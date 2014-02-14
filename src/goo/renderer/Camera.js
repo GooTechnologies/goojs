@@ -27,10 +27,10 @@ function(
 
 	/**
 	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.
-	 * @param {Number} fov the full vertical angle of view, in degrees.
-	 * @param {Number} aspect aspect ratio
-	 * @param {Number} near near plane distance
-	 * @param {Number} far far plane distance
+	 * @param {Number} [fov=45] the full vertical angle of view, in degrees.
+	 * @param {Number} [aspect=1] aspect ratio
+	 * @param {Number} [near=1] near plane distance
+	 * @param {Number} [far=1000] far plane distance
 	 */
 
 	function Camera(fov, aspect, near, far) {
@@ -72,7 +72,7 @@ function(
 		this._viewPortTop = 1.0;
 		this._viewPortBottom = 0.0;
 
-		this._planeQuantity = 6;
+		this._planeQuantity = 6; //! AT: unused
 
 		this._worldPlane = [];
 		for (var i = 0; i < Camera.FRUSTUM_PLANES; i++) {
@@ -667,8 +667,7 @@ function(
 	 * Converts a position in world coordinate space to a x,y,z frustum position using the current settings of this camera.
 	 *
 	 * @param worldPos the position in space to retrieve frustum coordinates for.
-	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
-	 *            created.
+	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is created.
 	 * @return a vector containing the x,y,z frustum position
 	 */
 	Camera.prototype.getFrustumCoordinates = function(worldPosition, store) {
@@ -698,7 +697,7 @@ function(
 	};
 
 	/**
-	 * update modelView if necessary.
+	 * Update modelView if necessary.
 	 */
 	Camera.prototype.checkModelView = function() {
 		if (this._updateMVMatrix) {
@@ -708,7 +707,7 @@ function(
 	};
 
 	/**
-	 * update projection if necessary.
+	 * Update projection if necessary.
 	 */
 	Camera.prototype.checkProjection = function() {
 		if (this._updatePMatrix) {
@@ -718,7 +717,7 @@ function(
 	};
 
 	/**
-	 * update modelViewProjection if necessary.
+	 * Update modelViewProjection if necessary.
 	 */
 	Camera.prototype.checkModelViewProjection = function() {
 		if (this._updateMVPMatrix) {
@@ -731,7 +730,7 @@ function(
 	};
 
 	/**
-	 * update inverse modelView if necessary.
+	 * Update inverse modelView if necessary.
 	 */
 	Camera.prototype.checkInverseModelView = function() {
 		if (this._updateInverseMVMatrix) {
@@ -742,7 +741,7 @@ function(
 	};
 
 	/**
-	 * update inverse modelViewProjection if necessary.
+	 * Update inverse modelViewProjection if necessary.
 	 */
 	Camera.prototype.checkInverseModelViewProjection = function() {
 		if (this._updateInverseMVPMatrix) {

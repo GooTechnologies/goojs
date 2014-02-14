@@ -11,6 +11,7 @@ function (AbstractAnimationChannel,
 	 * @param {string} channelName the name of this channel.
 	 * @param {number[]} times the time samples
 	 * @param {number[]} values our value samples. Entries may be null. Should have as many entries as the times array.
+	 * @private
 	 */
 	function InterpolatedFloatChannel (channelName, times, values, blendType) {
 		AbstractAnimationChannel.call(this, channelName, times, blendType);

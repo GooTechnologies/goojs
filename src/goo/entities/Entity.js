@@ -8,7 +8,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class A gameworld object and container of components
+	 * @class An entity is the basic object in the [World]{@link World}, and a container of [Components]{@link Component}.
 	 * @param {World} world A {@link World} reference
 	 * @param {String} [name] Entity name
 	 */

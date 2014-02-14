@@ -1,6 +1,6 @@
 define([
 	'goo/util/PromiseUtil'
-], /* @lends */ function(
+], /*@lends */ function(
 	PromiseUtil
 ) {
 	"use strict";
@@ -18,6 +18,7 @@ define([
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @returns {ComponentHandler}
+	 * @private
 	 *
 	 */
 	function ConfigHandler(world, getConfig, updateObject) {
@@ -27,7 +28,7 @@ define([
 		this._objects = {};
 	}
 
-	/*
+	/**
 	 * Method for creating empty engine object for ref. Should be overwritten in subclasses.
 	 * @returns {object} the newly created Entity, Material or other engine object
 	 * @private
@@ -47,7 +48,7 @@ define([
 		delete this._objects[ref];
 	};
 
-	/*
+	/**
 	 * Preparing config by populating it with defaults. Should be overwritten in subclasses.
 	 * @param {object} config
 	 * @private
@@ -56,7 +57,7 @@ define([
 		config = config;
 	};
 
-	/*
+	/**
 	 * Loads object for given ref
 	 * @param {string} ref
 	 * @param {object} options

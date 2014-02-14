@@ -19,12 +19,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading materials into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function MaterialHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -36,7 +37,7 @@ function(
 
 	MaterialHandler.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
 
-	/*
+	/**
 	 * Preparing material config by populating it with defaults.
 	 * @param {object} config
 	 * @private
@@ -79,7 +80,7 @@ function(
 		config.flat = false;
 	};
 
-	/*
+	/**
 	 * Creates a (somewhat) empty material.
 	 * @returns {Material}
 	 * @private
@@ -88,7 +89,7 @@ function(
 		return new Material();
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes a a material
 	 * @param {string} ref
 	 * @param {object|null} config

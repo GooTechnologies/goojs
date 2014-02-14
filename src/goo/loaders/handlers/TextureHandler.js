@@ -26,17 +26,14 @@ function(
 	"use strict";
 
 	/*jshint eqeqeq: false, -W041 */
-	/*
-	/*
+	/**
 	 * @class Handler for loading materials into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
-	/**
-	* @class
-	*/
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
@@ -68,7 +65,7 @@ function(
 	TextureHandler.WHITE = new Uint8Array([255, 255, 255, 255]);
 	TextureHandler.BLACK = new Uint8Array([0, 0, 0, 255]);
 
-	/*
+	/**
 	 * Preparing texture config by populating it with defaults.
 	 * @param {object} config
 	 * @private
@@ -86,7 +83,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Removes a texture
 	 * @param {ref}
 	 * @private
@@ -96,7 +93,7 @@ function(
 		delete this._objects[ref];
 	};
 
-	/*
+	/**
 	 * Creates an empty Texture.
 	 * @param {string} ref will be the entity's id
 	 * @returns {Texture}
@@ -106,7 +103,7 @@ function(
 		return new Texture();
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes a texture
 	 * @param {string} ref
 	 * @param {object|null} config

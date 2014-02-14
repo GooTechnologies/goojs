@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that provides a float value.
+		 * @private
 		 */
 		function LogicNodeFloat() {
 			LogicNode.call(this);

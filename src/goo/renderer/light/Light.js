@@ -40,7 +40,7 @@ function (
 		 * @property {number[]} resolution 512x512
 		 * @property {Vector3} upVector UNIT_Y
 		 * @property {number} darkness shadow contribution
-		 * @property {string} shadowType possible values <strong>'VSM'</strong> = Variance Shadow Maps, 'PCF' = Percentage Closer Filtering, 'Basic' = No filtering
+		 * @property {string} shadowType possible values 'VSM' = Variance Shadow Maps, 'PCF' = Percentage Closer Filtering, 'Basic' = No filtering
 		 */
 		this.shadowSettings = {
 			size: 100,

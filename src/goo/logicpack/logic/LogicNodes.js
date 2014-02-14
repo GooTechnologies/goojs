@@ -6,6 +6,7 @@ define(
 		// REVIEW: description needs updating
 		/**
 		 * @class Base class/module for all logic boxes
+		 * @private
 		 */
 		function LogicNodes() {}
 
@@ -14,6 +15,7 @@ define(
 
 		/**
 		 * Register a new logic node. All logic nodes must call this to register themselves.
+		 * @private
 		 */
 		LogicNodes.registerType = function(name, fn) {
 			LogicNodes.types[name] = {

@@ -21,12 +21,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading animation clips into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function AnimationClipHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -36,7 +37,7 @@ function(
 	AnimationClipHandler.prototype.constructor = AnimationClipHandler;
 	ConfigHandler._registerClass('clip', AnimationClipHandler);
 
-	/*
+	/**
 	 * Creates an empty animation clip
 	 * @param {string} ref
 	 * @returns {AnimationClip}
@@ -46,7 +47,7 @@ function(
 		return new AnimationClip();
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes an animation clip
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -65,7 +66,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Does the actual updating of animation clip and channels
 	 * It creates new channels on every update, but clips are practically never updated
 	 * @param {object} clipConfig

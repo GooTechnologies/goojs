@@ -13,11 +13,12 @@ define([
 ) {
 	'use strict';
 
-	/*
+	/**
 	 * @class Handling environments
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function EnvironmentHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -47,7 +48,7 @@ define([
 		};
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes an environment
 	 * @param {string} ref
 	 * @param {object|null} config

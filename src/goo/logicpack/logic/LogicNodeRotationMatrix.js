@@ -13,6 +13,7 @@ define(
 
 		/**
 		 * @class Logic node that constructs a rotation matrix.
+		 * @private
 		 */
 		function LogicNodeRotationMatrix() {
 			LogicNode.call(this);

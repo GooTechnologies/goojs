@@ -46,6 +46,7 @@ function (
 	/**
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward
 	 * @param {number} globalTime
+	 * @private
 	 */
 	ClipSource.prototype.setTime = function (globalTime) {
 		var instance = this._clipInstance;
@@ -112,23 +113,31 @@ function (
 	/**
 	 * Sets start time of clipinstance. If set to current time, clip is reset
 	 * @param {number} globalTime
+	 * @private
 	 */
 	ClipSource.prototype.resetClips = function (globalTime) {
 		this._clipInstance._startTime = globalTime;
 		this._clipInstance._active = true;
 	};
 
+	/**
+	 * @private
+	 */
 	ClipSource.prototype.shiftClipTime = function (shiftTime) {
 		this._clipInstance._startTime += shiftTime;
 		this._clipInstance._active = true;  // ?
 	};
 
+	/**
+	 * @private
+	 */
 	ClipSource.prototype.setTimeScale = function (timeScale) {
 		this._clipInstance.setTimeScale(timeScale);
 	};
 
 	/**
 	 * @returns {boolean} if clipsource is active
+	 * @private
 	 */
 	ClipSource.prototype.isActive = function () {
 		return this._clipInstance._active && (this._clip._maxTime !== -1);
@@ -136,6 +145,7 @@ function (
 
 	/**
 	 * @return a source data mapping for the channels in this clip source
+	 * @private
 	 */
 	ClipSource.prototype.getSourceData = function () {
 		if(!this._filter || !this._filterChannels) {
@@ -154,6 +164,9 @@ function (
 		return rVal;
 	};
 
+	/**
+	 * @returns {ClipSource}
+	 */
 	ClipSource.prototype.clone = function() {
 	    var cloned = new ClipSource(this._clip);
 

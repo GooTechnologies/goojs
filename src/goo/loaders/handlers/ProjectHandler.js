@@ -45,8 +45,10 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/*jshint eqeqeq: false, -W041 */
+	/**
 	 * @class Handler for loading project into engine (actually loading mainScene)
+	 * @private
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
@@ -54,7 +56,7 @@ function(
 	 */
 	function ProjectHandler() {
 		ConfigHandler.apply(this, arguments);
-		/*
+		/**
 		this._skybox = null;
 		this._skyboxTexture = null;
 		this._skyboxGeographic = false;
@@ -69,7 +71,7 @@ function(
 	ProjectHandler.prototype.constructor = ProjectHandler;
 	ConfigHandler._registerClass('project', ProjectHandler);
 
-	/*
+	/**
 	 * Removes project from engine, i e removes mainScene, i e removes scene entities from world
 	 * @param {string} ref}
 	 * @param {object} options
@@ -81,7 +83,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Creates an empty project object
 	 * @returns {object}
 	 * @private
@@ -92,7 +94,7 @@ function(
 		};
 	};
 
-	/*
+	/**
 	 * Creates/updates/removes a project
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -119,7 +121,7 @@ function(
 
 	return ProjectHandler;
 
-	/* Save for copy pasting into other handlers
+	/**Save for copy pasting into other handlers
 
 	ProjectHandler.prototype._prepare = function(config) {
 		config.skybox = config.skybox || {};
@@ -462,7 +464,7 @@ function(
 		}
 
 		// cleanup whatever magically made it into weather state and avoided the above update loop
-		/*
+		/**
 		for (var key in this.weatherState) {
 			if (!config[key]) {
 				ProjectHandler.weatherHandlers[key].remove.bind(this)(this.weatherState);

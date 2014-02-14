@@ -15,9 +15,9 @@ function (
 
 	/**
 	 * @class A 3D object with all points equi-distance from a center point.
-	 * @param {number} [zSamples=8] Number of segments.
-	 * @param {number} [radialSamples=8] Number of slices.
-	 * @param {number} [radius=0.5] Radius.
+	 * @param {Number} [zSamples=8] Number of segments.
+	 * @param {Number} [radialSamples=8] Number of slices.
+	 * @param {Number} [radius=0.5] Radius.
 	 * @param {Enum} [textureMode=Sphere.TextureModes.Polar] Texture wrapping mode.
 	 */
 	function Sphere(zSamples, radialSamples, radius, textureMode) {
@@ -29,31 +29,32 @@ function (
 			textureMode = props.textureMode;
 		}
 		/** Number of segments.
-		 * @type {number}
+		 * @type {Number}
 		 * @default 8
 		 */
 		this.zSamples = (zSamples !== undefined ? zSamples : 8) + 1;
 		/** Number of slices.
-		 * @type {number}
+		 * @type {Number}
 		 * @default 8
 		 */
 		this.radialSamples = radialSamples !== undefined ? radialSamples : 8;
-		/** @type {number}
+		/** @type {Number}
 		 * @default 0.5
 		 */
 		this.radius = radius !== undefined ? radius : 0.5;
+
+		if (typeof textureMode === 'string') {
+			textureMode = Sphere.TextureModes[textureMode];
+		}
 		/** Texture wrapping mode.
 		 * @type {Enum}
 		 * @default Sphere.TextureModes.Polar
 		 */
-		if (typeof textureMode === 'string') {
-			textureMode = Sphere.TextureModes[textureMode];
-		}
 		this.textureMode = textureMode !== undefined ? textureMode : Sphere.TextureModes.Polar;
 
 		/** Inward-facing normals, for skydomes.
 		 * @type {boolean}
-		 * @default
+		 * @default false
 		 */
 		this.viewInside = false;
 

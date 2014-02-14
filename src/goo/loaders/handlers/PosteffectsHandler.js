@@ -27,12 +27,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading posteffects into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function PosteffectsHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -48,7 +49,7 @@ function(
 	PosteffectsHandler.prototype.constructor = PosteffectsHandler;
 	ConfigHandler._registerClass('posteffects', PosteffectsHandler);
 
-	/*
+	/**
 	 * Removes the posteffects, i e removes the composer from rendersystem.
 	 * @param {ref}
 	 */
@@ -58,7 +59,7 @@ function(
 		delete this._objects[ref];
 	};
 
-	/*
+	/**
 	 * Creates an empty array which will hold the posteffects/RenderPasses
 	 * @returns {Entity}
 	 * @private
@@ -67,7 +68,7 @@ function(
 		return [];
 	};
 
-	/*
+	/**
 	 * Creates/updates/removes a posteffectconfig
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -109,7 +110,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Finds the already created effect from the configs id or creates a new one and updates it
 	 * according to config
 	 * @param {object} config

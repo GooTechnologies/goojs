@@ -15,6 +15,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);

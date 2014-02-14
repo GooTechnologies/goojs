@@ -12,12 +12,13 @@ function(
 	_
 ) {
 	"use strict";
-	/*
+	/**
 	 * @class Handler for loading sounds into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -27,7 +28,7 @@ function(
 	SoundHandler.prototype.constructor = SoundHandler;
 	ConfigHandler._registerClass('sound', SoundHandler);
 
-	/*
+	/**
 	 * Removes a sound
 	 * @param {ref}
 	 * @private
@@ -40,7 +41,7 @@ function(
 		delete this._objects[ref];
 	};
 
-	/*
+	/**
 	 * Preparing sound config by populating it with defaults.
 	 * @param {object} config
 	 * @private
@@ -54,7 +55,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Creates an empty sound.
 	 * @returns {Howl}
 	 * @private
@@ -65,7 +66,7 @@ function(
 		return howl;
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes a sound
 	 * @param {string} ref
 	 * @param {object|null} config

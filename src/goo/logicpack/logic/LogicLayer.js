@@ -12,6 +12,7 @@ define(
 		/**
 		 * @class Handles a logic layer, which is a container for Logic Nodes and connections. It handles resolving and executing
 		 *        connections, as well as cross-layer connections (through LogicSystem). Each LogicLayer has an entity owner.
+		 * @private
 		 */
 		function LogicLayer(ownerEntity) {
 			this._logicInterfaces = {};

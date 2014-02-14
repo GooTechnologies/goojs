@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that lets you access the logic layer of a different entity.
+		 * @private
 		 */
 		function LogicNodeEntityProxy() {
 			LogicNode.call(this);

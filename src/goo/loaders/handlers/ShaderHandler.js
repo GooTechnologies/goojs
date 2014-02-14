@@ -19,12 +19,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading shaders into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function ShaderHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -34,7 +35,7 @@ function(
 	ShaderHandler.prototype.constructor = ShaderHandler;
 	ConfigHandler._registerClass('shader', ShaderHandler);
 
-	/*
+	/**
 	 * Removes a shader
 	 * @param {ref}
 	 * @private
@@ -43,7 +44,7 @@ function(
 		// Some sort of gl release?
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes a shader
 	 * Currently it is not possible to update a shader, so we create a new one every time
 	 * @param {string} ref

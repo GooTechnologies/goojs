@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that provides an integer.
+		 * @private
 		 */
 		function LogicNodeInt() {
 			LogicNode.call(this);

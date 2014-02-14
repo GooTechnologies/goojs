@@ -40,6 +40,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function LogicComponentHandler() {
 		ComponentHandler.apply(this, arguments);

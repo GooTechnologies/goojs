@@ -23,6 +23,7 @@ function(
 
 	/**
 	* @class
+	* @private
 	*/
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);

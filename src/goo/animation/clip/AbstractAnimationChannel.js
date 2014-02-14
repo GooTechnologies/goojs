@@ -12,6 +12,7 @@ function (
 	 *        joint, or the play back of a specific sound, etc.) These channels are grouped together in an {@link AnimationClip} to describe a full animation.
 	 * @param {string} channelName the name of our channel. This is immutable to this instance of the class.
 	 * @param {number[]} times our time indices. Copied into the channel.
+	 * @private
 	 */
 	function AbstractAnimationChannel (channelName, times, blendType) {
 		this._blendType = blendType || 'Linear';

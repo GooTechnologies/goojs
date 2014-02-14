@@ -19,13 +19,14 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class For handling loading of meshrenderercomponents
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
+	 * @private
 	 */
 	function MeshRendererComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -38,7 +39,7 @@ function(
 
 	MeshRendererComponentHandler.DEFAULT_MATERIAL = Material.createMaterial(ShaderLib.uber, 'Default material');
 
-	/*
+	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 * @returns {object}
@@ -53,7 +54,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Create meshrenderer component.
 	 * @returns {MeshRendererComponent} the created component object
 	 * @private

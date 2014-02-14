@@ -23,12 +23,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading animation layers
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
 	 * @extends ConfigHandler
+	 * @private
 	 */
 	function AnimationLayersHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -38,7 +39,7 @@ function(
 	AnimationLayersHandler.prototype.constructor = AnimationLayersHandler;
 	ConfigHandler._registerClass('animation', AnimationLayersHandler);
 
-	/*
+	/**
 	 * Creates an empty array to store animation layers
 	 * @param {string} ref
 	 * @returns {AnimationLayer[]}
@@ -48,7 +49,7 @@ function(
 		return this._objects[ref] = [];
 	};
 
-	/*
+	/**
 	 * Shallow update of layers, which mean only changing blend weights and default states are allowed
 	 * @param {object} config
 	 * @param {AnimationLayer[]} layers
@@ -66,7 +67,7 @@ function(
 		return PromiseUtil.createDummyPromise(layers);
 	};
 
-	/*
+	/**
 	 * Sets current state on a layer if possible, otherwise clears  current state
 	 * @param {AnimationLayer} layer
 	 * @param {string} name
@@ -81,7 +82,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes the animation layers
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -112,7 +113,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Parses a single layer, puts the correct properties and {@link SteadyState} onto it
 	 * @param {object} layerConfig
 	 * @param {layer}
@@ -218,7 +219,7 @@ function(
 			});
 	};
 
-	/*
+	/**
 	 * Creates a new transition depending on type
 	 * @param {string} type
 	 * @returns {FadeTransitionState|SyncFadeTransitionState|FrozenTransitionState}

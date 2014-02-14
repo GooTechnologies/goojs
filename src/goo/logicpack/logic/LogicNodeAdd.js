@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node to add values.
+		 * @private
 		 */
 		function LogicNodeAdd() {
 			LogicNode.call(this);

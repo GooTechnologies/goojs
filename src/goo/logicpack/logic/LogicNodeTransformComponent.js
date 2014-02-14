@@ -14,6 +14,7 @@ define(
 
 		/**
 		 * @class Logic node that connects to the transform component of an entity.
+		 * @private
 		 */
 		function LogicNodeTransformComponent() {
 			LogicNode.call(this);

@@ -11,13 +11,14 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class For handling loading of sound components
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
+	 * @private
 	 */
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -30,7 +31,7 @@ function(
 	ComponentHandler._registerClass('sound', SoundComponentHandler);
 
 
-	/*
+	/**
 	 * Creates sound component
 	 * @returns {HowlerComponent} Should be soundcomponent
 	 * @private

@@ -7,6 +7,7 @@ function (
 
 	/**
 	 * @class Base class for a state in our animation system
+	 * @private
 	 */
 	function AbstractState () {
 		this._globalStartTime = 0;

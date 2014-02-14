@@ -17,12 +17,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading skeletons into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function SkeletonHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -32,7 +33,7 @@ function(
 	SkeletonHandler.prototype.constructor = SkeletonHandler;
 	ConfigHandler._registerClass('skeleton', SkeletonHandler);
 
-	/*
+	/**
 	 * Adds/updates/removes a skeleton. A Skeleton is created once and then reused, but skeletons
 	 * are rarely updated.
 	 * @param {string} ref
