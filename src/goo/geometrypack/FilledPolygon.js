@@ -49,8 +49,12 @@ define([
 				for (var j=0; j<al; j++) {
 					var vi = avl[j];
 					if(vi===i0 || vi===i1 || vi===i2) { continue; }
-					if(pointInTriangle(p[3*vi], p[3*vi+1], ax, ay, bx, by, cx, cy)) {earFound = false; break;}
+					if(pointInTriangle(p[3*vi], p[3*vi+1], ax, ay, bx, by, cx, cy)) {
+						console.log("Ear not found for " + i0 + ',' + i1 + ',' + i2);
+						earFound = false; break;
+					}
 				}
+				console.log("Ear found for " + i0 + ',' + i1 + ',' + i2);
 			}
 			if(earFound) {
 				tgs.push(i0, i1, i2);
@@ -61,10 +65,14 @@ define([
 			else { if(i++ > 3*al) { break; } }
 		}
 		tgs.push(avl[0], avl[1], avl[2]);
+		console.log(tgs);
 		return tgs;
 	}
 
 	function pointInTriangle(px, py, ax, ay, bx, by, cx, cy) {
+		if ((px==ax && py==ay) || (px==bx && py==by) || (px==cx && py==cy)) return false;
+
+
 		var v0x = cx-ax;
 		var v0y = cy-ay;
 		var v1x = bx-ax;
@@ -161,6 +169,95 @@ define([
 			maxX: maxX,
 			minY: minY,
 			maxY: maxY};
+	}
+
+	function linesCross(l1, l2) {
+		var p = l1.slice(0,2)
+		var r = [l1[2]-l1[0], l1[3]-l1[1]];
+		var q = l2.slice(0,2)
+		var s = [l2[2]-l2[0], l2[3]-l2[1]];
+		var rxs = (r[0]*s[1]-r[1]*s[0])
+		var q_pxr = (q[0]-p[0])*r[1] - (q[1]-p[1])*r[0];
+		if (rxs === 0) return false;
+		var u = q_pxr/rxs
+		var q_pxs = (q[0]-p[0])*s[1] - (q[1]-p[1])*s[0];
+		var t = q_pxs/rxs
+		return t > 0 && t < 1 && u>0 && u<1;
+	}
+
+
+	var rotateArray = (function() {
+		// save references to array functions to make lookup faster
+		var push = Array.prototype.push,
+				splice = Array.prototype.splice;
+
+		return function(array, count) {
+			var len = array.length >>> 0, // convert to uint
+				count = count >> 0; // convert to int
+
+			// convert count to value in range [0, len[
+			count = ((count % len) + len) % len;
+
+			// use splice.call() instead of this.splice() to make function generic
+			push.apply(array, splice.call(array, 0, count));
+			return array;
+		};
+	})();
+
+	function findConnectionPoints(c1,c2) {
+		for (var i=0; i<c1.length; i+=3) {
+			for (var j=0; j<c2.length; j+=3) {
+				var line = [c1[i], c1[i+1], c2[j], c2[j+1]];
+				var crossed = false;
+				for (var k=0; k<c1.length-3; k+=3) {
+					var crossLine = [c1[k], c1[k+1], c1[k+3], c1[k+4]];
+					if (linesCross(line, crossLine)) {
+						crossed = true;
+						break;
+					}
+				}
+				if (!crossed) {
+					for (var k=0; k<c1.length-3; k+=3) {
+						var crossLine = [c2[k], c2[k+1], c2[k+3], c2[k+4]];
+						if (linesCross(line, crossLine)) {
+							crossed = true;
+							break;
+						}
+					}
+					if (!crossed) {
+						return [i,j];						
+					}
+				}
+			}
+		}
+	}
+
+	FilledPolygon.connectContours = function(c1, c2) {
+		var cp = findConnectionPoints(c1,c2);
+		rotateArray(c2, cp[1]);
+		return c1.slice(0,cp[0]+3).concat(c2,c2.slice(0,3),c1.slice(cp[0]));
+	}
+
+	function angleBetween(v1, v2) {
+		var adotb = (v1[0]*v2[0] + v1[1]*v2[1])/Math.sqrt((v1[0]*v1[0] + v1[1]*v1[1])*(v2[0]*v2[0] + v2[1]*v2[1]));
+		var cross = v1[0]*v2[1]-v1[1]*v2[0];
+		return (cross!=0?cross/Math.abs(cross):1)*Math.acos(adotb);
+	}
+
+	function pointInside(p, c) {
+		var v1,v2,v1v2;
+		var angle = 0, dangle=0;
+		for (var i=0; i<c.length-3; i+=3) {
+			v1 = [c[i]-p[0],c[i+1]-p[1]];
+			v2 = [c[i+3]-p[0],c[i+4]-p[1]];
+			dangle = angleBetween(v1, v2);
+			angle+=dangle;
+		}
+		return Math.abs(Math.abs(angle)-Math.PI*2)<0.0001;
+	}
+
+	FilledPolygon.contourIsInside = function(c1,c2) {
+		return pointInside(c1, c2);
 	}
 
 	return FilledPolygon;

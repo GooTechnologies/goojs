@@ -51,6 +51,7 @@ define([
 		return this;
 	};
 
+
 	/**
 	 * @description Builds a surface as a result of multiplying 2 polyLines
 	 * @param {PolyLine} [that] The second operand
@@ -313,6 +314,8 @@ define([
 			return ret;
 		}
 	};
+
+
 
 	return PolyLine;
 });
