@@ -58,7 +58,7 @@ function(
 		if (config.shadowCaster) {
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
-				shadowType: 'Blur',
+				shadowType: 'VSM',
 				near: 1,
 				far: 1000,
 				resolution: [512, 512],
