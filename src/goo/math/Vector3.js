@@ -12,16 +12,16 @@ function (
 	/**
 	 * @class Vector with 3 components.  Used to store 3D translation and directions.  It also contains common 3D Vector operations.
 	 * @extends Vector
-	 * @description Creates a new Vector3 by passing in either a current Vector3, Number Array, or a set of three Numbers.  The original arguments are not modified.
-	 * @param {Vector3|Number[]|x,y,z} arguments Initial values for the components.
+	 * @description Creates a new Vector3 by passing in either a current Vector3, number Array, or a set of three numbers.  The original arguments are not modified.
+	 * @param {Vector3|number[]|x,y,z} arguments Initial values for the components.
 	 * @example 
-	 * // Passing in three Numbers
+	 * // Passing in three numbers
 	 * var v1 = new Vector3(1,2,3);
 	 * 
 	 * // Passing in an existing Vector3
 	 * var v2 = new Vector3(v1); // (1,2,3)
 	 *
-	 * // Passing in a Number Array
+	 * // Passing in a number Array
 	 * var v3 = new Vector3([4,5,6]);
 	 *
 	 * // Passing in no arguments
@@ -57,14 +57,29 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
-	 * @param {Vector3|number[]|numbers} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * Adds 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned. Equivalent of "return (target = lhs + rhs);".
+	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3|number[]|numbers} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3} [target] Target vector for storage.
+	 * @param {Vector3} [target] Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
-	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @example
+	 * // Adds two Vector3 with no target, returns a new Vector3 object as the result
+	 * var v1 = new Vector3(1,2,3);
+	 * var v2 = new Vector3(4,5,6);
+	 * var r1 = Vector3.add(v1, v2); // r1 == (5,7,9)
+	 * 
+	 * // Adds a number Array to a Vector3 with a target Vector3 to store the result
+	 * var a1 = [1,2,3];
+	 * var v1 = new Vector3(4,5,6);
+	 * var r1 = new Vector3(); // r1 == (0,0,0)
+	 * Vector3.add(a1, v1, r1); // r1 == (5,7,9)
+	 * 
+	 * // Adds a number to a Vector3, using that same Vector3 as the target to store the result
+	 * var v1 = new Vector3(1,2,3);
+	 * Vector3.add(5, v1, v1); // v1 == (6, 7, 8)
 	 */
 
 	Vector3.add = function (lhs, rhs, target) {
@@ -98,11 +113,21 @@ function (
 	};
 
 	/**
-	 * Component-wise addition optimized for vector3
-	 * @param {Vector3} lhs
-	 * @param {Vector3} rhs
-	 * @param {Vector3} target
-	 * @returns {Vector3} target
+	 * Optimized for Vector3 objects.  Adds 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.
+	 * @param {Vector3} lhs Vector3 on the left-hand side.
+	 * @param {Vector3} rhs Vector3 on the right-hand side.
+	 * @param {Vector3} target Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
+	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @example
+	 * // Adds two Vector3 objects and returns a new Vector3 object as the result
+	 * var v1 = new Vector3(1,2,3);
+	 * var v2 = new Vector3(4,5,6);
+	 * var v3 = Vector3.addv(v1, v2); // v3 == (5,7,9)
+	 *
+	 * // Adds two Vector3 objects, and stores the result in the target Vector3
+	 * var v1 = new Vector3(2,4,6);
+	 * var v2 = new Vector3(4,6,8);
+	 * Vector3.addv(v1, v2, v1); // v1 == (6,10,14)
 	 */
 	Vector3.addv = function (lhs, rhs, target) {
 		if (!target) {
@@ -118,7 +143,7 @@ function (
 
 	/**
 	 * Adds 'rhs' to the current Vector3. Equivalent to "return (this += rhs);".  Original argument is unchanged.
-	 * @param {Vector3|Number[]|Number} rhs Vector3, Array of Numbers, or single Number. For a single Number, the value is repeated for
+	 * @param {Vector3|number[]|number} rhs Vector3, Array of numbers, or single number. For a single number, the value is repeated for
 	 * every component.
 	 * @return {Vector3} Self for chaining.
 	 * @example
@@ -127,11 +152,11 @@ function (
 	 * var v2 = new Vector3(4,5,6);
 	 * v2.add(v1); // (5,7,9)
 	 *
-	 * // Passing in a Number Array
+	 * // Passing in a number Array
 	 * v3 = new Vector3(); // (0,0,0)
 	 * v3.add([1,2,3]); // (1,2,3)
 	 *
-	 * // Passing in a Number
+	 * // Passing in a number
 	 * v4 = new Vector3(); // (0,0,0)
 	 * v4.add(5); // (5,5,5)
 	 */
@@ -142,14 +167,29 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
-	 * @param {Vector3|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * Subtracts 'rhs' from 'lhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of "return (target = lhs - rhs);".
+	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3} [target] Target vector for storage.
+	 * @param {Vector3} [target] Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
-	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @example
+	 * // Subtracts Vector3 'v2' from Vector3 'v1', returns a new Vector3 object as the result
+	 * var v1 = new Vector3(1,2,3);
+	 * var v2 = new Vector3(4,5,6);
+	 * var r1 = Vector3.sub(v1, v2); // r1 == (-3,-3,-3)
+	 * 
+	 * // Subtracts a Vector3 'v1' from a number Array 'a1' with a target Vector3 to store the result
+	 * var a1 = [4,5,6];
+	 * var v1 = new Vector3(1,2,3);
+	 * var r1 = new Vector3(); // r1 == (0,0,0)
+	 * Vector3.sub(a1, v1, r1); // r1 == (3,3,3)
+	 * 
+	 * // Subtracts a number from a Vector3, using that same Vector3 as the target to store the result
+	 * var v1 = new Vector3(1,2,3);
+	 * Vector3.sub(v1, 5, v1); // v1 == (-4, -3, -2)
 	 */
 
 	Vector3.sub = function (lhs, rhs, target) {
@@ -182,6 +222,15 @@ function (
 		return target;
 	};
 
+	/**
+	 * Optimized for Vector3 objects.  Subtracts 'rhs' from 'lhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.
+	 * @param {Vector3} lhs Vector3 on the left-hand side.
+	 * @param {Vector3} rhs Vector3 on the right-hand side.
+	 * @param {Vector3} target Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
+	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @example
+	 * var v1 = new Vector3();
+	 */
 	Vector3.subv = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Vector3();
