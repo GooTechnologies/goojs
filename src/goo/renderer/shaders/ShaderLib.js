@@ -506,7 +506,10 @@ define([
 			},
 			timeMultiplier : 1.0,
 			translation : [0.0, 0.0, 1.0],
-			scale : [1.0, 1.0, 1.0]
+			scale : [1.0, 1.0, 1.0],
+			cutoffLow : 0.0,
+			cutoffHigh : 1.0,
+			color2pos : 0.5
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -567,6 +570,9 @@ define([
 				'uniform vec3 scale;',
 				'uniform float time;',
 				'uniform float timeMultiplier;',
+				'uniform float cutoffLow;',
+				'uniform float cutoffHigh;',
+				'uniform float color2pos;',
 
 				ShaderFragment.noise3d,
 
@@ -580,10 +586,25 @@ define([
 				' #ifdef NORMAL',
 				'	vec3 N = normalize(normal);',
 				' #else',
-				' vec3 N = vec3(0,0,1);',
+				' vec3 N = vec3(0, 0, 1);',
 				' #endif',
 				'	float noiseValue = snoise(vPos);',
-				'	vec3 finalColor = smoothstep(color1, mix(color2, color3, noiseValue), vec3(noiseValue));',
+				'	noiseValue = (noiseValue + 1.0) / 2.0;',
+				'	vec3 finalColor = vec3(0.0);',
+				'	if (noiseValue > color2pos) {',
+				'		float normNoise = (noiseValue - color2pos)/(1.0 - color2pos);',
+				'		finalColor = smoothstep(cutoffLow, cutoffHigh, mix(color2, color3, normNoise));',
+				//'		finalColor = mix(color2, color3, (noiseValue - color2pos)/(1.0 - color2pos));',
+				'	}', 
+				'	else {',
+				'		float normNoise = noiseValue / color2pos;',
+				'		finalColor = smoothstep(cutoffLow, cutoffHigh, mix(color1, color2, normNoise));',
+				'	}',
+				/*
+				'	vec3 c12 = smoothstep(0.0, color2pos, mix(color1, color2, noiseValue));',
+				'	vec3 c23 = smoothstep(color2pos, 1.0, mix(color2, color3, noiseValue));',
+				'	vec3 finalColor = mix(c12, c23, noiseValue);',
+				*/
 				'	vec4 final_color = vec4(finalColor, 1.0);',
 					ShaderBuilder.light.fragment,
 				'	final_color.a = opacity;',

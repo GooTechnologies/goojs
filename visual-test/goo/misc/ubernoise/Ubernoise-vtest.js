@@ -73,16 +73,19 @@ require([
 		for (var i= 0; i < entities.length; i++) {
 			entities[i].meshRendererComponent.materials = [perFragmentMaterial];
 		}
+
 		// DAT GUI SETUP
 		var pervertData = {
 			color1: [255, 0, 0],
 			color2: [0, 255, 0],
 			color3: [0, 0, 255],
-			timeMultiplier : 1.0,
+			timeMultiplier : 0.15,
 			scaleX : 1.0,
 			scaleY : 1.0,
 			scaleZ : 1.0,
-			noiseSize : 1.0
+			color2pos : 0.5,
+			cutoffLow : 0.0,
+			cutoffHigh : 1.0
 		};
 		var perFragGUIFolder = gui.addFolder(perFragmentMaterialName);
 		var controller = perFragGUIFolder.addColor(pervertData, 'color1');
@@ -92,14 +95,18 @@ require([
 			perFragmentMaterial.shader.uniforms.color1[1] = guiColor[1] / 255;
 			perFragmentMaterial.shader.uniforms.color1[2] = guiColor[2] / 255;
 		});
-		var controller = perFragGUIFolder.addColor(pervertData, 'color2');
+		controller = perFragGUIFolder.addColor(pervertData, 'color2');
 		controller.onChange(function() {
 			var guiColor = pervertData.color2;
 			perFragmentMaterial.shader.uniforms.color2[0] = guiColor[0] / 255;
 			perFragmentMaterial.shader.uniforms.color2[1] = guiColor[1] / 255;
 			perFragmentMaterial.shader.uniforms.color2[2] = guiColor[2] / 255;
 		});
-		var controller = perFragGUIFolder.addColor(pervertData, 'color3');
+		controller = perFragGUIFolder.add(pervertData, 'color2pos', 0.0, 1.0);
+		controller.onChange(function() {
+			perFragmentMaterial.shader.uniforms.color2pos = pervertData.color2pos;
+		});
+		controller = perFragGUIFolder.addColor(pervertData, 'color3');
 		controller.onChange(function() {
 			var guiColor = pervertData.color3;
 			perFragmentMaterial.shader.uniforms.color3[0] = guiColor[0] / 255;
@@ -121,10 +128,19 @@ require([
 			perFragmentMaterial.shader.uniforms.scale[2] = pervertData.scaleZ;
 		});
 
-		var timeRange = 30.0;
+		var timeRange = 15.0;
 		controller = perFragGUIFolder.add(pervertData, 'timeMultiplier', -timeRange, timeRange);
 		controller.onChange(function() {
 			perFragmentMaterial.shader.uniforms.timeMultiplier = pervertData.timeMultiplier;
+		});
+
+		controller = perFragGUIFolder.add(pervertData, 'cutoffLow', 0.0, 1.0);
+		controller.onChange(function() {
+			perFragmentMaterial.shader.uniforms.cutoffLow = pervertData.cutoffLow;
+		});
+		controller = perFragGUIFolder.add(pervertData, 'cutoffHigh', 0.0, 1.0);
+		controller.onChange(function() {
+			perFragmentMaterial.shader.uniforms.cutoffHigh = pervertData.cutoffHigh;
 		});
 		perFragGUIFolder.open();
 
