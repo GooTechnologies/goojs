@@ -21,6 +21,7 @@ function (
 		 * @type {Matrix4x4}
 		 */
 		this.matrix = new Matrix4x4();
+		this.normalMatrix = new Matrix4x4();
 
 		/** @type {Vector3} */
 		this.translation = new Vector3();
