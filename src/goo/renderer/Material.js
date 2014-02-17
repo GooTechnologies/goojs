@@ -5,21 +5,39 @@ define([
 function(
 	Shader
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A Material defines the look of an object.
-	 * @param {String} name Material name.
+	 * @param {string} name Material name.
+	 * @param {{ vshader, fshader }} shaderDefinition
 	 */
-	function Material(name) {
+	function Material(name, shaderDefinition) {
 		/** Material name.
-		 * @type {String}
+		 * @type {string}
 		 */
-		this.name = name;
+		this.name = null;
 		/** [Shader]{@link Shader} to use when rendering.
 		 * @type {Shader}
 		 */
 		this.shader = null;
+
+		//! AT: horrendous type checking follows
+		// function has 2 signatures because the deprecated .createMaterial had parameters in inverse order
+		if (typeof name === 'string') {
+			this.name = name;
+		} else if (name && name.vshader && name.fshader) {
+			this.shader = Material.createShader(name);
+		}
+
+		if (shaderDefinition && shaderDefinition.vshader && shaderDefinition.fshader) {
+			this.shader = Material.createShader(shaderDefinition);
+		} else if (typeof shaderDefinition === 'string') {
+			this.name = shaderDefinition;
+		}
+
+		this.name = this.name || 'Default Material';
+
 		/** Possible overrides for shader uniforms
 		 * @type {Object}
 		 * @default
@@ -218,10 +236,13 @@ function(
 	/**
 	 * Creates a new Material object and sets the shader by calling createShader with the shaderDefinition
 	 *
+	 * @deprecated Use new Material() instead
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
 	 * @param {String} [name=DefaultMaterial]
 	 * @return {Material}
 	 */
+
+	//! AT: this method has the parameters in the wrong order!!! // or the old constructor signature was
 	Material.createMaterial = function (shaderDefinition, name) {
 		var material = new Material(name || 'DefaultMaterial');
 
@@ -233,7 +254,7 @@ function(
 	Material.createEmptyMaterial = function(shaderDefinition, name) {
 		var material = new Material(name || 'Empty Material');
 		material.empty();
-		if(shaderDefinition) {
+		if (shaderDefinition) {
 			material.shader = Material.createShader(shaderDefinition);
 		} else {
 			material.shader = undefined;
@@ -241,6 +262,7 @@ function(
 		return material;
 	};
 
+	//! AT: how about a immutable material named EMPTY and a clone method for materials instead of this mutable madness?
 	Material.prototype.empty = function() {
 		this.cullState = {};
 		this.blendState = {};
