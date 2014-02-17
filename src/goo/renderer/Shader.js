@@ -517,8 +517,8 @@ function (
 	};
 
 	function setupDefaultCallbacks(defaultCallbacks) {
+		//! AT: can't Matrix4x4.IDENTITY be used instead of creating this every time?
 		var IDENTITY_MATRIX = new Matrix4x4();
-		var tmpMatrix = new Matrix4x4(); //! AT: unused
 
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
