@@ -92,6 +92,7 @@ function (
 		this.world.setSystem(new LightDebugSystem()); // Go away!
 		this.world.setSystem(new CameraDebugSystem()); // Go away!
 		this.world.setSystem(new MovementSystem()); // Go away!
+
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
@@ -215,7 +216,7 @@ function (
 			return;
 		}
 
-		tpf = Math.max(Math.min(tpf, 0.5), 0.0001);
+		tpf = Math.max(Math.min(tpf, 0.5), 0.0001); //! AT: MathUtils.clamp
 
 		// Smooth out the tpf
 		tpfSmoothingArray[tpfIndex] = tpf;
@@ -232,6 +233,7 @@ function (
 		World.tpf = this.world.tpf;
 		this.start = time;
 
+		// execute callbacks
 		for (var i = 0; i < this.callbacksNextFrame.length; i++) {
 			this.callbacksNextFrame[i](this.world.tpf);
 		}
@@ -241,6 +243,7 @@ function (
 			this.callbacksPreProcess[i](this.world.tpf);
 		}
 
+		// process the world
 		if (this.doProcess) {
 			this.world.process();
 		}
@@ -248,24 +251,28 @@ function (
 		this.renderer.info.reset();
 
 		if (this.doRender) {
-
 			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
 			this.renderer.clear();
+
+			// run the prerender callbacks
 			for (var i = 0; i < this.callbacksPreRender.length; i++) {
 				this.callbacksPreRender[i](this.world.tpf);
 			}
 
+			// run all the renderers
 			for (var i = 0; i < this.renderSystems.length; i++) {
 				this.renderSystems[i].render(this.renderer);
 			}
-			if(this._picking.doPick && Renderer.mainCamera) {
+
+			// handle pick requests
+			if (this._picking.doPick && Renderer.mainCamera) {
 				var cc = this.renderer.clearColor.data;
 				this._picking.clearColorStore[0] = cc[0];
 				this._picking.clearColorStore[1] = cc[1];
 				this._picking.clearColorStore[2] = cc[2];
 				this._picking.clearColorStore[3] = cc[3];
-				this.renderer.setClearColor(0,0,0,1);
+				this.renderer.setClearColor(0, 0, 0, 1);
 
 				for (var i = 0; i < this.renderSystems.length; i++) {
 					if (this.renderSystems[i].renderToPick) {
@@ -280,13 +287,17 @@ function (
 			}
 		}
 
+		// run the post render callbacks
 		for (var i = 0; i < this.callbacks.length; i++) {
 			this.callbacks[i](this.world.tpf);
 		}
 
+		// update the stats if there are any
 		if (this.stats) {
 			this.stats.update(this.renderer.info);
 		}
+
+		// resolve any snapshot requests
 		if (this._takeSnapshots.length) {
 			try {
 				var image = this.renderer.domElement.toDataURL();
@@ -299,7 +310,7 @@ function (
 			this._takeSnapshots = [];
 		}
 
-
+		// schedule next frame
 		this.animationId = window.requestAnimationFrame(this.run);
 	};
 
@@ -388,7 +399,7 @@ function (
 			}
 		}.bind(this), false);
 
-		document.addEventListener("mousedown", function (e) {
+		document.addEventListener('mousedown', function (e) {
 			if (e[activeKey]) {
 				var x = e.clientX;
 				var y = e.clientY;
