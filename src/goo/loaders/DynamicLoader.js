@@ -283,11 +283,11 @@ function(
 				return PromiseUtil.createDummyPromise(null);
 			}
 
-			if (!config) {
-				// Remove object
-				handler.remove(ref);
-				return PromiseUtil.createDummyPromise(null);
-			}
+			// if (!config) {
+			// 	// Remove object
+			// 	handler.remove(ref);
+			// 	return PromiseUtil.createDummyPromise(null);
+			// }
 
 			// Update object
 			this._objects[ref] = handler.update(ref, config, options).then(

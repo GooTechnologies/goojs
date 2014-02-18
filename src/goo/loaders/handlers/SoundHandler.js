@@ -87,17 +87,35 @@ function(
 			// Audio files
 			var promises = [];
 			var formats = ['mp3', 'wav', 'ogg'];
+			var mimeTypes = {
+				mp3: 'audio/mpeg',
+				wav: 'audio/vnd.wav',
+				ogg: 'audio/ogg'
+			};
+
 			for (var i = 0; i < formats.length; i++) {
 				var format = formats[i];
 				var path = config.audioRefs[format];
 				if (path) {
-					promises.push(that.getConfig(path, options));
+					promises.push(that.getConfig(path, options)
+						// Howler doesn't support object urls, so this is wasted
+						// .then(function(path){
+						// 	if (typeof path === 'string')
+						// 		return path;
+						// 	else if (path instanceof ArrayBuffer) {
+						// 		var mimeType = 'audio/mp3'
+						// 		var blob = new Blob([path], {type:mimeTypes[format]});
+						// 		return window.URL.createObjectURL(blob);
+						// 	}
+						// })
+					);
 				}
 			}
 			return RSVP.all(promises).then(function(paths) {
 				if (isEqual(paths, sound._urls)) {
 					return sound;
 				}
+
 				// Wait for howler to load
 				var howlerLoaded = new RSVP.Promise();
 				function onLoad() {
