@@ -439,9 +439,9 @@ function (
 			};
 		}
 
-		var x = rhs.data[2] * lhs.data[1] - rhs.data[1] * lhs.data[2];
-		var y = rhs.data[0] * lhs.data[2] - rhs.data[2] * lhs.data[0];
-		var z = rhs.data[1] * lhs.data[0] - rhs.data[0] * lhs.data[1];
+		var x = rdata[2] * ldata[1] - rdata[1] * ldata[2];
+		var y = rdata[0] * ldata[2] - rdata[2] * ldata[0];
+		var z = rdata[1] * ldata[0] - rdata[0] * ldata[1];
 		target.data[0] = x;
 		target.data[1] = y;
 		target.data[2] = z;
