@@ -67,6 +67,7 @@ define([
 	SkyboxHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(skybox) {
+			if (!skybox) { return; }
 			var promises = [];
 			if (config.box) {
 				promises.push(that._updateBox(config.box, options, skybox));
@@ -95,16 +96,17 @@ define([
 				skybox.textures = [texture];
 				skyTex.setImage(texture.image);
 
-				if (config.enabled)
+				if (config.enabled) {
 					that._show(that._skysphere);
-				else
+				} else {
 					that._hide(that._skysphere);
+				}
 				return that._skysphere;
 			});
 		}
 		else {
 			that._skysphereTexture.setImage(null);
-			that._hide(that._skysphere)
+			that._hide(that._skysphere);
 		}
 		return PromiseUtil.createDummyPromise(that._skysphere);
 	};
@@ -133,7 +135,7 @@ define([
 
 		// Load all textures
 		return RSVP.all(promises).then(function(textures) {
-			
+
 			// Check if skybox is the same
 			if (isEqual(textures, skybox.textures) && that._activeSkyShape === that._skybox) {
 				return that._skybox;
@@ -165,10 +167,11 @@ define([
 			skyTex.image.height = h;
 			skyTex.image.dataReady = true;
 			skyTex.setNeedsUpdate();
-			if (config.enabled) 
+			if (config.enabled) {
 				that._show(that._skybox);
-			else
+			} else {
 				that._hide(that._skybox);
+			}
 
 			return that._skybox;
 		});

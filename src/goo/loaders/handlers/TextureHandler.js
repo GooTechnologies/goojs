@@ -113,6 +113,7 @@ function(
 	TextureHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(texture) {
+			if (!texture) { return; }
 			var ret;
 
 			// Texture settings

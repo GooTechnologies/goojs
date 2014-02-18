@@ -2,7 +2,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/addons/howler/components/HowlerComponent',
 	'goo/util/rsvp'
-], 
+],
 /** @lends */
 function(
 	ComponentHandler,
@@ -54,6 +54,7 @@ function(
 		}
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
 			// Stop all sounds
 			for (var i = 0; i < component.sounds.length; i++) {
 				component.sounds[i].stop();

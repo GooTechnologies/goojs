@@ -68,6 +68,7 @@ function(
 	 MeshDataComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
 			if (config.shape) {
 				var shapeCreator = ShapeCreatorMemoized['create' + StringUtil.capitalize(config.shape)];
 				if (shapeCreator) {

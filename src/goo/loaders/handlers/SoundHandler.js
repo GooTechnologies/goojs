@@ -80,6 +80,7 @@ function(
 		var that = this;
 
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
+			if (!sound) { return; }
 			// Settings
 			sound.loop(config.loop);
 			sound.volume(config.volume);

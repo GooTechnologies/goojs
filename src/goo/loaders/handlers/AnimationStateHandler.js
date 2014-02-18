@@ -56,6 +56,7 @@ function(
 	AnimationStateHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(state) {
+			if (!state) { return; }
 			state._name = config.name;
 			return that._parseClipSource(config.clipSource, state._sourceTree, options).then(function(source) {
 				state._sourceTree = source;

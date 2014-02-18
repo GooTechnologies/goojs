@@ -9,7 +9,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
 ],
-/** @lends */ 
+/** @lends */
 function(
 	ConfigHandler,
 	AnimationLayer,
@@ -92,6 +92,7 @@ function(
 	AnimationLayersHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(object) {
+			if(!object) { return; }
 			var promises = [];
 			if (options && options.animation && options.animation.shallow) {
 				// Only update blendweights and default states

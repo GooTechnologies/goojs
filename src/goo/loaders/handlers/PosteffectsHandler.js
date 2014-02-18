@@ -10,7 +10,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
 	'goo/renderer/pass/PassLib'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,
@@ -78,6 +78,7 @@ function(
 	PosteffectsHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(posteffects) {
+			if (!posteffects) { return; }
 			var i = 0;
 			_.forEach(config.posteffects, function(effectConfig) {
 				posteffects[i++] = that._updateEffect(effectConfig, posteffects);
@@ -85,6 +86,7 @@ function(
 			posteffects.length = i;
 			return posteffects;
 		}).then(function(posteffects) {
+			if (!posteffects) { return; }
 			var enabled = posteffects.some(function(effect) { return effect.enabled; });
 			var renderSystem = that.world.getSystem('RenderSystem');
 			var composer = that._composer;

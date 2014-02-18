@@ -74,6 +74,7 @@ function(
 		var that = this;
 
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
 			// Component settings
 			component.cullMode = config.cullMode;
 			component.castShadows = config.castShadows;
@@ -98,7 +99,6 @@ function(
 				var selectionMaterial = component.materials.filter(function(material) {
 					return material.name === 'gooSelectionIndicator';
 				});
-				
 				component.materials = materials.concat(selectionMaterial);
 				return component;
 			});

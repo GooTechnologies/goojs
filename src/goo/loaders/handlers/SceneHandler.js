@@ -74,6 +74,7 @@ function(
 	SceneHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(scene) {
+			if (!scene) { return; }
 			scene.id = ref;
 			var promises = [];
 			promises.push(that._handleEntities(config, scene, options));
@@ -113,7 +114,7 @@ function(
 		var removedEntityIds = [];
 
 		for (var id in scene.entities) {
-			var engineEntity = scene.entities[id];
+			//var engineEntity = scene.entities[id];
 			if (addedEntityIds[id]) {
 				delete addedEntityIds[id];
 			}
@@ -133,7 +134,7 @@ function(
 				entity.addToWorld();
 				scene.entities[entity.id] = entity;
 			}
-			
+
 			// Removing old entities
 			// This is handled by EntityHandler
 			// for (var id in removedEntityIds) {

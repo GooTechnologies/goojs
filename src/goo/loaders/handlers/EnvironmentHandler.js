@@ -58,6 +58,7 @@ define([
 	EnvironmentHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(object) {
+			if (!object) { return; }
 			object.backgroundColor = config.backgroundColor.slice(0);
 			object.globalAmbient = config.globalAmbient.slice(0,3);
 
@@ -84,7 +85,7 @@ define([
 			}
 
 			// Skybox
-			if(config.skyboxRef && config.skyboxRef != that._cache.skyboxRef) {
+			if(config.skyboxRef && config.skyboxRef !== that._cache.skyboxRef) {
 				return that._load(config.skyboxRef, options).then(function(/*skybox*/) {
 					that._cache.skyboxRef = config.skyboxRef;
 					return object;

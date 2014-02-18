@@ -99,6 +99,7 @@ function(
 	MaterialHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(material) {
+			if (!material) { return; }
 			var promises = [];
 			// Material settings
 			_.extend(material.blendState, config.blendState);

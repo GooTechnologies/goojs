@@ -1,47 +1,10 @@
 define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/Skybox',
-	'goo/math/MathUtils',
-	'goo/shapes/Sphere',
-	'goo/renderer/Renderer',
-	'goo/renderer/pass/Composer',
-	'goo/renderer/pass/RenderPass',
-	'goo/math/Vector4',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/Util',
-	'goo/renderer/Texture',
-	'goo/entities/EntityUtils',
-	'goo/entities/SystemBus',
-	'goo/util/ArrayUtil',
-	'goo/util/ObjectUtil',
-	'goo/util/Snow'
+	'goo/loaders/handlers/ConfigHandler'
+
 ],
 /** @lends */
 function(
-	ConfigHandler,
-	RSVP,
-	PromiseUtil,
-	Skybox,
-	MathUtils,
-	Sphere,
-	Renderer,
-	Composer,
-	RenderPass,
-	Vector4,
-	ShaderLib,
-	ShaderBuilder,
-	FullscreenPass,
-	Util,
-	Texture,
-	EntityUtils,
-	SystemBus,
-	ArrayUtil,
-	_,
-	Snow
+	ConfigHandler
 ) {
 	"use strict";
 
@@ -104,6 +67,7 @@ function(
 	 ProjectHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(project) {
+			if (!project) { return; }
 			function loadPromise() {
 				return that._load(config.mainSceneRef, options).then(function(scene) {
 					project.mainScene = scene;
