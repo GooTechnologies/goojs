@@ -76,6 +76,8 @@ function (
 		target.scale.setv(tmpVec2);
 		target.translation.setv(tmpVec);
 
+		target.update();
+
 		return target;
 	};
 

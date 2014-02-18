@@ -160,6 +160,23 @@ define([
 
 			expect(transform1.matrix.equals(transform2.matrix)).toBeFalsy();
 		});
+
+		describe('combine', function () {
+			it('combines and updates the resulting transform', function () {
+				var transform1 = new Transform();
+				transform1.translation.set(1, 2, 3);
+
+				var transform2 = new Transform();
+				transform2.translation.set(11, 22, 33);
+
+				var result = Transform.combine(transform1, transform2);
+				expect(result.translation.equals(new Vector3(1, 2, 3).add(new Vector3(11, 22, 33)))).toBeTruthy();
+
+				expect(result.matrix[12]).toBeCloseTo(1 + 11);
+				expect(result.matrix[13]).toBeCloseTo(2 + 22);
+				expect(result.matrix[14]).toBeCloseTo(3 + 33);
+			});
+		});
 	});
 
 });
