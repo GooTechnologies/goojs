@@ -56,20 +56,20 @@ function (
 	'use strict';
 
 	/**
-	 * @class Standard setup of entity system to use as base for small projects/demos
+	 * @class The main class that updates the world and calls the renderers
 	 *
-	 * @param {Object} [parameters] GooRunner settings passed in a JSON object.
-	 * @param {boolean} [parameters.alpha=false]
-	 * @param {boolean} [parameters.premultipliedAlpha=true]
-	 * @param {boolean} [parameters.antialias=true]
-	 * @param {boolean} [parameters.stencil=false]
-	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
+	 * @param {boolean} [parameters.alpha=false] Specifies if the canvas should have an alpha channel or not.
+	 * @param {boolean} [parameters.premultipliedAlpha=true] Enables or disables premultiplication of color by alpha
+	 * @param {boolean} [parameters.antialias=true] Specifies if antialiasing should be turned on or no
+	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer
+	 * @param {boolean} [parameters.preserveDrawingBuffer=false] By default the drawing buffer will be cleared after it is presented to the HTML compositor. Enable this option to not clear the drawing buffer
 	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
-	 * @param {boolean} [parameters.showStats=false]
-	 * @param {boolean} [parameters.manuallyStartGameLoop=false]
-	 * @param {boolean} [parameters.logo=true]
-	 * @param {boolean} [parameters.tpfSmoothingCount=10]
-	 * @param {boolean} [parameters.debugKeys=false]
+	 * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
+	 * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
+	 * @param {boolean} [parameters.logo=true] Specifies whether the Goo logo is visible or not
+	 * @param {boolean} [parameters.tpfSmoothingCount=10] Specifies the amount of previous frames to use when computing the 'time per frame'
+	 * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
 	 */
 
 	function GooRunner (parameters) {
@@ -191,6 +191,13 @@ function (
 		};
 	}
 
+	/**
+	 * Add a render system to the world
+	 * @private
+	 * @param system
+	 * @param idx
+	 */
+	//! AT: private until priorities get added to render systems as 'idx' is very unflexibile
 	GooRunner.prototype.setRenderSystem = function (system, idx) {
 		this.world.setSystem(system);
 		if (idx !== undefined) {
@@ -360,7 +367,6 @@ function (
 	 * Enable misc debug configurations for inspecting aspects of the scene on hotkeys.
 	 * @private
 	 */
-
 	GooRunner.prototype._addDebugKeys = function () {
 		//TODO: Temporary keymappings
 		// shift+space = toggle fullscreen
@@ -416,7 +422,6 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to call when event is fired
 	 */
-
 	GooRunner.prototype.addEventListener = function(type, callback) {
 		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
@@ -435,7 +440,6 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to remove from event listener
 	 */
-
 	GooRunner.prototype.removeEventListener = function(type, callback) {
 		if(!this._eventListeners[type]) {
 			return;
@@ -476,7 +480,6 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @private
 	 */
-
 	GooRunner.prototype._enableEvent = function(type) {
 		if(this._events[type]) {
 			return;
@@ -505,7 +508,6 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @private
 	 */
-
 	GooRunner.prototype._disableEvent = function(type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
@@ -541,12 +543,11 @@ function (
 	/**
 	 * Requests a pick from screen space coordinates. A successful pick returns id and depth of the pick target.
 	 *
-	 * @param {Number} x screen coordinate
-	 * @param {Number} y screen coordinate
+	 * @param {number} x screen coordinate
+	 * @param {number} y screen coordinate
 	 * @param {Function} callback to handle the pick result
-	 * @param {Boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
+	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
 	 */
-
 	GooRunner.prototype.pick = function(x, y, callback, skipUpdateBuffer) {
 		this._picking.x = x;
 		this._picking.y = y;

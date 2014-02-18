@@ -47,12 +47,13 @@ function(
 		// Texture storage
 		this._textureMaps = {};
 
-		/** @type {object}
-		 * @property {Array<Number>} ambient The ambient color, [r, g, b, a]
-		 * @property {Array<Number>} diffuse The diffuse color, [r, g, b, a]
-		 * @property {Array<Number>} emissive The emissive color, [r, g, b, a]
-		 * @property {Array<Number>} specular The specular color, [r, g, b, a]
-		 * @property {Number} shininess The shininess exponent.
+		/** Specification of colors for this Material
+		 * @type {Object}
+		 * @property {number[]} ambient The ambient color, [r, g, b, a]
+		 * @property {number[]} diffuse The diffuse color, [r, g, b, a]
+		 * @property {number[]} emissive The emissive color, [r, g, b, a]
+		 * @property {number[]} specular The specular color, [r, g, b, a]
+		 * @property {number} shininess The shininess exponent.
 		 * */
 		this.materialState = {
 			ambient: Shader.DEFAULT_AMBIENT,
@@ -61,18 +62,20 @@ function(
 			specular: Shader.DEFAULT_SPECULAR,
 			shininess: Shader.DEFAULT_SHININESS
 		};
-		/** Specification of culling for this Material.
+
+		/** Specification of culling for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled
-		 * @property {String} cullFace possible values: 'Front', 'Back', 'FrontAndBack', default 'Back'
-		 * @property {String} frontFace possible values: 'CW' (clockwise) and 'CCW' (counterclockwise - default)
+		 * @property {string} cullFace possible values: 'Front', 'Back', 'FrontAndBack', default 'Back'
+		 * @property {string} frontFace possible values: 'CW' (clockwise) and 'CCW' (counterclockwise - default)
 		 */
 		this.cullState = {
 			enabled: true,
 			cullFace: 'Back', // Front, Back, FrontAndBack
 			frontFace: 'CCW' // CW, CCW
 		};
-		/**
+
+		/** Specification of blending for this Material
 		 * @type {Object}
 		 * @property {String} blending possible values: <strong>'NoBlending'</strong>, 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		 * @property {String} blendEquation possible values: <strong>'AddEquation'</strong>, 'SubtractEquation', 'ReverseSubtractEquation'
@@ -85,7 +88,8 @@ function(
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
-		/**
+
+		/** Specification of depth handling for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled default: true
 		 * @property {boolean} write default: true
@@ -94,7 +98,8 @@ function(
 			enabled: true,
 			write: true
 		};
-		/**
+
+		/** Specification of the polygon offset for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled
 		 * @property {number} factor default: 1
@@ -184,6 +189,7 @@ function(
 	};
 
 	/**
+	 * Returns the render queue of this material
 	 * @returns {number}
 	 */
 	Material.prototype.getRenderQueue = function () {
@@ -196,6 +202,7 @@ function(
 	};
 
 	/**
+	 * Sets the render queue of this material
 	 * @param {number} queue See {@link RenderQueue} for options
 	 */
 	Material.prototype.setRenderQueue = function (queue) {
