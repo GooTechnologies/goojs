@@ -8,16 +8,16 @@ function(
 	'use strict';
 
 	/**
-	 * @class A Material defines the look of an object.
-	 * @param {string} name Material name.
-	 * @param {{ vshader, fshader }} shaderDefinition
+	 * @class A Material defines the look of an object
+	 * @param {string} [name='Default Material'] Material name
+	 * @param {{ vshader, fshader }} [shaderDefinition] Optional shader to associate with the material
 	 */
 	function Material(name, shaderDefinition) {
-		/** Material name.
+		/** Material name
 		 * @type {string}
 		 */
 		this.name = null;
-		/** [Shader]{@link Shader} to use when rendering.
+		/** [Shader]{@link Shader} to use when rendering
 		 * @type {Shader}
 		 */
 		this.shader = null;
@@ -48,10 +48,10 @@ function(
 		this._textureMaps = {};
 
 		/** @type {object}
-		 * @property {Array<Number>} ambient The ambient color, [r,g,b,a]
-		 * @property {Array<Number>} diffuse The diffuse color, [r,g,b,a]
-		 * @property {Array<Number>} emissive The emissive color, [r,g,b,a]
-		 * @property {Array<Number>} specular The specular color, [r,g,b,a]
+		 * @property {Array<Number>} ambient The ambient color, [r, g, b, a]
+		 * @property {Array<Number>} diffuse The diffuse color, [r, g, b, a]
+		 * @property {Array<Number>} emissive The emissive color, [r, g, b, a]
+		 * @property {Array<Number>} specular The specular color, [r, g, b, a]
 		 * @property {Number} shininess The shininess exponent.
 		 * */
 		this.materialState = {
@@ -238,10 +238,9 @@ function(
 	 *
 	 * @deprecated Use new Material() instead
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
-	 * @param {String} [name=DefaultMaterial]
+	 * @param {String} [name='DefaultMaterial'] The name of the newly created material
 	 * @return {Material}
 	 */
-
 	//! AT: this method has the parameters in the wrong order!!! // or the old constructor signature was
 	Material.createMaterial = function (shaderDefinition, name) {
 		var material = new Material(name || 'DefaultMaterial');
@@ -251,6 +250,13 @@ function(
 		return material;
 	};
 
+	/**
+	 * Creates an 'empty' material
+	 * @private
+	 * @param shaderDefinition see {@link Shader}
+	 * @param name [name='Empty Material'] The name of the newly created material
+	 * @returns {Material}
+	 */
 	Material.createEmptyMaterial = function(shaderDefinition, name) {
 		var material = new Material(name || 'Empty Material');
 		material.empty();
@@ -263,6 +269,10 @@ function(
 	};
 
 	//! AT: how about a immutable material named EMPTY and a clone method for materials instead of this mutable madness?
+	/**
+	 * Removed the material's properties
+	 * @private
+	 */
 	Material.prototype.empty = function() {
 		this.cullState = {};
 		this.blendState = {};
