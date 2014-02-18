@@ -248,10 +248,9 @@ function (
 		this.renderer.info.reset();
 
 		if (this.doRender) {
-
 			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
-			this.renderer.clear();
+
 			for (var i = 0; i < this.callbacksPreRender.length; i++) {
 				this.callbacksPreRender[i](this.world.tpf);
 			}
@@ -261,13 +260,13 @@ function (
 					this.renderSystems[i].render(this.renderer);
 				}
 			}
-			if(this._picking.doPick && Renderer.mainCamera) {
+			if (this._picking.doPick && Renderer.mainCamera) {
 				var cc = this.renderer.clearColor.data;
 				this._picking.clearColorStore[0] = cc[0];
 				this._picking.clearColorStore[1] = cc[1];
 				this._picking.clearColorStore[2] = cc[2];
 				this._picking.clearColorStore[3] = cc[3];
-				this.renderer.setClearColor(0,0,0,1);
+				this.renderer.setClearColor(0, 0, 0, 1);
 
 				for (var i = 0; i < this.renderSystems.length; i++) {
 					if (this.renderSystems[i].renderToPick && !this.renderSystems[i].passive) {

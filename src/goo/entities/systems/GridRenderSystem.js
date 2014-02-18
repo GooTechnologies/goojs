@@ -109,7 +109,7 @@ function (
 		renderer.checkResize(this.camera);
 
 		if (this.camera) {
-			renderer.render(this.renderList, this.camera, this.lights, null, { color: false, depth: false, stencil: false });
+			renderer.render(this.renderList, this.camera, this.lights, null, false);
 		}
 	};
 
