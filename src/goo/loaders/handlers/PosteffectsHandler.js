@@ -82,7 +82,7 @@ function(
 			var i = 0;
 			_.forEach(config.posteffects, function(effectConfig) {
 				posteffects[i++] = that._updateEffect(effectConfig, posteffects);
-			}, 'sortValue');
+			}, null, 'sortValue');
 			posteffects.length = i;
 			return posteffects;
 		}).then(function(posteffects) {
@@ -123,7 +123,7 @@ function(
 		var effect;
 		for (var i = 0; i < posteffects.length; i++) {
 			if (posteffects[i].id === config.id) {
-				effect = posteffects[i].id;
+				effect = posteffects[i];
 				break;
 			}
 		}
