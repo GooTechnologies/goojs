@@ -2,6 +2,7 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/entities/SystemBus',
 	'goo/util/ArrayUtil',
+	'goo/util/ObjectUtil',
 	'goo/util/rsvp'
 ],
 /** @lends */
@@ -9,6 +10,7 @@ function(
 	ConfigHandler,
 	SystemBus,
 	ArrayUtil,
+	_,
 	RSVP
 ) {
 	"use strict";
