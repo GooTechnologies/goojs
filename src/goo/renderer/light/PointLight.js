@@ -8,13 +8,18 @@ define([
 	'use strict';
 
 	/**
-	 * @class A pointlight. So far it has the same effect as {@link Light}
+	 * @class A punctiform source of light. So far it has the same effect as {@link Light}
+	 * @constructor
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function PointLight () {
-		Light.apply(this, arguments);
+	function PointLight(color) {
+		Light.call(this, color);
 
+		/**
+		 * The range of the light (default is 1000)
+		 * @type {number}
+		 */
 		this.range = 1000;
 	}
 
