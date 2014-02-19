@@ -56,6 +56,11 @@ function (
 	SpotLight.prototype = Object.create(Light.prototype);
 	SpotLight.prototype.constructor = SpotLight;
 
+	/**
+	 * Updates the light's translation and orientation
+	 * @private
+	 * @param transform
+	 */
 	SpotLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
 
