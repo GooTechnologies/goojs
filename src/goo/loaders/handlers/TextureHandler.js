@@ -182,7 +182,7 @@ function(
 				}
 			} else {
 				// Blank
-				console.warn('Texture ' + ref + ' has no imageRef');
+				// console.warn('Texture ' + ref + ' has no imageRef');
 				// texture.setImage(TextureHandler.WHITE, 1, 1);
 				ret = texture;
 
