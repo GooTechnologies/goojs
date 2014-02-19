@@ -10,7 +10,7 @@ function (ParticleUtils, Renderer) {
 	 * @param {number} [settings.maxLifetime=3.0] The maximum lifetime of a particle emitted by this emitter (in seconds)
 	 * @param {number} [settings.minLifetime=2.0] The minimum lifetime of a particle emitted by this emitter (in seconds)
 	 * @param {{ color, mass, uvIndex, color, size, spin }[]} [settings.timeline] A timeline object describing the transformations that a particle should go through while it 'ages'. This overrides the timeline set on the particle component
-	 * @param {{ enabled, prepare, apply }[]} [settings.influences] An array of objects providing functions that alter the particle
+	 * @param {ParticleInfluence[]} [settings.influences] An array of objects providing functions that alter the particle
 	 * @param {Function: (particle, particleEntity) -> Vector3} [settings.emissionPoint] A function returning an emission point for a particle
 	 * @param {Function: (particle, particleEntity) -> Vector3} [settings.getEmissionVelocity] A function returning an emission velocity for a particle
 	 * @param {Function: (particle)} [settings.getParticleBillboardVectors=ParticleEmitter.CAMERA_BILLBOARD_FUNC] A function that sets the orientation of the particle's billboard

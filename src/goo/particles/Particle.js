@@ -18,8 +18,7 @@ function (
 	var calcVec = new Vector3();
 
 	/**
-	 * @class Data object tracking a single particle in a particle component.
-	 * @constructor
+	 * @class Data object tracking a single particle in a particle component
 	 */
 	function Particle(particleComponent, index) {
 		this.alive = false;
@@ -41,6 +40,11 @@ function (
 		this.lastColor = new Vector4();
 	}
 
+	/**
+	 * Called by the particle system to 'respawn' this particle
+	 * @private
+	 * @param emitter
+	 */
 	Particle.prototype.respawnParticle = function (emitter) {
 		this.emitter = emitter;
 		this.lifeSpan = emitter.nextParticleLifeSpan();
@@ -48,6 +52,12 @@ function (
 		this.age = 0;
 	};
 
+	/**
+	 * Called by the particle system each frame to update the position and other properties of the particle
+	 * @private
+	 * @param tpf
+	 * @param particleEntity
+	 */
 	Particle.prototype.update = function (tpf, particleEntity) {
 		if (!this.alive) {
 			return;
@@ -124,6 +134,10 @@ function (
 		}
 	};
 
+	/**
+	 * Called by update to mark this particle as dead/reusable
+	 * @private
+	 */
 	Particle.prototype.kill = function () {
 		this.alive = false;
 		// collapse particle to a single point, effectively hiding it from view.
