@@ -135,15 +135,11 @@ function(
 				scene.entities[entity.id] = entity;
 			}
 
-			// Removing old entities
-			// This is handled by EntityHandler
-			// for (var id in removedEntityIds) {
-			// 	var entity = scene.entities[id];
-			// 	if (entity) {
-			// 		entity.removeFromWorld();
-			// 		delete scene.entities[id];
-			// 	}
-			// }
+			// Removing old entities from the handler cache
+			// Removing them from the world is handled by the EntityHandler
+			for (var id in removedEntityIds) {
+				delete scene.entities[id];
+			}
 		});
 	};
 
