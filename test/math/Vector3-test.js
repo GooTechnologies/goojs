@@ -140,15 +140,21 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(Vector3.dot(a, b)).toEqual(5);
 		});
 
-		it("can calculate cross products", function() {
-			var a = new Vector3(3, 2, 1);
-			var b = new Vector3(3, 2, 1);
-			var c = new Vector3(1, 2, 3);
+		describe('cross', function () {
+			it('can calculate cross products', function () {
+				var a = new Vector3(3, 2, 1);
+				var b = new Vector3(3, 2, 1);
+				var c = new Vector3(1, 2, 3);
 
-			a.cross(c);
+				a.cross(c);
 
-			expect(a).toEqual(new Vector3(4, -8, 4));
-			expect(Vector3.cross(b, c)).toEqual(new Vector3(4, -8, 4));
+				expect(a).toEqual(new Vector3(4, -8, 4));
+				expect(Vector3.cross(b, c)).toEqual(new Vector3(4, -8, 4));
+			});
+
+			it('can calculate cross products of two vectors given as arrays', function () {
+				expect(Vector3.cross([3, 2, 1], [1, 2, 3])).toEqual(new Vector3(4, -8, 4));
+			});
 		});
 
 		it("can calculate the distance", function() {

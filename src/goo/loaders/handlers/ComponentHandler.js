@@ -17,6 +17,7 @@ define([
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @returns {ComponentHandler}
+	 * @private
 	 *
 	 */
 	function ComponentHandler(world, getConfig, updateObject) {
@@ -25,14 +26,14 @@ define([
 		this.updateObject = updateObject;
 	}
 
-	/*
+	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 * @private
 	 */
 	ComponentHandler.prototype._prepare = function(/*config*/) {};
 
-	/*
+	/**
 	 * Create engine component object based on the config. Should be overridden in subclasses.
 	 * @param {Entity} entity The entity on which this component should be added.
 	 * @returns {Component} the created component object
@@ -43,7 +44,7 @@ define([
 		throw new Error("ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)");
 	};
 
-	/*
+	/**
 	 * Remove engine component object. Should be overridden in subclasses.
 	 * @param {Entity} entity The entity from which this component should be removed.
 	 * @private
@@ -52,7 +53,7 @@ define([
 		entity.clearComponent(this._type);
 	};
 
-	/*
+	/**
 	 * Loads object for given ref
 	 * @param {string} ref
 	 * @param {object} options

@@ -1,52 +1,17 @@
 define([
-	'goo/loaders/handlers/ConfigHandler',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/Skybox',
-	'goo/math/MathUtils',
-	'goo/shapes/Sphere',
-	'goo/renderer/Renderer',
-	'goo/renderer/pass/Composer',
-	'goo/renderer/pass/RenderPass',
-	'goo/math/Vector4',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/Util',
-	'goo/renderer/Texture',
-	'goo/entities/EntityUtils',
-	'goo/entities/SystemBus',
-	'goo/util/ArrayUtil',
-	'goo/util/ObjectUtil',
-	'goo/util/Snow'
+	'goo/loaders/handlers/ConfigHandler'
+
 ],
 /** @lends */
 function(
-	ConfigHandler,
-	RSVP,
-	PromiseUtil,
-	Skybox,
-	MathUtils,
-	Sphere,
-	Renderer,
-	Composer,
-	RenderPass,
-	Vector4,
-	ShaderLib,
-	ShaderBuilder,
-	FullscreenPass,
-	Util,
-	Texture,
-	EntityUtils,
-	SystemBus,
-	ArrayUtil,
-	_,
-	Snow
+	ConfigHandler
 ) {
 	"use strict";
 
-	/*
+	/*jshint eqeqeq: false, -W041 */
+	/**
 	 * @class Handler for loading project into engine (actually loading mainScene)
+	 * @private
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
@@ -54,7 +19,7 @@ function(
 	 */
 	function ProjectHandler() {
 		ConfigHandler.apply(this, arguments);
-		/*
+		/**
 		this._skybox = null;
 		this._skyboxTexture = null;
 		this._skyboxGeographic = false;
@@ -69,7 +34,7 @@ function(
 	ProjectHandler.prototype.constructor = ProjectHandler;
 	ConfigHandler._registerClass('project', ProjectHandler);
 
-	/*
+	/**
 	 * Removes project from engine, i e removes mainScene, i e removes scene entities from world
 	 * @param {string} ref}
 	 * @param {object} options
@@ -81,7 +46,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Creates an empty project object
 	 * @returns {object}
 	 * @private
@@ -92,7 +57,7 @@ function(
 		};
 	};
 
-	/*
+	/**
 	 * Creates/updates/removes a project
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -102,6 +67,7 @@ function(
 	 ProjectHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(project) {
+			if (!project) { return; }
 			function loadPromise() {
 				return that._load(config.mainSceneRef, options).then(function(scene) {
 					project.mainScene = scene;
@@ -119,7 +85,7 @@ function(
 
 	return ProjectHandler;
 
-	/* Save for copy pasting into other handlers
+	/**Save for copy pasting into other handlers
 
 	ProjectHandler.prototype._prepare = function(config) {
 		config.skybox = config.skybox || {};
@@ -462,7 +428,7 @@ function(
 		}
 
 		// cleanup whatever magically made it into weather state and avoided the above update loop
-		/*
+		/**
 		for (var key in this.weatherState) {
 			if (!config[key]) {
 				ProjectHandler.weatherHandlers[key].remove.bind(this)(this.weatherState);

@@ -19,12 +19,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading entities into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function EntityHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -35,7 +36,7 @@ function(
 	EntityHandler.prototype.constructor = EntityHandler;
 	ConfigHandler._registerClass('entity', EntityHandler);
 
-	/*
+	/**
 	 * Creates an empty entity
 	 * @param {string} ref will be the entity's id
 	 * @returns {Entity}
@@ -45,7 +46,7 @@ function(
 		return this.world.createEntity();
 	};
 
-	/*
+	/**
 	 * Removes an entity
 	 * @param {ref}
 	 * @private
@@ -58,7 +59,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes an entity
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -105,7 +106,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes a component on an entity
 	 * @param {Entity} entity
 	 * @param {string} type
@@ -124,7 +125,7 @@ function(
 		return p;
 	};
 
-	/*
+	/**
 	 * Get the type for the component. Needed to match engine components against data model
 	 * component types.
 	 * @param {Component} component
@@ -139,7 +140,7 @@ function(
 		return type;
 	};
 
-	/*
+	/**
 	 * Gets the handler for a component type or creates a new one if necessary
 	 * @param {string} type
 	 * @returns {ComponentHandler}

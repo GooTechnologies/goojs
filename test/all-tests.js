@@ -42,6 +42,7 @@ define([
 	'test/renderer/Light-test',
 	'test/entities/Selection-test',
 	'test/entities/EntitySelection-test',
+	'test/renderer/Material-test',
 	'test/loaders/DynamicLoader-test',
 	'test/loaders/handlers/TransformComponentHandler-test',
 	'test/loaders/handlers/CameraComponentHandler-test',

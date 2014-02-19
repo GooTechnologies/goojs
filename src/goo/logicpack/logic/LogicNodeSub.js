@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that subtracts inputs.
+		 * @private
 		 */
 		function LogicNodeSub() {
 			LogicNode.call(this);

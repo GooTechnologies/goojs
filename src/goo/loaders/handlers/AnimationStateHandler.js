@@ -21,12 +21,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading animation states into engine
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
 	 * @extends ConfigHandler
+	 * @private
 	 */
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -35,7 +36,7 @@ function(
 	AnimationStateHandler.prototype.constructor = AnimationStateHandler;
 	ConfigHandler._registerClass('animstate', AnimationStateHandler);
 
-	/*
+	/**
 	 * Creates an empty animation state
 	 * @param {string} ref
 	 * @returns {SteadyState}
@@ -45,7 +46,7 @@ function(
 		return this._objects[ref] = new SteadyState();
 	};
 
-	/*
+	/**
 	 * Adds/updates/removes an animation state
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -55,6 +56,7 @@ function(
 	AnimationStateHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(state) {
+			if (!state) { return; }
 			state._name = config.name;
 			return that._parseClipSource(config.clipSource, state._sourceTree, options).then(function(source) {
 				state._sourceTree = source;
@@ -63,7 +65,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Updates or creates clipSource to put on animation state
 	 * @param {object} config
 	 * @param {ClipSource} [clipSource]

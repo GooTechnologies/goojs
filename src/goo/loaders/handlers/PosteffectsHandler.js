@@ -10,7 +10,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
 	'goo/renderer/pass/PassLib'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,
@@ -27,12 +27,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading posteffects into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function PosteffectsHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -48,7 +49,7 @@ function(
 	PosteffectsHandler.prototype.constructor = PosteffectsHandler;
 	ConfigHandler._registerClass('posteffects', PosteffectsHandler);
 
-	/*
+	/**
 	 * Removes the posteffects, i e removes the composer from rendersystem.
 	 * @param {ref}
 	 */
@@ -58,7 +59,7 @@ function(
 		delete this._objects[ref];
 	};
 
-	/*
+	/**
 	 * Creates an empty array which will hold the posteffects/RenderPasses
 	 * @returns {Entity}
 	 * @private
@@ -67,7 +68,7 @@ function(
 		return [];
 	};
 
-	/*
+	/**
 	 * Creates/updates/removes a posteffectconfig
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -77,13 +78,15 @@ function(
 	PosteffectsHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(posteffects) {
+			if (!posteffects) { return; }
 			var i = 0;
 			_.forEach(config.posteffects, function(effectConfig) {
 				posteffects[i++] = that._updateEffect(effectConfig, posteffects);
-			}, 'sortValue');
+			}, null, 'sortValue');
 			posteffects.length = i;
 			return posteffects;
 		}).then(function(posteffects) {
+			if (!posteffects) { return; }
 			var enabled = posteffects.some(function(effect) { return effect.enabled; });
 			var renderSystem = that.world.getSystem('RenderSystem');
 			var composer = that._composer;
@@ -109,7 +112,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Finds the already created effect from the configs id or creates a new one and updates it
 	 * according to config
 	 * @param {object} config
@@ -120,7 +123,7 @@ function(
 		var effect;
 		for (var i = 0; i < posteffects.length; i++) {
 			if (posteffects[i].id === config.id) {
-				effect = posteffects[i].id;
+				effect = posteffects[i];
 				break;
 			}
 		}

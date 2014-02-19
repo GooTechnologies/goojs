@@ -10,7 +10,8 @@ define(
 		"use strict";
 
 		/**
-		 * @class Logic node connecting to the LightComponent of an entity
+		 * @class Logic node connecting to the LightComponent of an entity.
+		 * @private
 		 */
 		function LogicNodeLightComponent() {
 			LogicNode.call(this);

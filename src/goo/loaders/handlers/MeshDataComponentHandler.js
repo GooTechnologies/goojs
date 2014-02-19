@@ -21,13 +21,14 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class For handling loading of meshdatacomponents
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
+	 * @private
 	 */	function MeshDataComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'MeshDataComponent';
@@ -37,7 +38,7 @@ function(
 	MeshDataComponentHandler.prototype.constructor = MeshDataComponentHandler;
 	ComponentHandler._registerClass('meshData', MeshDataComponentHandler);
 
-	/*
+	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 * @returns {object}
@@ -48,7 +49,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Create meshdata component.
 	 * @returns {MeshDataComponent} the created component object
 	 * @private
@@ -67,6 +68,7 @@ function(
 	 MeshDataComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
 			if (config.shape) {
 				var shapeCreator = ShapeCreatorMemoized['create' + StringUtil.capitalize(config.shape)];
 				if (shapeCreator) {

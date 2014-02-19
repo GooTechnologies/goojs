@@ -57,7 +57,8 @@ define([
 			var renderSystem = world.getSystem('RenderSystem');
 			spyOn(renderSystem, 'added');
 
-			var p = loader.load(config.id).then(function(skybox) {
+			var p = loader.load(config.id).then(function(skyboxes) {
+				var skybox = skyboxes[0];
 				expect(skybox).toEqual(jasmine.any(Entity));
 				expect(renderSystem.added).toHaveBeenCalledWith(skybox);
 				expect(skybox.isSkybox).toBeTruthy();
@@ -78,7 +79,8 @@ define([
 		it('loads a skysphere', function() {
 			var config = Configs.skybox('sphere');
 			loader.preload(Configs.get());
-			var p = loader.load(config.id).then(function(skybox) {
+			var p = loader.load(config.id).then(function(skyboxes) {
+				var skybox = skyboxes[0];
 				expect(skybox).toEqual(jasmine.any(Entity));
 				expect(skybox.isSkybox).toBeTruthy();
 

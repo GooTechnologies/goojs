@@ -12,6 +12,7 @@ define(
 
 		/**
 		 * @class Logic node to provide a const Vec3
+		 * @private
 		 */
 		function LogicNodeConstVec3() {
 			LogicNode.call(this);

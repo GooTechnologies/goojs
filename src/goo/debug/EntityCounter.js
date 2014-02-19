@@ -46,6 +46,7 @@ define([],
 
 	/**
 	 * Builds and appends the GUI for the entity counter
+	 * @memberOf EntityCounter#
 	 * @private
 	 */
 	function createPanel() {

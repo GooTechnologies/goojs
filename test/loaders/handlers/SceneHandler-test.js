@@ -29,8 +29,12 @@ define([
 			var config = Configs.scene();
 			loader.preload(Configs.get());
 			var p = loader.load(config.id).then(function(scene) {
-				expect(scene.entities).toEqual(jasmine.any(Array));
-				var entity = scene.entities[0];
+				expect(scene.entities).toEqual(jasmine.any(Object));
+				var entity;
+				for (var key in scene.entities) {
+					entity = scene.entities[key];
+					break;
+				}
 				expect(entity).toEqual(jasmine.any(Entity));
 				expect(entity._world._addedEntities).toContain(entity);
 			});

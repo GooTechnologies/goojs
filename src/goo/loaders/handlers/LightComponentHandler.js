@@ -22,13 +22,14 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class For handling loading of light components
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
+	 * @private
 	 */
 	function LightComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -39,7 +40,7 @@ function(
 	LightComponentHandler.prototype.constructor = LightComponentHandler;
 	ComponentHandler._registerClass('light', LightComponentHandler);
 
-	/*
+	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 * @private
@@ -57,7 +58,7 @@ function(
 		if (config.shadowCaster) {
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
-				shadowType: 'Blur',
+				shadowType: 'VSM',
 				near: 1,
 				far: 1000,
 				resolution: [512, 512],
@@ -72,7 +73,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Create light component object based on the config.
 	 * @returns {LightComponent} the created component object
 	 * @private

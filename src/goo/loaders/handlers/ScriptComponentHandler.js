@@ -1,20 +1,19 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/ScriptComponent',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/rsvp'
 ],
 /** @lends */
 function(
 	ComponentHandler,
 	ScriptComponent,
-	RSVP,
-	PromiseUtil
+	RSVP
 ) {
 	"use strict";
 
 	/**
 	* @class
+	* @private
 	*/
 	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -33,6 +32,7 @@ function(
 	ScriptComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
 			var promises = [];
 			for(var key in config.scriptRefs) {
 				promises.push(that._load(config.scriptRefs[key], options));

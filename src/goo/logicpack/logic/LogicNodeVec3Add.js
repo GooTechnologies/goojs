@@ -12,6 +12,7 @@ define(
 
 		/**
 		 * @class Logic node that adds Vec3 inputs.
+		 * @private
 		 */
 		function LogicNodeVec3Add() {
 			LogicNode.call(this);

@@ -20,6 +20,7 @@ function (
 
 	/**
 	 * @class Utilities for parsing json data
+	 * @private
 	 */
 	function JsonUtils () {
 

@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node to be used as Layer input.
+		 * @private
 		 */
 		function LogicNodeInput() {
 			LogicNode.call(this);

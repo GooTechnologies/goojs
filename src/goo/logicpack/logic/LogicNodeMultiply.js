@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that multiplies two inputs.
+		 * @private
 		 */
 		function LogicNodeMultiply() {
 			LogicNode.call(this);

@@ -15,12 +15,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class Handler for loading scene into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function SceneHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -30,7 +31,7 @@ function(
 	SceneHandler.prototype.constructor = SceneHandler;
 	ConfigHandler._registerClass('scene', SceneHandler);
 
-	/*
+	/**
 	 * Removes the scene, i e removes all entities in scene from engine world
 	 * @param {ref}
 	 */
@@ -48,7 +49,7 @@ function(
 		delete this._objects[ref];
 	};
 
-	/*
+	/**
 	 * Creates an empty scene which will hold some scene data
 	 * @returns {Entity}
 	 * @private
@@ -63,7 +64,7 @@ function(
 		};
 	};
 
-	/*
+	/**
 	 * Creates/updates/removes a scene
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -73,6 +74,7 @@ function(
 	SceneHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(scene) {
+			if (!scene) { return; }
 			scene.id = ref;
 			var promises = [];
 			promises.push(that._handleEntities(config, scene, options));
@@ -99,7 +101,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Adding and removing entities to the engine and thereby the scene
 	 * @param {object} config
 	 * @param {object} scene
@@ -145,7 +147,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Handling posteffects
 	 * @param {object} config
 	 * @param {object} scene
@@ -155,7 +157,7 @@ function(
 		return this._load(config.posteffectsRef, options);
 	};
 
-	/*
+	/**
 	 * Handling environment, to be implemented
 	 * @param {object} config
 	 * @param {object} scene

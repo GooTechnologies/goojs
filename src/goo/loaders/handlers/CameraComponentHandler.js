@@ -17,13 +17,14 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class For handling loading of camera components
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
+	 * @private
 	 */
 	function CameraComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -34,7 +35,7 @@ function(
 	ComponentHandler._registerClass('camera', CameraComponentHandler);
 	CameraComponentHandler.prototype.constructor = CameraComponentHandler;
 
-	/*
+	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 * @returns {object}
@@ -59,7 +60,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Create camera component object.
 	 * @param {Entity} entity The entity on which this component should be added.
 	 * @returns {CameraComponent} the created component object

@@ -33,7 +33,10 @@ function(
 ) {
 	"use strict";
 
-	/** @class */
+	/**
+	 * @class
+	 * @private
+	 */
 	function CrunchLoader() {
 	}
 

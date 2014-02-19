@@ -13,13 +13,14 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class For handling loading of sound components
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
+	 * @private
 	 */
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -31,7 +32,7 @@ function(
 	ComponentHandler._registerClass('sound', SoundComponentHandler);
 
 
-	/*
+	/**
 	 * Creates sound component
 	 * @returns {SoundComponent} Should be soundcomponent
 	 * @private
@@ -50,6 +51,7 @@ function(
 	SoundComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
 			// Stop all sounds
 			for (var i = 0; i < component.sounds.length; i++) {
 				component.sounds[i].stop();

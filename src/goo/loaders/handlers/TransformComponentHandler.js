@@ -21,12 +21,13 @@ function(
 ) {
 	"use strict";
 
-	/*
+	/**
 	 * @class For handling loading of transform component
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @private
 	 * @extends ComponentHandler
 	 */
 	function TransformComponentHandler() {
@@ -38,7 +39,7 @@ function(
 	TransformComponentHandler.prototype.constructor = TransformComponentHandler;
 	ComponentHandler._registerClass('transform', TransformComponentHandler);
 
-	/*
+	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 * @private
@@ -51,7 +52,7 @@ function(
 		});
 	};
 
-	/*
+	/**
 	 * Create transform component object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
 	 * @returns {TransformComponent} the created component object
@@ -61,7 +62,7 @@ function(
 		return new TransformComponent();
 	};
 
-	/*
+	/**
 	 * Remove engine component object. TransformComponents can't be removed, so we reset.
 	 * @param {Entity} entity The entity from which this component should be removed.
 	 * @private

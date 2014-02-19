@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that multiplies two floats.
+		 * @private
 		 */
 		function LogicNodeMultiplyFloat() {
 			LogicNode.call(this);

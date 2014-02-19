@@ -31,7 +31,7 @@ define([
 			var p = loader.load(config.id).then(function(project) {
 				console.log(project);
 				expect(project.mainScene).toBeDefined();
-				expect(project.mainScene.entities).toEqual(jasmine.any(Array));
+				expect(project.mainScene.entities).toEqual(jasmine.any(Object));
 			});
 			wait(p);
 		});
@@ -41,8 +41,11 @@ define([
 			var p = loader.load(config.id).then(function(project) {
 				console.log(project);
 				expect(project.mainScene).toBeDefined();
-				expect(project.mainScene.entities[0]).toEqual(jasmine.any(Entity));
-				expect(project.material);
+				var entity;
+				for (var key in project.mainScene.entities) {
+					entity = project.mainScene.entities[key];
+				}
+				expect(entity).toEqual(jasmine.any(Entity));
 			});
 			wait(p);
 		});

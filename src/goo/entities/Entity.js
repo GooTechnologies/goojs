@@ -8,7 +8,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class A gameworld object and container of components
+	 * @class An entity is the basic object in the [World]{@link World} and a container of [Components]{@link Component}.
 	 * @param {World} world A {@link World} reference
 	 * @param {String} [name] Entity name
 	 */
@@ -69,7 +69,7 @@ function (
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
 	 * @param {boolean} [recursive=true] Add children recursively
-	 * @returns {Entity} Returns itself to allow chaining
+	 * @returns {Entity} Returns self to allow chaining
 	 */
 	Entity.prototype.addToWorld = function (recursive) {
 		this._world.addEntity(this, recursive);
@@ -79,13 +79,19 @@ function (
 	/**
 	 * Remove entity from the world.
 	 * @param {boolean} [recursive=true] Remove children recursively
-	 * @returns {Entity} Returns itself to allow chaining
+	 * @returns {Entity} Returns self to allow chaining
 	 */
 	Entity.prototype.removeFromWorld = function (recursive) {
 		this._world.removeEntity(this, recursive);
 		return this;
 	};
 
+	/**
+	 * lower cases the first character of the type parameter.
+	 * @param {string} type name
+	 * @returns {string} lower cased type name
+	 * @private
+	 */
 	function getTypeAttributeName(type) {
 		return type.charAt(0).toLowerCase() + type.substr(1);
 	}
@@ -94,11 +100,11 @@ function (
 	 * Set component of a certain type on entity. The operation has no effect if the entity already contains a component of the same type.
 	 *
 	 * @param {Component} component Component to set on the entity
-	 * @returns {Entity} Returns itself to allow chaining
+	 * @returns {Entity} Returns self to allow chaining
 	 */
 	Entity.prototype.setComponent = function (component) {
 		if (this.hasComponent(component.type)) {
-			return;
+			return this;
 		} else {
 			this._components.push(component);
 		}
@@ -147,7 +153,7 @@ function (
 	 * Remove a component of a specific type from entity
 	 *
 	 * @param {string} type Type of component to remove (eg. 'meshDataComponent')
-	 * @returns {Entity} Returns itself to allow chaining
+	 * @returns {Entity} Returns self to allow chaining
 	 */
 	Entity.prototype.clearComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);

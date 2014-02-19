@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node to be used as layer output.
+		 * @private
 		 */
 		function LogicNodeOutput() {
 			LogicNode.call(this);

@@ -5,7 +5,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
 ],
-/** @lends */
+/* @lends */
 function(
 	ConfigHandler,
 	MeshData,
@@ -18,11 +18,12 @@ function(
 	var WEIGHTS_PER_VERT = 4;
 
 	/*jshint eqeqeq: false, -W041, bitwise: false */
-	/*
+	/**
 	 * @class Handler for meshdata. Will not update, only create once
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject
+	 * @private
 	 */
 	function MeshDataHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -32,7 +33,7 @@ function(
 	MeshDataHandler.prototype.constructor = MeshDataHandler;
 	ConfigHandler._registerClass('mesh', MeshDataHandler);
 
-	/*
+	/**
 	 * Removes the meshdata from the objects config
 	 * @param {string} ref
 	 */
@@ -41,7 +42,7 @@ function(
 		delete this._objects[ref];
 	};
 
-	/*
+	/**
 	 * Creates a MeshData once, then reuses that one without updating
 	 * @param {string} ref
 	 * @param {object|null} config
@@ -68,7 +69,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Creates a MeshData object with attributeMap according to config
 	 * @param {object} config
 	 * @returns {MeshData}
@@ -108,7 +109,7 @@ function(
 		return meshData;
 	};
 
-	/*
+	/**
 	 * Fills MeshData object from config
 	 * @param {MeshData} meshData
 	 * @param {object} config
@@ -128,7 +129,7 @@ function(
 			meshData.getAttributeBuffer(key).set(ArrayUtil.getTypedArray(bindata, data));
 		}
 
-		/* Remapping the joints. This will enable us to have skeleton with hundreds of joints even
+		/**Remapping the joints. This will enable us to have skeleton with hundreds of joints even
 		 * though meshes can only have ~70
 		 */
 		if (skinned && config.attributes.JOINTIDS) {

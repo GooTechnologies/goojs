@@ -44,7 +44,9 @@ define([
 				var camera = entity.cameraComponent.camera;
 				var cameraConfig = config.components.camera;
 				for (var key in cameraConfig) {
-					expect(camera[key]).toBe(cameraConfig[key]);
+					if (key !== 'projectionMode') {
+						expect(camera[key]).toBe(cameraConfig[key]);
+					}
 				}
 			});
 			wait(p);

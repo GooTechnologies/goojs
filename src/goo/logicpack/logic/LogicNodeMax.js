@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that computes the max of two inputs.
+		 * @private
 		 */
 		function LogicNodeMax() {
 			LogicNode.call(this);
