@@ -12,13 +12,13 @@ define([
 	/**
 	 * @class Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
 	 */
-	function MeshRendererComponent() {
+	function MeshRendererComponent(materials) {
 		this.type = 'MeshRendererComponent';
 
 		/** Materials to use when rendering
 		 * @type {Material[]}
 		 */
-		this.materials = [];
+		this.materials = Array.isArray(materials) ? materials : materials ? [materials] : [];
 		/** Worldspace bounding considering entity transformations
 		 * @type {BoundingVolume}
 		 */
