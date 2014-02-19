@@ -2,14 +2,16 @@ define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
-	'goo/entities/EntitySelection'
+	'goo/entities/EntitySelection',
+	'goo/math/Matrix4x4'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
 	Component,
-	EntitySelection
+	EntitySelection,
+	Matrix4x4
 ) {
 	'use strict';
 
@@ -293,6 +295,11 @@ function (
 		} else {
 			this.worldTransform.copy(this.transform);
 		}
+
+		// update the normal matrix
+		Matrix4x4.invert(this.transform.matrix, this.transform.normalMatrix);
+		Matrix4x4.transpose(this.transform.normalMatrix, this.transform.normalMatrix);
+
 		this._dirty = false;
 		this._updated = true;
 	};
