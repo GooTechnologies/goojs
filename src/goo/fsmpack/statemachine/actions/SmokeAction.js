@@ -40,7 +40,9 @@ function(
 		transitions: []
 	};
 
-	SmokeAction.prototype._run = function(fsm) {
+	SmokeAction.prototype._run = function (fsm) {
+		if (this.smokeEntity) { return; }
+
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 

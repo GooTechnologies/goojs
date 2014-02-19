@@ -45,6 +45,8 @@ function(
 	};
 
 	FireAction.prototype._run = function (fsm) {
+		if (this.fireEntity) { return; }
+
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
