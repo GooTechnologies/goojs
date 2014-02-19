@@ -12,7 +12,7 @@ function (
 	 * With this approach a developer can create powerful objects in the {@link World} by combining [Components]{@link Component} in an entity.
 	 * Components usually provide a single feature like the position and orientation of an entity in the world or the textures to be used.
 	 * For example you could make a light move around a scene by setting a {@link TransformComponent}, a {@link LightComponent} and a {@link ScriptComponent} on an entity.
-	 * Setting standard components can be a lot to type so we added a convenience function to the World class called {@link World#createEntity}.
+	 * Setting standard components can be a lot to type so we added a convenience function to the World class called [createEntity]{@link World#createEntity}.
 	 * This is the function you should use most of the time to create a new entity.
 	 * Once you have created an entity you can refer to this document to see what you can do with an entity.
 	 * But wait there is more, due to the power of JavaScript we have a feature that allows Components to inject their functions into entities.
