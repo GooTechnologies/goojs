@@ -68,6 +68,7 @@ define([
 	 MachineHandler.prototype.update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(machine) {
+			if (!machine) { return; }
 			machine.name = config.name;
 
 			// Remove old states
