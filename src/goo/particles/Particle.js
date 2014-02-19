@@ -13,12 +13,13 @@ function (
 	Vector4,
 	MeshData
 ) {
-	"use strict";
+	'use strict';
 
 	var calcVec = new Vector3();
 
 	/**
 	 * @class Data object tracking a single particle in a particle component.
+	 * @constructor
 	 */
 	function Particle(particleComponent, index) {
 		this.alive = false;

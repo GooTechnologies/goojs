@@ -15,15 +15,16 @@ function (
 	Vector3,
 	Vector4
 ) {
-	"use strict";
+	'use strict';
 
 	var Uint8ClampedArray = window.Uint8ClampedArray;
 
 	/**
 	 * @class Stores all buffers for geometric data and similar attributes
+	 * @constructor
 	 * @param {AttributeMap} attributeMap Describes which buffers to use and their format/sizes
-	 * @param {Number} vertexCount Number of vertices in buffer
-	 * @param {Number} indexCount Number of indices in buffer
+	 * @param {number} vertexCount Number of vertices in buffer
+	 * @param {number} indexCount Number of indices in buffer
 	 */
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
