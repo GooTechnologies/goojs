@@ -34,8 +34,8 @@ function(
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
 			var promises = [];
-			for(var key in config.scriptRefs) {
-				promises.push(that._load(config.scriptRefs[key], options));
+			for(var key in config.scripts) {
+				promises.push(that._load(config.scripts[key].scriptRef, options));
 			}
 			return RSVP.all(promises).then(function(scripts) {
 				component.scripts = scripts;

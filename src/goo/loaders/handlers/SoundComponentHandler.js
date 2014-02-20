@@ -61,8 +61,8 @@ function(
 			}
 			var promises = [];
 			// Load all sounds
-			for (var key in config.soundRefs) {
-				promises.push(that._load(config.soundRefs[key], options));
+			for (var key in config.sounds) {
+				promises.push(that._load(config.sounds[key].soundRef, options));
 			}
 			return RSVP.all(promises).then(function(sounds) {
 				// Set updates sounds
