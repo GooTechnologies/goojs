@@ -38,7 +38,7 @@ function(
 
 	SwitchCameraAction.prototype._run = function (fsm) {
 		var world = fsm.getOwnerEntity()._world;
-		var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
+		var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 		if (cameraEntity && cameraEntity.cameraComponent) {
 			SystemBus.emit('goo.setCurrentCamera', {
 				camera: cameraEntity.cameraComponent.camera,
