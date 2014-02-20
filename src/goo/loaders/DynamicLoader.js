@@ -274,13 +274,13 @@ function(
 
 			if (DynamicLoader._isRefTypeInGroup(ref, 'bundle')) {
 				// Do nothing
-				return PromiseUtil.createDummyPromise();
+				return PromiseUtil.createDummyPromise(config);
 			}
 
 			var handler = this._getHandler(type);
 			if (!handler) {
 				console.warn("No handler for type " + type);
-				return PromiseUtil.createDummyPromise(null);
+				return PromiseUtil.createDummyPromise(config);
 			}
 
 			// if (!config) {
