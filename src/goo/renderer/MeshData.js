@@ -17,12 +17,13 @@ function (
 ) {
 	'use strict';
 
+	//! AT: why this?
 	var Uint8ClampedArray = window.Uint8ClampedArray;
 
 	/**
 	 * @class Stores all buffers for geometric data and similar attributes
 	 * @constructor
-	 * @param {AttributeMap} attributeMap Describes which buffers to use and their format/sizes
+	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes
 	 * @param {number} vertexCount Number of vertices in buffer
 	 * @param {number} indexCount Number of indices in buffer
 	 */
@@ -49,6 +50,12 @@ function (
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
 
+	/**
+	 * Rebuilds the mesh vertex and index data
+	 * @param vertexCount
+	 * @param indexCount
+	 * @param saveOldData
+	 */
 	MeshData.prototype.rebuildData = function (vertexCount, indexCount, saveOldData) {
 		var savedAttributes = {};
 		var savedIndices = null;
@@ -84,6 +91,11 @@ function (
 		}
 	};
 
+	/**
+	 * Rebuilds the vertex data of a mesh
+	 * @private
+	 * @param vertexCount
+	 */
 	MeshData.prototype.rebuildVertexData = function (vertexCount) {
 		if (!isNaN(vertexCount)) {
 			this.vertexCount = vertexCount;
@@ -101,6 +113,11 @@ function (
 		}
 	};
 
+	/**
+	 * Rebuilds the index data
+	 * @private
+	 * @param indexCount
+	 */
 	MeshData.prototype.rebuildIndexData = function (indexCount) {
 		if (indexCount !== undefined) {
 			this.indexCount = indexCount;
@@ -111,6 +128,9 @@ function (
 		}
 	};
 
+	/**
+	 * Requests a refresh on the vertex data
+	 */
 	MeshData.prototype.setVertexDataUpdated = function () {
 		this.vertexData._dataNeedsRefresh = true;
 	};
@@ -206,6 +226,7 @@ function (
 		return index;
 	};
 
+	//! AT: unused
 	MeshData.prototype.getTotalPrimitiveCount = function () {
 		var count = 0;
 		for (var i = 0, max = this.primitiveCounts.length; i < max; i++) {
@@ -297,6 +318,7 @@ function (
 		}
 	};
 
+	//! AT: unused
 	MeshData.prototype.makeInterleavedData = function () {
 		var stride = 0;
 		var offset = 0;
@@ -525,7 +547,7 @@ function (
 	};
 
 	/**
-	 * Builds wireframe meshdata from mesh
+	 * Builds the wireframe MeshData from an existing mesh
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.buildWireframeData = function () {
