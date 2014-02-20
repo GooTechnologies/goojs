@@ -8,8 +8,15 @@ function (
 	'use strict';
 
 	/**
-	 * @class A generic container of data (transform, geometry, material and so on) wrapped in Components
-	 *
+	 * @class The Goo Engine is using an Entity-Component-System API which is a software design pattern that favors composition over inheritance.
+	 * With this approach a developer can create powerful objects in the {@link World} by combining [Components]{@link Component} in an entity.
+	 * Components usually provide a single feature like the position and orientation of an entity in the world or the textures to be used.
+	 * For example one can make a light move around a scene by setting a {@link TransformComponent}, a {@link LightComponent} and a {@link ScriptComponent} on an entity.
+	 * Setting standard components can be a lot to type so there is a convenience function in the World class called [createEntity]{@link World#createEntity}.
+	 * This is the function that should be used most of the time to create a new entity.
+	 * Refer to this document to see what can be done with an entity.
+	 * Due to the power of JavaScript there is a feature that allows Components to inject their functions directly into entities.
+	 * Most notably this is done by the {@link TransformComponent}. Some examples include [setTranslation]{@link TransformComponent#setTranslation}, [setRotation]{@link TransformComponent#setRotation} and [lookAt]{@link TransformComponent#lookAt}.
 	 * @param {World} world The {@link World} this entity will be part of when calling .addToWorld
 	 * @param {String} [name] Entity name
 	 * @param {number} [id] Entity id
