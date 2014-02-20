@@ -28,9 +28,11 @@ function(
 
 	HowlerSystem.prototype.deleted = function(entity) {
 		var howlerComponent = entity.howlerComponent;
-		var sounds = howlerComponent.sounds;
-		for (var i = 0; i < sounds.length; i++) {
-			sounds[i].stop();
+		if (howlerComponent && howlerComponent.sounds) {
+			var sounds = howlerComponent.sounds;
+			for (var i = 0; i < sounds.length; i++) {
+				sounds[i].stop();
+			}
 		}
 	};
 

@@ -30,6 +30,16 @@ function(
 	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
 	ComponentHandler._registerClass('sound', SoundComponentHandler);
 
+	SoundComponentHandler.prototype._remove = function(entity) {
+		var component = entity.howlerComponent;
+		if (component && component.sounds) {
+			var sounds = component.sounds;
+			for (var i = 0; i < sounds.length; i++) {
+				sounds[i].stop();
+			}
+		}
+	};
+
 
 	/**
 	 * Creates sound component
