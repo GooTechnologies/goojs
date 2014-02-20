@@ -148,7 +148,11 @@ function(
 			// Textures
 			function addTexture(type, ref, options) {
 				return that._load(ref, options).then(function(texture) {
-					material.setTexture(type, texture);
+					if (texture.image) {
+						material.setTexture(type, texture);
+					} else {
+						material.removeTexture(type);
+					}
 				}).then(null, function(err) {
 					throw new Error('Error loading texture: ' + ref + ' - ' + err);
 				});
