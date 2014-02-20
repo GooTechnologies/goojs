@@ -297,8 +297,8 @@ function (
 		}
 
 		// update the normal matrix
-		Matrix4x4.invert(this.transform.matrix, this.transform.normalMatrix);
-		Matrix4x4.transpose(this.transform.normalMatrix, this.transform.normalMatrix);
+		Matrix4x4.invert(this.worldTransform.matrix, this.worldTransform.normalMatrix);
+		Matrix4x4.transpose(this.worldTransform.normalMatrix, this.worldTransform.normalMatrix);
 
 		this._dirty = false;
 		this._updated = true;
