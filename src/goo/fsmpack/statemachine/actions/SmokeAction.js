@@ -77,6 +77,7 @@ function(
 	SmokeAction.prototype.cleanup = function (/*fsm*/) {
 		if (this.smokeEntity) {
 			this.smokeEntity.removeFromWorld();
+			this.smokeEntity = null;
 		}
 	};
 

@@ -82,6 +82,7 @@ function(
 	FireAction.prototype.cleanup = function (/*fsm*/) {
 		if (this.fireEntity) {
 			this.fireEntity.removeFromWorld();
+			this.fireEntity = null;
 		}
 	};
 
