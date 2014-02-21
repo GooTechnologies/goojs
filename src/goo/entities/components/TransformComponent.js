@@ -45,9 +45,15 @@ function (
 		this._updated = false;
 
 		this.api = {
+			getTranslation: function () {
+				return TransformComponent.prototype.getTranslation.apply(this, arguments);
+			}.bind(this),
 			setTranslation: function () {
 				TransformComponent.prototype.setTranslation.apply(this, arguments);
 				return this.entity;
+			}.bind(this),
+			getScale: function () {
+				return TransformComponent.prototype.getScale.apply(this, arguments);
 			}.bind(this),
 			setScale: function () {
 				TransformComponent.prototype.setScale.apply(this, arguments);
@@ -55,6 +61,13 @@ function (
 			}.bind(this),
 			addTranslation: function () {
 				TransformComponent.prototype.addTranslation.apply(this, arguments);
+				return this.entity;
+			}.bind(this),
+			getRotation: function () {
+				return TransformComponent.prototype.getRotation.apply(this, arguments);
+			}.bind(this),
+			addRotation: function () {
+				TransformComponent.prototype.addRotation.apply(this, arguments);
 				return this.entity;
 			}.bind(this),
 			setRotation: function () {
@@ -116,6 +129,21 @@ function (
 	TransformComponent.prototype.constructor = TransformComponent;
 
 	/**
+	 * Get this transform's translation.
+	 * Please note that this is a helper function returning
+	 * entity.transformComponent.transform.translation
+	 * To change the translation the returned object can be modified
+	 * after which entity.transformComponent.setUpdated() must be called.
+	 * Alternatively use setTranslation or addTranslation which call
+	 * setUpdated() for you.
+	 * 
+	 * @return {Vector3} translation
+	 */
+	TransformComponent.prototype.getTranslation = function () {
+		return this.transform.translation;
+	};
+
+	/**
 	 * Set this transform's translation.
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
@@ -124,6 +152,19 @@ function (
 		this.transform.translation.set(arguments);
 		this._dirty = true;
 		return this;
+	};
+
+	/**
+	 * Get this transform's scale.
+	 * Please note that this is a helper function returning
+	 * entity.transformComponent.transform.scale
+	 * To change the scale the returned object can be modified
+	 * after which entity.transformComponent.setUpdated() must be called.
+	 * Alternatively use setScale which calls setUpdated() for you.
+	 * @return {Vector3} scale
+	 */
+	TransformComponent.prototype.getScale = function () {
+		return this.transform.scale;
 	};
 
 	/**
@@ -153,11 +194,48 @@ function (
 	};
 
 	/**
+	 * Get this transform's rotation in Euler angles.
+	 * To change the rotation use setRotation or addRotation
+	 * or use the more powerful entity.transformComponent.transform.rotation
+	 * after which transformComponent.setUpdated() must be called.
+	 * 
+	 * @param {Vector3} [target] Target vector for storage.
+	 * @return {Vector3} rotation
+	 */
+	TransformComponent.prototype.getRotation = function (target) {
+		this.tmpRotVec = this.tmpRotVec || new Vector3();
+		target = target || this.tmpRotVec;
+		return this.transform.rotation.toAngles(target);
+	};
+
+	/**
+	 * Add to this transform's rotation in Euler angles.
+	 * 
+	 * @param {Vector | number[] | number...} Component values.
+	 * @return {TransformComponent} Self for chaining.
+	 */
+	TransformComponent.prototype.addRotation = function () {
+		this.tmpVec = this.tmpVec || new Vector3();
+		this.getRotation( this.tmpVec);
+		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
+			var arg0 = arguments[0];
+			if (arg0 instanceof Vector3) {
+				this.transform.rotation.fromAngles(this.tmpVec.x+arg0.x, this.tmpVec.y+arg0.y, this.tmpVec.z+arg0.z);
+			} else if (arg0.length === 3) {
+				this.transform.rotation.fromAngles(this.tmpVec.x+arg0[0], this.tmpVec.y+arg0[1], this.tmpVec.z+arg0[2]);
+			}
+		} else {
+			this.transform.rotation.fromAngles(this.tmpVec.x+arguments[0], this.tmpVec.y+arguments[1], this.tmpVec.z+arguments[2]);
+		}
+
+		this._dirty = true;
+		return this;
+	};
+
+	/**
 	 * Set this transform's rotation around X, Y and Z axis.
 	 * The rotation is applied in XYZ order.
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
+	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setRotation = function () {
