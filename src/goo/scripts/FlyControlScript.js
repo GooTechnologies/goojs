@@ -1,13 +1,15 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function(
 	Vector3,
 	Matrix3x3,
-	MathUtils
+	MathUtils,
+	SystemBus
 ) {
 	"use strict";
 
@@ -89,6 +91,11 @@ function(
 		if (this.domElement) {
 			this.setupMouseControls();
 		}
+		this.active = false;
+		this.currentCameraEntity = null;
+		SystemBus.addListener('goo.setCurrentCamera', function(data) {
+			this.currentCameraEntity = data.entity;
+		}.bind(this));
 	}
 
 	FlyControlScript.prototype.updateMovementVector = function() {
@@ -174,10 +181,12 @@ function(
 	};
 
 	var keydown = function(event) {
+		if (!this.active) { return; }
 		this.updateKeys(event, true);
 	};
 
 	var keyup = function(event) {
+		if (!this.active) { return; }
 		this.updateKeys(event, false);
 	};
 
@@ -199,6 +208,7 @@ function(
 	};
 
 	var mousedown = function(event) {
+		if (!this.active) { return; }
 		this.setupKeyControls();
 		this.domElement.focus();
 		this.resetMouseState();
@@ -206,10 +216,12 @@ function(
 	};
 
 	var mousemove = function(event) {
+		if (!this.active) { return; }
 		this.updateDeltas(event);
 	};
 
 	var mouseup = function(event) {
+		if (!this.active) { return; }
 		this.updateButtonState(event, false);
 		this.tearDownKeyControls();
 	};
@@ -233,6 +245,7 @@ function(
 	};
 
 	FlyControlScript.prototype.run = function(entity, tpf, env) {
+		this.active = entity === this.currentCameraEntity;
 		// grab our transformComponent
 		if (env) {
 			if (!this.domElement && env.domElement)  {

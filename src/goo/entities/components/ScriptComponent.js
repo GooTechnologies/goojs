@@ -67,7 +67,7 @@ function (
 	ScriptComponent.prototype.run = function (entity, tpf, environment) {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			if (script && script.run && (script.enabled === undefined || script.enabled)) {
+			if (script && script.run && (script.enabled === undefined || script.enabled || script.active)) {
 				script.run(entity, tpf, environment, script.parameters);
 			} else if (script.update) {
 				script.update(script.parameters, script.environment);

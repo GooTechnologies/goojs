@@ -54,9 +54,9 @@ function(
 		});
 	}
 
-	ScriptHandler.prototype.update = function(ref, config) {
+	ScriptHandler.prototype.update = function(ref, config, options) {
 		var script;
-		return ComponentHandler.prototype.update.call(this, ref, config, options).then(function(script) {
+		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(script) {
 			// first treat the oldstyle loading
 			if (config.className) {
 				var name = config.className;
