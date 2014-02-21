@@ -23,19 +23,19 @@ function(
 		parameters: [{
 			name: 'Start level',
 			key: 'startLevel',
-			type: 'number',
+			type: 'float',
 			description: 'Shake amount at start',
 			'default': 0
 		}, {
 			name: 'End level',
 			key: 'endLevel',
-			type: 'number',
+			type: 'float',
 			description: 'Shake amount at the end',
 			'default': 10
 		}, {
 			name: 'Time',
 			key: 'time',
-			type: 'number',
+			type: 'float',
 			description: 'Shake time amount',
 			'default': 1000
 		}, {

@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that writes output to the console.
+		 * @private
 		 */
 		function LogicNodeDebug() {
 			LogicNode.call(this);

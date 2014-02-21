@@ -174,6 +174,10 @@ function (
 		return this._data;
 	};
 
+
+	/**
+	* @returns {ManagedTransformSource}
+	*/
 	ManagedTransformSource.prototype.clone = function() {
 		var clonedData = {};
 		for (var key in this._data) {

@@ -1,18 +1,18 @@
 define([
-	'goo/fsmpack/statemachine/FSMComponent',
+	'goo/fsmpack/statemachine/StateMachineComponent',
 	'goo/fsmpack/statemachine/Machine',
 	'goo/fsmpack/statemachine/State'
 ], function(
-	FSMComponent,
+	StateMachineComponent,
 	Machine,
 	State
 ) {
 	'use strict';
 
-	describe('FSMComponent', function() {
-		var fsmComponent;
+	describe('StateMachineComponent', function() {
+		var stateMachineComponent;
 		beforeEach(function() {
-			fsmComponent = new FSMComponent();
+			stateMachineComponent = new StateMachineComponent();
 		});
 
 		it('can run enter on initialisation on all machines', function() {
@@ -20,7 +20,7 @@ define([
 
 			// set up machine 1
 			var machine1 = new Machine();
-			fsmComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine1);
 
 			var state1 = new State('entry');
 			machine1.addState(state1);
@@ -35,7 +35,7 @@ define([
 
 			// set up machine 2
 			var machine2 = new Machine();
-			fsmComponent.addMachine(machine2);
+			stateMachineComponent.addMachine(machine2);
 
 			var state2 = new State('entry');
 			machine2.addState(state2);
@@ -49,8 +49,8 @@ define([
 
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(234);
@@ -81,11 +81,11 @@ define([
 			machine1.addState(state1);
 			machine1.addState(state2);
 
-			fsmComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine1);
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(0);
@@ -118,15 +118,15 @@ define([
 			var machine2 = new Machine();
 			machine2.addState(state2);
 
-			fsmComponent.addMachine(machine1);
-			fsmComponent.addMachine(machine2);
+			stateMachineComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine2);
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			// do update
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(234);
@@ -157,17 +157,17 @@ define([
 				update: function() { gotData3 += 345; }
 			});
 
-			fsmComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine1);
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			// jump to second state
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			// second state update
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(234);
@@ -213,17 +213,17 @@ define([
 			machine1.addState(state1);
 			machine1.addState(state2);
 
-			fsmComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine1);
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			// jump to second state
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			// second state update
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			expect(gotData1).toBe(123);
 			expect(gotData2).toBe(234);
@@ -272,17 +272,17 @@ define([
 			machine1.addState(state1);
 			machine1.addState(state2);
 
-			fsmComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine1);
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			// jump to second state
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			// second state update
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			expect(gotData1).toBe(123 * 2);
 			expect(gotData2).toBe(234);
@@ -327,17 +327,17 @@ define([
 			machine1.addState(state1);
 			machine1.addState(state2);
 
-			fsmComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine1);
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			// jump to second state
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			// second state update
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			expect(gotData[0]).toBe(123);
 			expect(gotData[1]).toBe(234);
@@ -396,17 +396,17 @@ define([
 			machine1.addState(state1);
 			machine1.addState(state2);
 
-			fsmComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine1);
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			// jump to second state
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			// second state update
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			expect(gotData[0]).toBe(123);
 			expect(gotData[1]).toBe(234);
@@ -467,17 +467,17 @@ define([
 			machine1.addState(state1);
 			machine1.addState(state2);
 
-			fsmComponent.addMachine(machine1);
+			stateMachineComponent.addMachine(machine1);
 
 			// init
-			fsmComponent.init();
-			fsmComponent.doEnter();
+			stateMachineComponent.init();
+			stateMachineComponent.doEnter();
 
 			// jump to second state
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			// second state update
-			fsmComponent.update();
+			stateMachineComponent.update();
 
 			expect(gotData[0]).toBe(123 * 2);
 			expect(gotData[1]).toBe(234);

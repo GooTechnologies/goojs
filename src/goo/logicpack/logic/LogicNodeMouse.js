@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that reads mouse input.
+		 * @private
 		 */
 		function LogicNodeMouse() {
 			LogicNode.call(this);

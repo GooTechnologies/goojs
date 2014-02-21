@@ -8,6 +8,9 @@ define([
 	) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function Triangle(verts) {
 		this.verts = verts;
 

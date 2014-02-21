@@ -11,6 +11,7 @@ define(
 
 		/**
 		 * @class Logic node that calculates sin & cos.
+		 * @private
 		 */
 		function LogicNodeSine() {
 			LogicNode.call(this);

@@ -1,8 +1,10 @@
-/** 
- * Everything we need from underscore.js. Convenience stuff, copied straight off. 
+/**
+ * Everything we need from underscore.js. Convenience stuff, copied straight off.
  * For documentation, see http://underscorejs.org. Gotta love open source.
  */
-define([], function() {
+define([],
+	/** @lends */
+	function() {
 	"use strict";
 
 	var _ = {};
@@ -83,7 +85,7 @@ define([], function() {
 	// The cornerstone, an `each` implementation, aka `forEach`.
 	// Handles objects with the built-in `forEach`, arrays, and raw objects.
 	// Delegates to **ECMAScript 5**'s native `forEach` if available.
-	var each = _.each = _.forEach = function(obj, iterator, context) {
+	var each = _.each = _.forEach = function(obj, iterator, context, sortProp) {
 		if (typeof obj === 'undefined' || obj === null) {return;}
 		if (nativeForEach && obj.forEach === nativeForEach) {
 			obj.forEach(iterator, context);
@@ -92,14 +94,17 @@ define([], function() {
 				if (iterator.call(context, obj[i], i, obj) === breaker) {return;}
 			}
 		} else {
-			for (var key in obj) {
-				if (_.has(obj, key)) {
-					if (iterator.call(context, obj[key], key, obj) === breaker) {return;}
-				}
+			var keys = _.keys(obj);
+			if (sortProp !== undefined) {
+				keys.sort(function(a, b) {
+					return obj[a][sortProp] -  obj[b][sortProp];
+				});
+			}
+			for (var i = 0, length = keys.length; i < length; i++) {
+				if (iterator.call(context, obj[keys[i]], keys[i], obj) === breaker) {return;}
 			}
 		}
 	};
-
 
 
 	/**

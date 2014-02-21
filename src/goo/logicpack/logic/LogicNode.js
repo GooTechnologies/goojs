@@ -5,6 +5,7 @@ define(
 
 		/**
 		 * @class Base class/module for all logic boxes
+		 * @private
 		 */
 		function LogicNode() {
 			// Generated the same way as entities are, except different naming.

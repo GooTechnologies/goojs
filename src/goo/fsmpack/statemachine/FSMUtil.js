@@ -4,9 +4,6 @@ define(
 function() {
 	"use strict";
 
-	/**
-	 * @class FSM utilities
-	 */
 	function FSMUtil() {
 	}
 

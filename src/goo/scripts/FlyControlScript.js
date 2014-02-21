@@ -12,7 +12,7 @@ function(
 	"use strict";
 
 	/**
-	 * @class Flycam
+	 * @class
 	 * @param {Object} [properties]
 	 * @param {Element} [properties.domElement] Element to add mouse listeners to
 	 * @param {number} [properties.turnSpeedHorizontal=0.01]

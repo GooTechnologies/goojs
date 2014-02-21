@@ -21,6 +21,7 @@ function (
 		 * @type {Matrix4x4}
 		 */
 		this.matrix = new Matrix4x4();
+		this.normalMatrix = new Matrix4x4();
 
 		/** @type {Vector3} */
 		this.translation = new Vector3();
@@ -74,6 +75,8 @@ function (
 		target.rotation.copy(tmpMat1);
 		target.scale.setv(tmpVec2);
 		target.translation.setv(tmpVec);
+
+		target.update();
 
 		return target;
 	};

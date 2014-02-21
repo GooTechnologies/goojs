@@ -23,9 +23,9 @@ else:
     command = 'cake'
 grunt_command = 'node_modules/grunt-cli/bin/grunt'
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
-subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version, '--bundle-require'])
 
 # building packs
+# Don't forget to add these packs at the bottom of the file!
 subprocess.check_call(['node', 'tools/buildPack.js', 'fsmpack', version])
 subprocess.check_call(['node', 'tools/buildPack.js', 'geometrypack', version])
 
@@ -57,7 +57,8 @@ for directory in (
 	shutil.copytree(source, release_dir + '/' + destination)
 
 shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
-shutil.copy('out/goo-require.js', release_dir + '/lib/goo-require.js')
+shutil.copy('out/fsmpack.js', release_dir + '/lib/fsmpack.js')
+shutil.copy('out/geometrypack.js', release_dir + '/lib/geometrypack.js')
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('COPYING', release_dir + '/COPYING')
 shutil.copy('LICENSE', release_dir + '/LICENSE')

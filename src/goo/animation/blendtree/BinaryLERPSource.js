@@ -16,6 +16,7 @@ function (
 	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} sourceA our first source.
 	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} sourceB our second source.
 	 * @param {number} blendKey A key into the related AnimationManager's values store for pulling blend weighting.
+	 * @private
 	 */
 	function BinaryLERPSource (sourceA, sourceB, blendWeight) {
 		this._sourceA = sourceA ? sourceA : null;

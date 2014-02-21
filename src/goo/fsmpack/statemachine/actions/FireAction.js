@@ -3,8 +3,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils',
-	'goo/entities/EntityUtils'
+	'goo/util/ParticleSystemUtils'
 ],
 /** @lends */
 function(
@@ -12,13 +11,13 @@ function(
 	Material,
 	ShaderLib,
 	ParticleLib,
-	ParticleSystemUtils,
-	EntityUtils
+	ParticleSystemUtils
 ) {
 	'use strict';
 
 	function FireAction(/*id, settings*/) {
 		Action.apply(this, arguments);
+		this.fireEntity = null;
 	}
 
 	FireAction.material = null;
@@ -46,6 +45,8 @@ function(
 	};
 
 	FireAction.prototype._run = function (fsm) {
+		if (this.fireEntity) { return; }
+
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
@@ -62,7 +63,7 @@ function(
 
 		var entityScale = entity.transformComponent.worldTransform.scale;
 		var scale = (entityScale.data[0] + entityScale.data[1] + entityScale.data[2]) / 3;
-		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
+		this.fireEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner,
 			ParticleLib.getFire({
 				scale: scale,
@@ -71,20 +72,15 @@ function(
 			}),
 			FireAction.material
 		);
-		particleSystemEntity.name = '_ParticleSystemFire';
-		entity.transformComponent.attachChild(particleSystemEntity.transformComponent);
+		this.fireEntity.name = '_ParticleSystemFire';
+		entity.transformComponent.attachChild(this.fireEntity.transformComponent);
 
-		particleSystemEntity.addToWorld();
+		this.fireEntity.addToWorld();
 	};
 
-	FireAction.prototype.cleanup = function (fsm) {
-		var entity = fsm.getOwnerEntity();
-		var children = EntityUtils.getChildren(entity);
-		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
-			if (child.name.indexOf('_ParticleSystem') !== -1 && child.hasComponent('ParticleComponent')) {
-				child.removeFromWorld();
-			}
+	FireAction.prototype.cleanup = function (/*fsm*/) {
+		if (this.fireEntity) {
+			this.fireEntity.removeFromWorld();
 		}
 	};
 

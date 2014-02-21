@@ -2,14 +2,16 @@ define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
-	'goo/entities/EntitySelection'
+	'goo/entities/EntitySelection',
+	'goo/math/Matrix4x4'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
 	Component,
-	EntitySelection
+	EntitySelection,
+	Matrix4x4
 ) {
 	'use strict';
 
@@ -115,7 +117,7 @@ function (
 
 	/**
 	 * Set this transform's translation.
-	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
@@ -126,7 +128,7 @@ function (
 
 	/**
 	 * Set this transform's scale.
-	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
@@ -137,7 +139,7 @@ function (
 
 	/**
 	 * Add to this transform's translation.
-	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
@@ -159,12 +161,12 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setRotation = function () {
-		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
 			var arg0 = arguments[0];
 			if (arg0 instanceof Vector3) {
-				this.transform.rotation.fromAngles(arg0.x,arg0.y,arg0.z);
+				this.transform.rotation.fromAngles(arg0.x, arg0.y, arg0.z);
 			} else if (arg0.length === 3) {
-				this.transform.rotation.fromAngles(arg0[0],arg0[1],arg0[2]);
+				this.transform.rotation.fromAngles(arg0[0], arg0[1], arg0[2]);
 			}
 		} else {
 			this.transform.rotation.fromAngles(arguments[0], arguments[1], arguments[2]);
@@ -293,6 +295,11 @@ function (
 		} else {
 			this.worldTransform.copy(this.transform);
 		}
+
+		// update the normal matrix
+		Matrix4x4.invert(this.worldTransform.matrix, this.worldTransform.normalMatrix);
+		Matrix4x4.transpose(this.worldTransform.normalMatrix, this.worldTransform.normalMatrix);
+
 		this._dirty = false;
 		this._updated = true;
 	};

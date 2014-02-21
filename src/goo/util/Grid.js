@@ -29,6 +29,7 @@ function(
 		color: [0,0,0,1],
 		width: 1
 	};
+
 	/**
 	 * @class Creates an entity with all components needed to display a grid
 	 * @param {World} world

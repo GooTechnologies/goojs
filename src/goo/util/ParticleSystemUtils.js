@@ -15,10 +15,21 @@ define([
 	) {
 	'use strict';
 
+	/**
+	* @class
+	*/
 	function ParticleSystemUtils() {
 	}
 
-	ParticleSystemUtils.createParticleSystemEntity = function(goo, particleParameters, material) {
+	/**
+	 * Creates an Entity based on an object holding particle emitter parameters and a material
+	 * @private
+	 * @param goo
+	 * @param particleParameters
+	 * @param material
+	 * @returns {Entity}
+	 */
+	ParticleSystemUtils.createParticleSystemEntity = function (goo, particleParameters, material) {
 		// Create the particle cloud entity
 		var particleSystemEntity = goo.world.createEntity();
 
@@ -43,9 +54,16 @@ define([
 		return particleSystemEntity;
 	};
 
+	/**
+	 * Generates a radial gradient with multiple color stops; useful for water simple fire, snowflakes, water ripples and shockwaves
+	 * @param {number} [size=64]
+	 * @param {Object} [options]
+	 * @returns {Texture}
+	 */
 	ParticleSystemUtils.createFlareTexture = function(size, options) {
 		size = size || 64;
 
+		//! AT: this modifies the original options object which is intrusive and bad
 		options = options || {};
 		options.startRadius = typeof options.startRadius !== 'undefined' ? options.startRadius : 0;
 		options.endRadius = typeof options.endRadius !== 'undefined' ? options.endRadius : size / 2;
@@ -74,9 +92,16 @@ define([
 		return texture;
 	};
 
+	/**
+	 * Generates a texture of multiple trailing particles; useful for water splashes and sparks
+	 * @param {number} [size=64]
+	 * @param {Object} [options]
+	 * @returns {Texture}
+	 */
 	ParticleSystemUtils.createSplashTexture = function(size, options) {
 		size = size || 64;
 
+		//! AT: this modifies the original options object which is intrusive and bad
 		options = options || {};
 		options.nTrails = typeof options.nTrails !== 'undefined' ? options.nTrails : 8;
 		options.trailStartRadius = typeof options.trailStartRadius !== 'undefined' ? options.trailStartRadius : 1;
@@ -132,9 +157,16 @@ define([
 		return texture;
 	};
 
+	/**
+	 * Generates a texture of random fuzzy dots; useful for dust and plankton
+	 * @param {number} [size=64]
+	 * @param {Object} [options]
+	 * @returns {Texture}
+	 */
 	ParticleSystemUtils.createPlanktonTexture = function(size, options) {
 		size = size || 64;
 
+		//! AT: this modifies the original options object which is intrusive and bad
 		options = options || {};
 		options.nPoints = typeof options.nPoints !== 'undefined' ? options.nPoints : 10;
 		options.minRadius = typeof options.minRadius !== 'undefined' ? options.minRadius : 2;
@@ -171,9 +203,17 @@ define([
 		return texture;
 	};
 
+	/**
+	 * Generates a texture of complex hexagonal snowflakes
+	 * @param {number} [size=64]
+	 * @param {Object} [options]
+	 * @returns {Texture}
+	 */
 	ParticleSystemUtils.createSnowflakeTexture = function(size, options) {
 		size = size || 64;
 
+		//! AT: this modifies the original options object which is intrusive and bad
+		// also, unused
 		options = options || {};
 
 		var canvas = document.createElement('canvas');

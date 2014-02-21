@@ -3,7 +3,9 @@ define([
 	'goo/renderer/Renderer',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-], function(
+],
+/** @lends */
+function(
 	OrbitCamControlScript,
 	Renderer,
 	Vector3,
@@ -17,7 +19,7 @@ define([
 		RIGHT: 2
 	};
 
-// REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
+	// REVIEW: I think a bit of jsDoc would be a great idea and maybe a short introduction what this class does.
 	/**
 	 * @class Enables camera to orbit around a point in 3D space using the right mouse button, while panning with the middle button.
 	 * @extends OrbitCamControlScript
@@ -221,6 +223,8 @@ define([
 			this.dirty = true;
 		}
 		OrbitCamControlScript.prototype.run.call(this, entity, tpf, env);
+
+
 		if (env) {
 			this.viewportWidth = env.viewportWidth;
 			this.viewportHeight = env.viewportHeight;

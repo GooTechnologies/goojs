@@ -1,7 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/animation/clip/AnimationClip',
-	'goo/loaders/JsonUtils',
 	'goo/animation/clip/JointChannel',
 	'goo/animation/clip/TransformChannel',
 	'goo/animation/clip/InterpolatedFloatChannel',
@@ -9,10 +8,10 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
 ],
+/** @lends */
 function(
 	ConfigHandler,
 	AnimationClip,
-	JsonUtils,
 	JointChannel,
 	TransformChannel,
 	InterpolatedFloatChannel,
@@ -22,83 +21,123 @@ function(
 ) {
 	"use strict";
 
+	/**
+	 * @class Handler for loading animation clips into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 * @private
+	 */
 	function AnimationClipHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._objects = {};
 	}
 
 	AnimationClipHandler.prototype = Object.create(ConfigHandler.prototype);
+	AnimationClipHandler.prototype.constructor = AnimationClipHandler;
 	ConfigHandler._registerClass('clip', AnimationClipHandler);
 
-	AnimationClipHandler.prototype._create = function(ref) {
-		return this._objects[ref] = new AnimationClip();
+	/**
+	 * Creates an empty animation clip
+	 * @param {string} ref
+	 * @returns {AnimationClip}
+	 * @private
+	 */
+	AnimationClipHandler.prototype._create = function() {
+		return new AnimationClip();
 	};
 
-	AnimationClipHandler.prototype.update = function(ref, config) {
-		var object = this._objects[ref] || this._create(ref);
-		object._name = config.name;
-		var clip, that = this;
-		if (config.binaryRef) {
-			return this.getConfig(config.binaryRef).then(function(bindata) {
+	/**
+	 * Adds/updates/removes an animation clip
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated animation clip or null if removed
+	 */
+	AnimationClipHandler.prototype.update = function(ref, config, options) {
+		var that = this;
+		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(clip) {
+			if(!clip) { return clip; }
+			return that.getConfig(config.binaryRef, options).then(function(bindata) {
 				if (!bindata) {
 					throw new Error("Binary clip data was empty");
 				}
-				return that._updateAnimationClip(config, bindata, object);
+				return that._updateAnimationClip(config, bindata, clip);
 			});
-		} else {
-			clip = this._updateAnimationClip(config, null, object);
-			return PromiseUtil.createDummyPromise(clip);
-		}
+		});
 	};
 
+	/**
+	 * Does the actual updating of animation clip and channels
+	 * It creates new channels on every update, but clips are practically never updated
+	 * @param {object} clipConfig
+	 * @param {ArrayBuffer} binData
+	 * @param {AnimationClip} clip
+	 * @private
+	 */
 	AnimationClipHandler.prototype._updateAnimationClip = function(clipConfig, bindata, clip) {
-		/* jshint bitwise:false */
-		//console.debug("Creating animation clip");
-
 		clip._channels = [];
-		var useCompression = clipConfig.useCompression || false;
 
-		var compressedAnimRange = null;
-		if (useCompression) {
-			compressedAnimRange = clipConfig.compressedRange || (1 << 15) - 1;
-		}
-		if (clipConfig.channels && clipConfig.channels.length) {
-			for (var i = 0; i < clipConfig.channels.length; i++) {
-				var channel, times, rots, trans, scales, blendType;
-				var channelConfig = clipConfig.channels[i];
+		if (clipConfig.channels) {
+			var keys = Object.keys(clipConfig.channels);
+			for (var i = 0; i < keys.length; i++) {
+				var channelConfig = clipConfig.channels[keys[i]];
+				// Time samples
+				var times = ArrayUtil.getTypedArray(bindata, channelConfig.times);
 
-				if (bindata) {
-					times = ArrayUtil.getTypedArray(bindata, channelConfig.times);
-				} else {
-					times = new Float32Array(JsonUtils.parseChannelTimes(channelConfig, useCompression));
-				}
 				var blendType = channelConfig.blendType;
 				var type = channelConfig.type;
-				if (type === 'Joint' || type === 'Transform') {
-					if (bindata) {
+
+				var channel;
+				switch (type) {
+					case 'Joint':
+					case 'Transform':
+						// Transform samples
+						var rots, trans, scales;
 						rots = ArrayUtil.getTypedArray(bindata, channelConfig.rotationSamples);
 						trans = ArrayUtil.getTypedArray(bindata, channelConfig.translationSamples);
 						scales = ArrayUtil.getTypedArray(bindata, channelConfig.scaleSamples);
-					} else {
-						rots = JsonUtils.parseRotationSamples(channelConfig, compressedAnimRange, useCompression);
-						trans = JsonUtils.parseTranslationSamples(channelConfig, times.length, useCompression);
-						scales = JsonUtils.parseScaleSamples(channelConfig, times.length, useCompression);
-					}
-				}
-				if (type === 'Joint') {
-					channel = new JointChannel(channelConfig.jointName, channelConfig.jointIndex, times, rots, trans, scales, blendType);
-				} else if (channelConfig.type === 'Transform') {
-					channel = new TransformChannel(channelConfig.name, times, rots, trans, scales, blendType);
-				} else if (channelConfig.type === 'FloatLERP') {
-					channel = new InterpolatedFloatChannel(channelConfig.name, times, JsonUtils.parseFloatLERPValues(channelConfig, useCompression), blendType);
-				} else if (channelConfig.type === 'Trigger') {
-					channel = new TriggerChannel(channelConfig.name, times, channelConfig.keys);
-					if (channelConfig.guarantee) {
-						channel.guarantee = true;
-					}
-				} else {
-					console.warn("Unhandled channel type: " + channelConfig.type);
-					continue;
+
+						if (type === 'Joint') {
+							channel = new JointChannel(
+								channelConfig.jointIndex,
+								channelConfig.name,
+								times,
+								rots,
+								trans,
+								scales,
+								blendType
+							);
+						} else {
+							channel = new TransformChannel(
+								channelConfig.name,
+								times,
+								rots,
+								trans,
+								scales,
+								blendType
+							);
+						}
+						break;
+					case 'FloatLERP':
+						channel = new InterpolatedFloatChannel(
+							channelConfig.name,
+							times,
+							channelConfig.values,
+							blendType
+						);
+						break;
+					case 'Trigger':
+						channel = new TriggerChannel(
+							channelConfig.name,
+							times,
+							channelConfig.keys
+						);
+						channel.guarantee = !!channelConfig.guarantee;
+						break;
+					default:
+						console.warn("Unhandled channel type: " + channelConfig.type);
+						continue;
 				}
 				clip.addChannel(channel);
 			}

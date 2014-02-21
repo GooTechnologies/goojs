@@ -19,8 +19,9 @@ function (
 	 *        states, provided that a path is defined for transition from the current state to the desired one. *
 	 * @param {String} name Name of layer
 	 */
-	function AnimationLayer (name) {
+	function AnimationLayer (name, key) {
 		this._name = name;
+		this._key = key;
 
 		this._steadyStates = {};
 		this._currentState = null;
@@ -83,6 +84,7 @@ function (
 
 	/**
 	 * Does the updating before animations are applied
+	 * @private
 	 */
 	AnimationLayer.prototype.update = function(globalTime) {
 		if(this._currentState) {
@@ -92,6 +94,7 @@ function (
 
 	/**
 	 * Does the updating after animations are applied
+	 * @private
 	 */
 	AnimationLayer.prototype.postUpdate = function() {
 		if (this._currentState) {
@@ -214,6 +217,7 @@ function (
 	/**
 	 * Update the layer blender in this animation layer to properly point to the previous layer.
 	 * @param {Object} previousLayer the layer before this layer in the animation manager.
+	 * @private
 	 */
 	AnimationLayer.prototype.updateLayerBlending = function (previousLayer) {
 		if (this._layerBlender) {
@@ -247,6 +251,9 @@ function (
 		}
 	};
 
+	/**
+	 * @returns {AnimationLayer}
+	 */
 	AnimationLayer.prototype.clone = function() {
 		var cloned = new AnimationLayer(this._name);
 

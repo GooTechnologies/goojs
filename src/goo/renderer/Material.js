@@ -5,22 +5,39 @@ define([
 function(
 	Shader
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A Material defines the look of an object
-	 * @param {String} name Material name
+	 * @param {string} [name='Default Material'] Material name
+	 * @param {{ vshader, fshader }} [shaderDefinition] Optional shader to associate with the material
 	 */
-	function Material(name) {
-		/**
-		 * @type {String}
+	function Material(name, shaderDefinition) {
+		/** Material name
+		 * @type {string}
 		 */
-		this.name = name;
-
-		/** Shader to use when rendering
+		this.name = null;
+		/** [Shader]{@link Shader} to use when rendering
 		 * @type {Shader}
 		 */
 		this.shader = null;
+
+		//! AT: horrendous type checking follows
+		// function has 2 signatures because the deprecated .createMaterial had parameters in inverse order
+		if (typeof name === 'string') {
+			this.name = name;
+		} else if (name && name.vshader && name.fshader) {
+			this.shader = Material.createShader(name);
+		}
+
+		if (shaderDefinition && shaderDefinition.vshader && shaderDefinition.fshader) {
+			this.shader = Material.createShader(shaderDefinition);
+		} else if (typeof shaderDefinition === 'string') {
+			this.name = shaderDefinition;
+		}
+
+		this.name = this.name || 'Default Material';
+
 		/** Possible overrides for shader uniforms
 		 * @type {Object}
 		 * @default
@@ -30,32 +47,35 @@ function(
 		// Texture storage
 		this._textureMaps = {};
 
-		/** @type {object}
-		 * @property {Array<Number>} ambient The ambient color, [r,g,b,a]
-		 * @property {Array<Number>} diffuse The diffuse color, [r,g,b,a]
-		 * @property {Array<Number>} emissive The emissive color, [r,g,b,a]
-		 * @property {Array<Number>} specular The specular color, [r,g,b,a]
-		 * @property {Number} shininess The shininess exponent.
+		/** Specification of colors for this Material
+		 * @type {Object}
+		 * @property {number[]} ambient The ambient color, [r, g, b, a]
+		 * @property {number[]} diffuse The diffuse color, [r, g, b, a]
+		 * @property {number[]} emissive The emissive color, [r, g, b, a]
+		 * @property {number[]} specular The specular color, [r, g, b, a]
+		 * @property {number} shininess The shininess exponent.
 		 * */
-		this.materialState = {
+		/*this.materialState = {
 			ambient: Shader.DEFAULT_AMBIENT,
 			diffuse: Shader.DEFAULT_DIFFUSE,
 			emissive: Shader.DEFAULT_EMISSIVE,
 			specular: Shader.DEFAULT_SPECULAR,
 			shininess: Shader.DEFAULT_SHININESS
 		};
-		/** Specification of culling for this Material.
+
+		/** Specification of culling for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled
-		 * @property {String} cullFace possible values: 'Front', 'Back', 'FrontAndBack', default 'Back'
-		 * @property {String} frontFace possible values: 'CW' (clockwise) and 'CCW' (counterclockwise - default)
+		 * @property {string} cullFace possible values: 'Front', 'Back', 'FrontAndBack', default 'Back'
+		 * @property {string} frontFace possible values: 'CW' (clockwise) and 'CCW' (counterclockwise - default)
 		 */
 		this.cullState = {
 			enabled: true,
 			cullFace: 'Back', // Front, Back, FrontAndBack
 			frontFace: 'CCW' // CW, CCW
 		};
-		/**
+
+		/** Specification of blending for this Material
 		 * @type {Object}
 		 * @property {String} blending possible values: <strong>'NoBlending'</strong>, 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		 * @property {String} blendEquation possible values: <strong>'AddEquation'</strong>, 'SubtractEquation', 'ReverseSubtractEquation'
@@ -68,7 +88,8 @@ function(
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
-		/**
+
+		/** Specification of depth handling for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled default: true
 		 * @property {boolean} write default: true
@@ -77,7 +98,8 @@ function(
 			enabled: true,
 			write: true
 		};
-		/**
+
+		/** Specification of the polygon offset for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled
 		 * @property {number} factor default: 1
@@ -167,6 +189,7 @@ function(
 	};
 
 	/**
+	 * Returns the render queue of this material
 	 * @returns {number}
 	 */
 	Material.prototype.getRenderQueue = function () {
@@ -179,6 +202,7 @@ function(
 	};
 
 	/**
+	 * Sets the render queue of this material
 	 * @param {number} queue See {@link RenderQueue} for options
 	 */
 	Material.prototype.setRenderQueue = function (queue) {
@@ -219,10 +243,12 @@ function(
 	/**
 	 * Creates a new Material object and sets the shader by calling createShader with the shaderDefinition
 	 *
+	 * @deprecated Use new Material() instead
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
-	 * @param {String} [name=DefaultMaterial]
+	 * @param {String} [name='DefaultMaterial'] The name of the newly created material
 	 * @return {Material}
 	 */
+	//! AT: this method has the parameters in the wrong order!!! // or the old constructor signature was
 	Material.createMaterial = function (shaderDefinition, name) {
 		var material = new Material(name || 'DefaultMaterial');
 
@@ -231,10 +257,17 @@ function(
 		return material;
 	};
 
+	/**
+	 * Creates an 'empty' material
+	 * @private
+	 * @param shaderDefinition see {@link Shader}
+	 * @param name [name='Empty Material'] The name of the newly created material
+	 * @returns {Material}
+	 */
 	Material.createEmptyMaterial = function(shaderDefinition, name) {
 		var material = new Material(name || 'Empty Material');
 		material.empty();
-		if(shaderDefinition) {
+		if (shaderDefinition) {
 			material.shader = Material.createShader(shaderDefinition);
 		} else {
 			material.shader = undefined;
@@ -242,6 +275,11 @@ function(
 		return material;
 	};
 
+	//! AT: how about a immutable material named EMPTY and a clone method for materials instead of this mutable madness?
+	/**
+	 * Removed the material's properties
+	 * @private
+	 */
 	Material.prototype.empty = function() {
 		this.cullState = {};
 		this.blendState = {};

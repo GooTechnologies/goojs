@@ -29,7 +29,6 @@ function(
 	/**
 	 * @class Handles shadow techniques
 	 */
-
 	function ShadowHandler() {
 		this.depthMaterial = Material.createMaterial(ShaderLib.lightDepth, 'depthMaterial');
 		this.depthMaterial.cullState.cullFace = 'Back';

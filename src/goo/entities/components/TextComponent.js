@@ -7,6 +7,9 @@ function(
 	Component) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function TextComponent(text) {
 		this.type = 'TextComponent';
 

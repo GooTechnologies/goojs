@@ -1,18 +1,23 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/ScriptComponent',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
-], function(
+	'goo/util/rsvp'
+],
+/** @lends */
+function(
 	ComponentHandler,
 	ScriptComponent,
-	RSVP,
-	PromiseUtil
+	RSVP
 ) {
 	"use strict";
 
+	/**
+	* @class
+	* @private
+	*/
 	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);
+		this._type = 'ScriptComponent';
 	}
 	ScriptComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ScriptComponentHandler.prototype.constructor = ScriptComponentHandler;
@@ -20,40 +25,23 @@ define([
 
 	ScriptComponentHandler.prototype._prepare = function(/*config*/) {};
 
-	ScriptComponentHandler.prototype._create = function(entity/*, config*/) {
-		var component = new ScriptComponent();
-		entity.setComponent(component);
-		return component;
+	ScriptComponentHandler.prototype._create = function() {
+		return new ScriptComponent();
 	};
 
-
-	ScriptComponentHandler.prototype.update = function(entity, config) {
-		var that = this, promises = [];
-		function update(ref) {
-			return that.getConfig(ref).then(function(config) {
-				return that.updateObject(ref,config);
-			});
-		}
-		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		if (config.scriptRefs && config.scriptRefs.length) {
-			var refs = config.scriptRefs;
-			for (var i = 0; i < refs.length; i++) {
-				promises.push(update(refs[i]));
+	ScriptComponentHandler.prototype.update = function(entity, config, options) {
+		var that = this;
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
+			var promises = [];
+			for(var key in config.scripts) {
+				promises.push(that._load(config.scripts[key].scriptRef, options));
 			}
-		}
-
-		if (promises.length > 0) {
-			return RSVP.all(promises).then(function(scripts) {
-				if(!scripts[0]) {
-					component.scripts = [];
-				} else {
-					component.scripts = scripts;
-				}
+			return RSVP.all(promises).then(function(scripts) {
+				component.scripts = scripts;
+				return component;
 			});
-		}
-		else {
-			return PromiseUtil.createDummyPromise(component);
-		}
+		});
 	};
 
 	return ScriptComponentHandler;

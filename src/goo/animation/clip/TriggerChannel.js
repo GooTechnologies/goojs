@@ -9,6 +9,7 @@ function (AbstractAnimationChannel, TriggerData) {
 	 * @param {string} channelName the name of this channel.
 	 * @param {number[]} times the time samples
 	 * @param {string[]} keys our key samples. Entries may be null. Should have as many entries as the times array.
+	 * @private
 	 */
 	function TriggerChannel (channelName, times, keys, blendType) {
 		AbstractAnimationChannel.call(this, channelName, times, blendType);

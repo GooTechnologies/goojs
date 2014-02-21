@@ -291,6 +291,7 @@ define([
 
 		/**
 		 * Returns an array of all this entity's children
+		 * @deprecated Use entity.children.toArray() instead
 		 * @param entity
 		 * @returns {Entity[]}
 		 */

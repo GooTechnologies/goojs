@@ -9,7 +9,9 @@ define([
 	'goo/math/Plane',
 	'goo/math/Ray',
 	'goo/math/Vector3'
-], function(
+],
+/** @lends */
+function(
 	ShaderBuilder,
 	MeshData,
 	Shader,
@@ -22,6 +24,10 @@ define([
 	Vector3
 ) {
 	'use strict';
+
+	/**
+	* @class
+	*/
 	function Gizmo(name, gizmoRenderSystem) {
 		this.name = name || 'Default Gizmo';
 		this.gizmoRenderSystem = gizmoRenderSystem;

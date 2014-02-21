@@ -1,15 +1,14 @@
 define([
-	'goo/math/Vector2',
-	'goo/math/Vector3',
-	'goo/math/MathUtils'
-],
+	'goo/math/Vector2', 
+	'goo/math/Vector3', 
+	'goo/math/MathUtils',
+	'goo/entities/SystemBus'
+	],
 /** @lends */
 function (
-	Vector2,
-	Vector3,
-	MathUtils
-	) {
-	'use strict';
+	Vector2, Vector3, MathUtils, SystemBus) {
+	"use strict";
+
 
 	var _defaults = {
 		domElement: null,
@@ -47,6 +46,7 @@ function (
 		interpolationSpeed: 7,
 		onRun: null
 	};
+
 
 	/**
 	 * @class Enables camera to orbit around a point in 3D space using the mouse.
@@ -316,6 +316,8 @@ function (
 		}
 	};
 
+	var helpVector = new Vector3();
+
 	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
 		if (this.demoMode) {
 			var now = Date.now();
@@ -386,8 +388,17 @@ function (
 			this.targetSpherical.copy(this.spherical);
 		}
 
+
 		// set our component updated.
 		transformComponent.setUpdated();
+
+		transformComponent.transform.rotation.toAngles(helpVector);
+		SystemBus.emit('goo.cameraPositionChanged', {
+			spherical: this.spherical.data,
+			translation: transformComponent.transform.translation.data,
+			rotation: helpVector.data,
+			lookAtPoint: this.lookAtPoint.data
+		});
 	};
 
 	return OrbitCamControlScript;

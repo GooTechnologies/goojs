@@ -3,6 +3,9 @@ define(['goo/renderer/bounds/BoundingBox', 'goo/renderer/bounds/BoundingSphere',
 function (BoundingBox, BoundingSphere, Vector3) {
 	"use strict";
 
+	/**
+	* @class
+	*/
 	function BoundingTree (boundType) {
 		this.leftTree = null;
 		this.rightTree = null;

@@ -8,22 +8,30 @@ function (
 	'use strict';
 
 	/**
-	 * @class A gameworld object and container of components
-	 * @param {World} world A {@link World} reference
-	 * @param {String} [name] Entity name
-	 */
-	function Entity(world, name) {
+	* @class
+	* An Entity is a generic container of data. 
+	* This data is wrapped in [Components]{@link Component}, which usually provide isolated features (transforms, geometries, materials, scripts and so on). 
+	* By setting components to an entity, the entity will get the functionality provided by the components. 
+	* For example, an entity with a {@link TransformComponent} and a {@link LightComponent} will be a light source in 3D space. 
+	* Note that by attaching components to an entity, methods of the component will be injected into the entity, extending its interface.
+	* @param {World} world The {@link World} this entity will be part of when calling .addToWorld.
+	* @param {String} [name] Entity name.
+	* @param {number} [id] Entity id.
+	*/
+	function Entity(world, name, id) {
 		this._world = world;
 		this._components = [];
+		this.id = id !== undefined ? id : Entity.entityCount;
+		this._index = Entity.entityCount;
 
 		//! AT: not sure if this tags/attributes abstraction is really needed or if they are just glorified properties
 		this._tags = {};
 		this._attributes = {};
 
-		Object.defineProperty(this, 'id', {
+		/*Object.defineProperty(this, 'id', {
 			value : Entity.entityCount++,
 			writable : false
-		});
+		});*/
 		this.name = name !== undefined ? name : 'Entity_' + this.id;
 
 		/** Set to true to skip rendering (move to meshrenderercomponent)
@@ -33,12 +41,14 @@ function (
 		this.skip = false;
 
 		this.hidden = false;
+		this.static = false;
+		Entity.entityCount++;
 	}
 
 	//! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
 	/**
-	 * Sets components on the entity or tries to create and set components out of the supplied parameters
-	 * @returns {Entity} Returns self to allow chaining
+	 * Sets components on the entity or tries to create and set components out of the supplied parameters.
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.set = function() {
 		for (var i = 0; i < arguments.length; i++) {
@@ -64,8 +74,8 @@ function (
 
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
-	 * @param {boolean} [recursive=true] Add children recursively
-	 * @returns {Entity} Returns itself to allow chaining
+	 * @param {boolean} [recursive=true] Add children recursively.
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.addToWorld = function (recursive) {
 		this._world.addEntity(this, recursive);
@@ -74,14 +84,20 @@ function (
 
 	/**
 	 * Remove entity from the world.
-	 * @param {boolean} [recursive=true] Remove children recursively
-	 * @returns {Entity} Returns itself to allow chaining
+	 * @param {boolean} [recursive=true] Remove children recursively.
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.removeFromWorld = function (recursive) {
 		this._world.removeEntity(this, recursive);
 		return this;
 	};
 
+	/**
+	 * lower cases the first character of the type parameter.
+	 * @param {string} type name.
+	 * @returns {string} lower cased type name.
+	 * @private
+	 */
 	function getTypeAttributeName(type) {
 		return type.charAt(0).toLowerCase() + type.substr(1);
 	}
@@ -89,12 +105,12 @@ function (
 	/**
 	 * Set component of a certain type on entity. The operation has no effect if the entity already contains a component of the same type.
 	 *
-	 * @param {Component} component Component to set on the entity
-	 * @returns {Entity} Returns itself to allow chaining
+	 * @param {Component} component Component to set on the entity.
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setComponent = function (component) {
 		if (this.hasComponent(component.type)) {
-			return;
+			return this;
 		} else {
 			this._components.push(component);
 		}
@@ -115,10 +131,10 @@ function (
 	};
 
 	/**
-	 * Checks if a component of a specific type is present or not
+	 * Checks if a component of a specific type is present or not.
 	 *
-	 * @param {string} type Type of component to check for (eg. 'meshDataComponent')
-	 * @returns {boolean}
+	 * @param {string} type Type of component to check for (eg. 'meshDataComponent').
+	 * @returns {boolean}.
 	 */
 	Entity.prototype.hasComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);
@@ -127,10 +143,10 @@ function (
 	};
 
 	/**
-	 * Retrieve a component of a specific type
+	 * Retrieve a component of a specific type.
 	 *
-	 * @param {string} type Type of component to retrieve (eg. 'transformComponent')
-	 * @returns {Component} component with requested type or undefined if not present
+	 * @param {string} type Type of component to retrieve (eg. 'transformComponent').
+	 * @returns {Component} component with requested type or undefined if not present.
 	 */
 	Entity.prototype.getComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);
@@ -140,10 +156,10 @@ function (
 	};
 
 	/**
-	 * Remove a component of a specific type from entity
+	 * Remove a component of a specific type from entity.
 	 *
-	 * @param {string} type Type of component to remove (eg. 'meshDataComponent')
-	 * @returns {Entity} Returns itself to allow chaining
+	 * @param {string} type Type of component to remove (eg. 'meshDataComponent').
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);
@@ -175,9 +191,9 @@ function (
 	};
 
 	/**
-	 * Adds a tag to the entity
+	 * Adds a tag to the entity.
 	 * @param tag
-	 * @returns {Entity} Returns self to allow chaining
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setTag = function (tag) {
 		this._tags[tag] = true;
@@ -185,18 +201,18 @@ function (
 	};
 
 	/**
-	 * Checks whether an entity has a tag or not
+	 * Checks whether an entity has a tag or not.
 	 * @param tag
-	 * @returns {boolean}
+	 * @returns {boolean}.
 	 */
 	Entity.prototype.hasTag = function (tag) {
 		return !!this._tags[tag];
 	};
 
 	/**
-	 * Clears a tag on an entity
+	 * Clears a tag on an entity.
 	 * @param tag
-	 * @returns {Entity} Returns self to allow chaining
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearTag = function (tag) {
 		delete this._tags[tag];
@@ -204,10 +220,10 @@ function (
 	};
 
 	/**
-	 * Sets an attribute and its value on the entity
+	 * Sets an attribute and its value on the entity.
 	 * @param attribute
 	 * @param value
-	 * @returns {Entity} Returns self to allow chaining
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setAttribute = function (attribute, value) {
 		this._attributes[attribute] = value;
@@ -215,7 +231,7 @@ function (
 	};
 
 	/**
-	 * Checks whether an entity has an attribute or not
+	 * Checks whether an entity has an attribute or not.
 	 * @param tag
 	 * @returns {boolean}
 	 */
@@ -224,7 +240,7 @@ function (
 	};
 
 	/**
-	 * Gets the value of the specified attribute
+	 * Gets the value of the specified attribute.
 	 * @param attribute
 	 * @returns {*}
 	 */
@@ -233,9 +249,9 @@ function (
 	};
 
 	/**
-	 * Clears an attribute of the entity
+	 * Clears an attribute of the entity.
 	 * @param attribute
-	 * @returns {Entity} Returns self to allow chaining
+	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearAttribute = function (attribute) {
 		delete this._attributes[attribute];
@@ -243,7 +259,7 @@ function (
 	};
 
 	/**
-	 * @returns {string} Name of entity
+	 * @returns {string} Name of entity.
 	 */
 	Entity.prototype.toString = function () {
 		//! AT: should also return a list of its components or something more descriptive than just the name

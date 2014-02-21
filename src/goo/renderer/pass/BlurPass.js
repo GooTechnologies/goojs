@@ -4,7 +4,9 @@ define([
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib'
-], function(
+],
+/** @lends */
+function(
 	Material,
 	FullscreenUtil,
 	RenderTarget,
@@ -14,6 +16,7 @@ define([
 	"use strict";
 
 	/**
+	 * @class
 	 * <pre>
 	 * settings: {
 	 *     target : null,

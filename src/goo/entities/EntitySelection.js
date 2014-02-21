@@ -1,8 +1,10 @@
-define(['goo/entities/Selection'], function (Selection) {
+define(['goo/entities/Selection'],
+	/** @lends */
+	function (Selection) {
 	'use strict';
 
 	/**
-	 * A specialised selection object for entities
+	 * @class A specialised selection object for entities
 	 * @extends Selection
 	 * @constructor
 	 */
@@ -58,7 +60,7 @@ define(['goo/entities/Selection'], function (Selection) {
 	};
 
 	/**
-	 * Returns the common elements between this selection and the given parameter(s)
+	 * Returns the common entities between this selection and the given parameter(s)
 	 * @param entities {Entity | Entity[] | Entity... | EntitySelection}
 	 * @returns {EntitySelection} Returns self to allow chaining
 	 */
@@ -148,6 +150,7 @@ define(['goo/entities/Selection'], function (Selection) {
 	//! AT: the transform component/system should install these
 	/**
 	 * Returns the parents of all entities in this selection
+	 * @returns {EntitySelection} Returns self to allow chaining
 	 */
 	EntitySelection.prototype.parent = function () {
 		if (this.top === null) { return this; }
@@ -174,6 +177,7 @@ define(['goo/entities/Selection'], function (Selection) {
 
 	/**
 	 * Returns the children of all entities in this selection
+	 * @returns {EntitySelection} Returns self to allow chaining
 	 */
 	EntitySelection.prototype.children = function () {
 		// could use flatMap
@@ -194,6 +198,7 @@ define(['goo/entities/Selection'], function (Selection) {
 
 	/**
 	 * Converts anything (nothing, an EntitySelection, an array or more arguments) to an array
+	 * @memberOf EntitySelection#
 	 * @private
 	 * @returns {*}
 	 */

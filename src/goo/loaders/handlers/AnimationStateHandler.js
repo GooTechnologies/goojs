@@ -7,7 +7,9 @@ define([
 	'goo/animation/blendtree/FrozenClipSource',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], function(
+],
+/** @lends */
+function(
 	ConfigHandler,
 	SteadyState,
 	ClipSource,
@@ -19,48 +21,69 @@ define([
 ) {
 	"use strict";
 
+	/**
+	 * @class Handler for loading animation states into engine
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 * @extends ConfigHandler
+	 * @private
+	 */
 	function AnimationStateHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._objects = {};
 	}
-	AnimationStateHandler.prototype = Object.create(ConfigHandler);
+	AnimationStateHandler.prototype = Object.create(ConfigHandler.prototype);
 	AnimationStateHandler.prototype.constructor = AnimationStateHandler;
 	ConfigHandler._registerClass('animstate', AnimationStateHandler);
 
-	AnimationStateHandler.prototype.update = function(ref, config) {
-		var object = this._objects[ref] || this._create(ref);
-		object._name = config.name;
-		return this._parseClipSource(config.clipSource, object._sourceTree).then(function(source) {
-			object._sourceTree = source;
-			return object;
-		});
-	};
-
-	AnimationStateHandler.prototype.remove = function(ref) {
-		if (this._objects[ref]) {
-			delete this._objects[ref];
-		}
-	};
-
+	/**
+	 * Creates an empty animation state
+	 * @param {string} ref
+	 * @returns {SteadyState}
+	 * @private
+	 */
 	AnimationStateHandler.prototype._create = function(ref) {
 		return this._objects[ref] = new SteadyState();
 	};
 
-	AnimationStateHandler.prototype._parseClipSource = function(cfg, clipSource) {
-		//var promises, source;
+	/**
+	 * Adds/updates/removes an animation state
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated animation state or null if removed
+	 */
+	AnimationStateHandler.prototype.update = function(ref, config, options) {
+		var that = this;
+		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(state) {
+			if (!state) { return; }
+			state._name = config.name;
+			return that._parseClipSource(config.clipSource, state._sourceTree, options).then(function(source) {
+				state._sourceTree = source;
+				return state;
+			});
+		});
+	};
+
+	/**
+	 * Updates or creates clipSource to put on animation state
+	 * @param {object} config
+	 * @param {ClipSource} [clipSource]
+	 * @returns {RSVP.Promise} resolved with updated clip source
+	 */
+	AnimationStateHandler.prototype._parseClipSource = function(cfg, clipSource, options) {
 		var that = this;
 
 		switch (cfg.type) {
 			case 'Clip':
-				return this.getConfig(cfg.clipRef).then(function(config) {
-					return that.updateObject(cfg.clipRef, config, that.options).then(function(clip) {
+				return this.getConfig(cfg.clipRef, options).then(function(config) {
+					return that.updateObject(cfg.clipRef, config, options).then(function(clip) {
 						if(!clipSource || (!clipSource instanceof ClipSource)) {
 							clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
 						} else {
 							clipSource._clip = clip;
 							clipSource.setFilter(cfg.filter, cfg.channels);
 						}
-
 						if (cfg.loopCount) {
 							clipSource._clipInstance._loopCount = +cfg.loopCount;
 						}
@@ -75,26 +98,29 @@ define([
 				if(!clipSource || (!clipSource instanceof ManagedTransformSource)) {
 					clipSource = new ManagedTransformSource();
 				}
-				var source = clipSource;
 				if (cfg.clipRef) {
-					return this.getConfig(cfg.clipRef).then(function(config) {
-						return that.updateObject(cfg.clipRef, config, that.options);
+					return this.getConfig(cfg.clipRef, options).then(function(config) {
+						return that.updateObject(cfg.clipRef, config, options);
 					}).then(function(clip) {
-						source.initFromClip(clip, cfg.filter, cfg.channels);
-						return source;
+						clipSource.initFromClip(clip, cfg.filter, cfg.channels);
+						return clipSource;
 					});
 				} else {
-					return PromiseUtil.createDummyPromise(source);
+					return PromiseUtil.createDummyPromise(clipSource);
 				}
 				break;
 			case 'Lerp':
-				var promises = [this._parseClipSource(cfg.clipSourceA), this._parseClipSource(cfg.clipSourceB)];
+				// TODO reuse object like the other parsers
+				var promises = [
+					this._parseClipSource(cfg.clipSourceA, null, options),
+					this._parseClipSource(cfg.clipSourceB, null, options)
+				];
 				return RSVP.all(promises).then(function(clipSources) {
-					var source = new BinaryLERPSource(clipSources[0], clipSources[1]);
+					clipSource = new BinaryLERPSource(clipSources[0], clipSources[1]);
 					if (cfg.blendWeight) {
-						source.blendWeight = cfg.blendWeight;
+						clipSource.blendWeight = cfg.blendWeight;
 					}
-					return source;
+					return clipSource;
 				});
 			case 'Frozen':
 				return this._parseClipSource(cfg.clipSource).then(function(subClipSource) {

@@ -1,4 +1,8 @@
-define( /** @lends */ function() {
+define([
+	'goo/util/PromiseUtil'
+], /** @lends */ function(
+	PromiseUtil
+) {
 	"use strict";
 
 	/**
@@ -12,82 +16,82 @@ define( /** @lends */ function() {
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
-	 * @param {object} options
 	 * @returns {ComponentHandler}
+	 * @private
 	 *
 	 */
-	function ComponentHandler(world, getConfig, updateObject, options) {
+	function ComponentHandler(world, getConfig, updateObject) {
 		this.world = world;
 		this.getConfig = getConfig;
 		this.updateObject = updateObject;
-		this.options = options;
 	}
 
 	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
+	 * @private
 	 */
 	ComponentHandler.prototype._prepare = function(/*config*/) {};
 
 	/**
 	 * Create engine component object based on the config. Should be overridden in subclasses.
 	 * @param {Entity} entity The entity on which this component should be added.
-	 * @param {object} config
 	 * @returns {Component} the created component object
+	 * @private
+	 * @abstract
 	 */
-	ComponentHandler.prototype._create = function(/*entity, config*/) {
+	ComponentHandler.prototype._create = function() {
 		throw new Error("ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)");
 	};
 
-	/*jshint -W099*/
+	/**
+	 * Remove engine component object. Should be overridden in subclasses.
+	 * @param {Entity} entity The entity from which this component should be removed.
+	 * @private
+	 */
+	ComponentHandler.prototype._remove = function(entity) {
+		entity.clearComponent(this._type);
+	};
+
+	/**
+	 * Loads object for given ref
+	 * @param {string} ref
+	 * @param {object} options
+	 * @private
+	 */
+	ComponentHandler.prototype._load = function(ref, options) {
+		var update = this.updateObject.bind(this);
+		return this.getConfig(ref, options).then(function(config) {
+			return update(ref, config, options);
+		});
+	};
+
 	/**
 	 * Update engine component object based on the config. Should be overridden in subclasses.
 	 * This method is called by #{EntityHandler} to load new component configs into the engine.
-	 * A call to {super()} in your update method will create a new component object if needed.
-	 * Note this (somewhat inconsistent) difference: {ComponentHandler.update} returns the
-	 * updated component, whereas {MyHandler.update} should return a promise.
-	 *
-	 * @example
-	 * class MyComponentHandler
-	 @_register('my')
-	 * ...
-	 * 	update: (entity, config)->
-	 * 		component = super(entity, config)
-	 *
 	 * @param {Entity} entity The entity on which this component should be added.
 	 * @param {object} config
+	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the created component when loading is done.
 	 */
-	// REVIEW if component exists, doesn't return promise, but component
-	// also, if component is null, still tries to create component on null entity
-	// will probably cause an error
-	ComponentHandler.prototype.update = function(entity, config) {
+	ComponentHandler.prototype.update = function(entity, config/*, options*/) {
+		if(!entity) {
+			return PromiseUtil.createDummyPromise(null, 'Entity is missing');
+		}
+		if (!config) {
+			this._remove(entity);
+			return PromiseUtil.createDummyPromise();
+		}
+		var component = entity.getComponent(this._type);
+		if(!component) {
+			component = this._create();
+			entity.setComponent(component);
+		}
 		this._prepare(config);
-		var object;
-		// REVIEW: I would prefer ===
-		// ANSWER: entity !== null && entity !== undefined is unseemly
-		if(entity == null || entity[this.constructor._type + "Component"] == null) {
-			object = this._create(entity, config);
-		} else {
-			object = entity[this.constructor._type + "Component"];
-		}
 
-		return object;
+		return PromiseUtil.createDummyPromise(component);
 	};
 
-	/**
-	 * Remove the component that is handled by this handler from the given entity.
-	 * @param {Entity} entity The entity from which the component should be removed
-	 */
-	// REVIEW should it fails silently if entity is null?
-	ComponentHandler.prototype.remove = function(entity) {
-		// REVIEW: I would prefer !==
-		// ANSWER: entity !== null && entity !== undefined is unseemly
-		if(entity != null) {
-			entity.clearComponent(this.constructor._type + "Component");
-		}
-		return entity;
-	};
 
 	ComponentHandler.handlerClasses = {};
 
@@ -107,7 +111,6 @@ define( /** @lends */ function() {
 	 * @param {Class} klass the class to register for this component type
 	 */
 	ComponentHandler._registerClass = function(type, klass) {
-		klass._type = type;
 		ComponentHandler.handlerClasses[type] = klass;
 	};
 

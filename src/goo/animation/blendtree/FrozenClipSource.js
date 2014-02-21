@@ -14,21 +14,21 @@ function () {
 		this._time = frozenTime;
 	}
 
-	/*
+	/**
 	 * @return a source data mapping for the channels in this clip source
 	 */
 	FrozenClipSource.prototype.getSourceData = function () {
 		return this._source.getSourceData();
 	};
 
-	/*
+	/**
 	 * Sets start time of clipinstance to 0, so frozenTime will calculate correctly
 	 */
 	FrozenClipSource.prototype.resetClips = function () {
 		this._source.resetClips(0);
 	};
 
-	/*
+	/**
 	 * This will be called by a {@link SteadyState}, but will not update the animation, and will return true, to indicate animation is still active
 	 */
 	FrozenClipSource.prototype.setTime = function () {
@@ -36,15 +36,21 @@ function () {
 		return true;
 	};
 
-	/*
+	/**
 	 * A FrozenTreeSource is always active
 	 */
 	FrozenClipSource.prototype.isActive = function () {
 		return true;
 	};
 
+	/**
+	* Set time scale
+	*/
 	FrozenClipSource.prototype.setTimeScale = function() {};
 
+	/**
+	 * @returns {FrozenClipSource}
+	 */
 	FrozenClipSource.prototype.clone = function() {
 		var cloned = new FrozenClipSource(
 			this._source.clone(),

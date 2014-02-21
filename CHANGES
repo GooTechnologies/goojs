@@ -1,6 +1,23 @@
+v0.8.0 --- 2014-02-10
+
+Additions:
+ + goo.js does not require that you use requirejs anymore; if requirejs is not detected when goo.js starts loading the it will automatically create a "goo" namespace and fill it with every class that the engine consists of
+ + a new EntitySelection API
+ + entities can now be tagged
+ + entities can hold attributes
+ + entity "selectors" based on id, name, system, components, tags and attributes
+
+Changes:
+ * goo.js is now split in a core goo.js (which is much smaller) and additional packs which provides extra functionality
+
+Deprecated:
+ - EntityUtils.traverse(); use entity.traverse() instead
+ - EntityUtils.getChildren(); use entity.children.toArray() instead
+
+
 v0.7.0 --- 2014-01-23
 
-Added:
+Additions:
  + Made engine IE compliant
  + Light cookies
  + More post effects: blur, hatch, HSV, noise

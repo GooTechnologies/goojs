@@ -13,6 +13,7 @@ define(
 
 		/**
 		 * @class Logic node for vector < matrix computation
+		 * @private
 		 */
 		function LogicNodeApplyMatrix() {
 			LogicNode.call(this);

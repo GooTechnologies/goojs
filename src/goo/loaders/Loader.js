@@ -12,12 +12,12 @@ define([
 
 	/**
 	 * @class Handles loading of data.
-	 *
 	 * @constructor
 	 * @param {object} [parameters]
 	 * @param {string} [parameters.rootPath=''] The path of the project root.
 	 * Ex. <code>/project/root/</code>.
 	 * @param {Ajax} [parameters.xhr]
+	 * @private
 	 */
 	function Loader(parameters) {
 		if(typeof parameters !== "undefined" && parameters !== null && typeof parameters !== "object") {

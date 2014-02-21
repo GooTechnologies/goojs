@@ -1,61 +1,84 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/addons/howler/components/HowlerComponent',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
-], function(
+	'goo/util/rsvp'
+],
+/** @lends */
+function(
 	ComponentHandler,
 	HowlerComponent,
-	RSVP,
-	PromiseUtil
+	RSVP
 ) {
 	"use strict";
 
+	/**
+	 * @class For handling loading of sound components
+	 * @constructor
+	 * @param {World} world The goo world
+	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @extends ComponentHandler
+	 * @private
+	 */
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
+		// TODO Make a sound component instead
+		this._type = 'HowlerComponent';
 	}
 
 	SoundComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ComponentHandler._registerClass('sound', SoundComponentHandler);
-	SoundComponentHandler._type = 'howler';
 	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
+	ComponentHandler._registerClass('sound', SoundComponentHandler);
 
-	SoundComponentHandler.prototype._create = function(entity) {
-		var component = new HowlerComponent();
-		entity.setComponent(component);
-		return component;
+	SoundComponentHandler.prototype._remove = function(entity) {
+		var component = entity.howlerComponent;
+		if (component && component.sounds) {
+			var sounds = component.sounds;
+			for (var i = 0; i < sounds.length; i++) {
+				sounds[i].stop();
+			}
+		}
 	};
 
-	SoundComponentHandler.prototype.update = function(entity, config) {
+
+	/**
+	 * Creates sound component
+	 * @returns {HowlerComponent} Should be soundcomponent
+	 * @private
+	 */
+	SoundComponentHandler.prototype._create = function() {
+		// TODO Sound component
+		return new HowlerComponent();
+	};
+
+	/**
+	 * Update engine sound component object based on the config.
+	 * @param {Entity} entity The entity on which this component should be added.
+	 * @param {object} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
+	 */
+	SoundComponentHandler.prototype.update = function(entity, config, options) {
 		if (!window.Howl) {
 			throw new Error('Howler is missing');
 		}
-		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		for (var i = 0; i < component.sounds.length; i++) {
-			component.sounds[i].stop();
-		}
-		component.sounds = [];
-
-		var soundRefs = config.soundRefs;
-		if (soundRefs) {
+		var that = this;
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
+			// Stop all sounds
+			for (var i = 0; i < component.sounds.length; i++) {
+				component.sounds[i].stop();
+			}
 			var promises = [];
-
-			for (var i = 0; i < soundRefs.length; i++) {
-				promises.push(this._getSound(soundRefs[i]));
+			// Load all sounds
+			for (var key in config.sounds) {
+				promises.push(that._load(config.sounds[key].soundRef, options));
 			}
 			return RSVP.all(promises).then(function(sounds) {
+				// Set updates sounds
 				component.sounds = sounds;
 				return component;
 			});
-		} else {
-			return PromiseUtil.createDummyPromise(component);
-		}
-	};
-
-	SoundComponentHandler.prototype._getSound = function(ref) {
-		var that = this;
-		return this.getConfig(ref).then(function(config) {
-			return that.updateObject(ref, config);
 		});
 	};
 

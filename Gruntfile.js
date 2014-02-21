@@ -5,17 +5,11 @@ var fs = require('fs');
 
 module.exports = function(grunt) {
 	var engineVersion = grunt.option('goo-version') || 'UNOFFICIAL';
-	var bundleRequire = grunt.option('bundle-require');
 
 	var gooModule = {
 		name: 'goo'
 	};
-	var engineFilename = './out/goo.js'
-	if(bundleRequire) {
-		console.log('Bundling require');
-		gooModule.include = ['requireLib'];
-		engineFilename = './out/goo-require.js'
-	}
+	var engineFilename = './out/goo.js';
 
 	// Returns the code to add at the start and end of the minified file
 	function getWrapper() {
@@ -25,29 +19,27 @@ module.exports = function(grunt) {
 		wrapperHead +=
 			'/* Goo Engine ' + engineVersion + '\n' +
 			' * Copyright 2014 Goo Technologies AB\n' +
-			' */\n' +
-			'(function(window) {';
+			' */\n';
 
-		if (bundleRequire) {
-			wrapperTail += 'window.requirejs=requirejs;';
-			wrapperTail += 'window.require=require;';
-			wrapperTail += 'window.define=define;';
-		}
-		else {
-			// Put all calls to define and require in the f function
-			wrapperHead +=
-				'function f(){';
-			wrapperTail +=
-				'}' +
-				'if(window.localStorage&&window.localStorage.gooPath){' +
-					// We're configured to not use the engine from goo.js.
-					// Don't call the f function so the modules won't be defined
-					// and require will load them separately instead.
-					'window.require.config({' +
-						'paths:{goo:localStorage.gooPath}' +
-					'})' +
-				'}else f()'
-		}
+		var customRequire = fs.readFileSync('tools/customRequire.js');
+		wrapperHead += customRequire;
+
+		wrapperHead += '(function(window) {';
+
+		// Put all calls to define and require in the f function
+		wrapperHead +=
+			'function f(){';
+		wrapperTail +=
+			'}' +
+			'if(window.localStorage&&window.localStorage.gooPath){' +
+				// We're configured to not use the engine from goo.js.
+				// Don't call the f function so the modules won't be defined
+				// and require will load them separately instead.
+				'window.require.config({' +
+					'paths:{goo:localStorage.gooPath}' +
+				'})' +
+			'}else f()';
+
 		wrapperTail += '})(window,undefined)';
 		return [wrapperHead, wrapperTail];
 	}
@@ -104,7 +96,7 @@ module.exports = function(grunt) {
 			build: {
 				src: [
 					'out/',
-					'src/goo.js',
+					'src/goo.js'
 				]
 			},
 			toc: {
@@ -115,7 +107,7 @@ module.exports = function(grunt) {
 			docs: [
 				'goojs-jsdoc/',
 				'goojs-jsdoc-json/',
-				'goojs-jsdoc_*.tar.gz',
+				'goojs-jsdoc_*.tar.gz'
 			]
 		}
 	});
@@ -128,16 +120,37 @@ module.exports = function(grunt) {
 	grunt.registerTask('default', ['minify']);
 	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap']);
 
+
+	//! AT: no better place to put this
+	function extractFilename(path) {
+		var index = path.lastIndexOf('/');
+		return index === -1 ? path : path.substr(index + 1);
+	}
+
 	// Creates src/goo.js that depends on all engine modules
 	grunt.registerTask('main-file', function() {
-		var sourceFiles = glob.sync('!(*pack)/**/*.js', {cwd: 'src/goo/', nonegate: true })
-		var allModules = _.map(sourceFiles, function(f) {
+		var sourceFiles = glob.sync('!(*pack)/**/*.js', { cwd: 'src/goo/', nonegate: true })
+		var allModules = _.map(sourceFiles, function (f) {
 			return 'goo/' + f.replace(/\.js/, '');
 		});
 
-		fs.writeFileSync('src/goo.js', 'define([\n' +
-			_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n') +
-		'\n], function() {});\n');
+		var lines = [];
+		lines.push('require([');
+		lines.push(_.map(allModules, function (m) { return "\t'" + m + "'"; }).join(',\n'));
+		lines.push('], function (');
+
+		var fileNames = allModules.map(extractFilename);
+
+		lines.push('\t' + fileNames.join(',\n\t'));
+		lines.push(') {');
+		lines.push('if (!window.goo) { return; }');
+		fileNames.forEach(function (fileName) {
+			lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
+		});
+
+		lines.push('});');
+
+		fs.writeFileSync('src/goo.js', lines.join('\n'));
 	});
 
 	/*

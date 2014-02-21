@@ -1,5 +1,5 @@
 // adapted from https://github.com/rauschma/enums
-define(function () {
+define(/** @lends */function () {
 	"use strict";
 
 	function copyOwnFrom(target, source) {
@@ -27,6 +27,9 @@ define(function () {
 	};
 	Object.freeze(Symbol.prototype);
 
+	/**
+	* @class
+	*/
 	function Enum(obj) {
 		if (arguments.length === 1 && obj !== null && typeof obj === "object") {
 			Object.keys(obj).forEach(function (name) {

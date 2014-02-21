@@ -56,20 +56,20 @@ function (
 	'use strict';
 
 	/**
-	 * @class Standard setup of entity system to use as base for small projects/demos
+	 * @class The main class that updates the world and calls the renderers
 	 *
-	 * @param {Object} [parameters] GooRunner settings passed in a JSON object.
-	 * @param {boolean} [parameters.alpha=false]
-	 * @param {boolean} [parameters.premultipliedAlpha=true]
-	 * @param {boolean} [parameters.antialias=true]
-	 * @param {boolean} [parameters.stencil=false]
-	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
+	 * @param {boolean} [parameters.alpha=false] Specifies if the canvas should have an alpha channel or not.
+	 * @param {boolean} [parameters.premultipliedAlpha=true] Enables or disables premultiplication of color by alpha
+	 * @param {boolean} [parameters.antialias=true] Specifies if antialiasing should be turned on or no
+	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer
+	 * @param {boolean} [parameters.preserveDrawingBuffer=false] By default the drawing buffer will be cleared after it is presented to the HTML compositor. Enable this option to not clear the drawing buffer
 	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
-	 * @param {boolean} [parameters.showStats=false]
-	 * @param {boolean} [parameters.manuallyStartGameLoop=false]
-	 * @param {boolean} [parameters.logo=true]
-	 * @param {boolean} [parameters.tpfSmoothingCount=10]
-	 * @param {boolean} [parameters.debugKeys=false]
+	 * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
+	 * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
+	 * @param {boolean} [parameters.logo=true] Specifies whether the Goo logo is visible or not
+	 * @param {boolean} [parameters.tpfSmoothingCount=10] Specifies the amount of previous frames to use when computing the 'time per frame'
+	 * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
 	 */
 
 	function GooRunner (parameters) {
@@ -92,6 +92,7 @@ function (
 		this.world.setSystem(new LightDebugSystem()); // Go away!
 		this.world.setSystem(new CameraDebugSystem()); // Go away!
 		this.world.setSystem(new MovementSystem()); // Go away!
+
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];
 		this.world.setSystem(this.renderSystem);
@@ -190,6 +191,13 @@ function (
 		};
 	}
 
+	/**
+	 * Add a render system to the world
+	 * @private
+	 * @param system
+	 * @param idx
+	 */
+	//! AT: private until priorities get added to render systems as 'idx' is very unflexibile
 	GooRunner.prototype.setRenderSystem = function (system, idx) {
 		this.world.setSystem(system);
 		if (idx !== undefined) {
@@ -215,7 +223,7 @@ function (
 			return;
 		}
 
-		tpf = Math.max(Math.min(tpf, 0.5), 0.0001);
+		tpf = Math.max(Math.min(tpf, 0.5), 0.0001); //! AT: MathUtils.clamp
 
 		// Smooth out the tpf
 		tpfSmoothingArray[tpfIndex] = tpf;
@@ -232,6 +240,7 @@ function (
 		World.tpf = this.world.tpf;
 		this.start = time;
 
+		// execute callbacks
 		for (var i = 0; i < this.callbacksNextFrame.length; i++) {
 			this.callbacksNextFrame[i](this.world.tpf);
 		}
@@ -241,6 +250,7 @@ function (
 			this.callbacksPreProcess[i](this.world.tpf);
 		}
 
+		// process the world
 		if (this.doProcess) {
 			this.world.process();
 		}
@@ -248,27 +258,32 @@ function (
 		this.renderer.info.reset();
 
 		if (this.doRender) {
-
 			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
 			this.renderer.clear();
+
+			// run the prerender callbacks
 			for (var i = 0; i < this.callbacksPreRender.length; i++) {
 				this.callbacksPreRender[i](this.world.tpf);
 			}
 
+			// run all the renderers
 			for (var i = 0; i < this.renderSystems.length; i++) {
-				this.renderSystems[i].render(this.renderer);
+				if (!this.renderSystems[i].passive) {
+					this.renderSystems[i].render(this.renderer);
+				}
 			}
-			if(this._picking.doPick && Renderer.mainCamera) {
+			// handle pick requests
+			if (this._picking.doPick && Renderer.mainCamera) {
 				var cc = this.renderer.clearColor.data;
 				this._picking.clearColorStore[0] = cc[0];
 				this._picking.clearColorStore[1] = cc[1];
 				this._picking.clearColorStore[2] = cc[2];
 				this._picking.clearColorStore[3] = cc[3];
-				this.renderer.setClearColor(0,0,0,1);
+				this.renderer.setClearColor(0, 0, 0, 1);
 
 				for (var i = 0; i < this.renderSystems.length; i++) {
-					if (this.renderSystems[i].renderToPick) {
+					if (this.renderSystems[i].renderToPick && !this.renderSystems[i].passive) {
 						this.renderSystems[i].renderToPick(this.renderer, this._picking.skipUpdateBuffer);
 					}
 				}
@@ -280,13 +295,17 @@ function (
 			}
 		}
 
+		// run the post render callbacks
 		for (var i = 0; i < this.callbacks.length; i++) {
 			this.callbacks[i](this.world.tpf);
 		}
 
+		// update the stats if there are any
 		if (this.stats) {
 			this.stats.update(this.renderer.info);
 		}
+
+		// resolve any snapshot requests
 		if (this._takeSnapshots.length) {
 			try {
 				var image = this.renderer.domElement.toDataURL();
@@ -299,7 +318,7 @@ function (
 			this._takeSnapshots = [];
 		}
 
-
+		// schedule next frame
 		this.animationId = window.requestAnimationFrame(this.run);
 	};
 
@@ -349,7 +368,6 @@ function (
 	 * Enable misc debug configurations for inspecting aspects of the scene on hotkeys.
 	 * @private
 	 */
-
 	GooRunner.prototype._addDebugKeys = function () {
 		//TODO: Temporary keymappings
 		// shift+space = toggle fullscreen
@@ -388,7 +406,7 @@ function (
 			}
 		}.bind(this), false);
 
-		document.addEventListener("mousedown", function (e) {
+		document.addEventListener('mousedown', function (e) {
 			if (e[activeKey]) {
 				var x = e.clientX;
 				var y = e.clientY;
@@ -401,11 +419,10 @@ function (
 	};
 
 	/**
-	 * Adds an event listener to the goorunner
+	 * Adds an event listener to the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to call when event is fired
 	 */
-
 	GooRunner.prototype.addEventListener = function(type, callback) {
 		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
@@ -420,11 +437,10 @@ function (
 	};
 
 	/**
-	 * Removes an event listener to the goorunner
+	 * Removes an event listener to the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to remove from event listener
 	 */
-
 	GooRunner.prototype.removeEventListener = function(type, callback) {
 		if(!this._eventListeners[type]) {
 			return;
@@ -461,10 +477,10 @@ function (
 	};
 
 	/**
-	 * Enables event listening on the goorunner
+	 * Enables event listening on the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @private
 	 */
-
 	GooRunner.prototype._enableEvent = function(type) {
 		if(this._events[type]) {
 			return;
@@ -473,14 +489,14 @@ function (
 			var x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
 			var y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
 			this._eventTriggered[type] = e;
-			this.pick(x, y, function(id, depth) {
-				var entity = this.world.entityManager.getEntityById(id);
+			this.pick(x, y, function(index, depth) {
+				var entity = this.world.entityManager.getEntityByIndex(index);
 				this._dispatchEvent({
 					entity: entity,
 					depth: depth,
 					x: x,
 					y: y,
-					id: id
+					id: index
 				});
 			}.bind(this));
 		}.bind(this);
@@ -489,10 +505,10 @@ function (
 	};
 
 	/**
-	 * Disables event listening on the goorunner
+	 * Disables event listening on the GooRunner
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @private
 	 */
-
 	GooRunner.prototype._disableEvent = function(type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
@@ -519,21 +535,20 @@ function (
 	};
 
 	/**
-	 * Takes an image snapshot from the 3d scene at next rendercall
+	 * Takes an image snapshot from the 3d scene at next render call
 	 */
 	GooRunner.prototype.takeSnapshot = function(callback) {
 		this._takeSnapshots.push(callback);
 	};
 
 	/**
-	 * Requests a pick from screenspace coordinates. A successful pick returns id and depth of the pick target.
+	 * Requests a pick from screen space coordinates. A successful pick returns id and depth of the pick target.
 	 *
-	 * @param {Number} x screen coordinate
-	 * @param {Number} y screen coordinate
+	 * @param {number} x screen coordinate
+	 * @param {number} y screen coordinate
 	 * @param {Function} callback to handle the pick result
-	 * @param {Boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
+	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
 	 */
-
 	GooRunner.prototype.pick = function(x, y, callback, skipUpdateBuffer) {
 		this._picking.x = x;
 		this._picking.y = y;
