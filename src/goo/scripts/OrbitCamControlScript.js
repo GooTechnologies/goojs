@@ -32,7 +32,7 @@ function (
 		minAzimuth: 90 * MathUtils.DEG_TO_RAD,
 		maxAzimuth: 270 * MathUtils.DEG_TO_RAD,
 
-		releaseVelocity: true,
+		releaseVelocity: false,
 		invertedX: false,
 		invertedY: false,
 		invertedWheel: true,

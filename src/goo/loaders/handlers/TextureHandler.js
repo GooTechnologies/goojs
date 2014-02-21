@@ -162,6 +162,9 @@ function(
 					});
 				} else if (type === 'mp4') {
 					// Video
+					var video = document.createElement('video');
+					video.loop = (config.loop !== undefined) ? config.loop : true;
+
 					ret = that.getConfig(imageRef, options).then(function(video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
@@ -175,8 +178,6 @@ function(
 						}
 						return texture;
 					});
-					var video = document.createElement('video');
-					video.loop = (config.loop !== undefined) ? config.loop : true;
 				} else {
 					throw new Error('Unknown texture type');
 				}
