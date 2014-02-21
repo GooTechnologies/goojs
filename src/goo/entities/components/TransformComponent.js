@@ -45,6 +45,9 @@ function (
 		this._updated = false;
 
 		this.api = {
+			translation: this._getWrappedObject('translation'),
+			scale: this._getWrappedObject('scale'),
+			rotation: this._getWrappedObject('rotation'),
 			setTranslation: function () {
 				TransformComponent.prototype.setTranslation.apply(this, arguments);
 				return this.entity;
@@ -331,6 +334,65 @@ function (
 			entity.setComponent(transformComponent);
 			return true;
 		}
+	};
+
+
+	TransformComponent.prototype._getWrappedObject = function(propName) {
+		var transformComponent = this;
+		/**/
+		function WrappedObject() {
+		}
+		WrappedObject.prototype = transformComponent.transform[propName];
+		var obj = new WrappedObject();
+
+		function wrapFunc(obj, key) {
+				obj[key] = function() {
+					var retval = WrappedObject.prototype[key].apply(obj, arguments);
+					transformComponent.setUpdated();
+					return retval;
+				};
+		}
+
+		var aliases, wrapFuncs;
+		if (propName === 'rotation') {
+			aliases = [['e00'], ['e10'], ['e20'], ['e01'], ['e11'], ['e21'], ['e02'], ['e12'], ['e22']];
+			wrapFuncs = ["add", "sub", "mul", "div", "combine", "transpose", "invert", "setIdentity", "multiplyDiagonalPost", "fromAngles", "rotateX", "rotateY", "rotateZ", "fromAngleNormalAxis", "lookAt", "copyQuaternion", "copy", "set"];
+		} else {
+			aliases = [['x', 'u', 'r'], ['y', 'v', 'g'], ['z', 'w', 'b']];
+			wrapFuncs = ["add", "sub", "mul", "div", "cross", "lerp", "setd", "seta", "setv", "add_d", "addv", "mulv", "muld", "subv", "sub_d", "copy", "apply", "scale", "invert", "normalize", "set"];
+		}
+
+		for (var i = 0; i < wrapFuncs.length; i++) {
+				wrapFunc(obj, wrapFuncs[i]);
+		}
+
+		for (var i = 0; i < aliases.length; i++) {
+			/*jshint loopfunc: true */
+			(function (index) {
+				for (var j = 0; j < aliases[index].length; j++) {
+					Object.defineProperty(obj, aliases[index][j], {
+						get: function () {
+							return this.data[index];
+						},
+						set: function (value) {
+							transformComponent.setUpdated();
+							this.data[index] = value;
+						}
+					});
+				}
+
+				Object.defineProperty(obj, i, {
+					get: function () {
+						return this.data[index];
+					},
+					set: function (value) {
+						transformComponent.setUpdated();
+						this.data[index] = value;
+					}
+				});
+			})(i);
+		}
+		return obj;
 	};
 
 	return TransformComponent;
