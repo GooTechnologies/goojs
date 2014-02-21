@@ -241,10 +241,12 @@ function (
 		this.start = time;
 
 		// execute callbacks
-		for (var i = 0; i < this.callbacksNextFrame.length; i++) {
-			this.callbacksNextFrame[i](this.world.tpf);
-		}
+		//! AT: doing this to be able to schedule new callbacks from the existing callbacks
+		var callbacksNextFrame = this.callbacksNextFrame;
 		this.callbacksNextFrame = [];
+		for (var i = 0; i < callbacksNextFrame.length; i++) {
+			callbacksNextFrame[i](this.world.tpf);
+		}
 
 		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
 			this.callbacksPreProcess[i](this.world.tpf);
