@@ -1,6 +1,6 @@
 define([
-	'goo/math/Vector2', 
-	'goo/math/Vector3', 
+	'goo/math/Vector2',
+	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus'
 	],
@@ -43,7 +43,7 @@ function (
 
 		lookAtPoint: new Vector3(0,0,0),
 		spherical: new Vector3(15,0,0),
-		interpolationSpeed: 7,
+		interpolationSpeed: 1000,
 		onRun: null
 	};
 
