@@ -28,7 +28,8 @@ function(
 	SmokeAction.prototype.constructor = SmokeAction;
 
 	SmokeAction.external = {
-		name: 'Smoke',
+		key: 'Smoke',
+		name: 'Smoke FX',
 		description: 'Makes the entity emit smoke. To cancel the smoke emitter use the "Remove Particles" action',
 		parameters: [{
 			name: 'Color',
