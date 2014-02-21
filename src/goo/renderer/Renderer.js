@@ -59,8 +59,6 @@ function (
 			_canvas = document.createElement('canvas');
 			_canvas.width = 500;
 			_canvas.height = 500;
-			_canvas.style.width = '100%';
-			_canvas.style.height = '100%';
 		}
 		_canvas.screencanvas = true; // CocoonJS support
 		this.domElement = _canvas;
@@ -376,6 +374,16 @@ function (
 		Renderer.mainCamera = newCam.camera;
 	});
 
+	var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+	svg.setAttribute('version', '1.1');
+	document.body.appendChild(svg);
+	svg.style.visibility = 'hidden';
+	svg.style.position = 'absolute';
+	console.log(svg);
+	//document.body.removeChild(svg);
+	//var z = svg.currentScale;
+
 	/**
 	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height
 	 * if that is the case it will call this.setSize
@@ -384,9 +392,10 @@ function (
 	 */
 	Renderer.prototype.checkResize = function (camera) {
 		var devicePixelRatio = window.devicePixelRatio || 1;
+		devicePixelRatio /= svg.currentScale;
 
 		var adjustWidth, adjustHeight;
-		if (document.querySelector && this.domElement.style.width !== "" && this.domElement.style.height !== "") {
+		if (document.querySelector) {
 			adjustWidth = this.domElement.offsetWidth;
 			adjustHeight = this.domElement.offsetHeight;
 		} else {

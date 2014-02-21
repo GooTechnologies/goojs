@@ -42,6 +42,8 @@ function (
 	};
 
 	CameraSystem.prototype.deleted = function () {
+		//! AT: leaving it like this until a better solution is found
+		// apparently it might conflict with the new loader scheme
 		//this.findMainCamera();
 	};
 
