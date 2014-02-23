@@ -3,12 +3,19 @@ define([
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/math/MathUtils',
+	'goo/math/Transform',
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderBuilder',
+	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/TextureCreator',
+	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/Texture',
+	'goo/renderer/pass/FullscreenPass',
+	'goo/renderer/pass/FullscreenUtil',
+	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/renderer/Util'
 ],
 /** @lends */
@@ -17,109 +24,216 @@ function(
 	MeshDataComponent,
 	MeshRendererComponent,
 	MathUtils,
+	Transform,
 	MeshData,
 	Material,
 	Shader,
 	ShaderBuilder,
+	ShaderLib,
 	TextureCreator,
+	RenderTarget,
 	Texture,
+	FullscreenPass,
+	FullscreenUtil,
+	ShapeCreator,
+	Box,
 	Util
 ) {
 	"use strict";
 
-	Terrain.create = function(world, parentMipmap, topSize, count, normalMap) {
-		var size = topSize;
-		var mipmaps = [];
-		mipmaps[0] = parentMipmap;
-		for (var i = 1; i < count; i++) {
-			size *= 0.5;
+	// var mat = Material.createMaterial(ShaderLib.textured);
+	// mat.setTexture(Shader.DIFFUSE_MAP, floatTexture);
+	// goo.world.createEntity(new Box(), mat).addToWorld();
 
-			var mipmap = new Uint16Array(size * size);
-			mipmaps[i] = mipmap;
+	// CREATE
+	// heightMap is 16-bit
+	// convert to float32 and use as texture
+	// render texture into top rendertarget (which is in float format)
 
-			var doubleSize = size * 2;
-			for (var y = 0; y < size; y++) {
-				for (var x = 0; x < size; x++) {
-					var index = y * size + x;
-					var indexParent = y * doubleSize * 2 + x * 2;
+	// EDIT
+	// render into top rendertarget with brush textures and modifier shaders
 
-					// if (x < size - 1 && y < size - 1) {
-						mipmap[index] = (parentMipmap[indexParent] +
-							parentMipmap[indexParent + 1] +
-							parentMipmap[indexParent + doubleSize] +
-							parentMipmap[indexParent + doubleSize + 1]) / 4;
-					// } else {
-						// mipmap[index] = parentMipmap[indexParent];
-					// }
-				}
-			}
+	// UPDATE
+	// downsample
+	// upsample
 
-			parentMipmap = mipmap;
+	var upsampleShader = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			diffuseMap: 'MAIN_MAP',
+			childMap: Shader.DIFFUSE_MAP,
+			res: [1, 1, 1, 1]
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'varying vec2 texCoord0;',
+
+			'void main(void) {',
+			'	texCoord0 = vertexUV0;',
+			'	gl_Position = vec4(vertexPosition, 1.0);',
+			'}'
+		].join('\n'),
+		fshader: [
+			'uniform sampler2D diffuseMap;',
+			'uniform sampler2D childMap;',
+
+			'uniform vec4 res;',
+
+			'varying vec2 texCoord0;',
+
+			'void main(void)',
+			'{',
+			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+
+			'	vec2 coordMod = mod(floor(texCoord0 * res.xy), 2.0);',
+			'	bvec2 test = equal(coordMod, vec2(0.0));',
+
+			'	if (all(test)) {',
+			'		gl_FragColor.g = texture2D(childMap, texCoord0).r;',
+			'	} else if (test.x) {',
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(0.0, res.w)).r) * 0.5;',
+			'	} else if (test.y) {',
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, 0.0)).r) * 0.5;',
+			'	} else {',				
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, res.w)).r) * 0.5;',
+			'	}',
+			'	gl_FragColor.ba = vec2(0.0);',
+			'}'
+		].join('\n')
+	};
+
+	Terrain.prototype.draw = function(renderer, s, x, y) {
+		this.renderable.transform.translation.setd(x/this.size, y/this.size, 0);
+		// this.renderable.transform.scale.setd(s, s, 1);
+		this.renderable.transform.scale.setd(s, s, s);
+		this.renderable.transform.update();
+		renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+	};
+
+	Terrain.prototype.updateTextures = function(renderer) {
+		if (this.first) {
+			// this.copyPass.render(renderer, this.textures[0], this.floatTexture);
+			this.first = false;
 		}
 
-		size = topSize;
-		var textures = [];
-		for (var i = 0; i < mipmaps.length; i++) {
-			var mipmap = mipmaps[i];
-			var child = mipmaps[i + 1];
+		for (var i = 0; i < this.count - 1; i++) {
+			var mipmap = this.textures[i];
+			var child = this.textures[i + 1];
 
-			var clipmap = new Uint8Array(size * size * 4);
-			var halfSize = size / 2;
-			for (var y = 0; y < size; y++) {
-				for (var x = 0; x < size; x++) {
-					var index = y * size + x;
+			mipmap.magFilter = 'Bilinear';
+			mipmap.minFilter = 'BilinearNoMipMaps';
 
-					var height = mipmap[index];
-					clipmap[index * 4 + 0] = Math.floor(height / 256.0);
-					clipmap[index * 4 + 1] = height % 256.0;
+			this.copyPass.render(renderer, child, mipmap);
+		}
 
-					// find avg
-					if (child) {
-						var childIndex = Math.floor(y * 0.5) * halfSize + Math.floor(x * 0.5);
-						height = child[childIndex];
-						if (x % 2 === 0 && y % 2 === 0) {
-							height = child[childIndex];
-						} else if (x % 2 === 0) { // y
-							height = (child[childIndex] + child[childIndex + halfSize]) / 2;
-						} else if (y % 2 === 0) { // x
-							height = (child[childIndex] + child[childIndex + 1]) / 2;
-						} else { // x y
-							height = (child[childIndex] + child[childIndex + halfSize + 1]) / 2;
-						}
+		var size = this.size;
+		for (var i = 0; i < this.count; i++) {
+			var mipmapTarget = this.texturesBounce[i];
+			var mipmap = this.textures[i];
+			var child = this.textures[i + 1];
 
-						clipmap[index * 4 + 2] = Math.floor(height / 256.0);
-						clipmap[index * 4 + 3] = height % 256.0;
-					} else {
-						clipmap[index * 4 + 2] = clipmap[index * 4 + 0];
-						clipmap[index * 4 + 3] = clipmap[index * 4 + 1];
-					}
-				}
+			mipmap.magFilter = 'NearestNeighbor';
+			mipmap.minFilter = 'NearestNeighborNoMipMaps';
+
+			this.upsamplePass.material.setTexture('MAIN_MAP', mipmap);
+			this.upsamplePass.material.uniforms.res =  [size, size, 2/size, 2/size];
+
+			if (child) {
+				child.magFilter = 'NearestNeighbor';
+				child.minFilter = 'NearestNeighborNoMipMaps';
+				
+				this.upsamplePass.render(renderer, mipmapTarget, child);
+			} else {
+				this.upsamplePass.render(renderer, mipmapTarget, mipmap);
 			}
-
-			var texture = new Texture(clipmap, {
-				magFilter: 'NearestNeighbor',
-				minFilter: 'NearestNeighborNoMipMaps',
-				// wrapS: 'EdgeClamp',
-				// wrapT: 'EdgeClamp',
-				generateMipmaps: false
-			}, size, size);
-			textures[i] = texture;
 
 			size *= 0.5;
 		}
 
-		return new Terrain(world, textures, normalMap);
-	}
+		for (var i = 0; i < this.count; i++) {
+			this.copyPass.render(renderer, this.textures[i], this.texturesBounce[i]);
+		}
+
+		this.normalmapPass.render(renderer, this.normalMap, this.textures[0]);
+	};
 
 	/**
 	 * @class A terrain
 	 */
-	function Terrain(world, textures, normalMap) {
+	function Terrain(goo, heightMap, size, count) {
+		var brush = ShapeCreator.createQuad(2/size,2/size);
+		var mat = Material.createMaterial(ShaderLib.textured);
+		mat.blendState.blending = 'AdditiveBlending';
+		// mat.blendState.blending = 'CustomBlending';
+		var brushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
+		mat.setTexture(Shader.DIFFUSE_MAP, brushTexture);
+		this.renderable = {
+			meshData: brush,
+			materials: [mat],
+			transform: new Transform()
+		};
+
+
+		var world = goo.world
+		var renderer = goo.renderer;
+		this.size = size;
+		this.count = count;
+		this.first = true;
+
+		this.copyPass = new FullscreenPass(ShaderLib.screenCopy);
+		this.upsamplePass = new FullscreenPass(upsampleShader);
+		this.normalmapPass = new FullscreenPass(ShaderLib.normalmap);
+		this.normalmapPass.material.uniforms.resolution = [size, size];
+		this.normalmapPass.material.uniforms.height = 10;
+
+		var floatHeightMap = new Float32Array(size * size);
+		for (var y = 0; y < size; y++) {
+			for (var x = 0; x < size; x++) {
+				var index = y * size + x;
+
+				floatHeightMap[index] = heightMap[index] / 256.0;
+			}
+		}
+		this.floatTexture = new Texture(floatHeightMap, {
+			magFilter: 'NearestNeighbor',
+			minFilter: 'NearestNeighborNoMipMaps',
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+			generateMipmaps: false,
+			format: 'Luminance'
+		}, size, size);
+
+		this.normalMap = new RenderTarget(size, size);
+
+		this.textures = [];
+		this.texturesBounce = [];
+		for (var i = 0; i < count; i++) {
+			this.textures[i] = new RenderTarget(size, size, {
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps',
+				type: 'Float'
+			});
+			this.texturesBounce[i] = new RenderTarget(size, size, {
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps',
+				type: 'Float'
+			});
+
+			size *= 0.5;
+		}
+
+
+
 		this.n = 31;
 		// this.n = 8;
 		this.gridSize = (this.n + 1) * 4 - 1;
 		console.log('grid size: ', this.gridSize);
-		
+
 		this.height = 1;
 
 		var anisotropy = 4;
@@ -143,24 +257,25 @@ function(
 			anisotropy: anisotropy
 		});
 
-		var tw = textures[0].image.width;
-		var th = textures[0].image.height;
+		// var tw = textures[0].image.width;
+		// var th = textures[0].image.height;
 
 		var entity = world.createEntity('TerrainRoot');
 		entity.addToWorld();
 		this.clipmaps = [];
-		for (var i = 0; i < textures.length; i++) {
+		for (var i = 0; i < this.textures.length; i++) {
 			var size = Math.pow(2, i);
 
-			var texture = textures[i];
-			// var material = Material.createMaterial(terrainShaderDef, 'clipmap'+i);
-			var material = Material.createMaterial(Util.clone(terrainShaderDef), 'clipmap'+i);
+			var texture = this.textures[i];
+			var material = Material.createMaterial(Util.clone(terrainShaderDefFloat), 'clipmap' + i);
+			// var material = Material.createMaterial(Util.clone(terrainShaderDef), 'clipmap' + i);
+
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
 			// material.uniforms.materialDiffuse = [1.2, 1.2, 1.2, 1.0];
 
 			material.setTexture('HEIGHT_MAP', texture);
-			material.setTexture('NORMAL_MAP', normalMap);
+			material.setTexture('NORMAL_MAP', this.normalMap);
 
 			material.setTexture('GROUND_MAP1', grass1);
 			material.setTexture('GROUND_MAP2', grass2);
@@ -171,8 +286,8 @@ function(
 
 			material.cullState.frontFace = 'CW';
 			// material.wireframe = true;
-			material.uniforms.resolution = [this.height, 1 / size, texture.image.width * size, texture.image.height * size];
-			material.uniforms.resolutionNorm = [tw, th];
+			material.uniforms.resolution = [this.height, 1 / size, this.size, this.size];
+			material.uniforms.resolutionNorm = [this.size, this.size];
 
 			var clipmapEntity = this.createClipmapLevel(world, material, i);
 			clipmapEntity.setScale(size, 1, size);
@@ -189,8 +304,8 @@ function(
 			console.log(clipmapEntity);
 		}
 
-		var parentClipmap =  this.clipmaps[this.clipmaps.length-1];
-		for (var i = this.clipmaps.length-2; i >= 0; i--) {
+		var parentClipmap = this.clipmaps[this.clipmaps.length - 1];
+		for (var i = this.clipmaps.length - 2; i >= 0; i--) {
 			var clipmap = this.clipmaps[i];
 			clipmap.parentClipmap = parentClipmap;
 			parentClipmap = clipmap;
@@ -218,7 +333,7 @@ function(
 					EntityUtils.hide(clipmap.clipmapEntity);
 
 					if (i < this.clipmaps.length - 1) {
-						var childClipmap = this.clipmaps[i+1];
+						var childClipmap = this.clipmaps[i + 1];
 						childClipmap.clipmapEntity.innermost.meshRendererComponent.hidden = false;
 						childClipmap.clipmapEntity.interior1.meshRendererComponent.hidden = true;
 						childClipmap.clipmapEntity.interior2.meshRendererComponent.hidden = true;
@@ -229,7 +344,7 @@ function(
 					EntityUtils.show(clipmap.clipmapEntity);
 
 					if (i < this.clipmaps.length - 1) {
-						var childClipmap = this.clipmaps[i+1];
+						var childClipmap = this.clipmaps[i + 1];
 						childClipmap.clipmapEntity.innermost.meshRendererComponent.hidden = true;
 						childClipmap.clipmapEntity.interior1.meshRendererComponent.hidden = false;
 						childClipmap.clipmapEntity.interior2.meshRendererComponent.hidden = false;
@@ -247,13 +362,13 @@ function(
 				var interior1 = clipmap.parentClipmap.clipmapEntity.interior1;
 				var interior2 = clipmap.parentClipmap.clipmapEntity.interior2;
 
-				var xxx = MathUtils.moduloPositive(xx+1, 2);
-				var zzz = MathUtils.moduloPositive(zz+1, 2);
-				var xmove = xxx % 2 === 0 ? -n : n+1;
-				var zmove = zzz % 2 === 0 ? -n : n+1;
+				var xxx = MathUtils.moduloPositive(xx + 1, 2);
+				var zzz = MathUtils.moduloPositive(zz + 1, 2);
+				var xmove = xxx % 2 === 0 ? -n : n + 1;
+				var zmove = zzz % 2 === 0 ? -n : n + 1;
 				interior1.setTranslation(-n, 0, zmove);
 				zzz = MathUtils.moduloPositive(zz, 2);
-				zmove = zzz % 2 === 0 ? -n : -n+1;
+				zmove = zzz % 2 === 0 ? -n : -n + 1;
 				interior2.setTranslation(xmove, 0, zmove);
 			}
 
@@ -265,45 +380,45 @@ function(
 	};
 
 	Terrain.prototype.createClipmapLevel = function(world, material, level) {
-		var entity = world.createEntity('clipmap'+level);
+		var entity = world.createEntity('clipmap' + level);
 		entity.addToWorld();
 
 		var n = this.n;
 
 		// 0
-		this.createQuadEntity(world, material, level, entity, -2*n, -2*n, n, n);
-		this.createQuadEntity(world, material, level, entity, -1*n, -2*n, n, n);
-		this.createQuadEntity(world, material, level, entity, 0*n, -2*n, 2, n);
-		this.createQuadEntity(world, material, level, entity, 2, -2*n, n, n);
-		this.createQuadEntity(world, material, level, entity, 2+1*n, -2*n, n, n);
+		this.createQuadEntity(world, material, level, entity, -2 * n, -2 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, -1 * n, -2 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 0 * n, -2 * n, 2, n);
+		this.createQuadEntity(world, material, level, entity, 2, -2 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, -2 * n, n, n);
 
 		// 1
-		this.createQuadEntity(world, material, level, entity, -2*n, -1*n, n, n);
-		this.createQuadEntity(world, material, level, entity, 2+1*n, -1*n, n, n);
+		this.createQuadEntity(world, material, level, entity, -2 * n, -1 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, -1 * n, n, n);
 
 		// 2
-		this.createQuadEntity(world, material, level, entity, -2*n, 0, n, 2);
-		this.createQuadEntity(world, material, level, entity, 2+1*n, 0, n, 2);
+		this.createQuadEntity(world, material, level, entity, -2 * n, 0, n, 2);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 0, n, 2);
 
 		// 3
-		this.createQuadEntity(world, material, level, entity, -2*n, 2, n, n);
-		this.createQuadEntity(world, material, level, entity, 2+1*n, 2, n, n);
+		this.createQuadEntity(world, material, level, entity, -2 * n, 2, n, n);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 2, n, n);
 
 		// 4
-		this.createQuadEntity(world, material, level, entity, -2*n, 2+1*n, n, n);
-		this.createQuadEntity(world, material, level, entity, -1*n, 2+1*n, n, n);
-		this.createQuadEntity(world, material, level, entity, 0, 2+1*n, 2, n);
-		this.createQuadEntity(world, material, level, entity, 2, 2+1*n, n, n);
-		this.createQuadEntity(world, material, level, entity, 2+1*n, 2+1*n, n, n);
+		this.createQuadEntity(world, material, level, entity, -2 * n, 2 + 1 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, -1 * n, 2 + 1 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 0, 2 + 1 * n, 2, n);
+		this.createQuadEntity(world, material, level, entity, 2, 2 + 1 * n, n, n);
+		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 2 + 1 * n, n, n);
 
-		entity.innermost = this.createQuadEntity(world, material, level, entity, -n, -n, n*2+2, n*2+2);
+		entity.innermost = this.createQuadEntity(world, material, level, entity, -n, -n, n * 2 + 2, n * 2 + 2);
 
 		if (level !== 0) {
 			entity.innermost.meshRendererComponent.hidden = true;
 
 			// interior
-			entity.interior1 = this.createQuadEntity(world, material, level, entity, -n, -n, n*2+2, 1);
-			entity.interior2 = this.createQuadEntity(world, material, level, entity, -n, -n, 1, n*2+1);
+			entity.interior1 = this.createQuadEntity(world, material, level, entity, -n, -n, n * 2 + 2, 1);
+			entity.interior2 = this.createQuadEntity(world, material, level, entity, -n, -n, 1, n * 2 + 1);
 		}
 
 		return entity;
@@ -311,12 +426,12 @@ function(
 
 	Terrain.prototype.createQuadEntity = function(world, material, level, parentEntity, x, y, w, h) {
 		var meshData = this.createGrid(w, h);
-		var entity = world.createEntity('mesh_'+w+'_'+h, meshData, material);
+		var entity = world.createEntity('mesh_' + w + '_' + h, meshData, material);
 
-		entity.meshDataComponent.modelBound.xExtent = w*0.5;
-		entity.meshDataComponent.modelBound.yExtent = 255*this.height;
-		entity.meshDataComponent.modelBound.zExtent = h*0.5;
-		entity.meshDataComponent.modelBound.center.setd(w*0.5, 128*this.height, h*0.5);
+		entity.meshDataComponent.modelBound.xExtent = w * 0.5;
+		entity.meshDataComponent.modelBound.yExtent = 255 * this.height;
+		entity.meshDataComponent.modelBound.zExtent = h * 0.5;
+		entity.meshDataComponent.modelBound.center.setd(w * 0.5, 128 * this.height, h * 0.5);
 		entity.meshDataComponent.autoCompute = false;
 
 		entity.setTranslation(x, 0, y);
@@ -375,7 +490,7 @@ function(
 		return meshData;
 	};
 
-	var terrainShaderDef = {
+	var terrainShaderDefFloat = {
 		defines: {
 			SKIP_SPECULAR: true
 		},
@@ -412,33 +527,35 @@ function(
 		},
 		vshader: function() {
 			return [
-			'attribute vec3 vertexPosition;',
+				'attribute vec3 vertexPosition;',
 
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',
-			'uniform vec3 cameraPosition;',
-			'uniform sampler2D heightMap;',
-			'uniform vec4 resolution;',
+				'uniform mat4 viewProjectionMatrix;',
+				'uniform mat4 worldMatrix;',
+				'uniform vec3 cameraPosition;',
+				'uniform sampler2D heightMap;',
+				'uniform vec4 resolution;',
 
-			'varying vec3 vWorldPos;',
-			'varying vec3 viewPosition;',
-			'varying vec4 alphaval;',
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
+				'varying vec4 alphaval;',
 
-			ShaderBuilder.light.prevertex,
+				ShaderBuilder.light.prevertex,
 
-			'const vec2 alphaOffset = vec2(45.0);',
-			'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
-			// 'const vec2 alphaOffset = vec2(10.0);',
-			// 'const vec2 oneOverWidth = vec2(1.0 / 5.0);',
+				'const vec2 alphaOffset = vec2(45.0);',
+				'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
+				// 'const vec2 alphaOffset = vec2(10.0);',
+				// 'const vec2 oneOverWidth = vec2(1.0 / 5.0);',
 
-			'void main(void) {',
+				'void main(void) {',
 				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-				'vec2 coord = (worldPos.xz - vec2(0.0, 0.5)) / resolution.zw;',
+				'vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw;',
 
 				// 'vec4 heightCol = texture2DLod(heightMap, worldPos.xz * 1.0 / resolution, 0.0);',
 				'vec4 heightCol = texture2D(heightMap, coord);',
-				'float zf = (heightCol.r * 256.0 + heightCol.g);',
-				'float zd = (heightCol.b * 256.0 + heightCol.a);',
+				// 'float zf = (heightCol.r * 256.0 + heightCol.g);',
+				'float zf = heightCol.r;',
+				// 'float zd = (heightCol.b * 256.0 + heightCol.a);',
+				'float zd = heightCol.g;',
 
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
@@ -452,40 +569,41 @@ function(
 				'viewPosition = cameraPosition - vWorldPos;',
 
 				ShaderBuilder.light.vertex,
-			'}'
-		].join('\n');
+				'}'
+			].join('\n');
 		},
 		fshader: function() {
 			return [
-			'uniform vec3 col;',
-			'uniform sampler2D normalMap;',
-			'uniform sampler2D groundMap1;',
-			'uniform sampler2D groundMap2;',
-			'uniform sampler2D groundMap4;',
-			'uniform sampler2D groundMapN1;',
-			'uniform sampler2D groundMapN2;',
-			'uniform sampler2D groundMapN4;',
+				'uniform vec3 col;',
+				'uniform sampler2D normalMap;',
+				'uniform sampler2D groundMap1;',
+				'uniform sampler2D groundMap2;',
+				'uniform sampler2D groundMap4;',
+				'uniform sampler2D groundMapN1;',
+				'uniform sampler2D groundMapN2;',
+				'uniform sampler2D groundMapN4;',
 
-			'uniform vec2 fogSettings;',
-			'uniform vec3 fogColor;',
+				'uniform vec2 fogSettings;',
+				'uniform vec3 fogColor;',
 
-			'uniform vec2 resolutionNorm;',
+				'uniform vec2 resolutionNorm;',
 
-			// 'uniform vec2 resolution;',
-			// 'uniform sampler2D heightMap;',
+				// 'uniform vec2 resolution;',
+				// 'uniform sampler2D heightMap;',
 
-			'varying vec3 vWorldPos;',
-			'varying vec3 viewPosition;',
-			'varying vec4 alphaval;',
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
+				'varying vec4 alphaval;',
 
-			ShaderBuilder.light.prefragment,
+				ShaderBuilder.light.prefragment,
 
-			'void main(void)',
-			'{',
+				'void main(void)',
+				'{',
 				'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 				'vec2 coord = mapcoord * 256.0;',
 				'vec4 final_color = vec4(1.0);',
-	
+
+				// 'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0));',
 				'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
 				'N.y = 0.25;',
 				'N.z = -N.z;',
@@ -503,7 +621,7 @@ function(
 				'vec3 tangentNormal = mix(n1, n2, smoothstep(0.0, 1.0, 1.0));',
 				'tangentNormal = mix(tangentNormal, mountainN, slope);',
 
-				'N = normalize(vec3(N.x + tangentNormal.x, N.y, N.z + tangentNormal.y));',
+				// 'N = normalize(vec3(N.x + tangentNormal.x, N.y, N.z + tangentNormal.y));',
 
 				'vec4 g1 = texture2D(groundMap1, coord);',
 				'vec4 g2 = texture2D(groundMap2, coord);',
@@ -522,11 +640,15 @@ function(
 
 				'gl_FragColor = final_color;',
 
-				// 'gl_FragColor.r += alphaval.z >= 1.0 ? 0.5 : 0.0;',
+				// 'gl_FragColor.rgb = texture2D(heightMap, mapcoord).gba;',
+
+				// 'gl_FragColor.rgb = N;',
+
+				'gl_FragColor.r += alphaval.z >= 1.0 ? 0.5 : 0.0;',
 				// 'gl_FragColor.g += alphaval.z * 0.25;',
 				// 'gl_FragColor.b += alphaval.z <= 0.0 ? 0.5 : 0.0;',
-			'}'
-		].join('\n');
+				'}'
+			].join('\n');
 		}
 	};
 

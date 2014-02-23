@@ -57,84 +57,84 @@ function(
 
 	function Forrest() {
 		this.calcVec = new Vector3();
-		this.startX = 20;
-		this.startZ = 20;
+		this.startX = 22;
+		this.startZ = 22;
 	}
 
 	Forrest.prototype.init = function(world, terrainQuery) {
 		var promise = new RSVP.Promise();
 
-		// var loader = new DynamicLoader({
-		// 	world: world,
-		// 	rootPath: window.hunterResources + '/tree1',
-		// });
+		var loader = new DynamicLoader({
+			world: world,
+			rootPath: window.hunterResources + '/tree1',
+		});
 
-		// loader.loadFromBundle('project.project', 'root.bundle', {
-		// 	recursive: false,
-		// 	preloadBinaries: true,
-		// 	noEnvironment: true
-		// }).then(function(configs) {
-		// 	world.process();
+		loader.loadFromBundle('project.project', 'root.bundle', {
+			recursive: false,
+			preloadBinaries: true,
+			noEnvironment: true
+		}).then(function(configs) {
+			world.process();
 
-		// 	var root = loader.getCachedObjectForRef('entities/Veg_T01_aspenM_LOD2-Whole_root.entity');
+			var root = loader.getCachedObjectForRef('entities/Veg_T01_aspenM_LOD2-Whole_root.entity');
 
-			// var newRoot = goo.world.createEntity('newroot');
-			// var vec = new Vector3();
-			// var transform = new Transform();
-			// var count = 15;
-			// while (count > 0) {
-			// 	var xx = (Math.random() * 2.0 - 1.0);
-			// 	var zz = (Math.random() * 2.0 - 1.0);
-			// 	vec.setd(xx, 0, zz);
-			// 	vec.normalize();
-			// 	var dist = Math.random() * 15 + 10;
-			// 	vec.muld(dist, dist, dist);
-			// 	vec.x += this.startX;
-			// 	vec.z += this.startZ;
-			// 	xx = vec.x;
-			// 	zz = vec.z;
-			// 	vec.y = 10;
-			// 	var yy = terrainQuery.getHeightAt(vec.data);
-			// 	var norm = terrainQuery.getNormalAt(vec.data);
-			// 	var slope = norm.dot(Vector3.UNIT_Y);
-			// 	if (slope < 0.9) {
-			// 		continue;
-			// 	}
+			var newRoot = world.createEntity('newroot');
+			var vec = new Vector3();
+			var transform = new Transform();
+			var count = 15;
+			while (count > 0) {
+				var xx = (Math.random() * 2.0 - 1.0);
+				var zz = (Math.random() * 2.0 - 1.0);
+				vec.setd(xx, 0, zz);
+				vec.normalize();
+				var dist = Math.random() * 10 + 10;
+				vec.muld(dist, dist, dist);
+				vec.x += this.startX + 2;
+				vec.z += this.startZ + 2;
+				xx = vec.x;
+				zz = vec.z;
+				vec.y = 10;
+				var yy = terrainQuery.getHeightAt(vec.data);
+				var norm = terrainQuery.getNormalAt(vec.data);
+				var slope = norm.dot(Vector3.UNIT_Y);
+				if (slope < 0.9) {
+					continue;
+				}
 
-			// 	var size = (Math.random() * 0.6 + 0.7) * 0.03;
-			// 	transform.scale.setd(size, size, size);
-			// 	transform.translation.setd(0, 0, 0);
-			// 	var angle = Math.random() * Math.PI * 0.5;
-			// 	var anglex = Math.sin(angle);
-			// 	var anglez = Math.cos(angle);
-			// 	// transform.lookAt(new Vector3(anglex, 0.0, anglez), norm);
-			// 	transform.lookAt(new Vector3(anglex, 0.0, anglez), Vector3.UNIT_Y);
+				var size = (Math.random() * 0.6 + 0.7) * 0.03;
+				transform.scale.setd(size, size, size);
+				transform.translation.setd(0, 0, 0);
+				var angle = Math.random() * Math.PI * 0.5;
+				var anglex = Math.sin(angle);
+				var anglez = Math.cos(angle);
+				// transform.lookAt(new Vector3(anglex, 0.0, anglez), norm);
+				transform.lookAt(new Vector3(anglex, 0.0, anglez), Vector3.UNIT_Y);
 
-			// 	transform.translation.setd(xx, yy, zz);
-			// 	transform.update();
+				transform.translation.setd(xx, yy, zz);
+				transform.update();
 
-			// 	var clone = EntityUtils.clone(goo.world, root);
-			// 	clone.transformComponent.transform.copy(transform);
-			// 	newRoot.attachChild(clone);
+				var clone = EntityUtils.clone(world, root);
+				clone.transformComponent.transform.copy(transform);
+				newRoot.attachChild(clone);
 
-			// 	count--;
-			// }
+				count--;
+			}
 
-			// root.removeFromWorld();
-			// newRoot.addToWorld();
+			root.removeFromWorld();
+			newRoot.addToWorld();
 
-			// goo.world.process();
+			world.process();
 
-			// var combiner = new EntityCombiner(goo.world, 1);
-			// console.time('combine');
-			// combiner._combineList(newRoot);
-			// console.timeEnd('combine');
+			var combiner = new EntityCombiner(world, 1);
+			console.time('combine');
+			combiner._combineList(newRoot);
+			console.timeEnd('combine');
 
-			// console.log(newRoot);
+			console.log(newRoot);
 
-		// }.bind(this)).then(null, function(e) {
-		// 	console.error('Failed to load scene: ' + e);
-		// });
+		}.bind(this)).then(null, function(e) {
+			console.error('Failed to load scene: ' + e);
+		});
 
 		this.loadLODTrees(world, terrainQuery).then(function() {
 			promise.resolve();
@@ -170,7 +170,7 @@ function(
 		this.vegType = 0;
 
 		this.patchSize = 60; //25;
-		this.patchDensity = 20; //5;
+		this.patchDensity = 15; //5;
 		this.gridSize = 11;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
@@ -206,7 +206,7 @@ function(
 
 		var diffx = xx - this.startX;
 		var diffz = zz - this.startZ;
-		if (diffx * diffx + diffz * diffz < 25 * 25) {
+		if (diffx * diffx + diffz * diffz < 32 * 32) {
 			return -1;
 		}
 
