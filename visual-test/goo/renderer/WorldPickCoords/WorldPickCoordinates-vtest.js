@@ -50,7 +50,7 @@ require([
 			console.log('Entity is ' + event.entity + ' at ' + event.depth);
 			console.log('Camera distance from center', camera.translation.length());
 
-			var intersection = camera.getWorldCoordinates(event.x, event.y, goo.renderer.viewportWidth, goo.renderer.viewportHeight, event.depth);
+			var intersection = camera.getWorldPosition(event.x, event.y, goo.renderer.viewportWidth, goo.renderer.viewportHeight, event.depth);
 
 			pointer.setTranslation(intersection);
 		}

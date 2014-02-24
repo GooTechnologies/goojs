@@ -2416,7 +2416,7 @@ define([
 			'mat4 wMatrix = worldMatrix;',
 			ShaderBuilder.animation.vertex,
 			'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
-			'depth = length(mvPosition.xyz) / cameraFar;',
+			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'
 		].join("\n"),
