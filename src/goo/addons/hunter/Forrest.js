@@ -170,7 +170,7 @@ function(
 		this.vegType = 0;
 
 		this.patchSize = 50; //25;
-		this.patchDensity = 10; //5;
+		this.patchDensity = 8; //5;
 		this.gridSize = 11;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
@@ -216,8 +216,8 @@ function(
 		}
 
 		if (this.vegType === 0) {
-			var mx = (Math.sin(xx * 0.1) * 0.5 + 0.25);
-			var mz = (Math.sin(zz * 0.15) * 0.5 + 0.25);
+			var mx = (Math.sin(xx * 0.02) * 0.5 + 0.25);
+			var mz = (Math.sin(zz * 0.03) * 0.5 + 0.25);
 			var tt = (mx + mz) / 2.0;
 			var vegetationType = Math.floor(tt * this.vegetationList.length);
 			var rand = ((Math.random()+Math.random()+Math.random()+Math.random()-2)/4.0) + 0.0;
@@ -237,7 +237,7 @@ function(
 			return;
 		}
 
-		console.time('forrest update');
+		// console.time('forrest update');
 
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
@@ -273,7 +273,7 @@ function(
 		this.currentX = newX;
 		this.currentZ = newZ;
 
-		console.timeEnd('forrest update');
+		// console.timeEnd('forrest update');
 	};
 
 	Forrest.prototype.createPatch = function(patchX, patchZ) {

@@ -150,7 +150,7 @@ function(
 			return;
 		}
 
-		console.time('vegetation update');
+		// console.time('vegetation update');
 
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
@@ -186,7 +186,7 @@ function(
 		this.currentX = newX;
 		this.currentZ = newZ;
 
-		console.timeEnd('vegetation update');
+		// console.timeEnd('vegetation update');
 	};
 
 	Vegetation.prototype.createPatch = function(patchX, patchZ) {

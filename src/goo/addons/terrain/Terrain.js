@@ -108,17 +108,6 @@ function(
 			size *= 0.5;
 		}
 
-
-		this.terrainPickingMaterial = Material.createEmptyMaterial(terrainPickingShader, 'terrainPickingMaterial');
-		this.terrainPickingMaterial.blendState = {
-			blending: 'NoBlending',
-			blendEquation: 'AddEquation',
-			blendSrc: 'SrcAlphaFactor',
-			blendDst: 'OneMinusSrcAlphaFactor'
-		};
-
-
-
 		this.n = 31;
 		// this.n = 8;
 		this.gridSize = (this.n + 1) * 4 - 1;
@@ -182,13 +171,28 @@ function(
 			var clipmapEntity = this.createClipmapLevel(world, material, i);
 			clipmapEntity.setScale(size, 1, size);
 			entity.attachChild(clipmapEntity);
+
+			var terrainPickingMaterial = Material.createMaterial(Util.clone(terrainPickingShader), 'terrainPickingMaterial' + i);
+			// var terrainPickingMaterial = Material.createEmptyMaterial(Util.clone(terrainPickingShader), 'terrainPickingMaterial' + i);
+			terrainPickingMaterial.cullState.frontFace = 'CW';
+			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
+			terrainPickingMaterial.uniforms.resolution = [this.height, 1 / size, this.size, this.size];
+			terrainPickingMaterial.blendState = {
+				blending: 'NoBlending',
+				blendEquation: 'AddEquation',
+				blendSrc: 'SrcAlphaFactor',
+				blendDst: 'OneMinusSrcAlphaFactor'
+			};
+
 			this.clipmaps[i] = {
 				clipmapEntity: clipmapEntity,
 				level: i,
 				size: size,
 				currentX: 100000,
 				currentY: 100000,
-				currentZ: 100000
+				currentZ: 100000,
+				origMaterial: material,
+				terrainPickingMaterial: terrainPickingMaterial
 			};
 
 			console.log(clipmapEntity);
@@ -209,9 +213,29 @@ function(
 				entities.push(entity);
 			}
 		});
-		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, true, x, y, this.terrainPickingMaterial);
+
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+
+			EntityUtils.traverse(clipmap.clipmapEntity, function (entity) {
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.materials[0] = clipmap.terrainPickingMaterial;
+				}
+			});
+		}
+
+		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, true, x, y);
 		this.renderer.pick(x, y, pickingStore, Renderer.mainCamera);
-		console.log(pickingStore);
+
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+
+			EntityUtils.traverse(clipmap.clipmapEntity, function (entity) {
+				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.materials[0] = clipmap.origMaterial;
+				}
+			});
+		}
 	};
 
 	Terrain.prototype.draw = function(type, size, x, y, power, brushTexture) {
@@ -800,9 +824,10 @@ function(
 			cameraFar : Shader.FAR_PLANE,
 			cameraPosition: Shader.CAMERA,
 			heightMap: 'HEIGHT_MAP',
-			resolution: function(shaderInfo) {
-				return shaderInfo.renderable.materials[0].uniforms.resolution;
-			}, //[255, 1, 1024, 1024]
+			// resolution: function(shaderInfo) {
+				// return shaderInfo.renderable.materials[0].uniforms.resolution;
+			// },
+			resolution: [255, 1, 512, 512],
 			id : function(shaderInfo) {
 				return shaderInfo.renderable.id + 1;
 			}
@@ -810,11 +835,11 @@ function(
 		vshader : [
 		'attribute vec3 vertexPosition;',
 
+		'uniform sampler2D heightMap;',
 		'uniform mat4 viewMatrix;',
 		'uniform mat4 projectionMatrix;',
 		'uniform mat4 worldMatrix;',
 		'uniform float cameraFar;',
-		'uniform sampler2D heightMap;',
 		'uniform vec4 resolution;',
 		'uniform vec3 cameraPosition;',
 
@@ -837,7 +862,7 @@ function(
 
 			'worldPos.y = z * resolution.x;',
 
-			'vec4 mvPosition = viewMatrix * worldMatrix * worldPos;',
+			'vec4 mvPosition = viewMatrix * worldPos;',
 			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'
