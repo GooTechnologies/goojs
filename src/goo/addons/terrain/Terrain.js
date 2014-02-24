@@ -44,7 +44,7 @@ function(
 	/**
 	 * @class A terrain
 	 */
-	function Terrain(goo, heightMap, size, count) {
+	function Terrain(goo, floatHeightMap, size, count) {
 		var brush = ShapeCreator.createQuad(2/size,2/size);
 		var mat = Material.createMaterial(brushShader);
 		mat.blendState.blending = 'AdditiveBlending';
@@ -74,14 +74,8 @@ function(
 		this.normalmapPass.material.uniforms.resolution = [size, size];
 		this.normalmapPass.material.uniforms.height = 10;
 
-		var floatHeightMap = new Float32Array(size * size);
-		for (var y = 0; y < size; y++) {
-			for (var x = 0; x < size; x++) {
-				var index = y * size + x;
+		this.extractFloatPass = new FullscreenPass(extractShader);
 
-				floatHeightMap[index] = heightMap[index] / 256.0;
-			}
-		}
 		this.floatTexture = new Texture(floatHeightMap, {
 			magFilter: 'NearestNeighbor',
 			minFilter: 'NearestNeighborNoMipMaps',
@@ -109,8 +103,6 @@ function(
 
 			size *= 0.5;
 		}
-
-
 
 		this.n = 31;
 		// this.n = 8;
@@ -199,11 +191,11 @@ function(
 		this.renderable.materials[0].uniforms.opacity = power;
 
 		if (type === 'add') {
-			this.renderable.materials[0].blending = 'AdditiveBlending';
+			this.renderable.materials[0].blendState.blending = 'AdditiveBlending';
 		} else if (type === 'sub') {
-			this.renderable.materials[0].blending = 'SubtractiveBlending';
+			this.renderable.materials[0].blendState.blending = 'SubtractiveBlending';
 		} else if (type === 'mul') {
-			this.renderable.materials[0].blending = 'MultiplyBlending';
+			this.renderable.materials[0].blendState.blending = 'MultiplyBlending';
 		}
 
 		if (brushTexture) {
@@ -216,6 +208,22 @@ function(
 		this.renderable.transform.scale.setd(size, size, size);
 		this.renderable.transform.update();
 		this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+	};
+
+	Terrain.prototype.getTerrainData = function() {
+		var terrainBuffer = new Uint8Array(this.size * this.size * 4);
+		this.extractFloatPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
+		this.renderer.readPixels(0, 0, this.size, this.size, terrainBuffer);
+		var terrainFloats = new Float32Array(terrainBuffer.buffer);
+
+		var normalBuffer = new Uint8Array(this.size * this.size * 4);
+		this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
+		this.renderer.readPixels(0, 0, this.size, this.size, normalBuffer);
+
+		return {
+			heights: terrainFloats,
+			normals: normalBuffer
+		};
 	};
 
 	Terrain.prototype.updateTextures = function() {
@@ -684,6 +692,74 @@ function(
 		'{',
 		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
 		'	gl_FragColor.a *= opacity;',
+		'}'//
+		].join('\n')
+	};
+
+	var extractShader = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			diffuseMap : Shader.DIFFUSE_MAP
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+
+		'void main(void) {',
+		'	texCoord0 = vertexUV0;',
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'uniform sampler2D diffuseMap;',
+
+		'varying vec2 texCoord0;',
+
+		'float shift_right (float v, float amt) {',
+			'v = floor(v) + 0.5;',
+			'return floor(v / exp2(amt));',
+		'}',
+		'float shift_left (float v, float amt) {',
+			'return floor(v * exp2(amt) + 0.5);',
+		'}',
+		'float mask_last (float v, float bits) {',
+			'return mod(v, shift_left(1.0, bits));',
+		'}',
+		'float extract_bits (float num, float from, float to) {',
+			'from = floor(from + 0.5); to = floor(to + 0.5);',
+			'return mask_last(shift_right(num, from), to - from);',
+		'}',
+		'vec4 encode_float (float val) {',
+			'if (val == 0.0) return vec4(0, 0, 0, 0);',
+			'float sign = val > 0.0 ? 0.0 : 1.0;',
+			'val = abs(val);',
+			'float exponent = floor(log2(val));',
+			'float biased_exponent = exponent + 127.0;',
+			'float fraction = ((val / exp2(exponent)) - 1.0) * 8388608.0;',
+			'float t = biased_exponent / 2.0;',
+			'float last_bit_of_biased_exponent = fract(t) * 2.0;',
+			'float remaining_bits_of_biased_exponent = floor(t);',
+			'float byte4 = extract_bits(fraction, 0.0, 8.0) / 255.0;',
+			'float byte3 = extract_bits(fraction, 8.0, 16.0) / 255.0;',
+			'float byte2 = (last_bit_of_biased_exponent * 128.0 + extract_bits(fraction, 16.0, 23.0)) / 255.0;',
+			'float byte1 = (sign * 128.0 + remaining_bits_of_biased_exponent) / 255.0;',
+			'return vec4(byte4, byte3, byte2, byte1);',
+		'}',
+
+		'void main(void)',
+		'{',
+		// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
+		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y) + vec2(0.0/512.0, 1.0/512.0)).r);',
 		'}'//
 		].join('\n')
 	};
