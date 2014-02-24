@@ -25,6 +25,7 @@ function (
 		this._rate = 1.0;
 		this._start = 0;
 		this._duration = null;
+		this._volume = 1.0;
 		// Nodes
 		this._buffer = null;
 		this._currentSource = null;
@@ -106,6 +107,29 @@ function (
 		this._stop();
 	};
 
+	Sound.prototype.fadeIn = function(time) {
+		this.stop();
+		var volume = this._volume;
+		this._outNode.gain.value = 0;
+		var p = this.fade(volume, time);
+		this.play();
+		return p;
+	};
+
+	Sound.prototype.fadeOut = function(time) {
+		return this.fade(0, time);
+	};
+
+	Sound.prototype.fade = function(volume, time) {
+		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.currentTime);
+		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.currentTime + time);
+		var p = new RSVP.Promise();
+		setTimeout(function() {
+			p.resolve();
+		}, time * 1000);
+		return p;
+	};
+
 	/**
 	 * Does the actual stopping of the sound
 	 * @private
@@ -143,7 +167,8 @@ function (
 			}
 		}
 		if (config.volume !== undefined) {
-			this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
+			this._volume = MathUtils.clamp(config.volume, 0, 1);
+			this._outNode.gain.value = this._volume;
 		}
 		if (config.start !== undefined) {
 			this._start = config.start;

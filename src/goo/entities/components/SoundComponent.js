@@ -66,6 +66,19 @@ function(
 	};
 
 	/**
+	 * Get a component's sound by id
+	 * @param {string} id
+	 * @returns {Sound}
+	 */
+	SoundComponent.prototype.getSoundById = function(id) {
+		for (var i = 0; i < this.sounds.length; i++) {
+			if (this.sounds[i].id === id) {
+				return this.sounds[i];
+			}
+		}
+	};
+
+	/**
 	 * Connect output of component to audionodes
 	 * @param {object} [nodes]
 	 * @param {AudioNode} [nodes.dry]
