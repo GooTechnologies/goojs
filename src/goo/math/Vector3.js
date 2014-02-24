@@ -567,6 +567,31 @@ function (
 	};
 
 	/**
+	 * Calculates length squared of vector
+	 * @returns {number} length squared
+	 */
+	Vector3.prototype.length = function () {
+		return Math.sqrt(this.lengthSquared());
+	};
+
+	Vector3.prototype.normalize = function () {
+		var l = this.length();
+
+		if (l < 0.0000001) {
+			this.data[0] = 0;
+			this.data[1] = 0;
+			this.data[2] = 0;
+		} else {
+			l = 1.0 / l;
+			this.data[0] *= l;
+			this.data[1] *= l;
+			this.data[2] *= l;
+		}
+
+		return this;
+	};
+
+	/**
 	 * @static
 	 * @description Computes the squared distance between two vectors.
 	 * @param {Vector3} lhs Vector3.
