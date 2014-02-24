@@ -114,7 +114,7 @@ function(
 		// Temp decl
 		this.vNearPlaneCenter = new Vector3();
 		this.vFarPlaneCenter = new Vector3();
-		this.direction = new Vector3();
+		this.direction = new Vector3(); //! AT: unused
 		this.left = new Vector3();
 		this.up = new Vector3();
 		this.planeNormal = new Vector3();
