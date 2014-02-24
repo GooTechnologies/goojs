@@ -2,6 +2,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/sound/AudioContext',
 	'goo/math/Vector3',
+	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil'
 ],
@@ -10,20 +11,26 @@ function(
 	System,
 	AudioContext,
 	Vector3,
+	MathUtils,
 	SystemBus,
 	_
 ) {
 	'use strict';
-	function SoundSystem(settings) {
+	/**
+	 * @class System responsible for sound
+	 */
+	function SoundSystem() {
+		if (!AudioContext) {
+			console.warn('Cannot create soundsystem, webaudio not supported');
+			return;
+		}
 		System.call(this, 'SoundSystem', ['SoundComponent', 'TransformComponent']);
 
-		this.settings = settings || {};
 		this.entities = [];
 		this._outNode = AudioContext.createGain();
 		this._outNode.connect(AudioContext.destination);
 		this._wetNode = AudioContext.createGain();
 		this._wetNode.connect(this._outNode);
-		this._wetNode.gain.value = 0.2;
 		this._convolver = AudioContext.createConvolver();
 		this._convolver.connect(this._wetNode);
 
@@ -42,6 +49,7 @@ function(
 			rolloffFactor: 0.4,
 			maxDistance: 100
 		};
+		this._wetNode.gain.value = 0.2;
 
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
@@ -52,6 +60,11 @@ function(
 	SoundSystem.prototype = Object.create(System.prototype);
 	SoundSystem.prototype.constructor = SoundSystem;
 
+	/**
+	 * Connect sound components output nodes to sound system buses. Called by world.process()
+	 * @param {Entity} entity
+	 * @private
+	 */
 	SoundSystem.prototype.inserted = function(entity) {
 		entity.soundComponent.connectTo({
 			dry: this._outNode,
@@ -59,6 +72,12 @@ function(
 		});
 	};
 
+	/**
+	 * Be sure to stop all playing sounds when a component is removed. Called by world.process()
+	 * Sometimes this has already been done by the loader
+	 * @param {Entity} entity
+	 * @private
+	 */
 	SoundSystem.prototype.deleted = function(entity) {
 		if (entity.soundComponent) {
 			var sounds = entity.soundComponent.sounds;
@@ -69,14 +88,41 @@ function(
 		}
 	};
 
+	/**
+	 * Update the environmental sound system properties
+	 * @param {object} [config]
+	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
+	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
+	 * @param {number} [config.maxDistance] After this distance, sound will keep its volume.
+	 * @param {number} [config.volume] Will be clamped between 0 and 1.
+	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
+	 */
 	SoundSystem.prototype.updateConfig = function(config) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		_.extend(this._settings, config);
 		if (config.dopplerFactor !== undefined) {
 			this._listener.dopplerFactor = config.dopplerFactor;
 		}
+		if (config.volume !== undefined) {
+			this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
+		}
+		if (config.reverb !== undefined) {
+			this._wetNode.gain.value = MathUtils.clamp(config.reverb, 0, 1);
+		}
 	};
 
+	/**
+	 * Set the reverb impulse response
+	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
+	 */
 	SoundSystem.prototype.setReverb = function(audioBuffer) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		this._wetNode.disconnect();
 		if(!audioBuffer && this._wetNode) {
 			this._convolver.buffer = null;
@@ -87,6 +133,10 @@ function(
 	};
 
 	SoundSystem.prototype.process = function(entities, tpf) {
+		if (!AudioContext) {
+			// This should never happen because system shouldn't process
+			return;
+		}
 		this.entities = entities;
 		for (var i = 0; i < entities.length; i++) {
 			var component = entities[i].soundComponent;

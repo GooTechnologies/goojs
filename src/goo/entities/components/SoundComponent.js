@@ -11,6 +11,10 @@ function(
 ) {
 	'use strict';
 	function SoundComponent() {
+		if (!AudioContext) {
+			console.warn('Cannot create soundComponent, webaudio not supported');
+			return;
+		}
 		this.type = "SoundComponent";
 		this.sounds = [];
 		this._outDryNode = AudioContext.createGain();
@@ -28,16 +32,29 @@ function(
 	SoundComponent.prototype.constructor = SoundComponent;
 
 	/**
+	 * Add a sound to the component
 	 * @param {Sound} sound
 	 */
 	SoundComponent.prototype.addSound = function(sound) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		if (this.sounds.indexOf(sound) === -1) {
 			sound.connectTo([this._pannerNode, this._outWetNode]);
 			this.sounds.push(sound);
 		}
 	};
 
+	/**
+	 * Remove sound from component
+	 * @param {Sound} sound
+	 */
 	SoundComponent.prototype.removeSound = function(sound) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		var idx = this.sounds.indexOf(sound);
 		if (idx > -1) {
 			this.sounds.splice(idx, 1);
@@ -45,7 +62,17 @@ function(
 		}
 	};
 
+	/**
+	 * Connect output of component to audionodes
+	 * @param {object} [nodes]
+	 * @param {AudioNode} [nodes.dry]
+	 * @param {AudioNode} [nodes.wet]
+	 */
 	SoundComponent.prototype.connectTo = function(nodes) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		this._outDryNode.disconnect();
 		this._outWetNode.disconnect();
 		if (nodes && nodes.dry) {
@@ -56,7 +83,18 @@ function(
 		}
 	};
 
+	/**
+	 * Updates position, velocity and orientation of component and thereby all connected sounds
+	 * @param {settings} See {@link SoundSystem}
+	 * @param {Transform} the entity's world transform
+	 * @param {number} tpf
+	 * @private
+	 */
 	SoundComponent.prototype.process = function(settings, transform, tpf) {
+		if (!AudioContext) {
+			// Should never happen
+			return;
+		}
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
 

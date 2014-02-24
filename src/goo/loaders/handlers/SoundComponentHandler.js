@@ -2,14 +2,16 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/SoundComponent',
 	'goo/sound/AudioContext',
-	'goo/util/rsvp'
+	'goo/util/rsvp',
+	'goo/util/PromiseUtil'
 ],
 /** @lends */
 function(
 	ComponentHandler,
 	SoundComponent,
 	AudioContext,
-	RSVP
+	RSVP,
+	PromiseUtil
 ) {
 	"use strict";
 
@@ -31,8 +33,14 @@ function(
 	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
 	ComponentHandler._registerClass('sound', SoundComponentHandler);
 
+
+	/**
+	 * Removes the souncomponenthandler and stops all connected sounds
+	 * @param {Entity} entity
+	 * @private
+	 */
 	SoundComponentHandler.prototype._remove = function(entity) {
-		var component = entity.howlerComponent;
+		var component = entity.soundComponent;
 		if (component && component.sounds) {
 			var sounds = component.sounds;
 			for (var i = 0; i < sounds.length; i++) {
@@ -59,6 +67,10 @@ function(
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	SoundComponentHandler.prototype.update = function(entity, config, options) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return PromiseUtil.createDummyPromise();
+		}
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }

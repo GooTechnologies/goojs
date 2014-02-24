@@ -26,6 +26,24 @@ function(
 	 */
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
+
+		if (window.Audio !== undefined) {
+	    var audioTest = new Audio();
+	    this._codecs = [
+		    {
+			    type: 'mp3',
+			    enabled: !!audioTest.canPlayType('audio/mpeg;').replace(/^no$/,'')
+		    }, {
+			    type: 'ogg',
+			    enabled: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,'')
+		    }, {
+			    type: 'wav',
+			    enabled: !!audioTest.canPlayType('audio/wav; codecs="1"').replace(/^no$/,'')
+		    }
+	    ];
+		} else {
+			this._codecs = [];
+		}
 	}
 
 	SoundHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -76,14 +94,27 @@ function(
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */
 	SoundHandler.prototype.update = function(ref, config, options) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return PromiseUtil.createDummyPromise();
+		}
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
 			sound.update(config);
-			return that.getConfig(config.audioRefs.wav).then(function(audioBuffer) {
-				sound.setAudioBuffer(audioBuffer);
-
-				return sound;
-			});
+			var ref;
+			for (var i = 0; i < that._codecs.length; i++) {
+				var codec = that._codecs[i];
+				var ref = config.audioRefs[config.type];
+				if (ref && codec.enabled) {
+					/*jshint -W083 */
+					return that.getConfig(ref).then(function(audioBuffer) {
+						sound.setAudioBuffer(audioBuffer);
+						return sound;
+					});
+				}
+			}
+			console.warn('No supported audioformat was found');
+			return sound;
 		});
 	};
 

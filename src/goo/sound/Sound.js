@@ -15,7 +15,12 @@ function (
 	 * @class A representation of a sound in the engine
 	 */
 	function Sound() {
+		if (!AudioContext) {
+			console.warn('Cannot create sound, webaudio not supported');
+			return;
+		}
 		// Settings
+		this.id = null;
 		this._loop = false;
 		this._rate = 1.0;
 		this._start = 0;
@@ -33,9 +38,15 @@ function (
 	}
 
 	/**
-	 *
+	 * Plays the sound if it's not playing
+	 * @returns {RSVP.Promise} Resolves when sound has played through or when it's stopped.
+	 * Looping sounds will never resolve
 	 */
 	Sound.prototype.play = function() {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		if (this._currentSource) {
 			return this._endPromise;
 		}
@@ -64,9 +75,13 @@ function (
 	};
 
 	/**
-	 *
+	 * Pauses the sound if it's playing
 	 */
 	Sound.prototype.pause = function() {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		if (!this._currentSource) {
 			return;
 		}
@@ -76,9 +91,13 @@ function (
 	};
 
 	/**
-	 *
+	 * Stops the sound if it's playing
 	 */
 	Sound.prototype.stop = function() {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		if (!this._currentSource) {
 			return;
 		}
@@ -87,8 +106,9 @@ function (
 		this._stop();
 	};
 
-	/*
-	 *
+	/**
+	 * Does the actual stopping of the sound
+	 * @private
 	 */
 	Sound.prototype._stop = function() {
 		this._currentSource.stop(0);
@@ -97,9 +117,25 @@ function (
 	};
 
 	/**
-	 *
+	 * Updates the sound according to config
+	 * @param {object} [config]
+	 * @param {boolean} [config.loop]
+	 * @param {number} [config.volume]
+	 * @param {number} [config.start] Start offset in seconds. 
+	 * Will be clamped to be in actual soundclip duration
+	 * @param {number} [config.duration] Duration of the sound.
+	 * Will be clamped to be in actual soundclip duration
+	 * @param {number} [config.timeScale] Playback rate of the sound
 	 */
 	Sound.prototype.update = function(config) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
+		config = config || {};
+		if (config.id !== undefined) {
+			this.id = config.id;
+		}
 		if (config.loop !== undefined) {
 			this._loop = !!config.loop;
 			if (this._currentSource) {
@@ -107,7 +143,7 @@ function (
 			}
 		}
 		if (config.volume !== undefined) {
-			this._outNode.gain.value = config.volume;
+			this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
 		}
 		if (config.start !== undefined) {
 			this._start = config.start;
@@ -116,7 +152,7 @@ function (
 			this._duration = config.duration;
 		}
 		if (config.rate !== undefined) {
-			this._rate = config.rate;
+			this._rate = config.timeScale;
 		}
 		if (this._buffer) {
 			this._clampInterval();
@@ -124,6 +160,10 @@ function (
 		this._fixTimer();
 	};
 
+	/**
+	 * Clamps the start offset and duration to be in sound range
+	 * @private
+	 */
 	Sound.prototype._clampInterval = function() {
 		this._start = Math.min(this._start, this._buffer.duration);
 		if (this._duration !== null) {
@@ -134,10 +174,15 @@ function (
 		this._pausePos = MathUtils.clamp(this._pausePos, 0, this._duration);
 	};
 
-	/*
-	 *
+	/**
+	 * Connect output of sound to audionodes
+	 * @param {AudioNode[]|AudioNode} nodes
 	 */
 	Sound.prototype.connectTo = function(nodes) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		this._outNode.disconnect();
 		if (!nodes) {
 			return;
@@ -150,6 +195,10 @@ function (
 		}
 	};
 
+	/**
+	 * Sets a timer to resolve play promise when sound has played through
+	 * @private
+	 */
 	Sound.prototype._fixTimer = function() {
 		var that = this;
 		if (this._endTimer) {
@@ -165,13 +214,17 @@ function (
 	};
 
 	/**
-	 *
+	 * Sets the audio buffer which will be the sound source
+	 * @param {AudioBuffer} buffer
 	 */
 	Sound.prototype.setAudioBuffer = function(buffer) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		this._buffer = buffer;
 		this._clampInterval();
 	};
-
 
 	return Sound;
 });
