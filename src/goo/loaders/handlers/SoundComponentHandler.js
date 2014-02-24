@@ -74,24 +74,31 @@ function(
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
-			// Stop all sounds
+			component.updateConfig(config);
+
+			// Remove old sounds
 			for (var i = 0; i < component.sounds.length; i++) {
-				component.sounds[i].stop();
+				var sound = component.sounds[i];
+				if (!config.sounds[sound.id]) {
+					component.removeSound(sound);
+				}
 			}
-			var promises = [];
+
 			// Load all sounds
+			var promises = [];
 			for (var key in config.sounds) {
 				promises.push(that._load(config.sounds[key].soundRef, options));
 			}
 			return RSVP.all(promises).then(function(sounds) {
-				// Set updates sounds
+				// Add new sounds
 				for (var i = 0; i < sounds.length; i++) {
-					component.addSound(sounds[i]);
+					if (component.sounds.indexOf(sounds[i]) === -1) {
+						component.addSound(sounds[i]);
+					}
 				}
 				return component;
 			});
 		});
 	};
-
 	return SoundComponentHandler;
 });

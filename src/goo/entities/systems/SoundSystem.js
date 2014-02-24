@@ -35,6 +35,7 @@ function(
 		this._convolver.connect(this._wetNode);
 
 		this._listener = AudioContext.listener;
+		this._listener.dopplerFactor = 0.05;
 
 		this._position = new Vector3();
 		this._oldPosition = new Vector3();

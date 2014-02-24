@@ -26,6 +26,7 @@ function(
 	 */
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._audioCache = {};
 
 		if (window.Audio !== undefined) {
 	    var audioTest = new Audio();
@@ -100,17 +101,30 @@ function(
 		}
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
+			if (!sound) { return; }
 			sound.update(config);
 			var ref;
 			for (var i = 0; i < that._codecs.length; i++) {
 				var codec = that._codecs[i];
-				var ref = config.audioRefs[config.type];
+				var ref = config.audioRefs[codec.type];
 				if (ref && codec.enabled) {
-					/*jshint -W083 */
-					return that.getConfig(ref).then(function(audioBuffer) {
-						sound.setAudioBuffer(audioBuffer);
+					if (that._audioCache[ref]) {
+						sound.setAudioBuffer(that._audioCache[ref]);
 						return sound;
-					});
+					} else {
+						/*jshint -W083 */
+						return that.getConfig(ref).then(function(buffer) {
+							var promise = new RSVP.Promise();
+							AudioContext.decodeAudioData(buffer, function(audioBuffer) {
+								promise.resolve(audioBuffer);
+							});
+							return promise;
+						}).then(function(audioBuffer) {
+							that._audioCache[ref] = audioBuffer;
+							sound.setAudioBuffer(audioBuffer);
+							return sound;
+						});
+					}
 				}
 			}
 			console.warn('No supported audioformat was found');

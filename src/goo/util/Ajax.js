@@ -211,13 +211,7 @@ function(
 			responseType: Ajax.ARRAY_BUFFER
 		};
 		return this.get(ajaxProperties)
-		.then(function(request) {
-			var promise = new RSVP.Promise();
-			AudioContext.decodeAudioData(request.response, function(audioBuffer) {
-				promise.resolve(audioBuffer);
-			});
-			return promise;
-		}).then(null, function(err) {
+		.then(null, function(err) {
 			throw new Error('Could not load data from ' + url + ', ' + err);
 		});
 	};

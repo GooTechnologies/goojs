@@ -1,13 +1,15 @@
 define([
 	'goo/entities/components/Component',
 	'goo/sound/AudioContext',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function(
 	Component,
 	AudioContext,
-	Vector3
+	Vector3,
+	MathUtils
 ) {
 	'use strict';
 	function SoundComponent() {
@@ -57,6 +59,7 @@ function(
 		}
 		var idx = this.sounds.indexOf(sound);
 		if (idx > -1) {
+			sound.stop();
 			this.sounds.splice(idx, 1);
 			sound.connectTo();
 		}
@@ -80,6 +83,21 @@ function(
 		}
 		if (nodes && nodes.wet) {
 			this._outWetNode.connect(nodes.wet);
+		}
+	};
+
+	/**
+	 * Updates the component valueas according to config
+	 * @param {object} [config]
+	 * @param {number} config.volume
+	 * @param {number} config.reverb
+	 */
+	SoundComponent.prototype.updateConfig = function(config) {
+		if (config.volume !== undefined) {
+			this._outDryNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
+		}
+		if (config.reverb !== undefined) {
+			this._outWetNode.gain.value = MathUtils.clamp(config.reverb, 0, 1);
 		}
 	};
 
