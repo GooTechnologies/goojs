@@ -142,7 +142,7 @@ function(
 			if (typeInGroup(type, 'bundle')) {
 				var bundle = JSON.parse(request.response);
 				that.prefill(bundle, reload);
-				return null;
+				return bundle;
 			}
 			if (typeInGroup(type, 'json')) {
 				return JSON.parse(request.response);

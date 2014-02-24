@@ -42,7 +42,7 @@ define([
 		}
 	};
 
-	V.addOrbitCamera = function (spherical, lookAt) {
+	V.addOrbitCamera = function (spherical, lookAt, dragButton) {
 		spherical = V.toVector3(spherical, new Vector3(20, Math.PI / 2, 0));
 		lookAt = V.toVector3(lookAt, new Vector3(0, 0, 0));
 
@@ -53,7 +53,8 @@ define([
 			demoMode: true,
 			moveInterval: 4000,
 			moveInitialDelay: 200,
-			lookAtPoint: lookAt
+			lookAtPoint: lookAt,
+			dragButton: typeof dragButton === 'number' ? dragButton : -1
 		});
 
 		var cameraEntity = V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
