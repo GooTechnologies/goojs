@@ -52,6 +52,8 @@ function(
 		};
 		this._wetNode.gain.value = 0.2;
 
+		this._pausedSounds = {};
+
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
 			that._camera = camConfig.camera;
@@ -131,6 +133,55 @@ function(
 			this._convolver.buffer = audioBuffer;
 			this._wetNode.connect(this._outNode);
 		}
+	};
+
+	/**
+	 * Pause the sound system and thereby all sounds in the scene
+	 */
+	SoundSystem.prototype.pause = function() {
+		if (this._pausedSounds) { return; }
+		this._pausedSounds = {};
+		for (var i = 0; i < this.entities.length; i++) {
+			var sounds = this.entities[i].soundComponent.sounds;
+			for (var j = 0; j < sounds.length; j++) {
+				var sound = sounds[j];
+				if (sound.isPlaying()) {
+					sound.pause();
+					this._pausedSounds[sound.id] = true;
+				}
+			}
+		}
+	};
+
+	/**
+	 * Stopping the sound system and all sounds in scene
+	 */
+	SoundSystem.prototype.stop = function() {
+		for (var i = 0; i < this.entities.length; i++) {
+			var sounds = this.entities[i].soundComponent.sounds;
+			for (var j = 0; j < sounds.length; j++) {
+				var sound = sounds[j];
+				sound.stop();
+			}
+		}
+		this._pausedSounds = null;
+	};
+
+	/**
+	 * Resumes playing of all sounds that were paused
+	 */
+	SoundSystem.prototype.resume = function() {
+		if (!this._pausedSounds) { return; }
+		for (var i = 0; i < this.entities.length; i++) {
+			var sounds = this.entities[i].soundComponent.sounds;
+			for (var j = 0; j < sounds.length; j++) {
+				var sound = sounds[j];
+				if (this._pausedSounds[sound.id]) {
+					sound.play();
+				}
+			}
+		}
+		this._pausedSounds = null;
 	};
 
 	SoundSystem.prototype.process = function(entities, tpf) {

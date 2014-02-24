@@ -99,12 +99,13 @@ function (
 			console.warn('Webaudio not supported');
 			return;
 		}
-		if (!this._currentSource) {
-			return;
-		}
 		this._pausePos = 0;
-		this._endPromise.resolve();
-		this._stop();
+		if (this._endPromise) {
+			this._endPromise.resolve();
+		}
+		if (this._currentSource) {
+			this._stop();
+		}
 	};
 
 	Sound.prototype.fadeIn = function(time) {
@@ -128,6 +129,10 @@ function (
 			p.resolve();
 		}, time * 1000);
 		return p;
+	};
+
+	Sound.prototype.isPlaying = function() {
+		return !!this._currentSource;
 	};
 
 	/**
