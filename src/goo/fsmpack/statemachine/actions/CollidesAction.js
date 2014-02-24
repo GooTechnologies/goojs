@@ -21,7 +21,8 @@ function(
 	CollidesAction.prototype.constructor = CollidesAction;
 
 	CollidesAction.external = {
-		name: 'Collides',
+		key: 'Collides',
+		name: 'Collision',
 		description: 'Checks for collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag objects using the \'Tag\' action',
 		canTransition: true,
 		parameters: [{

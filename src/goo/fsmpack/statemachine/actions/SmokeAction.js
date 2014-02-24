@@ -28,7 +28,8 @@ function(
 	SmokeAction.prototype.constructor = SmokeAction;
 
 	SmokeAction.external = {
-		name: 'Smoke',
+		key: 'Smoke',
+		name: 'Smoke FX',
 		description: 'Makes the entity emit smoke. To cancel the smoke emitter use the "Remove Particles" action',
 		parameters: [{
 			name: 'Color',
@@ -40,7 +41,9 @@ function(
 		transitions: []
 	};
 
-	SmokeAction.prototype._run = function(fsm) {
+	SmokeAction.prototype._run = function (fsm) {
+		if (this.smokeEntity) { return; }
+
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
@@ -74,6 +77,7 @@ function(
 	SmokeAction.prototype.cleanup = function (/*fsm*/) {
 		if (this.smokeEntity) {
 			this.smokeEntity.removeFromWorld();
+			this.smokeEntity = null;
 		}
 	};
 

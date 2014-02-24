@@ -15,7 +15,8 @@ function(
 	TweenLightColorAction.prototype.constructor = TweenLightColorAction;
 
 	TweenLightColorAction.external = {
-		name: 'Tween Light Color',
+		key: 'Tween Light Color',
+		name: 'Tween Light',
 		description: 'Tweens the color of the light',
 		parameters: [{
 			name: 'Color',

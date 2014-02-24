@@ -7,7 +7,7 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/util/ArrayUtil',
 	'goo/util/rsvp'
-], 
+],
 /** @lends */
 function(
 	ComponentHandler,
@@ -106,17 +106,6 @@ function(
 			});
 		}
 
-		function idInList(id, children) {
-			var keys = Object.keys(children);
-			for (var i = 0; i < keys.length; i++) {
-				var child = children[keys[i]];
-				if (id === child.id) {
-					return true;
-				}
-			}
-			return false;
-		}
-
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) {
 				// Component was removed
@@ -135,18 +124,18 @@ function(
 			component.transform.scale.seta(config.scale);
 
 			var promises = [];
-			if (config.childRefs) {
+			if (config.children) {
 				// Attach children
 				// TODO: Watch out for circular dependencies
-				var keys = Object.keys(config.childRefs);
+				var keys = Object.keys(config.children);
 				for (var i = 0; i < keys.length; i++) {
-					var childRef = config.childRefs[keys[i]];
+					var childRef = config.children[keys[i]].entityRef;
 					promises.push(attachChild(component, childRef));
 				}
 				for (var i = 0; i < component.children.length; i++) {
 					var child = component.children[i];
 					var id = child.entity.id;
-					if (!idInList(id, config.childRefs)) {
+					if (!config.children[id]) {
 						component.detachChild(child);
 					}
 				}

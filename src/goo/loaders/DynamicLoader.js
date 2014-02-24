@@ -274,7 +274,7 @@ function(
 
 			if (DynamicLoader._isRefTypeInGroup(ref, 'bundle')) {
 				// Do nothing
-				return PromiseUtil.createDummyPromise();
+				return PromiseUtil.createDummyPromise(config);
 			}
 
 			var handler = this._getHandler(type);

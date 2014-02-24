@@ -45,6 +45,7 @@ define([
 	 StateMachineComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
 			var promises = [];
 			for (var key in config.machines) {
 				promises.push(that._load(config.machines[key].machineRef, options));

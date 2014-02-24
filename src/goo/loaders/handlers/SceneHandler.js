@@ -110,7 +110,7 @@ function(
 	SceneHandler.prototype._handleEntities = function(config, scene, options) {
 		var promises = [];
 
-		var addedEntityIds = _.clone(config.entityRefs);
+		var addedEntityIds = _.clone(config.entities);
 		var removedEntityIds = [];
 
 		for (var id in scene.entities) {
@@ -124,7 +124,7 @@ function(
 		}
 
 		for (var key in addedEntityIds) {
-			promises.push(this._load(config.entityRefs[key], options));
+			promises.push(this._load(config.entities[key].entityRef, options));
 		}
 
 		return RSVP.all(promises).then(function(entities) {
@@ -135,15 +135,11 @@ function(
 				scene.entities[entity.id] = entity;
 			}
 
-			// Removing old entities
-			// This is handled by EntityHandler
-			// for (var id in removedEntityIds) {
-			// 	var entity = scene.entities[id];
-			// 	if (entity) {
-			// 		entity.removeFromWorld();
-			// 		delete scene.entities[id];
-			// 	}
-			// }
+			// Removing old entities from the handler cache
+			// Removing them from the world is handled by the EntityHandler
+			for (var id in removedEntityIds) {
+				delete scene.entities[id];
+			}
 		});
 	};
 

@@ -162,6 +162,9 @@ function(
 					});
 				} else if (type === 'mp4') {
 					// Video
+					var video = document.createElement('video');
+					video.loop = (config.loop !== undefined) ? config.loop : true;
+
 					ret = that.getConfig(imageRef, options).then(function(video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
@@ -175,14 +178,12 @@ function(
 						}
 						return texture;
 					});
-					var video = document.createElement('video');
-					video.loop = (config.loop !== undefined) ? config.loop : true;
 				} else {
 					throw new Error('Unknown texture type');
 				}
 			} else {
 				// Blank
-				console.warn('Texture ' + ref + ' has no imageRef');
+				// console.warn('Texture ' + ref + ' has no imageRef');
 				// texture.setImage(TextureHandler.WHITE, 1, 1);
 				ret = texture;
 

@@ -31,6 +31,16 @@ function(
 	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
 	ComponentHandler._registerClass('sound', SoundComponentHandler);
 
+	SoundComponentHandler.prototype._remove = function(entity) {
+		var component = entity.howlerComponent;
+		if (component && component.sounds) {
+			var sounds = component.sounds;
+			for (var i = 0; i < sounds.length; i++) {
+				sounds[i].stop();
+			}
+		}
+	};
+
 
 	/**
 	 * Creates sound component
@@ -58,8 +68,8 @@ function(
 			}
 			var promises = [];
 			// Load all sounds
-			for (var key in config.soundRefs) {
-				promises.push(that._load(config.soundRefs[key], options));
+			for (var key in config.sounds) {
+				promises.push(that._load(config.sounds[key].soundRef, options));
 			}
 			return RSVP.all(promises).then(function(sounds) {
 				// Set updates sounds

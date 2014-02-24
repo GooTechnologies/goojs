@@ -5,15 +5,15 @@ function (
 	'use strict';
 
 	/**
-	* @class Library of particles
-	*/
+	 * @class Library of particles
+	 */
 	var ParticleLib = {};
 
 
 	/**
-	* Smoke particles
-	*/
-	ParticleLib.getSmoke = function(options) {
+	 * Returns a set of parameters for a smoke particle emitter
+	 */
+	ParticleLib.getSmoke = function (options) {
 		options = options || {};
 		options.scale = typeof options.scale !== 'undefined' ? options.scale : 1;
 		options.spread = typeof options.spread !== 'undefined' ? options.spread : 2;
@@ -22,9 +22,9 @@ function (
 			function (particle/*, particleEntity*/) {
 				// not nice, will end up a square
 				var vec3 = particle.velocity;
-				vec3.data[0] = (Math.random()-0.5) * 2 * options.spread * options.scale;
-				vec3.data[1] = (Math.random() + 4) * 2 * options.scale;
-				vec3.data[2] = (Math.random()-0.5) * 2 * options.spread * options.scale;
+				vec3.data[0] = (Math.random() - 0.5) * 2 * options.spread * options.scale;
+				vec3.data[1] = (Math.random() + 4.0) * 2 * options.scale;
+				vec3.data[2] = (Math.random() - 0.5) * 2 * options.spread * options.scale;
 				return vec3;
 			};
 		options.color = options.color || [0, 0, 0];
@@ -50,9 +50,9 @@ function (
 	};
 
 	/**
-	* Fire particles
-	*/
-	ParticleLib.getFire = function(options) {
+	 * Returns a set of parameters for a fire particle emitter
+	 */
+	ParticleLib.getFire = function (options) {
 		options = options || {};
 		options.scale = typeof options.scale !== 'undefined' ? options.scale : 1;
 		options.spread = typeof options.spread !== 'undefined' ? options.spread : 2;
@@ -68,9 +68,9 @@ function (
 			getEmissionVelocity: function (particle/*, particleEntity*/) {
 				// not nice, will end up a square
 				var vec3 = particle.velocity;
-				vec3.data[0] = (Math.random()-0.5) * 2 * options.spread * options.scale;
-				vec3.data[1] = (Math.random() + 1) * options.velocity * options.scale;
-				vec3.data[2] = (Math.random()-0.5) * 2 * options.spread * options.scale;
+				vec3.data[0] = (Math.random() - 0.5) * 2 * options.spread * options.scale;
+				vec3.data[1] = (Math.random() + 1.0) * options.velocity * options.scale;
+				vec3.data[2] = (Math.random() - 0.5) * 2 * options.spread * options.scale;
 				return vec3;
 			},
 			timeline: [{
@@ -94,9 +94,9 @@ function (
 	};
 
 	/**
-	* Snow particles
-	*/
-	ParticleLib.getSnow = function(options) {
+	 * Returns a set of parameters for a snow particle emitter
+	 */
+	ParticleLib.getSnow = function (options) {
 		options = options || {};
 		options.scale = typeof options.scale !== 'undefined' ? options.scale : 2;
 		options.spread = typeof options.spread !== 'undefined' ? options.spread : 50;

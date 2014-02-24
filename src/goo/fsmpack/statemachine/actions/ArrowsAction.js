@@ -48,7 +48,8 @@ function(
 		}
 
 		return {
-			name: 'Arrow Keys Listener',
+			key: 'Arrow Keys Listener',
+			name: 'Arrow Keys',
 			description: 'A 4-in-1 key down listener',
 			canTransition: true,
 			parameters: [],

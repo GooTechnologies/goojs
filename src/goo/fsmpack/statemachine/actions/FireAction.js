@@ -26,7 +26,8 @@ function(
 	FireAction.prototype.constructor = FireAction;
 
 	FireAction.external = {
-		name: 'Fire',
+		key: 'Fire',
+		name: 'Fire FX',
 		description: 'Makes the entity emit fire. To "extinguish" the fire use the "Remove Particles" action',
 		parameters: [{
 			name: 'Start Color',
@@ -45,6 +46,8 @@ function(
 	};
 
 	FireAction.prototype._run = function (fsm) {
+		if (this.fireEntity) { return; }
+
 		var entity = fsm.getOwnerEntity();
 		var gooRunner = entity._world.gooRunner;
 
@@ -79,6 +82,7 @@ function(
 	FireAction.prototype.cleanup = function (/*fsm*/) {
 		if (this.fireEntity) {
 			this.fireEntity.removeFromWorld();
+			this.fireEntity = null;
 		}
 	};
 

@@ -54,6 +54,8 @@ define([
 	SkyboxHandler.prototype._remove = function(ref) {
 		this.world.getSystem('RenderSystem').removed(this._activeSkyshape);
 		this._activeSkyshape = null;
+		ShaderBuilder.SKYBOX = null;
+		ShaderBuilder.SKYSPHERE = null;
 		delete this._objects[ref];
 	};
 
