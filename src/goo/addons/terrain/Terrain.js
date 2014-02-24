@@ -41,137 +41,15 @@ function(
 ) {
 	"use strict";
 
-	// var mat = Material.createMaterial(ShaderLib.textured);
-	// mat.setTexture(Shader.DIFFUSE_MAP, floatTexture);
-	// goo.world.createEntity(new Box(), mat).addToWorld();
-
-	// CREATE
-	// heightMap is 16-bit
-	// convert to float32 and use as texture
-	// render texture into top rendertarget (which is in float format)
-
-	// EDIT
-	// render into top rendertarget with brush textures and modifier shaders
-
-	// UPDATE
-	// downsample
-	// upsample
-
-	var upsampleShader = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			diffuseMap: 'MAIN_MAP',
-			childMap: Shader.DIFFUSE_MAP,
-			res: [1, 1, 1, 1]
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
-
-			'varying vec2 texCoord0;',
-
-			'void main(void) {',
-			'	texCoord0 = vertexUV0;',
-			'	gl_Position = vec4(vertexPosition, 1.0);',
-			'}'
-		].join('\n'),
-		fshader: [
-			'uniform sampler2D diffuseMap;',
-			'uniform sampler2D childMap;',
-
-			'uniform vec4 res;',
-
-			'varying vec2 texCoord0;',
-
-			'void main(void)',
-			'{',
-			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
-
-			'	vec2 coordMod = mod(floor(texCoord0 * res.xy), 2.0);',
-			'	bvec2 test = equal(coordMod, vec2(0.0));',
-
-			'	if (all(test)) {',
-			'		gl_FragColor.g = texture2D(childMap, texCoord0).r;',
-			'	} else if (test.x) {',
-			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(0.0, res.w)).r) * 0.5;',
-			'	} else if (test.y) {',
-			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, 0.0)).r) * 0.5;',
-			'	} else {',				
-			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, res.w)).r) * 0.5;',
-			'	}',
-			'	gl_FragColor.ba = vec2(0.0);',
-			'}'
-		].join('\n')
-	};
-
-	Terrain.prototype.draw = function(renderer, s, x, y) {
-		this.renderable.transform.translation.setd(x/this.size, y/this.size, 0);
-		// this.renderable.transform.scale.setd(s, s, 1);
-		this.renderable.transform.scale.setd(s, s, s);
-		this.renderable.transform.update();
-		renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
-	};
-
-	Terrain.prototype.updateTextures = function(renderer) {
-		if (this.first) {
-			// this.copyPass.render(renderer, this.textures[0], this.floatTexture);
-			this.first = false;
-		}
-
-		for (var i = 0; i < this.count - 1; i++) {
-			var mipmap = this.textures[i];
-			var child = this.textures[i + 1];
-
-			mipmap.magFilter = 'Bilinear';
-			mipmap.minFilter = 'BilinearNoMipMaps';
-
-			this.copyPass.render(renderer, child, mipmap);
-		}
-
-		var size = this.size;
-		for (var i = 0; i < this.count; i++) {
-			var mipmapTarget = this.texturesBounce[i];
-			var mipmap = this.textures[i];
-			var child = this.textures[i + 1];
-
-			mipmap.magFilter = 'NearestNeighbor';
-			mipmap.minFilter = 'NearestNeighborNoMipMaps';
-
-			this.upsamplePass.material.setTexture('MAIN_MAP', mipmap);
-			this.upsamplePass.material.uniforms.res =  [size, size, 2/size, 2/size];
-
-			if (child) {
-				child.magFilter = 'NearestNeighbor';
-				child.minFilter = 'NearestNeighborNoMipMaps';
-				
-				this.upsamplePass.render(renderer, mipmapTarget, child);
-			} else {
-				this.upsamplePass.render(renderer, mipmapTarget, mipmap);
-			}
-
-			size *= 0.5;
-		}
-
-		for (var i = 0; i < this.count; i++) {
-			this.copyPass.render(renderer, this.textures[i], this.texturesBounce[i]);
-		}
-
-		this.normalmapPass.render(renderer, this.normalMap, this.textures[0]);
-	};
-
 	/**
 	 * @class A terrain
 	 */
 	function Terrain(goo, heightMap, size, count) {
 		var brush = ShapeCreator.createQuad(2/size,2/size);
-		var mat = Material.createMaterial(ShaderLib.textured);
+		var mat = Material.createMaterial(brushShader);
 		mat.blendState.blending = 'AdditiveBlending';
-		// mat.blendState.blending = 'CustomBlending';
-		var brushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
-		mat.setTexture(Shader.DIFFUSE_MAP, brushTexture);
+		this.defaultBrushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
+		mat.setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 		this.renderable = {
 			meshData: brush,
 			materials: [mat],
@@ -179,15 +57,20 @@ function(
 		};
 
 
-		var world = goo.world
-		var renderer = goo.renderer;
+		var world = goo.world;
+		this.renderer = goo.renderer;
 		this.size = size;
 		this.count = count;
 		this.first = true;
 
 		this.copyPass = new FullscreenPass(ShaderLib.screenCopy);
+		this.copyPass.material.depthState.enabled = false;
+
 		this.upsamplePass = new FullscreenPass(upsampleShader);
+		this.upsamplePass.material.depthState.enabled = false;
+
 		this.normalmapPass = new FullscreenPass(ShaderLib.normalmap);
+		this.normalmapPass.material.depthState.enabled = false;
 		this.normalmapPass.material.uniforms.resolution = [size, size];
 		this.normalmapPass.material.uniforms.height = 10;
 
@@ -263,7 +146,7 @@ function(
 		var entity = world.createEntity('TerrainRoot');
 		entity.addToWorld();
 		this.clipmaps = [];
-		for (var i = 0; i < this.textures.length; i++) {
+		for (var i = 0; i < count; i++) {
 			var size = Math.pow(2, i);
 
 			var texture = this.textures[i];
@@ -298,7 +181,7 @@ function(
 				size: size,
 				currentX: 100000,
 				currentY: 100000,
-				currentZ: 100000,
+				currentZ: 100000
 			};
 
 			console.log(clipmapEntity);
@@ -312,6 +195,76 @@ function(
 		}
 	}
 
+	Terrain.prototype.draw = function(type, size, x, y, power, brushTexture) {
+		this.renderable.materials[0].uniforms.opacity = power;
+
+		if (type === 'add') {
+			this.renderable.materials[0].blending = 'AdditiveBlending';
+		} else if (type === 'sub') {
+			this.renderable.materials[0].blending = 'SubtractiveBlending';
+		} else if (type === 'mul') {
+			this.renderable.materials[0].blending = 'MultiplyBlending';
+		}
+
+		if (brushTexture) {
+			this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
+		} else {
+			this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+		}
+
+		this.renderable.transform.translation.setd(x/this.size, y/this.size, 0);
+		this.renderable.transform.scale.setd(size, size, size);
+		this.renderable.transform.update();
+		this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+	};
+
+	Terrain.prototype.updateTextures = function() {
+		if (this.first) {
+			this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
+			this.first = false;
+		}
+
+		for (var i = 0; i < this.count - 1; i++) {
+			var mipmap = this.textures[i];
+			var child = this.textures[i + 1];
+
+			mipmap.magFilter = 'Bilinear';
+			mipmap.minFilter = 'BilinearNoMipMaps';
+
+			this.copyPass.render(this.renderer, child, mipmap);
+		}
+
+		var size = this.size;
+		for (var i = 0; i < this.count; i++) {
+			var mipmapTarget = this.texturesBounce[i];
+			var mipmap = this.textures[i];
+			var child = this.textures[i + 1];
+
+			this.upsamplePass.material.setTexture('MAIN_MAP', mipmap);
+			this.upsamplePass.material.uniforms.res =  [size, size, 2/size, 2/size];
+
+			if (child) {
+				child.magFilter = 'NearestNeighbor';
+				child.minFilter = 'NearestNeighborNoMipMaps';
+
+				this.upsamplePass.render(this.renderer, mipmapTarget, child);
+			} else {
+				mipmap.magFilter = 'NearestNeighbor';
+				mipmap.minFilter = 'NearestNeighborNoMipMaps';
+
+				this.upsamplePass.render(this.renderer, mipmapTarget, mipmap);
+			}
+
+			size *= 0.5;
+		}
+
+		for (var i = 0; i < this.count; i++) {
+			this.copyPass.render(this.renderer, this.textures[i], this.texturesBounce[i]);
+		}
+
+		this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
+	};
+
 	Terrain.prototype.update = function(pos) {
 		var x = pos.x;
 		var y = pos.y;
@@ -319,8 +272,6 @@ function(
 
 		for (var i = 0; i < this.clipmaps.length; i++) {
 			var clipmap = this.clipmaps[i];
-
-			var level = clipmap.level;
 
 			var xx = Math.floor(x * 0.5 / clipmap.size);
 			var yy = Math.floor(y * 0.5 / clipmap.size);
@@ -495,10 +446,10 @@ function(
 			SKIP_SPECULAR: true
 		},
 		processors: [
-			ShaderBuilder.light.processor,
+			ShaderBuilder.light.processor
 		],
 		attributes: {
-			vertexPosition: MeshData.POSITION,
+			vertexPosition: MeshData.POSITION
 		},
 		uniforms: {
 			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
@@ -552,9 +503,7 @@ function(
 
 				// 'vec4 heightCol = texture2DLod(heightMap, worldPos.xz * 1.0 / resolution, 0.0);',
 				'vec4 heightCol = texture2D(heightMap, coord);',
-				// 'float zf = (heightCol.r * 256.0 + heightCol.g);',
 				'float zf = heightCol.r;',
-				// 'float zd = (heightCol.b * 256.0 + heightCol.a);',
 				'float zd = heightCol.g;',
 
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
@@ -621,7 +570,7 @@ function(
 				'vec3 tangentNormal = mix(n1, n2, smoothstep(0.0, 1.0, 1.0));',
 				'tangentNormal = mix(tangentNormal, mountainN, slope);',
 
-				// 'N = normalize(vec3(N.x + tangentNormal.x, N.y, N.z + tangentNormal.y));',
+				'N = normalize(vec3(N.x + tangentNormal.x, N.y, N.z + tangentNormal.y));',
 
 				'vec4 g1 = texture2D(groundMap1, coord);',
 				'vec4 g2 = texture2D(groundMap2, coord);',
@@ -640,16 +589,103 @@ function(
 
 				'gl_FragColor = final_color;',
 
-				// 'gl_FragColor.rgb = texture2D(heightMap, mapcoord).gba;',
+				// 'gl_FragColor.rgb = vec3(abs(alphaval.x - alphaval.y)) * 0.1;',
 
-				// 'gl_FragColor.rgb = N;',
-
-				'gl_FragColor.r += alphaval.z >= 1.0 ? 0.5 : 0.0;',
+				// 'gl_FragColor.r += alphaval.z >= 1.0 ? 0.5 : 0.0;',
 				// 'gl_FragColor.g += alphaval.z * 0.25;',
 				// 'gl_FragColor.b += alphaval.z <= 0.0 ? 0.5 : 0.0;',
 				'}'
 			].join('\n');
 		}
+	};
+
+	var upsampleShader = {
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			diffuseMap: 'MAIN_MAP',
+			childMap: Shader.DIFFUSE_MAP,
+			res: [1, 1, 1, 1]
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'varying vec2 texCoord0;',
+
+			'void main(void) {',
+			'	texCoord0 = vertexUV0;',
+			'	gl_Position = vec4(vertexPosition, 1.0);',
+			'}'
+		].join('\n'),
+		fshader: [
+			'uniform sampler2D diffuseMap;',
+			'uniform sampler2D childMap;',
+
+			'uniform vec4 res;',
+
+			'varying vec2 texCoord0;',
+
+			'void main(void)',
+			'{',
+			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+
+			'	vec2 coordMod = mod(floor(texCoord0 * res.xy), 2.0);',
+			'	bvec2 test = equal(coordMod, vec2(0.0));',
+
+			'	if (all(test)) {',
+			'		gl_FragColor.g = texture2D(childMap, texCoord0).r;',
+			'	} else if (test.x) {',
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(0.0, res.w)).r) * 0.5;',
+			'	} else if (test.y) {',
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, 0.0)).r) * 0.5;',
+			'	} else {',
+			'		gl_FragColor.g = (texture2D(childMap, texCoord0).r + texture2D(childMap, texCoord0 + vec2(res.z, res.w)).r) * 0.5;',
+			'	}',
+			'	gl_FragColor.ba = vec2(0.0);',
+			'}'
+		].join('\n')
+	};
+
+	var brushShader = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			opacity : 1.0,
+			diffuseMap : Shader.DIFFUSE_MAP
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+
+		'void main(void) {',
+		'	texCoord0 = vertexUV0;',
+		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'uniform sampler2D diffuseMap;',
+		'uniform float opacity;',
+
+		'varying vec2 texCoord0;',
+
+		'void main(void)',
+		'{',
+		'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+		'	gl_FragColor.a *= opacity;',
+		'}'//
+		].join('\n')
 	};
 
 	return Terrain;
