@@ -169,8 +169,8 @@ function(
 		this.material = material;
 		this.vegType = 0;
 
-		this.patchSize = 60; //25;
-		this.patchDensity = 15; //5;
+		this.patchSize = 50; //25;
+		this.patchDensity = 10; //5;
 		this.gridSize = 11;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
@@ -197,6 +197,11 @@ function(
 		this.currentZ = -10000;
 
 		return promise;
+	};
+
+	Forrest.prototype.rebuild = function() {
+		this.currentX = -10000;
+		this.currentZ = -10000;
 	};
 
 	Forrest.prototype.getVegetationType = function(xx, zz, slope) {
@@ -232,7 +237,7 @@ function(
 			return;
 		}
 
-		// console.time('vegetation update');
+		console.time('forrest update');
 
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
@@ -268,7 +273,7 @@ function(
 		this.currentX = newX;
 		this.currentZ = newZ;
 
-		// console.timeEnd('vegetation update');
+		console.timeEnd('forrest update');
 	};
 
 	Forrest.prototype.createPatch = function(patchX, patchZ) {

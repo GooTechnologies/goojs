@@ -107,6 +107,11 @@ function(
 		return promise;
 	};
 
+	Vegetation.prototype.rebuild = function() {
+		this.currentX = -10000;
+		this.currentZ = -10000;
+	};
+
 	Vegetation.prototype.circleVegetation = function() {
 		this.vegType++;
 		this.vegType %= 12;
@@ -145,7 +150,7 @@ function(
 			return;
 		}
 
-		// console.time('vegetation update');
+		console.time('vegetation update');
 
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
@@ -181,7 +186,7 @@ function(
 		this.currentX = newX;
 		this.currentZ = newZ;
 
-		// console.timeEnd('vegetation update');
+		console.timeEnd('vegetation update');
 	};
 
 	Vegetation.prototype.createPatch = function(patchX, patchZ) {
@@ -219,7 +224,7 @@ function(
 				var anglex = Math.sin(angle);
 				var anglez = Math.cos(angle);
 				this.calcVec.setd(anglex, 0.0, anglez);
-				transform.lookAt(this.calcVec, norm);
+				this.lookAt(transform.rotation, this.calcVec, norm);
 				transform.translation.setd(xx, yy, zz);
 				transform.update();
 
@@ -232,6 +237,31 @@ function(
 		var meshDatas = meshBuilder.build();
 
 		return meshDatas[0]; // Don't create patches bigger than 65k
+	};
+
+	Vegetation.prototype.lookAt = function (matrix, direction, up) {
+		var x = matrix._tempX, y = matrix._tempY, z = matrix._tempZ;
+
+		y.setv(up).normalize();
+		x.setv(up).cross(direction).normalize();
+		z.setv(y).cross(x);
+
+		// z.setv(direction).normalize();
+		// x.setv(up).cross(z).normalize();
+		// y.setv(z).cross(x);
+
+		var d = matrix.data;
+		d[0] = x.data[0];
+		d[1] = x.data[1];
+		d[2] = x.data[2];
+		d[3] = y.data[0];
+		d[4] = y.data[1];
+		d[5] = y.data[2];
+		d[6] = z.data[0];
+		d[7] = z.data[1];
+		d[8] = z.data[2];
+
+		return this;
 	};
 
 	Vegetation.prototype.createBase = function(type) {
