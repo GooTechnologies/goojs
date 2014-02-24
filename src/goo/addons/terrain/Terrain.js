@@ -9,9 +9,11 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/Texture',
+	'goo/renderer/Renderer',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/shapes/ShapeCreator',
@@ -30,9 +32,11 @@ function(
 	Shader,
 	ShaderBuilder,
 	ShaderLib,
+	ShaderFragment,
 	TextureCreator,
 	RenderTarget,
 	Texture,
+	Renderer,
 	FullscreenPass,
 	FullscreenUtil,
 	ShapeCreator,
@@ -104,6 +108,17 @@ function(
 			size *= 0.5;
 		}
 
+
+		this.terrainPickingMaterial = Material.createEmptyMaterial(terrainPickingShader, 'terrainPickingMaterial');
+		this.terrainPickingMaterial.blendState = {
+			blending: 'NoBlending',
+			blendEquation: 'AddEquation',
+			blendSrc: 'SrcAlphaFactor',
+			blendDst: 'OneMinusSrcAlphaFactor'
+		};
+
+
+
 		this.n = 31;
 		// this.n = 8;
 		this.gridSize = (this.n + 1) * 4 - 1;
@@ -135,7 +150,7 @@ function(
 		// var tw = textures[0].image.width;
 		// var th = textures[0].image.height;
 
-		var entity = world.createEntity('TerrainRoot');
+		var entity = this.terrainRoot = world.createEntity('TerrainRoot');
 		entity.addToWorld();
 		this.clipmaps = [];
 		for (var i = 0; i < count; i++) {
@@ -186,6 +201,18 @@ function(
 			parentClipmap = clipmap;
 		}
 	}
+
+	Terrain.prototype.pick = function(x, y, pickingStore) {
+		var entities = [];
+		EntityUtils.traverse(this.terrainRoot, function (entity) {
+			if (entity.meshDataComponent) {
+				entities.push(entity);
+			}
+		});
+		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, true, x, y, this.terrainPickingMaterial);
+		this.renderer.pick(x, y, pickingStore, Renderer.mainCamera);
+		console.log(pickingStore);
+	};
 
 	Terrain.prototype.draw = function(type, size, x, y, power, brushTexture) {
 		this.renderable.materials[0].uniforms.opacity = power;
@@ -502,8 +529,6 @@ function(
 
 				'const vec2 alphaOffset = vec2(45.0);',
 				'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
-				// 'const vec2 alphaOffset = vec2(10.0);',
-				// 'const vec2 oneOverWidth = vec2(1.0 / 5.0);',
 
 				'void main(void) {',
 				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
@@ -762,6 +787,74 @@ function(
 		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y) + vec2(0.0/512.0, 1.0/512.0)).r);',
 		'}'//
 		].join('\n')
+	};
+
+	var terrainPickingShader = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			cameraFar : Shader.FAR_PLANE,
+			cameraPosition: Shader.CAMERA,
+			heightMap: 'HEIGHT_MAP',
+			resolution: function(shaderInfo) {
+				return shaderInfo.renderable.materials[0].uniforms.resolution;
+			}, //[255, 1, 1024, 1024]
+			id : function(shaderInfo) {
+				return shaderInfo.renderable.id + 1;
+			}
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+
+		'uniform mat4 viewMatrix;',
+		'uniform mat4 projectionMatrix;',
+		'uniform mat4 worldMatrix;',
+		'uniform float cameraFar;',
+		'uniform sampler2D heightMap;',
+		'uniform vec4 resolution;',
+		'uniform vec3 cameraPosition;',
+
+		'varying float depth;',
+
+		'const vec2 alphaOffset = vec2(45.0);',
+		'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
+
+		'void main(void) {',
+			'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+			'vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw;',
+
+			'vec4 heightCol = texture2D(heightMap, coord);',
+			'float zf = heightCol.r;',
+			'float zd = heightCol.g;',
+
+			'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
+			'alpha.x = max(alpha.x, alpha.y);',
+			'float z = mix(zf, zd, alpha.x);',
+
+			'worldPos.y = z * resolution.x;',
+
+			'vec4 mvPosition = viewMatrix * worldMatrix * worldPos;',
+			'depth = -mvPosition.z / cameraFar;',
+			'gl_Position = projectionMatrix * mvPosition;',
+		'}'
+		].join("\n"),
+		fshader : [
+		'uniform float id;',
+
+		'varying float depth;',
+
+		ShaderFragment.methods.packDepth16,
+
+		'void main() {',
+			'vec2 packedId = vec2(floor(id/255.0), mod(id, 255.0)) * vec2(1.0/255.0);',
+			'vec2 packedDepth = packDepth16(depth);',
+			'gl_FragColor = vec4(packedId, packedDepth);',
+		'}'
+		].join("\n")
 	};
 
 	return Terrain;
