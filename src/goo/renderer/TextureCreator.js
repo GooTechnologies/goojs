@@ -71,9 +71,9 @@ function (
 		settings.autoPlay = true;
 
 		var texture = this.textureHandler._objects[id] = this.textureHandler._create();
-		return this.textureHandler.update(id, settings, {
+		this.textureHandler.update(id, settings, {
 			texture: {
-				dontwait: false
+				dontwait: true
 			}
 		}).then(null, function(err) {
 			errorCallback(err);

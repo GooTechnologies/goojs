@@ -72,11 +72,8 @@ require([
 		var entity = goo.world.createEntity(meshData, material);
 
 
-		new TextureCreator().loadTextureVideo('../../resources/sintel.mp4', false).then(function(texture) {
-			material.setTexture('DIFFUSE_MAP', texture);
-
-		});
-
+		var texture = new TextureCreator().loadTextureVideo('../../resources/sintel.mp4', false);
+		material.setTexture('DIFFUSE_MAP', texture);
 
 		return entity;
 	}

@@ -192,6 +192,7 @@ function(
 
 	Ajax.prototype._loadVideo = function (url) {
 		var video = document.createElement('video');
+		video.crossOrigin = 'anonymous';
 		var promise = new RSVP.Promise();
 		video.addEventListener('canplay', function() {
 			video.dataReady = true;

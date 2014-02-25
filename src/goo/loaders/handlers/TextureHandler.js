@@ -134,6 +134,7 @@ function(
 			texture.flipY = config.flipY;
 
 			texture.setNeedsUpdate();
+			texture.updateCallback = null;
 
 			var imageRef = config.imageRef;
 			if (imageRef) {
@@ -169,9 +170,12 @@ function(
 							texture.generateMipmaps = false;
 							texture.minFilter = 'BilinearNoMipMaps';
 						}
-						//texture.setImage(video);
+						texture.setImage(video);
+						texture.updateCallback = function () {
+							return !video.paused;
+						};
 						if (config.autoPlay === undefined || config.autoPlay) {
-							//video.play();
+							video.play();
 						}
 						return texture;
 					});
