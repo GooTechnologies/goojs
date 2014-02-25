@@ -132,7 +132,11 @@ define([
 			for (var j = 0; j < nShapes; j++) {
 				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
 				sphereMaterial.uniforms.color = [i / nShapes, j / nShapes, 0.3];
-				V.goo.world.createEntity(meshData, sphereMaterial, [i - nShapes/2, j - nShapes/2, 0]).setRotation(rotation).addToWorld();
+				V.goo.world.createEntity(
+					meshData,
+					sphereMaterial,
+					[i - nShapes/2, j - nShapes/2, 0]
+				).setRotation(rotation).addToWorld();
 			}
 		}
 	};
@@ -158,8 +162,9 @@ define([
 	 */
 	V.addLights = function () {
 		var world = V.goo.world;
-		world.createEntity(new PointLight(), [100, 100, 100]).addToWorld();
+		world.createEntity(new PointLight(), [ 100,  100,  100]).addToWorld();
 		world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
+		world.createEntity(new PointLight(), [-100,  100, -100]).addToWorld();
 	};
 
 	/**

@@ -13,7 +13,8 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/TextureCreator',
-	'goo/entities/components/LightComponent'
+	'goo/entities/components/LightComponent',
+	'../../lib/V'
 ], function(
 	GooRunner,
 	World,
@@ -29,66 +30,49 @@ require([
 	Vector3,
 	DirectionalLight,
 	TextureCreator,
-	LightComponent
+	LightComponent,
+	V
 ) {
 	'use strict';
 
-	var resourcePath = "../../resources";
+	var resourcePath = '../../resources/';
 
-	function anisotropicDemo(goo) {
-		//var boxEntity = createBoxEntity(goo);
-		//boxEntity.transformComponent.setTranslation(-50, -0.5, 0);
-		//boxEntity.addToWorld();
+	var goo = V.initGoo();
+	var world = goo.world;
 
-		var boxEntity = createBoxEntity(goo, goo.renderer.capabilities.maxAnisotropy);
-		boxEntity.transformComponent.setTranslation(50, -0.5, 0);
-		boxEntity.addToWorld();
+	var boxEntity = createBoxEntity();
+	boxEntity.transformComponent.setTranslation(-50, -0.5, 0);
+	boxEntity.addToWorld();
 
-		var light = new DirectionalLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(1, 10, 1);
-		lightEntity.transformComponent.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
-		lightEntity.addToWorld();
+	boxEntity = createBoxEntity(goo.renderer.capabilities.maxAnisotropy);
+	boxEntity.transformComponent.setTranslation(50, -0.5, 0);
+	boxEntity.addToWorld();
 
-		var camera = new Camera(45, 1, 0.1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement: goo.renderer.domElement,
-			spherical: new Vector3(1, Math.PI / 2, 0.1),
-			minAscent: 0.1,
-			turnSpeedHorizontal: 0.001,
-			turnSpeedVertical: 0.001
-		}));
-		cameraEntity.setComponent(scripts);
-	}
+	V.addLights();
 
-	function createBoxEntity(goo, anisotropy) {
+	var camera = new Camera(45, 1, 0.1, 1000);
+	var cameraEntity = goo.world.createEntity("CameraEntity");
+	cameraEntity.setComponent(new CameraComponent(camera));
+	cameraEntity.addToWorld();
+	var scripts = new ScriptComponent();
+	scripts.scripts.push(new OrbitCamControlScript({
+		domElement: goo.renderer.domElement,
+		spherical: new Vector3(1, Math.PI / 2, 0.1),
+		minAscent: 0.1,
+		turnSpeedHorizontal: 0.001,
+		turnSpeedVertical: 0.001
+	}));
+	cameraEntity.setComponent(scripts);
+
+
+	function createBoxEntity(anisotropy) {
 		var meshData = ShapeCreator.createBox(100, 1, 100, 200, 200);
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
-		var entity = goo.world.createEntity(meshData, material);
+		var entity = world.createEntity(meshData, material);
 
-
-		var texture = new TextureCreator().loadTextureVideo('../../resources/sintel.mp4', false);
+		var texture = new TextureCreator().loadTexture2D(resourcePath + 'font.png', { anisotropy: anisotropy });
 		material.setTexture('DIFFUSE_MAP', texture);
 
 		return entity;
 	}
-
-	function init() {
-		var goo = new GooRunner({
-			showStats: true,
-			toolMode: true,
-			logo: 'bottomleft'
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		anisotropicDemo(goo);
-	}
-
-	init();
 });
