@@ -4,6 +4,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/math/MathUtils',
 	'goo/math/Transform',
+	'goo/math/Vector3',
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
@@ -16,6 +17,7 @@ define([
 	'goo/renderer/Renderer',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/light/DirectionalLight',
 	'goo/shapes/ShapeCreator',
 	'goo/shapes/Box',
 	'goo/renderer/Util'
@@ -27,6 +29,7 @@ function(
 	MeshRendererComponent,
 	MathUtils,
 	Transform,
+	Vector3,
 	MeshData,
 	Material,
 	Shader,
@@ -39,6 +42,7 @@ function(
 	Renderer,
 	FullscreenPass,
 	FullscreenUtil,
+	DirectionalLight,
 	ShapeCreator,
 	Box,
 	Util
@@ -54,12 +58,14 @@ function(
 		mat.blendState.blending = 'AdditiveBlending';
 		this.defaultBrushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
 		mat.setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+		mat.cullState.cullFace = 'Front';
+
 		this.renderable = {
 			meshData: brush,
 			materials: [mat],
 			transform: new Transform()
 		};
-
+		this.renderable.transform.setRotationXYZ(0, 0, Math.PI*0.5);
 
 		var world = goo.world;
 		this.renderer = goo.renderer;
@@ -204,6 +210,27 @@ function(
 			clipmap.parentClipmap = parentClipmap;
 			parentClipmap = clipmap;
 		}
+
+
+		// edit marker
+		var light = new DirectionalLight();
+		var brushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
+		brushTexture.wrapS = 'EdgeClamp';
+		brushTexture.wrapT = 'EdgeClamp';
+		light.lightCookie = brushTexture;
+		light.shadowSettings.size = 10;
+		var lightEntity = this.lightEntity = world.createEntity(light);
+		lightEntity.setTranslation(200, 200, 200);
+		lightEntity.setRotation(-Math.PI*0.5, 0, 0);
+		lightEntity.addToWorld();
+	}
+
+	Terrain.prototype.setMarker = function(type, size, x, y, power, brushTexture) {
+		this.lightEntity.lightComponent.light.shadowSettings.size = size * 0.5;
+		brushTexture.wrapS = 'EdgeClamp';
+		brushTexture.wrapT = 'EdgeClamp';
+		this.lightEntity.lightComponent.light.lightCookie = brushTexture;
+		this.lightEntity.setTranslation(x, 200, y);
 	}
 
 	Terrain.prototype.pick = function(x, y, pickingStore) {
@@ -256,7 +283,7 @@ function(
 		}
 
 		this.renderable.transform.translation.setd(x/this.size, y/this.size, 0);
-		this.renderable.transform.scale.setd(size, size, size);
+		this.renderable.transform.scale.setd(-size, size, size);
 		this.renderable.transform.update();
 		this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
 	};
@@ -566,6 +593,7 @@ function(
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
 				'float z = mix(zf, zd, alpha.x);',
+				'z = coord.x < 0.0 || coord.x > 1.0 || coord.y < 0.0 || coord.y > 1.0 ? -1000.0 : z;',
 				'alphaval = vec4(zf, zd, alpha.x, z);',
 
 				'worldPos.y = z * resolution.x;',
@@ -636,7 +664,7 @@ function(
 				'final_color = mix(g1, g2, smoothstep(0.0, 1.0, 1.0));',
 
 				'slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-				'slope = smoothstep(0.0, 0.1, slope);',
+				'slope = smoothstep(0.05, 0.15, slope);',
 				'final_color = mix(final_color, mountain, slope);',
 
 				ShaderBuilder.light.fragment,
