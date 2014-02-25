@@ -1,4 +1,3 @@
-
 define([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
@@ -28,8 +27,18 @@ define([
 	) {
 	'use strict';
 
+	/**
+	 * @class
+	 * A collection of useful methods for visual tests
+	 */
 	var V = {};
 
+	/**
+	 * Converts either 3 parameters, an array, a {x, y, z} object or a Vector3 a Vector3
+	 * @param obj
+	 * @param def
+	 * @returns {*}
+	 */
 	V.toVector3 = function (obj, def) {
 		if (Array.isArray(obj)) {
 			return new Vector3(obj);
@@ -42,6 +51,13 @@ define([
 		}
 	};
 
+	/**
+	 * Adds an orbit camera in demo mode
+	 * @param spherical
+	 * @param lookAt
+	 * @param dragButton
+	 * @returns {Entity}
+	 */
 	V.addOrbitCamera = function (spherical, lookAt, dragButton) {
 		spherical = V.toVector3(spherical, new Vector3(20, Math.PI / 2, 0));
 		lookAt = V.toVector3(lookAt, new Vector3(0, 0, 0));
@@ -65,6 +81,10 @@ define([
 		return cameraEntity;
 	};
 
+	/**
+	 * Creates a random bright color
+	 * @returns {Array}
+	 */
 	function getRandomColor() {
 		var angle = Math.random() * Math.PI * 2;
 		var color = [
@@ -77,6 +97,14 @@ define([
 		return color;
 	}
 
+	/**
+	 * Returns a material from the supplied colors or a random brightly colored material
+	 * @param r Red value
+	 * @param g Green value
+	 * @param b Blue value
+	 * @param a Alpha value
+	 * @returns {goo.renderer.Material}
+	 */
 	V.getColoredMaterial = function (r, g, b, a) {
 		var material = new Material(ShaderLib.simpleLit);
 		if (arguments.length === 0) {
@@ -89,8 +117,15 @@ define([
 		return material;
 	};
 
+	/**
+	 * Adds a grid of colored shapes
+	 * @param [nShapes=15]
+	 * @param [meshData=new Sphere]
+	 * @param [rotation=(0, 0, 0)]
+	 */
 	V.addColoredShapes = function(nShapes, meshData, rotation) {
 		nShapes = nShapes || 15;
+		meshData = meshData || new Sphere(32, 32);
 		rotation = rotation || [0, 0, 0];
 
 		for (var i = 0; i < nShapes; i++) {
@@ -102,20 +137,36 @@ define([
 		}
 	};
 
+	/**
+	 * Adds a grid of colored spheres
+	 * @param [nSpheres=15]
+	 */
 	V.addColoredSpheres = function(nSpheres) {
 		V.addColoredShapes(nSpheres, new Sphere(32, 32));
 	};
 
+	/**
+	 * Adds a grid of colored boxes to the scene
+	 * @param [nBoxes=15]
+	 */
 	V.addColoredBoxes = function(nBoxes) {
 		V.addColoredShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
+	/**
+	 * Adds standard lighting to the scene
+	 */
 	V.addLights = function () {
 		var world = V.goo.world;
 		world.createEntity(new PointLight(), [100, 100, 100]).addToWorld();
 		world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
 	};
 
+	/**
+	 * Displays the normals of an object
+	 * @param entity
+	 * @returns {Entity}
+	 */
 	V.showNormals = function (entity) {
 		var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
 		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
@@ -126,6 +177,11 @@ define([
 		return normalsEntity;
 	};
 
+	/**
+	 * Initializes Goo
+	 * @param _options
+	 * @returns {GooRunner}
+	 */
 	V.initGoo = function (_options) {
 		var options = { showStats: true, logo: 'bottomleft' };
 		if (_options && _options.logo) {
