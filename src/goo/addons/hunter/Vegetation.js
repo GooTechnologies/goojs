@@ -79,6 +79,8 @@ function(
 
 		this.patchSize = 10;
 		this.patchDensity = 15;
+		// this.patchSize = 15;
+		// this.patchDensity = 15;
 		this.gridSize = 9;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
@@ -119,6 +121,19 @@ function(
 		this.currentZ = -10000;
 	};
 
+	var hidden = false;
+	Vegetation.prototype.toggle = function() {
+		hidden = !hidden;
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = this.grid[x][z];
+				entity.skip = hidden;
+			}
+		}
+		if (!hidden) {
+			this.rebuild();
+		}
+	};
 
 	Vegetation.prototype.getVegetationType = function(xx, zz, slope) {
 		if (slope < 0.9) {
@@ -143,6 +158,10 @@ function(
 	};
 
 	Vegetation.prototype.update = function(x, z) {
+		if (hidden) {
+			return;
+		}
+
 		var newX = Math.floor(x / this.patchSize);
 		var newZ = Math.floor(z / this.patchSize);
 

@@ -66,14 +66,14 @@ function(
 
 		var loader = new DynamicLoader({
 			world: world,
-			rootPath: window.hunterResources + '/tree1',
+			rootPath: window.hunterResources + '/tree1'
 		});
 
 		loader.loadFromBundle('project.project', 'root.bundle', {
 			recursive: false,
 			preloadBinaries: true,
 			noEnvironment: true
-		}).then(function(configs) {
+		}).then(function() {
 			world.process();
 
 			var root = loader.getCachedObjectForRef('entities/Veg_T01_aspenM_LOD2-Whole_root.entity');
@@ -229,7 +229,25 @@ function(
 		return this.vegType-1;
 	};
 
+	var hidden = false;
+	Forrest.prototype.toggle = function() {
+		hidden = !hidden;
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				var entity = this.grid[x][z];
+				entity.skip = hidden;
+			}
+		}
+		if (!hidden) {
+			this.rebuild();
+		}
+	};
+
 	Forrest.prototype.update = function(x, z) {
+		if (hidden) {
+			return;
+		}
+
 		var newX = Math.floor(x / this.patchSize);
 		var newZ = Math.floor(z / this.patchSize);
 
@@ -329,7 +347,7 @@ function(
 	var types = [
 		{ w: 9, h: 9, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.25 },
 		{ w: 8, h: 8, tx: 0.00, ty: 0.5, tw: 0.25, th: 0.25 },
-		{ w: 9, h: 9, tx: 0.5, ty: 0.75, tw: 0.25, th: 0.25 },
+		{ w: 9, h: 9, tx: 0.5, ty: 0.75, tw: 0.25, th: 0.25 }
 	];
 
 	Forrest.prototype.createBase = function(type) {
@@ -339,9 +357,9 @@ function(
 		var meshData = new MeshData(attributeMap, 4, 6);
 
 		meshData.getAttributeBuffer(MeshData.POSITION).set([
-			0, -type.h * 0.1, 0, 
-			0, -type.h * 0.1, 0, 
-			0, -type.h * 0.1, 0, 
+			0, -type.h * 0.1, 0,
+			0, -type.h * 0.1, 0,
+			0, -type.h * 0.1, 0,
 			0, -type.h * 0.1, 0
 		]);
 		meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([
@@ -354,9 +372,9 @@ function(
 			0, type.h, type.h, 0
 		]);
 		meshData.getAttributeBuffer('OFFSET').set([
-			-type.w*0.5, 0, 
-			-type.w*0.5, type.h, 
-			type.w*0.5, type.h, 
+			-type.w*0.5, 0,
+			-type.w*0.5, type.h,
+			type.w*0.5, type.h,
 			type.w*0.5, 0
 		]);
 
