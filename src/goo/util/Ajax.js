@@ -13,7 +13,7 @@ function(
 	_,
 	RSVP
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Ajax helper class
@@ -192,7 +192,6 @@ function(
 
 	Ajax.prototype._loadVideo = function (url) {
 		var video = document.createElement('video');
-
 		var promise = new RSVP.Promise();
 		video.addEventListener('canplay', function() {
 			video.dataReady = true;
@@ -202,6 +201,8 @@ function(
 		video.addEventListener('onerror', function(e) {
 			promise.reject('Coult not load video from ' + url + ', ' + e);
 		}, false);
+
+		video.src = url;
 		return promise;
 	};
 
@@ -252,7 +253,9 @@ function(
 			'gif'
 		],
 		video: [
-			'mp4'
+			'mp4',
+			'ogv',
+			'webm'
 		],
 		binary: [
 			'dat',

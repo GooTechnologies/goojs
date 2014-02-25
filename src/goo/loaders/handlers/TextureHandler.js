@@ -23,7 +23,7 @@ function(
 	Util,
 	_
 ) {
-	"use strict";
+	'use strict';
 
 	/*jshint eqeqeq: false, -W041 */
 	/**
@@ -160,11 +160,8 @@ function(
 						texture.setImage(image);
 						return texture;
 					});
-				} else if (type === 'mp4') {
+				} else if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
 					// Video
-					var video = document.createElement('video');
-					video.loop = (config.loop !== undefined) ? config.loop : true;
-
 					ret = that.getConfig(imageRef, options).then(function(video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
@@ -172,9 +169,9 @@ function(
 							texture.generateMipmaps = false;
 							texture.minFilter = 'BilinearNoMipMaps';
 						}
-						texture.setImage(imageRef);
+						//texture.setImage(video);
 						if (config.autoPlay === undefined || config.autoPlay) {
-							video.play();
+							//video.play();
 						}
 						return texture;
 					});

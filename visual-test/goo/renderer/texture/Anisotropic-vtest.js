@@ -36,11 +36,11 @@ require([
 	var resourcePath = "../../resources";
 
 	function anisotropicDemo(goo) {
-		var boxEntity = createBoxEntity(goo);
-		boxEntity.transformComponent.setTranslation(-50, -0.5, 0);
-		boxEntity.addToWorld();
+		//var boxEntity = createBoxEntity(goo);
+		//boxEntity.transformComponent.setTranslation(-50, -0.5, 0);
+		//boxEntity.addToWorld();
 
-		boxEntity = createBoxEntity(goo, goo.renderer.capabilities.maxAnisotropy);
+		var boxEntity = createBoxEntity(goo, goo.renderer.capabilities.maxAnisotropy);
 		boxEntity.transformComponent.setTranslation(50, -0.5, 0);
 		boxEntity.addToWorld();
 
@@ -70,10 +70,13 @@ require([
 		var meshData = ShapeCreator.createBox(100, 1, 100, 200, 200);
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		var entity = goo.world.createEntity(meshData, material);
-		TextureCreator.clearCache();
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/font.png');
-		texture.anisotropy = anisotropy;
-		material.setTexture('DIFFUSE_MAP', texture);
+
+
+		new TextureCreator().loadTextureVideo('../../resources/sintel.mp4', false).then(function(texture) {
+			material.setTexture('DIFFUSE_MAP', texture);
+
+		});
+
 
 		return entity;
 	}

@@ -309,7 +309,7 @@ function(
 	 * @private
 	 */
 	DynamicLoader.prototype._loadRef = function(ref, options) {
-		return this._ajax.load(ref, (options==null)?false:options.noCache);
+		return this._ajax.load(ref, (options==null) ? false : options.noCache);
 	};
 
 	/*
