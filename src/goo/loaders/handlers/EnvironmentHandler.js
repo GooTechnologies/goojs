@@ -3,13 +3,15 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/Snow' // TODO Should move!
+	'goo/util/Snow', // TODO Should move!
+	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
 	_,
 	SystemBus,
 	ShaderBuilder,
-	Snow
+	Snow,
+	RSVP
 ) {
 	'use strict';
 
@@ -84,14 +86,27 @@ define([
 				}
 			}
 
+			var promises = [];
 			// Skybox
 			if(config.skyboxRef && config.skyboxRef !== that._cache.skyboxRef) {
-				return that._load(config.skyboxRef, options).then(function(/*skybox*/) {
+				var p = that._load(config.skyboxRef, options).then(function(/*skybox*/) {
 					that._cache.skyboxRef = config.skyboxRef;
-					return object;
 				});
+				promises.push(p);
 			}
-			return object;
+
+			// Sound
+			var soundSystem = that.world.getSystem('SoundSystem');
+			if (config.sound && soundSystem) {
+				soundSystem.updateConfig(config.sound);
+				if (config.sound.reverbRef) {
+					var p = that._load(config.sound.reverbRef).then(function(sound) {
+						soundSystem.setReverb(sound._buffer);
+					});
+					promises.push(p);
+				}
+			}
+			return RSVP.all(promises).then(function() { return object; });
 		});
 	};
 

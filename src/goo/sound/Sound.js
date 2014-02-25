@@ -23,7 +23,7 @@ function (
 		this.id = null;
 		this._loop = false;
 		this._rate = 1.0;
-		this._start = 0;
+		this._offset = 0;
 		this._duration = null;
 		this._volume = 1.0;
 		// Nodes
@@ -62,14 +62,14 @@ function (
 		this._currentSource.buffer = this._buffer;
 		this._currentSource.loop = this._loop;
 		if (this._loop) {
-			this._currentSource.loopStart = this._start;
-			this._currentSource.loopEnd = this._duration + this._start;
+			this._currentSource.loopStart = this._offset;
+			this._currentSource.loopEnd = this._duration + this._offset;
 		}
 
 		this._playStart = AudioContext.currentTime - this._pausePos;
 		var duration = this._duration - this._pausePos;
 
-		this._currentSource.start(0, this._pausePos + this._start, duration);
+		this._currentSource.start(0, this._pausePos + this._offset, duration);
 
 		this._fixTimer();
 		return this._endPromise;
@@ -175,13 +175,13 @@ function (
 			this._volume = MathUtils.clamp(config.volume, 0, 1);
 			this._outNode.gain.value = this._volume;
 		}
-		if (config.start !== undefined) {
-			this._start = config.start;
+		if (config.offset !== undefined) {
+			this._offset = config.offset;
 		}
 		if (config.duration !== undefined) {
 			this._duration = config.duration;
 		}
-		if (config.rate !== undefined) {
+		if (config.timeScale !== undefined) {
 			this._rate = config.timeScale;
 		}
 		if (this._buffer) {
@@ -195,11 +195,11 @@ function (
 	 * @private
 	 */
 	Sound.prototype._clampInterval = function() {
-		this._start = Math.min(this._start, this._buffer.duration);
+		this._offset = Math.min(this._offset, this._buffer.duration);
 		if (this._duration !== null) {
-			this._duration = Math.min(this._buffer.duration - this._start, this._duration);
+			this._duration = Math.min(this._buffer.duration - this._offset, this._duration);
 		} else {
-			this._duration = this._buffer.duration - this._start;
+			this._duration = this._buffer.duration - this._offset;
 		}
 		this._pausePos = MathUtils.clamp(this._pausePos, 0, this._duration);
 	};

@@ -3,7 +3,8 @@ define([
 	'goo/entities/components/SoundComponent',
 	'goo/sound/AudioContext',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function(
@@ -11,7 +12,8 @@ function(
 	SoundComponent,
 	AudioContext,
 	RSVP,
-	PromiseUtil
+	PromiseUtil,
+	_
 ) {
 	"use strict";
 
@@ -35,7 +37,7 @@ function(
 
 
 	/**
-	 * Removes the souncomponenthandler and stops all connected sounds
+	 * Removes the souncomponent and stops all connected sounds
 	 * @param {Entity} entity
 	 * @private
 	 */
@@ -47,6 +49,17 @@ function(
 				sounds[i].stop();
 			}
 		}
+	};
+
+	/**
+	 * Prepares the config
+	 * @param {object} config
+	 */
+	SoundComponentHandler.prototype._prepare = function(config) {
+		_.defaults(config, {
+			volume: 1.0,
+			reverb: 0.0
+		});
 	};
 
 

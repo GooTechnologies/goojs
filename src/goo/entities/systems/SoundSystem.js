@@ -107,7 +107,7 @@ function(
 		}
 		_.extend(this._settings, config);
 		if (config.dopplerFactor !== undefined) {
-			this._listener.dopplerFactor = config.dopplerFactor;
+			this._listener.dopplerFactor = config.dopplerFactor * 0.05;
 		}
 		if (config.volume !== undefined) {
 			this._outNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
