@@ -57,6 +57,8 @@ function(
 	ScriptHandler.prototype.update = function(ref, config, options) {
 		var script;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(script) {
+			if (!config) return;
+
 			// first treat the oldstyle loading
 			if (config.className) {
 				var name = config.className;

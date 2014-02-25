@@ -52,7 +52,9 @@ define([
 	ConfigHandler._registerClass('skybox', SkyboxHandler);
 
 	SkyboxHandler.prototype._remove = function(ref) {
-		this.world.getSystem('RenderSystem').removed(this._activeSkyshape);
+		this._hide(this._skybox);
+		this._hide(this._skysphere);
+		this._skyboxTexture.setImage(null);
 		this._activeSkyshape = null;
 		ShaderBuilder.SKYBOX = null;
 		ShaderBuilder.SKYSPHERE = null;
@@ -91,7 +93,7 @@ define([
 						type: 'Sphere',
 						message: 'The skysphere needs an image to display.'
 					});
-					that._hide();
+					that._hide(that._skysphere);
 					return;
 				}
 				var skyTex = that._skysphereTexture;
@@ -187,7 +189,7 @@ define([
 	SkyboxHandler.prototype._show = function(skyshape) {
 		var renderSystem = this.world.getSystem('RenderSystem');
 		renderSystem.added(skyshape);
-
+		this._activeSkyshape = skyshape;
 		ShaderBuilder.SKYBOX = skyshape === this._skybox ? this._skyboxTexture : null;
 		ShaderBuilder.SKYSPHERE = skyshape === this._skysphere ? this._skysphereTexture : null;
 	};
