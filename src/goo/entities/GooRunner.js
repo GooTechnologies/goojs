@@ -486,7 +486,8 @@ function (
 					y: evt.y,
 					type: type,
 					domEvent: this._eventTriggered[type],
-					id: evt.id
+					id: evt.id,
+					intersection: evt.intersection
 				};
 				for (var i = 0; i < this._eventListeners[type].length; i++) {
 					if(this._eventListeners[type][i](e) === false) {
@@ -513,12 +514,14 @@ function (
 			this._eventTriggered[type] = e;
 			this.pick(x, y, function(index, depth) {
 				var entity = this.world.entityManager.getEntityByIndex(index);
+				var intersection = Renderer.mainCamera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, depth);
 				this._dispatchEvent({
 					entity: entity,
 					depth: depth,
 					x: x,
 					y: y,
-					id: index
+					id: index,
+					intersection: intersection
 				});
 			}.bind(this));
 		}.bind(this);

@@ -76,9 +76,7 @@ define([
 			dragButton: typeof dragButton === 'number' ? dragButton : -1
 		});
 
-		var cameraEntity = V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
-
-		return cameraEntity;
+		return V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
 	};
 
 	/**
@@ -202,6 +200,9 @@ define([
 		V.goo = new GooRunner(options);
 		V.goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(V.goo.renderer.domElement);
+
+		// V.goo.renderer.setClearColor(154 / 255, 172 / 255, 192 / 255, 1.0); // bright blue-grey
+		V.goo.renderer.setClearColor(103 / 255, 115 / 255, 129 / 255, 1.0); // dar blue-grey
 		return V.goo;
 	};
 
