@@ -374,15 +374,20 @@ function (
 		Renderer.mainCamera = newCam.camera;
 	});
 
-	var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-	svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-	svg.setAttribute('version', '1.1');
-	document.body.appendChild(svg);
-	svg.style.visibility = 'hidden';
-	svg.style.position = 'absolute';
-	console.log(svg);
-	//document.body.removeChild(svg);
-	//var z = svg.currentScale;
+	//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
+	// apparently this is the only way to find out the user zoom level
+	var svg;
+	if (document.createElementNS) {
+		svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+		svg.setAttribute('version', '1.1');
+		svg.style.visibility = 'hidden';
+		svg.style.position = 'absolute';
+		document.body.appendChild(svg);
+	} else {
+		//! AT: placeholder to avoid another conditional several lines below in checkResize
+		svg = { currentScale: 1 };
+	}
 
 	/**
 	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height
