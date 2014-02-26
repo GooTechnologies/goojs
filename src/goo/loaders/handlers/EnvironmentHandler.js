@@ -137,6 +137,8 @@ define([
 						soundSystem.setReverb(sound._buffer);
 					});
 					promises.push(p);
+				} else {
+					soundSystem.setReverb(null);
 				}
 			}
 			return RSVP.all(promises).then(function() { return object; });
