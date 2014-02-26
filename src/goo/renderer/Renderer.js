@@ -449,10 +449,10 @@ function (
 		if (w !== this.viewportX || h !== this.viewportY ||
 			width !== this.viewportWidth || height !== this.viewportHeight) {
 			this.setViewport(w, h, width, height);
-		}
 
-		if (this.hardwarePicking !== null) {
-			this.hardwarePicking.pickingTarget = null;
+			if (this.hardwarePicking !== null) {
+				this.hardwarePicking.pickingTarget = null;
+			}
 		}
 	};
 
@@ -1239,7 +1239,7 @@ function (
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
 					}
 					else {
-						Util.getBlankImage(texture, [.3, .3, .3, 0], image.width, image.height, this.maxCubemapSize, i);
+						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}
 				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
