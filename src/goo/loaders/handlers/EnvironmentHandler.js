@@ -15,6 +15,24 @@ define([
 ) {
 	'use strict';
 
+	var defaults = {
+		backgroundColor: [0.3,0.3,0.3,1],
+		globalAmbient: [0,0,0,1],
+		fog: {
+			enabled: false,
+			color: [1,1,1],
+			near: 10,
+			far: 1000
+		}
+	};
+	var soundDefaults = {
+		volume: 1,
+		reverb: 0,
+		dopplerFactor: 1,
+		rolloffFactor: 0.4,
+		maxDistance: 100
+	};
+
 	/**
 	 * @class Handling environments
 	 * @param {World} world
@@ -32,22 +50,37 @@ define([
 	ConfigHandler._registerClass('environment', EnvironmentHandler);
 
 	EnvironmentHandler.prototype._prepare = function(config) {
-		_.defaults(config, {
-			backgroundColor: [0,0,0,1],
-			globalAmbient: [0,0,0,1],
-			fog: {
-				enabled: false,
-				color: [1,1,1],
-				near: 10,
-				far: 1000
-			}
-		});
+		_.defaults(config, defaults);
 	};
 
 	EnvironmentHandler.prototype._create = function() {
 		return {
 			weatherState: {}
 		};
+	};
+
+	EnvironmentHandler.prototype._remove = function(ref) {
+		var object = this._objects[ref];
+		delete this._objects[ref];
+
+		// Remove weather
+		for (var key in object.weatherState) {
+			EnvironmentHandler.weatherHandlers[key].remove(object.weatherState);
+		}
+
+		// Reset environment
+		SystemBus.emit('goo.setClearColor', defaults.backgroundColor);
+		ShaderBuilder.GLOBAL_AMBIENT = defaults.globalAmbient;
+		ShaderBuilder.USE_FOG = defaults.fog.enabled;
+		ShaderBuilder.FOG_COLOR = defaults.fog.color.slice(0,3);
+		ShaderBuilder.FOG_SETTINGS = [defaults.fog.near, defaults.fog.far];
+
+		// Reset Sound
+		var soundSystem = this.world.getSystem('SoundSystem');
+		if (soundSystem) {
+			soundSystem.updateConfig(soundDefaults);
+			soundSystem.setReverb(null);
+		}
 	};
 
 	/**
