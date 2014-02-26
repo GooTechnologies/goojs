@@ -277,7 +277,7 @@ function (
 		if (this.doRender) {
 			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
-			this.renderer.clear();
+			//this.renderer.clear();
 
 			// run the prerender callbacks
 			for (var i = 0; i < this.callbacksPreRender.length; i++) {
