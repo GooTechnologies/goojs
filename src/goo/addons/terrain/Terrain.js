@@ -145,14 +145,14 @@ function(
 		this.height = 1;
 
 		var anisotropy = 4;
-		this.splat = new RenderTarget(this.size, this.size, {
+		this.splat = new RenderTarget(this.size * 2, this.size * 2, {
 				// magFilter: 'NearestNeighbor',
 				minFilter: 'NearestNeighborNoMipMaps',
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
 				generateMipmaps: false,
 		});
-		this.splatCopy = new RenderTarget(this.size, this.size, {
+		this.splatCopy = new RenderTarget(this.size * 2, this.size * 2, {
 				// magFilter: 'NearestNeighbor',
 				minFilter: 'NearestNeighborNoMipMaps',
 				wrapS: 'EdgeClamp',
@@ -279,6 +279,11 @@ function(
 		lightEntity.setTranslation(200, 200, 200);
 		lightEntity.setRotation(-Math.PI*0.5, 0, 0);
 		lightEntity.addToWorld();
+		this.lightEntity.lightComponent.hidden = true;
+	}
+
+	Terrain.prototype.toggleMarker = function() {
+		this.lightEntity.lightComponent.hidden = !this.lightEntity.lightComponent.hidden;
 	}
 
 	Terrain.prototype.setMarker = function(type, size, x, y, power, brushTexture) {
@@ -384,7 +389,7 @@ function(
 		this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
 		this.renderer.readPixels(0, 0, this.size, this.size, normalBuffer);
 
-		var splatBuffer = new Uint8Array(this.size * this.size * 4);
+		var splatBuffer = new Uint8Array(this.size * this.size * 4 * 4);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splat);
 		this.renderer.readPixels(0, 0, this.size, this.size, splatBuffer);
 
