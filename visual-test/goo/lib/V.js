@@ -10,7 +10,8 @@ define([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight'
+	'goo/renderer/light/PointLight',
+	'goo/entities/EntitySelection'
 ], function (
 	GooRunner,
 	World,
@@ -23,7 +24,8 @@ define([
 	OrbitCamControlScript,
 	ScriptComponent,
 	Vector3,
-	PointLight
+	PointLight,
+	EntitySelection
 	) {
 	'use strict';
 
@@ -116,6 +118,53 @@ define([
 	};
 
 	/**
+	 * Adds a grid of shapes
+	 * @param nShapes
+	 * @param meshData
+	 * @param rotation
+	 */
+	//! AT: more clear with code duplication
+	V.addShapes = function(nShapes, meshData, rotation) {
+		nShapes = nShapes || 15;
+		meshData = meshData || new Sphere(32, 32);
+		rotation = rotation || [0, 0, 0];
+
+		var entities = [];
+
+		var material = V.getColoredMaterial(1, 1, 1, 1);
+
+		for (var i = 0; i < nShapes; i++) {
+			for (var j = 0; j < nShapes; j++) {
+				entities.push(
+					V.goo.world.createEntity(
+						meshData,
+						material,
+						[i - nShapes/2, j - nShapes/2, 0]
+					).setRotation(rotation).addToWorld()
+				);
+			}
+		}
+
+		return new EntitySelection(entities);
+	};
+
+	/**
+	 * Adds a grid of spheres
+	 * @param [nSpheres=15]
+	 */
+	V.addSpheres = function(nSpheres) {
+		return V.addShapes(nSpheres, new Sphere(32, 32));
+	};
+
+	/**
+	 * Adds a grid of boxes to the scene
+	 * @param [nBoxes=15]
+	 */
+	V.addBoxes = function(nBoxes) {
+		return V.addShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
+	};
+
+	/**
 	 * Adds a grid of colored shapes
 	 * @param [nShapes=15]
 	 * @param [meshData=new Sphere]
@@ -126,17 +175,24 @@ define([
 		meshData = meshData || new Sphere(32, 32);
 		rotation = rotation || [0, 0, 0];
 
+		var entities = [];
+
 		for (var i = 0; i < nShapes; i++) {
 			for (var j = 0; j < nShapes; j++) {
-				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
-				sphereMaterial.uniforms.color = [i / nShapes, j / nShapes, 0.3];
-				V.goo.world.createEntity(
-					meshData,
-					sphereMaterial,
-					[i - nShapes/2, j - nShapes/2, 0]
-				).setRotation(rotation).addToWorld();
+				var material = Material.createMaterial(ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
+				material.uniforms.color = [i / nShapes, j / nShapes, 0.3];
+
+				entities.push(
+					V.goo.world.createEntity(
+						meshData,
+						material,
+						[i - nShapes/2, j - nShapes/2, 0]
+					).setRotation(rotation).addToWorld()
+				);
 			}
 		}
+
+		return new EntitySelection(entities);
 	};
 
 	/**
@@ -144,7 +200,7 @@ define([
 	 * @param [nSpheres=15]
 	 */
 	V.addColoredSpheres = function(nSpheres) {
-		V.addColoredShapes(nSpheres, new Sphere(32, 32));
+		return V.addColoredShapes(nSpheres, new Sphere(32, 32));
 	};
 
 	/**
@@ -152,7 +208,7 @@ define([
 	 * @param [nBoxes=15]
 	 */
 	V.addColoredBoxes = function(nBoxes) {
-		V.addColoredShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
+		return V.addColoredShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
 	/**

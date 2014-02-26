@@ -1,66 +1,33 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/renderer/Shader',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
-	'goo/debug/LightPointer',
-	'goo/entities/components/LightDebugComponent'
+	'goo/entities/components/LightDebugComponent',
+	'goo/shapes/Box',
+	'goo/shapes/Sphere',
+	'../../lib/V'
 ], function (
-	GooRunner,
-	World,
-	Material,
-	ShaderLib,
-	Camera,
-	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	Shader,
-	MeshDataComponent,
-	MeshRendererComponent,
 	Vector3,
 	PointLight,
 	DirectionalLight,
 	SpotLight,
-	LightComponent,
-	LightPointer,
-	LightDebugComponent
+	LightDebugComponent,
+	Box,
+	Sphere,
+	V
 	) {
 	'use strict';
 
-	var gui = new window.dat.GUI();
-
-	function addPointLight(goo) {
-		var pointLight = new PointLight();
-		pointLight.color.data[0] = 0.9;
-		pointLight.color.data[1] = 0.0;
-		pointLight.color.data[2] = 0.2;
+	function addPointLight() {
+		var pointLight = new PointLight(new Vector3(0.9, 0.0, 0.2));
 		pointLight.range = 5;
 		pointLight.shadowSettings.shadowType = 'PCF';
 
-		var pointLightEntity = goo.world.createEntity('pointLight');
-		pointLightEntity.setComponent(new LightComponent(pointLight));
+		goo.world.createEntity('pointLight', pointLight, [0, 0, 3])
+			.set(new LightDebugComponent())
+			.addToWorld();
 
-		pointLightEntity.setComponent(new LightDebugComponent());
-
-		pointLightEntity.transformComponent.transform.translation.setd(0, 0, 3);
-
-		pointLightEntity.addToWorld();
 
 		var pointlightGui = gui.addFolder('Point Light');
 		var data = {
@@ -84,23 +51,16 @@ require([
 		pointlightGui.open();
 	}
 
-	function addDirectionalLight(goo) {
-		var directionalLight = new DirectionalLight();
-		directionalLight.color.data[0] = 0.2;
-		directionalLight.color.data[1] = 0.9;
-		directionalLight.color.data[2] = 0.0;
-		directionalLight.intensity = 0.25;
+	function addDirectionalLight() {
+		var directionalLight = new DirectionalLight(new Vector3(0.2, 0.9, 0.0));
+		directionalLight.intensity = 0.05;
 		directionalLight.shadowSettings.size = 10;
 		directionalLight.shadowSettings.shadowType = 'PCF';
 
-		var directionalLightEntity = goo.world.createEntity('directionalLight');
-		directionalLightEntity.setComponent(new LightComponent(directionalLight));
+		goo.world.createEntity('directionalLight', directionalLight, [0, -5, 3])
+			.set(new LightDebugComponent())
+			.addToWorld();
 
-		directionalLightEntity.setComponent(new LightDebugComponent());
-
-		directionalLightEntity.transformComponent.transform.translation.setd(0, -5, 3);
-
-		directionalLightEntity.addToWorld();
 
 		var directionallightGui = gui.addFolder('Directional Light');
 		var data = {
@@ -121,24 +81,17 @@ require([
 	}
 
 	var ind = 0;
-	function addSpotLight(goo) {
-		var spotLight = new SpotLight();
-		spotLight.color.data[0] = 0.6;
-		spotLight.color.data[1] = 0.8;
-		spotLight.color.data[2] = 1.0;
+	function addSpotLight() {
+		var spotLight = new SpotLight(new Vector3(0.2, 0.4, 1.0));
 		spotLight.angle = 35;
 		spotLight.penumbra = 0;
 		spotLight.range = 20;
 		spotLight.shadowSettings.shadowType = 'PCF';
 
-		var spotLightEntity = goo.world.createEntity('spotLight');
-		spotLightEntity.setComponent(new LightComponent(spotLight));
+		var spotLightEntity = goo.world.createEntity('spotLight', spotLight, [0, 5, 5])
+			.set(new LightDebugComponent())
+			.addToWorld();
 
-		spotLightEntity.setComponent(new LightDebugComponent());
-
-		spotLightEntity.transformComponent.transform.translation.setd(0, 0, 5);
-
-		spotLightEntity.addToWorld();
 
 		var spotLightGui = gui.addFolder('Spot Light' + ind++);
 		var data = {
@@ -172,53 +125,24 @@ require([
 		return spotLightEntity;
 	}
 
-	function lightPointerDemo(goo) {
-		// add spheres to cast light on
-		var sphereMeshData = ShapeCreator.createSphere(16, 16, 0.5);
-		var sphereMaterial = Material.createMaterial(ShaderLib.simpleLit, 'SphereMaterial');
+	var gui = new window.dat.GUI();
+	var goo = V.initGoo();
 
-		var nSpheres = 5;
-		for(var i = 0; i < nSpheres; i++) {
-			for(var j = 0; j < nSpheres; j++) {
-				var sphereEntity = goo.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres/2, j - nSpheres/2, 0]);
-				sphereEntity.meshRendererComponent.castShadows = true;
-				sphereEntity.addToWorld();
-			}
-		}
+	// add some spheres to cast the light on
+	V.addShapes(5, new Sphere(32, 32, 0.5)).each(function (sphere) {
+		sphere.meshRendererComponent.castShadows = true;
+	});
 
-		var boxMeshData = ShapeCreator.createBox(30, 30, 0.5);
-		var boxEntity = goo.world.createEntity(boxMeshData, sphereMaterial, [0, 0, -6]).addToWorld();
+	goo.world.createEntity(new Box(30, 30, 0.5), V.getColoredMaterial(1, 1, 1, 1), [0, 0, -6]).addToWorld();
 
-		addPointLight(goo);
-		addDirectionalLight(goo);
-		addSpotLight(goo);
-		var spot = addSpotLight(goo);
-		spot.transformComponent.transform.translation.setd(3, -4, 5);
-		spot.transformComponent.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
+	addPointLight(goo);
+	addDirectionalLight(goo);
+	addSpotLight(goo);
 
-		// camera
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(20, Math.PI / 2, 0)
-		}));
-		cameraEntity.setComponent(scripts);
-	}
+	addSpotLight(goo)
+		.set([3, -4, 5])
+		.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 
-	function init() {
-		var goo = new GooRunner({
-			showStats: true,
-			logo: 'bottomleft'
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		lightPointerDemo(goo);
-	}
-
-	init();
+	// camera
+	V.addOrbitCamera();
 });
