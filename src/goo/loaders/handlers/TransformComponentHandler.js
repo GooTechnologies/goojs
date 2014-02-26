@@ -92,6 +92,15 @@ function(
 	TransformComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 
+		function hasChild(component, ref) {
+			for (var i = 0; i < component.children.length; i++) {
+				if (component.children[i].entity.id === ref) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		function attachChild(component, ref) {
 			return that.getConfig(ref, options).then(function(config) {
 				return that.updateObject(ref, config, options);
@@ -130,7 +139,9 @@ function(
 				var keys = Object.keys(config.children);
 				for (var i = 0; i < keys.length; i++) {
 					var childRef = config.children[keys[i]].entityRef;
-					promises.push(attachChild(component, childRef));
+					if (!hasChild(component, childRef)) {
+						promises.push(attachChild(component, childRef));
+					}
 				}
 				for (var i = 0; i < component.children.length; i++) {
 					var child = component.children[i];

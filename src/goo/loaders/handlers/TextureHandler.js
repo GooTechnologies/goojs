@@ -131,9 +131,11 @@ function(
 			texture.offset.set(config.offset);
 			texture.repeat.set(config.repeat);
 
-			texture.flipY = config.flipY;
+			if (texture.flipY !== config.flipY) {
+				texture.flipY = config.flipY;
+				texture.setNeedsUpdate();
+			}
 
-			texture.setNeedsUpdate();
 			texture.updateCallback = null;
 
 			var imageRef = config.imageRef;
@@ -158,7 +160,9 @@ function(
 					// Images
 					// Beware of image caching but should be handled by Ajax
 					ret = that.getConfig(imageRef, options).then(function(image) {
-						texture.setImage(image);
+						if(texture.image !== image) {
+							texture.setImage(image);
+						}
 						return texture;
 					});
 				} else if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
