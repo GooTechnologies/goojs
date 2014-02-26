@@ -58,6 +58,7 @@ function(
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(state) {
 			if (!state) { return; }
 			state._name = config.name;
+			state.id = config.id;
 			return that._parseClipSource(config.clipSource, state._sourceTree, options).then(function(source) {
 				state._sourceTree = source;
 				return state;

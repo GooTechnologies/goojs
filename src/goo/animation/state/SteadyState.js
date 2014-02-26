@@ -12,6 +12,7 @@ function (AbstractState) {
 	function SteadyState (name) {
 		AbstractState.call(this);
 
+		this.id = null;
 		this._name = name;
 		this._transitions = {};
 		this._sourceTree = null;

@@ -31,6 +31,7 @@ function (
 		 * @type {AnimationLayer[]}
 		 */
 		this.layers = [];
+		this._layersId = null;
 		this.floats = {};
 
 		this._updateRate = 1.0 / 60.0;

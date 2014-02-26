@@ -63,9 +63,10 @@ function(
 			}
 
 			var layersRef = config.layersRef;
-			if (layersRef) {
+			if (layersRef && layersRef !== component._layersId) {
 				p = that._load(layersRef, options).then(function(layers) {
 					component.layers = layers;
+					component._layersId = layersRef;
 				});
 				promises.push(p);
 			}

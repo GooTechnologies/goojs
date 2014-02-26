@@ -100,8 +100,8 @@ function(
 			}
 
 			var i = 0;
-			_.forEach(config.layers, function(layerCfg, key) {
-				promises.push(that._parseLayer(key, layerCfg, object[i++], options));
+			_.forEach(config.layers, function(layerCfg) {
+				promises.push(that._parseLayer(layerCfg, object[i++], options));
 			}, null, 'sortValue');
 
 			return RSVP.all(promises).then(function(layers) {
@@ -121,34 +121,35 @@ function(
 	 * @returns {RSVP.Promise} resolves with layer
 	 * @private
 	 */
-	AnimationLayersHandler.prototype._parseLayer = function(key, layerConfig, layer, options) {
+	AnimationLayersHandler.prototype._parseLayer = function(layerConfig, layer, options) {
 		var that = this;
 
-		function getState(key, ref, transitions) {
-			return that.getConfig(ref, options).then(function(config) {
-				return that.updateObject(ref, config, options).then(function(state) {
-					return {
-						state: state,
-						ref: ref,
-						config: config,
-						key: key,
-						transitions: transitions
-					};
+		function getState(id, transitions) {
+			if (layer._steadyStates[id]) {
+				return PromiseUtil.createDummyPromise({
+					state: layer._steadyStates[id],
+					transitions: transitions
 				});
+			}
+			return that._load(id, options).then(function(state) {
+				return {
+					state: state,
+					transitions: transitions
+				};
 			});
 		}
 
-		function fillStates(stateObjects) {
+		function fillStates(objects) {
 			layer._steadyStates = {};
 			// Steady states
-			for (var i = 0; i < stateObjects.length; i++) {
-				var stateObject = stateObjects[i];
-				layer._steadyStates[stateObject.key] = stateObject.state;
+			for (var i = 0; i < objects.length; i++) {
+				var object = objects[i];
+				layer._steadyStates[object.state.id] = object.state;
 			}
 			// State specific transitions
-			for(var i = 0; i < stateObjects.length; i++) {
-				var transitions = stateObjects[i].transitions;
-				var state = stateObjects[i].state;
+			for(var i = 0; i < objects.length; i++) {
+				var transitions = objects[i].transitions;
+				var state = objects[i].state;
 				state._transitions = {};
 				if (transitions) {
 					// Add all valid transitions to state
@@ -192,7 +193,7 @@ function(
 			layer._name = layerConfig.name;
 		}
 
-		layer._key = key;
+		layer.id = layerConfig.id;
 
 		if (layer._layerBlender) {
 			if (layerConfig.blendWeight !== undefined) {
@@ -204,10 +205,9 @@ function(
 
 		// Load all the stuff we need
 		var promises = [];
-		for (var stateKey in layerConfig.states) {
-			var stateRef = layerConfig.states[stateKey].stateRef;
-			var transitions = layerConfig.states[stateKey].transitions;
-			promises.push(getState(stateKey, stateRef, transitions));
+		for (var id in layerConfig.states) {
+			var transitions = layerConfig.states[id].transitions;
+			promises.push(getState(id, transitions));
 		}
 
 		// Populate layer

@@ -20,6 +20,7 @@ function (
 	 * @param {String} name Name of layer
 	 */
 	function AnimationLayer (name, key) {
+		this.id = key;
 		this._name = name;
 		this._key = key;
 
