@@ -96,7 +96,6 @@ function(
 	 */
 	SoundHandler.prototype.update = function(ref, config, options) {
 		if (!AudioContext) {
-			console.warn('Webaudio not supported');
 			return PromiseUtil.createDummyPromise();
 		}
 		var that = this;

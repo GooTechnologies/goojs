@@ -106,6 +106,10 @@ function(
 	 * @param {number} config.reverb
 	 */
 	SoundComponent.prototype.updateConfig = function(config) {
+		if (!AudioContext) {
+			console.warn('Webaudio not supported');
+			return;
+		}
 		if (config.volume !== undefined) {
 			this._outDryNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
 		}

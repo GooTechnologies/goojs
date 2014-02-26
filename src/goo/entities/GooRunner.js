@@ -14,6 +14,8 @@ define([
 	"goo/entities/systems/LightDebugSystem",
 	"goo/entities/systems/CameraDebugSystem",
 	'goo/entities/systems/MovementSystem',
+
+	'goo/sound/AudioContext',
 	'goo/entities/systems/SoundSystem',
 
 	'goo/entities/components/TransformComponent',
@@ -44,6 +46,8 @@ function (
 	LightDebugSystem,
 	CameraDebugSystem,
 	MovementSystem,
+
+	AudioContext,
 	SoundSystem,
 
 	TransformComponent,
@@ -100,7 +104,9 @@ function (
 		this.world.setSystem(new LightDebugSystem()); // Go away!
 		this.world.setSystem(new CameraDebugSystem()); // Go away!
 		this.world.setSystem(new MovementSystem()); // Go away!
-		this.world.setSystem(new SoundSystem());
+		if (AudioContext) {
+			this.world.setSystem(new SoundSystem());
+		}
 
 		this.renderSystem = new RenderSystem();
 		this.renderSystems = [this.renderSystem];

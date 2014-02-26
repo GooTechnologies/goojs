@@ -212,7 +212,9 @@ function(
 			url: url,
 			responseType: Ajax.ARRAY_BUFFER
 		};
-		return this.get(ajaxProperties)
+		return this.get(ajaxProperties).then(function(request) {
+			return request.response;
+		})
 		.then(null, function(err) {
 			throw new Error('Could not load data from ' + url + ', ' + err);
 		});
