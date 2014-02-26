@@ -188,7 +188,13 @@ define([
 	 * @returns {GooRunner}
 	 */
 	V.initGoo = function (_options) {
-		var options = { showStats: true, logo: 'bottomleft' };
+		var options = {
+			showStats: true,
+			logo: {
+				position: 'bottomright',
+				color: '#FFF'
+			}
+		};
 		if (_options && _options.logo) {
 			options.logo = _options.logo;
 		}

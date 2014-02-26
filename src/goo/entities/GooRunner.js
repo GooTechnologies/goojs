@@ -71,7 +71,11 @@ function (
 	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
-	 * @param {boolean} [parameters.logo=true] Specifies whether the Goo logo is visible or not
+	 * @param {boolean | string | { position, color }} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
+	 * If the parameter is not specified then the logo is placed in the top right corner.
+	 * If no logo is desired then this parameter should have the 'false' value.
+	 * If the supplied parameter is one of the following: 'topleft', 'topright', 'bottomleft', 'bottomright' then the logo will be positioned in the according corner
+	 * If the parameter is of type object then the logo will be positioned according to the 'position' key and will be colored according to the 'color' key
 	 * @param {boolean} [parameters.tpfSmoothingCount=10] Specifies the amount of previous frames to use when computing the 'time per frame'
 	 * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
 	 */
@@ -332,31 +336,36 @@ function (
 	//TODO: move this to Logo
 	GooRunner.prototype._buildLogo = function (settings) {
 		var div = document.createElement('div');
+
+		var color = settings && settings.color ? settings.color : Logo.blue;
+
 		var svg = Logo.getLogo({
 			width: '70px',
 			height: '50px',
-			color: Logo.blue
+			color: color
 		});
 		var span = '<span style="color: #EEE; font-family: Helvetica, sans-serif; font-size: 11px; display: inline-block; margin-top: 14px; margin-right: -3px; vertical-align: top;">Powered by</span>';
 		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + span + svg + '</a>';
 		div.style.position = 'absolute';
 		div.style.zIndex = '2000';
-		if (settings === 'topright') {
+
+		if (!settings) {
 			div.style.top = '10px';
 			div.style.right = '10px';
-		} else if (settings === 'topleft') {
+		} else if (settings === 'topright' || settings.position === 'topright') {
+			div.style.top = '10px';
+			div.style.right = '10px';
+		} else if (settings === 'topleft' || settings.position === 'topleft') {
 			div.style.top = '10px';
 			div.style.left = '10px';
-		} else if (settings === 'bottomright') {
+		} else if (settings === 'bottomright' || settings.position === 'bottomright') {
 			div.style.bottom = '10px';
 			div.style.right = '10px';
-		} else if (settings === 'bottomleft') {
-			div.style.bottom = '10px';
-			div.style.left = '10px';
 		} else {
-			div.style.top = '10px';
-			div.style.right = '10px';
+			div.style.bottom = '10px';
+			div.style.left = '10px';
 		}
+
 		div.id = 'goologo';
 		div.style.webkitTouchCallout = 'none';
 		div.style.webkitUserSelect = 'none';
