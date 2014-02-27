@@ -21,11 +21,13 @@ define([
 	 * @private
 	 *
 	 */
-	function ConfigHandler(world, getConfig, updateObject) {
+	function ConfigHandler(world, getConfig, updateObject, loadObject) {
 		this.world = world;
 		this.getConfig = getConfig;
 		this.updateObject = updateObject;
+		this.loadObject = loadObject;
 		this._objects = {};
+		this._loading = {};
 	}
 
 	/**
@@ -64,10 +66,38 @@ define([
 	 * @private
 	 */
 	ConfigHandler.prototype._load = function(ref, options) {
-		var update = this.updateObject.bind(this);
-		return this.getConfig(ref, options).then(function(config) {
-			return update(ref, config, options);
-		});
+		return this.loadObject(ref, options);
+	};
+
+	ConfigHandler.prototype.load = function(ref, options) {
+		var type = ref.split('.').pop();
+		if (type !== this.constructor._type) {
+			throw new Error('Trying to load type' + type + ' with handler for ' + this._type);
+		}
+		var that = this;
+		if (this._objects[ref] && !options.reload) {
+			return PromiseUtil.createDummyPromise(this._objects[ref]);
+		} else if (this._loading[ref]) {
+			return this._loading[ref];
+		} else {
+			return this._loading[ref] = this.getConfig(ref, options).then(function(config) {
+				return that.update(ref, config, options);
+			})
+			.then(function(object) {
+				delete that._loading[ref];
+				return object;
+			})
+			.then(null, function(err) {
+				delete that._loading[ref];
+				throw err;
+			});
+		}
+	};
+
+	ConfigHandler.prototype.clear = function() {
+		for (var ref in this._objects) {
+			this.update(ref, null, {});
+		}
 	};
 
 	/**

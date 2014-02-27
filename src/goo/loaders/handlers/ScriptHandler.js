@@ -55,16 +55,18 @@ function(
 	}
 
 	ScriptHandler.prototype.update = function(ref, config, options) {
+		var that = this;
 		var script;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(script) {
-			if (!config) return;
+			if (!config) { return; }
+
+			if (script.run) { return script; }
 
 			// first treat the oldstyle loading
 			if (config.className) {
 				var name = config.className;
-				script = null;
 				if (ScriptHandler.scripts[name] instanceof Function) {
-					script = new ScriptHandler.scripts[name](config.options);
+					script = that._objects[ref] = new ScriptHandler.scripts[name](config.options);
 				}
 
 				return PromiseUtil.createDummyPromise(script);

@@ -1,4 +1,7 @@
 define([
+	'goo/animation/state/FadeTransitionState',
+	'goo/animation/state/SyncFadeTransitionState',
+	'goo/animation/state/FrozenTransitionState',
 	'goo/animation/state/SteadyState',
 	'goo/animation/layer/LayerLERPBlender',
 	'goo/entities/World',
@@ -6,6 +9,9 @@ define([
 ],
 /** @lends */
 function (
+	FadeTransitionState,
+	SyncFadeTransitionState,
+	FrozenTransitionState,
 	SteadyState,
 	LayerLERPBlender,
 	World,
@@ -116,6 +122,9 @@ function (
 		if (this._steadyStates[state] === cState) {
 			return false;
 		}
+		if (!this._steadyStates[state]) {
+			return false;
+		}
 
 		if (cState && cState._transitions) {
 			transition = cState._transitions[state] || cState._transitions['*'];
@@ -124,13 +133,13 @@ function (
 			transition = this._transitions[state] || this._transitions['*'];
 		}
 		if (cState instanceof SteadyState && transition) {
-			var transitionState = this._transitionStates[transition.type];
+			var transitionState = this._getTransitionByType(transition.type);
 			this._doTransition(transitionState, cState, this._steadyStates[state], transition, globalTime);
 			return true;
 		} else if (!cState) {
 			transition = this._transitions[state];
 			if(transition) {
-				var transitionState = this._transitionStates[transition.type];
+				var transitionState = this._getTransitionByType(transition.type);
 				if (transitionState) {
 					this._doTransition(transitionState, null, this._steadyStates[state], transition, globalTime);
 					return true;
@@ -250,6 +259,26 @@ function (
 		if(this._currentState) {
 			this._currentState.setTimeScale(timeScale);
 		}
+	};
+
+	AnimationLayer.prototype._getTransitionByType = function(type) {
+		if (this._transitionStates[type]) { return this._transitionStates[type]; }
+		var transition;
+		switch (type) {
+			case 'Fade':
+				transition = new FadeTransitionState();
+				break;
+			case 'SyncFade':
+				transition = new SyncFadeTransitionState();
+				break;
+			case 'Frozen':
+				transition = new FrozenTransitionState();
+				break;
+			default:
+				console.log('Defaulting to frozen transition type');
+				transition = new FrozenTransitionState();
+		}
+		return this._transitionStates[type] = transition;
 	};
 
 	/**

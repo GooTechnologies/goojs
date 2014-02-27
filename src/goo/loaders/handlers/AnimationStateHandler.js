@@ -6,7 +6,8 @@ define([
 	'goo/animation/blendtree/BinaryLERPSource',
 	'goo/animation/blendtree/FrozenClipSource',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function(
@@ -17,7 +18,8 @@ function(
 	BinaryLERPSource,
 	FrozenClipSource,
 	RSVP,
-	PromiseUtil
+	PromiseUtil,
+	_
 ) {
 	"use strict";
 
@@ -59,6 +61,8 @@ function(
 			if (!state) { return; }
 			state._name = config.name;
 			state.id = config.id;
+			state._transitions = _.deepClone(config.transitions);
+
 			return that._parseClipSource(config.clipSource, state._sourceTree, options).then(function(source) {
 				state._sourceTree = source;
 				return state;
@@ -73,36 +77,30 @@ function(
 	 * @returns {RSVP.Promise} resolved with updated clip source
 	 */
 	AnimationStateHandler.prototype._parseClipSource = function(cfg, clipSource, options) {
-		var that = this;
-
 		switch (cfg.type) {
 			case 'Clip':
-				return this.getConfig(cfg.clipRef, options).then(function(config) {
-					return that.updateObject(cfg.clipRef, config, options).then(function(clip) {
-						if(!clipSource || (!clipSource instanceof ClipSource)) {
-							clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
-						} else {
-							clipSource._clip = clip;
-							clipSource.setFilter(cfg.filter, cfg.channels);
-						}
-						if (cfg.loopCount) {
-							clipSource._clipInstance._loopCount = +cfg.loopCount;
-						}
-						if (cfg.timeScale) {
-							clipSource._clipInstance._timeScale = cfg.timeScale;
-						}
+				return this.loadObject(cfg.clipRef, options).then(function(clip) {
+					if(!clipSource || (!clipSource instanceof ClipSource)) {
+						clipSource = new ClipSource(clip, cfg.filter, cfg.channels);
+					} else {
+						clipSource._clip = clip;
+						clipSource.setFilter(cfg.filter, cfg.channels);
+					}
+					if (cfg.loopCount) {
+						clipSource._clipInstance._loopCount = +cfg.loopCount;
+					}
+					if (cfg.timeScale) {
+						clipSource._clipInstance._timeScale = cfg.timeScale;
+					}
 
-						return clipSource;
-					});
+					return clipSource;
 				});
 			case 'Managed':
 				if(!clipSource || (!clipSource instanceof ManagedTransformSource)) {
 					clipSource = new ManagedTransformSource();
 				}
 				if (cfg.clipRef) {
-					return this.getConfig(cfg.clipRef, options).then(function(config) {
-						return that.updateObject(cfg.clipRef, config, options);
-					}).then(function(clip) {
+					return this.loadObject(cfg.clipRef, options).then(function(clip) {
 						clipSource.initFromClip(clip, cfg.filter, cfg.channels);
 						return clipSource;
 					});

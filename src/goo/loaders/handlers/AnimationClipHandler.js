@@ -58,7 +58,7 @@ function(
 		var that = this;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(clip) {
 			if(!clip) { return clip; }
-			return that.getConfig(config.binaryRef, options).then(function(bindata) {
+			return that.loadObject(config.binaryRef, options).then(function(bindata) {
 				if (!bindata) {
 					throw new Error("Binary clip data was empty");
 				}
