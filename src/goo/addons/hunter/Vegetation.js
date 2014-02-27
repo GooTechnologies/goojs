@@ -77,7 +77,7 @@ function(
 		this.material = material;
 		this.vegType = 0;
 
-		this.patchSize = 10;
+		this.patchSize = 12;
 		this.patchDensity = 15;
 		// this.patchSize = 15;
 		// this.patchDensity = 15;
@@ -136,25 +136,11 @@ function(
 	};
 
 	Vegetation.prototype.getVegetationType = function(xx, zz, slope) {
-		if (slope < 0.9) {
+		if (slope < 0.91) {
 			return -1;
 		}
 
-		if (this.vegType === 0) {
-			if (slope < 0.94) {
-				return Math.random() < 0.5 ? 0 : 2;
-			}
-			var mx = (Math.sin(xx * 0.1) * 0.5 + 0.5);
-			var mz = (Math.sin(zz * 0.15) * 0.5 + 0.5);
-			var tt = (mx + mz) / 2.0;
-			var vegetationType = Math.floor(tt * this.vegetationList.length);
-			var rand = ((Math.random()+Math.random()+Math.random()+Math.random()-2)/4.0) + 0.0;
-			vegetationType = Math.floor(MathUtils.clamp(vegetationType+rand*4, 0, this.vegetationList.length-1));
-
-			return vegetationType;
-		}
-
-		return this.vegType-1;
+		return MathUtils.clamp(this.terrainQuery.getVegetationType(xx, zz, slope), -1, this.vegetationList.length-1);
 	};
 
 	Vegetation.prototype.update = function(x, z) {
@@ -243,6 +229,8 @@ function(
 				var anglex = Math.sin(angle);
 				var anglez = Math.cos(angle);
 				this.calcVec.setd(anglex, 0.0, anglez);
+				// norm.y = 0.5;
+				// norm.normalize();
 				this.lookAt(transform.rotation, this.calcVec, norm);
 				transform.translation.setd(xx, yy, zz);
 				transform.update();
@@ -284,7 +272,7 @@ function(
 	};
 
 	Vegetation.prototype.createBase = function(type) {
-		var meshData = ShapeCreator.createQuad(type.w, type.h, 1, 1);
+		var meshData = ShapeCreator.createQuad(type.w, type.h, 10, 10);
 		meshData.attributeMap.BASE = MeshData.createAttribute(1, 'Float'),
 		meshData.rebuildData(meshData.vertexCount, meshData.indexCount, true);
 
@@ -412,7 +400,7 @@ function(
 				'normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 				'texCoord0 = vertexUV0;',
 				'viewPosition = cameraPosition - worldPos.xyz;',
-				'dist = 1.0 - smoothstep(35.0, 40.0, length(viewPosition.xz));',
+				'dist = 1.0 - smoothstep(45.0, 50.0, length(viewPosition.xz));',
 			'}'
 		].join('\n');
 		},

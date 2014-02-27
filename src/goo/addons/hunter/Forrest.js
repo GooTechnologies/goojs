@@ -64,77 +64,77 @@ function(
 	Forrest.prototype.init = function(world, terrainQuery) {
 		var promise = new RSVP.Promise();
 
-		var loader = new DynamicLoader({
-			world: world,
-			rootPath: window.hunterResources + '/tree1'
-		});
+		// var loader = new DynamicLoader({
+		// 	world: world,
+		// 	rootPath: window.hunterResources + '/tree1'
+		// });
 
-		loader.loadFromBundle('project.project', 'root.bundle', {
-			recursive: false,
-			preloadBinaries: true,
-			noEnvironment: true
-		}).then(function() {
-			world.process();
+		// loader.loadFromBundle('project.project', 'root.bundle', {
+		// 	recursive: false,
+		// 	preloadBinaries: true,
+		// 	noEnvironment: true
+		// }).then(function() {
+		// 	world.process();
 
-			var root = loader.getCachedObjectForRef('entities/Veg_T01_aspenM_LOD2-Whole_root.entity');
+		// 	var root = loader.getCachedObjectForRef('entities/Veg_T01_aspenM_LOD2-Whole_root.entity');
 
-			var newRoot = world.createEntity('newroot');
-			var vec = new Vector3();
-			var transform = new Transform();
-			var count = 15;
-			while (count > 0) {
-				var xx = (Math.random() * 2.0 - 1.0);
-				var zz = (Math.random() * 2.0 - 1.0);
-				vec.setd(xx, 0, zz);
-				vec.normalize();
-				var dist = Math.random() * 10 + 10;
-				vec.muld(dist, dist, dist);
-				vec.x += this.startX + 2;
-				vec.z += this.startZ + 2;
-				xx = vec.x;
-				zz = vec.z;
-				vec.y = 10;
-				var yy = terrainQuery.getHeightAt(vec.data);
-				var norm = terrainQuery.getNormalAt(vec.data);
-				var slope = norm.dot(Vector3.UNIT_Y);
-				if (slope < 0.9) {
-					continue;
-				}
+		// 	var newRoot = world.createEntity('newroot');
+		// 	var vec = new Vector3();
+		// 	var transform = new Transform();
+		// 	var count = 15;
+		// 	while (count > 0) {
+		// 		var xx = (Math.random() * 2.0 - 1.0);
+		// 		var zz = (Math.random() * 2.0 - 1.0);
+		// 		vec.setd(xx, 0, zz);
+		// 		vec.normalize();
+		// 		var dist = Math.random() * 10 + 10;
+		// 		vec.muld(dist, dist, dist);
+		// 		vec.x += this.startX + 2;
+		// 		vec.z += this.startZ + 2;
+		// 		xx = vec.x;
+		// 		zz = vec.z;
+		// 		vec.y = 10;
+		// 		var yy = terrainQuery.getHeightAt(vec.data);
+		// 		var norm = terrainQuery.getNormalAt(vec.data);
+		// 		var slope = norm.dot(Vector3.UNIT_Y);
+		// 		if (slope < 0.9) {
+		// 			continue;
+		// 		}
 
-				var size = (Math.random() * 0.6 + 0.7) * 0.03;
-				transform.scale.setd(size, size, size);
-				transform.translation.setd(0, 0, 0);
-				var angle = Math.random() * Math.PI * 0.5;
-				var anglex = Math.sin(angle);
-				var anglez = Math.cos(angle);
-				// transform.lookAt(new Vector3(anglex, 0.0, anglez), norm);
-				transform.lookAt(new Vector3(anglex, 0.0, anglez), Vector3.UNIT_Y);
+		// 		var size = (Math.random() * 0.6 + 0.7) * 0.03;
+		// 		transform.scale.setd(size, size, size);
+		// 		transform.translation.setd(0, 0, 0);
+		// 		var angle = Math.random() * Math.PI * 0.5;
+		// 		var anglex = Math.sin(angle);
+		// 		var anglez = Math.cos(angle);
+		// 		// transform.lookAt(new Vector3(anglex, 0.0, anglez), norm);
+		// 		transform.lookAt(new Vector3(anglex, 0.0, anglez), Vector3.UNIT_Y);
 
-				transform.translation.setd(xx, yy, zz);
-				transform.update();
+		// 		transform.translation.setd(xx, yy, zz);
+		// 		transform.update();
 
-				var clone = EntityUtils.clone(world, root);
-				clone.transformComponent.transform.copy(transform);
-				newRoot.attachChild(clone);
+		// 		var clone = EntityUtils.clone(world, root);
+		// 		clone.transformComponent.transform.copy(transform);
+		// 		newRoot.attachChild(clone);
 
-				count--;
-			}
+		// 		count--;
+		// 	}
 
-			root.removeFromWorld();
-			newRoot.addToWorld();
+		// 	root.removeFromWorld();
+		// 	newRoot.addToWorld();
 
-			world.process();
+		// 	world.process();
 
-			var combiner = new EntityCombiner(world, 1);
-			console.time('combine');
-			combiner._combineList(newRoot);
-			console.timeEnd('combine');
+		// 	var combiner = new EntityCombiner(world, 1);
+		// 	console.time('combine');
+		// 	combiner._combineList(newRoot);
+		// 	console.timeEnd('combine');
 
-			console.log(newRoot);
+		// 	console.log(newRoot);
 
-		}.bind(this)).then(null, function(e) {
-			console.error('Failed to load scene: ' + e);
-		});
+		// }.bind(this)).then(null, function(e) {
+		// 	console.error('Failed to load scene: ' + e);
+		// });
 
 		this.loadLODTrees(world, terrainQuery).then(function() {
 			promise.resolve();
@@ -163,7 +163,7 @@ function(
 		material.setTexture('NORMAL_MAP', texture);
 		material.uniforms.discardThreshold = 0.6;
 		// material.blendState.blending = 'CustomBlending';
-		material.uniforms.materialAmbient = [0.2, 0.2, 0.2, 1.0];
+		material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 1.0];
 		material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1.0];
 		material.renderQueue = 3000;
 		this.material = material;
@@ -209,24 +209,26 @@ function(
 			return -1;
 		}
 
-		var diffx = xx - this.startX;
-		var diffz = zz - this.startZ;
-		if (diffx * diffx + diffz * diffz < 32 * 32) {
-			return -1;
-		}
+		return MathUtils.clamp(this.terrainQuery.getForrestType(xx, zz, slope), -1, this.vegetationList.length-1);
 
-		if (this.vegType === 0) {
-			var mx = (Math.sin(xx * 0.02) * 0.5 + 0.25);
-			var mz = (Math.sin(zz * 0.03) * 0.5 + 0.25);
-			var tt = (mx + mz) / 2.0;
-			var vegetationType = Math.floor(tt * this.vegetationList.length);
-			var rand = ((Math.random()+Math.random()+Math.random()+Math.random()-2)/4.0) + 0.0;
-			vegetationType = Math.floor(MathUtils.clamp(vegetationType+rand*5, -1, this.vegetationList.length-1));
+		// var diffx = xx - this.startX;
+		// var diffz = zz - this.startZ;
+		// if (diffx * diffx + diffz * diffz < 32 * 32) {
+		// 	return -1;
+		// }
 
-			return vegetationType;
-		}
+		// if (this.vegType === 0) {
+		// 	var mx = (Math.sin(xx * 0.02) * 0.5 + 0.25);
+		// 	var mz = (Math.sin(zz * 0.03) * 0.5 + 0.25);
+		// 	var tt = (mx + mz) / 2.0;
+		// 	var vegetationType = Math.floor(tt * this.vegetationList.length);
+		// 	var rand = ((Math.random()+Math.random()+Math.random()+Math.random()-2)/4.0) + 0.0;
+		// 	vegetationType = Math.floor(MathUtils.clamp(vegetationType+rand*5, -1, this.vegetationList.length-1));
 
-		return this.vegType-1;
+		// 	return vegetationType;
+		// }
+
+		// return this.vegType-1;
 	};
 
 	var hidden = false;
@@ -322,18 +324,30 @@ function(
 					continue;
 				}
 
-				var size = Math.random() * 0.4 + 0.8;
-				transform.scale.setd(size, size, size);
-				transform.translation.setd(0, 0, 0);
-				var angle = Math.random() * Math.PI * 2.0;
-				var anglex = Math.sin(angle);
-				var anglez = Math.cos(angle);
-				this.calcVec.setd(anglex, 0.0, anglez);
-				transform.lookAt(this.calcVec, norm);
+				// var size = Math.random() * 0.4 + 0.8;
+				var size = (Math.random() * 0.5 + 0.75);
+				// transform.translation.setd(0, 0, 0);
+				// var angle = Math.random() * Math.PI * 2.0;
+				// var anglex = Math.sin(angle);
+				// var anglez = Math.cos(angle);
+				// this.calcVec.setd(anglex, 0.0, anglez);
+				// transform.lookAt(this.calcVec, norm);
 				transform.translation.setd(xx, yy, zz);
+				// transform.scale.setd(size, size, size);
 				transform.update();
 
 				var meshData = this.vegetationList[vegetationType];
+
+				var type = types[vegetationType];
+				var w = type.w * size;
+				var h = type.h * size;
+				meshData.getAttributeBuffer('OFFSET').set([
+					-w*0.5, 0,
+					-w*0.5, h,
+					w*0.5, h,
+					w*0.5, 0
+				]);
+
 				meshBuilder.addMeshData(meshData, transform);
 
 				// console.count('tree');
@@ -345,9 +359,9 @@ function(
 	};
 
 	var types = [
-		{ w: 9, h: 9, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.25 },
-		{ w: 8, h: 8, tx: 0.00, ty: 0.5, tw: 0.25, th: 0.25 },
-		{ w: 9, h: 9, tx: 0.5, ty: 0.75, tw: 0.25, th: 0.25 }
+		{ w: 8, h: 9, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.25 },
+		{ w: 7, h: 8, tx: 0.00, ty: 0.5, tw: 0.25, th: 0.25 },
+		{ w: 8, h: 9, tx: 0.5, ty: 0.75, tw: 0.25, th: 0.25 }
 	];
 
 	Forrest.prototype.createBase = function(type) {

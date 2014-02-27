@@ -167,13 +167,13 @@ function(
 		var ground2 = new TextureCreator().loadTexture2D('res/images/grass2.jpg', {
 			anisotropy: anisotropy
 		});
-		var ground3 = new TextureCreator().loadTexture2D('res/images/crosshair.png', {
+		var ground3 = new TextureCreator().loadTexture2D('res/images/grass2.jpg', {
 			anisotropy: anisotropy
 		});
-		var ground4 = new TextureCreator().loadTexture2D('res/images/screenshot.png', {
+		var ground4 = new TextureCreator().loadTexture2D('res/images/grass1.jpg', {
 			anisotropy: anisotropy
 		});
-		var ground5 = new TextureCreator().loadTexture2D('res/images/height.png', {
+		var ground5 = new TextureCreator().loadTexture2D('res/images/grass2.jpg', {
 			anisotropy: anisotropy
 		});
 		var stone = new TextureCreator().loadTexture2D('res/images/stone.jpg', {
@@ -270,10 +270,10 @@ function(
 
 		// edit marker
 		var light = new DirectionalLight();
-		var brushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
-		brushTexture.wrapS = 'EdgeClamp';
-		brushTexture.wrapT = 'EdgeClamp';
-		light.lightCookie = brushTexture;
+		// var brushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
+		// brushTexture.wrapS = 'EdgeClamp';
+		// brushTexture.wrapT = 'EdgeClamp';
+		// light.lightCookie = brushTexture;
 		light.shadowSettings.size = 10;
 		var lightEntity = this.lightEntity = world.createEntity(light);
 		lightEntity.setTranslation(200, 200, 200);
@@ -391,7 +391,7 @@ function(
 
 		var splatBuffer = new Uint8Array(this.size * this.size * 4 * 4);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splat);
-		this.renderer.readPixels(0, 0, this.size, this.size, splatBuffer);
+		this.renderer.readPixels(0, 0, this.size * 2, this.size * 2, splatBuffer);
 
 		return {
 			heights: terrainFloats,
@@ -735,58 +735,70 @@ function(
 
 				ShaderBuilder.light.prefragment,
 
-				'void main(void)',
-				'{',
-				'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
-				'vec2 coord = mapcoord * 256.0;',
-				'vec4 final_color = vec4(1.0);',
+				// 'vec3 blend(vec4 texture1, float a1, vec4 texture2, float a2) {',
+				// 	'float depth = 0.2;',
+				// 	'float ma = max(texture1.a + a1, texture2.a + a2) - depth;',
+				// 	'float b1 = max(texture1.a + a1 - ma, 0.0);',
+				// 	'float b2 = max(texture2.a + a2 - ma, 0.0);',
+				// 	'return (texture1.rgb * b1 + texture2.rgb * b2) / (b1 + b2);',
+				// '}',
 
-				// 'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0));',
-				'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
-				'N.y = 0.25;',
-				'N.z = -N.z;',
-				'N = normalize(N);',
+				'void main(void) {',
+					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
+					'vec2 coord = mapcoord * 256.0;',
+					'vec4 final_color = vec4(1.0);',
 
-				'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-				'slope = smoothstep(0.0, 0.1, slope);',
+					// 'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0));',
+					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
+					'N.y = 0.25;',
+					'N.z = -N.z;',
+					'N = normalize(N);',
 
-				// 'const float NMUL = 1.2;',
-				// 'vec3 n1 = texture2D(groundMapN1, coord).xyz * vec3(2.0) - vec3(1.0);', 'n1.z = NMUL;',
-				// 'vec3 n2 = texture2D(groundMapN2, coord).xyz * vec3(2.0) - vec3(1.0);', 'n2.z = NMUL;',
-				// 'vec3 mountainN = texture2D(groundMapN4, coord).xyz * vec3(2.0) - vec3(1.0);', 'mountainN.z = NMUL;',
-				// 'vec3 tangentNormal = mix(n1, n2, smoothstep(0.0, 1.0, 1.0));',
-				// 'tangentNormal = mix(tangentNormal, mountainN, slope);',
-				// 'N = normalize(vec3(N.x + tangentNormal.x, N.y, N.z + tangentNormal.y));',
+					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
+					'slope = smoothstep(0.0, 0.1, slope);',
 
-				'vec4 splat = texture2D(splatMap, mapcoord);',
-				'vec4 g1 = texture2D(groundMap1, coord);',
-				'vec4 g2 = texture2D(groundMap2, coord);',
-				'vec4 g3 = texture2D(groundMap3, coord);',
-				'vec4 g4 = texture2D(groundMap4, coord);',
-				'vec4 g5 = texture2D(groundMap5, coord);',
-				'vec4 stone = texture2D(stoneMap, coord);',
+					// 'const float NMUL = 1.2;',
+					// 'vec3 n1 = texture2D(groundMapN1, coord).xyz * vec3(2.0) - vec3(1.0);', 'n1.z = NMUL;',
+					// 'vec3 n2 = texture2D(groundMapN2, coord).xyz * vec3(2.0) - vec3(1.0);', 'n2.z = NMUL;',
+					// 'vec3 mountainN = texture2D(groundMapN4, coord).xyz * vec3(2.0) - vec3(1.0);', 'mountainN.z = NMUL;',
+					// 'vec3 tangentNormal = mix(n1, n2, smoothstep(0.0, 1.0, 1.0));',
+					// 'tangentNormal = mix(tangentNormal, mountainN, slope);',
+					// 'N = normalize(vec3(N.x + tangentNormal.x, N.y, N.z + tangentNormal.y));',
 
-				'final_color = mix(g1, g2, splat.r);',
-				'final_color = mix(final_color, g3, splat.g);',
-				'final_color = mix(final_color, g4, splat.b);',
-				'final_color = mix(final_color, g5, splat.a);',
+					'vec4 splat = texture2D(splatMap, mapcoord);',
+					'vec4 g1 = texture2D(groundMap1, coord);',
+					'vec4 g2 = texture2D(groundMap2, coord);',
+					'vec4 g3 = texture2D(groundMap3, coord);',
+					'vec4 g4 = texture2D(groundMap4, coord);',
+					'vec4 g5 = texture2D(groundMap5, coord);',
+					'vec4 stone = texture2D(stoneMap, coord);',
 
-				'slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-				'slope = smoothstep(0.05, 0.15, slope);',
-				'final_color = mix(final_color, stone, slope);',
+					// 'final_color.rgb = blend(g1, 1.0 - splat.r, g2, splat.r);',
+					// 'final_color.rgb = blend(final_color, 1.0 - splat.g, g3, splat.g);',
+					// 'final_color.rgb = blend(final_color, 1.0 - splat.b, g4, splat.b);',
+					// 'final_color.rgb = blend(final_color, 1.0 - splat.a, g5, splat.a);',
 
-				ShaderBuilder.light.fragment,
+					'final_color = mix(g1, g2, splat.r);',
+					'final_color = mix(final_color, g3, splat.g);',
+					'final_color = mix(final_color, g4, splat.b);',
+					'final_color = mix(final_color, g5, splat.a);',
 
-				'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
-				'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+					'slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
+					'slope = smoothstep(0.0, 0.1, slope);',
+					'final_color = mix(final_color, stone, slope);',
 
-				'gl_FragColor = final_color;',
+					ShaderBuilder.light.fragment,
 
-				// 'gl_FragColor.rgb = vec3(abs(alphaval.x - alphaval.y)) * 0.1;',
+					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 
-				// 'gl_FragColor.r += alphaval.z >= 1.0 ? 0.5 : 0.0;',
-				// 'gl_FragColor.g += alphaval.z * 0.25;',
-				// 'gl_FragColor.b += alphaval.z <= 0.0 ? 0.5 : 0.0;',
+					'gl_FragColor = final_color;',
+
+					// 'gl_FragColor.rgb = vec3(abs(alphaval.x - alphaval.y)) * 0.1;',
+
+					// 'gl_FragColor.r += alphaval.z >= 1.0 ? 0.5 : 0.0;',
+					// 'gl_FragColor.g += alphaval.z * 0.25;',
+					// 'gl_FragColor.b += alphaval.z <= 0.0 ? 0.5 : 0.0;',
 				'}'
 			].join('\n');
 		}
