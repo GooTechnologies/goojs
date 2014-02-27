@@ -392,12 +392,11 @@ function (
 		// set our component updated.
 		transformComponent.setUpdated();
 
-		transformComponent.transform.rotation.toAngles(helpVector);
 		SystemBus.emit('goo.cameraPositionChanged', {
 			spherical: this.spherical.data,
 			translation: transformComponent.transform.translation.data,
-			rotation: helpVector.data,
-			lookAtPoint: this.lookAtPoint.data
+			lookAtPoint: this.lookAtPoint.data,
+			id: entity.id
 		});
 	};
 

@@ -84,16 +84,18 @@ function(
 			if (config.environmentRef) {
 				promises.push(that._load(config.environmentRef, options));
 			}
-			if (config.initialCameraRef && config.initialCameraRef !== scene.initialCameraRef) {
-				promises.push(that._load(config.initialCameraRef, options).then(function(cameraEntity) {
-					if (cameraEntity && cameraEntity.cameraComponent) {
-						SystemBus.emit('goo.setCurrentCamera', {
-							camera: cameraEntity.cameraComponent.camera,
-							entity: cameraEntity
-						});
-					}
-					scene.initialCameraRef = config.initialCameraRef;
-				}));
+			if (!options.scene || !options.scene.dontSetCamera) {
+				if (config.initialCameraRef && config.initialCameraRef !== scene.initialCameraRef) {
+					promises.push(that._load(config.initialCameraRef, options).then(function(cameraEntity) {
+						if (cameraEntity && cameraEntity.cameraComponent) {
+							SystemBus.emit('goo.setCurrentCamera', {
+								camera: cameraEntity.cameraComponent.camera,
+								entity: cameraEntity
+							});
+						}
+						scene.initialCameraRef = config.initialCameraRef;
+					}));
+				}
 			}
 			return RSVP.all(promises).then(function() {
 				return scene;

@@ -60,16 +60,21 @@ function(
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(script) {
 			if (!config) { return; }
 
-			if (script.run) { return script; }
 
 			// first treat the oldstyle loading
 			if (config.className) {
-				var name = config.className;
-				if (ScriptHandler.scripts[name] instanceof Function) {
-					script = that._objects[ref] = new ScriptHandler.scripts[name](config.options);
+				if (!script.run) { 
+					var name = config.className;
+					if (ScriptHandler.scripts[name] instanceof Function) {
+						script = that._objects[ref] = new ScriptHandler.scripts[name](config.options);
+						script.id = config.id;
+					}
 				}
 
-				return PromiseUtil.createDummyPromise(script);
+				if (options.script && options.script.disabled) {
+					script.enabled = script.active = false;
+				}
+				return script;
 			} // else ...
 
 

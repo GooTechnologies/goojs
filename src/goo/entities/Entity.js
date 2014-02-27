@@ -1,9 +1,11 @@
 define([
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/util/StringUtil'
 ],
 /** @lends */
 function (
-	Component
+	Component,
+	StringUtil
 	) {
 	'use strict';
 
@@ -21,7 +23,7 @@ function (
 	function Entity(world, name, id) {
 		this._world = world;
 		this._components = [];
-		this.id = id !== undefined ? id : Entity.entityCount;
+		this.id = id !== undefined ? id : StringUtil.createUniqueId('entity');
 		this._index = Entity.entityCount;
 
 		//! AT: not sure if this tags/attributes abstraction is really needed or if they are just glorified properties
