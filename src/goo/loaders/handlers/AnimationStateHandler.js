@@ -6,7 +6,8 @@ define([
 	'goo/animation/blendtree/BinaryLERPSource',
 	'goo/animation/blendtree/FrozenClipSource',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function(
@@ -17,7 +18,8 @@ function(
 	BinaryLERPSource,
 	FrozenClipSource,
 	RSVP,
-	PromiseUtil
+	PromiseUtil,
+	_
 ) {
 	"use strict";
 
@@ -59,6 +61,8 @@ function(
 			if (!state) { return; }
 			state._name = config.name;
 			state.id = config.id;
+			state._transitions = _.deepClone(config.transitions);
+
 			return that._parseClipSource(config.clipSource, state._sourceTree, options).then(function(source) {
 				state._sourceTree = source;
 				return state;
