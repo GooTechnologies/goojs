@@ -128,9 +128,7 @@ function(
 				var textureRef = config.lightCookie;
 				textureRef = (textureRef.enabled) ? textureRef.textureRef : textureRef;
 
-				return that.getConfig(textureRef, options).then(function(config) {
-					return that.updateObject(textureRef, config, options);
-				}).then(function(texture) {
+				return that._load(textureRef, options).then(function(texture) {
 					light.lightCookie = texture;
 					return component;
 				});

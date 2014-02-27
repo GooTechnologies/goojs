@@ -145,7 +145,7 @@ function(
 				if (Loader) {
 					// Special (dds, tga, crn)
 					texture.a = imageRef;
-					ret = that.getConfig(imageRef).then(function(data) {
+					ret = that.loadObject(imageRef).then(function(data) {
 						if (data && data.preloaded) {
 							_.extend(texture.image, data.image);
 							texture.format = data.format;
@@ -159,7 +159,7 @@ function(
 				} else if(['jpg', 'jpeg', 'png', 'gif'].indexOf(type) !== -1) {
 					// Images
 					// Beware of image caching but should be handled by Ajax
-					ret = that.getConfig(imageRef, options).then(function(image) {
+					ret = that.loadObject(imageRef, options).then(function(image) {
 						if(texture.image !== image) {
 							texture.setImage(image);
 						}
@@ -167,7 +167,7 @@ function(
 					});
 				} else if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
 					// Video
-					ret = that.getConfig(imageRef, options).then(function(video) {
+					ret = that.loadObject(imageRef, options).then(function(video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
 						if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {

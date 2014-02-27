@@ -111,13 +111,10 @@ function(
 		}
 
 		if (this._cache[path] && !reload) {
-			return PromiseUtil.createDummyPromise(this._cache[path]).then(function(config) {
-				if (typeInGroup(type, 'bundle')) {
-					that.prefill(config, reload);
-					return null;
-				}
-				return config;
-			});
+			if (typeInGroup(type, 'bundle')) {
+				this.prefill(this._cache[path], reload);
+			}
+			return PromiseUtil.createDummyPromise(this._cache[path]);
 		}
 
 		var url = (this._rootPath) ? this._rootPath + path : path;

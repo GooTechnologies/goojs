@@ -112,7 +112,7 @@ function(
 						return sound;
 					} else {
 						/*jshint -W083 */
-						return that.getConfig(ref).then(function(buffer) {
+						return that.loadObject(ref).then(function(buffer) {
 							var promise = new RSVP.Promise();
 							AudioContext.decodeAudioData(buffer, function(audioBuffer) {
 								promise.resolve(audioBuffer);

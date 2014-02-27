@@ -6,7 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,
@@ -65,8 +65,8 @@ function(
 		}
 
 		var promises = [
-			this.getConfig(config.vshaderRef, options),
-			this.getConfig(config.fshaderRef, options)
+			this.loadObject(config.vshaderRef, options),
+			this.loadObject(config.fshaderRef, options)
 		];
 
 		return RSVP.all(promises).then(function(shaders) {
