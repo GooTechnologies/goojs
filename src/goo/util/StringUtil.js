@@ -54,6 +54,21 @@ define(function() {
 	};
 
 	/**
+	 * Returns the string from the last occurence of the stop string until the end. The stop string is not included in the result.
+	 * @param {string} string
+	 * @param {string} stopString
+	 * @returns {string}
+	 */
+	StringUtil.getAfterLast = function(string, stopString) {
+		var stopIndex = string.lastIndexOf(stopString);
+		if (stopIndex === -1) {
+			return string;
+		} else {
+			return string.slice(stopIndex + stopString.length, string.length);
+		}
+	};
+
+	/**
 	 * Returns the string from the index of the start string until the end of the string. The start character is
 	 * not included in the returned string.
 	 *

@@ -29,19 +29,21 @@ function(
 		this._audioCache = {};
 
 		if (window.Audio !== undefined) {
-	    var audioTest = new Audio();
-	    this._codecs = [
-		    {
-			    type: 'mp3',
-			    enabled: !!audioTest.canPlayType('audio/mpeg;').replace(/^no$/,'')
-		    }, {
-			    type: 'ogg',
-			    enabled: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,'')
-		    }, {
-			    type: 'wav',
-			    enabled: !!audioTest.canPlayType('audio/wav; codecs="1"').replace(/^no$/,'')
-		    }
-	    ];
+			var audioTest = new Audio();
+
+			//REVIEW: if 'no' is '' already then just use !!audioTest.canPlayType(...)
+			this._codecs = [
+				{
+					type: 'mp3',
+					enabled: !!audioTest.canPlayType('audio/mpeg;').replace(/^no$/,'')
+				}, {
+					type: 'ogg',
+					enabled: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,'')
+				}, {
+					type: 'wav',
+					enabled: !!audioTest.canPlayType('audio/wav; codecs="1"').replace(/^no$/,'')
+				}
+			];
 		} else {
 			this._codecs = [];
 		}
@@ -102,10 +104,11 @@ function(
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
 			if (!sound) { return; }
 			sound.update(config);
-			var ref;
+
 			for (var i = 0; i < that._codecs.length; i++) {
 				var codec = that._codecs[i];
 				var ref = config.audioRefs[codec.type];
+
 				if (ref && codec.enabled) {
 					if (that._audioCache[ref]) {
 						sound.setAudioBuffer(that._audioCache[ref]);

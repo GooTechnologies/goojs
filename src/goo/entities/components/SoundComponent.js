@@ -12,12 +12,13 @@ function(
 	MathUtils
 ) {
 	'use strict';
+
 	function SoundComponent() {
 		if (!AudioContext) {
 			console.warn('Cannot create soundComponent, webaudio not supported');
 			return;
 		}
-		this.type = "SoundComponent";
+		this.type = 'SoundComponent';
 		this.sounds = [];
 		this._outDryNode = AudioContext.createGain();
 		this._outWetNode = AudioContext.createGain();
@@ -30,6 +31,7 @@ function(
 		this._orientation = new Vector3();
 		this._velocity = new Vector3();
 	}
+
 	SoundComponent.prototype = Object.create(Component.prototype);
 	SoundComponent.prototype.constructor = SoundComponent;
 
@@ -37,7 +39,7 @@ function(
 	 * Add a sound to the component
 	 * @param {Sound} sound
 	 */
-	SoundComponent.prototype.addSound = function(sound) {
+	SoundComponent.prototype.addSound = function (sound) {
 		if (!AudioContext) {
 			console.warn('Webaudio not supported');
 			return;
@@ -52,7 +54,7 @@ function(
 	 * Remove sound from component
 	 * @param {Sound} sound
 	 */
-	SoundComponent.prototype.removeSound = function(sound) {
+	SoundComponent.prototype.removeSound = function (sound) {
 		if (!AudioContext) {
 			console.warn('Webaudio not supported');
 			return;
@@ -70,7 +72,7 @@ function(
 	 * @param {string} id
 	 * @returns {Sound}
 	 */
-	SoundComponent.prototype.getSoundById = function(id) {
+	SoundComponent.prototype.getSoundById = function (id) {
 		for (var i = 0; i < this.sounds.length; i++) {
 			if (this.sounds[i].id === id) {
 				return this.sounds[i];
@@ -84,7 +86,7 @@ function(
 	 * @param {AudioNode} [nodes.dry]
 	 * @param {AudioNode} [nodes.wet]
 	 */
-	SoundComponent.prototype.connectTo = function(nodes) {
+	SoundComponent.prototype.connectTo = function (nodes) {
 		if (!AudioContext) {
 			console.warn('Webaudio not supported');
 			return;
@@ -105,7 +107,7 @@ function(
 	 * @param {number} config.volume
 	 * @param {number} config.reverb
 	 */
-	SoundComponent.prototype.updateConfig = function(config) {
+	SoundComponent.prototype.updateConfig = function (config) {
 		if (!AudioContext) {
 			console.warn('Webaudio not supported');
 			return;
@@ -125,7 +127,7 @@ function(
 	 * @param {number} tpf
 	 * @private
 	 */
-	SoundComponent.prototype.process = function(settings, transform, tpf) {
+	SoundComponent.prototype.process = function (settings, transform, tpf) {
 		if (!AudioContext) {
 			// Should never happen
 			return;
@@ -137,7 +139,7 @@ function(
 		matrix.getTranslation(this._position);
 		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
 		this._oldPosition.setv(this._position);
-		this._orientation.setd(0,0,-1);
+		this._orientation.setd(0, 0, -1);
 		matrix.applyPostVector(this._orientation);
 
 		var pd = this._position.data;

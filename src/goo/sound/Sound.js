@@ -19,6 +19,7 @@ function (
 			console.warn('Cannot create sound, webaudio not supported');
 			return;
 		}
+
 		// Settings
 		this.id = null;
 		this._loop = false;
@@ -26,16 +27,20 @@ function (
 		this._offset = 0;
 		this._duration = null;
 		this._volume = 1.0;
+
 		// Nodes
 		this._buffer = null;
 		this._currentSource = null;
 		this._outNode = AudioContext.createGain();
 		this.connectTo();
+
 		// Playback memory
 		this._playStart = 0;
 		this._pausePos = 0;
-		this._endTimer = null;
+		//this._endTimer = null;
 		this._endPromise = null;
+
+		this._paused = false;
 	}
 
 	/**
@@ -57,6 +62,15 @@ function (
 		}
 
 		this._currentSource = AudioContext.createBufferSource();
+
+		//REVIEW: let's see if this works
+		this._paused = false;
+		this._currentSource.onended = function () {
+			if (!this._paused) {
+				this.stop();
+			}
+		}.bind(this);
+
 		this._currentSource.playbackRate.value = this._rate;
 		this._currentSource.connect(this._outNode);
 		this._currentSource.buffer = this._buffer;
@@ -71,7 +85,7 @@ function (
 
 		this._currentSource.start(0, this._pausePos + this._offset, duration);
 
-		this._fixTimer();
+		//this._fixTimer();
 		return this._endPromise;
 	};
 
@@ -86,6 +100,8 @@ function (
 		if (!this._currentSource) {
 			return;
 		}
+		this._paused = true;
+
 		this._pausePos = (AudioContext.currentTime - this._playStart) % this._duration;
 		this._pausePos /= this._rate;
 		this._stop();
@@ -99,6 +115,7 @@ function (
 			console.warn('Webaudio not supported');
 			return;
 		}
+		this._paused = false;
 		this._pausePos = 0;
 		if (this._endPromise) {
 			this._endPromise.resolve();
@@ -142,7 +159,7 @@ function (
 	Sound.prototype._stop = function() {
 		this._currentSource.stop(0);
 		this._currentSource = null;
-		this._fixTimer();
+		//this._fixTimer();
 	};
 
 	/**
@@ -182,12 +199,13 @@ function (
 			this._duration = config.duration;
 		}
 		if (config.timeScale !== undefined) {
-			this._rate = config.timeScale;
+			this._rate = config.timeScale; //REVIEW: should have the same name
 		}
 		if (this._buffer) {
 			this._clampInterval();
 		}
-		this._fixTimer();
+
+		//this._fixTimer();
 	};
 
 	/**
@@ -225,10 +243,12 @@ function (
 		}
 	};
 
+	//REVEIW: no need for this
 	/**
 	 * Sets a timer to resolve play promise when sound has played through
 	 * @private
 	 */
+	/*
 	Sound.prototype._fixTimer = function() {
 		var that = this;
 		if (this._endTimer) {
@@ -242,6 +262,7 @@ function (
 			}, duration * 1000);
 		}
 	};
+	*/
 
 	/**
 	 * Sets the audio buffer which will be the sound source

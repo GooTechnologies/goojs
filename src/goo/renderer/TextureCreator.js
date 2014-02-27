@@ -3,7 +3,8 @@ define([
 	'goo/renderer/Util',
 	'goo/loaders/handlers/TextureHandler',
 	'goo/util/Ajax',
-	'goo/util/StringUtil'
+	'goo/util/StringUtil',
+	'goo/util/Latch'
 ],
 /** @lends */
 function (
@@ -11,9 +12,12 @@ function (
 	Util,
 	TextureHandler,
 	Ajax,
-	StringUtil
+	StringUtil,
+	Latch
 ) {
 	'use strict';
+
+	//! AT: shouldn't this stay in util?
 
 	/**
 	 * @class Takes away the pain of creating textures of various sorts.
@@ -30,12 +34,8 @@ function (
 		);
 	}
 
+	//! AT: unused?
 	TextureCreator.UNSUPPORTED_FALLBACK = '.png';
-
-	function endsWith(str, suffix) {
-		return str.indexOf(suffix, str.length - suffix.length) !== -1;
-	}
-
 	TextureCreator.clearCache = function () {};
 
 	/**
@@ -56,7 +56,9 @@ function (
 				dontwait: true
 			}
 		}).then(function() {
-			callback();
+			if (callback) {
+				callback(texture);
+			}
 		});
 		return texture;
 	};
@@ -71,6 +73,7 @@ function (
 		settings.autoPlay = true;
 
 		var texture = this.textureHandler._objects[id] = this.textureHandler._create();
+
 		this.textureHandler.update(id, settings, {
 			texture: {
 				dontwait: true
@@ -78,59 +81,6 @@ function (
 		}).then(null, function(err) {
 			errorCallback(err);
 		});
-		return texture;
-
-		if (TextureCreator.cache[videoURL] !== undefined) {
-			return TextureCreator.cache[videoURL];
-		}
-
-		var video = document.createElement('video');
-		for (var attribute in videoSettings) {
-			video[attribute] = videoSettings[attribute];
-		}
-		video.loop = (typeof (loop) === 'boolean') ? loop : true;
-
-		video.addEventListener('error', function (error) {
-			console.warn('Couldn\'t load video URL [' + videoURL + ']', error);
-			if (errorCallback) {
-				errorCallback(error);
-			}
-		}, false);
-
-		var texture = new Texture(video, {
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp'
-		});
-
-		texture.readyCallback = function () {
-			if (video.readyState >= 3) {
-				console.log('Video ready: ' + video.videoWidth + ', ' + video.videoHeight);
-				video.width = video.videoWidth;
-				video.height = video.videoHeight;
-
-				// set minification filter based on pow2
-				if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
-					texture.generateMipmaps = false;
-					texture.minFilter = 'BilinearNoMipMaps';
-				}
-
-				video.play();
-
-				video.dataReady = true;
-				return true;
-			}
-			return false;
-		};
-
-		texture.updateCallback = function () {
-			return !video.paused;
-		};
-
-		video.crossOrigin = 'anonymous';
-
-		video.src = videoURL;
-
-		TextureCreator.cache[videoURL] = texture;
 
 		return texture;
 	};
@@ -234,6 +184,7 @@ function (
 		return texture;
 	};
 
+	//! AT: unused
 	TextureCreator._globalCallback = null;
 	TextureCreator._finishedLoading = function (image) {
 		if (TextureCreator._globalCallback) {
