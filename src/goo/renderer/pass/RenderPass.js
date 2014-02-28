@@ -17,7 +17,7 @@ function (
 		this.renderList = renderList;
 		this.filter = filter;
 
-		this.clearColor = new Vector4(0.0, 0.0, 0.0, 0.0);
+		this.clearColor = new Vector4(0.3, 0.3, 0.3, 1.0);
 		this.oldClearColor = new Vector4();
 		this.renderToScreen = false;
 
@@ -40,7 +40,9 @@ function (
 		if (clearColor) {
 			this.oldClearColor.setv(renderer.clearColor);
 			renderer.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
-		}
+		} 
+
+		renderer.setClearColor(0.3, 0.3, 0.3, 1.0);
 
 		var renderList;
 		if (this.filter) {

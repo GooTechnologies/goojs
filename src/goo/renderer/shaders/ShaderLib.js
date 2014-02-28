@@ -2435,5 +2435,62 @@ define([
 		].join("\n")
 	};
 
+	ShaderLib.xray = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms: {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			fullShadedImage: 'FULL_SHADED',
+			xRayShadedImage: 'X_RAY',
+			radius: 200,
+			mousePos: [200, 200],
+			resolution: [1600, 600],
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewMatrix;',
+		'uniform mat4 projectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+
+		'void main(void) {',
+		'	texCoord0 = vertexUV0;',
+		'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'uniform sampler2D fullShadedImage;',
+		'uniform sampler2D xRayShadedImage;',
+		'uniform int radius;',
+
+		'uniform vec2 mousePos;',
+		'uniform vec2 resolution;',
+
+		'varying vec2 texCoord0;',
+
+		'void main(void)',
+		'{',
+		'	vec4 fullSample = texture2D(fullShadedImage, texCoord0);',
+		'	vec4 xraySample = texture2D(xRayShadedImage, texCoord0);',
+		'	float d = length(mousePos-gl_FragCoord.xy);',
+		'	float r = float(radius);',
+		'   if (d < r) {',
+		'		float l = (d/r)*(d/r);',
+		'		float k = 1.0 - l;',
+		'		gl_FragColor = l*fullSample + k*xraySample;',
+		'	} else { ',
+		'		gl_FragColor = fullSample;',
+		'	}',
+		'}'//
+		].join('\n')
+	}
+
 	return ShaderLib;
 });

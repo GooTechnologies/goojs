@@ -3,6 +3,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BloomPass',
 	'goo/renderer/pass/BlurPass',
+	'goo/renderer/pass/XRayPass',
 	'goo/renderer/Util'
 ],
 /** @lends */
@@ -11,17 +12,50 @@ function(
 	FullscreenPass,
 	BloomPass,
 	BlurPass,
+	XRayPass,
 	Util
 ) {
 	'use strict';
 
 	/** @class */
 
+	function XRay(id) {
+		XRayPass.call(this);
+		this.id = id;
+
+	}
+	XRay.prototype = Object.create(XRayPass.prototype);
+	XRay.prototype.constructor = XRay;
+	XRay.prototype.update = function(config) {
+		var options = config.options;
+		var shader = this.material.shader;
+		if (options.radius !== undefined) {
+			shader.uniforms.radius = options.radius;
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+	XRay.label = 'X-Ray';
+	XRay.options = [
+		{
+			key: 'radius',
+			name: 'Radius',
+			type: 'int',
+			control: 'slider',
+			min: 1,
+			max: 500,
+			'default': 100
+		}
+	];
+
+
 	function Bloom(id) {
 		BloomPass.call(this);
 		this.id = id;
 	}
 	Bloom.prototype = Object.create(BloomPass.prototype);
+
 	Bloom.prototype.constructor = Bloom;
 
 	Bloom.prototype.update = function(config) {
@@ -625,6 +659,7 @@ function(
 	];
 
 	return {
+		XRay: XRay,
 		Bloom: Bloom,
 		Blur: Blur,
 		Vignette: Vignette,

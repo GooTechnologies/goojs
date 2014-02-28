@@ -174,6 +174,8 @@ function (
 	};
 
 	RenderSystem.prototype.setDebugMaterial = function(key) {
+
+		console.log('Setting debug material', key);
 		if(!key || key === '') {
 			this.overrideMaterials = [];
 			return;
