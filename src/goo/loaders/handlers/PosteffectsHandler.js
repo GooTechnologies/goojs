@@ -75,9 +75,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated posteffectsarray or null if removed
 	 */
-	PosteffectsHandler.prototype.update = function(ref, config, options) {
+	PosteffectsHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(posteffects) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(posteffects) {
 			if (!posteffects) { return; }
 			var i = 0;
 			_.forEach(config.posteffects, function(effectConfig) {

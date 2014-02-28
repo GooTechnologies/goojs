@@ -52,7 +52,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated shader or null if removed
 	 */
-	ShaderHandler.prototype.update = function(ref, config, options) {
+	ShaderHandler.prototype._update = function(ref, config, options) {
 		if (!config) {
 			this._remove(ref);
 			return PromiseUtil.createDummyPromise();

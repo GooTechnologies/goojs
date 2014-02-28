@@ -66,9 +66,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
-	EntityHandler.prototype.update = function(ref, config, options) {
+	EntityHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(entity) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(entity) {
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;

@@ -49,7 +49,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the Meshdata or null if removed
 	 */
-	MeshDataHandler.prototype.update = function(ref, config, options) {
+	MeshDataHandler.prototype._update = function(ref, config, options) {
 		if (!config) {
 			this._remove(ref);
 			return PromiseUtil.createDummyPromise();

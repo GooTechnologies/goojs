@@ -71,9 +71,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated scene or null if removed
 	 */
-	SceneHandler.prototype.update = function(ref, config, options) {
+	SceneHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(scene) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(scene) {
 			if (!scene) { return; }
 			scene.id = ref;
 			var promises = [];

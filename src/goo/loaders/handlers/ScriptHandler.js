@@ -54,10 +54,10 @@ function(
 		});
 	}
 
-	ScriptHandler.prototype.update = function(ref, config, options) {
+	ScriptHandler.prototype._update = function(ref, config, options) {
 		var that = this;
 		var script;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(script) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
 			if (!config) { return; }
 
 

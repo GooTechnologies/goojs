@@ -90,9 +90,9 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated environment or null if removed
 	 */
-	EnvironmentHandler.prototype.update = function(ref, config, options) {
+	EnvironmentHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(object) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(object) {
 			if (!object) { return; }
 			object.backgroundColor = config.backgroundColor.slice(0);
 			object.globalAmbient = config.globalAmbient.slice(0,3);

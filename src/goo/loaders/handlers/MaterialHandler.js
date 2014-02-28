@@ -96,9 +96,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated material or null if removed
 	 */
-	MaterialHandler.prototype.update = function(ref, config, options) {
+	MaterialHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(material) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(material) {
 			if (!material) { return; }
 			var promises = [];
 			// Material settings

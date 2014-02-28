@@ -68,9 +68,9 @@ define([
 		};
 	};
 
-	SkyboxHandler.prototype.update = function(ref, config, options) {
+	SkyboxHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(skybox) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(skybox) {
 			if (!skybox) { return; }
 			var promises = [];
 			if (config.box) {

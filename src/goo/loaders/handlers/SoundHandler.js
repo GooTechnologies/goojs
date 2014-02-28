@@ -96,12 +96,12 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */
-	SoundHandler.prototype.update = function(ref, config, options) {
+	SoundHandler.prototype._update = function(ref, config, options) {
 		if (!AudioContext) {
 			return PromiseUtil.createDummyPromise();
 		}
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(sound) {
 			if (!sound) { return; }
 			sound.update(config);
 

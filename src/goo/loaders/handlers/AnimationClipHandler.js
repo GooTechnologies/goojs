@@ -54,9 +54,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation clip or null if removed
 	 */
-	AnimationClipHandler.prototype.update = function(ref, config, options) {
+	AnimationClipHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(clip) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(clip) {
 			if(!clip) { return clip; }
 			return that.loadObject(config.binaryRef, options).then(function(bindata) {
 				if (!bindata) {

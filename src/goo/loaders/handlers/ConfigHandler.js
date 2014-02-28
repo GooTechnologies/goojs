@@ -75,10 +75,10 @@ define([
 			throw new Error('Trying to load type' + type + ' with handler for ' + this._type);
 		}
 		var that = this;
-		if (this._objects[ref] && !options.reload) {
-			return PromiseUtil.createDummyPromise(this._objects[ref]);
-		} else if (this._loading[ref]) {
+		if (this._loading[ref]) {
 			return this._loading[ref];
+		} else if (this._objects[ref] && !options.reload) {
+			return PromiseUtil.createDummyPromise(this._objects[ref]);
 		} else {
 			return this._loading[ref] = this.getConfig(ref, options).then(function(config) {
 				return that.update(ref, config, options);
@@ -109,6 +109,11 @@ define([
 	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
 	 */
 	ConfigHandler.prototype.update = function(ref, config, options) {
+		return this._loading[ref] = this._update(ref,config,options);
+	}
+
+
+	ConfigHandler.prototype._update = function(ref, config, options) {
 		if (!config) {
 			this._remove(ref, options);
 			return PromiseUtil.createDummyPromise();
