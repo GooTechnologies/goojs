@@ -52,29 +52,19 @@ function(
 	/**
 	 * @class A terrain
 	 */
-	function Terrain(goo, floatHeightMap, splatMap, size, count) {
+	function Terrain(goo, size, count) {
+		var world = goo.world;
+		this.renderer = goo.renderer;
+		this.size = size;
+		this.count = count;
+
 		var brush = ShapeCreator.createQuad(2/size,2/size);
 	
 		var mat = this.drawMaterial1 = Material.createMaterial(brushShader);
 		mat.blendState.blending = 'AdditiveBlending';
-		this.defaultBrushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
-		mat.setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 		mat.cullState.cullFace = 'Front';
 
 		var mat2 = this.drawMaterial2 = Material.createMaterial(brushShader2);
-		mat2.blendState = {
-			blending: 'NoBlending',
-			// blending: 'SeparateBlending',
-			blendEquationColor: 'AddEquation',
-			blendEquationAlpha: 'AddEquation',
-			// blendSrcColor: 'SrcColorFactor',
-			blendSrcColor: 'OneFactor',
-			blendDstColor: 'OneMinusSrcColorFactor',
-			blendSrcAlpha: 'SrcAlphaFactor',
-			blendDstAlpha: 'OneFactor',
-			// blendDstAlpha: 'OneMinusSrcAlphaFactor'
-		};
-		mat2.setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 		mat2.cullState.cullFace = 'Front';
 
 		this.renderable = {
@@ -83,12 +73,6 @@ function(
 			transform: new Transform()
 		};
 		this.renderable.transform.setRotationXYZ(0, 0, Math.PI*0.5);
-
-		var world = goo.world;
-		this.renderer = goo.renderer;
-		this.size = size;
-		this.count = count;
-		this.first = true;
 
 		this.copyPass = new FullscreenPass(ShaderLib.screenCopy);
 		this.copyPass.material.depthState.enabled = false;
@@ -102,15 +86,6 @@ function(
 		this.normalmapPass.material.uniforms.height = 10;
 
 		this.extractFloatPass = new FullscreenPass(extractShader);
-
-		this.floatTexture = new Texture(floatHeightMap, {
-			magFilter: 'NearestNeighbor',
-			minFilter: 'NearestNeighborNoMipMaps',
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
-			generateMipmaps: false,
-			format: 'Luminance'
-		}, size, size);
 
 		this.normalMap = new RenderTarget(size, size);
 
@@ -138,13 +113,9 @@ function(
 		}
 
 		this.n = 31;
-		// this.n = 8;
 		this.gridSize = (this.n + 1) * 4 - 1;
 		console.log('grid size: ', this.gridSize);
 
-		this.height = 1;
-
-		var anisotropy = 4;
 		this.splat = new RenderTarget(this.size * 2, this.size * 2, {
 				// magFilter: 'NearestNeighbor',
 				minFilter: 'NearestNeighborNoMipMaps',
@@ -161,72 +132,18 @@ function(
 		});
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
 
-		var ground1 = new TextureCreator().loadTexture2D('res/images/grass1.jpg', {
-			anisotropy: anisotropy
-		});
-		var ground2 = new TextureCreator().loadTexture2D('res/images/grass2.jpg', {
-			anisotropy: anisotropy
-		});
-		var ground3 = new TextureCreator().loadTexture2D('res/images/grass2.jpg', {
-			anisotropy: anisotropy
-		});
-		var ground4 = new TextureCreator().loadTexture2D('res/images/grass1.jpg', {
-			anisotropy: anisotropy
-		});
-		var ground5 = new TextureCreator().loadTexture2D('res/images/grass2.jpg', {
-			anisotropy: anisotropy
-		});
-		var stone = new TextureCreator().loadTexture2D('res/images/stone.jpg', {
-			anisotropy: anisotropy
-		});
-
-		this.copyPass.render(this.renderer, this.splatCopy, splatMap);
-		this.copyPass.render(this.renderer, this.splat, splatMap);
-
-		// var grass1n = new TextureCreator().loadTexture2D('res/images/grass1n.jpg', {
-		// 	anisotropy: anisotropy
-		// });
-		// var grass2n = new TextureCreator().loadTexture2D('res/images/grass2n.jpg', {
-		// 	anisotropy: anisotropy
-		// });
-		// var stonen = new TextureCreator().loadTexture2D('res/images/stonen.jpg', {
-		// 	anisotropy: anisotropy
-		// });
-
-		// var tw = textures[0].image.width;
-		// var th = textures[0].image.height;
-
 		var entity = this.terrainRoot = world.createEntity('TerrainRoot');
 		entity.addToWorld();
 		this.clipmaps = [];
 		for (var i = 0; i < count; i++) {
 			var size = Math.pow(2, i);
 
-			var texture = this.textures[i];
 			var material = Material.createMaterial(Util.clone(terrainShaderDefFloat), 'clipmap' + i);
-			// var material = Material.createMaterial(Util.clone(terrainShaderDef), 'clipmap' + i);
-
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
-			// material.uniforms.materialDiffuse = [1.2, 1.2, 1.2, 1.0];
-
-			material.setTexture('HEIGHT_MAP', texture);
-			material.setTexture('NORMAL_MAP', this.normalMap);
-
-			material.setTexture('SPLAT_MAP', this.splat);
-			material.setTexture('GROUND_MAP1', ground1);
-			material.setTexture('GROUND_MAP2', ground2);
-			material.setTexture('GROUND_MAP3', ground3);
-			material.setTexture('GROUND_MAP4', ground4);
-			material.setTexture('GROUND_MAP5', ground5);
-			material.setTexture('STONE_MAP', stone);
-			// material.setTexture('GROUND_MAP1_NORMALS', grass1n);
-			// material.setTexture('GROUND_MAP2_NORMALS', grass2n);
-			// material.setTexture('GROUND_MAP4_NORMALS', stonen);
-
 			material.cullState.frontFace = 'CW';
 			// material.wireframe = true;
-			material.uniforms.resolution = [this.height, 1 / size, this.size, this.size];
+			material.uniforms.resolution = [1, 1 / size, this.size, this.size];
 			material.uniforms.resolutionNorm = [this.size, this.size];
 
 			var clipmapEntity = this.createClipmapLevel(world, material, i);
@@ -234,11 +151,9 @@ function(
 			entity.attachChild(clipmapEntity);
 
 			var terrainPickingMaterial = Material.createMaterial(Util.clone(terrainPickingShader), 'terrainPickingMaterial' + i);
-			// var terrainPickingMaterial = Material.createEmptyMaterial(Util.clone(terrainPickingShader), 'terrainPickingMaterial' + i);
 			terrainPickingMaterial.cullState.frontFace = 'CW';
 			// terrainPickingMaterial.wireframe = true;
-			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
-			terrainPickingMaterial.uniforms.resolution = [this.height, 1 / size, this.size, this.size];
+			terrainPickingMaterial.uniforms.resolution = [1, 1 / size, this.size, this.size];
 			terrainPickingMaterial.blendState = {
 				blending: 'NoBlending',
 				blendEquation: 'AddEquation',
@@ -256,8 +171,6 @@ function(
 				origMaterial: material,
 				terrainPickingMaterial: terrainPickingMaterial
 			};
-
-			console.log(clipmapEntity);
 		}
 
 		var parentClipmap = this.clipmaps[this.clipmaps.length - 1];
@@ -267,13 +180,8 @@ function(
 			parentClipmap = clipmap;
 		}
 
-
 		// edit marker
 		var light = new DirectionalLight();
-		// var brushTexture = new TextureCreator().loadTexture2D('res/images/flare.png');
-		// brushTexture.wrapS = 'EdgeClamp';
-		// brushTexture.wrapT = 'EdgeClamp';
-		// light.lightCookie = brushTexture;
 		light.shadowSettings.size = 10;
 		var lightEntity = this.lightEntity = world.createEntity(light);
 		lightEntity.setTranslation(200, 200, 200);
@@ -282,9 +190,49 @@ function(
 		this.lightEntity.lightComponent.hidden = true;
 	}
 
+	Terrain.prototype.init = function(terrainTextures) {
+		this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
+			magFilter: 'NearestNeighbor',
+			minFilter: 'NearestNeighborNoMipMaps',
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+			generateMipmaps: false,
+			format: 'Luminance'
+		}, this.size, this.size);
+
+		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
+
+		this.copyPass.render(this.renderer, this.splatCopy, terrainTextures.splatMap);
+		this.copyPass.render(this.renderer, this.splat, terrainTextures.splatMap);
+
+		for (var i = 0; i < this.count; i++) {
+			var material = this.clipmaps[i].origMaterial;
+			var texture = this.textures[i];
+
+			material.setTexture('HEIGHT_MAP', texture);
+			material.setTexture('NORMAL_MAP', this.normalMap);
+
+			material.setTexture('SPLAT_MAP', this.splat);
+			material.setTexture('GROUND_MAP1', terrainTextures.ground1);
+			material.setTexture('GROUND_MAP2', terrainTextures.ground2);
+			material.setTexture('GROUND_MAP3', terrainTextures.ground3);
+			material.setTexture('GROUND_MAP4', terrainTextures.ground4);
+			material.setTexture('GROUND_MAP5', terrainTextures.ground5);
+			material.setTexture('STONE_MAP', terrainTextures.stone);
+			// material.setTexture('GROUND_MAP1_NORMALS', grass1n);
+			// material.setTexture('GROUND_MAP2_NORMALS', grass2n);
+			// material.setTexture('GROUND_MAP4_NORMALS', stonen);
+
+			var terrainPickingMaterial = this.clipmaps[i].terrainPickingMaterial;
+			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
+		}
+
+		this.updateTextures();
+	};
+
 	Terrain.prototype.toggleMarker = function() {
 		this.lightEntity.lightComponent.hidden = !this.lightEntity.lightComponent.hidden;
-	}
+	};
 
 	Terrain.prototype.setMarker = function(type, size, x, y, power, brushTexture) {
 		this.lightEntity.lightComponent.light.shadowSettings.size = size * 0.5;
@@ -292,9 +240,10 @@ function(
 		brushTexture.wrapT = 'EdgeClamp';
 		this.lightEntity.lightComponent.light.lightCookie = brushTexture;
 		this.lightEntity.setTranslation(x, 200, y);
-	}
+	};
 
-	Terrain.prototype.pick = function(x, y, pickingStore) {
+	Terrain.prototype.pick = function(camera, x, y, store) {
+
 		var entities = [];
 		EntityUtils.traverse(this.terrainRoot, function (entity) {
 			if (entity.meshDataComponent && entity.meshRendererComponent.hidden === false) {
@@ -313,7 +262,9 @@ function(
 		}
 
 		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, false, x, y);
-		this.renderer.pick(x, y, pickingStore, Renderer.mainCamera);
+		var pickStore = {};
+		this.renderer.pick(x, y, pickStore, Renderer.mainCamera);
+		camera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, pickStore.depth, store);
 
 		for (var i = 0; i < this.clipmaps.length; i++) {
 			var clipmap = this.clipmaps[i];
@@ -327,6 +278,9 @@ function(
 	};
 
 	Terrain.prototype.draw = function(mode, type, size, x, y, power, brushTexture, rgba) {
+		x = (x - this.size/2) * 2;
+		y = (y - this.size/2) * 2;
+
 		if (mode === 'paint') {
 			this.renderable.materials[0] = this.drawMaterial2;
 			this.renderable.materials[0].uniforms.opacity = power;
@@ -401,11 +355,6 @@ function(
 	};
 
 	Terrain.prototype.updateTextures = function() {
-		if (this.first) {
-			this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
-			this.first = false;
-		}
-
 		for (var i = 0; i < this.count - 1; i++) {
 			var mipmap = this.textures[i];
 			var child = this.textures[i + 1];
@@ -562,9 +511,9 @@ function(
 		var entity = world.createEntity('mesh_' + w + '_' + h, meshData, material);
 
 		entity.meshDataComponent.modelBound.xExtent = w * 0.5;
-		entity.meshDataComponent.modelBound.yExtent = 255 * this.height;
+		entity.meshDataComponent.modelBound.yExtent = 255;
 		entity.meshDataComponent.modelBound.zExtent = h * 0.5;
-		entity.meshDataComponent.modelBound.center.setd(w * 0.5, 128 * this.height, h * 0.5);
+		entity.meshDataComponent.modelBound.center.setd(w * 0.5, 128, h * 0.5);
 		entity.meshDataComponent.autoCompute = false;
 
 		entity.setTranslation(x, 0, y);

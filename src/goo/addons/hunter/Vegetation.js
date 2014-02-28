@@ -291,7 +291,7 @@ function(
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 		transform.translation.y = type.h * 0.5 - type.h * 0.1;
-			transform.translation.z = -type.w * 0.1;
+		transform.translation.z = -type.w * 0.1;
 		transform.update();
 
 		meshBuilder.addMeshData(meshData, transform);
