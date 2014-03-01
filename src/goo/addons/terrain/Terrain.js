@@ -67,6 +67,10 @@ function(
 		var mat2 = this.drawMaterial2 = Material.createMaterial(brushShader2);
 		mat2.cullState.cullFace = 'Front';
 
+		var mat3 = this.drawMaterial3 = Material.createMaterial(brushShader3);
+		mat3.uniforms.size = 1 / size;
+		mat3.cullState.cullFace = 'Front';
+
 		this.renderable = {
 			meshData: brush,
 			materials: [mat],
@@ -111,6 +115,8 @@ function(
 
 			size *= 0.5;
 		}
+
+		mat3.setTexture('HEIGHT_MAP', this.texturesBounce[0]);
 
 		this.n = 31;
 		this.gridSize = (this.n + 1) * 4 - 1;
@@ -278,6 +284,8 @@ function(
 	};
 
 	Terrain.prototype.draw = function(mode, type, size, x, y, power, brushTexture, rgba) {
+		power = MathUtils.clamp(power, 0, 1);
+
 		x = (x - this.size/2) * 2;
 		y = (y - this.size/2) * 2;
 
@@ -307,6 +315,23 @@ function(
 
 			this.renderable.materials[0].uniforms.rgba = rgba || [1,1,1,1];
 			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.splat, false);
+		} else if (mode === 'smooth') {
+			this.renderable.materials[0] = this.drawMaterial3;
+			this.renderable.materials[0].uniforms.opacity = power;
+
+			if (brushTexture) {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
+			} else {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+			}
+
+			this.renderable.transform.translation.setd(x/this.size, y/this.size, 0);
+			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.update();
+
+			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
+
+			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
 		} else {
 			this.renderable.materials[0] = this.drawMaterial1;
 			this.renderable.materials[0].uniforms.opacity = power;
@@ -852,7 +877,6 @@ function(
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
 			rgba: [1,1,1,1],
-			resolution: Shader.RESOLUTION,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			splatMap : 'SPLAT_MAP'
 		},
@@ -862,8 +886,6 @@ function(
 
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',
-
-		'uniform vec2 resolution;',
 
 		'varying vec2 texCoord0;',
 		'varying vec2 texCoord1;',
@@ -890,6 +912,60 @@ function(
 		'	float brush = texture2D(diffuseMap, texCoord0).r;',
 		'	vec4 final = mix(splat, rgba, opacity * brush);',
 		'	gl_FragColor = final;',
+		'}'//
+		].join('\n')
+	};
+
+	var brushShader3 = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			opacity : 1.0,
+			size: 1/512,
+			diffuseMap : Shader.DIFFUSE_MAP,
+			heightMap : 'HEIGHT_MAP'
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void) {',
+		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+		'	gl_Position = viewProjectionMatrix * worldPos;',
+		'	texCoord0 = vertexUV0;',
+		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'uniform sampler2D diffuseMap;',
+		'uniform sampler2D heightMap;',
+		'uniform float opacity;',
+
+		'uniform float size;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void)',
+		'{',
+		'	float col1 = texture2D(heightMap, texCoord1 + vec2(-size, -size)).r;',
+		'	float col2 = texture2D(heightMap, texCoord1 + vec2(-size, size)).r;',
+		'	float col3 = texture2D(heightMap, texCoord1 + vec2(size, size)).r;',
+		'	float col4 = texture2D(heightMap, texCoord1 + vec2(size, -size)).r;',
+		'	float avg = (col1 + col2 + col3 + col4) * 0.25;',
+		'	gl_FragColor = texture2D(heightMap, texCoord1);',
+		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
+		'	gl_FragColor.r = mix(gl_FragColor.r, avg, brush.r * brush.a * opacity);',
 		'}'//
 		].join('\n')
 	};
