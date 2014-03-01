@@ -71,6 +71,9 @@ function(
 		mat3.uniforms.size = 1 / size;
 		mat3.cullState.cullFace = 'Front';
 
+		var mat4 = this.drawMaterial4 = Material.createMaterial(brushShader4);
+		mat4.cullState.cullFace = 'Front';
+
 		this.renderable = {
 			meshData: brush,
 			materials: [mat],
@@ -117,6 +120,7 @@ function(
 		}
 
 		mat3.setTexture('HEIGHT_MAP', this.texturesBounce[0]);
+		mat4.setTexture('HEIGHT_MAP', this.texturesBounce[0]);
 
 		this.n = 31;
 		this.gridSize = (this.n + 1) * 4 - 1;
@@ -283,11 +287,11 @@ function(
 		}
 	};
 
-	Terrain.prototype.draw = function(mode, type, size, x, y, power, brushTexture, rgba) {
+	Terrain.prototype.draw = function(mode, type, size, x, y, z, power, brushTexture, rgba) {
 		power = MathUtils.clamp(power, 0, 1);
 
 		x = (x - this.size/2) * 2;
-		y = (y - this.size/2) * 2;
+		z = (z - this.size/2) * 2;
 
 		if (mode === 'paint') {
 			this.renderable.materials[0] = this.drawMaterial2;
@@ -307,7 +311,7 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, y/this.size, 0);
+			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
 			this.renderable.transform.scale.setd(-size, size, size);
 			this.renderable.transform.update();
 
@@ -325,7 +329,25 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, y/this.size, 0);
+			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.update();
+
+			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
+
+			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+		} else if (mode === 'flatten') {
+			this.renderable.materials[0] = this.drawMaterial4;
+			this.renderable.materials[0].uniforms.opacity = power;
+			this.renderable.materials[0].uniforms.height = y;
+
+			if (brushTexture) {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
+			} else {
+				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+			}
+
+			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
 			this.renderable.transform.scale.setd(-size, size, size);
 			this.renderable.transform.update();
 
@@ -350,7 +372,7 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, y/this.size, 0);
+			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
 			this.renderable.transform.scale.setd(-size, size, size);
 			this.renderable.transform.update();
 
@@ -966,6 +988,55 @@ function(
 		'	gl_FragColor = texture2D(heightMap, texCoord1);',
 		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
 		'	gl_FragColor.r = mix(gl_FragColor.r, avg, brush.r * brush.a * opacity);',
+		'}'//
+		].join('\n')
+	};
+
+	var brushShader4 = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			opacity : 1.0,
+			height: 0,
+			diffuseMap : Shader.DIFFUSE_MAP,
+			heightMap : 'HEIGHT_MAP'
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+		'attribute vec2 vertexUV0;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void) {',
+		'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+		'	gl_Position = viewProjectionMatrix * worldPos;',
+		'	texCoord0 = vertexUV0;',
+		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
+		'}'//
+		].join('\n'),
+		fshader : [//
+		'uniform sampler2D diffuseMap;',
+		'uniform sampler2D heightMap;',
+		'uniform float opacity;',
+
+		'uniform float height;',
+
+		'varying vec2 texCoord0;',
+		'varying vec2 texCoord1;',
+
+		'void main(void)',
+		'{',
+		'	gl_FragColor = texture2D(heightMap, texCoord1);',
+		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
+		'	gl_FragColor.r = mix(gl_FragColor.r, height, brush.r * brush.a * opacity);',
 		'}'//
 		].join('\n')
 	};
