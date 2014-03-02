@@ -241,5 +241,18 @@ function () {
 		return p;
 	};
 
+	/**
+	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1. 
+	 * This is useful in cases where a threshold function with a smooth transition is desired.
+	 * @param {number} edge0 Specifies the value of the lower edge of the Hermite function.
+	 * @param {number} edge1 Specifies the value of the upper edge of the Hermite function.
+	 * @param {number} x Specifies the source value for interpolation.
+	 * @returns {number}
+	 */
+	MathUtils.smoothstep = function (edge0, edge1, x) {
+		x = MathUtils.clamp((x - edge0) / (edge1 - edge0), 0, 1);
+		return x * x * (3 - 2 * x);
+	};
+
 	return MathUtils;
 });
