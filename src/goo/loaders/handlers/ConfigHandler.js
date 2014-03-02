@@ -1,6 +1,8 @@
 define([
+	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
 ], /*@lends */ function(
+	RSVP,
 	PromiseUtil
 ) {
 	"use strict";
@@ -95,9 +97,13 @@ define([
 	};
 
 	ConfigHandler.prototype.clear = function() {
+		var promises = [];
 		for (var ref in this._objects) {
-			this.update(ref, null, {});
+			promises.push(this.update(ref, null, {}));
 		}
+		this._objects = {};
+		this._loading = {};
+		return RSVP.all(promises);
 	};
 
 	/**

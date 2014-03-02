@@ -104,12 +104,14 @@ function(
 		for(var i = 0; i < refs.length; i++) {
 			this._handle(refs[i], null);
 		}*/
+		var promises = [];
 		for (var type in this._handlers) {
-			this._handlers[type].clear();
+			promises.push(this._handlers[type].clear());
 		}
 		if (this._ajax.clear instanceof Function) {
 			this._ajax.clear();
 		}
+		return RSVP.all(promises);
 	};
 
 	/**
