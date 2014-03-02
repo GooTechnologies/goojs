@@ -136,10 +136,6 @@ function(
 	};
 
 	Vegetation.prototype.getVegetationType = function(xx, zz, slope) {
-		if (slope < 0.91) {
-			return -1;
-		}
-
 		return MathUtils.clamp(this.terrainQuery.getVegetationType(xx, zz, slope), -1, this.vegetationList.length-1);
 	};
 

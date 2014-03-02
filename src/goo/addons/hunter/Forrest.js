@@ -133,30 +133,7 @@ function(
 	};
 
 	Forrest.prototype.getVegetationType = function(xx, zz, slope) {
-		if (slope < 0.9) {
-			return -1;
-		}
-
 		return MathUtils.clamp(this.terrainQuery.getForrestType(xx, zz, slope), -1, this.vegetationList.length-1);
-
-		// var diffx = xx - this.startX;
-		// var diffz = zz - this.startZ;
-		// if (diffx * diffx + diffz * diffz < 32 * 32) {
-		// 	return -1;
-		// }
-
-		// if (this.vegType === 0) {
-		// 	var mx = (Math.sin(xx * 0.02) * 0.5 + 0.25);
-		// 	var mz = (Math.sin(zz * 0.03) * 0.5 + 0.25);
-		// 	var tt = (mx + mz) / 2.0;
-		// 	var vegetationType = Math.floor(tt * this.vegetationList.length);
-		// 	var rand = ((Math.random()+Math.random()+Math.random()+Math.random()-2)/4.0) + 0.0;
-		// 	vegetationType = Math.floor(MathUtils.clamp(vegetationType+rand*5, -1, this.vegetationList.length-1));
-
-		// 	return vegetationType;
-		// }
-
-		// return this.vegType-1;
 	};
 
 	var hidden = false;
