@@ -64,7 +64,7 @@ function(
 		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/grassatlas_0_DIF_test.dds', null, function() {
 			promise.resolve();
 		});
-		texture.anisotropy = 16;
+		texture.anisotropy = 4;
 
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', texture);
@@ -202,7 +202,7 @@ function(
 				var xx = patchX + (x + Math.random()*0.5) * patchSpacing;
 				var zz = patchZ + (z + Math.random()*0.5) * patchSpacing;
 				pos[0] = xx;
-				pos[2] = zz;
+				pos[2] = zz + 0.5;
 				var yy = this.terrainQuery.getHeightAt(pos);
 				var norm = this.terrainQuery.getNormalAt(pos);
 				if (yy === null) {

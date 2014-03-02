@@ -741,17 +741,18 @@ function(
 
 				'void main(void) {',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
-					'vec2 coord = mapcoord * 256.0;',
+					'vec2 coord = mapcoord * 96.0;',
 					'vec4 final_color = vec4(1.0);',
 
 					// 'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0));',
 					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
-					'N.y = 0.25;',
-					'N.z = -N.z;',
+					'N.y = 0.1;',
+					// 'N.y = 0.25;',
+					// 'N.z = -N.z;',
 					'N = normalize(N);',
 
-					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-					'slope = smoothstep(0.0, 0.1, slope);',
+					// 'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
+					// 'slope = smoothstep(0.0, 0.1, slope);',
 
 					// 'const float NMUL = 1.2;',
 					// 'vec3 n1 = texture2D(groundMapN1, coord).xyz * vec3(2.0) - vec3(1.0);', 'n1.z = NMUL;',
@@ -779,8 +780,8 @@ function(
 					'final_color = mix(final_color, g4, splat.b);',
 					'final_color = mix(final_color, g5, splat.a);',
 
-					'slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-					'slope = smoothstep(0.0, 0.1, slope);',
+					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
+					'slope = smoothstep(0.15, 0.25, slope);',
 					'final_color = mix(final_color, stone, slope);',
 
 					ShaderBuilder.light.fragment,
