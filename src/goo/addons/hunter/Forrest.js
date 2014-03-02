@@ -57,18 +57,10 @@ function(
 
 	function Forrest() {
 		this.calcVec = new Vector3();
-		this.startX = 22;
-		this.startZ = 22;
 	}
 
 	Forrest.prototype.init = function(world, terrainQuery) {
-		var promise = new RSVP.Promise();
-
-		this.loadLODTrees(world, terrainQuery).then(function() {
-			promise.resolve();
-		});
-
-		return promise;
+		return this.loadLODTrees(world, terrainQuery);
 	};
 
 	Forrest.prototype.loadLODTrees = function(world, terrainQuery) {
@@ -86,6 +78,7 @@ function(
 		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/veg_treeImpostors_full_alpha_0_dif_small.dds', null, function() {
 			promise.resolve();
 		});
+		texture.anisotropy = 4;
 		material.setTexture('DIFFUSE_MAP', texture);
 		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/veg_treeImpostors_0_nrm_small.dds');
 		material.setTexture('NORMAL_MAP', texture);
@@ -213,7 +206,7 @@ function(
 				var xx = patchX + (x + Math.random()*0.75) * patchSpacing;
 				var zz = patchZ + (z + Math.random()*0.75) * patchSpacing;
 				pos[0] = xx;
-				pos[2] = zz;
+				pos[2] = zz + 0.5;
 				var yy = this.terrainQuery.getHeightAt(pos);
 				var norm = this.terrainQuery.getNormalAt(pos);
 				if (yy === null) {
@@ -229,16 +222,8 @@ function(
 					continue;
 				}
 
-				// var size = Math.random() * 0.4 + 0.8;
 				var size = (Math.random() * 0.5 + 0.75);
-				// transform.translation.setd(0, 0, 0);
-				// var angle = Math.random() * Math.PI * 2.0;
-				// var anglex = Math.sin(angle);
-				// var anglez = Math.cos(angle);
-				// this.calcVec.setd(anglex, 0.0, anglez);
-				// transform.lookAt(this.calcVec, norm);
 				transform.translation.setd(xx, yy, zz);
-				// transform.scale.setd(size, size, size);
 				transform.update();
 
 				var meshData = this.vegetationList[vegetationType];
