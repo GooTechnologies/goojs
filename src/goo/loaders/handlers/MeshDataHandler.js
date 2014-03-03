@@ -38,8 +38,11 @@ function (
 	 * @param {string} ref
 	 */
 	MeshDataHandler.prototype._remove = function (ref) {
-		// TODO Some gl release?
-		delete this._objects[ref];
+		console.log("Deleting meshdata " + ref);
+		if (this._objects[ref] && this._objects[ref].destroy) {
+			this._objects[ref].destroy();
+		}
+		return delete this._objects[ref];
 	};
 
 	/**
@@ -55,7 +58,6 @@ function (
 			return PromiseUtil.createDummyPromise();
 		}
 		if (this._objects[ref]) { return PromiseUtil.createDummyPromise(this._objects[ref]); }
-
 		var that = this;
 		return this.loadObject(config.binaryRef, options).then(function (bindata) {
 			if (!bindata) {

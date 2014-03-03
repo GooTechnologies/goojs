@@ -12,7 +12,7 @@ define([
 	'goo/util/StringUtil'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	Texture,
 	DdsLoader,
@@ -72,7 +72,7 @@ function(
 	 * @param {object} config
 	 * @private
 	 */
-	TextureHandler.prototype._prepare = function(config) {
+	TextureHandler.prototype._prepare = function (config) {
 		_.defaults(config, {
 			wrapS: 'Repeat',
 			wrapT: 'Repeat',
@@ -92,7 +92,7 @@ function(
 	 * @param {ref}
 	 * @private
 	 */
-	TextureHandler.prototype._remove = function(ref) {
+	TextureHandler.prototype._remove = function (ref) {
 		//TODO Some sort of gl texture release?
 		delete this._objects[ref];
 	};
@@ -103,7 +103,7 @@ function(
 	 * @returns {Texture}
 	 * @private
 	 */
-	TextureHandler.prototype._create = function() {
+	TextureHandler.prototype._create = function () {
 		return new Texture();
 	};
 
@@ -114,9 +114,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated texture or null if removed
 	 */
-	TextureHandler.prototype._update = function(ref, config, options) {
+	TextureHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(texture) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (texture) {
 			if (!texture) { return; }
 			var ret;
 
@@ -151,7 +151,7 @@ function(
 				if (Loader) {
 					// Special (dds, tga, crn)
 					texture.a = imageRef;
-					ret = that.loadObject(imageRef).then(function(data) {
+					ret = that.loadObject(imageRef).then(function (data) {
 						if (data && data.preloaded) {
 							_.extend(texture.image, data.image);
 							texture.format = data.format;
@@ -162,18 +162,18 @@ function(
 						loader.load(data, texture, config.flipY, 0, data.byteLength);
 						return texture;
 					});
-				} else if(['jpg', 'jpeg', 'png', 'gif'].indexOf(type) !== -1) {
+				} else if (['jpg', 'jpeg', 'png', 'gif'].indexOf(type) !== -1) {
 					// Images
 					// Beware of image caching but should be handled by Ajax
-					ret = that.loadObject(imageRef, options).then(function(image) {
-						if(texture.image !== image) {
+					ret = that.loadObject(imageRef, options).then(function (image) {
+						if (texture.image !== image) {
 							texture.setImage(image);
 						}
 						return texture;
 					});
 				} else if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
 					// Video
-					ret = that.loadObject(imageRef, options).then(function(video) {
+					ret = that.loadObject(imageRef, options).then(function (video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
 						video.loop = config.loop !== undefined ? config.loop : true;
@@ -193,12 +193,12 @@ function(
 				} else {
 					throw new Error('Unknown texture type');
 				}
-			} else if(config.svgData){
+			} else if (config.svgData) {
 				// Load SVG data
 				var p = new RSVP.Promise();
 				ret = p;
-				CanvasUtils.renderSvgToCanvas(config.svgData, {}, function(canvas){
-					if(canvas){
+				CanvasUtils.renderSvgToCanvas(config.svgData, {}, function (canvas) {
+					if (canvas) {
 						texture.setImage(canvas);
 						p.resolve(texture);
 					} else {
@@ -210,7 +210,6 @@ function(
 				// console.warn('Texture ' + ref + ' has no imageRef');
 				// texture.setImage(TextureHandler.WHITE, 1, 1);
 				ret = texture;
-
 			}
 			if (options && options.texture && options.texture.dontwait) {
 				return texture;
@@ -218,6 +217,14 @@ function(
 				return ret;
 			}
 		});
+	};
+
+	TextureHandler.prototype._remove = function (ref) {
+		console.log("Deleting texture " + ref);
+		if (this._objects[ref] && this._objects[ref].destroy) {
+			this._objects[ref].destroy();
+		}
+		return delete this._objects[ref];
 	};
 
 	return TextureHandler;
