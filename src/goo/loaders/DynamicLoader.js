@@ -76,7 +76,7 @@ function (
 	 * @param {boolean} [clear=false] If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
 	 *
 	 **/
-	 DynamicLoader.prototype.preload = function (bundle, clear) {
+	DynamicLoader.prototype.preload = function (bundle, clear) {
 		this._ajax.prefill(bundle, clear);
 	};
 
@@ -163,6 +163,11 @@ function (
 		} else {
 			return this._loadRef(ref, options);
 		}
+	};
+
+	DynamicLoader.prototype.remove = function (ref) {
+		delete this._objects[ref];
+		return this.update(ref, null);
 	};
 
 	/**
