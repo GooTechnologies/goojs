@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/renderer/TextureCreator',
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/crunch/CrunchLoader',
@@ -13,7 +12,6 @@ define([
 /** @lends */
 function(
 	ConfigHandler,
-	TextureCreator,
 	Texture,
 	DdsLoader,
 	CrunchLoader,
