@@ -49,25 +49,18 @@ function(
 		this.calcVec = new Vector3();
 	}
 
-	Vegetation.prototype.init = function(world, terrainQuery) {
-		var promise = new RSVP.Promise();
-
+	Vegetation.prototype.init = function(world, terrainQuery, vegetationAtlasTexture, vegetationTypes) {
 		this.world = world;
 		this.terrainQuery = terrainQuery;
 
 		this.vegetationList = [];
-		for (var i = 0; i < types.length; i++) {
-			var meshData = this.createBase(types[i]);
+		for (var i = 0; i < vegetationTypes.length; i++) {
+			var meshData = this.createBase(vegetationTypes[i]);
 			this.vegetationList[i] = meshData;
 		}
 
-		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/grassatlas_0_DIF_test.dds', null, function() {
-			promise.resolve();
-		});
-		texture.anisotropy = 4;
-
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
-		material.setTexture('DIFFUSE_MAP', texture);
+		material.setTexture('DIFFUSE_MAP', vegetationAtlasTexture);
 		material.cullState.enabled = false;
 		material.uniforms.discardThreshold = 0.2;
 		material.blendState.blending = 'CustomBlending';
@@ -79,8 +72,6 @@ function(
 
 		this.patchSize = 12;
 		this.patchDensity = 15;
-		// this.patchSize = 15;
-		// this.patchDensity = 15;
 		this.gridSize = 9;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
@@ -105,8 +96,6 @@ function(
 
 		this.currentX = -10000;
 		this.currentZ = -10000;
-
-		return promise;
 	};
 
 	Vegetation.prototype.rebuild = function() {
@@ -249,10 +238,6 @@ function(
 		x.setv(up).cross(direction).normalize();
 		z.setv(y).cross(x);
 
-		// z.setv(direction).normalize();
-		// x.setv(up).cross(z).normalize();
-		// y.setv(z).cross(x);
-
 		var d = matrix.data;
 		d[0] = x.data[0];
 		d[1] = x.data[1];
@@ -311,31 +296,6 @@ function(
 
 		return meshDatas[0];
 	};
-
-
-	var types = [
-		{ w: 1, h: 0.5, tx: 0.00, ty: 0.875, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.25, ty: 0.875, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.50, ty: 0.875, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.25, ty: 0.75, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.50, ty: 0.75, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.50, ty: 0.25, tw: 0.25, th: 0.125 },
-		// { w: 1, h: 0.5, tx: 0.50, ty: 0.375, tw: 0.25, th: 0.125 },
-		{ w: 1, h: 0.5, tx: 0.75, ty: 0.25, tw: 0.25, th: 0.125 },
-		// { w: 1, h: 0.5, tx: 0.75, ty: 0.375, tw: 0.25, th: 0.125 },
-
-		{ w: 1, h: 1, tx: 0.00, ty: 0.00, tw: 0.25, th: 0.25 },
-		{ w: 1, h: 1, tx: 0.25, ty: 0.00, tw: 0.25, th: 0.25 },
-		{ w: 1, h: 1, tx: 0.00, ty: 0.25, tw: 0.25, th: 0.25 },
-		{ w: 1, h: 1, tx: 0.25, ty: 0.25, tw: 0.25, th: 0.25 }
-		// { w: 1, h: 1, tx: 0.00, ty: 0.50, tw: 0.25, th: 0.25 },
-		// { w: 1, h: 1, tx: 0.25, ty: 0.50, tw: 0.25, th: 0.25 },
-		// { w: 1, h: 1, tx: 0.50, ty: 0.50, tw: 0.25, th: 0.25 },
-		// { w: 1, h: 1, tx: 0.75, ty: 0.50, tw: 0.25, th: 0.25 },
-
-		// { w: 2, h: 2, tx: 0.75, ty: 0.75, tw: 0.25, th: 0.25 },
-	];
 
 	var vegetationShader = {
 		processors: [

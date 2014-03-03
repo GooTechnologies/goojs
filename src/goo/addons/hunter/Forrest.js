@@ -59,29 +59,23 @@ function(
 		this.calcVec = new Vector3();
 	}
 
-	Forrest.prototype.init = function(world, terrainQuery) {
-		return this.loadLODTrees(world, terrainQuery);
+	Forrest.prototype.init = function(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes) {
+		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes);
 	};
 
-	Forrest.prototype.loadLODTrees = function(world, terrainQuery) {
-		var promise = new RSVP.Promise();
-
+	Forrest.prototype.loadLODTrees = function(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes) {
 		this.terrainQuery = terrainQuery;
+		this.forrestTypes = forrestTypes;
 
 		this.vegetationList = [];
-		for (var i = 0; i < types.length; i++) {
-			var meshData = this.createBase(types[i]);
+		for (var i = 0; i < forrestTypes.length; i++) {
+			var meshData = this.createBase(forrestTypes[i]);
 			this.vegetationList[i] = meshData;
 		}
 
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
-		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/veg_treeImpostors_full_alpha_0_dif_small.dds', null, function() {
-			promise.resolve();
-		});
-		texture.anisotropy = 4;
-		material.setTexture('DIFFUSE_MAP', texture);
-		var texture = new TextureCreator().loadTexture2D(window.hunterResources + '/veg_treeImpostors_0_nrm_small.dds');
-		material.setTexture('NORMAL_MAP', texture);
+		material.setTexture('DIFFUSE_MAP', forrestAtlasTexture);
+		material.setTexture('NORMAL_MAP', forrestAtlasNormals);
 		material.uniforms.discardThreshold = 0.6;
 		// material.blendState.blending = 'CustomBlending';
 		material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 1.0];
@@ -116,8 +110,6 @@ function(
 
 		this.currentX = -10000;
 		this.currentZ = -10000;
-
-		return promise;
 	};
 
 	Forrest.prototype.rebuild = function() {
@@ -228,7 +220,7 @@ function(
 
 				var meshData = this.vegetationList[vegetationType];
 
-				var type = types[vegetationType];
+				var type = this.forrestTypes[vegetationType];
 				var w = type.w * size;
 				var h = type.h * size;
 				meshData.getAttributeBuffer('OFFSET').set([
@@ -247,12 +239,6 @@ function(
 
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};
-
-	var types = [
-		{ w: 8, h: 9, tx: 0.00, ty: 0.75, tw: 0.25, th: 0.25 },
-		{ w: 7, h: 8, tx: 0.00, ty: 0.5, tw: 0.25, th: 0.25 },
-		{ w: 8, h: 9, tx: 0.5, ty: 0.75, tw: 0.25, th: 0.25 }
-	];
 
 	Forrest.prototype.createBase = function(type) {
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
