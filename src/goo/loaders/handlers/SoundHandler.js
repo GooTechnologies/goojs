@@ -31,17 +31,16 @@ function(
 		if (window.Audio !== undefined) {
 			var audioTest = new Audio();
 
-			//REVIEW: if 'no' is '' already then just use !!audioTest.canPlayType(...)
 			this._codecs = [
 				{
 					type: 'mp3',
-					enabled: !!audioTest.canPlayType('audio/mpeg;').replace(/^no$/,'')
+					enabled: !!audioTest.canPlayType('audio/mpeg;')
 				}, {
 					type: 'ogg',
-					enabled: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,'')
+					enabled: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"')
 				}, {
 					type: 'wav',
-					enabled: !!audioTest.canPlayType('audio/wav; codecs="1"').replace(/^no$/,'')
+					enabled: !!audioTest.canPlayType('audio/wav; codecs="1"')
 				}
 			];
 		} else {

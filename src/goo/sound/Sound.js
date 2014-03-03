@@ -63,7 +63,6 @@ function (
 
 		this._currentSource = AudioContext.createBufferSource();
 
-		//REVIEW: let's see if this works
 		this._paused = false;
 		this._currentSource.onended = function () {
 			if (!this._paused) {
@@ -85,7 +84,6 @@ function (
 
 		this._currentSource.start(0, this._pausePos + this._offset, duration);
 
-		//this._fixTimer();
 		return this._endPromise;
 	};
 
@@ -159,7 +157,6 @@ function (
 	Sound.prototype._stop = function() {
 		this._currentSource.stop(0);
 		this._currentSource = null;
-		//this._fixTimer();
 	};
 
 	/**
@@ -171,7 +168,7 @@ function (
 	 * Will be clamped to be in actual soundclip duration
 	 * @param {number} [config.duration] Duration of the sound.
 	 * Will be clamped to be in actual soundclip duration
-	 * @param {number} [config.timeScale] Playback rate of the sound
+	 * @param {number} [config.rate] Playback rate of the sound
 	 */
 	Sound.prototype.update = function(config) {
 		if (!AudioContext) {
@@ -199,13 +196,11 @@ function (
 			this._duration = config.duration;
 		}
 		if (config.timeScale !== undefined) {
-			this._rate = config.timeScale; //REVIEW: should have the same name
+			this._rate = config.rate; //REVIEW: should have the same name
 		}
 		if (this._buffer) {
 			this._clampInterval();
 		}
-
-		//this._fixTimer();
 	};
 
 	/**
@@ -242,27 +237,6 @@ function (
 			this._outNode.connect(nodes[i]);
 		}
 	};
-
-	//REVEIW: no need for this
-	/**
-	 * Sets a timer to resolve play promise when sound has played through
-	 * @private
-	 */
-	/*
-	Sound.prototype._fixTimer = function() {
-		var that = this;
-		if (this._endTimer) {
-			clearTimeout(this._endTimer);
-		}
-		if (this._currentSource && !this._loop) {
-			var duration = this._duration - (AudioContext.currentTime - this._playStart) % this._duration;
-			duration /= this._rate;
-			this._endTimer = setTimeout(function() {
-				that.stop();
-			}, duration * 1000);
-		}
-	};
-	*/
 
 	/**
 	 * Sets the audio buffer which will be the sound source

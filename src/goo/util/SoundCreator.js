@@ -22,9 +22,12 @@ function (
 		this.soundHandler = new SoundHandler(
 			{},
 			function (ref, options) {
-				return ajax.load(ref, (options == null) ? false : options.noCache);
+				return ajax.load(ref, options ? false : options.noCache);
 			},
-			function () {}
+			function () {},
+			function (ref, options) {
+				return ajax.load(ref, options ? false : options.noCache);
+			}
 		);
 	}
 
