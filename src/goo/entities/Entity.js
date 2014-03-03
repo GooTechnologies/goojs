@@ -34,7 +34,7 @@ function (
 			value : Entity.entityCount++,
 			writable : false
 		});*/
-		this.name = name !== undefined ? name : 'Entity_' + this.id;
+		this.name = name !== undefined ? name : 'Entity_' + this._index;
 
 		/** Set to true to skip rendering (move to meshrenderercomponent)
 		 * @type {boolean}

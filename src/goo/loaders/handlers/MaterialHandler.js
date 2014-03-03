@@ -106,6 +106,7 @@ function(
 			_.extend(material.cullState, config.cullState);
 			_.extend(material.depthState, config.depthState);
 
+			material.id = config.id;
 			material.name = config.name;
 			material.wireframe = config.wireframe;
 			material.flat = config.flat;

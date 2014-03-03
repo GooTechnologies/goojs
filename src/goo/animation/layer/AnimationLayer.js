@@ -28,7 +28,6 @@ function (
 	function AnimationLayer (name, key) {
 		this.id = key;
 		this._name = name;
-		this._key = key;
 
 		this._steadyStates = {};
 		this._currentState = null;
