@@ -52,7 +52,13 @@ function(
 		}
 	};
 
-	MeshDataHandler.prototype.remove = function(/*ref*/) {};
+	MeshDataHandler.prototype.remove = function(ref) {
+		console.log("Deleting meshdata " + ref);
+		if (this._objects[ref] && this._objects[ref].destroy) {
+			this._objects[ref].destroy();
+		}
+		return delete this._objects[ref];
+	};
 
 	MeshDataHandler.prototype._createMeshData = function(meshConfig, bindata) {
 		var compression;

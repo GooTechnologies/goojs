@@ -394,6 +394,15 @@ function(
 		return this._handle(ref, null);
 	};
 
+	DynamicLoader.prototype.clear = function() {
+		var promises = [];
+		for (var ref in this._objects) {
+			promises.push(this._handle(ref, null));
+			delete this._objects[ref];
+		}
+		return RSVP.all(promises);
+	};
+
 	// Load/update an object with the given reference into the engine
 	DynamicLoader.prototype._handle = function(ref, config, options) {
 		var that = this;

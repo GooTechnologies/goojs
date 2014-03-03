@@ -167,6 +167,9 @@ function(
 
 	TextureHandler.prototype.remove = function(ref) {
 		console.log("Deleting texture " + ref);
+		if (this._objects[ref] && this._objects[ref].destroy) {
+			this._objects[ref].destroy();
+		}
 		return delete this._objects[ref];
 	};
 
