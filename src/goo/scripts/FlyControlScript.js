@@ -35,7 +35,7 @@ function(
 		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeedVertical : 0.005;
 
 		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
-		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
+		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : 2;
 		this.dragToMove = properties.dragToMove !== undefined ? properties.dragToMove === true : true;
 
 		this.worldUpVector = new Vector3(properties.worldUpVector) || new Vector3(0, 1, 0);
@@ -109,7 +109,7 @@ function(
 			return;
 		}
 
-		if (this.dragOnly && !this.mouseState.buttonDown && !this.dragToMove) {
+		if (this.dragOnly && !this.mouseState.buttonDown && this.dragToMove) {
 			this.movementMultiplier = this.baseMultiplier;
 			this.moveState.forward = 0;
 			this.moveState.back = 0;
@@ -182,12 +182,12 @@ function(
 	};
 
 	var keydown = function(event) {
-		if (!this.active || !this.dragToMove && !this.mouseState.buttonDown && this.dragOnly) { return; }
+		if (!this.active || this.dragToMove && !this.mouseState.buttonDown && this.dragOnly) { return; }
 		this.updateKeys(event, true);
 	};
 
 	var keyup = function(event) {
-		if (!this.active || !this.dragToMove && !this.mouseState.buttonDown && this.dragOnly) { return; }
+		if (!this.active || this.dragToMove && !this.mouseState.buttonDown && this.dragOnly) { return; }
 		this.updateKeys(event, false);
 	};
 
@@ -272,7 +272,7 @@ function(
 		if (this.dragOnly && !this.mouseState.buttonDown) {
 			this.mouseState.dX = 0;
 			this.mouseState.dY = 0;
-			if (!this.dragToMove) {
+			if (this.dragToMove) {
 				this.movementMultiplier = this.baseMultiplier;
 				this.moveState.forward = 0;
 				this.moveState.back = 0;
