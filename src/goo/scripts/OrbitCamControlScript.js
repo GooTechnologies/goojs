@@ -43,7 +43,7 @@ function (
 
 		lookAtPoint: new Vector3(0,0,0),
 		spherical: new Vector3(15,0,0),
-		interpolationSpeed: 1000,
+		interpolationSpeed: 7,
 		onRun: null
 	};
 
@@ -335,8 +335,6 @@ function (
 			this.velocity.set(0, 0, 0);
 		}
 	};
-
-	var helpVector = new Vector3();
 
 	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
 		if (this.demoMode) {

@@ -63,6 +63,11 @@ function(
 			lastY: NaN,
 			lastPos: new Vector3()
 		};
+		this.orbitButton = properties.orbitButton !== undefined ? properties.orbitButton : Button.LEFT;
+		this.panButton = properties.panButton !== undefined ? properties.panButton : Button.RIGHT;
+		this.orbitKey = properties.orbitKey || 'altKey';
+		this.panKey = properties.panKey || 'shiftKey';
+
 		this.viewportWidth = 0;
 		this.viewportHeight = 0;
 		this.shiftKey = false;
@@ -83,7 +88,7 @@ function(
 	OrbitNPanControlScript.prototype.updateConfig = function(properties) {
 		OrbitCamControlScript.prototype.updateConfig.call(this,properties);
 		this.goingToLookAt.setv(this.lookAtPoint);
-	}
+	};
 
 
 	OrbitNPanControlScript.prototype.setupMouseControls = function() {
@@ -93,6 +98,8 @@ function(
 
 			that.shiftKey = event.shiftKey;
 			that.altKey = event.altKey;
+			that.metaKey = event.metaKey;
+			that.ctrlKey = event.ctrlKey;
 
 			that.updateButtonState(event.button, true, event);
 		}, false);
@@ -178,9 +185,9 @@ function(
 	};
 
 	OrbitNPanControlScript.prototype.updateButtonState = function(buttonIndex, down) {
-		if (buttonIndex === Button.RIGHT || buttonIndex === Button.LEFT && this.altKey) { // REVIEW would be nice to change '2' and '0' to something readable
+		if (buttonIndex === this.orbitButton && !this[this.panKey] || this[this.orbitKey]) {
 			OrbitCamControlScript.prototype.updateButtonState.call(this, 0, down);
-		} else if (buttonIndex === 1 || buttonIndex === 0 && this.shiftKey) {
+		} else if (buttonIndex === this.panButton && !this[this.orbitKey] || this[this.panKey]) {
 			this.panState.buttonDown = down;
 			if(down) {
 				this.panState.lastX = NaN;

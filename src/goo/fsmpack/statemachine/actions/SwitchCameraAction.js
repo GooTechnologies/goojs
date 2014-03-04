@@ -49,10 +49,6 @@ function(
 	};
 
 	SwitchCameraAction.prototype.cleanup = function (/*fsm*/) {
-		SystemBus.emit('goo.setCurrentCamera', {
-			camera: this._camera,
-			entity: null
-		});
 	};
 
 	return SwitchCameraAction;
