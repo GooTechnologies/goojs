@@ -347,12 +347,13 @@ function (
 		// ---
 		//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
 		// apparently this is the only way to find out the user zoom level
+
 		if (document.createElementNS) {
 			this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 			this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 			this.svg.setAttribute('version', '1.1');
-			this.svg.style.visibility = 'hidden';
 			this.svg.style.position = 'absolute';
+			this.svg.style.display = 'none';
 			document.body.appendChild(this.svg);
 		} else {
 			//! AT: placeholder to avoid another conditional below in checkResize
