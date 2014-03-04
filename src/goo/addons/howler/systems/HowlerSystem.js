@@ -21,19 +21,23 @@ function(
 
 		this.settings = settings || {};
 		this.settings.scale = this.settings.scale || 0.1;
+		this.entities = [];
 	}
 
 	HowlerSystem.prototype = Object.create(System.prototype);
 
 	HowlerSystem.prototype.deleted = function(entity) {
 		var howlerComponent = entity.howlerComponent;
-		var sounds = howlerComponent.sounds;
-		for (var i = 0; i < sounds.length; i++) {
-			sounds[i].stop();
+		if (howlerComponent && howlerComponent.sounds) {
+			var sounds = howlerComponent.sounds;
+			for (var i = 0; i < sounds.length; i++) {
+				sounds[i].stop();
+			}
 		}
 	};
 
 	HowlerSystem.prototype.process = function(entities) {
+		this.entities = entities;
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var howlerComponent = entity.howlerComponent;

@@ -111,7 +111,7 @@ function(
 				this._transformScale.data[0] *= scale;
 				break;
 			case 1:
-				this._transformScale.data[1] /= scale;
+				this._transformScale.data[1] *= scale;
 				break;
 			case 2:
 				this._transformScale.data[2] *= scale;
@@ -131,9 +131,9 @@ function(
 	ScaleGizmo.prototype._buildArrow = function(dim) {
 		var transform = new Transform();
 		if(dim === 0) {
-			transform.setRotationXYZ(0, Math.PI/2, 0);
+			transform.setRotationXYZ(0, Math.PI / 2, 0);
 		} else if (dim === 1) {
-			transform.setRotationXYZ(Math.PI/2, 0, 0);
+			transform.setRotationXYZ(Math.PI * 3 / 2, 0, 0);
 		}
 
 		this.addRenderable({

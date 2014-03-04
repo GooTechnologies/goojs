@@ -79,7 +79,7 @@ function (
 			var entity = entities[i];
 			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
 				var componentName = this._interestComponents[j];
-				if (entity.name !== 'ToolCameraEntity' && entity.hasComponent(componentName)) {
+				if (!entity.hidden && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);
 
 					var options = { full: this.doRender[componentName] || entity.getComponent(componentName).forceDebug };
@@ -89,7 +89,10 @@ function (
 						renderables = tree[componentName];
 					} else {
 						renderables = DebugDrawHelper.getRenderablesFor(component, options);
-						renderables.forEach(function (renderable) { renderable.id = entity.id; });
+						renderables.forEach(function (renderable) { 
+							renderable.id = entity.id; 
+							renderable._index = entity._index;
+						});
 						tree[componentName] = renderables;
 					}
 

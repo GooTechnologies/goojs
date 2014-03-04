@@ -40,10 +40,10 @@ function(
 
 	SoundFadeOutAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (entity.hasComponent('HowlerComponent')) {
-			var sound = entity.howlerComponent.sounds[this.sound];
+		if (entity.hasComponent('SoundComponent')) {
+			var sound = entity.soundComponent.getSoundById(this.sound);
 			if (sound) {
-				sound.fadeOut(0, this.time, function() {
+				sound.fadeOut(this.time / 1000).then(function() {
 					fsm.send(this.transitions.complete);
 				}.bind(this));
 			}

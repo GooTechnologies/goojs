@@ -23,22 +23,32 @@ function(
 	"use strict";
 
 	/**
-	* @class
-	* @private
-	*/
+	 * @class For handling loading of light components
+	 * @constructor
+	 * @param {World} world The goo world
+	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @extends ComponentHandler
+	 * @private
+	 */
 	function LightComponentHandler() {
 		ComponentHandler.apply(this, arguments);
+		this._type = 'LightComponent';
 	}
 
 	LightComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	LightComponentHandler.prototype.constructor = LightComponentHandler;
 	ComponentHandler._registerClass('light', LightComponentHandler);
 
+	/**
+	 * Prepare component. Set defaults on config here.
+	 * @param {object} config
+	 * @private
+	 */
 	LightComponentHandler.prototype._prepare = function(config) {
 		_.defaults(config, {
 			direction: [0, 0, 0],
-			color: [1, 1, 1, 1],
-			attenuate: true,
+			color: [1, 1, 1],
 			shadowCaster: false,
 			lightCookie: null
 		});
@@ -48,97 +58,84 @@ function(
 		if (config.shadowCaster) {
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
-				type: 'Blur',
-				projection: (config.type === 'DirectionalLight') ? 'Parallel' : 'Perspective',
-				fov: 55,
-				size: 400,
+				shadowType: 'VSM',
 				near: 1,
 				far: 1000,
 				resolution: [512, 512],
-				upVector: [0,1,0],
 				darkness: 0.5
 			});
-		}
-	};
-
-	LightComponentHandler.prototype._create = function(entity, config) {
-		var light;
-		switch(config.type) {
-			case 'SpotLight':
-				light = new SpotLight();
-				break;
-			case 'DirectionalLight':
-				light = new DirectionalLight();
-				break;
-			default:
-				light = new PointLight();
-		}
-		var component = new LightComponent(light);
-		entity.setComponent(component);
-		return component;
-	};
-
-	LightComponentHandler.prototype.update = function(entity, config) {
-		//var component, key, light, value;
-		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		var light = component.light;
-		for (var key in config) {
-			var value = config[key];
-			if (light.hasOwnProperty(key)) {
-				if (key === 'shadowSettings') {
-					for (var key in value) {
-						var shadowVal = value[key];
-						if (light.shadowSettings[key] instanceof Vector) {
-							light.shadowSettings[key].set(shadowVal);
-						} else {
-							light.shadowSettings[key] = _.clone(shadowVal);
-						}
-					}
-				}
-				else if (light[key] instanceof Vector) {
-					light[key].set(value);
-				} else {
-					light[key] = _.clone(value);
-				}
+			var settings = config.shadowSettings;
+			if (settings.projection === 'Parallel') {
+				settings.size = (settings.size !== undefined) ? settings.size : 400;
+			} else {
+				settings.fov = (settings.fov !== undefined) ? settings.fov : 55;
 			}
 		}
+	};
 
+	/**
+	 * Create light component object based on the config.
+	 * @returns {LightComponent} the created component object
+	 * @private
+	 */
+	LightComponentHandler.prototype._create = function() {
+		return new LightComponent();
+	};
+
+	/**
+	 * Update engine cameracomponent object based on the config.
+	 * @param {Entity} entity The entity on which this component should be added.
+	 * @param {object} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
+	 */
+	LightComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
-		var updateTexture = function(textureType, textureRef) {
-			return that.getConfig(textureRef).then(function(textureConfig) {
-				return that.updateObject(textureRef, textureConfig, that.options).then(function(texture) {
-					return {
-						type: textureType,
-						ref: textureRef,
-						texture: texture
-					};
-				});
-			});
+		var Light = {
+			SpotLight: SpotLight,
+			DirectionalLight: DirectionalLight,
+			PointLight: PointLight
 		};
 
-		if (config.lightCookie) {
-			var promise;
-			var textureRef = config.lightCookie;
-			if (typeof textureRef === 'string') {
-				promise = updateTexture('cookie', textureRef);
-			} else if (textureRef && textureRef.enabled) {
-				promise = updateTexture('cookie', textureRef.textureRef);
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
+			var light = component.light;
+			if(!light || Light[config.type] !== light.constructor) {
+				light = new Light[config.type]();
+				component.light = light;
 			}
-
-			if (promise) {
-				promise.then(function(texture) {
-					if (texture.texture) {
-						light.lightCookie = texture.texture;
+			for (var key in config) {
+				var value = config[key];
+				if (light.hasOwnProperty(key)) {
+					if (key === 'shadowSettings') {
+						for (var key in value) {
+							var shadowVal = value[key];
+							if (light.shadowSettings[key] instanceof Vector) {
+								light.shadowSettings[key].set(shadowVal);
+							} else {
+								light.shadowSettings[key] = _.clone(shadowVal);
+							}
+						}
+					}	else if (light[key] instanceof Vector) {
+						light[key].set(value);
 					} else {
-						light.lightCookie = null;
+						light[key] = _.clone(value);
 					}
-				}).then(null, function(err) {
-					console.error("Error loading texture: " + err);
-				});
+				}
 			}
-		}
 
-		return pu.createDummyPromise(component);
+			if (config.lightCookie) {
+				var textureRef = config.lightCookie;
+				textureRef = (textureRef.enabled) ? textureRef.textureRef : textureRef;
+
+				return that._load(textureRef, options).then(function(texture) {
+					light.lightCookie = texture;
+					return component;
+				});
+			} else {
+				return component;
+			}
+		});
 	};
 
 	return LightComponentHandler;

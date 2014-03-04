@@ -15,7 +15,8 @@ define([
 	function EntityManager() {
 		this.type = 'EntityManager';
 
-		this._entitiesById = [];
+		this._entitiesById = {};
+		this._entitiesByIndex = {};
 		this._entityCount = 0;
 
 		this.api = {
@@ -35,6 +36,7 @@ define([
 	EntityManager.prototype.added = function (entity) {
 		if (!this.containsEntity(entity)) {
 			this._entitiesById[entity.id] = entity;
+			this._entitiesByIndex[entity._index] = entity;
 			this._entityCount++;
 		}
 	};
@@ -42,6 +44,7 @@ define([
 	EntityManager.prototype.removed = function (entity) {
 		if (this.containsEntity(entity)) {
 			delete this._entitiesById[entity.id];
+			delete this._entitiesByIndex[entity._index];
 			this._entityCount--;
 		}
 	};
@@ -65,6 +68,17 @@ define([
 	EntityManager.prototype.getEntityById = function (id) {
 		return this._entitiesById[id];
 	};
+
+	/**
+	 * Retrieve an entity based on an id
+	 *
+	 * @param id Id to retrieve entity for
+	 * @returns Entity or undefined if not existing
+	 */
+	EntityManager.prototype.getEntityByIndex = function (index) {
+		return this._entitiesByIndex[index];
+	};
+
 
 	/**
 	 * Retrieve an entity based on its name

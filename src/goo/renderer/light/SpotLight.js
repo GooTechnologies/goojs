@@ -17,27 +17,50 @@ function (
 	 *
 	 * The angle property is also known as the outer angle or falloff. The exponent property is also known as
 	 * the inner angle or hotspot.
+	 * @constructor
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function SpotLight () {
-		Light.apply(this, arguments);
+	function SpotLight(color) {
+		Light.call(this, color);
 
-		/* @type {Vector3} */
+		/**
+		 * The direction vector of the light
+		 * @readonly
+		 * @type {Vector3}
+		 */
 		this.direction = new Vector3();
-		/** @type {Number} */
+
+		/**
+		 * The range of the light (default is 1000)
+		 * @type {number}
+		 */
 		this.range = 1000;
-		/** @type {Number} */
+
+		/**
+		 * The angle (in degrees) of the cone of light that this spotlight projects (default is 45)
+		 * @type {number}
+		 */
 		this.angle = 45;
-		/** @type {Number} */
-		 /* The angle to where light is full strength. Then it falls off linearly to the angle-value. So penumbra is always smaller than angle, and null to default to angle value */
+
+		/**
+		 * The angle to where light is full strength. Then it falls off linearly to the angle-value; penumbra is always smaller than angle. Set to null if the penumbra should be the same as the angle.
+		 * @type {number}
+		 */
 		this.penumbra = null;
-		/** @type {Number} */
+
+		/** @type {number} */
 		this.exponent = 16.0;
 	}
 
 	SpotLight.prototype = Object.create(Light.prototype);
+	SpotLight.prototype.constructor = SpotLight;
 
+	/**
+	 * Updates the light's translation and orientation
+	 * @private
+	 * @param transform
+	 */
 	SpotLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
 

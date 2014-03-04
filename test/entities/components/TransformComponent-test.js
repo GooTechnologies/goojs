@@ -65,31 +65,27 @@ define([
 				.not.toContain(childEntity.transformComponent);
 		});
 
-		// bad spec names
-		it('setRotation with x, y, z', function () {
-			// tc?
+		it('can set, add and get rotation', function () {
 			var tc = new TransformComponent();
-			// useless test as the rotation matrix is 0 by default anyways
-			tc.setRotation(0, 0, 0);
-			expect(tc.transform.rotation).toEqual(new Matrix3x3());
+			tc.setRotation(1,2,2);
+			tc.addRotation(0,0,1);
+			tc.getRotation();
 		});
 
-		it('setRotation with Vector3', function () {
+		it('can set, add and get rotation with array', function () {
 			var tc = new TransformComponent();
-			// vec?
-			// useless test; it's based on (0, 0, 0) or default values; it's so easy to accidentally get default values and the tests would not do their job
-			var vec = new Vector3(0, 0, 0);
-			tc.setRotation(vec);
-			expect(tc.transform.rotation).toEqual(new Matrix3x3());
+			tc.setRotation([1,2,2]);
+			tc.addRotation([0,0,1]);
 		});
 
-		it('setRotation with array', function () {
+		it('can set, add and get translation', function () {
 			var tc = new TransformComponent();
-			// useless test
-			tc.setRotation([0, 0, 0]);
-			expect(tc.transform.rotation).toEqual(new Matrix3x3());
+			tc.setTranslation(1,2,2);
+			var vec = tc.getTranslation();
+			expect(vec).toEqual(new Vector3(1,2,2));
+			tc.addTranslation(0,0,1);
+			expect(vec).toEqual(new Vector3(1,2,3));
 		});
-		//
 
 		it('handles attaching itself to an entity', function () {
 			var transformComponent = new TransformComponent();

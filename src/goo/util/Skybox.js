@@ -102,7 +102,9 @@ define([
 			'void main(void)',//
 			'{',//
 			'	vec4 cube = textureCube(diffuseMap, eyeVec);',//
+			' if (cube.a < 0.05) discard;',
 			'	gl_FragColor = cube;',//
+
 			 //' gl_FragColor = vec4(1.0,0.0,0.0,1.0);',//
 			'}'//
 		].join('\n')
@@ -150,7 +152,9 @@ define([
 
 			'void main(void)',
 			'{',
-			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+			' vec4 sphere = texture2D(diffuseMap, texCoord0);',
+			' if (sphere.a < 0.05) discard;',
+			'	gl_FragColor = sphere;',
 			'}'//
 		].join('\n')
 	};

@@ -36,11 +36,15 @@ function (
 	};
 
 	CameraSystem.prototype.inserted = function () {
-		this.findMainCamera();
+		if (!Renderer.mainCamera) {
+			this.findMainCamera();
+		}
 	};
 
 	CameraSystem.prototype.deleted = function () {
-		this.findMainCamera();
+		//! AT: leaving it like this until a better solution is found
+		// apparently it might conflict with the new loader scheme
+		//this.findMainCamera();
 	};
 
 	CameraSystem.prototype.process = function (entities) {

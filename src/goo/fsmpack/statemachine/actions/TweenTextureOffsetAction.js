@@ -15,7 +15,8 @@ function(
 	TweenTextureOffsetAction.prototype.constructor = TweenTextureOffsetAction;
 
 	TweenTextureOffsetAction.external = {
-		name: 'Tween Texture Offset',
+		key: 'Tween Texture Offset',
+		name: 'Tween Texture',
 		description: 'Smoothly changes the texture offset of the entity',
 		canTransition: true,
 		parameters: [{

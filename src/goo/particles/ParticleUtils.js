@@ -75,6 +75,7 @@ function (
 		var trAge = 0, ratio = 0;
 		var prevCEntry = null, prevMEntry = null, prevSiEntry = null, prevSpEntry = null, prevUVEntry = null;
 		var nextCEntry = null, nextMEntry = null, nextSiEntry = null, nextSpEntry = null;
+
 		for (var i = 0, max = timeline.length; i < max; i++) {
 			var entry = timeline[i];
 			trAge += (entry.timeOffset ? entry.timeOffset : 0.0) * lifeSpan;
@@ -144,6 +145,7 @@ function (
 			}
 		}
 
+		//! AT: hope this code is not based on the non-existent block scoping in JS
 		// color
 		{
 			ratio = (age - prevCAge) / (nextCAge - prevCAge);

@@ -111,15 +111,15 @@ function(
 		var size = 1.0;
 		quadTransform.scale.setd(size, size, size);
 		if (dim === 2) {
-			quadTransform.translation.setd(size, -size, 0);
+			quadTransform.translation.setd(size, size, 0);
 		} else if(dim === 0) {
-			quadTransform.translation.setd(0, -size, size);
-			quadTransform.setRotationXYZ(0, Math.PI/2, 0);
-			arrowTransform.setRotationXYZ(0, Math.PI/2, 0);
+			quadTransform.translation.setd(0, size, size);
+			quadTransform.setRotationXYZ(0, Math.PI / 2, 0);
+			arrowTransform.setRotationXYZ(0, Math.PI / 2, 0);
 		} else if (dim === 1) {
 			quadTransform.translation.setd(size, 0, size);
-			quadTransform.setRotationXYZ(Math.PI/2, 0, 0);
-			arrowTransform.setRotationXYZ(Math.PI/2, 0, 0);
+			quadTransform.setRotationXYZ(Math.PI / 2, 0, 0);
+			arrowTransform.setRotationXYZ(Math.PI * 3 / 2, 0, 0);
 		}
 
 		this.addRenderable({

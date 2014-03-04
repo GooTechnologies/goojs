@@ -1,7 +1,11 @@
-define(['goo/math/Vector', 'goo/math/Vector3'],
+define([
+	'goo/math/Vector',
+	'goo/math/Vector3'
+],
 /** @lends */
 function (Vector, Vector3) {
-	"use strict";
+	'use strict';
+	/*jshint validthis: true */
 
 	/**
 	 * @class Makes an entity controllable via the WASD keys. Shift causes the entity to crawl.
@@ -39,22 +43,18 @@ function (Vector, Vector3) {
 		this.strafeRightKey = !isNaN(properties.strafeRightKey) ? properties.strafeRightKey : 68;
 		this.XZ = properties.XZ || false;
 
-		this.onRun = properties.onRun;
-
-		// XXX: maybe add a lockPlane?
-
 		this.moveState = {
-			strafeLeft : 0,
-			strafeRight : 0,
-			forward : 0,
-			back : 0,
-			crawling : false
+			strafeLeft: 0,
+			strafeRight: 0,
+			forward: 0,
+			back: 0,
+			speed: this.walkSpeed
 		};
 
-		this.moveVector = new Vector3(0, 0, 0);
+		this.moveVector = new Vector3();
 		this.calcVector = new Vector3();
 
-		if(this.domElement) {
+		if (this.domElement) {
 			this.setupKeyControls();
 		}
 	}
@@ -64,55 +64,70 @@ function (Vector, Vector3) {
 		this.moveVector.z = this.moveState.forward - this.moveState.back;
 	};
 
-	WASDControlScript.prototype.updateKeys = function (event, down) {
-		if (event.altKey) {
-			return;
-		}
+	function keyDown(event) {
+		if (event.altKey) {	return;	}
 
-		var update = false;
 		switch (event.keyCode) {
 			case this.crawlKey:
-				this.moveState.crawling = down;
+				this.moveState.speed = this.crawlSpeed;
 				break;
 
 			case this.forwardKey:
-				this.moveState.forward = down ? 1 : 0;
-				update = true;
+				this.moveState.forward = 1;
+				this.updateMovementVector();
 				break;
 			case this.backKey:
-				this.moveState.back = down ? 1 : 0;
-				update = true;
+				this.moveState.back = 1;
+				this.updateMovementVector();
 				break;
 
 			case this.strafeLeftKey:
-				this.moveState.strafeLeft = down ? 1 : 0;
-				update = true;
+				this.moveState.strafeLeft = 1;
+				this.updateMovementVector();
 				break;
 			case this.strafeRightKey:
-				this.moveState.strafeRight = down ? 1 : 0;
-				update = true;
+				this.moveState.strafeRight = 1;
+				this.updateMovementVector();
 				break;
 		}
+	}
 
-		if (update) {
-			this.updateMovementVector();
+	function keyUp(event) {
+		if (event.altKey) {	return;	}
+
+		switch (event.keyCode) {
+			case this.crawlKey:
+				this.moveState.speed = this.walkSpeed;
+				break;
+
+			case this.forwardKey:
+				this.moveState.forward = 0;
+				this.updateMovementVector();
+				break;
+			case this.backKey:
+				this.moveState.back = 0;
+				this.updateMovementVector();
+				break;
+
+			case this.strafeLeftKey:
+				this.moveState.strafeLeft = 0;
+				this.updateMovementVector();
+				break;
+			case this.strafeRightKey:
+				this.moveState.strafeRight = 0;
+				this.updateMovementVector();
+				break;
 		}
-	};
+	}
 
 	WASDControlScript.prototype.setupKeyControls = function () {
-		var that = this;
 		this.domElement.setAttribute('tabindex', -1);
-		this.domElement.addEventListener('keydown', function (event) {
-			that.updateKeys(event, true);
-		}, false);
-
-		this.domElement.addEventListener('keyup', function (event) {
-			that.updateKeys(event, false);
-		}, false);
+		this.domElement.addEventListener('keydown', keyDown.bind(this), false);
+		this.domElement.addEventListener('keyup', keyUp.bind(this), false);
 	};
 
 	WASDControlScript.prototype.run = function (entity, tpf, env) {
-		if(env) {
+		if (env) {
 			if (!this.domElement && env.domElement) {
 				this.domElement = env.domElement;
 				this.setupKeyControls();
@@ -126,22 +141,26 @@ function (Vector, Vector3) {
 		}
 
 		// direction of movement in local coords
-		this.calcVector.set(this.fwdVector.x * this.moveVector.z + this.leftVector.x * this.moveVector.x, this.fwdVector.y * this.moveVector.z
-			+ this.leftVector.y * this.moveVector.x, this.fwdVector.z * this.moveVector.z + this.leftVector.z * this.moveVector.x);
+		this.calcVector.set(
+			this.fwdVector.x * this.moveVector.z + this.leftVector.x * this.moveVector.x,
+			this.fwdVector.y * this.moveVector.z + this.leftVector.y * this.moveVector.x,
+			this.fwdVector.z * this.moveVector.z + this.leftVector.z * this.moveVector.x
+		);
 		this.calcVector.normalize();
 
 		// move speed for this run...
-		var moveMult = entity._world.tpf * (this.moveState.crawling ? this.crawlSpeed : this.walkSpeed);
+		var moveMult = entity._world.tpf * this.moveState.speed;
 
 		// scale by speed
 		this.calcVector.mul(moveMult);
 
 		// grab orientation of player
 		var orient = transform.rotation;
+
 		// reorient our movement to entity space
 		orient.applyPost(this.calcVector);
 
-		if(this.XZ) {
+		if (this.XZ) {
 			this.calcVector.data[1] = 0.0;
 		}
 

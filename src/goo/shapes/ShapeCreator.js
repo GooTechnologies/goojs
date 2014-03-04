@@ -18,6 +18,7 @@ function (
 
 	/**
 	 * @class Factory for shape creation.
+	 * @deprecated Use new Box, Quad, Sphere, Cylinder and Torus instead
 	 * @description Only used to define the class. Should never be instantiated.
 	 */
 

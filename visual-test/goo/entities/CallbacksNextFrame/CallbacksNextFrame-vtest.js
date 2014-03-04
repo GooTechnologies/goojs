@@ -53,7 +53,14 @@ require([
 
 		boxEntity1.addToWorld();
 
+		// adding callbacks from a callback
+		goo.callbacksNextFrame.push(function updateRotation() {
+			boxEntity1.transformComponent.setRotation(World.time, 0, 0);
+			goo.callbacksNextFrame.push(updateRotation);
+		});
 
+		// older example when callbacks could not be scheduled from within a callback
+		/*
 		var updateRotation = function (tpf) {
 			boxEntity1.transformComponent.setRotation(World.time, 0, 0);
 		};
@@ -62,6 +69,7 @@ require([
 		goo.callbacksPreProcess.push(function () {
 			goo.callbacksNextFrame.push(updateRotation);
 		});
+		 */
 
 		V.addLights();
 
@@ -72,10 +80,10 @@ require([
 		var meshData = ShapeCreator.createBox(size, size, size);
 		var entity = goo.world.createEntity(meshData, position);
 
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
-		TextureCreator.clearCache();
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
-		material.setTexture('DIFFUSE_MAP', texture);
+		var material = Material.createMaterial(ShaderLib.simpleLit, 'BoxMaterial');
+		//TextureCreator.clearCache();
+		//var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
+		//material.setTexture('DIFFUSE_MAP', texture);
 		entity.setComponent(new MeshRendererComponent());
 		entity.meshRendererComponent.materials.push(material);
 

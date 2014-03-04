@@ -23,7 +23,8 @@ function(
 	TransitionOnMessageAction.prototype.constructor = TransitionOnMessageAction;
 
 	TransitionOnMessageAction.external = {
-		name: 'Transition on Message',
+		key: 'Transition on Message',
+		name: 'Listen',
 		description: 'Performs a transition on receiving a message',
 		canTransition: true,
 		parameters: [{
