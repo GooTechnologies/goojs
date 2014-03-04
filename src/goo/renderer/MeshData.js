@@ -717,6 +717,10 @@ function (
 		return flatMeshData;
 	};
 
+	MeshData.prototype.destroy = function (context) {
+		this.vertexData.destroy(context);
+		this.indexData.destroy(context);
+	};
 
 	/** 
 	 * @type {string}

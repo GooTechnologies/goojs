@@ -5,7 +5,7 @@ define([
 function (
 	Vector2
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
@@ -161,6 +161,10 @@ function (
 			}
 		}
 		this.setNeedsUpdate();
+	};
+
+	Texture.prototype.destroy = function (context) {
+		context.deleteTexture(this.glTexture);
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];
