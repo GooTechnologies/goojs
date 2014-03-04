@@ -16,20 +16,20 @@ function (
 	'use strict';
 
 	/**
-	 * @class Holds the transform of an entity. It also allows for a scene graph to be created, where transforms are inherited
-	 * down the tree.
+	 * @class Holds the transform of an entity. It also allows for a scene graph to be created,
+	 * in which transforms are inherited down the tree.
 	 */
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
 		this.entity = null;
-		/** Parent transformcomponent in the "scene graph"
+		/** Parent TransformComponent in the "scene graph".
 		 * @type {TransformComponent}
 		 * @default
 		 */
 		this.parent = null;
 		/**
-		 * Child transformcomponents in the "scenegraph"
+		 * Child TransformComponent in the "scene graph".
 		 * @type {TransformComponent[]}
 		 */
 		this.children = [];
@@ -129,14 +129,12 @@ function (
 	TransformComponent.prototype.constructor = TransformComponent;
 
 	/**
-	 * Get this transform's translation.
-	 * Please note that this is a helper function returning
-	 * entity.transformComponent.transform.translation
-	 * To change the translation the returned object can be modified
-	 * after which entity.transformComponent.setUpdated() must be called.
-	 * Alternatively use setTranslation or addTranslation which call
-	 * setUpdated() for you.
-	 * 
+	 * Gets the value of transformComponent.transform.translation.
+	 * To change the translation, the returned object can be modified
+	 * after which transformComponent.setUpdated() must be called.
+	 * Alternatively, use setTranslation or addTranslation which call
+	 * setUpdated() automatically.
+	 *
 	 * @return {Vector3} translation
 	 */
 	TransformComponent.prototype.getTranslation = function () {
@@ -144,7 +142,8 @@ function (
 	};
 
 	/**
-	 * Set this transform's translation.
+	 * Sets this transform's translation.
+	 *
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -155,12 +154,11 @@ function (
 	};
 
 	/**
-	 * Get this transform's scale.
-	 * Please note that this is a helper function returning
-	 * entity.transformComponent.transform.scale
-	 * To change the scale the returned object can be modified
-	 * after which entity.transformComponent.setUpdated() must be called.
-	 * Alternatively use setScale which calls setUpdated() for you.
+	 * Gets the value of transformComponent.transform.scale.
+	 * To change the scale, the returned object can be modified
+	 * after which transformComponent.setUpdated() must be called.
+	 * Alternatively, use setScale which calls setUpdated() automatically.
+	 *
 	 * @return {Vector3} scale
 	 */
 	TransformComponent.prototype.getScale = function () {
@@ -168,7 +166,7 @@ function (
 	};
 
 	/**
-	 * Set this transform's scale.
+	 * Sets this transform's scale.
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -179,7 +177,7 @@ function (
 	};
 
 	/**
-	 * Add to this transform's translation.
+	 * Adds to this transform's translation.
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -194,10 +192,8 @@ function (
 	};
 
 	/**
-	 * Get this transform's rotation in Euler angles.
-	 * To change the rotation use setRotation or addRotation
-	 * or use the more powerful entity.transformComponent.transform.rotation
-	 * after which transformComponent.setUpdated() must be called.
+	 * Gets the value of this.transform.rotation in Euler angles.
+	 * Returns a new Vector3 that cannot be used for modifying the rotation.
 	 * 
 	 * @param {Vector3} [target] Target vector for storage.
 	 * @return {Vector3} rotation
@@ -209,7 +205,7 @@ function (
 	};
 
 	/**
-	 * Add to this transform's rotation in Euler angles.
+	 * Adds to this transform's rotation using Euler angles.
 	 * 
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
@@ -233,7 +229,7 @@ function (
 	};
 
 	/**
-	 * Set this transform's rotation around X, Y and Z axis.
+	 * Sets this transform's rotation around X, Y and Z axis.
 	 * The rotation is applied in XYZ order.
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
