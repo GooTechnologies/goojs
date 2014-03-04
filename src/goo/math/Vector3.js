@@ -354,7 +354,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Divides 'lhs' by 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned. Equivalent of "return (target = lhs / rhs);".
+	 * Divides 'lhs' by 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of "return (target = lhs / rhs);".
 	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
@@ -509,14 +509,22 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Computes the cross product and stores the result in a separate vector. Equivalent of "return (target = lhs x rhs);".
-	 * @param {Vector3|number[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector3|number[]} rhs Vector or array of scalars on the right-hand side.
-	 * @param {Vector3} [target] Target vector for storage.
+	 * Computes the cross product between 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of "return (target = lhs x rhs);".
+	 * @param {Vector3|number[]} lhs Vector3 or array of numbers on the left-hand side.
+	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
+	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
-	 * @return {Vector3} A new vector if the target vector is omitted, else the target vector.
+	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @example
+	 * // Passing in two Vector3, returns a new Vector3 object as the result
+	 * var v1 = new Vector3(0, 1, 0);
+	 * var v2 = new Vector3(1, 0, 0);
+	 * var cross = Vector3.cross(v1, v2); // cross == (0, 0, -1)
+	 * 
+	 * // Passing in a Vector3 and a number Array, using the same Vector3 to store the results
+	 * var v3 = new Vector3(0, 0, -1);
+	 * Vector3.cross(v3, [0, -1, 0], v3); // v3 == (-1, 0, 0)
 	 */
-
 	Vector3.cross = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Vector3();
@@ -543,11 +551,19 @@ function (
 	};
 
 	/**
-	 * Computes the cross product and stores the result in a separate vector. Equivalent of "return (this = this x rhs);".
-	 * @param {Vector3|Float[]} rhs Vector or array of scalars on the right-hand side.
+	 * Computes the cross product between the current Vector3 and 'rhs'.  The current Vector3 becomes the result.  Equivalent of "return (this = this x rhs);".
+	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
 	 * @return {Vector3} Self for chaining.
+	 * @example
+	 * // Passing in a Vector3
+	 * var v1 = new Vector3(0, 1, 0);
+	 * var v2 = new Vector3(0, 0, -1);
+	 * v1.cross(v2); // v1 == (-1, 0, 0)
+	 * 
+	 * // Passing in an array
+	 * var v3 = new Vector3(1, 0, 0);
+	 * v3.cross([0, 1, 0]); // v3 == (0, 0, 1)
 	 */
-
 	Vector3.prototype.cross = function (rhs) {
 		return Vector3.cross(this, rhs, this);
 	};
@@ -555,10 +571,19 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Linearly interpolates between two vectors and stores the result locally.
-	 * @param {Vector3} end End vector.
-	 * @param {number} factor Interpolation factor between zero and one.
+	 * Linearly interpolates between the current Vector3 and an 'end' Vector3.  The current Vector3 is modified.
+	 * @param {Vector3} end End Vector3.
+	 * @param {number} factor Interpolation factor between 0.0 and 1.0.
 	 * @return {Vector3} Self for chaining.
+	 * @example
+	 * var goal = new Vector3(5, 0, 0);
+	 *
+	 * // In an entities  {@link ScriptComponent}
+	 * function run(entity, tpf){
+	 *     // entity.transformComponent.transform.translation is a Vector3 object
+	 *     entity.transformComponent.transform.translation.lerp(v2, tpf);
+	 *     entity.transformComponent.setUpdated();
+	 * }
 	 */
 	 // Review: this function looks like it could be generalized in Vector.js instead
 	Vector3.prototype.lerp = function (end, factor) {
@@ -571,11 +596,14 @@ function (
 
 	// Performance methods
 	/**
-	 * Sets vector values with numbers as inputs
+	 * Sets Vector3 values with numbers as inputs.  The current Vector3 is modified.
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * v1.setd(2, 4, 6); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.setd = function (x, y, z) {
 		this.data[0] = x;
@@ -584,10 +612,14 @@ function (
 
 		return this;
 	};
+
 	/**
-	 * Sets vector values with array as input
+	 * Sets Vector3 values with an Array of numbers as input.  The current Vector3 is modified.
 	 * @param {number[]} array
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * v1.seta([2, 4, 6]); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.seta = function (array) {
 		this.data[0] = array[0];
@@ -596,10 +628,15 @@ function (
 
 		return this;
 	};
+
 	/**
-	 * Sets vector values with another {@link Vector3} as input
+	 * Sets Vector3 values with another {@link Vector3} as input.  The current Vector3 is modified.
 	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * var v2 = new Vector3(1, 2, 3);
+	 * v1.setv(v2); // v1 == (1, 2, 3)
 	 */
 	Vector3.prototype.setv = function (vec3) {
 		this.data[0] = vec3.data[0];
@@ -608,12 +645,16 @@ function (
 
 		return this;
 	};
+
 	/**
-	 * Performs component-wise addition with numbers as inputs
+	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values.  The current Vector3 is modified.
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(1, 2, 3);
+	 * v1.add_d(2, 4, 6); // v1 == (3, 6, 9)
 	 */
 	Vector3.prototype.add_d = function (x, y, z) {
 		this.data[0] += x;
@@ -622,10 +663,15 @@ function (
 
 		return this;
 	};
+
 	/**
-	 * Performs component-wise addition with another {@link Vector3} as input
+	 * Adds another {@link Vector3} to the current Vector3.  The current Vector3 is modified.
 	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(1, 2, 3);
+	 * var v2 = new Vector3(4, 5, 6);
+	 * v1.addv(v2); // v1 == (5, 7, 9)
 	 */
 	Vector3.prototype.addv = function (vec3) {
 		this.data[0] += vec3.data[0];
@@ -634,10 +680,15 @@ function (
 
 		return this;
 	};
+
 	/**
-	 * Performs component-wise multiplication with another {@link Vector3} as input
+	 * Multiplies the current Vector3 by another {@link Vector3}.  The current Vector3 is modified.
 	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(1, 2, 3);
+	 * var v2 = new Vector3(2, 2, 2);
+	 * v1.mulv(v2); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.mulv = function (vec3) {
 		this.data[0] *= vec3.data[0];
@@ -648,11 +699,14 @@ function (
 	};
 
 	/**
-	 * Performs component-wise multiplication with numbers as inputs
+	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs.  The current Vector3 is modified.
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(1, 2, 3);
+	 * v1.muld(2, 4, 6); // v1 == (2, 8, 18)
 	 */
 	Vector3.prototype.muld = function (x, y, z) {
 		this.data[0] *= x;
@@ -661,10 +715,15 @@ function (
 
 		return this;
 	};
+
 	/**
-	 * Performs component-wise subtraction with another {@link Vector3} as input
+	 * Subtracts another {@link Vector3} from the current Vector3.  The current Vector3 is modified.
 	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * var v2 = new Vector3(2, 4, 6);
+	 * v1.subv(v2); // v1 == (-2, -4, -6)
 	 */
 	Vector3.prototype.subv = function (vec3) {
 		this.data[0] -= vec3.data[0];
@@ -673,12 +732,16 @@ function (
 
 		return this;
 	};
+
 	/**
-	 * Performs component-wise subtraction with numbers as inputs
+	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3.  The current Vector3 is modified.
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * v1.sub_d(1, 2, 3); // v1 == (-1, -2, -3)
 	 */
 	Vector3.prototype.sub_d = function (x, y, z) {
 		this.data[0] -= x;
@@ -687,9 +750,15 @@ function (
 
 		return this;
 	};
+
 	/**
-	 * Calculates length squared of vector
+	 * Calculates the length(magnitude) squared of the current Vector3.
+	 *              Note: When comparing the relative distances between two points it is usually sufficient
+	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @returns {number} length squared
+	 * @example
+	 * var v1 = new Vector3(0, 9, 0);
+	 * var n1 = v1.lengthSquared(); // n1 == 81
 	 */
 	Vector3.prototype.lengthSquared = function () {
 		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
@@ -697,10 +766,16 @@ function (
 
 	/**
 	 * @static
-	 * @description Computes the squared distance between two vectors.
+	 * @description Computes the distance squared between two Vector3.
+	 *              Note: When comparing the relative distances between two points it is usually sufficient
+	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} lhs Vector3.
 	 * @param {Vector3} rhs Vector3.
-	 * @return {Float} distance squared.
+	 * @return {number} distance squared.
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * var v2 = new Vector3(0, 9, 0);
+	 * var n1 = Vector3.distanceSquared(v1, v2); // n1 == 81
 	 */
 	Vector3.distanceSquared = function (lhs, rhs) {
 		var x = lhs.data[0] - rhs.data[0],
@@ -711,32 +786,46 @@ function (
 
 	/**
 	 * @static
-	 * @description Computes the distance between two vectors.
+	 * @description Computes the distance between two Vector3.
+	 *              Note: When comparing the relative distances between two points it is usually sufficient
+	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} lhs Vector3.
 	 * @param {Vector3} rhs Vector3.
-	 * @return {Float} distance.
+	 * @return {number} distance.
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * var v2 = new Vector3(0, 9, 0);
+	 * var n1 = Vector3.distance(v1, v2); // n1 == 9
 	 */
 	Vector3.distance = function (lhs, rhs) {
 		return Math.sqrt(Vector3.distanceSquared(lhs, rhs));
 	};
 
 	/**
-	 * @description Computes the squared distance between this and another vector.
+	 * @description Computes the distance squared between the current Vector3 and another Vector3.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} v Vector3.
-	 * @return {Float} distance squared.
+	 * @return {number} distance squared.
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * var v2 = new Vector3(0, 9, 0);
+	 * var n1 = v1.distanceSquared(v2); // 81
 	 */
 	Vector3.prototype.distanceSquared = function (v) {
 		return Vector3.distanceSquared( this, v);
 	};
 
 	/**
-	 * @description Computes the distance between this and another vector.
+	 * @description Computes the distance between the current Vector3 and another Vector3.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} v Vector3.
-	 * @return {Float} distance.
+	 * @return {number} distance.
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * var v2 = new Vector3(0, 9, 0);
+	 * var n1 = v1.distance(v2); // n1 == 9
 	 */
 	Vector3.prototype.distance = function (v) {
 		return Vector3.distance( this, v);
