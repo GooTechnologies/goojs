@@ -79,6 +79,13 @@ function(
 
 	OrbitNPanControlScript.prototype = Object.create(OrbitCamControlScript.prototype);
 
+
+	OrbitNPanControlScript.prototype.updateConfig = function(properties) {
+		OrbitCamControlScript.prototype.updateConfig.call(this,properties);
+		this.goingToLookAt.setv(this.lookAtPoint);
+	}
+
+
 	OrbitNPanControlScript.prototype.setupMouseControls = function() {
 		var that = this;
 		this.domElement.addEventListener('mousedown', function (event) {

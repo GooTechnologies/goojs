@@ -70,6 +70,9 @@ function(
 						script.id = config.id;
 					}
 				}
+				else if (script.updateConfig) {
+					script.updateConfig(config.options);
+				}
 
 				if (options.script && options.script.disabled) {
 					script.enabled = script.active = false;
