@@ -1,7 +1,7 @@
 define(
 	/** @lends */
 	function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
