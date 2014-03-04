@@ -192,7 +192,7 @@ function (
 	};
 
 	/**
-	 * Gets the value of this.transform.rotation in Euler angles.
+	 * Gets the value of transformComponent.transform.rotation in Euler angles.
 	 * Returns a new Vector3 that cannot be used for modifying the rotation.
 	 * 
 	 * @param {Vector3} [target] Target vector for storage.
