@@ -21,6 +21,7 @@ function(
 	CompareDistanceAction.external = {
 		key: 'Compare Distance',
 		name: 'Camera Distance',
+		type: 'collision',
 		description: 'Performs a transition based on the distance to the main camera or to a location',
 		canTransition: true,
 		parameters: [{

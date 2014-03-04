@@ -17,6 +17,7 @@ function(
 	TweenTextureOffsetAction.external = {
 		key: 'Tween Texture Offset',
 		name: 'Tween Texture',
+		type: 'texture',
 		description: 'Smoothly changes the texture offset of the entity',
 		canTransition: true,
 		parameters: [{

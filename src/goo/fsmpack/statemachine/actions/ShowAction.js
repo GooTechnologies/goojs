@@ -18,6 +18,7 @@ function(
 
 	ShowAction.external = {
 		name: 'Show',
+		type: 'display',
 		description: 'Makes an entity visible',
 		parameters: [],
 		transitions: []

@@ -23,6 +23,7 @@ function(
 	CollidesAction.external = {
 		key: 'Collides',
 		name: 'Collision',
+		type: 'collision',
 		description: 'Checks for collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag objects using the \'Tag\' action',
 		canTransition: true,
 		parameters: [{

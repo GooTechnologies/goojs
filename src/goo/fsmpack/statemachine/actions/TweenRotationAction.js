@@ -23,6 +23,7 @@ define([
 	TweenRotationAction.external = {
 		key: 'Tween Rotation',
 		name: 'Tween Rotate',
+		type: 'animation',
 		description: 'Smoothly transitions between two orientations',
 		canTransition: true,
 		parameters: [{

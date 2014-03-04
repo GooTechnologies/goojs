@@ -21,6 +21,7 @@ function(
 
 	SwitchCameraAction.external = {
 		name: 'Switch Camera',
+		type: 'camera',
 		description: 'Switches between cameras',
 		parameters: [{
 			name: 'Camera',

@@ -18,6 +18,7 @@ function(
 
 	LookAtAction.external = {
 		name: 'Look At',
+		type: 'animation',
 		description: 'Reorients an entity so that it\'s facing a specific point',
 		parameters: [{
 			name: 'Look at position',

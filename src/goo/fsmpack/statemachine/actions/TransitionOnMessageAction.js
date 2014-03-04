@@ -25,6 +25,7 @@ function(
 	TransitionOnMessageAction.external = {
 		key: 'Transition on Message',
 		name: 'Listen',
+		type: 'transitions',
 		description: 'Performs a transition on receiving a message',
 		canTransition: true,
 		parameters: [{

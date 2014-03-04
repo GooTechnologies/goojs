@@ -16,6 +16,7 @@ function(
 
 	SoundFadeOutAction.external = {
 		name: 'Sound Fade Out',
+		type: 'sound',
 		descriptions: 'Fades out a sound and stops it',
 		canTransition: true,
 		parameters: [{

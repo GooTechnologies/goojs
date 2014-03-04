@@ -30,6 +30,7 @@ function(
 
 	SetRenderTargetAction.external = {
 		name: 'Set Render Target',
+		type: 'texture',
 		description: 'Renders what a camera sees on the current entity\'s texture',
 		parameters: [{
 			name: 'Camera',

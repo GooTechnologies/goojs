@@ -16,6 +16,7 @@ function(
 
 	ScaleAction.external = {
 		name: 'Scale',
+		type: 'animation',
 		description: 'Scales the entity',
 		parameters: [{
 			name: 'Scale',

@@ -16,6 +16,7 @@ function(
 
 	RandomTransitionAction.external = {
 		name: 'Random Transition',
+		type: 'transitions',
 		description: 'Performs a random transition',
 		canTransition: true,
 		parameters: [{

@@ -16,6 +16,7 @@ function(
 
 	RemoveAction.external = {
 		name: 'Remove',
+		type: 'display',
 		description: 'Removes the entity from the world',
 		parameters: [{
 			name: 'Recursive',

@@ -32,6 +32,7 @@ function(
 
 	KeyPressedAction.external = {
 		name: 'Key Pressed',
+		type: 'controls',
 		description: 'Listens for a key press and performs a transition. Works over transition boundaries.',
 		canTransition: true,
 		parameters: [{

@@ -18,6 +18,7 @@ function(
 
 	HideAction.external = {
 		name: 'Hide',
+		type: 'display',
 		description: 'Hides an entity and its children',
 		parameters: [],
 		transitions: []

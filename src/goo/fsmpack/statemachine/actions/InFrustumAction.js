@@ -21,6 +21,7 @@ function(
 	InFrustumAction.external = {
 		key: 'In Frustum',
 		name: 'In View',
+		type: 'camera',
 		description: 'Performs a transition based on whether the entity is in a camera\'s frustum or not',
 		canTransition: true,
 		parameters: [{

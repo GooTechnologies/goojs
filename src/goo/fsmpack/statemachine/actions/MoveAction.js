@@ -18,6 +18,7 @@ function(
 
 	MoveAction.external = {
 		name: 'Move',
+		type: 'animation',
 		description: 'Moves the entity',
 		parameters: [{
 			name: 'Translation',

@@ -18,6 +18,7 @@ function(
 
 	ShakeAction.external = {
 		name: 'Shake',
+		type: 'animation',
 		description: 'Shakes the entity',
 		canTransition: true,
 		parameters: [{
