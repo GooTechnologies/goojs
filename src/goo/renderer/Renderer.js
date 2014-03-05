@@ -1209,6 +1209,11 @@ function (
 					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
 					image = texture.image;
 				}
+				
+				// ?!
+				if (image.isCompressed)
+					image.isData = true;
+			
 
 				if (image.isData === true) {
 					if (image.isCompressed) {
