@@ -53,7 +53,7 @@ require([
 				var z = Math.random() * 16 - 8;
 				if (Math.random() < 0.5) {
 					var w = 1+Math.random()*2,
-					    h = 1+Math.random()*2;
+						h = 1+Math.random()*2;
 					createEntity(goo, ShapeCreator.createBox(w, h, 1+Math.random()*2), {
 						mass:1,
 						shapes:[{
