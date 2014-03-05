@@ -522,7 +522,7 @@ function(
 			// is 'url', 'imageUrls' or 'urls' but not 'realUrl'
 			// is 'binaryRef' or 'soundRefs' but not 'ref'
 
-			if (/(^url|[\S]+ref)s?|Urls$/i.test(key)) {
+			if (/(^url|[\S]+ref)s?$|Urls$/i.test(key)) {
 				if (value !== null && value !== undefined) {
 					_refs = _refs.concat(value);
 				}
