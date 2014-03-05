@@ -24,6 +24,7 @@ function(
 
 	PickAction.external = {
 		name: 'Pick',
+		type: 'controls',
 		description: 'Listens for a picking event and performs a transition',
 		canTransition: true,
 		parameters: [], // but not farther than some value

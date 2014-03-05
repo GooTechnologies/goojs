@@ -19,6 +19,7 @@ function(
 	EmitAction.external = {
 		key: 'Emit message',
 		name: 'Emit Message',
+		type: 'transitions',
 		description: 'Emits a message on the bus',
 		parameters: [{
 			name: 'Channel',

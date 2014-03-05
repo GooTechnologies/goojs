@@ -16,6 +16,7 @@ function(Action) {
 
 	WaitAction.external = {
 		name: 'Wait',
+		type: 'animation',
 		description: 'Performs a transition after a specified amount of time',
 		canTransition: true,
 		parameters: [{

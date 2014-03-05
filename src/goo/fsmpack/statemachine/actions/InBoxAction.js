@@ -16,6 +16,7 @@ function(
 
 	InBoxAction.external = {
 		name: 'In Box',
+		type: 'collision',
 		description: 'Performs a transition based on whether an entity is inside a user defined box or not',
 		canTransition: true,
 		parameters: [{

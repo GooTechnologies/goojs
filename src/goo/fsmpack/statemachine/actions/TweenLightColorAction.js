@@ -17,6 +17,7 @@ function(
 	TweenLightColorAction.external = {
 		key: 'Tween Light Color',
 		name: 'Tween Light',
+		type: 'light',
 		description: 'Tweens the color of the light',
 		parameters: [{
 			name: 'Color',

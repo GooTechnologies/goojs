@@ -43,7 +43,7 @@ function (
 
 		lookAtPoint: new Vector3(0,0,0),
 		spherical: new Vector3(15,0,0),
-		interpolationSpeed: 1000,
+		interpolationSpeed: 7,
 		onRun: null
 	};
 
@@ -80,6 +80,7 @@ function (
 	 */
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
+
 
 		//! AT: this looks a lot like a defaults/extend function that can be extracted somewhere else
 		for(var key in _defaults) {
@@ -130,6 +131,25 @@ function (
 			this.lastTimeMoved = Date.now() + (properties.moveInitialDelay - this.moveInterval);
 		}
 	}
+
+	OrbitCamControlScript.prototype.updateConfig = function(properties) {
+		for(var key in properties) {
+			if(typeof(_defaults[key]) === 'boolean') {
+				this[key] = !!properties[key];
+			}
+			else if (!isNaN(_defaults[key]) && !isNaN(properties[key])) {
+				this[key] = properties[key];
+			}
+			else if(_defaults[key] instanceof Vector3) {
+				this[key].set(properties[key]);
+			}
+			else {
+				this[key] = properties[key];
+			}
+		}
+		this.targetSpherical.setv(this.spherical);
+		this.dirty = true;
+	};
 
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
@@ -315,8 +335,6 @@ function (
 			this.velocity.set(0, 0, 0);
 		}
 	};
-
-	var helpVector = new Vector3();
 
 	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
 		if (this.demoMode) {

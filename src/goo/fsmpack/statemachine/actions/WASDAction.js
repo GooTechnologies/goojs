@@ -50,6 +50,7 @@ function(
 		return {
 			key: 'WASD Keys Listener',
 			name: 'WASD Keys',
+			type: 'controls',
 			description: 'A 4-in-1 key down listener',
 			canTransition: true,
 			parameters: [],

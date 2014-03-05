@@ -18,6 +18,7 @@ function(
 
 	TweenLookAtAction.external = {
 		name: 'Tween Look At',
+		type: 'animation',
 		description: 'Smoothly transitions between two look at points',
 		canTransition: true,
 		parameters: [{

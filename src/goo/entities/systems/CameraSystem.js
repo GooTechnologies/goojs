@@ -21,11 +21,18 @@ function (
 
 	CameraSystem.prototype = Object.create(System.prototype);
 
+	/**
+	 * Sets the Renderer's main camera to be the first camera of the CameraComponents
+	 * in the currently active entities of this system.
+	 */
 	CameraSystem.prototype.findMainCamera = function () {
 		var mainCamera = null;
 		var mainCameraEntity = null;
-		for (var i = 0; i < this._activeEntities.length; i++) {
+		var numberOfEntities = this._activeEntities.length;
+		for (var i = 0; i < numberOfEntities; i++) {
 			var cameraComponent = this._activeEntities[i].cameraComponent;
+			// REVIEW: the cameracomponent does not have any property isMain?
+			// Also, why not break upon setting the mainCamera.
 			if (!mainCamera || cameraComponent.isMain) {
 				mainCamera = cameraComponent.camera;
 				mainCameraEntity = this._activeEntities[i];

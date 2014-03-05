@@ -42,7 +42,6 @@ define([
 	 */
 	function EnvironmentHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._cache = {};
 	}
 
 	EnvironmentHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -121,10 +120,8 @@ define([
 
 			var promises = [];
 			// Skybox
-			if(config.skyboxRef && config.skyboxRef !== that._cache.skyboxRef) {
-				var p = that._load(config.skyboxRef, options).then(function(/*skybox*/) {
-					that._cache.skyboxRef = config.skyboxRef;
-				});
+			if(config.skyboxRef) {
+				var p = that._load(config.skyboxRef, options);
 				promises.push(p);
 			}
 

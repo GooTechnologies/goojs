@@ -23,6 +23,7 @@ function(
 
 	MouseUpAction.external = {
 		name: 'Mouse Up',
+		type: 'controls',
 		description: 'Listens for a mouse button release and performs a transition',
 		canTransition: true,
 		parameters: [],

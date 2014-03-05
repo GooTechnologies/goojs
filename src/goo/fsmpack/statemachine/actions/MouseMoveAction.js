@@ -22,6 +22,7 @@ define([
 
 	MouseMoveAction.external = {
 		name: 'Mouse Move',
+		type: 'controls',
 		description: 'Listens for mouse movement and performs a transition',
 		canTransition: true,
 		parameters: [],

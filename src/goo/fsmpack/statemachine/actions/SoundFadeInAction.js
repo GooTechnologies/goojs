@@ -16,6 +16,7 @@ function(
 
 	SoundFadeInAction.external = {
 		name: 'Sound Fade In',
+		type: 'sound',
 		descriptions: 'Starts playing a sound',
 		canTransition: true,
 		parameters: [{
