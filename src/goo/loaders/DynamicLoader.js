@@ -400,6 +400,7 @@ function(
 			delete this._objects[ref];
 			promises.push(this._handle(ref, null));
 		}
+		this._configs = {};
 		return RSVP.all(promises);
 	};
 
