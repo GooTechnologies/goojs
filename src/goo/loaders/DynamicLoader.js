@@ -397,8 +397,8 @@ function(
 	DynamicLoader.prototype.clear = function() {
 		var promises = [];
 		for (var ref in this._objects) {
-			promises.push(this._handle(ref, null));
 			delete this._objects[ref];
+			promises.push(this._handle(ref, null));
 		}
 		return RSVP.all(promises);
 	};
