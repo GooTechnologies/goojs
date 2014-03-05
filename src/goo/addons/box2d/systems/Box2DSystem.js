@@ -153,6 +153,7 @@ function(
 			var position = entity.body.GetPosition();
 			var posX = position.get_x();
 			var posY = position.get_y();
+			//! schteppe: This is ugly. Should at least be possile to turn off. A more general implementation would be a "P2KillerPlane" component
 			if (posY < -10) {
 				entity.removeFromWorld();
 				continue;
