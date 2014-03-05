@@ -94,7 +94,7 @@ define([], function () {
 		} else if (!this.entries.length || start < this.entries[0].start) {
 			this.entries.unshift(newEntry);
 		} else {
-			var index = this.getEntryIndex(start) + 1;
+			var index = find(this.entries, start, this.lastTime) + 1;
 			this.entries.splice(index, 0, newEntry);
 		}
 

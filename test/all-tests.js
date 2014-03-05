@@ -62,5 +62,6 @@ define([
 	'test/loaders/handlers/SceneHandler-test',
 	'test/loaders/handlers/ProjectHandler-test',
 	'test/loaders/handlers/SkyboxHandler-test',
-	'test/loaders/handlers/EnvironmentHandler-test'
+	'test/loaders/handlers/EnvironmentHandler-test',
+	'test/timelinepack/Channel-test'
 ], function() {});
