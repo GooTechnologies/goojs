@@ -65,9 +65,9 @@ define([
 	 * @private
 	 * @returns {RSVP.Promise} Resolves with the updated machine or null if removed
 	 */
-	 MachineHandler.prototype.update = function(ref, config, options) {
+	 MachineHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(machine) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(machine) {
 			if (!machine) { return; }
 			machine.name = config.name;
 
@@ -121,7 +121,7 @@ define([
 				action.configure(actionConfig.options);
 			}
 			actions.push(action);
-		}, 'sortValue');
+		}, null, 'sortValue');
 		state._actions = actions;
 	};
 
