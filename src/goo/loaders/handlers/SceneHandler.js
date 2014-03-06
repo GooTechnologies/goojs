@@ -1,10 +1,12 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
+	'goo/util/PromiseUtil',
 	'goo/util/rsvp'
 ],
 /** @lends */
 function(
 	ConfigHandler,
+	PromiseUtil,
 	RSVP
 ) {
 	"use strict";
@@ -52,7 +54,7 @@ function(
 			});
 		} else {
 			console.warn("No entity refs in scene " + ref);
-			return config;
+			return PromiseUtil.createDummyPromise(config);
 		}
 	};
 
