@@ -57,6 +57,7 @@ function(
 
 	function Forrest() {
 		this.calcVec = new Vector3();
+		this.initDone = false;
 	}
 
 	Forrest.prototype.init = function(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes) {
@@ -67,10 +68,11 @@ function(
 		this.terrainQuery = terrainQuery;
 		this.forrestTypes = forrestTypes;
 
-		this.vegetationList = [];
-		for (var i = 0; i < forrestTypes.length; i++) {
-			var meshData = this.createBase(forrestTypes[i]);
-			this.vegetationList[i] = meshData;
+		this.vegetationList = {};
+		for (var type in forrestTypes) {
+			var typeSettings = forrestTypes[type];
+			var meshData = this.createBase(typeSettings);
+			this.vegetationList[type] = meshData;
 		}
 
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
@@ -82,7 +84,6 @@ function(
 		material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1.0];
 		material.renderQueue = 3000;
 		this.material = material;
-		this.vegType = 0;
 
 		this.patchSize = 50; //25;
 		this.patchDensity = 8; //5;
@@ -110,15 +111,13 @@ function(
 
 		this.currentX = -10000;
 		this.currentZ = -10000;
+
+		this.initDone = true;
 	};
 
 	Forrest.prototype.rebuild = function() {
 		this.currentX = -10000;
 		this.currentZ = -10000;
-	};
-
-	Forrest.prototype.getVegetationType = function(xx, zz, slope) {
-		return MathUtils.clamp(this.terrainQuery.getForrestType(xx, zz, slope), -1, this.vegetationList.length-1);
 	};
 
 	var hidden = false;
@@ -136,7 +135,7 @@ function(
 	};
 
 	Forrest.prototype.update = function(x, z) {
-		if (hidden) {
+		if (!this.initDone || hidden) {
 			return;
 		}
 
@@ -209,8 +208,8 @@ function(
 				}
 				var slope = norm.dot(Vector3.UNIT_Y);
 
-				var vegetationType = this.getVegetationType(xx, zz, slope);
-				if (vegetationType < 0) {
+				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope);
+				if (!vegetationType) {
 					continue;
 				}
 

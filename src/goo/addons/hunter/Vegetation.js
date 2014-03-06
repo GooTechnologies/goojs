@@ -47,16 +47,18 @@ function(
 
 	function Vegetation() {
 		this.calcVec = new Vector3();
+		this.initDone = false;
 	}
 
 	Vegetation.prototype.init = function(world, terrainQuery, vegetationAtlasTexture, vegetationTypes) {
 		this.world = world;
 		this.terrainQuery = terrainQuery;
 
-		this.vegetationList = [];
-		for (var i = 0; i < vegetationTypes.length; i++) {
-			var meshData = this.createBase(vegetationTypes[i]);
-			this.vegetationList[i] = meshData;
+		this.vegetationList = {};
+		for (var type in vegetationTypes) {
+			var typeSettings = vegetationTypes[type];
+			var meshData = this.createBase(typeSettings);
+			this.vegetationList[type] = meshData;
 		}
 
 		var material = Material.createMaterial(vegetationShader, 'vegetation');
@@ -68,7 +70,6 @@ function(
 		material.uniforms.materialSpecular = [0, 0, 0, 0];
 		material.renderQueue = 3001;
 		this.material = material;
-		this.vegType = 0;
 
 		this.patchSize = 12;
 		this.patchDensity = 15;
@@ -96,16 +97,11 @@ function(
 
 		this.currentX = -10000;
 		this.currentZ = -10000;
+
+		this.initDone = true;
 	};
 
 	Vegetation.prototype.rebuild = function() {
-		this.currentX = -10000;
-		this.currentZ = -10000;
-	};
-
-	Vegetation.prototype.circleVegetation = function() {
-		this.vegType++;
-		this.vegType %= 12;
 		this.currentX = -10000;
 		this.currentZ = -10000;
 	};
@@ -124,12 +120,8 @@ function(
 		}
 	};
 
-	Vegetation.prototype.getVegetationType = function(xx, zz, slope) {
-		return MathUtils.clamp(this.terrainQuery.getVegetationType(xx, zz, slope), -1, this.vegetationList.length-1);
-	};
-
 	Vegetation.prototype.update = function(x, z) {
-		if (hidden) {
+		if (!this.initDone || hidden) {
 			return;
 		}
 
@@ -202,8 +194,8 @@ function(
 				}
 				var slope = norm.dot(Vector3.UNIT_Y);
 
-				var vegetationType = this.getVegetationType(xx, zz, slope);
-				if (vegetationType < 0) {
+				var vegetationType = this.terrainQuery.getVegetationType(xx, zz, slope);
+				if (!vegetationType) {
 					continue;
 				}
 

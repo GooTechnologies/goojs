@@ -53,7 +53,7 @@ function(
 	 * @class A terrain
 	 */
 	function Terrain(goo, size, count) {
-		var world = goo.world;
+		this.world = goo.world;
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.count = count;
@@ -128,19 +128,24 @@ function(
 
 		this.splat = new RenderTarget(this.size * 2, this.size * 2, {
 				// magFilter: 'NearestNeighbor',
-				minFilter: 'NearestNeighborNoMipMaps',
+				// minFilter: 'NearestNeighborNoMipMaps',
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
 				generateMipmaps: false,
 		});
 		this.splatCopy = new RenderTarget(this.size * 2, this.size * 2, {
 				// magFilter: 'NearestNeighbor',
-				minFilter: 'NearestNeighborNoMipMaps',
+				// minFilter: 'NearestNeighborNoMipMaps',
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
 				generateMipmaps: false,
 		});
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
+	}
+
+	Terrain.prototype.init = function(terrainTextures) {
+		var world = this.world;
+		var count = this.count;
 
 		var entity = this.terrainRoot = world.createEntity('TerrainRoot');
 		entity.addToWorld();
@@ -198,9 +203,7 @@ function(
 		lightEntity.setRotation(-Math.PI*0.5, 0, 0);
 		lightEntity.addToWorld();
 		this.lightEntity.lightComponent.hidden = true;
-	}
 
-	Terrain.prototype.init = function(terrainTextures) {
 		this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
 			magFilter: 'NearestNeighbor',
 			minFilter: 'NearestNeighborNoMipMaps',
@@ -210,10 +213,19 @@ function(
 			format: 'Luminance'
 		}, this.size, this.size);
 
+		this.splatTexture = terrainTextures.splatMap instanceof Texture ? terrainTextures.splatMap : new Texture(terrainTextures.splatMap, {
+			magFilter: 'NearestNeighbor',
+			minFilter: 'NearestNeighborNoMipMaps',
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+			generateMipmaps: false,
+			flipY: false
+		}, this.size * 2, this.size * 2);
+
 		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
 
-		this.copyPass.render(this.renderer, this.splatCopy, terrainTextures.splatMap);
-		this.copyPass.render(this.renderer, this.splat, terrainTextures.splatMap);
+		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
+		this.copyPass.render(this.renderer, this.splat, this.splatTexture);
 
 		for (var i = 0; i < this.count; i++) {
 			var material = this.clipmaps[i].origMaterial;
@@ -271,7 +283,7 @@ function(
 			});
 		}
 
-		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, false, x, y);
+		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, false, x, y, null, true);
 		var pickStore = {};
 		this.renderer.pick(x, y, pickStore, Renderer.mainCamera);
 		camera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, pickStore.depth, store);
@@ -399,6 +411,69 @@ function(
 			normals: normalBuffer,
 			splat: splatBuffer
 		};
+	};
+
+	Terrain.prototype.buildAmmoBody = function() {
+		var terrainData = this.getTerrainData();
+
+		// --- Physics Start ---
+		var floatByteSize = 4;
+		var heightBuffer = Ammo.allocate(floatByteSize * this.size * this.size, "float", Ammo.ALLOC_NORMAL);
+
+		for (var z = 0; z < this.size; z++) {
+			for (var x = 0; x < this.size; x++) {
+				Ammo.setValue(heightBuffer + (z * this.size + x) * floatByteSize, terrainData.heights[z * this.size + x], 'float');
+			}
+		}
+
+		var heightScale = 1.0;
+		var minHeight = -1000;
+		var maxHeight = 1000;
+		var upAxis = 1; // 0 => x, 1 => y, 2 => z
+		var heightDataType = 0; //PHY_FLOAT;
+		var flipQuadEdges = false;
+
+		var shape = new Ammo.btHeightfieldTerrainShape(
+			widthPoints,
+			lengthPoints,
+			heightBuffer,
+			heightScale,
+			minHeight,
+			maxHeight,
+			upAxis,
+			heightDataType,
+			flipQuadEdges
+		);
+
+		// var sx = xw / widthPoints;
+		// var sz = zw / lengthPoints;
+		// var sy = 1.0;
+
+		// var sizeVector = new Ammo.btVector3(sx, sy, sz);
+		// shape.setLocalScaling(sizeVector);
+
+		var ammoTransform = new Ammo.btTransform();
+		ammoTransform.setIdentity(); // TODO: is this needed ?
+		// ammoTransform.setOrigin(new Ammo.btVector3( 0, yw /2, 0 ));
+		// ammoTransform.setOrigin(new Ammo.btVector3( xw / 2, 0, zw / 2 ));
+		// this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
+		// var q = this.gooQuaternion;
+		// ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
+		var localInertia = new Ammo.btVector3(0, 0, 0);
+
+		var mass = 0;
+		// rigidbody is dynamic if and only if mass is non zero, otherwise static
+		// if(mass !== 0.0) {
+			// shape.calculateLocalInertia( mass, localInertia );
+		// }
+
+		var info = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
+		var body = new Ammo.btRigidBody(info);
+		body.setFriction(1);
+
+		this.world.getSystem('AmmoSystem').ammoWorld.addRigidBody(body);
+		// --- Physics End ---
 	};
 
 	Terrain.prototype.updateTextures = function() {
@@ -932,8 +1007,8 @@ function(
 		'void main(void)',
 		'{',
 		'	vec4 splat = texture2D(splatMap, texCoord1);',
-		'	float brush = texture2D(diffuseMap, texCoord0).r;',
-		'	vec4 final = mix(splat, rgba, opacity * brush);',
+		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
+		'	vec4 final = mix(splat, rgba, opacity * length(brush.rgb) * brush.a);',
 		'	gl_FragColor = final;',
 		'}'//
 		].join('\n')
