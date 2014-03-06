@@ -16,6 +16,7 @@ function(
 
 	RemoveLightAction.external = {
 		name: 'Remove Light',
+		type: 'light',
 		description: 'Removes the light attached to the entity',
 		parameters: [],
 		transitions: []

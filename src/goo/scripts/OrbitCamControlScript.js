@@ -1,9 +1,14 @@
 define([
-	'goo/math/Vector2', 'goo/math/Vector3', 'goo/math/MathUtils'],
+	'goo/math/Vector2',
+	'goo/math/Vector3',
+	'goo/math/MathUtils',
+	'goo/entities/SystemBus'
+	],
 /** @lends */
 function (
-	Vector2, Vector3, MathUtils) {
+	Vector2, Vector3, MathUtils, SystemBus) {
 	"use strict";
+
 
 	var _defaults = {
 		domElement: null,
@@ -15,7 +20,7 @@ function (
 		dragOnly: true,
 		dragButton: -1,
 
-		worldUpVector: new Vector3(0,1,0),
+		worldUpVector: new Vector3(0, 1, 0),
 
 		baseDistance: 15,
 		minZoomDistance: 1,
@@ -27,7 +32,7 @@ function (
 		minAzimuth: 90 * MathUtils.DEG_TO_RAD,
 		maxAzimuth: 270 * MathUtils.DEG_TO_RAD,
 
-		releaseVelocity: true,
+		releaseVelocity: false,
 		invertedX: false,
 		invertedY: false,
 		invertedWheel: true,
@@ -41,6 +46,7 @@ function (
 		interpolationSpeed: 7,
 		onRun: null
 	};
+
 
 	/**
 	 * @class Enables camera to orbit around a point in 3D space using the mouse.
@@ -74,6 +80,9 @@ function (
 	 */
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
+
+
+		//! AT: this looks a lot like a defaults/extend function that can be extracted somewhere else
 		for(var key in _defaults) {
 			if(typeof(_defaults[key]) === 'boolean') {
 				this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];
@@ -122,6 +131,25 @@ function (
 			this.lastTimeMoved = Date.now() + (properties.moveInitialDelay - this.moveInterval);
 		}
 	}
+
+	OrbitCamControlScript.prototype.updateConfig = function(properties) {
+		for(var key in properties) {
+			if(typeof(_defaults[key]) === 'boolean') {
+				this[key] = !!properties[key];
+			}
+			else if (!isNaN(_defaults[key]) && !isNaN(properties[key])) {
+				this[key] = properties[key];
+			}
+			else if(_defaults[key] instanceof Vector3) {
+				this[key].set(properties[key]);
+			}
+			else {
+				this[key] = properties[key];
+			}
+		}
+		this.targetSpherical.setv(this.spherical);
+		this.dirty = true;
+	};
 
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
@@ -378,8 +406,16 @@ function (
 			this.targetSpherical.copy(this.spherical);
 		}
 
+
 		// set our component updated.
 		transformComponent.setUpdated();
+
+		SystemBus.emit('goo.cameraPositionChanged', {
+			spherical: this.spherical.data,
+			translation: transformComponent.transform.translation.data,
+			lookAtPoint: this.lookAtPoint.data,
+			id: entity.id
+		});
 	};
 
 	return OrbitCamControlScript;

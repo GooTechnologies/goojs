@@ -1,13 +1,15 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function(
 	Vector3,
 	Matrix3x3,
-	MathUtils
+	MathUtils,
+	SystemBus
 ) {
 	"use strict";
 
@@ -34,6 +36,7 @@ function(
 
 		this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
 		this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : 2;
+		this.dragToMove = properties.dragToMove !== undefined ? properties.dragToMove === true : true;
 
 		this.worldUpVector = new Vector3(properties.worldUpVector) || new Vector3(0, 1, 0);
 		this.localLeftVector = new Vector3(properties.localLeftVector) || new Vector3(-1, 0, 0);
@@ -89,6 +92,11 @@ function(
 		if (this.domElement) {
 			this.setupMouseControls();
 		}
+		this.active = false;
+		this.currentCameraEntity = null;
+		SystemBus.addListener('goo.setCurrentCamera', function(data) {
+			this.currentCameraEntity = data.entity;
+		}.bind(this));
 	}
 
 	FlyControlScript.prototype.updateMovementVector = function() {
@@ -101,7 +109,7 @@ function(
 			return;
 		}
 
-		if (this.dragOnly && !this.mouseState.buttonDown) {
+		if (this.dragOnly && !this.mouseState.buttonDown && this.dragToMove) {
 			this.movementMultiplier = this.baseMultiplier;
 			this.moveState.forward = 0;
 			this.moveState.back = 0;
@@ -174,10 +182,12 @@ function(
 	};
 
 	var keydown = function(event) {
+		if (!this.active || this.dragToMove && !this.mouseState.buttonDown && this.dragOnly) { return; }
 		this.updateKeys(event, true);
 	};
 
 	var keyup = function(event) {
+		if (!this.active || this.dragToMove && !this.mouseState.buttonDown && this.dragOnly) { return; }
 		this.updateKeys(event, false);
 	};
 
@@ -199,19 +209,22 @@ function(
 	};
 
 	var mousedown = function(event) {
-		this.setupKeyControls();
+		if (!this.active) { return; }
+		//this.setupKeyControls();
 		this.domElement.focus();
 		this.resetMouseState();
 		this.updateButtonState(event, true);
 	};
 
 	var mousemove = function(event) {
+		if (!this.active) { return; }
 		this.updateDeltas(event);
 	};
 
 	var mouseup = function(event) {
+		if (!this.active) { return; }
 		this.updateButtonState(event, false);
-		this.tearDownKeyControls();
+		//this.tearDownKeyControls();
 	};
 
 	FlyControlScript.prototype.setupMouseControls = function() {
@@ -233,11 +246,13 @@ function(
 	};
 
 	FlyControlScript.prototype.run = function(entity, tpf, env) {
+		this.active = entity === this.currentCameraEntity;
 		// grab our transformComponent
 		if (env) {
 			if (!this.domElement && env.domElement)  {
 				this.domElement = env.domElement;
 				this.setupMouseControls(); // Mouse down in turn sets up key controls
+				this.setupKeyControls();
 			}
 		}
 		var transformComponent = entity.transformComponent;
@@ -257,13 +272,15 @@ function(
 		if (this.dragOnly && !this.mouseState.buttonDown) {
 			this.mouseState.dX = 0;
 			this.mouseState.dY = 0;
-			this.movementMultiplier = this.baseMultiplier;
-			this.moveState.forward = 0;
-			this.moveState.back = 0;
-			this.moveState.strafeLeft = 0;
-			this.moveState.strafeRight = 0;
-			this.updateMovementVector();
-			return;
+			if (this.dragToMove) {
+				this.movementMultiplier = this.baseMultiplier;
+				this.moveState.forward = 0;
+				this.moveState.back = 0;
+				this.moveState.strafeLeft = 0;
+				this.moveState.strafeRight = 0;
+				this.updateMovementVector();
+				return;
+			}
 		}
 
 		if (this.moveVector.x !== 0 || this.moveVector.z !== 0) {

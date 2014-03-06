@@ -26,6 +26,7 @@ function(
 
 	KeyUpAction.external = {
 		name: 'Key Up',
+		type: 'controls',
 		description: 'Listens for a key release and performs a transition',
 		canTransition: true,
 		parameters: [{

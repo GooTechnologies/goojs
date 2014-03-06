@@ -109,6 +109,16 @@ module.exports = function(grunt) {
 				'goojs-jsdoc-json/',
 				'goojs-jsdoc_*.tar.gz'
 			]
+		},
+		'build-pack': {
+			fsmpack: {
+				packName: 'fsmpack',
+				outBaseDir: 'out'
+			},
+			geometrypack: {
+				packName: 'geometrypack',
+				outBaseDir: 'out'
+			}
 		}
 	});
 
@@ -117,8 +127,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 
+	grunt.loadTasks('tools/grunt_tasks');
+
 	grunt.registerTask('default', ['minify']);
-	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap']);
+	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
 
 
 	//! AT: no better place to put this
@@ -152,17 +164,4 @@ module.exports = function(grunt) {
 
 		fs.writeFileSync('src/goo.js', lines.join('\n'));
 	});
-
-	/*
-	grunt.registerTask('pack', 'Creates a pack', function() {
-		//! AT: writeFile (in buildPack.js) fails for some unknown reason if .pack() is exported
-		// this is unused - use 'node tools/buildPack.js <somepack>' instead
-		var packName = grunt.option('name');
-		if (!packName) {
-			console.error('Please specify a pack name using the -name option'.red);
-		} else {
-			buildPack.pack(packName);
-		}
-	});
-	*/
 };

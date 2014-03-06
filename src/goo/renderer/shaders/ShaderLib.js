@@ -2393,7 +2393,7 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraFar : Shader.FAR_PLANE,
 			id : function(shaderInfo) {
-				return shaderInfo.renderable.id + 1;
+				return shaderInfo.renderable._index!=null?shaderInfo.renderable._index + 1:shaderInfo.renderable.id + 1;
 			}
 		},
 		processors: [
@@ -2416,7 +2416,7 @@ define([
 			'mat4 wMatrix = worldMatrix;',
 			ShaderBuilder.animation.vertex,
 			'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
-			'depth = length(mvPosition.xyz) / cameraFar;',
+			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'
 		].join("\n"),

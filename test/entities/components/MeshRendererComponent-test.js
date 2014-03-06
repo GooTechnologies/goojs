@@ -41,5 +41,24 @@ define([
 			expect(entity.meshRendererComponent).toBe(meshRendererComponent);
 			expect(entity.meshRendererComponent.materials).toEqual([material]);
 		});
+
+		describe('constructor', function () {
+			it('creates a MeshRendererComponent from nothing', function () {
+				var meshRendererComponent = new MeshRendererComponent();
+				expect(meshRendererComponent.materials).toEqual([]);
+			});
+
+			it('creates a MeshRendererComponent from a material', function () {
+				var material = new Material();
+				var meshRendererComponent = new MeshRendererComponent(material);
+				expect(meshRendererComponent.materials).toEqual([material]);
+			});
+
+			it('creates a MeshRendererComponent from an array of materials', function () {
+				var materials = [new Material('asd'), new Material('dsa')];
+				var meshRendererComponent = new MeshRendererComponent(materials);
+				expect(meshRendererComponent.materials).toEqual(materials);
+			});
+		});
 	});
 });

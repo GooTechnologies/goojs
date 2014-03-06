@@ -16,6 +16,7 @@ function(
 
 	SoundFadeInAction.external = {
 		name: 'Sound Fade In',
+		type: 'sound',
 		descriptions: 'Starts playing a sound',
 		canTransition: true,
 		parameters: [{
@@ -40,10 +41,10 @@ function(
 
 	SoundFadeInAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (entity.hasComponent('HowlerComponent')) {
-			var sound = entity.howlerComponent.sounds[this.sound];
+		if (entity.hasComponent('SoundComponent')) {
+			var sound = entity.soundComponent.getSoundById(this.sound);
 			if (sound) {
-				sound.fadeIn(sound.volume(), this.time, function() {
+				sound.fadeIn(this.time / 1000).then(function() {
 					fsm.send(this.transitions.complete);
 				}.bind(this));
 			}

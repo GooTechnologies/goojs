@@ -5,7 +5,7 @@ define([
 function (
 	Vector2
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
@@ -97,7 +97,7 @@ function (
 		this.readyCallback = null;
 
 		if (image) {
-			this.setImage(image, settings, width, height);
+			this.setImage(image, width, height);
 		}
 	}
 
@@ -120,11 +120,10 @@ function (
 	 * Sets an image on the texture object.
 	 *
 	 * @param {Image} image The image to set. Can be an Image, TypedArray or an array of Images (for cubemaps)
-	 * @param {Object} [settings]
 	 * @param {Number} [width]
 	 * @param {Number} [height]
 	 */
-	Texture.prototype.setImage = function (image, settings, width, height) {
+	Texture.prototype.setImage = function (image, width, height) {
 		this.image = image;
 
 		var data = image instanceof Array ? image[0] : image;
@@ -149,7 +148,7 @@ function (
 					this.format = settings.format || 'RGBA';
 				}
 			} else {
-				throw "Data textures need width and height";
+				throw 'Data textures need width and height';
 			}
 		} else if (data instanceof HTMLCanvasElement) {
 			this.image.dataReady = true;
@@ -161,6 +160,14 @@ function (
 			}
 		}
 		this.setNeedsUpdate();
+	};
+
+	/**
+	 * Releases the allocated texture
+	 * @param {WebGLRenderingContext} context
+	 */
+	Texture.prototype.destroy = function (context) {
+		context.deleteTexture(this.glTexture);
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];

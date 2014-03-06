@@ -1,3 +1,4 @@
+require('coffee-script')
 fs = require('fs')
 path = require('path')
 child_process = require('child_process')

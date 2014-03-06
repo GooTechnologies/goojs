@@ -21,7 +21,9 @@ define([
 	TweenRotationAction.prototype.constructor = TweenRotationAction;
 
 	TweenRotationAction.external = {
-		name: 'Tween Rotation',
+		key: 'Tween Rotation',
+		name: 'Tween Rotate',
+		type: 'animation',
 		description: 'Smoothly transitions between two orientations',
 		canTransition: true,
 		parameters: [{

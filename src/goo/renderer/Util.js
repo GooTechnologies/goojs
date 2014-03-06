@@ -139,5 +139,63 @@ function () {
 		throw new Error("Unable to copy obj! Its type isn't supported.");
 	};
 
+
+	Util._blankImages = {};
+	Util.getBlankImage = function(texture, color, width, height, maxSize, index) {
+		var newWidth = Util.nearestPowerOfTwo(width);
+		var newHeight = Util.nearestPowerOfTwo(height);
+		newWidth = Math.min(newWidth, maxSize);
+		newHeight = Math.min(newHeight, maxSize);
+
+		var strColor = color.length===4?
+			'rgba(' + Number(color[0]*255).toFixed(0) + ',' + Number(color[1]*255).toFixed(0) + ',' + Number(color[2]*255).toFixed(0)+','+Number(color[3]).toFixed(2)+')':
+			'rgb(' + Number(color[0]*255).toFixed(0) + ',' + Number(color[1]*255).toFixed(0) + ',' + Number(color[2]*255).toFixed(0)+')';
+		var cacheKey = strColor+newWidth+'x'+newHeight;
+		var canvas = Util._blankImages[cacheKey];
+		if (!canvas) {
+			canvas = document.createElement('canvas'); 
+			canvas.width = newWidth;
+			canvas.height = newHeight;
+			var ctx = canvas.getContext('2d');
+			ctx.beginPath()
+			ctx.rect(0, 0, newWidth, newHeight);
+			ctx.fillStyle = strColor;
+			ctx.fill();
+			Util._blankImages[cacheKey] = canvas;
+		}
+		if (index === undefined) {
+			texture.image = canvas;
+		} else {
+			texture.image.data[index] = canvas;
+		}
+	}
+
+	Util.scaleImage = function(texture, image, width, height, maxSize, index) {
+		var newWidth = Util.nearestPowerOfTwo(width);
+		var newHeight = Util.nearestPowerOfTwo(height);
+		newWidth = Math.min(newWidth, maxSize);
+		newHeight = Math.min(newHeight, maxSize);
+
+		if (image.width !== newWidth || image.height !== newHeight) {
+			var canvas = document.createElement('canvas'); 
+			canvas.width = newWidth;
+			canvas.height = newHeight;
+			if (image.getAttribute) {
+				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
+			}
+			var ctx = canvas.getContext('2d');
+			ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+			//document.body.appendChild(canvas);
+			canvas.dataReady = true;
+			canvas.src = image.src;
+			if (index === undefined) {
+				texture.image = canvas;
+			} else {
+				texture.image.data[index] = canvas;
+			}
+			//canvas.parentNode.removeChild(canvas);
+		}		
+	}
+
 	return Util;
 });

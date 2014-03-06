@@ -59,8 +59,6 @@ function (
 			_canvas = document.createElement('canvas');
 			_canvas.width = 500;
 			_canvas.height = 500;
-			_canvas.style.width = '100%';
-			_canvas.style.height = '100%';
 		}
 		_canvas.screencanvas = true; // CocoonJS support
 		this.domElement = _canvas;
@@ -273,6 +271,7 @@ function (
 			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
 		};
 		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxTexureSize) : this.capabilities.maxTexureSize;
+		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxCubemapSize) : this.capabilities.maxCubemapSize;
 
 		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
 		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
@@ -340,6 +339,26 @@ function (
 
 		// Hardware picking
 		this.hardwarePicking = null;
+
+		SystemBus.addListener('goo.setClearColor', function(color) {
+			this.setClearColor.apply(this, color);
+		}.bind(this));
+
+		// ---
+		//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
+		// apparently this is the only way to find out the user zoom level
+
+		if (document.createElementNS) {
+			this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+			this.svg.setAttribute('version', '1.1');
+			this.svg.style.position = 'absolute';
+			this.svg.style.display = 'none';
+			document.body.appendChild(this.svg);
+		} else {
+			//! AT: placeholder to avoid another conditional below in checkResize
+			this.svg = { currentScale: 1 };
+		}
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -379,9 +398,10 @@ function (
 	 */
 	Renderer.prototype.checkResize = function (camera) {
 		var devicePixelRatio = window.devicePixelRatio || 1;
+		devicePixelRatio /= this.svg.currentScale;
 
 		var adjustWidth, adjustHeight;
-		if (document.querySelector && this.domElement.style.width !== "" && this.domElement.style.height !== "") {
+		if (document.querySelector) {
 			adjustWidth = this.domElement.offsetWidth;
 			adjustHeight = this.domElement.offsetHeight;
 		} else {
@@ -444,10 +464,10 @@ function (
 		if (w !== this.viewportX || h !== this.viewportY ||
 			width !== this.viewportWidth || height !== this.viewportHeight) {
 			this.setViewport(w, h, width, height);
-		}
 
-		if (this.hardwarePicking !== null) {
-			this.hardwarePicking.pickingTarget = null;
+			if (this.hardwarePicking !== null) {
+				this.hardwarePicking.pickingTarget = null;
+			}
 		}
 	};
 
@@ -1233,12 +1253,17 @@ function (
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubemapSize || image.height > this.capabilities.maxCubemapSize)) {
+			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubemapSize, i);
+					if (image.data[i]) {
+						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
+					}
+					else {
+						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
+					}
 				}
-				texture.image.width = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
-				texture.image.height = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
+				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 
@@ -1271,29 +1296,7 @@ function (
 	};
 
 	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize, index) {
-		var newWidth = Util.nearestPowerOfTwo(width);
-		var newHeight = Util.nearestPowerOfTwo(height);
-		newWidth = Math.min(newWidth, maxSize);
-		newHeight = Math.min(newHeight, maxSize);
-		if (width !== newWidth || height !== newHeight) {
-			var canvas = document.createElement('canvas'); // !!!!!
-			canvas.width = newWidth;
-			canvas.height = newHeight;
-			if (image.getAttribute) {
-				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
-			}
-			var ctx = canvas.getContext('2d');
-			ctx.drawImage(image, 0, 0, width, height, 0, 0, newWidth, newHeight);
-			document.body.appendChild(canvas);
-			canvas.dataReady = true;
-			canvas.src = image.src;
-			if (index === undefined) {
-				texture.image = canvas;
-			} else {
-				texture.image.data[index] = canvas;
-			}
-			canvas.parentNode.removeChild(canvas);
-		}
+		Util.scaleImage(texture, image, width, height, maxSize, index);
 	};
 
 	Renderer.prototype.getGLWrap = function (wrap) {

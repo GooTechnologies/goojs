@@ -8,7 +8,7 @@ Additions:
  + entity "selectors" based on id, name, system, components, tags and attributes
 
 Changes:
- * goo.js is now split in a core goo.js (which is much smaller) and additional packs which provides extra functionality
+ * goo.js is now split into a core goo.js (which is much smaller) and additional packs which provides extra functionality
 
 Deprecated:
  - EntityUtils.traverse(); use entity.traverse() instead
@@ -28,7 +28,7 @@ Additions:
  + Systems can now be prioritized
  + Support for cloning entities with animations
  + Entities may preserve their world coordinates when attached/detached from a parent entity
- + Components may now inject methods in their host entities - TransformComponent injects its setTranslation, addTranslation, lookAt, setRotation, setScale attachChild and detachChild
+ + Components may now inject methods in their host entities - TransformComponent injects its setTranslation, addTranslation, lookAt, setRotation, setScale, attachChild and detachChild
  + Correct handling of device pixel ratio
  + Automatic rescaling of RenderTargets for post effects when window scales
  + Added camera aspect ratio locking
@@ -75,7 +75,7 @@ Additions:
  + Shadows for more than one light
  + Anisotropic filtering
  + Bus - a message bus with hierarchical channels
- + Texture offset/repeat handling for übershader
+ + Texture offset/repeat handling for Ã¼bershader
  + More texture settings (premultiplyAlpha, unpackAlignment)
  + More visual tests
  + More API-documentation

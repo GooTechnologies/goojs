@@ -18,24 +18,25 @@ function(
 
 	ShakeAction.external = {
 		name: 'Shake',
+		type: 'animation',
 		description: 'Shakes the entity',
 		canTransition: true,
 		parameters: [{
 			name: 'Start level',
 			key: 'startLevel',
-			type: 'number',
+			type: 'float',
 			description: 'Shake amount at start',
 			'default': 0
 		}, {
 			name: 'End level',
 			key: 'endLevel',
-			type: 'number',
+			type: 'float',
 			description: 'Shake amount at the end',
 			'default': 10
 		}, {
 			name: 'Time',
 			key: 'time',
-			type: 'number',
+			type: 'float',
 			description: 'Shake time amount',
 			'default': 1000
 		}, {

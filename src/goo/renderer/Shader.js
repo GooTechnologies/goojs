@@ -517,8 +517,8 @@ function (
 	};
 
 	function setupDefaultCallbacks(defaultCallbacks) {
+		//! AT: can't Matrix4x4.IDENTITY be used instead of creating this every time?
 		var IDENTITY_MATRIX = new Matrix4x4();
-		var tmpMatrix = new Matrix4x4();
 
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
@@ -529,14 +529,14 @@ function (
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
+			//! AT: when is this condition ever true?
 			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
-			Matrix4x4.invert(matrix, tmpMatrix);
-			Matrix4x4.transpose(tmpMatrix, tmpMatrix);
-			uniformCall.uniformMatrix4fv(tmpMatrix);
+			//! AT: when is this condition ever true?
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : IDENTITY_MATRIX;
+			uniformCall.uniformMatrix4fv(matrix);
 		};
 
 		defaultCallbacks[Shader.VIEW_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {

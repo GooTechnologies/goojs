@@ -2,32 +2,34 @@ define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
-	'goo/entities/EntitySelection'
+	'goo/entities/EntitySelection',
+	'goo/math/Matrix4x4'
 ],
 /** @lends */
 function (
 	Transform,
 	Vector3,
 	Component,
-	EntitySelection
+	EntitySelection,
+	Matrix4x4
 ) {
 	'use strict';
 
 	/**
-	 * @class Holds the transform of an entity. It also allows for a scene graph to be created, where transforms are inherited
-	 * down the tree.
+	 * @class Holds the transform of an entity. It also allows for a scene graph to be created,
+	 * in which transforms are inherited down the tree.
 	 */
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
 		this.entity = null;
-		/** Parent transformcomponent in the "scene graph"
+		/** Parent TransformComponent in the "scene graph".
 		 * @type {TransformComponent}
 		 * @default
 		 */
 		this.parent = null;
 		/**
-		 * Child transformcomponents in the "scenegraph"
+		 * Child TransformComponent in the "scene graph".
 		 * @type {TransformComponent[]}
 		 */
 		this.children = [];
@@ -43,9 +45,15 @@ function (
 		this._updated = false;
 
 		this.api = {
+			getTranslation: function () {
+				return TransformComponent.prototype.getTranslation.apply(this, arguments);
+			}.bind(this),
 			setTranslation: function () {
 				TransformComponent.prototype.setTranslation.apply(this, arguments);
 				return this.entity;
+			}.bind(this),
+			getScale: function () {
+				return TransformComponent.prototype.getScale.apply(this, arguments);
 			}.bind(this),
 			setScale: function () {
 				TransformComponent.prototype.setScale.apply(this, arguments);
@@ -53,6 +61,13 @@ function (
 			}.bind(this),
 			addTranslation: function () {
 				TransformComponent.prototype.addTranslation.apply(this, arguments);
+				return this.entity;
+			}.bind(this),
+			getRotation: function () {
+				return TransformComponent.prototype.getRotation.apply(this, arguments);
+			}.bind(this),
+			addRotation: function () {
+				TransformComponent.prototype.addRotation.apply(this, arguments);
 				return this.entity;
 			}.bind(this),
 			setRotation: function () {
@@ -114,7 +129,21 @@ function (
 	TransformComponent.prototype.constructor = TransformComponent;
 
 	/**
-	 * Set this transform's translation.
+	 * Gets the value of transformComponent.transform.translation.
+	 * To change the translation, the returned object can be modified
+	 * after which transformComponent.setUpdated() must be called.
+	 * Alternatively, use setTranslation or addTranslation which call
+	 * setUpdated() automatically.
+	 *
+	 * @return {Vector3} translation
+	 */
+	TransformComponent.prototype.getTranslation = function () {
+		return this.transform.translation;
+	};
+
+	/**
+	 * Sets this transform's translation.
+	 *
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -125,7 +154,19 @@ function (
 	};
 
 	/**
-	 * Set this transform's scale.
+	 * Gets the value of transformComponent.transform.scale.
+	 * To change the scale, the returned object can be modified
+	 * after which transformComponent.setUpdated() must be called.
+	 * Alternatively, use setScale which calls setUpdated() automatically.
+	 *
+	 * @return {Vector3} scale
+	 */
+	TransformComponent.prototype.getScale = function () {
+		return this.transform.scale;
+	};
+
+	/**
+	 * Sets this transform's scale.
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -136,7 +177,7 @@ function (
 	};
 
 	/**
-	 * Add to this transform's translation.
+	 * Adds to this transform's translation.
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -151,11 +192,46 @@ function (
 	};
 
 	/**
-	 * Set this transform's rotation around X, Y and Z axis.
+	 * Gets the value of transformComponent.transform.rotation in Euler angles.
+	 * Returns a new Vector3 that cannot be used for modifying the rotation.
+	 * 
+	 * @param {Vector3} [target] Target vector for storage.
+	 * @return {Vector3} rotation
+	 */
+	TransformComponent.prototype.getRotation = function (target) {
+		this.tmpRotVec = this.tmpRotVec || new Vector3();
+		target = target || this.tmpRotVec;
+		return this.transform.rotation.toAngles(target);
+	};
+
+	/**
+	 * Adds to this transform's rotation using Euler angles.
+	 * 
+	 * @param {Vector | number[] | number...} Component values.
+	 * @return {TransformComponent} Self for chaining.
+	 */
+	TransformComponent.prototype.addRotation = function () {
+		this.tmpVec = this.tmpVec || new Vector3();
+		this.getRotation( this.tmpVec);
+		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
+			var arg0 = arguments[0];
+			if (arg0 instanceof Vector3) {
+				this.transform.rotation.fromAngles(this.tmpVec.x+arg0.x, this.tmpVec.y+arg0.y, this.tmpVec.z+arg0.z);
+			} else if (arg0.length === 3) {
+				this.transform.rotation.fromAngles(this.tmpVec.x+arg0[0], this.tmpVec.y+arg0[1], this.tmpVec.z+arg0[2]);
+			}
+		} else {
+			this.transform.rotation.fromAngles(this.tmpVec.x+arguments[0], this.tmpVec.y+arguments[1], this.tmpVec.z+arguments[2]);
+		}
+
+		this._dirty = true;
+		return this;
+	};
+
+	/**
+	 * Sets this transform's rotation around X, Y and Z axis.
 	 * The rotation is applied in XYZ order.
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
+	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setRotation = function () {
@@ -293,6 +369,11 @@ function (
 		} else {
 			this.worldTransform.copy(this.transform);
 		}
+
+		// update the normal matrix
+		Matrix4x4.invert(this.worldTransform.matrix, this.worldTransform.normalMatrix);
+		Matrix4x4.transpose(this.worldTransform.normalMatrix, this.worldTransform.normalMatrix);
+
 		this._dirty = false;
 		this._updated = true;
 	};

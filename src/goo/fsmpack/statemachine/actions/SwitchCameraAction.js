@@ -21,6 +21,7 @@ function(
 
 	SwitchCameraAction.external = {
 		name: 'Switch Camera',
+		type: 'camera',
 		description: 'Switches between cameras',
 		parameters: [{
 			name: 'Camera',
@@ -38,7 +39,7 @@ function(
 
 	SwitchCameraAction.prototype._run = function (fsm) {
 		var world = fsm.getOwnerEntity()._world;
-		var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
+		var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 		if (cameraEntity && cameraEntity.cameraComponent) {
 			SystemBus.emit('goo.setCurrentCamera', {
 				camera: cameraEntity.cameraComponent.camera,
@@ -48,10 +49,6 @@ function(
 	};
 
 	SwitchCameraAction.prototype.cleanup = function (/*fsm*/) {
-		SystemBus.emit('goo.setCurrentCamera', {
-			camera: this._camera,
-			entity: null
-		});
 	};
 
 	return SwitchCameraAction;

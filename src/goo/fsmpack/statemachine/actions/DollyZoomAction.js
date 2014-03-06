@@ -18,6 +18,7 @@ function(
 
 	DollyZoomAction.external = {
 		name: 'Dolly Zoom',
+		type: 'camera',
 		description: 'Performs dolly zoom',
 		parameters: [{
 			name: 'Forward',
