@@ -19,7 +19,7 @@ define([
 		this._entitiesByIndex = {};
 		this._entityCount = 0;
 
-		/** Entity selector. Its methods returns an {@link EntitySelection}. Can select by id or name, see examples for usage.
+		/** Entity selector. Its methods return an {@link EntitySelection}. Can select by id or name, see examples for usage.
 		 * <br><i>Injected into {@link World}.</i>
 		 * @member by
 		 * @memberOf EntityManager.prototype

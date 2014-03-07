@@ -55,8 +55,8 @@ function (
 	World.tpf = 1.0;
 
 
-		/** Entity selector. Its methods returns an {@link EntitySelection}. Can select by system, component, attribute or tag. See examples for usage.
-		 * <br><i>Will get additional methods when a {@link World} is attached.</i>
+		/** Entity selector. Its methods return an {@link EntitySelection}. Can select by system, component, attribute or tag. See examples for usage.
+		 * <br><i>Will get additional methods when an {@link EntityManager} is attached.</i>
 		 * @member by
 		 * @memberOf World.prototype
 		 * @example
