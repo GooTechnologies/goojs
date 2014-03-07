@@ -28,11 +28,11 @@ function (
 		this.textureHandler = new TextureHandler(
 			{},
 			function (ref, options) {
-				return ajax.load(ref, options ? false : options.noCache);
+				return ajax.load(ref, options ? options.noCache : false);
 			},
 			function () {},
 			function (ref, options) {
-				return ajax.load(ref, options ? false : options.noCache);
+				return ajax.load(ref, options ? options.noCache : false);
 			}
 		);
 	}
