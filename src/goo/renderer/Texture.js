@@ -97,7 +97,7 @@ function (
 		this.readyCallback = null;
 
 		if (image) {
-			this.setImage(image, width, height);
+			this.setImage(image, width, height, settings);
 		}
 	}
 
@@ -123,7 +123,7 @@ function (
 	 * @param {Number} [width]
 	 * @param {Number} [height]
 	 */
-	Texture.prototype.setImage = function (image, width, height) {
+	Texture.prototype.setImage = function (image, width, height, settings) {
 		this.image = image;
 
 		var data = image instanceof Array ? image[0] : image;
