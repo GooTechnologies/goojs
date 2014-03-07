@@ -5,7 +5,7 @@ define([
 function(
 	Component
 ) {
-	"use strict";
+	"use strict"; //REVIEW: use ''
 
 	/**
 	 * @class P2 physics component.
@@ -25,7 +25,7 @@ function(
 	 * @param {number}  [settings.offsetAngleY=0]
 	 * @param {number}  [settings.offsetAngleZ=0]
 	 * @example
-	 * var entity = EntityUtils.createTypicalEntity(goo.world, ShapeCreator.createBox(20, 10, 1));
+	 * var entity = goo.world.createEntity(new Box());
 	 * var p2comp = new P2Component({
 	 *     shapes:[{
 	 *         type: 'circle',
@@ -34,6 +34,7 @@ function(
 	 * });
 	 * entity.setComponent(p2comp);
 	 */
+	//REVIEW: both createTypicalEntity and ShapeCreator are deprecated
 	function P2Component(settings) {
 		this.type = 'P2Component';
 		this.settings = settings || {};
@@ -49,7 +50,9 @@ function(
 		this.offsetAngleY =     settings.offsetAngleY   !== undefined ? settings.offsetAngleY    : 0;
 		this.offsetAngleZ =     settings.offsetAngleZ   !== undefined ? settings.offsetAngleZ    : 0;
 	}
+
 	P2Component.prototype = Object.create(Component.prototype);
+	P2Component.prototype.constructor = P2Component;
 
 	return P2Component;
 });

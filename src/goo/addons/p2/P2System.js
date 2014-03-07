@@ -11,15 +11,15 @@ define([
 /** @lends */
 function(
 	System,
-	BoundingBox,
-	BoundingSphere,
-	Quaternion,
-	Box,
-	Quad,
-	Sphere,
-	MeshData
+	BoundingBox, //REVIEW: unused
+	BoundingSphere, //REVIEW: unused
+	Quaternion, //REVIEW: unused
+	Box, //REVIEW: unused
+	Quad, //REVIEW: unused
+	Sphere, //REVIEW: unused
+	MeshData //REVIEW: unused
 ) {
-	"use strict";
+	'use strict';
 
 	var p2 = window.p2;
 
@@ -45,18 +45,25 @@ function(
 		settings = settings || {};
 
 		var world = this.world = new p2.World({
-			gravity:settings.gravity || [0,-9.82],
+			gravity: settings.gravity || [0, -9.82]
 		});
 
 		this.stepFrequency = settings.stepFrequency || 60;
 	}
 
 	P2System.prototype = Object.create(System.prototype);
+	P2System.prototype.constructor = P2System;
 
 	function updateTransform(transformComponent, p2Component){
 		var position = p2Component.body.position,
 			scale = p2Component.scale;
 
+		//REVIEW: no spaces after '('; yes spaces before and after infix operators (+, -, *, ...)
+		// also have a look at setTranslation and setRotation: they both do that setUpdated does
+		// those 2 methods were added for the end user and do a lot of parameter parsing
+		// I'd use transformComponent.transform.translation.setd(1, 2, 3);
+		// and transformComponent.transform.rotation.fromAngles(1, 2, 3);
+		// and setUpdated, of course
 		transformComponent.setTranslation( position[0]*scale, position[1]*scale, 0);
 		transformComponent.setRotation(p2Component.offsetAngleX,
 									   p2Component.offsetAngleY,
@@ -79,7 +86,10 @@ function(
 			mass:p2Component.mass,
 			position:[transformComponent.transform.translation.x,transformComponent.transform.translation.y]
 		});
-		for(var i=0; i<p2Component.shapes.length; i++){
+
+		//REVIEW: spaces, spaces, spaces
+		for (var i = 0; i < p2Component.shapes.length; i++) {
+			//REVIEW: no one-letter variables! p2Component.shapes contains things named 's' and not things named 'shape'?
 			var s = p2Component.shapes[i],
 				shape;
 			switch(s.type){
@@ -93,9 +103,9 @@ function(
 					shape = new p2.Plane();
 					break;
 				default:
-					throw new Error("p2 shape '"+s.type+"' not recognized");
+					throw new Error("p2 shape '" + s.type + "' not recognized");
 			}
-			body.addShape(shape,s.offset,s.angle);
+			body.addShape(shape, s.offset, s.angle);
 		}
 
 		p2Component.body = body;
@@ -107,6 +117,8 @@ function(
 	P2System.prototype.deleted = function(entity) {
 		var p2Component = entity.p2Component;
 
+		//REVIEW: not gonna be true if you remove the component from the entity
+		// gotta research how to do this properly
 		if (p2Component) {
 			this.world.removeBody(p2Component.body);
 		}
