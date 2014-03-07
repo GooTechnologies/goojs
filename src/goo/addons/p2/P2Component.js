@@ -5,7 +5,7 @@ define([
 function(
 	Component
 ) {
-	"use strict"; //REVIEW: use ''
+	'use strict';
 
 	/**
 	 * @class P2 physics component.
@@ -34,7 +34,6 @@ function(
 	 * });
 	 * entity.setComponent(p2comp);
 	 */
-	//REVIEW: both createTypicalEntity and ShapeCreator are deprecated
 	function P2Component(settings) {
 		this.type = 'P2Component';
 		this.settings = settings || {};

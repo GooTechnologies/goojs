@@ -31,30 +31,21 @@ require([
 	P2Component,
 	PointLight,
 	LightComponent,
-	V //REVEIW: let's use V because it deals with the boilerplate for you
+	V
 ) {
 	'use strict';
 
 	var resourcePath = '../../resources';
 
 	function init() {
-		//REVIEW: bam!
 		var goo = V.initGoo();
-		/*
-		var goo = new GooRunner({
-			showStats : true
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-		*/
 
 		var p2System = new P2System();
 		goo.world.setSystem(p2System);
 		p2System.world.gravity[1] = -20;
 
 		function addPrimitives() {
-			//REVIEW: spaces
-			for (var i=0;i<40;i++) {
+			for (var i=0; i < 40; i++) {
 				var x = Math.random() * 16 - 8;
 				var y = Math.random() * 16 + 8;
 				var z = Math.random() * 16 - 8;
@@ -68,16 +59,16 @@ require([
 							width:w,
 							height:h,
 						}]
-					}, [x,y,z]);
+					}, [x, y, z]);
 				} else {
 					var radius = 1+Math.random();
 					createEntity(goo, ShapeCreator.createSphere(10, 10, radius), {
 						mass:1,
 						shapes:[{
 							type:'circle',
-							radius:radius,
-						}], //REVIEW: doesn't the checkstyle choke on these extra ','?
-					}, [x,y,z]);
+							radius:radius
+						}],
+					}, [x, y, z]);
 				}
 			}
 		}
@@ -91,38 +82,15 @@ require([
 			shapes:[{
 				type:'plane'
 			}],
-		}, [0,-10,0]);
+		}, [0, -10, 0]);
 
 		V.addLights();
-		/*
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.setTranslation(0, 100, -10);
-		lightEntity.addToWorld();
-		*/
 
-		//REVIEW: demo-mode (auto-moving) orbit camera in one line!
 		V.addOrbitCamera(new Vector3(40, Math.PI/2, Math.PI/4));
-		/*
-		var camera = new Camera(45, 1, 0.1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(40, Math.PI/2, Math.PI/4)
-		}));
-		cameraEntity.setComponent(scripts);
-		cameraEntity.addToWorld();
-		*/
 	}
 
 	function createEntity(goo, meshData, p2Settings, pos) {
-		//REVIEW: createMaterial is deprecated (and documented!); use new Material(...) instead
-		// at some point deprecated methods will get removed and will break your test :(
-		// this very smart IDE that I'm using will warn me when using deprecated methods - maybe yours has a similar option/plugin
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+		var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		var entity = goo.world.createEntity(meshData, material, pos);

@@ -1,23 +1,9 @@
 define([
-	'goo/entities/systems/System',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/Quaternion',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/renderer/MeshData'
+	'goo/entities/systems/System'
 ],
 /** @lends */
 function(
-	System,
-	BoundingBox, //REVIEW: unused
-	BoundingSphere, //REVIEW: unused
-	Quaternion, //REVIEW: unused
-	Box, //REVIEW: unused
-	Quad, //REVIEW: unused
-	Sphere, //REVIEW: unused
-	MeshData //REVIEW: unused
+	System
 ) {
 	'use strict';
 
@@ -58,16 +44,8 @@ function(
 		var position = p2Component.body.position,
 			scale = p2Component.scale;
 
-		//REVIEW: no spaces after '('; yes spaces before and after infix operators (+, -, *, ...)
-		// also have a look at setTranslation and setRotation: they both do that setUpdated does
-		// those 2 methods were added for the end user and do a lot of parameter parsing
-		// I'd use transformComponent.transform.translation.setd(1, 2, 3);
-		// and transformComponent.transform.rotation.fromAngles(1, 2, 3);
-		// and setUpdated, of course
-		transformComponent.setTranslation( position[0]*scale, position[1]*scale, 0);
-		transformComponent.setRotation(p2Component.offsetAngleX,
-									   p2Component.offsetAngleY,
-									   p2Component.offsetAngleZ + p2Component.body.angle);
+		transformComponent.transform.translation.setd(position[0] * scale, position[1] * scale, 0);
+		transformComponent.transform.rotation.fromAngles(p2Component.offsetAngleX, p2Component.offsetAngleY, p2Component.offsetAngleZ + p2Component.body.angle);
 		transformComponent.setUpdated();
 	}
 
@@ -87,25 +65,23 @@ function(
 			position:[transformComponent.transform.translation.x,transformComponent.transform.translation.y]
 		});
 
-		//REVIEW: spaces, spaces, spaces
 		for (var i = 0; i < p2Component.shapes.length; i++) {
-			//REVIEW: no one-letter variables! p2Component.shapes contains things named 's' and not things named 'shape'?
-			var s = p2Component.shapes[i],
-				shape;
-			switch(s.type){
+			var shape = p2Component.shapes[i],
+				p2shape;
+			switch(shape.type){
 				case 'box':
-					shape = new p2.Rectangle(s.width,s.height);
+					p2shape = new p2.Rectangle(shape.width,shape.height);
 					break;
 				case 'circle':
-					shape = new p2.Circle(s.radius);
+					p2shape = new p2.Circle(shape.radius);
 					break;
 				case 'plane':
-					shape = new p2.Plane();
+					p2shape = new p2.Plane();
 					break;
 				default:
-					throw new Error("p2 shape '" + s.type + "' not recognized");
+					throw new Error("p2 shape '" + shape.type + "' not recognized");
 			}
-			body.addShape(shape, s.offset, s.angle);
+			body.addShape(p2shape, shape.offset, shape.angle);
 		}
 
 		p2Component.body = body;
