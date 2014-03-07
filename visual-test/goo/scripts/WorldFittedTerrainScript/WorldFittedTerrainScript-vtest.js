@@ -140,13 +140,13 @@ require([
         var texture = new TextureCreator().loadTexture2D(txPath);
         material.setTexture('DIFFUSE_MAP', texture);
 
-        material.materialState.ambient = [
+        material.uniforms.materialAmbient = [
             0.310305785123966943,
             0.310305785123966943,
             0.386363636363636367,
             1
         ];
-        material.materialState.diffuse = [
+        material.uniforms.materialDiffuse = [
             0.25909090909090909,
             0.24909090909090909,
             0.29909090909090909,
@@ -156,9 +156,9 @@ require([
         material.cullState.cullFace = "Back";
   //      material.cullState.enabled = false;
         //    emissive: materialData.uniforms.materialEmissive,
-        material.materialState.specular = [0.0, 0.0, 0.0, 1];
-        material.materialState.emissive = [0, 0, 0, 1];
-        material.materialState.shininess = 0.1;
+        material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
+        material.uniforms.materialEmissive = [0, 0, 0, 1];
+        material.uniforms.materialSpecularPower = 0.1;
 
         var surfaceEntity = gooWorld.createEntity(meshData, material, id);
         surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
