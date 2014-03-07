@@ -116,7 +116,7 @@ function(
 		this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
 		var q = this.gooQuaternion;
 		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
-		
+
 		if(this.useWorldBounds) {
 			entity._world.process();
 			this.shape = this.getAmmoShapefromGooShapeWorldBounds(entity, gooTransform);
@@ -182,5 +182,6 @@ function(
 			tc.addTranslation( this.difference);
 		}
 	};
+
 	return AmmoComponent;
 });

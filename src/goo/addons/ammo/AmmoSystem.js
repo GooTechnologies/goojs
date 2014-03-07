@@ -11,7 +11,7 @@ function(
 
 	/**
 	 * @class Handles integration with Ammo.js.
-	 * Depends on the global Ammo object, 
+	 * Depends on the global Ammo object,
 	 * so load ammo.small.js using a script tag before using this system.
 	 * Direct access to the ammoWorld is available like this: myAmmoSystem.ammoWorld
 	 * See also {@link AmmoComponent}
@@ -25,7 +25,7 @@ function(
 	 * goo.world.setSystem(ammoSystem);
 	 */
 	function AmmoSystem(settings) {
-		System.call(this, 'AmmoSystem', ['AmmoComponent', 'TransformComponent']);
+		System.call(this, 'AmmoSystem', ['AmmoRigidbodyComponent', 'TransformComponent']);
 		this.settings = settings || {};
 		this.fixedTime = 1/(this.settings.stepFrequency || 60);
 		this.maxSubSteps = this.settings.maxSubSteps || 5;
@@ -40,17 +40,15 @@ function(
 	AmmoSystem.prototype = Object.create(System.prototype);
 
 	AmmoSystem.prototype.inserted = function(entity) {
-		if (entity.ammoComponent) {
-			entity.ammoComponent.initialize(entity);
-			this.ammoWorld.addRigidBody( entity.ammoComponent.body);
+		if (entity.ammoRigidbodyComponent) {
 		} else {
-			console.log('Warning: missing entity.ammoComponent');
+			console.log('Warning: missing entity.ammoRigidbodyComponent');
 		}
 	};
 
 	AmmoSystem.prototype.deleted = function(entity) {
-		if (entity.ammoComponent) {
-			this.ammoWorld.removeRigidBody(entity.ammoComponent.body);
+		if (entity.ammoRigidbodyComponent) {
+			this.ammoWorld.removeRigidBody(entity.ammoRigidbodyComponent.body);
 		}
 	};
 
@@ -59,8 +57,18 @@ function(
 
 		for (var i = 0; i < entities.length; i++) {
 			var e = entities[i];
-			if( e.ammoComponent.mass > 0) {
-				e.ammoComponent.copyPhysicalTransformToVisual( e, tpf);
+
+			if(!e.ammoRigidbodyComponent._initialized){
+
+				// Set initial position, etc
+				e.ammoRigidbodyComponent.initialize(e);
+
+				// Add to world
+				this.ammoWorld.addRigidBody( e.ammoRigidbodyComponent.body);
+			}
+
+			if( e.ammoRigidbodyComponent.mass > 0) {
+				e.ammoRigidbodyComponent.copyPhysicalTransformToVisual( e, tpf);
 			}
 		}
 	};
