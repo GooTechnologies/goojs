@@ -24,7 +24,7 @@ function (
 	 * @param {Settings} settings Texturing settings
 	 */
 	function TextureCreator() {
-		var ajax = new Ajax();
+		var ajax = this.ajax = new Ajax();
 		this.textureHandler = new TextureHandler(
 			{},
 			function (ref, options) {
@@ -173,7 +173,7 @@ function (
 			(function (index) {
 				var queryImage = imageDataArray[index];
 				if (typeof queryImage === 'string') {
-					that._loader.loadImage(queryImage).then(function (image) {
+					that.ajax._loadImage(queryImage).then(function (image) {
 						images[index] = image;
 						latch.countDown();
 					});
