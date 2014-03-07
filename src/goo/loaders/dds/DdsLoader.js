@@ -498,6 +498,7 @@ define(['goo/loaders/dds/DdsUtils'],
 
 		image.bpp = info.bpp;
 		image.dataReady = true;
+		image.isData = true;
 		tex.needsUpdate = true;
 	};
 
