@@ -209,16 +209,7 @@ function (
 	 * Adds a tag to the entity.
 	 * @param {string} tag
 	 * @example
-	 * // the very short story of a banana
 	 * var banana = world.createEntity().setTag('fruit').setTag('green');
-	 * setTimeout(function() {
-	 *     // some time passes and it becomes yellow
-	 *     banana.clearTag('green').setTag('yellow');
-	 *     setTimeout(function() {
-	 *         // more time passes and it's staring to get spots
-	 *         banana.clearTag('yellow').setTag('spots');
-	 *     }, 5000);
-	 * }, 5000);
 	 *
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
@@ -231,18 +222,9 @@ function (
 	 * Checks whether an entity has a tag or not.
 	 * @param {string} tag
 	 * @example
-	 * // Check for a tag and print corresponding message
-	 * function messageIfTag(message, tag) {
-	 *     if (banana.hasTag(tag)) {
-	 *         console.log(message);
-	 *     }
+	 * if (banana.hasTag('yellow')) {
+	 *     console.log('The banana is yellow');
 	 * }
-	 *  
-	 * window.addEventListener('keydown', function () {
-	 *     messageIfTag('The banana is green', 'green');
-	 *     messageIfTag('The banana is yellow', 'yellow');
-	 *     messageIfTag('The banana is spotty', 'spots');
-	 * });
 	 *
 	 * @returns {boolean}.
 	 */
@@ -257,7 +239,6 @@ function (
 	 * // Remove 'alive' tag if hit points drops to zero
 	 * if (hero.getAttribute('hit-points') <= 0) {
 	 *     hero.clearTag('alive');
-	 *     console.log('The hero has fallen');
 	 * }
 	 *
 	 * @returns {Entity} Returns self to allow chaining.
@@ -302,10 +283,7 @@ function (
 	 * @example
 	 * // Check hit points on monster entity
 	 * if (monster.getAttribute('hit-points') <= 0) {
-	 *     monster.clearTag('alive');
 	 *     console.log('The hero triumphs!');
-	 * } else {
-	 *     console.log('The monster how has', monster.getAttribute('hit-points'), 'hit points left');
 	 * }
 	 *
 	 * @returns {*}
