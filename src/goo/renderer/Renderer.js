@@ -883,7 +883,7 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial) {
+	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial, skipOverride) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			return;
 		}
@@ -932,7 +932,12 @@ function (
 					pickList.push(entity);
 				}
 			}
-			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, customPickingMaterial || this.hardwarePicking.pickingMaterial);
+
+			if (skipOverride) {
+				this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear);
+			} else {
+				this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, customPickingMaterial || this.hardwarePicking.pickingMaterial);
+			}
 
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
@@ -1522,6 +1527,16 @@ function (
 				context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
 			} else if (blending === 'CustomBlending') {
 				context.enable(WebGLRenderingContext.BLEND);
+			} else if (blending === 'SeparateBlending') {
+				context.enable(WebGLRenderingContext.BLEND);
+				context.blendEquationSeparate(
+						this.getGLBlendParam(material.blendState.blendEquationColor),
+						this.getGLBlendParam(material.blendState.blendEquationAlpha));
+				context.blendFuncSeparate(
+					this.getGLBlendParam(material.blendState.blendSrcColor),
+					this.getGLBlendParam(material.blendState.blendDstColor),
+					this.getGLBlendParam(material.blendState.blendSrcAlpha),
+					this.getGLBlendParam(material.blendState.blendDstAlpha));
 			} else {
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquationSeparate(WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD);
