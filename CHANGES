@@ -1,3 +1,25 @@
+v0.9.0 --- 2014-03-07
+
+Additions:
+ + added own sound system
+ + added a lot of documentation
+ + can get precise point of picking for shader-based picking in world coordinates
+ + added SoundCreator, similar to TextureCreator to load sound files
+ + added various new visual tests (Transform Gizmos, Sound, Picking, Ray, ...)
+ + MeshRendererComponent takes an optional array materials as parameter
+ + can now schedule callbacks to execute next frame from within a callback
+
+Fixed:
+ + various performance fixes
+ + canvas resizing is stabilised if they have no style referring to dimensions
+
+Changes:
+ * major changes of the DynamicLoader API
+
+Deprecated:
+ - Material.createMaterial(); use new Material() instead
+
+
 v0.8.0 --- 2014-02-10
 
 Additions:
