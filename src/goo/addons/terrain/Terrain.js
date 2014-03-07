@@ -278,6 +278,7 @@ function(
 
 			EntityUtils.traverse(clipmap.clipmapEntity, function (entity) {
 				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.isPickable = true;		
 					entity.meshRendererComponent.materials[0] = clipmap.terrainPickingMaterial;
 				}
 			});
@@ -293,6 +294,7 @@ function(
 
 			EntityUtils.traverse(clipmap.clipmapEntity, function (entity) {
 				if (entity.meshRendererComponent) {
+					entity.meshRendererComponent.isPickable = false;		
 					entity.meshRendererComponent.materials[0] = clipmap.origMaterial;
 				}
 			});
@@ -637,6 +639,7 @@ function(
 		entity.meshDataComponent.modelBound.zExtent = h * 0.5;
 		entity.meshDataComponent.modelBound.center.setd(w * 0.5, 128, h * 0.5);
 		entity.meshDataComponent.autoCompute = false;
+		entity.meshRendererComponent.isPickable = false;		
 
 		entity.setTranslation(x, 0, y);
 		// entity.setTranslation(x * 1.05, 0, y * 1.05);
