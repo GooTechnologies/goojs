@@ -2,6 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/math/Quaternion',
 	'goo/math/Vector3',
+	'goo/math/Transform',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad'
@@ -9,6 +10,7 @@ define([
 	Component,
 	Quaternion,
 	Vector3,
+	Transform,
 	Box,
 	Sphere,
 	Quad
@@ -115,29 +117,33 @@ define([
 	AmmoRigidbodyComponent.prototype.isCompound = function(entity, transformComponent){
 		transformComponent = transformComponent || entity.transformComponent;
 
-		console.log("traversing!")
+		var isCompound = false,
+			numCollidersOnBaseLevel = 0;
 
-		// TODO:
-		entity.traverse(function(entity){
-			console.log(entity)
+		// The shape is a compound shape if there's any collider in a sub entity
+		entity.traverse(function(entity,level){
+
+			if(level == 0){
+				numCollidersOnBaseLevel++;
+				return;
+			}
+
+			if(numCollidersOnBaseLevel > 1){
+				isCompound = true;
+				return false;
+			}
+
+			for(var i=0; i<entity._components.length; i++){
+				var comp = entity._components[i];
+				if(comp.type == 'AmmoColliderComponent'){
+					isCompound = true;
+					return false;
+				}
+			}
+
 		});
 
-		var result = false;
-
-		// Check if we have any colliders as children
-		for(var i=0; i<transformComponent.children.length; ++i){
-			var child = transformComponent.children[i];
-
-			if(child.type == "AmmoColliderComponent"){
-				return true;
-			}
-
-			if(this.isCompound(entity,child)){
-				return true;
-			}
-		}
-
-		return false;
+		return isCompound;
 	};
 
 	AmmoRigidbodyComponent.prototype.createAmmoShape = function(entity, gooTransform) {
@@ -169,8 +175,43 @@ define([
 			shape = collider.ammoShape;
 
 		} else {
-			// There's one or more colliders! Create a compound
+			// There's one or more colliders! Create a compound shape
 			shape = new Ammo.btCompoundShape();
+
+			// Needed for getting the Rigidbody-local transform of each collider
+			var bodyTransform = entity.transformComponent.worldTransform;
+			var invBodyTransform = new Transform();
+			invBodyTransform.copy(bodyTransform);
+			invBodyTransform.invert(invBodyTransform);
+
+			// Add all sub colliders
+			entity.traverse(function(entity,level){
+
+				for(var i=0; i<entity._components.length; i++){
+					var comp = entity._components[i];
+					if(comp.type == 'AmmoColliderComponent'){
+						var childAmmoShape = comp.ammoShape;
+
+						// Get the local transform of the collider, relative to the rigidbody
+						var localTrans = new Ammo.btTransform();
+						localTrans.setIdentity();
+						var gooTrans = new Transform();
+						gooTrans.copy(entity.transformComponent.worldTransform);
+						Transform.combine(invBodyTransform,gooTrans,gooTrans);
+						var gooPos = gooTrans.translation;
+						localTrans.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
+
+						var q = new Quaternion();
+						q.fromRotationMatrix(gooTrans.rotation);
+						localTrans.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+
+						shape.addChildShape(localTrans,childAmmoShape);
+					}
+				}
+
+			});
+
+			/*
 			var c = entity.transformComponent.children;
 			for(var i=0; i<c.length; i++) {
 				var childAmmoShape = this.getAmmoShapefromGooShape( c[i].entity );
@@ -181,6 +222,7 @@ define([
 				// TODO: also setRotation ?
 				shape.addChildShape(localTrans,childAmmoShape);
 			}
+			*/
 
 		}
 		return shape;

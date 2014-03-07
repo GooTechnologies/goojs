@@ -101,13 +101,30 @@ require([
 		);
 		planeEntity.transformComponent.transform.setRotationXYZ(-Math.PI/2, 0, 0);
 
-
-		// Create compound shape
-		var compound = new TransformComponent();
-		compound.attachChild(new AmmoBoxColliderComponent({
-			halfExtents:new Vector3(1,1,1)
-		}));
-		createEntity(goo, ShapeCreator.createBox(1, 10, 20), {mass: 0}, [-10,-5,0], compound);
+		// Create compound
+		var compoundEntity = goo.world.createEntity(new Vector3(0,3,0));
+		compoundEntity.addToWorld();
+		compoundEntity.setComponent(new AmmoRigidbodyComponent({ mass : 1 }));
+		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
+		material.setTexture('DIFFUSE_MAP', texture);
+		var h1 = new Vector3(1,2,1),
+			h2 = new Vector3(1,1,1),
+			h3 = new Vector3(1,1,1);
+		var subEntity1 = goo.world.createEntity(ShapeCreator.createBox(h1.x*2,h1.y*2,h1.z*2), material, new Vector3( 0,0, 2));
+		var subEntity2 = goo.world.createEntity(ShapeCreator.createBox(h2.x*2,h2.y*2,h2.z*2), material, new Vector3( 0,0,-2));
+		var subEntity3 = goo.world.createEntity(ShapeCreator.createBox(h3.x*2,h3.y*2,h3.z*2), material, new Vector3( 0,-2,-2));
+		subEntity1.addToWorld();
+		subEntity2.addToWorld();
+		subEntity3.addToWorld();
+		subEntity1.setComponent(new AmmoBoxColliderComponent({ halfExtents:h1 }));
+		subEntity2.setComponent(new AmmoBoxColliderComponent({ halfExtents:h2 }));
+		subEntity3.setComponent(new AmmoBoxColliderComponent({ halfExtents:h3 }));
+		compoundEntity.attachChild(subEntity1);
+		compoundEntity.attachChild(subEntity2);
+		compoundEntity.attachChild(subEntity3);
+		subEntity1.transformComponent.transform.rotation.fromAngles(Math.PI/6,0,0);
+		subEntity1.transformComponent.setUpdated();
 
 
 		var light = new PointLight();
