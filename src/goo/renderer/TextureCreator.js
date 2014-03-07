@@ -24,15 +24,15 @@ function (
 	 * @param {Settings} settings Texturing settings
 	 */
 	function TextureCreator() {
-		var ajax = new Ajax();
+		var ajax = this.ajax = new Ajax();
 		this.textureHandler = new TextureHandler(
 			{},
 			function (ref, options) {
-				return ajax.load(ref, options ? false : options.noCache);
+				return ajax.load(ref, options ? options.noCache : false);
 			},
 			function () {},
 			function (ref, options) {
-				return ajax.load(ref, options ? false : options.noCache);
+				return ajax.load(ref, options ? options.noCache : false);
 			}
 		);
 	}
@@ -53,7 +53,7 @@ function (
 		settings = settings || {};
 		settings.imageRef = imageURL;
 		var texture = this.textureHandler._objects[id] = this.textureHandler._create();
-		texture.setImage(TextureHandler.WHITE, 1, 1);
+		// texture.setImage(TextureHandler.WHITE, 1, 1);
 		this.textureHandler.update(id, settings, {
 			texture: {
 				dontwait: true
@@ -173,7 +173,7 @@ function (
 			(function (index) {
 				var queryImage = imageDataArray[index];
 				if (typeof queryImage === 'string') {
-					that._loader.loadImage(queryImage).then(function (image) {
+					that.ajax._loadImage(queryImage).then(function (image) {
 						images[index] = image;
 						latch.countDown();
 					});

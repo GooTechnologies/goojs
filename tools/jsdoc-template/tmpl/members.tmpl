@@ -1,12 +1,15 @@
 <?js var data = obj; ?>
-<dt>
-    <h4 class="name" id="<?js= id ?>"><?js= data.attribs + name + (data.signature ? data.signature : '') ?></h4>
+<header>
+    <h4 onclick="javascript:unfold('<?js= id ?>')"  class="name" id="<?js= id ?>">
+        <span class="icon-folded"></span>
+        <?js= data.attribs + name + (data.signature ? data.signature : '') ?>
+    </h4>
     
     <?js if (data.summary) { ?>
     <p class="summary"><?js= summary ?></p>
     <?js } ?>
-</dt>
-<dd>
+</header>
+<div class="foldable-content">
     <?js if (data.description) { ?>
     <div class="description">
         <?js= data.description ?>
@@ -19,4 +22,4 @@
         <h5>Example<?js= examples.length > 1? 's':'' ?></h5>
         <?js= this.partial('examples.tmpl', examples) ?>
     <?js } ?>
-</dd>
+</div>

@@ -27,12 +27,15 @@ require([
 		document.body.addEventListener('keypress', function (e) {
 			switch(e.which) {
 				case 49: // 1
+					console.log('translation');
 					gizmoRenderSystem.setActiveGizmo(0);
 					break;
 				case 50: // 2
+					console.log('rotation');
 					gizmoRenderSystem.setActiveGizmo(1);
 					break;
 				case 51: // 3
+					console.log('scale');
 					gizmoRenderSystem.setActiveGizmo(2);
 					break;
 				default:
@@ -48,9 +51,11 @@ require([
 
 			if (e.id < 16000) {
 				if (e.id >= 0) {
-					var entitySelected = goo.world.entityManager.getEntityById(e.id);
+					console.log('selected', e.id);
+					var entitySelected = goo.world.entityManager.getEntityByIndex(e.id);
 					gizmoRenderSystem.show(entitySelected);
 				} else {
+					console.log('deselected');
 					gizmoRenderSystem.show(); // actually hides
 				}
 			} else if (e.id < 16100) {

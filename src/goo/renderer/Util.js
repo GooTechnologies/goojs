@@ -153,11 +153,11 @@ function () {
 		var cacheKey = strColor+newWidth+'x'+newHeight;
 		var canvas = Util._blankImages[cacheKey];
 		if (!canvas) {
-			canvas = document.createElement('canvas'); 
+			canvas = document.createElement('canvas');
 			canvas.width = newWidth;
 			canvas.height = newHeight;
 			var ctx = canvas.getContext('2d');
-			ctx.beginPath()
+			ctx.beginPath();
 			ctx.rect(0, 0, newWidth, newHeight);
 			ctx.fillStyle = strColor;
 			ctx.fill();
@@ -166,9 +166,10 @@ function () {
 		if (index === undefined) {
 			texture.image = canvas;
 		} else {
+			texture.image.isData = false;
 			texture.image.data[index] = canvas;
 		}
-	}
+	};
 
 	Util.scaleImage = function(texture, image, width, height, maxSize, index) {
 		var newWidth = Util.nearestPowerOfTwo(width);
@@ -177,7 +178,7 @@ function () {
 		newHeight = Math.min(newHeight, maxSize);
 
 		if (image.width !== newWidth || image.height !== newHeight) {
-			var canvas = document.createElement('canvas'); 
+			var canvas = document.createElement('canvas');
 			canvas.width = newWidth;
 			canvas.height = newHeight;
 			if (image.getAttribute) {
@@ -194,8 +195,8 @@ function () {
 				texture.image.data[index] = canvas;
 			}
 			//canvas.parentNode.removeChild(canvas);
-		}		
-	}
+		}
+	};
 
 	return Util;
 });
