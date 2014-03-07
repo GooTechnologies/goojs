@@ -42,24 +42,6 @@ define([
 		this.mass = 		typeof settings.mass		!== 'undefined' ? settings.mass : 		1.0;
 		this.isTrigger =	typeof settings.isTrigger	!== 'undefined' ? settings.isTrigger : 	false;
 		this.ammoTransform = new Ammo.btTransform();
-		/*
-		var pos = entity.transformComponent.transform.translation,
-		    rot = entity.transformComponent.transform.rotation;
-
-		quaternion.fromRotationMatrix(rot);
-
-		var aquat = new Ammo.btQuaternion(quaternion.x,quaternion.y,quaternion.z,quaternion.w),
-		    apos = new Ammo.btVector3(this.position.x,this.position.y,this.position.z);
-
-		var trans = new Ammo.btTransform(aquat, apos);
-		var localInertia = new Ammo.btVector3(0,0,0);
-
-		entity.colliderComponent.ammoShape.calculateLocalInertia(mass, localInertia);
-		var motionState = new Ammo.btDefaultMotionState(trans);
-
-		this.rbInfo = new Ammo.btRigidBodyConstructionInfo( mass, motionState, entity.colliderComponent.ammoShape, localInertia );
-		this.body = new Ammo.btRigidBody(this.rbInfo);
-		*/
 	};
 
 	AmmoRigidbodyComponent.prototype = Object.create(Component.prototype);
@@ -89,10 +71,6 @@ define([
 		} else {
 			this.shape = this.createAmmoShape(entity, gooTransform);
 		}
-
-		// Possible to make sensors in Bullet?
-		//if(false == this.isTrigger){
-		//}
 
 		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
 		var localInertia = new Ammo.btVector3(0, 0, 0);
@@ -210,20 +188,6 @@ define([
 				}
 
 			});
-
-			/*
-			var c = entity.transformComponent.children;
-			for(var i=0; i<c.length; i++) {
-				var childAmmoShape = this.getAmmoShapefromGooShape( c[i].entity );
-				var localTrans = new Ammo.btTransform();
-				localTrans.setIdentity();
-				var gooPos = c[i].transform.translation;
-				localTrans.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
-				// TODO: also setRotation ?
-				shape.addChildShape(localTrans,childAmmoShape);
-			}
-			*/
-
 		}
 		return shape;
 	};
@@ -233,7 +197,6 @@ define([
 		var bound = EntityUtils.getTotalBoundingBox( entity);
 		this.center = bound.center;
 		shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent, bound.yExtent, bound.zExtent));
-		//shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent*scale, bound.yExtent*scale, bound.zExtent*scale));
 		return shape;
 	};
 
@@ -309,32 +272,6 @@ define([
 	};
 	AmmoRigidbodyComponent.prototype.addToWorld = function(){
 		Game.ammoWorld.addRigidBody(this.body);
-	};
-
-	AmmoRigidbodyComponent.prototype._ammoUpdate = function(){
-		this.body.getMotionState().getWorldTransform(ptrans);
-		origin = ptrans.getOrigin();
-		pquat = ptrans.getRotation();
-
-		this.newPos.setd(origin.x()+this.offsetPosition.x, origin.y()+this.offsetPosition.y, origin.z()+this.offsetPosition.z);
-		this.newRot.setd(pquat.x(), pquat.y(), pquat.z(), pquat.w());
-		this.position.setd(
-			this.newPos.x,
-			this.newPos.y,
-			this.newPos.z
-			);
-		quaternion.setd(
-			this.newRot.x,
-			this.newRot.y,
-			this.newRot.z,
-			this.newRot.w
-			);
-		//var tc = this.entity.transformComponent;
-		//while(tc.parent){
-   		//	tc = tc.parent.entity.transformComponent;
-		//}
-		this.entity.transformComponent.transform.rotation.copyQuaternion(quaternion);
-		this.entity.transformComponent.setUpdated();
 	};
 
 	AmmoRigidbodyComponent.prototype.copyPhysicalTransformToVisual = function(entity) {

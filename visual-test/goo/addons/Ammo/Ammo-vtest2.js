@@ -52,7 +52,7 @@ require([
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
 
-		var ammoSystem = new AmmoSystem();
+		var ammoSystem = window.ammoSystem = new AmmoSystem();
 		goo.world.setSystem(ammoSystem);
 
 		function addPrimitives() {
@@ -102,9 +102,9 @@ require([
 		planeEntity.transformComponent.transform.setRotationXYZ(-Math.PI/2, 0, 0);
 
 		// Create compound
-		var compoundEntity = goo.world.createEntity(new Vector3(0,3,0));
+		var compoundEntity = window.compoundEntity = goo.world.createEntity(new Vector3(0,3,0));
 		compoundEntity.addToWorld();
-		compoundEntity.setComponent(new AmmoRigidbodyComponent({ mass : 1 }));
+		compoundEntity.setComponent(new AmmoRigidbodyComponent({ mass : 1 /*, isTrigger:true*/ }));
 		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.setTexture('DIFFUSE_MAP', texture);
@@ -126,7 +126,6 @@ require([
 		compoundEntity.attachChild(subEntity3);
 		subEntity1.transformComponent.transform.rotation.fromAngles(Math.PI/6,0,0);
 		subEntity1.transformComponent.setUpdated();
-
 
 		var light = new PointLight();
 		var lightEntity = goo.world.createEntity('light');

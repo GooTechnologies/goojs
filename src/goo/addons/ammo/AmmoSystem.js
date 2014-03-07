@@ -1,13 +1,26 @@
 define([
-	'goo/entities/systems/System'
+	'goo/entities/systems/System',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function(
-	System
+	System,
+	SystemBus
 ) {
 	"use strict";
 
 	var Ammo = window.Ammo; // make jslint happy
+
+	// from http://bullet.googlecode.com/svn-history/r2171/trunk/src/BulletCollision/CollisionDispatch/btCollisionObject.h
+	var btCollisionFlags = {
+		CF_STATIC_OBJECT: 1,
+		CF_KINEMATIC_OBJECT: 2,
+		CF_NO_CONTACT_RESPONSE : 4,
+		CF_CUSTOM_MATERIAL_CALLBACK : 8,
+		CF_CHARACTER_OBJECT : 16,
+		CF_DISABLE_VISUALIZE_OBJECT : 32,
+		CF_DISABLE_SPU_COLLISION_PROCESSING : 64
+	};
 
 	/**
 	 * @class Handles integration with Ammo.js.
@@ -41,6 +54,7 @@ function(
 
 	AmmoSystem.prototype.inserted = function(entity) {
 		if (entity.ammoRigidbodyComponent) {
+
 		} else {
 			console.log('Warning: missing entity.ammoRigidbodyComponent');
 		}
@@ -58,6 +72,8 @@ function(
 		for (var i = 0; i < entities.length; i++) {
 			var e = entities[i];
 
+			var rb = e.ammoRigidbodyComponent;
+
 			if(!e.ammoRigidbodyComponent._initialized){
 
 				// Set initial position, etc
@@ -65,6 +81,45 @@ function(
 
 				// Add to world
 				this.ammoWorld.addRigidBody( e.ammoRigidbodyComponent.body);
+
+				// Turn off collision response if trigger
+				if(true == rb.isTrigger){
+					rb.body.setCollisionFlags(rb.body.getCollisionFlags() | btCollisionFlags.CF_NO_CONTACT_RESPONSE);
+					var callback = new Ammo.ConcreteContactResultCallback();
+					(function(){
+						Ammo.customizeVTable(callback, [{
+							original: Ammo.ConcreteContactResultCallback.prototype.addSingleResult,
+							replacement: function(
+								/* btManifoldPoint& */ cp_ptr,
+								/* const btCollisionObjectWrapper* */ colObj0_ptr,
+								/* int */ partId0,
+								/* int */ index0,
+								/* const btCollisionObjectWrapper* */ colObj1_ptr,
+								/* int */ partId1,
+								/* int */ index1      ) {
+								var cp = Ammo.wrapPointer(cp_ptr, Ammo.btManifoldPoint);
+								var colObj0 = Ammo.wrapPointer(colObj0_ptr, Ammo.btCollisionObjectWrapper);
+								var colObj1 = Ammo.wrapPointer(colObj1_ptr, Ammo.btCollisionObjectWrapper);
+								console.log('collision!',
+									colObj0,
+									colObj1,
+									partId0,
+									index0,
+									partId1,
+									index1
+								)
+								SystemBus.emit('goo.ammo.collision', {
+
+								});
+							}
+						}]);
+					})(rb);
+					rb.callback = callback;
+				}
+			}
+
+			if( e.ammoRigidbodyComponent.isTrigger) {
+				ammoSystem.ammoWorld.contactTest(rb.body,rb.callback);
 			}
 
 			if( e.ammoRigidbodyComponent.mass > 0) {
