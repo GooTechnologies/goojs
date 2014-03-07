@@ -289,9 +289,10 @@ h6
 	font-size: 100%;
 	line-height: 18px;
 	display: block;
-	padding: 4px 12px;
+	padding: 8px;
 	margin: 0;
-	background-color: #fff;
+	background-color: #eee;
+	border-radius: 3px;
 	color: #000;
 /*	border-left: 3px #ddd solid;*/
 }
