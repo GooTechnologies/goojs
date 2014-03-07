@@ -236,7 +236,7 @@ function generateSourceFiles(sourceFiles) {
  * @return {string} The HTML for the navigation sidebar.
  */
 function buildNav(members) {
-    var nav = '<a href="index.html"><img class="logo" src="images/goo.png" width="128" height="128" /></a>',
+    var nav = '',
         seen = {};
 
     if (members.modules.length) {
@@ -325,7 +325,7 @@ function buildNav(members) {
                 moduleSameName[0].module = c;
             }
             if (moduleClasses !== -1 && moduleClasses < members.classes.length) {
-                nav += '<h3>Classes</h3>';//<ul>';
+                //nav += '<h3>Classes</h3>';//<ul>';
                 moduleClasses = -1;
             }
             if ( !hasOwnProp.call(seen, c.longname) ) {
