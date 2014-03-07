@@ -228,33 +228,6 @@ define([
 		return shape;
 	};
 
-	// Recursively add physics shapes to the ammo compound shape
-	AmmoRigidbodyComponent.prototype.addAmmoCompoundChildren = function(ammoCompoundShape, parentWorldTransform, obj){
-		if(obj instanceof TransformComponent){
-			for(var i=0; i<obj.children.length; i++){
-				var comp = obj.children[i];
-				this.addAmmoCompoundChildren(ammoCompoundShape, obj.transform, comp);
-			}
-
-		} else if(obj instanceof Entity){
-			for(var i=0; i<obj._components.length; i++){
-				var comp = obj._components[i];
-				this.addAmmoCompoundChildren(ammoCompoundShape, parentWorldTransform, comp);
-			}
-
-		} else if(obj instanceof Component && obj.type == "AmmoColliderComponent"){
-
-			// Construct local transform
-			var localTrans = new Ammo.btTransform();
-			localTrans.setIdentity();
-			var gooPos = parentWorldTransform.transform.translation;
-			localTrans.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
-			// TODO: also setRotation ?
-
-			ammoCompoundShape.addChildShape(localTrans,obj.ammoShape);
-		}
-	}
-
 	AmmoRigidbodyComponent.prototype.createAmmoShapefromGooShapeWorldBounds = function(entity) {
 		var shape;
 		var bound = EntityUtils.getTotalBoundingBox( entity);

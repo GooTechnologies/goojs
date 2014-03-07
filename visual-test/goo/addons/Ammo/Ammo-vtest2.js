@@ -110,14 +110,15 @@ require([
 		material.setTexture('DIFFUSE_MAP', texture);
 		var h1 = new Vector3(1,2,1),
 			h2 = new Vector3(1,1,1),
-			h3 = new Vector3(1,1,1);
-		var subEntity1 = goo.world.createEntity(ShapeCreator.createBox(h1.x*2,h1.y*2,h1.z*2), material, new Vector3( 0,0, 2));
+			h3 = new Vector3(1,1,1),
+			radius=1;
+		var subEntity1 = goo.world.createEntity(ShapeCreator.createSphere(10,10,radius), material, new Vector3( 0,0, 2));
 		var subEntity2 = goo.world.createEntity(ShapeCreator.createBox(h2.x*2,h2.y*2,h2.z*2), material, new Vector3( 0,0,-2));
 		var subEntity3 = goo.world.createEntity(ShapeCreator.createBox(h3.x*2,h3.y*2,h3.z*2), material, new Vector3( 0,-2,-2));
 		subEntity1.addToWorld();
 		subEntity2.addToWorld();
 		subEntity3.addToWorld();
-		subEntity1.setComponent(new AmmoBoxColliderComponent({ halfExtents:h1 }));
+		subEntity1.setComponent(new AmmoSphereColliderComponent({ radius:radius }));
 		subEntity2.setComponent(new AmmoBoxColliderComponent({ halfExtents:h2 }));
 		subEntity3.setComponent(new AmmoBoxColliderComponent({ halfExtents:h3 }));
 		compoundEntity.attachChild(subEntity1);
