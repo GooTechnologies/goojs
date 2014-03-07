@@ -53,7 +53,7 @@ function (
 		settings = settings || {};
 		settings.imageRef = imageURL;
 		var texture = this.textureHandler._objects[id] = this.textureHandler._create();
-		texture.setImage(TextureHandler.WHITE, 1, 1);
+		// texture.setImage(TextureHandler.WHITE, 1, 1);
 		this.textureHandler.update(id, settings, {
 			texture: {
 				dontwait: true

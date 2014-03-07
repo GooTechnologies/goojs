@@ -142,6 +142,7 @@ function(
 
 		image.bpp = bpp;
 		image.dataReady = true;
+		image.isData = true;
 		texture.needsUpdate = true;
 
 		CrunchModule._free(src);
