@@ -222,11 +222,6 @@ function(
 			flipY: false
 		}, this.size * 2, this.size * 2);
 
-		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
-
-		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
-		this.copyPass.render(this.renderer, this.splat, this.splatTexture);
-
 		for (var i = 0; i < this.count; i++) {
 			var material = this.clipmaps[i].origMaterial;
 			var texture = this.textures[i];
@@ -249,6 +244,9 @@ function(
 			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
 		}
 
+		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
+		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
+		this.copyPass.render(this.renderer, this.splat, this.splatTexture);
 		this.updateTextures();
 	};
 
@@ -265,7 +263,6 @@ function(
 	};
 
 	Terrain.prototype.pick = function(camera, x, y, store) {
-
 		var entities = [];
 		EntityUtils.traverse(this.terrainRoot, function (entity) {
 			if (entity.meshDataComponent && entity.meshRendererComponent.hidden === false) {

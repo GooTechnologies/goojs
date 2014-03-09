@@ -43,9 +43,9 @@ function (
 	};
 
 	CameraSystem.prototype.inserted = function () {
-		if (!Renderer.mainCamera) {
+		// if (!Renderer.mainCamera) {
 			this.findMainCamera();
-		}
+		// }
 	};
 
 	CameraSystem.prototype.deleted = function () {
