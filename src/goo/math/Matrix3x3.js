@@ -14,12 +14,23 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @class Matrix with 3x3 components.
+	 * @class Matrix with 3x3 components.  Used to store 3D rotations.  It also contains common 3D Rotation operations.
 	 * @extends Matrix
-	 * @description Creates a new matrix.
+	 * @description Creates a new Matrix3x3 by passing in either a current Matrix3x3, number Array, or a set of 9 numbers.
 	 * @param {Matrix3x3|number[]|...number} arguments Initial values for the components.
+	 * @example
+	 * // Passing in no arguments
+	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 *
+	 * // Passing in a number Array
+	 * var m2 = new Matrix3x3([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+	 *		
+	 * // Passing in numbers
+	 * var m3 = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	 *
+	 * // Passing in an existing Matrix3x3
+	 * var m4 = new Matrix3x3(m1); // m4 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 */
-
 	function Matrix3x3() {
 		Matrix.call(this, 3, 3);
 
@@ -45,13 +56,21 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Performs a component-wise addition.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix3x3} [target] Target matrix for storage.
-	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
+	 * Adds 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Matrix3x3 object is created and returned.
+	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
+	 * @param {Matrix3x3} [target] Matrix3x3 to store the result.  If one is not supplied, a new Matrix3x3 object is created.
+	 * @return {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
+	 * @example
+	 * // Adds two Matrix3x3 with no target, returns a new Matrix3x3 object as the result
+	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 * var m2 = new Matrix3x3(0, 1, 0, 1, 0, 0, 1, 0, 0);
+	 * var r1 = Matrix3x3.add(m1, m2); // r1 == (1, 1, 0, 1, 1, 0, 1, 0, 1)
+	 * 
+	 * // Adds a number to a Matrix3x3, using the original Matrix3x3 to store the result
+	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 * m1.add(1); // m1 == (2, 1, 1, 1, 2, 1, 1, 1, 2)
 	 */
-
 	Matrix3x3.add = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
@@ -85,11 +104,18 @@ function (
 	};
 
 	/**
-	 * Performs a component-wise addition.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
+	 * Adds 'rhs' to the current Matrix3x3.
+	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
+	 * @example
+	 * // Adds a Matrix3x3 to the current Matrix3x3
+	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 * var m2 = new Matrix3x3(0, 1, 1, 1, 0, 1, 1, 1, 0);
+	 * m1.add(m2); // m1 == (1, 1, 1, 1, 1, 1, 1, 1, 1)
+	 * // Adds a number to the current Matrix3x3
+	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 * m1.add(1); // m1 == (2, 1, 1, 1, 2, 1, 1, 1, 2)
 	 */
-
 	Matrix3x3.prototype.add = function (rhs) {
 		return Matrix3x3.add(this, rhs, this);
 	};
@@ -97,13 +123,21 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Performs a component-wise subtraction.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix3x3} [target] Target matrix for storage.
-	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
+	 * Subtracts 'rhs' from 'lhs', and stores the reseult in 'target'.  If target is not supplied, a new Matrix3x3 object is created and returned.
+	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
+	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
+	 * @param {Matrix3x3} [target] Matrix3x3 to store the result.  If one is not supplied, a new Matrix3x3 object is created.
+	 * @return {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
+	 * @example
+	 * // Subtracts 'right' from 'left' with no target, returns a new Matrix3x3 object as the result
+	 * var left = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 * var right = new Matrix3x3(0, 1, 0, 1, 0, 0, 1, 0, 0);
+	 * var result = Matrix3x3.sub(left, right); // result == (1, -1, 0, -1, 1, 0, -1, 0, 1)
+	 * 
+	 * // Subtracts a number from a Matrix3x3, using the original Matrix3x3 to store the result
+	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 * m1.sub(1); // m1 == (0, -1, -1, -1, 0, -1, -1, -1, 0)
 	 */
-
 	Matrix3x3.sub = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
@@ -137,9 +171,18 @@ function (
 	};
 
 	/**
-	 * Performs a component-wise subtraction.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
+	 * Subtracts 'rhs' from the current Matrix3x3.
+	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
 	 * @return {Matrix3x3} Self for chaining.
+	 * @example
+	 * // Subtracts a Matrix3x3 from the current Matrix3x3
+	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 * var m2 = new Matrix3x3(0, 1, 1, 1, 0, 1, 1, 1, 0);
+	 * m1.sub(m2); // m1 == (1, -1, -1, -1, 1, -1, -1, -1, 0)
+	 *
+	 * // Subtracts a number from the current Matrix3x3
+	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
+	 * m1.sub(1); // m1 == (0, -1, -1, -1, 0, -1, -1, -1, 0)
 	 */
 
 	Matrix3x3.prototype.sub = function (rhs) {
@@ -598,7 +641,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Sets the matrix from rotational angles.
+	 * Sets the Matrix3x3 from rotational angles in radians.
 	 * @param {number} yaw Yaw angle in radians.
 	 * @param {number} roll Roll angle in radians.
 	 * @param {number} pitch Pitch angle in radians.

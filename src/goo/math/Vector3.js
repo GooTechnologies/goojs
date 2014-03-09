@@ -42,15 +42,86 @@ function (
 
 	/* ====================================================================== */
 
-	/** @type {Vector3} */
+	/** 
+	* Vector3 representing Zero Axis: (0, 0, 0)
+	* @type {Vector3}
+	* var oldValue = new Vector3(5, 2, 1);
+	* oldValue.setv(Vector3.ZERO); // oldValue == (0, 0, 0)
+	*/
 	Vector3.ZERO = new Vector3(0, 0, 0);
-	/** @type {Vector3} */
+
+	/**
+	* Vector3 representing All Axis: (1, 1, 1)
+	* @type {Vector3}
+	* @example
+	* var v1 = Vector3.copy(Vector3.ONE); // v1 == (1, 1, 1)
+	*/
 	Vector3.ONE = new Vector3(1, 1, 1);
-	/** @type {Vector3} */
+
+	/**
+	* Vector3 representing X Axis(right): (1, 0, 0)
+	* @type {Vector3}
+	* @example
+	* // speed we want to strafe left or right
+	* var speed = 5;
+	* // direction to strafe
+	* var strafeSpeed = 0;
+	* // if key 'a' is pressed
+	* if(KeyInput.getKey("a")){
+	*	strafeSpeed -= speed;
+	* }
+	* // if key 'd' is pressed
+	* if(KeyInput.getKey("d")){
+	*	strafeSpeed += speed;
+	* }
+	*
+	* // set strafeVector using Vector3.UNIT_X
+	* // strafeVector.x is either 0, speed, or -speed, depending on the keys pressed
+	* var strafeVector = Vector3.mul(Vector3.UNIT_X, strafeSpeed);
+	*/
 	Vector3.UNIT_X = new Vector3(1, 0, 0);
-	/** @type {Vector3} */
+
+	/**
+	* Vector3 representing Y Axis(up): (0, 1, 0)
+	* @type {Vector3}
+	* @example
+	* // height we want to jump
+	* var jumpHeight = 2.0;
+	* // gravity pulling us down
+	* var gravity = -9.8;
+	* // the calculated vertical jump impulse
+	* var jumpVelocity = Math.sqrt(2*jumpHeight*gravity);
+	*
+	* // set jumpVector using Vector3.UNIT_Y
+	* var jumpVector = Vector3.mul(Vector3.UNIT_Y, jumpVelocity); // jumpVector == (0, jumpVelocity, 0)
+	* @example
+	* 
+	*/
 	Vector3.UNIT_Y = new Vector3(0, 1, 0);
-	/** @type {Vector3} */
+
+	/**
+	* Vector3 representing Z Axis(forward): (0, 0, 1)
+	* @type {Vector3}
+	* @example
+	* // speed we want to move forward
+	* var fwd_speed = 5;
+	* // speed we want to move back
+	* var bck_speed = -3.5;
+	* // speed to move
+	* var moveSpeed = 0.0;
+	* // if key 'w' is pressed
+	* if(KeyInput.getKey("w")){
+	*	moveSpeed = fwd_speed;
+	* }
+	* // if key 's' is pressed
+	* if(KeyInput.getKey("s")){
+	*	moveSpeed = bck_speed;
+	* }
+	*
+	* // set moveVector, using Vector3.UNIT_Z
+	* // moveVector.z is either 0, fwd_speed, or bck_speed, depending on the keys pressed
+	* var moveVector = Vector3.mul(Vector3.UNIT_Z, moveSpeed);
+	*/
 	Vector3.UNIT_Z = new Vector3(0, 0, 1);
 
 	/* ====================================================================== */
