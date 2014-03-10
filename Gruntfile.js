@@ -137,7 +137,7 @@ module.exports = function(grunt) {
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default',  ['minify']);
+	grunt.registerTask('default',  ['minify','unittest']);
 	grunt.registerTask('minify',   ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
 	grunt.registerTask('unittest', ['karma:unit']);
 
