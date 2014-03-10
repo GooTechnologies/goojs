@@ -412,29 +412,31 @@ function(
 		};
 	};
 
-	Terrain.prototype.buildAmmoBody = function() {
-		var terrainData = this.getTerrainData();
-
-		// --- Physics Start ---
-		var floatByteSize = 4;
-		var heightBuffer = Ammo.allocate(floatByteSize * this.size * this.size, "float", Ammo.ALLOC_NORMAL);
-
+	Terrain.prototype.updateAmmoBody = function() {
+		var heights = this.getTerrainData().heights;
+		var heightBuffer = this.heightBuffer;
 		for (var z = 0; z < this.size; z++) {
 			for (var x = 0; x < this.size; x++) {
-				Ammo.setValue(heightBuffer + (z * this.size + x) * floatByteSize, terrainData.heights[z * this.size + x], 'float');
+				Ammo.setValue(heightBuffer + (z * this.size + x) * 4, heights[(this.size - z - 1) * this.size + x], 'float');
 			}
 		}
+	};
+
+	Terrain.prototype.initAmmoBody = function() {
+		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, "float", Ammo.ALLOC_NORMAL);
+
+		this.updateAmmoBody();
 
 		var heightScale = 1.0;
-		var minHeight = -1000;
-		var maxHeight = 1000;
+		var minHeight = -500;
+		var maxHeight = 500;
 		var upAxis = 1; // 0 => x, 1 => y, 2 => z
 		var heightDataType = 0; //PHY_FLOAT;
 		var flipQuadEdges = false;
 
 		var shape = new Ammo.btHeightfieldTerrainShape(
-			widthPoints,
-			lengthPoints,
+			this.size,
+			this.size,
 			heightBuffer,
 			heightScale,
 			minHeight,
@@ -453,26 +455,17 @@ function(
 
 		var ammoTransform = new Ammo.btTransform();
 		ammoTransform.setIdentity(); // TODO: is this needed ?
-		// ammoTransform.setOrigin(new Ammo.btVector3( 0, yw /2, 0 ));
-		// ammoTransform.setOrigin(new Ammo.btVector3( xw / 2, 0, zw / 2 ));
-		// this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
-		// var q = this.gooQuaternion;
-		// ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		ammoTransform.setOrigin(new Ammo.btVector3( this.size / 2, 0, this.size / 2 ));
 		var motionState = new Ammo.btDefaultMotionState( ammoTransform );
 		var localInertia = new Ammo.btVector3(0, 0, 0);
 
 		var mass = 0;
-		// rigidbody is dynamic if and only if mass is non zero, otherwise static
-		// if(mass !== 0.0) {
-			// shape.calculateLocalInertia( mass, localInertia );
-		// }
 
 		var info = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
 		var body = new Ammo.btRigidBody(info);
 		body.setFriction(1);
 
 		this.world.getSystem('AmmoSystem').ammoWorld.addRigidBody(body);
-		// --- Physics End ---
 	};
 
 	Terrain.prototype.updateTextures = function() {

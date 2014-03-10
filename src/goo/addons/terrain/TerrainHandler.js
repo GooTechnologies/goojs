@@ -325,6 +325,14 @@ define([
 			this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes);
 		};
 
+		TerrainHandler.prototype.updatePhysics = function() {
+			this.terrain.updateAmmoBody();
+		};
+
+		TerrainHandler.prototype.initPhysics = function() {
+			this.terrain.initAmmoBody();
+		};
+
 		TerrainHandler.prototype.update = function(cameraEntity) {
 			var pos = cameraEntity.transformComponent.transform.translation;
 			// pos.y = Math.max(pos.y, terrainQuery.getHeightAt([pos.x, 0, pos.z]) + 1.5);
