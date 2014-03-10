@@ -41,7 +41,8 @@
     "karma-coffee-preprocessor": "~0.1.3",
     "karma-phantomjs-launcher": "~0.1.2",
     "karma": "~0.10.9",
-    "karma-coverage": "~0.2.0"
+    "karma-coverage": "~0.2.0",
+    "grunt-karma": "~0.6.2"
   },
   "engines": {
     "node": ">=0.8.2"

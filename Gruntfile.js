@@ -119,19 +119,27 @@ module.exports = function(grunt) {
 				packName: 'geometrypack',
 				outBaseDir: 'out'
 			}
-		}
+		},
+		karma: {
+			unit: {
+				configFile: 'karma.conf.js',
+				singleRun: true,
+				browsers:['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
+			},
+		},
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-karma');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default', ['minify']);
-	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
-
+	grunt.registerTask('default',  ['minify']);
+	grunt.registerTask('minify',   ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
+	grunt.registerTask('unittest', ['karma:unit']);
 
 	//! AT: no better place to put this
 	function extractFilename(path) {
