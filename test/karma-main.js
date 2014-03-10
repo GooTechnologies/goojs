@@ -31,18 +31,9 @@ requirejs.config({
             exports: '_'
         }
     },
-
-    /*
-    // ask Require.js to load these files (all our tests)
-    deps: ['test/all-tests'],
-
-    // start test run, once Require.js is done
-    callback: window.__karma__.start
-    */
 });
 
 require(['test/all-tests'], function() {
-    //console.log("LOADED!")
     window.__karma__.externalResourceRootPath = "/base/test";
     window.__karma__.start();
 });
