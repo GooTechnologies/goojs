@@ -133,8 +133,11 @@
     ?>
         <h3 class="subsection-title">Members</h3>
         
-        <?js members.forEach(function(p) { ?>
-            <section class="foldable-item" id="<?js= p.id ?>">
+        <?js memberId = 0;
+            members.forEach(function(p) { 
+                p.idList = "member-"+memberId++;
+        ?>
+            <section class="foldable-item" id="<?js= p.idList ?>">
                 <?js= self.partial('members.tmpl', p) ?>
             </section>
         <?js }); ?>
@@ -146,8 +149,11 @@
     ?>
         <h3 class="subsection-title">Methods</h3>
         
-        <?js methods.forEach(function(m) { ?>
-        <section class="foldable-item" id="<?js= m.id ?>">
+        <?js methodId = 0;
+            methods.forEach(function(m) { 
+                m.idList = 'method-'+methodId++;
+        ?>
+        <section class="foldable-item <?js= m.id ?>" id="<?js= m.idList ?>">
             <?js= self.partial('method.tmpl', m) ?>
         </section>
         <?js }); ?>
