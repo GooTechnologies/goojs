@@ -6,7 +6,7 @@ function(
 	System
 ) {
 	"use strict";
-	// global Box2D
+	/* global Box2D */
 
 	/**
 	 * @class Physics simulation using Box2D.
