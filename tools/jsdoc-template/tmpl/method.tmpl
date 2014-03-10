@@ -3,7 +3,7 @@ var data = obj;
 var self = this;
 ?>
 <header>
-    <h4 onclick="javascript:unfold('<?js= id ?>')" class="name">
+    <h4 onclick="javascript:unfold('<?js= data.idList ?>')" class="name">
         <span class="icon-folded"></span>
         <?js= data.attribs + (kind === 'class' ? 'new ' : '') + name + (kind !== 'event' ? data.signature : '') ?></h4>
     
