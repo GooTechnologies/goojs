@@ -4,7 +4,7 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -23,7 +23,7 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
