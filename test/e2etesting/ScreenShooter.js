@@ -13,7 +13,7 @@ function ScreenShooter(options){
 
 	var settings = this.settings = {
 		wait   : 200,
-		script : '',
+		script : ScreenShooter.removeGooStuffScript,
 		width  : 500,
 		height : 500,
 	};

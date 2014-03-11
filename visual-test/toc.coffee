@@ -33,6 +33,9 @@ exports.getFiles = (callback) ->
 	glob 'visual-test/**/!(index).html', (err, files) ->
 		callback err, files
 
+exports.getFilesSync = ->
+	return glob.sync 'visual-test/**/!(index).html'
+
 exports.run = ->
 	exports.getFiles (err, files) ->
 		if err

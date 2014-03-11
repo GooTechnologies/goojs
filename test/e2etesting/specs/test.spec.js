@@ -5,55 +5,54 @@ var webdriver = require('selenium-webdriver')
 ,  	Canvas = require('canvas')
 ,  	Image = Canvas.Image
 ,   exec = require('child_process').exec
-,   imageDiff = require('./imageDiff')
+,   ScreenShooter = require(__dirname + '/../ScreenShooter')
+,   imgcompare = require(__dirname + '/../../../tools/imgcompare')
+,   coffeescript = require('coffee-script')
+,   toc = require(__dirname + '/../../../visual-test/toc')
 
 jasmine.getEnv().defaultTimeoutInterval = 10000; // in microseconds.
 
-var driver = new webdriver.Builder().withCapabilities(webdriver.Capabilities.chrome()).build();
+var shooter, testFiles=toc.getFilesSync();
 
-function writeScreenshot(data, name) {
-  name = name || 'ss.png';
-  var screenshotPath = 'out/';
-  fs.writeFileSync(screenshotPath + name, data, 'base64');
-};
+describe('visual test', function () {
 
-describe('basic test', function () {
-	it('should be on correct page', function (done) {
-		driver.get('http://localhost:8081/goojs/visual-test/goo/addons/p2/p2-vtest.html');
-		driver.getTitle().then(function(title) {
+	beforeEach(function(done){
+ 		if(!shooter) shooter = new ScreenShooter();
+		 done();
+	});
 
-			var w = new webdriver.WebDriver.Window(driver);
-			w.setSize(500,500).then(function(){
+	for(var i=0; i<testFiles.length; i++){
+		it('should render URL '+testFiles[i]+' correctly',function(done){
+			var testFile = testFiles.shift();
+			var url = 'http://localhost:8081/goojs/'+testFile;
+			var pngPath = path.join(os.tmpdir(),'tmp.png');
+			var refPath = path.join(__dirname,'..','screenshots',testFile.replace('visual-test','').replace('.html','.png'));
 
-				driver.executeScript("return 'haha';").then(function() {
+			// Take a screenshot
+			shooter.takeScreenshot(url, pngPath, function(err){
+				expect(err).toBeFalsy();
 
-					var p = driver.takeScreenshot().then(function(data) {
+				// Compare to the reference image
+				imgcompare.compare(pngPath,refPath,{
+					maxDist : 1,
+					maxSumSquares : 1,
+				},function(err,result){
 
-						var tmpdir = os.tmpdir();
-						var tmpImagePath = path.join(tmpdir,"screenshot.png");
+					console.log(err)
 
-						console.log(tmpImagePath)
+					expect(err).toBeFalsy();
+					expect(result).toBeTruthy();
 
-						fs.writeFileSync(tmpImagePath, data, 'base64');
-						var cmd = __dirname + "/../../../tools/imgcompare/bin/imgcompare "+tmpImagePath + " " + tmpImagePath +  " 1 1";
-						console.log("command",cmd)
-
-						exec(cmd, function(err,stdout,stderr){
-							if(err && err.code == 1){
-								console.log("Didnt match!");
-							} else if(err)
-								throw err;
-
-							console.log(stdout,stderr)
-
-							driver.close().then(function(){
-								done();
-							});
+					if(!testFiles.length){
+						// Shut down if there are no more tests
+						shooter.shutdown(function(){
+							done();
 						});
-					});
+					} else {
+						done();
+					}
 				});
 			});
 		});
-	});
+	}
 });
-
