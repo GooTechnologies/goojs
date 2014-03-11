@@ -5,10 +5,10 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	"use strict";
 
 	/**
-	 * @class [Quaternions](http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Advantages_of_quaternions)
-	 * provide a convenient mathematical notation for representing orientations and rotations of objects in three dimensions.
+	 * @class Quaternions provide a convenient mathematical notation for representing orientations and rotations of objects in three dimensions.
 	 * Compared to Euler angles they are simpler to compose and avoid the problem of gimbal lock.
 	 * Compared to rotation matrices they are more numerically stable and the representation (4 numbers) is more compact.
+	 * The main usage is probably the slerp function allowing smooth transitions between two rotations.
 	 * @extends Vector
 	 * @constructor
 	 * @param {...Float} arguments Initial values for the components.
@@ -400,10 +400,17 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
+	/**
+	 * Computes the spherical linear interpolation towards endQuat.
+	 * @param {Quaternion} endQuat end Quaternion.
+	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	 var slerp_work_quat = new Quaternion();
 	Quaternion.prototype.slerp = function (endQuat, changeAmnt) {
-		var end = new Quaternion().copy(endQuat);
-		Quaternion.slerp(this, endQuat, changeAmnt, end);
-		this.copy(end);
+		slerp_work_quat.copy(endQuat);
+		Quaternion.slerp(this, endQuat, changeAmnt, slerp_work_quat);
+		this.copy(slerp_work_quat);
 		return this;
 	};
 
