@@ -8,6 +8,7 @@ define([
 	'goo/scripts/BasicControlScript',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
+	'goo/entities/SystemBus',
 
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts',
@@ -26,6 +27,7 @@ function(
 	BasicControlScript,
 	PromiseUtil,
 	_,
+	SystemBus,
 
 	ScriptUtils,
 	Scripts
@@ -39,6 +41,31 @@ function(
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._bodyCache = {};
+		this._currentScriptLoading = null
+
+		var that = this;
+		window.addEventListener('error', function(evt) {
+			if (that._currentScriptLoading) {
+				var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + that._currentScriptLoading);
+				if (oldScriptElement) {
+					oldScriptElement.parentNode.removeChild(oldScriptElement);
+				}
+				delete window._gooScriptFactories[that._currentScriptLoading];
+				var script = that._objects[that._currentScriptLoading];
+				script.externals = {
+					error: {
+						line: evt.lineno - 1,
+						message: evt.message
+					}
+				};
+				script.setup = null;
+				script.update = null;
+				script.cleanup = null;
+				script.parameters = {};
+				script.enabled = false;
+				that._currentScriptLoading = null;
+			}
+		});
 	}
 	ScriptHandler.scripts = {
 		OrbitCamControlScript: OrbitCamControlScript,
@@ -52,24 +79,13 @@ function(
 	ScriptHandler.prototype.constructor = ScriptHandler;
 	ConfigHandler._registerClass('script', ScriptHandler);
 
-//	ScriptHandler.prototype._prepare = function(/*config*/) {};
-//	ScriptHandler.prototype._create = function(/*ref*/) {};
-
-	ScriptHandler.htmlELementIdPrefix = '_script_';
-
-	//! AT: needed?
-	function updateParameters(existingParams, newParams) {
-		var keys = Object.keys(newParams);
-		keys.forEach(function (key) {
-			existingParams[key] = newParams[key];
-		});
-	}
-
 	ScriptHandler.prototype._specialPrepare = function(script, config) {
 		config.options = config.options || {};
 		if (config.className === 'OrbitNPanControlScript') { return; }
 		// fill the rest of the parameters with default values
-		ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
+		if (script.externals && script.externals.parameters) {
+			ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
+		}
 		if (config.body) {
 			config._externals = script.externals;
 		}
@@ -85,12 +101,11 @@ function(
 
 	ScriptHandler.prototype._updateFromCustom = function(script, config) {
 		// cache the body of the function so parameter changes won't rebuild the function
-		var oldBody = this._bodyCache[config.id];
-		if (oldBody !== config.body) {
+		if (this._bodyCache[config.id] !== config.body) {
 			this._bodyCache[config.id] = config.body;
 
 			// delete the old script tag and add a new one
-			var oldScriptElement = document.getElementById(ScriptHandler.htmlELementIdPrefix + config.id);
+			var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + config.id);
 			if (oldScriptElement) {
 				oldScriptElement.parentNode.removeChild(oldScriptElement);
 			}
@@ -105,37 +120,42 @@ function(
 			var scriptFactoryStr = [
 				"window._gooScriptFactories['" + config.id + "'] = function () { 'use strict';",
 				config.body,
-
-				//! AT: these might throw undefined reference errors
-				' return {',
-				'  externals: externals,',
-				'  parameters: {},',
-				'  setup: setup,',
-				'  update: update,',
-				'  cleanup: cleanup,',
-				'  enabled: false',
-				' };',
+				' var obj = {};',
+				' if (typeof externals !== "undefined") {',
+				'  obj.externals = externals;',
+				' }',
+				' if (typeof setup !== "undefined") {',
+				'  obj.setup = setup;',
+				' }',
+				' if (typeof cleanup !== "undefined") {',
+				'  obj.cleanup = cleanup;',
+				' }',
+				' if (typeof update !== "undefined") {',
+				'  obj.update = update;',
+				' }',
+				' return obj;',
 				'};'
 			].join('\n');
 
 			// create the element and add it to the page so the user can debug it
 			// addition and execution of the script happens synchronously
 			var newScriptElement = document.createElement('script');
-			newScriptElement.id = ScriptHandler.htmlELementIdPrefix + config.id;
+			newScriptElement.id = ScriptHandler.DOM_ID_PREFIX + config.id;
 			newScriptElement.innerHTML = scriptFactoryStr;
+			this._currentScriptLoading = config.id;
 			document.body.appendChild(newScriptElement);
-			
-			var newScript = window._gooScriptFactories[config.id]();
-			if (!newScript) {
-				throw 'Unrecognized script body';
 
+			var newScript = window._gooScriptFactories[config.id];
+			if (newScript) {
+				newScript = newScript();
+				script.externals = newScript.externals;
+				script.setup = newScript.setup;
+				script.update = newScript.update;
+				script.cleanup = newScript.cleanup;
+				script.parameters = {};
+				script.enabled = false;
+				this._currentScriptLoading = null;
 			}
-			script.externals = newScript.externals;
-			script.setup = newScript.setup;
-			script.update = newScript.update;
-			script.cleanup = newScript.cleanup;
-			script.parameters = {};
-			script.enabled = false;
 
 			// generate names from external variable names
 			ScriptUtils.fillDefaultNames(script.externals.parameters);
@@ -178,12 +198,12 @@ function(
 				return script;
 			});
 		}
+		// Old style loading of OrbitNPanControlScript for now
 		var that = this;
 		var script;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
 			if (!config) { return; }
 
-			// first treat the oldstyle loading
 			if (config.className) {
 				if (!script.run) {
 					var name = config.className;
@@ -200,64 +220,11 @@ function(
 					script.enabled = script.active = false;
 				}
 				return script;
-			} // else ...
-
-
-			// cache the body of the function so parameter changes won't rebuild the function
-			var oldBody = this._bodyCache[config.id];
-			if (oldBody !== config.body) {
-				this._bodyCache[config.id] = config.body;
-
-				// delete the old script tag and add a new one
-				var oldScriptElement = document.getElementById(ScriptHandler.htmlELementIdPrefix + config.id);
-				if (oldScriptElement) {
-					oldScriptElement.parentNode.removeChild(oldScriptElement);
-				}
-
-				// create this script collection if it does not exist yet
-				if (!window._gooScriptFactories) {
-					// this holds script factories in 'compiled' form
-					window._gooScriptFactories = {};
-				}
-
-				// get a script factory in string form
-				var scriptFactoryStr = [
-					"window._gooScriptFactories['" + config.id + "'] = function () { 'use strict';",
-					config.body,
-
-					//! AT: these might throw undefined reference errors
-					'\treturn {',
-					'\t\texternals: externals,',
-					'\t\tsetup: setup,',
-					'\t\tupdate: update,',
-					'\t\tcleanup: cleanup,',
-					'\t\tparameters: {}',
-					'\t};',
-					'};'
-				].join('\n');
-
-				// create the element and add it to the page so the user can debug it
-				// addition and execution of the script happens synchronously
-				var newScriptElement = document.createElement('script');
-				newScriptElement.id = ScriptHandler.htmlELementIdPrefix + config.id;
-				newScriptElement.innerHTML = scriptFactoryStr;
-				document.body.appendChild(newScriptElement);
 			}
-
-			// get an instance of the script
-			script = window._gooScriptFactories[config.id]();
-
-			// assign original parameters
-			script.parameters = config.parameters;
-
-			// fill the rest of the parameters with default values
-			ScriptUtils.fillDefaultValues(script.parameters, script.externals.parameters);
-
-			// generate names from external variable names
-			ScriptUtils.fillDefaultNames(script.externals.parameters);
-
-			return script;
 		});
 	};
+
+	ScriptHandler.DOM_ID_PREFIX = '_script_';
+
 	return ScriptHandler;
 });
