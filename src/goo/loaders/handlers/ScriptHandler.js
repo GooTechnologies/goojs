@@ -7,6 +7,10 @@ define([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/BasicControlScript',
 	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil',
+
+	'goo/scripts/ScriptUtils',
+	'goo/scripts/Scripts',
 
 	'goo/scripts/NewWaveFPCamControlScript'
 ],
@@ -19,7 +23,11 @@ function(
 	FlyControlScript,
 	WASDControlScript,
 	BasicControlScript,
-	PromiseUtil
+	PromiseUtil,
+	_,
+
+	ScriptUtils,
+	Scripts
 ) {
 	"use strict";
 
@@ -56,7 +64,50 @@ function(
 		});
 	}
 
+	ScriptHandler.prototype._create = function(ref, config, options) {
+		if (!config) {
+			return ConfigHandler.prototype._create.call(this, ref);
+		}
+		if (config.className) {
+			var script = Scripts.create(config.className);
+			if (!script) {
+				throw 'Script was not recognized';
+			}
+			return this._objects[ref] = script;
+		}
+	};
+
+	ScriptHandler.prototype._prepare = function(config) {
+		config.options = config.options || {};
+		_.defaults(config.options, this._objects[config.id].parameters);
+	};
+
+	ScriptHandler.prototype._remove = function(ref) {
+		var script = this._objects[ref];
+		if (script && script.cleanup) {
+			script.cleanup();
+			delete this._objects[ref];
+		}
+	};
+
 	ScriptHandler.prototype._update = function(ref, config, options) {
+		if (!config) {
+			this._remove(ref);
+			PromiseUtil.createDummyPromise(null);
+		}
+		if (config.className !== 'OrbitNPanControlScript') {
+			var script;
+			if (!this._objects[ref]) {
+				script = this._create(ref, config, options);
+			} else if (this._objects[ref].external.name !== config.className) {
+				script = this._create(ref, config, options);
+			} else {
+				script = this._objects[ref];
+			}
+			this._prepare(config);
+			_.extend(script.parameters, config.options);
+			return PromiseUtil.createDummyPromise(script);
+		}
 		var that = this;
 		var script;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {

@@ -17,6 +17,10 @@ define ([
 		return _scripts[name];
 	};
 
+	Scripts.create = function (name) {
+		return _scripts[name].cons();
+	};
+
 	Scripts.allScripts = function () {
 		var scripts = {};
 		var keys = Object.keys(_scripts);

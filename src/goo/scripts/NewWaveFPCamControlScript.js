@@ -29,9 +29,9 @@ define([
 	var external = {
 		name: 'FPCamControlScript',
 		description: 'Attempts to lock the pointer and control the entity\'s orientation based on mouse movements',
-		parameters: [{
+		parameters: [/*{
 			key: 'domElement'
-		}, {
+		}, */{
 			key: 'turnSpeedHorizontal',
 			'default': 0.01,
 			type: 'float',
@@ -59,8 +59,6 @@ define([
 			control: 'slider',
 			min: -89,
 			max: 89
-		}, {
-			key: 'domElement'
 		}]
 	};
 
@@ -84,7 +82,7 @@ define([
 				dY: 0
 			};
 
-			setupMouseControls(parameters.domElement);
+			setupMouseControls(env.domElement);
 		}
 
 		function run(entity, tpf, env, parameters) {
@@ -102,11 +100,13 @@ define([
 			}
 			// apply dy around left vector
 			if (mouseState.dY !== 0) {
+				var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
+				var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
 				rotY -= parameters.turnSpeedVertical * mouseState.dY;
-				if (rotY > parameters.maxAscent) {
-					rotY = parameters.maxAscent;
-				} else if (rotY < parameters.minAscent) {
-					rotY = parameters.minAscent;
+				if (rotY > maxAscent) {
+					rotY = maxAscent;
+				} else if (rotY < minAscent) {
+					rotY = minAscent;
 				}
 			}
 
@@ -154,10 +154,15 @@ define([
 			GameUtils.requestPointerLock();
 		}
 
+		var params = {}
+		ScriptUtils.fillDefaultValues(params, external.parameters);
+
 		return {
 			setup: setup,
 			run: run,
-			cleanup: cleanup
+			cleanup: cleanup,
+			external: external,
+			parameters: params
 		};
 	};
 
