@@ -1,5 +1,7 @@
 var webdriver = require('selenium-webdriver')
 ,	fs = require('fs')
+,	os = require('os')
+,	path = require('path')
 ,  	Canvas = require('canvas')
 ,  	Image = Canvas.Image
 ,   exec = require('child_process').exec
@@ -7,8 +9,7 @@ var webdriver = require('selenium-webdriver')
 
 jasmine.getEnv().defaultTimeoutInterval = 10000; // in microseconds.
 
-var driver = new webdriver.Builder().
-    withCapabilities(webdriver.Capabilities.chrome()).build();
+var driver = new webdriver.Builder().withCapabilities(webdriver.Capabilities.chrome()).build();
 
 function writeScreenshot(data, name) {
   name = name || 'ss.png';
@@ -18,53 +19,38 @@ function writeScreenshot(data, name) {
 
 describe('basic test', function () {
 	it('should be on correct page', function (done) {
-		driver.get('http://www.wingify.com');
+		driver.get('http://localhost:8081/goojs/visual-test/goo/addons/p2/p2-vtest.html');
 		driver.getTitle().then(function(title) {
-			expect(title.indexOf('Wingify')).not.toEqual(-1);
 
-			console.log("asdlkmasf 111!!!")
+			var w = new webdriver.WebDriver.Window(driver);
+			w.setSize(500,500).then(function(){
 
-			var p = driver.takeScreenshot().then(function(data) {
+				driver.executeScript("return 'haha';").then(function() {
 
-				console.log("jnskjdnf 1111 33")
+					var p = driver.takeScreenshot().then(function(data) {
 
-				fs.writeFileSync("lol.png", data, 'base64');
+						var tmpdir = os.tmpdir();
+						var tmpImagePath = path.join(tmpdir,"screenshot.png");
 
+						console.log(tmpImagePath)
 
-				var result = imageDiff.compare('lol.png','lol.png');
+						fs.writeFileSync(tmpImagePath, data, 'base64');
+						var cmd = __dirname + "/../../../tools/imgcompare/bin/imgcompare "+tmpImagePath + " " + tmpImagePath +  " 1 1";
+						console.log("command",cmd)
 
-					console.log(stdout,stderr)
+						exec(cmd, function(err,stdout,stderr){
+							if(err && err.code == 1){
+								console.log("Didnt match!");
+							} else if(err)
+								throw err;
 
-					// Read diff image
-					fs.readFile('diff.png', function(err, squid){
-						if (err) throw err;
-
-						var canvas = new Canvas(200,200);
-					  	var ctx = canvas.getContext('2d');
-
-						img = new Image;
-						img.src = squid;
-						ctx.drawImage(img, 0, 0, 10,10);
-
-					  	//writeScreenshot(data, 'out1.png');
-
-						console.log("kjnasdkjnasd!!!")
-
-						//ctx.drawImage(img, 0, 0, 10, 10);
-
-						console.log("knf2222")
-
-						var imgd = ctx.getImageData(0, 0, 10, 10);
-						console.log(imgd.data);
-
-						driver.executeScript("return document.title;").then(function(title) {
-
-						  	console.log(title);
+							console.log(stdout,stderr)
 
 							driver.close().then(function(){
 								done();
 							});
 						});
+					});
 				});
 			});
 		});
