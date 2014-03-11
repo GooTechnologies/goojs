@@ -406,8 +406,11 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
 	 * @returns {Quaternion} Self for chaining.
 	 */
-	 var slerp_work_quat = new Quaternion();
+	 var slerp_work_quat;
 	Quaternion.prototype.slerp = function (endQuat, changeAmnt) {
+		if(!slerp_work_quat) {
+			slerp_work_quat = new Quaternion();
+		}
 		slerp_work_quat.copy(endQuat);
 		Quaternion.slerp(this, endQuat, changeAmnt, slerp_work_quat);
 		this.copy(slerp_work_quat);
