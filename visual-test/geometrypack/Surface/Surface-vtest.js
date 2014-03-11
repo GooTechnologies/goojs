@@ -64,7 +64,7 @@ require([
 			0, 0, 2], 20);
 
 		// generator material
-		var generatorMaterial = Material.createMaterial(ShaderLib.simpleColored);
+		var generatorMaterial = new Material(ShaderLib.simpleColored);
 
 		// x generator
 		var xGeneratorEntity = goo.world.createEntity(xGenerator, generatorMaterial);
@@ -80,14 +80,14 @@ require([
 		var surfaceMeshData = xGenerator.mul(yGenerator);
 
 		// surface material
-		var surfaceMaterial = Material.createMaterial(ShaderLib.simpleLit);
+		var surfaceMaterial = new Material(ShaderLib.simpleLit);
 
 		// surface entity
 		var surfaceEntity = goo.world.createEntity(surfaceMeshData, surfaceMaterial);
 		surfaceEntity.addToWorld();
 
 		var normalsMeshData = surfaceMeshData.getNormalsMeshData(6);
-		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored);
+		var normalsMaterial = new Material(ShaderLib.simpleColored);
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
 		var normalsEntity = goo.world.createEntity(normalsMeshData, normalsMaterial);
 		normalsEntity.addToWorld();

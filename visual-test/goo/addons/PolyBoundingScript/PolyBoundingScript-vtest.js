@@ -55,7 +55,7 @@ require([
 		for (var i = 0; i < nBoxes; i++) {
 			for (var j = 0; j < nBoxes; j++) {
 
-				var material = Material.createMaterial(ShaderLib.simpleColored, '');
+				var material = new Material(ShaderLib.simpleColored, '');
 				material.uniforms.color = [
 					i / nBoxes,
 					j / nBoxes,

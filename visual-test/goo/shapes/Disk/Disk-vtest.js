@@ -16,7 +16,7 @@ require([
 	function diskDemo() {
 		var goo = V.initGoo();
 
-		var material = Material.createMaterial(ShaderLib.simpleLit);
+		var material = new Material(ShaderLib.simpleLit);
 
 		// add pointy disk
 		var pointyDiskMeshData = new Disk(64, 4, 8);

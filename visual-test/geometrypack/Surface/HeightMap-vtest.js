@@ -59,7 +59,7 @@ require([
 		var matrix = getHeightMap(64, 64);
 		var meshData = Surface.createFromHeightMap(matrix);
 
-		var material = Material.createMaterial(ShaderLib.texturedLit);
+		var material = new Material(ShaderLib.texturedLit);
 		var texture = new TextureCreator().loadTexture2D('../../goo/resources/check.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		var boxEntity = goo.world.createEntity(meshData, material);

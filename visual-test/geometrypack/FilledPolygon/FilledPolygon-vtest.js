@@ -55,7 +55,7 @@ require([
 			0, 2, 0];
 		var meshData = new FilledPolygon(verts);
 
-		var material = Material.createMaterial(ShaderLib.simple, '');
+		var material = new Material(ShaderLib.simple, '');
 		//var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
 		//material.setTexture('DIFFUSE_MAP', texture);
 		var boxEntity = goo.world.createEntity(meshData, material);

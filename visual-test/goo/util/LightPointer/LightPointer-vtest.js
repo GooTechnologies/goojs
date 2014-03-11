@@ -149,7 +149,7 @@ require([
 		// add spheres to cast light on
 		var sphereMeshData = ShapeCreator.createSphere(32, 32);
 
-		var sphereMaterial = Material.createMaterial(ShaderLib.simpleLit, 'SphereMaterial');
+		var sphereMaterial = new Material(ShaderLib.simpleLit, 'SphereMaterial');
 
 		var nSpheres = 15;
 		for (var i = 0; i < nSpheres; i++) {

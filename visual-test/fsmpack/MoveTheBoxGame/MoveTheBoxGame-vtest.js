@@ -104,7 +104,7 @@ require([
 
 	function addCharacter(goo, x, y, z) {
 		var boxMeshData = ShapeCreator.createBox(1, 1, 1);
-		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
+		var boxMaterial = new Material(ShaderLib.simpleLit, 'mat');
 		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial, [x, y, z]);
 		boxEntity.setComponent(getFSMComponent(boxEntity));
 		boxEntity.addToWorld();
@@ -122,7 +122,7 @@ require([
 		var color = getColor(x, y, z);
 
 		var lampMeshData = ShapeCreator.createSphere(32, 32);
-		var lampMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		var lampMaterial = new Material(ShaderLib.simpleColored, '');
 		lampMaterial.uniforms.color = color;
 		var lampEntity = goo.world.createEntity(lampMeshData, lampMaterial, 'lamp1', [x, y, z]);
 

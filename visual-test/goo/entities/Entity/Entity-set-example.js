@@ -22,7 +22,7 @@ require([
 
 	var box = new Box();
 	var sphere = new Sphere(32, 32);
-	var material = Material.createMaterial(ShaderLib.simpleLit);
+	var material = new Material(ShaderLib.simpleLit);
 	var light = new PointLight();
 	var script = function (entity, tpf) {
 		entity.transformComponent.transform.rotation.rotateX(tpf * 2);

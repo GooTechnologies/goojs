@@ -108,7 +108,7 @@ require([
 	}
 
 	var texture = new TextureCreator().loadTexture2D('../../resources/goo.png');
-	var material = Material.createMaterial(ShaderLib.texturedLit);
+	var material = new Material(ShaderLib.texturedLit);
 	material.setTexture('DIFFUSE_MAP', texture);
 	function createEntity(goo, meshData, ammoSettings, pos) {
 		var entity = goo.world.createEntity(meshData, material, pos);

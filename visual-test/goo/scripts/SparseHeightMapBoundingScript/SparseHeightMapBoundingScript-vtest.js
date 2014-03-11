@@ -65,7 +65,7 @@ require([
 		}
 
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored, '');
 			material.uniforms.color = [
 				Math.cos(k) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -84,7 +84,7 @@ require([
 
 	function addCube(goo, x, y, z) {
 		var cubeMeshData = ShapeCreator.createBox(1, 0.1, 1);
-		var cubeMaterial = Material.createMaterial(ShaderLib.textured, '');
+		var cubeMaterial = new Material(ShaderLib.textured, '');
 		var cubeEntity = goo.world.createEntity(cubeMeshData, cubeMaterial);
 		cubeEntity.transformComponent.transform.translation.set(x, y, z);
 		cubeEntity.addToWorld();
@@ -125,7 +125,7 @@ require([
 		var matrix = getMatrix(sparseHeightMapBoundingScript, 128);
 		var meshData = Surface.createFromHeightMap(matrix);
 
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		var material = new Material(ShaderLib.simpleLit, '');
 		//material.wireframe = true;
 		var surfaceEntity = goo.world.createEntity(meshData, material, '');
 		surfaceEntity.transformComponent.setUpdated();

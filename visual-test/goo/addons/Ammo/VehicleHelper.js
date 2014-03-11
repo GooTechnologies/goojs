@@ -97,7 +97,7 @@ define([
 		this.addRearWheel( [-bound.xExtent, 0.0, -bound.zExtent]);
 	};
 	VehicleHelper.prototype.createDebugTire = function(pos, isFrontWheel) {
-		var material = Material.createMaterial(ShaderLib.simpleLit);
+		var material = new Material(ShaderLib.simpleLit);
 		if( isFrontWheel) {
 			material.uniforms.materialAmbient = [1,0,0,1];
 		}

@@ -50,12 +50,12 @@ require([
 
 		var latheMeshData = section.lathe(20);
 
-		var material = Material.createMaterial(ShaderLib.simpleLit);
+		var material = new Material(ShaderLib.simpleLit);
 		var latheEntity = goo.world.createEntity(latheMeshData, material);
 		latheEntity.addToWorld();
 
 		var normalsMeshData = latheMeshData.getNormalsMeshData(4);
-		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored);
+		var normalsMaterial = new Material(ShaderLib.simpleColored);
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
 		var normalsEntity = goo.world.createEntity(normalsMeshData, normalsMaterial);
 		normalsEntity.addToWorld();

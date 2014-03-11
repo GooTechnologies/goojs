@@ -59,7 +59,7 @@ define([
 		].join('\n')
 	};
 
-	var jointMaterial = Material.createMaterial(skeletonShaderDef);
+	var jointMaterial = new Material(skeletonShaderDef);
 	jointMaterial.depthState.enabled = false;
 	jointMaterial.blendState.blending = 'CustomBlending';
 	jointMaterial.uniforms.color = [1.0, 0.0, 0.0, 0.2];
@@ -69,7 +69,7 @@ define([
 		transform : new Transform()
 	};
 
-	var boneMaterial = Material.createMaterial(skeletonShaderDef);
+	var boneMaterial = new Material(skeletonShaderDef);
 	boneMaterial.depthState.enabled = false;
 	boneMaterial.blendState.blending = 'CustomBlending';
 	boneMaterial.shader.uniforms.color = [0.0, 1.0, 0.0, 0.1];
