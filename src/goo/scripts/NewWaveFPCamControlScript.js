@@ -33,16 +33,32 @@ define([
 			key: 'domElement'
 		}, {
 			key: 'turnSpeedHorizontal',
-			'default': 0.01
+			'default': 0.01,
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1
 		}, {
 			key: 'turnSpeedVertical',
-			'default': 0.01
+			'default': 0.01,
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1
 		}, {
 			key: 'maxAscent',
-			'default': 89.95 * MathUtils.DEG_TO_RAD
+			'default': 89,
+			type: 'int',
+			control: 'slider',
+			min: -89,
+			max: 89
 		}, {
 			key: 'minAscent',
-			'default': -89.95 * MathUtils.DEG_TO_RAD
+			'default': -89,
+			type: 'int',
+			control: 'slider',
+			min: -89,
+			max: 89
 		}, {
 			key: 'domElement'
 		}]

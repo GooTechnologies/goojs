@@ -6,7 +6,9 @@ define([
 	'goo/scripts/FlyControlScript',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/BasicControlScript',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+
+	'goo/scripts/NewWaveFPCamControlScript'
 ],
 /** @lends */
 function(
@@ -63,7 +65,7 @@ function(
 
 			// first treat the oldstyle loading
 			if (config.className) {
-				if (!script.run) { 
+				if (!script.run) {
 					var name = config.className;
 					if (ScriptHandler.scripts[name] instanceof Function) {
 						script = that._objects[ref] = new ScriptHandler.scripts[name](config.options);

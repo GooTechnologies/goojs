@@ -35,7 +35,9 @@ define(['goo/entities/systems/System'],
 	};
 
 	ScriptSystem.prototype.deleted = function (entity) {
-		entity.scriptComponent.cleanup();
+		if (entity.scriptComponent) {
+			entity.scriptComponent.cleanup();
+		}
 	};
 
 	return ScriptSystem;

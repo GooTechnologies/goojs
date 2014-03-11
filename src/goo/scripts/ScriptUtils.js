@@ -24,7 +24,7 @@ define([], function () {
 	 */
 	ScriptUtils.fillDefaultNames = function (specs) {
 		function getNameFromKey(key) {
-			var capitalisedKey = key.toUpperCase(0) + key.substr(1);
+			var capitalisedKey = key[0].toUpperCase() + key.slice(1);
 			return capitalisedKey.replace(/([A-Z])/g, ' $1');
 		}
 
