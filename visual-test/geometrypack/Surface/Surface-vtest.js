@@ -15,7 +15,8 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/geometrypack/PolyLine'
+	'goo/geometrypack/PolyLine',
+	'../../goo/lib/V'
 ], function (
 	GooRunner,
 	World,
@@ -38,96 +39,57 @@ require([
 	) {
 	'use strict';
 
-	function surfaceDemo(goo) {
-		var xGenerator = PolyLine.fromCubicSpline([
-			0, 0, 0,
-			1, 0, 0,
-			1, 0.5, 0,
-			0, 1, 0,
-			-1, 1.5, 0,
-			-1, 2, 0,
-			0, 2, 0], 20);
-		/*
-		var xGenerator = PolyLine.fromCubicSpline([
-			0, 0, 0,
-			1, 0, 0,
-			1, 0.5, 0,
-			0, 1, 0], 20);
-        */
-		var yGenerator = PolyLine.fromCubicSpline([
-			0, 0, 0,
-			1, 0, 0,
-			1, 0, 0.5,
-			0, 0, 1,
-			-1, 0, 1.5,
-			-1, 0, 2,
-			0, 0, 2], 20);
+	var goo = V.initGoo();
+	var world = goo.world;
 
-		// generator material
-		var generatorMaterial = new Material(ShaderLib.simpleColored);
+	var xGenerator = PolyLine.fromCubicSpline([
+		0, 0, 0,
+		1, 0, 0,
+		1, 0.5, 0,
+		0, 1, 0,
+		-1, 1.5, 0,
+		-1, 2, 0,
+		0, 2, 0], 20);
+	/*
+	 var xGenerator = PolyLine.fromCubicSpline([
+	 0, 0, 0,
+	 1, 0, 0,
+	 1, 0.5, 0,
+	 0, 1, 0], 20);
+	 */
+	var yGenerator = PolyLine.fromCubicSpline([
+		0, 0, 0,
+		1, 0, 0,
+		1, 0, 0.5,
+		0, 0, 1,
+		-1, 0, 1.5,
+		-1, 0, 2,
+		0, 0, 2], 20);
 
-		// x generator
-		var xGeneratorEntity = goo.world.createEntity(xGenerator, generatorMaterial);
-		xGeneratorEntity.transformComponent.transform.translation.setd(-1, 0, 0);
-		xGeneratorEntity.addToWorld();
+	// generator material
+	var generatorMaterial = new Material(ShaderLib.simpleColored);
 
-		// y generator
-		var yGeneratorEntity = goo.world.createEntity(yGenerator, generatorMaterial);
-		yGeneratorEntity.transformComponent.transform.translation.setd(-1, 0, 0);
-		yGeneratorEntity.addToWorld();
+	// x generator
+	world.createEntity(xGenerator, generatorMaterial, [-1, -1, 0]).addToWorld();
 
-		// surface mesh data
-		var surfaceMeshData = xGenerator.mul(yGenerator);
+	// y generator
+	world.createEntity(yGenerator, generatorMaterial, [-1, -1, 0]).addToWorld();
 
-		// surface material
-		var surfaceMaterial = new Material(ShaderLib.simpleLit);
+	// surface mesh data
+	var surfaceMeshData = xGenerator.mul(yGenerator);
 
-		// surface entity
-		var surfaceEntity = goo.world.createEntity(surfaceMeshData, surfaceMaterial);
-		surfaceEntity.addToWorld();
+	// surface material
+	var surfaceMaterial = new Material(ShaderLib.simpleLit);
 
-		var normalsMeshData = surfaceMeshData.getNormalsMeshData(6);
-		var normalsMaterial = new Material(ShaderLib.simpleColored);
-		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
-		var normalsEntity = goo.world.createEntity(normalsMeshData, normalsMaterial);
-		normalsEntity.addToWorld();
+	// surface entity
+	world.createEntity(surfaceMeshData, surfaceMaterial, [0, -1, 0]).addToWorld();
 
-		var light1 = new PointLight();
-		//light1.color = [1.0, 0.3, 0.0];
-		var light1Entity = goo.world.createEntity('light');
-		light1Entity.setComponent(new LightComponent(light1));
-		light1Entity.transformComponent.transform.translation.set(10, 10, 10);
-		light1Entity.addToWorld();
+	var normalsMeshData = surfaceMeshData.getNormalsMeshData(6);
+	var normalsMaterial = new Material(ShaderLib.simpleColored);
+	normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
+	world.createEntity(normalsMeshData, normalsMaterial, [0, -1, 0]).addToWorld();
 
-		var light2 = new PointLight();
-		//light2.color = [1.0, 0.3, 0.0];
-		var light2Entity = goo.world.createEntity('light');
-		light2Entity.setComponent(new LightComponent(light2));
-		light2Entity.transformComponent.transform.translation.set(-10, -10,  -10);
-		light2Entity.addToWorld();
+	V.addLights();
 
-		// camera
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity('CameraEntity');
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(300, Math.PI / 2, 0)
-		}));
-		cameraEntity.setComponent(scripts);
-	}
-
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		surfaceDemo(goo);
-	}
-
-	init();
+	V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 });
