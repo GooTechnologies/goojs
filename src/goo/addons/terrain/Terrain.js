@@ -96,6 +96,9 @@ function(
 
 		this.normalMap = new RenderTarget(size, size);
 
+		this.detailmapPass = new FullscreenPass(detailShader);
+		this.detailMap = new RenderTarget(1024, 1024);
+
 		this.textures = [];
 		this.texturesBounce = [];
 		for (var i = 0; i < count; i++) {
@@ -236,13 +239,20 @@ function(
 			material.setTexture('GROUND_MAP4', terrainTextures.ground4);
 			material.setTexture('GROUND_MAP5', terrainTextures.ground5);
 			material.setTexture('STONE_MAP', terrainTextures.stone);
-			// material.setTexture('GROUND_MAP1_NORMALS', grass1n);
-			// material.setTexture('GROUND_MAP2_NORMALS', grass2n);
-			// material.setTexture('GROUND_MAP4_NORMALS', stonen);
 
 			var terrainPickingMaterial = this.clipmaps[i].terrainPickingMaterial;
 			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
 		}
+
+		var material = this.detailmapPass.material;
+		material.setTexture('NORMAL_MAP', this.normalMap);
+		material.setTexture('SPLAT_MAP', this.splat);
+		material.setTexture('GROUND_MAP1', terrainTextures.ground1);
+		material.setTexture('GROUND_MAP2', terrainTextures.ground2);
+		material.setTexture('GROUND_MAP3', terrainTextures.ground3);
+		material.setTexture('GROUND_MAP4', terrainTextures.ground4);
+		material.setTexture('GROUND_MAP5', terrainTextures.ground5);
+		material.setTexture('STONE_MAP', terrainTextures.stone);
 
 		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
@@ -508,6 +518,8 @@ function(
 		}
 
 		this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
+
+		this.detailmapPass.render(this.renderer, this.detailMap, this.splat);
 	};
 
 	Terrain.prototype.update = function(pos) {
@@ -710,9 +722,6 @@ function(
 			groundMap4: 'GROUND_MAP4',
 			groundMap5: 'GROUND_MAP5',
 			stoneMap: 'STONE_MAP',
-			// groundMapN1: 'GROUND_MAP1_NORMALS',
-			// groundMapN2: 'GROUND_MAP2_NORMALS',
-			// groundMapN4: 'GROUND_MAP4_NORMALS',
 			fogSettings: function() {
 				return ShaderBuilder.FOG_SETTINGS;
 			},
@@ -749,7 +758,6 @@ function(
 				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
 				'vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw;',
 
-				// 'vec4 heightCol = texture2DLod(heightMap, worldPos.xz * 1.0 / resolution, 0.0);',
 				'vec4 heightCol = texture2D(heightMap, coord);',
 				'float zf = heightCol.r;',
 				'float zd = heightCol.g;',
@@ -757,7 +765,7 @@ function(
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
 				'float z = mix(zf, zd, alpha.x);',
-				'z = coord.x < 0.0 || coord.x > 1.0 || coord.y < 0.0 || coord.y > 1.0 ? -1000.0 : z;',
+				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
 				'alphaval = vec4(zf, zd, alpha.x, z);',
 
 				'worldPos.y = z * resolution.x;',
@@ -781,9 +789,6 @@ function(
 				'uniform sampler2D groundMap4;',
 				'uniform sampler2D groundMap5;',
 				'uniform sampler2D stoneMap;',
-				// 'uniform sampler2D groundMapN1;',
-				// 'uniform sampler2D groundMapN2;',
-				// 'uniform sampler2D groundMapN4;',
 
 				'uniform vec2 fogSettings;',
 				'uniform vec3 fogColor;',
@@ -808,27 +813,14 @@ function(
 				// '}',
 
 				'void main(void) {',
+					'if (alphaval.w < -1000.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 					'vec2 coord = mapcoord * 96.0;',
 					'vec4 final_color = vec4(1.0);',
 
-					// 'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0));',
 					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
 					'N.y = 0.1;',
-					// 'N.y = 0.25;',
-					// 'N.z = -N.z;',
 					'N = normalize(N);',
-
-					// 'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-					// 'slope = smoothstep(0.0, 0.1, slope);',
-
-					// 'const float NMUL = 1.2;',
-					// 'vec3 n1 = texture2D(groundMapN1, coord).xyz * vec3(2.0) - vec3(1.0);', 'n1.z = NMUL;',
-					// 'vec3 n2 = texture2D(groundMapN2, coord).xyz * vec3(2.0) - vec3(1.0);', 'n2.z = NMUL;',
-					// 'vec3 mountainN = texture2D(groundMapN4, coord).xyz * vec3(2.0) - vec3(1.0);', 'mountainN.z = NMUL;',
-					// 'vec3 tangentNormal = mix(n1, n2, smoothstep(0.0, 1.0, 1.0));',
-					// 'tangentNormal = mix(tangentNormal, mountainN, slope);',
-					// 'N = normalize(vec3(N.x + tangentNormal.x, N.y, N.z + tangentNormal.y));',
 
 					'vec4 splat = texture2D(splatMap, mapcoord);',
 					'vec4 g1 = texture2D(groundMap1, coord);',
@@ -837,11 +829,6 @@ function(
 					'vec4 g4 = texture2D(groundMap4, coord);',
 					'vec4 g5 = texture2D(groundMap5, coord);',
 					'vec4 stone = texture2D(stoneMap, coord);',
-
-					// 'final_color.rgb = blend(g1, 1.0 - splat.r, g2, splat.r);',
-					// 'final_color.rgb = blend(final_color, 1.0 - splat.g, g3, splat.g);',
-					// 'final_color.rgb = blend(final_color, 1.0 - splat.b, g4, splat.b);',
-					// 'final_color.rgb = blend(final_color, 1.0 - splat.a, g5, splat.a);',
 
 					'final_color = mix(g1, g2, splat.r);',
 					'final_color = mix(final_color, g3, splat.g);',
@@ -858,12 +845,6 @@ function(
 					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 
 					'gl_FragColor = final_color;',
-
-					// 'gl_FragColor.rgb = vec3(abs(alphaval.x - alphaval.y)) * 0.1;',
-
-					// 'gl_FragColor.r += alphaval.z >= 1.0 ? 0.5 : 0.0;',
-					// 'gl_FragColor.g += alphaval.z * 0.25;',
-					// 'gl_FragColor.b += alphaval.z <= 0.0 ? 0.5 : 0.0;',
 				'}'
 			].join('\n');
 		}
