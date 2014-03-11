@@ -71,9 +71,9 @@ function(
 		material.renderQueue = 3001;
 		this.material = material;
 
-		this.patchSize = 12;
-		this.patchDensity = 15;
-		this.gridSize = 9;
+		this.patchSize = 15;
+		this.patchDensity = 19;
+		this.gridSize = 7;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);

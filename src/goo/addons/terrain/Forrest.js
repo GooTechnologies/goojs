@@ -82,12 +82,14 @@ function(
 		// material.blendState.blending = 'CustomBlending';
 		material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 1.0];
 		material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1.0];
-		material.renderQueue = 3000;
+		material.renderQueue = 2001;
 		this.material = material;
 
-		this.patchSize = 50; //25;
-		this.patchDensity = 8; //5;
-		this.gridSize = 11;
+		this.patchSize = 64;
+		this.patchDensity = 10;
+		this.gridSize = 7;
+		this.minDist = 0;
+		// this.minDist = 1.5;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
@@ -155,19 +157,30 @@ function(
 
 				var diffX = patchX - this.currentX;
 				var diffZ = patchZ - this.currentZ;
-				if (diffX >= 0 && diffX < this.gridSize && diffZ >= 0 && diffZ < this.gridSize) {
-					continue;
-				}
 
 				patchX -= this.gridSizeHalf;
 				patchZ -= this.gridSizeHalf;
 				var modX = MathUtils.moduloPositive(patchX, this.gridSize);
 				var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
+				var entity = this.grid[modX][modZ];
+
+				var testX = Math.abs(x - this.gridSizeHalf);
+				var testZ = Math.abs(z - this.gridSizeHalf);
+
+				if (entity.meshRendererComponent.hidden === false && diffX >= 0 && diffX < this.gridSize && diffZ >= 0 && diffZ < this.gridSize) {
+					if (testX < this.minDist && testZ < this.minDist) {
+						entity.meshRendererComponent.hidden = true;
+					}
+					continue;
+				}
+
+				if (testX < this.minDist && testZ < this.minDist) {
+					entity.meshRendererComponent.hidden = true;
+					continue;
+				}
 
 				patchX *= this.patchSize;
 				patchZ *= this.patchSize;
-
-				var entity = this.grid[modX][modZ];
 				var meshData = this.createPatch(patchX, patchZ);
 				if (!meshData) {
 					entity.meshRendererComponent.hidden = true;
@@ -271,60 +284,6 @@ function(
 
 		return meshData;
 	};
-
-	// Forrest.prototype.createBase = function(type) {
-	// 	var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
-	// 	attributeMap.BASE = MeshData.createAttribute(1, 'Float');
-	// 	attributeMap.OFFSET = MeshData.createAttribute(2, 'Float');
-	// 	var meshData = new MeshData(attributeMap, 8, 12);
-
-	// 	meshData.getAttributeBuffer(MeshData.POSITION).set([
-	// 		0, -type.h * 0.1, 0, 
-	// 		0, -type.h * 0.1, 0, 
-	// 		0, -type.h * 0.1, 0, 
-	// 		0, -type.h * 0.1, 0,
-
-	// 		-type.w * 0.4, type.h * 0.5, -type.w * 0.4, 
-	// 		type.w * 0.4, type.h * 0.5, -type.w * 0.4, 
-	// 		type.w * 0.4, type.h * 0.5, type.w * 0.4, 
-	// 		-type.w * 0.4, type.h * 0.5, type.w * 0.4
-	// 	]);
-	// 	meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([
-	// 		type.tx, type.ty,
-	// 		type.tx, type.ty + type.th,
-	// 		type.tx + type.tw, type.ty + type.th,
-	// 		type.tx + type.tw, type.ty,
-
-	// 		type.tx, type.ty + type.th*0.6,
-	// 		type.tx, type.ty + type.th*0.9,
-	// 		type.tx + type.tw, type.ty + type.th*0.9,
-	// 		type.tx + type.tw, type.ty + type.th*0.6
-	// 	]);
-	// 	meshData.getAttributeBuffer('BASE').set([
-	// 		0, type.h, type.h, 0,
-
-	// 		type.h*0.5, type.h*0.5, type.h*0.5, type.h*0.5
-	// 	]);
-	// 	meshData.getAttributeBuffer('OFFSET').set([
-	// 		-type.w*0.5, 0, 
-	// 		-type.w*0.5, type.h, 
-	// 		type.w*0.5, type.h, 
-	// 		type.w*0.5, 0,
-
-	// 		0, 0, 
-	// 		0, 0, 
-	// 		0, 0, 
-	// 		0, 0
-	// 	]);
-
-	// 	meshData.getIndexBuffer().set([
-	// 		0, 3, 1, 1, 3, 2,
-
-	// 		4, 7, 5, 5, 7, 6
-	// 	]);
-
-	// 	return meshData;
-	// };
 
 	var vegetationShader = {
 		processors: [
