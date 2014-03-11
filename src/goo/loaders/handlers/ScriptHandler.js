@@ -6,7 +6,8 @@ define([
 	'goo/scripts/FlyControlScript',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/BasicControlScript',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/scripts/ScriptUtils'
 ],
 /** @lends */
 function(
@@ -17,7 +18,8 @@ function(
 	FlyControlScript,
 	WASDControlScript,
 	BasicControlScript,
-	PromiseUtil
+	PromiseUtil,
+	ScriptUtils
 ) {
 	"use strict";
 
@@ -55,7 +57,6 @@ function(
 	}
 
 	ScriptHandler.prototype.update = function(ref, config, options) {
-		var script;
 		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(script) {
 			// first treat the oldstyle loading
 			if (config.className) {
@@ -81,33 +82,45 @@ function(
 				}
 
 				// create this script collection if it does not exist yet
-				if (!window._gooScripts) {
-					// this holds scrips in 'compiled' form
-					window._gooScripts = {};
+				if (!window._gooScriptFactories) {
+					// this holds script factories in 'compiled' form
+					window._gooScriptFactories = {};
 				}
 
-				var fullScript = [
-					'window._gooScripts["' + config.id + '"] = (function() { "use strict"; ',
+				// get a script factory in string form
+				var scriptFactoryStr = [
+					"window._gooScriptFactories['" + config.id + "'] = function () { 'use strict';",
 					config.body,
-					'return {',
-					'\tsetup: setup,',
-					'\tupdate: update,',
-					'\tcleanup: cleanup',
-					'};',
-					'})();'
+
+					//! AT: these might throw undefined reference errors
+					'\treturn {',
+					'\t\texternal: external,',
+					'\t\tsetup: setup,',
+					'\t\tupdate: update,',
+					'\t\tcleanup: cleanup',
+					'\t};',
+					'};'
 				].join('\n');
 
 				// create the element and add it to the page so the user can debug it
 				// addition and execution of the script happens synchronously
 				var newScriptElement = document.createElement('script');
 				newScriptElement.id = ScriptHandler.htmlELementIdPrefix + config.id;
-				newScriptElement.innerHTML = fullScript;
+				newScriptElement.innerHTML = scriptFactoryStr;
 				document.body.appendChild(newScriptElement);
 			}
 
-			script = window._gooScripts[config.id];
+			// get an instance of the script
+			script = window._gooScriptFactories[config.id]();
 
+			// assign original parameters
 			script.parameters = config.parameters;
+
+			// fill the rest of the parameters with default values
+			ScriptUtils.fillDefaultValues(script.parameters, script.external.parameters);
+
+			// generate names from external variable names
+			ScriptUtils.fillDefaultNames(script.external.parameters);
 
 			return script;
 		});

@@ -5,8 +5,10 @@ define ([
 ], function (ScriptUtils) {
 	'use strict';
 
+	// the collection of scripts
 	var _scripts = {};
 
+	// the static class which just holds the following methods
 	var Scripts = {};
 
 	Scripts.register = function (external, cons) {
@@ -42,4 +44,4 @@ define ([
 	*/
 
 	return Scripts;
-})
+});
