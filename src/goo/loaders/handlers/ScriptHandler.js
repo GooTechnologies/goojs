@@ -7,7 +7,12 @@ define([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/BasicControlScript',
 	'goo/util/PromiseUtil',
-	'goo/scripts/ScriptUtils'
+	'goo/util/ObjectUtil',
+
+	'goo/scripts/ScriptUtils',
+	'goo/scripts/Scripts',
+
+	'goo/scripts/NewWaveFPCamControlScript'
 ],
 /** @lends */
 function(
@@ -19,7 +24,10 @@ function(
 	WASDControlScript,
 	BasicControlScript,
 	PromiseUtil,
-	ScriptUtils
+	_,
+
+	ScriptUtils,
+	Scripts
 ) {
 	"use strict";
 
@@ -56,17 +64,72 @@ function(
 		});
 	}
 
-	ScriptHandler.prototype.update = function(ref, config, options) {
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(script) {
+	ScriptHandler.prototype._create = function(ref, config, options) {
+		if (!config) {
+			return ConfigHandler.prototype._create.call(this, ref);
+		}
+		if (config.className) {
+			var script = Scripts.create(config.className);
+			if (!script) {
+				throw 'Script was not recognized';
+			}
+			return this._objects[ref] = script;
+		}
+	};
+
+	ScriptHandler.prototype._prepare = function(config) {
+		config.options = config.options || {};
+		_.defaults(config.options, this._objects[config.id].parameters);
+	};
+
+	ScriptHandler.prototype._remove = function(ref) {
+		var script = this._objects[ref];
+		if (script && script.cleanup) {
+			script.cleanup();
+			delete this._objects[ref];
+		}
+	};
+
+	ScriptHandler.prototype._update = function(ref, config, options) {
+		if (!config) {
+			this._remove(ref);
+			PromiseUtil.createDummyPromise(null);
+		}
+		if (config.className !== 'OrbitNPanControlScript') {
+			var script;
+			if (!this._objects[ref]) {
+				script = this._create(ref, config, options);
+			} else if (this._objects[ref].external.name !== config.className) {
+				script = this._create(ref, config, options);
+			} else {
+				script = this._objects[ref];
+			}
+			this._prepare(config);
+			_.extend(script.parameters, config.options);
+			return PromiseUtil.createDummyPromise(script);
+		}
+		var that = this;
+		var script;
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
+			if (!config) { return; }
+
 			// first treat the oldstyle loading
 			if (config.className) {
-				var name = config.className;
-				script = null;
-				if (ScriptHandler.scripts[name] instanceof Function) {
-					script = new ScriptHandler.scripts[name](config.options);
+				if (!script.run) {
+					var name = config.className;
+					if (ScriptHandler.scripts[name] instanceof Function) {
+						script = that._objects[ref] = new ScriptHandler.scripts[name](config.options);
+						script.id = config.id;
+					}
+				}
+				else if (script.updateConfig) {
+					script.updateConfig(config.options);
 				}
 
-				return PromiseUtil.createDummyPromise(script);
+				if (options.script && options.script.disabled) {
+					script.enabled = script.active = false;
+				}
+				return script;
 			} // else ...
 
 

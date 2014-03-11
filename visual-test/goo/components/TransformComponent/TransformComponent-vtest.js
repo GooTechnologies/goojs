@@ -28,7 +28,7 @@ require([
 
 	function getColoredMaterial(r, g, b) {
 		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		material.materialState.diffuse = [r, g, b, 1];
+		material.uniforms.materialDiffuse = [r, g, b, 1];
 		return material;
 	}
 

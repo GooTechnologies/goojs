@@ -1,5 +1,6 @@
 define([
 	'goo/loaders/handlers/TextureHandler',
+	'goo/sound/AudioContext',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/rsvp'
@@ -7,11 +8,12 @@ define([
 /** @lends */
 function(
 	TextureHandler,
+	AudioContext,
 	PromiseUtil,
 	_,
 	RSVP
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Ajax helper class
@@ -109,29 +111,27 @@ function(
 		}
 
 		if (this._cache[path] && !reload) {
-			return PromiseUtil.createDummyPromise(this._cache[path]).then(function(config) {
-				if (typeInGroup(type, 'bundle')) {
-					that.prefill(config, reload);
-					return null;
-				}
-				return config;
-			});
+			if (typeInGroup(type, 'bundle')) {
+				this.prefill(this._cache[path], reload);
+			}
+			if (this._cache[path] instanceof RSVP.Promise) {
+				return this._cache[path];
+			} else {
+				return PromiseUtil.createDummyPromise(this._cache[path]);
+			}
 		}
 
-		if (this._rootPath) {
-			path = this._rootPath + path;
-		}
-
+		var url = (this._rootPath) ? this._rootPath + path : path;
 		if (typeInGroup(type, 'image')) {
-			return this._cache[path] = this._loadImage(path);
+			return this._cache[path] = this._loadImage(url);
 		} else if (typeInGroup(type, 'video')) {
-			return this._cache[path] = this._loadVideo(path);
+			return this._cache[path] = this._loadVideo(url);
 		} else if (typeInGroup(type, 'audio')) {
-			return this._cache[path] = PromiseUtil.createDummyPromise(path);
+			return this._cache[path] = this._loadAudio(url);
 		}
 
 		var ajaxProperties = {
-			url: path
+			url: url
 		};
 
 		if (typeInGroup(type, 'binary')) {
@@ -143,7 +143,7 @@ function(
 			if (typeInGroup(type, 'bundle')) {
 				var bundle = JSON.parse(request.response);
 				that.prefill(bundle, reload);
-				return null;
+				return bundle;
 			}
 			if (typeInGroup(type, 'json')) {
 				return JSON.parse(request.response);
@@ -193,7 +193,7 @@ function(
 
 	Ajax.prototype._loadVideo = function (url) {
 		var video = document.createElement('video');
-
+		video.crossOrigin = 'anonymous';
 		var promise = new RSVP.Promise();
 		video.addEventListener('canplay', function() {
 			video.dataReady = true;
@@ -203,7 +203,22 @@ function(
 		video.addEventListener('onerror', function(e) {
 			promise.reject('Coult not load video from ' + url + ', ' + e);
 		}, false);
+
+		video.src = url;
 		return promise;
+	};
+
+	Ajax.prototype._loadAudio = function (url) {
+		var ajaxProperties = {
+			url: url,
+			responseType: Ajax.ARRAY_BUFFER
+		};
+		return this.get(ajaxProperties).then(function(request) {
+			return request.response;
+		})
+		.then(null, function(err) {
+			throw new Error('Could not load data from ' + url + ', ' + err);
+		});
 	};
 
 	// TODO Put this somewhere nicer
@@ -242,7 +257,9 @@ function(
 			'gif'
 		],
 		video: [
-			'mp4'
+			'mp4',
+			'ogv',
+			'webm'
 		],
 		binary: [
 			'dat',

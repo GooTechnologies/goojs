@@ -1,6 +1,6 @@
 define([
-	'goo/math/Vector2', 
-	'goo/math/Vector3', 
+	'goo/math/Vector2',
+	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus'
 	],
@@ -32,7 +32,7 @@ function (
 		minAzimuth: 90 * MathUtils.DEG_TO_RAD,
 		maxAzimuth: 270 * MathUtils.DEG_TO_RAD,
 
-		releaseVelocity: true,
+		releaseVelocity: false,
 		invertedX: false,
 		invertedY: false,
 		invertedWheel: true,
@@ -80,6 +80,7 @@ function (
 	 */
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
+
 
 		//! AT: this looks a lot like a defaults/extend function that can be extracted somewhere else
 		for(var key in _defaults) {
@@ -130,6 +131,25 @@ function (
 			this.lastTimeMoved = Date.now() + (properties.moveInitialDelay - this.moveInterval);
 		}
 	}
+
+	OrbitCamControlScript.prototype.updateConfig = function(properties) {
+		for(var key in properties) {
+			if(typeof(_defaults[key]) === 'boolean') {
+				this[key] = !!properties[key];
+			}
+			else if (!isNaN(_defaults[key]) && !isNaN(properties[key])) {
+				this[key] = properties[key];
+			}
+			else if(_defaults[key] instanceof Vector3) {
+				this[key].set(properties[key]);
+			}
+			else {
+				this[key] = properties[key];
+			}
+		}
+		this.targetSpherical.setv(this.spherical);
+		this.dirty = true;
+	};
 
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
@@ -316,8 +336,6 @@ function (
 		}
 	};
 
-	var helpVector = new Vector3();
-
 	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
 		if (this.demoMode) {
 			var now = Date.now();
@@ -392,12 +410,11 @@ function (
 		// set our component updated.
 		transformComponent.setUpdated();
 
-		transformComponent.transform.rotation.toAngles(helpVector);
 		SystemBus.emit('goo.cameraPositionChanged', {
 			spherical: this.spherical.data,
 			translation: transformComponent.transform.translation.data,
-			rotation: helpVector.data,
-			lookAtPoint: this.lookAtPoint.data
+			lookAtPoint: this.lookAtPoint.data,
+			id: entity.id
 		});
 	};
 

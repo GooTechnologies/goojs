@@ -18,6 +18,7 @@ function(
 
 	TweenMoveAction.external = {
 		name: 'Tween Move',
+		type: 'animation',
 		description: 'Smoothly transitions between two locations',
 		canTransition: true,
 		parameters: [{

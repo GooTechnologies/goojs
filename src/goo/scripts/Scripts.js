@@ -1,7 +1,5 @@
 define ([
 	'goo/scripts/ScriptUtils',
-	'goo/scripts/NewWaveFPCamControlScript',
-	'goo/scripts/NewWaveRotationScript'
 ], function (ScriptUtils) {
 	'use strict';
 
@@ -19,6 +17,10 @@ define ([
 
 	Scripts.getScript = function (name) {
 		return _scripts[name];
+	};
+
+	Scripts.create = function (name) {
+		return _scripts[name].cons();
 	};
 
 	Scripts.allScripts = function () {

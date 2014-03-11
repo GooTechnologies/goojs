@@ -81,9 +81,10 @@ define([
 					materials: {}
 				};
 				for (var i = 2; i >= 0; i--) {
-					config.materials[this.randomRef()] = {
+					var material = this.material();
+					config.materials[material.id] = {
 						sortValue: Math.random(),
-						materialRef: this.material().id
+						materialRef: material.id
 					};
 				}
 				return config;
@@ -102,11 +103,14 @@ define([
 			}
 		},
 		attachChild: function(parent, child) {
-			if (!parent.components.transform.childRefs) {
-				parent.components.transform.childRefs = {};
+			if (!parent.components.transform.children) {
+				parent.components.transform.children = {};
 			}
-			var key = this.randomRef();
-			parent.components.transform.childRefs[key] = child.id;
+			var size = Object.keys(parent.components.transform.children).length;
+			parent.components.transform.children[child.id] = {
+				entityRef: child.id,
+				sortValue: size
+			};
 		}
 	};
 });

@@ -5,7 +5,7 @@ define([
 function (
 	Vector2
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
@@ -148,7 +148,7 @@ function (
 					this.format = 'Alpha';
 				}
 			} else {
-				throw "Data textures need width and height";
+				throw 'Data textures need width and height';
 			}
 		} else if (data instanceof HTMLCanvasElement) {
 			this.image.dataReady = true;
@@ -160,6 +160,14 @@ function (
 			}
 		}
 		this.setNeedsUpdate();
+	};
+
+	/**
+	 * Releases the allocated texture
+	 * @param {WebGLRenderingContext} context
+	 */
+	Texture.prototype.destroy = function (context) {
+		context.deleteTexture(this.glTexture);
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];

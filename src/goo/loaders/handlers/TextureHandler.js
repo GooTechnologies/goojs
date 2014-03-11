@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/renderer/TextureCreator',
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/crunch/CrunchLoader',
@@ -13,7 +12,6 @@ define([
 /** @lends */
 function(
 	ConfigHandler,
-	TextureCreator,
 	Texture,
 	DdsLoader,
 	CrunchLoader,
@@ -23,7 +21,7 @@ function(
 	Util,
 	_
 ) {
-	"use strict";
+	'use strict';
 
 	/*jshint eqeqeq: false, -W041 */
 	/**
@@ -110,9 +108,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated texture or null if removed
 	 */
-	TextureHandler.prototype.update = function(ref, config, options) {
+	TextureHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(texture) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(texture) {
 			if (!texture) { return; }
 			var ret;
 
@@ -131,9 +129,12 @@ function(
 			texture.offset.set(config.offset);
 			texture.repeat.set(config.repeat);
 
-			texture.flipY = config.flipY;
+			if (texture.flipY !== config.flipY) {
+				texture.flipY = config.flipY;
+				texture.setNeedsUpdate();
+			}
 
-			texture.setNeedsUpdate();
+			texture.updateCallback = null;
 
 			var imageRef = config.imageRef;
 			if (imageRef) {
@@ -142,7 +143,7 @@ function(
 				if (Loader) {
 					// Special (dds, tga, crn)
 					texture.a = imageRef;
-					ret = that.getConfig(imageRef).then(function(data) {
+					ret = that.loadObject(imageRef).then(function(data) {
 						if (data && data.preloaded) {
 							_.extend(texture.image, data.image);
 							texture.format = data.format;
@@ -156,27 +157,30 @@ function(
 				} else if(['jpg', 'jpeg', 'png', 'gif'].indexOf(type) !== -1) {
 					// Images
 					// Beware of image caching but should be handled by Ajax
-					ret = that.getConfig(imageRef, options).then(function(image) {
-						texture.setImage(image);
+					ret = that.loadObject(imageRef, options).then(function(image) {
+						if(texture.image !== image) {
+							texture.setImage(image);
+						}
 						return texture;
 					});
-				} else if (type === 'mp4') {
+				} else if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
 					// Video
-					ret = that.getConfig(imageRef, options).then(function(video) {
+					ret = that.loadObject(imageRef, options).then(function(video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
 						if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
 							texture.generateMipmaps = false;
 							texture.minFilter = 'BilinearNoMipMaps';
 						}
-						texture.setImage(imageRef);
+						texture.setImage(video);
+						texture.updateCallback = function () {
+							return !video.paused;
+						};
 						if (config.autoPlay === undefined || config.autoPlay) {
 							video.play();
 						}
 						return texture;
 					});
-					var video = document.createElement('video');
-					video.loop = (config.loop !== undefined) ? config.loop : true;
 				} else {
 					throw new Error('Unknown texture type');
 				}

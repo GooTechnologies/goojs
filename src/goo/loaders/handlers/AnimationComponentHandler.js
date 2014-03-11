@@ -66,6 +66,7 @@ function(
 			if (layersRef) {
 				p = that._load(layersRef, options).then(function(layers) {
 					component.layers = layers;
+					component._layersId = layersRef;
 				});
 				promises.push(p);
 			}

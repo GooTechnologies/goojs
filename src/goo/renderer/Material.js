@@ -13,6 +13,7 @@ function(
 	 * @param {{ vshader, fshader }} [shaderDefinition] Optional shader to associate with the material
 	 */
 	function Material(name, shaderDefinition) {
+		this.id = null;
 		/** Material name
 		 * @type {string}
 		 */

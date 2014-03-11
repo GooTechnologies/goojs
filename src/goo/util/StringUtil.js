@@ -19,6 +19,22 @@ define(function() {
 		return str.charAt(0).toLowerCase() + str.substring(1);
 	};
 
+	StringUtil.createUniqueId = function (type) {
+		var date = Date.now();
+		var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			// | 0 is a hack to floor a number, so this is a random number between 0 and 15
+			var randomNumber = (date + Math.random() * 16) % 16 | 0;
+			if (c == 'x') {
+				return randomNumber.toString(16);
+			} else {
+				// Set bit 6 and 7 to 0 and 1
+				return (randomNumber&0x3|0x8).toString(16)
+			}
+		});
+
+		return uuid + '.' + type;
+	};
+
 	/**
 	 * Returns the string from the beginning of the string until the specified stop string. The stop string
 	 * is not included in the returned string.
@@ -34,6 +50,21 @@ define(function() {
 			return string;
 		} else {
 			return string.slice(0, stopIndex);
+		}
+	};
+
+	/**
+	 * Returns the string from the last occurence of the stop string until the end. The stop string is not included in the result.
+	 * @param {string} string
+	 * @param {string} stopString
+	 * @returns {string}
+	 */
+	StringUtil.getAfterLast = function(string, stopString) {
+		var stopIndex = string.lastIndexOf(stopString);
+		if (stopIndex === -1) {
+			return string;
+		} else {
+			return string.slice(stopIndex + stopString.length, string.length);
 		}
 	};
 

@@ -43,5 +43,13 @@ define(
 		this._dataNeedsRefresh = true;
 	};
 
+	/**
+	 * Releases the allocated buffer
+	 * @param {WebGLRenderingContext} context
+	 */
+	BufferData.prototype.destroy = function (context) {
+		context.deleteBuffer(this.glBuffer);
+	};
+
 	return BufferData;
 });

@@ -20,10 +20,11 @@ define([
 	 * @private
 	 *
 	 */
-	function ComponentHandler(world, getConfig, updateObject) {
+	function ComponentHandler(world, getConfig, updateObject, loadObject) {
 		this.world = world;
 		this.getConfig = getConfig;
 		this.updateObject = updateObject;
+		this.loadObject = loadObject;
 	}
 
 	/**
@@ -60,10 +61,7 @@ define([
 	 * @private
 	 */
 	ComponentHandler.prototype._load = function(ref, options) {
-		var update = this.updateObject.bind(this);
-		return this.getConfig(ref, options).then(function(config) {
-			return update(ref, config, options);
-		});
+		return this.loadObject(ref, options);
 	};
 
 	/**

@@ -18,6 +18,7 @@ define([
 
 	TweenScaleAction.external = {
 		name: 'Tween Scale',
+		type: 'animation',
 		description: 'Smoothly scales the entity',
 		canTransition: true,
 		parameters: [{

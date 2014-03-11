@@ -7,28 +7,33 @@ define([
 
 	return {
 		scene: function(complex) {
-			var entityRefs = [];
+			var entities = {};
 			var components = complex ? ['transform', 'meshRenderer', 'meshData', 'animation', 'camera', 'light']: [];
 			for (var i = 0; i < 5; i++) {
-				entityRefs.push(this.entity(components).id);
+				var entity = this.entity(components);
+				entities[entity.id] = {
+					sortValue: i,
+					entityRef: entity.id
+				};
 			}
 			var scene = this.gooObject('scene', 'Dummy');
-			scene.entityRefs = entityRefs;
+			scene.entities = entities;
 			return scene;
 		},
 		project: function(complex) {
 			var project = this.gooObject('project', 'Dummy');
 			project.scenes = {};
 
-			var scene;
+			var sceneWrapper;
 			for (var i = 0; i < 3; i++) {
-				scene = {
+				var scene = this.scene(complex);
+				sceneWrapper = {
 					sortValue: Math.random(),
-					sceneRef: this.scene(complex).id
+					sceneRef: scene.id
 				};
-				project.scenes[this.randomRef()] = scene;
+				project.scenes[scene.id] = sceneWrapper;
 			}
-			project.mainSceneRef = scene.sceneRef;
+			project.mainSceneRef = sceneWrapper.sceneRef;
 			return project;
 		},
 		skybox: function(type) {

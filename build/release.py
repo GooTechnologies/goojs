@@ -24,11 +24,6 @@ else:
 grunt_command = 'node_modules/grunt-cli/bin/grunt'
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
 
-# building packs
-# Don't forget to add these packs at the bottom of the file!
-subprocess.check_call(['node', 'tools/buildPack.js', 'fsmpack', version])
-subprocess.check_call(['node', 'tools/buildPack.js', 'geometrypack', version])
-
 subprocess.check_call([command, 'jsdoc'])
 subprocess.check_call([command, 'visualtoc'])
 
@@ -56,9 +51,13 @@ for directory in (
 		source, destination = directory
 	shutil.copytree(source, release_dir + '/' + destination)
 
+
 shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
+
+# pack files must also be copied
 shutil.copy('out/fsmpack.js', release_dir + '/lib/fsmpack.js')
 shutil.copy('out/geometrypack.js', release_dir + '/lib/geometrypack.js')
+
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('COPYING', release_dir + '/COPYING')
 shutil.copy('LICENSE', release_dir + '/LICENSE')

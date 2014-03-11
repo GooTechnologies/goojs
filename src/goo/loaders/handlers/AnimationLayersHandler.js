@@ -50,24 +50,6 @@ function(
 	};
 
 	/**
-	 * Shallow update of layers, which mean only changing blend weights and default states are allowed
-	 * @param {object} config
-	 * @param {AnimationLayer[]} layers
-	 */
-	AnimationLayersHandler.prototype._updateShallow = function(config, layers) {
-		for (var i = 0; i < layers.length; i++) {
-			var layer = layers[i];
-			var layerCfg = config[layer._key];
-
-			if (layer._layerBlender) {
-				layer._layerBlender._blendWeight = layerCfg.blendWeight;
-			}
-			this._setInitialState(layer, layerCfg.initialState);
-		}
-		return PromiseUtil.createDummyPromise(layers);
-	};
-
-	/**
 	 * Sets current state on a layer if possible, otherwise clears  current state
 	 * @param {AnimationLayer} layer
 	 * @param {string} name
@@ -89,19 +71,15 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation state or null if removed
 	 */
-	AnimationLayersHandler.prototype.update = function(ref, config, options) {
+	AnimationLayersHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(object) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(object) {
 			if(!object) { return; }
 			var promises = [];
-			if (options && options.animation && options.animation.shallow) {
-				// Only update blendweights and default states
-				return that._updateShallow(config.layers, object);
-			}
 
 			var i = 0;
-			_.forEach(config.layers, function(layerCfg, key) {
-				promises.push(that._parseLayer(key, layerCfg, object[i++], options));
+			_.forEach(config.layers, function(layerCfg) {
+				promises.push(that._parseLayer(layerCfg, object[i++], options));
 			}, null, 'sortValue');
 
 			return RSVP.all(promises).then(function(layers) {
@@ -121,70 +99,8 @@ function(
 	 * @returns {RSVP.Promise} resolves with layer
 	 * @private
 	 */
-	AnimationLayersHandler.prototype._parseLayer = function(key, layerConfig, layer, options) {
+	AnimationLayersHandler.prototype._parseLayer = function(layerConfig, layer, options) {
 		var that = this;
-
-		function getState(key, ref, transitions) {
-			return that.getConfig(ref, options).then(function(config) {
-				return that.updateObject(ref, config, options).then(function(state) {
-					return {
-						state: state,
-						ref: ref,
-						config: config,
-						key: key,
-						transitions: transitions
-					};
-				});
-			});
-		}
-
-		function fillStates(stateObjects) {
-			layer._steadyStates = {};
-			// Steady states
-			for (var i = 0; i < stateObjects.length; i++) {
-				var stateObject = stateObjects[i];
-				layer._steadyStates[stateObject.key] = stateObject.state;
-			}
-			// State specific transitions
-			for(var i = 0; i < stateObjects.length; i++) {
-				var transitions = stateObjects[i].transitions;
-				var state = stateObjects[i].state;
-				state._transitions = {};
-				if (transitions) {
-					// Add all valid transitions to state
-					for (var key in transitions) {
-						if (layer._steadyStates[key] || key === '*') {
-							var transition = _.clone(transitions[key]);
-							state._transitions[key] = transition;
-
-							// Create a reusable transition state
-							if (!layer._transitionStates[transition.type]) {
-								layer._transitionStates[transition.type] = that._getTransitionByType(transition.type);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		function fillTransitions() {
-			layer._transitions = {};
-			// Layer generic transitions
-			if (layerConfig.transitions) {
-				// Add all valid transitions to layer
-				for (var transitionKey in layerConfig.transitions) {
-					if (layer._steadyStates[transitionKey] || transitionKey === '*') {
-						var transition = _.clone(layerConfig.transitions[transitionKey]);
-						layer._transitions[transitionKey] = transition;
-
-						// Create a reusable transition state
-						if (!layer._transitionStates[transition.type]) {
-							layer._transitionStates[transition.type] = that._getTransitionByType(transition.type);
-						}
-					}
-				}
-			}
-		}
 
 		if (!layer) {
 			layer = new AnimationLayer(layerConfig.name);
@@ -192,7 +108,8 @@ function(
 			layer._name = layerConfig.name;
 		}
 
-		layer._key = key;
+		layer.id = layerConfig.id;
+		layer._transitions = _.deepClone(layerConfig.transitions);
 
 		if (layer._layerBlender) {
 			if (layerConfig.blendWeight !== undefined) {
@@ -204,40 +121,18 @@ function(
 
 		// Load all the stuff we need
 		var promises = [];
-		for (var stateKey in layerConfig.states) {
-			var stateRef = layerConfig.states[stateKey].stateRef;
-			var transitions = layerConfig.states[stateKey].transitions;
-			promises.push(getState(stateKey, stateRef, transitions));
+		for (var id in layerConfig.states) {
+			/*jshint -W083 */
+			promises.push(this.loadObject(id, options).then(function(state) {
+				layer._steadyStates[state.id] = state;
+			}));
 		}
 
 		// Populate layer
-		return RSVP.all(promises)
-			.then(fillStates)
-			.then(fillTransitions)
-			.then(function() {
-				that._setInitialState(layer, layerConfig.initialState);
-				return layer;
-			});
-	};
-
-	/**
-	 * Creates a new transition depending on type
-	 * @param {string} type
-	 * @returns {FadeTransitionState|SyncFadeTransitionState|FrozenTransitionState}
-	 * @private
-	 */
-	AnimationLayersHandler.prototype._getTransitionByType = function(type) {
-		switch (type) {
-			case 'Fade':
-				return new FadeTransitionState();
-			case 'SyncFade':
-				return new SyncFadeTransitionState();
-			case 'Frozen':
-				return new FrozenTransitionState();
-			default:
-				console.log('Defaulting to frozen transition type');
-				return new FrozenTransitionState();
-		}
+		return RSVP.all(promises).then(function() {
+			that._setInitialState(layer, layerConfig.initialStateRef);
+			return layer;
+		});
 	};
 
 	return AnimationLayersHandler;

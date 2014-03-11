@@ -21,6 +21,7 @@ function(
 
 	SwitchCameraAction.external = {
 		name: 'Switch Camera',
+		type: 'camera',
 		description: 'Switches between cameras',
 		parameters: [{
 			name: 'Camera',
@@ -48,10 +49,6 @@ function(
 	};
 
 	SwitchCameraAction.prototype.cleanup = function (/*fsm*/) {
-		SystemBus.emit('goo.setCurrentCamera', {
-			camera: this._camera,
-			entity: null
-		});
 	};
 
 	return SwitchCameraAction;

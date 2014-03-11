@@ -6,7 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,
@@ -52,7 +52,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated shader or null if removed
 	 */
-	ShaderHandler.prototype.update = function(ref, config, options) {
+	ShaderHandler.prototype._update = function(ref, config, options) {
 		if (!config) {
 			this._remove(ref);
 			return PromiseUtil.createDummyPromise();
@@ -65,8 +65,8 @@ function(
 		}
 
 		var promises = [
-			this.getConfig(config.vshaderRef, options),
-			this.getConfig(config.fshaderRef, options)
+			this.loadObject(config.vshaderRef, options),
+			this.loadObject(config.fshaderRef, options)
 		];
 
 		return RSVP.all(promises).then(function(shaders) {

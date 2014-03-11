@@ -20,7 +20,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class Main handler for an entity world
+	 * @class Main handler for an entity world.
+	 * @param {GooRunner} gooRunner GooRunner for updating the world.
 	 */
 	function World (gooRunner) {
 		this.gooRunner = gooRunner;
@@ -34,7 +35,7 @@ function (
 		this.by = {};
 		this._installDefaultSelectors();
 
-		/** Main keeper of entities
+		/** Main keeper of entities.
 		 * @type {EntityManager}
 		 */
 		this.entityManager = new EntityManager();
@@ -42,7 +43,7 @@ function (
 
 		this.time = 0.0;
 
-		/** Time since last frame in seconds
+		/** Time since last frame in seconds.
 		 * @type {number}
 		 */
 		this.tpf = 1.0;
@@ -53,14 +54,25 @@ function (
 	World.time = 0.0;
 	World.tpf = 1.0;
 
+
+		/** Entity selector. Its methods return an {@link EntitySelection}. Can select by system, component, attribute or tag. See examples for usage.
+		 * <br><i>Will get additional methods when an {@link EntityManager} is attached.</i>
+		 * @member by
+		 * @memberOf World.prototype
+		 * @example
+		 * var bySystem = gooRunner.world.by.system("RenderSystem").toArray();
+		 * var byComponent = gooRunner.world.by.component("cameraComponent").toArray();
+		 * var byTag = gooRunner.world.by.tag("monster").toArray()
+		 * var byAttribute = gooRunner.world.by.attribute("hit-points").toArray();
+		 */
+
 	World.prototype._installDefaultSelectors = function () {
+
 		this.by.system = function (systemType) {
 			var system = this.getSystem(systemType);
 			return new EntitySelection(system._activeEntities);
 		}.bind(this);
 
-		//! AT: all these queries are slow unless using another data structure for fast access
-		// these data structures would have to be maintained in dedicated managers that would then install these methods on world.by
 		this.by.component = function (componentType) {
 			var entities = this.entityManager.getEntities();
 

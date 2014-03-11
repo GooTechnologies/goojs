@@ -32,7 +32,7 @@ function(
 	}
 
 	MaterialHandler.prototype = Object.create(ConfigHandler.prototype);
-	MaterialHandler.prototype.construcor = MaterialHandler;
+	MaterialHandler.prototype.constructor = MaterialHandler;
 	ConfigHandler._registerClass('material', MaterialHandler);
 
 	MaterialHandler.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
@@ -96,9 +96,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated material or null if removed
 	 */
-	MaterialHandler.prototype.update = function(ref, config, options) {
+	MaterialHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(material) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(material) {
 			if (!material) { return; }
 			var promises = [];
 			// Material settings
@@ -106,6 +106,7 @@ function(
 			_.extend(material.cullState, config.cullState);
 			_.extend(material.depthState, config.depthState);
 
+			material.id = config.id;
 			material.name = config.name;
 			material.wireframe = config.wireframe;
 			material.flat = config.flat;
@@ -148,11 +149,7 @@ function(
 			// Textures
 			function addTexture(type, ref, options) {
 				return that._load(ref, options).then(function(texture) {
-					if (texture.image) {
-						material.setTexture(type, texture);
-					} else {
-						material.removeTexture(type);
-					}
+					material.setTexture(type, texture);
 				}).then(null, function(err) {
 					throw new Error('Error loading texture: ' + ref + ' - ' + err);
 				});

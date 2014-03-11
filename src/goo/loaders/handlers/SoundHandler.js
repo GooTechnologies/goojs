@@ -1,5 +1,7 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
+	'goo/sound/AudioContext',
+	'goo/sound/Sound',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -7,6 +9,8 @@ define([
 /** @lends */
 function(
 	ConfigHandler,
+	AudioContext,
+	Sound,
 	RSVP,
 	PromiseUtil,
 	_
@@ -22,6 +26,26 @@ function(
 	 */
 	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._audioCache = {};
+
+		if (window.Audio !== undefined) {
+			var audioTest = new Audio();
+
+			this._codecs = [
+				{
+					type: 'mp3',
+					enabled: !!audioTest.canPlayType('audio/mpeg;')
+				}, {
+					type: 'ogg',
+					enabled: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"')
+				}, {
+					type: 'wav',
+					enabled: !!audioTest.canPlayType('audio/wav; codecs="1"')
+				}
+			];
+		} else {
+			this._codecs = [];
+		}
 	}
 
 	SoundHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -61,9 +85,7 @@ function(
 	 * @private
 	 */
 	SoundHandler.prototype._create = function() {
-		var howl = new window.Howl({});
-		howl._loaded = true;
-		return howl;
+		return new Sound();
 	};
 
 	/**
@@ -73,85 +95,43 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */
-	 SoundHandler.prototype.update = function(ref, config, options) {
-		if (!window.Howl) {
-			throw new Error('Howler is missing');
+	SoundHandler.prototype._update = function(ref, config, options) {
+		if (!AudioContext) {
+			return PromiseUtil.createDummyPromise();
 		}
 		var that = this;
-
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(sound) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(sound) {
 			if (!sound) { return; }
-			// Settings
-			sound.loop(config.loop);
-			sound.volume(config.volume);
-			// TODO Sprites
-			// Audio files
-			var promises = [];
-			var formats = ['mp3', 'wav', 'ogg'];
-			var mimeTypes = {
-				mp3: 'audio/mpeg',
-				wav: 'audio/vnd.wav',
-				ogg: 'audio/ogg'
-			};
+			sound.update(config);
 
-			for (var i = 0; i < formats.length; i++) {
-				var format = formats[i];
-				var path = config.audioRefs[format];
-				if (path) {
-					promises.push(that.getConfig(path, options)
-						// Howler doesn't support object urls, so this is wasted
-						// .then(function(path){
-						// 	if (typeof path === 'string')
-						// 		return path;
-						// 	else if (path instanceof ArrayBuffer) {
-						// 		var mimeType = 'audio/mp3'
-						// 		var blob = new Blob([path], {type:mimeTypes[format]});
-						// 		return window.URL.createObjectURL(blob);
-						// 	}
-						// })
-					);
+			for (var i = 0; i < that._codecs.length; i++) {
+				var codec = that._codecs[i];
+				var ref = config.audioRefs[codec.type];
+
+				if (ref && codec.enabled) {
+					if (that._audioCache[ref]) {
+						sound.setAudioBuffer(that._audioCache[ref]);
+						return sound;
+					} else {
+						/*jshint -W083 */
+						return that.loadObject(ref).then(function(buffer) {
+							var promise = new RSVP.Promise();
+							AudioContext.decodeAudioData(buffer, function(audioBuffer) {
+								promise.resolve(audioBuffer);
+							});
+							return promise;
+						}).then(function(audioBuffer) {
+							that._audioCache[ref] = audioBuffer;
+							sound.setAudioBuffer(audioBuffer);
+							return sound;
+						});
+					}
 				}
 			}
-			return RSVP.all(promises).then(function(paths) {
-				if (isEqual(paths, sound._urls)) {
-					return sound;
-				}
-
-				// Wait for howler to load
-				var howlerLoaded = new RSVP.Promise();
-				function onLoad() {
-					howlerLoaded.resolve(sound);
-					sound.off('load', onLoad);
-					sound.off('loaderror', onError);
-				}
-				function onError() {
-					howlerLoaded.reject('Error loading sound for ' + ref);
-					sound.off('load', onLoad);
-					sound.off('loaderror', onError);
-				}
-				sound.on('load', onLoad);
-				sound.on('loaderror', onError);
-				sound.urls(paths);
-
-				return howlerLoaded;
-			}).then(function(sound) {
-				return sound;
-			});
+			console.warn('No supported audioformat was found');
+			return sound;
 		});
 	};
-
-	function isEqual(a, b) {
-		var len = a.length;
-		if (len !== b.length) {
-			return false;
-		}
-		while (len--) {
-			if(a[len] !== b[len]) {
-				return false;
-			}
-		}
-		return true;
-	}
 
 	return SoundHandler;
 });

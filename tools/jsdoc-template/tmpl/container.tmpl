@@ -12,24 +12,24 @@
 <section>
     
 <header>
-    <h2>
-
-    <?js if (doc.ancestors && doc.ancestors.length) { ?>
+    <?js if (doc.kind === 'class') { ?>
+        <?js= self.partial('constructorHeader.tmpl', doc) ?>
+    <?js } ?>
+    <h6>
+        <?js if (doc.ancestors && doc.ancestors.length) { ?>
         <span class="ancestors"><?js= doc.ancestors.join('') ?></span>
-    <?js } ?>
+        <?js } ?>
 
-    <?js if (doc.gooName) { ?>
-      <?js= doc.gooName ?>
-    <?js } else { ?>
-      <?js= doc.name ?>
-    <?js } ?>
+        <?js if (doc.gooName) { ?>
+            <?js= doc.gooName ?>
+        <?js } else { ?>
+            <?js= doc.name ?>
+        <?js } ?>
 
-    <?js if (doc.variation) { ?>
+        <?js if (doc.variation) { ?>
         <sup class="variation"><?js= doc.variation ?></sup>
-    <?js } ?>
-
-    </h2>
-
+        <?js } ?>
+    </h6>
     <?js if (doc.augments && doc.augments.length) { ?>
         <h3 class="extends">extends
         <?js doc.augments.forEach(function(a, i) { ?>
@@ -48,12 +48,8 @@
     <?js if (doc.kind === 'module' && doc.module) { ?>
         <?js= self.partial('method.tmpl', doc.module) ?>
     <?js } ?>
-    
-    <?js if (doc.kind === 'class') { ?>
-        <?js= self.partial('constructorHeader.tmpl', doc) ?>
-    <?js } ?>
     </div>
-    <?js
+<!--    <?js
       var members = self.find({kind: 'member', memberof: title === 'Global' ? {isUndefined: true} : doc.longname});
       if (members && members.length && members.forEach) { 
 		?>
@@ -73,9 +69,9 @@
         <table class="summary"><?js methods.forEach(function(m) { ?>
             <?js= self.partial('methodSummary.tmpl', m) ?>
         <?js }); ?></table>
-    <?js } ?>
-		
+    <?js } ?>		
 		<hr />
+!-->
 	  <?js if (doc.kind === 'class') { ?>
 	  		<h3 class="subsection-title">Constructor</h3>
 	      <?js= self.partial('method.tmpl', doc) ?>
@@ -137,9 +133,14 @@
     ?>
         <h3 class="subsection-title">Members</h3>
         
-        <dl><?js members.forEach(function(p) { ?>
-            <?js= self.partial('members.tmpl', p) ?>
-        <?js }); ?></dl>
+        <?js memberId = 0;
+            members.forEach(function(p) { 
+                p.idList = "member-"+memberId++;
+        ?>
+            <section class="foldable-item" id="<?js= p.idList ?>">
+                <?js= self.partial('members.tmpl', p) ?>
+            </section>
+        <?js }); ?>
     <?js } ?>
     
     <?js
@@ -148,9 +149,14 @@
     ?>
         <h3 class="subsection-title">Methods</h3>
         
-        <dl><?js methods.forEach(function(m) { ?>
+        <?js methodId = 0;
+            methods.forEach(function(m) { 
+                m.idList = 'method-'+methodId++;
+        ?>
+        <section class="foldable-item <?js= m.id ?>" id="<?js= m.idList ?>">
             <?js= self.partial('method.tmpl', m) ?>
-        <?js }); ?></dl>
+        </section>
+        <?js }); ?>
     <?js } ?>
     
     <?js

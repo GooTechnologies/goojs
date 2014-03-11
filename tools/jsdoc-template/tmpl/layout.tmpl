@@ -27,6 +27,13 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
     </script>
+
+    <script>
+        function unfold(id){
+            $('#'+id).toggleClass('unfolded');
+        }
+
+    </script>
     
     <!--
     <script type="text/javascript">
@@ -96,7 +103,11 @@
 </head>
 
 <body>
-
+<header class="top-menu">
+    <a class="logo" href="http://www.gootechnologies.com">
+        <img src="images/goo.png" />
+    </a>
+</header>
 <nav>
     <?js= this.nav ?>
 </nav>

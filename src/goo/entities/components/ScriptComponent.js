@@ -36,14 +36,15 @@ function (
 	 * @private
 	 * @param entity
 	 */
-	ScriptComponent.prototype.setup = function (entity) {
+	ScriptComponent.prototype.setup = function (entity, env) {
 		var commonEnvironment = {
 			getEntity: function () {
 				return entity;
 			},
 			getSystemBus: function () {
 				return SystemBus;
-			}
+			},
+			domElement: env.domElement
 		};
 
 		for (var i = 0; i < this.scripts.length; i++) {
@@ -69,7 +70,7 @@ function (
 			var script = this.scripts[i];
 			if (script && script.run && (script.enabled === undefined || script.enabled || script.active)) {
 				script.run(entity, tpf, environment, script.parameters);
-			} else if (script.update) {
+			} else if (script.update && (script.enabled === undefined || script.enabled || script.active)) {
 				script.update(script.parameters, script.environment);
 			}
 		}

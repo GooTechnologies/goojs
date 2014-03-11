@@ -44,91 +44,11 @@ require([
 	'use strict';
 
 	var external = {
-		name: 'Orbit cam',
-		description: 'Enables camera to orbit around a point in 3D space using the mouse',
+		name: 'Walk around',
+		description: '',
 		parameters: [{
-			key: 'turnSpeedHorizontal',
-			'default': 0.005
-		}, {
-			key: 'turnSpeedVertical',
-			'default': 0.005
-		}, {
-			key: 'zoomSpeed',
-			'default': 0.2
-		}, {
-			key: 'dragOnly',
-			description: 'Only move the camera when dragging',
-			'default': true
-		}, {
-			key: 'dragButton',
-			description: 'Only drag with button with this code (-1 to enable all)',
-			'default': -1
-		}, {
-			key: 'worldUpVector',
-			'default': new Vector3(0, 1, 0)
-		}, {
-			key: 'baseDistance',
-			'default': 15
-		}, {
-			key: 'minZoomDistance',
-			'default': 1
-		}, {
-			key: 'maxZoomDistance',
-			'default': 1000
-		}, {
-			key: 'minAscent',
-			description: 'Maximum arc (in radians) the camera can reach below the target point',
-			'default': -89.95 * MathUtils.DEG_TO_RAD
-		}, {
-			key: 'maxAscent',
-			description: 'Maximum arc (in radians) the camera can reach above the target point',
-			'default': 89.95 * MathUtils.DEG_TO_RAD
-		}, {
-			key: 'clampAzimuth',
-			'default': false
-		}, {
-			key: 'minAzimuth',
-			description: 'Maximum arc (in radians) the camera can reach clockwise of the target point',
-			'default': 90 * MathUtils.DEG_TO_RAD
-		}, {
-			key: 'maxAzimuth',
-			description: 'Maximum arc (in radians) the camera can reach counter-clockwise of the target point',
-			'default': 270 * MathUtils.DEG_TO_RAD
-		}, {
-			key: 'releaseVelocity',
-			'default': true
-		}, {
-			key: 'invertedX',
-			'default': false
-		}, {
-			key: 'invertedY',
-			'default': false
-		}, {
-			key: 'invertedWheel',
-			'default': true
-		}, {
-			key: 'drag',
-			'default': 5.0
-		}, {
-			key: 'maxSampleTimeMS',
-			'default': 200
-		}, {
-			key: 'lookAtPoint',
-			description: 'The point to orbit around',
-			'default': new Vector3()
-		}, {
-			key: 'spherical',
-			description: 'The initial position of the camera given in spherical coordinates (r, theta, phi). Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis.',
-			'default': new Vector3(15, 0, 0)
-		}, {
-			key: 'interpolationSpeed',
-			'default': 7
-		}, {
-			key: 'zoomDistanceFactor',
-			'default': 0.035
-		}, {
-			key: 'detailZoom',
-			'default': 0.15
+			key: 'rm',   // reverse mapping of animation state names to ids should not be given as parameter, but computed inside
+			'default': {}
 		}]
 	};
 
@@ -141,15 +61,15 @@ require([
 		};
 
 		var animForDelta = {
-			'-1,-1': 'upleft',
+			'-1,-1': 'forwardleft',
 			'-1,0': 'left',
-			'-1,1': 'downleft',
-			'0,1': 'down',
+			'-1,1': 'backleft',
+			'0,1': 'back',
 
-			'1,1': 'downright',
+			'1,1': 'backright',
 			'1,0': 'right',
-			'1,-1': 'upright',
-			'0,-1': 'up',
+			'1,-1': 'forwardright',
+			'0,-1': 'forward',
 
 			'0,0': 'idle'
 		};
@@ -170,22 +90,6 @@ require([
 			setupControls();
 		}
 
-		/*
-		function setupMouseControls() {
-			parameters.domElement.addEventListener('mousedown', function (event) {
-
-			}, false);
-
-			document.addEventListener('mousemove', function (event) {
-
-			}, false);
-
-			document.addEventListener('mouseup', function (event) {
-
-			}, false);
-		}
-		*/
-
 		function deltaToString(delta) {
 			return delta.x + ',' + delta.y;
 		}
@@ -193,28 +97,42 @@ require([
 		function transitionTo(deltaStr) {
 			var stateName = animForDelta[deltaStr];
 			console.log(stateName);
-			//entity.animationComponent.transitionTo(revMap);
+			entity.animationComponent.transitionTo(parameters.rm[stateName]);
 		}
 
 		function setupKeyControls() {
 			window.addEventListener('keydown', function (event) {
 				var key = event.which;
-				if (key === 38 && !keyState.up) { keyState.up = true; delta.y--; }
-				if (key === 37 && !keyState.left) { keyState.left = true; delta.x--; }
-				if (key === 40 && !keyState.down) { keyState.down = true; delta.y++; }
-				if (key === 39 && !keyState.right) { keyState.right = true; delta.x++; }
+				var newDelta = { x: delta.x, y: delta.y };
 
-				transitionTo(deltaToString(delta));
+				if (key === 38 && !keyState.up) { keyState.up = true; newDelta.y--; }
+				if (key === 37 && !keyState.left) { keyState.left = true; newDelta.x--; }
+				if (key === 40 && !keyState.down) { keyState.down = true; newDelta.y++; }
+				if (key === 39 && !keyState.right) { keyState.right = true; newDelta.x++; }
+
+				var updated = newDelta.x !== delta.x || newDelta.y !== delta.y;
+				if (updated) {
+					delta.x = newDelta.x;
+					delta.y = newDelta.y;
+					transitionTo(deltaToString(delta));
+				}
 			}, false);
 
 			window.addEventListener('keyup', function (event) {
 				var key = event.which;
-				if (key === 38 && keyState.up) { keyState.up = false; delta.y++; }
-				if (key === 37 && keyState.left) { keyState.left = false; delta.x++; }
-				if (key === 40 && keyState.down) { keyState.down = false; delta.y--; }
-				if (key === 39 && keyState.right) { keyState.right = false; delta.x--; }
+				var newDelta = { x: delta.x, y: delta.y };
 
-				transitionTo(deltaToString(delta));
+				if (key === 38 && keyState.up) { keyState.up = false; newDelta.y++; }
+				if (key === 37 && keyState.left) { keyState.left = false; newDelta.x++; }
+				if (key === 40 && keyState.down) { keyState.down = false; newDelta.y--; }
+				if (key === 39 && keyState.right) { keyState.right = false; newDelta.x--; }
+
+				var updated = newDelta.x !== delta.x || newDelta.y !== delta.y;
+				if (updated) {
+					delta.x = newDelta.x;
+					delta.y = newDelta.y;
+					transitionTo(deltaToString(delta));
+				}
 			}, false);
 		}
 
@@ -224,7 +142,7 @@ require([
 		}
 
 		function update(parameters, env) {
-
+			console.log('frame');
 		}
 
 		function cleanup() {
@@ -238,6 +156,7 @@ require([
 		};
 	};
 
+	//! AT: these should stay in object util
 	function pluckObj(obj, propName) {
 		var keys = Object.keys(obj);
 
@@ -289,68 +208,71 @@ require([
 				console.log(rm);
 
 				var walkAroundScript = WalkAroundScript();
+				walkAroundScript.parameters = { rm: rm };
 				var scriptComponent = new ScriptComponent(walkAroundScript);
 				entity.set(scriptComponent);
 
-				function z() {
-					entity.animationComponent.transitionTo(rm['left']);
-					setTimeout(zz, 500);
-				}
+				/*
+				 function z() {
+				 entity.animationComponent.transitionTo(rm['left']);
+				 setTimeout(zz, 500);
+				 }
 
-				function zz() {
-					entity.animationComponent.transitionTo(rm['right']);
-					setTimeout(z, 500);
-				}
+				 function zz() {
+				 entity.animationComponent.transitionTo(rm['right']);
+				 setTimeout(z, 500);
+				 }
 
-				z();
+				 z();
+				 */
 			}, 500);
 		}).then(null, function(e) {
 			console.error('Failed to load scene: ' + e);
 		});
 
 		/*
-		// add camera
-		var camera = new Camera();
-		var cameraEntity = goo.world.createEntity(camera, 'CameraEntity', [0, 0, 20]).lookAt([0, 0, 0]).addToWorld();
+		 // add camera
+		 var camera = new Camera();
+		 var cameraEntity = goo.world.createEntity(camera, 'CameraEntity', [0, 0, 20]).lookAt([0, 0, 0]).addToWorld();
 
-		// camera control set up
-		var scripts = new ScriptComponent();
+		 // camera control set up
+		 var scripts = new ScriptComponent();
 
-		var orbitCamScript = OrbitCamScript();
-		orbitCamScript.parameters = {
-			domElement: goo.renderer.domElement
-		};
-		scripts.scripts.push(orbitCamScript);
+		 var orbitCamScript = OrbitCamScript();
+		 orbitCamScript.parameters = {
+		 domElement: goo.renderer.domElement
+		 };
+		 scripts.scripts.push(orbitCamScript);
 
-		var key = null;
-		var x = 0, y = 0, z = 0;
+		 var key = null;
+		 var x = 0, y = 0, z = 0;
 
-		scripts.scripts.push({
-			run: function () {
-				if (key === 38) { z -= 0.1; }
-				if (key === 37) { x -= 0.1; }
-				if (key === 40) { z += 0.1; }
-				if (key === 39) { x += 0.1; }
+		 scripts.scripts.push({
+		 run: function () {
+		 if (key === 38) { z -= 0.1; }
+		 if (key === 37) { x -= 0.1; }
+		 if (key === 40) { z += 0.1; }
+		 if (key === 39) { x += 0.1; }
 
-				orbitCamScript.parameters.lookAtPoint.set(x, y, z);
-				//cameraEntity.lookAt(0, Math.sin(goo.world.time * 2) * 2, 0);
+		 orbitCamScript.parameters.lookAtPoint.set(x, y, z);
+		 //cameraEntity.lookAt(0, Math.sin(goo.world.time * 2) * 2, 0);
 
-				//cameraEntity.setTranslation();
-				//cameraEntity.transformComponent.setUpdated();
-			}
-		});
+		 //cameraEntity.setTranslation();
+		 //cameraEntity.transformComponent.setUpdated();
+		 }
+		 });
 
-		window.addEventListener('keydown', function (e) {
-			key = e.which;
-		});
+		 window.addEventListener('keydown', function (e) {
+		 key = e.which;
+		 });
 
-		window.addEventListener('keyup', function (e) {
-			key = null;
-			console.log('up', e.which);
-		});
+		 window.addEventListener('keyup', function (e) {
+		 key = null;
+		 console.log('up', e.which);
+		 });
 
-		cameraEntity.setComponent(scripts);
-		*/
+		 cameraEntity.setComponent(scripts);
+		 */
 	}
 
 	walkAroundScriptDemo();

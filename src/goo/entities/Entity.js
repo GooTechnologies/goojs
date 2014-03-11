@@ -1,9 +1,11 @@
 define([
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/util/StringUtil'
 ],
 /** @lends */
 function (
-	Component
+	Component,
+	StringUtil
 	) {
 	'use strict';
 
@@ -13,15 +15,15 @@ function (
 	* This data is wrapped in [Components]{@link Component}, which usually provide isolated features (transforms, geometries, materials, scripts and so on). 
 	* By setting components to an entity, the entity will get the functionality provided by the components. 
 	* For example, an entity with a {@link TransformComponent} and a {@link LightComponent} will be a light source in 3D space. 
-	* Note that by attaching components to an entity, methods of the component will be injected into the entity, extending its interface.
-	* @param {World} world The {@link World} this entity will be part of when calling .addToWorld.
+	* Note that when attaching components to an entity, methods of the component will be injected into the entity, extending its interface.
+	* @param {World} world The {@link World} this entity will be part of after calling .addToWorld().
 	* @param {String} [name] Entity name.
 	* @param {number} [id] Entity id.
 	*/
 	function Entity(world, name, id) {
 		this._world = world;
 		this._components = [];
-		this.id = id !== undefined ? id : Entity.entityCount;
+		this.id = id !== undefined ? id : StringUtil.createUniqueId('entity');
 		this._index = Entity.entityCount;
 
 		//! AT: not sure if this tags/attributes abstraction is really needed or if they are just glorified properties
@@ -32,15 +34,21 @@ function (
 			value : Entity.entityCount++,
 			writable : false
 		});*/
-		this.name = name !== undefined ? name : 'Entity_' + this.id;
+		this.name = name !== undefined ? name : 'Entity_' + this._index;
 
-		/** Set to true to skip rendering (move to meshrenderercomponent)
+		// (move to meshrenderercomponent)
+		/** Set to true to skip all processing (rendering, script updating, et cetera) of the entity .
 		 * @type {boolean}
 		 * @default false
 		 */
 		this.skip = false;
 
+		/** Set to true to skip rendering of the entity. Scripts will still be processed.
+		 * @type {boolean}
+		 * @default false
+		 */
 		this.hidden = false;
+
 		this.static = false;
 		Entity.entityCount++;
 	}
@@ -48,6 +56,13 @@ function (
 	//! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
 	/**
 	 * Sets components on the entity or tries to create and set components out of the supplied parameters.
+	 *
+	 * @example
+	 * // Create three entities with different components, add them to world
+	 * var sphereEntity = world.createEntity().set(sphere, material, [2, 0, 0]).addToWorld();
+	 * var lightEntity = world.createEntity().set(light, [0, 1, 0]).addToWorld();
+	 * var spinningEntity = world.createEntity().set(box, material, [-2, 0, 0], script).addToWorld();
+	 *
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.set = function() {
@@ -74,7 +89,7 @@ function (
 
 	/**
 	 * Add the entity to the world, making it active and processed by systems and managers.
-	 * @param {boolean} [recursive=true] Add children recursively.
+	 * @param {boolean} [recursive=true] Add children of the transform hierarchy recursively.
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.addToWorld = function (recursive) {
@@ -84,7 +99,7 @@ function (
 
 	/**
 	 * Remove entity from the world.
-	 * @param {boolean} [recursive=true] Remove children recursively.
+	 * @param {boolean} [recursive=true] Remove children of the transform hierarchy recursively.
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.removeFromWorld = function (recursive) {
@@ -134,7 +149,7 @@ function (
 	 * Checks if a component of a specific type is present or not.
 	 *
 	 * @param {string} type Type of component to check for (eg. 'meshDataComponent').
-	 * @returns {boolean}.
+	 * @returns {boolean}
 	 */
 	Entity.prototype.hasComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);
@@ -146,7 +161,7 @@ function (
 	 * Retrieve a component of a specific type.
 	 *
 	 * @param {string} type Type of component to retrieve (eg. 'transformComponent').
-	 * @returns {Component} component with requested type or undefined if not present.
+	 * @returns {Component} Component with requested type or undefined if not present.
 	 */
 	Entity.prototype.getComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);
@@ -192,7 +207,10 @@ function (
 
 	/**
 	 * Adds a tag to the entity.
-	 * @param tag
+	 * @param {string} tag
+	 * @example
+	 * var banana = world.createEntity().setTag('fruit').setTag('green');
+	 *
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setTag = function (tag) {
@@ -202,7 +220,12 @@ function (
 
 	/**
 	 * Checks whether an entity has a tag or not.
-	 * @param tag
+	 * @param {string} tag
+	 * @example
+	 * if (banana.hasTag('yellow')) {
+	 *     console.log('The banana is yellow');
+	 * }
+	 *
 	 * @returns {boolean}.
 	 */
 	Entity.prototype.hasTag = function (tag) {
@@ -211,7 +234,13 @@ function (
 
 	/**
 	 * Clears a tag on an entity.
-	 * @param tag
+	 * @param {string} tag
+	 * @example
+	 * // Remove 'alive' tag if hit points drops to zero
+	 * if (hero.getAttribute('hit-points') <= 0) {
+	 *     hero.clearTag('alive');
+	 * }
+	 *
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearTag = function (tag) {
@@ -221,8 +250,17 @@ function (
 
 	/**
 	 * Sets an attribute and its value on the entity.
-	 * @param attribute
+	 * @param {string} attribute
 	 * @param value
+	 * @example
+	 * // Create an entity with tags and attributes, and add it to world
+	 * var hero = world.createEntity()
+	 *                 .setTag('hero')
+	 *                 .setAttribute('hit-points', 30)
+	 *                 .setAttribute('attack-power', 3)
+	 *                 .setTag('alive')
+	 *                 .addToWorld();
+	 *
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setAttribute = function (attribute, value) {
@@ -232,7 +270,7 @@ function (
 
 	/**
 	 * Checks whether an entity has an attribute or not.
-	 * @param tag
+	 * @param {string} attribute
 	 * @returns {boolean}
 	 */
 	Entity.prototype.hasAttribute = function (attribute) {
@@ -241,7 +279,13 @@ function (
 
 	/**
 	 * Gets the value of the specified attribute.
-	 * @param attribute
+	 * @param {string} attribute
+	 * @example
+	 * // Check hit points on monster entity
+	 * if (monster.getAttribute('hit-points') <= 0) {
+	 *     console.log('The hero triumphs!');
+	 * }
+	 *
 	 * @returns {*}
 	 */
 	Entity.prototype.getAttribute = function (attribute) {
@@ -250,7 +294,7 @@ function (
 
 	/**
 	 * Clears an attribute of the entity.
-	 * @param attribute
+	 * @param {string} attribute
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearAttribute = function (attribute) {

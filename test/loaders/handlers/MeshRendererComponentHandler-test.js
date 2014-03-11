@@ -47,13 +47,12 @@ define([
 
 				for (var key in materialConfigs) {
 					var sortValue = materialConfigs[key].sortValue;
-					var ref = materialConfigs[key].materialRef;
-					sortMaterials[sortValue] = loader._objects[ref];
+					sortMaterials[sortValue] = key;
 				}
 
 				var keys = Object.keys(sortMaterials).sort();
 				for (var i = 0; i < keys.length; i++) {
-					expect(sortMaterials[keys[i]]).toBe(materials[i]);
+					expect(sortMaterials[keys[i]]).toBe(materials[i].id);
 				}
 				expect(entity.meshRendererComponent).toEqual(jasmine.any(MeshRendererComponent));
 				expect(entity.meshRendererComponent.materials[0]).toEqual(jasmine.any(Material));

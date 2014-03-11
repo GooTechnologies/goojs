@@ -48,7 +48,7 @@ define([
 			loader.preload(Configs.get());
 			var p = loader.load(layersConfig.id).then(function(layers) {
 				for (var i = 0; i < layers.length; i++) {
-					expect(layersConfig.layers[layers[i]._key].sortValue).toBe(i);
+					expect(layersConfig.layers[layers[i].id].sortValue).toBe(i);
 				}
 			});
 			wait(p);

@@ -92,10 +92,19 @@ function(
 	TransformComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 
+		/*
+		function hasChild(component, ref) {
+			for (var i = 0; i < component.children.length; i++) {
+				if (component.children[i].entity.id === ref) {
+					return true;
+				}
+			}
+			return false;
+		}
+		*/
+
 		function attachChild(component, ref) {
-			return that.getConfig(ref, options).then(function(config) {
-				return that.updateObject(ref, config, options);
-			}).then(function(entity) {
+			return that.loadObject(ref, options).then(function(entity) {
 				if (entity && entity.transformComponent) {
 					component.attachChild(entity.transformComponent);
 					entity.addToWorld();

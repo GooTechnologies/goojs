@@ -3,15 +3,35 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/Snow' // TODO Should move!
+	'goo/util/Snow', // TODO Should move!
+	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
 	_,
 	SystemBus,
 	ShaderBuilder,
-	Snow
+	Snow,
+	RSVP
 ) {
 	'use strict';
+
+	var defaults = {
+		backgroundColor: [0.3,0.3,0.3,1],
+		globalAmbient: [0,0,0,1],
+		fog: {
+			enabled: false,
+			color: [1,1,1],
+			near: 10,
+			far: 1000
+		}
+	};
+	var soundDefaults = {
+		volume: 1,
+		reverb: 0,
+		dopplerFactor: 1,
+		rolloffFactor: 0.4,
+		maxDistance: 100
+	};
 
 	/**
 	 * @class Handling environments
@@ -22,7 +42,6 @@ define([
 	 */
 	function EnvironmentHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._cache = {};
 	}
 
 	EnvironmentHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -30,22 +49,37 @@ define([
 	ConfigHandler._registerClass('environment', EnvironmentHandler);
 
 	EnvironmentHandler.prototype._prepare = function(config) {
-		_.defaults(config, {
-			backgroundColor: [0,0,0,1],
-			globalAmbient: [0,0,0,1],
-			fog: {
-				enabled: false,
-				color: [1,1,1],
-				near: 10,
-				far: 1000
-			}
-		});
+		_.defaults(config, defaults);
 	};
 
 	EnvironmentHandler.prototype._create = function() {
 		return {
 			weatherState: {}
 		};
+	};
+
+	EnvironmentHandler.prototype._remove = function(ref) {
+		var object = this._objects[ref];
+		delete this._objects[ref];
+
+		// Remove weather
+		for (var key in object.weatherState) {
+			EnvironmentHandler.weatherHandlers[key].remove(object.weatherState);
+		}
+
+		// Reset environment
+		SystemBus.emit('goo.setClearColor', defaults.backgroundColor);
+		ShaderBuilder.GLOBAL_AMBIENT = defaults.globalAmbient;
+		ShaderBuilder.USE_FOG = defaults.fog.enabled;
+		ShaderBuilder.FOG_COLOR = defaults.fog.color.slice(0,3);
+		ShaderBuilder.FOG_SETTINGS = [defaults.fog.near, defaults.fog.far];
+
+		// Reset Sound
+		var soundSystem = this.world.getSystem('SoundSystem');
+		if (soundSystem) {
+			soundSystem.updateConfig(soundDefaults);
+			soundSystem.setReverb(null);
+		}
 	};
 
 	/**
@@ -55,9 +89,9 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated environment or null if removed
 	 */
-	EnvironmentHandler.prototype.update = function(ref, config, options) {
+	EnvironmentHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(object) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(object) {
 			if (!object) { return; }
 			object.backgroundColor = config.backgroundColor.slice(0);
 			object.globalAmbient = config.globalAmbient.slice(0,3);
@@ -84,14 +118,27 @@ define([
 				}
 			}
 
+			var promises = [];
 			// Skybox
-			if(config.skyboxRef && config.skyboxRef !== that._cache.skyboxRef) {
-				return that._load(config.skyboxRef, options).then(function(/*skybox*/) {
-					that._cache.skyboxRef = config.skyboxRef;
-					return object;
-				});
+			if(config.skyboxRef) {
+				var p = that._load(config.skyboxRef, options);
+				promises.push(p);
 			}
-			return object;
+
+			// Sound
+			var soundSystem = that.world.getSystem('SoundSystem');
+			if (config.sound && soundSystem) {
+				soundSystem.updateConfig(config.sound);
+				if (config.sound.reverbRef) {
+					var p = that._load(config.sound.reverbRef).then(function(sound) {
+						soundSystem.setReverb(sound._buffer);
+					});
+					promises.push(p);
+				} else {
+					soundSystem.setReverb(null);
+				}
+			}
+			return RSVP.all(promises).then(function() { return object; });
 		});
 	};
 

@@ -41,7 +41,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
-	SkeletonHandler.prototype.update = function(ref, config/*, options*/) {
+	SkeletonHandler.prototype._update = function(ref, config/*, options*/) {
 		if (!this._objects[ref]) {
 			if (!config) {
 				return pu.createDummyPromise();

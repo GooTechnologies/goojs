@@ -6,7 +6,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/entities/EntityUtils'
-], 
+],
 /** @lends */
 function(
 	ConfigHandler,
@@ -66,9 +66,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
-	EntityHandler.prototype.update = function(ref, config, options) {
+	EntityHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype.update.call(this, ref, config, options).then(function(entity) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(entity) {
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
@@ -77,11 +77,11 @@ function(
 
 			// Adding/updating components
 			for (var type in config.components) {
-				if (config.components[type] != null) {
+				if (config.components[type]) {
 					var p = that._updateComponent(entity, type, config.components[type], options);
 					if (p) { promises.push(p); }
-					else { 
-						console.error("Error handling component " + type); 
+					else {
+						console.error("Error handling component " + type);
 					}
 				}
 			}
@@ -90,7 +90,7 @@ function(
 			var components = entity._components;
 			for(var i = 0; i < components.length; i++) {
 				var type = that._getComponentType(components[i]);
-				if (config.components[type] == null) {
+				if (!config.components[type]) {
 					that._updateComponent(entity, type, null, options);
 				}
 			}
@@ -153,7 +153,7 @@ function(
 					this.world,
 					this.getConfig,
 					this.updateObject,
-					this.options
+					this.loadObject
 				);
 			}
 		}

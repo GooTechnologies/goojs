@@ -59,8 +59,6 @@ function (
 			_canvas = document.createElement('canvas');
 			_canvas.width = 500;
 			_canvas.height = 500;
-			_canvas.style.width = '100%';
-			_canvas.style.height = '100%';
 		}
 		_canvas.screencanvas = true; // CocoonJS support
 		this.domElement = _canvas;
@@ -345,6 +343,22 @@ function (
 		SystemBus.addListener('goo.setClearColor', function(color) {
 			this.setClearColor.apply(this, color);
 		}.bind(this));
+
+		// ---
+		//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
+		// apparently this is the only way to find out the user zoom level
+
+		if (document.createElementNS) {
+			this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+			this.svg.setAttribute('version', '1.1');
+			this.svg.style.position = 'absolute';
+			this.svg.style.display = 'none';
+			document.body.appendChild(this.svg);
+		} else {
+			//! AT: placeholder to avoid another conditional below in checkResize
+			this.svg = { currentScale: 1 };
+		}
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -384,9 +398,10 @@ function (
 	 */
 	Renderer.prototype.checkResize = function (camera) {
 		var devicePixelRatio = window.devicePixelRatio || 1;
+		devicePixelRatio /= this.svg.currentScale;
 
 		var adjustWidth, adjustHeight;
-		if (document.querySelector && this.domElement.style.width !== "" && this.domElement.style.height !== "") {
+		if (document.querySelector) {
 			adjustWidth = this.domElement.offsetWidth;
 			adjustHeight = this.domElement.offsetHeight;
 		} else {
@@ -449,10 +464,10 @@ function (
 		if (w !== this.viewportX || h !== this.viewportY ||
 			width !== this.viewportWidth || height !== this.viewportHeight) {
 			this.setViewport(w, h, width, height);
-		}
 
-		if (this.hardwarePicking !== null) {
-			this.hardwarePicking.pickingTarget = null;
+			if (this.hardwarePicking !== null) {
+				this.hardwarePicking.pickingTarget = null;
+			}
 		}
 	};
 
@@ -904,6 +919,8 @@ function (
 			this.hardwarePicking.clearColorStore.setv(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
 				var devicePixelRatio = window.devicePixelRatio || 1;
+				devicePixelRatio /= this.svg.currentScale;
+
 				var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 				var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
@@ -934,6 +951,8 @@ function (
 			return;
 		}
 		var devicePixelRatio = window.devicePixelRatio || 1;
+		devicePixelRatio /= this.svg.currentScale;
+
 		var pickingResolutionDivider = 4;
 		var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 		var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
@@ -1235,11 +1254,10 @@ function (
 		} else if (texture.variant === 'CUBE') {
 			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					if (image.data[i]) {
+					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
-					}
-					else {
-						Util.getBlankImage(texture, [.3, .3, .3, 0], image.width, image.height, this.maxCubemapSize, i);
+					} else {
+						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}
 				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));

@@ -506,6 +506,8 @@ function (
 	 * Sets the components of the matrix.
 	 * @param {Matrix|number[]|number} arguments Component values.
 	 * @return {Matrix} Self for chaining.
+	 * 
+	 * 
 	 */
 
 	Matrix.prototype.set = function () {

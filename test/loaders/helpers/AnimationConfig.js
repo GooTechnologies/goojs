@@ -27,23 +27,25 @@ define([
 			layers.layers = {};
 
 			for (var i = 5; i >= 0; i--) {
-				var layerKey = this.randomRef();
+				var layerKey = this.randomRef('layer');
 
+				var state = this.animstate();
 				layers.layers[layerKey] = {
+					id: layerKey,
 					sortValue: i,
 					blendWeight: 1,
-					initialState: 'default',
-					states: {
-						'default': {
-							stateRef: this.animstate().id
-						}
-					},
+					initialStateRef: state.id,
+					states: {},
 					transitions: {
 						'*': {
 							type: 'Fade',
 							fadeTime: 1.2
 						}
 					}
+				};
+				layers.layers[layerKey].states[state.id] = {
+					sortValue: 0,
+					stateRef: state.id
 				};
 			}
 			return layers;
