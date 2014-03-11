@@ -1,16 +1,27 @@
-define([], function () {
+define([
+	'goo/scripts/Scripts',
+	'goo/scripts/ScriptUtils'
+], function (
+	Scripts,
+	ScriptUtils
+) {
 	'use strict';
 
 	var external = {
-		name: 'FPCamControlScript',
+		name: 'RotationScript',
 		description: '',
 		parameters: [{
 			key: 'fraction',
-			name: 'Speed'
+			name: 'Speed',
+			'default': 0.01,
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1
 		}]
 	};
 
-	return function () {
+	function NewWaveRotationScript() {
 		var mouseState, actualState, entity;
 
 		function setup(parameters, env) {
@@ -44,11 +55,15 @@ define([], function () {
 		function cleanup(parameters, env) {
 			document.removeEventListener('mousemove', onMouseMove);
 		}
-
+		var params = {}
+		ScriptUtils.fillDefaultValues(params, external.parameters);
 		return {
 			setup: setup,
 			update: update,
-			cleanup: cleanup
+			cleanup: cleanup,
+			external: external,
+			parameters: params
 		};
 	};
+	Scripts.register(external, NewWaveRotationScript);
 });

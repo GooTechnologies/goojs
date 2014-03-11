@@ -154,15 +154,12 @@ define([
 			GameUtils.requestPointerLock();
 		}
 
-		var params = {}
-		ScriptUtils.fillDefaultValues(params, external.parameters);
 
 		return {
 			setup: setup,
 			run: run,
 			cleanup: cleanup,
-			external: external,
-			parameters: params
+			externals: external,
 		};
 	};
 

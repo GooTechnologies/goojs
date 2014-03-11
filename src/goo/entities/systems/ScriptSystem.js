@@ -21,7 +21,7 @@ define(['goo/entities/systems/System'],
 	ScriptSystem.prototype = Object.create(System.prototype);
 
 	ScriptSystem.prototype.inserted = function (entity) {
-		entity.scriptComponent.setup(entity, this.environment);
+		//entity.scriptComponent.setup(entity, this.environment);
 	};
 
 	ScriptSystem.prototype.process = function (entities, tpf) {
@@ -36,7 +36,7 @@ define(['goo/entities/systems/System'],
 
 	ScriptSystem.prototype.deleted = function (entity) {
 		if (entity.scriptComponent) {
-			entity.scriptComponent.cleanup();
+			//entity.scriptComponent.cleanup();
 		}
 	};
 

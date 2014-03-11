@@ -12,7 +12,8 @@ define([
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts',
 
-	'goo/scripts/NewWaveFPCamControlScript'
+	'goo/scripts/NewWaveFPCamControlScript',
+	'goo/scripts/NewWaveRotationScript'
 ],
 /** @lends */
 function(
@@ -64,22 +65,14 @@ function(
 		});
 	}
 
-	ScriptHandler.prototype._create = function(ref, config, options) {
-		if (!config) {
-			return ConfigHandler.prototype._create.call(this, ref);
-		}
-		if (config.className) {
-			var script = Scripts.create(config.className);
-			if (!script) {
-				throw 'Script was not recognized';
-			}
-			return this._objects[ref] = script;
-		}
-	};
-
-	ScriptHandler.prototype._prepare = function(config) {
+	ScriptHandler.prototype._specialPrepare = function(script, config) {
 		config.options = config.options || {};
-		_.defaults(config.options, this._objects[config.id].parameters);
+		if (config.className === 'OrbitNPanControlScript') { return; }
+		// fill the rest of the parameters with default values
+		ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
+		if (config.body) {
+			config._externals = script.externals;
+		}
 	};
 
 	ScriptHandler.prototype._remove = function(ref) {
@@ -90,23 +83,100 @@ function(
 		}
 	};
 
-	ScriptHandler.prototype._update = function(ref, config, options) {
-		if (!config) {
-			this._remove(ref);
-			PromiseUtil.createDummyPromise(null);
-		}
-		if (config.className !== 'OrbitNPanControlScript') {
-			var script;
-			if (!this._objects[ref]) {
-				script = this._create(ref, config, options);
-			} else if (this._objects[ref].external.name !== config.className) {
-				script = this._create(ref, config, options);
-			} else {
-				script = this._objects[ref];
+	ScriptHandler.prototype._updateFromCustom = function(script, config) {
+		// cache the body of the function so parameter changes won't rebuild the function
+		var oldBody = this._bodyCache[config.id];
+		if (oldBody !== config.body) {
+			this._bodyCache[config.id] = config.body;
+
+			// delete the old script tag and add a new one
+			var oldScriptElement = document.getElementById(ScriptHandler.htmlELementIdPrefix + config.id);
+			if (oldScriptElement) {
+				oldScriptElement.parentNode.removeChild(oldScriptElement);
 			}
-			this._prepare(config);
-			_.extend(script.parameters, config.options);
-			return PromiseUtil.createDummyPromise(script);
+
+			// create this script collection if it does not exist yet
+			if (!window._gooScriptFactories) {
+				// this holds script factories in 'compiled' form
+				window._gooScriptFactories = {};
+			}
+
+			// get a script factory in string form
+			var scriptFactoryStr = [
+				"window._gooScriptFactories['" + config.id + "'] = function () { 'use strict';",
+				config.body,
+
+				//! AT: these might throw undefined reference errors
+				' return {',
+				'  externals: externals,',
+				'  parameters: {},',
+				'  setup: setup,',
+				'  update: update,',
+				'  cleanup: cleanup,',
+				'  enabled: false',
+				' };',
+				'};'
+			].join('\n');
+
+			// create the element and add it to the page so the user can debug it
+			// addition and execution of the script happens synchronously
+			var newScriptElement = document.createElement('script');
+			newScriptElement.id = ScriptHandler.htmlELementIdPrefix + config.id;
+			newScriptElement.innerHTML = scriptFactoryStr;
+			document.body.appendChild(newScriptElement);
+			
+			var newScript = window._gooScriptFactories[config.id]();
+			if (!newScript) {
+				throw 'Unrecognized script body';
+
+			}
+			script.externals = newScript.externals;
+			script.setup = newScript.setup;
+			script.update = newScript.update;
+			script.cleanup = newScript.cleanup;
+			script.parameters = {};
+			script.enabled = false;
+
+			// generate names from external variable names
+			ScriptUtils.fillDefaultNames(script.externals.parameters);
+		}
+		return script;
+	};
+
+	ScriptHandler.prototype._updateFromClass = function(script, config) {
+		if (script.externals.name !== config.className) {
+			var newScript = Scripts.create(config.className);
+			if (!newScript) {
+				throw 'Unrecognized script name';
+			}
+			script.externals = newScript.externals;
+			script.setup = newScript.setup;
+			script.update = newScript.update;
+			script.cleanup = newScript.cleanup;
+			script.parameters = {};
+			script.enabled = false;
+
+			// generate names from external variable names
+			ScriptUtils.fillDefaultNames(script.externals.parameters);
+		}
+
+		return script;
+	};
+
+	ScriptHandler.prototype._update = function(ref, config, options) {
+		var that = this;
+		if (config.className !== 'OrbitNPanControlScript') {
+			return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
+				if (!script) { return; }
+				if (config.className) {
+					that._updateFromClass(script, config);
+				} else if (config.body) {
+					that._updateFromCustom(script, config);
+				}
+				that._specialPrepare(script, config);
+				_.extend(script.parameters, config.options);
+				return script;
+			});
 		}
 		var that = this;
 		var script;
@@ -157,10 +227,11 @@ function(
 
 					//! AT: these might throw undefined reference errors
 					'\treturn {',
-					'\t\texternal: external,',
+					'\t\texternals: externals,',
 					'\t\tsetup: setup,',
 					'\t\tupdate: update,',
-					'\t\tcleanup: cleanup',
+					'\t\tcleanup: cleanup,',
+					'\t\tparameters: {}',
 					'\t};',
 					'};'
 				].join('\n');
@@ -180,10 +251,10 @@ function(
 			script.parameters = config.parameters;
 
 			// fill the rest of the parameters with default values
-			ScriptUtils.fillDefaultValues(script.parameters, script.external.parameters);
+			ScriptUtils.fillDefaultValues(script.parameters, script.externals.parameters);
 
 			// generate names from external variable names
-			ScriptUtils.fillDefaultNames(script.external.parameters);
+			ScriptUtils.fillDefaultNames(script.externals.parameters);
 
 			return script;
 		});

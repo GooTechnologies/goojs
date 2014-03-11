@@ -84,7 +84,7 @@ function (
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.cleanup) {
-				script.cleanup(script.parameters, script.environment);
+				//script.cleanup(script.parameters, script.environment);
 			}
 		}
 	};
