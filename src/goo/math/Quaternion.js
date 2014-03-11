@@ -239,7 +239,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	 * @param {Quaternion} endQuat end Quaternion.
 	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
 	 * @param {Quaternion} workQuat work Quaternion.
-	 * @return {Quaternion} workQuat returns the interpolated work Quaternion.
+	 * @return {Quaternion} workQuat the interpolated work Quaternion.
 	 */
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
@@ -400,13 +400,13 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
+	 var slerp_work_quat;
 	/**
 	 * Computes the spherical linear interpolation towards endQuat.
 	 * @param {Quaternion} endQuat end Quaternion.
 	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
 	 * @returns {Quaternion} Self for chaining.
 	 */
-	 var slerp_work_quat;
 	Quaternion.prototype.slerp = function (endQuat, changeAmnt) {
 		if(!slerp_work_quat) {
 			slerp_work_quat = new Quaternion();
