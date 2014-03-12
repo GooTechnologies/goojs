@@ -121,6 +121,13 @@ function (
 	 * @param {Vector3} point
 	 * @param {Vector3} store
 	 * @returns {Vector3} store
+	 * @example
+	 * // Vector3 object, one unit right, two units up, two units back
+	 * var v1 = new Vector3(1, 2, 2);
+	 * // Vector3 to store the local position
+	 * var localPos = new Vector3();
+	 * // converts v1 to be in 'world space' based on the entities postion / rotation
+	 * entity.transformComponent.transform.applyForward(v1, localPos);
 	 */
 	Transform.prototype.applyForward = function (point, store) {
 		store.setv(point);
@@ -139,6 +146,13 @@ function (
 	 * @param {Vector3} vector
 	 * @param {Vector3} store
 	 * @returns {Vector3} store
+	 * @example
+	 * // Vector3 pointing in the direction we want
+	 * var back = new Vector3(0, 0, 1);
+	 * // Vector3 to store the local 'back'
+	 * var localBack = new Vector3();
+	 * // converts 'back' to a localized direction based on the entities rotation
+	 * entity.transformComponent.transform.applyForwardVector(back, localBack);
 	 */
 	Transform.prototype.applyForwardVector = function (vector, store) {
 		store.copy(vector);
