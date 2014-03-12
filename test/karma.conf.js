@@ -14,12 +14,12 @@ module.exports = function(config) {
 
 	// list of files / patterns to load in the browser
 	files: [
-	  { pattern: 'test/**/*.png',   included: false },
-	  { pattern: 'test/all-tests.js',   included: false },
-	  'test/karma-main.js',
-	  { pattern: 'src/**/*.js',         included: false },
-	  { pattern: 'lib/**/*.js',         included: false },
-	  { pattern: 'test/**/*.js',        included: false },
+		{ pattern: 'test/**/*.png',   included: false },
+		{ pattern: 'test/all-tests.js',   included: false },
+		'test/karma-main.js',
+		{ pattern: 'src/**/*.js',         included: false },
+		{ pattern: 'lib/**/*.js',         included: false },
+		{ pattern: 'test/**/*.js',        included: false },
 	],
 
 
@@ -70,17 +70,16 @@ module.exports = function(config) {
 	singleRun: false,
 
 	preprocessors: {
-	  // source files, that you wanna generate coverage for
-	  // do not include tests or libraries
-	  // (these files will be instrumented by Istanbul)
+		// source files, that you wanna generate coverage for
+		// do not include tests or libraries
+		// (these files will be instrumented by Istanbul)
 		'**/src/goo/**/*.js': ['coverage']
 	},
 
 	// optionally, configure the reporter
 	coverageReporter: {
-	  type : 'html',
-	  dir : 'coverage/'
+		type : 'html',
+		dir : 'coverage/'
 	},
-
   });
 };
