@@ -106,7 +106,7 @@ define([
 		}
 		// TODO: use cylinder shape
 		var entity = this.goo.world.createEntity(new Sphere(20, 20, this.wheelRadius), material, pos);
-		//var entity = goo.world.createEntity(ShapeCreator.createCylinder(20, radius), material, pos);
+		//var entity = goo.world.createEntity(new Cylinder(20, radius), material, pos);
 		//entity.transformComponent.transform.setRotationXYZ(0, -Math.PI/2, 0);
 		//entity.transformComponent.setScale( 1, 1, 0.5);
 		entity.addToWorld();

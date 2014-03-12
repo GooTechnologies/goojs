@@ -1,7 +1,8 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
+	'goo/shapes/Cylinder',
 	'goo/math/Vector3',
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
@@ -11,7 +12,8 @@ require([
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Box,
+	Cylinder,
 	Vector3,
 	Box2DSystem,
 	Box2DComponent,
@@ -25,25 +27,10 @@ require([
 	var pipeEntity;
 	var sceneWidth = 3;
 
-	function getRandomColor() {
-		var k = Math.random() * Math.PI * 2;
-		var col = [Math.sin(k),
-			Math.sin(k + Math.PI * 2 / 3),
-			Math.sin(k + Math.PI * 4 / 3)].map(function(v) { return v / 2 + 0.5; });
-		col.push(1);
-		return col;
-	}
-
-	function getRandomColoredMaterial() {
-		var material = new Material(ShaderLib.simpleLit, 'Floormaterial');
-		material.uniforms.materialDiffuse = getRandomColor();
-		return material;
-	}
-
 	function addStaticBox(width, x, y, angle) {
 		var worldHeight = 0.1;
-		var meshData = ShapeCreator.createBox(width, worldHeight, worldHeight * 5);
-		var material = getRandomColoredMaterial();
+		var meshData = new Box(width, worldHeight, worldHeight * 5);
+		var material = V.getColoredMaterial();
 		var entity = gooRunner.world.createEntity(meshData, material, [x, y, 0]);
 		entity.transformComponent.transform.rotation.rotateZ(angle);
 
@@ -59,10 +46,10 @@ require([
 	}
 
 	function addCircle(x, y) {
-		var radius = Math.random() * 0.3 + 0.3;
+		var radius = V.rng.nextFloat() * 0.3 + 0.3;
 
-		var meshData = ShapeCreator.createCylinder(32, radius);
-		var material = getRandomColoredMaterial();
+		var meshData = new Cylinder(32, radius);
+		var material = V.getColoredMaterial();
 		var entity = gooRunner.world.createEntity(meshData, material, [x, y, 0]);
 
 		var box2DComponent = new Box2DComponent({
@@ -75,11 +62,11 @@ require([
 	}
 
 	function addBox(x, y) {
-		var width = Math.random() * 0.5 + 0.5;
-		var height = Math.random() * 0.5 + 0.5;
+		var width = V.rng.nextFloat() * 0.5 + 0.5;
+		var height = V.rng.nextFloat() * 0.5 + 0.5;
 
-		var meshData = ShapeCreator.createBox(width, height, width);
-		var material = getRandomColoredMaterial();
+		var meshData = new Box(width, height, width);
+		var material = V.getColoredMaterial();
 		var entity = gooRunner.world.createEntity(meshData, material, [x, y, 0]);
 
 		var box2DComponent = new Box2DComponent({
@@ -100,7 +87,7 @@ require([
 			0.5, 1, 0,
 			-0.3, 0.5, 0];
 		var meshData = new FilledPolygon(verts);
-		var material = getRandomColoredMaterial();
+		var material = V.getColoredMaterial();
 		var entity = gooRunner.world.createEntity(meshData, material, [x, y, 0]);
 
 		var verts = [
@@ -120,8 +107,8 @@ require([
 
 	function createPipe(pipeY) {
 		var pipeScale = 200;
-		var meshData = ShapeCreator.createCylinder(32, 1);
-		var material = getRandomColoredMaterial();
+		var meshData = new Cylinder(32, 1);
+		var material = V.getColoredMaterial();
 		var moveAroundScript = function(entity/*, tpf*/) {
 			var oldY = entity.transformComponent.transform.translation.y;
 			entity.transformComponent.transform.translation.setd(Math.sin(gooRunner.world.time) * sceneWidth, oldY, 0);
