@@ -96,7 +96,7 @@ function(
 
 		this.normalMap = new RenderTarget(size, size);
 
-		this.detailmapPass = new FullscreenPass(detailShader);
+//		this.detailmapPass = new FullscreenPass(detailShader);
 		this.detailMap = new RenderTarget(1024, 1024);
 
 		this.textures = [];
@@ -244,6 +244,7 @@ function(
 			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
 		}
 
+		/*
 		var material = this.detailmapPass.material;
 		material.setTexture('NORMAL_MAP', this.normalMap);
 		material.setTexture('SPLAT_MAP', this.splat);
@@ -253,7 +254,7 @@ function(
 		material.setTexture('GROUND_MAP4', terrainTextures.ground4);
 		material.setTexture('GROUND_MAP5', terrainTextures.ground5);
 		material.setTexture('STONE_MAP', terrainTextures.stone);
-
+		*/
 		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
 		this.copyPass.render(this.renderer, this.splat, this.splatTexture);
@@ -519,7 +520,7 @@ function(
 
 		this.normalmapPass.render(this.renderer, this.normalMap, this.textures[0]);
 
-		this.detailmapPass.render(this.renderer, this.detailMap, this.splat);
+		// this.detailmapPass.render(this.renderer, this.detailMap, this.splat);
 	};
 
 	Terrain.prototype.update = function(pos) {
