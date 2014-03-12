@@ -287,7 +287,16 @@ function(
 
 	var vegetationShader = {
 		processors: [
-			ShaderBuilder.light.processor
+			ShaderBuilder.light.processor,
+			function (shader, shaderInfo) {
+				if (ShaderBuilder.USE_FOG) {
+					shader.defines.FOG = true;
+					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
+					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
+				} else {
+					delete shader.defines.FOG;
+				}
+			}
 		],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -387,8 +396,10 @@ function(
 			// 'final_color = vec4(N, 1.0);',
 			ShaderBuilder.light.fragment,
 
+			'#ifdef FOG',
 			'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
 			'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+			'#endif',
 
 		'	gl_FragColor = final_color;',
 		'}'//
