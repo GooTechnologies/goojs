@@ -14,7 +14,8 @@ define([
 	'goo/scripts/Scripts',
 
 	'goo/scripts/NewWaveFPCamControlScript',
-	'goo/scripts/NewWaveRotationScript'
+	'goo/scripts/NewWaveRotationScript',
+	'goo/scripts/NewOrbitCamControlScript'
 ],
 /** @lends */
 function(
@@ -41,7 +42,7 @@ function(
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._bodyCache = {};
-		this._currentScriptLoading = null
+		this._currentScriptLoading = null;
 
 		var that = this;
 		window.addEventListener('error', function(evt) {
@@ -60,6 +61,7 @@ function(
 				};
 				script.setup = null;
 				script.update = null;
+				script.run = null;
 				script.cleanup = null;
 				script.parameters = {};
 				script.enabled = false;
@@ -164,7 +166,7 @@ function(
 	};
 
 	ScriptHandler.prototype._updateFromClass = function(script, config) {
-		if (script.externals.name !== config.className) {
+		if (!script.externals || script.externals.name !== config.className) {
 			var newScript = Scripts.create(config.className);
 			if (!newScript) {
 				throw 'Unrecognized script name';
@@ -172,6 +174,7 @@ function(
 			script.externals = newScript.externals;
 			script.setup = newScript.setup;
 			script.update = newScript.update;
+			script.run = newScript.run;
 			script.cleanup = newScript.cleanup;
 			script.parameters = {};
 			script.enabled = false;
@@ -185,7 +188,7 @@ function(
 
 	ScriptHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		if (config.className !== 'OrbitNPanControlScript') {
+		if (config && config.className !== 'OrbitNPanControlScript') {
 			return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
 				if (!script) { return; }
 				if (config.className) {
@@ -199,8 +202,6 @@ function(
 			});
 		}
 		// Old style loading of OrbitNPanControlScript for now
-		var that = this;
-		var script;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
 			if (!config) { return; }
 
