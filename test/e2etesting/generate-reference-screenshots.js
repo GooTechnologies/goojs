@@ -11,11 +11,14 @@ var webdriver = require('selenium-webdriver')
 
 program
   .version('0.0.0')
-  .option('-u, --url [url]', 			'URL of the visual test folder')
+  .option('-u, --url [url]', 			'URL of the goojs root folder')
   .option('-w, --wait [milliseconds]',  'Number of milliseconds to wait for the test to run before taking a screenshot.')
   .parse(process.argv);
 
-program.url = program.url || process.env.GOOJS_ROOT_URL+'/visual-test' || 'http://localhost:3000/visual-test';
+program.url = program.url || process.env.GOOJS_ROOT_URL || 'http://localhost:3000';
+program.url += '/visual-test';
+
+console.log('Using test URL: '+program.url);
 
 var shooter = new ScreenShooter({
 	script : ScreenShooter.removeGooStuffScript,

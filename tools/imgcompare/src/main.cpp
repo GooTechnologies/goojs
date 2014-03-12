@@ -59,41 +59,58 @@ int main( int argc, char** argv ) {
 	extractor.compute( img_1, keypoints_1, descriptors_1 );
 	extractor.compute( img_2, keypoints_2, descriptors_2 );
 
-	//-- Step 3: Matching descriptor vectors using FLANN matcher
-	FlannBasedMatcher matcher;
-	std::vector< DMatch > matches;
-	matcher.match( descriptors_1, descriptors_2, matches );
-
-	double max_dist = 0;
-	double min_dist = 100;
-
-	//-- Quick calculation of max and min distances between keypoints
-	for( int i = 0; i < descriptors_1.rows; i++ ) {
-		double dist = matches[i].distance;
-		if( dist < min_dist ) min_dist = dist;
-		if( dist > max_dist ) max_dist = dist;
-	}
-
 	printf("Result:\n");
 
-	//printf("%d feature points!\n", descriptors_1.rows);
-
-	// Bail if we find feature points too far away
-	double imgMaxDist = 0;
-	for( int i = 0; i < descriptors_1.rows; i++ ) {
-		double dist = matches[i].distance;
-
-		if( dist > imgMaxDist ){
-			imgMaxDist = dist;
-		}
-
-		if( dist > maxDist ){
-			printf("\tMax dist        = %g  FAILED\n", dist );
+	bool doFeatureTest = true;
+	if ( descriptors_1.empty() || descriptors_2.empty() ){
+		if(descriptors_1.empty() && descriptors_2.empty()){
+			// Both are empty, which is ok. But the FLANN test will fail if there are no features!
+			printf("\tNone of the images had features... Skipping the feature test.\n");
+			doFeatureTest = false;
+		} else {
+			// One is empty - means that images are quite different
+			printf("\tImage %d had no features! Can't consider them equal.\n",descriptors_1.empty()?1:2);
 			return EXIT_FAILURE;
 		}
 	}
 
-	printf("\tMax dist       = %g  OK\n", imgMaxDist );
+
+	//-- Step 3: Matching descriptor vectors using FLANN matcher
+	if(doFeatureTest){
+		FlannBasedMatcher matcher;
+		std::vector< DMatch > matches;
+		matcher.match( descriptors_1, descriptors_2, matches );
+
+		double max_dist = 0;
+		double min_dist = 100;
+
+		//-- Quick calculation of max and min distances between keypoints
+		for( int i = 0; i < descriptors_1.rows; i++ ) {
+			double dist = matches[i].distance;
+			if( dist < min_dist ) min_dist = dist;
+			if( dist > max_dist ) max_dist = dist;
+		}
+
+
+		//printf("%d feature points!\n", descriptors_1.rows);
+
+		// Bail if we find feature points too far away
+		double imgMaxDist = 0;
+		for( int i = 0; i < descriptors_1.rows; i++ ) {
+			double dist = matches[i].distance;
+
+			if( dist > imgMaxDist ){
+				imgMaxDist = dist;
+			}
+
+			if( dist > maxDist ){
+				printf("\tMax dist        = %g  FAILED\n", dist );
+				return EXIT_FAILURE;
+			}
+		}
+
+		printf("\tMax dist       = %g  OK\n", imgMaxDist );
+	}
 
 	/*
 	//-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
@@ -191,13 +208,13 @@ int main( int argc, char** argv ) {
 				+ pow(g_hist_1.at<float>(i-1) - g_hist_2.at<float>(i-1) , 2)
 				+ pow(r_hist_1.at<float>(i-1) - r_hist_2.at<float>(i-1) , 2) ) / 3);
 
-		if(sum > maxSumSquares){
-			printf("\tSum of squares = %g  FAILED (stopped when sum passed threshold)\n", sum);
+		if(sum/histSize > maxSumSquares){
+			printf("\tSum of squares = %g  FAILED (stopped when sum passed threshold)\n", sum/histSize);
 			return EXIT_FAILURE;
 		}
 	}
 
-	printf("\tSum of squares = %g  OK\n", sum);
+	printf("\tSum of squares = %g  OK\n", sum/histSize);
 
 
 
