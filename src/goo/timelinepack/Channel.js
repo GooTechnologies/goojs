@@ -1,7 +1,7 @@
 define([], function () {
 	'use strict';
 
-	function Channel() {
+	function Channel(options) {
 		this.entries = [];
 		this.time = 0;
 		this.lastTime = 0;
@@ -9,6 +9,8 @@ define([], function () {
 		this.callbackAgenda = [];
 		this.callbackIndex = 0;
 		this.lastCallbackTime = 0;
+		this.callbackUpdate = options.callbackUpdate;
+		this.callbackEnd = options.callbackEnd;
 	}
 
 	/**
@@ -38,11 +40,6 @@ define([], function () {
 		return start;
 	}
 
-	Channel.prototype.within = function (index, time) {
-		var entry = this.entries[index];
-		return entry.start < time && entry.start + entry.length > time;
-	};
-
 	//! AT: it looks like code duplication, but the alternative is a generalzilla
 	Channel.prototype.addCallback = function (start, callback) {
 		var newCallback = {
@@ -64,28 +61,20 @@ define([], function () {
 	/**
 	 * Schedules a tween
 	 * @param start Start time
-	 * @param length Length of the tween
-	 * @param valueStart Starting value
-	 * @param valueEnd End value
+	 * @param value
 	 * @param {'linear' | 'quadratic' | 'exponential'} easing Type of easing
-	 * @param {function(number, number)} [callbackUpdate]
-	 * @param [callbackStart] Callback to call when tween was entered
-	 * @param [callbackEnd] Callback to call when tween was exited
+	 * @param [callback] Callback to call when point was passed
 	 */
-	Channel.prototype.addEntry = function (start, length, valueStart, valueEnd, easing, callbackUpdate, callbackStart, callbackEnd) {
+	Channel.prototype.addEntry = function (start, value, easing, callback) {
 		// insert at correct index
-
-		// should also check for conflicts?
 
 		var newEntry = {
 			start: start,
-			length: length,
-			valueStart: valueStart,
-			valueEnd: valueEnd,
+			value: value,
 			//easing: easing,
 			//easingFunction: function (v) { return v; }, // identity function for now
 			easingFunction: easing,
-			callbackUpdate: callbackUpdate
+			callback: callback
 		};
 
 		if (start > this.lastTime) {
@@ -98,8 +87,7 @@ define([], function () {
 			this.entries.splice(index, 0, newEntry);
 		}
 
-		if (callbackStart) { this.addCallback(start, callbackStart); console.log('add start', start); }
-		if (callbackEnd) { this.addCallback(start + length, callbackEnd); console.log('add end', start + length);  }
+		if (callback) { this.addCallback(start, callback); console.log('add callback', start); }
 	};
 
 	/**
@@ -129,31 +117,36 @@ define([], function () {
 	Channel.prototype.update = function (tpf) {
 		this.time += tpf;
 
+		// tmp hack
+		if (this.time > this.lastTime) {
+			this.time %= this.lastTime;
+			this.callbackEnd();
+		}
+
 		this._checkCallbacks();
 
 		// run update callback on current position
 		var newEntryIndex = find(this.entries, this.time, this.lastTime);
 		var newEntry = this.entries[newEntryIndex];
-		var progressInEntry = (this.time - newEntry.start) / newEntry.length;
 
-		var progressValue;
+
+		var newValue;
 		if (this.time <= this.entries[0].start) {
-			progressValue = 0;
-		} else if (this.within(newEntryIndex, this.time)) {
-			progressValue = newEntry.easingFunction(progressInEntry);
+			newValue = this.entries[0].value;
+		} else if (this.time >= this.lastTime) {
+			newValue = this.entries[this.entries.length - 1].value;
 		} else {
-			progressValue = 1;
+			var nextEntry = this.entries[newEntryIndex + 1];
+			var progressInEntry = (this.time - newEntry.start) / (nextEntry.start - newEntry.start);
+			var progressValue = newEntry.easingFunction(progressInEntry);
+
+			newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
 		}
 
-		//var newValue = newEntry.valueStart * (1 - progressValue) + newEntry.valueEnd * progressValue;
-
-		//! AT: one less multiplication
-		var newValue = newEntry.valueStart + (newEntry.valueEnd - newEntry.valueStart) * progressValue;
-
 		//! AT: comparing floats with === is ok here
-		if (this.value !== newValue || true) { // overriding for now to see time progression
+		if (this.value !== newValue || true) { // overriding for now to get time progression
 			this.value = newValue;
-			newEntry.callbackUpdate(this.time, this.value, newEntryIndex);
+			this.callbackUpdate(this.time, this.value, newEntryIndex);
 		}
 	};
 

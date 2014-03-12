@@ -40,13 +40,13 @@ require([
 
 			drawPointer(time, value, index);
 
-			/*
+			//console.log(time, value);
 			box.setScale(0.6, value / 100, 0.6).setRotation(value / 100, value / 100, value / 100);
 
 			sphere.setScale(value / 100, value / 100, value / 100);
 			torus.setRotation(value / 100, value / 100, value / 100);
-			*/
-			entityTweener(time, value);
+
+			//entityTweener(time, value);
 		}
 
 		function getMessenger(message) {
@@ -55,11 +55,12 @@ require([
 			}
 		}
 
-		var channel = new Channel();
-		channel.addEntry(50, 30, 10, 20, TWEEN.Easing.Quadratic.InOut, callback, getMessenger('start1'), getMessenger('end1'));
-		channel.addEntry(100, 40, 20, 160, TWEEN.Easing.Sinusoidal.InOut, callback, getMessenger('start2'), getMessenger('end2'));
-		channel.addEntry(170, 80, 160, 80, TWEEN.Easing.Exponential.InOut, callback, getMessenger('start3'), getMessenger('end3'));
-		channel.addEntry(300, 150, 80, 400, TWEEN.Easing.Elastic.InOut, callback, getMessenger('start4'), getMessenger('end4'));
+		var channel = new Channel({ callbackUpdate: callback, callbackEnd: function () { trace = []; } });
+		channel.addEntry(50, 10, TWEEN.Easing.Quadratic.InOut, getMessenger('start1'));
+		channel.addEntry(100, 160, TWEEN.Easing.Sinusoidal.InOut, getMessenger('start2'));
+		channel.addEntry(170, 80, TWEEN.Easing.Exponential.InOut, getMessenger('start3'));
+		channel.addEntry(300, 400, TWEEN.Easing.Elastic.InOut, getMessenger('start4'));
+		channel.addEntry(400, 200, TWEEN.Easing.Elastic.InOut, getMessenger('start5'));
 		return channel;
 	}
 
@@ -72,18 +73,20 @@ require([
 		con2d.lineWidth = 1;
 		con2d.strokeStyle = '#DDD';
 
-		con2d.beginPath();
+//		con2d.beginPath();
+//		con2d.moveTo(channel.entries[0].start, channel.entries[0].value);
+
 		channel.entries.forEach(function (entry) {
-			con2d.moveTo(entry.start, entry.valueStart);
-			con2d.lineTo(entry.start + entry.length, entry.valueEnd);
+//			con2d.lineTo(entry.start + entry.length, entry.valueEnd);
+//			con2d.moveTo(entry.start, entry.valueStart);
 
 			con2d.fillStyle = '#000';
-			con2d.fillRect(entry.start - 2, entry.valueStart - 2, 5, 5);
+			con2d.fillRect(entry.start - 2, entry.value - 2, 5, 5);
 
-			con2d.fillStyle = '#000';
-			con2d.fillRect(entry.start + entry.length - 2, entry.valueEnd - 2, 5, 5);
+//			con2d.fillStyle = '#000';
+//			con2d.fillRect(entry.start + entry.length - 2, entry.valueEnd - 2, 5, 5);
 		});
-		con2d.stroke();
+//		con2d.stroke();
 	}
 
 	function drawPointer(time, value, index) {
