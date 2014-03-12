@@ -47,7 +47,7 @@ for(var i=0; i<files.length; i++){
 
 	var pngPath = path.join(__dirname,'screenshots',path.relative(path.join(gooRootPath,'visual-test'),file)).replace(/\.html$/,'.png');
 
-	var url = program.url+'/'+path.relative(gooRootPath,file);
+	var url = program.url+'/'+path.relative(gooRootPath,file) + '?deterministic=1';
 
 	urlToPathMap[url] = pngPath;
 }

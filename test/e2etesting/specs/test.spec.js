@@ -25,7 +25,7 @@ if(!rootUrl){
 // testFilePath should be something like visual-test/.../lol-test.html
 function getTestInfo(testFilePath){
 	var testFile = path.relative(gooRootPath,testFilePath);
-	var url = rootUrl+'/'+testFile;
+	var url = rootUrl+'/'+testFile + '?deterministic=1';
 	var pngPath = path.join(__dirname,'..','screenshots-tmp',testFile.replace('visual-test','').replace('.html','.png'));
 	var refPath = path.join(__dirname,'..','screenshots',    testFile.replace('visual-test','').replace('.html','.png'));
 
