@@ -8,6 +8,14 @@ var webdriver = require('selenium-webdriver')
 
 module.exports = ScreenShooter;
 
+/**
+ * @class ScreenShooter
+ * @param {object} [options]
+ * @param {number} [options.wait]   How long to wait before taking each screenshot.
+ * @param {string} [options.script]	JavaScript to run in the browser before each screenshot.
+ * @param {number} [options.width]	Width of the browser window
+ * @param {number} [options.height]	Height of the window
+ */
 function ScreenShooter(options){
 	options = options || {};
 
@@ -29,6 +37,7 @@ function ScreenShooter(options){
 
 ScreenShooter.prototype = new EventEmitter();
 
+// Script that removes stats, logos, dat.gui etc from a visual test
 ScreenShooter.removeGooStuffScript = [
 	"var statsEl = document.getElementById('stats');", // Remove stats box
 	"if(statsEl) statsEl.style.display='none';",
@@ -38,6 +47,7 @@ ScreenShooter.removeGooStuffScript = [
 	"if(dgEls && dgEls.length) dgEls[0].style.display='none';",
 ].join('\n');
 
+// Take a screenshot on an url and store it to a file. Will emit a 'shoot' event
 ScreenShooter.prototype.takeScreenshot = function(url,pngPath,callback){
 
 	var self = this;
@@ -84,7 +94,7 @@ ScreenShooter.prototype.takeScreenshot = function(url,pngPath,callback){
 	});
 };
 
-// Many screenshots
+// Take many screenshots. First arg is a map from url to png path.
 ScreenShooter.prototype.takeScreenshots = function(urlToPathMap,callback){
 	var self = this;
 
@@ -107,6 +117,7 @@ ScreenShooter.prototype.takeScreenshots = function(urlToPathMap,callback){
 	});
 };
 
+// Shut down the shooter.
 ScreenShooter.prototype.shutdown = function(callback){
 	// Shut down
 	this.driver.close().then(function(){
