@@ -45,8 +45,9 @@ describe('visual test', function () {
 		done();
 	});
 
+	var testCounter = 0;
 	function testFunc (done){
-		var testFile = testFiles.shift();
+		var testFile = testFiles[testCounter++];
 
 		var info2 = getTestInfo(testFile);
 
@@ -63,13 +64,20 @@ describe('visual test', function () {
 				maxDist : 0.1,
 				maxSumSquares : 1e-8,
 			},function(err,result){
-
-				//console.log(err)
-
 				expect(err).toBeFalsy();
 				expect(result).toBeTruthy();
 
-				if(!testFiles.length){
+				var severeLogEntries = [];
+				for(var j=0; j<shooter.browserLog.length; j++){
+					var entry = shooter.browserLog[j];
+					if(entry.level.name == 'SEVERE'){
+						severeLogEntries.push(entry);
+					}
+				}
+
+				expect(severeLogEntries).toEqual([]);
+
+				if(testCounter >= testFiles.length){
 					// Shut down if there are no more tests
 					shooter.shutdown(function(){
 						done();

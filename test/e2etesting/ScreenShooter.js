@@ -20,7 +20,7 @@ function ScreenShooter(options){
 	options = options || {};
 
 	var settings = this.settings = {
-		wait   : 600,
+		wait   : 700,
 		script : ScreenShooter.removeGooStuffScript,
 		width  : 400, // This is sort of the smallest possible in Chrome
 		height : 180,
@@ -33,6 +33,9 @@ function ScreenShooter(options){
 
 	// Init driver
 	this.driver = new webdriver.Builder().withCapabilities(webdriver.Capabilities.chrome()).build();
+
+	// Will update whenever needed.
+	this.browserLog = [];
 }
 
 ScreenShooter.prototype = new EventEmitter();
@@ -78,15 +81,22 @@ ScreenShooter.prototype.takeScreenshot = function(url,pngPath,callback){
 									return callback(err);
 								}
 
-								// Save screenshot
-								fs.writeFileSync(pngPath, data, 'base64');
+								// Get the console log
+								var logs = new webdriver.WebDriver.Logs(driver);
+								logs.get('browser').then(function(browserLog){
+									self.browserLog = browserLog;
 
-								self.emit('shoot',{
-									url:url,
-									path:pngPath,
+									// Save screenshot
+									fs.writeFileSync(pngPath, data, 'base64');
+
+									self.emit('shoot',{
+										url:url,
+										path:pngPath,
+										log:browserLog
+									});
+
+									callback();
 								});
-
-								callback();
 							});
 						});
 					}, self.settings.wait);
