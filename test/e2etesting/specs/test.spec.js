@@ -1,14 +1,14 @@
-var webdriver = require('selenium-webdriver')
-,	fs = require('fs')
-,	os = require('os')
-,	path = require('path')
-,  	Canvas = require('canvas')
-,  	Image = Canvas.Image
-,   exec = require('child_process').exec
-,   ScreenShooter = require(__dirname + '/../ScreenShooter')
-,   imgcompare = require(__dirname + '/../../../tools/imgcompare')
-,   coffeescript = require('coffee-script')
-,   toc = require(__dirname + '/../../../visual-test/toc')
+var webdriver = require('selenium-webdriver');
+var fs = require('fs');
+var os = require('os');
+var path = require('path');
+var Canvas = require('canvas');
+var Image = Canvas.Image;
+var exec = require('child_process').exec;
+var ScreenShooter = require(__dirname + '/../ScreenShooter');
+var imgcompare = require(__dirname + '/../../../tools/imgcompare');
+var coffeescript = require('coffee-script');
+var toc = require(__dirname + '/../../../visual-test/toc');
 
 jasmine.getEnv().defaultTimeoutInterval = 10000; // in microseconds.
 
@@ -38,49 +38,53 @@ function getTestInfo(testFilePath){
 
 describe('visual test', function () {
 
-	beforeEach(function(done){
- 		if(!shooter) shooter = new ScreenShooter();
-		 done();
+	beforeEach(function (done){
+		if(!shooter){
+			shooter = new ScreenShooter();
+		}
+		done();
 	});
+
+	function testFunc (done){
+		var testFile = testFiles.shift();
+
+		var info2 = getTestInfo(testFile);
+
+		var url = info2.url;
+		var pngPath = info2.pngPath;
+		var refPath = info2.refPath;
+
+		// Take a screenshot
+		shooter.takeScreenshot(url, pngPath, function(err){
+			expect(err).toBeFalsy();
+
+			// Compare to the reference image
+			imgcompare.compare(pngPath,refPath,{
+				maxDist : 0.1,
+				maxSumSquares : 1e-8,
+			},function(err,result){
+
+				//console.log(err)
+
+				expect(err).toBeFalsy();
+				expect(result).toBeTruthy();
+
+				if(!testFiles.length){
+					// Shut down if there are no more tests
+					shooter.shutdown(function(){
+						done();
+					});
+				} else {
+					done();
+				}
+			});
+		});
+	}
 
 	for(var i=0; i<testFiles.length; i++){
 		var info = getTestInfo(testFiles[i]);
 
 		// Register test
-		it('should render URL '+info.url+' correctly (ref: '+info.refPath+', screenshot: '+info.pngPath+')',function(done){
-			var testFile = testFiles.shift();
-
-			var info2 = getTestInfo(testFile);
-
-			var url = info2.url;
-			var pngPath = info2.pngPath;
-			var refPath = info2.refPath;
-
-			// Take a screenshot
-			shooter.takeScreenshot(url, pngPath, function(err){
-				expect(err).toBeFalsy();
-
-				// Compare to the reference image
-				imgcompare.compare(pngPath,refPath,{
-					maxDist : 0.1,
-					maxSumSquares : 1e-8,
-				},function(err,result){
-
-					//console.log(err)
-
-					expect(err).toBeFalsy();
-					expect(result).toBeTruthy();
-
-					if(!testFiles.length){
-						// Shut down if there are no more tests
-						shooter.shutdown(function(){
-							done();
-						});
-					} else {
-						done();
-					}
-				});
-			});
-		});
+		it('should render URL '+info.url+' correctly (ref: '+info.refPath+', screenshot: '+info.pngPath+')', testFunc);
 	}
 });

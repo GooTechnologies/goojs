@@ -1,10 +1,10 @@
-var webdriver = require('selenium-webdriver')
-,	fs = require('fs')
-,	os = require('os')
-,	path = require('path')
-,   async = require('async')
-,   mkdirp = require('mkdirp')
-,   EventEmitter = require('events').EventEmitter
+var webdriver = require('selenium-webdriver');
+var fs = require('fs');
+var os = require('os');
+var path = require('path');
+var async = require('async');
+var mkdirp = require('mkdirp');
+var EventEmitter = require('events').EventEmitter;
 
 module.exports = ScreenShooter;
 
@@ -26,14 +26,14 @@ function ScreenShooter(options){
 		height : 180,
 	};
 	for(var key in options){
-		if(typeof settings[key] != 'undefined'){
+		if(typeof settings[key] !== 'undefined'){
 			settings[key] = options[key];
 		}
 	}
 
 	// Init driver
 	this.driver = new webdriver.Builder().withCapabilities(webdriver.Capabilities.chrome()).build();
-};
+}
 
 ScreenShooter.prototype = new EventEmitter();
 
@@ -74,7 +74,9 @@ ScreenShooter.prototype.takeScreenshot = function(url,pngPath,callback){
 
 							// Create out folder if it does not exist
 							mkdirp.mkdirp(path.dirname(pngPath),function(err){
-								if(err) return callback(err);
+								if(err){
+									return callback(err);
+								}
 
 								// Save screenshot
 								fs.writeFileSync(pngPath, data, 'base64');
@@ -113,7 +115,9 @@ ScreenShooter.prototype.takeScreenshots = function(urlToPathMap,callback){
 		});
 
 	},function(){
-		if(callback) callback();
+		if(callback){
+			callback();
+		}
 	});
 };
 
@@ -121,7 +125,9 @@ ScreenShooter.prototype.takeScreenshots = function(urlToPathMap,callback){
 ScreenShooter.prototype.shutdown = function(callback){
 	// Shut down
 	this.driver.close().then(function(){
-		if(callback) callback();
+		if(callback){
+			callback();
+		}
 	});
 };
 
