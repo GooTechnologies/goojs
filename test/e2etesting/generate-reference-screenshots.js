@@ -15,13 +15,13 @@ program
   .option('-w, --wait [milliseconds]',  'Number of milliseconds to wait for the test to run before taking a screenshot.')
   .parse(process.argv);
 
-
-program.url = program.url || 'http://localhost:3000/visual-tests';
+program.url = program.url || process.env.GOOJS_ROOT_URL+'/visual-test' || 'http://localhost:3000/visual-test';
 
 var shooter = new ScreenShooter({
 	script : ScreenShooter.removeGooStuffScript,
-	wait :   program.wait || 0
 });
+if(typeof program.wait != "undefined")
+	shooter.wait = program.wait;
 
 shooter.on("shoot",function(evt){
 	console.log('Took a screenshot!');

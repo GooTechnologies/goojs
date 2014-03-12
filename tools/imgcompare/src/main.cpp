@@ -187,12 +187,12 @@ int main( int argc, char** argv ) {
 		v = g_hist_2.at<float>(i-1); if(v>max) max = v; if(v<min) min = v;
 		v = r_hist_2.at<float>(i-1); if(v>max) max = v; if(v<min) min = v;
 
-		sum += pow(b_hist_1.at<float>(i-1) - b_hist_2.at<float>(i-1) , 2);
-		sum += pow(g_hist_1.at<float>(i-1) - g_hist_2.at<float>(i-1) , 2);
-		sum += pow(r_hist_1.at<float>(i-1) - r_hist_2.at<float>(i-1) , 2);
+		sum += (( pow(b_hist_1.at<float>(i-1) - b_hist_2.at<float>(i-1) , 2)
+				+ pow(g_hist_1.at<float>(i-1) - g_hist_2.at<float>(i-1) , 2)
+				+ pow(r_hist_1.at<float>(i-1) - r_hist_2.at<float>(i-1) , 2) ) / 3);
 
 		if(sum > maxSumSquares){
-			printf("\tSum of squares = %g  FAILED\n", sum);
+			printf("\tSum of squares = %g  FAILED (stopped when sum passed threshold)\n", sum);
 			return EXIT_FAILURE;
 		}
 	}
