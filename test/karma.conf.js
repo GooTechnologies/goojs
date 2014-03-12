@@ -14,7 +14,7 @@ module.exports = function(config) {
 
 	// list of files / patterns to load in the browser
 	files: [
-	  { pattern: 'test/**/**/*.png',   included: false },
+	  { pattern: 'test/**/*.png',   included: false },
 	  { pattern: 'test/all-tests.js',   included: false },
 	  'test/karma-main.js',
 	  { pattern: 'src/**/*.js',         included: false },
@@ -25,7 +25,6 @@ module.exports = function(config) {
 
 	// list of files to exclude
 	exclude: [
-
 	],
 
 
