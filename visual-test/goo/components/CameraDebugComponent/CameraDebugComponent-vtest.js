@@ -4,7 +4,7 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -21,7 +21,7 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Sphere,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -50,7 +50,7 @@ require([
 	}
 
 	function addSpheres(gooRunner, nSpheres) {
-		var sphereMeshData = ShapeCreator.createSphere(32, 32);
+		var sphereMeshData = new Sphere(32, 32);
 
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {

@@ -1,7 +1,7 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
@@ -11,7 +11,7 @@ require([
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Box,
 	Vector3,
 	Box2DSystem,
 	Box2DComponent,
@@ -34,7 +34,7 @@ require([
 
 	function addOriginShape(goo) {
 		var world = goo.world;
-		var boxMeshData = ShapeCreator.createBox();
+		var boxMeshData = new Box();
 		var box;
 
 		box = world.createEntity(boxMeshData, getColoredMaterial(0, 0, 0));
@@ -185,7 +185,7 @@ require([
 		goo = V.initGoo();
 		world = goo.world;
 
-		boxMeshData = ShapeCreator.createBox();
+		boxMeshData = new Box();
 
 		// marking the origin
 		addOriginShape(goo);

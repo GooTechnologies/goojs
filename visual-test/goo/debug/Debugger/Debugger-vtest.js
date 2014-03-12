@@ -3,7 +3,10 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
+	'goo/shapes/Quad',
+	'goo/shapes/Torus',
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/Texture',
 	'goo/math/Vector3',
@@ -13,7 +16,10 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Sphere,
+	Box,
+	Quad,
+	Torus,
 	CameraComponent,
 	Texture,
 	Vector3,
@@ -35,17 +41,17 @@ require([
 		texture.magFilter = 'NearestNeighbor';
 		material.setTexture('DIFFUSE_MAP', texture);
 
-		createMesh(goo, ShapeCreator.createSphere(16, 16, 2), material, -10, 0, -30);
-		createMesh(goo, ShapeCreator.createBox(3, 3, 3), material, -10, 10, -30);
-		createMesh(goo, ShapeCreator.createQuad(3, 3), material, 0, -7, -20);
-		createMesh(goo, ShapeCreator.createTorus(16, 16, 1, 3), material, 0, 0, -30);
+		createMesh(goo, new Sphere(16, 16, 2), material, -10, 0, -30);
+		createMesh(goo, new Box(3, 3, 3), material, -10, 10, -30);
+		createMesh(goo, new Quad(3, 3), material, 0, -7, -20);
+		createMesh(goo, new Torus(16, 16, 1, 3), material, 0, 0, -30);
 	}
 
 	function debuggerDemo(goo) {
 		createShapes(goo);
 
 		// Add camera
-		var camera = new Camera(45, 1, 1, 1000);
+		var camera = new Camera();
 		var cameraEntity = goo.world.createEntity("CameraEntity");
 		cameraEntity.transformComponent.transform.translation.set(0, 0, 10);
 		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);

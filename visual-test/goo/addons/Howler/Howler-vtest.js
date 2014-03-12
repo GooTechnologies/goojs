@@ -4,7 +4,8 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -25,7 +26,8 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Sphere,
+	Box,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -60,8 +62,8 @@ require([
 	goo.world.setSystem(new HowlerSystem(goo.renderer));
 
 	// create panning cube
-	var meshData = ShapeCreator.createBox();
-	var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
+	var meshData = new Box();
+	var material = new Material(ShaderLib.texturedLit);
 	var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
@@ -88,7 +90,7 @@ require([
 	cubeEntity.setComponent(howlerComponent);
 
 	// create fixed sphere
-	meshData = ShapeCreator.createSphere(32, 32);
+	meshData = new Sphere(32, 32);
 	var sphereEntity = goo.world.createEntity(meshData, material, [0, 0, 5]).addToWorld();
 
 	howlerComponent = new HowlerComponent();

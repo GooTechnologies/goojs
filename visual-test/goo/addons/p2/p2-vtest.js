@@ -3,7 +3,9 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
+	'goo/shapes/Quad',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/shaders/ShaderLib',
@@ -20,7 +22,9 @@ require([
 	Material,
 	Camera,
 	CameraComponent,
-	ShapeCreator,
+	Sphere,
+	Box,
+	Quad,
 	TextureCreator,
 	ScriptComponent,
 	ShaderLib,
@@ -45,29 +49,29 @@ require([
 		p2System.world.gravity[1] = -20;
 
 		function addPrimitives() {
-			for (var i=0; i < 40; i++) {
+			for (var i = 0; i < 40; i++) {
 				var x = Math.random() * 16 - 8;
 				var y = Math.random() * 16 + 8;
 				var z = Math.random() * 16 - 8;
 				if (Math.random() < 0.5) {
-					var w = 1+Math.random()*2,
-						h = 1+Math.random()*2;
-					createEntity(goo, ShapeCreator.createBox(w, h, 1+Math.random()*2), {
-						mass:1,
-						shapes:[{
-							type:'box',
-							width:w,
-							height:h,
+					var w = 1 + Math.random() * 2,
+						h = 1 + Math.random() * 2;
+					createEntity(goo, new Box(w, h, 1 + Math.random() * 2), {
+						mass: 1,
+						shapes: [{
+							type: 'box',
+							width: w,
+							height: h
 						}]
 					}, [x, y, z]);
 				} else {
-					var radius = 1+Math.random();
-					createEntity(goo, ShapeCreator.createSphere(10, 10, radius), {
-						mass:1,
-						shapes:[{
-							type:'circle',
-							radius:radius
-						}],
+					var radius = 1 + Math.random();
+					createEntity(goo, new Sphere(10, 10, radius), {
+						mass: 1,
+						shapes: [{
+							type: 'circle',
+							radius: radius
+						}]
 					}, [x, y, z]);
 				}
 			}
@@ -76,21 +80,21 @@ require([
 		addPrimitives();
 		document.addEventListener('keypress', addPrimitives, false);
 
-		var planeEntity = createEntity(goo, ShapeCreator.createQuad(1000, 1000, 100, 100), {
+		createEntity(goo, new Quad(1000, 1000, 100, 100), {
 			mass: 0,
-			offsetAngleX:-Math.PI/2,
-			shapes:[{
-				type:'plane'
-			}],
+			offsetAngleX: -Math.PI / 2,
+			shapes: [{
+				type: 'plane'
+			}]
 		}, [0, -10, 0]);
 
 		V.addLights();
 
-		V.addOrbitCamera(new Vector3(40, Math.PI/2, Math.PI/4));
+		V.addOrbitCamera(new Vector3(40, Math.PI / 2, Math.PI / 4));
 	}
 
 	function createEntity(goo, meshData, p2Settings, pos) {
-		var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
+		var material = new Material(ShaderLib.texturedLit);
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		var entity = goo.world.createEntity(meshData, material, pos);
