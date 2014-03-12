@@ -60,8 +60,8 @@ describe('visual test', function () {
 
 				// Compare to the reference image
 				imgcompare.compare(pngPath,refPath,{
-					maxDist : 1,
-					maxSumSquares : 0.1,
+					maxDist : 0.1,
+					maxSumSquares : 1e-8,
 				},function(err,result){
 
 					//console.log(err)
