@@ -12,9 +12,10 @@ var webdriver = require('selenium-webdriver')
 
 jasmine.getEnv().defaultTimeoutInterval = 10000; // in microseconds.
 
-var shooter, testFiles=toc.getFilesSync();
+var shooter, testFiles=toc.getFilePathsSync();
 
 var rootUrl = process.env.GOOJS_ROOT_URL;
+var gooRootPath = path.join(__dirname,'..','..','..');
 
 if(!rootUrl){
 	console.error('Please set environment variable GOOJS_ROOT_URL!');
@@ -23,10 +24,11 @@ if(!rootUrl){
 
 // testFilePath should be something like visual-test/.../lol-test.html
 function getTestInfo(testFilePath){
-	var testFile = testFilePath;
+	var testFile = path.relative(gooRootPath,testFilePath);
 	var url = rootUrl+'/'+testFile;
 	var pngPath = path.join(__dirname,'..','screenshots-tmp',testFile.replace('visual-test','').replace('.html','.png'));
 	var refPath = path.join(__dirname,'..','screenshots',    testFile.replace('visual-test','').replace('.html','.png'));
+
 	return {
 		url:     url,
 		refPath: refPath,

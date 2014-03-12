@@ -30,11 +30,14 @@ printTree = (tree) ->
 	return ret
 
 exports.getFiles = (callback) ->
-	glob 'visual-test/**/!(index).html', (err, files) ->
+	glob __dirname + 'visual-test/**/!(index).html', (err, files) ->
 		callback err, files
 
 exports.getFilesSync = ->
 	return glob.sync 'visual-test/**/!(index).html'
+
+exports.getFilePathsSync = ->
+	return glob.sync __dirname + '/**/!(index).html'
 
 exports.run = ->
 	exports.getFiles (err, files) ->

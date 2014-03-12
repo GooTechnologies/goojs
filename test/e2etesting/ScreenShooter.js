@@ -12,7 +12,7 @@ function ScreenShooter(options){
 	options = options || {};
 
 	var settings = this.settings = {
-		wait   : 200,
+		wait   : 600,
 		script : ScreenShooter.removeGooStuffScript,
 		width  : 400, // This is sort of the smallest possible in Chrome
 		height : 180,

@@ -16,7 +16,8 @@ program
   .parse(process.argv);
 
 program.url = program.url || process.env.GOOJS_ROOT_URL || 'http://localhost:3000';
-program.url += '/visual-test';
+
+var gooRootPath = path.join(__dirname,'..','..');
 
 console.log('Using test URL: '+program.url);
 
@@ -33,25 +34,31 @@ shooter.on("shoot",function(evt){
 })
 
 // Get all visual test files
-toc.getFiles(function(err,files){
+var files = toc.getFilePathsSync();
+
+var screenshotsPath = path.join(__dirname,'screenshots');
+
+var urlToPathMap = {};
+for(var i=0; i<files.length; i++){
+	var file = files[i];
+	//file = file.replace('visual-test/','');
+	basename = path.basename(file);
+	dirname = path.dirname(file);
+
+	//var pngPath = path.join(path.relative(dirname,screenshotsPath),basename.replace("html","png"));
+
+	var pngPath = path.join(__dirname,'screenshots',path.relative(path.join(gooRootPath,'visual-test'),file)).replace(/\.html$/,".png");
+
+	//console.log(pngPath2)
+
+	var url = program.url+"/"+path.relative(gooRootPath,file);
+
+	//	console.log("URL;",url)
+
+	urlToPathMap[url] = pngPath;
+}
+
+shooter.takeScreenshots(urlToPathMap, function(err){
 	if(err) throw err;
-
-	var screenshotsPath = path.join(__dirname,'screenshots');
-
-	var urlToPathMap = {};
-	for(var i=0; i<files.length; i++){
-		var file = files[i];
-		file = file.replace('visual-test/','');
-		basename = path.basename(file);
-		dirname = path.dirname(file);
-		var pngPath = path.join(screenshotsPath,dirname,basename.replace("html","png"));
-
-		var url = program.url+"/"+file;
-		urlToPathMap[url] = pngPath;
-	}
-
-	shooter.takeScreenshots(urlToPathMap, function(err){
-		if(err) throw err;
-		shooter.shutdown();
-	});
+	shooter.shutdown();
 });
