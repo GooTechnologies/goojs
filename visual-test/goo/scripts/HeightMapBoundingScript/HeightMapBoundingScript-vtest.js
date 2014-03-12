@@ -54,7 +54,7 @@ require([
 		var nSpheres = 10;
 		var ak = Math.PI * 2 / nSpheres;
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored, '');
 			material.uniforms.color = [
 				Math.cos(k) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -92,7 +92,7 @@ require([
 
 			var meshData = Surface.createFromHeightMap(matrix);
 
-			var material = Material.createMaterial(ShaderLib.simpleLit, '');
+			var material = new Material(ShaderLib.simpleLit, '');
 			material.wireframe = true;
 			var surfaceEntity = goo.world.createEntity(meshData, material, '');
 			surfaceEntity.transformComponent.setUpdated();

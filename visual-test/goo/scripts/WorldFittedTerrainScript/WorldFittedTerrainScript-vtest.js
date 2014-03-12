@@ -64,7 +64,7 @@ require([
         var nSpheres = 4;
         var ak = Math.PI * 2 / nSpheres;
         for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-            var material = Material.createMaterial(ShaderLib.simpleColored, '');
+            var material = new Material(ShaderLib.simpleColored, '');
             material.uniforms.color = [
                 Math.cos(k) * 0.5 + 0.5,
                 Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -112,7 +112,7 @@ require([
 		var nSpheres = 20;
 		var ak = Math.PI * 2 / nSpheres;
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored, '');
 			material.uniforms.color = [
 				Math.cos(k/nSpheres) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -135,7 +135,7 @@ require([
 
     function buildTexturedGround(matrix, dimensions, id, gooWorld, txPath) {
         var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
-        var material = Material.createMaterial(ShaderLib.texturedLit, '');
+        var material = new Material(ShaderLib.texturedLit, '');
 
         var texture = new TextureCreator().loadTexture2D(txPath);
         material.setTexture('DIFFUSE_MAP', texture);
@@ -168,7 +168,7 @@ require([
 
     function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
         var meshData =  new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
-        var material = Material.createMaterial(ShaderLib.simpleLit);
+        var material = new Material(ShaderLib.simpleLit);
         material.wireframe = true;
         var surfaceEntity = gooWorld.createEntity(meshData, material, id);
         surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);

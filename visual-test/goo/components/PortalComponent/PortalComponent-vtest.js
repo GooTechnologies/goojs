@@ -45,7 +45,7 @@ require([
 
 	function addPortal(goo, camera, x, y, z, dim, options, overrideMaterial) {
 		var quadMeshData = ShapeCreator.createQuad(dim, dim);
-		var quadMaterial = Material.createMaterial(ShaderLib.textured, '');
+		var quadMaterial = new Material(ShaderLib.textured, '');
 		var quadEntity = goo.world.createEntity(quadMeshData, quadMaterial);
 		quadEntity.transformComponent.transform.translation.set(x, y, z);
 		var portalComponent = new PortalComponent(camera, 500, options, overrideMaterial);
@@ -60,7 +60,7 @@ require([
 
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {
-				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
+				var sphereMaterial = new Material(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
 				sphereMaterial.uniforms.color = [i / nSpheres, j / nSpheres, 0.3];
 				var sphereEntity = goo.world.createEntity(sphereMeshData, sphereMaterial);
 				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);

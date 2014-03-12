@@ -41,7 +41,7 @@ require([
 
 	function addTexturedBox(goo, x, y, z) {
 		var boxMeshData = ShapeCreator.createBox(10, 30, 10);
-		var boxMaterial = Material.createMaterial(ShaderLib.texturedLit, 'texturedBoxMaterial');
+		var boxMaterial = new Material(ShaderLib.texturedLit, 'texturedBoxMaterial');
 		var boxTexture = new TextureCreator().loadTexture2D('../../resources/check.png');
 		boxMaterial.setTexture('DIFFUSE_MAP', boxTexture);
 
@@ -52,7 +52,7 @@ require([
 
 	function addLamp(goo, x, y, z) {
 		var lampMeshData = ShapeCreator.createSphere(32, 32);
-		var lampMaterial = Material.createMaterial(ShaderLib.simpleLit, 'lampMaterial');
+		var lampMaterial = new Material(ShaderLib.simpleLit, 'lampMaterial');
 		var lampEntity = goo.world.createEntity(lampMeshData, lampMaterial, 'box');
 
 		var light = new PointLight();

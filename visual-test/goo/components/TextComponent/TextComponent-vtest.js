@@ -49,7 +49,7 @@ require([
 		var textEntity = goo.world.createEntity();
 
 		// get a font
-		var material = Material.createMaterial(ShaderLib.billboard, 'Billboard material');
+		var material = new Material(ShaderLib.billboard, 'Billboard material');
 		var texture = new TextureCreator().loadTexture2D('../../resources/font.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		material.blendState.blending = 'AlphaBlending';

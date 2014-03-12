@@ -321,7 +321,7 @@ define([
 
 		it('sets a MeshRendererComponent when trying to add a material', function() {
 			var entity = new Entity(world);
-			var material = Material.createMaterial(ShaderLib.simple);
+			var material = new Material(ShaderLib.simple);
 			entity.set(material);
 
 			expect(entity.meshRendererComponent).toBeTruthy();

@@ -169,7 +169,7 @@ define([
 		it('can create a typical entity holding all sorts of stuff in random order', function() {
 			var camera = new Camera();
 			var meshData = new Box();
-			var material = Material.createMaterial(ShaderLib.simple);
+			var material = new Material(ShaderLib.simple);
 			var light = new PointLight();
 			var script = { run: function () {} };
 

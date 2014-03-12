@@ -5,11 +5,12 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	"use strict";
 
 	/**
-	 * @class Quaternion represents a 4 value math object used in Ardor3D to describe rotations. It has the advantage of being able to avoid lock by
-	 *        adding a 4th dimension to rotation.
+	 * @class Quaternions provide a convenient mathematical notation for representing orientations and rotations of objects in three dimensions.
+	 * Compared to Euler angles they are simpler to compose and avoid the problem of gimbal lock.
+	 * Compared to rotation matrices they are more numerically stable and the representation (4 numbers) is more compact.
+	 * The main usage is probably the slerp function allowing smooth transitions between two rotations.
 	 * @extends Vector
 	 * @constructor
-	 * @description Creates a new quaternion.
 	 * @param {...Float} arguments Initial values for the components.
 	 */
 
@@ -232,6 +233,14 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		return target;
 	};
 
+	/**
+	 * Computes the spherical linear interpolation between startQuat and endQuat.
+	 * @param {Quaternion} startQuat start Quaternion.
+	 * @param {Quaternion} endQuat end Quaternion.
+	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
+	 * @param {Quaternion} workQuat work Quaternion.
+	 * @return {Quaternion} workQuat the interpolated work Quaternion.
+	 */
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
 		if (changeAmnt === 0.0) {
@@ -391,10 +400,20 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
+	 var slerp_work_quat;
+	/**
+	 * Computes the spherical linear interpolation towards endQuat.
+	 * @param {Quaternion} endQuat end Quaternion.
+	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
+	 * @returns {Quaternion} Self for chaining.
+	 */
 	Quaternion.prototype.slerp = function (endQuat, changeAmnt) {
-		var end = new Quaternion().copy(endQuat);
-		Quaternion.slerp(this, endQuat, changeAmnt, end);
-		this.copy(end);
+		if(!slerp_work_quat) {
+			slerp_work_quat = new Quaternion();
+		}
+		slerp_work_quat.copy(endQuat);
+		Quaternion.slerp(this, endQuat, changeAmnt, slerp_work_quat);
+		this.copy(slerp_work_quat);
 		return this;
 	};
 

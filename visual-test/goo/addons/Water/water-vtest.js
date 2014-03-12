@@ -43,7 +43,7 @@ require([
 	function waterDemo(goo) {
 		// Add entity to world
 		var meshData = ShapeCreator.createBox(7, 7, 7);
-		var material = Material.createMaterial(ShaderLib.simpleLit, 'BoxMaterial');
+		var material = new Material(ShaderLib.simpleLit, 'BoxMaterial');
 		// var texture1 = new TextureCreator().loadTexture2D(resourcePath + '/duck.tga');
 		// material.setTexture(Shader.DIFFUSE_MAP, texture1);
 
@@ -83,7 +83,7 @@ require([
 		loadSkybox(goo);
 
 		var meshData = ShapeCreator.createQuad(200, 200, 10, 10);
-		var material = Material.createMaterial(ShaderLib.simple);
+		var material = new Material(ShaderLib.simple);
 		var waterEntity = goo.world.createEntity(meshData, material);
 		waterEntity.transformComponent.transform.setRotationXYZ(-Math.PI / 2, 0, 0);
 		waterEntity.addToWorld();
@@ -141,7 +141,7 @@ require([
 
 	function createBox (goo, shader, w, h, d) {
 		var meshData = ShapeCreator.createBox(w, h, d);
-		var material = Material.createMaterial(shader);
+		var material = new Material(shader);
 		var entity = goo.world.createEntity(meshData, material);
 		return entity;
 	}
