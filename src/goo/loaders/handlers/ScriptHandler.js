@@ -150,6 +150,7 @@ function(
 			var newScript = window._gooScriptFactories[config.id];
 			if (newScript) {
 				newScript = newScript();
+				script.id = config.id;
 				script.externals = newScript.externals;
 				script.setup = newScript.setup;
 				script.update = newScript.update;
@@ -171,6 +172,7 @@ function(
 			if (!newScript) {
 				throw 'Unrecognized script name';
 			}
+			script.id = config.id;
 			script.externals = newScript.externals;
 			script.setup = newScript.setup;
 			script.update = newScript.update;

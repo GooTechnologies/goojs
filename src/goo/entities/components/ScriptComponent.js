@@ -69,9 +69,13 @@ function (
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script && script.run && (script.enabled === undefined || script.enabled || script.active)) {
-				script.run(entity, tpf, environment, script.parameters);
+				try {
+					script.run(entity, tpf, environment, script.parameters);
+				} catch (e) {}
 			} else if (script.update && (script.enabled === undefined || script.enabled || script.active)) {
-				script.update(script.parameters, script.environment);
+				try {
+					script.update(script.parameters, script.environment);
+				} catch (e) {}
 			}
 		}
 	};
@@ -84,7 +88,7 @@ function (
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.cleanup) {
-				//script.cleanup(script.parameters, script.environment);
+				script.cleanup(script.parameters, script.environment);
 			}
 		}
 	};
