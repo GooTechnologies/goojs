@@ -1,5 +1,4 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
@@ -7,12 +6,11 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Quad',
 	'goo/shapes/Torus',
-	'goo/entities/components/CameraComponent',
 	'goo/renderer/Texture',
 	'goo/math/Vector3',
-	'goo/debug/Debugger'
+	'goo/debug/Debugger',
+	'../../lib/V'
 ], function (
-	GooRunner,
 	Material,
 	ShaderLib,
 	Camera,
@@ -20,20 +18,20 @@ require([
 	Box,
 	Quad,
 	Torus,
-	CameraComponent,
 	Texture,
 	Vector3,
-	Debugger
+	Debugger,
+	V
 ) {
 	'use strict';
 
-	function createMesh(goo, meshData, material, x, y, z) {
-		var entity = goo.world.createEntity(meshData, material);
+	function createMesh(meshData, material, x, y, z) {
+		var entity = world.createEntity(meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();
 	}
 
-	function createShapes(goo) {
+	function createShapes() {
 		var material = new Material(ShaderLib.textured);
 		var colorInfo = new Uint8Array([255, 255, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 255, 255]);
 		var texture = new Texture(colorInfo, null, 2, 2);
@@ -41,33 +39,26 @@ require([
 		texture.magFilter = 'NearestNeighbor';
 		material.setTexture('DIFFUSE_MAP', texture);
 
-		createMesh(goo, new Sphere(16, 16, 2), material, -10, 0, -30);
-		createMesh(goo, new Box(3, 3, 3), material, -10, 10, -30);
-		createMesh(goo, new Quad(3, 3), material, 0, -7, -20);
-		createMesh(goo, new Torus(16, 16, 1, 3), material, 0, 0, -30);
+		createMesh(new Sphere(16, 16, 2), material, -10, 0, -30);
+		createMesh(new Box(3, 3, 3), material, -10, 10, -30);
+		createMesh(new Quad(3, 3), material, 0, -7, -20);
+		createMesh(new Torus(16, 16, 1, 3), material, 0, 0, -30);
 	}
 
-	function debuggerDemo(goo) {
-		createShapes(goo);
+	function debuggerDemo() {
+		createShapes();
 
 		// Add camera
 		var camera = new Camera();
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 10);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
+		world.createEntity(camera, [0, 0, 10])
+			.lookAt([0, 0, 0])
+			.addToWorld();
 
 		new Debugger(true, true).inject(goo);
 	}
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+	var goo = V.initGoo();
+	var world = goo.world;
 
-		debuggerDemo(goo);
-	}
-
-	init();
+	debuggerDemo();
 });

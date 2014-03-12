@@ -46,7 +46,7 @@ require([
 	}
 
 	function addCircle(x, y) {
-		var radius = Math.random() * 0.3 + 0.3;
+		var radius = V.rng.nextFloat() * 0.3 + 0.3;
 
 		var meshData = new Cylinder(32, radius);
 		var material = V.getColoredMaterial();
@@ -62,8 +62,8 @@ require([
 	}
 
 	function addBox(x, y) {
-		var width = Math.random() * 0.5 + 0.5;
-		var height = Math.random() * 0.5 + 0.5;
+		var width = V.rng.nextFloat() * 0.5 + 0.5;
+		var height = V.rng.nextFloat() * 0.5 + 0.5;
 
 		var meshData = new Box(width, height, width);
 		var material = V.getColoredMaterial();

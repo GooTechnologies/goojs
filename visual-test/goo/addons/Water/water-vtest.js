@@ -1,47 +1,31 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/renderer/Material',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
 	'goo/shapes/Box',
 	'goo/shapes/Quad',
 	'goo/renderer/TextureCreator',
-	'goo/entities/components/ScriptComponent',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/World',
-	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
+	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
-	'goo/renderer/light/PointLight',
-	'goo/entities/components/LightComponent',
 	'goo/renderer/Texture',
 	'goo/addons/water/FlatWaterRenderer',
-	'goo/renderer/MeshData',
 	'../../lib/V'
 ], function (
-	GooRunner,
 	Material,
-	Camera,
-	CameraComponent,
 	Box,
 	Quad,
 	TextureCreator,
-	ScriptComponent,
 	ShaderLib,
-	World,
-	OrbitCamControlScript,
 	Vector3,
+	MeshData,
 	Shader,
-	PointLight,
-	LightComponent,
 	Texture,
 	FlatWaterRenderer,
-	MeshData,
 	V
 	) {
 	'use strict';
 
-	function loadSkybox (goo) {
+	function loadSkybox () {
 		var environmentPath = 'resources/skybox/';
 		// left, right, bottom, top, back, front
 		var textureCube = new TextureCreator().loadTextureCube([
@@ -52,7 +36,7 @@ require([
 			environmentPath + '4.jpg',
 			environmentPath + '2.jpg'
 		]);
-		skybox = createBox(goo, skyboxShader, 10, 10, 10);
+		skybox = createBox(skyboxShader, 10, 10, 10);
 		skybox.meshRendererComponent.materials[0].setTexture(Shader.DIFFUSE_MAP, textureCube);
 		skybox.meshRendererComponent.materials[0].cullState.cullFace = 'Front';
 		skybox.meshRendererComponent.materials[0].depthState.enabled = false;
@@ -68,10 +52,10 @@ require([
 		});
 	}
 
-	function createBox (goo, shader, w, h, d) {
+	function createBox (shader, w, h, d) {
 		var meshData = new Box(w, h, d);
 		var material = new Material(shader);
-		return goo.world.createEntity(meshData, material);
+		return world.createEntity(meshData, material);
 	}
 
 	var skyboxShader = {
@@ -131,7 +115,7 @@ require([
 	for (var x = 0; x < count; x++) {
 		for (var y = 0; y < count * 2; y++) {
 			for (var z = 0; z < count; z++) {
-				goo.world.createEntity(meshData, material, [
+				world.createEntity(meshData, material, [
 						(x - count / 2) * 15,
 						(y - count / 2) * 15 - 10,
 						(z - count / 2) * 15
@@ -142,29 +126,24 @@ require([
 
 	var cameraEntity = V.addOrbitCamera(new Vector3(100, Math.PI / 3, Math.PI / 4));
 
-	var pointLight1 = new PointLight(new Vector3(1.0, 1.0, 1.0, 1.0));
-	pointLight1.range = 5000;
+	V.addLights();
 
-	world.createEntity(pointLight1, [-200, 200, -200]).addToWorld();
+	loadSkybox();
 
-	loadSkybox(goo);
+	meshData = new Quad(200, 200, 10, 10);
+	material = new Material(ShaderLib.simple);
+	var waterEntity = world.createEntity(meshData, material)
+		.setRotation([-Math.PI / 2, 0, 0])
+		.addToWorld();
 
-	var meshData = new Quad(200, 200, 10, 10);
-	var material = new Material(ShaderLib.simple);
-	var waterEntity = world.createEntity(meshData, material);
-	waterEntity.transformComponent.transform.setRotationXYZ(-Math.PI / 2, 0, 0);
-	waterEntity.addToWorld();
-
-	var script = {
-		run: function (entity) {
+	//! AT: this does nothing!
+	waterEntity.set(function (entity) {
 			var transformComponent = entity.transformComponent;
 			// transformComponent.transform.translation.x = Math.sin(World.time * 1.0) * 30;
 			transformComponent.transform.translation.y = 0;
 			// transformComponent.transform.translation.z = Math.cos(World.time * 1.0) * 30;
 			transformComponent.setUpdated();
-		}
-	};
-	waterEntity.set(script);
+		});
 
 	var waterRenderer = new FlatWaterRenderer({
 		normalsUrl: 'resources/water/waternormals3.png'
