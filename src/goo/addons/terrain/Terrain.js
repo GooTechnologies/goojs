@@ -705,7 +705,16 @@ function(
 			SKIP_SPECULAR: true
 		},
 		processors: [
-			ShaderBuilder.light.processor
+			ShaderBuilder.light.processor,
+			function (shader, shaderInfo) {
+				if (ShaderBuilder.USE_FOG) {
+					shader.defines.FOG = true;
+					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
+					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
+				} else {
+					delete shader.defines.FOG;
+				}
+			}
 		],
 		attributes: {
 			vertexPosition: MeshData.POSITION
@@ -842,8 +851,10 @@ function(
 
 					ShaderBuilder.light.fragment,
 
+					'#ifdef FOG',
 					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
 					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+					'#endif',
 
 					'gl_FragColor = final_color;',
 				'}'
@@ -1226,6 +1237,159 @@ function(
 			// 'gl_FragColor = vec4(depth * 0.2, 0.0, 0.0, 1.0);',
 		'}'
 		].join("\n")
+	};
+
+	var detailShader = {
+		defines: {
+			SKIP_SPECULAR: true
+		},
+		processors: [
+			ShaderBuilder.light.processor
+		],
+		attributes: {
+			vertexPosition: MeshData.POSITION
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			heightMap: 'HEIGHT_MAP',
+			normalMap: 'NORMAL_MAP',
+			splatMap: 'SPLAT_MAP',
+			groundMap1: 'GROUND_MAP1',
+			groundMap2: 'GROUND_MAP2',
+			groundMap3: 'GROUND_MAP3',
+			groundMap4: 'GROUND_MAP4',
+			groundMap5: 'GROUND_MAP5',
+			stoneMap: 'STONE_MAP',
+			fogSettings: function() {
+				return ShaderBuilder.FOG_SETTINGS;
+			},
+			fogColor: function() {
+				return ShaderBuilder.FOG_COLOR;
+			},
+			resolution: [255, 1, 1024, 1024],
+			resolutionNorm: [1024, 1024],
+			col: [0, 0, 0]
+		},
+		builder: function(shader, shaderInfo) {
+			ShaderBuilder.light.builder(shader, shaderInfo);
+		},
+		vshader: function() {
+			return [
+				'attribute vec3 vertexPosition;',
+
+				'uniform mat4 viewProjectionMatrix;',
+				'uniform mat4 worldMatrix;',
+				'uniform vec3 cameraPosition;',
+				'uniform sampler2D heightMap;',
+				'uniform vec4 resolution;',
+
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
+				'varying vec4 alphaval;',
+
+				ShaderBuilder.light.prevertex,
+
+				'const vec2 alphaOffset = vec2(45.0);',
+				'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
+
+				'void main(void) {',
+				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+				'vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw;',
+
+				'vec4 heightCol = texture2D(heightMap, coord);',
+				'float zf = heightCol.r;',
+				'float zd = heightCol.g;',
+
+				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
+				'alpha.x = max(alpha.x, alpha.y);',
+				'float z = mix(zf, zd, alpha.x);',
+				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
+				'alphaval = vec4(zf, zd, alpha.x, z);',
+
+				'worldPos.y = z * resolution.x;',
+				'gl_Position = viewProjectionMatrix * worldPos;',
+
+				'vWorldPos = worldPos.xyz;',
+				'viewPosition = cameraPosition - vWorldPos;',
+
+				ShaderBuilder.light.vertex,
+				'}'
+			].join('\n');
+		},
+		fshader: function() {
+			return [
+				'uniform vec3 col;',
+				'uniform sampler2D normalMap;',
+				'uniform sampler2D splatMap;',
+				'uniform sampler2D groundMap1;',
+				'uniform sampler2D groundMap2;',
+				'uniform sampler2D groundMap3;',
+				'uniform sampler2D groundMap4;',
+				'uniform sampler2D groundMap5;',
+				'uniform sampler2D stoneMap;',
+
+				'uniform vec2 fogSettings;',
+				'uniform vec3 fogColor;',
+
+				'uniform vec2 resolutionNorm;',
+
+				// 'uniform vec2 resolution;',
+				// 'uniform sampler2D heightMap;',
+
+				'varying vec3 vWorldPos;',
+				'varying vec3 viewPosition;',
+				'varying vec4 alphaval;',
+
+				ShaderBuilder.light.prefragment,
+
+				// 'vec3 blend(vec4 texture1, float a1, vec4 texture2, float a2) {',
+				// 	'float depth = 0.2;',
+				// 	'float ma = max(texture1.a + a1, texture2.a + a2) - depth;',
+				// 	'float b1 = max(texture1.a + a1 - ma, 0.0);',
+				// 	'float b2 = max(texture2.a + a2 - ma, 0.0);',
+				// 	'return (texture1.rgb * b1 + texture2.rgb * b2) / (b1 + b2);',
+				// '}',
+
+				'void main(void) {',
+					'if (alphaval.w < -1000.0) discard;',
+					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
+					'vec2 coord = mapcoord * 96.0;',
+					'vec4 final_color = vec4(1.0);',
+
+					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
+					'N.y = 0.1;',
+					'N = normalize(N);',
+
+					'vec4 splat = texture2D(splatMap, mapcoord);',
+					'vec4 g1 = texture2D(groundMap1, coord);',
+					'vec4 g2 = texture2D(groundMap2, coord);',
+					'vec4 g3 = texture2D(groundMap3, coord);',
+					'vec4 g4 = texture2D(groundMap4, coord);',
+					'vec4 g5 = texture2D(groundMap5, coord);',
+					'vec4 stone = texture2D(stoneMap, coord);',
+
+					'final_color = mix(g1, g2, splat.r);',
+					'final_color = mix(final_color, g3, splat.g);',
+					'final_color = mix(final_color, g4, splat.b);',
+					'final_color = mix(final_color, g5, splat.a);',
+
+					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
+					'slope = smoothstep(0.15, 0.25, slope);',
+					'final_color = mix(final_color, stone, slope);',
+
+					ShaderBuilder.light.fragment,
+
+					'#ifdef FOG',
+					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+					'#endif',
+
+					'gl_FragColor = final_color;',
+				'}'
+			].join('\n');
+		}
 	};
 
 	return Terrain;
