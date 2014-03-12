@@ -41,7 +41,7 @@ require([
 
 	function createBoxEntity(goo, size) {
 		var meshData = ShapeCreator.createBox(size, size, size);
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+		var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
 		var entity = goo.world.createEntity(meshData, material);
 
 		TextureCreator.clearCache();

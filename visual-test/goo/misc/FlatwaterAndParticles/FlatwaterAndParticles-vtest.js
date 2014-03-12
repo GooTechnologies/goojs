@@ -51,7 +51,7 @@ require([
 
 	function addFire(goo) {
 		// Particle material
-		var material = Material.createMaterial(ShaderLib.particles);
+		var material = new Material(ShaderLib.particles);
 		var texture = new TextureCreator().loadTexture2D('../../resources/flare.png');
 		texture.generateMipmaps = true;
 		material.setTexture('DIFFUSE_MAP', texture);
@@ -113,7 +113,7 @@ require([
 		// Water
 		var meshData = ShapeCreator.createQuad(10000, 10000, 10, 10);
 
-		var material = Material.createMaterial(ShaderLib.simple, 'mat');
+		var material = new Material(ShaderLib.simple, 'mat');
 		var waterEntity = goo.world.createEntity(meshData, material);
 		waterEntity.meshRendererComponent.isPickable = false;
 
@@ -154,7 +154,7 @@ require([
 
 	function addDebugQuad(goo, waterRenderer) {
 		var quadMeshData = ShapeCreator.createQuad(10, 10);
-		var quadMaterial = Material.createMaterial(ShaderLib.simple, 'mat');
+		var quadMaterial = new Material(ShaderLib.simple, 'mat');
 
 		void(waterRenderer);
 
@@ -165,7 +165,7 @@ require([
 
 	function addBox(goo) {
 		var boxMeshData = ShapeCreator.createBox(10, 30, 10);
-		var boxMaterial = Material.createMaterial(ShaderLib.simple, 'mat');
+		var boxMaterial = new Material(ShaderLib.simple, 'mat');
 		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
 		boxEntity.transformComponent.transform.translation.setd(0, 15.01, 0);
 		boxEntity.addToWorld();

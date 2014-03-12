@@ -179,7 +179,7 @@ define([
 
 		for (var i = 0; i < nShapes; i++) {
 			for (var j = 0; j < nShapes; j++) {
-				var material = Material.createMaterial(ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
+				var material = new Material(ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
 				material.uniforms.color = [i / nShapes, j / nShapes, 0.3];
 
 				entities.push(
@@ -228,7 +228,7 @@ define([
 	 */
 	V.showNormals = function (entity) {
 		var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
-		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		var normalsMaterial = new Material(ShaderLib.simpleColored, '');
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
 		var normalsEntity = V.goo.world.createEntity(normalsMeshData, normalsMaterial);
 		normalsEntity.transformComponent.transform = entity.transformComponent.transform;

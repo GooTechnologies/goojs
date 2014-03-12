@@ -79,7 +79,7 @@ module.exports = function (grunt) {
 			lines.push('\t' + fileNames.join(',\n\t'));
 
 			lines.push(') {');
-			lines.push('if (!window.goo) { return; }');
+			lines.push('\tvar goo = window.goo;\n\tif (!goo) { return; }');
 			fileNames.forEach(function (fileName) {
 				lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
 			});

@@ -27,7 +27,7 @@ require([
 	var goo, world;
 
 	function getColoredMaterial(r, g, b) {
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		var material = new Material(ShaderLib.simpleLit, '');
 		material.uniforms.materialDiffuse = [r, g, b, 1];
 		return material;
 	}

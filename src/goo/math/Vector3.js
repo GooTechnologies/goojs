@@ -94,8 +94,6 @@ function (
 	*
 	* // set jumpVector using Vector3.UNIT_Y
 	* var jumpVector = Vector3.mul(Vector3.UNIT_Y, jumpVelocity); // jumpVector == (0, jumpVelocity, 0)
-	* @example
-	* 
 	*/
 	Vector3.UNIT_Y = new Vector3(0, 1, 0);
 

@@ -23,9 +23,9 @@ require([
 		var shapeMeshData = ShapeCreator.createSphere();
 
 		// shape and boundingBox material
-		var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material1 = new Material(ShaderLib.simpleColored, '');
 		material1.uniforms.color = [0.3, 0.6, 0.9];
-		var material2 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material2 = new Material(ShaderLib.simpleColored, '');
 		material2.uniforms.color = [0.3, 0.9, 0.6];
 		material2.wireframe = true;
 

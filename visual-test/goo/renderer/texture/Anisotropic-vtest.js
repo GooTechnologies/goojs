@@ -67,7 +67,7 @@ require([
 
 	function createBoxEntity(anisotropy) {
 		var meshData = ShapeCreator.createBox(100, 1, 100, 200, 200);
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+		var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
 		var entity = world.createEntity(meshData, material);
 
 		var texture = new TextureCreator().loadTexture2D(resourcePath + 'font.png', { anisotropy: anisotropy });

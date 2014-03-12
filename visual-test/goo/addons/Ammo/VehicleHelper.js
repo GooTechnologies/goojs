@@ -1,10 +1,13 @@
 define([
 	'goo/entities/EntityUtils',
 	'goo/renderer/Material',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
 	'goo/renderer/shaders/ShaderLib'
 ], function (
-	EntityUtils, Material, ShapeCreator, ShaderLib
+	EntityUtils,
+	Material,
+	Sphere,
+	ShaderLib
 ) {
 	'use strict';
 	var Ammo = window.Ammo; // make jslint happy
@@ -97,12 +100,12 @@ define([
 		this.addRearWheel( [-bound.xExtent, 0.0, -bound.zExtent]);
 	};
 	VehicleHelper.prototype.createDebugTire = function(pos, isFrontWheel) {
-		var material = Material.createMaterial(ShaderLib.simpleLit);
+		var material = new Material(ShaderLib.simpleLit);
 		if( isFrontWheel) {
 			material.uniforms.materialAmbient = [1,0,0,1];
 		}
 		// TODO: use cylinder shape
-		var entity = this.goo.world.createEntity(ShapeCreator.createSphere(20, 20, this.wheelRadius), material, pos);
+		var entity = this.goo.world.createEntity(new Sphere(20, 20, this.wheelRadius), material, pos);
 		//var entity = goo.world.createEntity(ShapeCreator.createCylinder(20, radius), material, pos);
 		//entity.transformComponent.transform.setRotationXYZ(0, -Math.PI/2, 0);
 		//entity.transformComponent.setScale( 1, 1, 0.5);

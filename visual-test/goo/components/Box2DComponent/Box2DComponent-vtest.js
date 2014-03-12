@@ -35,7 +35,7 @@ require([
 	}
 
 	function getRandomColoredMaterial() {
-		var material = Material.createMaterial(ShaderLib.simpleLit, 'Floormaterial');
+		var material = new Material(ShaderLib.simpleLit, 'Floormaterial');
 		material.uniforms.materialDiffuse = getRandomColor();
 		return material;
 	}

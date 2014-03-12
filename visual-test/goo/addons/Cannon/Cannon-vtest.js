@@ -3,7 +3,9 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
+	'goo/shapes/Quad',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/shaders/ShaderLib',
@@ -19,7 +21,9 @@ require([
 	Material,
 	Camera,
 	CameraComponent,
-	ShapeCreator,
+	Sphere,
+	Box,
+	Quad,
 	TextureCreator,
 	ScriptComponent,
 	ShaderLib,
@@ -51,12 +55,12 @@ require([
 				var y = Math.random() * 16 + 8;
 				var z = Math.random() * 16 - 8;
 				if (Math.random() < 0.5) {
-					var boxEntity = createEntity(goo, ShapeCreator.createBox(1+Math.random()*2, 1+Math.random()*2, 1+Math.random()*2), {
+					var boxEntity = createEntity(goo, new Box(1+Math.random()*2, 1+Math.random()*2, 1+Math.random()*2), {
 						mass: 1
 					});
 					boxEntity.transformComponent.transform.translation.set(x, y, z);
 				} else {
-					var sphereEntity = createEntity(goo, ShapeCreator.createSphere(10, 10, 1+Math.random()), {
+					var sphereEntity = createEntity(goo, new Sphere(10, 10, 1+Math.random()), {
 						mass: 1
 					});
 					sphereEntity.transformComponent.transform.translation.set(x, y, z);
@@ -68,34 +72,29 @@ require([
 
 		document.addEventListener('keypress', addPrimitives, false);
 
-		// var torusEntity = createEntity(goo, ShapeCreator.createTorus(6, 6, 1, 2), {
-		// 	mass: 1
-		// });
-		// torusEntity.transformComponent.transform.translation.set(-2, 8, 0);
-
-		var floorEntity = createEntity(goo, ShapeCreator.createBox(5, 5, 5), {
+		var floorEntity = createEntity(goo, new Box(5, 5, 5), {
 			mass: 0
 		});
 		floorEntity.transformComponent.transform.translation.y = -7.5;
 
-		floorEntity = createEntity(goo, ShapeCreator.createBox(20, 10, 1), {
+		floorEntity = createEntity(goo, new Box(20, 10, 1), {
 			mass: 0
 		});
 		floorEntity.transformComponent.transform.translation.set(0,-5,10);
-		floorEntity = createEntity(goo, ShapeCreator.createBox(20, 10, 1), {
+		floorEntity = createEntity(goo, new Box(20, 10, 1), {
 			mass: 0
 		});
 		floorEntity.transformComponent.transform.translation.set(0,-5,-10);
-		floorEntity = createEntity(goo, ShapeCreator.createBox(1, 10, 20), {
+		floorEntity = createEntity(goo, new Box(1, 10, 20), {
 			mass: 0
 		});
 		floorEntity.transformComponent.transform.translation.set(10,-5,0);
-		floorEntity = createEntity(goo, ShapeCreator.createBox(1, 10, 20), {
+		floorEntity = createEntity(goo, new Box(1, 10, 20), {
 			mass: 0
 		});
 		floorEntity.transformComponent.transform.translation.set(-10,-5,0);
 
-		var planeEntity = createEntity(goo, ShapeCreator.createQuad(1000, 1000, 100, 100), {
+		var planeEntity = createEntity(goo, new Quad(1000, 1000, 100, 100), {
 			mass: 0
 		});
 		planeEntity.transformComponent.transform.translation.y = -10;
@@ -120,7 +119,7 @@ require([
 	}
 
 	function createEntity(goo, meshData, settings) {
-		var material = Material.createMaterial(ShaderLib.texturedLit);
+		var material = new Material(ShaderLib.texturedLit);
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		var entity = goo.world.createEntity(meshData, material);

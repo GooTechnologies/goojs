@@ -919,6 +919,8 @@ function (
 			this.hardwarePicking.clearColorStore.setv(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
 				var devicePixelRatio = window.devicePixelRatio || 1;
+				devicePixelRatio /= this.svg.currentScale;
+
 				var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 				var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
@@ -949,6 +951,8 @@ function (
 			return;
 		}
 		var devicePixelRatio = window.devicePixelRatio || 1;
+		devicePixelRatio /= this.svg.currentScale;
+
 		var pickingResolutionDivider = 4;
 		var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 		var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
