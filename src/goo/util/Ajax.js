@@ -18,11 +18,6 @@ function(
 	/**
 	 * @class Ajax helper class
 	 * @constructor
-	 * <code>{
-	 *   loaded: number Bytes loaded
-	 *   total: number Bytes to load
-	 *   count: number Number of resources loaded/loading
-	 * }</code>
 	 */
 	function Ajax(rootPath) {
 		if (rootPath) {

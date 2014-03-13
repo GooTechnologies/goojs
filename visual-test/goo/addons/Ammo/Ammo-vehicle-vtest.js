@@ -73,12 +73,6 @@ require([
 
 		goo.world.createEntity(new PointLight(), [0, 100, -10]).addToWorld();
 
-		var camScript = new OrbitCamControlScript({
-			domElement: goo.renderer.domElement,
-			spherical: new Vector3(40, 0, Math.PI/4)
-		});
-		goo.world.createEntity(new Camera(45, 1, 0.1, 1000), camScript).addToWorld();
-
 		/* shift center of gravity, felt kinda useless to me
 			var box = createEntity(goo, new Box(2, 2, 4), undefined, [0, 0.6, 0]);
 			var compound = goo.world.createEntity([0,7,0]);
@@ -101,10 +95,22 @@ require([
 			vehicleHelper.setSteeringValue( keys[37] * 0.3 + keys[39] * -0.3);
 			vehicleHelper.applyEngineForce( keys[38] * 1500 + keys[40] * -500, true);
 			vehicleHelper.updateWheelTransform();
-
-			camScript.lookAtPoint.set( chassis.transformComponent.transform.translation);
-			camScript.dirty = true;
 		});
+
+		var aboveCar = new Vector3();
+		var behindCar = new Vector3();
+		var camScriptObject = {};
+		camScriptObject.run = function(entity) {
+			var transform = chassis.transformComponent.transform;
+			var pos = transform.translation;
+			behindCar.setd(0,0,-16);
+			transform.rotation.applyPost(behindCar);
+			behindCar.addv(pos).add_d(0,15,0);
+			entity.transformComponent.transform.translation.lerp(behindCar,0.05);
+			entity.lookAt(aboveCar.setv(pos).add_d(0,1,0),Vector3.UNIT_Y);
+		};
+
+		goo.world.createEntity(new Camera(45, 1, 0.1, 1000), camScriptObject).addToWorld();
 	}
 
 	var texture = new TextureCreator().loadTexture2D('../../resources/goo.png');
@@ -120,7 +126,6 @@ require([
 	}
 
 	var goo = V.initGoo();
-	var world = goo.world;
 
 	init();
 });
