@@ -8,6 +8,7 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
+	'goo/entities/systems/HTMLSystem',
 	'goo/util/Stats',
 	"goo/entities/systems/CSSTransformSystem",
 	"goo/entities/systems/AnimationSystem",
@@ -25,6 +26,7 @@ define([
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/ScriptComponent',
 	'goo/entities/components/SoundComponent',
+	'goo/entities/components/HTMLComponent',
 
 	'goo/util/GameUtils',
 	'goo/util/Logo'
@@ -40,6 +42,7 @@ function (
 	LightingSystem,
 	CameraSystem,
 	ParticlesSystem,
+	HTMLSystem,
 	Stats,
 	CSSTransformSystem,
 	AnimationSystem,
@@ -57,6 +60,7 @@ function (
 	LightComponent,
 	ScriptComponent,
 	SoundComponent,
+	HTMLComponent,
 
 	GameUtils,
 	Logo
@@ -95,6 +99,7 @@ function (
 		// do this is a method called setupSystems
 		this.world.setSystem(new ScriptSystem(this.renderer));
 		this.world.setSystem(new TransformSystem());
+		this.world.setSystem(new HTMLSystem(this.renderer));
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new CSSTransformSystem(this.renderer)); // Go away!
 		this.world.setSystem(new ParticlesSystem());
@@ -119,6 +124,7 @@ function (
 		this.world.registerComponent(CameraComponent);
 		this.world.registerComponent(LightComponent);
 		this.world.registerComponent(ScriptComponent);
+		this.world.registerComponent(HTMLComponent);
 
 		this.doProcess = true;
 		this.doRender = true;

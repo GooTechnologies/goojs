@@ -27,7 +27,6 @@ define(
 	};
 
 	HTMLSystem.prototype.process = function (entities) {
-		console.log("and it is nothing");
 		if (entities.length === 0) {
 			return;
 		}
@@ -36,16 +35,24 @@ define(
 		var screenWidth = this.renderer.domElement.width;
 		var screenHeight = this.renderer.domElement.height;
 		
-		console.log("processing elements");
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var component = entity.getComponent('HTMLComponent');
 
 			// compute world position.
 			camera.getScreenCoordinates(entity.transformComponent.transform.translation, screenWidth, screenHeight, this.tmpVector);
-/*			if (this.tmpVector.z > 0)
+			if (this.tmpVector.z < 0)
+			{
+				if (component.hidden !== true) {
+					component.domElement.style.display = "none";
+					component.hidden = true;
+				}
 				continue;
-*/
+			}
+			else if (component.hidden === true) {
+				component.domElement.style.display = "";
+			}
+
 			var fx = Math.floor(this.tmpVector.x);
 			var fy = Math.floor(screenHeight - this.tmpVector.y);
 			
