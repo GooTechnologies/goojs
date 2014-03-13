@@ -49,7 +49,7 @@ define([
 				var channelConfig = config.channels[i];
 
 				var channel = new Channel(TimelineComponent.tweenMap[channelConfig.entityProperty]);
-				for (var j = 0; j < channelConfig.entries.length; i++) {
+				for (var j = 0; j < channelConfig.entries.length; j++) {
 					var entryConfig = channelConfig.entries[j];
 					var entry = {
 						start: entryConfig.start,
