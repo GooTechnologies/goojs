@@ -66,7 +66,9 @@ function(
 		material.cullState.enabled = false;
 		material.uniforms.discardThreshold = 0.2;
 		material.blendState.blending = 'CustomBlending';
-		material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 0.3];
+		// material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 0.3];
+		material.uniforms.materialAmbient = [0, 0, 0, 0];
+		material.uniforms.materialDiffuse = [1, 1, 1, 1];
 		material.uniforms.materialSpecular = [0, 0, 0, 0];
 		material.renderQueue = 3001;
 		this.material = material;
@@ -357,7 +359,7 @@ function(
 				'normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 				'texCoord0 = vertexUV0;',
 				'viewPosition = cameraPosition - worldPos.xyz;',
-				'dist = 1.0 - smoothstep(45.0, 50.0, length(viewPosition.xz));',
+				'dist = 1.0 - smoothstep(40.0, 50.0, length(viewPosition.xz));',
 			'}'
 		].join('\n');
 		},

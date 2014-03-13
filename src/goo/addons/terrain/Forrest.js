@@ -80,8 +80,9 @@ function(
 		material.setTexture('NORMAL_MAP', forrestAtlasNormals);
 		material.uniforms.discardThreshold = 0.6;
 		// material.blendState.blending = 'CustomBlending';
-		material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 1.0];
-		material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1.0];
+		material.uniforms.materialAmbient = [0, 0, 0, 0];
+		material.uniforms.materialDiffuse = [1, 1, 1, 1];
+		material.uniforms.materialSpecular = [0, 0, 0, 0];
 		material.renderQueue = 2001;
 		this.material = material;
 
