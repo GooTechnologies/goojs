@@ -541,7 +541,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Sets the matrix to identity.
+	 * Sets the matrix to identity: (1, 0, 0, 0, 1, 0, 0, 0, 1).
 	 * @return {Matrix3x3} Self for chaining.
 	 */
 
@@ -567,8 +567,12 @@ function (
 
 	/**
 	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
-	 * @param {Vector3} rhs Vector on the right-hand side.
-	 * @returns {Vector3} Transformed right-hand side vector.
+	 * @param {Vector3} rhs Vector3 on the right-hand side.  The Vector3 passed in IS modified.
+	 * @returns {Vector3} Transformed right-hand side Vector3.
+	 * @example
+	 * var forward = new Vector3(0, 0, -1);
+	 * entity.applyPost(forward); // now 'forward' is in local space
+	 * 
 	 */
 
 	Matrix3x3.prototype.applyPost = function (rhs) {
@@ -642,19 +646,22 @@ function (
 
 	/**
 	 * Sets the Matrix3x3 from rotational angles in radians.
-	 * @param {number} yaw Yaw angle in radians.
-	 * @param {number} roll Roll angle in radians.
-	 * @param {number} pitch Pitch angle in radians.
+	 * @param {number} pitch Pitch (X axis) angle in radians.
+	 * @param {number} yaw Yaw (Y axis) angle in radians.
+	 * @param {number} roll Roll (Z axis) angle in radians.
 	 * @returns {Matrix3x3} Self for chaining.
+	 * @example
+	 * // sets the rotation to Math.PI (180 degrees) on the Y axis
+	 * entity.transformComponent.transform.rotation.fromAngles(0, Math.PI, 0);
 	 */
 
-	Matrix3x3.prototype.fromAngles = function (yaw, roll, pitch) {
-		var cy = Math.cos(yaw);
-		var sy = Math.sin(yaw);
-		var ch = Math.cos(roll);
-		var sh = Math.sin(roll);
-		var cp = Math.cos(pitch);
-		var sp = Math.sin(pitch);
+	Matrix3x3.prototype.fromAngles = function (pitch, yaw, roll) {
+		var cy = Math.cos(pitch);
+		var sy = Math.sin(pitch);
+		var ch = Math.cos(yaw);
+		var sh = Math.sin(yaw);
+		var cp = Math.cos(roll);
+		var sp = Math.sin(roll);
 
 		var d = this.data;
 		d[0] = ch * cp;
@@ -671,11 +678,14 @@ function (
 	};
 
 	/**
-	 * Rotates a matrix by the given angle around the X axis
+	 * Rotates a Matrix3x3 by the given angle in radians, around the X axis.
 	 *
-	 * @param {number} rad the angle to rotate the matrix by
-	 * @param {Matrix3x3} [store] the receiving matrix
+	 * @param {number} rad the angle in radians to rotate the Matrix3x3 by.
+	 * @param {Matrix3x3} [store] the target Matrix3x3 to store the result or 'this', if undefined.
 	 * @returns {Matrix3x3} store
+	 * @example
+	 * // rotates the entity on the X axis, by the amount of time per frame (tpf)
+	 * entity.transformComponent.transform.rotation.rotateX(goo.world.tpf);
 	 */
 	Matrix3x3.prototype.rotateX = function (rad, store) {
 		store = store || this;
@@ -709,11 +719,14 @@ function (
 	};
 
 	/**
-	 * Rotates a matrix by the given angle around the Y axis
+	 * Rotates a Matrix3x3 by the given angle in radians, around the Y axis.
 	 *
-	 * @param {number} rad the angle to rotate the matrix by
-	 * @param {Matrix3x3} [store] the receiving matrix
+	 * @param {number} rad the angle in radians to rotate the Matrix3x3 by.
+	 * @param {Matrix3x3} [store] the target Matrix3x3 to store the result or 'this', if undefined.
 	 * @returns {Matrix3x3} store
+	 * @example
+	 * // rotates the entity on the Y axis, by Math.PI*0.5 (90 degrees)
+	 * entity.transformComponent.transform.rotation.rotateY(Math.PI*0.5);
 	 */
 	Matrix3x3.prototype.rotateY = function (rad, store) {
 		store = store || this;
@@ -747,11 +760,14 @@ function (
 	};
 
 	/**
-	 * Rotates a matrix by the given angle around the Z axis
+	 * Rotates a Matrix3x3 by the given angle in radians, around the Z axis.
 	 *
-	 * @param {number} rad the angle to rotate the matrix by
-	 * @param {Matrix3x3} [store] the receiving matrix
+	 * @param {number} rad the angle in radians to rotate the Matrix3x3 by.
+	 * @param {Matrix3x3} [store] the target Matrix3x3 to store the result or 'this', if undefined.
 	 * @returns {Matrix3x3} store
+	 * @example
+	 * // rotates the entity on the Z axis, by 3.14 (180 degrees)
+	 * entity.transformComponent.transform.rotation.rotateZ(3.14);
 	 */
 	Matrix3x3.prototype.rotateZ = function (rad, store) {
 		store = store || this;
@@ -785,9 +801,16 @@ function (
 	};
 
 	/**
-	 * Converts this matrix to Euler rotation angles (yaw, roll, pitch
-	 * @param {Vector3} Vector to store the computed angles in (or undefined to create a new one).
+	 * Converts the current Matrix3x3 to Euler rotation angles in radians: (X axis, Y axis, Z axis)
+	 * @param {Vector3} Vector3 to store the computed angles in (or undefined to create a new one).
 	 * @returns {Vector3} Result
+	 * @example
+	 * // Not passing in a Vector3 to store the result, one is created and returned
+	 * var rot = entity.transformComponent.transform.rotation.toAngles();
+	 *
+	 * // Passing in an existing Vector3 to store the result
+	 * var angles = new Vector3();
+	 * entity.transformComponent.transform.rotation.toAngles(angles);
 	 */
 	Matrix3x3.prototype.toAngles = function (store) {
 		var result = store;
@@ -856,10 +879,17 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Sets the matrix to look in a specific direction.
+	 * Sets the Matrix3x3 to look in a specific direction.
 	 * @param {Vector3} direction Direction vector.
 	 * @param {Vector3} up Up vector.
 	 * @returns {Matrix3x3} Self for chaining.
+	 * @example
+	 * // get the direction from the current entity to the 'other' entity
+	 * var direction = Vector3.sub(other.transformComponent.transform.translation, entity.transformComponent.transform.translation);
+	 * // pass in the direction, and use Vector3.UNIT_Y as 'up'
+	 * entity.lookAt(direction, Vector3.UNIT_Y);
+	 * // update the transform component with the new rotation
+	 * entity.transformComponent.setUpdated();
 	 */
 	Matrix3x3.prototype.lookAt = function (direction, up) {
 		var x = this._tempX, y = this._tempY, z = this._tempZ;
@@ -888,7 +918,6 @@ function (
 		d[6] = z.data[0];
 		d[7] = z.data[1];
 		d[8] = z.data[2];
-
 
 		return this;
 	};
