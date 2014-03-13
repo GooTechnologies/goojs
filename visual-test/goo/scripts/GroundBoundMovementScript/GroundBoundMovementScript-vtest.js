@@ -1,5 +1,4 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
@@ -23,9 +22,9 @@ require([
 	'goo/scripts/WorldFittedTerrainScript',
 	'goo/scripts/GroundBoundMovementScript',
 	'goo/renderer/TextureCreator',
-	'goo/util/CanvasUtils'
+	'goo/util/CanvasUtils',
+	'../../lib/V'
 ], function (
-	GooRunner,
 	World,
 	Material,
 	ShaderLib,
@@ -49,34 +48,34 @@ require([
 	WorldFittedTerrainScript,
 	GroundBoundMovementScript,
 	TextureCreator,
-	CanvasUtils
+	CanvasUtils,
+	V
 	) {
 	'use strict';
 
-	var goo;
 	var worldFittedTerrainScript = new WorldFittedTerrainScript();
 
 	var randomWalk = function(groundBoundMovementScript) {
 		function applySelection(selection) {
 			switch (selection) {
 				case 1:
-					groundBoundMovementScript.applyForward(Math.round(1-Math.random()*2));
+					groundBoundMovementScript.applyForward(Math.round(1 - V.rng.nextFloat() * 2));
 					break;
 				case 2:
-					groundBoundMovementScript.applyStrafe(Math.round(1-Math.random()*2));
+					groundBoundMovementScript.applyStrafe(Math.round(1 - V.rng.nextFloat() * 2));
 					break;
 				case 3:
 					groundBoundMovementScript.applyJump(1);
 					break;
 				case 4:
-					groundBoundMovementScript.applyTurn(1-Math.random()*2);
+					groundBoundMovementScript.applyTurn(1 - V.rng.nextFloat() * 2);
 					break;
 			}
 
 			setTimeout(function() {
-				selection = Math.ceil(Math.random()*Math.random()*4);
+				selection = Math.ceil(V.rng.nextFloat() * V.rng.nextFloat() * 4);
 				applySelection(selection);
-			}, 1000+Math.random()*2000);
+			}, 1000 + V.rng.nextFloat() * 2000);
 		}
 		applySelection(3);
 	};
@@ -99,7 +98,7 @@ require([
 		var nSpheres = 4;
 		var ak = Math.PI * 2 / nSpheres;
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored, '');
 			material.uniforms.color = [
 				Math.cos(k) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -116,7 +115,7 @@ require([
 		/*jshint loopfunc: true */
 		var meshData = new Sphere(32, 32);
 
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		var material = new Material(ShaderLib.simpleLit, '');
 		material.uniforms.color = [0.98, 0.6, 0.2];
 
 		var rootEntity = goo.world.createEntity(meshData, material);
@@ -180,7 +179,7 @@ require([
 		/*jshint loopfunc: true */
 		var meshData = new Sphere(32, 32);
 
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		var material = new Material(ShaderLib.simpleLit, '');
 		material.uniforms.color = [0.98, 0.6, 0.2];
 
 		var rootEntity = goo.world.createEntity(meshData, material);
@@ -226,7 +225,7 @@ require([
 
 	function buildTexturedGround(matrix, dimensions, id, gooWorld, txPath) {
 		var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
-		var material = Material.createMaterial(ShaderLib.texturedLit, '');
+		var material = new Material(ShaderLib.texturedLit, '');
 
 		var texture = new TextureCreator().loadTexture2D(txPath);
 		material.setTexture('DIFFUSE_MAP', texture);
@@ -259,7 +258,7 @@ require([
 /*
 	function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
 		var meshData =  new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
+		var material = new Material(ShaderLib.simpleLit, '');
 		material.wireframe = true;
 		var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
 		surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
@@ -339,12 +338,8 @@ require([
 
 	}
 
-	function init() {
-		goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-		groundBoundMovementScriptDemo();
-	}
+	var goo = V.initGoo();
+	var world = goo.world;
 
-	init();
+	groundBoundMovementScriptDemo();
 });

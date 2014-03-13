@@ -4,7 +4,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Renderer',
 
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/animation/Joint',
 
 	'goo/math/Vector3',
@@ -16,7 +16,7 @@ define([
 	Material,
 	Renderer,
 
-	ShapeCreator,
+	Box,
 	Joint,
 
 	Vector3,
@@ -59,24 +59,24 @@ define([
 		].join('\n')
 	};
 
-	var jointMaterial = Material.createMaterial(skeletonShaderDef);
+	var jointMaterial = new Material(skeletonShaderDef);
 	jointMaterial.depthState.enabled = false;
 	jointMaterial.blendState.blending = 'CustomBlending';
 	jointMaterial.uniforms.color = [1.0, 0.0, 0.0, 0.2];
 	var renderableJoint = {
-		meshData : ShapeCreator.createBox(1, 1, 1),
-		materials : [jointMaterial],
-		transform : new Transform()
+		meshData: new Box(),
+		materials: [jointMaterial],
+		transform: new Transform()
 	};
 
-	var boneMaterial = Material.createMaterial(skeletonShaderDef);
+	var boneMaterial = new Material(skeletonShaderDef);
 	boneMaterial.depthState.enabled = false;
 	boneMaterial.blendState.blending = 'CustomBlending';
 	boneMaterial.shader.uniforms.color = [0.0, 1.0, 0.0, 0.1];
 	var renderableBone = {
-		meshData : ShapeCreator.createBox(1, 1, 1),
-		materials : [boneMaterial],
-		transform : new Transform()
+		meshData: new Box(),
+		materials: [boneMaterial],
+		transform: new Transform()
 	};
 
 

@@ -2,8 +2,10 @@ require([
 	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/Camera',
+	'goo/shapes/Box',
+	'goo/shapes/Sphere',
+	'goo/shapes/Quad',
 	'goo/entities/components/CameraComponent',
-	'goo/shapes/ShapeCreator',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/shaders/ShaderLib',
@@ -13,13 +15,16 @@ require([
 	'goo/addons/ammo/AmmoSystem',
 	'goo/addons/ammo/AmmoComponent',
 	'goo/renderer/light/PointLight',
-	'goo/entities/components/LightComponent'
+	'goo/entities/components/LightComponent',
+	'../../lib/V'
 ], function (
 	GooRunner,
 	Material,
 	Camera,
+	Box,
+	Sphere,
+	Quad,
 	CameraComponent,
-	ShapeCreator,
 	TextureCreator,
 	ScriptComponent,
 	ShaderLib,
@@ -29,31 +34,26 @@ require([
 	AmmoSystem,
 	AmmoComponent,
 	PointLight,
-	LightComponent
+	LightComponent,
+	V
 ) {
 	"use strict";
 
 	var resourcePath = "../../resources";
 
 	function init() {
-		var goo = new GooRunner({
-			showStats : true
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
 		var ammoSystem = new AmmoSystem();
 		goo.world.setSystem(ammoSystem);
 
 		function addPrimitives() {
 			for (var i=0;i<20;i++) {
-				var x = Math.random() * 16 - 8;
-				var y = Math.random() * 16 + 8;
-				var z = Math.random() * 16 - 8;
-				if (Math.random() < 0.5) {
-					createEntity(goo, ShapeCreator.createBox(1+Math.random()*2, 1+Math.random()*2, 1+Math.random()*2), {mass:1}, [x,y,z]);
+				var x = V.rng.nextFloat() * 16 - 8;
+				var y = V.rng.nextFloat() * 16 + 8;
+				var z = V.rng.nextFloat() * 16 - 8;
+				if (V.rng.nextFloat() < 0.5) {
+					createEntity(goo, new Box(1+V.rng.nextFloat()*2, 1+V.rng.nextFloat()*2, 1+V.rng.nextFloat()*2), {mass:1}, [x,y,z]);
 				} else {
-					createEntity(goo, ShapeCreator.createSphere(10, 10, 1+Math.random()), {mass:1}, [x,y,z]);
+					createEntity(goo, new Sphere(10, 10, 1+V.rng.nextFloat()), {mass:1}, [x,y,z]);
 				}
 			}
 		}
@@ -61,13 +61,13 @@ require([
 		addPrimitives();
 		document.addEventListener('keypress', addPrimitives, false);
 
-		createEntity(goo, ShapeCreator.createBox(5, 5, 5), {mass: 0}, [0,-7.5,0]);
-		createEntity(goo, ShapeCreator.createBox(20, 10, 1), {mass: 0}, [0,-5,10]);
-		createEntity(goo, ShapeCreator.createBox(20, 10, 1), {mass: 0}, [0,-5,-10]);
-		createEntity(goo, ShapeCreator.createBox(1, 10, 20), {mass: 0}, [10,-5,0]);
-		createEntity(goo, ShapeCreator.createBox(1, 10, 20), {mass: 0}, [-10,-5,0]);
+		createEntity(goo, new Box(5, 5, 5), {mass: 0}, [0,-7.5,0]);
+		createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0,-5,10]);
+		createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0,-5,-10]);
+		createEntity(goo, new Box(1, 10, 20), {mass: 0}, [10,-5,0]);
+		createEntity(goo, new Box(1, 10, 20), {mass: 0}, [-10,-5,0]);
 
-		var planeEntity = createEntity(goo, ShapeCreator.createQuad(1000, 1000, 100, 100), {mass: 0}, [0,-10,0]);
+		var planeEntity = createEntity(goo, new Quad(1000, 1000, 100, 100), {mass: 0}, [0,-10,0]);
 		planeEntity.transformComponent.transform.setRotationXYZ(-Math.PI/2, 0, 0);
 
 		var light = new PointLight();
@@ -89,7 +89,7 @@ require([
 	}
 
 	function createEntity(goo, meshData, ammoSettings, pos) {
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+		var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
 		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		var entity = goo.world.createEntity(meshData, material, pos);
@@ -98,5 +98,7 @@ require([
 		return entity;
 	}
 
+	var goo = V.initGoo();
+	var world = goo.world;
 	init();
 });

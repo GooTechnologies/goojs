@@ -80,7 +80,7 @@ require([
 		var meshData = ShapeCreator.createBox(size, size, size);
 		var entity = goo.world.createEntity(meshData, position);
 
-		var material = Material.createMaterial(ShaderLib.simpleLit, 'BoxMaterial');
+		var material = new Material(ShaderLib.simpleLit, 'BoxMaterial');
 		//TextureCreator.clearCache();
 		//var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
 		//material.setTexture('DIFFUSE_MAP', texture);

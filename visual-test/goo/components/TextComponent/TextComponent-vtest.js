@@ -4,7 +4,6 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -24,7 +23,6 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -49,7 +47,7 @@ require([
 		var textEntity = goo.world.createEntity();
 
 		// get a font
-		var material = Material.createMaterial(ShaderLib.billboard, 'Billboard material');
+		var material = new Material(ShaderLib.billboard, 'Billboard material');
 		var texture = new TextureCreator().loadTexture2D('../../resources/font.png');
 		material.setTexture('DIFFUSE_MAP', texture);
 		material.blendState.blending = 'AlphaBlending';

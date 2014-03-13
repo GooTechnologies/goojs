@@ -50,7 +50,7 @@ require([
 	}
 
 	function addShapes(goo) {
-		var material = Material.createMaterial(ShaderLib.textured);
+		var material = new Material(ShaderLib.textured);
 		var colorInfo = new Uint8Array([255, 255, 255, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 255, 255]);
 		var texture = new Texture(colorInfo, null, 2, 2);
 		texture.minFilter = 'NearestNeighborNoMipMaps';

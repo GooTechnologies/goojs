@@ -76,7 +76,7 @@ define([
 			var mouseDownY = event.pageY;
 
 			this.goo.pick(mouseDownX, mouseDownY, function(id) {
-				var entity = this.goo.world.entityManager.getEntityById(id);
+				var entity = this.goo.world.entityManager.getEntityByIndex(id);
 				if(entity) {
 					this.oldPicked = this.picked;
 					this.picked = entity;

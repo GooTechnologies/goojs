@@ -4,7 +4,8 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Quad',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -22,7 +23,8 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Sphere,
+	Quad,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -44,8 +46,8 @@ require([
 	}
 
 	function addPortal(goo, camera, x, y, z, dim, options, overrideMaterial) {
-		var quadMeshData = ShapeCreator.createQuad(dim, dim);
-		var quadMaterial = Material.createMaterial(ShaderLib.textured, '');
+		var quadMeshData = new Quad(dim, dim);
+		var quadMaterial = new Material(ShaderLib.textured);
 		var quadEntity = goo.world.createEntity(quadMeshData, quadMaterial);
 		quadEntity.transformComponent.transform.translation.set(x, y, z);
 		var portalComponent = new PortalComponent(camera, 500, options, overrideMaterial);
@@ -56,11 +58,11 @@ require([
 	}
 
 	function addSpheres(goo, nSpheres) {
-		var sphereMeshData = ShapeCreator.createSphere(32, 32);
+		var sphereMeshData = new Sphere(32, 32);
 
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {
-				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
+				var sphereMaterial = new Material(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
 				sphereMaterial.uniforms.color = [i / nSpheres, j / nSpheres, 0.3];
 				var sphereEntity = goo.world.createEntity(sphereMeshData, sphereMaterial);
 				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);

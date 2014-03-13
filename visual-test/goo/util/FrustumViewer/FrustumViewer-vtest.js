@@ -56,7 +56,7 @@ require([
 		var nSpheres = 15;
 		for(var i = 0; i < nSpheres; i++) {
 			for(var j = 0; j < nSpheres; j++) {
-				var sphereMaterial = Material.createMaterial(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
+				var sphereMaterial = new Material(ShaderLib.simpleColored, 'SphereMaterial' + i + '_' + j);
 				sphereMaterial.uniforms.color = [i / nSpheres, j / nSpheres, 0.3];
 				var sphereEntity = goo.world.createEntity(sphereMeshData, sphereMaterial);
 				sphereEntity.transformComponent.transform.translation.set(i - nSpheres/2, j - nSpheres/2, 0);
