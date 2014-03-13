@@ -13,9 +13,12 @@ define([
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts',
 
-	'goo/scripts/NewWaveFPCamControlScript',
-	'goo/scripts/NewWaveRotationScript',
-	'goo/scripts/NewOrbitCamControlScript'
+	'goo/scripts/newwave/FPCamControlScript',
+	'goo/scripts/newwave/RotationScript',
+	'goo/scripts/newwave/OrbitCamControlScript',
+	'goo/scripts/newwave/PanCamScript',
+	'goo/scripts/newwave/OrbitNPanControlScript',
+	'goo/scripts/newwave/WASDScript'
 ],
 /** @lends */
 function(
@@ -83,7 +86,6 @@ function(
 
 	ScriptHandler.prototype._specialPrepare = function(script, config) {
 		config.options = config.options || {};
-		if (config.className === 'OrbitNPanControlScript') { return; }
 		// fill the rest of the parameters with default values
 		if (script.externals && script.externals.parameters) {
 			ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
@@ -190,7 +192,7 @@ function(
 
 	ScriptHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		if (config && config.className !== 'OrbitNPanControlScript') {
+		if (config) {
 			return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
 				if (!script) { return; }
 				if (config.className) {

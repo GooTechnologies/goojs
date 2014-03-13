@@ -44,7 +44,9 @@ function (
 			getSystemBus: function () {
 				return SystemBus;
 			},
-			domElement: env.domElement
+			domElement: env.domElement,
+			viewportWidth: env.viewportWidth,
+			viewportHeight: env.viewportHeight
 		};
 
 		for (var i = 0; i < this.scripts.length; i++) {

@@ -7,7 +7,7 @@ define([
 ) {
 	'use strict';
 
-	var external = {
+	var externals = {
 		name: 'RotationScript',
 		description: '',
 		parameters: [{
@@ -61,9 +61,9 @@ define([
 			setup: setup,
 			update: update,
 			cleanup: cleanup,
-			external: external,
+			externals: externals,
 			parameters: params
 		};
 	};
-	Scripts.register(external, NewWaveRotationScript);
+	Scripts.register(externals, NewWaveRotationScript);
 });
