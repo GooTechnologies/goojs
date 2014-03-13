@@ -84,13 +84,13 @@ function(
 
 	OrbitNPanControlScript.prototype = Object.create(OrbitCamControlScript.prototype);
 
-
+ 	// REVIEW: missing JsDoc
 	OrbitNPanControlScript.prototype.updateConfig = function(properties) {
 		OrbitCamControlScript.prototype.updateConfig.call(this,properties);
 		this.goingToLookAt.setv(this.lookAtPoint);
 	};
 
-
+	// REVIEW: missing JsDoc
 	OrbitNPanControlScript.prototype.setupMouseControls = function() {
 		var that = this;
 		this.domElement.addEventListener('mousedown', function (event) {

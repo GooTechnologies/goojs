@@ -81,7 +81,6 @@ function (
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
 
-
 		//! AT: this looks a lot like a defaults/extend function that can be extracted somewhere else
 		for(var key in _defaults) {
 			if(typeof(_defaults[key]) === 'boolean') {
@@ -121,7 +120,7 @@ function (
 			lastY : NaN
 		};
 
-		if(this.domElement) {
+		if (this.domElement) {
 			this.setupMouseControls();
 		}
 
@@ -132,15 +131,16 @@ function (
 		}
 	}
 
-	OrbitCamControlScript.prototype.updateConfig = function(properties) {
+	// REVIEW: JsDoc missing.
+	OrbitCamControlScript.prototype.updateConfig = function (properties) {
 		for(var key in properties) {
-			if(typeof(_defaults[key]) === 'boolean') {
+			if (typeof(_defaults[key]) === 'boolean') {
 				this[key] = !!properties[key];
 			}
 			else if (!isNaN(_defaults[key]) && !isNaN(properties[key])) {
 				this[key] = properties[key];
 			}
-			else if(_defaults[key] instanceof Vector3) {
+			else if (_defaults[key] instanceof Vector3) {
 				this[key].set(properties[key]);
 			}
 			else {
@@ -151,6 +151,7 @@ function (
 		this.dirty = true;
 	};
 
+	// REVIEW: JsDoc missing.
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
 			this.domElement.focus();
@@ -170,6 +171,7 @@ function (
 		}
 	};
 
+	// REVIEW: JsDoc missing.
 	OrbitCamControlScript.prototype.updateDeltas = function (mouseX, mouseY) {
 		var dx = 0, dy = 0;
 		if (isNaN(this.mouseState.lastX) || isNaN(this.mouseState.lastY)) {
