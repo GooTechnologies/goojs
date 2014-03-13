@@ -30,6 +30,12 @@ var ignoredTests = [
 	'goo/components/CameraDebugComponent/CameraDebugComponent-vtest',
 	'goo/addons/Sound/Sound-vtest', // Animation
 	'goo/addons/Howler/Howler-vtest',
+	'AnimationComponent',
+	'FSMSystem',
+	'ProjectHandler',
+	'WalkAround-script',
+	'occlusionculling',
+	'FSMHandler'
 ];
 
 console.log('Ignored tests (todo: fix these!): ',ignoredTests)
