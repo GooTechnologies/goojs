@@ -51,6 +51,8 @@ define([
 			var q = new Quaternion();
 			var result = new Quaternion();
 			Quaternion.mul2(p,q,result);
+
+			//! schteppe:  How to check result?
 			expect(result).toEqual(new Quaternion());
 		});
 
@@ -91,18 +93,21 @@ define([
 		});
 
 		it('can slerp',function(){
-			var startQuat = new Quaternion();
-			var endQuat = new Quaternion();
+			var angle1 = Math.PI/2;
+			var angle2 = 3*Math.PI/2;
+			var startQuat = new Quaternion(Math.sin(angle1),0,0,Math.cos(angle1));
+			var endQuat = new Quaternion(Math.sin(angle2),0,0,Math.cos(angle2));
 			var result = new Quaternion();
+
+			//! schteppe:  How to check ok?
 			Quaternion.slerp(startQuat,endQuat,0.5,result);
-			expect(result).toEqual(new Quaternion());
 		});
 
-		it('can slerp',function(){
+		it('can slerp via prototype method',function(){
 			var startQuat = new Quaternion();
 			var endQuat = new Quaternion();
 			var result = new Quaternion();
-			Quaternion.slerp(startQuat,endQuat,0.5,result);
+			startQuat.slerp(endQuat,0.5,result);
 			expect(result).toEqual(new Quaternion());
 		});
 
@@ -121,12 +126,16 @@ define([
 			var q = new Quaternion();
 			var m = new Matrix3x3();
 			q.fromRotationMatrix(m);
+			//! schteppe:  How to check ok?
 		});
 
-		it('can set rotation matrix', function(){
+		it('can convert to rotation matrix', function(){
 			var q = new Quaternion();
 			var m = new Matrix3x3();
 			q.toRotationMatrix(m);
+			expect(q.toRotationMatrix() instanceof Matrix3x3).toBeTruthy();
+
+			//! schteppe:  How to check ok?
 		});
 
 		it('can be set from vector to vector', function(){
@@ -134,6 +143,7 @@ define([
 			var u = new Vector3();
 			var v = new Vector3();
 			q.fromVectorToVector(u,v);
+			//! schteppe:  How to check ok?
 		});
 
 		it('can be normalized', function(){
@@ -168,16 +178,40 @@ define([
 			expect(q).toEqual(new Quaternion());
 		});
 
-		it('can generate axis and angle', function(){
+		it('can be set from a zero axis and angle', function(){
 			var q = new Quaternion();
-			var axis = new Vector3();
+			var axis = new Vector3(0,0,0);
+			var angle = 0;
+			q.fromAngleNormalAxis(angle,axis);
+			expect(q).toEqual(new Quaternion());
+		});
+
+		it('can generate axis and angle 1', function(){
+			var q = new Quaternion();
+			var axis = new Vector3(0,0,0);
 			var angle = q.toAngleAxis(axis);
 			expect(typeof angle).toEqual('number');
+		});
+
+		it('can generate axis and angle 2', function(){
+			var q = new Quaternion();
+			var axis = new Vector3(1,0,0);
+			var axisResult = new Vector3();
+			var angle = Math.PI/2;
+			q.fromAngleNormalAxis(angle,axis);
+			var angleResult = q.toAngleAxis(axisResult);
+			expect(Math.abs(angleResult - angle)<=0.001).toBeTruthy();
+			expect(axisResult).toEqual(axis);
 		});
 
 		it('can check for equality', function(){
 			var q = new Quaternion();
 			expect(q.equals(q)).toBeTruthy();
+		});
+
+		it('can check for equality with foreign object', function(){
+			var q = new Quaternion();
+			expect(q.equals(1)).toBeFalsy();
 		});
 
 		it('can set all components', function(){

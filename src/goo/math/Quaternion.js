@@ -652,7 +652,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		if (this === o) {
 			return true;
 		}
-		if (!o instanceof Quaternion) {
+		if (!(o instanceof Quaternion)) {
 			return false;
 		}
 		return Math.abs(this.data[0] - o.data[0]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[1] - o.data[1]) < Quaternion.ALLOWED_DEVIANCE
