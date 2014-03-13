@@ -54,6 +54,11 @@ function (
 
 			if (script.setup) {
 				script.setup(script.parameters, script.environment);
+				if (script.parameters && script.parameters.enabled !== undefined) {
+					script.enabled = script.parameters.enabled;
+				} else {
+					script.enabled = true;
+				}
 			}
 		}
 	};
@@ -89,6 +94,7 @@ function (
 			var script = this.scripts[i];
 			if (script.cleanup) {
 				script.cleanup(script.parameters, script.environment);
+				script.enabled = false;
 			}
 		}
 	};

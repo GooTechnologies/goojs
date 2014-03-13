@@ -10,10 +10,11 @@ define(['goo/entities/systems/System'],
 		System.call(this, 'ScriptSystem', ['ScriptComponent']);
 		this.renderer = renderer;
 		this.environment = {
-			domElement: null,
-			viewportWidth: 0,
-			viewportHeight: 0
+			domElement: this.renderer.domElement,
+			viewportWidth: this.renderer.viewportWidth,
+			viewportHeight: this.renderer.viewportHeight
 		};
+		this.manualSetup = false;
 
 		this.priority = 500;
 	}
@@ -21,13 +22,16 @@ define(['goo/entities/systems/System'],
 	ScriptSystem.prototype = Object.create(System.prototype);
 
 	ScriptSystem.prototype.inserted = function (entity) {
-		//entity.scriptComponent.setup(entity, this.environment);
+		if (!this.manualSetup) {
+			entity.scriptComponent.setup(entity, this.environment);
+		}
 	};
 
 	ScriptSystem.prototype.process = function (entities, tpf) {
 		this.environment.domElement = this.renderer.domElement;
 		this.environment.viewportWidth = this.renderer.viewportWidth;
 		this.environment.viewportHeight = this.renderer.viewportHeight;
+
 		for (var i = 0; i < entities.length; i++) {
 			var scriptComponent = entities[i].scriptComponent;
 			scriptComponent.run(entities[i], tpf, this.environment);
@@ -35,8 +39,8 @@ define(['goo/entities/systems/System'],
 	};
 
 	ScriptSystem.prototype.deleted = function (entity) {
-		if (entity.scriptComponent) {
-			//entity.scriptComponent.cleanup();
+		if (entity.scriptComponent && !this.manualSetup) {
+			entity.scriptComponent.cleanup();
 		}
 	};
 

@@ -194,12 +194,15 @@ function(
 			return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
 				if (!script) { return; }
 				if (config.className) {
-					that._updateFromClass(script, config);
+					that._updateFromClass(script, config, options);
 				} else if (config.body) {
-					that._updateFromCustom(script, config);
+					that._updateFromCustom(script, config, options);
 				}
 				that._specialPrepare(script, config);
 				_.extend(script.parameters, config.options);
+				if (options.script && options.script.disabled) {
+					script.enabled = script.active = false;
+				}
 				return script;
 			});
 		}
