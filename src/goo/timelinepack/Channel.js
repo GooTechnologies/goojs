@@ -6,9 +6,12 @@ define([], function () {
 		this.time = 0;
 		this.lastTime = 0;
 		this.value = 0;
+
 		this.callbackAgenda = [];
 		this.callbackIndex = 0;
 		this.lastCallbackTime = 0;
+
+		options = options || {};
 		this.callbackUpdate = options.callbackUpdate;
 		this.callbackEnd = options.callbackEnd;
 	}
@@ -71,8 +74,6 @@ define([], function () {
 		var newEntry = {
 			start: start,
 			value: value,
-			//easing: easing,
-			//easingFunction: function (v) { return v; }, // identity function for now
 			easingFunction: easing,
 			callback: callback
 		};
