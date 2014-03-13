@@ -111,7 +111,7 @@ function (
 	 * @param {Manager} [manager]
 	 * @param {System} [system]
 	 * @param {Component} [component]
- 	 * @example
+	 * @example
 	 * // Add two entities and register a component, all in one swoop
 	 * var entity1 = new Entity(gooRunner.world, 'Entity 1');
 	 * var entity2 = new Entity(gooRunner.world, 'Entity 2');
