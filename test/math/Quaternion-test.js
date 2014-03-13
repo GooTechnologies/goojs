@@ -200,7 +200,7 @@ define([
 			var angle = Math.PI/2;
 			q.fromAngleNormalAxis(angle,axis);
 			var angleResult = q.toAngleAxis(axisResult);
-			expect(Math.abs(angleResult - angle)<=0.001).toBeTruthy();
+			expect(angleResult).toBeCloseTo(angle);
 			expect(axisResult).toEqual(axis);
 		});
 

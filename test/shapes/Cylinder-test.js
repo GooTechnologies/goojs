@@ -1,13 +1,13 @@
 define(
 [
-	"goo/shapes/ShapeCreator"
+	"goo/shapes/Cylinder"
 ], function(
-	ShapeCreator
+	Cylinder
 ) {
 	"use strict";
 
 	describe("Cylinder", function() {
-		var a = ShapeCreator.createCylinder();
+		var a = new Cylinder();
 
 		it("Number of vertices and indices", function() {
 			expect(a.vertexCount).toEqual(8 * 4 + 2 + 2);
