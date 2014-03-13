@@ -1,5 +1,4 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
@@ -23,9 +22,9 @@ require([
 	'goo/scripts/WorldFittedTerrainScript',
 	'goo/scripts/GroundBoundMovementScript',
 	'goo/renderer/TextureCreator',
-	'goo/util/CanvasUtils'
+	'goo/util/CanvasUtils',
+	'../../lib/V'
 ], function (
-	GooRunner,
 	World,
 	Material,
 	ShaderLib,
@@ -49,34 +48,34 @@ require([
 	WorldFittedTerrainScript,
 	GroundBoundMovementScript,
 	TextureCreator,
-	CanvasUtils
+	CanvasUtils,
+	V
 	) {
 	'use strict';
 
-	var goo;
 	var worldFittedTerrainScript = new WorldFittedTerrainScript();
 
 	var randomWalk = function(groundBoundMovementScript) {
 		function applySelection(selection) {
 			switch (selection) {
 				case 1:
-					groundBoundMovementScript.applyForward(Math.round(1-Math.random()*2));
+					groundBoundMovementScript.applyForward(Math.round(1 - V.rng.nextFloat() * 2));
 					break;
 				case 2:
-					groundBoundMovementScript.applyStrafe(Math.round(1-Math.random()*2));
+					groundBoundMovementScript.applyStrafe(Math.round(1 - V.rng.nextFloat() * 2));
 					break;
 				case 3:
 					groundBoundMovementScript.applyJump(1);
 					break;
 				case 4:
-					groundBoundMovementScript.applyTurn(1-Math.random()*2);
+					groundBoundMovementScript.applyTurn(1 - V.rng.nextFloat() * 2);
 					break;
 			}
 
 			setTimeout(function() {
-				selection = Math.ceil(Math.random()*Math.random()*4);
+				selection = Math.ceil(V.rng.nextFloat() * V.rng.nextFloat() * 4);
 				applySelection(selection);
-			}, 1000+Math.random()*2000);
+			}, 1000 + V.rng.nextFloat() * 2000);
 		}
 		applySelection(3);
 	};
@@ -339,12 +338,8 @@ require([
 
 	}
 
-	function init() {
-		goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-		groundBoundMovementScriptDemo();
-	}
+	var goo = V.initGoo();
+	var world = goo.world;
 
-	init();
+	groundBoundMovementScriptDemo();
 });

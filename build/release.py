@@ -59,6 +59,7 @@ shutil.copy('out/fsmpack.js', release_dir + '/lib/fsmpack.js')
 shutil.copy('out/geometrypack.js', release_dir + '/lib/geometrypack.js')
 
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
+shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')
 shutil.copy('COPYING', release_dir + '/COPYING')
 shutil.copy('LICENSE', release_dir + '/LICENSE')
 shutil.copy('CHANGES', release_dir + '/CHANGES')

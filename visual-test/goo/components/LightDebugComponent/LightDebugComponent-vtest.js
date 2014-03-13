@@ -4,7 +4,7 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -24,7 +24,7 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Sphere,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -44,17 +44,17 @@ require([
 	var lightsState = {
 		pointLightOn: false,
 		directionalLightOn: false,
-		spotLightOn: false};
+		spotLightOn: false
+	};
 
 	function addSpin(entity/*, radiusX, radiusZ, speed, altitude*/) {
-		var offset = Math.random()*12;
-		entity.setComponent(new ScriptComponent({
-			run: function (entity) {
+		var offset = V.rng.nextFloat() * 12;
+		entity.set(function (entity) {
 				var light = entity.getComponent('LightComponent').light;
 
 				light.color.data[0] = Math.cos(World.time + offset) * 0.5 + 0.5;
-				light.color.data[1] = Math.cos(World.time +offset+ Math.PI * 2 / 3) * 0.5 + 0.5;
-				light.color.data[2] = Math.cos(World.time +offset+ Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
+				light.color.data[1] = Math.cos(World.time + offset + Math.PI * 2 / 3) * 0.5 + 0.5;
+				light.color.data[2] = Math.cos(World.time + offset + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
 				light.range = (Math.cos(World.time) * 0.5 + 0.5) * 6 + 2;
 
 				/*
@@ -64,65 +64,45 @@ require([
 				*/
 				light.changedProperties = true;
 				light.changedColor = true;
-			}
-		}));
+			});
 	}
 
-	function addPointLight(goo) {
-		var pointLight = new PointLight();
-		pointLight.color.data[0] = 0.9;
-		pointLight.color.data[1] = 0.0;
-		pointLight.color.data[2] = 0.2;
+	function addPointLight() {
+		var pointLight = new PointLight(new Vector3(0.9, 0.0, 0.2));
 		pointLight.range = 8;
 
 		var pointLightOrbitRadius = 5;
 		var pointLightOrbitSpeed = 0.5;
 		var pointLightAltitude = 0;
 
-		var pointLightEntity = goo.world.createEntity('pointLight');
-		pointLightEntity.setComponent(new LightComponent(pointLight));
-
-		pointLightEntity.setComponent(new LightDebugComponent());
-
-		pointLightEntity.transformComponent.transform.translation.setd(0, 0, 3);
+		var pointLightEntity = world.createEntity(pointLight, new LightDebugComponent(), [0, 0, 3]);
 
 		addSpin(pointLightEntity, pointLightOrbitRadius, pointLightOrbitRadius, pointLightOrbitSpeed, pointLightAltitude);
 		pointLightEntity.addToWorld();
-		goo.world.process();
+		world.process();
 
 		lightsState.pointLightOn = true;
 	}
 
-	function addDirectionalLight(goo) {
-		var directionalLight = new DirectionalLight();
-		directionalLight.color.data[0] = 0.2;
-		directionalLight.color.data[1] = 0.9;
-		directionalLight.color.data[2] = 0.0;
+	function addDirectionalLight() {
+		var directionalLight = new DirectionalLight(new Vector3(0.2, 0.9, 0.0));
 		directionalLight.intensity = 0.25;
 
 		var directionalLightOrbitRadius = 0;
 		var directionalLightOrbitSpeed = 0.7;
 		var directionalLightAltitude = -5;
 
-		var directionalLightEntity = goo.world.createEntity('directionalLight');
-		directionalLightEntity.setComponent(new LightComponent(directionalLight));
-
-		directionalLightEntity.setComponent(new LightDebugComponent());
-
-		directionalLightEntity.transformComponent.transform.translation.setd(0, -5, 3);
+		var directionalLightEntity = world.createEntity(directionalLight, new LightDebugComponent(), [0, -5, 3]);
 
 		addSpin(directionalLightEntity, directionalLightOrbitRadius, directionalLightOrbitRadius, directionalLightOrbitSpeed, directionalLightAltitude);
 		directionalLightEntity.addToWorld();
-		goo.world.process();
+		world.process();
 
 		lightsState.directionalLightOn = true;
 	}
 
-	function addSpotLight(goo) {
-		var spotLight = new SpotLight();
-		spotLight.color.data[0] = 0.2;
-		spotLight.color.data[1] = 0.4;
-		spotLight.color.data[2] = 1.0;
+	function addSpotLight() {
+		var spotLight = new SpotLight(new Vector3(0.2, 0.4, 1.0));
 		spotLight.angle = 15;
 		spotLight.range = 10;
 		spotLight.exponent = 0.0;
@@ -131,77 +111,59 @@ require([
 		var spotLightOrbitSpeed = 0.3;
 		var spotLightAltitude = 5;
 
-		var spotLightEntity = goo.world.createEntity('spotLight');
-		spotLightEntity.setComponent(new LightComponent(spotLight));
-
-		spotLightEntity.setComponent(new LightDebugComponent());
-
-		spotLightEntity.transformComponent.transform.translation.setd(0, 5, 5);
+		var spotLightEntity = world.createEntity(spotLight, new LightDebugComponent(), [0, 5, 5]);
 
 		addSpin(spotLightEntity, spotLightOrbitRadius, spotLightOrbitRadius * 2, spotLightOrbitSpeed, spotLightAltitude);
 		spotLightEntity.addToWorld();
-		goo.world.process();
+		world.process();
 
 		lightsState.spotLightOn = true;
 	}
 
-	function removePointLight(goo) {
-		goo.world.entityManager.getEntityByName('pointLight').removeFromWorld();
+	function removePointLight() {
+		world.entityManager.getEntityByName('pointLight').removeFromWorld();
 		lightsState.pointLightOn = false;
 	}
 
-	function removeDirectionalLight(goo) {
-		goo.world.entityManager.getEntityByName('directionalLight').removeFromWorld();
+	function removeDirectionalLight() {
+		world.entityManager.getEntityByName('directionalLight').removeFromWorld();
 		lightsState.directionalLightOn = false;
 	}
 
-	function removeSpotLight(goo) {
-		goo.world.entityManager.getEntityByName('spotLight').removeFromWorld();
+	function removeSpotLight() {
+		world.entityManager.getEntityByName('spotLight').removeFromWorld();
 		lightsState.spotLightOn = false;
 	}
 
-	function lightPointerDemo() {
-		var goo = V.initGoo();
+	var goo = V.initGoo();
+	var world = goo.world;
 
-		// add spheres to cast light on
-		var sphereMeshData = ShapeCreator.createSphere(32, 32);
+	// add spheres to cast light on
+	V.addSpheres();
 
-		var sphereMaterial = new Material(ShaderLib.simpleLit, 'SphereMaterial');
+	addPointLight();
+	addDirectionalLight();
+	addSpotLight();
 
-		var nSpheres = 15;
-		for(var i = 0; i < nSpheres; i++) {
-			for(var j = 0; j < nSpheres; j++) {
-				var sphereEntity = goo.world.createEntity(sphereMeshData, sphereMaterial, [i - nSpheres/2, j - nSpheres/2, 0]);
-				sphereEntity.addToWorld();
-			}
+	document.body.addEventListener('keypress', function(e) {
+		switch(e.keyCode) {
+			case 49:
+				if(lightsState.spotLightOn) { removeSpotLight();	}
+				else { addSpotLight(); }
+				break;
+			case 50:
+				if(lightsState.pointLightOn) { removePointLight(); }
+				else { addPointLight(); }
+				break;
+			case 51:
+				if(lightsState.directionalLightOn) { removeDirectionalLight(); }
+				else { addDirectionalLight(); }
+				break;
+			default:
+				console.log('Keys 1 to 3 switch light on/off');
 		}
+	});
 
-		addPointLight(goo);
-		addDirectionalLight(goo);
-		addSpotLight(goo);
-
-		document.body.addEventListener('keypress', function(e) {
-			switch(e.keyCode) {
-				case 49:
-					if(lightsState.spotLightOn) { removeSpotLight(goo);	}
-					else { addSpotLight(goo); }
-					break;
-				case 50:
-					if(lightsState.pointLightOn) { removePointLight(goo); }
-					else { addPointLight(goo); }
-					break;
-				case 51:
-					if(lightsState.directionalLightOn) { removeDirectionalLight(goo); }
-					else { addDirectionalLight(goo); }
-					break;
-				default:
-					console.log('Keys 1 to 3 switch light on/off');
-			}
-		});
-
-		// camera
-		V.addOrbitCamera();
-	}
-
-	lightPointerDemo();
+	// camera
+	V.addOrbitCamera();
 });

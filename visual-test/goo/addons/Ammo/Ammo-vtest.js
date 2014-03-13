@@ -15,7 +15,8 @@ require([
 	'goo/addons/ammo/AmmoSystem',
 	'goo/addons/ammo/AmmoComponent',
 	'goo/renderer/light/PointLight',
-	'goo/entities/components/LightComponent'
+	'goo/entities/components/LightComponent',
+	'../../lib/V'
 ], function (
 	GooRunner,
 	Material,
@@ -33,31 +34,26 @@ require([
 	AmmoSystem,
 	AmmoComponent,
 	PointLight,
-	LightComponent
+	LightComponent,
+	V
 ) {
 	"use strict";
 
 	var resourcePath = "../../resources";
 
 	function init() {
-		var goo = new GooRunner({
-			showStats : true
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
 		var ammoSystem = new AmmoSystem();
 		goo.world.setSystem(ammoSystem);
 
 		function addPrimitives() {
 			for (var i=0;i<20;i++) {
-				var x = Math.random() * 16 - 8;
-				var y = Math.random() * 16 + 8;
-				var z = Math.random() * 16 - 8;
-				if (Math.random() < 0.5) {
-					createEntity(goo, new Box(1+Math.random()*2, 1+Math.random()*2, 1+Math.random()*2), {mass:1}, [x,y,z]);
+				var x = V.rng.nextFloat() * 16 - 8;
+				var y = V.rng.nextFloat() * 16 + 8;
+				var z = V.rng.nextFloat() * 16 - 8;
+				if (V.rng.nextFloat() < 0.5) {
+					createEntity(goo, new Box(1+V.rng.nextFloat()*2, 1+V.rng.nextFloat()*2, 1+V.rng.nextFloat()*2), {mass:1}, [x,y,z]);
 				} else {
-					createEntity(goo, new Sphere(10, 10, 1+Math.random()), {mass:1}, [x,y,z]);
+					createEntity(goo, new Sphere(10, 10, 1+V.rng.nextFloat()), {mass:1}, [x,y,z]);
 				}
 			}
 		}
@@ -102,5 +98,7 @@ require([
 		return entity;
 	}
 
+	var goo = V.initGoo();
+	var world = goo.world;
 	init();
 });

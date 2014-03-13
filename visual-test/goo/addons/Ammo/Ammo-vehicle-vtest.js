@@ -1,11 +1,9 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/Camera',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
-
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/World',
@@ -14,9 +12,9 @@ require([
 	'goo/addons/ammo/AmmoSystem',
 	'goo/addons/ammo/AmmoComponent',
 	'goo/renderer/light/PointLight',
-	'VehicleHelper'
+	'VehicleHelper',
+	'../../lib/V'
 ], function (
-	GooRunner,
 	Material,
 	Camera,
 	Box,
@@ -30,26 +28,23 @@ require([
 	AmmoSystem,
 	AmmoComponent,
 	PointLight,
-	VehicleHelper
+	VehicleHelper,
+	V
 ) {
-	"use strict";
+	'use strict';
 
 	var ammoSystem;
 	function init() {
-		var goo = new GooRunner({showStats : true});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
 		ammoSystem = new AmmoSystem();
 		goo.world.setSystem(ammoSystem);
 
 		function addPrimitives() {
 			for (var i=0;i<20;i++) {
-				var x = Math.random() * 16 - 8, y = Math.random() * 16 + 8, z = Math.random() * 16 - 8;
-				if (Math.random() < 0.5) {
-					createEntity(goo, new Box(1+Math.random()*2, 1+Math.random()*2, 1+Math.random()*2), {mass:1}, [x,y,z]);
+				var x = V.rng.nextFloat() * 16 - 8, y = V.rng.nextFloat() * 16 + 8, z = V.rng.nextFloat() * 16 - 8;
+				if (V.rng.nextFloat() < 0.5) {
+					createEntity(goo, new Box(1+V.rng.nextFloat()*2, 1+V.rng.nextFloat()*2, 1+V.rng.nextFloat()*2), {mass:1}, [x,y,z]);
 				} else {
-					createEntity(goo, new Sphere(10, 10, 1+Math.random()), {mass:1}, [x,y,z]);
+					createEntity(goo, new Sphere(10, 10, 1+V.rng.nextFloat()), {mass:1}, [x,y,z]);
 				}
 			}
 		}
@@ -78,12 +73,6 @@ require([
 
 		goo.world.createEntity(new PointLight(), [0, 100, -10]).addToWorld();
 
-		var camScript = new OrbitCamControlScript({
-			domElement: goo.renderer.domElement,
-			spherical: new Vector3(40, 0, Math.PI/4)
-		});
-		goo.world.createEntity(new Camera(45, 1, 0.1, 1000), camScript).addToWorld();
-
 		/* shift center of gravity, felt kinda useless to me
 			var box = createEntity(goo, new Box(2, 2, 4), undefined, [0, 0.6, 0]);
 			var compound = goo.world.createEntity([0,7,0]);
@@ -106,10 +95,22 @@ require([
 			vehicleHelper.setSteeringValue( keys[37] * 0.3 + keys[39] * -0.3);
 			vehicleHelper.applyEngineForce( keys[38] * 1500 + keys[40] * -500, true);
 			vehicleHelper.updateWheelTransform();
-
-			camScript.lookAtPoint.set( chassis.transformComponent.transform.translation);
-			camScript.dirty = true;
 		});
+
+		var aboveCar = new Vector3();
+		var behindCar = new Vector3();
+		var camScriptObject = {};
+		camScriptObject.run = function(entity) {
+			var transform = chassis.transformComponent.transform;
+			var pos = transform.translation;
+			behindCar.setd(0,0,-16);
+			transform.rotation.applyPost(behindCar);
+			behindCar.addv(pos).add_d(0,15,0);
+			entity.transformComponent.transform.translation.lerp(behindCar,0.05);
+			entity.lookAt(aboveCar.setv(pos).add_d(0,1,0),Vector3.UNIT_Y);
+		};
+
+		goo.world.createEntity(new Camera(45, 1, 0.1, 1000), camScriptObject).addToWorld();
 	}
 
 	var texture = new TextureCreator().loadTexture2D('../../resources/goo.png');
@@ -123,6 +124,8 @@ require([
 		entity.addToWorld();
 		return entity;
 	}
+
+	var goo = V.initGoo();
 
 	init();
 });
