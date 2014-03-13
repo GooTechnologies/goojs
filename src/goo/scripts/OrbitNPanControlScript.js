@@ -84,7 +84,8 @@ function(
 
 	OrbitNPanControlScript.prototype = Object.create(OrbitCamControlScript.prototype);
 
- 	// REVIEW: missing JsDoc
+	// REVIEW: missing JsDoc
+	// POST-REVIEW Will soon be replaced by new script
 	OrbitNPanControlScript.prototype.updateConfig = function(properties) {
 		OrbitCamControlScript.prototype.updateConfig.call(this,properties);
 		this.goingToLookAt.setv(this.lookAtPoint);

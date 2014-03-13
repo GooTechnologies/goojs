@@ -132,6 +132,7 @@ function (
 	}
 
 	// REVIEW: JsDoc missing.
+	// POST-REVIEW This script will soon be replaced by the new scripts
 	OrbitCamControlScript.prototype.updateConfig = function (properties) {
 		for(var key in properties) {
 			if (typeof(_defaults[key]) === 'boolean') {
