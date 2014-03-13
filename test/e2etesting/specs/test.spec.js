@@ -61,11 +61,15 @@ describe('visual test', function () {
 
 			// Compare to the reference image
 			imgcompare.compare(pngPath,refPath,{
-				maxDist : 0.1,
-				maxSumSquares : 1e-8,
-			},function(err,result){
+				maxDist : 0.5,
+				maxSumSquares : 1e-7,
+			},function(err,result,stdout,stderr){
 				expect(err).toBeFalsy();
-				expect(result).toBeTruthy();
+				//expect(result).toBeTruthy();
+				if(!result){
+					// Only way to make custom message?
+					expect(stdout).toBeFalsy();
+				}
 
 				var severeLogEntries = [];
 				for(var j=0; j<shooter.browserLog.length; j++){

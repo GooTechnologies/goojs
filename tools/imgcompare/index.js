@@ -18,10 +18,10 @@ exports.compare = function(pathA,pathB,options,callback){
 
 	exec(cmd, function(err,stdout,stderr){
 		if(err && err.code == 1){
-			return callback && callback(null,false);
+			return callback && callback(null,false,stdout,stderr);
 		} else if(err)
 			return callback && callback(err);
 
-		if(callback) callback(null,true);
+		if(callback) callback(null,true,stdout,stderr);
 	});
 };
