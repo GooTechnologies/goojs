@@ -52,7 +52,7 @@ define([
 			var result = new Quaternion();
 			Quaternion.mul2(p,q,result);
 
-			//! schteppe:  How to check result?
+			//! schteppe: TODO: How to check result?
 			expect(result).toEqual(new Quaternion());
 		});
 
@@ -99,7 +99,7 @@ define([
 			var endQuat = new Quaternion(Math.sin(angle2),0,0,Math.cos(angle2));
 			var result = new Quaternion();
 
-			//! schteppe:  How to check ok?
+			//! schteppe: TODO: How to check ok?
 			Quaternion.slerp(startQuat,endQuat,0.5,result);
 		});
 
@@ -126,7 +126,7 @@ define([
 			var q = new Quaternion();
 			var m = new Matrix3x3();
 			q.fromRotationMatrix(m);
-			//! schteppe:  How to check ok?
+			//! schteppe: TODO: How to check ok?
 		});
 
 		it('can convert to rotation matrix', function(){
@@ -135,7 +135,7 @@ define([
 			q.toRotationMatrix(m);
 			expect(q.toRotationMatrix() instanceof Matrix3x3).toBeTruthy();
 
-			//! schteppe:  How to check ok?
+			//! schteppe: TODO: How to check ok?
 		});
 
 		it('can be set from vector to vector', function(){
@@ -143,7 +143,7 @@ define([
 			var u = new Vector3();
 			var v = new Vector3();
 			q.fromVectorToVector(u,v);
-			//! schteppe:  How to check ok?
+			//! schteppe: TODO: How to check ok?
 		});
 
 		it('can be normalized', function(){
