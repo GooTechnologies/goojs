@@ -2163,7 +2163,10 @@ define([
 			gaussBlurredImage1 : 'BLUR1',
 			gaussBlurredImage2 : 'BLUR2',
 			originalImage : 'ORIGINAL',
-			threshold : 0.01
+			threshold : 0.01,
+			edgeColor : [1.0, 0.0, 1.0, 1.0],
+			backgroundColor : [0.0, 0.0, 0.0, 1.0],
+			backgroundMix : 1.0
 		},
 		vshader : [
 		'attribute vec3 vertexPosition;',
@@ -2184,7 +2187,12 @@ define([
 		'uniform sampler2D gaussBlurredImage1;',
 		'uniform sampler2D gaussBlurredImage2;',
 		'uniform sampler2D originalImage;',
+
 		'uniform float threshold;',
+		'uniform float backgroundMix;',
+
+		'uniform vec4 edgeColor;',
+		'uniform vec4 backgroundColor;',
 
 		'varying vec2 texCoord0;',
 
@@ -2193,10 +2201,12 @@ define([
 		'	vec4 blur1 = texture2D(gaussBlurredImage1, texCoord0);',
 		'	vec4 blur2 = texture2D(gaussBlurredImage2, texCoord0);',
 		'	vec4 originalColor = texture2D(originalImage, texCoord0);',
-		'	vec3 col = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',
-		'	float value = (col.r + col.g + col.b) / 3.0;',
-		'	value = step(threshold, value);',
-		'	vec3 outputColor = mix(originalColor.rgb, vec3(value), value);',
+
+		'	vec3 nonEdgeColor = mix(originalColor.rgb, backgroundColor.rgb, backgroundMix);',
+		'	vec3 diffColor = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',
+		'	float edgeValue = (diffColor.r + diffColor.g + diffColor.b) / 3.0;',
+		'	edgeValue = smoothstep(0.0, threshold, edgeValue);',
+		'	vec3 outputColor = mix(nonEdgeColor, edgeColor.rgb, edgeValue);',
 		'	gl_FragColor = vec4(outputColor, 1.0);',
 		'}'//
 		].join('\n')
