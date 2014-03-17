@@ -7,6 +7,7 @@ define([
 	) {
 	'use strict';
 
+	// REVIEW Punctiform!?
 	/**
 	 * @class A punctiform source of light. So far it has the same effect as {@link Light}
 	 * @constructor
@@ -29,7 +30,7 @@ define([
 	/**
 	 * Updates the light's translation
 	 * @private
-	 * @param transform
+	 * @param {Transform} transform
 	 */
 	PointLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);

@@ -53,33 +53,29 @@ Note: If you get a TypeError on Windows when running the JSHint script, try doin
 Tests
 -----
 
-The tests use Jasmine (http://pivotal.github.com/jasmine/) and Testacular (http://vojtajina.github.com/testacular/).
+The tests use Jasmine (http://pivotal.github.com/jasmine/) and Karma (http://karma-runner.github.io/).
 
 
-### Testacular
+### Karma
 
-For testacular, the latest version is need (0.5.X) unless version >=0.6.0 has been released, install the canary build
+The simple way to run the tests is by running
 
-    npm install testacular@canary
+    grunt unittest
 
-(or `npm install -g testacular@canary`, to install globally.)
+This will start a browser and run all tests with Karma once. If you want to use the more convenient Karma server, continue with the following steps.
 
-To run testacular
+Install Karma by running
 
-     ./node_modules/.bin/testacular start test/testacular.conf.js
+    npm install karma -g
 
-or (if you have `make` installed) (DEPRECATED):
+To start the karma server, run
 
-    make test
+     karma start test/karma.conf.js
 
-or (if you have 'cake' installed):
-
-    cake testserver
-
-which will start the testacular server and remain idle watching for code or test changes.
+which will start the karma server and remain idle watching for code or test changes.
 You need to touch a file in src/ or test/ to trigger the tests.
 
-If you get the following error, Testacular didn't manage to start Chrome by itself.
+If you get the following error, Karma didn't manage to start Chrome by itself.
 
     error (launcher): Cannot start Chrome
             CreateProcessW: The system cannot find the path specified.
@@ -92,7 +88,7 @@ EITHER just open http://localhost:8080 manually in your browser.
 
 OR use the following command instead (adjusting the path if necessary):
 
-    testacular start --browsers="c:\Program Files (x86)\Google\Chrome\Application\chrome.exe" test/testacular.conf.js
+    karma start --browsers="c:\Program Files (x86)\Google\Chrome\Application\chrome.exe" test/karma.conf.js
 
 ### Jasmine
 
@@ -104,9 +100,7 @@ And then open http://localhost:8000/test/test.html
 
 ### Code Coverage
 
-Code coverage can be run using istanbul (https://github.com/gotwarlost/istanbul), which is built in to testacular. Every time the tests are run a code coverage result is saved into the folder `test-out/coverage/`, e.g. `test-out/coverage/Chrome\ 23.0\ \(Mac\)/lcov-report/index.html`.
-
-In order to use the output in Jenkins, convert the `lcov.info` file using the `lcov_cobertura.py` (https://github.com/eriwen/lcov-to-cobertura-xml) in the `tools` directory.
+Code coverage can be run using istanbul (https://github.com/gotwarlost/istanbul), which is built in to Karma. Every time the tests are run a code coverage result is saved into the folder `coverage/`, e.g. `coverage/Chrome 33.0.1750 (Mac OS X 10.9.2)/index.html`.
 
 JS Doc
 ------

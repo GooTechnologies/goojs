@@ -15,6 +15,9 @@ out/
 minified/
 output/
 
+# Created when running karma unittests
+coverage/
+
 # Created when minifying
 src/goo.js
 

@@ -3,6 +3,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BloomPass',
 	'goo/renderer/pass/BlurPass',
+	'goo/renderer/pass/DoGPass',
 	'goo/renderer/Util'
 ],
 /** @lends */
@@ -11,6 +12,7 @@ function(
 	FullscreenPass,
 	BloomPass,
 	BlurPass,
+	DoGPass,
 	Util
 ) {
 	'use strict';
@@ -80,6 +82,89 @@ function(
 			min: -100,
 			max: 100,
 			'default': 0
+		}
+	];
+
+	function DiffOfGaussians(id) {
+		DoGPass.call(this, arguments);
+		this.id = id;
+	}
+
+	DiffOfGaussians.prototype = Object.create(DoGPass.prototype);
+	DiffOfGaussians.prototype.constructor = DiffOfGaussians;
+
+	DiffOfGaussians.prototype.update = function(config) {
+		var options = config.options || {};
+
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+
+		if (options.sigma !== undefined) {
+			this.updateSigma(options.sigma);
+		}
+
+		if (options.threshold !== undefined) {
+			this.updateThreshold(options.threshold);
+		}
+
+		if (options.edgeColor !== undefined) {
+			this.updateEdgeColor(options.edgeColor);
+		}
+
+		if (options.backgroundColor !== undefined) {
+			this.updateBackgroundColor(options.backgroundColor);
+		}
+
+		if (options.backgroundMix !== undefined) {
+			this.updateBackgroundMix(options.backgroundMix);
+		}
+
+	};
+
+	DiffOfGaussians.label = 'Edge detect';
+	DiffOfGaussians.options = [
+		{
+			key: 'sigma',
+			name: 'Gauss Sigma',
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1.7,
+			decimals: 2,
+			'default': 0.6
+		},
+		{
+			key: 'threshold',
+			name: 'Threshold',
+			type: 'float',
+			control: 'slider',
+			min: 0.00000000000001,
+			max: 0.11,
+			decimals: 20,
+			'default': 0.005
+		},
+		{
+			key: 'backgroundMix',
+			name: 'Background %',
+			type: 'float',
+			control: 'slider',
+			min: 0.0,
+			max: 1.0,
+			decimals: 2,
+			'default': 0.0
+		},
+		{
+			key: 'edgeColor',
+			name: 'Edge Color',
+			type: 'color',
+			'default': [0.0, 1.0, 0.0]
+		},
+		{
+			key: 'backgroundColor',
+			name: 'Background Color',
+			type: 'color',
+			'default': [0.0, 0.0, 0.0]
 		}
 	];
 
@@ -637,6 +722,7 @@ function(
 		Colorify: Colorify,
 		Hatch: Hatch,
 		Dot: Dot,
-		Contrast: Contrast
+		Contrast: Contrast,
+		DiffOfGaussians: DiffOfGaussians
 	};
 });

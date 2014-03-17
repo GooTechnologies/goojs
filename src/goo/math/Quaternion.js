@@ -611,11 +611,11 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		}
 
 		var halfAngle = 0.5 * angle;
-		var sin = MathUtils.sin(halfAngle);
-		var w = MathUtils.cos(halfAngle);
-		var x = sin * axis.getX();
-		var y = sin * axis.getY();
-		var z = sin * axis.getZ();
+		var sin = Math.sin(halfAngle);
+		var w = Math.cos(halfAngle);
+		var x = sin * axis.x;
+		var y = sin * axis.y;
+		var z = sin * axis.z;
 		return this.set(x, y, z, w);
 	};
 
@@ -652,7 +652,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		if (this === o) {
 			return true;
 		}
-		if (!o instanceof Quaternion) {
+		if (!(o instanceof Quaternion)) {
 			return false;
 		}
 		return Math.abs(this.data[0] - o.data[0]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[1] - o.data[1]) < Quaternion.ALLOWED_DEVIANCE

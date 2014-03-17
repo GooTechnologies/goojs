@@ -1,14 +1,13 @@
 define(
 [
-	"goo/shapes/ShapeCreator",
-	"goo/shapes/Quad"
+	"goo/shapes/Quad",
 ], function(
-	ShapeCreator
+	Quad
 ) {
 	"use strict";
 
 	describe("Quad", function() {
-		var a = ShapeCreator.createQuad();
+		var a = new Quad();
 
 		it("Number of vertices and indices", function() {
 			expect(a.vertexCount).toEqual(4);
