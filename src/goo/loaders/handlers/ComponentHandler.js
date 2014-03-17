@@ -21,6 +21,7 @@ define([
 	 *
 	 */
 	function ComponentHandler(world, getConfig, updateObject, loadObject) {
+		//! schteppe: this._type seem to be assumed to be set by the subclass. Why not pass it as a parameter to this constructor?
 		this.world = world;
 		this.getConfig = getConfig;
 		this.updateObject = updateObject;
