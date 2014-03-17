@@ -55,7 +55,7 @@ function (
 	 */
 	Plane.prototype.reflectVector = function (unitVector, store) {
 		var result = store;
-		if (result === null) {
+		if (typeof(result) === 'undefined') {
 			result = new Vector3();
 		}
 

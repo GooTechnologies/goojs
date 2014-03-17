@@ -45,6 +45,7 @@ function (
 	/** 
 	* Vector3 representing Zero Axis: (0, 0, 0)
 	* @type {Vector3}
+	* @example
 	* var oldValue = new Vector3(5, 2, 1);
 	* oldValue.setv(Vector3.ZERO); // oldValue == (0, 0, 0)
 	*/

@@ -3,6 +3,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/RenderQueue',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -13,6 +14,7 @@ function(
 	Material,
 	Util,
 	ShaderLib,
+	RenderQueue,
 	RSVP,
 	PromiseUtil,
 	_
@@ -112,7 +114,11 @@ function(
 			material.flat = config.flat;
 			material.dualTransparency = config.dualTransparency;
 			if (config.renderQueue === -1) {
-				material.renderQueue = null;
+				if (config.blendState.blending !== 'NoBlending') {
+					material.renderQueue = RenderQueue.TRANSPARENT;
+				} else {
+					material.renderQueue = null;
+				}
 			} else {
 				material.renderQueue = config.renderQueue;
 			}
