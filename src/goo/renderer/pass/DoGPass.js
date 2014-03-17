@@ -30,19 +30,17 @@ define([
 		settings = settings || {};
 
 		this.target = settings.target !== undefined ? settings.target : null;
-		var width = settings.width !== undefined ? settings.width : 512;
-		var height = settings.height !== undefined ? settings.height : 512;
+		var width = settings.width !== undefined ? settings.width : 1024;
+		var height = settings.height !== undefined ? settings.height : 1024;
 		var sigma = settings.sigma !== undefined ? settings.sigma : 0.6;
 		var threshold = settings.threshold !== undefined ? settings.threshold : 0.005;
+		this.downsampleAmount = settings.downsampleAmount !== undefined ? Math.max(settings.downsampleAmount, 1) : 2;
 
 		if (sigma > 2.5) {
 			sigma = 2.5;
 		}
 
-		this.renderTargetX = new RenderTarget(width, height);
-
-		this.gaussian1 = new RenderTarget(width, height);
-		this.gaussian2 = new RenderTarget(width, height);
+		this.updateSize({width: width, height: height});
 
 		this.renderable = {
 			meshData : FullscreenUtil.quad,
@@ -56,6 +54,41 @@ define([
 		this.differenceShader.uniforms.threshold = threshold;
 		this.differenceMaterial = Material.createMaterial(this.differenceShader);
 
+		this.updateSigma(sigma);
+
+		this.enabled = true;
+		this.clear = false;
+		this.needsSwap = false;
+	}
+
+	DoGPass.prototype.updateThreshold = function(threshold) {
+		this.differenceMaterial.shader.uniforms.threshold = threshold;
+	};
+
+	DoGPass.prototype.updateEdgeColor = function(color) {
+		this.differenceMaterial.shader.uniforms.edgeColor = [color[0], color[1], color[2], 1.0];
+	};
+
+	DoGPass.prototype.updateBackgroundColor = function(color) {
+		this.differenceMaterial.shader.uniforms.backgroundColor = [color[0], color[1], color[2], 1.0];
+	};
+
+	DoGPass.prototype.updateBackgroundMix = function(amount) {
+		this.differenceMaterial.shader.uniforms.backgroundMix = amount;
+	};
+
+	DoGPass.prototype.updateSize = function(size) {
+		var sizeX = size.width / this.downsampleAmount;
+		var sizeY = size.height / this.downsampleAmount;
+		this.renderTargetX = new RenderTarget(sizeX, sizeY);
+		this.gaussian1 = new RenderTarget(sizeX, sizeY);
+		this.gaussian2 = new RenderTarget(sizeX, sizeY);
+
+		this.blurX = [0.5 / sizeX, 0.0];
+		this.blurY = [0.0, 0.5 / sizeY];
+	};
+
+	DoGPass.prototype.updateSigma = function(sigma) {
 		// Use a ratio between the sigmas of 1.6 to approximate the Laplacian of Gaussian [Marr–Hildreth].
 		// The max kernelsize is 2.5 , as implemented at this time in the convolutionShader, this means the max sigma to be used properly is 4.0
 		var kernel1 = this.convolutionShader1.buildKernel(sigma);
@@ -78,16 +111,10 @@ define([
 		this.convolutionShader1.uniforms.cKernel = kernel1;
 		this.convolutionShader2.uniforms.cKernel = kernel2;
 
-		this.blurX = [0.5 / width, 0.0];
-		this.blurY = [0.0, 0.5 / height];
-
 		this.convolutionMaterial1 = Material.createMaterial(this.convolutionShader1);
 		this.convolutionMaterial2 = Material.createMaterial(this.convolutionShader2);
 
-		this.enabled = true;
-		this.clear = false;
-		this.needsSwap = false;
-	}
+	};
 
 	DoGPass.prototype.render = function(renderer, writeBuffer, readBuffer) {
 
