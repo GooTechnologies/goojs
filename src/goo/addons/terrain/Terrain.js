@@ -57,6 +57,7 @@ function(
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.count = count;
+		this.splatMult = 2;
 
 		var brush = ShapeCreator.createQuad(2/size,2/size);
 	
@@ -129,12 +130,12 @@ function(
 		this.gridSize = (this.n + 1) * 4 - 1;
 		console.log('grid size: ', this.gridSize);
 
-		this.splat = new RenderTarget(this.size * 2, this.size * 2, {
+		this.splat = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
 				generateMipmaps: false,
 		});
-		this.splatCopy = new RenderTarget(this.size * 2, this.size * 2, {
+		this.splatCopy = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
 				generateMipmaps: false,
@@ -219,7 +220,7 @@ function(
 			wrapT: 'EdgeClamp',
 			generateMipmaps: false,
 			flipY: false
-		}, this.size * 2, this.size * 2);
+		}, this.size * this.splatMult, this.size * this.splatMult);
 
 		for (var i = 0; i < this.count; i++) {
 			var material = this.clipmaps[i].origMaterial;
@@ -416,7 +417,7 @@ function(
 
 		var splatBuffer = new Uint8Array(this.size * this.size * 4 * 4);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splat);
-		this.renderer.readPixels(0, 0, this.size * 2, this.size * 2, splatBuffer);
+		this.renderer.readPixels(0, 0, this.size * this.splatMult, this.size * this.splatMult, splatBuffer);
 
 		return {
 			heights: terrainFloats,
