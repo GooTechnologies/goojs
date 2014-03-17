@@ -17,12 +17,19 @@ function(
 		/** Material name
 		 * @type {string}
 		 */
+		// REVIEW How about this.name = 'Default Material' and skip line 48
 		this.name = null;
 		/** [Shader]{@link Shader} to use when rendering
 		 * @type {Shader}
 		 */
 		this.shader = null;
 
+		/* REVIEW
+		 * If we want the two signatures, it would probably be cleaner to use arguments
+		 * if (typeof arguments[0] === 'string) {
+		 *  this.name = arguments[0];
+		 * }
+		 */
 		//! AT: horrendous type checking follows
 		// function has 2 signatures because the deprecated .createMaterial had parameters in inverse order
 		if (typeof name === 'string') {
@@ -47,8 +54,11 @@ function(
 
 		// Texture storage
 		this._textureMaps = {};
-
-		/** Specification of colors for this Material
+		/* REVIEW
+		 * There was an idea to specify and jsdoc uniforms.materialDiffuse etc instead,
+		 * since those are the ones we use now
+		 */
+		/* Specification of colors for this Material
 		 * @type {Object}
 		 * @property {number[]} ambient The ambient color, [r, g, b, a]
 		 * @property {number[]} diffuse The diffuse color, [r, g, b, a]

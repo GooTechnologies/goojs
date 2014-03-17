@@ -518,6 +518,8 @@ function (
 
 	function setupDefaultCallbacks(defaultCallbacks) {
 		//! AT: can't Matrix4x4.IDENTITY be used instead of creating this every time?
+		// REVIEW Yes, although this is only called once
+		// So more of a code cleanup then a performance gain
 		var IDENTITY_MATRIX = new Matrix4x4();
 
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {

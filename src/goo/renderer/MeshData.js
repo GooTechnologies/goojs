@@ -52,9 +52,9 @@ function (
 
 	/**
 	 * Rebuilds the mesh vertex and index data
-	 * @param vertexCount
-	 * @param indexCount
-	 * @param saveOldData
+	 * @param {number} vertexCount
+	 * @param {number} indexCount
+	 * @param {boolean} saveOldData
 	 */
 	MeshData.prototype.rebuildData = function (vertexCount, indexCount, saveOldData) {
 		var savedAttributes = {};
@@ -94,7 +94,7 @@ function (
 	/**
 	 * Rebuilds the vertex data of a mesh
 	 * @private
-	 * @param vertexCount
+	 * @param {number} vertexCount
 	 */
 	MeshData.prototype.rebuildVertexData = function (vertexCount) {
 		if (!isNaN(vertexCount)) {
@@ -116,7 +116,7 @@ function (
 	/**
 	 * Rebuilds the index data
 	 * @private
-	 * @param indexCount
+	 * @param {number} indexCount
 	 */
 	MeshData.prototype.rebuildIndexData = function (indexCount) {
 		if (indexCount !== undefined) {
