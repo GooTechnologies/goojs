@@ -35,9 +35,11 @@ define([
 				var ret = EntityManager.prototype.getEntityById.apply(this, arguments);
 				return new EntitySelection(ret); // just entity
 			}.bind(this),
-			name: function () {
-				var ret = EntityManager.prototype.getEntityByName.apply(this, arguments);
-				return new EntitySelection(ret); // just entity
+			name: function (name) {
+				var entities = this.getEntities();
+				return new EntitySelection(entities.filter(function (entity) {
+					return entity.name === name;
+				}));
 			}.bind(this)
 		};
 	}
