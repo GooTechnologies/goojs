@@ -18,7 +18,9 @@ define([
 	'goo/scripts/newwave/OrbitCamControlScript',
 	'goo/scripts/newwave/PanCamScript',
 	'goo/scripts/newwave/OrbitNPanControlScript',
-	'goo/scripts/newwave/WASDScript'
+	'goo/scripts/newwave/WASDScript',
+	'goo/scripts/newwave/FlyControlScript',
+	'goo/scripts/newwave/MouseLookScript'
 ],
 /** @lends */
 function(

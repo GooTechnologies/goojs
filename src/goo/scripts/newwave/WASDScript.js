@@ -1,4 +1,4 @@
-require([
+define([
 	'goo/math/Vector3',
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils'
@@ -195,4 +195,6 @@ require([
 		};
 	};
 	Scripts.register(externals, WASDControlScript);
+
+	return WASDControlScript;
 });
