@@ -146,16 +146,16 @@ function(
 
 			var pan = (event.targetTouches.length === 2);
 			var orbit = (event.targetTouches.length === 1);
-			that.updateButtonState(Button.MIDDLE, pan);
-			that.updateButtonState(Button.RIGHT, orbit);
+			that.updateButtonState(that.panButton, pan);
+			that.updateButtonState(that.orbitButton, orbit);
 		});
 		this.domElement.addEventListener('touchend', function(event) {
 			if (!that.active) { return; }
 
 			var pan = (event.targetTouches.length === 2);
 			var orbit = (event.targetTouches.length === 1);
-			that.updateButtonState(Button.MIDDLE, pan);
-			that.updateButtonState(Button.RIGHT, orbit);
+			that.updateButtonState(that.panButton, pan);
+			that.updateButtonState(that.orbitButton, orbit);
 		});
 		var oldDistance = 0;
 		this.domElement.addEventListener('touchmove', function(event) {
