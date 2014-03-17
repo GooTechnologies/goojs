@@ -1,7 +1,7 @@
 define([
 	'goo/scripts/Scripts',
 	'goo/math/Vector3',
-	'goo/math/MathUtils',
+	'goo/math/MathUtils'
 ], function(
 	Scripts,
 	Vector3,
@@ -56,11 +56,14 @@ define([
 		var buttonPressed = false;
 		var lastX, lastY, x, y;
 		var angles;
+		var button;
 
 		function mouseDown(e) {
-			buttonPressed = true;
-			lastX = x = e.clientX;
-			lastY = y = e.clientY;
+			if (button === -1 || e.button === button) {
+				buttonPressed = true;
+				lastX = x = e.clientX;
+				lastY = y = e.clientY;
+			}
 		}
 		function mouseMove(e) {
 			if (buttonPressed) {
@@ -68,11 +71,16 @@ define([
 				y = e.clientY;
 			}
 		}
-		function mouseUp(e) {
+		function mouseUp() {
 			buttonPressed = false;
 		}
 
 		function setup(parameters, environment) {
+			button = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.button) - 1;
+			if (button < -1) {
+				button = -1;
+			}
+
 			var domElement = environment.domElement;
 			domElement.addEventListener('mousedown', mouseDown);
 			domElement.addEventListener('mousemove', mouseMove);
@@ -82,7 +90,7 @@ define([
 			angles = new Vector3();
 		}
 		function update(parameters, environment) {
-			if (x == lastX && y == lastY) {
+			if (x === lastX && y === lastY) {
 				return;
 			}
 			var deltaX = x - lastX;
@@ -90,10 +98,10 @@ define([
 			var entity = environment.getEntity();
 			var rotation = entity.transformComponent.transform.rotation;
 			rotation.toAngles(angles);
-			
+
 			var pitch = angles.data[0];
 			var yaw = angles.data[1];
-			
+
 			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
 			pitch = MathUtils.clamp(pitch + deltaY * parameters.speed / 200, minAscent, maxAscent);
@@ -102,8 +110,7 @@ define([
 			entity.transformComponent.setUpdated();
 			lastX = x;
 			lastY = y;
-			
-			
+
 		}
 		function cleanup(parameters, environment) {
 			var domElement = environment.domElement;
