@@ -100,6 +100,11 @@ define([
 					meshRef: this.mesh().id,
 					poseRef: this.skeleton().id
 				};
+			},
+			quad: function() {
+				return {
+					materialRef: this.material().id,
+				};
 			}
 		},
 		attachChild: function(parent, child) {

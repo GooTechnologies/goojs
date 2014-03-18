@@ -1,21 +1,25 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/MeshRendererComponent',
+	'goo/shapes/Quad',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/QuadComponent'
 ],
 /** @lends */
 function(
 	ComponentHandler,
-	MeshRendererComponent,
+	Quad,
 	Material,
 	ShaderLib,
 	RSVP,
-	pu,
-	_
+	PromiseUtil,
+	_,
+	MeshDataComponent,
+	QuadComponent
 ) {
 	"use strict";
 
@@ -37,7 +41,7 @@ function(
 	QuadComponentHandler.prototype.constructor = QuadComponentHandler;
 	ComponentHandler._registerClass('quad', QuadComponentHandler);
 
-	QuadComponentHandler.DEFAULT_MATERIAL = Material.createMaterial(ShaderLib.uber, 'Default material');
+	QuadComponentHandler.DEFAULT_MATERIAL = new Material(ShaderLib.uber, 'Default material');
 
 	/**
 	 * Prepare component. Set defaults on config here.
@@ -51,12 +55,12 @@ function(
 	};
 
 	/**
-	 * Create a QuadComponent.
-	 * @returns {QuadComponent} the created component object
+	 * Create a quadcomponent object.
+	 * @returns {object} the created component object
 	 * @private
 	 */
 	QuadComponentHandler.prototype._create = function() {
-		return new MeshRendererComponent();
+		return new QuadComponent(new Quad(), new Material());
 	};
 
 	/**
@@ -68,30 +72,21 @@ function(
 	 */
 	 QuadComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
-
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
 
-			// Materials - ???
-			var materials = config.materials;
-			if(!materials || !Object.keys(materials).length) {
-				var selectionMaterial = component.materials.filter(function(material) {
-					return material.name === 'gooSelectionIndicator';
-				});
-				component.materials = [QuadComponentHandler.DEFAULT_MATERIAL].concat(selectionMaterial);
+			// Materials
+			var materialRef = config.materialRef;
+			if(!materialRef) {
+				// No material ref given, set default
+				component.material = QuadComponentHandler.DEFAULT_MATERIAL;
 				return component;
 			}
 
-			var promises = [];
-			_.forEach(materials, function(item) {
-				promises.push(that._load(item.materialRef, options));
-			}, null, 'sortValue');
+			var promises = [that._load(config.materialRef, options)];
 
 			return RSVP.all(promises).then(function(materials) {
-				var selectionMaterial = component.materials.filter(function(material) {
-					return material.name === 'gooSelectionIndicator';
-				});
-				component.materials = materials.concat(selectionMaterial);
+				component.material = materials[0];
 				return component;
 			});
 		});

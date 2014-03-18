@@ -59,6 +59,7 @@ define([
 	//'test/loaders/handlers/MaterialHandler-test',
 	//'test/loaders/handlers/TextureHandler-test',
 	'test/loaders/handlers/MeshRendererComponentHandler-test',
+	'test/loaders/handlers/QuadComponentHandler-test',
 	'test/loaders/handlers/MeshDataComponentHandler-test',
 	'test/loaders/handlers/MeshDataHandler-test',
 	'test/loaders/handlers/SceneHandler-test',
