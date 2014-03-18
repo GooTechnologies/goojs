@@ -17,7 +17,7 @@ define([
 				y: 0
 			};
 
-			entity = env.getEntity();
+			entity = env.entity;
 
 			document.addEventListener('mousemove', onMouseMove);
 		}

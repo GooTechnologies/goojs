@@ -72,11 +72,11 @@ function (
 	ScriptComponent.prototype.run = function (entity) {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			if (script && script.run && (script.enabled === undefined || script.enabled || script.active)) {
+			if (script && script.run && (script.enabled === undefined || script.enabled)) {
 				try {
 					script.run(entity, entity._world.tpf, script.environment, script.parameters);
 				} catch (e) {}
-			} else if (script.update && (script.enabled === undefined || script.enabled || script.active)) {
+			} else if (script.update && (script.enabled === undefined || script.enabled)) {
 				try {
 					script.update(script.parameters, script.environment);
 				} catch (e) {}
