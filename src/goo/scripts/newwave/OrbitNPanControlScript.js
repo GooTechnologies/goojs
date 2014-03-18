@@ -53,7 +53,7 @@ define([
 	OrbitNPan.externals = {
 		name: 'OrbitNPanControlScript',
 		description: 'This is a combo of orbitcamcontrolscript and pancamcontrolscript',
-		parameters:	orbitParams.concat(panParams)
+		parameters:	params
 	};
 
 	return OrbitNPan;

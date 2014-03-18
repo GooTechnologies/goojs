@@ -31,6 +31,7 @@ define([
 		var maxSampleTimeMS;
 		var domElement;
 		var dragButton;
+		var zoomDistanceFactor = 0.035;
 
 		function setup(parameters, environment) {
 			domElement = environment.domElement;
@@ -38,6 +39,9 @@ define([
 			if (dragButton < -1) {
 				dragButton = -1;
 			}
+			// Making more linear perception
+			environment.smoothness = Math.pow(MathUtils.clamp(parameters.smoothness, 0, 1), 0.3);
+			environment.inertia = Math.pow(MathUtils.clamp(parameters.drag, 0, 1), 0.3);
 
 			timeSamples = [0, 0, 0, 0, 0];
 			xSamples = [0, 0, 0, 0, 0];
@@ -71,7 +75,7 @@ define([
 				environment.domElement.focus();
 			}
 
-			if (parameters.dragOnly && (dragButton === -1 || dragButton === buttonIndex)) {
+			if (dragButton === -1 || dragButton === buttonIndex) {
 				mouseState.buttonDown = down;
 				if (down) {
 					mouseState.lastX = NaN;
@@ -97,7 +101,7 @@ define([
 				mouseState.lastY = mouseY;
 			}
 
-			if (parameters.dragOnly && !mouseState.buttonDown || dx === 0 && dy === 0) {
+			if (!mouseState.buttonDown || dx === 0 && dy === 0) {
 				return;
 			}
 
@@ -111,7 +115,7 @@ define([
 			}
 
 			velocity.set(0, 0);
-			move(parameters.turnSpeedHorizontal * dx, parameters.turnSpeedVertical * dy, parameters, environment);
+			move(parameters.orbitSpeed * dx, parameters.orbitSpeed * dy, parameters, environment);
 		}
 
 		// Should be moved to mathUtils?
@@ -131,8 +135,8 @@ define([
 		}
 
 		function move(x, y, parameters, environment) {
-			var azimuthAccel = parameters.invertedX ? -x : x;
-			var thetaAccel = parameters.invertedY ? -y : y;
+			var azimuthAccel = x;
+			var thetaAccel = y;
 
 			// update our master spherical coords, using x and y movement
 			if (parameters.clampAzimuth) {
@@ -149,13 +153,12 @@ define([
 		}
 
 		function applyWheel(e, parameters, environment) {
-			var delta = (parameters.invertedWheel ? -1 : 1) * Math.max(-1, Math.min(1, e.wheelDelta || -e.detail));
-			delta *= parameters.zoomDistanceFactor * targetSpherical.x;
+			var delta =  Math.max(-1, Math.min(1, -e.wheelDelta || e.detail));
+			delta *= zoomDistanceFactor * targetSpherical.x;
 			zoom(parameters.zoomSpeed * delta, parameters, environment);
 		}
 
-		function zoom(percent, parameters, environment) {
-			var amount = percent * parameters.baseDistance;
+		function zoom(amount, parameters, environment) {
 			targetSpherical.x = MathUtils.clamp(targetSpherical.x + amount, parameters.minZoomDistance, parameters.maxZoomDistance);
 			environment.dirty = true;
 		}
@@ -173,8 +176,8 @@ define([
 			}
 			if (found) {
 				velocity.set(
-					dx * parameters.turnSpeedHorizontal / timeSamples.length,
-					dy * parameters.turnSpeedVertical / timeSamples.length
+					dx * parameters.orbitSpeed / timeSamples.length,
+					dy * parameters.orbitSpeed / timeSamples.length
 				);
 			} else {
 				velocity.set(0, 0);
@@ -263,7 +266,8 @@ define([
 		function updateVelocity (time, parameters, environment) {
 			if (velocity.lengthSquared() > 0.000001) {
 				move(velocity.x, velocity.y, parameters, environment);
-				velocity.mul(MathUtils.clamp(MathUtils.lerp(time, 1.0, 1.0 - parameters.drag), 0.0, 1.0));
+				var rate = MathUtils.lerp(environment.inertia, 0, 1 - time / environment.inertia);
+				velocity.mul(rate);
 			} else {
 				velocity.set(0, 0, 0);
 			}
@@ -284,7 +288,9 @@ define([
 				return; //
 			}
 
-			var delta = MathUtils.clamp(parameters.interpolationSpeed * entity._world.tpf, 0.0, 1.0);
+			var delta = MathUtils.lerp(environment.smoothness, 1, environment.world.tpf);
+
+			//var delta = MathUtils.clamp(parameters.interpolationSpeed * environment.world.tpf, 0.0, 1.0);
 
 			if (parameters.clampAzimuth) {
 				spherical.y = MathUtils.lerp(delta, spherical.y, targetSpherical.y);
@@ -340,26 +346,6 @@ define([
 			'default': true,
 			type: 'boolean'
 		}, {
-			key: 'turnSpeedHorizontal',
-			'default': 0.005,
-			type: 'float',
-			min: 0.001
-		}, {
-			key: 'turnSpeedVertical',
-			'default': 0.005,
-			type: 'float',
-			min: 0.001
-		}, {
-			key: 'zoomSpeed',
-			'default': 0.2,
-			type: 'float',
-			min: 0.01
-		}, {
-			key: 'dragOnly',
-			description: 'Only move the camera when dragging',
-			'default': true,
-			type: 'boolean'
-		}, {
 			key: 'dragButton',
 			description: 'Button to enable dragging',
 			'default': 'Any',
@@ -367,10 +353,31 @@ define([
 			type: 'string',
 			control: 'select'
 		}, {
-			key: 'baseDistance',
-			'default': 15,
+			key: 'orbitSpeed',
+			'default': 0.005,
 			type: 'float',
-			min: 1
+			scale: 0.001,
+			decimals: 3
+		}, {
+			key: 'zoomSpeed',
+			'default': 1.0,
+			type: 'float',
+			scale: 0.1
+		}, {
+			key: 'drag',
+			name: 'Inertia',
+			'default': 0.9,
+			type: 'float',
+			control: 'slider',
+			min: 0,
+			max: 1.0
+		}, {
+			key: 'smoothness',
+			'default': 0.9,
+			type: 'float',
+			min: 0,
+			max: 1,
+			control: 'slider'
 		}, {
 			key: 'minZoomDistance',
 			'default': 1,
@@ -418,55 +425,16 @@ define([
 			min: 0,
 			max: 360
 		}, {
-			key: 'releaseVelocity',
-			'default': true,
-			type: 'boolean'
-		}, {
-			key: 'invertedX',
-			'default': false,
-			type: 'boolean'
-		}, {
-			key: 'invertedY',
-			'default': false,
-			type: 'boolean'
-		}, {
-			key: 'invertedWheel',
-			'default': true,
-			type: 'boolean'
-		}, {
-			key: 'drag',
-			'default': 5.0,
-			type: 'int'
-		}, {
 			key: 'lookAtPoint',
 			description: 'The point to orbit around',
 			'default': [0, 0, 0],
 			type: 'vec3'
 		}, {
 			key: 'spherical',
+			name: 'Start Point',
 			description: 'The initial position of the camera given in spherical coordinates (r, theta, phi). Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis.',
 			'default': [15, 0, 0],
 			type: 'vec3'
-		}, {
-			key: 'interpolationSpeed',
-			'default': 7,
-			type: 'int',
-			min: 1,
-			max: 80
-		}, {
-			key: 'zoomDistanceFactor',
-			'default': 0.035,
-			type: 'float',
-			control: 'slider',
-			min: 0.01,
-			max: 1
-		}, {
-			key: 'detailZoom',
-			'default': 0.15,
-			type: 'float',
-			control: 'slider',
-			min: 0.01,
-			max: 1
 		}]
 	};
 

@@ -122,7 +122,7 @@ define([
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);
 
-				calcVector.scale(parameters.scale / 500);
+				calcVector.scale(parameters.panSpeed);
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
 			}
@@ -157,25 +157,12 @@ define([
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
-		},{
-			key: 'scale',
-			name: 'Amount',
+		}, {
+			key: 'panSpeed',
 			type: 'float',
-			control: 'slider',
-			min: 1,
-			max: 1000,
-			exponential: true,
-			'default': 3
-		},{
-			key: 'invertX',
-			name: 'Invert X',
-			type: 'boolean',
-			'default': false
-		},{
-			key: 'invertY',
-			name: 'Invert Y',
-			type: 'boolean',
-			'default': false
+			'default': 0.005,
+			scale: 0.001,
+			decimals: 3
 		}]
 	};
 
