@@ -1,21 +1,25 @@
 define([
 	'goo/entities/components/Component',
-	'goo/renderer/MeshData'
+	'goo/renderer/MeshData',
+	'goo/shapes/Quad',
+	'goo/entities/components/MeshDataComponent'
 ],
 /** @lends */
 function (
 	Component,
-	MeshData
+	MeshData,
+	Quad,
+	MeshDataComponent
 ) {
 	'use strict';
 
 	/**
-	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.
-	 * @param {MeshData} meshData Target mesh data for this component.
+	 * @class Quad component that holds mesh and a material.
 	 */
-	function QuadComponent(meshData,material) {
+	function QuadComponent(material) {
 		this.type = 'QuadComponent';
-		this.meshData = meshData;
+		this.meshData = new Quad();
+		this.meshDataComponent = new MeshDataComponent(this.meshData);
 		this.material = material;
 	}
 
@@ -29,6 +33,10 @@ function (
 		//TODO
 	};
 	*/
+
+	QuadComponent.prototype.attached = function(entity){
+		entity.setComponent(this.meshDataComponent);
+	};
 
 	return QuadComponent;
 });
