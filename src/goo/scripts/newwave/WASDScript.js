@@ -109,6 +109,7 @@ define([
 
 		function update(parameters, environment) {
 			if (moveVector.equals(Vector3.ZERO)) { return; }
+			if (parameters.whenUsed && environment.entity !== environment.currentCameraEntity) { return; }
 
 			// direction of movement in local coords
 			calcVector.set(
@@ -153,6 +154,10 @@ define([
 		name: 'WASD',
 		description: 'Enables moving via the WASD keys',
 		parameters: [{
+			key: 'whenUsed',
+			type: 'boolean',
+			'default': true
+		}, {
 			key: 'crawlKey',
 			type: 'key',
 			'default': 'Shift'

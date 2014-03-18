@@ -14,18 +14,24 @@ define([
 		var lastX, lastY, x, y;
 		var angles;
 		var button;
+		var _environment;
+		var _parameters;
 
 		function mouseDown(e) {
-			if (button === -1 || e.button === button) {
-				buttonPressed = true;
-				lastX = x = e.clientX;
-				lastY = y = e.clientY;
+			if (!_environment.whenUsed || _environment.entity === _environment.currentCameraEntity) {
+				if (button === -1 || e.button === button) {
+					buttonPressed = true;
+					lastX = x = e.clientX;
+					lastY = y = e.clientY;
+				}
 			}
 		}
 		function mouseMove(e) {
-			if (buttonPressed) {
-				x = e.clientX;
-				y = e.clientY;
+			if (!_environment.whenUsed || _environment.entity === _environment.currentCameraEntity) {
+				if (buttonPressed) {
+					x = e.clientX;
+					y = e.clientY;
+				}
 			}
 		}
 		function mouseUp() {
@@ -33,11 +39,12 @@ define([
 		}
 
 		function setup(parameters, environment) {
+			_environment = environment;
+			_parameters = parameters;
 			button = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.button) - 1;
 			if (button < -1) {
 				button = -1;
 			}
-
 			var domElement = environment.domElement;
 			domElement.addEventListener('mousedown', mouseDown);
 			domElement.addEventListener('mousemove', mouseMove);
@@ -89,6 +96,11 @@ define([
 		description: 'Click and drag to change rotation of entity, usually a camera',
 		parameters: [
 			{
+				key: 'whenUsed',
+				type: 'boolean',
+				'default': true
+			},
+			{
 				key: 'button',
 				name: 'Mouse button',
 				type: 'string',
@@ -98,7 +110,7 @@ define([
 			},
 			{
 				key: 'speed',
-				name: 'Speed',
+				name: 'Turn Speed',
 				type: 'float',
 				control: 'slider',
 				'default': 1.0,

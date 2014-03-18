@@ -53,6 +53,7 @@ define([
 			spherical.data[1] *= MathUtils.DEG_TO_RAD;
 			spherical.data[2] *= MathUtils.DEG_TO_RAD;
 			environment.lookAtPoint = lookAtPoint = new Vector3(parameters.lookAtPoint);
+			environment.goingToLookAt = new Vector3(lookAtPoint);
 
 			environment.targetSpherical = targetSpherical = new Vector3(spherical);
 			cartesian = new Vector3();
@@ -280,6 +281,13 @@ define([
 
 			var transform = transformComponent.transform;
 
+			var delta = MathUtils.lerp(environment.smoothness, 1, environment.world.tpf);
+
+			if (!environment.goingToLookAt.equals(environment.lookAtPoint)) {
+				environment.lookAtPoint.lerp(environment.goingToLookAt, delta);
+				environment.dirty = true;
+			}
+
 			if (parameters.releaseVelocity) {
 				updateVelocity(entity._world.tpf, parameters, environment);
 			}
@@ -288,7 +296,6 @@ define([
 				return; //
 			}
 
-			var delta = MathUtils.lerp(environment.smoothness, 1, environment.world.tpf);
 
 			//var delta = MathUtils.clamp(parameters.interpolationSpeed * environment.world.tpf, 0.0, 1.0);
 

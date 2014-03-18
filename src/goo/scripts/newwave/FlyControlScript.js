@@ -35,11 +35,12 @@ define([
 
 	var wasdParams = WASDScript.externals.parameters;
 	var mouseLookParams = MouseLookScript.externals.parameters;
+	var params = wasdParams.concat(mouseLookParams.slice(1));
 
 	FlyControlScript.externals = {
 		name: 'FlyControlScript',
 		description: 'This is a combo of WASDscript and mouselookscript',
-		parameters: wasdParams.concat(mouseLookParams)
+		parameters: params
 	};
 
 	return FlyControlScript;

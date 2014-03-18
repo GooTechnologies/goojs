@@ -24,7 +24,7 @@ define([
 			if (panButton < -1) {
 				panButton = -1;
 			}
-			lookAtPoint = environment.lookAtPoint;
+			lookAtPoint = environment.goingToLookAt;
 			fwdVector = new Vector3(Vector3.UNIT_Y);
 			leftVector = new Vector3(Vector3.UNIT_X).invert();
 			moveVector = new Vector3();
