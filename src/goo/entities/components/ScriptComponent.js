@@ -1,11 +1,13 @@
 define([
 	'goo/entities/components/Component',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function (
 	Component,
-	SystemBus
+	SystemBus,
+	_
 	) {
 	'use strict';
 
@@ -36,23 +38,18 @@ function (
 	 * @private
 	 * @param entity
 	 */
-	ScriptComponent.prototype.setup = function (entity, env) {
-		var commonEnvironment = {
-			getEntity: function () {
-				return entity;
-			},
-			getSystemBus: function () {
-				return SystemBus;
-			},
-			domElement: env.domElement,
-			viewportWidth: env.viewportWidth,
-			viewportHeight: env.viewportHeight
-		};
+	ScriptComponent.prototype.setup = function (entity) {
+		var systemEnvironment = entity._world.getSystem('ScriptSystem').environment;
+		var componentEnvironment = Object.create(systemEnvironment);
+		_.extend(componentEnvironment, {
+			entity: entity
+		});
 
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
+			var scriptEnvironment = Object.create(componentEnvironment);
 
-			script.environment = commonEnvironment;
+			script.environment = scriptEnvironment;
 
 			if (script.setup) {
 				script.setup(script.parameters, script.environment);
@@ -72,12 +69,12 @@ function (
 	 * @param tpf {number}
 	 * @param environment
 	 */
-	ScriptComponent.prototype.run = function (entity, tpf, environment) {
+	ScriptComponent.prototype.run = function (entity) {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script && script.run && (script.enabled === undefined || script.enabled || script.active)) {
 				try {
-					script.run(entity, tpf, environment, script.parameters);
+					script.run(entity, entity._world.tpf, script.environment, script.parameters);
 				} catch (e) {}
 			} else if (script.update && (script.enabled === undefined || script.enabled || script.active)) {
 				try {
@@ -109,7 +106,7 @@ function (
 	 * @returns {boolean}
 	 */
 	ScriptComponent.applyOnEntity = function (obj, entity) {
-		if (obj instanceof Function || (obj && obj.run instanceof Function)) {
+		if (obj instanceof Function || (obj && obj.run instanceof Function) || (obj && obj.update instanceof Function)) {
 			var scriptComponent;
 			if (!entity.scriptComponent) {
 				scriptComponent = new ScriptComponent();
@@ -117,7 +114,7 @@ function (
 			} else {
 				scriptComponent = entity.scriptComponent;
 			}
-			scriptComponent.scripts.push(obj.run instanceof Function ? obj : { run: obj });
+			scriptComponent.scripts.push(obj.run instanceof Function || obj.update instanceof Function ? obj : { run: obj });
 
 			return true;
 		}

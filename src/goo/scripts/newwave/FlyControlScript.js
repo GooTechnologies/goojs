@@ -1,21 +1,14 @@
 define([
 	'goo/scripts/Scripts',
-
 	'goo/scripts/newwave/WASDScript',
 	'goo/scripts/newwave/MouseLookScript'
 ], function(
-	Scripts
+	Scripts,
+	WASDScript,
+	MouseLookScript
 ) {
 	'use strict';
 
-	var wasdParams = Scripts.getScript('WASD').externals.parameters;
-	var mouseLookParams = Scripts.getScript('MouseLookScript').externals.parameters;
-	
-	var externals = {
-		name: 'FlyControlScript',
-		description: 'This is a combo of WASDscript and mouselookscript',
-		parameters: wasdParams.concat(mouseLookParams)
-	};
 
 	function FlyControlScript() {
 		var wasdScript = Scripts.create('WASD');
@@ -36,12 +29,18 @@ define([
 		return {
 			setup: setup,
 			cleanup: cleanup,
-			update: update,
-			externals: externals
+			update: update
 		};
 	}
 
-	Scripts.register(externals, FlyControlScript);
+	var wasdParams = WASDScript.externals.parameters;
+	var mouseLookParams = MouseLookScript.externals.parameters;
+
+	FlyControlScript.externals = {
+		name: 'FlyControlScript',
+		description: 'This is a combo of WASDscript and mouselookscript',
+		parameters: wasdParams.concat(mouseLookParams)
+	};
 
 	return FlyControlScript;
 });

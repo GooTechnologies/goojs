@@ -93,7 +93,7 @@ function (
 		this.renderer = new Renderer(parameters);
 
 		// do this is a method called setupSystems
-		this.world.setSystem(new ScriptSystem(this.renderer));
+		this.world.setSystem(new ScriptSystem(this.world));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new CSSTransformSystem(this.renderer)); // Go away!

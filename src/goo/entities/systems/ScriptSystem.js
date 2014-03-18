@@ -1,19 +1,36 @@
-define(['goo/entities/systems/System'],
+define([
+	'goo/entities/systems/System',
+	'goo/entities/SystemBus',
+	'goo/util/ObjectUtil',
+	'goo/scripts/ScriptRegister'
+],
 	/** @lends */
-	function (System) {
-	"use strict";
+	function (
+		System,
+		SystemBus,
+		_
+	) {
+	'use strict';
 
 	/**
 	 * @class Processes all entities with script components, running the scripts where applicable
 	 */
-	function ScriptSystem(renderer) {
+	function ScriptSystem(world) {
 		System.call(this, 'ScriptSystem', ['ScriptComponent']);
-		this.renderer = renderer;
+		this._world = world;
+		var renderer = this._world.gooRunner.renderer;
+		// General world environment
 		this.environment = {
-			domElement: this.renderer.domElement,
-			viewportWidth: this.renderer.viewportWidth,
-			viewportHeight: this.renderer.viewportHeight
+			domElement: renderer.domElement,
+			viewportWidth: renderer.viewportWidth,
+			viewportHeight: renderer.viewportHeight,
+			world: world,
+			SystemBus: SystemBus,
+			activeCameraEntity: null
 		};
+		SystemBus.addListener('goo.setCurrentCamera', function(data) {
+			this.environment.activeCameraEntity = data.entity;
+		}.bind(this));
 		this.manualSetup = false;
 
 		this.priority = 500;
@@ -23,15 +40,19 @@ define(['goo/entities/systems/System'],
 
 	ScriptSystem.prototype.inserted = function (entity) {
 		if (!this.manualSetup) {
-			entity.scriptComponent.setup(entity, this.environment);
+			entity.scriptComponent.setup(entity);
 		}
 	};
 
 	ScriptSystem.prototype.process = function (entities, tpf) {
-		this.environment.domElement = this.renderer.domElement;
-		this.environment.viewportWidth = this.renderer.viewportWidth;
-		this.environment.viewportHeight = this.renderer.viewportHeight;
+		// Update environment
+		var renderer = this._world.gooRunner.renderer;
+		_.extend(this.environment, {
+			viewportWidth: renderer.viewportWidth,
+			viewportHeight: renderer.viewportHeight
+		});
 
+		// Update scripts
 		for (var i = 0; i < entities.length; i++) {
 			var scriptComponent = entities[i].scriptComponent;
 			scriptComponent.run(entities[i], tpf, this.environment);

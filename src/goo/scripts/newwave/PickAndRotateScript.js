@@ -1,19 +1,12 @@
-require([
-	'goo/math/Vector3',
-	'goo/scripts/Scripts'
+define([
+	'goo/math/Vector3'
 ], function (
-	Vector3,
-	Scripts
+	Vector3
 ) {
 	'use strict';
 
-	var externals = {
-		name: 'Pick and rotate',
-		description: 'Enables pick-drag-rotating entities',
-	};
-
-	var PickAndRotateScript = function () {
-		var entity, transformComponent, transform, gooRunner;
+	function PickAndRotateScript() {
+		var transformComponent, transform, gooRunner;
 		var pickedEntity;
 		var parameters;
 
@@ -31,14 +24,14 @@ require([
 
 		var moveVector = new Vector3();
 		var calcVector = new Vector3();
-		
+
 		function mouseDown(event) {
 			console.log('Entity is ' + event.entity + ' at ' + event.depth);
 
 			pickedEntity = event.entity;
 			mouseState.down = !!event.entity;
 		}
-		
+
 		function mouseMove(event) {
 			mouseState.ox = mouseState.x;
 			mouseState.oy = mouseState.y;
@@ -54,27 +47,21 @@ require([
 				pickedEntity.transformComponent.setUpdated();
 			}
 		}
-		function mouseUp(event) {
+		function mouseUp(/*event*/) {
 			mouseState.down = false;
-		}
-		
-
-		// ---
-		function setupMouseControls(gooRunner) {
 		}
 
 		function setup(_parameters, env) {
 			parameters = _parameters;
 
-			var entity = env.getEntity();
-			gooRunner = entity._world.gooRunner;
+			gooRunner = env.world.gooRunner;
 
 			gooRunner.addEventListener('mousedown', mouseDown);
 			gooRunner.renderer.domElement.addEventListener('mousemove', mouseMove);
 			gooRunner.renderer.domElement.addEventListener('mouseup', mouseUp);
 		}
 
-		function update(parameters, env) {
+		function update(/*parameters, env*/) {
 			if (moveVector.equals(Vector3.ZERO)) { return; }
 
 			// direction of movement in local coords
@@ -86,7 +73,7 @@ require([
 			calcVector.normalize();
 
 			// move speed for this run...
-			var moveMult = entity._world.tpf * moveState.speed;
+			var moveMult = 1.0;
 
 			// scale by speed
 			calcVector.mul(moveMult);
@@ -113,9 +100,15 @@ require([
 		return {
 			setup: setup,
 			update: update,
-			cleanup: cleanup,
-			externals: externals
+			cleanup: cleanup
 		};
+	}
+
+	PickAndRotateScript.externals = {
+		name: 'Pick and rotate',
+		key: 'PickAndRotateScript',
+		description: 'Enables pick-drag-rotating entities'
 	};
-	Scripts.register(externals, PickAndRotateScript);
+
+	return PickAndRotateScript;
 });

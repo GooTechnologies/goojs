@@ -1,7 +1,9 @@
 define ([
-	'goo/scripts/ScriptUtils'
+	'goo/scripts/ScriptUtils',
+	'goo/util/ObjectUtil'
 ], function (
-	ScriptUtils
+	ScriptUtils,
+	_
 ) {
 	'use strict';
 
@@ -11,18 +13,37 @@ define ([
 	// the static class which just holds the following methods
 	var Scripts = {};
 
-	Scripts.register = function (externals, cons) {
+	Scripts.register = function (factoryFunction) {
+		var key = factoryFunction.externals.key || factoryFunction.externals.name;
+		if (_scripts[key]) {
+			console.warn('Script already registered for key ' + key);
+			return;
+		}
 		//! AT: this will modify the external object but that's ok
-		ScriptUtils.fillDefaultNames(externals.parameters);
-		_scripts[externals.name] = { externals: externals, cons: cons };
+		ScriptUtils.fillDefaultNames(factoryFunction.externals.parameters);
+		_scripts[key] = factoryFunction;
 	};
 
-	Scripts.getScript = function (name) {
-		return _scripts[name];
+	Scripts.getScript = function (key) {
+		return _scripts[key];
 	};
 
-	Scripts.create = function (name) {
-		return _scripts[name].cons();
+	Scripts.create = function (key, options) {
+		if (!_scripts[key]) {
+			throw new Error('Script is not registered');
+		}
+		var script = _scripts[key]();
+		script.parameters = {};
+		script.environment = null;
+		// Check if needed
+		script.externals = _scripts[key].externals;
+		if (_scripts[key].externals) {
+			ScriptUtils.fillDefaultValues(script.parameters, _scripts[key].externals.parameters);
+		}
+		if (options) {
+			_.extend(script.parameters, options);
+		}
+		return script;
 	};
 
 	Scripts.allScripts = function () {

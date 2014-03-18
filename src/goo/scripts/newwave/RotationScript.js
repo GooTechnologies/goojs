@@ -1,25 +1,7 @@
 define([
-	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils'
 ], function (
-	Scripts,
-	ScriptUtils
 ) {
 	'use strict';
-
-	var externals = {
-		name: 'RotationScript',
-		description: '',
-		parameters: [{
-			key: 'fraction',
-			name: 'Speed',
-			'default': 0.01,
-			type: 'float',
-			control: 'slider',
-			min: 0.01,
-			max: 1
-		}]
-	};
 
 	function NewWaveRotationScript() {
 		var mouseState, actualState, entity;
@@ -40,7 +22,7 @@ define([
 			document.addEventListener('mousemove', onMouseMove);
 		}
 
-		function update(parameters, env) {
+		function update(parameters/*, env*/) {
 			actualState.x += (mouseState.x - actualState.x) * parameters.fraction;
 			actualState.y += (mouseState.y - actualState.y) * parameters.fraction;
 
@@ -52,18 +34,29 @@ define([
 			mouseState.y = e.y;
 		}
 
-		function cleanup(parameters, env) {
+		function cleanup(/*parameters, env*/) {
 			document.removeEventListener('mousemove', onMouseMove);
 		}
-		var params = {}
-		ScriptUtils.fillDefaultValues(params, external.parameters);
 		return {
 			setup: setup,
 			update: update,
-			cleanup: cleanup,
-			externals: externals,
-			parameters: params
+			cleanup: cleanup
 		};
+	}
+
+	NewWaveRotationScript.externals = {
+		name: 'RotationScript',
+		description: '',
+		parameters: [{
+			key: 'fraction',
+			name: 'Speed',
+			'default': 0.01,
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1
+		}]
 	};
-	Scripts.register(externals, NewWaveRotationScript);
+
+	return NewWaveRotationScript;
 });

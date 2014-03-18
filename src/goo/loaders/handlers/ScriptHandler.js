@@ -11,16 +11,7 @@ define([
 	'goo/entities/SystemBus',
 
 	'goo/scripts/ScriptUtils',
-	'goo/scripts/Scripts',
-
-	'goo/scripts/newwave/FPCamControlScript',
-	'goo/scripts/newwave/RotationScript',
-	'goo/scripts/newwave/OrbitCamControlScript',
-	'goo/scripts/newwave/PanCamScript',
-	'goo/scripts/newwave/OrbitNPanControlScript',
-	'goo/scripts/newwave/WASDScript',
-	'goo/scripts/newwave/FlyControlScript',
-	'goo/scripts/newwave/MouseLookScript'
+	'goo/scripts/Scripts'
 ],
 /** @lends */
 function(
@@ -182,7 +173,7 @@ function(
 			script.update = newScript.update;
 			script.run = newScript.run;
 			script.cleanup = newScript.cleanup;
-			script.parameters = {};
+			script.parameters = newScript.parameters || {};
 			script.enabled = false;
 
 			// generate names from external variable names
