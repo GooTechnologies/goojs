@@ -71,13 +71,13 @@ define([
 		var camera = new Camera();
 
 		var orbitCamOpetions = {
-			domElement : V.goo.renderer.domElement,
-			spherical : spherical,
-			lookAtPoint: lookAt,
-			drag: 5.0,
-			releaseVelocity: true,
+			domElement        : V.goo.renderer.domElement,
+			spherical         : spherical,
+			lookAtPoint       : lookAt,
+			drag              : 5.0,
+			releaseVelocity   : true,
 			interpolationSpeed: 7,
-			dragButton: typeof dragButton === 'number' ? dragButton : -1
+			dragButton        : typeof dragButton === 'number' ? dragButton : -1
 		};
 
 		if (!V.deterministic) {
@@ -99,9 +99,11 @@ define([
 		var angle = V.rng.nextFloat() * Math.PI * 2;
 		var color = [
 			angle,
-			angle + Math.PI * 2 / 3,
-			angle + Math.PI * 4 / 3
-		].map(function (v) { return Math.sin(v) / 2 + 0.5; });
+				angle + Math.PI * 2 / 3,
+				angle + Math.PI * 4 / 3
+		].map(function (v) {
+				return Math.sin(v) / 2 + 0.5;
+			});
 		color.push(1);
 
 		return color;
@@ -133,8 +135,8 @@ define([
 	 * @param meshData
 	 * @param rotation
 	 */
-	//! AT: more clear with code duplication
-	V.addShapes = function(nShapes, meshData, rotation) {
+		//! AT: more clear with code duplication
+	V.addShapes = function (nShapes, meshData, rotation) {
 		nShapes = nShapes || 15;
 		meshData = meshData || new Sphere(32, 32);
 		rotation = rotation || [0, 0, 0];
@@ -149,7 +151,7 @@ define([
 					V.goo.world.createEntity(
 						meshData,
 						material,
-						[i - nShapes/2, j - nShapes/2, 0]
+						[i - nShapes / 2, j - nShapes / 2, 0]
 					).setRotation(rotation).addToWorld()
 				);
 			}
@@ -162,7 +164,7 @@ define([
 	 * Adds a grid of spheres
 	 * @param [nSpheres=15]
 	 */
-	V.addSpheres = function(nSpheres) {
+	V.addSpheres = function (nSpheres) {
 		return V.addShapes(nSpheres, new Sphere(32, 32));
 	};
 
@@ -170,7 +172,7 @@ define([
 	 * Adds a grid of boxes to the scene
 	 * @param [nBoxes=15]
 	 */
-	V.addBoxes = function(nBoxes) {
+	V.addBoxes = function (nBoxes) {
 		return V.addShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
@@ -180,7 +182,7 @@ define([
 	 * @param [meshData=new Sphere]
 	 * @param [rotation=(0, 0, 0)]
 	 */
-	V.addColoredShapes = function(nShapes, meshData, rotation) {
+	V.addColoredShapes = function (nShapes, meshData, rotation) {
 		nShapes = nShapes || 15;
 		meshData = meshData || new Sphere(32, 32);
 		rotation = rotation || [0, 0, 0];
@@ -196,7 +198,7 @@ define([
 					V.goo.world.createEntity(
 						meshData,
 						material,
-						[i - nShapes/2, j - nShapes/2, 0]
+						[i - nShapes / 2, j - nShapes / 2, 0]
 					).setRotation(rotation).addToWorld()
 				);
 			}
@@ -209,7 +211,7 @@ define([
 	 * Adds a grid of colored spheres
 	 * @param [nSpheres=15]
 	 */
-	V.addColoredSpheres = function(nSpheres) {
+	V.addColoredSpheres = function (nSpheres) {
 		return V.addColoredShapes(nSpheres, new Sphere(32, 32));
 	};
 
@@ -217,7 +219,7 @@ define([
 	 * Adds a grid of colored boxes to the scene
 	 * @param [nBoxes=15]
 	 */
-	V.addColoredBoxes = function(nBoxes) {
+	V.addColoredBoxes = function (nBoxes) {
 		return V.addColoredShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
@@ -226,9 +228,9 @@ define([
 	 */
 	V.addLights = function () {
 		var world = V.goo.world;
-		world.createEntity(new PointLight(), [ 100,  100,  100]).addToWorld();
+		world.createEntity(new PointLight(), [ 100, 100, 100]).addToWorld();
 		world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
-		world.createEntity(new PointLight(), [-100,  100, -100]).addToWorld();
+		world.createEntity(new PointLight(), [-100, 100, -100]).addToWorld();
 	};
 
 	/**
@@ -267,6 +269,7 @@ define([
 		if (V.deterministic) {
 			options.showStats = false;
 			options.logo = false;
+			options.manuallyStartGameLoop = true;
 		} else {
 			if (_options && _options.logo) {
 				options.logo = _options.logo;
@@ -284,6 +287,42 @@ define([
 		V.rng = new RNG(12348);
 
 		return V.goo;
+	};
+
+	function delay(nFrames, updateCallback, endCallback) {
+		var framesRemaining = nFrames;
+
+		function loop() {
+			framesRemaining--;
+			if (framesRemaining > 0) {
+				updateCallback();
+				requestAnimationFrame(loop);
+			} else {
+				if (endCallback) {
+					endCallback();
+				}
+			}
+		}
+
+		loop();
+	}
+
+	/**
+	 * Required in 'deterministic' mode
+	 */
+	V.process = function () {
+		if (!V.deterministic) { return; }
+
+		// waste some frames
+		delay(8, function () {}, function() {
+			var time = 0;
+			// render some frames
+			delay(3, function () {
+				time += 100;
+				V.goo._updateFrame(time);
+				V.goo.stopGameLoop();
+			});
+		});
 	};
 
 	return V;

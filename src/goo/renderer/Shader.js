@@ -517,11 +517,6 @@ function (
 	};
 
 	function setupDefaultCallbacks(defaultCallbacks) {
-		//! AT: can't Matrix4x4.IDENTITY be used instead of creating this every time?
-		// REVIEW Yes, although this is only called once
-		// So more of a code cleanup then a performance gain
-		var IDENTITY_MATRIX = new Matrix4x4();
-
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
@@ -532,12 +527,12 @@ function (
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : IDENTITY_MATRIX;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix4x4.IDENTITY;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 

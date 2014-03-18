@@ -134,8 +134,7 @@ function (Vector3, MathUtils) {
 		}
 
 		if (locationStore) {
-			// REVIEW locationStore.setv(this.direction).scale(ratio).addv(this.origin);
-			locationStore.set(this.direction).scale(ratio).add(this.origin);
+			locationStore.setv(this.direction).scale(ratio).addv(this.origin);
 		}
 
 		return true;
@@ -148,28 +147,24 @@ function (Vector3, MathUtils) {
 	 */
 	Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = this.calcVec1;
-		// REVIEW vectorA.setv(point).subv(this.origin);
-		vectorA.set(point).sub(this.origin);
+
+		vectorA.setv(point).subv(this.origin);
 		var t0 = this.direction.dot(vectorA);
 		if (t0 > 0) {
 			// d = |P - (O + t*D)|
-			// REVIEW vectorA.setv(this.direction).scale(t0);
-			vectorA.set(this.direction).scale(t0);
-			// REVIEW addv
-			vectorA.add(this.origin);
+			vectorA.setv(this.direction).scale(t0);
+			vectorA.addv(this.origin);
 		} else {
 			// ray is closest to origin point
-			// REVIEW setv
-			vectorA.set(this.origin);
+			vectorA.setv(this.origin);
 		}
 
 		// Save away the closest point if requested.
 		if (store) {
-			// REVIEW setv
-			store.set(vectorA);
+			store.setv(vectorA);
 		}
-		// REVIEW subv
-		vectorA.sub(point);
+
+		vectorA.subv(point);
 		return vectorA.lengthSquared();
 	};
 

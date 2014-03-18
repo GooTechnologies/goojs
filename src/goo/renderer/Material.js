@@ -14,37 +14,30 @@ function(
 	 */
 	function Material(name, shaderDefinition) {
 		this.id = null;
+
 		/** Material name
 		 * @type {string}
 		 */
-		// REVIEW How about this.name = 'Default Material' and skip line 48
-		this.name = null;
+		this.name = 'Default Material';
+
 		/** [Shader]{@link Shader} to use when rendering
 		 * @type {Shader}
 		 */
 		this.shader = null;
 
-		/* REVIEW
-		 * If we want the two signatures, it would probably be cleaner to use arguments
-		 * if (typeof arguments[0] === 'string) {
-		 *  this.name = arguments[0];
-		 * }
-		 */
 		//! AT: horrendous type checking follows
 		// function has 2 signatures because the deprecated .createMaterial had parameters in inverse order
-		if (typeof name === 'string') {
-			this.name = name;
-		} else if (name && name.vshader && name.fshader) {
-			this.shader = Material.createShader(name);
+		if (typeof arguments[0] === 'string') {
+			this.name = arguments[0];
+		} else if (arguments[0] && arguments[0].vshader && arguments[0].fshader) {
+			this.shader = Material.createShader(arguments[0]);
 		}
 
-		if (shaderDefinition && shaderDefinition.vshader && shaderDefinition.fshader) {
-			this.shader = Material.createShader(shaderDefinition);
-		} else if (typeof shaderDefinition === 'string') {
-			this.name = shaderDefinition;
+		if (arguments[1] && arguments[1].vshader && arguments[1].fshader) {
+			this.shader = Material.createShader(arguments[1]);
+		} else if (typeof arguments[1] === 'string') {
+			this.name = arguments[1];
 		}
-
-		this.name = this.name || 'Default Material';
 
 		/** Possible overrides for shader uniforms
 		 * @type {Object}

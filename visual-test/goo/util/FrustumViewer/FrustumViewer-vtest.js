@@ -41,14 +41,6 @@ require([
 		mainCameraId: 1
 	};
 
-	function setMainCamera(id, cameraEntities) {
-		var mainCamera = cameraEntities[id].getComponent('CameraComponent').camera;
-		SystemBus.emit('goo.setCurrentCamera', {
-			camera: mainCamera,
-			entity: cameraEntities[id]
-		});
-	}
-
 	function frustumViewerDemo(goo) {
 		// add spheres to have the cameras view them
 		var sphereMeshData = ShapeCreator.createSphere(32, 32);
@@ -75,13 +67,13 @@ require([
 			switch(e.keyCode) {
 				case 49:
 					if(cameraState.mainCameraId === 1) {
-						setMainCamera(0, [camera1Entity, camera2Entity]);
+						camera1Entity.setMain();
 						cameraState.mainCameraId = 0;
 					}
 					break;
 				case 50:
 					if(cameraState.mainCameraId === 0) {
-						setMainCamera(1, [camera1Entity, camera2Entity]);
+						camera2Entity.setMain();
 						cameraState.mainCameraId = 1;
 					}
 					break;

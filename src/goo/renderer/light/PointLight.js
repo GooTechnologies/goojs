@@ -7,9 +7,8 @@ define([
 	) {
 	'use strict';
 
-	// REVIEW Punctiform!?
 	/**
-	 * @class A punctiform source of light. So far it has the same effect as {@link Light}
+	 * @class A omni-directional source of light. So far it has the same effect as {@link Light}
 	 * @constructor
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light

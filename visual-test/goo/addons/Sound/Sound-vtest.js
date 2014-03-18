@@ -106,4 +106,6 @@ require([
 	V.addLights();
 
 	V.addOrbitCamera();
+
+	V.process();
 });
