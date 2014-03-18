@@ -380,7 +380,7 @@ define([
 			max: 1.0
 		}, {
 			key: 'smoothness',
-			'default': 0.9,
+			'default': 0.4,
 			type: 'float',
 			min: 0,
 			max: 1,
