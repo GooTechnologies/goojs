@@ -36,6 +36,7 @@ function (
 
 	QuadComponent.prototype.attached = function(entity){
 		entity.setComponent(this.meshDataComponent);
+		entity.set(this.material);
 	};
 
 	return QuadComponent;
