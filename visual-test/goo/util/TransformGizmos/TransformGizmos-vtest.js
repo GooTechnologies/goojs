@@ -1,8 +1,6 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/MeshDataComponent',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
@@ -10,10 +8,8 @@ require([
 	'goo/entities/systems/GizmoRenderSystem',
 	'../../lib/V'
 ], function(
-	GooRunner,
 	Material,
 	ShaderLib,
-	MeshDataComponent,
 	Vector3,
 	Box,
 	Sphere,
@@ -90,7 +86,7 @@ require([
 
 	// add some entities
 	world.createEntity(new Box(), material, [3, 0, 0]).addToWorld();
-	world.createEntity(new Sphere(32, 32), material, [0, 0, 0]).addToWorld();
+	var sphereEntity = world.createEntity(new Sphere(32, 32), material, [0, 0, 0]).addToWorld();
 	world.createEntity(new Torus(32, 32, 0.1, 0.5), material, [-3, 0, 0]).addToWorld();
 
 	// add the gizmo render system
@@ -102,5 +98,9 @@ require([
 	// allow switching of active gizmo with the 1, 2 and 3 keys
 	setupKeys();
 
+	gizmoRenderSystem.show(sphereEntity);
+
 	console.log('Pick entities to select them and press 1, 2, 3 to switch between transform gizmos');
+
+	V.process();
 });
