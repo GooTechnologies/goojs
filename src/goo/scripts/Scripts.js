@@ -9,6 +9,7 @@ define ([
 
 	// the collection of scripts
 	var _scripts = {};
+	var _gooClasses = {};
 
 	// the static class which just holds the following methods
 	var Scripts = {};
@@ -22,6 +23,14 @@ define ([
 		//! AT: this will modify the external object but that's ok
 		ScriptUtils.fillDefaultNames(factoryFunction.externals.parameters);
 		_scripts[key] = factoryFunction;
+	};
+
+	Scripts.addClass = function (name, klass) {
+		_gooClasses[name] = klass;
+	};
+
+	Scripts.getClasses = function() {
+		return _gooClasses;
 	};
 
 	Scripts.getScript = function (key) {

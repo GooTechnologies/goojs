@@ -1,14 +1,18 @@
 define([
 	'goo/entities/components/Component',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil'
+	'goo/scripts/Scripts',
+	'goo/util/ObjectUtil',
+	'goo/scripts/GooClassRegister',
+	'goo/scripts/ScriptRegister'
 ],
 /** @lends */
 function (
 	Component,
 	SystemBus,
+	Scripts,
 	_
-	) {
+) {
 	'use strict';
 
 	/**
@@ -18,6 +22,7 @@ function (
 	 */
 	function ScriptComponent(scripts) {
 		this.type = 'ScriptComponent';
+		this._gooClasses = Scripts.getClasses();
 
 		if (scripts instanceof Array) {
 			this.scripts = scripts;
@@ -52,11 +57,20 @@ function (
 			script.environment = scriptEnvironment;
 
 			if (script.setup) {
-				script.setup(script.parameters, script.environment);
-				if (script.parameters && script.parameters.enabled !== undefined) {
-					script.enabled = script.parameters.enabled;
-				} else {
-					script.enabled = true;
+				try {
+					script.setup(script.parameters, script.environment, this._gooClasses);
+					if (script.parameters && script.parameters.enabled !== undefined) {
+						script.enabled = script.parameters.enabled;
+					} else {
+						script.enabled = true;
+					}
+				} catch(e) {
+					script.enabled = false;
+					SystemBus.emit('goo.scriptError', {
+						message: e.message || e,
+						phase: 'setup',
+						scriptName: script.externals.name
+					});
 				}
 			}
 		}
@@ -78,8 +92,15 @@ function (
 				} catch (e) {}
 			} else if (script.update && (script.enabled === undefined || script.enabled)) {
 				try {
-					script.update(script.parameters, script.environment);
-				} catch (e) {}
+					script.update(script.parameters, script.environment, this._gooClasses);
+				} catch (e) {
+					script.enabled = false;
+					SystemBus.emit('goo.scriptError', {
+						message: e.message || e,
+						scriptName: script.externals.name,
+						phase: 'run'
+					});
+				}
 			}
 		}
 	};
@@ -92,7 +113,15 @@ function (
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.cleanup) {
-				script.cleanup(script.parameters, script.environment);
+				try {
+					script.cleanup(script.parameters, script.environment, this._gooClasses);
+				} catch (e) {
+					SystemBus.emit('goo.scriptError', {
+						message: e.message || e,
+						scriptName: script.externals.name,
+						phase: 'cleanup'
+					});
+				}
 				script.enabled = false;
 			}
 		}

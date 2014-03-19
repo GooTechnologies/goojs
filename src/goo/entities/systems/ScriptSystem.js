@@ -1,8 +1,7 @@
 define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil',
-	'goo/scripts/ScriptRegister'
+	'goo/util/ObjectUtil'
 ],
 	/** @lends */
 	function (

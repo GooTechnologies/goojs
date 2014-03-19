@@ -14,12 +14,22 @@ define([
 	 * @param spec {{key, name, default, description}[]}
 	 */
 	ScriptUtils.fillDefaultValues = function (parameters, specs) {
-		if (!specs) { return; }
+		if (!(specs instanceof Array)) { return; }
+		var keys = [];
 		specs.forEach(function (spec) {
+			if (!spec || typeof spec.key !== 'string' || !spec['default']) {
+				return;
+			}
+			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
 				parameters[spec.key] = _.clone(spec['default']);
 			}
 		});
+		for (var key in parameters) {
+			if (keys.indexOf(key) === -1) {
+				delete parameters[key];
+			}
+		}
 	};
 
 	/**
@@ -28,15 +38,15 @@ define([
 	 * @param specs {{key, name, default, description}[]}
 	 */
 	ScriptUtils.fillDefaultNames = function (specs) {
-		if (!specs) { return; }
+		if (!(specs instanceof Array)) { return; }
 		function getNameFromKey(key) {
+			if(typeof key !== 'string' || key.length === 0) { return ''; }
 			var capitalisedKey = key[0].toUpperCase() + key.slice(1);
-			return capitalisedKey.replace(/([A-Z])/g, ' $1');
+			return capitalisedKey.replace(/(.)([A-Z])/g, '$1 $2');
 		}
 
-		if (!specs) { return; }
-
 		specs.forEach(function (spec) {
+			if (!spec) { return; }
 			if (typeof spec.name === 'undefined') {
 				spec.name = getNameFromKey(spec.key);
 			}
