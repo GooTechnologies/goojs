@@ -7,7 +7,8 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/QuadComponent'
+	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/QuadComponent',
 ],
 /** @lends */
 function(
@@ -19,6 +20,7 @@ function(
 	PromiseUtil,
 	_,
 	MeshDataComponent,
+	MeshRendererComponent,
 	QuadComponent
 ) {
 	"use strict";
@@ -60,7 +62,23 @@ function(
 	 * @private
 	 */
 	QuadComponentHandler.prototype._create = function() {
-		return new QuadComponent(new Quad(), new Material());
+		var meshData = new Quad();
+		var meshDataComponent = new MeshDataComponent(meshData);
+		return new QuadComponent(meshData, null, new MeshRendererComponent(), meshDataComponent);
+	};
+
+	/**
+	 * Removes the quadcomponent
+	 * @param {Entity} entity
+	 * @private
+	 */
+	QuadComponentHandler.prototype._remove = function(entity) {
+		var idx = entity.meshRendererComponent.materials.indexOf(entity.quadComponent.material);
+		if(idx !== -1)
+			entity.meshRendererComponent.materials.splice(idx,1);
+		entity.clearComponent('meshDataComponent');
+		entity.clearComponent('meshRendererComponent');
+		entity.clearComponent('quadComponent');
 	};
 
 	/**
@@ -75,18 +93,37 @@ function(
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
 
+			// Remove material
+			var idx = component.meshRendererComponent.materials.indexOf(component.material);
+			if(idx !== -1)
+				component.meshRendererComponent.materials.splice(idx,1);
+
+			entity.clearComponent('meshRendererComponent');
+			entity.clearComponent('meshDataComponent');
+
 			// Materials
 			var materialRef = config.materialRef;
 			if(!materialRef) {
+
 				// No material ref given, set default
 				component.material = QuadComponentHandler.DEFAULT_MATERIAL;
+				component.meshRendererComponent.materials.push(component.material);
+
+				// Set components
+				entity.setComponent(component.meshRendererComponent);
+				entity.setComponent(component.meshDataComponent);
+
 				return component;
 			}
 
-			var promises = [that._load(config.materialRef, options)];
+			return that._load(config.materialRef, options).then(function(material) {
+				component.material = material;
+				component.meshRendererComponent.materials.push(component.material);
 
-			return RSVP.all(promises).then(function(materials) {
-				component.material = materials[0];
+				// Set components
+				entity.setComponent(component.meshRendererComponent);
+				entity.setComponent(component.meshDataComponent);
+
 				return component;
 			});
 		});

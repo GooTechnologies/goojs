@@ -16,10 +16,11 @@ function (
 	/**
 	 * @class Quad component that holds mesh and a material.
 	 */
-	function QuadComponent(material) {
+	function QuadComponent(meshData, material, meshRendererComponent, meshDataComponent) {
 		this.type = 'QuadComponent';
-		this.meshData = new Quad();
-		this.meshDataComponent = new MeshDataComponent(this.meshData);
+		this.meshData = meshData;
+		this.meshDataComponent = meshDataComponent;
+		this.meshRendererComponent = meshRendererComponent;
 		this.material = material;
 	}
 
@@ -35,8 +36,8 @@ function (
 	*/
 
 	QuadComponent.prototype.attached = function(entity){
-		entity.setComponent(this.meshDataComponent);
-		entity.set(this.material);
+		entity.clearComponent('meshRendererComponent');
+		entity.clearComponent('meshDataComponent');
 	};
 
 	return QuadComponent;
