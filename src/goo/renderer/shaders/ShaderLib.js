@@ -64,7 +64,8 @@ define([
 			discardThreshold: -0.01,
 			fogSettings: [0, 10000],
 			fogColor: [1, 1, 1],
-			shadowDarkness: 0.5
+			shadowDarkness: 0.5,
+			vertexColorAmount: 1.0
 	    },
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -210,6 +211,7 @@ define([
 			'#endif',
 			'#ifdef COLOR',
 				'varying vec4 color;',
+				'uniform float vertexColorAmount;',
 			'#endif',
 			'#ifdef TEXCOORD0',
 				'varying vec2 texCoord0;',
@@ -229,7 +231,7 @@ define([
 				'#endif',
 
 				'#ifdef COLOR',
-					'final_color *= color;',
+					'final_color *= mix(vec4(1.0), color, vertexColorAmount);',
 				'#endif',
 
 				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
