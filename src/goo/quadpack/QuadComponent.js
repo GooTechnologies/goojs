@@ -68,9 +68,9 @@ function (
 	/**
 	 * Attaches the current material to the meshrenderer component.
 	 */
-	QuadComponent.prototype.attachMaterial = function(){
+	QuadComponent.prototype.attachMaterial = function () {
 		var idx = this.meshRendererComponent.materials.indexOf(this.material);
-		if(idx === -1){
+		if (idx === -1) {
 			// Material not added yet. Add!
 			this.meshRendererComponent.materials.push(this.material);
 		}
@@ -79,11 +79,11 @@ function (
 	/**
 	 * Removes the current material from the meshrenderer component.
 	 */
-	QuadComponent.prototype.removeMaterial = function(){
+	QuadComponent.prototype.removeMaterial = function () {
 		var idx = this.meshRendererComponent.materials.indexOf(this.material);
-		if(idx !== -1){
+		if (idx !== -1) {
 			// Material found. remove!
-			this.meshRendererComponent.materials.splice(idx,1);
+			this.meshRendererComponent.materials.splice(idx, 1);
 		}
 	};
 

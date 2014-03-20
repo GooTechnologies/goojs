@@ -11,7 +11,7 @@ define([
 	'goo/quadpack/QuadComponent',
 ],
 /** @lends */
-function(
+function (
 	ComponentHandler,
 	Quad,
 	Material,
@@ -51,7 +51,7 @@ function(
 	 * @returns {object}
 	 * @private
 	 */
-	QuadComponentHandler.prototype._prepare = function(config) {
+	QuadComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
 		});
 	};
@@ -61,7 +61,7 @@ function(
 	 * @returns {object} the created component object
 	 * @private
 	 */
-	QuadComponentHandler.prototype._create = function() {
+	QuadComponentHandler.prototype._create = function () {
 		return new QuadComponent();
 	};
 
@@ -70,7 +70,7 @@ function(
 	 * @param {Entity} entity
 	 * @private
 	 */
-	QuadComponentHandler.prototype._remove = function(entity) {
+	QuadComponentHandler.prototype._remove = function (entity) {
 		entity.quadComponent.removeMaterial(); // Release material
 		entity.clearComponent('meshDataComponent');
 		entity.clearComponent('meshRendererComponent');
@@ -84,9 +84,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	 QuadComponentHandler.prototype.update = function(entity, config, options) {
+	QuadComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
 			// Remove material
@@ -97,7 +97,7 @@ function(
 
 			// Materials
 			var materialRef = config.materialRef;
-			if(!materialRef) {
+			if (!materialRef) {
 
 				// No material ref given, set default
 				component.material = QuadComponent.DEFAULT_MATERIAL;
@@ -110,7 +110,7 @@ function(
 				return component;
 			}
 
-			return that._load(config.materialRef, options).then(function(material) {
+			return that._load(config.materialRef, options).then(function (material) {
 				component.material = material;
 				component.attachMaterial();
 
