@@ -43,7 +43,7 @@ function(
 	QuadComponentHandler.prototype.constructor = QuadComponentHandler;
 	ComponentHandler._registerClass('quad', QuadComponentHandler);
 
-	QuadComponentHandler.DEFAULT_MATERIAL = new Material(ShaderLib.uber, 'Default material');
+	QuadComponent.DEFAULT_MATERIAL = new Material(ShaderLib.uber, 'Default material');
 
 	/**
 	 * Prepare component. Set defaults on config here.
@@ -62,9 +62,7 @@ function(
 	 * @private
 	 */
 	QuadComponentHandler.prototype._create = function() {
-		var meshData = new Quad();
-		var meshDataComponent = new MeshDataComponent(meshData);
-		return new QuadComponent(meshData, null, new MeshRendererComponent(), meshDataComponent);
+		return new QuadComponent();
 	};
 
 	/**
@@ -73,9 +71,7 @@ function(
 	 * @private
 	 */
 	QuadComponentHandler.prototype._remove = function(entity) {
-		var idx = entity.meshRendererComponent.materials.indexOf(entity.quadComponent.material);
-		if(idx !== -1)
-			entity.meshRendererComponent.materials.splice(idx,1);
+		entity.quadComponent.removeMaterial(); // Release material
 		entity.clearComponent('meshDataComponent');
 		entity.clearComponent('meshRendererComponent');
 		entity.clearComponent('quadComponent');
@@ -94,9 +90,7 @@ function(
 			if (!component) { return; }
 
 			// Remove material
-			var idx = component.meshRendererComponent.materials.indexOf(component.material);
-			if(idx !== -1)
-				component.meshRendererComponent.materials.splice(idx,1);
+			component.removeMaterial();
 
 			entity.clearComponent('meshRendererComponent');
 			entity.clearComponent('meshDataComponent');
@@ -106,8 +100,8 @@ function(
 			if(!materialRef) {
 
 				// No material ref given, set default
-				component.material = QuadComponentHandler.DEFAULT_MATERIAL;
-				component.meshRendererComponent.materials.push(component.material);
+				component.material = QuadComponent.DEFAULT_MATERIAL;
+				component.attachMaterial();
 
 				// Set components
 				entity.setComponent(component.meshRendererComponent);
@@ -118,7 +112,7 @@ function(
 
 			return that._load(config.materialRef, options).then(function(material) {
 				component.material = material;
-				component.meshRendererComponent.materials.push(component.material);
+				component.attachMaterial();
 
 				// Set components
 				entity.setComponent(component.meshRendererComponent);

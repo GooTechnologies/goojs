@@ -3,6 +3,7 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/components/QuadComponent',
+	'goo/entities/systems/QuadSystem',
 	'goo/math/Vector3',
 	'../../lib/V',
 	'goo/renderer/TextureCreator',
@@ -13,6 +14,7 @@ require([
 	Material,
 	ShaderLib,
 	QuadComponent,
+	QuadSystem,
 	Vector3,
 	V,
 	TextureCreator,
@@ -25,6 +27,8 @@ require([
 
 	var goo = V.initGoo();
 	var world = goo.world;
+
+	world.setSystem(new QuadSystem());
 
 	var data =	"<svg xmlns='http://www.w3.org/2000/svg' width='200' height='100'>" +
 				'<rect x="0" y="0" width="200" height="100" stroke="black" stroke-width="3" fill="blue" fill-opacity="0.5" />'+

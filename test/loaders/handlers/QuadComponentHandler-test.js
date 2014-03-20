@@ -54,7 +54,7 @@ define([
 
 			}).then(function(entity){
 				// Hopefully we loaded the default material
-				expect(entity.meshRendererComponent.materials[0]).toEqual(QuadComponentHandler.DEFAULT_MATERIAL);
+				expect(entity.meshRendererComponent.materials[0]).toEqual(QuadComponent.DEFAULT_MATERIAL);
 			});
 
 			wait(p);
@@ -72,16 +72,6 @@ define([
 
 			}).then(function(entity){
 				expect(entity._components.length).toBe(1); // just the transform component is left
-			});
-
-			wait(p);
-		});
-
-		it('cleans up after the component is removed', function() {
-			var config = Configs.entity(['quad']);
-			loader.preload(Configs.get());
-			var p = loader.load(config.id).then(function(entity) {
-				entity.clearComponent('quadComponent');
 			});
 
 			wait(p);
