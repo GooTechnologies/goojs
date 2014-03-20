@@ -26,20 +26,14 @@ for(var i=0; i<program.args.length; i++){
 
 // Create custom reporter
 var reporter;
-options.onComplete = function(){
+function onComplete(){
 	specs.length = 0;
 	for(var specId in reporter.allSpecs){
 		var spec = reporter.allSpecs[specId];
 		specs.push(spec);
-		/*
-		spec.id;
-		spec.description;
-		spec.fullName;
-		spec.failedExpectations;
-		spec.status;
-		*/
 	}
 };
+options.onComplete = onComplete;
 reporter = new Reporter(options);
 jasmine.addReporter(reporter);
 
@@ -59,13 +53,17 @@ app.use(express.errorHandler());
 
 app.get('/', function(req,res){
 
-	res.status(200).send(specs);
+	res.status(200).send({
+		lastRunTime: reporter.jasmineDoneAt,
+		specs: specs
+	});
 
 	// Get default options
 	var options = JSON.parse(JSON.stringify(runner.defaults));
 	for(var i=0; i<program.args.length; i++){
 		options.specFolders.push(program.args[i]);
 	}
+	options.onComplete = onComplete;
 
 	// Run!
 	if(reporter.done){
@@ -82,6 +80,7 @@ app.get('/', function(req,res){
 	      jasFunc = jasmine[funcName];
 	      global[funcName] = jasFunc;
 	    }
+	    global.dontShutDownShooter = true;
 	    matchedSpecs = fileFinder.find(options.specFolders, options.regExpSpec);
 	    specsList = fileFinder.sortFiles(matchedSpecs);
 	    if (_.isEmpty(specsList)) {

@@ -20,7 +20,6 @@ Reporter.prototype.reset = function(){
 
 Reporter.prototype.jasmineStarted = function(runner) {
 	this.startedAt = new Date();
-	console.log("JASMINE STARTED")
 };
 
 Reporter.prototype.jasmineDone = function() {
@@ -28,7 +27,7 @@ Reporter.prototype.jasmineDone = function() {
 		this.config.onComplete.apply(this);
 	}
 	this.done = true;
-	console.log("JASMINE DONE")
+	this.jasmineDoneAt = new Date();
 };
 
 Reporter.prototype.suiteStarted = function(suite) {
@@ -37,8 +36,6 @@ Reporter.prototype.suiteStarted = function(suite) {
 	this.currentSuite = suite;
 	this.reset();
 	this.done = false;
-
-	console.log("SUITE STARTED")
 };
 
 Reporter.prototype.suiteDone = function(suite) {
@@ -50,8 +47,6 @@ Reporter.prototype.suiteDone = function(suite) {
   delete this.suiteTimes[suite.id];
   this.currentSuite = (_ref = this.currentSuite.parent) != null ? _ref : null;
   this.done = true;
-
-  console.log("SUITE DONE")
 };
 
 Reporter.prototype.specStarted = function(spec) {
@@ -76,8 +71,6 @@ Reporter.prototype.specDone = function(spec) {
 	default:
 		break;
   }
-
-  console.log(spec)
 };
 
 module.exports = Reporter;

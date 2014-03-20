@@ -117,9 +117,14 @@ describe('visual test', function () {
 
 				if(testCounter >= testFiles.length){
 					// Shut down if there are no more tests
-					shooter.shutdown(function(){
+					testCounter = 0;
+					if(!global.dontShutDownShooter){
+						shooter.shutdown(function(){
+							done();
+						});
+					} else {
 						done();
-					});
+					}
 				} else {
 					done();
 				}
