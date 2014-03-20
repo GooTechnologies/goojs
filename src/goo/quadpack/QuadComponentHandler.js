@@ -8,7 +8,7 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/QuadComponent',
+	'goo/quadpack/QuadComponent',
 ],
 /** @lends */
 function(

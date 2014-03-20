@@ -2,10 +2,10 @@ require([
 	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/QuadComponent',
-	'goo/entities/systems/QuadSystem',
+	'goo/quadpack/QuadComponent',
+	'goo/quadpack/QuadSystem',
 	'goo/math/Vector3',
-	'../../lib/V',
+	'../../goo/lib/V',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/Texture',
 	'goo/util/CanvasUtils'

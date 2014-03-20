@@ -3,8 +3,8 @@ define([
 	'goo/renderer/Material',
 	'goo/loaders/DynamicLoader',
 	'loaders/Configs',
-	'goo/entities/components/QuadComponent',
-	'goo/loaders/handlers/QuadComponentHandler'
+	'goo/quadpack/QuadComponent',
+	'goo/quadpack/QuadComponentHandler'
 ], function(
 	World,
 	Material,
