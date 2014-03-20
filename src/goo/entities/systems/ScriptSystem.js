@@ -20,16 +20,15 @@ define([
 		this._world = world;
 		var renderer = this._world.gooRunner.renderer;
 		// General world environment
-		this.environment = {
+		this.context = {
 			domElement: renderer.domElement,
 			viewportWidth: renderer.viewportWidth,
 			viewportHeight: renderer.viewportHeight,
 			world: world,
-			SystemBus: SystemBus,
 			activeCameraEntity: null
 		};
 		SystemBus.addListener('goo.setCurrentCamera', function(data) {
-			this.environment.activeCameraEntity = data.entity;
+			this.context.activeCameraEntity = data.entity;
 		}.bind(this));
 		this.manualSetup = false;
 
@@ -47,7 +46,7 @@ define([
 	ScriptSystem.prototype.process = function (entities, tpf) {
 		// Update environment
 		var renderer = this._world.gooRunner.renderer;
-		_.extend(this.environment, {
+		_.extend(this.context, {
 			viewportWidth: renderer.viewportWidth,
 			viewportHeight: renderer.viewportHeight
 		});
@@ -55,7 +54,7 @@ define([
 		// Update scripts
 		for (var i = 0; i < entities.length; i++) {
 			var scriptComponent = entities[i].scriptComponent;
-			scriptComponent.run(entities[i], tpf, this.environment);
+			scriptComponent.run(entities[i], tpf);
 		}
 	};
 

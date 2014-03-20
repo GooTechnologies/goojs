@@ -43,21 +43,21 @@ function (
 	 * @param entity
 	 */
 	ScriptComponent.prototype.setup = function (entity) {
-		var systemEnvironment = entity._world.getSystem('ScriptSystem').environment;
-		var componentEnvironment = Object.create(systemEnvironment);
-		_.extend(componentEnvironment, {
+		var systemContext = entity._world.getSystem('ScriptSystem').context;
+		var componentContext = Object.create(systemContext);
+		_.extend(componentContext, {
 			entity: entity
 		});
 
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			var scriptEnvironment = Object.create(componentEnvironment);
+			var scriptContext = Object.create(componentContext);
 
-			script.environment = scriptEnvironment;
+			script.context = scriptContext;
 
 			if (script.setup) {
 				try {
-					script.setup(script.parameters, script.environment, this._gooClasses);
+					script.setup(script.parameters, script.context, this._gooClasses);
 					if (script.parameters && script.parameters.enabled !== undefined) {
 						script.enabled = script.parameters.enabled;
 					} else {
@@ -80,18 +80,18 @@ function (
 	 * @private
 	 * @param entity {Entity}
 	 * @param tpf {number}
-	 * @param environment
+	 * @param context
 	 */
 	ScriptComponent.prototype.run = function (entity) {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script && script.run && (script.enabled === undefined || script.enabled)) {
 				try {
-					script.run(entity, entity._world.tpf, script.environment, script.parameters);
+					script.run(entity, entity._world.tpf, script.context, script.parameters);
 				} catch (e) {}
 			} else if (script.update && (script.enabled === undefined || script.enabled)) {
 				try {
-					script.update(script.parameters, script.environment, this._gooClasses);
+					script.update(script.parameters, script.contexg, this._gooClasses);
 				} catch (e) {
 					script.enabled = false;
 					SystemBus.emit('goo.scriptError', {
@@ -113,7 +113,7 @@ function (
 			var script = this.scripts[i];
 			if (script.cleanup) {
 				try {
-					script.cleanup(script.parameters, script.environment, this._gooClasses);
+					script.cleanup(script.parameters, script.context, this._gooClasses);
 				} catch (e) {
 					SystemBus.emit('goo.scriptError', {
 						message: e.message || e,
