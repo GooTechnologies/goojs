@@ -1,8 +1,9 @@
 define([], function () {
 	'use strict';
 
-	function Channel(options) {
-		this.entries = [];
+	function Channel(id, options) {
+		this.id = id;
+		this.keyframes = [];
 		this.time = 0;
 		this.lastTime = 0;
 		this.value = 0;
@@ -31,7 +32,7 @@ define([], function () {
 
 		while (end - start > 1) {
 			var mid = Math.floor((end + start) / 2);
-			var midTime = sortedArray[mid].start;
+			var midTime = sortedArray[mid].time;
 
 			if (time > midTime) {
 				start = mid;
@@ -43,59 +44,72 @@ define([], function () {
 		return start;
 	}
 
+	/**
+	 * Called only when mutating the start times of entries to be sure that the order is kept
+	 * @private
+	 */
+	Channel.prototype.sort = function () {
+		this.keyframes.sort(function (a, b) { return a.time < b.time; });
+	};
+
+	/**
+	 * Add a callback to be called at a specific point in time
+	 * @param time
+	 * @param callback
+	 */
 	//! AT: it looks like code duplication, but the alternative is a generalzilla
-	Channel.prototype.addCallback = function (start, callback) {
+	Channel.prototype.addCallback = function (time, callback) {
 		var newCallback = {
-			start: start,
+			time: time,
 			callback: callback
 		};
 
-		if (start > this.lastCallbackTime) {
+		if (time > this.lastCallbackTime) {
 			this.callbackAgenda.push(newCallback);
-			this.lastCallbackTime = start;
-		} else if (!this.callbackAgenda.length || start < this.callbackAgenda[0].start) {
+			this.lastCallbackTime = time;
+		} else if (!this.callbackAgenda.length || time < this.callbackAgenda[0].time) {
 			this.callbackAgenda.unshift(newCallback);
 		} else {
-			var index = find(this.callbackAgenda, start, this.lastCallbackTime) + 1;
+			var index = find(this.callbackAgenda, time, this.lastCallbackTime) + 1;
 			this.callbackAgenda.splice(index, 0, newCallback);
 		}
 	};
 
 	/**
 	 * Schedules a tween
-	 * @param start Start time
+	 * @param time Start time
 	 * @param value
 	 * @param {'linear' | 'quadratic' | 'exponential'} easing Type of easing
 	 * @param [callback] Callback to call when point was passed
 	 */
-	Channel.prototype.addEntry = function (start, value, easing, callback) {
+	Channel.prototype.addKeyframe = function (time, value, easing, callback) {
 		// insert at correct index
 
 		var newEntry = {
-			start: start,
+			time: time,
 			value: value,
 			easingFunction: easing,
 			callback: callback
 		};
 
-		if (start > this.lastTime) {
-			this.entries.push(newEntry);
-			this.lastTime = start;
-		} else if (!this.entries.length || start < this.entries[0].start) {
-			this.entries.unshift(newEntry);
+		if (time > this.lastTime) {
+			this.keyframes.push(newEntry);
+			this.lastTime = time;
+		} else if (!this.keyframes.length || time < this.keyframes[0].time) {
+			this.keyframes.unshift(newEntry);
 		} else {
-			var index = find(this.entries, start, this.lastTime) + 1;
-			this.entries.splice(index, 0, newEntry);
+			var index = find(this.keyframes, time, this.lastTime) + 1;
+			this.keyframes.splice(index, 0, newEntry);
 		}
 
-		if (callback) { this.addCallback(start, callback); console.log('add callback', start); }
+		if (callback) { this.addCallback(time, callback); console.log('add callback', time); }
 	};
 
 	/**
 	 * Executes any callbacks that are scheduled before the current point in time
 	 */
 	Channel.prototype._checkCallbacks = function () {
-		while (this.callbackIndex < this.callbackAgenda.length && this.time > this.callbackAgenda[this.callbackIndex].start) {
+		while (this.callbackIndex < this.callbackAgenda.length && this.time > this.callbackAgenda[this.callbackIndex].time) {
 			this.callbackAgenda[this.callbackIndex].callback();
 			this.callbackIndex++;
 		}
@@ -127,18 +141,18 @@ define([], function () {
 		this._checkCallbacks();
 
 		// run update callback on current position
-		var newEntryIndex = find(this.entries, this.time, this.lastTime);
-		var newEntry = this.entries[newEntryIndex];
+		var newEntryIndex = find(this.keyframes, this.time, this.lastTime);
+		var newEntry = this.keyframes[newEntryIndex];
 
 
 		var newValue;
-		if (this.time <= this.entries[0].start) {
-			newValue = this.entries[0].value;
+		if (this.time <= this.keyframes[0].time) {
+			newValue = this.keyframes[0].value;
 		} else if (this.time >= this.lastTime) {
-			newValue = this.entries[this.entries.length - 1].value;
+			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
-			var nextEntry = this.entries[newEntryIndex + 1];
-			var progressInEntry = (this.time - newEntry.start) / (nextEntry.start - newEntry.start);
+			var nextEntry = this.keyframes[newEntryIndex + 1];
+			var progressInEntry = (this.time - newEntry.time) / (nextEntry.time - newEntry.time);
 			var progressValue = newEntry.easingFunction(progressInEntry);
 
 			newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;

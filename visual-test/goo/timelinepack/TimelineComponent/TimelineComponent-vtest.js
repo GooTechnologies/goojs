@@ -55,12 +55,12 @@ require([
 			}
 		}
 
-		var channel = new Channel({ callbackUpdate: callback, callbackEnd: function () { trace = []; } });
-		channel.addEntry(50, 10, TWEEN.Easing.Quadratic.InOut, getMessenger('start1'));
-		channel.addEntry(100, 160, TWEEN.Easing.Sinusoidal.InOut, getMessenger('start2'));
-		channel.addEntry(170, 80, TWEEN.Easing.Exponential.InOut, getMessenger('start3'));
-		channel.addEntry(300, 400, TWEEN.Easing.Elastic.InOut, getMessenger('start4'));
-		channel.addEntry(400, 200, TWEEN.Easing.Elastic.InOut, getMessenger('start5'));
+		var channel = new Channel('id', { callbackUpdate: callback, callbackEnd: function () { trace = []; } });
+		channel.addKeyframe(50, 10, TWEEN.Easing.Quadratic.InOut, getMessenger('start1'));
+		channel.addKeyframe(100, 160, TWEEN.Easing.Sinusoidal.InOut, getMessenger('start2'));
+		channel.addKeyframe(170, 80, TWEEN.Easing.Exponential.InOut, getMessenger('start3'));
+		channel.addKeyframe(300, 400, TWEEN.Easing.Elastic.InOut, getMessenger('start4'));
+		channel.addKeyframe(400, 200, TWEEN.Easing.Elastic.InOut, getMessenger('start5'));
 		return channel;
 	}
 
@@ -76,12 +76,12 @@ require([
 //		con2d.beginPath();
 //		con2d.moveTo(channel.entries[0].start, channel.entries[0].value);
 
-		channel.entries.forEach(function (entry) {
+		channel.keyframes.forEach(function (entry) {
 //			con2d.lineTo(entry.start + entry.length, entry.valueEnd);
 //			con2d.moveTo(entry.start, entry.valueStart);
 
 			con2d.fillStyle = '#000';
-			con2d.fillRect(entry.start - 2, entry.value - 2, 5, 5);
+			con2d.fillRect(entry.time - 2, entry.value - 2, 5, 5);
 
 //			con2d.fillStyle = '#000';
 //			con2d.fillRect(entry.start + entry.length - 2, entry.valueEnd - 2, 5, 5);

@@ -2,14 +2,16 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/timelinepack/TimelineComponent',
 	'goo/timelinepack/Channel',
-	'goo/util/PromiseUtil'
+	'goo/util/PromiseUtil',
+	'goo/util/ArrayUtil'
 	],
 /** @lends */
 	function(
 	ComponentHandler,
 	TimelineComponent,
 	Channel,
-	PromiseUtil
+	PromiseUtil,
+	ArrayUtil
 	) {
 	'use strict';
 
@@ -44,22 +46,61 @@ define([
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
-			//! AT: not sure if this is the best place
-			for (var i = 0; i < config.channels.length; i++) {
-				var channelConfig = config.channels[i];
+			// remove unmentioned channels
+			component.channels = component.channels.filter(function (channel) {
+				return !!config.channels[channel.id];
+			});
 
-				var channel = new Channel(TimelineComponent.tweenMap[channelConfig.entityProperty]);
-				for (var j = 0; j < channelConfig.entries.length; j++) {
-					var entryConfig = channelConfig.entries[j];
-					var entry = {
-						start: entryConfig.start,
-						value: entryConfig.value,
-						easingFunction: TWEEN.Easing[entryConfig.easingType][entryConfig.easingDirection]
-					};
-					channel.entries.push(entry);
+			for (var channelId in config.channels) {
+				var channelConfig = config.channels[channelId];
+
+				// search for existing one
+				var channel = ArrayUtil.find(component.channels, function (channel) {
+					return channel.id === channelId;
+				});
+
+				// and create one if needed
+				if (!channel) {
+					channel = new Channel(channelId, TimelineComponent.tweenMap[channelConfig.entityProperty]);
+					component.channels.push(channel);
 				}
 
-				component.channels.push(channel);
+				// remove unmentioned keyframes
+				// filter preserves the order, otherwise the channel would fail to work
+				channels.keyframes = channels.keyframes.filter(function (keyframe) {
+					return !!channelConfig.keyframes[keyframe.id];
+				});
+
+				var needsResorting = false;
+
+				for (var keyframeId in channelConfig.keyframes) {
+					var keyframeConfig = channelConfig.keyframes[keyframeId];
+
+					var keyframe = ArrayUtil.find(channel.keyframes, function (keyframe) {
+						return keyframe.id === keyframeId;
+					});
+
+					// create a new keyframe if it does not exist already or update it if it exists
+					if (!keyframe) {
+						// need to do some conversion over here between easingType/Direction and easing
+						var easingFunction = TWEEN.Easing[keyframeConfig.easingType][keyframeConfig.easingDirection];
+						channel.addKeyframe(keyframeConfig.time, keyframeConfig.value, easingFunction);
+					} else {
+						// the time of one keyframe changed so we're not certain anymore that they're sorted
+						if (keyframe.time !== +keyframeConfig.time) {
+							needsResorting = true;
+						}
+						keyframe.time = +keyframeConfig.time;
+						keyframe.value = +keyframeConfig.value;
+						keyframe.easingFunction = TWEEN.Easing[keyframeConfig.easingType][keyframeConfig.easingDirection];
+					}
+				}
+
+				// !AT: if time was changed for any keyframe then the whole channel might not work as expected
+				// could make this even faster but let's not go that far
+				if (needsResorting) {
+					channel.sort();
+				}
 			}
 
 			return PromiseUtil.createDummyPromise(component);
