@@ -269,7 +269,7 @@ function(
 				continue;
 			}
 			if (types.indexOf(param.type) === -1) {
-				errors.push('parameter type needs to be in' + types);
+				errors.push('parameter type needs to be one of (' + types.join(', ') + ')');
 				continue;
 			}
 			if (param.control && typeof param.control !== 'string') {
