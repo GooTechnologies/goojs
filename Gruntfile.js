@@ -31,6 +31,7 @@ module.exports = function(grunt) {
 			'function f(){';
 		wrapperTail +=
 			'}' +
+			'try{'+
 			'if(window.localStorage&&window.localStorage.gooPath){' +
 				// We're configured to not use the engine from goo.js.
 				// Don't call the f function so the modules won't be defined
@@ -38,7 +39,8 @@ module.exports = function(grunt) {
 				'window.require.config({' +
 					'paths:{goo:localStorage.gooPath}' +
 				'})' +
-			'}else f()';
+			'}else f()' +
+			'}catch(e){f()}';
 
 		wrapperTail += '})(window,undefined)';
 		return [wrapperHead, wrapperTail];

@@ -128,4 +128,6 @@ require([
 	var goo = V.initGoo();
 
 	init();
+
+	V.process();
 });

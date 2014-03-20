@@ -2,7 +2,7 @@ define([],
 	/** @lends */
 	function() {
 
-		"use strict";
+		'use strict';
 
 		/**
 		* @class
@@ -29,7 +29,7 @@ define([],
 		 * @param {number} [options.resizeToFit=false]	If true, the image is stretched to fit and centered on the canvas.
 		 * @param {function} callback
 		 */
-		CanvasUtils.prototype.loadCanvasFromPath = function(canvasPath, callback) {
+		CanvasUtils.prototype.loadCanvasFromPath = function (canvasPath, callback) {
 			var options = {};
 			if(arguments.length === 3){
 				// Called with loadCanvasFromPath(path,options,callback)
@@ -100,10 +100,10 @@ define([],
 		 * @param {object} options
 		 * @param {function} callback	Will be called when done. The single argument to this function will be the HTMLCanvasElement, or null if an error occurred.
 		 */
-		CanvasUtils.prototype.renderSvgToCanvas = function(svgSource, options, callback) {
+		CanvasUtils.prototype.renderSvgToCanvas = function (svgSource, options, callback) {
 			var DOMURL = window.URL || window.webkitURL || window;
 
-			var svg = new Blob([svgSource], {type: "image/svg+xml;charset=utf-8"});
+			var svg = new Blob([svgSource], {type: 'image/svg+xml;charset=utf-8'});
 			var url = DOMURL.createObjectURL(svg);
 
 			CanvasUtils.prototype.loadCanvasFromPath(url, options, callback);
@@ -116,15 +116,13 @@ define([],
 		 * @param canvas
 		 * @returns {Array}
 		 */
-
-		CanvasUtils.prototype.getMatrixFromCanvas = function(canvas) {
+		CanvasUtils.prototype.getMatrixFromCanvas = function (canvas) {
 			var context = canvas.getContext('2d');
 
-			var getAt = function(x, y) {
-				if(x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
+			var getAt = function (x, y) {
+				if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
 					return 0;
-				}
-				else {
+				} else {
 					return context.getImageData(x, y, 1, 1).data[0] / 255;
 				}
 			};
@@ -133,12 +131,11 @@ define([],
 			for (var i = 0; i < canvas.width; i++) {
 				matrix.push([]);
 				for (var j = 0; j < canvas.height; j++) {
-					matrix[i].push(getAt(i, canvas.height-(j+1)));
+					matrix[i].push(getAt(i, canvas.height - (j + 1)));
 				}
 			}
 			return matrix;
 		};
 
 		return CanvasUtils;
-
 	});

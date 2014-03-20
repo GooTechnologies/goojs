@@ -58,7 +58,7 @@ function(
 		if (config.shadowCaster) {
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
-				shadowType: 'VSM',
+				shadowType: 'Basic',
 				near: 1,
 				far: 1000,
 				resolution: [512, 512],
@@ -124,7 +124,11 @@ function(
 				}
 			}
 
-			if (config.lightCookie) {
+			if (config.type === 'PointLight') {
+				light.shadowCaster = false;
+			}
+
+			if (config.lightCookie && config.type !== 'PointLight') {
 				var textureRef = config.lightCookie;
 				textureRef = (textureRef.enabled) ? textureRef.textureRef : textureRef;
 
@@ -133,6 +137,7 @@ function(
 					return component;
 				});
 			} else {
+				light.lightCookie = null;
 				return component;
 			}
 		});
