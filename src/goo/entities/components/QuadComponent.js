@@ -20,13 +20,31 @@ function (
 	'use strict';
 
 	/**
-	 * @class Quad component that holds mesh and a material.
+	 * @class Quad component that holds a unit [Quad]{@link Quad} mesh and a [Material]{@link Material}. It makes it easy to create a textured quad in 3D space, for example a logotype. When the component is added to the world, all other needed components are automatically added to the entity.
+	 * @param {Material} [material] If none was given, a default material is used.
+	 * @extends {Component}
 	 */
 	function QuadComponent(material) {
 		this.type = QuadComponent.type;
-		this.meshData = new Quad(); // 1x1 quad
+
+		/** The quad meshdata.
+		 * @type {Quad}
+		 */
+		this.meshData = new Quad();
+
+		/** Mesh data component that this component creates and adds to the entity.
+		 * @type {MeshDataComponent}
+		 */
 		this.meshDataComponent = new MeshDataComponent(this.meshData);
+
+		/** Mesh renderer component that this component creates and adds to the entity.
+		 * @type {MeshRendererComponent}
+		 */
 		this.meshRendererComponent = new MeshRendererComponent(this.meshRendererComponent);
+
+		/** The material currently used by the component.
+		 * @type {Material}
+		 */
 		this.material = material || QuadComponent.DEFAULT_MATERIAL;
 
 		this.attachMaterial();
@@ -36,8 +54,16 @@ function (
 
 	QuadComponent.type = 'QuadComponent';
 
+	/**
+	 * Used if no material was given to the constructor.
+	 * @static
+	 * @type {Material}
+	 */
 	QuadComponent.DEFAULT_MATERIAL = new Material(ShaderLib.uber, 'QuadComponent default material');
 
+	/**
+	 * Attaches the current material to the meshrenderer component.
+	 */
 	QuadComponent.prototype.attachMaterial = function(){
 		var idx = this.meshRendererComponent.materials.indexOf(this.material);
 		if(idx === -1){
@@ -46,6 +72,9 @@ function (
 		}
 	};
 
+	/**
+	 * Removes the current material from the meshrenderer component.
+	 */
 	QuadComponent.prototype.removeMaterial = function(){
 		var idx = this.meshRendererComponent.materials.indexOf(this.material);
 		if(idx !== -1){
@@ -53,12 +82,6 @@ function (
 			this.meshRendererComponent.materials.splice(idx,1);
 		}
 	};
-
-	/*
-	QuadComponent.applyOnEntity = function(obj, entity) {
-		//TODO
-	};
-	*/
 
 	return QuadComponent;
 });
