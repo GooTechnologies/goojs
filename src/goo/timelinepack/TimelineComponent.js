@@ -15,10 +15,18 @@ define([
 	TimelineComponent.prototype = Object.create(Component.prototype);
 	TimelineComponent.prototype.constructor = TimelineComponent;
 
+	/**
+	 * Adds a channel
+	 * @param {Channel} channel
+	 */
 	TimelineComponent.prototype.addChannel = function (channel) {
 		this.channels.push(channel);
 	};
 
+	/**
+	 * Updates all channels with the time per last frame
+	 * @param {number} tpf
+	 */
 	TimelineComponent.prototype.update = function (tpf) {
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
@@ -27,6 +35,10 @@ define([
 		}
 	};
 
+	/**
+	 * Sets the time on all channels
+	 * @param {number} time
+	 */
 	TimelineComponent.prototype.setTime = function (time) {
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
@@ -34,4 +46,6 @@ define([
 			channel.setTime(time);
 		}
 	};
+
+	return TimelineComponent;
 });

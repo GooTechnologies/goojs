@@ -20,4 +20,6 @@ define([
 			entity.timelineComponent.update(tpf);
 		}
 	};
+
+	return TimelineSystem;
 });

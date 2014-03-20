@@ -100,6 +100,47 @@ define([
 					meshRef: this.mesh().id,
 					poseRef: this.skeleton().id
 				};
+			},
+			timeline: function () {
+				return {
+					channels: {
+						'c1': {
+							propertyKey: 'scaleX',
+							keyframes: {
+								'k1': {
+									time: 10,
+									value: 20,
+									tweenFunction: 'Linear'
+								},
+								'k2': {
+									time: 100,
+									value: 50,
+									tweenFunction: 'Linear'
+								},
+								'k3': {
+									time: 200,
+									value: 50,
+									tweenFunction: 'Linear'
+								}
+							}
+						},
+						'c2': {
+							propertyKey: 'translationY',
+							keyframes: {
+								'k1': {
+									time: 200,
+									value: 20,
+									tweenFunction: 'Linear'
+								},
+								'k2': {
+									time: 100,
+									value: 50,
+									tweenFunction: 'Linear'
+								}
+							}
+						}
+					}
+				};
 			}
 		},
 		attachChild: function(parent, child) {

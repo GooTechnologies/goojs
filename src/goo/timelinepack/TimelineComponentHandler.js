@@ -33,7 +33,7 @@ define([
 		return new TimelineComponent();
 	};
 
-	TimelineComponent.tweenMap = {
+	TimelineComponentHandler.tweenMap = {
 		'translationX': Channel.getTranslationXTweener,
 		'translationY': Channel.getTranslationYTweener,
 		'translationZ': Channel.getTranslationZTweener,
@@ -61,13 +61,13 @@ define([
 
 				// and create one if needed
 				if (!channel) {
-					channel = new Channel(channelId, TimelineComponent.tweenMap[channelConfig.entityProperty]);
+					channel = new Channel(channelId, TimelineComponentHandler.tweenMap[channelConfig.propertyKey]);
 					component.channels.push(channel);
 				}
 
 				// remove unmentioned keyframes
 				// filter preserves the order, otherwise the channel would fail to work
-				channels.keyframes = channels.keyframes.filter(function (keyframe) {
+				channel.keyframes = channel.keyframes.filter(function (keyframe) {
 					return !!channelConfig.keyframes[keyframe.id];
 				});
 
@@ -80,10 +80,13 @@ define([
 						return keyframe.id === keyframeId;
 					});
 
+					var easingType = 'Linear'; //keyframe.easing.substr
+					var easingDirection = 'None';
+
 					// create a new keyframe if it does not exist already or update it if it exists
 					if (!keyframe) {
 						// need to do some conversion over here between easingType/Direction and easing
-						var easingFunction = TWEEN.Easing[keyframeConfig.easingType][keyframeConfig.easingDirection];
+						var easingFunction = TWEEN.Easing[easingType][easingDirection];
 						channel.addKeyframe(keyframeConfig.time, keyframeConfig.value, easingFunction);
 					} else {
 						// the time of one keyframe changed so we're not certain anymore that they're sorted
@@ -92,7 +95,7 @@ define([
 						}
 						keyframe.time = +keyframeConfig.time;
 						keyframe.value = +keyframeConfig.value;
-						keyframe.easingFunction = TWEEN.Easing[keyframeConfig.easingType][keyframeConfig.easingDirection];
+						keyframe.easingFunction = TWEEN.Easing[easingType][easingDirection];
 					}
 				}
 
@@ -103,7 +106,7 @@ define([
 				}
 			}
 
-			return PromiseUtil.createDummyPromise(component);
+			return component;
 		});
 	};
 
