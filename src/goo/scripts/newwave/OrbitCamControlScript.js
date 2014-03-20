@@ -274,7 +274,7 @@ define([
 			}
 		}
 
-		function update(parameters, environment) {
+		function update(parameters, environment, goo) {
 			var entity = environment.entity;
 			// grab our transformComponent
 			var transformComponent = entity.transformComponent;
@@ -324,7 +324,7 @@ define([
 
 			// set our component updated.
 			transformComponent.setUpdated();
-			environment.SystemBus.emit('goo.cameraPositionChanged', {
+			goo.SystemBus.emit('goo.cameraPositionChanged', {
 				spherical: environment.spherical.data,
 				translation: transform.translation.data,
 				lookAtPoint: environment.lookAtPoint.data,

@@ -91,7 +91,7 @@ function (
 				} catch (e) {}
 			} else if (script.update && (script.enabled === undefined || script.enabled)) {
 				try {
-					script.update(script.parameters, script.contexg, this._gooClasses);
+					script.update(script.parameters, script.context, this._gooClasses);
 				} catch (e) {
 					script.enabled = false;
 					SystemBus.emit('goo.scriptError', {

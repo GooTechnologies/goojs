@@ -14,17 +14,17 @@ define([
 	function OrbitNPan() {
 		var orbitScript = Scripts.create('OrbitCamControlScript');
 		var panScript = Scripts.create('PanCamControlScript');
-		function setup(parameters, environment) {
-			orbitScript.setup(parameters, environment);
-			panScript.setup(parameters, environment);
+		function setup(parameters, environment, goo) {
+			orbitScript.setup(parameters, environment, goo);
+			panScript.setup(parameters, environment, goo);
 		}
-		function update(parameters, environment) {
-			panScript.update(parameters, environment);
-			orbitScript.update(parameters, environment);
+		function update(parameters, environment, goo) {
+			panScript.update(parameters, environment, goo);
+			orbitScript.update(parameters, environment, goo);
 		}
-		function cleanup(parameters, environment) {
-			panScript.cleanup(parameters, environment);
-			orbitScript.cleanup(parameters, environment);
+		function cleanup(parameters, environment, goo) {
+			panScript.cleanup(parameters, environment, goo);
+			orbitScript.cleanup(parameters, environment, goo);
 		}
 
 		return {
