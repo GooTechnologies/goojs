@@ -23,7 +23,7 @@ function(
 	MeshRendererComponent,
 	QuadComponent
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of quadcomponents

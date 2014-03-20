@@ -1,19 +1,9 @@
 define([
-	'goo/entities/systems/System',
-	'goo/sound/AudioContext',
-	'goo/math/Vector3',
-	'goo/math/MathUtils',
-	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil'
+	'goo/entities/systems/System'
 ],
 /** @lends */
 function(
-	System,
-	AudioContext,
-	Vector3,
-	MathUtils,
-	SystemBus,
-	_
+	System
 ) {
 	'use strict';
 	/**
