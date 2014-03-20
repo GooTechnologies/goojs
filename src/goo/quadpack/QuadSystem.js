@@ -7,7 +7,9 @@ function(
 ) {
 	'use strict';
 	/**
-	 * @class System responsible for quads
+	 * @class System responsible for quads.
+	 * @see {QuadComponent}
+	 * @extends {System}
 	 */
 	function QuadSystem() {
 		System.call(this, 'QuadSystem', ['QuadComponent']);

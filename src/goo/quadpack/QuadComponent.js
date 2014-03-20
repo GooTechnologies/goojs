@@ -20,7 +20,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class Quad component that holds a unit [Quad]{@link Quad} mesh and a [Material]{@link Material}. It makes it easy to create a textured quad in 3D space, for example a logotype. When the component is added to the world, all other needed components are automatically added to the entity.
+	 * @class Quad component that holds a unit [Quad]{@link Quad} mesh and a [Material]{@link Material}. It makes it easy to create a textured quad in 3D space, for example a logotype. When the component is added to the world, all other needed components are automatically added to the entity. Make sure your add a [QuadSystem]{@link QuadSystem} to the world before you start using this component.
+	 * @see QuadSystem
 	 * @param {Material} [material] If none was given, a default material is used.
 	 * @extends {Component}
 	 */
@@ -29,16 +30,19 @@ function (
 
 		/** The quad meshdata.
 		 * @type {Quad}
+		 * @private
 		 */
 		this.meshData = new Quad();
 
 		/** Mesh data component that this component creates and adds to the entity.
 		 * @type {MeshDataComponent}
+		 * @private
 		 */
 		this.meshDataComponent = new MeshDataComponent(this.meshData);
 
 		/** Mesh renderer component that this component creates and adds to the entity.
 		 * @type {MeshRendererComponent}
+		 * @private
 		 */
 		this.meshRendererComponent = new MeshRendererComponent(this.meshRendererComponent);
 
