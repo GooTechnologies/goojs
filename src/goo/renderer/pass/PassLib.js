@@ -722,6 +722,7 @@ function(
 		Colorify: Colorify,
 		Hatch: Hatch,
 		Dot: Dot,
-		Contrast: Contrast
+		Contrast: Contrast,
+		DiffOfGaussians: DiffOfGaussians
 	};
 });

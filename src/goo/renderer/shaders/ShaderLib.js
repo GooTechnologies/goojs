@@ -2201,7 +2201,7 @@ define([
 			'vec4 originalColor = texture2D(originalImage, texCoord0);',
 
 			'vec3 nonEdgeColor = mix(originalColor.rgb, backgroundColor.rgb, backgroundMix);',
-			'vec3 diffColor = clamp(blur1.rgb - blur2.rgb, 0.0, 1.0);',
+			'vec3 diffColor = abs(blur1.rgb - blur2.rgb);',
 			'float edgeValue = (diffColor.r + diffColor.g + diffColor.b) / 3.0;',
 			'edgeValue = smoothstep(0.0, threshold, edgeValue);',
 			'vec3 outputColor = mix(nonEdgeColor, edgeColor.rgb, edgeValue);',
