@@ -3,7 +3,6 @@ define([
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts',
 	'goo/util/ObjectUtil',
-	'goo/scripts/GooClassRegister',
 	'goo/scripts/ScriptRegister'
 ],
 /** @lends */
