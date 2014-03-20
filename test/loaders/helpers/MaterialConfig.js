@@ -54,6 +54,21 @@ define([
 			});
 			return texture;
 		},
+		textureSVG: function() {
+			var texture = this.gooObject('texture', 'Dummy');
+			_.extend(texture, {
+				magFilter: 'Bilinear',
+				minFilter: 'Trilinear',
+				offset: [0,0],
+				repeat: [1,1],
+				svgData: "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='100'><rect x='0' y='0' width='200' height='100' fill='blue' /></svg>",
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
+				anisotropy: 1,
+				flipY: true
+			});
+			return texture;
+		},
 		shader: function() {
 			var shader = this.gooObject('shader', 'Dummy');
 			_.extend(shader, {

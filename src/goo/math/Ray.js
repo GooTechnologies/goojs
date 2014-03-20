@@ -134,36 +134,37 @@ function (Vector3, MathUtils) {
 		}
 
 		if (locationStore) {
-			locationStore.set(this.direction).scale(ratio).add(this.origin);
+			locationStore.setv(this.direction).scale(ratio).addv(this.origin);
 		}
 
 		return true;
 	};
 
 	/**
-	 * @param point Vector3
-	 * @param store if not null, the closest point is stored in this param
+	 * @param {Vector3} point
+	 * @param {Vecotr3} [store] if not null, the closest point is stored in this param
 	 * @return the squared distance from this ray to the given point.
 	 */
 	Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = this.calcVec1;
-		vectorA.set(point).sub(this.origin);
+
+		vectorA.setv(point).subv(this.origin);
 		var t0 = this.direction.dot(vectorA);
 		if (t0 > 0) {
 			// d = |P - (O + t*D)|
-			vectorA.set(this.direction).scale(t0);
-			vectorA.add(this.origin);
+			vectorA.setv(this.direction).scale(t0);
+			vectorA.addv(this.origin);
 		} else {
 			// ray is closest to origin point
-			vectorA.set(this.origin);
+			vectorA.setv(this.origin);
 		}
 
 		// Save away the closest point if requested.
 		if (store) {
-			store.set(vectorA);
+			store.setv(vectorA);
 		}
 
-		vectorA.sub(point);
+		vectorA.subv(point);
 		return vectorA.lengthSquared();
 	};
 

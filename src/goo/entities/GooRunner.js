@@ -160,7 +160,7 @@ function (
 
 		this.animationId = 0;
 		if (!parameters.manuallyStartGameLoop) {
-			this.startGameLoop(this.run);
+			this.startGameLoop();
 		}
 
 		if (parameters.debugKeys) {
@@ -189,9 +189,11 @@ function (
 
 		GameUtils.addVisibilityChangeListener(function (paused) {
 			if (paused) {
-				this.stopGameLoop();
+				this._stopGameLoop();
 			} else {
-				this.startGameLoop();
+				if (!this.manuallyPaused) {
+					this._startGameLoop();
+				}
 			}
 		}.bind(this));
 
@@ -204,6 +206,8 @@ function (
 			pickingStore: {},
 			clearColorStore: []
 		};
+
+		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
 	}
 
 	/**
@@ -445,7 +449,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to call when event is fired
 	 */
-	GooRunner.prototype.addEventListener = function(type, callback) {
+	GooRunner.prototype.addEventListener = function (type, callback) {
 		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
 		}
@@ -463,7 +467,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to remove from event listener
 	 */
-	GooRunner.prototype.removeEventListener = function(type, callback) {
+	GooRunner.prototype.removeEventListener = function (type, callback) {
 		if(!this._eventListeners[type]) {
 			return;
 		}
@@ -476,7 +480,7 @@ function (
 		}
 	};
 
-	GooRunner.prototype._dispatchEvent = function(evt) {
+	GooRunner.prototype._dispatchEvent = function (evt) {
 		for (var type in this._eventTriggered) {
 			if(this._eventTriggered[type] && this._eventListeners[type]) {
 				var e = {
@@ -504,7 +508,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @private
 	 */
-	GooRunner.prototype._enableEvent = function(type) {
+	GooRunner.prototype._enableEvent = function (type) {
 		if(this._events[type]) {
 			return;
 		}
@@ -534,7 +538,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @private
 	 */
-	GooRunner.prototype._disableEvent = function(type) {
+	GooRunner.prototype._disableEvent = function (type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
 		}
@@ -542,9 +546,10 @@ function (
 	};
 
 	/**
-	 * Starts the game loop. (done through requestAnimationFrame)
+	 * The method that actually starts the game loop
+	 * @private
 	 */
-	GooRunner.prototype.startGameLoop = function () {
+	GooRunner.prototype._startGameLoop = function () {
 		if (!this.animationId) {
 			this.start = -1;
 			this.animationId = window.requestAnimationFrame(this.run);
@@ -552,17 +557,34 @@ function (
 	};
 
 	/**
-	 * Stops the game loop.
+	 * Starts the game loop. (done through requestAnimationFrame)
 	 */
-	GooRunner.prototype.stopGameLoop = function () {
+	GooRunner.prototype.startGameLoop = function () {
+		this.manuallyPaused = false;
+		this._startGameLoop();
+	};
+
+	/**
+	 * The method that actually stops the game loop
+	 * @private
+	 */
+	GooRunner.prototype._stopGameLoop = function () {
 		window.cancelAnimationFrame(this.animationId);
 		this.animationId = 0;
 	};
 
 	/**
+	 * Stops the game loop.
+	 */
+	GooRunner.prototype.stopGameLoop = function () {
+		this.manuallyPaused = true;
+		this._stopGameLoop();
+	};
+
+	/**
 	 * Takes an image snapshot from the 3d scene at next render call
 	 */
-	GooRunner.prototype.takeSnapshot = function(callback) {
+	GooRunner.prototype.takeSnapshot = function (callback) {
 		this._takeSnapshots.push(callback);
 	};
 
@@ -574,7 +596,7 @@ function (
 	 * @param {Function} callback to handle the pick result
 	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
 	 */
-	GooRunner.prototype.pick = function(x, y, callback, skipUpdateBuffer) {
+	GooRunner.prototype.pick = function (x, y, callback, skipUpdateBuffer) {
 		this._picking.x = x;
 		this._picking.y = y;
 		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;

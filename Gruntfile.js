@@ -31,6 +31,7 @@ module.exports = function(grunt) {
 			'function f(){';
 		wrapperTail +=
 			'}' +
+			'try{'+
 			'if(window.localStorage&&window.localStorage.gooPath){' +
 				// We're configured to not use the engine from goo.js.
 				// Don't call the f function so the modules won't be defined
@@ -38,7 +39,8 @@ module.exports = function(grunt) {
 				'window.require.config({' +
 					'paths:{goo:localStorage.gooPath}' +
 				'})' +
-			'}else f()';
+			'}else f()' +
+			'}catch(e){f()}';
 
 		wrapperTail += '})(window,undefined)';
 		return [wrapperHead, wrapperTail];
@@ -118,6 +120,10 @@ module.exports = function(grunt) {
 			geometrypack: {
 				packName: 'geometrypack',
 				outBaseDir: 'out'
+			},
+			quadpack: {
+				packName: 'quadpack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {
@@ -138,7 +144,7 @@ module.exports = function(grunt) {
 	grunt.loadTasks('tools/grunt_tasks');
 
 	grunt.registerTask('default',  ['minify']);
-	grunt.registerTask('minify',   ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
+	grunt.registerTask('minify',   ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack']);
 	grunt.registerTask('unittest', ['karma:unit']);
 
 	//! AT: no better place to put this

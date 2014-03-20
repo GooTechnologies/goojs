@@ -43,5 +43,10 @@ function(
 		}
 	};
 
+	TagAction.prototype.cleanup = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		entity.clearComponent('ProximityComponent');
+	};
+
 	return TagAction;
 });

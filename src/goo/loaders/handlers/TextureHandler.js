@@ -7,7 +7,8 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/util/CanvasUtils'
 ],
 /** @lends */
 function(
@@ -19,7 +20,8 @@ function(
 	RSVP,
 	pu,
 	Util,
-	_
+	_,
+	CanvasUtils
 ) {
 	'use strict';
 
@@ -184,6 +186,28 @@ function(
 				} else {
 					throw new Error('Unknown texture type');
 				}
+			} else if(config.svgData){
+				// Load SVG data
+				var canvasUtils = new CanvasUtils();
+				var p = new RSVP.Promise();
+				var opts = {
+					resizeToFit: true,
+				};
+				if(config.renderSize){
+					opts.width = config.renderSize;
+					opts.height = config.renderSize;
+				}
+				canvasUtils.renderSvgToCanvas(config.svgData, opts, function (canvas) {
+					if (!canvas){
+						throw new Error('Could not rasterize SVG to canvas!');
+					} else {
+						texture.setImage(canvas);
+						p.resolve(texture);
+					}
+					return p;
+				});
+				return p;
+
 			} else {
 				// Blank
 				// console.warn('Texture ' + ref + ' has no imageRef');

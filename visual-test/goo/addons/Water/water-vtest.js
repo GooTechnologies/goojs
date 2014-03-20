@@ -155,4 +155,6 @@ require([
 
 	waterRenderer.waterMaterial.shader.uniforms.fogColor = [1.0, 1.0, 1.0];
 	waterRenderer.waterMaterial.shader.uniforms.fogStart = 0;
+
+	V.process();
 });

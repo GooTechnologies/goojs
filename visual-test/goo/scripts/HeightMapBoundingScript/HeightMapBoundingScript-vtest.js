@@ -1,6 +1,4 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
@@ -20,10 +18,9 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/HeightMapBoundingScript',
-	'goo/util/CanvasUtils'
+	'goo/util/CanvasUtils',
+	'../../lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
@@ -43,7 +40,8 @@ require([
 	WASDControlScript,
 	MouseLookControlScript,
 	HeightMapBoundingScript,
-	CanvasUtils
+	CanvasUtils,
+	V
 	) {
 	'use strict';
 
@@ -69,8 +67,8 @@ require([
 					run: function(entity) {
 						var translation = entity.transformComponent.transform.translation;
 
-						translation.data[0] = Math.cos(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
-						translation.data[2] = Math.sin(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+						translation.data[0] = Math.cos(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+						translation.data[2] = Math.sin(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
 
 						entity.transformComponent.setUpdated();
 					}
@@ -83,59 +81,42 @@ require([
 		}
 	}
 
-	function heightMapBoundingScriptDemo(goo) {
-		var canvasUtils = new CanvasUtils();
 
-		canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
-			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
-			var heightMapBoundingScript = new HeightMapBoundingScript(matrix);
+	var goo = V.initGoo();
+	var world = goo.world;
 
-			var meshData = Surface.createFromHeightMap(matrix);
+	var canvasUtils = new CanvasUtils();
 
-			var material = new Material(ShaderLib.simpleLit, '');
-			material.wireframe = true;
-			var surfaceEntity = goo.world.createEntity(meshData, material, '');
-			surfaceEntity.transformComponent.setUpdated();
-			surfaceEntity.addToWorld();
+	canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
+		var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+		var heightMapBoundingScript = new HeightMapBoundingScript(matrix);
 
-			addSpheres(goo, heightMapBoundingScript);
+		var meshData = Surface.createFromHeightMap(matrix);
 
-			var light1 = new PointLight();
-			var light1Entity = goo.world.createEntity('light');
-			light1Entity.setComponent(new LightComponent(light1));
-			light1Entity.transformComponent.transform.translation.set(0, 100, 0);
-			light1Entity.addToWorld();
+		var material = new Material(ShaderLib.simpleLit);
+		material.wireframe = true;
 
-			// Add camera
-			var camera = new Camera(45, 1, 1, 1000);
-			var cameraEntity = goo.world.createEntity("CameraEntity");
-			cameraEntity.transformComponent.transform.translation.set(0, 10, 0);
-			cameraEntity.transformComponent.transform.lookAt(new Vector3(30, 0, 30), Vector3.UNIT_Y);
-			cameraEntity.setComponent(new CameraComponent(camera));
-			cameraEntity.addToWorld();
+		var surfaceEntity = world.createEntity(meshData, material);
+		surfaceEntity.transformComponent.setUpdated();
+		surfaceEntity.addToWorld();
 
-			// Camera control set up
-			var scripts = new ScriptComponent();
-			scripts.scripts.push(new WASDControlScript({
+		addSpheres(goo, heightMapBoundingScript);
+
+		// Add camera
+		var cameraEntity = world.createEntity(new Camera(), 'CameraEntity', [0, 10, 0]).lookAt(30, 0, 30).addToWorld();
+
+		// Camera control set up
+		var scriptComponent = new ScriptComponent([
+			new WASDControlScript({
 				domElement : goo.renderer.domElement,
 				walkSpeed : 25.0,
 				crawlSpeed : 10.0
-			}));
-			scripts.scripts.push(new MouseLookControlScript({
+			}),
+			new MouseLookControlScript({
 				domElement : goo.renderer.domElement
-			}));
-			//scripts.scripts.push(heightMapBoundingScript);
-			cameraEntity.setComponent(scripts);
-		});
-	}
+			})
+		]);
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		heightMapBoundingScriptDemo(goo);
-	}
-
-	init();
+		cameraEntity.set(scriptComponent);
+	});
 });

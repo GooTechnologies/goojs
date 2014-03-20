@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A punctiform source of light. So far it has the same effect as {@link Light}
+	 * @class A omni-directional source of light. So far it has the same effect as {@link Light}
 	 * @constructor
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
@@ -29,7 +29,7 @@ define([
 	/**
 	 * Updates the light's translation
 	 * @private
-	 * @param transform
+	 * @param {Transform} transform
 	 */
 	PointLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
