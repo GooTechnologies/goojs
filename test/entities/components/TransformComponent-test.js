@@ -116,6 +116,12 @@ define([
 			expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
 		});
 
+		it('handles getTranslation on host the same way as on itself', function () {
+			var entity = world.createEntity();
+			entity.setComponent(new TransformComponent());
+			expect(entity.getTranslation()).toBe(entity.transformComponent.getTranslation());
+		});
+
 		it('returns the parent host entity when calling any transform related method on it', function () {
 			var entity = world.createEntity();
 			entity.setComponent(new TransformComponent());

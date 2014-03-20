@@ -919,6 +919,8 @@ function (
 			this.hardwarePicking.clearColorStore.setv(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
 				var devicePixelRatio = window.devicePixelRatio || 1;
+				devicePixelRatio /= this.svg.currentScale;
+
 				var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 				var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
@@ -949,6 +951,8 @@ function (
 			return;
 		}
 		var devicePixelRatio = window.devicePixelRatio || 1;
+		devicePixelRatio /= this.svg.currentScale;
+
 		var pickingResolutionDivider = 4;
 		var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 		var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
@@ -1250,10 +1254,9 @@ function (
 		} else if (texture.variant === 'CUBE') {
 			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					if (image.data[i]) {
+					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
-					}
-					else {
+					} else {
 						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}

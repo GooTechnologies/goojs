@@ -2,13 +2,13 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Vector3',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/renderer/MeshData'
 ], function(
 	BoundingBox,
 	BoundingSphere,
 	Vector3,
-	ShapeCreator,
+	Box,
 	MeshData
 ) {
 	'use strict';
@@ -35,7 +35,7 @@ define([
 			it('computes the center of the bounding box from verts (of default box)', function() {
 				boundingBox1 = new BoundingBox();
 
-				var boxMeshData = ShapeCreator.createBox();
+				var boxMeshData = new Box();
 				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
 				expect(boundingBox1.center.data[0]).toBeCloseTo(0);
 				expect(boundingBox1.center.data[1]).toBeCloseTo(0);
@@ -53,7 +53,7 @@ define([
 
 			it('computes max & min of the bounding box from verts (of default box)', function() {
 				boundingBox1 = new BoundingBox();
-				var boxMeshData = ShapeCreator.createBox();
+				var boxMeshData = new Box();
 				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
 				expect(boundingBox1.min.data[0]).toBeCloseTo(-0.5);
 				expect(boundingBox1.min.data[1]).toBeCloseTo(-0.5);
@@ -77,7 +77,7 @@ define([
 
 			it('computes x/y/zExtent of the bounding box from verts (of default box)', function() {
 				boundingBox1 = new BoundingBox();
-				var boxMeshData = ShapeCreator.createBox();
+				var boxMeshData = new Box();
 				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
 				expect(boundingBox1.xExtent).toBeCloseTo(0.5);
 				expect(boundingBox1.yExtent).toBeCloseTo(0.5);

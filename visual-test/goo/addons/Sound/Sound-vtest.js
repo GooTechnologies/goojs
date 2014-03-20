@@ -1,7 +1,8 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
 	'goo/renderer/TextureCreator',
@@ -11,7 +12,8 @@ require([
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Sphere,
+	Box,
 	ScriptComponent,
 	Vector3,
 	TextureCreator,
@@ -22,35 +24,23 @@ require([
 	'use strict';
 
 	var goo = V.initGoo();
+	var world = goo.world;
 
 	// create panning cube
-	var meshData = ShapeCreator.createBox();
-	var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+	var meshData = new Box();
+	var material = new Material(ShaderLib.texturedLit);
 	var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
-	var cubeEntity = goo.world.createEntity(meshData, material).addToWorld();
+	var cubeEntity = world.createEntity(meshData, material).addToWorld();
 
-	cubeEntity.setComponent(new ScriptComponent({
-		run: function (entity) {
-			entity.transformComponent.transform.setRotationXYZ(
-				goo.world.time * 1.2,
-				goo.world.time * 2.0,
-				0
-			);
-			entity.transformComponent.transform.translation.setd(
-				Math.cos(goo.world.time) * 10,
-				0,
-				0
-			);
-			entity.transformComponent.setUpdated();
-		}
-	}));
+	cubeEntity.set(function (entity) {
+			entity.setRotation(world.time * 1.2, world.time * 2.0, 0)
+				.set([Math.cos(world.time) * 10, 0, 0]);
+		});
 
-	meshData = ShapeCreator.createSphere(32, 32);
-	var sphereEntity = goo.world.createEntity(meshData, material, [0, 0, 5]).addToWorld();
-
-
+	meshData = new Sphere(32, 32);
+	var sphereEntity = world.createEntity(meshData, material, [0, 0, 5]).addToWorld();
 
 	var resourceUrl = '../../resources/';
 	var urls = ['sfx1', 'sfx2'].map(function (fileName) { return resourceUrl + fileName + '.wav'; });
@@ -73,11 +63,11 @@ require([
 
 		var soundComponent = new SoundComponent();
 		soundComponent.addSound(sounds[0]);
-		cubeEntity.setComponent(soundComponent);
+		cubeEntity.set(soundComponent);
 
 		soundComponent = new SoundComponent();
 		soundComponent.addSound(sounds[1]);
-		sphereEntity.setComponent(soundComponent);
+		sphereEntity.set(soundComponent);
 
 		setupKeys();
 	}
@@ -116,4 +106,6 @@ require([
 	V.addLights();
 
 	V.addOrbitCamera();
+
+	V.process();
 });

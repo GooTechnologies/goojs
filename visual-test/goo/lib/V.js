@@ -11,7 +11,9 @@ define([
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
-	'goo/entities/EntitySelection'
+	'goo/entities/EntitySelection',
+	'lib/purl',
+	'lib/RNG'
 ], function (
 	GooRunner,
 	World,
@@ -25,7 +27,9 @@ define([
 	ScriptComponent,
 	Vector3,
 	PointLight,
-	EntitySelection
+	EntitySelection,
+	purl,
+	RNG
 	) {
 	'use strict';
 
@@ -65,18 +69,24 @@ define([
 		lookAt = V.toVector3(lookAt, new Vector3(0, 0, 0));
 
 		var camera = new Camera();
-		var orbitScript = new OrbitCamControlScript({
-			domElement : V.goo.renderer.domElement,
-			spherical : spherical,
-			demoMode: true,
-			moveInterval: 4000,
-			moveInitialDelay: 200,
-			lookAtPoint: lookAt,
-			drag: 5.0,
-			releaseVelocity: true,
+
+		var orbitCamOpetions = {
+			domElement        : V.goo.renderer.domElement,
+			spherical         : spherical,
+			lookAtPoint       : lookAt,
+			drag              : 5.0,
+			releaseVelocity   : true,
 			interpolationSpeed: 7,
-			dragButton: typeof dragButton === 'number' ? dragButton : -1
-		});
+			dragButton        : typeof dragButton === 'number' ? dragButton : -1
+		};
+
+		if (!V.deterministic) {
+			orbitCamOpetions.demoMode = true;
+			orbitCamOpetions.moveInterval = 4000;
+			orbitCamOpetions.moveInitialDelay = 200;
+		}
+
+		var orbitScript = new OrbitCamControlScript(orbitCamOpetions);
 
 		return V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
 	};
@@ -86,12 +96,14 @@ define([
 	 * @returns {Array}
 	 */
 	function getRandomColor() {
-		var angle = Math.random() * Math.PI * 2;
+		var angle = V.rng.nextFloat() * Math.PI * 2;
 		var color = [
 			angle,
-			angle + Math.PI * 2 / 3,
-			angle + Math.PI * 4 / 3
-		].map(function (v) { return Math.sin(v) / 2 + 0.5; });
+				angle + Math.PI * 2 / 3,
+				angle + Math.PI * 4 / 3
+		].map(function (v) {
+				return Math.sin(v) / 2 + 0.5;
+			});
 		color.push(1);
 
 		return color;
@@ -123,8 +135,8 @@ define([
 	 * @param meshData
 	 * @param rotation
 	 */
-	//! AT: more clear with code duplication
-	V.addShapes = function(nShapes, meshData, rotation) {
+		//! AT: more clear with code duplication
+	V.addShapes = function (nShapes, meshData, rotation) {
 		nShapes = nShapes || 15;
 		meshData = meshData || new Sphere(32, 32);
 		rotation = rotation || [0, 0, 0];
@@ -139,7 +151,7 @@ define([
 					V.goo.world.createEntity(
 						meshData,
 						material,
-						[i - nShapes/2, j - nShapes/2, 0]
+						[i - nShapes / 2, j - nShapes / 2, 0]
 					).setRotation(rotation).addToWorld()
 				);
 			}
@@ -152,7 +164,7 @@ define([
 	 * Adds a grid of spheres
 	 * @param [nSpheres=15]
 	 */
-	V.addSpheres = function(nSpheres) {
+	V.addSpheres = function (nSpheres) {
 		return V.addShapes(nSpheres, new Sphere(32, 32));
 	};
 
@@ -160,7 +172,7 @@ define([
 	 * Adds a grid of boxes to the scene
 	 * @param [nBoxes=15]
 	 */
-	V.addBoxes = function(nBoxes) {
+	V.addBoxes = function (nBoxes) {
 		return V.addShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
@@ -170,7 +182,7 @@ define([
 	 * @param [meshData=new Sphere]
 	 * @param [rotation=(0, 0, 0)]
 	 */
-	V.addColoredShapes = function(nShapes, meshData, rotation) {
+	V.addColoredShapes = function (nShapes, meshData, rotation) {
 		nShapes = nShapes || 15;
 		meshData = meshData || new Sphere(32, 32);
 		rotation = rotation || [0, 0, 0];
@@ -179,14 +191,14 @@ define([
 
 		for (var i = 0; i < nShapes; i++) {
 			for (var j = 0; j < nShapes; j++) {
-				var material = Material.createMaterial(ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
+				var material = new Material(ShaderLib.simpleColored, 'ShapeMaterial' + i + '_' + j);
 				material.uniforms.color = [i / nShapes, j / nShapes, 0.3];
 
 				entities.push(
 					V.goo.world.createEntity(
 						meshData,
 						material,
-						[i - nShapes/2, j - nShapes/2, 0]
+						[i - nShapes / 2, j - nShapes / 2, 0]
 					).setRotation(rotation).addToWorld()
 				);
 			}
@@ -199,7 +211,7 @@ define([
 	 * Adds a grid of colored spheres
 	 * @param [nSpheres=15]
 	 */
-	V.addColoredSpheres = function(nSpheres) {
+	V.addColoredSpheres = function (nSpheres) {
 		return V.addColoredShapes(nSpheres, new Sphere(32, 32));
 	};
 
@@ -207,7 +219,7 @@ define([
 	 * Adds a grid of colored boxes to the scene
 	 * @param [nBoxes=15]
 	 */
-	V.addColoredBoxes = function(nBoxes) {
+	V.addColoredBoxes = function (nBoxes) {
 		return V.addColoredShapes(nBoxes, new Box(0.9, 0.9, 0.9), [Math.PI / 2, Math.PI / 4, Math.PI / 8]);
 	};
 
@@ -216,9 +228,9 @@ define([
 	 */
 	V.addLights = function () {
 		var world = V.goo.world;
-		world.createEntity(new PointLight(), [ 100,  100,  100]).addToWorld();
+		world.createEntity(new PointLight(), [ 100, 100, 100]).addToWorld();
 		world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
-		world.createEntity(new PointLight(), [-100,  100, -100]).addToWorld();
+		world.createEntity(new PointLight(), [-100, 100, -100]).addToWorld();
 	};
 
 	/**
@@ -228,7 +240,7 @@ define([
 	 */
 	V.showNormals = function (entity) {
 		var normalsMeshData = entity.meshDataComponent.meshData.getNormalsMeshData();
-		var normalsMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		var normalsMaterial = new Material(ShaderLib.simpleColored, '');
 		normalsMaterial.uniforms.color = [0.2, 1.0, 0.6];
 		var normalsEntity = V.goo.world.createEntity(normalsMeshData, normalsMaterial);
 		normalsEntity.transformComponent.transform = entity.transformComponent.transform;
@@ -242,6 +254,10 @@ define([
 	 * @returns {GooRunner}
 	 */
 	V.initGoo = function (_options) {
+		// determine if we're running the visual test for people or for machines
+		var params = purl().param();
+		V.deterministic = !!params.deterministic;
+
 		var options = {
 			showStats: true,
 			logo: {
@@ -249,8 +265,15 @@ define([
 				color: '#FFF'
 			}
 		};
-		if (_options && _options.logo) {
-			options.logo = _options.logo;
+
+		if (V.deterministic) {
+			options.showStats = false;
+			options.logo = false;
+			options.manuallyStartGameLoop = true;
+		} else {
+			if (_options && _options.logo) {
+				options.logo = _options.logo;
+			}
 		}
 
 		V.goo = new GooRunner(options);
@@ -258,8 +281,48 @@ define([
 		document.body.appendChild(V.goo.renderer.domElement);
 
 		// V.goo.renderer.setClearColor(154 / 255, 172 / 255, 192 / 255, 1.0); // bright blue-grey
-		V.goo.renderer.setClearColor(103 / 255, 115 / 255, 129 / 255, 1.0); // dar blue-grey
+		V.goo.renderer.setClearColor(103 / 255, 115 / 255, 129 / 255, 1.0); // dark blue-grey
+
+		// let's get a RNG
+		V.rng = new RNG(12348);
+
 		return V.goo;
+	};
+
+	function delay(nFrames, updateCallback, endCallback) {
+		var framesRemaining = nFrames;
+
+		function loop() {
+			framesRemaining--;
+			if (framesRemaining > 0) {
+				updateCallback();
+				requestAnimationFrame(loop);
+			} else {
+				if (endCallback) {
+					endCallback();
+				}
+			}
+		}
+
+		loop();
+	}
+
+	/**
+	 * Required in 'deterministic' mode
+	 */
+	V.process = function () {
+		if (!V.deterministic) { return; }
+
+		// waste some frames
+		delay(8, function () {}, function() {
+			var time = 0;
+			// render some frames
+			delay(3, function () {
+				time += 100;
+				V.goo._updateFrame(time);
+				V.goo.stopGameLoop();
+			});
+		});
 	};
 
 	return V;

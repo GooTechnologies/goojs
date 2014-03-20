@@ -2,7 +2,7 @@ require([
 	'goo/loaders/DynamicLoader',
 	'js/createWorld',
 	'js/drawSkeleton',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Quad',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/MeshData',
@@ -12,7 +12,7 @@ require([
 	DynamicLoader,
 	createWorld,
 	drawSkeleton,
-	ShapeCreator,
+	Quad,
 	MeshDataComponent,
 	MeshRendererComponent,
 	MeshData,
@@ -80,12 +80,13 @@ require([
 			select.options[i] = new Option(opts[i], opts[i]);
 		}
 	}
+
 	function createDebugQuad(goo) {
 		var world = goo.world;
 		var entity = world.createEntity('Quad');
 		entity.transformComponent.transform.translation.set(0, 0, 0);
 
-		var quad = ShapeCreator.createQuad(2, 2);
+		var quad = new Quad(2, 2);
 		var meshDataComponent = new MeshDataComponent(quad);
 		entity.setComponent(meshDataComponent);
 
@@ -123,7 +124,7 @@ require([
 
 		var meshRendererComponent = new MeshRendererComponent();
 		meshRendererComponent.cullMode = 'Never';
-		var material = Material.createMaterial(fsShader, 'fsshader');
+		var material = new Material(fsShader, 'fsshader');
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);
 

@@ -16,29 +16,34 @@ function (
 	'use strict';
 
 	/**
-	 * @class Holds the transform of an entity. It also allows for a scene graph to be created, where transforms are inherited
-	 * down the tree.
+	 * @class Holds the transform of an entity. It also allows for a scene graph to be created,
+	 * in which transforms are inherited down the tree.
 	 */
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
 		this.entity = null;
-		/** Parent transformcomponent in the "scene graph"
+		/** Parent TransformComponent in the "scene graph".
 		 * @type {TransformComponent}
 		 * @default
 		 */
 		this.parent = null;
 		/**
-		 * Child transformcomponents in the "scenegraph"
+		 * Child TransformComponents in the "scene graph".
 		 * @type {TransformComponent[]}
 		 */
 		this.children = [];
-		/** @type {Transform} */
+
+		/**
+		 * The entity's transform in local space.
+		 * @type {Transform}
+		 */
 		this.transform = new Transform();
 
 		/** The entity's transform in world space.
 		 * Read only. Automatically updated.
-		 * @type {Transform} */
+		 * @type {Transform} 
+		 */
 		this.worldTransform = new Transform();
 
 		this._dirty = true;
@@ -129,14 +134,17 @@ function (
 	TransformComponent.prototype.constructor = TransformComponent;
 
 	/**
-	 * Get this transform's translation.
-	 * Please note that this is a helper function returning
-	 * entity.transformComponent.transform.translation
-	 * To change the translation the returned object can be modified
-	 * after which entity.transformComponent.setUpdated() must be called.
-	 * Alternatively use setTranslation or addTranslation which call
-	 * setUpdated() for you.
-	 * 
+	 * Gets the value of transformComponent.transform.translation.
+	 * To change the translation, the returned object can be modified
+	 * after which transformComponent.setUpdated() must be called.
+	 * Alternatively, use setTranslation or addTranslation which call
+	 * setUpdated() automatically.
+	 * <br /><i>Injected into entity when adding component.</i>
+	 * @example
+	 * var boxTranslation1 = boxEntity.transformComponent.getTranslation(); 
+	 * var boxTranslation2 = boxEntity.getTranslation();
+	 * console.log(boxTranslation1 === boxTranslation2); // true
+	 *
 	 * @return {Vector3} translation
 	 */
 	TransformComponent.prototype.getTranslation = function () {
@@ -144,7 +152,14 @@ function (
 	};
 
 	/**
-	 * Set this transform's translation.
+	 * Sets this transform's translation.
+	 * <br /><i>Injected into entity when adding component.</i>
+	 * @example
+	 * // The lines below are equivalent.
+	 * sphereEntity.transformComponent.setTranslation(1, 1, 0); 
+	 * sphereEntity.setTranslation(1, 1, 0);
+	 * sphereEntity.setTranslation(new Vector3(1, 1, 0));
+	 *
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -155,12 +170,16 @@ function (
 	};
 
 	/**
-	 * Get this transform's scale.
-	 * Please note that this is a helper function returning
-	 * entity.transformComponent.transform.scale
-	 * To change the scale the returned object can be modified
-	 * after which entity.transformComponent.setUpdated() must be called.
-	 * Alternatively use setScale which calls setUpdated() for you.
+	 * Gets the value of transformComponent.transform.scale.
+	 * To change the scale, the returned object can be modified
+	 * after which transformComponent.setUpdated() must be called.
+	 * Alternatively, use setScale which calls setUpdated() automatically.
+	 * <br /><i>Injected into entity when adding component.</i>
+	 * @example
+	 * var scale1 = entity.transformComponent.getScale();
+	 * var scale2 = entity.getScale();
+	 * console.log(scale1 === scale2); // true
+	 *
 	 * @return {Vector3} scale
 	 */
 	TransformComponent.prototype.getScale = function () {
@@ -168,7 +187,9 @@ function (
 	};
 
 	/**
-	 * Set this transform's scale.
+	 * Sets this transform's scale.
+	 * <br /><i>Injected into entity when adding component.</i>
+	 *
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -179,8 +200,14 @@ function (
 	};
 
 	/**
-	 * Add to this transform's translation.
-	 * @param {Vector | number[] | number...} Component values.
+	 * Adds to this transform's translation.
+	 * <br /><i>Injected into entity when adding component.</i>
+	 * @example
+	 * // Lines below are equivalent
+	 * boxEntity.addTranslation(new Vector(1, 2, 1));
+	 * boxEntity.transformComponent.addTranslation(1, 2, 1);
+	 *
+     * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
@@ -194,11 +221,14 @@ function (
 	};
 
 	/**
-	 * Get this transform's rotation in Euler angles.
-	 * To change the rotation use setRotation or addRotation
-	 * or use the more powerful entity.transformComponent.transform.rotation
-	 * after which transformComponent.setUpdated() must be called.
-	 * 
+	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians).
+	 * Returns a new Vector3 that cannot be used for modifying the rotation.
+	 * <br /><i>Injected into entity when adding component.</i>.
+	 * @example
+	 * var rot1 = sphereEntity.getRotation();
+	 * var rot2 = sphereEntity.transformComponent.getRotation();
+	 * console.log(rot1 === rot2); // true
+	 *
 	 * @param {Vector3} [target] Target vector for storage.
 	 * @return {Vector3} rotation
 	 */
@@ -209,8 +239,14 @@ function (
 	};
 
 	/**
-	 * Add to this transform's rotation in Euler angles.
-	 * 
+	 * Adds to this transform's rotation using Euler angles (in radians).
+	 * <br /><i>Injected into entity when adding component.</i>
+	 * @example
+	 * boxEntity.setRotation(Math.PI/4.0, 0, 0);
+	 * console.log(boxEntity.getRotation().toString()); // [0.79, 0, 0]
+	 * boxEntity.addRotation(new Vector3(MathUtils.DEG_TO_RAD*45.0, 0, 0));
+	 * console.log(boxEntity.getRotation().toString()); // [1.57, 0, 0]
+	 *
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -233,8 +269,13 @@ function (
 	};
 
 	/**
-	 * Set this transform's rotation around X, Y and Z axis.
-	 * The rotation is applied in XYZ order.
+	 * Sets this transform's rotation around X, Y and Z axis (Euler angles, in radians).
+	 * The rotation is applied in X, Y, Z order.
+	 * <br /><i>Injected into entity when adding component.</i>
+	 * @example
+	 * boxEntity.setRotation(Math.PI, 0, 0);
+	 * console.log(boxEntity.getRotation().toString()); // [3.14, 0, 0]
+	 *
 	 * @param {Vector | number[] | number...} Component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -256,6 +297,7 @@ function (
 
 	/**
 	 * Sets the transform to look in a specific direction.
+	 * <br /><i>Injected into entity when adding component.</i>
 	 *
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
@@ -280,7 +322,7 @@ function (
 	};
 
 	/**
-	 * Mark the component for updates of world transform
+	 * Mark the component for updates of world transform. Needs to be called after manually changing the transform without using helper functions.
 	 */
 	TransformComponent.prototype.setUpdated = function () {
 		this._dirty = true;
@@ -306,6 +348,7 @@ function (
 
 	/**
 	 * Attach a child transform to this component tree
+	 * <br /><i>Injected into entity when adding component.</i>
 	 *
 	 * @param {TransformComponent} childComponent Child transform component to attach
 	 * @param {boolean} [keepTransform=false] If enabled, the child's position, rotation and scale will appear unaffected
@@ -335,7 +378,8 @@ function (
 	};
 
 	/**
-	 * Detach a child transform from this component tree
+	 * Detach a child transform from this component tree.
+	 * <br /><i>Injected into entity when adding component.</i>
 	 *
 	 * @param {TransformComponent} childComponent child transform component to detach
 	 * @param {boolean} [keepTransform=false] If enabled, the child's position, rotation and scale will appear unaffected
@@ -358,14 +402,14 @@ function (
 	};
 
 	/**
-	 * Update target transform contained by this component
+	 * Update component's transform.
 	 */
 	TransformComponent.prototype.updateTransform = function () {
 		this.transform.update();
 	};
 
 	/**
-	 * Update this transform components world transform (resulting transform considering parent transformations)
+	 * Update component's world transform (resulting transform considering parent transformations).
 	 */
 	TransformComponent.prototype.updateWorldTransform = function () {
 		if (this.parent) {

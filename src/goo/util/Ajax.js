@@ -18,11 +18,6 @@ function(
 	/**
 	 * @class Ajax helper class
 	 * @constructor
-	 * <code>{
-	 *   loaded: number Bytes loaded
-	 *   total: number Bytes to load
-	 *   count: number Number of resources loaded/loading
-	 * }</code>
 	 */
 	function Ajax(rootPath) {
 		if (rootPath) {
@@ -114,7 +109,11 @@ function(
 			if (typeInGroup(type, 'bundle')) {
 				this.prefill(this._cache[path], reload);
 			}
-			return PromiseUtil.createDummyPromise(this._cache[path]);
+			if (this._cache[path] instanceof RSVP.Promise) {
+				return this._cache[path];
+			} else {
+				return PromiseUtil.createDummyPromise(this._cache[path]);
+			}
 		}
 
 		var url = (this._rootPath) ? this._rootPath + path : path;

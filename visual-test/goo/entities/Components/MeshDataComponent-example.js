@@ -46,7 +46,7 @@ require([
 		.addToWorld();
 
 	// set some materials so we actually see the meshes
-	var material = Material.createMaterial(ShaderLib.simpleLit);
+	var material = new Material(ShaderLib.simpleLit);
 	box.set(material);
 	sphere.set(material);
 	torus.set(material);

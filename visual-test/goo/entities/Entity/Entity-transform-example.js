@@ -44,7 +44,7 @@ require([
 	var sphereMesh = new Sphere(32, 32);
 
 	var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
-	var material = Material.createMaterial(ShaderLib.texturedLit);
+	var material = new Material(ShaderLib.texturedLit);
 	material.setTexture('DIFFUSE_MAP', texture);
 
 

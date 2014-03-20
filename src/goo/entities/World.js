@@ -20,10 +20,18 @@ function (
 	'use strict';
 
 	/**
-	 * @class Main handler for an entity world
+	 * @class Main handler for an entity world. The World keeps track of managers and systems, 
+	 * and also provides methods to create, select and remove entities.
+	 * Note that process() has to be called manually if objects need to be added and retrieved within the same update loop.
+	 * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
 	 */
 	function World (gooRunner) {
+
+		/** GooRunner for updating the world and calling the renderers.
+		 * @type {GooRunner}
+		 */
 		this.gooRunner = gooRunner;
+
 		this._managers = [];
 		this._systems = [];
 
@@ -34,7 +42,7 @@ function (
 		this.by = {};
 		this._installDefaultSelectors();
 
-		/** Main keeper of entities
+		/** Main keeper of entities.
 		 * @type {EntityManager}
 		 */
 		this.entityManager = new EntityManager();
@@ -42,7 +50,7 @@ function (
 
 		this.time = 0.0;
 
-		/** Time since last frame in seconds
+		/** Time since last frame in seconds.
 		 * @type {number}
 		 */
 		this.tpf = 1.0;
@@ -53,14 +61,24 @@ function (
 	World.time = 0.0;
 	World.tpf = 1.0;
 
+
+	/** Entity selector. Its methods return an {@link EntitySelection}. Can select by system, component, attribute or tag. See examples for usage.
+	 * <br><i>Will get additional methods when an {@link EntityManager} is attached.</i>
+	 * @member by
+	 * @memberOf World.prototype
+	 * @example
+	 * var bySystem = gooRunner.world.by.system("RenderSystem").toArray();
+	 * var byComponent = gooRunner.world.by.component("cameraComponent").toArray();
+	 * var byTag = gooRunner.world.by.tag("monster").toArray()
+	 * var byAttribute = gooRunner.world.by.attribute("hit-points").toArray();
+	 */
 	World.prototype._installDefaultSelectors = function () {
+
 		this.by.system = function (systemType) {
 			var system = this.getSystem(systemType);
 			return new EntitySelection(system._activeEntities);
 		}.bind(this);
 
-		//! AT: all these queries are slow unless using another data structure for fast access
-		// these data structures would have to be maintained in dedicated managers that would then install these methods on world.by
 		this.by.component = function (componentType) {
 			var entities = this.entityManager.getEntities();
 
@@ -87,7 +105,19 @@ function (
 	};
 
 	/**
-	 * Universal shorthand for adding managers, systems, entities and registering components
+	 * Universal shorthand for adding managers, systems, entities and registering components.
+	 * Arguments can be of types Entity, Manager, System or Component and added in any order or combination.
+	 * @param {Entity} [entity]
+	 * @param {Manager} [manager]
+	 * @param {System} [system]
+	 * @param {Component} [component]
+	 * @example
+	 * // Add two entities and register a component, all in one swoop
+	 * var entity1 = new Entity(gooRunner.world, 'Entity 1');
+	 * var entity2 = new Entity(gooRunner.world, 'Entity 2');
+	 * var animationComponent = new AnimationComponent();
+	 * gooRunner.world.add(entity1, animationComponent, entity2);
+	 *
 	 * @returns {World} Returns self to allow chaining
 	 */
 	//! AT: again, 'set' vs 'add' - entities are added to the world, systems/managers are set
@@ -110,10 +140,17 @@ function (
 	};
 
 	/**
-	 * Registers a component type. This is necessary to allow automatic creation of components from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on)
+	 * Registers a component type. This is necessary to allow automatic creation of components 
+	 * from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on).
+	 * When a {@link GooRunner} is created, it registers {@link TransformComponent}, {@link MeshDataComponent},
+	 * {@link MeshRendererComponent}, {@link CameraComponent}, {@link LightComponent} and {@link ScriptComponent} automatically.
+	 * @example
+	 * // Register the animation component type so that animations
+	 * // can be automatically created.
+	 * gooRunner.world.registerComponent(AnimationComponent);
 	 *
 	 * @param {Component} componentConstructor
-	 * @returns {World} Returns self to allow chaining
+	 * @returns {World} Returns self to allow chaining.
 	 */
 	World.prototype.registerComponent = function (componentConstructor) {
 		if (this._components.indexOf(componentConstructor) === -1) {
@@ -123,10 +160,10 @@ function (
 	};
 
 	/**
-	 * Adds a Manager to the world
+	 * Adds a {@link Manager} to the world.
 	 *
 	 * @param {Manager} manager
-	 * @returns {World} Returns self to allow chaining
+	 * @returns {World} Returns self to allow chaining.
 	 */
 	World.prototype.setManager = function (manager) {
 		this._managers.push(manager);
@@ -135,9 +172,9 @@ function (
 	};
 
 	/**
-	 * Retrieve a manager of type 'type'
+	 * Retrieves a {@link Manager} of a certain type.
 	 *
-	 * @param {String} type Type of manager to retrieve eg. 'EntityManager'
+	 * @param {String} type Type of manager to retrieve eg. 'EntityManager'.
 	 * @returns {Manager}
 	 */
 	World.prototype.getManager = function (type) {
@@ -150,10 +187,10 @@ function (
 	};
 
 	/**
-	 * Adds a {@link System} to the world
+	 * Adds a {@link System} to the world.
 	 *
 	 * @param {System} system
-	 * @returns {World} Returns self to allow chaining
+	 * @returns {World} Returns self to allow chaining.
 	 */
 	World.prototype.setSystem = function (system) {
 		var priority = system.priority;
@@ -169,9 +206,9 @@ function (
 	};
 
 	/**
-	 * Retrieve a {@link System} of type 'type'
+	 * Retrieve a {@link System} of type 'type'.
 	 *
-	 * @param {String} type Type of system to retrieve
+	 * @param {String} type Type of system to retrieve.
 	 * @returns {System}
 	 */
 	World.prototype.getSystem = function (type) {
@@ -185,6 +222,12 @@ function (
 
 	/**
 	 * Creates a new {@link Entity} with an optional MeshData, MeshRenderer, Camera, Script and Light component, placed optionally at a location. Parameters can be given in any order.
+	 * @example
+	 * // Create a sphere entity and add it to the world
+	 * var sphereEntity = world.createEntity(new Sphere(32, 32), material, [0, 0, 5]).addToWorld();
+	 * // Create a camera entity and add it to the world
+	 * var cameraEntity = world.createEntity(new Camera(), [0, 0, 3]).lookAt(new Vector3(0, 0, 0)).addToWorld();
+	 *
 	 * @param {MeshData} [meshData]
 	 * @param {Material} [material]
 	 * @param {String} [name]
@@ -211,20 +254,20 @@ function (
 	};
 
 	/**
-	 * Get all entities in world
+	 * Get an array of all entities in world.
 	 *
-	 * @returns {Entity[]} All entities existing in world
+	 * @returns {Entity[]} All entities existing in world.
 	 */
 	World.prototype.getEntities = function () {
 		return this.entityManager.getEntities();
 	};
 
 	/**
-	 * Add an entity to the world
+	 * Add an {@link Entity} to the world.
 	 *
-	 * @param {Entity} entity Entity to add
-	 * @param {boolean} [recursive=true] If entity hierarchy should be added recursively
-	 * @returns {World} Returns self to allow chaining
+	 * @param {Entity} entity Entity to add.
+	 * @param {boolean} [recursive=true] If entity hierarchy should be added recursively.
+	 * @returns {World} Returns self to allow chaining.
 	 */
 	World.prototype.addEntity = function (entity, recursive) {
 		if (this._addedEntities.indexOf(entity) === -1) {
@@ -242,11 +285,11 @@ function (
 	};
 
 	/**
-	 * Remove an entity from the world
+	 * Remove an {@link Entity} from the world.
 	 *
-	 * @param {Entity} entity Entity to remove
-	 * @param {boolean} [recursive=true] If entity hierarchy should be removed recursively
-	 * @returns {World} Returns self to allow chaining
+	 * @param {Entity} entity Entity to remove.
+	 * @param {boolean} [recursive=true] If entity hierarchy should be removed recursively.
+	 * @returns {World} Returns self to allow chaining.
 	 */
 	World.prototype.removeEntity = function (entity, recursive) {
 		if (this._removedEntities.indexOf(entity) === -1) {
@@ -290,7 +333,7 @@ function (
 	};
 
 	/**
-	 * Let the system know that an entity has been changed/updated
+	 * Let the world and its systems know that an entity has been changed/updated.
 	 *
 	 * @param entity
 	 * @param component
@@ -310,7 +353,8 @@ function (
 	};
 
 	/**
-	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called each frame
+	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called automatically each frame.
+	 * Has to be called between adding an entity to the world and getting it back.
 	 */
 	World.prototype.process = function () {
 		this._check(this._addedEntities, function (observer, entity) {

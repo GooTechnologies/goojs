@@ -349,7 +349,8 @@ function(
 									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
 									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy1)).r;',
 									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
+									'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness'+i+');'
+									//'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
 									);
 								} else if (light.shadowSettings.shadowType === 'VSM') {
 									fragment.push(
@@ -357,13 +358,13 @@ function(
 									'vec2 moments = vec2(texel.x, texel.y);',
 									'shadow = ChebychevInequality(moments, depth.z);',
 									// 'shadow = VsmFixLightBleed(shadow, 0.5);',
-									'shadow = pow(shadow, 8.0 - shadowDarkness'+i+' * 8.0);'
+									'shadow = pow(shadow, shadowDarkness'+i+' * 8.0);'
 									);
 								} else {
 									fragment.push(
 									'depth.z *= 0.96;',
 									'float shadowDepth = texture2D(shadowMaps'+i+', depth.xy).x;',
-									'if ( depth.z > shadowDepth ) shadow = shadowDarkness'+i+';'
+									'if ( depth.z > shadowDepth ) shadow = 1.0 - shadowDarkness'+i+';'
 									);
 								}
 						fragment.push(

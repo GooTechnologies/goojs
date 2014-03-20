@@ -1,39 +1,14 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
 	'goo/geometrypack/Surface',
-	'goo/renderer/TextureCreator'
+	'goo/renderer/TextureCreator',
+	'../../goo/lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
-	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
 	Surface,
 	TextureCreator,
 	V
@@ -55,45 +30,21 @@ require([
 		return matrix;
 	}
 
-	function heightMapDemo(goo) {
-		var matrix = getHeightMap(64, 64);
-		var meshData = Surface.createFromHeightMap(matrix);
+	var goo = V.initGoo();
+	var world = goo.world;
 
-		var material = Material.createMaterial(ShaderLib.texturedLit);
-		var texture = new TextureCreator().loadTexture2D('../../goo/resources/check.png');
-		material.setTexture('DIFFUSE_MAP', texture);
-		var boxEntity = goo.world.createEntity(meshData, material);
-		boxEntity.addToWorld();
+	var heightMapSize = 64;
 
-		var light1 = new PointLight();
-		//light1.color = [1.0, 0.3, 0.0];
-		var light1Entity = goo.world.createEntity('light');
-		light1Entity.setComponent(new LightComponent(light1));
-		light1Entity.transformComponent.transform.translation.set(10, 10, 10);
-		light1Entity.addToWorld();
+	var matrix = getHeightMap(heightMapSize, heightMapSize);
+	var meshData = Surface.createFromHeightMap(matrix);
 
-		// camera
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity('CameraEntity');
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 3);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(300, Math.PI / 2, 0)
-		}));
-		cameraEntity.setComponent(scripts);
-	}
+	var material = new Material(ShaderLib.texturedLit);
+	var texture = new TextureCreator().loadTexture2D('../../goo/resources/check.png');
+	material.setTexture('DIFFUSE_MAP', texture);
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+	world.createEntity(meshData, material, [-heightMapSize / 2, 0, -heightMapSize / 2]).addToWorld();
 
-		heightMapDemo(goo);
-	}
+	V.addLights();
 
-	init();
+	V.addOrbitCamera(new Vector3(100, Math.PI / 2, 0));
 });

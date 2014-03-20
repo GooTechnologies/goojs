@@ -23,7 +23,7 @@ define([
 
 		it('sets a MeshRendererComponent when trying to add a Material', function() {
 			var entity = new Entity(world);
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored, '');
 			entity.set(material);
 
 			expect(entity.meshRendererComponent).toBeTruthy();
@@ -35,7 +35,7 @@ define([
 			var meshRendererComponent = new MeshRendererComponent();
 			entity.set(meshRendererComponent);
 
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored, '');
 			entity.set(material);
 
 			expect(entity.meshRendererComponent).toBe(meshRendererComponent);

@@ -17,7 +17,7 @@ function(
 
 	function HeightMapBoundingScript(matrixData) {
 		this.matrixData = matrixData;
-		this.width = matrixData.length-1;
+		this.width = matrixData.length - 1;
 	}
 
 	/**
@@ -95,7 +95,7 @@ function(
 
 	HeightMapBoundingScript.prototype.run = function(entity) {
 		var translation = entity.transformComponent.transform.translation;
-		translation.data[1] = this.getInterpolated(translation.data[0], translation.data[2]);
+		translation.data[1] = this.getInterpolated(translation.data[2], translation.data[0]);
 	};
 
 	return HeightMapBoundingScript;

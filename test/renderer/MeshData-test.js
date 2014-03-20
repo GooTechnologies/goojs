@@ -1,10 +1,12 @@
 define(
 [
-	"goo/shapes/ShapeCreator",
+	"goo/shapes/Box",
+	"goo/shapes/Quad",
 	'goo/math/Transform',
 	'goo/renderer/MeshData'
 ], function(
-	ShapeCreator,
+	Box,
+	Quad,
 	Transform,
 	MeshData
 ) {
@@ -12,7 +14,7 @@ define(
 
 	describe("MeshData", function() {
 		it("getNormalsMeshData: number of vertices and indices", function() {
-			var box = ShapeCreator.createBox();
+			var box = new Box();
 			var normalsMD = box.getNormalsMeshData();
 
 			var nNormalsPerFace = 4;
@@ -25,7 +27,7 @@ define(
 		});
 
 		it("can translate vertices", function() {
-			var box = ShapeCreator.createQuad();
+			var box = new Quad();
 
 			var transform = new Transform();
 			transform.translation.setd(1, 2, 3);
@@ -50,7 +52,7 @@ define(
 		});
 
 		it("can rotate vertices", function() {
-			var box = ShapeCreator.createQuad();
+			var box = new Quad();
 
 			var transform = new Transform();
 			transform.setRotationXYZ(Math.PI/4, 0, 0);
@@ -76,7 +78,7 @@ define(
 		});
 
 		it("can apply a function on vertices", function() {
-			var box = ShapeCreator.createQuad();
+			var box = new Quad();
 
 			box.applyFunction(MeshData.POSITION, function(vert) {
 				vert.data[2] = vert.data[0] + vert.data[1];
@@ -99,5 +101,20 @@ define(
 			expect(box.dataViews.POSITION[10]).toBeCloseTo(-0.5); // -0.5
 			expect(box.dataViews.POSITION[11]).toBeCloseTo( 0.0); //  0.0
 		});
+
+		it('can get attribute buffer', function(){
+			var box = new Box();
+			//!TODO
+			box.getAttributeBuffer(MeshData.POSITION);
+			box.getAttributeBuffer(MeshData.NORMAL);
+			box.getAttributeBuffer(MeshData.COLOR);
+			box.getAttributeBuffer(MeshData.TANGENT);
+			box.getAttributeBuffer(MeshData.TEXCOORD0);
+			box.getAttributeBuffer(MeshData.TEXCOORD1);
+			box.getAttributeBuffer(MeshData.TEXCOORD2);
+			box.getAttributeBuffer(MeshData.TEXCOORD3);
+			box.getAttributeBuffer(MeshData.WEIGHTS);
+			box.getAttributeBuffer(MeshData.JOINTIDS);
+		})
 	});
 });

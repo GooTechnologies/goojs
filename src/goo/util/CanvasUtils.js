@@ -1,8 +1,7 @@
 define([],
 	/** @lends */
 	function() {
-
-		"use strict";
+		'use strict';
 
 		/**
 		* @class
@@ -17,7 +16,7 @@ define([],
 		 * @param {String} canvasPath
 		 * @param {function} callback
 		 */
-		CanvasUtils.prototype.loadCanvasFromPath = function(canvasPath, callback) {
+		CanvasUtils.prototype.loadCanvasFromPath = function (canvasPath, callback) {
 			// have the image load
 			var img = new Image();
 			img.src = canvasPath;
@@ -44,15 +43,13 @@ define([],
 		 * @param canvas
 		 * @returns {Array}
 		 */
-
-		CanvasUtils.prototype.getMatrixFromCanvas = function(canvas) {
+		CanvasUtils.prototype.getMatrixFromCanvas = function (canvas) {
 			var context = canvas.getContext('2d');
 
-			var getAt = function(x, y) {
-				if(x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
+			var getAt = function (x, y) {
+				if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
 					return 0;
-				}
-				else {
+				} else {
 					return context.getImageData(x, y, 1, 1).data[0] / 255;
 				}
 			};
@@ -61,7 +58,7 @@ define([],
 			for (var i = 0; i < canvas.width; i++) {
 				matrix.push([]);
 				for (var j = 0; j < canvas.height; j++) {
-					matrix[i].push(getAt(i, canvas.height-(j+1)));
+					matrix[i].push(getAt(i, canvas.height - (j + 1)));
 				}
 			}
 			return matrix;

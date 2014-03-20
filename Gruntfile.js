@@ -31,6 +31,7 @@ module.exports = function(grunt) {
 			'function f(){';
 		wrapperTail +=
 			'}' +
+			'try{'+
 			'if(window.localStorage&&window.localStorage.gooPath){' +
 				// We're configured to not use the engine from goo.js.
 				// Don't call the f function so the modules won't be defined
@@ -38,7 +39,8 @@ module.exports = function(grunt) {
 				'window.require.config({' +
 					'paths:{goo:localStorage.gooPath}' +
 				'})' +
-			'}else f()';
+			'}else f()' +
+			'}catch(e){f()}';
 
 		wrapperTail += '})(window,undefined)';
 		return [wrapperHead, wrapperTail];
@@ -119,19 +121,27 @@ module.exports = function(grunt) {
 				packName: 'geometrypack',
 				outBaseDir: 'out'
 			}
-		}
+		},
+		karma: {
+			unit: {
+				configFile: 'test/karma.conf.js',
+				singleRun: true,
+				browsers:['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
+			},
+		},
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-karma');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default', ['minify']);
-	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
-
+	grunt.registerTask('default',  ['minify']);
+	grunt.registerTask('minify',   ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
+	grunt.registerTask('unittest', ['karma:unit']);
 
 	//! AT: no better place to put this
 	function extractFilename(path) {
@@ -155,7 +165,7 @@ module.exports = function(grunt) {
 
 		lines.push('\t' + fileNames.join(',\n\t'));
 		lines.push(') {');
-		lines.push('if (!window.goo) { return; }');
+		lines.push('\tvar goo = window.goo;\n\tif (!goo) { return; }');
 		fileNames.forEach(function (fileName) {
 			lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
 		});

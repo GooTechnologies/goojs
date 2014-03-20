@@ -28,12 +28,12 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	var simpleColored = Material.createMaterial(ShaderLib.simpleColored);
+	var simpleColored = new Material(ShaderLib.simpleColored);
 	simpleColored.uniforms.color = [0.0, 0.3, 1.0];
 
-	var simpleLit = Material.createMaterial(ShaderLib.simpleLit);
+	var simpleLit = new Material(ShaderLib.simpleLit);
 
-	var texturedLit = Material.createMaterial(ShaderLib.texturedLit);
+	var texturedLit = new Material(ShaderLib.texturedLit);
 	var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
 	texturedLit.setTexture('DIFFUSE_MAP', texture);
 

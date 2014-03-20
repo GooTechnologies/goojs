@@ -2,6 +2,7 @@ html
 {
     overflow: auto;
     background-color: #fff;
+    height: 100%;
 }
 
 body
@@ -10,6 +11,25 @@ body
 	line-height: 130%;
 	color: #000;
 	background-color: #fff;
+	margin:0;
+	height:100%;
+}
+
+.top-menu{
+	background-color:black;
+	width:100%;
+	height: 48px;
+	box-sizing:border-box;
+	padding: 14px 4px;
+}
+
+.logo{
+	display: inline-block;
+	margin-left:8px;
+}
+
+.logo > img{
+	height:20px;
 }
 
 a {
@@ -27,13 +47,11 @@ a:active {
 header
 {
 	display: block;
-	padding: 6px 4px;
+	padding: 2px 4px;
 }
 
 .class-description {
-    font-style: italic;
-	font-family: Palatino, 'Palatino Linotype', serif;
-	font-size: 130%;
+	font-size: 110%;
 	line-height: 140%;
 	margin-bottom: 1em;
 	margin-top: 1em;
@@ -41,8 +59,10 @@ header
 
 #main {
 	display: inline-block;
-	width: 75%;
-	margin-top: 128px;
+	width: 70%;
+	padding: 12px;
+	border-left:1px solid #ccc;
+	min-height:85%;
 }
 
 section
@@ -72,6 +92,21 @@ nav
     padding-left: 9px;
     width: 20%;
     vertical-align: top;
+    padding: 12px 18px;
+    overflow-x:scroll;
+}
+
+nav > input{
+	width: 100%;
+	box-sizing:border-box;
+	border:1px solid #ccc;
+	border-radius: 3px;
+	height:24px;
+	padding: 0 8px;
+	margin: 8px 0;
+	color:#676767;
+	box-shadow: inset 0 4px 8px -2px rgba(0,0,0,0.1);
+	outline: 0;
 }
 
 nav ul {
@@ -113,19 +148,21 @@ nav li > label {
 }
 
 footer {
-    display: block;
+    position: static;
+    bottom: 0;
+    width:100%;
     padding: 6px;
     margin-top: 12px;
-    font-style: italic;
-    font-size: 90%;
+    font-size: 80%;
+    text-align: center;
 }
 
 h1
 {
-	font-size: 200%;
-	font-weight: bold;
+	font-size: 20px;
+	font-weight: 300;
 	letter-spacing: -0.01em;
-	margin: 12px 0 9px 0;
+	margin: 12px 0 9px 12px;
 }
 
 h2
@@ -142,14 +179,16 @@ h2 small {
 
 h3
 {
-	font-size: 150%;
-	font-weight: bold;
+	font-size: 16px;
+	font-weight: 300;
+	text-transform: uppercase;
 	letter-spacing: -0.01em;
 	margin-top: 16px;
 	margin: 6px 0 3px 0;
+	color:#676767
 }
 h3.subsection-title {
-	margin-top: 2em;
+	margin-top: 16px;
 	margin-bottom: 0.5em;
 }
 h3.extends {
@@ -160,12 +199,12 @@ h3.extends {
 
 h4
 {
-	font-size: 130%;
-	font-weight: bold;
+	font-size: 110%;
+	font-weight: 400;
 	letter-spacing: -0.01em;
 	margin-top: 16px;
-	margin: 18px 0 3px 0;
-	color: #2a3276;
+	margin: 4px 0 3px 0;
+	color: #111;
 }
 .container-overview h4 a, .container-overview h4 a:visited {
 	color: inherit;
@@ -173,10 +212,10 @@ h4
 
 h5, .container-overview .subsection-title
 {
-	font-size: 120%;
-	font-weight: bold;
+	font-size: 100%;
+	font-weight: 600;
 	letter-spacing: -0.01em;
-	margin: 8px 0 3px -16px;
+	margin: 8px 0 3px 0px;
 }
 
 h6
@@ -185,6 +224,7 @@ h6
 	letter-spacing: -0.01em;
 	margin: 6px 0 3px 0;
 	font-style: italic;
+	font-weight: 300;
 }
 
 .ancestors { color: #999; }
@@ -205,7 +245,7 @@ h6
 }
 
 .type-signature {
-    color: #aaa;
+    color: #444;
 }
 
 .name, .signature {
@@ -221,7 +261,6 @@ h6
 
 .description {
 	margin-bottom: 1em;
-	margin-left: -16px;
 	margin-top: 1em;
 }
 
@@ -250,9 +289,10 @@ h6
 	font-size: 100%;
 	line-height: 18px;
 	display: block;
-	padding: 4px 12px;
+	padding: 8px;
 	margin: 0;
-	background-color: #fff;
+	background-color: #eee;
+	border-radius: 3px;
 	color: #000;
 /*	border-left: 3px #ddd solid;*/
 }
@@ -262,6 +302,7 @@ h6
 	border-spacing: 0;
 	border: 0;
 	border-collapse: collapse;
+	margin-left: 8px;
 }
 
 .params .name, .props .name, .name code {
@@ -278,6 +319,11 @@ h6
 	vertical-align: top;
 	padding: 4px 6px;
 	display: table-cell;
+	font-weight: 400;
+}
+
+.param-desc{
+	margin-left: 8px;
 }
 
 .params thead tr, .props thead tr
@@ -335,4 +381,50 @@ nav img.logo {
    	display: inline-block;
 	padding: 7px;
 	margin-bottom: 15px;
+}
+
+.foldable-item{
+	border:1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 8px;
+	padding:0;
+}
+
+.foldable-item > header{
+	background-color:#cad1d9;
+	color:white;
+	width:100%;
+	min-height:32px;
+	box-sizing:border-box;
+	cursor: pointer;
+}
+
+.foldable-item .icon-folded{
+	display:inline-block;
+	height:14px;
+	width:14px;
+	background-image:url("jstree/d.png");
+	background-repeat: no-repeat;
+	background-color: transparent;
+}
+
+
+.foldable-item > header > h4{
+	margin:8px;
+}
+
+.foldable-content{
+	display: none;
+	padding:8px 16px;
+}
+
+.unfolded > .foldable-content{
+	display:block;
+}
+
+.unfolded .icon-folded{
+	background-position: -18px 0;
+	background-image:url("jstree/d.png");
+	background-repeat: no-repeat;
+	background-color: transparent;
 }

@@ -116,7 +116,7 @@ function(
 		this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
 		var q = this.gooQuaternion;
 		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
-		
+
 		if(this.useWorldBounds) {
 			entity._world.process();
 			this.shape = this.getAmmoShapefromGooShapeWorldBounds(entity, gooTransform);
@@ -125,7 +125,7 @@ function(
 			this.shape = this.getAmmoShapefromGooShape(entity, gooTransform);
 		}
 
-		if(false == this.isTrigger){
+		if(false === this.isTrigger){
 			var motionState = new Ammo.btDefaultMotionState( ammoTransform );
 			var localInertia = new Ammo.btVector3(0, 0, 0);
 
