@@ -1,11 +1,13 @@
 define([
 	'goo/entities/systems/System',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/util/StringUtil'
 ],
 /** @lends */
 function (
 	System,
-	SystemBus
+	SystemBus,
+	StringUtil
 ) {
 	'use strict';
 
@@ -41,7 +43,12 @@ function (
 		}
 	};
 
+	function formatTag(tag) {
+		return StringUtil.capitalize(tag);
+	}
+
 	ProximitySystem.prototype.getFor = function (tag) {
+		tag = formatTag(tag);
 		if (this.collections[tag]) {
 			return this.collections[tag].collection;
 		} else {
@@ -49,16 +56,17 @@ function (
 		}
 	};
 
-	ProximitySystem.prototype.inserted = function (entity) {
-		var tag = entity.proximityComponent.tag;
+	ProximitySystem.prototype.add = function (entity, tag) {
+		tag = formatTag(tag);
 		if (!this.collections[tag]) {
 			this.collections[tag] = { name: tag, collection: [] };
 		}
 		this.collections[tag].collection.push(entity);
 	};
 
-	ProximitySystem.prototype.deleted = function (entity) {
-		var collection = this.collections[entity.proximityComponent.tag].collection;
+	ProximitySystem.prototype.remove = function (entity, tag) {
+		tag = formatTag(tag);
+		var collection = this.collections[tag].collection;
 		var index = collection.indexOf(entity);
 		collection.splice(index, 1);
 	};
