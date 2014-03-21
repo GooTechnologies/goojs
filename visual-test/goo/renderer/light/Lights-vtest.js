@@ -4,7 +4,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightDebugComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Vector3,
 	PointLight,

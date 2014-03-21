@@ -106,40 +106,45 @@ define([
 					channels: {
 						'c1': {
 							propertyKey: 'scaleX',
-							keyframes: {
+							keyframes  : {
 								'k1': {
-									time: 10,
-									value: 20,
+									time         : 10,
+									value        : 20,
 									tweenFunction: 'Linear'
 								},
 								'k2': {
-									time: 100,
-									value: 50,
+									time         : 100,
+									value        : 50,
 									tweenFunction: 'Linear'
 								},
 								'k3': {
-									time: 200,
-									value: 50,
+									time         : 200,
+									value        : 50,
 									tweenFunction: 'Linear'
 								}
 							}
 						},
 						'c2': {
 							propertyKey: 'translationY',
-							keyframes: {
+							keyframes  : {
 								'k1': {
-									time: 200,
-									value: 20,
+									time         : 200,
+									value        : 20,
 									tweenFunction: 'Linear'
 								},
 								'k2': {
-									time: 100,
-									value: 50,
+									time         : 100,
+									value        : 50,
 									tweenFunction: 'Linear'
 								}
 							}
 						}
 					}
+				};
+			},
+			quad: function() {
+				return {
+					materialRef: this.material().id
 				};
 			}
 		},

@@ -17,7 +17,7 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/debug/LightPointer',
 	'goo/entities/components/LightDebugComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,

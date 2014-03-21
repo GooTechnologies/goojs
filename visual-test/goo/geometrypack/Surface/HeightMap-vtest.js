@@ -4,7 +4,7 @@ require([
 	'goo/math/Vector3',
 	'goo/geometrypack/Surface',
 	'goo/renderer/TextureCreator',
-	'../../goo/lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
@@ -39,7 +39,7 @@ require([
 	var meshData = Surface.createFromHeightMap(matrix);
 
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../goo/resources/check.png');
+	var texture = new TextureCreator().loadTexture2D('../../../resources/check.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
 	world.createEntity(meshData, material, [-heightMapSize / 2, 0, -heightMapSize / 2]).addToWorld();

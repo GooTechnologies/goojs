@@ -28,7 +28,7 @@ function (
 
 		this.api = {
 			//! AT: the component holds no reference to its entity therefore this method could never stay on the component
-			setMain: function () {
+			setAsMainCamera: function () {
 				SystemBus.emit('goo.setCurrentCamera', {
 					camera: this.cameraComponent.camera,
 					entity: this

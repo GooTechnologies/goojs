@@ -8,7 +8,7 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Transform',
-	'../../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

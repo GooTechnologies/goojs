@@ -21,7 +21,7 @@ require([
 	'goo/entities/components/ParticleComponent',
 	'goo/particles/ParticleUtils',
 	'goo/entities/components/MeshDataComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,
@@ -52,7 +52,7 @@ require([
 	function addFire(goo) {
 		// Particle material
 		var material = new Material(ShaderLib.particles);
-		var texture = new TextureCreator().loadTexture2D('../../resources/flare.png');
+		var texture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
 		texture.generateMipmaps = true;
 		material.setTexture('DIFFUSE_MAP', texture);
 		material.blendState.blending = 'AlphaBlending';
@@ -126,7 +126,7 @@ require([
 		//var camera = cameraEntity.cameraComponent.camera;
 		var waterRenderer = new FlatWaterRenderer({
 			useRefraction: false,
-			normalsUrl: '../../resources/waternormals3.png'
+			normalsUrl: '../../../resources/waternormals3.png'
 		});
 		goo.renderSystem.preRenderers.push(waterRenderer);
 

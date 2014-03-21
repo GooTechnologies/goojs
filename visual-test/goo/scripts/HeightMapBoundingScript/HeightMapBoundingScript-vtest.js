@@ -19,7 +19,7 @@ require([
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/HeightMapBoundingScript',
 	'goo/util/CanvasUtils',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
@@ -52,7 +52,7 @@ require([
 		var nSpheres = 10;
 		var ak = Math.PI * 2 / nSpheres;
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-			var material = new Material(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored);
 			material.uniforms.color = [
 				Math.cos(k) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -87,7 +87,7 @@ require([
 
 	var canvasUtils = new CanvasUtils();
 
-	canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
+	canvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
 		var matrix = canvasUtils.getMatrixFromCanvas(canvas);
 		var heightMapBoundingScript = new HeightMapBoundingScript(matrix);
 

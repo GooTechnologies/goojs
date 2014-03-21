@@ -5,7 +5,7 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/TextureCreator',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
@@ -20,7 +20,7 @@ require([
 	function addHalo(goo, x, y, z) {
 		var quadMeshData = ShapeCreator.createQuad(3, 3);
 		var quadMaterial = new Material(ShaderLib.billboard, 'mat');
-		var quadTexture = new TextureCreator().loadTexture2D('../../resources/flare.png');
+		var quadTexture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
 		quadMaterial.setTexture('DIFFUSE_MAP', quadTexture);
 		quadMaterial.blendState.blending = 'AlphaBlending';
 		quadMaterial.renderQueue = 2001;

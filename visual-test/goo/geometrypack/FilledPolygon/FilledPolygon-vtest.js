@@ -4,7 +4,7 @@ require([
 	'goo/math/Vector3',
 	'goo/geometrypack/FilledPolygon',
 	'goo/renderer/TextureCreator',
-	'../../goo/lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
@@ -28,7 +28,7 @@ require([
 	];
 	var meshData = new FilledPolygon(verts);
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../goo/resources/check.png');
+	var texture = new TextureCreator().loadTexture2D('../../../resources/check.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
 	world.createEntity(meshData, material).addToWorld();

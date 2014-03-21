@@ -120,6 +120,10 @@ module.exports = function(grunt) {
 			geometrypack: {
 				packName: 'geometrypack',
 				outBaseDir: 'out'
+			},
+			quadpack: {
+				packName: 'quadpack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {
@@ -140,7 +144,7 @@ module.exports = function(grunt) {
 	grunt.loadTasks('tools/grunt_tasks');
 
 	grunt.registerTask('default',  ['minify']);
-	grunt.registerTask('minify',   ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
+	grunt.registerTask('minify',   ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack']);
 	grunt.registerTask('unittest', ['karma:unit']);
 
 	//! AT: no better place to put this

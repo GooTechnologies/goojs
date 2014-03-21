@@ -4,7 +4,7 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/TextureCreator',
 	'goo/shapes/Cone',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
@@ -19,7 +19,7 @@ require([
 	var world = goo.world;
 
 	var material = new Material(ShaderLib.texturedLit, '');
-	var texture = new TextureCreator().loadTexture2D('../../resources/cone.png');
+	var texture = new TextureCreator().loadTexture2D('../../../resources/cone.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
 	// add normal cone

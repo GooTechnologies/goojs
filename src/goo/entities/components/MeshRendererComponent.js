@@ -15,6 +15,7 @@ define([
 	function MeshRendererComponent(materials) {
 		this.type = 'MeshRendererComponent';
 
+		//! schteppe: Don't chain or nest ternary operators as it hard to read and confusing
 		/** Materials to use when rendering
 		 * @type {Material[]}
 		 */

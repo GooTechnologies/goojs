@@ -8,7 +8,7 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
 	'goo/addons/scripts/PolyBoundingScript',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
@@ -87,4 +87,6 @@ require([
 
 	scripts.scripts.push(polyBoundingScript);
 	cameraEntity.set(scripts);
+
+	V.process();
 });
