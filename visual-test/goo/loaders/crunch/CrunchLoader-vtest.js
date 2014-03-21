@@ -25,9 +25,9 @@ require([
 	Vector3,
 	ShaderLib
 ) {
-	"use strict";
+	'use strict';
 
-	var resourcePath = "../../resources";
+	var resourcePath = '../../../resources';
 
 	function createBox(size, x, y, textureUrl, goo) {
 		var meshData = ShapeCreator.createBox(size, size, size, 1, 1);
