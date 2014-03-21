@@ -42,6 +42,22 @@ function(
 
 		var that = this;
 		window.addEventListener('error', function(evt) {
+			if (evt.filename) {
+				var scriptElem = document.querySelector('script[src="'+evt.filename+'"]');
+				if (scriptElem) {
+					var scriptId = scriptElem.getAttribute('data-script-id');
+					var script = that._objects[scriptId];
+					if (script) {
+						var error = {
+							message: evt.message,
+							line: evt.lineno,
+							file: evt.filename
+						};
+						setError(script, error);
+					}
+					scriptElem.parentNode.removeChild(scriptElem);
+				}
+			}
 			if (that._currentScriptLoading) {
 				var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + that._currentScriptLoading);
 				if (oldScriptElement) {
@@ -49,15 +65,11 @@ function(
 				}
 				delete window._gooScriptFactories[that._currentScriptLoading];
 				var script = that._objects[that._currentScriptLoading];
-				script.externals = {
-					errors: [evt.message + ' - On line ' + evt.lineno - 1]
+				var error = {
+					message: evt.message,
+					line: evt.lineno - 1
 				};
-				script.setup = null;
-				script.update = null;
-				script.run = null;
-				script.cleanup = null;
-				script.parameters = {};
-				script.enabled = false;
+				setError(script, error);
 				that._currentScriptLoading = null;
 			}
 		});
@@ -85,6 +97,36 @@ function(
 		}
 	};
 
+	ScriptHandler.prototype._addDependency = function(url, scriptId) {
+		var script = document.querySelector('script[src="'+url+'"]');
+		if (script) {
+			return PromiseUtil.createDummyPromise();
+		}
+
+		script = document.createElement('script');
+		script.src = url;
+		script.setAttribute('data-script-id', scriptId);
+
+		var promise = new RSVP.Promise();
+		script.onload = function() {
+			promise.resolve();
+		};
+		document.body.appendChild(script);
+
+		return promise;
+	};
+
+	ScriptHandler.prototype._create = function() {
+		return {
+			externals: {},
+			setup: null,
+			update: null,
+			run: null,
+			cleanup: null,
+			parameters: {}
+		};
+	};
+
 	ScriptHandler.prototype._remove = function(ref) {
 		var script = this._objects[ref];
 		if (script && script.cleanup) {
@@ -96,6 +138,7 @@ function(
 	ScriptHandler.prototype._updateFromCustom = function(script, config) {
 		// cache the body of the function so parameter changes won't rebuild the function
 		if (this._bodyCache[config.id] !== config.body) {
+			delete script.externals.errors;
 			this._bodyCache[config.id] = config.body;
 
 			// delete the old script tag and add a new one
@@ -115,8 +158,10 @@ function(
 				"window._gooScriptFactories['" + config.id + "'] = function () { 'use strict';",
 				config.body,
 				' var obj = {};',
-				' if (typeof externals !== "undefined") {',
-				'  obj.externals = externals;',
+				' if (typeof parameters !== "undefined") {',
+				'  obj.externals = {',
+				'   parameters: parameters',
+				'  };',
 				' }',
 				' if (typeof setup !== "undefined") {',
 				'  obj.setup = setup;',
@@ -151,15 +196,17 @@ function(
 					script.parameters = {};
 					script.enabled = false;
 				} catch(e) {
-					script.externals = {
-						errors: [e.message || e]
+					var err = {
+						message: e.toString()
 					};
-					script.setup = null;
-					script.update = null;
-					script.run = null;
-					script.cleanup = null;
-					script.parameters = {};
-					script.enabled = false;
+					// TODO Test if this works across browsers
+					/**/
+					var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+					if (m) {
+						err.line = parseInt(m[1], 10) - 1;
+					}
+					/**/
+					setError(script, err);
 				}
 				this._currentScriptLoading = null;
 			}
@@ -198,17 +245,29 @@ function(
 		if (config) {
 			return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
 				if (!script) { return; }
-				if (config.className) {
-					that._updateFromClass(script, config, options);
-				} else if (config.body) {
-					that._updateFromCustom(script, config, options);
+				var promises = [];
+				if (config.body && config.dependencies) {
+					delete script.externals.dependencyErrors;
+					for (var url in config.dependencies) {
+						promises.push(that._addDependency(url, config.id));
+					}
 				}
-				that._specialPrepare(script, config);
-				_.extend(script.parameters, config.options);
-				if (options.script && options.script.disabled) {
-					script.enabled = false;
-				}
-				return script;
+				return RSVP.all(promises).then(function() {
+					if (config.className) {
+						that._updateFromClass(script, config, options);
+					} else if (config.body) {
+						that._updateFromCustom(script, config, options);
+					}
+					that._specialPrepare(script, config);
+					if (script.externals.errors) {
+						return script;
+					}
+					_.extend(script.parameters, config.options);
+					if (options.script && options.script.disabled) {
+						script.enabled = false;
+					}
+					return script;
+				});
 			});
 		}
 		// Old style loading of OrbitNPanControlScript for now
@@ -238,7 +297,7 @@ function(
 	var types = ['string', 'float', 'int', 'vec3', 'boolean'];
 	function safeUp(externals) {
 		var	obj = {};
-		var errors = [];
+		var errors = externals.errors || [];
 		if (typeof externals !== 'object') {
 			return obj;
 		}
@@ -310,6 +369,29 @@ function(
 			obj.errors = errors;
 		}
 		return obj;
+	}
+
+	function setError(script, error) {
+		if (error.file) {
+			script.externals.dependencyErrors = script.externals.dependencyErrors || {};
+			script.externals.dependencyErrors[error.file] = error.message + ' - on line ' + error.line;
+		} else {
+			script.externals.errors = script.externals.errors || [];
+			var message = error.message;
+			if (error.line) {
+				message += ' - on line ' + error.line;
+			}
+			script.externals.errors.push(message);
+
+			script.setup = null;
+			script.update = null;
+			script.run = null;
+			script.cleanup = null;
+
+			script.parameters = {};
+			script.enabled = false;
+		}
+
 	}
 
 	ScriptHandler.DOM_ID_PREFIX = '_script_';
