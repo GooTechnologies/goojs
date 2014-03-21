@@ -399,8 +399,7 @@ function (
 	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
-		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio : 1;
-		devicePixelRatio /= this.svg.currentScale;
+		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var adjustWidth, adjustHeight;
 		if (document.querySelector) {
@@ -920,8 +919,7 @@ function (
 		if (!skipUpdateBuffer) {
 			this.hardwarePicking.clearColorStore.setv(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
-				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio : 1;
-				devicePixelRatio /= this.svg.currentScale;
+				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 				var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 				var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
@@ -952,8 +950,7 @@ function (
 			pickingStore.depth = 0;
 			return;
 		}
-		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio : 1;
-		devicePixelRatio /= this.svg.currentScale;
+		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var pickingResolutionDivider = 4;
 		var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
