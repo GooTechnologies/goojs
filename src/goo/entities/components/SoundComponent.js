@@ -30,6 +30,7 @@ function(
 		this._position = new Vector3();
 		this._orientation = new Vector3();
 		this._velocity = new Vector3();
+		this._attachedToCamera = false;
 	}
 
 	SoundComponent.prototype = Object.create(Component.prototype);
@@ -142,12 +143,19 @@ function(
 		this._orientation.setd(0, 0, -1);
 		matrix.applyPostVector(this._orientation);
 
-		var pd = this._position.data;
-		this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
-		var vd = this._velocity.data;
-		this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
-		var od = this._orientation.data;
-		this._pannerNode.setOrientation(od[0], od[1], od[2]);
+		if(!this._attachedToCamera){
+			var pd = this._position.data;
+			this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
+			var vd = this._velocity.data;
+			this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
+			var od = this._orientation.data;
+			this._pannerNode.setOrientation(od[0], od[1], od[2]);
+		} else {
+			// The component is attached to a camera.
+			this._pannerNode.setPosition(0, 0, 0);
+			this._pannerNode.setVelocity(0, 0, 0);
+			this._pannerNode.setOrientation(0, 0, -1);
+		}
 	};
 
 	return SoundComponent;

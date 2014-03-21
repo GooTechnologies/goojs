@@ -4,7 +4,9 @@ define([
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/math/Matrix4x4',
+	'goo/math/Transform'
 ],
 /** @lends */
 function(
@@ -13,7 +15,9 @@ function(
 	Vector3,
 	MathUtils,
 	SystemBus,
-	_
+	_,
+	Matrix4x4,
+	Transform
 ) {
 	'use strict';
 	/**
@@ -190,22 +194,38 @@ function(
 			return;
 		}
 		this.entities = entities;
+		var mvInv;
+		var relativeTransform = new Transform();
 		for (var i = 0; i < entities.length; i++) {
 			var component = entities[i].soundComponent;
-			component.process(this._settings, entities[i].transformComponent.worldTransform, tpf);
+
+			component._attachedToCamera = (entities[i].cameraComponent && entities[i].cameraComponent.camera === this._camera);
+
+			// Give the transform relative to the camera
+			if(this._camera && !component._attachedToCamera){
+				var cam = this._camera;
+				if(!mvInv){
+					mvInv = cam.getViewMatrix();
+				}
+				Matrix4x4.combine(mvInv, entities[i].transformComponent.worldTransform.matrix, relativeTransform.matrix);
+			}
+			component.process(this._settings, relativeTransform, tpf);
 		}
+
 		if (this._camera) {
 			var cam = this._camera;
-			this._position.setv(cam.translation);
-			this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
-			this._oldPosition.setv(this._position);
-			this._orientation.setv(cam._direction);
-			this._up.setv(cam._up);
-			this._left.setv(cam._left);
-			var pd = this._position.data;
-			this._listener.setPosition(pd[0], pd[1], pd[2]);
-			var vd = this._velocity.data;
-			this._listener.setVelocity(vd[0], vd[1], vd[2]);
+
+			if(!mvInv){
+				mvInv = cam.getViewMatrix();
+			}
+
+			// Do we need to rotate these?
+			this._orientation.setd(0,0,-1);
+			this._up.setd(0,1,0);
+
+			// Everything is relative to the camera
+			this._listener.setPosition(0, 0, 0);
+			this._listener.setVelocity(0, 0, 0);
 			var od = this._orientation.data;
 			var ud = this._up.data;
 			this._listener.setOrientation(
