@@ -60,7 +60,46 @@ function(
 		this.initDone = false;
 	}
 
+	var chainBundleLoading = function(world, promise, bundle) {
+		var loader = new DynamicLoader({
+			world: world,
+			preloadBinaries: true,
+			// rootPath: "goo/hunter/" + bundle.path
+			rootPath: "res/trees2"
+		});
+		return promise.then(function() {
+			console.log("loading bundle ", bundle);
+			return loader.load("root.bundle");
+		}).then(function(configs) {
+			// find scene and update it.
+			for (var ref in configs) {
+				console.log(ref);
+				// if (ref.indexOf(".scene") != -1) {
+				// 	return loader.update(ref, configs[ref]).then(function() {
+				// 		return configs;
+				// 	});
+				// }
+			}
+			console.error("Config in bundle ", bundle, " contained no scene?!");
+		});
+	};
+
 	Forrest.prototype.init = function(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes) {
+		var p = new RSVP.Promise();
+
+		var bundlesToLoad = ["fish"];
+		for (var i = 0; i < bundlesToLoad.length; i++) {
+			p = chainBundleLoading(world, p, bundlesToLoad[i]);
+		}
+
+		p.then(function() {
+			console.log("loaded forrest");
+		}, function(e) {
+			console.log("Error! ", e);
+		}).then(null, function(e) {
+			console.log("Error! ", e);
+		});
+
 		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes);
 	};
 
@@ -86,11 +125,13 @@ function(
 		material.renderQueue = 2001;
 		this.material = material;
 
-		this.patchSize = 64;
-		this.patchDensity = 10;
+		// this.patchSize = 64;
+		// this.patchDensity = 10;
+		// this.gridSize = 7;
+		this.patchSize = 32;
+		this.patchDensity = 5;
 		this.gridSize = 7;
-		this.minDist = 0;
-		// this.minDist = 1.5;
+		this.minDist = 1.5;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
@@ -168,21 +209,32 @@ function(
 				var testX = Math.abs(x - this.gridSizeHalf);
 				var testZ = Math.abs(z - this.gridSizeHalf);
 
+				var type = 1;
 				if (entity.meshRendererComponent.hidden === false && diffX >= 0 && diffX < this.gridSize && diffZ >= 0 && diffZ < this.gridSize) {
 					if (testX < this.minDist && testZ < this.minDist) {
-						entity.meshRendererComponent.hidden = true;
-					}
-					continue;
+						// entity.meshRendererComponent.hidden = true;
+						type = 2;
+					} else {
+						continue;
+					}	
 				}
 
 				if (testX < this.minDist && testZ < this.minDist) {
-					entity.meshRendererComponent.hidden = true;
-					continue;
+					// entity.meshRendererComponent.hidden = true;
+					type = 2;
+					// continue;
 				}
 
 				patchX *= this.patchSize;
 				patchZ *= this.patchSize;
-				var meshData = this.createPatch(patchX, patchZ);
+
+				var meshData = null;
+				if (type === 1) {
+					meshData = this.createPatch(patchX, patchZ);
+				} else {
+					meshData = this.createPatchReal(patchX, patchZ);
+				}
+
 				if (!meshData) {
 					entity.meshRendererComponent.hidden = true;
 				} else {
@@ -200,6 +252,60 @@ function(
 	};
 
 	Forrest.prototype.createPatch = function(patchX, patchZ) {
+		var meshBuilder = new MeshBuilder();
+		var transform = new Transform();
+
+		var patchDensity = this.patchDensity;
+		var patchSpacing = this.patchSpacing;
+		var pos = [0, 10, 0];
+		for (var x = 0; x < patchDensity; x++) {
+			for (var z = 0; z < patchDensity; z++) {
+				var xx = patchX + (x + Math.random()*0.75) * patchSpacing;
+				var zz = patchZ + (z + Math.random()*0.75) * patchSpacing;
+				pos[0] = xx;
+				pos[2] = zz + 0.5;
+				var yy = this.terrainQuery.getHeightAt(pos);
+				var norm = this.terrainQuery.getNormalAt(pos);
+				if (yy === null) {
+					yy = 0;
+				}
+				if (norm === null) {
+					norm = Vector3.UNIT_Y;
+				}
+				var slope = norm.dot(Vector3.UNIT_Y);
+
+				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope);
+				if (!vegetationType) {
+					continue;
+				}
+
+				var size = (Math.random() * 0.5 + 0.75);
+				transform.translation.setd(xx, yy, zz);
+				transform.update();
+
+				var meshData = this.vegetationList[vegetationType];
+
+				var type = this.forrestTypes[vegetationType];
+				var w = type.w * size;
+				var h = type.h * size;
+				meshData.getAttributeBuffer('OFFSET').set([
+					-w*0.5, 0,
+					-w*0.5, h,
+					w*0.5, h,
+					w*0.5, 0
+				]);
+
+				meshBuilder.addMeshData(meshData, transform);
+
+				// console.count('tree');
+			}
+		}
+		var meshDatas = meshBuilder.build();
+
+		return meshDatas[0]; // Don't create patches bigger than 65k
+	};
+
+	Forrest.prototype.createPatchReal = function(patchX, patchZ) {
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 

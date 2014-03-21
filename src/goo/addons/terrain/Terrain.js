@@ -97,7 +97,6 @@ function(
 		// this.detailmapPass = new FullscreenPass(detailShader);
 
 		this.normalMap = new RenderTarget(size, size);
-
 		// this.detailMap = new RenderTarget(size, size);
 
 		this.textures = [];
@@ -153,7 +152,7 @@ function(
 		for (var i = 0; i < count; i++) {
 			var size = Math.pow(2, i);
 
-			var material = Material.createMaterial(Util.clone(terrainShaderDefFloat), 'clipmap' + i);
+			var material = Material.createMaterial(terrainShaderDefFloat, 'clipmap' + i);
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
 			material.cullState.frontFace = 'CW';
@@ -165,9 +164,8 @@ function(
 			clipmapEntity.setScale(size, 1, size);
 			entity.attachChild(clipmapEntity);
 
-			var terrainPickingMaterial = Material.createMaterial(Util.clone(terrainPickingShader), 'terrainPickingMaterial' + i);
+			var terrainPickingMaterial = Material.createMaterial(terrainPickingShader, 'terrainPickingMaterial' + i);
 			terrainPickingMaterial.cullState.frontFace = 'CW';
-			// terrainPickingMaterial.wireframe = true;
 			terrainPickingMaterial.uniforms.resolution = [1, 1 / size, this.size, this.size];
 			terrainPickingMaterial.blendState = {
 				blending: 'NoBlending',
