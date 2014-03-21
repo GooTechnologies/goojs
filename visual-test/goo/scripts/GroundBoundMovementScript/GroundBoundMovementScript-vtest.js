@@ -23,7 +23,7 @@ require([
 	'goo/scripts/GroundBoundMovementScript',
 	'goo/renderer/TextureCreator',
 	'goo/util/CanvasUtils',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	World,
 	Material,

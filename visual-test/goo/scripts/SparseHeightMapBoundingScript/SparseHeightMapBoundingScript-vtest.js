@@ -10,7 +10,7 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/SparseHeightMapBoundingScript',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

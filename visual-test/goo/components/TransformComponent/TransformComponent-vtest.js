@@ -7,7 +7,7 @@ require([
 	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
 	'goo/debug/Debugger',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

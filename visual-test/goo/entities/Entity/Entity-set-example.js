@@ -5,7 +5,7 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	GooRunner,
 	Material,

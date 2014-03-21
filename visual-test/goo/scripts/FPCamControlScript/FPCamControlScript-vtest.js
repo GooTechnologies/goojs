@@ -14,7 +14,7 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/FPCamControlScript',
 	'goo/scripts/NewWaveFPCamControlScript',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,

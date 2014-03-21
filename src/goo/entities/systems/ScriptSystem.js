@@ -19,10 +19,7 @@ define(['goo/entities/systems/System'],
 	}
 
 	ScriptSystem.prototype = Object.create(System.prototype);
-
-	ScriptSystem.prototype.inserted = function (entity) {
-		entity.scriptComponent.setup(entity);
-	};
+	ScriptSystem.prototype.constructor = ScriptSystem;
 
 	ScriptSystem.prototype.process = function (entities, tpf) {
 		this.environment.domElement = this.renderer.domElement;
@@ -32,10 +29,6 @@ define(['goo/entities/systems/System'],
 			var scriptComponent = entities[i].scriptComponent;
 			scriptComponent.run(entities[i], tpf, this.environment);
 		}
-	};
-
-	ScriptSystem.prototype.deleted = function (entity) {
-		entity.scriptComponent.cleanup();
 	};
 
 	return ScriptSystem;

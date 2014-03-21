@@ -8,7 +8,7 @@ require([
 	'goo/addons/howler/components/HowlerComponent',
 	'goo/addons/howler/systems/HowlerSystem',
 	'goo/renderer/TextureCreator',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
@@ -23,22 +23,24 @@ require([
 	) {
 	'use strict';
 
+	var resourcesPath = '../../../resources/';
+
 	var goo = V.initGoo();
 	var world = goo.world;
 
 	var sound1 = new window.Howl({
-		urls: ['../../resources/sfx1.wav']
+		urls: [resourcesPath + 'sfx1.wav']
 	});
 
 	var sound2 = new window.Howl({
-		urls: ['../../resources/sfx2.wav']
+		urls: [resourcesPath + 'sfx2.wav']
 	});
 
 	world.setSystem(new HowlerSystem(goo.renderer));
 
 	// create panning cube
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
+	var texture = new TextureCreator().loadTexture2D(resourcesPath + 'check.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
 	var cubeEntity = world.createEntity(new Box(), material).addToWorld();
@@ -80,4 +82,6 @@ require([
 				console.log('1: sound!');
 		}
 	});
+
+	V.process();
 });

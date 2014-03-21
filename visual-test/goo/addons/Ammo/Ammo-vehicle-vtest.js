@@ -13,7 +13,7 @@ require([
 	'goo/addons/ammo/AmmoComponent',
 	'goo/renderer/light/PointLight',
 	'VehicleHelper',
-	'../../lib/V'
+	'../../../lib/V'
 ], function (
 	Material,
 	Camera,
@@ -113,7 +113,7 @@ require([
 		goo.world.createEntity(new Camera(45, 1, 0.1, 1000), camScriptObject).addToWorld();
 	}
 
-	var texture = new TextureCreator().loadTexture2D('../../resources/goo.png');
+	var texture = new TextureCreator().loadTexture2D('../../../resources/goo.png');
 	var material = new Material(ShaderLib.texturedLit);
 	material.setTexture('DIFFUSE_MAP', texture);
 	function createEntity(goo, meshData, ammoSettings, pos) {

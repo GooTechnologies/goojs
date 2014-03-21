@@ -3,7 +3,7 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
 	'goo/geometrypack/PolyLine',
-	'../../goo/lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

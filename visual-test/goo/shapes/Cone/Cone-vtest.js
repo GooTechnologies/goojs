@@ -4,7 +4,7 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/TextureCreator',
 	'goo/shapes/Cone',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

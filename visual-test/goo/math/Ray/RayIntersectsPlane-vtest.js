@@ -11,7 +11,7 @@ require([
 	'goo/renderer/MeshData',
 	'goo/math/Ray',
 	'goo/math/Plane',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	GooRunner,
 	Material,
