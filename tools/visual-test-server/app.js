@@ -8,6 +8,7 @@ var jasmine = jasmineEnv.getEnv();
 var express = require('express');
 var http = require('http');
 var _ = require('underscore')
+var glob = require('glob')
 
 // Specs to present
 var specs = [];
@@ -48,21 +49,39 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+var screenshotsPath = path.join(__dirname, '..', '..', 'test', 'e2etesting', 'screenshots');
+var refScreenshotsPath = path.join(__dirname, '..', '..', 'test', 'e2etesting', 'screenshots-tmp');
+var screenShotsURL = '/screenshots';
+var refScreenShotsURL = '/reference-screenshots';
+app.use(screenShotsURL, express.directory(screenshotsPath));
+app.use(screenShotsURL, express.static(screenshotsPath));
+app.use(refScreenShotsURL, express.directory(refScreenshotsPath));
+app.use(refScreenShotsURL, express.static(refScreenshotsPath));
 app.use(express.errorHandler());
 
 app.get('/', function(req,res){
 
-	res.status(200).send({
-		lastRunTime: reporter.jasmineDoneAt,
-		specs: specs
+	var compare = {};
+	var refPngs = glob(screenshotsPath+'/**/*.png',function(err,pngs){
+		for(var i=0; i<pngs.length; i++){
+			var p = screenShotsURL +'/' + path.relative(screenshotsPath,pngs[i]);
+			var p2 = refScreenShotsURL + '/' + path.relative(refScreenshotsPath,pngs[i].replace('screenshots','screenshots-tmp'));
+			compare[p] = p2;
+		}
+
+		res.status(200).send({
+			lastRunTime: reporter.jasmineDoneAt,
+			specs: specs,
+			referenceScreenshotsURL: refScreenShotsURL,
+			screenShotsURL: screenShotsURL,
+			compare: compare
+		});
 	});
 
 	// Get default options
 	var options = JSON.parse(JSON.stringify(runner.defaults));
-	for(var i=0; i<program.args.length; i++){
-		options.specFolders.push(program.args[i]);
-	}
+	options.specFolders.push(path.join(__dirname,'..','..','test','e2etesting','specs'));
+	console.log(options.specFolders)
 	options.onComplete = onComplete;
 
 	// Run!
@@ -70,7 +89,7 @@ app.get('/', function(req,res){
 		reporter.config = options;
 		//runner.run(options);
 
-		var defaults, error, funcName, jasFunc, jasmine, matchedSpecs, reporterOptions, spec, specsList, _i, _len;
+		var defaults, funcName, jasFunc, jasmine, matchedSpecs, reporterOptions, spec, specsList, _i, _len;
 	    defaults = {
 	      regExpSpec: new RegExp(".(js)$", "i")
 	    };
@@ -90,8 +109,7 @@ app.get('/', function(req,res){
 	      var spec = specsList[i];
 	      try {
 	        require(spec.path().replace(/\.\w+$/, ""));
-	      } catch (_error) {
-	        error = _error;
+	      } catch (error) {
 	        console.log("Exception loading: " + (spec.path()));
 	        console.log(error);
 	        throw error;
@@ -99,7 +117,6 @@ app.get('/', function(req,res){
 	    }
 	    jasmine.execute();
 	}
-
 });
 
 http.createServer(app).listen(app.get('port'), function(){
