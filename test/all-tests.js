@@ -27,7 +27,6 @@ define([
 	'test/util/Ajax-test',
 	'test/util/ColorUtil-test',
 	'test/util/CanvasUtils-test',
-	'test/loaders/Loader-test',
 	'test/renderer/Shader-test',
 	'test/renderer/MeshData-test',
 	'test/renderer/Camera-test',
