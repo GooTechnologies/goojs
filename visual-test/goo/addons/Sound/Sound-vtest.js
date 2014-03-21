@@ -8,7 +8,7 @@ require([
 	'goo/renderer/TextureCreator',
 	'goo/util/SoundCreator',
 	'goo/entities/components/SoundComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
@@ -23,13 +23,15 @@ require([
 	) {
 	'use strict';
 
+	var resourcePath = '../../../resources/';
+
 	var goo = V.initGoo();
 	var world = goo.world;
 
 	// create panning cube
 	var meshData = new Box();
 	var material = new Material(ShaderLib.texturedLit);
-	var texture = new TextureCreator().loadTexture2D('../../resources/check.png');
+	var texture = new TextureCreator().loadTexture2D(resourcePath + 'check.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
 	var cubeEntity = world.createEntity(meshData, material).addToWorld();
@@ -42,8 +44,7 @@ require([
 	meshData = new Sphere(32, 32);
 	var sphereEntity = world.createEntity(meshData, material, [0, 0, 5]).addToWorld();
 
-	var resourceUrl = '../../resources/';
-	var urls = ['sfx1', 'sfx2'].map(function (fileName) { return resourceUrl + fileName + '.wav'; });
+	var urls = ['sfx1', 'sfx2'].map(function (fileName) { return resourcePath + fileName + '.wav'; });
 	var sounds = [];
 
 	var soundCreator = new SoundCreator();

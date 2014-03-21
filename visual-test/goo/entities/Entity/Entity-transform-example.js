@@ -14,7 +14,7 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	Material,
 	ShaderLib,

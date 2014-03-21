@@ -15,7 +15,7 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/ScriptUtils',
 	'goo/math/Vector',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,

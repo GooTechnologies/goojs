@@ -5,7 +5,7 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/TextureCreator',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

@@ -16,7 +16,7 @@ require([
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
 	'goo/geometrypack/PolyLine',
-	'../../goo/lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,

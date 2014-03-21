@@ -7,7 +7,7 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	GooRunner,
 	Material,

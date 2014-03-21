@@ -16,7 +16,7 @@ require([
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
 	'goo/renderer/TextureCreator',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,

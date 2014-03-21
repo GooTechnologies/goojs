@@ -14,7 +14,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/LightComponent',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	GooRunner,
 	World,

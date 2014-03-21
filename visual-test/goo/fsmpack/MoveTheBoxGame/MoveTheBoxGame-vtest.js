@@ -5,7 +5,7 @@ require([
 	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
-	'../../goo/lib/V',
+	'lib/V',
 
 	'goo/fsmpack/statemachine/StateMachineComponent',
 	'goo/fsmpack/statemachine/StateMachineSystem',

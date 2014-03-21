@@ -19,7 +19,7 @@ require([
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/HeightMapBoundingScript',
 	'goo/util/CanvasUtils',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

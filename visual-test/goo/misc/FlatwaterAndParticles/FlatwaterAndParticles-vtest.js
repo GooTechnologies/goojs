@@ -21,7 +21,7 @@ require([
 	'goo/entities/components/ParticleComponent',
 	'goo/particles/ParticleUtils',
 	'goo/entities/components/MeshDataComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,
