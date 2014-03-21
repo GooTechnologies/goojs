@@ -3,7 +3,7 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

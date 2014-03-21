@@ -64,6 +64,8 @@
     "plusplus"      : false,  // Prohibit use of `++` & `--`.
     "sub"           : false,  // Tolerate all forms of subscript notation besides dot notation e.g. `dict['key']` instead of `dict.key`.
     "trailing"      : true,   // Prohibit trailing whitespaces.
+    "unused"        : true,   // Warns when you define and never use your variables.
+    //"quotmark"      : "single", // Enforces the consistency of quotation marks
 
     // "white" and "indent" give lots of warnings.
     // We may want to enable them again once we clean up the more pressing issues.

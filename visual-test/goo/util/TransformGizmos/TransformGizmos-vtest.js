@@ -6,7 +6,7 @@ require([
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
 	'goo/entities/systems/GizmoRenderSystem',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	Material,
 	ShaderLib,

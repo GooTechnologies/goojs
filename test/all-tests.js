@@ -26,7 +26,7 @@ define([
 	'test/entities/components/TransformComponent-test',
 	'test/util/Ajax-test',
 	'test/util/ColorUtil-test',
-	'test/loaders/Loader-test',
+	'test/util/CanvasUtils-test',
 	'test/renderer/Shader-test',
 	'test/renderer/MeshData-test',
 	'test/renderer/Camera-test',
@@ -57,12 +57,14 @@ define([
 	'test/loaders/handlers/AnimationComponentHandler-test',
 	'test/loaders/handlers/ShaderHandler-test',
 	//'test/loaders/handlers/MaterialHandler-test',
-	//'test/loaders/handlers/TextureHandler-test',
+	'test/loaders/handlers/TextureHandler-test',
 	'test/loaders/handlers/MeshRendererComponentHandler-test',
+	'test/loaders/handlers/QuadComponentHandler-test',
 	'test/loaders/handlers/MeshDataComponentHandler-test',
 	'test/loaders/handlers/MeshDataHandler-test',
 	'test/loaders/handlers/SceneHandler-test',
 	'test/loaders/handlers/ProjectHandler-test',
 	//'test/loaders/handlers/SkyboxHandler-test',
-	//'test/loaders/handlers/EnvironmentHandler-test'
+	//'test/loaders/handlers/EnvironmentHandler-test',
+	'test/entities/components/ScriptComponent-test'
 ], function() {});

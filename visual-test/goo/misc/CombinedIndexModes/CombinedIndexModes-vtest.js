@@ -15,7 +15,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,

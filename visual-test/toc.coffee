@@ -15,7 +15,7 @@ makeTree = (files) ->
 				branch[part] = {}
 			branch = branch[part]
 	return tree
-			
+
 printTree = (tree) ->
 	ret = '<ul>'
 	for branch, link of tree
@@ -29,18 +29,28 @@ printTree = (tree) ->
 	ret += '</ul>'
 	return ret
 
+exports.getFiles = (callback) ->
+	glob __dirname + 'visual-test/**/!(index).html', (err, files) ->
+		callback err, files
+
+exports.getFilesSync = ->
+	return glob.sync 'visual-test/**/!(index).html'
+
+exports.getFilePathsSync = ->
+	return glob.sync __dirname + '/**/!(index).html'
+
 exports.run = ->
-	glob 'visual-test/**/!(index).html', (err, files) ->
+	exports.getFiles (err, files) ->
 		if err
 			console.log err
 			return
 		if files.length == 0
 			console.log 'No files'
 			return
-		
+
 		tree = makeTree(files)
 		#console.log JSON.stringify(tree, null, '\t')
-		
+
 		content = '''
 			<html>
 			<head>
@@ -49,12 +59,12 @@ exports.run = ->
 			<body>
 			<h1>Contents</h1>
 		'''
-	
+
 		content += printTree(tree)
-		
+
 		content += '''
 			</body>
 			</html>
 		'''
-		
+
 		fs.writeFileSync path.resolve('visual-test','index.html'), content

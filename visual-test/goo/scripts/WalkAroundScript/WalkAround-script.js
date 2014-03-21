@@ -18,7 +18,7 @@ require([
 	'goo/math/MathUtils',
 	'goo/math/Vector2',
 	'goo/loaders/DynamicLoader',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,

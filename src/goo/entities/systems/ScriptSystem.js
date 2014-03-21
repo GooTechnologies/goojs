@@ -36,6 +36,7 @@ define([
 	}
 
 	ScriptSystem.prototype = Object.create(System.prototype);
+	ScriptSystem.prototype.constructor = ScriptSystem;
 
 	ScriptSystem.prototype.inserted = function (entity) {
 		if (!this.manualSetup) {

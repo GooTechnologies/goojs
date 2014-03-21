@@ -9,7 +9,7 @@ require([
 	'goo/renderer/Shader',
 	'goo/renderer/Texture',
 	'goo/addons/water/FlatWaterRenderer',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	Box,
