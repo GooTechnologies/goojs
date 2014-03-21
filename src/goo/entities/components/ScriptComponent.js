@@ -69,7 +69,7 @@ function (
 					SystemBus.emit('goo.scriptError', {
 						message: e.message || e,
 						phase: 'setup',
-						scriptName: script.externals.name
+						scriptName: script.name || script.externals.name
 					});
 				}
 			}
@@ -104,7 +104,7 @@ function (
 					script.enabled = false;
 					SystemBus.emit('goo.scriptError', {
 						message: e.message || e,
-						scriptName: script.externals.name,
+						scriptName: script.name || script.externals.name,
 						phase: 'run'
 					});
 				}
@@ -125,7 +125,7 @@ function (
 				} catch (e) {
 					SystemBus.emit('goo.scriptError', {
 						message: e.message || e,
-						scriptName: script.externals.name,
+						scriptName: script.name || script.externals.name,
 						phase: 'cleanup'
 					});
 				}

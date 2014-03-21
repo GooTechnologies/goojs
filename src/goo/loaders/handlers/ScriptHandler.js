@@ -97,21 +97,29 @@ function(
 		}
 	};
 
-	ScriptHandler.prototype._addDependency = function(url, scriptId) {
-		var script = document.querySelector('script[src="'+url+'"]');
-		if (script) {
+	ScriptHandler.prototype._addDependency = function(script, url, scriptId) {
+		var scriptElem = document.querySelector('script[src="'+url+'"]');
+		if (scriptElem) {
 			return PromiseUtil.createDummyPromise();
 		}
 
-		script = document.createElement('script');
-		script.src = url;
-		script.setAttribute('data-script-id', scriptId);
+		scriptElem = document.createElement('script');
+		scriptElem.src = url;
+		scriptElem.setAttribute('data-script-id', scriptId);
 
 		var promise = new RSVP.Promise();
-		script.onload = function() {
+		scriptElem.onload = function() {
 			promise.resolve();
 		};
-		document.body.appendChild(script);
+		scriptElem.onerror = function() {
+			var err = {
+				message: 'Could not load dependency',
+				file: url
+			};
+			setError(script, err);
+			promise.resolve();
+		};
+		document.body.appendChild(scriptElem);
 
 		return promise;
 	};
@@ -123,7 +131,8 @@ function(
 			update: null,
 			run: null,
 			cleanup: null,
-			parameters: {}
+			parameters: {},
+			name: null
 		};
 	};
 
@@ -249,7 +258,7 @@ function(
 				if (config.body && config.dependencies) {
 					delete script.externals.dependencyErrors;
 					for (var url in config.dependencies) {
-						promises.push(that._addDependency(url, config.id));
+						promises.push(that._addDependency(script, url, config.id));
 					}
 				}
 				return RSVP.all(promises).then(function() {
@@ -259,6 +268,7 @@ function(
 						that._updateFromCustom(script, config, options);
 					}
 					that._specialPrepare(script, config);
+					script.name = config.name;
 					if (script.externals.errors) {
 						return script;
 					}
@@ -270,28 +280,6 @@ function(
 				});
 			});
 		}
-		// Old style loading of OrbitNPanControlScript for now
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
-			if (!config) { return; }
-
-			if (config.className) {
-				if (!script.run) {
-					var name = config.className;
-					if (ScriptHandler.scripts[name] instanceof Function) {
-						script = that._objects[ref] = new ScriptHandler.scripts[name](config.options);
-						script.id = config.id;
-					}
-				}
-				else if (script.updateConfig) {
-					script.updateConfig(config.options);
-				}
-
-				if (options.script && options.script.disabled) {
-					script.enabled = script.active = false;
-				}
-				return script;
-			}
-		});
 	};
 
 	var types = ['string', 'float', 'int', 'vec3', 'boolean'];
@@ -368,8 +356,12 @@ function(
 
 	function setError(script, error) {
 		if (error.file) {
+			var message = error.message;
+			if (error.line) {
+				message += ' - on line ' + error.line;
+			}
 			script.externals.dependencyErrors = script.externals.dependencyErrors || {};
-			script.externals.dependencyErrors[error.file] = error.message + ' - on line ' + error.line;
+			script.externals.dependencyErrors[error.file] = message;
 		} else {
 			script.externals.errors = script.externals.errors || [];
 			var message = error.message;
