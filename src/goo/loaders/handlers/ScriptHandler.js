@@ -157,11 +157,11 @@ function(
 			var scriptFactoryStr = [
 				"window._gooScriptFactories['" + config.id + "'] = function () { 'use strict';",
 				config.body,
-				' var obj = {};',
+				' var obj = {',
+				'  externals: {}',
+				' };',
 				' if (typeof parameters !== "undefined") {',
-				'  obj.externals = {',
-				'   parameters: parameters',
-				'  };',
+				'  obj.externals.parameters = parameters;',
 				' }',
 				' if (typeof setup !== "undefined") {',
 				'  obj.setup = setup;',
@@ -301,19 +301,14 @@ function(
 		if (typeof externals !== 'object') {
 			return obj;
 		}
-		if (typeof externals.name !== 'string') {
-			errors.push('externals.name needs to be a string');
-		} else {
-			obj.name = externals.name;
-		}
-		if (typeof externals.description === 'string') {
-			obj.description = externals.description;
-		}
-		if (!(externals.parameters instanceof Array)) {
+		if (externals.parameters && !(externals.parameters instanceof Array)) {
 			errors.push('externals.parameters needs to be an array');
 		}
 		if (errors.length) {
 			obj.errors = errors;
+			return obj;
+		}
+		if(!externals.parameters) {
 			return obj;
 		}
 		obj.parameters = [];
