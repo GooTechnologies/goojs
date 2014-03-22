@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/loaders/JsonUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/fsmpack/statemachine/State',
@@ -9,7 +8,6 @@ define([
 	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
-	JsonUtils,
 	PromiseUtil,
 	_,
 	State,
@@ -33,16 +31,16 @@ define([
 
 	MachineHandler.prototype = Object.create(ConfigHandler.prototype);
 	MachineHandler.prototype.constructor = MachineHandler;
-	ConfigHandler._registerClass('machine', MachineHandler);
 
-	/**
-	 * Removes a machine
-	 * @param {ref}
-	 * @private
-	 */
+	ConfigHandler._registerClass('machine', MachineHandler);
 	MachineHandler.prototype._remove = function(ref) {
 		var machine = this._objects[ref];
 		if (machine) {
+			/**
+			 * Removes a machine
+			 * @param {ref}
+			 * @private
+			 */
 			machine.removeFromParent();
 		}
 		delete this._objects[ref];

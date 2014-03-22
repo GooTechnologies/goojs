@@ -310,14 +310,14 @@ define([
 	/**
 	 * Required in 'deterministic' mode
 	 */
-	V.process = function () {
+	V.process = function (renderLoops) {
 		if (!V.deterministic) { return; }
 
 		// waste some frames
 		delay(8, function () {}, function() {
 			var time = 0;
 			// render some frames
-			delay(3, function () {
+			delay(renderLoops || 3, function () {
 				time += 100;
 				V.goo._updateFrame(time);
 				V.goo.stopGameLoop();
