@@ -50,7 +50,9 @@ define([
 	}
 
 	var mousedown = function () {
-		GameUtils.requestPointerLock();
+		if (this.allowLock()) {
+			GameUtils.requestPointerLock();
+		}
 	};
 
 	var mousemove = function (event) {
@@ -70,6 +72,7 @@ define([
 
 	FPCamControlScript.prototype.setupMouseControls = function () {
 		this.domElement.addEventListener('mousedown', mousedown.bind(this), false);
+
 		document.addEventListener('mousemove', mousemove.bind(this));
 		document.addEventListener('pointerlockchange', pointerLockChange.bind(this));
 		document.addEventListener('pointerlockerror', pointerLockError.bind(this));

@@ -131,5 +131,25 @@ define(["goo/math/Vector2"], function(Vector2) {
 			expect(a.dot(b)).toEqual(5);
 			expect(Vector2.dot(a, b)).toEqual(5);
 		});
+
+		it("can be normalized", function() {
+			var a = new Vector2();
+
+			a.set(0, 0).normalize();
+			expect(a.x).toBeCloseTo(0);
+			expect(a.y).toBeCloseTo(0);
+
+			a.set(1, 1).normalize();
+			expect(a.x).toBeCloseTo(1/Math.sqrt(2));
+			expect(a.y).toBeCloseTo(1/Math.sqrt(2));
+
+			a.set(-2, -3).normalize();
+			expect(a.x).toBeCloseTo(-2/Math.sqrt(2*2+3*3));
+			expect(a.y).toBeCloseTo(-3/Math.sqrt(2*2+3*3));
+
+			a.set(12, 34).normalize();
+			expect(a.x).toBeCloseTo(12/Math.sqrt(12*12+34*34));
+			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34));
+		});
 	});
 });
