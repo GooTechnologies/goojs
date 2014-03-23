@@ -50,9 +50,7 @@ define([
 	}
 
 	var mousedown = function () {
-		if (this.allowLock()) {
-			GameUtils.requestPointerLock();
-		}
+		GameUtils.requestPointerLock();
 	};
 
 	var mousemove = function (event) {
