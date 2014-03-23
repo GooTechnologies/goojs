@@ -124,13 +124,14 @@ function(
 		material.renderQueue = 2001;
 		this.material = material;
 
-		// this.patchSize = 64;
-		// this.patchDensity = 10;
-		// this.gridSize = 7;
-		this.patchSize = 32;
-		this.patchDensity = 5;
+		this.patchSize = 64;
+		this.patchDensity = 10;
 		this.gridSize = 7;
-		this.minDist = 1.5;
+		this.minDist = 0;
+		// this.patchSize = 32;
+		// this.patchDensity = 5;
+		// this.gridSize = 7;
+		// this.minDist = 1.5;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
