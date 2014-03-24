@@ -132,12 +132,12 @@ function(
 		this.splat = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
-				generateMipmaps: false,
+				generateMipmaps: false
 		});
 		this.splatCopy = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
-				generateMipmaps: false,
+				generateMipmaps: false
 		});
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
 	}
@@ -1171,7 +1171,7 @@ function(
 
 	var terrainPickingShader = {
 		attributes : {
-			vertexPosition : MeshData.POSITION,
+			vertexPosition : MeshData.POSITION
 		},
 		uniforms : {
 			viewMatrix : Shader.VIEW_MATRIX,

@@ -22,6 +22,8 @@ define([
 		TextureCreator,
 		RSVP
 	) {
+		'use strict';
+
 		function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder) {
 			this.goo = goo;
 			this.terrainSize = terrainSize;
