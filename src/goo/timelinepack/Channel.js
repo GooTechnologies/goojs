@@ -146,6 +146,8 @@ define([], function () {
 			this.time %= this.lastTime;
 			// REVIEW No callbackend from handler
 			this.callbackEnd();
+			// REVIEW Need to reset callbackIndex, this might be the easiest way
+			// return this.setTime(this.time);
 		}
 
 		this._checkCallbacks();
