@@ -8,7 +8,7 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
-	'goo/quadpack/QuadComponent',
+	'goo/quadpack/QuadComponent'
 ],
 /** @lends */
 function (
@@ -43,6 +43,7 @@ function (
 	QuadComponentHandler.prototype.constructor = QuadComponentHandler;
 	ComponentHandler._registerClass('quad', QuadComponentHandler);
 
+	// REVIEW You already have this in QuadComponent
 	QuadComponent.DEFAULT_MATERIAL = new Material(ShaderLib.uber, 'Default material');
 
 	/**
@@ -51,6 +52,7 @@ function (
 	 * @returns {object}
 	 * @private
 	 */
+	// REVIEW Does nothing, so I guess you can remove it?
 	QuadComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
 		});
@@ -71,6 +73,7 @@ function (
 	 * @private
 	 */
 	QuadComponentHandler.prototype._remove = function (entity) {
+		// REVIEW I don't think removing material is necessary since we remove the component
 		entity.quadComponent.removeMaterial(); // Release material
 		entity.clearComponent('meshDataComponent');
 		entity.clearComponent('meshRendererComponent');
@@ -89,12 +92,29 @@ function (
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
+			/* REVIEW
+			 * With a quadComponent, we will never change material or change components
+			 * return that._load(config.materialRef, options).then(function (material) {
+			 *  if (!entity.hasComponent('meshRendererComponent')) {
+			 *   entity.setComponent(component.meshRendererComponent);
+			 *   entity.setComponent(component.meshDataComponent);
+			 *   component.setMaterial(material);
+			 *   // or component.meshRendererComponent.materials = [material]
+			 *  }
+			 *  return component;
+			 * }
+			*/
+
 			// Remove material
+			// REVIEW We will never change material
 			component.removeMaterial();
 
+			// REVIEW This will send unnecessary 'entityChanged' to the world
+			// if !entity.hasComponent then setComponent
 			entity.clearComponent('meshRendererComponent');
 			entity.clearComponent('meshDataComponent');
 
+			// REVIEW I think materialRef should be mandatory
 			// Materials
 			var materialRef = config.materialRef;
 			if (!materialRef) {

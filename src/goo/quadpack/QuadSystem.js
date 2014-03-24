@@ -5,6 +5,8 @@ define([
 function(
 	System
 ) {
+	// REVIEW Apparently when you do entity.setComponent(component) component.attached(entity) gets called.
+	// So system might be unnecessary.
 	'use strict';
 	/**
 	 * @class System responsible for quads.
@@ -35,6 +37,7 @@ function(
 	 * @private
 	 */
 	QuadSystem.prototype.deleted = function(entity) {
+		// REVIEW Clear quad component
 		if (entity.quadComponent) {
 			entity.clearComponent('meshRendererComponent');
 			entity.clearComponent('meshDataComponent');

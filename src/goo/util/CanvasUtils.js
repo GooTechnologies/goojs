@@ -3,6 +3,11 @@ define([],
 	function() {
 
 		'use strict';
+		// REVIEW no need for prototypes, we can have functionality on CanvasUtils
+		// Also, make promise based instead of sending callback
+
+		// I notice you create an image of svg, then render it to canvas. Can you send
+		// The image directly to the engine as texture?
 
 		/**
 		* @class

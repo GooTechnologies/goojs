@@ -189,9 +189,10 @@ function(
 			} else if(config.svgData){
 				// Load SVG data
 				var canvasUtils = new CanvasUtils();
+				// REVIEW ret = new RSVP.Promise and wait with return until the end
 				var p = new RSVP.Promise();
 				var opts = {
-					resizeToFit: true,
+					resizeToFit: true
 				};
 				if(config.renderSize){
 					opts.width = config.renderSize;

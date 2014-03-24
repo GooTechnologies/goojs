@@ -26,12 +26,14 @@ function (
 	 * @extends {Component}
 	 */
 	function QuadComponent(material) {
+		// REVIEW this.type = 'QuadComponent' is probably enough
 		this.type = QuadComponent.type;
 
 		/** The quad meshdata.
 		 * @type {Quad}
 		 * @private
 		 */
+		// REVIEW Consider flipping Quad, by default it looks away from lookatpoint and will be culled
 		this.meshData = new Quad();
 
 		/** Mesh data component that this component creates and adds to the entity.
@@ -44,6 +46,7 @@ function (
 		 * @type {MeshRendererComponent}
 		 * @private
 		 */
+		// REVIEW Why sending empy self in constructor?
 		this.meshRendererComponent = new MeshRendererComponent(this.meshRendererComponent);
 
 		/** The material currently used by the component.
@@ -69,6 +72,7 @@ function (
 	 * Attaches the current material to the meshrenderer component.
 	 */
 	QuadComponent.prototype.attachMaterial = function () {
+		// REVIEW this.meshRendererComponent.materials = [this.material];
 		var idx = this.meshRendererComponent.materials.indexOf(this.material);
 		if (idx === -1) {
 			// Material not added yet. Add!
@@ -80,6 +84,7 @@ function (
 	 * Removes the current material from the meshrenderer component.
 	 */
 	QuadComponent.prototype.removeMaterial = function () {
+		// REVIEW Not really needed, but there's also an ArrayUtil.remove(array, item) that does this
 		var idx = this.meshRendererComponent.materials.indexOf(this.material);
 		if (idx !== -1) {
 			// Material found. remove!
