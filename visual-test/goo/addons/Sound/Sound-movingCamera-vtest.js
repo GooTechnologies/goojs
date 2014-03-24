@@ -10,6 +10,8 @@ require([
 	'goo/entities/components/SoundComponent',
 	'lib/V',
 	'goo/scripts/OrbitCamControlScript',
+	'goo/scripts/FlyControlScript',
+	'goo/scripts/NewWaveFPCamControlScript',
 	'goo/renderer/Camera'
 ], function (
 	Material,
@@ -23,6 +25,8 @@ require([
 	SoundComponent,
 	V,
 	OrbitCamControlScript,
+	FlyControlScript,
+	NewWaveFPCamControlScript,
 	Camera
 	) {
 	'use strict';
@@ -63,24 +67,14 @@ require([
 
 	var camera = new Camera();
 
-	var orbitCamOpetions = {
+	var script = new FlyControlScript({
 		domElement        : V.goo.renderer.domElement,
-		spherical         : spherical,
-		lookAtPoint       : lookAt,
-		drag              : 5.0,
-		releaseVelocity   : true,
-		interpolationSpeed: 2,
-		dragButton        : -1
-	};
+		dragButton        : -1,
+		walkSpeed 		  : 5,
+	});
 
-	orbitCamOpetions.demoMode = false;
-	/*
-	orbitCamOpetions.moveInterval = 1000;
-	orbitCamOpetions.moveInitialDelay = 200;
-	*/
-
-	var orbitScript = new OrbitCamControlScript(orbitCamOpetions);
-	var cameraEntity = V.goo.world.createEntity(camera, [0, 0, 0], orbitScript, 'CameraEntity').addToWorld();
+	var cameraEntity = V.goo.world.createEntity(camera, [0, 0, 10], script, 'CameraEntity').addToWorld();
+	cameraEntity.setComponent(new ScriptComponent(script));
 
 	function allLoaded() {
 		console.log('all loaded');
@@ -99,6 +93,7 @@ require([
 	}
 
 	function setupKeys() {
+		console.log('1: boing\n2: squigly\n3: pause boing\n4: pause squigly');
 		document.body.addEventListener('keypress', function(e) {
 			switch(e.keyCode) {
 				case 49:
@@ -123,21 +118,19 @@ require([
 					sphereEntity.soundComponent.sounds[0].pause();
 					console.log('squigly pause');
 					break;
-				default:
-					console.log('1: boing\n2: squigly\n3: pause boing\n4: pause squigly');
 			}
-		});
+		},true);
 	}
 
 	var soundSystem = world.getSystem('SoundSystem');
 	soundSystem.updateConfig({
-		//dopplerFactor:0.5
+		dopplerFactor:1
 	});
 
 	var time = 0;
 	goo.callbacks.push(function(tpf){
 		time += tpf;
-		cameraEntity.transformComponent.setTranslation(0,0,/*5*Math.sin(10*time)+*/10);
+		//cameraEntity.transformComponent.setTranslation(0,0,/*5*Math.sin(10*time)+*/10);
 		sphereEntity.transformComponent.setTranslation(Math.sin(time)*10,0,/*Math.sin(time)*10*/0);
 	});
 
