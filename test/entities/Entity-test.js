@@ -8,6 +8,7 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/ScriptComponent',
+	'goo/entities/systems/ScriptSystem',
 	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/renderer/Material',
@@ -24,6 +25,7 @@ define([
 	CameraComponent,
 	LightComponent,
 	ScriptComponent,
+	ScriptSystem,
 	Box,
 	Vector3,
 	Material,
@@ -35,6 +37,7 @@ define([
 
 	describe('Entity', function() {
 		var world;
+
 		beforeEach(function() {
 			world = new World();
 			Entity.entityCount = 0;
@@ -45,6 +48,16 @@ define([
 			world.registerComponent(CameraComponent);
 			world.registerComponent(LightComponent);
 			world.registerComponent(ScriptComponent);
+
+			//
+			world.gooRunner = {
+				renderer: {
+					domElement: null,
+					viewportWidth: null,
+					viewportHeight: null
+				}
+			};
+			world.add(new ScriptSystem(world))
 		});
 
 		it('addToWorld', function() {
