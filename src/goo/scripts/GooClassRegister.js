@@ -1,8 +1,118 @@
-(function () {
+define([
+	'goo/scripts/Scripts',
+	'goo/animation/SkeletonPose',
+	'goo/animation/blendtree/ManagedTransformSource',
+	'goo/animation/layer/AnimationLayer',
+	'goo/animation/state/FadeTransitionState',
+	'goo/animation/state/FrozenTransitionState',
+	'goo/animation/state/SteadyState',
+	'goo/animation/state/SyncFadeTransitionState',
+	'goo/entities/Entity',
+	'goo/entities/EntitySelection',
+	'goo/entities/EntityUtils',
+	'goo/entities/Selection',
+	'goo/entities/SystemBus',
+	'goo/entities/World',
+	'goo/entities/components/AnimationComponent',
+	'goo/entities/components/CSSTransformComponent',
+	'goo/entities/components/CameraComponent',
+	'goo/entities/components/Component',
+	'goo/entities/components/LightComponent',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/MovementComponent',
+	'goo/entities/components/ParticleComponent',
+	'goo/entities/components/PortalComponent',
+	'goo/entities/components/ScriptComponent',
+	'goo/entities/components/SoundComponent',
+	'goo/entities/components/TextComponent',
+	'goo/entities/components/TransformComponent',
+	'goo/math/MathUtils',
+	'goo/math/Matrix',
+	'goo/math/Matrix2x2',
+	'goo/math/Matrix3x3',
+	'goo/math/Matrix4x4',
+	'goo/math/Plane',
+	'goo/math/Quaternion',
+	'goo/math/Ray',
+	'goo/math/Transform',
+	'goo/math/Vector',
+	'goo/math/Vector2',
+	'goo/math/Vector3',
+	'goo/math/Vector4',
+	'goo/noise/Noise',
+	'goo/noise/ValueNoise',
+	'goo/particles/Particle',
+	'goo/particles/ParticleEmitter',
+	'goo/particles/ParticleInfluence',
+	'goo/particles/ParticleLib',
+	'goo/particles/ParticleUtils',
+	'goo/picking/BoundingTree',
+	'goo/picking/PrimitivePickLogic',
+	'goo/renderer/BufferData',
+	'goo/renderer/BufferUtils',
+	'goo/renderer/Camera',
+	'goo/renderer/Material',
+	'goo/renderer/MeshData',
+	'goo/renderer/RenderQueue',
+	'goo/renderer/Shader',
+	'goo/renderer/Texture',
+	'goo/renderer/TextureCreator',
+	'goo/renderer/Util',
+	'goo/renderer/bounds/BoundingBox',
+	'goo/renderer/bounds/BoundingSphere',
+	'goo/renderer/bounds/BoundingVolume',
+	'goo/renderer/light/DirectionalLight',
+	'goo/renderer/light/Light',
+	'goo/renderer/light/PointLight',
+	'goo/renderer/light/SpotLight',
+	'goo/renderer/shaders/ShaderBuilder',
+	'goo/renderer/shaders/ShaderFragment',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/shadow/ShadowHandler',
+	'goo/shapes/Box',
+	'goo/shapes/Cone',
+	'goo/shapes/Cylinder',
+	'goo/shapes/Disk',
+	'goo/shapes/Grid',
+	'goo/shapes/ProjectedGrid',
+	'goo/shapes/Quad',
+	'goo/shapes/SimpleBox',
+	'goo/shapes/Sphere',
+	'goo/shapes/TerrainSurface',
+	'goo/shapes/TextureGrid',
+	'goo/shapes/Torus',
+	'goo/shapes/debug/CameraDebug',
+	'goo/shapes/debug/LightDebug',
+	'goo/shapes/debug/MeshRendererDebug',
+	'goo/shapes/debug/SkeletonDebug',
+	'goo/sound/AudioContext',
+	'goo/sound/OscillatorSound',
+	'goo/sound/Sound',
+	'goo/util/Ajax',
+	'goo/util/ArrayUtil',
+	'goo/util/CanvasUtils',
+	'goo/util/ColorUtil',
+	'goo/util/GameUtils',
+	'goo/util/MeshBuilder',
+	'goo/util/ObjectUtil',
+	'goo/util/ParticleSystemUtils',
+	'goo/util/PromiseUtil',
+	'goo/util/SoundCreator',
+	'goo/util/StringUtil',
+	'goo/util/combine/AtlasNode',
+	'goo/util/combine/EntityCombiner',
+	'goo/util/combine/Rectangle',
+	'goo/util/gizmos/RotationGizmo',
+	'goo/util/gizmos/ScaleGizmo',
+	'goo/util/gizmos/TranslationGizmo',
+	'goo/util/rsvp'
+], function (Scripts) {
 	'use strict';
 
-	var defs;
-	define(defs = [
+	//! AT: have to duplicate this for now until nicer way is found
+	// minifier cannot handle any expressions or statements other than a simple array of strings
+	var defines = [
 		'goo/scripts/Scripts',
 		'goo/animation/SkeletonPose',
 		'goo/animation/blendtree/ManagedTransformSource',
@@ -111,10 +221,10 @@
 		'goo/util/gizmos/ScaleGizmo',
 		'goo/util/gizmos/TranslationGizmo',
 		'goo/util/rsvp'
-	], function (Scripts) {
-		for (var i = 1; i < defs.length; i++) {
-			var name = defs[i].slice(defs[i].lastIndexOf('/') + 1);
-			Scripts.addClass(name, arguments[i]);
-		}
-	});
-})();
+	];
+
+	for (var i = 1; i < defines.length; i++) {
+		var name = defines[i].slice(defines[i].lastIndexOf('/') + 1);
+		Scripts.addClass(name, arguments[i]);
+	}
+});
