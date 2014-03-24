@@ -181,29 +181,26 @@ require([
 		});
 	}
 
-	function transformComponentDemo() {
-		goo = V.initGoo();
-		world = goo.world;
 
-		boxMeshData = new Box();
+	goo = V.initGoo();
+	world = goo.world;
 
-		// marking the origin
-		addOriginShape(goo);
+	boxMeshData = new Box();
 
-		// create the towers
-		createBoxTower1();
-		createBoxTower2();
+	// marking the origin
+	addOriginShape(goo);
 
-		// add light
-		V.addLights();
+	// create the towers
+	createBoxTower1();
+	createBoxTower2();
 
-		// add camera
-		V.addOrbitCamera(new Vector3(30, Math.PI / 2, 0.3));
+	// add light
+	V.addLights();
 
-		setupGUI();
+	// add camera
+	V.addOrbitCamera(new Vector3(30, Math.PI / 2, 0.3));
 
-		new Debugger(true, true).inject(goo);
-	}
+	setupGUI();
 
-	transformComponentDemo();
+	new Debugger(true, true).inject(goo);
 });

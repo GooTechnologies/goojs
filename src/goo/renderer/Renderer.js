@@ -48,6 +48,7 @@ function (
 	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.
 	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {function(string)} [parameters.onError] Called with message when error occurs
 	 */
@@ -68,6 +69,7 @@ function (
 		this._antialias = parameters.antialias !== undefined ? parameters.antialias : true;
 		this._stencil = parameters.stencil !== undefined ? parameters.stencil : false;
 		this._preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false;
+		this._useDevicePixelRatio = parameters.useDevicePixelRatio !== undefined ? parameters.useDevicePixelRatio : false;
 		this._onError = parameters.onError;
 
 		var settings = {
@@ -397,8 +399,7 @@ function (
 	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
-		var devicePixelRatio = window.devicePixelRatio || 1;
-		devicePixelRatio /= this.svg.currentScale;
+		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var adjustWidth, adjustHeight;
 		if (document.querySelector) {
@@ -918,8 +919,7 @@ function (
 		if (!skipUpdateBuffer) {
 			this.hardwarePicking.clearColorStore.setv(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
-				var devicePixelRatio = window.devicePixelRatio || 1;
-				devicePixelRatio /= this.svg.currentScale;
+				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 				var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 				var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
@@ -950,8 +950,7 @@ function (
 			pickingStore.depth = 0;
 			return;
 		}
-		var devicePixelRatio = window.devicePixelRatio || 1;
-		devicePixelRatio /= this.svg.currentScale;
+		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var pickingResolutionDivider = 4;
 		var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
