@@ -1825,46 +1825,37 @@ function (
 		return caps.join('\n');
 	};
 
-	//TODO!!!
-	// Was: function (meshData)
-	Renderer.prototype._deallocateMeshData = function () {
-//		if ( geometry.__webglVertexBuffer !== undefined ) _gl.deleteBuffer( geometry.__webglVertexBuffer );
+	Renderer.prototype._deallocateMeshData = function (meshData) {
+		if (meshData.vertexData !== undefined  && meshData.vertexData.glBuffer !== undefined ) {
+			this.context.deleteBuffer(meshData.vertexData.glBuffer);
+		}
+		if (meshData.indexData !== undefined  && meshData.indexData.glBuffer !== undefined ) {
+			this.context.deleteBuffer(meshData.indexData.glBuffer);
+		}
 	};
 
-	// Was: function (texture)
-	Renderer.prototype._deallocateTexture = function () {
-//		if ( texture.image && texture.image.__webglTextureCube ) {
-//			// cube texture
-//			_gl.deleteTexture( texture.image.__webglTextureCube );
-//		} else {
-//			// 2D texture
-//			if ( ! texture.__webglInit ) return;
-//
-//			texture.__webglInit = false;
-//			_gl.deleteTexture( texture.__webglTexture );
-//		}
+	Renderer.prototype._deallocateTexture = function (texture) {
+		if (texture.glTexture) {
+			this.context.deleteTexture(texture.glTexture);
+		}
 	};
 
-	// Was: function (renderTarget)
-	Renderer.prototype._deallocateRenderTarget = function () {
-//		if ( !renderTarget || ! renderTarget.__webglTexture ) return;
-//
-//		_gl.deleteTexture( renderTarget.__webglTexture );
-//
-//		if ( renderTarget instanceof THREE.WebGLRenderTargetCube ) {
-//			for ( var i = 0; i < 6; i ++ ) {
-//				_gl.deleteFramebuffer( renderTarget.__webglFramebuffer[ i ] );
-//				_gl.deleteRenderbuffer( renderTarget.__webglRenderbuffer[ i ] );
-//			}
-//		} else {
-//			_gl.deleteFramebuffer( renderTarget.__webglFramebuffer );
-//			_gl.deleteRenderbuffer( renderTarget.__webglRenderbuffer );
-//		}
+	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
+		if (renderTarget.glTexture) {
+			this.context.deleteTexture(renderTarget.glTexture);
+		}
+		if (renderTarget._glRenderBuffer) {
+			this.context.deleteFramebuffer(renderTarget._glRenderBuffer);
+		}
+		if (renderTarget._glFrameBuffer) {
+			this.context.deleteRenderbuffer(renderTarget._glFrameBuffer);
+		}
 	};
 
-	// Was: function (shader)
-	Renderer.prototype._deallocateShader = function () {
-//		_gl.deleteProgram( program );
+	Renderer.prototype._deallocateShader = function (shader) {
+		if (shader.shaderProgram) {
+			this.context.deleteProgram(shader.shaderProgram);
+		}
 	};
 
 	return Renderer;

@@ -396,7 +396,6 @@ function (
 	 * @private
 	 */
 	GooRunner.prototype._addDebugKeys = function () {
-		//TODO: Temporary keymappings
 		// shift+space = toggle fullscreen
 		// shift+enter = toggle mouselock
 		// shift+1 = normal rendering
