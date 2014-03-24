@@ -50,12 +50,14 @@ define([
 		var separator = easingString.indexOf('.');
 		var easingType = easingString.substr(0, separator);
 		var easingDirection = easingString.substr(separator + 1);
+		// REVIEW Bake tween into engine and require it
 		return TWEEN.Easing[easingType][easingDirection];
 	}
 
 	function updateKeyframe(keyframeConfig, keyframeId, channel) {
 		var needsResorting = false;
 
+		// REVIEW feels like this could be slow
 		var keyframe = ArrayUtil.find(channel.keyframes, function (keyframe) {
 			return keyframe.id === keyframeId;
 		});
@@ -77,7 +79,7 @@ define([
 
 		return {
 			needsResorting: needsResorting
-		}
+		};
 	}
 
 	function updateCallbackEntry(keyframeConfig, keyframeId, channel) {
@@ -89,6 +91,8 @@ define([
 
 		// create the event emitter callback, we're gonna use it anyway
 		var eventEmitter = function () {
+			// REVIEW Will event channels ever need more than one event?
+			// I think one channel should emit one event and channel.propertyKey would be eventName
 			for (var listId in keyframeConfig.events) {
 				var eventConfig = keyframeConfig.events[listId];
 				SystemBus.emit(eventConfig.channel, eventConfig.data);
@@ -109,7 +113,7 @@ define([
 
 		return {
 			needsResorting: needsResorting
-		}
+		};
 	}
 
 	function updateChannel(channelConfig, channelId, component) {
@@ -120,7 +124,9 @@ define([
 
 		// and create one if needed
 		if (!channel) {
+			// REVIEW should be called with (id, options) not (id, callback) according to Channel
 			channel = new Channel(channelId, TimelineComponentHandler.tweenMap[channelConfig.propertyKey]);
+			// REVIEW Channel needs to be connected to child entity somewhere
 			component.channels.push(channel);
 		}
 
@@ -135,8 +141,10 @@ define([
 
 		for (var keyframeId in channelConfig.keyframes) {
 			var keyframeConfig = channelConfig.keyframes[keyframeId];
+			// REVIEW You always add both value keyframe and callback keyframe?
 			var tmp1 = updateKeyframe(keyframeConfig, keyframeId, channel);
 			var tmp2 = updateCallbackEntry(keyframeConfig, keyframeId, channel);
+			// REVIEW How about always resort and keep Channel.addKeyFrame unsorted?
 			needsResorting = needsResorting || tmp1.needsResorting || tmp2.needsResorting;
 		}
 
@@ -158,6 +166,7 @@ define([
 
 			for (var channelId in config.channels) {
 				var channelConfig = config.channels[channelId];
+				// REVIEW channelConfig should contain channelId
 				updateChannel(channelConfig, channelId, component);
 			}
 

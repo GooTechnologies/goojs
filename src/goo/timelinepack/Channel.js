@@ -1,5 +1,6 @@
 define([], function () {
 	'use strict';
+	// REVIEW Would be nice to separate in TriggerChannel and ValueChannel
 
 	function Channel(id, options) {
 		this.id = id;
@@ -24,6 +25,7 @@ define([], function () {
 	 * @param lastTime
 	 */
 	//! AT: could convert into a more general ArrayUtil.pluck and binary search but that creates extra arrays
+	// REVIEW lastTime is given by sortedArray[sortedArray.length-1].time
 	function find(sortedArray, time, lastTime) {
 		var start = 0;
 		var end = sortedArray.length - 1;
@@ -49,6 +51,7 @@ define([], function () {
 	 * @private
 	 */
 	Channel.prototype.sort = function () {
+		// REVIEW a.time - b.time
 		this.keyframes.sort(function (a, b) { return a.time < b.time; });
 		this.callbackAgenda.sort(function (a, b) { return a.time < b.time; });
 	};
@@ -141,12 +144,14 @@ define([], function () {
 		// tmp hack
 		if (this.time > this.lastTime) {
 			this.time %= this.lastTime;
+			// REVIEW No callbackend from handler
 			this.callbackEnd();
 		}
 
 		this._checkCallbacks();
 
 		// run update callback on current position
+		// REVIEW This could be moved to the 'else'
 		var newEntryIndex = find(this.keyframes, this.time, this.lastTime);
 		var newEntry = this.keyframes[newEntryIndex];
 
@@ -161,19 +166,23 @@ define([], function () {
 			var progressInEntry = (this.time - newEntry.time) / (nextEntry.time - newEntry.time);
 			var progressValue = newEntry.easingFunction(progressInEntry);
 
+			// REVIEW MathUtils.lerp
 			newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
 		}
 
 		//! AT: comparing floats with === is ok here
 		if (this.value !== newValue || true) { // overriding for now to get time progression
 			this.value = newValue;
+			// REVIEW There's no callbackupdate from handlers
 			this.callbackUpdate(this.time, this.value, newEntryIndex);
 		}
 	};
 
+	// REVIEW Should probably be somewhere else
 	// tween factories
 	Channel.getTranslationXTweener = function (entity) {
 		return function (time, value) {
+			// REVIEW Use .data[0]
 			entity.transformComponent.transform.translation.x = value;
 			entity.transformComponent.setUpdated();
 		};
