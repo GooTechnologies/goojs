@@ -18,9 +18,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/light/DirectionalLight',
-	'goo/shapes/ShapeCreator',
-	'goo/shapes/Box',
-	'goo/renderer/Util'
+	'goo/shapes/ShapeCreator'
 ],
 /** @lends */
 function(
@@ -43,11 +41,11 @@ function(
 	FullscreenPass,
 	FullscreenUtil,
 	DirectionalLight,
-	ShapeCreator,
-	Box,
-	Util
+	ShapeCreator
 ) {
 	"use strict";
+
+	var Ammo = window.Ammo; // make jslint happy
 
 	/**
 	 * @class A terrain
@@ -707,7 +705,7 @@ function(
 		},
 		processors: [
 			ShaderBuilder.light.processor,
-			function (shader, shaderInfo) {
+			function (shader) {
 				if (ShaderBuilder.USE_FOG) {
 					shader.defines.FOG = true;
 					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
@@ -1237,76 +1235,76 @@ function(
 		].join("\n")
 	};
 
-	var detailShader = {
-		attributes: {
-			vertexPosition: MeshData.POSITION,
-			vertexUV0: MeshData.TEXCOORD0
-		},
-		uniforms: {
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix: Shader.WORLD_MATRIX,
-			normalMap: 'NORMAL_MAP',
-			splatMap: 'SPLAT_MAP',
-			groundMap1: 'GROUND_MAP1',
-			groundMap2: 'GROUND_MAP2',
-			groundMap3: 'GROUND_MAP3',
-			groundMap4: 'GROUND_MAP4',
-			groundMap5: 'GROUND_MAP5',
-			stoneMap: 'STONE_MAP'
-		},
-		vshader: [
-			'attribute vec3 vertexPosition;',
-			'attribute vec2 vertexUV0;',
+	// var detailShader = {
+	// 	attributes: {
+	// 		vertexPosition: MeshData.POSITION,
+	// 		vertexUV0: MeshData.TEXCOORD0
+	// 	},
+	// 	uniforms: {
+	// 		viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+	// 		worldMatrix: Shader.WORLD_MATRIX,
+	// 		normalMap: 'NORMAL_MAP',
+	// 		splatMap: 'SPLAT_MAP',
+	// 		groundMap1: 'GROUND_MAP1',
+	// 		groundMap2: 'GROUND_MAP2',
+	// 		groundMap3: 'GROUND_MAP3',
+	// 		groundMap4: 'GROUND_MAP4',
+	// 		groundMap5: 'GROUND_MAP5',
+	// 		stoneMap: 'STONE_MAP'
+	// 	},
+	// 	vshader: [
+	// 		'attribute vec3 vertexPosition;',
+	// 		'attribute vec2 vertexUV0;',
 
-			'varying vec2 texCoord0;',
+	// 		'varying vec2 texCoord0;',
 
-			'void main(void) {',
-			'	texCoord0 = vertexUV0;',
-			'	gl_Position = vec4(vertexPosition, 1.0);',
-			'}'
-		].join('\n'),
-		fshader: [
-			'uniform sampler2D normalMap;',
-			'uniform sampler2D splatMap;',
-			'uniform sampler2D groundMap1;',
-			'uniform sampler2D groundMap2;',
-			'uniform sampler2D groundMap3;',
-			'uniform sampler2D groundMap4;',
-			'uniform sampler2D groundMap5;',
-			'uniform sampler2D stoneMap;',
+	// 		'void main(void) {',
+	// 		'	texCoord0 = vertexUV0;',
+	// 		'	gl_Position = vec4(vertexPosition, 1.0);',
+	// 		'}'
+	// 	].join('\n'),
+	// 	fshader: [
+	// 		'uniform sampler2D normalMap;',
+	// 		'uniform sampler2D splatMap;',
+	// 		'uniform sampler2D groundMap1;',
+	// 		'uniform sampler2D groundMap2;',
+	// 		'uniform sampler2D groundMap3;',
+	// 		'uniform sampler2D groundMap4;',
+	// 		'uniform sampler2D groundMap5;',
+	// 		'uniform sampler2D stoneMap;',
 
-			'varying vec2 texCoord0;',
+	// 		'varying vec2 texCoord0;',
 
-			'void main(void) {',
-				'vec4 final_color = vec4(1.0);',
+	// 		'void main(void) {',
+	// 			'vec4 final_color = vec4(1.0);',
 
-				'vec2 coord = texCoord0 * 96.0;',
+	// 			'vec2 coord = texCoord0 * 96.0;',
 
-				'vec3 N = (texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0)).xzy;',
-				'N.y = 0.1;',
-				'N = normalize(N);',
+	// 			'vec3 N = (texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0)).xzy;',
+	// 			'N.y = 0.1;',
+	// 			'N = normalize(N);',
 
-				'vec4 splat = texture2D(splatMap, texCoord0);',
-				'vec4 g1 = texture2D(groundMap1, coord);',
-				'vec4 g2 = texture2D(groundMap2, coord);',
-				'vec4 g3 = texture2D(groundMap3, coord);',
-				'vec4 g4 = texture2D(groundMap4, coord);',
-				'vec4 g5 = texture2D(groundMap5, coord);',
-				'vec4 stone = texture2D(stoneMap, coord);',
+	// 			'vec4 splat = texture2D(splatMap, texCoord0);',
+	// 			'vec4 g1 = texture2D(groundMap1, coord);',
+	// 			'vec4 g2 = texture2D(groundMap2, coord);',
+	// 			'vec4 g3 = texture2D(groundMap3, coord);',
+	// 			'vec4 g4 = texture2D(groundMap4, coord);',
+	// 			'vec4 g5 = texture2D(groundMap5, coord);',
+	// 			'vec4 stone = texture2D(stoneMap, coord);',
 
-				'final_color = mix(g1, g2, splat.r);',
-				'final_color = mix(final_color, g3, splat.g);',
-				'final_color = mix(final_color, g4, splat.b);',
-				'final_color = mix(final_color, g5, splat.a);',
+	// 			'final_color = mix(g1, g2, splat.r);',
+	// 			'final_color = mix(final_color, g3, splat.g);',
+	// 			'final_color = mix(final_color, g4, splat.b);',
+	// 			'final_color = mix(final_color, g5, splat.a);',
 
-				'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-				'slope = smoothstep(0.15, 0.25, slope);',
-				'final_color = mix(final_color, stone, slope);',
+	// 			'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
+	// 			'slope = smoothstep(0.15, 0.25, slope);',
+	// 			'final_color = mix(final_color, stone, slope);',
 
-				'gl_FragColor = final_color;',
-			'}'
-		].join('\n')
-	};
+	// 			'gl_FragColor = final_color;',
+	// 		'}'
+	// 	].join('\n')
+	// };
 
 	var normalmapShader = {
 		attributes : {

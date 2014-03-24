@@ -53,7 +53,7 @@ define([
 		var altKey = false;
 
 		var mousedown = function(e) {
-			if (event.button === 0) {
+			if (e.button === 0) {
 				this.eventX = e.clientX;
 				this.eventY = e.clientY;
 
@@ -67,7 +67,7 @@ define([
 		};
 
 		var mouseup = function(e) {
-			if (event.button === 0) {
+			if (e.button === 0) {
 				LMB = false;
 				this.draw = false;
 				console.log('mouseup');

@@ -176,7 +176,7 @@ function(
 		var q = this.gooQuaternion;
 		this.ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
 		this.body.setWorldTransform(this.ammoTransform);
-	}
+	};
 
 	AmmoComponent.prototype.copyPhysicalTransformToVisual = function(entity) {
 		var tc = entity.transformComponent;
@@ -200,5 +200,6 @@ function(
 			tc.addTranslation(this.difference);
 		}
 	};
+	
 	return AmmoComponent;
 });
