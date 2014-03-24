@@ -35,7 +35,7 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = "../../resources";
+	var resourcePath = '../../../resources';
 
 	var gui = new window.dat.GUI();
 

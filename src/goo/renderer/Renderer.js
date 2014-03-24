@@ -48,6 +48,7 @@ function (
 	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.
 	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {function(string)} [parameters.onError] Called with message when error occurs
 	 */
@@ -68,6 +69,7 @@ function (
 		this._antialias = parameters.antialias !== undefined ? parameters.antialias : true;
 		this._stencil = parameters.stencil !== undefined ? parameters.stencil : false;
 		this._preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false;
+		this._useDevicePixelRatio = parameters.useDevicePixelRatio !== undefined ? parameters.useDevicePixelRatio : false;
 		this._onError = parameters.onError;
 
 		var settings = {
@@ -397,8 +399,7 @@ function (
 	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
-		var devicePixelRatio = window.devicePixelRatio || 1;
-		devicePixelRatio /= this.svg.currentScale;
+		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var adjustWidth, adjustHeight;
 		if (document.querySelector) {
@@ -612,7 +613,7 @@ function (
 			if(renderable.meshDataComponent.currentPose) {
 				renderInfo.currentPose = renderable.meshDataComponent.currentPose;
 			} else {
-				delete renderInfo.currentPose;
+				renderInfo.currentPose = undefined;
 			}
 		} else {
 			renderInfo.meshData = renderable.meshData;
@@ -621,7 +622,7 @@ function (
 			if(renderable.currentPose) {
 				renderInfo.currentPose = renderable.currentPose;
 			} else {
-				delete renderInfo.currentPose;
+				renderInfo.currentPose = undefined;
 			}
 		}
 
@@ -883,7 +884,7 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial) {
+	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial, skipOverride) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			return;
 		}
@@ -918,8 +919,7 @@ function (
 		if (!skipUpdateBuffer) {
 			this.hardwarePicking.clearColorStore.setv(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
-				var devicePixelRatio = window.devicePixelRatio || 1;
-				devicePixelRatio /= this.svg.currentScale;
+				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 				var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 				var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
@@ -934,7 +934,12 @@ function (
 					pickList.push(entity);
 				}
 			}
-			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, customPickingMaterial || this.hardwarePicking.pickingMaterial);
+
+			if (skipOverride) {
+				this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear);
+			} else {
+				this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, customPickingMaterial || this.hardwarePicking.pickingMaterial);
+			}
 
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
@@ -950,8 +955,7 @@ function (
 			pickingStore.depth = 0;
 			return;
 		}
-		var devicePixelRatio = window.devicePixelRatio || 1;
-		devicePixelRatio /= this.svg.currentScale;
+		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var pickingResolutionDivider = 4;
 		var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
@@ -1507,8 +1511,8 @@ function (
 			} else if (blending === 'SubtractiveBlending') {
 				// TODO: Find blendFuncSeparate() combination
 				context.enable(WebGLRenderingContext.BLEND);
-				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
-				context.blendFunc(WebGLRenderingContext.ZERO, WebGLRenderingContext.ONE_MINUS_SRC_COLOR);
+				context.blendEquation(WebGLRenderingContext.FUNC_REVERSE_SUBTRACT);
+				context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE);
 			} else if (blending === 'MultiplyBlending') {
 				// TODO: Find blendFuncSeparate() combination
 				context.enable(WebGLRenderingContext.BLEND);
@@ -1520,6 +1524,16 @@ function (
 				context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
 			} else if (blending === 'CustomBlending') {
 				context.enable(WebGLRenderingContext.BLEND);
+			} else if (blending === 'SeparateBlending') {
+				context.enable(WebGLRenderingContext.BLEND);
+				context.blendEquationSeparate(
+						this.getGLBlendParam(material.blendState.blendEquationColor),
+						this.getGLBlendParam(material.blendState.blendEquationAlpha));
+				context.blendFuncSeparate(
+					this.getGLBlendParam(material.blendState.blendSrcColor),
+					this.getGLBlendParam(material.blendState.blendDstColor),
+					this.getGLBlendParam(material.blendState.blendSrcAlpha),
+					this.getGLBlendParam(material.blendState.blendDstAlpha));
 			} else {
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquationSeparate(WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD);

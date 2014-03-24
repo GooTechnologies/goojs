@@ -17,24 +17,24 @@ makeTree = (files) ->
 	return tree
 
 printTree = (tree) ->
-	ret = '<ul>'
+	ret = '<ul>\n'
 	for branch, link of tree
 		ret += '<li>'
 		if typeof link == 'string'
-			ret += "<a href=\"#{link.slice(12)}\">#{branch}</a>"
+			ret += "<a href=\"#{link}\">#{branch}</a>"
 		else
 			ret += branch
 			ret += printTree(link)
-		ret += '</li>'
-	ret += '</ul>'
+		ret += '</li>\n'
+	ret += '</ul>\n'
 	return ret
 
 exports.getFiles = (callback) ->
-	glob __dirname + 'visual-test/**/!(index).html', (err, files) ->
+	glob __dirname + '/**/!(index).html', (err, files) ->
 		callback err, files
 
 exports.getFilesSync = ->
-	return glob.sync 'visual-test/**/!(index).html'
+	return glob.sync __dirname+'/**/!(index).html'
 
 exports.getFilePathsSync = ->
 	return glob.sync __dirname + '/**/!(index).html'
@@ -47,6 +47,9 @@ exports.run = ->
 		if files.length == 0
 			console.log 'No files'
 			return
+
+		for file, i in files
+			files[i] = path.relative __dirname, file
 
 		tree = makeTree(files)
 		#console.log JSON.stringify(tree, null, '\t')

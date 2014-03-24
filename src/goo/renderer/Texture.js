@@ -97,7 +97,7 @@ function (
 		this.readyCallback = null;
 
 		if (image) {
-			this.setImage(image, width, height);
+			this.setImage(image, width, height, settings);
 		}
 	}
 
@@ -123,7 +123,7 @@ function (
 	 * @param {Number} [width]
 	 * @param {Number} [height]
 	 */
-	Texture.prototype.setImage = function (image, width, height) {
+	Texture.prototype.setImage = function (image, width, height, settings) {
 		this.image = image;
 
 		var data = image instanceof Array ? image[0] : image;
@@ -142,10 +142,10 @@ function (
 					this.type = 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
 					this.type = 'UnsignedShort565';
-					this.format = 'RGB';
+					this.format = settings.format || 'RGB';
 				} else if (data instanceof Float32Array) {
 					this.type = 'Float';
-					this.format = 'Alpha';
+					this.format = settings.format || 'RGBA';
 				}
 			} else {
 				throw 'Data textures need width and height';

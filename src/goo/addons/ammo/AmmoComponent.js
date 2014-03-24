@@ -43,8 +43,10 @@ function(
 		this.useBounds = settings.useBounds !== undefined ? settings.useBounds : false;
 		this.useWorldBounds = settings.useWorldBounds !== undefined ? settings.useWorldBounds : false;
 		this.useWorldTransform = settings.useWorldTransform !== undefined ? settings.useWorldTransform : false;
+		this.linearFactor = settings.linearFactor !== undefined ? settings.linearFactor : new Ammo.btVector3(1, 1, 1);
 		this.ammoTransform = new Ammo.btTransform();
 		this.gooQuaternion = new Quaternion();
+		this.onInitializeBody = settings.onInitializeBody;
 		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
 		this.shape = undefined;
 	}
@@ -54,39 +56,39 @@ function(
 		var shape;
 		var scale = gooTransform.scale;
 
-		if( entity.meshDataComponent && entity.meshDataComponent.meshData) {
+		if (entity.meshDataComponent && entity.meshDataComponent.meshData) {
 			var meshData = entity.meshDataComponent.meshData;
 			if (meshData instanceof Box) {
-				shape = new Ammo.btBoxShape(new Ammo.btVector3( meshData.xExtent, meshData.yExtent, meshData.zExtent));
+				shape = new Ammo.btBoxShape(new Ammo.btVector3(meshData.xExtent, meshData.yExtent, meshData.zExtent));
 			} else if (meshData instanceof Sphere) {
-				shape = new Ammo.btSphereShape(meshData.radius);
+				shape = new Ammo.btSphereShape(meshData.radius * scale.x);
 			} else if (meshData instanceof Quad) {
 				// there doesn't seem to be a Quad shape in Ammo
-				shape = new Ammo.btBoxShape(new Ammo.btVector3( meshData.xExtent, meshData.yExtent, 0.01 )); //new Ammo.btPlane();
+				shape = new Ammo.btBoxShape(new Ammo.btVector3(meshData.xExtent, meshData.yExtent, 0.01)); //new Ammo.btPlane();
 			} else {
 				if (this.useBounds || this.mass > 0) {
 					entity.meshDataComponent.computeBoundFromPoints();
 					var bound = entity.meshDataComponent.modelBound;
 					if (bound instanceof BoundingBox) {
-						shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent*scale.x, bound.yExtent*scale.y, bound.zExtent*scale.z));
+						shape = new Ammo.btBoxShape(new Ammo.btVector3(bound.xExtent * scale.x, bound.yExtent * scale.y, bound.zExtent * scale.z));
 					} else if (bound instanceof BoundingSphere) {
-						shape = new Ammo.btSphereShape( bound.radius*scale.x);
+						shape = new Ammo.btSphereShape(bound.radius * scale.x);
 					}
 				} else {
-					shape = calculateTriangleMeshShape( entity, scale.data); // this can only be used for static meshes, i.e. mass == 0.
+					shape = calculateTriangleMeshShape(entity, scale.data); // this can only be used for static meshes, i.e. mass == 0.
 				}
 			}
 		} else {
 			var shape = new Ammo.btCompoundShape();
 			var c = entity.transformComponent.children;
-			for(var i=0; i<c.length; i++) {
-				var childAmmoShape = this.getAmmoShapefromGooShape( c[i].entity );
+			for (var i = 0; i < c.length; i++) {
+				var childAmmoShape = this.getAmmoShapefromGooShape(c[i].entity);
 				var localTrans = new Ammo.btTransform();
 				localTrans.setIdentity();
 				var gooPos = c[i].transform.translation;
-				localTrans.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
+				localTrans.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
 				// TODO: also setRotation ?
-				shape.addChildShape(localTrans,childAmmoShape);
+				shape.addChildShape(localTrans, childAmmoShape);
 			}
 		}
 		return shape;
@@ -94,9 +96,9 @@ function(
 
 	AmmoComponent.prototype.getAmmoShapefromGooShapeWorldBounds = function(entity) {
 		var shape;
-		var bound = EntityUtils.getTotalBoundingBox( entity);
+		var bound = EntityUtils.getTotalBoundingBox(entity);
 		this.center = bound.center;
-		shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent, bound.yExtent, bound.zExtent));
+		shape = new Ammo.btBoxShape(new Ammo.btVector3(bound.xExtent, bound.yExtent, bound.zExtent));
 		//shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent*scale, bound.yExtent*scale, bound.zExtent*scale));
 		return shape;
 	};
@@ -104,7 +106,7 @@ function(
 	AmmoComponent.prototype.initialize = function(entity) {
 		var gooTransform = entity.transformComponent.transform;
 
-		if( this.useWorldTransform ) {
+		if (this.useWorldTransform) {
 			gooTransform = entity.transformComponent.worldTransform;
 		}
 
@@ -112,40 +114,46 @@ function(
 
 		var ammoTransform = new Ammo.btTransform();
 		ammoTransform.setIdentity(); // TODO: is this needed ?
-		ammoTransform.setOrigin(new Ammo.btVector3( gooPos.x, gooPos.y, gooPos.z));
+		ammoTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
 		this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
 		var q = this.gooQuaternion;
 		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
 
-		if(this.useWorldBounds) {
+		if (this.useWorldBounds) {
 			entity._world.process();
 			this.shape = this.getAmmoShapefromGooShapeWorldBounds(entity, gooTransform);
-			this.difference = this.center.clone().sub( gooTransform.translation).invert();
+			this.difference = this.center.clone().sub(gooTransform.translation).invert();
 		} else {
 			this.shape = this.getAmmoShapefromGooShape(entity, gooTransform);
 		}
 
-		if(false === this.isTrigger){
-			var motionState = new Ammo.btDefaultMotionState( ammoTransform );
+		if (false === this.isTrigger) {
+			var motionState = new Ammo.btDefaultMotionState(ammoTransform);
 			var localInertia = new Ammo.btVector3(0, 0, 0);
 
 			// rigidbody is dynamic if and only if mass is non zero, otherwise static
-			if(this.mass !== 0.0) {
-				this.shape.calculateLocalInertia( this.mass, localInertia );
+			if (this.mass !== 0.0) {
+				this.shape.calculateLocalInertia(this.mass, localInertia);
 			}
 
 			var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, this.shape, localInertia);
-			this.body = new Ammo.btRigidBody( info );
+			this.localInertia = localInertia;
+			this.body = new Ammo.btRigidBody(info);
+			this.body.setLinearFactor(this.linearFactor);
+
+			if (this.onInitializeBody) {
+				this.onInitializeBody(this.body);
+			}
 		}
 	};
 
 	AmmoComponent.prototype.showBounds = function(entity) {
 		// entity.meshRendererComponent.worldBound
 		// entity.meshDataComponent.computeBoundFromPoints();
-		var bound = EntityUtils.getTotalBoundingBox( entity );
+		var bound = EntityUtils.getTotalBoundingBox(entity);
 		var bv;
 		if (bound.xExtent) {
-			bv = EntityUtils.createTypicalEntity(entity._world, ShapeCreator.createBox( bound.xExtent*2, bound.yExtent*2, bound.zExtent*2));
+			bv = EntityUtils.createTypicalEntity(entity._world, ShapeCreator.createBox(bound.xExtent * 2, bound.yExtent * 2, bound.zExtent * 2));
 		} else if (bound.radius) {
 			bv = EntityUtils.createTypicalEntity(entity._world, ShapeCreator.createSphere(12, 12, bound.radius));
 		}
@@ -160,9 +168,19 @@ function(
 		this.bv = bv;
 	};
 
+	AmmoComponent.prototype.setPhysicalTransform = function(transform) {
+		var gooPos = transform.translation;
+		this.ammoTransform.setIdentity(); // TODO: is this needed ?
+		this.ammoTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
+		this.gooQuaternion.fromRotationMatrix(transform.rotation);
+		var q = this.gooQuaternion;
+		this.ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		this.body.setWorldTransform(this.ammoTransform);
+	}
+
 	AmmoComponent.prototype.copyPhysicalTransformToVisual = function(entity) {
 		var tc = entity.transformComponent;
-		if ( ! this.body ) {
+		if (!this.body) {
 			return;
 		}
 		this.body.getMotionState().getWorldTransform(this.ammoTransform);
@@ -171,15 +189,15 @@ function(
 		tc.transform.rotation.copyQuaternion(this.gooQuaternion);
 		var origin = this.ammoTransform.getOrigin();
 		tc.setTranslation(origin.x(), origin.y(), origin.z());
-		if( this.settings.showBounds) {
-			if( !this.bv ) {
-				this.showBounds( entity);
+		if (this.settings.showBounds) {
+			if (!this.bv) {
+				this.showBounds(entity);
 			}
-			this.bv.transformComponent.transform.rotation.copy( tc.transform.rotation);
-			this.bv.transformComponent.setTranslation( tc.transform.translation);
+			this.bv.transformComponent.transform.rotation.copy(tc.transform.rotation);
+			this.bv.transformComponent.setTranslation(tc.transform.translation);
 		}
-		if( this.difference) {
-			tc.addTranslation( this.difference);
+		if (this.difference) {
+			tc.addTranslation(this.difference);
 		}
 	};
 	return AmmoComponent;

@@ -42,7 +42,7 @@ require([
 	function addTexturedBox(goo, x, y, z) {
 		var boxMeshData = ShapeCreator.createBox(10, 30, 10);
 		var boxMaterial = new Material(ShaderLib.texturedLit, 'texturedBoxMaterial');
-		var boxTexture = new TextureCreator().loadTexture2D('../../resources/check.png');
+		var boxTexture = new TextureCreator().loadTexture2D('../../../resources/check.png');
 		boxMaterial.setTexture('DIFFUSE_MAP', boxTexture);
 
 		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
@@ -61,16 +61,12 @@ require([
 		lampEntity.addToWorld();
 	}
 
-	function flatwaterAndParticlesDemo() {
-		var goo = V.initGoo();
+	var goo = V.initGoo();
 
-		V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
+	V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
 
-		addTexturedBox(goo, 0, 0, 0);
+	addTexturedBox(goo, 0, 0, 0);
 
-		addLamp(goo, -10, 10, 0);
-		addLamp(goo, -10, 5, 0);
-	}
-
-	flatwaterAndParticlesDemo();
+	addLamp(goo, -10, 10, 0);
+	addLamp(goo, -10, 5, 0);
 });

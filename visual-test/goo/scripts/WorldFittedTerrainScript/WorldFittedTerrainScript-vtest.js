@@ -179,7 +179,7 @@ require([
     function worldFittedTerrainScriptDemo() {
         var canvasUtils = new CanvasUtils();
 
-        canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
+        canvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
             var matrix = canvasUtils.getMatrixFromCanvas(canvas);
 
             var dim1 = {
@@ -221,7 +221,7 @@ require([
             };
 
             var terrainData3 = worldFittedTerrainScript.addHeightData(matrix, dim3);
-            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world, '../../resources/heightmap_small.png');
+            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world, '../../../resources/heightmap_small.png');
         //    buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim3);
 			addNormalPointers(goo, worldFittedTerrainScript, dim3);
@@ -265,7 +265,7 @@ require([
 
 
 
-		canvasUtils.loadCanvasFromPath('../../resources/checker_slope.png', function(canvas) {
+		canvasUtils.loadCanvasFromPath('../../../resources/checker_slope.png', function(canvas) {
 			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim = {
@@ -298,7 +298,7 @@ require([
 
 			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
 
-				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_6", goo.world, '../../resources/check.png');
+				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_6", goo.world, '../../../resources/check.png');
 			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
 
 			addSpheres(goo, worldFittedTerrainScript, dim);
