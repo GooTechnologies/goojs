@@ -395,7 +395,7 @@ function(
 	var vegetationShader = {
 		processors: [
 			ShaderBuilder.light.processor,
-			function (shader, shaderInfo) {
+			function (shader) {
 				if (ShaderBuilder.USE_FOG) {
 					shader.defines.FOG = true;
 					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;

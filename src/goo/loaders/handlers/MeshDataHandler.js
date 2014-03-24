@@ -98,7 +98,7 @@ function(
 		};
 
 		if (BufferUtils.browserType === 'Trident') {
-			typeMatch['uint8'] = 'UnsignedShort';
+			typeMatch.uint8 = 'UnsignedShort';
 		}
 
 		var attributeMap = {};

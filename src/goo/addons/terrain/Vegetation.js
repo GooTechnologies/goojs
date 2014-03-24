@@ -17,8 +17,7 @@ define([
 	'goo/noise/ValueNoise',
 	'goo/shapes/TerrainSurface',
 	'goo/shapes/ShapeCreator',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/rsvp'
+	'goo/renderer/shaders/ShaderBuilder'
 ],
 /** @lends */
 function(
@@ -40,8 +39,7 @@ function(
 	ValueNoise,
 	TerrainSurface,
 	ShapeCreator,
-	ShaderBuilder,
-	RSVP
+	ShaderBuilder
 ) {
 	"use strict";
 
@@ -248,7 +246,7 @@ function(
 
 	Vegetation.prototype.createBase = function(type) {
 		var meshData = ShapeCreator.createQuad(type.w, type.h, 10, 10);
-		meshData.attributeMap.BASE = MeshData.createAttribute(1, 'Float'),
+		meshData.attributeMap.BASE = MeshData.createAttribute(1, 'Float');
 		meshData.rebuildData(meshData.vertexCount, meshData.indexCount, true);
 
 		meshData.getAttributeBuffer(MeshData.NORMAL).set([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
@@ -294,7 +292,7 @@ function(
 	var vegetationShader = {
 		processors: [
 			ShaderBuilder.light.processor,
-			function (shader, shaderInfo) {
+			function (shader) {
 				if (ShaderBuilder.USE_FOG) {
 					shader.defines.FOG = true;
 					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;

@@ -148,7 +148,7 @@ define([
 				responseType: 'arraybuffer'
 			}).then(function(request) {
 				promise.resolve(request.response);
-			}.bind(this), function(err) {
+			}.bind(this), function() {
 				promise.resolve(null);
 			}.bind(this));
 

@@ -28,7 +28,7 @@ define(function() {
 				return randomNumber.toString(16);
 			} else {
 				// Set bit 6 and 7 to 0 and 1
-				return (randomNumber&0x3|0x8).toString(16)
+				return (randomNumber&0x3|0x8).toString(16);
 			}
 		});
 
