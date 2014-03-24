@@ -17,14 +17,14 @@ define([
 
 	function wait(promise, time) {
 		time = time || 1;
-		waitsFor(function() {
+		waitsFor(function () {
 			return promise.isResolved;
 		}, 'promise does not get resolved', time);
 	}
 
 	describe('TimelineComponentHandler', function () {
 		var loader;
-		beforeEach(function() {
+		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
 				world: world,

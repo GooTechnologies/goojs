@@ -89,7 +89,7 @@ define([
 				}
 				return config;
 			},
-			meshData: function(shape, options) {
+			meshData: function (shape, options) {
 				if (shape) {
 					return {
 						shape: shape,
@@ -108,19 +108,19 @@ define([
 							propertyKey: 'scaleX',
 							keyframes  : {
 								'k1': {
-									time         : 10,
-									value        : 20,
-									tweenFunction: 'Linear'
+									time  : 10,
+									value : 20,
+									easing: 'Linear.None'
 								},
 								'k2': {
-									time         : 100,
-									value        : 50,
-									tweenFunction: 'Linear'
+									time  : 100,
+									value : 50,
+									easing: 'Linear.None'
 								},
 								'k3': {
-									time         : 200,
-									value        : 50,
-									tweenFunction: 'Linear'
+									time  : 200,
+									value : 50,
+									easing: 'Linear.None'
 								}
 							}
 						},
@@ -128,21 +128,21 @@ define([
 							propertyKey: 'translationY',
 							keyframes  : {
 								'k1': {
-									time         : 200,
-									value        : 20,
-									tweenFunction: 'Linear'
+									time  : 200,
+									value : 20,
+									easing: 'Linear.None'
 								},
 								'k2': {
-									time         : 100,
-									value        : 50,
-									tweenFunction: 'Linear'
+									time  : 100,
+									value : 50,
+									easing: 'Linear.None'
 								}
 							}
 						}
 					}
 				};
 			},
-			quad: function() {
+			quad: function () {
 				return {
 					materialRef: this.material().id
 				};

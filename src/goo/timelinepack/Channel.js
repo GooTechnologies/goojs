@@ -50,16 +50,19 @@ define([], function () {
 	 */
 	Channel.prototype.sort = function () {
 		this.keyframes.sort(function (a, b) { return a.time < b.time; });
+		this.callbackAgenda.sort(function (a, b) { return a.time < b.time; });
 	};
 
 	/**
 	 * Add a callback to be called at a specific point in time
-	 * @param time
-	 * @param callback
+	 * @param {string} id
+	 * @param {number} time
+	 * @param {Function} callback
 	 */
 	//! AT: it looks like code duplication, but the alternative is a generalzilla
-	Channel.prototype.addCallback = function (time, callback) {
+	Channel.prototype.addCallback = function (id, time, callback) {
 		var newCallback = {
+			id: id,
 			time: time,
 			callback: callback
 		};
@@ -82,27 +85,30 @@ define([], function () {
 	 * @param {'linear' | 'quadratic' | 'exponential'} easing Type of easing
 	 * @param [callback] Callback to call when point was passed
 	 */
-	Channel.prototype.addKeyframe = function (time, value, easing, callback) {
+	Channel.prototype.addKeyframe = function (id, time, value, easing, callback) {
 		// insert at correct index
 
-		var newEntry = {
+		var newKeyframe = {
+			id: id,
 			time: time,
 			value: value,
-			easingFunction: easing,
-			callback: callback
+			easingFunction: easing//,
+			//callback: callback //! AT: probably not used
 		};
 
 		if (time > this.lastTime) {
-			this.keyframes.push(newEntry);
+			this.keyframes.push(newKeyframe);
 			this.lastTime = time;
 		} else if (!this.keyframes.length || time < this.keyframes[0].time) {
-			this.keyframes.unshift(newEntry);
+			this.keyframes.unshift(newKeyframe);
 		} else {
 			var index = find(this.keyframes, time, this.lastTime) + 1;
-			this.keyframes.splice(index, 0, newEntry);
+			this.keyframes.splice(index, 0, newKeyframe);
 		}
 
-		if (callback) { this.addCallback(time, callback); console.log('add callback', time); }
+		if (callback) {
+			this.addCallback(id, time, callback);
+		}
 	};
 
 	/**

@@ -9,7 +9,7 @@ require([
 	'goo/shapes/Torus',
 	'goo/math/Matrix3x3',
 	'goo/timelinepack/Channel',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,
@@ -56,11 +56,11 @@ require([
 		}
 
 		var channel = new Channel('id', { callbackUpdate: callback, callbackEnd: function () { trace = []; } });
-		channel.addKeyframe(50, 10, TWEEN.Easing.Quadratic.InOut, getMessenger('start1'));
-		channel.addKeyframe(100, 160, TWEEN.Easing.Sinusoidal.InOut, getMessenger('start2'));
-		channel.addKeyframe(170, 80, TWEEN.Easing.Exponential.InOut, getMessenger('start3'));
-		channel.addKeyframe(300, 400, TWEEN.Easing.Elastic.InOut, getMessenger('start4'));
-		channel.addKeyframe(400, 200, TWEEN.Easing.Elastic.InOut, getMessenger('start5'));
+		channel.addKeyframe('', 50, 10, TWEEN.Easing.Quadratic.InOut, getMessenger('start1'));
+		channel.addKeyframe('', 100, 160, TWEEN.Easing.Sinusoidal.InOut, getMessenger('start2'));
+		channel.addKeyframe('', 170, 80, TWEEN.Easing.Exponential.InOut, getMessenger('start3'));
+		channel.addKeyframe('', 300, 400, TWEEN.Easing.Elastic.InOut, getMessenger('start4'));
+		channel.addKeyframe('', 400, 200, TWEEN.Easing.Elastic.InOut, getMessenger('start5'));
 		return channel;
 	}
 
