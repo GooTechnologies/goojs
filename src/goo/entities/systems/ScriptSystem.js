@@ -38,11 +38,12 @@ define([
 	ScriptSystem.prototype = Object.create(System.prototype);
 	ScriptSystem.prototype.constructor = ScriptSystem;
 
+	/*
 	ScriptSystem.prototype.inserted = function (entity) {
 		if (!this.manualSetup) {
 			entity.scriptComponent.setup(entity);
 		}
-	};
+	};*/
 
 	ScriptSystem.prototype.process = function (entities, tpf) {
 		// Update environment
@@ -59,11 +60,24 @@ define([
 		}
 	};
 
+	ScriptSystem.prototype.addedComponent = function (entity, component) {
+		if (component.type === 'ScriptComponent' && !this.manualSetup) {
+			component.setup(entity);
+		}
+	};
+
+	ScriptSystem.prototype.removedComponent = function (entity, component) {
+		if (component.type === 'ScriptComponent' && !this.manualSetup) {
+			component.cleanup();
+		}
+	};
+
+	/*
 	ScriptSystem.prototype.deleted = function (entity) {
 		if (entity.scriptComponent && !this.manualSetup) {
 			entity.scriptComponent.cleanup();
 		}
-	};
+	};*/
 
 	return ScriptSystem;
 });

@@ -81,7 +81,7 @@ function (
 	 * @private
 	 * @type {setup}
 	 */
-	ScriptComponent.prototype.attached = ScriptComponent.prototype.setup;
+	//ScriptComponent.prototype.attached = ScriptComponent.prototype.setup;
 
 	/**
 	 * Runs the update function on every script attached to this entity
@@ -139,7 +139,7 @@ function (
 	 * @private
 	 * @type {setup}
 	 */
-	ScriptComponent.prototype.detached = ScriptComponent.prototype.cleanup;
+	//ScriptComponent.prototype.detached = ScriptComponent.prototype.cleanup;
 
 	/**
 	 * Attempts to add a script to an entity. The object can be a { run: Function } object or a Function. The entity is supposed to get a ScriptComponent with a script created out of the passed object
