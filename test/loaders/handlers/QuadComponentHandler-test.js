@@ -41,24 +41,6 @@ define([
 			wait(p);
 		});
 
-		it('loads default material if no material ref was given', function () {
-			var config = Configs.entity(['quad']);
-			loader.preload(Configs.get());
-			var p = loader.load(config.id).then(function (/*entity*/) {
-				var newConfig = JSON.parse(JSON.stringify(config));
-
-				// Remove the material!
-				delete newConfig.components.quad.materialRef;
-				return loader.update(config.id, newConfig);
-
-			}).then(function (entity) {
-				// Hopefully we loaded the default material
-				expect(entity.meshRendererComponent.materials[0]).toEqual(QuadComponent.DEFAULT_MATERIAL);
-			});
-
-			wait(p);
-		});
-
 		it('cleans up after the config was updated', function () {
 			var config = Configs.entity(['quad']);
 			loader.preload(Configs.get());
@@ -73,7 +55,7 @@ define([
 				expect(entity._components.length).toBe(1); // just the transform component is left
 			});
 
-			wait(p);
+			wait(p, 100);
 		});
 	});
 });

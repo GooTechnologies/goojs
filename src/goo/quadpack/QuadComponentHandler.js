@@ -43,24 +43,9 @@ function (
 	QuadComponentHandler.prototype.constructor = QuadComponentHandler;
 	ComponentHandler._registerClass('quad', QuadComponentHandler);
 
-	// REVIEW You already have this in QuadComponent
-	QuadComponent.DEFAULT_MATERIAL = new Material(ShaderLib.uber, 'Default material');
-
-	/**
-	 * Prepare component. Set defaults on config here.
-	 * @param {object} config
-	 * @returns {object}
-	 * @private
-	 */
-	// REVIEW Does nothing, so I guess you can remove it?
-	QuadComponentHandler.prototype._prepare = function (config) {
-		return _.defaults(config, {
-		});
-	};
-
 	/**
 	 * Create a quadcomponent object.
-	 * @returns {object} the created component object
+	 * @returns {QuadComponent} the created component object
 	 * @private
 	 */
 	QuadComponentHandler.prototype._create = function () {
@@ -68,15 +53,11 @@ function (
 	};
 
 	/**
-	 * Removes the quadcomponent
+	 * Removes the quadcomponent from the entity.
 	 * @param {Entity} entity
 	 * @private
 	 */
 	QuadComponentHandler.prototype._remove = function (entity) {
-		// REVIEW I don't think removing material is necessary since we remove the component
-		entity.quadComponent.removeMaterial(); // Release material
-		entity.clearComponent('meshDataComponent');
-		entity.clearComponent('meshRendererComponent');
 		entity.clearComponent('quadComponent');
 	};
 
@@ -92,51 +73,18 @@ function (
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
-			/* REVIEW
-			 * With a quadComponent, we will never change material or change components
-			 * return that._load(config.materialRef, options).then(function (material) {
-			 *  if (!entity.hasComponent('meshRendererComponent')) {
-			 *   entity.setComponent(component.meshRendererComponent);
-			 *   entity.setComponent(component.meshDataComponent);
-			 *   component.setMaterial(material);
-			 *   // or component.meshRendererComponent.materials = [material]
-			 *  }
-			 *  return component;
-			 * }
-			*/
-
-			// Remove material
-			// REVIEW We will never change material
-			component.removeMaterial();
-
-			// REVIEW This will send unnecessary 'entityChanged' to the world
-			// if !entity.hasComponent then setComponent
-			entity.clearComponent('meshRendererComponent');
-			entity.clearComponent('meshDataComponent');
-
-			// REVIEW I think materialRef should be mandatory
-			// Materials
-			var materialRef = config.materialRef;
-			if (!materialRef) {
-
-				// No material ref given, set default
-				component.material = QuadComponent.DEFAULT_MATERIAL;
-				component.attachMaterial();
-
-				// Set components
-				entity.setComponent(component.meshRendererComponent);
-				entity.setComponent(component.meshDataComponent);
-
-				return component;
-			}
-
+			// Load material
 			return that._load(config.materialRef, options).then(function (material) {
-				component.material = material;
-				component.attachMaterial();
 
-				// Set components
-				entity.setComponent(component.meshRendererComponent);
-				entity.setComponent(component.meshDataComponent);
+				// If the component already has got these components, they need to be overridden
+				if(entity.meshRendererComponent !== component.meshRendererComponent){
+					entity.setComponent(component.meshRendererComponent);
+				}
+				if(entity.meshDataComponent !== component.meshDataComponent){
+					entity.setComponent(component.meshDataComponent);
+				}
+
+				component.setMaterial(material);
 
 				return component;
 			});

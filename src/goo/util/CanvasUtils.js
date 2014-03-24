@@ -1,13 +1,15 @@
-define([],
-	/** @lends */
-	function() {
+define([
+	'goo/util/rsvp',
+],
+/** @lends */
+function(
+	RSVP
+) {
 
 		'use strict';
-		// REVIEW no need for prototypes, we can have functionality on CanvasUtils
-		// Also, make promise based instead of sending callback
 
-		// I notice you create an image of svg, then render it to canvas. Can you send
-		// The image directly to the engine as texture?
+		// TODO: No need for prototypes, we can have functionality on CanvasUtils
+		// TODO: make promise based instead of sending callbacks
 
 		/**
 		* @class
@@ -150,6 +152,25 @@ define([],
 				}
 			}
 			return matrix;
+		};
+
+		CanvasUtils.prototype.svgDataToImage = function(data){
+			var img = new Image();
+			var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+			var DOMURL = window.URL || window.webkitURL || window;
+			var url = DOMURL.createObjectURL(svg);
+			img.src = url;
+
+			var p = new RSVP.Promise();
+
+			img.onload = function(){
+				p.resolve(img);
+			};
+			img.onerror = function(){
+				p.reject();
+			};
+
+			return p;
 		};
 
 		return CanvasUtils;
