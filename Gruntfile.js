@@ -199,4 +199,10 @@ module.exports = function(grunt) {
 
 		fs.writeFileSync('src/goo.js', lines.join('\n'));
 	});
+
+	// Creates an HTML list of tests in visual-test/index.html
+	grunt.registerTask('visualtoc',function(){
+		var toc = require('./visual-test/toc');
+		toc.run();
+	});
 };
