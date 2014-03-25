@@ -26,7 +26,7 @@ define([
 			}
 		});
 		for (var key in parameters) {
-			if (keys.indexOf(key) === -1) {
+			if (keys.indexOf(key) === -1 && key !== 'enabled') {
 				delete parameters[key];
 			}
 		}
