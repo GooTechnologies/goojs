@@ -89,7 +89,7 @@ function(
 		this._ajax.prefill(bundle, clear);
 	};
 
-	/*
+	/**
 	 * Clears the cache of all the handlers. Also clears the engine
 	 */
 	DynamicLoader.prototype.clear = function() {
@@ -160,7 +160,7 @@ function(
 	 **** Loader functions ****
 	 */
 
-	/*
+	/**
 	 * Loads the object specified by the ref. If an object is already loaded,
 	 * it will return that object without updating it.
 	 * @param {string} ref
@@ -177,8 +177,8 @@ function(
 		}
 	};
 
-	/*
-	 * Updates object identified by ref accoring to config
+	/**
+	 * Updates object identified by ref according to config
 	 * @param {string} ref
 	 * @param {object} config
 	 * @param {object} options
@@ -197,7 +197,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Fetch a file from the server, and parse JSON if needed.
 	 *
 	 * @param {string} ref Ref of the config to load
@@ -209,7 +209,7 @@ function(
 		return this._ajax.load(ref, (options==null) ? false : options.noCache);
 	};
 
-	/*
+	/**
 	 * Recursively traverses all configs and preloads the binary files referenced.
 	 * @param {object} references one-level object of references, like in datamodel
 	 * @param {object} options See {DynamicLoader.load}
@@ -269,7 +269,7 @@ function(
 		return traverse(references).then(loadBinaryRefs);
 	};
 
-	/*
+	/**
 	 * Gets cached handler for type or creates a new one
 	 * @param {string} type
 	 * @returns {ConfigHandler}
@@ -291,7 +291,7 @@ function(
 	};
 
 	/*
-	 * Handles a ref with its loaded config, i e calls the proper config handler
+	 * Handles a ref with its loaded config, i.e. calls the proper config handler
 	 * to create or update the object
 	 *
 	 * @param {string} ref
@@ -331,7 +331,7 @@ function(
 	};*/
 
 
-	/*
+	/**
 	 * Find all the references in a config, and return in a flat list
 	 *
 	 * @param {object} config
@@ -375,7 +375,7 @@ function(
 		return ref.split('.').pop().toLowerCase();
 	};
 
-	/*
+	/**
 	 * Checks if ref has a type included in the group
 	 * Different groups are found in the top of the file
 	 *
