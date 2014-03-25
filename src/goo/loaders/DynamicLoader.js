@@ -115,7 +115,11 @@ function(
 	 * registered {@link ConfigHandler}
 	 *
 	 * @param {string} ref Ref of object to load
-	 * @param {object} options {@see DynamicLoader.update}
+	 * @param {object} options
+	 * @param {function(handled, total)} [options.progressCallback] Function called while loading the world.
+	 * Arguments handled and total are both integer numbers and represent the loaded elements so far as well as the total elements.
+	 * @param {boolean} [options.preloadBinaries] Load the binary data as soon as the reference is loaded. Defaults to false.
+	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 */
@@ -137,8 +141,6 @@ function(
 	 * @param {object} [config] New configuration (formatted according to data model).
 	 * If omitted, works the same as {DynamicLoader.load}.
 	 * @param {object} options
-	 * @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
-	 * 	each object as argument and if it returns true, it is added to the world.
 	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
 	 * @param {boolean} [options.recursive] Recursively load resources referenced from the given config. Defaults to true.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
