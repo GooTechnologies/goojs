@@ -43,7 +43,7 @@ function(
 		this.loadData(new Uint8Array(buffer));
 		var imageData = this.getCanvas();
 		tex.setImage(imageData, imageData.width, imageData.height);
-		imageData.isData = true;
+		//imageData.isData = true;
 		imageData.dataReady = true;
 		tex.needsUpdate = true;
 	};
