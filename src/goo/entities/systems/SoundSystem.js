@@ -18,6 +18,7 @@ function(
 	'use strict';
 	/**
 	 * @class System responsible for sound
+	 * @extends System
 	 */
 	function SoundSystem() {
 		if (!AudioContext) {

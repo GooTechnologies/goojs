@@ -7,6 +7,8 @@ define([
 
 	/**
 	 * HTML Compnent
+	 * @class
+	 * @extends Component
 	 */
 	function HTMLComponent(domElement) {
 		Component.call(this);

@@ -15,6 +15,7 @@ function(
 	 * @class Handles integration with Howler
 	 * @desc Depends on the global Howler object.
 	 * Load howler with a script tag before using this system.
+	 * @extends System
 	 */
 	function HowlerSystem(settings) {
 		System.call(this, 'HowlerSystem', ['HowlerComponent']);

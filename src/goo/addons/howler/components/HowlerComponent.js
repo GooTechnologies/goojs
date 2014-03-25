@@ -9,6 +9,7 @@ function(
 
 	/**
 	* @class
+	* @extends Component
 	*/
 	function HowlerComponent() {
 		this.type = 'HowlerComponent';

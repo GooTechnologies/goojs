@@ -12,6 +12,7 @@ define([
 	/**
 	 * @class Defines a light
 	 * @param {Light} light Light to contain in this component (directional, spot, point)
+	 * @extends Component
 	 */
 	function LightComponent(light) {
 		this.type = 'LightComponent';

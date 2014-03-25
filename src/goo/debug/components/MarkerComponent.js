@@ -12,6 +12,7 @@ function(
 	/**
 	 * @class Holds the necessary data for a marker
 	 * @param {Entity} entity The entity this component is attached to
+	 * @extends Component
 	 */
 	function MarkerComponent(hostEntity) {
 		this.type = 'MarkerComponent';

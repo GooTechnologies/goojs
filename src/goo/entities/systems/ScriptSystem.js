@@ -14,6 +14,7 @@ define([
 
 	/**
 	 * @class Processes all entities with script components, running the scripts where applicable
+	 * @extends System
 	 */
 	function ScriptSystem(world) {
 		System.call(this, 'ScriptSystem', ['ScriptComponent']);

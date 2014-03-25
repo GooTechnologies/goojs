@@ -15,6 +15,7 @@ function (
 	 * @class Processes all entities with a proximity component
 	 * @param {Renderer} renderer
 	 * @param {RenderSystem} renderSystem
+	 * @extends System
 	 */
 	function ProximitySystem() {
 		System.call(this, 'ProximitySystem', ['ProximityComponent']);

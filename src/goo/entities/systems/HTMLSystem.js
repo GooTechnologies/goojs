@@ -11,6 +11,10 @@ function(System, Renderer, Matrix4x4, MathUtils, Vector3) {
 
 	"use strict";
 
+	/**
+	 * @class
+	 * @extends System
+	 */
 	function HTMLSystem(renderer) {
 		System.call(this, "HTMLSystem", ["TransformComponent", "HTMLComponent"]);
 		this.renderer = renderer;

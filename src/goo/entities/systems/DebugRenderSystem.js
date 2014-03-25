@@ -22,6 +22,7 @@ function (
 	/**
 	 * @class Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
+	 * @extends System
 	 */
 	function DebugRenderSystem() {
 		System.call(this, 'DebugRenderSystem', ['TransformComponent']);

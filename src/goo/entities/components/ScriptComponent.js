@@ -18,6 +18,7 @@ function (
 	 * @class Contains scripts to be executed each frame when set on an active entity
 	 * @param {Array|object} [scripts] A script-object or an array of script-objects to attach to the entity.
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>.
+	 * @extends Component
 	 */
 	function ScriptComponent(scripts) {
 		this.type = 'ScriptComponent';
