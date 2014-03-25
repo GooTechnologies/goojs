@@ -133,6 +133,17 @@ module.exports = function(grunt) {
 				browsers:['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
 			},
 		},
+	    jsdoc : { // Could replace tools/generate_jsdoc.sh, but still need something that makes the tar.gz docs bundle
+	        dist : {
+	            src: ['src','tools/jsdoc-template/static/README.md'],
+	            options: {
+	                destination: 'goojs-jsdoc',
+	                template: 'tools/jsdoc-template',
+	                'private': false,
+	                recurse: true
+	            }
+	        }
+	    }
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -140,12 +151,14 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-karma');
+	grunt.loadNpmTasks('grunt-jsdoc');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default',  ['minify']);
-	grunt.registerTask('minify',   ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack']);
-	grunt.registerTask('unittest', ['karma:unit']);
+	grunt.registerTask('default',	['minify']);
+	grunt.registerTask('docs',		['jsdoc']);
+	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack']);
+	grunt.registerTask('unittest',	['karma:unit']);
 
 	//! AT: no better place to put this
 	function extractFilename(path) {
