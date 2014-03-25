@@ -136,6 +136,9 @@ function(
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
 
+		// REVIEW if (this._attachedToCamera) { do basic stuff plus early return }
+		// Or if (!transform) see review in soundsystem
+
 		var matrix = transform.matrix;
 		matrix.getTranslation(this._position);
 		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);

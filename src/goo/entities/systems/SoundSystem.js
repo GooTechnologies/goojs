@@ -41,12 +41,14 @@ function(
 		this._listener = AudioContext.listener;
 		this._listener.dopplerFactor = 0;
 
+		// REVIEW These won't be used since the camera is still
 		this._position = new Vector3();
 		this._oldPosition = new Vector3();
 		this._velocity = new Vector3();
 		this._orientation = new Vector3();
 
 		this._camera = null;
+		// REVIEW These won't be used
 		this._up = new Vector3();
 		this._left = new Vector3();
 
@@ -195,12 +197,24 @@ function(
 		}
 		this.entities = entities;
 		var mvInv;
+		// REVIEW Don't create new objects in loops
+		// Also, we only need a Matrix4x4
+		// Also, we could just send the mvInv into component.process
 		var relativeTransform = new Transform();
+
+		// var viewMat = this._camera.getViewMatrix()
 		for (var i = 0; i < entities.length; i++) {
 			var component = entities[i].soundComponent;
 
 			component._attachedToCamera = (entities[i].cameraComponent && entities[i].cameraComponent.camera === this._camera);
 
+			/* REVIEW
+			 * if (this._camera && entity.cameraComponent && entity.cameraComponent.camera === this._camera) {
+			 *   component.process(this._settings, null, tpf);
+			 * } else {
+			 *   component.process(this._settings, viewMat, tpf);
+			 * }
+			 */
 			// Give the transform relative to the camera
 			if(this._camera && !component._attachedToCamera){
 				var cam = this._camera;
@@ -212,6 +226,7 @@ function(
 			component.process(this._settings, relativeTransform, tpf);
 		}
 
+		// REVIEW All this is now unnecessary
 		if (this._camera) {
 			var cam = this._camera;
 
