@@ -36,6 +36,7 @@ else:
 
 os.makedirs(release_dir + '/lib')
 for directory in (
+	'lib/p2',
 	'lib/box2d',
 	'lib/cannon',
 	'lib/soundmanager2',
@@ -57,9 +58,11 @@ shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
 # pack files must also be copied
 shutil.copy('out/fsmpack.js', release_dir + '/lib/fsmpack.js')
 shutil.copy('out/geometrypack.js', release_dir + '/lib/geometrypack.js')
+shutil.copy('out/quadpack.js', release_dir + '/lib/quadpack.js')
 
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')
+shutil.copy('lib/polyk.js', release_dir + '/lib/polyk.js')
 shutil.copy('COPYING', release_dir + '/COPYING')
 shutil.copy('LICENSE', release_dir + '/LICENSE')
 shutil.copy('CHANGES', release_dir + '/CHANGES')
