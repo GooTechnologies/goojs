@@ -13,12 +13,21 @@ function(
 ) {
 	'use strict';
 
+	/**
+	 * @class Component that adds sound to an entity.
+	 * @extends {Component}
+	 */
 	function SoundComponent() {
 		if (!AudioContext) {
 			console.warn('Cannot create soundComponent, webaudio not supported');
 			return;
 		}
 		this.type = 'SoundComponent';
+
+		/**
+		 * Current sounds in the entity. Add a sound using {@link SoundComponent#addSound}.
+		 * @type {Array<Sound>}
+		 */
 		this.sounds = [];
 		this._outDryNode = AudioContext.createGain();
 		this._outWetNode = AudioContext.createGain();
@@ -122,13 +131,14 @@ function(
 	};
 
 	/**
-	 * Updates position, velocity and orientation of component and thereby all connected sounds
-	 * @param {settings} See {@link SoundSystem}
-	 * @param {Transform} the entity's world transform
+	 * Updates position, velocity and orientation of component and thereby all connected sounds.
+	 * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
+	 * @param {object} settings See {@link SoundSystem}
+	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
 	 * @param {number} tpf
 	 * @private
 	 */
-	SoundComponent.prototype.process = function (settings, transform, tpf) {
+	SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 		if (!AudioContext) {
 			// Should never happen
 			return;
@@ -136,29 +146,26 @@ function(
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
 
-		// REVIEW if (this._attachedToCamera) { do basic stuff plus early return }
-		// Or if (!transform) see review in soundsystem
-
-		var matrix = transform.matrix;
-		matrix.getTranslation(this._position);
-		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
-		this._oldPosition.setv(this._position);
-		this._orientation.setd(0, 0, -1);
-		matrix.applyPostVector(this._orientation);
-
-		if(!this._attachedToCamera){
-			var pd = this._position.data;
-			this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
-			var vd = this._velocity.data;
-			this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
-			var od = this._orientation.data;
-			this._pannerNode.setOrientation(od[0], od[1], od[2]);
-		} else {
-			// The component is attached to a camera.
+		if(this._attachedToCamera || !mvMat){
+			// The component is attached to the current camera.
 			this._pannerNode.setPosition(0, 0, 0);
 			this._pannerNode.setVelocity(0, 0, 0);
 			this._pannerNode.setOrientation(0, 0, -1);
+			return;
 		}
+
+		mvMat.getTranslation(this._position);
+		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
+		this._oldPosition.setv(this._position);
+		this._orientation.setd(0, 0, -1);
+		mvMat.applyPostVector(this._orientation);
+
+		var pd = this._position.data;
+		this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
+		var vd = this._velocity.data;
+		this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
+		var od = this._orientation.data;
+		this._pannerNode.setOrientation(od[0], od[1], od[2]);
 	};
 
 	return SoundComponent;

@@ -5,8 +5,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil',
-	'goo/math/Matrix4x4',
-	'goo/math/Transform'
+	'goo/math/Matrix4x4'
 ],
 /** @lends */
 function(
@@ -16,12 +15,12 @@ function(
 	MathUtils,
 	SystemBus,
 	_,
-	Matrix4x4,
-	Transform
+	Matrix4x4
 ) {
 	'use strict';
 	/**
-	 * @class System responsible for sound
+	 * @class System responsible for sound.
+	 * @extends {System}
 	 */
 	function SoundSystem() {
 		if (!AudioContext) {
@@ -41,16 +40,9 @@ function(
 		this._listener = AudioContext.listener;
 		this._listener.dopplerFactor = 0;
 
-		// REVIEW These won't be used since the camera is still
-		this._position = new Vector3();
-		this._oldPosition = new Vector3();
-		this._velocity = new Vector3();
-		this._orientation = new Vector3();
+		this._relativeTransform = new Matrix4x4();
 
 		this._camera = null;
-		// REVIEW These won't be used
-		this._up = new Vector3();
-		this._left = new Vector3();
 
 		this._settings = {
 			rolloffFactor: 0.4,
@@ -59,6 +51,14 @@ function(
 		this._wetNode.gain.value = 0.2;
 
 		this._pausedSounds = {};
+
+		// Everything is relative to the camera
+		this._listener.setPosition(0, 0, 0);
+		this._listener.setVelocity(0, 0, 0);
+		this._listener.setOrientation(
+			0,  0, -1, // Orientation
+			0,  1,  0  // Up
+		);
 
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
@@ -196,57 +196,27 @@ function(
 			return;
 		}
 		this.entities = entities;
-		var mvInv;
-		// REVIEW Don't create new objects in loops
-		// Also, we only need a Matrix4x4
-		// Also, we could just send the mvInv into component.process
-		var relativeTransform = new Transform();
+		var relativeTransform = this._relativeTransform;
 
-		// var viewMat = this._camera.getViewMatrix()
-		for (var i = 0; i < entities.length; i++) {
-			var component = entities[i].soundComponent;
-
-			component._attachedToCamera = (entities[i].cameraComponent && entities[i].cameraComponent.camera === this._camera);
-
-			/* REVIEW
-			 * if (this._camera && entity.cameraComponent && entity.cameraComponent.camera === this._camera) {
-			 *   component.process(this._settings, null, tpf);
-			 * } else {
-			 *   component.process(this._settings, viewMat, tpf);
-			 * }
-			 */
-			// Give the transform relative to the camera
-			if(this._camera && !component._attachedToCamera){
-				var cam = this._camera;
-				if(!mvInv){
-					mvInv = cam.getViewMatrix();
-				}
-				Matrix4x4.combine(mvInv, entities[i].transformComponent.worldTransform.matrix, relativeTransform.matrix);
-			}
-			component.process(this._settings, relativeTransform, tpf);
+		var viewMat;
+		if(this._camera){
+			viewMat = this._camera.getViewMatrix();
 		}
 
-		// REVIEW All this is now unnecessary
-		if (this._camera) {
-			var cam = this._camera;
+		for (var i = 0; i < entities.length; i++) {
+			var e = entities[i];
+			var component = e.soundComponent;
 
-			if(!mvInv){
-				mvInv = cam.getViewMatrix();
+			component._attachedToCamera = !!(e.cameraComponent && e.cameraComponent.camera === this._camera);
+
+			if(this._camera && !component._attachedToCamera){
+				// Give the transform relative to the camera
+				Matrix4x4.combine(viewMat, e.transformComponent.worldTransform.matrix, relativeTransform);
+				component.process(this._settings, relativeTransform, tpf);
+			} else {
+				// Component is attached to camera.
+				component.process(this._settings, null, tpf);
 			}
-
-			// Do we need to rotate these?
-			this._orientation.setd(0,0,-1);
-			this._up.setd(0,1,0);
-
-			// Everything is relative to the camera
-			this._listener.setPosition(0, 0, 0);
-			this._listener.setVelocity(0, 0, 0);
-			var od = this._orientation.data;
-			var ud = this._up.data;
-			this._listener.setOrientation(
-				od[0], od[1], od[2],
-				ud[0], ud[1], ud[2]
-			);
 		}
 	};
 
