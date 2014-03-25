@@ -13,7 +13,7 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/FPCamControlScript',
-	'goo/scripts/NewWaveFPCamControlScript',
+	'goo/scripts/newwave/FPCamControlScript',
 	'goo/scripts/ScriptUtils',
 	'lib/V'
 ], function (
@@ -44,7 +44,7 @@ require([
 			description: 'Locks the entity on a plane parallel to the ground',
 			parameters: [{
 				key: 'y',
-				'default': 0
+				'default': 0,
 				min: 0,
 				max: 10,
 				type: 'float',
