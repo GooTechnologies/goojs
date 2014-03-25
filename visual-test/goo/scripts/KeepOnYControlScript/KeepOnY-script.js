@@ -13,7 +13,7 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/FPCamControlScript',
-	'goo/scripts/NewWaveFPCamControlScript',
+	'goo/scripts/newwave/FPCamControlScript',
 	'goo/scripts/ScriptUtils',
 	'lib/V'
 ], function (
@@ -47,6 +47,19 @@ require([
 	};
 
 	var keepOnYControlScript = function () {
+		var externals = {
+			name: 'KeepOnY',
+			description: 'Locks the entity on a plane parallel to the ground',
+			parameters: [{
+				key: 'y',
+				'default': 0,
+				min: 0,
+				max: 10,
+				type: 'float',
+				control: 'slider'
+			}]
+		};
+
 		var entity;
 
 		function setup(parameters, env) {
