@@ -143,7 +143,14 @@ module.exports = function(grunt) {
 	                recurse: true
 	            }
 	        }
-	    }
+	    },
+		jshint: {
+			all: ['src'],
+			options:{
+				jshintrc: '.jshintrc',
+				force: true // Do not fail the task
+			}
+		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -152,6 +159,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-karma');
 	grunt.loadNpmTasks('grunt-jsdoc');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 
 	grunt.loadTasks('tools/grunt_tasks');
 

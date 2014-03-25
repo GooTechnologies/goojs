@@ -46,7 +46,8 @@
     "karma": "0.10.9",
     "karma-coverage": "0.2.0",
     "grunt-karma": "0.6.2",
-    "grunt-jsdoc": "~0.5.4"
+    "grunt-jsdoc": "~0.5.4",
+    "grunt-contrib-jshint": "~0.9.2"
   },
   "engines": {
     "node": ">=0.8.2"
