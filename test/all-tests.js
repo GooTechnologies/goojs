@@ -137,7 +137,6 @@ define([
 	'test/picking/PrimitivePickLogic-test',
 	'test/quadpack/QuadComponent-test',
 	'test/quadpack/QuadComponentHandler-test',
-	'test/quadpack/QuadSystem-test',
 	'test/renderer/bounds/BoundingBox-test',
 	'test/renderer/bounds/BoundingSphere-test',
 	'test/renderer/bounds/BoundingVolume-test',

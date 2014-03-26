@@ -1,8 +1,15 @@
-define([],
+define([
+	'goo/util/rsvp',
+],
 /** @lends */
-function() {
+function(
+	RSVP
+) {
 
 	'use strict';
+
+	// TODO: No need for prototypes, we can have functionality on CanvasUtils
+	// TODO: make promise based instead of sending callbacks
 
 	/**
 	* @class
@@ -145,6 +152,25 @@ function() {
 			}
 		}
 		return matrix;
+	};
+
+	CanvasUtils.prototype.svgDataToImage = function(data){
+		var img = new Image();
+		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+		var DOMURL = window.URL || window.webkitURL || window;
+		var url = DOMURL.createObjectURL(svg);
+		img.src = url;
+
+		var p = new RSVP.Promise();
+
+		img.onload = function(){
+			p.resolve(img);
+		};
+		img.onerror = function(){
+			p.reject();
+		};
+
+		return p;
 	};
 
 	return CanvasUtils;

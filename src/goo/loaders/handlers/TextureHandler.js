@@ -189,24 +189,14 @@ function(
 			} else if(config.svgData){
 				// Load SVG data
 				var canvasUtils = new CanvasUtils();
-				var p = new RSVP.Promise();
-				var opts = {
-					resizeToFit: true,
-				};
-				if(config.renderSize){
-					opts.width = config.renderSize;
-					opts.height = config.renderSize;
-				}
-				canvasUtils.renderSvgToCanvas(config.svgData, opts, function (canvas) {
-					if (!canvas){
-						throw new Error('Could not rasterize SVG to canvas!');
+				ret = canvasUtils.svgDataToImage(config.svgData).then(function (image) {
+					if (!image){
+						throw new Error('Could not convert SVG to image!');
 					} else {
-						texture.setImage(canvas);
-						p.resolve(texture);
+						texture.setImage(image);
 					}
-					return p;
+					return texture;
 				});
-				return p;
 
 			} else {
 				// Blank
