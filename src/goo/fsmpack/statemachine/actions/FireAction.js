@@ -74,6 +74,7 @@ function(
 			}),
 			FireAction.material
 		);
+		this.fireEntity.meshRendererComponent.isPickable = false;
 		this.fireEntity.name = '_ParticleSystemFire';
 		entity.transformComponent.attachChild(this.fireEntity.transformComponent);
 
