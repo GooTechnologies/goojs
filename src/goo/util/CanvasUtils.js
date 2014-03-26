@@ -8,7 +8,6 @@ function(
 
 	'use strict';
 
-	// TODO: No need for prototypes, we can have functionality on CanvasUtils
 	// TODO: make promise based instead of sending callbacks
 
 	/**
@@ -36,7 +35,7 @@ function(
 	 * @param {number} [options.resizeToFit=false]	If true, the image is stretched to fit and centered on the canvas.
 	 * @param {function} callback
 	 */
-	CanvasUtils.prototype.loadCanvasFromPath = function (canvasPath, callback) {
+	CanvasUtils.loadCanvasFromPath = function (canvasPath, callback) {
 		var options = {};
 		if(arguments.length === 3){
 			// Called with loadCanvasFromPath(path,options,callback)
@@ -108,8 +107,7 @@ function(
 	 * @param {function} callback	Will be called when done. The single argument to this function will be the HTMLCanvasElement, or null if an error occurred.
 	 * @example
 	 * var data = '&lt;svg xmlns="http://www.w3.org/2000/svg" width=100 height=100&gt;&lt;rect x=0 y=0 width=100 height=100 fill="blue" /&gt;&lt;/svg&gt;';
-	 * var cu = new CanvasUtils();
-	 * cu.renderSvgToCanvas(data, {
+	 * CanvasUtils.renderSvgToCanvas(data, {
 	 *     resizeToFit:true,
 	 *     width:100,
 	 *     height:100
@@ -117,13 +115,13 @@ function(
 	 *     // canvas is an HTMLCanvasElement
 	 * });
 	 */
-	CanvasUtils.prototype.renderSvgToCanvas = function (svgSource, options, callback) {
+	CanvasUtils.renderSvgToCanvas = function (svgSource, options, callback) {
 		var DOMURL = window.URL || window.webkitURL || window;
 
 		var svg = new Blob([svgSource], {type: 'image/svg+xml;charset=utf-8'});
 		var url = DOMURL.createObjectURL(svg);
 
-		CanvasUtils.prototype.loadCanvasFromPath(url, options, callback);
+		CanvasUtils.loadCanvasFromPath(url, options, callback);
 	};
 
 	/**
@@ -133,7 +131,7 @@ function(
 	 * @param canvas
 	 * @returns {Array}
 	 */
-	CanvasUtils.prototype.getMatrixFromCanvas = function (canvas) {
+	CanvasUtils.getMatrixFromCanvas = function (canvas) {
 		var context = canvas.getContext('2d');
 
 		var getAt = function (x, y) {
@@ -154,7 +152,7 @@ function(
 		return matrix;
 	};
 
-	CanvasUtils.prototype.svgDataToImage = function(data){
+	CanvasUtils.svgDataToImage = function(data){
 		var img = new Image();
 		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
 		var DOMURL = window.URL || window.webkitURL || window;

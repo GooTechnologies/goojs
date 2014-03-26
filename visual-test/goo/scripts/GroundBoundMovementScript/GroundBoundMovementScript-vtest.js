@@ -267,10 +267,8 @@ require([
 	}
  */
 	function groundBoundMovementScriptDemo() {
-		var canvasUtils = new CanvasUtils();
-
-		canvasUtils.loadCanvasFromPath('../../../resources/heightmap_walled.png', function(canvas) {
-			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+		CanvasUtils.loadCanvasFromPath('../../../resources/heightmap_walled.png', function(canvas) {
+			var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim1 = {
 				minX: -150,
@@ -317,8 +315,8 @@ require([
 			cameraEntity.setComponent(scripts);
 		});
 
-		canvasUtils.loadCanvasFromPath('../../../resources/checker_slope.png', function(canvas) {
-			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+		CanvasUtils.loadCanvasFromPath('../../../resources/checker_slope.png', function(canvas) {
+			var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim = {
 				minX: -20,

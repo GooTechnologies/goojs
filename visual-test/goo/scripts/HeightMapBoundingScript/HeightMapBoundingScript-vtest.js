@@ -85,10 +85,8 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	var canvasUtils = new CanvasUtils();
-
-	canvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
-		var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+	CanvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
+		var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 		var heightMapBoundingScript = new HeightMapBoundingScript(matrix);
 
 		var meshData = Surface.createFromHeightMap(matrix);

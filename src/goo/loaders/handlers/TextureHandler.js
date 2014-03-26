@@ -188,8 +188,7 @@ function(
 				}
 			} else if(config.svgData){
 				// Load SVG data
-				var canvasUtils = new CanvasUtils();
-				ret = canvasUtils.svgDataToImage(config.svgData).then(function (image) {
+				ret = CanvasUtils.svgDataToImage(config.svgData).then(function (image) {
 					if (!image){
 						throw new Error('Could not convert SVG to image!');
 					} else {

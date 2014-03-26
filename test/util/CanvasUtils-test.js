@@ -18,12 +18,11 @@ function(
 
 			var done = false;
 			var renderSize = 300;
-			var cu = new CanvasUtils();
 			var options = {
 				width: renderSize,
 				height: renderSize
 			};
-			cu.renderSvgToCanvas(data, options, function(canvas){
+			CanvasUtils.renderSvgToCanvas(data, options, function(canvas){
 				expect(canvas).toEqual(jasmine.any(HTMLCanvasElement));
 				expect(canvas.width).toEqual(options.width);
 				expect(canvas.height).toEqual(options.height);

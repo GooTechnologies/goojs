@@ -177,10 +177,8 @@ require([
     }
 
     function worldFittedTerrainScriptDemo() {
-        var canvasUtils = new CanvasUtils();
-
-        canvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
-            var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+        CanvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
+            var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 
             var dim1 = {
                 minX: 0,
@@ -265,8 +263,8 @@ require([
 
 
 
-		canvasUtils.loadCanvasFromPath('../../../resources/checker_slope.png', function(canvas) {
-			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+		CanvasUtils.loadCanvasFromPath('../../../resources/checker_slope.png', function(canvas) {
+			var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim = {
 				minX: 0,
@@ -285,7 +283,7 @@ require([
 			addSpheres(goo, worldFittedTerrainScript, dim);
 			addNormalPointers(goo, worldFittedTerrainScript, dim);
 
-		//	var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+		//	var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 
 			dim = {
 				minX: 0,
