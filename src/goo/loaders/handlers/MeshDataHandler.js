@@ -1,6 +1,7 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/renderer/MeshData',
+	'goo/renderer/BufferUtils',
 	'goo/animation/SkeletonPose',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
@@ -9,6 +10,7 @@ define([
 function(
 	ConfigHandler,
 	MeshData,
+	BufferUtils,
 	SkeletonPose,
 	PromiseUtil,
 	ArrayUtil
@@ -94,6 +96,10 @@ function(
 			// Not yet supported
 			'uint32' : 'UnsignedInt'
 		};
+
+		if (BufferUtils.browserType === 'Trident') {
+			typeMatch.uint8 = 'UnsignedShort';
+		}
 
 		var attributeMap = {};
 		for (var key in config.attributes) {

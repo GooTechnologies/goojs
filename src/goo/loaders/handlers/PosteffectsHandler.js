@@ -39,7 +39,7 @@ function(
 		ConfigHandler.apply(this, arguments);
 		this._composer = new Composer();
 		var renderSystem = this.world.getSystem('RenderSystem');
-		this._renderPass = new RenderPass(renderSystem.renderList),
+		this._renderPass = new RenderPass(renderSystem.renderList);
 		this._outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
 		this._outPass.renderToScreen = true;
 	}

@@ -9,6 +9,7 @@ function(
 
 	/**
 	* @class
+	* @extends Component
 	*/
 	function SoundManager2Component(settings) {
 		this.type = 'SoundManager2Component';

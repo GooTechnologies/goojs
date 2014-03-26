@@ -1,21 +1,28 @@
 define([
 	'goo/entities/components/Component',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/scripts/Scripts',
+	'goo/util/ObjectUtil',
+	'goo/scripts/ScriptRegister'
 ],
 /** @lends */
 function (
 	Component,
-	SystemBus
-	) {
+	SystemBus,
+	Scripts,
+	_
+) {
 	'use strict';
 
 	/**
 	 * @class Contains scripts to be executed each frame when set on an active entity
 	 * @param {Array|object} [scripts] A script-object or an array of script-objects to attach to the entity.
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>.
+	 * @extends Component
 	 */
 	function ScriptComponent(scripts) {
 		this.type = 'ScriptComponent';
+		this._gooClasses = Scripts.getClasses();
 
 		if (scripts instanceof Array) {
 			this.scripts = scripts;
@@ -38,22 +45,34 @@ function (
 	 * @param entity
 	 */
 	ScriptComponent.prototype.setup = function (entity) {
-		var commonEnvironment = {
-			getEntity: function () {
-				return entity;
-			},
-			getSystemBus: function () {
-				return SystemBus;
-			}
-		};
+		var systemContext = entity._world.getSystem('ScriptSystem').context;
+		var componentContext = Object.create(systemContext);
+		_.extend(componentContext, {
+			entity: entity
+		});
 
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
+			var scriptContext = Object.create(componentContext);
 
-			script.environment = commonEnvironment;
+			script.context = scriptContext;
 
 			if (script.setup) {
-				script.setup(script.parameters, script.environment);
+				try {
+					script.setup(script.parameters, script.context, this._gooClasses);
+					if (script.parameters && script.parameters.enabled !== undefined) {
+						script.enabled = script.parameters.enabled;
+					} else {
+						script.enabled = true;
+					}
+				} catch(e) {
+					script.enabled = false;
+					SystemBus.emit('goo.scriptError', {
+						message: e.message || e,
+						phase: 'setup',
+						scriptName: script.name || script.externals.name
+					});
+				}
 			}
 		}
 	};
@@ -63,22 +82,33 @@ function (
 	 * @private
 	 * @type {setup}
 	 */
-	ScriptComponent.prototype.attached = ScriptComponent.prototype.setup;
+	//ScriptComponent.prototype.attached = ScriptComponent.prototype.setup;
 
 	/**
 	 * Runs the update function on every script attached to this entity
 	 * @private
 	 * @param entity {Entity}
 	 * @param tpf {number}
-	 * @param environment
+	 * @param context
 	 */
-	ScriptComponent.prototype.run = function (entity, tpf, environment) {
+	ScriptComponent.prototype.run = function (entity) {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			if (script && script.run && (script.enabled === undefined || script.enabled || script.active)) {
-				script.run(entity, tpf, environment, script.parameters);
-			} else if (script.update) {
-				script.update(script.parameters, script.environment);
+			if (script && script.run && (script.enabled === undefined || script.enabled)) {
+				try {
+					script.run(entity, entity._world.tpf, script.context, script.parameters);
+				} catch (e) {}
+			} else if (script.update && (script.enabled === undefined || script.enabled)) {
+				try {
+					script.update(script.parameters, script.context, this._gooClasses);
+				} catch (e) {
+					script.enabled = false;
+					SystemBus.emit('goo.scriptError', {
+						message: e.message || e,
+						scriptName: script.name || script.externals.name,
+						phase: 'run'
+					});
+				}
 			}
 		}
 	};
@@ -91,7 +121,16 @@ function (
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
 			if (script.cleanup) {
-				script.cleanup(script.parameters, script.environment);
+				try {
+					script.cleanup(script.parameters, script.context, this._gooClasses);
+				} catch (e) {
+					SystemBus.emit('goo.scriptError', {
+						message: e.message || e,
+						scriptName: script.name || script.externals.name,
+						phase: 'cleanup'
+					});
+				}
+				script.enabled = false;
 			}
 		}
 	};
@@ -101,7 +140,7 @@ function (
 	 * @private
 	 * @type {setup}
 	 */
-	ScriptComponent.prototype.detached = ScriptComponent.prototype.cleanup;
+	//ScriptComponent.prototype.detached = ScriptComponent.prototype.cleanup;
 
 	/**
 	 * Attempts to add a script to an entity. The object can be a { run: Function } object or a Function. The entity is supposed to get a ScriptComponent with a script created out of the passed object
@@ -111,7 +150,7 @@ function (
 	 * @returns {boolean}
 	 */
 	ScriptComponent.applyOnEntity = function (obj, entity) {
-		if (obj instanceof Function || (obj && obj.run instanceof Function)) {
+		if (obj instanceof Function || (obj && obj.run instanceof Function) || (obj && obj.update instanceof Function)) {
 			var scriptComponent;
 			if (!entity.scriptComponent) {
 				scriptComponent = new ScriptComponent();
@@ -119,7 +158,7 @@ function (
 			} else {
 				scriptComponent = entity.scriptComponent;
 			}
-			scriptComponent.scripts.push(obj.run instanceof Function ? obj : { run: obj });
+			scriptComponent.scripts.push(obj.run instanceof Function || obj.update instanceof Function ? obj : { run: obj });
 
 			return true;
 		}

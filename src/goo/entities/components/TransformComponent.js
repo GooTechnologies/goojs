@@ -18,6 +18,7 @@ function (
 	/**
 	 * @class Holds the transform of an entity. It also allows for a scene graph to be created,
 	 * in which transforms are inherited down the tree.
+	 * @extends Component
 	 */
 	function TransformComponent() {
 		this.type = 'TransformComponent';
@@ -42,7 +43,7 @@ function (
 
 		/** The entity's transform in world space.
 		 * Read only. Automatically updated.
-		 * @type {Transform} 
+		 * @type {Transform}
 		 */
 		this.worldTransform = new Transform();
 
@@ -141,7 +142,7 @@ function (
 	 * setUpdated() automatically.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
-	 * var boxTranslation1 = boxEntity.transformComponent.getTranslation(); 
+	 * var boxTranslation1 = boxEntity.transformComponent.getTranslation();
 	 * var boxTranslation2 = boxEntity.getTranslation();
 	 * console.log(boxTranslation1 === boxTranslation2); // true
 	 *
@@ -156,7 +157,7 @@ function (
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
 	 * // The lines below are equivalent.
-	 * sphereEntity.transformComponent.setTranslation(1, 1, 0); 
+	 * sphereEntity.transformComponent.setTranslation(1, 1, 0);
 	 * sphereEntity.setTranslation(1, 1, 0);
 	 * sphereEntity.setTranslation(new Vector3(1, 1, 0));
 	 *

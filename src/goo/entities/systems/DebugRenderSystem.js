@@ -22,6 +22,7 @@ function (
 	/**
 	 * @class Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
+	 * @extends System
 	 */
 	function DebugRenderSystem() {
 		System.call(this, 'DebugRenderSystem', ['TransformComponent']);
@@ -89,8 +90,8 @@ function (
 						renderables = tree[componentName];
 					} else {
 						renderables = DebugDrawHelper.getRenderablesFor(component, options);
-						renderables.forEach(function (renderable) { 
-							renderable.id = entity.id; 
+						renderables.forEach(function (renderable) {
+							renderable.id = entity.id;
 							renderable._index = entity._index;
 						});
 						tree[componentName] = renderables;

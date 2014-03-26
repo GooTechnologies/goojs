@@ -553,6 +553,19 @@ function (
 		return sum;
 	};
 
+	Vector3.dotv = function (lhs, rhs) {
+		var ldata = lhs.data;
+		var rdata = rhs.data;
+
+		var sum = 0.0;
+
+		sum += ldata[0] * rdata[0];
+		sum += ldata[1] * rdata[1];
+		sum += ldata[2] * rdata[2];
+
+		return sum;
+	};
+
 	/**
 	 * Computes the dot product between the current Vector3 and 'rhs'.  Equivalent of "return this•rhs;".
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
@@ -832,6 +845,31 @@ function (
 	 */
 	Vector3.prototype.lengthSquared = function () {
 		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
+	};
+
+	/**
+	 * Calculates length squared of vector
+	 * @returns {number} length squared
+	 */
+	Vector3.prototype.length = function () {
+		return Math.sqrt(this.lengthSquared());
+	};
+
+	Vector3.prototype.normalize = function () {
+		var l = this.length();
+
+		if (l < 0.0000001) {
+			this.data[0] = 0;
+			this.data[1] = 0;
+			this.data[2] = 0;
+		} else {
+			l = 1.0 / l;
+			this.data[0] *= l;
+			this.data[1] *= l;
+			this.data[2] *= l;
+		}
+
+		return this;
 	};
 
 	/**

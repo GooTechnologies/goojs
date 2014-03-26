@@ -11,6 +11,7 @@ function (
 
 	/**
 	 * @class Processes all entities with animation components, updating the animations
+	 * @extends System
 	 */
 	function AnimationSystem() {
 		System.call(this, 'AnimationSystem', ['AnimationComponent']);

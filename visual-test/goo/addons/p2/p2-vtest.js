@@ -6,8 +6,8 @@ require([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
-	'goo/addons/p2/p2System',
-	'goo/addons/p2/p2Component',
+	'goo/addons/p2/P2System',
+	'goo/addons/p2/P2Component',
 	'lib/V'
 ], function (
 	Material,

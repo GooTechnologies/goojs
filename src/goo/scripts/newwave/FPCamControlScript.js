@@ -2,18 +2,14 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
 	'goo/math/MathUtils',
-	'goo/util/GameUtils',
-	'goo/scripts/ScriptUtils',
-	'goo/scripts/Scripts'
+	'goo/util/GameUtils'
 ],
 	/** @lends */
 	function (
 	Vector3,
 	Matrix3x3,
 	MathUtils,
-	GameUtils,
-	ScriptUtils,
-	Scripts
+	GameUtils
 ) {
 	'use strict';
 	/*jshint validthis: true */
@@ -26,37 +22,14 @@ define([
 	 * @param {number} [properties.turnSpeedVertical=0.01]
 	 */
 
-	var external = {
-		name: 'FPCamControlScript',
-		description: 'Attempts to lock the pointer and control the entity\'s orientation based on mouse movements',
-		parameters: [{
-			key: 'domElement'
-		}, {
-			key: 'turnSpeedHorizontal',
-			'default': 0.01
-		}, {
-			key: 'turnSpeedVertical',
-			'default': 0.01
-		}, {
-			key: 'maxAscent',
-			'default': 89.95 * MathUtils.DEG_TO_RAD
-		}, {
-			key: 'minAscent',
-			'default': -89.95 * MathUtils.DEG_TO_RAD
-		}, {
-			key: 'domElement'
-		}]
-	};
-
-	var cons = function () {
+	function FPCamControlScript() {
 		var calcVector;
 		var rotX, rotY;
 		var pointerLocked;
 		var mouseState;
+		var calcVector;
 
 		function setup(parameters, env) {
-			ScriptUtils.fillDefaultValues(parameters, external.parameters);
-
 			calcVector = new Vector3();
 			rotX = 0.0;
 			rotY = 0.0;
@@ -68,7 +41,7 @@ define([
 				dY: 0
 			};
 
-			setupMouseControls(parameters.domElement);
+			setupMouseControls(env.domElement);
 		}
 
 		function run(entity, tpf, env, parameters) {
@@ -86,11 +59,13 @@ define([
 			}
 			// apply dy around left vector
 			if (mouseState.dY !== 0) {
+				var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
+				var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
 				rotY -= parameters.turnSpeedVertical * mouseState.dY;
-				if (rotY > parameters.maxAscent) {
-					rotY = parameters.maxAscent;
-				} else if (rotY < parameters.minAscent) {
-					rotY = parameters.minAscent;
+				if (rotY > maxAscent) {
+					rotY = maxAscent;
+				} else if (rotY < minAscent) {
+					rotY = minAscent;
 				}
 			}
 
@@ -104,7 +79,7 @@ define([
 			mouseState.dY = 0;
 		}
 
-		function cleanup(parameters, env) {
+		function cleanup(/*parameters, env*/) {
 
 		}
 
@@ -138,14 +113,48 @@ define([
 			GameUtils.requestPointerLock();
 		}
 
+
 		return {
 			setup: setup,
 			run: run,
 			cleanup: cleanup
 		};
+	}
+
+
+	FPCamControlScript.externals = {
+		name: 'FPCamControlScript',
+		description: 'Attempts to lock the pointer and control the entity\'s orientation based on mouse movements',
+		parameters: [{
+			key: 'turnSpeedHorizontal',
+			'default': 0.01,
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1
+		}, {
+			key: 'turnSpeedVertical',
+			'default': 0.01,
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1
+		}, {
+			key: 'maxAscent',
+			'default': 89,
+			type: 'int',
+			control: 'slider',
+			min: -89,
+			max: 89
+		}, {
+			key: 'minAscent',
+			'default': -89,
+			type: 'int',
+			control: 'slider',
+			min: -89,
+			max: 89
+		}]
 	};
 
-	Scripts.register(external, cons);
-
-	return cons;
+	return FPCamControlScript;
 });

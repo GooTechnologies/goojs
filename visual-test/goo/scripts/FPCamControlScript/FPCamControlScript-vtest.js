@@ -13,7 +13,7 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/FPCamControlScript',
-	'goo/scripts/NewWaveFPCamControlScript',
+	'goo/scripts/newwave/FPCamControlScript',
 	'lib/V'
 ], function (
 	GooRunner,

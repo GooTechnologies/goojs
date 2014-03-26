@@ -11,6 +11,7 @@ define([
 
 	/**
 	 * @class Main handler of all entities in the world.
+	 * @extends Manager
 	 */
 	function EntityManager() {
 		this.type = 'EntityManager';

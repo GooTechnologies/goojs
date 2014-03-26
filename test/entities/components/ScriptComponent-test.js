@@ -14,12 +14,14 @@ define([
 
 		beforeEach(function () {
 			world = new World();
-			var dummyRenderer = {
-				domElement: null,
-				viewportWidth: null,
-				viewportHeight: null
+			world.gooRunner = {
+			    renderer: {
+					domElement: null,
+					viewportWidth: null,
+					viewportHeight: null
+				}
 			};
-			world.add(new ScriptSystem(dummyRenderer));
+			world.add(new ScriptSystem(world));
 		});
 
 		it('it calls setup on all scripts when removing the component', function () {

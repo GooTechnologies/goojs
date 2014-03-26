@@ -1,16 +1,9 @@
-define([], function () {
+define([
+], function (
+) {
 	'use strict';
 
-	var external = {
-		name: 'FPCamControlScript',
-		description: '',
-		parameters: [{
-			key: 'fraction',
-			name: 'Speed'
-		}]
-	};
-
-	return function () {
+	function NewWaveRotationScript() {
 		var mouseState, actualState, entity;
 
 		function setup(parameters, env) {
@@ -24,12 +17,12 @@ define([], function () {
 				y: 0
 			};
 
-			entity = env.getEntity();
+			entity = env.entity;
 
 			document.addEventListener('mousemove', onMouseMove);
 		}
 
-		function update(parameters, env) {
+		function update(parameters/*, env*/) {
 			actualState.x += (mouseState.x - actualState.x) * parameters.fraction;
 			actualState.y += (mouseState.y - actualState.y) * parameters.fraction;
 
@@ -41,14 +34,29 @@ define([], function () {
 			mouseState.y = e.y;
 		}
 
-		function cleanup(parameters, env) {
+		function cleanup(/*parameters, env*/) {
 			document.removeEventListener('mousemove', onMouseMove);
 		}
-
 		return {
 			setup: setup,
 			update: update,
 			cleanup: cleanup
 		};
+	}
+
+	NewWaveRotationScript.externals = {
+		name: 'RotationScript',
+		description: '',
+		parameters: [{
+			key: 'fraction',
+			name: 'Speed',
+			'default': 0.01,
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1
+		}]
 	};
+
+	return NewWaveRotationScript;
 });

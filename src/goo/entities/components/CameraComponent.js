@@ -16,6 +16,7 @@ function (
 	/**
 	 * @class Holds a camera.
 	 * @param {Camera} camera Camera to contain in this component
+	 * @extends Component
 	 */
 	function CameraComponent (camera) {
 		this.type = 'CameraComponent';
