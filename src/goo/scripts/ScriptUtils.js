@@ -17,7 +17,7 @@ define([
 		if (!(specs instanceof Array)) { return; }
 		var keys = [];
 		specs.forEach(function (spec) {
-			if (!spec || typeof spec.key !== 'string' || !spec['default']) {
+			if (!spec || typeof spec.key !== 'string' || spec['default'] === undefined) {
 				return;
 			}
 			keys.push(spec.key);
