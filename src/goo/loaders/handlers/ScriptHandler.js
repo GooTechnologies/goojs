@@ -39,53 +39,18 @@ function(
 		ConfigHandler.apply(this, arguments);
 		this._bodyCache = {};
 		this._currentScriptLoading = null;
-
-		var that = this;
-		window.addEventListener('error', function(evt) {
-			if (evt.filename) {
-				var scriptElem = document.querySelector('script[src="'+evt.filename+'"]');
-				if (scriptElem) {
-					var scriptId = scriptElem.getAttribute('data-script-id');
-					var script = that._objects[scriptId];
-					if (script) {
-						var error = {
-							message: evt.message,
-							line: evt.lineno,
-							file: evt.filename
-						};
-						setError(script, error);
-					}
-					scriptElem.parentNode.removeChild(scriptElem);
-				}
-			}
-			if (that._currentScriptLoading) {
-				var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + that._currentScriptLoading);
-				if (oldScriptElement) {
-					oldScriptElement.parentNode.removeChild(oldScriptElement);
-				}
-				delete window._gooScriptFactories[that._currentScriptLoading];
-				var script = that._objects[that._currentScriptLoading];
-				var error = {
-					message: evt.message,
-					line: evt.lineno - 1
-				};
-				setError(script, error);
-				that._currentScriptLoading = null;
-			}
-		});
+		this._addGlobalErrorListener();
 	}
-	ScriptHandler.scripts = {
-		OrbitCamControlScript: OrbitCamControlScript,
-		OrbitNPanControlScript: OrbitNPanControlScript,
-		FlyControlScript: FlyControlScript,
-		WASDControlScript: WASDControlScript,
-		BasicControlScript: BasicControlScript
-	};
 
 	ScriptHandler.prototype = Object.create(ConfigHandler.prototype);
 	ScriptHandler.prototype.constructor = ScriptHandler;
 	ConfigHandler._registerClass('script', ScriptHandler);
 
+	/**
+	 * Fills out script config with default parameters from the declarations in
+	 * the script code. Also adds externals config to data model config, so 
+	 * that Create can read them.
+	 */
 	ScriptHandler.prototype._specialPrepare = function(script, config) {
 		config.options = config.options || {};
 		// fill the rest of the parameters with default values
@@ -97,33 +62,9 @@ function(
 		}
 	};
 
-	ScriptHandler.prototype._addDependency = function(script, url, scriptId) {
-		var scriptElem = document.querySelector('script[src="'+url+'"]');
-		if (scriptElem) {
-			return PromiseUtil.createDummyPromise();
-		}
-
-		scriptElem = document.createElement('script');
-		scriptElem.src = url;
-		scriptElem.setAttribute('data-script-id', scriptId);
-
-		var promise = new RSVP.Promise();
-		scriptElem.onload = function() {
-			promise.resolve();
-		};
-		scriptElem.onerror = function() {
-			var err = {
-				message: 'Could not load dependency',
-				file: url
-			};
-			setError(script, err);
-			promise.resolve();
-		};
-		document.body.appendChild(scriptElem);
-
-		return promise;
-	};
-
+	/**
+	 * Creates a script data wrapper object to be used in the engine
+	 */	
 	ScriptHandler.prototype._create = function() {
 		return {
 			externals: {},
@@ -136,6 +77,10 @@ function(
 		};
 	};
 
+	/** 
+	 * Remove this script from the cache, and runs the cleanup method of the script.
+	 * @param {string} ref the script guid
+	 */
 	ScriptHandler.prototype._remove = function(ref) {
 		var script = this._objects[ref];
 		if (script && script.cleanup) {
@@ -144,89 +89,105 @@ function(
 		}
 	};
 
+
+	/**
+	 * Update a user-defined script (not a script available in the engine).
+	 * If the new body (in the data model config) differs from the cached body, 
+	 * the script will be reloaded (by means of a script tag). 
+	 * 
+	 * @param {object} script the cached engine script object
+	 * @param {object} config the data model config
+	 */
 	ScriptHandler.prototype._updateFromCustom = function(script, config) {
-		// cache the body of the function so parameter changes won't rebuild the function
-		if (this._bodyCache[config.id] !== config.body) {
-			delete script.externals.errors;
-			this._bodyCache[config.id] = config.body;
+		// No change, do nothing		
+		if (this._bodyCache[config.id] === config.body) {return script;}
 
-			// delete the old script tag and add a new one
-			var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + config.id);
-			if (oldScriptElement) {
-				oldScriptElement.parentNode.removeChild(oldScriptElement);
-			}
 
-			// create this script collection if it does not exist yet
-			if (!window._gooScriptFactories) {
-				// this holds script factories in 'compiled' form
-				window._gooScriptFactories = {};
-			}
+		delete script.externals.errors;
+		this._bodyCache[config.id] = config.body;
 
-			// get a script factory in string form
-			var scriptFactoryStr = [
-				"window._gooScriptFactories['" + config.id + "'] = function () { 'use strict';",
-				config.body,
-				' var obj = {',
-				'  externals: {}',
-				' };',
-				' if (typeof parameters !== "undefined") {',
-				'  obj.externals.parameters = parameters;',
-				' }',
-				' if (typeof setup !== "undefined") {',
-				'  obj.setup = setup;',
-				' }',
-				' if (typeof cleanup !== "undefined") {',
-				'  obj.cleanup = cleanup;',
-				' }',
-				' if (typeof update !== "undefined") {',
-				'  obj.update = update;',
-				' }',
-				' return obj;',
-				'};'
-			].join('\n');
+		// delete the old script tag and add a new one
+		var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + config.id);
+		if (oldScriptElement) {
+			oldScriptElement.parentNode.removeChild(oldScriptElement);
+		}
 
-			// create the element and add it to the page so the user can debug it
-			// addition and execution of the script happens synchronously
-			var newScriptElement = document.createElement('script');
-			newScriptElement.id = ScriptHandler.DOM_ID_PREFIX + config.id;
-			newScriptElement.innerHTML = scriptFactoryStr;
-			this._currentScriptLoading = config.id;
-			document.body.appendChild(newScriptElement);
+		// create this script collection if it does not exist yet
+		if (!window._gooScriptFactories) {
+			// this holds script factories in 'compiled' form
+			window._gooScriptFactories = {};
+		}
 
-			var newScript = window._gooScriptFactories[config.id];
-			if (newScript) {
-				try {
-					newScript = newScript();
-					script.id = config.id;
-					script.externals = safeUp(newScript.externals);
-					script.setup = newScript.setup;
-					script.update = newScript.update;
-					script.cleanup = newScript.cleanup;
-					script.parameters = {};
-					script.enabled = false;
-				} catch(e) {
-					var err = {
-						message: e.toString()
-					};
-					// TODO Test if this works across browsers
-					/**/
-					var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-					if (m) {
-						err.line = parseInt(m[1], 10) - 1;
-					}
-					/**/
-					setError(script, err);
+		// get a script factory in string form
+		var scriptFactoryStr = [
+			"window._gooScriptFactories['" + config.id + "'] = function () { 'use strict';",
+			config.body,
+			' var obj = {',
+			'  externals: {}',
+			' };',
+			' if (typeof parameters !== "undefined") {',
+			'  obj.externals.parameters = parameters;',
+			' }',
+			' if (typeof setup !== "undefined") {',
+			'  obj.setup = setup;',
+			' }',
+			' if (typeof cleanup !== "undefined") {',
+			'  obj.cleanup = cleanup;',
+			' }',
+			' if (typeof update !== "undefined") {',
+			'  obj.update = update;',
+			' }',
+			' return obj;',
+			'};'
+		].join('\n');
+
+		// create the element and add it to the page so the user can debug it
+		// addition and execution of the script happens synchronously
+		var newScriptElement = document.createElement('script');
+		newScriptElement.id = ScriptHandler.DOM_ID_PREFIX + config.id;
+		newScriptElement.innerHTML = scriptFactoryStr;
+		this._currentScriptLoading = config.id;
+		document.body.appendChild(newScriptElement);
+
+		var newScript = window._gooScriptFactories[config.id];
+		if (newScript) {
+			try {
+				newScript = newScript();
+				script.id = config.id;
+				script.externals = safeUp(newScript.externals);
+				script.setup = newScript.setup;
+				script.update = newScript.update;
+				script.cleanup = newScript.cleanup;
+				script.parameters = {};
+				script.enabled = false;
+			} catch(e) {
+				var err = {
+					message: e.toString()
+				};
+				// TODO Test if this works across browsers
+				/**/
+				var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+				if (m) {
+					err.line = parseInt(m[1], 10) - 1;
 				}
-				this._currentScriptLoading = null;
+				/**/
+				setError(script, err);
 			}
-			// generate names from external variable names
-			if (script.externals) {
-				ScriptUtils.fillDefaultNames(script.externals.parameters);
-			}
+			this._currentScriptLoading = null;
+		}
+		// generate names from external variable names
+		if (script.externals) {
+			ScriptUtils.fillDefaultNames(script.externals.parameters);
 		}
 		return script;
 	};
 
+	/**
+	 * Update a script that is from the engine. Checks if the class name has changed
+	 * and if so, creates a new script object from the new class. 
+	 * @param {object} script needs to have a className property
+	 * @param {object} config data model config
+	 */
 	ScriptHandler.prototype._updateFromClass = function(script, config) {
 		if (!script.externals || script.externals.name !== config.className) {
 			var newScript = Scripts.create(config.className);
@@ -272,15 +233,96 @@ function(
 					return script;
 				}
 				_.extend(script.parameters, config.options);
-				if (options.script && options.script.disabled) {
-					script.enabled = false;
-				}
 				return script;
 			});
 		});
 	};
 
+	/**
+	 * Loads an external javascript lib as a dependency to this script (if it's 
+	 * not already loaded). If the dependency fails to load, an error is set
+	 * on the script. 
+	 * @param {object} script config
+	 * @param {string} url location of the javascript lib
+	 * @param {string} scriptId the guid of the script
+	 * @return {RSVP.Promise} a promise that resolves when the dependency is loaded
+	 */ 
+	ScriptHandler.prototype._addDependency = function(script, url, scriptId) {
+		var scriptElem = document.querySelector('script[src="'+url+'"]');
+		if (scriptElem) {
+			return PromiseUtil.createDummyPromise();
+		}
+
+		scriptElem = document.createElement('script');
+		scriptElem.src = url;
+		scriptElem.setAttribute('data-script-id', scriptId);
+
+		var promise = new RSVP.Promise();
+		scriptElem.onload = function() {
+			promise.resolve();
+		};
+		scriptElem.onerror = function() {
+			var err = {
+				message: 'Could not load dependency',
+				file: url
+			};
+			setError(script, err);
+			promise.resolve();
+		};
+		document.body.appendChild(scriptElem);
+
+		return promise;
+	};
+
+
+	/**
+	 * Add a global error listener that catches script errors, and tries to match
+	 * them to scripts loaded with this handler. If an error is registered, the 
+	 * script is reset and an error message is appended to it. 
+	 * 
+	 */
+	ScriptHandler.prototype._addGlobalErrorListener = function() {
+		var that = this;
+		window.addEventListener('error', function(evt) {
+			if (evt.filename) {
+				var scriptElem = document.querySelector('script[src="'+evt.filename+'"]');
+				if (scriptElem) {
+					var scriptId = scriptElem.getAttribute('data-script-id');
+					var script = that._objects[scriptId];
+					if (script) {
+						var error = {
+							message: evt.message,
+							line: evt.lineno,
+							file: evt.filename
+						};
+						setError(script, error);
+					}
+					scriptElem.parentNode.removeChild(scriptElem);
+				}
+			}
+			if (that._currentScriptLoading) {
+				var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + that._currentScriptLoading);
+				if (oldScriptElement) {
+					oldScriptElement.parentNode.removeChild(oldScriptElement);
+				}
+				delete window._gooScriptFactories[that._currentScriptLoading];
+				var script = that._objects[that._currentScriptLoading];
+				var error = {
+					message: evt.message,
+					line: evt.lineno - 1
+				};
+				setError(script, error);
+				that._currentScriptLoading = null;
+			}
+		});
+	}
+
+
+
 	var types = ['string', 'float', 'int', 'vec3', 'boolean'];
+	/**
+	 * Validate external parameters
+	 */
 	function safeUp(externals) {
 		var	obj = {};
 		var errors = externals.errors || [];
@@ -352,6 +394,15 @@ function(
 		return obj;
 	}
 
+
+	/**
+	 * Flag a script with an error. The script will be disabled. 
+	 * @param {object} script
+	 * @param {object} error
+	 * @param {string} error.message
+	 * @param {Number} [error.line]
+	 * @param {string} [error.file]
+	 */
 	function setError(script, error) {
 		if (error.file) {
 			var message = error.message;
