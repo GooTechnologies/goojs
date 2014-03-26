@@ -591,7 +591,6 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	 * @param angle the angle to rotate (in radians).
 	 * @param axis the axis of rotation.
 	 * @return this quaternion for chaining
-	 * @throws NullPointerException if axis is null
 	 */
 	Quaternion.prototype.fromAngleAxis = function (angle, axis) {
 		var temp = new Vector3(axis).normalize();
@@ -603,7 +602,6 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	 *              the quaternion is set to identity.
 	 * @param angle the angle to rotate (in radians).
 	 * @param axis the axis of rotation (already normalized - unit length).
-	 * @throws NullPointerException if axis is null
 	 */
 	Quaternion.prototype.fromAngleNormalAxis = function (angle, axis) {
 		if (axis.equals(Vector3.ZERO)) {

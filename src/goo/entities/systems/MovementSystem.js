@@ -7,6 +7,7 @@ define(['goo/entities/systems/System'],
 		 * @class Processes all entities with movement components.
 		 * This system applies movement vectors for translation and rotation
 		 * to the transform of the entity which has it every frame.
+		 * @extends System
 		 */
 		function MovementSystem() {
 			System.call(this, 'MovementSystem', ['MovementComponent']);

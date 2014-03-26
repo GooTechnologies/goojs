@@ -16,7 +16,7 @@ require([
 	'goo/addons/cannon/CannonComponent',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,
@@ -39,7 +39,7 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = '../../resources';
+	var resourcePath = '../../../resources';
 
 	function createEntity(meshData, settings) {
 		var material = new Material(ShaderLib.texturedLit);
@@ -97,4 +97,6 @@ require([
 	V.addLights();
 
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
+
+	V.process();
 });

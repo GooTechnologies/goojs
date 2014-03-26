@@ -16,7 +16,7 @@ require([
 	'goo/addons/ammo/AmmoComponent',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,
@@ -39,7 +39,7 @@ require([
 ) {
 	"use strict";
 
-	var resourcePath = "../../resources";
+	var resourcePath = "../../../resources";
 
 	function init() {
 		var ammoSystem = new AmmoSystem();

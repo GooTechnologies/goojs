@@ -6,7 +6,7 @@ require([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Vector3',
-	'../../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

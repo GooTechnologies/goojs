@@ -23,7 +23,7 @@ require([
 	'goo/scripts/GroundBoundMovementScript',
 	'goo/renderer/TextureCreator',
 	'goo/util/CanvasUtils',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	World,
 	Material,
@@ -269,7 +269,7 @@ require([
 	function groundBoundMovementScriptDemo() {
 		var canvasUtils = new CanvasUtils();
 
-		canvasUtils.loadCanvasFromPath('../../resources/heightmap_walled.png', function(canvas) {
+		canvasUtils.loadCanvasFromPath('../../../resources/heightmap_walled.png', function(canvas) {
 			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim1 = {
@@ -284,7 +284,7 @@ require([
 			var terrainData1 = worldFittedTerrainScript.addHeightData(matrix, dim1);
 
 		//	buildSurfaceMesh(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world);
-			buildTexturedGround(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world, '../../resources/heightmap_walled.png');
+			buildTexturedGround(terrainData1.script.matrixData, terrainData1.dimensions, "terrain_mesh_1", goo.world, '../../../resources/heightmap_walled.png');
 
 
 			addSpheres(goo, worldFittedTerrainScript, dim1);
@@ -317,7 +317,7 @@ require([
 			cameraEntity.setComponent(scripts);
 		});
 
-		canvasUtils.loadCanvasFromPath('../../resources/checker_slope.png', function(canvas) {
+		canvasUtils.loadCanvasFromPath('../../../resources/checker_slope.png', function(canvas) {
 			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim = {
@@ -330,7 +330,7 @@ require([
 			};
 
 			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
-				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world, '../../resources/check.png');
+				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world, '../../../resources/check.png');
 			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
 			addSpheres(goo, worldFittedTerrainScript, dim);
 			addLight(dim);

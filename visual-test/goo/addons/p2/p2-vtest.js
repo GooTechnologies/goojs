@@ -6,9 +6,9 @@ require([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
-	'goo/addons/p2/p2System',
-	'goo/addons/p2/p2Component',
-	'../../lib/V'
+	'goo/addons/p2/P2System',
+	'goo/addons/p2/P2Component',
+	'lib/V'
 ], function (
 	Material,
 	Sphere,
@@ -23,7 +23,7 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = '../../resources';
+	var resourcePath = '../../../resources';
 
 	function createEntity(meshData, p2Settings, pos) {
 		var material = new Material(ShaderLib.texturedLit);
@@ -85,4 +85,6 @@ require([
 	V.addLights();
 
 	V.addOrbitCamera(new Vector3(40, Math.PI / 2, Math.PI / 4));
+
+	V.process();
 });

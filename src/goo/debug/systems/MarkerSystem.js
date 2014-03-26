@@ -21,6 +21,7 @@ define([
 
 	/**
 	 * @class Processes all entities with a marker component
+	 * @extends System
 	 */
 	function MarkerSystem(goo) {
 		System.call(this, 'MarkerSystem', ['MarkerComponent']);

@@ -14,7 +14,7 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	Material,
 	ShaderLib,
@@ -35,7 +35,7 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = "../../resources";
+	var resourcePath = '../../../resources/';
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -43,7 +43,7 @@ require([
 	var boxMesh = new Box();
 	var sphereMesh = new Sphere(32, 32);
 
-	var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
+	var texture = new TextureCreator().loadTexture2D(resourcePath + 'check.png');
 	var material = new Material(ShaderLib.texturedLit);
 	material.setTexture('DIFFUSE_MAP', texture);
 

@@ -30,7 +30,7 @@ function(
 
 		settings = settings || {};
 
-		var world = this.world = new p2.World({
+		this.world = new p2.World({
 			gravity: settings.gravity || [0, -9.82]
 		});
 

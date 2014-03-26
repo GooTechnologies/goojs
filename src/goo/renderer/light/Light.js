@@ -66,7 +66,7 @@ function (
 			far: 1000,
 			resolution: [512, 512],
 			upVector: Vector3.UNIT_Y,
-			darkness: 0.0,
+			darkness: 1.0,
 			shadowType: 'VSM'
 		};
 

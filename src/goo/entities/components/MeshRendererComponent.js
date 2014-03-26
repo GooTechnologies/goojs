@@ -11,6 +11,7 @@ define([
 
 	/**
 	 * @class Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
+	 * @extends Component
 	 */
 	function MeshRendererComponent(materials) {
 		this.type = 'MeshRendererComponent';

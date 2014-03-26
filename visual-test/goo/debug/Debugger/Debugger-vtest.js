@@ -9,7 +9,7 @@ require([
 	'goo/renderer/Texture',
 	'goo/math/Vector3',
 	'goo/debug/Debugger',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

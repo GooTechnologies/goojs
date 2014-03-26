@@ -5,6 +5,7 @@ define(['goo/entities/systems/System'],
 
 	/**
 	 * @class Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"
+	 * @extends System
 	 */
 	function TransformSystem() {
 		System.call(this, 'TransformSystem', ['TransformComponent']);

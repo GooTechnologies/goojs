@@ -6,7 +6,7 @@ require([
 	'goo/entities/components/LightDebugComponent',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Vector3,
 	PointLight,

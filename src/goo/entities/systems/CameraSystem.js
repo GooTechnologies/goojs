@@ -13,6 +13,7 @@ function (
 
 	/**
 	 * @class Updates cameras/cameracomponents with their transform component transforms
+	 * @extends System
 	 */
 	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);

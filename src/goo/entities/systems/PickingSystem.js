@@ -5,6 +5,7 @@ function (System) {
 
 	/**
 	 * @class Helps gather pickable entities
+	 * @extends System
 	 */
 	function PickingSystem (settings) {
 		System.call(this, 'PickingSystem', ['MeshRendererComponent', 'TransformComponent']);

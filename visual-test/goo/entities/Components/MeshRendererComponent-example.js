@@ -8,7 +8,7 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	GooRunner,
 	Material,
@@ -23,7 +23,7 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = "../../resources";
+	var resourcePath = '../../../resources';
 
 	var goo = V.initGoo();
 	var world = goo.world;

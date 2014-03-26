@@ -5,7 +5,7 @@ define([
 	'goo/animation/SkeletonPose',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], 
+],
 /** @lends */
 function(
 		ConfigHandler,

@@ -13,6 +13,7 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/ScriptComponent',
+	'goo/entities/systems/ScriptSystem',
 	'goo/entities/Entity',
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/managers/Manager'
@@ -31,6 +32,7 @@ define([
 	CameraComponent,
 	LightComponent,
 	ScriptComponent,
+	ScriptSystem,
 	Entity,
 	TransformSystem,
 	Manager
@@ -39,6 +41,7 @@ define([
 
 	describe('World with Systems', function() {
 		var world;
+
 		beforeEach(function() {
 			world = new World();
 			world.registerComponent(TransformComponent);
@@ -167,6 +170,17 @@ define([
 		});
 
 		it('can create a typical entity holding all sorts of stuff in random order', function() {
+			//
+			world.gooRunner = {
+				renderer: {
+					domElement: null,
+					viewportWidth: null,
+					viewportHeight: null
+				}
+			};
+			world.add(new ScriptSystem(world))
+
+
 			var camera = new Camera();
 			var meshData = new Box();
 			var material = new Material(ShaderLib.simple);
