@@ -35,10 +35,12 @@ function(
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
+
 			var promises = [];
 			_.forEach(config.scripts, function(script) {
 				promises.push(that._load(script.scriptRef, options));
 			}, null, 'sortValue');
+
 			return RSVP.all(promises).then(function(scripts) {
 				component.scripts = scripts;
 				return component;

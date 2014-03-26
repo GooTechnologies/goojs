@@ -56,6 +56,7 @@ define ([
 	};
 
 	Scripts.allScripts = function () {
+		// REVIEW: Why not return _scripts? Document this function.
 		var scripts = {};
 		var keys = Object.keys(_scripts);
 		for (var i = 0; i < keys.length; i++) {
