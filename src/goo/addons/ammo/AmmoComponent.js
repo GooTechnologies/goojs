@@ -10,11 +10,24 @@ define([
 	'goo/shapes/ShapeCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere'
+	'goo/renderer/bounds/BoundingSphere',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function(
-	EntityUtils, Component, Quaternion, calculateTriangleMeshShape, Box, Quad, Sphere, Material, ShapeCreator, ShaderLib, BoundingBox, BoundingSphere
+	EntityUtils,
+	Component,
+	Quaternion,
+	calculateTriangleMeshShape,
+	Box,
+	Quad,
+	Sphere,
+	Material,
+	ShapeCreator,
+	ShaderLib,
+	BoundingBox,
+	BoundingSphere,
+	_
 ) {
 	"use strict";
 
@@ -37,17 +50,29 @@ function(
 	 * entity.setComponent(new AmmoComponent({mass:5}));
 	 */
 	function AmmoComponent(settings) {
-		this.type = 'AmmoComponent';
 		this.settings = settings = settings || {};
-		this.mass = settings.mass !== undefined ? settings.mass : 0;
-		this.useBounds = settings.useBounds !== undefined ? settings.useBounds : false;
-		this.useWorldBounds = settings.useWorldBounds !== undefined ? settings.useWorldBounds : false;
-		this.useWorldTransform = settings.useWorldTransform !== undefined ? settings.useWorldTransform : false;
-		this.linearFactor = settings.linearFactor !== undefined ? settings.linearFactor : new Ammo.btVector3(1, 1, 1);
+
+		_.defaults(settings,{
+			mass: 0,
+			useBounds: false,
+			useWorldBounds : false,
+			useWorldTransform : false,
+			linearFactor : new Ammo.btVector3(1, 1, 1),
+			isTrigger : false,
+			onInitializeBody : null
+		});
+
+		this.mass = settings.mass;
+		this.useBounds = settings.useBounds;
+		this.useWorldBounds = settings.useWorldBounds;
+		this.useWorldTransform = settings.useWorldTransform;
+		this.linearFactor = settings.linearFactor;
+		this.onInitializeBody = settings.onInitializeBody;
+		this.isTrigger = settings.isTrigger;
+
+		this.type = 'AmmoComponent';
 		this.ammoTransform = new Ammo.btTransform();
 		this.gooQuaternion = new Quaternion();
-		this.onInitializeBody = settings.onInitializeBody;
-		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
 		this.shape = undefined;
 	}
 	AmmoComponent.prototype = Object.create(Component.prototype);
@@ -200,6 +225,6 @@ function(
 			tc.addTranslation(this.difference);
 		}
 	};
-	
+
 	return AmmoComponent;
 });
