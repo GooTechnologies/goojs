@@ -1,5 +1,5 @@
 define([
-	'goo/util/gizmos/Gizmo',
+	'goo/gizmopack/Gizmo',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
 	'goo/math/Vector3',

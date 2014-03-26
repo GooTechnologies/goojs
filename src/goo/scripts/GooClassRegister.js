@@ -103,9 +103,9 @@ define([
 	'goo/util/combine/AtlasNode',
 	'goo/util/combine/EntityCombiner',
 	'goo/util/combine/Rectangle',
-	'goo/util/gizmos/RotationGizmo',
-	'goo/util/gizmos/ScaleGizmo',
-	'goo/util/gizmos/TranslationGizmo',
+	'goo/gizmopack/RotationGizmo',
+	'goo/gizmopack/ScaleGizmo',
+	'goo/gizmopack/TranslationGizmo',
 	'goo/util/rsvp'
 ], function (Scripts) {
 	'use strict';
@@ -217,9 +217,9 @@ define([
 		'goo/util/combine/AtlasNode',
 		'goo/util/combine/EntityCombiner',
 		'goo/util/combine/Rectangle',
-		'goo/util/gizmos/RotationGizmo',
-		'goo/util/gizmos/ScaleGizmo',
-		'goo/util/gizmos/TranslationGizmo',
+		'goo/gizmopack/RotationGizmo',
+		'goo/gizmopack/ScaleGizmo',
+		'goo/gizmopack/TranslationGizmo',
 		'goo/util/rsvp'
 	];
 
