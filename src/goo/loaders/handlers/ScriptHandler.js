@@ -251,35 +251,33 @@ function(
 
 	ScriptHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		if (config) {
-			return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
-				if (!script) { return; }
-				var promises = [];
-				if (config.body && config.dependencies) {
-					delete script.externals.dependencyErrors;
-					for (var url in config.dependencies) {
-						promises.push(that._addDependency(script, url, config.id));
-					}
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
+			if (!script) { return; }
+			var promises = [];
+			if (config.body && config.dependencies) {
+				delete script.externals.dependencyErrors;
+				for (var url in config.dependencies) {
+					promises.push(that._addDependency(script, url, config.id));
 				}
-				return RSVP.all(promises).then(function() {
-					if (config.className) {
-						that._updateFromClass(script, config, options);
-					} else if (config.body) {
-						that._updateFromCustom(script, config, options);
-					}
-					that._specialPrepare(script, config);
-					script.name = config.name;
-					if (script.externals.errors) {
-						return script;
-					}
-					_.extend(script.parameters, config.options);
-					if (options.script && options.script.disabled) {
-						script.enabled = false;
-					}
+			}
+			return RSVP.all(promises).then(function() {
+				if (config.className) {
+					that._updateFromClass(script, config, options);
+				} else if (config.body) {
+					that._updateFromCustom(script, config, options);
+				}
+				that._specialPrepare(script, config);
+				script.name = config.name;
+				if (script.externals.errors) {
 					return script;
-				});
+				}
+				_.extend(script.parameters, config.options);
+				if (options.script && options.script.disabled) {
+					script.enabled = false;
+				}
+				return script;
 			});
-		}
+		});
 	};
 
 	var types = ['string', 'float', 'int', 'vec3', 'boolean'];
