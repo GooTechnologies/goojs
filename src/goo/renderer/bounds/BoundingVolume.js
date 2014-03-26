@@ -12,7 +12,7 @@ function(
 	 */
 	function BoundingVolume(center) {
 		this.center = new Vector3();
-		if (center !== undefined) {
+		if (center) {
 			this.center.setv(center);
 		}
 

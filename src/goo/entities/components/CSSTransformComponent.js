@@ -9,6 +9,7 @@ define([
 	 * @class Connects a domElement to an entity and applies the transformComponent of the entity to the domElement with CSS3 3d transforms
 	 * @param {domElement} domelement
 	 * @param {boolean} faceCamera
+	 * @extends Component
 	 */
 	function CSSTransformComponent(domElement, faceCamera) {
 		Component.call(this);

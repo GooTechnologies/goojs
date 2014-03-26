@@ -5,6 +5,7 @@ function (System) {
 
 	/**
 	 * @class Manages and reacts to particle components on entities.
+	 * @extends System
 	 */
 	function ParticlesSystem() {
 		System.call(this, 'ParticlesSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent', 'ParticleComponent']);

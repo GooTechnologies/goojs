@@ -71,7 +71,7 @@ function(
 			promise.resolve(results);
 		}
 		return promise;
-	}
+	};
 
 
 	/**

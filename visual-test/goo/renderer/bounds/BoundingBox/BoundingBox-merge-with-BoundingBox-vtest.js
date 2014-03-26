@@ -12,7 +12,7 @@ require([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
-	'../../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,

@@ -5,7 +5,7 @@ require([
 	'goo/renderer/MeshData',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
-	'../../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,

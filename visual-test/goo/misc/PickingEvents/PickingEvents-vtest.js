@@ -1,5 +1,5 @@
 require([
-	'../../lib/V'
+	'lib/V'
 ], function (
 	V
 	) {

@@ -116,7 +116,7 @@ define([
 	 */
 	ConfigHandler.prototype.update = function(ref, config, options) {
 		return this._loading[ref] = this._update(ref,config,options);
-	}
+	};
 
 
 	ConfigHandler.prototype._update = function(ref, config, options) {

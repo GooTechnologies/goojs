@@ -11,10 +11,10 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'goo/scripts/NewWaveFPCamControlScript',
+	'goo/scripts/newwave/FPCamControlScript',
 	'goo/scripts/ScriptUtils',
 	'goo/math/Vector',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,

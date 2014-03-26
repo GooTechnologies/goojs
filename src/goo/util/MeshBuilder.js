@@ -190,5 +190,17 @@ define([
 		return this.meshDatas;
 	};
 
+	MeshBuilder.prototype.reset = function () {
+		this.meshDatas = [];
+
+		this.vertexData = {};
+		this.indexData = [];
+		this.vertexCounter = 0;
+		this.indexCounter = 0;
+
+		this.indexLengths = [];
+		this.indexModes = [];
+	};
+
 	return MeshBuilder;
 });

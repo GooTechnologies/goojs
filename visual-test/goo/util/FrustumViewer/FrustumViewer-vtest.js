@@ -4,7 +4,7 @@ require([
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
 	'goo/debug/FrustumViewer',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Camera,
 	OrbitCamControlScript,

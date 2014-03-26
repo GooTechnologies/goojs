@@ -89,7 +89,7 @@ function(
 		this._ajax.prefill(bundle, clear);
 	};
 
-	/*
+	/**
 	 * Clears the cache of all the handlers. Also clears the engine
 	 */
 	DynamicLoader.prototype.clear = function() {
@@ -115,7 +115,11 @@ function(
 	 * registered {@link ConfigHandler}
 	 *
 	 * @param {string} ref Ref of object to load
-	 * @param {object} options {@see DynamicLoader.update}
+	 * @param {object} options
+	 * @param {function(handled, total)} [options.progressCallback] Function called while loading the world.
+	 * Arguments handled and total are both integer numbers and represent the loaded elements so far as well as the total elements.
+	 * @param {boolean} [options.preloadBinaries] Load the binary data as soon as the reference is loaded. Defaults to false.
+	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 */
@@ -137,10 +141,7 @@ function(
 	 * @param {object} [config] New configuration (formatted according to data model).
 	 * If omitted, works the same as {DynamicLoader.load}.
 	 * @param {object} options
-	 * @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
-	 * 	each object as argument and if it returns true, it is added to the world.
 	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
-	 * @param {boolean} [options.recursive] Recursively load resources referenced from the given config. Defaults to true.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 	 */
 	DynamicLoader.prototype.update = function(ref, config, options) {
@@ -160,7 +161,7 @@ function(
 	 **** Loader functions ****
 	 */
 
-	/*
+	/**
 	 * Loads the object specified by the ref. If an object is already loaded,
 	 * it will return that object without updating it.
 	 * @param {string} ref
@@ -177,8 +178,8 @@ function(
 		}
 	};
 
-	/*
-	 * Updates object identified by ref accoring to config
+	/**
+	 * Updates object identified by ref according to config
 	 * @param {string} ref
 	 * @param {object} config
 	 * @param {object} options
@@ -197,7 +198,7 @@ function(
 		}
 	};
 
-	/*
+	/**
 	 * Fetch a file from the server, and parse JSON if needed.
 	 *
 	 * @param {string} ref Ref of the config to load
@@ -209,7 +210,7 @@ function(
 		return this._ajax.load(ref, (options==null) ? false : options.noCache);
 	};
 
-	/*
+	/**
 	 * Recursively traverses all configs and preloads the binary files referenced.
 	 * @param {object} references one-level object of references, like in datamodel
 	 * @param {object} options See {DynamicLoader.load}
@@ -269,7 +270,7 @@ function(
 		return traverse(references).then(loadBinaryRefs);
 	};
 
-	/*
+	/**
 	 * Gets cached handler for type or creates a new one
 	 * @param {string} type
 	 * @returns {ConfigHandler}
@@ -291,7 +292,7 @@ function(
 	};
 
 	/*
-	 * Handles a ref with its loaded config, i e calls the proper config handler
+	 * Handles a ref with its loaded config, i.e. calls the proper config handler
 	 * to create or update the object
 	 *
 	 * @param {string} ref
@@ -331,7 +332,7 @@ function(
 	};*/
 
 
-	/*
+	/**
 	 * Find all the references in a config, and return in a flat list
 	 *
 	 * @param {object} config
@@ -375,7 +376,7 @@ function(
 		return ref.split('.').pop().toLowerCase();
 	};
 
-	/*
+	/**
 	 * Checks if ref has a type included in the group
 	 * Different groups are found in the top of the file
 	 *

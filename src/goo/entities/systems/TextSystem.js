@@ -12,6 +12,7 @@ define([
 
 	/**
 	 * @class Processes all entities with a text component
+	 * @extends System
 	 */
 	function TextSystem() {
 		System.call(this, 'TextSystem', ['TextComponent']);

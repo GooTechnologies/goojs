@@ -18,6 +18,7 @@ define([
 
 	/**
 	 * @class Processes all entities with a camera debug component
+	 * @extends System
 	 */
 	function CameraDebugSystem() {
 		System.call(this, 'CameraDebugSystem', ['CameraDebugComponent']);

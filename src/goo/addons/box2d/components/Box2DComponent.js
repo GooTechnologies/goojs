@@ -10,6 +10,7 @@ function(
 
 	/**
 	* @class Box2DComponent
+	* @extends Component
 	*/
 	function Box2DComponent(settings) {
 		this.type = 'Box2DComponent';

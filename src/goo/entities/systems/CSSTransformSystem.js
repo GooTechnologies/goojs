@@ -4,6 +4,7 @@ function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 
 	/**
 	* @class
+	* @extends System
 	*/
 	function CSSTransformSystem (renderer) {
 		System.call(this, "CSSTransformSystem", ["TransformComponent", "CSSTransformComponent"]);

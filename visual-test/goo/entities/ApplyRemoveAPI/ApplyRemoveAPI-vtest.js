@@ -14,7 +14,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/LightComponent',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	GooRunner,
 	World,
@@ -35,7 +35,7 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = "../../resources";
+	var resourcePath = '../../../resources';
 
 	var gui = new window.dat.GUI();
 

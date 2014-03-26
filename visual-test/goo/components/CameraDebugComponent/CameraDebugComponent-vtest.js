@@ -9,7 +9,7 @@ require([
 	'goo/math/Vector3',
 	'goo/entities/components/CameraDebugComponent',
 	'goo/entities/SystemBus',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
