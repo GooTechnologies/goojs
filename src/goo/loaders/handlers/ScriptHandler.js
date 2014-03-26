@@ -64,7 +64,7 @@ function(
 
 	/**
 	 * Creates a script data wrapper object to be used in the engine
-	 */	
+	 */
 	ScriptHandler.prototype._create = function() {
 		return {
 			externals: {},
@@ -246,7 +246,7 @@ function(
 	 * @param {string} url location of the javascript lib
 	 * @param {string} scriptId the guid of the script
 	 * @return {RSVP.Promise} a promise that resolves when the dependency is loaded
-	 */ 
+	 */
 	ScriptHandler.prototype._addDependency = function(script, url, scriptId) {
 		var scriptElem = document.querySelector('script[src="'+url+'"]');
 		if (scriptElem) {
@@ -267,6 +267,7 @@ function(
 				file: url
 			};
 			setError(script, err);
+			scriptElem.parentNode.removeChild(scriptElem);
 			promise.resolve();
 		};
 		document.body.appendChild(scriptElem);
@@ -315,7 +316,7 @@ function(
 				that._currentScriptLoading = null;
 			}
 		});
-	}
+	};
 
 
 
