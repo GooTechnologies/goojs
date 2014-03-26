@@ -83,8 +83,8 @@ function(
 	 */
 	ScriptHandler.prototype._remove = function(ref) {
 		var script = this._objects[ref];
-		if (script && script.cleanup) {
-			script.cleanup();
+		if (script && script.cleanup && script.context) {
+			script.cleanup(script.parameters, script.context, Scripts.getClasses());
 			delete this._objects[ref];
 		}
 	};
