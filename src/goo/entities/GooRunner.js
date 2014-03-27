@@ -262,14 +262,22 @@ function (
 
 		// execute callbacks
 		//! AT: doing this to be able to schedule new callbacks from the existing callbacks
-		var callbacksNextFrame = this.callbacksNextFrame;
-		this.callbacksNextFrame = [];
-		for (var i = 0; i < callbacksNextFrame.length; i++) {
-			callbacksNextFrame[i](this.world.tpf);
+		try {
+			var callbacksNextFrame = this.callbacksNextFrame;
+			this.callbacksNextFrame = [];
+			for (var i = 0; i < callbacksNextFrame.length; i++) {
+				callbacksNextFrame[i](this.world.tpf);
+			}
+		} catch (e) {
+			console.error(e);
 		}
 
-		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
-			this.callbacksPreProcess[i](this.world.tpf);
+		try {
+			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+				this.callbacksPreProcess[i](this.world.tpf);
+			}
+		} catch (e) {
+			console.error(e);
 		}
 
 		// process the world
@@ -310,7 +318,11 @@ function (
 					}
 				}
 				this.renderer.pick(this._picking.x, this._picking.y, this._picking.pickingStore, Renderer.mainCamera);
-				this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
+				try {
+					this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
+				} catch (e) {
+					console.error(e);
+				}
 				this._picking.doPick = false;
 
 				this.renderer.setClearColor.apply(this.renderer, this._picking.clearColorStore);
@@ -318,8 +330,12 @@ function (
 		}
 
 		// run the post render callbacks
-		for (var i = 0; i < this.callbacks.length; i++) {
-			this.callbacks[i](this.world.tpf);
+		try {
+			for (var i = 0; i < this.callbacks.length; i++) {
+				this.callbacks[i](this.world.tpf);
+			}
+		} catch (e) {
+			console.error(e);
 		}
 
 		// update the stats if there are any
@@ -493,10 +509,14 @@ function (
 					id: evt.id,
 					intersection: evt.intersection
 				};
-				for (var i = 0; i < this._eventListeners[type].length; i++) {
-					if(this._eventListeners[type][i](e) === false) {
-						break;
+				try {
+					for (var i = 0; i < this._eventListeners[type].length; i++) {
+						if(this._eventListeners[type][i](e) === false) {
+							break;
+						}
 					}
+				} catch(err) {
+					console.error(err);
 				}
 				this._eventTriggered[type] = null;
 			}
