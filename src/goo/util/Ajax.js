@@ -167,7 +167,7 @@ function(
 		window.URL = window.URL || window.webkitURL;
 		var image = new Image();
 		// Made the asset library thumbnails 403 in Create.
-		//image.crossOrigin = 'anonymous';
+		image.crossOrigin = 'anonymous';
 
 		var promise = new RSVP.Promise();
 		image.addEventListener('load', function () {
