@@ -18,14 +18,17 @@ function(
 	/**
 	 * @class Ajax helper class
 	 * @constructor
+	 * @param {string} rootPath
+	 * @param {object} options
 	 */
-	function Ajax(rootPath) {
+	function Ajax(rootPath, options) {
 		if (rootPath) {
 			this._rootPath = rootPath;
 			if (rootPath.slice(-1) !== '/') {
 				this._rootPath += '/';
 			}
 		}
+		this.options = options || {};
 		this._cache = {};
 	}
 
@@ -166,8 +169,9 @@ function(
 	Ajax.prototype._loadImage = function (url) {
 		window.URL = window.URL || window.webkitURL;
 		var image = new Image();
-		// Made the asset library thumbnails 403 in Create.
-		//image.crossOrigin = 'anonymous';
+		if (this.crossOrigin) {
+			image.crossOrigin = 'anonymous'
+		}
 
 		var promise = new RSVP.Promise();
 		image.addEventListener('load', function () {
@@ -189,7 +193,9 @@ function(
 
 	Ajax.prototype._loadVideo = function (url) {
 		var video = document.createElement('video');
-		video.crossOrigin = 'anonymous';
+		if (this.crossOrigin) {
+			video.crossOrigin = 'anonymous';
+		}
 		var promise = new RSVP.Promise();
 		video.addEventListener('canplay', function() {
 			video.dataReady = true;
