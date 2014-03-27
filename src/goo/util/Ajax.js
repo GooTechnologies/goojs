@@ -166,7 +166,8 @@ function(
 	Ajax.prototype._loadImage = function (url) {
 		window.URL = window.URL || window.webkitURL;
 		var image = new Image();
-		image.crossOrigin = 'anonymous';
+		// Made the asset library thumbnails 403 in Create.
+		//image.crossOrigin = 'anonymous';
 
 		var promise = new RSVP.Promise();
 		image.addEventListener('load', function () {

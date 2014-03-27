@@ -45,7 +45,7 @@ function(System, Renderer, Matrix4x4, MathUtils, Vector3) {
 			var component = entity.getComponent('HTMLComponent');
 
 			// compute world position.
-			camera.getScreenCoordinates(entity.transformComponent.transform.translation, screenWidth, screenHeight, this.tmpVector);
+			camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, screenWidth, screenHeight, this.tmpVector);
 			if (this.tmpVector.z < 0) {
 				if (component.hidden !== true) {
 					component.domElement.style.display = "none";

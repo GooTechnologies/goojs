@@ -48,7 +48,8 @@ function (
 		var systemContext = entity._world.getSystem('ScriptSystem').context;
 		var componentContext = Object.create(systemContext);
 		_.extend(componentContext, {
-			entity: entity
+			entity: entity,
+			entityData: {}
 		});
 
 		for (var i = 0; i < this.scripts.length; i++) {
