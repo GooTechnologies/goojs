@@ -99,7 +99,10 @@ define([
 	'goo/fsmpack/statemachine/actions/SetRenderTargetAction',
 	'goo/fsmpack/statemachine/actions/TweenTextureOffsetAction',
 
-	'goo/fsmpack/statemachine/actions/LogMessageAction'
+	'goo/fsmpack/statemachine/actions/LogMessageAction',
+
+	'goo/fsmpack/statemachine/actions/TweenOpacityAction'
+	//'goo/fsmpack/statemachine/actions/GotoURLAction'
 ],
 /** @lends */
 function(
