@@ -25,7 +25,7 @@ function(
 
 	/**
 	 * @class Handles integration with Cannon.js.
-	 * Depends on the global CANNON object, 
+	 * Depends on the global CANNON object,
 	 * so load cannon.js using a script tag before using this system.
 	 * See also {@link CannonComponent}
 	 * @extends System
