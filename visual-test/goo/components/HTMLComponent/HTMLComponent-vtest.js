@@ -1,9 +1,11 @@
 require([
+	'goo/entities/EntityUtils',
 	'goo/renderer/Camera',
 	'goo/entities/components/HTMLComponent',
 	'goo/entities/systems/HTMLSystem',
 	'lib/V'
 ], function (
+	EntityUtils,
 	Camera,
 	HTMLComponent,
 	HTMLSystem,
@@ -26,7 +28,7 @@ require([
 	// and html elements for every sphere
 	spheres.each(function (entity) {
 		var htmlElement = document.createElement('p');
-		htmlElement.style.position = 'absolute'
+		htmlElement.style.position = 'absolute';
 		htmlElement.style['-webkit-user-select'] = 'none';
 		htmlElement.innerHTML = 'A round box!';
 		document.body.appendChild(htmlElement);
@@ -34,6 +36,10 @@ require([
 		var htmlComponent = new HTMLComponent(htmlElement);
 
 		entity.set(htmlComponent);
+
+		if (Math.random() > 0.5) {
+			EntityUtils.hide(entity);
+		}
 	});
 
 	V.process();

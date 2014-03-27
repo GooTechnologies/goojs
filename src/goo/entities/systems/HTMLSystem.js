@@ -46,14 +46,25 @@ function(System, Renderer, Matrix4x4, MathUtils, Vector3) {
 
 			// compute world position.
 			camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, screenWidth, screenHeight, this.tmpVector);
-			if (this.tmpVector.z < 0) {
-				if (component.hidden !== true) {
-					component.domElement.style.display = "none";
-					component.hidden = true;
+
+			//! AT: should be done exactly how it's done for meshRendererComponent
+			// hacking it for now
+			if (entity.hidden) {
+				//! AT: is setting this every frame evil?
+				// is checking for it and setting it only if different less evil?
+				component.domElement.style.display = 'none';
+			} else {
+				if (this.tmpVector.z < 0) {
+					if (component.hidden !== true) {
+						component.domElement.style.display = 'none';
+						component.hidden = true;
+					}
+					continue;
+				} else if (component.hidden === true) {
+					component.domElement.style.display = 'none'; //! AT: should be 'none'; was ''
+				} else {
+					component.domElement.style.display = '';
 				}
-				continue;
-			} else if (component.hidden === true) {
-				component.domElement.style.display = "";
 			}
 
 			var fx = Math.floor(this.tmpVector.x);
