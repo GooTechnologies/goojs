@@ -57,7 +57,6 @@ function(
 
 		var request = new XMLHttpRequest();
 
-
 		request.open(method, url, true);
 		if (options.responseType) {
 			request.responseType = options.responseType;
@@ -167,6 +166,7 @@ function(
 	Ajax.prototype._loadImage = function (url) {
 		window.URL = window.URL || window.webkitURL;
 		var image = new Image();
+		image.crossOrigin = 'anonymous';
 
 		var promise = new RSVP.Promise();
 		image.addEventListener('load', function () {
