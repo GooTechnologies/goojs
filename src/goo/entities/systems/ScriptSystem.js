@@ -26,7 +26,8 @@ define([
 			viewportWidth: renderer.viewportWidth,
 			viewportHeight: renderer.viewportHeight,
 			world: world,
-			activeCameraEntity: null
+			activeCameraEntity: null,
+			worldData: {}
 		};
 		SystemBus.addListener('goo.setCurrentCamera', function(data) {
 			this.context.activeCameraEntity = data.entity;
