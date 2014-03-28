@@ -3,7 +3,9 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Quaternion',
-	'goo/math/Transform'
+	'goo/math/Transform',
+	'goo/math/Vector3',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function(
@@ -11,7 +13,9 @@ function(
 	BoundingBox,
 	BoundingSphere,
 	Quaternion,
-	Transform
+	Transform,
+	Vector3,
+	_
 ) {
 	'use strict';
 
@@ -34,67 +38,29 @@ function(
 
 		settings = settings || {};
 
+		_.defaults(settings, {
+			gravity :		new Vector3(0, -10, 0),
+			stepFrequency : 60
+		});
+
 		var world = this.world = new CANNON.World();
-		world.gravity.y = -9.82;
+		world.gravity.x = settings.gravity.x;
+		world.gravity.y = settings.gravity.y;
+		world.gravity.z = settings.gravity.z;
 		world.broadphase = new CANNON.NaiveBroadphase();
 
-		this.stepFrequency = settings.stepFrequency || 60;
+		this.stepFrequency = settings.stepFrequency;
 
 		this.quat = new Quaternion();
 	}
 
 	CannonSystem.prototype = Object.create(System.prototype);
 
-	CannonSystem.prototype.createShape = function(entity) {
-		var shape;
-		var rbComponent = entity.cannonRigidbodyComponent;
-
-		if (!entity.cannonColliderComponent) {
-			// No collider. Check children.
-			shape = new CANNON.Compound();
-
-			// Needed for getting the Rigidbody-local transform of each collider
-			var bodyTransform = entity.transformComponent.worldTransform;
-			var invBodyTransform = new Transform();
-			invBodyTransform.copy(bodyTransform);
-			invBodyTransform.invert(invBodyTransform);
-			var gooTrans = new Transform();
-
-			var that = this;
-			entity.traverse(function(entity){
-				if(entity.cannonColliderComponent){
-
-					// TODO: Should look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
-					gooTrans.copy(entity.transformComponent.worldTransform);
-					Transform.combine(invBodyTransform, gooTrans, gooTrans);
-
-					var t = entity.transformComponent.transform;
-					//var t = gooTrans;
-					var trans = t.translation;
-					var rot = t.rotation;
-					var offset = new CANNON.Vec3(trans.x, trans.y, trans.z);
-					var q = that.quat;
-					q.fromRotationMatrix(rot);
-					var orientation = new CANNON.Quaternion(q.x, q.y, q.z, q.w);
-					shape.addChild(entity.cannonColliderComponent.cannonShape, offset, orientation);
-				}
-			});
-
-		} else {
-
-			// Entity has a collider on the root
-			// Create a simple shape
-			shape = entity.cannonColliderComponent.cannonShape;
-		}
-
-		return shape;
-	};
-
 	CannonSystem.prototype.inserted = function(entity) {
 		var rbComponent = entity.cannonRigidbodyComponent;
 		var transformComponent = entity.transformComponent;
 
-		var shape = this.createShape(entity);
+		var shape = rbComponent.createShape(entity);
 		if (!shape) {
 			entity.clearComponent('CannonComponent');
 			return;
@@ -102,18 +68,26 @@ function(
 
 		var body = new CANNON.RigidBody(rbComponent.mass, shape);
 		body.position.set(transformComponent.transform.translation.x, transformComponent.transform.translation.y, transformComponent.transform.translation.z);
+		var v = rbComponent._initialVelocity;
+		body.velocity.set(v.x, v.y, v.z);
 		this.quat.fromRotationMatrix(transformComponent.transform.rotation);
 		body.quaternion.set(this.quat.x, this.quat.y, this.quat.z, this.quat.w);
 		rbComponent.body = body;
 
 		//b.aabbNeedsUpdate = true;
 		this.world.add(body);
+
+		var c = entity.cannonDistanceJointComponent;
+		if(c){
+			this.world.addConstraint(c.createConstraint(entity));
+		}
 	};
 
 	CannonSystem.prototype.deleted = function(entity) {
 		var rbComponent = entity.cannonRigidbodyComponent;
 
 		if (rbComponent) {
+			// TODO: remove joints?
 			this.world.remove(rbComponent.body);
 		}
 	};

@@ -17,6 +17,7 @@ require([
 	'goo/addons/cannon/CannonBoxColliderComponent',
 	'goo/addons/cannon/CannonSphereColliderComponent',
 	'goo/addons/cannon/CannonPlaneColliderComponent',
+	'goo/addons/cannon/CannonDistanceJointComponent',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
 	'lib/V'
@@ -39,6 +40,7 @@ require([
 	CannonBoxColliderComponent,
 	CannonSphereColliderComponent,
 	CannonPlaneColliderComponent,
+	CannonDistanceJointComponent,
 	PointLight,
 	LightComponent,
 	V
@@ -55,7 +57,9 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	var cannonSystem = new CannonSystem();
+	var cannonSystem = new CannonSystem({
+		gravity: new Vector3(0,-20,0)
+	});
 	world.setSystem(cannonSystem);
 
 	function addPrimitives() {
@@ -131,7 +135,42 @@ require([
 		return compoundEntity;
 	}
 
+	function createChain(x, y, z, numLinks, linkDistance, radius){
+		x = x || 0;
+		y = y || 0;
+		z = z || 0;
+		numLinks = numLinks || 5;
+		linkDistance = linkDistance || 1;
+		radius = radius || 1;
+
+		var lastBody;
+		for(var i=0; i<numLinks; i++){
+			var body = new CannonRigidbodyComponent({
+				mass: i ? 1 : 0,
+				velocity: new Vector3(0,0,i*3)
+			});
+			var e = createEntity(new Sphere(10, 10, radius))
+				.set([x, y-i*radius*2, z])
+				.setComponent(body)
+				.setComponent(new CannonSphereColliderComponent({
+					radius : radius
+				}))
+				.addToWorld();
+			if(lastBody){
+				e.setComponent(new CannonDistanceJointComponent({
+					distance: linkDistance,
+					connectedBody: lastBody
+				}));
+			}
+			lastBody = body;
+		}
+	}
+
 	addPrimitives();
+	var radius = 0.9;
+	var dist = 2;
+	var N = 5;
+	createChain(0, 4, 6, N, dist, radius);
 	createGround();
 	createCompound(0,5,0);
 
