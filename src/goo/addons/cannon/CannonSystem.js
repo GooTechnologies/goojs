@@ -56,12 +56,14 @@ function(
 		var rbComponent = entity.cannonRigidbodyComponent;
 
 		if (!entity.cannonColliderComponent) {
-
+			// No collider. Check children.
 			shape = new CANNON.Compound();
 
 			var that = this;
 			entity.traverse(function(entity){
 				if(entity.cannonColliderComponent){
+
+					// TODO: Should look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
 					var t = entity.transformComponent.transform;
 					var trans = t.translation;
 					var rot = t.rotation;
