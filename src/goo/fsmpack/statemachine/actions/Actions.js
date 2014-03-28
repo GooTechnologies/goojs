@@ -101,6 +101,7 @@ define([
 
 	'goo/fsmpack/statemachine/actions/LogMessageAction',
 
+	'goo/fsmpack/statemachine/actions/CopyJointTransformAction',
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction'
 	//'goo/fsmpack/statemachine/actions/GotoURLAction'
 ],
