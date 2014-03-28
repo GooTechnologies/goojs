@@ -24,8 +24,9 @@ function(
 	/**
 	 * @class Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
 	 * @extends System
-	 * @param [Object] settings. The settings object can contain the following properties:
-	 * @param {number} settings.stepFrequency (defaults to 60)
+	 * @param [Object] [settings]
+	 * @param {number} [settings.stepFrequency=60]
+	 * @param {string} [settings.broadphase='naive'] One of: 'naive' (NaiveBroadphase), 'sap' (SAPBroadphase)
 	 * @example
 	 * var cannonSystem = new CannonSystem({
 	 *     stepFrequency: 60,
@@ -40,14 +41,15 @@ function(
 
 		_.defaults(settings, {
 			gravity :		new Vector3(0, -10, 0),
-			stepFrequency : 60
+			stepFrequency : 60,
+			broadphase :	'naive'
 		});
 
 		var world = this.world = new CANNON.World();
 		world.gravity.x = settings.gravity.x;
 		world.gravity.y = settings.gravity.y;
 		world.gravity.z = settings.gravity.z;
-		world.broadphase = new CANNON.NaiveBroadphase();
+		this.setBroadphaseAlgorithm(settings.broadphase);
 
 		this.stepFrequency = settings.stepFrequency;
 
@@ -109,6 +111,20 @@ function(
 			this._quat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
 			entity.transformComponent.transform.rotation.copyQuaternion(this._quat);
 			entity.transformComponent.setUpdated();
+		}
+	};
+
+	CannonSystem.prototype.setBroadphaseAlgorithm = function(algorithm){
+		var world = this.world;
+		switch(algorithm){
+		case 'naive':
+			world.broadphase = new CANNON.NaiveBroadphase();
+			break;
+		case 'sap':
+			world.broadphase = new CANNON.SAPBroadphase(world);
+			break;
+		default:
+			throw new Error('Broadphase not supported: '+algorithm);
 		}
 	};
 
