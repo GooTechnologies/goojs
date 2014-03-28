@@ -70,7 +70,10 @@ define([
 
 		// create a new keyframe if it does not exist already or update it if it exists
 		if (!keyframe) {
-			channel.addKeyframe(keyframeConfig.time, keyframeConfig.value, easingFunction);
+			channel.addKeyframe(keyframeId,
+				keyframeConfig.time,
+				keyframeConfig.value, 
+				easingFunction);
 		} else {
 			// the time of one keyframe changed so we're not certain anymore that they're sorted
 			if (keyframe.time !== +keyframeConfig.time) {

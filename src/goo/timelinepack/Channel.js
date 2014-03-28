@@ -134,6 +134,7 @@ define([], function () {
 		this.update(0);
 	};
 
+
 	/**
 	 * Update the channel,
 	 * @param tpf
@@ -142,15 +143,15 @@ define([], function () {
 		this.time += tpf;
 
 		// tmp hack
-		if (this.time > this.lastTime && this.lastTime > 0) {
-			this.time %= this.lastTime;
-			// REVIEW No callbackend from handler
-			if (this.callbackEnd) {
-				this.callbackEnd();
-			}
-			// REVIEW Need to reset callbackIndex, this might be the easiest way
-			// return this.setTime(this.time);
-		}
+		// if (this.time > this.lastTime && this.lastTime > 0) {
+		// 	this.time %= this.lastTime;
+		// 	// REVIEW No callbackend from handler
+		// 	if (this.callbackEnd) {
+		// 		this.callbackEnd();
+		// 	}
+		// 	// REVIEW Need to reset callbackIndex, this might be the easiest way
+		// 	return this.setTime(this.time);
+		// }
 
 		this._checkCallbacks();
 
