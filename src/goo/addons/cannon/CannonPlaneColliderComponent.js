@@ -7,28 +7,21 @@ define([
 	Box,
 	Vector3
 ){
-	function AmmoPlaneColliderComponent(settings){
-		this.type = "AmmoColliderComponent";
+	'use strict';
+
+	var CANNON = window.CANNON;
+
+	function CannonPlaneColliderComponent(settings){
+		this.type = "CannonColliderComponent";
 
 		settings = settings || {};
 		var e = this.normal = settings.normal || new Vector3(0,1,0);
-		var c = this.planeConstant = (typeof settings.planeConstant!="undefined" ? settings.planeConstant : 0);
-
-		/*
-		// Automatically use half extents from mesh data components if they exist
-		if(typeof(entity)!="undefined" && entity.meshDataComponent && entity.meshDataComponent.meshData) {
-			var meshData = entity.meshDataComponent.meshData;
-			if (meshData instanceof Box) {
-				e.set_d(meshData.xExtent, meshData.yExtent, meshData.zExtent);
-			}
-		}
-		*/
 
 		// Create shape
-		this.ammoShape = new Ammo.btStaticPlaneShape(new Ammo.btVector3(e.x, e.y, e.z),c);
+		this.cannonShape = new CANNON.Plane();
 	};
-	AmmoPlaneColliderComponent.prototype = Object.create(Component.prototype);
-	AmmoPlaneColliderComponent.constructor = AmmoPlaneColliderComponent;
+	CannonPlaneColliderComponent.prototype = Object.create(Component.prototype);
+	CannonPlaneColliderComponent.constructor = CannonPlaneColliderComponent;
 
-	return AmmoPlaneColliderComponent;
+	return CannonPlaneColliderComponent;
 });

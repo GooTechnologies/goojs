@@ -19,7 +19,7 @@ function(
 	Sphere,
 	MeshData
 ) {
-	"use strict";
+	'use strict';
 
 	var CANNON = window.CANNON;
 
@@ -36,7 +36,7 @@ function(
 	 * goo.world.setSystem(cannonSystem);
 	 */
 	function CannonSystem(settings) {
-		System.call(this, 'CannonSystem', ['CannonComponent', 'TransformComponent']);
+		System.call(this, 'CannonSystem', ['CannonRigidbodyComponent','TransformComponent']);
 
 		settings = settings || {};
 
@@ -52,73 +52,39 @@ function(
 	CannonSystem.prototype = Object.create(System.prototype);
 
 	CannonSystem.prototype.createShape = function(entity) {
-		var cannonComponent = entity.cannonComponent;
-		var transformComponent = entity.transformComponent;
-
 		var shape;
-		if (!entity.meshDataComponent) {
-			var children = transformComponent.children;
-			for (var i = 0; i < children.length; i++) {
-				var childEntity = children[i].entity;
-				var childShape = this.createShape(childEntity);
-				if (childShape) {
-					if (!shape) {
-						shape = new CANNON.Compound();
-					}
+		var rbComponent = entity.cannonRigidbodyComponent;
 
-					var childTranslation = childEntity.transformComponent.transform.translation;
-					var childOrientation = childEntity.transformComponent.transform.rotation;
-					var offset = new CANNON.Vec3(childTranslation.x, childTranslation.y, childTranslation.z);
-					this.quat.fromRotationMatrix(childOrientation);
-					var orientation = new CANNON.Quaternion(this.quat.x, this.quat.y, this.quat.z, this.quat.w);
+		if (!entity.cannonColliderComponent) {
 
-					shape.addChild(childShape, offset, orientation);
+			shape = new CANNON.Compound();
+
+			var that = this;
+			entity.traverse(function(entity){
+				if(entity.cannonColliderComponent){
+					var t = entity.transformComponent.transform;
+					var trans = t.translation;
+					var rot = t.rotation;
+					var offset = new CANNON.Vec3(trans.x, trans.y, trans.z);
+					var q = that.quat;
+					q.fromRotationMatrix(rot);
+					var orientation = new CANNON.Quaternion(q.x, q.y, q.z, q.w);
+					shape.addChild(entity.cannonColliderComponent.cannonShape, offset, orientation);
 				}
-			}
+			});
+
 		} else {
-			var meshDataComponent = entity.meshDataComponent;
 
-			if (cannonComponent.useBounds) {
-				meshDataComponent.computeBoundFromPoints();
-				var bound = meshDataComponent.modelBound;
-				if (bound instanceof BoundingBox) {
-					shape = new CANNON.Box(new CANNON.Vec3(bound.xExtent, bound.yExtent, bound.zExtent));
-				} else if (bound instanceof BoundingSphere) {
-					shape = new CANNON.Sphere(bound.radius);
-				}
-			} else {
-				var meshData = meshDataComponent.meshData;
-				if (meshData instanceof Box) {
-					shape = new CANNON.Box(new CANNON.Vec3(meshData.xExtent, meshData.yExtent, meshData.zExtent));
-				} else if (meshData instanceof Sphere) {
-					shape = new CANNON.Sphere(meshData.radius);
-				} else if (meshData instanceof Quad) {
-					shape = new CANNON.Plane();
-				} else {
-					var points = [];
-					var faces = [];
-
-					var vbuf = meshData.getAttributeBuffer(MeshData.POSITION);
-					var indices = meshData.getIndexBuffer();
-
-					for (var i = 0; i < meshData.vertexCount*3; i+=3) {
-						points.push(new CANNON.Vec3(vbuf[i], vbuf[i+1], vbuf[i+2]));
-					}
-					for (var i = 0; i < meshData.indexCount; i += 3) {
-						var face = [indices[i], indices[i + 1], indices[i + 2]];
-						faces.push(face);
-					}
-
-					shape = new CANNON.ConvexPolyhedron(points, faces);
-				}
-			}
+			// Entity has a collider on the root
+			// Create a simple shape
+			shape = entity.cannonColliderComponent.cannonShape;
 		}
 
 		return shape;
 	};
 
 	CannonSystem.prototype.inserted = function(entity) {
-		var cannonComponent = entity.cannonComponent;
+		var rbComponent = entity.cannonRigidbodyComponent;
 		var transformComponent = entity.transformComponent;
 
 		var shape = this.createShape(entity);
@@ -127,21 +93,21 @@ function(
 			return;
 		}
 
-		var body = new CANNON.RigidBody(cannonComponent.mass, shape);
+		var body = new CANNON.RigidBody(rbComponent.mass, shape);
 		body.position.set(transformComponent.transform.translation.x, transformComponent.transform.translation.y, transformComponent.transform.translation.z);
 		this.quat.fromRotationMatrix(transformComponent.transform.rotation);
 		body.quaternion.set(this.quat.x, this.quat.y, this.quat.z, this.quat.w);
-		cannonComponent.body = body;
+		rbComponent.body = body;
 
 		//b.aabbNeedsUpdate = true;
 		this.world.add(body);
 	};
 
 	CannonSystem.prototype.deleted = function(entity) {
-		var cannonComponent = entity.cannonComponent;
+		var rbComponent = entity.cannonRigidbodyComponent;
 
-		if (cannonComponent) {
-			this.world.remove(cannonComponent.body);
+		if (rbComponent) {
+			this.world.remove(rbComponent.body);
 		}
 	};
 
@@ -150,10 +116,10 @@ function(
 
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			var cannonComponent = entity.cannonComponent;
+			var cannonComponent = entity.cannonRigidbodyComponent;
 
 			var position = cannonComponent.body.position;
-			entity.transformComponent.setTranslation( position.x, position.y, position.z);
+			entity.transformComponent.setTranslation(position.x, position.y, position.z);
 
 			var cannonQuat = cannonComponent.body.quaternion;
 			this.quat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);

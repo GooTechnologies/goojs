@@ -3,34 +3,18 @@ define([
 ], function(
 	Component
 ){
-	function AmmoSphereColliderComponent(settings){
-		this.type = "AmmoColliderComponent";
+	'use strict';
 
+	var CANNON = window.CANNON;
+
+	function CannonSphereColliderComponent(settings){
 		settings = settings || {};
-
+		this.type = 'CannonColliderComponent';
 		this.radius = settings.radius || 0.5;
+		this.cannonShape = new CANNON.Sphere(this.radius);
+	}
+	CannonSphereColliderComponent.prototype = Object.create(Component.prototype);
+	CannonSphereColliderComponent.constructor = CannonSphereColliderComponent;
 
-		this.ammoShape = new Ammo.btSphereShape(this.radius);
-
-		/*
-		if(entity.meshDataComponent && entity.meshDataComponent.meshData) {
-			var meshData = entity.meshDataComponent.meshData;
-			if (meshData instanceof Sphere) {
-				this.ammoShape = new Ammo.btSphereShape(meshData.radius);
-			}
-		}
-		else{
-			if(typeof radius !== 'undefined'){
-				this.ammoShape = new Ammo.btSphereShape(radius);
-			}
-			else{
-				this.ammoShape = new Ammo.btSphereShape(0.5);
-			}
-		}
-		*/
-	};
-	AmmoSphereColliderComponent.prototype = Object.create(Component.prototype);
-	AmmoSphereColliderComponent.constructor = AmmoSphereColliderComponent;
-
-	return AmmoSphereColliderComponent;
+	return CannonSphereColliderComponent;
 });

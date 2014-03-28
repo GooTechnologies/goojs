@@ -8,24 +8,20 @@ define([
 	Vector3
 ){
 
+	'use strict';
+
+	var CANNON = window.CANNON;
+
 	// Todo: copy pasted from Ammo, convert to Cannon
 	function CannonBoxColliderComponent(settings){
 		this.type = "CannonColliderComponent";
 
 		settings = settings || {};
-		var e = this.halfExtents = settings.halfExtents || new Vector3(0.5,0.5,0.5);
-
-		// Automatically use half extents from mesh data components if they exist
-		if(typeof(entity)!="undefined" && entity.meshDataComponent && entity.meshDataComponent.meshData) {
-			var meshData = entity.meshDataComponent.meshData;
-			if (meshData instanceof Box) {
-				e.set_d(meshData.xExtent, meshData.yExtent, meshData.zExtent);
-			}
-		}
+		var e = this.halfExtents = settings.halfExtents || new Vector3(0.5, 0.5, 0.5);
 
 		// Create shape
-		this.cannonShape = new Cannon.btBoxShape(new Cannon.btVector3(e.x, e.y, e.z));
-	};
+		this.cannonShape = new CANNON.Box(new CANNON.Vec3(e.x, e.y, e.z));
+	}
 	CannonBoxColliderComponent.prototype = Object.create(Component.prototype);
 	CannonBoxColliderComponent.constructor = CannonBoxColliderComponent;
 

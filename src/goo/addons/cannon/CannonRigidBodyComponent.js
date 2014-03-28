@@ -5,7 +5,8 @@ define([
 	'goo/math/Transform',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
-	'goo/shapes/Quad'
+	'goo/shapes/Quad',
+	'goo/util/ObjectUtil'
 ],function(
 	Component,
 	Quaternion,
@@ -13,15 +14,13 @@ define([
 	Transform,
 	Box,
 	Sphere,
-	Quad
+	Quad,
+	_
 ){
 	"use strict";
 
 	var quaternion = new Quaternion();
-	var ptrans = new Cannon.btTransform();
-	var pquat = new Cannon.btQuaternion(0,0,0,1);
-	var pvec = new Cannon.btVector3();
-	var origin = new Cannon.btVector3();
+	var pquat = new CANNON.Quaternion();
 
 	/**
 	 * @class Adds Cannon physics to an entity. Should be combined with one of the CannonCollider components, such as the @link{CannonSphereColliderComponent}. Also see {@link CannonSystem}.
@@ -34,13 +33,17 @@ define([
 	 * @param {boolean} [settings.collisionDetection='discrete']
 	 */
 	function CannonRigidbodyComponent(settings){
+		settings = settings || {};
 		this.type = "CannonRigidbodyComponent";
 
-		settings = settings || {};
+		_.defaults(settings,{
+			mass : 1
+		});
+
+		this.mass = settings.mass;
 
 		this._initialized = false; // Keep track, so we can add the body next frame
-		this.mass = 		typeof settings.mass		!== 'undefined' ? settings.mass : 		1.0;
-	};
+	}
 
 	CannonRigidbodyComponent.prototype = Object.create(Component.prototype);
 	CannonRigidbodyComponent.constructor = CannonRigidbodyComponent;
@@ -53,14 +56,11 @@ define([
 	CannonRigidbodyComponent.prototype.initialize = function(entity) {
 		var gooTransform = entity.transformComponent.worldTransform;
 		var gooPos = gooTransform.translation;
-		var CannonTransform = new Cannon.btTransform();
-
-		CannonTransform.setIdentity();
-		CannonTransform.setOrigin(new Cannon.btVector3( gooPos.x, gooPos.y, gooPos.z));
+		var CannonPos = new CANNON.Vec3(gooPos.x, gooPos.y, gooPos.z);
 
 		var q = quaternion;
 		q.fromRotationMatrix(gooTransform.rotation);
-		CannonTransform.setRotation(new Cannon.btQuaternion(q.x, q.y, q.z, q.w));
+		CannonTransform.setRotation(new CANNON.btQuaternion(q.x, q.y, q.z, q.w));
 
 		if(this.useWorldBounds) {
 			entity._world.process();
@@ -70,16 +70,16 @@ define([
 			this.shape = this.createCannonShape(entity, gooTransform);
 		}
 
-		var motionState = new Cannon.btDefaultMotionState( CannonTransform );
-		var localInertia = new Cannon.btVector3(0, 0, 0);
+		var motionState = new CANNON.btDefaultMotionState( CannonTransform );
+		var localInertia = new CANNON.btVector3(0, 0, 0);
 
 		// rigidbody is dynamic if and only if mass is non zero, otherwise static
 		if(this.mass !== 0.0) {
 			this.shape.calculateLocalInertia( this.mass, localInertia );
 		}
 
-		var info = new Cannon.btRigidBodyConstructionInfo(this.mass, motionState, this.shape, localInertia);
-		this.body = new Cannon.btRigidBody( info );
+		var info = new CANNON.btRigidBodyConstructionInfo(this.mass, motionState, this.shape, localInertia);
+		this.body = new CANNON.btRigidBody( info );
 
 		this._initialized = true;
 	};
@@ -131,9 +131,9 @@ define([
 			entity.meshDataComponent.computeBoundFromPoints();
 			var bound = entity.meshDataComponent.modelBound;
 			if (bound instanceof BoundingBox) {
-				shape = new Cannon.btBoxShape(new Cannon.btVector3( bound.xExtent*scale.x, bound.yExtent*scale.y, bound.zExtent*scale.z));
+				shape = new CANNON.btBoxShape(new CANNON.btVector3( bound.xExtent*scale.x, bound.yExtent*scale.y, bound.zExtent*scale.z));
 			} else if (bound instanceof BoundingSphere) {
-				shape = new Cannon.btSphereShape( bound.radius*scale.x);
+				shape = new CANNON.btSphereShape( bound.radius*scale.x);
 			}
 
 		} else if( !this.isCompound(entity) ) {
@@ -152,7 +152,7 @@ define([
 
 		} else {
 			// There's one or more colliders! Create a compound shape
-			shape = new Cannon.btCompoundShape();
+			shape = new CANNON.btCompoundShape();
 
 			// Needed for getting the Rigidbody-local transform of each collider
 			var bodyTransform = entity.transformComponent.worldTransform;
@@ -169,17 +169,17 @@ define([
 						var childCannonShape = comp.CannonShape;
 
 						// Get the local transform of the collider, relative to the rigidbody
-						var localTrans = new Cannon.btTransform();
+						var localTrans = new CANNON.btTransform();
 						localTrans.setIdentity();
 						var gooTrans = new Transform();
 						gooTrans.copy(entity.transformComponent.worldTransform);
 						Transform.combine(invBodyTransform,gooTrans,gooTrans);
 						var gooPos = gooTrans.translation;
-						localTrans.setOrigin(new Cannon.btVector3( gooPos.x, gooPos.y, gooPos.z));
+						localTrans.setOrigin(new CANNON.btVector3( gooPos.x, gooPos.y, gooPos.z));
 
 						var q = new Quaternion();
 						q.fromRotationMatrix(gooTrans.rotation);
-						localTrans.setRotation(new Cannon.btQuaternion(q.x, q.y, q.z, q.w));
+						localTrans.setRotation(new CANNON.btQuaternion(q.x, q.y, q.z, q.w));
 
 						shape.addChildShape(localTrans,childCannonShape);
 					}
@@ -194,17 +194,17 @@ define([
 		var shape;
 		var bound = EntityUtils.getTotalBoundingBox( entity);
 		this.center = bound.center;
-		shape = new Cannon.btBoxShape(new Cannon.btVector3( bound.xExtent, bound.yExtent, bound.zExtent));
+		shape = new CANNON.btBoxShape(new CANNON.btVector3( bound.xExtent, bound.yExtent, bound.zExtent));
 		return shape;
 	};
 
 	CannonRigidbodyComponent.prototype.setLinearFactor = function(n0, n1, n2){
-		this.body.setLinearFactor(new Cannon.btVector3(n0,n1,n2));
+		this.body.setLinearFactor(new CANNON.btVector3(n0,n1,n2));
 	};
 
 	// rotation
 	CannonRigidbodyComponent.prototype.setAngularFactor = function(n0, n1, n2){
-		this.body.setAngularFactor(new Cannon.btVector3(n0,n1,n2));
+		this.body.setAngularFactor(new CANNON.btVector3(n0,n1,n2));
 	};
 	CannonRigidbodyComponent.prototype.setFriction = function(n1){
 		this.body.setFriction(n1);
