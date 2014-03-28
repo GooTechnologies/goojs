@@ -750,7 +750,7 @@ function(
 			name: 'Scale',
 			min: 0.2,
 			'default': 1,
-			scale: 0.05
+			scale: 0.01
 		}
 	];
 
