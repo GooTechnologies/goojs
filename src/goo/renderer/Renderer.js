@@ -897,6 +897,7 @@ function (
 				blendSrc: 'SrcAlphaFactor',
 				blendDst: 'OneMinusSrcAlphaFactor'
 			};
+			pickingMaterial.wireframe = false;
 
 			this.hardwarePicking = {
 				pickingTarget: new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider, {
