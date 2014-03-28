@@ -3,10 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Quaternion',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
-	'goo/renderer/MeshData'
+	'goo/math/Transform'
 ],
 /** @lends */
 function(
@@ -14,10 +11,7 @@ function(
 	BoundingBox,
 	BoundingSphere,
 	Quaternion,
-	Box,
-	Quad,
-	Sphere,
-	MeshData
+	Transform
 ) {
 	'use strict';
 
@@ -59,12 +53,23 @@ function(
 			// No collider. Check children.
 			shape = new CANNON.Compound();
 
+			// Needed for getting the Rigidbody-local transform of each collider
+			var bodyTransform = entity.transformComponent.worldTransform;
+			var invBodyTransform = new Transform();
+			invBodyTransform.copy(bodyTransform);
+			invBodyTransform.invert(invBodyTransform);
+			var gooTrans = new Transform();
+
 			var that = this;
 			entity.traverse(function(entity){
 				if(entity.cannonColliderComponent){
 
 					// TODO: Should look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
+					gooTrans.copy(entity.transformComponent.worldTransform);
+					Transform.combine(invBodyTransform, gooTrans, gooTrans);
+
 					var t = entity.transformComponent.transform;
+					//var t = gooTrans;
 					var trans = t.translation;
 					var rot = t.rotation;
 					var offset = new CANNON.Vec3(trans.x, trans.y, trans.z);

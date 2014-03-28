@@ -45,10 +45,10 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = '../../../resources';
-
 	function createEntity(meshData,material) {
-		if(!material) material = V.getColoredMaterial();
+		if(!material){
+			material = V.getColoredMaterial();
+		}
 		return world.createEntity(meshData, material);
 	}
 
@@ -100,7 +100,7 @@ require([
 	function createCompound (x, y, z) {
 		// Create compound
 		var compoundEntity = world.createEntity(new Vector3(x,y,z));
-		compoundEntity.setComponent(new CannonRigidbodyComponent({ mass : 1 }));
+		compoundEntity.setComponent(new CannonRigidbodyComponent({ mass : 5 }));
 		var material = V.getColoredMaterial(0,0,1);
 		var h1 = new Vector3(4,1,1),
 			h2 = new Vector3(1,3,1),

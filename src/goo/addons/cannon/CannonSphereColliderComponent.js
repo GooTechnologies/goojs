@@ -7,6 +7,12 @@ define([
 
 	var CANNON = window.CANNON;
 
+	/**
+	 * Sphere collider.
+	 * @param {object} [settings]
+	 * @param {number} [settings.radius]
+	 * @todo should have an own .type!
+	 */
 	function CannonSphereColliderComponent(settings){
 		settings = settings || {};
 		this.type = 'CannonColliderComponent';
