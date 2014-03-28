@@ -124,7 +124,11 @@ module.exports = function(grunt) {
 			quadpack: {
 				packName: 'quadpack',
 				outBaseDir: 'out'
-			}
+			},
+			timelinepack: {
+				packName: 'timelinepack',
+				outBaseDir: 'out'
+			},
 		},
 		karma: {
 			unit: {
@@ -165,7 +169,7 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('default',	['minify']);
 	grunt.registerTask('docs',		['jsdoc']);
-	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack']);
+	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack', 'build-pack:timelinepack']);
 	grunt.registerTask('unittest',	['karma:unit']);
 
 	//! AT: no better place to put this

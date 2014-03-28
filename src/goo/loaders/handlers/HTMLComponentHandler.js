@@ -63,19 +63,40 @@ function(
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
-			if (component.domElement) {
-				component.domElement.parentNode.removeChild(component.domElement);
+			var domElement = component.domElement;
+			if (!domElement) {
+				domElement = document.createElement('div');
+				domElement.id = entity.id;
+				domElement.addEventListener('mousedown', function(domEvent) {
+					console.log('Picked a html entity');
+					var gooRunner = entity._world.gooRunner;
+					var evt = {
+						entity: entity, 
+						depth:0,
+						x: domEvent.pageX,
+						y: domEvent.pageY,
+						domEvent: domEvent,
+						id: entity.id,
+						type: 'mousedown'
+					};
+					gooRunner.triggerEvent('mousedown', evt);
+				});
+				component.domElement = domElement;
+				domElement.style.position = 'absolute';
+				domElement.style.zIndex = 3000;
+				entity._world.gooRunner.renderer.domElement.parentElement.appendChild(domElement);
 			}
-
-			var domElement = document.createElement('div');
-			component.domElement = domElement;
-
-			domElement.style.position = 'absolute';
-			domElement.style.zIndex = 3000;
 			domElement.innerHTML = config.innerHTML;
-			document.body.appendChild(domElement);
 		});
 	};
+
+	HTMLComponentHandler.prototype._remove = function (entity) {
+		ComponentHandler.prototype._remove.call(this, entity);
+		var component = entity.htmlComponent;
+		if (component.domElement) {
+			component.domElement.parentNode.removeChild(component.domElement);
+		}
+	}
 
 	return HTMLComponentHandler;
 });

@@ -496,6 +496,22 @@ function (
 		}
 	};
 
+	/**
+   * Triggers an event on the goorunner (force)
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {object} evt The goorunner-style event
+	 * @param {Entity} evt.entity The goorunner-style event
+	 * @param {number} evt.x 
+	 * @param {number} evt.y
+	 * @param {Event} evt.domEvent The original DOM event
+   */
+	GooRunner.prototype.triggerEvent = function(type, evt) {
+		evt.type = type;
+		this._eventTriggered['mousedown'] = evt.domEvent;
+		this._dispatchEvent(evt);
+	}
+
+
 	GooRunner.prototype._dispatchEvent = function (evt) {
 		for (var type in this._eventTriggered) {
 			if(this._eventTriggered[type] && this._eventListeners[type]) {

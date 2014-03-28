@@ -77,6 +77,7 @@ define(['goo/util/ArrayUtil'],
 	/**
 	 * Register callback for a channel
 	 * @param {String} channelName
+	 * @param {Function} callback function(data)
 	 * @param {boolean} [retrieveLatestEmit=false] Retrieve the last emit done before this listener was added (if emitted with storeEmit)
 	 */
 	Bus.prototype.addListener = function (channelName, callback, retrieveLatestEmit) {

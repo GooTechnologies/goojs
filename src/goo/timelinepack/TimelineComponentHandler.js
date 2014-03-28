@@ -42,11 +42,15 @@ define([
 		'translationZ': Channel.getTranslationZTweener,
 		'scaleX': Channel.getScaleXTweener,
 		'scaleY': Channel.getScaleYTweener,
-		'scaleZ': Channel.getScaleZTweener
+		'scaleZ': Channel.getScaleZTweener,
+		'event': function(){},
 	};
 
 	//! AT: requires TWEEN
 	function getEasingFunction(easingString) {
+		if (!easingString) {
+			return TWEEN.Easing.Linear.None;
+		}
 		var separator = easingString.indexOf('.');
 		var easingType = easingString.substr(0, separator);
 		var easingDirection = easingString.substr(separator + 1);
@@ -95,7 +99,7 @@ define([
 			// I think one channel should emit one event and channel.propertyKey would be eventName
 			for (var listId in keyframeConfig.events) {
 				var eventConfig = keyframeConfig.events[listId];
-				SystemBus.emit(eventConfig.channel, eventConfig.data);
+				SystemBus.emit(eventConfig.name, eventConfig.data);
 			}
 		};
 
@@ -125,7 +129,11 @@ define([
 		// and create one if needed
 		if (!channel) {
 			// REVIEW should be called with (id, options) not (id, callback) according to Channel
-			channel = new Channel(channelId, TimelineComponentHandler.tweenMap[channelConfig.propertyKey]);
+			var updateCallback = channelConfig.propertyKey? TimelineComponentHandler.tweenMap[channelConfig.propertyKey]:function(){};
+
+			channel = new Channel(channelId, {
+				callbackUpdate: updateCallback,
+			});
 			// REVIEW Channel needs to be connected to child entity somewhere
 			component.channels.push(channel);
 		}

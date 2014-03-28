@@ -67,8 +67,11 @@ function(System, Renderer, Matrix4x4, MathUtils, Vector3) {
 				}
 			}
 
-			var fx = Math.floor(this.tmpVector.x);
-			var fy = Math.floor(screenHeight - this.tmpVector.y);
+			var renderer = this.renderer;
+			var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
+
+			var fx = Math.floor(this.tmpVector.x/devicePixelRatio);
+			var fy = Math.floor((screenHeight - this.tmpVector.y)/devicePixelRatio);
 
 			setStyle(component.domElement, 'transform', 'translate(-50%, -50%) translate(' + fx + 'px, ' + fy + 'px)');
 			// project

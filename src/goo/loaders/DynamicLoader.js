@@ -30,7 +30,7 @@ define([
 	'goo/loaders/handlers/PosteffectsHandler',
 	'goo/loaders/handlers/EnvironmentHandler',
 	'goo/loaders/handlers/SkyboxHandler',
-	'goo/loaders/handlers/HTMLComponentHandler'
+	'goo/loaders/handlers/HTMLComponentHandler',
 ],
 /** @lends */
 function(
