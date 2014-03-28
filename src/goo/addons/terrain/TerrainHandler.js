@@ -252,10 +252,10 @@ define([
 								return null;
 							}
 
-							xx *= 2;
-							zz *= 2;
+							xx *= this.terrain.splatMult;
+							zz *= this.terrain.splatMult;
 
-							var index = (zz * terrainSize * 2 + xx) * 4;
+							var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
 							var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
 							var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
 							var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
@@ -287,10 +287,10 @@ define([
 								return null;
 							}
 
-							xx *= 2;
-							zz *= 2;
+							xx *= this.terrain.splatMult;
+							zz *= this.terrain.splatMult;
 
-							var index = (zz * terrainSize * 2 + xx) * 4;
+							var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
 							var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
 							var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
 							var splat3 = this.terrainInfo.splat[index + 2] / 255.0;

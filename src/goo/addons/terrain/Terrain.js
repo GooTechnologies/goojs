@@ -57,6 +57,7 @@ function(
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.count = count;
+		this.splatMult = 2;
 
 		var brush = ShapeCreator.createQuad(2/size,2/size);
 	
@@ -96,7 +97,6 @@ function(
 		// this.detailmapPass = new FullscreenPass(detailShader);
 
 		this.normalMap = new RenderTarget(size, size);
-
 		// this.detailMap = new RenderTarget(size, size);
 
 		this.textures = [];
@@ -129,12 +129,12 @@ function(
 		this.gridSize = (this.n + 1) * 4 - 1;
 		console.log('grid size: ', this.gridSize);
 
-		this.splat = new RenderTarget(this.size * 2, this.size * 2, {
+		this.splat = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
 				generateMipmaps: false,
 		});
-		this.splatCopy = new RenderTarget(this.size * 2, this.size * 2, {
+		this.splatCopy = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
 				wrapS: 'EdgeClamp',
 				wrapT: 'EdgeClamp',
 				generateMipmaps: false,
@@ -152,7 +152,7 @@ function(
 		for (var i = 0; i < count; i++) {
 			var size = Math.pow(2, i);
 
-			var material = Material.createMaterial(Util.clone(terrainShaderDefFloat), 'clipmap' + i);
+			var material = Material.createMaterial(terrainShaderDefFloat, 'clipmap' + i);
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
 			material.cullState.frontFace = 'CW';
@@ -164,9 +164,8 @@ function(
 			clipmapEntity.setScale(size, 1, size);
 			entity.attachChild(clipmapEntity);
 
-			var terrainPickingMaterial = Material.createMaterial(Util.clone(terrainPickingShader), 'terrainPickingMaterial' + i);
+			var terrainPickingMaterial = Material.createMaterial(terrainPickingShader, 'terrainPickingMaterial' + i);
 			terrainPickingMaterial.cullState.frontFace = 'CW';
-			// terrainPickingMaterial.wireframe = true;
 			terrainPickingMaterial.uniforms.resolution = [1, 1 / size, this.size, this.size];
 			terrainPickingMaterial.blendState = {
 				blending: 'NoBlending',
@@ -219,7 +218,7 @@ function(
 			wrapT: 'EdgeClamp',
 			generateMipmaps: false,
 			flipY: false
-		}, this.size * 2, this.size * 2);
+		}, this.size * this.splatMult, this.size * this.splatMult);
 
 		for (var i = 0; i < this.count; i++) {
 			var material = this.clipmaps[i].origMaterial;
@@ -416,7 +415,7 @@ function(
 
 		var splatBuffer = new Uint8Array(this.size * this.size * 4 * 4);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splat);
-		this.renderer.readPixels(0, 0, this.size * 2, this.size * 2, splatBuffer);
+		this.renderer.readPixels(0, 0, this.size * this.splatMult, this.size * this.splatMult, splatBuffer);
 
 		return {
 			heights: terrainFloats,
