@@ -95,7 +95,12 @@ function dependants(fileName) {
 }
 
 function help() {
-	var helpString = [].join('\n');
+	var helpString = [
+		"Usage:",
+		" --cycles",
+		" --dependencies <modulepath>",
+		" --dependants <modulepath>"
+	].join('\n');
 
 	console.log(helpString);
 }
@@ -108,11 +113,11 @@ function main() {
 	if (args.length === 2) {
 		cycleDetector();
 	} else {
-		if (args[2] === '--cycles') {
+		if (args[2] === '--cycles' && args.length === 3) {
 			cycleDetector();
-		} else if (args[2] === '--dependencies') {
+		} else if (args[2] === '--dependencies' && args.length === 4) {
 			dependencies(args[3]);
-		} else if (args[2] === '--dependants') {
+		} else if (args[2] === '--dependants' && args.length === 4) {
 			dependants(args[3]);
 		} else {
 			 help();
