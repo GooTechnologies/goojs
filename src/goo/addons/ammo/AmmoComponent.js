@@ -82,7 +82,7 @@ function(
 			var shape = new Ammo.btCompoundShape();
 			var c = entity.transformComponent.children;
 			for(var i=0; i<c.length; i++) {
-				var childAmmoShape = this.getAmmoShapefromGooShape( c[i].entity );
+				var childAmmoShape = this.getAmmoShapefromGooShape(c[i].entity, gooTransform);
 				var localTrans = new Ammo.btTransform();
 				localTrans.setIdentity();
 				var gooPos = c[i].transform.translation;
