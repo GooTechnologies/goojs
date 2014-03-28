@@ -230,7 +230,17 @@ define([
 	'test/loaders/handlers/AnimationComponentHandler-test',
 	'test/loaders/handlers/ShaderHandler-test',
 	//'test/loaders/handlers/MaterialHandler-test',
+	//'test/loaders/handlers/TextureHandler-test',
+	'test/loaders/handlers/MeshRendererComponentHandler-test',
+	'test/loaders/handlers/MeshDataComponentHandler-test',
+	'test/loaders/handlers/MeshDataHandler-test',
+	'test/loaders/handlers/SceneHandler-test',
+	'test/loaders/handlers/ProjectHandler-test',
+	'test/loaders/handlers/SkyboxHandler-test',
+	'test/loaders/handlers/EnvironmentHandler-test',
 	//'test/loaders/handlers/SkyboxHandler-test',
 	//'test/loaders/handlers/EnvironmentHandler-test',
-	'test/entities/components/ScriptComponent-test'
+	'test/entities/components/ScriptComponent-test',
+	'test/timelinepack/Channel-test',
+	'test/timelinepack/TimelineComponentHandler-test'
 ], function() {});
