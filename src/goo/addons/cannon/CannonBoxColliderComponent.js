@@ -12,9 +12,15 @@ define([
 
 	var CANNON = window.CANNON;
 
-	// Todo: copy pasted from Ammo, convert to Cannon
+	/**
+	 * Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.
+	 * @param {object} [settings]
+	 * @class
+	 * @constructor
+	 * @extends Component
+	 */
 	function CannonBoxColliderComponent(settings){
-		this.type = "CannonColliderComponent";
+		this.type = "CannonBoxColliderComponent";
 
 		settings = settings || {};
 		var e = this.halfExtents = settings.halfExtents || new Vector3(0.5, 0.5, 0.5);

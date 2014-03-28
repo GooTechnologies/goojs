@@ -15,7 +15,7 @@ define([
 	 */
 	function CannonSphereColliderComponent(settings){
 		settings = settings || {};
-		this.type = 'CannonColliderComponent';
+		this.type = 'CannonSphereColliderComponent';
 		this.radius = settings.radius || 0.5;
 		this.cannonShape = new CANNON.Sphere(this.radius);
 	}

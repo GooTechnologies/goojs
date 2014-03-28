@@ -12,10 +12,9 @@ define([
 	var CANNON = window.CANNON;
 
 	function CannonPlaneColliderComponent(settings){
-		this.type = "CannonColliderComponent";
+		this.type = "CannonPlaneColliderComponent";
 
 		settings = settings || {};
-		var e = this.normal = settings.normal || new Vector3(0,1,0);
 
 		// Create shape
 		this.cannonShape = new CANNON.Plane();

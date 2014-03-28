@@ -69,13 +69,12 @@ function(
 		}
 
 		var body = new CANNON.RigidBody(rbComponent.mass, shape);
-		body.position.set(transformComponent.transform.translation.x, transformComponent.transform.translation.y, transformComponent.transform.translation.z);
-		var v = rbComponent._initialVelocity;
-		body.velocity.set(v.x, v.y, v.z);
+		rbComponent.body = body;
+		entity.setPosition(transformComponent.transform.translation);
+		entity.setVelocity(rbComponent._initialVelocity);
 		var q = this._quat;
 		q.fromRotationMatrix(transformComponent.transform.rotation);
 		body.quaternion.set(q.x, q.y, q.z, q.w);
-		rbComponent.body = body;
 
 		this.world.add(body);
 

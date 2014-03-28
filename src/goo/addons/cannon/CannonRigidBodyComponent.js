@@ -34,20 +34,33 @@ define([
 		_.defaults(settings, {
 			mass : 1,
 			velocity : new Vector3()
+			// Todo: a lot of more things from Cannon.js API
 		});
 
 		this.mass = settings.mass;
 
 		this._initialized = false; // Keep track, so we can add the body next frame
 		this._quat = new Quaternion();
-		this._initialVelocity = settings.velocity;
-
+		this._initialVelocity = new Vector3();
+		this._initialVelocity.setv(settings.velocity);
 
 		this.api = {
+
 			setForce: function (force) {
-				this.body.force.x = force.x;
-				this.body.force.y = force.y;
-				this.body.force.z = force.z;
+				CannonRigidbodyComponent.prototype.setForce.call(this,force);
+			}.bind(this),
+
+			setVelocity: function (velocity) {
+				CannonRigidbodyComponent.prototype.setVelocity.call(this,velocity);
+			}.bind(this),
+
+			// TODO: is it possible to use entity.setTranslation(), and override the TransformComponent API?
+			setPosition: function (pos) {
+				CannonRigidbodyComponent.prototype.setPosition.call(this,pos);
+			}.bind(this),
+
+			setAngularVelocity: function (angularVelocity) {
+				CannonRigidbodyComponent.prototype.setAngularVelocity.call(this, angularVelocity);
 			}.bind(this),
 		};
 	}
@@ -55,18 +68,35 @@ define([
 	CannonRigidbodyComponent.prototype = Object.create(Component.prototype);
 	CannonRigidbodyComponent.constructor = CannonRigidbodyComponent;
 
+	CannonRigidbodyComponent.prototype.setForce = function (force) {
+		this.body.force.set(force.x, force.y, force.z);
+	};
+
+	CannonRigidbodyComponent.prototype.setVelocity = function (velocity) {
+		this.body.velocity.set(velocity.x, velocity.y, velocity.z);
+	};
+
+	CannonRigidbodyComponent.prototype.setPosition = function (pos) {
+		this.body.position.set(pos.x, pos.y, pos.z);
+	};
+
+	CannonRigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
+		this.body.angularVelocity.set(angularVelocity.x, angularVelocity.y, angularVelocity.z);
+	};
+
 	/**
 	 * Get the collider component from an entity, if one exist.
 	 * @return {mixed} Any of the collider types, or NULL if not found
 	 */
 	CannonRigidbodyComponent.getCollider = function(entity){
-		return entity.cannonColliderComponent || entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || null;
+		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || null;
 	};
 
 	CannonRigidbodyComponent.prototype.createShape = function(entity) {
 		var shape;
 
-		if (!CannonRigidbodyComponent.getCollider(entity)) {
+		var collider = CannonRigidbodyComponent.getCollider(entity);
+		if (!collider) {
 			// No collider. Check children.
 			shape = new CANNON.Compound();
 
@@ -79,7 +109,8 @@ define([
 
 			var that = this;
 			entity.traverse(function(entity){
-				if(CannonRigidbodyComponent.getCollider(entity)){
+				var collider = CannonRigidbodyComponent.getCollider(entity);
+				if(collider){
 
 					// TODO: Should look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
 					// Like this:
@@ -95,7 +126,7 @@ define([
 					var q = that._quat;
 					q.fromRotationMatrix(rot);
 					var orientation = new CANNON.Quaternion(q.x, q.y, q.z, q.w);
-					shape.addChild(entity.cannonColliderComponent.cannonShape, offset, orientation);
+					shape.addChild(collider.cannonShape, offset, orientation);
 				}
 			});
 
@@ -103,7 +134,7 @@ define([
 
 			// Entity has a collider on the root
 			// Create a simple shape
-			shape = entity.cannonColliderComponent.cannonShape;
+			shape = collider.cannonShape;
 		}
 
 		return shape;
