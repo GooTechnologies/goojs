@@ -22,15 +22,15 @@ function(
 	var CANNON = window.CANNON;
 
 	/**
-	 * @class Handles integration with Cannon.js.
-	 * Depends on the global CANNON object,
-	 * so load cannon.js using a script tag before using this system.
-	 * See also {@link CannonComponent}
+	 * @class Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
 	 * @extends System
 	 * @param [Object] settings. The settings object can contain the following properties:
 	 * @param {number} settings.stepFrequency (defaults to 60)
 	 * @example
-	 * var cannonSystem = new CannonSystem({stepFrequency:60});
+	 * var cannonSystem = new CannonSystem({
+	 *     stepFrequency: 60,
+	 *     gravity: new Vector3(0, -10, 0)
+	 * });
 	 * goo.world.setSystem(cannonSystem);
 	 */
 	function CannonSystem(settings) {
@@ -51,7 +51,7 @@ function(
 
 		this.stepFrequency = settings.stepFrequency;
 
-		this.quat = new Quaternion();
+		this._quat = new Quaternion();
 	}
 
 	CannonSystem.prototype = Object.create(System.prototype);
@@ -70,11 +70,11 @@ function(
 		body.position.set(transformComponent.transform.translation.x, transformComponent.transform.translation.y, transformComponent.transform.translation.z);
 		var v = rbComponent._initialVelocity;
 		body.velocity.set(v.x, v.y, v.z);
-		this.quat.fromRotationMatrix(transformComponent.transform.rotation);
-		body.quaternion.set(this.quat.x, this.quat.y, this.quat.z, this.quat.w);
+		var q = this._quat;
+		q.fromRotationMatrix(transformComponent.transform.rotation);
+		body.quaternion.set(q.x, q.y, q.z, q.w);
 		rbComponent.body = body;
 
-		//b.aabbNeedsUpdate = true;
 		this.world.add(body);
 
 		var c = entity.cannonDistanceJointComponent;
@@ -93,8 +93,11 @@ function(
 	};
 
 	CannonSystem.prototype.process = function(entities /*, tpf */) {
+
+		// Step the world forward in time
 		this.world.step(1 / this.stepFrequency);
 
+		// Update positions of entities from the physics data
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var cannonComponent = entity.cannonRigidbodyComponent;
@@ -103,8 +106,8 @@ function(
 			entity.transformComponent.setTranslation(position.x, position.y, position.z);
 
 			var cannonQuat = cannonComponent.body.quaternion;
-			this.quat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
-			entity.transformComponent.transform.rotation.copyQuaternion(this.quat);
+			this._quat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
+			entity.transformComponent.transform.rotation.copyQuaternion(this._quat);
 			entity.transformComponent.setUpdated();
 		}
 	};
