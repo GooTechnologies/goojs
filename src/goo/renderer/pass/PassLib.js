@@ -4,6 +4,7 @@ define([
 	'goo/renderer/pass/BloomPass',
 	'goo/renderer/pass/BlurPass',
 	'goo/renderer/pass/DoGPass',
+	'goo/renderer/pass/MotionBlurPass',
 	'goo/renderer/Util'
 ],
 /** @lends */
@@ -13,6 +14,7 @@ function(
 	BloomPass,
 	BlurPass,
 	DoGPass,
+	MotionBlurPass,
 	Util
 ) {
 	'use strict';
@@ -709,6 +711,49 @@ function(
 		}
 	];
 
+	function MotionBlur(id) {
+		MotionBlurPass.call(this);
+		this.id = id;
+	}
+	MotionBlur.prototype = Object.create(MotionBlurPass.prototype);
+	MotionBlur.prototype.constructor = MotionBlur;
+
+	MotionBlur.prototype.update = function (config) {
+		var options = config.options;
+		var shader = this.inPass.material.shader;
+		if (options.blend !== undefined) {
+			shader.uniforms.blend = options.blend;
+		}
+		if (options.scale !== undefined) {
+			shader.uniforms.scale = options.scale;
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+
+	MotionBlur.label = 'Motion Blur';
+
+	MotionBlur.options = [
+		{
+			key: 'blend',
+			type: 'float',
+			control: 'slider',
+			name: 'Amount',
+			min: 0,
+			max: 1,
+			'default': 0.5
+		},
+		{
+			key: 'scale',
+			type: 'float',
+			name: 'Scale',
+			min: 0.2,
+			'default': 1,
+			scale: 0.05
+		}
+	];
+
 	return {
 		Bloom: Bloom,
 		Blur: Blur,
@@ -723,6 +768,7 @@ function(
 		Hatch: Hatch,
 		Dot: Dot,
 		Contrast: Contrast,
-		DiffOfGaussians: DiffOfGaussians
+		DiffOfGaussians: DiffOfGaussians,
+		MotionBlur: MotionBlur
 	};
 });
