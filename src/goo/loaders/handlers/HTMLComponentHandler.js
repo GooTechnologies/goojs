@@ -83,8 +83,11 @@ function(
 				});
 				component.domElement = domElement;
 				domElement.style.position = 'absolute';
+				domElement.style.top = 0;
+				domElement.style.left = 0;
 				domElement.style.zIndex = 3000;
-				entity._world.gooRunner.renderer.domElement.parentElement.appendChild(domElement);
+				var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
+				parentEl.appendChild(domElement);
 			}
 			domElement.innerHTML = config.innerHTML;
 		});
