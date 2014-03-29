@@ -29,6 +29,26 @@ Countdown.prototype.enqueue = function (n) {
 };
 // ===
 
+function trimPrefix(string, prefix) {
+	if (string.substr(0, prefix.length) === prefix) {
+		return string.substr(prefix.length);
+	} else {
+		return string;
+	}
+}
+
+function trimSuffix(string, suffix) {
+	if (string.substr(string.length - suffix.length) === suffix) {
+		return string.substr(0, string.length - suffix.length);
+	} else {
+		return string;
+	}
+}
+
+function getProperFileName(fileName) {
+	return fileName.replace(/\\/g, '/');
+}
+
 function getDependencies(fileName, callback) {
 	fs.readFile(fileName, 'utf8', function (err, data) {
 		if (err) { throw err; }
@@ -58,7 +78,7 @@ function getDependencies(fileName, callback) {
 			array = eval(arrayStr);
 		}
 
-		var properFileName = fileName.replace(/\\/g, '/');
+		var properFileName = getProperFileName(fileName);
 
 		callback(properFileName, array);
 	});
@@ -69,7 +89,8 @@ function getTree(rootPath, callback) {
 	countdown = new Countdown(1, callback.bind(null, tree));
 
 	var solvedDependencies = function (properFileName, array) {
-		tree[properFileName] = array;
+		var trimmed = trimPrefix(properFileName, rootPath);
+		tree[trimmed] = array;
 		countdown.solve();
 	};
 
@@ -83,7 +104,27 @@ function getTree(rootPath, callback) {
 	});
 }
 
+function getDependants(rootPath, fileName, callback) {
+	getTree(rootPath, function (tree) {
+		var trimmed = trimSuffix(trimPrefix(fileName, rootPath), '.js');
+		var dependants = [];
+
+		for (var moduleName in tree) {
+			var module = tree[moduleName];
+
+			if (module.indexOf(trimmed) !== -1) {
+				dependants.push(moduleName);
+			}
+		}
+
+		var properFileName = getProperFileName(fileName);
+
+		callback(properFileName, dependants);
+	});
+}
+
 exports.Dependency = {
 	getTree: getTree,
-	getDependencies: getDependencies
+	getDependencies: getDependencies,
+	getDependants: getDependants
 };
