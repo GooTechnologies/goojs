@@ -79,7 +79,8 @@ function(
 			anisotropy: 1,
 			offset: [0, 0],
 			repeat: [1, 1],
-			flipY: true
+			flipY: true,
+			lodOffset: 0.0
 		});
 	};
 
@@ -130,6 +131,7 @@ function(
 
 			texture.offset.set(config.offset);
 			texture.repeat.set(config.repeat);
+			texture.lodOffset = config.lodOffset;
 
 			if (texture.flipY !== config.flipY) {
 				texture.flipY = config.flipY;

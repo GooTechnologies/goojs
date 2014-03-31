@@ -84,6 +84,7 @@ function (
 
 		this.offset = new Vector2(settings.offset || [0, 0]);
 		this.repeat = new Vector2(settings.repeat || [1, 1]);
+		this.lodOffset = 0.0;
 
 		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;
 		this.premultiplyAlpha = settings.premultiplyAlpha !== undefined ? settings.premultiplyAlpha : false;

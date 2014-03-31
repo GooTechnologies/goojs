@@ -89,6 +89,8 @@ function(
 					shader.uniforms.offsetRepeat[1] = offset.y;
 					shader.uniforms.offsetRepeat[2] = repeat.x;
 					shader.uniforms.offsetRepeat[3] = repeat.y;
+
+					shader.uniforms.lodOffset = textureMaps[type].lodOffset;
 				}
 			}
 
