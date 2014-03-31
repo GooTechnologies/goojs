@@ -37,7 +37,7 @@ function (
 		this.name = name !== undefined ? name : 'Entity_' + this._index;
 
 		// (move to meshrenderercomponent)
-		/** Set to true to skip all processing (rendering, script updating, et cetera) of the entity .
+		/** Set to true to skip all processing (rendering, script updating, et cetera) of the entity.
 		 * @type {boolean}
 		 * @default false
 		 */
