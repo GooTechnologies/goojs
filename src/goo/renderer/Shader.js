@@ -3,7 +3,8 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
-	'goo/renderer/Util'
+	'goo/renderer/Util',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
@@ -11,9 +12,10 @@ function (
 	Matrix4x4,
 	World,
 	RenderQueue,
-	Util
+	Util,
+	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
@@ -332,7 +334,8 @@ function (
 		this.shaderProgram = context.createProgram();
 		var error = context.getError();
 		if (this.shaderProgram === null || error !== WebGLRenderingContext.NO_ERROR) {
-			console.error("Shader error: " + error + " [shader: " + this.name + "]");
+			console.error('Shader error: ' + error + ' [shader: ' + this.name + ']');
+			SystemBus.emit('goo.shader.error');
 		}
 
 		context.attachShader(this.shaderProgram, vertexShader);
@@ -341,7 +344,9 @@ function (
 		// Link the Shader Program
 		context.linkProgram(this.shaderProgram);
 		if (!context.getProgramParameter(this.shaderProgram, WebGLRenderingContext.LINK_STATUS)) {
-			console.error("Could not initialise shaders: " + context.getProgramInfoLog(this.shaderProgram));
+			var errInfo = context.getProgramInfoLog(this.shaderProgram);
+			console.error('Could not initialise shaders: ' + errInfo);
+			SystemBus.emit('goo.shader.error', errInfo);
 		}
 
 		for (var key in this.attributeMapping) {
