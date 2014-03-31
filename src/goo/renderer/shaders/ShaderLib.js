@@ -59,7 +59,7 @@ define([
 			opacity: 1.0,
 			reflectivity: 0.0,
 			refractivity: 0.0,
-			etaRatio: 0.0,
+			etaRatio: -0.5,
 			fresnel: 0.0,
 			discardThreshold: -0.01,
 			fogSettings: [0, 10000],
@@ -293,7 +293,7 @@ define([
 							'vec4 environment = texture2D(environmentSphere, (refractionVector.xy / m) + 0.5);',
 						'#endif',
 
-						'final_color = mix(final_color, environment, refractivity);',
+						'final_color.rgb = mix(final_color.rgb, environment.rgb, refractivity);',
 					'}',
 
 					'if (reflectivity > 0.0) {',
@@ -331,7 +331,7 @@ define([
 						'float fresnelVal = pow(1.0 - abs(dot(normalize(viewPosition), N)), fresnel * 4.0);',
 						'reflectionAmount *= fresnelVal;',
 
-						'final_color = mix(final_color, environment, reflectionAmount);',
+						'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
 					'}',
 				'#endif',
 
