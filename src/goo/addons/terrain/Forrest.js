@@ -217,6 +217,12 @@ function(
 						// entity.meshRendererComponent.hidden = true;
 						levelOfDetail = 2;
 					} else {
+						entity.traverse(function (entity, level) {
+							if (level > 0) {
+								entity.removeFromWorld();
+							}
+						});
+
 						continue;
 					}
 				}
@@ -241,9 +247,11 @@ function(
 					entity.meshRendererComponent.hidden = true;
 				} else {
 					entity.meshRendererComponent.hidden = false;
-					entity.meshDataComponent.meshData = meshData;
-					entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+					if (levelOfDetail < 2) {
+						entity.meshDataComponent.meshData = meshData;
+					}
 				}
+				entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 			}
 		}
 
@@ -292,7 +300,7 @@ function(
 		return pos;
 	};
 
-	Forrest.prototype.addVegMeshToPatch = function(vegetationType, pos, meshBuilder, levelOfDetail) {
+	Forrest.prototype.addVegMeshToPatch = function(vegetationType, pos, meshBuilder, levelOfDetail, gridEntity) {
 		var transform = new Transform();
 		var size = (MathUtils.fastRandom() * 0.5 + 0.75);
 		transform.translation.set(pos);
@@ -300,16 +308,14 @@ function(
 		// var meshData;
 		if (levelOfDetail === 2 && this.entityMap[vegetationType]) {
 			var treeEntity = this.fetchTreeMesh(vegetationType);
-			treeEntity.transformComponent.transform.scale.mul(size);
+			treeEntity.transformComponent.transform.scale.mul(size * 0.4);
 			treeEntity.transformComponent.transform.translation.set(pos);
 			treeEntity.addToWorld();
+			gridEntity.attachChild(treeEntity);
 		} else {
 			var meshData = this.fetchTreeBillboard(vegetationType, size);
 			meshBuilder.addMeshData(meshData, transform);
 		}
-
-
-
 	};
 
 
@@ -317,6 +323,14 @@ function(
 		var meshBuilder = new MeshBuilder();
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
+
+		if (gridEntity) {
+			gridEntity.traverse(function (entity, level) {
+				if (level > 0) {
+					entity.removeFromWorld();
+				}
+			});
+		}
 
 		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		for (var x = 0; x < patchDensity; x++) {
@@ -332,6 +346,11 @@ function(
 			}
 		}
 		var meshDatas = meshBuilder.build();
+
+		if (levelOfDetail === 2) {
+			new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
+		}
+
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};
 
