@@ -65,7 +65,8 @@ define([
 			fogSettings: [0, 10000],
 			fogColor: [1, 1, 1],
 			shadowDarkness: 0.5,
-			vertexColorAmount: 1.0
+			vertexColorAmount: 1.0,
+			lodBias: 0.0
 	    },
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -150,6 +151,7 @@ define([
 		},
 		fshader: function () {
 			return [
+			'uniform float lodBias;',
 			'#ifdef DIFFUSE_MAP',
 				'uniform sampler2D diffuseMap;',
 			'#endif',
@@ -227,7 +229,7 @@ define([
 				'vec4 final_color = vec4(1.0);',
 
 				'#if defined(DIFFUSE_MAP) && defined(TEXCOORD0)',
-					'final_color *= texture2D(diffuseMap, texCoord0);',
+					'final_color *= texture2D(diffuseMap, texCoord0, lodBias);',
 				'#endif',
 
 				'#ifdef COLOR',
@@ -264,7 +266,7 @@ define([
 					'#endif',
 					'#if defined(TANGENT) && defined(NORMAL_MAP) && defined(TEXCOORD0)',
 						'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
-						'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
+						'vec3 tangentNormal = texture2D(normalMap, texCoord0, lodBias).xyz * vec3(2.0) - vec3(1.0);',
 						'tangentNormal.xy *= normalMultiplier;',
 						'vec3 worldNormal = (tangentToWorld * tangentNormal);',
 						'N = normalize(worldNormal);',

@@ -1,4 +1,4 @@
-var Dependecy = require('./dependency').Dependency;
+var Dependency = require('./dependency').Dependency;
 var fs = require('fs');
 var colors = require('colors');
 
@@ -70,10 +70,59 @@ function checkCycles(graph) {
 	console.log('No cycles found'.green);
 }
 
-Dependecy.getTree('src/', function (graph) {
-	// get the nice graph - without paths
-	graph = getNiceGraph(graph);
+// ---
+function cycleDetector() {
+	// do the whole tree
+	Dependency.getTree(rootPath, function (graph) {
+		// get the nice graph - without paths
+		graph = getNiceGraph(graph);
 
-	// check for cycles
-	checkCycles(graph);
-});
+		// check for cycles
+		checkCycles(graph);
+	});
+}
+
+function dependencies(fileName) {
+	Dependency.getDependencies(fileName, function (properFileName, dependencies) {
+		console.log(properFileName, 'is dependant on\n', dependencies);
+	});
+}
+
+function dependants(fileName) {
+	Dependency.getDependants(rootPath, fileName, function (properFileName, dependants) {
+		console.log(properFileName, 'is required by\n', dependants);
+	});
+}
+
+function help() {
+	var helpString = [
+		"Usage:",
+		" --cycles",
+		" --dependencies <modulepath>",
+		" --dependants <modulepath>"
+	].join('\n');
+
+	console.log(helpString);
+}
+
+var rootPath;
+
+function main() {
+	rootPath = 'src/';
+	var args = process.argv;
+	if (args.length === 2) {
+		cycleDetector();
+	} else {
+		if (args[2] === '--cycles' && args.length === 3) {
+			cycleDetector();
+		} else if (args[2] === '--dependencies' && args.length === 4) {
+			dependencies(args[3]);
+		} else if (args[2] === '--dependants' && args.length === 4) {
+			dependants(args[3]);
+		} else {
+			 help();
+		}
+	}
+}
+
+main();
