@@ -79,19 +79,23 @@ define([
 					mouseState.oy = mouseState.y;
 				},
 				touchstart: function(event) {
-					mouseState.down = (event.targetTouches.length === 2);
-					if (!mouseState.down) { return; }
+					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
+						mouseState.down = (event.targetTouches.length === 2);
+						if (!mouseState.down) { return; }
 
-					var center = getTouchCenter(event.targetTouches);
-					mouseState.ox = mouseState.x = center[0];
-					mouseState.oy = mouseState.y = center[1];
+						var center = getTouchCenter(event.targetTouches);
+						mouseState.ox = mouseState.x = center[0];
+						mouseState.oy = mouseState.y = center[1];
+					}
 				},
 				touchmove: function(event) {
-					if (!mouseState.down) { return; }
+					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
+						if (!mouseState.down) { return; }
 
-					var center = getTouchCenter(event.targetTouches);
-					mouseState.x = center[0];
-					mouseState.y = center[1];
+						var center = getTouchCenter(event.targetTouches);
+						mouseState.x = center[0];
+						mouseState.y = center[1];
+					}
 				},
 				touchend: function(/*event*/) {
 					mouseState.down = false;
