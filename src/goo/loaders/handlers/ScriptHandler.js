@@ -280,6 +280,7 @@ function(
 	 * Add a global error listener that catches script errors, and tries to match
 	 * them to scripts loaded with this handler. If an error is registered, the 
 	 * script is reset and an error message is appended to it. 
+	 * @private
 	 * 
 	 */
 	ScriptHandler.prototype._addGlobalErrorListener = function() {
@@ -323,6 +324,7 @@ function(
 	var types = ['string', 'float', 'int', 'vec3', 'boolean'];
 	/**
 	 * Validate external parameters
+	 * @private
 	 */
 	function safeUp(externals) {
 		var	obj = {};
@@ -403,6 +405,7 @@ function(
 	 * @param {string} error.message
 	 * @param {Number} [error.line]
 	 * @param {string} [error.file]
+	 * @private
 	 */
 	function setError(script, error) {
 		if (error.file) {
