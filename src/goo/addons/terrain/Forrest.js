@@ -300,7 +300,7 @@ function(
 		// var meshData;
 		if (levelOfDetail === 2) {
 			var treeEntity = this.fetchTreeMesh(vegetationType);
-			treeEntity.transformComponent.scale.mul(size);
+			treeEntity.transformComponent.transform.scale.mul(size);
 			treeEntity.transformComponent.transform.translation.set(pos);
 			treeEntity.addToWorld();
 		} else {
