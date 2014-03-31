@@ -124,14 +124,14 @@ function(
 		material.renderQueue = 2001;
 		this.material = material;
 
-		this.patchSize = 64;
-		this.patchDensity = 10;
-		this.gridSize = 7;
-		this.minDist = 0;
-		// this.patchSize = 32;
-		// this.patchDensity = 5;
+		// this.patchSize = 64;
+		// this.patchDensity = 10;
 		// this.gridSize = 7;
-		// this.minDist = 1.5;
+		// this.minDist = 0;
+		this.patchSize = 32;
+		this.patchDensity = 5;
+		this.gridSize = 7;
+		this.minDist = 1.5;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
@@ -258,10 +258,12 @@ function(
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
 		var pos = [0, 10, 0];
+
+		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + Math.random()*0.75) * patchSpacing;
-				var zz = patchZ + (z + Math.random()*0.75) * patchSpacing;
+				var xx = patchX + (x + MathUtils.fastRandom()*0.75) * patchSpacing;
+				var zz = patchZ + (z + MathUtils.fastRandom()*0.75) * patchSpacing;
 				pos[0] = xx;
 				pos[2] = zz + 0.5;
 				var yy = this.terrainQuery.getHeightAt(pos);
@@ -274,12 +276,12 @@ function(
 				}
 				var slope = norm.dot(Vector3.UNIT_Y);
 
-				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope);
+				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope, MathUtils.fastRandom());
 				if (!vegetationType) {
 					continue;
 				}
 
-				var size = (Math.random() * 0.5 + 0.75);
+				var size = (MathUtils.fastRandom() * 0.5 + 0.75);
 				transform.translation.setd(xx, yy, zz);
 				transform.update();
 
@@ -312,10 +314,12 @@ function(
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
 		var pos = [0, 10, 0];
+
+		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + Math.random()*0.75) * patchSpacing;
-				var zz = patchZ + (z + Math.random()*0.75) * patchSpacing;
+				var xx = patchX + (x + MathUtils.fastRandom()*0.75) * patchSpacing;
+				var zz = patchZ + (z + MathUtils.fastRandom()*0.75) * patchSpacing;
 				pos[0] = xx;
 				pos[2] = zz + 0.5;
 				var yy = this.terrainQuery.getHeightAt(pos);
@@ -328,12 +332,12 @@ function(
 				}
 				var slope = norm.dot(Vector3.UNIT_Y);
 
-				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope);
+				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope, MathUtils.fastRandom());
 				if (!vegetationType) {
 					continue;
 				}
 
-				var size = (Math.random() * 0.5 + 0.75);
+				var size = (MathUtils.fastRandom() * 0.5 + 0.75);
 				transform.translation.setd(xx, yy, zz);
 				transform.update();
 

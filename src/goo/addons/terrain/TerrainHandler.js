@@ -275,8 +275,7 @@ define([
 						}
 						return null;
 					}.bind(this),
-					getForrestType: function(xx, zz, slope) {
-						var rand = Math.random();
+					getForrestType: function(xx, zz, slope, rand) {
 						if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
 							return null;
 						}

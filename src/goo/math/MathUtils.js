@@ -300,5 +300,21 @@ function () {
 		return x * x * (3 - 2 * x);
 	};
 
+	/** @type {number}
+	* @example
+	* // sets random seed to use with MathUtils.fastRandom()
+	* MathUtils.randomSeed = 1337;
+	*/
+	MathUtils.randomSeed = 1337;
+
+	/**
+	 * Rough random generation with seeding. Set random seed through MathUtils.randomSeed = {new seed value}
+	 * @returns {number} Random number between 0 and 1.
+	 */
+	MathUtils.fastRandom = function() {
+		MathUtils.randomSeed = (MathUtils.randomSeed * 9301 + 49297) % 233280;
+		return MathUtils.randomSeed / 233280;
+	};
+
 	return MathUtils;
 });
