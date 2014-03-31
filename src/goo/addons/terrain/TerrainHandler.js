@@ -110,7 +110,7 @@ define([
 			this.vegetation.toggle();
 		};
 
-		TerrainHandler.prototype.initLevel = function(terrainData, settings) {
+		TerrainHandler.prototype.initLevel = function(terrainData, settings, forrestLODEntityMap) {
 			this.settings = settings;
 			var terrainSize = this.terrainSize;
 
@@ -135,7 +135,7 @@ define([
 					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
 				}
 
-				return this._load(terrainData, terrainArray, splatArray);
+				return this._load(terrainData, terrainArray, splatArray, forrestLODEntityMap);
 			}.bind(this));
 		};
 
@@ -165,7 +165,7 @@ define([
 			return promise;
 		};
 
-		TerrainHandler.prototype._load = function(terrainData, parentMipmap, splatMap) {
+		TerrainHandler.prototype._load = function(terrainData, parentMipmap, splatMap, forrestLODEntityMap) {
 			var promises = [];
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground1.texture));
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground2.texture));
@@ -182,7 +182,7 @@ define([
 					ground3: textures[2],
 					ground4: textures[3],
 					ground5: textures[4],
-					stone: textures[5],
+					stone: textures[5]
 				});
 				this.terrainInfo = this.terrain.getTerrainData();
 
@@ -321,7 +321,7 @@ define([
 				var forrestTypes = terrainData.forrestTypes;
 
 				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes);
-				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes);
+				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
 			}.bind(this));
 		};
 
