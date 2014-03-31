@@ -516,7 +516,7 @@ function (
 		evt.type = type;
 		this._eventTriggered['mousedown'] = evt.domEvent;
 		this._dispatchEvent(evt);
-	}
+	};
 
 
 	GooRunner.prototype._dispatchEvent = function (evt) {
