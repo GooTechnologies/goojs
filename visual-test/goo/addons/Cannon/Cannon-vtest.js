@@ -58,7 +58,8 @@ require([
 	var world = goo.world;
 
 	var cannonSystem = new CannonSystem({
-		gravity: new Vector3(0,-30,0)
+		gravity: new Vector3(0,-30,0),
+		broadphase: 'sap'
 	});
 	world.setSystem(cannonSystem);
 
@@ -129,12 +130,11 @@ require([
 			h5 = new Vector3(4,1,1);
 
 		// Create 'sub entities' that, each holding a collider. Position is relative to the root entity.
-		var material = V.getColoredMaterial(0,0,1);
-		var subEntity1 = world.createEntity(new Box(h1.x*2,h1.y*2,h1.z*2), material, new Vector3(    0, 2,   0).mul(2));
-		var subEntity2 = world.createEntity(new Box(h2.x*2,h2.y*2,h2.z*2), material, new Vector3( -1.5, 0,   0).mul(2));
-		var subEntity3 = world.createEntity(new Box(h3.x*2,h3.y*2,h3.z*2), material, new Vector3(    1, 0,   0).mul(2));
-		var subEntity4 = world.createEntity(new Box(h4.x*2,h4.y*2,h4.z*2), material, new Vector3(  1.5,-1,   0).mul(2));
-		var subEntity5 = world.createEntity(new Box(h5.x*2,h5.y*2,h5.z*2), material, new Vector3(    0,-2,   0).mul(2));
+		var subEntity1 = world.createEntity(new Box(h1.x*2,h1.y*2,h1.z*2), V.getColoredMaterial(), new Vector3(    0, 2,   0).mul(2));
+		var subEntity2 = world.createEntity(new Box(h2.x*2,h2.y*2,h2.z*2), V.getColoredMaterial(), new Vector3( -1.5, 0,   0).mul(2));
+		var subEntity3 = world.createEntity(new Box(h3.x*2,h3.y*2,h3.z*2), V.getColoredMaterial(), new Vector3(    1, 0,   0).mul(2));
+		var subEntity4 = world.createEntity(new Box(h4.x*2,h4.y*2,h4.z*2), V.getColoredMaterial(), new Vector3(  1.5,-1,   0).mul(2));
+		var subEntity5 = world.createEntity(new Box(h5.x*2,h5.y*2,h5.z*2), V.getColoredMaterial(), new Vector3(    0,-2,   0).mul(2));
 		subEntity1.setComponent(new CannonBoxColliderComponent({ halfExtents:h1 }));
 		subEntity2.setComponent(new CannonBoxColliderComponent({ halfExtents:h2 }));
 		subEntity3.setComponent(new CannonBoxColliderComponent({ halfExtents:h3 }));
@@ -204,6 +204,9 @@ require([
 
 	document.addEventListener('keydown', function(evt){
 		switch(evt.keyCode){
+		case 69:
+			explode();
+			break;
 		case 32:
 			// Add force field
 			forcefieldEnabled = true;
@@ -223,12 +226,13 @@ require([
 		}
 	}, false);
 
-	console.log('SPACE: force field\nANY OTHER KEY: add bodies');
+	console.log('SPACE: force field\nE: Explode!\nANY OTHER KEY: add bodies');
 
-	createStaticBox(  0, -7.5,  10, 20, 5,  1);
-	createStaticBox(  0, -7.5, -10, 20, 5,  1);
-	createStaticBox( 10, -7.5,   0,  1, 5, 20);
-	createStaticBox(-10, -7.5,   0,  1, 5, 20);
+	var w = 1;
+	createStaticBox(  0, -7.5,  10+w/2, 20+w, 5,  w);
+	createStaticBox(  0, -7.5, -10-w/2, 20+w, 5,  w);
+	createStaticBox( 10, -7.5,       0,  w, 5, 20);
+	createStaticBox(-10, -7.5,       0,  w, 5, 20);
 
 	var force = new Vector3();
 	goo.callbacks.push(function(){
@@ -251,6 +255,26 @@ require([
 			}
 		}
 	});
+
+	function explode(){
+
+		// Add some force to all bodies
+		var physicsEntities = world.by.system("CannonSystem").toArray();
+
+		for(var i=0; i<physicsEntities.length; i++){
+			var entity = physicsEntities[i];
+
+			// Force is directed to the origin
+            force.copy(entity.getTranslation(force));
+
+            // Set a proper length of it
+            force.normalize();
+            force.mul(5000);
+
+            // Apply it to the entity
+            entity.setForce(force);
+		}
+	}
 
 	V.addLights();
 
