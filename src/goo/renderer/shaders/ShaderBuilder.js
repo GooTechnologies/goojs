@@ -90,7 +90,7 @@ function(
 					shader.uniforms.offsetRepeat[2] = repeat.x;
 					shader.uniforms.offsetRepeat[3] = repeat.y;
 
-					shader.uniforms.lodOffset = textureMaps[type].lodOffset;
+					shader.uniforms.lodBias = textureMaps[type].lodBias;
 				}
 			}
 

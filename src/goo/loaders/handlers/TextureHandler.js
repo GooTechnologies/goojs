@@ -80,7 +80,7 @@ function(
 			offset: [0, 0],
 			repeat: [1, 1],
 			flipY: true,
-			lodOffset: 0.0
+			lodBias: 0.0
 		});
 	};
 
@@ -131,7 +131,7 @@ function(
 
 			texture.offset.set(config.offset);
 			texture.repeat.set(config.repeat);
-			texture.lodOffset = config.lodOffset;
+			texture.lodBias = config.lodBias;
 
 			if (texture.flipY !== config.flipY) {
 				texture.flipY = config.flipY;
