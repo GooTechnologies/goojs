@@ -209,13 +209,13 @@ define([
 						applyWheel(event, parameters, environment);
 					}
 				},
-				touchstart: function(/*event*/) {
+				touchstart: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						updateButtonState(0, true, parameters, environment);
+						updateButtonState(dragButton, event.targetTouches.length === 1, parameters, environment);
 					}
 				},
 				touchend: function(/*event*/) {
-					updateButtonState(0, false, parameters, environment);
+					updateButtonState(dragButton, false, parameters, environment);
 					oldDistance = 0;
 				},
 				touchmove: function(event) {
@@ -233,7 +233,7 @@ define([
 						} else {
 							cx = x1;
 							cy = y1;
-							updateDeltas(cx, cy);
+							updateDeltas(cx, cy, parameters, environment);
 						}
 						var scale = (distance - oldDistance) / Math.max(domElement.height, domElement.width);
 						scale /= 3;
@@ -295,7 +295,6 @@ define([
 			if (!environment.dirty) {
 				return; //
 			}
-
 
 			//var delta = MathUtils.clamp(parameters.interpolationSpeed * environment.world.tpf, 0.0, 1.0);
 

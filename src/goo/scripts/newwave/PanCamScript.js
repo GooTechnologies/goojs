@@ -17,7 +17,15 @@ define([
 		var lookAtPoint;
 		var mouseState;
 
-		var mouseDown, mouseUp, mouseMove, mouseLeave;
+		function getTouchCenter(touches) {
+			var x1 = touches[0].clientX;
+			var y1 = touches[0].clientY;
+			var x2 = touches[1].clientX;
+			var y2 = touches[1].clientY;
+			var cx = (x1 + x2) / 2;
+			var cy = (y1 + y2) / 2;
+			return [cx, cy];
+		}
 
 		function setup(parameters, environment) {
 			panButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.panButton) - 1;
@@ -30,6 +38,7 @@ define([
 			moveVector = new Vector3();
 			calcVector = new Vector3();
 			calcVector2 = new Vector3();
+
 			mouseState = {
 				x: 0,
 				y: 0,
@@ -39,41 +48,60 @@ define([
 				dy: 0,
 				down: false
 			};
-
-			mouseDown = function(event) {
-				if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
+			var listeners = environment.listeners = {
+				mousedown: function(event) {
+					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
+						if (event.button === panButton || panButton === -1) {
+							mouseState.down = true;
+							mouseState.ox = mouseState.x = event.clientX;
+							mouseState.oy = mouseState.y = event.clientY;
+						}
+					}
+				},
+				mouseup: function(event) {
 					if (event.button === panButton || panButton === -1) {
-						mouseState.down = true;
-						mouseState.ox = mouseState.x = event.clientX;
-						mouseState.oy = mouseState.y = event.clientY;
+						mouseState.down = false;
+						mouseState.dx = mouseState.dy = 0;
 					}
-				}
-			};
-			mouseUp = function(event) {
-				if (event.button === panButton || panButton === -1) {
+				},
+				mousemove: function(event) {
+					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
+						if (mouseState.down) {
+							mouseState.x = event.clientX;
+							mouseState.y = event.clientY;
+							environment.dirty = true;
+						}
+					}
+				},
+				mouseleave: function(/*event*/) {
 					mouseState.down = false;
-					mouseState.dx = mouseState.dy = 0;
-				}
-			};
-			mouseMove = function(event) {
-				if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-					if (mouseState.down) {
-						mouseState.x = event.clientX;
-						mouseState.y = event.clientY;
-						environment.dirty = true;
-					}
-				}
-			};
-			mouseLeave = function(/*event*/) {
-				mouseState.down = false;
-				mouseState.ox = mouseState.x;
-				mouseState.oy = mouseState.y;
-			};
+					mouseState.ox = mouseState.x;
+					mouseState.oy = mouseState.y;
+				},
+				touchstart: function(event) {
+					mouseState.down = (event.targetTouches.length === 2);
+					if (!mouseState.down) { return; }
 
-			environment.domElement.addEventListener('mousedown', mouseDown);
-			environment.domElement.addEventListener('mousemove', mouseMove);
-			environment.domElement.addEventListener('mouseup', mouseUp);
-			environment.domElement.addEventListener('mouseleave', mouseLeave);
+					var center = getTouchCenter(event.targetTouches);
+					mouseState.ox = mouseState.x = center[0];
+					mouseState.oy = mouseState.y = center[1];
+				},
+				touchmove: function(event) {
+					if (!mouseState.down) { return; }
+
+					var center = getTouchCenter(event.targetTouches);
+					mouseState.x = center[0];
+					mouseState.y = center[1];
+				},
+				touchend: function(/*event*/) {
+					mouseState.down = false;
+					mouseState.ox = mouseState.x;
+					mouseState.oy = mouseState.y;
+				}
+			};
+			for (var event in listeners) {
+				environment.domElement.addEventListener(event, listeners[event]);
+			}
 			environment.dirty = true;
 		}
 
@@ -129,10 +157,9 @@ define([
 		}
 
 		function cleanup(parameters, environment) {
-			environment.domElement.removeEventListener('mousedown', mouseDown);
-			environment.domElement.removeEventListener('mousemove', mouseMove);
-			environment.domElement.removeEventListener('mouseup', mouseUp);
-			environment.domElement.removeEventListener('mouseleave', mouseLeave);
+			for (var event in environment.listeners) {
+				environment.domElement.removeEventListener(event, environment.listeners[event]);
+			}
 		}
 
 		return {
