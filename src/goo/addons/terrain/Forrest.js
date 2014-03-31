@@ -232,7 +232,7 @@ function(
 
 				var meshData = null;
 			//	if (levelOfDetail === 1) {
-					meshData = this.createForrestPatch(patchX, patchZ, levelOfDetail);
+					meshData = this.createForrestPatch(patchX, patchZ, levelOfDetail, entity);
 			//	} else {
 			//		meshData = this.createPatchReal(patchX, patchZ);
 			//	}
@@ -298,7 +298,7 @@ function(
 		transform.translation.set(pos);
 		transform.update();
 		// var meshData;
-		if (levelOfDetail === 2) {
+		if (levelOfDetail === 2 && this.entityMap[vegetationType]) {
 			var treeEntity = this.fetchTreeMesh(vegetationType);
 			treeEntity.transformComponent.transform.scale.mul(size);
 			treeEntity.transformComponent.transform.translation.set(pos);
@@ -313,7 +313,7 @@ function(
 	};
 
 
-	Forrest.prototype.createForrestPatch = function(patchX, patchZ, levelOfDetail) {
+	Forrest.prototype.createForrestPatch = function(patchX, patchZ, levelOfDetail, gridEntity) {
 		var meshBuilder = new MeshBuilder();
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
@@ -326,7 +326,7 @@ function(
 				var vegetationType = this.determineVegTypeAtPos(pos);
 
 				if (vegetationType) {
-					 this.addVegMeshToPatch(vegetationType, pos, meshBuilder, levelOfDetail);
+					 this.addVegMeshToPatch(vegetationType, pos, meshBuilder, levelOfDetail, gridEntity);
 				}
 				// console.count('tree');
 			}
