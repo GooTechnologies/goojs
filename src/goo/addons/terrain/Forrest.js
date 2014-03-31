@@ -251,59 +251,75 @@ function(
 		// console.timeEnd('forrest update');
 	};
 
+	Forrest.prototype.determineVegTypeAtPos = function(pos) {
+
+		var norm = this.terrainQuery.getNormalAt(pos);
+
+
+		if (norm === null) {
+			norm = Vector3.UNIT_Y;
+		}
+		var slope = norm.dot(Vector3.UNIT_Y);
+
+		return this.terrainQuery.getForrestType(pos[0], pos[2], slope, MathUtils.fastRandom());
+	};
+
+	Forrest.prototype.fetchTreeMesh = function(vegetationType, size) {
+		var meshData = this.vegetationList[vegetationType];
+
+		var type = this.forrestTypes[vegetationType];
+		var w = type.w * size;
+		var h = type.h * size;
+		meshData.getAttributeBuffer('OFFSET').set([
+			-w*0.5, 0,
+			-w*0.5, h,
+			w*0.5, h,
+			w*0.5, 0
+		]);
+		return meshData;
+	};
+
+	Forrest.prototype.getPointInPatch = function(x, z, patchX, patchZ, patchSpacing) {
+		var pos = [0, 0, 0];
+		pos[0] = patchX + (x + MathUtils.fastRandom()*0.75) * patchSpacing;
+		pos[2] = 0.5 + patchZ + (z + MathUtils.fastRandom()*0.75) * patchSpacing;
+
+		pos[1] = this.terrainQuery.getHeightAt(pos);
+		if (pos[1] === null) {
+			pos[1] = 0;
+		}
+		return pos;
+	};
+
+	Forrest.prototype.addVegMeshToPatch = function(vegetationType, pos, meshBuilder) {
+		var transform = new Transform();
+		var size = (MathUtils.fastRandom() * 0.5 + 0.75);
+		transform.translation.set(pos);
+		transform.update();
+		var meshData = this.fetchTreeMesh(vegetationType, size);
+		meshBuilder.addMeshData(meshData, transform);
+	};
+
+
 	Forrest.prototype.createPatch = function(patchX, patchZ) {
 		var meshBuilder = new MeshBuilder();
-		var transform = new Transform();
-
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
-		var pos = [0, 10, 0];
 
 		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + MathUtils.fastRandom()*0.75) * patchSpacing;
-				var zz = patchZ + (z + MathUtils.fastRandom()*0.75) * patchSpacing;
-				pos[0] = xx;
-				pos[2] = zz + 0.5;
-				var yy = this.terrainQuery.getHeightAt(pos);
-				var norm = this.terrainQuery.getNormalAt(pos);
-				if (yy === null) {
-					yy = 0;
+
+				var pos = this.getPointInPatch(x, z, patchX, patchZ, patchSpacing);
+				var vegetationType = this.determineVegTypeAtPos(pos);
+
+				if (vegetationType) {
+					 this.addVegMeshToPatch(vegetationType, pos, meshBuilder);
 				}
-				if (norm === null) {
-					norm = Vector3.UNIT_Y;
-				}
-				var slope = norm.dot(Vector3.UNIT_Y);
-
-				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope, MathUtils.fastRandom());
-				if (!vegetationType) {
-					continue;
-				}
-
-				var size = (MathUtils.fastRandom() * 0.5 + 0.75);
-				transform.translation.setd(xx, yy, zz);
-				transform.update();
-
-				var meshData = this.vegetationList[vegetationType];
-
-				var type = this.forrestTypes[vegetationType];
-				var w = type.w * size;
-				var h = type.h * size;
-				meshData.getAttributeBuffer('OFFSET').set([
-					-w*0.5, 0,
-					-w*0.5, h,
-					w*0.5, h,
-					w*0.5, 0
-				]);
-
-				meshBuilder.addMeshData(meshData, transform);
-
 				// console.count('tree');
 			}
 		}
 		var meshDatas = meshBuilder.build();
-
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};
 
