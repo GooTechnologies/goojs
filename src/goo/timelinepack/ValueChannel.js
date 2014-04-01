@@ -134,47 +134,67 @@ define([], function () {
 		}
 	};
 
+	function memoize(fun) {
+		var entity;
+		return function (entityId) {
+			return entity || (entity = fun(entityId));
+		}
+	}
+
 	// REVIEW Should probably be somewhere else
 	// tween factories
-	ValueChannel.getTranslationXTweener = function (entity) {
+	ValueChannel.getTranslationXTweener = function (entityId, resolver) {
+		var entity;
 		return function (time, value) {
-			// REVIEW Use .data[0]
-			entity.transformComponent.transform.translation.x = value;
+			if (!entity) { entity = resolver(); }
+			entity.transformComponent.transform.translation.data[0] = value;
 			entity.transformComponent.setUpdated();
 		};
 	};
 
-	ValueChannel.getTranslationYTweener = function (entity) {
+	ValueChannel.getTranslationYTweener = function (entityId, resolver) {
+		var entity;
 		return function (time, value) {
-			entity.transformComponent.transform.translation.y = value;
+			if (!entity) { entity = resolver(); }
+			entity.transformComponent.transform.translation.data[1] = value;
 			entity.transformComponent.setUpdated();
 		};
 	};
 
-	ValueChannel.getTranslationZTweener = function (entity) {
+	ValueChannel.getTranslationZTweener = function (entityId, resolver) {
+		var entity;
 		return function (time, value) {
-			entity.transformComponent.transform.translation.z = value;
+			if (!entity) { entity = resolver(); }
+			entity.transformComponent.transform.translation.data[2] = value;
 			entity.transformComponent.setUpdated();
 		};
 	};
 
-	ValueChannel.getScaleXTweener = function (entity) {
+	ValueChannel.getScaleXTweener = function (entityId, resolver) {
+		var entity;
 		return function (time, value) {
-			entity.transformComponent.transform.scale.x = value;
+			if (!entity) { entity = resolver(entityId); }
+
+				entity.transformComponent.transform.scale.data[0] = value;
+				entity.transformComponent.setUpdated();
+
+		};
+	};
+
+	ValueChannel.getScaleYTweener = function (entityId, resolver) {
+		var entity;
+		return function (time, value) {
+			if (!entity) { entity = resolver(entityId); }
+			entity.transformComponent.transform.scale.data[1] = value;
 			entity.transformComponent.setUpdated();
 		};
 	};
 
-	ValueChannel.getScaleYTweener = function (entity) {
+	ValueChannel.getScaleZTweener = function (entityId, resolver) {
+		var entity;
 		return function (time, value) {
-			entity.transformComponent.transform.scale.y = value;
-			entity.transformComponent.setUpdated();
-		};
-	};
-
-	ValueChannel.getScaleZTweener = function (entity) {
-		return function (time, value) {
-			entity.transformComponent.transform.scale.z = value;
+			if (!entity) { entity = resolver(); }
+			entity.transformComponent.transform.scale.data[2] = value;
 			entity.transformComponent.setUpdated();
 		};
 	};

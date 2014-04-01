@@ -120,7 +120,7 @@ define([
 		};
 	}
 
-	function updateChannel(channelConfig, channelId, component) {
+	function updateChannel(channelConfig, channelId, component, entityResolver) {
 		// search for existing one
 		var channel = ArrayUtil.find(component.channels, function (channel) {
 			return channel.id === channelId;
@@ -129,9 +129,8 @@ define([
 		// and create one if needed
 		if (!channel) {
 			if (channelConfig.propertyKey) {
-				// REVIEW should be called with (id, options) not (id, callback) according to Channel
 				var updateCallback = channelConfig.propertyKey ?
-					TimelineComponentHandler.tweenMap[channelConfig.propertyKey] :
+					TimelineComponentHandler.tweenMap[channelConfig.propertyKey](channelConfig.entityId, entityResolver) :
 					function () {};
 
 				channel = new ValueChannel(channelId, {
@@ -141,7 +140,6 @@ define([
 				channel = new EventChannel(channelId);
 			}
 
-			// REVIEW Channel needs to be connected to child entity somewhere
 			component.channels.push(channel);
 		}
 
@@ -157,13 +155,13 @@ define([
 		if (channelConfig.propertyKey) {
 			for (var keyframeId in channelConfig.keyframes) {
 				var keyframeConfig = channelConfig.keyframes[keyframeId];
-				var updateResult = updateKeyframe(keyframeConfig, keyframeId, channel);
+				var updateResult = updateKeyframe(keyframeConfig, keyframeId, channel, channelConfig);
 				needsResorting = needsResorting || updateResult.needsResorting;
 			}
 		} else {
 			for (var keyframeId in channelConfig.keyframes) {
 				var keyframeConfig = channelConfig.keyframes[keyframeId];
-				var updateResult = updateCallbackEntry(keyframeConfig, keyframeId, channel);
+				var updateResult = updateCallbackEntry(keyframeConfig, keyframeId, channel, channelConfig);
 				needsResorting = needsResorting || updateResult.needsResorting;
 			}
 		}
@@ -176,6 +174,7 @@ define([
 	}
 
 	TimelineComponentHandler.prototype.update = function(entity, config, options) {
+		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
@@ -184,9 +183,13 @@ define([
 				return !!config.channels[channel.id];
 			});
 
+			var entityResolver = function (entityId) {
+				return that.world.entityManager.getEntityById(entityId);
+			};
+
 			for (var channelId in config.channels) {
 				var channelConfig = config.channels[channelId];
-				updateChannel(channelConfig, channelId, component);
+				updateChannel(channelConfig, channelId, component, entityResolver);
 			}
 
 			return component;

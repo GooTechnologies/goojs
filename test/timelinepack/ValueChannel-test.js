@@ -61,5 +61,9 @@ define([
 				expect(channel.keyframes[2].time).toEqual(250);
 			});
 		});
+
+		describe('setTime', function () {
+
+		});
 	});
 });
