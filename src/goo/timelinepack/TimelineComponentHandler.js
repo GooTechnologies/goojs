@@ -43,7 +43,7 @@ define([
 		'scaleX': Channel.getScaleXTweener,
 		'scaleY': Channel.getScaleYTweener,
 		'scaleZ': Channel.getScaleZTweener,
-		'event': function(){},
+		'event': function () {}
 	};
 
 	//! AT: requires TWEEN
@@ -54,7 +54,6 @@ define([
 		var separator = easingString.indexOf('.');
 		var easingType = easingString.substr(0, separator);
 		var easingDirection = easingString.substr(separator + 1);
-		// REVIEW Bake tween into engine and require it
 		return TWEEN.Easing[easingType][easingDirection];
 	}
 
