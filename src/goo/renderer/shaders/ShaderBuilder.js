@@ -49,12 +49,18 @@ function(
 
 			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
 
-			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
+			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
+				shader.defines.REFLECTIVE = true;
+			} else {
+				delete shader.defines.REFLECTIVE;
+			}
+
+			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
 				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
 			} else if (material.getTexture('ENVIRONMENT_CUBE')) {
 				material.removeTexture('ENVIRONMENT_CUBE');
 			}
-			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
+			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
 				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
 				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
 			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
@@ -109,6 +115,7 @@ function(
 					attribute === 'WEIGHTS' ||
 					attribute === 'PHYSICALLY_BASED_SHADING' ||
 					attribute === 'ENVIRONMENT_TYPE' ||
+					attribute === 'REFLECTIVE' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
 				}
