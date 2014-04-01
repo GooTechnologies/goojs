@@ -34,6 +34,7 @@ function(
 	ShaderBuilder.SKYSPHERE = null;
 	ShaderBuilder.ENVIRONMENT_TYPE = 0;
 	ShaderBuilder.GLOBAL_AMBIENT = [0, 0, 0];
+	ShaderBuilder.CLEAR_COLOR = [1, 0, 0, 0];
 	ShaderBuilder.USE_FOG = false;
 	ShaderBuilder.FOG_SETTINGS = [0, 10000];
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
@@ -45,6 +46,8 @@ function(
 			var textureMaps = material._textureMaps;
 
 			shader.defines = shader.defines || {};
+
+			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
 
 			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
 				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
