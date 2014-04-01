@@ -45,6 +45,14 @@ function(
 		}
 	};
 
+	/**
+	 * Clears the ajax cache
+	 * Is called by {@link DynamicLoader.clear}
+	 */
+	Ajax.prototype.clear = function() {
+		this._cache = {};
+	};
+
 	/*
 	 * Uses GET to retrieve data at a remote location.
 	 *
@@ -170,7 +178,7 @@ function(
 		window.URL = window.URL || window.webkitURL;
 		var image = new Image();
 		if (this.crossOrigin) {
-			image.crossOrigin = 'anonymous'
+			image.crossOrigin = 'anonymous';
 		}
 
 		var promise = new RSVP.Promise();
