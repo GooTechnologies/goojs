@@ -20,6 +20,7 @@ define(
 	/**
 	 * Injects public methods of this component into the host entity
 	 * @param entity
+	 * @private
 	 */
 	Component.prototype.applyAPI = function (entity) {
 		if (!this.installedAPI) {
@@ -40,6 +41,7 @@ define(
 	/**
 	 * Removed any methods attached to the host entity that belong to this component's API
 	 * @param entity
+	 * @private
 	 */
 	Component.prototype.removeAPI = function (entity) {
 		var installedAPI = this.installedAPI;

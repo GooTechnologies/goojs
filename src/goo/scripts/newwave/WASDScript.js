@@ -109,7 +109,7 @@ define([
 
 		function update(parameters, environment) {
 			if (moveVector.equals(Vector3.ZERO)) { return; }
-			if (parameters.whenUsed && environment.entity !== environment.currentCameraEntity) { return; }
+			if (parameters.whenUsed && environment.entity !== environment.activeCameraEntity) { return; }
 
 			// direction of movement in local coords
 			calcVector.set(

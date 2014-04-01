@@ -14,7 +14,7 @@ function (
 	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new vector.
-	 * @param {Vector4|Float[]|...Float} arguments Initial values for the components.
+	 * @param {Vector4|number[]|...number} arguments Initial values for the components.
 	 */
 
 	function Vector4() {
@@ -44,9 +44,9 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
-	 * @param {Vector4|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -86,7 +86,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector4} Self for chaining.
 	 */
@@ -100,9 +100,9 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
-	 * @param {Vector4|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -142,7 +142,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise subtraction and stores the result locally. Equivalent of "return (this = this - rhs);".
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector4} Self for chaining.
 	 */
@@ -156,9 +156,9 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
-	 * @param {Vector4|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -198,7 +198,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise multiplication and stores the result locally. Equivalent of "return (this = this * rhs);".
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector4} Self for chaining.
 	 */
@@ -212,9 +212,9 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
-	 * @param {Vector4|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -254,7 +254,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector4} Self for chaining.
 	 */
@@ -267,12 +267,12 @@ function (
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
-	 * @param {Vector4|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
-	 * @return {Float} Dot product.
+	 * @return {number} Dot product.
 	 */
 
 	Vector4.dot = function (lhs, rhs) {
@@ -306,9 +306,9 @@ function (
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
-	 * @param {Vector4|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @return {Float} Dot product.
+	 * @return {number} Dot product.
 	 */
 
 	Vector4.prototype.dot = function (rhs) {
@@ -320,7 +320,7 @@ function (
 	/**
 	 * @description Linearly interpolates between two vectors and stores the result locally.
 	 * @param {Vector3} end End vector.
-	 * @param {Float} factor Interpolation factor between zero and one.
+	 * @param {number} factor Interpolation factor between zero and one.
 	 * @return {Vector3} Self for chaining.
 	 */
 	Vector4.prototype.lerp = function (end, factor) {

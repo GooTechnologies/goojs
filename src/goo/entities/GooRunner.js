@@ -90,7 +90,14 @@ function (
 
 		GameUtils.initAllShims();
 
+		/** Automatically created Goo world.
+		 * @type {World}
+		 */
 		this.world = new World(this);
+
+		/** Automatically created renderer.
+		 * @type {Renderer}
+		 */
 		this.renderer = new Renderer(parameters);
 
 		// do this is a method called setupSystems
@@ -509,7 +516,7 @@ function (
 		evt.type = type;
 		this._eventTriggered['mousedown'] = evt.domEvent;
 		this._dispatchEvent(evt);
-	}
+	};
 
 
 	GooRunner.prototype._dispatchEvent = function (evt) {

@@ -12,7 +12,7 @@ define([
 	GameUtils
 ) {
 	'use strict';
-	/*jshint validthis: true */
+	/* jshint validthis: true */
 
 	/**
 	 * @class Enables mouse rotation of an entity.
@@ -22,12 +22,11 @@ define([
 	 * @param {number} [properties.turnSpeedVertical=0.01]
 	 */
 
-	function FPCamControlScript() {
+	var FPCamControlScript = function () {
 		var calcVector;
 		var rotX, rotY;
 		var pointerLocked;
 		var mouseState;
-		var calcVector;
 
 		function setup(parameters, env) {
 			calcVector = new Vector3();
@@ -62,7 +61,7 @@ define([
 				var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 				var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
 				rotY -= parameters.turnSpeedVertical * mouseState.dY;
-				if (rotY > maxAscent) {
+				if (rotY > maxAscent) {
 					rotY = maxAscent;
 				} else if (rotY < minAscent) {
 					rotY = minAscent;
@@ -83,7 +82,7 @@ define([
 
 		}
 
-	    // ---
+		// ---
 		var mousedown = function () {
 			GameUtils.requestPointerLock();
 		};
@@ -113,46 +112,44 @@ define([
 			GameUtils.requestPointerLock();
 		}
 
-
 		return {
 			setup: setup,
 			run: run,
 			cleanup: cleanup
 		};
-	}
-
+	};
 
 	FPCamControlScript.externals = {
-		name: 'FPCamControlScript',
+		name       : 'FPCamControlScript',
 		description: 'Attempts to lock the pointer and control the entity\'s orientation based on mouse movements',
-		parameters: [{
-			key: 'turnSpeedHorizontal',
+		parameters : [{
+			key      : 'turnSpeedHorizontal',
 			'default': 0.01,
-			type: 'float',
-			control: 'slider',
-			min: 0.01,
-			max: 1
+			type     : 'float',
+			control  : 'slider',
+			min      : 0.01,
+			max      : 1
 		}, {
-			key: 'turnSpeedVertical',
+			key      : 'turnSpeedVertical',
 			'default': 0.01,
-			type: 'float',
-			control: 'slider',
-			min: 0.01,
-			max: 1
+			type     : 'float',
+			control  : 'slider',
+			min      : 0.01,
+			max      : 1
 		}, {
-			key: 'maxAscent',
+			key      : 'maxAscent',
 			'default': 89,
-			type: 'int',
-			control: 'slider',
-			min: -89,
-			max: 89
+			type     : 'int',
+			control  : 'slider',
+			min      : -89,
+			max      : 89
 		}, {
-			key: 'minAscent',
+			key      : 'minAscent',
 			'default': -89,
-			type: 'int',
-			control: 'slider',
-			min: -89,
-			max: 89
+			type     : 'int',
+			control  : 'slider',
+			min      : -89,
+			max      : 89
 		}]
 	};
 

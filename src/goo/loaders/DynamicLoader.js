@@ -30,7 +30,7 @@ define([
 	'goo/loaders/handlers/PosteffectsHandler',
 	'goo/loaders/handlers/EnvironmentHandler',
 	'goo/loaders/handlers/SkyboxHandler',
-	'goo/loaders/handlers/HTMLComponentHandler',
+	'goo/loaders/handlers/HTMLComponentHandler'
 ],
 /** @lends */
 function(
@@ -52,8 +52,8 @@ function(
 	 * @param {object} parameters
 	 * @param {World} parameters.world The target World object.
 	 * @param {string} parameters.rootPath The root path from where to get resources.
-	 * @param {Ajax} [parameters.ajax=new Ajax(parameters.rootPath)].
-	 * Here you can overwrite how the loader fetches refs. Good for testing.
+	 * @param {Ajax} [parameters.ajax=new Ajax(parameters.rootPath)]
+	 * Can be used to overwrite how the loader fetches refs. Good for testing.
 	 */
 	function DynamicLoader(options) {
 		if(options.world) {
@@ -78,11 +78,10 @@ function(
 
 	/**
 	 * Load configs into the loader cache without loading anything into the engine.
-	 * Subsequent calls to load and update will draw
-	 * configs from the prefilled cache.
+	 * Subsequent calls to load and update will draw configs from the prefilled cache.
 	 *
 	 * @param {object} configs Configs object. Keys should be refs, and values are the config objects. If a config is null,
-	 * 	the loader will search for the appropriate config in the loader's internal cache.
+	 * the loader will search for the appropriate config in the loader's internal cache.
 	 * @param {boolean} [clear=false] If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
 	 *
 	 **/
@@ -91,7 +90,8 @@ function(
 	};
 
 	/**
-	 * Clears the cache of all the handlers. Also clears the engine
+	 * Clears the cache of all the handlers. Also clears the engine.
+	 * @returns {RSVP.Promise} Promise resolves when handlers are cleared.
 	 */
 	DynamicLoader.prototype.clear = function() {
 		/*var refs = Object.keys(this._objects);
@@ -113,14 +113,14 @@ function(
 	/**
 	 * Load an object with the specified path into the engine. The object can be of any
 	 * type, what loading does is determined by the ref type and the
-	 * registered {@link ConfigHandler}
+	 * registered {@link ConfigHandler}.
 	 *
-	 * @param {string} ref Ref of object to load
+	 * @param {string} ref Ref of object to load.
 	 * @param {object} options
 	 * @param {function(handled, total)} [options.progressCallback] Function called while loading the world.
 	 * Arguments handled and total are both integer numbers and represent the loaded elements so far as well as the total elements.
-	 * @param {boolean} [options.preloadBinaries] Load the binary data as soon as the reference is loaded. Defaults to false.
-	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
+	 * @param {boolean} [options.preloadBinaries=false] Load the binary data as soon as the reference is loaded.
+	 * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 */
@@ -136,13 +136,13 @@ function(
 
 	/**
 	 * Update an object in the world with an updated config. The object can be of any
-	 * type, updating behavior is determined by the registered {ConfigHandler}
+	 * type, updating behavior is determined by the registered {ConfigHandler}.
 	 *
-	 * @param {string} ref Ref of object to update
+	 * @param {string} ref Ref of object to update.
 	 * @param {object} [config] New configuration (formatted according to data model).
 	 * If omitted, works the same as {DynamicLoader.load}.
 	 * @param {object} options
-	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
+	 * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 	 */
 	DynamicLoader.prototype.update = function(ref, config, options) {
@@ -167,7 +167,8 @@ function(
 	 * it will return that object without updating it.
 	 * @param {string} ref
 	 * @param {object} options
-	 * @returnes {object} Depending on what type of ref was loaded.
+	 * @returns {object} Depending on what type of ref was loaded.
+	 * @private
 	 */
 	DynamicLoader.prototype._loadObject = function(ref, options) {
 		var type = DynamicLoader.getTypeForRef(ref);
@@ -185,6 +186,7 @@ function(
 	 * @param {object} config
 	 * @param {object} options
 	 * @returns {object} Depending on what's being updated
+	 * @private
 	 */
 	DynamicLoader.prototype._updateObject = function(ref, config, options) {
 		var type = DynamicLoader.getTypeForRef(ref);
@@ -272,9 +274,9 @@ function(
 	};
 
 	/**
-	 * Gets cached handler for type or creates a new one
-	 * @param {string} type
-	 * @returns {ConfigHandler}
+	 * Gets cached handler for type or creates a new one.
+	 * @param {string} type Type.
+	 * @returns {ConfigHandler} Config handler.
 	 * @private
 	 */
 	DynamicLoader.prototype._getHandler = function(type) {
@@ -334,10 +336,11 @@ function(
 
 
 	/**
-	 * Find all the references in a config, and return in a flat list
+	 * Find all the references in a config, and return in a flat list.
 	 *
-	 * @param {object} config
-	 * @returns {string[]} refs
+	 * @param {object} config Config.
+	 * @returns {string[]} refs References.
+	 * @private
 	 */
 	DynamicLoader.prototype._getRefsFromConfig = function(config) {
 		var refs = [];
@@ -368,10 +371,10 @@ function(
 	};
 
 	/**
-	 * Gets the type of ref
+	 * Gets the type of a reference.
 	 *
-	 * @param {string} ref
-	 * @returns {string} type
+	 * @param {string} ref Reference.
+	 * @returns {string} Type of reference.
 	 */
 	DynamicLoader.getTypeForRef = function(ref) {
 		return ref.split('.').pop().toLowerCase();
@@ -380,7 +383,7 @@ function(
 	/**
 	 * Checks if ref has a type included in the group
 	 * Different groups are found in the top of the file
-	 *
+	 * @private
 	 * @param {string} ref
 	 * @param {string} group
 	 * @returns {boolean}

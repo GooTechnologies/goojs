@@ -13,7 +13,7 @@ function (
 	 * @class Vector with 3 components.  Used to store 3D translation and directions.  It also contains common 3D Vector operations.
 	 * @extends Vector
 	 * @description Creates a new Vector3 by passing in either a current Vector3, number Array, or a set of three numbers.
-	 * @param {Vector3|number[]|x,y,z} arguments Initial values for the components.
+	 * @param {Vector3|number[]|...number} arguments Initial values for the components.
 	 * @example 
 	 * // Passing in three numbers
 	 * var v1 = new Vector3(1, 2, 3);

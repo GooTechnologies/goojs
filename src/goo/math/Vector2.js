@@ -10,7 +10,7 @@ define(["goo/math/Vector"],
 	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new vector.
-	 * @param {Vector2|Float[]|...Float} arguments Initial values for the components.
+	 * @param {Vector2|number[]|...number} arguments Initial values for the components.
 	 */
 
 	function Vector2() {
@@ -38,9 +38,9 @@ define(["goo/math/Vector"],
 	/**
 	 * @static
 	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -78,7 +78,7 @@ define(["goo/math/Vector"],
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector2} Self for chaining.
 	 */
@@ -92,9 +92,9 @@ define(["goo/math/Vector"],
 	/**
 	 * @static
 	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -132,7 +132,7 @@ define(["goo/math/Vector"],
 
 	/**
 	 * @description Performs a component-wise subtraction and stores the result locally. Equivalent of "return (this = this - rhs);".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector2} Self for chaining.
 	 */
@@ -146,9 +146,9 @@ define(["goo/math/Vector"],
 	/**
 	 * @static
 	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -186,7 +186,7 @@ define(["goo/math/Vector"],
 
 	/**
 	 * @description Performs a component-wise multiplication and stores the result locally. Equivalent of "return (this = this * rhs);".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector2} Self for chaining.
 	 */
@@ -200,9 +200,9 @@ define(["goo/math/Vector"],
 	/**
 	 * @static
 	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
@@ -240,7 +240,7 @@ define(["goo/math/Vector"],
 
 	/**
 	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector2} Self for chaining.
 	 */
@@ -253,12 +253,12 @@ define(["goo/math/Vector"],
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
-	 * @param {Vector2|Float[]|Float} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
-	 * @return {Float} Dot product.
+	 * @return {number} Dot product.
 	 */
 
 	Vector2.dot = function (lhs, rhs) {
@@ -290,9 +290,9 @@ define(["goo/math/Vector"],
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
-	 * @param {Vector2|Float[]|Float} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
+	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
-	 * @return {Float} Dot product.
+	 * @return {number} Dot product.
 	 */
 
 	Vector2.prototype.dot = function (rhs) {

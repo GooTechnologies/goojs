@@ -34,6 +34,7 @@ function(
 	ShaderBuilder.SKYSPHERE = null;
 	ShaderBuilder.ENVIRONMENT_TYPE = 0;
 	ShaderBuilder.GLOBAL_AMBIENT = [0, 0, 0];
+	ShaderBuilder.CLEAR_COLOR = [1, 0, 0, 0];
 	ShaderBuilder.USE_FOG = false;
 	ShaderBuilder.FOG_SETTINGS = [0, 10000];
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
@@ -46,12 +47,20 @@ function(
 
 			shader.defines = shader.defines || {};
 
-			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
+			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
+
+			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
+				shader.defines.REFLECTIVE = true;
+			} else {
+				delete shader.defines.REFLECTIVE;
+			}
+
+			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
 				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
 			} else if (material.getTexture('ENVIRONMENT_CUBE')) {
 				material.removeTexture('ENVIRONMENT_CUBE');
 			}
-			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
+			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
 				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
 				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
 			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
@@ -106,6 +115,7 @@ function(
 					attribute === 'WEIGHTS' ||
 					attribute === 'PHYSICALLY_BASED_SHADING' ||
 					attribute === 'ENVIRONMENT_TYPE' ||
+					attribute === 'REFLECTIVE' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
 				}
@@ -273,7 +283,10 @@ function(
 				);
 
 				var useLightCookie = light.lightCookie instanceof Texture;
-				if (light.shadowCaster || useLightCookie) {
+				if ((light.shadowCaster || useLightCookie) &&
+					shaderInfo.renderable.meshRendererComponent &&
+					shaderInfo.renderable.meshRendererComponent.receiveShadows
+				) {
 					prevertex.push(
 						'uniform mat4 shadowLightMatrices'+i+';',
 						'varying vec4 shadowLightDepths'+i+';'

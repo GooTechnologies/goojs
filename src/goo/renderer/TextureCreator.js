@@ -85,6 +85,11 @@ function (
 		return texture;
 	};
 
+	/**
+	 * Creates a video texture streamed from the webcam
+	 * @example yourMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTextureWebCam());
+	 * @returns {Texture}
+	 */
 	TextureCreator.prototype.loadTextureWebCam = function () {
 		var video = document.createElement('video');
 		video.autoplay = true;

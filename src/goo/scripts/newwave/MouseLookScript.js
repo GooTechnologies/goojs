@@ -18,7 +18,7 @@ define([
 		var _parameters;
 
 		function mouseDown(e) {
-			if (!_environment.whenUsed || _environment.entity === _environment.currentCameraEntity) {
+			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
 				if (button === -1 || e.button === button) {
 					buttonPressed = true;
 					lastX = x = e.clientX;
@@ -27,7 +27,7 @@ define([
 			}
 		}
 		function mouseMove(e) {
-			if (!_environment.whenUsed || _environment.entity === _environment.currentCameraEntity) {
+			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
 				if (buttonPressed) {
 					x = e.clientX;
 					y = e.clientY;

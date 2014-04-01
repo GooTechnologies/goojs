@@ -14,7 +14,7 @@ function (
 	 * @property {Float32Array} data Storage for the vector components.
 	 * @constructor
 	 * @description Creates a new vector.
-	 * @param {Integer} size Number of vector components.
+	 * @param {number} size Number of vector components.
 	 */
 
 	function Vector(size) {
@@ -63,8 +63,8 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
-	 * @param {Vector|Float[]} lhs Vector or array of scalars.
-	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector|number[]} lhs Vector or array of scalars.
+	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
@@ -95,7 +95,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
-	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @return {Vector} Self for chaining.
 	 */
 
@@ -108,8 +108,8 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
-	 * @param {Vector|Float[]} lhs Vector or array of scalars.
-	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector|number[]} lhs Vector or array of scalars.
+	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
@@ -140,7 +140,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this - rhs);".
-	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @return {Vector} Self for chaining.
 	 */
 
@@ -153,8 +153,8 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
-	 * @param {Vector|Float[]} lhs Vector or array of scalars.
-	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector|number[]} lhs Vector or array of scalars.
+	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
@@ -185,7 +185,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this * rhs);".
-	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @return {Vector} Self for chaining.
 	 */
 
@@ -198,8 +198,8 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
-	 * @param {Vector|Float[]} lhs Vector or array of scalars.
-	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector|number[]} lhs Vector or array of scalars.
+	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
@@ -230,7 +230,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
-	 * @param {Vector|Float[]} rhs Vector or array of scalars.
+	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @return {Vector} Self for chaining.
 	 */
 
@@ -282,10 +282,10 @@ function (
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
-	 * @param {Vector|Float[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
+	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
+	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
-	 * @return {Float} Dot product.
+	 * @return {number} Dot product.
 	 */
 
 	Vector.dot = function (lhs, rhs) {
@@ -311,8 +311,8 @@ function (
 
 	/**
 	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
-	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
-	 * @return {Float} Dot product.
+	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {number} Dot product.
 	 */
 
 	Vector.prototype.dot = function (rhs) {
@@ -420,9 +420,9 @@ function (
 	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - lhs)•(rhs - lhs);". When comparing the relative
 	 *              distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root
 	 *              operation.
-	 * @param {Vector|Float[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
-	 * @return {Float} Squared distance.
+	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
+	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {number} Squared distance.
 	 */
 
 	Vector.distanceSquared = function (lhs, rhs) {
@@ -433,8 +433,8 @@ function (
 	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - this)•(rhs - this);". When comparing the
 	 *              relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square
 	 *              root operation.
-	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
-	 * @return {Float} Squared distance.
+	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {number} Squared distance.
 	 */
 
 	Vector.prototype.distanceSquared = function (rhs) {
@@ -446,9 +446,9 @@ function (
 	/**
 	 * @static
 	 * @description Computes the distance between two vectors. Equivalent of "return sqrt((rhs - lhs)•(rhs - lhs));".
-	 * @param {Vector|Float[]} lhs Vector or array of scalars on the left-hand side.
-	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
-	 * @return {Float} Distance.
+	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
+	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {number} Distance.
 	 */
 
 	Vector.distance = function (lhs, rhs) {
@@ -457,8 +457,8 @@ function (
 
 	/**
 	 * @description Computes the distance between two vectors. Equivalent of "return sqrt((rhs - this)•(rhs - this));".
-	 * @param {Vector|Float[]} rhs Vector or array of scalars on the right-hand side.
-	 * @return {Float} Distance.
+	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
+	 * @return {number} Distance.
 	 */
 
 	Vector.prototype.distance = function (rhs) {
@@ -469,7 +469,7 @@ function (
 
 	/**
 	 * @description Computes the squared length of the vector. Equivalent of "return this•this;".
-	 * @return {Float} Square length.
+	 * @return {number} Square length.
 	 */
 
 	Vector.prototype.lengthSquared = function () {
@@ -480,7 +480,7 @@ function (
 
 	/**
 	 * @description Computes the length of the vector. Equivalent of "return sqrt(this•this);".
-	 * @return {Float} Length.
+	 * @return {number} Length.
 	 */
 
 	Vector.prototype.length = function () {
@@ -555,7 +555,7 @@ function (
 
 	/**
 	 * @description Sets the components of the vector.
-	 * @param {Vector|Float[]|...Float} arguments Component values.
+	 * @param {Vector|number[]|...number} arguments Component values.
 	 * @return {Vector} Self for chaining.
 	 */
 

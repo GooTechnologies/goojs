@@ -85,7 +85,7 @@ define([
 					spherical.y = MathUtils.moduloPositive(spherical.y, MathUtils.TWO_PI);
 					targetSpherical.copy(spherical);
 				} else {
-					applyReleaseDrift(parameters, environment);
+					applyReleaseDrift(parameters);
 				}
 			}
 		}
@@ -135,9 +135,7 @@ define([
 			return _value < _min ? min : _value > _max ? max : value;
 		}
 
-		function move(x, y, parameters, environment) {
-			var azimuthAccel = x;
-			var thetaAccel = y;
+		function move(azimuthAccel, thetaAccel, parameters, environment) {
 
 			// update our master spherical coords, using x and y movement
 			if (parameters.clampAzimuth) {
@@ -209,13 +207,13 @@ define([
 						applyWheel(event, parameters, environment);
 					}
 				},
-				touchstart: function(/*event*/) {
+				touchstart: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						updateButtonState(0, true, parameters, environment);
+						updateButtonState(dragButton, event.targetTouches.length === 1, parameters, environment);
 					}
 				},
 				touchend: function(/*event*/) {
-					updateButtonState(0, false, parameters, environment);
+					updateButtonState(dragButton, false, parameters, environment);
 					oldDistance = 0;
 				},
 				touchmove: function(event) {
@@ -227,13 +225,14 @@ define([
 						if (touches.length === 2) {
 							var x2 = touches[1].clientX;
 							var y2 = touches[1].clientY;
+							// REVIEW : cx and cy are never used, miss or just remove?
 							cx = (x1 + x2) / 2;
 							cy = (y1 + y2) / 2;
 							distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 						} else {
 							cx = x1;
 							cy = y1;
-							updateDeltas(cx, cy);
+							updateDeltas(cx, cy, parameters, environment);
 						}
 						var scale = (distance - oldDistance) / Math.max(domElement.height, domElement.width);
 						scale /= 3;
@@ -295,7 +294,6 @@ define([
 			if (!environment.dirty) {
 				return; //
 			}
-
 
 			//var delta = MathUtils.clamp(parameters.interpolationSpeed * environment.world.tpf, 0.0, 1.0);
 

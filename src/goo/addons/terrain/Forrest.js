@@ -83,7 +83,7 @@ function(
 		});
 	};
 
-	Forrest.prototype.init = function(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes) {
+	Forrest.prototype.init = function(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap) {
 		var p = new RSVP.Promise();
 
 		var bundlesToLoad = ["fish"];
@@ -92,19 +92,21 @@ function(
 		}
 
 		p.then(function() {
-			console.log("loaded forrest");
+			console.log("loaded forrest", forrestTypes);
 		}, function(e) {
 			console.log("Error! ", e);
 		}).then(null, function(e) {
 			console.log("Error! ", e);
 		});
 
-		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes);
+		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap);
 	};
 
-	Forrest.prototype.loadLODTrees = function(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes) {
+	Forrest.prototype.loadLODTrees = function(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap) {
 		this.terrainQuery = terrainQuery;
 		this.forrestTypes = forrestTypes;
+		this.entityMap = entityMap || {};
+		this.world = world;
 
 		this.vegetationList = {};
 		for (var type in forrestTypes) {
@@ -124,19 +126,19 @@ function(
 		material.renderQueue = 2001;
 		this.material = material;
 
-		this.patchSize = 64;
-		this.patchDensity = 10;
-		this.gridSize = 7;
-		this.minDist = 0;
-		// this.patchSize = 32;
-		// this.patchDensity = 5;
+		// this.patchSize = 64;
+		// this.patchDensity = 10;
 		// this.gridSize = 7;
-		// this.minDist = 1.5;
+		// this.minDist = 0;
+		this.patchSize = 32;
+		this.patchDensity = 5;
+		this.gridSize = 7;
+		this.minDist = 1.5;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
 		this.grid = [];
-		var dummyMesh = this.createPatch(0, 0);
+		var dummyMesh = this.createForrestPatch(0, 0, 1);
 		for (var x = 0; x < this.gridSize; x++) {
 			this.grid[x] = [];
 			for (var z = 0; z < this.gridSize; z++) {
@@ -209,19 +211,25 @@ function(
 				var testX = Math.abs(x - this.gridSizeHalf);
 				var testZ = Math.abs(z - this.gridSizeHalf);
 
-				var type = 1;
+				var levelOfDetail = 1;
 				if (entity.meshRendererComponent.hidden === false && diffX >= 0 && diffX < this.gridSize && diffZ >= 0 && diffZ < this.gridSize) {
 					if (testX < this.minDist && testZ < this.minDist) {
 						// entity.meshRendererComponent.hidden = true;
-						type = 2;
+						levelOfDetail = 2;
 					} else {
+						entity.traverse(function (entity, level) {
+							if (level > 0) {
+								entity.removeFromWorld();
+							}
+						});
+
 						continue;
 					}
 				}
 
 				if (testX < this.minDist && testZ < this.minDist) {
 					// entity.meshRendererComponent.hidden = true;
-					type = 2;
+					levelOfDetail = 2;
 					// continue;
 				}
 
@@ -229,19 +237,21 @@ function(
 				patchZ *= this.patchSize;
 
 				var meshData = null;
-				if (type === 1) {
-					meshData = this.createPatch(patchX, patchZ);
-				} else {
-					meshData = this.createPatchReal(patchX, patchZ);
-				}
+			//	if (levelOfDetail === 1) {
+					meshData = this.createForrestPatch(patchX, patchZ, levelOfDetail, entity);
+			//	} else {
+			//		meshData = this.createPatchReal(patchX, patchZ);
+			//	}
 
 				if (!meshData) {
 					entity.meshRendererComponent.hidden = true;
 				} else {
 					entity.meshRendererComponent.hidden = false;
-					entity.meshDataComponent.meshData = meshData;
-					entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+					if (levelOfDetail < 2) {
+						entity.meshDataComponent.meshData = meshData;
+					}
 				}
+				entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 			}
 		}
 
@@ -251,110 +261,95 @@ function(
 		// console.timeEnd('forrest update');
 	};
 
-	Forrest.prototype.createPatch = function(patchX, patchZ) {
-		var meshBuilder = new MeshBuilder();
-		var transform = new Transform();
-
-		var patchDensity = this.patchDensity;
-		var patchSpacing = this.patchSpacing;
-		var pos = [0, 10, 0];
-		for (var x = 0; x < patchDensity; x++) {
-			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + Math.random()*0.75) * patchSpacing;
-				var zz = patchZ + (z + Math.random()*0.75) * patchSpacing;
-				pos[0] = xx;
-				pos[2] = zz + 0.5;
-				var yy = this.terrainQuery.getHeightAt(pos);
-				var norm = this.terrainQuery.getNormalAt(pos);
-				if (yy === null) {
-					yy = 0;
-				}
-				if (norm === null) {
-					norm = Vector3.UNIT_Y;
-				}
-				var slope = norm.dot(Vector3.UNIT_Y);
-
-				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope);
-				if (!vegetationType) {
-					continue;
-				}
-
-				var size = (Math.random() * 0.5 + 0.75);
-				transform.translation.setd(xx, yy, zz);
-				transform.update();
-
-				var meshData = this.vegetationList[vegetationType];
-
-				var type = this.forrestTypes[vegetationType];
-				var w = type.w * size;
-				var h = type.h * size;
-				meshData.getAttributeBuffer('OFFSET').set([
-					-w*0.5, 0,
-					-w*0.5, h,
-					w*0.5, h,
-					w*0.5, 0
-				]);
-
-				meshBuilder.addMeshData(meshData, transform);
-
-				// console.count('tree');
-			}
+	Forrest.prototype.determineVegTypeAtPos = function(pos) {
+		var norm = this.terrainQuery.getNormalAt(pos);
+		if (norm === null) {
+			norm = Vector3.UNIT_Y;
 		}
-		var meshDatas = meshBuilder.build();
-
-		return meshDatas[0]; // Don't create patches bigger than 65k
+		var slope = norm.dot(Vector3.UNIT_Y);
+		return this.terrainQuery.getForrestType(pos[0], pos[2], slope, MathUtils.fastRandom());
 	};
 
-	Forrest.prototype.createPatchReal = function(patchX, patchZ) {
-		var meshBuilder = new MeshBuilder();
-		var transform = new Transform();
+	Forrest.prototype.fetchTreeMesh = function(vegetationType) {
+        return EntityUtils.clone(this.world, this.entityMap[vegetationType]);
+	};
 
+	Forrest.prototype.fetchTreeBillboard = function(vegetationType, size) {
+		var meshData = this.vegetationList[vegetationType];
+		var type = this.forrestTypes[vegetationType];
+		var w = type.w * size;
+		var h = type.h * size;
+		meshData.getAttributeBuffer('OFFSET').set([
+			-w*0.5, 0,
+			-w*0.5, h,
+			w*0.5, h,
+			w*0.5, 0
+		]);
+		return meshData;
+	};
+
+	Forrest.prototype.getPointInPatch = function(x, z, patchX, patchZ, patchSpacing) {
+		var pos = [0, 0, 0];
+		pos[0] = patchX + (x + MathUtils.fastRandom()*0.75) * patchSpacing;
+		pos[2] = 0.5 + patchZ + (z + MathUtils.fastRandom()*0.75) * patchSpacing;
+
+		pos[1] = this.terrainQuery.getHeightAt(pos);
+		if (pos[1] === null) {
+			pos[1] = 0;
+		}
+		return pos;
+	};
+
+	Forrest.prototype.addVegMeshToPatch = function(vegetationType, pos, meshBuilder, levelOfDetail, gridEntity) {
+		var transform = new Transform();
+		var size = (MathUtils.fastRandom() * 0.5 + 0.75);
+		transform.translation.set(pos);
+		transform.update();
+		// var meshData;
+		if (levelOfDetail === 2 && this.entityMap[vegetationType]) {
+			var treeEntity = this.fetchTreeMesh(vegetationType);
+			treeEntity.transformComponent.transform.scale.mul(size * 0.4);
+			treeEntity.transformComponent.transform.translation.set(pos);
+			treeEntity.addToWorld();
+			gridEntity.attachChild(treeEntity);
+		} else {
+			var meshData = this.fetchTreeBillboard(vegetationType, size);
+			meshBuilder.addMeshData(meshData, transform);
+		}
+	};
+
+
+	Forrest.prototype.createForrestPatch = function(patchX, patchZ, levelOfDetail, gridEntity) {
+		var meshBuilder = new MeshBuilder();
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
-		var pos = [0, 10, 0];
+
+		if (gridEntity) {
+			gridEntity.traverse(function (entity, level) {
+				if (level > 0) {
+					entity.removeFromWorld();
+				}
+			});
+		}
+
+		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + Math.random()*0.75) * patchSpacing;
-				var zz = patchZ + (z + Math.random()*0.75) * patchSpacing;
-				pos[0] = xx;
-				pos[2] = zz + 0.5;
-				var yy = this.terrainQuery.getHeightAt(pos);
-				var norm = this.terrainQuery.getNormalAt(pos);
-				if (yy === null) {
-					yy = 0;
+
+				var pos = this.getPointInPatch(x, z, patchX, patchZ, patchSpacing);
+				var vegetationType = this.determineVegTypeAtPos(pos);
+
+				if (vegetationType) {
+					 this.addVegMeshToPatch(vegetationType, pos, meshBuilder, levelOfDetail, gridEntity);
 				}
-				if (norm === null) {
-					norm = Vector3.UNIT_Y;
-				}
-				var slope = norm.dot(Vector3.UNIT_Y);
-
-				var vegetationType = this.terrainQuery.getForrestType(xx, zz, slope);
-				if (!vegetationType) {
-					continue;
-				}
-
-				var size = (Math.random() * 0.5 + 0.75);
-				transform.translation.setd(xx, yy, zz);
-				transform.update();
-
-				var meshData = this.vegetationList[vegetationType];
-
-				var type = this.forrestTypes[vegetationType];
-				var w = type.w * size;
-				var h = type.h * size;
-				meshData.getAttributeBuffer('OFFSET').set([
-					-w*0.5, 0,
-					-w*0.5, h,
-					w*0.5, h,
-					w*0.5, 0
-				]);
-
-				meshBuilder.addMeshData(meshData, transform);
-
 				// console.count('tree');
 			}
 		}
 		var meshDatas = meshBuilder.build();
+
+		if (levelOfDetail === 2) {
+			new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
+		}
 
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};

@@ -30,8 +30,15 @@ function (
 			this.scripts = [scripts];
 		} else {
 			/**
-			 * @type {Array}
-			 */
+			* Array of scripts tied to this script component. Scripts can be added to the component 
+			* using the constructor or by manually adding to the array.
+			* @type {object[]}
+			* @example
+			* // Add a script to script component
+			* var scriptComponent = new ScriptComponent();
+			* var controlScript = new WASDControlScript();
+			* scriptComponent.scripts.push(controlScript);
+			*/
 			this.scripts = [];
 		}
 	}

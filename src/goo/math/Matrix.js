@@ -30,7 +30,7 @@ function (
 	/**
 	 * @private
 	 * @description Binds aliases to the different matrix components.
-	 * @param {String[]} aliases Array of component aliases for each component index.
+	 * @param {string[]} aliases Array of component aliases for each component index.
 	 */
 	Matrix.prototype.setupAliases = function (aliases) {
 		var that = this;
@@ -532,7 +532,7 @@ function (
 
 	/**
 	 * Converts the matrix into a string.
-	 * @return {String} String of component values.
+	 * @return {string} String of component values.
 	 */
 
 	Matrix.prototype.toString = function () {
