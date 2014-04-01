@@ -144,6 +144,7 @@ define([
 	 * @param tpf
 	 */
 	Channel.prototype.update = function (tpf) {
+		if (this.keyframes.length === 0) { return; }
 		this.time += tpf;
 
 		// tmp hack
@@ -176,7 +177,7 @@ define([
 			if (nextEntry) {
 				var progressInEntry = (this.time - newEntry.time) / (nextEntry.time - newEntry.time);
 				var progressValue = newEntry.easingFunction(progressInEntry);
-				newValue = MathUtils.lerp(newEntry.value, nextEntry.value, progressValue);
+				newValue = MathUtils.lerp(progressValue, newEntry.value, nextEntry.value);
 			} else {
 				newValue = newEntry.value;
 			}
