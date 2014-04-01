@@ -169,7 +169,7 @@ define([
 		var newValue;
 		if (this.time <= this.keyframes[0].time) {
 			newValue = this.keyframes[0].value;
-		} else if (this.time >= this.lastTime) {
+		} else if (this.time >= this.keyframes[this.keyframes.length-1].time) {
 			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
 			var nextEntry = this.keyframes[newEntryIndex + 1];
