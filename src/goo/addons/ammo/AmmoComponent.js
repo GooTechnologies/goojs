@@ -79,14 +79,16 @@ function(
 
 	AmmoComponent.prototype.getAmmoShapefromGooShape = function(entity, gooTransform) {
 		var shape;
-		var scale = gooTransform.scale;
+
+		// Need to abs since negative scales are fine for meshes but not for bounding boxes.
+		var scale = [Math.abs(gooTransform.scale.x), Math.abs(gooTransform.scale.y), Math.abs(gooTransform.scale.z)];
 
 		if (entity.meshDataComponent && entity.meshDataComponent.meshData) {
 			var meshData = entity.meshDataComponent.meshData;
 			if (meshData instanceof Box) {
-				shape = new Ammo.btBoxShape(new Ammo.btVector3(meshData.xExtent, meshData.yExtent, meshData.zExtent));
+				shape = new Ammo.btBoxShape(new Ammo.btVector3(meshData.xExtent * scale[0], meshData.yExtent * scale[1], meshData.zExtent * scale[2]));
 			} else if (meshData instanceof Sphere) {
-				shape = new Ammo.btSphereShape(meshData.radius * scale.x);
+				shape = new Ammo.btSphereShape(meshData.radius * scale[0]);
 			} else if (meshData instanceof Quad) {
 				// there doesn't seem to be a Quad shape in Ammo
 				shape = new Ammo.btBoxShape(new Ammo.btVector3(meshData.xExtent, meshData.yExtent, 0.01)); //new Ammo.btPlane();
@@ -95,9 +97,9 @@ function(
 					entity.meshDataComponent.computeBoundFromPoints();
 					var bound = entity.meshDataComponent.modelBound;
 					if (bound instanceof BoundingBox) {
-						shape = new Ammo.btBoxShape(new Ammo.btVector3(bound.xExtent * scale.x, bound.yExtent * scale.y, bound.zExtent * scale.z));
+						shape = new Ammo.btBoxShape(new Ammo.btVector3(bound.xExtent * scale[0], bound.yExtent * scale[1], bound.zExtent * scale[2]));
 					} else if (bound instanceof BoundingSphere) {
-						shape = new Ammo.btSphereShape(bound.radius * scale.x);
+						shape = new Ammo.btSphereShape(bound.radius * scale[0]);
 					}
 				} else {
 					shape = calculateTriangleMeshShape(entity, scale.data); // this can only be used for static meshes, i.e. mass == 0.
@@ -107,7 +109,7 @@ function(
 			var shape = new Ammo.btCompoundShape();
 			var c = entity.transformComponent.children;
 			for (var i = 0; i < c.length; i++) {
-				var childAmmoShape = this.getAmmoShapefromGooShape(c[i].entity);
+				var childAmmoShape = this.getAmmoShapefromGooShape(c[i].entity, gooTransform);
 				var localTrans = new Ammo.btTransform();
 				localTrans.setIdentity();
 				var gooPos = c[i].transform.translation;

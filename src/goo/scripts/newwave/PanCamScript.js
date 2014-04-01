@@ -127,17 +127,17 @@ define([
 			mouseState.ox = mouseState.x;
 			mouseState.oy = mouseState.y;
 
-			var c = Renderer.mainCamera;
+			var mainCam = Renderer.mainCamera;
 
-			if (lookAtPoint && c) {
-				if (lookAtPoint.equals(c.translation)) { return; }
-				c.getScreenCoordinates(lookAtPoint, 1, 1, calcVector);
+			if (lookAtPoint && mainCam) {
+				if (lookAtPoint.equals(mainCam.translation)) { return; }
+				mainCam.getScreenCoordinates(lookAtPoint, 1, 1, calcVector);
 				calcVector.add_d(
 					-mouseState.dx / environment.viewportWidth,
 					mouseState.dy / environment.viewportHeight,
 					0
 				);
-				c.getWorldCoordinates(
+				mainCam.getWorldCoordinates(
 					calcVector.x,
 					calcVector.y,
 					1,

@@ -23,7 +23,7 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = '../../../resources';
+	var resourcePath = '../../../../resources';
 
 	var goo = V.initGoo();
 	var world = goo.world;

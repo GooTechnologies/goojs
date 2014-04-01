@@ -69,6 +69,7 @@ define([
 
 		// Reset environment
 		SystemBus.emit('goo.setClearColor', defaults.backgroundColor);
+		ShaderBuilder.CLEAR_COLOR = defaults.backgroundColor;
 		ShaderBuilder.GLOBAL_AMBIENT = defaults.globalAmbient;
 		ShaderBuilder.USE_FOG = defaults.fog.enabled;
 		ShaderBuilder.FOG_COLOR = defaults.fog.color.slice(0,3);
@@ -104,6 +105,7 @@ define([
 			SystemBus.emit('goo.setClearColor', object.backgroundColor);
 
 			// Fog and ambient
+			ShaderBuilder.CLEAR_COLOR = object.backgroundColor;
 			ShaderBuilder.GLOBAL_AMBIENT = object.globalAmbient;
 			ShaderBuilder.USE_FOG = object.fog.enabled;
 			ShaderBuilder.FOG_COLOR = object.fog.color.slice(0,3);

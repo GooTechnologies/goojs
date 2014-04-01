@@ -185,8 +185,11 @@ define([
 	SkyboxHandler.prototype._hide = function(skyshape) {
 		var renderSystem = this.world.getSystem('RenderSystem');
 		renderSystem.removed(skyshape);
-		ShaderBuilder.SKYBOX = null;
-		ShaderBuilder.SKYSPHERE = null;
+		if (skyshape === this._skybox) {
+			ShaderBuilder.SKYBOX = null;
+		} else if (skyshape === this._skysphere) {
+			ShaderBuilder.SKYSPHERE = null;
+		}
 	};
 
 	SkyboxHandler.prototype._show = function(skyshape) {
