@@ -21,7 +21,6 @@ define([], function () {
 	 * @param lastTime
 	 */
 	//! AT: could convert into a more general ArrayUtil.pluck and binary search but that creates extra arrays
-	// REVIEW lastTime is given by sortedArray[sortedArray.length-1].time
 	function find(sortedArray, time) {
 		var start = 0;
 		var end = sortedArray.length - 1;
@@ -51,6 +50,7 @@ define([], function () {
 		this.keyframes.sort(function (a, b) {
 			return a.time - b.time;
 		});
+		this.lastTime = this.keyframes[this.keyframes.length - 1].time;
 	};
 
 	/**

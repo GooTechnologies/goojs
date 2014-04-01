@@ -1,14 +1,14 @@
 define([
-	'goo/timelinepack/Channel'
+	'goo/timelinepack/ValueChannel'
 ], function (
-	Channel
+	ValueChannel
 	) {
 	'use strict';
 
-	describe('Channel', function() {
+	describe('ValueChannel', function() {
 		var channel;
 		beforeEach(function () {
-			channel = new Channel();
+			channel = new ValueChannel();
 		});
 
 		describe('addKeyframe', function () {

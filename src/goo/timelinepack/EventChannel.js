@@ -5,9 +5,9 @@ define([], function () {
 		this.id = id;
 		this.time = 0;
 
-		this.callbackAgenda = [];
+		this.keyframes = [];
 		this.callbackIndex = 0;
-		this.lastCallbackTime = 0;
+		this.lastTime = 0;
 	}
 
 	/**
@@ -43,9 +43,10 @@ define([], function () {
 	 * @private
 	 */
 	EventChannel.prototype.sort = function () {
-		this.callbackAgenda.sort(function (a, b) {
+		this.keyframes.sort(function (a, b) {
 			return a.time - b.time;
 		});
+		this.lastTime = this.keyframes[this.keyframes.length - 1].time;
 	};
 
 	/**
@@ -61,14 +62,14 @@ define([], function () {
 			callback: callback
 		};
 
-		if (time > this.lastCallbackTime) {
-			this.callbackAgenda.push(newCallback);
-			this.lastCallbackTime = time;
-		} else if (!this.callbackAgenda.length || time < this.callbackAgenda[0].time) {
-			this.callbackAgenda.unshift(newCallback);
+		if (time > this.lastTime) {
+			this.keyframes.push(newCallback);
+			this.lastTime = time;
+		} else if (!this.callbackAgenda.length || time < this.keyframes[0].time) {
+			this.keyframes.unshift(newCallback);
 		} else {
-			var index = find(this.callbackAgenda, time) + 1;
-			this.callbackAgenda.splice(index, 0, newCallback);
+			var index = find(this.keyframes, time) + 1;
+			this.keyframes.splice(index, 0, newCallback);
 		}
 	};
 
@@ -77,8 +78,8 @@ define([], function () {
 	 * @private
 	 */
 	EventChannel.prototype._checkCallbacks = function () {
-		while (this.callbackIndex < this.callbackAgenda.length && this.time > this.callbackAgenda[this.callbackIndex].time) {
-			this.callbackAgenda[this.callbackIndex].callback();
+		while (this.callbackIndex < this.keyframes.length && this.time > this.keyframes[this.callbackIndex].time) {
+			this.keyframes[this.callbackIndex].callback();
 			this.callbackIndex++;
 		}
 	};
@@ -89,7 +90,7 @@ define([], function () {
 	 */
 	EventChannel.prototype.setTime = function (time) {
 		this.time = time;
-		this.callbackIndex = find(this.callbackAgenda, this.time, this.lastTime);
+		this.callbackIndex = find(this.keyframes, this.time, this.lastTime);
 		this.update(0);
 	};
 

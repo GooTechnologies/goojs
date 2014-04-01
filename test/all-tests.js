@@ -241,6 +241,6 @@ define([
 	//'test/loaders/handlers/SkyboxHandler-test',
 	//'test/loaders/handlers/EnvironmentHandler-test',
 	'test/entities/components/ScriptComponent-test',
-	'test/timelinepack/Channel-test',
+	'test/timelinepack/ValueChannel-test',
 	'test/timelinepack/TimelineComponentHandler-test'
 ], function() {});
