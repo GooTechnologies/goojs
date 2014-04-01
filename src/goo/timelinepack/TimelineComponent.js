@@ -38,13 +38,16 @@ define([
 	/**
 	 * Sets the time on all channels
 	 * @param {number} time
+	 * @returns {object} The new channel values
 	 */
 	TimelineComponent.prototype.setTime = function (time) {
+		var retVal = {};
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
-			channel.setTime(time);
+			retVal[channel.id] = channel.setTime(time);
 		}
+		return retVal;
 	};
 
 	return TimelineComponent;

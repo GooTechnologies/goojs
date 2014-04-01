@@ -1,4 +1,8 @@
-define([], function () {
+define([
+	'goo/math/MathUtils'
+], function (
+	MathUtils
+) {
 	'use strict';
 	// REVIEW Would be nice to separate in TriggerChannel and ValueChannel
 
@@ -52,7 +56,7 @@ define([], function () {
 	 */
 	Channel.prototype.sort = function () {
 		// REVIEW a.time - b.time
-		this.keyframes.sort(function (a, b) { return a.time < b.time; });
+		this.keyframes.sort(function (a, b) { return a.time - b.time; });
 		this.callbackAgenda.sort(function (a, b) { return a.time < b.time; });
 	};
 
@@ -131,7 +135,7 @@ define([], function () {
 	Channel.prototype.setTime = function (time) {
 		this.time = time;
 		this.callbackIndex = find(this.callbackAgenda, this.time, this.lastTime);
-		this.update(0);
+		return this.update(0);
 	};
 
 
@@ -168,11 +172,14 @@ define([], function () {
 			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
 			var nextEntry = this.keyframes[newEntryIndex + 1];
-			var progressInEntry = (this.time - newEntry.time) / (nextEntry.time - newEntry.time);
-			var progressValue = newEntry.easingFunction(progressInEntry);
 
-			// REVIEW MathUtils.lerp
-			newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
+			if (nextEntry) {
+				var progressInEntry = (this.time - newEntry.time) / (nextEntry.time - newEntry.time);
+				var progressValue = newEntry.easingFunction(progressInEntry);
+				newValue = MathUtils.lerp(newEntry.value, nextEntry.value, progressValue);
+			} else {
+				newValue = newEntry.value;
+			}
 		}
 
 		//! AT: comparing floats with === is ok here
@@ -181,6 +188,7 @@ define([], function () {
 			// REVIEW There's no callbackupdate from handlers
 			this.callbackUpdate(this.time, this.value, newEntryIndex);
 		}
+		return this.value;
 	};
 
 	// REVIEW Should probably be somewhere else

@@ -43,7 +43,7 @@ define([
 		'scaleX': Channel.getScaleXTweener,
 		'scaleY': Channel.getScaleYTweener,
 		'scaleZ': Channel.getScaleZTweener,
-		'event': function(){},
+		'event': function(){}
 	};
 
 	//! AT: requires TWEEN
@@ -72,7 +72,7 @@ define([
 		if (!keyframe) {
 			channel.addKeyframe(keyframeId,
 				keyframeConfig.time,
-				keyframeConfig.value, 
+				keyframeConfig.value,
 				easingFunction);
 		} else {
 			// the time of one keyframe changed so we're not certain anymore that they're sorted
@@ -123,7 +123,7 @@ define([
 		};
 	}
 
-	function updateChannel(channelConfig, channelId, component) {
+	function updateChannel(channelConfig, channelId, component, entity) {
 		// search for existing one
 		var channel = ArrayUtil.find(component.channels, function (channel) {
 			return channel.id === channelId;
@@ -132,10 +132,10 @@ define([
 		// and create one if needed
 		if (!channel) {
 			// REVIEW should be called with (id, options) not (id, callback) according to Channel
-			var updateCallback = channelConfig.propertyKey? TimelineComponentHandler.tweenMap[channelConfig.propertyKey]:function(){};
+			var updateCallback = channelConfig.propertyKey? TimelineComponentHandler.tweenMap[channelConfig.propertyKey](entity):function(){};
 
 			channel = new Channel(channelId, {
-				callbackUpdate: updateCallback,
+				callbackUpdate: updateCallback
 			});
 			// REVIEW Channel needs to be connected to child entity somewhere
 			component.channels.push(channel);
@@ -178,7 +178,7 @@ define([
 			for (var channelId in config.channels) {
 				var channelConfig = config.channels[channelId];
 				// REVIEW channelConfig should contain channelId
-				updateChannel(channelConfig, channelId, component);
+				updateChannel(channelConfig, channelId, component, entity);
 			}
 
 			return component;
