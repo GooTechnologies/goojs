@@ -85,7 +85,7 @@ define([
 					spherical.y = MathUtils.moduloPositive(spherical.y, MathUtils.TWO_PI);
 					targetSpherical.copy(spherical);
 				} else {
-					applyReleaseDrift(parameters, environment);
+					applyReleaseDrift(parameters);
 				}
 			}
 		}
@@ -135,9 +135,7 @@ define([
 			return _value < _min ? min : _value > _max ? max : value;
 		}
 
-		function move(x, y, parameters, environment) {
-			var azimuthAccel = x;
-			var thetaAccel = y;
+		function move(azimuthAccel, thetaAccel, parameters, environment) {
 
 			// update our master spherical coords, using x and y movement
 			if (parameters.clampAzimuth) {
@@ -227,6 +225,7 @@ define([
 						if (touches.length === 2) {
 							var x2 = touches[1].clientX;
 							var y2 = touches[1].clientY;
+							// REVIEW : cx and cy are never used, miss or just remove?
 							cx = (x1 + x2) / 2;
 							cy = (y1 + y2) / 2;
 							distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
