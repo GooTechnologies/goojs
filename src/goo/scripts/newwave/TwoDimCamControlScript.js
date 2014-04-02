@@ -111,6 +111,11 @@ define([
 			type: 'float',
 			min: 0.01
 		}, {
+			key: 'size',
+			'default': 100,
+			type: 'float',
+			min: 0.1
+		}, {
 			key: 'maxSize',
 			'default': 1000,
 			type: 'float',
