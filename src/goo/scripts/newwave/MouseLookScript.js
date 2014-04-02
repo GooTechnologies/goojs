@@ -16,6 +16,7 @@ define([
 		var button;
 		var _environment;
 		var _parameters;
+		var _initialAzimuth;
 
 		function mouseDown(e) {
 			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
@@ -52,7 +53,11 @@ define([
 			domElement.addEventListener('mouseleave', mouseUp);
 
 			angles = new Vector3();
+			var rotation = environment.entity.transformComponent.transform.rotation;
+			rotation.toAngles(angles);
+			_initialAzimuth = angles.data[1];
 		}
+
 		function update(parameters, environment) {
 			if (x === lastX && y === lastY) {
 				return;
@@ -69,7 +74,14 @@ define([
 			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
 			pitch = MathUtils.clamp(pitch - deltaY * parameters.speed / 200, minAscent, maxAscent);
+
+			var maxAzimuth = parameters.maxAzimuth * MathUtils.DEG_TO_RAD - _initialAzimuth;
+			var minAzimuth = parameters.minAzimuth * MathUtils.DEG_TO_RAD - _initialAzimuth;
 			yaw -= deltaX * parameters.speed / 200;
+			if (parameters.clampAzimuth) {
+				yaw = MathUtils.radialClamp(yaw , minAzimuth, maxAzimuth);
+			}
+
 			rotation.fromAngles(pitch, yaw, 0);
 			entity.transformComponent.setUpdated();
 			lastX = x;
@@ -135,6 +147,26 @@ define([
 				'default': -89.95,
 				min: -89.95,
 				max: 89.95
+			}, {
+				key: 'clampAzimuth',
+				'default': false,
+				type: 'boolean'
+			}, {
+				key: 'minAzimuth',
+				description: 'Maximum arc the camera can reach clockwise of the target point',
+				'default': -90,
+				type: 'int',
+				control: 'slider',
+				min: -180,
+				max: 0
+			}, {
+				key: 'maxAzimuth',
+				description: 'Maximum arc the camera can reach counter-clockwise of the target point',
+				'default': 90,
+				type: 'int',
+				control: 'slider',
+				min: 0,
+				max: 180
 			}
 		]
 	};

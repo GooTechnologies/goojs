@@ -95,6 +95,7 @@ function(
 			var material = meshRendererComponent.materials[0];
 			var texture = material.getTexture('DIFFUSE_MAP');
 			var initialOffset = texture.offset;
+			var time = entity._world.time * 1000;
 
 			var fakeFrom = { x: initialOffset.x, y: initialOffset.y };
 			var fakeTo = { x: this.toX, y: this.toY };
@@ -103,7 +104,7 @@ function(
 				texture.offset.setd(this.x, this.y);
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(fsm.getTime() * 1000);
+			}.bind(this)).start(time);
 		}
 	};
 

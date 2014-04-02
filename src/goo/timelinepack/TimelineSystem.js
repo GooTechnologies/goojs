@@ -22,7 +22,6 @@ define([
 				component.setTime(0);
 			}
 			this.time = 0;
-			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
 			this.passive = true;
 			return;
 		}
