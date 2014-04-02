@@ -151,7 +151,7 @@ define([
 				var transform = entity.transformComponent.transform;
 				calcVector.setv(fwdVector).scale(mouseState.dy);
 				calcVector2.setv(leftVector).scale(mouseState.dx);
-				if(parameters.normalized){
+				if(parameters.screenMove){
 					var camera = entity.cameraComponent.camera;
 					calcVector.scale(2*camera._frustumTop / environment.viewportHeight);
 					calcVector2.scale(2*camera._frustumRight / environment.viewportWidth);
@@ -199,10 +199,10 @@ define([
 			scale: 0.001,
 			decimals: 3
 		}, {
-			key: 'normalized',
+			key: 'screenMove',
 			type: 'boolean',
 			'default': false,
-			description: 'Use normalized screen coords instead of pixels.',
+			description: 'Syncs camera with mouse world position.',
 		}]
 	};
 
