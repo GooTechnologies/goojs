@@ -48,6 +48,9 @@ function (
 
 		this.type = 'QuadComponent';
 
+		/* REVIEW: Why Holding on to these?
+		 * It should always be the defaults
+		 */
 		/**
 		 * The width of the component in 3D space
 		 */
@@ -150,8 +153,10 @@ function (
 			return;
 		}
 
-		if(this.preserveAspectRatio && image && image.width && image.height){
-			var ratio = image.width / image.height;
+		if(this.preserveAspectRatio && image){
+			var height = image.svgHeight || image.height;
+			var width = image.svgWidth || image.width;
+			var ratio = width / height;
 			if(ratio > 1){
 				this.width = 1;
 				this.height = 1 / ratio;
@@ -162,6 +167,7 @@ function (
 		}
 
 		var md = this.meshData;
+		// REVIEW md.xExtent = this.width * 0.5;
 		md.xExtent = this.width;
 		md.yExtent = this.height;
 		md.tileX = this.tileX;

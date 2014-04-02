@@ -1,9 +1,11 @@
 define([
 	'goo/util/rsvp',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function(
-	RSVP
+	RSVP,
+	MathUtils
 ) {
 
 	'use strict';
@@ -20,19 +22,19 @@ function(
 	/**
 	 * Loads an image element from a given URL and returns the image rendered on a canvas within a callback.
 	 *
-	 * @param {string} canvasPath					The URL to the image to render to the canvas.
+	 * @param {string} canvasPath	                 The URL to the image to render to the canvas.
 	 * @param {object} [options]
-	 * @param {number} [options.width]				Resulting width of the canvas, falls back to image width.
-	 * @param {number} [options.height]				Resulting height of the canvas, falls back to image height.
-	 * @param {number} [options.sourceX]			Where to start clipping in x
-	 * @param {number} [options.sourceY]			Where to start clipping in y
-	 * @param {number} [options.sourceWidth]		The width of the clipped image
-	 * @param {number} [options.sourceHeight]		The height of the clipped image
-	 * @param {number} [options.destX]				Destination frame offset in x
-	 * @param {number} [options.destY]				Destination frame offset in y
-	 * @param {number} [options.destWidth]			Destination frame width
-	 * @param {number} [options.destHeight]			Destination frame height
-	 * @param {number} [options.resizeToFit=false]	If true, the image is stretched to fit and centered on the canvas.
+	 * @param {number} [options.width]             Resulting width of the canvas, falls back to image width.
+	 * @param {number} [options.height]            Resulting height of the canvas, falls back to image height.
+	 * @param {number} [options.sourceX]           Where to start clipping in x
+	 * @param {number} [options.sourceY]           Where to start clipping in y
+	 * @param {number} [options.sourceWidth]       The width of the clipped image
+	 * @param {number} [options.sourceHeight]      The height of the clipped image
+	 * @param {number} [options.destX]             Destination frame offset in x
+	 * @param {number} [options.destY]             Destination frame offset in y
+	 * @param {number} [options.destWidth]         Destination frame width
+	 * @param {number} [options.destHeight]        Destination frame height
+	 * @param {number} [options.resizeToFit=false] If true, the image is stretched to fit and centered on the canvas.
 	 * @param {function} callback
 	 */
 	CanvasUtils.loadCanvasFromPath = function (canvasPath, callback) {
@@ -167,6 +169,12 @@ function(
 		var p = new RSVP.Promise();
 
 		img.onload = function(){
+			var size = MathUtils.nearestHigherPowerOfTwo(Math.max(img.width, img.height));
+			// TODO Might not work in all browsers, perhaps implement in a cleaner way
+			img.svgWidth = img.width;
+			img.svgHeight = img.height;
+			img.width = size;
+			img.height = size;
 			p.resolve(img);
 		};
 		img.onerror = function(){
