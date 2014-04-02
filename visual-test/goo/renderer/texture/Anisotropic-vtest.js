@@ -1,36 +1,22 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
+	'goo/shapes/Box',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/TextureCreator',
-	'goo/entities/components/LightComponent',
 	'lib/V'
 ], function(
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
-	CameraComponent,
+	Box,
 	OrbitCamControlScript,
 	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	DirectionalLight,
 	TextureCreator,
-	LightComponent,
 	V
 ) {
 	'use strict';
@@ -40,37 +26,31 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
+	var textureCreator = new TextureCreator();
+
 	var boxEntity = createBoxEntity();
-	boxEntity.transformComponent.setTranslation(-50, -0.5, 0);
-	boxEntity.addToWorld();
+	boxEntity.set([-50, -0.5, 0]).addToWorld();
 
 	boxEntity = createBoxEntity(goo.renderer.capabilities.maxAnisotropy);
-	boxEntity.transformComponent.setTranslation(50, -0.5, 0);
-	boxEntity.addToWorld();
+	boxEntity.set([50, -0.5, 0]).addToWorld();
 
 	V.addLights();
 
-	var camera = new Camera(45, 1, 0.1, 1000);
-	var cameraEntity = goo.world.createEntity("CameraEntity");
-	cameraEntity.setComponent(new CameraComponent(camera));
-	cameraEntity.addToWorld();
-	var scripts = new ScriptComponent();
-	scripts.scripts.push(new OrbitCamControlScript({
+	var cameraEntity = world.createEntity('CameraEntity', new Camera(45, 1, 0.1)).addToWorld();
+	cameraEntity.set(new OrbitCamControlScript({
 		domElement: goo.renderer.domElement,
 		spherical: new Vector3(1, Math.PI / 2, 0.1),
 		minAscent: 0.1,
 		turnSpeedHorizontal: 0.001,
 		turnSpeedVertical: 0.001
 	}));
-	cameraEntity.setComponent(scripts);
-
 
 	function createBoxEntity(anisotropy) {
-		var meshData = ShapeCreator.createBox(100, 1, 100, 200, 200);
-		var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
+		var meshData = new Box(100, 1, 100, 200, 200);
+		var material = new Material(ShaderLib.texturedLit);
 		var entity = world.createEntity(meshData, material);
 
-		var texture = new TextureCreator().loadTexture2D(resourcePath + 'font.png', { anisotropy: anisotropy });
+		var texture = textureCreator.loadTexture2D(resourcePath + 'font.png', { anisotropy: anisotropy });
 		material.setTexture('DIFFUSE_MAP', texture);
 
 		return entity;
