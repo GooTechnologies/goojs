@@ -132,7 +132,8 @@ function (
 		this.meshRendererComponent.materials = [material];
 		material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
 		material.renderQueue = 2000;
-		material.dualTransparency = true;					// Visible on both sides
+		material.cullState.enabled = false;
+		//material.dualTransparency = true;					// Visible on both sides
 		material.uniforms.discardThreshold = 0.1;
 	};
 

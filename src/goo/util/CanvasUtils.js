@@ -1,11 +1,9 @@
 define([
-	'goo/util/rsvp',
-	'goo/math/MathUtils'
+	'goo/util/rsvp'
 ],
 /** @lends */
 function(
-	RSVP,
-	MathUtils
+	RSVP
 ) {
 
 	'use strict';
@@ -154,27 +152,27 @@ function(
 		return matrix;
 	};
 
+	var _cache = {};
+
 	/**
 	 * Convert SVG XML content to an HTMLImageElement.
 	 * @param  {string} data
 	 * @return {RSVP.Promise} Promise that resolves with the Image.
 	 */
-	CanvasUtils.svgDataToImage = function(data){
-		var img = new Image();
-		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+	CanvasUtils.svgDataToImage = function(data, id){
 		var DOMURL = window.URL || window.webkitURL || window;
-		var url = DOMURL.createObjectURL(svg);
-		img.src = url;
-
 		var p = new RSVP.Promise();
+		if (id && _cache[id]) {
+			DOMURL.revokeObjectURL(_cache[id]);
+		}
+
+		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+		var img = new Image();
+
+		_cache[id] = DOMURL.createObjectURL(svg);
+		img.src = _cache[id];
 
 		img.onload = function(){
-			var size = MathUtils.nearestHigherPowerOfTwo(Math.max(img.width, img.height));
-			// TODO Might not work in all browsers, perhaps implement in a cleaner way
-			img.svgWidth = img.width;
-			img.svgHeight = img.height;
-			img.width = size;
-			img.height = size;
 			p.resolve(img);
 		};
 		img.onerror = function(){
