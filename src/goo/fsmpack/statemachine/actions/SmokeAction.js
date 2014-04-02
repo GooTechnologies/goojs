@@ -70,6 +70,8 @@ function(
 			SmokeAction.material
 		);
 		this.smokeEntity.meshRendererComponent.isPickable = false;
+		this.smokeEntity.meshRendererComponent.castShadows = false;
+		this.smokeEntity.meshRendererComponent.receiveShadows = false;
 		this.smokeEntity.name = '_ParticleSystemSmoke';
 		entity.transformComponent.attachChild(this.smokeEntity.transformComponent);
 
