@@ -151,9 +151,13 @@ define([
 				var transform = entity.transformComponent.transform;
 				calcVector.setv(fwdVector).scale(mouseState.dy);
 				calcVector2.setv(leftVector).scale(mouseState.dx);
+				if(parameters.normalized){
+					var camera = entity.cameraComponent.camera;
+					calcVector.scale(2*camera._frustumTop / environment.viewportHeight);
+					calcVector2.scale(2*camera._frustumRight / environment.viewportWidth);
+				}
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);
-
 				calcVector.scale(parameters.panSpeed);
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
@@ -194,6 +198,11 @@ define([
 			'default': 0.005,
 			scale: 0.001,
 			decimals: 3
+		}, {
+			key: 'normalized',
+			type: 'boolean',
+			'default': false,
+			description: 'Use normalized screen coords instead of pixels.',
 		}]
 	};
 
