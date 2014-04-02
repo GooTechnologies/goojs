@@ -146,7 +146,7 @@ define([], function () {
 	ValueChannel.getTranslationXTweener = function (entityId, resolver) {
 		var entity;
 		return function (time, value) {
-			if (!entity) { entity = resolver(); }
+			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.translation.data[0] = value;
 			entity.transformComponent.setUpdated();
 		};
@@ -155,7 +155,7 @@ define([], function () {
 	ValueChannel.getTranslationYTweener = function (entityId, resolver) {
 		var entity;
 		return function (time, value) {
-			if (!entity) { entity = resolver(); }
+			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.translation.data[1] = value;
 			entity.transformComponent.setUpdated();
 		};
@@ -164,7 +164,7 @@ define([], function () {
 	ValueChannel.getTranslationZTweener = function (entityId, resolver) {
 		var entity;
 		return function (time, value) {
-			if (!entity) { entity = resolver(); }
+			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.translation.data[2] = value;
 			entity.transformComponent.setUpdated();
 		};
@@ -174,10 +174,8 @@ define([], function () {
 		var entity;
 		return function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
-
-				entity.transformComponent.transform.scale.data[0] = value;
-				entity.transformComponent.setUpdated();
-
+			entity.transformComponent.transform.scale.data[0] = value;
+			entity.transformComponent.setUpdated();
 		};
 	};
 
@@ -193,7 +191,7 @@ define([], function () {
 	ValueChannel.getScaleZTweener = function (entityId, resolver) {
 		var entity;
 		return function (time, value) {
-			if (!entity) { entity = resolver(); }
+			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.scale.data[2] = value;
 			entity.transformComponent.setUpdated();
 		};
