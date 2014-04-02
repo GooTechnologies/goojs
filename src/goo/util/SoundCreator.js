@@ -17,7 +17,7 @@ function (
 	 * @class Provides a simple way to load sounds
 	 */
 	function SoundCreator() {
-		var ajax = new Ajax();
+		var ajax = this.ajax = new Ajax();
 
 		this.soundHandler = new SoundHandler(
 			{},
@@ -30,6 +30,14 @@ function (
 			}
 		);
 	}
+
+	/**
+	 * Releases any references to cached objects
+	 */
+	SoundCreator.prototype.clear = function () {
+		this.ajax.clear();
+		this.soundHandler.clear();
+	};
 
 	SoundCreator.prototype.loadSound = function (url, settings, callback) {
 		var id = StringUtil.createUniqueId('sound');
