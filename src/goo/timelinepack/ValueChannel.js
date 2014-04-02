@@ -5,7 +5,6 @@ define([], function () {
 	function ValueChannel(id, options) {
 		this.id = id;
 		this.keyframes = [];
-		this.time = 0;
 		this.lastTime = 0;
 		this.value = 0;
 
@@ -80,22 +79,10 @@ define([], function () {
 	};
 
 	/**
-	 * Sets the time
-	 * @param time
-	 */
-	ValueChannel.prototype.setTime = function (time) {
-		this.time = time;
-		this.update(0);
-	};
-
-
-	/**
 	 * Update the channel,
 	 * @param tpf
 	 */
-	ValueChannel.prototype.update = function (tpf) {
-		this.time += tpf;
-
+	ValueChannel.prototype.update = function (time) {
 		// redo looping
 
 		// tmp hack
@@ -109,18 +96,16 @@ define([], function () {
 		// }
 
 		// run update callback on current position
-		// REVIEW This could be moved to the 'else'
-		var newEntryIndex = find(this.keyframes, this.time);
-		var newEntry = this.keyframes[newEntryIndex];
-
 		var newValue;
-		if (this.time <= this.keyframes[0].time) {
+		if (time <= this.keyframes[0].time) {
 			newValue = this.keyframes[0].value;
-		} else if (this.time >= this.lastTime) {
+		} else if (time >= this.lastTime) {
 			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
+			var newEntryIndex = find(this.keyframes, time);
+			var newEntry = this.keyframes[newEntryIndex];
 			var nextEntry = this.keyframes[newEntryIndex + 1];
-			var progressInEntry = (this.time - newEntry.time) / (nextEntry.time - newEntry.time);
+			var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
 			var progressValue = newEntry.easingFunction(progressInEntry);
 
 			// REVIEW MathUtils.lerp
@@ -130,7 +115,7 @@ define([], function () {
 		//! AT: comparing floats with === is ok here
 		if (this.value !== newValue || true) { // overriding for now to get time progression
 			this.value = newValue;
-			this.callbackUpdate(this.time, this.value, newEntryIndex);
+			this.callbackUpdate(time, this.value, newEntryIndex);
 		}
 	};
 
