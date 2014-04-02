@@ -283,9 +283,9 @@ function(
 				);
 
 				var useLightCookie = light.lightCookie instanceof Texture;
-				if ((light.shadowCaster || useLightCookie) &&
+				if (useLightCookie || (light.shadowCaster && 
 					shaderInfo.renderable.meshRendererComponent &&
-					shaderInfo.renderable.meshRendererComponent.receiveShadows
+					shaderInfo.renderable.meshRendererComponent.receiveShadows)
 				) {
 					prevertex.push(
 						'uniform mat4 shadowLightMatrices'+i+';',
