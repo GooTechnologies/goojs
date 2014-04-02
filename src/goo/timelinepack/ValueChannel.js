@@ -97,12 +97,13 @@ define([], function () {
 
 		// run update callback on current position
 		var newValue;
+		var newEntryIndex;
 		if (time <= this.keyframes[0].time) {
 			newValue = this.keyframes[0].value;
 		} else if (time >= this.lastTime) {
 			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
-			var newEntryIndex = find(this.keyframes, time);
+			newEntryIndex = find(this.keyframes, time);
 			var newEntry = this.keyframes[newEntryIndex];
 			var nextEntry = this.keyframes[newEntryIndex + 1];
 			var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
@@ -117,14 +118,17 @@ define([], function () {
 			this.value = newValue;
 			this.callbackUpdate(time, this.value, newEntryIndex);
 		}
+		return newValue;
 	};
 
+	/*
 	function memoize(fun) {
 		var entity;
 		return function (entityId) {
 			return entity || (entity = fun(entityId));
-		}
+		};
 	}
+	*/
 
 	// REVIEW Should probably be somewhere else
 	// tween factories
