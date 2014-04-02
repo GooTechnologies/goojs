@@ -99,6 +99,7 @@ function(
 			var translation = transformComponent.transform.translation;
 			var initialTranslation = new Vector3().copy(translation);
 			var camera = entity.cameraComponent.camera;
+			var time = entity._world.time * 1000;
 
 			var to = new Vector3(this.lookAt).sub(initialTranslation).normalize().scale(this.forward).add(initialTranslation);
 
@@ -123,7 +124,7 @@ function(
 				camera.setFrustumPerspective(fov);
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(fsm.getTime() * 1000);
+			}.bind(this)).start(time);
 		}
 	};
 

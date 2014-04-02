@@ -91,6 +91,7 @@ define([
 
 		var fakeFrom = { x: initialScale.x, y: initialScale.y, z: initialScale.z };
 		var fakeTo;
+		var time = entity._world.time * 1000;
 
 		if (this.relative) {
 			var to = Vector3.add(initialScale, this.to);
@@ -110,7 +111,7 @@ define([
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(fsm.getTime() * 1000);
+				}.bind(this)).start(time);
 		}
 	};
 

@@ -42,6 +42,7 @@ function(
 		}]
 	};
 
+	// REVIEW: This should use gooRunner events, rather than attaching listeners to the document
 	MouseDownAction.prototype._setup = function() {
 		document.addEventListener('mousedown', this.eventListener);
 	};
