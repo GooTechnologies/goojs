@@ -88,6 +88,7 @@ function(
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
 		var initialTranslation = new Vector3().copy(translation);
+		var time = entity._world.time * 1000;
 
 		var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z };
 		var fakeTo;
@@ -97,7 +98,6 @@ function(
 		if (this.relative) {
 			var to = Vector3.add(initialTranslation, this.to);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
-
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
 				translation.data[0] += this.x - old.x;
 				translation.data[1] += this.y - old.y;
@@ -110,7 +110,7 @@ function(
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(fsm.getTime() * 1000);
+			}.bind(this)).start(time);
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
@@ -126,7 +126,7 @@ function(
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(fsm.getTime() * 1000);
+			}.bind(this)).start(time);
 		}
 	};
 

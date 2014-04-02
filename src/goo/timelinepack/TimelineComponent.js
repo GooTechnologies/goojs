@@ -10,6 +10,8 @@ define([
 		this.type = 'TimelineComponent';
 
 		this.channels = [];
+
+		this.time = 0;
 	}
 
 	TimelineComponent.prototype = Object.create(Component.prototype);
@@ -28,10 +30,12 @@ define([
 	 * @param {number} tpf
 	 */
 	TimelineComponent.prototype.update = function (tpf) {
+		this.time += tpf;
+
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
-			channel.update(tpf);
+			channel.update(this.time);
 		}
 	};
 
@@ -42,10 +46,12 @@ define([
 	 */
 	TimelineComponent.prototype.setTime = function (time) {
 		var retVal = {};
+		this.time = time;
+
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
-			retVal[channel.id] = channel.setTime(time);
+			retVal[channel.id] = channel.update(this.time);
 		}
 		return retVal;
 	};

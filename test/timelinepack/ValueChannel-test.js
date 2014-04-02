@@ -1,14 +1,14 @@
 define([
-	'goo/timelinepack/Channel'
+	'goo/timelinepack/ValueChannel'
 ], function (
-	Channel
+	ValueChannel
 	) {
 	'use strict';
 
-	describe('Channel', function() {
+	describe('ValueChannel', function() {
 		var channel;
 		beforeEach(function () {
-			channel = new Channel();
+			channel = new ValueChannel();
 		});
 
 		describe('addKeyframe', function () {
@@ -60,6 +60,10 @@ define([
 				expect(channel.keyframes.length).toEqual(5);
 				expect(channel.keyframes[2].time).toEqual(250);
 			});
+		});
+
+		describe('setTime', function () {
+
 		});
 	});
 });

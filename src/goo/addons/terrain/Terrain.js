@@ -432,6 +432,7 @@ function(
 		}
 	};
 
+	// Returns the ammo body.
 	Terrain.prototype.initAmmoBody = function() {
 		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, "float", Ammo.ALLOC_NORMAL);
 
@@ -476,6 +477,8 @@ function(
 		body.setFriction(1);
 
 		this.world.getSystem('AmmoSystem').ammoWorld.addRigidBody(body);
+
+		return body;
 	};
 
 	Terrain.prototype.updateTextures = function() {

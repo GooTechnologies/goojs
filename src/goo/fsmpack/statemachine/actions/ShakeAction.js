@@ -77,6 +77,7 @@ function(
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
+		var time = entity._world.time * 1000;
 
 		var oldVal = new Vector3();
 		var target = new Vector3();
@@ -109,7 +110,7 @@ function(
 			translation.sub(oldVal);
 			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start(fsm.getTime() * 1000);
+		}.bind(this)).start(time);
 	};
 
 	return ShakeAction;

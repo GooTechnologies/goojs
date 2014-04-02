@@ -6,8 +6,10 @@ define([
 	'goo/scripts/newwave/PanCamScript',
 	'goo/scripts/newwave/MouseLookScript',
 	'goo/scripts/newwave/WASDScript'
-], function(Scripts) {
+	//'goo/scripts/newwave/FPCamControlScript'
+], function (Scripts) {
 	'use strict';
+
 	for (var i = 1; i < arguments.length; i++) {
 		Scripts.register(arguments[i]);
 	}

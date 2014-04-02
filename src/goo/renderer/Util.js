@@ -171,6 +171,20 @@ function () {
 		}
 	};
 
+	function getImage(data, width, height) {
+		var canvas = document.createElement('canvas');
+		canvas.width = width;
+		canvas.height = height;
+
+		var context = canvas.getContext('2d');
+
+		var imageData = context.createImageData(width, height);
+		imageData.data.set(data);
+		context.putImageData(imageData, 0, 0);
+
+		return canvas;
+	}
+
 	Util.scaleImage = function(texture, image, width, height, maxSize, index) {
 		var newWidth = Util.nearestPowerOfTwo(width);
 		var newHeight = Util.nearestPowerOfTwo(height);
@@ -185,7 +199,15 @@ function () {
 				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
 			}
 			var ctx = canvas.getContext('2d');
-			ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+
+			if (image.data) {
+				// putImageData directly on this canvas will not resize
+				// have to putImageData on another canvas and drawImage that afterwards
+				ctx.drawImage(getImage(image.data, image.width, image.height), 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+			} else {
+				//! AT: this will choke if fed with a manually created texture ([0, 0, 0, 255, ...])
+				ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+			}
 			//document.body.appendChild(canvas);
 			canvas.dataReady = true;
 			canvas.src = image.src;

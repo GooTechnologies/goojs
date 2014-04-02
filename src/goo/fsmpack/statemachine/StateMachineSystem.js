@@ -61,7 +61,7 @@ function (
 			}
 		}
 
-		if (window.TWEEN) { window.TWEEN.update(this.time * 1000); } // this should not stay here
+		if (window.TWEEN) { window.TWEEN.update(this.engine.world.time * 1000); } // this should not stay here
 
 		for (var i = 0; i < entities.length; i++) {
 			component = entities[i].stateMachineComponent;

@@ -110,6 +110,32 @@ function () {
 	};
 
 	/**
+	 * Clamps an angle to a given interval. The interval is defined by min and max. If min is larger than max, the clamp will wrap around.
+	 * @param {number} value Input value.
+	 * @param {number} min Lower bound of interval (inclusive).
+	 * @param {number} max Upper bound of interval (inclusive).
+	 * @return {number} Clamped value.
+	 * @example
+	 * var a = -1;
+	 * a = Math.radialClamp(a, 0, 9); // a == 0
+	 */
+	MathUtils.radialClamp = function (value, min, max) {
+		// Rotating coordinates to be mirrored
+		var zero = (min + max)/2 + ((max > min) ? Math.PI : 0);
+		var _value = MathUtils.moduloPositive(value - zero, MathUtils.TWO_PI);
+		var _min = MathUtils.moduloPositive(min - zero, MathUtils.TWO_PI);
+		var _max = MathUtils.moduloPositive(max - zero, MathUtils.TWO_PI);
+
+		// Putting min, max and value on the same circle
+		if (value < 0 && min > 0) { min -= MathUtils.TWO_PI; }
+		else if (value > 0 && min < 0) { min += MathUtils.TWO_PI; }
+		if (value > MathUtils.TWO_PI && max < MathUtils.TWO_PI) { max += MathUtils.TWO_PI; }
+
+		return _value < _min ? min : _value > _max ? max : value;
+	}
+
+
+	/**
 	 * Calculates the positive modulo
 	 * @param {number} value
 	 * @param {number} size

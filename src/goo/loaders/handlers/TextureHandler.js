@@ -190,15 +190,10 @@ function(
 				}
 			} else if(config.svgData){
 				// Load SVG data
-				ret = CanvasUtils.svgDataToImage(config.svgData).then(function (image) {
-					if (!image){
-						throw new Error('Could not convert SVG to image!');
-					} else {
-						texture.setImage(image);
-					}
+				ret = CanvasUtils.svgDataToImage(config.svgData, config.id).then(function (image) {
+					texture.setImage(image);
 					return texture;
 				});
-
 			} else {
 				// Blank
 				// console.warn('Texture ' + ref + ' has no imageRef');

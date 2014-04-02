@@ -85,6 +85,7 @@ function (
 				}
 
 				component.setMaterial(material);
+				component.rebuildMeshData();
 
 				return component;
 			});

@@ -1,5 +1,5 @@
 define([
-	'goo/util/rsvp',
+	'goo/util/rsvp'
 ],
 /** @lends */
 function(
@@ -20,19 +20,19 @@ function(
 	/**
 	 * Loads an image element from a given URL and returns the image rendered on a canvas within a callback.
 	 *
-	 * @param {string} canvasPath					The URL to the image to render to the canvas.
+	 * @param {string} canvasPath	                 The URL to the image to render to the canvas.
 	 * @param {object} [options]
-	 * @param {number} [options.width]				Resulting width of the canvas, falls back to image width.
-	 * @param {number} [options.height]				Resulting height of the canvas, falls back to image height.
-	 * @param {number} [options.sourceX]			Where to start clipping in x
-	 * @param {number} [options.sourceY]			Where to start clipping in y
-	 * @param {number} [options.sourceWidth]		The width of the clipped image
-	 * @param {number} [options.sourceHeight]		The height of the clipped image
-	 * @param {number} [options.destX]				Destination frame offset in x
-	 * @param {number} [options.destY]				Destination frame offset in y
-	 * @param {number} [options.destWidth]			Destination frame width
-	 * @param {number} [options.destHeight]			Destination frame height
-	 * @param {number} [options.resizeToFit=false]	If true, the image is stretched to fit and centered on the canvas.
+	 * @param {number} [options.width]             Resulting width of the canvas, falls back to image width.
+	 * @param {number} [options.height]            Resulting height of the canvas, falls back to image height.
+	 * @param {number} [options.sourceX]           Where to start clipping in x
+	 * @param {number} [options.sourceY]           Where to start clipping in y
+	 * @param {number} [options.sourceWidth]       The width of the clipped image
+	 * @param {number} [options.sourceHeight]      The height of the clipped image
+	 * @param {number} [options.destX]             Destination frame offset in x
+	 * @param {number} [options.destY]             Destination frame offset in y
+	 * @param {number} [options.destWidth]         Destination frame width
+	 * @param {number} [options.destHeight]        Destination frame height
+	 * @param {number} [options.resizeToFit=false] If true, the image is stretched to fit and centered on the canvas.
 	 * @param {function} callback
 	 */
 	CanvasUtils.loadCanvasFromPath = function (canvasPath, callback) {
@@ -102,9 +102,9 @@ function(
 	/**
 	 * Renders an SVG to a canvas element.
 	 *
-	 * @param {string} svgSource	The SVG XML source code
-	 * @param {object} options		Will be passed to loadCanvasFromPath.
-	 * @param {function} callback	Will be called when done. The single argument to this function will be the HTMLCanvasElement, or null if an error occurred.
+	 * @param {string} svgSource			The SVG XML source code
+	 * @param {object} options				Will be passed to loadCanvasFromPath.
+	 * @param {function} callback			Will be called when done. The single argument to this function will be the HTMLCanvasElement, or null if an error occurred.
 	 * @example
 	 * var data = '&lt;svg xmlns="http://www.w3.org/2000/svg" width=100 height=100&gt;&lt;rect x=0 y=0 width=100 height=100 fill="blue" /&gt;&lt;/svg&gt;';
 	 * CanvasUtils.renderSvgToCanvas(data, {
@@ -152,20 +152,31 @@ function(
 		return matrix;
 	};
 
-	CanvasUtils.svgDataToImage = function(data){
-		var img = new Image();
-		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
-		var DOMURL = window.URL || window.webkitURL || window;
-		var url = DOMURL.createObjectURL(svg);
-		img.src = url;
+	var _cache = {};
 
+	/**
+	 * Convert SVG XML content to an HTMLImageElement.
+	 * @param  {string} data
+	 * @return {RSVP.Promise} Promise that resolves with the Image.
+	 */
+	CanvasUtils.svgDataToImage = function(data, id){
+		var DOMURL = window.URL || window.webkitURL || window;
 		var p = new RSVP.Promise();
+		if (id && _cache[id]) {
+			DOMURL.revokeObjectURL(_cache[id]);
+		}
+
+		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+		var img = new Image();
+
+		_cache[id] = DOMURL.createObjectURL(svg);
+		img.src = _cache[id];
 
 		img.onload = function(){
 			p.resolve(img);
 		};
 		img.onerror = function(){
-			p.reject();
+			p.reject('Could not load SVG image.');
 		};
 
 		return p;
