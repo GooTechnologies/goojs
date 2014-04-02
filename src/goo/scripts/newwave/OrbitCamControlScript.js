@@ -225,9 +225,6 @@ define([
 						if (touches.length === 2) {
 							var x2 = touches[1].clientX;
 							var y2 = touches[1].clientY;
-							// REVIEW : cx and cy are never used, miss or just remove?
-							cx = (x1 + x2) / 2;
-							cy = (y1 + y2) / 2;
 							distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 						} else {
 							cx = x1;
