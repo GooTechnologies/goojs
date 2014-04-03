@@ -69,7 +69,7 @@ define([
 						if (mouseState.down) {
 							mouseState.x = event.clientX;
 							mouseState.y = event.clientY;
-							environment.dirty = true;
+							environment.panDirty = true;
 						}
 					}
 				},
@@ -106,11 +106,11 @@ define([
 			for (var event in listeners) {
 				environment.domElement.addEventListener(event, listeners[event]);
 			}
-			environment.dirty = true;
+			environment.panDirty = true;
 		}
 
 		function update(parameters, environment) {
-			if(!environment.dirty) { return ;}
+			if(!environment.panDirty) { return ;}
 			mouseState.dx = mouseState.x - mouseState.ox;
 			mouseState.dy = mouseState.y - mouseState.oy;
 			if (mouseState.dx === 0 && mouseState.dy === 0) {
