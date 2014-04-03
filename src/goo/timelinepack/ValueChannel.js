@@ -1,4 +1,8 @@
-define([], function () {
+define([
+	'goo/math/Vector3'
+], function (
+	Vector3
+	) {
 	'use strict';
 	// REVIEW Would be nice to separate in TriggerChannel and ValueChannel
 
@@ -160,6 +164,45 @@ define([], function () {
 		return function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.translation.data[2] = value;
+			entity.transformComponent.setUpdated();
+		};
+	};
+
+	ValueChannel.getRotationXTweener = function (entityId, resolver) {
+		var entity;
+		var angles = new Vector3();
+		return function (time, value) {
+			if (!entity) { entity = resolver(entityId); }
+
+			entity.transformComponent.transform.rotation.toAngles(angles);
+			angles.data[0] = value;
+			entity.transformComponent.transform.rotation.fromAngles(angles.data[0], angles.data[1], angles.data[2]);
+			entity.transformComponent.setUpdated();
+		};
+	};
+
+	ValueChannel.getRotationYTweener = function (entityId, resolver) {
+		var entity;
+		var angles = new Vector3();
+		return function (time, value) {
+			if (!entity) { entity = resolver(entityId); }
+
+			entity.transformComponent.transform.rotation.toAngles(angles);
+			angles.data[1] = value;
+			entity.transformComponent.transform.rotation.fromAngles(angles.data[0], angles.data[1], angles.data[2]);
+			entity.transformComponent.setUpdated();
+		};
+	};
+
+	ValueChannel.getRotationZTweener = function (entityId, resolver) {
+		var entity;
+		var angles = new Vector3();
+		return function (time, value) {
+			if (!entity) { entity = resolver(entityId); }
+
+			entity.transformComponent.transform.rotation.toAngles(angles);
+			angles.data[2] = value;
+			entity.transformComponent.transform.rotation.fromAngles(angles.data[0], angles.data[1], angles.data[2]);
 			entity.transformComponent.setUpdated();
 		};
 	};
