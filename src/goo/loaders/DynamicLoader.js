@@ -94,6 +94,7 @@ function(
 	 * @returns {RSVP.Promise} Promise resolves when handlers are cleared.
 	 */
 	DynamicLoader.prototype.clear = function() {
+		// REVIEW: don't keep dead code! it rots!
 		/*var refs = Object.keys(this._objects);
 		this._objects = {};
 		// Remove all objects from engine
@@ -294,6 +295,7 @@ function(
 		return null;
 	};
 
+	// REVIEW: remove this; it's kept in the repo forever anyway
 	/*
 	 * Handles a ref with its loaded config, i.e. calls the proper config handler
 	 * to create or update the object
