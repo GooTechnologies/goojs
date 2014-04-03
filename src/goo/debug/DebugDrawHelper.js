@@ -16,7 +16,8 @@ define([
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/math/Transform'
+	'goo/math/Transform',
+	'goo/renderer/Camera'
 ], function(
 	LightComponent,
 	CameraComponent,
@@ -35,7 +36,8 @@ define([
 	Util,
 	ShaderLib,
 	ShaderBuilder,
-	Transform
+	Transform,
+	Camera
 ) {
 	'use strict';
 	var DebugDrawHelper = {};
@@ -99,7 +101,7 @@ define([
 		});
 	};
 
-	DebugDrawHelper.update = function(renderables, component, camPosition) {
+	DebugDrawHelper.update = function(renderables, component, camera) {
 		// major refactoring needed here
 
 		// rebuilding camera frustum if needed
@@ -129,7 +131,11 @@ define([
 		if (renderables[1]) { DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component); }
 
 		// keeping scale the same on the first element which is assumed to always be the camera mesh/light 'bulb'
+		var camPosition = camera.translation;
 		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
+		if (camera && camera.projectionMode === Camera.Parallel) {
+			scale = (camera._frustumTop - camera._frustumBottom) / 20;
+		}
 		renderables[0].transform.scale.setd(scale,scale,scale);
 		renderables[0].transform.update();
 

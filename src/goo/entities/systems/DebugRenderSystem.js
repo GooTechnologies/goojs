@@ -98,7 +98,7 @@ function (
 					}
 
 					renderables.forEach(function (renderable) { renderable.transform.copy(entity.transformComponent.worldTransform); });
-					DebugDrawHelper.update(renderables, component, this.camera.translation);
+					DebugDrawHelper.update(renderables, component, this.camera);
 					renderables.forEach(function (renderable) { this.renderList[count++] = renderable; }.bind(this));
 				}
 			}
