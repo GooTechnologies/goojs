@@ -102,7 +102,7 @@ function(
 						shape = new Ammo.btSphereShape(bound.radius * scale[0]);
 					}
 				} else {
-					shape = calculateTriangleMeshShape(entity, scale.data); // this can only be used for static meshes, i.e. mass == 0.
+					shape = calculateTriangleMeshShape(entity, scale); // this can only be used for static meshes, i.e. mass == 0.
 				}
 			}
 		} else {
