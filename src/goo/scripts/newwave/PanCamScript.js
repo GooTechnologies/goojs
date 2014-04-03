@@ -51,7 +51,15 @@ define([
 			var listeners = environment.listeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						if (event.button === panButton || panButton === -1) {
+						var button = event.button;
+						if (button === 0) {
+							if (event.altKey) {
+								button = 2;
+							} else if (event.shiftKey) {
+								button = 1;
+							}
+						}
+						if (button === panButton || panButton === -1) {
 							mouseState.down = true;
 							mouseState.ox = mouseState.x = event.clientX;
 							mouseState.oy = mouseState.y = event.clientY;
@@ -59,7 +67,15 @@ define([
 					}
 				},
 				mouseup: function(event) {
-					if (event.button === panButton || panButton === -1) {
+					var button = event.button;
+					if (button === 0) {
+						if (event.altKey) {
+							button = 2;
+						} else if (event.shiftKey) {
+							button = 1;
+						}
+					}
+					if (button === panButton || panButton === -1) {
 						mouseState.down = false;
 						mouseState.dx = mouseState.dy = 0;
 					}

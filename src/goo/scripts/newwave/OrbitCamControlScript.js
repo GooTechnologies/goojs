@@ -188,11 +188,27 @@ define([
 			var listeners = environment.listeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						updateButtonState(event.button, true, parameters, environment);
+						var button = event.button;
+						if (button === 0) {
+							if (event.altKey) {
+								button = 2;
+							} else if (event.shiftKey) {
+								button = 1;
+							}
+						}
+						updateButtonState(button, true, parameters, environment);
 					}
 				},
 				mouseup: function(event) {
-					updateButtonState(event.button, false, parameters, environment);
+					var button = event.button;
+					if (button === 0) {
+						if (event.altKey) {
+							button = 2;
+						} else if (event.shiftKey) {
+							button = 1;
+						}
+					}
+					updateButtonState(button, false, parameters, environment);
 				},
 				mousemove: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
