@@ -102,13 +102,11 @@ define([
 			promises.push(this.update(ref, null, {}));
 		}
 
-		// this._objects = {};
 		//! AT: clearing it one key at a time in case anyone holds a reference to the object
 		for (var key in this._objects) {
 			delete this._objects[key];
 		}
 
-		//this._loading = {};
 		for (var key in this._loading) {
 			delete this._loading[key];
 		}
