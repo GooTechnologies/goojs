@@ -1,5 +1,7 @@
 define([
 	'goo/scripts/Scripts',
+	'goo/addons/ammo/AmmoSystem',
+	'goo/addons/ammo/AmmoComponent',
 	'goo/animation/SkeletonPose',
 	'goo/animation/blendtree/ManagedTransformSource',
 	'goo/animation/layer/AnimationLayer',
@@ -114,6 +116,8 @@ define([
 	// minifier cannot handle any expressions or statements other than a simple array of strings
 	var defines = [
 		'goo/scripts/Scripts',
+		'goo/addons/ammo/AmmoSystem',
+		'goo/addons/ammo/AmmoComponent',
 		'goo/animation/SkeletonPose',
 		'goo/animation/blendtree/ManagedTransformSource',
 		'goo/animation/layer/AnimationLayer',
