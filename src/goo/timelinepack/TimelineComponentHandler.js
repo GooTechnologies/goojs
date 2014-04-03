@@ -19,6 +19,7 @@ define([
 	) {
 	'use strict';
 
+	var TWEEN = window.TWEEN;
 	/**
 	 * @class
 	 * @private
@@ -73,7 +74,7 @@ define([
 			channel.addKeyframe(
 				keyframeId,
 				keyframeConfig.time,
-				keyframeConfig.value, 
+				keyframeConfig.value,
 				easingFunction
 			);
 		} else {
@@ -176,6 +177,11 @@ define([
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
+
+			if (!isNaN(config.duration)) {
+				component.duration = +config.duration;
+			}
+			component.loop = (config.loop.enabled === true);
 
 			// remove existing channels in the component that are not mentioned in the config anymore
 			component.channels = component.channels.filter(function (channel) {
