@@ -192,8 +192,8 @@ define([
 					if (entity.lightComponent) {
 						entity.lightComponent.hidden = true;
 					}
-					if (entity.hTMLComponent) {
-						entity.hTMLComponent.hidden = true;
+					if (entity.htmlComponent) {
+						entity.htmlComponent.hidden = true;
 					}
 					return;
 				}
@@ -207,8 +207,8 @@ define([
 				if (entity.lightComponent) {
 					entity.lightComponent.hidden = entity.hidden;
 				}
-				if (entity.hTMLComponent) {
-					entity.hTMLComponent.hidden = entity.hidden;
+				if (entity.htmlComponent) {
+					entity.htmlComponent.hidden = entity.hidden;
 				}
 			});
 		};
@@ -228,8 +228,8 @@ define([
 				if (entity.lightComponent) {
 					entity.lightComponent.hidden = true;
 				}
-				if (entity.hTMLComponent) {
-					entity.hTMLComponent.hidden = true;
+				if (entity.htmlComponent) {
+					entity.htmlComponent.hidden = true;
 				}
 			});
 		};

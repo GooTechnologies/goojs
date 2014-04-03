@@ -10,17 +10,17 @@ define([
 	 * @class
 	 * @extends Component
 	 */
-	function HTMLComponent(domElement) {
+	function HtmlComponent(domElement) {
 		Component.call(this);
-		this.type = "HTMLComponent";
+		this.type = 'HtmlComponent';
 
 		this.domElement = domElement;
 
 		this.hidden = false;
 	}
 
-	HTMLComponent.prototype = Object.create(Component.prototype);
-	HTMLComponent.prototype.constructor = HTMLComponent;
+	HtmlComponent.prototype = Object.create(Component.prototype);
+	HtmlComponent.prototype.constructor = HtmlComponent;
 
-	return HTMLComponent;
+	return HtmlComponent;
 });

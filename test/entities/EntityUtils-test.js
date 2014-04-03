@@ -12,7 +12,7 @@ define([
 	'goo/entities/components/TransformComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/LightComponent',
-	'goo/entities/components/HTMLComponent'
+	'goo/entities/components/HtmlComponent'
 ], function(
 	World,
 	Entity,
@@ -27,7 +27,7 @@ define([
 	TransformComponent,
 	MeshRendererComponent,
 	LightComponent,
-	HTMLComponent
+	HtmlComponent
 ) {
 	'use strict';
 
@@ -137,14 +137,14 @@ define([
 			function getEntity() {
 				return world.createEntity().set(new MeshRendererComponent())
 					.set(new LightComponent())
-					.set(new HTMLComponent());
+					.set(new HtmlComponent());
 			}
 
 			function expectEverything(entity, entityHidden, componentsHidden) {
 				expect(entity.hidden).toEqual(entityHidden);
 				expect(entity.meshRendererComponent.hidden).toEqual(componentsHidden);
 				expect(entity.lightComponent.hidden).toEqual(componentsHidden);
-				expect(entity.hTMLComponent.hidden).toEqual(componentsHidden);
+				expect(entity.htmlComponent.hidden).toEqual(componentsHidden);
 			}
 
 			describe('hide', function () {
