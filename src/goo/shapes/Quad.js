@@ -19,12 +19,12 @@ define(['goo/renderer/MeshData'],
 			tileX = props.tileX;
 			tileY = props.tileY;
 		}
-		/** Extent along the local x axis.
+		/** Half-extent along the local x axis.
 		 * @type {number}
 		 * @default 0.5
 		 */
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
-		/** Extent along the local y axis.
+		/** Half-extent along the local y axis.
 		 * @type {number}
 		 * @default 0.5
 		 */

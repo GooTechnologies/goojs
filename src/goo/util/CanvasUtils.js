@@ -152,25 +152,20 @@ function(
 		return matrix;
 	};
 
-	var _cache = {};
-
 	/**
 	 * Convert SVG XML content to an HTMLImageElement.
 	 * @param  {string} data
 	 * @return {RSVP.Promise} Promise that resolves with the Image.
 	 */
-	CanvasUtils.svgDataToImage = function(data, id){
+	CanvasUtils.svgDataToImage = function(data){
 		var DOMURL = window.URL || window.webkitURL || window;
 		var p = new RSVP.Promise();
-		if (id && _cache[id]) {
-			DOMURL.revokeObjectURL(_cache[id]);
-		}
 
 		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
 		var img = new Image();
 
-		_cache[id] = DOMURL.createObjectURL(svg);
-		img.src = _cache[id];
+		var url = DOMURL.createObjectURL(svg);
+		img.src = url;
 
 		img.onload = function(){
 			p.resolve(img);
