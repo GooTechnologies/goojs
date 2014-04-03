@@ -106,11 +106,16 @@ define([], function () {
 			newEntryIndex = find(this.keyframes, time);
 			var newEntry = this.keyframes[newEntryIndex];
 			var nextEntry = this.keyframes[newEntryIndex + 1];
-			var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
-			var progressValue = newEntry.easingFunction(progressInEntry);
 
-			// REVIEW MathUtils.lerp
-			newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
+			if (nextEntry) {
+				var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
+				var progressValue = newEntry.easingFunction(progressInEntry);
+
+				// REVIEW MathUtils.lerp
+				newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
+			} else {
+				newValue = newEntry.value;
+			}
 		}
 
 		//! AT: comparing floats with === is ok here
