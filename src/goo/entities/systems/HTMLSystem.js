@@ -49,7 +49,7 @@ function(System, Renderer, Matrix4x4, MathUtils, Vector3) {
 
 			//! AT: should be done exactly how it's done for meshRendererComponent
 			// hacking it for now
-			if (entity.hidden) {
+			if (component.hidden) {
 				//! AT: is setting this every frame evil?
 				// is checking for it and setting it only if different less evil?
 				component.domElement.style.display = 'none';

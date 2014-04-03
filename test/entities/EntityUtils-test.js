@@ -6,7 +6,13 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/renderer/light/PointLight'
+	'goo/renderer/light/PointLight',
+
+	'goo/entities/systems/TransformSystem',
+	'goo/entities/components/TransformComponent',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/LightComponent',
+	'goo/entities/components/HTMLComponent'
 ], function(
 	World,
 	Entity,
@@ -15,7 +21,13 @@ define([
 	Material,
 	ShaderLib,
 	Camera,
-	PointLight
+	PointLight,
+
+	TransformSystem,
+	TransformComponent,
+	MeshRendererComponent,
+	LightComponent,
+	HTMLComponent
 ) {
 	'use strict';
 
@@ -23,10 +35,13 @@ define([
 		var world;
 		var material = new Material(ShaderLib.simple);
 		var meshData = new Box();
-		var camera = new Camera(45, 1, 1, 1000);
+		var camera = new Camera();
 		var light = new PointLight();
+
 		beforeEach(function() {
 			world = new World();
+			world.add(new TransformComponent());
+			world.add(new TransformSystem());
 			Entity.entityCount = 0;
 		});
 
@@ -116,5 +131,99 @@ define([
 			expect(bb.yExtent).toBe(10.5);
 			expect(bb.zExtent).toBe(10.5);
 		});
+
+		//! AT: let's isolate this a bit
+		(function () {
+			function getEntity() {
+				return world.createEntity().set(new MeshRendererComponent())
+					.set(new LightComponent())
+					.set(new HTMLComponent());
+			}
+
+			function expectEverything(entity, entityHidden, componentsHidden) {
+				expect(entity.hidden).toEqual(entityHidden);
+				expect(entity.meshRendererComponent.hidden).toEqual(componentsHidden);
+				expect(entity.lightComponent.hidden).toEqual(componentsHidden);
+				expect(entity.hTMLComponent.hidden).toEqual(componentsHidden);
+			}
+
+			describe('hide', function () {
+				it('can hide an entity and its components', function () {
+					var entity = getEntity();
+
+					EntityUtils.hide(entity);
+
+					expectEverything(entity, true, true);
+				});
+
+				it('can hide an entity and its children and their components', function () {
+					var grandparent = getEntity();
+					var parent1 = getEntity();
+					var parent2 = getEntity();
+					var child11 = getEntity();
+					var child12 = getEntity();
+					var child21 = getEntity();
+					var child22 = getEntity();
+
+					grandparent.attachChild(parent1);
+					grandparent.attachChild(parent2);
+					parent1.attachChild(child11);
+					parent1.attachChild(child12);
+					parent2.attachChild(child21);
+					parent2.attachChild(child22);
+
+					EntityUtils.hide(parent1);
+					EntityUtils.hide(grandparent);
+
+					expectEverything(grandparent, true, true);
+					expectEverything(parent1, true, true);
+					expectEverything(parent2, false, true);
+					expectEverything(child11, false, true);
+					expectEverything(child12, false, true);
+					expectEverything(child21, false, true);
+					expectEverything(child22, false, true);
+				});
+			});
+
+			describe('show', function () {
+				it('can show a hidden entity and its components', function () {
+					var entity = getEntity();
+
+					EntityUtils.hide(entity);
+					EntityUtils.show(entity);
+
+					expectEverything(entity, false, false);
+				});
+
+				it('can show a hidden entity but keeps its components hidden if an ancestor entity is hidden', function () {
+					var grandparent = getEntity();
+					var parent1 = getEntity();
+					var parent2 = getEntity();
+					var child11 = getEntity();
+					var child12 = getEntity();
+					var child21 = getEntity();
+					var child22 = getEntity();
+
+					grandparent.attachChild(parent1);
+					grandparent.attachChild(parent2);
+					parent1.attachChild(child11);
+					parent1.attachChild(child12);
+					parent2.attachChild(child21);
+					parent2.attachChild(child22);
+
+					EntityUtils.hide(grandparent);
+					EntityUtils.show(parent1);
+					EntityUtils.show(child22);
+
+					expectEverything(grandparent, true, true);
+					expectEverything(parent1, false, true);
+					expectEverything(parent2, false, true);
+					expectEverything(child11, false, true);
+					expectEverything(child12, false, true);
+					expectEverything(child21, false, true);
+					expectEverything(child22, false, true);
+				});
+			});
+		})();
 	});
 });

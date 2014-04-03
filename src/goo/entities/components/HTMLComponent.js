@@ -1,9 +1,9 @@
 define([
-	"goo/entities/components/Component"
+	'goo/entities/components/Component'
 ], /** @lends */ function (
 	Component
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * HTML Compnent
@@ -13,9 +13,14 @@ define([
 	function HTMLComponent(domElement) {
 		Component.call(this);
 		this.type = "HTMLComponent";
+
 		this.domElement = domElement;
+
+		this.hidden = false;
 	}
 
 	HTMLComponent.prototype = Object.create(Component.prototype);
+	HTMLComponent.prototype.constructor = HTMLComponent;
+
 	return HTMLComponent;
 });
