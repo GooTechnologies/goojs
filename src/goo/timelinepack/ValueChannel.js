@@ -5,7 +5,6 @@ define([], function () {
 	function ValueChannel(id, options) {
 		this.id = id;
 		this.keyframes = [];
-		this.time = 0;
 		this.lastTime = 0;
 		this.value = 0;
 
@@ -80,22 +79,10 @@ define([], function () {
 	};
 
 	/**
-	 * Sets the time
-	 * @param time
-	 */
-	ValueChannel.prototype.setTime = function (time) {
-		this.time = time;
-		this.update(0);
-	};
-
-
-	/**
 	 * Update the channel,
 	 * @param tpf
 	 */
-	ValueChannel.prototype.update = function (tpf) {
-		this.time += tpf;
-
+	ValueChannel.prototype.update = function (time) {
 		// redo looping
 
 		// tmp hack
@@ -109,44 +96,51 @@ define([], function () {
 		// }
 
 		// run update callback on current position
-		// REVIEW This could be moved to the 'else'
-		var newEntryIndex = find(this.keyframes, this.time);
-		var newEntry = this.keyframes[newEntryIndex];
-
 		var newValue;
-		if (this.time <= this.keyframes[0].time) {
+		var newEntryIndex;
+		if (time <= this.keyframes[0].time) {
 			newValue = this.keyframes[0].value;
-		} else if (this.time >= this.lastTime) {
+		} else if (time >= this.lastTime) {
 			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
+			newEntryIndex = find(this.keyframes, time);
+			var newEntry = this.keyframes[newEntryIndex];
 			var nextEntry = this.keyframes[newEntryIndex + 1];
-			var progressInEntry = (this.time - newEntry.time) / (nextEntry.time - newEntry.time);
-			var progressValue = newEntry.easingFunction(progressInEntry);
 
-			// REVIEW MathUtils.lerp
-			newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
+			if (nextEntry) {
+				var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
+				var progressValue = newEntry.easingFunction(progressInEntry);
+
+				// REVIEW MathUtils.lerp
+				newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
+			} else {
+				newValue = newEntry.value;
+			}
 		}
 
 		//! AT: comparing floats with === is ok here
 		if (this.value !== newValue || true) { // overriding for now to get time progression
 			this.value = newValue;
-			this.callbackUpdate(this.time, this.value, newEntryIndex);
+			this.callbackUpdate(time, this.value, newEntryIndex);
 		}
+		return newValue;
 	};
 
+	/*
 	function memoize(fun) {
 		var entity;
 		return function (entityId) {
 			return entity || (entity = fun(entityId));
-		}
+		};
 	}
+	*/
 
 	// REVIEW Should probably be somewhere else
 	// tween factories
 	ValueChannel.getTranslationXTweener = function (entityId, resolver) {
 		var entity;
 		return function (time, value) {
-			if (!entity) { entity = resolver(); }
+			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.translation.data[0] = value;
 			entity.transformComponent.setUpdated();
 		};
@@ -155,7 +149,7 @@ define([], function () {
 	ValueChannel.getTranslationYTweener = function (entityId, resolver) {
 		var entity;
 		return function (time, value) {
-			if (!entity) { entity = resolver(); }
+			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.translation.data[1] = value;
 			entity.transformComponent.setUpdated();
 		};
@@ -164,7 +158,7 @@ define([], function () {
 	ValueChannel.getTranslationZTweener = function (entityId, resolver) {
 		var entity;
 		return function (time, value) {
-			if (!entity) { entity = resolver(); }
+			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.translation.data[2] = value;
 			entity.transformComponent.setUpdated();
 		};
@@ -174,10 +168,8 @@ define([], function () {
 		var entity;
 		return function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
-
-				entity.transformComponent.transform.scale.data[0] = value;
-				entity.transformComponent.setUpdated();
-
+			entity.transformComponent.transform.scale.data[0] = value;
+			entity.transformComponent.setUpdated();
 		};
 	};
 
@@ -193,7 +185,7 @@ define([], function () {
 	ValueChannel.getScaleZTweener = function (entityId, resolver) {
 		var entity;
 		return function (time, value) {
-			if (!entity) { entity = resolver(); }
+			if (!entity) { entity = resolver(entityId); }
 			entity.transformComponent.transform.scale.data[2] = value;
 			entity.transformComponent.setUpdated();
 		};

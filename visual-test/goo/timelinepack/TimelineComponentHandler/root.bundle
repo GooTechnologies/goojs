@@ -448,7 +448,52 @@
 						"k2": {
 							"time"  : 2,
 							"value" : 3,
+							"easing": "Elastic.InOut"
+						},
+						"k3": {
+							"time"  : 2.5,
+							"value" : 1,
+							"easing": "Back.InOut"
+						}
+					}
+				},
+				"c2": {
+					"sortValue": 1,
+					"entityId": "e0285494b86346d0b1ecaee48c36b2e9.entity",
+					"propertyKey": "scaleY",
+					"keyframes": {
+						"k1": {
+							"time"  : 0.5,
+							"value" : 1,
+							"easing": "Exponential.InOut"
+						},
+						"k2": {
+							"time"  : 2,
+							"value" : 3,
 							"easing": "Quadratic.InOut"
+						},
+						"k3": {
+							"time"  : 3.5,
+							"value" : 1,
+							"easing": "Back.InOut"
+						}
+					}
+				},
+				"c3": {
+					"sortValue": 3,
+					"eventName": "eventchannel1",
+					"keyframes": {
+						"k1": {
+							"time"  : 0.5,
+							"value" : "message1"
+						},
+						"k2": {
+							"time"  : 2,
+							"value": "message2"
+						},
+						"k3": {
+							"time"  : 3.5,
+							"value": "message3"
 						}
 					}
 				}

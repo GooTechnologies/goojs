@@ -188,11 +188,27 @@ define([
 			var listeners = environment.orbitListeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						updateButtonState(event.button, true, parameters, environment);
+						var button = event.button;
+						if (button === 0) {
+							if (event.altKey) {
+								button = 2;
+							} else if (event.shiftKey) {
+								button = 1;
+							}
+						}
+						updateButtonState(button, true, parameters, environment);
 					}
 				},
 				mouseup: function(event) {
-					updateButtonState(event.button, false, parameters, environment);
+					var button = event.button;
+					if (button === 0) {
+						if (event.altKey) {
+							button = 2;
+						} else if (event.shiftKey) {
+							button = 1;
+						}
+					}
+					updateButtonState(button, false, parameters, environment);
 				},
 				mousemove: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
@@ -225,9 +241,6 @@ define([
 						if (touches.length === 2) {
 							var x2 = touches[1].clientX;
 							var y2 = touches[1].clientY;
-							// REVIEW : cx and cy are never used, miss or just remove?
-							cx = (x1 + x2) / 2;
-							cy = (y1 + y2) / 2;
 							distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 						} else {
 							cx = x1;

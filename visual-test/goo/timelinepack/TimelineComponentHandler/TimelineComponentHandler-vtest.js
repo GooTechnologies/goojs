@@ -13,7 +13,9 @@ require([
 	'goo/loaders/DynamicLoader',
 
 	'goo/timelinepack/TimelineComponentHandler',
-	'goo/timelinepack/TimelineSystem'
+	'goo/timelinepack/TimelineSystem',
+
+	'goo/entities/SystemBus'
 ], function (
 	GooRunner,
 	Material,
@@ -28,18 +30,42 @@ require([
 
 	DynamicLoader,
 	TimelineComponentHandler,
-	TimelineSystem
+	TimelineSystem,
+
+	SystemBus
 ) {
 	'use strict';
 
+	function setupGUI() {
+		var buttonReset = document.createElement('button');
+		buttonReset.innerHTML = 'reset';
+		buttonReset.addEventListener('click', TimelineSystem.prototype.reset.bind(timelineSystem));
+		document.body.appendChild(buttonReset);
+
+		var buttonPause = document.createElement('button');
+		buttonPause.innerHTML = 'pause';
+		buttonPause.addEventListener('click', TimelineSystem.prototype.pause.bind(timelineSystem));
+		document.body.appendChild(buttonPause);
+
+		var buttonResume = document.createElement('button');
+		buttonResume.innerHTML = 'play';
+		buttonResume.addEventListener('click', TimelineSystem.prototype.play.bind(timelineSystem));
+		document.body.appendChild(buttonResume);
+	}
+
+	function setupEventListener() {
+		SystemBus.addListener('eventchannel1', function (data) {
+			console.log('Got message on', 'eventchannel1', ':', data);
+		});
+	}
+
 	var goo = V.initGoo({
-		antialias: true,
 		manuallyStartGameLoop: true
 	});
 
 	var world = goo.world;
-
-	world.add(new TimelineSystem());
+	var timelineSystem = new TimelineSystem();
+	world.add(timelineSystem);
 
 	// The loader takes care of loading the data
 	var loader = new DynamicLoader({
@@ -49,7 +75,7 @@ require([
 
 	loader.load('root.bundle', {
 		preloadBinaries: true
-	}).then(function(result) {
+	}).then(function (result) {
 		// Grab the first project in the bundle.
 		var bundleKeys = Object.keys(result);
 		var projectIds = bundleKeys.filter(function(k) {
@@ -61,8 +87,11 @@ require([
 			return null;
 		}
 
+		setupGUI();
+		setupEventListener();
+
 		return loader.load(projectId);
-	}).then(function() {
+	}).then(function () {
 		// This code will be called when the project has finished loading.
 		goo.renderer.domElement.id = 'goo';
 		document.body.appendChild(goo.renderer.domElement);
@@ -71,17 +100,10 @@ require([
 
 		// Application code goes here!
 
-		/*
-		 To get a hold of entities, one can use the World's selection functions:
-		 var allEntities = goo.world.getEntities();                  // all
-		 var entity      = goo.world.by.name('EntityName').first();  // by name
-		 */
-
 		// Start the rendering loop!
 		goo.startGameLoop();
 
-	}).then(null, function(e) {
-		// If something goes wrong, 'e' is the error message from the engine.
-		//alert('Failed to load project: ' + e);
+	}).then(null, function (e) {
+
 	});
 });

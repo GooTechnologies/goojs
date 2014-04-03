@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/HTMLComponent',
+	'goo/entities/components/HtmlComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -8,7 +8,7 @@ define([
 /** @lends */
 function(
 	ComponentHandler,
-	HTMLComponent,
+	HtmlComponent,
 	RSVP,
 	pu,
 	_
@@ -24,14 +24,14 @@ function(
 	 * @extends ComponentHandler
 	 * @private
 	 */
-	function HTMLComponentHandler() {
+	function HtmlComponentHandler() {
 		ComponentHandler.apply(this, arguments);
-		this._type = 'HTMLComponent';
+		this._type = 'HtmlComponent';
 	}
 
-	HTMLComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ComponentHandler._registerClass('html', HTMLComponentHandler);
-	HTMLComponentHandler.prototype.constructor = HTMLComponentHandler;
+	HtmlComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	ComponentHandler._registerClass('html', HtmlComponentHandler);
+	HtmlComponentHandler.prototype.constructor = HtmlComponentHandler;
 
 	/**
 	 * Prepare component. Set defaults on config here.
@@ -39,7 +39,7 @@ function(
 	 * @returns {object}
 	 * @private
 	 */
-	HTMLComponentHandler.prototype._prepare = function (config) {};
+	HtmlComponentHandler.prototype._prepare = function (config) {};
 
 	/**
 	 * Create camera component object.
@@ -47,8 +47,8 @@ function(
 	 * @returns {CameraComponent} the created component object
 	 * @private
 	 */
-	HTMLComponentHandler.prototype._create = function () {
-		return new HTMLComponent();
+	HtmlComponentHandler.prototype._create = function () {
+		return new HtmlComponent();
 	};
 
 
@@ -59,7 +59,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	HTMLComponentHandler.prototype.update = function (entity, config, options) {
+	HtmlComponentHandler.prototype.update = function (entity, config, options) {
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
@@ -93,7 +93,7 @@ function(
 		});
 	};
 
-	HTMLComponentHandler.prototype._remove = function (entity) {
+	HtmlComponentHandler.prototype._remove = function (entity) {
 		ComponentHandler.prototype._remove.call(this, entity);
 		var component = entity.htmlComponent;
 		if (component.domElement) {
@@ -101,5 +101,5 @@ function(
 		}
 	}
 
-	return HTMLComponentHandler;
+	return HtmlComponentHandler;
 });

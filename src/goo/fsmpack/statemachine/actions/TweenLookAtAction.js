@@ -83,6 +83,7 @@ function(
 		var transform = transformComponent.transform;
 
 		var distance = Vector3.distance(new Vector3(this.to), transform.translation);
+		var time = entity._world.time * 1000;
 
 		var initialLookAt = new Vector3(0, 0, 1);
 		var orientation = transform.rotation;
@@ -101,7 +102,7 @@ function(
 			transformComponent.setUpdated();
 		}).onComplete(function() {
 			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start(fsm.getTime() * 1000);
+		}.bind(this)).start(time);
 	};
 
 	return TweenLookAtAction;

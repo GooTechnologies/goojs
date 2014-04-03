@@ -17,7 +17,7 @@ define([
 
 	var defaults = {
 		backgroundColor: [0.3,0.3,0.3,1],
-		globalAmbient: [0,0,0,1],
+		globalAmbient: [0,0,0],
 		fog: {
 			enabled: false,
 			color: [1,1,1],
@@ -70,7 +70,7 @@ define([
 		// Reset environment
 		SystemBus.emit('goo.setClearColor', defaults.backgroundColor);
 		ShaderBuilder.CLEAR_COLOR = defaults.backgroundColor;
-		ShaderBuilder.GLOBAL_AMBIENT = defaults.globalAmbient;
+		ShaderBuilder.GLOBAL_AMBIENT = defaults.globalAmbient.slice(0,3);
 		ShaderBuilder.USE_FOG = defaults.fog.enabled;
 		ShaderBuilder.FOG_COLOR = defaults.fog.color.slice(0,3);
 		ShaderBuilder.FOG_SETTINGS = [defaults.fog.near, defaults.fog.far];

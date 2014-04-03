@@ -649,5 +649,35 @@ function (
 		this._picking.doPick = true;
 	};
 
+	/**
+	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.
+	 * @private
+	 */
+	GooRunner.prototype.pickSync = function (x, y) {
+		// save the clear color
+		var currentClearColor = this.renderer.clearColor.data;
+
+		var savedClearColor = [
+			currentClearColor[0],
+			currentClearColor[1],
+			currentClearColor[2],
+			currentClearColor[3]
+		];
+
+		// change the clear color
+		this.renderer.setClearColor(0, 0, 0, 1);
+
+		// render
+		this.renderSystem.renderToPick(this.renderer, false);
+
+		// restore the clear color
+		this.renderer.setClearColor.apply(this.renderer, savedClearColor);
+
+		// get the picking data from the buffer
+		var pickingStore = {};
+		this.renderer.pick(x, y, pickingStore, Renderer.mainCamera);
+		return pickingStore;
+	};
+
 	return GooRunner;
 });

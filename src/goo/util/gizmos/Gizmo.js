@@ -129,7 +129,7 @@ function(
 			var camera = Renderer.mainCamera;
 			var scale;
 			if (camera.projectionMode === Camera.Perspective) {
-				var dist = Math.sqrt(camera.translation.distanceSquared(this.transform.translation));
+				var dist = camera.translation.distance(this.transform.translation);
 				scale = dist * this._gizmoSize;
 			} else {
 				scale = (camera._frustumTop - camera._frustumBottom) / 30;

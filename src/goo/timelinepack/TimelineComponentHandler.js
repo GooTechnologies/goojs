@@ -139,7 +139,6 @@ define([
 			} else {
 				channel = new EventChannel(channelId);
 			}
-
 			component.channels.push(channel);
 		}
 

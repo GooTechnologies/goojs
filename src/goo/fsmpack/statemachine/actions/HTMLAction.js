@@ -35,7 +35,7 @@ function(
 
 	HTMLAction.prototype._setup = function (fsm) {
 		var ownerEntity = fsm.getOwnerEntity();
-		this.domElement = ownerEntity.hTMLComponent.domElement;
+		this.domElement = ownerEntity.htmlComponent.domElement;
 		this.domElement.addEventListener('click', this.eventListener);
 	};
 

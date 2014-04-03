@@ -180,7 +180,7 @@ define([
 		EntityUtils.show = function(entity) {
 			entity.hidden = false;
 
-			//first search if it has hidden parents to determine if itself should be visible
+			// first search if it has hidden parents to determine if itself should be visible
 			var pointer = entity;
 			while (pointer.transformComponent.parent) {
 				pointer = pointer.transformComponent.parent.entity;
@@ -189,17 +189,26 @@ define([
 					if (entity.meshRendererComponent) {
 						entity.meshRendererComponent.hidden = true;
 					}
+					if (entity.lightComponent) {
+						entity.lightComponent.hidden = true;
+					}
+					if (entity.htmlComponent) {
+						entity.htmlComponent.hidden = true;
+					}
 					return;
 				}
 			}
 
-			EntityUtils.traverse(entity, function(entity) {
+			entity.traverse(function (entity) {
 				if (entity.hidden) { return false; }
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.hidden = entity.hidden;
 				}
 				if (entity.lightComponent) {
 					entity.lightComponent.hidden = entity.hidden;
+				}
+				if (entity.htmlComponent) {
+					entity.htmlComponent.hidden = entity.hidden;
 				}
 			});
 		};
@@ -208,16 +217,19 @@ define([
 		 * Hides the entity and its descendants
 		 * @param {Entity} entity The entity to hide
 		 */
-		EntityUtils.hide = function(entity) {
+		EntityUtils.hide = function (entity) {
 			entity.hidden = true;
 
 			// hide everything underneath this
-			EntityUtils.traverse(entity, function(entity) {
+			entity.traverse(function (entity) {
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.hidden = true;
 				}
 				if (entity.lightComponent) {
 					entity.lightComponent.hidden = true;
+				}
+				if (entity.htmlComponent) {
+					entity.htmlComponent.hidden = true;
 				}
 			});
 		};

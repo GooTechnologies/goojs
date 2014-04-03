@@ -86,7 +86,7 @@ require([
 				case 50:
 					sphereEntity.soundComponent.sounds[0].play()
 						.then(function () {
-							console.log('boing ended');
+							console.log('squigly ended');
 						});
 					console.log('squigly');
 					break;
