@@ -53,7 +53,7 @@ define([
 				param['default'] = 'Left';
 				break;
 			case 'panButton':
-				param['default'] = 'Right';
+				param['default'] = 'Middle';
 				break;
 			case 'panSpeed':
 				param['default'] = 1; // PanSpeed should be 1 in the parallel cam / 2D case
