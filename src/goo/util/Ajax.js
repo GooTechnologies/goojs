@@ -165,7 +165,7 @@ function(
 	};
 
 	/**
-	 * Loads image data at specified path which is returned in a Promise object. 
+	 * Loads image data at specified path which is returned in a Promise object.
 	 *
 	 * @example
 	 * loader.loadImage('resources/image.png').then(function(image) {
@@ -289,6 +289,70 @@ function(
 	Ajax.types.asset = Ajax.types.image.concat(
 		Ajax.types.binary
 	);
+
+	Ajax.parseURL = (function() {
+		var splitRegExp = new RegExp(
+			'^' +
+				'(?:' +
+				'([^:/?#.]+)' +                         // scheme - ignore special characters
+														// used by other URL parts such as :,
+														// ?, /, #, and .
+				':)?' +
+				'(?://' +
+				'(?:([^/?#]*)@)?' +                     // userInfo
+				'([\\w\\d\\-\\u0100-\\uffff.%]*)' +     // domain - restrict to letters,
+														// digits, dashes, dots, percent
+														// escapes, and unicode characters.
+				'(?::([0-9]+))?' +                      // port
+				')?' +
+				'([^?#]+)?' +                           // path
+				'(?:\\?([^#]*))?' +                     // query
+				'(?:#(.*))?' +                          // fragment
+				'$');
+
+		return function (uri) {
+			var split;
+			split = uri.match(splitRegExp);
+			return {
+				'scheme':split[1],
+				'user_info':split[2],
+				'domain':split[3],
+				'port':split[4],
+				'path':split[5],
+				'query_data': split[6],
+				'fragment':split[7]
+			};
+		};
+	})();
+
+	/**
+	 * Removes everything after the path in the URL, including query parameters and fragments.
+	 *
+	 * @example
+	 *     var url = 'http://example.com/images/goo.png?param=1#fragment';
+	 *     var newURL = Ajax.removeParamsFromURL(url); // 'http://example.com/images/goo.png'
+	 *
+	 * @param  {string} url
+	 * @return {string}
+	 *
+	 * @see http://codereview.stackexchange.com/questions/9574/faster-and-cleaner-way-to-parse-parameters-from-url-in-javascript-jquery
+	 */
+	Ajax.removeParamsFromURL = function(url){
+		if (!url) {
+			return '';
+		}
+		var parsedUrl = Ajax.parseURL(url);
+		var path = parsedUrl.path;
+		if (!path) {
+			return url;
+		}
+		var idx = url.indexOf(path);
+		var len = idx + path.length;
+		if (len > url.length) {
+			return url;
+		}
+		return url.substr(0,len);
+	};
 
 	return Ajax;
 });
