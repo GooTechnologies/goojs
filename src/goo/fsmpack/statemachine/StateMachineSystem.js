@@ -20,7 +20,8 @@ function (
 		this.entered = true;
 		this.paused = false;
 
-		/** Current time, in seconds.
+		/**
+		 * Current time, in seconds.
 		 * @type {Number}
 		 */
 		this.time = 0;
