@@ -7,7 +7,15 @@ function(Action) {
 		Action.apply(this, arguments);
 
 		this.everyFrame = true;
+
+		/**Current time, in milliseconds.
+		 * @type {Number}
+		 */
 		this.currentTime = 0;
+
+		/**Wait time, in milliseconds.
+		 * @type {Number}
+		 */
 		this.totalWait = 0;
 	}
 
@@ -23,13 +31,13 @@ function(Action) {
 			name: 'Base Time',
 			key: 'waitTime',
 			type: 'number',
-			description: 'Base time in seconds before transition fires',
-			"default": 5
+			description: 'Base time in milliseconds before transition fires',
+			"default": 5000
 		}, {
 			name: 'Random Time',
 			key: 'randomTime',
 			type: 'number',
-			description: 'Add up to this much Random time to the base time',
+			description: 'Add up to this much Random time to the base time.',
 			"default": 0
 		}],
 		transitions: [{
@@ -45,7 +53,7 @@ function(Action) {
 	};
 
 	WaitAction.prototype._run = function(fsm) {
-		this.currentTime += fsm.getTpf();
+		this.currentTime += fsm.getTpf() * 1000;
 		if (this.currentTime >= this.totalWait) {
 			fsm.send(this.transitions.timeUp);
 		}
