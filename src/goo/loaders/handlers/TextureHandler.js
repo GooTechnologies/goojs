@@ -190,9 +190,15 @@ function(
 				}
 			} else if(config.svgData){
 				// Load SVG data
-				ret = CanvasUtils.svgDataToImage(config.svgData, config.id).then(function (image) {
-					texture.setImage(image);
-					return texture;
+				var p = new RSVP.Promise();
+				ret = p;
+				CanvasUtils.renderSvgToCanvas(config.svgData, {}, function(canvas){
+					if(canvas){
+						texture.setImage(canvas);
+						p.resolve(texture);
+					} else {
+						p.reject('could not render svg to canvas');
+					}
 				});
 			} else {
 				// Blank
