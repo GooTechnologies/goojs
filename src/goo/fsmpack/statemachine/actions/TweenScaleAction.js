@@ -102,7 +102,7 @@ define([
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(fsm.getTime() * 1000);
+				}.bind(this)).start(time);
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
