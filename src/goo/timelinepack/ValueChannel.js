@@ -1,10 +1,9 @@
 define([
-	'goo/math/Vector3'
+//	'goo/math/Vector3'
 ], function (
-	Vector3
+//	Vector3
 	) {
 	'use strict';
-	// REVIEW Would be nice to separate in TriggerChannel and ValueChannel
 
 	function ValueChannel(id, options) {
 		this.id = id;
@@ -100,11 +99,14 @@ define([
 		// }
 
 		// run update callback on current position
+		if (!this.keyframes.length) {
+			return;
+		}
 		var newValue;
 		var newEntryIndex;
 		if (time <= this.keyframes[0].time) {
 			newValue = this.keyframes[0].value;
-		} else if (time >= this.lastTime) {
+		} else if (time >= this.keyframes[this.keyframes.length - 1].time) {
 			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
 			newEntryIndex = find(this.keyframes, time);
@@ -141,33 +143,31 @@ define([
 
 	// REVIEW Should probably be somewhere else
 	// tween factories
-	ValueChannel.getTranslationXTweener = function (entityId, resolver) {
+	ValueChannel.getSimpleTransformTweener = function (type, dimensionIndex, entityId, resolver) {
 		var entity;
 		return function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
-			entity.transformComponent.transform.translation.data[0] = value;
+
+			entity.transformComponent.transform[type].data[dimensionIndex] = value;
 			entity.transformComponent.setUpdated();
 		};
 	};
 
-	ValueChannel.getTranslationYTweener = function (entityId, resolver) {
+	ValueChannel.getRotationTweener = function(angleIndex, entityId, resolver, rotation) {
 		var entity;
-		return function (time, value) {
+		var degToRad = Math.PI / 180;
+		var func = function(time, value) {
 			if (!entity) { entity = resolver(entityId); }
-			entity.transformComponent.transform.translation.data[1] = value;
+			var rotation = func.rotation;
+			rotation[angleIndex] = value * degToRad;
+			entity.transformComponent.transform.rotation.fromAngles(rotation[0], rotation[1], rotation[2]);
 			entity.transformComponent.setUpdated();
 		};
+		func.rotation = rotation;
+		return func;
 	};
 
-	ValueChannel.getTranslationZTweener = function (entityId, resolver) {
-		var entity;
-		return function (time, value) {
-			if (!entity) { entity = resolver(entityId); }
-			entity.transformComponent.transform.translation.data[2] = value;
-			entity.transformComponent.setUpdated();
-		};
-	};
-
+	/* Unstable and probably very slow
 	ValueChannel.getRotationXTweener = function (entityId, resolver) {
 		var entity;
 		var angles = new Vector3();
@@ -206,33 +206,7 @@ define([
 			entity.transformComponent.setUpdated();
 		};
 	};
-
-	ValueChannel.getScaleXTweener = function (entityId, resolver) {
-		var entity;
-		return function (time, value) {
-			if (!entity) { entity = resolver(entityId); }
-			entity.transformComponent.transform.scale.data[0] = value;
-			entity.transformComponent.setUpdated();
-		};
-	};
-
-	ValueChannel.getScaleYTweener = function (entityId, resolver) {
-		var entity;
-		return function (time, value) {
-			if (!entity) { entity = resolver(entityId); }
-			entity.transformComponent.transform.scale.data[1] = value;
-			entity.transformComponent.setUpdated();
-		};
-	};
-
-	ValueChannel.getScaleZTweener = function (entityId, resolver) {
-		var entity;
-		return function (time, value) {
-			if (!entity) { entity = resolver(entityId); }
-			entity.transformComponent.transform.scale.data[2] = value;
-			entity.transformComponent.setUpdated();
-		};
-	};
+	*/
 
 	return ValueChannel;
 });

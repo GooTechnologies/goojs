@@ -40,6 +40,7 @@ define([
 	};
 
 	TimelineComponentHandler.tweenMap = {
+		/*
 		'translationX': ValueChannel.getTranslationXTweener,
 		'translationY': ValueChannel.getTranslationYTweener,
 		'translationZ': ValueChannel.getTranslationZTweener,
@@ -49,6 +50,17 @@ define([
 		'scaleX': ValueChannel.getScaleXTweener,
 		'scaleY': ValueChannel.getScaleYTweener,
 		'scaleZ': ValueChannel.getScaleZTweener,
+		'event': function () {}
+		*/
+		'translationX': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 0),
+		'translationY': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 1),
+		'translationZ': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 2),
+		'scaleX': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 0),
+		'scaleY': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 1),
+		'scaleZ': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 2),
+		'rotationX': ValueChannel.getRotationTweener.bind(null, 0),
+		'rotationY': ValueChannel.getRotationTweener.bind(null, 1),
+		'rotationZ': ValueChannel.getRotationTweener.bind(null, 2),
 		'event': function () {}
 	};
 
@@ -124,7 +136,7 @@ define([
 		};
 	}
 
-	function updateChannel(channelConfig, channelId, component, entityResolver) {
+	function updateChannel(channelConfig, channelId, component, entityResolver, rotationMap) {
 		// search for existing one
 		var channel = ArrayUtil.find(component.channels, function (channel) {
 			return channel.id === channelId;
@@ -132,10 +144,14 @@ define([
 
 		// and create one if needed
 		if (!channel) {
-			if (channelConfig.propertyKey) {
-				var updateCallback = channelConfig.propertyKey ?
-					TimelineComponentHandler.tweenMap[channelConfig.propertyKey](channelConfig.entityId, entityResolver) :
-					function () {};
+			var key = channelConfig.propertyKey;
+			if (key) {
+				var entityId = channelConfig.entityId;
+				if (entityId && !rotationMap[entityId]) {
+					rotationMap[entityId] = [0, 0, 0];
+				}
+				var updateCallback =
+					TimelineComponentHandler.tweenMap[key](entityId, entityResolver, rotationMap[entityId]);
 
 				channel = new ValueChannel(channelId, {
 					callbackUpdate: updateCallback
@@ -144,6 +160,11 @@ define([
 				channel = new EventChannel(channelId);
 			}
 			component.channels.push(channel);
+		} else if (channelConfig.entityId && channel.callbackUpdate && channel.callbackUpdate.rotation) {
+			var rotation = rotationMap[channelConfig.entityId] = channel.callbackUpdate.rotation;
+			rotation[0] = 0;
+			rotation[1] = 0;
+			rotation[2] = 0;
 		}
 
 		// remove existing keyframes in the channel that are not mentioned in the config anymore
@@ -194,10 +215,10 @@ define([
 			var entityResolver = function (entityId) {
 				return that.world.entityManager.getEntityById(entityId);
 			};
-
+			var rotationMap = {};
 			for (var channelId in config.channels) {
 				var channelConfig = config.channels[channelId];
-				updateChannel(channelConfig, channelId, component, entityResolver);
+				updateChannel(channelConfig, channelId, component, entityResolver, rotationMap);
 			}
 
 			return component;
