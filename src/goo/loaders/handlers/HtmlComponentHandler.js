@@ -61,8 +61,8 @@ function(
 			if (!domElement) {
 				domElement = document.createElement('div');
 				domElement.id = entity.id;
+				domElement.className = 'goo-entity'
 				domElement.addEventListener('mousedown', function(domEvent) {
-					console.log('HTML Mousedown');
 					var gooRunner = entity._world.gooRunner;
 					var evt = {
 						entity: entity,
@@ -107,11 +107,12 @@ function(
 				domElement.style.position = 'absolute';
 				domElement.style.top = 0;
 				domElement.style.left = 0;
-				domElement.style.zIndex = 3000;
+				domElement.style.zIndex = 1;
 				var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
 				parentEl.appendChild(domElement);
 			}
 			domElement.innerHTML = config.innerHTML;
+			component.useTransformComponent = config.useTransformComponent == null ? true: config.useTransformComponent;
 		});
 	};
 

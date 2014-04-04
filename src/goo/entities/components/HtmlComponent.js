@@ -17,6 +17,7 @@ define([
 		this.domElement = domElement;
 
 		this.hidden = false;
+		this.useTransformComponent = true;
 	}
 
 	HtmlComponent.prototype = Object.create(Component.prototype);
