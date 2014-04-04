@@ -67,6 +67,7 @@ function (
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
+		this._devicePixelRatio = 1;
 
 		this.mouseMove = function(evt) {
 			if(!this.activeGizmo) {
@@ -74,9 +75,10 @@ function (
 			}
 			var x = (evt.offsetX !== undefined) ? evt.offsetX : evt.layerX;
 			var y = (evt.offsetY !== undefined) ? evt.offsetY : evt.layerY;
+
 			this.activeGizmo.update([
-				x / this.viewportWidth,
-				y / this.viewportHeight
+				x / (this.viewportWidth / this._devicePixelRatio),
+				y / (this.viewportHeight / this._devicePixelRatio)
 			]);
 		}.bind(this);
 
@@ -97,8 +99,8 @@ function (
 			this.activeGizmo.activate({
 				id: id,
 				data: handle,
-				x: x / this.viewportWidth,
-				y: y / this.viewportHeight
+				x: x / (this.viewportWidth / this._devicePixelRatio),
+				y: y / (this.viewportHeight / this._devicePixelRatio)
 			});
 			this.domElement.addEventListener('mousemove', this.mouseMove);
 		}
@@ -239,6 +241,7 @@ function (
 
 	GizmoRenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
+		this._devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
 
 		if(!this.domElement) {
 			this.domElement = renderer.domElement;
