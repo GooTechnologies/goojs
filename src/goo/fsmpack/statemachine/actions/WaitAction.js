@@ -39,7 +39,7 @@ function(Action) {
 			name: 'Random Time',
 			key: 'randomTime',
 			type: 'number',
-			description: 'When greater than 0, a random number of milliseconds (between 0 and this value) will be added to the base wait time',
+			description: 'A random number of milliseconds (between 0 and this value) will be added to the base wait time',
 			"default": 0
 		}],
 		transitions: [{
