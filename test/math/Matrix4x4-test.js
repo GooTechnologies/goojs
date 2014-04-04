@@ -117,5 +117,41 @@ define(["goo/math/Matrix4x4", "goo/math/Vector3", "goo/math/Vector4", "goo/math/
 
 			expect(a.applyPostVector(new Vector3(1, 2, 3))).toEqual(new Vector3(38, 44, 50));
 		});
+
+		it("can add two matrices component-wise", function() {
+			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+			expect(Matrix4x4.add(a,a)).toEqual(Matrix4x4.mul(a,2));
+		});
+
+		it("can add a scalar to all components of a matrix", function() {
+			var a = new Matrix4x4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
+			expect(Matrix4x4.add(a,1)).toEqual(Matrix4x4.mul(a,2));
+		});
+
+		it("can subtract two matrices component-wise", function() {
+			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+			expect(Matrix4x4.sub(a,a)).toEqual(Matrix4x4.mul(a,0));
+		});
+
+		it("can subtract a scalar to all components of a matrix", function() {
+			var a = new Matrix4x4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
+			expect(Matrix4x4.sub(a,1)).toEqual(Matrix4x4.mul(a,0));
+		});
+
+		it("can multiply two matrices component-wise", function() {
+			var a = new Matrix4x4(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+
+			expect(Matrix4x4.mul(a,a)).toEqual(Matrix4x4.mul(a,2));
+		});
+
+		it("can divide two matrices component-wise", function() {
+			var a = new Matrix4x4(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+
+			expect(Matrix4x4.div(a,a)).toEqual(Matrix4x4.div(a,2));
+		});
 	});
 });
