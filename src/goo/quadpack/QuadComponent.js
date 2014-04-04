@@ -127,11 +127,13 @@ function (
 	QuadComponent.prototype.setMaterial = function(material) {
 		this.material = material;
 		this.meshRendererComponent.materials = [material];
-		material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
-		material.renderQueue = 2000;
-		material.cullState.enabled = false;
+		// REVIEW: Don't set this stuff here, set it in the data model
+		
+		//material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
+		// material.renderQueue = 2000;
+		//material.cullState.enabled = false;
 		//material.dualTransparency = true;					// Visible on both sides
-		material.uniforms.discardThreshold = 0.1;
+		//material.uniforms.discardThreshold = 0.1;
 	};
 
 	/**
