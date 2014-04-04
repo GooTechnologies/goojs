@@ -8,12 +8,14 @@ function(Action) {
 
 		this.everyFrame = true;
 
-		/**Current time, in milliseconds.
+		/**
+		 * Current time, in milliseconds.
 		 * @type {Number}
 		 */
 		this.currentTime = 0;
 
-		/**Wait time, in milliseconds.
+		/**
+		 * Wait time, in milliseconds.
 		 * @type {Number}
 		 */
 		this.totalWait = 0;
@@ -37,7 +39,7 @@ function(Action) {
 			name: 'Random Time',
 			key: 'randomTime',
 			type: 'number',
-			description: 'Add up to this much Random time to the base time.',
+			description: 'When greater than 0, a random number of milliseconds (between 0 and this value) will be added to the base wait time',
 			"default": 0
 		}],
 		transitions: [{
