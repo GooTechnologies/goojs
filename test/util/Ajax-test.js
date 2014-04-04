@@ -108,26 +108,5 @@ define([
 					expect(reason).toEqual('Couldn\'t find a fake response: ' + ajaxSettings.url);
 				});
 			});
-
-			it('parses URLs', function () {
-				var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
-				var parts = Ajax.parseURL(url);
-				expect(parts.scheme).toEqual('http');
-				expect(parts.domain).toEqual('example.com');
-				expect(parts.user_info).toBeFalsy();
-				expect(parts.port).toEqual('1234');
-				expect(parts.path).toEqual('/images/goo.png');
-				expect(parts.query_data).toEqual('param=1');
-				expect(parts.fragment).toEqual('fragment');
-			});
-
-			it('removes parameters from URLs', function () {
-				var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
-				var stripped = Ajax.removeParamsFromURL(url);
-				expect(stripped).toEqual('http://example.com:1234/images/goo.png');
-
-				expect(Ajax.removeParamsFromURL('')).toEqual('');
-				expect(Ajax.removeParamsFromURL('../images/goo.png?a=1')).toEqual('../images/goo.png');
-			});
 		});
 });

@@ -27,7 +27,7 @@ require([
 
 	function createEntity(meshData, p2Settings, pos) {
 		var material = new Material(ShaderLib.texturedLit);
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png?image=foo&type=bar');
+		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png?a=1&b=2#fragment');
 		material.setTexture('DIFFUSE_MAP', texture);
 
 		return world.createEntity(meshData, material, pos)

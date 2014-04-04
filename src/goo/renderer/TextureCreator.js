@@ -59,7 +59,7 @@ function (
 	TextureCreator.prototype.loadTexture2D = function (imageURL, settings, callback) {
 		var id = StringUtil.createUniqueId('texture');
 		settings = settings || {};
-		settings.imageRef = Ajax.removeParamsFromURL(imageURL); // imageRef must end with a file extension, no url parameters! See datamodel!
+		settings.imageRef = imageURL;
 		var texture = this.textureHandler._objects[id] = this.textureHandler._create();
 		// texture.setImage(TextureHandler.WHITE, 1, 1);
 		this.textureHandler.update(id, settings).then(function() {
@@ -74,7 +74,7 @@ function (
 	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, settings, errorCallback) {
 		var id = StringUtil.createUniqueId('texture');
 		settings = settings || {};
-		settings.imageRef = Ajax.removeParamsFromURL(videoURL);  // imageRef must end with a file extension, no url parameters! See datamodel!
+		settings.imageRef = videoURL;
 		settings.loop = loop;
 		settings.wrapS = 'EdgeClamp';
 		settings.wrapT = 'EdgeClamp';

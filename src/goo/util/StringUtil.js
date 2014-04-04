@@ -162,17 +162,17 @@ define(function() {
 
 	/**
 	 * Escapes all HTML entities from a given string.
-	 * 
+	 *
 	 * @param  {string} text
 	 * 		The string whose HTML entities are to be encoded.
-	 * 		
+	 *
 	 * @return {string}
 	 * 		The specified string with all its HTML entities encoded.
 	 */
 	StringUtil.escapeHtmlEntities = function (text) {
 		var div = document.createElement('div');
 		div.appendChild(document.createTextNode(text));
-		
+
 		// Any edge cases that are not escaped by the browser.
 		var edgeCases = { 34: 'quot' };
 
@@ -181,6 +181,57 @@ define(function() {
 			return '&' + (entityName || '#' + c.charCodeAt(0)) + ';';
 		});
 	};
+
+	/**
+	 * Parses an URL
+	 * var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
+	 * var parts = Ajax.parseURL(url);
+	 * parts.scheme			// 'http'
+	 * parts.domain			// 'example.com'
+	 * parts.user_info		// undefined
+	 * parts.port			// '1234'
+	 * parts.path			// '/images/goo.png'
+	 * parts.query_data		// 'param=1'
+	 * parts.fragment		// 'fragment'
+	 * @static
+	 * @method parseURL
+	 * @param {string} url
+	 */
+	StringUtil.parseURL = (function() {
+		var splitRegExp = new RegExp(
+			'^' +
+				'(?:' +
+				'([^:/?#.]+)' +                         // scheme - ignore special characters
+														// used by other URL parts such as :,
+														// ?, /, #, and .
+				':)?' +
+				'(?://' +
+				'(?:([^/?#]*)@)?' +                     // userInfo
+				'([\\w\\d\\-\\u0100-\\uffff.%]*)' +     // domain - restrict to letters,
+														// digits, dashes, dots, percent
+														// escapes, and unicode characters.
+				'(?::([0-9]+))?' +                      // port
+				')?' +
+				'([^?#]+)?' +                           // path
+				'(?:\\?([^#]*))?' +                     // query
+				'(?:#(.*))?' +                          // fragment
+				'$');
+
+		return function (uri) {
+			var split;
+			split = uri.match(splitRegExp);
+			return {
+				'scheme':split[1],
+				'user_info':split[2],
+				'domain':split[3],
+				'port':split[4],
+				'path':split[5],
+				'query_data': split[6],
+				'fragment':split[7]
+			};
+		};
+	})();
+
 
 	return StringUtil;
 });
