@@ -71,7 +71,7 @@ define([],
 		if (this.top === null) { return this; }
 
 		for (var i = 0; i < this.top.length; i++) {
-			if (fun(this.top[i]) === false) {
+			if (fun(this.top[i], i) === false) {
 				break;
 			}
 		}
