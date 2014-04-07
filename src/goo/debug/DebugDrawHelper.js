@@ -17,7 +17,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/math/Transform',
-	'goo/renderer/Camera'
+	'goo/renderer/Camera',
+	'goo/renderer/Renderer'
 ], function(
 	LightComponent,
 	CameraComponent,
@@ -37,7 +38,8 @@ define([
 	ShaderLib,
 	ShaderBuilder,
 	Transform,
-	Camera
+	Camera,
+	Renderer
 ) {
 	'use strict';
 	var DebugDrawHelper = {};
@@ -131,18 +133,21 @@ define([
 		if (renderables[1]) { DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component); }
 
 		// keeping scale the same on the first element which is assumed to always be the camera mesh/light 'bulb'
-		var camPosition = camera.translation;
-		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
-		if (camera && camera.projectionMode === Camera.Parallel) {
-			scale = (camera._frustumTop - camera._frustumBottom) / 20;
-		}
-		renderables[0].transform.scale.setd(scale,scale,scale);
-		renderables[0].transform.update();
+		var mainCamera = Renderer.mainCamera;
+		if(mainCamera){
+			var camPosition = mainCamera.translation;
+			var scale = renderables[0].transform.translation.distance(camPosition) / 30;
+			if (mainCamera.projectionMode === Camera.Parallel) {
+				scale = (mainCamera._frustumTop - mainCamera._frustumBottom) / 20;
+			}
+			renderables[0].transform.scale.setd(scale,scale,scale);
+			renderables[0].transform.update();
 
-		// keeping scale for directional light mesh since scale is meaningless for it
-		if (component.light && component.light instanceof DirectionalLight) {
-			if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
-			if (renderables[1]) { renderables[1].transform.update(); }
+			// keeping scale for directional light mesh since scale is meaningless for it
+			if (component.light && component.light instanceof DirectionalLight) {
+				if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
+				if (renderables[1]) { renderables[1].transform.update(); }
+			}
 		}
 	};
 
