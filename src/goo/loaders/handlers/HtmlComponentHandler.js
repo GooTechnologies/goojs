@@ -111,7 +111,7 @@ function(
 				var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
 				parentEl.appendChild(domElement);
 			}
-			domElement.innerHTML = config.innerHTML;
+			domElement.innerHTML = config.innerHtml;
 			component.useTransformComponent = config.useTransformComponent == null ? true: config.useTransformComponent;
 		});
 	};
