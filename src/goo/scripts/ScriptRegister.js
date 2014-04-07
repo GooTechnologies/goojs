@@ -4,6 +4,7 @@ define([
 	'goo/scripts/newwave/FlyControlScript',
 	'goo/scripts/newwave/OrbitCamControlScript',
 	'goo/scripts/newwave/TwoDimCamControlScript',
+	'goo/scripts/newwave/AxisAlignedCamControlScript',
 	'goo/scripts/newwave/TwoDimNPanControlScript',
 	'goo/scripts/newwave/PanCamScript',
 	'goo/scripts/newwave/MouseLookScript',

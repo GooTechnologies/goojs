@@ -41,7 +41,7 @@ define([
 			calcVector2 = new Vector3();
 
 			var renderer = environment.world.gooRunner.renderer;
-			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? 
+			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ?
 				window.devicePixelRatio / renderer.svg.currentScale : 1;
 
 			mouseState = {

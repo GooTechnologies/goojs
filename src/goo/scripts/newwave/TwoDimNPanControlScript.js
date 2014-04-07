@@ -3,12 +3,14 @@ define([
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/newwave/TwoDimCamControlScript',
 	'goo/scripts/newwave/PanCamScript',
+	'goo/scripts/newwave/AxisAlignedCamControlScript',
 	'goo/util/ObjectUtil'
 ], function(
 	Scripts,
 	ScriptUtils,
 	TwoDimCamControlScript,
 	PanCamScript,
+	AxisAlignedCamControlScript,
 	_
 ) {
 	'use strict';
@@ -17,19 +19,23 @@ define([
 	 * @class Enables pan and zoom for parallel projection cameras. This is a combo of TwoDimCamControlScript and PanCamControlScript
 	 */
 	function TwoDimNPanControlScript() {
-		var twoDimScript = Scripts.create('TwoDimCamControlScript');
-		var panScript = Scripts.create('PanCamControlScript');
+		var twoDimScript =	Scripts.create('TwoDimCamControlScript');
+		var panScript =		Scripts.create('PanCamControlScript');
+		var axisScript =	Scripts.create('AxisAlignedCamControlScript');
 		function setup(parameters, environment, goo) {
 			twoDimScript.setup(parameters, environment, goo);
 			panScript.setup(parameters, environment, goo);
+			axisScript.setup(parameters, environment, goo);
 		}
 		function update(parameters, environment, goo) {
 			twoDimScript.update(parameters, environment, goo);
 			panScript.update(parameters, environment, goo);
+			axisScript.update(parameters, environment, goo);
 		}
 		function cleanup(parameters, environment, goo) {
 			panScript.cleanup(parameters, environment, goo);
 			twoDimScript.cleanup(parameters, environment, goo);
+			axisScript.cleanup(parameters, environment, goo);
 		}
 
 		return {
@@ -41,9 +47,10 @@ define([
 
 	var twoDimParams = TwoDimCamControlScript.externals.parameters;
 	var panParams = PanCamScript.externals.parameters;
+	var axisParams = AxisAlignedCamControlScript.externals.parameters;
 
 	// Remove one of the "whenUsed" params
-	var params = _.deepClone(twoDimParams.concat(panParams.slice(1)));
+	var params = _.deepClone(twoDimParams.concat(panParams.slice(1)).concat(axisParams));
 
 	// Change defaults for this script
 	for (var i = 0; i < params.length; i++) {

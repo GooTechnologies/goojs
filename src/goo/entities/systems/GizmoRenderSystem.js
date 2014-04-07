@@ -13,8 +13,8 @@ define([
 	'goo/util/gizmos/Gizmo',
 	'goo/util/gizmos/TranslationGizmo',
 	'goo/util/gizmos/RotationGizmo',
-	'goo/util/gizmos/ScaleGizmo'
-],
+	'goo/util/gizmos/ScaleGizmo',
+	'goo/renderer/Camera'],
 /** @lends */
 function (
 	System,
@@ -31,7 +31,8 @@ function (
 	Gizmo,
 	TranslationGizmo,
 	RotationGizmo,
-	ScaleGizmo
+	ScaleGizmo,
+	Camera
 ) {
 	'use strict';
 
@@ -76,10 +77,23 @@ function (
 			var x = (evt.offsetX !== undefined) ? evt.offsetX : evt.layerX;
 			var y = (evt.offsetY !== undefined) ? evt.offsetY : evt.layerY;
 
-			this.activeGizmo.update([
+			var mousePos = [
 				x / (this.viewportWidth / this._devicePixelRatio),
 				y / (this.viewportHeight / this._devicePixelRatio)
-			]);
+			];
+
+			/*
+			var camera = this.camera;
+			if(camera && camera.projectionMode === Camera.Parallel){
+				mousePos[0] = x / (this.viewportWidth  / this._devicePixelRatio) / (camera._frustumRight - camera._frustumLeft);
+				mousePos[1] = y / (this.viewportHeight / this._devicePixelRatio) / (camera._frustumTop  - camera._frustumBottom);
+			}
+
+			console.log(mousePos[0],mousePos[1])
+			*/
+
+			this.activeGizmo.update(mousePos);
+
 		}.bind(this);
 
 

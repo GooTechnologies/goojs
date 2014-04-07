@@ -33,7 +33,7 @@ define([
 			var camera = entity.cameraComponent.camera;
 			var delta = MathUtils.lerp(env.smoothness, 1, env.world.tpf);
 			size = env.size = MathUtils.lerp(delta, size, targetSize);
-			camera.setFrustum(1, 1000, -size, size, size, -size, 1);
+			camera.setFrustum(1, TwoDimCamControlScript.LARGE_NUMBER, -size, size, size, -size, 1);
 			if(Math.abs(targetSize-size) < 0.00001){
 				env.twoDimDirty = false;
 			} else {
@@ -81,6 +81,10 @@ define([
 			cleanup: cleanup
 		};
 	}
+
+	// Used for setting camera position and frustum
+	// should be large enough for all scenes  but smaller than the max float value in WebGL
+	TwoDimCamControlScript.LARGE_NUMBER = 1e30;
 
 	/**
 	 * @static
