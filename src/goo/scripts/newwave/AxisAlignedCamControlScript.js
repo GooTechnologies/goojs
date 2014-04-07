@@ -46,7 +46,7 @@ define([
 		}
 
 		function update(params, env) {
-			if(params.view != env.currentView){
+			if(params.view !== env.currentView){
 				env.axisAlignedDirty = true;
 			}
 			if (!env.axisAlignedDirty) {
