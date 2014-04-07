@@ -1,10 +1,7 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -18,12 +15,9 @@ require([
 	'goo/debug/LightPointer',
 	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,

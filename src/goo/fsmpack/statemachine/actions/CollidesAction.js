@@ -60,12 +60,12 @@ function(
 		var collection = proximitySystem.getFor(this.tag);
 
 		var collides = false;
-		EntityUtils.traverse(entity, function(entity) {
+		entity.traverse(function (entity) {
 			var worldBound;
 			if (entity.meshRendererComponent) {
 				worldBound = entity.meshRendererComponent.worldBound;
 				for (var i = 0; i < collection.length; i++) {
-					EntityUtils.traverse(collection[i], function(entity) {
+					collection[i].traverse(function (entity) {
 						if (entity.meshRendererComponent && entity.meshRendererComponent.worldBound && worldBound.intersects(entity.meshRendererComponent.worldBound)) {
 							collides = true;
 							return false;
