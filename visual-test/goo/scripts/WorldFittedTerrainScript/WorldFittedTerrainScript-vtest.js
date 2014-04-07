@@ -53,6 +53,8 @@ require([
     ) {
     'use strict';
 
+    //! schteppe: Outdated. Delete test?
+
     var goo;
     var worldFittedTerrainScript = new WorldFittedTerrainScript();
 

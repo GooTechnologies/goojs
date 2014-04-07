@@ -41,6 +41,8 @@ require([
 	) {
 	'use strict';
 
+	//! schteppe: Outdated. Delete test?
+
 	var external = {
 		name: 'Orbit cam',
 		description: 'Enables camera to orbit around a point in 3D space using the mouse',
