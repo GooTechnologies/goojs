@@ -17,15 +17,38 @@ define([
 		function setup(params, env) {
 			setupMouseControls(params, env);
 			env.axis		= new Vector3(0, 0, 1);
+			env.upAxis		= new Vector3(0, 1, 0);
+			setView(params, env, params.view);
+			//env.currentView = params.view;
 			env.targetAxis	= new Vector3(0, 0, 1);
 			env.lookAtPoint	= new Vector3(0, 0, 0);
-			env.distance	= 100;//params.distance;
-			env.upAxis		= new Vector3(0, 1, 0);
+			env.distance	= params.distance;
 			env.smoothness	= Math.pow(MathUtils.clamp(params.smoothness, 0, 1), 0.3);
 			env.axisAlignedDirty = true;
 		}
 
+		function setView(params, env, view){
+			if(env.currentView === view){
+				return;
+			}
+			env.currentView = view;
+			switch(view){
+				case 'XY':
+					env.axis.setd(0, 0, 1);
+					env.upAxis.setd(0, 1, 0);
+					break;
+				case 'ZY':
+					env.axis.setd(1, 0, 0);
+					env.upAxis.setd(0, 1, 0);
+					break;
+			}
+			env.axisAlignedDirty = true;
+		}
+
 		function update(params, env) {
+			if(params.view != env.currentView){
+				env.axisAlignedDirty = true;
+			}
 			if (!env.axisAlignedDirty) {
 				return;
 			}
@@ -92,9 +115,15 @@ define([
 			type: 'float',
 			description:'Camera distance from lookat point',
 			control: 'slider',
-			'default': 1e29,
+			'default': 1e3,
 			min: 1,
-			max: 1e29
+			max: 1e5
+		},{
+			key: 'view',
+			type:'string',
+			'default': 'XY',
+			control:'select',
+			options: ['XY', 'ZY']
 		}]
 	};
 
