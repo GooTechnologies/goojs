@@ -3,6 +3,10 @@ define(['goo/fsmpack/statemachine/actions/Action'],
 function(Action) {
 	"use strict";
 
+	/**
+	 * @class
+	 * @extends Action
+	 */
 	function WaitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 

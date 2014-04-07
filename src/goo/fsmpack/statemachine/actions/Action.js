@@ -7,6 +7,11 @@ function(
 ) {
 	"use strict";
 
+	/**
+	 * @class
+	 * @param {string} id
+	 * @param {object} settings
+	 */
 	function Action(id, settings) {
 		this.id = id;
 		this.configure(settings || {});
