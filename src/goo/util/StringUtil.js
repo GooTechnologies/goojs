@@ -1,8 +1,13 @@
 /*jshint bitwise: false */
-define(function() {
+define([],
+/** @lends */
+function() {
 	"use strict";
 
-	var StringUtil = {};
+	/**
+	 * @class
+	 */
+	function StringUtil(){}
 
 	StringUtil.endsWith = function(str, suffix) {
 		return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -184,20 +189,19 @@ define(function() {
 
 	/**
 	 * Parses an URL
-	 * var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
-	 * var parts = Ajax.parseURL(url);
-	 * parts.scheme			// 'http'
-	 * parts.domain			// 'example.com'
-	 * parts.user_info		// undefined
-	 * parts.port			// '1234'
-	 * parts.path			// '/images/goo.png'
-	 * parts.query_data		// 'param=1'
-	 * parts.fragment		// 'fragment'
-	 * @static
-	 * @method parseURL
 	 * @param {string} url
+	 * @example
+	 *     var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
+	 *     var parts = Ajax.parseURL(url);
+	 *     parts.scheme			// 'http'
+	 *     parts.domain			// 'example.com'
+	 *     parts.user_info		// undefined
+	 *     parts.port			// '1234'
+	 *     parts.path			// '/images/goo.png'
+	 *     parts.query_data		// 'param=1'
+	 *     parts.fragment		// 'fragment'
 	 */
-	StringUtil.parseURL = (function() {
+	StringUtil.parseURL = function(uri) {
 		var splitRegExp = new RegExp(
 			'^' +
 				'(?:' +
@@ -217,21 +221,18 @@ define(function() {
 				'(?:#(.*))?' +                          // fragment
 				'$');
 
-		return function (uri) {
-			var split;
-			split = uri.match(splitRegExp);
-			return {
-				'scheme':split[1],
-				'user_info':split[2],
-				'domain':split[3],
-				'port':split[4],
-				'path':split[5],
-				'query_data': split[6],
-				'fragment':split[7]
-			};
+		var split;
+		split = uri.match(splitRegExp);
+		return {
+			'scheme':split[1],
+			'user_info':split[2],
+			'domain':split[3],
+			'port':split[4],
+			'path':split[5],
+			'query_data': split[6],
+			'fragment':split[7]
 		};
-	})();
-
+	};
 
 	return StringUtil;
 });
