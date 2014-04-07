@@ -3,21 +3,27 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'lib/V'
+	'goo/shapes/Quad',
+	'lib/V',
+	'goo/renderer/Camera'
 ], function(
 	GooRunner,
 	Material,
 	ShaderLib,
 	MeshDataComponent,
+	MeshRendererComponent,
 	Vector3,
 	Box,
 	Sphere,
 	Torus,
-	V
+	Quad,
+	V,
+	Camera
 ) {
 	'use strict';
 
@@ -29,7 +35,12 @@ require([
 	V.addLights();
 
 	// add the camera
-	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
+	var cameraEntity = V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
+	/*
+	var size = 3;
+	cameraEntity.cameraComponent.camera.setProjectionMode(Camera.Parallel);
+	cameraEntity.cameraComponent.camera.setFrustum(1, 1000, -size, size, size, -size, 1);
+	*/
 
 	// standard materials
 	var material = new Material(ShaderLib.simpleLit);
@@ -45,9 +56,12 @@ require([
 	// register a listener for click events
 	goo.addEventListener('click', function (event) {
 		if (event.entity) {
-			console.log('Picked entity:' + event.entity + ' at ',event.intersection.x, event.intersection.y, event.intersection.z);
+			console.log('Picked entity:' + event.entity + ' at ',event.intersection.x, event.intersection.y, event.intersection.z + ' at depth = ' + event.depth);
 
 			pointer.setTranslation(event.intersection);
 		}
 	});
+
+	V.addDebugQuad();
+
 });
