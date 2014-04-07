@@ -19,7 +19,7 @@ define([
 			env.axis		= new Vector3(0, 0, 1);
 			env.targetAxis	= new Vector3(0, 0, 1);
 			env.lookAtPoint	= new Vector3(0, 0, 0);
-			env.distance	= 10000;//params.distance;
+			env.distance	= 100;//params.distance;
 			env.upAxis		= new Vector3(0, 1, 0);
 			env.smoothness	= Math.pow(MathUtils.clamp(params.smoothness, 0, 1), 0.3);
 			env.axisAlignedDirty = true;
