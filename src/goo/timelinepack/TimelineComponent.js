@@ -12,6 +12,8 @@ define([
 		this.channels = [];
 
 		this.time = 0;
+		this.duration = 0;
+		this.loop = false;
 	}
 
 	TimelineComponent.prototype = Object.create(Component.prototype);
@@ -30,7 +32,18 @@ define([
 	 * @param {number} tpf
 	 */
 	TimelineComponent.prototype.update = function (tpf) {
-		this.time += tpf;
+		var time = this.time + tpf;
+		if (time > this.duration) {
+			if (this.loop) {
+				time = time % this.duration;
+			} else {
+				time = this.duration;
+			}
+		} else if (time < 0) {
+			this.time = 0;
+		}
+		if (time === this.time) { return; }
+		this.time = time;
 
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];

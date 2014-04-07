@@ -37,6 +37,8 @@ require([
 	) {
 	'use strict';
 
+	//! schteppe: Outdated. Delete test?
+
 	var external = {
 		name: 'Pick and rotate',
 		description: 'Enables pick-drag-rotating entities',

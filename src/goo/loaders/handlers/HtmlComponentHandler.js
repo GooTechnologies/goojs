@@ -1,17 +1,11 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/HtmlComponent',
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil'
+	'goo/entities/components/HtmlComponent'
 ],
 /** @lends */
 function(
 	ComponentHandler,
-	HtmlComponent,
-	RSVP,
-	pu,
-	_
+	HtmlComponent
 ) {
 	"use strict";
 
@@ -39,7 +33,7 @@ function(
 	 * @returns {object}
 	 * @private
 	 */
-	HtmlComponentHandler.prototype._prepare = function (config) {};
+	HtmlComponentHandler.prototype._prepare = function (/*config*/) {};
 
 	/**
 	 * Create camera component object.
@@ -67,11 +61,11 @@ function(
 			if (!domElement) {
 				domElement = document.createElement('div');
 				domElement.id = entity.id;
+				domElement.className = 'goo-entity'
 				domElement.addEventListener('mousedown', function(domEvent) {
-					console.log('Picked a html entity');
 					var gooRunner = entity._world.gooRunner;
 					var evt = {
-						entity: entity, 
+						entity: entity,
 						depth:0,
 						x: domEvent.pageX,
 						y: domEvent.pageY,
@@ -81,25 +75,54 @@ function(
 					};
 					gooRunner.triggerEvent('mousedown', evt);
 				});
+				domElement.addEventListener('mouseup', function(domEvent) {
+					console.log('HTML Mouseup');
+					var gooRunner = entity._world.gooRunner;
+					var evt = {
+						entity: entity,
+						depth:0,
+						x: domEvent.pageX,
+						y: domEvent.pageY,
+						domEvent: domEvent,
+						id: entity.id,
+						type: 'mouseup'
+					};
+					gooRunner.triggerEvent('mouseup', evt);
+				});
+				domElement.addEventListener('click', function(domEvent) {
+					console.log('HTML Click');
+					var gooRunner = entity._world.gooRunner;
+					var evt = {
+						entity: entity,
+						depth:0,
+						x: domEvent.pageX,
+						y: domEvent.pageY,
+						domEvent: domEvent,
+						id: entity.id,
+						type: 'click'
+					};
+					gooRunner.triggerEvent('click', evt);
+				});
 				component.domElement = domElement;
 				domElement.style.position = 'absolute';
 				domElement.style.top = 0;
 				domElement.style.left = 0;
-				domElement.style.zIndex = 3000;
+				domElement.style.zIndex = 1;
 				var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
 				parentEl.appendChild(domElement);
 			}
 			domElement.innerHTML = config.innerHTML;
+			component.useTransformComponent = config.useTransformComponent == null ? true: config.useTransformComponent;
 		});
 	};
 
 	HtmlComponentHandler.prototype._remove = function (entity) {
-		ComponentHandler.prototype._remove.call(this, entity);
 		var component = entity.htmlComponent;
+		ComponentHandler.prototype._remove.call(this, entity);
 		if (component.domElement) {
 			component.domElement.parentNode.removeChild(component.domElement);
 		}
-	}
+	};
 
 	return HtmlComponentHandler;
 });

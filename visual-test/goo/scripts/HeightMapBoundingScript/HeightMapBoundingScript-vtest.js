@@ -42,7 +42,7 @@ require([
 	HeightMapBoundingScript,
 	CanvasUtils,
 	V
-	) {
+) {
 	'use strict';
 
 	function addSpheres(goo, heightMapBoundingScript) {

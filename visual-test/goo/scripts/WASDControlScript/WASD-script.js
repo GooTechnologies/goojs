@@ -35,6 +35,8 @@ require([
 	) {
 	'use strict';
 
+	//! schteppe: Outdated and already covered in FPCamControlScript test. Delete?
+
 	//! AT: use chars instead of keycodes? depends on how the frontend passes keys
 	var external = {
 		name: 'WASD',

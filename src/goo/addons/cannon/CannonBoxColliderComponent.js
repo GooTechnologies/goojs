@@ -2,7 +2,9 @@ define([
 	'goo/entities/components/Component',
 	'goo/shapes/Box',
 	'goo/math/Vector3'
-], function(
+],
+/** @lends */
+function(
 	Component,
 	Box,
 	Vector3
@@ -13,13 +15,11 @@ define([
 	var CANNON = window.CANNON;
 
 	/**
-	 * Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.
+	 * @class Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.
 	 * @param {object} [settings]
-	 * @class
-	 * @constructor
 	 * @extends Component
 	 */
-	function CannonBoxColliderComponent(settings){
+	function CannonBoxColliderComponent (settings) {
 		this.type = "CannonBoxColliderComponent";
 
 		settings = settings || {};

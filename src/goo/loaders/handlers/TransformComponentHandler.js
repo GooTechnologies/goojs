@@ -92,6 +92,7 @@ function(
 	TransformComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
 
+		// REVIEW: remove it
 		/*
 		function hasChild(component, ref) {
 			for (var i = 0; i < component.children.length; i++) {

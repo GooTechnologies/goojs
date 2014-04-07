@@ -1,6 +1,8 @@
 define([
 	'goo/entities/components/Component'
-], function(
+],
+/** @lends */
+function(
 	Component
 ){
 	'use strict';
@@ -8,10 +10,9 @@ define([
 	var CANNON = window.CANNON;
 
 	/**
-	 * Sphere collider.
+	 * @class Sphere collider for the {@link CannonSystem}.
 	 * @param {object} [settings]
 	 * @param {number} [settings.radius]
-	 * @todo should have an own .type!
 	 */
 	function CannonSphereColliderComponent(settings){
 		settings = settings || {};

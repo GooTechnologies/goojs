@@ -3,6 +3,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
+	'goo/util/StringUtil',
 	'goo/util/rsvp'
 ],
 /** @lends */
@@ -11,6 +12,7 @@ function(
 	AudioContext,
 	PromiseUtil,
 	_,
+	StringUtil,
 	RSVP
 ) {
 	'use strict';
@@ -102,7 +104,7 @@ function(
 	 */
 	Ajax.prototype.load = function(path, reload) {
 		var that = this;
-		var type = path.slice(path.lastIndexOf('.')+1).toLowerCase();
+		var type = StringUtil.parseURL(path).path.slice(path.lastIndexOf('.')+1).toLowerCase();
 		function typeInGroup(type, group) {
 			return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
 		}
@@ -165,7 +167,7 @@ function(
 	};
 
 	/**
-	 * Loads image data at specified path which is returned in a Promise object. 
+	 * Loads image data at specified path which is returned in a Promise object.
 	 *
 	 * @example
 	 * loader.loadImage('resources/image.png').then(function(image) {

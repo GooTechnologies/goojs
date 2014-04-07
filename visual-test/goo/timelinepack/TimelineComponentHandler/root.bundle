@@ -460,7 +460,29 @@
 				"c2": {
 					"sortValue": 1,
 					"entityId": "e0285494b86346d0b1ecaee48c36b2e9.entity",
-					"propertyKey": "scaleY",
+					"propertyKey": "rotationY",
+					"keyframes": {
+						"k1": {
+							"time"  : 0.5,
+							"value" : 1,
+							"easing": "Exponential.InOut"
+						},
+						"k2": {
+							"time"  : 2,
+							"value" : 3,
+							"easing": "Quadratic.InOut"
+						},
+						"k3": {
+							"time"  : 3.5,
+							"value" : 1,
+							"easing": "Back.InOut"
+						}
+					}
+				},
+				"c2.5": {
+					"sortValue": 1,
+					"entityId": "e0285494b86346d0b1ecaee48c36b2e9.entity",
+					"propertyKey": "rotationX",
 					"keyframes": {
 						"k1": {
 							"time"  : 0.5,

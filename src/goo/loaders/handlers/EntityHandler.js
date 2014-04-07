@@ -53,9 +53,20 @@ function(
 	 */
 	EntityHandler.prototype._remove = function(ref) {
 		var entity = this._objects[ref];
+		var that = this;
 		if (entity) {
-			entity.removeFromWorld();
-			delete this._objects[ref];
+			// Remove components
+			var promises = [];
+			var components = entity._components;
+			for(var i = 0; i < components.length; i++) {
+				var type = this._getComponentType(components[i]);
+				promises.push(this._updateComponent(entity, type, null));
+			}
+			return RSVP.all(promises)
+			.then(function(){
+				entity.removeFromWorld();
+				delete that._objects[ref];
+			});
 		}
 	};
 
