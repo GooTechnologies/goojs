@@ -5,6 +5,7 @@ function(Action) {
 
 	/**
 	 * @class
+	 * @private
 	 * @extends Action
 	 */
 	function WaitAction(/*id, settings*/) {
