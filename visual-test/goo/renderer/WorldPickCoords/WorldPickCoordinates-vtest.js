@@ -36,11 +36,7 @@ require([
 
 	// add the camera
 	var cameraEntity = V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
-	/*
-	var size = 3;
-	cameraEntity.cameraComponent.camera.setProjectionMode(Camera.Parallel);
-	cameraEntity.cameraComponent.camera.setFrustum(1, 1000, -size, size, size, -size, 1);
-	*/
+	var camera = cameraEntity.cameraComponent.camera;
 
 	// standard materials
 	var material = new Material(ShaderLib.simpleLit);
@@ -59,6 +55,27 @@ require([
 			console.log('Picked entity:' + event.entity + ' at ',event.intersection.x, event.intersection.y, event.intersection.z + ' at depth = ' + event.depth);
 
 			pointer.setTranslation(event.intersection);
+		}
+	});
+
+	var size = 3;
+	var fov = camera.fov;
+	var aspect = camera.aspect;
+	var near = camera.near;
+	var far = camera.far;
+
+	// register a listener for click events
+	document.addEventListener('keypress', function (event) {
+		switch(event.keyCode){
+			case 112: // p
+				if(camera.projectionMode === Camera.Parallel){
+					camera.setProjectionMode(Camera.Perspective);
+					camera.setFrustumPerspective(fov, aspect, near, far);
+				} else {
+					camera.setProjectionMode(Camera.Parallel);
+					camera.setFrustum(near, far, -size, size, size, -size, aspect);
+				}
+				break;
 		}
 	});
 

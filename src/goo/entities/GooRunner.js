@@ -508,7 +508,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {object} evt The goorunner-style event
 	 * @param {Entity} evt.entity The goorunner-style event
-	 * @param {number} evt.x 
+	 * @param {number} evt.x
 	 * @param {number} evt.y
 	 * @param {Event} evt.domEvent The original DOM event
    */
