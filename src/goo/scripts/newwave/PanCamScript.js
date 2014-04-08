@@ -81,10 +81,8 @@ define([
 							button = 1;
 						}
 					}
-					if (button === panButton || panButton === -1) {
-						mouseState.down = false;
-						mouseState.dx = mouseState.dy = 0;
-					}
+					mouseState.down = false;
+					mouseState.dx = mouseState.dy = 0;
 				},
 				mousemove: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {

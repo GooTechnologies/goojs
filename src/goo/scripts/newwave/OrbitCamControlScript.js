@@ -77,7 +77,7 @@ define([
 				environment.domElement.focus();
 			}
 
-			if (dragButton === -1 || dragButton === buttonIndex) {
+			if (dragButton === -1 || dragButton === buttonIndex || down === false) {
 				mouseState.buttonDown = down;
 				if (down) {
 					mouseState.lastX = NaN;
