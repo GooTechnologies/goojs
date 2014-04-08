@@ -47,6 +47,7 @@ define([
 
 	var twoDimParams = TwoDimCamControlScript.externals.parameters;
 	var panParams = PanCamScript.externals.parameters;
+	// REVIEW slice'em so you don't get two 'whenUsed'
 	var axisParams = AxisAlignedCamControlScript.externals.parameters;
 
 	// Remove one of the "whenUsed" params
@@ -56,9 +57,11 @@ define([
 	for (var i = 0; i < params.length; i++) {
 		var param = params[i];
 		switch (param.key) {
+			// REVIEW No dragbutton
 			case 'dragButton':
 				param['default'] = 'Left';
 				break;
+			// REVIEW Default should probably be left, then override in create
 			case 'panButton':
 				param['default'] = 'Middle';
 				break;
@@ -73,7 +76,7 @@ define([
 
 	TwoDimNPanControlScript.externals = {
 		name: 'TwoDimNPanControlScript',
-		description: 'This is a combo of twodimcamcontrolscript and pancamcontrolscript',
+		description: 'This is a combo of twodimcamcontrolscript and pancamcontrolscript', // REVIEW And axisalignedcamcontrolscript
 		parameters:	params
 	};
 

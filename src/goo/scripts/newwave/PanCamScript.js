@@ -17,6 +17,7 @@ define([
 		var lookAtPoint;
 		var mouseState;
 		var devicePixelRatio;
+		var listeners;
 
 		function getTouchCenter(touches) {
 			var x1 = touches[0].clientX;
@@ -53,7 +54,7 @@ define([
 				dy: 0,
 				down: false
 			};
-			var listeners = environment.listeners = {
+			listeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var button = event.button;
@@ -187,8 +188,8 @@ define([
 		}
 
 		function cleanup(parameters, environment) {
-			for (var event in environment.listeners) {
-				environment.domElement.removeEventListener(event, environment.listeners[event]);
+			for (var event in listeners) {
+				environment.domElement.removeEventListener(event, listeners[event]);
 			}
 		}
 
@@ -214,17 +215,18 @@ define([
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
-		}, {
+		}, { // Set this default to something that works with screenMove
 			key: 'panSpeed',
 			type: 'float',
 			'default': 0.005,
 			scale: 0.001,
 			decimals: 3
 		}, {
+			// REVIEW Remove it from parameters and always use it.
 			key: 'screenMove',
 			type: 'boolean',
 			'default': false,
-			description: 'Syncs camera with mouse world position.',
+			description: 'Syncs camera with mouse world position.'
 		}]
 	};
 

@@ -17,6 +17,7 @@ define([
 		var zoomDistanceFactor = 0.035;
 		var size = 10;					// Current size
 		var targetSize = size;			// Animation target size
+		var listeners;
 
 		function setup(params, env) {
 			setupMouseControls(params, env);
@@ -33,6 +34,7 @@ define([
 			var camera = entity.cameraComponent.camera;
 			var delta = MathUtils.lerp(env.smoothness, 1, env.world.tpf);
 			size = env.size = MathUtils.lerp(delta, size, targetSize);
+			// REVIEW Don't redefine near and far, send null, null
 			camera.setFrustum(1, 2e4, -size, size, size, -size, 1);
 			if(Math.abs(targetSize-size) < 0.00001){
 				env.twoDimDirty = false;
@@ -43,20 +45,20 @@ define([
 
 		// Removes all listeners
 		function cleanup(params, env) {
-			for (var event in env.listeners) {
-				env.domElement.removeEventListener(event, env.listeners[event]);
+			for (var event in listeners) {
+				env.domElement.removeEventListener(event, listeners[event]);
 			}
 		}
 
 		// Attaches the needed mouse event listeners
 		function setupMouseControls(params, env) {
 			// Define listeners
-			var listeners = env.listeners = {
+			listeners = {
 				mousewheel: function(event) {
 					if (!params.whenUsed || env.entity === env.activeCameraEntity) {
 						applyWheel(event, params, env);
 					}
-				},
+				}
 			};
 			listeners.DOMMouseScroll = listeners.mousewheel;
 
