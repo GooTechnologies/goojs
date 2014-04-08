@@ -13,6 +13,7 @@ function (
 
 	/**
 	 * @class StateMachineComponent
+	 * @private
 	 */
 	function StateMachineComponent() {
 		this.type = 'StateMachineComponent';
