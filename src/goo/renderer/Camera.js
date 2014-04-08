@@ -625,7 +625,6 @@ function(
 	 * @param zDepth the depth into the camera view to take our point in world distance.
 	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
-	 * @param orthographic Set to true if orthographic projection is used.
 	 * @return a vector containing the world coordinates.
 	 */
 	Camera.prototype.getWorldPosition = function(screenX, screenY, screenWidth, screenHeight, zDepth, store) {
