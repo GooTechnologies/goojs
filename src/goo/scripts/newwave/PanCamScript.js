@@ -16,6 +16,7 @@ define([
 		var panButton;
 		var lookAtPoint;
 		var mouseState;
+		var listeners;
 
 		function getTouchCenter(touches) {
 			var x1 = touches[0].clientX;
@@ -48,7 +49,7 @@ define([
 				dy: 0,
 				down: false
 			};
-			var listeners = environment.listeners = {
+			listeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						if (event.button === panButton || panButton === -1) {
@@ -161,8 +162,8 @@ define([
 		}
 
 		function cleanup(parameters, environment) {
-			for (var event in environment.listeners) {
-				environment.domElement.removeEventListener(event, environment.listeners[event]);
+			for (var event in listeners) {
+				environment.domElement.removeEventListener(event, listeners[event]);
 			}
 		}
 
