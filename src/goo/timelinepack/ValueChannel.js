@@ -83,21 +83,9 @@ define([
 
 	/**
 	 * Update the channel,
-	 * @param tpf
+	 * @param time
 	 */
 	ValueChannel.prototype.update = function (time) {
-		// redo looping
-
-		// tmp hack
-		// if (this.time > this.lastTime && this.lastTime > 0) {
-		// 	this.time %= this.lastTime;
-		// 	if (this.callbackEnd) {
-		// 		this.callbackEnd();
-		// 	}
-		// 	// REVIEW Need to reset callbackIndex, this might be the easiest way
-		// 	return this.setTime(this.time);
-		// }
-
 		// run update callback on current position
 		if (!this.keyframes.length) {
 			return;
@@ -132,16 +120,6 @@ define([
 		return newValue;
 	};
 
-	/*
-	function memoize(fun) {
-		var entity;
-		return function (entityId) {
-			return entity || (entity = fun(entityId));
-		};
-	}
-	*/
-
-	// REVIEW Should probably be somewhere else
 	// tween factories
 	ValueChannel.getSimpleTransformTweener = function (type, dimensionIndex, entityId, resolver) {
 		var entity;
