@@ -10,6 +10,7 @@ function (
 
 	/**
 	 * @class Processes all entities with a FSM component
+	 * @private
 	 */
 	function StateMachineSystem(engine) {
 		System.call(this, 'StateMachineSystem', ['StateMachineComponent']);
