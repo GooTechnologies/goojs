@@ -80,8 +80,8 @@ function(
 			moveVector = this._result;
 
 		// Project mouse move to plane
-		this._plane.rayIntersect(this._oldRay, oldWorldPos);
-		this._plane.rayIntersect(this._newRay, worldPos);
+		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
+		this._plane.rayIntersect(this._newRay, worldPos, true);
 		moveVector.setv(worldPos).subv(oldWorldPos);
 		// And add to translation
 		this.transform.translation.add(moveVector);
@@ -94,8 +94,8 @@ function(
 			line = this._line;
 
 		// Project mousemove to plane
-		this._plane.rayIntersect(this._oldRay, oldWorldPos);
-		this._plane.rayIntersect(this._newRay, worldPos);
+		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
+		this._plane.rayIntersect(this._newRay, worldPos, true);
 		moveVector.setv(worldPos).subv(oldWorldPos);
 		// Then project plane diff to line
 		var d = moveVector.dot(line);
