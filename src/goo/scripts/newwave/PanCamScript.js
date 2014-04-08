@@ -16,6 +16,7 @@ define([
 		var panButton;
 		var lookAtPoint;
 		var mouseState;
+		var devicePixelRatio;
 		var listeners;
 
 		function getTouchCenter(touches) {
@@ -40,6 +41,10 @@ define([
 			calcVector = new Vector3();
 			calcVector2 = new Vector3();
 
+			var renderer = environment.world.gooRunner.renderer;
+			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? 
+				window.devicePixelRatio / renderer.svg.currentScale : 1;
+
 			mouseState = {
 				x: 0,
 				y: 0,
@@ -52,7 +57,15 @@ define([
 			listeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						if (event.button === panButton || panButton === -1) {
+						var button = event.button;
+						if (button === 0) {
+							if (event.altKey) {
+								button = 2;
+							} else if (event.shiftKey) {
+								button = 1;
+							}
+						}
+						if (button === panButton || panButton === -1) {
 							mouseState.down = true;
 							mouseState.ox = mouseState.x = event.clientX;
 							mouseState.oy = mouseState.y = event.clientY;
@@ -60,7 +73,15 @@ define([
 					}
 				},
 				mouseup: function(event) {
-					if (event.button === panButton || panButton === -1) {
+					var button = event.button;
+					if (button === 0) {
+						if (event.altKey) {
+							button = 2;
+						} else if (event.shiftKey) {
+							button = 1;
+						}
+					}
+					if (button === panButton || panButton === -1) {
 						mouseState.down = false;
 						mouseState.dx = mouseState.dy = 0;
 					}
@@ -130,12 +151,13 @@ define([
 
 			var mainCam = Renderer.mainCamera;
 
+
 			if (lookAtPoint && mainCam) {
 				if (lookAtPoint.equals(mainCam.translation)) { return; }
 				mainCam.getScreenCoordinates(lookAtPoint, 1, 1, calcVector);
 				calcVector.add_d(
-					-mouseState.dx / environment.viewportWidth,
-					mouseState.dy / environment.viewportHeight,
+					-mouseState.dx / (environment.viewportWidth/devicePixelRatio),
+					mouseState.dy / (environment.viewportHeight/devicePixelRatio),
 					0
 				);
 				mainCam.getWorldCoordinates(
