@@ -115,7 +115,7 @@ define([
 			type: 'float',
 			description:'Camera distance from lookat point',
 			control: 'slider',
-			'default': 1e3,
+			'default': 1e4,
 			min: 1,
 			max: 1e5
 		},{
