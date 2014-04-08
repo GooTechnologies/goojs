@@ -7,7 +7,6 @@ define([
 	'goo/shapes/Quad',
 	'goo/shapes/Sphere',
 	'goo/renderer/Material',
-	'goo/shapes/ShapeCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
@@ -23,7 +22,6 @@ function(
 	Quad,
 	Sphere,
 	Material,
-	ShapeCreator,
 	ShaderLib,
 	BoundingBox,
 	BoundingSphere,
@@ -180,9 +178,9 @@ function(
 		var bound = EntityUtils.getTotalBoundingBox(entity);
 		var bv;
 		if (bound.xExtent) {
-			bv = EntityUtils.createTypicalEntity(entity._world, ShapeCreator.createBox(bound.xExtent * 2, bound.yExtent * 2, bound.zExtent * 2));
+			bv = entity._world.createEntity(new Box(bound.xExtent * 2, bound.yExtent * 2, bound.zExtent * 2));
 		} else if (bound.radius) {
-			bv = EntityUtils.createTypicalEntity(entity._world, ShapeCreator.createSphere(12, 12, bound.radius));
+			bv = entity._world.createEntity(new Sphere(12, 12, bound.radius));
 		}
 		var material = Material.createMaterial(ShaderLib.simpleLit);
 		material.wireframe = true;

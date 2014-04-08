@@ -4,7 +4,8 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
+	'goo/shapes/Quad',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -28,7 +29,8 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Box,
+	Quad,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -111,7 +113,7 @@ require([
 
 	function addWater(goo, waterY) {
 		// Water
-		var meshData = ShapeCreator.createQuad(10000, 10000, 10, 10);
+		var meshData = new Quad(10000, 10000, 10, 10);
 
 		var material = new Material(ShaderLib.simple, 'mat');
 		var waterEntity = goo.world.createEntity(meshData, material);
@@ -153,7 +155,7 @@ require([
 	}
 
 	function addDebugQuad(goo, waterRenderer) {
-		var quadMeshData = ShapeCreator.createQuad(10, 10);
+		var quadMeshData = new Quad(10, 10);
 		var quadMaterial = new Material(ShaderLib.simple, 'mat');
 
 		void(waterRenderer);
@@ -164,7 +166,7 @@ require([
 	}
 
 	function addBox(goo) {
-		var boxMeshData = ShapeCreator.createBox(10, 30, 10);
+		var boxMeshData = new Box(10, 30, 10);
 		var boxMaterial = new Material(ShaderLib.simple, 'mat');
 		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
 		boxEntity.transformComponent.transform.translation.setd(0, 15.01, 0);

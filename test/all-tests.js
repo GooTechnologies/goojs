@@ -190,7 +190,6 @@ define([
 	'test/shapes/Grid-test',
 	'test/shapes/ProjectedGrid-test',
 	'test/shapes/Quad-test',
-	'test/shapes/ShapeCreator-test',
 	'test/shapes/SimpleBox-test',
 	'test/shapes/Sphere-test',
 	'test/shapes/TerrainSurface-test',

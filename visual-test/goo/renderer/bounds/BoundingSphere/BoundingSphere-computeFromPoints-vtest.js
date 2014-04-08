@@ -1,7 +1,7 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingSphere',
@@ -10,7 +10,7 @@ require([
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Sphere,
 	MeshData,
 	MeshRendererComponent,
 	BoundingSphere,
@@ -57,7 +57,7 @@ require([
 		var yCenter = boundingSphere.center.data[1];
 		var zCenter = boundingSphere.center.data[2];
 
-		var sphereMeshData = ShapeCreator.createSphere(10, 16, radius);
+		var sphereMeshData = new Sphere(10, 16, radius);
 		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 		// camera

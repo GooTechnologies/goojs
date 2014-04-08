@@ -26,13 +26,11 @@ function(
 
 	RemoveParticlesAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		var children = EntityUtils.getChildren(entity);
-		for (var i = 0; i < children.length; i++) {
-			var child = children[i];
+		entity.children().each(function (child) {
 			if (child.name.indexOf('_ParticleSystem') !== -1 && child.hasComponent('ParticleComponent')) {
 				child.removeFromWorld();
 			}
-		}
+		});
 	};
 
 	return RemoveParticlesAction;

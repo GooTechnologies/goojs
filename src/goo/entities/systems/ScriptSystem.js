@@ -2,13 +2,15 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil',
+	'goo/scripts/Scripts',
 	'goo/scripts/GooClassRegister'
 ],
 	/** @lends */
 	function (
 		System,
 		SystemBus,
-		_
+		_,
+		Scripts
 	) {
 	'use strict';
 
@@ -80,6 +82,8 @@ define([
 			entity.scriptComponent.cleanup();
 		}
 	};*/
+
+	Scripts.addClass('ScriptSystem', ScriptSystem);
 
 	return ScriptSystem;
 });

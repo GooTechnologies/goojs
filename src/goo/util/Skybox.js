@@ -1,5 +1,5 @@
 define([
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
@@ -8,7 +8,7 @@ define([
 	'goo/math/Transform'
 
 ], /** @lends */ function (
-	ShapeCreator,
+	Box,
 	Sphere,
 	MeshData,
 	Material,
@@ -24,7 +24,7 @@ define([
 	function Skybox(type, images, textureMode, yRotation) {
 		var texture;
 		if (type === Skybox.SPHERE) {
-			this.meshData = ShapeCreator.createSphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
+			this.meshData = new Sphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
 			if (images instanceof Array) {
 				images = images[0];
 			}
@@ -32,7 +32,7 @@ define([
 				texture = new TextureCreator().loadTexture2D(images);
 			}
 		} else if (type === Skybox.BOX) {
-			this.meshData = ShapeCreator.createBox(1, 1, 1);
+			this.meshData = new Box(1, 1, 1);
 			if (images.length) {
 				texture = new TextureCreator().loadTextureCube(images, {flipY: false});
 			}

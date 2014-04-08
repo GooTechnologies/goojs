@@ -76,17 +76,22 @@ define([], function () {
 	 * Update the channel,
 	 * @param time
 	 */
-	EventChannel.prototype.update = function (time) {
+	EventChannel.prototype.update = function (time, skipCallback) {
+		if (!this.keyframes.length) { return; }
+		var currentKeyframe = this.keyframes[this.callbackIndex];
+		if (!currentKeyframe) {
+			currentKeyframe = this.keyframes[this.keyframes.length - 1];
+		}
 		if (time < this.keyframes[0].time) {
+			// Reset event channel
 			this.callbackIndex = 0;
 			return;
-		} else if (time > this.lastTime) {
-
-		} else {
-			if (time < this.keyframes[this.callbackIndex].time) {
-				this.callbackIndex = find(this.keyframes, time) + 1;
-			}
+		} else if (time < currentKeyframe.time) {
+			this.callbackIndex = find(this.keyframes, time) + 1;
+		} else if (this.callbackIndex > this.keyframes.length - 1) {
+			return;
 		}
+		if (skipCallback) { return; }
 
 		while (this.callbackIndex < this.keyframes.length && time > this.keyframes[this.callbackIndex].time) {
 			this.keyframes[this.callbackIndex].callback();

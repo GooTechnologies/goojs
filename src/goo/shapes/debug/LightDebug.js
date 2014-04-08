@@ -2,7 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight'
@@ -12,7 +12,7 @@ define([
 		MeshData,
 		MeshBuilder,
 		Transform,
-		ShapeCreator,
+		Sphere,
 		PointLight,
 		DirectionalLight,
 		SpotLight
@@ -20,7 +20,7 @@ define([
 	"use strict";
 
 	function LightDebug() {
-		this._ball = ShapeCreator.createSphere(12, 12, 0.3);
+		this._ball = new Sphere(12, 12, 0.3);
 		this._pointLightMesh = LightDebug._buildPointLightMesh();
 		this._spotLightMesh = LightDebug._buildSpotLightMesh();
 		this._directionalLightMesh = LightDebug._buildDirectionalLightMesh();

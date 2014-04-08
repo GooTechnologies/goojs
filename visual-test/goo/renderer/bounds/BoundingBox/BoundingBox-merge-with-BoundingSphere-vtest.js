@@ -1,7 +1,9 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
+	'goo/shapes/Quad',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingBox',
@@ -12,7 +14,9 @@ require([
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Sphere,
+	Box,
+	Quad,
 	MeshData,
 	MeshRendererComponent,
 	BoundingBox,
@@ -33,7 +37,7 @@ require([
 		var yCenter = boundingSphere.center.data[1];
 		var zCenter = boundingSphere.center.data[2];
 
-		var sphereMeshData = ShapeCreator.createSphere(16, 16, radius);
+		var sphereMeshData = new Sphere(16, 16, radius);
 		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
@@ -49,7 +53,7 @@ require([
 		var yCenter = boundingBox.center.data[1];
 		var zCenter = boundingBox.center.data[2];
 
-		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
+		var boxMeshData = new Box(xSize, ySize, zSize);
 		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
@@ -58,11 +62,11 @@ require([
 
 		var transform = new Transform();
 
-		var shape1MeshData = ShapeCreator.createSphere();
+		var shape1MeshData = new Sphere();
 		transform.translation.setd(2, 0, 0);
 		transform.update();
 		shape1MeshData.applyTransform(MeshData.POSITION, transform);
-		var shape2MeshData = ShapeCreator.createQuad();
+		var shape2MeshData = new Quad();
 		transform.translation.setd(0, 2, 0);
 		transform.update();
 		shape1MeshData.applyTransform(MeshData.POSITION, transform);

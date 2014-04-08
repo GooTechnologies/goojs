@@ -1,11 +1,9 @@
 define([
 	'goo/entities/components/Component',
-	'goo/shapes/ShapeCreator',
 	'goo/debug/BoundingVolumeMeshBuilder'],
 /** @lends */
 function(
 	Component,
-	ShapeCreator,
 	BoundingVolumeMeshBuilder) {
 	"use strict";
 

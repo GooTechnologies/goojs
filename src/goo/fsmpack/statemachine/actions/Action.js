@@ -9,6 +9,7 @@ function(
 
 	/**
 	 * @class
+	 * @private
 	 * @param {string} id
 	 * @param {object} settings
 	 */

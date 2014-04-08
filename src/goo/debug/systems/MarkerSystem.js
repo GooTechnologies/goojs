@@ -2,7 +2,6 @@ define([
 	'goo/entities/systems/System',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
 	'goo/debug/components/MarkerComponent',
 	'goo/renderer/Renderer',
 	'goo/math/Transform'
@@ -12,7 +11,6 @@ define([
 		System,
 		Material,
 		ShaderLib,
-		ShapeCreator,
 		MarkerComponent,
 		Renderer,
 		Transform

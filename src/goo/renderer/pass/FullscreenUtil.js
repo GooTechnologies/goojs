@@ -1,15 +1,15 @@
 define([
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Quad',
 	'goo/renderer/Camera',
 	'goo/math/Vector3'
 ],
 /** @lends */
 function (
-	ShapeCreator,
+	Quad,
 	Camera,
 	Vector3
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Utility class with a default setup parallel camera and fullscreen quad for fullscreen pass usage
@@ -26,7 +26,7 @@ function (
 	camera.onFrameChange();
 	FullscreenUtil.camera = camera;
 
-	FullscreenUtil.quad = ShapeCreator.createQuad(2, 2);
+	FullscreenUtil.quad = new Quad(2, 2);
 
 	return FullscreenUtil;
 });

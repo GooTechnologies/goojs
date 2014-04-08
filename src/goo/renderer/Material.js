@@ -247,7 +247,7 @@ function(
 	/**
 	 * Creates a new Material object and sets the shader by calling createShader with the shaderDefinition
 	 *
-	 * @deprecated Use new Material() instead
+	 * @deprecated Use new Material() instead; Deprecated since 0.9.0 - scheduled to be removed in 0.11.0
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
 	 * @param {String} [name='DefaultMaterial'] The name of the newly created material
 	 * @return {Material}

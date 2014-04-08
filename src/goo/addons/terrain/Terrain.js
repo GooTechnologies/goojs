@@ -18,7 +18,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/light/DirectionalLight',
-	'goo/shapes/ShapeCreator'
+	'goo/shapes/Quad'
 ],
 /** @lends */
 function(
@@ -41,7 +41,7 @@ function(
 	FullscreenPass,
 	FullscreenUtil,
 	DirectionalLight,
-	ShapeCreator
+	Quad
 ) {
 	"use strict";
 
@@ -57,7 +57,7 @@ function(
 		this.count = count;
 		this.splatMult = 2;
 
-		var brush = ShapeCreator.createQuad(2/size,2/size);
+		var brush = new Quad(2 / size, 2 / size);
 
 		var mat = this.drawMaterial1 = Material.createMaterial(brushShader);
 		mat.blendState.blending = 'AdditiveBlending';
@@ -274,7 +274,7 @@ function(
 
 	Terrain.prototype.pick = function(camera, x, y, store) {
 		var entities = [];
-		EntityUtils.traverse(this.terrainRoot, function (entity) {
+		this.terrainRoot.traverse(function (entity) {
 			if (entity.meshDataComponent && entity.meshRendererComponent.hidden === false) {
 				entities.push(entity);
 			}
@@ -283,7 +283,7 @@ function(
 		for (var i = 0; i < this.clipmaps.length; i++) {
 			var clipmap = this.clipmaps[i];
 
-			EntityUtils.traverse(clipmap.clipmapEntity, function (entity) {
+			clipmap.clipmapEntity.traverse(function (entity) {
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.isPickable = true;
 					entity.meshRendererComponent.materials[0] = clipmap.terrainPickingMaterial;
@@ -299,7 +299,7 @@ function(
 		for (var i = 0; i < this.clipmaps.length; i++) {
 			var clipmap = this.clipmaps[i];
 
-			EntityUtils.traverse(clipmap.clipmapEntity, function (entity) {
+			clipmap.clipmapEntity.traverse(function (entity) {
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.isPickable = false;
 					entity.meshRendererComponent.materials[0] = clipmap.origMaterial;

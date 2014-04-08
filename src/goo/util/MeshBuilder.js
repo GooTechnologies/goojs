@@ -11,7 +11,7 @@ define([
 		// Matrix3x3,
 		EntityUtils
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Combines mesh datas
@@ -29,17 +29,17 @@ define([
 	}
 
 	MeshBuilder.prototype.addEntity = function (entity) {
-		EntityUtils.traverse(entity, function (entity) {
+		entity.traverse(function (entity) {
 			if (entity.transformComponent._dirty) {
 				entity.transformComponent.updateTransform();
 			}
 		});
-		EntityUtils.traverse(entity, function (entity) {
+		entity.traverse(function (entity) {
 			if (entity.transformComponent._dirty) {
 				EntityUtils.updateWorldTransform(entity.transformComponent);
 			}
 		});
-		EntityUtils.traverse(entity, function (entity) {
+		entity.traverse(function (entity) {
 			if (entity.meshDataComponent) {
 				this.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
 			}

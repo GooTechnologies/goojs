@@ -229,8 +229,15 @@ function(
 				}
 				that._specialPrepare(script, config);
 				script.name = config.name;
-				if (script.externals.errors) {
+				if (script.externals.errors || script.externals.dependencyErrors) {
+					SystemBus.emit('scriptError', {
+						id: ref, 
+						errors: script.externals.errors, 
+						dependencyErrors: script.externals.dependencyErrors});
 					return script;
+				}
+				else {
+					SystemBus.emit('scriptError', {id: ref, errors: null});
 				}
 				_.extend(script.parameters, config.options);
 				return script;
