@@ -134,6 +134,8 @@ function(
 	Camera.NEAR_PLANE = 5;
 	Camera.FRUSTUM_PLANES = 6;
 
+	//! schteppe: Why not capital letters for the following?
+
 	/**
 	 * Projection mode for perspective frustum
 	 */

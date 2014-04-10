@@ -42,7 +42,7 @@ define([
 			calcVector2 = new Vector3();
 
 			var renderer = environment.world.gooRunner.renderer;
-			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? 
+			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ?
 				window.devicePixelRatio / renderer.svg.currentScale : 1;
 
 			mouseState = {
@@ -89,7 +89,7 @@ define([
 						if (mouseState.down) {
 							mouseState.x = event.clientX;
 							mouseState.y = event.clientY;
-							environment.dirty = true;
+							environment.panDirty = true;
 						}
 					}
 				},
@@ -126,11 +126,11 @@ define([
 			for (var event in listeners) {
 				environment.domElement.addEventListener(event, listeners[event]);
 			}
-			environment.dirty = true;
+			environment.panDirty = true;
 		}
 
 		function update(parameters, environment) {
-			if(!environment.dirty) { return ;}
+			if(!environment.panDirty) { return ;}
 			mouseState.dx = mouseState.x - mouseState.ox;
 			mouseState.dy = mouseState.y - mouseState.oy;
 			if (mouseState.dx === 0 && mouseState.dy === 0) {
@@ -172,9 +172,13 @@ define([
 				var transform = entity.transformComponent.transform;
 				calcVector.setv(fwdVector).scale(mouseState.dy);
 				calcVector2.setv(leftVector).scale(mouseState.dx);
+				if(parameters.screenMove){
+					var camera = entity.cameraComponent.camera;
+					calcVector.scale(2*camera._frustumTop / environment.viewportHeight);
+					calcVector2.scale(2*camera._frustumRight / environment.viewportWidth);
+				}
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);
-
 				calcVector.scale(parameters.panSpeed);
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
@@ -209,12 +213,18 @@ define([
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
-		}, {
+		}, { // Set this default to something that works with screenMove
 			key: 'panSpeed',
 			type: 'float',
 			'default': 0.005,
 			scale: 0.001,
 			decimals: 3
+		}, {
+			// REVIEW Remove it from parameters and always use it.
+			key: 'screenMove',
+			type: 'boolean',
+			'default': false,
+			description: 'Syncs camera with mouse world position.'
 		}]
 	};
 

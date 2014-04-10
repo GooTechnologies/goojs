@@ -16,7 +16,9 @@ define([
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/math/Transform'
+	'goo/math/Transform',
+	'goo/renderer/Camera',
+	'goo/renderer/Renderer'
 ], function(
 	LightComponent,
 	CameraComponent,
@@ -35,7 +37,9 @@ define([
 	Util,
 	ShaderLib,
 	ShaderBuilder,
-	Transform
+	Transform,
+	Camera,
+	Renderer
 ) {
 	'use strict';
 	var DebugDrawHelper = {};
@@ -99,7 +103,7 @@ define([
 		});
 	};
 
-	DebugDrawHelper.update = function(renderables, component, camPosition) {
+	DebugDrawHelper.update = function(renderables, component, camera) {
 		// major refactoring needed here
 
 		// rebuilding camera frustum if needed
@@ -129,14 +133,21 @@ define([
 		if (renderables[1]) { DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component); }
 
 		// keeping scale the same on the first element which is assumed to always be the camera mesh/light 'bulb'
-		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
-		renderables[0].transform.scale.setd(scale,scale,scale);
-		renderables[0].transform.update();
+		var mainCamera = Renderer.mainCamera;
+		if(mainCamera){
+			var camPosition = mainCamera.translation;
+			var scale = renderables[0].transform.translation.distance(camPosition) / 30;
+			if (mainCamera.projectionMode === Camera.Parallel) {
+				scale = (mainCamera._frustumTop - mainCamera._frustumBottom) / 20;
+			}
+			renderables[0].transform.scale.setd(scale,scale,scale);
+			renderables[0].transform.update();
 
-		// keeping scale for directional light mesh since scale is meaningless for it
-		if (component.light && component.light instanceof DirectionalLight) {
-			if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
-			if (renderables[1]) { renderables[1].transform.update(); }
+			// keeping scale for directional light mesh since scale is meaningless for it
+			if (component.light && component.light instanceof DirectionalLight) {
+				if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
+				if (renderables[1]) { renderables[1].transform.update(); }
+			}
 		}
 	};
 

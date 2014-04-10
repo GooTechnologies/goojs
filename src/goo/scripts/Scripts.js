@@ -39,7 +39,7 @@ define ([
 
 	Scripts.create = function (key, options) {
 		if (!_scripts[key]) {
-			throw new Error('Script is not registered');
+			throw new Error('Script "'+key+'" is not registered');
 		}
 		var script = _scripts[key]();
 		script.parameters = {};

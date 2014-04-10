@@ -5,7 +5,8 @@ define([
 	'goo/shapes/Disk',
 	'goo/shapes/Quad',
 	'goo/math/Transform',
-	'goo/renderer/Renderer'
+	'goo/renderer/Renderer',
+	'goo/renderer/Camera'
 ],
 /** @lends */
 function(
@@ -15,7 +16,8 @@ function(
 	Disk,
 	Quad,
 	Transform,
-	Renderer
+	Renderer,
+	Camera
 ) {
 	'use strict';
 
@@ -47,6 +49,16 @@ function(
 	TranslationGizmo.prototype.process = function() {
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
+
+		/*
+		var w = 1, h = 1;
+		var camera = this.camera;
+		if(camera && camera.projectionMode === Camera.Parallel){
+			w = 1/(camera._frustumRight - camera._frustumLeft);
+			h = 1/(camera._frustumTop  - camera._frustumBottom);
+		}
+		*/
+
 		Renderer.mainCamera.getPickRay(op[0], op[1], 1, 1, this._oldRay);
 		Renderer.mainCamera.getPickRay(p[0], p[1], 1, 1, this._newRay);
 
