@@ -32,6 +32,7 @@ define([
 		var domElement;
 		var dragButton;
 		var zoomDistanceFactor = 0.035;
+		var listeners;
 
 		function setup(parameters, environment) {
 			domElement = environment.domElement;
@@ -76,7 +77,7 @@ define([
 				environment.domElement.focus();
 			}
 
-			if (dragButton === -1 || dragButton === buttonIndex) {
+			if (dragButton === -1 || dragButton === buttonIndex || down === false) {
 				mouseState.buttonDown = down;
 				if (down) {
 					mouseState.lastX = NaN;
@@ -185,7 +186,7 @@ define([
 
 		function setupMouseControls(parameters, environment) {
 			var oldDistance = 0;
-			var listeners = environment.listeners = {
+			listeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var button = event.button;
@@ -344,8 +345,8 @@ define([
 		}
 
 		function cleanup(parameters, environment) {
-			for (var event in environment.listeners) {
-				environment.domElement.removeEventListener(event, environment.listeners[event]);
+			for (var event in listeners) {
+				environment.domElement.removeEventListener(event, listeners[event]);
 			}
 		}
 

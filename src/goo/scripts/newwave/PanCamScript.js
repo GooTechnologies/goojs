@@ -17,6 +17,7 @@ define([
 		var lookAtPoint;
 		var mouseState;
 		var devicePixelRatio;
+		var listeners;
 
 		function getTouchCenter(touches) {
 			var x1 = touches[0].clientX;
@@ -53,7 +54,7 @@ define([
 				dy: 0,
 				down: false
 			};
-			var listeners = environment.listeners = {
+			listeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var button = event.button;
@@ -80,10 +81,8 @@ define([
 							button = 1;
 						}
 					}
-					if (button === panButton || panButton === -1) {
-						mouseState.down = false;
-						mouseState.dx = mouseState.dy = 0;
-					}
+					mouseState.down = false;
+					mouseState.dx = mouseState.dy = 0;
 				},
 				mousemove: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
@@ -183,8 +182,8 @@ define([
 		}
 
 		function cleanup(parameters, environment) {
-			for (var event in environment.listeners) {
-				environment.domElement.removeEventListener(event, environment.listeners[event]);
+			for (var event in listeners) {
+				environment.domElement.removeEventListener(event, listeners[event]);
 			}
 		}
 
