@@ -92,6 +92,7 @@ function(
 	};
 
 	Ajax.ARRAY_BUFFER = 'arraybuffer';
+	Ajax.crossOrigin = false;
 
 	/**
 	 * Loads data at specified path which is returned in a Promise object.
@@ -104,7 +105,7 @@ function(
 	 */
 	Ajax.prototype.load = function(path, reload) {
 		var that = this;
-		var type = StringUtil.parseURL(path).path.slice(path.lastIndexOf('.')+1).toLowerCase();
+		var type = StringUtil.parseURL(path).path.split('.').pop().toLowerCase();
 		function typeInGroup(type, group) {
 			return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
 		}
@@ -179,7 +180,7 @@ function(
 	Ajax.prototype._loadImage = function (url) {
 		window.URL = window.URL || window.webkitURL;
 		var image = new Image();
-		if (this.crossOrigin) {
+		if (Ajax.crossOrigin) {
 			image.crossOrigin = 'anonymous';
 		}
 
@@ -203,7 +204,7 @@ function(
 
 	Ajax.prototype._loadVideo = function (url) {
 		var video = document.createElement('video');
-		if (this.crossOrigin) {
+		if (Ajax.crossOrigin) {
 			video.crossOrigin = 'anonymous';
 		}
 		var promise = new RSVP.Promise();
