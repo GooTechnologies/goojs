@@ -2,12 +2,14 @@ define([
 	'goo/math/Vector3',
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils',
-	'goo/renderer/Renderer'
+	'goo/renderer/Renderer',
+	'goo/entities/SystemBus'
 ], function (
 	Vector3,
 	Scripts,
 	ScriptUtils,
-	Renderer
+	Renderer,
+	SystemBus
 ) {
 	'use strict';
 
@@ -150,6 +152,9 @@ define([
 			var mainCam = Renderer.mainCamera;
 
 
+			var entity = environment.entity;
+			var transform = entity.transformComponent.transform;
+
 			if (lookAtPoint && mainCam) {
 				if (lookAtPoint.equals(mainCam.translation)) { return; }
 				mainCam.getScreenCoordinates(lookAtPoint, 1, 1, calcVector);
@@ -167,9 +172,8 @@ define([
 					calcVector
 				);
 				lookAtPoint.setv(calcVector);
+
 			} else {
-				var entity = environment.entity;
-				var transform = entity.transformComponent.transform;
 				calcVector.setv(fwdVector).scale(mouseState.dy);
 				calcVector2.setv(leftVector).scale(mouseState.dx);
 				if(parameters.screenMove){
@@ -183,6 +187,11 @@ define([
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
 			}
+			SystemBus.emit('goo.cameraPositionChanged', {
+				translation: transform.translation.data,
+				lookAtPoint: lookAtPoint?lookAtPoint.data:null,
+				id: entity.id
+			});
 		}
 
 		function cleanup(parameters, environment) {

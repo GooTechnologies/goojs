@@ -4,14 +4,16 @@ define([
 	'goo/scripts/newwave/TwoDimCamControlScript',
 	'goo/scripts/newwave/PanCamScript',
 	'goo/scripts/newwave/AxisAlignedCamControlScript',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/entities/SystemBus'
 ], function(
 	Scripts,
 	ScriptUtils,
 	TwoDimCamControlScript,
 	PanCamScript,
 	AxisAlignedCamControlScript,
-	_
+	_,
+	SystemBus
 ) {
 	'use strict';
 

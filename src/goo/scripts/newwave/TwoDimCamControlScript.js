@@ -1,11 +1,13 @@
 define([
 	'goo/math/Vector3',
 	'goo/scripts/ScriptUtils',
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'goo/entities/SystemBus'
 ], function(
 	Vector3,
 	ScriptUtils,
-	MathUtils
+	MathUtils,
+	SystemBus
 ) {
 	'use strict';
 
@@ -41,6 +43,13 @@ define([
 			} else {
 				env.twoDimDirty = true;
 			}
+
+			var transform = entity.transformComponent.transform;
+			SystemBus.emit('goo.cameraPositionChanged', {
+				translation: transform.translation.data,
+				size: size,
+				id: entity.id
+			});
 		}
 
 		// Removes all listeners
