@@ -43,7 +43,7 @@ require([
 	var material = new Material(ShaderLib.simpleLit);
 	var box1 = world.createEntity(boxMesh, material);
 
-	var gamepadComponent = new GamepadComponent();
+	var gamepadComponent = new GamepadComponent(0);
 	var speed = 2;
 	gamepadComponent.setLeftStickFunction(function(entity, vec, amount) {
 		var ytrans = - speed * vec.y * amount;
