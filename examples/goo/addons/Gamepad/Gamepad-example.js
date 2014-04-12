@@ -24,7 +24,14 @@ require([
 
 	'use strict';
 
-	var goo = new GooRunner();
+	var options = {
+		logo: {
+			position: 'bottomright',
+			color: '#FFF'
+		},
+		manuallyStartGameLoop: true
+	};
+	var goo = new GooRunner(options);
 	goo.renderer.domElement.id = 'goo';
 	document.body.appendChild(goo.renderer.domElement);
 
@@ -37,8 +44,9 @@ require([
 	var box1 = world.createEntity(boxMesh, material);
 
 	var gamepadComponent = new GamepadComponent();
+	var speed = 2;
 	gamepadComponent.setLeftStickFunction(function(entity, vec, amount) {
-		entity.transformComponent.addTranslation(vec.x * amount, 0, vec.y * amount);
+		entity.transformComponent.setTranslation(speed * vec.x * amount, speed * vec.y * amount, 0);
 	});
 	box1.setComponent(gamepadComponent);
 	box1.addToWorld();
@@ -49,6 +57,8 @@ require([
 
 	var camera = new Camera();
 	camera.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
-	world.createEntity(camera, [0, 2, 10]).addToWorld();
+	world.createEntity(camera, [0, 0, 10]).addToWorld();
+
+	goo.startGameLoop();
 
 });

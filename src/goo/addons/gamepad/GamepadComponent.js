@@ -39,5 +39,6 @@ function(
 		this.rightStickFunction = callback;
 	};
 
+
 	return GamepadComponent;
 });

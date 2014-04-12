@@ -27,8 +27,15 @@ function(
 		var leftX = axes[0];
 		var leftY = axes[1];
 
-		this.leftAmount = (leftX * leftX) + (leftY * leftY);
-		this.leftStickDirection.setd(Math.cos(leftX ), Math.sin(leftY));
+
+		this.leftStickDirection.setd(leftX, -leftY);
+		var length = this.leftStickDirection.length();
+		if (length > 0.0000001) {
+			this.leftStickDirection.data[0] /= length;
+			this.leftStickDirection.data[1] /= length;
+		}
+
+		this.leftAmount = Math.max(Math.abs(leftX), Math.abs(leftY));
 
 		var rightX = axes[2];
 		var rightY = axes[3];
