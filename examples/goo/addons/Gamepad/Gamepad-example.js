@@ -46,8 +46,17 @@ require([
 	var gamepadComponent = new GamepadComponent();
 	var speed = 2;
 	gamepadComponent.setLeftStickFunction(function(entity, vec, amount) {
-		entity.transformComponent.setTranslation(speed * vec.x * amount, speed * vec.y * amount, 0);
+		var ytrans = - speed * vec.y * amount;
+		var xtrans = speed * vec.x * amount;
+		entity.transformComponent.setTranslation(xtrans, ytrans, 0);
 	});
+
+	gamepadComponent.setRightStickFunction(function(entity, vec, amount) {
+		var xrot = vec.x * amount * Math.PI * 2;
+		var zrot = vec.y * amount * Math.PI * 2;
+		entity.transformComponent.setRotation(zrot, xrot, 0);
+	});
+
 	box1.setComponent(gamepadComponent);
 	box1.addToWorld();
 

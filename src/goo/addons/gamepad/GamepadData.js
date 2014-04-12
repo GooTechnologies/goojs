@@ -26,23 +26,33 @@ function(
 
 		var leftX = axes[0];
 		var leftY = axes[1];
-
-
-		this.leftStickDirection.setd(leftX, leftY);
-		var length = this.leftStickDirection.length();
-		if (length > 0.0000001) {
-			this.leftStickDirection.data[0] /= length;
-			this.leftStickDirection.data[1] /= length;
-		}
-
-		this.leftAmount = Math.max(Math.abs(leftX), Math.abs(leftY));
+		this.calculateStickDirection(this.leftStickDirection, leftX, leftY);
+		this.leftAmount = this.calculateStickAmount(leftX, leftY);
 
 		var rightX = axes[2];
 		var rightY = axes[3];
-
+		this.calculateStickDirection(this.rightStickDirection, rightX, rightY);
+		this.rightAmount = this.calculateStickAmount(rightX, rightY);
 	};
 
+	/**
+	 *
+	 * @param {Vector2} dirVector
+	 * @param {Number} x
+	 * @param {Number} y
+	 */
+	GamepadData.prototype.calculateStickDirection = function(dirVector, x, y) {
+		dirVector.setd(x, y);
+		var length = dirVector.length();
+		if (length > 0.0000001) {
+			dirVector.data[0] /= length;
+			dirVector.data[1] /= length;
+		}
+	};
 
+	GamepadData.prototype.calculateStickAmount = function(x, y) {
+		return Math.max(Math.abs(x), Math.abs(y));
+	};
 
 	return GamepadData
 });
