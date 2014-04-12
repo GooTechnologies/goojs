@@ -28,7 +28,7 @@ function(
 		var leftY = axes[1];
 
 
-		this.leftStickDirection.setd(leftX, -leftY);
+		this.leftStickDirection.setd(leftX, leftY);
 		var length = this.leftStickDirection.length();
 		if (length > 0.0000001) {
 			this.leftStickDirection.data[0] /= length;
