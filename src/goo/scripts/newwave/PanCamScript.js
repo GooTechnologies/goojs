@@ -186,9 +186,11 @@ define([
 					// In the case of screenMove, we normalize the camera movement
 					// to the near plane instead of using pixels. This makes the parallel
 					// camera map mouse world movement to camera movement 1-1
-					var camera = entity.cameraComponent.camera;
-					calcVector.scale((camera._frustumTop - camera._frustumBottom) / environment.viewportHeight);
-					calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
+					if(entity.cameraComponent && entity.cameraComponent.camera){
+						var camera = entity.cameraComponent.camera;
+						calcVector.scale((camera._frustumTop - camera._frustumBottom) / environment.viewportHeight);
+						calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
+					}
 				//}
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);
