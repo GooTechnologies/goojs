@@ -320,7 +320,9 @@ define([
 
 			var delta = MathUtils.lerp(environment.smoothness, 1, environment.world.tpf);
 
-			if (!environment.goingToLookAt.equals(environment.lookAtPoint)) {
+			if (environment.goingToLookAt.distanceSquared(environment.lookAtPoint) < 1e-6) {
+				environment.lookAtPoint.setv(environment.goingToLookAt);
+			} else {
 				environment.lookAtPoint.lerp(environment.goingToLookAt, delta);
 				//environment.orbitDirty = true;
 			}
@@ -348,7 +350,7 @@ define([
 				transform.lookAt(lookAtPoint, worldUpVector);
 			}
 
-			if (spherical.distanceSquared(targetSpherical) < 0.000001) {
+			if (spherical.distanceSquared(targetSpherical) < 0.000001 && environment.lookAtPoint.equals(environment.goingToLookAt)) {
 				spherical.y = MathUtils.moduloPositive(spherical.y, MathUtils.TWO_PI);
 				targetSpherical.copy(spherical);
 				//environment.dirty = false;
