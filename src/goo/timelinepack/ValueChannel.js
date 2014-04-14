@@ -145,46 +145,5 @@ define([
 		return func;
 	};
 
-	/* Unstable and probably very slow
-	ValueChannel.getRotationXTweener = function (entityId, resolver) {
-		var entity;
-		var angles = new Vector3();
-		return function (time, value) {
-			if (!entity) { entity = resolver(entityId); }
-
-			entity.transformComponent.transform.rotation.toAngles(angles);
-			angles.data[0] = value;
-			entity.transformComponent.transform.rotation.fromAngles(angles.data[0], angles.data[1], angles.data[2]);
-			entity.transformComponent.setUpdated();
-		};
-	};
-
-	ValueChannel.getRotationYTweener = function (entityId, resolver) {
-		var entity;
-		var angles = new Vector3();
-		return function (time, value) {
-			if (!entity) { entity = resolver(entityId); }
-
-			entity.transformComponent.transform.rotation.toAngles(angles);
-			angles.data[1] = value;
-			entity.transformComponent.transform.rotation.fromAngles(angles.data[0], angles.data[1], angles.data[2]);
-			entity.transformComponent.setUpdated();
-		};
-	};
-
-	ValueChannel.getRotationZTweener = function (entityId, resolver) {
-		var entity;
-		var angles = new Vector3();
-		return function (time, value) {
-			if (!entity) { entity = resolver(entityId); }
-
-			entity.transformComponent.transform.rotation.toAngles(angles);
-			angles.data[2] = value;
-			entity.transformComponent.transform.rotation.fromAngles(angles.data[0], angles.data[1], angles.data[2]);
-			entity.transformComponent.setUpdated();
-		};
-	};
-	*/
-
 	return ValueChannel;
 });

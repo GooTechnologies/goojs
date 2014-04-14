@@ -6,7 +6,6 @@ define([
 	'use strict';
 
 	function TimelineComponent() {
-		//! AT: pass this as a parameter to the base Component class
 		this.type = 'TimelineComponent';
 
 		this.channels = [];

@@ -61,7 +61,7 @@ require([
 	camera.setProjectionMode(Camera.Parallel);
 	var script = Scripts.create('OrbitNPanControlScript', {
 		//dragButton: 'None',
-		panSpeed : 1
+		//panSpeed : 1
 	});
 
 	// camera control set up

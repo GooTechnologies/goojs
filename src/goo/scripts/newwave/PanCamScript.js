@@ -2,12 +2,14 @@ define([
 	'goo/math/Vector3',
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils',
-	'goo/renderer/Renderer'
+	'goo/renderer/Renderer',
+	'goo/entities/SystemBus'
 ], function (
 	Vector3,
 	Scripts,
 	ScriptUtils,
-	Renderer
+	Renderer,
+	SystemBus
 ) {
 	'use strict';
 
@@ -89,7 +91,7 @@ define([
 						if (mouseState.down) {
 							mouseState.x = event.clientX;
 							mouseState.y = event.clientY;
-							environment.panDirty = true;
+							environment.dirty = true;
 						}
 					}
 				},
@@ -126,11 +128,11 @@ define([
 			for (var event in listeners) {
 				environment.domElement.addEventListener(event, listeners[event]);
 			}
-			environment.panDirty = true;
+			environment.dirty = true;
 		}
 
 		function update(parameters, environment) {
-			if(!environment.panDirty) {
+			if(!environment.dirty) {
 				return;
 			}
 			mouseState.dx = mouseState.x - mouseState.ox;
@@ -152,6 +154,8 @@ define([
 			var mainCam = Renderer.mainCamera;
 
 			var entity = environment.entity;
+			var transform = entity.transformComponent.transform;
+
 			if (lookAtPoint && mainCam) {
 				if (lookAtPoint.equals(mainCam.translation)) {
 					return;
@@ -173,9 +177,8 @@ define([
 				);
 				lookAtPoint.setv(calcVector);
 				console.log(mouseState.dx, mouseState.dy)
+
 			} else {
-				var entity = environment.entity;
-				var transform = entity.transformComponent.transform;
 				calcVector.setv(fwdVector).scale(mouseState.dy);
 				calcVector2.setv(leftVector).scale(mouseState.dx);
 
@@ -196,7 +199,13 @@ define([
 				//}
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
+				//environment.dirty = false;
 			}
+			SystemBus.emit('goo.cameraPositionChanged', {
+				translation: transform.translation.data,
+				lookAtPoint: lookAtPoint?lookAtPoint.data:null,
+				id: entity.id
+			});
 		}
 
 		function cleanup(parameters, environment) {
