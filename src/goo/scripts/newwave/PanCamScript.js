@@ -91,7 +91,7 @@ define([
 						if (mouseState.down) {
 							mouseState.x = event.clientX;
 							mouseState.y = event.clientY;
-							environment.panDirty = true;
+							environment.dirty = true;
 						}
 					}
 				},
@@ -128,11 +128,11 @@ define([
 			for (var event in listeners) {
 				environment.domElement.addEventListener(event, listeners[event]);
 			}
-			environment.panDirty = true;
+			environment.dirty = true;
 		}
 
 		function update(parameters, environment) {
-			if(!environment.panDirty) { return ;}
+			if(!environment.dirty) { return ;}
 			mouseState.dx = mouseState.x - mouseState.ox;
 			mouseState.dy = mouseState.y - mouseState.oy;
 			if (mouseState.dx === 0 && mouseState.dy === 0) {
@@ -186,6 +186,7 @@ define([
 				calcVector.scale(parameters.panSpeed);
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
+				environment.dirty = false;
 			}
 			SystemBus.emit('goo.cameraPositionChanged', {
 				translation: transform.translation.data,

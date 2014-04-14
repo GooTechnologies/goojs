@@ -61,7 +61,7 @@ define([
 			worldUpVector = new Vector3(Vector3.UNIT_Y);
 			maxSampleTimeMS = 200;
 
-			environment.orbitDirty = true;
+			environment.dirty = true;
 
 			mouseState = {
 				buttonDown: false,
@@ -149,7 +149,7 @@ define([
 			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
 			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 			targetSpherical.z = MathUtils.clamp(targetSpherical.z + thetaAccel, minAscent, maxAscent);
-			environment.orbitDirty = true;
+			environment.dirty = true;
 		}
 
 		function applyWheel(e, parameters, environment) {
@@ -160,7 +160,7 @@ define([
 
 		function zoom(amount, parameters, environment) {
 			targetSpherical.x = MathUtils.clamp(targetSpherical.x + amount, parameters.minZoomDistance, parameters.maxZoomDistance);
-			environment.orbitDirty = true;
+			environment.dirty = true;
 		}
 
 		function applyReleaseDrift(parameters) {
@@ -186,7 +186,7 @@ define([
 
 		function setupMouseControls(parameters, environment) {
 			var oldDistance = 0;
-			var listeners = environment.orbitListeners = {
+			listeners = {
 				mousedown: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var button = event.button;
@@ -288,6 +288,11 @@ define([
 		}
 
 		function update(parameters, environment, goo) {
+			if (!environment.dirty) {
+				return; //
+			}
+
+
 			var entity = environment.entity;
 			// grab our transformComponent
 			var transformComponent = entity.transformComponent;
@@ -298,16 +303,13 @@ define([
 
 			if (!environment.goingToLookAt.equals(environment.lookAtPoint)) {
 				environment.lookAtPoint.lerp(environment.goingToLookAt, delta);
-				environment.orbitDirty = true;
+				//environment.orbitDirty = true;
 			}
 
 			if (parameters.releaseVelocity) {
 				updateVelocity(entity._world.tpf, parameters, environment);
 			}
 
-			if (!environment.orbitDirty) {
-				return; //
-			}
 
 			//var delta = MathUtils.clamp(parameters.interpolationSpeed * environment.world.tpf, 0.0, 1.0);
 
@@ -330,7 +332,7 @@ define([
 			if (spherical.distanceSquared(targetSpherical) < 0.000001) {
 				spherical.y = MathUtils.moduloPositive(spherical.y, MathUtils.TWO_PI);
 				targetSpherical.copy(spherical);
-				environment.orbitDirty = false;
+				environment.dirty = false;
 			}
 
 			// set our component updated.
@@ -344,8 +346,8 @@ define([
 		}
 
 		function cleanup(parameters, environment) {
-			for (var event in environment.orbitListeners) {
-				environment.domElement.removeEventListener(event, environment.orbitListeners[event]);
+			for (var event in listeners) {
+				environment.domElement.removeEventListener(event, listeners[event]);
 			}
 		}
 
