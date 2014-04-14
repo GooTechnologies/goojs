@@ -60,7 +60,7 @@ require([
 	var cameraEntity = goo.world.createEntity(camera, 'CameraEntity', [0,0,10]).addToWorld();
 	camera.setProjectionMode(Camera.Parallel);
 	var script = Scripts.create('OrbitNPanControlScript', {
-		//dragButton: 'None',
+		dragButton: 'None',
 		//panSpeed : 1
 	});
 

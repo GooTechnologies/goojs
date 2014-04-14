@@ -176,7 +176,6 @@ define([
 					calcVector
 				);
 				lookAtPoint.setv(calcVector);
-				console.log(mouseState.dx, mouseState.dy)
 
 			} else {
 				calcVector.setv(fwdVector).scale(mouseState.dy);
