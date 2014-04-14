@@ -178,8 +178,8 @@ define([
 				calcVector2.setv(leftVector).scale(mouseState.dx);
 				if(parameters.screenMove){
 					var camera = entity.cameraComponent.camera;
-					calcVector.scale(2*camera._frustumTop / environment.viewportHeight);
-					calcVector2.scale(2*camera._frustumRight / environment.viewportWidth);
+					calcVector.scale(2*camera._frustumTop / (environment.viewportHeight/devicePixelRatio));
+					calcVector2.scale(2*camera._frustumRight / (environment.viewportWidth/devicePixelRatio));
 				}
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);

@@ -145,6 +145,7 @@ define([
 		return func;
 	};
 
+	// REVIEW: Remove commented out code
 	/* Unstable and probably very slow
 	ValueChannel.getRotationXTweener = function (entityId, resolver) {
 		var entity;

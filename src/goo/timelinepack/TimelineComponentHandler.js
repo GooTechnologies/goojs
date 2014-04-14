@@ -40,6 +40,8 @@ define([
 	};
 
 	TimelineComponentHandler.tweenMap = {
+
+		// REVIEW: remove commented out code
 		/*
 		'translationX': ValueChannel.getTranslationXTweener,
 		'translationY': ValueChannel.getTranslationYTweener,
@@ -61,7 +63,7 @@ define([
 		'rotationX': ValueChannel.getRotationTweener.bind(null, 0),
 		'rotationY': ValueChannel.getRotationTweener.bind(null, 1),
 		'rotationZ': ValueChannel.getRotationTweener.bind(null, 2),
-		'event': function () {}
+		'event': function () {} // REVIEW: No tween map for event
 	};
 
 	//! AT: requires TWEEN
@@ -107,6 +109,7 @@ define([
 		};
 	}
 
+	// REVIEW: This is only for event channels, that should be reflected in the method name
 	function updateCallbackEntry(keyframeConfig, keyframeId, channel, channelConfig) {
 		var needsResorting = false;
 
