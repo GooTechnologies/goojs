@@ -130,7 +130,9 @@ define([
 		}
 
 		function update(parameters, environment) {
-			if(!environment.panDirty) { return ;}
+			if(!environment.panDirty) {
+				return;
+			}
 			mouseState.dx = mouseState.x - mouseState.ox;
 			mouseState.dy = mouseState.y - mouseState.oy;
 			if (mouseState.dx === 0 && mouseState.dy === 0) {
@@ -149,9 +151,12 @@ define([
 
 			var mainCam = Renderer.mainCamera;
 
-
+			var entity = environment.entity;
 			if (lookAtPoint && mainCam) {
-				if (lookAtPoint.equals(mainCam.translation)) { return; }
+				if (lookAtPoint.equals(mainCam.translation)) {
+					return;
+				}
+				var camera = entity.cameraComponent.camera;
 				mainCam.getScreenCoordinates(lookAtPoint, 1, 1, calcVector);
 				calcVector.add_d(
 					-mouseState.dx / (environment.viewportWidth/devicePixelRatio),
@@ -167,19 +172,28 @@ define([
 					calcVector
 				);
 				lookAtPoint.setv(calcVector);
+				console.log(mouseState.dx, mouseState.dy)
 			} else {
 				var entity = environment.entity;
 				var transform = entity.transformComponent.transform;
 				calcVector.setv(fwdVector).scale(mouseState.dy);
 				calcVector2.setv(leftVector).scale(mouseState.dx);
-				if(parameters.screenMove){
+
+				//! schteppe: use world coordinates for both by default?
+				//if(parameters.screenMove){
+					// In the case of screenMove, we normalize the camera movement
+					// to the near plane instead of using pixels. This makes the parallel
+					// camera map mouse world movement to camera movement 1-1
 					var camera = entity.cameraComponent.camera;
-					calcVector.scale(2*camera._frustumTop / environment.viewportHeight);
-					calcVector2.scale(2*camera._frustumRight / environment.viewportWidth);
-				}
+					calcVector.scale((camera._frustumTop - camera._frustumBottom) / environment.viewportHeight);
+					calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
+				//}
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);
-				calcVector.scale(parameters.panSpeed);
+				//if(!parameters.screenMove){
+					// panSpeed should be 1 in the screenMove case, to make movement sync properly
+					calcVector.scale(parameters.panSpeed);
+				//}
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
 			}
@@ -213,18 +227,17 @@ define([
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
-		}, { // Set this default to something that works with screenMove
+		}, {
 			key: 'panSpeed',
 			type: 'float',
 			'default': 0.005,
 			scale: 0.001,
 			decimals: 3
 		}, {
-			// REVIEW Remove it from parameters and always use it.
 			key: 'screenMove',
 			type: 'boolean',
 			'default': false,
-			description: 'Syncs camera with mouse world position.'
+			description: 'Syncs camera movement with mouse world position 1-1, needed for parallel camera.'
 		}]
 	};
 

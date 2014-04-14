@@ -57,13 +57,11 @@ require([
 
 	// add camera
 	var camera = new Camera();
-	var cameraEntity = goo.world.createEntity(camera, 'CameraEntity', [0,0,100]).addToWorld();
+	var cameraEntity = goo.world.createEntity(camera, 'CameraEntity', [0,0,10]).addToWorld();
 	camera.setProjectionMode(Camera.Parallel);
-	var script = Scripts.create('TwoDimNPanControlScript', {
-		// TwoDim
-		size: 10,
-		// Pan
-		panButton: 'Middle',
+	var script = Scripts.create('OrbitNPanControlScript', {
+		//dragButton: 'None',
+		panSpeed : 1
 	});
 
 	// camera control set up
