@@ -7,6 +7,7 @@ No new feature should be added to the engine unless it is unit tested and/or vis
 
 + Use *V* to write tests faster and have them working with the automatic checking
 + Add comments here and there - since visual tests target individual features, they can be useful when examples are lacking. Don't go overboard with comments - these are still tests and not full tutorials. If you do wish to write something more elaborate consider doing either a full tutorial or an example (check the `examples` folder)
++ Keep common resources in the base resource folder. Keep resources only relevant to one visual test in the test's folder.
 + Don't require interactivity unless the feature is intrinsically interactive (keyboard/mouse scripts)
 + Don't use scenes created in *Create* - they are a nightmare to maintain with all the data model changes and they rely on too many things that can go wrong therefore rendering the test useless. Exceptions are of course the vtests for the handlers themselves.
 
