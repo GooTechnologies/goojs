@@ -31,7 +31,7 @@ function(
 ) {
 	"use strict";
 
-	var Ammo = window.Ammo; // make jslint happy
+	/*global Ammo */
 
 	/**
 	 * @class Adds Ammo physics to a Goo entity.
