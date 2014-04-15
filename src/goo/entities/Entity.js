@@ -72,6 +72,7 @@ function (
 				this.setComponent(argument);
 			} else {
 				// ask all components if they are compatible with the given data
+				if (!this._world) { return this; }
 				var components = this._world._components;
 				for (var j = 0; j < components.length; j++) {
 					var component = components[j];
