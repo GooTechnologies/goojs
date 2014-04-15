@@ -177,14 +177,14 @@ function(
 		// entity.meshDataComponent.computeBoundFromPoints();
 		var bound = EntityUtils.getTotalBoundingBox(entity);
 		var bv;
-		if (bound.xExtent) {
-			bv = entity._world.createEntity(new Box(bound.xExtent * 2, bound.yExtent * 2, bound.zExtent * 2));
-		} else if (bound.radius) {
-			bv = entity._world.createEntity(new Sphere(12, 12, bound.radius));
-		}
-		var material = Material.createMaterial(ShaderLib.simpleLit);
+
+		var material = new Material(ShaderLib.simpleLit);
 		material.wireframe = true;
-		bv.meshRendererComponent.materials.push(material);
+		if (bound.xExtent) {
+			bv = entity._world.createEntity(new Box(bound.xExtent * 2, bound.yExtent * 2, bound.zExtent * 2), material);
+		} else if (bound.radius) {
+			bv = entity._world.createEntity(new Sphere(12, 12, bound.radius), material);
+		}
 
 		bv.transformComponent.setTranslation(bound.center);
 		//entity.transformComponent.attachChild( bv.transformComponent );
