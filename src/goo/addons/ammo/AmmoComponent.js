@@ -69,6 +69,7 @@ function(
 		this.linearFactor = settings.linearFactor;
 		this.onInitializeBody = settings.onInitializeBody;
 		this.isTrigger = settings.isTrigger;
+        this.scale = settings.scale;
 
 		this.type = 'AmmoComponent';
 		this.ammoTransform = new Ammo.btTransform();
@@ -81,7 +82,11 @@ function(
 		var shape;
 
 		// Need to abs since negative scales are fine for meshes but not for bounding boxes.
-		var scale = [Math.abs(gooTransform.scale.x), Math.abs(gooTransform.scale.y), Math.abs(gooTransform.scale.z)];
+        var scale = [Math.abs(gooTransform.scale.x), Math.abs(gooTransform.scale.y), Math.abs(gooTransform.scale.z)];
+        // if a scale value is used in settings
+        if(this.scale)
+		    scale = [Math.abs(this.scale.x),Math.abs(this.scale.y),Math.abs(this.scale.z)]
+
 
 		if (entity.meshDataComponent && entity.meshDataComponent.meshData) {
 			var meshData = entity.meshDataComponent.meshData;
@@ -102,7 +107,7 @@ function(
 						shape = new Ammo.btSphereShape(bound.radius * scale[0]);
 					}
 				} else {
-					shape = calculateTriangleMeshShape(entity, scale.data); // this can only be used for static meshes, i.e. mass == 0.
+					shape = calculateTriangleMeshShape(entity, scale); // this can only be used for static meshes, i.e. mass == 0.
 				}
 			}
 		} else {
