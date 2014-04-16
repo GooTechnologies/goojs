@@ -1,13 +1,13 @@
 define([
-	'goo/debug/components/MarkerComponent',
-	'goo/debug/systems/MarkerSystem'
+	'goo/debugpack/components/MarkerComponent',
+	'goo/debugpack/systems/MarkerSystem'
 ],
 	/** @lends */
 	function (
 	MarkerComponent,
 	MarkerSystem
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class The debugger utility class adds a way to "select" entities and run a filtered serializer on them. It can also create a REPL and export the selected entity to global scope to aid in debugging with the browser's web console.

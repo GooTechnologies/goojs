@@ -386,7 +386,7 @@ define([
 				material.setTexture(Shader.DIFFUSE_MAP, V.goo.renderer.hardwarePicking.pickingTarget);
 			}
 		});
-		entity.addToWorld();
+		return entity.addToWorld();
 	};
 
 	return V;

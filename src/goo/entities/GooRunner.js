@@ -9,11 +9,7 @@ define([
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
 	'goo/util/Stats',
-	"goo/entities/systems/CSSTransformSystem",
 	"goo/entities/systems/AnimationSystem",
-	"goo/entities/systems/LightDebugSystem",
-	"goo/entities/systems/CameraDebugSystem",
-	'goo/entities/systems/MovementSystem',
 
 	'goo/sound/AudioContext',
 	'goo/entities/systems/SoundSystem',
@@ -41,11 +37,7 @@ function (
 	CameraSystem,
 	ParticlesSystem,
 	Stats,
-	CSSTransformSystem,
 	AnimationSystem,
-	LightDebugSystem,
-	CameraDebugSystem,
-	MovementSystem,
 
 	AudioContext,
 	SoundSystem,
@@ -104,14 +96,10 @@ function (
 		this.world.setSystem(new ScriptSystem(this.world));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
-		this.world.setSystem(new CSSTransformSystem(this.renderer)); // Go away!
 		this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 		this.world.setSystem(new AnimationSystem());
-		this.world.setSystem(new LightDebugSystem()); // Go away!
-		this.world.setSystem(new CameraDebugSystem()); // Go away!
-		this.world.setSystem(new MovementSystem()); // Go away!
 		if (AudioContext) {
 			this.world.setSystem(new SoundSystem());
 		}
