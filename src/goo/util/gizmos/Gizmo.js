@@ -222,7 +222,7 @@ function(
 	};
 
 	Gizmo.prototype._buildMaterialForAxis = function(axis, opacity) {
-		var material = Material.createMaterial(Gizmo._shaderDef, axis+'Material');
+		var material = new Material(Gizmo._shaderDef, axis + 'Material');
 		material.uniforms.color = this._colors[axis];
 
 		if(opacity !== undefined && opacity < 1.0) {

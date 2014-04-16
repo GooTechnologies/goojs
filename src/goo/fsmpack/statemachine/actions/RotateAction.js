@@ -19,7 +19,7 @@ function(
 	RotateAction.external = {
 		name: 'Rotate',
 		type: 'animation',
-		description: 'Rotates the entity',
+		description: 'Rotates the entity with the set angles.',
 		parameters: [{
 			name: 'Rotation',
 			key: 'rotation',

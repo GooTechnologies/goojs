@@ -1,6 +1,12 @@
 define([], function () {
 	'use strict';
 
+
+	// REVIEW: This and ValueChannel contans a lot of duplicated code. Maybe a single class with different type args, or an abstract parent?
+	// Either this could be the base class and ValueChannel could be the child, since this doesn't seem to contain any event-specific functionality
+	// Then of course you'd change the name
+	// Or you'd move some specific functionality in here and find some other way of sharing the duplicated functionality.
+
 	function EventChannel(id) {
 		this.id = id;
 

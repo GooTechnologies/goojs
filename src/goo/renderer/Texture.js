@@ -58,11 +58,11 @@ function (
 	 *			<li>'UnsignedShort5551' =
 	 *			<li>'Float' =
 	 *		</ul>
-	 * @param {boolean} [settings.offset=(0,0)] Texture offset
-	 * @param {boolean} [settings.repeat=(1,1)] Texture repeat/scale
+	 * @param {Array} [settings.offset=(0,0)] Texture offset
+	 * @param {Array} [settings.repeat=(1,1)] Texture repeat/scale
 	 * @param {boolean} [settings.generateMipmaps='true'] Automatically generate mipmaps
 	 * @param {boolean} [settings.premultiplyAlpha='false'] Premultiply alpha
-	 * @param {boolean} [settings.unpackAlignment=1] Unpack alignment setting
+	 * @param {number} [settings.unpackAlignment=1] Unpack alignment setting
 	 * @param {boolean} [settings.flipY='true'] Flip texture in y-axis
 	 */
 	function Texture(image, settings, width, height) {

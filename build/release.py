@@ -59,7 +59,7 @@ shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
 shutil.copy('out/fsmpack.js', release_dir + '/lib/fsmpack.js')
 shutil.copy('out/geometrypack.js', release_dir + '/lib/geometrypack.js')
 shutil.copy('out/quadpack.js', release_dir + '/lib/quadpack.js')
-
+shutil.copy('out/timelinepack.js', release_dir + '/lib/timelinepack.js')
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')
 shutil.copy('lib/polyk.js', release_dir + '/lib/polyk.js')

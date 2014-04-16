@@ -1,11 +1,13 @@
 define([
 	'goo/math/Vector3',
 	'goo/scripts/ScriptUtils',
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'goo/entities/SystemBus'
 ], function(
 	Vector3,
 	ScriptUtils,
-	MathUtils
+	MathUtils,
+	SystemBus
 ) {
 	'use strict';
 
@@ -35,12 +37,20 @@ define([
 			var delta = MathUtils.lerp(env.smoothness, 1, env.world.tpf);
 			size = env.size = MathUtils.lerp(delta, size, targetSize);
 			// REVIEW Don't redefine near and far, send null, null
+			// near, far = 1, 2e4 to cover whole scene in create
 			camera.setFrustum(1, 2e4, -size, size, size, -size, 1);
 			if(Math.abs(targetSize-size) < 0.00001){
 				env.twoDimDirty = false;
 			} else {
 				env.twoDimDirty = true;
 			}
+
+			var transform = entity.transformComponent.transform;
+			SystemBus.emit('goo.cameraPositionChanged', {
+				translation: transform.translation.data,
+				size: size,
+				id: entity.id
+			});
 		}
 
 		// Removes all listeners

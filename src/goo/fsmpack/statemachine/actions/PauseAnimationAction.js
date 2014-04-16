@@ -17,7 +17,7 @@ function(
 	PauseAnimationAction.external = {
 		name: 'Pause Animation',
 		type: 'animation',
-		description: 'Pauses animations',
+		description: 'Pauses skeleton animations',
 		parameters: [{
 			name: 'On all',
 			key: 'onAll',

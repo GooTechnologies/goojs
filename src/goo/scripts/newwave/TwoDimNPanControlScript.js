@@ -4,14 +4,16 @@ define([
 	'goo/scripts/newwave/TwoDimCamControlScript',
 	'goo/scripts/newwave/PanCamScript',
 	'goo/scripts/newwave/AxisAlignedCamControlScript',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/entities/SystemBus'
 ], function(
 	Scripts,
 	ScriptUtils,
 	TwoDimCamControlScript,
 	PanCamScript,
 	AxisAlignedCamControlScript,
-	_
+	_,
+	SystemBus
 ) {
 	'use strict';
 
@@ -47,21 +49,17 @@ define([
 
 	var twoDimParams = TwoDimCamControlScript.externals.parameters;
 	var panParams = PanCamScript.externals.parameters;
-	// REVIEW slice'em so you don't get two 'whenUsed'
 	var axisParams = AxisAlignedCamControlScript.externals.parameters;
 
 	// Remove one of the "whenUsed" params
-	var params = _.deepClone(twoDimParams.concat(panParams.slice(1)).concat(axisParams));
+	var params = _.deepClone(twoDimParams.concat(panParams.slice(1)).concat(axisParams.slice(1)));
 
 	// Change defaults for this script
 	for (var i = 0; i < params.length; i++) {
 		var param = params[i];
 		switch (param.key) {
-			// REVIEW No dragbutton
-			case 'dragButton':
-				param['default'] = 'Left';
-				break;
 			// REVIEW Default should probably be left, then override in create
+			// ----> Whyyyy
 			case 'panButton':
 				param['default'] = 'Middle';
 				break;
@@ -69,14 +67,15 @@ define([
 				param['default'] = 1; // PanSpeed should be 1 in the parallel cam / 2D case
 				break;
 			case 'screenMove':
-				param['default'] = true; // Should use screen movement
+				// REVIEW Remove? No..
+				param['default'] = true; // Should use screen movement - map mouse movement in the near plane 1-1 to the camera position
 				break;
 		}
 	}
 
 	TwoDimNPanControlScript.externals = {
 		name: 'TwoDimNPanControlScript',
-		description: 'This is a combo of twodimcamcontrolscript and pancamcontrolscript', // REVIEW And axisalignedcamcontrolscript
+		description: 'This is a combo of TwoDimCamControlScript, PanCamControlScript and AxisAlignedCamControlScript',
 		parameters:	params
 	};
 

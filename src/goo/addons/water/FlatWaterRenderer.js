@@ -49,7 +49,7 @@ function (
 			this.depthTarget = new RenderTarget(width, height);
 		}
 
-		var waterMaterial = Material.createMaterial(waterShaderDef, 'WaterMaterial');
+		var waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
 		waterMaterial.shader.defines.REFRACTION = this.useRefraction;
 		waterMaterial.cullState.enabled = false;
 		var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
@@ -77,7 +77,7 @@ function (
 
 		this.waterEntity = null;
 
-		this.depthMaterial = Material.createMaterial(packDepthY, 'depth');
+		this.depthMaterial = new Material(packDepthY, 'depth');
 	}
 
 	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {

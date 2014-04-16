@@ -17,7 +17,8 @@ function(
 	InBoxAction.external = {
 		name: 'In Box',
 		type: 'collision',
-		description: 'Performs a transition based on whether an entity is inside a user defined box or not',
+		description: 'Performs a transition based on whether an entity is inside a user defined box volume or not.' +
+			'The volume is defined by setting two points which, when connected, form a diagonal through the box volume.',
 		canTransition: true,
 		parameters: [{
 			name: 'Point1',

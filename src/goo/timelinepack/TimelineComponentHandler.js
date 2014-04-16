@@ -40,18 +40,6 @@ define([
 	};
 
 	TimelineComponentHandler.tweenMap = {
-		/*
-		'translationX': ValueChannel.getTranslationXTweener,
-		'translationY': ValueChannel.getTranslationYTweener,
-		'translationZ': ValueChannel.getTranslationZTweener,
-		'rotationX': ValueChannel.getRotationXTweener,
-		'rotationY': ValueChannel.getRotationYTweener,
-		'rotationZ': ValueChannel.getRotationZTweener,
-		'scaleX': ValueChannel.getScaleXTweener,
-		'scaleY': ValueChannel.getScaleYTweener,
-		'scaleZ': ValueChannel.getScaleZTweener,
-		'event': function () {}
-		*/
 		'translationX': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 0),
 		'translationY': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 1),
 		'translationZ': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 2),
@@ -60,8 +48,7 @@ define([
 		'scaleZ': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 2),
 		'rotationX': ValueChannel.getRotationTweener.bind(null, 0),
 		'rotationY': ValueChannel.getRotationTweener.bind(null, 1),
-		'rotationZ': ValueChannel.getRotationTweener.bind(null, 2),
-		'event': function () {}
+		'rotationZ': ValueChannel.getRotationTweener.bind(null, 2)
 	};
 
 	//! AT: requires TWEEN
@@ -75,7 +62,7 @@ define([
 		return TWEEN.Easing[easingType][easingDirection];
 	}
 
-	function updateKeyframe(keyframeConfig, keyframeId, channel) {
+	function updateValueChannelKeyframe(keyframeConfig, keyframeId, channel) {
 		var needsResorting = false;
 
 		var keyframe = ArrayUtil.find(channel.keyframes, function (keyframe) {
@@ -107,7 +94,7 @@ define([
 		};
 	}
 
-	function updateCallbackEntry(keyframeConfig, keyframeId, channel, channelConfig) {
+	function updateEventChannelKeyFrame(keyframeConfig, keyframeId, channel, channelConfig) {
 		var needsResorting = false;
 
 		var callbackEntry = ArrayUtil.find(channel.keyframes, function (callbackEntry) {
@@ -179,13 +166,13 @@ define([
 		if (channelConfig.propertyKey) {
 			for (var keyframeId in channelConfig.keyframes) {
 				var keyframeConfig = channelConfig.keyframes[keyframeId];
-				var updateResult = updateKeyframe(keyframeConfig, keyframeId, channel, channelConfig);
+				var updateResult = updateValueChannelKeyframe(keyframeConfig, keyframeId, channel, channelConfig);
 				needsResorting = needsResorting || updateResult.needsResorting;
 			}
 		} else {
 			for (var keyframeId in channelConfig.keyframes) {
 				var keyframeConfig = channelConfig.keyframes[keyframeId];
-				var updateResult = updateCallbackEntry(keyframeConfig, keyframeId, channel, channelConfig);
+				var updateResult = updateEventChannelKeyFrame(keyframeConfig, keyframeId, channel, channelConfig);
 				needsResorting = needsResorting || updateResult.needsResorting;
 			}
 		}
