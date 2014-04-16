@@ -1101,6 +1101,52 @@ define([
 		].join('\n')
 	};
 
+	ShaderLib.border = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.DIFFUSE_MAP,
+			amount : 1.0,
+			resolution : Shader.RESOLUTION
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			'varying vec2 vUv;',
+			'void main() {',
+				'vUv = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
+		fshader: [
+			'uniform float amount;',
+			'uniform sampler2D tDiffuse;',
+			'uniform vec2 resolution;',
+
+			'varying vec2 vUv;',
+
+			'void main() {',
+				'vec4 color = texture2D(tDiffuse, vUv );',
+
+				'if(int(gl_FragCoord.x) == 0 || int(gl_FragCoord.y) == 0 || int(gl_FragCoord.x) == int(resolution.x)-1 || int(gl_FragCoord.y) == int(resolution.y)-1){',
+					'gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);',
+				'} else {',
+					'gl_FragColor = color;',
+				'}',
+			'}'
+		].join('\n')
+	};
+
 	ShaderLib.dotscreen = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
