@@ -168,6 +168,7 @@ define([
 				var camera = env.activeCameraEntity.cameraComponent.camera;
 				var size = targetSpherical.x * Math.tan(camera.fov * MathUtils.DEG_TO_RAD);
 				camera.setFrustum(null, null, -size, size, size, -size, null);
+				env.size = size;
 			}
 		}
 
@@ -355,6 +356,8 @@ define([
 				targetSpherical.copy(spherical);
 				environment.dirty = false;
 			}
+
+			setFrustumFromSpherical(parameters, environment);
 
 			// set our component updated.
 			transformComponent.setUpdated();
