@@ -49,7 +49,12 @@ function (
 		 */
 		this.hidden = false;
 
+		/** Mark entity as static, to allow being mesh-combined.
+		 * @type {boolean}
+		 * @default false
+		 */
 		this.static = false;
+
 		Entity.entityCount++;
 	}
 
