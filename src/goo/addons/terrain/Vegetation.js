@@ -59,7 +59,7 @@ function(
 			this.vegetationList[type] = meshData;
 		}
 
-		var material = Material.createMaterial(vegetationShader, 'vegetation');
+		var material = new Material(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', vegetationAtlasTexture);
 		material.cullState.enabled = false;
 		material.uniforms.discardThreshold = 0.2;

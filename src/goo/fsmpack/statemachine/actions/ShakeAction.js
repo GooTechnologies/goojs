@@ -34,7 +34,7 @@ function(
 			description: 'Shake amount at the end',
 			'default': 10
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'float',
 			description: 'Shake time amount',

@@ -55,7 +55,7 @@ function (
 		this.fullscreenPass = new FullscreenPass(ShaderLib.normalmap);
 		this.fullscreenPass.material.shader.uniforms.resolution = [width, height];
 
-		var waterMaterial = this.waterMaterial = Material.createMaterial(waterShaderDef, 'WaterMaterial');
+		var waterMaterial = this.waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
 		waterMaterial.cullState.enabled = false;
 
 		waterMaterial.setTexture('NORMAL_MAP', new TextureCreator().loadTexture2D('../resources/water/waternormals3.png'));
@@ -64,7 +64,7 @@ function (
 		waterMaterial.setTexture('NORMAL_MAP_COARSE', this.normalTarget);
 		//waterMaterial.shader.uniforms.screenSize = [this.heightTarget.width, this.heightTarget.height];
 
-		var materialWire = this.materialWire = Material.createMaterial(ShaderLib.simple, 'mat');
+		var materialWire = this.materialWire = new Material(ShaderLib.simple, 'mat');
 		materialWire.wireframe = true;
 		materialWire.wireframeColor = [0,0,0];
 
@@ -85,7 +85,7 @@ function (
 			0,1,0
 		]);
 		projData.getIndexBuffer().set([1, 3, 0, 2, 3, 1]);
-		var materialProj = Material.createMaterial(projShaderDef, 'mat');
+		var materialProj = new Material(projShaderDef, 'mat');
 		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/uniformclouds.jpg');
 		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/perlin_noise.png');
 		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/wbump.png');

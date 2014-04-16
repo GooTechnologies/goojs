@@ -61,7 +61,7 @@ function(
 		if (!cameraEntity || !cameraEntity.cameraComponent || !cameraEntity.cameraComponent.camera) { return; }
 		var camera = cameraEntity.cameraComponent.camera;
 
-		var portalMaterial = Material.createMaterial(ShaderLib.textured, '');
+		var portalMaterial = new Material(ShaderLib.textured);
 
 		if (!entity.meshRendererComponent) { return; }
 		this.oldMaterials = entity.meshRendererComponent.materials;

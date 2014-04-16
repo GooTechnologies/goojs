@@ -263,7 +263,7 @@ define([
 		var meshRendererComponent = new MeshRendererComponent();
 		lightEntity.setComponent(meshRendererComponent);
 
-		var material = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material = new Material(ShaderLib.simpleColored);
 		material.uniforms.color = [
 			light.color.data[0],
 			light.color.data[1],

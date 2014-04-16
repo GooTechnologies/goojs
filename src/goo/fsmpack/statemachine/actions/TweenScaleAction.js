@@ -19,7 +19,7 @@ define([
 	TweenScaleAction.external = {
 		name: 'Tween Scale',
 		type: 'animation',
-		description: 'Smoothly scales the entity',
+		description: 'Transition to the set scale.',
 		canTransition: true,
 		parameters: [{
 			name: 'Scale',
@@ -34,7 +34,7 @@ define([
 			description: 'If true add, otherwise set',
 			'default': true
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this movement to complete',
