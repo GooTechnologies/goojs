@@ -153,7 +153,7 @@ function (
 		var shaderDef = Util.clone(ShaderLib.uber);
 		shaderDef.fshader = fshader;
 		if(key !== 'flat') {
-			this._debugMaterials[key] = Material.createMaterial(shaderDef, key);
+			this._debugMaterials[key] = new Material(shaderDef, key);
 			if (key === 'wireframe') {
 				this._debugMaterials[key].wireframe = true;
 			}

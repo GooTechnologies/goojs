@@ -38,7 +38,7 @@ function(
 		var gooRunner = entity._world.gooRunner;
 
 		if (!SnowAction.material) {
-			SnowAction.material = Material.createMaterial(ShaderLib.particles);
+			SnowAction.material = new Material(ShaderLib.particles);
 			var texture = ParticleSystemUtils.createFlareTexture();
 			texture.generateMipmaps = true;
 			SnowAction.material.setTexture('DIFFUSE_MAP', texture);

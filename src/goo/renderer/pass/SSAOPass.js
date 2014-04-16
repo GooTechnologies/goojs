@@ -31,7 +31,7 @@ function (
 	function SSAOPass(renderList) {
 		this.depthPass = new RenderPass(renderList);
 		this.depthPass.clearColor.set(1,1,1,1);
-		var packDepthMaterial = Material.createMaterial(packDepth);
+		var packDepthMaterial = new Material(packDepth);
 		this.depthPass.overrideMaterial = packDepthMaterial;
 
 		this.downsampleAmount = 4;

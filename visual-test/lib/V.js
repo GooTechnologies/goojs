@@ -377,7 +377,7 @@ define([
 
 		var meshRendererComponent = new MeshRendererComponent();
 		meshRendererComponent.cullMode = 'Never';
-		var material = Material.createMaterial(fsShader, 'fsshader');
+		var material = new Material(fsShader, 'fsshader');
 		meshRendererComponent.materials.push(material);
 		entity.setComponent(meshRendererComponent);
 

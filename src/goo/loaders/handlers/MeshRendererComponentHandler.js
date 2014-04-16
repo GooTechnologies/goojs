@@ -37,7 +37,7 @@ function(
 	MeshRendererComponentHandler.prototype.constructor = MeshRendererComponentHandler;
 	ComponentHandler._registerClass('meshRenderer', MeshRendererComponentHandler);
 
-	MeshRendererComponentHandler.DEFAULT_MATERIAL = Material.createMaterial(ShaderLib.uber, 'Default material');
+	MeshRendererComponentHandler.DEFAULT_MATERIAL = new Material(ShaderLib.uber, 'Default material');
 
 	/**
 	 * Prepare component. Set defaults on config here.

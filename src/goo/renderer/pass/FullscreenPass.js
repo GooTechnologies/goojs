@@ -13,7 +13,7 @@ function (
 
 	/** @class */
 	function FullscreenPass(shader) {
-		this.material = Material.createMaterial(shader || ShaderLib.simple);
+		this.material = new Material(shader || ShaderLib.simple);
 		this.useReadBuffer = true;
 
 		this.renderToScreen = false;

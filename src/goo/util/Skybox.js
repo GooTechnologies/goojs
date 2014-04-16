@@ -39,7 +39,7 @@ define([
 		} else {
 			throw new Error('Unknown geometry type');
 		}
-		var material = Material.createMaterial(shaders[type], 'Skybox material');
+		var material = new Material(shaders[type], 'Skybox material');
 
 		material.setTexture(Shader.DIFFUSE_MAP, texture);
 
