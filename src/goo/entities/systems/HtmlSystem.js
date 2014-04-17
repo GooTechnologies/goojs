@@ -74,11 +74,13 @@ function (
 			var renderer = this.renderer;
 			if (component.useTransformComponent) {
 				var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
-
 				var fx = Math.floor(this.tmpVector.x/devicePixelRatio);
 				var fy = Math.floor((screenHeight - this.tmpVector.y)/devicePixelRatio);
 
-				setStyle(component.domElement, 'transform', 'translate(-50%, -50%) translate(' + fx + 'px, ' + fy + 'px)');
+				setStyle(component.domElement, 'transform', 
+					'translate(-50%, -50%) '+
+					'translate(' + fx + 'px, ' + fy + 'px)'+
+					'translate(' + renderer.domElement.offsetLeft + 'px, ' + renderer.domElement.offsetTop + 'px)');
 			}
 			else {
 				setStyle(component.domElement, 'transform', '');
