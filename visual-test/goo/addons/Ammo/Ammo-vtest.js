@@ -60,11 +60,11 @@ require([
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {
-			var x = Math.random() * 16 - 8;
-			var y = Math.random() * 16 + 8;
-			var z = Math.random() * 16 - 8;
-			if (Math.random() < 0.5) {
-				var h = new Vector3(0.5+Math.random(), 0.5+Math.random(), 0.5+Math.random());
+			var x = V.rng.nextFloat() * 16 - 8;
+			var y = V.rng.nextFloat() * 16 + 8;
+			var z = V.rng.nextFloat() * 16 - 8;
+			if (V.rng.nextFloat() < 0.5) {
+				var h = new Vector3(0.5+V.rng.nextFloat(), 0.5+V.rng.nextFloat(), 0.5+V.rng.nextFloat());
 				createEntity(goo, new Box(2*h.x,2*h.y,2*h.z),
 					{mass:1},
 					[x,y,z],
@@ -73,7 +73,7 @@ require([
 					})
 				);
 			} else {
-				var radius = 1+Math.random();
+				var radius = 1+V.rng.nextFloat();
 				createEntity(goo, new Sphere(10, 10, radius),
 					{mass:1},
 					[x,y,z],
@@ -99,7 +99,8 @@ require([
 	var planeEntity = createEntity(goo, new Quad(1000, 1000, 100, 100), {mass: 0}, [0,-10,0],
 		new AmmoPlaneColliderComponent({
 			normal: new Vector3(0,0,1) // Goo quad faces in the z direction
-		})
+		}),
+		V.getColoredMaterial(0.7,0.7,0.7)
 	);
 	planeEntity.setRotation([-Math.PI/2,0,0]);
 
@@ -107,9 +108,7 @@ require([
 	var compoundEntity = window.compoundEntity = goo.world.createEntity(new Vector3(0,3,0));
 	compoundEntity.addToWorld();
 	compoundEntity.setComponent(new AmmoRigidbodyComponent({ mass : 1 /*, isTrigger:true*/ }));
-	var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
-	var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
-	material.setTexture('DIFFUSE_MAP', texture);
+	var material = V.getColoredMaterial();
 	var h1 = new Vector3(1,2,1),
 		h2 = new Vector3(1,1,1),
 		h3 = new Vector3(1,1,1),
@@ -129,27 +128,12 @@ require([
 	subEntity1.transformComponent.transform.rotation.fromAngles(Math.PI/6,0,0);
 	subEntity1.transformComponent.setUpdated();
 
-	var light = new PointLight();
-	var lightEntity = goo.world.createEntity('light');
-	lightEntity.setComponent(new LightComponent(light));
-	lightEntity.transformComponent.setTranslation(0, 100, -10);
-	lightEntity.addToWorld();
+	V.addLights();
 
-	var camera = new Camera(45, 1, 0.1, 1000);
-	var cameraEntity = goo.world.createEntity("CameraEntity");
-	cameraEntity.setComponent(new CameraComponent(camera));
-	var scripts = new ScriptComponent();
-	scripts.scripts.push(new OrbitCamControlScript({
-		domElement : goo.renderer.domElement,
-		spherical : new Vector3(40, 0, Math.PI/4)
-	}));
-	cameraEntity.setComponent(scripts);
-	cameraEntity.addToWorld();
+	V.addOrbitCamera([50,0,0]);
 
-	function createEntity(goo, meshData, ammoSettings, pos, colliderComponent) {
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png');
-		material.setTexture('DIFFUSE_MAP', texture);
+	function createEntity(goo, meshData, ammoSettings, pos, colliderComponent, material) {
+		material = material || V.getColoredMaterial();
 		var entity = goo.world.createEntity(meshData, material, pos);
 		entity.addToWorld();
 		entity.setComponent(colliderComponent);
