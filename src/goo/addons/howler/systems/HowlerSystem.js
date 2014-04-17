@@ -15,6 +15,8 @@ function(
 	 * @class Handles integration with Howler
 	 * @desc Depends on the global Howler object.
 	 * Load howler with a script tag before using this system.
+	 * @deprecated Deprecated since 0.9.0 and scheduled for removal in 0.11.0
+	 * @extends System
 	 */
 	function HowlerSystem(settings) {
 		System.call(this, 'HowlerSystem', ['HowlerComponent']);

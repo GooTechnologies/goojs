@@ -34,6 +34,7 @@ function(
 	ShaderBuilder.SKYSPHERE = null;
 	ShaderBuilder.ENVIRONMENT_TYPE = 0;
 	ShaderBuilder.GLOBAL_AMBIENT = [0, 0, 0];
+	ShaderBuilder.CLEAR_COLOR = [1, 0, 0, 0];
 	ShaderBuilder.USE_FOG = false;
 	ShaderBuilder.FOG_SETTINGS = [0, 10000];
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
@@ -46,12 +47,20 @@ function(
 
 			shader.defines = shader.defines || {};
 
-			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
+			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
+
+			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
+				shader.defines.REFLECTIVE = true;
+			} else {
+				delete shader.defines.REFLECTIVE;
+			}
+
+			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
 				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
 			} else if (material.getTexture('ENVIRONMENT_CUBE')) {
 				material.removeTexture('ENVIRONMENT_CUBE');
 			}
-			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity > 0 || material.uniforms.refractivity > 0)) {
+			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
 				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
 				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
 			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
@@ -89,6 +98,8 @@ function(
 					shader.uniforms.offsetRepeat[1] = offset.y;
 					shader.uniforms.offsetRepeat[2] = repeat.x;
 					shader.uniforms.offsetRepeat[3] = repeat.y;
+
+					shader.uniforms.lodBias = textureMaps[type].lodBias;
 				}
 			}
 
@@ -104,6 +115,7 @@ function(
 					attribute === 'WEIGHTS' ||
 					attribute === 'PHYSICALLY_BASED_SHADING' ||
 					attribute === 'ENVIRONMENT_TYPE' ||
+					attribute === 'REFLECTIVE' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
 				}
@@ -271,7 +283,10 @@ function(
 				);
 
 				var useLightCookie = light.lightCookie instanceof Texture;
-				if (light.shadowCaster || useLightCookie) {
+				if (useLightCookie || (light.shadowCaster && 
+					shaderInfo.renderable.meshRendererComponent &&
+					shaderInfo.renderable.meshRendererComponent.receiveShadows)
+				) {
 					prevertex.push(
 						'uniform mat4 shadowLightMatrices'+i+';',
 						'varying vec4 shadowLightDepths'+i+';'
@@ -349,7 +364,8 @@ function(
 									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
 									'fDepth = texture2D(shadowMaps'+i+', depth.xy + vec2(dx1, dy1)).r;',
 									'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-									'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
+									'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness'+i+');'
+									//'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness'+i+') + shadowDarkness'+i+';'
 									);
 								} else if (light.shadowSettings.shadowType === 'VSM') {
 									fragment.push(
@@ -357,13 +373,13 @@ function(
 									'vec2 moments = vec2(texel.x, texel.y);',
 									'shadow = ChebychevInequality(moments, depth.z);',
 									// 'shadow = VsmFixLightBleed(shadow, 0.5);',
-									'shadow = pow(shadow, 8.0 - shadowDarkness'+i+' * 8.0);'
+									'shadow = pow(shadow, shadowDarkness'+i+' * 8.0);'
 									);
 								} else {
 									fragment.push(
 									'depth.z *= 0.96;',
 									'float shadowDepth = texture2D(shadowMaps'+i+', depth.xy).x;',
-									'if ( depth.z > shadowDepth ) shadow = shadowDarkness'+i+';'
+									'if ( depth.z > shadowDepth ) shadow = 1.0 - shadowDarkness'+i+';'
 									);
 								}
 						fragment.push(
@@ -433,7 +449,8 @@ function(
 					);
 					if (useLightCookie) {
 						fragment.push(
-							'cookie = texture2D(lightCookie'+i+', depth.xy).rgb;'
+							'vec4 cookieTex = texture2D(lightCookie'+i+', depth.xy);',
+							'cookie = cookieTex.rgb * cookieTex.a;'
 						);
 					}
 					fragment.push(

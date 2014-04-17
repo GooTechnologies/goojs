@@ -1,16 +1,16 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Vector3',
-	'../../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Sphere,
 	MeshData,
 	MeshRendererComponent,
 	BoundingSphere,
@@ -40,9 +40,9 @@ require([
 		var shapeMeshData = buildCustomTriangle([0, -1, 0, 1, 0, 0, 0, 1, 0]);
 
 		// shape and boundingBox material
-		var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material1 = new Material(ShaderLib.simpleColored, '');
 		material1.uniforms.color = [0.3, 0.6, 0.9];
-		var material2 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material2 = new Material(ShaderLib.simpleColored, '');
 		material2.uniforms.color = [0.3, 0.9, 0.6];
 		material2.wireframe = true;
 
@@ -57,7 +57,7 @@ require([
 		var yCenter = boundingSphere.center.data[1];
 		var zCenter = boundingSphere.center.data[2];
 
-		var sphereMeshData = ShapeCreator.createSphere(10, 16, radius);
+		var sphereMeshData = new Sphere(10, 16, radius);
 		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 		// camera

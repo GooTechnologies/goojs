@@ -8,7 +8,8 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/Plane',
 	'goo/math/Ray',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/renderer/Camera'
 ],
 /** @lends */
 function(
@@ -21,7 +22,8 @@ function(
 	Matrix4x4,
 	Plane,
 	Ray,
-	Vector3
+	Vector3,
+	Camera
 ) {
 	'use strict';
 
@@ -123,13 +125,16 @@ function(
 
 
 	Gizmo.prototype.updateTransforms = function() {
-		if(Renderer.mainCamera) {
-			var camPos = Renderer.mainCamera.translation;
-			var gizmoPos = this.transform.translation;
-			var dist = Math.sqrt(camPos.distanceSquared(gizmoPos));
-			var s = dist * this._gizmoSize;
-
-			this.transform.scale.setd(s,s,s);
+		if (Renderer.mainCamera) {
+			var camera = Renderer.mainCamera;
+			var scale;
+			if (camera.projectionMode === Camera.Perspective) {
+				var dist = camera.translation.distance(this.transform.translation);
+				scale = dist * this._gizmoSize;
+			} else {
+				scale = (camera._frustumTop - camera._frustumBottom) / 30;
+			}
+			this.transform.scale.setd(scale, scale, scale);
 		}
 
 		this.transform.update();
@@ -217,7 +222,7 @@ function(
 	};
 
 	Gizmo.prototype._buildMaterialForAxis = function(axis, opacity) {
-		var material = Material.createMaterial(Gizmo._shaderDef, axis+'Material');
+		var material = new Material(Gizmo._shaderDef, axis + 'Material');
 		material.uniforms.color = this._colors[axis];
 
 		if(opacity !== undefined && opacity < 1.0) {

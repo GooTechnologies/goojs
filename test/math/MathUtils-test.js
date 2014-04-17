@@ -24,6 +24,7 @@ define([
 			expect(MathUtils.lerp( 0.5, 10.0, 20.0)).toEqual(15.0);
 			expect(MathUtils.lerp( 1.0, 10.0, 20.0)).toEqual(20.0);
 			expect(MathUtils.lerp( 2.0, 10.0, 20.0)).toEqual(30.0);
+			expect(MathUtils.lerp( 1.0, 5.0, 5.0)).toEqual(5.0);
 		});
 
 		it("can clamp a value to a given interval", function() {
@@ -120,6 +121,31 @@ define([
 			p3 = [0, 0, 1];
 			expect(MathUtils.getTriangleNormal(p1[0], p1[1], p1[2], p2[0], p2[1], p2[2], p3[0], p3[1], p3[2])).toEqual([1, 1, 1]);
 
+		});
+
+		it('can do positive modulo', function() {
+			expect(MathUtils.moduloPositive(-Math.PI/2,2*Math.PI)).toBeCloseTo(3*Math.PI/2);
+		});
+
+		it('can check if a value is close to another', function() {
+			expect(MathUtils.closeTo(1,1)).toBeTruthy();
+			expect(MathUtils.closeTo(1,2)).toBeFalsy();
+			expect(MathUtils.closeTo(1,1.01,0.02)).toBeTruthy();
+			expect(MathUtils.closeTo(1,1.02,0.01)).toBeFalsy();
+		});
+
+		it('can get the sign of a number', function() {
+			expect(MathUtils.sign(1)).toBe(1);
+			expect(MathUtils.sign(-1)).toBe(-1);
+			expect(MathUtils.sign(1.4)).toBe(1);
+			expect(MathUtils.sign(-1.4)).toBe(-1);
+			expect(MathUtils.sign(0)).toBe(0);
+		});
+
+		it('can do radial clamping', function() {
+			var a = -1;
+			a = MathUtils.radialClamp(a, 0, 9);
+			expect(a).toBe(0);
 		});
 
 	});

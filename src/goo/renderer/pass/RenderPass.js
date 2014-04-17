@@ -37,7 +37,7 @@ function (
 		}
 
 		lights = lights || [];
-		if (clearColor) {
+		if (clearColor && false) {
 			this.oldClearColor.setv(renderer.clearColor);
 			renderer.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 		}
@@ -54,7 +54,7 @@ function (
 			renderer.render(renderList, camera, lights, readBuffer, this.clear, this.overrideMaterial);
 		}
 
-		if (this.clearColor) {
+		if (this.clearColor && false) {
 			var oc = this.oldClearColor.data;
 			renderer.setClearColor(oc[0], oc[1], oc[2], oc[3]);
 		}

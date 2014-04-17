@@ -16,7 +16,9 @@ define([
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/math/Transform'
+	'goo/math/Transform',
+	'goo/renderer/Camera',
+	'goo/renderer/Renderer'
 ], function(
 	LightComponent,
 	CameraComponent,
@@ -35,7 +37,9 @@ define([
 	Util,
 	ShaderLib,
 	ShaderBuilder,
-	Transform
+	Transform,
+	Camera,
+	Renderer
 ) {
 	'use strict';
 	var DebugDrawHelper = {};
@@ -50,22 +54,22 @@ define([
 
 		if (component.type === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light, options);
-			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
+			material = new Material(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
 		} else if (component.type === 'CameraComponent') {
 			meshes = cameraDebug.getMesh(component.camera, options);
-			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
+			material = new Material(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
 
 			material.uniforms.materialAmbient = [0.4, 0.4, 0.4, 1];
 			material.uniforms.materialDiffuse = [0.6, 0.6, 0.6, 1];
 			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
 		} else if (component.type === 'MeshRendererComponent') {
 			meshes = meshRendererDebug.getMesh();
-			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
+			material = new Material(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
 		} else if (component instanceof SkeletonPose) {
 			meshes = skeletonDebug.getMesh(component, options);
 			var materials = [
-				Material.createMaterial(ShaderLib.uber, 'SkeletonDebugMaterial'),
-				Material.createMaterial(ShaderLib.uber, 'SkeletonDebugMaterial')
+				new Material(ShaderLib.uber, 'SkeletonDebugMaterial'),
+				new Material(ShaderLib.uber, 'SkeletonDebugMaterial')
 			];
 			var renderables = [];
 			var len = materials.length;
@@ -99,7 +103,7 @@ define([
 		});
 	};
 
-	DebugDrawHelper.update = function(renderables, component, camPosition) {
+	DebugDrawHelper.update = function(renderables, component, camera) {
 		// major refactoring needed here
 
 		// rebuilding camera frustum if needed
@@ -129,14 +133,21 @@ define([
 		if (renderables[1]) { DebugDrawHelper[component.type].updateTransform(renderables[1].transform, component); }
 
 		// keeping scale the same on the first element which is assumed to always be the camera mesh/light 'bulb'
-		var scale = renderables[0].transform.translation.distance(camPosition) / 30;
-		renderables[0].transform.scale.setd(scale,scale,scale);
-		renderables[0].transform.update();
+		var mainCamera = Renderer.mainCamera;
+		if(mainCamera){
+			var camPosition = mainCamera.translation;
+			var scale = renderables[0].transform.translation.distance(camPosition) / 30;
+			if (mainCamera.projectionMode === Camera.Parallel) {
+				scale = (mainCamera._frustumTop - mainCamera._frustumBottom) / 20;
+			}
+			renderables[0].transform.scale.setd(scale,scale,scale);
+			renderables[0].transform.update();
 
-		// keeping scale for directional light mesh since scale is meaningless for it
-		if (component.light && component.light instanceof DirectionalLight) {
-			if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
-			if (renderables[1]) { renderables[1].transform.update(); }
+			// keeping scale for directional light mesh since scale is meaningless for it
+			if (component.light && component.light instanceof DirectionalLight) {
+				if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
+				if (renderables[1]) { renderables[1].transform.update(); }
+			}
 		}
 	};
 

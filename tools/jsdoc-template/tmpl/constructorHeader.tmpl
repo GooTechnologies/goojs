@@ -2,4 +2,9 @@
 var data = obj;
 var self = this;
 ?>
-<h4 class="name"><a href="#<?js=id?>"><?js= data.attribs + (kind === 'class' ? 'new ' : '') + name ?></a><?js= (kind !== 'event' ? data.signature : '') ?></h4>
+<h4 class="name">
+	<a href="#<?js=id?>">
+		<?js= data.attribs + (kind === 'class' ? 'new ' : '') + name ?>
+	</a>
+	<?js= (kind !== 'event' ? data.signature : '') ?>
+</h4>

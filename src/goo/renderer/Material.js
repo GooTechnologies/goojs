@@ -14,10 +14,12 @@ function(
 	 */
 	function Material(name, shaderDefinition) {
 		this.id = null;
+
 		/** Material name
 		 * @type {string}
 		 */
-		this.name = null;
+		this.name = 'Default Material';
+
 		/** [Shader]{@link Shader} to use when rendering
 		 * @type {Shader}
 		 */
@@ -25,19 +27,17 @@ function(
 
 		//! AT: horrendous type checking follows
 		// function has 2 signatures because the deprecated .createMaterial had parameters in inverse order
-		if (typeof name === 'string') {
-			this.name = name;
-		} else if (name && name.vshader && name.fshader) {
-			this.shader = Material.createShader(name);
+		if (typeof arguments[0] === 'string') {
+			this.name = arguments[0];
+		} else if (arguments[0] && arguments[0].vshader && arguments[0].fshader) {
+			this.shader = Material.createShader(arguments[0]);
 		}
 
-		if (shaderDefinition && shaderDefinition.vshader && shaderDefinition.fshader) {
-			this.shader = Material.createShader(shaderDefinition);
-		} else if (typeof shaderDefinition === 'string') {
-			this.name = shaderDefinition;
+		if (arguments[1] && arguments[1].vshader && arguments[1].fshader) {
+			this.shader = Material.createShader(arguments[1]);
+		} else if (typeof arguments[1] === 'string') {
+			this.name = arguments[1];
 		}
-
-		this.name = this.name || 'Default Material';
 
 		/** Possible overrides for shader uniforms
 		 * @type {Object}
@@ -47,8 +47,11 @@ function(
 
 		// Texture storage
 		this._textureMaps = {};
-
-		/** Specification of colors for this Material
+		/* REVIEW
+		 * There was an idea to specify and jsdoc uniforms.materialDiffuse etc instead,
+		 * since those are the ones we use now
+		 */
+		/* Specification of colors for this Material
 		 * @type {Object}
 		 * @property {number[]} ambient The ambient color, [r, g, b, a]
 		 * @property {number[]} diffuse The diffuse color, [r, g, b, a]
@@ -244,7 +247,7 @@ function(
 	/**
 	 * Creates a new Material object and sets the shader by calling createShader with the shaderDefinition
 	 *
-	 * @deprecated Use new Material() instead
+	 * @deprecated Use new Material() instead; Deprecated since 0.9.0 - scheduled to be removed in 0.11.0
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
 	 * @param {String} [name='DefaultMaterial'] The name of the newly created material
 	 * @return {Material}

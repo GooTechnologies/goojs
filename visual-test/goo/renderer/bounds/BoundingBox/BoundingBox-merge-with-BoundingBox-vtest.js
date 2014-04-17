@@ -4,7 +4,8 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
+	'goo/shapes/Sphere',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -12,14 +13,15 @@ require([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
-	'../../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Box,
+	Sphere,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -49,13 +51,13 @@ require([
 	function boundingBoxDemo() {
 		var goo = V.initGoo();
 
-		var shape1MeshData = ShapeCreator.createSphere();
+		var shape1MeshData = new Sphere();
 		var shape2MeshData = buildCustomTriangle([0, 0, 4, 0, 3, 5, 0, 0, 6]);
 
 		// shapes and boundingBox material
-		var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material1 = new Material(ShaderLib.simpleColored, '');
 		material1.uniforms.color = [0.3, 0.6, 0.9];
-		var material2 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material2 = new Material(ShaderLib.simpleColored, '');
 		material2.uniforms.color = [0.3, 0.9, 0.6];
 		material2.wireframe = true;
 
@@ -81,7 +83,7 @@ require([
 		var yCenter = mergedBoundingBox.center.data[1];
 		var zCenter = mergedBoundingBox.center.data[2];
 
-		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
+		var boxMeshData = new Box(xSize, ySize, zSize);
 		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 		// camera

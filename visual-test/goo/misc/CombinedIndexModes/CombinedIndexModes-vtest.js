@@ -4,7 +4,6 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -15,14 +14,13 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -65,7 +63,7 @@ require([
 		x = x || 0;
 		y = y || 0;
 		z = z || 0;
-		var material = Material.createMaterial(ShaderLib.simple, '');
+		var material = new Material(ShaderLib.simple, '');
 		var entity = goo.world.createEntity(meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();

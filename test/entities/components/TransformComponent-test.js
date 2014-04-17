@@ -65,6 +65,7 @@ define([
 				.not.toContain(childEntity.transformComponent);
 		});
 
+		//! AT: if any method fails the whole spec fails
 		it('can set, add and get rotation', function () {
 			var tc = new TransformComponent();
 			tc.setRotation(1,2,2);
@@ -72,12 +73,14 @@ define([
 			tc.getRotation();
 		});
 
+		//! AT: if any method fails the whole spec fails
 		it('can set, add and get rotation with array', function () {
 			var tc = new TransformComponent();
 			tc.setRotation([1,2,2]);
 			tc.addRotation([0,0,1]);
 		});
 
+		//! AT: if any method fails the whole spec fails
 		it('can set, add and get translation', function () {
 			var tc = new TransformComponent();
 			tc.setTranslation(1,2,2);
@@ -114,6 +117,12 @@ define([
 			entity.setComponent(new TransformComponent());
 
 			expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
+		});
+
+		it('handles getTranslation on host the same way as on itself', function () {
+			var entity = world.createEntity();
+			entity.setComponent(new TransformComponent());
+			expect(entity.getTranslation()).toBe(entity.transformComponent.getTranslation());
 		});
 
 		it('returns the parent host entity when calling any transform related method on it', function () {

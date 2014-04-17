@@ -102,7 +102,9 @@ function (
 		this.translation.setv(b.translation);
 		this.translation.mulv(a.scale);
 		this.tmpMat1.applyPost(this.translation).addv(a.translation);
-		this.scale.setv(a.scale).mulv(b.scale);
+
+		this.tmpVec.setv(a.scale).mulv(b.scale);
+		this.scale.setv(this.tmpVec);
 	};
 
 	/**
@@ -121,6 +123,13 @@ function (
 	 * @param {Vector3} point
 	 * @param {Vector3} store
 	 * @returns {Vector3} store
+	 * @example
+	 * // Vector3 object, one unit right, two units up, two units back
+	 * var v1 = new Vector3(1, 2, 2);
+	 * // Vector3 to store the local position
+	 * var localPos = new Vector3();
+	 * // converts v1 to be in 'world space' based on the entities postion / rotation
+	 * entity.transformComponent.transform.applyForward(v1, localPos);
 	 */
 	Transform.prototype.applyForward = function (point, store) {
 		store.setv(point);
@@ -139,6 +148,13 @@ function (
 	 * @param {Vector3} vector
 	 * @param {Vector3} store
 	 * @returns {Vector3} store
+	 * @example
+	 * // Vector3 pointing in the direction we want
+	 * var back = new Vector3(0, 0, 1);
+	 * // Vector3 to store the local 'back'
+	 * var localBack = new Vector3();
+	 * // converts 'back' to a localized direction based on the entities rotation
+	 * entity.transformComponent.transform.applyForwardVector(back, localBack);
 	 */
 	Transform.prototype.applyForwardVector = function (vector, store) {
 		store.copy(vector);
@@ -201,6 +217,8 @@ function (
 
 	/**
 	 * Sets the transform to look in a specific direction.
+	 * Please note: This function contains a known bug resulting in looking in the opposite direction
+	 * for non-camera and non-light entities.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 */
@@ -208,7 +226,9 @@ function (
 		if (!up) {
 			up = Vector3.UNIT_Y;
 		}
-
+		// REVIEW: this is actually using the wrong direction, it should be reversed.
+		//   this.tmpVec.setv(position).subv(this.translation).normalize();
+		// However we might need the old behavior for lights and cameras.
 		this.tmpVec.setv(this.translation).subv(position).normalize();
 		this.rotation.lookAt(this.tmpVec, up);
 	};

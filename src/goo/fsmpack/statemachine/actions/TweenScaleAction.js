@@ -19,7 +19,7 @@ define([
 	TweenScaleAction.external = {
 		name: 'Tween Scale',
 		type: 'animation',
-		description: 'Smoothly scales the entity',
+		description: 'Transition to the set scale.',
 		canTransition: true,
 		parameters: [{
 			name: 'Scale',
@@ -34,7 +34,7 @@ define([
 			description: 'If true add, otherwise set',
 			'default': true
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this movement to complete',
@@ -91,6 +91,7 @@ define([
 
 		var fakeFrom = { x: initialScale.x, y: initialScale.y, z: initialScale.z };
 		var fakeTo;
+		var time = entity._world.time * 1000;
 
 		if (this.relative) {
 			var to = Vector3.add(initialScale, this.to);
@@ -101,7 +102,7 @@ define([
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(fsm.getTime() * 1000);
+				}.bind(this)).start(time);
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
@@ -110,7 +111,7 @@ define([
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(fsm.getTime() * 1000);
+				}.bind(this)).start(time);
 		}
 	};
 

@@ -81,7 +81,6 @@ function (
 	function OrbitCamControlScript (properties) {
 		properties = properties || {};
 
-
 		//! AT: this looks a lot like a defaults/extend function that can be extracted somewhere else
 		for(var key in _defaults) {
 			if(typeof(_defaults[key]) === 'boolean') {
@@ -121,7 +120,7 @@ function (
 			lastY : NaN
 		};
 
-		if(this.domElement) {
+		if (this.domElement) {
 			this.setupMouseControls();
 		}
 
@@ -130,17 +129,25 @@ function (
 			this.moveInterval = properties.moveInterval;
 			this.lastTimeMoved = Date.now() + (properties.moveInitialDelay - this.moveInterval);
 		}
+
+		this.active = false;
+		this.currentCameraEntity = null;
+		SystemBus.addListener('goo.setCurrentCamera', function (data) {
+			this.currentCameraEntity = data.entity;
+		}.bind(this));
 	}
 
-	OrbitCamControlScript.prototype.updateConfig = function(properties) {
+	// REVIEW: JsDoc missing.
+	// POST-REVIEW This script will soon be replaced by the new scripts
+	OrbitCamControlScript.prototype.updateConfig = function (properties) {
 		for(var key in properties) {
-			if(typeof(_defaults[key]) === 'boolean') {
+			if (typeof(_defaults[key]) === 'boolean') {
 				this[key] = !!properties[key];
 			}
 			else if (!isNaN(_defaults[key]) && !isNaN(properties[key])) {
 				this[key] = properties[key];
 			}
-			else if(_defaults[key] instanceof Vector3) {
+			else if (_defaults[key] instanceof Vector3) {
 				this[key].set(properties[key]);
 			}
 			else {
@@ -151,6 +158,7 @@ function (
 		this.dirty = true;
 	};
 
+	// REVIEW: JsDoc missing.
 	OrbitCamControlScript.prototype.updateButtonState = function (buttonIndex, down) {
 		if (this.domElement !== document) {
 			this.domElement.focus();
@@ -170,6 +178,7 @@ function (
 		}
 	};
 
+	// REVIEW: JsDoc missing.
 	OrbitCamControlScript.prototype.updateDeltas = function (mouseX, mouseY) {
 		var dx = 0, dy = 0;
 		if (isNaN(this.mouseState.lastX) || isNaN(this.mouseState.lastY)) {
@@ -263,29 +272,35 @@ function (
 	OrbitCamControlScript.prototype.setupMouseControls = function () {
 		var that = this;
 		this.domElement.addEventListener('mousedown', function (event) {
+			if (!that.active) { return; }
 			that.updateButtonState(event.button, true);
 		}, false);
 
 		document.addEventListener('mouseup', function (event) {
+			if (!that.active) { return; }
 			that.updateButtonState(event.button, false);
 		}, false);
 
 		document.addEventListener('mousemove', function (event) {
+			if (!that.active) { return; }
 			that.updateDeltas(event.clientX, event.clientY);
 			that.lastTimeMoved = Date.now();
 		}, false);
 
 		this.domElement.addEventListener('mousewheel', function (event) {
+			if (!that.active) { return; }
 			that.applyWheel(event);
 			that.lastTimeMoved = Date.now();
 		}, false);
 		this.domElement.addEventListener('DOMMouseScroll', function (event) {
+			if (!that.active) { return; }
 			that.applyWheel(event);
 		}, false);
 
 		// Avoid missing the mouseup event because of Chrome bug:
 		// https://code.google.com/p/chromium/issues/detail?id=244289
 		this.domElement.addEventListener('dragstart', function (event) {
+			if (!that.active) { return; }
 			event.preventDefault();
 		}, false);
 		this.domElement.oncontextmenu = function() { return false; };
@@ -293,13 +308,16 @@ function (
 
 		// Touch controls
 		this.domElement.addEventListener('touchstart', function() {
+			if (!that.active) { return; }
 			that.updateButtonState(0, true);
 		});
 		this.domElement.addEventListener('touchend', function() {
+			if (!that.active) { return; }
 			that.updateButtonState(0, false);
 			oldDistance = 0;
 		});
 		this.domElement.addEventListener('touchmove', function(event) {
+			if (!that.active) { return; }
 			var cx, cy, distance;
 			var touches = event.targetTouches;
 			var x1 = touches[0].clientX;
@@ -337,6 +355,8 @@ function (
 	};
 
 	OrbitCamControlScript.prototype.run = function (entity, tpf, env) {
+		this.active = entity === this.currentCameraEntity;
+
 		if (this.demoMode) {
 			var now = Date.now();
 

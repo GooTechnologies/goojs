@@ -1,17 +1,21 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Quad',
+	'goo/shapes/Box',
 	'goo/renderer/MeshData',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Transform',
-	'../../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Sphere,
+	Quad,
+	Box,
 	MeshData,
 	BoundingBox,
 	Vector3,
@@ -22,7 +26,7 @@ require([
 	'use strict';
 
 	function addBoundingSphereToWorld(goo, boundingSphere) {
-		var material2 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material2 = new Material(ShaderLib.simpleColored, '');
 		material2.uniforms.color = [0.3, 0.9, 0.6];
 		material2.wireframe = true;
 
@@ -31,12 +35,12 @@ require([
 		var yCenter = boundingSphere.center.data[1];
 		var zCenter = boundingSphere.center.data[2];
 
-		var sphereMeshData = ShapeCreator.createSphere(16, 16, radius);
+		var sphereMeshData = new Sphere(16, 16, radius);
 		goo.world.createEntity(sphereMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
 	function addBoundingBoxToWorld(goo, boundingBox) {
-		var material2 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material2 = new Material(ShaderLib.simpleColored, '');
 		material2.uniforms.color = [0.3, 0.9, 0.6];
 		material2.wireframe = true;
 
@@ -47,7 +51,7 @@ require([
 		var yCenter = boundingBox.center.data[1];
 		var zCenter = boundingBox.center.data[2];
 
-		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
+		var boxMeshData = new Box(xSize, ySize, zSize);
 		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 	}
 
@@ -56,17 +60,17 @@ require([
 
 		var transform = new Transform();
 
-		var shape1MeshData = ShapeCreator.createQuad();
+		var shape1MeshData = new Quad();
 		transform.translation.setd(2, 0, 0);
 		transform.update();
 		shape1MeshData.applyTransform(MeshData.POSITION, transform);
-		var shape2MeshData = ShapeCreator.createBox();
+		var shape2MeshData = new Box();
 		transform.translation.setd(0, 2, 0);
 		transform.update();
 		shape1MeshData.applyTransform(MeshData.POSITION, transform);
 
 		// shapes and boundingBox material
-		var material1 = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material1 = new Material(ShaderLib.simpleColored, '');
 		material1.uniforms.color = [0.3, 0.6, 0.9];
 
 		// wrap shapeMeshData-s entities entity

@@ -153,11 +153,11 @@ function () {
 		var cacheKey = strColor+newWidth+'x'+newHeight;
 		var canvas = Util._blankImages[cacheKey];
 		if (!canvas) {
-			canvas = document.createElement('canvas'); 
+			canvas = document.createElement('canvas');
 			canvas.width = newWidth;
 			canvas.height = newHeight;
 			var ctx = canvas.getContext('2d');
-			ctx.beginPath()
+			ctx.beginPath();
 			ctx.rect(0, 0, newWidth, newHeight);
 			ctx.fillStyle = strColor;
 			ctx.fill();
@@ -166,8 +166,23 @@ function () {
 		if (index === undefined) {
 			texture.image = canvas;
 		} else {
+			texture.image.isData = false;
 			texture.image.data[index] = canvas;
 		}
+	};
+
+	function getImage(data, width, height) {
+		var canvas = document.createElement('canvas');
+		canvas.width = width;
+		canvas.height = height;
+
+		var context = canvas.getContext('2d');
+
+		var imageData = context.createImageData(width, height);
+		imageData.data.set(data);
+		context.putImageData(imageData, 0, 0);
+
+		return canvas;
 	}
 
 	Util.scaleImage = function(texture, image, width, height, maxSize, index) {
@@ -177,14 +192,22 @@ function () {
 		newHeight = Math.min(newHeight, maxSize);
 
 		if (image.width !== newWidth || image.height !== newHeight) {
-			var canvas = document.createElement('canvas'); 
+			var canvas = document.createElement('canvas');
 			canvas.width = newWidth;
 			canvas.height = newHeight;
 			if (image.getAttribute) {
 				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
 			}
 			var ctx = canvas.getContext('2d');
-			ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+
+			if (image.data) {
+				// putImageData directly on this canvas will not resize
+				// have to putImageData on another canvas and drawImage that afterwards
+				ctx.drawImage(getImage(image.data, image.width, image.height), 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+			} else {
+				//! AT: this will choke if fed with a manually created texture ([0, 0, 0, 255, ...])
+				ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+			}
 			//document.body.appendChild(canvas);
 			canvas.dataReady = true;
 			canvas.src = image.src;
@@ -194,8 +217,8 @@ function () {
 				texture.image.data[index] = canvas;
 			}
 			//canvas.parentNode.removeChild(canvas);
-		}		
-	}
+		}
+	};
 
 	return Util;
 });

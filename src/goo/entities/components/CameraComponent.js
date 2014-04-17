@@ -1,19 +1,22 @@
 define([
 	'goo/entities/components/Component',
 	'goo/math/Vector3',
-	'goo/renderer/Camera'
+	'goo/renderer/Camera',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
 	Component,
 	Vector3,
-	Camera
+	Camera,
+	SystemBus
 ) {
 	'use strict';
 
 	/**
 	 * @class Holds a camera.
 	 * @param {Camera} camera Camera to contain in this component
+	 * @extends Component
 	 */
 	function CameraComponent (camera) {
 		this.type = 'CameraComponent';
@@ -23,6 +26,17 @@ function (
 		this.leftVec = new Vector3(-1, 0, 0);
 		this.upVec = new Vector3(0, 1, 0);
 		this.dirVec = new Vector3(0, 0, -1);
+
+		this.api = {
+			//! AT: the component holds no reference to its entity therefore this method could never stay on the component
+			setAsMainCamera: function () {
+				SystemBus.emit('goo.setCurrentCamera', {
+					camera: this.cameraComponent.camera,
+					entity: this
+				});
+				return this;
+			}
+		};
 	}
 
 	CameraComponent.type = 'CameraComponent';

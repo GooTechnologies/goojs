@@ -41,8 +41,9 @@ function(
 	 */
 	TgaLoader.prototype.load = function (buffer, tex/*, flipped, arrayByteOffset, arrayByteLength*/) {
 		this.loadData(new Uint8Array(buffer));
-		var imageData = this.getImageData();
-		tex.setImage(imageData, null, imageData.width, imageData.height);
+		var imageData = this.getCanvas();
+		tex.setImage(imageData, imageData.width, imageData.height);
+		//imageData.isData = true;
 		imageData.dataReady = true;
 		tex.needsUpdate = true;
 	};
@@ -253,10 +254,6 @@ function(
 		// sent as argument
 		imageData ||
 
-		// In main frame ?
-		(document && document.createElement('canvas').getContext('2d').createImageData(width, height)) ||
-
-		// Not have access to document.
 		{
 			width: width,
 			height: height,

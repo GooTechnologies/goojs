@@ -13,6 +13,7 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/ScriptComponent',
+	'goo/entities/systems/ScriptSystem',
 	'goo/entities/Entity',
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/managers/Manager'
@@ -31,6 +32,7 @@ define([
 	CameraComponent,
 	LightComponent,
 	ScriptComponent,
+	ScriptSystem,
 	Entity,
 	TransformSystem,
 	Manager
@@ -39,16 +41,12 @@ define([
 
 	describe('World with Systems', function() {
 		var world;
+
 		beforeEach(function() {
 			world = new World();
-			world.registerComponent(TransformComponent);
-			world.registerComponent(MeshDataComponent);
-			world.registerComponent(MeshRendererComponent);
-			world.registerComponent(CameraComponent);
-			world.registerComponent(LightComponent);
 		});
 
-		it ('adds a system with default priority to the world', function() {
+		it('adds a system with default priority to the world', function () {
 			var systemA = { type: 'A', priority: 0 };
 			var systemB = { type: 'B', priority: 0 };
 
@@ -57,7 +55,8 @@ define([
 
 			expect(world._systems).toEqual([systemA, systemB]);
 		});
-		it ('adds a system with high priority to the world', function() {
+
+		it ('adds a system with high priority to the world', function () {
 			var systemA = { type: 'A', priority: 0 };
 			var systemB = { type: 'B', priority: 0 };
 			var systemC = { type: 'B', priority: -1 };
@@ -68,7 +67,8 @@ define([
 
 			expect(world._systems).toEqual([systemC, systemA, systemB]);
 		});
-		it ('adds a system with low priority to the world', function() {
+
+		it('adds a system with low priority to the world', function () {
 			var world = new World();
 
 			var systemA = { type: 'A', priority: 0 };
@@ -81,7 +81,8 @@ define([
 
 			expect(world._systems).toEqual([systemA, systemB, systemC]);
 		});
-		it ('adds a system with medium priority to the world', function() {
+
+		it('adds a system with medium priority to the world', function () {
 			var systemA = { type: 'A', priority: 3 };
 			var systemB = { type: 'B', priority: 1 };
 			var systemC = { type: 'C', priority: 2 };
@@ -91,6 +92,18 @@ define([
 			world.setSystem(systemC);
 
 			expect(world._systems).toEqual([systemB, systemC, systemA]);
+		});
+
+		it('removes a system', function () {
+			var systemA = { type: 'A', priority: 3 };
+			var systemB = { type: 'B', priority: 1 };
+
+			world.setSystem(systemA);
+			world.setSystem(systemB);
+
+			world.clearSystem('A');
+
+			expect(world._systems).toEqual([systemB]);
 		});
 	});
 
@@ -167,9 +180,20 @@ define([
 		});
 
 		it('can create a typical entity holding all sorts of stuff in random order', function() {
+			//
+			world.gooRunner = {
+				renderer: {
+					domElement: null,
+					viewportWidth: null,
+					viewportHeight: null
+				}
+			};
+			world.add(new ScriptSystem(world))
+
+
 			var camera = new Camera();
 			var meshData = new Box();
-			var material = Material.createMaterial(ShaderLib.simple);
+			var material = new Material(ShaderLib.simple);
 			var light = new PointLight();
 			var script = { run: function () {} };
 

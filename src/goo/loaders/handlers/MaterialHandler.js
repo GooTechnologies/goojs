@@ -3,6 +3,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/RenderQueue',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -13,6 +14,7 @@ function(
 	Material,
 	Util,
 	ShaderLib,
+	RenderQueue,
 	RSVP,
 	PromiseUtil,
 	_
@@ -76,8 +78,12 @@ function(
 		if (config.dualTransparency === null || config.dualTransparency === undefined) {
 			config.dualTransparency = false;
 		}
-		config.wireframe = false;
-		config.flat = false;
+		if (config.wireframe === null || config.wireframe === undefined) {
+			config.wireframe = false;
+		}
+		if (config.flat === null || config.flat === undefined) {
+			config.flat = false;
+		}
 	};
 
 	/**
@@ -112,7 +118,11 @@ function(
 			material.flat = config.flat;
 			material.dualTransparency = config.dualTransparency;
 			if (config.renderQueue === -1) {
-				material.renderQueue = null;
+				if (config.blendState.blending !== 'NoBlending') {
+					material.renderQueue = RenderQueue.TRANSPARENT;
+				} else {
+					material.renderQueue = null;
+				}
 			} else {
 				material.renderQueue = config.renderQueue;
 			}
@@ -126,24 +136,20 @@ function(
 			}
 
 			// Shader
-			if (config.wireframe) {
-				material.shader = Material.createShader(ShaderLib.simple);
+			var shaderRef = config.shaderRef;
+			if (!shaderRef) {
+				material.shader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader');
+			}
+			else if (shaderRef.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) === 0) {
+				var shaderName = shaderRef.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
+				material.shader = Material.createShader(ShaderLib[shaderName]);
 			} else {
-				var shaderRef = config.shaderRef;
-				if (!shaderRef) {
-					material.shader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader');
-				}
-				else if (shaderRef.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) === 0) {
-					var shaderName = shaderRef.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
-					material.shader = Material.createShader(ShaderLib[shaderName]);
-				} else {
-					var p = that._load(shaderRef, options).then(function(shader) {
-						material.shader = shader;
-					}).then(null, function(err) {
-						throw new Error('Error loading shader: ' + err);
-					});
-					promises.push(p);
-				}
+				var p = that._load(shaderRef, options).then(function(shader) {
+					material.shader = shader;
+				}).then(null, function(err) {
+					throw new Error('Error loading shader: ' + err);
+				});
+				promises.push(p);
 			}
 
 			// Textures

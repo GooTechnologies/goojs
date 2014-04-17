@@ -3,7 +3,8 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
-	'goo/renderer/Util'
+	'goo/renderer/Util',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
@@ -11,9 +12,10 @@ function (
 	Matrix4x4,
 	World,
 	RenderQueue,
-	Util
+	Util,
+	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
@@ -201,18 +203,10 @@ function (
 
 	Shader.prototype._bindUniforms = function (shaderInfo) {
 		if (this.uniforms) {
-			try {
-				this.textureIndex = 0;
-				var names = Object.keys(this.uniforms);
-				for (var i = 0, l = names.length; i < l; i++) {
-					this._bindUniform(names[i], shaderInfo);
-				}
-				this.errorOnce = false;
-			} catch (err) {
-				if (this.errorOnce === false) {
-					console.error(err.stack);
-					this.errorOnce = true;
-				}
+			this.textureIndex = 0;
+			var names = Object.keys(this.uniforms);
+			for (var i = 0, l = names.length; i < l; i++) {
+				this._bindUniform(names[i], shaderInfo);
 			}
 		}
 	};
@@ -340,7 +334,8 @@ function (
 		this.shaderProgram = context.createProgram();
 		var error = context.getError();
 		if (this.shaderProgram === null || error !== WebGLRenderingContext.NO_ERROR) {
-			console.error("Shader error: " + error + " [shader: " + this.name + "]");
+			console.error('Shader error: ' + error + ' [shader: ' + this.name + ']');
+			SystemBus.emit('goo.shader.error');
 		}
 
 		context.attachShader(this.shaderProgram, vertexShader);
@@ -349,7 +344,9 @@ function (
 		// Link the Shader Program
 		context.linkProgram(this.shaderProgram);
 		if (!context.getProgramParameter(this.shaderProgram, WebGLRenderingContext.LINK_STATUS)) {
-			console.error("Could not initialise shaders: " + context.getProgramInfoLog(this.shaderProgram));
+			var errInfo = context.getProgramInfoLog(this.shaderProgram);
+			console.error('Could not initialise shaders: ' + errInfo);
+			SystemBus.emit('goo.shader.error', errInfo);
 		}
 
 		for (var key in this.attributeMapping) {
@@ -517,9 +514,6 @@ function (
 	};
 
 	function setupDefaultCallbacks(defaultCallbacks) {
-		//! AT: can't Matrix4x4.IDENTITY be used instead of creating this every time?
-		var IDENTITY_MATRIX = new Matrix4x4();
-
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
@@ -530,12 +524,12 @@ function (
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : IDENTITY_MATRIX;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : IDENTITY_MATRIX;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix4x4.IDENTITY;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 

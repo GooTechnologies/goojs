@@ -1,49 +1,29 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
 	'goo/shapes/Box',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
-	'goo/addons/scripts/PolyBoundingScript'
+	'goo/addons/scripts/PolyBoundingScript',
+	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
 	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
 	Box,
 	WASDControlScript,
 	MouseLookControlScript,
-	PolyBoundingScript
+	PolyBoundingScript,
+	V
 	) {
 	'use strict';
 
-	function addBoxes(goo, polyBoundingScript) {
+	function addBoxes(polyBoundingScript) {
 		var boxDim = 5;
 		var boxDimp2 = boxDim / 2;
 		var boxHeight = 60;
@@ -55,19 +35,17 @@ require([
 		for (var i = 0; i < nBoxes; i++) {
 			for (var j = 0; j < nBoxes; j++) {
 
-				var material = Material.createMaterial(ShaderLib.simpleColored, '');
+				var material = new Material(ShaderLib.simpleColored);
 				material.uniforms.color = [
 					i / nBoxes,
 					j / nBoxes,
 					0.2
 				];
-				var boxEntity = goo.world.createEntity(meshData, material);
 
 				var x = (i - nBoxes / 2) * (boxDim + 10);
 				var y = (j - nBoxes / 2) * (boxDim + 10);
-				boxEntity.transformComponent.transform.translation.setd(x, 0, y);
 
-				boxEntity.addToWorld();
+				world.createEntity(meshData, material, [x, 0, y]).addToWorld();
 
 				polyBoundingScript.addCollidable({
 					poly: [
@@ -82,47 +60,33 @@ require([
 		}
 	}
 
-	function polyBoundingScriptDemo(goo) {
-		var polyBoundingScript = new PolyBoundingScript();
-		addBoxes(goo, polyBoundingScript);
+	var goo = V.initGoo();
+	var world = goo.world;
 
-		// Add light
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(0, 100, 0);
-		lightEntity.addToWorld();
 
-		// Add camera
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 0, 20);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
+	var polyBoundingScript = new PolyBoundingScript();
+	addBoxes(polyBoundingScript);
 
-		// Camera control set up
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new WASDControlScript({
-			domElement : goo.renderer.domElement,
-			walkSpeed : 25.0,
-			crawlSpeed : 10.0
-		}));
-		scripts.scripts.push(new MouseLookControlScript({
-			domElement : goo.renderer.domElement
-		}));
+	V.addLights();
 
-		scripts.scripts.push(polyBoundingScript);
-		cameraEntity.setComponent(scripts);
-	}
+	// Add camera
+	var cameraEntity = world.createEntity(new Camera(), [0, 0, 20])
+		.lookAt(new Vector3(0, 0, 0))
+		.addToWorld();
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+	// Camera control set up
+	var scripts = new ScriptComponent();
+	scripts.scripts.push(new WASDControlScript({
+		domElement: goo.renderer.domElement,
+		walkSpeed: 25.0,
+		crawlSpeed: 10.0
+	}));
+	scripts.scripts.push(new MouseLookControlScript({
+		domElement: goo.renderer.domElement
+	}));
 
-		polyBoundingScriptDemo(goo);
-	}
+	scripts.scripts.push(polyBoundingScript);
+	cameraEntity.set(scripts);
 
-	init();
+	V.process();
 });

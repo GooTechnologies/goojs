@@ -39,6 +39,7 @@ define([
 	/**
 	 * @class Processes all entities with a light debug component
 	 * @deprecated
+	 * @extends System
 	 */
 	function LightDebugSystem() {
 		System.call(this, 'LightDebugSystem', ['LightDebugComponent']);
@@ -52,7 +53,7 @@ define([
 		var meshData = LightPointer.getMeshData(light);
 		entity.setComponent(new MeshDataComponent(meshData));
 
-		var material = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material = new Material(ShaderLib.simpleColored);
 		material.uniforms.color = [
 			light.color.data[0],
 			light.color.data[1],

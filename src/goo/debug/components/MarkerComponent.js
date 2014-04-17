@@ -1,17 +1,16 @@
 define([
 	'goo/entities/components/Component',
-	'goo/shapes/ShapeCreator',
 	'goo/debug/BoundingVolumeMeshBuilder'],
 /** @lends */
 function(
 	Component,
-	ShapeCreator,
 	BoundingVolumeMeshBuilder) {
 	"use strict";
 
 	/**
 	 * @class Holds the necessary data for a marker
 	 * @param {Entity} entity The entity this component is attached to
+	 * @extends Component
 	 */
 	function MarkerComponent(hostEntity) {
 		this.type = 'MarkerComponent';

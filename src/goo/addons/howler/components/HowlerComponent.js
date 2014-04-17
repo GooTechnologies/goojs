@@ -9,6 +9,8 @@ function(
 
 	/**
 	* @class
+	* @deprecated Deprecated since 0.9.0 and scheduled for removal in 0.11.0
+	* @extends Component
 	*/
 	function HowlerComponent() {
 		this.type = 'HowlerComponent';

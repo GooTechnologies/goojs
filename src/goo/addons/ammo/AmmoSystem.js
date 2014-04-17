@@ -8,8 +8,7 @@ function(
 	SystemBus
 ) {
 	"use strict";
-
-	var Ammo = window.Ammo; // make jslint happy
+	/*global Ammo */
 
 	// from http://bullet.googlecode.com/svn-history/r2171/trunk/src/BulletCollision/CollisionDispatch/btCollisionObject.h
 	var btCollisionFlags = {

@@ -1,10 +1,7 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -20,14 +17,12 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/HeightMapBoundingScript',
-	'goo/util/CanvasUtils'
+	'goo/util/CanvasUtils',
+	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -43,8 +38,9 @@ require([
 	WASDControlScript,
 	MouseLookControlScript,
 	HeightMapBoundingScript,
-	CanvasUtils
-	) {
+	CanvasUtils,
+	V
+) {
 	'use strict';
 
 	function addSpheres(goo, heightMapBoundingScript) {
@@ -54,7 +50,7 @@ require([
 		var nSpheres = 10;
 		var ak = Math.PI * 2 / nSpheres;
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored);
 			material.uniforms.color = [
 				Math.cos(k) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -69,8 +65,8 @@ require([
 					run: function(entity) {
 						var translation = entity.transformComponent.transform.translation;
 
-						translation.data[0] = Math.cos(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
-						translation.data[2] = Math.sin(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+						translation.data[0] = Math.cos(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+						translation.data[2] = Math.sin(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
 
 						entity.transformComponent.setUpdated();
 					}
@@ -83,59 +79,40 @@ require([
 		}
 	}
 
-	function heightMapBoundingScriptDemo(goo) {
-		var canvasUtils = new CanvasUtils();
 
-		canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
-			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
-			var heightMapBoundingScript = new HeightMapBoundingScript(matrix);
+	var goo = V.initGoo();
+	var world = goo.world;
 
-			var meshData = Surface.createFromHeightMap(matrix);
+	CanvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
+		var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
+		var heightMapBoundingScript = new HeightMapBoundingScript(matrix);
 
-			var material = Material.createMaterial(ShaderLib.simpleLit, '');
-			material.wireframe = true;
-			var surfaceEntity = goo.world.createEntity(meshData, material, '');
-			surfaceEntity.transformComponent.setUpdated();
-			surfaceEntity.addToWorld();
+		var meshData = Surface.createFromHeightMap(matrix);
 
-			addSpheres(goo, heightMapBoundingScript);
+		var material = new Material(ShaderLib.simpleLit);
+		material.wireframe = true;
 
-			var light1 = new PointLight();
-			var light1Entity = goo.world.createEntity('light');
-			light1Entity.setComponent(new LightComponent(light1));
-			light1Entity.transformComponent.transform.translation.set(0, 100, 0);
-			light1Entity.addToWorld();
+		var surfaceEntity = world.createEntity(meshData, material);
+		surfaceEntity.transformComponent.setUpdated();
+		surfaceEntity.addToWorld();
 
-			// Add camera
-			var camera = new Camera(45, 1, 1, 1000);
-			var cameraEntity = goo.world.createEntity("CameraEntity");
-			cameraEntity.transformComponent.transform.translation.set(0, 10, 0);
-			cameraEntity.transformComponent.transform.lookAt(new Vector3(30, 0, 30), Vector3.UNIT_Y);
-			cameraEntity.setComponent(new CameraComponent(camera));
-			cameraEntity.addToWorld();
+		addSpheres(goo, heightMapBoundingScript);
 
-			// Camera control set up
-			var scripts = new ScriptComponent();
-			scripts.scripts.push(new WASDControlScript({
+		// Add camera
+		var cameraEntity = world.createEntity(new Camera(), 'CameraEntity', [0, 10, 0]).lookAt(30, 0, 30).addToWorld();
+
+		// Camera control set up
+		var scriptComponent = new ScriptComponent([
+			new WASDControlScript({
 				domElement : goo.renderer.domElement,
 				walkSpeed : 25.0,
 				crawlSpeed : 10.0
-			}));
-			scripts.scripts.push(new MouseLookControlScript({
+			}),
+			new MouseLookControlScript({
 				domElement : goo.renderer.domElement
-			}));
-			//scripts.scripts.push(heightMapBoundingScript);
-			cameraEntity.setComponent(scripts);
-		});
-	}
+			})
+		]);
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		heightMapBoundingScriptDemo(goo);
-	}
-
-	init();
+		cameraEntity.set(scriptComponent);
+	});
 });

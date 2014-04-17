@@ -7,7 +7,9 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/util/CanvasUtils',
+	'goo/util/StringUtil'
 ],
 /** @lends */
 function(
@@ -19,7 +21,9 @@ function(
 	RSVP,
 	pu,
 	Util,
-	_
+	_,
+	CanvasUtils,
+	StringUtil
 ) {
 	'use strict';
 
@@ -77,7 +81,8 @@ function(
 			anisotropy: 1,
 			offset: [0, 0],
 			repeat: [1, 1],
-			flipY: true
+			flipY: true,
+			lodBias: 0.0
 		});
 	};
 
@@ -128,6 +133,7 @@ function(
 
 			texture.offset.set(config.offset);
 			texture.repeat.set(config.repeat);
+			texture.lodBias = config.lodBias;
 
 			if (texture.flipY !== config.flipY) {
 				texture.flipY = config.flipY;
@@ -138,7 +144,7 @@ function(
 
 			var imageRef = config.imageRef;
 			if (imageRef) {
-				var type = imageRef.split('.').pop().toLowerCase();
+				var type = StringUtil.parseURL(imageRef).path.split('.').pop().toLowerCase();
 				var Loader = TextureHandler.loaders[type];
 				if (Loader) {
 					// Special (dds, tga, crn)
@@ -184,6 +190,18 @@ function(
 				} else {
 					throw new Error('Unknown texture type');
 				}
+			} else if(config.svgData){
+				// Load SVG data
+				var p = new RSVP.Promise();
+				ret = p;
+				CanvasUtils.renderSvgToCanvas(config.svgData, {}, function(canvas){
+					if(canvas){
+						texture.setImage(canvas);
+						p.resolve(texture);
+					} else {
+						p.reject('could not render svg to canvas');
+					}
+				});
 			} else {
 				// Blank
 				// console.warn('Texture ' + ref + ' has no imageRef');

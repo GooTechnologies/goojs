@@ -4,7 +4,7 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -14,14 +14,14 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/LightComponent',
-	'../../lib/V'
+	'lib/V'
 ], function(
 	GooRunner,
 	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Box,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -35,13 +35,13 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = "../../resources";
+	var resourcePath = '../../../resources';
 
 	var gui = new window.dat.GUI();
 
 	function createBoxEntity(goo, size) {
-		var meshData = ShapeCreator.createBox(size, size, size);
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
+		var meshData = new Box(size, size, size);
+		var material = new Material(ShaderLib.texturedLit, 'BoxMaterial');
 		var entity = goo.world.createEntity(meshData, material);
 
 		TextureCreator.clearCache();

@@ -18,6 +18,7 @@ define([
 
 	/**
 	 * @class Processes all entities with a camera debug component
+	 * @extends System
 	 */
 	function CameraDebugSystem() {
 		System.call(this, 'CameraDebugSystem', ['CameraDebugComponent']);
@@ -31,7 +32,7 @@ define([
 		var meshData = FrustumViewer.getMeshData(camera);
 		entity.setComponent(new MeshDataComponent(meshData));
 
-		var material = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material = new Material(ShaderLib.simpleColored);
 		material.uniforms.color = [0.4, 0.7, 1.0];
 
 		var meshRendererComponent = new MeshRendererComponent();

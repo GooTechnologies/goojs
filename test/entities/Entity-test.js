@@ -8,6 +8,7 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/ScriptComponent',
+	'goo/entities/systems/ScriptSystem',
 	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/renderer/Material',
@@ -24,6 +25,7 @@ define([
 	CameraComponent,
 	LightComponent,
 	ScriptComponent,
+	ScriptSystem,
 	Box,
 	Vector3,
 	Material,
@@ -35,6 +37,7 @@ define([
 
 	describe('Entity', function() {
 		var world;
+
 		beforeEach(function() {
 			world = new World();
 			Entity.entityCount = 0;
@@ -45,6 +48,16 @@ define([
 			world.registerComponent(CameraComponent);
 			world.registerComponent(LightComponent);
 			world.registerComponent(ScriptComponent);
+
+			//
+			world.gooRunner = {
+				renderer: {
+					domElement: null,
+					viewportWidth: null,
+					viewportHeight: null
+				}
+			};
+			world.add(new ScriptSystem(world))
 		});
 
 		it('addToWorld', function() {
@@ -219,7 +232,7 @@ define([
 			expect(entity.setTranslation).toBeTruthy();
 		});
 
-		it('removed the api of a component', function() {
+		it('removes the api of a component', function() {
 			var entity = world.createEntity();
 			entity.clearComponent('TransformComponent');
 			expect(entity.setTranslation).toBeFalsy();
@@ -321,7 +334,7 @@ define([
 
 		it('sets a MeshRendererComponent when trying to add a material', function() {
 			var entity = new Entity(world);
-			var material = Material.createMaterial(ShaderLib.simple);
+			var material = new Material(ShaderLib.simple);
 			entity.set(material);
 
 			expect(entity.meshRendererComponent).toBeTruthy();
@@ -358,6 +371,7 @@ define([
 		});
 
 		/*
+		//! AT: disputed
 		it('cannot clear a transform component', function() {
 			var entity = world.createEntity();
 			entity.setComponent(new MeshDataComponent());
@@ -368,6 +382,30 @@ define([
 			expect(entity.hasComponent('TransformComponent')).toBe(true);
 		});
 		*/
+
+		it('can add components on a world-less entity', function () {
+			var entity = new Entity();
+			entity.setComponent(new CameraComponent());
+			expect(entity.cameraComponent).toBeTruthy();
+		});
+
+		it('can remove components on a world-less entity', function () {
+			var entity = new Entity();
+			entity.setComponent(new CameraComponent());
+			entity.clearComponent('CameraComponent');
+			expect(entity.cameraComponent).toBeFalsy();
+		});
+
+		it("can pass a 'primitive engine object' to .set of a world-less entity", function () {
+			var entity = new Entity();
+			entity.set([1, 2, 3]);
+			// if we get here at least it doesn't blow up (like it used to)
+			expect(true).toBeTruthy();
+
+			//! AT: this should work too but requires a lot of changes
+			// registered components should stay somewhere else than in worlds
+			//expect(entity.cameraComponent).toBeTruthy();
+		});
 
 		describe('tags', function () {
 			it('sets a tag on an entity', function () {

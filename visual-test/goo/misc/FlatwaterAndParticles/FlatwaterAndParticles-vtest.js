@@ -4,7 +4,8 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
+	'goo/shapes/Quad',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -21,14 +22,15 @@ require([
 	'goo/entities/components/ParticleComponent',
 	'goo/particles/ParticleUtils',
 	'goo/entities/components/MeshDataComponent',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Box,
+	Quad,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -51,8 +53,8 @@ require([
 
 	function addFire(goo) {
 		// Particle material
-		var material = Material.createMaterial(ShaderLib.particles);
-		var texture = new TextureCreator().loadTexture2D('../../resources/flare.png');
+		var material = new Material(ShaderLib.particles);
+		var texture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
 		texture.generateMipmaps = true;
 		material.setTexture('DIFFUSE_MAP', texture);
 		material.blendState.blending = 'AlphaBlending';
@@ -111,9 +113,9 @@ require([
 
 	function addWater(goo, waterY) {
 		// Water
-		var meshData = ShapeCreator.createQuad(10000, 10000, 10, 10);
+		var meshData = new Quad(10000, 10000, 10, 10);
 
-		var material = Material.createMaterial(ShaderLib.simple, 'mat');
+		var material = new Material(ShaderLib.simple, 'mat');
 		var waterEntity = goo.world.createEntity(meshData, material);
 		waterEntity.meshRendererComponent.isPickable = false;
 
@@ -126,7 +128,7 @@ require([
 		//var camera = cameraEntity.cameraComponent.camera;
 		var waterRenderer = new FlatWaterRenderer({
 			useRefraction: false,
-			normalsUrl: '../../resources/waternormals3.png'
+			normalsUrl: '../../../resources/waternormals3.png'
 		});
 		goo.renderSystem.preRenderers.push(waterRenderer);
 
@@ -153,8 +155,8 @@ require([
 	}
 
 	function addDebugQuad(goo, waterRenderer) {
-		var quadMeshData = ShapeCreator.createQuad(10, 10);
-		var quadMaterial = Material.createMaterial(ShaderLib.simple, 'mat');
+		var quadMeshData = new Quad(10, 10);
+		var quadMaterial = new Material(ShaderLib.simple, 'mat');
 
 		void(waterRenderer);
 
@@ -164,8 +166,8 @@ require([
 	}
 
 	function addBox(goo) {
-		var boxMeshData = ShapeCreator.createBox(10, 30, 10);
-		var boxMaterial = Material.createMaterial(ShaderLib.simple, 'mat');
+		var boxMeshData = new Box(10, 30, 10);
+		var boxMaterial = new Material(ShaderLib.simple, 'mat');
 		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
 		boxEntity.transformComponent.transform.translation.setd(0, 15.01, 0);
 		boxEntity.addToWorld();

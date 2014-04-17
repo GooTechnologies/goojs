@@ -16,6 +16,7 @@ define([
 	}
 
 	describe('TextureHandler', function() {
+
 		var loader;
 		beforeEach(function() {
 			var world = new World();
@@ -24,12 +25,22 @@ define([
 				rootPath: 'loaders/res/'
 			});
 		});
+
 		it('loads a texture with an image', function() {
 			var config = Configs.texture();
 			loader.preload(Configs.get());
 			var p = loader.load(config.id).then(function(texture) {
 				expect(texture).toEqual(jasmine.any(Texture));
 				expect(texture.image).toEqual(jasmine.any(Image));
+			});
+			wait(p, 1000);
+		});
+
+		it('loads a texture with an SVG', function() {
+			var config = Configs.textureSVG();
+			loader.preload(Configs.get());
+			var p = loader.load(config.id).then(function(texture) {
+				expect(texture).toEqual(jasmine.any(Texture));
 			});
 			wait(p, 1000);
 		});

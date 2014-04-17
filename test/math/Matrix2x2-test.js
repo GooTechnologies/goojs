@@ -73,5 +73,38 @@ define(["goo/math/Matrix2x2"], function(Matrix2x2) {
 			expect(a).toEqual(Matrix2x2.IDENTITY);
 			expect(b).toEqual(Matrix2x2.IDENTITY);
 		});
+
+		it("can add", function() {
+			var a = new Matrix2x2(1, 2, 3, 4);
+			var b = new Matrix2x2();
+			Matrix2x2.add(a,a,b);
+			expect(b).toEqual(new Matrix2x2(2,4,6,8));
+			expect(Matrix2x2.add(a,a)).toEqual(new Matrix2x2(2,4,6,8));
+			expect(a.add(a)).toEqual(new Matrix2x2(2,4,6,8));
+		});
+
+		it("can add scalar", function() {
+			var a = new Matrix2x2(1, 2, 3, 4);
+			var b = new Matrix2x2();
+			Matrix2x2.add(a,1,b);
+			expect(b).toEqual(new Matrix2x2(2,3,4,5));
+		});
+
+		it("can subtract", function() {
+			var a = new Matrix2x2(1, 2, 3, 4);
+			var b = new Matrix2x2();
+			Matrix2x2.sub(a,a,b);
+			expect(b).toEqual(new Matrix2x2(0,0,0,0));
+			expect(Matrix2x2.sub(a,a)).toEqual(new Matrix2x2(0,0,0,0));
+			expect(a.sub(a)).toEqual(new Matrix2x2(0,0,0,0));
+		});
+
+		it("can subtract scalar", function() {
+			var a = new Matrix2x2(1, 2, 3, 4);
+			var b = new Matrix2x2();
+			Matrix2x2.sub(a,1,b);
+			expect(b).toEqual(new Matrix2x2(0,1,2,3));
+		});
+
 	});
 });

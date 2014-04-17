@@ -3,6 +3,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
+	'goo/util/StringUtil',
 	'goo/util/rsvp'
 ],
 /** @lends */
@@ -11,6 +12,7 @@ function(
 	AudioContext,
 	PromiseUtil,
 	_,
+	StringUtil,
 	RSVP
 ) {
 	'use strict';
@@ -18,19 +20,17 @@ function(
 	/**
 	 * @class Ajax helper class
 	 * @constructor
-	 * <code>{
-	 *   loaded: number Bytes loaded
-	 *   total: number Bytes to load
-	 *   count: number Number of resources loaded/loading
-	 * }</code>
+	 * @param {string} rootPath
+	 * @param {object} options
 	 */
-	function Ajax(rootPath) {
+	function Ajax(rootPath, options) {
 		if (rootPath) {
 			this._rootPath = rootPath;
 			if (rootPath.slice(-1) !== '/') {
 				this._rootPath += '/';
 			}
 		}
+		this.options = options || {};
 		this._cache = {};
 	}
 
@@ -47,6 +47,14 @@ function(
 		}
 	};
 
+	/**
+	 * Clears the ajax cache
+	 * Is called by {@link DynamicLoader.clear}
+	 */
+	Ajax.prototype.clear = function() {
+		this._cache = {};
+	};
+
 	/*
 	 * Uses GET to retrieve data at a remote location.
 	 *
@@ -61,7 +69,6 @@ function(
 		var method = 'GET';
 
 		var request = new XMLHttpRequest();
-
 
 		request.open(method, url, true);
 		if (options.responseType) {
@@ -85,6 +92,7 @@ function(
 	};
 
 	Ajax.ARRAY_BUFFER = 'arraybuffer';
+	Ajax.crossOrigin = false;
 
 	/**
 	 * Loads data at specified path which is returned in a Promise object.
@@ -97,7 +105,7 @@ function(
 	 */
 	Ajax.prototype.load = function(path, reload) {
 		var that = this;
-		var type = path.slice(path.lastIndexOf('.')+1).toLowerCase();
+		var type = StringUtil.parseURL(path).path.split('.').pop().toLowerCase();
 		function typeInGroup(type, group) {
 			return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
 		}
@@ -160,7 +168,7 @@ function(
 	};
 
 	/**
-	 * Loads image data at specified path which is returned in a Promise object. 
+	 * Loads image data at specified path which is returned in a Promise object.
 	 *
 	 * @example
 	 * loader.loadImage('resources/image.png').then(function(image) {
@@ -172,6 +180,9 @@ function(
 	Ajax.prototype._loadImage = function (url) {
 		window.URL = window.URL || window.webkitURL;
 		var image = new Image();
+		if (Ajax.crossOrigin) {
+			image.crossOrigin = 'anonymous';
+		}
 
 		var promise = new RSVP.Promise();
 		image.addEventListener('load', function () {
@@ -193,7 +204,9 @@ function(
 
 	Ajax.prototype._loadVideo = function (url) {
 		var video = document.createElement('video');
-		video.crossOrigin = 'anonymous';
+		if (Ajax.crossOrigin) {
+			video.crossOrigin = 'anonymous';
+		}
 		var promise = new RSVP.Promise();
 		video.addEventListener('canplay', function() {
 			video.dataReady = true;

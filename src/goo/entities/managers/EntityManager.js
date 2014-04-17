@@ -11,6 +11,7 @@ define([
 
 	/**
 	 * @class Main handler of all entities in the world.
+	 * @extends Manager
 	 */
 	function EntityManager() {
 		this.type = 'EntityManager';
@@ -19,14 +20,27 @@ define([
 		this._entitiesByIndex = {};
 		this._entityCount = 0;
 
+		/** Entity selector. Its methods return an {@link EntitySelection}. Can select by id or name, see examples for usage.
+		 * <br><i>Injected into {@link World}.</i>
+		 * @member by
+		 * @memberOf EntityManager.prototype
+		 * @example
+		 * var byId = gooRunner.world.by.id("2b88941938444da8afab8205b1c80616.entity").first();
+		 * var byName = gooRunner.world.by.name("Box").first();
+		 *
+		 */
+
 		this.api = {
+
 			id: function () {
 				var ret = EntityManager.prototype.getEntityById.apply(this, arguments);
 				return new EntitySelection(ret); // just entity
 			}.bind(this),
-			name: function () {
-				var ret = EntityManager.prototype.getEntityByName.apply(this, arguments);
-				return new EntitySelection(ret); // just entity
+			name: function (name) {
+				var entities = this.getEntities();
+				return new EntitySelection(entities.filter(function (entity) {
+					return entity.name === name;
+				}));
 			}.bind(this)
 		};
 	}

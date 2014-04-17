@@ -3,6 +3,8 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/BloomPass',
 	'goo/renderer/pass/BlurPass',
+	'goo/renderer/pass/DoGPass',
+	'goo/renderer/pass/MotionBlurPass',
 	'goo/renderer/Util'
 ],
 /** @lends */
@@ -11,6 +13,8 @@ function(
 	FullscreenPass,
 	BloomPass,
 	BlurPass,
+	DoGPass,
+	MotionBlurPass,
 	Util
 ) {
 	'use strict';
@@ -80,6 +84,89 @@ function(
 			min: -100,
 			max: 100,
 			'default': 0
+		}
+	];
+
+	function DiffOfGaussians(id) {
+		DoGPass.call(this, arguments);
+		this.id = id;
+	}
+
+	DiffOfGaussians.prototype = Object.create(DoGPass.prototype);
+	DiffOfGaussians.prototype.constructor = DiffOfGaussians;
+
+	DiffOfGaussians.prototype.update = function(config) {
+		var options = config.options || {};
+
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+
+		if (options.sigma !== undefined) {
+			this.updateSigma(options.sigma);
+		}
+
+		if (options.threshold !== undefined) {
+			this.updateThreshold(options.threshold);
+		}
+
+		if (options.edgeColor !== undefined) {
+			this.updateEdgeColor(options.edgeColor);
+		}
+
+		if (options.backgroundColor !== undefined) {
+			this.updateBackgroundColor(options.backgroundColor);
+		}
+
+		if (options.backgroundMix !== undefined) {
+			this.updateBackgroundMix(options.backgroundMix);
+		}
+
+	};
+
+	DiffOfGaussians.label = 'Edge detect';
+	DiffOfGaussians.options = [
+		{
+			key: 'sigma',
+			name: 'Gauss Sigma',
+			type: 'float',
+			control: 'slider',
+			min: 0.01,
+			max: 1.7,
+			decimals: 2,
+			'default': 0.6
+		},
+		{
+			key: 'threshold',
+			name: 'Threshold',
+			type: 'float',
+			control: 'slider',
+			min: 0.00000000000001,
+			max: 0.11,
+			decimals: 20,
+			'default': 0.005
+		},
+		{
+			key: 'backgroundMix',
+			name: 'Background %',
+			type: 'float',
+			control: 'slider',
+			min: 0.0,
+			max: 1.0,
+			decimals: 2,
+			'default': 0.0
+		},
+		{
+			key: 'edgeColor',
+			name: 'Edge Color',
+			type: 'color',
+			'default': [0.0, 1.0, 0.0]
+		},
+		{
+			key: 'backgroundColor',
+			name: 'Background Color',
+			type: 'color',
+			'default': [0.0, 0.0, 0.0]
 		}
 	];
 
@@ -624,6 +711,49 @@ function(
 		}
 	];
 
+	function MotionBlur(id) {
+		MotionBlurPass.call(this);
+		this.id = id;
+	}
+	MotionBlur.prototype = Object.create(MotionBlurPass.prototype);
+	MotionBlur.prototype.constructor = MotionBlur;
+
+	MotionBlur.prototype.update = function (config) {
+		var options = config.options;
+		var shader = this.inPass.material.shader;
+		if (options.blend !== undefined) {
+			shader.uniforms.blend = options.blend;
+		}
+		if (options.scale !== undefined) {
+			shader.uniforms.scale = options.scale;
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+
+	MotionBlur.label = 'Motion Blur';
+
+	MotionBlur.options = [
+		{
+			key: 'blend',
+			type: 'float',
+			control: 'slider',
+			name: 'Amount',
+			min: 0,
+			max: 1,
+			'default': 0.5
+		},
+		{
+			key: 'scale',
+			type: 'float',
+			name: 'Scale',
+			min: 0.2,
+			'default': 1,
+			scale: 0.01
+		}
+	];
+
 	return {
 		Bloom: Bloom,
 		Blur: Blur,
@@ -637,6 +767,8 @@ function(
 		Colorify: Colorify,
 		Hatch: Hatch,
 		Dot: Dot,
-		Contrast: Contrast
+		Contrast: Contrast,
+		DiffOfGaussians: DiffOfGaussians,
+		MotionBlur: MotionBlur
 	};
 });

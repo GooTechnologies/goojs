@@ -1,17 +1,17 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
 	'goo/debug/Debugger',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Box,
 	Vector3,
 	Box2DSystem,
 	Box2DComponent,
@@ -27,14 +27,14 @@ require([
 	var goo, world;
 
 	function getColoredMaterial(r, g, b) {
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		material.materialState.diffuse = [r, g, b, 1];
+		var material = new Material(ShaderLib.simpleLit, '');
+		material.uniforms.materialDiffuse = [r, g, b, 1];
 		return material;
 	}
 
 	function addOriginShape(goo) {
 		var world = goo.world;
-		var boxMeshData = ShapeCreator.createBox();
+		var boxMeshData = new Box();
 		var box;
 
 		box = world.createEntity(boxMeshData, getColoredMaterial(0, 0, 0));
@@ -181,29 +181,26 @@ require([
 		});
 	}
 
-	function transformComponentDemo() {
-		goo = V.initGoo();
-		world = goo.world;
 
-		boxMeshData = ShapeCreator.createBox();
+	goo = V.initGoo();
+	world = goo.world;
 
-		// marking the origin
-		addOriginShape(goo);
+	boxMeshData = new Box();
 
-		// create the towers
-		createBoxTower1();
-		createBoxTower2();
+	// marking the origin
+	addOriginShape(goo);
 
-		// add light
-		V.addLights();
+	// create the towers
+	createBoxTower1();
+	createBoxTower2();
 
-		// add camera
-		V.addOrbitCamera(new Vector3(30, Math.PI / 2, 0.3));
+	// add light
+	V.addLights();
 
-		setupGUI();
+	// add camera
+	V.addOrbitCamera(new Vector3(30, Math.PI / 2, 0.3));
 
-		new Debugger(true, true).inject(goo);
-	}
+	setupGUI();
 
-	transformComponentDemo();
+	new Debugger(true, true).inject(goo);
 });

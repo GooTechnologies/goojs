@@ -14,7 +14,7 @@ function (
 	"use strict";
 
 	/**
-	 * @class Creates and modifies @link{MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
+	 * @class Creates and modifies {@link MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
 	 * more emitters. Each emitter spawns particles, controlling spawn rate, lifetime, initial velocity vector and
 	 * position of each particle. Each Particle System also contains a timeline describing changes each particle should
 	 * perform over its lifetime, including:
@@ -33,6 +33,7 @@ function (
 	 * @param {number} [settings.uRange=1]
 	 * @param {number} [settings.vRange=1]
 	 * @param {number} [settings.particleCount=100]
+	 * @extends Component
 	 */
 	function ParticleComponent (settings) {
 		this.type = 'ParticleComponent';

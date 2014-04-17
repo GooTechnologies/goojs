@@ -1,51 +1,33 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
 	'goo/shapes/Sphere',
+	'goo/shapes/Box',
+	'goo/entities/components/ScriptComponent',
+	'goo/math/Vector3',
 	'goo/geometrypack/Surface',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
-	'goo/scripts/SparseHeightMapBoundingScript'
+	'goo/scripts/SparseHeightMapBoundingScript',
+	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
-	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
 	Sphere,
+	Box,
+	ScriptComponent,
+	Vector3,
 	Surface,
 	WASDControlScript,
 	MouseLookControlScript,
-	SparseHeightMapBoundingScript
+	SparseHeightMapBoundingScript,
+	V
 	) {
 	'use strict';
 
-	function addSpheres(goo, sparseHeightMapBoundingScript) {
+	function addSpheres(sparseHeightMapBoundingScript) {
 		var meshData = new Sphere(32, 32);
 
 		var nSpheres = 10;
@@ -56,8 +38,8 @@ require([
 				run: function(entity) {
 					var translation = entity.transformComponent.transform.translation;
 
-					translation.data[0] = Math.cos(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
-					translation.data[2] = Math.sin(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+					translation.data[0] = Math.cos(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+					translation.data[2] = Math.sin(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
 
 					entity.transformComponent.setUpdated();
 				}
@@ -65,29 +47,25 @@ require([
 		}
 
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored);
 			material.uniforms.color = [
 				Math.cos(k) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
 			];
-			var sphereEntity = goo.world.createEntity(meshData, material);
-			sphereEntity.transformComponent.transform.translation.setd(i, 0, 0);
+			var sphereEntity = world.createEntity(meshData, material, [i, 0, 0]);
 
-			var scriptComponent = new ScriptComponent(makeScript(i));
-			scriptComponent.scripts.push(sparseHeightMapBoundingScript);
-			sphereEntity.setComponent(scriptComponent);
+			var scriptComponent = new ScriptComponent([makeScript(i), sparseHeightMapBoundingScript]);
+			sphereEntity.set(scriptComponent);
 
 			sphereEntity.addToWorld();
 		}
 	}
 
-	function addCube(goo, x, y, z) {
-		var cubeMeshData = ShapeCreator.createBox(1, 0.1, 1);
-		var cubeMaterial = Material.createMaterial(ShaderLib.textured, '');
-		var cubeEntity = goo.world.createEntity(cubeMeshData, cubeMaterial);
-		cubeEntity.transformComponent.transform.translation.set(x, y, z);
-		cubeEntity.addToWorld();
+	function addCube(x, y, z) {
+		var cubeMeshData = new Box(1, 0.1, 1);
+		var cubeMaterial = new Material(ShaderLib.textured);
+		world.createEntity(cubeMeshData, cubeMaterial, [x, y, z]).addToWorld();
 	}
 
 	function getMatrix(sparseHeightMapBoundingScript, nSamples) {
@@ -102,74 +80,59 @@ require([
 		return mat;
 	}
 
-	function randomTerrain(goo, nPoints, maxX, maxZ) {
+	function randomTerrain(nPoints, maxX, maxZ) {
 		var elevationData = [];
 		for (var i = 0; i < nPoints; i++) {
-			var x = Math.random() * maxX;
-			var z = Math.random() * maxZ;
+			var x = V.rng.nextFloat() * maxX;
+			var z = V.rng.nextFloat() * maxZ;
 			var y = (Math.cos(x / 3) + Math.cos(z / 3)) * 4;
 
 		    elevationData.push(x, y, z);
 
-			addCube(goo, x, y, z);
+			addCube(x, y, z);
 		}
 
 		return elevationData;
 	}
 
-	function sparseHeightMapBoundingScriptDemo(goo) {
-		// add terrain
-		var elevationData = randomTerrain(goo, 50, 100, 100);
-		var sparseHeightMapBoundingScript = new SparseHeightMapBoundingScript(elevationData);
+	var goo = V.initGoo();
+	var world = goo.world;
 
-		var matrix = getMatrix(sparseHeightMapBoundingScript, 128);
-		var meshData = Surface.createFromHeightMap(matrix);
+	// add terrain
+	var elevationData = randomTerrain(50, 100, 100);
+	var sparseHeightMapBoundingScript = new SparseHeightMapBoundingScript(elevationData);
 
-		var material = Material.createMaterial(ShaderLib.simpleLit, '');
-		//material.wireframe = true;
-		var surfaceEntity = goo.world.createEntity(meshData, material, '');
-		surfaceEntity.transformComponent.setUpdated();
-		surfaceEntity.addToWorld();
+	var matrix = getMatrix(sparseHeightMapBoundingScript, 128);
+	var meshData = Surface.createFromHeightMap(matrix);
 
-		// add spheres
-		addSpheres(goo, sparseHeightMapBoundingScript);
+	var material = new Material(ShaderLib.simpleLit);
+	//material.wireframe = true;
+	var surfaceEntity = world.createEntity(meshData, material);
+	surfaceEntity.addToWorld();
 
-		// add light
-		var light = new PointLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(0, 100, 0);
-		lightEntity.addToWorld();
+	// add spheres
+	addSpheres(sparseHeightMapBoundingScript);
 
-		// Add camera
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 30, 0);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(40, 0, 40), Vector3.UNIT_Y);
-		cameraEntity.setComponent(new CameraComponent(camera));
-		cameraEntity.addToWorld();
+	V.addLights();
 
-		// Camera control set up
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new WASDControlScript({
+	// Add camera
+	var cameraEntity = world.createEntity(new Camera(), [0, 30, 0])
+		.lookAt(40, 0, 40)
+		.addToWorld();
+
+	// Camera control set up
+	var scriptComponent = new ScriptComponent([
+		new WASDControlScript({
 			domElement : goo.renderer.domElement,
 			walkSpeed : 25.0,
 			crawlSpeed : 10.0
-		}));
-		scripts.scripts.push(new MouseLookControlScript({
+		}),
+		new MouseLookControlScript({
 			domElement : goo.renderer.domElement
-		}));
+		})
+	]);
 
-		cameraEntity.setComponent(scripts);
-	}
+	cameraEntity.set(scriptComponent);
 
-	function init() {
-		var goo = new GooRunner();
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
-
-		sparseHeightMapBoundingScriptDemo(goo);
-	}
-
-	init();
+	V.process();
 });

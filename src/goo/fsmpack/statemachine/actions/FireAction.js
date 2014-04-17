@@ -53,7 +53,7 @@ function(
 		var gooRunner = entity._world.gooRunner;
 
 		if (!FireAction.material) {
-			FireAction.material = Material.createMaterial(ShaderLib.particles);
+			FireAction.material = new Material(ShaderLib.particles);
 			var texture = ParticleSystemUtils.createFlareTexture();
 			texture.generateMipmaps = true;
 			FireAction.material.setTexture('DIFFUSE_MAP', texture);
@@ -74,6 +74,9 @@ function(
 			}),
 			FireAction.material
 		);
+		this.fireEntity.meshRendererComponent.isPickable = false;
+		this.fireEntity.meshRendererComponent.castShadows = false;
+		this.fireEntity.meshRendererComponent.receiveShadows = false;
 		this.fireEntity.name = '_ParticleSystemFire';
 		entity.transformComponent.attachChild(this.fireEntity.transformComponent);
 

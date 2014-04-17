@@ -101,8 +101,16 @@ define([
 		for (var ref in this._objects) {
 			promises.push(this.update(ref, null, {}));
 		}
-		this._objects = {};
-		this._loading = {};
+
+		//! AT: clearing it one key at a time in case anyone holds a reference to the object
+		for (var key in this._objects) {
+			delete this._objects[key];
+		}
+
+		for (var key in this._loading) {
+			delete this._loading[key];
+		}
+
 		return RSVP.all(promises);
 	};
 
@@ -116,7 +124,7 @@ define([
 	 */
 	ConfigHandler.prototype.update = function(ref, config, options) {
 		return this._loading[ref] = this._update(ref,config,options);
-	}
+	};
 
 
 	ConfigHandler.prototype._update = function(ref, config, options) {

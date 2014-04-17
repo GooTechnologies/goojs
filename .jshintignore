@@ -2,3 +2,4 @@ lib/polyk.js
 test/testacular.conf.js
 test/testacular-min.conf.js
 tools/jsdoc-template/**/*.*
+src/goo/*pack/*pack.js

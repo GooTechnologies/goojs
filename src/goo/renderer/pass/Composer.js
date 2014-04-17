@@ -93,7 +93,6 @@ function (
 				pass.viewportSize = size;
 			}
 		}
-		// console.log('UPDATED SIZE COMPOSER: ', size);
 	};
 
 	Composer.prototype.render = function (renderer, delta, camera, lights) {
@@ -122,13 +121,6 @@ function (
 				}
 				this.swapBuffers();
 			}
-
-			// TODO
-			// if (pass instanceof MaskPass) {
-			// maskActive = true;
-			// } else if (pass instanceof ClearMaskPass) {
-			// maskActive = false;
-			// }
 		}
 	};
 

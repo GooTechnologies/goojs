@@ -74,6 +74,7 @@ function (
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false] By default the drawing buffer will be cleared after it is presented to the HTML compositor. Enable this option to not clear the drawing buffer
 	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
+	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
 	 * @param {boolean | string | { position, color }} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
 	 * If the parameter is not specified then the logo is placed in the top right corner.
@@ -89,11 +90,18 @@ function (
 
 		GameUtils.initAllShims();
 
+		/** Automatically created Goo world.
+		 * @type {World}
+		 */
 		this.world = new World(this);
+
+		/** Automatically created renderer.
+		 * @type {Renderer}
+		 */
 		this.renderer = new Renderer(parameters);
 
 		// do this is a method called setupSystems
-		this.world.setSystem(new ScriptSystem(this.renderer));
+		this.world.setSystem(new ScriptSystem(this.world));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
 		this.world.setSystem(new CSSTransformSystem(this.renderer)); // Go away!
@@ -160,7 +168,7 @@ function (
 
 		this.animationId = 0;
 		if (!parameters.manuallyStartGameLoop) {
-			this.startGameLoop(this.run);
+			this.startGameLoop();
 		}
 
 		if (parameters.debugKeys) {
@@ -189,9 +197,11 @@ function (
 
 		GameUtils.addVisibilityChangeListener(function (paused) {
 			if (paused) {
-				this.stopGameLoop();
+				this._stopGameLoop();
 			} else {
-				this.startGameLoop();
+				if (!this.manuallyPaused) {
+					this._startGameLoop();
+				}
 			}
 		}.bind(this));
 
@@ -204,6 +214,8 @@ function (
 			pickingStore: {},
 			clearColorStore: []
 		};
+
+		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
 	}
 
 	/**
@@ -257,14 +269,22 @@ function (
 
 		// execute callbacks
 		//! AT: doing this to be able to schedule new callbacks from the existing callbacks
-		var callbacksNextFrame = this.callbacksNextFrame;
-		this.callbacksNextFrame = [];
-		for (var i = 0; i < callbacksNextFrame.length; i++) {
-			callbacksNextFrame[i](this.world.tpf);
+		try {
+			var callbacksNextFrame = this.callbacksNextFrame;
+			this.callbacksNextFrame = [];
+			for (var i = 0; i < callbacksNextFrame.length; i++) {
+				callbacksNextFrame[i](this.world.tpf);
+			}
+		} catch (e) {
+			console.error(e);
 		}
 
-		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
-			this.callbacksPreProcess[i](this.world.tpf);
+		try {
+			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+				this.callbacksPreProcess[i](this.world.tpf);
+			}
+		} catch (e) {
+			console.error(e);
 		}
 
 		// process the world
@@ -305,7 +325,11 @@ function (
 					}
 				}
 				this.renderer.pick(this._picking.x, this._picking.y, this._picking.pickingStore, Renderer.mainCamera);
-				this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
+				try {
+					this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
+				} catch (e) {
+					console.error(e);
+				}
 				this._picking.doPick = false;
 
 				this.renderer.setClearColor.apply(this.renderer, this._picking.clearColorStore);
@@ -313,8 +337,12 @@ function (
 		}
 
 		// run the post render callbacks
-		for (var i = 0; i < this.callbacks.length; i++) {
-			this.callbacks[i](this.world.tpf);
+		try {
+			for (var i = 0; i < this.callbacks.length; i++) {
+				this.callbacks[i](this.world.tpf);
+			}
+		} catch (e) {
+			console.error(e);
 		}
 
 		// update the stats if there are any
@@ -391,7 +419,6 @@ function (
 	 * @private
 	 */
 	GooRunner.prototype._addDebugKeys = function () {
-		//TODO: Temporary keymappings
 		// shift+space = toggle fullscreen
 		// shift+enter = toggle mouselock
 		// shift+1 = normal rendering
@@ -445,7 +472,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to call when event is fired
 	 */
-	GooRunner.prototype.addEventListener = function(type, callback) {
+	GooRunner.prototype.addEventListener = function (type, callback) {
 		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
 		}
@@ -463,7 +490,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @param {function(event)} Callback to remove from event listener
 	 */
-	GooRunner.prototype.removeEventListener = function(type, callback) {
+	GooRunner.prototype.removeEventListener = function (type, callback) {
 		if(!this._eventListeners[type]) {
 			return;
 		}
@@ -476,7 +503,23 @@ function (
 		}
 	};
 
-	GooRunner.prototype._dispatchEvent = function(evt) {
+	/**
+   * Triggers an event on the goorunner (force)
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {object} evt The goorunner-style event
+	 * @param {Entity} evt.entity The goorunner-style event
+	 * @param {number} evt.x
+	 * @param {number} evt.y
+	 * @param {Event} evt.domEvent The original DOM event
+   */
+	GooRunner.prototype.triggerEvent = function(type, evt) {
+		evt.type = type;
+		this._eventTriggered[type] = evt.domEvent;
+		this._dispatchEvent(evt);
+	};
+
+
+	GooRunner.prototype._dispatchEvent = function (evt) {
 		for (var type in this._eventTriggered) {
 			if(this._eventTriggered[type] && this._eventListeners[type]) {
 				var e = {
@@ -489,10 +532,14 @@ function (
 					id: evt.id,
 					intersection: evt.intersection
 				};
-				for (var i = 0; i < this._eventListeners[type].length; i++) {
-					if(this._eventListeners[type][i](e) === false) {
-						break;
+				try {
+					for (var i = 0; i < this._eventListeners[type].length; i++) {
+						if(this._eventListeners[type][i](e) === false) {
+							break;
+						}
 					}
+				} catch(err) {
+					console.error(err);
 				}
 				this._eventTriggered[type] = null;
 			}
@@ -504,7 +551,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @private
 	 */
-	GooRunner.prototype._enableEvent = function(type) {
+	GooRunner.prototype._enableEvent = function (type) {
 		if(this._events[type]) {
 			return;
 		}
@@ -534,7 +581,7 @@ function (
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
 	 * @private
 	 */
-	GooRunner.prototype._disableEvent = function(type) {
+	GooRunner.prototype._disableEvent = function (type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
 		}
@@ -542,9 +589,10 @@ function (
 	};
 
 	/**
-	 * Starts the game loop. (done through requestAnimationFrame)
+	 * The method that actually starts the game loop
+	 * @private
 	 */
-	GooRunner.prototype.startGameLoop = function () {
+	GooRunner.prototype._startGameLoop = function () {
 		if (!this.animationId) {
 			this.start = -1;
 			this.animationId = window.requestAnimationFrame(this.run);
@@ -552,17 +600,34 @@ function (
 	};
 
 	/**
-	 * Stops the game loop.
+	 * Starts the game loop. (done through requestAnimationFrame)
 	 */
-	GooRunner.prototype.stopGameLoop = function () {
+	GooRunner.prototype.startGameLoop = function () {
+		this.manuallyPaused = false;
+		this._startGameLoop();
+	};
+
+	/**
+	 * The method that actually stops the game loop
+	 * @private
+	 */
+	GooRunner.prototype._stopGameLoop = function () {
 		window.cancelAnimationFrame(this.animationId);
 		this.animationId = 0;
 	};
 
 	/**
+	 * Stops the game loop.
+	 */
+	GooRunner.prototype.stopGameLoop = function () {
+		this.manuallyPaused = true;
+		this._stopGameLoop();
+	};
+
+	/**
 	 * Takes an image snapshot from the 3d scene at next render call
 	 */
-	GooRunner.prototype.takeSnapshot = function(callback) {
+	GooRunner.prototype.takeSnapshot = function (callback) {
 		this._takeSnapshots.push(callback);
 	};
 
@@ -574,7 +639,7 @@ function (
 	 * @param {Function} callback to handle the pick result
 	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
 	 */
-	GooRunner.prototype.pick = function(x, y, callback, skipUpdateBuffer) {
+	GooRunner.prototype.pick = function (x, y, callback, skipUpdateBuffer) {
 		this._picking.x = x;
 		this._picking.y = y;
 		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
@@ -582,6 +647,36 @@ function (
 			this._picking.pickingCallback = callback;
 		}
 		this._picking.doPick = true;
+	};
+
+	/**
+	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.
+	 * @private
+	 */
+	GooRunner.prototype.pickSync = function (x, y) {
+		// save the clear color
+		var currentClearColor = this.renderer.clearColor.data;
+
+		var savedClearColor = [
+			currentClearColor[0],
+			currentClearColor[1],
+			currentClearColor[2],
+			currentClearColor[3]
+		];
+
+		// change the clear color
+		this.renderer.setClearColor(0, 0, 0, 1);
+
+		// render
+		this.renderSystem.renderToPick(this.renderer, false);
+
+		// restore the clear color
+		this.renderer.setClearColor.apply(this.renderer, savedClearColor);
+
+		// get the picking data from the buffer
+		var pickingStore = {};
+		this.renderer.pick(x, y, pickingStore, Renderer.mainCamera);
+		return pickingStore;
 	};
 
 	return GooRunner;

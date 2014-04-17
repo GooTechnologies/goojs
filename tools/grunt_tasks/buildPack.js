@@ -79,7 +79,7 @@ module.exports = function (grunt) {
 			lines.push('\t' + fileNames.join(',\n\t'));
 
 			lines.push(') {');
-			lines.push('if (!window.goo) { return; }');
+			lines.push('\tvar goo = window.goo;\n\tif (!goo) { return; }');
 			fileNames.forEach(function (fileName) {
 				lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
 			});
@@ -116,13 +116,14 @@ module.exports = function (grunt) {
 		return config;
 	}
 
-	function wrap(fileName, head, tail) {
+	function wrap(fileName, head, tail, callback) {
 		fs.readFile(fileName, function (err, data) {
 			if (err) { throw err; }
 			var wrapped = head + data + tail;
 			fs.writeFile(fileName, wrapped, function (err) {
 				if (err) { throw err; }
 				console.log('Done wrapping'.green);
+				callback()
 			});
 		});
 	}
@@ -135,13 +136,15 @@ module.exports = function (grunt) {
 	}
 
 	function getTailWrapping(packName) {
-		return '\n' +
-			'}if(window.localStorage&&window.localStorage.gooPath){\n' +
-				'window.require.config({\n' +
-					'paths:{goo:localStorage.gooPath}\n' +
-				'});\n' +
-			'}else f()\n' +
-			'})(window,undefined)';
+		return ['',
+			'}try{',
+				'if(window.localStorage&&window.localStorage.gooPath){',
+					'window.require.config({',
+						'paths:{goo:localStorage.gooPath}',
+					'});',
+				'}else f()',
+			'}catch(e){f()}',
+			'})(window,undefined)'].join('\n');
 	}
 
 	grunt.registerMultiTask('build-pack', 'Minifies a pack', function () {
@@ -191,9 +194,7 @@ module.exports = function (grunt) {
 				console.log('Ignore List'.grey);
 				console.log(modulesAndDependencies.ignoreList);
 
-				wrap(outBaseDir + '/' + packName + '.js', getHeadWrapping(packName, version), getTailWrapping(packName));
-
-				done();
+				wrap(outBaseDir + '/' + packName + '.js', getHeadWrapping(packName, version), getTailWrapping(packName), done);
 			}, function(err) {
 				// optimization err callback
 				// :(

@@ -52,9 +52,9 @@ function (
 
 	/**
 	 * Rebuilds the mesh vertex and index data
-	 * @param vertexCount
-	 * @param indexCount
-	 * @param saveOldData
+	 * @param {number} vertexCount
+	 * @param {number} indexCount
+	 * @param {boolean} saveOldData
 	 */
 	MeshData.prototype.rebuildData = function (vertexCount, indexCount, saveOldData) {
 		var savedAttributes = {};
@@ -94,7 +94,7 @@ function (
 	/**
 	 * Rebuilds the vertex data of a mesh
 	 * @private
-	 * @param vertexCount
+	 * @param {number} vertexCount
 	 */
 	MeshData.prototype.rebuildVertexData = function (vertexCount) {
 		if (!isNaN(vertexCount)) {
@@ -116,7 +116,7 @@ function (
 	/**
 	 * Rebuilds the index data
 	 * @private
-	 * @param indexCount
+	 * @param {number} indexCount
 	 */
 	MeshData.prototype.rebuildIndexData = function (indexCount) {
 		if (indexCount !== undefined) {
@@ -631,13 +631,9 @@ function (
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.buildFlatMeshData = function() {
-		var idcs = [], oldIdcs = this.getIndexBuffer();
+		var oldIdcs = this.getIndexBuffer();
 		if (oldIdcs === null) {
 			console.debug('No indices, probably a point mesh');
-			return this;
-		}
-		if (oldIdcs.length > 65535) {
-			console.warn('Mesh too big, cannot build flat mesh data');
 			return this;
 		}
 
@@ -716,23 +712,19 @@ function (
 								}
 							}
 						}
-						idcs.push(idcs.length);
-						idcs.push(idcs.length);
-						idcs.push(idcs.length);
 						indexCount += 3;
 				}
 			}
 		}
-		if (idcs.length === 0) {
+		if (indexCount === 0) {
 			console.warn('Could not build flat data');
 			return this;
 		}
-		var flatMeshData = new MeshData(attributeMap, idcs.length, idcs.length);
+		var flatMeshData = new MeshData(attributeMap, indexCount);
 
 		for (var key in attribs) {
 			flatMeshData.getAttributeBuffer(key).set(attribs[key].values);
 		}
-		flatMeshData.getIndexBuffer().set(idcs);
 
 		flatMeshData.paletteMap = this.paletteMap;
 		flatMeshData.weightPerVertex = this.weightsPerVertex;

@@ -4,7 +4,6 @@ require([
     'goo/renderer/Material',
     'goo/renderer/shaders/ShaderLib',
     'goo/renderer/Camera',
-    'goo/shapes/ShapeCreator',
     'goo/entities/components/CameraComponent',
     'goo/scripts/OrbitCamControlScript',
     'goo/entities/components/ScriptComponent',
@@ -30,7 +29,6 @@ require([
     Material,
     ShaderLib,
     Camera,
-    ShapeCreator,
     CameraComponent,
     OrbitCamControlScript,
     ScriptComponent,
@@ -53,6 +51,8 @@ require([
     ) {
     'use strict';
 
+    //! schteppe: Outdated. Delete test?
+
     var goo;
     var worldFittedTerrainScript = new WorldFittedTerrainScript();
 
@@ -64,7 +64,7 @@ require([
         var nSpheres = 4;
         var ak = Math.PI * 2 / nSpheres;
         for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-            var material = Material.createMaterial(ShaderLib.simpleColored, '');
+            var material = new Material(ShaderLib.simpleColored, '');
             material.uniforms.color = [
                 Math.cos(k) * 0.5 + 0.5,
                 Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -112,7 +112,7 @@ require([
 		var nSpheres = 20;
 		var ak = Math.PI * 2 / nSpheres;
 		for (var i = 0, k = 0; i < nSpheres; i++, k += ak) {
-			var material = Material.createMaterial(ShaderLib.simpleColored, '');
+			var material = new Material(ShaderLib.simpleColored, '');
 			material.uniforms.color = [
 				Math.cos(k/nSpheres) * 0.5 + 0.5,
 				Math.cos(k + Math.PI / 3 * 2) * 0.5 + 0.5,
@@ -135,18 +135,18 @@ require([
 
     function buildTexturedGround(matrix, dimensions, id, gooWorld, txPath) {
         var meshData = new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
-        var material = Material.createMaterial(ShaderLib.texturedLit, '');
+        var material = new Material(ShaderLib.texturedLit, '');
 
         var texture = new TextureCreator().loadTexture2D(txPath);
         material.setTexture('DIFFUSE_MAP', texture);
 
-        material.materialState.ambient = [
+        material.uniforms.materialAmbient = [
             0.310305785123966943,
             0.310305785123966943,
             0.386363636363636367,
             1
         ];
-        material.materialState.diffuse = [
+        material.uniforms.materialDiffuse = [
             0.25909090909090909,
             0.24909090909090909,
             0.29909090909090909,
@@ -156,9 +156,9 @@ require([
         material.cullState.cullFace = "Back";
   //      material.cullState.enabled = false;
         //    emissive: materialData.uniforms.materialEmissive,
-        material.materialState.specular = [0.0, 0.0, 0.0, 1];
-        material.materialState.emissive = [0, 0, 0, 1];
-        material.materialState.shininess = 0.1;
+        material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
+        material.uniforms.materialEmissive = [0, 0, 0, 1];
+        material.uniforms.materialSpecularPower = 0.1;
 
         var surfaceEntity = gooWorld.createEntity(meshData, material, id);
         surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
@@ -168,7 +168,7 @@ require([
 
     function buildSurfaceMesh(matrix, dimensions, id, gooWorld) {
         var meshData =  new TerrainSurface(matrix, dimensions.maxX-dimensions.minX, dimensions.maxY-dimensions.minY, dimensions.maxZ-dimensions.minZ);
-        var material = Material.createMaterial(ShaderLib.simpleLit);
+        var material = new Material(ShaderLib.simpleLit);
         material.wireframe = true;
         var surfaceEntity = gooWorld.createEntity(meshData, material, id);
         surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
@@ -177,10 +177,8 @@ require([
     }
 
     function worldFittedTerrainScriptDemo() {
-        var canvasUtils = new CanvasUtils();
-
-        canvasUtils.loadCanvasFromPath('../../resources/heightmap_small.png', function(canvas) {
-            var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+        CanvasUtils.loadCanvasFromPath('../../../resources/heightmap_small.png', function(canvas) {
+            var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 
             var dim1 = {
                 minX: 0,
@@ -221,7 +219,7 @@ require([
             };
 
             var terrainData3 = worldFittedTerrainScript.addHeightData(matrix, dim3);
-            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world, '../../resources/heightmap_small.png');
+            buildTexturedGround(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world, '../../../resources/heightmap_small.png');
         //    buildSurfaceMesh(terrainData3.script.matrixData, terrainData3.dimensions, "terrain_mesh_3", goo.world);
             addSpheres(goo, worldFittedTerrainScript, dim3);
 			addNormalPointers(goo, worldFittedTerrainScript, dim3);
@@ -265,8 +263,8 @@ require([
 
 
 
-		canvasUtils.loadCanvasFromPath('../../resources/checker_slope.png', function(canvas) {
-			var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+		CanvasUtils.loadCanvasFromPath('../../../resources/checker_slope.png', function(canvas) {
+			var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 
 			var dim = {
 				minX: 0,
@@ -285,7 +283,7 @@ require([
 			addSpheres(goo, worldFittedTerrainScript, dim);
 			addNormalPointers(goo, worldFittedTerrainScript, dim);
 
-		//	var matrix = canvasUtils.getMatrixFromCanvas(canvas);
+		//	var matrix = CanvasUtils.getMatrixFromCanvas(canvas);
 
 			dim = {
 				minX: 0,
@@ -298,7 +296,7 @@ require([
 
 			var terrainData = worldFittedTerrainScript.addHeightData(matrix, dim);
 
-				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_6", goo.world, '../../resources/check.png');
+				buildTexturedGround(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_6", goo.world, '../../../resources/check.png');
 			//	buildSurfaceMesh(terrainData.script.matrixData, terrainData.dimensions, "terrain_mesh_5", goo.world);
 
 			addSpheres(goo, worldFittedTerrainScript, dim);

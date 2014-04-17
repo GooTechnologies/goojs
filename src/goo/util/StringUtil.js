@@ -1,7 +1,13 @@
-define(function() {
+/*jshint bitwise: false */
+define([],
+/** @lends */
+function() {
 	"use strict";
 
-	var StringUtil = {};
+	/**
+	 * @class
+	 */
+	function StringUtil(){}
 
 	StringUtil.endsWith = function(str, suffix) {
 		return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -24,11 +30,11 @@ define(function() {
 		var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 			// | 0 is a hack to floor a number, so this is a random number between 0 and 15
 			var randomNumber = (date + Math.random() * 16) % 16 | 0;
-			if (c == 'x') {
+			if (c === 'x') {
 				return randomNumber.toString(16);
 			} else {
 				// Set bit 6 and 7 to 0 and 1
-				return (randomNumber&0x3|0x8).toString(16)
+				return (randomNumber&0x3|0x8).toString(16);
 			}
 		});
 
@@ -157,6 +163,75 @@ define(function() {
 		idCounter++;
 		var stringedArguments = Array.prototype.slice.call(arguments, 0).join('');
 		return StringUtil.hashCode(idCounter + '' + stringedArguments);
+	};
+
+	/**
+	 * Escapes all HTML entities from a given string.
+	 *
+	 * @param  {string} text
+	 * 		The string whose HTML entities are to be encoded.
+	 *
+	 * @return {string}
+	 * 		The specified string with all its HTML entities encoded.
+	 */
+	StringUtil.escapeHtmlEntities = function (text) {
+		var div = document.createElement('div');
+		div.appendChild(document.createTextNode(text));
+
+		// Any edge cases that are not escaped by the browser.
+		var edgeCases = { 34: 'quot' };
+
+		return div.innerHTML.replace(/[\u00A0-\u2666\"\']/g, function(c) {
+			var entityName = edgeCases[c.charCodeAt(0)];
+			return '&' + (entityName || '#' + c.charCodeAt(0)) + ';';
+		});
+	};
+
+	/**
+	 * Parses an URL
+	 * @param {string} url
+	 * @example
+	 *     var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
+	 *     var parts = Ajax.parseURL(url);
+	 *     parts.scheme			// 'http'
+	 *     parts.domain			// 'example.com'
+	 *     parts.user_info		// undefined
+	 *     parts.port			// '1234'
+	 *     parts.path			// '/images/goo.png'
+	 *     parts.query_data		// 'param=1'
+	 *     parts.fragment		// 'fragment'
+	 */
+	StringUtil.parseURL = function(uri) {
+		var splitRegExp = new RegExp(
+			'^' +
+				'(?:' +
+				'([^:/?#.]+)' +                         // scheme - ignore special characters
+														// used by other URL parts such as :,
+														// ?, /, #, and .
+				':)?' +
+				'(?://' +
+				'(?:([^/?#]*)@)?' +                     // userInfo
+				'([\\w\\d\\-\\u0100-\\uffff.%]*)' +     // domain - restrict to letters,
+														// digits, dashes, dots, percent
+														// escapes, and unicode characters.
+				'(?::([0-9]+))?' +                      // port
+				')?' +
+				'([^?#]+)?' +                           // path
+				'(?:\\?([^#]*))?' +                     // query
+				'(?:#(.*))?' +                          // fragment
+				'$');
+
+		var split;
+		split = uri.match(splitRegExp);
+		return {
+			'scheme':split[1],
+			'user_info':split[2],
+			'domain':split[3],
+			'port':split[4],
+			'path':split[5],
+			'query_data': split[6],
+			'fragment':split[7]
+		};
 	};
 
 	return StringUtil;

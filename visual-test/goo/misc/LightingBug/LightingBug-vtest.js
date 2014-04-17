@@ -4,7 +4,8 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -16,14 +17,15 @@ require([
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
 	'goo/renderer/TextureCreator',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	World,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Sphere,
+	Box,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -40,9 +42,9 @@ require([
 	'use strict';
 
 	function addTexturedBox(goo, x, y, z) {
-		var boxMeshData = ShapeCreator.createBox(10, 30, 10);
-		var boxMaterial = Material.createMaterial(ShaderLib.texturedLit, 'texturedBoxMaterial');
-		var boxTexture = new TextureCreator().loadTexture2D('../../resources/check.png');
+		var boxMeshData = new Box(10, 30, 10);
+		var boxMaterial = new Material(ShaderLib.texturedLit, 'texturedBoxMaterial');
+		var boxTexture = new TextureCreator().loadTexture2D('../../../resources/check.png');
 		boxMaterial.setTexture('DIFFUSE_MAP', boxTexture);
 
 		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
@@ -51,8 +53,8 @@ require([
 	}
 
 	function addLamp(goo, x, y, z) {
-		var lampMeshData = ShapeCreator.createSphere(32, 32);
-		var lampMaterial = Material.createMaterial(ShaderLib.simpleLit, 'lampMaterial');
+		var lampMeshData = new Sphere(32, 32);
+		var lampMaterial = new Material(ShaderLib.simpleLit, 'lampMaterial');
 		var lampEntity = goo.world.createEntity(lampMeshData, lampMaterial, 'box');
 
 		var light = new PointLight();
@@ -61,16 +63,12 @@ require([
 		lampEntity.addToWorld();
 	}
 
-	function flatwaterAndParticlesDemo() {
-		var goo = V.initGoo();
+	var goo = V.initGoo();
 
-		V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
+	V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
 
-		addTexturedBox(goo, 0, 0, 0);
+	addTexturedBox(goo, 0, 0, 0);
 
-		addLamp(goo, -10, 10, 0);
-		addLamp(goo, -10, 5, 0);
-	}
-
-	flatwaterAndParticlesDemo();
+	addLamp(goo, -10, 10, 0);
+	addLamp(goo, -10, 5, 0);
 });

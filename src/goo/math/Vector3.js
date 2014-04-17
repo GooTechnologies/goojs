@@ -13,7 +13,7 @@ function (
 	 * @class Vector with 3 components.  Used to store 3D translation and directions.  It also contains common 3D Vector operations.
 	 * @extends Vector
 	 * @description Creates a new Vector3 by passing in either a current Vector3, number Array, or a set of three numbers.
-	 * @param {Vector3|number[]|x,y,z} arguments Initial values for the components.
+	 * @param {Vector3|number[]|...number} arguments Initial values for the components.
 	 * @example 
 	 * // Passing in three numbers
 	 * var v1 = new Vector3(1, 2, 3);
@@ -42,15 +42,85 @@ function (
 
 	/* ====================================================================== */
 
-	/** @type {Vector3} */
+	/** 
+	* Vector3 representing Zero Axis: (0, 0, 0)
+	* @type {Vector3}
+	* @example
+	* var oldValue = new Vector3(5, 2, 1);
+	* oldValue.setv(Vector3.ZERO); // oldValue == (0, 0, 0)
+	*/
 	Vector3.ZERO = new Vector3(0, 0, 0);
-	/** @type {Vector3} */
+
+	/**
+	* Vector3 representing All Axis: (1, 1, 1)
+	* @type {Vector3}
+	* @example
+	* var v1 = Vector3.copy(Vector3.ONE); // v1 == (1, 1, 1)
+	*/
 	Vector3.ONE = new Vector3(1, 1, 1);
-	/** @type {Vector3} */
+
+	/**
+	* Vector3 representing X Axis(right): (1, 0, 0)
+	* @type {Vector3}
+	* @example
+	* // speed we want to strafe left or right
+	* var speed = 5;
+	* // direction to strafe
+	* var strafeSpeed = 0;
+	* // if key 'a' is pressed
+	* if(KeyInput.getKey("a")){
+	*	strafeSpeed -= speed;
+	* }
+	* // if key 'd' is pressed
+	* if(KeyInput.getKey("d")){
+	*	strafeSpeed += speed;
+	* }
+	*
+	* // set strafeVector using Vector3.UNIT_X
+	* // strafeVector.x is either 0, speed, or -speed, depending on the keys pressed
+	* var strafeVector = Vector3.mul(Vector3.UNIT_X, strafeSpeed);
+	*/
 	Vector3.UNIT_X = new Vector3(1, 0, 0);
-	/** @type {Vector3} */
+
+	/**
+	* Vector3 representing Y Axis(up): (0, 1, 0)
+	* @type {Vector3}
+	* @example
+	* // height we want to jump
+	* var jumpHeight = 2.0;
+	* // gravity pulling us down
+	* var gravity = -9.8;
+	* // the calculated vertical jump impulse
+	* var jumpVelocity = Math.sqrt(2*jumpHeight*gravity);
+	*
+	* // set jumpVector using Vector3.UNIT_Y
+	* var jumpVector = Vector3.mul(Vector3.UNIT_Y, jumpVelocity); // jumpVector == (0, jumpVelocity, 0)
+	*/
 	Vector3.UNIT_Y = new Vector3(0, 1, 0);
-	/** @type {Vector3} */
+
+	/**
+	* Vector3 representing Z Axis(forward): (0, 0, 1)
+	* @type {Vector3}
+	* @example
+	* // speed we want to move forward
+	* var fwd_speed = 5;
+	* // speed we want to move back
+	* var bck_speed = -3.5;
+	* // speed to move
+	* var moveSpeed = 0.0;
+	* // if key 'w' is pressed
+	* if(KeyInput.getKey("w")){
+	*	moveSpeed = fwd_speed;
+	* }
+	* // if key 's' is pressed
+	* if(KeyInput.getKey("s")){
+	*	moveSpeed = bck_speed;
+	* }
+	*
+	* // set moveVector, using Vector3.UNIT_Z
+	* // moveVector.z is either 0, fwd_speed, or bck_speed, depending on the keys pressed
+	* var moveVector = Vector3.mul(Vector3.UNIT_Z, moveSpeed);
+	*/
 	Vector3.UNIT_Z = new Vector3(0, 0, 1);
 
 	/* ====================================================================== */
@@ -483,6 +553,19 @@ function (
 		return sum;
 	};
 
+	Vector3.dotv = function (lhs, rhs) {
+		var ldata = lhs.data;
+		var rdata = rhs.data;
+
+		var sum = 0.0;
+
+		sum += ldata[0] * rdata[0];
+		sum += ldata[1] * rdata[1];
+		sum += ldata[2] * rdata[2];
+
+		return sum;
+	};
+
 	/**
 	 * Computes the dot product between the current Vector3 and 'rhs'.  Equivalent of "return this•rhs;".
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
@@ -762,6 +845,31 @@ function (
 	 */
 	Vector3.prototype.lengthSquared = function () {
 		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
+	};
+
+	/**
+	 * Calculates length squared of vector
+	 * @returns {number} length squared
+	 */
+	Vector3.prototype.length = function () {
+		return Math.sqrt(this.lengthSquared());
+	};
+
+	Vector3.prototype.normalize = function () {
+		var l = this.length();
+
+		if (l < 0.0000001) {
+			this.data[0] = 0;
+			this.data[1] = 0;
+			this.data[2] = 0;
+		} else {
+			l = 1.0 / l;
+			this.data[0] *= l;
+			this.data[1] *= l;
+			this.data[2] *= l;
+		}
+
+		return this;
 	};
 
 	/**

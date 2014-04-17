@@ -1,15 +1,19 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
+	'goo/shapes/Quad',
+	'goo/shapes/Sphere',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/TextureCreator',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Box,
+	Quad,
+	Sphere,
 	Vector3,
 	PointLight,
 	TextureCreator,
@@ -18,9 +22,9 @@ require([
 	'use strict';
 
 	function addHalo(goo, x, y, z) {
-		var quadMeshData = ShapeCreator.createQuad(3, 3);
-		var quadMaterial = Material.createMaterial(ShaderLib.billboard, 'mat');
-		var quadTexture = new TextureCreator().loadTexture2D('../../resources/flare.png');
+		var quadMeshData = new Quad(3, 3);
+		var quadMaterial = new Material(ShaderLib.billboard, 'mat');
+		var quadTexture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
 		quadMaterial.setTexture('DIFFUSE_MAP', quadTexture);
 		quadMaterial.blendState.blending = 'AlphaBlending';
 		quadMaterial.renderQueue = 2001;
@@ -29,14 +33,14 @@ require([
 	}
 
 	function addBox(goo) {
-		var boxMeshData = ShapeCreator.createBox(1, 1, 1);
-		var boxMaterial = Material.createMaterial(ShaderLib.simpleLit, 'mat');
+		var boxMeshData = new Box(1, 1, 1);
+		var boxMaterial = new Material(ShaderLib.simpleLit, 'mat');
 		goo.world.createEntity(boxMeshData, boxMaterial).addToWorld();
 	}
 
 	function addLamp(goo, x, y, z) {
-		var lampMeshData = ShapeCreator.createSphere(32, 32);
-		var lampMaterial = Material.createMaterial(ShaderLib.simpleColored, '');
+		var lampMeshData = new Sphere(32, 32);
+		var lampMaterial = new Material(ShaderLib.simpleColored, '');
 		lampMaterial.uniforms.color = [1.0, 0.8, 0.1];
 
 		var light = new PointLight();

@@ -166,5 +166,23 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(dist).toEqual(8);
 		});
 
+		it("can be normalized", function() {
+			var a = new Vector3();
+
+			a.set(0, 0, 0).normalize();
+			expect(a.x).toBeCloseTo(0);
+			expect(a.y).toBeCloseTo(0);
+			expect(a.z).toBeCloseTo(0);
+
+			a.set(1, 1, 1).normalize();
+			expect(a.x).toBeCloseTo(1/Math.sqrt(3));
+			expect(a.y).toBeCloseTo(1/Math.sqrt(3));
+			expect(a.z).toBeCloseTo(1/Math.sqrt(3));
+
+			a.set(12, 34, 56).normalize();
+			expect(a.x).toBeCloseTo(12/Math.sqrt(12*12+34*34+56*56));
+			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34+56*56));
+			expect(a.z).toBeCloseTo(56/Math.sqrt(12*12+34*34+56*56));
+		});
 	});
 });

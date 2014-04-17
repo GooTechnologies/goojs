@@ -58,11 +58,11 @@ function (
 	 *			<li>'UnsignedShort5551' =
 	 *			<li>'Float' =
 	 *		</ul>
-	 * @param {boolean} [settings.offset=(0,0)] Texture offset
-	 * @param {boolean} [settings.repeat=(1,1)] Texture repeat/scale
+	 * @param {Array} [settings.offset=(0,0)] Texture offset
+	 * @param {Array} [settings.repeat=(1,1)] Texture repeat/scale
 	 * @param {boolean} [settings.generateMipmaps='true'] Automatically generate mipmaps
 	 * @param {boolean} [settings.premultiplyAlpha='false'] Premultiply alpha
-	 * @param {boolean} [settings.unpackAlignment=1] Unpack alignment setting
+	 * @param {number} [settings.unpackAlignment=1] Unpack alignment setting
 	 * @param {boolean} [settings.flipY='true'] Flip texture in y-axis
 	 */
 	function Texture(image, settings, width, height) {
@@ -84,6 +84,7 @@ function (
 
 		this.offset = new Vector2(settings.offset || [0, 0]);
 		this.repeat = new Vector2(settings.repeat || [1, 1]);
+		this.lodBias = 0.0;
 
 		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;
 		this.premultiplyAlpha = settings.premultiplyAlpha !== undefined ? settings.premultiplyAlpha : false;
@@ -97,7 +98,7 @@ function (
 		this.readyCallback = null;
 
 		if (image) {
-			this.setImage(image, width, height);
+			this.setImage(image, width, height, settings);
 		}
 	}
 
@@ -123,7 +124,7 @@ function (
 	 * @param {Number} [width]
 	 * @param {Number} [height]
 	 */
-	Texture.prototype.setImage = function (image, width, height) {
+	Texture.prototype.setImage = function (image, width, height, settings) {
 		this.image = image;
 
 		var data = image instanceof Array ? image[0] : image;
@@ -142,10 +143,10 @@ function (
 					this.type = 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
 					this.type = 'UnsignedShort565';
-					this.format = 'RGB';
+					this.format = settings.format || 'RGB';
 				} else if (data instanceof Float32Array) {
 					this.type = 'Float';
-					this.format = 'Alpha';
+					this.format = settings.format || 'RGBA';
 				}
 			} else {
 				throw 'Data textures need width and height';

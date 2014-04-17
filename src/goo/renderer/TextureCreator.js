@@ -24,15 +24,15 @@ function (
 	 * @param {Settings} settings Texturing settings
 	 */
 	function TextureCreator() {
-		var ajax = new Ajax();
+		var ajax = this.ajax = new Ajax();
 		this.textureHandler = new TextureHandler(
 			{},
 			function (ref, options) {
-				return ajax.load(ref, options ? false : options.noCache);
+				return ajax.load(ref, options ? options.noCache : false);
 			},
 			function () {},
 			function (ref, options) {
-				return ajax.load(ref, options ? false : options.noCache);
+				return ajax.load(ref, options ? options.noCache : false);
 			}
 		);
 	}
@@ -40,6 +40,14 @@ function (
 	//! AT: unused?
 	TextureCreator.UNSUPPORTED_FALLBACK = '.png';
 	TextureCreator.clearCache = function () {};
+
+	/**
+	 * Releases any references to cached objects
+	 */
+	TextureCreator.prototype.clear = function () {
+		this.ajax.clear();
+		this.textureHandler.clear();
+	};
 
 	/**
 	 * Creates a texture and loads image into it
@@ -53,16 +61,13 @@ function (
 		settings = settings || {};
 		settings.imageRef = imageURL;
 		var texture = this.textureHandler._objects[id] = this.textureHandler._create();
-		texture.setImage(TextureHandler.WHITE, 1, 1);
-		this.textureHandler.update(id, settings, {
-			texture: {
-				dontwait: true
-			}
-		}).then(function() {
+		// texture.setImage(TextureHandler.WHITE, 1, 1);
+		this.textureHandler.update(id, settings).then(function() {
 			if (callback) {
 				callback(texture);
 			}
 		});
+
 		return texture;
 	};
 
@@ -88,6 +93,11 @@ function (
 		return texture;
 	};
 
+	/**
+	 * Creates a video texture streamed from the webcam
+	 * @example yourMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTextureWebCam());
+	 * @returns {Texture}
+	 */
 	TextureCreator.prototype.loadTextureWebCam = function () {
 		var video = document.createElement('video');
 		video.autoplay = true;
@@ -173,7 +183,7 @@ function (
 			(function (index) {
 				var queryImage = imageDataArray[index];
 				if (typeof queryImage === 'string') {
-					that._loader.loadImage(queryImage).then(function (image) {
+					that.ajax._loadImage(queryImage).then(function (image) {
 						images[index] = image;
 						latch.countDown();
 					});

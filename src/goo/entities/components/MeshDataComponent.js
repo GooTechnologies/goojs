@@ -14,6 +14,7 @@ function (
 	/**
 	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.
 	 * @param {MeshData} meshData Target mesh data for this component.
+	 * @extends Component
 	 */
 	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';

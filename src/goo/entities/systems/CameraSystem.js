@@ -13,6 +13,7 @@ function (
 
 	/**
 	 * @class Updates cameras/cameracomponents with their transform component transforms
+	 * @extends System
 	 */
 	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
@@ -20,31 +21,28 @@ function (
 	}
 
 	CameraSystem.prototype = Object.create(System.prototype);
+	CameraSystem.prototype.constructor = CameraSystem;
 
 	/**
 	 * Sets the Renderer's main camera to be the first camera of the CameraComponents
 	 * in the currently active entities of this system.
 	 */
 	CameraSystem.prototype.findMainCamera = function () {
-		var mainCamera = null;
-		var mainCameraEntity = null;
-		var numberOfEntities = this._activeEntities.length;
-		for (var i = 0; i < numberOfEntities; i++) {
-			var cameraComponent = this._activeEntities[i].cameraComponent;
-			// REVIEW: the cameracomponent does not have any property isMain?
-			// Also, why not break upon setting the mainCamera.
-			if (!mainCamera || cameraComponent.isMain) {
-				mainCamera = cameraComponent.camera;
-				mainCameraEntity = this._activeEntities[i];
-			}
+		if (this._activeEntities.length) {
+			var firstEntity = this._activeEntities[0];
+				SystemBus.emit('goo.setCurrentCamera', {
+					camera: firstEntity.cameraComponent.camera,
+					entity: firstEntity
+				});
 		}
-		SystemBus.emit('goo.setCurrentCamera', { camera: mainCamera, entity: mainCameraEntity });
-		Renderer.mainCamera = mainCamera;
 	};
 
-	CameraSystem.prototype.inserted = function () {
+	CameraSystem.prototype.inserted = function (entity) {
 		if (!Renderer.mainCamera) {
-			this.findMainCamera();
+			SystemBus.emit('goo.setCurrentCamera', {
+				camera: entity.cameraComponent.camera,
+				entity: entity
+			});
 		}
 	};
 
@@ -54,9 +52,9 @@ function (
 		//this.findMainCamera();
 	};
 
-	CameraSystem.prototype.process = function (entities) {
-		for (var i = 0; i < entities.length; i++) {
-			var entity = entities[i];
+	CameraSystem.prototype.process = function () {
+		for (var i = 0; i < this._activeEntities.length; i++) {
+			var entity = this._activeEntities[i];
 			var transformComponent = entity.transformComponent;
 			var cameraComponent = entity.cameraComponent;
 

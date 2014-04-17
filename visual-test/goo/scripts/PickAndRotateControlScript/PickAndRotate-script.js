@@ -3,7 +3,6 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
@@ -11,17 +10,16 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'goo/scripts/NewWaveFPCamControlScript',
+	'goo/scripts/newwave/FPCamControlScript',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/ScriptUtils',
 	'goo/math/Vector',
-	'../../lib/V'
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
 	CameraComponent,
 	ScriptComponent,
 	MeshData,
@@ -36,6 +34,8 @@ require([
 	V
 	) {
 	'use strict';
+
+	//! schteppe: Outdated. Delete test?
 
 	var external = {
 		name: 'Pick and rotate',

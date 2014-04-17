@@ -31,6 +31,7 @@ module.exports = function(grunt) {
 			'function f(){';
 		wrapperTail +=
 			'}' +
+			'try{'+
 			'if(window.localStorage&&window.localStorage.gooPath){' +
 				// We're configured to not use the engine from goo.js.
 				// Don't call the f function so the modules won't be defined
@@ -38,7 +39,8 @@ module.exports = function(grunt) {
 				'window.require.config({' +
 					'paths:{goo:localStorage.gooPath}' +
 				'})' +
-			'}else f()';
+			'}else f()' +
+			'}catch(e){f()}';
 
 		wrapperTail += '})(window,undefined)';
 		return [wrapperHead, wrapperTail];
@@ -118,6 +120,39 @@ module.exports = function(grunt) {
 			geometrypack: {
 				packName: 'geometrypack',
 				outBaseDir: 'out'
+			},
+			quadpack: {
+				packName: 'quadpack',
+				outBaseDir: 'out'
+			},
+			timelinepack: {
+				packName: 'timelinepack',
+				outBaseDir: 'out'
+			},
+		},
+		karma: {
+			unit: {
+				configFile: 'test/karma.conf.js',
+				singleRun: true,
+				browsers:['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
+			},
+		},
+	    jsdoc : { // Could replace tools/generate_jsdoc.sh, but still need something that makes the tar.gz docs bundle
+	        dist : {
+	            src: ['src','tools/jsdoc-template/static/README.md'],
+	            options: {
+	                destination: 'goojs-jsdoc',
+	                template: 'tools/jsdoc-template',
+	                'private': false,
+	                recurse: true
+	            }
+	        }
+	    },
+		jshint: {
+			all: ['src'],
+			options:{
+				jshintrc: '.jshintrc',
+				force: true // Do not fail the task
 			}
 		}
 	});
@@ -126,12 +161,17 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-karma');
+	grunt.loadNpmTasks('grunt-jsdoc');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default', ['minify']);
-	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack']);
-
+	grunt.registerTask('default',	['minify']);
+	grunt.registerTask('docs',		['jsdoc']);
+	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack', 'build-pack:timelinepack']);
+	grunt.registerTask('unittest',	['karma:unit']);
+	grunt.registerTask('test',		['unittest']);
 
 	//! AT: no better place to put this
 	function extractFilename(path) {
@@ -155,7 +195,7 @@ module.exports = function(grunt) {
 
 		lines.push('\t' + fileNames.join(',\n\t'));
 		lines.push(') {');
-		lines.push('if (!window.goo) { return; }');
+		lines.push('\tvar goo = window.goo;\n\tif (!goo) { return; }');
 		fileNames.forEach(function (fileName) {
 			lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
 		});
@@ -163,5 +203,11 @@ module.exports = function(grunt) {
 		lines.push('});');
 
 		fs.writeFileSync('src/goo.js', lines.join('\n'));
+	});
+
+	// Creates an HTML list of tests in visual-test/index.html
+	grunt.registerTask('visualtoc',function(){
+		var toc = require('./visual-test/toc');
+		toc.run();
 	});
 };

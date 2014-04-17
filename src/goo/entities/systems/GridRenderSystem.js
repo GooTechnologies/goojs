@@ -30,6 +30,7 @@ function (
 	/**
 	 * @class Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
+	 * @extends System
 	 */
 	function GridRenderSystem() {
 		System.call(this, 'GridRenderSystem', []);
@@ -47,7 +48,7 @@ function (
 		this.transform.scale.setd(1000, 1000, 1000);
 		this.transform.update();
 
-		var gridMaterial = Material.createMaterial(gridShaderDef, 'Grid Material');
+		var gridMaterial = new Material(gridShaderDef, 'Grid Material');
 		gridMaterial.depthState.write = true;
 		gridMaterial.depthState.enabled = true;
 
@@ -58,7 +59,7 @@ function (
 		};
 		// It ain't pretty, but it works
 		var surfaceShader = Util.clone(ShaderLib.simpleColored);
-		var surfaceMaterial = Material.createMaterial(surfaceShader, 'Surface Material');
+		var surfaceMaterial = new Material(surfaceShader, 'Surface Material');
 		surfaceMaterial.uniforms.color = [0.4, 0.4, 0.4];
 		surfaceMaterial.uniforms.opacity = 0.9;
 		surfaceMaterial.blendState.blending = 'CustomBlending';
