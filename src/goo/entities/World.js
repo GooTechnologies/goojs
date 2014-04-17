@@ -73,7 +73,6 @@ function (
 	 * var byAttribute = gooRunner.world.by.attribute("hit-points").toArray();
 	 */
 	World.prototype._installDefaultSelectors = function () {
-
 		this.by.system = function (systemType) {
 			var system = this.getSystem(systemType);
 			return new EntitySelection(system._activeEntities);
@@ -87,6 +86,7 @@ function (
 			}));
 		}.bind(this);
 
+		//! AT: this will be relocated into the Tag Manager once it gets implemented
 		this.by.tag = function (tag) {
 			var entities = this.entityManager.getEntities();
 
@@ -95,6 +95,7 @@ function (
 			}));
 		}.bind(this);
 
+		//! AT: this will be relocated into the Attribute Manager once it gets implemented
 		this.by.attribute = function (attribute) {
 			var entities = this.entityManager.getEntities();
 
@@ -218,6 +219,24 @@ function (
 				return system;
 			}
 		}
+	};
+
+	/**
+	 * Removes the {@link System} of type 'type'.
+	 * Entities tracked by the removed system will not get handled properly when they are removed from the world
+	 * or when their components (that are tracked by this system) change.
+	 *
+	 * @param {String} type Type of system to remove.
+	 * @returns {World} Returns self to allow chaining.
+	 */
+	World.prototype.clearSystem = function (type) {
+		for (var i = 0; i < this._systems.length; i++) {
+			var system = this._systems[i];
+			if (system.type === type) {
+				this._systems.splice(i, 1);
+			}
+		}
+		return this;
 	};
 
 	/**
