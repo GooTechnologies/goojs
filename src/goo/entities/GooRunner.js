@@ -151,20 +151,7 @@ function (
 		this.callbacksNextFrame = [];
 		this._takeSnapshots = [];
 
-		var that = this;
 		this.start = -1;
-		//Move out
-		this.run = function (time) {
-			try {
-				that._updateFrame(time);
-			} catch (e) {
-				if (e instanceof Error) {
-					console.error(e.stack);
-				} else {
-					console.error(e);
-				}
-			}
-		};
 
 		this.animationId = 0;
 		if (!parameters.manuallyStartGameLoop) {
@@ -217,6 +204,24 @@ function (
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
 	}
+
+	/**
+	 *
+	 * @private
+	 * @param time
+	 */
+	//! TODO: private until documented
+	GooRunner.prototype.run = function (time) {
+		try {
+			this._updateFrame(time);
+		} catch (e) {
+			if (e instanceof Error) {
+				console.error(e.stack);
+			} else {
+				console.error(e);
+			}
+		}
+	};
 
 	/**
 	 * Add a render system to the world
