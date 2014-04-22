@@ -251,7 +251,7 @@ function (
 
 		if (tpf < 0 || tpf > 1.0) { // skip a loop - original start time probably bad.
 			this.start = time;
-			this.animationId = window.requestAnimationFrame(this.run);
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
 			return;
 		}
 
@@ -369,7 +369,7 @@ function (
 		}
 
 		// schedule next frame
-		this.animationId = window.requestAnimationFrame(this.run);
+		this.animationId = window.requestAnimationFrame(this.run.bind(this));
 	};
 
 	//TODO: move this to Logo
@@ -600,7 +600,7 @@ function (
 	GooRunner.prototype._startGameLoop = function () {
 		if (!this.animationId) {
 			this.start = -1;
-			this.animationId = window.requestAnimationFrame(this.run);
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
 		}
 	};
 
