@@ -313,6 +313,7 @@ function(
 			} else if (value instanceof Object) {
 				// Go down a level
 				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
+					//! AT: this check is unnecessary
 					if (value.hasOwnProperty(keys[i])) {
 						traverse(keys[i], value[keys[i]]);
 					}
