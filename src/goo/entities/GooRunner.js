@@ -64,7 +64,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class The main class that updates the world and calls the renderers
+	 * @class The main class that updates the world and calls the renderers. 
+	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 *
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
 	 * @param {boolean} [parameters.alpha=false] Specifies if the canvas should have an alpha channel or not.

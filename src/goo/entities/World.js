@@ -23,6 +23,7 @@ function (
 	 * @class Main handler for an entity world. The World keeps track of managers and systems, 
 	 * and also provides methods to create, select and remove entities.
 	 * Note that process() has to be called manually if objects need to be added and retrieved within the same update loop.
+	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
 	 */
 	function World (gooRunner) {
