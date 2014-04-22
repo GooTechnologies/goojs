@@ -16,7 +16,7 @@ function(
 	 * @extends Component
 	 * @param {object} [settings]
 	 * @param {number} [settings.distance=1]
-	 * @param {CannonRigidbodyComponent} [settings.connectedBody]
+	 * @param {CannonRigidbodyComponent} settings.connectedBody
 	 */
 	function CannonDistanceJointComponent(settings){
 		settings = settings || {};
