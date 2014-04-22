@@ -105,9 +105,10 @@ function (
 	 */
 	Ajax.prototype.load = function (path, reload) {
 		var that = this;
-		var type = StringUtil.parseURL(path).path.split('.').pop().toLowerCase();
+		var path2 = StringUtil.parseURL(path).path;//! AT: dunno what to call this
+		var type = path2.substr(path2.lastIndexOf('.') + 1).toLowerCase();
 		function typeInGroup(type, group) {
-			return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
+			return type && Ajax.types[group] && Ajax.types[group][type];
 		}
 
 		if (!path) {
@@ -237,61 +238,67 @@ function (
 	// TODO Put this somewhere nicer
 	Ajax.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
 
+	function addKeys(obj, keys) {
+		for (var i = 0; i < keys.length; i++) {
+			obj[keys[i]] = true;
+		}
+		return obj;
+	}
 
-	//! AT: all these should be objects instead of arrays; property lookup is faster than indexOf
 	Ajax.types = {
-		text: [
-			'vert',
-			'frag' // + Scripts in the future
-		],
-		json: [
-			'shader',
-			'script',
-			'entity',
-			'material',
-			'scene',
-			'mesh',
-			'texture',
-			'skeleton',
-			'animation',
-			'clip',
-			'bundle',
-			'project',
-			'machine',
-			'posteffects',
-			'animstate',
-			'sound',
-			'environment',
-			'skybox'
-		],
-		image: [
-			'jpg',
-			'jpeg',
-			'png',
-			'gif'
-		],
-		video: [
-			'mp4',
-			'ogv',
-			'webm'
-		],
-		binary: [
-			'dat',
-			'bin'
-		].concat(
-			_.keys(TextureHandler.loaders)
-		),
-		audio: [
-			'mp3',
-			'wav',
-			'ogg'
-		],
-		bundle: [
-			'bundle'
-		]
+		text: {
+			vert: true,
+			frag: true // + Scripts in the future
+		},
+		json: {
+			shader: true,
+			script: true,
+			entity: true,
+			material: true,
+			scene: true,
+			mesh: true,
+			texture: true,
+			skeleton: true,
+			animation: true,
+			clip: true,
+			bundle: true,
+			project: true,
+			machine: true,
+			posteffects: true,
+			animstate: true,
+			sound: true,
+			environment: true,
+			skybox: true
+		},
+		image: {
+			jpg: true,
+			jpeg: true,
+			png: true,
+			gif: true
+		},
+		video: {
+			mp4: true,
+			ogv: true,
+			webm: true
+		},
+		binary: addKeys({
+			dat: true,
+			bin: true
+		}, Object.keys(TextureHandler.loaders)),
+		audio: {
+			mp3: true,
+			wav: true,
+			ogg: true
+		},
+		bundle: {
+			bundle: true
+		}
 	};
-	Ajax.types.asset = Ajax.types.image.concat(
-		Ajax.types.binary
+
+	Ajax.types.asset = addKeys(
+		{},
+		Object.keys(Ajax.types.image)
+			.concat(Object.keys(Ajax.types.binary))
 	);
 
 	return Ajax;
