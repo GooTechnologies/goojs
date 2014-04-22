@@ -53,11 +53,42 @@ function(
 	 */
 	EntityHandler.prototype._remove = function(ref) {
 		var entity = this._objects[ref];
+		var that = this;
 		if (entity) {
-			entity.removeFromWorld();
-			delete this._objects[ref];
+			// Remove components
+			var promises = [];
+			var components = entity._components;
+			for(var i = 0; i < components.length; i++) {
+				var type = this._getComponentType(components[i]);
+				promises.push(this._updateComponent(entity, type, null));
+			}
+			return RSVP.all(promises)
+			.then(function(){
+				entity.removeFromWorld();
+				delete that._objects[ref];
+			});
 		}
 	};
+
+	function updateTags(entity, config) {
+		entity._tags = {};
+		if (!config) { return; }
+
+		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
+		for (var tag in config) {
+			entity.setTag(tag);
+		}
+	}
+
+	function updateAttributes(entity, config) {
+		entity._attributes = {};
+		if (!config) { return; }
+
+		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
+		for (var attribute in config) {
+			entity.setAttribute(attribute, config[attribute]);
+		}
+	}
 
 	/**
 	 * Adds/updates/removes an entity
@@ -68,11 +99,15 @@ function(
 	 */
 	EntityHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(entity) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (entity) {
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
 			entity.static = !!config.static;
+
+			updateTags(entity, config.tags);
+			updateAttributes(entity, config.attributes);
+
 			var promises = [];
 
 			// Adding/updating components

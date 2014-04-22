@@ -2,12 +2,14 @@ define([
 	'goo/math/Vector3',
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils',
-	'goo/renderer/Renderer'
+	'goo/renderer/Renderer',
+	'goo/entities/SystemBus'
 ], function (
 	Vector3,
 	Scripts,
 	ScriptUtils,
-	Renderer
+	Renderer,
+	SystemBus
 ) {
 	'use strict';
 
@@ -42,7 +44,7 @@ define([
 			calcVector2 = new Vector3();
 
 			var renderer = environment.world.gooRunner.renderer;
-			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? 
+			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ?
 				window.devicePixelRatio / renderer.svg.currentScale : 1;
 
 			mouseState = {
@@ -130,7 +132,9 @@ define([
 		}
 
 		function update(parameters, environment) {
-			if(!environment.dirty) { return ;}
+			if(!environment.dirty) {
+				return;
+			}
 			mouseState.dx = mouseState.x - mouseState.ox;
 			mouseState.dy = mouseState.y - mouseState.oy;
 			if (mouseState.dx === 0 && mouseState.dy === 0) {
@@ -149,9 +153,14 @@ define([
 
 			var mainCam = Renderer.mainCamera;
 
+			var entity = environment.entity;
+			var transform = entity.transformComponent.transform;
 
 			if (lookAtPoint && mainCam) {
-				if (lookAtPoint.equals(mainCam.translation)) { return; }
+				if (lookAtPoint.equals(mainCam.translation)) {
+					return;
+				}
+				var camera = entity.cameraComponent.camera;
 				mainCam.getScreenCoordinates(lookAtPoint, 1, 1, calcVector);
 				calcVector.add_d(
 					-mouseState.dx / (environment.viewportWidth/devicePixelRatio),
@@ -167,18 +176,37 @@ define([
 					calcVector
 				);
 				lookAtPoint.setv(calcVector);
+
 			} else {
-				var entity = environment.entity;
-				var transform = entity.transformComponent.transform;
 				calcVector.setv(fwdVector).scale(mouseState.dy);
 				calcVector2.setv(leftVector).scale(mouseState.dx);
+
+				//! schteppe: use world coordinates for both by default?
+				//if(parameters.screenMove){
+					// In the case of screenMove, we normalize the camera movement
+					// to the near plane instead of using pixels. This makes the parallel
+					// camera map mouse world movement to camera movement 1-1
+					if(entity.cameraComponent && entity.cameraComponent.camera){
+						var camera = entity.cameraComponent.camera;
+						calcVector.scale((camera._frustumTop - camera._frustumBottom) / environment.viewportHeight);
+						calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
+					}
+				//}
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);
-
-				calcVector.scale(parameters.panSpeed);
+				//if(!parameters.screenMove){
+					// panSpeed should be 1 in the screenMove case, to make movement sync properly
+					calcVector.scale(parameters.panSpeed);
+				//}
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
+				//environment.dirty = false;
 			}
+			SystemBus.emit('goo.cameraPositionChanged', {
+				translation: transform.translation.data,
+				lookAtPoint: lookAtPoint?lookAtPoint.data:null,
+				id: entity.id
+			});
 		}
 
 		function cleanup(parameters, environment) {
@@ -215,6 +243,11 @@ define([
 			'default': 0.005,
 			scale: 0.001,
 			decimals: 3
+		}, {
+			key: 'screenMove',
+			type: 'boolean',
+			'default': false,
+			description: 'Syncs camera movement with mouse world position 1-1, needed for parallel camera.'
 		}]
 	};
 

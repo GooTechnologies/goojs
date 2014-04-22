@@ -40,7 +40,7 @@ function(
 			description: 'Property',
 			'default': ''
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this tween to complete',

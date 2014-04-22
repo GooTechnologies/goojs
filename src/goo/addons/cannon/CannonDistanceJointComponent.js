@@ -1,7 +1,9 @@
 define([
 	'goo/entities/components/Component',
 	'goo/util/ObjectUtil'
-], function(
+],
+/** @lends */
+function(
 	Component,
 	_
 ){
@@ -10,7 +12,8 @@ define([
 	var CANNON = window.CANNON;
 
 	/**
-	 * Distance joint
+	 * @class Distance joint. Add to an entity with a {@link CannonRigidbodyComponent} and physically link it to another entity!
+	 * @extends Component
 	 * @param {object} [settings]
 	 * @param {number} [settings.distance=1]
 	 * @param {CannonRigidbodyComponent} [settings.connectedBody]

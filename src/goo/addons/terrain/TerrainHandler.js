@@ -330,7 +330,7 @@ define([
 		};
 
 		TerrainHandler.prototype.initPhysics = function() {
-			this.terrain.initAmmoBody();
+			this.ammoBody = this.terrain.initAmmoBody();
 		};
 
 		TerrainHandler.prototype.update = function(cameraEntity) {

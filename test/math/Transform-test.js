@@ -177,6 +177,23 @@ define([
 				expect(result.matrix[14]).toBeCloseTo(3 + 33);
 			});
 		});
+
+
+		describe('multiply', function () {
+			it('can multiply and keep scaling correct', function () {
+
+				var transform1 = new Transform();
+				transform1.scale.set(1, 2, 3);
+
+				var transform2 = new Transform();
+				transform2.scale.set(4, 5, 6);
+
+				transform1.multiply(transform1, transform2);
+
+				expect(transform1.scale).toBeEqualToVector(new Vector3(1 * 4, 2 * 5, 3 * 6));
+
+			});
+		});
 	});
 
 });

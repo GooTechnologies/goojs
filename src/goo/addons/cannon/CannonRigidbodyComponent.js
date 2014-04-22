@@ -7,7 +7,9 @@ define([
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
 	'goo/util/ObjectUtil'
-],function(
+],
+/** @lends */
+function(
 	Component,
 	Quaternion,
 	Vector3,
@@ -22,12 +24,12 @@ define([
 	var CANNON = window.CANNON;
 
 	/**
-	 * @class Adds Cannon physics to an entity. Should be combined with one of the CannonCollider components, such as the @link{CannonSphereColliderComponent}. Also see {@link CannonSystem}.
+	 * @class Adds Cannon physics to an entity. Should be combined with one of the CannonCollider components, such as the {@link CannonSphereColliderComponent}. Also see {@link CannonSystem}.
 	 * @extends Component
 	 * @param {Object}  [settings]
 	 * @param {number}  [settings.mass=1]
 	 */
-	function CannonRigidbodyComponent(settings){
+	function CannonRigidbodyComponent (settings) {
 		settings = settings || {};
 		this.type = "CannonRigidbodyComponent";
 

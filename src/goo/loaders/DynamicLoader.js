@@ -30,7 +30,7 @@ define([
 	'goo/loaders/handlers/PosteffectsHandler',
 	'goo/loaders/handlers/EnvironmentHandler',
 	'goo/loaders/handlers/SkyboxHandler',
-	'goo/loaders/handlers/HTMLComponentHandler'
+	'goo/loaders/handlers/HtmlComponentHandler'
 ],
 /** @lends */
 function(
@@ -94,12 +94,6 @@ function(
 	 * @returns {RSVP.Promise} Promise resolves when handlers are cleared.
 	 */
 	DynamicLoader.prototype.clear = function() {
-		/*var refs = Object.keys(this._objects);
-		this._objects = {};
-		// Remove all objects from engine
-		for(var i = 0; i < refs.length; i++) {
-			this._handle(refs[i], null);
-		}*/
 		var promises = [];
 		for (var type in this._handlers) {
 			promises.push(this._handlers[type].clear());
@@ -294,47 +288,6 @@ function(
 		return null;
 	};
 
-	/*
-	 * Handles a ref with its loaded config, i.e. calls the proper config handler
-	 * to create or update the object
-	 *
-	 * @param {string} ref
-	 * @param {object} config
-	 * @param {object} options
-	 * @private
-	 */
-	/*DynamicLoader.prototype._handle = function(ref, config, options) {
-		var that = this;
-		var cachedObject = this._objects[ref];
-		if (cachedObject && cachedObject.then && !cachedObject.isRejected) {
-			// Object is in the process of being handled already
-			return this._objects[ref];
-		} else {
-			var type = DynamicLoader.getTypeForRef(ref);
-
-			if (DynamicLoader._isRefTypeInGroup(ref, 'bundle')) {
-				// Do nothing
-				return PromiseUtil.createDummyPromise(config);
-			}
-
-			var handler = this._getHandler(type);
-			if (!handler) {
-				console.warn("No handler for type " + type);
-				return PromiseUtil.createDummyPromise(config);
-			}
-
-			// Update object
-			this._objects[ref] = handler.update(ref, config, options).then(
-				function(object) {
-					that._objects[ref] = object;
-					return object;
-				}
-			);
-			return this._objects[ref];
-		}
-	};*/
-
-
 	/**
 	 * Find all the references in a config, and return in a flat list.
 	 *
@@ -345,7 +298,7 @@ function(
 	DynamicLoader.prototype._getRefsFromConfig = function(config) {
 		var refs = [];
 		function traverse(key, value) {
-			if (/\S+refs?$/i.test(key)) {
+			if (/\S+refs?$/i.test(key) && key !== 'thumbnailRef') {
 				// Refs
 				if (value instanceof Object) {
 					for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {

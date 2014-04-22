@@ -1,11 +1,13 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Vector2',
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'goo/renderer/Camera',
 ], function(
 	Vector3,
 	Vector2,
-	MathUtils
+	MathUtils,
+	Camera
 ) {
 	'use strict';
 
@@ -36,9 +38,12 @@ define([
 
 		function setup(parameters, environment) {
 			domElement = environment.domElement;
-			dragButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.dragButton) - 1;
+			dragButton = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(parameters.dragButton) - 1;
 			if (dragButton < -1) {
 				dragButton = -1;
+			}
+			if(dragButton === 4){
+				dragButton = null;
 			}
 			// Making more linear perception
 			environment.smoothness = Math.pow(MathUtils.clamp(parameters.smoothness, 0, 1), 0.3);
@@ -60,6 +65,8 @@ define([
 			cartesian = new Vector3();
 			worldUpVector = new Vector3(Vector3.UNIT_Y);
 			maxSampleTimeMS = 200;
+
+			setFrustumFromSpherical(parameters, environment);
 
 			environment.dirty = true;
 
@@ -149,7 +156,20 @@ define([
 			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
 			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 			targetSpherical.z = MathUtils.clamp(targetSpherical.z + thetaAccel, minAscent, maxAscent);
+
+			setFrustumFromSpherical(parameters, environment);
 			environment.dirty = true;
+		}
+
+		function setFrustumFromSpherical(params, env) {
+			if(env.entity === env.activeCameraEntity && env.activeCameraEntity.cameraComponent.camera.projectionMode === Camera.Parallel){
+				// Camera is parallel! Change frustum instead!
+				// Use trigonometry to convert camera distance to frustum size
+				var camera = env.activeCameraEntity.cameraComponent.camera;
+				var size = targetSpherical.x * Math.tan(camera.fov * MathUtils.DEG_TO_RAD);
+				camera.setFrustum(null, null, -size, size, size, -size, null);
+				env.size = size;
+			}
 		}
 
 		function applyWheel(e, parameters, environment) {
@@ -217,7 +237,7 @@ define([
 					}
 				},
 				mouseleave: function(event) {
-					environment.listeners.mouseup(event);
+					environment.orbitListeners.mouseup(event);
 				},
 				mousewheel: function(event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
@@ -288,6 +308,11 @@ define([
 		}
 
 		function update(parameters, environment, goo) {
+			if (!environment.dirty) {
+				return; //
+			}
+
+
 			var entity = environment.entity;
 			// grab our transformComponent
 			var transformComponent = entity.transformComponent;
@@ -296,18 +321,17 @@ define([
 
 			var delta = MathUtils.lerp(environment.smoothness, 1, environment.world.tpf);
 
-			if (!environment.goingToLookAt.equals(environment.lookAtPoint)) {
+			if (environment.goingToLookAt.distanceSquared(environment.lookAtPoint) < 1e-6) {
+				environment.lookAtPoint.setv(environment.goingToLookAt);
+			} else {
 				environment.lookAtPoint.lerp(environment.goingToLookAt, delta);
-				environment.dirty = true;
+				//environment.orbitDirty = true;
 			}
 
 			if (parameters.releaseVelocity) {
 				updateVelocity(entity._world.tpf, parameters, environment);
 			}
 
-			if (!environment.dirty) {
-				return; //
-			}
 
 			//var delta = MathUtils.clamp(parameters.interpolationSpeed * environment.world.tpf, 0.0, 1.0);
 
@@ -327,12 +351,13 @@ define([
 				transform.lookAt(lookAtPoint, worldUpVector);
 			}
 
-			if (spherical.distanceSquared(targetSpherical) < 0.000001) {
-				environment.dirty = false;
+			if (spherical.distanceSquared(targetSpherical) < 0.000001 && environment.lookAtPoint.equals(environment.goingToLookAt)) {
 				spherical.y = MathUtils.moduloPositive(spherical.y, MathUtils.TWO_PI);
 				targetSpherical.copy(spherical);
 				environment.dirty = false;
 			}
+
+			setFrustumFromSpherical(parameters, environment);
 
 			// set our component updated.
 			transformComponent.setUpdated();
@@ -368,7 +393,7 @@ define([
 			key: 'dragButton',
 			description: 'Button to enable dragging',
 			'default': 'Any',
-			options: ['Any', 'Left', 'Middle', 'Right'],
+			options: ['Any', 'Left', 'Middle', 'Right', 'None'],
 			type: 'string',
 			control: 'select'
 		}, {

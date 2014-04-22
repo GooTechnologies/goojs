@@ -1,14 +1,14 @@
 require([
 	'goo/entities/EntityUtils',
 	'goo/renderer/Camera',
-	'goo/entities/components/HTMLComponent',
-	'goo/entities/systems/HTMLSystem',
+	'goo/entities/components/HtmlComponent',
+	'goo/entities/systems/HtmlSystem',
 	'lib/V'
 ], function (
 	EntityUtils,
 	Camera,
-	HTMLComponent,
-	HTMLSystem,
+	HtmlComponent,
+	HtmlSystem,
 	V
 	) {
 	'use strict';
@@ -20,7 +20,7 @@ require([
 	V.addOrbitCamera();
 
 	// add text system to world
-	world.setSystem(new HTMLSystem(goo.renderer));
+	world.setSystem(new HtmlSystem(goo.renderer));
 
 	// add spheres
 	var spheres = V.addColoredSpheres(7);
@@ -33,7 +33,7 @@ require([
 		htmlElement.innerHTML = 'A round box!';
 		document.body.appendChild(htmlElement);
 
-		var htmlComponent = new HTMLComponent(htmlElement);
+		var htmlComponent = new HtmlComponent(htmlElement);
 
 		entity.set(htmlComponent);
 

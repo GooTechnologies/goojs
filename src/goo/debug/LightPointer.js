@@ -2,7 +2,6 @@ define([
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/Material',
@@ -10,14 +9,14 @@ define([
 	'goo/math/MathUtils',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight'
+	'goo/renderer/light/SpotLight',
+	'goo/shapes/Sphere'
 	],
 	/** @lends */
 	function (
 		MeshData,
 		MeshBuilder,
 		Transform,
-		ShapeCreator,
 		MeshDataComponent,
 		MeshRendererComponent,
 		Material,
@@ -25,9 +24,10 @@ define([
 		MathUtils,
 		PointLight,
 		DirectionalLight,
-		SpotLight
+		SpotLight,
+		Sphere
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class
@@ -192,7 +192,7 @@ define([
 		var transform = new Transform();
 
 		var ballMeshData = buildBall(light.range);
-		var sphereMeshData = ShapeCreator.createSphere(8, 8, 0.1);
+		var sphereMeshData = new Sphere(8, 8, 0.1);
 		meshBuilder.addMeshData(ballMeshData, transform);
 		meshBuilder.addMeshData(sphereMeshData, transform);
 		var meshDatas = meshBuilder.build();
@@ -204,7 +204,7 @@ define([
 		var transform = new Transform();
 
 		var coneMeshData = buildCone(light.angle, light.range);
-		var sphereMeshData = ShapeCreator.createSphere(8, 8, 0.1);
+		var sphereMeshData = new Sphere(8, 8, 0.1);
 
 		meshBuilder.addMeshData(sphereMeshData, transform);
 		transform.scale.setd(1, 1, -1);
@@ -222,7 +222,7 @@ define([
 		transform.update();
 
 		var columnMeshData = buildColumn();
-		var sphereMeshData = ShapeCreator.createSphere(8, 8, 0.1);
+		var sphereMeshData = new Sphere(8, 8, 0.1);
 		meshBuilder.addMeshData(columnMeshData, transform);
 		meshBuilder.addMeshData(sphereMeshData, transform);
 		var meshDatas = meshBuilder.build();
@@ -263,7 +263,7 @@ define([
 		var meshRendererComponent = new MeshRendererComponent();
 		lightEntity.setComponent(meshRendererComponent);
 
-		var material = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material = new Material(ShaderLib.simpleColored);
 		material.uniforms.color = [
 			light.color.data[0],
 			light.color.data[1],

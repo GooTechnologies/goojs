@@ -2,7 +2,6 @@ define([
 	'goo/entities/systems/System',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
 	'goo/debug/components/MarkerComponent',
 	'goo/renderer/Renderer',
 	'goo/math/Transform'
@@ -12,7 +11,6 @@ define([
 		System,
 		Material,
 		ShaderLib,
-		ShapeCreator,
 		MarkerComponent,
 		Renderer,
 		Transform
@@ -26,7 +24,7 @@ define([
 	function MarkerSystem(goo) {
 		System.call(this, 'MarkerSystem', ['MarkerComponent']);
 
-		this.material = Material.createMaterial(ShaderLib.simpleColored, '');
+		this.material = new Material(ShaderLib.simpleColored);
 		this.material.depthState.enabled = false;
 		this.material.shader.uniforms.color = [0.0, 1.0, 0.0];
 

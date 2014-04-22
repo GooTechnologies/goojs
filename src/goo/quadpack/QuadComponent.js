@@ -48,26 +48,30 @@ function (
 
 		this.type = 'QuadComponent';
 
-		if(settings.preserveAspectRatio && image && image.width && image.height){
-			var ratio = image.width / image.height;
-			if(ratio > 1){
-				settings.height = settings.width / ratio;
-			} else if(ratio < 1){
-				settings.width = settings.height * ratio;
-			}
-		}
-
-		/** The quad meshdata.
-		 * @type {Quad}
-		 * @private
+		/**
+		 * The width of the component in 3D space
 		 */
-		this.meshData = new Quad(settings.width,settings.height,settings.tileX,settings.tileY);
+		this.width = settings.width;
 
-		/** Mesh data component that this component creates and adds to the entity.
-		 * @type {MeshDataComponent}
-		 * @private
+		/**
+		 * The height of the component in 3D space
 		 */
-		this.meshDataComponent = new MeshDataComponent(this.meshData);
+		this.height = settings.height;
+
+		/**
+		 * Tiling in x direction
+		 */
+		this.tileX = settings.tileX;
+
+		/**
+		 * Tiling in y direction
+		 */
+		this.tileY = settings.tileY;
+
+		/**
+		 * Whether to preserve aspect ratio or not. If this property is true, the component will have a maximum dimension of 1 in the 3D space.
+		 */
+		this.preserveAspectRatio = settings.preserveAspectRatio;
 
 		/** Mesh renderer component that this component creates and adds to the entity.
 		 * @type {MeshRendererComponent}
@@ -80,17 +84,28 @@ function (
 		 */
 		this.material = new Material(ShaderLib.uber, 'QuadComponent default material');
 
+		/** The quad meshdata.
+		 * @type {Quad}
+		 * @private
+		 */
+		this.meshData = new Quad(settings.width, settings.height, settings.tileX, settings.tileY);
+
+		/** Mesh data component that this component creates and adds to the entity.
+		 * @type {MeshDataComponent}
+		 * @private
+		 */
+		this.meshDataComponent = new MeshDataComponent(this.meshData);
+
 		// Set the material as current
 		var m = this.material;
-		this.meshRendererComponent.materials = [m];
-		m.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
-		m.renderQueue = 2000;
-		m.dualTransparency = true;					// Visible on both sides
+		this.setMaterial(m);
 
 		if(image){
 			var texture = new Texture(image);
 			m.setTexture('DIFFUSE_MAP',texture);
 		}
+
+		this.rebuildMeshData();
 	}
 	QuadComponent.prototype = Object.create(Component.prototype);
 	QuadComponent.prototype.constructor = QuadComponent;
@@ -105,10 +120,60 @@ function (
 		entity.clearComponent('meshDataComponent');
 	};
 
+	/**
+	 * Set the current material for the quad
+	 * @param Material material
+	 */
 	QuadComponent.prototype.setMaterial = function(material) {
 		this.material = material;
 		this.meshRendererComponent.materials = [material];
+		// REVIEW: Don't set this stuff here, set it in the data model
+		
+		//material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
+		// material.renderQueue = 2000;
+		//material.cullState.enabled = false;
+		//material.dualTransparency = true;					// Visible on both sides
+		//material.uniforms.discardThreshold = 0.1;
+	};
+
+	/**
+	 * Re-build the meshData for the meshDataComponent.
+	 */
+	QuadComponent.prototype.rebuildMeshData = function(){
+		var material = this.material;
+
+		// Resize so it keeps aspect ratio
+		var texture = material.getTexture('DIFFUSE_MAP');
+		if(!texture){
+			return;
+		}
+
+		var image = texture.image;
+		if(!image){
+			return;
+		}
+
+		if(this.preserveAspectRatio && image){
+			var height = image.svgHeight || image.height;
+			var width = image.svgWidth || image.width;
+			var ratio = width / height;
+			if(ratio > 1){
+				this.width = 1;
+				this.height = 1 / ratio;
+			} else if(ratio < 1){
+				this.height = 1;
+				this.width = ratio;
+			}
+		}
+
+		var md = this.meshData;
+		md.xExtent = this.width * 0.5;
+		md.yExtent = this.height * 0.5;
+		md.tileX = this.tileX;
+		md.tileY = this.tileY;
+		this.meshData.rebuild();
 	};
 
 	return QuadComponent;
 });
+

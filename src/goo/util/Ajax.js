@@ -3,6 +3,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
+	'goo/util/StringUtil',
 	'goo/util/rsvp'
 ],
 /** @lends */
@@ -11,6 +12,7 @@ function(
 	AudioContext,
 	PromiseUtil,
 	_,
+	StringUtil,
 	RSVP
 ) {
 	'use strict';
@@ -43,6 +45,14 @@ function(
 		} else {
 			_.extend(this._cache, bundle);
 		}
+	};
+
+	/**
+	 * Clears the ajax cache
+	 * Is called by {@link DynamicLoader.clear}
+	 */
+	Ajax.prototype.clear = function() {
+		this._cache = {};
 	};
 
 	/*
@@ -82,6 +92,7 @@ function(
 	};
 
 	Ajax.ARRAY_BUFFER = 'arraybuffer';
+	Ajax.crossOrigin = false;
 
 	/**
 	 * Loads data at specified path which is returned in a Promise object.
@@ -94,7 +105,7 @@ function(
 	 */
 	Ajax.prototype.load = function(path, reload) {
 		var that = this;
-		var type = path.slice(path.lastIndexOf('.')+1).toLowerCase();
+		var type = StringUtil.parseURL(path).path.split('.').pop().toLowerCase();
 		function typeInGroup(type, group) {
 			return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
 		}
@@ -157,7 +168,7 @@ function(
 	};
 
 	/**
-	 * Loads image data at specified path which is returned in a Promise object. 
+	 * Loads image data at specified path which is returned in a Promise object.
 	 *
 	 * @example
 	 * loader.loadImage('resources/image.png').then(function(image) {
@@ -169,8 +180,8 @@ function(
 	Ajax.prototype._loadImage = function (url) {
 		window.URL = window.URL || window.webkitURL;
 		var image = new Image();
-		if (this.crossOrigin) {
-			image.crossOrigin = 'anonymous'
+		if (Ajax.crossOrigin) {
+			image.crossOrigin = 'anonymous';
 		}
 
 		var promise = new RSVP.Promise();
@@ -193,7 +204,7 @@ function(
 
 	Ajax.prototype._loadVideo = function (url) {
 		var video = document.createElement('video');
-		if (this.crossOrigin) {
+		if (Ajax.crossOrigin) {
 			video.crossOrigin = 'anonymous';
 		}
 		var promise = new RSVP.Promise();

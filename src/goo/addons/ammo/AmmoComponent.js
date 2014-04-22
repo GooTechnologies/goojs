@@ -7,7 +7,6 @@ define([
 	'goo/shapes/Quad',
 	'goo/shapes/Sphere',
 	'goo/renderer/Material',
-	'goo/shapes/ShapeCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
@@ -23,7 +22,6 @@ function(
 	Quad,
 	Sphere,
 	Material,
-	ShapeCreator,
 	ShaderLib,
 	BoundingBox,
 	BoundingSphere,
@@ -102,7 +100,7 @@ function(
 						shape = new Ammo.btSphereShape(bound.radius * scale[0]);
 					}
 				} else {
-					shape = calculateTriangleMeshShape(entity, scale.data); // this can only be used for static meshes, i.e. mass == 0.
+					shape = calculateTriangleMeshShape(entity, scale); // this can only be used for static meshes, i.e. mass == 0.
 				}
 			}
 		} else {
@@ -179,14 +177,14 @@ function(
 		// entity.meshDataComponent.computeBoundFromPoints();
 		var bound = EntityUtils.getTotalBoundingBox(entity);
 		var bv;
-		if (bound.xExtent) {
-			bv = EntityUtils.createTypicalEntity(entity._world, ShapeCreator.createBox(bound.xExtent * 2, bound.yExtent * 2, bound.zExtent * 2));
-		} else if (bound.radius) {
-			bv = EntityUtils.createTypicalEntity(entity._world, ShapeCreator.createSphere(12, 12, bound.radius));
-		}
-		var material = Material.createMaterial(ShaderLib.simpleLit);
+
+		var material = new Material(ShaderLib.simpleLit);
 		material.wireframe = true;
-		bv.meshRendererComponent.materials.push(material);
+		if (bound.xExtent) {
+			bv = entity._world.createEntity(new Box(bound.xExtent * 2, bound.yExtent * 2, bound.zExtent * 2), material);
+		} else if (bound.radius) {
+			bv = entity._world.createEntity(new Sphere(12, 12, bound.radius), material);
+		}
 
 		bv.transformComponent.setTranslation(bound.center);
 		//entity.transformComponent.attachChild( bv.transformComponent );

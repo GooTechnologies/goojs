@@ -13,7 +13,11 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/entities/EntitySelection',
 	'lib/purl',
-	'lib/RNG'
+	'lib/RNG',
+	'goo/shapes/Quad',
+	'goo/renderer/Shader',
+	'goo/entities/components/MeshDataComponent',
+	'goo/entities/components/MeshRendererComponent'
 ], function (
 	GooRunner,
 	World,
@@ -29,7 +33,11 @@ define([
 	PointLight,
 	EntitySelection,
 	purl,
-	RNG
+	RNG,
+	Quad,
+	Shader,
+	MeshDataComponent,
+	MeshRendererComponent
 	) {
 	'use strict';
 
@@ -323,6 +331,62 @@ define([
 				V.goo.stopGameLoop();
 			});
 		});
+	};
+
+
+	V.addDebugQuad = function() {
+		var world = V.goo.world;
+		var entity = world.createEntity('Quad');
+		entity.transformComponent.transform.translation.set(0, 0, 0);
+
+		var quad = new Quad(2, 2);
+		var meshDataComponent = new MeshDataComponent(quad);
+		entity.setComponent(meshDataComponent);
+
+		var fsShader = {
+			attributes: {
+				vertexPosition: 'POSITION'
+			},
+			uniforms: {
+				diffuseMap: 'DIFFUSE_MAP'
+			},
+			vshader: [ //
+				'attribute vec3 vertexPosition;', //
+
+				'const vec2 madd = vec2(0.5,0.5);',
+				'varying vec2 textureCoord;',
+
+				'void main(void) {', //
+				'	textureCoord = vertexPosition.xy * madd + madd;', // scale vertex attribute to [0-1] range
+				'	gl_Position = vec4(vertexPosition.xy * vec2(0.3, 0.3) - vec2(0.5, 0.5), 0.0, 1.0);',
+					'}' //
+			].join('\n'),
+			fshader: [ //
+				'precision mediump float;', //
+
+				'uniform sampler2D diffuseMap;', //
+
+				'varying vec2 textureCoord;',
+
+				'void main(void)', //
+				'{', //
+				'	gl_FragColor = texture2D(diffuseMap,textureCoord);', //
+				'}' //
+			].join('\n')
+		};
+
+		var meshRendererComponent = new MeshRendererComponent();
+		meshRendererComponent.cullMode = 'Never';
+		var material = new Material(fsShader, 'fsshader');
+		meshRendererComponent.materials.push(material);
+		entity.setComponent(meshRendererComponent);
+
+		V.goo.callbacks.push(function (/*tpf*/) {
+			if (V.goo.renderer.hardwarePicking && V.goo.renderer.hardwarePicking.pickingTarget) {
+				material.setTexture(Shader.DIFFUSE_MAP, V.goo.renderer.hardwarePicking.pickingTarget);
+			}
+		});
+		entity.addToWorld();
 	};
 
 	return V;

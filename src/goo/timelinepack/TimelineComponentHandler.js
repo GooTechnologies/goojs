@@ -1,7 +1,8 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/timelinepack/TimelineComponent',
-	'goo/timelinepack/Channel',
+	'goo/timelinepack/ValueChannel',
+	'goo/timelinepack/EventChannel',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil',
 	'goo/entities/SystemBus'
@@ -10,13 +11,15 @@ define([
 	function(
 	ComponentHandler,
 	TimelineComponent,
-	Channel,
+	ValueChannel,
+	EventChannel,
 	PromiseUtil,
 	ArrayUtil,
 	SystemBus
 	) {
 	'use strict';
 
+	var TWEEN = window.TWEEN;
 	/**
 	 * @class
 	 * @private
@@ -37,13 +40,15 @@ define([
 	};
 
 	TimelineComponentHandler.tweenMap = {
-		'translationX': Channel.getTranslationXTweener,
-		'translationY': Channel.getTranslationYTweener,
-		'translationZ': Channel.getTranslationZTweener,
-		'scaleX': Channel.getScaleXTweener,
-		'scaleY': Channel.getScaleYTweener,
-		'scaleZ': Channel.getScaleZTweener,
-		'event': function(){},
+		'translationX': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 0),
+		'translationY': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 1),
+		'translationZ': ValueChannel.getSimpleTransformTweener.bind(null, 'translation', 2),
+		'scaleX': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 0),
+		'scaleY': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 1),
+		'scaleZ': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 2),
+		'rotationX': ValueChannel.getRotationTweener.bind(null, 0),
+		'rotationY': ValueChannel.getRotationTweener.bind(null, 1),
+		'rotationZ': ValueChannel.getRotationTweener.bind(null, 2)
 	};
 
 	//! AT: requires TWEEN
@@ -54,14 +59,12 @@ define([
 		var separator = easingString.indexOf('.');
 		var easingType = easingString.substr(0, separator);
 		var easingDirection = easingString.substr(separator + 1);
-		// REVIEW Bake tween into engine and require it
 		return TWEEN.Easing[easingType][easingDirection];
 	}
 
-	function updateKeyframe(keyframeConfig, keyframeId, channel) {
+	function updateValueChannelKeyframe(keyframeConfig, keyframeId, channel) {
 		var needsResorting = false;
 
-		// REVIEW feels like this could be slow
 		var keyframe = ArrayUtil.find(channel.keyframes, function (keyframe) {
 			return keyframe.id === keyframeId;
 		});
@@ -70,10 +73,12 @@ define([
 
 		// create a new keyframe if it does not exist already or update it if it exists
 		if (!keyframe) {
-			channel.addKeyframe(keyframeId,
+			channel.addKeyframe(
+				keyframeId,
 				keyframeConfig.time,
-				keyframeConfig.value, 
-				easingFunction);
+				keyframeConfig.value,
+				easingFunction
+			);
 		} else {
 			// the time of one keyframe changed so we're not certain anymore that they're sorted
 			if (keyframe.time !== +keyframeConfig.time) {
@@ -89,21 +94,16 @@ define([
 		};
 	}
 
-	function updateCallbackEntry(keyframeConfig, keyframeId, channel) {
+	function updateEventChannelKeyFrame(keyframeConfig, keyframeId, channel, channelConfig) {
 		var needsResorting = false;
 
-		var callbackEntry = ArrayUtil.find(channel.callbackAgenda, function (callbackEntry) {
+		var callbackEntry = ArrayUtil.find(channel.keyframes, function (callbackEntry) {
 			return callbackEntry.id === keyframeId;
 		});
 
 		// create the event emitter callback, we're gonna use it anyway
 		var eventEmitter = function () {
-			// REVIEW Will event channels ever need more than one event?
-			// I think one channel should emit one event and channel.propertyKey would be eventName
-			for (var listId in keyframeConfig.events) {
-				var eventConfig = keyframeConfig.events[listId];
-				SystemBus.emit(eventConfig.name, eventConfig.data);
-			}
+			SystemBus.emit(channelConfig.eventName, keyframeConfig.value);
 		};
 
 		// create a new callback entry in the callback agenda if it does not exist already or update it if it exists
@@ -123,7 +123,7 @@ define([
 		};
 	}
 
-	function updateChannel(channelConfig, channelId, component) {
+	function updateChannel(channelConfig, channelId, component, entityResolver, rotationMap) {
 		// search for existing one
 		var channel = ArrayUtil.find(component.channels, function (channel) {
 			return channel.id === channelId;
@@ -131,17 +131,30 @@ define([
 
 		// and create one if needed
 		if (!channel) {
-			// REVIEW should be called with (id, options) not (id, callback) according to Channel
-			var updateCallback = channelConfig.propertyKey? TimelineComponentHandler.tweenMap[channelConfig.propertyKey]:function(){};
+			var key = channelConfig.propertyKey;
+			if (key) {
+				var entityId = channelConfig.entityId;
+				if (entityId && !rotationMap[entityId]) {
+					rotationMap[entityId] = [0, 0, 0];
+				}
+				var updateCallback =
+					TimelineComponentHandler.tweenMap[key](entityId, entityResolver, rotationMap[entityId]);
 
-			channel = new Channel(channelId, {
-				callbackUpdate: updateCallback,
-			});
-			// REVIEW Channel needs to be connected to child entity somewhere
+				channel = new ValueChannel(channelId, {
+					callbackUpdate: updateCallback
+				});
+			} else {
+				channel = new EventChannel(channelId);
+			}
 			component.channels.push(channel);
+		} else if (channelConfig.entityId && channel.callbackUpdate && channel.callbackUpdate.rotation) {
+			var rotation = rotationMap[channelConfig.entityId] = channel.callbackUpdate.rotation;
+			rotation[0] = 0;
+			rotation[1] = 0;
+			rotation[2] = 0;
 		}
 
-		// remove unmentioned keyframes
+		// remove existing keyframes in the channel that are not mentioned in the config anymore
 		// filter preserves the order, otherwise the channel would fail to work
 		// the keyframes need always be sorted by their time property
 		channel.keyframes = channel.keyframes.filter(function (keyframe) {
@@ -150,13 +163,18 @@ define([
 
 		var needsResorting = false;
 
-		for (var keyframeId in channelConfig.keyframes) {
-			var keyframeConfig = channelConfig.keyframes[keyframeId];
-			// REVIEW You always add both value keyframe and callback keyframe?
-			var tmp1 = updateKeyframe(keyframeConfig, keyframeId, channel);
-			var tmp2 = updateCallbackEntry(keyframeConfig, keyframeId, channel);
-			// REVIEW How about always resort and keep Channel.addKeyFrame unsorted?
-			needsResorting = needsResorting || tmp1.needsResorting || tmp2.needsResorting;
+		if (channelConfig.propertyKey) {
+			for (var keyframeId in channelConfig.keyframes) {
+				var keyframeConfig = channelConfig.keyframes[keyframeId];
+				var updateResult = updateValueChannelKeyframe(keyframeConfig, keyframeId, channel, channelConfig);
+				needsResorting = needsResorting || updateResult.needsResorting;
+			}
+		} else {
+			for (var keyframeId in channelConfig.keyframes) {
+				var keyframeConfig = channelConfig.keyframes[keyframeId];
+				var updateResult = updateEventChannelKeyFrame(keyframeConfig, keyframeId, channel, channelConfig);
+				needsResorting = needsResorting || updateResult.needsResorting;
+			}
 		}
 
 		// !AT: if time was changed for any keyframe then the whole channel might not work as expected
@@ -167,18 +185,27 @@ define([
 	}
 
 	TimelineComponentHandler.prototype.update = function(entity, config, options) {
+		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
-			// remove unmentioned channels
+			if (!isNaN(config.duration)) {
+				component.duration = +config.duration;
+			}
+			component.loop = (config.loop.enabled === true);
+
+			// remove existing channels in the component that are not mentioned in the config anymore
 			component.channels = component.channels.filter(function (channel) {
 				return !!config.channels[channel.id];
 			});
 
+			var entityResolver = function (entityId) {
+				return that.world.entityManager.getEntityById(entityId);
+			};
+			var rotationMap = {};
 			for (var channelId in config.channels) {
 				var channelConfig = config.channels[channelId];
-				// REVIEW channelConfig should contain channelId
-				updateChannel(channelConfig, channelId, component);
+				updateChannel(channelConfig, channelId, component, entityResolver, rotationMap);
 			}
 
 			return component;

@@ -134,6 +134,8 @@ function(
 	Camera.NEAR_PLANE = 5;
 	Camera.FRUSTUM_PLANES = 6;
 
+	//! schteppe: Why not capital letters for the following?
+
 	/**
 	 * Projection mode for perspective frustum
 	 */
@@ -631,12 +633,24 @@ function(
 		if (!store) {
 			store = new Vector3();
 		}
-		zDepth = (this.far / (this.far - this.near)) + ((this.far * this.near / (this.near - this.far)) / zDepth);
+
+		if(this.projectionMode === Camera.Parallel){
+			zDepth = ((zDepth - this.near) / (this.far - this.near));
+		} else {
+			// http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+			zDepth = ( this.far / (this.far - this.near)) + ((this.far * this.near / (this.near - this.far)) / zDepth);
+		}
+
 		this.checkInverseModelViewProjection();
 		var position = new Vector4();
-		position.set((screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1, ((screenHeight - screenY) / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
+		var x = (screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1;
+		var y = ((screenHeight - screenY) / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1;
+		var z = zDepth * 2 - 1;
+		var w = 1;
+		position.set(x, y, z, w);
 		this.modelViewProjectionInverse.applyPost(position);
 		position.mul(1.0 / position.w);
+
 		store.x = position.x;
 		store.y = position.y;
 		store.z = position.z;

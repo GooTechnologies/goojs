@@ -10,6 +10,7 @@ function (
 
 	/**
 	 * @class Processes all entities with a FSM component
+	 * @private
 	 */
 	function StateMachineSystem(engine) {
 		System.call(this, 'StateMachineSystem', ['StateMachineComponent']);
@@ -20,7 +21,8 @@ function (
 		this.entered = true;
 		this.paused = false;
 
-		/** Current time, in seconds.
+		/**
+		 * Current time, in seconds.
 		 * @type {Number}
 		 */
 		this.time = 0;

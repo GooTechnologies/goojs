@@ -13,7 +13,7 @@ require([
 	'goo/addons/ammo/AmmoComponent',
 	'goo/renderer/light/PointLight',
 	'VehicleHelper',
-	'../../../lib/V'
+	'lib/V'
 ], function (
 	Material,
 	Camera,

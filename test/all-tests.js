@@ -190,7 +190,6 @@ define([
 	'test/shapes/Grid-test',
 	'test/shapes/ProjectedGrid-test',
 	'test/shapes/Quad-test',
-	'test/shapes/ShapeCreator-test',
 	'test/shapes/SimpleBox-test',
 	'test/shapes/Sphere-test',
 	'test/shapes/TerrainSurface-test',
@@ -201,6 +200,7 @@ define([
 	'test/util/Ajax-test',
 	'test/util/CanvasUtils-test',
 	'test/util/ColorUtil-test',
+	'test/util/StringUtil-test',
 	'test/renderer/Shader-test',
 	'test/renderer/MeshData-test',
 	'test/renderer/Camera-test',
@@ -241,6 +241,6 @@ define([
 	//'test/loaders/handlers/SkyboxHandler-test',
 	//'test/loaders/handlers/EnvironmentHandler-test',
 	'test/entities/components/ScriptComponent-test',
-	'test/timelinepack/Channel-test',
+	'test/timelinepack/ValueChannel-test',
 	'test/timelinepack/TimelineComponentHandler-test'
 ], function() {});

@@ -1,7 +1,8 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
+	'goo/shapes/Sphere',
 	'goo/renderer/MeshData',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
@@ -9,7 +10,8 @@ require([
 ], function (
 	Material,
 	ShaderLib,
-	ShapeCreator,
+	Box,
+	Sphere,
 	MeshData,
 	BoundingBox,
 	Vector3,
@@ -20,7 +22,7 @@ require([
 	function boundingBoxDemo() {
 		var goo = V.initGoo();
 
-		var shapeMeshData = ShapeCreator.createSphere();
+		var shapeMeshData = new Sphere();
 
 		// shape and boundingBox material
 		var material1 = new Material(ShaderLib.simpleColored, '');
@@ -42,7 +44,7 @@ require([
 		var yCenter = boundingBox.center.data[1];
 		var zCenter = boundingBox.center.data[2];
 
-		var boxMeshData = ShapeCreator.createBox(xSize, ySize, zSize);
+		var boxMeshData = new Box(xSize, ySize, zSize);
 		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
 		// camera

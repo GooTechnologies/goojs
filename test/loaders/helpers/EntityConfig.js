@@ -139,6 +139,9 @@ define([
 								}
 							}
 						}
+					},
+					loop: {
+						enabled: false
 					}
 				};
 			},

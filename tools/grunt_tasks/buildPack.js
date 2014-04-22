@@ -116,13 +116,14 @@ module.exports = function (grunt) {
 		return config;
 	}
 
-	function wrap(fileName, head, tail) {
+	function wrap(fileName, head, tail, callback) {
 		fs.readFile(fileName, function (err, data) {
 			if (err) { throw err; }
 			var wrapped = head + data + tail;
 			fs.writeFile(fileName, wrapped, function (err) {
 				if (err) { throw err; }
 				console.log('Done wrapping'.green);
+				callback()
 			});
 		});
 	}
@@ -193,9 +194,7 @@ module.exports = function (grunt) {
 				console.log('Ignore List'.grey);
 				console.log(modulesAndDependencies.ignoreList);
 
-				wrap(outBaseDir + '/' + packName + '.js', getHeadWrapping(packName, version), getTailWrapping(packName));
-
-				done();
+				wrap(outBaseDir + '/' + packName + '.js', getHeadWrapping(packName, version), getTailWrapping(packName), done);
 			}, function(err) {
 				// optimization err callback
 				// :(

@@ -128,7 +128,7 @@ function (
 	ScriptComponent.prototype.cleanup = function () {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			if (script.cleanup) {
+			if (script.context && script.cleanup) {
 				try {
 					script.cleanup(script.parameters, script.context, this._gooClasses);
 				} catch (e) {

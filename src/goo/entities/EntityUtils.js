@@ -136,7 +136,7 @@ define([
 
 		/**
 		 * Traverse entity hierarchy with callback
-		 * @deprecated Use entity.traverse instead
+		 * @deprecated Use entity.traverse instead; Deprecated since 0.8.0 - scheduled to be removed in 0.10.0
 		 * @param {Entity} entity The entity to begin traversing from
 		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy.
 		 * The traversing can be stopped from propagating if the callback returns false.
@@ -180,7 +180,7 @@ define([
 		EntityUtils.show = function(entity) {
 			entity.hidden = false;
 
-			//first search if it has hidden parents to determine if itself should be visible
+			// first search if it has hidden parents to determine if itself should be visible
 			var pointer = entity;
 			while (pointer.transformComponent.parent) {
 				pointer = pointer.transformComponent.parent.entity;
@@ -189,17 +189,26 @@ define([
 					if (entity.meshRendererComponent) {
 						entity.meshRendererComponent.hidden = true;
 					}
+					if (entity.lightComponent) {
+						entity.lightComponent.hidden = true;
+					}
+					if (entity.htmlComponent) {
+						entity.htmlComponent.hidden = true;
+					}
 					return;
 				}
 			}
 
-			EntityUtils.traverse(entity, function(entity) {
+			entity.traverse(function (entity) {
 				if (entity.hidden) { return false; }
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.hidden = entity.hidden;
 				}
 				if (entity.lightComponent) {
 					entity.lightComponent.hidden = entity.hidden;
+				}
+				if (entity.htmlComponent) {
+					entity.htmlComponent.hidden = entity.hidden;
 				}
 			});
 		};
@@ -208,23 +217,26 @@ define([
 		 * Hides the entity and its descendants
 		 * @param {Entity} entity The entity to hide
 		 */
-		EntityUtils.hide = function(entity) {
+		EntityUtils.hide = function (entity) {
 			entity.hidden = true;
 
 			// hide everything underneath this
-			EntityUtils.traverse(entity, function(entity) {
+			entity.traverse(function (entity) {
 				if (entity.meshRendererComponent) {
 					entity.meshRendererComponent.hidden = true;
 				}
 				if (entity.lightComponent) {
 					entity.lightComponent.hidden = true;
 				}
+				if (entity.htmlComponent) {
+					entity.htmlComponent.hidden = true;
+				}
 			});
 		};
 
 		/**
 		 * Creates an entity with an optional MeshData, MeshRenderer, Camera, Script and Light component, placed optionally at a location. Parameters except for the first can be given in any order. First parameter must always be a World.
-		 * @deprecated Use world.createEntity instead
+		 * @deprecated Use world.createEntity instead; Deprecated since 0.7.0 - scheduled to be removed in 0.9.0
 		 * @param {World} world
 		 * @param {MeshData} [meshData]
 		 * @param {Material} [material]
@@ -291,7 +303,7 @@ define([
 
 		/**
 		 * Returns an array of all this entity's children
-		 * @deprecated Use entity.children.toArray() instead
+		 * @deprecated Use entity.children.get() instead; Deprecated since 0.8.0 - scheduled to be removed in 0.10.0
 		 * @param entity
 		 * @returns {Entity[]}
 		 */
@@ -308,7 +320,7 @@ define([
 		EntityUtils.getTotalBoundingBox = function (entity) {
 			var mergedWorldBound = new BoundingBox();
 			var first = true;
-			EntityUtils.traverse(entity, function (entity) {
+			entity.traverse(function (entity) {
 				if (entity.meshRendererComponent) {
 					if (first) {
 						var boundingVolume = entity.meshRendererComponent.worldBound;

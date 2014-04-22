@@ -13,8 +13,8 @@ define([
 	'goo/util/gizmos/Gizmo',
 	'goo/util/gizmos/TranslationGizmo',
 	'goo/util/gizmos/RotationGizmo',
-	'goo/util/gizmos/ScaleGizmo'
-],
+	'goo/util/gizmos/ScaleGizmo',
+	'goo/renderer/Camera'],
 /** @lends */
 function (
 	System,
@@ -31,7 +31,8 @@ function (
 	Gizmo,
 	TranslationGizmo,
 	RotationGizmo,
-	ScaleGizmo
+	ScaleGizmo,
+	Camera
 ) {
 	'use strict';
 
@@ -67,6 +68,7 @@ function (
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
+		this._devicePixelRatio = 1;
 
 		this.mouseMove = function(evt) {
 			if(!this.activeGizmo) {
@@ -74,10 +76,24 @@ function (
 			}
 			var x = (evt.offsetX !== undefined) ? evt.offsetX : evt.layerX;
 			var y = (evt.offsetY !== undefined) ? evt.offsetY : evt.layerY;
-			this.activeGizmo.update([
-				x / this.viewportWidth,
-				y / this.viewportHeight
-			]);
+
+			var mousePos = [
+				x / (this.viewportWidth / this._devicePixelRatio),
+				y / (this.viewportHeight / this._devicePixelRatio)
+			];
+
+			/*
+			var camera = this.camera;
+			if(camera && camera.projectionMode === Camera.Parallel){
+				mousePos[0] = x / (this.viewportWidth  / this._devicePixelRatio) / (camera._frustumRight - camera._frustumLeft);
+				mousePos[1] = y / (this.viewportHeight / this._devicePixelRatio) / (camera._frustumTop  - camera._frustumBottom);
+			}
+
+			console.log(mousePos[0],mousePos[1])
+			*/
+
+			this.activeGizmo.update(mousePos);
+
 		}.bind(this);
 
 
@@ -97,8 +113,8 @@ function (
 			this.activeGizmo.activate({
 				id: id,
 				data: handle,
-				x: x / this.viewportWidth,
-				y: y / this.viewportHeight
+				x: x / (this.viewportWidth / this._devicePixelRatio),
+				y: y / (this.viewportHeight / this._devicePixelRatio)
 			});
 			this.domElement.addEventListener('mousemove', this.mouseMove);
 		}
@@ -239,6 +255,7 @@ function (
 
 	GizmoRenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
+		this._devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
 
 		if(!this.domElement) {
 			this.domElement = renderer.domElement;

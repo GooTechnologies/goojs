@@ -22,6 +22,8 @@ define([
 				component.setTime(0);
 			}
 			this.time = 0;
+			//! AT: but no TWEENS have been harmed in any way
+			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
 			this.passive = true;
 			return;
 		}
@@ -60,7 +62,6 @@ define([
 		this.resetRequest = true;
 		this.paused = false;
 	};
-
 
 	return TimelineSystem;
 });

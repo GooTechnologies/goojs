@@ -229,8 +229,15 @@ function(
 				}
 				that._specialPrepare(script, config);
 				script.name = config.name;
-				if (script.externals.errors) {
+				if (script.externals.errors || script.externals.dependencyErrors) {
+					SystemBus.emit('scriptError', {
+						id: ref,
+						errors: script.externals.errors,
+						dependencyErrors: script.externals.dependencyErrors});
 					return script;
+				}
+				else {
+					SystemBus.emit('scriptError', {id: ref, errors: null});
 				}
 				_.extend(script.parameters, config.options);
 				return script;
@@ -414,14 +421,14 @@ function(
 				message += ' - on line ' + error.line;
 			}
 			script.externals.dependencyErrors = script.externals.dependencyErrors || {};
-			script.externals.dependencyErrors[error.file] = message;
+			script.externals.dependencyErrors[error.file] = error;
 		} else {
 			script.externals.errors = script.externals.errors || [];
 			var message = error.message;
 			if (error.line) {
 				message += ' - on line ' + error.line;
 			}
-			script.externals.errors.push(message);
+			script.externals.errors.push(error);
 
 			script.setup = null;
 			script.update = null;

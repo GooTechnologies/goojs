@@ -6,10 +6,13 @@ define([
 	'use strict';
 
 	function TimelineComponent() {
-		//! AT: pass this as a parameter to the base Component class
 		this.type = 'TimelineComponent';
 
 		this.channels = [];
+
+		this.time = 0;
+		this.duration = 0;
+		this.loop = false;
 	}
 
 	TimelineComponent.prototype = Object.create(Component.prototype);
@@ -28,23 +31,41 @@ define([
 	 * @param {number} tpf
 	 */
 	TimelineComponent.prototype.update = function (tpf) {
+		var time = this.time + tpf;
+		if (time > this.duration) {
+			if (this.loop) {
+				time = time % this.duration;
+			} else {
+				time = this.duration;
+			}
+		} else if (time < 0) {
+			this.time = 0;
+		}
+		if (time === this.time) { return; }
+		this.time = time;
+
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
-			channel.update(tpf);
+			channel.update(this.time);
 		}
 	};
 
 	/**
 	 * Sets the time on all channels
 	 * @param {number} time
+	 * @returns {object} The new channel values
 	 */
 	TimelineComponent.prototype.setTime = function (time) {
+		var retVal = {};
+		this.time = time;
+
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
-			channel.setTime(time);
+			retVal[channel.id] = channel.update(this.time);
 		}
+		return retVal;
 	};
 
 	return TimelineComponent;

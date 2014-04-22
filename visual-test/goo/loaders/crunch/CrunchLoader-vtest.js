@@ -3,7 +3,7 @@ require([
 	'goo/entities/GooRunner',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/ScriptComponent',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/entities/components/LightComponent',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/Camera',
@@ -16,7 +16,7 @@ require([
 	GooRunner,
 	TextureCreator,
 	ScriptComponent,
-	ShapeCreator,
+	Box,
 	LightComponent,
 	PointLight,
 	Camera,
@@ -30,7 +30,7 @@ require([
 	var resourcePath = '../../../resources';
 
 	function createBox(size, x, y, textureUrl, goo) {
-		var meshData = ShapeCreator.createBox(size, size, size, 1, 1);
+		var meshData = new Box(size, size, size, 1, 1);
 
 		var texture = new TextureCreator({
 			verticalFlip : true

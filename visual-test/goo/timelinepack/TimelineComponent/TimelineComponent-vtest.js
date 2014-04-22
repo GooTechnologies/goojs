@@ -8,7 +8,8 @@ require([
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
 	'goo/math/Matrix3x3',
-	'goo/timelinepack/Channel',
+	'goo/timelinepack/ValueChannel',
+	'goo/timelinepack/EventChannel',
 	'lib/V'
 ], function (
 	GooRunner,
@@ -20,15 +21,16 @@ require([
 	Sphere,
 	Torus,
 	Matrix3x3,
-	Channel,
+	ValueChannel,
+	EventChannel,
 	V
 ) {
 	'use strict';
 
 	var trace = [];
 
-	function getChannel() {
-		var entityTweener = Channel.getScaleXTweener(box);
+	function getValueChannel() {
+		var entityTweener = ValueChannel.getScaleXTweener(box);
 
 		function callback(time, value, index) {
 			drawClear();
@@ -40,7 +42,6 @@ require([
 
 			drawPointer(time, value, index);
 
-			//console.log(time, value);
 			box.setScale(0.6, value / 100, 0.6).setRotation(value / 100, value / 100, value / 100);
 
 			sphere.setScale(value / 100, value / 100, value / 100);
@@ -49,18 +50,31 @@ require([
 			//entityTweener(time, value);
 		}
 
+		var channel = new ValueChannel('id', {
+			callbackUpdate: callback,
+			callbackEnd: function () { trace = []; }
+		});
+		channel.addKeyframe('', 50, 10, TWEEN.Easing.Quadratic.InOut);
+		channel.addKeyframe('', 100, 160, TWEEN.Easing.Sinusoidal.InOut);
+		channel.addKeyframe('', 170, 80, TWEEN.Easing.Exponential.InOut);
+		channel.addKeyframe('', 300, 400, TWEEN.Easing.Elastic.InOut);
+		channel.addKeyframe('', 400, 200, TWEEN.Easing.Elastic.InOut);
+		return channel;
+	}
+
+	function getEventChannel() {
 		function getMessenger(message) {
 			return function () {
 				console.log(message);
 			}
 		}
 
-		var channel = new Channel('id', { callbackUpdate: callback, callbackEnd: function () { trace = []; } });
-		channel.addKeyframe('', 50, 10, TWEEN.Easing.Quadratic.InOut, getMessenger('start1'));
-		channel.addKeyframe('', 100, 160, TWEEN.Easing.Sinusoidal.InOut, getMessenger('start2'));
-		channel.addKeyframe('', 170, 80, TWEEN.Easing.Exponential.InOut, getMessenger('start3'));
-		channel.addKeyframe('', 300, 400, TWEEN.Easing.Elastic.InOut, getMessenger('start4'));
-		channel.addKeyframe('', 400, 200, TWEEN.Easing.Elastic.InOut, getMessenger('start5'));
+		var channel = new EventChannel('id');
+		channel.addCallback('', 50, getMessenger('start1'));
+		channel.addCallback('', 100, getMessenger('start2'));
+		channel.addCallback('', 170, getMessenger('start3'));
+		channel.addCallback('', 300, getMessenger('start4'));
+		channel.addCallback('', 400, getMessenger('start5'));
 		return channel;
 	}
 
@@ -76,7 +90,7 @@ require([
 //		con2d.beginPath();
 //		con2d.moveTo(channel.entries[0].start, channel.entries[0].value);
 
-		channel.keyframes.forEach(function (entry) {
+		valueChannel.keyframes.forEach(function (entry) {
 //			con2d.lineTo(entry.start + entry.length, entry.valueEnd);
 //			con2d.moveTo(entry.start, entry.valueStart);
 
@@ -130,7 +144,8 @@ require([
 		var buttonReset = document.createElement('button');
 		buttonReset.innerHTML = 'reset';
 		buttonReset.addEventListener('click', function () {
-			channel.setTime(0);
+			valueChannel.setTime(0);
+			eventChannel.setTime(0);
 			trace = [];
 			drawClear();
 			drawTrace();
@@ -174,9 +189,16 @@ require([
 
 	setupButtons();
 
-	var channel = getChannel();
-	drawChannel(channel);
+	var valueChannel = getValueChannel();
+	drawChannel(valueChannel);
+
+	var eventChannel = getEventChannel();
 
 	// gotta trigger the update somehow
-	goo.callbacks.push(function (tpf) { if (!paused) { channel.update(tpf * 100); } });
+	goo.callbacks.push(function (tpf) {
+		if (!paused) {
+			valueChannel.update(tpf * 100);
+			eventChannel.update(tpf * 100);
+		}
+	});
 });
