@@ -17,8 +17,15 @@ define([
 	function LightComponent(light) {
 		this.type = 'LightComponent';
 
+        /**
+         * Light contained in this component.
+         */
 		this.light = light;
 
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.hidden = false;
 	}
 

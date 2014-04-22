@@ -68,6 +68,7 @@ function() {
 	/**
 	 * Checks if a system is interested in an entity based on its interests list and adds or removed the entity from the system's index
 	 * @param entity {Entity} to check if the system is interested in
+	 * @private
 	 */
 	System.prototype._check = function(entity) {
 		if (this.interests && this.interests.length === 0) {
