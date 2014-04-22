@@ -2,7 +2,7 @@ require('coffee-script')
 fs = require('fs')
 path = require('path')
 child_process = require('child_process')
-convert = require('./converter/convert').convert
+# convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
 wrench = require('wrench')
 rimraf = require('rimraf')

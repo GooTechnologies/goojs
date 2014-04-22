@@ -4,10 +4,11 @@ define(
 	'use strict';
 
 	/**
-	 * @class Base class/module for all components
+	 * @class Base class/module for all components.
+	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 */
 	function Component() {
-		/** If the component should be processed for containing entities
+		/** If the component should be processed for containing entities.
 		 * @type {boolean}
 		 * @default
 		 */
@@ -18,7 +19,7 @@ define(
 	}
 
 	/**
-	 * Injects public methods of this component into the host entity
+	 * Injects public methods of this component into the host entity.
 	 * @param entity
 	 * @private
 	 */
@@ -39,7 +40,7 @@ define(
 	};
 
 	/**
-	 * Removed any methods attached to the host entity that belong to this component's API
+	 * Removed any methods attached to the host entity that belong to this component's API.
 	 * @param entity
 	 * @private
 	 */

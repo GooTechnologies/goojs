@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * HTML Compnent
+	 * HTML Component.
 	 * @class
 	 * @extends Component
 	 */
@@ -14,9 +14,21 @@ define([
 		Component.call(this);
 		this.type = 'HtmlComponent';
 
+		/**
+		* DOM element.
+		*/
 		this.domElement = domElement;
 
+		/**
+		 * @type {boolean}
+		 * @default 
+		 */
 		this.hidden = false;
+
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
 		this.useTransformComponent = true;
 	}
 

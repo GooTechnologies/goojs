@@ -19,7 +19,7 @@ function(
 	TweenMoveAction.external = {
 		name: 'Tween Move',
 		type: 'animation',
-		description: 'Smoothly transitions between two locations',
+		description: 'Transition to the set location.',
 		canTransition: true,
 		parameters: [{
 			name: 'Translation',
@@ -34,7 +34,7 @@ function(
 			description: 'If true add, otherwise set',
 			'default': true
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this movement to complete',

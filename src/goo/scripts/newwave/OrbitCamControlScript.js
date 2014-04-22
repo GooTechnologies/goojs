@@ -1,11 +1,13 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Vector2',
-	'goo/math/MathUtils'
-], function(
+	'goo/math/MathUtils',
+	'goo/renderer/Camera'
+], function (
 	Vector3,
 	Vector2,
-	MathUtils
+	MathUtils,
+	Camera
 ) {
 	'use strict';
 
@@ -36,9 +38,12 @@ define([
 
 		function setup(parameters, environment) {
 			domElement = environment.domElement;
-			dragButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.dragButton) - 1;
+			dragButton = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(parameters.dragButton) - 1;
 			if (dragButton < -1) {
 				dragButton = -1;
+			}
+			if (dragButton === 4) {
+				dragButton = null;
 			}
 			// Making more linear perception
 			environment.smoothness = Math.pow(MathUtils.clamp(parameters.smoothness, 0, 1), 0.3);
@@ -61,7 +66,11 @@ define([
 			worldUpVector = new Vector3(Vector3.UNIT_Y);
 			maxSampleTimeMS = 200;
 
-			environment.orbitDirty = true;
+			if (environment.entity.cameraComponent && environment.entity.cameraComponent.camera.projectionMode === Camera.Parallel) {
+				environment.size = environment.entity.cameraComponent.camera.top;
+			}
+
+			environment.dirty = true;
 
 			mouseState = {
 				buttonDown: false,
@@ -123,7 +132,7 @@ define([
 		// Should be moved to mathUtils?
 		function _radialClamp(value, min, max) {
 			// Rotating coordinates to be mirrored
-			var zero = (min + max)/2 + ((max > min) ? Math.PI : 0);
+			var zero = (min + max) / 2 + ((max > min) ? Math.PI : 0);
 			var _value = MathUtils.moduloPositive(value - zero, MathUtils.TWO_PI);
 			var _min = MathUtils.moduloPositive(min - zero, MathUtils.TWO_PI);
 			var _max = MathUtils.moduloPositive(max - zero, MathUtils.TWO_PI);
@@ -149,7 +158,16 @@ define([
 			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
 			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 			targetSpherical.z = MathUtils.clamp(targetSpherical.z + thetaAccel, minAscent, maxAscent);
-			environment.orbitDirty = true;
+
+			environment.dirty = true;
+		}
+
+		function updateFrustumSize(delta, env) {
+			var camera = env.entity.cameraComponent.camera;
+			env.size = camera.top;
+			env.size /= delta;
+			var size = env.size;
+			camera.setFrustum(null, null, -size, size, size, -size);
 		}
 
 		function applyWheel(e, parameters, environment) {
@@ -160,7 +178,7 @@ define([
 
 		function zoom(amount, parameters, environment) {
 			targetSpherical.x = MathUtils.clamp(targetSpherical.x + amount, parameters.minZoomDistance, parameters.maxZoomDistance);
-			environment.orbitDirty = true;
+			environment.dirty = true;
 		}
 
 		function applyReleaseDrift(parameters) {
@@ -186,8 +204,8 @@ define([
 
 		function setupMouseControls(parameters, environment) {
 			var oldDistance = 0;
-			var listeners = environment.orbitListeners = {
-				mousedown: function(event) {
+			listeners = {
+				mousedown: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var button = event.button;
 						if (button === 0) {
@@ -200,7 +218,7 @@ define([
 						updateButtonState(button, true, parameters, environment);
 					}
 				},
-				mouseup: function(event) {
+				mouseup: function (event) {
 					var button = event.button;
 					if (button === 0) {
 						if (event.altKey) {
@@ -211,29 +229,29 @@ define([
 					}
 					updateButtonState(button, false, parameters, environment);
 				},
-				mousemove: function(event) {
+				mousemove: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						updateDeltas(event.clientX, event.clientY, parameters, environment);
 					}
 				},
-				mouseleave: function(event) {
+				mouseleave: function (event) {
 					environment.orbitListeners.mouseup(event);
 				},
-				mousewheel: function(event) {
+				mousewheel: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						applyWheel(event, parameters, environment);
 					}
 				},
-				touchstart: function(event) {
+				touchstart: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						updateButtonState(dragButton, event.targetTouches.length === 1, parameters, environment);
 					}
 				},
-				touchend: function(/*event*/) {
+				touchend: function (/*event*/) {
 					updateButtonState(dragButton, false, parameters, environment);
 					oldDistance = 0;
 				},
-				touchmove: function(event) {
+				touchmove: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var cx, cy, distance;
 						var touches = event.targetTouches;
@@ -277,7 +295,7 @@ define([
 			domElement.oncontextmenu = function () { return false; };
 		}
 
-		function updateVelocity (time, parameters, environment) {
+		function updateVelocity(time, parameters, environment) {
 			if (velocity.lengthSquared() > 0.000001) {
 				move(velocity.x, velocity.y, parameters, environment);
 				var rate = MathUtils.lerp(environment.inertia, 0, 1 - time / environment.inertia);
@@ -288,6 +306,11 @@ define([
 		}
 
 		function update(parameters, environment, goo) {
+			if (!environment.dirty) {
+				return; //
+			}
+
+
 			var entity = environment.entity;
 			// grab our transformComponent
 			var transformComponent = entity.transformComponent;
@@ -296,18 +319,17 @@ define([
 
 			var delta = MathUtils.lerp(environment.smoothness, 1, environment.world.tpf);
 
-			if (!environment.goingToLookAt.equals(environment.lookAtPoint)) {
+			if (environment.goingToLookAt.distanceSquared(environment.lookAtPoint) < 1e-6) {
+				environment.lookAtPoint.setv(environment.goingToLookAt);
+			} else {
 				environment.lookAtPoint.lerp(environment.goingToLookAt, delta);
-				environment.orbitDirty = true;
+				//environment.orbitDirty = true;
 			}
 
 			if (parameters.releaseVelocity) {
 				updateVelocity(entity._world.tpf, parameters, environment);
 			}
 
-			if (!environment.orbitDirty) {
-				return; //
-			}
 
 			//var delta = MathUtils.clamp(parameters.interpolationSpeed * environment.world.tpf, 0.0, 1.0);
 
@@ -316,8 +338,13 @@ define([
 			} else {
 				spherical.y = MathUtils.lerp(delta, spherical.y, targetSpherical.y);
 			}
-
+			var deltaX = spherical.x;
 			spherical.x = MathUtils.lerp(delta, spherical.x, targetSpherical.x);
+			deltaX /= spherical.x;
+
+			if (environment.entity.cameraComponent && environment.entity.cameraComponent.camera.projectionMode === Camera.Parallel) {
+				updateFrustumSize(deltaX, environment);
+			}
 			spherical.z = MathUtils.lerp(delta, spherical.z, targetSpherical.z);
 
 			MathUtils.sphericalToCartesian(spherical.x, spherical.y, spherical.z, cartesian);
@@ -327,10 +354,10 @@ define([
 				transform.lookAt(lookAtPoint, worldUpVector);
 			}
 
-			if (spherical.distanceSquared(targetSpherical) < 0.000001) {
+			if (spherical.distanceSquared(targetSpherical) < 0.000001 && environment.lookAtPoint.equals(environment.goingToLookAt)) {
 				spherical.y = MathUtils.moduloPositive(spherical.y, MathUtils.TWO_PI);
 				targetSpherical.copy(spherical);
-				environment.orbitDirty = false;
+				environment.dirty = false;
 			}
 
 			// set our component updated.
@@ -344,8 +371,8 @@ define([
 		}
 
 		function cleanup(parameters, environment) {
-			for (var event in environment.orbitListeners) {
-				environment.domElement.removeEventListener(event, environment.orbitListeners[event]);
+			for (var event in listeners) {
+				environment.domElement.removeEventListener(event, listeners[event]);
 			}
 		}
 
@@ -367,7 +394,7 @@ define([
 			key: 'dragButton',
 			description: 'Button to enable dragging',
 			'default': 'Any',
-			options: ['Any', 'Left', 'Middle', 'Right'],
+			options: ['Any', 'Left', 'Middle', 'Right', 'None'],
 			type: 'string',
 			control: 'select'
 		}, {

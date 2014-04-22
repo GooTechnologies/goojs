@@ -46,7 +46,7 @@ function (
 			materials : []
 		};
 
-		this.copyMaterial = Material.createMaterial(ShaderLib.copyPure);
+		this.copyMaterial = new Material(ShaderLib.copyPure);
 		this.copyMaterial.uniforms.opacity = strength;
 		this.copyMaterial.blendState.blending = 'AdditiveBlending';
 
@@ -55,11 +55,11 @@ function (
 			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
 			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)
 		};
-		this.convolutionMaterial = Material.createMaterial(this.convolutionShader);
+		this.convolutionMaterial = new Material(this.convolutionShader);
 		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;
 		this.convolutionMaterial.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);
 
-		this.bcMaterial = Material.createMaterial(ShaderLib.brightnesscontrast);
+		this.bcMaterial = new Material(ShaderLib.brightnesscontrast);
 		this.bcMaterial.uniforms.brightness = 0.0;
 		this.bcMaterial.uniforms.contrast = 0.0;
 

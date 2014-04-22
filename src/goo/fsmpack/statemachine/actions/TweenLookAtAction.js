@@ -19,7 +19,7 @@ function(
 	TweenLookAtAction.external = {
 		name: 'Tween Look At',
 		type: 'animation',
-		description: 'Smoothly transitions between two look at points',
+		description: 'Transition the entity\'s rotation to face the set position.',
 		canTransition: true,
 		parameters: [{
 			name: 'Position',
@@ -28,7 +28,7 @@ function(
 			description: 'Look at point',
 			'default': [0, 0, 0]
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this movement to complete',

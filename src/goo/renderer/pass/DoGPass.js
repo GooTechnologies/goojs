@@ -52,7 +52,7 @@ define([
 
 		this.differenceShader = Util.clone(ShaderLib.differenceOfGaussians);
 		this.differenceShader.uniforms.threshold = threshold;
-		this.differenceMaterial = Material.createMaterial(this.differenceShader);
+		this.differenceMaterial = new Material(this.differenceShader);
 
 		this.updateSigma(sigma);
 
@@ -111,8 +111,8 @@ define([
 		this.convolutionShader1.uniforms.cKernel = kernel1;
 		this.convolutionShader2.uniforms.cKernel = kernel2;
 
-		this.convolutionMaterial1 = Material.createMaterial(this.convolutionShader1);
-		this.convolutionMaterial2 = Material.createMaterial(this.convolutionShader2);
+		this.convolutionMaterial1 = new Material(this.convolutionShader1);
+		this.convolutionMaterial2 = new Material(this.convolutionShader2);
 
 	};
 

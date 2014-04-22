@@ -59,18 +59,18 @@ function(
 
 		var brush = new Quad(2 / size, 2 / size);
 
-		var mat = this.drawMaterial1 = Material.createMaterial(brushShader);
+		var mat = this.drawMaterial1 = new Material(brushShader);
 		mat.blendState.blending = 'AdditiveBlending';
 		mat.cullState.cullFace = 'Front';
 
-		var mat2 = this.drawMaterial2 = Material.createMaterial(brushShader2);
+		var mat2 = this.drawMaterial2 = new Material(brushShader2);
 		mat2.cullState.cullFace = 'Front';
 
-		var mat3 = this.drawMaterial3 = Material.createMaterial(brushShader3);
+		var mat3 = this.drawMaterial3 = new Material(brushShader3);
 		mat3.uniforms.size = 1 / size;
 		mat3.cullState.cullFace = 'Front';
 
-		var mat4 = this.drawMaterial4 = Material.createMaterial(brushShader4);
+		var mat4 = this.drawMaterial4 = new Material(brushShader4);
 		mat4.cullState.cullFace = 'Front';
 
 		this.renderable = {
@@ -150,7 +150,7 @@ function(
 		for (var i = 0; i < count; i++) {
 			var size = Math.pow(2, i);
 
-			var material = Material.createMaterial(terrainShaderDefFloat, 'clipmap' + i);
+			var material = new Material(terrainShaderDefFloat, 'clipmap' + i);
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
 			material.cullState.frontFace = 'CW';
@@ -162,7 +162,7 @@ function(
 			clipmapEntity.setScale(size, 1, size);
 			entity.attachChild(clipmapEntity);
 
-			var terrainPickingMaterial = Material.createMaterial(terrainPickingShader, 'terrainPickingMaterial' + i);
+			var terrainPickingMaterial = new Material(terrainPickingShader, 'terrainPickingMaterial' + i);
 			terrainPickingMaterial.cullState.frontFace = 'CW';
 			terrainPickingMaterial.uniforms.resolution = [1, 1 / size, this.size, this.size];
 			terrainPickingMaterial.blendState = {

@@ -28,6 +28,17 @@ function(
 	 * @extends Component
 	 * @param {Object}  [settings]
 	 * @param {number}  [settings.mass=1]
+	 * @example
+	 * world.setSystem(new CannonSystem());
+	 * var entity = world.createEntity();
+	 * var rigidBodyComponent = new CannonRigidBodyComponent({
+	 *   mass : 1
+	 * });
+	 * entity.setComponent(rigidBodyComponent);
+	 * var boxColliderComponent = new CannonBoxColliderComponent({
+	 *   halfExtents : new Vector3(1, 1, 1)
+	 * });
+	 * entity.setComponent(boxColliderComponent);
 	 */
 	function CannonRigidbodyComponent (settings) {
 		settings = settings || {};
@@ -70,18 +81,34 @@ function(
 	CannonRigidbodyComponent.prototype = Object.create(Component.prototype);
 	CannonRigidbodyComponent.constructor = CannonRigidbodyComponent;
 
+	/**
+	 * Set the force on the body
+	 * @param {Vector3} force
+	 */
 	CannonRigidbodyComponent.prototype.setForce = function (force) {
 		this.body.force.set(force.x, force.y, force.z);
 	};
 
+	/**
+	 * Set the velocity on the body
+	 * @param {Vector3} velocity
+	 */
 	CannonRigidbodyComponent.prototype.setVelocity = function (velocity) {
 		this.body.velocity.set(velocity.x, velocity.y, velocity.z);
 	};
 
+	/**
+	 * Set the body position.
+	 * @param {Vector3} position
+	 */
 	CannonRigidbodyComponent.prototype.setPosition = function (pos) {
 		this.body.position.set(pos.x, pos.y, pos.z);
 	};
 
+	/**
+	 * Set the body angular velocity position.
+	 * @param {Vector3} angularVelocity
+	 */
 	CannonRigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
 		this.body.angularVelocity.set(angularVelocity.x, angularVelocity.y, angularVelocity.z);
 	};

@@ -59,9 +59,43 @@ define([
 		 * @default
 		 */
 		this.hidden = false;
+
+		this.api = {
+			setDiffuse: function () {
+				if (!this.materials[0].uniforms.materialDiffuse) {
+					this.materials[0].uniforms.materialDiffuse = [0, 0, 0, 1];
+				}
+				var diffuse = this.materials[0].uniforms.materialDiffuse;
+
+				//! AT: need to search for a pattern matching library; this is just ugly and unmaintainable
+				if (arguments.length >= 3) {
+					diffuse[0] = arguments[0];
+					diffuse[1] = arguments[1];
+					diffuse[2] = arguments[2];
+					diffuse[3] = arguments.length === 3 ? 1 : arguments[3];
+				} else {
+					var arg = arguments[0];
+					if (arg instanceof Array) {
+						diffuse[0] = arg[0];
+						diffuse[1] = arg[1];
+						diffuse[2] = arg[2];
+						diffuse[3] = arg.length === 3 ? 1 : arg[3];
+					} else if (arg.r !== undefined && arg.g !== undefined && typeof arg.b !== undefined) {
+						diffuse[0] = arg.r;
+						diffuse[1] = arg.g;
+						diffuse[2] = arg.b;
+						diffuse[3] = arg.a === undefined ? 1 : arg.a;
+					}
+				}
+			}.bind(this),
+			getDiffuse: function () {
+				return this.materials[0].uniforms.materialDiffuse;
+			}.bind(this)
+		};
 	}
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
+	MeshRendererComponent.prototype.constructor = MeshRendererComponent;
 
 	/**
 	 * Update world bounding

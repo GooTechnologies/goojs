@@ -12,6 +12,7 @@ function() {
 	 *        <li> interests = [] -> don't listen to any entities
 	 *        <li> interests = ['coolComponent', 'testComponent'] -> listen to entities that contains at minimum 'coolComponent' and 'testComponent'
 	 *        </ul>
+ 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 * @param {String} type System type name as a string
 	 * @param {String[]} interests Array of component types this system is interested in
 	 * @property {String} type System type
@@ -68,6 +69,7 @@ function() {
 	/**
 	 * Checks if a system is interested in an entity based on its interests list and adds or removed the entity from the system's index
 	 * @param entity {Entity} to check if the system is interested in
+	 * @private
 	 */
 	System.prototype._check = function(entity) {
 		if (this.interests && this.interests.length === 0) {

@@ -64,7 +64,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class The main class that updates the world and calls the renderers
+	 * @class The main class that updates the world and calls the renderers. 
+	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 *
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
 	 * @param {boolean} [parameters.alpha=false] Specifies if the canvas should have an alpha channel or not.
@@ -151,20 +152,7 @@ function (
 		this.callbacksNextFrame = [];
 		this._takeSnapshots = [];
 
-		var that = this;
 		this.start = -1;
-		//Move out
-		this.run = function (time) {
-			try {
-				that._updateFrame(time);
-			} catch (e) {
-				if (e instanceof Error) {
-					console.error(e.stack);
-				} else {
-					console.error(e);
-				}
-			}
-		};
 
 		this.animationId = 0;
 		if (!parameters.manuallyStartGameLoop) {
@@ -219,6 +207,24 @@ function (
 	}
 
 	/**
+	 *
+	 * @private
+	 * @param time
+	 */
+	//! TODO: private until documented
+	GooRunner.prototype.run = function (time) {
+		try {
+			this._updateFrame(time);
+		} catch (e) {
+			if (e instanceof Error) {
+				console.error(e.stack);
+			} else {
+				console.error(e);
+			}
+		}
+	};
+
+	/**
 	 * Add a render system to the world
 	 * @private
 	 * @param system
@@ -246,7 +252,7 @@ function (
 
 		if (tpf < 0 || tpf > 1.0) { // skip a loop - original start time probably bad.
 			this.start = time;
-			this.animationId = window.requestAnimationFrame(this.run);
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
 			return;
 		}
 
@@ -364,7 +370,7 @@ function (
 		}
 
 		// schedule next frame
-		this.animationId = window.requestAnimationFrame(this.run);
+		this.animationId = window.requestAnimationFrame(this.run.bind(this));
 	};
 
 	//TODO: move this to Logo
@@ -595,7 +601,7 @@ function (
 	GooRunner.prototype._startGameLoop = function () {
 		if (!this.animationId) {
 			this.start = -1;
-			this.animationId = window.requestAnimationFrame(this.run);
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
 		}
 	};
 

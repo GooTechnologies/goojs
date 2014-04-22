@@ -24,7 +24,7 @@ define([
 	function MarkerSystem(goo) {
 		System.call(this, 'MarkerSystem', ['MarkerComponent']);
 
-		this.material = Material.createMaterial(ShaderLib.simpleColored, '');
+		this.material = new Material(ShaderLib.simpleColored);
 		this.material.depthState.enabled = false;
 		this.material.shader.uniforms.color = [0.0, 1.0, 0.0];
 

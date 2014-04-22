@@ -54,22 +54,22 @@ define([
 
 		if (component.type === 'LightComponent') {
 			meshes = lightDebug.getMesh(component.light, options);
-			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
+			material = new Material(ShaderLib.simpleColored, 'DebugDrawLightMaterial');
 		} else if (component.type === 'CameraComponent') {
 			meshes = cameraDebug.getMesh(component.camera, options);
-			material = Material.createMaterial(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
+			material = new Material(ShaderLib.simpleLit, 'DebugDrawCameraMaterial');
 
 			material.uniforms.materialAmbient = [0.4, 0.4, 0.4, 1];
 			material.uniforms.materialDiffuse = [0.6, 0.6, 0.6, 1];
 			material.uniforms.materialSpecular = [0.0, 0.0, 0.0, 1];
 		} else if (component.type === 'MeshRendererComponent') {
 			meshes = meshRendererDebug.getMesh();
-			material = Material.createMaterial(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
+			material = new Material(ShaderLib.simpleColored, 'DebugMeshRendererComponentMaterial');
 		} else if (component instanceof SkeletonPose) {
 			meshes = skeletonDebug.getMesh(component, options);
 			var materials = [
-				Material.createMaterial(ShaderLib.uber, 'SkeletonDebugMaterial'),
-				Material.createMaterial(ShaderLib.uber, 'SkeletonDebugMaterial')
+				new Material(ShaderLib.uber, 'SkeletonDebugMaterial'),
+				new Material(ShaderLib.uber, 'SkeletonDebugMaterial')
 			];
 			var renderables = [];
 			var len = materials.length;

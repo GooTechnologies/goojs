@@ -113,7 +113,7 @@ function(
 			this.vegetationList[type] = meshData;
 		}
 
-		var material = Material.createMaterial(vegetationShader, 'vegetation');
+		var material = new Material(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', forrestAtlasTexture);
 		material.setTexture('NORMAL_MAP', forrestAtlasNormals);
 		material.uniforms.discardThreshold = 0.6;

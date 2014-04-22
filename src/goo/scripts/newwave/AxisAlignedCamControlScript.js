@@ -13,17 +13,14 @@ define([
 	 * @class
 	 */
 	function AxisAlignedCamControlScript() {
-		var listeners;
 		function setup(params, env) {
-			setupMouseControls(params, env);
-			// REVIEW Your nice tabbed layout breaks for people using two spaces for tabs. Use spaces.
-			env.axis		= new Vector3(0, 0, 1);
-			env.upAxis		= new Vector3(0, 1, 0);
+			// Look axis
+			env.axis = new Vector3(Vector3.UNIT_Z);
+			// Up axis will most often be Y but you never know...
+			env.upAxis = new Vector3(Vector3.UNIT_Y);
 			setView(params, env, params.view);
-			//env.currentView = params.view;
-			// REVIEW Not used
-			env.targetAxis	= new Vector3(0, 0, 1);
-			env.lookAtPoint	= new Vector3(0, 0, 0);
+			env.currentView = params.view;
+			env.lookAtPoint	= new Vector3(Vector3.ZERO);
 			env.distance	= params.distance;
 			env.smoothness	= Math.pow(MathUtils.clamp(params.smoothness, 0, 1), 0.3);
 			env.axisAlignedDirty = true;
@@ -36,14 +33,12 @@ define([
 			env.currentView = view;
 			switch(view){
 				case 'XY':
-					// REVIEW setv(Vector3.UNIT_Z) and so on
-					env.axis.setd(0, 0, 1);
-					// REVIEW Up axis will probably always be UNIT_Y
-					env.upAxis.setd(0, 1, 0);
+					env.axis.setv(Vector3.UNIT_Z);
+					env.upAxis.setv(Vector3.UNIT_Y);
 					break;
 				case 'ZY':
-					env.axis.setd(1, 0, 0);
-					env.upAxis.setd(0, 1, 0);
+					env.axis.setv(Vector3.UNIT_X);
+					env.upAxis.setv(Vector3.UNIT_Y);
 					break;
 			}
 			env.axisAlignedDirty = true;
@@ -58,42 +53,16 @@ define([
 			}
 			var entity = env.entity;
 			var transform = entity.transformComponent.transform;
-			// REVIEW transform.translation.setv(env.axis).scale(env.distance).addv(env.lookAtPoint)
-			var cameraPosition = Vector3.add(env.lookAtPoint, Vector3.mul(env.axis, env.distance));
-			// REVIEW Won't this collide with the pancamscript?
-			transform.translation.set(cameraPosition);
+			transform.translation.setv(env.axis).scale(env.distance).addv(env.lookAtPoint);
+			// REVIEW: Collision with pancamscript? Make new panscript for the 2d camera, or bake the panning logic into the axisaligned camera script?
 			transform.lookAt(env.lookAtPoint, env.upAxis);
 			entity.transformComponent.setUpdated();
 
 			env.axisAlignedDirty = false;
-
-			//var delta = MathUtils.lerp(env.smoothness, 1, env.world.tpf);
-			//size = env.size = MathUtils.lerp(delta, size, targetSize);
-			//camera.setFrustum(1, AxisAlignedCamControlScript.LARGE_NUMBER, -size, size, size, -size, 1);
-			/*if(Math.abs(targetSize-size) < 0.00001){
-				env.twoDimDirty = false;
-			} else {
-				env.twoDimDirty = true;
-			}*/
 		}
 
 		// Removes all listeners
-		function cleanup(params, env) {
-			for (var event in listeners) {
-				env.domElement.removeEventListener(event, listeners[event]);
-			}
-		}
-		// REVIEW A bit unnecessary perhaps
-		// Attaches the needed mouse event listeners
-		function setupMouseControls(params, env) {
-			// Define listeners
-			listeners = {
-			};
-
-			// Attach listeners
-			for (var event in listeners) {
-				env.domElement.addEventListener(event, listeners[event]);
-			}
+		function cleanup(/*params, env*/) {
 		}
 
 		return {
@@ -120,7 +89,7 @@ define([
 			type: 'float',
 			description:'Camera distance from lookat point',
 			control: 'slider',
-			'default': 1e4,
+			'default': 1e1,
 			min: 1,
 			max: 1e5
 		},{

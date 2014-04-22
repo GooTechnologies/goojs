@@ -87,7 +87,8 @@ function(
 			component.camera.setProjectionMode(Camera[config.projectionMode]);
 			component.camera.lockedRatio = config.lockedRatio || false;
 			if (config.projectionMode === 'Perspective') {
-				component.camera.setFrustumPerspective(config.fov, config.aspect || 1, config.near, config.far);
+				var aspect = (config.lockedRatio) ? config.aspect : null;
+				component.camera.setFrustumPerspective(config.fov, aspect, config.near, config.far);
 			} else {
 				var size = config.size;
 				component.camera.setFrustum(config.near, config.far, -size, size, size, -size, config.aspect || 1);

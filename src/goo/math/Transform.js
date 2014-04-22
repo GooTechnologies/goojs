@@ -102,7 +102,9 @@ function (
 		this.translation.setv(b.translation);
 		this.translation.mulv(a.scale);
 		this.tmpMat1.applyPost(this.translation).addv(a.translation);
-		this.scale.setv(a.scale).mulv(b.scale);
+
+		this.tmpVec.setv(a.scale).mulv(b.scale);
+		this.scale.setv(this.tmpVec);
 	};
 
 	/**
@@ -215,6 +217,8 @@ function (
 
 	/**
 	 * Sets the transform to look in a specific direction.
+	 * Please note: This function contains a known bug resulting in looking in the opposite direction
+	 * for non-camera and non-light entities.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 */
@@ -222,7 +226,9 @@ function (
 		if (!up) {
 			up = Vector3.UNIT_Y;
 		}
-
+		// REVIEW: this is actually using the wrong direction, it should be reversed.
+		//   this.tmpVec.setv(position).subv(this.translation).normalize();
+		// However we might need the old behavior for lights and cameras.
 		this.tmpVec.setv(this.translation).subv(position).normalize();
 		this.rotation.lookAt(this.tmpVec, up);
 	};

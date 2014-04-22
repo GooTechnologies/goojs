@@ -43,8 +43,8 @@ function checkCycles(graph) {
 	// bad, slow alg to check for cycles
 	function walk(nodeName, startNode, path) {
 		if (nodeName === startNode) {
-			console.log('Cycle detected!'.red);
-			throw path;
+			process.stdout.write('Cycle detected!\n' + path);
+			process.exit(1);
 		}
 		if (startNode === null) { startNode = nodeName; }
 

@@ -6,6 +6,7 @@ define([
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
+
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
 	'goo/loaders/handlers/LightComponentHandler',
@@ -33,7 +34,7 @@ define([
 	'goo/loaders/handlers/HtmlComponentHandler'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	ComponentHandler,
 	Ajax,
@@ -85,7 +86,7 @@ function(
 	 * @param {boolean} [clear=false] If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
 	 *
 	 **/
-	 DynamicLoader.prototype.preload = function(bundle, clear) {
+	 DynamicLoader.prototype.preload = function (bundle, clear) {
 		this._ajax.prefill(bundle, clear);
 	};
 
@@ -93,7 +94,7 @@ function(
 	 * Clears the cache of all the handlers. Also clears the engine.
 	 * @returns {RSVP.Promise} Promise resolves when handlers are cleared.
 	 */
-	DynamicLoader.prototype.clear = function() {
+	DynamicLoader.prototype.clear = function () {
 		var promises = [];
 		for (var type in this._handlers) {
 			promises.push(this._handlers[type].clear());
@@ -118,7 +119,7 @@ function(
 	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
 	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 */
-	DynamicLoader.prototype.load = function(ref, options) {
+	DynamicLoader.prototype.load = function (ref, options) {
 		options = options || {};
 		var load = this._loadObject.bind(this, ref, options);
 		if (options.preloadBinaries === true) {
@@ -139,14 +140,14 @@ function(
 	 * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
 	 */
-	DynamicLoader.prototype.update = function(ref, config, options) {
+	DynamicLoader.prototype.update = function (ref, config, options) {
 		var that = this;
 		options = options || {};
 
-		return this._ajax.update(ref, config).then(function(config) {
+		return this._ajax.update(ref, config).then(function (config) {
 			return that._updateObject(ref, config, options);
 		})
-		.then(null, function(err) {
+		.then(null, function (err) {
 			console.error("Error updating " + ref + " " + err);
 			throw err;
 		});
@@ -164,7 +165,7 @@ function(
 	 * @returns {object} Depending on what type of ref was loaded.
 	 * @private
 	 */
-	DynamicLoader.prototype._loadObject = function(ref, options) {
+	DynamicLoader.prototype._loadObject = function (ref, options) {
 		var type = DynamicLoader.getTypeForRef(ref);
 		var handler = this._getHandler(type);
 		if (handler) {
@@ -182,7 +183,7 @@ function(
 	 * @returns {object} Depending on what's being updated
 	 * @private
 	 */
-	DynamicLoader.prototype._updateObject = function(ref, config, options) {
+	DynamicLoader.prototype._updateObject = function (ref, config, options) {
 		var type = DynamicLoader.getTypeForRef(ref);
 		var handler = this._getHandler(type);
 		if (handler) {
@@ -203,7 +204,7 @@ function(
 	 * @returns {RSVP.Promise} Promise that resolves with the loaded config
 	 * @private
 	 */
-	DynamicLoader.prototype._loadRef = function(ref, options) {
+	DynamicLoader.prototype._loadRef = function (ref, options) {
 		return this._ajax.load(ref, (options==null) ? false : options.noCache);
 	};
 
@@ -214,14 +215,14 @@ function(
 	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
 	 * @private
 	 */
-	DynamicLoader.prototype._loadBinariesFromRefs = function(references, options) {
+	DynamicLoader.prototype._loadBinariesFromRefs = function (references, options) {
 		var that = this;
 		function loadBinaryRefs(refs) {
 			var handled = 0;
 
 			// Load the binary and increase progress tick on finished loading
 			function load(ref) {
-				return that._loadRef(ref, options).then(function() {
+				return that._loadRef(ref, options).then(function () {
 					handled++;
 					if (options.progressCallback instanceof Function) {
 						options.progressCallback(handled, refs.length);
@@ -230,12 +231,12 @@ function(
 			}
 
 			// When all binary refs are loaded, we're done
-			return RSVP.all(refs.map(function(ref) { return load(ref); }));
+			return RSVP.all(refs.map(function (ref) { return load(ref); }));
 		}
 
 		function traverse(refs) {
-			var binaryRefs = [];
-			var jsonRefs = [];
+			var binaryRefs = {};
+			var jsonRefs = {};
 			var promises = [];
 
 			// Loads config for traversal
@@ -249,11 +250,12 @@ function(
 
 				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
 					var ref = refs[keys[i]];
-					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && binaryRefs.indexOf(ref) === -1) {
+					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs[ref]) {
 						// If it's a binary ref, store it in the list
-						binaryRefs.push(ref);
-					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && jsonRefs.indexOf(ref) === -1) {
+						binaryRefs[ref] = true;
+					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs[ref]) {
 						// If it's a json-config, look deeper
+						jsonRefs[ref] = true;
 						loadFn(ref);
 					}
 				}
@@ -261,7 +263,7 @@ function(
 
 			traverseFn({ collectionRefs: refs });
 			// Resolved when everything is loaded and traversed
-			return RSVP.all(promises).then(function() { return binaryRefs; } );
+			return RSVP.all(promises).then(function () { return Object.keys(binaryRefs); } );
 		}
 
 		return traverse(references).then(loadBinaryRefs);
@@ -273,7 +275,7 @@ function(
 	 * @returns {ConfigHandler} Config handler.
 	 * @private
 	 */
-	DynamicLoader.prototype._getHandler = function(type) {
+	DynamicLoader.prototype._getHandler = function (type) {
 		var handler = this._handlers[type];
 		if (handler) { return handler; }
 		var Handler = ConfigHandler.getHandler(type);
@@ -295,10 +297,14 @@ function(
 	 * @returns {string[]} refs References.
 	 * @private
 	 */
-	DynamicLoader.prototype._getRefsFromConfig = function(config) {
+
+	var refRegex = new RegExp('\S+refs?$', 'i');
+	//var refRegex = /\S+refs?$/i; //! AT: if you do profiling and use this instead your flame chart will loook totally different - probably due to this form not compiling at parse time
+
+	DynamicLoader.prototype._getRefsFromConfig = function (config) {
 		var refs = [];
 		function traverse(key, value) {
-			if (/\S+refs?$/i.test(key)) {
+			if (refRegex.test(key) && key !== 'thumbnailRef') {
 				// Refs
 				if (value instanceof Object) {
 					for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
@@ -313,13 +319,14 @@ function(
 			} else if (value instanceof Object) {
 				// Go down a level
 				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
+					//! AT: this check is unnecessary
 					if (value.hasOwnProperty(keys[i])) {
 						traverse(keys[i], value[keys[i]]);
 					}
 				}
 			}
 		}
-		traverse("", config);
+		traverse('', config);
 		return refs;
 	};
 
@@ -329,8 +336,8 @@ function(
 	 * @param {string} ref Reference.
 	 * @returns {string} Type of reference.
 	 */
-	DynamicLoader.getTypeForRef = function(ref) {
-		return ref.split('.').pop().toLowerCase();
+	DynamicLoader.getTypeForRef = function (ref) {
+		return ref.substr(ref.lastIndexOf('.') + 1).toLowerCase();
 	};
 
 	/**
@@ -341,9 +348,9 @@ function(
 	 * @param {string} group
 	 * @returns {boolean}
 	 */
-	DynamicLoader._isRefTypeInGroup = function(ref, group) {
+	DynamicLoader._isRefTypeInGroup = function (ref, group) {
 		var type = DynamicLoader.getTypeForRef(ref);
-		return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
+		return type && Ajax.types[group] && Ajax.types[group][type];
 	};
 
 	return DynamicLoader;

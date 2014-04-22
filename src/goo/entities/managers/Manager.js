@@ -5,8 +5,7 @@ define(
 	'use strict';
 
 	/**
-	 * Base class for managers
-	 * @constructor
+	 * @class Base class for managers.
 	 */
 	function Manager() {
 

@@ -56,6 +56,11 @@ function(
 		img.onload = function() {
 			// when ready, paint the image on the canvas
 
+			if (img.width === 0 && img.height === 0) {
+				// Could not load
+				return callback();
+			}
+
 			// Canvas size
 			options.width =  options.width  ? options.width :  img.width;
 			options.height = options.height ? options.height : img.height;

@@ -75,9 +75,7 @@ function(
 			return;
 		}
 
-		// will be based on static setting when we add it to Create
-		// if (!subs || entity.isStatic === false) {
-		if (!subs || entity.scriptComponent || entity.stateMachineComponent) {
+		if (!subs || entity.static === false) {
 			subs = [];
 			baseSubs.put(entity, subs);
 		}

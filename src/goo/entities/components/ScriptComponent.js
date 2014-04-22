@@ -15,8 +15,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class Contains scripts to be executed each frame when set on an active entity
-	 * @param {Array|object} [scripts] A script-object or an array of script-objects to attach to the entity.
+	 * @class Contains scripts to be executed each frame when set on an active entity.
+	 * @param {object[]|object} [scripts] A script-object or an array of script-objects to attach to the entity.
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>.
 	 * @extends Component
 	 */
@@ -47,7 +47,7 @@ function (
 	ScriptComponent.prototype.constructor = ScriptComponent;
 
 	/**
-	 * Runs the .setup method on each script; called when the ScriptComponent is attached to the entity or when the entity is added to the world
+	 * Runs the .setup method on each script; called when the ScriptComponent is attached to the entity or when the entity is added to the world.
 	 * @private
 	 * @param entity
 	 */
@@ -86,14 +86,14 @@ function (
 	};
 
 	/**
-	 * Called when script component is attached to entity
+	 * Called when script component is attached to entity.
 	 * @private
 	 * @type {setup}
 	 */
 	//ScriptComponent.prototype.attached = ScriptComponent.prototype.setup;
 
 	/**
-	 * Runs the update function on every script attached to this entity
+	 * Runs the update function on every script attached to this entity.
 	 * @private
 	 * @param entity {Entity}
 	 * @param tpf {number}
@@ -122,7 +122,7 @@ function (
 	};
 
 	/**
-	 * Reverts any changes done by setup; called when the entity loses its ScriptComponent or is removed from the world
+	 * Reverts any changes done by setup; called when the entity loses its ScriptComponent or is removed from the world.
 	 * @private
 	 */
 	ScriptComponent.prototype.cleanup = function () {
@@ -144,7 +144,7 @@ function (
 	};
 
 	/**
-	 * Called when script component is detached from entity
+	 * Called when script component is detached from entity.
 	 * @private
 	 * @type {setup}
 	 */

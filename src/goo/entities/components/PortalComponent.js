@@ -36,7 +36,15 @@ function(
 		var aspect = camera.aspect;
 
 		this.type = 'PortalComponent';
+
+		/**
+		 * @type {Camera}
+		 */
 		this.camera = camera;
+
+		/**
+		 * @type {RenderTarget}
+		 */
 		this.target = new RenderTarget(height, height / aspect);
 
 		if(this.options.preciseRecursion) {

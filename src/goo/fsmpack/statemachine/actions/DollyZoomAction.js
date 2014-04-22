@@ -33,7 +33,7 @@ function(
 			description: 'Point to focus on while transitioning',
 			'default': [0, 0, 0]
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time',

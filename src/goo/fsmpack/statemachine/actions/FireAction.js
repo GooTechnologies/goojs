@@ -53,7 +53,7 @@ function(
 		var gooRunner = entity._world.gooRunner;
 
 		if (!FireAction.material) {
-			FireAction.material = Material.createMaterial(ShaderLib.particles);
+			FireAction.material = new Material(ShaderLib.particles);
 			var texture = ParticleSystemUtils.createFlareTexture();
 			texture.generateMipmaps = true;
 			FireAction.material.setTexture('DIFFUSE_MAP', texture);

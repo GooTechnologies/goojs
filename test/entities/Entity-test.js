@@ -232,7 +232,7 @@ define([
 			expect(entity.setTranslation).toBeTruthy();
 		});
 
-		it('removed the api of a component', function() {
+		it('removes the api of a component', function() {
 			var entity = world.createEntity();
 			entity.clearComponent('TransformComponent');
 			expect(entity.setTranslation).toBeFalsy();
@@ -371,6 +371,7 @@ define([
 		});
 
 		/*
+		//! AT: disputed
 		it('cannot clear a transform component', function() {
 			var entity = world.createEntity();
 			entity.setComponent(new MeshDataComponent());
@@ -381,6 +382,30 @@ define([
 			expect(entity.hasComponent('TransformComponent')).toBe(true);
 		});
 		*/
+
+		it('can add components on a world-less entity', function () {
+			var entity = new Entity();
+			entity.setComponent(new CameraComponent());
+			expect(entity.cameraComponent).toBeTruthy();
+		});
+
+		it('can remove components on a world-less entity', function () {
+			var entity = new Entity();
+			entity.setComponent(new CameraComponent());
+			entity.clearComponent('CameraComponent');
+			expect(entity.cameraComponent).toBeFalsy();
+		});
+
+		it("can pass a 'primitive engine object' to .set of a world-less entity", function () {
+			var entity = new Entity();
+			entity.set([1, 2, 3]);
+			// if we get here at least it doesn't blow up (like it used to)
+			expect(true).toBeTruthy();
+
+			//! AT: this should work too but requires a lot of changes
+			// registered components should stay somewhere else than in worlds
+			//expect(entity.cameraComponent).toBeTruthy();
+		});
 
 		describe('tags', function () {
 			it('sets a tag on an entity', function () {

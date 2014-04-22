@@ -1,11 +1,13 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/HtmlComponent'
+	'goo/entities/components/HtmlComponent',
+	'goo/util/rsvp'
 ],
 /** @lends */
 function(
 	ComponentHandler,
-	HtmlComponent
+	HtmlComponent,
+	RSVP
 ) {
 	"use strict";
 
@@ -54,6 +56,7 @@ function(
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	HtmlComponentHandler.prototype.update = function (entity, config, options) {
+		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
@@ -109,10 +112,51 @@ function(
 				domElement.style.left = 0;
 				domElement.style.zIndex = 1;
 				var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
+				// var containerEl = parentEl.querySelector('#goo-htmlcomponent-container-element');
+				// if (!containerEl) {
+				// 	containerEl = document.createElement('div');
+				// 	parentEl.appendChild(containerEl);
+				// 	containerEl.id = 'goo-htmlcomponent-container-element';
+				// 	containerEl.style.position = 'absolute';
+				// 	var canvas = entity._world.gooRunner.renderer.domElement;
+				// 	var resize = function() {
+				// 		containerEl.style.top = canvas.offsetTop + 'px';
+				// 		containerEl.style.left = canvas.offsetLeft + 'px';
+				// 		containerEl.style.height = canvas.offsetHeight + 'px';
+				// 		containerEl.style.width = canvas.offsetWidth + 'px';
+				// 	}
+				// 	resize();
+				// 	parentEl.addEventListener('resize', resize);
+				// }
+				// else {
+				// 	containerEl = containerEl.first();
+				// }
+
 				parentEl.appendChild(domElement);
 			}
 			domElement.innerHTML = config.innerHtml;
+
+			// Fix images
+			var images = domElement.getElementsByTagName('IMG');
+			var imagePromises = [];
+			for (var i = 0; i < images.length; i++) {
+				var htmlImage = images[i];
+				var imageRef = htmlImage.getAttribute('data-id');
+				var promise = (function(htmlImage){
+					return that.loadObject(imageRef, options)
+					.then(function(image) {
+						htmlImage.src = image.src;
+						return htmlImage;
+					}, function (e) {
+						console.error(e);
+						delete htmlImage.src;
+						return htmlImage;
+					});
+				})(htmlImage);
+				imagePromises.push(promise);
+		}
 			component.useTransformComponent = config.useTransformComponent == null ? true: config.useTransformComponent;
+			return RSVP.all(imagePromises);
 		});
 	};
 

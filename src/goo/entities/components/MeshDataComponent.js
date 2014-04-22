@@ -19,18 +19,26 @@ function (
 	function MeshDataComponent(meshData) {
 		this.type = 'MeshDataComponent';
 
+		/**
+		 * @type {MeshData}
+		 */
 		this.meshData = meshData;
 
-		/** Bounding volume in local space
+		/** Bounding volume in local space.
 		 * @type {BoundingVolume}
-		 * @default
 		 */
 		this.modelBound = new BoundingBox();
-		/** Automatically compute bounding fit
+
+		/** Automatically compute bounding fit.
 		 * @type {boolean}
 		 * @default
 		 */
 		this.autoCompute = true;
+
+		/**
+		 * @type {SkeletonPose}
+		 * @default
+		 */ 
 		this.currentPose = null; // SkeletonPose
 	}
 
@@ -40,10 +48,10 @@ function (
 	MeshDataComponent.prototype.constructor = MeshDataComponent;
 
 	/**
-	 * Set the bounding volume type (sphere, box etc)
+	 * Set the bounding volume type (sphere, box etc).
 	 *
-	 * @param {BoundingVolume} modelBound Bounding to apply to this meshdata component
-	 * @param {boolean} autoCompute If true, automatically compute bounding fit
+	 * @param {BoundingVolume} modelBound Bounding to apply to this meshdata component.
+	 * @param {boolean} autoCompute If true, automatically compute bounding fit.
 	 */
 	MeshDataComponent.prototype.setModelBound = function (modelBound, autoCompute) {
 		this.modelBound = modelBound;
@@ -51,7 +59,7 @@ function (
 	};
 
 	/**
-	 * Compute bounding center and bounds for this mesh
+	 * Compute bounding center and bounds for this mesh.
 	 */
 	MeshDataComponent.prototype.computeBoundFromPoints = function () {
 		if (this.autoCompute && this.modelBound !== null && this.meshData) {
