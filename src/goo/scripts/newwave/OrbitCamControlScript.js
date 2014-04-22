@@ -2,8 +2,8 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector2',
 	'goo/math/MathUtils',
-	'goo/renderer/Camera',
-], function(
+	'goo/renderer/Camera'
+], function (
 	Vector3,
 	Vector2,
 	MathUtils,
@@ -42,7 +42,7 @@ define([
 			if (dragButton < -1) {
 				dragButton = -1;
 			}
-			if(dragButton === 4){
+			if (dragButton === 4) {
 				dragButton = null;
 			}
 			// Making more linear perception
@@ -66,7 +66,9 @@ define([
 			worldUpVector = new Vector3(Vector3.UNIT_Y);
 			maxSampleTimeMS = 200;
 
-			setFrustumFromSpherical(parameters, environment);
+			if (environment.entity.cameraComponent && environment.entity.cameraComponent.camera.projectionMode === Camera.Parallel) {
+				environment.size = environment.entity.cameraComponent.camera.top;
+			}
 
 			environment.dirty = true;
 
@@ -130,7 +132,7 @@ define([
 		// Should be moved to mathUtils?
 		function _radialClamp(value, min, max) {
 			// Rotating coordinates to be mirrored
-			var zero = (min + max)/2 + ((max > min) ? Math.PI : 0);
+			var zero = (min + max) / 2 + ((max > min) ? Math.PI : 0);
 			var _value = MathUtils.moduloPositive(value - zero, MathUtils.TWO_PI);
 			var _min = MathUtils.moduloPositive(min - zero, MathUtils.TWO_PI);
 			var _max = MathUtils.moduloPositive(max - zero, MathUtils.TWO_PI);
@@ -157,19 +159,15 @@ define([
 			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 			targetSpherical.z = MathUtils.clamp(targetSpherical.z + thetaAccel, minAscent, maxAscent);
 
-			setFrustumFromSpherical(parameters, environment);
 			environment.dirty = true;
 		}
 
-		function setFrustumFromSpherical(params, env) {
-			if(env.entity === env.activeCameraEntity && env.activeCameraEntity.cameraComponent.camera.projectionMode === Camera.Parallel){
-				// Camera is parallel! Change frustum instead!
-				// Use trigonometry to convert camera distance to frustum size
-				var camera = env.activeCameraEntity.cameraComponent.camera;
-				var size = targetSpherical.x * Math.tan(camera.fov * MathUtils.DEG_TO_RAD);
-				camera.setFrustum(null, null, -size, size, size, -size, null);
-				env.size = size;
-			}
+		function updateFrustumSize(delta, env) {
+			var camera = env.entity.cameraComponent.camera;
+			env.size = camera.top;
+			env.size /= delta;
+			var size = env.size;
+			camera.setFrustum(null, null, -size, size, size, -size);
 		}
 
 		function applyWheel(e, parameters, environment) {
@@ -207,7 +205,7 @@ define([
 		function setupMouseControls(parameters, environment) {
 			var oldDistance = 0;
 			listeners = {
-				mousedown: function(event) {
+				mousedown: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var button = event.button;
 						if (button === 0) {
@@ -220,7 +218,7 @@ define([
 						updateButtonState(button, true, parameters, environment);
 					}
 				},
-				mouseup: function(event) {
+				mouseup: function (event) {
 					var button = event.button;
 					if (button === 0) {
 						if (event.altKey) {
@@ -231,29 +229,29 @@ define([
 					}
 					updateButtonState(button, false, parameters, environment);
 				},
-				mousemove: function(event) {
+				mousemove: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						updateDeltas(event.clientX, event.clientY, parameters, environment);
 					}
 				},
-				mouseleave: function(event) {
+				mouseleave: function (event) {
 					environment.orbitListeners.mouseup(event);
 				},
-				mousewheel: function(event) {
+				mousewheel: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						applyWheel(event, parameters, environment);
 					}
 				},
-				touchstart: function(event) {
+				touchstart: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						updateButtonState(dragButton, event.targetTouches.length === 1, parameters, environment);
 					}
 				},
-				touchend: function(/*event*/) {
+				touchend: function (/*event*/) {
 					updateButtonState(dragButton, false, parameters, environment);
 					oldDistance = 0;
 				},
-				touchmove: function(event) {
+				touchmove: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var cx, cy, distance;
 						var touches = event.targetTouches;
@@ -297,7 +295,7 @@ define([
 			domElement.oncontextmenu = function () { return false; };
 		}
 
-		function updateVelocity (time, parameters, environment) {
+		function updateVelocity(time, parameters, environment) {
 			if (velocity.lengthSquared() > 0.000001) {
 				move(velocity.x, velocity.y, parameters, environment);
 				var rate = MathUtils.lerp(environment.inertia, 0, 1 - time / environment.inertia);
@@ -340,8 +338,13 @@ define([
 			} else {
 				spherical.y = MathUtils.lerp(delta, spherical.y, targetSpherical.y);
 			}
-
+			var deltaX = spherical.x;
 			spherical.x = MathUtils.lerp(delta, spherical.x, targetSpherical.x);
+			deltaX /= spherical.x;
+
+			if (environment.entity.cameraComponent && environment.entity.cameraComponent.camera.projectionMode === Camera.Parallel) {
+				updateFrustumSize(deltaX, environment);
+			}
 			spherical.z = MathUtils.lerp(delta, spherical.z, targetSpherical.z);
 
 			MathUtils.sphericalToCartesian(spherical.x, spherical.y, spherical.z, cartesian);
@@ -356,8 +359,6 @@ define([
 				targetSpherical.copy(spherical);
 				environment.dirty = false;
 			}
-
-			setFrustumFromSpherical(parameters, environment);
 
 			// set our component updated.
 			transformComponent.setUpdated();
