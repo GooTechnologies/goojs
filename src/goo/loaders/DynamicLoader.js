@@ -234,8 +234,8 @@ function(
 		}
 
 		function traverse(refs) {
-			var binaryRefs = [];
-			var jsonRefs = [];
+			var binaryRefs = {};
+			var jsonRefs = {};
 			var promises = [];
 
 			// Loads config for traversal
@@ -249,11 +249,12 @@ function(
 
 				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
 					var ref = refs[keys[i]];
-					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && binaryRefs.indexOf(ref) === -1) {
+					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs[ref]) {
 						// If it's a binary ref, store it in the list
-						binaryRefs.push(ref);
-					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && jsonRefs.indexOf(ref) === -1) {
+						binaryRefs[ref] = true;
+					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs[ref]) {
 						// If it's a json-config, look deeper
+						jsonRefs[ref] = true;
 						loadFn(ref);
 					}
 				}
@@ -261,7 +262,7 @@ function(
 
 			traverseFn({ collectionRefs: refs });
 			// Resolved when everything is loaded and traversed
-			return RSVP.all(promises).then(function() { return binaryRefs; } );
+			return RSVP.all(promises).then(function () { return Object.keys(binaryRefs); } );
 		}
 
 		return traverse(references).then(loadBinaryRefs);
