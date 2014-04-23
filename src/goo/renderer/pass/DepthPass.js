@@ -27,7 +27,7 @@ function (
 	*/
 	function DepthPass(renderList, outShader) {
 		this.depthPass = new RenderPass(renderList);
-		var packDepthMaterial = Material.createMaterial(packDepth);
+		var packDepthMaterial = new Material(packDepth);
 		this.depthPass.overrideMaterial = packDepthMaterial;
 
 		this.blurTarget = new RenderTarget(256, 256);

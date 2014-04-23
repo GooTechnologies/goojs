@@ -25,7 +25,7 @@ function(
 			description: 'Opacity',
 			'default': 1
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for the transition to complete',
@@ -79,6 +79,7 @@ function(
 			var meshRendererComponent = entity.meshRendererComponent;
 			var material = meshRendererComponent.materials[0];
 			var uniforms = material.uniforms;
+			var time = entity._world.time * 1000;
 
 			var fakeFrom = { opacity: uniforms.opacity === undefined ? 1 : uniforms.opacity };
 			var fakeTo = { opacity: this.to };
@@ -94,7 +95,7 @@ function(
 				old.opacity = this.opacity;
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(fsm.getTime() * 1000);
+			}.bind(this)).start(time);
 		}
 	};
 

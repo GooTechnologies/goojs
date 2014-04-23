@@ -26,7 +26,7 @@ function(
 			description: 'Color of the light',
 			'default': [1, 1, 1]
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for the transition to complete',
@@ -79,6 +79,7 @@ function(
 		if (entity.lightComponent) {
 			var lightComponent = entity.lightComponent;
 			var color = lightComponent.light.color;
+			var time = entity._world.time * 1000;
 
 			var fakeFrom = { x: color.x, y: color.y, z: color.z };
 			var fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
@@ -95,7 +96,7 @@ function(
 				old.z = this.z;
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
-				}.bind(this)).start(fsm.getTime() * 1000);
+				}.bind(this)).start(time);
 		}
 	};
 

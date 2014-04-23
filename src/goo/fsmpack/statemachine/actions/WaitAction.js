@@ -3,11 +3,26 @@ define(['goo/fsmpack/statemachine/actions/Action'],
 function(Action) {
 	"use strict";
 
+	/**
+	 * @class
+	 * @private
+	 * @extends Action
+	 */
 	function WaitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
 		this.everyFrame = true;
+
+		/**
+		 * Current time, in milliseconds.
+		 * @type {Number}
+		 */
 		this.currentTime = 0;
+
+		/**
+		 * Wait time, in milliseconds.
+		 * @type {Number}
+		 */
 		this.totalWait = 0;
 	}
 
@@ -17,19 +32,20 @@ function(Action) {
 	WaitAction.external = {
 		name: 'Wait',
 		type: 'animation',
-		description: 'Performs a transition after a specified amount of time',
+		description: 'Performs a transition after a specified amount of time. ' +
+			'A random time can be set, this will add between 0 and the set random time to the specified wait time.',
 		canTransition: true,
 		parameters: [{
-			name: 'Base Time',
+			name: 'Time (ms)',
 			key: 'waitTime',
 			type: 'number',
-			description: 'Base time in seconds before transition fires',
-			"default": 5
+			description: 'Base time in milliseconds before transition fires',
+			"default": 5000
 		}, {
-			name: 'Random Time',
+			name: 'Random (ms)',
 			key: 'randomTime',
 			type: 'number',
-			description: 'Add up to this much Random time to the base time',
+			description: 'A random number of milliseconds (between 0 and this value) will be added to the base wait time',
 			"default": 0
 		}],
 		transitions: [{
@@ -45,7 +61,7 @@ function(Action) {
 	};
 
 	WaitAction.prototype._run = function(fsm) {
-		this.currentTime += fsm.getTpf();
+		this.currentTime += fsm.getTpf() * 1000;
 		if (this.currentTime >= this.totalWait) {
 			fsm.send(this.transitions.timeUp);
 		}

@@ -29,7 +29,7 @@ function (
 		this.height = 25;
 
 		// put this in some subroutine
-		this.material = Material.createMaterial(ShaderLib.particles);
+		this.material = new Material(ShaderLib.particles);
 		var texture = ParticleSystemUtils.createFlareTexture(64); //Snowflake
 		texture.generateMipmaps = true;
 		this.material.setTexture('DIFFUSE_MAP', texture);

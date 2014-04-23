@@ -17,7 +17,7 @@ function (
 	* @class
 	*/
 	function NesPass(textureUrl) {
-		this.material = Material.createMaterial(nesShader);
+		this.material = new Material(nesShader);
 
 		this.renderToScreen = false;
 

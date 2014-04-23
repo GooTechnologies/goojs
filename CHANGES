@@ -1,3 +1,15 @@
+v0.9.7 --- 2014-04-22
+
+Fixes:
+ * numerous tiny bugfixes
+
+v0.9.6 --- 2014-04-15
+
+Fixes:
+ * Renamed file "CannonRigidBodyComponent.js" to "CannonRigidbodyComponent.js"
+ * Grabbing the global window.Ammo object after it is loaded
+ * Stop forcing aspect ratio when loading camera
+
 v0.9.0 --- 2014-03-07
 
 Additions:
@@ -10,8 +22,8 @@ Additions:
  + can now schedule callbacks to execute next frame from within a callback
 
 Fixed:
- + various performance fixes
- + canvas resizing is stabilised if they have no style referring to dimensions
+ * various performance fixes
+ * canvas resizing is stabilised if they have no style referring to dimensions
 
 Changes:
  * major changes of the DynamicLoader API

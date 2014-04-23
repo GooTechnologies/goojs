@@ -6,7 +6,7 @@ define([
 	"use strict";
 
 	/**
-	 * @class Connects a domElement to an entity and applies the transformComponent of the entity to the domElement with CSS3 3d transforms
+	 * @class Connects a domElement to an entity and applies the transformComponent of the entity to the domElement with CSS3 3D transforms.
 	 * @param {domElement} domelement
 	 * @param {boolean} faceCamera
 	 * @extends Component
@@ -15,8 +15,21 @@ define([
 		Component.call(this);
 
 		this.type = "CSSTransformComponent";
+
+		/**
+		 * DOM element.
+		 */
 		this.domElement = domElement;
+
+		/** 
+		 * @type {number}
+		 * @default 1
+		 */
 		this.scale = 1;
+
+		/**
+		 * @type {boolean}
+		 */
 		this.faceCamera = (typeof faceCamera === 'undefined') ? false : faceCamera;
 	}
 

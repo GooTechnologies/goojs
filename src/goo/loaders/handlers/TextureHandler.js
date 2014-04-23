@@ -8,7 +8,8 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
 	'goo/util/ObjectUtil',
-	'goo/util/CanvasUtils'
+	'goo/util/CanvasUtils',
+	'goo/util/StringUtil'
 ],
 /** @lends */
 function(
@@ -21,7 +22,8 @@ function(
 	pu,
 	Util,
 	_,
-	CanvasUtils
+	CanvasUtils,
+	StringUtil
 ) {
 	'use strict';
 
@@ -142,7 +144,8 @@ function(
 
 			var imageRef = config.imageRef;
 			if (imageRef) {
-				var type = imageRef.split('.').pop().toLowerCase();
+				var path = StringUtil.parseURL(imageRef).path;
+				var type = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
 				var Loader = TextureHandler.loaders[type];
 				if (Loader) {
 					// Special (dds, tga, crn)
@@ -190,11 +193,16 @@ function(
 				}
 			} else if(config.svgData){
 				// Load SVG data
-				ret = CanvasUtils.svgDataToImage(config.svgData).then(function (image) {
-					texture.setImage(image);
-					return texture;
+				var p = new RSVP.Promise();
+				ret = p;
+				CanvasUtils.renderSvgToCanvas(config.svgData, {}, function(canvas){
+					if(canvas){
+						texture.setImage(canvas);
+						p.resolve(texture);
+					} else {
+						p.reject('could not render svg to canvas');
+					}
 				});
-
 			} else {
 				// Blank
 				// console.warn('Texture ' + ref + ' has no imageRef');

@@ -16,7 +16,7 @@ define([
 	'goo/noise/Noise',
 	'goo/noise/ValueNoise',
 	'goo/shapes/TerrainSurface',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Quad',
 	'goo/renderer/shaders/ShaderBuilder'
 ],
 /** @lends */
@@ -38,7 +38,7 @@ function(
 	Noise,
 	ValueNoise,
 	TerrainSurface,
-	ShapeCreator,
+	Quad,
 	ShaderBuilder
 ) {
 	"use strict";
@@ -59,7 +59,7 @@ function(
 			this.vegetationList[type] = meshData;
 		}
 
-		var material = Material.createMaterial(vegetationShader, 'vegetation');
+		var material = new Material(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', vegetationAtlasTexture);
 		material.cullState.enabled = false;
 		material.uniforms.discardThreshold = 0.2;
@@ -245,7 +245,7 @@ function(
 	};
 
 	Vegetation.prototype.createBase = function(type) {
-		var meshData = ShapeCreator.createQuad(type.w, type.h, 10, 10);
+		var meshData = new Quad(type.w, type.h, 10, 10);
 		meshData.attributeMap.BASE = MeshData.createAttribute(1, 'Float');
 		meshData.rebuildData(meshData.vertexCount, meshData.indexCount, true);
 

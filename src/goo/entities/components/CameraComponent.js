@@ -15,16 +15,33 @@ function (
 
 	/**
 	 * @class Holds a camera.
-	 * @param {Camera} camera Camera to contain in this component
+	 * @param {Camera} camera Camera to contain in this component.
 	 * @extends Component
 	 */
 	function CameraComponent (camera) {
 		this.type = 'CameraComponent';
 
+		/** The camera contained by the component.
+		 * @type {Camera}
+		 */
 		this.camera = camera;
 
+		/** Left vector.
+		 * @type {Vector3}
+		 * @default (-1, 0, 0)
+		 */
 		this.leftVec = new Vector3(-1, 0, 0);
+
+		/** Up vector.
+		 * @type {Vector3}
+		 * @default (0, 1, 0)
+		 */	
 		this.upVec = new Vector3(0, 1, 0);
+
+		/** Direction vector.
+		 * @type {Vector3}
+		 * @default (0, 0, -1)
+		 */
 		this.dirVec = new Vector3(0, 0, -1);
 
 		this.api = {
@@ -45,7 +62,7 @@ function (
 	CameraComponent.prototype.constructor = CameraComponent;
 
 	/**
-	 * @param {number} axisId Axis to use as up-vector. 0=X, 1=Y, 2=Z
+	 * @param {number} axisId Axis to use as up-vector (0=X, 1=Y, 2=Z).
 	 */
 	CameraComponent.prototype.setUpVector = function (axisId) {
 		if (axisId === 0) {
@@ -64,7 +81,7 @@ function (
 	};
 
 	/**
-	 * Updates the contained camera according to a transform (coming from the transformcomponent)
+	 * Updates the contained camera according to a transform (coming from the TransformComponent).
 	 * @param {Transform} transform
 	 */
 	CameraComponent.prototype.updateCamera = function (transform) {

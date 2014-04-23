@@ -2,7 +2,7 @@ require('coffee-script')
 fs = require('fs')
 path = require('path')
 child_process = require('child_process')
-convert = require('./converter/convert').convert
+# convert = require('./converter/convert').convert
 copyLibs = require('./buildengine/copyLibs').copyLibs
 wrench = require('wrench')
 rimraf = require('rimraf')
@@ -112,4 +112,10 @@ task 'visualtoc',
 	'Creates a table of content index.html for visual tests',
 	->
 		toc = require('./visual-test/toc')
+		toc.run()
+
+task 'examplestoc',
+	'Creates a table of content index.html for examples',
+	->
+		toc = require('./examples/toc')
 		toc.run()

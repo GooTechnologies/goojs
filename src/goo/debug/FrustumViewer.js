@@ -2,7 +2,6 @@ define([
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/Material',
@@ -15,7 +14,6 @@ define([
 		MeshData,
 		MeshBuilder,
 		Transform,
-		ShapeCreator,
 		MeshDataComponent,
 		MeshRendererComponent,
 		Material,
@@ -188,7 +186,7 @@ define([
 		cameraEntity.setComponent(meshDataComponent);
 
 		var meshRendererComponent = new MeshRendererComponent();
-		var material = Material.createMaterial(ShaderLib.simpleColored, '');
+		var material = new Material(ShaderLib.simpleColored);
 		material.uniforms.color = [0.5, 0.7, 1];
 		meshRendererComponent.materials.push(material);
 		cameraEntity.setComponent(meshRendererComponent);

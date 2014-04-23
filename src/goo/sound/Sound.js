@@ -61,11 +61,11 @@ function (
 			return this._endPromise;
 		}
 
-		this._currentSource = AudioContext.createBufferSource();
+		var currentSource = this._currentSource = AudioContext.createBufferSource();
 
 		this._paused = false;
 		this._currentSource.onended = function () {
-			if (!this._paused) {
+			if (this._currentSource === currentSource && !this._paused) {
 				this.stop();
 			}
 		}.bind(this);

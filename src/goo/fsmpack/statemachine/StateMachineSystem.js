@@ -10,6 +10,7 @@ function (
 
 	/**
 	 * @class Processes all entities with a FSM component
+	 * @private
 	 */
 	function StateMachineSystem(engine) {
 		System.call(this, 'StateMachineSystem', ['StateMachineComponent']);
@@ -19,6 +20,11 @@ function (
 		this.passive = false;
 		this.entered = true;
 		this.paused = false;
+
+		/**
+		 * Current time, in seconds.
+		 * @type {Number}
+		 */
 		this.time = 0;
 
 		this.evalProxy = {
@@ -61,7 +67,7 @@ function (
 			}
 		}
 
-		if (window.TWEEN) { window.TWEEN.update(this.time * 1000); } // this should not stay here
+		if (window.TWEEN) { window.TWEEN.update(this.engine.world.time * 1000); } // this should not stay here
 
 		for (var i = 0; i < entities.length; i++) {
 			component = entities[i].stateMachineComponent;

@@ -4,7 +4,8 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Sphere',
+	'goo/shapes/Box',
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -23,7 +24,8 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
+	Sphere,
+	Box,
 	CameraComponent,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -40,7 +42,7 @@ require([
 	'use strict';
 
 	function addTexturedBox(goo, x, y, z) {
-		var boxMeshData = ShapeCreator.createBox(10, 30, 10);
+		var boxMeshData = new Box(10, 30, 10);
 		var boxMaterial = new Material(ShaderLib.texturedLit, 'texturedBoxMaterial');
 		var boxTexture = new TextureCreator().loadTexture2D('../../../resources/check.png');
 		boxMaterial.setTexture('DIFFUSE_MAP', boxTexture);
@@ -51,7 +53,7 @@ require([
 	}
 
 	function addLamp(goo, x, y, z) {
-		var lampMeshData = ShapeCreator.createSphere(32, 32);
+		var lampMeshData = new Sphere(32, 32);
 		var lampMaterial = new Material(ShaderLib.simpleLit, 'lampMaterial');
 		var lampEntity = goo.world.createEntity(lampMeshData, lampMaterial, 'box');
 

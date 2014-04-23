@@ -71,7 +71,7 @@
     // We may want to enable them again once we clean up the more pressing issues.
     // The "white" and "indent" settings also don't work together in JSHint before 1.0
     // See https://github.com/jshint/jshint/issues/451
-    //"white"         : true,   // Check against strict whitespace and indentation rules.
+    "white"         : true,   // Check against strict whitespace and indentation rules.
     //"indent"        : 4,      // Specify indentation spacing
     "smarttabs"     : true    // Suppress warnings about mixed tabs and spaces
 }

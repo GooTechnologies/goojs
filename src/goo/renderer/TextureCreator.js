@@ -42,6 +42,14 @@ function (
 	TextureCreator.clearCache = function () {};
 
 	/**
+	 * Releases any references to cached objects
+	 */
+	TextureCreator.prototype.clear = function () {
+		this.ajax.clear();
+		this.textureHandler.clear();
+	};
+
+	/**
 	 * Creates a texture and loads image into it
 	 * @example gridMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg'));
 	 * @param {string} imageURL

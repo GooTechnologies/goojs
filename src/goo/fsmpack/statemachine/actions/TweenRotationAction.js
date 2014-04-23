@@ -24,7 +24,7 @@ define([
 		key: 'Tween Rotation',
 		name: 'Tween Rotate',
 		type: 'animation',
-		description: 'Smoothly transitions between two orientations',
+		description: 'Transition to the set rotation, in angles.',
 		canTransition: true,
 		parameters: [{
 			name: 'Rotation',
@@ -39,7 +39,7 @@ define([
 			description: 'If true add, otherwise set',
 			'default': true
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this movement to complete',
@@ -96,6 +96,7 @@ define([
 		var initialRotation = new Quaternion().fromRotationMatrix(rotation);
 		var finalRotation = new Quaternion().fromRotationMatrix(new Matrix3x3().fromAngles(this.to[0] * MathUtils.DEG_TO_RAD, this.to[1] * MathUtils.DEG_TO_RAD, this.to[2] * MathUtils.DEG_TO_RAD));
 		var workQuaternion = new Quaternion();
+		var time = entity._world.time * 1000;
 
 		if (this.relative) {
 			Quaternion.mul2(initialRotation, finalRotation, finalRotation);
@@ -107,7 +108,7 @@ define([
 			transformComponent.setUpdated();
 		}).onComplete(function() {
 			fsm.send(this.eventToEmit.channel);
-		}.bind(this)).start(fsm.getTime() * 1000);
+		}.bind(this)).start(time);
 	};
 
 	return TweenRotationAction;

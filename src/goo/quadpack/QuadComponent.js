@@ -88,7 +88,7 @@ function (
 		 * @type {Quad}
 		 * @private
 		 */
-		this.meshData = new Quad(settings.width,settings.height,settings.tileX,settings.tileY);
+		this.meshData = new Quad(settings.width, settings.height, settings.tileX, settings.tileY);
 
 		/** Mesh data component that this component creates and adds to the entity.
 		 * @type {MeshDataComponent}
@@ -127,10 +127,13 @@ function (
 	QuadComponent.prototype.setMaterial = function(material) {
 		this.material = material;
 		this.meshRendererComponent.materials = [material];
-		material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
-		material.renderQueue = 2000;
-		material.dualTransparency = true;					// Visible on both sides
-		material.uniforms.discardThreshold = 0.1;
+		// REVIEW: Don't set this stuff here, set it in the data model
+		
+		//material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
+		// material.renderQueue = 2000;
+		//material.cullState.enabled = false;
+		//material.dualTransparency = true;					// Visible on both sides
+		//material.uniforms.discardThreshold = 0.1;
 	};
 
 	/**
@@ -150,8 +153,10 @@ function (
 			return;
 		}
 
-		if(this.preserveAspectRatio && image && image.width && image.height){
-			var ratio = image.width / image.height;
+		if(this.preserveAspectRatio && image){
+			var height = image.svgHeight || image.height;
+			var width = image.svgWidth || image.width;
+			var ratio = width / height;
 			if(ratio > 1){
 				this.width = 1;
 				this.height = 1 / ratio;
@@ -162,8 +167,8 @@ function (
 		}
 
 		var md = this.meshData;
-		md.xExtent = this.width;
-		md.yExtent = this.height;
+		md.xExtent = this.width * 0.5;
+		md.yExtent = this.height * 0.5;
 		md.tileX = this.tileX;
 		md.tileY = this.tileY;
 		this.meshData.rebuild();

@@ -1,13 +1,16 @@
-define([], function () {
+define([
+//	'goo/math/Vector3'
+], function (
+//	Vector3
+	) {
 	'use strict';
-	// REVIEW Would be nice to separate in TriggerChannel and ValueChannel
 
 	function ValueChannel(id, options) {
 		this.id = id;
 		this.keyframes = [];
-		this.time = 0;
 		this.lastTime = 0;
 		this.value = 0;
+		this.enabled = true;
 
 		options = options || {};
 		this.callbackUpdate = options.callbackUpdate;
@@ -80,103 +83,69 @@ define([], function () {
 	};
 
 	/**
-	 * Sets the time
+	 * Update the channel,
 	 * @param time
 	 */
-	ValueChannel.prototype.setTime = function (time) {
-		this.time = time;
-		this.update(0);
-	};
-
-
-	/**
-	 * Update the channel,
-	 * @param tpf
-	 */
-	ValueChannel.prototype.update = function (tpf) {
-		this.time += tpf;
-
-		// redo looping
-
-		// tmp hack
-		// if (this.time > this.lastTime && this.lastTime > 0) {
-		// 	this.time %= this.lastTime;
-		// 	if (this.callbackEnd) {
-		// 		this.callbackEnd();
-		// 	}
-		// 	// REVIEW Need to reset callbackIndex, this might be the easiest way
-		// 	return this.setTime(this.time);
-		// }
+	ValueChannel.prototype.update = function (time) {
+		if (!this.enabled) { return; }
 
 		// run update callback on current position
-		// REVIEW This could be moved to the 'else'
-		var newEntryIndex = find(this.keyframes, this.time);
-		var newEntry = this.keyframes[newEntryIndex];
-
+		if (!this.keyframes.length) {
+			return;
+		}
 		var newValue;
-		if (this.time <= this.keyframes[0].time) {
+		var newEntryIndex;
+		if (time <= this.keyframes[0].time) {
 			newValue = this.keyframes[0].value;
-		} else if (this.time >= this.lastTime) {
+		} else if (time >= this.keyframes[this.keyframes.length - 1].time) {
 			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
+			newEntryIndex = find(this.keyframes, time);
+			var newEntry = this.keyframes[newEntryIndex];
 			var nextEntry = this.keyframes[newEntryIndex + 1];
-			var progressInEntry = (this.time - newEntry.time) / (nextEntry.time - newEntry.time);
-			var progressValue = newEntry.easingFunction(progressInEntry);
 
-			// REVIEW MathUtils.lerp
-			newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
+			if (nextEntry) {
+				var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
+				var progressValue = newEntry.easingFunction(progressInEntry);
+
+				// REVIEW MathUtils.lerp
+				newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
+			} else {
+				newValue = newEntry.value;
+			}
 		}
 
 		//! AT: comparing floats with === is ok here
 		if (this.value !== newValue || true) { // overriding for now to get time progression
 			this.value = newValue;
-			this.callbackUpdate(this.time, this.value, newEntryIndex);
+			this.callbackUpdate(time, this.value, newEntryIndex);
 		}
+		return newValue;
 	};
 
-	// REVIEW Should probably be somewhere else
 	// tween factories
-	ValueChannel.getTranslationXTweener = function (entity) {
+	ValueChannel.getSimpleTransformTweener = function (type, dimensionIndex, entityId, resolver) {
+		var entity;
 		return function (time, value) {
-			// REVIEW Use .data[0]
-			entity.transformComponent.transform.translation.x = value;
+			if (!entity) { entity = resolver(entityId); }
+
+			entity.transformComponent.transform[type].data[dimensionIndex] = value;
 			entity.transformComponent.setUpdated();
 		};
 	};
 
-	ValueChannel.getTranslationYTweener = function (entity) {
-		return function (time, value) {
-			entity.transformComponent.transform.translation.y = value;
+	ValueChannel.getRotationTweener = function(angleIndex, entityId, resolver, rotation) {
+		var entity;
+		var degToRad = Math.PI / 180;
+		var func = function(time, value) {
+			if (!entity) { entity = resolver(entityId); }
+			var rotation = func.rotation;
+			rotation[angleIndex] = value * degToRad;
+			entity.transformComponent.transform.rotation.fromAngles(rotation[0], rotation[1], rotation[2]);
 			entity.transformComponent.setUpdated();
 		};
-	};
-
-	ValueChannel.getTranslationZTweener = function (entity) {
-		return function (time, value) {
-			entity.transformComponent.transform.translation.z = value;
-			entity.transformComponent.setUpdated();
-		};
-	};
-
-	ValueChannel.getScaleXTweener = function (entity) {
-		return function (time, value) {
-			entity.transformComponent.transform.scale.x = value;
-			entity.transformComponent.setUpdated();
-		};
-	};
-
-	ValueChannel.getScaleYTweener = function (entity) {
-		return function (time, value) {
-			entity.transformComponent.transform.scale.y = value;
-			entity.transformComponent.setUpdated();
-		};
-	};
-
-	ValueChannel.getScaleZTweener = function (entity) {
-		return function (time, value) {
-			entity.transformComponent.transform.scale.z = value;
-			entity.transformComponent.setUpdated();
-		};
+		func.rotation = rotation;
+		return func;
 	};
 
 	return ValueChannel;

@@ -142,5 +142,11 @@ define([
 			expect(MathUtils.sign(0)).toBe(0);
 		});
 
+		it('can do radial clamping', function() {
+			var a = -1;
+			a = MathUtils.radialClamp(a, 0, 9);
+			expect(a).toBe(0);
+		});
+
 	});
 });

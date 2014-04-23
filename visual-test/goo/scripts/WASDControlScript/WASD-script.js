@@ -3,7 +3,6 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
@@ -20,7 +19,6 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
 	CameraComponent,
 	ScriptComponent,
 	MeshData,
@@ -34,6 +32,8 @@ require([
 	V
 	) {
 	'use strict';
+
+	//! schteppe: Outdated and already covered in FPCamControlScript test. Delete?
 
 	//! AT: use chars instead of keycodes? depends on how the frontend passes keys
 	var external = {

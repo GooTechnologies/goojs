@@ -50,7 +50,7 @@ function(
 			materials : []
 		};
 
-		this.copyMaterial = Material.createMaterial(ShaderLib.copyPure);
+		this.copyMaterial = new Material(ShaderLib.copyPure);
 		this.copyMaterial.uniforms.opacity = strength;
 		this.copyMaterial.blendState.blending = 'CustomBlending';
 
@@ -61,7 +61,7 @@ function(
 		};
 		this.convolutionShader.uniforms.uImageIncrement = this.blurX;
 		this.convolutionShader.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);
-		this.convolutionMaterial = Material.createMaterial(this.convolutionShader);
+		this.convolutionMaterial = new Material(this.convolutionShader);
 
 		this.enabled = true;
 		this.clear = false;

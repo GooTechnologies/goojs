@@ -1,9 +1,15 @@
 define([], function () {
 	'use strict';
 
+
+	// REVIEW: This and ValueChannel contans a lot of duplicated code. Maybe a single class with different type args, or an abstract parent?
+	// Either this could be the base class and ValueChannel could be the child, since this doesn't seem to contain any event-specific functionality
+	// Then of course you'd change the name
+	// Or you'd move some specific functionality in here and find some other way of sharing the duplicated functionality.
+
 	function EventChannel(id) {
 		this.id = id;
-		this.time = 0;
+		this.enabled = true;
 
 		this.keyframes = [];
 		this.callbackIndex = 0;
@@ -65,7 +71,7 @@ define([], function () {
 		if (time > this.lastTime) {
 			this.keyframes.push(newCallback);
 			this.lastTime = time;
-		} else if (!this.callbackAgenda.length || time < this.keyframes[0].time) {
+		} else if (!this.keyframes.length || time < this.keyframes[0].time) {
 			this.keyframes.unshift(newCallback);
 		} else {
 			var index = find(this.keyframes, time) + 1;
@@ -74,55 +80,31 @@ define([], function () {
 	};
 
 	/**
-	 * Executes any callbacks that are scheduled before the current point in time
-	 * @private
+	 * Update the channel,
+	 * @param time
 	 */
-	EventChannel.prototype._checkCallbacks = function () {
-		while (this.callbackIndex < this.keyframes.length && this.time > this.keyframes[this.callbackIndex].time) {
+	EventChannel.prototype.update = function (time, skipCallback) {
+		if (!this.enabled) { return; }
+		if (!this.keyframes.length) { return; }
+		var currentKeyframe = this.keyframes[this.callbackIndex];
+		if (!currentKeyframe) {
+			currentKeyframe = this.keyframes[this.keyframes.length - 1];
+		}
+		if (time < this.keyframes[0].time) {
+			// Reset event channel
+			this.callbackIndex = 0;
+			return;
+		} else if (time < currentKeyframe.time) {
+			this.callbackIndex = find(this.keyframes, time) + 1;
+		} else if (this.callbackIndex > this.keyframes.length - 1) {
+			return;
+		}
+		if (skipCallback) { return; }
+
+		while (this.callbackIndex < this.keyframes.length && time > this.keyframes[this.callbackIndex].time) {
 			this.keyframes[this.callbackIndex].callback();
 			this.callbackIndex++;
 		}
-	};
-
-	/**
-	 * Sets the time
-	 * @param time
-	 */
-	EventChannel.prototype.setTime = function (time) {
-		this.time = time;
-		this.callbackIndex = find(this.keyframes, this.time, this.lastTime);
-		this.update(0);
-	};
-
-
-	/**
-	 * Update the channel,
-	 * @param tpf
-	 */
-	EventChannel.prototype.update = function (tpf) {
-		this.time += tpf;
-
-		// redo looping
-
-		// tmp hack
-		// if (this.time > this.lastTime && this.lastTime > 0) {
-		// 	this.time %= this.lastTime;
-		// 	// REVIEW No callbackend from handler
-		// 	if (this.callbackEnd) {
-		// 		this.callbackEnd();
-		// 	}
-		// 	// REVIEW Need to reset callbackIndex, this might be the easiest way
-		// 	return this.setTime(this.time);
-		// }
-
-		this._checkCallbacks();
-	};
-
-	EventChannel.getScaleZTweener = function (entity) {
-		return function (time, value) {
-			entity.transformComponent.transform.scale.z = value;
-			entity.transformComponent.setUpdated();
-		};
 	};
 
 	return EventChannel;

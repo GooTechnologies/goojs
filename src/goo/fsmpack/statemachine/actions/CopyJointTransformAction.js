@@ -48,6 +48,13 @@ function(
 
 	function updateWorldTransform(transformComponent) {
 		transformComponent.updateWorldTransform();
+		var entity = transformComponent.entity;
+		if (entity && entity.meshDataComponent && entity.meshRendererComponent) {
+			entity.meshRendererComponent.updateBounds(
+				entity.meshDataComponent.modelBound,
+				transformComponent.worldTransform
+			);
+		}
 
 		for (var i = 0; i < transformComponent.children.length; i++) {
 			updateWorldTransform(transformComponent.children[i]);

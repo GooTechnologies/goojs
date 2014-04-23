@@ -6,8 +6,7 @@ function(
 	System
 ) {
 	"use strict";
-
-	var Ammo = window.Ammo; // make jslint happy
+	/*global Ammo */
 
 	/**
 	 * @class Handles integration with Ammo.js.

@@ -715,7 +715,7 @@ function (
 		out[7] = a21 * c - a11 * s;
 		out[8] = a22 * c - a12 * s;
 
-		return out;
+		return store;
 	};
 
 	/**
@@ -756,7 +756,7 @@ function (
 		out[7] = a01 * s + a21 * c;
 		out[8] = a02 * s + a22 * c;
 
-		return out;
+		return store;
 	};
 
 	/**
@@ -797,7 +797,7 @@ function (
 		out[4] = a11 * c - a01 * s;
 		out[5] = a12 * c - a02 * s;
 
-		return out;
+		return store;
 	};
 
 	/**

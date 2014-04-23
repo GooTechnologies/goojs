@@ -75,9 +75,7 @@ function(
 			return;
 		}
 
-		// will be based on static setting when we add it to Create
-		// if (!subs || entity.isStatic === false) {
-		if (!subs || entity.scriptComponent || entity.stateMachineComponent) {
+		if (!subs || entity.static === false) {
 			subs = [];
 			baseSubs.put(entity, subs);
 		}
@@ -183,7 +181,7 @@ function(
 		var wb = new BoundingBox();
 		for (var i = 0; i < entities.length; i++) {
 			var rootEntity = entities[i];
-			EntityUtils.traverse(rootEntity, function(entity) {
+			rootEntity.traverse(function (entity) {
 				if (entity.meshRendererComponent && !entity.particleComponent) {
 					if (first) {
 						var bound = entity.meshRendererComponent.worldBound;

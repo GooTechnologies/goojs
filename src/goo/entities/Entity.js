@@ -49,7 +49,12 @@ function (
 		 */
 		this.hidden = false;
 
+		/** Mark entity as static, to allow being mesh-combined.
+		 * @type {boolean}
+		 * @default false
+		 */
 		this.static = false;
+
 		Entity.entityCount++;
 	}
 
@@ -72,6 +77,7 @@ function (
 				this.setComponent(argument);
 			} else {
 				// ask all components if they are compatible with the given data
+				if (!this._world) { return this; }
 				var components = this._world._components;
 				for (var j = 0; j < components.length; j++) {
 					var component = components[j];
@@ -138,7 +144,7 @@ function (
 
 		component.applyAPI(this);
 
-		if (this._world.entityManager.containsEntity(this)) {
+		if (this._world && this._world.entityManager.containsEntity(this)) {
 			this._world.changedEntity(this, component, 'addedComponent');
 		}
 
@@ -197,7 +203,7 @@ function (
 			delete this[typeAttributeName];
 
 			// notifying the world of the change
-			if (this._world.entityManager.containsEntity(this)) {
+			if (this._world && this._world.entityManager.containsEntity(this)) {
 				this._world.changedEntity(this, component, 'removedComponent');
 			}
 		}

@@ -3,7 +3,6 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
@@ -21,7 +20,6 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
-	ShapeCreator,
 	CameraComponent,
 	ScriptComponent,
 	MeshData,
@@ -36,6 +34,8 @@ require([
 	V
 	) {
 	'use strict';
+
+	//! schteppe: Outdated. Delete test?
 
 	var external = {
 		name: 'Pick and rotate',

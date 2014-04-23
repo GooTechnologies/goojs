@@ -129,7 +129,7 @@ function(
 			var camera = Renderer.mainCamera;
 			var scale;
 			if (camera.projectionMode === Camera.Perspective) {
-				var dist = Math.sqrt(camera.translation.distanceSquared(this.transform.translation));
+				var dist = camera.translation.distance(this.transform.translation);
 				scale = dist * this._gizmoSize;
 			} else {
 				scale = (camera._frustumTop - camera._frustumBottom) / 30;
@@ -222,7 +222,7 @@ function(
 	};
 
 	Gizmo.prototype._buildMaterialForAxis = function(axis, opacity) {
-		var material = Material.createMaterial(Gizmo._shaderDef, axis+'Material');
+		var material = new Material(Gizmo._shaderDef, axis + 'Material');
 		material.uniforms.color = this._colors[axis];
 
 		if(opacity !== undefined && opacity < 1.0) {

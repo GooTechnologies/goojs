@@ -67,17 +67,22 @@ function (
 	var p0 = new Vector3();
 
 	/**
-	 * Get the intersection of a ray with a plane
+	 * Get the intersection of a ray with a plane.
 	 * @param {Ray} ray
 	 * @param {Vector3} [store]
-	 * @returns {Vector3} store or new Vector3
+	 * @param {bool} [suppressWarnings=false]
+	 * @param {bool} [precision=1e-8]
+	 * @returns {Vector3|null} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
 	 */
-	Plane.prototype.rayIntersect = function (ray, store) {
+	Plane.prototype.rayIntersect = function (ray, store, suppressWarnings, precision) {
+		precision = typeof(precision)==='undefined' ? 1e-7 : precision;
 		store = store || new Vector3();
 
 		var lDotN = ray.direction.dot(this.normal);
-		if(Math.abs(lDotN) < 1e-8) {
-			console.warn('Ray parallell with plane');
+		if(Math.abs(lDotN) < precision) {
+			if(!suppressWarnings){
+				console.warn('Ray parallell with plane');
+			}
 			return null;
 		}
 		var c = this.constant;

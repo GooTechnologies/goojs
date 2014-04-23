@@ -17,7 +17,7 @@ function(
 	ResumeAnimationAction.external = {
 		name: 'Resume Animation',
 		type: 'animation',
-		description: 'Continues playing an animation',
+		description: 'Continues playing a skeleton animation',
 		parameters: [{
 			name: 'On all',
 			key: 'onAll',

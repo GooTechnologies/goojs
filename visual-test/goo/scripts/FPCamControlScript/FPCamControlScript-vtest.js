@@ -1,39 +1,24 @@
 require([
 	'goo/entities/GooRunner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/components/CameraComponent',
 	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/entities/components/LightComponent',
-	'goo/scripts/WASDControlScript',
-	'goo/scripts/FPCamControlScript',
+	'goo/scripts/newwave/WASDScript',
 	'goo/scripts/newwave/FPCamControlScript',
-	'lib/V'
+	'lib/V',
+	'goo/scripts/Scripts'
 ], function (
 	GooRunner,
-	Material,
-	ShaderLib,
 	Camera,
-	ShapeCreator,
-	CameraComponent,
 	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
-	Vector3,
-	PointLight,
-	LightComponent,
 	WASDControlScript,
 	FPCamControlScript,
-	NewWaveFPCamControlScript,
-	V
-	) {
+	V,
+	Scripts
+) {
 	'use strict';
+
+	// FPCamControlScript is not in ScriptRegister yet, include it manually
+	Scripts.register(FPCamControlScript);
 
 	var goo = V.initGoo();
 
@@ -48,17 +33,20 @@ require([
 	// camera control set up
 	var scripts = new ScriptComponent();
 
-	// WASD control script to move around
-	scripts.scripts.push(new WASDControlScript({
+	var wasdScript = Scripts.create('WASD', {
 		domElement: goo.renderer.domElement,
 		walkSpeed: 25.0,
 		crawlSpeed: 10.0
-	}));
+	});
+	var fpScript = Scripts.create('FPCamControlScript', {
+		domElement: goo.renderer.domElement,
+		maxAscent: 89,
+		minAscent: -89,
+		turnSpeedVertical: 0.005,
+		turnSpeedHorizontal: 0.005,
+	});
 
-	// the FPCam script itself that locks the pointer and moves the camera
-	var fpScript = NewWaveFPCamControlScript();
-	fpScript.parameters = { domElement: goo.renderer.domElement };
-	scripts.scripts.push(fpScript);
+	scripts.scripts.push(wasdScript, fpScript);
 
 	cameraEntity.setComponent(scripts);
 });

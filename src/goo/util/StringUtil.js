@@ -1,22 +1,27 @@
 /*jshint bitwise: false */
-define(function() {
+define([],
+/** @lends */
+function () {
 	"use strict";
 
-	var StringUtil = {};
+	/**
+	 * @class
+	 */
+	function StringUtil() {}
 
-	StringUtil.endsWith = function(str, suffix) {
+	StringUtil.endsWith = function (str, suffix) {
 		return str.indexOf(suffix, str.length - suffix.length) !== -1;
 	};
 
-	StringUtil.startsWith = function(str, prefix) {
+	StringUtil.startsWith = function (str, prefix) {
 		return str.indexOf(prefix) === 0;
 	};
 
-	StringUtil.capitalize = function(str) {
+	StringUtil.capitalize = function (str) {
 		return str.charAt(0).toUpperCase() + str.substring(1);
 	};
 
-	StringUtil.uncapitalize = function(str) {
+	StringUtil.uncapitalize = function (str) {
 		return str.charAt(0).toLowerCase() + str.substring(1);
 	};
 
@@ -29,7 +34,7 @@ define(function() {
 				return randomNumber.toString(16);
 			} else {
 				// Set bit 6 and 7 to 0 and 1
-				return (randomNumber&0x3|0x8).toString(16);
+				return (randomNumber & 0x3 | 0x8).toString(16);
 			}
 		});
 
@@ -45,7 +50,7 @@ define(function() {
 	 * @param {string} string
 	 * @param {string} stopString
 	 */
-	StringUtil.getUntil = function(string, stopString) {
+	StringUtil.getUntil = function (string, stopString) {
 		var stopIndex = string.indexOf(stopString);
 		if (stopIndex === -1) {
 			return string;
@@ -60,7 +65,7 @@ define(function() {
 	 * @param {string} stopString
 	 * @returns {string}
 	 */
-	StringUtil.getAfterLast = function(string, stopString) {
+	StringUtil.getAfterLast = function (string, stopString) {
 		var stopIndex = string.lastIndexOf(stopString);
 		if (stopIndex === -1) {
 			return string;
@@ -78,7 +83,7 @@ define(function() {
 	 * @param {string} string
 	 * @param {string} startString
 	 */
-	StringUtil.getFrom = function(string, startString) {
+	StringUtil.getFrom = function (string, startString) {
 		var startIndex = string.indexOf(startString);
 		if (startIndex === -1) {
 			return '';
@@ -89,25 +94,24 @@ define(function() {
 		}
 	};
 
-	StringUtil.getIndexedName = function(base, takenNames, separator){
+	StringUtil.getIndexedName = function (base, takenNames, separator) {
 		if (!separator) {
 			separator = '_';
 		}
 
-		var re = new RegExp(base+'(' + separator + '\\d+)?');
+		var re = new RegExp(base + '(' + separator + '\\d+)?');
 		var i;
 		var index = 0;
 		for (i in takenNames) {
 			var name = takenNames[i];
 			var m = re.exec(name);
 			if (m) {
-				if (m.length>1 && m[1]){
+				if (m.length > 1 && m[1]) {
 					var nidx = parseInt(m[1].substring(separator.length), 10);
-					if (nidx>=index) {
-						index = nidx+1;
+					if (nidx >= index) {
+						index = nidx + 1;
 					}
-				}
-				else {
+				} else {
 					index = 1;
 				}
 			}
@@ -116,8 +120,8 @@ define(function() {
 		return base + separator + index;
 	};
 
-	StringUtil.getUniqueName = function(desiredName, takenNames, separator) {
-		if (takenNames.indexOf(desiredName)===-1) {
+	StringUtil.getUniqueName = function (desiredName, takenNames, separator) {
+		if (takenNames.indexOf(desiredName) === -1) {
 			return desiredName;
 		}
 
@@ -133,7 +137,7 @@ define(function() {
 	Js implementation of Java's hashcode (sort of). Somewhat useful for creating
 	unique ideas that contain [A-Za-z0-9-_]
 	*/
-	StringUtil.hashCode = function(str) {
+	StringUtil.hashCode = function (str) {
 		var hash = 0;
 
 		if (str.length === 0) {
@@ -154,7 +158,7 @@ define(function() {
 	var idCounter = +new Date();
 
 	// returns an almost unique id
-	StringUtil.getUniqueId = function() {
+	StringUtil.getUniqueId = function () {
 		idCounter++;
 		var stringedArguments = Array.prototype.slice.call(arguments, 0).join('');
 		return StringUtil.hashCode(idCounter + '' + stringedArguments);
@@ -162,24 +166,75 @@ define(function() {
 
 	/**
 	 * Escapes all HTML entities from a given string.
-	 * 
+	 *
 	 * @param  {string} text
-	 * 		The string whose HTML entities are to be encoded.
-	 * 		
+	 * The string whose HTML entities are to be encoded.
+	 *
 	 * @return {string}
-	 * 		The specified string with all its HTML entities encoded.
+	 * The specified string with all its HTML entities encoded.
 	 */
 	StringUtil.escapeHtmlEntities = function (text) {
 		var div = document.createElement('div');
 		div.appendChild(document.createTextNode(text));
-		
+
 		// Any edge cases that are not escaped by the browser.
 		var edgeCases = { 34: 'quot' };
 
-		return div.innerHTML.replace(/[\u00A0-\u2666\"\']/g, function(c) {
+		return div.innerHTML.replace(/[\u00A0-\u2666\"\']/g, function (c) {
 			var entityName = edgeCases[c.charCodeAt(0)];
 			return '&' + (entityName || '#' + c.charCodeAt(0)) + ';';
 		});
+	};
+
+	/**
+	 * Parses an URL
+	 * @param {string} url
+	 * @example
+	 *     var url = 'http://example.com:1234/images/goo.png?param=1#fragment';
+	 *     var parts = Ajax.parseURL(url);
+	 *     parts.scheme			// 'http'
+	 *     parts.domain			// 'example.com'
+	 *     parts.user_info		// undefined
+	 *     parts.port			// '1234'
+	 *     parts.path			// '/images/goo.png'
+	 *     parts.query_data		// 'param=1'
+	 *     parts.fragment		// 'fragment'
+	 */
+
+	//! AT: this does far too much and is used only to get the extension of whatever the uri is
+	// write a faster one instead
+
+	// let's save it ourselves if the browser doesn't automagically do it
+	var splitRegExp = new RegExp(
+		'^' +
+		'(?:' +
+		'([^:/?#.]+)' +                         // scheme - ignore special characters
+		// used by other URL parts such as :,
+		// ?, /, #, and .
+		':)?' +
+		'(?://' +
+		'(?:([^/?#]*)@)?' +                     // userInfo
+		'([\\w\\d\\-\\u0100-\\uffff.%]*)' +     // domain - restrict to letters,
+		// digits, dashes, dots, percent
+		// escapes, and unicode characters.
+		'(?::([0-9]+))?' +                      // port
+		')?' +
+		'([^?#]+)?' +                           // path
+		'(?:\\?([^#]*))?' +                     // query
+		'(?:#(.*))?' +                          // fragment
+		'$');
+
+	StringUtil.parseURL = function (uri) {
+		var split = uri.match(splitRegExp);
+		return {
+			'scheme': split[1],
+			'user_info': split[2],
+			'domain': split[3],
+			'port': split[4],
+			'path': split[5],
+			'query_data': split[6],
+			'fragment': split[7]
+		};
 	};
 
 	return StringUtil;
