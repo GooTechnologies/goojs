@@ -122,5 +122,26 @@ define(["goo/math/Matrix3x3", "goo/math/Vector3", "goo/math/Quaternion"], functi
 			testMatrix.toAngles(store);
 			expect(testVec).toEqual(store);
 		});
+
+		describe('rotateX', function () {
+			it('returns itself when no store matrix is given', function () {
+				var a = new Matrix3x3();
+				expect(a.rotateX(1)).toBe(a);
+			});
+		});
+
+		describe('rotateY', function () {
+			it('returns itself when no store matrix is given', function () {
+				var a = new Matrix3x3();
+				expect(a.rotateY(1)).toBe(a);
+			});
+		});
+
+		describe('rotateZ', function () {
+			it('returns itself when no store matrix is given', function () {
+				var a = new Matrix3x3();
+				expect(a.rotateZ(1)).toBe(a);
+			});
+		});
 	});
 });
