@@ -59,7 +59,10 @@ function(
 			useWorldTransform : false,
 			linearFactor : new Ammo.btVector3(1, 1, 1),
 			isTrigger : false,
-			onInitializeBody : null
+			onInitializeBody : null,
+            scale: null,
+            translation: null,
+            rotation: null
 		});
 
 		this.mass = settings.mass;
@@ -70,6 +73,8 @@ function(
 		this.onInitializeBody = settings.onInitializeBody;
 		this.isTrigger = settings.isTrigger;
         this.scale = settings.scale;
+        this.translation = settings.translation;
+        this.rotation = settings.rotation;
 
 		this.type = 'AmmoComponent';
 		this.ammoTransform = new Ammo.btTransform();
@@ -142,14 +147,15 @@ function(
 			gooTransform = entity.transformComponent.worldTransform;
 		}
 
-		var gooPos = gooTransform.translation;
+		var gooPos = this.translation || gooTransform.translation;
+        var gooRot = this.rotation || gooTransform.rotation;
 
 		var ammoTransform = new Ammo.btTransform();
 		ammoTransform.setIdentity(); // TODO: is this needed ?
 		ammoTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
-		this.gooQuaternion.fromRotationMatrix(gooTransform.rotation);
-		var q = this.gooQuaternion;
-		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		this.gooQuaternion.fromRotationMatrix(gooRot);
+        var q = this.gooQuaternion;
+        ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
 
 		if (this.useWorldBounds) {
 			entity._world.process();
