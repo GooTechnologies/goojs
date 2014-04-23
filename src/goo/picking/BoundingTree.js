@@ -172,9 +172,9 @@ function (BoundingBox, BoundingSphere, Vector3) {
 
 			var vertices = null;
 			var vecStore = new Vector3();
-			for ( var i = this.start; i < this.end; i++) {
+			for (var i = this.start; i < this.end; i++) {
 				vertices = data.getPrimitiveVertices(this.primitiveIndices[i], this.section, vertices);
-				for ( var t = 0; t < vertices.length; t++) {
+				for (var t = 0; t < vertices.length; t++) {
 					worldTransform.matrix.applyPostPoint(vertices[t]);
 				}
 				if (ray.intersects(vertices, false, vecStore)) {
@@ -184,14 +184,13 @@ function (BoundingBox, BoundingSphere, Vector3) {
 					var vec = new Vector3();
 					vec.setv(vecStore);
 					result.points.push(vec);
-					result.vertices = result.vertices || [];
-					result.vertices.push(vertices);
 
-					// result.hits = result.hits || [];
-					// result.hits.push({
-					// 	distance: ray.origin.distance(vecStore),
-					// 	point: vecStore
-					// });
+					result.vertices = result.vertices || [];
+					var verticesCopy = [];
+					for (var copyIndex = vertices.length - 1; copyIndex >= 0; copyIndex--) {
+						verticesCopy[copyIndex] = new Vector3().setv(vertices[copyIndex]);
+					}
+					result.vertices.push(verticesCopy);
 				}
 			}
 		}
