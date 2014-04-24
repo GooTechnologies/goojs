@@ -9,7 +9,7 @@ define([
 	'goo/renderer/shaders/ShaderLib'
 ],
 /** @lends */
-function(
+function (
 	Action,
 	PortalComponent,
 	PortalSystem,
@@ -56,7 +56,7 @@ function(
 		var entity = fsm.getOwnerEntity();
 		var world = entity._world;
 
-		var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
+		var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 
 		if (!cameraEntity || !cameraEntity.cameraComponent || !cameraEntity.cameraComponent.camera) { return; }
 		var camera = cameraEntity.cameraComponent.camera;
