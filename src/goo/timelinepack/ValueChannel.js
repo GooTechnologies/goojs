@@ -83,7 +83,7 @@ define([
 	};
 
 	/**
-	 * Update the channel,
+	 * Update the channel to a given time.
 	 * @param time
 	 */
 	ValueChannel.prototype.update = function (time) {
