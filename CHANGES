@@ -1,3 +1,8 @@
+v0.9.8 --- 2014-04-24
+
+Fixes:
+ * SetRenderTargetAction, InFrustumAction fixes
+
 v0.9.7 --- 2014-04-22
 
 Fixes:
