@@ -789,6 +789,7 @@ function (
 			this.updateBlending(material);
 			this.updateOffset(material);
 			this.updateTextures(material);
+
 			this.updateLineAndPointSettings(material);
 
 			this._checkDualTransparency(material, meshData);
@@ -1057,6 +1058,7 @@ function (
 
 			for (var j = 0; j < textureList.length; j++) {
 				texture = textureList[j];
+
 				var texIndex = textureSlot.index instanceof Array ? textureSlot.index[j] : textureSlot.index;
 
 				if (texture === null ||
@@ -1077,6 +1079,7 @@ function (
 				if (texture.glTexture === null) {
 					texture.glTexture = context.createTexture();
 					this.updateTexture(context, texture, texIndex, unitrecord);
+					texture.needsUpdate = false;
 				} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
 					this.updateTexture(context, texture, texIndex, unitrecord);
 					texture.needsUpdate = false;
