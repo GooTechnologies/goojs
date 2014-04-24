@@ -12,6 +12,17 @@ function (
 
 		this.eventListener = function (evt) {
 
+			var htmlCmp = this.ownerEntity.getComponent('HtmlComponent');
+			var clickedHtmlCmp = (htmlCmp && htmlCmp.domElement.contains(evt.target));
+			if (clickedHtmlCmp) {
+				this.handleExit();
+				return;
+			}
+
+			if (evt.target !== this.canvasElement) {
+				return;
+			}
+
 			var pickResult = this.goo.pickSync(evt.offsetX, evt.offsetY);
 			if (pickResult.id === -1) {
 				return;
@@ -24,8 +35,7 @@ function (
 				return;
 			}
 
-			var handler = window.gooHandleExit || this.handleExit.bind(this);
-			handler(this.url, this.exitName);
+			this.handleExit();
 
 		}.bind(this);
 	}
@@ -58,16 +68,26 @@ function (
 	PickAndExitAction.prototype._setup = function (fsm) {
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
-		this.domElement = this.goo.renderer.domElement;
+		this.canvasElement = this.goo.renderer.domElement;
+		//
+		// ASSUMPTION: HtmlComponents will be attached in the DOM as siblings
+		// to the canvas.
+		//
+		this.domElement = this.canvasElement.parentNode;
 		this.domElement.addEventListener('click', this.eventListener, false);
 	};
 
-	PickAndExitAction.prototype._run = function (fsm) {
+	PickAndExitAction.prototype._run = function () {
 		// Don't really need it.
 	};
 
-	PickAndExitAction.prototype.handleExit = function (url) {
-		window.open(url, '_blank');
+	PickAndExitAction.prototype.handleExit = function () {
+
+		var handler = window.gooHandleExit || function (url) {
+			window.open(url, '_blank');
+		};
+
+		handler(this.url, this.exitName);
 	};
 
 	PickAndExitAction.prototype.exit = function () {
