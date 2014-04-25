@@ -114,6 +114,10 @@ define([
 			var data = this.gamepadData[gamepadIndex];
 			var gamepad = this.gamepads[gamepadIndex];
 
+			if (!gamepad) {
+				return;
+			}
+
 			// TODO: Refactor the functions to be in an array in the component.
 			var rawX, rawY, rawData;
 			if (gamepadComponent.leftStickFunction) {
