@@ -51,7 +51,7 @@ require([
 		var xrot =  - vec.x * amount * Math.PI * 0.25;
 		var currentRotation = entity.getRotation();
 		entity.setRotation(currentRotation.x, currentRotation.y, xrot);
-		entity.setTranslation(0, -rawData[1] * 0.5, 0);
+		entity.setTranslation(rawData[0] * 0.2, -rawData[1] * 0.5, 0);
 	});
 
 	gamepadComponent.setRightStickFunction(function(entity, vec, amount, rawData) {
