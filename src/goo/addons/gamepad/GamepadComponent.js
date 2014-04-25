@@ -16,7 +16,11 @@ function(
 
 		this.type = 'GamepadComponent';
 
-		this.buttoncallbacks = {};
+		this.buttonDownFunctions = {};
+
+		this.buttonUpFunctions = {};
+
+		this.buttonPressedFunctions = {};
 
 		this.leftStickFunction = null;
 		this.rightStickFunction = null;
@@ -25,18 +29,27 @@ function(
 	}
 
 	GamepadComponent.prototype = Object.create(Component.prototype);
+
 	GamepadComponent.prototype.constructor = GamepadComponent;
 
-	GamepadComponent.prototype.setButtonCallback = function(buttonIndex, callback) {
-		this.buttoncallbacks[buttonIndex] = callback;
+	GamepadComponent.prototype.setButtonDownFunction = function(buttonIndex, buttonFunction) {
+		this.buttonDownFunctions[buttonIndex] = buttonFunction;
 	};
 
-	GamepadComponent.prototype.setLeftStickFunction = function (callback) {
-		this.leftStickFunction = callback;
+	GamepadComponent.prototype.setButtonUpFunction = function(buttonIndex, buttonFunction) {
+		this.buttonUpFunctions[buttonIndex] = buttonFunction;
 	};
 
-	GamepadComponent.prototype.setRightStickFunction = function (callback) {
-		this.rightStickFunction = callback;
+	GamepadComponent.prototype.setButtonPressedFunction= function(buttonIndex, buttonFunction) {
+		this.buttonPressedFunctions[buttonIndex] = buttonFunction;
+	};
+
+	GamepadComponent.prototype.setLeftStickFunction = function (stickFunction) {
+		this.leftStickFunction = stickFunction;
+	};
+
+	GamepadComponent.prototype.setRightStickFunction = function (stickFunction) {
+		this.rightStickFunction = stickFunction;
 	};
 
 
