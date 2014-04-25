@@ -113,3 +113,9 @@ task 'visualtoc',
 	->
 		toc = require('./visual-test/toc')
 		toc.run()
+
+task 'examplestoc',
+	'Creates a table of content index.html for examples',
+	->
+		toc = require('./examples/toc')
+		toc.run()

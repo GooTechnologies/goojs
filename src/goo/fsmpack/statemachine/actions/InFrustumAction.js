@@ -4,7 +4,7 @@ define([
 	'goo/renderer/bounds/BoundingSphere'
 ],
 /** @lends */
-function(
+function (
 	Action,
 	Camera,
 	BoundingSphere
@@ -57,7 +57,7 @@ function(
 	InFrustumAction.prototype._setup = function (fsm) {
 		if (!this.current) {
 			var world = fsm.getOwnerEntity()._world;
-			var cameraEntity = world.entityManager.getEntityByName(this.cameraEntityRef);
+			var cameraEntity = world.entityManager.getEntityById(this.cameraEntityRef);
 			this.camera = cameraEntity.cameraComponent.camera;
 		}
 	};

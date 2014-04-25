@@ -789,6 +789,7 @@ function (
 			this.updateBlending(material);
 			this.updateOffset(material);
 			this.updateTextures(material);
+
 			this.updateLineAndPointSettings(material);
 
 			this._checkDualTransparency(material, meshData);
@@ -1057,6 +1058,7 @@ function (
 
 			for (var j = 0; j < textureList.length; j++) {
 				texture = textureList[j];
+
 				var texIndex = textureSlot.index instanceof Array ? textureSlot.index[j] : textureSlot.index;
 
 				if (texture === null ||
@@ -1077,6 +1079,7 @@ function (
 				if (texture.glTexture === null) {
 					texture.glTexture = context.createTexture();
 					this.updateTexture(context, texture, texIndex, unitrecord);
+					texture.needsUpdate = false;
 				} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
 					this.updateTexture(context, texture, texIndex, unitrecord);
 					texture.needsUpdate = false;
@@ -1806,10 +1809,13 @@ function (
 
 	Renderer.prototype.getCapabilitiesString = function () {
 		var caps = [];
+		var isArrayBufferView = function(value) {
+			return value && value.buffer instanceof ArrayBuffer && value.byteLength !== undefined;
+		}
 		for (var name in this.capabilities) {
 			var cap = this.capabilities[name];
 			var str = '';
-			if (cap instanceof ArrayBufferView) {
+			if (isArrayBufferView(cap)) {
 				str += '[';
 				for (var i = 0; i < cap.length; i++) {
 					str += cap[i];

@@ -10,6 +10,7 @@ define([
 		this.keyframes = [];
 		this.lastTime = 0;
 		this.value = 0;
+		this.enabled = true;
 
 		options = options || {};
 		this.callbackUpdate = options.callbackUpdate;
@@ -82,10 +83,12 @@ define([
 	};
 
 	/**
-	 * Update the channel,
+	 * Update the channel to a given time.
 	 * @param time
 	 */
 	ValueChannel.prototype.update = function (time) {
+		if (!this.enabled) { return; }
+
 		// run update callback on current position
 		if (!this.keyframes.length) {
 			return;

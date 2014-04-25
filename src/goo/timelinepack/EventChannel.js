@@ -9,6 +9,7 @@ define([], function () {
 
 	function EventChannel(id) {
 		this.id = id;
+		this.enabled = true;
 
 		this.keyframes = [];
 		this.callbackIndex = 0;
@@ -83,6 +84,7 @@ define([], function () {
 	 * @param time
 	 */
 	EventChannel.prototype.update = function (time, skipCallback) {
+		if (!this.enabled) { return; }
 		if (!this.keyframes.length) { return; }
 		var currentKeyframe = this.keyframes[this.callbackIndex];
 		if (!currentKeyframe) {

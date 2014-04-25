@@ -298,7 +298,7 @@ function (
 	 * @private
 	 */
 
-	var refRegex = new RegExp('\S+refs?$', 'i');
+	var refRegex = new RegExp('\\S+refs?$', 'i');
 	//var refRegex = /\S+refs?$/i; //! AT: if you do profiling and use this instead your flame chart will loook totally different - probably due to this form not compiling at parse time
 
 	DynamicLoader.prototype._getRefsFromConfig = function (config) {
