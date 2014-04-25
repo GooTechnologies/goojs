@@ -9,9 +9,7 @@ require([
 	'goo/entities/GooRunner',
 	'goo/entities/EntityUtils',
 	'goo/renderer/light/PointLight',
-	'goo/renderer/Camera',
-	'goo/scripts/OrbitNPanControlScript',
-	'goo/entities/components/ScriptComponent'
+	'goo/renderer/Camera'
 ], function(
 	V,
 	GamepadSystem,
@@ -23,9 +21,7 @@ require([
 	GooRunner,
 	EntityUtils,
 	PointLight,
-	Camera,
-	OrbitNPanControlScript,
-	ScriptComponent
+	Camera
 	) {
 
 	'use strict';
@@ -35,7 +31,8 @@ require([
 			position: 'bottomright',
 			color: '#FFF'
 		},
-		manuallyStartGameLoop: true
+		manuallyStartGameLoop: true,
+		showStats: true
 	};
 	var goo = new GooRunner(options);
 	goo.renderer.domElement.id = 'goo';
