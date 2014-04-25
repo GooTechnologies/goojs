@@ -754,6 +754,83 @@ function(
 		}
 	];
 
+	function Antialias(id) {
+		FullscreenPass.call(this, Util.clone(ShaderLib.antialias));
+		this.id = id;
+	}
+	Antialias.prototype = Object.create(FullscreenPass.prototype);
+	Antialias.prototype.constructor = Antialias;
+
+	Antialias.prototype.update = function (config) {
+		var options = config.options;
+		var shader = this.material.shader;
+		if (options.span !== undefined) {
+			shader.uniforms.FXAA_SPAN_MAX = options.span;
+			shader.uniforms.FXAA_REDUCE_MUL = 1 / options.span;
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+
+	Antialias.label = 'Antialias';
+	Antialias.options = [
+		{
+			key: 'span',
+			type: 'int',
+			control: 'slider',
+			name: 'Span',
+			min: 0,
+			max: 16,
+			'default': 8
+		}
+	];
+
+	function Radial(id) {
+		FullscreenPass.call(this, Util.clone(ShaderLib.radial));
+		this.id = id;
+	}
+	Radial.prototype = Object.create(FullscreenPass.prototype);
+	Radial.prototype.constructor = Radial;
+
+	Radial.prototype.update = function (config) {
+		var options = config.options;
+		var shader = this.material.shader;
+		if (options.offset !== undefined) {
+			shader.uniforms.offset = options.offset;
+		}
+		if (options.multiplier !== undefined) {
+			shader.uniforms.multiplier = options.multiplier;
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+
+	Radial.label = 'Radial';
+	Radial.options = [
+		{
+			key: 'offset',
+			type: 'float',
+			control: 'slider',
+			name: 'Offset',
+			min: -1,
+			max: 1,
+			decimals: 2,
+			'default': -0.5
+		},
+		{
+			key: 'multiplier',
+			type: 'float',
+			control: 'slider',
+			name: 'Multiplier',
+			min: -1,
+			max: 1,
+			decimals: 2,
+			'default': 0.75
+		}
+	];
+
 	return {
 		Bloom: Bloom,
 		Blur: Blur,
@@ -769,6 +846,8 @@ function(
 		Dot: Dot,
 		Contrast: Contrast,
 		DiffOfGaussians: DiffOfGaussians,
-		MotionBlur: MotionBlur
+		MotionBlur: MotionBlur,
+		Antialias: Antialias,
+		Radial: Radial
 	};
 });
