@@ -1,6 +1,6 @@
 define( [], function(){
 	"use strict";
-	var Ammo = window.Ammo; // make jslint happy
+	/*global Ammo */
 
 	// TODO: instead of using this scale parameter, "simply" scale the vertices with the real entity transform
 	return function(entity, scale) {
