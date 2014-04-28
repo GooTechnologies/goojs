@@ -61,25 +61,24 @@ function (
 
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			var scriptContext = Object.create(componentContext);
-
-			script.context = scriptContext;
-
-			if (script.setup) {
-				try {
-					script.setup(script.parameters, script.context, this._gooClasses);
-					if (script.parameters && script.parameters.enabled !== undefined) {
-						script.enabled = script.parameters.enabled;
-					} else {
-						script.enabled = true;
+			if (!script.context) {
+				script.context = Object.create(componentContext);
+				if (script.parameters && script.parameters.enabled !== undefined) {
+					script.enabled = script.parameters.enabled;
+				} else {
+					script.enabled = true;
+				}
+				if (script.setup) {
+					try {
+						script.setup(script.parameters, script.context, this._gooClasses);
+					} catch (e) {
+						script.enabled = false;
+						SystemBus.emit('goo.scriptError', {
+							message: e.message || e,
+							phase: 'setup',
+							scriptName: script.name || script.externals.name
+						});
 					}
-				} catch(e) {
-					script.enabled = false;
-					SystemBus.emit('goo.scriptError', {
-						message: e.message || e,
-						phase: 'setup',
-						scriptName: script.name || script.externals.name
-					});
 				}
 			}
 		}
@@ -128,17 +127,20 @@ function (
 	ScriptComponent.prototype.cleanup = function () {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			if (script.context && script.cleanup) {
-				try {
-					script.cleanup(script.parameters, script.context, this._gooClasses);
-				} catch (e) {
-					SystemBus.emit('goo.scriptError', {
-						message: e.message || e,
-						scriptName: script.name || script.externals.name,
-						phase: 'cleanup'
-					});
+			if (script.context) {
+				if (script.cleanup) {
+					try {
+						script.cleanup(script.parameters, script.context, this._gooClasses);
+					} catch (e) {
+						SystemBus.emit('goo.scriptError', {
+							message: e.message || e,
+							scriptName: script.name || script.externals.name,
+							phase: 'cleanup'
+						});
+					}
 				}
 				script.enabled = false;
+				script.context = null;
 			}
 		}
 	};

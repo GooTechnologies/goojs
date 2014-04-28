@@ -14,7 +14,7 @@ define([
 	'goo/scripts/Scripts'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	RSVP,
 	OrbitCamControlScript,
@@ -51,7 +51,7 @@ function(
 	 * the script code. Also adds externals config to data model config, so 
 	 * that Create can read them.
 	 */
-	ScriptHandler.prototype._specialPrepare = function(script, config) {
+	ScriptHandler.prototype._specialPrepare = function (script, config) {
 		config.options = config.options || {};
 		// fill the rest of the parameters with default values
 		if (script.externals && script.externals.parameters) {
@@ -65,7 +65,7 @@ function(
 	/**
 	 * Creates a script data wrapper object to be used in the engine
 	 */
-	ScriptHandler.prototype._create = function() {
+	ScriptHandler.prototype._create = function () {
 		return {
 			externals: {},
 			setup: null,
@@ -81,10 +81,14 @@ function(
 	 * Remove this script from the cache, and runs the cleanup method of the script.
 	 * @param {string} ref the script guid
 	 */
-	ScriptHandler.prototype._remove = function(ref) {
+	ScriptHandler.prototype._remove = function (ref) {
 		var script = this._objects[ref];
 		if (script && script.cleanup && script.context) {
-			script.cleanup(script.parameters, script.context, Scripts.getClasses());
+			try {
+				script.cleanup(script.parameters, script.context, Scripts.getClasses());
+			} catch (e) {
+				// Some cleanup error
+			}
 			delete this._objects[ref];
 		}
 	};
@@ -98,9 +102,9 @@ function(
 	 * @param {object} script the cached engine script object
 	 * @param {object} config the data model config
 	 */
-	ScriptHandler.prototype._updateFromCustom = function(script, config) {
+	ScriptHandler.prototype._updateFromCustom = function (script, config) {
 		// No change, do nothing		
-		if (this._bodyCache[config.id] === config.body) {return script;}
+		if (this._bodyCache[config.id] === config.body) { return script; }
 
 
 		delete script.externals.errors;
@@ -160,7 +164,7 @@ function(
 				script.cleanup = newScript.cleanup;
 				script.parameters = {};
 				script.enabled = false;
-			} catch(e) {
+			} catch (e) {
 				var err = {
 					message: e.toString()
 				};
@@ -188,7 +192,7 @@ function(
 	 * @param {object} script needs to have a className property
 	 * @param {object} config data model config
 	 */
-	ScriptHandler.prototype._updateFromClass = function(script, config) {
+	ScriptHandler.prototype._updateFromClass = function (script, config) {
 		if (!script.externals || script.externals.name !== config.className) {
 			var newScript = Scripts.create(config.className);
 			if (!newScript) {
@@ -210,9 +214,9 @@ function(
 		return script;
 	};
 
-	ScriptHandler.prototype._update = function(ref, config, options) {
+	ScriptHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(script) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (script) {
 			if (!script) { return; }
 			var promises = [];
 			if (config.body && config.dependencies) {
@@ -221,7 +225,7 @@ function(
 					promises.push(that._addDependency(script, url, config.id));
 				}
 			}
-			return RSVP.all(promises).then(function() {
+			return RSVP.all(promises).then(function () {
 				if (config.className) {
 					that._updateFromClass(script, config, options);
 				} else if (config.body) {
@@ -233,7 +237,8 @@ function(
 					SystemBus.emit('scriptError', {
 						id: ref,
 						errors: script.externals.errors,
-						dependencyErrors: script.externals.dependencyErrors});
+						dependencyErrors: script.externals.dependencyErrors
+					});
 					return script;
 				}
 				else {
@@ -254,8 +259,8 @@ function(
 	 * @param {string} scriptId the guid of the script
 	 * @return {RSVP.Promise} a promise that resolves when the dependency is loaded
 	 */
-	ScriptHandler.prototype._addDependency = function(script, url, scriptId) {
-		var scriptElem = document.querySelector('script[src="'+url+'"]');
+	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
+		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
 			return PromiseUtil.createDummyPromise();
 		}
@@ -265,10 +270,10 @@ function(
 		scriptElem.setAttribute('data-script-id', scriptId);
 
 		var promise = new RSVP.Promise();
-		scriptElem.onload = function() {
+		scriptElem.onload = function () {
 			promise.resolve();
 		};
-		scriptElem.onerror = function() {
+		scriptElem.onerror = function () {
 			var err = {
 				message: 'Could not load dependency',
 				file: url
@@ -290,11 +295,11 @@ function(
 	 * @private
 	 * 
 	 */
-	ScriptHandler.prototype._addGlobalErrorListener = function() {
+	ScriptHandler.prototype._addGlobalErrorListener = function () {
 		var that = this;
-		window.addEventListener('error', function(evt) {
+		window.addEventListener('error', function (evt) {
 			if (evt.filename) {
-				var scriptElem = document.querySelector('script[src="'+evt.filename+'"]');
+				var scriptElem = document.querySelector('script[src="' + evt.filename + '"]');
 				if (scriptElem) {
 					var scriptId = scriptElem.getAttribute('data-script-id');
 					var script = that._objects[scriptId];
@@ -346,7 +351,7 @@ function(
 			obj.errors = errors;
 			return obj;
 		}
-		if(!externals.parameters) {
+		if (!externals.parameters) {
 			return obj;
 		}
 		obj.parameters = [];
