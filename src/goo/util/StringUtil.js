@@ -205,6 +205,9 @@ function () {
 	// write a faster one instead
 
 	// let's save it ourselves if the browser doesn't automagically do it
+	/**
+	 * @private
+	 */
 	var splitRegExp = new RegExp(
 		'^' +
 		'(?:' +
