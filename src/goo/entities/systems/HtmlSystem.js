@@ -85,7 +85,7 @@ function (
 			var renderer = this.renderer;
 			var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
 			var fx = Math.floor(this.tmpVector.x/devicePixelRatio);
-			var fy = Math.floor((screenHeight - this.tmpVector.y)/devicePixelRatio);
+			var fy = Math.floor(this.tmpVector.y/devicePixelRatio);
 
 			setStyle(component.domElement, 'transform',
 				'translate(-50%, -50%) '+
