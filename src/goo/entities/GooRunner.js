@@ -64,7 +64,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class The main class that updates the world and calls the renderers. 
+	 * @class The main class that updates the world and calls the renderers.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 *
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
@@ -658,10 +658,15 @@ function (
 	/**
 	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.
 	 * @private
+	 * @param {number} x screen coordinate
+	 * @param {number} y screen coordinate
+	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
 	 */
-	GooRunner.prototype.pickSync = function (x, y) {
+	GooRunner.prototype.pickSync = function (x, y, skipUpdateBuffer) {
 		// save the clear color
 		var currentClearColor = this.renderer.clearColor.data;
+
+		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
 
 		var savedClearColor = [
 			currentClearColor[0],
