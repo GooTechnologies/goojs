@@ -13,84 +13,106 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * Attaches mouse events to an entity.
+	 * @class
+	 */
 	function ButtonScript() {
-		var button;
-		var mouseState;
-		var listeners;
 
-		function setup(parameters, environment) {
-			button = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.button) - 1;
-			if (button < -1) {
-				button = -1;
+		function setup(params, env) {
+			env.button = ['Any', 'Left', 'Middle', 'Right'].indexOf(params.button) - 1;
+
+			// Mechanism to keep down the number of render-to-pick buffer.
+			env.renderToPickHandler = function () {
+				env.skipUpdateBuffer = true;
+			};
+			SystemBus.addListener('ButtonScript.renderToPick', env.renderToPickHandler, false);
+
+			if (env.button < -1) {
+				env.button = -1;
 			}
 
-			mouseState = {
+			env.mouseState = {
 				x: 0,
 				y: 0,
 				down: false,
-				downOnEntity: false // Used for the click event
+				downOnEntity: false, // Used for the click event
+				overEntity: false
 			};
-			listeners = {
+
+			env.listeners = {
 				mousedown: function (event) {
-					if (!parameters.whenUsed) { return; }
+					if (!params.whenUsed) { return; }
 					var pressedButton = getButton(event);
-					if (pressedButton === button || button === -1) {
-						mouseState.down = true;
-						mouseState.x = event.clientX;
-						mouseState.y = event.clientY;
-						onMouseEvent(parameters, environment, 'mousedown');
+					if (pressedButton === env.button || env.button === -1) {
+						env.mouseState.down = true;
+						getMousePos(params, env, event);
+						onMouseEvent(params, env, 'mousedown');
 					}
 				},
 				mouseup: function (event) {
-					if (!parameters.whenUsed) { return; }
+					if (!params.whenUsed) { return; }
 					var pressedButton = getButton(event);
-					if (pressedButton === button || button === -1) {
-						mouseState.down = false;
-						mouseState.x = event.clientX;
-						mouseState.y = event.clientY;
-						if (mouseState.downOnEntity) {
-							onMouseEvent(parameters, environment, 'click');
+					if (pressedButton === env.button || env.button === -1) {
+						env.mouseState.down = false;
+						getMousePos(params, env, event);
+						if (env.mouseState.downOnEntity) {
+							onMouseEvent(params, env, 'click');
 						}
-						onMouseEvent(parameters, environment, 'mouseup');
+						onMouseEvent(params, env, 'mouseup');
 					}
 				},
 				dblclick: function (event) {
-					if (!parameters.whenUsed) { return; }
+					if (!params.whenUsed) { return; }
 					var pressedButton = getButton(event);
-					if (pressedButton === button || button === -1) {
-						mouseState.down = false;
-						mouseState.x = event.clientX;
-						mouseState.y = event.clientY;
-						onMouseEvent(parameters, environment, 'dblclick');
+					if (pressedButton === env.button || env.button === -1) {
+						env.mouseState.down = false;
+						getMousePos(params, env, event);
+						onMouseEvent(params, env, 'dblclick');
 					}
 				},
+				mousemove: function (event) {
+					if (!params.whenUsed || !params.enableOnMouseMove) { return; }
+					env.mouseState.down = false;
+					getMousePos(params, env, event);
+					onMouseEvent(params, env, 'mousemove');
+				},
 				touchstart: function (event) {
-					if (!parameters.whenUsed) { return; }
-					mouseState.down = true;
+					if (!params.whenUsed) { return; }
+					env.mouseState.down = true;
 
 					var touches = event.targetTouches;
-					mouseState.x = touches[0].clientX;
-					mouseState.y = touches[0].clientY;
-					onMouseEvent(parameters, environment, 'touchstart');
+					env.mouseState.x = touches[0].clientX;
+					env.mouseState.y = touches[0].clientY;
+					onMouseEvent(params, env, 'touchstart');
 				},
 				touchend: function (/*event*/) {
-					if (!parameters.whenUsed) { return; }
-					mouseState.down = false;
-					onMouseEvent(parameters, environment, 'touchend');
+					if (!params.whenUsed) { return; }
+					env.mouseState.down = false;
+					onMouseEvent(params, env, 'touchend');
 				}
 			};
-			for (var event in listeners) {
-				environment.domElement.addEventListener(event, listeners[event]);
+			for (var event in env.listeners) {
+				env.domElement.addEventListener(event, env.listeners[event]);
 			}
 		}
 
-		function update(/*parameters, environment*/) {
+		function getMousePos(params, env, mouseEvent) {
+			var rect = env.domElement.getBoundingClientRect();
+			env.mouseState.x = mouseEvent.pageX - rect.left;
+			env.mouseState.y = mouseEvent.pageY - rect.top;
 		}
 
-		function cleanup(parameters, environment) {
-			for (var event in listeners) {
-				environment.domElement.removeEventListener(event, listeners[event]);
+		function update(params, env) {
+			env.skipUpdateBuffer = false;
+		}
+
+		function cleanup(params, env) {
+			// Remove event listeners
+			for (var event in env.listeners) {
+				env.domElement.removeEventListener(event, env.listeners[event]);
 			}
+			SystemBus.removeListener('ButtonScript.renderToPick', env.renderToPickHandler);
 		}
 
 		function getButton(event) {
@@ -112,18 +134,36 @@ define([
 			}
 			var entity = env.entity;
 			var gooRunner = entity._world.gooRunner;
-			var pickResult = gooRunner.pickSync(mouseState.x, mouseState.y);
+
+			var pickResult = gooRunner.pickSync(env.mouseState.x, env.mouseState.y, env.skipUpdateBuffer);
+			if (!env.skipUpdateBuffer) {
+				SystemBus.emit('ButtonScript.renderToPick');
+			}
 			var entity = gooRunner.world.entityManager.getEntityByIndex(pickResult.id);
-			mouseState.downOnEntity = false;
+			env.mouseState.downOnEntity = false;
 			if (entity === env.entity) {
-				SystemBus.emit('goo.buttonScriptEvent', {
+				SystemBus.emit(params.channel + '.' + type, {
 					type: type,
 					entity: entity
 				});
 				if (type === 'mousedown' || type === 'touchstart') {
-					mouseState.downOnEntity = true;
+					env.mouseState.downOnEntity = true;
 				}
 			}
+
+			if (type === 'mousemove' && !env.mouseState.overEntity && entity === env.entity) {
+				SystemBus.emit(params.channel + '.mouseover', {
+					type: 'mouseover',
+					entity: entity
+				});
+			}
+			if (type === 'mousemove' && env.mouseState.overEntity && entity !== env.entity) {
+				SystemBus.emit(params.channel + '.mouseout', {
+					type: 'mouseout',
+					entity: entity
+				});
+			}
+			env.mouseState.overEntity = (entity === env.entity);
 		}
 
 		return {
@@ -148,6 +188,18 @@ define([
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
+		}, {
+			key: 'channel',
+			name: 'channel',
+			description: 'Event channel to emit to. Will emit channel.click, .mousedown, .mouseup, .mouseover, .mouseout, .dblclick, .touchstart, .touchend',
+			type: 'string',
+			'default': 'button',
+		}, {
+			key: 'enableOnMouseMove',
+			name: 'enableOnMouseMove',
+			description: 'Enables .mousemove, .mouseover, and .mouseout events. For larger scenes, this might be worth turning off, for better performance.',
+			type: 'boolean',
+			'default': true
 		}]
 	};
 

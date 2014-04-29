@@ -1,37 +1,23 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'goo/shapes/Quad',
 	'lib/V',
-	'goo/renderer/Camera',
 	'goo/scripts/Scripts',
 	'goo/entities/SystemBus',
 	'goo/entities/components/HtmlComponent',
-	'goo/entities/systems/HtmlSystem'
+	'goo/entities/systems/HtmlSystem',
+	'goo/util/ObjectUtil',
+	'goo/entities/components/ScriptComponent'
 ], function (
-	GooRunner,
-	Material,
-	ShaderLib,
-	MeshDataComponent,
-	MeshRendererComponent,
 	Vector3,
 	Box,
-	Sphere,
-	Torus,
-	Quad,
 	V,
-	Camera,
 	Scripts,
 	SystemBus,
 	HtmlComponent,
-	HtmlSystem
+	HtmlSystem,
+	_,
+	ScriptComponent
 ) {
 	'use strict';
 
@@ -43,30 +29,42 @@ require([
 	V.addLights();
 	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
 
-	var map = {
+	var entities = {
 		mousedown: null,
 		mouseup: null,
 		click: null,
-		dblclick: null
+		dblclick: null,
+		touchstart: null,
+		touchend: null,
+		mousemove: null,
+		mouseover: null,
+		mouseout: null
 	};
 
 	var i = 0;
-	var dist = 2;
-	var N = 4;
-	for (var event in map) {
-		// Create clickable cube
+	var dist = 1.2;
+	var N = _.keys(entities).length;
+	for (var eventType in entities) {
+
+		// Create a cube
 		var position = [i * dist - dist * (N - 1) / 2, 0, 0];
 		var material = V.getColoredMaterial(1, 1, 1);
-		var script = Scripts.create('ButtonScript');
-		var entity = world.createEntity(new Box(), material, position, script).addToWorld();
-		map[event] = entity;
+		var entity = world.createEntity(new Box(), material, position).addToWorld();
+
+		// Attach a button script to it.
+		var script = Scripts.create('ButtonScript', {
+			channel: 'button' + i
+		});
+		var scriptComponent = new ScriptComponent(script);
+		entity.setComponent(scriptComponent);
+		entities[eventType] = entity;
 		i++;
 
 		// HTML sign below
 		var htmlElement = document.createElement('p');
 		htmlElement.style.position = 'absolute';
 		htmlElement.style['-webkit-user-select'] = 'none';
-		htmlElement.innerHTML = event;
+		htmlElement.innerHTML = eventType;
 		document.body.appendChild(htmlElement);
 		var htmlComponent = new HtmlComponent(htmlElement);
 		position[1] -= 1;
@@ -86,12 +84,18 @@ require([
 		}
 	}
 
-	SystemBus.addListener('goo.buttonScriptEvent', function (event) {
-		var entity = event.entity;
-		var eventEntity = map[event.type];
-		if (entity === eventEntity) {
-			swapColor(entity);
-		}
-	});
+	function handler(event) {
+		swapColor(entities[event.type]);
+	}
+
+	SystemBus.addListener('button0.mousedown', handler);
+	SystemBus.addListener('button1.mouseup', handler);
+	SystemBus.addListener('button2.click', handler);
+	SystemBus.addListener('button3.dblclick', handler);
+	SystemBus.addListener('button4.touchstart', handler);
+	SystemBus.addListener('button5.touchend', handler);
+	SystemBus.addListener('button6.mousemove', handler);
+	SystemBus.addListener('button7.mouseover', handler);
+	SystemBus.addListener('button8.mouseout', handler);
 
 });
