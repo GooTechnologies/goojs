@@ -168,7 +168,7 @@ function (
 	 * Will be clamped to be in actual soundclip duration
 	 * @param {number} [config.duration] Duration of the sound.
 	 * Will be clamped to be in actual soundclip duration
-	 * @param {number} [config.rate] Playback rate of the sound
+	 * @param {number} [config.timeScale] Playback rate of the sound
 	 */
 	Sound.prototype.update = function(config) {
 		if (!AudioContext) {
