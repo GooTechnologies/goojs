@@ -42,8 +42,8 @@ function(
 		}]
 	};
 
-	TransitionOnMessageAction.prototype._setup = function(/*fsm*/) {
-		SystemBus.addListener(this.channel, this.eventListener);
+	TransitionOnMessageAction.prototype._setup = function (/*fsm*/) {
+		SystemBus.addListener(this.channel, this.eventListener, false);
 	};
 
 	TransitionOnMessageAction.prototype._run = function(fsm) {
