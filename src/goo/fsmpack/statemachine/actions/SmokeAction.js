@@ -7,7 +7,7 @@ define([
 	'goo/util/ParticleSystemUtils'
 ],
 /** @lends */
-function(
+function (
 	Action,
 	Material,
 	ShaderLib,
