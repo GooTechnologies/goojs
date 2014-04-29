@@ -149,6 +149,9 @@ define([
 				if (type === 'mousedown' || type === 'touchstart') {
 					env.mouseState.downOnEntity = true;
 				}
+				if (params.linkUrl) {
+					window.open(params.linkUrl, params.linkTarget);
+				}
 			}
 
 			if (type === 'mousemove' && !env.mouseState.overEntity && entity === env.entity) {
@@ -183,11 +186,23 @@ define([
 		}, {
 			key: 'button',
 			name: 'button',
-			description: 'Only interact with this button',
+			description: 'Only interact with this mouse button',
 			type: 'string',
 			control: 'select',
 			'default': 'Any',
 			options: ['Any', 'Left', 'Middle', 'Right']
+		}, {
+			key: 'linkUrl',
+			name: 'linkUrl',
+			description: 'URL to open when clicking the entity. Leave this field empty to disable.',
+			type: 'string',
+			'default': ''
+		}, {
+			key: 'linkTarget',
+			name: 'linkTarget',
+			description: 'The window to open the link in.',
+			type: 'string',
+			'default': '_blank'
 		}, {
 			key: 'channel',
 			name: 'channel',
