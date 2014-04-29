@@ -14,7 +14,8 @@ define([
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/renderer/TaskScheduler'
 ],
 /** @lends */
 function (
@@ -32,7 +33,8 @@ function (
 	RenderQueue,
 	ShaderLib,
 	ShadowHandler,
-	SystemBus
+	SystemBus,
+	TaskScheduler
 ) {
 	"use strict";
 
@@ -707,17 +709,21 @@ function (
 
 	/**
 	 * Preloads the textures of a material
+	 * @private
 	 * @param material
+	 * @param queue
 	 */
-	Renderer.prototype.preloadTextures = function (material) {
+	Renderer.prototype.preloadTextures = function (material, queue) {
 		var context = this.context;
 		var textureKeys = Object.keys(material._textureMaps);
 
-		for (var i = 0; i < textureKeys.length; i++) {
-			var texture = material.getTexture(textureKeys[i]);
+		// for (var i = 0; i < textureKeys.length; i++) {
+		// gotta simulate lexical scoping
+		textureKeys.forEach(function (textureKey) {
+			var texture = material.getTexture(textureKey);
 
 			if (texture === undefined) {
-				continue;
+				return ;
 			}
 
 			var textureList = texture;
@@ -725,37 +731,40 @@ function (
 				textureList = [texture];
 			}
 
-			for (var j = 0; j < textureList.length; j++) {
-				texture = textureList[j];
+			// for (var j = 0; j < textureList.length; j++) {
+			// gotta simulate lexical scoping
+			textureList.forEach(function (texture) {
+				queue.push(function () {
+					if (texture === null ||
+						texture instanceof RenderTarget === false && (texture.image === undefined ||
+						texture.checkDataReady() === false)) {
 
-				if (texture === null ||
-					texture instanceof RenderTarget === false && (texture.image === undefined ||
-					texture.checkDataReady() === false)) {
-
-					if (texture.variant === '2D') {
-						texture = TextureCreator.DEFAULT_TEXTURE_2D;
-					} else if (texture.variant === 'CUBE') {
-						texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+						if (texture.variant === '2D') {
+							texture = TextureCreator.DEFAULT_TEXTURE_2D;
+						} else if (texture.variant === 'CUBE') {
+							texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+						}
 					}
-				}
 
-				if (texture.glTexture === null) {
-					texture.glTexture = context.createTexture();
-					this.preloadTexture(context, texture);
-					texture.needsUpdate = false;
-				} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
-					this.preloadTexture(context, texture);
-					texture.needsUpdate = false;
-				}
-			}
-		}
+					if (texture.glTexture === null) {
+						texture.glTexture = context.createTexture();
+						this.preloadTexture(context, texture);
+						texture.needsUpdate = false;
+					} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
+						this.preloadTexture(context, texture);
+						texture.needsUpdate = false;
+					}
+				}.bind(this));
+			}.bind(this));
+		}.bind(this));
 	};
 
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables"
 	 * @param renderList
 	 */
-	Renderer.prototype.preloadMaterials = function (renderList) {
+	Renderer.prototype.preloadMaterials = function (renderList, onComplete) {
+		var queue = [];
 		var renderInfo = {};
 
 		if (Array.isArray(renderList)) {
@@ -764,18 +773,23 @@ function (
 				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
 					continue;
 				}
+
+				// this function does so much more than I need it to do
+				// I only need the material of the renderable
 				this.fillRenderInfo(renderable, renderInfo);
 
 				for (var j = 0; j < renderInfo.materials.length; j++) {
-					this.preloadTextures(renderInfo.materials[j]);
+					this.preloadTextures(renderInfo.materials[j], queue);
 				}
 			}
 		} else {
 			this.fillRenderInfo(renderList, renderInfo);
 			for (var j = 0; j < renderInfo.materials.length; j++) {
-				this.preloadTextures(renderInfo.materials[j]);
+				this.preloadTextures(renderInfo.materials[j], queue);
 			}
 		}
+
+		TaskScheduler.each(queue, onComplete);
 	};
 
 	/**
@@ -784,7 +798,7 @@ function (
 	 * @param material
 	 * @param renderInfo
 	 */
-	Renderer.prototype.precompileShader = function (material, renderInfo) {
+	Renderer.prototype.precompileShader = function (material, renderInfo, queue) {
 		var shader = material.shader;
 		if (shader.processors || shader.defines) {
 			// Call processors
@@ -828,7 +842,7 @@ function (
 			}
 		}
 
-		shader.precompile(this);
+		queue.push(function () { shader.precompile(this); }.bind(this));
 	};
 
 	/**
@@ -836,10 +850,12 @@ function (
 	 * @param renderList
 	 * @param lights
 	 */
-	Renderer.prototype.precompileShaders = function (renderList, lights) {
+	Renderer.prototype.precompileShaders = function (renderList, lights, onComplete) {
 		var renderInfo = {
 			lights: lights
 		};
+
+		var queue = [];
 
 		if (Array.isArray(renderList)) {
 			for (var i = 0; i < renderList.length; i++) {
@@ -851,16 +867,18 @@ function (
 
 				for (var j = 0; j < renderInfo.materials.length; j++) {
 					renderInfo.material = renderInfo.materials[j];
-					this.precompileShader(renderInfo.materials[j], renderInfo);
+					this.precompileShader(renderInfo.materials[j], renderInfo, queue);
 				}
 			}
 		} else {
 			this.fillRenderInfo(renderList, renderInfo);
 			for (var j = 0; j < renderInfo.materials.length; j++) {
 				renderInfo.material = renderInfo.materials[j];
-				this.precompileShader(renderInfo.materials[j], renderInfo);
+				this.precompileShader(renderInfo.materials[j], renderInfo, queue);
 			}
 		}
+
+		TaskScheduler.each(queue, onComplete);
 	};
 
 	/**
