@@ -609,8 +609,8 @@ function(
 		}
 		var origin = new Vector3();
 		var direction = new Vector3();
-		this.getWorldCoordinates(screenX, screenHeight - screenY, screenWidth, screenHeight, 0, origin);
-		this.getWorldCoordinates(screenX, screenHeight - screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, origin);
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
 		store.origin.copy(origin);
 		store.direction.copy(direction);
 
@@ -661,8 +661,8 @@ function(
 	/**
 	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
 	 *
-	 * @param screenX the screen x position
-	 * @param screenY the screen y position
+	 * @param screenX the screen x position (x=0 is the leftmost coordinate of the screen)
+	 * @param screenY the screen y position (y=0 is the top of the screen)
 	 * @param screenWidth the screen width
 	 * @param screenHeight the screen height
 	 * @param zDepth the depth into the camera view to take our point. 0 indicates the near plane of the camera and 1 indicates the far plane.
@@ -676,7 +676,9 @@ function(
 		}
 		this.checkInverseModelViewProjection();
 		var position = new Vector4();
-		position.set((screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1, (screenY / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
+		var x = (screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1;
+		var y = ((screenHeight - screenY) / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1;
+		position.set(x, y, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPost(position);
 		position.mul(1.0 / position.w);
 		store.x = position.x;
@@ -700,7 +702,7 @@ function(
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
 
 		store.x = (store.x + 1) * (this._viewPortRight - this._viewPortLeft) / 2 * screenWidth;
-		store.y = (store.y + 1) * (this._viewPortTop - this._viewPortBottom) / 2 * screenHeight;
+		store.y = (1 - store.y) * (this._viewPortTop - this._viewPortBottom) / 2 * screenHeight;
 		store.z = (store.z + 1) / 2;
 
 		return store;

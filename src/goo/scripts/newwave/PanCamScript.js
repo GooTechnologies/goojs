@@ -162,8 +162,8 @@ define([
 				}
 				var camera = entity.cameraComponent.camera;
 				mainCam.getScreenCoordinates(lookAtPoint, 1, 1, calcVector);
-				calcVector.add_d(
-					-mouseState.dx / (environment.viewportWidth/devicePixelRatio),
+				calcVector.sub_d(
+					mouseState.dx / (environment.viewportWidth/devicePixelRatio),
 					mouseState.dy / (environment.viewportHeight/devicePixelRatio),
 					0
 				);

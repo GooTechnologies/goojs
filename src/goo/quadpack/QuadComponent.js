@@ -97,12 +97,19 @@ function (
 		this.meshDataComponent = new MeshDataComponent(this.meshData);
 
 		// Set the material as current
-		var m = this.material;
-		this.setMaterial(m);
+		var material = this.material;
+		material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
+		material.renderQueue = 2000;
+		material.cullState.enabled = false;
+		material.dualTransparency = true;					// Visible on both sides
+		material.uniforms.discardThreshold = 0.1;
+		this.setMaterial(material);
 
 		if(image){
 			var texture = new Texture(image);
-			m.setTexture('DIFFUSE_MAP',texture);
+			texture.wrapS = 'EdgeClamp';
+			texture.wrapT = 'EdgeClamp';
+			material.setTexture('DIFFUSE_MAP',texture);
 		}
 
 		this.rebuildMeshData();
@@ -129,11 +136,6 @@ function (
 		this.meshRendererComponent.materials = [material];
 		// REVIEW: Don't set this stuff here, set it in the data model
 		
-		//material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
-		// material.renderQueue = 2000;
-		//material.cullState.enabled = false;
-		//material.dualTransparency = true;					// Visible on both sides
-		//material.uniforms.discardThreshold = 0.1;
 	};
 
 	/**

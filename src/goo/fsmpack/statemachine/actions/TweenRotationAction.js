@@ -99,7 +99,7 @@ define([
 		var time = entity._world.time * 1000;
 
 		if (this.relative) {
-			Quaternion.mul2(initialRotation, finalRotation, finalRotation);
+			Quaternion.mul(initialRotation, finalRotation, finalRotation);
 		}
 
 		this.tween.from({ t: 0 }).to({ t: 1 }, +this.time).easing(this.easing).onUpdate(function() {

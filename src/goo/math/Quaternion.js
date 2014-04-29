@@ -75,26 +75,14 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 
 	/**
 	 * @static
-	 * @description Performs a component-wise multiplication between two quaternions and stores the result in a separate quaternion.
+	 * @description Performs a multiplication between two quaternions and stores the result in a separate quaternion.
+ 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
-	Quaternion.mul = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.data[0] = lhs.data[0] * rhs.data[0];
-		target.data[1] = lhs.data[1] * rhs.data[1];
-		target.data[2] = lhs.data[2] * rhs.data[2];
-		target.data[3] = lhs.data[3] * rhs.data[3];
-
-		return target;
-	};
-
-	Quaternion.mul2 = function(a, b, out) {
+	Quaternion.mul = function(a, b, out) {
 		var ax = a.data[0], ay = a.data[1], az = a.data[2], aw = a.data[3],
 			bx = b.data[0], by = b.data[1], bz = b.data[2], bw = b.data[3];
 
@@ -104,6 +92,21 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		out.data[3] = aw * bw - ax * bx - ay * by - az * bz;
 		return out;
 	};
+
+	/**
+	 * @static
+	 * @description Performs a multiplication between two quaternions and stores the result in a separate quaternion.
+ 	 * The result is a <b>quaternion product</b>.
+	 * @param {Quaternion} lhs Quaternion on the left-hand side.
+	 * @param {Quaternion} rhs Quaternion on the right-hand side.
+	 * @param {Quaternion} [target] Target quaternion for storage.
+	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
+ 	 * @deprecated in 0.9.0, scheduled to be removed in 0.11.0. Use Quaternion.mul instead.
+	 */
+	Quaternion.mul2 = function(a, b, out) {
+		console.warn('Will be deprecated. Use Quaternion.mul instead.');
+		return Quaternion.mul(a, b, out);
+	}
 
 	/**
 	 * @static
@@ -319,7 +322,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * @description Performs a component-wise addition between two quaternions and stores the result locally.
+	 * @description Performs a component-wise addition between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -328,7 +331,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between two quaternions and stores the result locally.
+	 * @description Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -337,7 +340,8 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication between two quaternions and stores the result locally.
+	 * @description Performs a multiplication between the current quaternion and another and stores the result locally. 
+	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -346,7 +350,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * @description Performs a component-wise division between two quaternions and stores the result locally.
+	 * @description Performs a component-wise division between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */

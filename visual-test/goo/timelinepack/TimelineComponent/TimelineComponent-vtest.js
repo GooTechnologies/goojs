@@ -27,15 +27,22 @@ require([
 ) {
 	'use strict';
 
+	/* global TWEEN */
+
 	var trace = [];
+	var valueChannel;
 
 	function getValueChannel() {
-		var entityTweener = ValueChannel.getScaleXTweener(box);
 
 		function callback(time, value, index) {
 			drawClear();
 
-			if (time < 500) { trace.push({ x: time, y: value }); }
+			if (time < 500) {
+				trace.push({
+					x: time,
+					y: value
+				});
+			}
 			drawTrace();
 
 			drawChannel();
@@ -43,16 +50,15 @@ require([
 			drawPointer(time, value, index);
 
 			box.setScale(0.6, value / 100, 0.6).setRotation(value / 100, value / 100, value / 100);
-
 			sphere.setScale(value / 100, value / 100, value / 100);
 			torus.setRotation(value / 100, value / 100, value / 100);
-
-			//entityTweener(time, value);
 		}
 
 		var channel = new ValueChannel('id', {
 			callbackUpdate: callback,
-			callbackEnd: function () { trace = []; }
+			callbackEnd: function () {
+				trace = [];
+			}
 		});
 		channel.addKeyframe('', 50, 10, TWEEN.Easing.Quadratic.InOut);
 		channel.addKeyframe('', 100, 160, TWEEN.Easing.Sinusoidal.InOut);
@@ -66,7 +72,7 @@ require([
 		function getMessenger(message) {
 			return function () {
 				console.log(message);
-			}
+			};
 		}
 
 		var channel = new EventChannel('id');
@@ -118,7 +124,7 @@ require([
 		con2d.fillStyle = '#000';
 		con2d.fillText('t: ' + time.toFixed(2), time + 10, value - 5);
 		con2d.fillText('v: ' + value.toFixed(2), time + 10, value + 5);
-		con2d.fillText('i: ' + index, time + 10, value + 15);
+		//con2d.fillText('i: ' + index, time + 10, value + 15);
 	}
 
 	function drawTrace() {
@@ -144,8 +150,8 @@ require([
 		var buttonReset = document.createElement('button');
 		buttonReset.innerHTML = 'reset';
 		buttonReset.addEventListener('click', function () {
-			valueChannel.setTime(0);
-			eventChannel.setTime(0);
+			valueChannel.update(0);
+			eventChannel.update(0);
 			trace = [];
 			drawClear();
 			drawTrace();
@@ -183,22 +189,23 @@ require([
 
 	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
 
-
 	// timeline related
 	setupCanvas2D();
 
 	setupButtons();
 
-	var valueChannel = getValueChannel();
+	valueChannel = getValueChannel();
 	drawChannel(valueChannel);
 
 	var eventChannel = getEventChannel();
 
 	// gotta trigger the update somehow
-	goo.callbacks.push(function (tpf) {
+	goo.callbacks.push(function () {
 		if (!paused) {
-			valueChannel.update(tpf * 100);
-			eventChannel.update(tpf * 100);
+			valueChannel.update(goo.world.time * 1000 * 0.1);
+			eventChannel.update(goo.world.time * 1000 * 0.1);
 		}
 	});
+
+	goo.startGameLoop();
 });
