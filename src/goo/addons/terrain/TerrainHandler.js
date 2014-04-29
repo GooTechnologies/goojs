@@ -308,7 +308,34 @@ define([
 							return null;
 						}
 						return null;
-					}.bind(this)
+					}.bind(this),
+                    getType: function(xx, zz, slope, rand) {
+                        if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
+                            return null;
+                        }
+
+                        if (this.terrainInfo) {
+                            xx = Math.floor(xx);
+                            zz = Math.floor(zz);
+
+                            if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
+                                return null;
+                            }
+
+                            xx *= this.terrain.splatMult;
+                            zz *= this.terrain.splatMult;
+
+                            var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
+                            var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
+                            var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
+                            var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
+                            var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
+                            var type = splat1 > rand ? terrainData.ground2 : splat2 > rand ? terrainData.ground3 : splat3 > rand ? terrainData.ground4 : splat4 > rand ? terrainData.ground5 : terrainData.ground1;
+
+                            return type;
+                        }
+                        return null;
+                    }.bind(this)
 				};
 
 				var vegetationAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas);
