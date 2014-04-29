@@ -136,6 +136,20 @@ function (
 		return new Shader(this.name, this.originalShaderDefinition);
 	};
 
+	/**
+	 * Compiles a shader and does not apply it
+	 * @private
+	 * @param renderer
+	 */
+	Shader.prototype.precompile = function (renderer) {
+		if (this.shaderProgram === null) {
+			this._investigateShaders();
+			this.addDefines(this.defines);
+			this.addPrecision(this.overridePrecision || renderer.shaderPrecision);
+			this.compile(renderer);
+		}
+	};
+
 	/*
 	 * Matches an attribute or uniform variable declaration.
 	 *
