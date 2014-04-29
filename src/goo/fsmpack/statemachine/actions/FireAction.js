@@ -47,9 +47,11 @@ function(
 	};
 
 	FireAction.prototype._run = function (fsm) {
-		if (this.fireEntity) { return; }
-
 		var entity = fsm.getOwnerEntity();
+		if (this.fireEntity && entity.transformComponent.children.indexOf(this.fireEntity) !== -1) {
+			return;
+		}
+
 		var gooRunner = entity._world.gooRunner;
 
 		if (!FireAction.material) {
