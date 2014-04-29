@@ -193,7 +193,7 @@ define([
 			name: 'channel',
 			description: 'Event channel to emit to. Will emit channel.click, .mousedown, .mouseup, .mouseover, .mouseout, .dblclick, .touchstart, .touchend',
 			type: 'string',
-			'default': 'button',
+			'default': 'button'
 		}, {
 			key: 'enableOnMouseMove',
 			name: 'enableOnMouseMove',
