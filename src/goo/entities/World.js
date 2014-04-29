@@ -49,6 +49,9 @@ function (
 		this.entityManager = new EntityManager();
 		this.setManager(this.entityManager);
 
+		/** Accumulated time per frames(tpf) the world has been running.  Calculated at the start of each frame.
+		 * @type {number}
+		 */
 		this.time = 0.0;
 
 		/** Time since last frame in seconds.

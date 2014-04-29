@@ -490,7 +490,6 @@ function (
 
 		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
 
-		// console.log('EMIT VIEWPORTSIZE');
 		SystemBus.emit('goo.viewportResize', {
 			x: this.viewportX,
 			y: this.viewportY,
@@ -545,6 +544,323 @@ function (
 
 	Renderer.prototype.updateShadows = function (partitioner, entities, lights) {
 		this.shadowHandler.checkShadowRendering(this, partitioner, entities, lights);
+	};
+
+	/**
+	 * Loads a compressed texture but does not use it
+	 * @private
+	 * @param context
+	 * @param target
+	 * @param texture
+	 * @param imageData
+	 */
+	Renderer.prototype.preloadCompressedTexture = function (context, target, texture, imageData) {
+		var mipSizes = texture.image.mipmapSizes;
+		var dataOffset = 0, dataLength = 0;
+		var width = texture.image.width, height = texture.image.height;
+		var ddsExt = DdsUtils.getDdsExtension(context);
+		var internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+		if (texture.format === 'PrecompressedDXT1') {
+			internalFormat = ddsExt.COMPRESSED_RGB_S3TC_DXT1_EXT;
+		} else if (texture.format === 'PrecompressedDXT1A') {
+			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT1_EXT;
+		} else if (texture.format === 'PrecompressedDXT3') {
+			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT3_EXT;
+		} else if (texture.format === 'PrecompressedDXT5') {
+			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+		} else {
+			throw new Error("Unhandled compression format: " + imageData.getDataFormat().name());
+		}
+
+		if (typeof mipSizes === 'undefined' || mipSizes === null) {
+			if (imageData instanceof Uint8Array) {
+				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, imageData);
+			} else {
+				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset,
+					imageData.byteLength));
+			}
+		} else {
+			texture.generateMipmaps = false;
+			if (imageData instanceof Array) {
+				for (var i = 0; i < imageData.length; i++) {
+					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, imageData[i]);
+					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
+					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
+				}
+			} else {
+				for (var i = 0; i < mipSizes.length; i++) {
+					dataLength = mipSizes[i];
+					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset
+						+ dataOffset, dataLength));
+					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
+					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
+					dataOffset += dataLength;
+				}
+			}
+
+			var expectedMipmaps = 1 + Math.ceil(Math.log(Math.max(texture.image.height, texture.image.width)) / Math.log(2));
+			var size = mipSizes[mipSizes.length - 1];
+			if (mipSizes.length < expectedMipmaps) {
+				for (var i = mipSizes.length; i < expectedMipmaps; i++) {
+					size = ~~((width + 3) / 4) * ~~((height + 3) / 4) * texture.image.bpp * 2;
+					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(size));
+					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
+					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
+				}
+			}
+		}
+	};
+
+	/**
+	 * Preloads a texture
+	 * @param context
+	 * @param texture
+	 */
+	Renderer.prototype.preloadTexture = function (context, texture) {
+		// this.bindTexture(context, texture, unit, record);
+		// context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit); // do I need this?
+		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
+
+		// set alignment to support images with width % 4 !== 0, as
+		// images are not aligned
+		context.pixelStorei(WebGLRenderingContext.UNPACK_ALIGNMENT, texture.unpackAlignment);
+
+		// Using premultiplied alpha
+		context.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultiplyAlpha);
+
+		// set if we want to flip on Y
+		context.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, texture.flipY);
+
+		// TODO: Check for the restrictions of using npot textures
+		// see: http://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Non-Power_of_Two_Texture_Support
+		// TODO: Add "usesMipmaps" to check if minfilter has mipmap mode
+
+		var image = texture.image;
+		if (texture.variant === '2D') {
+			if (!image) {
+				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+			} else {
+				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
+					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
+					image = texture.image;
+				}
+
+				if (image.isData === true) {
+					if (image.isCompressed) {
+						this.preloadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
+					} else {
+						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), image.width,
+							image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+								.getGLPixelDataType(texture.type), image.data);
+					}
+				} else {
+					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
+						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image);
+				}
+
+				if (texture.generateMipmaps && !image.isCompressed) {
+					context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+				}
+			}
+		} else if (texture.variant === 'CUBE') {
+			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
+				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
+					if (image.data[i] && !image.data[i].buffer ) {
+						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
+					} else {
+						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
+					}
+				}
+				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
+				image = texture.image;
+			}
+
+			for (var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
+				var face = Texture.CUBE_FACES[faceIndex];
+
+				if (!image) {
+					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+						this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+				} else {
+					if (image.isData === true) {
+						if (image.isCompressed) {
+							this.loadCompressedTexture(context, this.getGLCubeMapFace(face), texture, image.data[faceIndex]);
+						} else {
+							context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), image.width,
+								image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+									.getGLPixelDataType(texture.type), image.data[faceIndex]);
+						}
+					} else {
+						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this
+							.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image.data[faceIndex]);
+					}
+				}
+			}
+
+			if (image && texture.generateMipmaps && !image.isCompressed) {
+				context.generateMipmap(WebGLRenderingContext.TEXTURE_CUBE_MAP);
+			}
+		}
+	};
+
+	/**
+	 * Preloads the textures of a material
+	 * @param material
+	 */
+	Renderer.prototype.preloadTextures = function (material) {
+		var context = this.context;
+		var textureKeys = Object.keys(material._textureMaps);
+
+		for (var i = 0; i < textureKeys.length; i++) {
+			var texture = material.getTexture(textureKeys[i]);
+
+			if (texture === undefined) {
+				continue;
+			}
+
+			var textureList = texture;
+			if (texture instanceof Array === false) {
+				textureList = [texture];
+			}
+
+			for (var j = 0; j < textureList.length; j++) {
+				texture = textureList[j];
+
+				if (texture === null ||
+					texture instanceof RenderTarget === false && (texture.image === undefined ||
+					texture.checkDataReady() === false)) {
+
+					if (texture.variant === '2D') {
+						texture = TextureCreator.DEFAULT_TEXTURE_2D;
+					} else if (texture.variant === 'CUBE') {
+						texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+					}
+				}
+
+				if (texture.glTexture === null) {
+					texture.glTexture = context.createTexture();
+					this.preloadTexture(context, texture);
+					texture.needsUpdate = false;
+				} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
+					this.preloadTexture(context, texture);
+					texture.needsUpdate = false;
+				}
+			}
+		}
+	};
+
+	/**
+	 * Preloads textures that come with the materials on the supplied "renderables"
+	 * @param renderList
+	 */
+	Renderer.prototype.preloadMaterials = function (renderList) {
+		var renderInfo = {};
+
+		if (Array.isArray(renderList)) {
+			for (var i = 0; i < renderList.length; i++) {
+				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
+				this.fillRenderInfo(renderable, renderInfo);
+
+				for (var j = 0; j < renderInfo.materials.length; j++) {
+					this.preloadTextures(renderInfo.materials[j]);
+				}
+			}
+		} else {
+			this.fillRenderInfo(renderList, renderInfo);
+			for (var j = 0; j < renderInfo.materials.length; j++) {
+				this.preloadTextures(renderInfo.materials[j]);
+			}
+		}
+	};
+
+	/**
+	 * Preprocesses a shader and compiles it
+	 * @private
+	 * @param material
+	 * @param renderInfo
+	 */
+	Renderer.prototype.precompileShader = function (material, renderInfo) {
+		var shader = material.shader;
+		if (shader.processors || shader.defines) {
+			// Call processors
+			if (shader.processors) {
+				for (var j = 0; j < shader.processors.length; j++) {
+					shader.processors[j](shader, renderInfo);
+				}
+			}
+
+			// check defines. if no hit in cache -> add to cache. if hit in cache,
+			// replace with cache version and copy over uniforms.
+			var defineArray = Object.keys(shader.defines);
+			var len = defineArray.length;
+			var shaderKeyArray = [];
+			for (var j = 0; j < len; j++) {
+				var key = defineArray[j];
+				shaderKeyArray.push(key + '_' + shader.defines[key]);
+			}
+			shaderKeyArray.sort();
+			var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+
+			var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
+			if (!shaderCache[defineKey]) {
+				if (shader.builder) {
+					shader.builder(shader, renderInfo);
+				}
+				shader = material.shader = shader.clone();
+				shaderCache[defineKey] = shader;
+			} else {
+				shader = shaderCache[defineKey];
+				if (shader !== material.shader) {
+					var uniforms = material.shader.uniforms;
+					var keys = Object.keys(uniforms);
+					for (var ii = 0, l = keys.length; ii < l; ii++) {
+						var key = keys[ii];
+						shader.uniforms[key] = uniforms[key];
+					}
+
+					material.shader = shader;
+				}
+			}
+		}
+
+		shader.precompile(this);
+	};
+
+	/**
+	 * Precompiles shaders of the supplied "renderables"
+	 * @param renderList
+	 * @param lights
+	 */
+	Renderer.prototype.precompileShaders = function (renderList, lights) {
+		var renderInfo = {
+			lights: lights
+		};
+
+		if (Array.isArray(renderList)) {
+			for (var i = 0; i < renderList.length; i++) {
+				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
+				this.fillRenderInfo(renderable, renderInfo);
+
+				for (var j = 0; j < renderInfo.materials.length; j++) {
+					renderInfo.material = renderInfo.materials[j];
+					this.precompileShader(renderInfo.materials[j], renderInfo);
+				}
+			}
+		} else {
+			this.fillRenderInfo(renderList, renderInfo);
+			for (var j = 0; j < renderInfo.materials.length; j++) {
+				renderInfo.material = renderInfo.materials[j];
+				this.precompileShader(renderInfo.materials[j], renderInfo);
+			}
+		}
 	};
 
 	/**
@@ -684,8 +1000,9 @@ function (
 		var flatOrWire = null;
 		var originalData = meshData;
 
+		// number of materials to render - own materials or overriding materials
 		var count = 0;
-		if(this._overrideMaterials.length === 0) {
+		if (this._overrideMaterials.length === 0) {
 			count = materials.length;
 		} else {
 			count = this._overrideMaterials.length;
@@ -693,18 +1010,21 @@ function (
 
 		for (var i = 0; i < count; i++) {
 			var material = null, orMaterial = null;
+
 			if (i < materials.length) {
 				material = materials[i];
 			}
-			if(i < this._overrideMaterials.length) {
+			if (i < this._overrideMaterials.length) {
 				orMaterial = this._overrideMaterials[i];
 			}
+
 			if (material && orMaterial) {
 				this._override(orMaterial, material, this._mergedMaterial);
 				material = this._mergedMaterial;
 			} else if (orMaterial) {
 				material = orMaterial;
 			}
+
 			if (!material.shader) {
 				if (!material.errorOnce) {
 					console.warn('No shader set on material: ' + material.name);
@@ -738,6 +1058,8 @@ function (
 			renderInfo.material = material;
 			renderInfo.meshData = meshData;
 
+			//! AT: this should stay in a method
+
 			// Check for caching of shader that use defines
 			var shader = material.shader;
 			if (shader.processors || shader.defines) {
@@ -761,6 +1083,7 @@ function (
 				var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
 
 				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
+
 				if (!shaderCache[defineKey]) {
 					if (shader.builder) {
 						shader.builder(shader, renderInfo);
@@ -1151,7 +1474,7 @@ function (
 			case 'CUBE':
 				return WebGLRenderingContext.TEXTURE_CUBE_MAP;
 		}
-		throw "invalid texture type: " + type;
+		throw 'invalid texture type: ' + type;
 	};
 
 	Renderer.prototype.loadCompressedTexture = function (context, target, texture, imageData) {

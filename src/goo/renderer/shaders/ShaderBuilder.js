@@ -198,7 +198,7 @@ function(
 						lightDefines.push('C');
 						shader.defines.COOKIE = true;
 					} else {
-						shader.defines.COOKIE = false;
+						delete shader.defines.COOKIE;
 					}
 
 					var matrix = shadowData.lightCamera.getViewProjectionMatrix().data;
