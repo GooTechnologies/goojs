@@ -21,16 +21,15 @@ define([
 
 		function setup(params, env) {
 			env.button = ['Any', 'Left', 'Middle', 'Right'].indexOf(params.button) - 1;
+			if (env.button < -1) {
+				env.button = -1;
+			}
 
-			// Mechanism to keep down the number of render-to-pick buffer.
+			// Mechanism to keep down render-to-pick buffer calls.
 			env.renderToPickHandler = function () {
 				env.skipUpdateBuffer = true;
 			};
 			SystemBus.addListener('ButtonScript.renderToPick', env.renderToPickHandler, false);
-
-			if (env.button < -1) {
-				env.button = -1;
-			}
 
 			env.mouseState = {
 				x: 0,
@@ -128,12 +127,7 @@ define([
 		}
 
 		function onMouseEvent(params, env, type) {
-			var mainCam = Renderer.mainCamera;
-			if (!mainCam) {
-				return;
-			}
-			var entity = env.entity;
-			var gooRunner = entity._world.gooRunner;
+			var gooRunner = env.entity._world.gooRunner;
 
 			var pickResult = gooRunner.pickSync(env.mouseState.x, env.mouseState.y, env.skipUpdateBuffer);
 			if (!env.skipUpdateBuffer) {
@@ -154,12 +148,14 @@ define([
 				}
 			}
 
+			// mouseover
 			if (type === 'mousemove' && !env.mouseState.overEntity && entity === env.entity) {
 				SystemBus.emit(params.channel + '.mouseover', {
 					type: 'mouseover',
 					entity: entity
 				});
 			}
+			// mouseout
 			if (type === 'mousemove' && env.mouseState.overEntity && entity !== env.entity) {
 				SystemBus.emit(params.channel + '.mouseout', {
 					type: 'mouseout',
