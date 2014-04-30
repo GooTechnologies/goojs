@@ -201,6 +201,9 @@ function (
 			// problem is that there are plenty of projects out there that have timeScale instead of rate
 			// timeScale was considered because it's the same as for animations
 			// rate would have been preferred to timeScale as it's the term used by WebAudio
+			if (this._currentSource) {
+				this._currentSource.playbackRate.value = config.timeScale;
+			}
 		}
 		if (this._buffer) {
 			this._clampInterval();
