@@ -311,7 +311,7 @@ define([
 					}.bind(this),
                     getType: function(xx, zz, slope, rand) {
                         if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
-                            return null;
+                            return terrainData.stone;
                         }
 
                         if (this.terrainInfo) {
@@ -319,7 +319,7 @@ define([
                             zz = Math.floor(zz);
 
                             if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-                                return null;
+                                return terrainData.stone;
                             }
 
                             xx *= this.terrain.splatMult;
@@ -334,7 +334,7 @@ define([
 
                             return type;
                         }
-                        return null;
+                        return terrainData.stone;
                     }.bind(this)
 				};
 
