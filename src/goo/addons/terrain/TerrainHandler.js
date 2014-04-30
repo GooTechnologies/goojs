@@ -361,8 +361,7 @@ define([
 		};
 
 		TerrainHandler.prototype.update = function(cameraEntity) {
-			var pos = cameraEntity.transformComponent.transform.translation;
-			// pos.y = Math.max(pos.y, terrainQuery.getHeightAt([pos.x, 0, pos.z]) + 1.5);
+			var pos = cameraEntity.cameraComponent.camera.translation;
 
 			if (this.terrain) {
 				var settings = this.settings;

@@ -377,15 +377,15 @@ function (
 	GooRunner.prototype._buildLogo = function (settings) {
 		var div = document.createElement('div');
 
-		var color = settings && settings.color ? settings.color : Logo.blue;
+		var color = settings && settings.color ? settings.color : Logo.white;
 
 		var svg = Logo.getLogo({
 			width: '70px',
 			height: '50px',
 			color: color
 		});
-		var span = '<span style="color: #EEE; font-family: Helvetica, sans-serif; font-size: 11px; display: inline-block; margin-top: 14px; margin-right: -3px; vertical-align: top;">Powered by</span>';
-		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + span + svg + '</a>';
+
+		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + svg + '</a>';
 		div.style.position = 'absolute';
 		div.style.zIndex = '2000';
 
