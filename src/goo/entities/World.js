@@ -376,10 +376,9 @@ function (
 	};
 
 	/**
-	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called automatically each frame.
-	 * Has to be called between adding an entity to the world and getting it back.
+	 * Handle newly added entities, changed entities and removed entities.
 	 */
-	World.prototype.process = function () {
+	World.prototype.handleEntityChanges = function () {
 		this._check(this._addedEntities, function (observer, entity) {
 			if (observer.added) {
 				observer.added(entity);
@@ -414,6 +413,14 @@ function (
 				}
 			}
 		});
+	};
+
+	/**
+	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called automatically each frame.
+	 * Has to be called between adding an entity to the world and getting it back.
+	 */
+	World.prototype.process = function () {
+		this.handleEntityChanges();
 
 		for (var i = 0; i < this._systems.length; i++) {
 			var system = this._systems[i];
