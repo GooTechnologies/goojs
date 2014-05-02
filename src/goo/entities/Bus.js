@@ -18,7 +18,7 @@ define(['goo/util/ArrayUtil'],
 	 * @param {boolean} [storeEmit=false] Store the emit data for transmitting to future listeners
 	 */
 	Bus.prototype.emit = function (channels, data, storeEmit) {
-		storeEmit = storeEmit !== false;
+		storeEmit = !!storeEmit;
 
 		if (typeof channels === 'string') {
 			channels = [channels];
@@ -81,7 +81,7 @@ define(['goo/util/ArrayUtil'],
 	 * @param {boolean} [retrieveLatestEmit=false] Retrieve the last emit done before this listener was added (if emitted with storeEmit)
 	 */
 	Bus.prototype.addListener = function (channelName, callback, retrieveLatestEmit) {
-		retrieveLatestEmit = retrieveLatestEmit !== false;
+		retrieveLatestEmit = !!retrieveLatestEmit;
 
 		var node = this.trie;
 		var channelPath = channelName.split('.');
