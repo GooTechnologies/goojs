@@ -222,6 +222,21 @@ define([
 				expect(gotData).toBeUndefined();
 			});
 
+			it('stores the last message when told to', function () {
+				bus.emit('main', 123, true);
+
+				var gotData;
+				bus.addListener('main', function (data) { gotData = data; }, true);
+
+				expect(gotData).toBe(123);
+			});
+
+			it('returns itself', function () {
+				expect(bus.emit('main')).toBe(bus);
+			});
+		});
+
+		describe('addListener', function () {
 			it('does not retrieve the last message by default', function () {
 				bus.emit('main', 123, true);
 
@@ -231,12 +246,6 @@ define([
 				expect(gotData).toBeUndefined();
 			});
 
-			it('returns itself', function () {
-				expect(bus.emit('main')).toBe(bus);
-			});
-		});
-
-		describe('addListener', function () {
 			it('returns itself', function () {
 				expect(bus.addListener('main', function () {})).toBe(bus);
 			});
