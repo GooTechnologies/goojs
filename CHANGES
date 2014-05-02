@@ -1,14 +1,31 @@
+v0.9.9 --- 2014-05-06
+=====================
+
+Additions:
+ + added a way to preload textures to the GPU gradually, without freezing up the browser
+ + added a way to precompile shaders gradually, without freezing up the browser
+ + added World.prototype.processEntityChanges that only processes add/changed/removed entities and does not call the systems for an update
+
+Fixes:
+ * Fixed a picking bug
+ * Fixed an infinite loop in the DynamicLoader
+ * Fixed several performance issues in the DynamicLoader
+
+
 v0.9.8 --- 2014-04-24
+=====================
 
 Fixes:
  * SetRenderTargetAction, InFrustumAction fixes
 
 v0.9.7 --- 2014-04-22
+=====================
 
 Fixes:
  * numerous tiny bugfixes
 
 v0.9.6 --- 2014-04-15
+=====================
 
 Fixes:
  * Renamed file "CannonRigidBodyComponent.js" to "CannonRigidbodyComponent.js"
@@ -16,6 +33,7 @@ Fixes:
  * Stop forcing aspect ratio when loading camera
 
 v0.9.0 --- 2014-03-07
+=====================
 
 Additions:
  + added own sound system
@@ -38,6 +56,7 @@ Deprecated:
 
 
 v0.8.0 --- 2014-02-10
+=====================
 
 Additions:
  + goo.js does not require that you use requirejs anymore; if requirejs is not detected when goo.js starts loading the it will automatically create a "goo" namespace and fill it with every class that the engine consists of
@@ -55,6 +74,7 @@ Deprecated:
 
 
 v0.7.0 --- 2014-01-23
+=====================
 
 Additions:
  + Made engine IE compliant
@@ -89,6 +109,7 @@ Deprecated:
 
 
 v0.6.0 --- 2013-11-06
+=====================
 
 Added:
  + Fog
@@ -109,6 +130,7 @@ Removals:
 
 
 v0.5.0 --- 2013-09-23
+=====================
 
 Additions:
  + Shadows for more than one light
