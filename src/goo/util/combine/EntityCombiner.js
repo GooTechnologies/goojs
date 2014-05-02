@@ -39,7 +39,9 @@ function(
 	 * Runs the combiner
 	 */
 	EntityCombiner.prototype.combine = function() {
-		this.world.process();
+		this.world.getSystem('TransformSystem')._process();
+		this.world.getSystem('BoundingUpdateSystem')._process();
+		// this.world.process(); //! AT: don't run this here! it does a million thing you don't want
 
 		var topEntities = this.world.entityManager.getTopEntities();
 		if (this.gridSize > 1) {
