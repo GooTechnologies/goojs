@@ -43,9 +43,10 @@ require([
 
 	var i = 0;
 	var dist = 1.2;
-	var N = _.keys(entities).length;
-	for (var eventType in entities) {
+	var N = _.keys(entities).length; //REVIEW: use the native and all-wonderful Object.keys(entities) instead
+	// also, pick a better name
 
+	for (var eventType in entities) {
 		// Create a cube
 		var position = [i * dist - dist * (N - 1) / 2, 0, 0];
 		var material = V.getColoredMaterial(1, 1, 1);
@@ -55,8 +56,11 @@ require([
 		var script = Scripts.create('ButtonScript', {
 			channel: 'button' + i
 		});
+
+		//REVIEW: these 2 lines are sooo API 1
 		var scriptComponent = new ScriptComponent(script);
 		entity.setComponent(scriptComponent);
+		// entity.set(script) is more API 2 ;)
 		entities[eventType] = entity;
 		i++;
 
@@ -72,7 +76,7 @@ require([
 	}
 
 	SystemBus.addListener('goo.scriptError', function (event) {
-		console.log("Script error!", event);
+		console.log('Script error!', event);
 	});
 
 	function swapColor(entity) {
@@ -97,5 +101,4 @@ require([
 	SystemBus.addListener('button6.mousemove', handler);
 	SystemBus.addListener('button7.mouseover', handler);
 	SystemBus.addListener('button8.mouseout', handler);
-
 });
