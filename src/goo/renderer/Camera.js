@@ -719,6 +719,13 @@ function (
 	Camera.prototype.getScreenCoordinates = function (worldPosition, screenWidth, screenHeight, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
 
+		var aspect = this.aspect / (screenWidth / screenHeight);
+		if (aspect > 1) {
+			store.y /= aspect;
+		} else if (aspect < 1) {
+			store.x *= aspect;
+		}
+
 		store.x = (store.x + 1) * (this._viewPortRight - this._viewPortLeft) / 2 * screenWidth;
 		store.y = (1 - store.y) * (this._viewPortTop - this._viewPortBottom) / 2 * screenHeight;
 		store.z = (store.z + 1) / 2;
