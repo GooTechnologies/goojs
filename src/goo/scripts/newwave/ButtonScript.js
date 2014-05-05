@@ -81,7 +81,7 @@ define([
 					env.mouseState.down = true;
 
 					var touches = event.targetTouches;
-					env.mouseState.x = touches[0].clientX; //REVIEW: wondering if these would work
+					env.mouseState.x = touches[0].clientX;
 					env.mouseState.y = touches[0].clientY;
 					onMouseEvent(params, env, 'touchstart');
 				},

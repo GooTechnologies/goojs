@@ -5,9 +5,7 @@ require([
 	'goo/scripts/Scripts',
 	'goo/entities/SystemBus',
 	'goo/entities/components/HtmlComponent',
-	'goo/entities/systems/HtmlSystem',
-	'goo/util/ObjectUtil',
-	'goo/entities/components/ScriptComponent'
+	'goo/entities/systems/HtmlSystem'
 ], function (
 	Vector3,
 	Box,
@@ -15,9 +13,7 @@ require([
 	Scripts,
 	SystemBus,
 	HtmlComponent,
-	HtmlSystem,
-	_,
-	ScriptComponent
+	HtmlSystem
 ) {
 	'use strict';
 
@@ -43,12 +39,11 @@ require([
 
 	var i = 0;
 	var dist = 1.2;
-	var N = _.keys(entities).length; //REVIEW: use the native and all-wonderful Object.keys(entities) instead
-	// also, pick a better name
+	var numEntities = Object.keys(entities).length;
 
 	for (var eventType in entities) {
 		// Create a cube
-		var position = [i * dist - dist * (N - 1) / 2, 0, 0];
+		var position = [i * dist - dist * (numEntities - 1) / 2, 0, 0];
 		var material = V.getColoredMaterial(1, 1, 1);
 		var entity = world.createEntity(new Box(), material, position).addToWorld();
 
@@ -56,11 +51,7 @@ require([
 		var script = Scripts.create('ButtonScript', {
 			channel: 'button' + i
 		});
-
-		//REVIEW: these 2 lines are sooo API 1
-		var scriptComponent = new ScriptComponent(script);
-		entity.setComponent(scriptComponent);
-		// entity.set(script) is more API 2 ;)
+		entity.set(script);
 		entities[eventType] = entity;
 		i++;
 
