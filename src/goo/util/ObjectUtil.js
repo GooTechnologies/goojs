@@ -4,8 +4,8 @@
  */
 define([],
 	/** @lends */
-	function() {
-	"use strict";
+	function () {
+	'use strict';
 
 	var _ = {};
 
@@ -29,6 +29,7 @@ define([],
 			nativeKeys			 = Object.keys,
 			nativeForEach		 = ArrayProto.forEach;
 
+	//! AT: can remove this
 	_.has = function(obj, key) {
 		return hasOwnProperty.call(obj, key);
 	};
@@ -65,6 +66,7 @@ define([],
 		return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
 	};
 
+	//! AT: can take this out; Object.keys is supported by every browser nowadays
 	_.keys = nativeKeys || function(obj) {
 		if (obj !== Object(obj)) {throw new TypeError('Invalid object');}
 		var keys = [];
@@ -76,8 +78,7 @@ define([],
 		return keys;
 	};
 
-
-
+	//! AT: can take this out; Array.isArray is supported by every browser nowadays
 	_.isArray = nativeIsArray || function(obj) {
 		return toString.call(obj) === '[object Array]';
 	};
@@ -161,6 +162,7 @@ define([],
 		return result;
 	};
 
+	//! AT: can take this out; it's supported by every browser we care about
 	_.indexOf = function(array, item) {
 		for (var i = 0; i < array.length; i++) {
 			if (i in array && array[i] === item) {

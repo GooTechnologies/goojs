@@ -1,60 +1,24 @@
 define([
-//	'goo/math/Vector3'
+	'goo/timelinepack/AbstractTimelineChannel',
+	'goo/math/MathUtils'
 ], function (
-//	Vector3
+	AbstractTimelineChannel,
+	MathUtils
 	) {
 	'use strict';
 
 	function ValueChannel(id, options) {
-		this.id = id;
-		this.keyframes = [];
-		this.lastTime = 0;
+		AbstractTimelineChannel.call(this, id);
+
 		this.value = 0;
-		this.enabled = true;
 
 		options = options || {};
 		this.callbackUpdate = options.callbackUpdate;
 		this.callbackEnd = options.callbackEnd;
 	}
 
-	/**
-	 * Searching for the entry that is previous to the given time
-	 * @param sortedArray
-	 * @param time
-	 * @param lastTime
-	 */
-	//! AT: could convert into a more general ArrayUtil.pluck and binary search but that creates extra arrays
-	function find(sortedArray, time) {
-		var start = 0;
-		var end = sortedArray.length - 1;
-		var lastTime = sortedArray[sortedArray.length - 1].time;
-
-		if (time > lastTime) { return end; }
-
-		while (end - start > 1) {
-			var mid = Math.floor((end + start) / 2);
-			var midTime = sortedArray[mid].time;
-
-			if (time > midTime) {
-				start = mid;
-			} else {
-				end = mid;
-			}
-		}
-
-		return start;
-	}
-
-	/**
-	 * Called only when mutating the start times of entries to be sure that the order is kept
-	 * @private
-	 */
-	ValueChannel.prototype.sort = function () {
-		this.keyframes.sort(function (a, b) {
-			return a.time - b.time;
-		});
-		this.lastTime = this.keyframes[this.keyframes.length - 1].time;
-	};
+	ValueChannel.prototype = Object.create(AbstractTimelineChannel.prototype);
+	ValueChannel.prototype.constructor = AbstractTimelineChannel;
 
 	/**
 	 * Schedules a tween
@@ -77,7 +41,7 @@ define([
 		} else if (!this.keyframes.length || time < this.keyframes[0].time) {
 			this.keyframes.unshift(newKeyframe);
 		} else {
-			var index = find(this.keyframes, time) + 1;
+			var index = this._find(this.keyframes, time) + 1;
 			this.keyframes.splice(index, 0, newKeyframe);
 		}
 	};
@@ -100,7 +64,7 @@ define([
 		} else if (time >= this.keyframes[this.keyframes.length - 1].time) {
 			newValue = this.keyframes[this.keyframes.length - 1].value;
 		} else {
-			newEntryIndex = find(this.keyframes, time);
+			newEntryIndex = this._find(this.keyframes, time);
 			var newEntry = this.keyframes[newEntryIndex];
 			var nextEntry = this.keyframes[newEntryIndex + 1];
 
@@ -108,8 +72,7 @@ define([
 				var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
 				var progressValue = newEntry.easingFunction(progressInEntry);
 
-				// REVIEW MathUtils.lerp
-				newValue = newEntry.value + (nextEntry.value - newEntry.value) * progressValue;
+				newValue = MathUtils.lerp(progressValue, newEntry.value, nextEntry.value);
 			} else {
 				newValue = newEntry.value;
 			}
@@ -134,10 +97,10 @@ define([
 		};
 	};
 
-	ValueChannel.getRotationTweener = function(angleIndex, entityId, resolver, rotation) {
+	ValueChannel.getRotationTweener = function (angleIndex, entityId, resolver, rotation) {
 		var entity;
 		var degToRad = Math.PI / 180;
-		var func = function(time, value) {
+		var func = function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
 			var rotation = func.rotation;
 			rotation[angleIndex] = value * degToRad;
