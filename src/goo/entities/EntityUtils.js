@@ -5,6 +5,8 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/ScriptComponent',
+	'goo/scripts/Scripts',
+	'goo/scripts/ScriptUtils',
 	'goo/renderer/Camera',
 	'goo/renderer/light/Light',
 	'goo/renderer/Material',
@@ -12,7 +14,8 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Transform',
 	'goo/entities/components/CSSTransformComponent',
-	'goo/entities/components/AnimationComponent'
+	'goo/entities/components/AnimationComponent',
+	'goo/util/ObjectUtil'
 ],
 	/** @lends */
 	function (
@@ -22,6 +25,8 @@ define([
 		CameraComponent,
 		LightComponent,
 		ScriptComponent,
+		Scripts,
+		ScriptUtils,
 		Camera,
 		Light,
 		Material,
@@ -29,7 +34,8 @@ define([
 		BoundingBox,
 		Transform,
 		CSSTransformComponent,
-		AnimationComponent
+		AnimationComponent,
+		_
 	) {
 		'use strict';
 
@@ -50,7 +56,7 @@ define([
 		function cloneSkeletonPose(skeletonPose, settings) {
 			settings.skeletonMap = settings.skeletonMap || {
 				originals: [],
-				clones:[]
+				clones: []
 			};
 			var idx = settings.skeletonMap.originals.indexOf(skeletonPose);
 			var clonedSkeletonPose;
@@ -94,6 +100,31 @@ define([
 					var clonedAnimationComponent = component.clone();
 					clonedAnimationComponent._skeletonPose = cloneSkeletonPose(component._skeletonPose, settings);
 					newEntity.setComponent(clonedAnimationComponent);
+				} else if (component instanceof ScriptComponent) {
+					var scriptComponent = new ScriptComponent();
+					for (var j = 0; j < component.scripts.length; j++) {
+						var newScript;
+						var script = component.scripts[j];
+						var key = script.externals ? script.externals.key : script.externals.name;
+						if (key && Scripts.getScript(key)) { // Engine script
+							newScript = Scripts.create(key, script.parameters);
+						} else { // Custom script
+							newScript = {
+								externals: script.externals,
+								name: (script.name || '') + '_clone',
+								enabled: !!script.enabled
+							};
+							if (script.parameters) { newScript.parameters = _.deepClone(script.parameters); }
+							if (script.setup) { newScript.setup = script.setup; }
+							if (script.update) { newScript.update = script.update; }
+							if (script.setup) { newScript.cleanup = script.cleanup; }
+							scriptComponent.scripts.push(newScript);
+						}
+					}
+					newEntity.setComponent(scriptComponent);
+					if (world.getSystem('ScriptSystem').manualSetup && component.scripts[0].context) {
+						scriptComponent.setup(newEntity);
+					}
 				} else {
 					newEntity.setComponent(component);
 				}
@@ -177,7 +208,7 @@ define([
 		 * Shows an entity and its descendants if they are not hidden
 		 * @param {Entity} entity The entity to show
 		 */
-		EntityUtils.show = function(entity) {
+		EntityUtils.show = function (entity) {
 			entity.hidden = false;
 
 			// first search if it has hidden parents to determine if itself should be visible
@@ -308,7 +339,7 @@ define([
 		 * @returns {Entity[]}
 		 */
 		EntityUtils.getChildren = function (entity) {
-			return entity.transformComponent.children.map(function(childTransformComponent) {
+			return entity.transformComponent.children.map(function (childTransformComponent) {
 				return childTransformComponent.entity;
 			});
 		};
