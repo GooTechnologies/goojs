@@ -168,7 +168,7 @@ function (
 	 * Will be clamped to be in actual soundclip duration
 	 * @param {number} [config.duration] Duration of the sound.
 	 * Will be clamped to be in actual soundclip duration
-	 * @param {number} [config.rate] Playback rate of the sound
+	 * @param {number} [config.timeScale] Playback rate of the sound
 	 */
 	Sound.prototype.update = function(config) {
 		if (!AudioContext) {
@@ -196,7 +196,14 @@ function (
 			this._duration = config.duration;
 		}
 		if (config.timeScale !== undefined) {
-			this._rate = config.rate; //REVIEW: should have the same name
+			this._rate = config.timeScale;
+			//! AT: should have the same name if they are the same thing
+			// problem is that there are plenty of projects out there that have timeScale instead of rate
+			// timeScale was considered because it's the same as for animations
+			// rate would have been preferred to timeScale as it's the term used by WebAudio
+			if (this._currentSource) {
+				this._currentSource.playbackRate.value = config.timeScale;
+			}
 		}
 		if (this._buffer) {
 			this._clampInterval();

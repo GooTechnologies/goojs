@@ -34,7 +34,7 @@ function(
 	ShaderBuilder.SKYSPHERE = null;
 	ShaderBuilder.ENVIRONMENT_TYPE = 0;
 	ShaderBuilder.GLOBAL_AMBIENT = [0, 0, 0];
-	ShaderBuilder.CLEAR_COLOR = [1, 0, 0, 0];
+	ShaderBuilder.CLEAR_COLOR = [0.3, 0.3, 0.3, 1];
 	ShaderBuilder.USE_FOG = false;
 	ShaderBuilder.FOG_SETTINGS = [0, 10000];
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
@@ -283,7 +283,7 @@ function(
 				);
 
 				var useLightCookie = light.lightCookie instanceof Texture;
-				if (useLightCookie || (light.shadowCaster && 
+				if (useLightCookie || (light.shadowCaster &&
 					shaderInfo.renderable.meshRendererComponent &&
 					shaderInfo.renderable.meshRendererComponent.receiveShadows)
 				) {

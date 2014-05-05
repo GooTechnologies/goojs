@@ -2078,9 +2078,9 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			lightPosition : Shader.LIGHT0,
-			HighlightColour : [0.9,0.8,0.7,1.0],
-			MidColour : [0.65,0.55,0.45,1.0],
-			ShadowColour : [0.4,0.3,0.2,1.0],
+			HighlightColor : [0.9,0.8,0.7,1.0],
+			MidColor : [0.65,0.55,0.45,1.0],
+			ShadowColor : [0.4,0.3,0.2,1.0],
 			HighlightSize : 0.2,
 			ShadowSize : 0.01,
 			OutlineWidth : 0.15
@@ -2108,9 +2108,9 @@ define([
 			'}'
 		].join('\n'),
 		fshader : [
-			'uniform vec4 HighlightColour;',
-			'uniform vec4 MidColour;',
-			'uniform vec4 ShadowColour;',
+			'uniform vec4 HighlightColor;',
+			'uniform vec4 MidColor;',
+			'uniform vec4 ShadowColor;',
 			'uniform float HighlightSize;',
 			'uniform float ShadowSize;',
 			'uniform float OutlineWidth;',
@@ -2125,12 +2125,12 @@ define([
 				'vec3 v = normalize(V);',
 
 				'float lambert = dot(l,n);',
-				'vec4 colour = MidColour;',
-				'if (lambert > 1.0 - HighlightSize) colour = HighlightColour;',
-				'if (lambert < ShadowSize) colour = ShadowColour;',
-				'if (dot(n,v) < OutlineWidth) colour = vec4(0.0,0.0,0.0,1.0);',
+				'vec4 color = MidColor;',
+				'if (lambert > 1.0 - HighlightSize) color = HighlightColor;',
+				'if (lambert < ShadowSize) color = ShadowColor;',
+				'if (dot(n,v) < OutlineWidth) color = vec4(0.0,0.0,0.0,1.0);',
 
-				'gl_FragColor = colour;',
+				'gl_FragColor = color;',
 			'}'
 		].join('\n')
 	};
