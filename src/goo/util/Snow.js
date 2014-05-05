@@ -43,7 +43,7 @@ function (
 
 		// and this too
 		this.particleCloudEntity = ParticleSystemUtils.createParticleSystemEntity(
-			gooRunner,
+			gooRunner.world,
 			ParticleLib.getSnow({
 				getEmissionPoint: function(vec3) {
 					// either camera or some predefined area
