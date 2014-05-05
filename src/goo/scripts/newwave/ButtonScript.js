@@ -81,8 +81,9 @@ define([
 					env.mouseState.down = true;
 
 					var touches = event.targetTouches;
-					env.mouseState.x = touches[0].clientX;
-					env.mouseState.y = touches[0].clientY;
+					var rect = env.domElement.getBoundingClientRect();
+					env.mouseState.x = touches[0].pageX - rect.left;
+					env.mouseState.y = touches[0].pageY - rect.top;
 					onMouseEvent(params, env, 'touchstart');
 				},
 				touchend: function (/*event*/) {
