@@ -105,7 +105,7 @@ define([
 
 	MouseLookControlScript.externals = {
 		key: 'MouseLookScript',
-		name: 'MouseLookScript',
+		name: 'Mouse Look Control',
 		description: 'Click and drag to change rotation of entity, usually a camera',
 		parameters: [
 			{

@@ -106,7 +106,7 @@ define([
 
 	PickAndRotateScript.externals = {
 		key: 'PickAndRotateScript',
-		name: 'PickAndRotateScript',
+		name: 'Pick and Rotate',
 		description: 'Enables pick-drag-rotating entities'
 	};
 

@@ -46,7 +46,7 @@ define([
 
 	RotationScript.externals = {
 		key: 'RotationScript',
-		name: 'RotationScript',
+		name: 'Mouse Rotation',
 		description: '',
 		parameters: [{
 			key: 'fraction',

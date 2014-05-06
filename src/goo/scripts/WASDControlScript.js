@@ -152,7 +152,7 @@ define([
 
 	WASDControlScript.externals = {
 		key: 'WASD',
-		name: 'WASD',
+		name: 'WASD Control',
 		description: 'Enables moving via the WASD keys',
 		parameters: [{
 			key: 'whenUsed',

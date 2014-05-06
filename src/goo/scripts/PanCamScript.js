@@ -223,7 +223,8 @@ define([
 	}
 
 	PanCamScript.externals = {
-		name: 'PanCamControlScript',
+		key: 'PanCamControlScript',
+		name: 'PanCamera Control',
 		description: 'Enables camera to pan around a point in 3D space using the mouse',
 		parameters: [{
 			key: 'whenUsed',

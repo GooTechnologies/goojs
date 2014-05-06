@@ -150,7 +150,6 @@ define([
 		 * @param {Array} [pos] the position as [x, y, z]
 		 * @returns {Vector3} the normal vector
 		 */
-
 		WorldFittedTerrainScript.prototype.getTerrainNormalAt = function(pos) {
 			var heightData = this.getHeightDataForPosition(pos);
             if (!heightData) {

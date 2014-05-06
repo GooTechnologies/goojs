@@ -384,7 +384,8 @@ define([
 	}
 
 	OrbitCamControlScript.externals = {
-		name: 'OrbitCamControlScript',
+		key: 'OrbitCamControlScript',
+		name: 'OrbitCamera Control',
 		description: 'Enables camera to orbit around a point in 3D space using the mouse',
 		parameters: [{
 			key: 'whenUsed',

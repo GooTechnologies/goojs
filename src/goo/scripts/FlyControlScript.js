@@ -39,7 +39,7 @@ define([
 
 	FlyControlScript.externals = {
 		key: 'FlyControlScript',
-		name: 'FlyControlScript',
+		name: 'Fly Control',
 		description: 'This is a combo of WASDscript and mouselookscript',
 		parameters: params
 	};

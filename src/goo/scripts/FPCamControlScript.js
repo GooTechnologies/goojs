@@ -121,7 +121,7 @@ define([
 
 	FPCamControlScript.externals = {
 		key        : 'FPCamControlScript',
-		name       : 'FPCamControlScript',
+		name       : 'First Person Camera Control',
 		description: 'Attempts to lock the pointer and control the entity\'s orientation based on mouse movements',
 		parameters : [{
 			key      : 'turnSpeedHorizontal',
