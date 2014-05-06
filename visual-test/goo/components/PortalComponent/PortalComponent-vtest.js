@@ -70,18 +70,7 @@ require([
 	}
 
 	function addUserCamera() {
-		var camera = new Camera();
-
-		var scripts = new ScriptComponent([
-			new OrbitCamControlScript({
-				domElement: goo.renderer.domElement,
-				spherical: new Vector3(25, Math.PI / 4, 0)
-			})
-		]);
-
-		world.createEntity('UserCameraEntity', [0, 0, 3], camera, scripts).lookAt(0, 0, 0).addToWorld();
-
-		return camera;
+		return V.addOrbitCamera(new Vector3(25, Math.PI / 4, 0)).cameraComponent.camera;
 	}
 
 	var goo = V.initGoo();

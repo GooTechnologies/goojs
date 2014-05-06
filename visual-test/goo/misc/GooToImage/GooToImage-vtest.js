@@ -12,7 +12,8 @@ require([
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightDebugComponent',
 	'goo/renderer/Renderer',
-	'goo/math/Plane'
+	'goo/math/Plane',
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,
@@ -27,7 +28,8 @@ require([
 	SpotLight,
 	LightDebugComponent,
 	Renderer,
-	Plane
+	Plane,
+	V
 	) {
 	'use strict';
 
@@ -66,6 +68,7 @@ require([
 		}
 	}
 
+	/*
 	function addOrbitCam() {
 		var cameraEntity = goo.world.createEntity(new Camera(), 'CameraEntity').addToWorld();
 		var orbitCamScript = new OrbitCamControlScript({
@@ -74,6 +77,7 @@ require([
 		});
 		cameraEntity.set(orbitCamScript);
 	}
+	*/
 	// ---
 
 
@@ -180,13 +184,11 @@ require([
 	// ---
 
 	// --- setting up everything
-	var goo = new GooRunner({
+	var goo = V.initGoo({
 		antialias: false, // for some reason lines don't render nice when using antialias on some hardware
 		alpha: true,
 		logo: { position: 'bottomright', color: '#FFF' }
 	});
-	goo.renderer.domElement.id = 'goo';
-	document.body.appendChild(goo.renderer.domElement);
 
 	var world = goo.world;
 
@@ -202,7 +204,7 @@ require([
 	addSpotLight();
 
 	// camera
-	addOrbitCam();
+	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
 	goo.renderer.setClearColor(0.05, 0.05, 0.05, 0.0);
 

@@ -2,8 +2,8 @@ require([
 	'goo/entities/GooRunner',
 	'goo/renderer/Camera',
 	'goo/entities/components/ScriptComponent',
-	'goo/scripts/newwave/WASDScript',
-	'goo/scripts/newwave/FPCamControlScript',
+	'goo/scripts/WASDScript',
+	'goo/scripts/FPCamControlScript',
 	'lib/V',
 	'goo/scripts/Scripts'
 ], function (

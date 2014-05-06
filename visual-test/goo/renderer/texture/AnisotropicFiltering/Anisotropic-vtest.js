@@ -7,6 +7,7 @@ require([
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
 	'goo/renderer/TextureCreator',
+	'goo/scripts/Scripts',
 	'lib/V'
 ], function(
 	Material,
@@ -17,6 +18,7 @@ require([
 	ScriptComponent,
 	Vector3,
 	TextureCreator,
+	Scripts,
 	V
 ) {
 	'use strict';
@@ -36,14 +38,13 @@ require([
 
 	V.addLights();
 
-	var cameraEntity = world.createEntity('CameraEntity', new Camera(45, 1, 0.1)).addToWorld();
-	cameraEntity.set(new OrbitCamControlScript({
-		domElement: goo.renderer.domElement,
-		spherical: new Vector3(1, Math.PI / 2, 0.1),
+	var orbitScript = Scripts.create('OrbitCamControlScript', {
+		spherical: new Vector3(1, 90, 0.1 * 180 / Math.PI),
 		minAscent: 0.1,
 		turnSpeedHorizontal: 0.001,
 		turnSpeedVertical: 0.001
-	}));
+	});
+	var cameraEntity = world.createEntity('CameraEntity', new Camera(45, 1, 0.1), orbitScript).addToWorld();
 
 	function createBoxEntity(anisotropy) {
 		var meshData = new Box(100, 1, 100, 200, 200);

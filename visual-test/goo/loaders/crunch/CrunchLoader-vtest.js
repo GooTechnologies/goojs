@@ -10,7 +10,8 @@ require([
 	'goo/entities/components/CameraComponent',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'lib/V'
 ], function (
 	Material,
 	GooRunner,
@@ -23,7 +24,8 @@ require([
 	CameraComponent,
 	OrbitCamControlScript,
 	Vector3,
-	ShaderLib
+	ShaderLib,
+	V
 ) {
 	'use strict';
 
@@ -45,24 +47,10 @@ require([
 
 	function init() {
 		// Create typical goo application
-		var goo = new GooRunner({
-			showStats : true
-		});
-		goo.renderer.domElement.id = 'goo';
+		var goo = V.initGoo();
 		document.body.appendChild(goo.renderer.domElement);
 
-		var camera = new Camera(45, 1, 1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.transformComponent.transform.translation.set(0, 5, 60);
-		cameraEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
-		cameraEntity.setComponent(new CameraComponent(camera));
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(60, Math.PI / 2, 0)
-		}));
-		cameraEntity.setComponent(scripts);
-		cameraEntity.addToWorld();
+		V.addOrbitCamera();
 
 		// Setup light
 		var light = new PointLight();

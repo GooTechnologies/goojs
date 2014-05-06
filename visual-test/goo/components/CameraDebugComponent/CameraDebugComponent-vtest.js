@@ -87,15 +87,7 @@ require([
 			}
 		}));
 
-		// camera 2 - with orbit cam control script
-		var camera2Entity = world.createEntity(new Camera(), [0, 0, 3]).lookAt(new Vector3(0, 0, 0)).addToWorld();
-
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement: goo.renderer.domElement,
-			spherical: new Vector3(25, Math.PI / 4, 0)
-		}));
-		camera2Entity.set(scripts);
+		var camera2Entity = V.addOrbitCamera(new Vector3(25, Math.PI / 4, 0));
 
 		// attach camera debug components
 		camera1Entity.set(new CameraDebugComponent());

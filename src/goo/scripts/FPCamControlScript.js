@@ -12,6 +12,7 @@ define([
 	GameUtils
 ) {
 	'use strict';
+	/* jshint validthis: true */
 
 	/**
 	 * @class Enables mouse rotation of an entity.
@@ -20,103 +21,136 @@ define([
 	 * @param {number} [properties.turnSpeedHorizontal=0.01]
 	 * @param {number} [properties.turnSpeedVertical=0.01]
 	 */
-	function FPCamControlScript(properties) {
-		properties = properties || {};
 
-		this.name = 'FPCamControlScript';
+	var FPCamControlScript = function () {
+		var calcVector;
+		var rotX, rotY;
+		var pointerLocked;
+		var mouseState;
 
-		this.domElement = properties.domElement || null;
+		function setup(parameters, env) {
+			calcVector = new Vector3();
+			rotX = 0.0;
+			rotY = 0.0;
 
-		this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeedHorizontal : 0.01;
-		this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeedVertical : 0.01;
+			pointerLocked = false;
 
-		this.maxAscent = (properties.maxAscent !== undefined) ? properties.maxAscent : 89.95 * MathUtils.DEG_TO_RAD;
-		this.minAscent = (properties.minAscent !== undefined) ? properties.minAscent : -89.95 * MathUtils.DEG_TO_RAD;
+			mouseState = {
+				dX: 0,
+				dY: 0
+			};
 
-		this.calcVector = new Vector3();
-		this.rotX = 0.0;
-		this.rotY = 0.0;
+			setupMouseControls(env.domElement);
+		}
 
-		this.pointerLocked = false;
+		function run(entity, tpf, env, parameters) {
+			var transformComponent = entity.transformComponent;
+			var transform = transformComponent.transform;
 
-		this.mouseState = {
-			dX: 0,
-			dY: 0
+			var orient = transform.rotation;
+			orient.toAngles(calcVector);
+			rotY = calcVector.x;
+			rotX = calcVector.y;
+
+			// apply dx around upVector
+			if (mouseState.dX !== 0) {
+				rotX -= parameters.turnSpeedHorizontal * mouseState.dX;
+			}
+			// apply dy around left vector
+			if (mouseState.dY !== 0) {
+				var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
+				var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
+				rotY -= parameters.turnSpeedVertical * mouseState.dY;
+				if (rotY > maxAscent) {
+					rotY = maxAscent;
+				} else if (rotY < minAscent) {
+					rotY = minAscent;
+				}
+			}
+
+			transform.rotation.fromAngles(rotY, rotX, 0.0);
+
+			// set our component updated.
+			transformComponent.setUpdated();
+
+			// clear state
+			mouseState.dX = 0;
+			mouseState.dY = 0;
+		}
+
+		function cleanup(/*parameters, env*/) {
+
+		}
+
+		// ---
+		var mousedown = function () {
+			GameUtils.requestPointerLock();
 		};
 
-		if (this.domElement) {
-			this.setupMouseControls();
-		}
-	}
-
-	var mousedown = function () {
-		GameUtils.requestPointerLock();
-	};
-
-	var mousemove = function (event) {
-		if (this.pointerLocked) {
-			this.mouseState.dX += event.movementX;
-			this.mouseState.dY += event.movementY;
-		}
-	};
-
-	var pointerLockChange = function (/*event*/) {
-		this.pointerLocked = !!document.pointerLockElement;
-	};
-
-	var pointerLockError = function (/*event*/) {
-		this.pointerLocked = !!document.pointerLockElement;
-	};
-
-	FPCamControlScript.prototype.setupMouseControls = function () {
-		this.domElement.addEventListener('mousedown', mousedown.bind(this), false);
-
-		document.addEventListener('mousemove', mousemove.bind(this));
-		document.addEventListener('pointerlockchange', pointerLockChange.bind(this));
-		document.addEventListener('pointerlockerror', pointerLockError.bind(this));
-
-		// attempt to request a pointer lock; will succeed only if fullscreen is enabled
-		GameUtils.requestPointerLock();
-	};
-
-	FPCamControlScript.prototype.run = function (entity, tpf, env) {
-		if (env) {
-			if (!this.domElement && env.domElement) {
-				this.domElement = env.domElement;
-				this.setupMouseControls();
+		var mousemove = function (event) {
+			if (pointerLocked) {
+				mouseState.dX += event.movementX;
+				mouseState.dY += event.movementY;
 			}
+		};
+
+		var pointerLockChange = function (/*event*/) {
+			pointerLocked = !!document.pointerLockElement;
+		};
+
+		var pointerLockError = function (/*event*/) {
+			pointerLocked = !!document.pointerLockElement;
+		};
+
+		function setupMouseControls(domElement) {
+			domElement.addEventListener('mousedown', mousedown.bind(this), false);
+			document.addEventListener('mousemove', mousemove.bind(this));
+			document.addEventListener('pointerlockchange', pointerLockChange.bind(this));
+			document.addEventListener('pointerlockerror', pointerLockError.bind(this));
+
+			//! AT: attempt to request a pointer lock; will succeed only if fullscreen is enabled
+			GameUtils.requestPointerLock();
 		}
 
-		var transformComponent = entity.transformComponent;
-		var transform = transformComponent.transform;
+		return {
+			setup: setup,
+			run: run,
+			cleanup: cleanup
+		};
+	};
 
-		var orient = transform.rotation;
-		orient.toAngles(this.calcVector);
-		this.rotY = this.calcVector.x;
-		this.rotX = this.calcVector.y;
-
-		// apply dx around upVector
-		if (this.mouseState.dX !== 0) {
-			this.rotX -= this.turnSpeedHorizontal * this.mouseState.dX;
-		}
-		// apply dy around left vector
-		if (this.mouseState.dY !== 0) {
-			this.rotY -= this.turnSpeedVertical * this.mouseState.dY;
-			if (this.rotY > this.maxAscent) {
-				this.rotY = this.maxAscent;
-			} else if (this.rotY < this.minAscent) {
-				this.rotY = this.minAscent;
-			}
-		}
-		//Matrix3x3.combine(this.calcMat1, thisCalcMat2, transform.rotation);
-		transform.rotation.fromAngles(this.rotY, this.rotX, 0.0);
-
-		// set our component updated.
-		transformComponent.setUpdated();
-
-		// clear state
-		this.mouseState.dX = 0;
-		this.mouseState.dY = 0;
+	FPCamControlScript.externals = {
+		name       : 'FPCamControlScript',
+		description: 'Attempts to lock the pointer and control the entity\'s orientation based on mouse movements',
+		parameters : [{
+			key      : 'turnSpeedHorizontal',
+			'default': 0.01,
+			type     : 'float',
+			control  : 'slider',
+			min      : 0.01,
+			max      : 1
+		}, {
+			key      : 'turnSpeedVertical',
+			'default': 0.01,
+			type     : 'float',
+			control  : 'slider',
+			min      : 0.01,
+			max      : 1
+		}, {
+			key      : 'maxAscent',
+			'default': 89,
+			type     : 'int',
+			control  : 'slider',
+			min      : -89,
+			max      : 89
+		}, {
+			key      : 'minAscent',
+			'default': -89,
+			type     : 'int',
+			control  : 'slider',
+			min      : -89,
+			max      : 89
+		}]
 	};
 
 	return FPCamControlScript;

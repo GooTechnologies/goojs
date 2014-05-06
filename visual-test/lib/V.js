@@ -17,7 +17,9 @@ define([
 	'goo/shapes/Quad',
 	'goo/renderer/Shader',
 	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent'
+	'goo/entities/components/MeshRendererComponent',
+	'goo/scripts/Scripts',
+	'goo/util/ObjectUtil'
 ], function (
 	GooRunner,
 	World,
@@ -37,7 +39,9 @@ define([
 	Quad,
 	Shader,
 	MeshDataComponent,
-	MeshRendererComponent
+	MeshRendererComponent,
+	Scripts,
+	_
 	) {
 	'use strict';
 
@@ -73,7 +77,7 @@ define([
 	 * @returns {Entity}
 	 */
 	V.addOrbitCamera = function (spherical, lookAt, dragButton) {
-		spherical = V.toVector3(spherical, new Vector3(20, Math.PI / 2, 0));
+		spherical = V.toVector3(spherical, new Vector3(20, 90, 0));
 		lookAt = V.toVector3(lookAt, new Vector3(0, 0, 0));
 
 		var camera = new Camera();
@@ -94,9 +98,10 @@ define([
 			orbitCamOpetions.moveInitialDelay = 200;
 		}
 
-		var orbitScript = new OrbitCamControlScript(orbitCamOpetions);
-
-		return V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
+		var orbitScript = Scripts.create('OrbitCamControlScript', orbitCamOpetions);
+		var entity = V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
+		entity.setComponent(orbitScript);
+		return entity;
 	};
 
 	/**
@@ -107,11 +112,11 @@ define([
 		var angle = V.rng.nextFloat() * Math.PI * 2;
 		var color = [
 			angle,
-				angle + Math.PI * 2 / 3,
-				angle + Math.PI * 4 / 3
+			angle + Math.PI * 2 / 3,
+			angle + Math.PI * 4 / 3
 		].map(function (v) {
-				return Math.sin(v) / 2 + 0.5;
-			});
+			return Math.sin(v) / 2 + 0.5;
+		});
 		color.push(1);
 
 		return color;
@@ -278,11 +283,8 @@ define([
 			options.showStats = false;
 			options.logo = false;
 			options.manuallyStartGameLoop = true;
-		} else {
-			if (_options && _options.logo) {
-				options.logo = _options.logo;
-			}
 		}
+		_.extend(options, _options);
 
 		V.goo = new GooRunner(options);
 		V.goo.renderer.domElement.id = 'goo';

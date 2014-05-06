@@ -12,7 +12,6 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/FPCamControlScript',
-	'goo/scripts/newwave/FPCamControlScript',
 	'goo/scripts/ScriptUtils',
 	'lib/V'
 ], function (
@@ -29,7 +28,6 @@ require([
 	LightComponent,
 	WASDControlScript,
 	FPCamControlScript,
-	NewWaveFPCamControlScript,
 	ScriptUtils,
 	V
 	) {
@@ -90,7 +88,7 @@ require([
 		}));
 
 		// the FPCam script itself that locks the pointer and moves the camera
-		var fpScript = NewWaveFPCamControlScript();
+		var fpScript = FPCamControlScript();
 		fpScript.parameters = {
 			domElement: goo.renderer.domElement
 		};
