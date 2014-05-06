@@ -95,7 +95,7 @@ define([
 			drag              : 5.0,
 			releaseVelocity   : true,
 			interpolationSpeed: 7,
-			dragButton        : typeof dragButton === 'number' ? dragButton : -1
+			dragButton        : dragButton || 'Any'
 		};
 
 		if (!V.deterministic) {

@@ -79,7 +79,7 @@ require([
 	// add some lights
 	V.addLights();
 
-	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3), new Vector3(), 2);
+	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3), new Vector3(), 'Right');
 
 	// standard material
 	var material = new Material(ShaderLib.simpleLit);
