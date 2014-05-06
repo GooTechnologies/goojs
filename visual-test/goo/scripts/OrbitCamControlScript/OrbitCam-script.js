@@ -2,16 +2,12 @@ require([
 	'goo/entities/GooRunner',
 	'goo/renderer/Camera',
 	'goo/entities/components/ScriptComponent',
-	'goo/scripts/WASDScript',
-	'goo/scripts/FPCamControlScript',
 	'lib/V',
 	'goo/scripts/Scripts'
 ], function (
 	GooRunner,
 	Camera,
 	ScriptComponent,
-	WASDControlScript,
-	FPCamControlScript,
 	V,
 	Scripts
 ) {
