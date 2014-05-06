@@ -54,12 +54,13 @@ require([
 		var scripts = new ScriptComponent();
 
 		// WASD control script to move around
-		scripts.scripts.push(new WASDControlScript({
+		scripts.scripts.push(Scripts.create('WASD', {
 			domElement: goo.renderer.domElement,
 			walkSpeed: 25.0,
 			crawlSpeed: 10.0
 		}));
 
+		Scripts.register(PickAndRotateScript);
 		var pickAndRotateScript = Scripts.create('PickAndRotateScript');
 		scripts.scripts.push(pickAndRotateScript);
 

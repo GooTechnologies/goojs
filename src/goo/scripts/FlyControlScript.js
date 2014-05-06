@@ -1,11 +1,11 @@
 define([
 	'goo/scripts/Scripts',
-	'goo/scripts/WASDScript',
-	'goo/scripts/MouseLookScript'
+	'goo/scripts/WASDControlScript',
+	'goo/scripts/MouseLookControlScript'
 ], function (
 	Scripts,
 	WASDScript,
-	MouseLookScript
+	MouseLookControlScript
 ) {
 	'use strict';
 
@@ -34,10 +34,11 @@ define([
 	}
 
 	var wasdParams = WASDScript.externals.parameters;
-	var mouseLookParams = MouseLookScript.externals.parameters;
+	var mouseLookParams = MouseLookControlScript.externals.parameters;
 	var params = wasdParams.concat(mouseLookParams.slice(1));
 
 	FlyControlScript.externals = {
+		key: 'FlyControlScript',
 		name: 'FlyControlScript',
 		description: 'This is a combo of WASDscript and mouselookscript',
 		parameters: params

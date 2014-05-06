@@ -174,6 +174,7 @@ define([
 	}
 
 	ButtonScript.externals = {
+		key: 'ButtonScript',
 		name: 'ButtonScript',
 		description: 'Enables an entity to be interacted with using click or touch.',
 		parameters: [{

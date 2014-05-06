@@ -245,6 +245,7 @@ define([
 	}
 
 	CannonPickScript.externals = {
+		key: 'CannonPickScript',
 		name: 'CannonPickScript',
 		description: 'Enables camera to pan around a point in 3D space using the mouse',
 		parameters: [{

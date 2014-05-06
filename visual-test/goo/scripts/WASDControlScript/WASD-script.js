@@ -13,7 +13,8 @@ require([
 	'goo/scripts/FPCamControlScript',
 	'goo/scripts/ScriptUtils',
 	'goo/math/Vector',
-	'lib/V'
+	'lib/V',
+	'goo/scripts/Scripts'
 ], function (
 	GooRunner,
 	Material,
@@ -29,10 +30,12 @@ require([
 	FPCamControlScript,
 	ScriptUtils,
 	Vector,
-	V
+	V,
+	Scripts
 	) {
 	'use strict';
 
+	/*
 	//! schteppe: Outdated and already covered in FPCamControlScript test. Delete?
 
 	//! AT: use chars instead of keycodes? depends on how the frontend passes keys
@@ -210,6 +213,7 @@ require([
 			cleanup: cleanup
 		};
 	};
+	*/
 
 	function WASDControlScriptDemo() {
 		var goo = V.initGoo();
@@ -224,20 +228,17 @@ require([
 
 		// camera control set up
 		var scripts = new ScriptComponent();
-
-		var wasdScript = WASDControlScript();
-		wasdScript.parameters = {
+		var wasdScript = Scripts.create('WASDControlScript', {
 			domElement: goo.renderer.domElement
-		};
+		});
 
 		// WASD control script to move around
 		scripts.scripts.push(wasdScript);
 
 		// the FPCam script itself that locks the pointer and moves the camera
-		var fpScript = FPCamControlScript();
-		fpScript.parameters = {
+		var fpScript = Scripts.create('FPCamControlScript', {
 			domElement: goo.renderer.domElement
-		};
+		});
 		scripts.scripts.push(fpScript);
 
 		cameraEntity.setComponent(scripts);

@@ -5,11 +5,12 @@ define([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/scripts/AxisAlignedCamControlScript',
 	'goo/scripts/PanCamScript',
-	'goo/scripts/MouseLookScript',
-	'goo/scripts/WASDScript',
+	'goo/scripts/MouseLookControlScript',
+	'goo/scripts/WASDControlScript',
 	'goo/scripts/ButtonScript',
-	'goo/scripts/PickAndRotateScript'
-	//'goo/scripts/newwave/FPCamControlScript'
+	//'goo/scripts/PickAndRotateScript'
+	//'goo/scripts/FPCamControlScript'
+	//'goo/scripts/RotationScript'
 ], function (Scripts) {
 	'use strict';
 

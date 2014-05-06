@@ -19,7 +19,8 @@ define([
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/scripts/Scripts',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/math/MathUtils'
 ], function (
 	GooRunner,
 	World,
@@ -41,7 +42,8 @@ define([
 	MeshDataComponent,
 	MeshRendererComponent,
 	Scripts,
-	_
+	_,
+	MathUtils
 	) {
 	'use strict';
 
@@ -80,9 +82,13 @@ define([
 		spherical = V.toVector3(spherical, new Vector3(20, 90, 0));
 		lookAt = V.toVector3(lookAt, new Vector3(0, 0, 0));
 
+		// Convert to degrees since the script uses degrees
+		spherical.y = MathUtils.degFromRad(spherical.y);
+		spherical.z = MathUtils.degFromRad(spherical.z);
+
 		var camera = new Camera();
 
-		var orbitCamOpetions = {
+		var orbitCamOptions = {
 			domElement        : V.goo.renderer.domElement,
 			spherical         : spherical,
 			lookAtPoint       : lookAt,
@@ -93,14 +99,13 @@ define([
 		};
 
 		if (!V.deterministic) {
-			orbitCamOpetions.demoMode = true;
-			orbitCamOpetions.moveInterval = 4000;
-			orbitCamOpetions.moveInitialDelay = 200;
+			orbitCamOptions.demoMode = true;
+			orbitCamOptions.moveInterval = 4000;
+			orbitCamOptions.moveInitialDelay = 200;
 		}
 
-		var orbitScript = Scripts.create('OrbitCamControlScript', orbitCamOpetions);
+		var orbitScript = Scripts.create('OrbitCamControlScript', orbitCamOptions);
 		var entity = V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
-		entity.setComponent(orbitScript);
 		return entity;
 	};
 

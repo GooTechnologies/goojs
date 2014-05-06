@@ -45,6 +45,7 @@ define([
 	}
 
 	RotationScript.externals = {
+		key: 'RotationScript',
 		name: 'RotationScript',
 		description: '',
 		parameters: [{

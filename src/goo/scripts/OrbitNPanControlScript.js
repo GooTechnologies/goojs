@@ -51,6 +51,7 @@ define([
 	}
 
 	OrbitNPan.externals = {
+		key: 'OrbitNPanControlScript',
 		name: 'OrbitNPanControlScript',
 		description: 'This is a combo of orbitcamcontrolscript and pancamcontrolscript',
 		parameters:	params
