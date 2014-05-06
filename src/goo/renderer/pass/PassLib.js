@@ -831,6 +831,178 @@ function(
 		}
 	];
 
+	function Overlay(id) {
+		FullscreenPass.call(this, Util.clone(ShaderLib.overlay));
+		this.id = id;
+	}
+	Overlay.prototype = Object.create(FullscreenPass.prototype);
+	Overlay.prototype.constructor = Overlay;
+
+	Overlay.blendmodes = [
+		'Normal',
+		'Lighten',
+		'Darken',
+		'Multiply',
+		'Average',
+		'Add',
+		'Substract',
+		'Difference',
+		'Negation',
+		'Exclusion',
+		'Screen',
+		'Overlay',
+		'SoftLight',
+		'HardLight',
+		'ColorDodge',
+		'ColorBurn',
+		'LinearLight',
+		'VividLight',
+		'PinLight',
+		'HardMix',
+		'Reflect',
+		'Glow',
+		'Phoenix'
+	];
+
+	Overlay.prototype.update = function (config) {
+		var options = config.options;
+		var shader = this.material.shader;
+		// if (options.url !== undefined) {
+		// 	var texture = options.url; // fix texture handling in Create
+		// 	if (!this.material.getTexture('OVERLAY_MAP')) {
+		// 		this.material.setTexture('OVERLAY_MAP', texture);
+		// 	}
+		// }
+		if (options.blendmode !== undefined) {
+			var newBlendMode = Overlay.blendmodes.indexOf(options.blendmode);
+			if (newBlendMode !== shader.defines.OVERLAY_TYPE) {
+				shader.defines.OVERLAY_TYPE = newBlendMode;
+				shader.uniforms.amount = options.amount - 0.01;
+			}
+		}
+		if (options.amount !== undefined) {
+			shader.uniforms.amount = options.amount;
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+
+	Overlay.label = 'Overlay';
+	Overlay.options = [
+		{
+			key: 'url',
+			name: 'Texture',
+			type: 'texture',
+			'default': ''
+		},
+		{
+			key: 'blendmode',
+			name: 'Blend Mode',
+			type: 'string',
+			control: 'select',
+			options: Overlay.blendmodes,
+			'default': 'Normal'
+		},
+		{
+			key: 'amount',
+			name: 'Amount',
+			type: 'float',
+			control: 'slider',
+			min: 0,
+			max: 1,
+			decimals: 2,
+			'default': 1
+		}
+	];
+
+	function Levels(id) {
+		FullscreenPass.call(this, Util.clone(ShaderLib.levels));
+		this.id = id;
+	}
+	Levels.prototype = Object.create(FullscreenPass.prototype);
+	Levels.prototype.constructor = Levels;
+
+	Levels.prototype.update = function (config) {
+		var options = config.options;
+		var shader = this.material.shader;
+		if (options.gamma !== undefined) {
+			shader.uniforms.gamma = options.gamma;
+		}
+		if (options.gamma !== undefined) {
+			shader.uniforms.gamma = options.gamma;
+		}
+		if (options.minInput !== undefined) {
+			shader.uniforms.minInput = options.minInput;
+		}
+		if (options.maxInput !== undefined) {
+			shader.uniforms.maxInput = options.maxInput;
+		}
+		if (options.minOutput !== undefined) {
+			shader.uniforms.minOutput = options.minOutput;
+		}
+		if (options.maxOutput !== undefined) {
+			shader.uniforms.maxOutput = options.maxOutput;
+		}
+		if (config.enabled !== undefined) {
+			this.enabled = config.enabled;
+		}
+	};
+
+	Levels.label = 'Levels';
+	Levels.options = [
+		{
+			key: 'gamma',
+			type: 'float',
+			control: 'slider',
+			name: 'Gamma',
+			min: 0,
+			max: 5,
+			decimals: 2,
+			'default': 1
+		},
+		{
+			key: 'minInput',
+			type: 'float',
+			control: 'slider',
+			name: 'Min Input',
+			min: 0,
+			max: 1,
+			decimals: 2,
+			'default': 0
+		},
+		{
+			key: 'maxInput',
+			type: 'float',
+			control: 'slider',
+			name: 'Max Input',
+			min: 0,
+			max: 1,
+			decimals: 2,
+			'default': 1
+		},
+		{
+			key: 'minOutput',
+			type: 'float',
+			control: 'slider',
+			name: 'Min Output',
+			min: 0,
+			max: 1,
+			decimals: 2,
+			'default': 0
+		},
+		{
+			key: 'maxOutput',
+			type: 'float',
+			control: 'slider',
+			name: 'Max Output',
+			min: 0,
+			max: 1,
+			decimals: 2,
+			'default': 1
+		}
+	];
+
 	return {
 		Bloom: Bloom,
 		Blur: Blur,
@@ -848,6 +1020,8 @@ function(
 		DiffOfGaussians: DiffOfGaussians,
 		MotionBlur: MotionBlur,
 		Antialias: Antialias,
-		Radial: Radial
+		Radial: Radial,
+		// Overlay: Overlay,
+		Levels: Levels
 	};
 });
