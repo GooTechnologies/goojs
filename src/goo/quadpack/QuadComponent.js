@@ -157,14 +157,7 @@ function (
 		if (this.preserveAspectRatio && image) {
 			var height = image.svgHeight || image.height;
 			var width = image.svgWidth || image.width;
-			/*var ratio = width / height;
-			if (ratio > 1){
-				this.width = 1;
-				this.height = 1 / ratio;
-			} else if (ratio < 1){
-				this.height = 1;
-				this.width = ratio;
-			}*/
+
 			this.width = width / 100;
 			this.height = height / 100;
 		}
