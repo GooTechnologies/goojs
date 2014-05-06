@@ -7,10 +7,12 @@ Additions:
  + added World.prototype.processEntityChanges that only processes add/changed/removed entities and does not call the systems for an update
 
 Fixes:
- * Fixed a picking bug
- * Fixed an infinite loop in the DynamicLoader
- * Fixed several performance issues in the DynamicLoader
+ * fixed a picking bug
+ * fixed an infinite loop in the DynamicLoader
+ * fixed several performance issues in the DynamicLoader
 
+Changes:
+ * Camera.prototype.getWorldCoordinates now uses the correct Y direction of screen coordinates
 
 v0.9.8 --- 2014-04-24
 =====================
