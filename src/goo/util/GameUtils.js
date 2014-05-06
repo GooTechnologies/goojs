@@ -68,11 +68,13 @@ function () {
 		}
 	};
 
+	var visibilityChangeListeners = [];
+
 	/**
 	 * Add a visibilitychange listener.
 	 * @param {Function} callback function called with a boolean (true=hidden, false=visible)
 	 */
-	GameUtils.addVisibilityChangeListener = function(callback) {
+	GameUtils.addVisibilityChangeListener = function (callback) {
 		if (typeof(callback) !== 'function') {
 			return;
 		}
@@ -93,14 +95,26 @@ function () {
 
 		if (typeof document.addEventListener !== 'undefined' &&
 			typeof hidden !== 'undefined') {
-			document.addEventListener(visibilityChange, function() {
+			var eventListener = function () {
 				if (document[hidden]) {
 					callback(true);
 				} else {
 					callback(false);
 				}
+			};
+			visibilityChangeListeners.push({
+				eventName: visibilityChange,
+				eventListener: eventListener
 			});
+			document.addEventListener(visibilityChange, eventListener);
 		}
+	};
+
+	GameUtils.clearVisibilityChangeListeners = function () {
+		visibilityChangeListeners.forEach(function (listener) {
+			document.removeEventListener(listener.eventName, listener.eventListener);
+		});
+		visibilityChangeListeners = [];
 	};
 
 	/**

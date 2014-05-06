@@ -27,7 +27,9 @@ define([
 	'goo/entities/components/SoundComponent',
 
 	'goo/util/GameUtils',
-	'goo/util/Logo'
+	'goo/util/Logo',
+
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
@@ -59,7 +61,9 @@ function (
 	SoundComponent,
 
 	GameUtils,
-	Logo
+	Logo,
+
+	SystemBus
 ) {
 	'use strict';
 
@@ -688,6 +692,29 @@ function (
 		var pickingStore = {};
 		this.renderer.pick(x, y, pickingStore, Renderer.mainCamera);
 		return pickingStore;
+	};
+
+	/**
+	 * Clears the GooRunner and anything associated with it. Once this method is called this instanceof og GooRunner is unusable.
+	 */
+	GooRunner.prototype.clear = function () {
+		this.stopGameLoop();
+		this.world.clear();
+
+		// detach the canvas from the page
+		var gooCanvas = this.renderer.domElement;
+		if (gooCanvas.parentNode) {
+			gooCanvas.parentNode.removeChild(gooCanvas);
+		}
+
+		// a lot of stuff may reside in here
+		SystemBus.clear();
+
+		// this should never have existed in the first place
+		Renderer.mainCamera = null;
+
+		// clears out whatever visibility-change listeners were attached to document
+		GameUtils.clearVisibilityChangeListeners();
 	};
 
 	return GooRunner;

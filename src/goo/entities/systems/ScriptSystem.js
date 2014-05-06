@@ -20,7 +20,10 @@ define([
 	 */
 	function ScriptSystem(world) {
 		System.call(this, 'ScriptSystem', ['ScriptComponent']);
+
+		//! AT: why this?
 		this._world = world;
+
 		var renderer = this._world.gooRunner.renderer;
 		// General world environment
 		this.context = {
@@ -31,7 +34,7 @@ define([
 			activeCameraEntity: null,
 			worldData: {}
 		};
-		SystemBus.addListener('goo.setCurrentCamera', function(data) {
+		SystemBus.addListener('goo.setCurrentCamera', function (data) {
 			this.context.activeCameraEntity = data.entity;
 		}.bind(this));
 		this.manualSetup = false;
@@ -82,6 +85,15 @@ define([
 			entity.scriptComponent.cleanup();
 		}
 	};*/
+
+	ScriptSystem.prototype.clear = function () {
+		for (var i = 0; i < this._activeEntities.length; i++) {
+			var entity = this._activeEntities[i];
+			entity.scriptComponent.cleanup();
+		}
+
+		System.prototype.clear.call(this);
+	};
 
 	Scripts.addClass('ScriptSystem', ScriptSystem);
 

@@ -346,6 +346,7 @@ function (
 		}
 
 		this.shaderProgram = context.createProgram();
+
 		var error = context.getError();
 		if (this.shaderProgram === null || error !== WebGLRenderingContext.NO_ERROR) {
 			console.error('Shader error: ' + error + ' [shader: ' + this.name + ']');
