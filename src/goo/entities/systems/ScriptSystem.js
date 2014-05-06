@@ -91,6 +91,8 @@ define([
 			var entity = this._activeEntities[i];
 			entity.scriptComponent.cleanup();
 		}
+
+		System.prototype.clear.call(this);
 	};
 
 	Scripts.addClass('ScriptSystem', ScriptSystem);

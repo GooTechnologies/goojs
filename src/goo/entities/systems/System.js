@@ -1,6 +1,6 @@
 define(
 /** @lends */
-function() {
+function () {
 	'use strict';
 
 	/**
@@ -12,7 +12,7 @@ function() {
 	 *        <li> interests = [] -> don't listen to any entities
 	 *        <li> interests = ['coolComponent', 'testComponent'] -> listen to entities that contains at minimum 'coolComponent' and 'testComponent'
 	 *        </ul>
- 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
+	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 * @param {String} type System type name as a string
 	 * @param {String[]} interests Array of component types this system is interested in
 	 * @property {String} type System type
@@ -36,7 +36,7 @@ function() {
 	 * Called when an entity is added to the world and systems need to be informed
 	 * @param entity
 	 */
-	System.prototype.added = function(entity) {
+	System.prototype.added = function (entity) {
 		this._check(entity);
 	};
 
@@ -44,7 +44,7 @@ function() {
 	 * Called when an entity gets/loses components
 	 * @param entity
 	 */
-	System.prototype.changed = function(entity) {
+	System.prototype.changed = function (entity) {
 		this._check(entity);
 	};
 
@@ -52,7 +52,7 @@ function() {
 	 * Called when an entity is removed from the world
 	 * @param entity
 	 */
-	System.prototype.removed = function(entity) {
+	System.prototype.removed = function (entity) {
 		var index = this._activeEntities.indexOf(entity);
 		if (index !== -1) {
 			this._activeEntities.splice(index, 1);
@@ -71,7 +71,7 @@ function() {
 	 * @param entity {Entity} to check if the system is interested in
 	 * @private
 	 */
-	System.prototype._check = function(entity) {
+	System.prototype._check = function (entity) {
 		if (this.interests && this.interests.length === 0) {
 			return;
 		}
@@ -102,13 +102,15 @@ function() {
 		}
 	};
 
-	System.prototype._process = function(tpf) {
+	System.prototype._process = function (tpf) {
 		if (this.process) { // are there systems without a this.process?
 			this.process(this._activeEntities, tpf);
 		}
 	};
 
-
+	System.prototype.clear = function () {
+		this._activeEntities = [];
+	};
 
 	return System;
 });

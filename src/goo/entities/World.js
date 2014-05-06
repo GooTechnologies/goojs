@@ -26,7 +26,7 @@ function (
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
 	 */
-	function World (gooRunner) {
+	function World(gooRunner) {
 
 		/** GooRunner for updating the world and calling the renderers.
 		 * @type {GooRunner}
@@ -457,7 +457,14 @@ function (
 			}
 		}
 
-		this.getSystem('ScriptSystem').context = null;
+		//! AT: this looks hacky and probably unnecessary
+		// this.getSystem('ScriptSystem').context = null;
+
+		this.entityManager.clear();
+
+		this._addedEntities = [];
+		this._changedEntities = [];
+		this._removedEntities = [];
 	};
 
 	return World;
