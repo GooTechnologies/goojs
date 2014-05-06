@@ -24,14 +24,14 @@ define([
 	/**
 	 * Creates an Entity based on an object holding particle emitter parameters and a material
 	 * @private
-	 * @param goo
+	 * @param world
 	 * @param particleParameters
 	 * @param material
 	 * @returns {Entity}
 	 */
-	ParticleSystemUtils.createParticleSystemEntity = function (goo, particleParameters, material) {
+	ParticleSystemUtils.createParticleSystemEntity = function (world, particleParameters, material) {
 		// Create the particle cloud entity
-		var particleSystemEntity = goo.world.createEntity();
+		var particleSystemEntity = world.createEntity();
 
 		// Set particle component
 		var particleComponent = new ParticleComponent({

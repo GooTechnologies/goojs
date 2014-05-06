@@ -49,7 +49,7 @@ function(
 		}
 
 		var particleSystemEntity = ParticleSystemUtils.createParticleSystemEntity(
-			gooRunner,
+			gooRunner.world,
 			ParticleLib.getSmoke(), // change to snow
 			SnowAction.material
 		);

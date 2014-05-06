@@ -64,7 +64,7 @@ function (
 		var entityScale = entity.transformComponent.worldTransform.scale;
 		var scale = (entityScale.data[0] + entityScale.data[1] + entityScale.data[2]) / 3;
 		this.smokeEntity = ParticleSystemUtils.createParticleSystemEntity(
-			gooRunner,
+			gooRunner.world,
 			ParticleLib.getSmoke({
 				scale: scale,
 				color: this.color

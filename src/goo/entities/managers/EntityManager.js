@@ -1,7 +1,7 @@
 define([
 	'goo/entities/managers/Manager',
 	'goo/entities/EntitySelection'
-	],
+],
 	/** @lends */
 	function (
 		Manager,
@@ -27,11 +27,8 @@ define([
 		 * @example
 		 * var byId = gooRunner.world.by.id("2b88941938444da8afab8205b1c80616.entity").first();
 		 * var byName = gooRunner.world.by.name("Box").first();
-		 *
 		 */
-
 		this.api = {
-
 			id: function () {
 				var ret = EntityManager.prototype.getEntityById.apply(this, arguments);
 				return new EntitySelection(ret); // just entity
@@ -101,7 +98,7 @@ define([
 	 * @returns Entity or undefined if not existing
 	 */
 	EntityManager.prototype.getEntityByName = function (name) {
-		for(var i in this._entitiesById) {
+		for (var i in this._entitiesById) {
 			var entity = this._entitiesById[i];
 			if (entity.name === name) {
 				return entity;
@@ -126,7 +123,7 @@ define([
 	//! AT: this need to return an EntitySelection object
 	EntityManager.prototype.getEntities = function () {
 		var entities = [];
-		for(var i in this._entitiesById) {
+		for (var i in this._entitiesById) {
 			entities.push(this._entitiesById[i]);
 		}
 		return entities;
@@ -150,6 +147,15 @@ define([
 			}
 		}
 		return entities;
+	};
+
+	/**
+	 * Removes all entities
+	 */
+	EntityManager.prototype.clear = function () {
+		this._entitiesById = {};
+		this._entitiesByIndex = {};
+		this._entityCount = 0;
 	};
 
 	return EntityManager;

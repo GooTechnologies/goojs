@@ -27,7 +27,9 @@ define([
 	'goo/entities/components/SoundComponent',
 
 	'goo/util/GameUtils',
-	'goo/util/Logo'
+	'goo/util/Logo',
+
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
@@ -59,12 +61,14 @@ function (
 	SoundComponent,
 
 	GameUtils,
-	Logo
+	Logo,
+
+	SystemBus
 ) {
 	'use strict';
 
 	/**
-	 * @class The main class that updates the world and calls the renderers. 
+	 * @class The main class that updates the world and calls the renderers.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 *
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
@@ -658,10 +662,15 @@ function (
 	/**
 	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.
 	 * @private
+	 * @param {number} x screen coordinate
+	 * @param {number} y screen coordinate
+	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
 	 */
-	GooRunner.prototype.pickSync = function (x, y) {
+	GooRunner.prototype.pickSync = function (x, y, skipUpdateBuffer) {
 		// save the clear color
 		var currentClearColor = this.renderer.clearColor.data;
+
+		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
 
 		var savedClearColor = [
 			currentClearColor[0],
@@ -683,6 +692,29 @@ function (
 		var pickingStore = {};
 		this.renderer.pick(x, y, pickingStore, Renderer.mainCamera);
 		return pickingStore;
+	};
+
+	/**
+	 * Clears the GooRunner and anything associated with it. Once this method is called this instanceof og GooRunner is unusable.
+	 */
+	GooRunner.prototype.clear = function () {
+		this.stopGameLoop();
+		this.world.clear();
+
+		// detach the canvas from the page
+		var gooCanvas = this.renderer.domElement;
+		if (gooCanvas.parentNode) {
+			gooCanvas.parentNode.removeChild(gooCanvas);
+		}
+
+		// a lot of stuff may reside in here
+		SystemBus.clear();
+
+		// this should never have existed in the first place
+		Renderer.mainCamera = null;
+
+		// clears out whatever visibility-change listeners were attached to document
+		GameUtils.clearVisibilityChangeListeners();
 	};
 
 	return GooRunner;

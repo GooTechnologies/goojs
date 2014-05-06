@@ -6,7 +6,8 @@ define([
 	'goo/scripts/newwave/AxisAlignedCamControlScript',
 	'goo/scripts/newwave/PanCamScript',
 	'goo/scripts/newwave/MouseLookScript',
-	'goo/scripts/newwave/WASDScript'
+	'goo/scripts/newwave/WASDScript',
+	'goo/scripts/newwave/ButtonScript'
 	//'goo/scripts/newwave/FPCamControlScript'
 ], function (Scripts) {
 	'use strict';

@@ -950,15 +950,6 @@ function (
 		return this._corners;
 	};
 
-	var sgn = function (val) {
-		if (val > 0.0) {
-			return 1.0;
-		} else if (val < 0.0) {
-			return -1.0;
-		}
-		return 0.0;
-	};
-
 	/**
 	 * Clipping using oblique frustums
 	 * @param clipPlane clipping plane
@@ -974,8 +965,8 @@ function (
 		var projection = this.getProjectionMatrix();
 
 		this._qCalc.setd(
-			(sgn(clipPlane.x) + projection[8]) / projection[0],
-			(sgn(clipPlane.y) + projection[9]) / projection[5],
+			(MathUtils.sign(clipPlane.x) + projection[8]) / projection[0],
+			(MathUtils.sign(clipPlane.y) + projection[9]) / projection[5],
 			-1,
 			(1.0 + projection[10]) / projection[14]
 		);
