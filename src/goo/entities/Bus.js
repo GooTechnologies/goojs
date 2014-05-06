@@ -168,5 +168,9 @@ define(['goo/util/ArrayUtil'],
 		return this;
 	};
 
+	Bus.prototype.clear = function () {
+		this.trie = { name: '', listeners: [], children: {} };
+	};
+
 	return Bus;
 });

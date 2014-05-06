@@ -80,7 +80,7 @@ function (
 				TransformComponent.prototype.setRotation.apply(this, arguments);
 				return this.entity;
 			}.bind(this),
-			lookAt: function() {
+			lookAt: function () {
 				TransformComponent.prototype.lookAt.apply(this, arguments);
 				return this.entity;
 			}.bind(this),

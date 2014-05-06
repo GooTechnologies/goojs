@@ -62,6 +62,7 @@ function (
 		this._components = [];
 	}
 
+	//! AT: these need to go
 	World.time = 0.0;
 	World.tpf = 1.0;
 
@@ -443,6 +444,20 @@ function (
 			}
 		}
 		entities.length = 0;
+	};
+
+	/**
+	 * Calls .clear on all systems that support this method
+	 */
+	World.prototype.clear = function () {
+		for (var i = 0; i < this._systems.length; i++) {
+			var system = this._systems[i];
+			if (system.clear) {
+				system.clear();
+			}
+		}
+
+		this.getSystem('ScriptSystem').context = null;
 	};
 
 	return World;
