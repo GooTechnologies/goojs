@@ -3,21 +3,27 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/light/PointLight',
+	'goo/renderer/Camera',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
-	'lib/V'
+	'goo/entities/Entity'
 ], function(
 	GooRunner,
 	Material,
 	ShaderLib,
 	PointLight,
+	Camera,
 	Box,
 	Sphere,
-	V
+	Entity
 ) {
 	'use strict';
 
-	var goo = V.initGoo();
+	// initialize the engine and attach the rendering canvas to the page
+	var goo = new GooRunner();
+	goo.renderer.domElement.id = 'goo';
+	document.body.appendChild(goo.renderer.domElement);
+
 	var world = goo.world;
 
 	var box = new Box();
@@ -29,9 +35,10 @@ require([
 		entity.transformComponent.setUpdated();
 	};
 
-	var sphereEntity = world.createEntity().set(sphere, material, [2, 0, 0]).addToWorld();
-	var lightEntity = world.createEntity().set(light, [0, 1, 0]).addToWorld();
-	var spinningEntity = world.createEntity().set(box, material, [-2, 0, 0], script).addToWorld();
+	var sphereEntity = new Entity(world).set(sphere, material, [2, 0, 0]).addToWorld();
+	var lightEntity = new Entity(world).set(light, [0, 1, 0]).addToWorld();
+	var spinningEntity = new Entity(world).set(box, material, [-2, 0, 0], script).addToWorld();
 
-	V.addOrbitCamera();
+	// add a camera
+	world.createEntity(new Camera(), [0, 0, 15]).addToWorld();
 });

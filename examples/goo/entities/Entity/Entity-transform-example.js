@@ -1,41 +1,39 @@
 require([
+	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
-	'goo/math/Vector3',
-	'goo/renderer/light/DirectionalLight',
+	'goo/renderer/light/PointLight',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/LightComponent',
 	'goo/shapes/Box',
-	'goo/shapes/Sphere',
-	'lib/V'
-], function(
+	'goo/shapes/Sphere'
+], function (
+	GooRunner,
 	Material,
 	ShaderLib,
 	Camera,
 	CameraComponent,
-	OrbitCamControlScript,
 	ScriptComponent,
-	MeshData,
 	MeshRendererComponent,
-	Vector3,
-	DirectionalLight,
+	PointLight,
 	TextureCreator,
 	LightComponent,
 	Box,
-	Sphere,
-	V
+	Sphere
 ) {
 	'use strict';
 
 	var resourcePath = '../../../resources/';
 
-	var goo = V.initGoo();
+	// initialize the engine and attach the rendering canvas to the page
+	var goo = new GooRunner();
+	goo.renderer.domElement.id = 'goo';
+	document.body.appendChild(goo.renderer.domElement);
+
 	var world = goo.world;
 
 	var boxMesh = new Box();
@@ -57,7 +55,11 @@ require([
 	sphere2.addTranslation(0, 4, 0);
 
 
-	V.addLights();
+	// add some lights
+	world.createEntity(new PointLight(), [ 100, 100, 100]).addToWorld();
+	world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
+	world.createEntity(new PointLight(), [-100, 100, -100]).addToWorld();
 
-	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
+	// add a camera
+	world.createEntity(new Camera(), [0, 0, 15]).addToWorld();
 });

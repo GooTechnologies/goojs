@@ -208,6 +208,7 @@ define([
 		 * Shows an entity and its descendants if they are not hidden
 		 * @param {Entity} entity The entity to show
 		 */
+		//! RB: refactor this out of here
 		EntityUtils.show = function (entity) {
 			entity.hidden = false;
 
@@ -248,6 +249,7 @@ define([
 		 * Hides the entity and its descendants
 		 * @param {Entity} entity The entity to hide
 		 */
+		//! RB: refactor this out of here
 		EntityUtils.hide = function (entity) {
 			entity.hidden = true;
 

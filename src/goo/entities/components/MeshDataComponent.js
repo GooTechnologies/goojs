@@ -12,7 +12,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.
+	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.<br>
+	 * {@linkplain http://code.gooengine.com/latest/examples/goo/entities/components/MeshDataComponent/MeshDataComponent-example.html Working example}
 	 * @param {MeshData} meshData Target mesh data for this component.
 	 * @extends Component
 	 */

@@ -7,7 +7,8 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'lib/V'
+	'goo/renderer/light/PointLight',
+	'goo/renderer/Camera'
 ], function(
 	GooRunner,
 	Material,
@@ -17,11 +18,16 @@ require([
 	Box,
 	Sphere,
 	Torus,
-	V
+	PointLight,
+	Camera
 ) {
 	'use strict';
 
-	var goo = V.initGoo();
+	// initialize the engine and attach the rendering canvas to the page
+	var goo = new GooRunner();
+	goo.renderer.domElement.id = 'goo';
+	document.body.appendChild(goo.renderer.domElement);
+
 	var world = goo.world;
 
 	// get some meshes
@@ -51,8 +57,11 @@ require([
 	sphere.set(material);
 	torus.set(material);
 
+	// add some lights
+	world.createEntity(new PointLight(), [ 100, 100, 100]).addToWorld();
+	world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
+	world.createEntity(new PointLight(), [-100, 100, -100]).addToWorld();
 
-	V.addLights();
-
-	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));
+	// add a camera
+	world.createEntity(new Camera(), [0, 0, 15]).addToWorld();
 });
