@@ -211,6 +211,12 @@ module.exports = function(grunt) {
 		toc.run();
 	});
 
+	// Creates an example table of content HTML file: examples/index.html
+	grunt.registerTask('examplestoc', function () {
+		var toc = require('./examples/toc');
+		toc.run();
+	});
+
 	// Generates reference screenshots
 	grunt.registerTask('refs', function () {
 		var done = this.async();

@@ -40,34 +40,28 @@ exports.getFilePathsSync = ->
 	return glob.sync __dirname + '/**/!(index).html'
 
 exports.run = ->
-	exports.getFiles (err, files) ->
-		if err
-			console.log err
-			return
-		if files.length == 0
-			console.log 'No files'
-			return
+	files = exports.getFilesSync()
 
-		for file, i in files
-			files[i] = path.relative __dirname, file
+	for file, i in files
+		files[i] = path.relative __dirname, file
 
-		tree = makeTree(files)
-		#console.log JSON.stringify(tree, null, '\t')
+	tree = makeTree(files)
+	#console.log JSON.stringify(tree, null, '\t')
 
-		content = '''
-			<html>
-			<head>
-				<title>Visual tests</title>
-			</head>
-			<body>
-			<h1>Contents</h1>
-		'''
+	content = '''
+		<html>
+		<head>
+			<title>Visual tests</title>
+		</head>
+		<body>
+		<h1>Contents</h1>
+	'''
 
-		content += printTree(tree)
+	content += printTree(tree)
 
-		content += '''
-			</body>
-			</html>
-		'''
+	content += '''
+		</body>
+		</html>
+	'''
 
-		fs.writeFileSync path.resolve('visual-test','index.html'), content
+	fs.writeFileSync path.resolve('visual-test','index.html'), content
