@@ -645,6 +645,14 @@ function (
 		var position = new Vector4();
 		var x = (screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1;
 		var y = ((screenHeight - screenY) / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1;
+
+		var aspect = this.aspect / (screenWidth / screenHeight);
+		if (aspect > 1) {
+			y *= aspect;
+		} else if (aspect < 1) {
+			x /= aspect;
+		}
+
 		var z = zDepth * 2 - 1;
 		var w = 1;
 		position.set(x, y, z, w);
@@ -676,8 +684,18 @@ function (
 		}
 		this.checkInverseModelViewProjection();
 		var position = new Vector4();
+
 		var x = (screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1;
 		var y = ((screenHeight - screenY) / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1;
+
+		var aspect = this.aspect / (screenWidth / screenHeight);
+		if (aspect > 1) {
+			y *= aspect;
+		} else if (aspect < 1) {
+			x /= aspect;
+		}
+
+
 		position.set(x, y, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPost(position);
 		position.mul(1.0 / position.w);
@@ -700,6 +718,13 @@ function (
 	 */
 	Camera.prototype.getScreenCoordinates = function (worldPosition, screenWidth, screenHeight, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
+
+		var aspect = this.aspect / (screenWidth / screenHeight);
+		if (aspect > 1) {
+			store.y /= aspect;
+		} else if (aspect < 1) {
+			store.x *= aspect;
+		}
 
 		store.x = (store.x + 1) * (this._viewPortRight - this._viewPortLeft) / 2 * screenWidth;
 		store.y = (1 - store.y) * (this._viewPortTop - this._viewPortBottom) / 2 * screenHeight;

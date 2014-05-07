@@ -175,6 +175,7 @@ function(
 					ret = that.loadObject(imageRef, options).then(function(video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
+						video.loop = config.loop;
 						if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
 							texture.generateMipmaps = false;
 							texture.minFilter = 'BilinearNoMipMaps';

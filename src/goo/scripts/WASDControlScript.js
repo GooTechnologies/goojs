@@ -181,17 +181,17 @@ define([
 		}, {
 			key: 'walkSpeed',
 			type: 'int',
-			'default': 100,
+			'default': 10,
 			min: 1,
-			max: 1000,
+			max: 100,
 			exponential: true,
 			control: 'slider'
 		}, {
 			key: 'crawlSpeed',
 			type: 'int',
-			'default': 10,
+			'default': 1,
 			min: 0.1,
-			max: 100,
+			max: 10,
 			exponential: true,
 			control: 'slider'
 		}]

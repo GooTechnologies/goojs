@@ -1,17 +1,19 @@
 define([
 	'goo/scripts/Scripts',
 	'goo/math/Vector3',
-	'goo/math/MathUtils'
-], function(
+	'goo/math/MathUtils',
+	'goo/util/GameUtils'
+], function (
 	Scripts,
 	Vector3,
-	MathUtils
+	MathUtils,
+	GameUtils
 ) {
 	'use strict';
 
 	function MouseLookControlScript() {
 		var buttonPressed = false;
-		var lastX, lastY, x, y;
+		var lastX = 0, lastY = 0, x = 0, y = 0;
 		var angles;
 		var button;
 		var _environment;
@@ -30,27 +32,42 @@ define([
 		function mouseMove(e) {
 			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
 				if (buttonPressed) {
-					x = e.clientX;
-					y = e.clientY;
+					if (e.movementX !== undefined) {
+						x += e.movementX;
+						y += e.movementY;
+					}	else {
+						x = e.clientX;
+						y = e.clientY;
+					}
 				}
 			}
 		}
 		function mouseUp() {
 			buttonPressed = false;
 		}
+		function pointerLockChange() {
+			buttonPressed = !!document.pointerLockElement;
+		}
 
 		function setup(parameters, environment) {
 			_environment = environment;
 			_parameters = parameters;
-			button = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.button) - 1;
+			button = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(parameters.button) - 1;
 			if (button < -1) {
 				button = -1;
 			}
 			var domElement = environment.domElement;
-			domElement.addEventListener('mousedown', mouseDown);
-			domElement.addEventListener('mousemove', mouseMove);
-			domElement.addEventListener('mouseup', mouseUp);
-			domElement.addEventListener('mouseleave', mouseUp);
+			if (button === 3) {
+				document.addEventListener('pointerlockchange', pointerLockChange);
+				document.addEventListener('mousemove', mouseMove);
+
+				GameUtils.requestPointerLock();
+			} else {
+				domElement.addEventListener('mousedown', mouseDown);
+				domElement.addEventListener('mouseup', mouseUp);
+				domElement.addEventListener('mouseleave', mouseUp);
+				domElement.addEventListener('mousemove', mouseMove);
+			}
 
 			angles = new Vector3();
 			var rotation = environment.entity.transformComponent.transform.rotation;
@@ -79,7 +96,7 @@ define([
 			var minAzimuth = parameters.minAzimuth * MathUtils.DEG_TO_RAD - _initialAzimuth;
 			yaw -= deltaX * parameters.speed / 200;
 			if (parameters.clampAzimuth) {
-				yaw = MathUtils.radialClamp(yaw , minAzimuth, maxAzimuth);
+				yaw = MathUtils.radialClamp(yaw, minAzimuth, maxAzimuth);
 			}
 
 			rotation.fromAngles(pitch, yaw, 0);
@@ -90,10 +107,17 @@ define([
 		}
 		function cleanup(parameters, environment) {
 			var domElement = environment.domElement;
-			domElement.removeEventListener('mousedown', mouseDown);
-			domElement.removeEventListener('mousemove', mouseMove);
-			domElement.removeEventListener('mouseup', mouseUp);
-			domElement.removeEventListener('mouseleave', mouseUp);
+			if (button === 3) {
+				GameUtils.exitPointerLock();
+
+				document.removeEventListener('mousemove', mouseMove);
+				document.removeEventListener('pointerlockchange', pointerLockChange);
+			} else {
+				domElement.removeEventListener('mousemove', mouseMove);
+				domElement.removeEventListener('mousedown', mouseDown);
+				domElement.removeEventListener('mouseup', mouseUp);
+				domElement.removeEventListener('mouseleave', mouseUp);
+			}
 		}
 
 		return {
@@ -119,7 +143,7 @@ define([
 				type: 'string',
 				control: 'select',
 				'default': 'Left',
-				options: ['Any', 'Left', 'Middle', 'Right']
+				options: ['Any', 'Left', 'Middle', 'Right', 'None']
 			},
 			{
 				key: 'speed',
