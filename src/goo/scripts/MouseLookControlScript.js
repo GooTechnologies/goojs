@@ -29,6 +29,15 @@ define([
 				}
 			}
 		}
+
+		// Used when button is None.
+		// Helps attaching the lock if we failed in .setup().
+		function mouseDown2() {
+			if (!document.pointerLockElement) {
+				GameUtils.requestPointerLock();
+			}
+		}
+
 		function mouseMove(e) {
 			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
 				if (buttonPressed) {
@@ -60,7 +69,9 @@ define([
 			if (button === 3) {
 				document.addEventListener('pointerlockchange', pointerLockChange);
 				document.addEventListener('mousemove', mouseMove);
+				document.addEventListener('mousedown', mouseDown2);
 
+				// attempt to request a pointer lock; will succeed only if fullscreen is enabled.
 				GameUtils.requestPointerLock();
 			} else {
 				domElement.addEventListener('mousedown', mouseDown);
@@ -111,6 +122,7 @@ define([
 				GameUtils.exitPointerLock();
 
 				document.removeEventListener('mousemove', mouseMove);
+				document.removeEventListener('mousedown', mouseDown2);
 				document.removeEventListener('pointerlockchange', pointerLockChange);
 			} else {
 				domElement.removeEventListener('mousemove', mouseMove);

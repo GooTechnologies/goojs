@@ -14,6 +14,8 @@ define([
 	'use strict';
 	/* jshint validthis: true */
 
+	//! schteppe: what does this do that is different from the MouseLook script?
+
 	/**
 	 * @class Enables mouse rotation of an entity.
 	 * @param {Object} [properties]
