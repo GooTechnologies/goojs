@@ -57,6 +57,8 @@ function(
 		this.count = count;
 		this.splatMult = 2;
 
+		this._gridCache = {};
+
 		var brush = new Quad(2 / size, 2 / size);
 
 		var mat = this.drawMaterial1 = new Material(brushShader);
@@ -655,17 +657,16 @@ function(
 		return entity;
 	};
 
-	var gridCache = {};
 
 	Terrain.prototype.createGrid = function(w, h) {
 		var key = w + '_' + h;
-		if (gridCache[key]) {
-			return gridCache[key];
+		if (this._gridCache[key]) {
+			return this._gridCache[key];
 		}
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
 		var meshData = new MeshData(attributeMap, (w + 1) * (h + 1), (w * 2 + 4) * h);
-		gridCache[key] = meshData;
+		this._gridCache[key] = meshData;
 
 		meshData.indexModes = ['TriangleStrip'];
 
