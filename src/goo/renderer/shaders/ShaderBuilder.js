@@ -89,24 +89,23 @@ function(
 				if (!shader.defines[type]) {
 					shader.defines[type] = true;
 				}
+			}
 
-				if (type === 'DIFFUSE_MAP') {
-					var offset = textureMaps[type].offset;
-					var repeat = textureMaps[type].repeat;
-					shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
-					shader.uniforms.offsetRepeat[0] = offset.x;
-					shader.uniforms.offsetRepeat[1] = offset.y;
-					shader.uniforms.offsetRepeat[2] = repeat.x;
-					shader.uniforms.offsetRepeat[3] = repeat.y;
-
-					shader.uniforms.lodBias = textureMaps[type].lodBias;
-				} else {
-					shader.uniforms.offsetRepeat[0] = 0;
-					shader.uniforms.offsetRepeat[1] = 0;
-					shader.uniforms.offsetRepeat[2] = 1;
-					shader.uniforms.offsetRepeat[3] = 1;
-					shader.uniforms.lodBias = 0;
-				}
+			if (textureMaps.DIFFUSE_MAP) {
+				shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
+				var offset = textureMaps.DIFFUSE_MAP.offset;
+				var repeat = textureMaps.DIFFUSE_MAP.repeat;
+				shader.uniforms.offsetRepeat[0] = offset.x;
+				shader.uniforms.offsetRepeat[1] = offset.y;
+				shader.uniforms.offsetRepeat[2] = repeat.x;
+				shader.uniforms.offsetRepeat[3] = repeat.y;
+				shader.uniforms.lodBias = textureMaps.DIFFUSE_MAP.lodBias;
+			} else {
+				shader.uniforms.offsetRepeat[0] = 0;
+				shader.uniforms.offsetRepeat[1] = 0;
+				shader.uniforms.offsetRepeat[2] = 1;
+				shader.uniforms.offsetRepeat[3] = 1;
+				shader.uniforms.lodBias = 0;
 			}
 
 			// Exclude in a nicer way
