@@ -4,10 +4,10 @@ module.exports = function (grunt) {
 	var fs = require('fs');
 
 	grunt.registerMultiTask('toc', 'Makes a table of contents', function () {
-		var pattern = grunt.option('pattern');
-		var title = grunt.option('title');
-		var outFile = grunt.option('outFile');
-		var relPath = grunt.option('relPath');
+		var pattern = this.data.pattern;
+		var title = this.data.title;
+		var outFile = this.data.outFile;
+		var relPath = this.data.relPath;
 
 		var files = getFilesSync(pattern);
 		for (var i = 0; i < files.length; i++) {
@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 			files[i] = path.relative(relPath, file);
 		}
 		var tree = makeTree(files);
-		var content = '<html>\n<head>\n	<title>'+title+'</title>\n</head>\n<body>\n<h1>Contents</h1>';
+		var content = '<html>\n<head>\n	<title>' + title + '</title>\n</head>\n<body>\n<h1>Contents</h1>';
 		content += printTree(tree);
 		content += '</body>\n</html>';
 		fs.writeFileSync(outFile, content);
@@ -59,17 +59,7 @@ module.exports = function (grunt) {
 		return ret;
 	}
 
-	function getFiles(callback) {
-		return glob(__dirname + '/**/!(index).html', function(err, files) {
-			return callback(err, files);
-		});
-	}
-
 	function getFilesSync(pattern) {
 		return glob.sync(pattern);
-	}
-
-	function getFilePathsSync() {
-		return glob.sync(__dirname + '/**/!(index).html');
 	}
 };

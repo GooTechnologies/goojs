@@ -146,7 +146,7 @@ module.exports = function (grunt) {
 			},
 			jsdoc_json: {
 				command: path.resolve('tools', 'generate_jsdoc_json.sh'),
-			},
+			}
 		},
 		/*
 	    jsdoc : { // Could replace tools/generate_jsdoc.sh, but still need something that makes the tar.gz docs bundle
@@ -167,7 +167,22 @@ module.exports = function (grunt) {
 				jshintrc: '.jshintrc',
 				force: true // Do not fail the task
 			}
-		}
+		},
+
+		toc: {
+			visualtest: {
+				title: 'Visual tests',
+				pattern: __dirname + '/visual-test/**/!(index).html',
+				outFile: __dirname + '/visual-test/index.html',
+				relPath: __dirname + '/visual-test'
+			},
+			examples: {
+				title: 'Examples',
+				pattern: __dirname + '/examples/**/!(index).html',
+				outFile: __dirname + '/examples/index.html',
+				relPath: __dirname + '/examples'
+			},
+		},
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -194,6 +209,11 @@ module.exports = function (grunt) {
 		return index === -1 ? path : path.substr(index + 1);
 	}
 
+	// Registers the precommit hook
+	grunt.registerTask('init-git', function () {
+		fs.writeFileSync('.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n');
+	});
+
 	// Creates src/goo.js that depends on all engine modules
 	grunt.registerTask('main-file', function () {
 		var sourceFiles = glob.sync('!(*pack)/**/*.js', { cwd: 'src/goo/', nonegate: true });
@@ -218,26 +238,6 @@ module.exports = function (grunt) {
 		lines.push('});');
 
 		fs.writeFileSync('src/goo.js', lines.join('\n'));
-	});
-
-	// Creates an HTML list of tests in visual-test/index.html
-	grunt.registerTask('visualtoc', function () {
-		var toc = require('./visual-test/toc');
-		toc.run({
-			pattern: __dirname + '/visual-test/**/!(index).html',
-			outFile: __dirname + '/visual-test/index.html',
-			relPath: __dirname + '/visual-test'
-		});
-	});
-
-	// Creates an example table of content HTML file: examples/index.html
-	grunt.registerTask('examplestoc', function () {
-		var toc = require('./visual-test/toc');
-		toc.run({
-			pattern: __dirname + '/examples/**/!(index).html',
-			outFile: __dirname + '/examples/index.html',
-			relPath: __dirname + '/examples'
-		});
 	});
 
 	// Generates reference screenshots
