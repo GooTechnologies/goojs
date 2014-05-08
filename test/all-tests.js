@@ -242,5 +242,6 @@ define([
 	//'test/loaders/handlers/EnvironmentHandler-test',
 	'test/entities/components/ScriptComponent-test',
 	'test/timelinepack/ValueChannel-test',
+	'test/timelinepack/EventChannel-test',
 	'test/timelinepack/TimelineComponentHandler-test'
 ], function() {});

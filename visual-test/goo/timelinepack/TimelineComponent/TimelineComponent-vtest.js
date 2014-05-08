@@ -76,7 +76,7 @@ require([
 		}
 
 		var channel = new EventChannel('id');
-		channel.addCallback('', 50, getMessenger('start1'));
+		channel.addCallback('', 0, getMessenger('start1'));
 		channel.addCallback('', 100, getMessenger('start2'));
 		channel.addCallback('', 170, getMessenger('start3'));
 		channel.addCallback('', 300, getMessenger('start4'));
@@ -93,20 +93,10 @@ require([
 		con2d.lineWidth = 1;
 		con2d.strokeStyle = '#DDD';
 
-//		con2d.beginPath();
-//		con2d.moveTo(channel.entries[0].start, channel.entries[0].value);
-
 		valueChannel.keyframes.forEach(function (entry) {
-//			con2d.lineTo(entry.start + entry.length, entry.valueEnd);
-//			con2d.moveTo(entry.start, entry.valueStart);
-
 			con2d.fillStyle = '#000';
 			con2d.fillRect(entry.time - 2, entry.value - 2, 5, 5);
-
-//			con2d.fillStyle = '#000';
-//			con2d.fillRect(entry.start + entry.length - 2, entry.valueEnd - 2, 5, 5);
 		});
-//		con2d.stroke();
 	}
 
 	function drawPointer(time, value, index) {
@@ -150,8 +140,9 @@ require([
 		var buttonReset = document.createElement('button');
 		buttonReset.innerHTML = 'reset';
 		buttonReset.addEventListener('click', function () {
-			valueChannel.update(0);
-			eventChannel.update(0);
+			time = 0;
+			valueChannel.setTime(0);
+			eventChannel.setTime(0);
 			trace = [];
 			drawClear();
 			drawTrace();
@@ -200,10 +191,12 @@ require([
 	var eventChannel = getEventChannel();
 
 	// gotta trigger the update somehow
+	var time = 0;
 	goo.callbacks.push(function () {
 		if (!paused) {
-			valueChannel.update(goo.world.time * 1000 * 0.1);
-			eventChannel.update(goo.world.time * 1000 * 0.1);
+			time += goo.world.tpf * 1000 * 0.1;
+			valueChannel.update(time);
+			eventChannel.update(time);
 		}
 	});
 

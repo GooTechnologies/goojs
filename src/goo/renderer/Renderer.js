@@ -557,10 +557,13 @@ function (
 	 * @param imageData
 	 */
 	Renderer.prototype.preloadCompressedTexture = function (context, target, texture, imageData) {
+		// REVIEW: This method is super similar to loadCompressedTexture. Reuse some code? We do want to reduce the lib size.
 		var mipSizes = texture.image.mipmapSizes;
 		var dataOffset = 0, dataLength = 0;
 		var width = texture.image.width, height = texture.image.height;
 		var ddsExt = DdsUtils.getDdsExtension(context);
+
+		// REVIEW: This conversion to internal format is also done in .loadCompressedTexture
 		var internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
 		if (texture.format === 'PrecompressedDXT1') {
 			internalFormat = ddsExt.COMPRESSED_RGB_S3TC_DXT1_EXT;
@@ -578,6 +581,7 @@ function (
 			if (imageData instanceof Uint8Array) {
 				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, imageData);
 			} else {
+				// REVIEW: What line break convention is used?
 				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset,
 					imageData.byteLength));
 			}
@@ -586,6 +590,8 @@ function (
 			if (imageData instanceof Array) {
 				for (var i = 0; i < imageData.length; i++) {
 					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, imageData[i]);
+					// REVIEW: this operation is being done many times, not very DRY
+					// REVIEW: Also Math.floor is practically as fast as ~~, does the same thing, and is more readable. http://jsperf.com/jsfvsbitnot/15
 					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
 					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
 				}
@@ -619,6 +625,8 @@ function (
 	 * @param texture
 	 */
 	Renderer.prototype.preloadTexture = function (context, texture) {
+		// REVIEW: Veeeeery similar to loadTexture. Merge?
+
 		// this.bindTexture(context, texture, unit, record);
 		// context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit); // do I need this?
 		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
@@ -671,6 +679,7 @@ function (
 					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
 					} else {
+						// REVIEW: Hard coded background color that should be determined by Create?
 						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
 					}
 				}
@@ -834,7 +843,10 @@ function (
 					var keys = Object.keys(uniforms);
 					for (var ii = 0, l = keys.length; ii < l; ii++) {
 						var key = keys[ii];
-						shader.uniforms[key] = uniforms[key];
+						var origUniform = shader.uniforms[key] = uniforms[key];
+						if (origUniform instanceof Array) {
+							shader.uniforms[key] = origUniform.slice(0);
+						}
 					}
 
 					material.shader = shader;
@@ -851,6 +863,7 @@ function (
 	 * @param lights
 	 */
 	Renderer.prototype.precompileShaders = function (renderList, lights, onComplete) {
+		// REVIEW: use promises?
 		var renderInfo = {
 			lights: lights
 		};
@@ -939,6 +952,7 @@ function (
 		}
 	};
 
+	// REVIEW: make a RenderInfo class?
 	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {
 		if (renderable instanceof Entity) {
 			renderInfo.meshData = renderable.meshDataComponent.meshData;

@@ -63,7 +63,7 @@ define([
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
-			retVal[channel.id] = channel.update(this.time);
+			retVal[channel.id] = channel.setTime(this.time);
 		}
 		return retVal;
 	};

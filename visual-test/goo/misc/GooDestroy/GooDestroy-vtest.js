@@ -8,9 +8,7 @@ require([
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
 	'goo/renderer/light/PointLight',
-	'goo/renderer/Camera',
-	'goo/util/GameUtils',
-	'goo/entities/SystemBus'
+	'goo/renderer/Camera'
 ], function(
 	GooRunner,
 	Material,
@@ -21,9 +19,7 @@ require([
 	Sphere,
 	Torus,
 	PointLight,
-	Camera,
-	GameUtils,
-	SystemBus
+	Camera
 	) {
 	'use strict';
 
