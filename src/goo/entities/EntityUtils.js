@@ -71,6 +71,8 @@ define([
 			return clonedSkeletonPose;
 		}
 
+		//! AT: this is a huge mess
+		// cloneEntity will only work for very few cases anyways, for very specific components
 		function cloneEntity(world, entity, settings) {
 			var newEntity = world.createEntity(entity.name);
 
@@ -105,6 +107,7 @@ define([
 					for (var j = 0; j < component.scripts.length; j++) {
 						var newScript;
 						var script = component.scripts[j];
+						// REVIEW: if script.external is false then this will blow up
 						var key = script.externals ? script.externals.key : script.externals.name;
 						if (key && Scripts.getScript(key)) { // Engine script
 							newScript = Scripts.create(key, script.parameters);
@@ -115,6 +118,8 @@ define([
 								enabled: !!script.enabled
 							};
 							if (script.parameters) { newScript.parameters = _.deepClone(script.parameters); }
+
+							// REVIEW: there's no harm in assigning nothings if you skip these ifs
 							if (script.setup) { newScript.setup = script.setup; }
 							if (script.update) { newScript.update = script.update; }
 							if (script.setup) { newScript.cleanup = script.cleanup; }
@@ -161,6 +166,9 @@ define([
 			settings.shareData = settings.shareData || true;
 			settings.shareMaterial = settings.shareMaterial || true;  // REVIEW: these are not used nor documented but would be great if they were
 			settings.cloneHierarchy = settings.cloneHierarchy || true;
+
+			//! AT: why is everything here overridden anyways?
+			// Why is this function just defaulting some parameters and then calling cloneEntity to do the rest?
 
 			return cloneEntity(world, entity, settings);
 		};
