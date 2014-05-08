@@ -86,6 +86,8 @@ define([
 		return newValue;
 	};
 
+	ValueChannel.prototype.setTime = ValueChannel.prototype.update;
+
 	// tween factories
 	ValueChannel.getSimpleTransformTweener = function (type, dimensionIndex, entityId, resolver) {
 		var entity;

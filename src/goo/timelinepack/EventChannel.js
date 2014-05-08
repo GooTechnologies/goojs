@@ -8,6 +8,7 @@ define([
 	function EventChannel(id) {
 		AbstractTimelineChannel.call(this, id);
 
+		this.oldTime = 0;
 		this.callbackIndex = 0;
 	}
 
@@ -39,31 +40,46 @@ define([
 	};
 
 	/**
-	 * Update the channel,
+	 * Update the channel
 	 * @param time
 	 */
-	EventChannel.prototype.update = function (time, skipCallback) {
+	EventChannel.prototype.update = function (time) {
 		if (!this.enabled) { return; }
 		if (!this.keyframes.length) { return; }
-		var currentKeyframe = this.keyframes[this.callbackIndex];
-		if (!currentKeyframe) {
-			currentKeyframe = this.keyframes[this.keyframes.length - 1];
-		}
-		if (time < this.keyframes[0].time) {
-			// Reset event channel
+
+		// loop
+		if (time < this.oldTime) {
+			while (this.callbackIndex < this.keyframes.length) {
+				this.keyframes[this.callbackIndex].callback();
+				this.callbackIndex++;
+			}
 			this.callbackIndex = 0;
-			return;
-		} else if (time < currentKeyframe.time) {
-			this.callbackIndex = this._find(this.keyframes, time) + 1;
-		} else if (this.callbackIndex > this.keyframes.length - 1) {
-			return;
 		}
-		if (skipCallback) { return; }
 
 		while (this.callbackIndex < this.keyframes.length && time > this.keyframes[this.callbackIndex].time) {
 			this.keyframes[this.callbackIndex].callback();
 			this.callbackIndex++;
 		}
+
+		this.oldTime = time;
+	};
+
+	/**
+	 * No events need be fired when scrubbing the timeline
+	 * @private
+	 * @param time
+	 */
+	EventChannel.prototype.setTime = function (time) {
+		if (!this.enabled) { return; }
+		if (!this.keyframes.length) { return; }
+
+		if (time <= this.keyframes[0].time) {
+			this.callbackIndex = 0;
+		} else {
+			this.callbackIndex = this._find(this.keyframes, time) + 1;
+		}
+
+		this.oldTime = time;
 	};
 
 	return EventChannel;
