@@ -82,7 +82,8 @@ function(
 			offset: [0, 0],
 			repeat: [1, 1],
 			flipY: true,
-			lodBias: 0.0
+			lodBias: 0.0,
+			loop: true
 		});
 	};
 
@@ -175,7 +176,7 @@ function(
 					ret = that.loadObject(imageRef, options).then(function(video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
-						video.loop = config.loop;
+						video.loop = config.loop !== undefined ? config.loop : true;
 						if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
 							texture.generateMipmaps = false;
 							texture.minFilter = 'BilinearNoMipMaps';
