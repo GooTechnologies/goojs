@@ -223,13 +223,21 @@ module.exports = function (grunt) {
 	// Creates an HTML list of tests in visual-test/index.html
 	grunt.registerTask('visualtoc', function () {
 		var toc = require('./visual-test/toc');
-		toc.run();
+		toc.run({
+			pattern: __dirname + '/visual-test/**/!(index).html',
+			outFile: __dirname + '/visual-test/index.html',
+			relPath: __dirname + '/visual-test'
+		});
 	});
 
 	// Creates an example table of content HTML file: examples/index.html
 	grunt.registerTask('examplestoc', function () {
-		var toc = require('./examples/toc');
-		toc.run();
+		var toc = require('./visual-test/toc');
+		toc.run({
+			pattern: __dirname + '/examples/**/!(index).html',
+			outFile: __dirname + '/examples/index.html',
+			relPath: __dirname + '/examples'
+		});
 	});
 
 	// Generates reference screenshots
