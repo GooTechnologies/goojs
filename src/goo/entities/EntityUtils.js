@@ -118,8 +118,6 @@ define([
 							};
 							if (script.parameters) { newScript.parameters = _.deepClone(script.parameters); }
 
-							// REVIEW: there's no harm in assigning nothings if you skip these ifs
-							// POST REVIEW: It makes the object cleaner
 							if (script.setup) { newScript.setup = script.setup; }
 							if (script.update) { newScript.update = script.update; }
 							if (script.setup) { newScript.cleanup = script.cleanup; }
