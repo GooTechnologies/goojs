@@ -58,11 +58,22 @@ for directory in (
 shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
 
 # pack files must also be copied
-shutil.copy('out/fsmpack.js', release_dir + '/lib/fsmpack.js')
-shutil.copy('out/geometrypack.js', release_dir + '/lib/geometrypack.js')
-shutil.copy('out/quadpack.js', release_dir + '/lib/quadpack.js')
-shutil.copy('out/timelinepack.js', release_dir + '/lib/timelinepack.js')
-shutil.copy('out/debugpack.js', release_dir + '/lib/debugpack.js')
+for packName in (
+	'fsm',
+	'geometry',
+	'quad',
+	'script',
+	'timeline',
+	'debug'
+):
+	shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
+
+#shutil.copy('out/geometrypack.js', release_dir + '/lib/geometrypack.js')
+#shutil.copy('out/quadpack.js', release_dir + '/lib/quadpack.js')
+#shutil.copy('out/scriptpack.js', release_dir + '/lib/scriptpack.js')
+#shutil.copy('out/timelinepack.js', release_dir + '/lib/timelinepack.js')
+#shutil.copy('out/debugpack.js', release_dir + '/lib/debugpack.js')
+
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')
 shutil.copy('lib/polyk.js', release_dir + '/lib/polyk.js')

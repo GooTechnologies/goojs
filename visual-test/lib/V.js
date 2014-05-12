@@ -7,7 +7,7 @@ define([
 	'goo/shapes/Sphere',
 	'goo/shapes/Box',
 	'goo/entities/components/CameraComponent',
-	'goo/scriptpack/ScriptRegister',
+	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
@@ -30,7 +30,7 @@ define([
 	Sphere,
 	Box,
 	CameraComponent,
-	ScriptRegister,
+	OrbitCamControlScript,
 	ScriptComponent,
 	Vector3,
 	PointLight,
@@ -104,7 +104,7 @@ define([
 			orbitCamOptions.moveInitialDelay = 200;
 		}
 
-		var orbitScript = Scripts.create('OrbitCamControlScript', orbitCamOptions);
+		var orbitScript = Scripts.create(OrbitCamControlScript, orbitCamOptions);
 		var entity = V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
 		return entity;
 	};
