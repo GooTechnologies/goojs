@@ -27,6 +27,7 @@ define([
 	}
 
 	Surface.prototype = Object.create(MeshData.prototype);
+	Surface.prototype.constructor = Surface;
 
 	/**
 	 * @description Builds or rebuilds the mesh data
@@ -154,7 +155,8 @@ define([
 			minX: minX,
 			maxX: maxX,
 			minY: minY,
-			maxY: maxY};
+			maxY: maxY
+		};
 	}
 
 	/**
@@ -163,8 +165,10 @@ define([
 	 * @param {number} [xScale=1]
 	 * @param {number} [yScale=1]
 	 * @returns {Surface} The created surface
+	 * @example
+	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/HeightMap-vtest.html Working example}</caption>
 	 */
-	Surface.createFromHeightMap = function(heightMap, xScale, yScale, zScale) {
+	Surface.createFromHeightMap = function (heightMap, xScale, yScale, zScale) {
 		xScale = xScale || 1;
 		yScale = yScale || 1;
         zScale = zScale || 1;
@@ -188,8 +192,7 @@ define([
 	 * @param {number} yCount y axis vertex count
 	 * @returns {Surface} The surface mesh
 	 */
-	Surface.createTessellatedFlat = function(xSize, ySize, xCount, yCount) {
-
+	Surface.createTessellatedFlat = function (xSize, ySize, xCount, yCount) {
 		var verts = [];
 		for (var i = 0; i < xCount; i++) {
 			for (var j = 0; j < yCount; j++) {
@@ -199,7 +202,6 @@ define([
 		var surface = new Surface(verts, xCount);
 		return surface;
 	};
-
 
 	return Surface;
 });

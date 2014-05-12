@@ -5,6 +5,10 @@ define([
 	) {
 	'use strict';
 
+	/**
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example}</caption>
+	 * @constructor
+	 */
 	function TimelineSystem() {
 		System.call(this, 'TimelineSystem', ['TimelineComponent']);
 	}
