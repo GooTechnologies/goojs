@@ -31,6 +31,17 @@ define(['goo/util/ArrayUtil'],
 		return this;
 	};
 
+	/**
+	 * Retrieves the last message sent on a channel. This will only work if message preservation is enabled when emitting.
+	 * @param channel
+	 */
+	Bus.prototype.getLastMessageOn = function (channelName) {
+		var node = this._getNode(channelName);
+		if (node) {
+			return node.latestData;
+		}
+	};
+
 	Bus.prototype._getNode = function (channelName, storeEmit) {
 		var node = this.trie;
 		var channelPath = channelName.split('.');
