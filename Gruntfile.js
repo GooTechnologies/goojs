@@ -202,6 +202,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack', 'build-pack:timelinepack']);
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('test',		['unittest']);
+	grunt.registerTask('checkstyle', ['jshint']);
 
 	//! AT: no better place to put this
 	function extractFilename(path) {
