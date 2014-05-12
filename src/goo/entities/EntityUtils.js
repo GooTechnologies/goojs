@@ -107,8 +107,7 @@ define([
 					for (var j = 0; j < component.scripts.length; j++) {
 						var newScript;
 						var script = component.scripts[j];
-						// REVIEW: if script.external is false then this will blow up
-						var key = script.externals ? script.externals.key : script.externals.name;
+						var key = script.externals ? script.externals.key || script.externals.name : null;
 						if (key && Scripts.getScript(key)) { // Engine script
 							newScript = Scripts.create(key, script.parameters);
 						} else { // Custom script
@@ -119,7 +118,6 @@ define([
 							};
 							if (script.parameters) { newScript.parameters = _.deepClone(script.parameters); }
 
-							// REVIEW: there's no harm in assigning nothings if you skip these ifs
 							if (script.setup) { newScript.setup = script.setup; }
 							if (script.update) { newScript.update = script.update; }
 							if (script.setup) { newScript.cleanup = script.cleanup; }
