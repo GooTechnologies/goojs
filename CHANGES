@@ -1,3 +1,23 @@
+v0.10.0 --- 2014-05-13
+======================
+
+Additions:
+ + Experimental way of clearing the engine using GooRunner.prototype.clear
+ + Examples are linked to from jsdocs
+
+Fixes:
+ *
+
+Deprecated:
+ -
+
+Breaking changes:
+ * All debug related classes are relocated in the debugpack (MarkerComponent, CameraDebug, LightDebug, MeshRendererDebug, SkeletonDebug, CameraDebugSystem, DebugRenderSystem, LightDebugSystem, MarkerSystem, BoundingVolumeMeshBuilder, DebugDrawHelper, Debugger, EntityCounter, FrustumViewer, LightPointer)
+ - EntityUtils.createTypicalEntity has been removed as scheduled; use world.createEntity instead
+ - EntityUtils.traverse has been removed as scheduled; use entity.traverse instead
+ - ShapeCreator has been removed as scheduled; use new Box/Sphere/Quad... instead
+
+
 v0.9.9 --- 2014-05-06
 =====================
 
