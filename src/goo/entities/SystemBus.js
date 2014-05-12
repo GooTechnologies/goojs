@@ -1,10 +1,6 @@
-define([
-	'goo/entities/Bus'
-],
+define(['goo/entities/Bus'],
 /** @lends */
-function (
-	Bus
-) {
+function (Bus) {
 
 	"use strict";
 
