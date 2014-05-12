@@ -172,24 +172,6 @@ define([
 		};
 
 		/**
-		 * Traverse entity hierarchy with callback
-		 * @deprecated Use entity.traverse instead; Deprecated since 0.8.0 - scheduled to be removed in 0.10.0
-		 * @param {Entity} entity The entity to begin traversing from
-		 * @param {function(Entity)} callback Callback to run. Runs top to bottom in the hierarchy.
-		 * The traversing can be stopped from propagating if the callback returns false.
-		 */
-		EntityUtils.traverse = function (entity, callback, level) {
-			level = level !== undefined ? level : 0;
-
-			if (callback(entity, level) !== false) {
-				for (var i = 0; i < entity.transformComponent.children.length; i++) {
-					var child = entity.transformComponent.children[i];
-					EntityUtils.traverse(child.entity, callback, level + 1);
-				}
-			}
-		};
-
-		/**
 		 * Traverse the entity hierarchy upwards, returning the root entity
 		 * @param {Entity} entity The entity to begin traversing from
 		 * @returns {Entity} The root entity
@@ -270,85 +252,6 @@ define([
 				if (entity.htmlComponent) {
 					entity.htmlComponent.hidden = true;
 				}
-			});
-		};
-
-		/**
-		 * Creates an entity with an optional MeshData, MeshRenderer, Camera, Script and Light component, placed optionally at a location. Parameters except for the first can be given in any order. First parameter must always be a World.
-		 * @deprecated Use world.createEntity instead; Deprecated since 0.7.0 - scheduled to be removed in 0.9.0
-		 * @param {World} world
-		 * @param {MeshData} [meshData]
-		 * @param {Material} [material]
-		 * @param {String} [name]
-		 * @param {Camera} [camera]
-		 * @param {Light} [light]
-		 * @returns {Entity}
-		 */
-
-		//! AT: this can be removed - all that this offers can be obtained through world.createEntity
-		EntityUtils.createTypicalEntity = function (world) {
-			// Create entity
-			var entity = world.createEntity();
-
-			for (var i = 1; i < arguments.length; i++) {
-				var arg = arguments[i];
-
-				if (arg instanceof MeshData) {
-					var meshDataComponent = new MeshDataComponent(arg);
-					entity.setComponent(meshDataComponent);
-
-					// attach mesh renderer component for backwards compatibility reasons
-					if (!entity.hasComponent('MeshRendererComponent')) {
-						var meshRendererComponent = new MeshRendererComponent();
-						entity.setComponent(meshRendererComponent);
-					}
-				} else if (arg instanceof Material) {
-					if (!entity.hasComponent('MeshRendererComponent')) {
-						var meshRendererComponent = new MeshRendererComponent();
-						entity.setComponent(meshRendererComponent);
-					}
-					entity.meshRendererComponent.materials.push(arg);
-				} else if (arg instanceof Light) {
-					var lightComponent = new LightComponent(arg);
-					entity.setComponent(lightComponent);
-				} else if (arg instanceof Camera) {
-					var cameraComponent = new CameraComponent(arg);
-					entity.setComponent(cameraComponent);
-				} else if (arg instanceof Transform) {
-					entity.transformComponent.transform = arg;
-				} else if (typeof arg === 'string') {
-					entity.name = arg;
-				} else if (Array.isArray(arg) && arg.length === 3) {
-					entity.transformComponent.transform.translation.setd(arg[0], arg[1], arg[2]);
-				} else if (typeof arg.run === 'function') {
-					if (!entity.hasComponent('ScriptComponent')) {
-						entity.setComponent(new ScriptComponent());
-					}
-					entity.scriptComponent.scripts.push(arg);
-				}
-			}
-
-			return entity;
-		};
-
-		//! AT: undocumented and probably not used
-		EntityUtils.createDOMEntity = function (world, domElement) {
-			var entity = world.createEntity();
-
-			entity.setComponent(new CSSTransformComponent(domElement));
-
-			return entity;
-		};
-
-		/**
-		 * Returns an array of all this entity's children
-		 * @deprecated Use entity.children.get() instead; Deprecated since 0.8.0 - scheduled to be removed in 0.10.0
-		 * @param entity
-		 * @returns {Entity[]}
-		 */
-		EntityUtils.getChildren = function (entity) {
-			return entity.transformComponent.children.map(function (childTransformComponent) {
-				return childTransformComponent.entity;
 			});
 		};
 
