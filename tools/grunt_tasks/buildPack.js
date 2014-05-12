@@ -198,7 +198,7 @@ module.exports = function (grunt) {
 			}, function(err) {
 				// optimization err callback
 				// :(
-				console.error(err.red);
+				console.error(err);
 				done(false);
 			});
 		});

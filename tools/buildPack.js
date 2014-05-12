@@ -186,6 +186,7 @@ function getTailWrapping(packName) {
 
 		// optimize!
 		console.log('optimize!');
+
 		requirejs.optimize(optimizerConfig, function (buildResponse) {
 			// buildResponse is just a text output of the modules included.
 

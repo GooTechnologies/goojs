@@ -38,16 +38,22 @@ define ([
 	};
 
 	Scripts.create = function (key, options) {
-		if (!_scripts[key]) {
-			throw new Error('Script "'+key+'" is not registered');
+		var factoryFunction;
+		if (typeof key === 'string') {
+			factoryFunction = _scripts[key];
+			if (!factoryFunction) {
+				throw new Error('Script "' + key + '" is not registered');
+			}
+		} else if (typeof key === 'function') {
+			factoryFunction = key;
 		}
-		var script = _scripts[key]();
+		var script = factoryFunction();
 		script.parameters = {};
 		script.environment = null;
 		// Check if needed
-		script.externals = _scripts[key].externals;
-		if (_scripts[key].externals) {
-			ScriptUtils.fillDefaultValues(script.parameters, _scripts[key].externals.parameters);
+		script.externals = factoryFunction.externals;
+		if (factoryFunction.externals) {
+			ScriptUtils.fillDefaultValues(script.parameters, factoryFunction.externals.parameters);
 		}
 		if (options) {
 			_.extend(script.parameters, options);

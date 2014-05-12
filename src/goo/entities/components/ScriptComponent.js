@@ -2,8 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts',
-	'goo/util/ObjectUtil',
-	'goo/scripts/ScriptRegister'
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function (
@@ -30,7 +29,7 @@ function (
 			this.scripts = [scripts];
 		} else {
 			/**
-			* Array of scripts tied to this script component. Scripts can be added to the component 
+			* Array of scripts tied to this script component. Scripts can be added to the component
 			* using the constructor or by manually adding to the array.
 			* @type {object[]}
 			* @example

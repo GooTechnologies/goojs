@@ -1,7 +1,7 @@
 define([
 	'goo/scripts/Scripts',
-	'goo/scripts/WASDControlScript',
-	'goo/scripts/MouseLookControlScript'
+	'goo/scriptpack/WASDControlScript',
+	'goo/scriptpack/MouseLookControlScript'
 ], function (
 	Scripts,
 	WASDScript,
@@ -11,8 +11,8 @@ define([
 
 
 	function FlyControlScript() {
-		var wasdScript = Scripts.create('WASD');
-		var lookScript = Scripts.create('MouseLookScript');
+		var wasdScript = Scripts.create(WASDControlScript);
+		var lookScript = Scripts.create(MouseLookControlScript);
 		function setup(parameters, environment) {
 			lookScript.setup(parameters, environment);
 			wasdScript.setup(parameters, environment);

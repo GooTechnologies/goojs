@@ -132,6 +132,14 @@ module.exports = function (grunt) {
 				packName: 'timelinepack',
 				outBaseDir: 'out'
 			},
+			debugpack: {
+				packName: 'debugpack',
+				outBaseDir: 'out'
+			},
+			scriptpack: {
+				packName: 'scriptpack',
+				outBaseDir: 'out'
+			}
 		},
 		karma: {
 			unit: {
@@ -184,7 +192,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('default',	['minify']);
 	grunt.registerTask('docs',		['shell:jsdoc']);
 	grunt.registerTask('jsdoc',		['shell:jsdoc']);
-	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack', 'build-pack:timelinepack']);
+	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack']);
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('test',		['unittest']);
 
