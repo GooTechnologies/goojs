@@ -297,5 +297,14 @@ define([
 				expect(bus.removeListenerFromAllChannels('main', function () {})).toBe(bus);
 			});
 		});
+
+		describe('clear', function () {
+			it('clears the system bus of any channels or listeners', function () {
+				bus.addListener('main', function (data) {});
+				bus.addListener('main.second', function (data) {});
+				bus.clear();
+				expect(bus).toEqual(new Bus());
+			});
+		});
 	});
 });
