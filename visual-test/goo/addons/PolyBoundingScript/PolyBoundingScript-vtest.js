@@ -7,6 +7,7 @@ require([
 	'goo/shapes/Box',
 	'goo/scriptpack/PolyBoundingScript',
 	'goo/scripts/Scripts',
+	'goo/scriptpack/ScriptRegister',
 	'lib/V'
 ], function (
 	Material,
@@ -17,6 +18,7 @@ require([
 	Box,
 	PolyBoundingScript,
 	Scripts,
+	ScriptRegister,
 	V
 	) {
 	'use strict';
