@@ -24,7 +24,7 @@ define([
 		key: 'Tween Rotation',
 		name: 'Tween Rotate',
 		type: 'animation',
-		description: 'Smoothly transitions between two orientations',
+		description: 'Transition to the set rotation, in angles.',
 		canTransition: true,
 		parameters: [{
 			name: 'Rotation',
@@ -39,7 +39,7 @@ define([
 			description: 'If true add, otherwise set',
 			'default': true
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for this movement to complete',
@@ -99,7 +99,7 @@ define([
 		var time = entity._world.time * 1000;
 
 		if (this.relative) {
-			Quaternion.mul2(initialRotation, finalRotation, finalRotation);
+			Quaternion.mul(initialRotation, finalRotation, finalRotation);
 		}
 
 		this.tween.from({ t: 0 }).to({ t: 1 }, +this.time).easing(this.easing).onUpdate(function() {

@@ -25,7 +25,7 @@ function(
 			description: 'Opacity',
 			'default': 1
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for the transition to complete',

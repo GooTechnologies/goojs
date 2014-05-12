@@ -34,7 +34,7 @@ function(
 	ShaderBuilder.SKYSPHERE = null;
 	ShaderBuilder.ENVIRONMENT_TYPE = 0;
 	ShaderBuilder.GLOBAL_AMBIENT = [0, 0, 0];
-	ShaderBuilder.CLEAR_COLOR = [1, 0, 0, 0];
+	ShaderBuilder.CLEAR_COLOR = [0.3, 0.3, 0.3, 1];
 	ShaderBuilder.USE_FOG = false;
 	ShaderBuilder.FOG_SETTINGS = [0, 10000];
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
@@ -89,18 +89,23 @@ function(
 				if (!shader.defines[type]) {
 					shader.defines[type] = true;
 				}
+			}
 
-				if (type === 'DIFFUSE_MAP') {
-					var offset = textureMaps[type].offset;
-					var repeat = textureMaps[type].repeat;
-					shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
-					shader.uniforms.offsetRepeat[0] = offset.x;
-					shader.uniforms.offsetRepeat[1] = offset.y;
-					shader.uniforms.offsetRepeat[2] = repeat.x;
-					shader.uniforms.offsetRepeat[3] = repeat.y;
-
-					shader.uniforms.lodBias = textureMaps[type].lodBias;
-				}
+			if (textureMaps.DIFFUSE_MAP) {
+				shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
+				var offset = textureMaps.DIFFUSE_MAP.offset;
+				var repeat = textureMaps.DIFFUSE_MAP.repeat;
+				shader.uniforms.offsetRepeat[0] = offset.x;
+				shader.uniforms.offsetRepeat[1] = offset.y;
+				shader.uniforms.offsetRepeat[2] = repeat.x;
+				shader.uniforms.offsetRepeat[3] = repeat.y;
+				shader.uniforms.lodBias = textureMaps.DIFFUSE_MAP.lodBias;
+			} else {
+				shader.uniforms.offsetRepeat[0] = 0;
+				shader.uniforms.offsetRepeat[1] = 0;
+				shader.uniforms.offsetRepeat[2] = 1;
+				shader.uniforms.offsetRepeat[3] = 1;
+				shader.uniforms.lodBias = 0;
 			}
 
 			// Exclude in a nicer way
@@ -198,7 +203,7 @@ function(
 						lightDefines.push('C');
 						shader.defines.COOKIE = true;
 					} else {
-						shader.defines.COOKIE = false;
+						delete shader.defines.COOKIE;
 					}
 
 					var matrix = shadowData.lightCamera.getViewProjectionMatrix().data;
@@ -283,7 +288,7 @@ function(
 				);
 
 				var useLightCookie = light.lightCookie instanceof Texture;
-				if (useLightCookie || (light.shadowCaster && 
+				if (useLightCookie || (light.shadowCaster &&
 					shaderInfo.renderable.meshRendererComponent &&
 					shaderInfo.renderable.meshRendererComponent.receiveShadows)
 				) {

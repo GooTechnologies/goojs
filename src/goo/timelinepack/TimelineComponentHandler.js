@@ -146,6 +146,7 @@ define([
 			} else {
 				channel = new EventChannel(channelId);
 			}
+			channel.enabled = channelConfig.enabled !== false;
 			component.channels.push(channel);
 		} else if (channelConfig.entityId && channel.callbackUpdate && channel.callbackUpdate.rotation) {
 			var rotation = rotationMap[channelConfig.entityId] = channel.callbackUpdate.rotation;

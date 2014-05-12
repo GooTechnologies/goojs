@@ -77,7 +77,8 @@ define([
 	 * @type {Object}
 	 */
 	AxisAlignedCamControlScript.externals = {
-		name: 'AxisAlignedCamControlScript',
+		key: 'AxisAlignedCamControlScript',
+		name: 'Axis-aligned Camera Control',
 		description: 'Aligns a camera along an axis, and enables switching between them.',
 		parameters: [{
 			key: 'whenUsed',

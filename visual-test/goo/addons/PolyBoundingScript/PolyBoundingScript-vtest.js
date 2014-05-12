@@ -8,6 +8,7 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
 	'goo/addons/scripts/PolyBoundingScript',
+	'goo/scripts/Scripts',
 	'lib/V'
 ], function (
 	Material,
@@ -19,6 +20,7 @@ require([
 	WASDControlScript,
 	MouseLookControlScript,
 	PolyBoundingScript,
+	Scripts,
 	V
 	) {
 	'use strict';
@@ -76,12 +78,12 @@ require([
 
 	// Camera control set up
 	var scripts = new ScriptComponent();
-	scripts.scripts.push(new WASDControlScript({
+	scripts.scripts.push(Scripts.create('WASD', {
 		domElement: goo.renderer.domElement,
 		walkSpeed: 25.0,
 		crawlSpeed: 10.0
 	}));
-	scripts.scripts.push(new MouseLookControlScript({
+	scripts.scripts.push(Scripts.create('MouseLookScript', {
 		domElement: goo.renderer.domElement
 	}));
 

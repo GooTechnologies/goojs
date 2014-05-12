@@ -26,7 +26,6 @@ function (
 		this.id = id !== undefined ? id : StringUtil.createUniqueId('entity');
 		this._index = Entity.entityCount;
 
-		//! AT: not sure if this tags/attributes abstraction is really needed or if they are just glorified properties
 		this._tags = {};
 		this._attributes = {};
 
@@ -49,7 +48,12 @@ function (
 		 */
 		this.hidden = false;
 
+		/** Mark entity as static, to allow being mesh-combined.
+		 * @type {boolean}
+		 * @default false
+		 */
 		this.static = false;
+
 		Entity.entityCount++;
 	}
 
@@ -57,15 +61,15 @@ function (
 	/**
 	 * Sets components on the entity or tries to create and set components out of the supplied parameters.
 	 *
-	 * @example
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-set-example.html Working example}</caption>
 	 * // Create three entities with different components, add them to world
-	 * var sphereEntity = world.createEntity().set(sphere, material, [2, 0, 0]).addToWorld();
-	 * var lightEntity = world.createEntity().set(light, [0, 1, 0]).addToWorld();
-	 * var spinningEntity = world.createEntity().set(box, material, [-2, 0, 0], script).addToWorld();
+	 * var sphereEntity = new Entity(world).set(sphere, material, [2, 0, 0]).addToWorld();
+	 * var lightEntity = new Entity(world).set(light, [0, 1, 0]).addToWorld();
+	 * var spinningEntity = new Entity(world).set(box, material, [-2, 0, 0], script).addToWorld();
 	 *
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
-	Entity.prototype.set = function() {
+	Entity.prototype.set = function () {
 		for (var i = 0; i < arguments.length; i++) {
 			var argument = arguments[i];
 			if (argument instanceof Component) {
@@ -209,7 +213,7 @@ function (
 	/**
 	 * Adds a tag to the entity.
 	 * @param {string} tag
-	 * @example
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example}</caption>
 	 * var banana = world.createEntity().setTag('fruit').setTag('green');
 	 *
 	 * @returns {Entity} Returns self to allow chaining.
@@ -222,7 +226,7 @@ function (
 	/**
 	 * Checks whether an entity has a tag or not.
 	 * @param {string} tag
-	 * @example
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example}</caption>
 	 * if (banana.hasTag('yellow')) {
 	 *     console.log('The banana is yellow');
 	 * }
@@ -236,7 +240,7 @@ function (
 	/**
 	 * Clears a tag on an entity.
 	 * @param {string} tag
-	 * @example
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example}</caption>
 	 * // Remove 'alive' tag if hit points drops to zero
 	 * if (hero.getAttribute('hit-points') <= 0) {
 	 *     hero.clearTag('alive');
@@ -251,9 +255,10 @@ function (
 
 	/**
 	 * Sets an attribute and its value on the entity.
+	 *
 	 * @param {string} attribute
 	 * @param value
-	 * @example
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-attributes-example.html Working example}</caption>
 	 * // Create an entity with tags and attributes, and add it to world
 	 * var hero = world.createEntity()
 	 *                 .setTag('hero')

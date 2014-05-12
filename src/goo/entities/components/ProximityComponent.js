@@ -6,6 +6,10 @@ function(
 	) {
 	'use strict';
 
+	/**
+	 * @class
+	 * @private
+	 */
 	function ProximityComponent(tag) {
 		this.type = 'ProximityComponent';
 

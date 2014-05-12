@@ -1,12 +1,7 @@
-var webdriver = require('selenium-webdriver');
-var fs = require('fs');
-var os = require('os');
 var path = require('path');
 var program = require('commander');
-var async = require('async');
-var coffeescript = require('coffee-script');
+require('coffee-script');
 var toc = require(__dirname + '/../../visual-test/toc');
-var mkdirp = require('mkdirp');
 var ScreenShooter = require('./ScreenShooter');
 
 program

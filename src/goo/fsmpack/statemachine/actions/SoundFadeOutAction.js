@@ -17,7 +17,7 @@ function(
 	SoundFadeOutAction.external = {
 		name: 'Sound Fade Out',
 		type: 'sound',
-		descriptions: 'Fades out a sound and stops it',
+		description: 'Fades out a sound and stops it.',
 		canTransition: true,
 		parameters: [{
 			name: 'Sound',
@@ -26,7 +26,7 @@ function(
 			description: 'Sound',
 			'default': 0
 		}, {
-			name: 'Time',
+			name: 'Time (ms)',
 			key: 'time',
 			type: 'number',
 			description: 'Time it takes for the fading to complete',

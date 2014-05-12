@@ -56,22 +56,13 @@ require([
 		world.createEntity(new PointLight(), [-100, -100, -100]).addToWorld();
 
 		// and a camera
-		// cameras are kept in Renderer.mainCamera and in the system bus which is never cleansed
-		//world.createEntity(new Camera(), [0, 0, 10]).lookAt(0, 0, 0).addToWorld();
+		world.createEntity(new Camera(), [0, 0, 10]).addToWorld();
 	}
 
 	function destroy() {
 		console.log('destroy');
 
-		// remove all entities from the world
-		goo.world.getEntities().forEach(function (entity) { entity.removeFromWorld(); });
-
-		// also stop the game loop and remove references to goo
-		setTimeout(function () {
-			goo.stopGameLoop();
-			var gooCanvas = goo.renderer.domElement;
-			gooCanvas.parentNode.removeChild(gooCanvas);
-			goo = null;
-		}, 300);
+		goo.clear();
+		goo = null;
 	}
 });

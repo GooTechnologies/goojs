@@ -12,8 +12,8 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/FPCamControlScript',
-	'goo/scripts/newwave/FPCamControlScript',
 	'goo/scripts/ScriptUtils',
+	'goo/scripts/Scripts',
 	'lib/V'
 ], function (
 	GooRunner,
@@ -29,8 +29,8 @@ require([
 	LightComponent,
 	WASDControlScript,
 	FPCamControlScript,
-	NewWaveFPCamControlScript,
 	ScriptUtils,
+	Scripts,
 	V
 	) {
 	'use strict';
@@ -83,14 +83,14 @@ require([
 		var scripts = new ScriptComponent();
 
 		// WASD control script to move around
-		scripts.scripts.push(new WASDControlScript({
+		scripts.scripts.push(Scripts.create('WASD', {
 			domElement: goo.renderer.domElement,
 			walkSpeed: 25.0,
 			crawlSpeed: 10.0
 		}));
 
 		// the FPCam script itself that locks the pointer and moves the camera
-		var fpScript = NewWaveFPCamControlScript();
+		var fpScript = FPCamControlScript();
 		fpScript.parameters = {
 			domElement: goo.renderer.domElement
 		};

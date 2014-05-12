@@ -245,8 +245,9 @@ define([
 	}
 
 	CannonPickScript.externals = {
-		name: 'CannonPickScript',
-		description: 'Enables camera to pan around a point in 3D space using the mouse',
+		key: 'CannonPickScript',
+		name: 'Cannon.js Body Pick',
+		description: 'Enables the user to physically pick a Cannon.js physics body and drag it around.',
 		parameters: [{
 			key: 'whenUsed',
 			type: 'boolean',

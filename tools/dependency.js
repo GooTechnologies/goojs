@@ -1,5 +1,6 @@
-var fs = require('fs');
-var colors = require('colors');
+/*jshint strict: false, evil: true */
+/* global exports */
+var fs = require('graceful-fs');
 var file = require('file');
 
 var tree;

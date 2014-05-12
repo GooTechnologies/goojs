@@ -11,7 +11,7 @@ define([
 	'goo/renderer/bounds/BoundingVolume'
 ],
 /** @lends */
-function(
+function (
 	Handy,
 	Vector3,
 	Vector4,
@@ -45,10 +45,10 @@ function(
 		this._up = new Vector3(0, 1, 0);
 		this._direction = new Vector3(0, 0, -1);
 
-		Handy.defineProperty(this, 'this._depthRangeNear', 0.0, function() {
+		Handy.defineProperty(this, 'this._depthRangeNear', 0.0, function () {
 			this._depthRangeDirty = true;
 		});
-		Handy.defineProperty(this, 'this._depthRangeFar', 1.0, function() {
+		Handy.defineProperty(this, 'this._depthRangeFar', 1.0, function () {
 			this._depthRangeDirty = true;
 		});
 		this._depthRangeDirty = true;
@@ -467,7 +467,7 @@ function(
 	/**
 	 * Updates the values of the world planes associated with this camera.
 	 */
-	Camera.prototype.onFrameChange = function() {
+	Camera.prototype.onFrameChange = function () {
 		var dirDotLocation = this._direction.dot(this.translation);
 
 		var planeNormal = this.planeNormal;
@@ -540,7 +540,7 @@ function(
 	/**
 	 * Updates the value of our projection matrix.
 	 */
-	Camera.prototype.updateProjectionMatrix = function() {
+	Camera.prototype.updateProjectionMatrix = function () {
 		if (this.projectionMode === Camera.Parallel) {
 			this.projection.setIdentity();
 
@@ -569,7 +569,7 @@ function(
 	/**
 	 * Updates the value of our model view matrix.
 	 */
-	Camera.prototype.updateModelViewMatrix = function() {
+	Camera.prototype.updateModelViewMatrix = function () {
 		this.modelView.setIdentity();
 
 		var d = this.modelView.data;
@@ -603,14 +603,14 @@ function(
 	 * @param store the Ray to store the result in. If false, a new Ray is created and returned.
 	 * @return the resulting Ray.
 	 */
-	Camera.prototype.getPickRay = function(screenX, screenY, screenWidth, screenHeight, store) {
+	Camera.prototype.getPickRay = function (screenX, screenY, screenWidth, screenHeight, store) {
 		if (!store) {
 			store = new Ray();
 		}
 		var origin = new Vector3();
 		var direction = new Vector3();
-		this.getWorldCoordinates(screenX, screenHeight - screenY, screenWidth, screenHeight, 0, origin);
-		this.getWorldCoordinates(screenX, screenHeight - screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, origin);
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
 		store.origin.copy(origin);
 		store.direction.copy(direction);
 
@@ -629,22 +629,30 @@ function(
 	 *            created.
 	 * @return a vector containing the world coordinates.
 	 */
-	Camera.prototype.getWorldPosition = function(screenX, screenY, screenWidth, screenHeight, zDepth, store) {
+	Camera.prototype.getWorldPosition = function (screenX, screenY, screenWidth, screenHeight, zDepth, store) {
 		if (!store) {
 			store = new Vector3();
 		}
 
-		if(this.projectionMode === Camera.Parallel){
+		if (this.projectionMode === Camera.Parallel) {
 			zDepth = ((zDepth - this.near) / (this.far - this.near));
 		} else {
 			// http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html
-			zDepth = ( this.far / (this.far - this.near)) + ((this.far * this.near / (this.near - this.far)) / zDepth);
+			zDepth = (this.far / (this.far - this.near)) + ((this.far * this.near / (this.near - this.far)) / zDepth);
 		}
 
 		this.checkInverseModelViewProjection();
 		var position = new Vector4();
 		var x = (screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1;
 		var y = ((screenHeight - screenY) / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1;
+
+		var aspect = this.aspect / (screenWidth / screenHeight);
+		if (aspect > 1) {
+			y *= aspect;
+		} else if (aspect < 1) {
+			x /= aspect;
+		}
+
 		var z = zDepth * 2 - 1;
 		var w = 1;
 		position.set(x, y, z, w);
@@ -661,8 +669,8 @@ function(
 	/**
 	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
 	 *
-	 * @param screenX the screen x position
-	 * @param screenY the screen y position
+	 * @param screenX the screen x position (x=0 is the leftmost coordinate of the screen)
+	 * @param screenY the screen y position (y=0 is the top of the screen)
 	 * @param screenWidth the screen width
 	 * @param screenHeight the screen height
 	 * @param zDepth the depth into the camera view to take our point. 0 indicates the near plane of the camera and 1 indicates the far plane.
@@ -670,13 +678,25 @@ function(
 	 *            created.
 	 * @return a vector containing the world coordinates.
 	 */
-	Camera.prototype.getWorldCoordinates = function(screenX, screenY, screenWidth, screenHeight, zDepth, store) {
+	Camera.prototype.getWorldCoordinates = function (screenX, screenY, screenWidth, screenHeight, zDepth, store) {
 		if (!store) {
 			store = new Vector3();
 		}
 		this.checkInverseModelViewProjection();
 		var position = new Vector4();
-		position.set((screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1, (screenY / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1, zDepth * 2 - 1, 1);
+
+		var x = (screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1;
+		var y = ((screenHeight - screenY) / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1;
+
+		var aspect = this.aspect / (screenWidth / screenHeight);
+		if (aspect > 1) {
+			y *= aspect;
+		} else if (aspect < 1) {
+			x /= aspect;
+		}
+
+
+		position.set(x, y, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPost(position);
 		position.mul(1.0 / position.w);
 		store.x = position.x;
@@ -696,11 +716,18 @@ function(
 	 *            created.
 	 * @return a vector containing the screen coordinates as x and y and the distance as a percent between near and far planes.
 	 */
-	Camera.prototype.getScreenCoordinates = function(worldPosition, screenWidth, screenHeight, store) {
+	Camera.prototype.getScreenCoordinates = function (worldPosition, screenWidth, screenHeight, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
 
+		var aspect = this.aspect / (screenWidth / screenHeight);
+		if (aspect > 1) {
+			store.y /= aspect;
+		} else if (aspect < 1) {
+			store.x *= aspect;
+		}
+
 		store.x = (store.x + 1) * (this._viewPortRight - this._viewPortLeft) / 2 * screenWidth;
-		store.y = (store.y + 1) * (this._viewPortTop - this._viewPortBottom) / 2 * screenHeight;
+		store.y = (1 - store.y) * (this._viewPortTop - this._viewPortBottom) / 2 * screenHeight;
 		store.z = (store.z + 1) / 2;
 
 		return store;
@@ -713,7 +740,7 @@ function(
 	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is created.
 	 * @return a vector containing the x,y,z frustum position
 	 */
-	Camera.prototype.getFrustumCoordinates = function(worldPosition, store) {
+	Camera.prototype.getFrustumCoordinates = function (worldPosition, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
 
 		store.x = (store.x + 1) * (this._frustumRight - this._frustumLeft) / 2 + this._frustumLeft;
@@ -723,7 +750,7 @@ function(
 		return store;
 	};
 
-	Camera.prototype.getNormalizedDeviceCoordinates = function(worldPosition, store) {
+	Camera.prototype.getNormalizedDeviceCoordinates = function (worldPosition, store) {
 		if (!store) {
 			store = new Vector3();
 		}
@@ -742,7 +769,7 @@ function(
 	/**
 	 * Update modelView if necessary.
 	 */
-	Camera.prototype.checkModelView = function() {
+	Camera.prototype.checkModelView = function () {
 		if (this._updateMVMatrix) {
 			this.updateModelViewMatrix();
 			this._updateMVMatrix = false;
@@ -752,7 +779,7 @@ function(
 	/**
 	 * Update projection if necessary.
 	 */
-	Camera.prototype.checkProjection = function() {
+	Camera.prototype.checkProjection = function () {
 		if (this._updatePMatrix) {
 			this.updateProjectionMatrix();
 			this._updatePMatrix = false;
@@ -762,7 +789,7 @@ function(
 	/**
 	 * Update modelViewProjection if necessary.
 	 */
-	Camera.prototype.checkModelViewProjection = function() {
+	Camera.prototype.checkModelViewProjection = function () {
 		if (this._updateMVPMatrix) {
 			this.checkModelView();
 			this.checkProjection();
@@ -775,7 +802,7 @@ function(
 	/**
 	 * Update inverse modelView if necessary.
 	 */
-	Camera.prototype.checkInverseModelView = function() {
+	Camera.prototype.checkInverseModelView = function () {
 		if (this._updateInverseMVMatrix) {
 			this.checkModelView();
 			Matrix4x4.invert(this.modelView, this.modelViewInverse);
@@ -786,7 +813,7 @@ function(
 	/**
 	 * Update inverse modelViewProjection if necessary.
 	 */
-	Camera.prototype.checkInverseModelViewProjection = function() {
+	Camera.prototype.checkInverseModelViewProjection = function () {
 		if (this._updateInverseMVPMatrix) {
 			this.checkModelViewProjection();
 			Matrix4x4.invert(this.modelViewProjection, this.modelViewProjectionInverse);
@@ -794,27 +821,27 @@ function(
 		}
 	};
 
-	Camera.prototype.getViewMatrix = function() {
+	Camera.prototype.getViewMatrix = function () {
 		this.checkModelView();
 		return this.modelView;
 	};
 
-	Camera.prototype.getProjectionMatrix = function() {
+	Camera.prototype.getProjectionMatrix = function () {
 		this.checkProjection();
 		return this.projection;
 	};
 
-	Camera.prototype.getViewProjectionMatrix = function() {
+	Camera.prototype.getViewProjectionMatrix = function () {
 		this.checkModelViewProjection();
 		return this.modelViewProjection;
 	};
 
-	Camera.prototype.getViewInverseMatrix = function() {
+	Camera.prototype.getViewInverseMatrix = function () {
 		this.checkInverseModelView();
 		return this.modelViewInverse;
 	};
 
-	Camera.prototype.getViewProjectionInverseMatrix = function() {
+	Camera.prototype.getViewProjectionInverseMatrix = function () {
 		this.checkInverseModelViewProjection();
 		return this.modelViewProjectionInverse;
 	};
@@ -875,9 +902,9 @@ function(
 
 		this._frustumNear = optimalCameraNear;
 		this._frustumFar = optimalCameraFar;
-	 };
+	};
 
-	Camera.prototype.calculateFrustumCorners = function(fNear, fFar) {
+	Camera.prototype.calculateFrustumCorners = function (fNear, fFar) {
 		fNear = fNear !== undefined ? fNear : this._frustumNear;
 		fFar = fFar !== undefined ? fFar : this._frustumFar;
 
@@ -923,15 +950,6 @@ function(
 		return this._corners;
 	};
 
-	var sgn = function (val) {
-		if (val > 0.0) {
-			return 1.0;
-		} else if (val < 0.0) {
-			return -1.0;
-		}
-		return 0.0;
-	};
-
 	/**
 	 * Clipping using oblique frustums
 	 * @param clipPlane clipping plane
@@ -947,8 +965,8 @@ function(
 		var projection = this.getProjectionMatrix();
 
 		this._qCalc.setd(
-			(sgn(clipPlane.x) + projection[8]) / projection[0],
-			(sgn(clipPlane.y) + projection[9]) / projection[5],
+			(MathUtils.sign(clipPlane.x) + projection[8]) / projection[0],
+			(MathUtils.sign(clipPlane.y) + projection[9]) / projection[5],
 			-1,
 			(1.0 + projection[10]) / projection[14]
 		);

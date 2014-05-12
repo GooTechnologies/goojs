@@ -154,10 +154,8 @@ function (
 
 		var mode = this.indexModes[section];
 		var rSize = MeshData.getVertexCount(mode);
-		var result = store;
-		if (!result || result.length < rSize) {
-			result = [];
-		}
+		var result = store || [];
+		result.length = rSize;
 
 		var verts = this.getAttributeBuffer(MeshData.POSITION);
 		for (var i = 0; i < rSize; i++) {

@@ -144,7 +144,8 @@ function(
 
 			var imageRef = config.imageRef;
 			if (imageRef) {
-				var type = StringUtil.parseURL(imageRef).path.split('.').pop().toLowerCase();
+				var path = StringUtil.parseURL(imageRef).path;
+				var type = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
 				var Loader = TextureHandler.loaders[type];
 				if (Loader) {
 					// Special (dds, tga, crn)
@@ -174,6 +175,7 @@ function(
 					ret = that.loadObject(imageRef, options).then(function(video) {
 						video.width = video.videoWidth;
 						video.height = video.videoHeight;
+						video.loop = config.loop;
 						if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
 							texture.generateMipmaps = false;
 							texture.minFilter = 'BilinearNoMipMaps';

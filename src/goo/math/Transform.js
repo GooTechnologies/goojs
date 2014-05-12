@@ -102,7 +102,9 @@ function (
 		this.translation.setv(b.translation);
 		this.translation.mulv(a.scale);
 		this.tmpMat1.applyPost(this.translation).addv(a.translation);
-		this.scale.setv(a.scale).mulv(b.scale);
+
+		this.tmpVec.setv(a.scale).mulv(b.scale);
+		this.scale.setv(this.tmpVec);
 	};
 
 	/**

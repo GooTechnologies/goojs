@@ -17,6 +17,7 @@ function(
 	/**
 	 * @class Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.
 	 * @param {object} [settings]
+	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
 	 * @extends Component
 	 */
 	function CannonBoxColliderComponent (settings) {

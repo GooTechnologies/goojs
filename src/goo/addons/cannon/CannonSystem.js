@@ -8,7 +8,7 @@ define([
 	'goo/util/ObjectUtil'
 ],
 /** @lends */
-function(
+function (
 	System,
 	BoundingBox,
 	BoundingSphere,
@@ -26,6 +26,7 @@ function(
 	 * @extends System
 	 * @param [Object] [settings]
 	 * @param {number} [settings.stepFrequency=60]
+	 * @param {Vector3} [settings.gravity] The gravity to use in the scene. Default is (0,-10,0)
 	 * @param {string} [settings.broadphase='naive'] One of: 'naive' (NaiveBroadphase), 'sap' (SAPBroadphase)
 	 * @example
 	 * var cannonSystem = new CannonSystem({
@@ -35,7 +36,7 @@ function(
 	 * goo.world.setSystem(cannonSystem);
 	 */
 	function CannonSystem(settings) {
-		System.call(this, 'CannonSystem', ['CannonRigidbodyComponent','TransformComponent']);
+		System.call(this, 'CannonSystem', ['CannonRigidbodyComponent', 'TransformComponent']);
 
 		settings = settings || {};
 
@@ -79,12 +80,12 @@ function(
 		this.world.add(body);
 
 		var c = entity.cannonDistanceJointComponent;
-		if(c){
+		if (c) {
 			this.world.addConstraint(c.createConstraint(entity));
 		}
 	};
 
-	CannonSystem.prototype.deleted = function(entity) {
+	CannonSystem.prototype.deleted = function (entity) {
 		var rbComponent = entity.cannonRigidbodyComponent;
 
 		if (rbComponent) {
@@ -93,7 +94,7 @@ function(
 		}
 	};
 
-	CannonSystem.prototype.process = function(entities /*, tpf */) {
+	CannonSystem.prototype.process = function (entities /*, tpf */) {
 
 		// Step the world forward in time
 		this.world.step(1 / this.stepFrequency);
@@ -113,9 +114,13 @@ function(
 		}
 	};
 
-	CannonSystem.prototype.setBroadphaseAlgorithm = function(algorithm){
+	/**
+	 * Set the broadphase algorithm to use
+	 * @param {string} algorithm One of: 'naive' (NaiveBroadphase), 'sap' (SAPBroadphase)
+	 */
+	CannonSystem.prototype.setBroadphaseAlgorithm = function (algorithm) {
 		var world = this.world;
-		switch(algorithm){
+		switch (algorithm) {
 		case 'naive':
 			world.broadphase = new CANNON.NaiveBroadphase();
 			break;
@@ -123,7 +128,7 @@ function(
 			world.broadphase = new CANNON.SAPBroadphase(world);
 			break;
 		default:
-			throw new Error('Broadphase not supported: '+algorithm);
+			throw new Error('Broadphase not supported: ' + algorithm);
 		}
 	};
 

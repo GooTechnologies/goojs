@@ -57,7 +57,7 @@ define([
 				down: false
 			};
 			listeners = {
-				mousedown: function(event) {
+				mousedown: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						var button = event.button;
 						if (button === 0) {
@@ -69,12 +69,14 @@ define([
 						}
 						if (button === panButton || panButton === -1) {
 							mouseState.down = true;
-							mouseState.ox = mouseState.x = event.clientX;
-							mouseState.oy = mouseState.y = event.clientY;
+							var x = (event.offsetX !== undefined) ? event.offsetX : event.layerX;
+							var y = (event.offsetY !== undefined) ? event.offsetY : event.layerY;
+							mouseState.ox = mouseState.x = x;
+							mouseState.oy = mouseState.y = y;
 						}
 					}
 				},
-				mouseup: function(event) {
+				mouseup: function (event) {
 					var button = event.button;
 					if (button === 0) {
 						if (event.altKey) {
@@ -86,21 +88,23 @@ define([
 					mouseState.down = false;
 					mouseState.dx = mouseState.dy = 0;
 				},
-				mousemove: function(event) {
+				mousemove: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						if (mouseState.down) {
-							mouseState.x = event.clientX;
-							mouseState.y = event.clientY;
+							var x = (event.offsetX !== undefined) ? event.offsetX : event.layerX;
+							var y = (event.offsetY !== undefined) ? event.offsetY : event.layerY;
+							mouseState.x = x;
+							mouseState.y = y;
 							environment.dirty = true;
 						}
 					}
 				},
-				mouseleave: function(/*event*/) {
+				mouseleave: function (/*event*/) {
 					mouseState.down = false;
 					mouseState.ox = mouseState.x;
 					mouseState.oy = mouseState.y;
 				},
-				touchstart: function(event) {
+				touchstart: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						mouseState.down = (event.targetTouches.length === 2);
 						if (!mouseState.down) { return; }
@@ -110,7 +114,7 @@ define([
 						mouseState.oy = mouseState.y = center[1];
 					}
 				},
-				touchmove: function(event) {
+				touchmove: function (event) {
 					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
 						if (!mouseState.down) { return; }
 
@@ -119,7 +123,7 @@ define([
 						mouseState.y = center[1];
 					}
 				},
-				touchend: function(/*event*/) {
+				touchend: function (/*event*/) {
 					mouseState.down = false;
 					mouseState.ox = mouseState.x;
 					mouseState.oy = mouseState.y;
@@ -132,7 +136,7 @@ define([
 		}
 
 		function update(parameters, environment) {
-			if(!environment.dirty) {
+			if (!environment.dirty) {
 				return;
 			}
 			mouseState.dx = mouseState.x - mouseState.ox;
@@ -161,17 +165,19 @@ define([
 					return;
 				}
 				var camera = entity.cameraComponent.camera;
-				mainCam.getScreenCoordinates(lookAtPoint, 1, 1, calcVector);
-				calcVector.add_d(
-					-mouseState.dx / (environment.viewportWidth/devicePixelRatio),
-					mouseState.dy / (environment.viewportHeight/devicePixelRatio),
+				var width = environment.domElement.offsetWidth;
+				var height = environment.domElement.offsetHeight;
+				mainCam.getScreenCoordinates(lookAtPoint, width, height, calcVector);
+				calcVector.sub_d(
+					mouseState.dx,/// (environment.viewportWidth/devicePixelRatio),
+					mouseState.dy,/// (environment.viewportHeight/devicePixelRatio),
 					0
 				);
 				mainCam.getWorldCoordinates(
 					calcVector.x,
 					calcVector.y,
-					1,
-					1,
+					width,
+					height,
 					calcVector.z,
 					calcVector
 				);
@@ -182,11 +188,11 @@ define([
 				calcVector2.setv(leftVector).scale(mouseState.dx);
 
 				//! schteppe: use world coordinates for both by default?
-				//if(parameters.screenMove){
+				//if (parameters.screenMove){
 					// In the case of screenMove, we normalize the camera movement
 					// to the near plane instead of using pixels. This makes the parallel
 					// camera map mouse world movement to camera movement 1-1
-					if(entity.cameraComponent && entity.cameraComponent.camera){
+					if (entity.cameraComponent && entity.cameraComponent.camera) {
 						var camera = entity.cameraComponent.camera;
 						calcVector.scale((camera._frustumTop - camera._frustumBottom) / environment.viewportHeight);
 						calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
@@ -194,7 +200,7 @@ define([
 				//}
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);
-				//if(!parameters.screenMove){
+				//if (!parameters.screenMove){
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
 					calcVector.scale(parameters.panSpeed);
 				//}
@@ -204,7 +210,7 @@ define([
 			}
 			SystemBus.emit('goo.cameraPositionChanged', {
 				translation: transform.translation.data,
-				lookAtPoint: lookAtPoint?lookAtPoint.data:null,
+				lookAtPoint: lookAtPoint ? lookAtPoint.data : null,
 				id: entity.id
 			});
 		}
@@ -223,7 +229,8 @@ define([
 	}
 
 	PanCamScript.externals = {
-		name: 'PanCamControlScript',
+		key: 'PanCamControlScript',
+		name: 'PanCamera Control',
 		description: 'Enables camera to pan around a point in 3D space using the mouse',
 		parameters: [{
 			key: 'whenUsed',

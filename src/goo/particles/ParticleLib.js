@@ -9,7 +9,6 @@ function (
 	 */
 	var ParticleLib = {};
 
-
 	/**
 	 * Returns a set of parameters for a smoke particle emitter
 	 */

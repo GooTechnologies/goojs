@@ -24,8 +24,9 @@ else:
 grunt_command = 'node_modules/grunt-cli/bin/grunt'
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
 
-subprocess.check_call([command, 'jsdoc'])
-subprocess.check_call([command, 'visualtoc'])
+subprocess.check_call([grunt_command, 'jsdoc'])
+subprocess.check_call([grunt_command, 'visualtoc'])
+subprocess.check_call([grunt_command, 'examplestoc'])
 
 release_dir = os.getenv('RELEASE_DIR', 'out/release/' + name)
 if os.path.isdir(release_dir):
@@ -44,7 +45,8 @@ for directory in (
 	'lib/crunch',
 	'lib/hammerv2',
 	('goojs-jsdoc', 'docs'),
-	'visual-test'
+	'visual-test',
+	'examples'
 ):
 	if isinstance(directory, basestring):
 		source = destination = directory

@@ -3,7 +3,7 @@ define([
 ) {
 	'use strict';
 
-	function NewWaveRotationScript() {
+	function RotationScript() {
 		var mouseState, actualState, entity;
 
 		function setup(parameters, env) {
@@ -44,8 +44,9 @@ define([
 		};
 	}
 
-	NewWaveRotationScript.externals = {
-		name: 'RotationScript',
+	RotationScript.externals = {
+		key: 'RotationScript',
+		name: 'Mouse Rotation',
 		description: '',
 		parameters: [{
 			key: 'fraction',
@@ -58,5 +59,5 @@ define([
 		}]
 	};
 
-	return NewWaveRotationScript;
+	return RotationScript;
 });

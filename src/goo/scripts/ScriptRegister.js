@@ -1,15 +1,16 @@
 define([
 	'goo/scripts/Scripts',
-	'goo/scripts/newwave/OrbitNPanControlScript',
-	'goo/scripts/newwave/FlyControlScript',
-	'goo/scripts/newwave/OrbitCamControlScript',
-	'goo/scripts/newwave/TwoDimCamControlScript',
-	'goo/scripts/newwave/AxisAlignedCamControlScript',
-	'goo/scripts/newwave/TwoDimNPanControlScript',
-	'goo/scripts/newwave/PanCamScript',
-	'goo/scripts/newwave/MouseLookScript',
-	'goo/scripts/newwave/WASDScript'
-	//'goo/scripts/newwave/FPCamControlScript'
+	'goo/scripts/OrbitNPanControlScript',
+	'goo/scripts/FlyControlScript',
+	'goo/scripts/OrbitCamControlScript',
+	'goo/scripts/AxisAlignedCamControlScript',
+	'goo/scripts/PanCamScript',
+	'goo/scripts/MouseLookControlScript',
+	'goo/scripts/WASDControlScript',
+	'goo/scripts/ButtonScript',
+	//'goo/scripts/PickAndRotateScript'
+	//'goo/scripts/FPCamControlScript'
+	//'goo/scripts/RotationScript'
 ], function (Scripts) {
 	'use strict';
 

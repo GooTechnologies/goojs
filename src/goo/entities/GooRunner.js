@@ -23,7 +23,9 @@ define([
 	'goo/entities/components/SoundComponent',
 
 	'goo/util/GameUtils',
-	'goo/util/Logo'
+	'goo/util/Logo',
+
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
@@ -51,12 +53,15 @@ function (
 	SoundComponent,
 
 	GameUtils,
-	Logo
+	Logo,
+
+	SystemBus
 ) {
 	'use strict';
 
 	/**
-	 * @class The main class that updates the world and calls the renderers
+	 * @class The main class that updates the world and calls the renderers.
+	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 *
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
 	 * @param {boolean} [parameters.alpha=false] Specifies if the canvas should have an alpha channel or not.
@@ -139,20 +144,7 @@ function (
 		this.callbacksNextFrame = [];
 		this._takeSnapshots = [];
 
-		var that = this;
 		this.start = -1;
-		//Move out
-		this.run = function (time) {
-			try {
-				that._updateFrame(time);
-			} catch (e) {
-				if (e instanceof Error) {
-					console.error(e.stack);
-				} else {
-					console.error(e);
-				}
-			}
-		};
 
 		this.animationId = 0;
 		if (!parameters.manuallyStartGameLoop) {
@@ -207,6 +199,24 @@ function (
 	}
 
 	/**
+	 *
+	 * @private
+	 * @param time
+	 */
+	//! TODO: private until documented
+	GooRunner.prototype.run = function (time) {
+		try {
+			this._updateFrame(time);
+		} catch (e) {
+			if (e instanceof Error) {
+				console.error(e.stack);
+			} else {
+				console.error(e);
+			}
+		}
+	};
+
+	/**
 	 * Add a render system to the world
 	 * @private
 	 * @param system
@@ -234,7 +244,7 @@ function (
 
 		if (tpf < 0 || tpf > 1.0) { // skip a loop - original start time probably bad.
 			this.start = time;
-			this.animationId = window.requestAnimationFrame(this.run);
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
 			return;
 		}
 
@@ -352,22 +362,22 @@ function (
 		}
 
 		// schedule next frame
-		this.animationId = window.requestAnimationFrame(this.run);
+		this.animationId = window.requestAnimationFrame(this.run.bind(this));
 	};
 
 	//TODO: move this to Logo
 	GooRunner.prototype._buildLogo = function (settings) {
 		var div = document.createElement('div');
 
-		var color = settings && settings.color ? settings.color : Logo.blue;
+		var color = settings && settings.color ? settings.color : Logo.white;
 
 		var svg = Logo.getLogo({
 			width: '70px',
 			height: '50px',
 			color: color
 		});
-		var span = '<span style="color: #EEE; font-family: Helvetica, sans-serif; font-size: 11px; display: inline-block; margin-top: 14px; margin-right: -3px; vertical-align: top;">Powered by</span>';
-		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + span + svg + '</a>';
+
+		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + svg + '</a>';
 		div.style.position = 'absolute';
 		div.style.zIndex = '2000';
 
@@ -583,7 +593,7 @@ function (
 	GooRunner.prototype._startGameLoop = function () {
 		if (!this.animationId) {
 			this.start = -1;
-			this.animationId = window.requestAnimationFrame(this.run);
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
 		}
 	};
 
@@ -640,10 +650,15 @@ function (
 	/**
 	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.
 	 * @private
+	 * @param {number} x screen coordinate
+	 * @param {number} y screen coordinate
+	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer
 	 */
-	GooRunner.prototype.pickSync = function (x, y) {
+	GooRunner.prototype.pickSync = function (x, y, skipUpdateBuffer) {
 		// save the clear color
 		var currentClearColor = this.renderer.clearColor.data;
+
+		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
 
 		var savedClearColor = [
 			currentClearColor[0],
@@ -665,6 +680,29 @@ function (
 		var pickingStore = {};
 		this.renderer.pick(x, y, pickingStore, Renderer.mainCamera);
 		return pickingStore;
+	};
+
+	/**
+	 * Clears the GooRunner and anything associated with it. Once this method is called this instanceof og GooRunner is unusable.
+	 */
+	GooRunner.prototype.clear = function () {
+		this.stopGameLoop();
+		this.world.clear();
+
+		// detach the canvas from the page
+		var gooCanvas = this.renderer.domElement;
+		if (gooCanvas.parentNode) {
+			gooCanvas.parentNode.removeChild(gooCanvas);
+		}
+
+		// a lot of stuff may reside in here
+		SystemBus.clear();
+
+		// this should never have existed in the first place
+		Renderer.mainCamera = null;
+
+		// clears out whatever visibility-change listeners were attached to document
+		GameUtils.clearVisibilityChangeListeners();
 	};
 
 	return GooRunner;

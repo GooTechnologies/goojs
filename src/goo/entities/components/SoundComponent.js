@@ -13,6 +13,11 @@ function(
 ) {
 	'use strict';
 
+	/**
+	* Sound component.
+	* @class
+	* @extends Component
+	*/
 	function SoundComponent() {
 		if (!AudioContext) {
 			console.warn('Cannot create soundComponent, webaudio not supported');

@@ -29,21 +29,21 @@ define([
 			ShaderBuilder.light.processor,
 			ShaderBuilder.animation.processor
 		],
-	    attributes: {
-	        vertexPosition: MeshData.POSITION,
-	        vertexNormal: MeshData.NORMAL,
-	        vertexTangent: MeshData.TANGENT,
-	        vertexColor: MeshData.COLOR,
-	        vertexUV0: MeshData.TEXCOORD0,
-	        vertexUV1: MeshData.TEXCOORD1,
-	        vertexJointIDs: MeshData.JOINTIDS,
-	        vertexWeights: MeshData.WEIGHTS
-	    },
-	    uniforms: {
-	        viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-	        worldMatrix: Shader.WORLD_MATRIX,
-	        normalMatrix: Shader.NORMAL_MATRIX,
-	        cameraPosition: Shader.CAMERA,
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL,
+			vertexTangent: MeshData.TANGENT,
+			vertexColor: MeshData.COLOR,
+			vertexUV0: MeshData.TEXCOORD0,
+			vertexUV1: MeshData.TEXCOORD1,
+			vertexJointIDs: MeshData.JOINTIDS,
+			vertexWeights: MeshData.WEIGHTS
+		},
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			normalMatrix: Shader.NORMAL_MATRIX,
+			cameraPosition: Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			offsetRepeat : [0,0,1,1],
 			normalMap : Shader.NORMAL_MAP,
@@ -67,7 +67,7 @@ define([
 			shadowDarkness: 0.5,
 			vertexColorAmount: 1.0,
 			lodBias: 0.0
-	    },
+		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
 		},
@@ -2078,9 +2078,9 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			lightPosition : Shader.LIGHT0,
-			HighlightColour : [0.9,0.8,0.7,1.0],
-			MidColour : [0.65,0.55,0.45,1.0],
-			ShadowColour : [0.4,0.3,0.2,1.0],
+			HighlightColor : [0.9,0.8,0.7,1.0],
+			MidColor : [0.65,0.55,0.45,1.0],
+			ShadowColor : [0.4,0.3,0.2,1.0],
 			HighlightSize : 0.2,
 			ShadowSize : 0.01,
 			OutlineWidth : 0.15
@@ -2108,9 +2108,9 @@ define([
 			'}'
 		].join('\n'),
 		fshader : [
-			'uniform vec4 HighlightColour;',
-			'uniform vec4 MidColour;',
-			'uniform vec4 ShadowColour;',
+			'uniform vec4 HighlightColor;',
+			'uniform vec4 MidColor;',
+			'uniform vec4 ShadowColor;',
 			'uniform float HighlightSize;',
 			'uniform float ShadowSize;',
 			'uniform float OutlineWidth;',
@@ -2125,12 +2125,12 @@ define([
 				'vec3 v = normalize(V);',
 
 				'float lambert = dot(l,n);',
-				'vec4 colour = MidColour;',
-				'if (lambert > 1.0 - HighlightSize) colour = HighlightColour;',
-				'if (lambert < ShadowSize) colour = ShadowColour;',
-				'if (dot(n,v) < OutlineWidth) colour = vec4(0.0,0.0,0.0,1.0);',
+				'vec4 color = MidColor;',
+				'if (lambert > 1.0 - HighlightSize) color = HighlightColor;',
+				'if (lambert < ShadowSize) color = ShadowColor;',
+				'if (dot(n,v) < OutlineWidth) color = vec4(0.0,0.0,0.0,1.0);',
 
-				'gl_FragColor = colour;',
+				'gl_FragColor = color;',
 			'}'
 		].join('\n')
 	};
@@ -2235,6 +2235,152 @@ define([
 		].join('\n')
 	};
 
+	ShaderLib.overlay = {
+		defines: {
+			OVERLAY_TYPE: 0
+		},
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
+		},
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			tDiffuse: Shader.DIFFUSE_MAP,
+			tDiffuse2: 'OVERLAY_MAP',
+			amount: 1
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			'varying vec2 vUv;',
+			'void main() {',
+				'vUv = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
+		fshader: [
+			ShaderFragment.blendmodes,
+
+			'#define Mixin(base, blend, type, a)	mix(base, type(base, blend), a);',
+
+			'uniform sampler2D tDiffuse;',
+			'uniform sampler2D tDiffuse2;',
+			'uniform float amount;',
+
+			'varying vec2 vUv;',
+
+			'void main() {',
+				'gl_FragColor = texture2D(tDiffuse, vUv);',
+				'vec4 blendTexture = texture2D(tDiffuse2, vUv);',
+				'float a = amount * blendTexture.a;',
+
+				'#if OVERLAY_TYPE == 0',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendNormal, a);',
+				'#elif OVERLAY_TYPE == 1',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendLighten, a);',
+				'#elif OVERLAY_TYPE == 2',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendDarken, a);',
+				'#elif OVERLAY_TYPE == 3',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendMultiply, a);',
+				'#elif OVERLAY_TYPE == 4',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendAverage, a);',
+				'#elif OVERLAY_TYPE == 5',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendAdd, a);',
+				'#elif OVERLAY_TYPE == 6',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendSubstract, a);',
+				'#elif OVERLAY_TYPE == 7',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendDifference, a);',
+				'#elif OVERLAY_TYPE == 8',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendNegation, a);',
+				'#elif OVERLAY_TYPE == 9',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendExclusion, a);',
+				'#elif OVERLAY_TYPE == 10',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendScreen, a);',
+				'#elif OVERLAY_TYPE == 11',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendOverlay, a);',
+				'#elif OVERLAY_TYPE == 12',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendSoftLight, a);',
+				'#elif OVERLAY_TYPE == 13',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendHardLight, a);',
+				'#elif OVERLAY_TYPE == 14',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendColorDodge, a);',
+				'#elif OVERLAY_TYPE == 15',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendColorBurn, a);',
+				'#elif OVERLAY_TYPE == 16',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendLinearLight, a);',
+				'#elif OVERLAY_TYPE == 17',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendVividLight, a);',
+				'#elif OVERLAY_TYPE == 18',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendPinLight, a);',
+				'#elif OVERLAY_TYPE == 19',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendHardMix, a);',
+				'#elif OVERLAY_TYPE == 20',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendReflect, a);',
+				'#elif OVERLAY_TYPE == 21',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendGlow, a);',
+				'#elif OVERLAY_TYPE == 22',
+					'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendPhoenix, a);',
+				'#endif',
+			'}'
+		].join('\n')
+	};
+
+	ShaderLib.levels = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.DIFFUSE_MAP,
+			gamma : 1,
+			minInput : 0,
+			maxInput : 1,
+			minOutput : 0,
+			maxOutput : 1
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			'varying vec2 vUv;',
+			'void main() {',
+				'vUv = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
+		fshader: [
+			ShaderFragment.blendmodes,
+
+			'uniform sampler2D tDiffuse;',
+			'uniform float gamma;',
+			'uniform float minInput;',
+			'uniform float maxInput;',
+			'uniform float minOutput;',
+			'uniform float maxOutput;',
+
+			'varying vec2 vUv;',
+
+			'void main() {',
+				'gl_FragColor = texture2D( tDiffuse, vUv );',
+				'gl_FragColor.rgb = LevelsControl(gl_FragColor.rgb, minInput, gamma, maxInput, minOutput, maxOutput);',
+			'}'
+		].join('\n')
+	};
+
 	ShaderLib.boxfilter = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -2275,6 +2421,136 @@ define([
 					'}',
 				'}',
 				'gl_FragColor = vec4(result / vec3(9.0), 1.0);',
+			'}'
+		].join('\n')
+	};
+
+	ShaderLib.antialias = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.DIFFUSE_MAP,
+			frameBufSize : Shader.RESOLUTION,
+			FXAA_SPAN_MAX : 8.0,
+			FXAA_REDUCE_MUL : 1.0/8.0
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			'varying vec2 texCoords;',
+
+			'void main() {',
+				'texCoords = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
+		fshader: [
+			'uniform sampler2D tDiffuse;',
+			'uniform vec2 frameBufSize;',
+			'uniform float FXAA_SPAN_MAX;',
+			'uniform float FXAA_REDUCE_MUL;',
+
+			'varying vec2 texCoords;',
+
+			'void main() {',
+				'float FXAA_REDUCE_MIN = 1.0/128.0;',
+
+				'vec3 rgbNW = texture2D(tDiffuse, texCoords + (vec2(-1.0, -1.0) / frameBufSize)).xyz;',
+				'vec3 rgbNE = texture2D(tDiffuse, texCoords + (vec2(1.0, -1.0) / frameBufSize)).xyz;',
+				'vec3 rgbSW = texture2D(tDiffuse, texCoords + (vec2(-1.0, 1.0) / frameBufSize)).xyz;',
+				'vec3 rgbSE = texture2D(tDiffuse, texCoords + (vec2(1.0, 1.0) / frameBufSize)).xyz;',
+				'vec3 rgbM = texture2D(tDiffuse, texCoords).xyz;',
+
+				'vec3 luma=vec3(0.299, 0.587, 0.114);',
+				'float lumaNW = dot(rgbNW, luma);',
+				'float lumaNE = dot(rgbNE, luma);',
+				'float lumaSW = dot(rgbSW, luma);',
+				'float lumaSE = dot(rgbSE, luma);',
+				'float lumaM  = dot(rgbM,  luma);',
+				'float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));',
+				'float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));',
+				'vec2 dir;',
+				'dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));',
+				'dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));',
+				'float dirReduce = max(',
+				'		(lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL),',
+				'		FXAA_REDUCE_MIN);',
+				'float rcpDirMin = 1.0/(min(abs(dir.x), abs(dir.y)) + dirReduce);',
+				'dir = min(vec2( FXAA_SPAN_MAX,  FXAA_SPAN_MAX),',
+				'		  max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),',
+				'		  dir * rcpDirMin)) / frameBufSize;',
+				'vec3 rgbA = (1.0/2.0) * (',
+				'		texture2D(tDiffuse, texCoords.xy + dir * (1.0/3.0 - 0.5)).xyz +',
+				'		texture2D(tDiffuse, texCoords.xy + dir * (2.0/3.0 - 0.5)).xyz);',
+				'vec3 rgbB = rgbA * (1.0/2.0) + (1.0/4.0) * (',
+				'		texture2D(tDiffuse, texCoords.xy + dir * (0.0/3.0 - 0.5)).xyz +',
+				'		texture2D(tDiffuse, texCoords.xy + dir * (3.0/3.0 - 0.5)).xyz);',
+				'float lumaB = dot(rgbB, luma);',
+				'if ((lumaB < lumaMin) || (lumaB > lumaMax)) {',
+				'		gl_FragColor.xyz=rgbA;',
+				'} else{',
+				'		gl_FragColor.xyz=rgbB;',
+				'}',
+			'}'
+		].join('\n')
+	};
+
+	ShaderLib.radial = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.DIFFUSE_MAP,
+			frameBufSize : Shader.RESOLUTION,
+			offset : 0.5,
+			multiplier : -0.75
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			'varying vec2 texCoords;',
+
+			'void main() {',
+				'texCoords = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
+		fshader: [
+			'uniform sampler2D tDiffuse;',
+			'uniform vec2 frameBufSize;',
+			'uniform float offset;',
+			'uniform float multiplier;',
+
+			'varying vec2 texCoords;',
+
+			'void main() {',
+				'vec2 uv = texCoords - 0.5;',
+				'vec3 o = texture2D(tDiffuse, 0.5 + (uv.xy *= 0.992)).rgb;',
+				'float z = 0.0;',
+				'for (float i = 0.0; i < 50.0; i++) {',
+					'vec3 T = texture2D(tDiffuse, 0.5 + (uv.xy *= 0.992)).rgb;',
+					'z += pow(max(0.0, offset + length(T) * multiplier), 2.0) * exp(-i * 0.08);',
+				'}',
+				'gl_FragColor = vec4(o*o + z, 1.0);',
 			'}'
 		].join('\n')
 	};
@@ -2381,8 +2657,8 @@ define([
 		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
-      vertexJointIDs: MeshData.JOINTIDS,
-      vertexWeights: MeshData.WEIGHTS
+	  vertexJointIDs: MeshData.JOINTIDS,
+	  vertexWeights: MeshData.WEIGHTS
 		},
 		uniforms : {
 			viewMatrix : Shader.VIEW_MATRIX,

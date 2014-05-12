@@ -6,7 +6,7 @@ define([
 	'goo/util/ParticleSystemUtils'
 ],
 /** @lends */
-function(
+function (
 	Action,
 	Material,
 	ShaderLib,
@@ -47,9 +47,11 @@ function(
 	};
 
 	FireAction.prototype._run = function (fsm) {
-		if (this.fireEntity) { return; }
-
 		var entity = fsm.getOwnerEntity();
+		if (this.fireEntity && entity.transformComponent.children.indexOf(this.fireEntity) !== -1) {
+			return;
+		}
+
 		var gooRunner = entity._world.gooRunner;
 
 		if (!FireAction.material) {
@@ -66,7 +68,7 @@ function(
 		var entityScale = entity.transformComponent.worldTransform.scale;
 		var scale = (entityScale.data[0] + entityScale.data[1] + entityScale.data[2]) / 3;
 		this.fireEntity = ParticleSystemUtils.createParticleSystemEntity(
-			gooRunner,
+			gooRunner.world,
 			ParticleLib.getFire({
 				scale: scale,
 				startColor: this.startColor,

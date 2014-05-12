@@ -45,6 +45,7 @@ define([
 	'goo/fsmpack/statemachine/actions/KeyDownAction',
 	'goo/fsmpack/statemachine/actions/KeyPressedAction',
 	'goo/fsmpack/statemachine/actions/PickAction',
+	'goo/fsmpack/statemachine/actions/PickAndExitAction',
 	'goo/fsmpack/statemachine/actions/WASDAction',
 
 	'goo/fsmpack/statemachine/actions/MoveAction',

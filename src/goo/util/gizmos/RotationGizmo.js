@@ -94,8 +94,7 @@ function(
 				1,1,
 				this._direction
 			);
-			this._direction.sub_d(props.x, 1-props.y, 0);
-			this._direction.y *= -1;
+			this._direction.sub_d(props.x, props.y, 0);
 
 			this._direction.z = 0;
 			this._direction.normalize();

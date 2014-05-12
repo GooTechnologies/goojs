@@ -23,9 +23,10 @@ function (
 	 * @class Main handler for an entity world. The World keeps track of managers and systems, 
 	 * and also provides methods to create, select and remove entities.
 	 * Note that process() has to be called manually if objects need to be added and retrieved within the same update loop.
+	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
 	 */
-	function World (gooRunner) {
+	function World(gooRunner) {
 
 		/** GooRunner for updating the world and calling the renderers.
 		 * @type {GooRunner}
@@ -48,6 +49,9 @@ function (
 		this.entityManager = new EntityManager();
 		this.setManager(this.entityManager);
 
+		/** Accumulated time per frames(tpf) the world has been running.  Calculated at the start of each frame.
+		 * @type {number}
+		 */
 		this.time = 0.0;
 
 		/** Time since last frame in seconds.
@@ -58,6 +62,7 @@ function (
 		this._components = [];
 	}
 
+	//! AT: these need to go
 	World.time = 0.0;
 	World.tpf = 1.0;
 
@@ -73,7 +78,6 @@ function (
 	 * var byAttribute = gooRunner.world.by.attribute("hit-points").toArray();
 	 */
 	World.prototype._installDefaultSelectors = function () {
-
 		this.by.system = function (systemType) {
 			var system = this.getSystem(systemType);
 			return new EntitySelection(system._activeEntities);
@@ -87,6 +91,7 @@ function (
 			}));
 		}.bind(this);
 
+		//! AT: this will be relocated into the Tag Manager once it gets implemented
 		this.by.tag = function (tag) {
 			var entities = this.entityManager.getEntities();
 
@@ -95,6 +100,7 @@ function (
 			}));
 		}.bind(this);
 
+		//! AT: this will be relocated into the Attribute Manager once it gets implemented
 		this.by.attribute = function (attribute) {
 			var entities = this.entityManager.getEntities();
 
@@ -218,6 +224,24 @@ function (
 				return system;
 			}
 		}
+	};
+
+	/**
+	 * Removes the {@link System} of type 'type'.
+	 * Entities tracked by the removed system will not get handled properly when they are removed from the world
+	 * or when their components (that are tracked by this system) change.
+	 *
+	 * @param {String} type Type of system to remove.
+	 * @returns {World} Returns self to allow chaining.
+	 */
+	World.prototype.clearSystem = function (type) {
+		for (var i = 0; i < this._systems.length; i++) {
+			var system = this._systems[i];
+			if (system.type === type) {
+				this._systems.splice(i, 1);
+			}
+		}
+		return this;
 	};
 
 	/**
@@ -353,10 +377,9 @@ function (
 	};
 
 	/**
-	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called automatically each frame.
-	 * Has to be called between adding an entity to the world and getting it back.
+	 * Processes newly added entities, changed entities and removed entities
 	 */
-	World.prototype.process = function () {
+	World.prototype.processEntityChanges = function () {
 		this._check(this._addedEntities, function (observer, entity) {
 			if (observer.added) {
 				observer.added(entity);
@@ -391,6 +414,14 @@ function (
 				}
 			}
 		});
+	};
+
+	/**
+	 * Process all added/changed/removed entities and callback to active systems and managers. Usually called automatically each frame.
+	 * Has to be called between adding an entity to the world and getting it back.
+	 */
+	World.prototype.process = function () {
+		this.processEntityChanges();
 
 		for (var i = 0; i < this._systems.length; i++) {
 			var system = this._systems[i];
@@ -413,6 +444,27 @@ function (
 			}
 		}
 		entities.length = 0;
+	};
+
+	/**
+	 * Calls .clear on all systems that support this method
+	 */
+	World.prototype.clear = function () {
+		for (var i = 0; i < this._systems.length; i++) {
+			var system = this._systems[i];
+			if (system.clear) {
+				system.clear();
+			}
+		}
+
+		//! AT: this looks hacky and probably unnecessary
+		// this.getSystem('ScriptSystem').context = null;
+
+		this.entityManager.clear();
+
+		this._addedEntities = [];
+		this._changedEntities = [];
+		this._removedEntities = [];
 	};
 
 	return World;

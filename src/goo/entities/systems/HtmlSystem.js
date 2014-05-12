@@ -48,41 +48,49 @@ function (
 			var entity = entities[i];
 			var component = entity.htmlComponent;
 
+			// Always show if not using transform
+			if (!component.useTransformComponent) {
+				component.domElement.style.display = '';
+				setStyle(component.domElement, 'transform', '');
+				continue;
+			}
+
+			// Hidden
+			if (component.hidden) {
+				component.domElement.style.display = 'none';
+				continue;
+			}
+
+			// Behind camera
+			this.tmpVector.setv(camera.translation)
+				.subv(entity.transformComponent.worldTransform.translation);
+			if (camera._direction.dot(this.tmpVector) > 0) {
+				component.domElement.style.display = 'none';
+				continue;
+			}
+
 			// compute world position.
 			camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, screenWidth, screenHeight, this.tmpVector);
-
-			//! AT: should be done exactly how it's done for meshRendererComponent
-			// hacking it for now
-			if (component.hidden) {
-				//! AT: is setting this every frame evil?
-				// is checking for it and setting it only if different less evil?
-				component.domElement.style.display = 'none';
-			} else {
-				if (this.tmpVector.z < 0) {
-					if (component.hidden !== true) {
-						component.domElement.style.display = 'none';
-						component.hidden = true;
-					}
-					continue;
-				} else if (component.hidden === true) {
-					component.domElement.style.display = 'none'; //! AT: should be 'none'; was ''
-				} else {
-					component.domElement.style.display = '';
+			// Behind near plane
+			if (this.tmpVector.z < 0) {
+				if (component.hidden !== true) {
+					component.domElement.style.display = 'none';
+					//component.hidden = true;
 				}
+				continue;
 			}
+			// Else visible
+			component.domElement.style.display = '';
 
 			var renderer = this.renderer;
-			if (component.useTransformComponent) {
-				var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
+			var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
+			var fx = Math.floor(this.tmpVector.x/devicePixelRatio);
+			var fy = Math.floor(this.tmpVector.y/devicePixelRatio);
 
-				var fx = Math.floor(this.tmpVector.x/devicePixelRatio);
-				var fy = Math.floor((screenHeight - this.tmpVector.y)/devicePixelRatio);
-
-				setStyle(component.domElement, 'transform', 'translate(-50%, -50%) translate(' + fx + 'px, ' + fy + 'px)');
-			}
-			else {
-				setStyle(component.domElement, 'transform', '');
-			}
+			setStyle(component.domElement, 'transform',
+				'translate(-50%, -50%) '+
+				'translate(' + fx + 'px, ' + fy + 'px)'+
+				'translate(' + renderer.domElement.offsetLeft + 'px, ' + renderer.domElement.offsetTop + 'px)');
 			// project
 		}
 	};

@@ -77,15 +77,16 @@ function (
 			return that._load(config.materialRef, options).then(function (material) {
 
 				// If the component already has got these components, they need to be overridden
-				if(entity.meshRendererComponent !== component.meshRendererComponent){
+				if (entity.meshRendererComponent !== component.meshRendererComponent) {
 					entity.setComponent(component.meshRendererComponent);
 				}
-				if(entity.meshDataComponent !== component.meshDataComponent){
+				if (entity.meshDataComponent !== component.meshDataComponent) {
 					entity.setComponent(component.meshDataComponent);
 				}
 
 				component.setMaterial(material);
 				component.rebuildMeshData();
+				component.meshDataComponent.autoCompute = true;
 
 				return component;
 			});

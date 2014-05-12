@@ -1,227 +1,212 @@
 define([
+	'goo/scripts/Scripts',
 	'goo/math/Vector3',
-	'goo/math/Matrix3x3',
-	'goo/math/MathUtils'
-],
-	/** @lends */
-	function (
+	'goo/math/MathUtils',
+	'goo/util/GameUtils'
+], function (
+	Scripts,
 	Vector3,
-	Matrix3x3,
-	MathUtils
+	MathUtils,
+	GameUtils
 ) {
-		"use strict";
+	'use strict';
 
-		/**
-		 * @class Enables mouse rotation of an entity.
-		 * @param {Object} [properties]
-		 * @param {Element} [properties.domElement] Element to add mouse listeners to
-		 * @param {number} [properties.turnSpeedHorizontal=0.01]
-		 * @param {number} [properties.turnSpeedVertical=0.01]
-		 * @param {number} [properties.dragButton=-1] Only drag with button with this code (-1 to enable all)
-		 * @param {Vector3} [properties.worldUpVector=Vector3(0,1,0)]
-		 * @param {Vector3} [properties.localLeftVector=Vector3(-1,0,0)]
-		 */
-		function MouseLookControlScript (properties) {
+	function MouseLookControlScript() {
+		var buttonPressed = false;
+		var lastX = 0, lastY = 0, x = 0, y = 0;
+		var angles;
+		var button;
+		var _environment;
+		var _parameters;
+		var _initialAzimuth;
 
-			properties = properties || {};
-
-			this.name = 'MouseLookControlScript';
-
-			this.domElement = properties.domElement || null;
-
-			this.turnSpeedHorizontal = !isNaN(properties.turnSpeedHorizontal) ? properties.turnSpeedHorizontal : 0.01;
-			this.turnSpeedVertical = !isNaN(properties.turnSpeedVertical) ? properties.turnSpeedVertical : 0.01;
-
-			this.dragOnly = properties.dragOnly !== undefined ? properties.dragOnly === true : true;
-			this.dragButton = !isNaN(properties.dragButton) ? properties.dragButton : -1;
-
-			this.worldUpVector = new Vector3(properties.worldUpVector) || new Vector3(0, 1, 0);
-			this.localLeftVector = new Vector3(properties.localLeftVector) || new Vector3(-1, 0, 0);
-
-			// XXX: might be neat to instead set a lookat point and then slerp to it over time?
-			// this.localFwdVector = properties.localFwdVector || new Vector3(0, 0, -1);
-			// this.slerpFactor = !isNaN(properties.slerpFactor) ? properties.slerpFactor : 0.8;
-			// this.restAngle = !isNaN(properties.restAngle) ? properties.restAngle : 0.01;
-			// this.rest = true;
-			// this.calcQuat1 = new Quaternion();
-			// this.calcQuat2 = new Quaternion();
-			// this.direction = new Vector3(this.localFwdVector);
-
-			this.onRun = properties.onRun;
-
-			this.maxAscent = (properties.maxAscent !== undefined) ? properties.maxAscent : 89.95 * MathUtils.DEG_TO_RAD;
-			this.minAscent = (properties.minAscent !== undefined) ? properties.minAscent : -89.95 * MathUtils.DEG_TO_RAD;
-
-			this.calcVector = new Vector3();
-			this.calcMat1 = new Matrix3x3();
-			this.calcMat2 = new Matrix3x3();
-			this.rotX = 0.0;
-			this.rotY = 0.0;
-
-			this.resetMouseState();
-			if(this.domElement) {
-				this.setupMouseControls();
+		function mouseDown(e) {
+			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
+				if (button === -1 || e.button === button) {
+					buttonPressed = true;
+					lastX = x = e.clientX;
+					lastY = y = e.clientY;
+				}
 			}
 		}
 
-		MouseLookControlScript.prototype.resetMouseState = function () {
-			this.mouseState = {
-				buttonDown : false,
-				lastX : NaN,
-				lastY : NaN,
-				dX : 0,
-				dY : 0
-			};
-		};
-
-		MouseLookControlScript.prototype.updateButtonState = function (event, down) {
-			if (this.domElement !== document) {
-				this.domElement.focus();
+		// Used when button is None.
+		// Helps attaching the lock if we failed in .setup().
+		function mouseDown2() {
+			if (!document.pointerLockElement) {
+				GameUtils.requestPointerLock();
 			}
+		}
 
-
-			if (this.dragOnly && (this.dragButton === -1 || this.dragButton === event.button)) {
-				this.mouseState.buttonDown = down;
-
-				event.preventDefault();
+		function mouseMove(e) {
+			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
+				if (buttonPressed) {
+					if (e.movementX !== undefined) {
+						x += e.movementX;
+						y += e.movementY;
+					}	else {
+						x = e.clientX;
+						y = e.clientY;
+					}
+				}
 			}
-		};
+		}
+		function mouseUp() {
+			buttonPressed = false;
+		}
+		function pointerLockChange() {
+			buttonPressed = !!document.pointerLockElement;
+		}
 
-		MouseLookControlScript.prototype.updateDeltas = function (event) {
-			if (isNaN(this.mouseState.lastX) || isNaN(this.mouseState.lastY)) {
-				this.mouseState.dX = 0;
-				this.mouseState.dY = 0;
-				this.mouseState.lastX = event.clientX;
-				this.mouseState.lastY = event.clientY;
+		function setup(parameters, environment) {
+			_environment = environment;
+			_parameters = parameters;
+			button = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(parameters.button) - 1;
+			if (button < -1) {
+				button = -1;
+			}
+			var domElement = environment.domElement;
+			if (button === 3) {
+				document.addEventListener('pointerlockchange', pointerLockChange);
+				document.addEventListener('mousemove', mouseMove);
+				document.addEventListener('mousedown', mouseDown2);
+
+				// attempt to request a pointer lock; will succeed only if fullscreen is enabled.
+				GameUtils.requestPointerLock();
 			} else {
-				this.mouseState.dX = event.clientX - this.mouseState.lastX;
-				this.mouseState.dY = event.clientY - this.mouseState.lastY;
-				this.mouseState.lastX = event.clientX;
-				this.mouseState.lastY = event.clientY;
+				domElement.addEventListener('mousedown', mouseDown);
+				domElement.addEventListener('mouseup', mouseUp);
+				domElement.addEventListener('mouseleave', mouseUp);
+				domElement.addEventListener('mousemove', mouseMove);
 			}
-		};
 
-		var boundMouseDown, boundMouseMove, boundMouseUp;
+			angles = new Vector3();
+			var rotation = environment.entity.transformComponent.transform.rotation;
+			rotation.toAngles(angles);
+			_initialAzimuth = angles.data[1];
+		}
 
-		var mousedown = function (event) {
-			this.resetMouseState();
-			this.updateButtonState(event, true);
-
-			boundMouseMove = mousemove.bind(this);
-			boundMouseUp = mouseup.bind(this);
-
-			document.addEventListener('mousemove', boundMouseMove, false);
-			document.addEventListener('mouseup', boundMouseUp, false);
-			document.addEventListener('mouseout', boundMouseUp, false);
-		};
-
-		var mousemove = function (event) {
-			this.updateDeltas(event);
-		};
-
-		var mouseup = function (event) {
-			this.updateButtonState(event, false);
-
-			document.removeEventListener('mousemove', boundMouseMove);
-			document.removeEventListener('mouseup', boundMouseUp);
-			document.removeEventListener('mouseout', boundMouseUp);
-		};
-
-		MouseLookControlScript.prototype.setupMouseControls = function () {
-			boundMouseDown = mousedown.bind(this);
-
-			this.domElement.addEventListener('mousedown', boundMouseDown, false);
-		};
-
-		MouseLookControlScript.prototype.run = function (entity, tpf, env) {
-			// grab our transformComponent
-			if (env) {
-				if(!this.domElement && env.domElement) {
-					this.domElement = env.domElement;
-					this.setupMouseControls();
-				}
-			}
-			var transformComponent = entity.transformComponent;
-			if (!transformComponent) {
+		function update(parameters, environment) {
+			if (x === lastX && y === lastY) {
 				return;
 			}
-			var transform = transformComponent.transform;
+			var deltaX = x - lastX;
+			var deltaY = y - lastY;
+			var entity = environment.entity;
+			var rotation = entity.transformComponent.transform.rotation;
+			rotation.toAngles(angles);
 
-			var orient = transform.rotation;
-			orient.toAngles(this.calcVector);
-			this.rotY = this.calcVector.x;
-			this.rotX = this.calcVector.y;
+			var pitch = angles.data[0];
+			var yaw = angles.data[1];
 
+			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
+			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
+			pitch = MathUtils.clamp(pitch - deltaY * parameters.speed / 200, minAscent, maxAscent);
 
-			// XXX: might be neat to instead set a lookat point and then slerp to it over time?
-			// if (!this.rest) {
-			// // apply transform to localFwdVector
-			// transform.rotation.applyPost(this.calcVector.set(this.localFwdVector));
-			//
-			// // see if we're pointing at/close to our desired look direction
-			// var angleDiff = Math.acos(this.calcVector.dot(this.direction));
-			// if (angleDiff < this.restAngle) {
-			// // pretty close, so stop
-			// this.rest = true;
-			// } else {
-			// // we are not pointed at our desired angle, slerp to it
-			// // generate a quat to rotate from current to desired
-			// // slerp along it
-			// this.calcQuat1.fromRotationMatrix(transform.rotation);
-			// this.calcQuat2.fromVectorToVector(this.localFwdVector, this.direction);
-			//
-			// this.calcQuat1.slerp(this.calcQuat2, this.slerpFactor * entity._world.tpf);
-			// this.calcQuat1.toRotationMatrix(transform.rotation);
-			//
-			// // set our component updated.
-			// transformComponent.setUpdated();
-			// }
-			// }
-
-			// exit early if not dragging, or no movement
-			if (this.dragOnly && !this.mouseState.buttonDown || this.mouseState.dX === 0 && this.mouseState.dY === 0) {
-				this.mouseState.dX = 0;
-				this.mouseState.dY = 0;
-				return;
+			var maxAzimuth = parameters.maxAzimuth * MathUtils.DEG_TO_RAD - _initialAzimuth;
+			var minAzimuth = parameters.minAzimuth * MathUtils.DEG_TO_RAD - _initialAzimuth;
+			yaw -= deltaX * parameters.speed / 200;
+			if (parameters.clampAzimuth) {
+				yaw = MathUtils.radialClamp(yaw, minAzimuth, maxAzimuth);
 			}
 
-			// speed for this movement...
-			var moveMultH = this.turnSpeedHorizontal;
-			var moveMultV = this.turnSpeedVertical;
+			rotation.fromAngles(pitch, yaw, 0);
+			entity.transformComponent.setUpdated();
+			lastX = x;
+			lastY = y;
 
-			// apply dx around upVector
-			if (this.mouseState.dX !== 0) {
-				this.rotX -= moveMultH * this.mouseState.dX;
+		}
+		function cleanup(parameters, environment) {
+			var domElement = environment.domElement;
+			if (button === 3) {
+				GameUtils.exitPointerLock();
 
-				//this.calcMat1.fromAngleNormalAxis(this.rotX, this.worldUpVector.x, this.worldUpVector.y, this.worldUpVector.z);
-
-				//Matrix3x3.combine(this.calcMat1, transform.rotation, this.calcMat2);
-				//transform.rotation.set(this.calcMat2);
+				document.removeEventListener('mousemove', mouseMove);
+				document.removeEventListener('mousedown', mouseDown2);
+				document.removeEventListener('pointerlockchange', pointerLockChange);
+			} else {
+				domElement.removeEventListener('mousemove', mouseMove);
+				domElement.removeEventListener('mousedown', mouseDown);
+				domElement.removeEventListener('mouseup', mouseUp);
+				domElement.removeEventListener('mouseleave', mouseUp);
 			}
-			// apply dy around left vector
-			if (this.mouseState.dY !== 0) {
-				this.rotY -= moveMultV * this.mouseState.dY;
-				if(this.rotY > this.maxAscent) {
-					this.rotY = this.maxAscent;
-				} else if (this.rotY < this.minAscent) {
-					this.rotY = this.minAscent;
-				}
-				//this.calcMat2.fromAngleNormalAxis(this.rotY, this.localLeftVector.x, this.localLeftVector.y,
-				//	this.localLeftVector.z);
+		}
 
-				//Matrix3x3.combine(transform.rotation, this.calcMat1, this.calcMat2);
-				//transform.rotation.set(this.calcMat2);
-			}
-			//Matrix3x3.combine(this.calcMat1, thisCalcMat2, transform.rotation);
-			transform.rotation.fromAngles(this.rotY, this.rotX, 0.0);
-
-			// set our component updated.
-			transformComponent.setUpdated();
-
-			// clear state
-			this.mouseState.dX = 0;
-			this.mouseState.dY = 0;
+		return {
+			setup: setup,
+			update: update,
+			cleanup: cleanup
 		};
+	}
 
-		return MouseLookControlScript;
-	});
+	MouseLookControlScript.externals = {
+		key: 'MouseLookScript',
+		name: 'Mouse Look Control',
+		description: 'Click and drag to change rotation of entity, usually a camera',
+		parameters: [
+			{
+				key: 'whenUsed',
+				type: 'boolean',
+				'default': true
+			},
+			{
+				key: 'button',
+				name: 'Mouse button',
+				type: 'string',
+				control: 'select',
+				'default': 'Left',
+				options: ['Any', 'Left', 'Middle', 'Right', 'None']
+			},
+			{
+				key: 'speed',
+				name: 'Turn Speed',
+				type: 'float',
+				control: 'slider',
+				'default': 1.0,
+				min: -10,
+				max: 10,
+				scale: 0.1
+			},
+			{
+				key: 'maxAscent',
+				name: 'Max Ascent',
+				type: 'float',
+				control: 'slider',
+				'default': 89.95,
+				min: -89.95,
+				max: 89.95
+			},
+			{
+				key: 'minAscent',
+				name: 'Min Ascent',
+				type: 'float',
+				control: 'slider',
+				'default': -89.95,
+				min: -89.95,
+				max: 89.95
+			}, {
+				key: 'clampAzimuth',
+				'default': false,
+				type: 'boolean'
+			}, {
+				key: 'minAzimuth',
+				description: 'Maximum arc the camera can reach clockwise of the target point',
+				'default': -90,
+				type: 'int',
+				control: 'slider',
+				min: -180,
+				max: 0
+			}, {
+				key: 'maxAzimuth',
+				description: 'Maximum arc the camera can reach counter-clockwise of the target point',
+				'default': 90,
+				type: 'int',
+				control: 'slider',
+				min: 0,
+				max: 180
+			}
+		]
+	};
+
+	return MouseLookControlScript;
+});

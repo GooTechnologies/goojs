@@ -10,6 +10,7 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/SparseHeightMapBoundingScript',
+	'goo/scripts/Scripts',
 	'lib/V'
 ], function (
 	Material,
@@ -23,6 +24,7 @@ require([
 	WASDControlScript,
 	MouseLookControlScript,
 	SparseHeightMapBoundingScript,
+	Scripts,
 	V
 	) {
 	'use strict';
@@ -122,12 +124,12 @@ require([
 
 	// Camera control set up
 	var scriptComponent = new ScriptComponent([
-		new WASDControlScript({
+		Scripts.create('WASD', {
 			domElement : goo.renderer.domElement,
 			walkSpeed : 25.0,
 			crawlSpeed : 10.0
 		}),
-		new MouseLookControlScript({
+		Scripts.create('MouseLookScript', {
 			domElement : goo.renderer.domElement
 		})
 	]);

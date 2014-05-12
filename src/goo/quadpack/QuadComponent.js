@@ -44,7 +44,7 @@ function (
 			tileY	: 1,
 			preserveAspectRatio : true
 		};
-		_.defaults(settings,defaults);
+		_.defaults(settings, defaults);
 
 		this.type = 'QuadComponent';
 
@@ -97,12 +97,19 @@ function (
 		this.meshDataComponent = new MeshDataComponent(this.meshData);
 
 		// Set the material as current
-		var m = this.material;
-		this.setMaterial(m);
+		var material = this.material;
+		material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
+		material.renderQueue = 2000;
+		material.cullState.enabled = false;
+		material.dualTransparency = true;					// Visible on both sides
+		material.uniforms.discardThreshold = 0.1;
+		this.setMaterial(material);
 
-		if(image){
+		if (image) {
 			var texture = new Texture(image);
-			m.setTexture('DIFFUSE_MAP',texture);
+			texture.wrapS = 'EdgeClamp';
+			texture.wrapT = 'EdgeClamp';
+			material.setTexture('DIFFUSE_MAP', texture);
 		}
 
 		this.rebuildMeshData();
@@ -110,12 +117,12 @@ function (
 	QuadComponent.prototype = Object.create(Component.prototype);
 	QuadComponent.prototype.constructor = QuadComponent;
 
-	QuadComponent.prototype.attached = function(entity) {
+	QuadComponent.prototype.attached = function (entity) {
 		entity.setComponent(entity.quadComponent.meshRendererComponent);
 		entity.setComponent(entity.quadComponent.meshDataComponent);
 	};
 
-	QuadComponent.prototype.detached = function(entity) {
+	QuadComponent.prototype.detached = function (entity) {
 		entity.clearComponent('meshRendererComponent');
 		entity.clearComponent('meshDataComponent');
 	};
@@ -124,46 +131,35 @@ function (
 	 * Set the current material for the quad
 	 * @param Material material
 	 */
-	QuadComponent.prototype.setMaterial = function(material) {
+	QuadComponent.prototype.setMaterial = function (material) {
 		this.material = material;
 		this.meshRendererComponent.materials = [material];
 		// REVIEW: Don't set this stuff here, set it in the data model
-		
-		//material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
-		// material.renderQueue = 2000;
-		//material.cullState.enabled = false;
-		//material.dualTransparency = true;					// Visible on both sides
-		//material.uniforms.discardThreshold = 0.1;
 	};
 
 	/**
 	 * Re-build the meshData for the meshDataComponent.
 	 */
-	QuadComponent.prototype.rebuildMeshData = function(){
+	QuadComponent.prototype.rebuildMeshData = function () {
 		var material = this.material;
 
 		// Resize so it keeps aspect ratio
 		var texture = material.getTexture('DIFFUSE_MAP');
-		if(!texture){
+		if (!texture) {
 			return;
 		}
 
 		var image = texture.image;
-		if(!image){
+		if (!image) {
 			return;
 		}
 
-		if(this.preserveAspectRatio && image){
+		if (this.preserveAspectRatio && image) {
 			var height = image.svgHeight || image.height;
 			var width = image.svgWidth || image.width;
-			var ratio = width / height;
-			if(ratio > 1){
-				this.width = 1;
-				this.height = 1 / ratio;
-			} else if(ratio < 1){
-				this.height = 1;
-				this.width = ratio;
-			}
+
+			this.width = width / 100;
+			this.height = height / 100;
 		}
 
 		var md = this.meshData;

@@ -12,7 +12,7 @@ function(
 	/**
 	 * @class Sphere collider for the {@link CannonSystem}.
 	 * @param {object} [settings]
-	 * @param {number} [settings.radius]
+	 * @param {number} [settings.radius=0.5]
 	 */
 	function CannonSphereColliderComponent(settings){
 		settings = settings || {};

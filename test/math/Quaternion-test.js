@@ -38,19 +38,11 @@ define([
 			expect(result).toEqual(new Quaternion(-1,-1,-1,-1));
 		});
 
-		it('can multiply two quaternions component-wise',function(){
-			var p = new Quaternion(2,2,2,2);
-			var q = new Quaternion(2,2,2,2);
-			var result = new Quaternion();
-			Quaternion.mul(p,q,result);
-			expect(result).toEqual(new Quaternion(4,4,4,4));
-		});
-
 		it('can multiply two quaternions',function(){
 			var p = new Quaternion();
 			var q = new Quaternion();
 			var result = new Quaternion();
-			Quaternion.mul2(p,q,result);
+			Quaternion.mul(p,q,result);
 
 			//! schteppe: TODO: How to check result?
 			expect(result).toEqual(new Quaternion());

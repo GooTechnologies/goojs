@@ -20,6 +20,8 @@ function(
 	 * @returns {RSVP.Promise}
 	 *
 	 */
+
+	//! AT: make this execute asynchronously with a 0ms delay (use postMessage)
 	PromiseUtil.createDummyPromise = function(arg, error) {
 		var promise;
 		promise = new RSVP.Promise();

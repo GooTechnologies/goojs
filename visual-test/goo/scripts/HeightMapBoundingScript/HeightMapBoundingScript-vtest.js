@@ -17,6 +17,7 @@ require([
 	'goo/scripts/WASDControlScript',
 	'goo/scripts/MouseLookControlScript',
 	'goo/scripts/HeightMapBoundingScript',
+	'goo/scripts/Scripts',
 	'goo/util/CanvasUtils',
 	'lib/V'
 ], function (
@@ -38,6 +39,7 @@ require([
 	WASDControlScript,
 	MouseLookControlScript,
 	HeightMapBoundingScript,
+	Scripts,
 	CanvasUtils,
 	V
 ) {
@@ -103,12 +105,12 @@ require([
 
 		// Camera control set up
 		var scriptComponent = new ScriptComponent([
-			new WASDControlScript({
+			Scripts.create('WASD', {
 				domElement : goo.renderer.domElement,
 				walkSpeed : 25.0,
 				crawlSpeed : 10.0
 			}),
-			new MouseLookControlScript({
+			Scripts.create('MouseLookScript', {
 				domElement : goo.renderer.domElement
 			})
 		]);

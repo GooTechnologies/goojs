@@ -22,7 +22,8 @@ require([
 	'goo/entities/components/MovementComponent',
 	'goo/scripts/GroundBoundMovementScript',
     'goo/renderer/TextureCreator',
-    'goo/util/CanvasUtils'
+    'goo/util/CanvasUtils',
+    'goo/scripts/Scripts'
 ], function (
     GooRunner,
     World,
@@ -47,7 +48,8 @@ require([
 	MovementComponent,
 	GroundBoundMovementScript,
     TextureCreator,
-    CanvasUtils
+    CanvasUtils,
+    Scripts
     ) {
     'use strict';
 
@@ -249,12 +251,12 @@ require([
 
             // Camera control set up
             var scripts = new ScriptComponent();
-            scripts.scripts.push(new WASDControlScript({
+            scripts.scripts.push(Scripts.create('WASD', {
                 domElement : goo.renderer.domElement,
                 walkSpeed : 25.0,
                 crawlSpeed : 10.0
             }));
-            scripts.scripts.push(new MouseLookControlScript({
+            scripts.scripts.push(Scripts.create('MouseLookScript', {
                 domElement : goo.renderer.domElement
             }));
         //    scripts.scripts.push(worldFittedTerrainScript);

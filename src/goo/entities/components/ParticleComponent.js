@@ -61,10 +61,12 @@ function (
 	}
 
 	ParticleComponent.prototype = Object.create(Component.prototype);
+	ParticleComponent.prototype.constructor = ParticleComponent;
 
 	ParticleComponent.prototype.generateMeshData = function () {
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.COLOR, MeshData.TEXCOORD0]);
 		this.meshData = new MeshData(attributeMap, this.particleCount * 4, this.particleCount * 6);
+		this.meshData.vertexData.setDataUsage('DynamicDraw');
 
 		// setup texture coords
 		var uvBuffer = this.meshData.getAttributeBuffer(MeshData.TEXCOORD0);

@@ -7,7 +7,7 @@ define([
 	'goo/util/rsvp'
 ],
 /** @lends */
-function(
+function (
 	TextureHandler,
 	AudioContext,
 	PromiseUtil,
@@ -39,7 +39,7 @@ function(
 	 * @param {object} bundle Pairs of key-configs
 	 * @param {boolean} [clear=false] If set to true will overwrite cache, otherwise extend it
 	 */
-	Ajax.prototype.prefill = function(bundle, clear) {
+	Ajax.prototype.prefill = function (bundle, clear) {
 		if (clear) {
 			this._cache = bundle;
 		} else {
@@ -51,7 +51,7 @@ function(
 	 * Clears the ajax cache
 	 * Is called by {@link DynamicLoader.clear}
 	 */
-	Ajax.prototype.clear = function() {
+	Ajax.prototype.clear = function () {
 		this._cache = {};
 	};
 
@@ -62,7 +62,7 @@ function(
 	 * @param {string} options.url
 	 * @return {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
 	 */
-	Ajax.prototype.get = function(options) {
+	Ajax.prototype.get = function (options) {
 		options = options || {};
 		var url = options.url || '';
 
@@ -77,8 +77,8 @@ function(
 
 		var promise = new RSVP.Promise();
 		request.onreadystatechange = function () {
-			if ( request.readyState === 4 ) {
-				if ( request.status >= 200 && request.status <= 299 ) {
+			if (request.readyState === 4) {
+				if (request.status >= 200 && request.status <= 299) {
 					promise.resolve(request);
 				} else {
 					promise.reject(request.statusText);
@@ -103,11 +103,12 @@ function(
 	 * @returns {RSVP.Promise} The promise is resolved with the data loaded. If a parser is specified
 	 * the data will be of the type resolved by the parser promise.
 	 */
-	Ajax.prototype.load = function(path, reload) {
+	Ajax.prototype.load = function (path, reload) {
 		var that = this;
-		var type = StringUtil.parseURL(path).path.split('.').pop().toLowerCase();
+		var path2 = StringUtil.parseURL(path).path;//! AT: dunno what to call this
+		var type = path2.substr(path2.lastIndexOf('.') + 1).toLowerCase();
 		function typeInGroup(type, group) {
-			return type && Ajax.types[group] && _.indexOf(Ajax.types[group], type) >= 0;
+			return type && Ajax.types[group] && Ajax.types[group][type];
 		}
 
 		if (!path) {
@@ -147,7 +148,7 @@ function(
 		}
 
 		return this._cache[path] = this.get(ajaxProperties)
-		.then(function(request) {
+		.then(function (request) {
 			if (typeInGroup(type, 'bundle')) {
 				var bundle = JSON.parse(request.response);
 				that.prefill(bundle, reload);
@@ -157,12 +158,12 @@ function(
 				return JSON.parse(request.response);
 			}
 			return request.response;
-		}).then(null, function(err) {
+		}).then(null, function (err) {
 			throw new Error('Could not load data from ' + path + ', ' + err);
 		});
 	};
 
-	Ajax.prototype.update = function(path, config) {
+	Ajax.prototype.update = function (path, config) {
 		this._cache[path] = config;
 		return PromiseUtil.createDummyPromise(config);
 	};
@@ -187,7 +188,7 @@ function(
 		var promise = new RSVP.Promise();
 		image.addEventListener('load', function () {
 			image.dataReady = true;
-			if(window.URL && window.URL.revokeObjectURL !== undefined) {
+			if (window.URL && window.URL.revokeObjectURL !== undefined) {
 				window.URL.revokeObjectURL(image.src);
 			}
 
@@ -208,12 +209,12 @@ function(
 			video.crossOrigin = 'anonymous';
 		}
 		var promise = new RSVP.Promise();
-		video.addEventListener('canplay', function() {
+		video.addEventListener('canplay', function () {
 			video.dataReady = true;
 			promise.resolve(video);
 		}, false);
 
-		video.addEventListener('onerror', function(e) {
+		video.addEventListener('onerror', function (e) {
 			promise.reject('Coult not load video from ' + url + ', ' + e);
 		}, false);
 
@@ -226,10 +227,10 @@ function(
 			url: url,
 			responseType: Ajax.ARRAY_BUFFER
 		};
-		return this.get(ajaxProperties).then(function(request) {
+		return this.get(ajaxProperties).then(function (request) {
 			return request.response;
 		})
-		.then(null, function(err) {
+		.then(null, function (err) {
 			throw new Error('Could not load data from ' + url + ', ' + err);
 		});
 	};
@@ -237,60 +238,67 @@ function(
 	// TODO Put this somewhere nicer
 	Ajax.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
 
+	function addKeys(obj, keys) {
+		for (var i = 0; i < keys.length; i++) {
+			obj[keys[i]] = true;
+		}
+		return obj;
+	}
 
 	Ajax.types = {
-		text: [
-			'vert',
-			'frag' // + Scripts in the future
-		],
-		json: [
-			'shader',
-			'script',
-			'entity',
-			'material',
-			'scene',
-			'mesh',
-			'texture',
-			'skeleton',
-			'animation',
-			'clip',
-			'bundle',
-			'project',
-			'machine',
-			'posteffects',
-			'animstate',
-			'sound',
-			'environment',
-			'skybox'
-		],
-		image: [
-			'jpg',
-			'jpeg',
-			'png',
-			'gif'
-		],
-		video: [
-			'mp4',
-			'ogv',
-			'webm'
-		],
-		binary: [
-			'dat',
-			'bin'
-		].concat(
-			_.keys(TextureHandler.loaders)
-		),
-		audio: [
-			'mp3',
-			'wav',
-			'ogg'
-		],
-		bundle: [
-			'bundle'
-		]
+		text: {
+			vert: true,
+			frag: true // + Scripts in the future
+		},
+		json: {
+			shader: true,
+			script: true,
+			entity: true,
+			material: true,
+			scene: true,
+			mesh: true,
+			texture: true,
+			skeleton: true,
+			animation: true,
+			clip: true,
+			bundle: true,
+			project: true,
+			machine: true,
+			posteffects: true,
+			animstate: true,
+			sound: true,
+			environment: true,
+			skybox: true
+		},
+		image: {
+			jpg: true,
+			jpeg: true,
+			png: true,
+			gif: true
+		},
+		video: {
+			mp4: true,
+			ogv: true,
+			webm: true
+		},
+		binary: addKeys({
+			dat: true,
+			bin: true
+		}, Object.keys(TextureHandler.loaders)),
+		audio: {
+			mp3: true,
+			wav: true,
+			ogg: true
+		},
+		bundle: {
+			bundle: true
+		}
 	};
-	Ajax.types.asset = Ajax.types.image.concat(
-		Ajax.types.binary
+
+	Ajax.types.asset = addKeys(
+		{},
+		Object.keys(Ajax.types.image)
+			.concat(Object.keys(Ajax.types.binary))
 	);
 
 	return Ajax;

@@ -76,16 +76,7 @@ require([
 		lightEntity.transformComponent.setTranslation(0, 100, -10);
 		lightEntity.addToWorld();
 
-		var camera = new Camera(45, 1, 0.1, 1000);
-		var cameraEntity = goo.world.createEntity("CameraEntity");
-		cameraEntity.setComponent(new CameraComponent(camera));
-		var scripts = new ScriptComponent();
-		scripts.scripts.push(new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(40, 0, Math.PI/4)
-		}));
-		cameraEntity.setComponent(scripts);
-		cameraEntity.addToWorld();
+		V.addOrbitCamera(new Vector3(40, 0, Math.PI/4));
 	}
 
 	function createEntity(goo, meshData, ammoSettings, pos) {

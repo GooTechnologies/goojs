@@ -137,13 +137,14 @@ require([
 		.addToWorld();
 
 	//! AT: this does nothing!
-	waterEntity.set(function (entity) {
+	/*waterEntity.set(function (entity) {
 			var transformComponent = entity.transformComponent;
 			// transformComponent.transform.translation.x = Math.sin(World.time * 1.0) * 30;
 			transformComponent.transform.translation.y = 0;
 			// transformComponent.transform.translation.z = Math.cos(World.time * 1.0) * 30;
 			transformComponent.setUpdated();
 		});
+	*/
 
 	var waterRenderer = new FlatWaterRenderer({
 		normalsUrl: 'resources/water/waternormals3.png'
