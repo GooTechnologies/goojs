@@ -138,6 +138,7 @@ function (
 			} else if (argument instanceof System) {
 				this.setSystem(argument);
 			} else if (argument instanceof Component) {
+				//! AT: TransformComponent and co and NOT instances of Component
 			    this.registerComponent(argument);
 			}
 		}

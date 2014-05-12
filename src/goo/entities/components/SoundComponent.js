@@ -14,10 +14,11 @@ function(
 	'use strict';
 
 	/**
-	* Sound component.
-	* @class
-	* @extends Component
-	*/
+	 * Sound component<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
+	 * @class
+	 * @extends Component
+	 */
 	function SoundComponent() {
 		if (!AudioContext) {
 			console.warn('Cannot create soundComponent, webaudio not supported');

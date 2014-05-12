@@ -25,6 +25,7 @@ function(
 	 * @param {number}  [settings.offsetAngleY=0]
 	 * @param {number}  [settings.offsetAngleZ=0]
 	 * @example
+	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example}</caption>
 	 * var entity = goo.world.createEntity(new Box());
 	 * var p2comp = new P2Component({
 	 *     shapes:[{

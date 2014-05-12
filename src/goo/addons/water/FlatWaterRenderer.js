@@ -26,7 +26,8 @@ function (
 	"use strict";
 
 	/**
-	 * @class Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
+	 * @class Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Water/water-vtest.html Working example}
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */

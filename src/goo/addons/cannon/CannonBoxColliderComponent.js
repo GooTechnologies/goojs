@@ -15,7 +15,8 @@ function(
 	var CANNON = window.CANNON;
 
 	/**
-	 * @class Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.
+	 * @class Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
 	 * @param {object} [settings]
 	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
 	 * @extends Component
@@ -29,6 +30,7 @@ function(
 		// Create shape
 		this.cannonShape = new CANNON.Box(new CANNON.Vec3(e.x, e.y, e.z));
 	}
+
 	CannonBoxColliderComponent.prototype = Object.create(Component.prototype);
 	CannonBoxColliderComponent.constructor = CannonBoxColliderComponent;
 

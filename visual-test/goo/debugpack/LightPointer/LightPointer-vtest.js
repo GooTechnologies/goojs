@@ -12,7 +12,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/debug/LightPointer',
+	'goo/debugpack/LightPointer',
 	'lib/V'
 ], function (
 	Material,
@@ -36,7 +36,8 @@ require([
 	var lightsState = {
 		pointLightOn: false,
 		directionalLightOn: false,
-		spotLightOn: false};
+		spotLightOn: false
+	};
 
 	function addSpin(entity, radiusX, radiusZ, speed, altitude) {
 		entity.setComponent(new ScriptComponent({
