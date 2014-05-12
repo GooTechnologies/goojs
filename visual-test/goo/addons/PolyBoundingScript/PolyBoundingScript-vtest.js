@@ -5,9 +5,7 @@ require([
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
-	'goo/scripts/WASDControlScript',
-	'goo/scripts/MouseLookControlScript',
-	'goo/addons/scripts/PolyBoundingScript',
+	'goo/scriptpack/PolyBoundingScript',
 	'goo/scripts/Scripts',
 	'lib/V'
 ], function (
@@ -17,8 +15,6 @@ require([
 	ScriptComponent,
 	Vector3,
 	Box,
-	WASDControlScript,
-	MouseLookControlScript,
 	PolyBoundingScript,
 	Scripts,
 	V

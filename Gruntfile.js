@@ -67,7 +67,7 @@ module.exports = function (grunt) {
 					modules: [gooModule],
 					paths: {
 						'requireLib': '../lib/require'
-					},
+					}
 
 					// I tried using a wrap block like this, but it has no effect
 					// wrap: { ... }
@@ -146,15 +146,15 @@ module.exports = function (grunt) {
 				configFile: 'test/karma.conf.js',
 				singleRun: true,
 				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
-			},
+			}
 		},
 		shell: {
 			jsdoc: {
-				command: path.resolve('tools', 'generate_jsdoc.sh'),
+				command: path.resolve('tools', 'generate_jsdoc.sh')
 			},
 			jsdoc_json: {
-				command: path.resolve('tools', 'generate_jsdoc_json.sh'),
-			},
+				command: path.resolve('tools', 'generate_jsdoc_json.sh')
+			}
 		},
 		/*
 	    jsdoc : { // Could replace tools/generate_jsdoc.sh, but still need something that makes the tar.gz docs bundle

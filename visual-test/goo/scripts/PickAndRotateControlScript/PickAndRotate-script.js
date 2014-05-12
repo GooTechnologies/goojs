@@ -10,11 +10,8 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'goo/scripts/FPCamControlScript',
-	'goo/scripts/WASDControlScript',
 	'goo/scripts/ScriptUtils',
 	'goo/math/Vector',
-	'goo/scripts/PickAndRotateScript',
 	'goo/scripts/Scripts',
 	'lib/V'
 ], function (
@@ -29,11 +26,8 @@ require([
 	Vector3,
 	PointLight,
 	LightComponent,
-	FPCamControlScript,
-	WASDControlScript,
 	ScriptUtils,
 	Vector,
-	PickAndRotateScript,
 	Scripts,
 	V
 	) {
@@ -60,7 +54,6 @@ require([
 			crawlSpeed: 10.0
 		}));
 
-		Scripts.register(PickAndRotateScript);
 		var pickAndRotateScript = Scripts.create('PickAndRotateScript');
 		scripts.scripts.push(pickAndRotateScript);
 

@@ -2,7 +2,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/debug/components/MarkerComponent',
+	'goo/debugpack/components/MarkerComponent',
 	'goo/renderer/Renderer',
 	'goo/math/Transform'
 ],

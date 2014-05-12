@@ -21,9 +21,9 @@ require([
 	) {
 	'use strict';
 
-	function addHalo(goo, x, y, z) {
+	function addHalo(x, y, z) {
 		var quadMeshData = new Quad(3, 3);
-		var quadMaterial = new Material(ShaderLib.billboard, 'mat');
+		var quadMaterial = new Material(ShaderLib.billboard);
 		var quadTexture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
 		quadMaterial.setTexture('DIFFUSE_MAP', quadTexture);
 		quadMaterial.blendState.blending = 'AlphaBlending';
@@ -32,15 +32,15 @@ require([
 		goo.world.createEntity(quadMeshData, quadMaterial, [x, y, z]).addToWorld();
 	}
 
-	function addBox(goo) {
+	function addBox() {
 		var boxMeshData = new Box(1, 1, 1);
 		var boxMaterial = new Material(ShaderLib.simpleLit, 'mat');
 		goo.world.createEntity(boxMeshData, boxMaterial).addToWorld();
 	}
 
-	function addLamp(goo, x, y, z) {
+	function addLamp(x, y, z) {
 		var lampMeshData = new Sphere(32, 32);
-		var lampMaterial = new Material(ShaderLib.simpleColored, '');
+		var lampMaterial = new Material(ShaderLib.simpleColored);
 		lampMaterial.uniforms.color = [1.0, 0.8, 0.1];
 
 		var light = new PointLight();
@@ -48,24 +48,20 @@ require([
 
 		goo.world.createEntity(lampMeshData, lampMaterial, light, [x, y, z]).addToWorld();
 
-		addHalo(goo, x, y, z);
+		addHalo(x, y, z);
 	}
 
-	function addLamps(goo) {
+	function addLamps() {
 		var nLamps = 5;
 		for (var i = 0; i < nLamps; i++) {
-			addLamp(goo, (i - ((nLamps - 1) / 2)) * 4, 5, 0);
+			addLamp((i - ((nLamps - 1) / 2)) * 4, 5, 0);
 		}
 	}
 
-	function billboardShaderDemo() {
-		var goo = V.initGoo();
+	var goo = V.initGoo();
 
-		V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
+	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
-		addLamps(goo);
-		addBox(goo);
-	}
-
-	billboardShaderDemo();
+	addLamps();
+	addBox();
 });

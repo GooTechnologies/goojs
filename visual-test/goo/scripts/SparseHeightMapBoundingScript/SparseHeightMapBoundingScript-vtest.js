@@ -7,9 +7,7 @@ require([
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
 	'goo/geometrypack/Surface',
-	'goo/scripts/WASDControlScript',
-	'goo/scripts/MouseLookControlScript',
-	'goo/scripts/SparseHeightMapBoundingScript',
+	'goo/scriptpack/SparseHeightMapBoundingScript',
 	'goo/scripts/Scripts',
 	'lib/V'
 ], function (
@@ -21,8 +19,6 @@ require([
 	ScriptComponent,
 	Vector3,
 	Surface,
-	WASDControlScript,
-	MouseLookControlScript,
 	SparseHeightMapBoundingScript,
 	Scripts,
 	V

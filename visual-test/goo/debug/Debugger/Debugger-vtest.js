@@ -8,7 +8,7 @@ require([
 	'goo/shapes/Torus',
 	'goo/renderer/Texture',
 	'goo/math/Vector3',
-	'goo/debug/Debugger',
+	'goo/debugpack/Debugger',
 	'lib/V'
 ], function (
 	Material,

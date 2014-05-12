@@ -9,8 +9,8 @@ define([
 	'goo/scriptpack/WASDControlScript',
 	'goo/scriptpack/ButtonScript',
 	//'goo/scriptpack/PolyBoundingScript',
-	//'goo/scriptpack/PickAndRotateScript'
-	//'goo/scriptpack/FPCamControlScript'
+	'goo/scriptpack/PickAndRotateScript',
+	'goo/scriptpack/FPCamControlScript'
 	//'goo/scriptpack/RotationScript'
 	//'goo/scriptpack/BasicControlScript'
 ], function (Scripts) {

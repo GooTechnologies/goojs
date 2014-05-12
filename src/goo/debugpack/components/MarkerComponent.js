@@ -1,6 +1,6 @@
 define([
 	'goo/entities/components/Component',
-	'goo/debug/BoundingVolumeMeshBuilder'],
+	'goo/debugpack/BoundingVolumeMeshBuilder'],
 /** @lends */
 function(
 	Component,

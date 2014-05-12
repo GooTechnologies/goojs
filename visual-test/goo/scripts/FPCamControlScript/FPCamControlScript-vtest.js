@@ -2,8 +2,6 @@ require([
 	'goo/entities/GooRunner',
 	'goo/renderer/Camera',
 	'goo/entities/components/ScriptComponent',
-	'goo/scripts/FPCamControlScript',
-	'goo/scripts/WASDControlScript',
 	'lib/V',
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts',
@@ -12,17 +10,12 @@ require([
 	GooRunner,
 	Camera,
 	ScriptComponent,
-	FPCamControlScript,
-	WASDControlScript,
 	V,
 	ScriptUtils,
 	Scripts,
 	_
 ) {
 	'use strict';
-
-	// FPCamControlScript is not in ScriptRegister yet, include it manually
-	Scripts.register(FPCamControlScript);
 
 	var goo = V.initGoo();
 

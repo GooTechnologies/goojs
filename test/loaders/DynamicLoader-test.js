@@ -11,9 +11,6 @@ define([
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
 	"goo/entities/systems/AnimationSystem",
-	"goo/entities/systems/LightDebugSystem",
-	"goo/entities/systems/CameraDebugSystem",
-	'goo/entities/systems/MovementSystem',
 
 	'goo/sound/AudioContext',
 	'goo/entities/systems/SoundSystem'
@@ -55,9 +52,6 @@ define([
 			world.setSystem(new BoundingUpdateSystem());
 			world.setSystem(new LightingSystem());
 			world.setSystem(new AnimationSystem());
-			world.setSystem(new LightDebugSystem()); // Go away!
-			world.setSystem(new CameraDebugSystem()); // Go away!
-			world.setSystem(new MovementSystem()); // Go away!
 			if (AudioContext) {
 				world.setSystem(new SoundSystem());
 			}

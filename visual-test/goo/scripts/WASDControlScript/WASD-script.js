@@ -10,7 +10,6 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'goo/scripts/FPCamControlScript',
 	'goo/scripts/ScriptUtils',
 	'goo/math/Vector',
 	'lib/V',
@@ -27,7 +26,6 @@ require([
 	Vector3,
 	PointLight,
 	LightComponent,
-	FPCamControlScript,
 	ScriptUtils,
 	Vector,
 	V,
@@ -58,7 +56,6 @@ require([
 		scripts.scripts.push(wasdScript);
 
 		// the FPCam script itself that locks the pointer and moves the camera
-		Scripts.register(FPCamControlScript);
 		var fpScript = Scripts.create('FPCamControlScript', {
 			domElement: goo.renderer.domElement
 		});

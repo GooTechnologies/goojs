@@ -79,6 +79,5 @@ require([
 		}
 	});
 
-	V.addDebugQuad();
-
+	//V.addDebugQuad();
 });
