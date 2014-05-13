@@ -21,10 +21,10 @@ define([
 
 			it('can insert an entry before any other entry', function () {
 				// setup
-				channel.addKeyframe('', 100);
-				channel.addKeyframe('', 200);
-				channel.addKeyframe('', 300);
-				channel.addKeyframe('', 400);
+				channel.addKeyframe('', 100)
+					.addKeyframe('', 200)
+					.addKeyframe('', 300)
+					.addKeyframe('', 400);
 
 				// inserting an entry before any existing entries
 				channel.addKeyframe('', 10);
@@ -35,10 +35,10 @@ define([
 
 			it('can insert an entry after any other entry', function () {
 				// setup
-				channel.addKeyframe('', 100);
-				channel.addKeyframe('', 200);
-				channel.addKeyframe('', 300);
-				channel.addKeyframe('', 400);
+				channel.addKeyframe('', 100)
+					.addKeyframe('', 200)
+					.addKeyframe('', 300)
+					.addKeyframe('', 400);
 
 				// inserting an entry before any existing entries
 				channel.addKeyframe('', 500);
@@ -49,10 +49,10 @@ define([
 
 			it('can insert an entry and maintain the set of entries sorted', function () {
 				// setup
-				channel.addKeyframe('', 100);
-				channel.addKeyframe('', 200);
-				channel.addKeyframe('', 300);
-				channel.addKeyframe('', 400);
+				channel.addKeyframe('', 100)
+					.addKeyframe('', 200)
+					.addKeyframe('', 300)
+					.addKeyframe('', 400);
 
 				// inserting an entry before any existing entries
 				channel.addKeyframe('', 250);
@@ -62,8 +62,16 @@ define([
 			});
 		});
 
-		describe('setTime', function () {
+		describe('update', function () {
+			it('calls the update callback with the correct value', function () {
+				var data0 = 0;
+				channel.callbackUpdate = function (data) { data0 = data; };
 
+				channel.addKeyframe('', 100, 1, function (progress) { return progress; })
+					.addKeyframe('', 200, 2, function () {});
+
+				channel.update(150);
+			});
 		});
 	});
 });

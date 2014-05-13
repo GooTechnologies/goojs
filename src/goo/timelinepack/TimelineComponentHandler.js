@@ -146,7 +146,6 @@ define([
 			} else {
 				channel = new EventChannel(channelId);
 			}
-			channel.enabled = channelConfig.enabled !== false;
 			component.channels.push(channel);
 		} else if (channelConfig.entityId && channel.callbackUpdate && channel.callbackUpdate.rotation) {
 			var rotation = rotationMap[channelConfig.entityId] = channel.callbackUpdate.rotation;
@@ -154,6 +153,8 @@ define([
 			rotation[1] = 0;
 			rotation[2] = 0;
 		}
+
+		channel.enabled = channelConfig.enabled !== false;
 
 		// remove existing keyframes in the channel that are not mentioned in the config anymore
 		// filter preserves the order, otherwise the channel would fail to work

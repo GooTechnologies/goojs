@@ -44,6 +44,8 @@ define([
 			var index = this._find(this.keyframes, time) + 1;
 			this.keyframes.splice(index, 0, newKeyframe);
 		}
+
+		return this;
 	};
 
 	/**
@@ -51,12 +53,9 @@ define([
 	 * @param time
 	 */
 	ValueChannel.prototype.update = function (time) {
-		if (!this.enabled) { return; }
+		if (!this.enabled) { return this; }
+		if (!this.keyframes.length) { return this; }
 
-		// run update callback on current position
-		if (!this.keyframes.length) {
-			return;
-		}
 		var newValue;
 		var newEntryIndex;
 		if (time <= this.keyframes[0].time) {
@@ -79,10 +78,12 @@ define([
 		}
 
 		//! AT: comparing floats with === is ok here
-		if (this.value !== newValue || true) { // overriding for now to get time progression
-			this.value = newValue;
-			this.callbackUpdate(time, this.value, newEntryIndex);
-		}
+		// if (this.value !== newValue || true) { // overriding for now to get time progression
+		//! AT: not sure if create people want this all the time or not
+		this.value = newValue;
+		this.callbackUpdate(time, this.value, newEntryIndex);
+		// }
+
 		return newValue;
 	};
 
