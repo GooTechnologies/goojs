@@ -12,6 +12,7 @@ require([
 	'goo/shapes/Quad',
 	'goo/shapes/Torus',
 	'goo/renderer/Texture',
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	Camera,
 	ScriptComponent,
@@ -26,6 +27,7 @@ require([
 	Quad,
 	Torus,
 	Texture
+	/*ScriptRegister*/
 ) {
 	'use strict';
 

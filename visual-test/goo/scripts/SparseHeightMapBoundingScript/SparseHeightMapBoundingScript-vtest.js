@@ -9,7 +9,8 @@ require([
 	'goo/geometrypack/Surface',
 	'goo/scriptpack/SparseHeightMapBoundingScript',
 	'goo/scripts/Scripts',
-	'lib/V'
+	'lib/V',
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	Material,
 	ShaderLib,
@@ -22,6 +23,7 @@ require([
 	SparseHeightMapBoundingScript,
 	Scripts,
 	V
+	/*ScriptRegister*/
 	) {
 	'use strict';
 

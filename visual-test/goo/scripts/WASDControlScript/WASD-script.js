@@ -13,7 +13,8 @@ require([
 	'goo/scripts/ScriptUtils',
 	'goo/math/Vector',
 	'lib/V',
-	'goo/scripts/Scripts'
+	'goo/scripts/Scripts',
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	GooRunner,
 	Material,
@@ -30,6 +31,7 @@ require([
 	Vector,
 	V,
 	Scripts
+	/* ScriptRegister */
 	) {
 	'use strict';
 

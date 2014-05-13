@@ -5,15 +5,15 @@ require([
 	'lib/V',
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts',
-	'goo/util/ObjectUtil'
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	GooRunner,
 	Camera,
 	ScriptComponent,
 	V,
 	ScriptUtils,
-	Scripts,
-	_
+	Scripts
+	/*ScriptRegister*/
 ) {
 	'use strict';
 

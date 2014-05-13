@@ -6,7 +6,7 @@ require([
 	'goo/addons/box2d/systems/Box2DSystem',
 	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
-	'goo/debug/Debugger',
+	'goo/debugpack/Debugger',
 	'lib/V'
 ], function (
 	Material,

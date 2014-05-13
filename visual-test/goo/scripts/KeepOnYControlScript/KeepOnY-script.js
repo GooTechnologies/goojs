@@ -12,7 +12,8 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts',
-	'lib/V'
+	'lib/V',
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	GooRunner,
 	Material,
@@ -28,6 +29,7 @@ require([
 	ScriptUtils,
 	Scripts,
 	V
+	/*ScriptRegister*/
 	) {
 	'use strict';
 

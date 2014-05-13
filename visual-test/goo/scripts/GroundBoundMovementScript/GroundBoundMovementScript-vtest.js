@@ -21,7 +21,8 @@ require([
 	'goo/scripts/Scripts',
 	'goo/renderer/TextureCreator',
 	'goo/util/CanvasUtils',
-	'lib/V'
+	'lib/V',
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	World,
 	Material,
@@ -46,6 +47,7 @@ require([
 	TextureCreator,
 	CanvasUtils,
 	V
+	/* ScriptRegister */
 	) {
 	'use strict';
 

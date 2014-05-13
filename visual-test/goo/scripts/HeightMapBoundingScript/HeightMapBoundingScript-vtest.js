@@ -16,7 +16,8 @@ require([
 	'goo/scriptpack/HeightMapBoundingScript',
 	'goo/scripts/Scripts',
 	'goo/util/CanvasUtils',
-	'lib/V'
+	'lib/V',
+	'goo/scriptpack/ScriptRegister',
 ], function (
 	Material,
 	ShaderLib,
@@ -36,6 +37,7 @@ require([
 	Scripts,
 	CanvasUtils,
 	V
+	/* ScriptRegister */
 ) {
 	'use strict';
 
