@@ -1,11 +1,19 @@
 define([
-	'goo/timelinepack/ValueChannel'
+	'goo/timelinepack/ValueChannel',
+	'goo/entities/Entity',
+	'goo/entities/components/TransformComponent',
+	'goo/math/Matrix3x3',
+	'goo/math/MathUtils'
 ], function (
-	ValueChannel
+	ValueChannel,
+	Entity,
+	TransformComponent,
+	Matrix3x3,
+	MathUtils
 	) {
 	'use strict';
 
-	describe('ValueChannel', function() {
+	describe('ValueChannel', function () {
 		var channel;
 		beforeEach(function () {
 			channel = new ValueChannel();
@@ -63,14 +71,90 @@ define([
 		});
 
 		describe('update', function () {
-			it('calls the update callback with the correct value', function () {
+			it('calls the update callback with the correct value when updating before all keyframes', function () {
 				var data0 = 0;
-				channel.callbackUpdate = function (data) { data0 = data; };
+				channel.callbackUpdate = function (time, value) { data0 = value; };
+
+				channel.addKeyframe('', 100, 1, function (progress) { return progress; })
+					.addKeyframe('', 200, 2, function () {});
+
+				channel.update(50);
+				expect(data0).toEqual(1);
+			});
+
+			it('calls the update callback with the correct value when updating between 2 keyframes', function () {
+				var data0 = 0;
+				channel.callbackUpdate = function (time, value) { data0 = value; };
 
 				channel.addKeyframe('', 100, 1, function (progress) { return progress; })
 					.addKeyframe('', 200, 2, function () {});
 
 				channel.update(150);
+				expect(data0).toEqual(1.5);
+			});
+
+			it('calls the update callback with the correct value when updating after all keyframes', function () {
+				var data0 = 0;
+				channel.callbackUpdate = function (time, value) { data0 = value; };
+
+				channel.addKeyframe('', 100, 1, function (progress) { return progress; })
+					.addKeyframe('', 200, 2, function () {});
+
+				channel.update(250);
+				expect(data0).toEqual(2);
+			});
+
+			it('does nothing when called on a disabled channel', function () {
+				var data0 = 0;
+				channel.callbackUpdate = function (time, value) { data0 = value; };
+
+				channel.enabled = false;
+
+				channel.addKeyframe('', 100, 1, function (progress) { return progress; })
+					.addKeyframe('', 200, 2, function () {});
+
+				channel.update(150);
+				expect(data0).toEqual(0);
+			});
+
+			it('does nothing when called on an empty channel', function () {
+				var data0 = 0;
+				channel.callbackUpdate = function (time, value) { data0 = value; };
+
+				channel.update(150);
+				expect(data0).toEqual(0);
+			});
+		});
+	});
+
+	describe('tweener factories', function () {
+		var entity;
+		var resolver = function () { return entity; };
+		beforeEach(function () {
+			entity = new Entity();
+			entity.setComponent(new TransformComponent());
+		});
+
+		describe('getSimpleTransformTweener', function () {
+			it('gets a translation tweener that alters the translation of the resolved entity', function () {
+				var tweener = ValueChannel.getSimpleTransformTweener('translation', 1, '', resolver);
+				tweener(0, 123);
+				expect(entity.transformComponent.transform.translation.data[1]).toEqual(123);
+			});
+
+			it('gets a scale tweener that alters the scale of the resolved entity', function () {
+				var tweener = ValueChannel.getSimpleTransformTweener('scale', 2, '', resolver);
+				tweener(0, 123);
+				expect(entity.transformComponent.transform.scale.data[2]).toEqual(123);
+			});
+		});
+
+		describe('getRotationTweener', function () {
+			it('gets a rotation tweenerthat alters the rotation of the resolved entity', function () {
+				var tweener = ValueChannel.getRotationTweener(0, '', resolver, [0, 0, 0]);
+				tweener(0, 123 * MathUtils.RAD_TO_DEG);
+				var expectedRotation = new Matrix3x3().fromAngles(123, 0, 0);
+				expect(entity.transformComponent.transform.rotation.equals(expectedRotation)).toBeTruthy();
 			});
 		});
 	});
