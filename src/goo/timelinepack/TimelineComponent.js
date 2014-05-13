@@ -26,9 +26,11 @@ define([
 	/**
 	 * Adds a channel
 	 * @param {Channel} channel
+	 * @returns {TimelineComponent} Returns self to allow chaining
 	 */
 	TimelineComponent.prototype.addChannel = function (channel) {
 		this.channels.push(channel);
+		return this;
 	};
 
 	/**
@@ -43,10 +45,8 @@ define([
 			} else {
 				time = this.duration;
 			}
-		} else if (time < 0) {
-			this.time = 0;
 		}
-		if (time === this.time) { return; }
+		if (time === this.time) { return this; }
 		this.time = time;
 
 		for (var i = 0; i < this.channels.length; i++) {
@@ -54,6 +54,8 @@ define([
 
 			channel.update(this.time);
 		}
+
+		return this;
 	};
 
 	/**
@@ -68,10 +70,12 @@ define([
 
 			channel.setTime(this.time);
 		}
+
+		return this;
 	};
 
 	/**
-	 * Retrives the values of all channels
+	 * Retrieves the values of all channels
 	 * @private
 	 * @returns {object}
 	 */
