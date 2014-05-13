@@ -55,6 +55,7 @@ define([
 	 * @description Builds a surface as a result of multiplying 2 polyLines
 	 * @param {PolyLine} [that] The second operand
 	 * @returns {Surface} The resulting surface
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example}</caption>
 	 */
 	PolyLine.prototype.mul = function (that) {
 		if(!(that instanceof PolyLine)) {
@@ -145,6 +146,7 @@ define([
 	 * @description Builds a surface as a result of rotating this polyLine around the Y axis
 	 * @param {number} [nSegments=8] The number of segments for the resulting surface
 	 * @returns {Surface} The resulting surface
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Lathe-vtest.html Working example}</caption>
 	 */
 	PolyLine.prototype.lathe = function (nSegments) {
 		nSegments = nSegments || 8;

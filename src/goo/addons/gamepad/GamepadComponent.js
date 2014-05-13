@@ -1,13 +1,13 @@
 define([
 	'goo/entities/components/Component'
-],
-function(
+], function (
 	Component
 	) {
 	'use strict';
 
 	/**
 	 * @class
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Gamepad/Gamepad-example.html Working example}
 	 * @extends Component
 	 * @param gamepadIndex
 	 * @constructor
@@ -29,7 +29,6 @@ function(
 	}
 
 	GamepadComponent.prototype = Object.create(Component.prototype);
-
 	GamepadComponent.prototype.constructor = GamepadComponent;
 
 	GamepadComponent.prototype.setButtonDownFunction = function(buttonIndex, buttonFunction) {
@@ -51,7 +50,6 @@ function(
 	GamepadComponent.prototype.setRightStickFunction = function (stickFunction) {
 		this.rightStickFunction = stickFunction;
 	};
-
 
 	return GamepadComponent;
 });

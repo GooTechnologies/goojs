@@ -12,11 +12,11 @@ define([
 
 	/**
 	 * @class
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Gamepad/Gamepad-example.html Working example}
 	 * @extends System
 	 * @constructor
 	 */
 	function GamepadSystem() {
-
 		System.call(this, 'GamepadSystem', ['GamepadComponent']);
 
 		this.gamepads = [];
@@ -31,7 +31,7 @@ define([
 		if (navigator.webkitGetGamepads) {
 			this.updateGamepads = this.chromeGamepadUpdate;
 		} else {
-			this.updateGamepads = function(){};
+			this.updateGamepads = function () {};
 
 			var that = this;
 			window.addEventListener('gamepadconnected', function(e) {

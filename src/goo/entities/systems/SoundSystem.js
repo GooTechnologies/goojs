@@ -17,7 +17,8 @@ function(
 ) {
 	'use strict';
 	/**
-	 * @class System responsible for sound
+	 * @class System responsible for sound<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
 	 * @extends System
 	 */
 	function SoundSystem() {

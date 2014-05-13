@@ -236,6 +236,27 @@ define([
 			});
 		});
 
+		describe('getLastMessageOn', function () {
+			it('retrieves the last message sent on a channel', function () {
+				bus.emit('main', 123, true);
+
+				expect(bus.getLastMessageOn('main')).toEqual(123);
+			});
+
+			it('retrieves the last message sent on a channel when sending multiple data', function () {
+				bus.emit('main', 123, true);
+				bus.emit('main', 456, true);
+
+				expect(bus.getLastMessageOn('main')).toEqual(456);
+			});
+
+			it('retrieves nothing if there was no stored data on a channel', function () {
+				bus.emit('main', 123);
+
+				expect(bus.getLastMessageOn('main')).toBeUndefined();
+			});
+		});
+
 		describe('addListener', function () {
 			it('does not retrieve the last message by default', function () {
 				bus.emit('main', 123, true);
@@ -274,6 +295,15 @@ define([
 		describe('removeListenerFromAllChannels', function () {
 			it('returns itself', function () {
 				expect(bus.removeListenerFromAllChannels('main', function () {})).toBe(bus);
+			});
+		});
+
+		describe('clear', function () {
+			it('clears the system bus of any channels or listeners', function () {
+				bus.addListener('main', function (data) {});
+				bus.addListener('main.second', function (data) {});
+				bus.clear();
+				expect(bus).toEqual(new Bus());
 			});
 		});
 	});
