@@ -10,7 +10,7 @@ define([
 	'goo/scriptpack/ButtonScript',
 	//'goo/scriptpack/PolyBoundingScript',
 	'goo/scriptpack/PickAndRotateScript',
-	'goo/scriptpack/FPCamControlScript'
+	//'goo/scriptpack/FPCamControlScript'
 	//'goo/scriptpack/RotationScript'
 	//'goo/scriptpack/BasicControlScript'
 ], function (Scripts) {

@@ -35,7 +35,7 @@ require([
 	) {
 	'use strict';
 
-	//! schteppe: Outdated and already covered in FPCamControlScript test. Delete?
+	//! schteppe: Already covered in other tests. Delete?
 
 	function WASDControlScriptDemo() {
 		var goo = V.initGoo();
@@ -58,7 +58,7 @@ require([
 		scripts.scripts.push(wasdScript);
 
 		// the FPCam script itself that locks the pointer and moves the camera
-		var fpScript = Scripts.create('FPCamControlScript', {
+		var fpScript = Scripts.create('MouseLookScript', {
 			domElement: goo.renderer.domElement
 		});
 		scripts.scripts.push(fpScript);

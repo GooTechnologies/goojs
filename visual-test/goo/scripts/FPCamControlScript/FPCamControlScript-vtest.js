@@ -36,15 +36,6 @@ require([
 		crawlSpeed: 10.0
 	});
 
-	var fpScript = Scripts.create('FPCamControlScript', {
-		domElement: goo.renderer.domElement,
-		maxAscent: 89,
-		minAscent: -89,
-		turnSpeedVertical: 0.005,
-		turnSpeedHorizontal: 0.005,
-	});
-
-	/*
 	var fpScript = Scripts.create('MouseLookScript', {
 		domElement: goo.renderer.domElement,
 		maxAscent: 89,
@@ -52,7 +43,6 @@ require([
 		speed: 0.5,
 		button: 'None'
 	});
-	*/
 
 	scripts.scripts.push(wasdScript, fpScript);
 

@@ -88,10 +88,7 @@ require([
 		}));
 
 		// the FPCam script itself that locks the pointer and moves the camera
-		var fpScript = Scripts.create('FPCamControlScript');/*FPCamControlScript();
-		fpScript.parameters = {
-			domElement: goo.renderer.domElement
-		};*/
+		var fpScript = Scripts.create('MouseLookScript');
 		scripts.scripts.push(fpScript);
 
 		var keepOnYScript = keepOnYControlScript();
