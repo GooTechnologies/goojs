@@ -59,17 +59,30 @@ define([
 	/**
 	 * Sets the time on all channels
 	 * @param {number} time
-	 * @returns {object} The new channel values
 	 */
 	TimelineComponent.prototype.setTime = function (time) {
-		var retVal = {};
 		this.time = time;
 
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
-			retVal[channel.id] = channel.setTime(this.time);
+			channel.setTime(this.time);
 		}
+	};
+
+	/**
+	 * Retrives the values of all channels
+	 * @private
+	 * @returns {object}
+	 */
+	TimelineComponent.prototype.getValues = function () {
+		var retVal = {};
+
+		for (var i = 0; i < this.channels.length; i++) {
+			var channel = this.channels[i];
+			retVal[channel.id] = channel.value;
+		}
+
 		return retVal;
 	};
 

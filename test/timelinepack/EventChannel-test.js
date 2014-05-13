@@ -148,8 +148,9 @@ define([
 			});
 
 			it('will not do anything but return itself when called on a disabled channel', function () {
-				var data0 = 0;
 				channel.enabled = false;
+
+				var data0 = 0;
 				channel.addCallback('id0', 1, function () { data0 += 123; });
 
 				expect(channel.update(1.5)).toBe(channel);
@@ -164,11 +165,30 @@ define([
 		describe('setTime', function () {
 			it('will not do anything but return itself when called on a disabled channel', function () {
 				channel.enabled = false;
+				channel.addCallback('id0', 1, function () {});
 				expect(channel.setTime(1.5)).toBe(channel);
 			});
 
 			it('will not do anything but return itself when called on an empty channel', function () {
 				expect(channel.setTime(1.5)).toBe(channel);
+			});
+		});
+
+		describe('sort', function () {
+			it('sorts the keyframes', function () {
+				channel.addCallback('id0', 1, function () {})
+					.addCallback('id1', 2, function () {})
+					.addCallback('id2', 3, function () {})
+					.addCallback('id3', 4, function () {});
+
+				channel.keyframes[0].time = 5;
+				channel.keyframes[2].time = 0;
+				channel.sort();
+
+				expect(channel.keyframes.length).toEqual(4);
+				expect(channel.keyframes.every(function (keyframe, index) {
+					return keyframe.time <= channel.keyframes[Math.min(channel.keyframes.length - 1, index)].time;
+				})).toBeTruthy();
 			});
 		});
 	});

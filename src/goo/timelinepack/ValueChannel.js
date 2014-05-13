@@ -80,7 +80,7 @@ define([
 		this.callbackUpdate(time, this.value, newEntryIndex);
 		// }
 
-		return newValue;
+		return this;
 	};
 
 	ValueChannel.prototype.setTime = ValueChannel.prototype.update;
