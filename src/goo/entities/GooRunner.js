@@ -25,7 +25,8 @@ define([
 	'goo/util/GameUtils',
 	'goo/util/Logo',
 
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/renderer/Material'
 ],
 /** @lends */
 function (
@@ -55,7 +56,8 @@ function (
 	GameUtils,
 	Logo,
 
-	SystemBus
+	SystemBus,
+	Material
 ) {
 	'use strict';
 
@@ -697,7 +699,7 @@ function (
 	};
 
 	/**
-	 * Clears the GooRunner and anything associated with it. Once this method is called this instanceof og GooRunner is unusable.
+	 * Clears the GooRunner and anything associated with it. Once this method is called this instanceof of GooRunner is unusable.
 	 */
 	GooRunner.prototype.clear = function () {
 		this.stopGameLoop();
@@ -712,11 +714,29 @@ function (
 		// a lot of stuff may reside in here
 		SystemBus.clear();
 
+		// clearing cached materials
+		Material.store = [];
+		Material.hash = [];
+
 		// this should never have existed in the first place
 		Renderer.mainCamera = null;
 
 		// clears out whatever visibility-change listeners were attached to document
 		GameUtils.clearVisibilityChangeListeners();
+
+		// severe some more connections
+		this.world = null;
+		this.renderer = null;
+		this.renderSystem = null;
+		this.renderSystems = null;
+
+		// and forget any scheduled callbacks as they can hold references too
+		this.callbacks = null;
+		this.callbacksPreProcess = null;
+		this.callbacksPreRender = null;
+		this.callbacksNextFrame = null;
+		this._takeSnapshots = null;
+		this._events = null;
 	};
 
 	return GooRunner;
