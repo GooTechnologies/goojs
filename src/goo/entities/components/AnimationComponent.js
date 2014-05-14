@@ -44,7 +44,7 @@ function (
 		this._skeletonPose = pose;
 
 		this.paused = false;
-		this.lastTimeOfPause = null;
+		this.lastTimeOfPause = -1;
 	}
 
 	AnimationComponent.prototype = Object.create(Component.prototype);
@@ -55,7 +55,7 @@ function (
 	 * @param {bool} allowDirectSwitch Allow the function to directly switch state if transitioning fails (missing or transition already in progress)
 	 * @returns {boolean} true if a transition was found and started
 	 */
-	AnimationComponent.prototype.transitionTo = function(stateKey, allowDirectSwitch) {
+	AnimationComponent.prototype.transitionTo = function (stateKey, allowDirectSwitch) {
 		if (this.layers[0].transitionTo(stateKey)) {
 			return true;
 		}
@@ -68,17 +68,17 @@ function (
 	 * Get available states
 	 * returns {string[]} available state keys
 	 */
-	AnimationComponent.prototype.getStates = function() {
+	AnimationComponent.prototype.getStates = function () {
 		return this.layers[0].getStates();
 	};
-	AnimationComponent.prototype.getCurrentState = function() {
+	AnimationComponent.prototype.getCurrentState = function () {
 		return this.layers[0].getCurrentState();
 	};
 	/**
 	 * Get available transitions
 	 * returns {string[]} available state keys
 	 */
-	AnimationComponent.prototype.getTransitions = function() {
+	AnimationComponent.prototype.getTransitions = function () {
 		return this.layers[0].getTransitions();
 	};
 
@@ -104,7 +104,7 @@ function (
 		}
 
 		// move the time forward on the layers
-		for ( var i = 0, max = this.layers.length; i < max; i++) {
+		for (var i = 0, max = this.layers.length; i < max; i++) {
 			this.layers[i].update(globalTime);
 		}
 	};
@@ -112,7 +112,7 @@ function (
 	/*
 	 * Applying calculated animations to the concerned data
 	 */
-	AnimationComponent.prototype.apply = function(transformComponent) {
+	AnimationComponent.prototype.apply = function (transformComponent) {
 		var data = this.getCurrentSourceData();
 		var pose = this._skeletonPose;
 
@@ -139,7 +139,7 @@ function (
 						for (var i = 0, maxI = value._currentTriggers.length; i < maxI; i++) {
 							var callbacks = this._triggerCallbacks[value._currentTriggers[i]];
 							if (callbacks && callbacks.length) {
-								for ( var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
+								for (var j = 0, maxJ = callbacks.length; j < maxJ; j++) {
 									callbacks[j]();
 								}
 							}
@@ -156,7 +156,7 @@ function (
 		}
 	};
 
-	AnimationComponent.prototype._updateWorldTransform = function(transformComponent) {
+	AnimationComponent.prototype._updateWorldTransform = function (transformComponent) {
 		transformComponent.updateWorldTransform();
 
 		for (var i = 0; i < transformComponent.children.length; i++) {
@@ -167,9 +167,9 @@ function (
 	/*
 	 * Called after the animations are applied
 	 */
-	AnimationComponent.prototype.postUpdate = function() {
+	AnimationComponent.prototype.postUpdate = function () {
 		// post update to clear states
-		for ( var i = 0, max = this.layers.length; i < max; i++) {
+		for (var i = 0, max = this.layers.length; i < max; i++) {
 			this.layers[i].postUpdate();
 		}
 	};
@@ -184,7 +184,7 @@ function (
 		}
 		var last = this.layers.length - 1;
 		this.layers[0]._layerBlender = null;
-		for ( var i = 0; i < last; i++) {
+		for (var i = 0; i < last; i++) {
 			this.layers[i + 1].updateLayerBlending(this.layers[i]);
 		}
 		return this.layers[last].getCurrentSourceData();
@@ -203,32 +203,32 @@ function (
 		}
 	};
 
-	AnimationComponent.prototype.resetClips = function(globalTime) {
+	AnimationComponent.prototype.resetClips = function (globalTime) {
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].resetClips(globalTime);
 		}
 	};
 
-	AnimationComponent.prototype.shiftClipTime = function(shiftTime) {
+	AnimationComponent.prototype.shiftClipTime = function (shiftTime) {
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].shiftClipTime(shiftTime);
 		}
 	};
 
-	AnimationComponent.prototype.setTimeScale = function(timeScale) {
+	AnimationComponent.prototype.setTimeScale = function (timeScale) {
 		for (var i = 0; i < this.layers.length; i++) {
 			this.layers[i].setTimeScale(timeScale);
 		}
 	};
 
-	AnimationComponent.prototype.pause = function() {
+	AnimationComponent.prototype.pause = function () {
 		if (!this.paused) {
 			this.lastTimeOfPause = World.time;
 			this.paused = true;
 		}
 	};
 
-	AnimationComponent.prototype.stop = function() {
+	AnimationComponent.prototype.stop = function () {
 		if (this._skeletonPose) {
 			this._skeletonPose.setToBindPose();
 		}
@@ -236,7 +236,7 @@ function (
 		this.lastTimeOfPause = -1;
 	};
 
-	AnimationComponent.prototype.resume = function() {
+	AnimationComponent.prototype.resume = function () {
 		if (this.paused) {
 			if (this.lastTimeOfPause === -1) {
 				this.resetClips();
@@ -247,10 +247,10 @@ function (
 		this.paused = false;
 	};
 
-	AnimationComponent.prototype.clone = function() {
+	AnimationComponent.prototype.clone = function () {
 		var cloned = new AnimationComponent();
 
-		cloned.layers = this.layers.map(function(layer) {
+		cloned.layers = this.layers.map(function (layer) {
 			return layer.clone();
 		});
 		return cloned;
