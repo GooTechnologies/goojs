@@ -1,4 +1,4 @@
-v0.10.0 --- 2014-05-13
+v0.10.0 --- 2014-05-20
 ======================
 
 Additions:
@@ -18,6 +18,15 @@ Breaking changes:
  - EntityUtils.traverse has been removed as scheduled; use entity.traverse instead
  - ShapeCreator has been removed as scheduled; use new Box/Sphere/Quad... instead
 
+v.0.9.10 --- 2014-05-14
+=======================
+
+Additions:
+ + added experimental .clear on GooRunner, World and SystemBus
+
+Fixes:
+ * fixed video looping bug
+ * made sure projects loads even if sound decoding fails
 
 v0.9.9 --- 2014-05-06
 =====================
