@@ -4,6 +4,7 @@ v0.10.0 --- 2014-05-20
 Additions:
  + Experimental way of clearing the engine using GooRunner.prototype.clear
  + Examples are linked to from jsdocs
+ + Added Matrix4x4.prototype.getRotation
 
 Fixes:
  * fix in Quaternion.prototype.fromVectorToVector
