@@ -103,8 +103,6 @@ function(
 			this.first = false;
 			return;
 		}
-		this.shadowResults = [];
-		this.shadowLights = [];
 		for (var i = 0; i < lights.length; i++) {
 			var light = lights[i];
 

@@ -183,10 +183,11 @@ function (
 
 		// Bind attributes
 		//TODO: good?
-		if (this.attributes) {
+		// if (this.attributes) {
 		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
+		if (shaderInfo.meshData !== record.meshData) {
 			// record.attributes = this.attributes;
-			// record.meshData = shaderInfo.meshData;
+			record.meshData = shaderInfo.meshData;
 			var attributeMap = shaderInfo.meshData.attributeMap;
 
 			var attributes = this.attributes;
@@ -212,7 +213,10 @@ function (
 			}
 		}
 
-		this._bindUniforms(shaderInfo);
+		// if (shaderInfo.material !== record.material) {
+			// record.material = shaderInfo.material;
+			this._bindUniforms(shaderInfo);
+		// }
 	};
 
 	Shader.prototype._bindUniforms = function (shaderInfo) {
