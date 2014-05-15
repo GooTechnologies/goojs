@@ -40,10 +40,14 @@ function(
 		if (!parent.animationComponent || !parent.animationComponent._skeletonPose) { return; }
 		var pose = parent.animationComponent._skeletonPose;
 		var jointTransform = pose._globalTransforms[this.jointIndex];
-		if (!jointTransform) { return; }
+		if (!jointTransform) { return; }
 
 		entity.transformComponent.transform.matrix.copy(jointTransform.matrix);
+		jointTransform.matrix.getTranslation(entity.transformComponent.transform.translation);
+		jointTransform.matrix.getScale(entity.transformComponent.transform.scale);
+		jointTransform.matrix.getRotation(entity.transformComponent.transform.rotation);
 		updateWorldTransform(entity.transformComponent);
+		entity.transformComponent._dirty = true;
 	};
 
 	function updateWorldTransform(transformComponent) {
