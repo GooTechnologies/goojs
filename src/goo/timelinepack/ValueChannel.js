@@ -44,6 +44,8 @@ define([
 			var index = this._find(this.keyframes, time) + 1;
 			this.keyframes.splice(index, 0, newKeyframe);
 		}
+
+		return this;
 	};
 
 	/**
@@ -51,12 +53,9 @@ define([
 	 * @param time
 	 */
 	ValueChannel.prototype.update = function (time) {
-		if (!this.enabled) { return; }
+		if (!this.enabled) { return this.value; }
+		if (!this.keyframes.length) { return this.value; }
 
-		// run update callback on current position
-		if (!this.keyframes.length) {
-			return;
-		}
 		var newValue;
 		var newEntryIndex;
 		if (time <= this.keyframes[0].time) {
@@ -68,22 +67,20 @@ define([
 			var newEntry = this.keyframes[newEntryIndex];
 			var nextEntry = this.keyframes[newEntryIndex + 1];
 
-			if (nextEntry) {
-				var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
-				var progressValue = newEntry.easingFunction(progressInEntry);
+			var progressInEntry = (time - newEntry.time) / (nextEntry.time - newEntry.time);
+			var progressValue = newEntry.easingFunction(progressInEntry);
 
-				newValue = MathUtils.lerp(progressValue, newEntry.value, nextEntry.value);
-			} else {
-				newValue = newEntry.value;
-			}
+			newValue = MathUtils.lerp(progressValue, newEntry.value, nextEntry.value);
 		}
 
 		//! AT: comparing floats with === is ok here
-		if (this.value !== newValue || true) { // overriding for now to get time progression
-			this.value = newValue;
-			this.callbackUpdate(time, this.value, newEntryIndex);
-		}
-		return newValue;
+		// if (this.value !== newValue || true) { // overriding for now to get time progression
+		//! AT: not sure if create people want this all the time or not
+		this.value = newValue;
+		this.callbackUpdate(time, this.value, newEntryIndex);
+		// }
+
+		return this;
 	};
 
 	ValueChannel.prototype.setTime = ValueChannel.prototype.update;
@@ -101,11 +98,10 @@ define([
 
 	ValueChannel.getRotationTweener = function (angleIndex, entityId, resolver, rotation) {
 		var entity;
-		var degToRad = Math.PI / 180;
 		var func = function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
 			var rotation = func.rotation;
-			rotation[angleIndex] = value * degToRad;
+			rotation[angleIndex] = value * MathUtils.DEG_TO_RAD;
 			entity.transformComponent.transform.rotation.fromAngles(rotation[0], rotation[1], rotation[2]);
 			entity.transformComponent.setUpdated();
 		};

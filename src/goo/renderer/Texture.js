@@ -152,6 +152,11 @@ function (
 				throw 'Data textures need width and height';
 			}
 		} else if (data instanceof HTMLCanvasElement) {
+			if (image instanceof Array) {
+				this.image = {
+					data: image
+				};
+			}
 			this.image.dataReady = true;
 		} else {
 			if (image instanceof Array) {

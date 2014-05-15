@@ -88,6 +88,7 @@ function (
 						}
 						/**/
 
+						console.error(err);
 						SystemBus.emit('goo.scriptError', err);
 					}
 				}
@@ -120,23 +121,24 @@ function (
 				try {
 					script.update(script.parameters, script.context, this._gooClasses);
 				} catch (e) {
-						script.enabled = false;
-						var err = {
-							id: script.id,
-							errors: [{
-								message: e.message || e,
-								phase: 'update'
-							}]
-						}
-						// TODO Test if this works across browsers
-						/**/
-						var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-						if (m) {
-							err.errors[0].line = parseInt(m[1], 10) - 1;
-						}
-						/**/
+					script.enabled = false;
+					var err = {
+						id: script.id,
+						errors: [{
+							message: e.message || e,
+							phase: 'update'
+						}]
+					}
+					// TODO Test if this works across browsers
+					/**/
+					var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+					if (m) {
+						err.errors[0].line = parseInt(m[1], 10) - 1;
+					}
+					/**/
 
-						SystemBus.emit('goo.scriptError', err);
+					console.error(err);
+					SystemBus.emit('goo.scriptError', err);
 				}
 			}
 		}
@@ -168,7 +170,7 @@ function (
 							err.errors[0].line = parseInt(m[1], 10) - 1;
 						}
 						/**/
-
+						console.error(err);
 						SystemBus.emit('goo.scriptError', err);
 					}
 				}

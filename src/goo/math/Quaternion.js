@@ -340,7 +340,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 	};
 
 	/**
-	 * @description Performs a multiplication between the current quaternion and another and stores the result locally. 
+	 * @description Performs a multiplication between the current quaternion and another and stores the result locally.
 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -517,7 +517,7 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 			var pivotVector = new Vector3();
 			var dot = a.dot(b) / factor;
 			var theta = Math.acos(Math.max(-1.0, Math.min(dot, 1.0)));
-			a.cross(b, pivotVector);
+			Vector3.cross(a, b, pivotVector);
 			if (dot < 0.0 && pivotVector.length() < MathUtils.EPSILON) {
 				// Vectors parallel and opposite direction, therefore a rotation of 180 degrees about any vector
 				// perpendicular to this vector will rotate vector a onto vector b.

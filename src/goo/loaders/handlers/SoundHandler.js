@@ -7,7 +7,7 @@ define([
 	'goo/util/ObjectUtil'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	AudioContext,
 	Sound,
@@ -57,7 +57,7 @@ function(
 	 * @param {ref}
 	 * @private
 	 */
-	SoundHandler.prototype._remove = function(ref) {
+	SoundHandler.prototype._remove = function (ref) {
 		var sound = this._objects[ref];
 		if (sound) {
 			sound.stop();
@@ -70,7 +70,7 @@ function(
 	 * @param {object} config
 	 * @private
 	 */
-	SoundHandler.prototype._prepare = function(config) {
+	SoundHandler.prototype._prepare = function (config) {
 		_.defaults(config, {
 			loop: false,
 			audioRefs: {},
@@ -84,7 +84,7 @@ function(
 	 * @returns {Howl}
 	 * @private
 	 */
-	SoundHandler.prototype._create = function() {
+	SoundHandler.prototype._create = function () {
 		return new Sound();
 	};
 
@@ -95,15 +95,14 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */
-	SoundHandler.prototype._update = function(ref, config, options) {
+	SoundHandler.prototype._update = function (ref, config, options) {
 		if (!AudioContext) {
 			return PromiseUtil.createDummyPromise();
 		}
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(sound) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (sound) {
 			if (!sound) { return; }
 			sound.update(config);
-
 			for (var i = 0; i < that._codecs.length; i++) {
 				var codec = that._codecs[i];
 				var ref = config.audioRefs[codec.type];
@@ -114,15 +113,20 @@ function(
 						return sound;
 					} else {
 						/*jshint -W083 */
-						return that.loadObject(ref).then(function(buffer) {
+						return that.loadObject(ref).then(function (buffer) {
 							var promise = new RSVP.Promise();
-							AudioContext.decodeAudioData(buffer, function(audioBuffer) {
+							AudioContext.decodeAudioData(buffer, function (audioBuffer) {
 								promise.resolve(audioBuffer);
+							}, function (/*err*/) {
+								console.error('Could not decode audio ' + ref);
+								promise.resolve(null);
 							});
 							return promise;
-						}).then(function(audioBuffer) {
-							that._audioCache[ref] = audioBuffer;
-							sound.setAudioBuffer(audioBuffer);
+						}).then(function (audioBuffer) {
+							if (audioBuffer) {
+								that._audioCache[ref] = audioBuffer;
+								sound.setAudioBuffer(audioBuffer);
+							}
 							return sound;
 						});
 					}

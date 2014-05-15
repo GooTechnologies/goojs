@@ -234,5 +234,6 @@ define([
 	'test/entities/components/ScriptComponent-test',
 	'test/timelinepack/ValueChannel-test',
 	'test/timelinepack/EventChannel-test',
+	'test/timelinepack/TimelineComponent-test',
 	'test/timelinepack/TimelineComponentHandler-test'
-], function() {});
+], function () {});
