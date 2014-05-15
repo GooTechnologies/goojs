@@ -5,6 +5,11 @@ define([
 	) {
 	'use strict';
 
+	/**
+	 * Timeline component
+	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example}</caption>
+	 * @constructor
+	 */
 	function TimelineComponent() {
 		this.type = 'TimelineComponent';
 
@@ -21,9 +26,11 @@ define([
 	/**
 	 * Adds a channel
 	 * @param {Channel} channel
+	 * @returns {TimelineComponent} Returns self to allow chaining
 	 */
 	TimelineComponent.prototype.addChannel = function (channel) {
 		this.channels.push(channel);
+		return this;
 	};
 
 	/**
@@ -38,10 +45,8 @@ define([
 			} else {
 				time = this.duration;
 			}
-		} else if (time < 0) {
-			this.time = 0;
 		}
-		if (time === this.time) { return; }
+		if (time === this.time) { return this; }
 		this.time = time;
 
 		for (var i = 0; i < this.channels.length; i++) {
@@ -49,22 +54,39 @@ define([
 
 			channel.update(this.time);
 		}
+
+		return this;
 	};
 
 	/**
 	 * Sets the time on all channels
 	 * @param {number} time
-	 * @returns {object} The new channel values
 	 */
 	TimelineComponent.prototype.setTime = function (time) {
-		var retVal = {};
 		this.time = time;
 
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
 
-			retVal[channel.id] = channel.setTime(this.time);
+			channel.setTime(this.time);
 		}
+
+		return this;
+	};
+
+	/**
+	 * Retrieves the values of all channels
+	 * @private
+	 * @returns {object}
+	 */
+	TimelineComponent.prototype.getValues = function () {
+		var retVal = {};
+
+		for (var i = 0; i < this.channels.length; i++) {
+			var channel = this.channels[i];
+			retVal[channel.id] = channel.value;
+		}
+
 		return retVal;
 	};
 

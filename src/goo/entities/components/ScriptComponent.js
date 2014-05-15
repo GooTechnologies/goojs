@@ -72,12 +72,14 @@ function (
 					try {
 						script.setup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {
-						script.enabled = false;
-						SystemBus.emit('goo.scriptError', {
+						var err = {
 							message: e.message || e,
 							phase: 'setup',
 							scriptName: script.name || script.externals.name
-						});
+						};
+						console.error(err);
+						script.enabled = false;
+						SystemBus.emit('goo.scriptError', err);
 					}
 				}
 			}
@@ -109,12 +111,14 @@ function (
 				try {
 					script.update(script.parameters, script.context, this._gooClasses);
 				} catch (e) {
-					script.enabled = false;
-					SystemBus.emit('goo.scriptError', {
+					var err = {
 						message: e.message || e,
 						scriptName: script.name || script.externals.name,
-						phase: 'run'
-					});
+						phase: 'update'
+					};
+					console.error(err);
+					script.enabled = false;
+					SystemBus.emit('goo.scriptError', err);
 				}
 			}
 		}
@@ -132,11 +136,13 @@ function (
 					try {
 						script.cleanup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {
-						SystemBus.emit('goo.scriptError', {
+						var err = {
 							message: e.message || e,
 							scriptName: script.name || script.externals.name,
 							phase: 'cleanup'
-						});
+						};
+						console.error(err);
+						SystemBus.emit('goo.scriptError', err);
 					}
 				}
 				script.enabled = false;

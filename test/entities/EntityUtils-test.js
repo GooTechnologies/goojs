@@ -11,6 +11,7 @@ define([
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/components/TransformComponent',
 	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/HtmlComponent'
 ], function(
@@ -26,6 +27,7 @@ define([
 	TransformSystem,
 	TransformComponent,
 	MeshRendererComponent,
+	MeshDataComponent,
 	LightComponent,
 	HtmlComponent
 ) {
@@ -33,69 +35,14 @@ define([
 
 	describe('EntityUtils', function() {
 		var world;
-		var material = new Material(ShaderLib.simple);
 		var meshData = new Box();
-		var camera = new Camera();
-		var light = new PointLight();
 
 		beforeEach(function() {
 			world = new World();
-			world.add(new TransformComponent());
+			world.registerComponent(TransformComponent);
+			world.registerComponent(MeshDataComponent);
 			world.add(new TransformSystem());
 			Entity.entityCount = 0;
-		});
-
-		it('can create a typical entity holding nothing (backwards compatibile)', function() {
-			var entity = EntityUtils.createTypicalEntity(world);
-			expect(entity.toString()).toBe('Entity_0');
-			expect(entity.hasComponent('MeshDataComponent')).toBeFalsy();
-			expect(entity.hasComponent('MeshRendererComponent')).toBeFalsy();
-			expect(entity.hasComponent('LightComponent')).toBeFalsy();
-			expect(entity.hasComponent('CameraComponent')).toBeFalsy();
-		});
-
-		it('can create a typical entity holding a mesh (backwards compatibile)', function() {
-			var entity = EntityUtils.createTypicalEntity(world, meshData);
-			expect(entity.hasComponent('MeshDataComponent')).toBeTruthy();
-			expect(entity.hasComponent('MeshRendererComponent')).toBeTruthy();
-		});
-
-		it('can create a typical entity holding a mesh and a material (backwards compatibile)', function() {
-			var entity = EntityUtils.createTypicalEntity(world, meshData, material);
-			expect(entity.hasComponent('MeshDataComponent')).toBeTruthy();
-			expect(entity.hasComponent('MeshRendererComponent')).toBeTruthy();
-		});
-
-		it('can create a typical entity holding a mesh, a material and a name (backwards compatibile)', function() {
-			var entity = EntityUtils.createTypicalEntity(world, meshData, material, 'entitate');
-			expect(entity.hasComponent('MeshDataComponent')).toBeTruthy();
-			expect(entity.hasComponent('MeshRendererComponent')).toBeTruthy();
-			expect(entity.toString()).toBe('entitate');
-		});
-
-		it('can create a typical entity holding a light', function() {
-			var entity = EntityUtils.createTypicalEntity(world, light);
-			expect(entity.hasComponent('LightComponent')).toBeTruthy();
-		});
-
-		it('can create a typical entity holding a camera', function() {
-			var entity = EntityUtils.createTypicalEntity(world, camera);
-			expect(entity.hasComponent('CameraComponent')).toBeTruthy();
-		});
-
-		it('can create a typical entity holding located somewhere', function() {
-			var entity = EntityUtils.createTypicalEntity(world, [10, 20, 30]);
-			var translation = entity.transformComponent.transform.translation;
-			expect(translation.data[0] === 10 && translation.data[1] === 20 && translation.data[2] === 30).toBeTruthy();
-		});
-
-		it('can create a typical entity holding all sorts of stuff in random order', function() {
-			var entity = EntityUtils.createTypicalEntity(world, camera, meshData, 'entitate', material, light);
-			expect(entity.toString()).toBe('entitate');
-			expect(entity.hasComponent('MeshDataComponent')).toBeTruthy();
-			expect(entity.hasComponent('MeshRendererComponent')).toBeTruthy();
-			expect(entity.hasComponent('LightComponent')).toBeTruthy();
-			expect(entity.hasComponent('CameraComponent')).toBeTruthy();
 		});
 
 		it('can get the root entity', function() {
@@ -112,10 +59,10 @@ define([
 		});
 
 		it('can get the total bounding box', function() {
-			var e1 = EntityUtils.createTypicalEntity(world, meshData);
-			var e2 = EntityUtils.createTypicalEntity(world, meshData, [10,10,10]);
+			var e1 = world.createEntity(meshData, new MeshRendererComponent());
+			var e2 = world.createEntity(meshData, new MeshRendererComponent(), [10, 10, 10]);
 			e1.transformComponent.attachChild(e2.transformComponent);
-			var e3 = EntityUtils.createTypicalEntity(world, meshData, [10,10,10]);
+			var e3 = world.createEntity(meshData, new MeshRendererComponent(), [10, 10, 10]);
 			e2.transformComponent.attachChild(e3.transformComponent);
 			world.process();
 			var es = [e1,e2,e3,e1,e2,e3];

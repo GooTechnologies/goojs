@@ -48,7 +48,7 @@ function (
 
 	/**
 	 * Fills out script config with default parameters from the declarations in
-	 * the script code. Also adds externals config to data model config, so 
+	 * the script code. Also adds externals config to data model config, so
 	 * that Create can read them.
 	 */
 	ScriptHandler.prototype._specialPrepare = function (script, config) {
@@ -77,7 +77,7 @@ function (
 		};
 	};
 
-	/** 
+	/**
 	 * Remove this script from the cache, and runs the cleanup method of the script.
 	 * @param {string} ref the script guid
 	 */
@@ -96,14 +96,14 @@ function (
 
 	/**
 	 * Update a user-defined script (not a script available in the engine).
-	 * If the new body (in the data model config) differs from the cached body, 
-	 * the script will be reloaded (by means of a script tag). 
-	 * 
+	 * If the new body (in the data model config) differs from the cached body,
+	 * the script will be reloaded (by means of a script tag).
+	 *
 	 * @param {object} script the cached engine script object
 	 * @param {object} config the data model config
 	 */
 	ScriptHandler.prototype._updateFromCustom = function (script, config) {
-		// No change, do nothing		
+		// No change, do nothing
 		if (this._bodyCache[config.id] === config.body) { return script; }
 
 
@@ -188,7 +188,7 @@ function (
 
 	/**
 	 * Update a script that is from the engine. Checks if the class name has changed
-	 * and if so, creates a new script object from the new class. 
+	 * and if so, creates a new script object from the new class.
 	 * @param {object} script needs to have a className property
 	 * @param {object} config data model config
 	 */
@@ -251,9 +251,9 @@ function (
 	};
 
 	/**
-	 * Loads an external javascript lib as a dependency to this script (if it's 
+	 * Loads an external javascript lib as a dependency to this script (if it's
 	 * not already loaded). If the dependency fails to load, an error is set
-	 * on the script. 
+	 * on the script.
 	 * @param {object} script config
 	 * @param {string} url location of the javascript lib
 	 * @param {string} scriptId the guid of the script
@@ -290,10 +290,10 @@ function (
 
 	/**
 	 * Add a global error listener that catches script errors, and tries to match
-	 * them to scripts loaded with this handler. If an error is registered, the 
-	 * script is reset and an error message is appended to it. 
+	 * them to scripts loaded with this handler. If an error is registered, the
+	 * script is reset and an error message is appended to it.
 	 * @private
-	 * 
+	 *
 	 */
 	ScriptHandler.prototype._addGlobalErrorListener = function () {
 		var that = this;
@@ -411,7 +411,7 @@ function (
 
 
 	/**
-	 * Flag a script with an error. The script will be disabled. 
+	 * Flag a script with an error. The script will be disabled.
 	 * @param {object} script
 	 * @param {object} error
 	 * @param {string} error.message

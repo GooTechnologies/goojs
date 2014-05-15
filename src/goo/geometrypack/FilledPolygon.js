@@ -9,7 +9,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class A polygon shape.
+	 * @class A polygon shape
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/FilledPolygon/FilledPolygon-vtest.html Working example}
 	 * @param {Array} verts Array of vertices
 	 * @param {Array} indices Array of indices
 	 */

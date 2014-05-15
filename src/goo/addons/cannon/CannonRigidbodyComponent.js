@@ -29,6 +29,7 @@ function(
 	 * @param {Object}  [settings]
 	 * @param {number}  [settings.mass=1]
 	 * @example
+	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}</caption>
 	 * world.setSystem(new CannonSystem());
 	 * var entity = world.createEntity();
 	 * var rigidBodyComponent = new CannonRigidBodyComponent({

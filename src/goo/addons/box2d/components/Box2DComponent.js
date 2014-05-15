@@ -9,9 +9,10 @@ function(
 
 
 	/**
-	* @class Box2DComponent
-	* @extends Component
-	*/
+	 * @class Box2DComponent<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example}
+	 * @extends Component
+	 */
 	function Box2DComponent(settings) {
 		this.type = 'Box2DComponent';
 

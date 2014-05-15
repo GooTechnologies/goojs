@@ -46,6 +46,8 @@ define([], function () {
 			return a.time - b.time;
 		});
 		this.lastTime = this.keyframes[this.keyframes.length - 1].time;
+
+		return this;
 	};
 
 	return AbstractTimelineChannel;

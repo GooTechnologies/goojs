@@ -19,6 +19,7 @@ function(
 	 * @param {number}                      settings.stepFrequency=60
 	 * @param {Array.<number>}              settings.gravity=[0,-9.82]
 	 * @example
+	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example}</caption>
 	 * var p2System = new P2System({
 	 *     stepFrequency: 60,
 	 *     gravity: [0,-10]

@@ -44,8 +44,9 @@ function(
 	 * @param {boolean} [settings.useWorldTransform=false] use the model world transform instead of local (this setting is experimental)
 	 * @param {boolean} [settings.showBounds=false] show the model world bounding box (this setting is experimental)
 	 * @example
-	 * var entity = EntityUtils.createTypicalEntity(goo.world, ShapeCreator.createBox(20, 10, 1));
-	 * entity.setComponent(new AmmoComponent({mass:5}));
+	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Ammo/Ammo-vtest.html Working example}</caption>
+	 * var entity = world.createEntity(new Box(20, 10, 1));
+	 * entity.setComponent(new AmmoComponent({ mass:5 }));
 	 */
 	function AmmoComponent(settings) {
 		this.settings = settings = settings || {};

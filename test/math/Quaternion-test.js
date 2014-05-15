@@ -131,11 +131,11 @@ define([
 		});
 
 		it('can be set from vector to vector', function(){
+			var p = new Quaternion();
 			var q = new Quaternion();
-			var u = new Vector3();
-			var v = new Vector3();
-			q.fromVectorToVector(u,v);
-			//! schteppe: TODO: How to check ok?
+			q.fromVectorToVector(new Vector3(1, 0, 0), new Vector3(0, 1, 0));
+			p.fromAngleAxis(Math.PI / 2, new Vector3(0, 0, 1));
+			expect(p).toEqual(q);
 		});
 
 		it('can be normalized', function(){

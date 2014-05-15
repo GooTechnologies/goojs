@@ -92,6 +92,9 @@ define([
 			entity.scriptComponent.cleanup();
 		}
 
+		this._world = null;
+		this.context = null;
+
 		System.prototype.clear.call(this);
 	};
 

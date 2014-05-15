@@ -138,6 +138,7 @@ function (
 			} else if (argument instanceof System) {
 				this.setSystem(argument);
 			} else if (argument instanceof Component) {
+				//! AT: TransformComponent and co and NOT instances of Component
 			    this.registerComponent(argument);
 			}
 		}
@@ -457,14 +458,23 @@ function (
 			}
 		}
 
-		//! AT: this looks hacky and probably unnecessary
-		// this.getSystem('ScriptSystem').context = null;
+		this._systems = [];
+
+		// severe all connections from entities to this world
+		var allEntities = this.entityManager.getEntities();
+		for (var i = 0; i < allEntities.length; i++) {
+			var entity = allEntities[i];
+			entity._world = null;
+		}
 
 		this.entityManager.clear();
 
 		this._addedEntities = [];
 		this._changedEntities = [];
 		this._removedEntities = [];
+
+		// severe the connection to gooRunner
+		this.gooRunner = null;
 	};
 
 	return World;

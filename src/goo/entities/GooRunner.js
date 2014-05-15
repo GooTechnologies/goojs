@@ -1,19 +1,15 @@
 define([
 	'goo/entities/World',
+	'goo/renderer/Renderer',
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/systems/RenderSystem',
-	'goo/renderer/Renderer',
 	'goo/entities/systems/BoundingUpdateSystem',
 	'goo/entities/systems/ScriptSystem',
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
+	'goo/entities/systems/AnimationSystem',
 	'goo/util/Stats',
-	"goo/entities/systems/CSSTransformSystem",
-	"goo/entities/systems/AnimationSystem",
-	"goo/entities/systems/LightDebugSystem",
-	"goo/entities/systems/CameraDebugSystem",
-	'goo/entities/systems/MovementSystem',
 
 	'goo/sound/AudioContext',
 	'goo/entities/systems/SoundSystem',
@@ -29,25 +25,22 @@ define([
 	'goo/util/GameUtils',
 	'goo/util/Logo',
 
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/renderer/Material'
 ],
 /** @lends */
 function (
 	World,
+	Renderer,
 	TransformSystem,
 	RenderSystem,
-	Renderer,
 	BoundingUpdateSystem,
 	ScriptSystem,
 	LightingSystem,
 	CameraSystem,
 	ParticlesSystem,
-	Stats,
-	CSSTransformSystem,
 	AnimationSystem,
-	LightDebugSystem,
-	CameraDebugSystem,
-	MovementSystem,
+	Stats,
 
 	AudioContext,
 	SoundSystem,
@@ -63,7 +56,8 @@ function (
 	GameUtils,
 	Logo,
 
-	SystemBus
+	SystemBus,
+	Material
 ) {
 	'use strict';
 
@@ -90,7 +84,7 @@ function (
 	 * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
 	 */
 
-	function GooRunner (parameters) {
+	function GooRunner(parameters) {
 		parameters = parameters || {};
 
 		GameUtils.initAllShims();
@@ -105,33 +99,8 @@ function (
 		 */
 		this.renderer = new Renderer(parameters);
 
-		// do this is a method called setupSystems
-		this.world.setSystem(new ScriptSystem(this.world));
-		this.world.setSystem(new TransformSystem());
-		this.world.setSystem(new CameraSystem());
-		this.world.setSystem(new CSSTransformSystem(this.renderer)); // Go away!
-		this.world.setSystem(new ParticlesSystem());
-		this.world.setSystem(new BoundingUpdateSystem());
-		this.world.setSystem(new LightingSystem());
-		this.world.setSystem(new AnimationSystem());
-		this.world.setSystem(new LightDebugSystem()); // Go away!
-		this.world.setSystem(new CameraDebugSystem()); // Go away!
-		this.world.setSystem(new MovementSystem()); // Go away!
-		if (AudioContext) {
-			this.world.setSystem(new SoundSystem());
-		}
-
-		this.renderSystem = new RenderSystem();
-		this.renderSystems = [this.renderSystem];
-		this.world.setSystem(this.renderSystem);
-
-		// register components - do it in a separate method; can be an array
-		this.world.registerComponent(TransformComponent);
-		this.world.registerComponent(MeshDataComponent);
-		this.world.registerComponent(MeshRendererComponent);
-		this.world.registerComponent(CameraComponent);
-		this.world.registerComponent(LightComponent);
-		this.world.registerComponent(ScriptComponent);
+		this._setBaseSystems();
+		this._registerBaseComponents();
 
 		this.doProcess = true;
 		this.doRender = true;
@@ -211,7 +180,42 @@ function (
 	}
 
 	/**
-	 *
+	 * Sets the base systems on the world
+	 * @private
+	 */
+	GooRunner.prototype._setBaseSystems = function () {
+		this.world.setSystem(new ScriptSystem(this.world));
+		this.world.setSystem(new TransformSystem());
+		this.world.setSystem(new CameraSystem());
+		this.world.setSystem(new ParticlesSystem());
+		this.world.setSystem(new BoundingUpdateSystem());
+		this.world.setSystem(new LightingSystem());
+		this.world.setSystem(new AnimationSystem());
+
+		if (AudioContext) {
+			this.world.setSystem(new SoundSystem());
+		}
+
+		this.renderSystem = new RenderSystem();
+		this.renderSystems = [this.renderSystem];
+		this.world.setSystem(this.renderSystem);
+	};
+
+	/**
+	 * Registers the base components so that methods like Entity.prototype.set can work
+	 * @private
+	 */
+	GooRunner.prototype._registerBaseComponents = function () {
+		this.world.registerComponent(TransformComponent);
+		this.world.registerComponent(MeshDataComponent);
+		this.world.registerComponent(MeshRendererComponent);
+		this.world.registerComponent(CameraComponent);
+		this.world.registerComponent(LightComponent);
+		this.world.registerComponent(ScriptComponent);
+	};
+
+	/**
+	 * Wrapper function for _updateFrame; called by requestAnimationFrame
 	 * @private
 	 * @param time
 	 */
@@ -417,7 +421,7 @@ function (
 		div.style.mozUserSelect = 'none';
 		div.style.msUserSelect = 'none';
 		div.style.userSelect = 'none';
-		div.ondragstart = function() {
+		div.ondragstart = function () {
 			return false;
 		};
 
@@ -469,7 +473,7 @@ function (
 			if (e[activeKey]) {
 				var x = e.clientX;
 				var y = e.clientY;
-				this.pick(x, y, function(id, depth) {
+				this.pick(x, y, function (id, depth) {
 					var entity = this.world.entityManager.getEntityById(id);
 					console.log('Picked entity:', entity, 'At depth:', depth);
 				}.bind(this));
@@ -483,13 +487,13 @@ function (
 	 * @param {function(event)} Callback to call when event is fired
 	 */
 	GooRunner.prototype.addEventListener = function (type, callback) {
-		if(!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
+		if (!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
 		}
 
-		if(typeof callback === 'function') {
+		if (typeof callback === 'function') {
 			this._eventListeners[type].push(callback);
-			if(this._eventListeners[type].length === 1) {
+			if (this._eventListeners[type].length === 1) {
 				this._enableEvent(type);
 			}
 		}
@@ -501,7 +505,7 @@ function (
 	 * @param {function(event)} Callback to remove from event listener
 	 */
 	GooRunner.prototype.removeEventListener = function (type, callback) {
-		if(!this._eventListeners[type]) {
+		if (!this._eventListeners[type]) {
 			return;
 		}
 		var index = this._eventListeners[type].indexOf(callback);
@@ -522,7 +526,7 @@ function (
 	 * @param {number} evt.y
 	 * @param {Event} evt.domEvent The original DOM event
    */
-	GooRunner.prototype.triggerEvent = function(type, evt) {
+	GooRunner.prototype.triggerEvent = function (type, evt) {
 		evt.type = type;
 		this._eventTriggered[type] = evt.domEvent;
 		this._dispatchEvent(evt);
@@ -531,7 +535,7 @@ function (
 
 	GooRunner.prototype._dispatchEvent = function (evt) {
 		for (var type in this._eventTriggered) {
-			if(this._eventTriggered[type] && this._eventListeners[type]) {
+			if (this._eventTriggered[type] && this._eventListeners[type]) {
 				var e = {
 					entity: evt.entity,
 					depth: evt.depth,
@@ -544,11 +548,11 @@ function (
 				};
 				try {
 					for (var i = 0; i < this._eventListeners[type].length; i++) {
-						if(this._eventListeners[type][i](e) === false) {
+						if (this._eventListeners[type][i](e) === false) {
 							break;
 						}
 					}
-				} catch(err) {
+				} catch (err) {
 					console.error(err);
 				}
 				this._eventTriggered[type] = null;
@@ -562,14 +566,14 @@ function (
 	 * @private
 	 */
 	GooRunner.prototype._enableEvent = function (type) {
-		if(this._events[type]) {
+		if (this._events[type]) {
 			return;
 		}
-		var func = function(e) {
+		var func = function (e) {
 			var x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
 			var y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
 			this._eventTriggered[type] = e;
-			this.pick(x, y, function(index, depth) {
+			this.pick(x, y, function (index, depth) {
 				var entity = this.world.entityManager.getEntityByIndex(index);
 				var intersection = Renderer.mainCamera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, depth);
 				this._dispatchEvent({
@@ -695,7 +699,7 @@ function (
 	};
 
 	/**
-	 * Clears the GooRunner and anything associated with it. Once this method is called this instanceof og GooRunner is unusable.
+	 * Clears the GooRunner and anything associated with it. Once this method is called this instanceof of GooRunner is unusable.
 	 */
 	GooRunner.prototype.clear = function () {
 		this.stopGameLoop();
@@ -710,11 +714,29 @@ function (
 		// a lot of stuff may reside in here
 		SystemBus.clear();
 
+		// clearing cached materials
+		Material.store = [];
+		Material.hash = [];
+
 		// this should never have existed in the first place
 		Renderer.mainCamera = null;
 
 		// clears out whatever visibility-change listeners were attached to document
 		GameUtils.clearVisibilityChangeListeners();
+
+		// severe some more connections
+		this.world = null;
+		this.renderer = null;
+		this.renderSystem = null;
+		this.renderSystems = null;
+
+		// and forget any scheduled callbacks as they can hold references too
+		this.callbacks = null;
+		this.callbacksPreProcess = null;
+		this.callbacksPreRender = null;
+		this.callbacksNextFrame = null;
+		this._takeSnapshots = null;
+		this._events = null;
 	};
 
 	return GooRunner;

@@ -67,7 +67,7 @@ module.exports = function (grunt) {
 					modules: [gooModule],
 					paths: {
 						'requireLib': '../lib/require'
-					},
+					}
 
 					// I tried using a wrap block like this, but it has no effect
 					// wrap: { ... }
@@ -132,21 +132,25 @@ module.exports = function (grunt) {
 				packName: 'timelinepack',
 				outBaseDir: 'out'
 			},
+			debugpack: {
+				packName: 'debugpack',
+				outBaseDir: 'out'
+			}
 		},
 		karma: {
 			unit: {
 				configFile: 'test/karma.conf.js',
 				singleRun: true,
 				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
-			},
+			}
 		},
 		shell: {
 			jsdoc: {
-				command: path.resolve('tools', 'generate_jsdoc.sh'),
+				command: path.resolve('tools', 'generate_jsdoc.sh')
 			},
 			jsdoc_json: {
-				command: path.resolve('tools', 'generate_jsdoc_json.sh'),
-			},
+				command: path.resolve('tools', 'generate_jsdoc_json.sh')
+			}
 		},
 		/*
 	    jsdoc : { // Could replace tools/generate_jsdoc.sh, but still need something that makes the tar.gz docs bundle
@@ -184,7 +188,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('default',	['minify']);
 	grunt.registerTask('docs',		['shell:jsdoc']);
 	grunt.registerTask('jsdoc',		['shell:jsdoc']);
-	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack', 'build-pack:timelinepack']);
+	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack', 'build-pack:timelinepack', 'build-pack:debugpack']);
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('test',		['unittest']);
 

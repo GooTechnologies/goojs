@@ -37,6 +37,8 @@ define([
 			var index = this._find(this.keyframes, time) + 1;
 			this.keyframes.splice(index, 0, newCallback);
 		}
+
+		return this;
 	};
 
 	/**
@@ -44,8 +46,8 @@ define([
 	 * @param time
 	 */
 	EventChannel.prototype.update = function (time) {
-		if (!this.enabled) { return; }
-		if (!this.keyframes.length) { return; }
+		if (!this.enabled) { return this; }
+		if (!this.keyframes.length) { return this; }
 
 		// loop
 		if (time < this.oldTime) {
@@ -62,6 +64,8 @@ define([
 		}
 
 		this.oldTime = time;
+
+		return this;
 	};
 
 	/**
@@ -70,8 +74,8 @@ define([
 	 * @param time
 	 */
 	EventChannel.prototype.setTime = function (time) {
-		if (!this.enabled) { return; }
-		if (!this.keyframes.length) { return; }
+		if (!this.enabled) { return this; }
+		if (!this.keyframes.length) { return this; }
 
 		if (time <= this.keyframes[0].time) {
 			this.callbackIndex = 0;
@@ -80,6 +84,8 @@ define([
 		}
 
 		this.oldTime = time;
+
+		return this;
 	};
 
 	return EventChannel;
