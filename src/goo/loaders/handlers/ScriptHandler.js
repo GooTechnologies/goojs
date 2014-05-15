@@ -46,21 +46,6 @@ function (
 	ScriptHandler.prototype.constructor = ScriptHandler;
 	ConfigHandler._registerClass('script', ScriptHandler);
 
-	/**
-	 * Fills out script config with default parameters from the declarations in
-	 * the script code. Also adds externals config to data model config, so
-	 * that Create can read them.
-	 */
-	ScriptHandler.prototype._specialPrepare = function (script, config) {
-		config.options = config.options || {};
-		// fill the rest of the parameters with default values
-		if (script.externals && script.externals.parameters) {
-			ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
-		}
-		if (config.body) {
-			config._externals = script.externals;
-		}
-	};
 
 	/**
 	 * Creates a script data wrapper object to be used in the engine
@@ -76,6 +61,7 @@ function (
 			name: null
 		};
 	};
+
 
 	/**
 	 * Remove this script from the cache, and runs the cleanup method of the script.
@@ -186,6 +172,7 @@ function (
 		return script;
 	};
 
+
 	/**
 	 * Update a script that is from the engine. Checks if the class name has changed
 	 * and if so, creates a new script object from the new class.
@@ -214,41 +201,58 @@ function (
 		return script;
 	};
 
+
 	ScriptHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (script) {
+
+		return ConfigHandler.prototype._update.call(this, ref, config, options)
+		.then(function (script) {
 			if (!script) { return; }
+
+			script = script;
 			var promises = [];
+
 			if (config.body && config.dependencies) {
 				delete script.externals.dependencyErrors;
 				for (var url in config.dependencies) {
 					promises.push(that._addDependency(script, url, config.id));
 				}
 			}
+
 			return RSVP.all(promises).then(function () {
-				if (config.className) {
-					that._updateFromClass(script, config, options);
-				} else if (config.body) {
-					that._updateFromCustom(script, config, options);
-				}
-				that._specialPrepare(script, config);
-				script.name = config.name;
-				if (script.externals.errors || script.externals.dependencyErrors) {
-					SystemBus.emit('scriptError', {
-						id: ref,
-						errors: script.externals.errors,
-						dependencyErrors: script.externals.dependencyErrors
-					});
-					return script;
-				}
-				else {
-					SystemBus.emit('scriptError', {id: ref, errors: null});
-				}
-				_.extend(script.parameters, config.options);
 				return script;
 			});
+		})
+		.then(function (script) {
+			if (!script) { return; }
+
+			if (config.className) { // Engine script.
+				that._updateFromClass(script, config, options);
+			} else if (config.body) { // Custom script.
+				that._updateFromCustom(script, config, options);
+			}
+
+			script.name = config.name;
+			_.extend(script.parameters, config.options);
+
+			// Pass the externals to the config so that Create can access
+			// them easily.
+			if (config.body) {
+				config._externals = script.externals;
+			}
+
+			var error = { id: ref, errors: null };
+			if (script.externals.errors || script.externals.dependencyErrors) {
+				error.errors = script.externals.errors;
+				error.dependencyErrors = script.externals.dependencyErrors;
+			}
+
+			SystemBus.emit('scriptError', error);
+
+			return script;
 		});
 	};
+
 
 	/**
 	 * Loads an external javascript lib as a dependency to this script (if it's
@@ -332,8 +336,8 @@ function (
 	};
 
 
-
 	var types = ['string', 'float', 'int', 'vec3', 'boolean'];
+
 	/**
 	 * Validate external parameters
 	 * @private
@@ -446,7 +450,9 @@ function (
 
 	}
 
+
 	ScriptHandler.DOM_ID_PREFIX = '_script_';
+
 
 	return ScriptHandler;
 });
