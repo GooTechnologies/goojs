@@ -121,12 +121,11 @@ function(
 
 		// Load all the stuff we need
 		var promises = [];
-		for (var id in layerConfig.states) {
-			/*jshint -W083 */
-			promises.push(this.loadObject(id, options).then(function(state) {
+		_.forEach(layerConfig.states, function(stateCfg) {
+			promises.push(that.loadObject(stateCfg.stateRef, options).then(function(state){
 				layer._steadyStates[state.id] = state;
 			}));
-		}
+		}, null, 'sortValue');
 
 		// Populate layer
 		return RSVP.all(promises).then(function() {
