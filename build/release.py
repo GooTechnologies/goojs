@@ -64,15 +64,11 @@ for packName in (
 	'quad',
 	'script',
 	'timeline',
-	'debug'
+	'debug',
+	'p2',
+	'box2d'
 ):
-	shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
-
-#shutil.copy('out/geometrypack.js', release_dir + '/lib/geometrypack.js')
-#shutil.copy('out/quadpack.js', release_dir + '/lib/quadpack.js')
-#shutil.copy('out/scriptpack.js', release_dir + '/lib/scriptpack.js')
-#shutil.copy('out/timelinepack.js', release_dir + '/lib/timelinepack.js')
-#shutil.copy('out/debugpack.js', release_dir + '/lib/debugpack.js')
+    shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
 
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')
