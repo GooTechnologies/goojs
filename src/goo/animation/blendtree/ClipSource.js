@@ -50,7 +50,7 @@ function (
 	 */
 	ClipSource.prototype.setTime = function (globalTime) {
 		var instance = this._clipInstance;
-		if (!instance._startTime) {
+		if (typeof(instance._startTime) !== 'number') {
 			instance._startTime = globalTime;
 		}
 
@@ -116,7 +116,7 @@ function (
 	 * @private
 	 */
 	ClipSource.prototype.resetClips = function (globalTime) {
-		this._clipInstance._startTime = globalTime;
+		this._clipInstance._startTime = typeof(globalTime) !== 'undefined' ? globalTime : 0;
 		this._clipInstance._active = true;
 	};
 

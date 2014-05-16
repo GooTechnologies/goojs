@@ -17,7 +17,7 @@ require([
 	) {
 	'use strict';
 
-	var resourcesPath = '../../../resources/';
+	var resourcesPath = '../../../../resources/';
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -43,9 +43,9 @@ require([
 	// change text
 	var text = 'The quick brown fox\njumps over\nthe lazy dog ';
 	var counter = 0;
-	setInterval(function() {
+	setInterval(function () {
 		counter++;
-		if(counter > text.length) { counter = 1; }
+		if (counter > text.length) { counter = 1; }
 
 		textEntity.textComponent.setText(text.substr(0, counter));
 	}, 100);
