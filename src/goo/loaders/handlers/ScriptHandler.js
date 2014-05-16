@@ -183,7 +183,7 @@ function (
 		if (!script.externals || script.externals.name !== config.className) {
 			var newScript = Scripts.create(config.className);
 			if (!newScript) {
-				throw 'Unrecognized script name';
+				throw new Error('Unrecognized script name');
 			}
 			script.id = config.id;
 			script.externals = newScript.externals;

@@ -4,7 +4,8 @@ define([
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil',
 
-	'goo/scripts/ScriptUtils',
+	'goo/scripts/Scripts',
+	'goo/scripts/ScriptUtils'
 ],
 /** @lends */
 function(
@@ -13,6 +14,7 @@ function(
 	RSVP,
 	_,
 
+	Scripts,
 	ScriptUtils
 ) {
 	"use strict";
@@ -21,7 +23,7 @@ function(
 	* @class
 	* @private
 	*/
-	function ScriptComponentHandler() {
+	function ScriptComponentHandler () {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'ScriptComponent';
 	}
@@ -30,48 +32,95 @@ function(
 	ComponentHandler._registerClass('script', ScriptComponentHandler);
 
 
-	ScriptComponentHandler.prototype._prepare = function(/*config*/) {};
+	ScriptComponentHandler.ENGINE_SCRIPT_PREFIX = "GOO_ENGINE_SCRIPTS/";
 
 
-	ScriptComponentHandler.prototype._create = function() {
+	ScriptComponentHandler.prototype._prepare = function (/*config*/) {};
+
+
+	ScriptComponentHandler.prototype._create = function () {
 		return new ScriptComponent();
 	};
 
 
-	ScriptComponentHandler.prototype.update = function(entity, config, options) {
+	ScriptComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
+
 		return ComponentHandler.prototype.update.call(this, entity, config, options)
-		.then(function(component) {
+		.then(function (component) {
 			if (!component) { return; }
 
+			// Load the scripts that are associated with each script instance
+			// saved in the script component. For engine scripts we just have
+			// to create them.
 			var promises = [];
-			_.forEach(config.scripts, function(scriptInstance) {
-				promises.push(that._load(scriptInstance.scriptRef, options));
+			_.forEach(config.scripts, function (scriptInstance) {
+				var ref = scriptInstance.scriptRef;
+				var isEngineScript = ref.indexOf(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX) === 0;
+
+				if (isEngineScript) {
+					var scriptName = ref.slice(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX.length);
+					promises.push(_createEngineScript(scriptName));
+				} else {
+					promises.push(that._load(scriptInstance.scriptRef, options));
+				}
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function(scripts) {
-				component.scripts = scripts;
-
-				// Set the parameters defined in the script instance config in
-				// the actual script.
-				_.forEach(scripts, function (script) {
-					var scriptInstance = config.scripts[script.id];
-
-					// Fill the options in the instance with default values.
-					if (script.externals && script.externals.parameters) {
-						ScriptUtils.fillDefaultValues(scriptInstance.options, script.externals.parameters);
-					}
-
-					_.extend(script.parameters, scriptInstance.options);
-
-					if (scriptInstance.name) {
-						script.name = scriptInstance.name;
-					}
-				});
-
-				return component;
+			return RSVP.all(promises).then(function (scripts) {
+				return { component: component, scripts: scripts };
 			});
+		})
+		.then(function (result) {
+			if (!result.component) { return; }
+			result.component.scripts = result.scripts;
+
+			// Set the parameters defined in the script instance configs in the
+			// the actual loaded scripts.
+			_.forEach(result.scripts, function (script) {
+				var scriptInstance = null;
+				for (var instanceId in config.scripts) {
+					var instance = config.scripts[instanceId];
+					if (instance.scriptRef === script.id) {
+						scriptInstance = instance;
+					}
+				}
+
+				// Fill the options in the instance with default values.
+				if (script.externals && script.externals.parameters) {
+					ScriptUtils.fillDefaultValues(scriptInstance.options, script.externals.parameters);
+				}
+
+				_.extend(script.parameters, scriptInstance.options);
+				if (scriptInstance.name) { script.name = scriptInstance.name; }
+			});
+
+			return result.component;
 		});
+	};
+
+
+	/**
+	 * Creates a new script engine.
+	 *
+	 * @param {object} scriptName
+	 *		The name of the script which is to be created.
+	 *
+	 * @returns {Promise}
+	 *		A promise which is resolved with the new script.
+	 */
+	 function _createEngineScript(scriptName) {
+		var script = Scripts.create(scriptName);
+		if (!script) { throw new Error('Unrecognized script name'); }
+
+		script.id = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX + scriptName;
+		script.enabled = true;
+
+		// Generate names from external variable names.
+		ScriptUtils.fillDefaultNames(script.externals.parameters);
+
+		var promise = new RSVP.Promise();
+		promise.resolve(script);
+		return promise;
 	};
 
 
