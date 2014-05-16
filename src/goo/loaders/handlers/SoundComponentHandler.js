@@ -83,6 +83,7 @@ function(
 		if (!AudioContext) {
 			return PromiseUtil.createDummyPromise();
 		}
+
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
@@ -96,11 +97,12 @@ function(
 				}
 			}
 
-			// Load all sounds
 			var promises = [];
-			for (var key in config.sounds) {
-				promises.push(that._load(config.sounds[key].soundRef, options));
-			}
+			// Load all sounds
+			_.forEach(config.sounds, function(soundCfg) {
+				promises.push(that._load(soundCfg.soundRef, options));
+			}, null, 'sortValue');
+
 			return RSVP.all(promises).then(function(sounds) {
 				// Add new sounds
 				for (var i = 0; i < sounds.length; i++) {

@@ -105,6 +105,8 @@ define([
 				return {
 					channels: {
 						'c1': {
+							id: 'c1',
+							sortValue:0,
 							propertyKey: 'scaleX',
 							keyframes  : {
 								'k1': {
@@ -125,6 +127,8 @@ define([
 							}
 						},
 						'c2': {
+							id: 'c2',
+							sortValue:1,
 							propertyKey: 'translationY',
 							keyframes  : {
 								'k1': {

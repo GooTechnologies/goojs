@@ -152,6 +152,12 @@ function (
 				throw 'Data textures need width and height';
 			}
 		} else if (data instanceof HTMLCanvasElement) {
+			// REVIEW This is done in the next else too, perhaps move out of this if? Talk with Rikard about it.
+			if (image instanceof Array) {
+				this.image = {
+					data: image
+				};
+			}
 			this.image.dataReady = true;
 		} else {
 			if (image instanceof Array) {

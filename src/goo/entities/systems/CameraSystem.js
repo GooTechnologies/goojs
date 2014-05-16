@@ -17,7 +17,7 @@ function (
 	 */
 	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
-		this.mainCamera = null;
+		this.mainCamera = null; //! AT: what's up with this? is it unused?
 	}
 
 	CameraSystem.prototype = Object.create(System.prototype);
@@ -30,10 +30,10 @@ function (
 	CameraSystem.prototype.findMainCamera = function () {
 		if (this._activeEntities.length) {
 			var firstEntity = this._activeEntities[0];
-				SystemBus.emit('goo.setCurrentCamera', {
-					camera: firstEntity.cameraComponent.camera,
-					entity: firstEntity
-				});
+			SystemBus.emit('goo.setCurrentCamera', {
+				camera: firstEntity.cameraComponent.camera,
+				entity: firstEntity
+			});
 		}
 	};
 

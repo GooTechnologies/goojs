@@ -103,6 +103,7 @@ function(
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
+			window.entities = window.entities || {}
 			entity.static = !!config.static;
 
 			updateTags(entity, config.tags);

@@ -9,7 +9,7 @@ require([
 	'goo/shapes/Torus',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/Camera'
-], function(
+], function (
 	GooRunner,
 	Material,
 	ShaderLib,
@@ -25,11 +25,13 @@ require([
 
 	var goo;
 
+	console.log('Hit 1 to create a goo instance and 2 to destroy it. Use this visual test to check if the garbage collector can collect anything related to goo');
+
 	window.addEventListener('keyup', function (e) {
 		if (e.which === 49) {
-			create();
-		} else {
-			destroy();
+			if (!goo) { create(); }
+		} else if (e.which === 50) {
+			if (goo) { destroy(); }
 		}
 	});
 

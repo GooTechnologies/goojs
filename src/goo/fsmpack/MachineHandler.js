@@ -144,6 +144,7 @@ define([
 	 * @private
 	 */
 	MachineHandler.prototype._updateState = function(machine, stateConfig, options) {
+		var that = this;
 		var state;
 		if (machine._states && machine._states[stateConfig.id]) {
 			state = machine._states[stateConfig.id];
@@ -171,6 +172,14 @@ define([
 		for (var key in stateConfig.childMachines) {
 			promises.push(this._load(stateConfig.childMachines[key].machineRef, options));
 		}
+
+		/*
+		// TODO: Test and use this. Will make the promises sorted correctly.
+		_.forEach(stateConfig.childMachines, function(childMachineConfig) {
+			promises.push(that._load(childMachineConfig.machineRef, options));
+		}, null, 'sortValue');
+		*/
+
 		return RSVP.all(promises).then(function(machines) {
 			for (var i = 0; i < machines; i++) {
 				state.addMachine(machines[i]);

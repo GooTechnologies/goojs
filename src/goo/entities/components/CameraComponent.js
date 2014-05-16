@@ -43,23 +43,23 @@ function (
 		 * @default (0, 0, -1)
 		 */
 		this.dirVec = new Vector3(0, 0, -1);
-
-		this.api = {
-			//! AT: the component holds no reference to its entity therefore this method could never stay on the component
-			setAsMainCamera: function () {
-				SystemBus.emit('goo.setCurrentCamera', {
-					camera: this.cameraComponent.camera,
-					entity: this
-				});
-				return this;
-			}
-		};
 	}
 
 	CameraComponent.type = 'CameraComponent';
 
 	CameraComponent.prototype = Object.create(Component.prototype);
 	CameraComponent.prototype.constructor = CameraComponent;
+
+	CameraComponent.prototype.api = {
+		//! AT: the component holds no reference to its entity therefore this method could never stay on the component
+		setAsMainCamera: function () {
+			SystemBus.emit('goo.setCurrentCamera', {
+				camera: this.cameraComponent.camera,
+				entity: this
+			});
+			return this;
+		}
+	};
 
 	/**
 	 * @param {number} axisId Axis to use as up-vector (0=X, 1=Y, 2=Z).

@@ -125,6 +125,7 @@ function(
 			if (config.children) {
 				// Attach children
 				// TODO: Watch out for circular dependencies
+				// TODO: Use sort values
 				var keys = Object.keys(config.children);
 				for (var i = 0; i < keys.length; i++) {
 					var childRef = config.children[keys[i]].entityRef;

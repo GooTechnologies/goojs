@@ -110,6 +110,7 @@ function(
 	 * @param {object} options
 	 */
 	SceneHandler.prototype._handleEntities = function(config, scene, options) {
+		var that = this;
 		var promises = [];
 
 		var addedEntityIds = _.clone(config.entities);
@@ -125,9 +126,9 @@ function(
 			}
 		}
 
-		for (var key in addedEntityIds) {
-			promises.push(this._load(config.entities[key].entityRef, options));
-		}
+		_.forEach(addedEntityIds, function(entityConfig) {
+			promises.push(that._load(entityConfig.entityRef, options));
+		}, null, 'sortValue');
 
 		return RSVP.all(promises).then(function(entities) {
 			// Adding new entities

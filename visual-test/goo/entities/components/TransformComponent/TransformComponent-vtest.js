@@ -53,27 +53,27 @@ require([
 	function createBoxTower1() {
 		// keepTransform = false; --------------------
 		box11 = world.createEntity(boxMeshData, getColoredMaterial(1, 0, 0), [-2, 0, 0]);
-		box11.transformComponent.setRotation(0, Math.PI/4, 0);
+		box11.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box11.transformComponent.setScale(1.5, 1, 1);
 		box11.addToWorld();
 
 		box12 = world.createEntity(boxMeshData, getColoredMaterial(1, 0.5, 0), [-2, 1, 0]);
-		box12.transformComponent.setRotation(0, Math.PI/4, 0);
+		box12.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box12.transformComponent.setScale(1.5, 1, 1);
 		box12.addToWorld();
 
 		box13 = world.createEntity(boxMeshData, getColoredMaterial(1, 1, 0), [-2, 2, 0]);
-		box13.transformComponent.setRotation(0, Math.PI/4, 0);
+		box13.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box13.transformComponent.setScale(1.5, 1, 1);
 		box13.addToWorld();
 
 		box14 = world.createEntity(boxMeshData, getColoredMaterial(0, 1, 0), [-2, 3, 0]);
-		box14.transformComponent.setRotation(0, Math.PI/4, 0);
+		box14.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box14.transformComponent.setScale(1.5, 1, 1);
 		box14.addToWorld();
 
 		box15 = world.createEntity(boxMeshData, getColoredMaterial(0, 0, 1), [-2, 4, 0]);
-		box15.transformComponent.setRotation(0, Math.PI/4, 0);
+		box15.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box15.transformComponent.setScale(1.5, 1, 1);
 		box15.addToWorld();
 	}
@@ -81,27 +81,27 @@ require([
 	function createBoxTower2() {
 		// keepTransform = true; ---------------------
 		box21 = world.createEntity(boxMeshData, getColoredMaterial(1, 0, 0), [2, 0, 0]);
-		box21.transformComponent.setRotation(0, Math.PI/4, 0);
+		box21.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box21.transformComponent.setScale(1.5, 1, 1);
 		box21.addToWorld();
 
 		box22 = world.createEntity(boxMeshData, getColoredMaterial(1, 0.5, 0), [2, 1, 0]);
-		box22.transformComponent.setRotation(0, Math.PI/4, 0);
+		box22.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box22.transformComponent.setScale(1.5, 1, 1);
 		box22.addToWorld();
 
 		box23 = world.createEntity(world, boxMeshData, getColoredMaterial(1, 1, 0), [2, 2, 0]);
-		box23.transformComponent.setRotation(0, Math.PI/4, 0);
+		box23.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box23.transformComponent.setScale(1.5, 1, 1);
 		box23.addToWorld();
 
 		box24 = world.createEntity(world, boxMeshData, getColoredMaterial(0, 1, 0), [2, 3, 0]);
-		box24.transformComponent.setRotation(0, Math.PI/4, 0);
+		box24.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box24.transformComponent.setScale(1.5, 1, 1);
 		box24.addToWorld();
 
 		box25 = world.createEntity(world, boxMeshData, getColoredMaterial(0, 0, 1), [2, 4, 0]);
-		box25.transformComponent.setRotation(0, Math.PI/4, 0);
+		box25.transformComponent.setRotation(0, Math.PI / 4, 0);
 		box25.transformComponent.setScale(1.5, 1, 1);
 		box25.addToWorld();
 	}

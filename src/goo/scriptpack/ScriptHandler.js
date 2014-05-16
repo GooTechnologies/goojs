@@ -58,7 +58,10 @@ function (
 			ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
 		}
 		if (config.body) {
-			config._externals = script.externals;
+			SystemBus.emit('goo.scriptExternals', {
+				id: config.id,
+				externals: script.externals
+			});
 		}
 	};
 
@@ -107,7 +110,7 @@ function (
 		if (this._bodyCache[config.id] === config.body) { return script; }
 
 
-		delete script.externals.errors;
+		delete script.errors;
 		this._bodyCache[config.id] = config.body;
 
 		// delete the old script tag and add a new one
@@ -220,10 +223,10 @@ function (
 			if (!script) { return; }
 			var promises = [];
 			if (config.body && config.dependencies) {
-				delete script.externals.dependencyErrors;
-				for (var url in config.dependencies) {
-					promises.push(that._addDependency(script, url, config.id));
-				}
+				delete script.dependencyErrors;
+				_.forEach(config.dependencies, function(scriptConfig) {
+					promises.push(that._addDependency(script, scriptConfig.url, config.id));
+				}, null, 'sortValue');
 			}
 			return RSVP.all(promises).then(function () {
 				if (config.className) {
@@ -233,16 +236,16 @@ function (
 				}
 				that._specialPrepare(script, config);
 				script.name = config.name;
-				if (script.externals.errors || script.externals.dependencyErrors) {
-					SystemBus.emit('scriptError', {
+				if (script.errors || script.dependencyErrors) {
+					SystemBus.emit('goo.scriptError', {
 						id: ref,
-						errors: script.externals.errors,
-						dependencyErrors: script.externals.dependencyErrors
+						errors: script.errors,
+						dependencyErrors: script.dependencyErrors
 					});
 					return script;
 				}
 				else {
-					SystemBus.emit('scriptError', {id: ref, errors: null});
+					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
 				}
 				_.extend(script.parameters, config.options);
 				return script;
@@ -425,15 +428,15 @@ function (
 			if (error.line) {
 				message += ' - on line ' + error.line;
 			}
-			script.externals.dependencyErrors = script.externals.dependencyErrors || {};
-			script.externals.dependencyErrors[error.file] = error;
+			script.dependencyErrors = script.dependencyErrors || {};
+			script.dependencyErrors[error.file] = error;
 		} else {
-			script.externals.errors = script.externals.errors || [];
+			script.errors = script.errors || [];
 			var message = error.message;
 			if (error.line) {
 				message += ' - on line ' + error.line;
 			}
-			script.externals.errors.push(error);
+			script.errors.push(error);
 
 			script.setup = null;
 			script.update = null;
