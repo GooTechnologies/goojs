@@ -161,11 +161,7 @@ module.exports = function (grunt) {
 
 	function extractPathName(packPath) {
 		var separator = packPath.lastIndexOf('/');
-		if (separator !== -1) {
-			return packPath.substr(separator + 1);
-		} else {
-			return packPath;
-		}
+		return separator === -1 ? packPath : packPath.substr(separator + 1);
 	}
 
 	grunt.registerMultiTask('build-pack', 'Minifies a pack', function () {

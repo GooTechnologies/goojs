@@ -141,7 +141,7 @@ module.exports = function (grunt) {
 				outBaseDir: 'out'
 			},
 			scriptpack: {
-				packName: 'scriptpack',
+				packPath: 'scriptpack',
 				outBaseDir: 'out'
 			}
 		},
