@@ -117,23 +117,27 @@ module.exports = function (grunt) {
 		},
 		'build-pack': {
 			fsmpack: {
-				packName: 'fsmpack',
+				packPath: 'fsmpack',
 				outBaseDir: 'out'
 			},
 			geometrypack: {
-				packName: 'geometrypack',
+				packPath: 'geometrypack',
 				outBaseDir: 'out'
 			},
 			quadpack: {
-				packName: 'quadpack',
+				packPath: 'quadpack',
 				outBaseDir: 'out'
 			},
 			timelinepack: {
-				packName: 'timelinepack',
+				packPath: 'timelinepack',
 				outBaseDir: 'out'
 			},
 			debugpack: {
-				packName: 'debugpack',
+				packPath: 'debugpack',
+				outBaseDir: 'out'
+			},
+			p2pack: {
+				packPath: 'addons/p2pack',
 				outBaseDir: 'out'
 			},
 			scriptpack: {
@@ -204,7 +208,15 @@ module.exports = function (grunt) {
 
 	// Creates src/goo.js that depends on all engine modules
 	grunt.registerTask('main-file', function () {
+		// prefiltering out files in packs on the 'ground' level
 		var sourceFiles = glob.sync('!(*pack)/**/*.js', { cwd: 'src/goo/', nonegate: true });
+
+		// filtering files in packs that are not on the 'ground' level
+		var regexp = /.+pack\/.+/;
+		sourceFiles = sourceFiles.filter(function (sourceFile) {
+			return !regexp.test(sourceFile);
+		});
+
 		var allModules = _.map(sourceFiles, function (f) {
 			return 'goo/' + f.replace(/\.js/, '');
 		});
