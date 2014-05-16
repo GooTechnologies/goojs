@@ -44,7 +44,7 @@ require([
 	function getFSMComponent(ballEntity, dx, dy) {
 		var fsmComponent = new FSMComponent();
 
-		(function() {
+		(function () {
 			// ball mover
 			var machineBall = new Machine('ball');
 			fsmComponent.addMachine(machineBall);
@@ -54,7 +54,7 @@ require([
 			stateSingular.addAction(new AddPositionAction(null, { position: ['dx', 'dy', 0] }));
 		})();
 
-		(function() {
+		(function () {
 			// ball collider
 			var machineWall = new Machine('wall');
 			fsmComponent.addMachine(machineWall);
@@ -69,10 +69,10 @@ require([
 			machineWall.addState(stateMoving);
 			stateMoving.addAction(new AddPositionAction(null, { entity: ballEntity, amountX: 'dx', amountY: 'dy', everyFrame: true }));
 			stateMoving.addAction(new GetPositionAction(null, { entity: ballEntity, variableX: 'px', variableY: 'py' }));
-			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'px', rightHand: -dx/2, transitions: { less: 'toFlipX' } }));
-			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'px', rightHand:  dx/2, transitions: { greater: 'toFlipX' } }));
-			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'py', rightHand: -dy/2, transitions: { less: 'toFlipY' } }));
-			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'py', rightHand:  dy/2, transitions: { greater: 'toFlipY' } }));
+			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'px', rightHand: -dx / 2, transitions: { less: 'toFlipX' } }));
+			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'px', rightHand:  dx / 2, transitions: { greater: 'toFlipX' } }));
+			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'py', rightHand: -dy / 2, transitions: { less: 'toFlipY' } }));
+			stateMoving.addAction(new NumberCompareAction(null, { leftHand: 'py', rightHand:  dy / 2, transitions: { greater: 'toFlipY' } }));
 			stateMoving.setTransition('toFlipX', 'flipX');
 			stateMoving.setTransition('toFlipY', 'flipY');
 
@@ -103,10 +103,10 @@ require([
 	}
 
 	function addWalls(dx, dy) {
-		addWall( -dx / 2,       0,      1, dy + 1);
-		addWall(       0,  dy / 2, dx + 1,      1);
-		addWall(  dx / 2,       0,      1, dy + 1);
-		addWall(       0, -dy / 2, dx + 1,      1);
+		addWall(-dx / 2,       0,      1, dy + 1);
+		addWall(      0,  dy / 2, dx + 1,      1);
+		addWall( dx / 2,       0,      1, dy + 1);
+		addWall(      0, -dy / 2, dx + 1,      1);
 	}
 
 	function getColor(x, y, z) {
@@ -114,7 +114,8 @@ require([
 		return [
 			Math.cos(x + y + z) / 2 + 0.5,
 			Math.cos(x + y + z + step) / 2 + 0.5,
-			Math.cos(x + y + z + step * 2) / 2 + 0.5];
+			Math.cos(x + y + z + step * 2) / 2 + 0.5
+		];
 	}
 
 	function addBall(x, y, z) {
@@ -127,9 +128,7 @@ require([
 		var light = new PointLight(new Vector3(color[0], color[1], color[2]));
 		light.range = 10;
 
-		var lampEntity = world.createEntity(lampMeshData, lampMaterial, 'lamp1', [x, y, z]).addToWorld();
-
-		return lampEntity;
+		return world.createEntity(lampMeshData, lampMaterial, 'lamp1', [x, y, z], light).addToWorld();
 	}
 
 	var goo = V.initGoo();

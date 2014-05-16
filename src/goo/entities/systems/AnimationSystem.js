@@ -31,10 +31,8 @@ function (
 
 	AnimationSystem.prototype.pause = function () {
 		this.passive = true;
-		//! AT: why loop like this? why just here? does 'len' stand for 'length'? the length of the array remains the same
-		var len = this._activeEntities.length;
-		while (len--) {
-			this._activeEntities[len].animationComponent.pause();
+		for (var i = 0; i < this._activeEntities.length; i++) {
+			this._activeEntities[i].animationComponent.pause();
 		}
 	};
 

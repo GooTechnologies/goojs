@@ -94,7 +94,7 @@ function (
 	 */
 	AnimationLayer.prototype.update = function(globalTime) {
 		if(this._currentState) {
-			this._currentState.update(globalTime || World.time);
+			this._currentState.update(typeof(globalTime)!=='undefined' ? globalTime : World.time);
 		}
 	};
 
@@ -115,7 +115,7 @@ function (
 	 * @returns {Boolean} true if a transition was found and started
 	 */
 	AnimationLayer.prototype.transitionTo = function(state, globalTime) {
-		globalTime = globalTime || World.time;
+		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 		var cState = this._currentState;
 		var transition;
 		if (this._steadyStates[state] === cState) {
@@ -172,7 +172,7 @@ function (
 	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
 	 */
 	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime) {
-		globalTime = globalTime || World.time;
+		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 		this._currentState = state;
 		if (state) {
 			if (rewind) {
@@ -244,13 +244,13 @@ function (
 
 	AnimationLayer.prototype.resetClips = function(globalTime) {
 		if (this._currentState) {
-			this._currentState.resetClips(globalTime || World.time);
+			this._currentState.resetClips(typeof(globalTime) !== 'undefined' ? globalTime : World.time);
 		}
 	};
 
 	AnimationLayer.prototype.shiftClipTime = function(shiftTime) {
 		if (this._currentState) {
-			this._currentState.shiftClipTime(shiftTime || 0);
+			this._currentState.shiftClipTime(typeof(shiftTime) !== 'undefined' ? shiftTime : 0);
 		}
 	};
 
