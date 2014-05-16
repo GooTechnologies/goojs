@@ -224,9 +224,9 @@ function (
 			var promises = [];
 			if (config.body && config.dependencies) {
 				delete script.dependencyErrors;
-				for (var url in config.dependencies) {
-					promises.push(that._addDependency(script, url, config.id));
-				}
+				_.forEach(config.dependencies, function(scriptConfig) {
+					promises.push(that._addDependency(script, scriptConfig.url, config.id));
+				}, null, 'sortValue');
 			}
 			return RSVP.all(promises).then(function () {
 				if (config.className) {
