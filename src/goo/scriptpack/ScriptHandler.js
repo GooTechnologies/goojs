@@ -2,10 +2,10 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/util/rsvp',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/scripts/OrbitNPanControlScript',
-	'goo/scripts/FlyControlScript',
-	'goo/scripts/WASDControlScript',
-	'goo/scripts/BasicControlScript',
+	'goo/scriptpack/OrbitNPanControlScript',
+	'goo/scriptpack/FlyControlScript',
+	'goo/scriptpack/WASDControlScript',
+	'goo/scriptpack/BasicControlScript',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus',
@@ -46,6 +46,24 @@ function (
 	ScriptHandler.prototype.constructor = ScriptHandler;
 	ConfigHandler._registerClass('script', ScriptHandler);
 
+	/**
+	 * Fills out script config with default parameters from the declarations in
+	 * the script code. Also adds externals config to data model config, so
+	 * that Create can read them.
+	 */
+	ScriptHandler.prototype._specialPrepare = function (script, config) {
+		config.options = config.options || {};
+		// fill the rest of the parameters with default values
+		if (script.externals && script.externals.parameters) {
+			ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
+		}
+		if (config.body) {
+			SystemBus.emit('goo.scriptExternals', {
+				id: config.id,
+				externals: script.externals
+			});
+		}
+	};
 
 	/**
 	 * Creates a script data wrapper object to be used in the engine
@@ -93,7 +111,7 @@ function (
 		if (this._bodyCache[config.id] === config.body) { return script; }
 
 
-		delete script.externals.errors;
+		delete script.errors;
 		this._bodyCache[config.id] = config.body;
 
 		// delete the old script tag and add a new one
@@ -209,19 +227,16 @@ function (
 		.then(function (script) {
 			if (!script) { return; }
 
-			script = script;
 			var promises = [];
 
 			if (config.body && config.dependencies) {
-				delete script.externals.dependencyErrors;
-				for (var url in config.dependencies) {
-					promises.push(that._addDependency(script, url, config.id));
-				}
+				delete script.dependencyErrors;
+				_.forEach(config.dependencies, function(scriptConfig) {
+					promises.push(that._addDependency(script, scriptConfig.url, config.id));
+				}, null, 'sortValue');
 			}
 
-			return RSVP.all(promises).then(function () {
-				return script;
-			});
+			return RSVP.all(promises).then(function () { return script;	});
 		})
 		.then(function (script) {
 			if (!script) { return; }
@@ -232,14 +247,23 @@ function (
 				that._updateFromCustom(script, config, options);
 			}
 
-			script.name = config.name;
-			_.extend(script.parameters, config.options);
 
-			// Pass the externals to the config so that Create can access
-			// them easily.
-			if (config.body) {
-				config._externals = script.externals;
+			that._specialPrepare(script, config);
+			script.name = config.name;
+
+			if (script.errors || script.dependencyErrors) {
+				SystemBus.emit('goo.scriptError', {
+					id: ref,
+					errors: script.errors,
+					dependencyErrors: script.dependencyErrors
+				});
+				return script;
 			}
+			else {
+				SystemBus.emit('goo.scriptError', {id: ref, errors: null});
+			}
+
+			_.extend(script.parameters, config.options);
 
 			var error = { id: ref, errors: null };
 			if (script.externals.errors || script.externals.dependencyErrors) {
@@ -338,6 +362,7 @@ function (
 
 	var types = ['string', 'float', 'int', 'vec3', 'boolean'];
 
+
 	/**
 	 * Validate external parameters
 	 * @private
@@ -429,15 +454,15 @@ function (
 			if (error.line) {
 				message += ' - on line ' + error.line;
 			}
-			script.externals.dependencyErrors = script.externals.dependencyErrors || {};
-			script.externals.dependencyErrors[error.file] = error;
+			script.dependencyErrors = script.dependencyErrors || {};
+			script.dependencyErrors[error.file] = error;
 		} else {
-			script.externals.errors = script.externals.errors || [];
+			script.errors = script.errors || [];
 			var message = error.message;
 			if (error.line) {
 				message += ' - on line ' + error.line;
 			}
-			script.externals.errors.push(error);
+			script.errors.push(error);
 
 			script.setup = null;
 			script.update = null;

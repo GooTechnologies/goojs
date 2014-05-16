@@ -7,7 +7,7 @@ define([
 	'goo/util/ObjectUtil'
 ],
 /** @lends */
-function(
+function (
 	ComponentHandler,
 	CameraComponent,
 	Camera,
@@ -41,7 +41,7 @@ function(
 	 * @returns {object}
 	 * @private
 	 */
-	CameraComponentHandler.prototype._prepare = function(config) {
+	CameraComponentHandler.prototype._prepare = function (config) {
 		_.defaults(config, {
 			near: 1,
 			far: 10000,
@@ -66,7 +66,7 @@ function(
 	 * @returns {CameraComponent} the created component object
 	 * @private
 	 */
-	CameraComponentHandler.prototype._create = function() {
+	CameraComponentHandler.prototype._create = function () {
 		var camera = new Camera(45, 1, 1, 1000);
 		var component = new CameraComponent(camera);
 		return component;
@@ -81,17 +81,16 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	CameraComponentHandler.prototype.update = function(entity, config, options) {
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+	CameraComponentHandler.prototype.update = function (entity, config, options) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			component.camera.setProjectionMode(Camera[config.projectionMode]);
 			component.camera.lockedRatio = config.lockedRatio || false;
 			if (config.projectionMode === 'Perspective') {
-				var aspect = (config.lockedRatio) ? config.aspect : null;
-				component.camera.setFrustumPerspective(config.fov, aspect, config.near, config.far);
+				component.camera.setFrustumPerspective(config.fov, null, config.near, config.far);
 			} else {
 				var size = config.size;
-				component.camera.setFrustum(config.near, config.far, -size, size, size, -size, config.aspect || 1);
+				component.camera.setFrustum(config.near, config.far, -size, size, size, -size, null);
 				component.camera.size = size;
 			}
 			return component;

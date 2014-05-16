@@ -24,8 +24,6 @@ define([
 	'goo/loaders/handlers/AnimationLayersHandler',
 	'goo/loaders/handlers/AnimationClipHandler',
 	'goo/loaders/handlers/ProjectHandler',
-	'goo/loaders/handlers/ScriptComponentHandler',
-	'goo/loaders/handlers/ScriptHandler',
 	'goo/loaders/handlers/SoundComponentHandler',
 	'goo/loaders/handlers/SoundHandler',
 	'goo/loaders/handlers/PosteffectsHandler',

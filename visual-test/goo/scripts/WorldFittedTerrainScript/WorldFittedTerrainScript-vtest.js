@@ -16,14 +16,13 @@ require([
     'goo/entities/components/LightComponent',
     'goo/shapes/TerrainSurface',
     'goo/shapes/Sphere',
-    'goo/scripts/WASDControlScript',
-    'goo/scripts/MouseLookControlScript',
-    'goo/scripts/WorldFittedTerrainScript',
+    'goo/scriptpack/WorldFittedTerrainScript',
 	'goo/entities/components/MovementComponent',
-	'goo/scripts/GroundBoundMovementScript',
+	'goo/scriptpack/GroundBoundMovementScript',
     'goo/renderer/TextureCreator',
     'goo/util/CanvasUtils',
-    'goo/scripts/Scripts'
+    'goo/scripts/Scripts',
+    'goo/scriptpack/ScriptRegister'
 ], function (
     GooRunner,
     World,
@@ -42,14 +41,13 @@ require([
     LightComponent,
     TerrainSurface,
     Sphere,
-    WASDControlScript,
-    MouseLookControlScript,
     WorldFittedTerrainScript,
 	MovementComponent,
 	GroundBoundMovementScript,
     TextureCreator,
     CanvasUtils,
-    Scripts
+    Scripts,
+    ScriptRegister
     ) {
     'use strict';
 

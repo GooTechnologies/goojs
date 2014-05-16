@@ -3,13 +3,15 @@ require([
 	'goo/entities/components/ScriptComponent',
 	'goo/scripts/Scripts',
 	'goo/math/Vector3',
-	'lib/V'
+	'lib/V',
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	Camera,
 	ScriptComponent,
 	Scripts,
 	Vector3,
 	V
+	/* ScriptRegister */
 	) {
 	'use strict';
 

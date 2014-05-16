@@ -1,5 +1,5 @@
 define([
-	'goo/scripts/HeightMapBoundingScript'
+	'goo/scriptpack/HeightMapBoundingScript'
 ], function(
 	HeightMapBoundingScript
 	) {

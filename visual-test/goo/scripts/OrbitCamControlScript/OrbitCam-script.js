@@ -3,13 +3,15 @@ require([
 	'goo/renderer/Camera',
 	'goo/entities/components/ScriptComponent',
 	'lib/V',
-	'goo/scripts/Scripts'
+	'goo/scripts/Scripts',
+	'goo/scripts/OrbitCamControlScript'
 ], function (
 	GooRunner,
 	Camera,
 	ScriptComponent,
 	V,
-	Scripts
+	Scripts,
+	OrbitCamControlScript
 ) {
 	'use strict';
 
@@ -26,8 +28,8 @@ require([
 	// camera control set up
 	var scripts = new ScriptComponent();
 
-	var wasdScript = Scripts.create('OrbitCamControlScript', {
-		domElement: goo.renderer.domElement,
+	var wasdScript = Scripts.create(OrbitCamControlScript, {
+		domElement: goo.renderer.domElement
 	});
 
 	scripts.scripts.push(wasdScript);

@@ -56,6 +56,14 @@ define([
 		}
 		function pointerLockChange() {
 			buttonPressed = !!document.pointerLockElement;
+
+			if (document.pointerLockElement) {
+				// We are attached! No mousedown listener needed any more.
+				_environment.domElement.removeEventListener('mousedown', mouseDown2);
+			} else {
+				// Not attached.
+				_environment.domElement.addEventListener('mousedown', mouseDown2);
+			}
 		}
 
 		function setup(parameters, environment) {
@@ -69,7 +77,7 @@ define([
 			if (button === 3) {
 				document.addEventListener('pointerlockchange', pointerLockChange);
 				document.addEventListener('mousemove', mouseMove);
-				document.addEventListener('mousedown', mouseDown2);
+				domElement.addEventListener('mousedown', mouseDown2);
 
 				// attempt to request a pointer lock; will succeed only if fullscreen is enabled.
 				GameUtils.requestPointerLock();
@@ -122,7 +130,7 @@ define([
 				GameUtils.exitPointerLock();
 
 				document.removeEventListener('mousemove', mouseMove);
-				document.removeEventListener('mousedown', mouseDown2);
+				domElement.removeEventListener('mousedown', mouseDown2);
 				document.removeEventListener('pointerlockchange', pointerLockChange);
 			} else {
 				domElement.removeEventListener('mousemove', mouseMove);

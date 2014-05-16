@@ -3,7 +3,6 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
 	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
 	'goo/entities/components/MeshRendererComponent',
@@ -14,18 +13,16 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/geometrypack/Surface',
 	'goo/shapes/Sphere',
-	'goo/scripts/WASDControlScript',
-	'goo/scripts/MouseLookControlScript',
-	'goo/scripts/HeightMapBoundingScript',
+	'goo/scriptpack/HeightMapBoundingScript',
 	'goo/scripts/Scripts',
 	'goo/util/CanvasUtils',
-	'lib/V'
+	'lib/V',
+	'goo/scriptpack/ScriptRegister',
 ], function (
 	Material,
 	ShaderLib,
 	Camera,
 	CameraComponent,
-	OrbitCamControlScript,
 	ScriptComponent,
 	MeshData,
 	MeshRendererComponent,
@@ -36,12 +33,11 @@ require([
 	LightComponent,
 	Surface,
 	Sphere,
-	WASDControlScript,
-	MouseLookControlScript,
 	HeightMapBoundingScript,
 	Scripts,
 	CanvasUtils,
 	V
+	/* ScriptRegister */
 ) {
 	'use strict';
 

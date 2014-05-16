@@ -2,27 +2,20 @@ require([
 	'goo/entities/GooRunner',
 	'goo/renderer/Camera',
 	'goo/entities/components/ScriptComponent',
-	'goo/scripts/FPCamControlScript',
-	'goo/scripts/WASDControlScript',
 	'lib/V',
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts',
-	'goo/util/ObjectUtil'
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	GooRunner,
 	Camera,
 	ScriptComponent,
-	FPCamControlScript,
-	WASDControlScript,
 	V,
 	ScriptUtils,
-	Scripts,
-	_
+	Scripts
+	/*ScriptRegister*/
 ) {
 	'use strict';
-
-	// FPCamControlScript is not in ScriptRegister yet, include it manually
-	Scripts.register(FPCamControlScript);
 
 	var goo = V.initGoo();
 
@@ -43,15 +36,6 @@ require([
 		crawlSpeed: 10.0
 	});
 
-	var fpScript = Scripts.create('FPCamControlScript', {
-		domElement: goo.renderer.domElement,
-		maxAscent: 89,
-		minAscent: -89,
-		turnSpeedVertical: 0.005,
-		turnSpeedHorizontal: 0.005,
-	});
-
-	/*
 	var fpScript = Scripts.create('MouseLookScript', {
 		domElement: goo.renderer.domElement,
 		maxAscent: 89,
@@ -59,7 +43,6 @@ require([
 		speed: 0.5,
 		button: 'None'
 	});
-	*/
 
 	scripts.scripts.push(wasdScript, fpScript);
 

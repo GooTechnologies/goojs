@@ -9,7 +9,7 @@ define([
 	) {
 	'use strict';
 
-	var WASDControlScript = function () {
+	function WASDControlScript() {
 		var entity, transformComponent, transform;
 		var _parameters;
 
@@ -31,27 +31,27 @@ define([
 			if (event.altKey) {	return;	}
 
 			switch (ScriptUtils.keyForCode(event.keyCode)) {
-				case _parameters.crawlKey:
-					moveState.speed = _parameters.crawlSpeed;
-					break;
+			case _parameters.crawlKey:
+				moveState.speed = _parameters.crawlSpeed;
+				break;
 
-				case _parameters.forwardKey:
-					moveState.forward = 1;
-					updateMovementVector();
-					break;
-				case _parameters.backKey:
-					moveState.back = 1;
-					updateMovementVector();
-					break;
+			case _parameters.forwardKey:
+				moveState.forward = 1;
+				updateMovementVector();
+				break;
+			case _parameters.backKey:
+				moveState.back = 1;
+				updateMovementVector();
+				break;
 
-				case _parameters.strafeLeftKey:
-					moveState.strafeLeft = 1;
-					updateMovementVector();
-					break;
-				case _parameters.strafeRightKey:
-					moveState.strafeRight = 1;
-					updateMovementVector();
-					break;
+			case _parameters.strafeLeftKey:
+				moveState.strafeLeft = 1;
+				updateMovementVector();
+				break;
+			case _parameters.strafeRightKey:
+				moveState.strafeRight = 1;
+				updateMovementVector();
+				break;
 			}
 		}
 
@@ -59,27 +59,27 @@ define([
 			if (event.altKey) {	return;	}
 
 			switch (ScriptUtils.keyForCode(event.keyCode)) {
-				case _parameters.crawlKey:
-					moveState.speed = _parameters.walkSpeed;
-					break;
+			case _parameters.crawlKey:
+				moveState.speed = _parameters.walkSpeed;
+				break;
 
-				case _parameters.forwardKey:
-					moveState.forward = 0;
-					updateMovementVector();
-					break;
-				case _parameters.backKey:
-					moveState.back = 0;
-					updateMovementVector();
-					break;
+			case _parameters.forwardKey:
+				moveState.forward = 0;
+				updateMovementVector();
+				break;
+			case _parameters.backKey:
+				moveState.back = 0;
+				updateMovementVector();
+				break;
 
-				case _parameters.strafeLeftKey:
-					moveState.strafeLeft = 0;
-					updateMovementVector();
-					break;
-				case _parameters.strafeRightKey:
-					moveState.strafeRight = 0;
-					updateMovementVector();
-					break;
+			case _parameters.strafeLeftKey:
+				moveState.strafeLeft = 0;
+				updateMovementVector();
+				break;
+			case _parameters.strafeRightKey:
+				moveState.strafeRight = 0;
+				updateMovementVector();
+				break;
 			}
 		}
 
@@ -148,7 +148,7 @@ define([
 			update: update,
 			cleanup: cleanup
 		};
-	};
+	}
 
 	WASDControlScript.externals = {
 		key: 'WASD',

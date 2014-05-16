@@ -1,19 +1,17 @@
 define([
 	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/scripts/PanCamScript'
+	'goo/scriptpack/PanCamScript'
 ], function (
 	Scripts,
-	ScriptUtils,
 	OrbitCamControlScript,
-	PanCamScript
+	PanCamControlScript
 ) {
 	'use strict';
 
 	function OrbitNPan() {
-		var orbitScript = Scripts.create('OrbitCamControlScript');
-		var panScript = Scripts.create('PanCamControlScript');
+		var orbitScript = Scripts.create(OrbitCamControlScript);
+		var panScript = Scripts.create(PanCamControlScript);
 		function setup(parameters, environment, goo) {
 			orbitScript.setup(parameters, environment, goo);
 			panScript.setup(parameters, environment, goo);
@@ -35,7 +33,7 @@ define([
 	}
 
 	var orbitParams = OrbitCamControlScript.externals.parameters;
-	var panParams = PanCamScript.externals.parameters;
+	var panParams = PanCamControlScript.externals.parameters;
 
 	var params = orbitParams.concat(panParams.slice(1));
 	for (var i = 0; i < params.length; i++) {
