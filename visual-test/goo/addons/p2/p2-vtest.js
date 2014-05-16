@@ -6,8 +6,8 @@ require([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
-	'goo/addons/p2/P2System',
-	'goo/addons/p2/P2Component',
+	'goo/addons/p2pack/P2System',
+	'goo/addons/p2pack/P2Component',
 	'lib/V'
 ], function (
 	Material,
@@ -23,12 +23,8 @@ require([
 ) {
 	'use strict';
 
-	var resourcePath = '../../../resources';
-
-	function createEntity(meshData, p2Settings, pos) {
-		var material = new Material(ShaderLib.texturedLit);
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/goo.png?a=1&b=2#fragment');
-		material.setTexture('DIFFUSE_MAP', texture);
+	function createEntity(meshData, p2Settings, pos, material) {
+		material = material || V.getColoredMaterial();
 
 		return world.createEntity(meshData, material, pos)
 			.set(new P2Component(p2Settings))
@@ -80,7 +76,7 @@ require([
 		shapes: [{
 			type: 'plane'
 		}]
-	}, [0, -10, 0]);
+	}, [0, -10, 0], V.getColoredMaterial(0.05, 0.1, 0.2));
 
 	V.addLights();
 
