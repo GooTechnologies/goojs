@@ -8,8 +8,8 @@ define([
 	'goo/scriptpack/MouseLookControlScript',
 	'goo/scriptpack/WASDControlScript',
 	'goo/scriptpack/ButtonScript',
+	'goo/scriptpack/PickAndRotateScript'
 	//'goo/scriptpack/PolyBoundingScript',
-	'goo/scriptpack/PickAndRotateScript',
 	//'goo/scriptpack/FPCamControlScript'
 	//'goo/scriptpack/RotationScript'
 	//'goo/scriptpack/BasicControlScript'
@@ -18,6 +18,6 @@ define([
 
 	for (var i = 1; i < arguments.length; i++) {
 		Scripts.register(arguments[i]);
-		Scripts.addClass(arguments[i]);
+		Scripts.addClass(arguments[i].name, arguments[i]);
 	}
 });
