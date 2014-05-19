@@ -97,6 +97,8 @@ function (
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
+		this.attributeKeys = null;
+		this.uniformKeys = null;
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
 		 *		<ul>
@@ -191,7 +193,7 @@ function (
 			var attributeMap = shaderInfo.meshData.attributeMap;
 
 			var attributes = this.attributes;
-			var keys = Object.keys(attributes);
+			var keys = this.attributeKeys;
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var key = keys[i];
 				var attribute = attributeMap[attributes[key]];
@@ -215,24 +217,20 @@ function (
 
 		// if (shaderInfo.material !== record.material) {
 			// record.material = shaderInfo.material;
-			this._bindUniforms(shaderInfo);
-		// }
-	};
-
-	Shader.prototype._bindUniforms = function (shaderInfo) {
-		if (this.uniforms) {
-			this.textureIndex = 0;
-			var names = Object.keys(this.uniforms);
-			for (var i = 0, l = names.length; i < l; i++) {
-				this._bindUniform(names[i], shaderInfo);
+			if (this.uniforms) {
+				this.textureIndex = 0;
+				// var names = Object.keys(this.uniforms);
+				var names = this.uniformKeys;
+				for (var i = 0, l = names.length; i < l; i++) {
+					this._bindUniform(names[i], shaderInfo);
+				}
 			}
-		}
+		// }
 	};
 
 	Shader.prototype._bindUniform = function (name, shaderInfo) {
 		var mapping = this.uniformCallMapping[name];
 		if (mapping === undefined) {
-			// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
 			return;
 		}
 		var defValue = (shaderInfo.material.uniforms[name] !== undefined) ? shaderInfo.material.uniforms[name] : this.uniforms[name];
@@ -272,6 +270,8 @@ function (
 		this.uniformMapping = {};
 		this.uniformCallMapping = {};
 		this.currentCallbacks = {};
+		this.attributeKeys = null;
+		this.uniformKeys = null;
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	};
@@ -395,7 +395,7 @@ function (
 					if (slot.name === key) {
 						this.textureSlots.splice(i, 1);
 						delete this.textureSlotsNaming[slot.name];
-						for (; i < l-1; i++) {
+						for (; i < l - 1; i++) {
 							this.textureSlots[i].index--;
 						}
 						break;
@@ -408,14 +408,16 @@ function (
 			this.uniformCallMapping[key] = new ShaderCall(context, uniform, this.uniformMapping[key].format);
 		}
 
-		// if (this.attributes) {
+		if (this.attributes) {
 		// 	for (var name in this.attributeIndexMapping) {
 		// 		var mapping = this.attributes[name];
 		// 		if (mapping === undefined) {
 		// 			console.warn('No binding found for attribute: ' + name + ' [' + this.name + '][' + this._id + ']');
 		// 		}
 		// 	}
-		// }
+
+			this.attributeKeys = Object.keys(this.attributes);
+		}
 
 		if (this.uniforms) {
 			// Fix links ($link)
@@ -447,6 +449,8 @@ function (
 					// console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
 				// }
 			// }
+
+			this.uniformKeys = Object.keys(this.uniforms);
 		}
 
 		//console.log('Shader [' + this.name + '][' + this._id + '] compiled');

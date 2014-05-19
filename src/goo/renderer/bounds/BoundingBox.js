@@ -161,21 +161,18 @@ function (
 	};
 
 	BoundingBox.prototype.getCorners = function (store) {
-		if (!store || store.length !== 8) {
-			store = [];
-			for (var i = 0; i < store.length; i++) {
-				store.push(new Vector3());
-			}
-		}
+		var xExtent = this.xExtent;
+		var yExtent = this.yExtent;
+		var zExtent = this.zExtent;
 		var centerData = this.center.data;
-		store[0].setd(centerData[0] + this.xExtent, centerData[1] + this.yExtent, centerData[2] + this.zExtent);
-		store[1].setd(centerData[0] + this.xExtent, centerData[1] + this.yExtent, centerData[2] - this.zExtent);
-		store[2].setd(centerData[0] + this.xExtent, centerData[1] - this.yExtent, centerData[2] + this.zExtent);
-		store[3].setd(centerData[0] + this.xExtent, centerData[1] - this.yExtent, centerData[2] - this.zExtent);
-		store[4].setd(centerData[0] - this.xExtent, centerData[1] + this.yExtent, centerData[2] + this.zExtent);
-		store[5].setd(centerData[0] - this.xExtent, centerData[1] + this.yExtent, centerData[2] - this.zExtent);
-		store[6].setd(centerData[0] - this.xExtent, centerData[1] - this.yExtent, centerData[2] + this.zExtent);
-		store[7].setd(centerData[0] - this.xExtent, centerData[1] - this.yExtent, centerData[2] - this.zExtent);
+		store[0].setd(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
+		store[1].setd(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
+		store[2].setd(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
+		store[3].setd(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
+		store[4].setd(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
+		store[5].setd(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
+		store[6].setd(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
+		store[7].setd(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
 		return store;
 	};
 
