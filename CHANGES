@@ -6,6 +6,7 @@ Breaking changes:
      goo/addons/p2/* -> goo/addons/p2pack/*
      goo/addons/box2d/* -> goo/addons/box2dpack/*
      goo/addons/terrain/* -> goo/addons/terrainpack/*
+     goo/addons/cannon/* -> goo/addons/cannonpack/*
 
 v0.10.0 --- 2014-05-20
 ======================
