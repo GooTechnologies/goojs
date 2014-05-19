@@ -11,7 +11,7 @@ define([
 
 
 	function FlyControlScript() {
-		var wasdScript = Scripts.create(WASDControlScript);
+		var wasdScript = Scripts.create(WASDScript);
 		var lookScript = Scripts.create(MouseLookControlScript);
 		function setup(parameters, environment) {
 			lookScript.setup(parameters, environment);
