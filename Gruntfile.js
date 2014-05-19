@@ -155,6 +155,10 @@ module.exports = function (grunt) {
 			cannonpack: {
 				packPath: 'addons/cannonpack',
 				outBaseDir: 'out'
+			},
+			howlerpack: {
+				packPath: 'addons/howlerpack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {

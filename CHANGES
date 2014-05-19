@@ -7,6 +7,7 @@ Breaking changes:
      goo/addons/box2d/* -> goo/addons/box2dpack/*
      goo/addons/terrain/* -> goo/addons/terrainpack/*
      goo/addons/cannon/* -> goo/addons/cannonpack/*
+     goo/addons/howler/* -> goo/addons/howlerpack/*
 
 v0.10.0 --- 2014-05-20
 ======================
