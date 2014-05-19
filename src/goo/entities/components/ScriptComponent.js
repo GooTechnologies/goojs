@@ -62,6 +62,7 @@ function (
 			var script = this.scripts[i];
 			if (!script.context) {
 				script.context = Object.create(componentContext);
+
 				if (script.parameters && script.parameters.enabled !== undefined) {
 					script.enabled = script.parameters.enabled;
 				} else {
