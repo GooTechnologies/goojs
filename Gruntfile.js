@@ -147,6 +147,10 @@ module.exports = function (grunt) {
 			box2dpack: {
 				packPath: 'addons/box2dpack',
 				outBaseDir: 'out'
+			},
+			terrainpack: {
+				packPath: 'addons/terrainpack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {

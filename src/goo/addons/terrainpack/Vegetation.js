@@ -20,7 +20,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder'
 ],
 /** @lends */
-function(
+function (
 	MeshDataComponent,
 	Material,
 	Camera,
@@ -48,7 +48,7 @@ function(
 		this.initDone = false;
 	}
 
-	Vegetation.prototype.init = function(world, terrainQuery, vegetationAtlasTexture, vegetationTypes) {
+	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes) {
 		this.world = world;
 		this.terrainQuery = terrainQuery;
 
@@ -101,13 +101,13 @@ function(
 		this.initDone = true;
 	};
 
-	Vegetation.prototype.rebuild = function() {
+	Vegetation.prototype.rebuild = function () {
 		this.currentX = -10000;
 		this.currentZ = -10000;
 	};
 
 	var hidden = false;
-	Vegetation.prototype.toggle = function() {
+	Vegetation.prototype.toggle = function () {
 		hidden = !hidden;
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
@@ -120,7 +120,7 @@ function(
 		}
 	};
 
-	Vegetation.prototype.update = function(x, z) {
+	Vegetation.prototype.update = function (x, z) {
 		if (!this.initDone || hidden) {
 			return;
 		}
@@ -171,7 +171,7 @@ function(
 		// console.timeEnd('vegetation update');
 	};
 
-	Vegetation.prototype.createPatch = function(patchX, patchZ) {
+	Vegetation.prototype.createPatch = function (patchX, patchZ) {
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 
@@ -244,7 +244,7 @@ function(
 		return this;
 	};
 
-	Vegetation.prototype.createBase = function(type) {
+	Vegetation.prototype.createBase = function (type) {
 		var meshData = new Quad(type.w, type.h, 10, 10);
 		meshData.attributeMap.BASE = MeshData.createAttribute(1, 'Float');
 		meshData.rebuildData(meshData.vertexCount, meshData.indexCount, true);
@@ -314,10 +314,10 @@ function(
 			cameraPosition : Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			discardThreshold: -0.01,
-			fogSettings: function() {
+			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
 			},
-			fogColor: function() {
+			fogColor: function () {
 				return ShaderBuilder.FOG_COLOR;
 			},
 			time : Shader.TIME
