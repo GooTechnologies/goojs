@@ -57,45 +57,36 @@ function(
 			_.forEach(config.scripts, function (scriptInstance) {
 				var ref = scriptInstance.scriptRef;
 				var isEngineScript = ref.indexOf(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX) === 0;
+				var promise = null;
 
 				if (isEngineScript) {
 					var scriptName = ref.slice(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX.length);
-					promises.push(_createEngineScript(scriptName));
+					promise = _createEngineScript(scriptName);
 				} else {
-					promises.push(that._load(scriptInstance.scriptRef, options));
+					promise = that._load(scriptInstance.scriptRef, options);
 				}
+
+				promise.then(function (script) {
+					if (script.externals && script.externals.parameters) {
+						ScriptUtils.fillDefaultValues(scriptInstance.options, script.externals.parameters);
+					}
+
+					_.extend(script.parameters, scriptInstance.options);
+					if (scriptInstance.name) {
+						script.name = scriptInstance.name;
+					}
+
+					return script;
+				});
+
+				promises.push(promise);
 			}, null, 'sortValue');
 
 			return RSVP.all(promises).then(function (scripts) {
-				return { component: component, scripts: scripts };
+				component.scripts = scripts;
+				return component;
 			});
 		})
-		.then(function (result) {
-			if (!result.component) { return; }
-			result.component.scripts = result.scripts;
-
-			// Set the parameters defined in the script instance configs in the
-			// the actual loaded scripts.
-			_.forEach(result.scripts, function (script) {
-				var scriptInstance = null;
-				for (var instanceId in config.scripts) {
-					var instance = config.scripts[instanceId];
-					if (instance.scriptRef === script.id) {
-						scriptInstance = instance;
-					}
-				}
-
-				// Fill the options in the instance with default values.
-				if (script.externals && script.externals.parameters) {
-					ScriptUtils.fillDefaultValues(scriptInstance.options, script.externals.parameters);
-				}
-
-				_.extend(script.parameters, scriptInstance.options);
-				if (scriptInstance.name) { script.name = scriptInstance.name; }
-			});
-
-			return result.component;
-		});
 	};
 
 

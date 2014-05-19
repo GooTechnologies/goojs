@@ -110,7 +110,6 @@ function (
 		// No change, do nothing
 		if (this._bodyCache[config.id] === config.body) { return script; }
 
-
 		delete script.errors;
 		this._bodyCache[config.id] = config.body;
 
@@ -187,6 +186,7 @@ function (
 		if (script.externals) {
 			ScriptUtils.fillDefaultNames(script.externals.parameters);
 		}
+
 		return script;
 	};
 
@@ -211,6 +211,8 @@ function (
 			script.cleanup = newScript.cleanup;
 			script.parameters = newScript.parameters || {};
 			script.enabled = false;
+
+			console.log(script)
 
 			// generate names from external variable names
 			ScriptUtils.fillDefaultNames(script.externals.parameters);
@@ -246,7 +248,6 @@ function (
 			} else if (config.body) { // Custom script.
 				that._updateFromCustom(script, config, options);
 			}
-
 
 			that._specialPrepare(script, config);
 			script.name = config.name;
