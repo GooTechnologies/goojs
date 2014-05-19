@@ -153,6 +153,12 @@ module.exports = function (grunt) {
 				outBaseDir: 'out'
 			}
 		},
+		'build-custom': {
+			myBundle: {
+				modules: ['goo/addons/ammo/'],
+				outFile: 'bundle.js'
+			}
+		},
 		karma: {
 			unit: {
 				configFile: 'test/karma.conf.js',

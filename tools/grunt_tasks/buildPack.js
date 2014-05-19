@@ -221,4 +221,63 @@ module.exports = function (grunt) {
 			});
 		});
 	});
+
+	grunt.registerMultiTask('build-custom', 'Builds a custom bundle', function () {
+		var modules = this.data.modules;
+		var version = grunt.option('goo-version') || '';
+		var outFile = this.data.outFile || 'custom-bundle.js';
+		var done = this.async();
+
+		// get all dependencies
+		console.log('get all dependencies'.grey);
+		var tree = madge('src/' + modules[0], { format: 'amd' }).tree;
+
+		// get modules and dependencies
+		console.log('get modules and engine dependencies'.grey);
+		var modulesAndDependencies = getModulesAndDependencies(tree);
+
+		console.log(modulesAndDependencies)
+
+		// get the source for the pack
+		console.log('get the source for the pack'.grey);
+		var packStr = buildPack(modulesAndDependencies.moduleList, packPath, packName);
+
+		// add the pack
+		console.log('add the pack');
+		fs.writeFile('src/goo/' + packPath + '/' + packName + '.js', packStr, function (err) {
+			if (err) {
+				console.error('Error while writing the pack'.red);
+				console.error(err);
+				done(false);
+			}
+
+			// get the config for the optimizer
+			console.log('get the config for the optimizer'.grey);
+			var optimizerConfig = getOptimizerConfig(packPath, packName, modulesAndDependencies.ignoreList, outBaseDir);
+
+			// optimize!
+			console.log('optimize!');
+			requirejs.optimize(optimizerConfig, function (buildResponse) {
+				// buildResponse is just a text output of the modules included.
+
+				console.log('Done optimizing'.green);
+
+				console.log('Pack Name: '.grey, packPath);
+
+				console.log('Module List'.grey);
+				console.log(modulesAndDependencies.moduleList);
+
+				console.log('-----'.grey);
+				console.log('Ignore List'.grey);
+				console.log(modulesAndDependencies.ignoreList);
+
+				wrap(outFile, getHeadWrapping(packName, version), getTailWrapping(packName), done);
+			}, function (err) {
+				// optimization err callback
+				// :(
+				console.error(err);
+				done(false);
+			});
+		});
+	});
 };
