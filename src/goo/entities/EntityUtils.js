@@ -146,11 +146,12 @@ define([
 		}
 
 		/**
-		 * Clone entity hierarchy with optional settings for sharing data and callbacks
+		 * Clone entity hierarchy with optional settings for sharing data and callbacks.
 		 * @param {World} world
 		 * @param {Entity} entity The entity to clone
 		 * @param {Object} [settings]
 		 * @param {function(Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
+		 * @returns {Entity} The cloned entity.
 		 */
 		EntityUtils.clone = function (world, entity, settings) {
 			settings = settings || {};

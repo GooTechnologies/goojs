@@ -1,5 +1,5 @@
 define([
-	'goo/scripts/GroundBoundMovementScript',
+	'goo/scriptpack/GroundBoundMovementScript',
 	'goo/entities/components/MovementComponent',
 	'goo/entities/systems/MovementSystem',
 	'goo/entities/components/TransformComponent'

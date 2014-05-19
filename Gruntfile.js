@@ -117,23 +117,54 @@ module.exports = function (grunt) {
 		},
 		'build-pack': {
 			fsmpack: {
-				packName: 'fsmpack',
+				packPath: 'fsmpack',
 				outBaseDir: 'out'
 			},
 			geometrypack: {
-				packName: 'geometrypack',
+				packPath: 'geometrypack',
 				outBaseDir: 'out'
 			},
 			quadpack: {
-				packName: 'quadpack',
+				packPath: 'quadpack',
 				outBaseDir: 'out'
 			},
 			timelinepack: {
-				packName: 'timelinepack',
+				packPath: 'timelinepack',
 				outBaseDir: 'out'
 			},
 			debugpack: {
-				packName: 'debugpack',
+				packPath: 'debugpack',
+				outBaseDir: 'out'
+			},
+			scriptpack: {
+				packPath: 'scriptpack',
+				outBaseDir: 'out'
+			},
+			p2pack: {
+				packPath: 'addons/p2pack',
+				outBaseDir: 'out'
+			},
+			box2dpack: {
+				packPath: 'addons/box2dpack',
+				outBaseDir: 'out'
+			},
+			terrainpack: {
+				packPath: 'addons/terrainpack',
+				outBaseDir: 'out'
+			},
+			ammopack: {
+				packPath: 'addons/ammopack',
+			},
+			cannonpack: {
+				packPath: 'addons/cannonpack',
+				outBaseDir: 'out'
+			},
+			howlerpack: {
+				packPath: 'addons/howlerpack',
+				outBaseDir: 'out'
+			},
+			waterpack: {
+				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
 			}
 		},
@@ -188,7 +219,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('default',	['minify']);
 	grunt.registerTask('docs',		['shell:jsdoc']);
 	grunt.registerTask('jsdoc',		['shell:jsdoc']);
-	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack:fsmpack', 'build-pack:geometrypack', 'build-pack:quadpack', 'build-pack:timelinepack', 'build-pack:debugpack']);
+	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack']);
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('test',		['unittest']);
 
@@ -200,7 +231,15 @@ module.exports = function (grunt) {
 
 	// Creates src/goo.js that depends on all engine modules
 	grunt.registerTask('main-file', function () {
+		// prefiltering out files in packs on the 'ground' level
 		var sourceFiles = glob.sync('!(*pack)/**/*.js', { cwd: 'src/goo/', nonegate: true });
+
+		// filtering files in packs that are not on the 'ground' level
+		var regexp = /.+pack\/.+/;
+		sourceFiles = sourceFiles.filter(function (sourceFile) {
+			return !regexp.test(sourceFile);
+		});
+
 		var allModules = _.map(sourceFiles, function (f) {
 			return 'goo/' + f.replace(/\.js/, '');
 		});

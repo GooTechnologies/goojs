@@ -10,7 +10,7 @@ define([
 	'goo/util/ObjectUtil'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	AnimationLayer,
 	LayerLERPBlender,
@@ -21,7 +21,7 @@ function(
 	PromiseUtil,
 	_
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading animation layers
@@ -45,7 +45,7 @@ function(
 	 * @returns {AnimationLayer[]}
 	 * @private
 	 */
-	AnimationLayersHandler.prototype._create = function(ref) {
+	AnimationLayersHandler.prototype._create = function (ref) {
 		return this._objects[ref] = [];
 	};
 
@@ -54,10 +54,11 @@ function(
 	 * @param {AnimationLayer} layer
 	 * @param {string} name
 	 */
-	AnimationLayersHandler.prototype._setInitialState = function(layer, name) {
-		if (name && layer._steadyStates[name]) {
-			if (layer._currentState !== layer._steadyStates[name]) {
-				layer.setCurrentStateByName(name, true);
+	AnimationLayersHandler.prototype._setInitialState = function (layer, stateKey) {
+		if (stateKey) {
+			var state = layer.getStateById(stateKey);
+			if (layer._currentState !== state) {
+				layer.setCurrentStateById(stateKey, true);
 			}
 		} else {
 			layer.setCurrentState();
@@ -71,20 +72,20 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation state or null if removed
 	 */
-	AnimationLayersHandler.prototype._update = function(ref, config, options) {
+	AnimationLayersHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(object) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (object) {
 			if(!object) { return; }
 			var promises = [];
 
 			var i = 0;
-			_.forEach(config.layers, function(layerCfg) {
+			_.forEach(config.layers, function (layerCfg) {
 				promises.push(that._parseLayer(layerCfg, object[i++], options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function(layers) {
+			return RSVP.all(promises).then(function (layers) {
 				object.length = layers.length;
-				for(var i = 0; i < layers.length; i++) {
+				for (var i = 0; i < layers.length; i++) {
 					object[i] = layers[i];
 				}
 				return object;
@@ -99,7 +100,7 @@ function(
 	 * @returns {RSVP.Promise} resolves with layer
 	 * @private
 	 */
-	AnimationLayersHandler.prototype._parseLayer = function(layerConfig, layer, options) {
+	AnimationLayersHandler.prototype._parseLayer = function (layerConfig, layer, options) {
 		var that = this;
 
 		if (!layer) {
@@ -121,15 +122,14 @@ function(
 
 		// Load all the stuff we need
 		var promises = [];
-		for (var id in layerConfig.states) {
-			/*jshint -W083 */
-			promises.push(this.loadObject(id, options).then(function(state) {
-				layer._steadyStates[state.id] = state;
+		_.forEach(layerConfig.states, function (stateCfg) {
+			promises.push(that.loadObject(stateCfg.stateRef, options).then(function (state) {
+				layer.setState(state.id, state);
 			}));
-		}
+		}, null, 'sortValue');
 
 		// Populate layer
-		return RSVP.all(promises).then(function() {
+		return RSVP.all(promises).then(function () {
 			that._setInitialState(layer, layerConfig.initialStateRef);
 			return layer;
 		});

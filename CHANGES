@@ -1,19 +1,35 @@
+v0.10.1 --- 2014-05-27
+======================
+
+Breaking changes:
+ * all addons are now split in packs:
+     goo/addons/p2/* -> goo/addons/p2pack/*
+     goo/addons/box2d/* -> goo/addons/box2dpack/*
+     goo/addons/terrain/* -> goo/addons/terrainpack/*
+     goo/addons/cannon/* -> goo/addons/cannonpack/*
+     goo/addons/howler/* -> goo/addons/howlerpack/*
+
 v0.10.0 --- 2014-05-20
 ======================
 
 Additions:
- + Experimental way of clearing the engine using GooRunner.prototype.clear
- + Examples are linked to from jsdocs
+ + experimental way of clearing the engine using GooRunner.prototype.clear
+ + examples are linked to from jsdocs
+ + added Matrix4x4.prototype.getRotation
+ + added AnimationLayer.prototype.setCurrentStateById
+ + added AnimationLayer.prototype.getStateById
+ + added AnimationLayer.prototype.getStateByName
 
 Fixes:
+ * AnimationLayer.prototype.setCurrentStateByName now gets the state by name and not id
  * fix in Quaternion.prototype.fromVectorToVector
 
 Deprecated:
  -
 
 Breaking changes:
- * All debug related classes are relocated in the debugpack (MarkerComponent, CameraDebug, LightDebug, MeshRendererDebug, SkeletonDebug, CameraDebugSystem, DebugRenderSystem, LightDebugSystem, MarkerSystem, BoundingVolumeMeshBuilder, DebugDrawHelper, Debugger, EntityCounter, FrustumViewer, LightPointer)
- * New wave scripts (src/goo/scripts/newwave) are relocated to the parent folder, replacing some of the older scripts. The old FPCamControlScript, FlyControlScript, OrbitCamControlScript, OrbitNPanControlScript, MouseLookControlScript and WASDControlScript are thus replaced with new style scripts and are not backwards-compatible.
+ * all debug related classes are relocated in the debugpack (MarkerComponent, CameraDebug, LightDebug, MeshRendererDebug, SkeletonDebug, CameraDebugSystem, DebugRenderSystem, LightDebugSystem, MarkerSystem, BoundingVolumeMeshBuilder, DebugDrawHelper, Debugger, EntityCounter, FrustumViewer, LightPointer)
+ * new wave scripts (src/goo/scripts/newwave) are relocated to the parent folder, replacing some of the older scripts. The old FPCamControlScript, FlyControlScript, OrbitCamControlScript, OrbitNPanControlScript, MouseLookControlScript and WASDControlScript are thus replaced with new style scripts and are not backwards-compatible.
  - EntityUtils.createTypicalEntity has been removed as scheduled; use world.createEntity instead
  - EntityUtils.traverse has been removed as scheduled; use entity.traverse instead
  - ShapeCreator has been removed as scheduled; use new Box/Sphere/Quad... instead

@@ -1,5 +1,5 @@
 define([
-	'goo/scripts/WorldFittedTerrainScript'
+	'goo/scriptpack/WorldFittedTerrainScript'
 ], function(
 	WorldFittedTerrainScript
 	) {

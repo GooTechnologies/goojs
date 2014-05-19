@@ -5,7 +5,7 @@ define([
 	'goo/math/Vector3',
 	'goo/entities/Entity',
 	'goo/math/Transform'
-], function(
+], function (
 	World,
 	TransformComponent,
 	Matrix3x3,
@@ -15,15 +15,15 @@ define([
 ) {
 	'use strict';
 
-	describe('TransformComponent', function() {
+	describe('TransformComponent', function () {
 		var world;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			world = new World();
 			world.registerComponent(TransformComponent);
 		});
 
-		it('can attach a child component via the transformComponent', function() {
+		it('can attach a child component via the transformComponent', function () {
 			var parentEntity = world.createEntity();
 			var childEntity = world.createEntity();
 			parentEntity.addToWorld();
@@ -31,13 +31,11 @@ define([
 			parentEntity.transformComponent.attachChild(childEntity.transformComponent);
 			world.process();
 
-			expect(parentEntity.transformComponent.children)
-				.toContain(childEntity.transformComponent);
-
+			expect(parentEntity.transformComponent.children).toContain(childEntity.transformComponent);
 			expect(childEntity.transformComponent.parent).toBe(parentEntity.transformComponent);
 		});
 
-		it('correctly removes parent reference of child on its removal from the world', function() {
+		it('correctly removes parent reference of child on its removal from the world', function () {
 			var parentEntity = world.createEntity();
 			var childEntity = world.createEntity();
 			parentEntity.addToWorld();
@@ -46,12 +44,11 @@ define([
 			world.process();
 			childEntity.removeFromWorld();
 			world.process();
-			expect(parentEntity.transformComponent.children)
-				.not.toContain(childEntity.transformComponent);
+			expect(parentEntity.transformComponent.children).not.toContain(childEntity.transformComponent);
 			expect(childEntity.transformComponent.parent).toBeNull();
 		});
 
-		it('correctly removes child reference of parent on its removal from the world (in non-recursive mode)', function() {
+		it('correctly removes child reference of parent on its removal from the world (in non-recursive mode)', function () {
 			var parentEntity = world.createEntity();
 			var childEntity = world.createEntity();
 			parentEntity.addToWorld();
@@ -61,11 +58,11 @@ define([
 			parentEntity.removeFromWorld(false);
 			world.process();
 			expect(childEntity.transformComponent.parent).toBeNull();
-			expect(parentEntity.transformComponent.children)
-				.not.toContain(childEntity.transformComponent);
+			expect(parentEntity.transformComponent.children).not.toContain(childEntity.transformComponent);
 		});
 
 		//! AT: if any method fails the whole spec fails
+		// what is this testing? that the methods simply exist?
 		it('can set, add and get rotation', function () {
 			var tc = new TransformComponent();
 			tc.setRotation(1,2,2);
@@ -74,6 +71,7 @@ define([
 		});
 
 		//! AT: if any method fails the whole spec fails
+		// what is this testing? that the methods simply exist?
 		it('can set, add and get rotation with array', function () {
 			var tc = new TransformComponent();
 			tc.setRotation([1,2,2]);
@@ -92,9 +90,7 @@ define([
 
 		it('handles attaching itself to an entity', function () {
 			var transformComponent = new TransformComponent();
-			var world = new World();
-			var entity = new Entity();
-			entity._world = world;
+			var entity = new Entity(world);
 
 			entity.setComponent(transformComponent);
 			expect(transformComponent.entity).toBe(entity);
@@ -103,9 +99,7 @@ define([
 		// should it ever be detached? since it's enforced and there are so many dependencies probably not
 		it('handles detaching itself from an entity', function () {
 			var transformComponent = new TransformComponent();
-			var world = new World();
-			var entity = new Entity();
-			entity._world = world;
+			var entity = new Entity(world);
 
 			entity.setComponent(transformComponent);
 			entity.clearComponent('transformComponent');
@@ -131,7 +125,7 @@ define([
 
 			expect(entity.setTranslation(new Vector3(1, 2, 3))).toBe(entity);
 			expect(entity.setScale(new Vector3(1, 2, 3))).toBe(entity);
-			expect(entity.addTranslation(new Vector3(1, 2, 3))).toBe(entity);
+//			expect(entity.addTranslation(new Vector3(1, 2, 3))).toBe(entity);
 			expect(entity.setRotation(new Vector3(1, 2, 3))).toBe(entity);
 			expect(entity.lookAt(new Vector3(1, 2, 3))).toBe(entity);
 		});
@@ -205,6 +199,44 @@ define([
 
 				expect(entity.transformComponent).toBeTruthy();
 				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+			});
+
+			it('applies all of the API functions correctly', function(){
+				var entity = new Entity(world);
+				var childEntity = new Entity(world);
+				function traverseFunction(entity){
+					expect(entity).toEqual(jasmine.any(Entity));
+				}
+				entity.set(new TransformComponent());
+				childEntity.set(new TransformComponent());
+
+				entity.setTranslation(1,2,3);
+				expect(entity.getTranslation()).toEqual(new Vector3(1,2,3));
+
+				entity.setRotation(0,0,0);
+				expect(entity.getRotation()).toEqual(new Vector3(0,0,0));
+
+				entity.setScale(1,2,3);
+				expect(entity.getScale()).toEqual(new Vector3(1,2,3));
+
+				entity.lookAt(0,0,0);
+
+				entity.addTranslation(1,0,0);
+
+				entity.setTranslation(1,2,3).addTranslation(1,2,3);
+				expect(entity.getTranslation()).toEqual(new Vector3(2,4,6));
+
+				entity.attachChild(childEntity);
+				expect(entity.children().size()).toEqual(1);
+				expect(childEntity.parent().size()).toEqual(1);
+
+				entity.traverse(traverseFunction);
+				entity.traverseUp(traverseFunction);
+
+				entity.detachChild(childEntity);
+				expect(entity.children().size()).toEqual(0);
+				expect(childEntity.parent().size()).toEqual(0);
+
 			});
 		});
 

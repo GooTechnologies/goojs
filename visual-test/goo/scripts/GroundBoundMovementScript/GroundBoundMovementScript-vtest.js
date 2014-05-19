@@ -16,14 +16,13 @@ require([
 	'goo/entities/components/LightComponent',
 	'goo/shapes/TerrainSurface',
 	'goo/shapes/Sphere',
-	'goo/scripts/WASDControlScript',
-	'goo/scripts/MouseLookControlScript',
-	'goo/scripts/WorldFittedTerrainScript',
-	'goo/scripts/GroundBoundMovementScript',
+	'goo/scriptpack/WorldFittedTerrainScript',
+	'goo/scriptpack/GroundBoundMovementScript',
 	'goo/scripts/Scripts',
 	'goo/renderer/TextureCreator',
 	'goo/util/CanvasUtils',
-	'lib/V'
+	'lib/V',
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	World,
 	Material,
@@ -42,14 +41,13 @@ require([
 	LightComponent,
 	TerrainSurface,
 	Sphere,
-	WASDControlScript,
-	MouseLookControlScript,
 	WorldFittedTerrainScript,
 	GroundBoundMovementScript,
 	Scripts,
 	TextureCreator,
 	CanvasUtils,
 	V
+	/* ScriptRegister */
 	) {
 	'use strict';
 

@@ -2,8 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts',
-	'goo/util/ObjectUtil',
-	'goo/scripts/ScriptRegister'
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function (
@@ -30,7 +29,7 @@ function (
 			this.scripts = [scripts];
 		} else {
 			/**
-			* Array of scripts tied to this script component. Scripts can be added to the component 
+			* Array of scripts tied to this script component. Scripts can be added to the component
 			* using the constructor or by manually adding to the array.
 			* @type {object[]}
 			* @example
@@ -63,6 +62,7 @@ function (
 			var script = this.scripts[i];
 			if (!script.context) {
 				script.context = Object.create(componentContext);
+
 				if (script.parameters && script.parameters.enabled !== undefined) {
 					script.enabled = script.parameters.enabled;
 				} else {
@@ -72,13 +72,23 @@ function (
 					try {
 						script.setup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {
-						var err = {
-							message: e.message || e,
-							phase: 'setup',
-							scriptName: script.name || script.externals.name
-						};
-						console.error(err);
 						script.enabled = false;
+						var err = {
+							id: script.id,
+							errors: [{
+								message: e.message || e,
+								phase: 'setup'
+							}]
+						}
+						// TODO Test if this works across browsers
+						/**/
+						var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+						if (m) {
+							err.errors[0].line = parseInt(m[1], 10) - 1;
+						}
+						/**/
+
+						console.error(err);
 						SystemBus.emit('goo.scriptError', err);
 					}
 				}
@@ -111,13 +121,23 @@ function (
 				try {
 					script.update(script.parameters, script.context, this._gooClasses);
 				} catch (e) {
-					var err = {
-						message: e.message || e,
-						scriptName: script.name || script.externals.name,
-						phase: 'update'
-					};
-					console.error(err);
 					script.enabled = false;
+					var err = {
+						id: script.id,
+						errors: [{
+							message: e.message || e,
+							phase: 'update'
+						}]
+					}
+					// TODO Test if this works across browsers
+					/**/
+					var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+					if (m) {
+						err.errors[0].line = parseInt(m[1], 10) - 1;
+					}
+					/**/
+
+					console.error(err);
 					SystemBus.emit('goo.scriptError', err);
 				}
 			}
@@ -137,10 +157,19 @@ function (
 						script.cleanup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {
 						var err = {
-							message: e.message || e,
-							scriptName: script.name || script.externals.name,
-							phase: 'cleanup'
-						};
+							id: script.id,
+							errors: [{
+								message: e.message || e,
+								phase: 'cleanup'
+							}]
+						}
+						// TODO Test if this works across browsers
+						/**/
+						var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+						if (m) {
+							err.errors[0].line = parseInt(m[1], 10) - 1;
+						}
+						/**/
 						console.error(err);
 						SystemBus.emit('goo.scriptError', err);
 					}

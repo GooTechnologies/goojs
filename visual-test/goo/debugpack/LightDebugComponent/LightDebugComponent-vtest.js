@@ -15,7 +15,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/debug/LightPointer',
+	'goo/debugpack/LightPointer',
 	'goo/entities/components/LightDebugComponent',
 	'lib/V'
 ], function (

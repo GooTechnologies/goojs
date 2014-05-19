@@ -3,6 +3,7 @@ require([
 	'goo/shapes/Box',
 	'lib/V',
 	'goo/scripts/Scripts',
+	'goo/scriptpack/ScriptRegister',
 	'goo/entities/SystemBus',
 	'goo/entities/components/HtmlComponent',
 	'goo/entities/systems/HtmlSystem'
@@ -11,6 +12,7 @@ require([
 	Box,
 	V,
 	Scripts,
+	ScriptRegister,
 	SystemBus,
 	HtmlComponent,
 	HtmlSystem

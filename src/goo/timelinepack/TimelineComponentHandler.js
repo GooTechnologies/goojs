@@ -5,7 +5,8 @@ define([
 	'goo/timelinepack/EventChannel',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/util/ObjectUtil'
 	],
 /** @lends */
 	function(
@@ -15,7 +16,8 @@ define([
 	EventChannel,
 	PromiseUtil,
 	ArrayUtil,
-	SystemBus
+	SystemBus,
+	_
 	) {
 	'use strict';
 
@@ -205,10 +207,10 @@ define([
 				return that.world.entityManager.getEntityById(entityId);
 			};
 			var rotationMap = {};
-			for (var channelId in config.channels) {
-				var channelConfig = config.channels[channelId];
-				updateChannel(channelConfig, channelId, component, entityResolver, rotationMap);
-			}
+
+			_.forEach(config.channels, function (channelConfig) {
+				updateChannel(channelConfig, channelConfig.id, component, entityResolver, rotationMap);
+			}, null, 'sortValue');
 
 			return component;
 		});

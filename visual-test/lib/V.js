@@ -1,3 +1,4 @@
+/* global requestAnimationFrame */
 define([
 	'goo/entities/GooRunner',
 	'goo/entities/World',
@@ -92,7 +93,6 @@ define([
 			domElement        : V.goo.renderer.domElement,
 			spherical         : spherical,
 			lookAtPoint       : lookAt,
-			drag              : 5.0,
 			releaseVelocity   : true,
 			interpolationSpeed: 7,
 			dragButton        : dragButton || 'Any'
@@ -104,7 +104,7 @@ define([
 			orbitCamOptions.moveInitialDelay = 200;
 		}
 
-		var orbitScript = Scripts.create('OrbitCamControlScript', orbitCamOptions);
+		var orbitScript = Scripts.create(OrbitCamControlScript, orbitCamOptions);
 		var entity = V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
 		return entity;
 	};
@@ -329,7 +329,7 @@ define([
 		if (!V.deterministic) { return; }
 
 		// waste some frames
-		delay(8, function () {}, function() {
+		delay(8, function () {}, function () {
 			var time = 0;
 			// render some frames
 			delay(renderLoops || 3, function () {
@@ -341,7 +341,7 @@ define([
 	};
 
 
-	V.addDebugQuad = function() {
+	V.addDebugQuad = function () {
 		var world = V.goo.world;
 		var entity = world.createEntity('Quad');
 		entity.transformComponent.transform.translation.set(0, 0, 0);
@@ -366,7 +366,7 @@ define([
 				'void main(void) {', //
 				'	textureCoord = vertexPosition.xy * madd + madd;', // scale vertex attribute to [0-1] range
 				'	gl_Position = vec4(vertexPosition.xy * vec2(0.3, 0.3) - vec2(0.5, 0.5), 0.0, 1.0);',
-					'}' //
+				'}' //
 			].join('\n'),
 			fshader: [ //
 				'precision mediump float;', //
