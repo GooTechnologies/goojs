@@ -141,6 +141,7 @@
                 p.idList = "member-"+memberId++;
         ?>
             <section class="foldable-item" id="<?js= p.idList ?>">
+                <a id="<?js= p.id ?>"></a>
                 <?js= self.partial('members.tmpl', p) ?>
             </section>
         <?js }); ?>
@@ -157,6 +158,7 @@
                 m.idList = 'method-'+methodId++;
         ?>
         <section class="foldable-item <?js= m.id ?>" id="<?js= m.idList ?>">
+            <a id="<?js= m.id ?>"></a>
             <?js= self.partial('method.tmpl', m) ?>
         </section>
         <?js }); ?>
