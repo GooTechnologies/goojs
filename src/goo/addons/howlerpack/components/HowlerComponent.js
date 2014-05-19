@@ -5,7 +5,7 @@ define([
 function(
 	Component
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class
@@ -20,17 +20,17 @@ function(
 
 	HowlerComponent.prototype = Object.create(Component.prototype);
 
-	HowlerComponent.prototype.addSound = function(howl) {
+	HowlerComponent.prototype.addSound = function (howl) {
 		if(this.sounds.indexOf(howl) === -1) {
 			this.sounds.push(howl);
 		}
 	};
 
-	HowlerComponent.prototype.playSound = function(soundIndex, sprite, callback) {
+	HowlerComponent.prototype.playSound = function (soundIndex, sprite, callback) {
 		this.sounds[soundIndex].play(sprite, callback);
 	};
 
-	HowlerComponent.prototype.getSound = function(soundIndex) {
+	HowlerComponent.prototype.getSound = function (soundIndex) {
 		return this.sounds[soundIndex];
 	};
 

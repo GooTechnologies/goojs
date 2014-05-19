@@ -151,6 +151,21 @@ module.exports = function (grunt) {
 			terrainpack: {
 				packPath: 'addons/terrainpack',
 				outBaseDir: 'out'
+			},
+			ammopack: {
+				packPath: 'addons/ammopack',
+			},
+			cannonpack: {
+				packPath: 'addons/cannonpack',
+				outBaseDir: 'out'
+			},
+			howlerpack: {
+				packPath: 'addons/howlerpack',
+				outBaseDir: 'out'
+			},
+			waterpack: {
+				packPath: 'addons/waterpack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {

@@ -60,7 +60,7 @@ function (
 
 	CannonSystem.prototype = Object.create(System.prototype);
 
-	CannonSystem.prototype.inserted = function(entity) {
+	CannonSystem.prototype.inserted = function (entity) {
 		var rbComponent = entity.cannonRigidbodyComponent;
 		var transformComponent = entity.transformComponent;
 

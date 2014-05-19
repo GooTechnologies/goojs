@@ -5,8 +5,8 @@ require([
 	'goo/shapes/Sphere',
 	'goo/shapes/Box',
 	'goo/math/Vector3',
-	'goo/addons/howler/components/HowlerComponent',
-	'goo/addons/howler/systems/HowlerSystem',
+	'goo/addons/howlerpack/components/HowlerComponent',
+	'goo/addons/howlerpack/systems/HowlerSystem',
 	'goo/renderer/TextureCreator',
 	'lib/V'
 ], function (
