@@ -47,25 +47,6 @@ function (
 	ConfigHandler._registerClass('script', ScriptHandler);
 
 	/**
-	 * Fills out script config with default parameters from the declarations in
-	 * the script code. Also adds externals config to data model config, so
-	 * that Create can read them.
-	 */
-	ScriptHandler.prototype._specialPrepare = function (script, config) {
-		config.options = config.options || {};
-		// fill the rest of the parameters with default values
-		if (script.externals && script.externals.parameters) {
-			ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
-		}
-		if (config.body) {
-			SystemBus.emit('goo.scriptExternals', {
-				id: config.id,
-				externals: script.externals
-			});
-		}
-	};
-
-	/**
 	 * Creates a script data wrapper object to be used in the engine
 	 */
 	ScriptHandler.prototype._create = function () {
@@ -231,48 +212,51 @@ function (
 
 			if (config.body && config.dependencies) {
 				delete script.dependencyErrors;
-				_.forEach(config.dependencies, function(scriptConfig) {
-					promises.push(that._addDependency(script, scriptConfig.url, config.id));
+
+				_.forEach(config.dependencies, function(dependencyConfig) {
+					promises.push(that._addDependency(script, dependencyConfig.url, config.id));
 				}, null, 'sortValue');
 			}
 
-			return RSVP.all(promises).then(function () { return script;	});
-		})
-		.then(function (script) {
-			if (!script) { return; }
+			return RSVP.all(promises)
+			.then(function () {
+				if (config.className) { // Engine script.
+					that._updateFromClass(script, config, options);
+				} else if (config.body) { // Custom script.
+					that._updateFromCustom(script, config, options);
+				}
 
-			if (config.className) { // Engine script.
-				that._updateFromClass(script, config, options);
-			} else if (config.body) { // Custom script.
-				that._updateFromCustom(script, config, options);
-			}
+				if (config.body) {
+					SystemBus.emit('goo.scriptExternals', {
+						id: config.id,
+						externals: script.externals
+					});
+				}
 
-			that._specialPrepare(script, config);
-			script.name = config.name;
+				script.name = config.name;
 
-			if (script.errors || script.dependencyErrors) {
-				SystemBus.emit('goo.scriptError', {
-					id: ref,
-					errors: script.errors,
-					dependencyErrors: script.dependencyErrors
-				});
+				if (script.errors || script.dependencyErrors) {
+					SystemBus.emit('goo.scriptError', {
+						id: ref,
+						errors: script.errors,
+						dependencyErrors: script.dependencyErrors
+					});
+					return script;
+				}
+				else {
+					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
+				}
+
+				var error = { id: ref, errors: null };
+				if (script.externals.errors || script.externals.dependencyErrors) {
+					error.errors = script.externals.errors;
+					error.dependencyErrors = script.externals.dependencyErrors;
+				}
+
+				SystemBus.emit('scriptError', error);
+
 				return script;
-			}
-			else {
-				SystemBus.emit('goo.scriptError', {id: ref, errors: null});
-			}
-
-			_.extend(script.parameters, config.options);
-
-			var error = { id: ref, errors: null };
-			if (script.externals.errors || script.externals.dependencyErrors) {
-				error.errors = script.externals.errors;
-				error.dependencyErrors = script.externals.dependencyErrors;
-			}
-
-			SystemBus.emit('scriptError', error);
-
-			return script;
+			});
 		});
 	};
 

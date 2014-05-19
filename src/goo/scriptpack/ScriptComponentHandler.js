@@ -63,20 +63,27 @@ function(
 					var scriptName = ref.slice(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX.length);
 					promise = _createEngineScript(scriptName);
 				} else {
-					promise = that._load(scriptInstance.scriptRef, options);
+					promise = that._load(scriptInstance.scriptRef, {reload: true});
 				}
 
-				promise.then(function (script) {
+				promise = promise.then(function (script) {
 					if (script.externals && script.externals.parameters) {
 						ScriptUtils.fillDefaultValues(scriptInstance.options, script.externals.parameters);
 					}
 
-					_.extend(script.parameters, scriptInstance.options);
-					if (scriptInstance.name) {
-						script.name = scriptInstance.name;
-					}
+					// We need to duplicate the script so we can have multiple
+					// similar scripts with different parameters.
+					var newScript = {};
+					newScript.id = config.id;
+					newScript.externals = script.externals;
+					newScript.setup = script.setup;
+					newScript.update = script.update;
+					newScript.run = script.run;
+					newScript.cleanup = script.cleanup;
+					newScript.parameters = _.extend({}, script.parameters, scriptInstance.options);
+					newScript.enabled = false;
 
-					return script;
+					return newScript;
 				});
 
 				promises.push(promise);
