@@ -104,7 +104,7 @@ function(
 		if (!script) { throw new Error('Unrecognized script name'); }
 
 		script.id = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX + scriptName;
-		script.enabled = true;
+		script.enabled = false;
 
 		// Generate names from external variable names.
 		ScriptUtils.fillDefaultNames(script.externals.parameters);

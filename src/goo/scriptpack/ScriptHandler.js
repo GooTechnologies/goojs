@@ -212,8 +212,6 @@ function (
 			script.parameters = newScript.parameters || {};
 			script.enabled = false;
 
-			console.log(script)
-
 			// generate names from external variable names
 			ScriptUtils.fillDefaultNames(script.externals.parameters);
 		}
