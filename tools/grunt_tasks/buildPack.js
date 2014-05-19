@@ -49,6 +49,23 @@ module.exports = function (grunt) {
 		};
 	}
 
+	function getModulesAndDependencies2(tree, folder) {
+		var moduleList = [];
+		var ignoreList = [];
+		for (var module in tree) {
+			var dependencies = tree[module];
+			moduleList.push(folder + '/' + module);
+			dependencies.forEach(function (dependency) {
+				moduleList.push(dependency);
+			});
+		}
+
+		return {
+			moduleList: moduleList,
+			ignoreList: ignoreList
+		};
+	}
+
 	/**
 	 * Extracts the name of a file from a complete path
 	 * @param path
@@ -74,6 +91,42 @@ module.exports = function (grunt) {
 		moduleList.forEach(function (moduleName) {
 			if (packName !== moduleName) { // packPath ?
 				lines.push('\t"goo/' + packPath + '/' + moduleName + '",');
+			}
+		});
+
+		// what is this?
+		if (global) {
+			lines.push('], function (');
+
+			var fileNames = moduleList.filter(function (moduleName) {
+				return packName !== moduleName;  // packPath ?
+			}).map(extractFilename);
+
+			lines.push('\t' + fileNames.join(',\n\t'));
+
+			lines.push(') {');
+			lines.push('\tvar goo = window.goo;\n\tif (!goo) { return; }');
+			fileNames.forEach(function (fileName) {
+				lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
+			});
+		} else {
+			lines.push('], function () {');
+		}
+
+		lines.push('});');
+
+		var str = lines.join('\n');
+		return str;
+	}
+
+	function buildPack2(moduleList, packPath, packName) {
+		var lines = [];
+
+		lines.push('require([');
+
+		moduleList.forEach(function (moduleName) {
+			if (packName !== moduleName) { // packPath ?
+				lines.push('\t"'+moduleName+'",');
 			}
 		});
 
@@ -233,18 +286,16 @@ module.exports = function (grunt) {
 		var tree = madge('src/' + modules[0], { format: 'amd' }).tree;
 
 		// get modules and dependencies
-		console.log('get modules and engine dependencies'.grey);
-		var modulesAndDependencies = getModulesAndDependencies(tree);
-
-		console.log(modulesAndDependencies)
+		console.log('get modules and dependencies'.grey);
+		var modulesAndDependencies = getModulesAndDependencies2(tree, modules[0]);
 
 		// get the source for the pack
-		console.log('get the source for the pack'.grey);
-		var packStr = buildPack(modulesAndDependencies.moduleList, packPath, packName);
+		console.log('get the source'.grey);
+		var packStr = buildPack2(modulesAndDependencies.moduleList, 'custombuild', 'custombuild');
 
 		// add the pack
 		console.log('add the pack');
-		fs.writeFile('src/goo/' + packPath + '/' + packName + '.js', packStr, function (err) {
+		fs.writeFile(outFile, packStr, function (err) {
 			if (err) {
 				console.error('Error while writing the pack'.red);
 				console.error(err);
@@ -253,7 +304,14 @@ module.exports = function (grunt) {
 
 			// get the config for the optimizer
 			console.log('get the config for the optimizer'.grey);
-			var optimizerConfig = getOptimizerConfig(packPath, packName, modulesAndDependencies.ignoreList, outBaseDir);
+			var optimizerConfig = {
+				baseUrl: 'src/',
+				name: 'goo/custombuild/bundle',
+				out: outFile,
+				paths: {
+					'goo/custombuild': '../'
+				}
+			};//getOptimizerConfig('custombuild', 'custombuild', modulesAndDependencies.ignoreList, outBaseDir);
 
 			// optimize!
 			console.log('optimize!');
@@ -262,7 +320,7 @@ module.exports = function (grunt) {
 
 				console.log('Done optimizing'.green);
 
-				console.log('Pack Name: '.grey, packPath);
+				console.log('Pack Name: '.grey, 'custombuild');
 
 				console.log('Module List'.grey);
 				console.log(modulesAndDependencies.moduleList);
@@ -271,7 +329,7 @@ module.exports = function (grunt) {
 				console.log('Ignore List'.grey);
 				console.log(modulesAndDependencies.ignoreList);
 
-				wrap(outFile, getHeadWrapping(packName, version), getTailWrapping(packName), done);
+				wrap(outFile, getHeadWrapping('custombuild', 'custombuild', version), getTailWrapping('custombuild', 'custombuild'), done);
 			}, function (err) {
 				// optimization err callback
 				// :(
