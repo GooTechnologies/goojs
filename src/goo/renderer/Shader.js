@@ -99,6 +99,7 @@ function (
 		this.uniforms = shaderDefinition.uniforms || {};
 		this.attributeKeys = null;
 		this.uniformKeys = null;
+		this.matchedUniforms = [];
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
 		 *		<ul>
@@ -215,13 +216,24 @@ function (
 			}
 		}
 
-		if (this.uniforms) {
+		if (this.matchedUniforms) {
 			this.textureIndex = 0;
-			var names = this.uniformKeys;
-			for (var i = 0, l = names.length; i < l; i++) {
-				this._bindUniform(names[i], shaderInfo);
+
+			// var uniformCallMapping = this.uniformCallMapping;
+			// var materialuniforms = shaderInfo.material.uniforms;
+
+			for (var i = 0, l = this.matchedUniforms.length; i < l; i++) {
+				this._bindUniform(this.matchedUniforms[i], shaderInfo);
 			}
 		}
+
+		// if (this.uniforms) {
+		// 	this.textureIndex = 0;
+		// 	var names = this.uniformKeys;
+		// 	for (var i = 0, l = names.length; i < l; i++) {
+		// 		this._bindUniform(names[i], shaderInfo);
+		// 	}
+		// }
 	};
 
 	Shader.prototype._bindUniform = function (name, shaderInfo) {
@@ -433,9 +445,13 @@ function (
 				delete this.uniforms.$link;
 			}
 
+			this.matchedUniforms = [];
 			for (var name in this.uniforms) {
-				// var mapping = this.uniformCallMapping[name];
-				// if (mapping === undefined) {
+				var mapping = this.uniformCallMapping[name];
+				if (mapping !== undefined) {
+					this.matchedUniforms.push(name);
+				} 
+				// else {
 					// console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
 				// }
 
@@ -444,11 +460,12 @@ function (
 					this.currentCallbacks[name] = this.defaultCallbacks[value];
 				}
 			}
+
 			// for (var name in this.uniformCallMapping) {
-				// var mapping = this.uniforms[name];
-				// if (mapping === undefined) {
-					// console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
-				// }
+			// 	var mapping = this.uniforms[name];
+			// 	if (mapping === undefined) {
+			// 		console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
+			// 	}
 			// }
 
 			this.uniformKeys = Object.keys(this.uniforms);
