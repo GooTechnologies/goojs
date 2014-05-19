@@ -81,7 +81,7 @@ function(
 			if (!posteffects) { return; }
 			var i = 0;
 			_.forEach(config.posteffects, function(effectConfig) {
-				posteffects[i++] = that._updateEffect(effectConfig, posteffects);
+				posteffects[i++] = that._updateEffect(effectConfig, posteffects, options);
 			}, null, 'sortValue');
 			posteffects.length = i;
 			return RSVP.all(posteffects);
@@ -122,8 +122,8 @@ function(
 	PosteffectsHandler.prototype._updateEffect = function(config, posteffects, options) {
 		var that = this;
 		function loadConfig(key, id) {
-			return that._load(id).then(function (object) {
-				config[key] = object;
+			return that._load(id, options).then(function (object) {
+				config.options[key] = object;
 			});
 		}
 		var effect;
@@ -140,19 +140,19 @@ function(
 			effect = new PassLib[config.type](config.id);
 		}
 		var promises = [];
-		for (var i = 0; i < effect.options) {
-			var option = effect.options[i];
+		for (var i = 0; i < PassLib[config.type].options.length; i++) {
+			var option = PassLib[config.type].options[i];
 			var key = option.key;
 			var type = option.type;
 			if (type === 'texture') {
 				if (config.options[key] && config.options[key].textureRef) {
-					promises.push(loadConfig(key, config.options[key].textureRef);
+					promises.push(loadConfig(key, config.options[key].textureRef));
 				} else {
 					config.options[key] = null;
 				}
 			} else if (type === 'entity') {
-				if (config.options[key] && config.options[key].textureRef) {
-					promises.push(loadConfig(key, config.options[key].entityRef);
+				if (config.options[key] && config.options[key].entityRef) {
+					promises.push(loadConfig(key, config.options[key].entityRef));
 				} else {
 					config.options[key] = null;
 				}

@@ -883,6 +883,11 @@ function(
 		if (options.amount !== undefined) {
 			shader.uniforms.amount = options.amount;
 		}
+		if (options.url != null) {
+			this.material.setTexture('OVERLAY_MAP', options.url);
+		} else {
+			this.material.removeTexture('OVERLAY_MAP');
+		}
 		if (config.enabled !== undefined) {
 			this.enabled = config.enabled;
 		}
