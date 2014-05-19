@@ -1,7 +1,7 @@
 define([
-		'goo/addons/terrain/Terrain',
-		'goo/addons/terrain/Vegetation',
-		'goo/addons/terrain/Forrest',
+		'goo/addons/terrainpack/Terrain',
+		'goo/addons/terrainpack/Vegetation',
+		'goo/addons/terrainpack/Forrest',
 		'goo/math/Vector3',
 		'goo/util/Ajax',
 		'goo/math/Transform',
@@ -41,18 +41,18 @@ define([
 			this.eventY = 0;
 		}
 
-		TerrainHandler.prototype.isEditing = function() {
+		TerrainHandler.prototype.isEditing = function () {
 			return !this.hidden;
 		};
 
-		TerrainHandler.prototype.getHeightAt = function(pos) {
+		TerrainHandler.prototype.getHeightAt = function (pos) {
 			return this.terrainQuery ? this.terrainQuery.getHeightAt(pos) : 0;
 		};
 
 		var LMB = false;
 		var altKey = false;
 
-		var mousedown = function(e) {
+		var mousedown = function (e) {
 			if (e.button === 0) {
 				this.eventX = e.clientX;
 				this.eventY = e.clientY;
@@ -66,7 +66,7 @@ define([
 			}
 		};
 
-		var mouseup = function(e) {
+		var mouseup = function (e) {
 			if (e.button === 0) {
 				LMB = false;
 				this.draw = false;
@@ -74,7 +74,7 @@ define([
 			}
 		};
 
-		var mousemove = function(e) {
+		var mousemove = function (e) {
 			this.eventX = e.clientX;
 			this.eventY = e.clientY;
 
@@ -86,7 +86,7 @@ define([
 			}
 		};
 
-		TerrainHandler.prototype.toggleEditMode = function() {
+		TerrainHandler.prototype.toggleEditMode = function () {
 			this.terrain.toggleMarker();
 
 			this.hidden = !this.hidden;
@@ -110,14 +110,14 @@ define([
 			this.vegetation.toggle();
 		};
 
-		TerrainHandler.prototype.initLevel = function(terrainData, settings, forrestLODEntityMap) {
+		TerrainHandler.prototype.initLevel = function (terrainData, settings, forrestLODEntityMap) {
 			this.settings = settings;
 			var terrainSize = this.terrainSize;
 
 			var terrainPromise = this._loadData(terrainData.heightMap);
 			var splatPromise = this._loadData(terrainData.splatMap);
 
-			return RSVP.all([terrainPromise, splatPromise]).then(function(datas) {
+			return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
 				var terrainBuffer = datas[0];
 				var splatBuffer = datas[1];
 
@@ -139,33 +139,33 @@ define([
 			}.bind(this));
 		};
 
-		TerrainHandler.prototype._loadData = function(url) {
+		TerrainHandler.prototype._loadData = function (url) {
 			var promise = new RSVP.Promise();
 
 			var ajax = new Ajax();
 			ajax.get({
 				url: this.resourceFolder + url,
 				responseType: 'arraybuffer'
-			}).then(function(request) {
+			}).then(function (request) {
 				promise.resolve(request.response);
-			}.bind(this), function() {
+			}.bind(this), function () {
 				promise.resolve(null);
 			}.bind(this));
 
 			return promise;
 		};
 
-		TerrainHandler.prototype._textureLoad = function(url) {
+		TerrainHandler.prototype._textureLoad = function (url) {
 			var promise = new RSVP.Promise();
 			new TextureCreator().loadTexture2D(url, {
 				anisotropy: 4
-			}, function(texture) {
+			}, function (texture) {
 				promise.resolve(texture);
 			});
 			return promise;
 		};
 
-		TerrainHandler.prototype._load = function(terrainData, parentMipmap, splatMap, forrestLODEntityMap) {
+		TerrainHandler.prototype._load = function (terrainData, parentMipmap, splatMap, forrestLODEntityMap) {
 			var promises = [];
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground1.texture));
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground2.texture));
@@ -173,7 +173,7 @@ define([
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground4.texture));
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground5.texture));
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.stone.texture));
-			return RSVP.all(promises).then(function(textures) {
+			return RSVP.all(promises).then(function (textures) {
 				this.terrain.init({
 					heightMap: parentMipmap,
 					splatMap: splatMap,
@@ -189,7 +189,7 @@ define([
 				var terrainSize = this.terrainSize;
 				var calcVec = new Vector3();
 				var terrainQuery = this.terrainQuery = {
-					getHeightAt: function(pos) {
+					getHeightAt: function (pos) {
 						if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
 							return -1000;
 						}
@@ -219,7 +219,7 @@ define([
 						return MathUtils.lerp(intOnZ, MathUtils.lerp(intOnX, topLeft, topRight),
 							MathUtils.lerp(intOnX, bottomLeft, bottomRight));
 					}.bind(this),
-					getNormalAt: function(pos) {
+					getNormalAt: function (pos) {
 						var x = pos[0];
 						var z = terrainSize - pos[2];
 
@@ -240,7 +240,7 @@ define([
 
 						return calcVec.setd((topLeft - topRight), 1, (bottomLeft - topLeft)).normalize();
 					}.bind(this),
-					getVegetationType: function(xx, zz, slope) {
+					getVegetationType: function (xx, zz, slope) {
 						var rand = Math.random();
 						if (MathUtils.smoothstep(0.82, 0.91, slope) < rand) {
 							return null;
@@ -275,7 +275,7 @@ define([
 						}
 						return null;
 					}.bind(this),
-					getForrestType: function(xx, zz, slope, rand) {
+					getForrestType: function (xx, zz, slope, rand) {
 						if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
 							return null;
 						}
@@ -309,7 +309,7 @@ define([
 						}
 						return null;
 					}.bind(this),
-                    getType: function(xx, zz, slope, rand) {
+                    getType: function (xx, zz, slope, rand) {
                         if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
                             return terrainData.stone;
                         }
@@ -352,15 +352,15 @@ define([
 			}.bind(this));
 		};
 
-		TerrainHandler.prototype.updatePhysics = function() {
+		TerrainHandler.prototype.updatePhysics = function () {
 			this.terrain.updateAmmoBody();
 		};
 
-		TerrainHandler.prototype.initPhysics = function() {
+		TerrainHandler.prototype.initPhysics = function () {
 			this.ammoBody = this.terrain.initAmmoBody();
 		};
 
-		TerrainHandler.prototype.update = function(cameraEntity) {
+		TerrainHandler.prototype.update = function (cameraEntity) {
 			var pos = cameraEntity.cameraComponent.camera.translation;
 
 			if (this.terrain) {

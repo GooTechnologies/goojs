@@ -49,6 +49,7 @@ function(
 	}
 
 	Box2DSystem.prototype = Object.create(System.prototype);
+	Box2DSystem.prototype.constructor = Box2DSystem;
 
 	Box2DSystem.prototype.inserted = function (entity) {
 		var p = entity.box2DComponent;

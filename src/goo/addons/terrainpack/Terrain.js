@@ -142,7 +142,7 @@ function(
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
 	}
 
-	Terrain.prototype.init = function(terrainTextures) {
+	Terrain.prototype.init = function (terrainTextures) {
 		var world = this.world;
 		var count = this.count;
 
@@ -242,7 +242,7 @@ function(
 
 		// var normalAdd = new TextureCreator().loadTexture2D('res/terrain/grass2n.jpg', {
 			// anisotropy: 4
-		// }, function(texture) {});
+		// }, function (texture) {});
 		// this.normalmapPass.material.setTexture('NORMAL_MAP', normalAdd);
 
 		// var material = this.detailmapPass.material;
@@ -262,11 +262,11 @@ function(
 		this.updateTextures();
 	};
 
-	Terrain.prototype.toggleMarker = function() {
+	Terrain.prototype.toggleMarker = function () {
 		this.lightEntity.lightComponent.hidden = !this.lightEntity.lightComponent.hidden;
 	};
 
-	Terrain.prototype.setMarker = function(type, size, x, y, power, brushTexture) {
+	Terrain.prototype.setMarker = function (type, size, x, y, power, brushTexture) {
 		this.lightEntity.lightComponent.light.shadowSettings.size = size * 0.5;
 		brushTexture.wrapS = 'EdgeClamp';
 		brushTexture.wrapT = 'EdgeClamp';
@@ -274,7 +274,7 @@ function(
 		this.lightEntity.setTranslation(x, 200, y);
 	};
 
-	Terrain.prototype.pick = function(camera, x, y, store) {
+	Terrain.prototype.pick = function (camera, x, y, store) {
 		var entities = [];
 		this.terrainRoot.traverse(function (entity) {
 			if (entity.meshDataComponent && entity.meshRendererComponent.hidden === false) {
@@ -310,7 +310,7 @@ function(
 		}
 	};
 
-	Terrain.prototype.draw = function(mode, type, size, x, y, z, power, brushTexture, rgba) {
+	Terrain.prototype.draw = function (mode, type, size, x, y, z, power, brushTexture, rgba) {
 		power = MathUtils.clamp(power, 0, 1);
 
 		x = (x - this.size/2) * 2;
@@ -403,7 +403,7 @@ function(
 		}
 	};
 
-	Terrain.prototype.getTerrainData = function() {
+	Terrain.prototype.getTerrainData = function () {
 		var terrainBuffer = new Uint8Array(this.size * this.size * 4);
 		this.extractFloatPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
 		this.renderer.readPixels(0, 0, this.size, this.size, terrainBuffer);
@@ -424,7 +424,7 @@ function(
 		};
 	};
 
-	Terrain.prototype.updateAmmoBody = function() {
+	Terrain.prototype.updateAmmoBody = function () {
 		var heights = this.getTerrainData().heights;
 		var heightBuffer = this.heightBuffer;
 		for (var z = 0; z < this.size; z++) {
@@ -435,7 +435,7 @@ function(
 	};
 
 	// Returns the ammo body.
-	Terrain.prototype.initAmmoBody = function() {
+	Terrain.prototype.initAmmoBody = function () {
 		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, "float", Ammo.ALLOC_NORMAL);
 
 		this.updateAmmoBody();
@@ -483,7 +483,7 @@ function(
 		return body;
 	};
 
-	Terrain.prototype.updateTextures = function() {
+	Terrain.prototype.updateTextures = function () {
 		for (var i = 0; i < this.count - 1; i++) {
 			var mipmap = this.textures[i];
 			var child = this.textures[i + 1];
@@ -527,7 +527,7 @@ function(
 		// this.detailmapPass.render(this.renderer, this.detailMap, this.textures[0]);
 	};
 
-	Terrain.prototype.update = function(pos) {
+	Terrain.prototype.update = function (pos) {
 		var x = pos.x;
 		var y = pos.y;
 		var z = pos.z;
@@ -592,7 +592,7 @@ function(
 		}
 	};
 
-	Terrain.prototype.createClipmapLevel = function(world, material, level) {
+	Terrain.prototype.createClipmapLevel = function (world, material, level) {
 		var entity = world.createEntity('clipmap' + level);
 		entity.addToWorld();
 
@@ -637,7 +637,7 @@ function(
 		return entity;
 	};
 
-	Terrain.prototype.createQuadEntity = function(world, material, level, parentEntity, x, y, w, h) {
+	Terrain.prototype.createQuadEntity = function (world, material, level, parentEntity, x, y, w, h) {
 		var meshData = this.createGrid(w, h);
 		var entity = world.createEntity('mesh_' + w + '_' + h, meshData, material);
 
@@ -658,7 +658,7 @@ function(
 	};
 
 
-	Terrain.prototype.createGrid = function(w, h) {
+	Terrain.prototype.createGrid = function (w, h) {
 		var key = w + '_' + h;
 		if (this._gridCache[key]) {
 			return this._gridCache[key];
@@ -736,20 +736,20 @@ function(
 			groundMap4: 'GROUND_MAP4',
 			groundMap5: 'GROUND_MAP5',
 			stoneMap: 'STONE_MAP',
-			fogSettings: function() {
+			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
 			},
-			fogColor: function() {
+			fogColor: function () {
 				return ShaderBuilder.FOG_COLOR;
 			},
 			resolution: [255, 1, 1024, 1024],
 			resolutionNorm: [1024, 1024],
 			col: [0, 0, 0]
 		},
-		builder: function(shader, shaderInfo) {
+		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
 		},
-		vshader: function() {
+		vshader: function () {
 			return [
 				'attribute vec3 vertexPosition;',
 
@@ -792,7 +792,7 @@ function(
 				'}'
 			].join('\n');
 		},
-		fshader: function() {
+		fshader: function () {
 			return [
 				'uniform vec3 col;',
 				'uniform sampler2D normalMap;',
@@ -1183,7 +1183,7 @@ function(
 			cameraPosition: Shader.CAMERA,
 			heightMap: 'HEIGHT_MAP',
 			resolution: [255, 1, 1, 1],
-			id : function(shaderInfo) {
+			id : function (shaderInfo) {
 				return shaderInfo.renderable.id + 1;
 			}
 		},

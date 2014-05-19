@@ -2,11 +2,10 @@ define([
 	'goo/entities/components/Component'
 ],
 /** @lends */
-function(
+function (
 	Component
 ) {
 	'use strict';
-
 
 	/**
 	 * @class Box2DComponent<br>
@@ -27,7 +26,7 @@ function(
 		this.height = settings.height ? settings.height : 1;
 		this.radius = settings.radius ? settings.radius : 1;
 		this.vertices = settings.vertices ? settings.vertices : [0, 1, 2, 2, 0, 2];
-		this.movable = settings.movable === false ? false : true;
+		this.movable = settings.movable !== false;
 		this.friction = settings.friction ? settings.friction : 1;
 		this.restitution = settings.restitution ? settings.restitution : 0;
 		this.offsetX = settings.offsetX ? settings.offsetX : 0;
@@ -35,6 +34,7 @@ function(
 	}
 
 	Box2DComponent.prototype = Object.create(Component.prototype);
+	Box2DComponent.prototype.constructor = Box2DComponent;
 
 	return Box2DComponent;
 });

@@ -12,6 +12,7 @@ function(
 	 * @desc Depends on the global soundManager object.
 	 * Load soundmanager2 with a script tag before using this system.
 	 * @extends System
+	 * @deprecated Deprecated since 0.10.x and scheduled for removal in 0.12.0
 	 */
 	function SoundManager2System(settings) {
 		System.call(this, 'SoundManager2System', ['SoundManager2Component', 'TransformComponent']);
