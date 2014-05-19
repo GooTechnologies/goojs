@@ -27,10 +27,10 @@ function (
 
 	/**
 	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.
-	 * @param {Number} [fov=45] the full vertical angle of view, in degrees.
-	 * @param {Number} [aspect=1] aspect ratio
-	 * @param {Number} [near=1] near plane distance
-	 * @param {Number} [far=1000] far plane distance
+	 * @param {Number} [fov=45] The full vertical angle of view, in degrees.
+	 * @param {Number} [aspect=1] Aspect ratio.
+	 * @param {Number} [near=1] Near plane distance.
+	 * @param {Number} [far=1000] Far plane distance.
 	 */
 
 	function Camera(fov, aspect, near, far) {
@@ -182,10 +182,10 @@ function (
 	/**
 	 * Sets the frustum plane values of this camera using the given perspective values.
 	 *
-	 * @param fovY the full angle of view on the Y axis, in degrees.
-	 * @param aspect the aspect ratio of our view (generally in [0,1]). Often this is canvas width / canvas height.
-	 * @param near our near plane value
-	 * @param far our far plane value
+	 * @param {Number} fov The full angle of view on the Y axis, in degrees.
+	 * @param {Number} aspect The aspect ratio of our view (generally in [0,1]). Often this is canvas width / canvas height.
+	 * @param {Number} near Near plane value
+	 * @param {Number} far Far plane value
 	 */
 	Camera.prototype.setFrustumPerspective = function (fov, aspect, near, far) {
 		if (fov !== undefined && fov !== null) {
@@ -218,12 +218,12 @@ function (
 	/**
 	 * Sets the frustum plane values of this camera using the given values.
 	 *
-	 * @param near
-	 * @param far
-	 * @param left
-	 * @param right
-	 * @param top
-	 * @param bottom
+	 * @param {Number} near
+	 * @param {Number} far
+	 * @param {Number} left
+	 * @param {Number} right
+	 * @param {Number} top
+	 * @param {Number} bottom
 	 */
 	Camera.prototype.setFrustum = function (near, far, left, right, top, bottom, aspect) {
 		if (near !== undefined && near !== null) {
@@ -289,10 +289,10 @@ function (
 	 * Sets the axes and location of the camera. Similar to {@link setAxes}, but sets camera
 	 * location as well.
 	 *
-	 * @param location
-	 * @param left
-	 * @param up
-	 * @param direction
+	 * @param {Vector3} location
+	 * @param {Vector3} left
+	 * @param {Vector3} up
+	 * @param {Vector3} direction
 	 */
 	Camera.prototype.setFrame = function (location, left, up, direction) {
 		this._left.copy(left);
@@ -309,7 +309,7 @@ function (
 	 * worldUpVector to compute up and left camera vectors.
 	 *
 	 * @param {Vector3} pos Where to look at in terms of world coordinates.
-	 * @param {Vector3} worldUpVector A normalized vector indicating the up direction of the world. (often {@link Vector3#UNIT_Y} or {@link Vector3#UNIT_Z}).
+	 * @param {Vector3} worldUpVector A normalized vector indicating the up direction of the world. (often Vector3.UNIT_Y or Vector3.UNIT_Z).
 	 */
 	Camera.prototype.lookAt = function (pos, worldUpVector) {
 		this._newDirection.copy(pos).sub(this.translation).normalize();
@@ -354,9 +354,10 @@ function (
 		this.onFrameChange();
 	};
 
+	// VS: Private while not implemented!
 	/**
 	 * Sets the boundaries of this camera's viewport to the given values
-	 *
+	 * @private
 	 * @param left
 	 * @param right
 	 * @param bottom
@@ -376,7 +377,7 @@ function (
 	 * Checks a bounding volume against the planes of this camera's frustum and returns if it is completely inside of, outside of, or intersecting.
 	 *
 	 * @param bound the bound to check for culling
-	 * @return intersection type
+	 * @returns {Object} Intersection type
 	 */
 	Camera.prototype.contains = function (bound) {
 		if (!bound) {
@@ -596,12 +597,12 @@ function (
 	 * removed: param flipVertical if true, we'll flip the screenPosition on the y axis. This is useful when you are dealing with non-opengl coordinate
 	 *            systems.
 	 *
-	 * @param screenX the screen x position
-	 * @param screenY the screen y position
-	 * @param screenWidth the screen width
-	 * @param screenHeight the screen height
-	 * @param store the Ray to store the result in. If false, a new Ray is created and returned.
-	 * @return the resulting Ray.
+	 * @param {Number} screenX the screen x position
+	 * @param {Number} screenY the screen y position
+	 * @param {Number} screenWidth the screen width
+	 * @param {Number} screenHeight the screen height
+	 * @param {Ray} [store] the Ray to store the result in. If false, a new Ray is created and returned.
+	 * @returns {Ray} The resulting Ray.
 	 */
 	Camera.prototype.getPickRay = function (screenX, screenY, screenWidth, screenHeight, store) {
 		if (!store) {
@@ -620,14 +621,14 @@ function (
 	/**
 	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
 	 *
-	 * @param screenX the screen x position
-	 * @param screenY the screen y position
-	 * @param screenWidth the screen width
-	 * @param screenHeight the screen height
-	 * @param zDepth the depth into the camera view to take our point in world distance.
-	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
+	 * @param {Number} screenX the screen x position
+	 * @param {Number} screenY the screen y position
+	 * @param {Number} screenWidth the screen width
+	 * @param {Number} screenHeight the screen height
+	 * @param {Number} zDepth the depth into the camera view to take our point in world distance.
+	 * @param {Vector3} [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
-	 * @return a vector containing the world coordinates.
+	 * @return {Vector3} Vector containing the world coordinates.
 	 */
 	Camera.prototype.getWorldPosition = function (screenX, screenY, screenWidth, screenHeight, zDepth, store) {
 		if (!store) {
@@ -676,9 +677,9 @@ function (
 	 * @param screenWidth the screen width
 	 * @param screenHeight the screen height
 	 * @param zDepth the depth into the camera view to take our point. 0 indicates the near plane of the camera and 1 indicates the far plane.
-	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
+	 * @param [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
-	 * @return a vector containing the world coordinates.
+	 * @returns {Vector3} Vector containing the world coordinates.
 	 */
 	Camera.prototype.getWorldCoordinates = function (screenX, screenY, screenWidth, screenHeight, zDepth, store) {
 		if (!store) {
@@ -715,9 +716,9 @@ function (
 	 * @param worldPos the position in space to retrieve screen coordinates for.
 	 * @param screenWidth the screen width
 	 * @param screenHeight the screen height
-	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
+	 * @param [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
-	 * @return a vector containing the screen coordinates as x and y and the distance as a percent between near and far planes.
+	 * @returns {Vector3} Vector containing the screen coordinates as x and y and the distance as a percent between near and far planes.
 	 */
 	Camera.prototype.getScreenCoordinates = function (worldPosition, screenWidth, screenHeight, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
@@ -742,8 +743,8 @@ function (
 	 * Converts a position in world coordinate space to a x,y,z frustum position using the current settings of this camera.
 	 *
 	 * @param worldPos the position in space to retrieve frustum coordinates for.
-	 * @param store Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is created.
-	 * @return a vector containing the x,y,z frustum position
+	 * @param [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is created.
+	 * @returns {Vector3} Vector containing the x, y and z frustum position.
 	 */
 	Camera.prototype.getFrustumCoordinates = function (worldPosition, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
@@ -852,11 +853,9 @@ function (
 	};
 
 	/**
-	 * Compress this camera's near and far frustum planes to be smaller if possible, using the given bounds as a
-	 * measure.
-	 *
-	 * @param sceneBounds
-	 *            the scene bounds
+	 * Compress this camera's near and far frustum planes to be smaller if possible, 
+	 * using the given bounds as a measure.
+	 * @param sceneBounds The scene bounds
 	 */
 	Camera.prototype.pack = function (sceneBounds) {
 		var center = sceneBounds.center;
@@ -957,7 +956,8 @@ function (
 
 	/**
 	 * Clipping using oblique frustums
-	 * @param clipPlane clipping plane
+	 * @param clipPlane Clipping plane
+	 * @param offset Offset
 	 */
 	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig, offset) {
 		offset = offset || 0;

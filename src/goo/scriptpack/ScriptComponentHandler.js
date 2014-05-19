@@ -105,6 +105,7 @@ function(
 	 *
 	 * @returns {Promise}
 	 *		A promise which is resolved with the new script.
+	 * @private
 	 */
 	 function _createEngineScript(scriptName) {
 		var script = Scripts.create(scriptName);
