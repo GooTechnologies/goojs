@@ -129,13 +129,17 @@ function(
 			}
 
 			if (config.lightCookie && config.type !== 'PointLight') {
-				var textureRef = config.lightCookie;
-				textureRef = (textureRef.enabled) ? textureRef.textureRef : textureRef;
+				var textureObj = config.lightCookie;
 
-				return that._load(textureRef, options).then(function(texture) {
-					light.lightCookie = texture;
+				if (!textureObj || !textureObj.textureRef || textureObj.enabled === false) {
+					light.lightCookie = null;
 					return component;
-				});
+				} else {
+					return that._load(textureObj.textureRef, options).then(function (texture) {
+						light.lightCookie = texture;
+						return component;
+					});
+				}
 			} else {
 				light.lightCookie = null;
 				return component;

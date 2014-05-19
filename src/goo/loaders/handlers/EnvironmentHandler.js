@@ -121,8 +121,9 @@ define([
 			}
 
 			var promises = [];
+
 			// Skybox
-			if(config.skyboxRef) {
+			if (config.skyboxRef) {
 				var p = that._load(config.skyboxRef, options);
 				promises.push(p);
 			}
