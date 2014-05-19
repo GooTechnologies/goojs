@@ -17,7 +17,6 @@ define([
 
 	var defaults = {
 		backgroundColor: [0.3,0.3,0.3,1],
-		backgroundTexture: null,
 		globalAmbient: [0,0,0],
 		fog: {
 			enabled: false,
@@ -122,22 +121,6 @@ define([
 			}
 
 			var promises = [];
-
-			// Background texture
-			if (config.backgroundTexture) {
-				var textureObj = config.backgroundTexture;
-
-				if (!textureObj || !textureObj.textureRef || textureObj.enabled === false) {
-					object.backgroundTexture = null;
-				} else {
-					var p = that._load(textureObj.textureRef, options).then(function (texture) {
-						object.backgroundTexture = texture;
-					});
-					promises.push(p);
-				}
-			} else {
-				object.backgroundTexture = null;
-			}
 
 			// Skybox
 			if (config.skyboxRef) {
