@@ -3,10 +3,10 @@ define([
 	'goo/util/ObjectUtil'
 ],
 /** @lends */
-function(
+function (
 	Component,
 	_
-){
+) {
 	'use strict';
 
 	var CANNON = window.CANNON;
@@ -19,11 +19,11 @@ function(
 	 * @param {number} [settings.distance=1]
 	 * @param {CannonRigidbodyComponent} settings.connectedBody
 	 */
-	function CannonDistanceJointComponent(settings){
+	function CannonDistanceJointComponent(settings) {
 		settings = settings || {};
 		this.type = 'CannonDistanceJointComponent';
 
-		_.defaults(settings,{
+		_.defaults(settings, {
 			distance : 1,
 			connectedBody: null
 		});
@@ -36,7 +36,7 @@ function(
 	CannonDistanceJointComponent.prototype = Object.create(Component.prototype);
 	CannonDistanceJointComponent.constructor = CannonDistanceJointComponent;
 
-	CannonDistanceJointComponent.prototype.createConstraint = function(entity){
+	CannonDistanceJointComponent.prototype.createConstraint = function (entity) {
 		var bodyA = entity.cannonRigidbodyComponent.body;
 		var bodyB = this.connectedBody.body;
 		this.cannonConstraint = new CANNON.DistanceConstraint(bodyA, bodyB, this.distance);

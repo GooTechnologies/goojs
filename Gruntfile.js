@@ -151,6 +151,10 @@ module.exports = function (grunt) {
 			terrainpack: {
 				packPath: 'addons/terrainpack',
 				outBaseDir: 'out'
+			},
+			cannonpack: {
+				packPath: 'addons/cannonpack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {

@@ -2,9 +2,9 @@ define([
 	'goo/entities/components/Component'
 ],
 /** @lends */
-function(
+function (
 	Component
-){
+) {
 	'use strict';
 
 	var CANNON = window.CANNON;
@@ -15,7 +15,7 @@ function(
 	 * @param {object} [settings]
 	 * @param {number} [settings.radius=0.5]
 	 */
-	function CannonSphereColliderComponent(settings){
+	function CannonSphereColliderComponent(settings) {
 		settings = settings || {};
 		this.type = 'CannonSphereColliderComponent';
 		this.radius = settings.radius || 0.5;

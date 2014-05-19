@@ -4,12 +4,11 @@ define([
 	'goo/math/Vector3'
 ],
 /** @lends */
-function(
+function (
 	Component,
 	Box,
 	Vector3
-){
-
+) {
 	'use strict';
 
 	var CANNON = window.CANNON;
@@ -21,8 +20,8 @@ function(
 	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
 	 * @extends Component
 	 */
-	function CannonBoxColliderComponent (settings) {
-		this.type = "CannonBoxColliderComponent";
+	function CannonBoxColliderComponent(settings) {
+		this.type = 'CannonBoxColliderComponent';
 
 		settings = settings || {};
 		var e = this.halfExtents = settings.halfExtents || new Vector3(0.5, 0.5, 0.5);
