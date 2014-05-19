@@ -215,17 +215,13 @@ function (
 			}
 		}
 
-		// if (shaderInfo.material !== record.material) {
-			// record.material = shaderInfo.material;
-			if (this.uniforms) {
-				this.textureIndex = 0;
-				// var names = Object.keys(this.uniforms);
-				var names = this.uniformKeys;
-				for (var i = 0, l = names.length; i < l; i++) {
-					this._bindUniform(names[i], shaderInfo);
-				}
+		if (this.uniforms) {
+			this.textureIndex = 0;
+			var names = this.uniformKeys;
+			for (var i = 0, l = names.length; i < l; i++) {
+				this._bindUniform(names[i], shaderInfo);
 			}
-		// }
+		}
 	};
 
 	Shader.prototype._bindUniform = function (name, shaderInfo) {
@@ -233,9 +229,14 @@ function (
 		if (mapping === undefined) {
 			return;
 		}
-		var defValue = (shaderInfo.material.uniforms[name] !== undefined) ? shaderInfo.material.uniforms[name] : this.uniforms[name];
 
-		if (typeof defValue === 'string') {
+		var defValue = shaderInfo.material.uniforms[name];
+		if (defValue === undefined) {
+			defValue = this.uniforms[name];
+		}
+
+		var type = typeof defValue;
+		if (type === 'string') {
 			var callback = this.currentCallbacks[name];
 			if (callback) {
 				callback(mapping, shaderInfo);
@@ -258,7 +259,7 @@ function (
 				}
 			}
 		} else {
-			var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
+			var value = type === 'function' ? defValue(shaderInfo) : defValue;
 			mapping.call(value);
 		}
 	};
