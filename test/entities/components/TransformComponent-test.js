@@ -200,6 +200,44 @@ define([
 				expect(entity.transformComponent).toBeTruthy();
 				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
 			});
+
+			it('applies all of the API functions correctly', function(){
+				var entity = new Entity(world);
+				var childEntity = new Entity(world);
+				function traverseFunction(entity){
+					expect(entity).toEqual(jasmine.any(Entity));
+				}
+				entity.set(new TransformComponent());
+				childEntity.set(new TransformComponent());
+
+				entity.setTranslation(1,2,3);
+				expect(entity.getTranslation()).toEqual(new Vector3(1,2,3));
+
+				entity.setRotation(0,0,0);
+				expect(entity.getRotation()).toEqual(new Vector3(0,0,0));
+
+				entity.setScale(1,2,3);
+				expect(entity.getScale()).toEqual(new Vector3(1,2,3));
+
+				entity.lookAt(0,0,0);
+
+				entity.addTranslation(1,0,0);
+
+				entity.setTranslation(1,2,3).addTranslation(1,2,3);
+				expect(entity.getTranslation()).toEqual(new Vector3(2,4,6));
+
+				entity.attachChild(childEntity);
+				expect(entity.children().size()).toEqual(1);
+				expect(childEntity.parent().size()).toEqual(1);
+
+				entity.traverse(traverseFunction);
+				entity.traverseUp(traverseFunction);
+
+				entity.detachChild(childEntity);
+				expect(entity.children().size()).toEqual(0);
+				expect(childEntity.parent().size()).toEqual(0);
+
+			});
 		});
 
 		it('gets an EntitySelection of children', function () {

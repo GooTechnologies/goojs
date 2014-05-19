@@ -66,7 +66,7 @@ function (
 			return this;
 		},
 		setScale: function () {
-			TransformComponent.prototype.setRotation.apply(this.transformComponent, arguments);
+			TransformComponent.prototype.setScale.apply(this.transformComponent, arguments);
 			return this;
 		},
 		lookAt: function () {
@@ -85,11 +85,11 @@ function (
 		},
 
 		addTranslation: function () {
-			TransformComponent.prototype.addTranslation.apply(this, arguments);
+			TransformComponent.prototype.addTranslation.apply(this.transformComponent, arguments);
 			return this;
 		},
 		addRotation: function () {
-			TransformComponent.prototype.addRotation.apply(this, arguments);
+			TransformComponent.prototype.addRotation.apply(this.transformComponent, arguments);
 			return this;
 		},
 		// no, there's no addScale
