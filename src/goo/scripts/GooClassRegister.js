@@ -1,13 +1,5 @@
 define([
 	'goo/scripts/Scripts',
-	'goo/addons/cannon/CannonBoxColliderComponent',
-	'goo/addons/cannon/CannonDistanceJointComponent',
-	'goo/addons/cannon/CannonPlaneColliderComponent',
-	'goo/addons/cannon/CannonRigidbodyComponent',
-	'goo/addons/cannon/CannonSphereColliderComponent',
-	'goo/addons/cannon/CannonSystem',
-	'goo/addons/water/FlatWaterRenderer',
-	'goo/addons/water/ProjectedGridWaterRenderer',
 	'goo/animation/Joint',
 	'goo/animation/Skeleton',
 	'goo/animation/SkeletonPose',
@@ -188,14 +180,6 @@ define([
 	// minifier cannot handle any expressions or statements other than a simple array of strings
 	var defines = [
 		'goo/scripts/Scripts',
-		'goo/addons/cannon/CannonBoxColliderComponent',
-		'goo/addons/cannon/CannonDistanceJointComponent',
-		'goo/addons/cannon/CannonPlaneColliderComponent',
-		'goo/addons/cannon/CannonRigidbodyComponent',
-		'goo/addons/cannon/CannonSphereColliderComponent',
-		'goo/addons/cannon/CannonSystem',
-		'goo/addons/water/FlatWaterRenderer',
-		'goo/addons/water/ProjectedGridWaterRenderer',
 		'goo/animation/Joint',
 		'goo/animation/Skeleton',
 		'goo/animation/SkeletonPose',

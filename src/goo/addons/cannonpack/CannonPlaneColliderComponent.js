@@ -2,9 +2,9 @@ define([
 	'goo/entities/components/Component'
 ],
 /** @lends */
-function(
+function (
 	Component
-){
+) {
 	'use strict';
 
 	var CANNON = window.CANNON;
@@ -14,7 +14,7 @@ function(
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
 	 * @param {object} [settings]
 	 */
-	function CannonPlaneColliderComponent(settings){
+	function CannonPlaneColliderComponent(settings) {
 		this.type = "CannonPlaneColliderComponent";
 
 		settings = settings || {};

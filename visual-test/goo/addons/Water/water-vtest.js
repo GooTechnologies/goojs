@@ -8,7 +8,7 @@ require([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/Texture',
-	'goo/addons/water/FlatWaterRenderer',
+	'goo/addons/waterpack/FlatWaterRenderer',
 	'lib/V'
 ], function (
 	Material,

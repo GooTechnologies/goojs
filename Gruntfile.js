@@ -154,6 +154,17 @@ module.exports = function (grunt) {
 			},
 			ammopack: {
 				packPath: 'addons/ammopack',
+			},
+			cannonpack: {
+				packPath: 'addons/cannonpack',
+				outBaseDir: 'out'
+			},
+			howlerpack: {
+				packPath: 'addons/howlerpack',
+				outBaseDir: 'out'
+			},
+			waterpack: {
+				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
 			}
 		},
