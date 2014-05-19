@@ -57,80 +57,81 @@ function (
 	TransformComponent.prototype.constructor = TransformComponent;
 
 	TransformComponent.prototype.api = {
-		getTranslation: function () {
-			return TransformComponent.prototype.getTranslation.apply(this.transformComponent, arguments);
-		},
 		setTranslation: function () {
 			TransformComponent.prototype.setTranslation.apply(this.transformComponent, arguments);
-			return this.transformComponent.entity;
+			return this;
 		},
-		getScale: function () {
-			return TransformComponent.prototype.getScale.apply(this.transformComponent, arguments);
+		setRotation: function () {
+			TransformComponent.prototype.setRotation.apply(this.transformComponent, arguments);
+			return this;
 		},
 		setScale: function () {
 			TransformComponent.prototype.setScale.apply(this.transformComponent, arguments);
-			return this.transformComponent.entity;
+			return this;
 		},
-		addTranslation: function () {
-			TransformComponent.prototype.addTranslation.apply(this.transformComponent, arguments);
-			return this.transformComponent.entity;
+		lookAt: function () {
+			TransformComponent.prototype.lookAt.apply(this.transformComponent, arguments);
+			return this;
+		},
+
+		getTranslation: function () {
+			return TransformComponent.prototype.getTranslation.apply(this.transformComponent, arguments);
 		},
 		getRotation: function () {
 			return TransformComponent.prototype.getRotation.apply(this.transformComponent, arguments);
 		},
+		getScale: function () {
+			return TransformComponent.prototype.getScale.apply(this.transformComponent, arguments);
+		},
+
+		addTranslation: function () {
+			TransformComponent.prototype.addTranslation.apply(this.transformComponent, arguments);
+			return this;
+		},
 		addRotation: function () {
 			TransformComponent.prototype.addRotation.apply(this.transformComponent, arguments);
-			return this.transformComponent.entity;
+			return this;
 		},
-		setRotation: function () {
-			TransformComponent.prototype.setRotation.apply(this.transformComponent, arguments);
-			return this.transformComponent.entity;
-		},
-		lookAt: function () {
-			TransformComponent.prototype.lookAt.apply(this.transformComponent, arguments);
-			return this.transformComponent.entity;
-		},
+		// no, there's no addScale
 
-		// attachChild: Entity | Selection, boolean -> this.transformComponent
+
+		// attachChild: Entity | Selection, boolean -> this
 		attachChild: function (entity) {
 			this.transformComponent.attachChild(entity.transformComponent);
-			return this.transformComponent.entity;
+			return this;
 		},
-
-		// detachChild: Entity | Selection, boolean -> this.transformComponent
+		// detachChild: Entity | Selection, boolean -> this
 		detachChild: function (entity) {
 			this.transformComponent.detachChild(entity.transformComponent);
-			return this.transformComponent.entity;
+			return this;
 		},
 
 		children: function () {
-			return new EntitySelection(this.transformComponent.entity).children();
+			return new EntitySelection(this).children();
 		},
-
 		parent: function () {
-			return new EntitySelection(this.transformComponent.entity).parent();
+			return new EntitySelection(this).parent();
 		},
 
 		traverse: function (callback, level) {
 			level = level !== undefined ? level : 0;
 
-			if (callback(this.transformComponent.entity, level) !== false) {
+			if (callback(this, level) !== false) {
 				for (var i = 0; i < this.transformComponent.children.length; i++) {
 					var childEntity = this.transformComponent.children[i].entity;
 					childEntity.traverse(callback, level + 1);
 				}
 			}
 
-			return this.transformComponent.entity;
+			return this;
 		},
-
 		traverseUp: function (callback) {
 			var transformComponent = this.transformComponent;
 			while (callback(transformComponent.entity) !== false && transformComponent.parent) {
 				transformComponent = transformComponent.parent;
 			}
 
-			return this.transformComponent.entity;
+			return this;
 		}
 	};
 
@@ -212,7 +213,7 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
-		if(arguments.length === 3) {
+		if (arguments.length === 3) {
 			this.transform.translation.add(arguments);
 		} else {
 			this.transform.translation.add(arguments[0]);
@@ -253,16 +254,16 @@ function (
 	 */
 	TransformComponent.prototype.addRotation = function () {
 		this.tmpVec = this.tmpVec || new Vector3();
-		this.getRotation( this.tmpVec);
+		this.getRotation(this.tmpVec);
 		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
 			var arg0 = arguments[0];
 			if (arg0 instanceof Vector3) {
-				this.transform.rotation.fromAngles(this.tmpVec.x+arg0.x, this.tmpVec.y+arg0.y, this.tmpVec.z+arg0.z);
+				this.transform.rotation.fromAngles(this.tmpVec.x + arg0.x, this.tmpVec.y + arg0.y, this.tmpVec.z + arg0.z);
 			} else if (arg0.length === 3) {
-				this.transform.rotation.fromAngles(this.tmpVec.x+arg0[0], this.tmpVec.y+arg0[1], this.tmpVec.z+arg0[2]);
+				this.transform.rotation.fromAngles(this.tmpVec.x + arg0[0], this.tmpVec.y + arg0[1], this.tmpVec.z + arg0[2]);
 			}
 		} else {
-			this.transform.rotation.fromAngles(this.tmpVec.x+arguments[0], this.tmpVec.y+arguments[1], this.tmpVec.z+arguments[2]);
+			this.transform.rotation.fromAngles(this.tmpVec.x + arguments[0], this.tmpVec.y + arguments[1], this.tmpVec.z + arguments[2]);
 		}
 
 		this._dirty = true;
@@ -356,7 +357,7 @@ function (
 	 */
 	TransformComponent.prototype.attachChild = function (childComponent, keepTransform) {
 		var component = this;
-		while(component) {
+		while (component) {
 			if (component === childComponent) {
 				console.warn('attachChild: An object can\'t be added as a descendant of itself.');
 				return;
@@ -432,7 +433,7 @@ function (
 		this._updated = true;
 	};
 
-	TransformComponent.applyOnEntity = function(obj, entity) {
+	TransformComponent.applyOnEntity = function (obj, entity) {
 		var transformComponent = entity.transformComponent;
 
 		if (!transformComponent) {

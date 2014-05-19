@@ -246,7 +246,7 @@ function (
 		if (this.activeGizmo) {
 			if (this.activeGizmo.dirty) {
 				this.activeGizmo.process();
-			} else if (this.entity && this.entity.transformComponent._updated) {
+			} else if (this.entity && this.entity.transformComponent._updated && !this.active) {
 				this.activeGizmo.copyTransform(this.entity.transformComponent.worldTransform, this.global);
 			}
 			this.activeGizmo.updateTransforms();

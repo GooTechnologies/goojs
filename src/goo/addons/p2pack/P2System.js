@@ -2,7 +2,7 @@ define([
 	'goo/entities/systems/System'
 ],
 /** @lends */
-function(
+function (
 	System
 ) {
 	'use strict';
@@ -41,7 +41,7 @@ function(
 	P2System.prototype = Object.create(System.prototype);
 	P2System.prototype.constructor = P2System;
 
-	function updateTransform(transformComponent, p2Component){
+	function updateTransform(transformComponent, p2Component) {
 		var position = p2Component.body.position,
 			scale = p2Component.scale;
 
@@ -50,7 +50,7 @@ function(
 		transformComponent.setUpdated();
 	}
 
-	P2System.prototype.inserted = function(entity) {
+	P2System.prototype.inserted = function (entity) {
 		var p2Component = entity.p2Component;
 		var transformComponent = entity.transformComponent;
 
@@ -62,16 +62,16 @@ function(
 
 		// Create shapes
 		var body = p2Component.body = new p2.Body({
-			mass:p2Component.mass,
-			position:[transformComponent.transform.translation.x,transformComponent.transform.translation.y]
+			mass: p2Component.mass,
+			position: [transformComponent.transform.translation.x, transformComponent.transform.translation.y]
 		});
 
 		for (var i = 0; i < p2Component.shapes.length; i++) {
 			var shape = p2Component.shapes[i],
 				p2shape;
-			switch(shape.type){
+			switch (shape.type) {
 				case 'box':
-					p2shape = new p2.Rectangle(shape.width,shape.height);
+					p2shape = new p2.Rectangle(shape.width, shape.height);
 					break;
 				case 'circle':
 					p2shape = new p2.Circle(shape.radius);
@@ -91,7 +91,7 @@ function(
 		this.world.addBody(body);
 	};
 
-	P2System.prototype.deleted = function(entity) {
+	P2System.prototype.deleted = function (entity) {
 		var p2Component = entity.p2Component;
 
 		//REVIEW: not gonna be true if you remove the component from the entity
@@ -101,7 +101,7 @@ function(
 		}
 	};
 
-	P2System.prototype.process = function(entities /*, tpf */) {
+	P2System.prototype.process = function (entities /*, tpf */) {
 		this.world.step(1 / this.stepFrequency);
 
 		for (var i = 0; i < entities.length; i++) {

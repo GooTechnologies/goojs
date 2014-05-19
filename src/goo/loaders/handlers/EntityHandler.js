@@ -70,12 +70,12 @@ function(
 		}
 	};
 
-	function updateTags(entity, config) {
+	function updateTags(entity, tags) {
 		entity._tags = {};
-		if (!config) { return; }
+		if (!tags) { return; }
 
 		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
-		for (var tag in config) {
+		for (var tag in tags) {
 			entity.setTag(tag);
 		}
 	}
@@ -103,6 +103,7 @@ function(
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
+			window.entities = window.entities || {}
 			entity.static = !!config.static;
 
 			updateTags(entity, config.tags);

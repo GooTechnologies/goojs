@@ -25,7 +25,7 @@ function (
 	 *        states, provided that a path is defined for transition from the current state to the desired one. *
 	 * @param {String} name Name of layer
 	 */
-	function AnimationLayer (name, key) {
+	function AnimationLayer(name, key) {
 		this.id = key;
 		this._name = name;
 
@@ -42,7 +42,7 @@ function (
 	 * Get available states for layer
 	 * @returns {string[]}
 	 */
-	AnimationLayer.prototype.getStates = function() {
+	AnimationLayer.prototype.getStates = function () {
 		return Object.keys(this._steadyStates);
 	};
 
@@ -51,7 +51,7 @@ function (
 	 * @param {string} stateKey
 	 * @param {SteadyState} state
 	 */
-	AnimationLayer.prototype.setState = function(stateKey, state) {
+	AnimationLayer.prototype.setState = function (stateKey, state) {
 		this._steadyStates[stateKey] = state;
 	};
 
@@ -60,7 +60,7 @@ function (
 	 * layer in the animation component.
 	 * @param {number} weight Should be between 0 and 1 and will be clamped
 	 */
-	AnimationLayer.prototype.setBlendWeight = function(weight) {
+	AnimationLayer.prototype.setBlendWeight = function (weight) {
 		if (this._layerBlender) {
 			this._layerBlender._blendWeight = MathUtils.clamp(weight, 0, 1);
 		}
@@ -70,7 +70,7 @@ function (
 	 * Get available transitions for current State
 	 * @returns {string[]}
 	 */
-	AnimationLayer.prototype.getTransitions = function() {
+	AnimationLayer.prototype.getTransitions = function () {
 		var transitions;
 		if (this._currentState) {
 			transitions = Object.keys(this._currentState._transitions);
@@ -92,9 +92,9 @@ function (
 	 * Does the updating before animations are applied
 	 * @private
 	 */
-	AnimationLayer.prototype.update = function(globalTime) {
-		if(this._currentState) {
-			this._currentState.update(globalTime || World.time);
+	AnimationLayer.prototype.update = function (globalTime) {
+		if (this._currentState) {
+			this._currentState.update(typeof(globalTime) !== 'undefined' ? globalTime : World.time);
 		}
 	};
 
@@ -102,7 +102,7 @@ function (
 	 * Does the updating after animations are applied
 	 * @private
 	 */
-	AnimationLayer.prototype.postUpdate = function() {
+	AnimationLayer.prototype.postUpdate = function () {
 		if (this._currentState) {
 			this._currentState.postUpdate();
 		}
@@ -114,8 +114,8 @@ function (
 	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
 	 * @returns {Boolean} true if a transition was found and started
 	 */
-	AnimationLayer.prototype.transitionTo = function(state, globalTime) {
-		globalTime = globalTime || World.time;
+	AnimationLayer.prototype.transitionTo = function (state, globalTime) {
+		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 		var cState = this._currentState;
 		var transition;
 		if (this._steadyStates[state] === cState) {
@@ -137,7 +137,7 @@ function (
 			return true;
 		} else if (!cState) {
 			transition = this._transitions[state];
-			if(transition) {
+			if (transition) {
 				var transitionState = this._getTransitionByType(transition.type);
 				if (transitionState) {
 					this._doTransition(transitionState, null, this._steadyStates[state], transition, globalTime);
@@ -148,8 +148,8 @@ function (
 		return false;
 	};
 
-	AnimationLayer.prototype._doTransition = function(transition, source, target, config, globalTime) {
-		if(source) {
+	AnimationLayer.prototype._doTransition = function (transition, source, target, config, globalTime) {
+		if (source) {
 			transition._sourceState = source;
 			var timeWindow = config.timeWindow || [-1, -1];
 			if (!transition.isValid(timeWindow, globalTime)) {
@@ -172,21 +172,57 @@ function (
 	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
 	 */
 	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime) {
-		globalTime = globalTime || World.time;
+		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 		this._currentState = state;
 		if (state) {
 			if (rewind) {
 				state.resetClips(globalTime);
 			}
-			state.onFinished = function() {
+			state.onFinished = function () {
 				this.setCurrentState(state._targetState || null);
 				this.update();
 			}.bind(this);
 		}
 	};
 
+	/**
+	 * Get the current state
+	 * @return {AbstractState|null}
+	 */
 	AnimationLayer.prototype.getCurrentState = function () {
 		return this._currentState;
+	};
+
+	/**
+	 * Set the current state by state id.
+	 * @param {string} id
+	 */
+	AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime) {
+		var state = this.getStateById(id);
+		this.setCurrentState(state, rewind, globalTime);
+	};
+
+	/**
+	 * Get the current state by id.
+	 * @param {string} id
+	 * @return {AbstractState|null}
+	 */
+	AnimationLayer.prototype.getStateById = function (id) {
+		return this._steadyStates[id];
+	};
+
+	/**
+	 * Get the current state by name.
+	 * @param {string} name
+	 * @return {AbstractState|null}
+	 */
+	AnimationLayer.prototype.getStateByName = function (name) {
+		for (var id in this._steadyStates) {
+			var state = this._steadyStates[id];
+			if (state._name === name) {
+				return this._steadyStates[id];
+			}
+		}
 	};
 
 	/**
@@ -198,7 +234,7 @@ function (
 	 */
 	AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind, globalTime) {
 		if (stateName) {
-			var state = this._steadyStates[stateName];
+			var state = this.getStateByName(stateName);
 			if (state) {
 				this.setCurrentState(state, rewind, globalTime);
 				return true;
@@ -242,25 +278,25 @@ function (
 		this.setCurrentState(null);
 	};
 
-	AnimationLayer.prototype.resetClips = function(globalTime) {
+	AnimationLayer.prototype.resetClips = function (globalTime) {
 		if (this._currentState) {
-			this._currentState.resetClips(globalTime || World.time);
+			this._currentState.resetClips(typeof(globalTime) !== 'undefined' ? globalTime : World.time);
 		}
 	};
 
-	AnimationLayer.prototype.shiftClipTime = function(shiftTime) {
+	AnimationLayer.prototype.shiftClipTime = function (shiftTime) {
 		if (this._currentState) {
-			this._currentState.shiftClipTime(shiftTime || 0);
+			this._currentState.shiftClipTime(typeof(shiftTime) !== 'undefined' ? shiftTime : 0);
 		}
 	};
 
-	AnimationLayer.prototype.setTimeScale = function(timeScale) {
-		if(this._currentState) {
+	AnimationLayer.prototype.setTimeScale = function (timeScale) {
+		if (this._currentState) {
 			this._currentState.setTimeScale(timeScale);
 		}
 	};
 
-	AnimationLayer.prototype._getTransitionByType = function(type) {
+	AnimationLayer.prototype._getTransitionByType = function (type) {
 		if (this._transitionStates[type]) { return this._transitionStates[type]; }
 		var transition;
 		switch (type) {
@@ -283,7 +319,7 @@ function (
 	/**
 	 * @returns {AnimationLayer}
 	 */
-	AnimationLayer.prototype.clone = function() {
+	AnimationLayer.prototype.clone = function () {
 		var cloned = new AnimationLayer(this._name);
 
 

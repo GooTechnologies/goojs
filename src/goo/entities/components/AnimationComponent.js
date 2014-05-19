@@ -62,7 +62,7 @@ function (
 		if (!allowDirectSwitch) {
 			return false;
 		}
-		return this.layers[0].setCurrentStateByName(stateKey);
+		return this.layers[0].setCurrentStateById(stateKey);
 	};
 	/**
 	 * Get available states
@@ -91,7 +91,7 @@ function (
 		}
 
 		// grab current global time
-		globalTime = globalTime || World.time;
+		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 
 		// check throttle
 		if (this._updateRate !== 0.0) {
@@ -237,9 +237,9 @@ function (
 	};
 
 	AnimationComponent.prototype.resume = function () {
-		if (this.paused) {
+		if (this.paused || this.lastTimeOfPause === -1) {
 			if (this.lastTimeOfPause === -1) {
-				this.resetClips();
+				this.resetClips(World.time);
 			} else {
 				this.shiftClipTime(World.time - this.lastTimeOfPause);
 			}

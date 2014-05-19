@@ -761,6 +761,21 @@ function (
 	};
 
 	/**
+	 * @description Gets the rotational part of the matrix (the upper left 3x3 matrix).
+	 * @param {Matrix3x3} store Rotation matrix to store in.
+	 * @returns {Matrix4x4} Self for chaining.
+	 */
+	Matrix4x4.prototype.getRotation = function (store) {
+		var d = this.data;
+		store.set(
+			d[0], d[1], d[2],
+			d[4], d[5], d[6],
+			d[8], d[9], d[10]
+		);
+		return this;
+	};
+
+	/**
 	 * @description Gets the scaling part of the matrix.
 	 * @param {Vector3} store Scaling vector to store result in.
 	 * @returns {Matrix4x4} Self for chaining.

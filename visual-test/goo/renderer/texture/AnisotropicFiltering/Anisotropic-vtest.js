@@ -9,7 +9,7 @@ require([
 	'goo/renderer/TextureCreator',
 	'goo/scripts/Scripts',
 	'lib/V'
-], function(
+], function (
 	Material,
 	ShaderLib,
 	Camera,
@@ -38,13 +38,13 @@ require([
 
 	V.addLights();
 
-	var orbitScript = Scripts.create('OrbitCamControlScript', {
+	var orbitScript = Scripts.create(OrbitCamControlScript, {
 		spherical: new Vector3(1, 90, 0.1 * 180 / Math.PI),
 		minAscent: 0.1,
 		turnSpeedHorizontal: 0.001,
 		turnSpeedVertical: 0.001
 	});
-	var cameraEntity = world.createEntity('CameraEntity', new Camera(45, 1, 0.1), orbitScript).addToWorld();
+	world.createEntity('CameraEntity', new Camera(45, 1, 0.1), orbitScript).addToWorld();
 
 	function createBoxEntity(anisotropy) {
 		var meshData = new Box(100, 1, 100, 200, 200);

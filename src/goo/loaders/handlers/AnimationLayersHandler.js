@@ -54,10 +54,11 @@ function(
 	 * @param {AnimationLayer} layer
 	 * @param {string} name
 	 */
-	AnimationLayersHandler.prototype._setInitialState = function(layer, name) {
-		if (name && layer._steadyStates[name]) {
-			if (layer._currentState !== layer._steadyStates[name]) {
-				layer.setCurrentStateByName(name, true);
+	AnimationLayersHandler.prototype._setInitialState = function (layer, stateKey) {
+		if (stateKey) {
+			var state = layer.getStateById(stateKey);
+			if (layer._currentState !== state) {
+				layer.setCurrentStateById(stateKey, true);
 			}
 		} else {
 			layer.setCurrentState();
@@ -121,12 +122,11 @@ function(
 
 		// Load all the stuff we need
 		var promises = [];
-		for (var id in layerConfig.states) {
-			/*jshint -W083 */
-			promises.push(this.loadObject(id, options).then(function(state) {
-				layer._steadyStates[state.id] = state;
+		_.forEach(layerConfig.states, function(stateCfg) {
+			promises.push(that.loadObject(stateCfg.stateRef, options).then(function(state){
+				layer.setState(state.id, state);
 			}));
-		}
+		}, null, 'sortValue');
 
 		// Populate layer
 		return RSVP.all(promises).then(function() {

@@ -10,11 +10,11 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
-	'goo/scripts/FPCamControlScript',
 	'goo/scripts/ScriptUtils',
 	'goo/math/Vector',
 	'lib/V',
-	'goo/scripts/Scripts'
+	'goo/scripts/Scripts',
+	'goo/scriptpack/ScriptRegister'
 ], function (
 	GooRunner,
 	Material,
@@ -27,15 +27,15 @@ require([
 	Vector3,
 	PointLight,
 	LightComponent,
-	FPCamControlScript,
 	ScriptUtils,
 	Vector,
 	V,
 	Scripts
+	/* ScriptRegister */
 	) {
 	'use strict';
 
-	//! schteppe: Outdated and already covered in FPCamControlScript test. Delete?
+	//! schteppe: Already covered in other tests. Delete?
 
 	function WASDControlScriptDemo() {
 		var goo = V.initGoo();
@@ -58,8 +58,7 @@ require([
 		scripts.scripts.push(wasdScript);
 
 		// the FPCam script itself that locks the pointer and moves the camera
-		Scripts.register(FPCamControlScript);
-		var fpScript = Scripts.create('FPCamControlScript', {
+		var fpScript = Scripts.create('MouseLookScript', {
 			domElement: goo.renderer.domElement
 		});
 		scripts.scripts.push(fpScript);
