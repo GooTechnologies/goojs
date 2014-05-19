@@ -25,14 +25,14 @@ function (
 	ShaderLib,
 	ShaderFragment
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
-	function ProjectedGridWaterRenderer (settings) {
+	function ProjectedGridWaterRenderer(settings) {
 		this.waterCamera = new Camera(45, 1, 0.1, 2000);
 		this.renderList = [];
 

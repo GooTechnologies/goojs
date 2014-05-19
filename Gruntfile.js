@@ -159,6 +159,10 @@ module.exports = function (grunt) {
 			howlerpack: {
 				packPath: 'addons/howlerpack',
 				outBaseDir: 'out'
+			},
+			waterpack: {
+				packPath: 'addons/waterpack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {
