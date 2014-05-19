@@ -894,7 +894,7 @@ function(
 			key: 'url',
 			name: 'Texture',
 			type: 'texture',
-			'default': ''
+			'default': {}
 		},
 		{
 			key: 'blendmode',
@@ -1021,7 +1021,7 @@ function(
 		MotionBlur: MotionBlur,
 		Antialias: Antialias,
 		Radial: Radial,
-		// Overlay: Overlay,
+		Overlay: Overlay,
 		Levels: Levels
 	};
 });

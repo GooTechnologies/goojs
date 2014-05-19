@@ -84,7 +84,7 @@ function(
 				posteffects[i++] = that._updateEffect(effectConfig, posteffects);
 			}, null, 'sortValue');
 			posteffects.length = i;
-			return posteffects;
+			return RSVP.all(posteffects);
 		}).then(function(posteffects) {
 			if (!posteffects) { return; }
 			var enabled = posteffects.some(function(effect) { return effect.enabled; });
@@ -119,7 +119,13 @@ function(
 	 * @param {RenderPass[]} array of engine posteffects/Renderpasses
 	 * @returns {RenderPass} effect
 	 */
-	PosteffectsHandler.prototype._updateEffect = function(config, posteffects) {
+	PosteffectsHandler.prototype._updateEffect = function(config, posteffects, options) {
+		var that = this;
+		function loadConfig(key, id) {
+			return that._load(id).then(function (object) {
+				config[key] = object;
+			});
+		}
 		var effect;
 		for (var i = 0; i < posteffects.length; i++) {
 			if (posteffects[i].id === config.id) {
@@ -133,8 +139,29 @@ function(
 			}
 			effect = new PassLib[config.type](config.id);
 		}
-		effect.update(config);
-		return effect;
+		var promises = [];
+		for (var i = 0; i < effect.options) {
+			var option = effect.options[i];
+			var key = option.key;
+			var type = option.type;
+			if (type === 'texture') {
+				if (config.options[key] && config.options[key].textureRef) {
+					promises.push(loadConfig(key, config.options[key].textureRef);
+				} else {
+					config.options[key] = null;
+				}
+			} else if (type === 'entity') {
+				if (config.options[key] && config.options[key].textureRef) {
+					promises.push(loadConfig(key, config.options[key].entityRef);
+				} else {
+					config.options[key] = null;
+				}
+			}
+		}
+		return RSVP.all(promises).then(function() {
+			effect.update(config);
+			return effect;
+		})
 	};
 
 	return PosteffectsHandler;
