@@ -62,7 +62,7 @@ function (
 		if (!allowDirectSwitch) {
 			return false;
 		}
-		return this.layers[0].setCurrentStateByName(stateKey);
+		return this.layers[0].setCurrentStateById(stateKey);
 	};
 	/**
 	 * Get available states

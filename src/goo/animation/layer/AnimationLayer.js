@@ -185,12 +185,45 @@ function (
 		}
 	};
 
+	/**
+	 * Get the current state
+	 * @return {AbstractState|null}
+	 */
 	AnimationLayer.prototype.getCurrentState = function () {
 		return this._currentState;
 	};
 
-	// REVIEW Change this to actually use name, make sure all dependencies are using the new version
-	// Add setCurrentStateById, getStateById and getStateByName
+	/**
+	 * Set the current state by state id.
+	 * @param {string} id
+	 */
+	AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime) {
+		var state = this.getStateById(id);
+		this.setCurrentState(state, rewind, globalTime);
+	};
+
+	/**
+	 * Get the current state by id.
+	 * @param {string} id
+	 * @return {AbstractState|null}
+	 */
+	AnimationLayer.prototype.getStateById = function (id) {
+		return this._steadyStates[id];
+	};
+
+	/**
+	 * Get the current state by name.
+	 * @param {string} name
+	 * @return {AbstractState|null}
+	 */
+	AnimationLayer.prototype.getStateByName = function (name) {
+		for (var id in this._steadyStates) {
+			var state = this._steadyStates[id];
+			if (state._name === name) {
+				return this._steadyStates[id];
+			}
+		}
+	};
 
 	/**
 	 * Force the current state of the machine to the state with the given name.
@@ -201,7 +234,7 @@ function (
 	 */
 	AnimationLayer.prototype.setCurrentStateByName = function (stateName, rewind, globalTime) {
 		if (stateName) {
-			var state = this._steadyStates[stateName];
+			var state = this.getStateByName(stateName);
 			if (state) {
 				this.setCurrentState(state, rewind, globalTime);
 				return true;

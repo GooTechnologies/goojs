@@ -8,7 +8,7 @@ define([
 	'goo/entities/EntityUtils'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,
@@ -17,7 +17,7 @@ function(
 	_,
 	EntityUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading entities into engine
@@ -42,7 +42,7 @@ function(
 	 * @returns {Entity}
 	 * @private
 	 */
-	EntityHandler.prototype._create = function() {
+	EntityHandler.prototype._create = function () {
 		return this.world.createEntity();
 	};
 
@@ -51,31 +51,31 @@ function(
 	 * @param {ref}
 	 * @private
 	 */
-	EntityHandler.prototype._remove = function(ref) {
+	EntityHandler.prototype._remove = function (ref) {
 		var entity = this._objects[ref];
 		var that = this;
 		if (entity) {
 			// Remove components
 			var promises = [];
 			var components = entity._components;
-			for(var i = 0; i < components.length; i++) {
+			for (var i = 0; i < components.length; i++) {
 				var type = this._getComponentType(components[i]);
 				promises.push(this._updateComponent(entity, type, null));
 			}
 			return RSVP.all(promises)
-			.then(function(){
+			.then(function () {
 				entity.removeFromWorld();
 				delete that._objects[ref];
 			});
 		}
 	};
 
-	function updateTags(entity, config) {
+	function updateTags(entity, tags) {
 		entity._tags = {};
-		if (!config) { return; }
+		if (!tags) { return; }
 
 		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
-		for (var tag in config) {
+		for (var tag in tags) {
 			entity.setTag(tag);
 		}
 	}
@@ -97,7 +97,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
-	EntityHandler.prototype._update = function(ref, config, options) {
+	EntityHandler.prototype._update = function (ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (entity) {
 			if (!entity) { return; }
@@ -124,14 +124,14 @@ function(
 
 			// Removing components
 			var components = entity._components;
-			for(var i = 0; i < components.length; i++) {
+			for (var i = 0; i < components.length; i++) {
 				var type = that._getComponentType(components[i]);
 				if (!config.components[type]) {
 					that._updateComponent(entity, type, null, options);
 				}
 			}
 			// When all is done, hide or show and return
-			return PromiseUtil.optimisticAll(promises).then(function(/*components*/) {
+			return PromiseUtil.optimisticAll(promises).then(function (/*components*/) {
 				if (config.hidden) {
 					EntityUtils.hide(entity);
 				} else {
@@ -151,7 +151,7 @@ function(
 	 * @returns {RSVP.Promise} Resolves with updated entity
 	 * @private
 	 */
-	EntityHandler.prototype._updateComponent = function(entity, type, config, options) {
+	EntityHandler.prototype._updateComponent = function (entity, type, config, options) {
 		var handler = this._getHandler(type);
 		if (!handler) { return null; }
 
@@ -168,7 +168,7 @@ function(
 	 * @returns {string} 
 	 * @private
 	 */
-	EntityHandler.prototype._getComponentType = function(component) {
+	EntityHandler.prototype._getComponentType = function (component) {
 		var type = component.type;
 		type = type.slice(0, type.lastIndexOf('Component'));
 		type = StringUtil.uncapitalize(type);
@@ -181,7 +181,7 @@ function(
 	 * @param {string} type
 	 * @returns {ComponentHandler}
 	 */
-	EntityHandler.prototype._getHandler = function(type) {
+	EntityHandler.prototype._getHandler = function (type) {
 		if (!this._componentHandlers[type]) {
 			var Handler = ComponentHandler.getHandler(type);
 			if (Handler) {
