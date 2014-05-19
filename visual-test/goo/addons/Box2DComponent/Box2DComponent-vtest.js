@@ -4,8 +4,8 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder',
 	'goo/math/Vector3',
-	'goo/addons/box2d/systems/Box2DSystem',
-	'goo/addons/box2d/components/Box2DComponent',
+	'goo/addons/box2dpack/systems/Box2DSystem',
+	'goo/addons/box2dpack/components/Box2DComponent',
 	'goo/math/MathUtils',
 	'goo/geometrypack/FilledPolygon',
 	'lib/V'

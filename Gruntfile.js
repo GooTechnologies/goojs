@@ -136,12 +136,35 @@ module.exports = function (grunt) {
 				packPath: 'debugpack',
 				outBaseDir: 'out'
 			},
+			scriptpack: {
+				packPath: 'scriptpack',
+				outBaseDir: 'out'
+			},
 			p2pack: {
 				packPath: 'addons/p2pack',
 				outBaseDir: 'out'
 			},
-			scriptpack: {
-				packPath: 'scriptpack',
+			box2dpack: {
+				packPath: 'addons/box2dpack',
+				outBaseDir: 'out'
+			},
+			terrainpack: {
+				packPath: 'addons/terrainpack',
+				outBaseDir: 'out'
+			},
+			ammopack: {
+				packPath: 'addons/ammopack',
+			},
+			cannonpack: {
+				packPath: 'addons/cannonpack',
+				outBaseDir: 'out'
+			},
+			howlerpack: {
+				packPath: 'addons/howlerpack',
+				outBaseDir: 'out'
+			},
+			waterpack: {
+				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
 			}
 		},
