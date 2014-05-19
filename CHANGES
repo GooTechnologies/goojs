@@ -5,9 +5,13 @@ Additions:
  + Experimental way of clearing the engine using GooRunner.prototype.clear
  + Examples are linked to from jsdocs
  + Added Matrix4x4.prototype.getRotation
+ + Added AnimationLayer.prototype.setCurrentStateById
+ + Added AnimationLayer.prototype.getStateById
+ + Added AnimationLayer.prototype.getStateByName
 
 Fixes:
- * fix in Quaternion.prototype.fromVectorToVector
+ * AnimationLayer.prototype.setCurrentStateByName now gets the state by name and not id
+ * Bugfix in Quaternion.prototype.fromVectorToVector
 
 Deprecated:
  -
