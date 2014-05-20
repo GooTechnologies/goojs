@@ -8,7 +8,7 @@ define([
 	'goo/scripts/ScriptUtils'
 ],
 /** @lends */
-function(
+function (
 	ComponentHandler,
 	ScriptComponent,
 	RSVP,
@@ -23,7 +23,7 @@ function(
 	* @class
 	* @private
 	*/
-	function ScriptComponentHandler () {
+	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'ScriptComponent';
 	}
@@ -83,7 +83,7 @@ function(
 					newScript.parameters = _.extend({}, script.parameters);
 					newScript.enabled = false;
 
-					return that._setParameters(newScript, scriptInstance.options);
+					return that._setParameters(newScript, scriptInstance, options);
 				});
 
 				promises.push(promise);
@@ -93,10 +93,11 @@ function(
 				component.scripts = scripts;
 				return component;
 			});
-		})
+		});
 	};
-	
-	ScriptComponentHandler.prototype._setParameters = function (script, options) {
+
+	ScriptComponentHandler.prototype._setParameters = function (script, config, options) {
+		var that = this;
 		function loadKey(key, id) {
 			return that._load(id, options).then(function (object) {
 				script.parameters[key] = object;
@@ -109,18 +110,18 @@ function(
 				var parameter = parameters[i];
 				var key = parameter.key;
 				if (parameter.type === 'texture') {
-					var textureRef = options[key];
+					var textureRef = config.options[key];
 					if (!textureRef || !textureRef.textureRef || textureRef.enabled === false) {
 						script.parameters[key] = null;
 					} else {
-						promises.push(loadKey(script, key, textureRef.textureRef));
+						promises.push(loadKey(key, textureRef.textureRef));
 					}
 				} else if (parameter.type === 'entity') {
-					var entityRef = options[key].entityRef;
-					if (!entityRef) {
+					var entityRef = config.options[key];
+					if (!entityRef || !entityRef.entityRef || entityRef.enabled === false) {
 						script.parameters[key] = null;
 					} else {
-						promises.push(loadKey(key, entityRef));
+						promises.push(loadKey(key, entityRef.entityRef));
 					}
 				} else {
 					script.parameters[key] = _.extend(options[key]);
@@ -141,7 +142,7 @@ function(
 	 *		A promise which is resolved with the new script.
 	 * @private
 	 */
-	 function _createEngineScript(scriptName) {
+	function _createEngineScript(scriptName) {
 		var script = Scripts.create(scriptName);
 		if (!script) { throw new Error('Unrecognized script name'); }
 
@@ -154,7 +155,7 @@ function(
 		var promise = new RSVP.Promise();
 		promise.resolve(script);
 		return promise;
-	};
+	}
 
 
 	return ScriptComponentHandler;

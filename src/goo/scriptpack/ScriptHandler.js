@@ -202,11 +202,6 @@ function (
 
 
 	ScriptHandler.prototype._update = function (ref, config, options) {
-		function loadKey(script, key, id) {
-			return that._load(script, id, options).then(function (object) {
-				script.parameters[key] = object;
-			});
-		}
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options)
 		.then(function (script) {
@@ -216,7 +211,7 @@ function (
 
 			if (config.body && config.dependencies) {
 				delete script.dependencyErrors;
-				_.forEach(config.dependencies, function(dependencyConfig) {
+				_.forEach(config.dependencies, function (dependencyConfig) {
 					promises.push(that._addDependency(script, dependencyConfig.url, config.id));
 				}, null, 'sortValue');
 			}
@@ -258,32 +253,7 @@ function (
 
 				SystemBus.emit('scriptError', error);
 
-				var promises = [];
-				if (script.externals && script.externals.parameters) {
-					var parameters = script.externals.parameters;
-					for (var i = 0; i < parameters.length; i++) {
-						var parameter = parameters[i];
-						var key = parameter.key;
-						if (parameter.type === 'texture') {
-							var textureRef = config.options[key];
-							if (!textureRef || !textureRef.textureRef || textureRef.enabled === false) {
-								script.parameters[key] = null;
-							} else {
-								promises.push(loadKey(script, key, textureRef.textureRef));
-							}
-						} else if (parameter.type === 'entity') {
-							var entityRef = config.options[key].entityRef;
-							if (!entityRef) {
-								script.parameters[key] = null;
-							} else {
-								promises.push(loadKey(script, key, entityRef));
-							}
-						} else {
-							script.parameters[key] = _.extend(config.options[key]);
-						}
-					}
-				}
-				return RSVP.all(promises).then(function () { return script; });
+				return script;
 			});
 		});
 	};
