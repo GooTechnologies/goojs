@@ -146,7 +146,6 @@ function (
 				script.setup = newScript.setup;
 				script.update = newScript.update;
 				script.cleanup = newScript.cleanup;
-				// REVIEW Not used anymore I think
 				script.parameters = {};
 				script.enabled = false;
 			} catch (e) {
@@ -246,16 +245,6 @@ function (
 				else {
 					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
 				}
-
-				/* REVIEW Is this needed for something?
-				var error = { id: ref, errors: null };
-				if (script.externals.errors || script.externals.dependencyErrors) {
-					error.errors = script.externals.errors;
-					error.dependencyErrors = script.externals.dependencyErrors;
-				}
-				*/
-
-				//SystemBus.emit('scriptError', error);
 
 				return script;
 			});
