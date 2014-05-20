@@ -146,6 +146,7 @@ function (
 				script.setup = newScript.setup;
 				script.update = newScript.update;
 				script.cleanup = newScript.cleanup;
+				// REVIEW Not used anymore I think
 				script.parameters = {};
 				script.enabled = false;
 			} catch (e) {
@@ -177,6 +178,7 @@ function (
 	 * and if so, creates a new script object from the new class.
 	 * @param {object} script needs to have a className property
 	 * @param {object} config data model config
+	 * @deprecated
 	 */
 	ScriptHandler.prototype._updateFromClass = function (script, config) {
 		if (!script.externals || script.externals.name !== config.className) {
@@ -245,11 +247,13 @@ function (
 					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
 				}
 
+				/* REVIEW Is this needed for something?
 				var error = { id: ref, errors: null };
 				if (script.externals.errors || script.externals.dependencyErrors) {
 					error.errors = script.externals.errors;
 					error.dependencyErrors = script.externals.dependencyErrors;
 				}
+				*/
 
 				//SystemBus.emit('scriptError', error);
 

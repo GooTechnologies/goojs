@@ -3,6 +3,7 @@ define([
 	'goo/entities/components/ScriptComponent',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil',
+	'goo/util/PromiseUtil',
 
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils'
@@ -13,6 +14,7 @@ function (
 	ScriptComponent,
 	RSVP,
 	_,
+	PromiseUtil,
 
 	Scripts,
 	ScriptUtils
@@ -75,15 +77,19 @@ function (
 					// similar scripts with different parameters.
 					var newScript = {};
 					newScript.id = config.id;
+					// REVIEW No need for externals
 					newScript.externals = script.externals;
 					newScript.setup = script.setup;
 					newScript.update = script.update;
 					newScript.run = script.run;
 					newScript.cleanup = script.cleanup;
+					// REVIEW newScript.parameters = {}
 					newScript.parameters = _.extend({}, script.parameters);
 					newScript.enabled = false;
 
-					return that._setParameters(newScript, scriptInstance, options);
+					return that._setParameters(newScript.parameters, scriptInstance.options, script.externals, options).then(function () {
+						return newScript;
+					});
 				});
 
 				promises.push(promise);
@@ -96,41 +102,43 @@ function (
 		});
 	};
 
-	ScriptComponentHandler.prototype._setParameters = function (script, config, options) {
-		var that = this;
-		function loadKey(key, id) {
-			return that._load(id, options).then(function (object) {
-				script.parameters[key] = object;
-			});
-		}
+	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
+		if (!externals.parameters) { return; }
+
 		var promises = [];
-		if (script.externals && script.externals.parameters) {
-			var parameters = script.externals.parameters;
-			for (var i = 0; i < parameters.length; i++) {
-				var parameter = parameters[i];
-				var key = parameter.key;
-				if (parameter.type === 'texture') {
-					var textureRef = config.options[key];
-					if (!textureRef || !textureRef.textureRef || textureRef.enabled === false) {
-						script.parameters[key] = null;
-					} else {
-						promises.push(loadKey(key, textureRef.textureRef));
-					}
-				} else if (parameter.type === 'entity') {
-					var entityRef = config.options[key];
-					if (!entityRef || !entityRef.entityRef || entityRef.enabled === false) {
-						script.parameters[key] = null;
-					} else {
-						promises.push(loadKey(key, entityRef.entityRef));
-					}
-				} else {
-					script.parameters[key] = _.extend(config.options[key]);
-				}
-			}
+		for (var i = 0; i < externals.parameters.length; i++) {
+			var external = externals.parameters[i];
+			this._setParameter(parameters, config[external.key], external, options);
+
 		}
-		return RSVP.all(promises).then(function () { return script; });
+		return RSVP.all(promises);
 	};
 
+	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
+		var key = external.key;
+		if (external.type === 'texture') {
+			if (!config || !config.entityRef || config.enabled === false) {
+				parameters[key] = null;
+				return PromiseUtil.createDummyPromise();
+			} else {
+				return this._load(config.textureRef, options).then(function (texture) {
+					parameters[key] = texture;
+				});
+			}
+		} else if (external.type === 'entity') {
+			if (!config || !config.entityRef || config.enabled === false) {
+				parameters[key] = null;
+				return PromiseUtil.createDummyPromise();
+			} else {
+				return this._load(config.entityRef, options).then(function (entity) {
+					parameters[key] = entity;
+				});
+			}
+		} else {
+			parameters[key] = _.extend(config);
+			return PromiseUtil.createDummyPromise();
+		}
+	};
 
 	/**
 	 * Creates a new script engine.
@@ -143,15 +151,21 @@ function (
 	 * @private
 	 */
 	function _createEngineScript(scriptName) {
+		// REVIEW This is surely the way to load it, but as it is implemented now it will still
+		// create a new script on each load. Something for the engine peopel though
 		var script = Scripts.create(scriptName);
 		if (!script) { throw new Error('Unrecognized script name'); }
 
 		script.id = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX + scriptName;
 		script.enabled = false;
 
+		// REVIEW Maybe this is a good a place as any to call SystemBus.emit('goo.scriptExternals')
+
 		// Generate names from external variable names.
+		// REVIEW This should probably be done in Scripts.create if it's not already
 		ScriptUtils.fillDefaultNames(script.externals.parameters);
 
+		// REVIEW return PromiseUtil.createDummyPromise(script)
 		var promise = new RSVP.Promise();
 		promise.resolve(script);
 		return promise;
