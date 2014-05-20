@@ -8,7 +8,6 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
-	//'goo/entities/systems/AnimationSystem',
 	'goo/util/Stats',
 
 	'goo/sound/AudioContext',
@@ -39,7 +38,6 @@ function (
 	LightingSystem,
 	CameraSystem,
 	ParticlesSystem,
-	//AnimationSystem,
 	Stats,
 
 	AudioContext,
@@ -190,7 +188,6 @@ function (
 		this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
-		//this.world.setSystem(new AnimationSystem()); // :(
 
 		if (AudioContext) {
 			this.world.setSystem(new SoundSystem());
