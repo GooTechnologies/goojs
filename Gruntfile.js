@@ -155,7 +155,6 @@ module.exports = function (grunt) {
 		},
 		'build-custom': {
 			myBundle: {
-				modules: ['goo/addons/ammo'],
 				outFile: 'bundle.js'
 			}
 		},
