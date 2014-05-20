@@ -124,7 +124,7 @@ function (
 						promises.push(loadKey(key, entityRef.entityRef));
 					}
 				} else {
-					script.parameters[key] = _.extend(options[key]);
+					script.parameters[key] = _.extend(config.options[key]);
 				}
 			}
 		}

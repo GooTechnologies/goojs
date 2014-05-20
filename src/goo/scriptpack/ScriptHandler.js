@@ -251,7 +251,7 @@ function (
 					error.dependencyErrors = script.externals.dependencyErrors;
 				}
 
-				SystemBus.emit('scriptError', error);
+				//SystemBus.emit('scriptError', error);
 
 				return script;
 			});
