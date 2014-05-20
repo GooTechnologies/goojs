@@ -98,10 +98,12 @@ function(Vector3) {
 		for (var bucketIndex = 0; bucketIndex < bucketSortList.length; bucketIndex++) {
 			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
-			if (key < RenderQueue.TRANSPARENT) {
-				bucket.sort(this.opaqueSorter);
-			} else {
-				bucket.sort(this.transparentSorter);
+			if (key >= 0) {
+				if (key < RenderQueue.TRANSPARENT) {
+					bucket.sort(this.opaqueSorter);
+				} else {
+					bucket.sort(this.transparentSorter);
+				}
 			}
 			for ( var i = 0; i < bucket.length; i++) {
 				renderList[index] = bucket[i];

@@ -47,25 +47,6 @@ function (
 	ConfigHandler._registerClass('script', ScriptHandler);
 
 	/**
-	 * Fills out script config with default parameters from the declarations in
-	 * the script code. Also adds externals config to data model config, so
-	 * that Create can read them.
-	 */
-	ScriptHandler.prototype._specialPrepare = function (script, config) {
-		config.options = config.options || {};
-		// fill the rest of the parameters with default values
-		if (script.externals && script.externals.parameters) {
-			ScriptUtils.fillDefaultValues(config.options, script.externals.parameters);
-		}
-		if (config.body) {
-			SystemBus.emit('goo.scriptExternals', {
-				id: config.id,
-				externals: script.externals
-			});
-		}
-	};
-
-	/**
 	 * Creates a script data wrapper object to be used in the engine
 	 */
 	ScriptHandler.prototype._create = function () {
@@ -79,6 +60,7 @@ function (
 			name: null
 		};
 	};
+
 
 	/**
 	 * Remove this script from the cache, and runs the cleanup method of the script.
@@ -108,7 +90,6 @@ function (
 	ScriptHandler.prototype._updateFromCustom = function (script, config) {
 		// No change, do nothing
 		if (this._bodyCache[config.id] === config.body) { return script; }
-
 
 		delete script.errors;
 		this._bodyCache[config.id] = config.body;
@@ -186,8 +167,10 @@ function (
 		if (script.externals) {
 			ScriptUtils.fillDefaultNames(script.externals.parameters);
 		}
+
 		return script;
 	};
+
 
 	/**
 	 * Update a script that is from the engine. Checks if the class name has changed
@@ -199,7 +182,7 @@ function (
 		if (!script.externals || script.externals.name !== config.className) {
 			var newScript = Scripts.create(config.className);
 			if (!newScript) {
-				throw 'Unrecognized script name';
+				throw new Error('Unrecognized script name');
 			}
 			script.id = config.id;
 			script.externals = newScript.externals;
@@ -217,31 +200,44 @@ function (
 		return script;
 	};
 
+
 	ScriptHandler.prototype._update = function (ref, config, options) {
 		function loadKey(script, key, id) {
-			return that._load(id, options).then(function (object) {
+			return that._load(script, id, options).then(function (object) {
 				script.parameters[key] = object;
 			});
 		}
-
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (script) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options)
+		.then(function (script) {
 			if (!script) { return; }
+
 			var promises = [];
+
 			if (config.body && config.dependencies) {
 				delete script.dependencyErrors;
-				_.forEach(config.dependencies, function (scriptConfig) {
-					promises.push(that._addDependency(script, scriptConfig.url, config.id));
+				_.forEach(config.dependencies, function(dependencyConfig) {
+					promises.push(that._addDependency(script, dependencyConfig.url, config.id));
 				}, null, 'sortValue');
 			}
-			return RSVP.all(promises).then(function () {
-				if (config.className) {
+
+			return RSVP.all(promises)
+			.then(function () {
+				if (config.className) { // Engine script.
 					that._updateFromClass(script, config, options);
-				} else if (config.body) {
+				} else if (config.body) { // Custom script.
 					that._updateFromCustom(script, config, options);
 				}
-				that._specialPrepare(script, config);
+
+				if (config.body) {
+					SystemBus.emit('goo.scriptExternals', {
+						id: config.id,
+						externals: script.externals
+					});
+				}
+
 				script.name = config.name;
+
 				if (script.errors || script.dependencyErrors) {
 					SystemBus.emit('goo.scriptError', {
 						id: ref,
@@ -253,6 +249,15 @@ function (
 				else {
 					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
 				}
+
+				var error = { id: ref, errors: null };
+				if (script.externals.errors || script.externals.dependencyErrors) {
+					error.errors = script.externals.errors;
+					error.dependencyErrors = script.externals.dependencyErrors;
+				}
+
+				SystemBus.emit('scriptError', error);
+
 				var promises = [];
 				if (script.externals && script.externals.parameters) {
 					var parameters = script.externals.parameters;
@@ -282,6 +287,7 @@ function (
 			});
 		});
 	};
+
 
 	/**
 	 * Loads an external javascript lib as a dependency to this script (if it's
@@ -367,6 +373,7 @@ function (
 
 
 	var types = ['string', 'float', 'int', 'vec3', 'boolean', 'texture', 'entity'];
+
 	/**
 	 * Validate external parameters
 	 * @private
@@ -479,7 +486,9 @@ function (
 
 	}
 
+
 	ScriptHandler.DOM_ID_PREFIX = '_script_';
+
 
 	return ScriptHandler;
 });

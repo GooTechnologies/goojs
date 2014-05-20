@@ -166,6 +166,10 @@ module.exports = function (grunt) {
 			waterpack: {
 				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
+			},
+			soundmanager2pack: {
+				packPath: 'addons/soundmanager2pack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {

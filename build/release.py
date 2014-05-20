@@ -71,7 +71,8 @@ for packName in (
 	'ammo',
 	'cannon',
 	'howler',
-	'water'
+	'water',
+	'soundmanager2'
 ):
     shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
 

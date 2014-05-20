@@ -29,11 +29,11 @@ function (
 		this.rotation = new Matrix3x3();
 		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
-
-		this.tmpVec = new Vector3();
-		this.tmpVec2 = new Vector3();
-		this.tmpMat1 = new Matrix3x3();
 	}
+
+	Transform.tmpVec = new Vector3();
+	Transform.tmpVec2 = new Vector3();
+	Transform.tmpMat1 = new Matrix3x3();
 
 	/**
 	 * Combines two transforms into one. This will only work if scaling in the left hand transform is uniform
@@ -94,17 +94,17 @@ function (
 	Transform.prototype.multiply = function (a, b) {
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
 
-		this.tmpMat1.data.set(a.rotation.data);
-		//this.tmpMat1.multiplyDiagonalPost(a.scale, this.tmpMat1);
+		Transform.tmpMat1.data.set(a.rotation.data);
+		//Transform.tmpMat1.multiplyDiagonalPost(a.scale, Transform.tmpMat1);
 		this.rotation.data.set(b.rotation.data);
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
-		Matrix3x3.combine(this.tmpMat1, this.rotation, this.rotation);
+		Matrix3x3.combine(Transform.tmpMat1, this.rotation, this.rotation);
 		this.translation.setv(b.translation);
 		this.translation.mulv(a.scale);
-		this.tmpMat1.applyPost(this.translation).addv(a.translation);
+		Transform.tmpMat1.applyPost(this.translation).addv(a.translation);
 
-		this.tmpVec.setv(a.scale).mulv(b.scale);
-		this.scale.setv(this.tmpVec);
+		Transform.tmpVec.setv(a.scale).mulv(b.scale);
+		this.scale.setv(Transform.tmpVec);
 	};
 
 	/**
@@ -227,10 +227,10 @@ function (
 			up = Vector3.UNIT_Y;
 		}
 		// REVIEW: this is actually using the wrong direction, it should be reversed.
-		//   this.tmpVec.setv(position).subv(this.translation).normalize();
+		//   Transform.tmpVec.setv(position).subv(this.translation).normalize();
 		// However we might need the old behavior for lights and cameras.
-		this.tmpVec.setv(this.translation).subv(position).normalize();
-		this.rotation.lookAt(this.tmpVec, up);
+		Transform.tmpVec.setv(this.translation).subv(position).normalize();
+		this.rotation.lookAt(Transform.tmpVec, up);
 	};
 
 	/**
