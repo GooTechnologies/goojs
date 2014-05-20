@@ -163,6 +163,10 @@ module.exports = function (grunt) {
 			waterpack: {
 				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
+			},
+			animationpack: {
+				packPath: 'animationpack',
+				outBaseDir: 'out'
 			}
 		},
 		karma: {

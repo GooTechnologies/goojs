@@ -1,42 +1,4 @@
 define([
-	/*
-	'goo/fsmpack/statemachine/actions/LogVariableAction',
-	'goo/fsmpack/statemachine/actions/SetVariableAction',
-	'goo/fsmpack/statemachine/actions/AddPositionAction',
-	'goo/fsmpack/statemachine/actions/MouseClickAction',
-	'goo/fsmpack/statemachine/actions/SetPositionAction',
-	'goo/fsmpack/statemachine/actions/AddVariableAction',
-	//'goo/fsmpack/statemachine/actions/MouseMoveAction',
-	'goo/fsmpack/statemachine/actions/SetRotationAction',
-	//'goo/fsmpack/statemachine/actions/AddVectorAction',
-	'goo/fsmpack/statemachine/actions/MultiplyVariableAction',
-	//'goo/fsmpack/statemachine/actions/TestAngleAction',
-	//'goo/fsmpack/statemachine/actions/EventListenerAction',
-	'goo/fsmpack/statemachine/actions/NumberCompareAction',
-	//'goo/fsmpack/statemachine/actions/TestCollisionAction',
-	//'goo/fsmpack/statemachine/actions/FollowEntityAction',
-	//'goo/fsmpack/statemachine/actions/RandomEventAction',
-	//'goo/fsmpack/statemachine/actions/TestSpeedAction',
-	'goo/fsmpack/statemachine/actions/GetPositionAction',
-	//'goo/fsmpack/statemachine/actions/ScriptAction',
-	//'goo/fsmpack/statemachine/actions/TweenAction',
-	//'goo/fsmpack/statemachine/actions/GuiButtonAction',
-	'goo/fsmpack/statemachine/actions/SetAnimationAction',
-	//'goo/fsmpack/statemachine/actions/TweenPositionAction',
-	'goo/fsmpack/statemachine/actions/KeyDownAction',
-	'goo/fsmpack/statemachine/actions/SetClearColorAction',
-	//'goo/fsmpack/statemachine/actions/TweenRotationAction',
-	//'goo/fsmpack/statemachine/actions/KeyPressAction',
-	//'goo/fsmpack/statemachine/actions/SetCssPropertyAction',
-
-	'goo/fsmpack/statemachine/actions/KeyUpAction',
-	'goo/fsmpack/statemachine/actions/SetLightRangeAction',
-
-	// 'goo/fsmpack/statemachine/actions/TransformAction',
-	'goo/fsmpack/statemachine/actions/MoveAction',
-	'goo/fsmpack/statemachine/actions/RotateAction'
-    */
-
 	'goo/fsmpack/statemachine/actions/ArrowsAction',
 	'goo/fsmpack/statemachine/actions/MouseUpAction',
 	'goo/fsmpack/statemachine/actions/MouseDownAction',
@@ -54,7 +16,7 @@ define([
 	'goo/fsmpack/statemachine/actions/LookAtAction',
 
 	'goo/fsmpack/statemachine/actions/TweenMoveAction',
-	'goo/fsmpack/statemachine/actions/TweenRotationAction', // Tween Rotate
+	'goo/fsmpack/statemachine/actions/TweenRotationAction',
 	'goo/fsmpack/statemachine/actions/TweenScaleAction',
 	'goo/fsmpack/statemachine/actions/TweenLookAtAction',
 	'goo/fsmpack/statemachine/actions/ShakeAction',
@@ -67,8 +29,8 @@ define([
 
 	'goo/fsmpack/statemachine/actions/TransitionAction',
 	'goo/fsmpack/statemachine/actions/RandomTransitionAction',
-	'goo/fsmpack/statemachine/actions/EmitAction', // Emit Message
-	'goo/fsmpack/statemachine/actions/TransitionOnMessageAction', // Listen
+	'goo/fsmpack/statemachine/actions/EmitAction',
+	'goo/fsmpack/statemachine/actions/TransitionOnMessageAction',
 	'goo/fsmpack/statemachine/actions/EvalAction',
 
 	'goo/fsmpack/statemachine/actions/HideAction',
@@ -79,19 +41,19 @@ define([
 	'goo/fsmpack/statemachine/actions/RemoveLightAction',
 	'goo/fsmpack/statemachine/actions/TweenLightColorAction',
 
-	'goo/fsmpack/statemachine/actions/SetClearColorAction', // Background Color
+	'goo/fsmpack/statemachine/actions/SetClearColorAction',
 
 	'goo/fsmpack/statemachine/actions/SwitchCameraAction',
-	'goo/fsmpack/statemachine/actions/InFrustumAction', // In View
+	'goo/fsmpack/statemachine/actions/InFrustumAction',
 	'goo/fsmpack/statemachine/actions/DollyZoomAction',
 
 	'goo/fsmpack/statemachine/actions/InBoxAction',
-	'goo/fsmpack/statemachine/actions/CompareDistanceAction', // Camera Distance
-	'goo/fsmpack/statemachine/actions/CollidesAction', // Collision
+	'goo/fsmpack/statemachine/actions/CompareDistanceAction',
+	'goo/fsmpack/statemachine/actions/CollidesAction',
 	'goo/fsmpack/statemachine/actions/TagAction',
 
-	'goo/fsmpack/statemachine/actions/SmokeAction', // Smoke FX
-	'goo/fsmpack/statemachine/actions/FireAction', // Fire FX
+	'goo/fsmpack/statemachine/actions/SmokeAction',
+	'goo/fsmpack/statemachine/actions/FireAction',
 	'goo/fsmpack/statemachine/actions/RemoveParticlesAction',
 
 	'goo/fsmpack/statemachine/actions/SoundFadeInAction',
@@ -106,10 +68,9 @@ define([
 	'goo/fsmpack/statemachine/actions/HTMLAction',
 	'goo/fsmpack/statemachine/actions/CopyJointTransformAction',
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction'
-	//'goo/fsmpack/statemachine/actions/GotoURLAction'
 ],
 /** @lends */
-function(
+function (
 
 ) {
 	'use strict';

@@ -1,15 +1,18 @@
-define(['goo/animation/state/AbstractState'],
+define([
+	'goo/animationpack/state/AbstractState'
+],
 /** @lends */
-function (AbstractState) {
-	"use strict";
+function (
+	AbstractState
+) {
+	'use strict';
 
 	/**
-	 * @class A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for
-	 *        example.)
+	 * @class A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for example.)
 	 * @extends AbstractState
 	 * @param {string} name Name of state
 	 */
-	function SteadyState (name) {
+	function SteadyState(name) {
 		AbstractState.call(this);
 
 		this.id = null;

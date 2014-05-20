@@ -1,7 +1,13 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TriggerData'],
+define([
+	'goo/animationpack/clip/AbstractAnimationChannel',
+	'goo/animationpack/clip/TriggerData'
+],
 /** @lends */
-function (AbstractAnimationChannel, TriggerData) {
-	"use strict";
+function (
+	AbstractAnimationChannel,
+	TriggerData
+) {
+	'use strict';
 
 	/**
 	 * @class An animation source channel consisting of keyword samples indicating when a specific trigger condition is met. Each channel can only be
@@ -11,7 +17,7 @@ function (AbstractAnimationChannel, TriggerData) {
 	 * @param {string[]} keys our key samples. Entries may be null. Should have as many entries as the times array.
 	 * @private
 	 */
-	function TriggerChannel (channelName, times, keys, blendType) {
+	function TriggerChannel(channelName, times, keys, blendType) {
 		AbstractAnimationChannel.call(this, channelName, times, blendType);
 		this._keys = keys ? keys.slice(0) : null;
 		this.guarantee = false;

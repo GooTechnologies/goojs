@@ -1,21 +1,21 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/animation/Joint',
-	'goo/animation/Skeleton',
-	'goo/animation/SkeletonPose',
+	'goo/animationpack/Joint',
+	'goo/animationpack/Skeleton',
+	'goo/animationpack/SkeletonPose',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
 ],
 /** @lends */
-function(
-		ConfigHandler,
-		Joint,
-		Skeleton,
-		SkeletonPose,
-		pu,
-		_
+function (
+	ConfigHandler,
+	Joint,
+	Skeleton,
+	SkeletonPose,
+	pu,
+	_
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading skeletons into engine

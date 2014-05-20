@@ -1,6 +1,6 @@
 define([
 	'goo/math/Transform',
-	'goo/animation/Joint',
+	'goo/animationpack/Joint',
 	'goo/math/Matrix4x4'
 ],
 /** @lends */

@@ -1,15 +1,15 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/animation/clip/AnimationClip',
-	'goo/animation/clip/JointChannel',
-	'goo/animation/clip/TransformChannel',
-	'goo/animation/clip/InterpolatedFloatChannel',
-	'goo/animation/clip/TriggerChannel',
+	'goo/animationpack/clip/AnimationClip',
+	'goo/animationpack/clip/JointChannel',
+	'goo/animationpack/clip/TransformChannel',
+	'goo/animationpack/clip/InterpolatedFloatChannel',
+	'goo/animationpack/clip/TriggerChannel',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	AnimationClip,
 	JointChannel,
@@ -19,7 +19,7 @@ function(
 	PromiseUtil,
 	ArrayUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading animation clips into engine

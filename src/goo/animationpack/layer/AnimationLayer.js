@@ -1,10 +1,10 @@
 define([
-	'goo/animation/state/FadeTransitionState',
-	'goo/animation/state/SyncFadeTransitionState',
-	'goo/animation/state/FrozenTransitionState',
-	'goo/animation/state/SteadyState',
-	'goo/animation/layer/LayerLERPBlender',
-	'goo/entities/World',
+	'goo/animationpack/state/FadeTransitionState',
+	'goo/animationpack/state/SyncFadeTransitionState',
+	'goo/animationpack/state/FrozenTransitionState',
+	'goo/animationpack/state/SteadyState',
+	'goo/animationpack/layer/LayerLERPBlender',
+	'goo/entities/World', //! AT: this should not exist
 	'goo/math/MathUtils'
 ],
 /** @lends */

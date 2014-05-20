@@ -1,9 +1,13 @@
-define(['goo/animation/clip/AbstractAnimationChannel',
-	'goo/math/MathUtils'],
+define([
+	'goo/animationpack/clip/AbstractAnimationChannel',
+	'goo/math/MathUtils'
+],
 /** @lends */
-function (AbstractAnimationChannel,
-	MathUtils) {
-	"use strict";
+function (
+	AbstractAnimationChannel,
+	MathUtils
+) {
+	'use strict';
 
 	/**
 	 * @class An animation source channel consisting of float value samples. These samples are interpolated between key frames. Potential uses for

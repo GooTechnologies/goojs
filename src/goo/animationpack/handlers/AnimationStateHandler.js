@@ -1,10 +1,10 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/animation/state/SteadyState',
-	'goo/animation/blendtree/ClipSource',
-	'goo/animation/blendtree/ManagedTransformSource',
-	'goo/animation/blendtree/BinaryLERPSource',
-	'goo/animation/blendtree/FrozenClipSource',
+	'goo/animationpack/state/SteadyState',
+	'goo/animationpack/blendtree/ClipSource',
+	'goo/animationpack/blendtree/ManagedTransformSource',
+	'goo/animationpack/blendtree/BinaryLERPSource',
+	'goo/animationpack/blendtree/FrozenClipSource',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
@@ -21,7 +21,7 @@ function(
 	PromiseUtil,
 	_
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading animation states into engine

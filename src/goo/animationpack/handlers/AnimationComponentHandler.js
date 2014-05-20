@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/AnimationComponent',
+	'goo/animationpack/components/AnimationComponent',
 	'goo/util/rsvp'
 ],
 /** @lends */

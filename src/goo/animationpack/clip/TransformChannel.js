@@ -1,7 +1,17 @@
-define(['goo/animation/clip/AbstractAnimationChannel', 'goo/animation/clip/TransformData', 'goo/math/Quaternion', 'goo/math/Vector3'],
+define([
+	'goo/animationpack/clip/AbstractAnimationChannel',
+	'goo/animationpack/clip/TransformData',
+	'goo/math/Quaternion',
+	'goo/math/Vector3'
+],
 /** @lends */
-function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
-	"use strict";
+function (
+	AbstractAnimationChannel,
+	TransformData,
+	Quaternion,
+	Vector3
+) {
+	'use strict';
 
 	/**
 	 * @class An animation channel consisting of a series of transforms interpolated over time.
@@ -17,7 +27,6 @@ function (AbstractAnimationChannel, TransformData, Quaternion, Vector3) {
 		if (rotations.length / 4 !== times.length || translations.length / 3 !== times.length || scales.length / 3 !== times.length) {
 			throw new Error("All provided arrays must be the same length (accounting for type)! Channel: " + channelName);
 		}
-
 
 		this._rotations = new Float32Array(rotations);
 		this._translations = new Float32Array(translations);

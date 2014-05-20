@@ -1,6 +1,6 @@
 define([
-	'goo/animation/state/AbstractState',
-	'goo/animation/blendtree/BinaryLERPSource',
+	'goo/animationpack/state/AbstractState',
+	'goo/animationpack/blendtree/BinaryLERPSource',
 	'goo/math/MathUtils'
 ],
 /** @lends */
@@ -9,7 +9,7 @@ function (
 	BinaryLERPSource,
 	MathUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class An abstract transition state that blends between two other states.

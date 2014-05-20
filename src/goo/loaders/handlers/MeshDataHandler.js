@@ -2,7 +2,6 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/renderer/MeshData',
 	'goo/renderer/BufferUtils',
-	'goo/animation/SkeletonPose',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
 ],
@@ -11,11 +10,10 @@ function(
 	ConfigHandler,
 	MeshData,
 	BufferUtils,
-	SkeletonPose,
 	PromiseUtil,
 	ArrayUtil
 ) {
-	"use strict";
+	'use strict';
 
 	var WEIGHTS_PER_VERT = 4;
 
@@ -39,7 +37,7 @@ function(
 	 * Removes the meshdata from the objects config
 	 * @param {string} ref
 	 */
-	MeshDataHandler.prototype._remove = function(ref) {
+	MeshDataHandler.prototype._remove = function (ref) {
 		// TODO Some gl release?
 		delete this._objects[ref];
 	};
@@ -59,9 +57,9 @@ function(
 		if (this._objects[ref]) { return PromiseUtil.createDummyPromise(this._objects[ref]); }
 
 		var that = this;
-		return this.loadObject(config.binaryRef, options).then(function(bindata) {
+		return this.loadObject(config.binaryRef, options).then(function (bindata) {
 			if (!bindata) {
-				throw new Error("Binary mesh data was empty");
+				throw new Error('Binary mesh data was empty');
 			}
 			var meshData = that._createMeshData(config, bindata);
 			that._fillMeshData(meshData, config, bindata);
@@ -75,7 +73,7 @@ function(
 	 * @returns {MeshData}
 	 * @private
 	 */
-	MeshDataHandler.prototype._createMeshData = function(config) {
+	MeshDataHandler.prototype._createMeshData = function (config) {
 		var skinned = config.type === 'SkinnedMesh';
 		var vertexCount = config.vertexCount;
 		if (vertexCount === 0) {
@@ -84,7 +82,7 @@ function(
 
 		var indexCount = 0;
 		if(config.indexLengths) {
-			indexCount = config.indexLengths.reduce(function(store, val) { return store + val; });
+			indexCount = config.indexLengths.reduce(function (store, val) { return store + val; });
 		} else if (config.indices) {
 			indexCount = config.indices.wordLength;
 		}
@@ -172,11 +170,11 @@ function(
 
 		// TODO Put somewhere else
 		if (config.boundingVolume) {
-			if (config.boundingVolume.type === "BoundingBox") {
+			if (config.boundingVolume.type === 'BoundingBox') {
 				meshData.boundingBox = {min: config.boundingVolume.min, max: config.boundingVolume.max};
 			}
 			else {
-				throw new Error("Bounding volume was not BoundingBox");
+				throw new Error('Bounding volume was not BoundingBox');
 			}
 		}
 		return meshData;

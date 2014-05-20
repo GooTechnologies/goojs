@@ -1,10 +1,10 @@
 define([
 	'goo/entities/components/Component',
-	'goo/entities/World',
-	'goo/animation/layer/AnimationLayer',
-	'goo/animation/clip/JointData',
-	'goo/animation/clip/TransformData',
-	'goo/animation/clip/TriggerData'
+	'goo/entities/World', //! AT: this should not exist
+	'goo/animationpack/layer/AnimationLayer',
+	'goo/animationpack/clip/JointData',
+	'goo/animationpack/clip/TransformData',
+	'goo/animationpack/clip/TriggerData'
 ],
 /** @lends */
 function (

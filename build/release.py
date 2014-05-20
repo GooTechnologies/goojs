@@ -70,7 +70,8 @@ for packName in (
 	'terrain',
 	'cannon',
 	'howler',
-	'water'
+	'water',
+	'animation'
 ):
     shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
 

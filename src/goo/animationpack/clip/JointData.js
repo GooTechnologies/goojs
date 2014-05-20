@@ -1,7 +1,11 @@
-define(['goo/animation/clip/TransformData'],
+define([
+	'goo/animationpack/clip/TransformData'
+],
 /** @lends */
-function (TransformData) {
-	"use strict";
+function (
+	TransformData
+) {
+	'use strict';
 
 	/**
 	 * @class Describes transform of a joint.

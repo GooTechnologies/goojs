@@ -1,7 +1,13 @@
-define(['goo/animation/clip/TransformChannel', 'goo/animation/clip/JointData'],
+define([
+	'goo/animationpack/clip/TransformChannel',
+	'goo/animationpack/clip/JointData'
+],
 /** @lends */
-function (TransformChannel, JointData) {
-	"use strict";
+function (
+	TransformChannel,
+	JointData
+) {
+	'use strict';
 
 	/**
 	 * @class Transform animation channel, specifically geared towards describing the motion of skeleton joints.
@@ -12,7 +18,7 @@ function (TransformChannel, JointData) {
 	 * @param {number[]} translations the translations to set on this channel at each time offset.
 	 * @param {number[]} scales the scales to set on this channel at each time offset.
 	 */
-	function JointChannel (jointIndex, jointName, times, rotations, translations, scales, blendType) {
+	function JointChannel(jointIndex, jointName, times, rotations, translations, scales, blendType) {
 		TransformChannel.call(this, jointName, times, rotations, translations, scales, blendType);
 
 		this._jointName = jointName; // Joint has a name even though index is used for id, this can be used for debugging purposes. 

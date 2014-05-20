@@ -1,7 +1,7 @@
 define([
 	'goo/shapes/Box',
 	'goo/math/Transform',
-	'goo/animation/Joint',
+	'goo/animationpack/Joint',
 	'goo/util/MeshBuilder',
 	'goo/renderer/MeshData'
 ], function(

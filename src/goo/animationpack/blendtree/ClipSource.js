@@ -1,6 +1,6 @@
 define([
 	'goo/math/MathUtils',
-	'goo/animation/clip/AnimationClipInstance'
+	'goo/animationpack/clip/AnimationClipInstance'
 ],
 /** @lends */
 function (
@@ -15,7 +15,7 @@ function (
 	 * @param {string} [filter] 'Exclude' or 'Include'
 	 * @param {string[]} [channelNames]
 	 */
-	function ClipSource (clip, filter, channelNames) {
+	function ClipSource(clip, filter, channelNames) {
 		this._clip = clip;
 		this._clipInstance = new AnimationClipInstance();
 

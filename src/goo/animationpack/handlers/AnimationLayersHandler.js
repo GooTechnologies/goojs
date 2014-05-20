@@ -1,10 +1,10 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/animation/layer/AnimationLayer',
-	'goo/animation/layer/LayerLERPBlender',
-	'goo/animation/state/FadeTransitionState',
-	'goo/animation/state/SyncFadeTransitionState',
-	'goo/animation/state/FrozenTransitionState',
+	'goo/animationpack/layer/AnimationLayer',
+	'goo/animationpack/layer/LayerLERPBlender',
+	'goo/animationpack/state/FadeTransitionState',
+	'goo/animationpack/state/SyncFadeTransitionState',
+	'goo/animationpack/state/FrozenTransitionState',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'

@@ -1,11 +1,11 @@
 define([
-	'goo/animation/Joint'
+	'goo/animationpack/Joint'
 ],
 /** @lends */
 function (
 	Joint
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Describes a collection of Joints. This class represents the hierarchy of a Skeleton and its original aspect (via the {@link Joint} class). This
@@ -13,12 +13,12 @@ function (
 	 * @param {String} name
 	 * @param {Joint[]} joints
 	 */
-	function Skeleton (name, joints) {
+	function Skeleton(name, joints) {
 		this._name = name;
 		this._joints = joints;
 	}
 
-	Skeleton.prototype.clone = function() {
+	Skeleton.prototype.clone = function () {
 		var name = this._name;
 		var jointArray = this._joints;
 		var joints = [];

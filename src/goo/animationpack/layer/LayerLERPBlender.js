@@ -1,12 +1,16 @@
-define(['goo/animation/blendtree/BinaryLERPSource'],
+define([
+	'goo/animationpack/blendtree/BinaryLERPSource'
+],
 /** @lends */
-function (BinaryLERPSource) {
-	"use strict";
+function (
+	BinaryLERPSource
+) {
+	'use strict';
 
 	/**
 	 * @class A layer blender that uses linear interpolation to merge the results of two layers.
 	 */
-	function LayerLERPBlender () {
+	function LayerLERPBlender() {
 		this._blendWeight = null;
 		this._layerA = null;
 		this._layerB = null;

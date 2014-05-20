@@ -1,8 +1,8 @@
 define([
-	'goo/animation/clip/JointChannel',
-	'goo/animation/clip/JointData',
-	'goo/animation/clip/JointChannel',
-	'goo/animation/clip/JointData',
+	'goo/animationpack/clip/JointChannel',
+	'goo/animationpack/clip/JointData',
+	'goo/animationpack/clip/JointChannel',
+	'goo/animationpack/clip/JointData',
 	'goo/math/Vector3',
 	'goo/math/Quaternion'
 ],
@@ -22,7 +22,7 @@ function (
 	 *        controlling a particular joint or set of joints programatically.
 	 * @param {string} [sourceName] Name of source we were initialized from, if given.
 	 */
-	function ManagedTransformSource (sourceName) {
+	function ManagedTransformSource(sourceName) {
 		this._sourceName = sourceName ? sourceName : null;
 		this._data = {};
 	}
@@ -178,7 +178,7 @@ function (
 	/**
 	* @returns {ManagedTransformSource}
 	*/
-	ManagedTransformSource.prototype.clone = function() {
+	ManagedTransformSource.prototype.clone = function () {
 		var clonedData = {};
 		for (var key in this._data) {
 			clonedData[key] = this._data[key].clone();

@@ -1,13 +1,13 @@
 define([
 	'goo/math/MathUtils',
-	'goo/animation/clip/TransformData'
+	'goo/animationpack/clip/TransformData'
 ],
 /** @lends */
 function (
 	MathUtils,
 	TransformData
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Takes two blend sources and uses linear interpolation to merge {@link TransformData} values. If one of the sources is null, or does not have a

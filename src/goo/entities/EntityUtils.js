@@ -14,7 +14,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Transform',
 	'goo/entities/components/CSSTransformComponent',
-	'goo/entities/components/AnimationComponent',
+	//'goo/animationpack/components/AnimationComponent',
 	'goo/util/ObjectUtil'
 ],
 	/** @lends */
@@ -34,7 +34,7 @@ define([
 		BoundingBox,
 		Transform,
 		CSSTransformComponent,
-		AnimationComponent,
+		//AnimationComponent,
 		_
 	) {
 		'use strict';
