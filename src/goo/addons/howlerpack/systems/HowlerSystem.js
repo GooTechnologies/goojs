@@ -4,12 +4,12 @@ define([
 	'goo/renderer/Renderer'
 ],
 /** @lends */
-function(
+function (
 	System,
 	Vector3,
 	Renderer
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handles integration with Howler
@@ -28,7 +28,7 @@ function(
 
 	HowlerSystem.prototype = Object.create(System.prototype);
 
-	HowlerSystem.prototype.deleted = function(entity) {
+	HowlerSystem.prototype.deleted = function (entity) {
 		var howlerComponent = entity.howlerComponent;
 		if (howlerComponent && howlerComponent.sounds) {
 			var sounds = howlerComponent.sounds;
@@ -38,7 +38,7 @@ function(
 		}
 	};
 
-	HowlerSystem.prototype.process = function(entities) {
+	HowlerSystem.prototype.process = function (entities) {
 		this.entities = entities;
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];

@@ -2,7 +2,7 @@ define([
 	'goo/entities/EntityUtils',
 	'goo/entities/components/Component',
 	'goo/math/Quaternion',
-	'goo/addons/ammo/calculateTriangleMeshShape',
+	'goo/addons/ammopack/calculateTriangleMeshShape',
 	'goo/shapes/Box',
 	'goo/shapes/Quad',
 	'goo/shapes/Sphere',
@@ -32,7 +32,7 @@ function(
 	/*global Ammo */
 
 	/**
-	 * @class Adds Ammo physics to a Goo entity. 
+	 * @class Adds Ammo physics to a Goo entity.
 	 * Ammo is a powerful physics engine converted from the C language project Bullet.
 	 * Use Ammo.js if you need to support any 3D shape (trimesh).
 	 * Also see {@link AmmoSystem}.

@@ -39,11 +39,11 @@ function (
 		} else {
 			this.set(arguments);
 		}
-
-		this._tempX = new Vector3();
-		this._tempY = new Vector3();
-		this._tempZ = new Vector3();
 	}
+
+	Matrix3x3._tempX = new Vector3();
+	Matrix3x3._tempY = new Vector3();
+	Matrix3x3._tempZ = new Vector3();
 
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
 	Matrix3x3.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e01'], ['e11'], ['e21'], ['e02'], ['e12'], ['e22']]);
@@ -892,7 +892,7 @@ function (
 	 * entity.transformComponent.setUpdated();
 	 */
 	Matrix3x3.prototype.lookAt = function (direction, up) {
-		var x = this._tempX, y = this._tempY, z = this._tempZ;
+		var x = Matrix3x3._tempX, y = Matrix3x3._tempY, z = Matrix3x3._tempZ;
 
 		z.setv(direction).normalize();
 

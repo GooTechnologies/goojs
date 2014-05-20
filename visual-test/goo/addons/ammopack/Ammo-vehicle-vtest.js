@@ -8,8 +8,8 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/World',
 	'goo/math/Vector3',
-	'goo/addons/ammo/AmmoSystem',
-	'goo/addons/ammo/AmmoComponent',
+	'goo/addons/ammopack/AmmoSystem',
+	'goo/addons/ammopack/AmmoComponent',
 	'goo/renderer/light/PointLight',
 	'VehicleHelper',
 	'lib/V'

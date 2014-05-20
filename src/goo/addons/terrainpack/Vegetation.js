@@ -223,8 +223,12 @@ function (
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};
 
+	var _tempX = new Vector3();
+	var _tempY = new Vector3();
+	var _tempZ = new Vector3();
+
 	Vegetation.prototype.lookAt = function (matrix, direction, up) {
-		var x = matrix._tempX, y = matrix._tempY, z = matrix._tempZ;
+		var x = _tempX, y = _tempY, z = _tempZ;
 
 		y.setv(up).normalize();
 		x.setv(up).cross(direction).normalize();
