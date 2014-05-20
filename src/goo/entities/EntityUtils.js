@@ -14,7 +14,6 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Transform',
 	'goo/entities/components/CSSTransformComponent',
-	'goo/entities/components/AnimationComponent',
 	'goo/util/ObjectUtil'
 ],
 	/** @lends */
@@ -34,7 +33,6 @@ define([
 		BoundingBox,
 		Transform,
 		CSSTransformComponent,
-		AnimationComponent,
 		_
 	) {
 		'use strict';
@@ -98,7 +96,7 @@ define([
 					}
 					newEntity.setComponent(meshRendererComponent);
 
-				} else if (component instanceof AnimationComponent) {
+				} else if (component.type === 'AnimationComponent') { //! AT: will have to do for now
 					var clonedAnimationComponent = component.clone();
 					clonedAnimationComponent._skeletonPose = cloneSkeletonPose(component._skeletonPose, settings);
 					newEntity.setComponent(clonedAnimationComponent);

@@ -2,7 +2,7 @@ define([
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/CameraComponent',
 	'goo/entities/components/MeshRendererComponent',
-	'goo/animation/SkeletonPose',
+	'goo/animationpack/SkeletonPose',
 
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',

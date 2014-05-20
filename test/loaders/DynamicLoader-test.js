@@ -10,11 +10,18 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
-	"goo/entities/systems/AnimationSystem",
+	"goo/animationpack/systems/AnimationSystem",
 
 	'goo/sound/AudioContext',
-	'goo/entities/systems/SoundSystem'
-], function(
+	'goo/entities/systems/SoundSystem',
+
+	'goo/animationpack/handlers/SkeletonHandler',
+	'goo/animationpack/handlers/AnimationComponentHandler',
+	'goo/animationpack/handlers/AnimationStateHandler',
+	'goo/animationpack/handlers/AnimationLayersHandler',
+	'goo/animationpack/handlers/AnimationClipHandler'
+
+], function (
 	World,
 	DynamicLoader,
 	Configs,
@@ -27,9 +34,6 @@ define([
 	CameraSystem,
 	ParticlesSystem,
 	AnimationSystem,
-	LightDebugSystem,
-	CameraDebugSystem,
-	MovementSystem,
 
 	AudioContext,
 	SoundSystem
@@ -38,13 +42,13 @@ define([
 	'use strict';
 	function wait(promise, time) {
 		time = time || 1;
-		waitsFor(function() { return promise.isResolved; }, 'promise does not get resolved', time);
+		waitsFor(function () { return promise.isResolved; }, 'promise does not get resolved', time);
 	}
 
-	describe('DynamicLoader', function() {
+	describe('DynamicLoader', function () {
 		var loader;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			var world = new World();
 			world.setSystem(new TransformSystem());
 			world.setSystem(new CameraSystem());
@@ -64,14 +68,14 @@ define([
 			});
 		});
 
-		it('loads bundle', function() {
+		it('loads bundle', function () {
 			// Create a bundlewrapper to preload and skip ajax
 			var config = Configs.entity();
 			var bundleRef = Configs.randomRef('bundle');
 
 			loader.update(bundleRef, Configs.get());
 			// Load bundle
-			var p = loader.load(bundleRef).then(function() {
+			var p = loader.load(bundleRef).then(function () {
 				var keys = Object.keys(loader._ajax._cache);
 
 				expect(keys).toContain(config.id);
@@ -80,11 +84,11 @@ define([
 
 			wait(p);
 		});
-		it('clears the engine', function() {
+		it('clears the engine', function () {
 			var config = Configs.project(true);
 			var world = loader._world;
 			loader.preload(Configs.get());
-			var p = loader.load(config.id).then(function() {
+			var p = loader.load(config.id).then(function () {
 				world.process();
 				// We have some entities
 				expect(world.entityManager.getEntities().length).toBeGreaterThan(0);
@@ -97,7 +101,7 @@ define([
 				expect(Object.keys(loader._ajax._cache).length).toBeGreaterThan(0);
 
 				return loader.clear();
-			}).then(function() {
+			}).then(function () {
 				world.process();
 				// Process loop is empty
 				expect(world._addedEntities.length).toBe(0);

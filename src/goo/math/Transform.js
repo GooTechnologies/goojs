@@ -42,8 +42,8 @@ function (
 	 * @param {Transform} target
 	 * @returns {Transform} target
 	 */
-	Transform.combine = function(lhs, rhs, target) {
-		if(lhs.scale.data[0] !== lhs.scale.data[1] || lhs.scale.data[0] !== lhs.scale.data[2]) {
+	Transform.combine = function (lhs, rhs, target) {
+		if (lhs.scale.data[0] !== lhs.scale.data[1] || lhs.scale.data[0] !== lhs.scale.data[2]) {
 			throw {
 				name: 'NonUniformScaleException',
 				message: 'Non-uniform scaling in left hand transform, cannot resolve combined transform'
@@ -52,7 +52,7 @@ function (
 		target = target || new Transform();
 
 		// Translation
-		var tmpVec = target.tmpVec;
+		var tmpVec = Transform.tmpVec;
 		tmpVec.setv(rhs.translation);
 		// Rotate translation
 		lhs.rotation.applyPost(tmpVec);
@@ -62,13 +62,13 @@ function (
 		tmpVec.addv(lhs.translation);
 
 		// Scale
-		var tmpVec2 = target.tmpVec2;
+		var tmpVec2 = Transform.tmpVec2;
 		tmpVec2.setv(rhs.scale);
 		// Scale scale
 		tmpVec2.mulv(lhs.scale);
 
 		// Rotation
-		var tmpMat1 = target.tmpMat1;
+		var tmpMat1 = Transform.tmpMat1;
 		// Rotate rotation
 		Matrix3x3.combine(lhs.rotation, rhs.rotation, tmpMat1);
 
@@ -86,7 +86,7 @@ function (
 	 * @param {Transform} rhs right hand side transform
 	 * @returns {Transform} this for chaining
 	 */
-	Transform.prototype.combine = function(rhs) {
+	Transform.prototype.combine = function (rhs) {
 		return Transform.combine(this, rhs, this);
 	};
 

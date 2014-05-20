@@ -2,9 +2,9 @@ define([
 	'goo/entities/World',
 	'goo/entities/components/MeshDataComponent',
 	'goo/renderer/MeshData',
-	'goo/animation/SkeletonPose',
+	'goo/animationpack/SkeletonPose',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs'
+	'../Configs'
 ], function(
 	World,
 	MeshDataComponent,

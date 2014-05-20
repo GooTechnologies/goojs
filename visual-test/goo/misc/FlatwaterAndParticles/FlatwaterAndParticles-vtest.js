@@ -17,7 +17,7 @@ require([
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
 	'goo/renderer/TextureCreator',
-	'goo/addons/water/FlatWaterRenderer',
+	'goo/addons/waterpack/FlatWaterRenderer',
 	'goo/entities/systems/ParticlesSystem',
 	'goo/entities/components/ParticleComponent',
 	'goo/particles/ParticleUtils',

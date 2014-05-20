@@ -154,6 +154,7 @@ module.exports = function (grunt) {
 			},
 			ammopack: {
 				packPath: 'addons/ammopack',
+				outBaseDir: 'out'
 			},
 			cannonpack: {
 				packPath: 'addons/cannonpack',
@@ -167,9 +168,22 @@ module.exports = function (grunt) {
 				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
 			},
+			animationpack: {
+				packPath: 'animationpack',
+				outBaseDir: 'out'
+			},
 			soundmanager2pack: {
 				packPath: 'addons/soundmanager2pack',
 				outBaseDir: 'out'
+			},
+			gamepadpack: {
+				packPath: 'addons/gamepadpack',
+				outBaseDir: 'out'
+			}
+		},
+		'build-custom': {
+			myBundle: {
+				outFile: 'bundle.js'
 			}
 		},
 		karma: {

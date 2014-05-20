@@ -18,24 +18,26 @@ module.exports = function (grunt) {
 	/**
 	 * Gathers a list of modules and one of dependencies
 	 * @param tree
+	 * @param packPath
 	 * @returns {{moduleList: Array, ignoreList: Array}}
 	 */
-	function getModulesAndDependencies(tree) {
+	function getModulesAndDependencies(tree, packPath) {
 		var moduleList = [];
 		var ignoreList = [];
+
+		// var re = /goo\/[^\/]+pack\//;
+
+		//! AT: not sure if nested '+)+' here will do a combinatorial explosion here
+		// {1,3} should be enough for everyone
+		// var regexp = new RegExp('goo(?:\\\/[^\\\/]+){0,2}\\\/' + packName + '\\/');
 
 		for (var module in tree) {
 			var dependencies = tree[module];
 
 			moduleList.push(slash(module));
 
-			// var re = /goo\/[^\/]+pack\//;
-
-			//! AT: not sure if nested '+)+' here will do a combinatorial explosion here
-			// {1,3} should be enough for everyone
-			var regexp = /goo(?:\/[^\/]+){1,3}pack\//;
 			dependencies.forEach(function (dependency) {
-				if (!regexp.test(dependency)) {
+				if (dependency.indexOf(packPath) === -1) {
 					if (ignoreList.indexOf(dependency) === -1) {
 						ignoreList.push(dependency);
 					}
@@ -48,6 +50,7 @@ module.exports = function (grunt) {
 			ignoreList: ignoreList
 		};
 	}
+
 
 	/**
 	 * Extracts the name of a file from a complete path
@@ -177,7 +180,7 @@ module.exports = function (grunt) {
 
 		// get modules and dependencies
 		console.log('get modules and engine dependencies'.grey);
-		var modulesAndDependencies = getModulesAndDependencies(tree);
+		var modulesAndDependencies = getModulesAndDependencies(tree, packPath);
 
 		// get the source for the pack
 		console.log('get the source for the pack'.grey);
@@ -221,4 +224,5 @@ module.exports = function (grunt) {
 			});
 		});
 	});
+
 };
