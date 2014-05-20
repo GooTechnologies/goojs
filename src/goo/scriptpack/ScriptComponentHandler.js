@@ -4,6 +4,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil',
 	'goo/util/PromiseUtil',
+	'goo/entities/SystemBus',
 
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils'
@@ -15,6 +16,7 @@ function (
 	RSVP,
 	_,
 	PromiseUtil,
+	SystemBus,
 
 	Scripts,
 	ScriptUtils
@@ -77,17 +79,15 @@ function (
 					// similar scripts with different parameters.
 					var newScript = {};
 					newScript.id = config.id;
-					// REVIEW No need for externals
-					newScript.externals = script.externals;
 					newScript.setup = script.setup;
 					newScript.update = script.update;
 					newScript.run = script.run;
 					newScript.cleanup = script.cleanup;
-					// REVIEW newScript.parameters = {}
 					newScript.parameters = _.extend({}, script.parameters);
 					newScript.enabled = false;
 
-					return that._setParameters(newScript.parameters, scriptInstance.options, script.externals, options).then(function () {
+					return that._setParameters(newScript.parameters, scriptInstance.options, script.externals, options)
+					.then(function () {
 						return newScript;
 					});
 				});
@@ -102,6 +102,7 @@ function (
 		});
 	};
 
+
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
 		if (!externals.parameters) { return; }
 
@@ -113,6 +114,7 @@ function (
 		}
 		return RSVP.all(promises);
 	};
+
 
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
 		var key = external.key;
@@ -140,6 +142,7 @@ function (
 		}
 	};
 
+
 	/**
 	 * Creates a new script engine.
 	 *
@@ -151,24 +154,18 @@ function (
 	 * @private
 	 */
 	function _createEngineScript(scriptName) {
-		// REVIEW This is surely the way to load it, but as it is implemented now it will still
-		// create a new script on each load. Something for the engine peopel though
 		var script = Scripts.create(scriptName);
 		if (!script) { throw new Error('Unrecognized script name'); }
 
 		script.id = ScriptComponentHandler.ENGINE_SCRIPT_PREFIX + scriptName;
 		script.enabled = false;
 
-		// REVIEW Maybe this is a good a place as any to call SystemBus.emit('goo.scriptExternals')
+		SystemBus.emit('goo.scriptExternals', {
+			id: script.id,
+			externals: script.externals
+		});
 
-		// Generate names from external variable names.
-		// REVIEW This should probably be done in Scripts.create if it's not already
-		ScriptUtils.fillDefaultNames(script.externals.parameters);
-
-		// REVIEW return PromiseUtil.createDummyPromise(script)
-		var promise = new RSVP.Promise();
-		promise.resolve(script);
-		return promise;
+		return PromiseUtil.createDummyPromise(script);
 	}
 
 

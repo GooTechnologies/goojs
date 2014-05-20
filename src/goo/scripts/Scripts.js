@@ -14,6 +14,7 @@ define ([
 	// the static class which just holds the following methods
 	var Scripts = {};
 
+
 	Scripts.register = function (factoryFunction) {
 		var key = factoryFunction.externals.key || factoryFunction.externals.name;
 		if (_scripts[key]) {
@@ -25,17 +26,21 @@ define ([
 		_scripts[key] = factoryFunction;
 	};
 
+
 	Scripts.addClass = function (name, klass) {
 		_gooClasses[name] = klass;
 	};
+
 
 	Scripts.getClasses = function() {
 		return _gooClasses;
 	};
 
+
 	Scripts.getScript = function (key) {
 		return _scripts[key];
 	};
+
 
 	Scripts.create = function (key, options) {
 		var factoryFunction;
@@ -47,19 +52,24 @@ define ([
 		} else if (typeof key === 'function') {
 			factoryFunction = key;
 		}
+
 		var script = factoryFunction();
 		script.parameters = {};
 		script.environment = null;
-		// Check if needed
 		script.externals = factoryFunction.externals;
+
 		if (factoryFunction.externals) {
+			ScriptUtils.fillDefaultNames(script.externals.parameters);
 			ScriptUtils.fillDefaultValues(script.parameters, factoryFunction.externals.parameters);
 		}
+
 		if (options) {
 			_.extend(script.parameters, options);
 		}
+
 		return script;
 	};
+
 
 	Scripts.allScripts = function () {
 		// REVIEW: Why not return _scripts? Document this function.
@@ -71,6 +81,7 @@ define ([
 		}
 		return scripts;
 	};
+
 
 	return Scripts;
 });
