@@ -52,7 +52,7 @@ require([
 
 		function setup(parameters, env) {
 			ScriptUtils.fillDefaultValues(parameters, external.parameters);
-			entity = env.getEntity();
+			entity = env.entity;
 		}
 
 		function update(parameters, env) {
