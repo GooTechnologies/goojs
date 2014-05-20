@@ -311,7 +311,7 @@ function (
 	 * worldUpVector to compute up and left camera vectors.
 	 *
 	 * @param {Vector3} pos Where to look at in terms of world coordinates.
-	 * @param {Vector3} worldUpVector A normalized vector indicating the up direction of the world. (often Vector3.UNIT_Y or Vector3.UNIT_Z).
+	 * @param {Vector3} worldUpVector A vector indicating the up direction of the world. (often Vector3.UNIT_Y or Vector3.UNIT_Z).
 	 */
 	Camera.prototype.lookAt = function (pos, worldUpVector) {
 		this._newDirection.copy(pos).sub(this.translation).normalize();
@@ -356,30 +356,11 @@ function (
 		this.onFrameChange();
 	};
 
-	// VS: Private while not implemented!
-	/**
-	 * Sets the boundaries of this camera's viewport to the given values
-	 * @private
-	 * @param left
-	 * @param right
-	 * @param bottom
-	 * @param top
-	 */
-
-	// Was: function (left, right, bottom, top)
-	Camera.prototype.setViewPort = function () {
-		console.warn('Camera.setViewPort() not implemented.');
-		//setViewPortLeft(left);
-		//setViewPortRight(right);
-		//setViewPortBottom(bottom);
-		//setViewPortTop(top);
-	};
-
 	/**
 	 * Checks a bounding volume against the planes of this camera's frustum and returns if it is completely inside of, outside of, or intersecting.
 	 *
-	 * @param bound the bound to check for culling
-	 * @returns {Object} Intersection type
+	 * @param {BoundingVolume} bound the BoundingVolume to check for culling
+	 * @returns {Number} Intersection type
 	 */
 	Camera.prototype.contains = function (bound) {
 		if (!bound) {
@@ -596,8 +577,6 @@ function (
 
 	/**
 	 * Calculate a Pick Ray using the given screen position at the near plane of this camera and the camera's position in space.
-	 * removed: param flipVertical if true, we'll flip the screenPosition on the y axis. This is useful when you are dealing with non-opengl coordinate
-	 *            systems.
 	 *
 	 * @param {Number} screenX the screen x position
 	 * @param {Number} screenY the screen y position
@@ -610,13 +589,8 @@ function (
 		if (!store) {
 			store = new Ray();
 		}
-		var origin = new Vector3();
-		var direction = new Vector3();
-		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, origin);
-		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, direction).sub(origin).normalize();
-		store.origin.copy(origin);
-		store.direction.copy(direction);
-
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, store.origin);
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).sub(store.origin).normalize();
 		return store;
 	};
 
@@ -630,7 +604,7 @@ function (
 	 * @param {Number} zDepth the depth into the camera view to take our point in world distance.
 	 * @param {Vector3} [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
-	 * @return {Vector3} Vector containing the world coordinates.
+	 * @returns {Vector3} Vector containing the world coordinates.
 	 */
 	Camera.prototype.getWorldPosition = function (screenX, screenY, screenWidth, screenHeight, zDepth, store) {
 		if (!store) {

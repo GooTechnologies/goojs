@@ -26,6 +26,9 @@ define([
 			expect(camera._frustumFar).toBe(30.0);
 			//TODO: test other parts of frustum and boundingbox
 		});
+		it('can pick a ray', function() {
+			var ray = camera.getPickRay(25, 25, 100, 100);
+		});
 		it('can calculate corners of frustum', function() {
 			var corners = camera.calculateFrustumCorners();
 			expect(corners[0]).toEqual(new Vector3(1,-1,-1));
