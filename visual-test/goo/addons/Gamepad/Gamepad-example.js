@@ -1,7 +1,7 @@
 require([
 	'lib/V',
-	'goo/addons/gamepad/GamepadSystem',
-	'goo/addons/gamepad/GamepadComponent',
+	'goo/addons/gamepadpack/GamepadSystem',
+	'goo/addons/gamepadpack/GamepadComponent',
 	'goo/shapes/Box',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',

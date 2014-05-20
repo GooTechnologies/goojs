@@ -1,6 +1,6 @@
 define([
 	'goo/entities/systems/System',
-	'goo/addons/gamepad/GamepadData'
+	'goo/addons/gamepadpack/GamepadData'
 ],
 /** @lends */
 	function(

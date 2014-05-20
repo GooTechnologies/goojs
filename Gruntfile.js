@@ -175,6 +175,10 @@ module.exports = function (grunt) {
 			soundmanager2pack: {
 				packPath: 'addons/soundmanager2pack',
 				outBaseDir: 'out'
+			},
+			gamepadpack: {
+				packPath: 'addons/gamepadpack',
+				outBaseDir: 'out'
 			}
 		},
 		'build-custom': {
