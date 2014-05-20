@@ -5,7 +5,39 @@ module.exports = function (grunt) {
 	var madge = require('madge');
 	var fs = require('fs');
 	var colors = require('colors');
+	var filesize = require('filesize');
 
+	function wrap(fileName, head, tail, callback) {
+		fs.readFile(fileName, function (err, data) {
+			if (err) { throw err; }
+			var wrapped = head + data + tail;
+			fs.writeFile(fileName, wrapped, function (err) {
+				if (err) { throw err; }
+				grunt.log.ok('Done wrapping');
+				callback();
+			});
+		});
+	}
+
+	function getHeadWrapping(packName, version) {
+		return '/* Goo Engine ' + packName + ' ' + version + '\n' +
+			' * Copyright 2014 Goo Technologies AB\n' +
+			' */\n' +
+			'(function(window){function f(){\n';
+	}
+
+	function getTailWrapping() {
+		return ['',
+			'}try{',
+				'if(window.localStorage&&window.localStorage.gooPath){',
+					'window.require.config({',
+						'paths:{goo:localStorage.gooPath}',
+					'});',
+				'}else f()',
+			'}catch(e){f()}',
+			'})(window,undefined)'
+		].join('\n');
+	}
 
 	/**
 	 * Extracts the name of a file from a complete path
@@ -18,7 +50,7 @@ module.exports = function (grunt) {
 	}
 
 
-	function getModulesAndDependencies2(tree, folder) {
+	function getModulesAndDependencies(tree, folder) {
 		var moduleList = [];
 		var ignoreList = [];
 		for (var module in tree) {
@@ -35,14 +67,14 @@ module.exports = function (grunt) {
 		};
 	}
 
-	function buildPack2(moduleList, packPath, packName) {
+	function buildPack(moduleList, packPath, packName) {
 		var lines = [];
 
 		lines.push('require([');
 
 		moduleList.forEach(function (moduleName) {
 			if (packName !== moduleName) { // packPath ?
-				lines.push('\t"'+moduleName+'",');
+				lines.push('\t"' + moduleName + '",');
 			}
 		});
 
@@ -68,31 +100,56 @@ module.exports = function (grunt) {
 		lines.push('});');
 
 		var str = lines.join('\n');
+
 		return str;
 	}
 
+	function getModulesAndDependencies2(baseUrl, modules, moduleList){
+		for(var i=0; i<modules.length; i++){
+			// Madge only takes folders as arguments for some reason
+			var idx = modules[i].lastIndexOf('/');
+			var parentPath = modules[i].substr(0, idx);
+			var moduleName = modules[i].substr(idx + 1);
+			var folder = baseUrl + parentPath;
+			var tree = madge(folder, { format: 'amd' }).tree;
+
+			var module = parentPath + '/' + moduleName;
+			var dependencies = tree[moduleName];
+
+			if(moduleList.indexOf(module) === -1){
+				moduleList.push(module);
+			}
+			dependencies.forEach(function (dependency) {
+				if(moduleList.indexOf(dependency) === -1){
+					moduleList.push(dependency);
+					getModulesAndDependencies2(baseUrl, [dependency], moduleList);
+				}
+			});
+		}
+
+		return moduleList;
+	}
 
 	grunt.registerMultiTask('build-custom', 'Builds a custom bundle', function () {
 		var modules = grunt.option('modules');
 		if (!modules) {
 			throw new Error('Please provide --modules=module1,module2,...');
 		}
+		var baseUrl = 'src/';
 		modules = modules.split(',');
 		var version = grunt.option('goo-version') || grunt.config.data.pkg.version;
 		var outFile = grunt.option('outFile') || 'bundle.js';
 		var done = this.async();
 
-		// get all dependencies
-		var tree = madge('src/' + modules[0], { format: 'amd' }).tree;
-		grunt.log.ok('Got dependencies');
-
 		// get modules and dependencies
 		grunt.log.writeln('get modules and dependencies');
-		var modulesAndDependencies = getModulesAndDependencies2(tree, modules[0]);
+		var modulesAndDependencies = [];
+		getModulesAndDependencies2(baseUrl, modules, modulesAndDependencies);
+		modulesAndDependencies.sort();
 
 		// get the source for the pack
 		grunt.log.writeln('get the source');
-		var packStr = buildPack2(modulesAndDependencies.moduleList, 'custombuild', 'custombuild');
+		var packStr = buildPack(modulesAndDependencies, 'custombuild', 'custombuild');
 
 		// add the pack
 		grunt.log.writeln('add the pack');
@@ -106,34 +163,35 @@ module.exports = function (grunt) {
 			// get the config for the optimizer
 			grunt.log.writeln('get the config for the optimizer');
 			var optimizerConfig = {
-				baseUrl: 'src/',
-				name: 'goo/custombuild/bundle',
+				baseUrl: baseUrl,
+				name: 'goo/custombuild/' + outFile.replace('.js',''),
 				out: outFile,
 				paths: {
 					'goo/custombuild': '../'
 				}
 			};
+			var optimizeOption = grunt.option('optimize');
+			if(optimizeOption){
+				optimizerConfig.optimize = optimizeOption;
+			}
 
 			// optimize!
-			grunt.log.writeln('optimize!');
+			grunt.log.writeln('Optimizing...');
 			requirejs.optimize(optimizerConfig, function (buildResponse) {
 				// buildResponse is just a text output of the modules included.
-
 				grunt.log.ok('Done optimizing');
 
-				grunt.log.writeln('Pack Name: ', 'custombuild');
+				grunt.log.writeln(modulesAndDependencies.join('\n'));
 
-				grunt.log.writeln('Module List');
-				grunt.log.writeln(modulesAndDependencies.moduleList);
+				var head = getHeadWrapping('custom build', version);
+				var tail = getTailWrapping();
+				wrap(outFile, head, tail, done);
 
-				grunt.log.writeln('-----');
-				grunt.log.writeln('Ignore List');
-				grunt.log.writeln(modulesAndDependencies.ignoreList);
+				var bytes = fs.statSync(outFile)["size"];
 
-				wrap(outFile, getHeadWrapping('custombuild', 'custombuild', version), getTailWrapping('custombuild', 'custombuild'), done);
+				grunt.log.ok(outFile + ' written (' + filesize(bytes, {unix: true}) + ')');
+
 			}, function (err) {
-				// optimization err callback
-				// :(
 				grunt.log.error(err);
 				done(false);
 			});

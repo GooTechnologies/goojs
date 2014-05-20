@@ -2,12 +2,14 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector2',
 	'goo/math/MathUtils',
-	'goo/renderer/Camera'
+	'goo/renderer/Camera',
+	'goo/entities/SystemBus'
 ], function (
 	Vector3,
 	Vector2,
 	MathUtils,
-	Camera
+	Camera,
+	SystemBus
 ) {
 	'use strict';
 
@@ -362,7 +364,7 @@ define([
 
 			// set our component updated.
 			transformComponent.setUpdated();
-			goo.SystemBus.emit('goo.cameraPositionChanged', {
+			SystemBus.emit('goo.cameraPositionChanged', {
 				spherical: environment.spherical.data,
 				translation: transform.translation.data,
 				lookAtPoint: environment.lookAtPoint.data,
