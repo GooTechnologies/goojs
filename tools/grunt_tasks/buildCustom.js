@@ -104,7 +104,7 @@ module.exports = function (grunt) {
 		return str;
 	}
 
-	function getModulesAndDependencies2(baseUrl, modules, moduleList){
+	function getModulesAndDependencies2(baseUrl, modules, moduleList, printDebug){
 		for(var i=0; i<modules.length; i++){
 			// Madge only takes folders as arguments for some reason
 			var idx = modules[i].lastIndexOf('/');
@@ -123,6 +123,10 @@ module.exports = function (grunt) {
 				if(moduleList.indexOf(dependency) === -1){
 					moduleList.push(dependency);
 					getModulesAndDependencies2(baseUrl, [dependency], moduleList);
+
+					if(printDebug){
+						grunt.log.writeln(module,'--->',dependency)
+					}
 				}
 			});
 		}
