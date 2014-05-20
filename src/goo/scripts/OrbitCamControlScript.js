@@ -13,214 +13,189 @@ define([
 ) {
 	'use strict';
 
-	function OrbitCamControlScript() {
-		var spherical;
-		var lookAtPoint;
 
-		/**
-		 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi).
-		 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples:
-		 * <ul>
-		 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
-		 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
-		 * <li>View from top: <code>new Vector3(15,Math.PI/2,Math.PI/2) // z is down and x is right</code> </li>
-		 * <li>View from top-right corner: <code>new Vector3(15, Math.PI/3, Math.PI/8)</code> </li>
-		 * </ul>
-		 */
+	/**
+	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi).
+	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples:
+	 * <ul>
+	 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
+	 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
+	 * <li>View from top: <code>new Vector3(15,Math.PI/2,Math.PI/2) // z is down and x is right</code> </li>
+	 * <li>View from top-right corner: <code>new Vector3(15, Math.PI/3, Math.PI/8)</code> </li>
+	 * </ul>
+	 */
 
-		var timeSamples, xSamples, ySamples, sample;
-		var velocity, targetSpherical, cartesian;
-		var mouseState;
-		var worldUpVector;
-		var maxSampleTimeMS;
-		var domElement;
-		var dragButton;
-		var zoomDistanceFactor = 0.035;
-		var listeners;
+	var zoomDistanceFactor = 0.035;
 
-		function setup(parameters, environment) {
-			domElement = environment.domElement;
-			dragButton = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(parameters.dragButton) - 1;
-			if (dragButton < -1) {
-				dragButton = -1;
-			}
-			if (dragButton === 4) {
-				dragButton = null;
-			}
-			// Making more linear perception
-			environment.smoothness = Math.pow(MathUtils.clamp(parameters.smoothness, 0, 1), 0.3);
-			environment.inertia = Math.pow(MathUtils.clamp(parameters.drag, 0, 1), 0.3);
+	function setup(args, ctx) {
+		ctx.dirty = true;
+		ctx.timeSamples = [0, 0, 0, 0, 0];
+		ctx.xSamples = [0, 0, 0, 0, 0];
+		ctx.ySamples = [0, 0, 0, 0, 0];
+		ctx.sample = 0;
+		ctx.velocity = new Vector2(0, 0);
+		ctx.cartesian = new Vector3();
+		ctx.worldUpVector = new Vector3(Vector3.UNIT_Y);
+		ctx.maxSampleTimeMS = 200;
 
-			timeSamples = [0, 0, 0, 0, 0];
-			xSamples = [0, 0, 0, 0, 0];
-			ySamples = [0, 0, 0, 0, 0];
-			sample = 0;
-			velocity = new Vector2(0, 0);
+		ctx.mouseState = {
+			buttonDown: false,
+			lastX: NaN,
+			lastY: NaN
+		};
 
-			environment.spherical = spherical = new Vector3(parameters.spherical);
-			spherical.data[1] *= MathUtils.DEG_TO_RAD;
-			spherical.data[2] *= MathUtils.DEG_TO_RAD;
-			environment.lookAtPoint = lookAtPoint = new Vector3(parameters.lookAtPoint);
-			environment.goingToLookAt = new Vector3(lookAtPoint);
+		// Making more linear perception
+		ctx.smoothness = Math.pow(MathUtils.clamp(args.smoothness, 0, 1), 0.3);
+		ctx.inertia = Math.pow(MathUtils.clamp(args.drag, 0, 1), 0.3);
 
-			environment.targetSpherical = targetSpherical = new Vector3(spherical);
-			cartesian = new Vector3();
-			worldUpVector = new Vector3(Vector3.UNIT_Y);
-			maxSampleTimeMS = 200;
-
-			if (environment.entity.cameraComponent && environment.entity.cameraComponent.camera.projectionMode === Camera.Parallel) {
-				environment.size = environment.entity.cameraComponent.camera.top;
-			}
-
-			environment.dirty = true;
-
-			mouseState = {
-				buttonDown: false,
-				lastX: NaN,
-				lastY: NaN
-			};
-
-			setupMouseControls(parameters, environment);
+		ctx.dragButton = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(args.dragButton) - 1;
+		if (ctx.dragButton < -1) {
+			ctx.dragButton = -1;
+		} else if (ctx.dragButton === 4) {
+			ctx.dragButton = null;
 		}
 
-		function updateButtonState(buttonIndex, down, parameters, environment) {
-			if (environment.domElement !== document) {
-				environment.domElement.focus();
-			}
+		// Getting script angles from transform
+		var angles = ctx.entity.getRotation();
+		var spherical = ctx.spherical = new Vector3(
+			args.spherical[0],
+			-angles[1] + Math.PI / 2,
+			-angles[0]
+		);
+		ctx.targetSpherical = new Vector3(spherical);
 
-			if (dragButton === -1 || dragButton === buttonIndex || down === false) {
-				mouseState.buttonDown = down;
-				if (down) {
-					mouseState.lastX = NaN;
-					mouseState.lastY = NaN;
-					velocity.set(0, 0);
-					spherical.y = MathUtils.moduloPositive(spherical.y, MathUtils.TWO_PI);
-					targetSpherical.copy(spherical);
-				} else {
-					applyReleaseDrift(parameters);
-				}
-			}
+		// Setting look at point at a distance forward
+		var rotation = ctx.entity.transformComponent.transform.rotation;
+		ctx.lookAtPoint = new Vector3(0, 0, -args.spherical[0]);
+		rotation.applyPost(ctx.lookAtPoint);
+		ctx.lookAtPoint.addv(ctx.entity.getTranslation());
+		ctx.goingToLookAt = new Vector3(ctx.lookAtPoint);
+
+		// Parallel camera size
+		updateFrustumSize(1, ctx);
+
+		setupMouseControls(args, ctx);
+	}
+
+	function updateButtonState(buttonIndex, down, args, ctx) {
+		if (ctx.domElement !== document) {
+			ctx.domElement.focus();
 		}
-
-		function updateDeltas(mouseX, mouseY, parameters, environment) {
-			var dx = 0, dy = 0;
-			if (isNaN(mouseState.lastX) || isNaN(mouseState.lastY)) {
-				mouseState.lastX = mouseX;
-				mouseState.lastY = mouseY;
+		var dragButton = ctx.dragButton;
+		var mouseState = ctx.mouseState;
+		if (dragButton === -1 || dragButton === buttonIndex || down === false) {
+			mouseState.buttonDown = down;
+			if (down) {
+				mouseState.lastX = NaN;
+				mouseState.lastY = NaN;
+				ctx.velocity.setd(0, 0);
+				ctx.spherical.data[1] = MathUtils.moduloPositive(ctx.spherical.data[1], MathUtils.TWO_PI);
+				ctx.targetSpherical.setv(ctx.spherical);
 			} else {
-				dx = -(mouseX - mouseState.lastX);
-				dy = mouseY - mouseState.lastY;
-				mouseState.lastX = mouseX;
-				mouseState.lastY = mouseY;
+				applyReleaseDrift(args, ctx);
 			}
+		}
+	}
 
-			if (!mouseState.buttonDown || dx === 0 && dy === 0) {
-				return;
-			}
-
-			timeSamples[sample] = Date.now();
-			xSamples[sample] = dx;
-			ySamples[sample] = dy;
-
-			sample++;
-			if (sample > timeSamples.length - 1) {
-				sample = 0;
-			}
-
-			velocity.set(0, 0);
-			move(parameters.orbitSpeed * dx, parameters.orbitSpeed * dy, parameters, environment);
+	function updateDeltas(mouseX, mouseY, args, ctx) {
+		var dx = 0, dy = 0;
+		var mouseState = ctx.mouseState;
+		if (isNaN(mouseState.lastX) || isNaN(mouseState.lastY)) {
+			mouseState.lastX = mouseX;
+			mouseState.lastY = mouseY;
+		} else {
+			dx = -(mouseX - mouseState.lastX);
+			dy = mouseY - mouseState.lastY;
+			mouseState.lastX = mouseX;
+			mouseState.lastY = mouseY;
 		}
 
-		// Should be moved to mathUtils?
-		function _radialClamp(value, min, max) {
-			// Rotating coordinates to be mirrored
-			var zero = (min + max) / 2 + ((max > min) ? Math.PI : 0);
-			var _value = MathUtils.moduloPositive(value - zero, MathUtils.TWO_PI);
-			var _min = MathUtils.moduloPositive(min - zero, MathUtils.TWO_PI);
-			var _max = MathUtils.moduloPositive(max - zero, MathUtils.TWO_PI);
-
-			// Putting min, max and value on the same circle
-			if (value < 0 && min > 0) { min -= MathUtils.TWO_PI; }
-			else if (value > 0 && min < 0) { min += MathUtils.TWO_PI; }
-			if (value > MathUtils.TWO_PI && max < MathUtils.TWO_PI) { max += MathUtils.TWO_PI; }
-
-			return _value < _min ? min : _value > _max ? max : value;
+		if (!mouseState.buttonDown || dx === 0 && dy === 0) {
+			return;
 		}
 
-		function move(azimuthAccel, thetaAccel, parameters, environment) {
+		// Release velocity samples
+		ctx.timeSamples[ctx.sample] = Date.now();
+		ctx.xSamples[ctx.sample] = dx;
+		ctx.ySamples[ctx.sample] = dy;
 
-			// update our master spherical coords, using x and y movement
-			if (parameters.clampAzimuth) {
-				var minAzimuth = parameters.minAzimuth * MathUtils.DEG_TO_RAD;
-				var maxAzimuth = parameters.maxAzimuth * MathUtils.DEG_TO_RAD;
-				targetSpherical.y = _radialClamp(targetSpherical.y - azimuthAccel, minAzimuth, maxAzimuth);
-			} else {
-				targetSpherical.y = targetSpherical.y - azimuthAccel;
-			}
-			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;
-			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
-			targetSpherical.z = MathUtils.clamp(targetSpherical.z + thetaAccel, minAscent, maxAscent);
-
-			environment.dirty = true;
+		ctx.sample++;
+		if (ctx.sample > ctx.timeSamples.length - 1) {
+			ctx.sample = 0;
 		}
 
-		function updateFrustumSize(delta, env) {
-			var camera = env.entity.cameraComponent.camera;
-			env.size = camera.top;
-			env.size /= delta;
-			var size = env.size;
+		ctx.velocity.setd(0, 0);
+		move(args.orbitSpeed * dx, args.orbitSpeed * dy, args, ctx);
+	}
+
+	function move(azimuthAccel, thetaAccel, args, ctx) {
+		var td = ctx.targetSpherical.data;
+
+		// update our master spherical coords, using x and y movement
+		if (args.clampAzimuth) {
+			var minAzimuth = args.minAzimuth * MathUtils.DEG_TO_RAD;
+			var maxAzimuth = args.maxAzimuth * MathUtils.DEG_TO_RAD;
+			td[1] = MathUtils.radialClamp(td[1] - azimuthAccel, minAzimuth, maxAzimuth);
+		} else {
+			td[1] = td[1] - azimuthAccel;
+		}
+		var minAscent = args.minAscent * MathUtils.DEG_TO_RAD;
+		var maxAscent = args.maxAscent * MathUtils.DEG_TO_RAD;
+		td[2] = MathUtils.clamp(td[2] + thetaAccel, minAscent, maxAscent);
+
+		ctx.dirty = true;
+	}
+
+	function updateFrustumSize(delta, ctx) {
+		var camera = ctx.entity.cameraComponent.camera;
+		if (camera.projectionMode === Camera.Parallel) {
+			ctx.size = camera.top;
+			ctx.size /= delta;
+			var size = ctx.size;
 			camera.setFrustum(null, null, -size, size, size, -size);
 		}
+	}
 
-		function applyWheel(e, parameters, environment) {
-			var delta =  Math.max(-1, Math.min(1, -e.wheelDelta || e.detail));
-			delta *= zoomDistanceFactor * targetSpherical.x;
-			zoom(parameters.zoomSpeed * delta, parameters, environment);
-		}
+	function applyWheel(e, args, ctx) {
+		var delta =  Math.max(-1, Math.min(1, -e.wheelDelta || e.detail));
+		delta *= zoomDistanceFactor * ctx.targetSpherical.data[0];
 
-		function zoom(amount, parameters, environment) {
-			targetSpherical.x = MathUtils.clamp(targetSpherical.x + amount, parameters.minZoomDistance, parameters.maxZoomDistance);
-			environment.dirty = true;
-		}
+		var td = ctx.targetSpherical.data;
+		td[0] = MathUtils.clamp(
+			td[0] + args.zoomSpeed * delta,
+			args.minZoomDistance,
+			args.maxZoomDistance
+		);
+		ctx.dirty = true;
+	}
 
-		function applyReleaseDrift(parameters) {
-			var now = Date.now();
-			var dx = 0, dy = 0;
-			var found = false;
-			for (var i = 0, max = timeSamples.length; i < max; i++) {
-				if (now - timeSamples[i] < maxSampleTimeMS) {
-					dx += xSamples[i];
-					dy += ySamples[i];
-					found = true;
-				}
-			}
-			if (found) {
-				velocity.set(
-					dx * parameters.orbitSpeed / timeSamples.length,
-					dy * parameters.orbitSpeed / timeSamples.length
-				);
-			} else {
-				velocity.set(0, 0);
+	function applyReleaseDrift(args, ctx) {
+		var timeSamples = ctx.timeSamples;
+		var now = Date.now();
+		var dx = 0, dy = 0;
+		var found = false;
+		for (var i = 0, max = timeSamples.length; i < max; i++) {
+			if (now - timeSamples[i] < ctx.maxSampleTimeMS) {
+				dx += ctx.xSamples[i];
+				dy += ctx.ySamples[i];
+				found = true;
 			}
 		}
+		if (found) {
+			ctx.velocity.setd(
+				dx * args.orbitSpeed / timeSamples.length,
+				dy * args.orbitSpeed / timeSamples.length
+			);
+		} else {
+			ctx.velocity.setd(0, 0);
+		}
+	}
 
-		function setupMouseControls(parameters, environment) {
-			var oldDistance = 0;
-			listeners = {
-				mousedown: function (event) {
-					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						var button = event.button;
-						if (button === 0) {
-							if (event.altKey) {
-								button = 2;
-							} else if (event.shiftKey) {
-								button = 1;
-							}
-						}
-						updateButtonState(button, true, parameters, environment);
-					}
-				},
-				mouseup: function (event) {
+	function setupMouseControls(args, ctx) {
+		var oldDistance = 0;
+		ctx.listeners = {
+			mousedown: function (event) {
+				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
 					var button = event.button;
 					if (button === 0) {
 						if (event.altKey) {
@@ -229,155 +204,169 @@ define([
 							button = 1;
 						}
 					}
-					updateButtonState(button, false, parameters, environment);
-				},
-				mousemove: function (event) {
-					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						updateDeltas(event.clientX, event.clientY, parameters, environment);
-					}
-				},
-				mouseleave: function (event) {
-					environment.orbitListeners.mouseup(event);
-				},
-				mousewheel: function (event) {
-					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						applyWheel(event, parameters, environment);
-					}
-				},
-				touchstart: function (event) {
-					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						updateButtonState(dragButton, event.targetTouches.length === 1, parameters, environment);
-					}
-				},
-				touchend: function (/*event*/) {
-					updateButtonState(dragButton, false, parameters, environment);
-					oldDistance = 0;
-				},
-				touchmove: function (event) {
-					if (!parameters.whenUsed || environment.entity === environment.activeCameraEntity) {
-						var cx, cy, distance;
-						var touches = event.targetTouches;
-						var x1 = touches[0].clientX;
-						var y1 = touches[0].clientY;
-						if (touches.length === 2) {
-							var x2 = touches[1].clientX;
-							var y2 = touches[1].clientY;
-							distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-						} else {
-							cx = x1;
-							cy = y1;
-							updateDeltas(cx, cy, parameters, environment);
-						}
-						var scale = (distance - oldDistance) / Math.max(domElement.height, domElement.width);
-						scale /= 3;
-						if (oldDistance === 0) {
-							oldDistance = distance;
-						} else if (touches.length === 2 && Math.abs(scale) > 0.3) {
-							applyWheel({ wheelDelta: scale }, parameters, environment);
-							oldDistance = distance;
-						}
+					updateButtonState(button, true, args, ctx);
+				}
+			},
+			mouseup: function (event) {
+				var button = event.button;
+				if (button === 0) {
+					if (event.altKey) {
+						button = 2;
+					} else if (event.shiftKey) {
+						button = 1;
 					}
 				}
-			};
-			listeners.DOMMouseScroll = listeners.mousewheel;
-			listeners.mouseleave = listeners.mouseup;
-
-			for (var event in listeners) {
-				environment.domElement.addEventListener(event, listeners[event]);
+				updateButtonState(button, false, args, ctx);
+			},
+			mousemove: function (event) {
+				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
+					updateDeltas(event.clientX, event.clientY, args, ctx);
+				}
+			},
+			mouseleave: function (event) {
+				ctx.orbitListeners.mouseup(event);
+			},
+			mousewheel: function (event) {
+				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
+					applyWheel(event, args, ctx);
+				}
+			},
+			touchstart: function (event) {
+				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
+					updateButtonState(ctx.dragButton, event.targetTouches.length === 1, args, ctx);
+				}
+			},
+			touchend: function (/*event*/) {
+				updateButtonState(ctx.dragButton, false, args, ctx);
+				oldDistance = 0;
+			},
+			touchmove: function (event) {
+				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
+					var cx, cy, distance;
+					var touches = event.targetTouches;
+					var x1 = touches[0].clientX;
+					var y1 = touches[0].clientY;
+					if (touches.length === 2) {
+						var x2 = touches[1].clientX;
+						var y2 = touches[1].clientY;
+						distance = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+					} else {
+						cx = x1;
+						cy = y1;
+						updateDeltas(cx, cy, args, ctx);
+					}
+					var scale = (distance - oldDistance) / Math.max(ctx.domElement.offsetHeight, ctx.domElement.offsetWidth);
+					scale /= 3;
+					if (oldDistance === 0) {
+						oldDistance = distance;
+					} else if (touches.length === 2 && Math.abs(scale) > 0.3) {
+						applyWheel({ wheelDelta: scale }, args, ctx);
+						oldDistance = distance;
+					}
+				}
 			}
+		};
+		ctx.listeners.DOMMouseScroll = ctx.listeners.mousewheel;
+		ctx.listeners.mouseleave = ctx.listeners.mouseup;
 
-			// Avoid missing the mouseup event because of Chrome bug:
-			// https://code.google.com/p/chromium/issues/detail?id=244289
-			// seems solved
-			/*
-			parameters.domElement.addEventListener('dragstart', function (event) {
-				preventDefault();
-			}, false);
-			*/
-			domElement.oncontextmenu = function () { return false; };
+		for (var event in ctx.listeners) {
+			ctx.domElement.addEventListener(event, ctx.listeners[event]);
 		}
 
-		function updateVelocity(time, parameters, environment) {
-			if (velocity.lengthSquared() > 0.000001) {
-				move(velocity.x, velocity.y, parameters, environment);
-				var rate = MathUtils.lerp(environment.inertia, 0, 1 - time / environment.inertia);
-				velocity.mul(rate);
-			} else {
-				velocity.set(0, 0, 0);
-			}
+		// Avoid missing the mouseup event because of Chrome bug:
+		// https://code.google.com/p/chromium/issues/detail?id=244289
+		// seems solved
+		/*
+		args.domElement.addEventListener('dragstart', function (event) {
+			preventDefault();
+		}, false);
+		*/
+		ctx.domElement.oncontextmenu = function () { return false; };
+	}
+
+	function updateVelocity(time, args, ctx) {
+		if (ctx.velocity.lengthSquared() > 0.000001) {
+			move(ctx.velocity.x, ctx.velocity.y, args, ctx);
+			var rate = MathUtils.lerp(ctx.inertia, 0, 1 - time / ctx.inertia);
+			ctx.velocity.mul(rate);
+		} else {
+			ctx.velocity.setd(0, 0, 0);
+		}
+	}
+
+	function update(args, ctx/*, goo*/) {
+		if (!ctx.dirty) {
+			return; //
+		}
+		var spherical = ctx.spherical;
+		var targetSpherical = ctx.targetSpherical;
+		var lookAtPoint = ctx.lookAtPoint;
+		var goingToLookAt = ctx.goingToLookAt;
+		var cartesian = ctx.cartesian;
+
+		var entity = ctx.entity;
+		var transformComponent = entity.transformComponent;
+		var transform = transformComponent.transform;
+
+		var delta = MathUtils.lerp(ctx.smoothness, 1, ctx.world.tpf);
+
+		if (goingToLookAt.distanceSquared(lookAtPoint) < 1e-6) {
+			lookAtPoint.setv(goingToLookAt);
+		} else {
+			lookAtPoint.lerp(goingToLookAt, delta);
 		}
 
-		function update(parameters, environment, goo) {
-			if (!environment.dirty) {
-				return; //
-			}
-
-
-			var entity = environment.entity;
-			// grab our transformComponent
-			var transformComponent = entity.transformComponent;
-
-			var transform = transformComponent.transform;
-
-			var delta = MathUtils.lerp(environment.smoothness, 1, environment.world.tpf);
-
-			if (environment.goingToLookAt.distanceSquared(environment.lookAtPoint) < 1e-6) {
-				environment.lookAtPoint.setv(environment.goingToLookAt);
-			} else {
-				environment.lookAtPoint.lerp(environment.goingToLookAt, delta);
-				//environment.orbitDirty = true;
-			}
-
-			if (parameters.releaseVelocity) {
-				updateVelocity(entity._world.tpf, parameters, environment);
-			}
-
-
-			//var delta = MathUtils.clamp(parameters.interpolationSpeed * environment.world.tpf, 0.0, 1.0);
-
-			if (parameters.clampAzimuth) {
-				spherical.y = MathUtils.lerp(delta, spherical.y, targetSpherical.y);
-			} else {
-				spherical.y = MathUtils.lerp(delta, spherical.y, targetSpherical.y);
-			}
-			var deltaX = spherical.x;
-			spherical.x = MathUtils.lerp(delta, spherical.x, targetSpherical.x);
-			deltaX /= spherical.x;
-
-			if (environment.entity.cameraComponent && environment.entity.cameraComponent.camera.projectionMode === Camera.Parallel) {
-				updateFrustumSize(deltaX, environment);
-			}
-			spherical.z = MathUtils.lerp(delta, spherical.z, targetSpherical.z);
-
-			MathUtils.sphericalToCartesian(spherical.x, spherical.y, spherical.z, cartesian);
-
-			transform.translation.set(cartesian.add(lookAtPoint));
-			if (!transform.translation.equals(lookAtPoint)) {
-				transform.lookAt(lookAtPoint, worldUpVector);
-			}
-
-			if (spherical.distanceSquared(targetSpherical) < 0.000001 && environment.lookAtPoint.equals(environment.goingToLookAt)) {
-				spherical.y = MathUtils.moduloPositive(spherical.y, MathUtils.TWO_PI);
-				targetSpherical.copy(spherical);
-				environment.dirty = false;
-			}
-
-			// set our component updated.
-			transformComponent.setUpdated();
-			SystemBus.emit('goo.cameraPositionChanged', {
-				spherical: environment.spherical.data,
-				translation: transform.translation.data,
-				lookAtPoint: environment.lookAtPoint.data,
-				id: entity.id
-			});
+		if (ctx.inertia > 0) {
+			updateVelocity(entity._world.tpf, args, ctx);
 		}
 
-		function cleanup(parameters, environment) {
-			for (var event in listeners) {
-				environment.domElement.removeEventListener(event, listeners[event]);
-			}
+
+		//var delta = MathUtils.clamp(args.interpolationSpeed * ctx.world.tpf, 0.0, 1.0);
+		var sd = spherical.data;
+		var tsd = targetSpherical.data;
+
+		// Move azimuth to target
+		sd[1] = MathUtils.lerp(delta, sd[1], tsd[1]);
+		// Move ascent to target
+		sd[2] = MathUtils.lerp(delta, sd[2], tsd[2]);
+
+		// Move distance to target
+		var deltaX = sd[0];
+		sd[0] = MathUtils.lerp(delta, sd[0], tsd[0]);
+		deltaX /= sd[0];
+		updateFrustumSize(deltaX, ctx);
+
+
+		MathUtils.sphericalToCartesian(sd[0], sd[1], sd[2], cartesian);
+
+		transform.translation.set(cartesian.add(lookAtPoint));
+		if (!transform.translation.equals(lookAtPoint)) {
+			transform.lookAt(lookAtPoint, ctx.worldUpVector);
 		}
 
+		if (spherical.distanceSquared(targetSpherical) < 1e-6 && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
+			sd[1] = MathUtils.moduloPositive(sd[1], MathUtils.TWO_PI);
+			targetSpherical.setv(spherical);
+			ctx.dirty = false;
+		}
+
+		// set our component updated.
+		transformComponent.setUpdated();
+		SystemBus.emit('goo.cameraPositionChanged', {
+			spherical: ctx.spherical.data,
+			translation: transform.translation.data,
+			lookAtPoint: ctx.lookAtPoint.data,
+			id: entity.id
+		});
+	}
+
+	function cleanup(args, ctx) {
+		for (var event in ctx.listeners) {
+			ctx.domElement.removeEventListener(event, ctx.listeners[event]);
+		}
+	}
+
+	function OrbitCamControlScript() {
 		return {
 			setup: setup,
 			update: update,
