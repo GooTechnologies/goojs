@@ -97,6 +97,9 @@ function (
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
+		this.attributeKeys = null;
+		this.uniformKeys = null;
+		this.matchedUniforms = [];
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
 		 *		<ul>
@@ -183,14 +186,15 @@ function (
 
 		// Bind attributes
 		//TODO: good?
-		if (this.attributes) {
+		// if (this.attributes) {
 		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
+		if (shaderInfo.meshData !== record.meshData) {
 			// record.attributes = this.attributes;
-			// record.meshData = shaderInfo.meshData;
+			record.meshData = shaderInfo.meshData;
 			var attributeMap = shaderInfo.meshData.attributeMap;
 
 			var attributes = this.attributes;
-			var keys = Object.keys(attributes);
+			var keys = this.attributeKeys;
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var key = keys[i];
 				var attribute = attributeMap[attributes[key]];
@@ -212,28 +216,39 @@ function (
 			}
 		}
 
-		this._bindUniforms(shaderInfo);
-	};
-
-	Shader.prototype._bindUniforms = function (shaderInfo) {
-		if (this.uniforms) {
+		if (this.matchedUniforms) {
 			this.textureIndex = 0;
-			var names = Object.keys(this.uniforms);
-			for (var i = 0, l = names.length; i < l; i++) {
-				this._bindUniform(names[i], shaderInfo);
+
+			// var uniformCallMapping = this.uniformCallMapping;
+			// var materialuniforms = shaderInfo.material.uniforms;
+
+			for (var i = 0, l = this.matchedUniforms.length; i < l; i++) {
+				this._bindUniform(this.matchedUniforms[i], shaderInfo);
 			}
 		}
+
+		// if (this.uniforms) {
+		// 	this.textureIndex = 0;
+		// 	var names = this.uniformKeys;
+		// 	for (var i = 0, l = names.length; i < l; i++) {
+		// 		this._bindUniform(names[i], shaderInfo);
+		// 	}
+		// }
 	};
 
 	Shader.prototype._bindUniform = function (name, shaderInfo) {
 		var mapping = this.uniformCallMapping[name];
 		if (mapping === undefined) {
-			// console.warn('Uniform binding [' + name + '] does not exist in the shader.');
 			return;
 		}
-		var defValue = (shaderInfo.material.uniforms[name] !== undefined) ? shaderInfo.material.uniforms[name] : this.uniforms[name];
 
-		if (typeof defValue === 'string') {
+		var defValue = shaderInfo.material.uniforms[name];
+		if (defValue === undefined) {
+			defValue = this.uniforms[name];
+		}
+
+		var type = typeof defValue;
+		if (type === 'string') {
 			var callback = this.currentCallbacks[name];
 			if (callback) {
 				callback(mapping, shaderInfo);
@@ -256,7 +271,7 @@ function (
 				}
 			}
 		} else {
-			var value = typeof defValue === 'function' ? defValue(shaderInfo) : defValue;
+			var value = type === 'function' ? defValue(shaderInfo) : defValue;
 			mapping.call(value);
 		}
 	};
@@ -268,6 +283,8 @@ function (
 		this.uniformMapping = {};
 		this.uniformCallMapping = {};
 		this.currentCallbacks = {};
+		this.attributeKeys = null;
+		this.uniformKeys = null;
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	};
@@ -391,7 +408,7 @@ function (
 					if (slot.name === key) {
 						this.textureSlots.splice(i, 1);
 						delete this.textureSlotsNaming[slot.name];
-						for (; i < l-1; i++) {
+						for (; i < l - 1; i++) {
 							this.textureSlots[i].index--;
 						}
 						break;
@@ -404,14 +421,16 @@ function (
 			this.uniformCallMapping[key] = new ShaderCall(context, uniform, this.uniformMapping[key].format);
 		}
 
-		// if (this.attributes) {
+		if (this.attributes) {
 		// 	for (var name in this.attributeIndexMapping) {
 		// 		var mapping = this.attributes[name];
 		// 		if (mapping === undefined) {
 		// 			console.warn('No binding found for attribute: ' + name + ' [' + this.name + '][' + this._id + ']');
 		// 		}
 		// 	}
-		// }
+
+			this.attributeKeys = Object.keys(this.attributes);
+		}
 
 		if (this.uniforms) {
 			// Fix links ($link)
@@ -426,9 +445,13 @@ function (
 				delete this.uniforms.$link;
 			}
 
+			this.matchedUniforms = [];
 			for (var name in this.uniforms) {
-				// var mapping = this.uniformCallMapping[name];
-				// if (mapping === undefined) {
+				var mapping = this.uniformCallMapping[name];
+				if (mapping !== undefined) {
+					this.matchedUniforms.push(name);
+				} 
+				// else {
 					// console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
 				// }
 
@@ -437,12 +460,15 @@ function (
 					this.currentCallbacks[name] = this.defaultCallbacks[value];
 				}
 			}
+
 			// for (var name in this.uniformCallMapping) {
-				// var mapping = this.uniforms[name];
-				// if (mapping === undefined) {
-					// console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
-				// }
+			// 	var mapping = this.uniforms[name];
+			// 	if (mapping === undefined) {
+			// 		console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
+			// 	}
 			// }
+
+			this.uniformKeys = Object.keys(this.uniforms);
 		}
 
 		//console.log('Shader [' + this.name + '][' + this._id + '] compiled');

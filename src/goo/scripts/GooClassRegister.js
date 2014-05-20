@@ -1,7 +1,5 @@
 define([
 	'goo/scripts/Scripts',
-	'goo/addons/ammo/AmmoComponent',
-	'goo/addons/ammo/AmmoSystem',
 	'goo/entities/Entity',
 	'goo/entities/EntitySelection',
 	'goo/entities/EntityUtils',
@@ -155,8 +153,6 @@ define([
 	// minifier cannot handle any expressions or statements other than a simple array of strings
 	var defines = [
 		'goo/scripts/Scripts',
-		'goo/addons/ammo/AmmoComponent',
-		'goo/addons/ammo/AmmoSystem',
 		'goo/entities/Entity',
 		'goo/entities/EntitySelection',
 		'goo/entities/EntityUtils',

@@ -152,6 +152,10 @@ module.exports = function (grunt) {
 				packPath: 'addons/terrainpack',
 				outBaseDir: 'out'
 			},
+			ammopack: {
+				packPath: 'addons/ammopack',
+				outBaseDir: 'out'
+			},
 			cannonpack: {
 				packPath: 'addons/cannonpack',
 				outBaseDir: 'out'
@@ -166,6 +170,10 @@ module.exports = function (grunt) {
 			},
 			animationpack: {
 				packPath: 'animationpack',
+				outBaseDir: 'out'
+			},
+			soundmanager2pack: {
+				packPath: 'addons/soundmanager2pack',
 				outBaseDir: 'out'
 			}
 		},

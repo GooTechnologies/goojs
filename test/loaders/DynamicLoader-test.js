@@ -10,10 +10,16 @@ define([
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
 	'goo/entities/systems/ParticlesSystem',
-	"goo/entities/systems/AnimationSystem",
+	"goo/animationpack/systems/AnimationSystem",
 
 	'goo/sound/AudioContext',
-	'goo/entities/systems/SoundSystem'
+	'goo/entities/systems/SoundSystem',
+
+	'goo/animationpack/handlers/SkeletonHandler',	'goo/animationpack/handlers/AnimationComponentHandler',
+	'goo/animationpack/handlers/AnimationStateHandler',
+	'goo/animationpack/handlers/AnimationLayersHandler',
+	'goo/animationpack/handlers/AnimationClipHandler'
+
 ], function(
 	World,
 	DynamicLoader,

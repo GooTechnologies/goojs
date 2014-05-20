@@ -63,6 +63,7 @@ define([
 		}
 	};
 
+
 	ScriptUtils._keys = {
 		'Backspace': 8,
 		'Tab': 9,

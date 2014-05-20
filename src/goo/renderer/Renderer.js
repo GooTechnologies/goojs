@@ -1129,7 +1129,10 @@ function (
 						var keys = Object.keys(uniforms);
 						for (var ii = 0, l = keys.length; ii < l; ii++) {
 							var key = keys[ii];
-							shader.uniforms[key] = uniforms[key];
+							var origUniform = shader.uniforms[key] = uniforms[key];
+							if (origUniform instanceof Array) {
+								shader.uniforms[key] = origUniform.slice(0);
+							}
 						}
 
 						material.shader = shader;

@@ -68,10 +68,12 @@ for packName in (
 	'p2',
 	'box2d',
 	'terrain',
+	'ammo',
 	'cannon',
 	'howler',
 	'water',
-	'animation'
+	'animation',
+	'soundmanager2'
 ):
     shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
 
