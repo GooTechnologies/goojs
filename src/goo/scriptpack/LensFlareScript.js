@@ -98,7 +98,7 @@ define([
 			this.displacementVector.sub(this.positionVector);
 			this.offset = this.displacementVector.length();
 			this.centerRatio = 1-(1 / (this.positionVector.length() / (this.offset*edgeRelevance)));
-			this.centerRatio = Math.max(1,this.centerRatio);
+			//this.centerRatio = Math.max(1,this.centerRatio);
 			//if (Math.random() < 0.05) console.log(this.centerRatio)
 		};
 
