@@ -8,7 +8,8 @@ define([
 	'goo/scriptpack/MouseLookControlScript',
 	'goo/scriptpack/WASDControlScript',
 	'goo/scriptpack/ButtonScript',
-	'goo/scriptpack/PickAndRotateScript'
+	'goo/scriptpack/PickAndRotateScript',
+	'goo/scriptpack/LensFlareScript'
 	//'goo/scriptpack/PolyBoundingScript',
 	//'goo/scriptpack/FPCamControlScript'
 	//'goo/scriptpack/RotationScript'
