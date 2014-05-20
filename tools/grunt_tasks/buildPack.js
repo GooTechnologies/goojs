@@ -51,6 +51,7 @@ module.exports = function (grunt) {
 		};
 	}
 
+
 	/**
 	 * Extracts the name of a file from a complete path
 	 * @param path
@@ -223,4 +224,5 @@ module.exports = function (grunt) {
 			});
 		});
 	});
+
 };

@@ -2,8 +2,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil',
-	'goo/scripts/Scripts',
-	'goo/scripts/GooClassRegister'
+	'goo/scripts/Scripts'
 ],
 	/** @lends */
 	function (

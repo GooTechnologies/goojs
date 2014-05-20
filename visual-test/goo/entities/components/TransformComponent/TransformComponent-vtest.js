@@ -3,8 +3,6 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Box',
 	'goo/math/Vector3',
-	'goo/addons/box2d/systems/Box2DSystem',
-	'goo/addons/box2d/components/Box2DComponent',
 	'goo/math/MathUtils',
 	'goo/debugpack/Debugger',
 	'lib/V'
@@ -13,8 +11,6 @@ require([
 	ShaderLib,
 	Box,
 	Vector3,
-	Box2DSystem,
-	Box2DComponent,
 	MathUtils,
 	Debugger,
 	V
