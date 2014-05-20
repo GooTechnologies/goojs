@@ -117,7 +117,7 @@ function (
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
 		var key = external.key;
 		if (external.type === 'texture') {
-			if (!config || !config.entityRef || config.enabled === false) {
+			if (!config || !config.textureRef || config.enabled === false) {
 				parameters[key] = null;
 				return PromiseUtil.createDummyPromise();
 			} else {
