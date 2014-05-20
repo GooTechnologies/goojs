@@ -26,11 +26,11 @@ function (
 	'use strict';
 
 	/**
-	 * @class This class represents a view into a 3d scene and how that view should map to a 2D rendering surface.
+	 * @class This class represents a view into a 3D scene and how that view should map to a 2D rendering surface.
 	 * @param {Number} [fov=45] The full vertical angle of view, in degrees.
-	 * @param {Number} [aspect=1] Aspect ratio.
-	 * @param {Number} [near=1] Near plane distance.
-	 * @param {Number} [far=1000] Far plane distance.
+	 * @param {Number} [aspect=1] Aspect ratio of the 3D canvas used.
+	 * @param {Number} [near=1] Near plane clip distance.
+	 * @param {Number} [far=1000] Far plane clip distance.
 	 */
 
 	function Camera(fov, aspect, near, far) {
@@ -71,8 +71,6 @@ function (
 		this._viewPortRight = 1.0;
 		this._viewPortTop = 1.0;
 		this._viewPortBottom = 0.0;
-
-		this._planeQuantity = 6; //! AT: unused
 
 		this._worldPlane = [];
 		for (var i = 0; i < Camera.FRUSTUM_PLANES; i++) {
@@ -259,6 +257,11 @@ function (
 		this.onFrustumChange();
 	};
 
+	/**
+	 * Copy the settings of a source camera to this camera.
+	 *
+	 * @param {Camera} source
+	 */
 	Camera.prototype.copy = function (source) {
 		this.translation.setv(source.translation);
 		this._left.setv(source._left);
@@ -286,8 +289,7 @@ function (
 	};
 
 	/**
-	 * Sets the axes and location of the camera. Similar to {@link setAxes}, but sets camera
-	 * location as well.
+	 * Sets the location and the left, up and direction axes of the camera.
 	 *
 	 * @param {Vector3} location
 	 * @param {Vector3} left
