@@ -84,7 +84,9 @@ define([
 
 		for (var i = 0; i < this.channels.length; i++) {
 			var channel = this.channels[i];
-			retVal[channel.id] = channel.value;
+			if (typeof channel.value !== 'undefined' && channel.keyframes.length) {
+				retVal[channel.id] = channel.value;
+			}
 		}
 
 		return retVal;
