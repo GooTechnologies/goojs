@@ -179,6 +179,10 @@ module.exports = function (grunt) {
 			gamepadpack: {
 				packPath: 'addons/gamepadpack',
 				outBaseDir: 'out'
+			},
+			passpack: {
+				packPath: 'passpack',
+				outBaseDir: 'out'
 			}
 		},
 		'build-custom': {

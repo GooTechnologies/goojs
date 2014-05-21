@@ -3,7 +3,8 @@ define([
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/Util',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'goo/passpack/ShaderLibExtra'
 ],
 /** @lends */
 function (
@@ -11,9 +12,10 @@ function (
 	FullscreenUtil,
 	RenderTarget,
 	Util,
-	ShaderLib
+	ShaderLib,
+	ShaderLibExtra
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class
@@ -59,7 +61,7 @@ function (
 		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;
 		this.convolutionMaterial.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);
 
-		this.bcMaterial = new Material(ShaderLib.brightnesscontrast);
+		this.bcMaterial = new Material(ShaderLibExtra.brightnesscontrast);
 		this.bcMaterial.uniforms.brightness = 0.0;
 		this.bcMaterial.uniforms.contrast = 0.0;
 
