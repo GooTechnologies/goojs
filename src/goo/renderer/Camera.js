@@ -596,12 +596,13 @@ function (
 
 	/**
 	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
+	 * This function calls getWorldCoordinates after converting zDepth to screen space.
 	 *
 	 * @param {Number} screenX the screen x position
 	 * @param {Number} screenY the screen y position
 	 * @param {Number} screenWidth the screen width
 	 * @param {Number} screenHeight the screen height
-	 * @param {Number} zDepth the depth into the camera view to take our point in world distance.
+	 * @param {Number} zDepth the depth into the camera view in world distance.
 	 * @param {Vector3} [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
 	 * @returns {Vector3} Vector containing the world coordinates.
@@ -613,19 +614,18 @@ function (
 			// http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html
 			zDepth = (this.far / (this.far - this.near)) + ((this.far * this.near / (this.near - this.far)) / zDepth);
 		}
-
 		return this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, zDepth, store);
 	};
 
 	/**
 	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
 	 *
-	 * @param screenX the screen x position (x=0 is the leftmost coordinate of the screen)
-	 * @param screenY the screen y position (y=0 is the top of the screen)
-	 * @param screenWidth the screen width
-	 * @param screenHeight the screen height
-	 * @param zDepth the depth into the camera view to take our point. 0 indicates the near plane of the camera and 1 indicates the far plane.
-	 * @param [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
+	 * @param {Number} screenX the screen x position (x=0 is the leftmost coordinate of the screen)
+	 * @param {Number} screenY the screen y position (y=0 is the top of the screen)
+	 * @param {Number} screenWidth the screen width
+	 * @param {Number} screenHeight the screen height
+	 * @param {Number} zDepth the {@link http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html non linear depth} between 0 and 1 into the camera view. 0 indicates the near plane of the camera and 1 indicates the far plane.
+	 * @param {Vector3} [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
 	 * @returns {Vector3} Vector containing the world coordinates.
 	 */
@@ -659,14 +659,14 @@ function (
 	};
 
 	/**
-	 * Converts a position in world coordinate space to an x,y screen position and depth value using the current settings of this camera.
+	 * Converts a position in world coordinate space to an x,y screen position and non linear depth value using the current settings of this camera.
 	 *
-	 * @param worldPos the position in space to retrieve screen coordinates for.
-	 * @param screenWidth the screen width
-	 * @param screenHeight the screen height
-	 * @param [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
+	 * @param {Vector3} worldPos the position in world space to retrieve screen coordinates for.
+	 * @param {Number} screenWidth the screen width
+	 * @param {Number} screenHeight the screen height
+	 * @param {Vector3} [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is
 	 *            created.
-	 * @returns {Vector3} Vector containing the screen coordinates as x and y and the distance as a percent between near and far planes.
+	 * @returns {Vector3} Vector containing the screen coordinates as x and y and the distance as a non linear value between the near (0) and far (1) planes.
 	 */
 	Camera.prototype.getScreenCoordinates = function (worldPosition, screenWidth, screenHeight, store) {
 		store = this.getNormalizedDeviceCoordinates(worldPosition, store);
@@ -690,8 +690,9 @@ function (
 	/**
 	 * Converts a position in world coordinate space to a x,y,z frustum position using the current settings of this camera.
 	 *
-	 * @param worldPos the position in space to retrieve frustum coordinates for.
-	 * @param [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned. Otherwise, a new vector is created.
+	 * @param {Vector3} worldPos the position in space to retrieve frustum coordinates for.
+	 * @param {Vector3} [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned.
+	 *        Otherwise, a new vector is created.
 	 * @returns {Vector3} Vector containing the x, y and z frustum position.
 	 */
 	Camera.prototype.getFrustumCoordinates = function (worldPosition, store) {
@@ -704,6 +705,14 @@ function (
 		return store;
 	};
 
+	/**
+	 * Converts a position in world coordinate space to normalized device coordinates by applying the modelViewProjection from this camera.
+	 *
+	 * @param {Vector3} worldPos the position in space to retrieve coordinates for.
+	 * @param {Vector3} [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned.
+	 *        Otherwise, a new vector is created.
+	 * @returns {Vector3} Vector containing the x, y and z normalized device coordinates.
+	 */
 	Camera.prototype.getNormalizedDeviceCoordinates = function (worldPosition, store) {
 		if (!store) {
 			store = new Vector3();
@@ -721,7 +730,7 @@ function (
 	};
 
 	/**
-	 * Update modelView if necessary.
+	 * Update the modelView matrix if necessary.
 	 */
 	Camera.prototype.checkModelView = function () {
 		if (this._updateMVMatrix) {
@@ -731,7 +740,7 @@ function (
 	};
 
 	/**
-	 * Update projection if necessary.
+	 * Update the projection matrix if necessary.
 	 */
 	Camera.prototype.checkProjection = function () {
 		if (this._updatePMatrix) {
@@ -741,7 +750,7 @@ function (
 	};
 
 	/**
-	 * Update modelViewProjection if necessary.
+	 * Update the modelViewProjection matrix if necessary.
 	 */
 	Camera.prototype.checkModelViewProjection = function () {
 		if (this._updateMVPMatrix) {
@@ -754,7 +763,7 @@ function (
 	};
 
 	/**
-	 * Update inverse modelView if necessary.
+	 * Update the inverse modelView matrix if necessary.
 	 */
 	Camera.prototype.checkInverseModelView = function () {
 		if (this._updateInverseMVMatrix) {
@@ -765,7 +774,7 @@ function (
 	};
 
 	/**
-	 * Update inverse modelViewProjection if necessary.
+	 * Update the inverse modelViewProjection matrix if necessary.
 	 */
 	Camera.prototype.checkInverseModelViewProjection = function () {
 		if (this._updateInverseMVPMatrix) {
@@ -775,26 +784,41 @@ function (
 		}
 	};
 
+	/**
+	 * @returns {Matrix4x4} the modelView matrix.
+	 */
 	Camera.prototype.getViewMatrix = function () {
 		this.checkModelView();
 		return this.modelView;
 	};
 
+	/**
+	 * @returns {Matrix4x4} the projection matrix.
+	 */
 	Camera.prototype.getProjectionMatrix = function () {
 		this.checkProjection();
 		return this.projection;
 	};
 
+	/**
+	 * @returns {Matrix4x4} the modelViewProjection matrix.
+	 */
 	Camera.prototype.getViewProjectionMatrix = function () {
 		this.checkModelViewProjection();
 		return this.modelViewProjection;
 	};
 
+	/**
+	 * @returns {Matrix4x4} the modelViewInverse matrix.
+	 */
 	Camera.prototype.getViewInverseMatrix = function () {
 		this.checkInverseModelView();
 		return this.modelViewInverse;
 	};
 
+	/**
+	 * @returns {Matrix4x4} the modelViewProjectionInverse matrix.
+	 */
 	Camera.prototype.getViewProjectionInverseMatrix = function () {
 		this.checkInverseModelViewProjection();
 		return this.modelViewProjectionInverse;
@@ -803,7 +827,7 @@ function (
 	/**
 	 * Compress this camera's near and far frustum planes to be smaller if possible, 
 	 * using the given bounds as a measure.
-	 * @param sceneBounds The scene bounds
+	 * @param {BoundingVolume} sceneBounds The scene bounds
 	 */
 	Camera.prototype.pack = function (sceneBounds) {
 		var center = sceneBounds.center;
@@ -841,8 +865,6 @@ function (
 			optimalCameraFar = Math.max(-position.z, optimalCameraFar);
 		}
 
-		// XXX: use of getFrustumNear and getFrustumFar seems suspicious...
-		// XXX: It depends on the frustum being reset each update
 		optimalCameraNear = Math.min(Math.max(this._frustumNear, optimalCameraNear), this._frustumFar);
 		optimalCameraFar = Math.max(optimalCameraNear, Math.min(this._frustumFar, optimalCameraFar));
 
@@ -903,9 +925,9 @@ function (
 	};
 
 	/**
-	 * Clipping using oblique frustums
-	 * @param clipPlane Clipping plane
-	 * @param offset Offset
+	 * Clip using an oblique frustum different from the the view frustum
+	 * @param {Vector4} clipPlane Clipping plane
+	 * @param {Number} offset Offset
 	 */
 	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig, offset) {
 		offset = offset || 0;
