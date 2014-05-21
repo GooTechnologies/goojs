@@ -99,7 +99,9 @@ function (
 
 
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
-		if (!externals.parameters) { return; }
+		if (!externals || !externals.parameters) {
+			return PromiseUtil.createDummyPromise();
+		}
 
 		var promises = [];
 		for (var i = 0; i < externals.parameters.length; i++) {
