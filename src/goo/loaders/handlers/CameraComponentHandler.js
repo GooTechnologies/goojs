@@ -85,7 +85,7 @@ function (
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			component.camera.setProjectionMode(Camera[config.projectionMode]);
-			component.camera.lockedRatio = config.lockedRatio || false;
+			component.camera.lockedRatio = false;
 			if (config.projectionMode === 'Perspective') {
 				component.camera.setFrustumPerspective(config.fov, null, config.near, config.far);
 			} else {
