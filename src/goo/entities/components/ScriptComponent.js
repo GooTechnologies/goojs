@@ -72,14 +72,17 @@ function (
 					try {
 						script.setup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {
+						// REVIEW: Very similar to the other catch clauses. Amalgamate?
 						script.enabled = false;
 						var err = {
+							// REVIEW: id is undefined when I try this with a custom script. Takes unnecessary space in the console if it is not set.
 							id: script.id,
+							// REVIEW: Do we ever get more than 1 error?
 							errors: [{
 								message: e.message || e,
 								phase: 'setup'
 							}]
-						}
+						};
 						// TODO Test if this works across browsers
 						/**/
 						var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
@@ -88,6 +91,8 @@ function (
 						}
 						/**/
 
+						// REVIEW: console.error(e.message, err) looks better and is more convenient in the console, since you dont have to expand the object. Maybe compile everything into a string? 'Error: "'+e.message+'" in script ' + script.id + ' on line ' + line
+						// REVIEW: Maybe it's possible to make a custom Error instance with file name, line number, etc?
 						console.error(err);
 						SystemBus.emit('goo.scriptError', err);
 					}
@@ -128,7 +133,7 @@ function (
 							message: e.message || e,
 							phase: 'update'
 						}]
-					}
+					};
 					// TODO Test if this works across browsers
 					/**/
 					var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
@@ -162,7 +167,7 @@ function (
 								message: e.message || e,
 								phase: 'cleanup'
 							}]
-						}
+						};
 						// TODO Test if this works across browsers
 						/**/
 						var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
