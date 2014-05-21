@@ -1,38 +1,12 @@
 define([
-	'goo/entities/components/TransformComponent',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/LightComponent',
-	'goo/entities/components/ScriptComponent',
 	'goo/scripts/Scripts',
-	'goo/scripts/ScriptUtils',
-	'goo/renderer/Camera',
-	'goo/renderer/light/Light',
-	'goo/renderer/Material',
-	'goo/renderer/MeshData',
 	'goo/renderer/bounds/BoundingBox',
-	'goo/math/Transform',
-	'goo/entities/components/CSSTransformComponent',
 	'goo/util/ObjectUtil'
 ],
 	/** @lends */
 	function (
-		TransformComponent,
-		MeshDataComponent,
-		MeshRendererComponent,
-		CameraComponent,
-		LightComponent,
-		ScriptComponent,
 		Scripts,
-		ScriptUtils,
-		Camera,
-		Light,
-		Material,
-		MeshData,
 		BoundingBox,
-		Transform,
-		CSSTransformComponent,
 		_
 	) {
 		'use strict';
@@ -76,33 +50,31 @@ define([
 
 			for (var i = 0; i < entity._components.length; i++) {
 				var component = entity._components[i];
-				if (component instanceof TransformComponent) {
+				if (component.type === 'TransformComponent') {
 					newEntity.transformComponent.transform.copy(component.transform);
-				} else if (component instanceof MeshDataComponent) {
-					var meshDataComponent = new MeshDataComponent(component.meshData);
+				} else if (component.type === 'MeshDataComponent') {
+					var meshDataComponent = new component.constructor(component.meshData);
 					meshDataComponent.modelBound = new component.modelBound.constructor();
 					if (component.currentPose) {
 						meshDataComponent.currentPose = cloneSkeletonPose(component.currentPose, settings);
 					}
 					newEntity.setComponent(meshDataComponent);
-				} else if (component instanceof MeshRendererComponent) {
+				} else if (component.type === 'MeshRendererComponent') {
 					// REVIEW: Should the cloned new meshrendercomponent not get all the set member varialbes from the
 					// cloned component? Now it gets defaulted from the constructor instead. The materials are also shared.
 					// Maybe this is something to be pushed to another story, to actually use the settings sent to cloneEntity, as
 					// stated in the old review comment in clone()
-					var meshRendererComponent = new MeshRendererComponent();
+					var meshRendererComponent = new component.constructor();
 					for (var j = 0; j < component.materials.length; j++) {
 						meshRendererComponent.materials.push(component.materials[j]);
 					}
 					newEntity.setComponent(meshRendererComponent);
-
-					// REVIEW: Replacing all 'instanceof' checks with this kind would make the modules more independent (good when making small custom builds), but it would also spawn less errors (if any) at compile time.
-				} else if (component.type === 'AnimationComponent') { //! AT: will have to do for now
+				} else if (component.type === 'AnimationComponent') {
 					var clonedAnimationComponent = component.clone();
 					clonedAnimationComponent._skeletonPose = cloneSkeletonPose(component._skeletonPose, settings);
 					newEntity.setComponent(clonedAnimationComponent);
-				} else if (component instanceof ScriptComponent) {
-					var scriptComponent = new ScriptComponent();
+				} else if (component.type === 'ScriptComponent') {
+					var scriptComponent = new component.constructor();
 					for (var j = 0; j < component.scripts.length; j++) {
 						var newScript;
 						var script = component.scripts[j];
