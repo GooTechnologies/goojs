@@ -22,6 +22,9 @@ function (
 			getTpf: function () {
 				return this._fsm.entity._world.tpf;
 			}.bind(this),
+			getWorld: function () {
+				return this._fsm.entity._world;
+			}.bind(this),
 			getTime: function () {
 				return this._fsm.system.time;
 			}.bind(this),
