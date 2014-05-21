@@ -8,6 +8,16 @@ Breaking changes:
      goo/addons/terrain/* -> goo/addons/terrainpack/*
      goo/addons/cannon/* -> goo/addons/cannonpack/*
      goo/addons/howler/* -> goo/addons/howlerpack/*
+     goo/addons/water/* -> goo/addons/waterpack/*
+     goo/addons/ammo/* -> goo/addons/ammopack/*
+     goo/addons/soundmanager2/* -> goo/addons/soundmanage2pack/*
+     goo/addons/gamepad/* -> goo/addons/gamepadpack/*
+ * the animation module has been extracted in its own pack:
+     Any files which used to be under goo/animation have been relocated to goo/animationpack along with any animation-related handlers.
+     To be able to load animations using the dynamic loader you need to require any animation-related handlers (SkeletonHandler, AnimationComponentHandler, AnimationStateHandler, AnimationLayersHandler, AnimationClipHandler) - all of them will register themselves with the dynamic loader.
+     Also, the animation system is not pre-included in the world - it will need to be added manually (world.setSystem(new AnimationSystem())) for projects that contain animations.
+ * the passes have been extracted in their own pack:
+      goo/passpack contains the former goo/renderer/pass/PassLib along with pass-related shaders which used to be in goo/renderer/shaders/ShaderLib, any post-effect related passes (Bloom, Blur, Depth, DOF, DOG, MotionBlur, Nes, SSAO) and the PosteffectsHandler. To be able to load posteffects using the dynamic loader you need to require the PosteffectsHandler (which will register itself).
 
 v0.10.0 --- 2014-05-20
 ======================
@@ -23,9 +33,6 @@ Additions:
 Fixes:
  * AnimationLayer.prototype.setCurrentStateByName now gets the state by name and not id
  * fix in Quaternion.prototype.fromVectorToVector
-
-Deprecated:
- -
 
 Breaking changes:
  * all debug related classes are relocated in the debugpack (MarkerComponent, CameraDebug, LightDebug, MeshRendererDebug, SkeletonDebug, CameraDebugSystem, DebugRenderSystem, LightDebugSystem, MarkerSystem, BoundingVolumeMeshBuilder, DebugDrawHelper, Debugger, EntityCounter, FrustumViewer, LightPointer)
