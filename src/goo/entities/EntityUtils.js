@@ -45,7 +45,7 @@ define([
 		}
 
 		/*
-		* @description Returns a clone of the given SkeletonPose. Also stores the cloned poses into settings, in order not to 
+		* @description Returns a clone of the given SkeletonPose. Also stores the cloned poses into settings, in order not to
 		* clone multiple instances of the same SkeletonPose.
 		* @private
 		* @param {SkeletonPose} skeletonPose
@@ -88,14 +88,15 @@ define([
 				} else if (component instanceof MeshRendererComponent) {
 					// REVIEW: Should the cloned new meshrendercomponent not get all the set member varialbes from the
 					// cloned component? Now it gets defaulted from the constructor instead. The materials are also shared.
-					// Maybe this is something to be pushed to another story, to actually use the settings sent to cloneEntity, as 
-					// stated in the old review comment in clone() 
+					// Maybe this is something to be pushed to another story, to actually use the settings sent to cloneEntity, as
+					// stated in the old review comment in clone()
 					var meshRendererComponent = new MeshRendererComponent();
 					for (var j = 0; j < component.materials.length; j++) {
 						meshRendererComponent.materials.push(component.materials[j]);
 					}
 					newEntity.setComponent(meshRendererComponent);
 
+					// REVIEW: Replacing all 'instanceof' checks with this kind would make the modules more independent (good when making small custom builds), but it would also spawn less errors (if any) at compile time.
 				} else if (component.type === 'AnimationComponent') { //! AT: will have to do for now
 					var clonedAnimationComponent = component.clone();
 					clonedAnimationComponent._skeletonPose = cloneSkeletonPose(component._skeletonPose, settings);
