@@ -17,7 +17,8 @@ define([
 				update: callback,
 				setTime: callback,
 				id: id,
-				value: value
+				value: value,
+				keyframes: [1, 2, 3]
 			};
 		}
 
