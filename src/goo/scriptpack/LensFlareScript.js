@@ -152,7 +152,7 @@ define([
 			var scaleFactor = flareGeometry.distance + flareGeometry.distance * flareGeometry.centerRatio * edgeScaling;
 
 			var quadTransform = this.quad.transformComponent.transform;
-			quadTransform.transform.scale.set(this.sizeVector);
+			quadTransform.scale.set(this.sizeVector);
 			quadTransform.scale.mul(scaleFactor);
 			quadTransform.rotation.set(flareGeometry.camRot);
 			quadTransform.translation.set(this.positionVector);
