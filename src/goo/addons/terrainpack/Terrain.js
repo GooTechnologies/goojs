@@ -434,6 +434,14 @@ function(
 		}
 	};
 
+	Terrain.prototype.useLightmap = function(texture) {
+		terrainShaderDefFloat.defines.LIGHTMAP = true;
+		for (var i = 0; i < this.count; i++) {
+			var material = this.clipmaps[i].origMaterial;
+			material.setTexture('LIGHT_MAP', texture);
+		}
+	};
+
 	// Returns the ammo body.
 	Terrain.prototype.initAmmoBody = function () {
 		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, "float", Ammo.ALLOC_NORMAL);
@@ -736,6 +744,7 @@ function(
 			groundMap4: 'GROUND_MAP4',
 			groundMap5: 'GROUND_MAP5',
 			stoneMap: 'STONE_MAP',
+			lightMap: 'LIGHT_MAP',
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
 			},
@@ -804,6 +813,7 @@ function(
 				'uniform sampler2D groundMap4;',
 				'uniform sampler2D groundMap5;',
 				'uniform sampler2D stoneMap;',
+				'uniform sampler2D lightMap;',
 
 				'uniform vec2 fogSettings;',
 				'uniform vec3 fogColor;',
@@ -854,6 +864,10 @@ function(
 					'#ifdef FOG',
 					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
 					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+					'#endif',
+
+					'#ifdef LIGHTMAP',
+					'final_color = final_color * texture2D(lightMap, mapcoord);',
 					'#endif',
 
 					'gl_FragColor = final_color;',
