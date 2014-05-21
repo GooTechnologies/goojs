@@ -9,10 +9,10 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
-	'goo/renderer/pass/PassLib'
+	'goo/passpack/PassLib'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	ArrayUtil,
 	RSVP,
@@ -25,14 +25,14 @@ function(
 	Util,
 	PassLib
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading posteffects into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function PosteffectsHandler() {
@@ -87,7 +87,7 @@ function(
 			return RSVP.all(posteffects);
 		}).then(function(posteffects) {
 			if (!posteffects) { return; }
-			var enabled = posteffects.some(function(effect) { return effect.enabled; });
+			var enabled = posteffects.some(function(effect) { return effect.enabled; });
 			var renderSystem = that.world.getSystem('RenderSystem');
 			var composer = that._composer;
 			// If there are any enabled, add them
@@ -96,7 +96,7 @@ function(
 				composer.addPass(that._renderPass);
 				for(var i = 0; i < posteffects.length; i++) {
 					var posteffect = posteffects[i];
-					if (posteffect && posteffect.enabled) {
+					if (posteffect && posteffect.enabled) {
 						composer.addPass(posteffects[i]);
 					}
 				}

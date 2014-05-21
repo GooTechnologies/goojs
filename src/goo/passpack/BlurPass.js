@@ -13,7 +13,7 @@ function(
 	Util,
 	ShaderLib
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class

@@ -6,7 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/pass/BlurPass',
+	'goo/passpack/BlurPass',
 	'goo/renderer/Util',
 	'goo/util/Skybox'
 ],
@@ -23,7 +23,7 @@ function (
 	Util,
 	Skybox
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class

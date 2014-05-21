@@ -7,8 +7,8 @@ define([
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/pass/BlurPass',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/passpack/BlurPass',
+	'goo/passpack/ShaderLibExtra'
 ],
 /** @lends */
 function (
@@ -21,9 +21,9 @@ function (
 	RenderPass,
 	FullscreenPass,
 	BlurPass,
-	ShaderLib
+	ShaderLibExtra
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class
@@ -46,10 +46,10 @@ function (
 		this.needsSwap = true;
 	}
 
-	SSAOPass.prototype.updateSize = function(size) {
+	SSAOPass.prototype.updateSize = function (size) {
 		var width = Math.floor(size.width / this.downsampleAmount);
 		var height = Math.floor(size.height / this.downsampleAmount);
-		var shader = Util.clone(ShaderLib.ssao);
+		var shader = Util.clone(ShaderLibExtra.ssao);
 		shader.uniforms.size = [width, height];
 		this.outPass = new FullscreenPass(shader);
 		this.outPass.useReadBuffer = false;
