@@ -433,17 +433,25 @@ function (
 	};
 
 	World.prototype._check = function (entities, callback) {
+		// go through all the managers first
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			for (var managerIndex = 0; managerIndex < this._managers.length; managerIndex++) {
 				var manager = this._managers[managerIndex];
 				callback(manager, entity);
 			}
+		}
+
+		// go through all systems
+		// yes, these loops need to be separate to avoid edge cases
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
 			for (var systemIndex = 0; systemIndex < this._systems.length; systemIndex++) {
 				var system = this._systems[systemIndex];
 				callback(system, entity);
 			}
 		}
+
 		entities.length = 0;
 	};
 
