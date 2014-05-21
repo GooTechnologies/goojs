@@ -134,7 +134,12 @@ function (
 		if (typeInGroup(type, 'image')) {
 			return this._cache[path] = this._loadImage(url);
 		} else if (typeInGroup(type, 'video')) {
-			return this._cache[path] = this._loadVideo(url);
+			var mimeTypes = {
+				mp4: 'video/mp4',
+				ogv: 'video/ogg',
+				webm: 'video/webm'
+			};
+			return this._cache[path] = this._loadVideo(url, mimeTypes[type]);
 		} else if (typeInGroup(type, 'audio')) {
 			return this._cache[path] = this._loadAudio(url);
 		}
@@ -203,22 +208,31 @@ function (
 		return promise;
 	};
 
-	Ajax.prototype._loadVideo = function (url) {
+	Ajax.prototype._loadVideo = function (url, mimeType) {
+		var promise = new RSVP.Promise();
+
 		var video = document.createElement('video');
 		if (Ajax.crossOrigin) {
 			video.crossOrigin = 'anonymous';
 		}
-		var promise = new RSVP.Promise();
 		video.addEventListener('canplay', function () {
 			video.dataReady = true;
 			promise.resolve(video);
 		}, false);
-
 		video.addEventListener('onerror', function (e) {
 			promise.reject('Coult not load video from ' + url + ', ' + e);
 		}, false);
 
-		video.src = url;
+		var ajaxProperties = {
+			url: url,
+			responseType: Ajax.ARRAY_BUFFER
+		};
+		this.get(ajaxProperties).then(function (request) {
+			var blob = new Blob([request.response], { type: mimeType });
+			var url = window.URL.createObjectURL(blob);
+			video.src = url;
+		});
+
 		return promise;
 	};
 
