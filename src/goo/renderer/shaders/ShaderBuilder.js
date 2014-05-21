@@ -39,39 +39,55 @@ function(
 	ShaderBuilder.FOG_SETTINGS = [0, 10000];
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
 
+	ShaderBuilder.allowedAttributes = {
+		'MAX_POINT_LIGHTS': true,
+		'MAX_DIRECTIONAL_LIGHTS': true,
+		'MAX_SPOT_LIGHTS': true,
+		'SHADOW_TYPE': true,
+		'JOINT_COUNT': true,
+		'WEIGHTS': true,
+		'PHYSICALLY_BASED_SHADING': true,
+		'ENVIRONMENT_TYPE': true,
+		'REFLECTIVE': true,
+		'WRAP_AROUND': true
+	};
+
 	ShaderBuilder.uber = {
 		processor: function (shader, shaderInfo) {
 			var attributeMap = shaderInfo.meshData.attributeMap;
 			var material = shaderInfo.material;
+			var materialUniforms = material.uniforms;
 			var textureMaps = material._textureMaps;
+			var shaderUniforms = shader.uniforms;
 
 			shader.defines = shader.defines || {};
+			var shaderDefines = shader.defines;
 
-			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
+			shaderUniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
 
-			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
-				shader.defines.REFLECTIVE = true;
-			} else {
-				delete shader.defines.REFLECTIVE;
+			if (materialUniforms.reflectivity || materialUniforms.refractivity) {
+				shaderDefines.REFLECTIVE = true;
+			} else if (shaderDefines.REFLECTIVE) {
+				delete shaderDefines.REFLECTIVE;
 			}
 
-			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
-				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
-			} else if (material.getTexture('ENVIRONMENT_CUBE')) {
-				material.removeTexture('ENVIRONMENT_CUBE');
+			if (ShaderBuilder.SKYBOX && (materialUniforms.reflectivity || materialUniforms.refractivity)) {
+				material._textureMaps.ENVIRONMENT_CUBE = ShaderBuilder.SKYBOX;
+			} else if (material._textureMaps.ENVIRONMENT_CUBE) {
+				delete material._textureMaps.ENVIRONMENT_CUBE;
 			}
-			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
-				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
-				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
-			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
-				material.removeTexture('ENVIRONMENT_SPHERE');
+			if (ShaderBuilder.SKYSPHERE && (materialUniforms.reflectivity || materialUniforms.refractivity)) {
+				material._textureMaps.ENVIRONMENT_SPHERE = ShaderBuilder.SKYSPHERE;
+				shaderDefines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
+			} else if (material._textureMaps.ENVIRONMENT_SPHERE) {
+				delete material._textureMaps.ENVIRONMENT_SPHERE;
 			}
 
 			var keys = Object.keys(attributeMap);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var attribute = keys[i];
-				if (!shader.defines[attribute]) {
-					shader.defines[attribute] = true;
+				if (!shaderDefines[attribute]) {
+					shaderDefines[attribute] = true;
 				}
 			}
 
@@ -86,69 +102,61 @@ function(
 					continue;
 				}
 
-				if (!shader.defines[type]) {
-					shader.defines[type] = true;
+				if (!shaderDefines[type]) {
+					shaderDefines[type] = true;
 				}
 			}
 
+			shaderUniforms.offsetRepeat = shaderUniforms.offsetRepeat || [0, 0, 1, 1];
 			if (textureMaps.DIFFUSE_MAP) {
-				shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
 				var offset = textureMaps.DIFFUSE_MAP.offset;
 				var repeat = textureMaps.DIFFUSE_MAP.repeat;
-				shader.uniforms.offsetRepeat[0] = offset.x;
-				shader.uniforms.offsetRepeat[1] = offset.y;
-				shader.uniforms.offsetRepeat[2] = repeat.x;
-				shader.uniforms.offsetRepeat[3] = repeat.y;
-				shader.uniforms.lodBias = textureMaps.DIFFUSE_MAP.lodBias;
+				shaderUniforms.offsetRepeat[0] = offset.data[0];
+				shaderUniforms.offsetRepeat[1] = offset.data[1];
+				shaderUniforms.offsetRepeat[2] = repeat.data[0];
+				shaderUniforms.offsetRepeat[3] = repeat.data[1];
+				shaderUniforms.lodBias = textureMaps.DIFFUSE_MAP.lodBias;
 			} else {
-				shader.uniforms.offsetRepeat[0] = 0;
-				shader.uniforms.offsetRepeat[1] = 0;
-				shader.uniforms.offsetRepeat[2] = 1;
-				shader.uniforms.offsetRepeat[3] = 1;
-				shader.uniforms.lodBias = 0;
+				shaderUniforms.offsetRepeat[0] = 0;
+				shaderUniforms.offsetRepeat[1] = 0;
+				shaderUniforms.offsetRepeat[2] = 1;
+				shaderUniforms.offsetRepeat[3] = 1;
+				shaderUniforms.lodBias = 0;
 			}
 
 			// Exclude in a nicer way
-			var keys = Object.keys(shader.defines);
+			var keys = Object.keys(shaderDefines);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var attribute = keys[i];
-				if (attribute === 'MAX_POINT_LIGHTS' ||
-					attribute === 'MAX_DIRECTIONAL_LIGHTS' ||
-					attribute === 'MAX_SPOT_LIGHTS' ||
-					attribute === 'SHADOW_TYPE' ||
-					attribute === 'JOINT_COUNT' ||
-					attribute === 'WEIGHTS' ||
-					attribute === 'PHYSICALLY_BASED_SHADING' ||
-					attribute === 'ENVIRONMENT_TYPE' ||
-					attribute === 'REFLECTIVE' ||
-					attribute === 'WRAP_AROUND') {
+				if (ShaderBuilder.allowedAttributes[attribute]) {
 					continue;
 				}
-				if (!attributeMap[attribute] && !textureMaps[attribute]) {
-					delete shader.defines[attribute];
+
+				if (shaderDefines[attribute] && !attributeMap[attribute] && !textureMaps[attribute]) {
+					delete shaderDefines[attribute];
 				}
 			}
 
 			// discard
-			if (shaderInfo.material.uniforms.discardThreshold >= 0.0) {
-				shader.defines.DISCARD = true;
-			} else {
-				delete shader.defines.DISCARD;
+			if (materialUniforms.discardThreshold >= 0.0) {
+				shaderDefines.DISCARD = true;
+			} else if (shaderDefines.DISCARD) {
+				delete shaderDefines.DISCARD;
 			}
 
 			// fog
 			if (ShaderBuilder.USE_FOG) {
-				shader.defines.FOG = true;
-				shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
-				shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
-			} else {
-				delete shader.defines.FOG;
+				shaderDefines.FOG = true;
+				shaderUniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
+				shaderUniforms.fogColor = ShaderBuilder.FOG_COLOR;
+			} else if (shaderDefines.FOG) {
+				delete shaderDefines.FOG;
 			}
 
-			shader.defines.SKIP_SPECULAR = true;
+			shaderDefines.SKIP_SPECULAR = true;
 
 			//TODO: Hacky?
-			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
+			if (shaderDefines.NORMAL && shaderDefines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
 				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
 			}
 		}
@@ -166,26 +174,26 @@ function(
 			shader.defines = shader.defines || {};
 
 			var lights = shaderInfo.lights;
-			var lightDefines = [];
+			var lightDefines = '';
 			for (var i = 0; i < lights.length; i++) {
 				var light = lights[i];
 
 				if (light instanceof PointLight) {
-					shader.uniforms['pointLight'+i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
-					shader.uniforms['pointLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
-					lightDefines.push('P');
+					shader.uniforms['pointLight' + i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
+					shader.uniforms['pointLightColor' + i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
+					lightDefines += 'P';
 				} else if (light instanceof DirectionalLight) {
-					shader.uniforms['directionalLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
-					shader.uniforms['directionalLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
-					lightDefines.push('D');
+					shader.uniforms['directionalLightDirection' + i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
+					shader.uniforms['directionalLightColor' + i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
+					lightDefines += 'D';
 				} else if (light instanceof SpotLight) {
-					shader.uniforms['spotLight'+i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
-					shader.uniforms['spotLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
-					shader.uniforms['spotLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
+					shader.uniforms['spotLight' + i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
+					shader.uniforms['spotLightColor' + i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
+					shader.uniforms['spotLightDirection' + i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
 
-					shader.uniforms['spotLightAngle'+i] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
-					shader.uniforms['spotLightPenumbra'+i] = light.penumbra !== undefined ? Math.sin(light.penumbra * MathUtils.DEG_TO_RAD / 4) : 0;
-					lightDefines.push('S');
+					shader.uniforms['spotLightAngle' + i] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
+					shader.uniforms['spotLightPenumbra' + i] = light.penumbra !== undefined ? Math.sin(light.penumbra * MathUtils.DEG_TO_RAD / 4) : 0;
+					lightDefines += 'S';
 				}
 
 				var useLightCookie = light.lightCookie instanceof Texture;
@@ -194,46 +202,46 @@ function(
 					var shadowData = light.shadowSettings.shadowData;
 
 					if (light.shadowCaster) {
-						shader.uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
-						shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
+						shader.uniforms['shadowMaps' + i] = 'SHADOW_MAP' + i;
+						shaderInfo.material.setTexture('SHADOW_MAP' + i, shadowData.shadowResult);
 					}
 					if (useLightCookie) {
-						shader.uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
-						shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
-						lightDefines.push('C');
+						shader.uniforms['lightCookie' + i] = 'LIGHT_COOKIE' + i;
+						shaderInfo.material.setTexture('LIGHT_COOKIE' + i, light.lightCookie);
+						lightDefines += 'C';
 						shader.defines.COOKIE = true;
 					} else {
 						delete shader.defines.COOKIE;
 					}
 
 					var matrix = shadowData.lightCamera.getViewProjectionMatrix().data;
-					var mat = shader.uniforms['shadowLightMatrices'+i] = shader.uniforms['shadowLightMatrices'+i] || [];
+					var mat = shader.uniforms['shadowLightMatrices' + i] = shader.uniforms['shadowLightMatrices' + i] || [];
 					for (var j = 0; j < 16; j++) {
 						mat[j] = matrix[j];
 					}
 
 					if (light.shadowCaster) {
 						var translationData = shadowData.lightCamera.translation.data;
-						var pos = shader.uniforms['shadowLightPositions'+i] = shader.uniforms['shadowLightPositions'+i] || [];
+						var pos = shader.uniforms['shadowLightPositions' + i] = shader.uniforms['shadowLightPositions' + i] || [];
 						pos[0] = translationData[0];
 						pos[1] = translationData[1];
 						pos[2] = translationData[2];
 
-						shader.uniforms['cameraScales'+i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
-						shader.uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
+						shader.uniforms['cameraScales' + i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
+						shader.uniforms['shadowDarkness' + i] = light.shadowSettings.darkness;
 
 						if (light.shadowSettings.shadowType === 'PCF') {
-							var sizes = shader.uniforms['shadowMapSizes'+i] = shader.uniforms['shadowMapSizes'+i] || [];
+							var sizes = shader.uniforms['shadowMapSizes' + i] = shader.uniforms['shadowMapSizes' + i] || [];
 							sizes[0] = light.shadowSettings.resolution[0];
 							sizes[1] = light.shadowSettings.resolution[1];
 						}
 
-						lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
+						lightDefines += 'H' + (light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
 					}
 				}
 			}
 
-			shader.defines.LIGHT = lightDefines.join('');
+			shader.defines.LIGHT = lightDefines;
 		},
 		builder: function (shader, shaderInfo) {
 			var prevertex = [];

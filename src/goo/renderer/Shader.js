@@ -185,11 +185,7 @@ function (
 		}
 
 		// Bind attributes
-		//TODO: good?
-		// if (this.attributes) {
-		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
 		if (shaderInfo.meshData !== record.meshData) {
-			// record.attributes = this.attributes;
 			record.meshData = shaderInfo.meshData;
 			var attributeMap = shaderInfo.meshData.attributeMap;
 
@@ -199,7 +195,6 @@ function (
 				var key = keys[i];
 				var attribute = attributeMap[attributes[key]];
 				if (!attribute) {
-					// TODO: log or what?
 					continue;
 				}
 
@@ -219,60 +214,57 @@ function (
 		if (this.matchedUniforms) {
 			this.textureIndex = 0;
 
-			// var uniformCallMapping = this.uniformCallMapping;
-			// var materialuniforms = shaderInfo.material.uniforms;
+			// var updateUniforms = false;
+			// if (switchedProgram || shaderInfo.material !== record.material || shaderInfo.material.shader !== record.shader) {
+			// 	record.material = shaderInfo.material;
+			// 	record.shader = shaderInfo.material.shader;
+
+			// 	updateUniforms = true;
+			// }
 
 			for (var i = 0, l = this.matchedUniforms.length; i < l; i++) {
-				this._bindUniform(this.matchedUniforms[i], shaderInfo);
-			}
-		}
+				var name = this.matchedUniforms[i];
 
-		// if (this.uniforms) {
-		// 	this.textureIndex = 0;
-		// 	var names = this.uniformKeys;
-		// 	for (var i = 0, l = names.length; i < l; i++) {
-		// 		this._bindUniform(names[i], shaderInfo);
-		// 	}
-		// }
-	};
+				var defValue = shaderInfo.material.uniforms[name];
+				if (defValue === undefined) {
+					defValue = this.uniforms[name];
+				}
 
-	Shader.prototype._bindUniform = function (name, shaderInfo) {
-		var mapping = this.uniformCallMapping[name];
-		if (mapping === undefined) {
-			return;
-		}
-
-		var defValue = shaderInfo.material.uniforms[name];
-		if (defValue === undefined) {
-			defValue = this.uniforms[name];
-		}
-
-		var type = typeof defValue;
-		if (type === 'string') {
-			var callback = this.currentCallbacks[name];
-			if (callback) {
-				callback(mapping, shaderInfo);
-			} else {
-				var slot = this.textureSlotsNaming[name];
-				if (slot !== undefined) {
-					var maps = shaderInfo.material.getTexture(slot.mapping);
-					if (maps instanceof Array) {
-						var arr = [];
-						slot.index = [];
-						for (var i = 0; i < maps.length; i++) {
-							slot.index.push(this.textureIndex);
-							arr.push(this.textureIndex++);
-						}
-						mapping.call(arr);
-					} else {
-						slot.index = this.textureIndex;
-						mapping.call(this.textureIndex++);
-					}
+				var type = typeof defValue;
+				if (type === 'string') {
+					this._bindUniformString(name, shaderInfo);
+				} else if (type === 'function') {
+					this.uniformCallMapping[name].call(defValue(shaderInfo));
+				// } else if (updateUniforms) {
+				} else {
+					this.uniformCallMapping[name].call(defValue);
 				}
 			}
+		}
+	};
+
+	Shader.prototype._bindUniformString = function (name, shaderInfo) {
+		var mapping = this.uniformCallMapping[name];
+		var callback = this.currentCallbacks[name];
+		if (callback) {
+			callback(mapping, shaderInfo);
 		} else {
-			var value = type === 'function' ? defValue(shaderInfo) : defValue;
-			mapping.call(value);
+			var slot = this.textureSlotsNaming[name];
+			if (slot !== undefined) {
+				var maps = shaderInfo.material._textureMaps[slot.mapping];
+				if (maps instanceof Array) {
+					var arr = [];
+					slot.index = [];
+					for (var i = 0; i < maps.length; i++) {
+						slot.index.push(this.textureIndex);
+						arr.push(this.textureIndex++);
+					}
+					mapping.call(arr);
+				} else {
+					slot.index = this.textureIndex;
+					mapping.call(this.textureIndex++);
+				}
+			}
 		}
 	};
 

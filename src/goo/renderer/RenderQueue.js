@@ -20,7 +20,7 @@ function(Vector3) {
 			if (m1 === null || m2 === null) {
 				return 0;
 			}
-			if(m1 === m2) {
+			if (m1 === m2) {
 				var bound1 = a.meshRendererComponent.worldBound;
 				var bound2 = b.meshRendererComponent.worldBound;
 				if (bound1 === null || bound2 === null) {
