@@ -75,7 +75,7 @@ for packName in (
 	'animation',
 	'soundmanager2',
 	'gamepad',
-	'passpack'
+	'pass'
 ):
     shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
 
