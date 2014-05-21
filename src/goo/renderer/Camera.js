@@ -607,10 +607,6 @@ function (
 	 * @returns {Vector3} Vector containing the world coordinates.
 	 */
 	Camera.prototype.getWorldPosition = function (screenX, screenY, screenWidth, screenHeight, zDepth, store) {
-		if (!store) {
-			store = new Vector3();
-		}
-
 		if (this.projectionMode === Camera.Parallel) {
 			zDepth = ((zDepth - this.near) / (this.far - this.near));
 		} else {
@@ -618,31 +614,7 @@ function (
 			zDepth = (this.far / (this.far - this.near)) + ((this.far * this.near / (this.near - this.far)) / zDepth);
 		}
 
-		this.checkInverseModelViewProjection();
-		var position = new Vector4();
-		var x = (screenX / screenWidth - this._viewPortLeft) / (this._viewPortRight - this._viewPortLeft) * 2 - 1;
-		var y = ((screenHeight - screenY) / screenHeight - this._viewPortBottom) / (this._viewPortTop - this._viewPortBottom) * 2 - 1;
-
-		/*
-		var aspect = this.aspect / (screenWidth / screenHeight);
-		if (aspect > 1) {
-			y *= aspect;
-		} else if (aspect < 1) {
-			x /= aspect;
-		}
-		*/
-
-		var z = zDepth * 2 - 1;
-		var w = 1;
-		position.set(x, y, z, w);
-		this.modelViewProjectionInverse.applyPost(position);
-		position.mul(1.0 / position.w);
-
-		store.x = position.x;
-		store.y = position.y;
-		store.z = position.z;
-
-		return store;
+		return this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, zDepth, store);
 	};
 
 	/**
