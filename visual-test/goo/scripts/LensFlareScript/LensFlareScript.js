@@ -28,7 +28,9 @@ require([
 	var scripts = new ScriptComponent();
 
 	var lensFlareScript = Scripts.create(LensFlareScript, {
-		domElement: goo.renderer.domElement
+		domElement: goo.renderer.domElement,
+		edgeRelevance: 0,
+		edgeDampen : 1
 	});
 
 	scripts.scripts.push(lensFlareScript);
