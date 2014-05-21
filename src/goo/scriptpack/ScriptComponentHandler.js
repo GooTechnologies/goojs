@@ -77,13 +77,8 @@ function (
 
 					// We need to duplicate the script so we can have multiple
 					// similar scripts with different parameters.
-					var newScript = {};
-					newScript.id = config.id;
-					newScript.setup = script.setup;
-					newScript.update = script.update;
-					newScript.run = script.run;
-					newScript.cleanup = script.cleanup;
-					newScript.parameters = _.extend({}, script.parameters);
+					var newScript = Object.create(script);
+					newScript.parameters = {};
 					newScript.enabled = false;
 
 					return that._setParameters(newScript.parameters, scriptInstance.options, script.externals, options)

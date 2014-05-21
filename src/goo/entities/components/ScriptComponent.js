@@ -72,29 +72,7 @@ function (
 					try {
 						script.setup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {
-						// REVIEW: Very similar to the other catch clauses. Amalgamate?
-						script.enabled = false;
-						var err = {
-							// REVIEW: id is undefined when I try this with a custom script. Takes unnecessary space in the console if it is not set.
-							id: script.id,
-							// REVIEW: Do we ever get more than 1 error?
-							errors: [{
-								message: e.message || e,
-								phase: 'setup'
-							}]
-						};
-						// TODO Test if this works across browsers
-						/**/
-						var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-						if (m) {
-							err.errors[0].line = parseInt(m[1], 10) - 1;
-						}
-						/**/
-
-						// REVIEW: console.error(e.message, err) looks better and is more convenient in the console, since you dont have to expand the object. Maybe compile everything into a string? 'Error: "'+e.message+'" in script ' + script.id + ' on line ' + line
-						// REVIEW: Maybe it's possible to make a custom Error instance with file name, line number, etc?
-						console.error(err);
-						SystemBus.emit('goo.scriptError', err);
+						this._handleError(script, e, 'setup');
 					}
 				}
 			}
@@ -126,24 +104,7 @@ function (
 				try {
 					script.update(script.parameters, script.context, this._gooClasses);
 				} catch (e) {
-					script.enabled = false;
-					var err = {
-						id: script.id,
-						errors: [{
-							message: e.message || e,
-							phase: 'update'
-						}]
-					};
-					// TODO Test if this works across browsers
-					/**/
-					var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-					if (m) {
-						err.errors[0].line = parseInt(m[1], 10) - 1;
-					}
-					/**/
-
-					console.error(err);
-					SystemBus.emit('goo.scriptError', err);
+					this._handleError(script, e, 'update');
 				}
 			}
 		}
@@ -161,28 +122,37 @@ function (
 					try {
 						script.cleanup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {
-						var err = {
-							id: script.id,
-							errors: [{
-								message: e.message || e,
-								phase: 'cleanup'
-							}]
-						};
-						// TODO Test if this works across browsers
-						/**/
-						var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-						if (m) {
-							err.errors[0].line = parseInt(m[1], 10) - 1;
-						}
-						/**/
-						console.error(err);
-						SystemBus.emit('goo.scriptError', err);
+						this._handleError(script, e, 'cleanup');
 					}
 				}
 				script.enabled = false;
 				script.context = null;
 			}
 		}
+	};
+
+	/**
+	 * Formats the error and sends it to the systembus
+	 * @private
+	 */
+	ScriptComponent.prototype._handleError = function (script, error, phase) {
+		script.enabled = false;
+		var err = {
+			id: script.id,
+			errors: [{
+				message: error.message || error,
+				phase: phase
+			}]
+		};
+		// TODO Test if this works across browsers
+		/**/
+		var m = error.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+		if (m) {
+			err.errors[0].line = parseInt(m[1], 10) - 1;
+		}
+		/**/
+		console.error(err.errors[0].message, err);
+		SystemBus.emit('goo.scriptError', err);
 	};
 
 	/**
