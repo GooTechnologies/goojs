@@ -9,30 +9,15 @@ define([],
 
 	var _ = {};
 
-
 	// Save bytes in the minified (but not gzipped) version:
-	var ArrayProto = Array.prototype,
-//			FuncProto = Function.prototype
-			ObjProto = Object.prototype;
+	var ArrayProto = Array.prototype;
 
 	var breaker = {};
 
 	// Create quick reference variables for speed access to core prototypes.
-	var slice						 = ArrayProto.slice,
-//			push						 = ArrayProto.push,
-//			concat					 = ArrayProto.concat,
-			toString				 = ObjProto.toString,
-			hasOwnProperty	 = ObjProto.hasOwnProperty;
+	var slice = ArrayProto.slice;
 
-	// Maybe there is an Array.isArray
-	var nativeIsArray		 = Array.isArray,
-			nativeKeys			 = Object.keys,
-			nativeForEach		 = ArrayProto.forEach;
-
-	//! AT: can remove this
-	_.has = function(obj, key) {
-		return hasOwnProperty.call(obj, key);
-	};
+	var nativeForEach = ArrayProto.forEach;
 
 	_.defaults = function(obj) {
 		each(slice.call(arguments, 1), function(source) {
@@ -62,31 +47,14 @@ define([],
 
 	// Create a (shallow-cloned) duplicate of an object.
 	_.clone = function(obj) {
-		if (!_.isObject(obj)) {return obj;}
-		return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
-	};
-
-	//! AT: can take this out; Object.keys is supported by every browser nowadays
-	_.keys = nativeKeys || function(obj) {
-		if (obj !== Object(obj)) {throw new TypeError('Invalid object');}
-		var keys = [];
-		for (var key in obj) {
-			if (_.has(obj, key)) {
-				keys[keys.length] = key;
-			}
-		}
-		return keys;
-	};
-
-	//! AT: can take this out; Array.isArray is supported by every browser nowadays
-	_.isArray = nativeIsArray || function(obj) {
-		return toString.call(obj) === '[object Array]';
+		if (!_.isObject(obj)) { return obj; }
+		return Array.isArray(obj) ? obj.slice() : _.extend({}, obj);
 	};
 
 	// The cornerstone, an `each` implementation, aka `forEach`.
 	// Handles objects with the built-in `forEach`, arrays, and raw objects.
 	// Delegates to **ECMAScript 5**'s native `forEach` if available.
-	var each = _.each = _.forEach = function(obj, iterator, context, sortProp) {
+	var each = _.each = _.forEach = function (obj, iterator, context, sortProp) {
 		if (typeof obj === 'undefined' || obj === null) {return;}
 		if (nativeForEach && obj.forEach === nativeForEach) {
 			obj.forEach(iterator, context);
@@ -95,7 +63,7 @@ define([],
 				if (iterator.call(context, obj[i], i, obj) === breaker) {return;}
 			}
 		} else {
-			var keys = _.keys(obj);
+			var keys = Object.keys(obj);
 			if (sortProp !== undefined) {
 				keys.sort(function(a, b) {
 					return obj[a][sortProp] -  obj[b][sortProp];
@@ -106,7 +74,6 @@ define([],
 			}
 		}
 	};
-
 
 	/**
 	 * from http://stackoverflow.com/questions/4459928/how-to-deep-clone-in-javascript
@@ -160,16 +127,6 @@ define([],
 		}
 
 		return result;
-	};
-
-	//! AT: can take this out; it's supported by every browser we care about
-	_.indexOf = function(array, item) {
-		for (var i = 0; i < array.length; i++) {
-			if (i in array && array[i] === item) {
-				return i;
-			}
-		}
-		return -1;
 	};
 
 	return _;
