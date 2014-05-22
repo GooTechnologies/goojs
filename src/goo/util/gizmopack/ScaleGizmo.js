@@ -1,5 +1,5 @@
 define([
-	'goo/util/gizmos/Gizmo',
+	'goo/util/gizmopack/Gizmo',
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/shapes/Box',

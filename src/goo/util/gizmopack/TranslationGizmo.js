@@ -1,12 +1,11 @@
 define([
-	'goo/util/gizmos/Gizmo',
+	'goo/util/gizmopack/Gizmo',
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/shapes/Disk',
 	'goo/shapes/Quad',
 	'goo/math/Transform',
-	'goo/renderer/Renderer',
-	'goo/renderer/Camera'
+	'goo/renderer/Renderer'
 ],
 /** @lends */
 function(
@@ -16,8 +15,7 @@ function(
 	Disk,
 	Quad,
 	Transform,
-	Renderer,
-	Camera
+	Renderer
 ) {
 	'use strict';
 

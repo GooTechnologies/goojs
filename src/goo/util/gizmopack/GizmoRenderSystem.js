@@ -10,11 +10,11 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
-	'goo/util/gizmos/Gizmo',
-	'goo/util/gizmos/TranslationGizmo',
-	'goo/util/gizmos/RotationGizmo',
-	'goo/util/gizmos/ScaleGizmo',
-	'goo/renderer/Camera'],
+	'goo/gizmopack/Gizmo',
+	'goo/gizmopack/TranslationGizmo',
+	'goo/gizmopack/RotationGizmo',
+	'goo/gizmopack/ScaleGizmo'
+],
 /** @lends */
 function (
 	System,
@@ -31,8 +31,7 @@ function (
 	Gizmo,
 	TranslationGizmo,
 	RotationGizmo,
-	ScaleGizmo,
-	Camera
+	ScaleGizmo
 ) {
 	'use strict';
 
