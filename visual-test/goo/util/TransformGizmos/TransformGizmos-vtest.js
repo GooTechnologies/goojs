@@ -5,7 +5,7 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'goo/entities/systems/GizmoRenderSystem',
+	'goo/util/gizmopack/GizmoRenderSystem',
 	'lib/V'
 ], function(
 	Material,
