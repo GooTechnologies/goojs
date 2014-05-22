@@ -69,15 +69,17 @@ function (
 	};
 
 	ShapeCreatorMemoized.createBox = function (options, oldMeshData) {
+		options.textureMode = options.textureMode || 'Uniform';
 		var width = 1, height = 1, length = 1, tileX = 1, tileY = 1;
 		if (!oldMeshData ||
 			width !== oldMeshData.xExtent ||
 			height !== oldMeshData.yExtent ||
 			length !== oldMeshData.zExtent ||
 			tileX !== oldMeshData.tileX ||
-			tileY !== oldMeshData.tileY) {
-			return cacheOrCreate('box', {}, function() {
-				return new Box(width, height, length, tileX, tileY);
+			tileY !== oldMeshData.tileY ||
+			options.textureMode !== oldMeshData.textureMode.name) {
+			return cacheOrCreate('box', options, function() {
+				return new Box(width, height, length, tileX, tileY, options.textureMode);
 			});
 		} else {
 			return oldMeshData;
@@ -96,7 +98,7 @@ function (
 			options.radialSamples !== oldMeshData.radialSamples ||
 			options.textureMode !== oldMeshData.textureMode.name ||
 			radius !== oldMeshData.radius) {
-			return cacheOrCreate('sphere', options, function() {
+			return cacheOrCreate('sphere', options, function () {
 				return new Sphere(options.zSamples, options.radialSamples, radius, options.textureMode);
 			});
 		} else {
