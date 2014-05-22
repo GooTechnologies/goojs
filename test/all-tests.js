@@ -181,7 +181,6 @@ define([
 	'test/statemachine/StateMachineComponent-test',
 	'test/util/Ajax-test',
 	'test/util/CanvasUtils-test',
-	'test/util/ColorUtil-test',
 	'test/util/StringUtil-test',
 	'test/renderer/Shader-test',
 	'test/renderer/MeshData-test',
