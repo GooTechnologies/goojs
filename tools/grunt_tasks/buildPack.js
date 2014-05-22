@@ -2,7 +2,7 @@ module.exports = function (grunt) {
 	'use strict';
 
 	var requirejs = require('requirejs');
-	var madge = require('madge');
+	var madge = require('madge'); //! AT: this library returns false negatives
 	var fs = require('fs');
 	var colors = require('colors');
 
@@ -37,11 +37,8 @@ module.exports = function (grunt) {
 			moduleList.push(slash(module));
 
 			dependencies.forEach(function (dependency) {
-				// REVIEW Why not && ?
-				if (dependency.indexOf(packPath) === -1) {
-					if (ignoreList.indexOf(dependency) === -1) {
-						ignoreList.push(dependency);
-					}
+				if (dependency.indexOf(packPath) === -1 && ignoreList.indexOf(dependency) === -1) {
+					ignoreList.push(dependency);
 				}
 			});
 		}
@@ -75,19 +72,20 @@ module.exports = function (grunt) {
 
 		lines.push('require([');
 
-		moduleList.forEach(function (moduleName) {
-			if (packName !== moduleName) { // packPath ?
-				lines.push('\t"goo/' + packPath + '/' + moduleName + '",');
-			}
+		var filteredModuleList = moduleList.filter(function (moduleName) {
+			return packName !== moduleName;  // packPath ?
+		});
+
+		//! AT: use map & join to not get that last comma
+		filteredModuleList.forEach(function (moduleName) {
+			lines.push('\t"goo/' + packPath + '/' + moduleName + '",');
 		});
 
 		// what is this?
 		if (global) {
 			lines.push('], function (');
-			// REVIEW The filter could be done before the require part too
-			var fileNames = moduleList.filter(function (moduleName) {
-				return packName !== moduleName;  // packPath ?
-			}).map(extractFilename);
+
+			var fileNames = filteredModuleList.map(extractFilename);
 
 			lines.push('\t' + fileNames.join(',\n\t'));
 
@@ -159,19 +157,13 @@ module.exports = function (grunt) {
 					'});',
 				'}else f()',
 			'}catch(e){f()}',
-			// REVIEW Why the undefined?
-			'})(window,undefined)'
+			'})(window)'
 		].join('\n');
-	}
-	// REVIEW This is excctly like extractFileName
-	function extractPathName(packPath) {
-		var separator = packPath.lastIndexOf('/');
-		return separator === -1 ? packPath : packPath.substr(separator + 1);
 	}
 
 	grunt.registerMultiTask('build-pack', 'Minifies a pack', function () {
 		var packPath = this.data.packPath;
-		var packName = extractPathName(this.data.packPath);
+		var packName = extractFilename(this.data.packPath);
 		var version = grunt.option('goo-version') || '';
 		var outBaseDir = this.data.outBaseDir || 'out';
 		var done = this.async();
