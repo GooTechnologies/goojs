@@ -363,6 +363,13 @@ function (
 			//! AT: placeholder to avoid another conditional below in checkResize
 			this.svg = { currentScale: 1 };
 		}
+
+		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
+		//      this needs to be re-added her again for each new GooRunner/Renderer
+		//      cycle.
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			Renderer.mainCamera = newCam.camera;
+		});
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -390,9 +397,6 @@ function (
 	};
 
 	Renderer.mainCamera = null;
-	SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-		Renderer.mainCamera = newCam.camera;
-	});
 
 	/**
 	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height
