@@ -183,6 +183,10 @@ module.exports = function (grunt) {
 			passpack: {
 				packPath: 'passpack',
 				outBaseDir: 'out'
+			},
+			gizmopack: {
+				packPath: 'util/gizmopack',
+				outBaseDir: 'out'
 			}
 		},
 		'build-custom': {

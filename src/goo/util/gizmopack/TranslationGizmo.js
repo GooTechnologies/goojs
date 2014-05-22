@@ -8,7 +8,7 @@ define([
 	'goo/renderer/Renderer'
 ],
 /** @lends */
-function(
+function (
 	Gizmo,
 	MeshData,
 	MeshBuilder,

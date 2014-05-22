@@ -10,10 +10,10 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
-	'goo/gizmopack/Gizmo',
-	'goo/gizmopack/TranslationGizmo',
-	'goo/gizmopack/RotationGizmo',
-	'goo/gizmopack/ScaleGizmo'
+	'goo/util/gizmopack/Gizmo',
+	'goo/util/gizmopack/TranslationGizmo',
+	'goo/util/gizmopack/RotationGizmo',
+	'goo/util/gizmopack/ScaleGizmo'
 ],
 /** @lends */
 function (

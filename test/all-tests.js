@@ -65,7 +65,6 @@ define([
 	'test/entities/systems/BoundingUpdateSystem-test',
 	'test/entities/systems/CameraSystem-test',
 	'test/entities/systems/CSSTransformSystem-test',
-	'test/entities/systems/GizmoRenderSystem-test',
 	'test/entities/systems/GridRenderSystem-test',
 	'test/entities/systems/LightingSystem-test',
 	'test/entities/systems/ParticlesSystem-test',
