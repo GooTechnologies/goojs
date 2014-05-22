@@ -10,6 +10,7 @@ function (Vector3, MathUtils) {
 		this.origin = origin || new Vector3();
 		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
 
+		// TODO: Put on the prototype and make sure that none of them interfere
 		this.calcVec1 = new Vector3();
 		this.calcVec2 = new Vector3();
 		this.calcVec3 = new Vector3();
@@ -19,7 +20,7 @@ function (Vector3, MathUtils) {
 	/**
 	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
 	 * true)
-	 * 
+	 *
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
 	 * @param locationStore Vector3 to store our intersection point in.
@@ -37,7 +38,7 @@ function (Vector3, MathUtils) {
 
 	/**
 	 * Ray vs triangle implementation.
-	 * 
+	 *
 	 * @param pointA First
 	 * @param pointB
 	 * @param pointC
