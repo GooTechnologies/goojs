@@ -37,6 +37,7 @@ module.exports = function (grunt) {
 			moduleList.push(slash(module));
 
 			dependencies.forEach(function (dependency) {
+				// REVIEW Why not && ?
 				if (dependency.indexOf(packPath) === -1) {
 					if (ignoreList.indexOf(dependency) === -1) {
 						ignoreList.push(dependency);
@@ -83,7 +84,7 @@ module.exports = function (grunt) {
 		// what is this?
 		if (global) {
 			lines.push('], function (');
-
+			// REVIEW The filter could be done before the require part too
 			var fileNames = moduleList.filter(function (moduleName) {
 				return packName !== moduleName;  // packPath ?
 			}).map(extractFilename);
@@ -158,10 +159,11 @@ module.exports = function (grunt) {
 					'});',
 				'}else f()',
 			'}catch(e){f()}',
+			// REVIEW Why the undefined?
 			'})(window,undefined)'
 		].join('\n');
 	}
-
+	// REVIEW This is excctly like extractFileName
 	function extractPathName(packPath) {
 		var separator = packPath.lastIndexOf('/');
 		return separator === -1 ? packPath : packPath.substr(separator + 1);
