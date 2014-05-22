@@ -254,9 +254,8 @@ define([
 		}, {
 			key: 'panSpeed',
 			type: 'float',
-			'default': 0.005,
-			scale: 0.001,
-			decimals: 3
+			'default': 1,
+			scale: 0.01
 		}/*, {
 			key: 'screenMove',
 			type: 'boolean',
