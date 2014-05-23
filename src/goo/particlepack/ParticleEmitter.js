@@ -1,4 +1,4 @@
-define(['goo/particles/ParticleUtils', 'goo/renderer/Renderer'],
+define(['goo/particlepack/ParticleUtils', 'goo/renderer/Renderer'],
 /** @lends */
 function (ParticleUtils, Renderer) {
 	'use strict';

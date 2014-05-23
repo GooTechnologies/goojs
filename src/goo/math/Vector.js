@@ -70,28 +70,28 @@ function (
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.add = function (lhs, rhs, target) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
-
-		if (!target) {
-			target = new Vector(size);
-		}
-
-		if (rdata.length !== size || target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
-		for (var i = 0; i < size; i++) {
-			target.data[i] = ldata[i] + rdata[i];
-		}
-
-		return target;
-	};
+//	Vector.add = function (lhs, rhs, target) {
+//		var ldata = lhs.data || lhs;
+//		var rdata = rhs.data || rhs;
+//		var size = ldata.length;
+//
+//		if (!target) {
+//			target = new Vector(size);
+//		}
+//
+//		if (rdata.length !== size || target.data.length !== size) {
+//			throw {
+//				name: "Illegal Arguments",
+//				message: "The arguments are of incompatible sizes."
+//			};
+//		}
+//
+//		for (var i = 0; i < size; i++) {
+//			target.data[i] = ldata[i] + rdata[i];
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
@@ -99,9 +99,9 @@ function (
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.add = function (rhs) {
-		return Vector.add(this, rhs, this);
-	};
+//	Vector.prototype.add = function (rhs) {
+//		return Vector.add(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -115,28 +115,28 @@ function (
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.sub = function (lhs, rhs, target) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
-
-		if (!target) {
-			target = new Vector(size);
-		}
-
-		if (rdata.length !== size || target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
-		for (var i = 0; i < size; i++) {
-			target.data[i] = ldata[i] - rdata[i];
-		}
-
-		return target;
-	};
+//	Vector.sub = function (lhs, rhs, target) {
+//		var ldata = lhs.data || lhs;
+//		var rdata = rhs.data || rhs;
+//		var size = ldata.length;
+//
+//		if (!target) {
+//			target = new Vector(size);
+//		}
+//
+//		if (rdata.length !== size || target.data.length !== size) {
+//			throw {
+//				name: "Illegal Arguments",
+//				message: "The arguments are of incompatible sizes."
+//			};
+//		}
+//
+//		for (var i = 0; i < size; i++) {
+//			target.data[i] = ldata[i] - rdata[i];
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this - rhs);".
@@ -144,9 +144,9 @@ function (
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.sub = function (rhs) {
-		return Vector.sub(this, rhs, this);
-	};
+//	Vector.prototype.sub = function (rhs) {
+//		return Vector.sub(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -160,28 +160,28 @@ function (
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.mul = function (lhs, rhs, target) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
-
-		if (!target) {
-			target = new Vector(size);
-		}
-
-		if (rdata.length !== size || target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
-		for (var i = 0; i < size; i++) {
-			target.data[i] = ldata[i] * rdata[i];
-		}
-
-		return target;
-	};
+//	Vector.mul = function (lhs, rhs, target) {
+//		var ldata = lhs.data || lhs;
+//		var rdata = rhs.data || rhs;
+//		var size = ldata.length;
+//
+//		if (!target) {
+//			target = new Vector(size);
+//		}
+//
+//		if (rdata.length !== size || target.data.length !== size) {
+//			throw {
+//				name: "Illegal Arguments",
+//				message: "The arguments are of incompatible sizes."
+//			};
+//		}
+//
+//		for (var i = 0; i < size; i++) {
+//			target.data[i] = ldata[i] * rdata[i];
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this * rhs);".
@@ -189,9 +189,9 @@ function (
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.mul = function (rhs) {
-		return Vector.mul(this, rhs, this);
-	};
+//	Vector.prototype.mul = function (rhs) {
+//		return Vector.mul(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -205,28 +205,28 @@ function (
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.div = function (lhs, rhs, target) {
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-		var size = ldata.length;
-
-		if (!target) {
-			target = new Vector(size);
-		}
-
-		if (rdata.length !== size || target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
-		for (var i = 0; i < size; i++) {
-			target.data[i] = ldata[i] / rdata[i];
-		}
-
-		return target;
-	};
+//	Vector.div = function (lhs, rhs, target) {
+//		var ldata = lhs.data || lhs;
+//		var rdata = rhs.data || rhs;
+//		var size = ldata.length;
+//
+//		if (!target) {
+//			target = new Vector(size);
+//		}
+//
+//		if (rdata.length !== size || target.data.length !== size) {
+//			throw {
+//				name: "Illegal Arguments",
+//				message: "The arguments are of incompatible sizes."
+//			};
+//		}
+//
+//		for (var i = 0; i < size; i++) {
+//			target.data[i] = ldata[i] / rdata[i];
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
@@ -234,9 +234,9 @@ function (
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.div = function (rhs) {
-		return Vector.div(this, rhs, this);
-	};
+//	Vector.prototype.div = function (rhs) {
+//		return Vector.div(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -315,9 +315,9 @@ function (
 	 * @return {number} Dot product.
 	 */
 
-	Vector.prototype.dot = function (rhs) {
-		return Vector.dot(this, rhs);
-	};
+//	Vector.prototype.dot = function (rhs) {
+//		return Vector.dot(this, rhs);
+//	};
 
 	/* ====================================================================== */
 
@@ -331,42 +331,42 @@ function (
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
-	Vector.apply = function (lhs, rhs, target) {
-		var rows = lhs.rows;
-		var cols = lhs.cols;
-		var size = rhs.data.length;
-
-		if (!target) {
-			target = new Vector(rows);
-		}
-
-		if (target.data.length !== rows || cols !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
-		if (target === rhs) {
-			return Vector.copy(Vector.apply(lhs, rhs), target);
-		}
-
-		for (var c = 0; c < cols; c++) {
-			var o = c * rows;
-
-			for (var r = 0; r < rows; r++) {
-				var sum = 0.0;
-
-				for (var i = 0; i < size; i++) {
-					sum += lhs.data[i * lhs.rows + r] * rhs.data[i];
-				}
-
-				target.data[o + r] = sum;
-			}
-		}
-
-		return target;
-	};
+//	Vector.apply = function (lhs, rhs, target) {
+//		var rows = lhs.rows;
+//		var cols = lhs.cols;
+//		var size = rhs.data.length;
+//
+//		if (!target) {
+//			target = new Vector(rows);
+//		}
+//
+//		if (target.data.length !== rows || cols !== size) {
+//			throw {
+//				name: "Illegal Arguments",
+//				message: "The arguments are of incompatible sizes."
+//			};
+//		}
+//
+//		if (target === rhs) {
+//			return Vector.copy(Vector.apply(lhs, rhs), target);
+//		}
+//
+//		for (var c = 0; c < cols; c++) {
+//			var o = c * rows;
+//
+//			for (var r = 0; r < rows; r++) {
+//				var sum = 0.0;
+//
+//				for (var i = 0; i < size; i++) {
+//					sum += lhs.data[i * lhs.rows + r] * rhs.data[i];
+//				}
+//
+//				target.data[o + r] = sum;
+//			}
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * @description Applys a matrix to a vector and stores the result locally. Equivalent of "return (this = lhs•this);".
@@ -374,9 +374,9 @@ function (
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.apply = function (lhs) {
-		return Vector.apply(lhs, this, this);
-	};
+//	Vector.prototype.apply = function (lhs) {
+//		return Vector.apply(lhs, this, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -425,9 +425,9 @@ function (
 	 * @return {number} Squared distance.
 	 */
 
-	Vector.distanceSquared = function (lhs, rhs) {
-		return Vector.sub(lhs, rhs).lengthSquared();
-	};
+//	Vector.distanceSquared = function (lhs, rhs) {
+//		return Vector.sub(lhs, rhs).lengthSquared();
+//	};
 
 	/**
 	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - this)•(rhs - this);". When comparing the
@@ -437,9 +437,9 @@ function (
 	 * @return {number} Squared distance.
 	 */
 
-	Vector.prototype.distanceSquared = function (rhs) {
-		return Vector.sub(this, rhs).lengthSquared();
-	};
+//	Vector.prototype.distanceSquared = function (rhs) {
+//		return Vector.sub(this, rhs).lengthSquared();
+//	};
 
 	/* ====================================================================== */
 
@@ -451,9 +451,9 @@ function (
 	 * @return {number} Distance.
 	 */
 
-	Vector.distance = function (lhs, rhs) {
-		return Vector.sub(lhs, rhs).length();
-	};
+//	Vector.distance = function (lhs, rhs) {
+//		return Vector.sub(lhs, rhs).length();
+//	};
 
 	/**
 	 * @description Computes the distance between two vectors. Equivalent of "return sqrt((rhs - this)•(rhs - this));".
@@ -461,9 +461,9 @@ function (
 	 * @return {number} Distance.
 	 */
 
-	Vector.prototype.distance = function (rhs) {
-		return Vector.sub(this, rhs).length();
-	};
+//	Vector.prototype.distance = function (rhs) {
+//		return Vector.sub(this, rhs).length();
+//	};
 
 	/* ====================================================================== */
 
@@ -483,21 +483,21 @@ function (
 	 * @return {number} Length.
 	 */
 
-	Vector.prototype.length = function () {
-		return Math.sqrt(Vector.dot(this, this));
-	};
+//	Vector.prototype.length = function () {
+//		return Math.sqrt(Vector.dot(this, this));
+//	};
 
 	/**
 	 * Scales the vector
 	 * @param {number} factor
 	 * @returns {Vector} this for chaining
 	 */
-	Vector.prototype.scale = function(factor) {
-		for (var i = this.data.length - 1; i >= 0; i--) {
-			this.data[i] *= factor;
-		}
-		return this;
-	};
+//	Vector.prototype.scale = function(factor) {
+//		for (var i = this.data.length - 1; i >= 0; i--) {
+//			this.data[i] *= factor;
+//		}
+//		return this;
+//	};
 
 	/* ====================================================================== */
 
@@ -522,23 +522,23 @@ function (
 	 * @return {Vector} Self for chaining.
 	 */
 
-	Vector.prototype.normalize = function () {
-		var l = this.length();
-		var dataLength = this.data.length;
-
-		if (l < MathUtils.EPSILON) {
-			for (var i = 0; i < dataLength; i++) {
-				this.data[i] = 0;
-			}
-		} else {
-			l = 1.0 / l;
-			for (var i = 0; i < dataLength; i++) {
-				this.data[i] *= l;
-			}
-		}
-
-		return this;
-	};
+//	Vector.prototype.normalize = function () {
+//		var l = this.length();
+//		var dataLength = this.data.length;
+//
+//		if (l < MathUtils.EPSILON) {
+//			for (var i = 0; i < dataLength; i++) {
+//				this.data[i] = 0;
+//			}
+//		} else {
+//			l = 1.0 / l;
+//			for (var i = 0; i < dataLength; i++) {
+//				this.data[i] *= l;
+//			}
+//		}
+//
+//		return this;
+//	};
 
 	/* ====================================================================== */
 
@@ -547,9 +547,9 @@ function (
 	 * @return {Vector} Clone of self.
 	 */
 
-	Vector.prototype.clone = function () {
-		return Vector.copy(this);
-	};
+//	Vector.prototype.clone = function () {
+//		return Vector.copy(this);
+//	};
 
 	/* ====================================================================== */
 
@@ -586,20 +586,20 @@ function (
 	 * @return {String} String of component values.
 	 */
 
-	Vector.prototype.toString = function () {
-		var string = "";
-
-		string += "[";
-
-		for (var i = 0; i < this.data.length; i++) {
-			string += this.data[i];
-			string += i !== this.data.length - 1 ? ", " : "";
-		}
-
-		string += "]";
-
-		return string;
-	};
+//	Vector.prototype.toString = function () {
+//		var string = "";
+//
+//		string += "[";
+//
+//		for (var i = 0; i < this.data.length; i++) {
+//			string += this.data[i];
+//			string += i !== this.data.length - 1 ? ", " : "";
+//		}
+//
+//		string += "]";
+//
+//		return string;
+//	};
 
 	/* ====================================================================== */
 

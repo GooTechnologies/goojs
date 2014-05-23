@@ -1,6 +1,6 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/systems/ProximitySystem',
+	'goo/fsmpack/ProximitySystem',
 	'goo/entities/EntityUtils'
 ],
 /** @lends */

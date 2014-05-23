@@ -3,8 +3,8 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/TextureCreator',
-	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils'
+	'goo/particlepack/ParticleLib',
+	'goo/particlepack/ParticleSystemUtils'
 ],
 /** @lends */
 function(

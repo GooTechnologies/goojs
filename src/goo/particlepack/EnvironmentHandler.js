@@ -3,7 +3,7 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
-	'goo/util/Snow', // TODO Should move!
+	'goo/particlepack/Snow', // TODO Should move!
 	'goo/util/rsvp'
 ], function(
 	ConfigHandler,

@@ -71,34 +71,34 @@ function (
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.add = function (lhs, rhs, target) {
-		var rows = lhs.rows;
-		var cols = lhs.cols;
-
-		if (!target) {
-			target = new Matrix(rows, cols);
-		}
-
-		if (rhs instanceof Matrix) {
-			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
-			for (var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] + rhs.data[i];
-			}
-		} else {
-			if (target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
-			for (var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] + rhs;
-			}
-		}
-
-		return target;
-	};
+//	Matrix.add = function (lhs, rhs, target) {
+//		var rows = lhs.rows;
+//		var cols = lhs.cols;
+//
+//		if (!target) {
+//			target = new Matrix(rows, cols);
+//		}
+//
+//		if (rhs instanceof Matrix) {
+//			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
+//				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//			}
+//
+//			for (var i = 0; i < lhs.data.length; i++) {
+//				target.data[i] = lhs.data[i] + rhs.data[i];
+//			}
+//		} else {
+//			if (target.rows !== rows || target.cols !== cols) {
+//				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//			}
+//
+//			for (var i = 0; i < lhs.data.length; i++) {
+//				target.data[i] = lhs.data[i] + rhs;
+//			}
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * Performs a component-wise addition.
@@ -106,9 +106,9 @@ function (
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.add = function (rhs) {
-		return Matrix.add(this, rhs, this);
-	};
+//	Matrix.prototype.add = function (rhs) {
+//		return Matrix.add(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -120,34 +120,34 @@ function (
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.sub = function (lhs, rhs, target) {
-		var rows = lhs.rows;
-		var cols = lhs.cols;
-
-		if (!target) {
-			target = new Matrix(rows, cols);
-		}
-
-		if (rhs instanceof Matrix) {
-			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
-			for (var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] - rhs.data[i];
-			}
-		} else {
-			if (target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
-			for (var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] - rhs;
-			}
-		}
-
-		return target;
-	};
+//	Matrix.sub = function (lhs, rhs, target) {
+//		var rows = lhs.rows;
+//		var cols = lhs.cols;
+//
+//		if (!target) {
+//			target = new Matrix(rows, cols);
+//		}
+//
+//		if (rhs instanceof Matrix) {
+//			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
+//				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//			}
+//
+//			for (var i = 0; i < lhs.data.length; i++) {
+//				target.data[i] = lhs.data[i] - rhs.data[i];
+//			}
+//		} else {
+//			if (target.rows !== rows || target.cols !== cols) {
+//				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//			}
+//
+//			for (var i = 0; i < lhs.data.length; i++) {
+//				target.data[i] = lhs.data[i] - rhs;
+//			}
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * Performs a component-wise subtraction.
@@ -155,9 +155,9 @@ function (
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.sub = function (rhs) {
-		return Matrix.sub(this, rhs, this);
-	};
+//	Matrix.prototype.sub = function (rhs) {
+//		return Matrix.sub(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -169,34 +169,34 @@ function (
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.mul = function (lhs, rhs, target) {
-		var rows = lhs.rows;
-		var cols = lhs.cols;
-
-		if (!target) {
-			target = new Matrix(rows, cols);
-		}
-
-		if (rhs instanceof Matrix) {
-			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
-			for (var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] * rhs.data[i];
-			}
-		} else {
-			if (target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
-			for (var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] * rhs;
-			}
-		}
-
-		return target;
-	};
+//	Matrix.mul = function (lhs, rhs, target) {
+//		var rows = lhs.rows;
+//		var cols = lhs.cols;
+//
+//		if (!target) {
+//			target = new Matrix(rows, cols);
+//		}
+//
+//		if (rhs instanceof Matrix) {
+//			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
+//				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//			}
+//
+//			for (var i = 0; i < lhs.data.length; i++) {
+//				target.data[i] = lhs.data[i] * rhs.data[i];
+//			}
+//		} else {
+//			if (target.rows !== rows || target.cols !== cols) {
+//				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//			}
+//
+//			for (var i = 0; i < lhs.data.length; i++) {
+//				target.data[i] = lhs.data[i] * rhs;
+//			}
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * Performs a component-wise multiplication.
@@ -204,9 +204,9 @@ function (
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.mul = function (rhs) {
-		return Matrix.mul(this, rhs, this);
-	};
+//	Matrix.prototype.mul = function (rhs) {
+//		return Matrix.mul(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -218,36 +218,36 @@ function (
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.div = function (lhs, rhs, target) {
-		var rows = lhs.rows;
-		var cols = lhs.cols;
-
-		if (!target) {
-			target = new Matrix(rows, cols);
-		}
-
-		if (rhs instanceof Matrix) {
-			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
-			for (var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] / rhs.data[i];
-			}
-		} else {
-			if (target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
-			rhs = 1.0 / rhs;
-
-			for (var i = 0; i < lhs.data.length; i++) {
-				target.data[i] = lhs.data[i] * rhs;
-			}
-		}
-
-		return target;
-	};
+//	Matrix.div = function (lhs, rhs, target) {
+//		var rows = lhs.rows;
+//		var cols = lhs.cols;
+//
+//		if (!target) {
+//			target = new Matrix(rows, cols);
+//		}
+//
+//		if (rhs instanceof Matrix) {
+//			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
+//				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//			}
+//
+//			for (var i = 0; i < lhs.data.length; i++) {
+//				target.data[i] = lhs.data[i] / rhs.data[i];
+//			}
+//		} else {
+//			if (target.rows !== rows || target.cols !== cols) {
+//				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//			}
+//
+//			rhs = 1.0 / rhs;
+//
+//			for (var i = 0; i < lhs.data.length; i++) {
+//				target.data[i] = lhs.data[i] * rhs;
+//			}
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * Performs a component-wise division.
@@ -255,9 +255,9 @@ function (
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.div = function (rhs) {
-		return Matrix.div(this, rhs, this);
-	};
+//	Matrix.prototype.div = function (rhs) {
+//		return Matrix.div(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -269,39 +269,39 @@ function (
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.combine = function (lhs, rhs, target) {
-		var rows = lhs.rows;
-		var cols = rhs.cols;
-		var size = lhs.cols = rhs.rows;
-
-		if (!target) {
-			target = new Matrix(rows, cols);
-		}
-
-		if (lhs.cols !== size || rhs.rows !== size || target.rows !== rows || target.cols !== cols) {
-			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-		}
-
-		if (target === lhs || target === rhs) {
-			return Matrix.copy(Matrix.combine(lhs, rhs), target);
-		}
-
-		for (var c = 0; c < cols; c++) {
-			var o = c * rows;
-
-			for (var r = 0; r < rows; r++) {
-				var sum = 0.0;
-
-				for (var i = 0; i < size; i++) {
-					sum += lhs.data[i * lhs.rows + r] * rhs.data[c * rhs.rows + i];
-				}
-
-				target.data[o + r] = sum;
-			}
-		}
-
-		return target;
-	};
+//	Matrix.combine = function (lhs, rhs, target) {
+//		var rows = lhs.rows;
+//		var cols = rhs.cols;
+//		var size = lhs.cols = rhs.rows;
+//
+//		if (!target) {
+//			target = new Matrix(rows, cols);
+//		}
+//
+//		if (lhs.cols !== size || rhs.rows !== size || target.rows !== rows || target.cols !== cols) {
+//			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//		}
+//
+//		if (target === lhs || target === rhs) {
+//			return Matrix.copy(Matrix.combine(lhs, rhs), target);
+//		}
+//
+//		for (var c = 0; c < cols; c++) {
+//			var o = c * rows;
+//
+//			for (var r = 0; r < rows; r++) {
+//				var sum = 0.0;
+//
+//				for (var i = 0; i < size; i++) {
+//					sum += lhs.data[i * lhs.rows + r] * rhs.data[c * rhs.rows + i];
+//				}
+//
+//				target.data[o + r] = sum;
+//			}
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * Combines two matrices (matrix multiplication) and stores the result locally.
@@ -309,9 +309,9 @@ function (
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.combine = function (rhs) {
-		return Matrix.combine(this, rhs, this);
-	};
+//	Matrix.prototype.combine = function (rhs) {
+//		return Matrix.combine(this, rhs, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -322,41 +322,41 @@ function (
 	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
-	Matrix.transpose = function (source, target) {
-		var rows = source.cols;
-		var cols = source.rows;
-
-		if (!target) {
-			target = new Matrix(rows, cols);
-		}
-
-		if (target.rows !== rows || target.cols !== cols) {
-			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-		}
-
-		if (target === source) {
-			return Matrix.copy(Matrix.transpose(source), target);
-		}
-
-		for (var c = 0; c < cols; c++) {
-			var o = c * rows;
-
-			for (var r = 0; r < rows; r++) {
-				target.data[o + r] = source.data[r * cols + c];
-			}
-		}
-
-		return target;
-	};
+//	Matrix.transpose = function (source, target) {
+//		var rows = source.cols;
+//		var cols = source.rows;
+//
+//		if (!target) {
+//			target = new Matrix(rows, cols);
+//		}
+//
+//		if (target.rows !== rows || target.cols !== cols) {
+//			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
+//		}
+//
+//		if (target === source) {
+//			return Matrix.copy(Matrix.transpose(source), target);
+//		}
+//
+//		for (var c = 0; c < cols; c++) {
+//			var o = c * rows;
+//
+//			for (var r = 0; r < rows; r++) {
+//				target.data[o + r] = source.data[r * cols + c];
+//			}
+//		}
+//
+//		return target;
+//	};
 
 	/**
 	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
 	 * @return {Matrix} Self for chaining.
 	 */
 
-	Matrix.prototype.transpose = function () {
-		return Matrix.transpose(this, this);
-	};
+//	Matrix.prototype.transpose = function () {
+//		return Matrix.transpose(this, this);
+//	};
 
 	/* ====================================================================== */
 
@@ -403,19 +403,19 @@ function (
 	 * @return {boolean} True if equal.
 	 */
 
-	Matrix.equals = function (lhs, rhs) {
-		if (lhs.rows !== rhs.rows || lhs.cols !== rhs.cols) {
-			return false;
-		}
-
-		for (var i = 0; i < lhs.data.length; i++) {
-			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
-				return false;
-			}
-		}
-
-		return true;
-	};
+//	Matrix.equals = function (lhs, rhs) {
+//		if (lhs.rows !== rhs.rows || lhs.cols !== rhs.cols) {
+//			return false;
+//		}
+//
+//		for (var i = 0; i < lhs.data.length; i++) {
+//			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
+//				return false;
+//			}
+//		}
+//
+//		return true;
+//	};
 
 	/**
 	 * Compares two matrices for approximate equality.
@@ -423,9 +423,9 @@ function (
 	 * @return {boolean} True if equal.
 	 */
 
-	Matrix.prototype.equals = function (rhs) {
-		return Matrix.equals(this, rhs);
-	};
+//	Matrix.prototype.equals = function (rhs) {
+//		return Matrix.equals(this, rhs);
+//	};
 
 	/* ====================================================================== */
 
@@ -434,25 +434,25 @@ function (
 	 * @return {boolean} True if orthogonal.
 	 */
 
-	Matrix.prototype.isOrthogonal = function () {
-		for (var ca = 0; ca < this.cols; ca++) {
-			for (var cb = ca + 1; cb < this.cols; cb++) {
-				var oa = ca * this.rows;
-				var ob = cb * this.rows;
-				var sum = 0.0;
-
-				for (var r = 0; r < this.rows; r++) {
-					sum += this.data[oa + r] * this.data[ob + r];
-				}
-
-				if (Math.abs(sum) > MathUtils.EPSILON) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	};
+//	Matrix.prototype.isOrthogonal = function () {
+//		for (var ca = 0; ca < this.cols; ca++) {
+//			for (var cb = ca + 1; cb < this.cols; cb++) {
+//				var oa = ca * this.rows;
+//				var ob = cb * this.rows;
+//				var sum = 0.0;
+//
+//				for (var r = 0; r < this.rows; r++) {
+//					sum += this.data[oa + r] * this.data[ob + r];
+//				}
+//
+//				if (Math.abs(sum) > MathUtils.EPSILON) {
+//					return false;
+//				}
+//			}
+//		}
+//
+//		return true;
+//	};
 
 	/* ====================================================================== */
 
@@ -461,22 +461,22 @@ function (
 	 * @return {boolean} True if normal.
 	 */
 
-	Matrix.prototype.isNormal = function () {
-		for (var c = 0; c < this.cols; c++) {
-			var o = c * this.rows;
-			var sum = 0.0;
-
-			for (var r = 0; r < this.rows; r++) {
-				sum += this.data[o + r] * this.data[o + r];
-			}
-
-			if (Math.abs(sum - 1.0) > MathUtils.EPSILON) {
-				return false;
-			}
-		}
-
-		return true;
-	};
+//	Matrix.prototype.isNormal = function () {
+//		for (var c = 0; c < this.cols; c++) {
+//			var o = c * this.rows;
+//			var sum = 0.0;
+//
+//			for (var r = 0; r < this.rows; r++) {
+//				sum += this.data[o + r] * this.data[o + r];
+//			}
+//
+//			if (Math.abs(sum - 1.0) > MathUtils.EPSILON) {
+//				return false;
+//			}
+//		}
+//
+//		return true;
+//	};
 
 	/* ====================================================================== */
 
@@ -485,9 +485,9 @@ function (
 	 * @return {boolean} True if orthonormal.
 	 */
 
-	Matrix.prototype.isOrthonormal = function () {
-		return this.isOrthogonal() && this.isNormal();
-	};
+//	Matrix.prototype.isOrthonormal = function () {
+//		return this.isOrthogonal() && this.isNormal();
+//	};
 
 	/* ====================================================================== */
 
@@ -496,9 +496,9 @@ function (
 	 * @return {Matrix} Clone of self.
 	 */
 
-	Matrix.prototype.clone = function () {
-		return Matrix.copy(this);
-	};
+//	Matrix.prototype.clone = function () {
+//		return Matrix.copy(this);
+//	};
 
 	/* ====================================================================== */
 
@@ -535,24 +535,24 @@ function (
 	 * @return {string} String of component values.
 	 */
 
-	Matrix.prototype.toString = function () {
-		var string = "";
-
-		for (var c = 0; c < this.cols; c++) {
-			var offset = c * this.rows;
-
-			string += "[";
-
-			for (var r = 0; r < this.rows; r++) {
-				string += this.data[offset + r];
-				string += r !== this.rows - 1 ? ", " : "";
-			}
-
-			string += c !== this.cols - 1 ? "], " : "]";
-		}
-
-		return string;
-	};
+//	Matrix.prototype.toString = function () {
+//		var string = "";
+//
+//		for (var c = 0; c < this.cols; c++) {
+//			var offset = c * this.rows;
+//
+//			string += "[";
+//
+//			for (var r = 0; r < this.rows; r++) {
+//				string += this.data[offset + r];
+//				string += r !== this.rows - 1 ? ", " : "";
+//			}
+//
+//			string += c !== this.cols - 1 ? "], " : "]";
+//		}
+//
+//		return string;
+//	};
 
 	/* ====================================================================== */
 

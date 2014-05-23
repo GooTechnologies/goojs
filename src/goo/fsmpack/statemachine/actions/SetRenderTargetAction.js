@@ -1,7 +1,7 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/components/PortalComponent',
-	'goo/entities/systems/PortalSystem',
+	'goo/portalpack/PortalComponent',
+	'goo/portalpack/PortalSystem',
 	'goo/math/Vector3',
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/Camera',

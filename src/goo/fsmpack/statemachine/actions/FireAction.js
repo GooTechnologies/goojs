@@ -2,8 +2,8 @@ define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/particles/ParticleLib',
-	'goo/util/ParticleSystemUtils'
+	'goo/particlepack/ParticleLib',
+	'goo/particlepack/ParticleSystemUtils'
 ],
 /** @lends */
 function (

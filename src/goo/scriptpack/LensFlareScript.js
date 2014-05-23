@@ -1,6 +1,6 @@
 define([
 	'goo/math/Vector3',
-	'goo/util/ParticleSystemUtils',
+	'goo/particlepack/ParticleSystemUtils',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Quad'

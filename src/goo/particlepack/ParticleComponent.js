@@ -1,7 +1,7 @@
 define([
 	'goo/entities/components/Component',
-	'goo/particles/Particle',
-	'goo/particles/ParticleEmitter',
+	'goo/particlepack/Particle',
+	'goo/particlepack/ParticleEmitter',
 	'goo/renderer/MeshData'
 ],
 /** @lends */

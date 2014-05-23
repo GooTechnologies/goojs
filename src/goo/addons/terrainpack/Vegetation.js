@@ -15,7 +15,7 @@ define([
 	'goo/util/MeshBuilder',
 	'goo/noise/Noise',
 	'goo/noise/ValueNoise',
-	'goo/shapes/TerrainSurface',
+	'goo/addons/terrainpack/TerrainSurface',
 	'goo/shapes/Quad',
 	'goo/renderer/shaders/ShaderBuilder'
 ],

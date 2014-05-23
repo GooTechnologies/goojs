@@ -13,7 +13,7 @@ define([
 	'goo/util/MeshBuilder',
 	'goo/noise/Noise',
 	'goo/noise/ValueNoise',
-	'goo/shapes/TerrainSurface',
+	'goo/addons/terrainpack/TerrainSurface',
 	'goo/loaders/DynamicLoader',
 	'goo/entities/EntityUtils',
 	'goo/util/combine/EntityCombiner',

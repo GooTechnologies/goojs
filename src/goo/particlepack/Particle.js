@@ -1,5 +1,5 @@
 define([
-	'goo/particles/ParticleUtils',
+	'goo/particlepack/ParticleUtils',
 	'goo/math/Vector',
 	'goo/math/Vector3',
 	'goo/math/Vector4',

@@ -7,7 +7,7 @@ define([
 	'goo/entities/systems/ScriptSystem',
 	'goo/entities/systems/LightingSystem',
 	'goo/entities/systems/CameraSystem',
-	'goo/entities/systems/ParticlesSystem',
+
 	'goo/util/Stats',
 
 	'goo/sound/AudioContext',
@@ -37,7 +37,7 @@ function (
 	ScriptSystem,
 	LightingSystem,
 	CameraSystem,
-	ParticlesSystem,
+	//ParticlesSystem,
 	Stats,
 
 	AudioContext,
@@ -185,7 +185,7 @@ function (
 		this.world.setSystem(new ScriptSystem(this.world));
 		this.world.setSystem(new TransformSystem());
 		this.world.setSystem(new CameraSystem());
-		this.world.setSystem(new ParticlesSystem());
+		//this.world.setSystem(new ParticlesSystem());
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 
