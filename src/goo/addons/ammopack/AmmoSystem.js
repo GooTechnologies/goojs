@@ -33,7 +33,9 @@ function(
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
 		var solver = new Ammo.btSequentialImpulseConstraintSolver();
 		this.ammoWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, overlappingPairCache, solver, collisionConfiguration );
-		this.ammoWorld.setGravity(new Ammo.btVector3(0, this.settings.gravity || -9.81, 0));
+		var gravity = this.settings.gravity;
+		if (gravity == null) {gravity = -9.81};
+		this.ammoWorld.setGravity(new Ammo.btVector3(0, gravity, 0));
 	}
 
 	AmmoSystem.prototype = Object.create(System.prototype);
