@@ -338,17 +338,29 @@ define([
                     }.bind(this)
 				};
 
-				var vegetationAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas);
+				var texturesPromise = new RSVP.Promise();
+				var loadCount = 3;
+				var onLoaded = function() {
+					if (--loadCount)
+						texturesPromise.resolve();
+				};
+
+				var vegetationAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas, {}, onLoaded);
+
 				vegetationAtlasTexture.anisotropy = 4;
 				var vegetationTypes = terrainData.vegetationTypes;
 
-				var forrestAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas);
+				var forrestAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas, {}, onLoaded);
+
 				forrestAtlasTexture.anisotropy = 4;
-				var forrestAtlasNormals = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals);
+				var forrestAtlasNormals = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals, {}, onLoaded);
+
 				var forrestTypes = terrainData.forrestTypes;
 
 				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes);
 				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
+
+				return texturesPromise;
 			}.bind(this));
 		};
 
