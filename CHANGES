@@ -18,6 +18,7 @@ Breaking changes:
      Also, the animation system is not pre-included in the world - it will need to be added manually (world.setSystem(new AnimationSystem())) for projects that contain animations.
  * the passes have been extracted in their own pack:
       goo/passpack contains the former goo/renderer/pass/PassLib along with pass-related shaders which used to be in goo/renderer/shaders/ShaderLib, any post-effect related passes (Bloom, Blur, Depth, DOF, DOG, MotionBlur, Nes, SSAO) and the PosteffectsHandler. To be able to load posteffects using the dynamic loader you need to require the PosteffectsHandler (which will register itself).
+ * the transform gizmos have been relocated to their own pack, under goo/util/gizmopack
 
 v0.10.0 --- 2014-05-20
 ======================
