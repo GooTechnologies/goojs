@@ -341,7 +341,7 @@ define([
 				var texturesPromise = new RSVP.Promise();
 				var loadCount = 3;
 				var onLoaded = function() {
-					if (--loadCount)
+					if (!--loadCount)
 						texturesPromise.resolve();
 				};
 
