@@ -3,13 +3,15 @@ define([
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils',
 	'goo/renderer/Renderer',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'goo/renderer/Camera'
 ], function (
 	Vector3,
 	Scripts,
 	ScriptUtils,
 	Renderer,
-	SystemBus
+	SystemBus,
+	Camera
 ) {
 	'use strict';
 
@@ -142,6 +144,7 @@ define([
 			mouseState.dx = mouseState.x - mouseState.ox;
 			mouseState.dy = mouseState.y - mouseState.oy;
 			if (mouseState.dx === 0 && mouseState.dy === 0) {
+				environment.dirty = !!environment.lookAtPoint;
 				return;
 			}
 
@@ -160,11 +163,11 @@ define([
 			var entity = environment.entity;
 			var transform = entity.transformComponent.transform;
 
+			var camera = entity.cameraComponent.camera;
 			if (lookAtPoint && mainCam) {
 				if (lookAtPoint.equals(mainCam.translation)) {
 					return;
 				}
-				var camera = entity.cameraComponent.camera;
 				var width = environment.domElement.offsetWidth;
 				var height = environment.domElement.offsetHeight;
 				mainCam.getScreenCoordinates(lookAtPoint, width, height, calcVector);
@@ -192,21 +195,25 @@ define([
 					// In the case of screenMove, we normalize the camera movement
 					// to the near plane instead of using pixels. This makes the parallel
 					// camera map mouse world movement to camera movement 1-1
-					if (entity.cameraComponent && entity.cameraComponent.camera) {
-						var camera = entity.cameraComponent.camera;
-						calcVector.scale((camera._frustumTop - camera._frustumBottom) / environment.viewportHeight);
-						calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
-					}
+				if (entity.cameraComponent && entity.cameraComponent.camera) {
+					var camera = entity.cameraComponent.camera;
+					calcVector.scale((camera._frustumTop - camera._frustumBottom) / environment.viewportHeight);
+					calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
+				}
 				//}
 				calcVector.addv(calcVector2);
 				transform.rotation.applyPost(calcVector);
 				//if (!parameters.screenMove){
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
+				if (camera.projectionMode === Camera.Perspective) {
+					// RB: I know, very arbitrary but looks ok
+					calcVector.scale(parameters.panSpeed * 60);
+				} else {
 					calcVector.scale(parameters.panSpeed);
-				//}
+				}
 				entity.transformComponent.transform.translation.addv(calcVector);
 				entity.transformComponent.setUpdated();
-				//environment.dirty = false;
+				environment.dirty = false;
 			}
 			SystemBus.emit('goo.cameraPositionChanged', {
 				translation: transform.translation.data,
@@ -247,15 +254,14 @@ define([
 		}, {
 			key: 'panSpeed',
 			type: 'float',
-			'default': 0.005,
-			scale: 0.001,
-			decimals: 3
-		}, {
+			'default': 1,
+			scale: 0.01
+		}/*, {
 			key: 'screenMove',
 			type: 'boolean',
 			'default': false,
 			description: 'Syncs camera movement with mouse world position 1-1, needed for parallel camera.'
-		}]
+		}*/]
 	};
 
 	return PanCamScript;

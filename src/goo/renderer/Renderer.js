@@ -363,6 +363,13 @@ function (
 			//! AT: placeholder to avoid another conditional below in checkResize
 			this.svg = { currentScale: 1 };
 		}
+
+		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
+		//      this needs to be re-added her again for each new GooRunner/Renderer
+		//      cycle.
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			Renderer.mainCamera = newCam.camera;
+		});
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -390,9 +397,6 @@ function (
 	};
 
 	Renderer.mainCamera = null;
-	SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-		Renderer.mainCamera = newCam.camera;
-	});
 
 	/**
 	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height
@@ -549,83 +553,13 @@ function (
 	};
 
 	/**
-	 * Loads a compressed texture but does not use it
-	 * @private
-	 * @param context
-	 * @param target
-	 * @param texture
-	 * @param imageData
-	 */
-	Renderer.prototype.preloadCompressedTexture = function (context, target, texture, imageData) {
-		// REVIEW: This method is super similar to loadCompressedTexture. Reuse some code? We do want to reduce the lib size.
-		var mipSizes = texture.image.mipmapSizes;
-		var dataOffset = 0, dataLength = 0;
-		var width = texture.image.width, height = texture.image.height;
-		var ddsExt = DdsUtils.getDdsExtension(context);
-
-		// REVIEW: This conversion to internal format is also done in .loadCompressedTexture
-		var internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
-		if (texture.format === 'PrecompressedDXT1') {
-			internalFormat = ddsExt.COMPRESSED_RGB_S3TC_DXT1_EXT;
-		} else if (texture.format === 'PrecompressedDXT1A') {
-			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT1_EXT;
-		} else if (texture.format === 'PrecompressedDXT3') {
-			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT3_EXT;
-		} else if (texture.format === 'PrecompressedDXT5') {
-			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
-		} else {
-			throw new Error("Unhandled compression format: " + imageData.getDataFormat().name());
-		}
-
-		if (typeof mipSizes === 'undefined' || mipSizes === null) {
-			if (imageData instanceof Uint8Array) {
-				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, imageData);
-			} else {
-				// REVIEW: What line break convention is used?
-				context.compressedTexImage2D(target, 0, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset,
-					imageData.byteLength));
-			}
-		} else {
-			texture.generateMipmaps = false;
-			if (imageData instanceof Array) {
-				for (var i = 0; i < imageData.length; i++) {
-					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, imageData[i]);
-					// REVIEW: this operation is being done many times, not very DRY
-					// REVIEW: Also Math.floor is practically as fast as ~~, does the same thing, and is more readable. http://jsperf.com/jsfvsbitnot/15
-					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
-					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
-				}
-			} else {
-				for (var i = 0; i < mipSizes.length; i++) {
-					dataLength = mipSizes[i];
-					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(imageData.buffer, imageData.byteOffset
-						+ dataOffset, dataLength));
-					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
-					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
-					dataOffset += dataLength;
-				}
-			}
-
-			var expectedMipmaps = 1 + Math.ceil(Math.log(Math.max(texture.image.height, texture.image.width)) / Math.log(2));
-			var size = mipSizes[mipSizes.length - 1];
-			if (mipSizes.length < expectedMipmaps) {
-				for (var i = mipSizes.length; i < expectedMipmaps; i++) {
-					size = ~~((width + 3) / 4) * ~~((height + 3) / 4) * texture.image.bpp * 2;
-					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, new Uint8Array(size));
-					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
-					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
-				}
-			}
-		}
-	};
-
-	/**
 	 * Preloads a texture
 	 * @param context
 	 * @param texture
 	 */
 	Renderer.prototype.preloadTexture = function (context, texture) {
 		// REVIEW: Veeeeery similar to loadTexture. Merge?
+		//! AT: the code will diverge; it was initially copy-pasted and adapted to suit the need, but it will have to be iterated on; adding more ifs for different code paths is not gonna make the code nicer
 
 		// this.bindTexture(context, texture, unit, record);
 		// context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit); // do I need this?
@@ -658,7 +592,7 @@ function (
 
 				if (image.isData === true) {
 					if (image.isCompressed) {
-						this.preloadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
+						this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
 					} else {
 						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), image.width,
 							image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
@@ -771,8 +705,9 @@ function (
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables"
 	 * @param renderList
+	 * @param promise
 	 */
-	Renderer.prototype.preloadMaterials = function (renderList, onComplete) {
+	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];
 		var renderInfo = {};
 
@@ -798,7 +733,7 @@ function (
 			}
 		}
 
-		TaskScheduler.each(queue, onComplete);
+		return TaskScheduler.each(queue);
 	};
 
 	/**
@@ -862,8 +797,7 @@ function (
 	 * @param renderList
 	 * @param lights
 	 */
-	Renderer.prototype.precompileShaders = function (renderList, lights, onComplete) {
-		// REVIEW: use promises?
+	Renderer.prototype.precompileShaders = function (renderList, lights) {
 		var renderInfo = {
 			lights: lights
 		};
@@ -891,7 +825,7 @@ function (
 			}
 		}
 
-		TaskScheduler.each(queue, onComplete);
+		return TaskScheduler.each(queue);
 	};
 
 	/**
@@ -1542,6 +1476,7 @@ function (
 			if (imageData instanceof Array) {
 				for (var i = 0; i < imageData.length; i++) {
 					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, imageData[i]);
+					//! SH: REVIEW: this operation is being done many times, not very DRY; also Math.floor is practically as fast as ~~, does the same thing, and is more readable. http://jsperf.com/jsfvsbitnot/15
 					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
 					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
 				}

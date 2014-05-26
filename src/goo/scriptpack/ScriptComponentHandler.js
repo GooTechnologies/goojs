@@ -71,6 +71,11 @@ function (
 				}
 
 				promise = promise.then(function (script) {
+					scriptInstance.options = scriptInstance.options || {};
+					if (script.parameters) {
+						_.defaults(scriptInstance.options, script.parameters);
+					}
+
 					if (script.externals && script.externals.parameters) {
 						ScriptUtils.fillDefaultValues(scriptInstance.options, script.externals.parameters);
 					}
@@ -107,8 +112,8 @@ function (
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var external = externals.parameters[i];
 			this._setParameter(parameters, config[external.key], external, options);
-
 		}
+		parameters.enabled = (config.enabled !== undefined) ? config.enabled : true;
 		return RSVP.all(promises);
 	};
 

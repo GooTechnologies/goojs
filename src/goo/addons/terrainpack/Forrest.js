@@ -310,6 +310,9 @@ function (
 			treeEntity.transformComponent.transform.translation.set(pos);
 			treeEntity.addToWorld();
 			gridEntity.attachChild(treeEntity);
+			if (this.onAddedVegMesh) {
+				this.onAddedVegMesh(vegetationType, treeEntity, pos, size);
+			}
 		} else {
 			var meshData = this.fetchTreeBillboard(vegetationType, size);
 			meshBuilder.addMeshData(meshData, transform);
