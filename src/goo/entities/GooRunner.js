@@ -360,7 +360,10 @@ function (
 
 		// update the stats if there are any
 		if (this.stats) {
-			this.stats.update(this.renderer.info);
+			this.stats.update(
+				this.renderer.info.toString() + '<br/>' +
+				'transformUpdates: ' + this.world.getSystem('TransformSystem').numUpdates
+			);
 		}
 
 		// resolve any snapshot requests

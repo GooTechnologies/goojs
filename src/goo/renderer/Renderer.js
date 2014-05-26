@@ -335,7 +335,11 @@ function (
 				this.indices = 0;
 			},
 			toString: function () {
-				return 'Calls: ' + this.calls + ' Vertices: ' + this.vertices + ' Indices: ' + this.indices;
+				return (
+					'Calls: ' + this.calls +
+					'<br/>Vertices: ' + this.vertices +
+					'<br/>Indices: ' + this.indices
+				);
 			}
 		};
 

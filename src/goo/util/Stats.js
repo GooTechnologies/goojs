@@ -124,7 +124,7 @@ define(
 				prevTimeMs = time;
 
 				if (info) {
-					infoText.innerHTML = 'Calls: ' + info.calls + '<br>Vertices: ' + info.vertices + '<br>Indices: ' + info.indices;
+					infoText.innerHTML = info;
 				}
 			}
 

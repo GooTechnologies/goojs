@@ -1,6 +1,8 @@
-define(['goo/entities/systems/System'],
-	/** @lends */
-	function (System) {
+define([
+	'goo/entities/systems/System'
+],
+/** @lends */
+function (System) {
 	"use strict";
 
 	/**
@@ -9,11 +11,13 @@ define(['goo/entities/systems/System'],
 	 */
 	function TransformSystem() {
 		System.call(this, 'TransformSystem', ['TransformComponent']);
+		this.numUpdates = 0;
 	}
 
 	TransformSystem.prototype = Object.create(System.prototype);
 
 	TransformSystem.prototype.process = function (entities) {
+		this.numUpdates = 0;
 		var i, transformComponent;
 		for (i = 0; i < entities.length; i++) {
 			transformComponent = entities[i].transformComponent;
@@ -22,6 +26,11 @@ define(['goo/entities/systems/System'],
 				transformComponent.updateTransform();
 			}
 		}
+
+		for (i = 0; i < entities.length; i++) {
+			entities[i].transformComponent._updated2 = false;
+		}
+
 		for (i = 0; i < entities.length; i++) {
 			transformComponent = entities[i].transformComponent;
 			if (transformComponent._dirty) {
@@ -31,7 +40,14 @@ define(['goo/entities/systems/System'],
 	};
 
 	TransformSystem.prototype.updateWorldTransform = function (transformComponent) {
-		transformComponent.updateWorldTransform();
+		if (!transformComponent._updated2 && ((transformComponent.parent === null) || (transformComponent.parent && transformComponent.parent._updated2))) {
+			this.numUpdates++;
+			transformComponent.updateWorldTransform();
+			transformComponent._updated2 = true;
+		} else {
+			// No need to update children
+			return;
+		}
 
 		for (var i = 0; i < transformComponent.children.length; i++) {
 			this.updateWorldTransform(transformComponent.children[i]);
