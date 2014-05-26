@@ -1,13 +1,11 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/systems/ProximitySystem',
-	'goo/entities/EntityUtils'
+	'goo/fsmpack/proximity/ProximitySystem'
 ],
 /** @lends */
 function(
 	Action,
-	ProximitySystem,
-	EntityUtils
+	ProximitySystem
 ) {
 	'use strict';
 

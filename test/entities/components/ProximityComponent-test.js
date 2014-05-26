@@ -1,7 +1,7 @@
 define([
 	'goo/entities/World',
-	'goo/entities/systems/ProximitySystem',
-	'goo/entities/components/ProximityComponent'
+	'goo/fsmpack/proximity/ProximitySystem',
+	'goo/fsmpack/proximity/ProximityComponent'
 ], function (
 	World,
 	ProximitySystem,

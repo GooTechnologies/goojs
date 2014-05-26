@@ -17,7 +17,7 @@ function (
 	Camera,
 	MathUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Projected grid mesh
