@@ -1,4 +1,8 @@
-define([], function () {
+define([
+	'goo/util/rsvp'
+], function (
+	RSVP
+	) {
 	'use strict';
 
 	(function performanceShim() {
@@ -20,8 +24,8 @@ define([], function () {
 	TaskScheduler.maxTimePerFrame = 50;
 
 	// Engine loop must be disabled while running this
-	TaskScheduler.each = function (queue, onComplete) {
-		// REVIEW: Replace onComplete callback for promise? Looks kinda weird to mix promises and callbacks in the loadScene.js template file
+	TaskScheduler.each = function (queue) {
+		var promise = new RSVP.Promise();
 		var i = 0;
 
 		function process() {
@@ -36,11 +40,13 @@ define([], function () {
 				//! AT: 4 ms is the minimum amount as specified by the HTML standard
 				setTimeout(process, 4);
 			} else {
-				onComplete();
+				promise.resolve();
 			}
 		}
 
 		process();
+
+		return promise;
 	};
 
 	return TaskScheduler;
