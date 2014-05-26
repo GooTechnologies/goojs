@@ -1,6 +1,6 @@
 define(['goo/math/Vector3'],
 /** @lends */
-function(Vector3) {
+function (Vector3) {
 	"use strict";
 
 	/**
@@ -11,7 +11,7 @@ function(Vector3) {
 	function RenderQueue() {
 		var that = this;
 		var tmpVec = new Vector3();
-		this.opaqueSorter = function(a, b) {
+		this.opaqueSorter = function (a, b) {
 			//TODO: Add texture checks on material
 
 			var m1 = a.meshRendererComponent.materials[0];
@@ -20,7 +20,7 @@ function(Vector3) {
 			if (m1 === null || m2 === null) {
 				return 0;
 			}
-			if(m1 === m2) {
+			if (m1 === m2) {
 				var bound1 = a.meshRendererComponent.worldBound;
 				var bound2 = b.meshRendererComponent.worldBound;
 				if (bound1 === null || bound2 === null) {
@@ -52,14 +52,14 @@ function(Vector3) {
 			}
 			return shader1._id - shader2._id;
 		};
-		this.transparentSorter = function(a, b) {
+		this.transparentSorter = function (a, b) {
 			var bound1 = a.meshRendererComponent.worldBound;
 			var bound2 = b.meshRendererComponent.worldBound;
 			var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
 			var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
 			return dist2 - dist1;
 		};
-		this.bucketSorter = function(a, b) {
+		this.bucketSorter = function (a, b) {
 			return a - b;
 		};
 	}
@@ -68,7 +68,7 @@ function(Vector3) {
 	 * @param {Entity[]} renderList
 	 * @param {Camera} camera
 	 */
-	RenderQueue.prototype.sort = function(renderList, camera) {
+	RenderQueue.prototype.sort = function (renderList, camera) {
 		var index = 0;
 		this.camera = camera;
 		var buckets = {};
@@ -105,7 +105,7 @@ function(Vector3) {
 					bucket.sort(this.transparentSorter);
 				}
 			}
-			for ( var i = 0; i < bucket.length; i++) {
+			for (var i = 0; i < bucket.length; i++) {
 				renderList[index] = bucket[i];
 				index++;
 			}
