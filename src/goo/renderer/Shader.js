@@ -449,7 +449,7 @@ function (
 				var mapping = this.uniformCallMapping[name];
 				if (mapping !== undefined) {
 					this.matchedUniforms.push(name);
-				} 
+				}
 				// else {
 					// console.warn('No uniform found for binding: ' + name + ' [' + this.name + '][' + this._id + ']');
 				// }
