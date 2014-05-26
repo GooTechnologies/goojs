@@ -68,7 +68,7 @@ function (
 				} else {
 					script.enabled = true;
 				}
-				if (script.setup) {
+				if (script.setup && script.enabled) {
 					try {
 						script.setup(script.parameters, script.context, this._gooClasses);
 					} catch (e) {

@@ -38,6 +38,7 @@ function (
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._bodyCache = {};
+		this._dependencyPromises = {};
 		this._currentScriptLoading = null;
 		this._addGlobalErrorListener();
 	}
@@ -225,6 +226,7 @@ function (
 					that._updateFromCustom(script, config, options);
 				}
 
+
 				if (config.body) {
 					SystemBus.emit('goo.scriptExternals', {
 						id: config.id,
@@ -245,7 +247,7 @@ function (
 				else {
 					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
 				}
-
+				_.extend(script.parameters, config.options);
 				return script;
 			});
 		});
@@ -262,18 +264,20 @@ function (
 	 * @return {RSVP.Promise} a promise that resolves when the dependency is loaded
 	 */
 	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
+		var that = this;
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
-			return PromiseUtil.createDummyPromise();
+			return this._dependencyPromises[url] || PromiseUtil.createDummyPromise();
 		}
 
 		scriptElem = document.createElement('script');
 		scriptElem.src = url;
 		scriptElem.setAttribute('data-script-id', scriptId);
 
-		var promise = new RSVP.Promise();
+		var promise = this._dependencyPromises[url] = new RSVP.Promise();
 		scriptElem.onload = function () {
 			promise.resolve();
+			delete that._dependencyPromises[url];
 		};
 		scriptElem.onerror = function () {
 			var err = {
@@ -283,6 +287,7 @@ function (
 			setError(script, err);
 			scriptElem.parentNode.removeChild(scriptElem);
 			promise.resolve();
+			delete that._dependencyPromises[url];
 		};
 		document.body.appendChild(scriptElem);
 
