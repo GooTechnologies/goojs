@@ -107,8 +107,8 @@ function (
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var external = externals.parameters[i];
 			this._setParameter(parameters, config[external.key], external, options);
-
 		}
+		parameters.enabled = (config.enabled !== undefined) ? config.enabled : true;
 		return RSVP.all(promises);
 	};
 
