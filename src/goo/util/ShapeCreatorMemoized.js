@@ -69,6 +69,7 @@ function (
 	};
 
 	ShapeCreatorMemoized.createBox = function (options, oldMeshData) {
+		options = options || {};
 		options.textureMode = options.textureMode || 'Uniform';
 		var width = 1, height = 1, length = 1, tileX = 1, tileY = 1;
 		if (!oldMeshData ||

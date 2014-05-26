@@ -226,6 +226,7 @@ function (
 					that._updateFromCustom(script, config, options);
 				}
 
+
 				if (config.body) {
 					SystemBus.emit('goo.scriptExternals', {
 						id: config.id,
@@ -246,7 +247,7 @@ function (
 				else {
 					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
 				}
-
+				_.extend(script.parameters, config.options);
 				return script;
 			});
 		});
