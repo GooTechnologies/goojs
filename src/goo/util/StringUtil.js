@@ -155,7 +155,7 @@ function () {
 
 	// REVIEW: idCounter is only updated on declaration, same session will always have the same seed
 	// used in generating ids
-	var idCounter = +new Date();
+	var idCounter = Date.now();
 
 	// returns an almost unique id
 	StringUtil.getUniqueId = function () {
