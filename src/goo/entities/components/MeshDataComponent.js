@@ -39,7 +39,7 @@ function (
 		/**
 		 * @type {SkeletonPose}
 		 * @default
-		 */ 
+		 */
 		this.currentPose = null; // SkeletonPose
 	}
 
@@ -72,7 +72,7 @@ function (
 		}
 	};
 
-	MeshDataComponent.applyOnEntity = function(obj, entity) {
+	MeshDataComponent.applyOnEntity = function (obj, entity) {
 		if (obj instanceof MeshData) {
 			var meshDataComponent = new MeshDataComponent(obj);
 			entity.setComponent(meshDataComponent);
