@@ -154,37 +154,54 @@ function(
 		}
 	};
 
+	var lightDefines = [];
+
 	ShaderBuilder.light = {
 		processor: function (shader, shaderInfo) {
-			shader.uniforms.materialAmbient = shader.uniforms.materialAmbient || 'AMBIENT';
-			shader.uniforms.materialEmissive = shader.uniforms.materialEmissive || 'EMISSIVE';
-			shader.uniforms.materialDiffuse = shader.uniforms.materialDiffuse || 'DIFFUSE';
-			shader.uniforms.materialSpecular = shader.uniforms.materialSpecular || 'SPECULAR';
-			shader.uniforms.materialSpecularPower = shader.uniforms.materialSpecularPower || 'SPECULAR_POWER';
-			shader.uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
+			var uniforms = shader.uniforms;
+			uniforms.materialAmbient = uniforms.materialAmbient || 'AMBIENT';
+			uniforms.materialEmissive = uniforms.materialEmissive || 'EMISSIVE';
+			uniforms.materialDiffuse = uniforms.materialDiffuse || 'DIFFUSE';
+			uniforms.materialSpecular = uniforms.materialSpecular || 'SPECULAR';
+			uniforms.materialSpecularPower = uniforms.materialSpecularPower || 'SPECULAR_POWER';
+			uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
 
 			shader.defines = shader.defines || {};
 
 			var lights = shaderInfo.lights;
-			var lightDefines = [];
 			for (var i = 0; i < lights.length; i++) {
 				var light = lights[i];
 
 				if (light instanceof PointLight) {
-					shader.uniforms['pointLight'+i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
-					shader.uniforms['pointLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
+					uniforms['pointLight' + i] = uniforms['pointLight' + i] || [];
+					uniforms['pointLightColor' + i] = uniforms['pointLightColor' + i] || [];
+
+					var pointLightN = uniforms['pointLight' + i];
+					var translation = light.translation.data;
+					pointLightN[0] = translation[0];
+					pointLightN[1] = translation[1];
+					pointLightN[2] = translation[2];
+					pointLightN[3] = light.range;
+
+					var pointLightColorN = uniforms['pointLightColor' + i];
+					var color = light.color.data;
+					pointLightColorN[0] = color[0] * light.intensity;
+					pointLightColorN[1] = color[1] * light.intensity;
+					pointLightColorN[2] = color[2] * light.intensity;
+					pointLightColorN[3] = light.specularIntensity;
+
 					lightDefines.push('P');
 				} else if (light instanceof DirectionalLight) {
-					shader.uniforms['directionalLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
-					shader.uniforms['directionalLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
+					uniforms['directionalLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
+					uniforms['directionalLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
 					lightDefines.push('D');
 				} else if (light instanceof SpotLight) {
-					shader.uniforms['spotLight'+i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
-					shader.uniforms['spotLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
-					shader.uniforms['spotLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
+					uniforms['spotLight'+i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
+					uniforms['spotLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
+					uniforms['spotLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
 
-					shader.uniforms['spotLightAngle'+i] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
-					shader.uniforms['spotLightPenumbra'+i] = light.penumbra !== undefined ? Math.sin(light.penumbra * MathUtils.DEG_TO_RAD / 4) : 0;
+					uniforms['spotLightAngle'+i] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
+					uniforms['spotLightPenumbra'+i] = light.penumbra !== undefined ? Math.sin(light.penumbra * MathUtils.DEG_TO_RAD / 4) : 0;
 					lightDefines.push('S');
 				}
 
@@ -194,11 +211,11 @@ function(
 					var shadowData = light.shadowSettings.shadowData;
 
 					if (light.shadowCaster) {
-						shader.uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
+						uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
 						shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
 					}
 					if (useLightCookie) {
-						shader.uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
+						uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
 						shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
 						lightDefines.push('C');
 						shader.defines.COOKIE = true;
@@ -207,23 +224,23 @@ function(
 					}
 
 					var matrix = shadowData.lightCamera.getViewProjectionMatrix().data;
-					var mat = shader.uniforms['shadowLightMatrices'+i] = shader.uniforms['shadowLightMatrices'+i] || [];
+					var mat = uniforms['shadowLightMatrices'+i] = uniforms['shadowLightMatrices'+i] || [];
 					for (var j = 0; j < 16; j++) {
 						mat[j] = matrix[j];
 					}
 
 					if (light.shadowCaster) {
 						var translationData = shadowData.lightCamera.translation.data;
-						var pos = shader.uniforms['shadowLightPositions'+i] = shader.uniforms['shadowLightPositions'+i] || [];
+						var pos = uniforms['shadowLightPositions'+i] = uniforms['shadowLightPositions'+i] || [];
 						pos[0] = translationData[0];
 						pos[1] = translationData[1];
 						pos[2] = translationData[2];
 
-						shader.uniforms['cameraScales'+i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
-						shader.uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
+						uniforms['cameraScales'+i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
+						uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
 
 						if (light.shadowSettings.shadowType === 'PCF') {
-							var sizes = shader.uniforms['shadowMapSizes'+i] = shader.uniforms['shadowMapSizes'+i] || [];
+							var sizes = uniforms['shadowMapSizes'+i] = uniforms['shadowMapSizes'+i] || [];
 							sizes[0] = light.shadowSettings.resolution[0];
 							sizes[1] = light.shadowSettings.resolution[1];
 						}
@@ -234,6 +251,7 @@ function(
 			}
 
 			shader.defines.LIGHT = lightDefines.join('');
+			lightDefines.length = 0;
 		},
 		builder: function (shader, shaderInfo) {
 			var prevertex = [];

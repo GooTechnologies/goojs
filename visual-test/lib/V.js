@@ -80,7 +80,7 @@ define([
 	 * @returns {Entity}
 	 */
 	V.addOrbitCamera = function (spherical, lookAt, dragButton) {
-		spherical = V.toVector3(spherical, new Vector3(20, 90, 0));
+		spherical = V.toVector3(spherical, new Vector3(20, 0, 0));
 		lookAt = V.toVector3(lookAt, new Vector3(0, 0, 0));
 
 		// Convert to degrees since the script uses degrees
@@ -105,7 +105,8 @@ define([
 		}
 
 		var orbitScript = Scripts.create(OrbitCamControlScript, orbitCamOptions);
-		var entity = V.goo.world.createEntity(camera, [0, 0, 3], orbitScript, 'CameraEntity').addToWorld();
+		var entity = V.goo.world.createEntity(camera, [20, 0, 0], orbitScript, 'CameraEntity').addToWorld();
+		entity.setRotation(0, Math.PI/2, 0);
 		return entity;
 	};
 
