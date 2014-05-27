@@ -1,0 +1,16 @@
+.title, .subtitle {
+	font-family: sans-serif;
+	font-size: small;
+}
+
+.entry {
+	font-family: sans-serif;
+	font-size: large;
+	padding: 8px;
+	margin: 4px;
+	border: 1px solid #cccccc;
+}
+
+.entry-measurements {
+	font-size: medium;
+}
