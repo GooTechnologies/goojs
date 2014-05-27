@@ -220,6 +220,20 @@ function (
 		}
 		var meshDatas = meshBuilder.build();
 
+		// Calculate lighting from lightmap
+		for (var i=0;i<meshDatas.length;i++) {
+			var meshData = meshDatas[i];
+			var verts = meshData.getAttributeBuffer(MeshData.POSITION);
+			var cols = meshData.getAttributeBuffer(MeshData.COLOR);
+			for (var i=0,j=0;i<verts.length;i+=3,j+=4) {
+				var col = this.terrainQuery.getLightAt([verts[i], verts[i+1], verts[i+2]]);
+				cols[j] = col;
+				cols[j+1] = col;
+				cols[j+2] = col;
+				cols[j+3] = 1;
+			}
+		}
+
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};
 
@@ -251,6 +265,8 @@ function (
 	Vegetation.prototype.createBase = function (type) {
 		var meshData = new Quad(type.w, type.h, 10, 10);
 		meshData.attributeMap.BASE = MeshData.createAttribute(1, 'Float');
+		meshData.attributeMap.COLOR = MeshData.createAttribute(4, 'Float');
+
 		meshData.rebuildData(meshData.vertexCount, meshData.indexCount, true);
 
 		meshData.getAttributeBuffer(MeshData.NORMAL).set([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
@@ -261,8 +277,16 @@ function (
 			type.tx + type.tw, type.ty
 		]);
 
+
 		meshData.getAttributeBuffer('BASE').set([
 			0, type.h, type.h, 0
+		]);
+
+		meshData.getAttributeBuffer(MeshData.COLOR).set([
+			1,1,1,1,
+			1,1,1,1,
+			1,1,1,1,
+			1,1,1,1
 		]);
 
 		var meshBuilder = new MeshBuilder();
@@ -310,6 +334,7 @@ function (
 			vertexPosition : MeshData.POSITION,
 			vertexNormal : MeshData.NORMAL,
 			vertexUV0 : MeshData.TEXCOORD0,
+			vertexColor : MeshData.COLOR,
 			base : 'BASE'
 		},
 		uniforms : {
@@ -334,6 +359,7 @@ function (
 			'attribute vec3 vertexPosition;',
 			'attribute vec3 vertexNormal;',
 			'attribute vec2 vertexUV0;',
+			'attribute vec4 vertexColor;',
 			'attribute float base;',
 
 			'uniform mat4 viewProjectionMatrix;',
@@ -347,6 +373,7 @@ function (
 			'varying vec3 vWorldPos;',
 			'varying vec3 viewPosition;',
 			'varying vec2 texCoord0;',
+			'varying vec4 color;',
 			'varying float dist;',
 
 			'void main(void) {',
@@ -360,6 +387,7 @@ function (
 
 				'normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
 				'texCoord0 = vertexUV0;',
+				'color = vertexColor;',
 				'viewPosition = cameraPosition - worldPos.xyz;',
 				'dist = 1.0 - smoothstep(40.0, 50.0, length(viewPosition.xz));',
 			'}'
@@ -379,10 +407,11 @@ function (
 			'varying vec3 viewPosition;',
 			'varying vec2 texCoord0;',
 			'varying float dist;',
+			'varying vec4 color;',
 
 			'void main(void)',
 			'{',
-				'vec4 final_color = texture2D(diffuseMap, texCoord0);',
+				'vec4 final_color = texture2D(diffuseMap, texCoord0) * color;',
 				'if (final_color.a < discardThreshold) discard;',
 				'final_color.a = min(final_color.a, dist);',
 				'if (final_color.a <= 0.0) discard;',

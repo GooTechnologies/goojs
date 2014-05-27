@@ -434,11 +434,11 @@ function(
 		}
 	};
 
-	Terrain.prototype.useLightmap = function(texture) {
+	Terrain.prototype.setLightmapTexture = function(lightMap) {
 		terrainShaderDefFloat.defines.LIGHTMAP = true;
 		for (var i = 0; i < this.count; i++) {
 			var material = this.clipmaps[i].origMaterial;
-			material.setTexture('LIGHT_MAP', texture);
+			material.setTexture('LIGHT_MAP', lightMap);
 		}
 	};
 
