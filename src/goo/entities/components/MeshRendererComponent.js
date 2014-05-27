@@ -60,6 +60,8 @@ define([
 		 * @default
 		 */
 		this.hidden = false;
+
+		this._renderDistance = 0;
 	}
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
@@ -109,7 +111,7 @@ define([
 		this.worldBound = bounding.transform(transform, this.worldBound);
 	};
 
-	MeshRendererComponent.applyOnEntity = function(obj, entity) {
+	MeshRendererComponent.applyOnEntity = function (obj, entity) {
 		var meshRendererComponent = entity.meshRendererComponent;
 
 		if (!meshRendererComponent) {

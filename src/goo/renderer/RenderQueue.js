@@ -9,8 +9,6 @@ function (Vector3) {
 	 * back to front.
 	 */
 	function RenderQueue() {
-		var that = this;
-		var tmpVec = new Vector3();
 		this.opaqueSorter = function (a, b) {
 			//TODO: Add texture checks on material
 
@@ -27,8 +25,8 @@ function (Vector3) {
 					return 0;
 				}
 
-				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
-				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
+				var dist1 = a.meshRendererComponent._renderDistance;
+				var dist2 = b.meshRendererComponent._renderDistance;
 
 				return dist1 - dist2;
 			}
@@ -45,18 +43,16 @@ function (Vector3) {
 					return 0;
 				}
 
-				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
-				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
+				var dist1 = a.meshRendererComponent._renderDistance;
+				var dist2 = b.meshRendererComponent._renderDistance;
 
 				return dist1 - dist2;
 			}
 			return shader1._id - shader2._id;
 		};
 		this.transparentSorter = function (a, b) {
-			var bound1 = a.meshRendererComponent.worldBound;
-			var bound2 = b.meshRendererComponent.worldBound;
-			var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
-			var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
+			var dist1 = a.meshRendererComponent._renderDistance;
+			var dist2 = b.meshRendererComponent._renderDistance;
 			return dist2 - dist1;
 		};
 		this.bucketSorter = function (a, b) {
@@ -64,15 +60,21 @@ function (Vector3) {
 		};
 	}
 
+	var bucketSortList = [];
+
+	var tmpVec = new Vector3();
+
 	/**
 	 * @param {Entity[]} renderList
 	 * @param {Camera} camera
 	 */
 	RenderQueue.prototype.sort = function (renderList, camera) {
+
+		// TODO: Reuse objects more
 		var index = 0;
 		this.camera = camera;
 		var buckets = {};
-		var bucketSortList = [];
+		bucketSortList.length = 0;
 		for (var i = 0; i < renderList.length; i++) {
 			var renderable = renderList[i];
 			var meshRendererComponent = renderable.meshRendererComponent;
@@ -83,6 +85,14 @@ function (Vector3) {
 				continue;
 			}
 			var renderQueue = meshRendererComponent.materials[0].getRenderQueue();
+
+			var distance = 0;
+			var bound = meshRendererComponent.worldBound;
+			if (bound !== null) {
+				distance = tmpVec.setv(camera.translation).subv(bound.center).lengthSquared();
+			}
+			meshRendererComponent._renderDistance = distance;
+
 			var bucket = buckets[renderQueue];
 			if (!bucket) {
 				bucket = [];
