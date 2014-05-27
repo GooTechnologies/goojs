@@ -80,6 +80,7 @@ function (
 	 * If the parameter is of type object then the logo will be positioned according to the 'position' key and will be colored according to the 'color' key
 	 * @param {boolean} [parameters.tpfSmoothingCount=10] Specifies the amount of previous frames to use when computing the 'time per frame'
 	 * @param {boolean} [parameters.debugKeys=false] If enabled the hotkeys Shift+[1..6] will be enabled
+	 * @param {boolean} [parameters.useTryCatch=true]
 	 */
 
 	function GooRunner(parameters) {
@@ -96,6 +97,12 @@ function (
 		 * @type {Renderer}
 		 */
 		this.renderer = new Renderer(parameters);
+
+		/** Set to true to run user-defined callbacks within try/catch statements. Errors will be printed to console.
+		 * @type {boolean}
+		 * @default true
+		 */
+		this.useTryCatch = parameters.useTryCatch !== undefined ? parameters.useTryCatch : true;
 
 		this._setBaseSystems();
 		this._registerBaseComponents();
@@ -218,13 +225,22 @@ function (
 	 */
 	//! TODO: private until documented
 	GooRunner.prototype.run = function (time) {
-		try {
+		if (this.useTryCatch) {
+			this._callSafe(this._updateFrame, time);// this._updateFrameSafe(time);
+		} else {
 			this._updateFrame(time);
-		} catch (e) {
-			if (e instanceof Error) {
-				console.error(e.stack);
+		}
+	};
+
+	// Calls a function and catches any error
+	GooRunner.prototype._callSafe = function (func) {
+		try {
+			func.apply(this, Array.prototype.slice.call(arguments, 1));
+		} catch (error) {
+			if (error instanceof Error) {
+				console.error(error.stack);
 			} else {
-				console.error(e);
+				console.log(error);
 			}
 		}
 	};
@@ -280,24 +296,26 @@ function (
 
 		// execute callbacks
 		//! AT: doing this to be able to schedule new callbacks from the existing callbacks
-		try {
-			if (this.callbacksNextFrame.length > 0) {
-				var callbacksNextFrame = this.callbacksNextFrame;
-				this.callbacksNextFrame = [];
-				for (var i = 0; i < callbacksNextFrame.length; i++) {
-					callbacksNextFrame[i](this.world.tpf);
+		if (this.callbacksNextFrame.length > 0) {
+			var callbacksNextFrame = this.callbacksNextFrame;
+			this.callbacksNextFrame = [];
+			for (var i = 0; i < callbacksNextFrame.length; i++) {
+				var callback = callbacksNextFrame[i];
+				if (this.useTryCatch) {
+					this._callSafe(callback, this.world.tpf);
+				} else {
+					callback(this.world.tpf);
 				}
 			}
-		} catch (e) {
-			console.error(e);
 		}
 
-		try {
-			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
-				this.callbacksPreProcess[i](this.world.tpf);
+		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+			var callback = this.callbacksPreProcess[i];
+			if (this.useTryCatch) {
+				this._callSafe(callback, this.world.tpf);
+			} else {
+				callback(this.world.tpf);
 			}
-		} catch (e) {
-			console.error(e);
 		}
 
 		// process the world
@@ -338,10 +356,10 @@ function (
 					}
 				}
 				this.renderer.pick(this._picking.x, this._picking.y, this._picking.pickingStore, Renderer.mainCamera);
-				try {
+				if (this.useTryCatch) {
+					this._callSafe(this._picking.pickingCallback, this._picking.pickingStore.id, this._picking.pickingStore.depth);
+				} else {
 					this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
-				} catch (e) {
-					console.error(e);
 				}
 				this._picking.doPick = false;
 
@@ -350,12 +368,13 @@ function (
 		}
 
 		// run the post render callbacks
-		try {
-			for (var i = 0; i < this.callbacks.length; i++) {
-				this.callbacks[i](this.world.tpf);
+		for (var i = 0; i < this.callbacks.length; i++) {
+			var callback = this.callbacks[i];
+			if (this.useTryCatch) {
+				this._callSafe(callback, this.world.tpf);
+			} else {
+				callback(this.world.tpf);
 			}
-		} catch (e) {
-			console.error(e);
 		}
 
 		// update the stats if there are any
@@ -368,13 +387,14 @@ function (
 
 		// resolve any snapshot requests
 		if (this._takeSnapshots.length) {
-			try {
-				var image = this.renderer.domElement.toDataURL();
-				for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
-					this._takeSnapshots[i](image);
+			var image = this.renderer.domElement.toDataURL();
+			for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
+				var callback = this._takeSnapshots[i];
+				if (this.useTryCatch) {
+					this._callSafe(callback, image);
+				} else {
+					callback(image);
 				}
-			} catch (err) {
-				console.error('Failed to take snapshot', err.message);
 			}
 			this._takeSnapshots = [];
 		}
