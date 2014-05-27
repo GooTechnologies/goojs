@@ -5,7 +5,7 @@ define([
 	'goo/math/MathUtils'
 ],
 /** @lends */
-function(
+function (
 	Component,
 	AudioContext,
 	Vector3,
@@ -33,11 +33,8 @@ function(
 
 		this._pannerNode.connect(this._outDryNode);
 		this._oldPosition = new Vector3();
-		this._position = new Vector3();
-		this._orientation = new Vector3();
-		this._velocity = new Vector3();
-	}
 
+	}
 	SoundComponent.prototype = Object.create(Component.prototype);
 	SoundComponent.prototype.constructor = SoundComponent;
 
@@ -126,6 +123,10 @@ function(
 		}
 	};
 
+	var tmpVec1 = new Vector3();
+	var tmpVec2 = new Vector3();
+	var tmpVec3 = new Vector3();
+
 	/**
 	 * Updates position, velocity and orientation of component and thereby all connected sounds
 	 * @param {settings} See {@link SoundSystem}
@@ -134,6 +135,10 @@ function(
 	 * @private
 	 */
 	SoundComponent.prototype.process = function (settings, transform, tpf) {
+		var position = tmpVec1;
+		var orientation = tmpVec2;
+		var velocity = tmpVec3;
+
 		if (!AudioContext) {
 			// Should never happen
 			return;
@@ -142,17 +147,19 @@ function(
 		this._pannerNode.maxDistance = settings.maxDistance;
 
 		var matrix = transform.matrix;
-		matrix.getTranslation(this._position);
-		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
-		this._oldPosition.setv(this._position);
-		this._orientation.setd(0, 0, -1);
-		matrix.applyPostVector(this._orientation);
-
-		var pd = this._position.data;
-		this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
-		var vd = this._velocity.data;
+		matrix.getTranslation(position);
+		velocity.setv(position).subv(this._oldPosition).div(tpf);
+		var vd = velocity.data;
 		this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
-		var od = this._orientation.data;
+
+		this._oldPosition.setv(position);
+		var pd = position.data;
+		this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
+
+		orientation.setd(0, 0, -1);
+		matrix.applyPostVector(orientation);
+
+		var od = orientation.data;
 		this._pannerNode.setOrientation(od[0], od[1], od[2]);
 	};
 
