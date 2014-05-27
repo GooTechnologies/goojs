@@ -37,6 +37,13 @@ function (System) {
 				this.updateWorldTransform(transformComponent);
 			}
 		}
+
+		for (i = 0; i < entities.length; i++) {
+			transformComponent = entities[i].transformComponent;
+			if (transformComponent._dirty) {
+				transformComponent.updateWorldTransform();
+			}
+		}
 	};
 
 	TransformSystem.prototype.updateWorldTransform = function (transformComponent) {
