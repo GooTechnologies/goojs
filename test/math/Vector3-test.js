@@ -94,6 +94,14 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(function() { Vector3.sub([1], b); }).toThrow();
 		});
 
+		it('can be negated', function () {
+			var vector = new Vector3(123, 345, -567);
+
+			vector.invert();
+
+			expect(vector).toEqual(new Vector3(-123, -345, 567));
+		});
+
 		it("can perform multiplication", function() {
 			var a = new Vector3(1, 2, 3);
 			var b = new Vector3(1, 2, 3);

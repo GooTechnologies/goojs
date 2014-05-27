@@ -342,6 +342,18 @@ function (
 	};
 
 	/* ====================================================================== */
+	/**
+	 * Performs component-wise negation of the vector
+	 * @returns {Vector3} Self for chaining
+	 */
+	Vector3.prototype.invert = function () {
+		this.data[0] = 0.0 - this.data[0];
+		this.data[1] = 0.0 - this.data[1];
+		this.data[2] = 0.0 - this.data[2];
+		return this;
+	};
+
+	/* ====================================================================== */
 
 	/**
 	 * Multiplies 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned. Equivalent of "return (target = lhs * rhs);".

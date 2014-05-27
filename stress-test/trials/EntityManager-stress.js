@@ -19,7 +19,7 @@ define([
 		}
 	});
 
-	responseTime('Create 3000 entities and EntityManager.added for another 30000 entities', 10, function () {
+	responseTime('Create 3000 entities and EntityManager.added for another 3000 entities', 10, function () {
 		var nEntities = 3000;
 		var world = new World();
 		var entityManager = new EntityManager();

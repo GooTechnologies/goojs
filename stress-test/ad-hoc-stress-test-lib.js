@@ -43,6 +43,13 @@
 
 	// repeatedly measures how much did a function take to execute
 	function repeat(times, fun) {
+		// run a couple of times to get the JIT to do its thing
+		var preMeasureIterations = Math.min(times / 4, 101); // 101 (just in case 100 is the magic number to trigger the optimizer)
+		for (var i = 0; i < times; i++) {
+			fun();
+		}
+
+		// run to measure
 		var min = Number.MAX_VALUE;
 		var avg, sum = 0;
 		var max = Number.MIN_VALUE;

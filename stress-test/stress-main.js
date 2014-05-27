@@ -8,6 +8,7 @@ require.config({
 });
 
 require([
+	'trials/Vector3-vs-Vector',
 	'trials/EntityManager-stress'
 ], function () {
 	stress();
