@@ -1,4 +1,4 @@
-v0.10.1 --- 2014-05-27
+v0.10.2 --- 2014-06-03
 ======================
 
 Breaking changes:
@@ -19,6 +19,13 @@ Breaking changes:
  * the passes have been extracted in their own pack:
       goo/passpack contains the former goo/renderer/pass/PassLib along with pass-related shaders which used to be in goo/renderer/shaders/ShaderLib, any post-effect related passes (Bloom, Blur, Depth, DOF, DOG, MotionBlur, Nes, SSAO) and the PosteffectsHandler. To be able to load posteffects using the dynamic loader you need to require the PosteffectsHandler (which will register itself).
  * the transform gizmos have been relocated to their own pack, under goo/util/gizmopack
+
+v0.10.1 --- 2014-05-27
+======================
+
+Fixes:
+ * animations can have timescale and loopcount 0
+ * fixed .preloadTextures/.procompileShaders crashing on devices without support for the global 'performance'
 
 v0.10.0 --- 2014-05-20
 ======================
