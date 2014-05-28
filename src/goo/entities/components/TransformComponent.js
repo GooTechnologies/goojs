@@ -135,7 +135,7 @@ function (
 		}
 	};
 
-	var tmpRotVec = new Vector3();
+	var tmpVec = new Vector3();
 
 	/**
 	 * Gets the value of transformComponent.transform.translation.
@@ -237,7 +237,7 @@ function (
 	 * @return {Vector3} rotation
 	 */
 	TransformComponent.prototype.getRotation = function (target) {
-		target = target || tmpRotVec;
+		target = target || tmpVec;
 		return this.transform.rotation.toAngles(target);
 	};
 
@@ -254,17 +254,16 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addRotation = function () {
-		this.tmpVec = this.tmpVec || new Vector3();
-		this.getRotation(this.tmpVec);
+		this.getRotation(tmpVec);
 		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
 			var arg0 = arguments[0];
 			if (arg0 instanceof Vector3) {
-				this.transform.rotation.fromAngles(this.tmpVec.x + arg0.x, this.tmpVec.y + arg0.y, this.tmpVec.z + arg0.z);
+				this.transform.rotation.fromAngles(tmpVec.x + arg0.x, tmpVec.y + arg0.y, tmpVec.z + arg0.z);
 			} else if (arg0.length === 3) {
-				this.transform.rotation.fromAngles(this.tmpVec.x + arg0[0], this.tmpVec.y + arg0[1], this.tmpVec.z + arg0[2]);
+				this.transform.rotation.fromAngles(tmpVec.x + arg0[0], tmpVec.y + arg0[1], tmpVec.z + arg0[2]);
 			}
 		} else {
-			this.transform.rotation.fromAngles(this.tmpVec.x + arguments[0], this.tmpVec.y + arguments[1], this.tmpVec.z + arguments[2]);
+			this.transform.rotation.fromAngles(tmpVec.x + arguments[0], tmpVec.y + arguments[1], tmpVec.z + arguments[2]);
 		}
 
 		this._dirty = true;
