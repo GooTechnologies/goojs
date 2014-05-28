@@ -350,6 +350,7 @@ function (
 
 		if (levelOfDetail === 2) {
 			new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
+			return null;
 		}
 
 		return meshDatas[0]; // Don't create patches bigger than 65k

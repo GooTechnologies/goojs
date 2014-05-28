@@ -91,6 +91,7 @@ function (
 				entity.set(meshDataComponent);
 				entity.addToWorld();
 				this.grid[x][z] = entity;
+				entity.meshRendererComponent.cullMode = 'Never';
 				entity.meshRendererComponent.hidden = true;
 			}
 		}
