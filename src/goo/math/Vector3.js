@@ -467,7 +467,6 @@ function (
 
 		if (typeof (lhs) === 'number') {
 
-			var ilhs = 1 / lhs;
 			var rdata = rhs.data || rhs;
 			target.data[0] = lhs / rdata[0];
 			target.data[1] = lhs / rdata[1];
