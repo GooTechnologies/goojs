@@ -29,13 +29,13 @@ function (
 		this.zExtent = zExtent !== undefined ? zExtent : 1;
 	}
 
-	BoundingBox._compVect1 = new Vector3();
-	BoundingBox._compVect2 = new Vector3();
-	BoundingBox.vec = new Vector3();
+	var tmpVec1 = new Vector3();
+	var tmpVec2 = new Vector3();
+	var tmpVec3 = new Vector3();
 
-	BoundingBox.corners = [];
+	var tmpCorners = [];
 	for (var i = 0; i < 8; i++) {
-		BoundingBox.corners.push(new Vector3());
+		tmpCorners.push(new Vector3());
 	}
 
 	BoundingBox.prototype = Object.create(BoundingVolume.prototype);
@@ -44,7 +44,7 @@ function (
 	BoundingBox.prototype.computeFromPoints = function (verts) {
 		var min = this.min;
 		var max = this.max;
-		var vec = BoundingBox.vec;
+		var vec = tmpVec3;
 
 		min.setd(Infinity, Infinity, Infinity);
 		max.setd(-Infinity, -Infinity, -Infinity);
@@ -74,8 +74,8 @@ function (
 			return;
 		}
 
-		var min = BoundingBox._compVect1.set(Infinity, Infinity, Infinity);
-		var max = BoundingBox._compVect2.set(-Infinity, -Infinity, -Infinity);
+		var min = tmpVec1.set(Infinity, Infinity, Infinity);
+		var max = tmpVec2.set(-Infinity, -Infinity, -Infinity);
 
 		var store = [];
 
@@ -122,7 +122,7 @@ function (
 			box = new BoundingBox();
 		}
 
-		var corners = BoundingBox.corners;
+		var corners = tmpCorners;
 		this.getCorners(corners);
 
 		// Transform all of these points by the transform
@@ -363,8 +363,8 @@ function (
 			return false;
 		}
 
-		// var diff = Vector3.sub(ray.origin, this.center, BoundingBox._compVect1);
-		var diff = BoundingBox._compVect1.setv(ray.origin).subv(this.center);
+		// var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
+		var diff = tmpVec1.setv(ray.origin).subv(this.center);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -403,7 +403,7 @@ function (
 			return null;
 		}
 
-		var diff = Vector3.sub(ray.origin, this.center, BoundingBox._compVect1);
+		var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -492,8 +492,8 @@ function (
 			store = new BoundingBox();
 		}
 
-		var calcVec1 = BoundingBox._compVect1;
-		var calcVec2 = BoundingBox._compVect2;
+		var calcVec1 = tmpVec1;
+		var calcVec2 = tmpVec2;
 
 		calcVec1.x = this.center.x - this.xExtent;
 		if (calcVec1.x > center.x - xExtent) {

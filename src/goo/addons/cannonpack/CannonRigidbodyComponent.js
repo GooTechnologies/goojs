@@ -52,36 +52,30 @@ function (
 		}); //! AT: this is modifying the settings object which is bad practice (as in 'unintended side effects')
 
 		this.mass = settings.mass;
-
-		this._initialized = false; // Keep track, so we can add the body next frame
-		//! AT: private and unused?
-
-		this._quat = new Quaternion();
 		this._initialVelocity = new Vector3();
 		this._initialVelocity.setv(settings.velocity);
-
-		this.api = {
-			setForce: function (force) {
-				CannonRigidbodyComponent.prototype.setForce.call(this,force);
-			}.bind(this),
-
-			setVelocity: function (velocity) {
-				CannonRigidbodyComponent.prototype.setVelocity.call(this,velocity);
-			}.bind(this),
-
-			// TODO: is it possible to use entity.setTranslation(), and override the TransformComponent API?
-			setPosition: function (pos) {
-				CannonRigidbodyComponent.prototype.setPosition.call(this,pos);
-			}.bind(this),
-
-			setAngularVelocity: function (angularVelocity) {
-				CannonRigidbodyComponent.prototype.setAngularVelocity.call(this, angularVelocity);
-			}.bind(this)
-		};
 	}
 
 	CannonRigidbodyComponent.prototype = Object.create(Component.prototype);
 	CannonRigidbodyComponent.constructor = CannonRigidbodyComponent;
+
+	CannonRigidbodyComponent.prototype.api = {
+		setForce: function (force) {
+			CannonRigidbodyComponent.prototype.setForce.call(this.cannonRigidbodyComponent, force);
+		},
+		setVelocity: function (velocity) {
+			CannonRigidbodyComponent.prototype.setVelocity.call(this.cannonRigidbodyComponent, velocity);
+		},
+		// schteppe: needs to be separate from the transformcomponent setTranslation, since the transformcomponent data will get overridden by physics
+		setPosition: function (pos) {
+			CannonRigidbodyComponent.prototype.setPosition.call(this.cannonRigidbodyComponent, pos);
+		},
+		setAngularVelocity: function (angularVelocity) {
+			CannonRigidbodyComponent.prototype.setAngularVelocity.call(this.cannonRigidbodyComponent, angularVelocity);
+		}
+	};
+
+	var tmpQuat = new Quaternion();
 
 	/**
 	 * Set the force on the body
@@ -154,7 +148,7 @@ function (
 					var trans = t.translation;
 					var rot = t.rotation;
 					var offset = new CANNON.Vec3(trans.x, trans.y, trans.z);
-					var q = that._quat;
+					var q = tmpQuat;
 					q.fromRotationMatrix(rot);
 					var orientation = new CANNON.Quaternion(q.x, q.y, q.z, q.w);
 					shape.addChild(collider.cannonShape, offset, orientation);

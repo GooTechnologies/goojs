@@ -22,11 +22,10 @@ function (
 	 */
 	function BoundingSphere(center, radius) {
 		BoundingVolume.call(this, center);
-
 		this.radius = radius !== undefined ? radius : 1;
-
-		this.vec = new Vector3();
 	}
+
+	var tmpVec = new Vector3();
 
 	BoundingSphere.prototype = Object.create(BoundingVolume.prototype);
 	BoundingSphere.prototype.constructor = BoundingSphere;
@@ -34,7 +33,7 @@ function (
 	BoundingSphere.prototype.computeFromPoints = function (verts) {
 		var min = this.min;
 		var max = this.max;
-		var vec = this.vec;
+		var vec = tmpVec;
 
 		min.setd(Infinity, Infinity, Infinity);
 		max.setd(-Infinity, -Infinity, -Infinity);
@@ -96,7 +95,7 @@ function (
 
 		var maxRadiusSqr = 0.0;
 		for (var i = 0; i < points.length; i++) {
-			var diff = Vector3.sub(points[i], this.center, this.vec);
+			var diff = Vector3.sub(points[i], this.center, tmpVec);
 			var radiusSqr = diff.lengthSquared();
 			if (radiusSqr > maxRadiusSqr) {
 				maxRadiusSqr = radiusSqr;
@@ -189,7 +188,7 @@ function (
 	};
 
 	BoundingSphere.prototype.intersectsSphere = function (bs) {
-		var diff = this.vec.setv(this.center).subv(bs.center);
+		var diff = tmpVec.setv(this.center).subv(bs.center);
 		var rsum = this.radius + bs.radius;
 		return diff.dot(diff) <= rsum * rsum;
 		//return this.center.distanceSquared(bs.center) <= rsum * rsum;
@@ -264,7 +263,7 @@ function (
 		if (bv instanceof BoundingSphere) {
 			return this.mergeSphere(bv.center, bv.radius, this);
 		} else {
-			var boxRadius = this.vec.setd(bv.xExtent, bv.yExtent, bv.zExtent).length();
+			var boxRadius = tmpVec.setd(bv.xExtent, bv.yExtent, bv.zExtent).length();
 			return this.mergeSphere(bv.center, boxRadius, this);
 		}
 	};
@@ -274,7 +273,7 @@ function (
 			store = new BoundingSphere();
 		}
 
-		var diff = this.vec.setv(center).subv(this.center);
+		var diff = tmpVec.setv(center).subv(this.center);
 		var lengthSquared = diff.lengthSquared();
 		var radiusDiff = radius - this.radius;
 		var radiusDiffSqr = radiusDiff * radiusDiff;

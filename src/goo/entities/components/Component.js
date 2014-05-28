@@ -14,7 +14,6 @@ define(
 		 */
 		this.enabled = true;
 
-		//this.api = {}; // should be static (although it contains bound methods)
 		this.installedAPI = {};
 	}
 

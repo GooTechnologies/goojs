@@ -9,13 +9,12 @@ function (Vector3, MathUtils) {
 	function Ray(origin, direction) {
 		this.origin = origin || new Vector3();
 		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
-
-		// TODO: Put on the prototype and make sure that none of them interfere
-		this.calcVec1 = new Vector3();
-		this.calcVec2 = new Vector3();
-		this.calcVec3 = new Vector3();
-		this.calcVec4 = new Vector3();
 	}
+
+	var tmpVec1 = new Vector3();
+	var tmpVec2 = new Vector3();
+	var tmpVec3 = new Vector3();
+	var tmpVec4 = new Vector3();
 
 	/**
 	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
@@ -47,10 +46,10 @@ function (Vector3, MathUtils) {
 	 * @return true if this ray intersects a triangle formed by the given three points.
 	 */
 	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
-		var diff = this.calcVec1.set(this.origin).sub(pointA);
-		var edge1 = this.calcVec2.set(pointB).sub(pointA);
-		var edge2 = this.calcVec3.set(pointC).sub(pointA);
-		var norm = this.calcVec4.set(edge1).cross(edge2);
+		var diff = tmpVec1.set(this.origin).sub(pointA);
+		var edge1 = tmpVec2.set(pointB).sub(pointA);
+		var edge2 = tmpVec3.set(pointC).sub(pointA);
+		var norm = tmpVec4.set(edge1).cross(edge2);
 
 		var dirDotNorm = this.direction.dot(norm);
 		var sign;
@@ -107,7 +106,7 @@ function (Vector3, MathUtils) {
 	 */
 	Ray.prototype.getDistanceToPrimitive = function (worldVertices) {
 		// Intersection test
-		var intersect = this.calcVec1;
+		var intersect = tmpVec1;
 		if (this.intersects(worldVertices, false, intersect)) {
 			return this.origin.distance(intersect.x, intersect.y, intersect.z);
 		}
@@ -147,7 +146,7 @@ function (Vector3, MathUtils) {
 	 * @return the squared distance from this ray to the given point.
 	 */
 	Ray.prototype.distanceSquared = function (point, store) {
-		var vectorA = this.calcVec1;
+		var vectorA = tmpVec1;
 
 		vectorA.setv(point).subv(this.origin);
 		var t0 = this.direction.dot(vectorA);
