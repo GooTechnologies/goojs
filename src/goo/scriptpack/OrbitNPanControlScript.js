@@ -37,10 +37,20 @@ define([
 	var orbitParams = OrbitCamControlScript.externals.parameters;
 	var panParams = PanCamControlScript.externals.parameters;
 
-	var params = orbitParams.concat(panParams.slice(1));
+	// Make sure we don't change parameters for the other scripts
+	var params = _.deepClone(orbitParams.concat(panParams.slice(1)));
+
+	// Remove the panSpeed parameter
 	for (var i = 0; i < params.length; i++) {
-		var param = _.deepClone(params[i]);
-		params[i] = param;
+		var param = params[i];
+		if (param.key === 'panSpeed') {
+			params.splice(i, 1);
+			break;
+		}
+	}
+
+	for (var i = 0; i < params.length; i++) {
+		var param = params[i];
 		switch (param.key) {
 		case 'dragButton':
 			param['default'] = 'Left';
