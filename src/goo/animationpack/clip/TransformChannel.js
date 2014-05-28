@@ -1,15 +1,13 @@
 define([
 	'goo/animationpack/clip/AbstractAnimationChannel',
 	'goo/animationpack/clip/TransformData',
-	'goo/math/Quaternion',
-	'goo/math/Vector3'
+	'goo/math/Quaternion'
 ],
 /** @lends */
 function (
 	AbstractAnimationChannel,
 	TransformData,
-	Quaternion,
-	Vector3
+	Quaternion
 ) {
 	'use strict';
 
@@ -21,7 +19,7 @@ function (
 	 * @param {Array} translations the translations to set on this channel at each time offset.
 	 * @param {Array} scales the scales to set on this channel at each time offset.
 	 */
-	function TransformChannel (channelName, times, rotations, translations, scales, blendType) {
+	function TransformChannel(channelName, times, rotations, translations, scales, blendType) {
 		AbstractAnimationChannel.call(this, channelName, times, blendType);
 
 		if (rotations.length / 4 !== times.length || translations.length / 3 !== times.length || scales.length / 3 !== times.length) {
@@ -31,11 +29,10 @@ function (
 		this._rotations = new Float32Array(rotations);
 		this._translations = new Float32Array(translations);
 		this._scales = new Float32Array(scales);
-
-		this.tmpVec = new Vector3();
-		this.tmpQuat = new Quaternion();
-		this.tmpQuat2 = new Quaternion();
 	}
+
+	var tmpQuat = new Quaternion();
+	var tmpQuat2 = new Quaternion();
 
 	TransformChannel.prototype = Object.create(AbstractAnimationChannel.prototype);
 
@@ -96,23 +93,23 @@ function (
 		transformData._rotation.data[2] = this._rotations[index4A + 2];
 		transformData._rotation.data[3] = this._rotations[index4A + 3];
 
-		this.tmpQuat.data[0] = this._rotations[index4B + 0];
-		this.tmpQuat.data[1] = this._rotations[index4B + 1];
-		this.tmpQuat.data[2] = this._rotations[index4B + 2];
-		this.tmpQuat.data[3] = this._rotations[index4B + 3];
+		tmpQuat.data[0] = this._rotations[index4B + 0];
+		tmpQuat.data[1] = this._rotations[index4B + 1];
+		tmpQuat.data[2] = this._rotations[index4B + 2];
+		tmpQuat.data[3] = this._rotations[index4B + 3];
 
-		if (!transformData._rotation.equals(this.tmpQuat)) {
-			Quaternion.slerp(transformData._rotation, this.tmpQuat, fraction, this.tmpQuat2);
-			transformData._rotation.setv(this.tmpQuat2);
+		if (!transformData._rotation.equals(tmpQuat)) {
+			Quaternion.slerp(transformData._rotation, tmpQuat, fraction, tmpQuat2);
+			transformData._rotation.setv(tmpQuat2);
 		}
 
-		transformData._translation.data[0] = (1 - fraction) * this._translations[index3A+0] + fraction * this._translations[index3B+0];
-		transformData._translation.data[1] = (1 - fraction) * this._translations[index3A+1] + fraction * this._translations[index3B+1];
-		transformData._translation.data[2] = (1 - fraction) * this._translations[index3A+2] + fraction * this._translations[index3B+2];
+		transformData._translation.data[0] = (1 - fraction) * this._translations[index3A + 0] + fraction * this._translations[index3B + 0];
+		transformData._translation.data[1] = (1 - fraction) * this._translations[index3A + 1] + fraction * this._translations[index3B + 1];
+		transformData._translation.data[2] = (1 - fraction) * this._translations[index3A + 2] + fraction * this._translations[index3B + 2];
 
-		transformData._scale.data[0] = (1 - fraction) * this._scales[index3A+0] + fraction * this._scales[index3B+0];
-		transformData._scale.data[1] = (1 - fraction) * this._scales[index3A+1] + fraction * this._scales[index3B+1];
-		transformData._scale.data[2] = (1 - fraction) * this._scales[index3A+2] + fraction * this._scales[index3B+2];
+		transformData._scale.data[0] = (1 - fraction) * this._scales[index3A + 0] + fraction * this._scales[index3B + 0];
+		transformData._scale.data[1] = (1 - fraction) * this._scales[index3A + 1] + fraction * this._scales[index3B + 1];
+		transformData._scale.data[2] = (1 - fraction) * this._scales[index3A + 2] + fraction * this._scales[index3B + 2];
 	};
 
 	/**
