@@ -18,7 +18,7 @@ require([
 	var numFires = 200;
 	var scale = 3 / numFires;
 
-	function addFire(translation) {
+	function addFire(translation, scale) {
 		var material = new Material(ShaderLib.particles);
 		var texture = ParticleSystemUtils.createFlareTexture();
 		texture.generateMipmaps = true;
@@ -46,7 +46,7 @@ require([
 	V.addOrbitCamera();
 
 	for (var i = 0; i < numFires; i++) {
-		addFire([0, 0, (i - numFires / 2) * scale*5]);
+		addFire([0, 0, (i - numFires / 2) * scale*5], scale*(Math.sin(i/10)+1.5));
 	}
 
 	V.process();
