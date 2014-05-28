@@ -46,25 +46,25 @@ function (
 		var max = this.max;
 		var vec = tmpVec3;
 
-		min.setd(Infinity, Infinity, Infinity);
-		max.setd(-Infinity, -Infinity, -Infinity);
+		min.setd(verts[0], verts[1], verts[2]);
+		max.setd(verts[0], verts[1], verts[2]);
 		var x, y, z;
 		for (var i = 0; i < verts.length; i += 3) {
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
-			min.x = x < min.x ? x : min.x;
-			min.y = y < min.y ? y : min.y;
-			min.z = z < min.z ? z : min.z;
-			max.x = x > max.x ? x : max.x;
-			max.y = y > max.y ? y : max.y;
-			max.z = z > max.z ? z : max.z;
+			min.data[0] = x < min.data[0] ? x : min.data[0];
+			min.data[1] = y < min.data[1] ? y : min.data[1];
+			min.data[2] = z < min.data[2] ? z : min.data[2];
+			max.data[0] = x > max.data[0] ? x : max.data[0];
+			max.data[1] = y > max.data[1] ? y : max.data[1];
+			max.data[2] = z > max.data[2] ? z : max.data[2];
 		}
 
 		vec.setv(max).subv(min).div(2.0);
-		this.xExtent = vec.x;
-		this.yExtent = vec.y;
-		this.zExtent = vec.z;
+		this.xExtent = vec.data[0];
+		this.yExtent = vec.data[1];
+		this.zExtent = vec.data[2];
 
 		this.center.setv(max).addv(min).div(2.0);
 	};

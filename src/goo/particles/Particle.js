@@ -52,6 +52,8 @@ function (
 		this.age = 0;
 	};
 
+	var tmpArray = [];
+
 	/**
 	 * Called by the particle system each frame to update the position and other properties of the particle
 	 * @private
@@ -126,10 +128,23 @@ function (
 			var vIndex = 1.0 - (Math.floor(this.uvIndex / this.parent.vRange) / this.parent.vRange);
 			var uDelta = 1.0 / this.parent.uRange;
 			var vDelta = 1.0 / this.parent.vRange;
-			uvBuffer.set([uIndex + uDelta, vIndex - vDelta], this.index * 8 + 0);
-			uvBuffer.set([uIndex + uDelta, vIndex], this.index * 8 + 2);
-			uvBuffer.set([uIndex, vIndex], this.index * 8 + 4);
-			uvBuffer.set([uIndex, vIndex - vDelta], this.index * 8 + 6);
+
+			tmpArray[0] = uIndex + uDelta;
+			tmpArray[1] = vIndex - vDelta;
+			uvBuffer.set(tmpArray, this.index * 8 + 0);
+
+			tmpArray[0] = uIndex + uDelta;
+			tmpArray[1] = vIndex;
+			uvBuffer.set(tmpArray, this.index * 8 + 2);
+
+			tmpArray[0] = uIndex;
+			tmpArray[1] = vIndex;
+			uvBuffer.set(tmpArray, this.index * 8 + 4);
+
+			tmpArray[0] = uIndex;
+			tmpArray[1] = vIndex - vDelta;
+			uvBuffer.set(tmpArray, this.index * 8 + 6);
+
 			this.lastUVIndex = this.uvIndex;
 		}
 	};

@@ -12,11 +12,11 @@ require([
 	ParticleLib,
 	ParticleSystemUtils,
 	V
-	) {
+) {
 	'use strict';
 
-	var numFires = 50;
-	var scale = 2/numFires;
+	var numFires = 200;
+	var scale = 3 / numFires;
 
 	function addFire(translation) {
 		var material = new Material(ShaderLib.particles);
