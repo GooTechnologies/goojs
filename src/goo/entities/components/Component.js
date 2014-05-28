@@ -28,7 +28,12 @@ define(
 		}
 
 		var api = this.api;
-		for (var key in api) {
+		if (!api) {
+			return;
+		}
+		var keys = Object.keys(api);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
 			if (typeof entity[key] === 'undefined') {
 				entity[key] = api[key];
 				this.installedAPI[key] = true;

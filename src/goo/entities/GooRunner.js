@@ -556,7 +556,9 @@ function (
 
 
 	GooRunner.prototype._dispatchEvent = function (evt) {
-		for (var type in this._eventTriggered) {
+		var types = Object.keys(this._eventTriggered);
+		for (var i = 0; i < types.length; i++) {
+			var type = types[i];
 			if (this._eventTriggered[type] && this._eventListeners[type]) {
 				var e = {
 					entity: evt.entity,
@@ -569,8 +571,8 @@ function (
 					intersection: evt.intersection
 				};
 				try {
-					for (var i = 0; i < this._eventListeners[type].length; i++) {
-						if (this._eventListeners[type][i](e) === false) {
+					for (var j = 0; j < this._eventListeners[type].length; j++) {
+						if (this._eventListeners[type][j](e) === false) {
 							break;
 						}
 					}
