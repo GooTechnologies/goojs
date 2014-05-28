@@ -20,7 +20,6 @@ define([
 		var panButton;
 		var lookAtPoint;
 		var mouseState;
-		var devicePixelRatio;
 		var listeners;
 
 		function getTouchCenter(touches) {
@@ -46,7 +45,7 @@ define([
 			calcVector2 = new Vector3();
 
 			var renderer = environment.world.gooRunner.renderer;
-			devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ?
+			environment.devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ?
 				window.devicePixelRatio / renderer.svg.currentScale : 1;
 
 			mouseState = {
@@ -168,8 +167,8 @@ define([
 				if (lookAtPoint.equals(mainCam.translation)) {
 					return;
 				}
-				var width = environment.domElement.offsetWidth;
-				var height = environment.domElement.offsetHeight;
+				var width = environment.viewportWidth / environment.devicePixelRatio;
+				var height = environment.viewportHeight / environment.devicePixelRatio;
 				mainCam.getScreenCoordinates(lookAtPoint, width, height, calcVector);
 				calcVector.sub_d(
 					mouseState.dx,/// (environment.viewportWidth/devicePixelRatio),
