@@ -22,10 +22,11 @@ function (
 	function HtmlSystem(renderer) {
 		System.call(this, 'HtmlSystem', ['TransformComponent', 'HtmlComponent']);
 		this.renderer = renderer;
-		this.tmpVector = new Vector3();
 	}
 
 	HtmlSystem.prototype = Object.create(System.prototype);
+
+	var tmpVector = new Vector3();
 
 	// Copied from CSSTransformComponent
 	var prefixes = ["", "-webkit-", "-moz-", "-ms-", "-o-"];
@@ -62,17 +63,17 @@ function (
 			}
 
 			// Behind camera
-			this.tmpVector.setv(camera.translation)
+			tmpVector.setv(camera.translation)
 				.subv(entity.transformComponent.worldTransform.translation);
-			if (camera._direction.dot(this.tmpVector) > 0) {
+			if (camera._direction.dot(tmpVector) > 0) {
 				component.domElement.style.display = 'none';
 				continue;
 			}
 
 			// compute world position.
-			camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, screenWidth, screenHeight, this.tmpVector);
+			camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, screenWidth, screenHeight, tmpVector);
 			// Behind near plane
-			if (this.tmpVector.z < 0) {
+			if (tmpVector.z < 0) {
 				if (component.hidden !== true) {
 					component.domElement.style.display = 'none';
 					//component.hidden = true;
@@ -84,8 +85,8 @@ function (
 
 			var renderer = this.renderer;
 			var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
-			var fx = Math.floor(this.tmpVector.x/devicePixelRatio);
-			var fy = Math.floor(this.tmpVector.y/devicePixelRatio);
+			var fx = Math.floor(tmpVector.x/devicePixelRatio);
+			var fy = Math.floor(tmpVector.y/devicePixelRatio);
 
 			setStyle(component.domElement, 'transform',
 				'translate(-50%, -50%) '+
