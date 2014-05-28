@@ -207,7 +207,7 @@ define([
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
 				if (camera.projectionMode === Camera.Perspective) {
 					// RB: I know, very arbitrary but looks ok
-					calcVector.scale(parameters.panSpeed * 60);
+					calcVector.scale(parameters.panSpeed * 20);
 				} else {
 					calcVector.scale(parameters.panSpeed);
 				}
