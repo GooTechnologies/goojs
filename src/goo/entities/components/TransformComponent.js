@@ -135,6 +135,8 @@ function (
 		}
 	};
 
+	var tmpRotVec = new Vector3();
+
 	/**
 	 * Gets the value of transformComponent.transform.translation.
 	 * To change the translation, the returned object can be modified
@@ -235,8 +237,7 @@ function (
 	 * @return {Vector3} rotation
 	 */
 	TransformComponent.prototype.getRotation = function (target) {
-		this.tmpRotVec = this.tmpRotVec || new Vector3();
-		target = target || this.tmpRotVec;
+		target = target || tmpRotVec;
 		return this.transform.rotation.toAngles(target);
 	};
 
