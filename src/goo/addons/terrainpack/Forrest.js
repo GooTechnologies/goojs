@@ -136,9 +136,11 @@ function (
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
 		this.grid = [];
+		this.gridState = [];
 		var dummyMesh = this.createForrestPatch(0, 0, 1);
 		for (var x = 0; x < this.gridSize; x++) {
 			this.grid[x] = [];
+			this.gridState[x] = [];
 			for (var z = 0; z < this.gridSize; z++) {
 				var entity = world.createEntity(this.material);
 				var meshDataComponent = new MeshDataComponent(dummyMesh);
@@ -149,6 +151,11 @@ function (
 				entity.set(meshDataComponent);
 				entity.addToWorld();
 				this.grid[x][z] = entity;
+				this.gridState[x][z] = {
+					lod: -1,
+					x: -1,
+					z: -1
+				};
 				entity.meshRendererComponent.hidden = true;
 			}
 		}
@@ -197,57 +204,38 @@ function (
 				var patchX = newX + x;
 				var patchZ = newZ + z;
 
-				var diffX = patchX - this.currentX;
-				var diffZ = patchZ - this.currentZ;
-
 				patchX -= this.gridSizeHalf;
 				patchZ -= this.gridSizeHalf;
 				var modX = MathUtils.moduloPositive(patchX, this.gridSize);
 				var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
 				var entity = this.grid[modX][modZ];
+				var state = this.gridState[modX][modZ];
 
+				//
 				var testX = Math.abs(x - this.gridSizeHalf);
 				var testZ = Math.abs(z - this.gridSizeHalf);
-
 				var levelOfDetail = 1;
-				if (entity.meshRendererComponent.hidden === false && diffX >= 0 && diffX < this.gridSize && diffZ >= 0 && diffZ < this.gridSize) {
-					if (testX < this.minDist && testZ < this.minDist) {
-						// entity.meshRendererComponent.hidden = true;
-						levelOfDetail = 2;
-					} else {
-						entity.traverse(function (entity, level) {
-							if (level > 0) {
-								entity.removeFromWorld();
-							}
-						});
-
-						continue;
-					}
-				}
-
-				if (testX < this.minDist && testZ < this.minDist) {
-					// entity.meshRendererComponent.hidden = true;
+				if (testX < this.minDist & testZ < this.minDist)
 					levelOfDetail = 2;
-					// continue;
+
+				// recycle if same settings
+				if (state.lod === levelOfDetail && state.x === patchX && state.z === patchZ) {
+					continue;
 				}
+
+				// store grid patch state and re-generate
+				state.lod = levelOfDetail;
+				state.x = patchX;
+				state.z = patchZ;
 
 				patchX *= this.patchSize;
 				patchZ *= this.patchSize;
-
-				var meshData = null;
-			//	if (levelOfDetail === 1) {
-					meshData = this.createForrestPatch(patchX, patchZ, levelOfDetail, entity);
-			//	} else {
-			//		meshData = this.createPatchReal(patchX, patchZ);
-			//	}
-
-				if (!meshData) {
-					entity.meshRendererComponent.hidden = true;
-				} else {
+				var meshData = this.createForrestPatch(patchX, patchZ, levelOfDetail, entity);
+				if (meshData && meshData.vertexCount > 0) {
+					entity.meshDataComponent.meshData = meshData;
 					entity.meshRendererComponent.hidden = false;
-					if (levelOfDetail < 2) {
-						entity.meshDataComponent.meshData = meshData;
-					}
+				} else {
+					entity.meshRendererComponent.hidden = true;
 				}
 				entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 			}
@@ -304,7 +292,9 @@ function (
 		transform.translation.set(pos);
 		transform.update();
 		// var meshData;
-		if (levelOfDetail === 2 && this.entityMap[vegetationType]) {
+		var useMesh = gridEntity && ((levelOfDetail === 2) || (this.forrestTypes[vegetationType].forbidden === true));
+
+		if (useMesh && this.entityMap[vegetationType]) {
 			var treeEntity = this.fetchTreeMesh(vegetationType);
 			treeEntity.transformComponent.transform.scale.mul(size);
 			treeEntity.transformComponent.transform.translation.set(pos);
@@ -326,6 +316,7 @@ function (
 		var patchSpacing = this.patchSpacing;
 
 		if (gridEntity) {
+			// remove any previous old trees.
 			gridEntity.traverse(function (entity, level) {
 				if (level > 0) {
 					entity.removeFromWorld();
@@ -346,11 +337,10 @@ function (
 				// console.count('tree');
 			}
 		}
-		var meshDatas = meshBuilder.build();
 
+		var meshDatas = meshBuilder.build();
 		if (levelOfDetail === 2) {
 			new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
-			return null;
 		}
 
 		return meshDatas[0]; // Don't create patches bigger than 65k
