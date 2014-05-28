@@ -469,9 +469,9 @@ function (
 
 			var ilhs = 1 / lhs;
 			var rdata = rhs.data || rhs;
-			target.data[0] = rdata[0] * ilhs;
-			target.data[1] = rdata[1] * ilhs;
-			target.data[2] = rdata[2] * ilhs;
+			target.data[0] = lhs / rdata[0];
+			target.data[1] = lhs / rdata[1];
+			target.data[2] = lhs / rdata[2];
 
 		} else if (typeof (rhs) === 'number') {
 
