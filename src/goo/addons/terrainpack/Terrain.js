@@ -859,7 +859,6 @@ function(
 					// 'vec3 detail = texture2D(detailMap, mapcoord).xyz;',
 					// 'final_color.rgb = mix(final_color.rgb, detail, smoothstep(30.0, 60.0, length(viewPosition)));',
 
-					ShaderBuilder.light.fragment,
 
 					'#ifdef FOG',
 					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
@@ -868,6 +867,8 @@ function(
 
 					'#ifdef LIGHTMAP',
 					'final_color = final_color * texture2D(lightMap, mapcoord);',
+					'#else',
+					ShaderBuilder.light.fragment,
 					'#endif',
 
 					'gl_FragColor = final_color;',
