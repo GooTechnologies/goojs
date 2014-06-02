@@ -49,7 +49,7 @@ function (
 		min.setd(verts[0], verts[1], verts[2]);
 		max.setd(verts[0], verts[1], verts[2]);
 		var x, y, z;
-		for (var i = 0; i < verts.length; i += 3) {
+		for (var i = 3; i < verts.length; i += 3) {
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
@@ -61,13 +61,15 @@ function (
 			max.data[2] = z > max.data[2] ? z : max.data[2];
 		}
 
-		vec.setv(max).subv(min).div(2.0);
+		vec.setv(max).subv(min).mul(0.5);
 		this.xExtent = vec.data[0];
 		this.yExtent = vec.data[1];
 		this.zExtent = vec.data[2];
 
 		this.center.setv(max).addv(min).div(2.0);
 	};
+
+	var tmpArray = [];
 
 	BoundingBox.prototype.computeFromPrimitives = function (data, section, indices, start, end) {
 		if (end - start <= 0) {
@@ -77,7 +79,8 @@ function (
 		var min = tmpVec1.set(Infinity, Infinity, Infinity);
 		var max = tmpVec2.set(-Infinity, -Infinity, -Infinity);
 
-		var store = [];
+		var store = tmpArray;
+		store.length = 0;
 
 		for (var i = start; i < end; i++) {
 			store = data.getPrimitiveVertices(indices[i], section, store);
