@@ -402,6 +402,10 @@ function (
 				errors.push('parameter decimals needs to be number');
 				continue;
 			}
+			if (param.precision && isNaN(param.precision)) {
+				errors.push('parameter decimals needs to be number');
+				continue;
+			}
 			if (param.exponential !== undefined && typeof param.exponential !== 'boolean') {
 				errors.push('parameter exponential needs to be boolean');
 				continue;
