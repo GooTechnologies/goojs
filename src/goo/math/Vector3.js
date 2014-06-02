@@ -381,31 +381,39 @@ function (
 	 * Vector3.mul(v1, 5, v1); // v1 == (5, 10, 15)
 	 */
 	Vector3.mul = function (lhs, rhs, target) {
-		if (typeof (lhs) === "number") {
-			lhs = [lhs, lhs, lhs];
-		}
-
-		if (typeof (rhs) === "number") {
-			rhs = [rhs, rhs, rhs];
-		}
-
 		if (!target) {
 			target = new Vector3();
 		}
 
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
+		if (typeof (lhs) === 'number') {
 
-		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
+			var rdata = rhs.data || rhs;
+			target.data[0] = lhs * rdata[0];
+			target.data[1] = lhs * rdata[1];
+			target.data[2] = lhs * rdata[2];
+
+		} else if (typeof (rhs) === 'number') {
+
+			var ldata = lhs.data || lhs;
+			target.data[0] = ldata[0] * rhs;
+			target.data[1] = ldata[1] * rhs;
+			target.data[2] = ldata[2] * rhs;
+
+		} else {
+			var ldata = lhs.data || lhs;
+			var rdata = rhs.data || rhs;
+
+			if (ldata.length !== 3 || rdata.length !== 3) {
+				throw {
+					name: 'Illegal Arguments',
+					message: 'The arguments are of incompatible sizes.'
+				};
+			}
+
+			target.data[0] = ldata[0] * rdata[0];
+			target.data[1] = ldata[1] * rdata[1];
+			target.data[2] = ldata[2] * rdata[2];
 		}
-
-		target.data[0] = ldata[0] * rdata[0];
-		target.data[1] = ldata[1] * rdata[1];
-		target.data[2] = ldata[2] * rdata[2];
 
 		return target;
 	};

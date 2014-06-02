@@ -66,7 +66,7 @@ function (
 		this.yExtent = vec.data[1];
 		this.zExtent = vec.data[2];
 
-		this.center.setv(max).addv(min).div(2.0);
+		this.center.setv(max).addv(min).mul(0.5);
 	};
 
 	var tmpArray = [];
