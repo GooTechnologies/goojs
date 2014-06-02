@@ -5,6 +5,8 @@ define([
 function (System) {
 	'use strict';
 
+	var numUpdates;
+
 	/**
 	 * @class Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"
 	 * @extends System
@@ -17,7 +19,7 @@ function (System) {
 	TransformSystem.prototype = Object.create(System.prototype);
 
 	TransformSystem.prototype.process = function (entities) {
-		this.numUpdates = 0;
+		numUpdates = 0;
 		var i, transformComponent;
 		for (i = 0; i < entities.length; i++) {
 			transformComponent = entities[i].transformComponent;
@@ -27,45 +29,29 @@ function (System) {
 			}
 		}
 
-
+		// Traverse from root nodes and down, depth first
 		for (i = 0; i < entities.length; i++) {
-			transformComponent = entities[i].transformComponent;
-			if (transformComponent.parent === null && !transformComponent._dirty) {
-				// Root node that is not dirty. We don't need to update it.
-				transformComponent._updated2 = true;
-			} else {
-				transformComponent._updated2 = false;
+			var entity = entities[i];
+			transformComponent = entity.transformComponent;
+			if (transformComponent.parent === null) {
+				entity.traverse(traverseFunc);
 			}
 		}
 
-		for (i = 0; i < entities.length; i++) {
-			transformComponent = entities[i].transformComponent;
-			this.updateWorldTransform(transformComponent);
-		}
+		this.numUpdates = numUpdates;
+	};
 
-		// Should not be needed, but safe it up
-		for (i = 0; i < entities.length; i++) {
-			transformComponent = entities[i].transformComponent;
-			if (transformComponent._dirty) {
-				transformComponent.updateWorldTransform();
+	function traverseFunc(entity) {
+		if (entity.transformComponent._dirty) {
+			entity.transformComponent.updateWorldTransform();
+			numUpdates++;
+			// Set children to dirty
+			var children = entity.transformComponent.children;
+			for (var j = 0; j < children.length; j++) {
+				children[j]._dirty = true;
 			}
 		}
-	};
-
-	TransformSystem.prototype.updateWorldTransform = function (transformComponent) {
-		var isRoot = transformComponent.parent === null;
-		var isUpdated = transformComponent._updated2;
-		var hasUpdatedParent = (transformComponent.parent && transformComponent.parent._updated2);
-		if (!isUpdated && (isRoot || hasUpdatedParent)) {
-			this.numUpdates++;
-			transformComponent.updateWorldTransform();
-			transformComponent._updated2 = true;
-		}
-
-		for (var i = 0; i < transformComponent.children.length; i++) {
-			this.updateWorldTransform(transformComponent.children[i]);
-		}
-	};
+	}
 
 	return TransformSystem;
 });
