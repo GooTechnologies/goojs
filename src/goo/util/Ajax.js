@@ -191,18 +191,24 @@ function (
 		}
 
 		var promise = new RSVP.Promise();
-		image.addEventListener('load', function () {
+
+		var onLoad = function loadHandler() {
 			image.dataReady = true;
 			if (window.URL && window.URL.revokeObjectURL !== undefined) {
 				window.URL.revokeObjectURL(image.src);
 			}
-
+			image.removeEventListener('load', onLoad);
+			image.removeEventListener('error', onError);
 			promise.resolve(image);
-		}, false);
-
-		image.addEventListener('error', function (e) {
+		};
+		var onError = function errorHandler(e) {
+			image.removeEventListener('load', onLoad);
+			image.removeEventListener('error', onError);
 			promise.reject('Could not load image from ' + url + ', ' + e);
-		}, false);
+		};
+
+		image.addEventListener('load', onLoad, false);
+		image.addEventListener('error', onError, false);
 
 		image.src = url;
 		return promise;

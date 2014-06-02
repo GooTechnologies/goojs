@@ -5,7 +5,7 @@ define([
 	RSVP,
 	PromiseUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Base class for resource handlers, used to load all types of resources into the engine.
@@ -123,7 +123,7 @@ define([
 	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
 	 */
 	ConfigHandler.prototype.update = function (ref, config, options) {
-		return this._loading[ref] = this._update(ref,config,options);
+		return this._loading[ref] = this._update(ref, config, options);
 	};
 
 
