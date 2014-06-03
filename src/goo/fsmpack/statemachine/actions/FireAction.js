@@ -29,7 +29,7 @@ function (
 		key: 'Fire',
 		name: 'Fire FX',
 		type: 'fx',
-		description: 'Makes the entity emit fire. To "extinguish" the fire use the "Remove Particles" action',
+		description: 'Makes the entity emit fire. To "extinguish" the fire use the "Remove Particles" action.',
 		parameters: [{
 			name: 'Start Color',
 			key: 'startColor',
