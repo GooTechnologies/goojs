@@ -26,6 +26,12 @@ function (
 
 	HtmlSystem.prototype = Object.create(System.prototype);
 
+	//
+	// Browsers implement z-index as signed 32bit int.
+	// Overflowing pushes the element to the back.
+	//
+	var MAX_Z_INDEX = 2147483647;
+
 	var tmpVector = new Vector3();
 
 	// Copied from CSSTransformComponent
@@ -92,7 +98,8 @@ function (
 				'translate(-50%, -50%) '+
 				'translate(' + fx + 'px, ' + fy + 'px)'+
 				'translate(' + renderer.domElement.offsetLeft + 'px, ' + renderer.domElement.offsetTop + 'px)');
-			// project
+
+			setStyle(component.domElement, 'z-index', MAX_Z_INDEX - Math.round(tmpVector.z * MAX_Z_INDEX));
 		}
 	};
 
