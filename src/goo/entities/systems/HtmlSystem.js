@@ -98,7 +98,7 @@ function (
 				'translate(-50%, -50%) '+
 				'translate(' + fx + 'px, ' + fy + 'px)'+
 				'translate(' + renderer.domElement.offsetLeft + 'px, ' + renderer.domElement.offsetTop + 'px)');
-
+			// REVIEW z-index isn't prefixed, set it yourself
 			setStyle(component.domElement, 'z-index', MAX_Z_INDEX - Math.round(tmpVector.z * MAX_Z_INDEX));
 		}
 	};
