@@ -22,7 +22,7 @@ function(
 	SwitchCameraAction.external = {
 		name: 'Switch Camera',
 		type: 'camera',
-		description: 'Switches between cameras',
+		description: 'Switches to a selected camera',
 		parameters: [{
 			name: 'Camera',
 			key: 'cameraEntityRef',

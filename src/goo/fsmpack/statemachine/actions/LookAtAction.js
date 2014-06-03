@@ -21,7 +21,7 @@ function(
 		type: 'animation',
 		description: 'Reorients an entity so that it\'s facing a specific point',
 		parameters: [{
-			name: 'Look at position',
+			name: 'Look at',
 			key: 'lookAt',
 			type: 'position',
 			description: 'Position to look at',

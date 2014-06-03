@@ -24,7 +24,7 @@ function(
 			name: 'Forward',
 			key: 'forward',
 			type: 'number',
-			description: 'Number of units to move towards the focus point; Enter negative values to move away',
+			description: 'Number of units to move towards the focus point. Enter negative values to move away.',
 			'default': 100
 		}, {
 			name: 'Focus point',

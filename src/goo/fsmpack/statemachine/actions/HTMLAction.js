@@ -23,13 +23,13 @@ function(
 	HTMLAction.external = {
 		name: 'HTMLPick',
 		type: 'controls',
-		description: 'Listens for a picking event and performs a transition',
+		description: 'Listens for a picking event and performs a transition. Can only be used on HTML entities.',
 		canTransition: true,
 		parameters: [], // but not farther than some value
 		transitions: [{
 			key: 'pick',
 			name: 'Pick',
-			description: 'State to transition to when entity is picked'
+			description: 'State to transition to when the HTML entity is picked'
 		}]
 	};
 

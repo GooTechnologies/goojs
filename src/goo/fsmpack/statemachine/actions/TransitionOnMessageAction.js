@@ -26,7 +26,7 @@ function(
 		key: 'Transition on Message',
 		name: 'Listen',
 		type: 'transitions',
-		description: 'Performs a transition on receiving a message',
+		description: 'Performs a transition on receiving a system bus message (a ping) on a specific channel',
 		canTransition: true,
 		parameters: [{
 			name: 'Message channel',
