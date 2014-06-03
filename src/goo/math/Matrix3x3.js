@@ -929,7 +929,6 @@ function (
 	 * @param {Quaternion} quaternion Rotational quaternion.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.copyQuaternion = function (quaternion) {
 		return quaternion.toRotationMatrix(this);
 	};
@@ -939,7 +938,6 @@ function (
 	 * @param {Matrix3x3} source Source matrix.
 	 * @return {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.copy = function (source) {
 		var t = this.data;
 		var s = source.data;
@@ -957,16 +955,18 @@ function (
 		return this;
 	};
 
+	/**
+	 * Returns a new matrix with the same values as the existing one.
+	 * @return {Matrix3x3} The new matrix.
+	 */
 	Matrix3x3.prototype.clone = function () {
 		var d = this.data;
 		return new Matrix3x3(
 			d[0], d[1], d[2],
 			d[3], d[4], d[5],
-			d[4], d[5], d[6]
+			d[6], d[7], d[8]
 		);
 	};
-
-	/* ====================================================================== */
 
 	return Matrix3x3;
 });

@@ -386,7 +386,37 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		return this;
 	};
 
+
 	/* ====================================================================== */
+
+	/**
+	 * Copies component values and stores them locally.
+	 * @param {Matrix2x2} source Source matrix.
+	 * @return {Matrix2x2} Self for chaining.
+	 */
+	Matrix2x2.prototype.copy = function (source) {
+		var t = this.data;
+		var s = source.data;
+
+		t[0] = s[0];
+		t[1] = s[1];
+		t[2] = s[2];
+		t[3] = s[3];
+
+		return this;
+	};
+
+	/**
+	 * Returns a new matrix with the same values as the existing one.
+	 * @return {Matrix2x2} The new matrix.
+	 */
+	Matrix2x2.prototype.clone = function () {
+		var d = this.data;
+		return new Matrix2x2(
+			d[0], d[1],
+			d[2], d[3]
+		);
+	};
 
 	return Matrix2x2;
 });

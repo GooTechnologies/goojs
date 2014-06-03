@@ -143,5 +143,24 @@ define(["goo/math/Matrix3x3", "goo/math/Vector3", "goo/math/Quaternion"], functi
 				expect(a.rotateZ(1)).toBe(a);
 			});
 		});
+
+		describe('copy', function () {
+			it('can copy from another matrix', function () {
+				var original = new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99);
+				var copy = new Matrix3x3(110, 220, 330, 440, 550, 660, 770, 880, 990);
+				copy.copy(original);
+				expect(copy).toEqual(new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99));
+			});
+		});
+
+		describe('clone', function () {
+			it('can clone to another matrix', function () {
+				var original = new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99);
+				var clone = original.clone();
+
+				expect(clone).not.toBe(original);
+				expect(clone).toEqual(new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99));
+			});
+		});
 	});
 });
