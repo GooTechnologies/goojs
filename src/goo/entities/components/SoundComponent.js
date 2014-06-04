@@ -22,10 +22,6 @@ function (
 	 * @extends {Component}
 	 */
 	function SoundComponent() {
-		if (!AudioContext) {
-			console.warn('Cannot create soundComponent, webaudio not supported');
-			return;
-		}
 		this.type = 'SoundComponent';
 
 		/**
@@ -33,7 +29,7 @@ function (
 		 * @type {Array<Sound>}
 		 */
 		this.sounds = [];
-		this._isPanned = true; // REVIEW: this is private and only set here so... remove? it would simplify some code paths in the .process method
+		this._isPanned = true;
 		this._outDryNode = AudioContext.createGain();
 		this._outWetNode = AudioContext.createGain();
 		this.connectTo();
@@ -57,10 +53,6 @@ function (
 	 * @param {Sound} sound
 	 */
 	SoundComponent.prototype.addSound = function (sound) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		if (this.sounds.indexOf(sound) === -1) {
 			sound.connectTo([this._inNode, this._outWetNode]);
 			this.sounds.push(sound);
@@ -72,10 +64,6 @@ function (
 	 * @param {Sound} sound
 	 */
 	SoundComponent.prototype.removeSound = function (sound) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		var idx = this.sounds.indexOf(sound);
 		if (idx > -1) {
 			sound.stop();
@@ -104,11 +92,6 @@ function (
 	 * @param {AudioNode} [nodes.wet]
 	 */
 	SoundComponent.prototype.connectTo = function (nodes) {
-		if (!AudioContext) {
-			//! AT: can you get an audionode and call this function if you have no audio context?
-			console.warn('Webaudio not supported');
-			return;
-		}
 		this._outDryNode.disconnect();
 		this._outWetNode.disconnect();
 		if (nodes && nodes.dry) {
@@ -126,10 +109,6 @@ function (
 	 * @param {number} config.reverb
 	 */
 	SoundComponent.prototype.updateConfig = function (config) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		if (config.volume !== undefined) {
 			this._outDryNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
 		}
@@ -147,10 +126,6 @@ function (
 	 * @private
 	 */
 	SoundComponent.prototype.process = function (settings, mvMat, tpf) {
-		if (!AudioContext) {
-			// Should never happen
-			return;
-		}
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
 
@@ -159,6 +134,7 @@ function (
 			if (this._isPanned) {
 				this._inNode.disconnect();
 				this._inNode.connect(this._outDryNode);
+				this._isPanned = false
 			}
 			this._pannerNode.setPosition(0, 0, 0);
 			this._pannerNode.setVelocity(0, 0, 0);
@@ -167,6 +143,7 @@ function (
 		} else if (!this._isPanned) {
 			this._inNode.disconnect();
 			this._inNode.connect(this._pannerNode);
+			this._isPanned = true;
 		}
 
 		mvMat.getTranslation(this._position);
