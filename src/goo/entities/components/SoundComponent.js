@@ -5,13 +5,16 @@ define([
 	'goo/math/MathUtils'
 ],
 /** @lends */
-function(
+function (
 	Component,
 	AudioContext,
 	Vector3,
 	MathUtils
 ) {
 	'use strict';
+
+	//! AT: every method here is prefixed with a check for AudioContext. Is it really needed? can it just be refactored away?
+	//Or, isn't just one (the first) warning enough - it might ruing everything if flooding the console
 
 	/**
 	 * @class Component that adds sound to an entity.
@@ -30,7 +33,7 @@ function(
 		 * @type {Array<Sound>}
 		 */
 		this.sounds = [];
-		this._isPanned = true;
+		this._isPanned = true; // REVIEW: this is private and only set here so... remove? it would simplify some code paths in the .process method
 		this._outDryNode = AudioContext.createGain();
 		this._outWetNode = AudioContext.createGain();
 		this.connectTo();
@@ -102,6 +105,7 @@ function(
 	 */
 	SoundComponent.prototype.connectTo = function (nodes) {
 		if (!AudioContext) {
+			//! AT: can you get an audionode and call this function if you have no audio context?
 			console.warn('Webaudio not supported');
 			return;
 		}
@@ -150,7 +154,7 @@ function(
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
 
-		if(this._attachedToCamera || !mvMat){
+		if (this._attachedToCamera || !mvMat) {
 			// The component is attached to the current camera.
 			if (this._isPanned) {
 				this._inNode.disconnect();
