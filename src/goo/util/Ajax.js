@@ -76,15 +76,20 @@ function (
 		}
 
 		var promise = new RSVP.Promise();
-		request.onreadystatechange = function () {
+
+		var handleStateChange = function () {
 			if (request.readyState === 4) {
 				if (request.status >= 200 && request.status <= 299) {
+					request.removeEventListener('readystatechange', handleStateChange);
 					promise.resolve(request);
 				} else {
+					request.removeEventListener('readystatechange', handleStateChange);
 					promise.reject(request.statusText);
 				}
 			}
 		};
+
+		request.addEventListener('readystatechange', handleStateChange);
 
 		request.send();
 
@@ -107,6 +112,7 @@ function (
 		var that = this;
 		var path2 = StringUtil.parseURL(path).path;//! AT: dunno what to call this
 		var type = path2.substr(path2.lastIndexOf('.') + 1).toLowerCase();
+
 		function typeInGroup(type, group) {
 			return type && Ajax.types[group] && Ajax.types[group][type];
 		}

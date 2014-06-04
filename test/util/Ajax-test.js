@@ -51,7 +51,12 @@ define([
 				return this.responseHeader[header] ? this.responseHeader[header] : null;
 			};
 
-			MockXHR.prototype.addEventListener = function() {
+			MockXHR.prototype.addEventListener = function (eventName, callback) {
+				this.onreadystatechange = callback;
+			};
+
+			MockXHR.prototype.removeEventListener = function (eventName, callback) {
+				// does nothing!
 			};
 
 			return MockXHR;
