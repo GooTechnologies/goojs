@@ -46,6 +46,7 @@ function (
 	Matrix3x3._tempZ = new Vector3();
 
 	Matrix3x3.prototype = Object.create(Matrix.prototype);
+	Matrix3x3.prototype.constructor = Matrix3x3;
 	Matrix3x3.prototype.setupAliases([['e00'], ['e10'], ['e20'], ['e01'], ['e11'], ['e21'], ['e02'], ['e12'], ['e22']]);
 
 	/* ====================================================================== */
