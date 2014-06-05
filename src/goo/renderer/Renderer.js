@@ -2155,10 +2155,10 @@ function (
 			this.context.deleteTexture(renderTarget.glTexture);
 		}
 		if (renderTarget._glRenderBuffer) {
-			this.context.deleteFramebuffer(renderTarget._glRenderBuffer);
+			this.context.deleteRenderbuffer(renderTarget._glRenderBuffer);
 		}
 		if (renderTarget._glFrameBuffer) {
-			this.context.deleteRenderbuffer(renderTarget._glFrameBuffer);
+			this.context.deleteFramebuffer(renderTarget._glFrameBuffer);
 		}
 	};
 
