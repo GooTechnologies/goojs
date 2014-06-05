@@ -1,3 +1,9 @@
+v0.10.3 --- 2014-06-05
+======================
+
+Breaking changes:
+ * transparency map now uses alpha value
+
 v0.10.2 --- 2014-06-05
 ======================
 
