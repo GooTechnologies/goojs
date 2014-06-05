@@ -50,11 +50,13 @@ function (Vector3) {
 			}
 			return shader1._id - shader2._id;
 		};
+
 		this.transparentSorter = function (a, b) {
 			var dist1 = a.meshRendererComponent._renderDistance;
 			var dist2 = b.meshRendererComponent._renderDistance;
 			return dist2 - dist1;
 		};
+
 		this.bucketSorter = function (a, b) {
 			return a - b;
 		};
@@ -69,7 +71,6 @@ function (Vector3) {
 	 * @param {Camera} camera
 	 */
 	RenderQueue.prototype.sort = function (renderList, camera) {
-
 		// TODO: Reuse objects more
 		var index = 0;
 		this.camera = camera;
@@ -89,6 +90,7 @@ function (Vector3) {
 			var distance = 0;
 			var bound = meshRendererComponent.worldBound;
 			if (bound !== null) {
+				/* REVIEW: even if it doesn't have a worldBound, you can still use the object's position (it's better than nothing) */
 				distance = tmpVec.setv(camera.translation).subv(bound.center).lengthSquared();
 			}
 			meshRendererComponent._renderDistance = distance;
