@@ -68,9 +68,15 @@ function(
 		this.needsSwap = false;
 	}
 
-	BlurPass.prototype.updateSize = function(size) {
+	BlurPass.prototype.updateSize = function(size, renderer) {
 		var sizeX = size.width / this.downsampleAmount;
 		var sizeY = size.height / this.downsampleAmount;
+		if (this.renderTargetX) {
+			renderer._deallocateRenderTarget(this.renderTargetX);
+		}
+		if (this.renderTargetY) {
+			renderer._deallocateRenderTarget(this.renderTargetY);
+		}
 		this.renderTargetX = new RenderTarget(sizeX, sizeY);
 		this.renderTargetY = new RenderTarget(sizeX, sizeY);
 	};
