@@ -235,6 +235,9 @@ define([
 				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
 					updateButtonState(ctx.dragButton, event.targetTouches.length === 1, args, ctx);
 				}
+				if( navigator.userAgent.match(/Android/i) ) {
+					event.preventDefault();
+				}
 			},
 			touchend: function (/*event*/) {
 				updateButtonState(ctx.dragButton, false, args, ctx);
