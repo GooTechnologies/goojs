@@ -51,7 +51,7 @@ function(
 
 			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
 				shader.defines.REFLECTIVE = true;
-			} else {
+			} else if (shader.defines.REFLECTIVE !== undefined) {
 				delete shader.defines.REFLECTIVE;
 			}
 
@@ -91,14 +91,14 @@ function(
 				}
 			}
 
+			shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
 			if (textureMaps.DIFFUSE_MAP) {
-				shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
 				var offset = textureMaps.DIFFUSE_MAP.offset;
 				var repeat = textureMaps.DIFFUSE_MAP.repeat;
-				shader.uniforms.offsetRepeat[0] = offset.x;
-				shader.uniforms.offsetRepeat[1] = offset.y;
-				shader.uniforms.offsetRepeat[2] = repeat.x;
-				shader.uniforms.offsetRepeat[3] = repeat.y;
+				shader.uniforms.offsetRepeat[0] = offset.data[0];
+				shader.uniforms.offsetRepeat[1] = offset.data[1];
+				shader.uniforms.offsetRepeat[2] = repeat.data[0];
+				shader.uniforms.offsetRepeat[3] = repeat.data[1];
 				shader.uniforms.lodBias = textureMaps.DIFFUSE_MAP.lodBias;
 			} else {
 				shader.uniforms.offsetRepeat[0] = 0;
@@ -130,9 +130,9 @@ function(
 			}
 
 			// discard
-			if (shaderInfo.material.uniforms.discardThreshold >= 0.0) {
+			if (material.uniforms.discardThreshold >= 0.0) {
 				shader.defines.DISCARD = true;
-			} else {
+			} else if (shader.defines.DISCARD !== undefined) {
 				delete shader.defines.DISCARD;
 			}
 
@@ -141,7 +141,7 @@ function(
 				shader.defines.FOG = true;
 				shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
 				shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
-			} else {
+			} else if (shader.defines.FOG !== undefined) {
 				delete shader.defines.FOG;
 			}
 
@@ -192,8 +192,22 @@ function(
 
 					lightDefines.push('P');
 				} else if (light instanceof DirectionalLight) {
-					uniforms['directionalLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
-					uniforms['directionalLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
+					uniforms['directionalLightDirection' + i] = uniforms['directionalLightDirection' + i] || [];
+					uniforms['directionalLightColor' + i] = uniforms['directionalLightColor' + i] || [];
+
+					var directionalLightDir = uniforms['directionalLightDirection' + i];
+					var direction = light.direction.data;
+					directionalLightDir[0] = direction[0];
+					directionalLightDir[1] = direction[1];
+					directionalLightDir[2] = direction[2];
+
+					var directionalLightColorN = uniforms['directionalLightColor' + i];
+					var color = light.color.data;
+					directionalLightColorN[0] = color[0] * light.intensity;
+					directionalLightColorN[1] = color[1] * light.intensity;
+					directionalLightColorN[2] = color[2] * light.intensity;
+					directionalLightColorN[3] = light.specularIntensity;
+
 					lightDefines.push('D');
 				} else if (light instanceof SpotLight) {
 					uniforms['spotLight'+i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];

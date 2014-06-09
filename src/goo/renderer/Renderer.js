@@ -1044,7 +1044,8 @@ function (
 				// replace with cache version and copy over uniforms.
 				var defineArray = Object.keys(shader.defines);
 				var len = defineArray.length;
-				var shaderKeyArray = [];
+				var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
+				shaderKeyArray.length = 0;
 				for (var j = 0; j < len; j++) {
 					var key = defineArray[j];
 					shaderKeyArray.push(key + '_' + shader.defines[key]);
