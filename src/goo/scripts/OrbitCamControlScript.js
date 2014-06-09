@@ -384,6 +384,8 @@ define([
 		parameters: [{
 			key: 'whenUsed',
 			'default': true,
+			name: 'When Camera Used',
+			description:'Script only runs when the camera to which it is added is being used.',
 			type: 'boolean'
 		}, {
 			key: 'dragButton',
