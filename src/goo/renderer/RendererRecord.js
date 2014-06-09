@@ -29,6 +29,8 @@ function() {
 
 		this.usedProgram = null;
 		this.boundAttributes = [];
+		this.enabledAttributes = [];
+		this.newlyEnabledAttributes = [];
 
 		this.depthRecord = {};
 		this.cullRecord = {};
