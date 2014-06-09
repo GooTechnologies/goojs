@@ -1,35 +1,16 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/Sphere',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
 	'goo/debugpack/LightPointer',
-	'goo/entities/components/LightDebugComponent',
+	'goo/debugpack/components/LightDebugComponent',
+	'goo/debugpack/systems/LightDebugSystem',
 	'lib/V'
 ], function (
-	GooRunner,
-	World,
-	Material,
-	ShaderLib,
-	Camera,
 	Sphere,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
 	PointLight,
 	DirectionalLight,
@@ -37,6 +18,7 @@ require([
 	LightComponent,
 	LightPointer,
 	LightDebugComponent,
+	LightDebugSystem,
 	V
 	) {
 	'use strict';
@@ -52,10 +34,10 @@ require([
 		entity.set(function (entity) {
 				var light = entity.getComponent('LightComponent').light;
 
-				light.color.data[0] = Math.cos(World.time + offset) * 0.5 + 0.5;
-				light.color.data[1] = Math.cos(World.time + offset + Math.PI * 2 / 3) * 0.5 + 0.5;
-				light.color.data[2] = Math.cos(World.time + offset + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
-				light.range = (Math.cos(World.time) * 0.5 + 0.5) * 6 + 2;
+				light.color.data[0] = Math.cos(world.time + offset) * 0.5 + 0.5;
+				light.color.data[1] = Math.cos(world.time + offset + Math.PI * 2 / 3) * 0.5 + 0.5;
+				light.color.data[2] = Math.cos(world.time + offset + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
+				light.range = (Math.cos(world.time) * 0.5 + 0.5) * 6 + 2;
 
 				/*
 				if(light.angle) {
@@ -137,6 +119,8 @@ require([
 
 	var goo = V.initGoo();
 	var world = goo.world;
+
+	world.setSystem(new LightDebugSystem());
 
 	// add spheres to cast light on
 	V.addSpheres();

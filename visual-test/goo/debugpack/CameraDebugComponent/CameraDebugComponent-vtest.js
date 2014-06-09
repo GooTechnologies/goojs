@@ -7,7 +7,7 @@ require([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
-	'goo/entities/components/CameraDebugComponent',
+	'goo/debugpack/components/CameraDebugComponent',
 	'goo/entities/SystemBus',
 	'lib/V'
 ], function (

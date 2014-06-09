@@ -1,6 +1,7 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/passpack/ShaderLibExtra',
 	'goo/shapes/Box',
 	'goo/shapes/Quad',
 	'goo/shapes/Sphere',
@@ -11,6 +12,7 @@ require([
 ], function (
 	Material,
 	ShaderLib,
+	ShaderLibExtra,
 	Box,
 	Quad,
 	Sphere,
@@ -23,7 +25,7 @@ require([
 
 	function addHalo(x, y, z) {
 		var quadMeshData = new Quad(3, 3);
-		var quadMaterial = new Material(ShaderLib.billboard);
+		var quadMaterial = new Material(ShaderLibExtra.billboard);
 		var quadTexture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
 		quadMaterial.setTexture('DIFFUSE_MAP', quadTexture);
 		quadMaterial.blendState.blending = 'AlphaBlending';
