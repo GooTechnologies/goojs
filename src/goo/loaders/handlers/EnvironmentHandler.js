@@ -133,7 +133,7 @@ define([
 			if (config.sound && soundSystem) {
 				soundSystem.updateConfig(config.sound);
 				if (config.sound.reverbRef) {
-					var p = that._load(config.sound.reverbRef).then(function(sound) {
+					var p = that._load(config.sound.reverbRef, options).then(function(sound) {
 						soundSystem.setReverb(sound._buffer);
 					});
 					promises.push(p);

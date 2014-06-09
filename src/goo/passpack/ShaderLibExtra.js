@@ -1251,7 +1251,6 @@ define([
 			'vec4 blur1 = texture2D(gaussBlurredImage1, texCoord0);',
 			'vec4 blur2 = texture2D(gaussBlurredImage2, texCoord0);',
 			'vec4 originalColor = texture2D(originalImage, texCoord0);',
-
 			'vec3 nonEdgeColor = mix(originalColor.rgb, backgroundColor.rgb, backgroundMix);',
 			'vec3 diffColor = abs(blur1.rgb - blur2.rgb);',
 			'float edgeValue = (diffColor.r + diffColor.g + diffColor.b) / 3.0;',

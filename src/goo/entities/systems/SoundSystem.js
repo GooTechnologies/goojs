@@ -4,7 +4,8 @@ define([
 	'goo/math/Vector3',
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/math/Matrix4x4'
 ],
 /** @lends */
 function(
@@ -13,13 +14,14 @@ function(
 	Vector3,
 	MathUtils,
 	SystemBus,
-	_
+	_,
+	Matrix4x4
 ) {
 	'use strict';
 	/**
-	 * @class System responsible for sound<br>
+	 * @class System responsible for sound.
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
-	 * @extends System
+	 * @extends {System}
 	 */
 	function SoundSystem() {
 		if (!AudioContext) {
@@ -39,14 +41,9 @@ function(
 		this._listener = AudioContext.listener;
 		this._listener.dopplerFactor = 0;
 
-		this._position = new Vector3();
-		this._oldPosition = new Vector3();
-		this._velocity = new Vector3();
-		this._orientation = new Vector3();
+		this._relativeTransform = new Matrix4x4();
 
 		this._camera = null;
-		this._up = new Vector3();
-		this._left = new Vector3();
 
 		this._settings = {
 			rolloffFactor: 0.4,
@@ -55,6 +52,15 @@ function(
 		this._wetNode.gain.value = 0.2;
 
 		this._pausedSounds = {};
+
+		// Everything is relative to the camera
+		this._listener.setPosition(0, 0, 0);
+		this._listener.setVelocity(0, 0, 0);
+		this._listener.setOrientation(
+			0,  0, -1, // Orientation
+			0,  1,  0  // Up
+		);
+
 
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
@@ -192,28 +198,27 @@ function(
 			return;
 		}
 		this.entities = entities;
-		for (var i = 0; i < entities.length; i++) {
-			var component = entities[i].soundComponent;
-			component.process(this._settings, entities[i].transformComponent.worldTransform, tpf);
+		var relativeTransform = this._relativeTransform;
+
+		var viewMat;
+		if(this._camera){
+			viewMat = this._camera.getViewMatrix();
 		}
-		if (this._camera) {
-			var cam = this._camera;
-			this._position.setv(cam.translation);
-			this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
-			this._oldPosition.setv(this._position);
-			this._orientation.setv(cam._direction);
-			this._up.setv(cam._up);
-			this._left.setv(cam._left);
-			var pd = this._position.data;
-			this._listener.setPosition(pd[0], pd[1], pd[2]);
-			var vd = this._velocity.data;
-			this._listener.setVelocity(vd[0], vd[1], vd[2]);
-			var od = this._orientation.data;
-			var ud = this._up.data;
-			this._listener.setOrientation(
-				od[0], od[1], od[2],
-				ud[0], ud[1], ud[2]
-			);
+
+		for (var i = 0; i < entities.length; i++) {
+			var e = entities[i];
+			var component = e.soundComponent;
+
+			component._attachedToCamera = !!(e.cameraComponent && e.cameraComponent.camera === this._camera);
+
+			if(this._camera && !component._attachedToCamera){
+				// Give the transform relative to the camera
+				Matrix4x4.combine(viewMat, e.transformComponent.worldTransform.matrix, relativeTransform);
+				component.process(this._settings, relativeTransform, tpf);
+			} else {
+				// Component is attached to camera.
+				component.process(this._settings, null, tpf);
+			}
 		}
 	};
 

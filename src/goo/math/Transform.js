@@ -250,6 +250,7 @@ function (
 		result.matrix.invert();
 
 		var newRotation = result.rotation.copy(this.rotation);
+		newRotation.transpose();
 		// if (_uniformScale) {
 		// var sx = this.scale.x;
 		// newRotation.transposeLocal();
@@ -257,11 +258,12 @@ function (
 		// newRotation.multiplyLocal(1.0 / sx);
 		// }
 		// } else {
-		newRotation.multiplyDiagonalPost(this.scale, newRotation).invert();
+		//newRotation.multiplyDiagonalPost(this.scale, newRotation).invert();
 		// }
 
-		result.translation.copy(this.translation);
-		result.rotation.applyPost(result.translation).invert();
+		result.scale.setv(Vector3.ONE).div(this.scale);
+		result.translation.copy(this.translation).invert().mulv(result.scale);
+		result.rotation.applyPost(result.translation)
 
 		// result.update();
 

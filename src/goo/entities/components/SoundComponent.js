@@ -13,28 +13,38 @@ function (
 ) {
 	'use strict';
 
+	//! AT: every method here is prefixed with a check for AudioContext. Is it really needed? can it just be refactored away?
+	//Or, isn't just one (the first) warning enough - it might ruing everything if flooding the console
+
 	/**
-	 * Sound component<br>
+	 * @class Component that adds sound to an entity.
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
-	 * @class
-	 * @extends Component
+	 * @extends {Component}
 	 */
 	function SoundComponent() {
-		if (!AudioContext) {
-			console.warn('Cannot create soundComponent, webaudio not supported');
-			return;
-		}
 		this.type = 'SoundComponent';
+
+		/**
+		 * Current sounds in the entity. Add a sound using {@link SoundComponent#addSound}.
+		 * @type {Array<Sound>}
+		 */
 		this.sounds = [];
+		this._isPanned = true;
 		this._outDryNode = AudioContext.createGain();
 		this._outWetNode = AudioContext.createGain();
 		this.connectTo();
 		this._pannerNode = AudioContext.createPanner();
 
 		this._pannerNode.connect(this._outDryNode);
+		this._inNode = AudioContext.createGain();
+		this._inNode.connect(this._pannerNode);
 		this._oldPosition = new Vector3();
-
+		this._position = new Vector3();
+		this._orientation = new Vector3();
+		this._velocity = new Vector3();
+		this._attachedToCamera = false;
 	}
+
 	SoundComponent.prototype = Object.create(Component.prototype);
 	SoundComponent.prototype.constructor = SoundComponent;
 
@@ -43,12 +53,8 @@ function (
 	 * @param {Sound} sound
 	 */
 	SoundComponent.prototype.addSound = function (sound) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		if (this.sounds.indexOf(sound) === -1) {
-			sound.connectTo([this._pannerNode, this._outWetNode]);
+			sound.connectTo([this._inNode, this._outWetNode]);
 			this.sounds.push(sound);
 		}
 	};
@@ -58,10 +64,6 @@ function (
 	 * @param {Sound} sound
 	 */
 	SoundComponent.prototype.removeSound = function (sound) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		var idx = this.sounds.indexOf(sound);
 		if (idx > -1) {
 			sound.stop();
@@ -90,10 +92,6 @@ function (
 	 * @param {AudioNode} [nodes.wet]
 	 */
 	SoundComponent.prototype.connectTo = function (nodes) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		this._outDryNode.disconnect();
 		this._outWetNode.disconnect();
 		if (nodes && nodes.dry) {
@@ -111,10 +109,6 @@ function (
 	 * @param {number} config.reverb
 	 */
 	SoundComponent.prototype.updateConfig = function (config) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		if (config.volume !== undefined) {
 			this._outDryNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
 		}
@@ -123,43 +117,46 @@ function (
 		}
 	};
 
-	var tmpVec1 = new Vector3();
-	var tmpVec2 = new Vector3();
-	var tmpVec3 = new Vector3();
-
 	/**
-	 * Updates position, velocity and orientation of component and thereby all connected sounds
-	 * @param {settings} See {@link SoundSystem}
-	 * @param {Transform} the entity's world transform
+	 * Updates position, velocity and orientation of component and thereby all connected sounds.
+	 * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
+	 * @param {object} settings See {@link SoundSystem}
+	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
 	 * @param {number} tpf
 	 * @private
 	 */
-	SoundComponent.prototype.process = function (settings, transform, tpf) {
-		var position = tmpVec1;
-		var orientation = tmpVec2;
-		var velocity = tmpVec3;
-
-		if (!AudioContext) {
-			// Should never happen
-			return;
-		}
+	SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
 		this._pannerNode.maxDistance = settings.maxDistance;
 
-		var matrix = transform.matrix;
-		matrix.getTranslation(position);
-		velocity.setv(position).subv(this._oldPosition).div(tpf);
-		var vd = velocity.data;
-		this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
+		if (this._attachedToCamera || !mvMat) {
+			// The component is attached to the current camera.
+			if (this._isPanned) {
+				this._inNode.disconnect();
+				this._inNode.connect(this._outDryNode);
+				this._isPanned = false
+			}
+			this._pannerNode.setPosition(0, 0, 0);
+			this._pannerNode.setVelocity(0, 0, 0);
+			this._pannerNode.setOrientation(0, 0, 0);
+			return;
+		} else if (!this._isPanned) {
+			this._inNode.disconnect();
+			this._inNode.connect(this._pannerNode);
+			this._isPanned = true;
+		}
 
-		this._oldPosition.setv(position);
-		var pd = position.data;
+		mvMat.getTranslation(this._position);
+		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
+		this._oldPosition.setv(this._position);
+		this._orientation.setd(0, 0, -1);
+		mvMat.applyPostVector(this._orientation);
+
+		var pd = this._position.data;
 		this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
-
-		orientation.setd(0, 0, -1);
-		matrix.applyPostVector(orientation);
-
-		var od = orientation.data;
+		var vd = this._velocity.data;
+		this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
+		var od = this._orientation.data;
 		this._pannerNode.setOrientation(od[0], od[1], od[2]);
 	};
 

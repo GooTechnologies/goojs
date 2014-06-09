@@ -15,11 +15,6 @@ function (
 	 * @class A representation of a sound in the engine
 	 */
 	function Sound() {
-		if (!AudioContext) {
-			console.warn('Cannot create sound, webaudio not supported');
-			return;
-		}
-
 		// Settings
 		this.id = null;
 		this._loop = false;
@@ -49,10 +44,6 @@ function (
 	 * Looping sounds will never resolve
 	 */
 	Sound.prototype.play = function() {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		if (this._currentSource) {
 			return this._endPromise;
 		}
@@ -91,10 +82,7 @@ function (
 	 * Pauses the sound if it's playing
 	 */
 	Sound.prototype.pause = function() {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
+
 		if (!this._currentSource) {
 			return;
 		}
@@ -109,10 +97,6 @@ function (
 	 * Stops the sound if it's playing
 	 */
 	Sound.prototype.stop = function() {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		this._paused = false;
 		this._pausePos = 0;
 		if (this._endPromise) {
@@ -171,10 +155,6 @@ function (
 	 * @param {number} [config.timeScale] Playback rate of the sound
 	 */
 	Sound.prototype.update = function(config) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		config = config || {};
 		if (config.id !== undefined) {
 			this.id = config.id;
@@ -229,10 +209,6 @@ function (
 	 * @param {AudioNode[]|AudioNode} nodes
 	 */
 	Sound.prototype.connectTo = function(nodes) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		this._outNode.disconnect();
 		if (!nodes) {
 			return;
@@ -250,10 +226,6 @@ function (
 	 * @param {AudioBuffer} buffer
 	 */
 	Sound.prototype.setAudioBuffer = function(buffer) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
-			return;
-		}
 		this._buffer = buffer;
 		this._clampInterval();
 	};

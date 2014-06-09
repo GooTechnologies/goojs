@@ -60,7 +60,7 @@ define([
 
 		this.enabled = true;
 		this.clear = false;
-		this.needsSwap = false;
+		this.needsSwap = true;
 	}
 
 	DoGPass.prototype.updateThreshold = function (threshold) {
@@ -156,7 +156,7 @@ define([
 		if (this.target !== null) {
 			renderer.render(this.renderable, FullscreenUtil.camera, [], this.target, this.clear);
 		} else {
-			renderer.render(this.renderable, FullscreenUtil.camera, [], readBuffer, this.clear);
+			renderer.render(this.renderable, FullscreenUtil.camera, [], writeBuffer, this.clear);
 		}
 	};
 

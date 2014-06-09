@@ -135,6 +135,7 @@ function (
 		var newScriptElement = document.createElement('script');
 		newScriptElement.id = ScriptHandler.DOM_ID_PREFIX + config.id;
 		newScriptElement.innerHTML = scriptFactoryStr;
+		newScriptElement.async = false;
 		this._currentScriptLoading = config.id;
 		document.body.appendChild(newScriptElement);
 
@@ -398,6 +399,10 @@ function (
 				continue;
 			}
 			if (param.decimals && isNaN(param.decimals)) {
+				errors.push('parameter decimals needs to be number');
+				continue;
+			}
+			if (param.precision && isNaN(param.precision)) {
 				errors.push('parameter decimals needs to be number');
 				continue;
 			}
