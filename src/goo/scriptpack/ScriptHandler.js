@@ -368,53 +368,48 @@ function (
 		outScript.externals.parameters = [];
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var param = externals.parameters[i];
-			// REVIEW: is the styling supposed to capitalize these messages?
-			// they show up uncapitalized; capitalize them here or via css
 			if (typeof param.key !== 'string' || param.key.length === 0) {
-				errors.push({ message: 'parameter key needs to be a non-empty string' });
+				errors.push({ message: 'Parameter key needs to be a non-empty string' });
 				continue;
 			}
-			if (param.name && typeof param.name !== 'string') {
-				errors.push({ message: 'parameter name needs to be a non-empty string' });
+			if (param.name !== undefined && (typeof param.name !== 'string' || param.name.length === 0)) {
+				errors.push({ message: 'Parameter name needs to be a non-empty string' });
 				continue;
 			}
 			if (types.indexOf(param.type) === -1) {
-				errors.push({ message: 'parameter type needs to be one of (' + types.join(', ') + ')' });
+				errors.push({ message: 'Parameter type needs to be one of (' + types.join(', ') + ')' });
 				continue;
 			}
-			// REVIEW: 0, false, '', NaN and other crap will get past this
-			if (param.control && typeof param.control !== 'string') {
-				errors.push({ message: 'parameter control needs to be a non-empty string' });
+			if (param.control !== undefined && (typeof param.control !== 'string' || param.control.length === 0)) {
+				errors.push({ message: 'Parameter control needs to be a non-empty string' });
 				continue;
 			}
-			// REVIEW: same here
-			if (param.options && !(param.options instanceof Array)) {
-				errors.push({ message: 'parameter key needs to be array' });
+			if (param.options !== undefined && !(param.options instanceof Array)) {
+				errors.push({ message: 'Parameter key needs to be array' });
 				continue;
 			}
-			// REVIEW: and here (false and ''); same for the rest
-			if (param.min && isNaN(param.min)) {
-				errors.push({ message: 'parameter min needs to be number' });
+			if (param.min !== undefined && isNaN(param.min)) {
+				errors.push({ message: 'Parameter min needs to be number' });
 				continue;
 			}
-			if (param.max && isNaN(param.max)) {
-				errors.push({ message: 'parameter max needs to be number' });
+			if (param.max !== undefined && isNaN(param.max)) {
+				errors.push({ message: 'Parameter max needs to be number' });
 				continue;
 			}
-			if (param.scale && isNaN(param.scale)) {
-				errors.push({ message: 'parameter scale needs to be number' });
+			if (param.scale !== undefined && isNaN(param.scale)) {
+				errors.push({ message: 'Parameter scale needs to be number' });
 				continue;
 			}
-			if (param.decimals && isNaN(param.decimals)) {
-				errors.push({ message: 'parameter decimals needs to be number' });
+			if (param.decimals !== undefined && isNaN(param.decimals)) {
+				errors.push({ message: 'Parameter decimals needs to be number' });
 				continue;
 			}
-			if (param.precision && isNaN(param.precision)) {
-				errors.push({ message: 'parameter precision needs to be number' });
+			if (param.precision !== undefined && isNaN(param.precision)) {
+				errors.push({ message: 'Parameter precision needs to be number' });
 				continue;
 			}
 			if (param.exponential !== undefined && typeof param.exponential !== 'boolean') {
-				errors.push({ message: 'parameter exponential needs to be boolean' });
+				errors.push({ message: 'Parameter exponential needs to be boolean' });
 				continue;
 			}
 			if (param['default'] == null) {
@@ -437,7 +432,7 @@ function (
 						param['default'] = {};
 						break;
 					default:
-						errors.push({ message: 'parameter default is missing or of wrong type' });
+						errors.push({ message: 'Parameter default is missing or of wrong type' });
 						continue;
 				}
 			}
