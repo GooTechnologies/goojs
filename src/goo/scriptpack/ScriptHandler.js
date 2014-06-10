@@ -348,7 +348,6 @@ function (
 	 * @private
 	 */
 	function safeUp(script, outScript) {
-		var	obj = {};
 		var errors = script.errors || [];
 		if (typeof script.externals !== 'object') {
 			outScript.externals = {};
@@ -388,6 +387,9 @@ function (
 				errors.push({ message: 'Parameter key needs to be array' });
 				continue;
 			}
+			// REVIEW: some unwanted values will pass: isNaN(true), isNaN(false), isNaN(''), isNaN([]) return false
+			// isNaN('123') also returns false, which is a dubious case... since it does look like a number and it can without any issues be converted to a number but it is not a number
+			// the same for the following several checks
 			if (param.min !== undefined && isNaN(param.min)) {
 				errors.push({ message: 'Parameter min needs to be number' });
 				continue;
