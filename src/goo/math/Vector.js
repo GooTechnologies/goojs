@@ -26,17 +26,16 @@ function (
 	/**
 	 * @private
 	 * @description Binds aliases to the different vector components.
+	 * @param {prototype} prototype The prototype to bind to.
 	 * @param {String[]} aliases Array of component aliases for each component index.
 	 */
 
 	Vector.setupAliases = function (prototype, aliases) {
-		var that = prototype;
-
 		for (var i = 0; i < aliases.length; i++) {
 			/*jshint loopfunc: true */
 			(function (index) {
 				for (var j = 0; j < aliases[index].length; j++) {
-					Object.defineProperty(that, aliases[index][j], {
+					Object.defineProperty(prototype, aliases[index][j], {
 						get: function () {
 							return this.data[index];
 						},
@@ -46,7 +45,7 @@ function (
 					});
 				}
 
-				Object.defineProperty(that, i, {
+				Object.defineProperty(prototype, i, {
 					get: function () {
 						return this.data[index];
 					},
