@@ -2,7 +2,7 @@ define([
 	'goo/fsmpack/statemachine/actions/Action'
 ],
 /** @lends */
-function(
+function (
 	Action
 ) {
 	'use strict';
@@ -35,8 +35,10 @@ function(
 
 	HTMLAction.prototype._setup = function (fsm) {
 		var ownerEntity = fsm.getOwnerEntity();
-		this.domElement = ownerEntity.htmlComponent.domElement;
-		this.domElement.addEventListener('click', this.eventListener);
+		if (ownerEntity.htmlComponent) {
+			this.domElement = ownerEntity.htmlComponent.domElement;
+			this.domElement.addEventListener('click', this.eventListener);
+		}
 	};
 
 	HTMLAction.prototype._run = function (fsm) {
@@ -47,7 +49,9 @@ function(
 	};
 
 	HTMLAction.prototype.exit = function () {
-		this.domElement.removeEventListener('click', this.eventListener);
+		if (this.domElement) {
+			this.domElement.removeEventListener('click', this.eventListener);
+		}
 	};
 
 	return HTMLAction;
