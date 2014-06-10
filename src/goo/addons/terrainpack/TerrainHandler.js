@@ -188,6 +188,7 @@ define([
 
 				var terrainSize = this.terrainSize;
 				var calcVec = new Vector3();
+
 				var terrainQuery = this.terrainQuery = {
 					getHeightAt: function (pos) {
 						if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
@@ -309,6 +310,40 @@ define([
 						}
 						return null;
 					}.bind(this),
+					getLightAt: function (pos) {
+						if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
+							return -1000;
+						}
+
+						if (!this.lightMapData || !this.lightMapSize)
+							return 1;
+
+						var x = pos[0] * this.lightMapSize / terrainSize;
+						var z = (terrainSize - pos[2]) * this.lightMapSize / terrainSize;
+
+						var col = Math.floor(x);
+						var row = Math.floor(z);
+
+						var intOnX = x - col;
+						var intOnZ = z - row;
+
+						var col1 = col + 1;
+						var row1 = row + 1;
+
+						col = MathUtils.moduloPositive(col, this.lightMapSize);
+						row = MathUtils.moduloPositive(row, this.lightMapSize);
+						col1 = MathUtils.moduloPositive(col1, this.lightMapSize);
+						row1 = MathUtils.moduloPositive(row1, this.lightMapSize);
+
+						var topLeft = this.lightMapData[row * this.lightMapSize + col];
+						var topRight = this.lightMapData[row * this.lightMapSize + col1];
+						var bottomLeft = this.lightMapData[row1 * this.lightMapSize + col];
+						var bottomRight = this.lightMapData[row1 * this.lightMapSize + col1];
+
+						return MathUtils.lerp(intOnZ, MathUtils.lerp(intOnX, topLeft, topRight),
+						       MathUtils.lerp(intOnX, bottomLeft, bottomRight)) / 255.0;
+					}.bind(this),
+
                     getType: function (xx, zz, slope, rand) {
                         if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
                             return terrainData.stone;
@@ -370,6 +405,22 @@ define([
 
 		TerrainHandler.prototype.initPhysics = function () {
 			this.ammoBody = this.terrain.initAmmoBody();
+		};
+
+		TerrainHandler.prototype.useLightmap = function(data, size) {
+			var lightMap = new Texture(data, {
+				magFilter: 'Bilinear',
+				minFilter: 'NearestNeighborNoMipMaps',
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false,
+				format: 'Luminance',
+				type: 'UnsignedByte'
+			}, size, size);
+
+			this.lightMapData = data;
+			this.lightMapSize = size;
+			this.terrain.setLightmapTexture(lightMap);
 		};
 
 		TerrainHandler.prototype.update = function (cameraEntity) {

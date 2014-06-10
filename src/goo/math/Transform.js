@@ -31,9 +31,9 @@ function (
 		this.scale = new Vector3(1, 1, 1);
 	}
 
-	Transform.tmpVec = new Vector3();
-	Transform.tmpVec2 = new Vector3();
-	Transform.tmpMat1 = new Matrix3x3();
+	var tmpVec = new Vector3();
+	var tmpVec2 = new Vector3();
+	var tmpMat1 = new Matrix3x3();
 
 	/**
 	 * Combines two transforms into one. This will only work if scaling in the left hand transform is uniform
@@ -52,7 +52,6 @@ function (
 		target = target || new Transform();
 
 		// Translation
-		var tmpVec = Transform.tmpVec;
 		tmpVec.setv(rhs.translation);
 		// Rotate translation
 		lhs.rotation.applyPost(tmpVec);
@@ -62,13 +61,11 @@ function (
 		tmpVec.addv(lhs.translation);
 
 		// Scale
-		var tmpVec2 = Transform.tmpVec2;
 		tmpVec2.setv(rhs.scale);
 		// Scale scale
 		tmpVec2.mulv(lhs.scale);
 
 		// Rotation
-		var tmpMat1 = Transform.tmpMat1;
 		// Rotate rotation
 		Matrix3x3.combine(lhs.rotation, rhs.rotation, tmpMat1);
 
@@ -94,17 +91,17 @@ function (
 	Transform.prototype.multiply = function (a, b) {
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
 
-		Transform.tmpMat1.data.set(a.rotation.data);
-		//Transform.tmpMat1.multiplyDiagonalPost(a.scale, Transform.tmpMat1);
+		tmpMat1.data.set(a.rotation.data);
+		//tmpMat1.multiplyDiagonalPost(a.scale, tmpMat1);
 		this.rotation.data.set(b.rotation.data);
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
-		Matrix3x3.combine(Transform.tmpMat1, this.rotation, this.rotation);
+		Matrix3x3.combine(tmpMat1, this.rotation, this.rotation);
 		this.translation.setv(b.translation);
 		this.translation.mulv(a.scale);
-		Transform.tmpMat1.applyPost(this.translation).addv(a.translation);
+		tmpMat1.applyPost(this.translation).addv(a.translation);
 
-		Transform.tmpVec.setv(a.scale).mulv(b.scale);
-		this.scale.setv(Transform.tmpVec);
+		tmpVec.setv(a.scale).mulv(b.scale);
+		this.scale.setv(tmpVec);
 	};
 
 	/**
@@ -227,10 +224,10 @@ function (
 			up = Vector3.UNIT_Y;
 		}
 		// REVIEW: this is actually using the wrong direction, it should be reversed.
-		//   Transform.tmpVec.setv(position).subv(this.translation).normalize();
+		//   tmpVec.setv(position).subv(this.translation).normalize();
 		// However we might need the old behavior for lights and cameras.
-		Transform.tmpVec.setv(this.translation).subv(position).normalize();
-		this.rotation.lookAt(Transform.tmpVec, up);
+		tmpVec.setv(this.translation).subv(position).normalize();
+		this.rotation.lookAt(tmpVec, up);
 	};
 
 	/**

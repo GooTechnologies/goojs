@@ -14,7 +14,7 @@ require([
 	V.addOrbitCamera();
 	V.addLights();
 
-	var numBoxes = 5;
+	var numBoxes = 10;
 	var material = V.getColoredMaterial(1, 1, 1, 1);
 	var size = 0.7;
 	var box = new Box(size, size, size);

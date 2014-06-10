@@ -4,7 +4,6 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
 	'goo/entities/EntityUtils'
 ],
 /** @lends */
@@ -14,7 +13,6 @@ function (
 	RSVP,
 	StringUtil,
 	PromiseUtil,
-	_,
 	EntityUtils
 ) {
 	'use strict';
@@ -103,7 +101,7 @@ function (
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
-			window.entities = window.entities || {}
+			window.entities = window.entities || {};
 			entity.static = !!config.static;
 
 			updateTags(entity, config.tags);

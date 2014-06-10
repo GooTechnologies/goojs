@@ -76,20 +76,28 @@ function (
 		this._clearColor[3] = color[3];
 	};
 
-	Composer.prototype.updateSize = function() {
+	Composer.prototype.updateSize = function(renderer) {
 		var size = this.size;
 		if (!size) {
 			return;
 		}
 		var width = size.width;
 		var height = size.height;
+
+		if (this.writeBuffer) {
+			renderer._deallocateRenderTarget(this.writeBuffer);
+		}
+		if (this.readBuffer) {
+			renderer._deallocateRenderTarget(this.readBuffer);
+		}
+
 		this.writeBuffer = new RenderTarget(width, height);
 		this.readBuffer = this.writeBuffer.clone();
 
 		for (var i = 0, il = this.passes.length; i < il; i++) {
 			var pass = this.passes[i];
 			if (pass.updateSize && this._checkPassResize(pass, size)) {
-				pass.updateSize(size);
+				pass.updateSize(size, renderer);
 				pass.viewportSize = size;
 			}
 		}
@@ -97,7 +105,7 @@ function (
 
 	Composer.prototype.render = function (renderer, delta, camera, lights) {
 		if (this.dirty) {
-			this.updateSize();
+			this.updateSize(renderer);
 			this.dirty = false;
 		}
 

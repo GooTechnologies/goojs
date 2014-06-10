@@ -19,7 +19,7 @@ function(
 		type: 'animation',
 		description: 'Continues playing a skeleton animation',
 		parameters: [{
-			name: 'On all',
+			name: 'On all entities',
 			key: 'onAll',
 			type: 'boolean',
 			description: 'Resume animation on all entities or just one',

@@ -54,9 +54,8 @@ function (
 		this.setBroadphaseAlgorithm(settings.broadphase);
 
 		this.stepFrequency = settings.stepFrequency;
-
-		this._quat = new Quaternion();
 	}
+	var tmpQuat = new Quaternion();
 
 	CannonSystem.prototype = Object.create(System.prototype);
 
@@ -74,7 +73,7 @@ function (
 		rbComponent.body = body;
 		entity.setPosition(transformComponent.transform.translation);
 		entity.setVelocity(rbComponent._initialVelocity);
-		var q = this._quat;
+		var q = tmpQuat;
 		q.fromRotationMatrix(transformComponent.transform.rotation);
 		body.quaternion.set(q.x, q.y, q.z, q.w);
 
@@ -109,8 +108,8 @@ function (
 			entity.transformComponent.setTranslation(position.x, position.y, position.z);
 
 			var cannonQuat = cannonComponent.body.quaternion;
-			this._quat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
-			entity.transformComponent.transform.rotation.copyQuaternion(this._quat);
+			tmpQuat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
+			entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);
 			entity.transformComponent.setUpdated();
 		}
 	};

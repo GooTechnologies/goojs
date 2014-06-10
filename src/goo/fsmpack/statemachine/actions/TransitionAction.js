@@ -17,7 +17,7 @@ function(
 	TransitionAction.external = {
 		name: 'Transition',
 		type: 'transitions',
-		description: 'Performs a transition',
+		description: 'Transition to a selected state',
 		canTransition: true,
 		parameters: [],
 		transitions: [{

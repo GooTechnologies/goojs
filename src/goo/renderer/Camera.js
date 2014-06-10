@@ -77,8 +77,6 @@ function (
 			this._worldPlane[i] = new Plane();
 		}
 
-		this._newDirection = new Vector3();
-
 		this.projectionMode = Camera.Perspective;
 		this.lockedRatio = false;
 		this.aspect = aspect;
@@ -122,6 +120,8 @@ function (
 		this.setFrustumPerspective(fov, aspect, near, far);
 		this.onFrameChange();
 	}
+
+	var newDirection = new Vector3(); // tmp
 
 	// Planes of the frustum
 	Camera.LEFT_PLANE = 0;
@@ -314,14 +314,14 @@ function (
 	 * @param {Vector3} worldUpVector A vector indicating the up direction of the world. (often Vector3.UNIT_Y or Vector3.UNIT_Z).
 	 */
 	Camera.prototype.lookAt = function (pos, worldUpVector) {
-		this._newDirection.copy(pos).sub(this.translation).normalize();
+		newDirection.copy(pos).sub(this.translation).normalize();
 
 		// check to see if we haven't really updated camera -- no need to call
 		// sets.
-		if (this._newDirection.equals(this._direction)) {
+		if (newDirection.equals(this._direction)) {
 			return;
 		}
-		this._direction.copy(this._newDirection);
+		this._direction.copy(newDirection);
 
 		this._up.copy(worldUpVector).normalize();
 		if (this._up.equals(Vector3.ZERO)) {
@@ -357,7 +357,7 @@ function (
 	};
 
 	/**
-	 * Checks a bounding volume against the planes of this camera's frustum and returns if it is completely inside of, outside of, or intersecting. 
+	 * Checks a bounding volume against the planes of this camera's frustum and returns if it is completely inside of, outside of, or intersecting.
 	 * Example returns are Camera.Inside, Camera.Outside or Camera.Intersects.
 	 *
 	 * @param {BoundingVolume} bound The BoundingVolume to check for culling.
@@ -826,7 +826,7 @@ function (
 	};
 
 	/**
-	 * Compress this camera's near and far frustum planes to be smaller if possible, 
+	 * Compress this camera's near and far frustum planes to be smaller if possible,
 	 * using the given bounds as a measure.
 	 * @param {BoundingVolume} sceneBounds The scene bounds.
 	 */

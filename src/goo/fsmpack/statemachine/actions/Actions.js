@@ -92,7 +92,7 @@ function (
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			if (key === 'Eval') {
+			if (key === 'Eval' || key === 'HTMLPick') {
 				continue;
 			}
 			actions[key] = _actions[key];
@@ -100,7 +100,7 @@ function (
 		return actions;
 	};
 
-	function registerAll (args) {
+	function registerAll(args) {
 		var actionsStartIndex = 0;
 		for (var i = actionsStartIndex; i < args.length; i++) {
 			var arg = args[i];

@@ -2,7 +2,7 @@ define([
 	'goo/fsmpack/statemachine/actions/Action'
 ],
 /** @lends */
-function(
+function (
 	Action
 ) {
 	"use strict";
@@ -22,13 +22,13 @@ function(
 			name: 'Scale',
 			key: 'scale',
 			type: 'position',
-			description: 'Move',
+			description: 'Scale',
 			'default': [0, 0, 0]
 		}, {
 			name: 'Relative',
 			key: 'relative',
 			type: 'boolean',
-			description: 'If true add/multiply the current scaling',
+			description: 'If true, add/multiply the current scaling',
 			'default': true
 		}, {
 			name: 'Multiply',

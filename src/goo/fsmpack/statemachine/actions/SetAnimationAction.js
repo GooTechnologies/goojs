@@ -16,7 +16,7 @@ function(
 	SetAnimationAction.external = {
 		name: 'Set Animation',
 		type: 'animation',
-		description: 'Transitions between skeleton animations',
+		description: 'Transitions to a selected animation',
 		parameters: [{
 			name:'Animation',
 			key:'animation',

@@ -7,6 +7,9 @@ Breaking changes:
 v0.10.2 --- 2014-06-05
 ======================
 
+Fixes:
+ * bugfix in Renderer.prototype._deallocateRenderTarget
+
 Breaking changes:
  * all addons are now split in packs:
      goo/addons/p2/* -> goo/addons/p2pack/*

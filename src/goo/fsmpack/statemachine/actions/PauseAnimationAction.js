@@ -19,7 +19,7 @@ function(
 		type: 'animation',
 		description: 'Pauses skeleton animations',
 		parameters: [{
-			name: 'On all',
+			name: 'On all entities',
 			key: 'onAll',
 			type: 'boolean',
 			description: 'Pause animation on all entities or just one',

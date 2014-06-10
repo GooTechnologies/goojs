@@ -22,7 +22,7 @@ function(
 		key: 'Collides',
 		name: 'Collision',
 		type: 'collision',
-		description: 'Checks for collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag objects using the \'Tag\' action',
+		description: 'Checks for collisions or non-collisions with other entities. Collisions are based on the entities\' bounding volumes. Before using collisions you first need to tag objects using the \'Tag\' action.',
 		canTransition: true,
 		parameters: [{
 			name: 'Tag',
@@ -35,11 +35,11 @@ function(
 		transitions: [{
 			key: 'collides',
 			name: 'On Collision',
-			description: 'States to transition to when a collision occurs'
+			description: 'State to transition to when a collision occurs'
 		}, {
 			key: 'notCollides',
 			name: 'On Divergence',
-			description: 'States to transition to when a collision is not occurring'
+			description: 'State to transition to when a collision is not occurring'
 		}]
 	};
 

@@ -5,7 +5,6 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
 
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
@@ -32,8 +31,7 @@ function (
 	Ajax,
 	RSVP,
 	StringUtil,
-	PromiseUtil,
-	_
+	PromiseUtil
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
@@ -49,18 +47,18 @@ function (
 	 * Can be used to overwrite how the loader fetches refs. Good for testing.
 	 */
 	function DynamicLoader(options) {
-		if(options.world) {
+		if (options.world) {
 			this._world = options.world;
 		} else {
-			throw new Error("World argument cannot be null");
+			throw new Error('World argument cannot be null');
 		}
+
 		if (options.ajax) {
 			this._ajax = options.ajax;
-		}
-		else if (options.rootPath) {
+		} else if (options.rootPath) {
 			this._ajax = new Ajax(options.rootPath);
 		} else {
-			throw new Error("ajax or rootPath must be defined");
+			throw new Error('ajax or rootPath must be defined');
 		}
 
 		// Will hold the engine objects
@@ -197,7 +195,7 @@ function (
 	 * @private
 	 */
 	DynamicLoader.prototype._loadRef = function (ref, options) {
-		return this._ajax.load(ref, (options==null) ? false : options.noCache);
+		return this._ajax.load(ref, (options == null) ? false : options.noCache);
 	};
 
 	/**
@@ -255,7 +253,7 @@ function (
 
 			traverseFn({ collectionRefs: refs });
 			// Resolved when everything is loaded and traversed
-			return RSVP.all(promises).then(function () { return Object.keys(binaryRefs); } );
+			return RSVP.all(promises).then(function () { return Object.keys(binaryRefs); });
 		}
 
 		return traverse(references).then(loadBinaryRefs);
@@ -291,7 +289,6 @@ function (
 	 */
 
 	var refRegex = new RegExp('\\S+refs?$', 'i');
-	//var refRegex = /\S+refs?$/i; //! AT: if you do profiling and use this instead your flame chart will loook totally different - probably due to this form not compiling at parse time
 
 	DynamicLoader.prototype._getRefsFromConfig = function (config) {
 		var refs = [];

@@ -14,7 +14,6 @@ define(
 		 */
 		this.enabled = true;
 
-		//this.api = {}; // should be static (although it contains bound methods)
 		this.installedAPI = {};
 	}
 
@@ -29,7 +28,12 @@ define(
 		}
 
 		var api = this.api;
-		for (var key in api) {
+		if (!api) {
+			return;
+		}
+		var keys = Object.keys(api);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
 			if (typeof entity[key] === 'undefined') {
 				entity[key] = api[key];
 				this.installedAPI[key] = true;
@@ -46,6 +50,7 @@ define(
 	 */
 	Component.prototype.removeAPI = function (entity) {
 		var installedAPI = this.installedAPI;
+		// REVIEW: do it here as well
 		for (var key in installedAPI) {
 			delete entity[key];
 		}

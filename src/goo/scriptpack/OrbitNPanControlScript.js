@@ -1,11 +1,13 @@
 define([
 	'goo/scripts/Scripts',
 	'goo/scripts/OrbitCamControlScript',
-	'goo/scriptpack/PanCamScript'
+	'goo/scriptpack/PanCamScript',
+	'goo/util/ObjectUtil'
 ], function (
 	Scripts,
 	OrbitCamControlScript,
-	PanCamControlScript
+	PanCamControlScript,
+	_
 ) {
 	'use strict';
 
@@ -35,7 +37,18 @@ define([
 	var orbitParams = OrbitCamControlScript.externals.parameters;
 	var panParams = PanCamControlScript.externals.parameters;
 
-	var params = orbitParams.concat(panParams.slice(1));
+	// Make sure we don't change parameters for the other scripts
+	var params = _.deepClone(orbitParams.concat(panParams.slice(1)));
+
+	// Remove the panSpeed parameter
+	for (var i = 0; i < params.length; i++) {
+		var param = params[i];
+		if (param.key === 'panSpeed') {
+			params.splice(i, 1);
+			break;
+		}
+	}
+
 	for (var i = 0; i < params.length; i++) {
 		var param = params[i];
 		switch (param.key) {
@@ -44,6 +57,9 @@ define([
 			break;
 		case 'panButton':
 			param['default'] = 'Right';
+			break;
+		case 'panSpeed':
+			param['default'] = 1;
 			break;
 		}
 	}

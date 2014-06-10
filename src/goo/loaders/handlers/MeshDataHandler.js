@@ -6,7 +6,7 @@ define([
 	'goo/util/ArrayUtil'
 ],
 /* @lends */
-function(
+function (
 	ConfigHandler,
 	MeshData,
 	BufferUtils,
@@ -49,7 +49,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the Meshdata or null if removed
 	 */
-	MeshDataHandler.prototype._update = function(ref, config, options) {
+	MeshDataHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
 			this._remove(ref);
 			return PromiseUtil.createDummyPromise();
@@ -81,7 +81,7 @@ function(
 		}
 
 		var indexCount = 0;
-		if(config.indexLengths) {
+		if (config.indexLengths) {
 			indexCount = config.indexLengths.reduce(function (store, val) { return store + val; });
 		} else if (config.indices) {
 			indexCount = config.indices.wordLength;
@@ -119,7 +119,7 @@ function(
 	 * @returns {MeshData}
 	 * @private
 	 */
-	MeshDataHandler.prototype._fillMeshData = function(meshData, config, bindata) {
+	MeshDataHandler.prototype._fillMeshData = function (meshData, config, bindata) {
 		var skinned = meshData.type === MeshData.SKINMESH;
 
 		for (var key in config.attributes) {
@@ -172,8 +172,7 @@ function(
 		if (config.boundingVolume) {
 			if (config.boundingVolume.type === 'BoundingBox') {
 				meshData.boundingBox = {min: config.boundingVolume.min, max: config.boundingVolume.max};
-			}
-			else {
+			} else {
 				throw new Error('Bounding volume was not BoundingBox');
 			}
 		}

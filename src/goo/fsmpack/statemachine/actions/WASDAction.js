@@ -51,7 +51,7 @@ function(
 			key: 'WASD Keys Listener',
 			name: 'WASD Keys',
 			type: 'controls',
-			description: 'A 4-in-1 key down listener',
+			description: 'Transitions to other states when the WASD keys are pressed',
 			canTransition: true,
 			parameters: [],
 			transitions: transitions

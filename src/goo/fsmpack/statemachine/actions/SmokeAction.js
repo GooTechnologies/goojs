@@ -31,7 +31,7 @@ function (
 		key: 'Smoke',
 		name: 'Smoke FX',
 		type: 'fx',
-		description: 'Makes the entity emit smoke. To cancel the smoke emitter use the "Remove Particles" action',
+		description: 'Makes the entity emit smoke. To cancel the smoke emitter use the "Remove Particles" action.',
 		parameters: [{
 			name: 'Color',
 			key: 'color',

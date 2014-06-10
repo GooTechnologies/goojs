@@ -184,6 +184,8 @@ function (
 			switchedProgram = true;
 		}
 
+		record.newlyEnabledAttributes.length = 0;
+
 		// Bind attributes
 		//TODO: good?
 		if (this.attributes) {
@@ -208,10 +210,28 @@ function (
 					continue;
 				}
 
-				if (switchedProgram) {
-					renderer.context.enableVertexAttribArray(attributeIndex);
-				}
+				record.newlyEnabledAttributes[attributeIndex] = true;
+				// if (switchedProgram) {
+					// renderer.context.enableVertexAttribArray(attributeIndex);
+				// }
 				renderer.bindVertexAttribute(attributeIndex, attribute);
+			}
+		}
+
+		for (var i = 0, l = record.enabledAttributes.length; i < l; i++) {
+			var enabled = record.enabledAttributes[i];
+			var newEnabled = record.newlyEnabledAttributes[i];
+			if (!newEnabled && enabled) {
+				renderer.context.disableVertexAttribArray(i);
+				record.enabledAttributes[i] = false;
+			}
+		}
+		for (var i = 0, l = record.newlyEnabledAttributes.length; i < l; i++) {
+			var enabled = record.enabledAttributes[i];
+			var newEnabled = record.newlyEnabledAttributes[i];
+			if (newEnabled && !enabled) {
+				renderer.context.enableVertexAttribArray(i);
+				record.enabledAttributes[i] = true;
 			}
 		}
 

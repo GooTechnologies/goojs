@@ -237,7 +237,7 @@ function (
 	 * @return {Vector3} rotation
 	 */
 	TransformComponent.prototype.getRotation = function (target) {
-		target = target || tmpVec;
+		target = target || new Vector3();
 		return this.transform.rotation.toAngles(target);
 	};
 

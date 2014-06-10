@@ -891,7 +891,6 @@ function (
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
-
 	Matrix4x4.prototype.applyPostVector = function (rhs) {
 		var x = rhs.x;
 		var y = rhs.y;
@@ -910,7 +909,6 @@ function (
 	 * @param {Matrix4x4} source Source matrix.
 	 * @return {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.copy = function (source) {
 		var t = this.data;
 		var s = source.data;
@@ -935,6 +933,10 @@ function (
 		return this;
 	};
 
+	/**
+	 * Returns a new matrix with the same values as the existing one.
+	 * @return {Matrix4x4} The new matrix.
+	 */
 	Matrix4x4.prototype.clone = function () {
 		var d = this.data;
 		return new Matrix4x4(
@@ -944,8 +946,6 @@ function (
 			d[12], d[13], d[14], d[15]
 		);
 	};
-
-	/* ====================================================================== */
 
 	return Matrix4x4;
 });

@@ -2,7 +2,7 @@ define([
 	'goo/fsmpack/statemachine/actions/Action'
 ],
 /** @lends */
-function(
+function (
 	Action
 ) {
 	'use strict';
@@ -23,20 +23,22 @@ function(
 	HTMLAction.external = {
 		name: 'HTMLPick',
 		type: 'controls',
-		description: 'Listens for a picking event and performs a transition',
+		description: 'Listens for a picking event and performs a transition. Can only be used on HTML entities.',
 		canTransition: true,
 		parameters: [], // but not farther than some value
 		transitions: [{
 			key: 'pick',
 			name: 'Pick',
-			description: 'State to transition to when entity is picked'
+			description: 'State to transition to when the HTML entity is picked'
 		}]
 	};
 
 	HTMLAction.prototype._setup = function (fsm) {
 		var ownerEntity = fsm.getOwnerEntity();
-		this.domElement = ownerEntity.htmlComponent.domElement;
-		this.domElement.addEventListener('click', this.eventListener);
+		if (ownerEntity.htmlComponent) {
+			this.domElement = ownerEntity.htmlComponent.domElement;
+			this.domElement.addEventListener('click', this.eventListener);
+		}
 	};
 
 	HTMLAction.prototype._run = function (fsm) {
@@ -47,7 +49,9 @@ function(
 	};
 
 	HTMLAction.prototype.exit = function () {
-		this.domElement.removeEventListener('click', this.eventListener);
+		if (this.domElement) {
+			this.domElement.removeEventListener('click', this.eventListener);
+		}
 	};
 
 	return HTMLAction;

@@ -153,5 +153,24 @@ define(["goo/math/Matrix4x4", "goo/math/Vector3", "goo/math/Vector4", "goo/math/
 
 			expect(Matrix4x4.div(a,a)).toEqual(Matrix4x4.div(a,2));
 		});
+
+		describe('copy', function () {
+			it('can copy from another matrix', function () {
+				var original = new Matrix4x4(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160);
+				var copy = new Matrix4x4(100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600);
+				copy.copy(original);
+				expect(copy).toEqual(new Matrix4x4(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160));
+			});
+		});
+
+		describe('clone', function () {
+			it('can clone to another matrix', function () {
+				var original = new Matrix4x4(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160);
+				var clone = original.clone();
+
+				expect(clone).not.toBe(original);
+				expect(clone).toEqual(new Matrix4x4(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160));
+			});
+		});
 	});
 });

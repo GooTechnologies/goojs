@@ -150,9 +150,10 @@ function (
 	/**
 	 *
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
+	 * @param {Function} callback Called when loading has finished
 	 * @returns {Texture} cubemap
 	 */
-	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings) {
+	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings, callback) {
 		var texture = new Texture(null, settings);
 		texture.variant = 'CUBE';
 		var images = [];
@@ -174,6 +175,10 @@ function (
 				texture.image.dataReady = true;
 				texture.image.width = w;
 				texture.image.height = h;
+
+				if (callback) {
+					callback();
+				}
 			}
 		});
 

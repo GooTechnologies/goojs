@@ -20,7 +20,7 @@ function(
 
 	AddLightAction.external = {
 		name: 'Add Light',
-		description: 'Adds a light on the entity',
+		description: 'Adds a point light to the entity',
 		type: 'light',
 		parameters: [{
 			name: 'Color',

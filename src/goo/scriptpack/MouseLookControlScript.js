@@ -155,6 +155,8 @@ define([
 			{
 				key: 'whenUsed',
 				type: 'boolean',
+				name: 'When Camera Used',
+				description:'Script only runs when the camera to which it is added is being used.',
 				'default': true
 			},
 			{

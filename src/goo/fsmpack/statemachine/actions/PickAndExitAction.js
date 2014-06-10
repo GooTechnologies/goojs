@@ -47,14 +47,14 @@ function (
 	PickAndExitAction.external = {
 		name: 'Pick and Exit',
 		type: 'controls',
-		description: 'Listens for a picking event and opens a new browser window',
+		description: 'Listens for a picking event on the entity and opens a new browser window',
 		canTransition: true,
 		parameters: [{
 			name: 'URL',
 			key: 'url',
 			type: 'string',
 			description: 'URL to open',
-			'default': 'http://www.gootechnologies.com'
+			'default': 'http://www.goocreate.com/'
 		}, {
 			name: 'Exit name',
 			key: 'exitName',

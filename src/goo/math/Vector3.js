@@ -14,10 +14,10 @@ function (
 	 * @extends Vector
 	 * @description Creates a new Vector3 by passing in either a current Vector3, number Array, or a set of three numbers.
 	 * @param {Vector3|number[]|...number} arguments Initial values for the components.
-	 * @example 
+	 * @example
 	 * // Passing in three numbers
 	 * var v1 = new Vector3(1, 2, 3);
-	 * 
+	 *
 	 * // Passing in an existing Vector3
 	 * var v2 = new Vector3(v1); // v2 == (1, 2, 3)
 	 *
@@ -42,7 +42,7 @@ function (
 
 	/* ====================================================================== */
 
-	/** 
+	/**
 	* Vector3 representing Zero Axis: (0, 0, 0)
 	* @type {Vector3}
 	* @example
@@ -139,13 +139,13 @@ function (
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
 	 * var r1 = Vector3.add(v1, v2); // r1 == (5, 7, 9)
-	 * 
+	 *
 	 * // Adds a number Array and a Vector3 with a target Vector3 to store the result
 	 * var a1 = [1, 2, 3];
 	 * var v1 = new Vector3(4, 5, 6);
 	 * var r1 = new Vector3(); // r1 == (0, 0, 0)
 	 * Vector3.add(a1, v1, r1); // r1 == (5, 7, 9)
-	 * 
+	 *
 	 * // Adds a number to a Vector3, using that same Vector3 as the target to store the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * Vector3.add(5, v1, v1); // v1 == (6, 7, 8)
@@ -248,13 +248,13 @@ function (
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
 	 * var r1 = Vector3.sub(v1, v2); // r1 == (-3, -3, -3)
-	 * 
+	 *
 	 * // Subtracts a Vector3 'v1' from a number Array 'a1' with a target Vector3 to store the result
 	 * var a1 = [4, 5, 6];
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var r1 = new Vector3(); // r1 == (0, 0, 0)
 	 * Vector3.sub(a1, v1, r1); // r1 == (3, 3, 3)
-	 * 
+	 *
 	 * // Subtracts a number from a Vector3, using that same Vector3 as the target to store the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * Vector3.sub(v1, 5, v1); // v1 == (-4, -3, -2)
@@ -369,43 +369,51 @@ function (
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
 	 * var r1 = Vector3.mul(v1, v2); // r1 == (4, 10, 18)
-	 * 
+	 *
 	 * // Multiplies a number Array and a Vector3 with a target Vector3 to store the result
 	 * var a1 = [1, 2, 3];
 	 * var v1 = new Vector3(4, 5, 6);
 	 * var r1 = new Vector3(); // r1 == (0, 0, 0)
 	 * Vector3.mul(a1, v1, r1); // r1 == (4, 10, 18)
-	 * 
+	 *
 	 * // Multiplies a Vector3 by a number, using that same Vector3 as the target to store the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * Vector3.mul(v1, 5, v1); // v1 == (5, 10, 15)
 	 */
 	Vector3.mul = function (lhs, rhs, target) {
-		if (typeof (lhs) === "number") {
-			lhs = [lhs, lhs, lhs];
-		}
-
-		if (typeof (rhs) === "number") {
-			rhs = [rhs, rhs, rhs];
-		}
-
 		if (!target) {
 			target = new Vector3();
 		}
 
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
+		if (typeof (lhs) === 'number') {
 
-		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
+			var rdata = rhs.data || rhs;
+			target.data[0] = lhs * rdata[0];
+			target.data[1] = lhs * rdata[1];
+			target.data[2] = lhs * rdata[2];
+
+		} else if (typeof (rhs) === 'number') {
+
+			var ldata = lhs.data || lhs;
+			target.data[0] = ldata[0] * rhs;
+			target.data[1] = ldata[1] * rhs;
+			target.data[2] = ldata[2] * rhs;
+
+		} else {
+			var ldata = lhs.data || lhs;
+			var rdata = rhs.data || rhs;
+
+			if (ldata.length !== 3 || rdata.length !== 3) {
+				throw {
+					name: 'Illegal Arguments',
+					message: 'The arguments are of incompatible sizes.'
+				};
+			}
+
+			target.data[0] = ldata[0] * rdata[0];
+			target.data[1] = ldata[1] * rdata[1];
+			target.data[2] = ldata[2] * rdata[2];
 		}
-
-		target.data[0] = ldata[0] * rdata[0];
-		target.data[1] = ldata[1] * rdata[1];
-		target.data[2] = ldata[2] * rdata[2];
 
 		return target;
 	};
@@ -449,43 +457,52 @@ function (
 	 * var v1 = new Vector3(2, 4, 8);
 	 * var v2 = new Vector3(1, 2, 4);
 	 * var r1 = Vector3.div(v1, v2); // r1 == (2, 2, 2)
-	 * 
+	 *
 	 * // Divides a number Array by a Vector3 with a target Vector3 to store the result
 	 * var a1 = [5, 10, 15];
 	 * var v1 = new Vector3(5, 2, 3);
 	 * var r1 = new Vector3(); // r1 == (0, 0, 0)
 	 * Vector3.div(a1, v1, r1); // r1 == (1, 5, 5)
-	 * 
+	 *
 	 * // Divides a Vector3 by a number, using that same Vector3 as the target to store the result
 	 * var v1 = new Vector3(5, 10, 15);
 	 * Vector3.div(v1, 5, v1); // v1 == (1, 2, 3)
 	 */
 	Vector3.div = function (lhs, rhs, target) {
-		if (typeof (lhs) === "number") {
-			lhs = [lhs, lhs, lhs];
-		}
-
-		if (typeof (rhs) === "number") {
-			rhs = [rhs, rhs, rhs];
-		}
-
 		if (!target) {
 			target = new Vector3();
 		}
 
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
+		if (typeof (lhs) === 'number') {
 
-		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
+			var rdata = rhs.data || rhs;
+			target.data[0] = lhs / rdata[0];
+			target.data[1] = lhs / rdata[1];
+			target.data[2] = lhs / rdata[2];
+
+		} else if (typeof (rhs) === 'number') {
+
+			var irhs = 1 / rhs;
+			var ldata = lhs.data || lhs;
+			target.data[0] = ldata[0] * irhs;
+			target.data[1] = ldata[1] * irhs;
+			target.data[2] = ldata[2] * irhs;
+
+		} else {
+			var ldata = lhs.data || lhs;
+			var rdata = rhs.data || rhs;
+
+			if (ldata.length !== 3 || rdata.length !== 3) {
+				throw {
+					name: 'Illegal Arguments',
+					message: 'The arguments are of incompatible sizes.'
+				};
+			}
+
+			target.data[0] = ldata[0] / rdata[0];
+			target.data[1] = ldata[1] / rdata[1];
+			target.data[2] = ldata[2] / rdata[2];
 		}
-
-		target.data[0] = ldata[0] / rdata[0];
-		target.data[1] = ldata[1] / rdata[1];
-		target.data[2] = ldata[2] / rdata[2];
 
 		return target;
 	};
@@ -615,7 +632,7 @@ function (
 	 * var v1 = new Vector3(0, 1, 0);
 	 * var v2 = new Vector3(1, 0, 0);
 	 * var cross = Vector3.cross(v1, v2); // cross == (0, 0, -1)
-	 * 
+	 *
 	 * // Passing in a Vector3 and a number Array, using the same Vector3 to store the results
 	 * var v3 = new Vector3(0, 0, -1);
 	 * Vector3.cross(v3, [0, -1, 0], v3); // v3 == (-1, 0, 0)
@@ -654,7 +671,7 @@ function (
 	 * var v1 = new Vector3(0, 1, 0);
 	 * var v2 = new Vector3(0, 0, -1);
 	 * v1.cross(v2); // v1 == (-1, 0, 0)
-	 * 
+	 *
 	 * // Passing in an array
 	 * var v3 = new Vector3(1, 0, 0);
 	 * v3.cross([0, 1, 0]); // v3 == (0, 0, 1)
