@@ -79,7 +79,6 @@ function (
 					gooRunner.triggerEvent('mousedown', evt);
 				});
 				domElement.addEventListener('mouseup', function (domEvent) {
-					console.log('HTML Mouseup');
 					var gooRunner = entity._world.gooRunner;
 					var evt = {
 						entity: entity,
@@ -93,7 +92,6 @@ function (
 					gooRunner.triggerEvent('mouseup', evt);
 				});
 				domElement.addEventListener('click', function (domEvent) {
-					console.log('HTML Click');
 					var gooRunner = entity._world.gooRunner;
 					var evt = {
 						entity: entity,
