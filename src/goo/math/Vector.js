@@ -5,7 +5,7 @@ define([
 function (
 	MathUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/* ====================================================================== */
 
@@ -29,8 +29,8 @@ function (
 	 * @param {String[]} aliases Array of component aliases for each component index.
 	 */
 
-	Vector.prototype.setupAliases = function (aliases) {
-		var that = this;
+	Vector.setupAliases = function (prototype, aliases) {
+		var that = prototype;
 
 		for (var i = 0; i < aliases.length; i++) {
 			/*jshint loopfunc: true */

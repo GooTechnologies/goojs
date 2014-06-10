@@ -5,7 +5,7 @@ define([
 function (
 	Vector
 ) {
-	"use strict";
+	'use strict';
 
 	/* ====================================================================== */
 
@@ -28,7 +28,7 @@ function (
 	}
 
 	Vector4.prototype = Object.create(Vector.prototype);
-	Vector4.prototype.setupAliases([['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
+	Vector.setupAliases(Vector4.prototype,[['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
 
 	/* ====================================================================== */
 
