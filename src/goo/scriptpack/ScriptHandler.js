@@ -368,26 +368,31 @@ function (
 		outScript.externals.parameters = [];
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var param = externals.parameters[i];
+			// REVIEW: is the styling supposed to capitalize these messages?
+			// they show up uncapitalized; capitalize them here or via css
 			if (typeof param.key !== 'string' || param.key.length === 0) {
-				errors.push({ message: 'parameter key needs to be string' });
+				errors.push({ message: 'parameter key needs to be a non-empty string' });
 				continue;
 			}
 			if (param.name && typeof param.name !== 'string') {
-				errors.push({ message: 'parameter name needs to be string' });
+				errors.push({ message: 'parameter name needs to be a non-empty string' });
 				continue;
 			}
 			if (types.indexOf(param.type) === -1) {
 				errors.push({ message: 'parameter type needs to be one of (' + types.join(', ') + ')' });
 				continue;
 			}
+			// REVIEW: 0, false, '', NaN and other crap will get past this
 			if (param.control && typeof param.control !== 'string') {
-				errors.push({ message: 'parameter control needs to be string' });
+				errors.push({ message: 'parameter control needs to be a non-empty string' });
 				continue;
 			}
+			// REVIEW: same here
 			if (param.options && !(param.options instanceof Array)) {
 				errors.push({ message: 'parameter key needs to be array' });
 				continue;
 			}
+			// REVIEW: and here (false and ''); same for the rest
 			if (param.min && isNaN(param.min)) {
 				errors.push({ message: 'parameter min needs to be number' });
 				continue;
@@ -429,10 +434,10 @@ function (
 						break;
 					case 'texture':
 					case 'entity':
-						param['default'] = {}
+						param['default'] = {};
 						break;
 					default:
-						errors.push({ message: 'parameter default is missing' });
+						errors.push({ message: 'parameter default is missing or of wrong type' });
 						continue;
 				}
 			}
