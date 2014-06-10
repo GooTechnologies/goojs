@@ -387,26 +387,23 @@ function (
 				errors.push({ message: 'Parameter key needs to be array' });
 				continue;
 			}
-			// REVIEW: some unwanted values will pass: isNaN(true), isNaN(false), isNaN(''), isNaN([]) return false
-			// isNaN('123') also returns false, which is a dubious case... since it does look like a number and it can without any issues be converted to a number but it is not a number
-			// the same for the following several checks
-			if (param.min !== undefined && isNaN(param.min)) {
+			if (param.min !== undefined && typeof param.min !== 'number') {
 				errors.push({ message: 'Parameter min needs to be number' });
 				continue;
 			}
-			if (param.max !== undefined && isNaN(param.max)) {
+			if (param.max !== undefined && typeof param.max !== 'number') {
 				errors.push({ message: 'Parameter max needs to be number' });
 				continue;
 			}
-			if (param.scale !== undefined && isNaN(param.scale)) {
+			if (param.scale !== undefined && typeof param.scale !== 'number') {
 				errors.push({ message: 'Parameter scale needs to be number' });
 				continue;
 			}
-			if (param.decimals !== undefined && isNaN(param.decimals)) {
+			if (param.decimals !== undefined && typeof param.decimals !== 'number') {
 				errors.push({ message: 'Parameter decimals needs to be number' });
 				continue;
 			}
-			if (param.precision !== undefined && isNaN(param.precision)) {
+			if (param.precision !== undefined && typeof param.precision !== 'number') {
 				errors.push({ message: 'Parameter precision needs to be number' });
 				continue;
 			}
