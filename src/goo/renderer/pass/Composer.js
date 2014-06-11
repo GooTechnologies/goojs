@@ -61,10 +61,10 @@ function (
 		return false;
 	};
 
-	Composer.prototype.addPass = function (pass) {
+	Composer.prototype.addPass = function (pass, renderer) {
 		this.passes.push(pass);
 		if (pass.updateSize && this.size && this._checkPassResize(pass, this.size)) {
-			pass.updateSize(this.size);
+			pass.updateSize(this.size, renderer);
 			pass.viewportSize = this.size;
 		}
 	};
