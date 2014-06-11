@@ -19,8 +19,14 @@ define([
 	) {
 	'use strict';
 
+	/**
+	 * @class Collection of additional useful shaders
+	 */
 	function ShaderLibExtra() {}
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.billboard = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -62,6 +68,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.showDepth = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -97,6 +106,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.bokehShader = {
 		attributes : {
 			position : MeshData.POSITION,
@@ -199,6 +211,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.sepia = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -244,6 +259,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.dotscreen = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -299,6 +317,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.vignette = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -349,6 +370,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.film = {
 		attributes : ShaderLib.copy.attributes,
 		uniforms : {
@@ -392,6 +416,9 @@ define([
 			'}'].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.noise = {
 		attributes : ShaderLib.copy.attributes,
 		uniforms : {
@@ -432,6 +459,9 @@ define([
 			'}'].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.bleachbypass = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -487,6 +517,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.horizontalTiltShift = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -540,6 +573,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.colorify = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -583,6 +619,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.hatch = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -657,6 +696,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.ssao = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -866,6 +908,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.skinning = {
 		defines : {
 			JOINT_COUNT : 56,
@@ -944,6 +989,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.rgbshift = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -988,6 +1036,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.brightnesscontrast = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1040,6 +1091,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.hsb = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1091,6 +1145,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.luminosity = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1130,6 +1187,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.toon = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1198,8 +1258,9 @@ define([
 		].join('\n')
 	};
 
-	/*
+	/**
 	 *	Outputs the difference as tex0 - tex1, the value is tresholded to create a clearer edge.
+	 * @static
 	 */
 	ShaderLibExtra.differenceOfGaussians = {
 		attributes : {
@@ -1261,6 +1322,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.overlay = {
 		defines: {
 			OVERLAY_TYPE: 0
@@ -1358,6 +1422,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.levels = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1407,6 +1474,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.boxfilter = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1451,6 +1521,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.radial = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1501,6 +1574,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.packDepth = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -1540,6 +1616,9 @@ define([
 		].join('\n')
 	};
 
+	/**
+	 * @static
+	*/
 	ShaderLibExtra.antialias = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
