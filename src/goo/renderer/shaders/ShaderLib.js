@@ -15,6 +15,7 @@ define([
 
 	/**
 	 * @class Collection of useful shaders
+	 * Details of each can be printed using console.log().
 	 */
 	function ShaderLib() {}
 
