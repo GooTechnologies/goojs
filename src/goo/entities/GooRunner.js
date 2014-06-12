@@ -121,7 +121,9 @@ function (
 		}
 		if (parameters.logo === undefined || parameters.logo) {
 			var logoDiv = this._buildLogo(parameters.logo);
-			document.body.appendChild(logoDiv);
+			if (logoDiv) {
+				document.body.appendChild(logoDiv);
+			}
 		}
 
 		this.callbacks = [];
@@ -419,6 +421,9 @@ function (
 			height: '50px',
 			color: color
 		});
+		if (svg === '') {
+			return;
+		}
 
 		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + svg + '</a>';
 		div.style.position = 'absolute';
