@@ -1294,7 +1294,7 @@ define([
 		fshader: [
 			ShaderFragment.blendmodes,
 
-			'#define Mixin(base, blend, type, a)	mix(base, type(base, blend), a);',
+			'#define Mixin(base, blend, type, a) (mix(base, type(base, blend), a));',
 
 			'uniform sampler2D tDiffuse;',
 			'uniform sampler2D tDiffuse2;',
@@ -1304,6 +1304,7 @@ define([
 
 			'void main() {',
 			'gl_FragColor = texture2D(tDiffuse, vUv);',
+			'gl_FragColor.a = 1.0;',
 			'vec4 blendTexture = texture2D(tDiffuse2, vUv);',
 			'float a = amount * blendTexture.a;',
 
@@ -1314,11 +1315,13 @@ define([
 			'#elif OVERLAY_TYPE == 2',
 			'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendDarken, a);',
 			'#elif OVERLAY_TYPE == 3',
-			'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendMultiply, a);',
+			// 'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendMultiply, a);',
+			'gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * blendTexture.rgb, a);',
 			'#elif OVERLAY_TYPE == 4',
 			'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendAverage, a);',
 			'#elif OVERLAY_TYPE == 5',
-			'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendAdd, a);',
+			// 'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendAdd, a);',
+			'gl_FragColor.rgb = mix(gl_FragColor.rgb, min(gl_FragColor.rgb + blendTexture.rgb, vec3(1.0)), a);',
 			'#elif OVERLAY_TYPE == 6',
 			'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendSubstract, a);',
 			'#elif OVERLAY_TYPE == 7',
