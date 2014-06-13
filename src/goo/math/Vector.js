@@ -31,7 +31,6 @@ function (
 
 	Vector.prototype.setupAliases = function (aliases) {
 		var that = this;
-
 		for (var i = 0; i < aliases.length; i++) {
 			/*jshint loopfunc: true */
 			(function (index) {

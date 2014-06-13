@@ -376,6 +376,7 @@ function (
 		return this.dataViews[attributeName];
 	};
 
+	//! schteppe: are simple getters like this really needed? Why not just use the property?
 	MeshData.prototype.getIndexData = function () {
 		return this.indexData;
 	};
@@ -730,6 +731,10 @@ function (
 		return flatMeshData;
 	};
 
+	/**
+	 * Destroys all attached vertex and index data.
+	 * @param  {WebGLContext} context
+	 */
 	MeshData.prototype.destroy = function (context) {
 		this.vertexData.destroy(context);
 		this.indexData.destroy(context);

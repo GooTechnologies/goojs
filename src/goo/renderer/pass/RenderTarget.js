@@ -74,5 +74,24 @@ define(['goo/math/Vector2'],
 		return tmp;
 	};
 
+	/**
+	 * Deallocates all allocated resources from the WebGL context.
+	 * @param  {WebGLContext} context
+	 */
+	RenderTarget.prototype.destroy = function (context) {
+		if (this.glTexture) {
+			context.deleteTexture(this.glTexture);
+			this.glTexture = null;
+		}
+		if (this._glRenderBuffer) {
+			context.deleteRenderbuffer(this._glRenderBuffer);
+			this._glRenderBuffer = null;
+		}
+		if (this._glFrameBuffer) {
+			context.deleteFramebuffer(this._glFrameBuffer);
+			this._glFrameBuffer = null;
+		}
+	};
+
 	return RenderTarget;
 });

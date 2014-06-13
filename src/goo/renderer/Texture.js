@@ -170,6 +170,7 @@ function (
 	 */
 	Texture.prototype.destroy = function (context) {
 		context.deleteTexture(this.glTexture);
+		this.glTexture = null;
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];

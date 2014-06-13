@@ -38,7 +38,6 @@ function (
 	 * @param {string} ref
 	 */
 	MeshDataHandler.prototype._remove = function (ref) {
-		console.log("Deleting meshdata " + ref);
 		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
 			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
 		}

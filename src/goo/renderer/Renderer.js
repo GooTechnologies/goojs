@@ -1997,7 +1997,9 @@ function (
 			record.write = true;
 		}
 
-		this.context.clear(bits);
+		if (bits) {
+			this.context.clear(bits);
+		}
 	};
 
 	Renderer.prototype.flush = function () {
@@ -2137,36 +2139,19 @@ function (
 	};
 
 	Renderer.prototype._deallocateMeshData = function (meshData) {
-		if (meshData.vertexData !== undefined  && meshData.vertexData.glBuffer !== undefined ) {
-			this.context.deleteBuffer(meshData.vertexData.glBuffer);
-		}
-		if (meshData.indexData !== undefined  && meshData.indexData.glBuffer !== undefined ) {
-			this.context.deleteBuffer(meshData.indexData.glBuffer);
-		}
+		meshData.destroy(this.context);
 	};
 
 	Renderer.prototype._deallocateTexture = function (texture) {
-		if (texture.glTexture) {
-			this.context.deleteTexture(texture.glTexture);
-		}
+		texture.destroy(this.context);
 	};
 
 	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
-		if (renderTarget.glTexture) {
-			this.context.deleteTexture(renderTarget.glTexture);
-		}
-		if (renderTarget._glRenderBuffer) {
-			this.context.deleteRenderbuffer(renderTarget._glRenderBuffer);
-		}
-		if (renderTarget._glFrameBuffer) {
-			this.context.deleteFramebuffer(renderTarget._glFrameBuffer);
-		}
+		renderTarget.destroy(this.context);
 	};
 
 	Renderer.prototype._deallocateShader = function (shader) {
-		if (shader.shaderProgram) {
-			this.context.deleteProgram(shader.shaderProgram);
-		}
+		shader.destroy();
 	};
 
 	return Renderer;
