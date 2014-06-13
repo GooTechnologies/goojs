@@ -405,7 +405,9 @@ function (
 		}
 
 		// schedule next frame
-		this.animationId = window.requestAnimationFrame(this.run.bind(this));
+		if (this.animationId) {
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
+		}
 	};
 
 	//TODO: move this to Logo

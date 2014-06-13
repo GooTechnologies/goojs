@@ -435,10 +435,20 @@ function(
 	};
 
 	Terrain.prototype.setLightmapTexture = function(lightMap) {
-		terrainShaderDefFloat.defines.LIGHTMAP = true;
-		for (var i = 0; i < this.count; i++) {
-			var material = this.clipmaps[i].origMaterial;
-			material.setTexture('LIGHT_MAP', lightMap);
+		// update all meshes.
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+			clipmap.clipmapEntity.traverse(function (entity) {
+				if (entity.meshRendererComponent) {
+					var material = entity.meshRendererComponent.materials[0];
+					if (lightMap) {
+						material.setTexture("LIGHT_MAP", lightMap);
+						material.shader.defines.LIGHTMAP = true;
+					} else {
+						material.shader.defines.LIGHTMAP = false;
+					}
+				}
+			});
 		}
 	};
 

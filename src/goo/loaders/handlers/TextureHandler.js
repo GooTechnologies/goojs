@@ -221,5 +221,12 @@ function (
 		});
 	};
 
+	TextureHandler.prototype._remove = function (ref) {
+		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
+			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
+		}
+		delete this._objects[ref];
+	};
+
 	return TextureHandler;
 });

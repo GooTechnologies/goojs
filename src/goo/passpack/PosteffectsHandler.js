@@ -97,7 +97,7 @@ function (
 				for(var i = 0; i < posteffects.length; i++) {
 					var posteffect = posteffects[i];
 					if (posteffect && posteffect.enabled) {
-						composer.addPass(posteffects[i]);
+						composer.addPass(posteffects[i], that.world.gooRunner.renderer);
 					}
 				}
 				composer.addPass(that._outPass);
