@@ -36,13 +36,13 @@ function (
 
 	// Copied from CSSTransformComponent
 	var prefixes = ["", "-webkit-", "-moz-", "-ms-", "-o-"];
-	var setStyle = function(element, property, style) {
+	var setStyle = function (element, property, style) {
 		for (var j = 0; j < prefixes.length; j++) {
 			element.style[prefixes[j] + property] = style;
 		}
 	};
 
-	HtmlSystem.prototype.process = function(entities) {
+	HtmlSystem.prototype.process = function (entities) {
 		if (entities.length === 0) {
 			return;
 		}
@@ -55,9 +55,9 @@ function (
 			var entity = entities[i];
 			var component = entity.htmlComponent;
 
-			// Always show if not using transform
+			// Always show if not using transform (except if not hidden)
 			if (!component.useTransformComponent) {
-				component.domElement.style.display = '';
+				component.domElement.style.display = component.hidden ? 'none' : '';
 				setStyle(component.domElement, 'transform', '');
 				continue;
 			}
@@ -91,12 +91,12 @@ function (
 
 			var renderer = this.renderer;
 			var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
-			var fx = Math.floor(tmpVector.x/devicePixelRatio);
-			var fy = Math.floor(tmpVector.y/devicePixelRatio);
+			var fx = Math.floor(tmpVector.x / devicePixelRatio);
+			var fy = Math.floor(tmpVector.y / devicePixelRatio);
 
 			setStyle(component.domElement, 'transform',
-				'translate(-50%, -50%) '+
-				'translate(' + fx + 'px, ' + fy + 'px)'+
+				'translate(-50%, -50%) ' +
+				'translate(' + fx + 'px, ' + fy + 'px)' +
 				'translate(' + renderer.domElement.offsetLeft + 'px, ' + renderer.domElement.offsetTop + 'px)');
 
 			component.domElement.style.zIndex = MAX_Z_INDEX - Math.round(tmpVector.z * MAX_Z_INDEX);
