@@ -96,7 +96,9 @@ function(
 			return that.loadObject(ref, options).then(function(entity) {
 				if (entity && entity.transformComponent) {
 					component.attachChild(entity.transformComponent);
-					entity.addToWorld();
+					if (that.world.entityManager.containsEntity(entity) || that.world._addedEntities.indexOf(entity) > -1) {
+						entity.addToWorld();
+					}
 				} else {
 					console.error('Failed to add child to transform component');
 				}
