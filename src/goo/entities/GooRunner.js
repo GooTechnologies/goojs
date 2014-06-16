@@ -148,19 +148,28 @@ function (
 			click: null,
 			mousedown: null,
 			mouseup: null,
-			mousemove: null
+			mousemove: null,
+			touchstart: null,
+			touchend: null,
+			touchmove: null
 		};
 		this._eventListeners = {
 			click: [],
 			mousedown: [],
 			mouseup: [],
-			mousemove: []
+			mousemove: [],
+			touchstart: [],
+			touchend: [],
+			touchmove: []
 		};
 		this._eventTriggered = {
 			click: null,
 			mousedown: null,
 			mouseup: null,
-			mousemove: null
+			mousemove: null,
+			touchstart: null,
+			touchend: null,
+			touchmove: null
 		};
 
 		GameUtils.addVisibilityChangeListener(function (paused) {
@@ -606,8 +615,14 @@ function (
 			return;
 		}
 		var func = function (e) {
-			var x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
-			var y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
+			var x, y;
+			if (e.type === 'touchstart' || e.type === 'touchend' || e.type === 'touchmove') {
+				x = e.changedTouches[0].pageX - e.changedTouches[0].target.getBoundingClientRect().left;
+				y = e.changedTouches[0].pageY - e.changedTouches[0].target.getBoundingClientRect().top;
+			} else {
+				x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
+				y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
+			}
 			this._eventTriggered[type] = e;
 			this.pick(x, y, function (index, depth) {
 				var entity = this.world.entityManager.getEntityByIndex(index);
