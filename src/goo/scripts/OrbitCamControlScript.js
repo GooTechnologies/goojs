@@ -56,13 +56,7 @@ define([
 		}
 
 		var spherical;
-		if (args.spherical) {
-			var spherical = ctx.spherical = new Vector3(
-				args.spherical[0],
-				args.spherical[1] * MathUtils.DEG_TO_RAD,
-				args.spherical[2] * MathUtils.DEG_TO_RAD
-			);
-		} else {
+		if (args.lookAtDistance) {
 			// Getting script angles from transform
 			var angles = ctx.entity.getRotation();
 			spherical = ctx.spherical = new Vector3(
@@ -70,17 +64,23 @@ define([
 				-angles[1] + Math.PI / 2,
 				-angles[0]
 			);
+		} else {
+			var spherical = ctx.spherical = new Vector3(
+				args.spherical[0],
+				args.spherical[1] * MathUtils.DEG_TO_RAD,
+				args.spherical[2] * MathUtils.DEG_TO_RAD
+			);
 		}
 		ctx.targetSpherical = new Vector3(spherical);
 
-		if (args.lookAtPoint) {
-			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
-		} else {
+		if (args.lookAtDistance) {
 			// Setting look at point at a distance forward
 			var rotation = ctx.entity.transformComponent.transform.rotation;
 			ctx.lookAtPoint = new Vector3(0, 0, -args.lookAtDistance);
 			rotation.applyPost(ctx.lookAtPoint);
 			ctx.lookAtPoint.addv(ctx.entity.getTranslation());
+		} else {
+			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
 		}
 		ctx.goingToLookAt = new Vector3(ctx.lookAtPoint);
 
