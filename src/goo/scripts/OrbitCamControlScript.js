@@ -248,6 +248,8 @@ define([
 				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
 					updateButtonState(ctx.dragButton, event.targetTouches.length === 1, args, ctx);
 				}
+				// fix Android bug that stops touchmove events, unless prevented
+				// https://code.google.com/p/android/issues/detail?id=5491
 				if( navigator.userAgent.match(/Android/i) ) {
 					event.preventDefault();
 				}
