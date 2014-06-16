@@ -67,7 +67,8 @@ define([
 			fogColor: [1, 1, 1],
 			shadowDarkness: 0.5,
 			vertexColorAmount: 1.0,
-			lodBias: 0.0
+			lodBias: 0.0,
+			wrapSettings: [0.5, 0.0]
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);

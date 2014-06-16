@@ -55,20 +55,33 @@ define([
 			ctx.dragButton = null;
 		}
 
-		// Getting script angles from transform
-		var angles = ctx.entity.getRotation();
-		var spherical = ctx.spherical = new Vector3(
-			args.spherical[0],
-			-angles[1] + Math.PI / 2,
-			-angles[0]
-		);
+		var spherical;
+		if (args.lookAtDistance) {
+			// Getting script angles from transform
+			var angles = ctx.entity.getRotation();
+			spherical = ctx.spherical = new Vector3(
+				args.lookAtDistance,
+				-angles[1] + Math.PI / 2,
+				-angles[0]
+			);
+		} else {
+			var spherical = ctx.spherical = new Vector3(
+				args.spherical[0],
+				args.spherical[1] * MathUtils.DEG_TO_RAD,
+				args.spherical[2] * MathUtils.DEG_TO_RAD
+			);
+		}
 		ctx.targetSpherical = new Vector3(spherical);
 
-		// Setting look at point at a distance forward
-		var rotation = ctx.entity.transformComponent.transform.rotation;
-		ctx.lookAtPoint = new Vector3(0, 0, -args.spherical[0]);
-		rotation.applyPost(ctx.lookAtPoint);
-		ctx.lookAtPoint.addv(ctx.entity.getTranslation());
+		if (args.lookAtDistance) {
+			// Setting look at point at a distance forward
+			var rotation = ctx.entity.transformComponent.transform.rotation;
+			ctx.lookAtPoint = new Vector3(0, 0, -args.lookAtDistance);
+			rotation.applyPost(ctx.lookAtPoint);
+			ctx.lookAtPoint.addv(ctx.entity.getTranslation());
+		} else {
+			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
+		}
 		ctx.goingToLookAt = new Vector3(ctx.lookAtPoint);
 
 		// Parallel camera size
@@ -467,16 +480,11 @@ define([
 			min: 0,
 			max: 360
 		}, {
-			key: 'lookAtPoint',
+			key: 'lookAtDistance',
 			description: 'The point to orbit around',
-			'default': [0, 0, 0],
-			type: 'vec3'
-		}, {
-			key: 'spherical',
-			name: 'Start Point',
-			description: 'The initial position of the camera given in spherical coordinates (r, theta, phi). Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis.',
-			'default': [15, 0, 0],
-			type: 'vec3'
+			'default': 15,
+			type: 'float',
+			min: 0.001
 		}]
 	};
 

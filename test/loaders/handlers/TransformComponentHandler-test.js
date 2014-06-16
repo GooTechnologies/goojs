@@ -109,7 +109,21 @@ define([
 			wait(p);
 		});
 
-		it('adds hierarchy correctly', function() {
+		function inScene(id) {
+			if (loader._world.entityManager._entitiesById[id]) {
+				return true;
+			}
+			var addedEntities = loader._world._addedEntities;
+			for (var i = 0; i < addedEntities.length; i++) {
+				var entity = addedEntities[i];
+				if (entity.id === id) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		it('adds hierarchy correctly outside of scene', function() {
 			var parentConfig = Configs.entity(['transform']);
 			var childConfig = Configs.entity(['transform']);
 			Configs.attachChild(parentConfig, childConfig);
@@ -117,15 +131,35 @@ define([
 			loader.preload(Configs.get());
 
 			var p = loader.load(parentConfig.id).then(function(entity) {
+				loader._world.process();
 				expect(entity.transformComponent.children.length).toBeGreaterThan(0);
 
 				var child = entity.transformComponent.children[0];
 				expect(child).toEqual(jasmine.any(TransformComponent));
 				expect(child.entity.id).toBe(childConfig.id);
 				expect(child.parent).toBe(entity.transformComponent);
+				expect(inScene(parentConfig.id)).toBeFalsy();
+				expect(inScene(childConfig.id)).toBeFalsy();
 			});
 			wait(p);
 		});
+		it('adds hierarchy correctly inside of scene', function() {
+			var sceneConfig = Configs.scene();
+			var childConfig = Configs.entity();
+			var parentId = Object.keys(sceneConfig.entities)[0];
+			var parentConfig = Configs.get()[parentId];
+			console.log(childConfig);
+
+			Configs.attachChild(parentConfig, childConfig);
+			loader.preload(Configs.get());
+			var p = loader.load(sceneConfig.id).then(function() {
+				loader._world.process();
+				expect(inScene(childConfig.id)).toBeTruthy();
+				expect(inScene(parentConfig.id)).toBeTruthy();
+			});
+			wait(p);
+
+		})
 	});
 
 

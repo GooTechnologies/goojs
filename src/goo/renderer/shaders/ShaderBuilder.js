@@ -284,6 +284,7 @@ function(
 				'uniform vec4 materialSpecular;',
 				'uniform float materialSpecularPower;',
 				'uniform vec3 globalAmbient;',
+				'uniform vec2 wrapSettings;',
 
 				// 'float VsmFixLightBleed(in float pMax, in float amount) {',
 					// 'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
@@ -438,15 +439,9 @@ function(
 
 						'float dotProduct = dot(N, lVector);',
 
-						'#ifdef WRAP_AROUND',
-							'float pointDiffuseWeightFull = max(dotProduct, 0.0);',
-							'float pointDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
-
-							'float wrapRGB = 1.0;',
-							'vec3 pointDiffuseWeight = mix(vec3(pointDiffuseWeightFull), vec3(pointDiffuseWeightHalf), wrapRGB);',
-						'#else',
-							'float pointDiffuseWeight = max(dotProduct, 0.0);',
-						'#endif',
+						'float pointDiffuseWeightFull = max(dotProduct, 0.0);',
+						'float pointDiffuseWeightHalf = max(mix(dotProduct, 1.0, wrapSettings.x), 0.0);',
+						'vec3 pointDiffuseWeight = mix(vec3(pointDiffuseWeightFull), vec3(pointDiffuseWeightHalf), wrapSettings.y);',
 
 						'totalDiffuse += materialDiffuse.rgb * pointLightColor'+i+'.rgb * pointDiffuseWeight * lDistance * shadow;',
 
@@ -472,15 +467,9 @@ function(
 						'vec3 dirVector = normalize(-directionalLightDirection'+i+');',
 						'float dotProduct = dot(N, dirVector);',
 
-						'#ifdef WRAP_AROUND',
-							'float dirDiffuseWeightFull = max(dotProduct, 0.0);',
-							'float dirDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
-
-							'float wrapRGB = 1.0;',
-							'vec3 dirDiffuseWeight = mix(vec3(dirDiffuseWeightFull), vec3(dirDiffuseWeightHalf), wrapRGB);',
-						'#else',
-							'float dirDiffuseWeight = max(dotProduct, 0.0);',
-						'#endif',
+						'float dirDiffuseWeightFull = max(dotProduct, 0.0);',
+						'float dirDiffuseWeightHalf = max(mix(dotProduct, 1.0, wrapSettings.x), 0.0);',
+						'vec3 dirDiffuseWeight = mix(vec3(dirDiffuseWeightFull), vec3(dirDiffuseWeightHalf), wrapSettings.y);',
 
 						'vec3 cookie = vec3(1.0);'
 					);
@@ -530,15 +519,9 @@ function(
 
 							'float dotProduct = dot(N, lVector);',
 
-							'#ifdef WRAP_AROUND',
-								'float spotDiffuseWeightFull = max(dotProduct, 0.0);',
-								'float spotDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
-
-								'float wrapRGB = 1.0;',
-								'vec3 spotDiffuseWeight = mix(vec3(spotDiffuseWeightFull), vec3(spotDiffuseWeightHalf), wrapRGB);',
-							'#else',
-								'float spotDiffuseWeight = max(dotProduct, 0.0);',
-							'#endif',
+							'float spotDiffuseWeightFull = max(dotProduct, 0.0);',
+							'float spotDiffuseWeightHalf = max(mix(dotProduct, 1.0, wrapSettings.x), 0.0);',
+							'vec3 spotDiffuseWeight = mix(vec3(spotDiffuseWeightFull), vec3(spotDiffuseWeightHalf), wrapSettings.y);',
 
 							'vec3 cookie = vec3(1.0);'
 					);

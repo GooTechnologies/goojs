@@ -1068,15 +1068,9 @@ function (
 						var keys = Object.keys(uniforms);
 						for (var ii = 0, l = keys.length; ii < l; ii++) {
 							var key = keys[ii];
-							var origUniform = uniforms[key];
+							var origUniform = shader.uniforms[key] = uniforms[key];
 							if (origUniform instanceof Array) {
-								var shaderUniform = shader.uniforms[key];
-								shader.uniforms[key] = shaderUniform || [];
-								for (var k = 0; k < origUniform.length; k++) {
-									shaderUniform[k] = origUniform[k];
-								}
-							} else {
-								shader.uniforms[key] = uniforms[key];
+								shader.uniforms[key] = origUniform.slice(0);
 							}
 						}
 
