@@ -121,6 +121,9 @@ function(
 					attribute === 'PHYSICALLY_BASED_SHADING' ||
 					attribute === 'ENVIRONMENT_TYPE' ||
 					attribute === 'REFLECTIVE' ||
+					attribute === 'DISCARD' ||
+					attribute === 'FOG' ||
+					attribute === 'SKIP_SPECULAR' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
 				}
@@ -264,7 +267,10 @@ function(
 				}
 			}
 
-			shader.defines.LIGHT = lightDefines.join('');
+			var lightStr = lightDefines.join('');
+			if (shader.defines.LIGHT !== lightStr) {
+				shader.defines.LIGHT = lightStr;
+			}
 			lightDefines.length = 0;
 		},
 		builder: function (shader, shaderInfo) {
