@@ -408,19 +408,25 @@ define([
 		};
 
 		TerrainHandler.prototype.useLightmap = function(data, size) {
-			var lightMap = new Texture(data, {
-				magFilter: 'Bilinear',
-				minFilter: 'NearestNeighborNoMipMaps',
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
-				generateMipmaps: false,
-				format: 'Luminance',
-				type: 'UnsignedByte'
-			}, size, size);
+			if (data) {
+				var lightMap = new Texture(data, {
+					magFilter: 'Bilinear',
+					minFilter: 'NearestNeighborNoMipMaps',
+					wrapS: 'EdgeClamp',
+					wrapT: 'EdgeClamp',
+					generateMipmaps: false,
+					format: 'Luminance',
+					type: 'UnsignedByte'
+				}, size, size);
 
-			this.lightMapData = data;
-			this.lightMapSize = size;
-			this.terrain.setLightmapTexture(lightMap);
+				this.lightMapData = data;
+				this.lightMapSize = size;
+				this.terrain.setLightmapTexture(lightMap);
+			} else {
+				delete this.lightMapData;
+				delete this.lightMapSize;
+				this.terrain.setLightmapTexture();
+			}
 		};
 
 		TerrainHandler.prototype.update = function (cameraEntity) {

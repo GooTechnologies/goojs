@@ -8,7 +8,7 @@ define([
 	return {
 		scene: function(complex) {
 			var entities = {};
-			var components = complex ? ['transform', 'meshRenderer', 'meshData', 'animation', 'camera', 'light']: [];
+			var components = complex ? ['transform', 'meshRenderer', 'meshData', 'animation', 'camera', 'light']: null;
 			for (var i = 0; i < 5; i++) {
 				var entity = this.entity(components);
 				entities[entity.id] = {

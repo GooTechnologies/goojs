@@ -43,13 +43,13 @@ require([
 		entity.setComponent(new ScriptComponent({
 			run: function (entity) {
 				entity.setTranslation(
-					Math.cos(World.time * speed) * radiusX,
+					Math.cos(world.time * speed) * radiusX,
 					altitude,
-					Math.sin(World.time * speed) * radiusZ
+					Math.sin(world.time * speed) * radiusZ
 				);
 				entity.setRotation(
 					0,
-					-World.time * speed - Math.PI/4,
+					-world.time * speed - Math.PI/4,
 					0
 				);
 			}

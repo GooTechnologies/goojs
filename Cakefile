@@ -37,7 +37,7 @@ task 'testserver', 'Start Testacular server', (options) ->
 task 'testmin', 'Start Testacular server for minified engine', ->
 	server = require('testacular').server
 	server.start(configFile: 'test/testacular-min.conf.js')
-	
+
 option '-o', '--output [FILE]', 'Outputfile'
 
 task 'checkstyle', 'Run JSHint', (options) ->
@@ -46,12 +46,12 @@ task 'checkstyle', 'Run JSHint', (options) ->
 	# with the same config files (.jshintrc and .jshintignore)
 	# as when running from the command-line.
 	cli = require('jshint/src/cli/cli')
-	
+
 	if options.arguments[1]
 		files = options.arguments[1]
 	else
 		files = "src/ test/"
-		
+
 	cmdopts = cli.interpret("jshint --reporter=tools/jshint-reporter.js #{files}")
 
 task 'whitespace',
@@ -74,10 +74,10 @@ task 'checkstyleforjenkins', 'Run JSHint to XML', (options) ->
 
 task 'init-git', 'Install the precommit script', (options) ->
 	fs.writeFile '.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n'
-	
+
 task 'convert',
 	"Converts a file from old json structure to new directory-json structure.\nUse cake convert [inputFile] [outputDirectory].",
-	(options) ->		
+	(options) ->
 		if options.arguments.length != 4
 			console.log 'Wrong paramaters, use cake convert [inputFile] [outputDirectory] [objectname]'
 		else
@@ -107,7 +107,7 @@ task 'jsdoc',
 			command = path.resolve('tools', 'generate_jsdoc.sh')
 
 		runCommand command
-		
+
 task 'visualtoc',
 	'Creates a table of content index.html for visual tests',
 	->

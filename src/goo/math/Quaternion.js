@@ -1,8 +1,18 @@
 /*jshint bitwise: false*/
-define(["goo/math/Vector", "goo/math/Vector3", "goo/math/Matrix3x3", "goo/math/MathUtils"],
+define([
+	'goo/math/Vector',
+	'goo/math/Vector3',
+	'goo/math/Matrix3x3',
+	'goo/math/MathUtils'
+],
 /** @lends */
-function (Vector, Vector3, Matrix3x3, MathUtils) {
-	"use strict";
+function (
+	Vector,
+	Vector3,
+	Matrix3x3,
+	MathUtils
+) {
+	'use strict';
 
 	/**
 	 * @class Quaternions provide a convenient mathematical notation for
@@ -21,12 +31,12 @@ function (Vector, Vector3, Matrix3x3, MathUtils) {
 		if (arguments.length !== 0) {
 			this.set(arguments);
 		} else {
-			this.setd(0,0,0,1);
+			this.setd(0, 0, 0, 1);
 		}
 	}
 
 	Quaternion.prototype = Object.create(Vector.prototype);
-	Quaternion.prototype.setupAliases([['x'], ['y'], ['z'], ['w']]);
+	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;

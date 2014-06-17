@@ -1,3 +1,14 @@
+v0.10.5 --- 2014-06-17
+======================
+
+Additions:
+ + support for touchstart, touchmove and touchend on GooRunner
+
+Fixes:
+ * better parameter validation for scripts
+ * picking of entities with an HTML component
+ * textComponent visual-test not displaying anything
+
 v0.10.3 --- 2014-06-05
 ======================
 

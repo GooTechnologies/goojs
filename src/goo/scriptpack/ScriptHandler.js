@@ -144,7 +144,7 @@ function (
 			try {
 				newScript = newScript();
 				script.id = config.id;
-				script.externals = safeUp(newScript.externals);
+				safeUp(newScript, script);
 				script.setup = newScript.setup;
 				script.update = newScript.update;
 				script.cleanup = newScript.cleanup;
@@ -347,79 +347,99 @@ function (
 	 * Validate external parameters
 	 * @private
 	 */
-	function safeUp(externals) {
-		var	obj = {};
-		var errors = externals.errors || [];
-		if (typeof externals !== 'object') {
-			return obj;
+	function safeUp(script, outScript) {
+		var errors = script.errors || [];
+		if (typeof script.externals !== 'object') {
+			outScript.externals = {};
+			return;
 		}
+		var externals = script.externals;
 		if (externals.parameters && !(externals.parameters instanceof Array)) {
 			errors.push('externals.parameters needs to be an array');
 		}
 		if (errors.length) {
-			obj.errors = errors;
-			return obj;
+			outScript.errors = errors;
+			return;
 		}
 		if (!externals.parameters) {
-			return obj;
+			return;
 		}
-		obj.parameters = [];
+		outScript.externals.parameters = [];
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var param = externals.parameters[i];
 			if (typeof param.key !== 'string' || param.key.length === 0) {
-				errors.push('parameter key needs to be string');
+				errors.push({ message: 'Parameter key needs to be a non-empty string' });
 				continue;
 			}
-			if (param.name && typeof param.name !== 'string') {
-				errors.push('parameter name needs to be string');
+			if (param.name !== undefined && (typeof param.name !== 'string' || param.name.length === 0)) {
+				errors.push({ message: 'Parameter name needs to be a non-empty string' });
 				continue;
 			}
 			if (types.indexOf(param.type) === -1) {
-				errors.push('parameter type needs to be one of (' + types.join(', ') + ')');
+				errors.push({ message: 'Parameter type needs to be one of (' + types.join(', ') + ')' });
 				continue;
 			}
-			if (param.control && typeof param.control !== 'string') {
-				errors.push('parameter control needs to be string');
+			if (param.control !== undefined && (typeof param.control !== 'string' || param.control.length === 0)) {
+				errors.push({ message: 'Parameter control needs to be a non-empty string' });
 				continue;
 			}
-			if (param.options && !(param.options instanceof Array)) {
-				errors.push('parameter key needs to be array');
+			if (param.options !== undefined && !(param.options instanceof Array)) {
+				errors.push({ message: 'Parameter key needs to be array' });
 				continue;
 			}
-			if (param.min && isNaN(param.min)) {
-				errors.push('parameter min needs to be number');
+			if (param.min !== undefined && typeof param.min !== 'number') {
+				errors.push({ message: 'Parameter min needs to be number' });
 				continue;
 			}
-			if (param.max && isNaN(param.max)) {
-				errors.push('parameter max needs to be number');
+			if (param.max !== undefined && typeof param.max !== 'number') {
+				errors.push({ message: 'Parameter max needs to be number' });
 				continue;
 			}
-			if (param.scale && isNaN(param.scale)) {
-				errors.push('parameter scale needs to be number');
+			if (param.scale !== undefined && typeof param.scale !== 'number') {
+				errors.push({ message: 'Parameter scale needs to be number' });
 				continue;
 			}
-			if (param.decimals && isNaN(param.decimals)) {
-				errors.push('parameter decimals needs to be number');
+			if (param.decimals !== undefined && typeof param.decimals !== 'number') {
+				errors.push({ message: 'Parameter decimals needs to be number' });
 				continue;
 			}
-			if (param.precision && isNaN(param.precision)) {
-				errors.push('parameter decimals needs to be number');
+			if (param.precision !== undefined && typeof param.precision !== 'number') {
+				errors.push({ message: 'Parameter precision needs to be number' });
 				continue;
 			}
 			if (param.exponential !== undefined && typeof param.exponential !== 'boolean') {
-				errors.push('parameter exponential needs to be boolean');
+				errors.push({ message: 'Parameter exponential needs to be boolean' });
 				continue;
 			}
-			if (param['default'] === undefined) {
-				errors.push('parameter default is missing');
-				continue;
+			if (param['default'] == null) {
+				switch (param.type) {
+					case 'float':
+					case 'int':
+						param['default'] = 0.0;
+						break;
+					case 'string':
+						param['default'] = '';
+						break;
+					case 'vec3':
+						param['default'] = [0.0, 0.0, 0.0];
+						break;
+					case 'boolean':
+						param['default'] = false;
+						break;
+					case 'texture':
+					case 'entity':
+						param['default'] = {};
+						break;
+					default:
+						errors.push({ message: 'Parameter default is missing or of wrong type' });
+						continue;
+				}
 			}
-			obj.parameters.push(param);
+			outScript.externals.parameters.push(param);
 		}
 		if (errors.length) {
-			obj.errors = errors;
+			outScript.errors = errors;
 		}
-		return obj;
 	}
 
 

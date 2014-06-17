@@ -3,7 +3,8 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightDebugComponent',
+	'goo/debugpack/components/LightDebugComponent',
+	'goo/debugpack/systems/LightDebugSystem',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'lib/V'
@@ -13,6 +14,7 @@ require([
 	DirectionalLight,
 	SpotLight,
 	LightDebugComponent,
+	LightDebugSystem,
 	Box,
 	Sphere,
 	V
@@ -127,6 +129,9 @@ require([
 
 	var gui = new window.dat.GUI();
 	var goo = V.initGoo();
+	var world = goo.world;
+
+	world.setSystem(new LightDebugSystem());
 
 	// add some spheres to cast the light on
 	V.addShapes(5, new Sphere(32, 32, 0.5)).each(function (sphere) {

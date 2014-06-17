@@ -121,7 +121,9 @@ function (
 		}
 		if (parameters.logo === undefined || parameters.logo) {
 			var logoDiv = this._buildLogo(parameters.logo);
-			document.body.appendChild(logoDiv);
+			if (logoDiv) {
+				document.body.appendChild(logoDiv);
+			}
 		}
 
 		this.callbacks = [];
@@ -146,19 +148,28 @@ function (
 			click: null,
 			mousedown: null,
 			mouseup: null,
-			mousemove: null
+			mousemove: null,
+			touchstart: null,
+			touchend: null,
+			touchmove: null
 		};
 		this._eventListeners = {
 			click: [],
 			mousedown: [],
 			mouseup: [],
-			mousemove: []
+			mousemove: [],
+			touchstart: [],
+			touchend: [],
+			touchmove: []
 		};
 		this._eventTriggered = {
 			click: null,
 			mousedown: null,
 			mouseup: null,
-			mousemove: null
+			mousemove: null,
+			touchstart: null,
+			touchend: null,
+			touchmove: null
 		};
 
 		GameUtils.addVisibilityChangeListener(function (paused) {
@@ -185,7 +196,7 @@ function (
 	}
 
 	/**
-	 * Sets the base systems on the world
+	 * Sets the base systems on the world.
 	 * @private
 	 */
 	GooRunner.prototype._setBaseSystems = function () {
@@ -206,7 +217,7 @@ function (
 	};
 
 	/**
-	 * Registers the base components so that methods like Entity.prototype.set can work
+	 * Registers the base components so that methods like Entity.prototype.set can work.
 	 * @private
 	 */
 	GooRunner.prototype._registerBaseComponents = function () {
@@ -233,7 +244,10 @@ function (
 		}
 	};
 
-	// Calls a function and catches any error
+	/**
+     * Calls a function and catches any error
+	 * @private
+	 */
 	GooRunner.prototype._callSafe = function (func) {
 		try {
 			func.apply(this, Array.prototype.slice.call(arguments, 1));
@@ -405,7 +419,9 @@ function (
 		}
 
 		// schedule next frame
-		this.animationId = window.requestAnimationFrame(this.run.bind(this));
+		if (this.animationId) {
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
+		}
 	};
 
 	//TODO: move this to Logo
@@ -419,6 +435,9 @@ function (
 			height: '50px',
 			color: color
 		});
+		if (svg === '') {
+			return;
+		}
 
 		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + svg + '</a>';
 		div.style.position = 'absolute';
@@ -509,9 +528,25 @@ function (
 	};
 
 	/**
-	 * Adds an event listener to the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
-	 * @param {function(event)} Callback to call when event is fired
+	 * Adds an event listener to the GooRunner.
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
+	 * 'touchstart', 'touchend' or 'touchmove'.
+	 * @param  {function(event)} callback Callback function.
+	 * @param {Entity} callback.event.entity Picked entity, undefined if no entity is picked.
+	 * @param {Vector3} callback.event.intersection Point of pick ray intersection with scene.
+	 * @param {number} callback.event.depth Depth of pick ray intersection.
+	 * @param {number} callback.event.x Canvas x coordinate.
+	 * @param {number} callback.event.y Canvas y coordinate.
+	 * @param {string} callback.event.type Type of triggered event ('mousedown', 'touchstart', etc).
+	 * @param {Event} callback.event.domEvent Original DOM event.
+	 * @param {number} callback.event.id Entity pick ID. -1 if no entity was picked.
+	 * @example
+	 * gooRunner.addEventListener('mousedown', function(event) {
+	 *   if (event.entity) {
+	 *     console.log('clicked entity', event.entity.name);
+	 *     console.log('clicked point', event.intersection);
+	 *   }
+	 * });
 	 */
 	GooRunner.prototype.addEventListener = function (type, callback) {
 		if (!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
@@ -527,9 +562,10 @@ function (
 	};
 
 	/**
-	 * Removes an event listener to the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
-	 * @param {function(event)} Callback to remove from event listener
+	 * Removes an event listener from the GooRunner.
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
+	 * 'touchstart', 'touchend' or 'touchmove'.
+	 * @param {function(event)} callback Callback to remove from event listener.
 	 */
 	GooRunner.prototype.removeEventListener = function (type, callback) {
 		if (!this._eventListeners[type]) {
@@ -545,14 +581,15 @@ function (
 	};
 
 	/**
-   * Triggers an event on the goorunner (force)
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
-	 * @param {object} evt The goorunner-style event
-	 * @param {Entity} evt.entity The goorunner-style event
-	 * @param {number} evt.x
-	 * @param {number} evt.y
-	 * @param {Event} evt.domEvent The original DOM event
-   */
+	 * Triggers an event on the GooRunner (force).
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
+	 * 'touchstart', 'touchend' or 'touchmove'.
+	 * @param {object} evt The GooRunner-style event
+	 * @param {Entity} evt.entity Event entity.
+	 * @param {number} evt.x Event canvas X coordinate.
+	 * @param {number} evt.y Event canvas Y coordinate.
+	 * @param {Event} evt.domEvent The original DOM event.
+     */
 	GooRunner.prototype.triggerEvent = function (type, evt) {
 		evt.type = type;
 		this._eventTriggered[type] = evt.domEvent;
@@ -591,7 +628,8 @@ function (
 
 	/**
 	 * Enables event listening on the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove',
+	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @private
 	 */
 	GooRunner.prototype._enableEvent = function (type) {
@@ -599,8 +637,14 @@ function (
 			return;
 		}
 		var func = function (e) {
-			var x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
-			var y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
+			var x, y;
+			if (e.type === 'touchstart' || e.type === 'touchend' || e.type === 'touchmove') {
+				x = e.changedTouches[0].pageX - e.changedTouches[0].target.getBoundingClientRect().left;
+				y = e.changedTouches[0].pageY - e.changedTouches[0].target.getBoundingClientRect().top;
+			} else {
+				x = (e.offsetX !== undefined) ? e.offsetX : e.layerX;
+				y = (e.offsetY !== undefined) ? e.offsetY : e.layerY;
+			}
 			this._eventTriggered[type] = e;
 			this.pick(x, y, function (index, depth) {
 				var entity = this.world.entityManager.getEntityByIndex(index);
@@ -621,7 +665,8 @@ function (
 
 	/**
 	 * Disables event listening on the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove',
+	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @private
 	 */
 	GooRunner.prototype._disableEvent = function (type) {
@@ -643,7 +688,7 @@ function (
 	};
 
 	/**
-	 * Starts the game loop. (done through requestAnimationFrame)
+	 * Starts the game loop (done through requestAnimationFrame).
 	 */
 	GooRunner.prototype.startGameLoop = function () {
 		this.manuallyPaused = false;
@@ -668,7 +713,8 @@ function (
 	};
 
 	/**
-	 * Takes an image snapshot from the 3d scene at next render call
+	 * Takes an image snapshot from the 3d scene at next render call.
+	 * @param {function} callback
 	 */
 	GooRunner.prototype.takeSnapshot = function (callback) {
 		this._takeSnapshots.push(callback);

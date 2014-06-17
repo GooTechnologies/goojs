@@ -82,6 +82,8 @@ define([
 		description: 'Aligns a camera along an axis, and enables switching between them.',
 		parameters: [{
 			key: 'whenUsed',
+			name: 'When Camera Used',
+			description:'Script only runs when the camera to which it is added is being used.',
 			'default': true,
 			type: 'boolean'
 		},{

@@ -10,7 +10,6 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightDebugComponent',
 	'goo/renderer/Renderer',
 	'goo/math/Plane',
 	'lib/V'
@@ -26,7 +25,6 @@ require([
 	PointLight,
 	DirectionalLight,
 	SpotLight,
-	LightDebugComponent,
 	Renderer,
 	Plane,
 	V
@@ -38,14 +36,14 @@ require([
 		var pointLight = new PointLight(new Vector3(0.9, 0.0, 0.2));
 		pointLight.range = 5;
 
-		world.createEntity(pointLight, 'pointLight', [0, 0, 3], new LightDebugComponent()).addToWorld();
+		world.createEntity(pointLight, 'pointLight', [0, 0, 3]).addToWorld();
 	}
 
 	function addDirectionalLight() {
 		var directionalLight = new DirectionalLight(new Vector3(0.2, 0.9, 0.0));
 		directionalLight.intensity = 0.1;
 
-		world.createEntity(directionalLight, 'directionalLight', [0, -5, 3], new LightDebugComponent()).addToWorld();
+		world.createEntity(directionalLight, 'directionalLight', [0, -5, 3]).addToWorld();
 	}
 
 	function addSpotLight() {
@@ -54,7 +52,7 @@ require([
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
 
-		world.createEntity(spotLight, 'spotLight', [0, 5, 5], new LightDebugComponent()).addToWorld();
+		world.createEntity(spotLight, 'spotLight', [0, 5, 5]).addToWorld();
 	}
 
 	function addSpheres(nSpheres) {
