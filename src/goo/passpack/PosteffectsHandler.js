@@ -56,6 +56,7 @@ function (
 	PosteffectsHandler.prototype._remove = function(ref) {
 		var renderSystem = this.world.getSystem('RenderSystem');
 		ArrayUtil.remove(renderSystem.composers, this._composer);
+		// TODO destroy rendertargets from passes and composer
 		delete this._objects[ref];
 	};
 
@@ -80,11 +81,24 @@ function (
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(posteffects) {
 			if (!posteffects) { return; }
 			var i = 0;
+			var oldEffects = posteffects.slice();
+			var promises = [];
 			_.forEach(config.posteffects, function(effectConfig) {
-				posteffects[i++] = that._updateEffect(effectConfig, posteffects, options);
+				promises.push(that._updateEffect(effectConfig, oldEffects, options))
 			}, null, 'sortValue');
-			posteffects.length = i;
-			return RSVP.all(posteffects);
+			return RSVP.all(promises).then(function(effects) {
+				for (var i = 0; i < effects.length; i++) {
+					posteffects[i] = effects[i];
+				}
+				posteffects.length = i;
+				for (var i = 0; i < oldEffects.length; i++) {
+					var effect = oldEffects[i];
+					if (posteffects.indexOf(effect) === -1) {
+						// Destroy posteffect rendertargets
+					}
+				}
+				return posteffects;
+			});
 		}).then(function(posteffects) {
 			if (!posteffects) { return; }
 			var enabled = posteffects.some(function(effect) { return effect.enabled; });

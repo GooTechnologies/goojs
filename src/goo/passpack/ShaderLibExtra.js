@@ -1265,6 +1265,13 @@ define([
 		defines: {
 			OVERLAY_TYPE: 0
 		},
+		processors: [function(shader, shaderInfo) {
+			if (shaderInfo.material._textureMaps.OVERLAY_MAP) {
+				shader.defines.OVERLAY_MAP = true;
+			} else {
+				delete shader.defines.OVERLAY_MAP;
+			}
+		}],
 		attributes: {
 			vertexPosition: MeshData.POSITION,
 			vertexUV0: MeshData.TEXCOORD0
@@ -1306,8 +1313,8 @@ define([
 			'gl_FragColor = texture2D(tDiffuse, vUv);',
 			'vec4 blendTexture = texture2D(tDiffuse2, vUv);',
 			'float a = amount * blendTexture.a;',
-
-			'#if OVERLAY_TYPE == 0',
+			'#if !defined(OVERLAY_MAP)',
+			'#elif OVERLAY_TYPE == 0',
 			'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendNormal, a);',
 			'#elif OVERLAY_TYPE == 1',
 			'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendLighten, a);',
