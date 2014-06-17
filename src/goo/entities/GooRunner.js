@@ -529,7 +529,7 @@ function (
 
 	/**
 	 * Adds an event listener to the GooRunner.
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup', 
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @param  {function(event)} callback Callback function.
 	 * @param {Entity} callback.event.entity Picked entity, undefined if no entity is picked.
@@ -563,7 +563,7 @@ function (
 
 	/**
 	 * Removes an event listener from the GooRunner.
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup', 
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @param {function(event)} callback Callback to remove from event listener.
 	 */
@@ -582,14 +582,14 @@ function (
 
 	/**
 	 * Triggers an event on the GooRunner (force).
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup', 
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @param {object} evt The GooRunner-style event
 	 * @param {Entity} evt.entity Event entity.
 	 * @param {number} evt.x Event canvas X coordinate.
 	 * @param {number} evt.y Event canvas Y coordinate.
 	 * @param {Event} evt.domEvent The original DOM event.
-   */
+     */
 	GooRunner.prototype.triggerEvent = function (type, evt) {
 		evt.type = type;
 		this._eventTriggered[type] = evt.domEvent;
@@ -628,7 +628,7 @@ function (
 
 	/**
 	 * Enables event listening on the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove',
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @private
 	 */
@@ -665,7 +665,7 @@ function (
 
 	/**
 	 * Disables event listening on the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove',
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @private
 	 */
