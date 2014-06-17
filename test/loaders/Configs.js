@@ -3,16 +3,16 @@ define([
 	'loaders/helpers/AnimationConfig',
 	'loaders/helpers/MaterialConfig',
 	'loaders/helpers/MeshConfig',
-	'loaders/helpers/SceneConfig'
-], function(
-) {
+	'loaders/helpers/SceneConfig',
+	'loaders/helpers/PosteffectsConfig'
+], function () {
 	'use strict';
 	var bundle = {};
 	var Configs = {
-		randomRef: function(type) {
+		randomRef: function (type) {
 			return Math.random().toString(16) + '.' + (type || '');
 		},
-		gooObject: function(type, name) {
+		gooObject: function (type, name) {
 			var config = {
 				id: Configs.randomRef(type),
 				name: name,
@@ -33,13 +33,13 @@ define([
 			this.addToBundle(config);
 			return config;
 		},
-		addToBundle: function(config, ref) {
+		addToBundle: function (config, ref) {
 			ref = ref || config.id;
 			if (ref) {
 				bundle[ref] = config;
 			}
 		},
-		binary: function(size) {
+		binary: function (size) {
 			var arr = new Float32Array(size);
 			for (var i = 0; i < size; i++) {
 				arr[i] = i / size;
@@ -48,7 +48,7 @@ define([
 			Configs.addToBundle(arr.buffer, ref);
 			return ref;
 		},
-		get: function() {
+		get: function () {
 			return bundle;
 		}
 	};

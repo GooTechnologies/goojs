@@ -562,11 +562,15 @@ function (
 	 * @param texture
 	 */
 	Renderer.prototype.preloadTexture = function (context, texture) {
+		//! schteppe: Is there any case where we want to preload a texture to another context than this.context?
+
 		// REVIEW: Veeeeery similar to loadTexture. Merge?
 		//! AT: the code will diverge; it was initially copy-pasted and adapted to suit the need, but it will have to be iterated on; adding more ifs for different code paths is not gonna make the code nicer
 
 		// this.bindTexture(context, texture, unit, record);
 		// context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit); // do I need this?
+
+		//! schteppe: What if the .glTexture is not allocated yet?
 		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
 
 		// set alignment to support images with width % 4 !== 0, as
@@ -709,7 +713,7 @@ function (
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables"
 	 * @param renderList
-	 * @param promise
+	 * @return {RSVP.Promise}
 	 */
 	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];

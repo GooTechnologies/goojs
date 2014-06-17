@@ -201,6 +201,7 @@ define([
 	'test/loaders/handlers/LightComponentHandler-test',
 	'test/loaders/handlers/EntityHandler-test',
 	'test/loaders/handlers/ShaderHandler-test',
+	'test/passpack/PosteffectsHandler-test',
 	//'test/loaders/handlers/MaterialHandler-test',
 	//'test/loaders/handlers/TextureHandler-test',
 	'test/loaders/handlers/MeshRendererComponentHandler-test',

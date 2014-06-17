@@ -376,10 +376,6 @@ function (
 		}
 	};
 
-	Shader.prototype.destroy = function (context) {
-
-	};
-
 	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
 		this.context = context;
@@ -389,15 +385,12 @@ function (
 		// console.log('---------------------- fragment: '+ this.name +' --------------------------');
 		// console.log(this.fragmentSource);
 
-		var vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
-		var fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
+		this.vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
+		this.fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
 
-		if (vertexShader === null || fragmentShader === null) {
+		if (this.vertexShader === null || this.fragmentShader === null) {
 			console.error("Shader error - no shaders");
 		}
-
-		this.vertexShader = vertexShader;
-		this.fragmentShader = fragmentShader;
 
 		this.shaderProgram = context.createProgram();
 
@@ -407,8 +400,8 @@ function (
 			SystemBus.emit('goo.shader.error');
 		}
 
-		context.attachShader(this.shaderProgram, vertexShader);
-		context.attachShader(this.shaderProgram, fragmentShader);
+		context.attachShader(this.shaderProgram, this.vertexShader);
+		context.attachShader(this.shaderProgram, this.fragmentShader);
 
 		// Link the Shader Program
 		context.linkProgram(this.shaderProgram);

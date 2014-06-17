@@ -1,10 +1,12 @@
 define([
 	'goo/entities/World',
+	'goo/entities/GooRunner',
 	'goo/renderer/Texture',
 	'goo/loaders/DynamicLoader',
 	'loaders/Configs'
-], function(
+], function (
 	World,
+	GooRunner,
 	Texture,
 	DynamicLoader,
 	Configs
@@ -18,12 +20,20 @@ define([
 	describe('TextureHandler', function () {
 
 		var loader;
+		var world;
+		var gooRunner;
 		beforeEach(function () {
-			var world = new World();
+			gooRunner = new GooRunner({
+				logo: false
+			});
+			world = gooRunner.world;
 			loader = new DynamicLoader({
 				world: world,
 				rootPath: 'loaders/res/'
 			});
+		});
+		afterEach(function () {
+			gooRunner.clear();
 		});
 
 		it('loads a texture with an image', function () {
@@ -45,12 +55,15 @@ define([
 			wait(p, 1000);
 		});
 
-		it('clears a texture from the GPU', function () {
+		it('clears a texture from the context', function () {
 			var config = Configs.texture();
 			loader.preload(Configs.get());
 			var t;
 			var p = loader.load(config.id).then(function (texture) {
 				t = texture;
+				// Allocate a dummy texture on the context
+				texture.glTexture = gooRunner.renderer.context.createTexture();
+				gooRunner.renderer.preloadTexture(gooRunner.renderer.context, texture);
 				return loader.clear();
 			}).then(function () {
 				expect(t.glTexture).toBeFalsy();

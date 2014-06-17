@@ -53,10 +53,17 @@ function (
 	 * Removes the posteffects, i e removes the composer from rendersystem.
 	 * @param {ref}
 	 */
-	PosteffectsHandler.prototype._remove = function(ref) {
+	PosteffectsHandler.prototype._remove = function (ref) {
+		var composer = this._composer;
 		var renderSystem = this.world.getSystem('RenderSystem');
-		ArrayUtil.remove(renderSystem.composers, this._composer);
+		ArrayUtil.remove(renderSystem.composers, composer);
 		delete this._objects[ref];
+		if (this.world.gooRunner) {
+			var context = this.world.gooRunner.renderer.context;
+			composer.writeBuffer.destroy(context);
+			composer.readBuffer.destroy(context);
+		}
+		composer.passes.length = 0;
 	};
 
 	/**
@@ -64,7 +71,7 @@ function (
 	 * @returns {Entity}
 	 * @private
 	 */
-	PosteffectsHandler.prototype._create = function() {
+	PosteffectsHandler.prototype._create = function () {
 		return [];
 	};
 
@@ -75,26 +82,26 @@ function (
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated posteffectsarray or null if removed
 	 */
-	PosteffectsHandler.prototype._update = function(ref, config, options) {
+	PosteffectsHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(posteffects) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (posteffects) {
 			if (!posteffects) { return; }
 			var i = 0;
-			_.forEach(config.posteffects, function(effectConfig) {
+			_.forEach(config.posteffects, function (effectConfig) {
 				posteffects[i++] = that._updateEffect(effectConfig, posteffects, options);
 			}, null, 'sortValue');
 			posteffects.length = i;
 			return RSVP.all(posteffects);
-		}).then(function(posteffects) {
+		}).then(function (posteffects) {
 			if (!posteffects) { return; }
-			var enabled = posteffects.some(function(effect) { return effect.enabled; });
+			var enabled = posteffects.some(function (effect) { return effect.enabled; });
 			var renderSystem = that.world.getSystem('RenderSystem');
 			var composer = that._composer;
 			// If there are any enabled, add them
 			if (enabled) {
 				composer.passes = [];
 				composer.addPass(that._renderPass);
-				for(var i = 0; i < posteffects.length; i++) {
+				for (var i = 0; i < posteffects.length; i++) {
 					var posteffect = posteffects[i];
 					if (posteffect && posteffect.enabled) {
 						composer.addPass(posteffects[i], that.world.gooRunner.renderer);
@@ -119,7 +126,7 @@ function (
 	 * @param {RenderPass[]} array of engine posteffects/Renderpasses
 	 * @returns {RenderPass} effect
 	 */
-	PosteffectsHandler.prototype._updateEffect = function(config, posteffects, options) {
+	PosteffectsHandler.prototype._updateEffect = function (config, posteffects, options) {
 		var that = this;
 		function loadConfig(key, id) {
 			return that._load(id, options).then(function (object) {
@@ -158,10 +165,10 @@ function (
 				}
 			}
 		}
-		return RSVP.all(promises).then(function() {
+		return RSVP.all(promises).then(function () {
 			effect.update(config);
 			return effect;
-		})
+		});
 	};
 
 	return PosteffectsHandler;
