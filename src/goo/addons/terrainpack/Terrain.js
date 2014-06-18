@@ -1191,7 +1191,7 @@ function(
 		'void main(void)',
 		'{',
 		// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
-		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y) + vec2(0.0/512.0, 1.0/512.0)).r);',
+		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).r);',
 		'}'//
 		].join('\n')
 	};
