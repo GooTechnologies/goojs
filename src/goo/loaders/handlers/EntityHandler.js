@@ -55,7 +55,7 @@ function (
 		if (entity) {
 			// Remove components
 			var promises = [];
-			var components = entity._components;
+			var components = entity._components.slice(0);
 			for (var i = 0; i < components.length; i++) {
 				var type = this._getComponentType(components[i]);
 				promises.push(this._updateComponent(entity, type, null));
