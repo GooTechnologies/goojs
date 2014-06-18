@@ -58,6 +58,9 @@ function (
 	 * @private
 	 */
 	QuadComponentHandler.prototype._remove = function (entity) {
+		if (this.world && this.world.gooRunner) {
+			entity.quadComponent.destroy(this.world.gooRunner.renderer.context);
+		}
 		entity.clearComponent('quadComponent');
 	};
 

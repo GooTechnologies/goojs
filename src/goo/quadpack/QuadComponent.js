@@ -128,6 +128,10 @@ function (
 		entity.clearComponent('meshDataComponent');
 	};
 
+	QuadComponent.prototype.destroy = function (context) {
+		this.meshData.destroy(context);
+	};
+
 	/**
 	 * Set the current material for the quad
 	 * @param Material material
