@@ -92,6 +92,16 @@ function (
 					if (cfg.timeScale !== undefined) {
 						clipSource._clipInstance._timeScale = cfg.timeScale;
 					}
+					clipSource._startTime = cfg.startTime || 0;
+					var minTime = Infinity;
+					for (var i = 0; i < clip._channels.length; i++) {
+						var channel = clip._channels[i];
+						for (var j = 0; j < channel._times.length; j++) {
+							var time = channel._times[j];
+							if (time < minTime) { minTime = time; }
+						}
+					}
+					clipSource._startTime = Math.max(clipSource._startTime, minTime);
 
 					return clipSource;
 				});

@@ -31,7 +31,7 @@ define([
 		this.needsSwap = true;
 	}
 
-	MotionBlurPass.prototype.updateSize = function(size) {
+	MotionBlurPass.prototype.updateSize = function(size, renderer) {
 		var sizeX = size.width;
 		var sizeY = size.height;
 		this.targetSwap = [
@@ -41,15 +41,21 @@ define([
 	};
 
 	MotionBlurPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
-		if (this.targetSwap[1].glTexture) {
-			this.inPass.material.setTexture('MOTION_MAP', this.targetSwap[1]);
-		}
+		this.inPass.material.setTexture('MOTION_MAP', this.targetSwap[1]);
 		this.inPass.render(renderer, this.targetSwap[0], readBuffer);
 		this.outPass.render(renderer, writeBuffer, this.targetSwap[0]);
 		this.targetSwap.reverse();
 	};
 
 	var blendShader = {
+		defines: {},
+		processors: [function (shader, shaderInfo) {
+			if(shaderInfo.material._textureMaps.MOTION_MAP.glTexture) {
+				shader.defines.MOTION_MAP = true;
+			} else {
+				delete shader.defines.MOTION_MAP;
+			}
+		}],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -87,9 +93,13 @@ define([
 		'void main(void)',
 		'{',
 			'vec4 colA = texture2D(diffuseMap, texCoord0);',
+			'#ifdef MOTION_MAP',
 			'vec4 colB = texture2D(motionMap, (texCoord0 - 0.5) / scale + 0.5);',
 			'float wBlend = blend;// * length(colB) / sqrt(3.0);',
 			'gl_FragColor = mix(colA, colB, wBlend);',
+			'#else',
+			'gl_FragColor = colA;',
+			'#endif',
 		'}'
 		].join('\n')
 	};
