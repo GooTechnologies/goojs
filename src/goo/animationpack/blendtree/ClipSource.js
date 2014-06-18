@@ -32,7 +32,7 @@ function (
 	 * @param {string} [filter] 'Exclude' or 'Include'
 	 * @param {string[]} [channelNames]
 	 */
-	ClipSource.prototype.setFilter = function(filter, channelNames) {
+	ClipSource.prototype.setFilter = function (filter, channelNames) {
 		if (filter && channelNames) {
 			this._filter = (['Exclude', 'Include'].indexOf(filter) > -1) ? filter : null;
 			for (var i = 0; i < channelNames.length; i++) {
@@ -97,8 +97,8 @@ function (
 					}
 				}
 
-				if (clockTime > maxTime || clockTime < 0) {
-					clockTime = MathUtils.clamp(clockTime, 0, maxTime);
+				if (clockTime > maxTime || clockTime < minTime) {
+					clockTime = MathUtils.clamp(clockTime, minTime, maxTime);
 					// deactivate this instance of the clip
 					instance._active = false;
 				}
@@ -148,7 +148,7 @@ function (
 	 * @private
 	 */
 	ClipSource.prototype.getSourceData = function () {
-		if(!this._filter || !this._filterChannels) {
+		if (!this._filter || !this._filterChannels) {
 			return this._clipInstance._clipStateObjects;
 		}
 		var cso = this._clipInstance._clipStateObjects;
@@ -167,7 +167,7 @@ function (
 	/**
 	 * @returns {ClipSource}
 	 */
-	ClipSource.prototype.clone = function() {
+	ClipSource.prototype.clone = function () {
 	    var cloned = new ClipSource(this._clip);
 
 		cloned._clipInstance = this._clipInstance.clone();
