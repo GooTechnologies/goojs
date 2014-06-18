@@ -75,8 +75,9 @@ function (
 			} catch (e) {
 				// Some cleanup error
 			}
-			delete this._objects[ref];
 		}
+		delete this._objects[ref];
+		delete this._bodyCache[ref];
 	};
 
 

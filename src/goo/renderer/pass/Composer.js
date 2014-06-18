@@ -46,6 +46,18 @@ function (
 	}
 
 	/**
+	 * Deallocate all allocated WebGL buffers, and the passes.
+	 * @param  {Renderer} renderer
+	 */
+	Composer.prototype.destroy = function (renderer) {
+		this.deallocateBuffers(renderer);
+		for (var i = 0; i < this.passes.length; i++) {
+			var pass = this.passes[i];
+			pass.destroy(renderer);
+		}
+	};
+
+	/**
 	 * Deallocate the read and write buffers.
 	 * @param  {Renderer} renderer
 	 */
@@ -55,18 +67,6 @@ function (
 		}
 		if (this.readBuffer) {
 			this.readBuffer.destroy(renderer.context);
-		}
-	};
-
-	/**
-	 * Deallocate all allocated WebGL buffers, and the passes.
-	 * @param  {Renderer} renderer
-	 */
-	Composer.prototype.destroy = function (renderer) {
-		this.deallocateBuffers(renderer);
-		for (var i = 0; i < this.passes.length; i++) {
-			var pass = this.passes[i];
-			pass.destroy(renderer);
 		}
 	};
 

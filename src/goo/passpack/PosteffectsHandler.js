@@ -58,13 +58,11 @@ function (
 		var renderSystem = this.world.getSystem('RenderSystem');
 		ArrayUtil.remove(renderSystem.composers, composer);
 		delete this._objects[ref];
-		/*
 		if (this.world.gooRunner) {
 			composer.destroy(this.world.gooRunner.renderer);
 		}
 		composer.passes.length = 0;
 		this._composer = new Composer();
-		*/
 	};
 
 	/**
