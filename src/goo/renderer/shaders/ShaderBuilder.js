@@ -148,6 +148,12 @@ function(
 				delete shader.defines.FOG;
 			}
 
+			// $dan: This is maybe a bit of secret property here for allowing multiplicative ambient on materials.
+			//       It should probably be default, although it'd break too much to just go ahead and change it.
+			if (material.multiplyAmbient) {
+				shader.defines.MULTIPLY_AMBIENT = true;
+			}
+
 			shader.defines.SKIP_SPECULAR = true;
 
 			//TODO: Hacky?
@@ -566,10 +572,16 @@ function(
 					'vec3 emissive = materialEmissive.rgb;',
 				'#endif',
 
-				'#ifdef SKIP_SPECULAR',
-					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + globalAmbient + materialAmbient.rgb);',
+				'#if defined(MULTIPLY_AMBIENT)',
+					'vec3 ambient = globalAmbient * materialAmbient.rgb;',
 				'#else',
-					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + globalAmbient + materialAmbient.rgb) + totalSpecular;',
+					'vec3 ambient = globalAmbient + materialAmbient.rgb;',
+				'#endif',
+
+				'#ifdef SKIP_SPECULAR',
+					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + ambient);',
+				'#else',
+					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + ambient) + totalSpecular;',
 				'#endif',
 
 				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',
