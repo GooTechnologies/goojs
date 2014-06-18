@@ -55,14 +55,14 @@ function (
 	 * @param {bool} allowDirectSwitch Allow the function to directly switch state if transitioning fails (missing or transition already in progress)
 	 * @returns {boolean} true if a transition was found and started
 	 */
-	AnimationComponent.prototype.transitionTo = function (stateKey, allowDirectSwitch) {
-		if (this.layers[0].transitionTo(stateKey)) {
+	AnimationComponent.prototype.transitionTo = function (stateKey, allowDirectSwitch, callback) {
+		if (this.layers[0].transitionTo(stateKey, undefined, callback)) {
 			return true;
 		}
 		if (!allowDirectSwitch) {
 			return false;
 		}
-		return this.layers[0].setCurrentStateById(stateKey, true);
+		return this.layers[0].setCurrentStateById(stateKey, true, undefined, callback);
 	};
 	/**
 	 * Get available states

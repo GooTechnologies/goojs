@@ -114,7 +114,7 @@ function (
 	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
 	 * @returns {Boolean} true if a transition was found and started
 	 */
-	AnimationLayer.prototype.transitionTo = function (state, globalTime) {
+	AnimationLayer.prototype.transitionTo = function (state, globalTime, finishCallback) {
 		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 		var cState = this._currentState;
 		var transition;
@@ -133,14 +133,14 @@ function (
 		}
 		if (cState instanceof SteadyState && transition) {
 			var transitionState = this._getTransitionByType(transition.type);
-			this._doTransition(transitionState, cState, this._steadyStates[state], transition, globalTime);
+			this._doTransition(transitionState, cState, this._steadyStates[state], transition, globalTime, finishCallback);
 			return true;
 		} else if (!cState) {
 			transition = this._transitions[state];
 			if (transition) {
 				var transitionState = this._getTransitionByType(transition.type);
 				if (transitionState) {
-					this._doTransition(transitionState, null, this._steadyStates[state], transition, globalTime);
+					this._doTransition(transitionState, null, this._steadyStates[state], transition, globalTime, finishCallback);
 					return true;
 				}
 			}
@@ -148,7 +148,7 @@ function (
 		return false;
 	};
 
-	AnimationLayer.prototype._doTransition = function (transition, source, target, config, globalTime) {
+	AnimationLayer.prototype._doTransition = function (transition, source, target, config, globalTime, finishCallback) {
 		if (source) {
 			transition._sourceState = source;
 			var timeWindow = config.timeWindow || [-1, -1];
@@ -160,9 +160,8 @@ function (
 		}
 		transition._targetState = target;
 		transition.readFromConfig(config);
-		transition.resetClips(globalTime);
 
-		this.setCurrentState(transition);
+		this.setCurrentState(transition, true, globalTime, finishCallback);
 	};
 
 	/**
@@ -171,7 +170,7 @@ function (
 	 * @param {Boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
 	 */
-	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime) {
+	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime, finishCallback) {
 		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 		this._currentState = state;
 		if (state) {
@@ -179,7 +178,10 @@ function (
 				state.resetClips(globalTime);
 			}
 			state.onFinished = function () {
-				this.setCurrentState(state._targetState || null);
+				this.setCurrentState(state._targetState || null, false, undefined, finishCallback);
+				if (state instanceof SteadyState && finishCallback instanceof Function) {
+					finishCallback()
+				}
 				this.update();
 			}.bind(this);
 		}
@@ -197,9 +199,9 @@ function (
 	 * Set the current state by state id.
 	 * @param {string} id
 	 */
-	AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime) {
+	AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime, callback) {
 		var state = this.getStateById(id);
-		this.setCurrentState(state, rewind, globalTime);
+		this.setCurrentState(state, rewind, globalTime, callback);
 	};
 
 	/**
