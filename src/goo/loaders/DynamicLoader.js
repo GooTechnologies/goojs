@@ -5,6 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
+	'goo/util/ShapeCreatorMemoized',
 
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
@@ -31,7 +32,8 @@ function (
 	Ajax,
 	RSVP,
 	StringUtil,
-	PromiseUtil
+	PromiseUtil,
+	ShapeCreatorMemoized
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
@@ -91,6 +93,9 @@ function (
 		}
 		if (this._ajax.clear instanceof Function) {
 			this._ajax.clear();
+		}
+		if (this._world && this._world.gooRunner) {
+			ShapeCreatorMemoized.clearCache(this._world.gooRunner.renderer.context);
 		}
 		return RSVP.all(promises);
 	};

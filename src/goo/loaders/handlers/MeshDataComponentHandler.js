@@ -59,6 +59,16 @@ function(
 	};
 
 	/**
+	 * Removes the meshdata component
+	 * @param {string} ref
+	 */
+	MeshDataComponentHandler.prototype._remove = function (entity) {
+		if (entity.meshDataComponent && entity.meshDataComponent.meshData && this.world.gooRunner) {
+			entity.meshDataComponent.meshData.destroy(this.world.gooRunner.renderer.context);
+		}
+	};
+
+	/**
 	 * Update engine meshdatacomponent object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
 	 * @param {object} config
