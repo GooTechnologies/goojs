@@ -236,7 +236,6 @@ function (
 	 */
 	//! TODO: private until documented
 	GooRunner.prototype.run = function (time) {
-		// REVIEW: if these safe calls get too many you might want to put the check into the _callSafe function instead of prepending it everywhere
 		if (this.useTryCatch) {
 			this._callSafe(this._updateFrame, time);// this._updateFrameSafe(time);
 		} else {
@@ -314,23 +313,27 @@ function (
 		if (this.callbacksNextFrame.length > 0) {
 			var callbacksNextFrame = this.callbacksNextFrame;
 			this.callbacksNextFrame = [];
-			// REVIEW: wrap the for loop (it will become 2 loops, one safe and one not safe (dangerous?)) with the if, not the other way around. You avoid doing an if for every callback
-			for (var i = 0; i < callbacksNextFrame.length; i++) {
-				var callback = callbacksNextFrame[i];
-				if (this.useTryCatch) {
+			if (this.useTryCatch) {
+				for (var i = 0; i < callbacksNextFrame.length; i++) {
+					var callback = callbacksNextFrame[i];
 					this._callSafe(callback, this.world.tpf);
-				} else {
+				}
+			} else {
+				for (var i = 0; i < callbacksNextFrame.length; i++) {
+					var callback = callbacksNextFrame[i];
 					callback(this.world.tpf);
 				}
 			}
 		}
 
-		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
-			// REVIEW: same here
-			var callback = this.callbacksPreProcess[i];
-			if (this.useTryCatch) {
+		if (this.useTryCatch) {
+			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+				var callback = this.callbacksPreProcess[i];
 				this._callSafe(callback, this.world.tpf);
-			} else {
+			}
+		} else {
+			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+				var callback = this.callbacksPreProcess[i];
 				callback(this.world.tpf);
 			}
 		}
@@ -385,12 +388,14 @@ function (
 		}
 
 		// run the post render callbacks
-		for (var i = 0; i < this.callbacks.length; i++) {
-			// REVIEW: and here
-			var callback = this.callbacks[i];
-			if (this.useTryCatch) {
+		if (this.useTryCatch) {
+			for (var i = 0; i < this.callbacks.length; i++) {
+				var callback = this.callbacks[i];
 				this._callSafe(callback, this.world.tpf);
-			} else {
+			}
+		} else {
+			for (var i = 0; i < this.callbacks.length; i++) {
+				var callback = this.callbacks[i];
 				callback(this.world.tpf);
 			}
 		}
@@ -406,12 +411,14 @@ function (
 		// resolve any snapshot requests
 		if (this._takeSnapshots.length) {
 			var image = this.renderer.domElement.toDataURL();
-			for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
-				// REVIEW: ...and here too
-				var callback = this._takeSnapshots[i];
-				if (this.useTryCatch) {
+			if (this.useTryCatch) {
+				for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
+					var callback = this._takeSnapshots[i];
 					this._callSafe(callback, image);
-				} else {
+				}
+			} else {
+				for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
+					var callback = this._takeSnapshots[i];
 					callback(image);
 				}
 			}

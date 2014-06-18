@@ -50,8 +50,9 @@ define(
 	 */
 	Component.prototype.removeAPI = function (entity) {
 		var installedAPI = this.installedAPI;
-		// REVIEW: do it here as well
-		for (var key in installedAPI) {
+		var keys = Object.keys(installedAPI);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
 			delete entity[key];
 		}
 	};

@@ -53,7 +53,6 @@ function (
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
-			// REVIEW: I did the exact same conversion a month ago and benchmarked it and it performed exactly the same. I left the code as it was because it was readable. so... got any benchmarks? (for specifically this function)
 			min.data[0] = x < min.data[0] ? x : min.data[0];
 			min.data[1] = y < min.data[1] ? y : min.data[1];
 			min.data[2] = z < min.data[2] ? z : min.data[2];

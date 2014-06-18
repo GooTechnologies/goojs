@@ -18,7 +18,6 @@ function (System) {
 
 	TransformSystem.prototype = Object.create(System.prototype);
 
-	//! AT: this needs to be fully unit tested; not only fully covered, but tested with all sorts of hierarchies; it's one of the most important parts of the engine
 	TransformSystem.prototype.process = function (entities) {
 		numUpdates = 0;
 		var i, transformComponent;
