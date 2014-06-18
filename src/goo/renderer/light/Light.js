@@ -1,10 +1,10 @@
 define([
-        'goo/math/Vector3'
-        ],
+	'goo/math/Vector3'
+],
 /** @lends */
 function (
 	Vector3
-	) {
+) {
 	'use strict';
 
 	/**
@@ -73,6 +73,22 @@ function (
 		this.changedProperties = false;
 		this.changedColor =  false;
 	}
+
+	Light.prototype.destroy = function (renderer) {
+		var shadowSettings = this.shadowSettings;
+		if (shadowSettings.shadowData) {
+			if (shadowSettings.shadowData.shadowTarget) {
+				shadowSettings.shadowData.shadowTarget.destroy(renderer.context);
+			}
+			if (shadowSettings.shadowData.shadowTargetDown) {
+				shadowSettings.shadowData.shadowTargetDown.destroy(renderer.context);
+			}
+			if (shadowSettings.shadowData.shadowBlurred) {
+				shadowSettings.shadowData.shadowBlurred.destroy(renderer.context);
+			}
+		}
+		delete shadowSettings.shadowData;
+	};
 
 	return Light;
 });

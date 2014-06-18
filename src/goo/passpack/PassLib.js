@@ -8,7 +8,7 @@ define([
 	'goo/renderer/Util'
 ],
 /** @lends */
-function(
+function (
 	ShaderLibExtra,
 	FullscreenPass,
 	BloomPass,
@@ -96,7 +96,7 @@ function(
 	DiffOfGaussians.prototype = Object.create(DoGPass.prototype);
 	DiffOfGaussians.prototype.constructor = DiffOfGaussians;
 
-	DiffOfGaussians.prototype.update = function(config) {
+	DiffOfGaussians.prototype.update = function (config) {
 		var options = config.options || {};
 
 		if (config.enabled !== undefined) {

@@ -96,6 +96,12 @@ function (
 		}
 		if (this._world && this._world.gooRunner) {
 			ShapeCreatorMemoized.clearCache(this._world.gooRunner.renderer.context);
+			for (var i = 0; i < this._world.gooRunner.renderSystems.length; i++) {
+				var lights = this._world.gooRunner.renderSystems[i].lights;
+				for (var j = 0; j < lights.length; j++) {
+					lights[j].destroy(this._world.gooRunner.renderer);
+				}
+			}
 		}
 		return RSVP.all(promises);
 	};
