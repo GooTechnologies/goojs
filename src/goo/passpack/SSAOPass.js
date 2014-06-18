@@ -8,7 +8,8 @@ define([
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/passpack/BlurPass',
-	'goo/passpack/ShaderLibExtra'
+	'goo/passpack/ShaderLibExtra',
+	'goo/renderer/pass/Pass'
 ],
 /** @lends */
 function (
@@ -21,7 +22,8 @@ function (
 	RenderPass,
 	FullscreenPass,
 	BlurPass,
-	ShaderLibExtra
+	ShaderLibExtra,
+	Pass
 ) {
 	'use strict';
 
@@ -45,6 +47,9 @@ function (
 		this.clear = false;
 		this.needsSwap = true;
 	}
+
+	SSAOPass.prototype = Object.create(Pass.prototype);
+	SSAOPass.prototype.constructor = SSAOPass;
 
 	SSAOPass.prototype.updateSize = function (size) {
 		var width = Math.floor(size.width / this.downsampleAmount);

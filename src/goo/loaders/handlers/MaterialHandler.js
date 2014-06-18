@@ -44,7 +44,7 @@ function(
 	 * @param {object} config
 	 * @private
 	 */
-	MaterialHandler.prototype._prepare = function(config) {
+	MaterialHandler.prototype._prepare = function (config) {
 		if (!config.blendState) {
 			config.blendState = {};
 		}
@@ -91,8 +91,15 @@ function(
 	 * @returns {Material}
 	 * @private
 	 */
-	MaterialHandler.prototype._create = function() {
+	MaterialHandler.prototype._create = function () {
 		return new Material();
+	};
+
+	MaterialHandler.prototype._remove = function (ref) {
+		var material = this._objects[ref];
+		material.shader.destroy();
+		material.empty();
+		delete this._objects[ref];
 	};
 
 	/**

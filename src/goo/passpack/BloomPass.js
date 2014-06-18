@@ -4,7 +4,8 @@ define([
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/passpack/ShaderLibExtra'
+	'goo/passpack/ShaderLibExtra',
+	'goo/renderer/pass/Pass'
 ],
 /** @lends */
 function (
@@ -13,7 +14,8 @@ function (
 	RenderTarget,
 	Util,
 	ShaderLib,
-	ShaderLibExtra
+	ShaderLibExtra,
+	Pass
 ) {
 	'use strict';
 
@@ -40,7 +42,10 @@ function (
 		var width = window.innerWidth || 1024;
 		var height = window.innerHeight || 1024;
 		this.updateSize({
-			x: 0, y: 0, width: width, height: height
+			x: 0,
+			y: 0,
+			width: width,
+			height: height
 		});
 
 		this.renderable = {
@@ -70,7 +75,16 @@ function (
 		this.needsSwap = false;
 	}
 
-	BloomPass.prototype.updateSize = function(size, renderer) {
+	BloomPass.prototype = Object.create(Pass.prototype);
+	BloomPass.prototype.constructor = BloomPass;
+
+	BloomPass.prototype.destroy = function (renderer) {
+		this.renderTargetX.destroy(renderer.context);
+		this.renderTargetY.destroy(renderer.context);
+		this.convolutionMaterial.shader.destroy();
+	};
+
+	BloomPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width / this.downsampleAmount;
 		var sizeY = size.height / this.downsampleAmount;
 		if (this.renderTargetX) {
@@ -83,7 +97,7 @@ function (
 		this.renderTargetY = new RenderTarget(sizeX, sizeY);
 	};
 
-	BloomPass.prototype.render = function(renderer, writeBuffer, readBuffer) {
+	BloomPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 		// Brightness & contrast
 		this.renderable.materials[0] = this.bcMaterial;
 

@@ -8,7 +8,8 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/passpack/BlurPass',
 	'goo/renderer/Util',
-	'goo/util/Skybox'
+	'goo/util/Skybox',
+	'goo/renderer/pass/Pass'
 ],
 /** @lends */
 function (
@@ -21,7 +22,8 @@ function (
 	FullscreenPass,
 	BlurPass,
 	Util,
-	Skybox
+	Skybox,
+	Pass
 ) {
 	'use strict';
 
@@ -54,6 +56,9 @@ function (
 		this.clear = false;
 		this.needsSwap = true;
 	}
+
+	DOFPass.prototype = Object.create(Pass.prototype);
+	DOFPass.prototype.constructor = DOFPass;
 
 	DOFPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
 		this.depthPass.render(renderer, null, this.depthTarget, delta);

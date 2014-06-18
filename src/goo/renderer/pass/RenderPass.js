@@ -1,10 +1,12 @@
 define([
 	'goo/renderer/Renderer',
+	'goo/renderer/pass/Pass',
 	'goo/math/Vector4'
 ],
 /** @lends */
 function (
 	Renderer,
+	Pass,
 	Vector4
 ) {
 
@@ -27,6 +29,9 @@ function (
 		this.clear = true;
 		this.needsSwap = false;
 	}
+
+	RenderPass.prototype = Object.create(Pass.prototype);
+	RenderPass.prototype.constructor = RenderPass;
 
 	// RenderPasses may have a fourth additional parameter called delta
 	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights, clearColor) {

@@ -59,11 +59,10 @@ function (
 		ArrayUtil.remove(renderSystem.composers, composer);
 		delete this._objects[ref];
 		if (this.world.gooRunner) {
-			var context = this.world.gooRunner.renderer.context;
-			composer.writeBuffer.destroy(context);
-			composer.readBuffer.destroy(context);
+			composer.destroy(this.world.gooRunner.renderer);
 		}
 		composer.passes.length = 0;
+		this._composer = new Composer();
 	};
 
 	/**
