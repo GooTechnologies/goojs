@@ -98,7 +98,7 @@ function (
 				}
 
 				if (clockTime > maxTime || clockTime < minTime) {
-					clockTime = MathUtils.clamp(clockTime, 0, maxTime);
+					clockTime = MathUtils.clamp(clockTime, minTime, maxTime);
 					// deactivate this instance of the clip
 					instance._active = false;
 				}
