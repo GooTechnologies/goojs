@@ -17,10 +17,6 @@ print 'Creating release', name
 if os.path.isdir('out'):
     shutil.rmtree('out')
 
-if os.name == 'nt':
-    command = 'cake.cmd'
-else:
-    command = 'cake'
 grunt_command = 'node_modules/grunt-cli/bin/grunt'
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
 
