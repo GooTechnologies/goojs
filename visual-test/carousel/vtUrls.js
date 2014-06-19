@@ -11,6 +11,8 @@
 			"http://127.0.0.1:8003/goojs/visual-test/goo/misc/FlatwaterAndParticles/FlatwaterAndParticles-vtest.html",
 			"http://127.0.0.1:8003/goojs/visual-test/goo/misc/CombinedIndexModes/CombinedIndexModes-vtest.html",
 			"http://127.0.0.1:8003/goojs/visual-test/goo/components/PortalComponent/PortalComponent-vtest.html"
+			"http://127.0.0.1:8003/goojs/visual-test/goo/passpack/BloomPass/BloomPass.html",
+			"http://127.0.0.1:8003/goojs/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html",
 		]
 	};
 })();
