@@ -4,4 +4,4 @@
 #
 #rm -rf node_modules
 npm install
-./build/release.py $VERSION
+./tools/release.py $VERSION
