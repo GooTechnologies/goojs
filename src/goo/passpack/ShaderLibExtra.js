@@ -1266,8 +1266,14 @@ define([
 			OVERLAY_TYPE: 0
 		},
 		processors: [function(shader, shaderInfo) {
-			if (shaderInfo.material._textureMaps.OVERLAY_MAP) {
+			var overlayTex = shaderInfo.material._textureMaps.OVERLAY_MAP;
+			if (overlayTex) {
 				shader.defines.OVERLAY_MAP = true;
+				var offsetRepeat = shader.uniforms.offsetRepeat;
+				offsetRepeat[0] = overlayTex.offset.data[0];
+				offsetRepeat[1] = overlayTex.offset.data[1];
+				offsetRepeat[2] = overlayTex.repeat.data[0];
+				offsetRepeat[3] = overlayTex.repeat.data[1];
 			} else {
 				delete shader.defines.OVERLAY_MAP;
 			}
@@ -1282,6 +1288,7 @@ define([
 			worldMatrix: Shader.WORLD_MATRIX,
 			tDiffuse: Shader.DIFFUSE_MAP,
 			tDiffuse2: 'OVERLAY_MAP',
+			offsetRepeat: [0, 0, 1, 1],
 			amount: 1
 		},
 		vshader: [
@@ -1306,13 +1313,19 @@ define([
 			'uniform sampler2D tDiffuse;',
 			'uniform sampler2D tDiffuse2;',
 			'uniform float amount;',
+			'#ifdef OVERLAY_MAP',
+			'uniform vec4 offsetRepeat;',
+			'#endif',
 
 			'varying vec2 vUv;',
 
 			'void main() {',
 			'gl_FragColor = texture2D(tDiffuse, vUv);',
-			'vec4 blendTexture = texture2D(tDiffuse2, vUv);',
+			'#ifdef OVERLAY_MAP',
+			'vec2 oUv = vUv * offsetRepeat.zw + offsetRepeat.xy;',
+			'vec4 blendTexture = texture2D(tDiffuse2, oUv);',
 			'float a = amount * blendTexture.a;',
+			'#endif',
 			'#if !defined(OVERLAY_MAP)',
 			'#elif OVERLAY_TYPE == 0',
 			'gl_FragColor.rgb = Mixin(gl_FragColor.rgb, blendTexture.rgb, BlendNormal, a);',
