@@ -1,3 +1,9 @@
+v0.10.6 --- 2014-06-23
+======================
+
+Fixes:
+ * not being able to hide HtmlComponents that were not synced with the TransformComponent
+
 v0.10.5 --- 2014-06-17
 ======================
 
