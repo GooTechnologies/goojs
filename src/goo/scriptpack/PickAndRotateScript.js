@@ -27,10 +27,25 @@ define([
 		var moveVector = new Vector3();
 		var calcVector = new Vector3();
 
+		function getButton(event) {
+			var pressedButton = event.button;
+			if (pressedButton === 0) {
+				if (event.altKey) {
+					pressedButton = 2;
+				} else if (event.shiftKey) {
+					pressedButton = 1;
+				}
+			}
+			return pressedButton;
+		}
+
 		function mouseDown(event) {
 			if (parameters.disable) { return; }
-			pickedEntity = event.entity;
-			onPressEvent();
+			var pressedButton = getButton(event.domEvent);
+			if (pressedButton === env.dragButton || env.dragButton === -1) {
+				pickedEntity = event.entity;
+				onPressEvent();
+			}
 		}
 
 		function onPressEvent() {
@@ -65,6 +80,11 @@ define([
 		function setup(_parameters, ctx) {
 			parameters = _parameters;
 			env = ctx;
+
+			env.dragButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.dragButton) - 1;
+			if (env.dragButton < -1) {
+				env.dragButton = -1;
+			}
 
 			gooRunner = env.world.gooRunner;
 
@@ -125,6 +145,13 @@ define([
 			description: 'Prevent rotation. For preventing this script programmatically.',
 			type: 'boolean',
 			'default': false
+		}, {
+			key: 'dragButton',
+			description: 'Button to enable dragging',
+			'default': 'Any',
+			options: ['Any', 'Left', 'Middle', 'Right'],
+			type: 'string',
+			control: 'select'
 		}]
 	};
 
