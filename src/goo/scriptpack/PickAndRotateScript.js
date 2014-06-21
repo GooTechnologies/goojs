@@ -28,6 +28,7 @@ define([
 		var calcVector = new Vector3();
 
 		function mouseDown(event) {
+			if (parameters.disable) { return; }
 			pickedEntity = event.entity;
 			onPressEvent();
 		}
@@ -118,7 +119,13 @@ define([
 	PickAndRotateScript.externals = {
 		key: 'PickAndRotateScript',
 		name: 'Pick and Rotate',
-		description: 'Enables pick-drag-rotating entities'
+		description: 'Enables pick-drag-rotating entities',
+		parameters: [{
+			key: 'disable',
+			description: 'Prevent rotation. For preventing this script programmatically.',
+			type: 'boolean',
+			'default': false
+		}]
 	};
 
 	return PickAndRotateScript;
