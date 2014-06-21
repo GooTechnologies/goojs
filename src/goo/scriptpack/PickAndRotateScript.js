@@ -6,11 +6,13 @@ define([
 	'use strict';
 
 	function PickAndRotateScript() {
+		var env;
 		var transformComponent, transform, gooRunner;
 		var pickedEntity;
 		var parameters;
 
 		var mouseState = {
+			down: false,
 			x: 0,
 			y: 0,
 			ox: 0,
@@ -26,10 +28,18 @@ define([
 		var calcVector = new Vector3();
 
 		function mouseDown(event) {
-			console.log('Entity is ' + event.entity + ' at ' + event.depth);
-
 			pickedEntity = event.entity;
-			mouseState.down = !!event.entity;
+			onPressEvent();
+		}
+
+		function onPressEvent() {
+			var pickResult = gooRunner.pickSync(mouseState.x, mouseState.y);
+			var entity = gooRunner.world.entityManager.getEntityByIndex(pickResult.id);
+			if (entity === env.entity) {
+				mouseState.down = true;
+			} else {
+				mouseState.down = false;
+			}
 		}
 
 		function mouseMove(event) {
@@ -51,8 +61,9 @@ define([
 			mouseState.down = false;
 		}
 
-		function setup(_parameters, env) {
+		function setup(_parameters, ctx) {
 			parameters = _parameters;
+			env = ctx;
 
 			gooRunner = env.world.gooRunner;
 
