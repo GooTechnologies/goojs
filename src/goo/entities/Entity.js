@@ -42,7 +42,8 @@ function (
 		 */
 		this.skip = false;
 
-		/** Set to true to skip rendering of the entity. Scripts will still be processed.
+		/** Holds the hidden status of the entity. The hidden status will not however propagate to components or child entities.
+		 * @deprecated The usage of this flag changed. Please use EntityUtils.hide/show(entity) instead.
 		 * @type {boolean}
 		 * @default false
 		 */
