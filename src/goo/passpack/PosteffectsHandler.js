@@ -58,10 +58,15 @@ function (
 		var renderSystem = this.world.getSystem('RenderSystem');
 		ArrayUtil.remove(renderSystem.composers, composer);
 		delete this._objects[ref];
+
+		// REVIEW: when will you have the world but not a gooRunner in the world?
 		if (this.world.gooRunner) {
 			composer.destroy(this.world.gooRunner.renderer);
 		}
+		// REVIEW: why are you reaching in the composer here? shouldn't destroy do it instead?
+		// if you create a new composer anyways, why do you need to do this anyway?
 		composer.passes.length = 0;
+
 		this._composer = new Composer();
 	};
 

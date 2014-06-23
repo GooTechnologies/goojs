@@ -11,7 +11,7 @@ function (
 	ShaderLib,
 	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
@@ -62,12 +62,17 @@ function (
 	 * @param  {Renderer} renderer
 	 */
 	Composer.prototype.deallocateBuffers = function (renderer) {
+		// REVIEW: should you be removing the writeBuffer?
+		// the writeBuffer that was passed to you in the constructor, so maybe who passed it to you might still want to use it after removing this composer
+		// only remove it if you created it
 		if (this.writeBuffer) {
 			this.writeBuffer.destroy(renderer.context);
 		}
 		if (this.readBuffer) {
 			this.readBuffer.destroy(renderer.context);
 		}
+
+		// REVIEW: are you removing the copyPass too? I don't see anything going up, so some other code must be deleting it?
 	};
 
 	Composer.prototype.swapBuffers = function () {

@@ -82,6 +82,7 @@ function (
 		this.renderTargetX.destroy(renderer.context);
 		this.renderTargetY.destroy(renderer.context);
 		this.convolutionMaterial.shader.destroy();
+		// REVIEW: again, the copyMaterial issue
 	};
 
 	BloomPass.prototype.updateSize = function (size, renderer) {

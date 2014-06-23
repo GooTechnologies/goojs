@@ -84,6 +84,7 @@ function (
 			this.renderTargetY.destroy(renderer.context);
 		}
 		this.convolutionMaterial.shader.destroy();
+		// REVIEW: shouldn't you destroy the copyMaterial too? I don't see it in the stats so... who is destroying it?
 	};
 
 	BlurPass.prototype.updateSize = function (size, renderer) {
