@@ -13,7 +13,9 @@ define([
 ) {
 	'use strict';
 
+	//! REVIEW: for next time, do code indent & cleanup in an own commit, separated from the actual code changes. This makes the diffs readable.
 
+	//! REVIEW: outdated docs? Remove or update.
 	/**
 	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi).
 	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples:
@@ -25,7 +27,7 @@ define([
 	 * </ul>
 	 */
 
-	var zoomDistanceFactor = 0.035;
+	var zoomDistanceFactor = 0.035; //! REVIEW: Should this be a parameter to the script?
 
 	function setup(args, ctx) {
 		ctx.dirty = true;
@@ -56,6 +58,7 @@ define([
 		}
 
 		var spherical;
+		//! REVIEW: Have to set lookAtDistance = 0 to use args.spherical now?
 		if (args.lookAtDistance) {
 			// Getting script angles from transform
 			var angles = ctx.entity.getRotation();
@@ -65,6 +68,8 @@ define([
 				-angles[0]
 			);
 		} else {
+			//! REVIEW: there's no spherical argument definition
+			//! REVIEW: docs above say radians, this is assuming degrees
 			var spherical = ctx.spherical = new Vector3(
 				args.spherical[0],
 				args.spherical[1] * MathUtils.DEG_TO_RAD,
@@ -73,6 +78,7 @@ define([
 		}
 		ctx.targetSpherical = new Vector3(spherical);
 
+		//! REVIEW: Have to set lookAtDistance = 0 to use args.lookAtPoint now?
 		if (args.lookAtDistance) {
 			// Setting look at point at a distance forward
 			var rotation = ctx.entity.transformComponent.transform.rotation;
@@ -80,6 +86,7 @@ define([
 			rotation.applyPost(ctx.lookAtPoint);
 			ctx.lookAtPoint.addv(ctx.entity.getTranslation());
 		} else {
+			//! REVIEW: there's no lookAtPoint argument definition
 			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
 		}
 		ctx.goingToLookAt = new Vector3(ctx.lookAtPoint);
@@ -250,7 +257,8 @@ define([
 				}
 				// fix Android bug that stops touchmove events, unless prevented
 				// https://code.google.com/p/android/issues/detail?id=5491
-				if( navigator.userAgent.match(/Android/i) ) {
+				//! REVIEW: Do we have to check this on each touchstart?
+				if (navigator.userAgent.match(/Android/i)) {
 					event.preventDefault();
 				}
 			},
@@ -278,6 +286,7 @@ define([
 					if (oldDistance === 0) {
 						oldDistance = distance;
 					} else if (touches.length === 2 && Math.abs(scale) > 0.3) {
+						//! REVIEW: Reuse this event object
 						applyWheel({ wheelDelta: scale }, args, ctx);
 						oldDistance = distance;
 					}
@@ -303,6 +312,7 @@ define([
 	}
 
 	function updateVelocity(time, args, ctx) {
+		//! REVIEW: this "stopSpeed" number should be a parameter
 		if (ctx.velocity.lengthSquared() > 0.000001) {
 			move(ctx.velocity.x, ctx.velocity.y, args, ctx);
 			var rate = MathUtils.lerp(ctx.inertia, 0, 1 - time / ctx.inertia);
@@ -328,6 +338,7 @@ define([
 
 		var delta = MathUtils.lerp(ctx.smoothness, 1, ctx.world.tpf);
 
+		//! REVIEW: this number should be a parameter
 		if (goingToLookAt.distanceSquared(lookAtPoint) < 1e-6) {
 			lookAtPoint.setv(goingToLookAt);
 		} else {
@@ -362,6 +373,7 @@ define([
 			transform.lookAt(lookAtPoint, ctx.worldUpVector);
 		}
 
+		//! REVIEW: it's used here too
 		if (spherical.distanceSquared(targetSpherical) < 1e-6 && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
 			sd[1] = MathUtils.moduloPositive(sd[1], MathUtils.TWO_PI);
 			targetSpherical.setv(spherical);
@@ -392,6 +404,8 @@ define([
 		};
 	}
 
+	//! REVIEW: No lookAtPoint or spherical parameters any more? I really like those!
+
 	OrbitCamControlScript.externals = {
 		key: 'OrbitCamControlScript',
 		name: 'OrbitCamera Control',
@@ -400,7 +414,7 @@ define([
 			key: 'whenUsed',
 			'default': true,
 			name: 'When Camera Used',
-			description:'Script only runs when the camera to which it is added is being used.',
+			description: 'Script only runs when the camera to which it is added is being used.',
 			type: 'boolean'
 		}, {
 			key: 'dragButton',
