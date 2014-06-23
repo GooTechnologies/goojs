@@ -36,40 +36,40 @@ define([
 		var textureShapes = {
 			splash: { trailStartRadius: 25, trailEndRadius: 0},
 			ring: [
-				{ fraction: 0.00,	value: 0},
-				{ fraction: 0.70,	value: 0},
-				{ fraction: 0.92,	value: 1},
-				{ fraction: 0.98,	value: 0}
+				{ fraction: 0.00, value: 0 },
+				{ fraction: 0.70, value: 0 },
+				{ fraction: 0.92, value: 1 },
+				{ fraction: 0.98, value: 0 }
 			],
 			dot: [
-				{ fraction: 0.00,	value: 1},
-				{ fraction: 0.30,	value: 0.75},
-				{ fraction: 0.50,	value: 0.45},
-				{ fraction: 0.65,	value: 0.21},
-				{ fraction: 0.75,	value: 0.1},
-				{ fraction: 0.98,	value: 0}
+				{ fraction: 0.00, value: 1 },
+				{ fraction: 0.30, value: 0.75 },
+				{ fraction: 0.50, value: 0.45 },
+				{ fraction: 0.65, value: 0.21 },
+				{ fraction: 0.75, value: 0.1 },
+				{ fraction: 0.98, value: 0 }
 			],
 			bell: [
-				{ fraction: 0.00,	value: 1},
-				{ fraction: 0.15,	value: 0.75},
-				{ fraction: 0.30,	value: 0.5},
-				{ fraction: 0.40,	value: 0.25},
-				{ fraction: 0.75,	value: 0.05},
-				{ fraction: 0.98,	value: 0}
+				{ fraction: 0.00, value: 1 },
+				{ fraction: 0.15, value: 0.75 },
+				{ fraction: 0.30, value: 0.5 },
+				{ fraction: 0.40, value: 0.25 },
+				{ fraction: 0.75, value: 0.05 },
+				{ fraction: 0.98, value: 0 }
 			],
 			none: [
-				{fraction: 0,	value: 1},
-				{fraction: 1,	value: 0}
+				{ fraction: 0, value: 1 },
+				{ fraction: 1, value: 0 }
 			]
 		};
 
 		function generateTextures(txSize) {
 			textures.size = txSize;
-			textures.splash = ParticleSystemUtils.createSplashTexture(512, {trailStartRadius: 25, trailEndRadius: 0});
-			textures.ring = ParticleSystemUtils.createFlareTexture(txSize, {steps: textureShapes.ring, startRadius: txSize / 4, endRadius: txSize / 2});
-			textures.dot = ParticleSystemUtils.createFlareTexture(txSize, {steps: textureShapes.dot, startRadius: 0, endRadius: txSize / 2});
-			textures.bell = ParticleSystemUtils.createFlareTexture(txSize, {steps: textureShapes.bell, startRadius: 0, endRadius: txSize / 2});
-			textures['default'] = ParticleSystemUtils.createFlareTexture(txSize, {steps: textureShapes.none, startRadius: 0, endRadius: txSize / 2});
+			textures.splash = ParticleSystemUtils.createSplashTexture(512, { trailStartRadius: 25, trailEndRadius: 0 });
+			textures.ring = ParticleSystemUtils.createFlareTexture(txSize, { steps: textureShapes.ring, startRadius: txSize / 4, endRadius: txSize / 2 });
+			textures.dot = ParticleSystemUtils.createFlareTexture(txSize, { steps: textureShapes.dot, startRadius: 0, endRadius: txSize / 2 });
+			textures.bell = ParticleSystemUtils.createFlareTexture(txSize, { steps: textureShapes.bell, startRadius: 0, endRadius: txSize / 2 });
+			textures['default'] = ParticleSystemUtils.createFlareTexture(txSize, { steps: textureShapes.none, startRadius: 0, endRadius: txSize / 2 });
 		}
 
 		function FlareGeometry() {
@@ -83,9 +83,9 @@ define([
 			this.displacementVector = new Vector3();
 		}
 
-		FlareGeometry.prototype.updateFrameGeometry = function (lightEntity, cameraParent) {
-			this.camRot = cameraParent.transformComponent.transform.rotation;
-			this.centerVector.set(cameraParent.cameraComponent.camera.translation);
+		FlareGeometry.prototype.updateFrameGeometry = function (lightEntity, cameraEntity) {
+			this.camRot = cameraEntity.transformComponent.transform.rotation;
+			this.centerVector.set(cameraEntity.cameraComponent.camera.translation);
 			this.displacementVector.set(lightEntity.getTranslation());
 			this.displacementVector.sub(this.centerVector);
 			this.distance = this.displacementVector.length();
@@ -190,6 +190,8 @@ define([
 			}
 			flares = [];
 			lightEntity = env.entity;
+
+			//! AT: why this?
 			if (lightEntity.meshRendererComponent) {
 				lightEntity.meshRendererComponent.cullMode = 'Dynamic';
 			}
@@ -199,18 +201,18 @@ define([
 			lightColor = [params.color[0], params.color[1], params.color[2], 1];
 
 			quadData = [
-				{size: 2.53,	tx: "bell",		intensity: 0.70,	displace:  1},
-				{size: 0.53,	tx: "dot",		intensity: 0.70,	displace:  1},
-				{size: 0.83,	tx: "bell",		intensity: 0.20,	displace:  0.8},
-				{size: 0.40,	tx: "ring",		intensity: 0.10,	displace:  0.6},
-				{size: 0.30,	tx: "bell",		intensity: 0.10,	displace:  0.4},
-				{size: 0.60,	tx: "bell",		intensity: 0.10,	displace:  0.3},
-				{size: 0.30,	tx: "dot",		intensity: 0.10,	displace:  0.15},
-				{size: 0.22,	tx: "ring",		intensity: 0.03,	displace:  -0.25},
-				{size: 0.36,	tx: "dot",		intensity: 0.05,	displace:  -0.5},
-				{size: 0.80,	tx: "ring",		intensity: 0.10,	displace:  -0.8},
-				{size: 0.86,	tx: "bell",		intensity: 0.20,	displace:  -1.1},
-				{size: 1.30,	tx: "ring",		intensity: 0.05,	displace:  -1.5}
+				{ size: 2.53, tx: "bell", intensity: 0.70, displace:  1    },
+				{ size: 0.53, tx: "dot",  intensity: 0.70, displace:  1    },
+				{ size: 0.83, tx: "bell", intensity: 0.20, displace:  0.8  },
+				{ size: 0.40, tx: "ring", intensity: 0.10, displace:  0.6  },
+				{ size: 0.30, tx: "bell", intensity: 0.10, displace:  0.4  },
+				{ size: 0.60, tx: "bell", intensity: 0.10, displace:  0.3  },
+				{ size: 0.30, tx: "dot",  intensity: 0.10, displace:  0.15 },
+				{ size: 0.22, tx: "ring", intensity: 0.03, displace: -0.25 },
+				{ size: 0.36, tx: "dot",  intensity: 0.05, displace: -0.5  },
+				{ size: 0.80, tx: "ring", intensity: 0.10, displace: -0.8  },
+				{ size: 0.86, tx: "bell", intensity: 0.20, displace: -1.1  },
+				{ size: 1.30, tx: "ring", intensity: 0.05, displace: -1.5  }
 			];
 		}
 
@@ -220,7 +222,6 @@ define([
 		}
 
 		function update(params, env) {
-
 			if (env.entity.isVisible) {
 				flareGeometry.updateFrameGeometry(lightEntity, env.activeCameraEntity);
 				if (!isActive) {
@@ -231,14 +232,11 @@ define([
 				for (var i = 0; i < flares.length; i++) {
 					flares[i].updatePosition(flareGeometry);
 				}
-
 			} else {
-
 				if (isActive) {
 					removeFlareQuads(flares);
 					isActive = false;
 				}
-
 			}
 		}
 
@@ -277,7 +275,7 @@ define([
 			type: 'float',
 			description: 'How much the effect cares about being centered or not',
 			control: 'slider',
-			'default': 1,
+			'default': 0,
 			min: 0,
 			max: 2
 		}, {
