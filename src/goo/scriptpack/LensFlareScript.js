@@ -177,7 +177,6 @@ define([
 			for (var i = 0; i < quads.length; i++) {
 				quads[i].quad.removeFromWorld();
 			}
-			console.log({quads: quads})
 		}
 
 		// REVIEW: can we homogeonize the scripts, they all seem to use slightly
@@ -230,7 +229,6 @@ define([
 		}
 
 		function update(params, env) {
-			console.log({isvis: env.entity.isVisible, isActive: isActive})
 			if (env.entity.isVisible) {
 				flareGeometry.updateFrameGeometry(lightEntity, env.activeCameraEntity);
 				if (!isActive) {
