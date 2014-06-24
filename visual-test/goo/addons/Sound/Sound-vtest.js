@@ -75,7 +75,7 @@ require([
 
 	function setupKeys() {
 		document.body.addEventListener('keypress', function(e) {
-			switch(e.keyCode) {
+			switch(e.which) {
 				case 49:
 					cubeEntity.soundComponent.sounds[0].play()
 						.then(function () {
