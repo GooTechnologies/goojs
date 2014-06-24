@@ -7,14 +7,14 @@ function (
 	'use strict';
 
 	/**
-	 * @class A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
+	 * @class A rectangular, two dimensional shape. The local height of the DoubleQuad defines it's size about the y-axis,
 	 * while the width defines the x-axis. The z-axis will always be 0.
 	 * @param {number} [width=1] Total width of quad.
 	 * @param {number} [height=1] Total height of quad.
 	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
 	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
 	 */
-	function Quad(width, height, tileX, tileY) {
+	function DoubleQuad(width, height, tileX, tileY) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			width = props.width;
@@ -48,32 +48,44 @@ function (
 		this.tileY = tileY || 1;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
-		MeshData.call(this, attributeMap, 4, 6);
+		MeshData.call(this, attributeMap, 8, 12);
 
 		this.rebuild();
 	}
 
-	Quad.prototype = Object.create(MeshData.prototype);
-	Quad.prototype.constructor = Quad;
+	DoubleQuad.prototype = Object.create(MeshData.prototype);
+	DoubleQuad.prototype.constructor = DoubleQuad;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.
-	 * @returns {Quad} Self for chaining.
+	 * @returns {DoubleQuad} Self for chaining.
 	 */
-	Quad.prototype.rebuild = function () {
+	DoubleQuad.prototype.rebuild = function () {
 		var xExtent = this.xExtent;
 		var yExtent = this.yExtent;
 		var tileX = this.tileX;
 		var tileY = this.tileY;
 
-		this.getAttributeBuffer(MeshData.POSITION).set([-xExtent, -yExtent, 0, -xExtent, yExtent, 0, xExtent, yExtent, 0, xExtent, -yExtent, 0]);
-		this.getAttributeBuffer(MeshData.NORMAL).set([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]);
-		this.getAttributeBuffer(MeshData.TEXCOORD0).set([0, 0, 0, tileY, tileX, tileY, tileX, 0]);
+		this.getAttributeBuffer(MeshData.POSITION).set([
+			-xExtent, -yExtent, 0,   -xExtent, yExtent, 0,   xExtent, yExtent, 0,   xExtent, -yExtent, 0,
+			-xExtent, -yExtent, 0,   -xExtent, yExtent, 0,   xExtent, yExtent, 0,   xExtent, -yExtent, 0
+		]);
+		this.getAttributeBuffer(MeshData.NORMAL).set([
+			0, 0,  1,   0, 0,  1,   0, 0,  1,   0, 0,  1,
+			0, 0, -1,   0, 0, -1,   0, 0, -1,   0, 0, -1
+		]);
+		this.getAttributeBuffer(MeshData.TEXCOORD0).set([
+			0, 0,   0, tileY,   tileX, tileY,   tileX, 0,
+			0, 0,   0, tileY,   tileX, tileY,   tileX, 0
+		]);
 
-		this.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
+		this.getIndexBuffer().set([
+			0, 3, 1,   1, 3, 2,
+			7, 4, 5,   7, 5, 6
+		]);
 
 		return this;
 	};
 
-	return Quad;
+	return DoubleQuad;
 });

@@ -18,7 +18,7 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	var material = new Material(ShaderLib.texturedLit, '');
+	var material = new Material(ShaderLib.texturedLit);
 	var texture = new TextureCreator().loadTexture2D('../../../resources/cone.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
@@ -29,9 +29,7 @@ require([
 
 	// add flat cone
 	var flatConeMeshData = new Cone(64, 4, 0);
-	var flatConeEntity = world.createEntity(flatConeMeshData, material, 'Flat Cone');
-	flatConeEntity.transformComponent.transform.translation.setd( 4.5, 0, 0);
-	flatConeEntity.addToWorld();
+	var flatConeEntity = world.createEntity(flatConeMeshData, material, 'Flat Cone', [4.5, 0, 0]).addToWorld();
 	V.showNormals(flatConeEntity);
 
 	V.addLights();
