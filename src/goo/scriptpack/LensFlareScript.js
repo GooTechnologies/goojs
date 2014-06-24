@@ -23,6 +23,9 @@ define([
 		var world;
 		var isActive;
 		var quadData;
+		// REVIEW since many of these params are only used once, can we pass
+		// them around explicitly, or maybe just global `params` instead of
+		// each of them individually?
 		var lightColor;
 		var globalIntensity;
 		var systemScale;
@@ -72,6 +75,7 @@ define([
 			textures['default'] = ParticleSystemUtils.createFlareTexture(txSize, { steps: textureShapes.none, startRadius: 0, endRadius: txSize / 2 });
 		}
 
+		// REVIEW: can this class be extracted and passed what it needs?
 		function FlareGeometry() {
 			this.camRot = null;
 			this.distance = 0;
@@ -100,6 +104,7 @@ define([
 			this.centerRatio = Math.max(0, this.centerRatio);
 		};
 
+		// REVIEW: same question here, a lot of state bound up in LensFlareScript
 		function FlareQuad(lightColor, tx, displace, size, intensity) {
 			this.sizeVector = new Vector3(size, size, size);
 			this.sizeVector.mul(systemScale);
@@ -172,8 +177,11 @@ define([
 			for (var i = 0; i < quads.length; i++) {
 				quads[i].quad.removeFromWorld();
 			}
+			console.log({quads: quads})
 		}
 
+		// REVIEW: can we homogeonize the scripts, they all seem to use slightly
+		// different coding conventions for things like env/ctx
 		function setup(params, env) {
 			flareGeometry = new FlareGeometry();
 			systemScale = params.scale;
@@ -222,6 +230,7 @@ define([
 		}
 
 		function update(params, env) {
+			console.log({isvis: env.entity.isVisible, isActive: isActive})
 			if (env.entity.isVisible) {
 				flareGeometry.updateFrameGeometry(lightEntity, env.activeCameraEntity);
 				if (!isActive) {
@@ -232,6 +241,8 @@ define([
 				for (var i = 0; i < flares.length; i++) {
 					flares[i].updatePosition(flareGeometry);
 				}
+			// # REVIEW: if the entity has ever been visible then the FlareQuads
+			// are staying. Is it a problem with removeFlareQuads?
 			} else {
 				if (isActive) {
 					removeFlareQuads(flares);
@@ -268,6 +279,7 @@ define([
 			control: 'slider',
 			'default': 1,
 			min: 0.01,
+			// REVIEW: why 2 for so many of these params? can they be normalized
 			max: 2
 		}, {
 			key: 'edgeRelevance',
