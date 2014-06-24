@@ -1,7 +1,7 @@
 define([
 	'goo/entities/components/Component',
 	'goo/renderer/MeshData',
-	'goo/shapes/Quad',
+	'goo/quadpack/DoubleQuad',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/shaders/ShaderLib',
@@ -101,13 +101,12 @@ function (
 		var material = this.material;
 		material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
 		material.renderQueue = 2000;
-		material.cullState.enabled = false;
-		material.dualTransparency = true;					// Visible on both sides
 		material.uniforms.discardThreshold = 0.1;
 		this.setMaterial(material);
 
 		if (image) {
 			var texture = new Texture(image);
+			texture.anisotropy = 16;
 			texture.wrapS = 'EdgeClamp';
 			texture.wrapT = 'EdgeClamp';
 			material.setTexture('DIFFUSE_MAP', texture);

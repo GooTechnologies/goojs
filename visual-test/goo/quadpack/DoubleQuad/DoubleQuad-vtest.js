@@ -3,7 +3,7 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3',
 	'goo/renderer/TextureCreator',
-	'goo/shapes/DoubleQuad',
+	'goo/quadpack/DoubleQuad',
 	'lib/V'
 ], function (
 	Material,
