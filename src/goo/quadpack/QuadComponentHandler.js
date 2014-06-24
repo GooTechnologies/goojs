@@ -8,7 +8,6 @@ define([
 /** @lends */
 function (
 	ComponentHandler,
-	ShaderLib,
 	RSVP,
 	PromiseUtil,
 	_,
