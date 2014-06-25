@@ -1,3 +1,11 @@
+v0.10.6 --- 2014-06-25
+======================
+
+Fixes:
+ * texture leaks when using posteffects
+ * animation start time related bugs
+ * can now hide htmlComponents that are unsynced with their entity (transform-wise)
+
 v0.10.5 --- 2014-06-17
 ======================
 
