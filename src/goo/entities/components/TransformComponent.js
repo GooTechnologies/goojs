@@ -132,6 +132,80 @@ function (
 			}
 
 			return this;
+		},
+
+		hide: function () {
+			this._hidden = true;
+
+			// hide everything underneath this
+			this.traverse(function (entity) {
+				// will have to refactor this loop in some function; it's used in other places too
+				for (var i = 0; i < entity._components.length; i++) {
+					var component = entity._components[i];
+					if (typeof component.hidden === 'boolean') {
+						component.hidden = true;
+					}
+				}
+			});
+
+			return this;
+		},
+
+		// will not show the entity (and it's children) if any of its ancestors are hidden
+		show: function () {
+			this._hidden = false;
+
+			// first search if it has hidden parents to determine if itself should be visible
+			var pointer = this;
+			while (pointer.transformComponent.parent) {
+				pointer = pointer.transformComponent.parent.entity;
+				if (pointer._hidden) {
+					// extra check and set might be needed
+					for (var i = 0; i < this._components.length; i++) {
+						var component = this._components[i];
+						if (typeof component.hidden === 'boolean') {
+							component.hidden = true;
+						}
+					}
+					return this;
+				}
+			}
+
+			this.traverse(function (entity) {
+				if (entity._hidden) { return false; }
+				for (var i = 0; i < entity._components.length; i++) {
+					var component = entity._components[i];
+					if (typeof component.hidden === 'boolean') {
+						component.hidden = entity._hidden;
+					}
+				}
+			});
+
+			return this;
+		},
+
+		// entity.show().isHidden() will return false if any ancestor of entity is hidden
+		isVisiblyHidden: function () {
+			var pointer = this;
+
+			if (pointer._hidden) {
+				return true;
+			}
+
+			while (pointer.transformComponent.parent) {
+				pointer = pointer.transformComponent.parent.entity;
+				if (pointer._hidden) {
+					return true;
+				}
+			}
+
+			return false;
+		},
+
+		// entity.isHidden returns the hidden status of the entity and may not reflect what is visible
+		// an entity can have a hidden status of 'visible', but visually it may be hidden due to one of its ancestors being hidden
+		isHidden: function () {
+			return this._hidden;
 		}
 	};
 

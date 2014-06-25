@@ -73,7 +73,7 @@ function(
 	};
 
 	EntityCombiner.prototype._buildSubs = function(entity, baseSubs, subs) {
-		if (entity.hidden || entity.skip || entity.animationComponent || entity.particleComponent) {
+		if (entity._hidden || entity.skip || entity.animationComponent || entity.particleComponent) {
 			return;
 		}
 
@@ -164,7 +164,7 @@ function(
 						}
 					} else {
 						entity.skip = true;
-						entity.hidden = true;
+						entity._hidden = true;
 					}
 				}
 				var meshDatas = meshBuilder.build();

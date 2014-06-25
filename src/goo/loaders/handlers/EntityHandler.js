@@ -131,9 +131,9 @@ function (
 			// When all is done, hide or show and return
 			return PromiseUtil.optimisticAll(promises).then(function (/*components*/) {
 				if (config.hidden) {
-					EntityUtils.hide(entity);
+					entity.hide();
 				} else {
-					EntityUtils.show(entity);
+					entity.show();
 				}
 				return entity;
 			});

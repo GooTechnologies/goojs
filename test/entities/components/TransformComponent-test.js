@@ -4,14 +4,20 @@ define([
 	'goo/math/Matrix3x3',
 	'goo/math/Vector3',
 	'goo/entities/Entity',
-	'goo/math/Transform'
+	'goo/math/Transform',
+	'goo/entities/components/MeshRendererComponent',
+	'goo/entities/components/LightComponent',
+	'goo/entities/components/HtmlComponent'
 ], function (
 	World,
 	TransformComponent,
 	Matrix3x3,
 	Vector3,
 	Entity,
-	Transform
+	Transform,
+	MeshRendererComponent,
+	LightComponent,
+	HtmlComponent
 ) {
 	'use strict';
 
@@ -340,5 +346,185 @@ define([
 				expect(traversed).toEqual([child22]);
 			});
 		});
+
+		//! AT: let's isolate this a bit
+		// it can't stay in its own describe but it uses some methods of its own
+		(function () {
+			function getEntity() {
+				return world.createEntity().set(new MeshRendererComponent())
+					.set(new LightComponent())
+					.set(new HtmlComponent());
+			}
+
+			function expectEverything(entity, entityHidden, componentsHidden) {
+				expect(entity._hidden).toEqual(entityHidden);
+				expect(entity.meshRendererComponent.hidden).toEqual(componentsHidden);
+				expect(entity.lightComponent.hidden).toEqual(componentsHidden);
+				expect(entity.htmlComponent.hidden).toEqual(componentsHidden);
+			}
+
+			describe('hide', function () {
+				it('can hide an entity and its components', function () {
+					var entity = getEntity();
+
+					entity.hide();
+
+					expectEverything(entity, true, true);
+				});
+
+				it('can hide an entity and its children and their components', function () {
+					var grandparent = getEntity();
+					var parent1 = getEntity();
+					var parent2 = getEntity();
+					var child11 = getEntity();
+					var child12 = getEntity();
+					var child21 = getEntity();
+					var child22 = getEntity();
+
+					grandparent.attachChild(parent1);
+					grandparent.attachChild(parent2);
+					parent1.attachChild(child11);
+					parent1.attachChild(child12);
+					parent2.attachChild(child21);
+					parent2.attachChild(child22);
+
+					parent1.hide();
+					grandparent.hide();
+
+					expectEverything(grandparent, true, true);
+					expectEverything(parent1, true, true);
+					expectEverything(parent2, false, true);
+					expectEverything(child11, false, true);
+					expectEverything(child12, false, true);
+					expectEverything(child21, false, true);
+					expectEverything(child22, false, true);
+				});
+			});
+
+			describe('show', function () {
+				it('can show a hidden entity and its components', function () {
+					var entity = getEntity();
+
+					entity.hide();
+					entity.show();
+
+					expectEverything(entity, false, false);
+				});
+
+				it('can show a hidden entity but keeps its components hidden if an ancestor entity is hidden', function () {
+					var grandparent = getEntity();
+					var parent1 = getEntity();
+					var parent2 = getEntity();
+					var child11 = getEntity();
+					var child12 = getEntity();
+					var child21 = getEntity();
+					var child22 = getEntity();
+
+					grandparent.attachChild(parent1);
+					grandparent.attachChild(parent2);
+					parent1.attachChild(child11);
+					parent1.attachChild(child12);
+					parent2.attachChild(child21);
+					parent2.attachChild(child22);
+
+					grandparent.hide();
+					parent1.show();
+					child22.show();
+
+					expectEverything(grandparent, true, true);
+					expectEverything(parent1, false, true);
+					expectEverything(parent2, false, true);
+					expectEverything(child11, false, true);
+					expectEverything(child12, false, true);
+					expectEverything(child21, false, true);
+					expectEverything(child22, false, true);
+				});
+			});
+
+			describe('isHidden', function () {
+			    it('returns the correct hidden status for one entity', function () {
+					var entity1 = getEntity();
+					expect(entity1.isHidden()).toBeFalsy();
+
+					var entity2 = getEntity();
+					entity2.hide();
+					expect(entity2.isHidden()).toBeTruthy();
+					entity2.show();
+					expect(entity2.isHidden()).toBeFalsy();
+			    });
+
+				it('returns the correct hidden status for an entity in a hierarchy', function () {
+					var grandparent = getEntity();
+					var parent1 = getEntity();
+					var parent2 = getEntity();
+					var child11 = getEntity();
+					var child12 = getEntity();
+					var child21 = getEntity();
+					var child22 = getEntity();
+
+					grandparent.attachChild(parent1);
+					grandparent.attachChild(parent2);
+					parent1.attachChild(child11);
+					parent1.attachChild(child12);
+					parent2.attachChild(child21);
+					parent2.attachChild(child22);
+
+					parent1.hide();
+
+					expect(grandparent.isHidden()).toBeFalsy();
+					expect(parent1.isHidden()).toBeTruthy();
+					expect(parent2.isHidden()).toBeFalsy();
+
+					expect(child11.isHidden()).toBeFalsy();
+					expect(child12.isHidden()).toBeFalsy();
+					expect(child21.isHidden()).toBeFalsy();
+					expect(child22.isHidden()).toBeFalsy();
+				});
+			});
+
+			describe('isVisiblyHidden', function () {
+				it('returns the correct visibly hidden status for one entity', function () {
+					var entity1 = getEntity();
+					expect(entity1.isVisiblyHidden()).toBeFalsy();
+
+					var entity2 = getEntity();
+					entity2.hide();
+					expect(entity2.isVisiblyHidden()).toBeTruthy();
+					entity2.show();
+					expect(entity2.isVisiblyHidden()).toBeFalsy();
+				});
+
+				it('returns the correct visibly hidden status for an entity in a hierarchy', function () {
+					var grandparent = getEntity();
+					var parent1 = getEntity();
+					var parent2 = getEntity();
+					var child11 = getEntity();
+					var child12 = getEntity();
+					var child21 = getEntity();
+					var child22 = getEntity();
+
+					grandparent.attachChild(parent1);
+					grandparent.attachChild(parent2);
+					parent1.attachChild(child11);
+					parent1.attachChild(child12);
+					parent2.attachChild(child21);
+					parent2.attachChild(child22);
+
+					parent1.hide();
+
+					expect(grandparent.isVisiblyHidden()).toBeFalsy();
+					expect(parent1.isVisiblyHidden()).toBeTruthy();
+					expect(parent2.isVisiblyHidden()).toBeFalsy();
+
+					expect(child11.isVisiblyHidden()).toBeTruthy();
+					expect(child12.isVisiblyHidden()).toBeTruthy();
+					expect(child21.isVisiblyHidden()).toBeFalsy();
+					expect(child22.isVisiblyHidden()).toBeFalsy();
+				});
+			});
+
+			//! AT: components will be visible if attached after the entity was hidden
+			// same goes for entities attached after the parent was hidden
+		})();
 	});
 });

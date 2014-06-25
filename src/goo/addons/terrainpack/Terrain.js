@@ -560,8 +560,8 @@ function(
 			if (yy !== clipmap.currentY) {
 				clipmap.currentY = yy;
 				var compSize = this.gridSize * clipmap.size * 2;
-				if (clipmap.clipmapEntity.hidden === false && y > compSize) {
-					EntityUtils.hide(clipmap.clipmapEntity);
+				if (clipmap.clipmapEntity._hidden === false && y > compSize) {
+					clipmap.clipmapEntity.hide();
 
 					if (i < this.clipmaps.length - 1) {
 						var childClipmap = this.clipmaps[i + 1];
@@ -571,8 +571,8 @@ function(
 					}
 
 					continue;
-				} else if (clipmap.clipmapEntity.hidden === true && y <= compSize) {
-					EntityUtils.show(clipmap.clipmapEntity);
+				} else if (clipmap.clipmapEntity._hidden === true && y <= compSize) {
+					clipmap.clipmapEntity.show();
 
 					if (i < this.clipmaps.length - 1) {
 						var childClipmap = this.clipmaps[i + 1];
