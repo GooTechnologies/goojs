@@ -82,5 +82,3 @@ shutil.copy('lib/polyk.js', release_dir + '/lib/polyk.js')
 shutil.copy('COPYING', release_dir + '/COPYING')
 shutil.copy('LICENSE', release_dir + '/LICENSE')
 shutil.copy('CHANGES', release_dir + '/CHANGES')
-
-#
