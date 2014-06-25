@@ -23,6 +23,13 @@ require([
 ) {
 	'use strict';
 
+	V.describe([
+		'All entities in the scene hold a p2Component',
+		'',
+		'Controls:',
+		'anykey: add more objects'
+	].join('\n'));
+
 	function createEntity(meshData, p2Settings, pos, material) {
 		material = material || V.getColoredMaterial();
 

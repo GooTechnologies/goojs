@@ -6,6 +6,7 @@
 	var pauseButton = document.getElementById('pause');
 	var statusSpan = document.getElementById('status');
 	var urlSpan = document.getElementById('current');
+	var iframe = document.getElementById('vtest-container');
 
 	var running = false;
 	var lastTimeout = null;
@@ -14,21 +15,14 @@
 
 	var urls = [''];
 	var currentIndex = 0;
-	var win = window.open('');
-
-	if (!win) {
-		console.warn('Turn off the pop-up blocker');
-	}
-
-	win.document.body.innerText = 'Hit any of the start buttons to commence';
 
 	/*
-	 function getUrls() {
-	 nl = document.getElementsByTagName('a');
-	 ar = Array.prototype.slice.call(nl);
-	 ar.map(function(n) { return n.href; });
-	 }
-	 */
+	function getUrls() {
+		nl = document.getElementsByTagName('a');
+		ar = Array.prototype.slice.call(nl);
+		ar.map(function(n) { return n.href; });
+	}
+	*/
 
 	var excludedTerms = ['Howler', 'occlusion'];
 	function doUrls(listName) {
@@ -46,7 +40,7 @@
 		currentIndex %= urls.length;
 
 		urlSpan.innerText = urls[currentIndex];
-		win.location.href = urls[currentIndex];
+		iframe.src = urls[currentIndex];
 	}
 
 	function start() {

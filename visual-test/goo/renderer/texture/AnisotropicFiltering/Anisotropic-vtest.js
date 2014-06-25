@@ -23,6 +23,10 @@ require([
 ) {
 	'use strict';
 
+	V.describe([
+		'Half of the visible surface has a texture with anisotropic filtering on and the other half without. The effect is most visible when the surface is viewed at a low angle.'
+	].join('\n'));
+
 	var resourcePath = '../../../../resources/';
 
 	var goo = V.initGoo();

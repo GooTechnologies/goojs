@@ -1,6 +1,4 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
@@ -16,8 +14,6 @@ require([
 	'goo/entities/components/LightComponent',
 	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
 	Camera,
@@ -34,6 +30,11 @@ require([
 	V
 	) {
 	'use strict';
+
+	V.describe([
+		'A 7x7 matrix of shapes using all possible combinations of index modes.',
+		'From left to right, top to bottom: GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_LINE_LOOP, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN'
+	].join('\n'));
 
 	function buildCombined(verts1, indices1, indexMode1, verts2, indices2, indexMode2) {
 		var nVerts1 = verts1.length / 3;
