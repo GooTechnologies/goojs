@@ -123,7 +123,7 @@ define([
 			return false;
 		}
 
-		it('adds hierarchy correctly outside of scene', function() {
+		xit('adds hierarchy correctly outside of scene', function() {
 			var parentConfig = Configs.entity(['transform']);
 			var childConfig = Configs.entity(['transform']);
 			Configs.attachChild(parentConfig, childConfig);
