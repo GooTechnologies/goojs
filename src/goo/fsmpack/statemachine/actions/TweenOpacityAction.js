@@ -91,7 +91,6 @@ function(
 			}
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
 				uniforms.opacity += this.opacity - old.opacity;
-				console.log(uniforms.opacity);
 				old.opacity = this.opacity;
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
