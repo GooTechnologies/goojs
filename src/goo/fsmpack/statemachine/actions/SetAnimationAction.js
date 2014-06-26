@@ -1,6 +1,6 @@
 define(['goo/fsmpack/statemachine/actions/Action'],
 /** @lends */
-function(
+function (
 	Action
 	) {
 	"use strict";
@@ -18,17 +18,24 @@ function(
 		type: 'animation',
 		description: 'Transitions to a selected animation',
 		parameters: [{
-			name:'Animation',
-			key:'animation',
-			type:'animstate'
+			name: 'Animation',
+			key: 'animation',
+			type: 'animstate'
 		}],
-		transitions:[]
+		transitions: [{
+			key: 'complete',
+			name: 'On completion',
+			description: 'State to transition to when the target animation completes'
+		}]
 	};
 
-	SetAnimationAction.prototype._run = function(fsm) {
+	SetAnimationAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
+		var that = this;
 		if (typeof this.animation === 'string' && entity.animationComponent) {
-			entity.animationComponent.transitionTo(this.animation, true);
+			entity.animationComponent.transitionTo(this.animation, true, function () {
+				fsm.send(that.transitions.complete);
+			});
 		}
 	};
 

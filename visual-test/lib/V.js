@@ -397,5 +397,39 @@ define([
 		return entity.addToWorld();
 	};
 
+	function createPanel(text) {
+		text = text.replace(/\n/g, '<br>');
+
+		var div = document.createElement('div');
+		div.innerHTML =
+			'<div style="font-size: x-small;font-family: sans-serif; margin: 4px;">This visual test:</div>' +
+			'<div style="font-size: small; font-family: sans-serif; margin: 4px; padding: 4px; border: 1px solid #AAA; background-color: white; max-width: 400px;">' + text + '</span>';
+		div.style.position = 'absolute';
+		div.style.zIndex = '2001';
+		div.style.backgroundColor = '#DDDDDD';
+		div.style.left = '10px';
+		div.style.bottom = '10px';
+
+		div.style.webkitTouchCallout = 'none';
+		div.style.webkitUserSelect = 'none';
+		div.style.khtmlUserSelect = 'none';
+		div.style.mozUserSelect = 'none';
+		div.style.msUserSelect = 'none';
+		div.style.userSelect = 'none';
+
+		div.style.padding = '3px';
+		div.style.borderRadius = '6px';
+
+		document.body.appendChild(div);
+	}
+
+	V.describe = function (text) {
+		if (!V.deterministic) {
+			createPanel(text);
+		}
+
+		console.log(text);
+	};
+
 	return V;
 });

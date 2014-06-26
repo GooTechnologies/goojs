@@ -196,7 +196,7 @@ function (
 	}
 
 	/**
-	 * Sets the base systems on the world
+	 * Sets the base systems on the world.
 	 * @private
 	 */
 	GooRunner.prototype._setBaseSystems = function () {
@@ -217,7 +217,7 @@ function (
 	};
 
 	/**
-	 * Registers the base components so that methods like Entity.prototype.set can work
+	 * Registers the base components so that methods like Entity.prototype.set can work.
 	 * @private
 	 */
 	GooRunner.prototype._registerBaseComponents = function () {
@@ -236,7 +236,6 @@ function (
 	 */
 	//! TODO: private until documented
 	GooRunner.prototype.run = function (time) {
-		// REVIEW: if these safe calls get too many you might want to put the check into the _callSafe function instead of prepending it everywhere
 		if (this.useTryCatch) {
 			this._callSafe(this._updateFrame, time);// this._updateFrameSafe(time);
 		} else {
@@ -244,7 +243,10 @@ function (
 		}
 	};
 
-	// Calls a function and catches any error
+	/**
+     * Calls a function and catches any error
+	 * @private
+	 */
 	GooRunner.prototype._callSafe = function (func) {
 		try {
 			func.apply(this, Array.prototype.slice.call(arguments, 1));
@@ -311,23 +313,27 @@ function (
 		if (this.callbacksNextFrame.length > 0) {
 			var callbacksNextFrame = this.callbacksNextFrame;
 			this.callbacksNextFrame = [];
-			// REVIEW: wrap the for loop (it will become 2 loops, one safe and one not safe (dangerous?)) with the if, not the other way around. You avoid doing an if for every callback
-			for (var i = 0; i < callbacksNextFrame.length; i++) {
-				var callback = callbacksNextFrame[i];
-				if (this.useTryCatch) {
+			if (this.useTryCatch) {
+				for (var i = 0; i < callbacksNextFrame.length; i++) {
+					var callback = callbacksNextFrame[i];
 					this._callSafe(callback, this.world.tpf);
-				} else {
+				}
+			} else {
+				for (var i = 0; i < callbacksNextFrame.length; i++) {
+					var callback = callbacksNextFrame[i];
 					callback(this.world.tpf);
 				}
 			}
 		}
 
-		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
-			// REVIEW: same here
-			var callback = this.callbacksPreProcess[i];
-			if (this.useTryCatch) {
+		if (this.useTryCatch) {
+			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+				var callback = this.callbacksPreProcess[i];
 				this._callSafe(callback, this.world.tpf);
-			} else {
+			}
+		} else {
+			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+				var callback = this.callbacksPreProcess[i];
 				callback(this.world.tpf);
 			}
 		}
@@ -382,12 +388,14 @@ function (
 		}
 
 		// run the post render callbacks
-		for (var i = 0; i < this.callbacks.length; i++) {
-			// REVIEW: and here
-			var callback = this.callbacks[i];
-			if (this.useTryCatch) {
+		if (this.useTryCatch) {
+			for (var i = 0; i < this.callbacks.length; i++) {
+				var callback = this.callbacks[i];
 				this._callSafe(callback, this.world.tpf);
-			} else {
+			}
+		} else {
+			for (var i = 0; i < this.callbacks.length; i++) {
+				var callback = this.callbacks[i];
 				callback(this.world.tpf);
 			}
 		}
@@ -403,12 +411,14 @@ function (
 		// resolve any snapshot requests
 		if (this._takeSnapshots.length) {
 			var image = this.renderer.domElement.toDataURL();
-			for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
-				// REVIEW: ...and here too
-				var callback = this._takeSnapshots[i];
-				if (this.useTryCatch) {
+			if (this.useTryCatch) {
+				for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
+					var callback = this._takeSnapshots[i];
 					this._callSafe(callback, image);
-				} else {
+				}
+			} else {
+				for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
+					var callback = this._takeSnapshots[i];
 					callback(image);
 				}
 			}
@@ -416,7 +426,9 @@ function (
 		}
 
 		// schedule next frame
-		this.animationId = window.requestAnimationFrame(this.run.bind(this));
+		if (this.animationId) {
+			this.animationId = window.requestAnimationFrame(this.run.bind(this));
+		}
 	};
 
 	//TODO: move this to Logo
@@ -523,9 +535,25 @@ function (
 	};
 
 	/**
-	 * Adds an event listener to the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
-	 * @param {function(event)} Callback to call when event is fired
+	 * Adds an event listener to the GooRunner.
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
+	 * 'touchstart', 'touchend' or 'touchmove'.
+	 * @param  {function(event)} callback Callback function.
+	 * @param {Entity} callback.event.entity Picked entity, undefined if no entity is picked.
+	 * @param {Vector3} callback.event.intersection Point of pick ray intersection with scene.
+	 * @param {number} callback.event.depth Depth of pick ray intersection.
+	 * @param {number} callback.event.x Canvas x coordinate.
+	 * @param {number} callback.event.y Canvas y coordinate.
+	 * @param {string} callback.event.type Type of triggered event ('mousedown', 'touchstart', etc).
+	 * @param {Event} callback.event.domEvent Original DOM event.
+	 * @param {number} callback.event.id Entity pick ID. -1 if no entity was picked.
+	 * @example
+	 * gooRunner.addEventListener('mousedown', function(event) {
+	 *   if (event.entity) {
+	 *     console.log('clicked entity', event.entity.name);
+	 *     console.log('clicked point', event.intersection);
+	 *   }
+	 * });
 	 */
 	GooRunner.prototype.addEventListener = function (type, callback) {
 		if (!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
@@ -541,9 +569,10 @@ function (
 	};
 
 	/**
-	 * Removes an event listener to the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
-	 * @param {function(event)} Callback to remove from event listener
+	 * Removes an event listener from the GooRunner.
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
+	 * 'touchstart', 'touchend' or 'touchmove'.
+	 * @param {function(event)} callback Callback to remove from event listener.
 	 */
 	GooRunner.prototype.removeEventListener = function (type, callback) {
 		if (!this._eventListeners[type]) {
@@ -559,14 +588,15 @@ function (
 	};
 
 	/**
-   * Triggers an event on the goorunner (force)
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
-	 * @param {object} evt The goorunner-style event
-	 * @param {Entity} evt.entity The goorunner-style event
-	 * @param {number} evt.x
-	 * @param {number} evt.y
-	 * @param {Event} evt.domEvent The original DOM event
-   */
+	 * Triggers an event on the GooRunner (force).
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
+	 * 'touchstart', 'touchend' or 'touchmove'.
+	 * @param {object} evt The GooRunner-style event
+	 * @param {Entity} evt.entity Event entity.
+	 * @param {number} evt.x Event canvas X coordinate.
+	 * @param {number} evt.y Event canvas Y coordinate.
+	 * @param {Event} evt.domEvent The original DOM event.
+     */
 	GooRunner.prototype.triggerEvent = function (type, evt) {
 		evt.type = type;
 		this._eventTriggered[type] = evt.domEvent;
@@ -605,7 +635,8 @@ function (
 
 	/**
 	 * Enables event listening on the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove',
+	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @private
 	 */
 	GooRunner.prototype._enableEvent = function (type) {
@@ -641,7 +672,8 @@ function (
 
 	/**
 	 * Disables event listening on the GooRunner
-	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove' or 'mouseup'
+	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove',
+	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @private
 	 */
 	GooRunner.prototype._disableEvent = function (type) {
@@ -663,7 +695,7 @@ function (
 	};
 
 	/**
-	 * Starts the game loop. (done through requestAnimationFrame)
+	 * Starts the game loop (done through requestAnimationFrame).
 	 */
 	GooRunner.prototype.startGameLoop = function () {
 		this.manuallyPaused = false;
@@ -688,7 +720,8 @@ function (
 	};
 
 	/**
-	 * Takes an image snapshot from the 3d scene at next render call
+	 * Takes an image snapshot from the 3d scene at next render call.
+	 * @param {function} callback
 	 */
 	GooRunner.prototype.takeSnapshot = function (callback) {
 		this._takeSnapshots.push(callback);

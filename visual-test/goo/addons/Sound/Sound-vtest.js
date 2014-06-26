@@ -23,6 +23,16 @@ require([
 	) {
 	'use strict';
 
+	V.describe([
+		'Both the sphere and the cube have sound components',
+		'',
+		'Controls:',
+		'1: boing',
+		'2: squigly',
+		'3: pause boing',
+		'4: pause squigly'
+	].join('\n'));
+
 	var resourcePath = '../../../resources/';
 
 	var goo = V.initGoo();
@@ -75,7 +85,7 @@ require([
 
 	function setupKeys() {
 		document.body.addEventListener('keypress', function(e) {
-			switch(e.keyCode) {
+			switch(e.which) {
 				case 49:
 					cubeEntity.soundComponent.sounds[0].play()
 						.then(function () {

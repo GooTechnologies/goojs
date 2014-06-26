@@ -435,10 +435,20 @@ function(
 	};
 
 	Terrain.prototype.setLightmapTexture = function(lightMap) {
-		terrainShaderDefFloat.defines.LIGHTMAP = true;
-		for (var i = 0; i < this.count; i++) {
-			var material = this.clipmaps[i].origMaterial;
-			material.setTexture('LIGHT_MAP', lightMap);
+		// update all meshes.
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+			clipmap.clipmapEntity.traverse(function (entity) {
+				if (entity.meshRendererComponent) {
+					var material = entity.meshRendererComponent.materials[0];
+					if (lightMap) {
+						material.setTexture("LIGHT_MAP", lightMap);
+						material.shader.defines.LIGHTMAP = true;
+					} else {
+						material.shader.defines.LIGHTMAP = false;
+					}
+				}
+			});
 		}
 	};
 
@@ -550,8 +560,8 @@ function(
 			if (yy !== clipmap.currentY) {
 				clipmap.currentY = yy;
 				var compSize = this.gridSize * clipmap.size * 2;
-				if (clipmap.clipmapEntity.hidden === false && y > compSize) {
-					EntityUtils.hide(clipmap.clipmapEntity);
+				if (clipmap.clipmapEntity._hidden === false && y > compSize) {
+					clipmap.clipmapEntity.hide();
 
 					if (i < this.clipmaps.length - 1) {
 						var childClipmap = this.clipmaps[i + 1];
@@ -561,8 +571,8 @@ function(
 					}
 
 					continue;
-				} else if (clipmap.clipmapEntity.hidden === true && y <= compSize) {
-					EntityUtils.show(clipmap.clipmapEntity);
+				} else if (clipmap.clipmapEntity._hidden === true && y <= compSize) {
+					clipmap.clipmapEntity.show();
 
 					if (i < this.clipmaps.length - 1) {
 						var childClipmap = this.clipmaps[i + 1];
@@ -1181,7 +1191,7 @@ function(
 		'void main(void)',
 		'{',
 		// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
-		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y) + vec2(0.0/512.0, 1.0/512.0)).r);',
+		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).r);',
 		'}'//
 		].join('\n')
 	};

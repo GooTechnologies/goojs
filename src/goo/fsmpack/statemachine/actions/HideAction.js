@@ -26,7 +26,7 @@ function(
 
 	HideAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		EntityUtils.hide(entity);
+		entity.hide();
 	};
 
 	return HideAction;

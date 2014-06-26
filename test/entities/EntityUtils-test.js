@@ -88,7 +88,7 @@ define([
 			}
 
 			function expectEverything(entity, entityHidden, componentsHidden) {
-				expect(entity.hidden).toEqual(entityHidden);
+				expect(entity._hidden).toEqual(entityHidden);
 				expect(entity.meshRendererComponent.hidden).toEqual(componentsHidden);
 				expect(entity.lightComponent.hidden).toEqual(componentsHidden);
 				expect(entity.htmlComponent.hidden).toEqual(componentsHidden);

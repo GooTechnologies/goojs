@@ -112,9 +112,10 @@ function (
 	 * Transition the layer to another state. The transition must be specified either on the state or on the layer (as a general transition), see FileFormat spec for more info
 	 * @param {String} state
 	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @param {function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 * @returns {Boolean} true if a transition was found and started
 	 */
-	AnimationLayer.prototype.transitionTo = function (state, globalTime) {
+	AnimationLayer.prototype.transitionTo = function (state, globalTime, finishCallback) {
 		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 		var cState = this._currentState;
 		var transition;
@@ -133,14 +134,14 @@ function (
 		}
 		if (cState instanceof SteadyState && transition) {
 			var transitionState = this._getTransitionByType(transition.type);
-			this._doTransition(transitionState, cState, this._steadyStates[state], transition, globalTime);
+			this._doTransition(transitionState, cState, this._steadyStates[state], transition, globalTime, finishCallback);
 			return true;
 		} else if (!cState) {
 			transition = this._transitions[state];
 			if (transition) {
 				var transitionState = this._getTransitionByType(transition.type);
 				if (transitionState) {
-					this._doTransition(transitionState, null, this._steadyStates[state], transition, globalTime);
+					this._doTransition(transitionState, null, this._steadyStates[state], transition, globalTime, finishCallback);
 					return true;
 				}
 			}
@@ -148,7 +149,7 @@ function (
 		return false;
 	};
 
-	AnimationLayer.prototype._doTransition = function (transition, source, target, config, globalTime) {
+	AnimationLayer.prototype._doTransition = function (transition, source, target, config, globalTime, finishCallback) {
 		if (source) {
 			transition._sourceState = source;
 			var timeWindow = config.timeWindow || [-1, -1];
@@ -160,9 +161,8 @@ function (
 		}
 		transition._targetState = target;
 		transition.readFromConfig(config);
-		transition.resetClips(globalTime);
 
-		this.setCurrentState(transition);
+		this.setCurrentState(transition, true, globalTime, finishCallback);
 	};
 
 	/**
@@ -170,8 +170,9 @@ function (
 	 * @param {AbstractState} state our new state. If null, then no state is currently set on this layer.
 	 * @param {Boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
 	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @param {function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 */
-	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime) {
+	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime, finishCallback) {
 		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
 		this._currentState = state;
 		if (state) {
@@ -179,7 +180,10 @@ function (
 				state.resetClips(globalTime);
 			}
 			state.onFinished = function () {
-				this.setCurrentState(state._targetState || null);
+				this.setCurrentState(state._targetState || null, false, undefined, finishCallback);
+				if (state instanceof SteadyState && finishCallback instanceof Function) {
+					finishCallback()
+				}
 				this.update();
 			}.bind(this);
 		}
@@ -196,10 +200,13 @@ function (
 	/**
 	 * Set the current state by state id.
 	 * @param {string} id
+	 * @param {Boolean} [rewind=false] if true, the clip(s) in the given state will be rewound by setting its start time to the current time and setting it active.
+	 * @param {Number} [globalTime=World.time] start time for the transition, defaults to current time
+	 * @param {function} callback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 */
-	AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime) {
+	AnimationLayer.prototype.setCurrentStateById = function (id, rewind, globalTime, callback) {
 		var state = this.getStateById(id);
-		this.setCurrentState(state, rewind, globalTime);
+		this.setCurrentState(state, rewind, globalTime, callback);
 	};
 
 	/**

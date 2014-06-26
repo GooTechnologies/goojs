@@ -27,6 +27,10 @@ require([
 ) {
 	'use strict';
 
+	V.describe([
+		'Click on any object and a small red sphere should appear at the intersection between the pick ray originating from the camera and the clicked-on object'
+	].join('\n'));
+
 	// initialise goo
 	var goo = V.initGoo();
 	var world = goo.world;

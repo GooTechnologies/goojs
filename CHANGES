@@ -1,3 +1,10 @@
+v0.10.7 --- 2014-07-01
+======================
+
+Deprecated:
+ - EntityUtils.hide/show; use entity.hide/show instead
+ - entity.hidden is no longer exposed; use entity.isHidden and entity.isVisiblyHidden instead
+
 v0.10.6 --- 2014-06-25
 ======================
 

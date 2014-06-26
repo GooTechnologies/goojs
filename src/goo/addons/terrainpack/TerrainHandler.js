@@ -39,6 +39,9 @@ define([
 			this.draw = false;
 			this.eventX = 0;
 			this.eventY = 0;
+			this.vegetationSettings = {
+				gridSize: 7
+			};
 		}
 
 		TerrainHandler.prototype.isEditing = function () {
@@ -392,7 +395,7 @@ define([
 
 				var forrestTypes = terrainData.forrestTypes;
 
-				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes);
+				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
 				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
 
 				return texturesPromise;
@@ -408,19 +411,25 @@ define([
 		};
 
 		TerrainHandler.prototype.useLightmap = function(data, size) {
-			var lightMap = new Texture(data, {
-				magFilter: 'Bilinear',
-				minFilter: 'NearestNeighborNoMipMaps',
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
-				generateMipmaps: false,
-				format: 'Luminance',
-				type: 'UnsignedByte'
-			}, size, size);
+			if (data) {
+				var lightMap = new Texture(data, {
+					magFilter: 'Bilinear',
+					minFilter: 'NearestNeighborNoMipMaps',
+					wrapS: 'EdgeClamp',
+					wrapT: 'EdgeClamp',
+					generateMipmaps: false,
+					format: 'Luminance',
+					type: 'UnsignedByte'
+				}, size, size);
 
-			this.lightMapData = data;
-			this.lightMapSize = size;
-			this.terrain.setLightmapTexture(lightMap);
+				this.lightMapData = data;
+				this.lightMapSize = size;
+				this.terrain.setLightmapTexture(lightMap);
+			} else {
+				delete this.lightMapData;
+				delete this.lightMapSize;
+				this.terrain.setLightmapTexture();
+			}
 		};
 
 		TerrainHandler.prototype.update = function (cameraEntity) {
