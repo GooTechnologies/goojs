@@ -10,7 +10,7 @@ require([
 	'goo/entities/EntityUtils',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/Camera'
-], function(
+], function (
 	V,
 	GamepadSystem,
 	GamepadComponent,
@@ -25,6 +25,8 @@ require([
 	) {
 
 	'use strict';
+
+	V.description('Use a gamepad to control the box');
 
 	var options = {
 		logo: {
@@ -81,7 +83,6 @@ require([
 	});
 
 	gamepadComponent.setButtonPressedFunction(0, function(entity, value) {
-
 		var childCount = entity.children().toArray().length;
 		if (childCount == 0) {
 			var cloneBaby = EntityUtils.clone(world, entity, {cloneHierarchy: false});
@@ -115,5 +116,4 @@ require([
 	camEntity.addToWorld();
 
 	goo.startGameLoop();
-
 });

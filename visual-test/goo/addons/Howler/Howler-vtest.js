@@ -23,6 +23,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('Both the sphere and the cube have sound components');
+
 	var resourcesPath = '../../../resources/';
 
 	var goo = V.initGoo();

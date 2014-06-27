@@ -15,6 +15,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('A filled polygon generated from a polyLine');
+
 	var goo = V.initGoo();
 	var world = goo.world;
 

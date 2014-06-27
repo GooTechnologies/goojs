@@ -1,33 +1,27 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/MeshDataComponent',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
-	'goo/shapes/Torus',
-	'goo/shapes/Quad',
 	'goo/renderer/MeshData',
 	'goo/math/Ray',
 	'goo/math/Plane',
 	'lib/V'
 ], function(
-	GooRunner,
 	Material,
 	ShaderLib,
-	MeshDataComponent,
 	Vector3,
 	Box,
 	Sphere,
-	Torus,
-	Quad,
 	MeshData,
 	Ray,
 	Plane,
 	V
 ) {
 	'use strict';
+
+	V.describe('3 rays are intersecting 3 planes and all their points of intersection are marked with small spheres.');
 
 	// initialise goo
 	var goo = V.initGoo();

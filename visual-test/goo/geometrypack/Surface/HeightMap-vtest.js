@@ -15,6 +15,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('A terrain-like surface generated from a heightmap stored as a matrix of floats');
+
 	function getHeightMap(nLin, nCol) {
 		var matrix = [];
 		for (var i = 0; i < nLin; i++) {
