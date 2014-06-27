@@ -16,25 +16,6 @@ require([
 		V.addLights();
 		V.addOrbitCamera();
 
-		// pick events
-		/*goo.setEventHandlers({
-			onClick: function(clickedEntity, depth) {
-				console.log('mouseclick', clickedEntity ? clickedEntity.toString() + ' at depth ' + depth : 'nothing');
-				if(clickedEntity) {
-					var color = clickedEntity.meshRendererComponent.materials[0].uniforms.color;
-					swapChannels(color);
-				}
-			},
-			onChange: function(lastEntity, currentEntity, depth) {
-				console.log('mouseleft', lastEntity ? lastEntity.toString() + ' at depth ' + depth : 'nothing');
-				console.log('mouseover', currentEntity ? currentEntity.toString() + ' at depth ' + depth : 'nothing');
-
-				if(currentEntity) {
-					var color = currentEntity.meshRendererComponent.materials[0].uniforms.color;
-					swapChannels(color);
-				}
-			}
-		});*/
 		var lastEntity;
 		var lastDepth;
 
@@ -51,13 +32,16 @@ require([
 			lastDepth = evt.depth;
 		});
 
-		goo.addEventListener('click', function(evt) {
-			console.log('Entity is ' + evt.entity + ' at ' + evt.depth);
-			if(evt.entity) {
-				var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
-				swapChannels(color);
-			}
-		});
+        var onPick = function(evt) {
+            console.log('Entity is ' + evt.entity + ' at ' + evt.depth);
+            if(evt.entity) {
+                var color = evt.entity.meshRendererComponent.materials[0].uniforms.color;
+                swapChannels(color);
+            }
+        };
+
+		goo.addEventListener('click', onPick);
+        goo.addEventListener('touchstart', onPick);
 	}
 
 	pickingEventsDemo();

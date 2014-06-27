@@ -2,10 +2,10 @@ define([
 	'goo/fsmpack/statemachine/actions/Action'
 ],
 /** @lends */
-function(
+function (
 	Action
 ) {
-	"use strict";
+	'use strict';
 
 	function TweenOpacityAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -63,14 +63,28 @@ function(
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenOpacityAction.prototype._setup = function (/*fsm*/) {
+	TweenOpacityAction.prototype._setup = function (fsm) {
 		this.tween = new window.TWEEN.Tween();
+
+        var entity = fsm.getOwnerEntity();
+        var meshRendererComponent = entity.meshRendererComponent;
+
+        this.material = meshRendererComponent.materials[0];
+        this.oldBlending = this.material.blendState.blending;
+        this.oldQueue = this.material.renderQueue;
+
+        this.material.blendState.blending = 'CustomBlending';
+        if (this.material.renderQueue < 2000) {
+            this.material.renderQueue = 2000;
+        }
 	};
 
 	TweenOpacityAction.prototype.cleanup = function (/*fsm*/) {
 		if (this.tween) {
 			this.tween.stop();
 		}
+        this.material.blendState.blending = this.oldBlending;
+        this.material.renderQueue = this.oldQueue;
 	};
 
 	TweenOpacityAction.prototype._run = function (fsm) {
@@ -81,16 +95,18 @@ function(
 			var uniforms = material.uniforms;
 			var time = entity._world.time * 1000;
 
-			var fakeFrom = { opacity: uniforms.opacity === undefined ? 1 : uniforms.opacity };
+			var fakeFrom = { opacity: uniforms.opacity === undefined ? uniforms.materialDiffuse[3] : uniforms.opacity };
 			var fakeTo = { opacity: this.to };
 
 			var old = { opacity: fakeFrom.opacity };
 
-			if (material.blendState.blending === 'NoBlending') {
-				material.blendState.blending = 'CustomBlending';
-			}
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-				uniforms.opacity += this.opacity - old.opacity;
+				if (uniforms.opacity === undefined) {
+                    uniforms.materialDiffuse[3] += this.opacity - old.opacity;
+                } else {
+                    uniforms.opacity += this.opacity - old.opacity;
+                }
+
 				old.opacity = this.opacity;
 			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
