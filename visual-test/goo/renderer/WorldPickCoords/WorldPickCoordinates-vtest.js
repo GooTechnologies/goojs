@@ -24,6 +24,8 @@ require([
         'Change the projection mode by hitting P'
 	].join('\n'));
 
+    V.button('P', keyP);
+
 	// initialise goo
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -70,18 +72,20 @@ require([
 	var near = camera.near;
 	var far = camera.far;
 
+    function keyP() {
+        if (camera.projectionMode === Camera.Parallel){
+            camera.setProjectionMode(Camera.Perspective);
+            camera.setFrustumPerspective(fov, aspect, near, far);
+        } else {
+            camera.setProjectionMode(Camera.Parallel);
+            camera.setFrustum(near, far, -size, size, size, -size, aspect);
+        }
+    }
+
 	// register a listener for click events
 	document.addEventListener('keypress', function (event) {
-		switch(event.keyCode){
-			case 112: // p
-				if (camera.projectionMode === Camera.Parallel){
-					camera.setProjectionMode(Camera.Perspective);
-					camera.setFrustumPerspective(fov, aspect, near, far);
-				} else {
-					camera.setProjectionMode(Camera.Parallel);
-					camera.setFrustum(near, far, -size, size, size, -size, aspect);
-				}
-				break;
+		switch (event.keyCode){
+			case 112: keyP(); break;
 		}
 	});
 });

@@ -30,6 +30,8 @@ require([
 		'anykey: add more objects'
 	].join('\n'));
 
+    V.button('anykey', addPrimitives);
+
 	function createEntity(meshData, p2Settings, pos, material) {
 		material = material || V.getColoredMaterial();
 

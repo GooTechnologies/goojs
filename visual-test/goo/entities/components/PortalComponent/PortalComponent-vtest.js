@@ -27,6 +27,17 @@ require([
 	) {
 	'use strict';
 
+    V.describe([
+        '4 portals with different properties',
+        'Controls:',
+        '',
+        '1: request redraw of the upper-left portal',
+        '2: add-remove the portal component on the bottom-left portal'
+    ].join('\n'));
+
+    V.button('1', key1);
+    V.button('2', key2);
+
 	function addPortalSystem() {
 		var renderingSystem = goo.world.getSystem('RenderSystem');
 		var renderer = goo.renderer;
@@ -106,26 +117,30 @@ require([
 	var addRemovePortalEntity = addPortal(userCamera,  3, -3, 2, 5, { preciseRecursion: true, alwaysRender: true });
 	var storedPortalComponent = addRemovePortalEntity.portalComponent;
 
+    function key1() {
+        console.log('redrawing');
+        overridenMaterialPortalEntity.portalComponent.requestUpdate();
+    }
+
+    function key2() {
+        if (addRemovePortalEntity.portalComponent) {
+            addRemovePortalEntity.clearComponent('PortalComponent');
+            console.log('cleared');
+        } else {
+            addRemovePortalEntity.setComponent(storedPortalComponent);
+            console.log('added');
+        }
+    }
+
 	// setup some interaction
 	document.addEventListener('keypress', function (e) {
 		switch (e.which) {
-			case 49:
-				console.log('redrawing');
-				overridenMaterialPortalEntity.portalComponent.requestUpdate();
-				break;
-			case 50:
-				if (addRemovePortalEntity.portalComponent) {
-					addRemovePortalEntity.clearComponent('PortalComponent');
-					console.log('cleared');
-				} else {
-					addRemovePortalEntity.setComponent(storedPortalComponent);
-					console.log('added');
-				}
-				break;
+			case 49: key1(); break;
+			case 50: key2(); break;
 			default:
 				console.log(
-						'1 - request redraw of the non-auto updated portal\n' +
-						'2 - add/remove a portal component on one of the portals'
+                    '1 - request redraw of the non-auto updated portal\n' +
+                    '2 - add/remove a portal component on one of the portals'
 				);
 		}
 	});

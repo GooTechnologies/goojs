@@ -341,7 +341,10 @@ define([
 		});
 	};
 
-
+    /**
+     * Adds a debug quad for the picking buffer
+     * @returns {Entity}
+     */
 	V.addDebugQuad = function () {
 		var world = V.goo.world;
 		var entity = world.createEntity('Quad');
@@ -397,10 +400,16 @@ define([
 		return entity.addToWorld();
 	};
 
+    /**
+     * Creates the panel that holds a project's description
+     * @param text
+     */
 	function createPanel(text) {
 		text = text.replace(/\n/g, '<br>');
 
+        //! AT: ugly combination of js and inline style setting
 		var div = document.createElement('div');
+        div.id = 'vt-panel';
 		div.innerHTML =
 			'<div style="font-size: x-small;font-family: sans-serif; margin: 4px;">This visual test:</div>' +
 			'<div style="font-size: small; font-family: sans-serif; margin: 4px; padding: 4px; border: 1px solid #AAA; background-color: white; max-width: 400px;">' + text + '</span>';
@@ -423,6 +432,10 @@ define([
 		document.body.appendChild(div);
 	}
 
+    /**
+     * Adds a description panel to the visual test. Also outputs the description to the web console.
+     * @param text
+     */
 	V.describe = function (text) {
 		if (!V.deterministic) {
 			createPanel(text);
@@ -430,6 +443,27 @@ define([
 
 		console.log(text);
 	};
+
+    /**
+     * Adds a button to the description panel
+     * @param text
+     * @param onClick
+     */
+    V.button = function (text, onClick) {
+        if (V.deterministic) { return; }
+
+        var panel = document.getElementById('vt-panel');
+        if (!panel) {
+            console.error('First create a panel with V.describe()');
+            return;
+        }
+
+        var button = document.createElement('button');
+        button.innerText = text;
+        button.addEventListener('click', onClick);
+
+        panel.appendChild(button);
+    };
 
 	return V;
 });
