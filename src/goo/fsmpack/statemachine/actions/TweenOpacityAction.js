@@ -72,10 +72,15 @@ function (
         this.material = meshRendererComponent.materials[0];
         this.oldBlending = this.material.blendState.blending;
         this.oldQueue = this.material.renderQueue;
+        this.oldOpacity = this.material.shader.uniforms.opacity;
 
         this.material.blendState.blending = 'CustomBlending';
         if (this.material.renderQueue < 2000) {
             this.material.renderQueue = 2000;
+        }
+
+        if (this.material.shader.uniforms.opacity === undefined) {
+            this.material.shader.uniforms.opacity = 1;
         }
 	};
 
@@ -85,30 +90,25 @@ function (
 		}
         this.material.blendState.blending = this.oldBlending;
         this.material.renderQueue = this.oldQueue;
+        this.material.shader.uniforms.opacity = this.oldOpacity;
 	};
 
 	TweenOpacityAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.meshRendererComponent) {
-			var meshRendererComponent = entity.meshRendererComponent;
-			var material = meshRendererComponent.materials[0];
-			var uniforms = material.uniforms;
+			var uniforms = this.material.shader.uniforms;
 			var time = entity._world.time * 1000;
 
-			var fakeFrom = { opacity: uniforms.opacity === undefined ? uniforms.materialDiffuse[3] : uniforms.opacity };
+			var fakeFrom = { opacity: uniforms.opacity };
 			var fakeTo = { opacity: this.to };
 
 			var old = { opacity: fakeFrom.opacity };
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-				if (uniforms.opacity === undefined) {
-                    uniforms.materialDiffuse[3] += this.opacity - old.opacity;
-                } else {
-                    uniforms.opacity += this.opacity - old.opacity;
-                }
+				uniforms.opacity += this.opacity - old.opacity;
 
 				old.opacity = this.opacity;
-			}).onComplete(function() {
+			}).onComplete(function () {
 				fsm.send(this.eventToEmit.channel);
 			}.bind(this)).start(time);
 		}
