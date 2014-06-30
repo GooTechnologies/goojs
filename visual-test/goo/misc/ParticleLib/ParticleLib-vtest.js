@@ -15,6 +15,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('Particle system presets covered by ParticleLib');
+
 	function addFire(translation) {
 		var material = new Material(ShaderLib.particles);
 		var texture = ParticleSystemUtils.createFlareTexture();

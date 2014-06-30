@@ -17,13 +17,18 @@ require([
 	) {
 	'use strict';
 
+	V.describe([
+		'One of the box towers are assembled with the preserve-transform option enabled and one without.',
+		'After repeated assembling/disassembling the boxes should remain in their initial positions.'
+	].join('\n'));
+
 	var box11, box12, box13, box14, box15;
 	var box21, box22, box23, box24, box25;
 	var boxMeshData;
 	var goo, world;
 
 	function getColoredMaterial(r, g, b) {
-		var material = new Material(ShaderLib.simpleLit, '');
+		var material = new Material(ShaderLib.simpleLit);
 		material.uniforms.materialDiffuse = [r, g, b, 1];
 		return material;
 	}

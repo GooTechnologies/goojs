@@ -17,6 +17,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('');
+
 	var resourcesPath = '../../../../resources/';
 
 	var goo = V.initGoo();

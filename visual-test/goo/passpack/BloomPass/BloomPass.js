@@ -25,6 +25,8 @@ require([
 ) {
 	'use strict';
 
+	V.describe('Bloom is used as a posteffect');
+
 	var goo = V.initGoo();
 	V.addLights();
 	V.addOrbitCamera(new Vector3(15, Math.PI / 2, 0.3));

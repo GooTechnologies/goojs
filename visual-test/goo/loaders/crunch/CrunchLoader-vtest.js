@@ -29,6 +29,8 @@ require([
 ) {
 	'use strict';
 
+	V.describe('The cubes\' textures are compressed using the crunch algorithm');
+
 	var resourcePath = '../../../resources';
 
 	function createBox(size, x, y, textureUrl, goo) {

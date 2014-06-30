@@ -17,6 +17,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('All supported light types are featured in this scene');
+
 	function addPointLight() {
 		var pointLight = new PointLight(new Vector3(0.9, 0.0, 0.2));
 		pointLight.range = 5;

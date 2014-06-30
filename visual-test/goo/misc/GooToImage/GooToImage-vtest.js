@@ -1,11 +1,9 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
 	'goo/shapes/Sphere',
 	'goo/shapes/Box',
-	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
@@ -14,13 +12,11 @@ require([
 	'goo/math/Plane',
 	'lib/V'
 ], function (
-	GooRunner,
 	Material,
 	ShaderLib,
 	Camera,
 	Sphere,
 	Box,
-	OrbitCamControlScript,
 	Vector3,
 	PointLight,
 	DirectionalLight,
@@ -30,6 +26,13 @@ require([
 	V
 	) {
 	'use strict';
+
+	V.describe([
+		'This vtest shows how to get an image from a canvas.',
+		'Press A to slice the scene in several images display them and kill the goo renderer.'
+	].join('\n'));
+
+	V.button('A', keyA);
 
 	// --- setting up some a scene
 	function addPointLight() {
@@ -65,17 +68,6 @@ require([
 			}
 		}
 	}
-
-	/*
-	function addOrbitCam() {
-		var cameraEntity = goo.world.createEntity(new Camera(), 'CameraEntity').addToWorld();
-		var orbitCamScript = new OrbitCamControlScript({
-			domElement : goo.renderer.domElement,
-			spherical : new Vector3(20, Math.PI / 2, 0)
-		});
-		cameraEntity.set(orbitCamScript);
-	}
-	*/
 	// ---
 
 
@@ -206,13 +198,17 @@ require([
 
 	goo.renderer.setClearColor(0.05, 0.05, 0.05, 0.0);
 
+	function keyA() {
+		// getting all entities in an array
+		allEntities = goo.world.getEntities();
+
+		takeAllShots();
+	}
+
 	// listen for 'A'
 	window.addEventListener('keyup', function (e) {
 		if (e.which === 65) {
-			// getting all entities in an array
-			allEntities = goo.world.getEntities();
-
-			takeAllShots();
+			keyA();
 		} else {
 			console.log('A - take screenshots and animate');
 		}

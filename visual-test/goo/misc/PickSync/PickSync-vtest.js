@@ -5,9 +5,11 @@ require([
 	) {
 	'use strict';
 
+	V.describe('Synchronous picking: the spheres should change color when clicked on.');
+
 	function swapChannels(colors) {
-		var tmp;
-		tmp = colors[0]; colors[0] = colors[1];	colors[1] = colors[2]; colors[2] = tmp;
+		var tmp
+		tmp = colors[0]; colors[0] = colors[1]; colors[1] = colors[2]; colors[2] = tmp;
 	}
 
 	var goo = V.initGoo();
@@ -15,7 +17,7 @@ require([
 	V.addLights();
 	V.addOrbitCamera();
 
-	window.addEventListener('click', function (e) {
+	function onPick(e) {
 		var pickResult = goo.pickSync(e.clientX, e.clientY);
 
 		var entity = goo.world.entityManager.getEntityByIndex(pickResult.id);
@@ -23,5 +25,8 @@ require([
 			var color = entity.meshRendererComponent.materials[0].uniforms.color;
 			swapChannels(color);
 		}
-	});
+	}
+
+	window.addEventListener('click', onPick);
+	window.addEventListener('touchstart', onPick);
 });

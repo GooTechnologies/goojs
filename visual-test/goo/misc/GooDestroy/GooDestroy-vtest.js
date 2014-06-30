@@ -2,36 +2,50 @@ require([
 	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/MeshDataComponent',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
 	'goo/renderer/light/PointLight',
-	'goo/renderer/Camera'
+	'goo/renderer/Camera',
+	'lib/V'
 ], function (
 	GooRunner,
 	Material,
 	ShaderLib,
-	MeshDataComponent,
 	Vector3,
 	Box,
 	Sphere,
 	Torus,
 	PointLight,
-	Camera
+	Camera,
+	V
 	) {
 	'use strict';
 
 	var goo;
 
-	console.log('Hit 1 to create a goo instance and 2 to destroy it. Use this visual test to check if the garbage collector can collect anything related to goo');
+	V.describe([
+		'Hit 1 to create a goo instance and 2 to destroy it.',
+		' Use this visual test to check if the garbage collector can collect anything related to goo'
+	].join('\n'));
+
+	V.button('1', key1);
+	V.button('2', key2);
+
+	function key1() {
+		if (!goo) { create(); }
+	}
+
+	function key2() {
+		if (goo) { destroy(); }
+	}
 
 	window.addEventListener('keyup', function (e) {
 		if (e.which === 49) {
-			if (!goo) { create(); }
+			key1();
 		} else if (e.which === 50) {
-			if (goo) { destroy(); }
+			key2();
 		}
 	});
 

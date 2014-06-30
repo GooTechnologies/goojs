@@ -5,6 +5,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('The colored spheres change colors when clicked on or when the mouse exits/enters their projected image.');
+
 	function swapChannels(colors) {
 		var tmp;
 		tmp = colors[0]; colors[0] = colors[1];	colors[1] = colors[2]; colors[2] = tmp;

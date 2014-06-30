@@ -23,6 +23,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('The 5 yellow orbs have a halo on them that always faces the camera. They are renderered using the billboard shader.');
+
 	function addHalo(x, y, z) {
 		var quadMeshData = new Quad(3, 3);
 		var quadMaterial = new Material(ShaderLibExtra.billboard);

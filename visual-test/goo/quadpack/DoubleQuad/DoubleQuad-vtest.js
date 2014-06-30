@@ -15,6 +15,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('The double-faced quad');
+
 	var goo = V.initGoo();
 	var world = goo.world;
 

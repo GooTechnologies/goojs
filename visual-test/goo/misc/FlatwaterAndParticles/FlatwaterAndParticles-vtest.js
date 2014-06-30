@@ -1,58 +1,34 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/Box',
 	'goo/shapes/Quad',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
 	'goo/renderer/TextureCreator',
 	'goo/addons/waterpack/FlatWaterRenderer',
 	'goo/entities/systems/ParticlesSystem',
 	'goo/entities/components/ParticleComponent',
 	'goo/particles/ParticleUtils',
-	'goo/entities/components/MeshDataComponent',
 	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	Box,
 	Quad,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
 	TextureCreator,
 	FlatWaterRenderer,
 	ParticlesSystem,
 	ParticleComponent,
 	ParticleUtils,
-	MeshDataComponent,
 	V
 	) {
 	'use strict';
 
+	V.describe('Fire and water were at some point causing rendering artifacts. This scene serves as the minimal test case.');
+
 	function addFire(goo) {
-		// Particle material
+		// particle material
 		var material = new Material(ShaderLib.particles);
 		var texture = new TextureCreator().loadTexture2D('../../../resources/flare.png');
 		texture.generateMipmaps = true;
@@ -62,11 +38,7 @@ require([
 		material.depthState.write = false;
 		material.renderQueue = 2001;
 
-		// Create the particle cloud entity
-		var explosionEntity = goo.world.createEntity();
-		explosionEntity.transformComponent.transform.translation.setd(10, 0, 0);
-
-		// Create particle component of the particle cloud entity
+		// create particle component of the particle cloud entity
 		var particleComponent = new ParticleComponent({
 			timeline : [{
 				timeOffset : 0.0,
@@ -96,26 +68,17 @@ require([
 				}
 			}]
 		});
-		explosionEntity.setComponent(particleComponent);
 
-		// Create meshData component using particle data
-		var meshDataComponent = new MeshDataComponent(particleComponent.meshData);
-		explosionEntity.setComponent(meshDataComponent);
-
-		// Create meshRenderer component with material and shader
-		var meshRendererComponent = new MeshRendererComponent();
-		meshRendererComponent.materials.push(material);
-		explosionEntity.setComponent(meshRendererComponent);
-
-		// Add explosion entity to world
-		explosionEntity.addToWorld();
+		// create the particle cloud entity
+		goo.world.createEntity(particleComponent.meshData, material, particleComponent, [10, 0, 0])
+			.addToWorld();
 	}
 
 	function addWater(goo, waterY) {
-		// Water
+		// water
 		var meshData = new Quad(10000, 10000, 10, 10);
 
-		var material = new Material(ShaderLib.simple, 'mat');
+		var material = new Material(ShaderLib.simple);
 		var waterEntity = goo.world.createEntity(meshData, material);
 		waterEntity.meshRendererComponent.isPickable = false;
 
@@ -154,39 +117,19 @@ require([
 		return waterRenderer;
 	}
 
-	function addDebugQuad(goo, waterRenderer) {
-		var quadMeshData = new Quad(10, 10);
-		var quadMaterial = new Material(ShaderLib.simple, 'mat');
-
-		void(waterRenderer);
-
-		var quadEntity = goo.world.createEntity(quadMeshData, quadMaterial);
-		quadEntity.transformComponent.transform.translation.setd(0, 15.01, 10);
-		quadEntity.addToWorld();
-	}
-
 	function addBox(goo) {
 		var boxMeshData = new Box(10, 30, 10);
-		var boxMaterial = new Material(ShaderLib.simple, 'mat');
-		var boxEntity = goo.world.createEntity(boxMeshData, boxMaterial);
-		boxEntity.transformComponent.transform.translation.setd(0, 15.01, 0);
-		boxEntity.addToWorld();
+		var boxMaterial = new Material(ShaderLib.simple);
+		goo.world.createEntity(boxMeshData, boxMaterial, [0, 15.01, 0])
+			.addToWorld();
 	}
 
-	function flatwaterAndParticlesDemo() {
-		var goo = V.initGoo();
+	var goo = V.initGoo();
 
-		V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
-		V.addLights();
+	V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
+	V.addLights();
 
-		addBox(goo);
-		var waterRenderer = addWater(goo, 0);
-		addFire(goo);
-
-		if(false) {
-			addDebugQuad(goo, waterRenderer);
-		}
-	}
-
-	flatwaterAndParticlesDemo();
+	addBox(goo);
+	addWater(goo, 0);
+	addFire(goo);
 });

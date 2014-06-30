@@ -1,39 +1,13 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
-	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
 	'goo/geometrypack/PolyLine',
 	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
-
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
-	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
 	PolyLine,
 	V
 	) {

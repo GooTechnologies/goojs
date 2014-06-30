@@ -1,17 +1,17 @@
 require([
-	'goo/entities/EntityUtils',
 	'goo/renderer/Camera',
 	'goo/entities/components/HtmlComponent',
 	'goo/entities/systems/HtmlSystem',
 	'lib/V'
 ], function (
-	EntityUtils,
 	Camera,
 	HtmlComponent,
 	HtmlSystem,
 	V
 	) {
 	'use strict';
+
+	V.describe('All spheres have an html component attached which should have it\'s transform synced');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -38,7 +38,7 @@ require([
 		entity.set(htmlComponent);
 
 		if (Math.random() > 0.5) {
-			EntityUtils.hide(entity);
+			entity.hide();
 		}
 	});
 
