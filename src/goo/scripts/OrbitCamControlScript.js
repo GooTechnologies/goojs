@@ -13,22 +13,30 @@ define([
 ) {
 	'use strict';
 
-	//! REVIEW: for next time, do code indent & cleanup in an own commit, separated from the actual code changes. This makes the diffs readable.
+	var ZOOM_DISTANCE_FACTOR = 0.035;
+	var EPSILON = 1e-6;
 
-	//! REVIEW: outdated docs? Remove or update.
 	/**
-	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi).
-	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples:
-	 * <ul>
-	 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
-	 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
-	 * <li>View from top: <code>new Vector3(15,Math.PI/2,Math.PI/2) // z is down and x is right</code> </li>
-	 * <li>View from top-right corner: <code>new Vector3(15, Math.PI/3, Math.PI/8)</code> </li>
-	 * </ul>
+	 * @param {object} args
+	 * @param {boolean} args.whenUsed When current entity is the camera in use
+	 * @param {string} args.dragButton Can be 'Any', 'Left', 'Middle', 'Right', 'None'. None disables dragging
+	 * @param {number} args.orbitSpeed
+	 * @param {number} args.zoomSpeed
+	 * @param {number} args.drag The inertia
+	 * @param {number} args.smoothness
+	 * @param {number} args.minZoomDistance
+	 * @param {number} args.maxZoomDistance
+	 * @param {number} args.minAscent in degrees
+	 * @param {number} args.maxAscent in degrees
+	 * @param {number} args.minAzimuth in degrees
+	 * @param {number} args.maxAzimuth in degress
+	 * @param {boolean} args.clampAzimuth If true, min and max azimuth are used.
+	 * @param {number} args.lookAtDistance distance to the lookatpoint
+	 * @param {number[3]} args.lookAtPoint the point in space to look
+	 * @deprecated
+	 * @param {number[3]} args.spherical The start position of the camera in [radius, azimuth, ascent] form, where 0 azimuth looks to -X
+	 * @deprecated
 	 */
-
-	var zoomDistanceFactor = 0.035; //! REVIEW: Should this be a parameter to the script?
-
 	function setup(args, ctx) {
 		ctx.dirty = true;
 		ctx.timeSamples = [0, 0, 0, 0, 0];
@@ -58,7 +66,6 @@ define([
 		}
 
 		var spherical;
-		//! REVIEW: Have to set lookAtDistance = 0 to use args.spherical now?
 		if (args.lookAtDistance) {
 			// Getting script angles from transform
 			var angles = ctx.entity.getRotation();
@@ -67,27 +74,27 @@ define([
 				-angles[1] + Math.PI / 2,
 				-angles[0]
 			);
-		} else {
-			//! REVIEW: there's no spherical argument definition
-			//! REVIEW: docs above say radians, this is assuming degrees
+		} else if (args.spherical) {
 			var spherical = ctx.spherical = new Vector3(
 				args.spherical[0],
 				args.spherical[1] * MathUtils.DEG_TO_RAD,
 				args.spherical[2] * MathUtils.DEG_TO_RAD
 			);
+		} else {
+			var spherical = ctx.spherical = new Vector3(15, 0, 0); // Just something so the script won't crash
 		}
 		ctx.targetSpherical = new Vector3(spherical);
 
-		//! REVIEW: Have to set lookAtDistance = 0 to use args.lookAtPoint now?
 		if (args.lookAtDistance) {
 			// Setting look at point at a distance forward
 			var rotation = ctx.entity.transformComponent.transform.rotation;
 			ctx.lookAtPoint = new Vector3(0, 0, -args.lookAtDistance);
 			rotation.applyPost(ctx.lookAtPoint);
 			ctx.lookAtPoint.addv(ctx.entity.getTranslation());
-		} else {
-			//! REVIEW: there's no lookAtPoint argument definition
+		} else if (args.lookAtPoint) {
 			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
+		} else {
+			ctx.lookAtPoint = new Vector3();
 		}
 		ctx.goingToLookAt = new Vector3(ctx.lookAtPoint);
 
@@ -178,7 +185,7 @@ define([
 
 	function applyWheel(e, args, ctx) {
 		var delta =  Math.max(-1, Math.min(1, -e.wheelDelta || e.detail));
-		delta *= zoomDistanceFactor * ctx.targetSpherical.data[0];
+		delta *= ZOOM_DISTANCE_FACTOR * ctx.targetSpherical.data[0];
 
 		var td = ctx.targetSpherical.data;
 		td[0] = MathUtils.clamp(
@@ -213,6 +220,11 @@ define([
 
 	function setupMouseControls(args, ctx) {
 		var oldDistance = 0;
+		var isAndroid = !!navigator.userAgent.match(/Android/i);
+		var fakeEvent = {
+			wheelDelta: 0
+		};
+
 		ctx.listeners = {
 			mousedown: function (event) {
 				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
@@ -257,8 +269,7 @@ define([
 				}
 				// fix Android bug that stops touchmove events, unless prevented
 				// https://code.google.com/p/android/issues/detail?id=5491
-				//! REVIEW: Do we have to check this on each touchstart?
-				if (navigator.userAgent.match(/Android/i)) {
+				if (isAndroid) {
 					event.preventDefault();
 				}
 			},
@@ -286,8 +297,8 @@ define([
 					if (oldDistance === 0) {
 						oldDistance = distance;
 					} else if (touches.length === 2 && Math.abs(scale) > 0.3) {
-						//! REVIEW: Reuse this event object
-						applyWheel({ wheelDelta: scale }, args, ctx);
+						fakeEvent.wheelDelta = scale;
+						applyWheel(fakeEvent, args, ctx);
 						oldDistance = distance;
 					}
 				}
@@ -312,8 +323,7 @@ define([
 	}
 
 	function updateVelocity(time, args, ctx) {
-		//! REVIEW: this "stopSpeed" number should be a parameter
-		if (ctx.velocity.lengthSquared() > 0.000001) {
+		if (ctx.velocity.lengthSquared() > EPSILON) {
 			move(ctx.velocity.x, ctx.velocity.y, args, ctx);
 			var rate = MathUtils.lerp(ctx.inertia, 0, 1 - time / ctx.inertia);
 			ctx.velocity.mul(rate);
@@ -338,8 +348,7 @@ define([
 
 		var delta = MathUtils.lerp(ctx.smoothness, 1, ctx.world.tpf);
 
-		//! REVIEW: this number should be a parameter
-		if (goingToLookAt.distanceSquared(lookAtPoint) < 1e-6) {
+		if (goingToLookAt.distanceSquared(lookAtPoint) < EPSILON) {
 			lookAtPoint.setv(goingToLookAt);
 		} else {
 			lookAtPoint.lerp(goingToLookAt, delta);
@@ -373,8 +382,7 @@ define([
 			transform.lookAt(lookAtPoint, ctx.worldUpVector);
 		}
 
-		//! REVIEW: it's used here too
-		if (spherical.distanceSquared(targetSpherical) < 1e-6 && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
+		if (spherical.distanceSquared(targetSpherical) < EPSILON && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
 			sd[1] = MathUtils.moduloPositive(sd[1], MathUtils.TWO_PI);
 			targetSpherical.setv(spherical);
 			ctx.dirty = false;
@@ -403,8 +411,6 @@ define([
 			cleanup: cleanup
 		};
 	}
-
-	//! REVIEW: No lookAtPoint or spherical parameters any more? I really like those!
 
 	OrbitCamControlScript.externals = {
 		key: 'OrbitCamControlScript',
