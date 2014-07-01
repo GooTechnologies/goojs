@@ -1,6 +1,10 @@
 v0.10.7 --- 2014-07-01
 ======================
 
+Fixes:
+ * minor orbit camera script fixes
+ * dynamic loader now releases GPU resources when removing entities
+
 Deprecated:
  - EntityUtils.hide/show; use entity.hide/show instead
  - entity.hidden is no longer exposed; use entity.isHidden and entity.isVisiblyHidden instead
