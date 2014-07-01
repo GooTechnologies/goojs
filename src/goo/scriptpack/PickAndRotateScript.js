@@ -7,6 +7,7 @@ define([
 
 	function PickAndRotateScript() {
 		var env;
+		// REVIEW : transformComponent and transform are never assigned
 		var transformComponent, transform, gooRunner;
 		var pickedEntity;
 		var parameters;
@@ -21,6 +22,7 @@ define([
 			dy: 0
 		};
 
+		// REVIEW : No of these vectors seem to be used? check the update function.
 		var fwdVector = new Vector3(0, 0, -1);
 		var leftVector = new Vector3(-1, 0, 0);
 
@@ -51,11 +53,7 @@ define([
 		function onPressEvent() {
 			var pickResult = gooRunner.pickSync(mouseState.x, mouseState.y);
 			var entity = gooRunner.world.entityManager.getEntityByIndex(pickResult.id);
-			if (entity === env.entity) {
-				mouseState.down = true;
-			} else {
-				mouseState.down = false;
-			}
+			mouseState.down = entity === env.entity;
 		}
 
 		function mouseMove(event) {
@@ -94,7 +92,11 @@ define([
 		}
 
 		function update(/*parameters, env*/) {
-			if (moveVector.equals(Vector3.ZERO)) { return; }
+
+			// REVIEW: moveVector not assigned anywhere, so its always Zero, always true if case here.
+			if (moveVector.equals(Vector3.ZERO)) {
+				return;
+			}
 
 			// direction of movement in local coords
 			calcVector.set(
@@ -116,6 +118,7 @@ define([
 			// reorient our movement to entity space
 			orient.applyPost(calcVector);
 
+			// REVIEW : Using the unassigned variables below here
 			// add to our transform
 			transform.translation.add(calcVector);
 
