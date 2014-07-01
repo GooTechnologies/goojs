@@ -1,14 +1,9 @@
-define([
-	'goo/math/Vector3'
-], function (
-	Vector3
-) {
+define([], function () {
 	'use strict';
 
 	function PickAndRotateScript() {
 		var env;
-		// REVIEW : transformComponent and transform are never assigned
-		var transformComponent, transform, gooRunner;
+		var gooRunner;
 		var pickedEntity;
 		var parameters;
 
@@ -21,13 +16,6 @@ define([
 			dx: 0,
 			dy: 0
 		};
-
-		// REVIEW : No of these vectors seem to be used? check the update function.
-		var fwdVector = new Vector3(0, 0, -1);
-		var leftVector = new Vector3(-1, 0, 0);
-
-		var moveVector = new Vector3();
-		var calcVector = new Vector3();
 
 		function getButton(event) {
 			var pressedButton = event.button;
@@ -91,40 +79,7 @@ define([
 			gooRunner.renderer.domElement.addEventListener('mouseup', mouseUp);
 		}
 
-		function update(/*parameters, env*/) {
-
-			// REVIEW: moveVector not assigned anywhere, so its always Zero, always true if case here.
-			if (moveVector.equals(Vector3.ZERO)) {
-				return;
-			}
-
-			// direction of movement in local coords
-			calcVector.set(
-				fwdVector.x * moveVector.z + leftVector.x * moveVector.x,
-				fwdVector.y * moveVector.z + leftVector.y * moveVector.x,
-				fwdVector.z * moveVector.z + leftVector.z * moveVector.x
-			);
-			calcVector.normalize();
-
-			// move speed for this run...
-			var moveMult = 1.0;
-
-			// scale by speed
-			calcVector.mul(moveMult);
-
-			// grab orientation of player
-			var orient = transform.rotation;
-
-			// reorient our movement to entity space
-			orient.applyPost(calcVector);
-
-			// REVIEW : Using the unassigned variables below here
-			// add to our transform
-			transform.translation.add(calcVector);
-
-			// set our component updated.
-			transformComponent.setUpdated();
-		}
+		function update(/*parameters, env*/) {}
 
 		function cleanup(_parameters, env) {
 			env.domElement.removeEventListener('mousemove', mouseMove, false);
