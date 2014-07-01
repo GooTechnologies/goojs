@@ -15,6 +15,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('cones of different heights');
+
 	var goo = V.initGoo();
 	var world = goo.world;
 

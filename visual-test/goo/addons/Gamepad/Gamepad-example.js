@@ -26,7 +26,7 @@ require([
 
 	'use strict';
 
-	V.description('Use a gamepad to control the box');
+	V.describe('Use a gamepad to control the box.');
 
 	var options = {
 		logo: {

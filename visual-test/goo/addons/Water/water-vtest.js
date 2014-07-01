@@ -25,6 +25,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('The large quad should look like water, with ripples and a reflection of the skybox and the boxes above the quad\'s surface.');
+
 	function loadSkybox () {
 		var environmentPath = 'resources/skybox/';
 		// left, right, bottom, top, back, front

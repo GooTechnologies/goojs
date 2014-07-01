@@ -36,6 +36,8 @@ require([
 ) {
 	'use strict';
 
+	V.describe('The sphere has a timeline component which was loadd using the dynamic loader.');
+
 	function setupGUI() {
 		var buttonReset = document.createElement('button');
 		buttonReset.innerHTML = 'reset';
