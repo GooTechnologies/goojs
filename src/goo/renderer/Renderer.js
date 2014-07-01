@@ -832,6 +832,108 @@ function (
 		return TaskScheduler.each(queue);
 	};
 
+	Renderer.prototype.preloadBuffers = function (renderList) {
+		var renderInfo = {
+		};
+
+		if (Array.isArray(renderList)) {
+			for (var i = 0; i < renderList.length; i++) {
+				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
+				this.fillRenderInfo(renderable, renderInfo);
+				for (var j = 0; j < renderInfo.materials.length; j++) {
+					renderInfo.material = renderInfo.materials[j];
+					this.preloadBuffer(renderable, renderInfo.materials[j], renderInfo);
+				}
+			}
+		} else {
+			this.fillRenderInfo(renderList, renderInfo);
+			for (var j = 0; j < renderInfo.materials.length; j++) {
+				renderInfo.material = renderInfo.materials[j];
+				this.preloadBuffer(renderList, renderInfo.materials[j], renderInfo);
+			}
+		}
+	};
+
+	/**
+	 * Creates buffers of the supplied "renderables"
+	 * @param renderList
+	 * @param material
+	 * @param renderInfo
+	 */
+	Renderer.prototype.preloadBuffer = function (renderable, material, renderInfo) {
+		var meshData = renderInfo.meshData;
+		if (meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
+			&& meshData.indexData.data.byteLength === 0) {
+			return;
+		}
+		this.bindData(meshData.vertexData);
+		if (meshData.getIndexBuffer() !== null) {
+			this.bindData(meshData.getIndexData());
+		}
+
+		var materials = renderInfo.materials;
+		var flatOrWire = null;
+		var originalData = meshData;
+
+		var count = 0;
+		if (this._overrideMaterials.length === 0) {
+			count = materials.length;
+		} else {
+			count = this._overrideMaterials.length;
+		}
+
+		for (var i = 0; i < count; i++) {
+			var material = null, orMaterial = null;
+
+			if (i < materials.length) {
+				material = materials[i];
+			}
+			if (i < this._overrideMaterials.length) {
+				orMaterial = this._overrideMaterials[i];
+			}
+
+			if (material && orMaterial) {
+				this._override(orMaterial, material, this._mergedMaterial);
+				material = this._mergedMaterial;
+			} else if (orMaterial) {
+				material = orMaterial;
+			}
+
+			if (!material.shader) {
+				if (!material.errorOnce) {
+					console.warn('No shader set on material: ' + material.name);
+					material.errorOnce = true;
+				}
+				continue;
+			} else {
+				material.errorOnce = false;
+			}
+
+			if (material.wireframe && flatOrWire !== 'wire') {
+				if (!meshData.wireframeData) {
+					meshData.wireframeData = meshData.buildWireframeData();
+				}
+				meshData = meshData.wireframeData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = 'wire';
+			} else if (material.flat && flatOrWire !== 'flat') {
+				if (!meshData.flatMeshData) {
+					meshData.flatMeshData = meshData.buildFlatMeshData();
+				}
+				meshData = meshData.flatMeshData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = 'flat';
+			} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
+				meshData = originalData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = null;
+			}
+		}
+	};
+
 	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
 	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
