@@ -65,7 +65,7 @@ function (
 			}
 			var meshData = that._createMeshData(config, bindata);
 			that._fillMeshData(meshData, config, bindata);
-			return meshData;
+			return that._objects[ref] = meshData;
 		});
 	};
 
