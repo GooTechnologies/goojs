@@ -21,6 +21,7 @@ function (
 	 * @property {RenderTarget} renderTarget Data to wrap
 	 */
 	function Composer(renderTarget) {
+		this._passedWriteBuffer = !!renderTarget;
 		this.writeBuffer = renderTarget;
 
 		if (this.writeBuffer === undefined) {
@@ -39,14 +40,16 @@ function (
 		this.size = null;
 		this.dirty = false;
 
-		SystemBus.addListener('goo.viewportResize', function (size) {
+		this._viewportResizeHandler = function (size) {
 			this.dirty = true;
 			this.size = size;
-		}.bind(this), true);
+		}.bind(this);
+
+		SystemBus.addListener('goo.viewportResize', this._viewportResizeHandler, true);
 	}
 
 	/**
-	 * Deallocate all allocated WebGL buffers, and the passes.
+	 * Deallocate all allocated WebGL buffers, listeners, and passes.
 	 * @param  {Renderer} renderer
 	 */
 	Composer.prototype.destroy = function (renderer) {
@@ -55,24 +58,21 @@ function (
 			var pass = this.passes[i];
 			pass.destroy(renderer);
 		}
+		SystemBus.removeListener('goo.viewportResize', this._viewportResizeHandler);
 	};
 
 	/**
 	 * Deallocate the read and write buffers.
-	 * @param  {Renderer} renderer
+	 * @param {Renderer} renderer
 	 */
 	Composer.prototype.deallocateBuffers = function (renderer) {
-		// REVIEW: should you be removing the writeBuffer?
-		// the writeBuffer that was passed to you in the constructor, so maybe who passed it to you might still want to use it after removing this composer
-		// only remove it if you created it
-		if (this.writeBuffer) {
+		if (this.writeBuffer && !this._passedWriteBuffer) {
 			this.writeBuffer.destroy(renderer.context);
 		}
 		if (this.readBuffer) {
 			this.readBuffer.destroy(renderer.context);
 		}
-
-		// REVIEW: are you removing the copyPass too? I don't see anything going up, so some other code must be deleting it?
+		this.copyPass.destroy(renderer);
 	};
 
 	Composer.prototype.swapBuffers = function () {

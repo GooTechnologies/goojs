@@ -762,6 +762,7 @@ function (
 
 			// check defines. if no hit in cache -> add to cache. if hit in cache,
 			// replace with cache version and copy over uniforms.
+			// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
 			var defineArray = Object.keys(shader.defines);
 			var len = defineArray.length;
 			var shaderKeyArray = [];
@@ -798,6 +799,20 @@ function (
 		}
 
 		queue.push(function () { shader.precompile(this); }.bind(this));
+	};
+
+	/**
+	 * Remove all shaders from cache.
+	 */
+	Renderer.prototype.clearShaderCache = function () {
+		var cache = this.rendererRecord.shaderCache;
+		if (!cache) {
+			return;
+		}
+		var keys = Object.keys(cache);
+		for (var i = 0; i < keys.length; i++) {
+			delete cache[keys[i]];
+		}
 	};
 
 	/**

@@ -102,6 +102,8 @@ function (
 					lights[j].destroy(this._world.gooRunner.renderer);
 				}
 			}
+
+			this._world.gooRunner.renderer.clearShaderCache();
 		}
 		return RSVP.all(promises);
 	};

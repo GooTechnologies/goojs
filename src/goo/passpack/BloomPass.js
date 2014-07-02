@@ -79,20 +79,25 @@ function (
 	BloomPass.prototype.constructor = BloomPass;
 
 	BloomPass.prototype.destroy = function (renderer) {
-		this.renderTargetX.destroy(renderer.context);
-		this.renderTargetY.destroy(renderer.context);
+		if (this.renderTargetX) {
+			this.renderTargetX.destroy(renderer.context);
+		}
+		if (this.renderTargetY) {
+			this.renderTargetY.destroy(renderer.context);
+		}
 		this.convolutionMaterial.shader.destroy();
-		// REVIEW: again, the copyMaterial issue
+		this.copyMaterial.shader.destroy();
+		this.bcMaterial.shader.destroy();
 	};
 
 	BloomPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width / this.downsampleAmount;
 		var sizeY = size.height / this.downsampleAmount;
 		if (this.renderTargetX) {
-			renderer._deallocateRenderTarget(this.renderTargetX);
+			this.renderTargetX.destroy(renderer.context);
 		}
 		if (this.renderTargetY) {
-			renderer._deallocateRenderTarget(this.renderTargetY);
+			this.renderTargetY.destroy(renderer.context);
 		}
 		this.renderTargetX = new RenderTarget(sizeX, sizeY);
 		this.renderTargetY = new RenderTarget(sizeX, sizeY);

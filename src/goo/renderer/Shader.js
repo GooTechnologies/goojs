@@ -58,10 +58,10 @@ function (
 		this.vertexShader = null;
 		this.fragmentShader = null;
 
-		/** The context where the program and shaders were allocated.
+		/** The renderer where the program and shaders were allocated.
 		 * @type {WebGLContext|null}
 		 */
-		this.context = null;
+		this.renderer = null;
 
 		/**
 		 * Attributes detected in the shader source code.
@@ -378,7 +378,7 @@ function (
 
 	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
-		this.context = context;
+		this.renderer = renderer;
 
 		// console.log('---------------------- vertex: '+ this.name +' --------------------------');
 		// console.log(this.vertexSource);
@@ -710,18 +710,18 @@ function (
 
 	Shader.prototype.destroy = function () {
 		if (this.shaderProgram) {
-			this.context.deleteProgram(this.shaderProgram);
+			this.renderer.context.deleteProgram(this.shaderProgram);
 			this.shaderProgram = null;
 		}
 		if (this.vertexShader) {
-			this.context.deleteShader(this.vertexShader);
+			this.renderer.context.deleteShader(this.vertexShader);
 			this.vertexShader = null;
 		}
 		if (this.fragmentShader) {
-			this.context.deleteShader(this.fragmentShader);
+			this.renderer.context.deleteShader(this.fragmentShader);
 			this.fragmentShader = null;
 		}
-		this.context = null;
+		this.renderer = null;
 	};
 
 	Shader.prototype.toString = function () {
