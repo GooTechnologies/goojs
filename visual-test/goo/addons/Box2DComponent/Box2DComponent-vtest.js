@@ -141,6 +141,10 @@ require([
 					);
 			}
 		});
+
+		V.button('Add Circle', function() {addCircle(pipeEntity.transformComponent.transform.translation.x, pipeY)});
+		V.button('Add Box', function() {addBox(pipeEntity.transformComponent.transform.translation.x, pipeY)});
+		V.button('Add Polygon', function() {addPolygon(pipeEntity.transformComponent.transform.translation.x, pipeY)});
 	}
 
 

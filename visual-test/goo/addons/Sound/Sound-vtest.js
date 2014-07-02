@@ -67,6 +67,8 @@ require([
 
 	function loadSound(url) {
 		soundCreator.loadSound(url, {}, function (sound) {
+			// Make the sounds loop when played.
+			sound._loop = true;
 			sounds.push(sound);
 			if (sounds.length >= urls.length) {
 				allLoaded();
@@ -84,6 +86,9 @@ require([
 		soundComponent = new SoundComponent();
 		soundComponent.addSound(sounds[1]);
 		sphereEntity.set(soundComponent);
+
+		// Start playing the booing sound automatically.
+		key1();
 
 		setupKeys();
 	}

@@ -31,6 +31,8 @@ require([
 ) {
 	'use strict';
 
+	V.describe('Ammo.js Vehicle test. Use the arrow keys to steer. Press "R" to reset the vehicle. Press "SPACE" to add entities');
+
 	var ammoSystem;
 	function init() {
 		ammoSystem = new AmmoSystem();

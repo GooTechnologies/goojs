@@ -17,7 +17,7 @@ require([
 	) {
 	'use strict';
 
-	V.describe('');
+	V.describe('Tests the TextComponent, which uses an image of the alphabet to display text.');
 
 	var resourcesPath = '../../../../resources/';
 

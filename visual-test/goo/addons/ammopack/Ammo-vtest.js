@@ -27,7 +27,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('All entities in the scene have an ammo component which updates their transform.');
+	V.describe('All entities in the scene have an ammo component which updates their transform. Press any key to add entities.');
 
 	var resourcePath = '../../../resources';
 
@@ -54,6 +54,8 @@ require([
 				}
 			}
 		}
+
+		V.button('Add Entities', addPrimitives);
 
 		addPrimitives();
 		document.addEventListener('keypress', addPrimitives, false);
