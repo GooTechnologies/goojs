@@ -318,6 +318,11 @@ function (
 		this.currentWidth = 0;
 		/** @type {number} */
 		this.currentHeight = 0;
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.devicePixelRatio = 1;
 
 		//this.overrideMaterial = null;
 		this._overrideMaterials = [];
@@ -409,7 +414,7 @@ function (
 	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
-		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
+		var devicePixelRatio = this.devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var adjustWidth, adjustHeight;
 		if (document.querySelector) {

@@ -13,7 +13,7 @@ define([
 function (
 	Component,
 	MeshData,
-	Quad,
+	DoubleQuad,
 	MeshDataComponent,
 	MeshRendererComponent,
 	ShaderLib,
@@ -89,7 +89,7 @@ function (
 		 * @type {Quad}
 		 * @private
 		 */
-		this.meshData = new Quad(settings.width, settings.height, settings.tileX, settings.tileY);
+		this.meshData = new DoubleQuad(settings.width, settings.height, settings.tileX, settings.tileY);
 
 		/** Mesh data component that this component creates and adds to the entity.
 		 * @type {MeshDataComponent}

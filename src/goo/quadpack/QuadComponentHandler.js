@@ -65,6 +65,8 @@ function (
 
 			// Load material
 			return that._load(config.materialRef, options).then(function (material) {
+				// setting this here until the frontend sends good values
+				material.cullState.enabled = true;
 
 				// If the component already has got these components, they need to be overridden
 				if (entity.meshRendererComponent !== component.meshRendererComponent) {
