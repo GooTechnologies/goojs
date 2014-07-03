@@ -7,6 +7,7 @@ require([
 	'goo/loaders/DynamicLoader',
 	'goo/util/combine/EntityCombiner',
 	'goo/renderer/Renderer',
+	'lib/V',
 	'goo/util/rsvp',
 
 	'CanvasWrapper',
@@ -36,6 +37,7 @@ require([
 	DynamicLoader,
 	EntityCombiner,
 	Renderer,
+	V,
 	RSVP,
 
 	CanvasWrapper,
@@ -43,6 +45,13 @@ require([
 ) {
 	'use strict';
 
+	V.describe([
+		'A scene with a goon and the bloom post effect is loaded and unloaded repeatedly.',
+		'All resources should be deallocated on unload and with time the memory usage should not go up.',
+		'Use a webgl inspector to track how many textures/buffers/programs are used at any time.',
+	].join('\n'));
+
+	// to replace this scene with another, just clean the res folder and drop new assets in it
 
 	var gooRunner;
 	function init() {
