@@ -23,18 +23,11 @@ define([
 		var world;
 		var isActive;
 		var quadData;
-		// REVIEW since many of these params are only used once, can we pass
-		// them around explicitly, or maybe just global `params` instead of
-		// each of them individually?
 		var lightColor;
 		var globalIntensity;
-		var systemScale;
 		var spriteTxSize = 64;
 		var flareGeometry;
 		var textures = {};
-		var edgeRelevance;
-		var edgeDampen;
-		var edgeScaling;
 
 		var textureShapes = {
 			splash: { trailStartRadius: 25, trailEndRadius: 0},
@@ -75,100 +68,23 @@ define([
 			textures['default'] = ParticleSystemUtils.createFlareTexture(txSize, { steps: textureShapes.none, startRadius: 0, endRadius: txSize / 2 });
 		}
 
-		// REVIEW: can this class be extracted and passed what it needs?
-		function FlareGeometry() {
-			this.camRot = null;
-			this.distance = 0;
-			this.offset = 0;
-			this.centerRatio = 0;
-			this.positionVector = new Vector3();
-			this.distanceVector = new Vector3();
-			this.centerVector = new Vector3();
-			this.displacementVector = new Vector3();
-		}
-
-		FlareGeometry.prototype.updateFrameGeometry = function (lightEntity, cameraEntity) {
-			this.camRot = cameraEntity.transformComponent.transform.rotation;
-			this.centerVector.set(cameraEntity.cameraComponent.camera.translation);
-			this.displacementVector.set(lightEntity.getTranslation());
-			this.displacementVector.sub(this.centerVector);
-			this.distance = this.displacementVector.length();
-			this.distanceVector.set(0, 0, -this.distance);
-			this.camRot.applyPost(this.distanceVector);
-			this.centerVector.add(this.distanceVector);
-			this.positionVector.set(this.centerVector);
-			this.displacementVector.set(lightEntity.getTranslation());
-			this.displacementVector.sub(this.positionVector);
-			this.offset = this.displacementVector.length();
-			this.centerRatio = 1 - (1 / (this.positionVector.length() / (this.offset * edgeRelevance)));
-			this.centerRatio = Math.max(0, this.centerRatio);
-		};
-
-		// REVIEW: same question here, a lot of state bound up in LensFlareScript
-		function FlareQuad(lightColor, tx, displace, size, intensity) {
-			this.sizeVector = new Vector3(size, size, size);
-			this.sizeVector.mul(systemScale);
-			this.positionVector = new Vector3();
-			this.flareVector = new Vector3();
-			this.intensity = intensity;
-			this.displace = displace;
-			this.color = [lightColor[0] * intensity, lightColor[1] * intensity, lightColor[2] * intensity, 1];
-			var material = new Material(ShaderLib.uber, "flareShader");
-
-			material.uniforms.materialEmissive = this.color;
-			material.uniforms.materialDiffuse = [0, 0, 0, 1];
-			material.uniforms.materialAmbient = [0, 0, 0, 1];
-			material.uniforms.materialSpecular = [0, 0, 0, 1];
-
-			var texture = textures[tx];
-
-			material.setTexture('DIFFUSE_MAP', texture);
-			material.setTexture('EMISSIVE_MAP', texture);
-			material.blendState.blending = "AdditiveBlending";
-			material.blendState.blendEquation = "AddEquation";
-			material.blendState.blendSrc = 'OneFactor';
-			material.blendState.blendDst = 'OneFactor';
-			material.depthState.enabled = false;
-			material.depthState.write = false;
-			material.cullState.enabled = false;
-
-			var meshData = new Quad(1, 1);
-			var entity = world.createEntity(meshData, material);
-			entity.meshRendererComponent.cullMode = 'Never';
-			entity.addToWorld();
-
-			this.material = material;
-			this.quad = entity;
-		}
-
-		FlareQuad.prototype.updatePosition = function (flareGeometry) {
-			this.flareVector.set(flareGeometry.displacementVector);
-			this.positionVector.set(flareGeometry.positionVector);
-			this.flareVector.mul(this.displace);
-			this.positionVector.add(this.flareVector);
-
-			this.material.uniforms.materialEmissive = [
-				this.color[0] * flareGeometry.centerRatio * edgeDampen,
-				this.color[1] * flareGeometry.centerRatio * edgeDampen,
-				this.color[2] * flareGeometry.centerRatio * edgeDampen,
-				1
-			];
-
-			var scaleFactor = flareGeometry.distance + flareGeometry.distance * flareGeometry.centerRatio * edgeScaling;
-
-			var quadTransform = this.quad.transformComponent.transform;
-			quadTransform.scale.set(this.sizeVector);
-			quadTransform.scale.mul(scaleFactor);
-			quadTransform.rotation.set(flareGeometry.camRot);
-			quadTransform.translation.set(this.positionVector);
-			this.quad.transformComponent.updateTransform();
-			this.quad.transformComponent.updateWorldTransform();
-		};
-
-		function createFlareQuads(quads, lightColor) {
+		function createFlareQuads(quads, lightColor, systemScale, edgeDampen, edgeScaling) {
 			for (var i = 0; i < quads.length; i++) {
 				var quad = quads[i];
-				flares.push(new FlareQuad(lightColor, quad.tx, quad.displace, quad.size, quad.intensity * globalIntensity));
+				flares.push(
+					new FlareQuad(
+						lightColor,
+						quad.tx,
+						quad.displace,
+						quad.size,
+						quad.intensity * globalIntensity,
+						systemScale,
+						edgeDampen,
+						edgeScaling,
+						textures,
+						world
+					)
+				);
 			}
 			return flares;
 		}
@@ -179,60 +95,50 @@ define([
 			}
 		}
 
-		// REVIEW: can we homogeonize the scripts, they all seem to use slightly
-		// different coding conventions for things like env/ctx
-		function setup(params, env) {
-			flareGeometry = new FlareGeometry();
-			systemScale = params.scale;
-			globalIntensity = params.intensity;
-			edgeRelevance = params.edgeRelevance * 100;
-			edgeDampen = params.edgeDampen;
-			edgeScaling = params.edgeScaling;
+		function setup(args, ctx) {
+			globalIntensity = args.intensity;
+			flareGeometry = new FlareGeometry(args.edgeRelevance * 100);
 			var baseSize = spriteTxSize;
-			if (params.highRes) {
+			if (args.highRes) {
 				baseSize *= 4;
 			}
 			if (textures.size !== baseSize) {
 				generateTextures(baseSize);
 			}
 			flares = [];
-			lightEntity = env.entity;
+			lightEntity = ctx.entity;
 
-			//! AT: why this?
-			if (lightEntity.meshRendererComponent) {
-				lightEntity.meshRendererComponent.cullMode = 'Dynamic';
-			}
-			world = env.world;
+			world = ctx.world;
 			isActive = false;
 
-			lightColor = [params.color[0], params.color[1], params.color[2], 1];
+			lightColor = [args.color[0], args.color[1], args.color[2], 1];
 
 			quadData = [
-				{ size: 2.53, tx: "bell", intensity: 0.70, displace:  1    },
-				{ size: 0.53, tx: "dot",  intensity: 0.70, displace:  1    },
-				{ size: 0.83, tx: "bell", intensity: 0.20, displace:  0.8  },
-				{ size: 0.40, tx: "ring", intensity: 0.10, displace:  0.6  },
-				{ size: 0.30, tx: "bell", intensity: 0.10, displace:  0.4  },
-				{ size: 0.60, tx: "bell", intensity: 0.10, displace:  0.3  },
-				{ size: 0.30, tx: "dot",  intensity: 0.10, displace:  0.15 },
-				{ size: 0.22, tx: "ring", intensity: 0.03, displace: -0.25 },
-				{ size: 0.36, tx: "dot",  intensity: 0.05, displace: -0.5  },
-				{ size: 0.80, tx: "ring", intensity: 0.10, displace: -0.8  },
-				{ size: 0.86, tx: "bell", intensity: 0.20, displace: -1.1  },
-				{ size: 1.30, tx: "ring", intensity: 0.05, displace: -1.5  }
+				{ size: 2.53, tx: 'bell', intensity: 0.70, displace:  1    },
+				{ size: 0.53, tx: 'dot',  intensity: 0.70, displace:  1    },
+				{ size: 0.83, tx: 'bell', intensity: 0.20, displace:  0.8  },
+				{ size: 0.40, tx: 'ring', intensity: 0.10, displace:  0.6  },
+				{ size: 0.30, tx: 'bell', intensity: 0.10, displace:  0.4  },
+				{ size: 0.60, tx: 'bell', intensity: 0.10, displace:  0.3  },
+				{ size: 0.30, tx: 'dot',  intensity: 0.10, displace:  0.15 },
+				{ size: 0.22, tx: 'ring', intensity: 0.03, displace: -0.25 },
+				{ size: 0.36, tx: 'dot',  intensity: 0.05, displace: -0.5  },
+				{ size: 0.80, tx: 'ring', intensity: 0.10, displace: -0.8  },
+				{ size: 0.86, tx: 'bell', intensity: 0.20, displace: -1.1  },
+				{ size: 1.30, tx: 'ring', intensity: 0.05, displace: -1.5  }
 			];
 		}
 
-		function cleanup(/*params, env*/) {
+		function cleanup(/*args, ctx*/) {
 			removeFlareQuads(flares);
 			flares = [];
 		}
 
-		function update(params, env) {
-			if (env.entity.isVisible) {
-				flareGeometry.updateFrameGeometry(lightEntity, env.activeCameraEntity);
+		function update(args, ctx) {
+			if (ctx.entity.isVisible) {
+				flareGeometry.updateFrameGeometry(lightEntity, ctx.activeCameraEntity);
 				if (!isActive) {
-					flares = createFlareQuads(quadData, lightColor);
+					flares = createFlareQuads(quadData, lightColor, args.scale, args.edgeDampen, args.edgeScaling);
 					isActive = true;
 				}
 
@@ -278,6 +184,7 @@ define([
 			'default': 1,
 			min: 0.01,
 			// REVIEW: why 2 for so many of these params? can they be normalized
+			//! AT: [0,1] might be the normal domain but the upper allowed bound is 2 because it allows for superbright/superfancy lens flares
 			max: 2
 		}, {
 			key: 'edgeRelevance',
@@ -325,6 +232,97 @@ define([
 			control: 'checkbox',
 			'default': false
 		}]
+	};
+
+	function FlareGeometry(edgeRelevance) {
+		this.camRot = null;
+		this.distance = 0;
+		this.offset = 0;
+		this.centerRatio = 0;
+		this.positionVector = new Vector3();
+		this.distanceVector = new Vector3();
+		this.centerVector = new Vector3();
+		this.displacementVector = new Vector3();
+		this.edgeRelevance = edgeRelevance;
+	}
+
+	FlareGeometry.prototype.updateFrameGeometry = function (lightEntity, cameraEntity) {
+		this.camRot = cameraEntity.transformComponent.transform.rotation;
+		this.centerVector.set(cameraEntity.cameraComponent.camera.translation);
+		this.displacementVector.set(lightEntity.getTranslation());
+		this.displacementVector.sub(this.centerVector);
+		this.distance = this.displacementVector.length();
+		this.distanceVector.set(0, 0, -this.distance);
+		this.camRot.applyPost(this.distanceVector);
+		this.centerVector.add(this.distanceVector);
+		this.positionVector.set(this.centerVector);
+		this.displacementVector.set(lightEntity.getTranslation());
+		this.displacementVector.sub(this.positionVector);
+		this.offset = this.displacementVector.length();
+		this.centerRatio = 1 - (1 / (this.positionVector.length() / (this.offset * this.edgeRelevance)));
+		this.centerRatio = Math.max(0, this.centerRatio);
+	};
+
+	function FlareQuad(lightColor, tx, displace, size, intensity, systemScale, edgeDampen, edgeScaling, textures, world) {
+		this.sizeVector = new Vector3(size, size, size);
+		this.sizeVector.mul(systemScale);
+		this.positionVector = new Vector3();
+		this.flareVector = new Vector3();
+		this.intensity = intensity;
+		this.displace = displace;
+		this.color = [lightColor[0] * intensity, lightColor[1] * intensity, lightColor[2] * intensity, 1];
+		this.edgeDampen = edgeDampen;
+		this.edgeScaling = edgeScaling;
+		var material = new Material(ShaderLib.uber, 'flareShader');
+
+		material.uniforms.materialEmissive = this.color;
+		material.uniforms.materialDiffuse = [0, 0, 0, 1];
+		material.uniforms.materialAmbient = [0, 0, 0, 1];
+		material.uniforms.materialSpecular = [0, 0, 0, 1];
+
+		var texture = textures[tx];
+
+		material.setTexture('DIFFUSE_MAP', texture);
+		material.setTexture('EMISSIVE_MAP', texture);
+		material.blendState.blending = 'AdditiveBlending';
+		material.blendState.blendEquation = 'AddEquation';
+		material.blendState.blendSrc = 'OneFactor';
+		material.blendState.blendDst = 'OneFactor';
+		material.depthState.enabled = false;
+		material.depthState.write = false;
+		material.cullState.enabled = false;
+
+		var meshData = new Quad(1, 1);
+		var entity = world.createEntity(meshData, material);
+		entity.meshRendererComponent.cullMode = 'Never';
+		entity.addToWorld();
+
+		this.material = material;
+		this.quad = entity;
+	}
+
+	FlareQuad.prototype.updatePosition = function (flareGeometry) {
+		this.flareVector.set(flareGeometry.displacementVector);
+		this.positionVector.set(flareGeometry.positionVector);
+		this.flareVector.mul(this.displace);
+		this.positionVector.add(this.flareVector);
+
+		this.material.uniforms.materialEmissive = [
+			this.color[0] * flareGeometry.centerRatio * this.edgeDampen,
+			this.color[1] * flareGeometry.centerRatio * this.edgeDampen,
+			this.color[2] * flareGeometry.centerRatio * this.edgeDampen,
+			1
+		];
+
+		var scaleFactor = flareGeometry.distance + flareGeometry.distance * flareGeometry.centerRatio * this.edgeScaling;
+
+		var quadTransform = this.quad.transformComponent.transform;
+		quadTransform.scale.set(this.sizeVector);
+		quadTransform.scale.mul(scaleFactor);
+		quadTransform.rotation.set(flareGeometry.camRot);
+		quadTransform.translation.set(this.positionVector);
+		this.quad.transformComponent.updateTransform();
+		this.quad.transformComponent.updateWorldTransform();
 	};
 
 	return LensFlareScript;
