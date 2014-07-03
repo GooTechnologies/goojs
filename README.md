@@ -3,12 +3,14 @@ GooJS
 
 Goo Engine in JavaScript
 
+
 TL;DR
 -----
 
     npm install
-    npm install -g coffee-script  # On Unixy systems prefix with sudo
-    cake init-git
+    npm install -g grunt-cli
+    grunt init-git
+
 
 Install dependencies
 --------------------
@@ -21,29 +23,19 @@ Optionally, if you want to runt Grunt using just the `grunt` command,
 install Grunt globally (may need to be run as root):
 
     npm install -g grunt-cli
-
-To be able to run Cake directly from the command-line, install it globally:
-
-    npm install -g coffee-script
+    
 
 Style checks
 ------------
 
-To run JSHint on the code, run:
-
-    cake checkstyle
-
 To make sure that no incorrectly styled content appears, install the pre-commit hook:
 
-    cake init-git
+    grunt init-git
 
 This makes Git check whether all added and modified files pass the style check
 before allowing a commit.
 
-Note: The pre-commit hook checks the content of the files in the workspace,
-not the staged files. This means that if you are committing files that are
-correct in the staging area, but incorrect in the workspace,
-you'll get an error anyway.
+Note: The pre-commit hook checks the content of the files in the workspace, not the staged files. This means that if you are committing files that are correct in the staging area, but incorrect in the workspace, you'll get an error anyway.
 
 This also means that `git commit file.js` may not actually check file.js.
 
@@ -58,9 +50,11 @@ The tests use Jasmine (http://pivotal.github.com/jasmine/) and Karma (http://kar
 
 ### Karma
 
-The simple way to run the tests is by running
+Open up a server and the open [http://localhost:your-fav-port/goojs/test/test.html]()
 
-    grunt unittest
+OR
+
+Run `grunt unittest`
 
 This will start a browser and run all tests with Karma once. If you want to use the more convenient Karma server, continue with the following steps.
 
@@ -70,7 +64,7 @@ Install Karma by running
 
 To start the karma server, run
 
-     karma start test/karma.conf.js
+    karma start test/karma.conf.js
 
 which will start the karma server and remain idle watching for code or test changes.
 You need to touch a file in src/ or test/ to trigger the tests.
@@ -104,6 +98,7 @@ Code coverage can be run using istanbul (https://github.com/gotwarlost/istanbul)
 
 JS Doc
 ------
+
 The jsdoc requires you install JSDoc 3, https://github.com/jsdoc3/jsdoc
 
 One way is to install jsdoc using the package.json file and running `npm install`. Generate the docs
@@ -114,18 +109,15 @@ The resulting documentation will be generated in the goojs-jsdoc directory and a
 
 ## Releasing
 
-See https://bitbucket.org/gootech/goonguide/src/51fdadf22988605065d61c035139a56219609c79/release-engine.md?at=master
+See [https://bitbucket.org/gootech/goonguide/src/51fdadf22988605065d61c035139a56219609c79/release-engine.md?at=master]()
 
 ## Building
+
 To build a regular goo minified version, run
 
 	grunt
-
-To build a combined require and goo minified version, run
-
-	grunt -bundle-require -minify
-
-To build individual packs run
+	
+This will build the engine and all registered packs. The output is in the *out* folder. To build individual packs run
 
     node tools/buildPack.js packName
 
