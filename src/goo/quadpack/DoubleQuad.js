@@ -7,8 +7,10 @@ function (
 	'use strict';
 
 	/**
-	 * @class A rectangular, two dimensional shape. The local height of the DoubleQuad defines it's size about the y-axis,
-	 * while the width defines the x-axis. The z-axis will always be 0.
+	 * @class A rectangular, two dimensional shape. The local height of the
+	 * DoubleQuad defines it's size about the y-axis, while the width defines
+	 * the x-axis. The z-axis will always be 0.
+	 *
 	 * @param {number} [width=1] Total width of quad.
 	 * @param {number} [height=1] Total height of quad.
 	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
@@ -47,7 +49,11 @@ function (
 		 */
 		this.tileY = tileY || 1;
 
-		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
+		var attributeMap = MeshData.defaultMap([
+			MeshData.POSITION,
+			MeshData.NORMAL,
+			MeshData.TEXCOORD0
+		]);
 		MeshData.call(this, attributeMap, 8, 12);
 
 		this.rebuild();
