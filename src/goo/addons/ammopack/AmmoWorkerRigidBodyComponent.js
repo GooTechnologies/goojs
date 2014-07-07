@@ -34,65 +34,92 @@ function (
 		 * @type {number}
 		 */
 		this._mass = typeof(settings.mass) === 'number' ? settings.mass : 1;
+
+		/**
+		 * Queue for accumulating commands that are given before the entity was added to the system.
+		 * @private
+		 * @type {Array}
+		 */
+		this._queue = [];
 	}
 	AmmoWorkerRigidbodyComponent.prototype = Object.create(Component.prototype);
 	AmmoWorkerRigidbodyComponent.constructor = AmmoWorkerRigidbodyComponent;
 
+	/**
+	 * Handles attaching itself to an entity. Should only be called by the engine.
+	 * @private
+	 * @param entity
+	 */
+	AmmoWorkerRigidbodyComponent.prototype.attached = function (entity) {
+		this.entity = entity;
+	};
+
+	AmmoWorkerRigidbodyComponent.prototype.api = {
+		setLinearVelocity: function () {
+			AmmoWorkerRigidbodyComponent.prototype.setLinearVelocity.apply(this.ammoWorkerRigidbodyComponent, arguments);
+			return this;
+		},
+	};
+
 	AmmoWorkerRigidbodyComponent.prototype.setLinearFactor = function (linearFactor) {
-		this._system.postMessage({
+		this._postMessage({
 			command: 'setLinearFactor',
 			linearFactor: v2a(linearFactor)
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setAngularFactor = function (angularFactor) {
-		this._system.postMessage({
+		this._postMessage({
 			command: 'setAngularFactor',
 			angularFactor: v2a(angularFactor)
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setFriction = function (friction) {
-		this._system.postMessage({
+		this._postMessage({
 			command: 'setFriction',
 			friction: friction
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setSleepingThresholds = function (linear, angular) {
 		//this.body.setSleepingThresholds(linear, angular);
-		this._system.postMessage({
+		this._postMessage({
 			command: 'setSleepingThresholds',
 			linear: linear,
 			angular: angular,
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setCenterOfMassTransform = function (position, quaternion) {
-		this._system.postMessage({
+		this._postMessage({
 			command: 'setCenterOfMassTransform',
 			position: v2a(position),
 			quaternion: v2a(quaternion),
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setLinearVelocity = function (velocity) {
-		this._system.postMessage({
+		this._postMessage({
 			command: 'setLinearVelocity',
 			velocity: v2a(velocity)
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.applyCentralImpulse = function (impulse) {
 		// this.body.applyCentralImpulse(pvec);
-		this._system.postMessage({
+		this._postMessage({
 			command: 'applyCentralImpulse',
 			impulse: v2a(impulse)
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.applyCentralForce = function (force) {
 		// this.body.applyCentralForce(pvec);
-		this._system.postMessage({
+		this._postMessage({
 			command: 'applyCentralForce',
 			impulse: v2a(force)
 		});
 	};
-	AmmoWorkerRigidbodyComponent.prototype.postMessage = function (message) {
-		message.id = this._entity.id;
+	AmmoWorkerRigidbodyComponent.prototype._postMessage = function (message) {
+		message.id = this.entity.id;
+		if (!this._system) {
+			this._queue.push(message);
+			return;
+		}
 		this._system.postMessage(message);
 	};
 

@@ -142,7 +142,6 @@ function (
 	AmmoWorkerSystem.prototype.inserted = function (entity) {
 		entity.ammoWorkerRigidbodyComponent._entity = entity;
 
-
 		// Check if there are colliders on the second level
 		var colliders = [];
 		entity.traverse(function (child, level) {
@@ -228,6 +227,15 @@ function (
 			rotation: v2a(tmpQuat),
 			shapes: shapeConfigs,
 		});
+
+
+		// Send messages accumulated in the queue
+		var queue = entity.ammoWorkerRigidbodyComponent._queue;
+		for (var i = 0; i < queue.length; i++) {
+			var message = queue[i];
+			this._postMessage(message);
+		}
+		queue.length = 0;
 	};
 
 	AmmoWorkerSystem.prototype.deleted = function (entity) {
@@ -286,6 +294,7 @@ function (
 		var timeStep;
 		var maxSubSteps = 3;
 		var bodies = [];
+		var idToBodyMap = {};
 		var bus = new ARRAY_TYPE(NUM_FLOATS_PER_BODY * BUS_RESIZE_STEP);
 
 		/**
@@ -423,15 +432,12 @@ function (
 				info.set_m_restitution(bodyConfig.restitution);
 				var body = new Ammo.btRigidBody(info);
 
-				/*
-				body.setLinearVelocity(new Ammo.btVector3(bodyConfig.velocity[0],bodyConfig.velocity[1],bodyConfig.velocity[2]));
-				body.setAngularVelocity(new Ammo.btVector3(bodyConfig.angularVelocity[0],bodyConfig.angularVelocity[1],bodyConfig.angularVelocity[2]));
-				*/
-
 				ammoWorld.addRigidBody(body);
 
 				bodies.push(body);
+				idToBodyMap[bodyConfig.id] = body;
 			},
+
 			run: function (/*params*/) {
 				var last = Date.now();
 				function mainLoop() {
@@ -444,9 +450,26 @@ function (
 				}
 				interval = setInterval(mainLoop, timeStep * 1000);
 			},
+
 			step: function (/*params*/) {
 				// Manual step
 				step(timeStep, 0);
+			},
+
+			setLinearVelocity: function (params) {
+				var body = getBodyById(params.id);
+				if (!body) {
+					return;
+				}
+				body.setLinearVelocity(new Ammo.btVector3(params.velocity[0], params.velocity[1], params.velocity[2]));
+			},
+
+			setAngularVelocity: function (params) {
+				var body = getBodyById(params.id);
+				if (!body) {
+					return;
+				}
+				body.setAngularVelocity(new Ammo.btVector3(params.angularVelocity[0], params.angularVelocity[1], params.angularVelocity[2]));
 			}
 		};
 
@@ -467,6 +490,10 @@ function (
 				}
 			}
 		};
+
+		function getBodyById(id) {
+			return idToBodyMap[id];
+		}
 	}
 
 	return AmmoWorkerSystem;

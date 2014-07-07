@@ -90,9 +90,31 @@ require([
 		}
 	}
 
+	function setVelocity() {
+		var radius = 1;
+		var entity = createEntity(goo, new Sphere(10, 10, radius),
+			{mass: 1},
+			[0, 3, 0],
+			new AmmoSphereColliderComponent({
+				radius : radius,
+			})
+		);
+		entity.setLinearVelocity(new Vector3(0, 20, 0));
+	}
+
 	addPrimitives();
 
-	document.addEventListener('keypress', addPrimitives, false);
+	document.addEventListener('keypress', function (event) {
+		var ch = String.fromCharCode(event.keyCode);
+		switch (ch) {
+		case 'a':
+			addPrimitives();
+			break;
+		case 'v':
+			setVelocity();
+			break;
+		}
+	}, false);
 
 	var h = new Vector3(2.5, 2.5, 2.5);
 	createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),   {mass: 0}, [0, -7.5, 0], new AmmoBoxColliderComponent({ halfExtents: h }));
