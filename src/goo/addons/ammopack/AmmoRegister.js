@@ -2,6 +2,8 @@ define([
 	'goo/scripts/Scripts',
 	'goo/addons/ammopack/AmmoSystem',
 	'goo/addons/ammopack/AmmoComponent',
+	'goo/addons/ammopack/AmmoWorkerSystem',
+	'goo/addons/ammopack/AmmoWorkerComponent',
 	'goo/addons/ammopack/calculateTriangleMeshShape'
 ], function (Scripts) {
 	'use strict';
@@ -10,6 +12,8 @@ define([
 		'goo/scripts/Scripts',
 		'goo/addons/ammopack/AmmoSystem',
 		'goo/addons/ammopack/AmmoComponent',
+		'goo/addons/ammopack/AmmoWorkerSystem',
+		'goo/addons/ammopack/AmmoWorkerComponent',
 		'goo/addons/ammopack/calculateTriangleMeshShape'
 	];
 
