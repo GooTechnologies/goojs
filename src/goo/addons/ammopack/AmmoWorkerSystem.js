@@ -140,7 +140,6 @@ function (
 	};
 
 	AmmoWorkerSystem.prototype.inserted = function (entity) {
-		entity.ammoWorkerRigidbodyComponent._entity = entity;
 
 		// Check if there are colliders on the second level
 		var colliders = [];
@@ -184,13 +183,13 @@ function (
 			} else if (colliderComponent instanceof AmmoSphereColliderComponent) {
 				shapeConfig = {
 					type: 'sphere',
-					radius: colliderComponent.radius,
+					radius: colliderComponent.radius
 				};
 			} else if (colliderComponent instanceof AmmoPlaneColliderComponent) {
 				shapeConfig = {
 					type: 'plane',
 					normal: v2a(colliderComponent.normal),
-					planeConstant: colliderComponent.planeConstant,
+					planeConstant: colliderComponent.planeConstant
 				};
 			}
 			if (shapeConfig) {
@@ -225,7 +224,7 @@ function (
 			mass: entity.ammoWorkerRigidbodyComponent._mass,
 			position: v2a(gooPos),
 			rotation: v2a(tmpQuat),
-			shapes: shapeConfigs,
+			shapes: shapeConfigs
 		});
 
 
@@ -243,7 +242,6 @@ function (
 			type: 'removeBody',
 			id: entity.id
 		});
-		delete entity.ammoWorkerRigidbodyComponent._entity;
 		delete entity.ammoWorkerRigidbodyComponent._system;
 	};
 
@@ -469,7 +467,7 @@ function (
 				if (!body) {
 					return;
 				}
-				body.setAngularVelocity(new Ammo.btVector3(params.angularVelocity[0], params.angularVelocity[1], params.angularVelocity[2]));
+				body.setAngularVelocity(new Ammo.btVector3(params.velocity[0], params.velocity[1], params.velocity[2]));
 			}
 		};
 

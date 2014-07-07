@@ -74,7 +74,7 @@ require([
 					{mass: 1},
 					[x, y, z],
 					new AmmoBoxColliderComponent({
-						halfExtents : h,
+						halfExtents : h
 					})
 				);
 			} else {
@@ -83,7 +83,7 @@ require([
 					{mass: 1},
 					[x, y, z],
 					new AmmoSphereColliderComponent({
-						radius : radius,
+						radius : radius
 					})
 				);
 			}
@@ -91,15 +91,16 @@ require([
 	}
 
 	function setVelocity() {
-		var radius = 1;
-		var entity = createEntity(goo, new Sphere(10, 10, radius),
+		var h = new Vector3(0.5, 0.5, 0.5);
+		var entity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
 			{mass: 1},
 			[0, 3, 0],
-			new AmmoSphereColliderComponent({
-				radius : radius,
+			new AmmoBoxColliderComponent({
+				halfExtents : h
 			})
 		);
 		entity.setLinearVelocity(new Vector3(0, 20, 0));
+		entity.setAngularVelocity(new Vector3(20, 0, 0));
 	}
 
 	addPrimitives();

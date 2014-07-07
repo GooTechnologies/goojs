@@ -24,10 +24,9 @@ function (
 		this._system = null;
 
 		/**
-		 * @private
 		 * @type {Entity}
 		 */
-		this._entity = null;
+		this.entity = null;
 
 		/**
 		 * @private
@@ -46,7 +45,7 @@ function (
 	AmmoWorkerRigidbodyComponent.constructor = AmmoWorkerRigidbodyComponent;
 
 	/**
-	 * Handles attaching itself to an entity. Should only be called by the engine.
+	 * Handles attaching itself to an entity.
 	 * @private
 	 * @param entity
 	 */
@@ -54,11 +53,23 @@ function (
 		this.entity = entity;
 	};
 
+	AmmoWorkerRigidbodyComponent.prototype.detached = function (/*entity*/) {
+		this.entity = null;
+	};
+
 	AmmoWorkerRigidbodyComponent.prototype.api = {
 		setLinearVelocity: function () {
 			AmmoWorkerRigidbodyComponent.prototype.setLinearVelocity.apply(this.ammoWorkerRigidbodyComponent, arguments);
 			return this;
 		},
+		setAngularVelocity: function () {
+			AmmoWorkerRigidbodyComponent.prototype.setAngularVelocity.apply(this.ammoWorkerRigidbodyComponent, arguments);
+			return this;
+		},
+		setCenterOfMassTransform: function () {
+			AmmoWorkerRigidbodyComponent.prototype.setCenterOfMassTransform.apply(this.ammoWorkerRigidbodyComponent, arguments);
+			return this;
+		}
 	};
 
 	AmmoWorkerRigidbodyComponent.prototype.setLinearFactor = function (linearFactor) {
@@ -84,19 +95,25 @@ function (
 		this._postMessage({
 			command: 'setSleepingThresholds',
 			linear: linear,
-			angular: angular,
+			angular: angular
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setCenterOfMassTransform = function (position, quaternion) {
 		this._postMessage({
 			command: 'setCenterOfMassTransform',
 			position: v2a(position),
-			quaternion: v2a(quaternion),
+			quaternion: v2a(quaternion)
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setLinearVelocity = function (velocity) {
 		this._postMessage({
 			command: 'setLinearVelocity',
+			velocity: v2a(velocity)
+		});
+	};
+	AmmoWorkerRigidbodyComponent.prototype.setAngularVelocity = function (velocity) {
+		this._postMessage({
+			command: 'setAngularVelocity',
 			velocity: v2a(velocity)
 		});
 	};
