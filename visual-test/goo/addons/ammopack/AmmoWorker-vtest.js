@@ -124,9 +124,18 @@ require([
 
 	function setPosition() {
 		if (addRemoveEntity) {
-			console.log('here')
-			addRemoveEntity.setCenterOfMassTransform(new Vector3(2,2,2), new Quaternion());
+			addRemoveEntity.setCenterOfMassTransform(new Vector3(3, 3, 3), new Quaternion());
 		}
+	}
+
+	var paused = false;
+	function playPause() {
+		if (paused) {
+			ammoWorkerSystem.run();
+		} else {
+			ammoWorkerSystem.pause();
+		}
+		paused = !paused;
 	}
 
 	addPrimitives();
@@ -143,8 +152,11 @@ require([
 		case 'r':
 			addRemove();
 			break;
-		case 'p':
+		case 'm':
 			setPosition();
+			break;
+		case 'p':
+			playPause();
 			break;
 		}
 	}, false);

@@ -58,9 +58,7 @@ function (
 		this._initWorker();
 		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.numSubSteps) === 'number' ? settings.numSubSteps : 3);
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
-		this._postMessage({
-			command: 'run'
-		});
+		this.run();
 	}
 	AmmoWorkerSystem.prototype = Object.create(System.prototype);
 
@@ -118,6 +116,24 @@ function (
 	};
 
 	/**
+	 * Starts the physics simulation.
+	 */
+	AmmoWorkerSystem.prototype.run = function () {
+		this._postMessage({
+			command: 'run'
+		});
+	};
+
+	/**
+	 * Stops the physics simulation.
+	 */
+	AmmoWorkerSystem.prototype.pause = function () {
+		this._postMessage({
+			command: 'pause'
+		});
+	};
+
+	/**
 	 * @param {Vector3} gravity
 	 */
 	AmmoWorkerSystem.prototype.setGravity = function (gravity) {
@@ -128,6 +144,7 @@ function (
 	};
 
 	/**
+	 * Set the time step for physics simulation, along with the maximum number of substeps.
 	 * @param {number} timeStep
 	 * @param {number} maxSubSteps
 	 */
@@ -459,6 +476,12 @@ function (
 					clearInterval(interval);
 				}
 				interval = setInterval(mainLoop, timeStep * 1000);
+			},
+
+			pause: function (/*params*/) {
+				if (interval) {
+					clearInterval(interval);
+				}
 			},
 
 			step: function (/*params*/) {
