@@ -2,7 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/entities/Entity',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	Entity,

@@ -5,7 +5,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Texture',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	Material,

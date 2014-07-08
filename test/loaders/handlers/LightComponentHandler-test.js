@@ -5,7 +5,7 @@ define([
 	'goo/renderer/light/SpotLight',
 	'goo/renderer/light/PointLight',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	LightComponent,

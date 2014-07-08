@@ -3,7 +3,7 @@ define([
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/Camera',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	CameraComponent,

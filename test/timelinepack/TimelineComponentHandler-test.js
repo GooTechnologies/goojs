@@ -2,7 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs',
+	'test/loaders/Configs',
 	'goo/timelinepack/TimelineComponent',
 	'goo/timelinepack/TimelineComponentHandler'
 ], function(
