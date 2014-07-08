@@ -654,6 +654,7 @@ define([
 		'{',
 		'#if defined(TEXCOORD0) && defined(DIFFUSE_MAP)',
 			'gl_FragColor = texture2D(diffuseMap, texCoord0);',
+			'if (gl_FragColor.a < 0.01) discard;',
 		'#else',
 			'gl_FragColor = vec4(1.0);',
 		'#endif',

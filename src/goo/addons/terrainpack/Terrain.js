@@ -91,7 +91,7 @@ function(
 		this.normalmapPass = new FullscreenPass(normalmapShader);
 		this.normalmapPass.material.depthState.enabled = false;
 		this.normalmapPass.material.uniforms.resolution = [size, size];
-		this.normalmapPass.material.uniforms.height = 10;
+		this.normalmapPass.material.uniforms.height = 10 / 20;
 
 		this.extractFloatPass = new FullscreenPass(extractShader);
 		// this.detailmapPass = new FullscreenPass(detailShader);
@@ -277,6 +277,7 @@ function(
 
 	Terrain.prototype.pick = function (camera, x, y, store) {
 		var entities = [];
+		camera = camera || Renderer.mainCamera;
 		this.terrainRoot.traverse(function (entity) {
 			if (entity.meshDataComponent && entity.meshRendererComponent.hidden === false) {
 				entities.push(entity);
@@ -294,9 +295,9 @@ function(
 			});
 		}
 
-		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, false, x, y, null, true);
+		this.renderer.renderToPick(entities, camera, true, false, false, x, y, null, true);
 		var pickStore = {};
-		this.renderer.pick(x, y, pickStore, Renderer.mainCamera);
+		this.renderer.pick(x, y, pickStore, camera);
 		camera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, pickStore.depth, store);
 
 		for (var i = 0; i < this.clipmaps.length; i++) {

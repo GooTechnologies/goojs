@@ -114,9 +114,8 @@ define([
 			this.eventX = e.targetTouches[0].pageX;
 			this.eventY = e.targetTouches[0].pageY;
 
-			this.pick = true;
-
 			if (LMB) {
+				this.pick = true;
 				this.draw = true;
 			}
 		}
@@ -145,8 +144,12 @@ define([
 				LMB = false;
 			}
 
-			this.forrest.toggle();
-			this.vegetation.toggle();
+			if (this.forrest) {
+				this.forrest.toggle();
+			}
+			if (this.vegetation) {
+				this.vegetation.toggle();
+			}
 		};
 
 		TerrainHandler.prototype.initLevel = function (terrainData, settings, forrestLODEntityMap) {
@@ -413,26 +416,32 @@ define([
 				};
 
 				var texturesPromise = new RSVP.Promise();
-				var loadCount = 3;
+				var loadCount = 0;
 				var onLoaded = function() {
 					if (!--loadCount)
 						texturesPromise.resolve();
 				};
 
-				var vegetationAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas, {}, onLoaded);
 
-				vegetationAtlasTexture.anisotropy = 4;
-				var vegetationTypes = terrainData.vegetationTypes;
+				if (this.vegetation) {
+					loadCount += 1
+					var vegetationAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas, {}, onLoaded);
 
-				var forrestAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas, {}, onLoaded);
+					vegetationAtlasTexture.anisotropy = 4;
+					var vegetationTypes = terrainData.vegetationTypes;
+					this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
+				}
+				if (this.forrest) {
+					loadCount += 2
+					var forrestAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas, {}, onLoaded);
 
-				forrestAtlasTexture.anisotropy = 4;
-				var forrestAtlasNormals = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals, {}, onLoaded);
+					forrestAtlasTexture.anisotropy = 4;
+					var forrestAtlasNormals = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals, {}, onLoaded);
 
-				var forrestTypes = terrainData.forrestTypes;
+					var forrestTypes = terrainData.forrestTypes;
+					this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
+				}
 
-				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
-				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
 
 				return texturesPromise;
 			}.bind(this));
