@@ -25,5 +25,12 @@ function (
 	AmmoBoxColliderComponent.prototype = Object.create(Component.prototype);
 	AmmoBoxColliderComponent.constructor = AmmoBoxColliderComponent;
 
+	AmmoBoxColliderComponent.prototype.serialize = function () {
+		return {
+			type: 'box',
+			halfExtents: Array.prototype.slice.call(this.halfExtents.data, 0)
+		};
+	};
+
 	return AmmoBoxColliderComponent;
 });

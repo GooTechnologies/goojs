@@ -20,5 +20,12 @@ function (
 	AmmoSphereColliderComponent.prototype = Object.create(Component.prototype);
 	AmmoSphereColliderComponent.constructor = AmmoSphereColliderComponent;
 
+	AmmoSphereColliderComponent.prototype.serialize = function () {
+		return {
+			type: 'sphere',
+			radius: this.radius
+		};
+	};
+
 	return AmmoSphereColliderComponent;
 });

@@ -1,16 +1,10 @@
 define([
 	'goo/entities/components/Component',
-	'goo/addons/ammopack/AmmoBoxColliderComponent',
-	'goo/addons/ammopack/AmmoSphereColliderComponent',
-	'goo/addons/ammopack/AmmoPlaneColliderComponent',
 	'goo/math/Quaternion'
 ],
 /** @lends */
 function (
 	Component,
-	AmmoBoxColliderComponent,
-	AmmoSphereColliderComponent,
-	AmmoPlaneColliderComponent,
 	Quaternion
 ) {
 	'use strict';
@@ -149,25 +143,8 @@ function (
 			var colliderEntity = colliders[j];
 
 			var colliderComponent = colliderEntity.ammoColliderComponent;
-			var shapeConfig;
+			var shapeConfig = colliderComponent.serialize();
 
-			if (colliderComponent instanceof AmmoBoxColliderComponent) {
-				shapeConfig = {
-					type: 'box',
-					halfExtents: v2a(colliderComponent.halfExtents)
-				};
-			} else if (colliderComponent instanceof AmmoSphereColliderComponent) {
-				shapeConfig = {
-					type: 'sphere',
-					radius: colliderComponent.radius
-				};
-			} else if (colliderComponent instanceof AmmoPlaneColliderComponent) {
-				shapeConfig = {
-					type: 'plane',
-					normal: v2a(colliderComponent.normal),
-					planeConstant: colliderComponent.planeConstant
-				};
-			}
 			if (shapeConfig) {
 				if (colliderEntity !== entity) {
 
@@ -212,7 +189,6 @@ function (
 		}
 		queue.length = 0;
 	};
-
 
 	AmmoWorkerRigidbodyComponent.prototype.setLinearFactor = function (linearFactor) {
 		this._postMessage({

@@ -211,20 +211,52 @@ function (
 		function getAmmoShape(shapeConfig) {
 			var shape;
 			switch (shapeConfig.type) {
+
 			case 'box':
 				var extents = new Ammo.btVector3(shapeConfig.halfExtents[0], shapeConfig.halfExtents[1], shapeConfig.halfExtents[2]);
 
 				shape = new Ammo.btBoxShape(extents);
 				Ammo.destroy(extents);
 				break;
+
 			case 'sphere':
 				shape = new Ammo.btSphereShape(shapeConfig.radius);
 				break;
+
 			case 'plane':
-				//console.log('plane ' + shapeConfig.normal + ' ' + shapeConfig.planeConstant);
 				var n = shapeConfig.normal;
 				shape = new Ammo.btStaticPlaneShape(new Ammo.btVector3(n[0], n[1], n[2]), shapeConfig.planeConstant);
 				break;
+
+			case 'terrain':
+				var floatByteSize = 4;
+				var heightBuffer = Ammo.allocate(floatByteSize * shapeConfig.numWidthPoints * shapeConfig.numLengthPoints, "float", Ammo.ALLOC_NORMAL);
+
+				for (var i = 0, il = shapeConfig.heights.length; i < il; i ++) {
+					Ammo.setValue(heightBuffer + i * floatByteSize, shapeConfig.heights[i], 'float');
+				}
+
+				var heightDataType = 0;
+
+				shape = new Ammo.btHeightfieldTerrainShape(
+					shapeConfig.numWidthPoints,
+					shapeConfig.numLengthPoints,
+					heightBuffer,
+					shapeConfig.heightScale, // 1.0
+					shapeConfig.minHeight,
+					shapeConfig.maxHeight,
+					shapeConfig.upAxis, // 1 == y
+					heightDataType,
+					shapeConfig.flipQuadEdges // false
+				);
+
+				var sx = shapeConfig.width / (shapeConfig.numWidthPoints - 1);
+				var sz = shapeConfig.length / (shapeConfig.numLengthPoints - 1);
+				var sy = 1.0;
+				var sizeVector = new Ammo.btVector3(sx, sy, sz);
+				shape.setLocalScaling(sizeVector);
+				break;
+
 			default:
 				throw new Error('Shape type not recognized: ' + shapeConfig.type);
 			}

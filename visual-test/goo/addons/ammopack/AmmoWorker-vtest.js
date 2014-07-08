@@ -20,8 +20,10 @@ require([
 	'goo/addons/ammopack/AmmoBoxColliderComponent',
 	'goo/addons/ammopack/AmmoCapsuleColliderComponent',
 	'goo/addons/ammopack/AmmoPlaneColliderComponent',
+	'goo/addons/ammopack/AmmoTerrainColliderComponent',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
+	'goo/geometrypack/Surface',
 	'lib/V'
 ], function (
 	GooRunner,
@@ -45,8 +47,10 @@ require([
 	AmmoBoxColliderComponent,
 	AmmoCapsuleColliderComponent,
 	AmmoPlaneColliderComponent,
+	AmmoTerrainColliderComponent,
 	PointLight,
 	LightComponent,
+	Surface,
 	V
 ) {
 	'use strict';
@@ -90,6 +94,37 @@ require([
 				);
 			}
 		}
+	}
+
+	function addTerrain() {
+		var nLin = 64, nCol = 64;
+		var matrix = [];
+		for (var i = 0; i < nLin; i++) {
+			matrix.push([]);
+			for (var j = 0; j < nCol; j++) {
+				var value =
+					Math.sin(i * 0.1) +
+					Math.cos(j * 0.1) +
+					Math.sin(Math.sqrt(i * i + j * j) * 0.3) * 2;
+				//value = 0;
+				matrix[i].push(value);
+			}
+		}
+		var meshData = Surface.createFromHeightMap(matrix);
+		var material = V.getColoredMaterial();
+		var entity = goo.world.createEntity(meshData, material, [-nLin / 2, -5, -nCol / 2]).addToWorld();
+		entity.setComponent(new AmmoWorkerRigidbodyComponent({
+			mass: 0 // static
+		}));
+
+		var colliderEntity = goo.world.createEntity();
+		colliderEntity.addToWorld();
+		entity.attachChild(colliderEntity);
+		colliderEntity.transformComponent.transform.translation.setd(nLin / 2, 0, nCol / 2);
+		colliderEntity.transformComponent.setUpdated();
+		colliderEntity.setComponent(new AmmoTerrainColliderComponent({
+			heightMap: matrix
+		}));
 	}
 
 	function setVelocity() {
@@ -160,6 +195,7 @@ require([
 
 	addPrimitives();
 	addKinematic();
+	addTerrain();
 
 	console.log([
 		'a: add primitives',
@@ -190,29 +226,21 @@ require([
 		}
 	}, false);
 
-	var h = new Vector3(2.5, 2.5, 2.5);
-	createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),   {mass: 0}, [0, -7.5, 0], new AmmoBoxColliderComponent({ halfExtents: h }));
-	h = new Vector3(10, 5, 0.5);
+	var h = new Vector3(10, 5, 0.5);
 	createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, 10],  new AmmoBoxColliderComponent({ halfExtents: h }));
 	createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, -10], new AmmoBoxColliderComponent({ halfExtents: h }));
 	h = new Vector3(0.5, 5, 10);
 	createEntity(goo, new Box(1, 10, 20), {mass: 0}, [10, -5, 0],  new AmmoBoxColliderComponent({ halfExtents: h }));
 	createEntity(goo, new Box(1, 10, 20), {mass: 0}, [-10, -5, 0], new AmmoBoxColliderComponent({ halfExtents: h }));
-	var planeEntity = createEntity(goo, new Quad(1000, 1000, 100, 100), {mass: 0}, [0, -10, 0],
-		new AmmoPlaneColliderComponent({
-			normal: new Vector3(0, 0, 1) // Goo quad faces in the z direction
-		}),
-		V.getColoredMaterial(0.7, 0.7, 0.7)
-	);
-	planeEntity.setRotation([-Math.PI / 2, 0, 0]);
 
 	// Create compound
 	var compoundEntity = goo.world.createEntity(new Vector3(0, 3, 0));
 	compoundEntity.addToWorld();
-	compoundEntity.setComponent(new AmmoWorkerRigidbodyComponent({ mass : 1 }));
+	compoundEntity.setComponent(new AmmoWorkerRigidbodyComponent({
+		mass : 1
+	}));
 	var material = V.getColoredMaterial();
-	var h1 = new Vector3(1, 2, 1),
-		h2 = new Vector3(1, 1, 1),
+	var h2 = new Vector3(1, 1, 1),
 		h3 = new Vector3(1, 1, 1),
 		radius = 1;
 	var subEntity1 = goo.world.createEntity(new Sphere(10, 10, radius), material, new Vector3(0, 0, 2));

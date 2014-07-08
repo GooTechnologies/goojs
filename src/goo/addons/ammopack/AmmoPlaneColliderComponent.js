@@ -31,5 +31,13 @@ function (
 	AmmoPlaneColliderComponent.prototype = Object.create(Component.prototype);
 	AmmoPlaneColliderComponent.constructor = AmmoPlaneColliderComponent;
 
+	AmmoPlaneColliderComponent.prototype.serialize = function () {
+		return {
+			type: 'plane',
+			normal: Array.prototype.slice.call(this.normal.data, 0),
+			planeConstant: this.planeConstant
+		};
+	};
+
 	return AmmoPlaneColliderComponent;
 });
