@@ -89,6 +89,38 @@ define([
 			}
 		};
 
+		var touchdown = function (e) {
+			if (e.targetTouches.length === 1) {
+				this.eventX = e.targetTouches[0].pageX
+				this.eventY = e.targetTouches[0].pageY
+
+				LMB = true;
+				this.pick = true;
+				this.draw = true;
+				console.log('touchdown');
+			} else {
+				LMB = false;
+				this.draw = false;
+			}
+		};
+
+		var touchup = function (e) {
+			LMB = false;
+			this.draw = false;
+			console.log('touchup');
+		}
+
+		var touchmove = function (e) {
+			this.eventX = e.targetTouches[0].pageX;
+			this.eventY = e.targetTouches[0].pageY;
+
+			this.pick = true;
+
+			if (LMB) {
+				this.draw = true;
+			}
+		}
+
 		TerrainHandler.prototype.toggleEditMode = function () {
 			this.terrain.toggleMarker();
 
@@ -99,6 +131,10 @@ define([
 				this.goo.renderer.domElement.addEventListener("mouseup", mouseup.bind(this), false);
 				this.goo.renderer.domElement.addEventListener("mouseout", mouseup.bind(this), false);
 				this.goo.renderer.domElement.addEventListener("mousemove", mousemove.bind(this), false);
+
+				this.goo.renderer.domElement.addEventListener('touchstart', touchdown.bind(this), false);
+				this.goo.renderer.domElement.addEventListener('touchend', touchup.bind(this), false);
+				this.goo.renderer.domElement.addEventListener('touchmove', touchmove.bind(this), false);
 			} else {
 				this.goo.renderer.domElement.removeEventListener("mousedown", mousedown);
 				this.goo.renderer.domElement.removeEventListener("mouseup", mouseup);
