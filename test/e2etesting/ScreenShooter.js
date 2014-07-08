@@ -1,6 +1,5 @@
 var webdriver = require('selenium-webdriver');
 var fs = require('fs');
-var os = require('os');
 var path = require('path');
 var async = require('async');
 var mkdirp = require('mkdirp');
@@ -23,8 +22,9 @@ function ScreenShooter(options) {
 		wait   : 700,
 		script : ScreenShooter.removeGooStuffScript,
 		width  : 400, // This is sort of the smallest possible in Chrome
-		height : 180
+		height : 300
 	};
+
 	for (var key in options) {
 		if (typeof settings[key] !== 'undefined') {
 			settings[key] = options[key];
@@ -57,50 +57,44 @@ ScreenShooter.prototype.takeScreenshot = function (url, pngPath, callback) {
 
 	// Point the browser to it
 	driver.get(url).then(function () {
-		// Get the window and resize it
-		var w = new webdriver.WebDriver.Window(driver);
-		w.setSize(self.settings.width, self.settings.height).then(function () {
+		setTimeout(function () {
 
-			// Wait for webgl to set up and so on
-			setTimeout(function () {
+			// Run our startup script
+			driver.executeScript(self.settings.script).then(function () {
+				// Wait for webgl to set up and so on
+				setTimeout(function () {
+					// Take screenshot
+					driver.executeScript('return document.getElementById("goo").toDataURL();').then(function (data) {
+//						data = data.substr(data.indexOf(',') + 1);
+						data = data.replace(/^data:image\/\w+;base64,/, '');
 
-				// Run our startup script
-				driver.executeScript(self.settings.script).then(function () {
+						// Create out folder if it does not exist
+						mkdirp.mkdirp(path.dirname(pngPath), function (err) {
+							if (err) {
+								return callback(err);
+							}
 
-					// Wait for webgl to set up and so on
-					setTimeout(function () {
+							// Get the console log
+							var logs = new webdriver.WebDriver.Logs(driver);
+							logs.get('browser').then(function (browserLog) {
+								self.browserLog = browserLog;
 
-						// Take screenshot
-						var p = driver.takeScreenshot().then(function (data) {
+								// Save screenshot
+								fs.writeFileSync(pngPath, data, 'base64');
 
-							// Create out folder if it does not exist
-							mkdirp.mkdirp(path.dirname(pngPath), function (err) {
-								if (err) {
-									return callback(err);
-								}
-
-								// Get the console log
-								var logs = new webdriver.WebDriver.Logs(driver);
-								logs.get('browser').then(function (browserLog) {
-									self.browserLog = browserLog;
-
-									// Save screenshot
-									fs.writeFileSync(pngPath, data, 'base64');
-
-									self.emit('shoot', {
-										url: url,
-										path: pngPath,
-										log: browserLog
-									});
-
-									callback();
+								self.emit('shoot', {
+									url: url,
+									path: pngPath,
+									log: browserLog
 								});
+
+								callback();
 							});
 						});
 					}, self.settings.wait);
-				});
+				}, self.settings.wait);
 			}, self.settings.wait);
-		});
+		}, self.settings.wait);
 	});
 };
 

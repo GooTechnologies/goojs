@@ -1,11 +1,8 @@
-var webdriver = require('selenium-webdriver');
 var fs = require('fs');
-var os = require('os');
 var path = require('path');
 var exec = require('child_process').exec;
 var ScreenShooter = require(__dirname + '/../ScreenShooter');
 var imgcompare = require(__dirname + '/../../../tools/imgcompare');
-var coffeescript = require('coffee-script');
 var toc = require(__dirname + '/../../../visual-test/toc');
 
 
@@ -14,6 +11,7 @@ jasmine.getEnv().defaultTimeoutInterval = 10000; // in microseconds.
 var shooter, testFiles=toc.getFilePathsSync();
 
 var ignoredTests = [
+	'example',
 	'carousel',
 	'goo/addons/Ammo/Ammo-vehicle-vtest',
 	'goo/addons/Ammo/Ammo-vtest',
@@ -35,7 +33,8 @@ var ignoredTests = [
 	'WalkAround-script',
 	'occlusionculling',
 	'FSMHandler',
-	'goo/addons/Water/water-vtest'
+	'goo/addons/Water/water-vtest',
+	'DynamicLoaderDestroy'
 ];
 
 console.log('Ignored tests (todo: fix these!): ', ignoredTests);
@@ -106,7 +105,7 @@ describe('visual test', function () {
 				}
 
 				var severeLogEntries = [];
-				for (var j = 0; j<shooter.browserLog.length; j++) {
+				for (var j = 0; j < shooter.browserLog.length; j++) {
 					var entry = shooter.browserLog[j];
 					if (entry.level.name == 'SEVERE') {
 						severeLogEntries.push(entry);
