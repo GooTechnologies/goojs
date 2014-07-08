@@ -212,12 +212,26 @@ function (
 	}
 
 	function workerCode() {
-		/* global importScripts,Ammo,postMessage,onmessage */
+		/* global importScripts,Ammo,postMessage,onmessage,performance */
 		/*jshint bitwise: false*/
 		var Module = {
 			TOTAL_MEMORY: 256 * 1024 * 1024
 		};
 		importScripts('http://code.gooengine.com/0.10.6/lib/ammo.small.js');
+
+		// performance.now shim
+		if (typeof performance === 'undefined') {
+			performance = {};
+		}
+		if (!performance.now) {
+			var nowOffset = Date.now();
+			if (performance.timing && performance.timing.navigationStart) {
+				nowOffset = performance.timing.navigationStart;
+			}
+			performance.now = function () {
+				return Date.now() - nowOffset;
+			};
+		}
 
 		var ARRAY_TYPE = typeof(Float32Array) !== 'undefined' ? Float32Array : Array;
 		var NUM_FLOATS_PER_BODY = 7; // 3 pos, 4 rot
@@ -332,10 +346,10 @@ function (
 				return;
 			}
 
-			// TODO: handle substepping manually. This is needed for kinematic objects to work properly.
-			var subStepsTaken = ammoWorld.stepSimulation(timeStep, 0, timeStep);
-
 			checkResizeBus();
+
+			// TODO: handle substepping manually. This is needed for kinematic objects to work properly.
+			ammoWorld.stepSimulation(timeStep, 0, timeStep);
 
 			// Pack body data into bus
 			for (var i = 0; i < bodies.length; i++) {
