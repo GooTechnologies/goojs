@@ -105,6 +105,24 @@ require([
 		entity.setAngularVelocity(new Vector3(20, 0, 0));
 	}
 
+	function addKinematic() {
+		var h = new Vector3(4, 1, 4);
+		var entity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
+			{ mass: 1, type: AmmoWorkerRigidbodyComponent.KINEMATIC },
+			[0, 3, -10],
+			new AmmoBoxColliderComponent({
+				halfExtents : h
+			})
+		);
+
+		var sign = 1;
+		setInterval(function () {
+			entity.setLinearVelocity(new Vector3(sign * 3, 0, 0));
+			entity.setAngularVelocity(new Vector3(0, sign * 2, 0)); // Does not work yet
+			sign *= -1;
+		}, 2000);
+	}
+
 	var addRemoveEntity;
 	function addRemove() {
 		if (!addRemoveEntity) {
@@ -125,6 +143,8 @@ require([
 	function setPosition() {
 		if (addRemoveEntity) {
 			addRemoveEntity.setCenterOfMassTransform(new Vector3(3, 3, 3), new Quaternion());
+		} else {
+			addRemove();
 		}
 	}
 
@@ -139,6 +159,15 @@ require([
 	}
 
 	addPrimitives();
+	addKinematic();
+
+	console.log([
+		'a: add primitives',
+		'v: set velocity',
+		'r: add/remove body',
+		'm: set position (move)',
+		'p: play/pause simulation'
+	].join('\n'));
 
 	document.addEventListener('keypress', function (event) {
 		var ch = String.fromCharCode(event.keyCode);

@@ -1,16 +1,28 @@
 define([
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/addons/ammopack/AmmoBoxColliderComponent',
+	'goo/addons/ammopack/AmmoSphereColliderComponent',
+	'goo/addons/ammopack/AmmoPlaneColliderComponent',
+	'goo/math/Quaternion'
 ],
 /** @lends */
 function (
-	Component
+	Component,
+	AmmoBoxColliderComponent,
+	AmmoSphereColliderComponent,
+	AmmoPlaneColliderComponent,
+	Quaternion
 ) {
 	'use strict';
 
+	var tmpQuat = new Quaternion();
+
 	/**
-	 * @class Adds Ammo physics to an entity. Should be combined with one of the AmmoCollider components, such as the @link{AmmoSphereColliderComponent}. Also see {@link AmmoSystem}.
+	 * @class Adds threaded Ammo physics to an entity. Should be combined with one of the AmmoCollider components, such as the @link{AmmoSphereColliderComponent}. Also see {@link AmmoWorkerSystem}.
 	 * @extends Component
-	 * @param {Object} [settings]
+	 * @param {object} [settings]
+	 * @param {number} [settings.mass=1]
+	 * @param {number} [settings.type] Must be set to AmmoWorkerRigidbodyComponent.DYNAMIC, KINEMATIC, or STATIC. Defaults to DYNAMIC.
 	 */
 	function AmmoWorkerRigidbodyComponent(settings) {
 		this.type = "AmmoWorkerRigidbodyComponent";
@@ -35,6 +47,12 @@ function (
 		this._mass = typeof(settings.mass) === 'number' ? settings.mass : 1;
 
 		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._bodyType = typeof(settings.type) === 'number' ? settings.type : AmmoWorkerRigidbodyComponent.DYNAMIC;
+
+		/**
 		 * Queue for accumulating commands that are given before the entity was added to the system.
 		 * @private
 		 * @type {Array}
@@ -43,6 +61,27 @@ function (
 	}
 	AmmoWorkerRigidbodyComponent.prototype = Object.create(Component.prototype);
 	AmmoWorkerRigidbodyComponent.constructor = AmmoWorkerRigidbodyComponent;
+
+	/**
+	 * Dynamic object. Has a nonzero finite mass and responds to forces.
+	 * @static
+	 * @type {Number}
+	 */
+	AmmoWorkerRigidbodyComponent.DYNAMIC = 1;
+
+	/**
+	 * Static object. Non-moving and infinite mass.
+	 * @static
+	 * @type {Number}
+	 */
+	AmmoWorkerRigidbodyComponent.STATIC = 2;
+
+	/**
+	 * Kinematic body. Infinite mass but can move.
+	 * @static
+	 * @type {Number}
+	 */
+	AmmoWorkerRigidbodyComponent.KINEMATIC = 4;
 
 	/**
 	 * Handles attaching itself to an entity.
@@ -71,6 +110,109 @@ function (
 			return this;
 		}
 	};
+
+	/**
+	 * Scans attached colliders and instructs the worker to create the body.
+	 */
+	AmmoWorkerRigidbodyComponent.prototype._add = function () {
+		var entity = this.entity;
+
+		// Check if there are colliders on the second level
+		var colliders = [];
+		entity.traverse(function (child, level) {
+			if (level === 1 && child.ammoColliderComponent) {
+				colliders.push(child);
+			}
+		});
+
+		// Check if the root entity has a collider
+		if (entity.ammoColliderComponent) {
+			colliders.push(entity);
+		}
+
+		if (!colliders.length) {
+			return;
+		}
+
+		var shapeConfigs = [];
+
+		// Update transforms
+		entity.transformComponent.updateTransform();
+		entity.transformComponent.updateWorldTransform();
+		for (var j = 0; j < colliders.length; j++) {
+			var colliderEntity = colliders[j];
+			colliderEntity.transformComponent.updateTransform();
+			colliderEntity.transformComponent.updateWorldTransform();
+		}
+
+		for (var j = 0; j < colliders.length; j++) {
+			var colliderEntity = colliders[j];
+
+			var colliderComponent = colliderEntity.ammoColliderComponent;
+			var shapeConfig;
+
+			if (colliderComponent instanceof AmmoBoxColliderComponent) {
+				shapeConfig = {
+					type: 'box',
+					halfExtents: v2a(colliderComponent.halfExtents)
+				};
+			} else if (colliderComponent instanceof AmmoSphereColliderComponent) {
+				shapeConfig = {
+					type: 'sphere',
+					radius: colliderComponent.radius
+				};
+			} else if (colliderComponent instanceof AmmoPlaneColliderComponent) {
+				shapeConfig = {
+					type: 'plane',
+					normal: v2a(colliderComponent.normal),
+					planeConstant: colliderComponent.planeConstant
+				};
+			}
+			if (shapeConfig) {
+				if (colliderEntity !== entity) {
+
+					// Add local transform
+					var pos = colliderEntity.transformComponent.transform.translation;
+					shapeConfig.localPosition = v2a(pos);
+
+					var rot = colliderEntity.transformComponent.transform.rotation;
+					tmpQuat.fromRotationMatrix(rot);
+
+					shapeConfig.localRotation = v2a(tmpQuat);
+				}
+				shapeConfigs.push(shapeConfig);
+			}
+		}
+
+		// Allow no shapes?
+		if (!shapeConfigs.length) {
+			return;
+		}
+
+		var gooPos = entity.transformComponent.worldTransform.translation;
+		var gooRot = entity.transformComponent.worldTransform.rotation;
+
+		tmpQuat.fromRotationMatrix(gooRot);
+
+		this._postMessage({
+			command: 'addBody',
+			id: entity.id,
+			mass: entity.ammoWorkerRigidbodyComponent._mass,
+			position: v2a(gooPos),
+			rotation: v2a(tmpQuat),
+			shapes: shapeConfigs,
+			type: entity.ammoWorkerRigidbodyComponent._bodyType,
+		});
+
+		// Send messages accumulated in the queue
+		var queue = entity.ammoWorkerRigidbodyComponent._queue;
+		for (var i = 0; i < queue.length; i++) {
+			var message = queue[i];
+			this._postMessage(message);
+		}
+		queue.length = 0;
+	};
+
 
 	AmmoWorkerRigidbodyComponent.prototype.setLinearFactor = function (linearFactor) {
 		this._postMessage({

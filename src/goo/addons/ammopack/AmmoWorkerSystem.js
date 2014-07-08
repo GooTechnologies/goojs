@@ -2,35 +2,16 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/math/Quaternion',
-	'goo/math/Vector3',
-	'goo/addons/ammopack/AmmoBoxColliderComponent',
-	'goo/addons/ammopack/AmmoSphereColliderComponent',
-	'goo/addons/ammopack/AmmoPlaneColliderComponent'
+	'goo/math/Vector3'
 ],
 /** @lends */
 function (
 	System,
 	SystemBus,
 	Quaternion,
-	Vector3,
-	AmmoBoxColliderComponent,
-	AmmoSphereColliderComponent,
-	AmmoPlaneColliderComponent
+	Vector3
 ) {
 	'use strict';
-
-	// from http://bullet.googlecode.com/svn-history/r2171/trunk/src/BulletCollision/CollisionDispatch/btCollisionObject.h
-	/*
-	var btCollisionFlags = {
-		CF_STATIC_OBJECT: 1,
-		CF_KINEMATIC_OBJECT: 2,
-		CF_NO_CONTACT_RESPONSE : 4,
-		CF_CUSTOM_MATERIAL_CALLBACK : 8,
-		CF_CHARACTER_OBJECT : 16,
-		CF_DISABLE_VISUALIZE_OBJECT : 32,
-		CF_DISABLE_SPU_COLLISION_PROCESSING : 64
-	};
-	*/
 
 	/**
 	 * @class Handles integration with Ammo.js, using a worker thread.
@@ -111,7 +92,7 @@ function (
 	 * @param {object} message
 	 */
 	AmmoWorkerSystem.prototype._postMessage = function (message) {
-		console.log(JSON.stringify(message, 2, 2));
+		//console.log(JSON.stringify(message, 2, 2));
 		this._worker.postMessage(message);
 	};
 
@@ -157,102 +138,8 @@ function (
 	};
 
 	AmmoWorkerSystem.prototype.inserted = function (entity) {
-
 		entity.ammoWorkerRigidbodyComponent._system = this;
-
-		// Check if there are colliders on the second level
-		var colliders = [];
-		entity.traverse(function (child, level) {
-			if (level === 1 && child.ammoColliderComponent) {
-				colliders.push(child);
-			}
-		});
-
-		// Check if the root entity has a collider
-		if (entity.ammoColliderComponent) {
-			colliders.push(entity);
-		}
-
-		if (!colliders.length) {
-			return;
-		}
-
-		var shapeConfigs = [];
-
-		// Update transforms
-		entity.transformComponent.updateTransform();
-		entity.transformComponent.updateWorldTransform();
-		for (var j = 0; j < colliders.length; j++) {
-			var colliderEntity = colliders[j];
-			colliderEntity.transformComponent.updateTransform();
-			colliderEntity.transformComponent.updateWorldTransform();
-		}
-
-		for (var j = 0; j < colliders.length; j++) {
-			var colliderEntity = colliders[j];
-
-			var colliderComponent = colliderEntity.ammoColliderComponent;
-			var shapeConfig;
-
-			if (colliderComponent instanceof AmmoBoxColliderComponent) {
-				shapeConfig = {
-					type: 'box',
-					halfExtents: v2a(colliderComponent.halfExtents)
-				};
-			} else if (colliderComponent instanceof AmmoSphereColliderComponent) {
-				shapeConfig = {
-					type: 'sphere',
-					radius: colliderComponent.radius
-				};
-			} else if (colliderComponent instanceof AmmoPlaneColliderComponent) {
-				shapeConfig = {
-					type: 'plane',
-					normal: v2a(colliderComponent.normal),
-					planeConstant: colliderComponent.planeConstant
-				};
-			}
-			if (shapeConfig) {
-				if (colliderEntity !== entity) {
-
-					// Add local transform
-					var pos = colliderEntity.transformComponent.transform.translation;
-					shapeConfig.localPosition = v2a(pos);
-
-					var rot = colliderEntity.transformComponent.transform.rotation;
-					tmpQuat.fromRotationMatrix(rot);
-
-					shapeConfig.localRotation = v2a(tmpQuat);
-				}
-				shapeConfigs.push(shapeConfig);
-			}
-		}
-
-		// Allow no shapes?
-		if (!shapeConfigs.length) {
-			return;
-		}
-
-		var gooPos = entity.transformComponent.worldTransform.translation;
-		var gooRot = entity.transformComponent.worldTransform.rotation;
-
-		tmpQuat.fromRotationMatrix(gooRot);
-
-		this._postMessage({
-			command: 'addBody',
-			id: entity.id,
-			mass: entity.ammoWorkerRigidbodyComponent._mass,
-			position: v2a(gooPos),
-			rotation: v2a(tmpQuat),
-			shapes: shapeConfigs
-		});
-
-		// Send messages accumulated in the queue
-		var queue = entity.ammoWorkerRigidbodyComponent._queue;
-		for (var i = 0; i < queue.length; i++) {
-			var message = queue[i];
-			this._postMessage(message);
-		}
-		queue.length = 0;
+		entity.ammoWorkerRigidbodyComponent._add();
 	};
 
 	AmmoWorkerSystem.prototype.deleted = function (entity) {
@@ -271,26 +158,9 @@ function (
 		return Array.prototype.slice.call(v.data, 0);
 	}
 
-	/*
-	function hasZeroRigidTransform(transform) {
-		if (transform.translation.length() !== 0) {
-			return false;
-		}
-
-		var m = transform.rotation.data;
-		var elements = [1, 2, 3, 5, 6, 7];
-		for (var i = 0; i < elements.length; i++) {
-			if (m[i]) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-	*/
-
 	function workerCode() {
 		/* global importScripts,Ammo,postMessage,onmessage */
+		/*jshint bitwise: false*/
 		var Module = {
 			TOTAL_MEMORY: 256 * 1024 * 1024
 		};
@@ -299,6 +169,25 @@ function (
 		var ARRAY_TYPE = typeof(Float32Array) !== 'undefined' ? Float32Array : Array;
 		var NUM_FLOATS_PER_BODY = 7; // 3 pos, 4 rot
 		var BUS_RESIZE_STEP = 10;
+
+		// from http://bullet.googlecode.com/svn-history/r2171/trunk/src/BulletCollision/CollisionDispatch/btCollisionObject.h
+		var collisionFlags = {
+			STATIC_OBJECT: 1,
+			KINEMATIC_OBJECT: 2,
+			NO_CONTACT_RESPONSE : 4,
+			CUSTOM_MATERIAL_CALLBACK : 8,
+			CHARACTER_OBJECT : 16,
+			DISABLE_VISUALIZE_OBJECT : 32,
+			DISABLE_SPU_COLLISION_PROCESSING : 64
+		};
+
+		var activationStates = {
+	        ACTIVE_TAG: 1,
+	        ISLAND_SLEEPING: 2,
+	        WANTS_DEACTIVATION: 3,
+	        DISABLE_DEACTIVATION: 4,
+	        DISABLE_SIMULATION: 5
+		};
 
 		var interval;
 		var ammoTransform;
@@ -310,6 +199,7 @@ function (
 		var timeStep;
 		var maxSubSteps = 3;
 		var bodies = [];
+		var bodyConfigs = [];
 		var idToBodyMap = {};
 		var bus = new ARRAY_TYPE(NUM_FLOATS_PER_BODY * BUS_RESIZE_STEP);
 
@@ -331,7 +221,7 @@ function (
 				shape = new Ammo.btSphereShape(shapeConfig.radius);
 				break;
 			case 'plane':
-				console.log('plane ' + shapeConfig.normal + ' ' + shapeConfig.planeConstant);
+				//console.log('plane ' + shapeConfig.normal + ' ' + shapeConfig.planeConstant);
 				var n = shapeConfig.normal;
 				shape = new Ammo.btStaticPlaneShape(new Ammo.btVector3(n[0], n[1], n[2]), shapeConfig.planeConstant);
 				break;
@@ -339,6 +229,10 @@ function (
 				throw new Error('Shape type not recognized: ' + shapeConfig.type);
 			}
 			return shape;
+		}
+
+		function bodyIsKinematic(body){
+			return body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT;
 		}
 
 		function step(dt, subSteps) {
@@ -356,7 +250,14 @@ function (
 			// Pack body data into bus
 			for (var i = 0; i < bodies.length; i++) {
 				var body = bodies[i];
+				var bodyConfig = bodyConfigs[i];
+
 				body.getMotionState().getWorldTransform(ammoTransform);
+
+				// Move kinematic bodies
+				if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
+					updateKinematic(body, bodyConfig, ammoTransform);
+				}
 
 				var p = NUM_FLOATS_PER_BODY * i;
 
@@ -379,6 +280,49 @@ function (
 			if (bodies.length * NUM_FLOATS_PER_BODY > bus.length) {
 				bus = new ARRAY_TYPE((bodies.length + BUS_RESIZE_STEP) * NUM_FLOATS_PER_BODY);
 			}
+		}
+
+		function updateKinematic(body, bodyConfig, currentTransform) {
+			var v = bodyConfig.linearVelocity;
+			if (!v) {
+				return;
+			}
+			var position = currentTransform.getOrigin();
+			var transform = new Ammo.btTransform();
+			transform.setIdentity();
+			transform.getOrigin().setValue(position.x() + v[0] * timeStep, position.y() + v[1] * timeStep, position.z() + v[2] * timeStep);
+
+			// TODO: Integrate the quaternion, like this:
+			/*
+			w.set(angularVelo.x, angularVelo.y, angularVelo.z, 0);
+			w.mult(quat,wq);
+			quat.x += half_dt * wq.x;
+			quat.y += half_dt * wq.y;
+			quat.z += half_dt * wq.z;
+			quat.w += half_dt * wq.w;
+			quat.normalize();
+            */
+			// transform.setRotation(new Ammo.btQuaternion(params.quaternion[0], params.quaternion[1], params.quaternion[2], params.quaternion[3]));
+			body.getMotionState().setWorldTransform(transform);
+
+			//Ammo.destroy(v);
+			/*
+            this._displacement.copy(this._linearVelocity).scale(timeStep);
+            this.entity.translate(this._displacement);
+
+            this._displacement.copy(this._angularVelocity).scale(timeStep);
+            this.entity.rotate(this._displacement.x, this._displacement.y, this._displacement.z);
+
+            if (body.getMotionState()) {
+                var pos = this.entity.getPosition();
+                var rot = this.entity.getRotation();
+
+                ammoTransform.getOrigin().setValue(pos.x(), pos.y(), pos.z());
+                //ammoQuat.setValue(rot.x, rot.y, rot.z, rot.w);
+                //ammoTransform.setRotation(ammoQuat);
+                body.getMotionState().setWorldTransform(ammoTransform);
+            }
+            */
 		}
 
 		var commandHandlers = {
@@ -436,6 +380,10 @@ function (
 				ammoTransform.setRotation(ammoQuat);
 				Ammo.destroy(ammoQuat);
 
+				if (bodyConfig.type === 4) {
+					bodyConfig.mass = 0;
+				}
+
 				var motionState = new Ammo.btDefaultMotionState(ammoTransform);
 				var localInertia = new Ammo.btVector3(0, 0, 0);
 
@@ -448,10 +396,17 @@ function (
 				info.set_m_restitution(bodyConfig.restitution);
 				var body = new Ammo.btRigidBody(info);
 
+				if (bodyConfig.type === 4) {
+					body.setCollisionFlags(body.getCollisionFlags() | collisionFlags.KINEMATIC_OBJECT);
+					body.setActivationState(activationStates.DISABLE_DEACTIVATION);
+				}
+
 				ammoWorld.addRigidBody(body);
 
 				bodies.push(body);
+				bodyConfigs.push(bodyConfig);
 				idToBodyMap[bodyConfig.id] = body;
+
 			},
 
 			removeBody: function (params) {
@@ -461,6 +416,7 @@ function (
 				}
 				bodies.splice(bodies.indexOf(body), 1);
 				delete idToBodyMap[params.id];
+				delete idToBodyConfigMap[params.id];
 				ammoWorld.removeRigidBody(body);
 				Ammo.destroy(body);
 			},
@@ -499,6 +455,7 @@ function (
 				transform.setOrigin(new Ammo.btVector3(params.position[0], params.position[1], params.position[2]));
 				transform.setRotation(new Ammo.btQuaternion(params.quaternion[0], params.quaternion[1], params.quaternion[2], params.quaternion[3]));
 				body.setCenterOfMassTransform(transform);
+				//body.setWorldTransform(transform);
 			},
 
 			setLinearVelocity: function (params) {
@@ -507,6 +464,10 @@ function (
 					return;
 				}
 				body.setLinearVelocity(new Ammo.btVector3(params.velocity[0], params.velocity[1], params.velocity[2]));
+				if (bodyIsKinematic(body)) {
+					var bodyConfig = bodyConfigs[bodies.indexOf(body)];
+					bodyConfig.linearVelocity = params.velocity;
+				}
 			},
 
 			setAngularVelocity: function (params) {
@@ -529,7 +490,7 @@ function (
 
 			if (data.command) {
 				if (commandHandlers[data.command]) {
-					console.log('command: ' + data.command);
+					//console.log('command: ' + data.command);
 					commandHandlers[data.command](data);
 				} else {
 					console.warn('No handler for command "' + data.command + '"');
