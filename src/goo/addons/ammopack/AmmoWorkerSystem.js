@@ -132,6 +132,15 @@ function (
 	};
 
 	/**
+	 * Steps the physics simulation.
+	 */
+	AmmoWorkerSystem.prototype.step = function () {
+		this._postMessage({
+			command: 'step'
+		});
+	};
+
+	/**
 	 * Stops the physics simulation.
 	 */
 	AmmoWorkerSystem.prototype.pause = function () {
@@ -248,8 +257,8 @@ function (
 		var bus = new ARRAY_TYPE(NUM_FLOATS_PER_BODY * BUS_RESIZE_STEP);
 
 		// Temp vars
-        var ammoRayStart = new Ammo.btVector3();
-        var ammoRayEnd = new Ammo.btVector3();
+		var ammoRayStart = new Ammo.btVector3();
+		var ammoRayEnd = new Ammo.btVector3();
 
 		/**
 		 * Convert a shape config to an instance of Ammo shape.
@@ -319,12 +328,12 @@ function (
 			dt = dt || 1 / 60;
 			subSteps = typeof(subSteps) === 'number' ? subSteps : maxSubSteps;
 
-			// TODO: handle substepping manually. This is needed for kinematic objects to work properly.
-			ammoWorld.stepSimulation(timeStep, 0, timeStep);
-
 			if (!bus || !bus.length) {
 				return;
 			}
+
+			// TODO: handle substepping manually. This is needed for kinematic objects to work properly.
+			var subStepsTaken = ammoWorld.stepSimulation(timeStep, 0, timeStep);
 
 			checkResizeBus();
 
@@ -337,7 +346,7 @@ function (
 
 				// Move kinematic bodies
 				if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
-					updateKinematic(body, bodyConfig, ammoTransform, dt);
+					updateKinematic(body, bodyConfig, ammoTransform, timeStep);
 				}
 
 				var p = NUM_FLOATS_PER_BODY * i;
@@ -369,10 +378,7 @@ function (
 				return;
 			}
 			var position = currentTransform.getOrigin();
-			var transform = new Ammo.btTransform();
-			transform.setIdentity();
-			transform.getOrigin().setValue(position.x() + v[0] * dt, position.y() + v[1] * dt, position.z() + v[2] * dt);
-
+			currentTransform.getOrigin().setValue(position.x() + v[0] * dt, position.y() + v[1] * dt, position.z() + v[2] * dt);
 			// TODO: Integrate the quaternion, like this:
 			/*
 			w.set(angularVelo.x, angularVelo.y, angularVelo.z, 0);
@@ -383,9 +389,8 @@ function (
 			quat.w += half_dt * wq.w;
 			quat.normalize();
             */
-			// transform.setRotation(new Ammo.btQuaternion(params.quaternion[0], params.quaternion[1], params.quaternion[2], params.quaternion[3]));
-			body.getMotionState().setWorldTransform(transform);
-
+			currentTransform.setRotation(new Ammo.btQuaternion(0, 0, 0, 1));
+			body.getMotionState().setWorldTransform(currentTransform);
 			//Ammo.destroy(v);
 			/*
             this._displacement.copy(this._linearVelocity).scale(timeStep);
@@ -478,6 +483,8 @@ function (
 				info.set_m_restitution(bodyConfig.restitution);
 				var body = new Ammo.btRigidBody(info);
 
+				body.setActivationState(activationStates.DISABLE_DEACTIVATION);
+
 				if (bodyConfig.type === 4) {
 					body.setCollisionFlags(body.getCollisionFlags() | collisionFlags.KINEMATIC_OBJECT);
 					body.setActivationState(activationStates.DISABLE_DEACTIVATION);
@@ -502,9 +509,9 @@ function (
 			},
 
 			run: function (/*params*/) {
-				var last = Date.now();
+				var last = performance.now();
 				function mainLoop() {
-					var now = Date.now();
+					var now = performance.now();
 					step((now - last) / 1000);
 					last = now;
 				}
@@ -522,7 +529,7 @@ function (
 
 			step: function (/*params*/) {
 				// Manual step
-				step(timeStep, 0);
+				step(timeStep);
 			},
 
 			setCenterOfMassTransform: function (params) {
@@ -535,7 +542,6 @@ function (
 				transform.setOrigin(new Ammo.btVector3(params.position[0], params.position[1], params.position[2]));
 				transform.setRotation(new Ammo.btQuaternion(params.quaternion[0], params.quaternion[1], params.quaternion[2], params.quaternion[3]));
 				body.setCenterOfMassTransform(transform);
-				//body.setWorldTransform(transform);
 			},
 
 			setLinearVelocity: function (params) {

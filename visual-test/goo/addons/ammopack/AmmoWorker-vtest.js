@@ -159,20 +159,26 @@ require([
 
 	function addKinematic() {
 		var h = new Vector3(4, 1, 4);
+		var pos = [0, 3, -10];
 		var entity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
 			{ mass: 1, type: AmmoWorkerRigidbodyComponent.KINEMATIC },
-			[0, 3, -10],
+			pos,
 			new AmmoBoxColliderComponent({
 				halfExtents : h
 			})
 		);
 
+		pos[1] += 2;
+		createEntity(goo, new Box(2, 2, 2), {mass: 1}, pos,  new AmmoBoxColliderComponent({ halfExtents: new Vector3(1, 1, 1) }));
+
 		var sign = 1;
-		setInterval(function () {
+		function func() {
 			entity.setLinearVelocity(new Vector3(sign * 3, 0, 0));
 			entity.setAngularVelocity(new Vector3(0, sign * 2, 0)); // Does not work yet
 			sign *= -1;
-		}, 4000);
+		}
+		//setInterval(func, 4000);
+		func();
 	}
 
 	var addRemoveEntity;
@@ -230,6 +236,9 @@ require([
 		switch (ch) {
 		case 'a':
 			addPrimitives();
+			break;
+		case 's':
+			ammoWorkerSystem.step();
 			break;
 		case 'v':
 			setVelocity();
