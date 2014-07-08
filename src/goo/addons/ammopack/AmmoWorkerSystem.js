@@ -269,6 +269,8 @@ function (
 		var bodyConfigs = [];
 		var idToBodyMap = {};
 		var bus = new ARRAY_TYPE(NUM_FLOATS_PER_BODY * BUS_RESIZE_STEP);
+		var simulationStartTime = 0;
+		var physicsTime = 0;
 
 		// Temp vars
 		var ammoRayStart = new Ammo.btVector3();
@@ -342,14 +344,29 @@ function (
 			dt = dt || 1 / 60;
 			subSteps = typeof(subSteps) === 'number' ? subSteps : maxSubSteps;
 
+			// TODO: handle substepping manually. This is needed for kinematic objects to work properly.
+			ammoWorld.stepSimulation(timeStep, 0, timeStep);
+
+			// Move kinematic bodies
+			for (var i = 0; i < bodies.length; i++) {
+				var body = bodies[i];
+				var bodyConfig = bodyConfigs[i];
+
+				body.getMotionState().getWorldTransform(ammoTransform);
+
+				if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
+					updateKinematic(body, bodyConfig, ammoTransform, timeStep);
+				}
+			}
+		}
+
+		function sendTransforms() {
+
 			if (!bus || !bus.length) {
 				return;
 			}
 
 			checkResizeBus();
-
-			// TODO: handle substepping manually. This is needed for kinematic objects to work properly.
-			ammoWorld.stepSimulation(timeStep, 0, timeStep);
 
 			// Pack body data into bus
 			for (var i = 0; i < bodies.length; i++) {
@@ -357,11 +374,6 @@ function (
 				var bodyConfig = bodyConfigs[i];
 
 				body.getMotionState().getWorldTransform(ammoTransform);
-
-				// Move kinematic bodies
-				if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
-					updateKinematic(body, bodyConfig, ammoTransform, timeStep);
-				}
 
 				var p = NUM_FLOATS_PER_BODY * i;
 
@@ -523,11 +535,25 @@ function (
 			},
 
 			run: function (/*params*/) {
-				var last = performance.now();
+				var last = performance.now() / 1000;
+				simulationStartTime = last;
+				physicsTime = 0;
+
 				function mainLoop() {
-					var now = performance.now();
-					step((now - last) / 1000);
+					var now = performance.now() / 1000;
+					var wallClockTime = now - simulationStartTime;
+					var dt = now - last;
 					last = now;
+					var subSteps = 0;
+					while (physicsTime < wallClockTime) {
+						step(dt);
+						physicsTime += timeStep;
+						subSteps++;
+						if (subSteps >= maxSubSteps) {
+							break;
+						}
+					}
+					sendTransforms();
 				}
 				if (interval) {
 					clearInterval(interval);

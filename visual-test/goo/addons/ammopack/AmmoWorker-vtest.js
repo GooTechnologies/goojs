@@ -58,7 +58,8 @@ require([
 	var goo = V.initGoo();
 
 	var ammoWorkerSystem = new AmmoWorkerSystem({
-		gravity: new Vector3(0, -10, 0)
+		gravity: new Vector3(0, -10, 0),
+		maxSubSteps: 1
 	});
 	goo.world.setSystem(ammoWorkerSystem);
 
@@ -137,7 +138,7 @@ require([
 		var colliderEntity = goo.world.createEntity();
 		colliderEntity.addToWorld();
 		entity.attachChild(colliderEntity);
-		colliderEntity.transformComponent.transform.translation.setd(nLin / 2, 0, nCol / 2);
+		colliderEntity.transformComponent.transform.translation.setd((nLin) / 2, 0, (nCol) / 2);
 		colliderEntity.transformComponent.setUpdated();
 		colliderEntity.setComponent(new AmmoTerrainColliderComponent({
 			heightMap: matrix
