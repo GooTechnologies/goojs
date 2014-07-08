@@ -137,7 +137,7 @@ function (
 			this._queue.push(message);
 			return;
 		}
-		this._system.postMessage(message);
+		this._system._postMessage(message);
 	};
 
 	function v2a(v) {

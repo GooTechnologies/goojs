@@ -113,7 +113,7 @@ function (
 	 * @param {object} message
 	 */
 	AmmoWorkerSystem.prototype._postMessage = function (message) {
-		//console.log(JSON.stringify(message,2,2));
+		console.log(JSON.stringify(message, 2, 2));
 		this._worker.postMessage(message);
 	};
 
@@ -140,6 +140,8 @@ function (
 	};
 
 	AmmoWorkerSystem.prototype.inserted = function (entity) {
+
+		entity.ammoWorkerRigidbodyComponent._system = this;
 
 		// Check if there are colliders on the second level
 		var colliders = [];
@@ -227,7 +229,6 @@ function (
 			shapes: shapeConfigs
 		});
 
-
 		// Send messages accumulated in the queue
 		var queue = entity.ammoWorkerRigidbodyComponent._queue;
 		for (var i = 0; i < queue.length; i++) {
@@ -239,7 +240,7 @@ function (
 
 	AmmoWorkerSystem.prototype.deleted = function (entity) {
 		this._postMessage({
-			type: 'removeBody',
+			command: 'removeBody',
 			id: entity.id
 		});
 		delete entity.ammoWorkerRigidbodyComponent._system;
@@ -436,6 +437,17 @@ function (
 				idToBodyMap[bodyConfig.id] = body;
 			},
 
+			removeBody: function (params) {
+				var body = getBodyById(params.id);
+				if (!body) {
+					return;
+				}
+				bodies.splice(bodies.indexOf(body), 1);
+				delete idToBodyMap[params.id];
+				ammoWorld.removeRigidBody(body);
+				Ammo.destroy(body);
+			},
+
 			run: function (/*params*/) {
 				var last = Date.now();
 				function mainLoop() {
@@ -454,6 +466,18 @@ function (
 				step(timeStep, 0);
 			},
 
+			setCenterOfMassTransform: function (params) {
+				var body = getBodyById(params.id);
+				if (!body) {
+					return;
+				}
+				var transform = new Ammo.btTransform();
+				transform.setIdentity();
+				transform.setOrigin(new Ammo.btVector3(params.position[0], params.position[1], params.position[2]));
+				transform.setRotation(new Ammo.btQuaternion(params.quaternion[0], params.quaternion[1], params.quaternion[2], params.quaternion[3]));
+				body.setCenterOfMassTransform(transform);
+			},
+
 			setLinearVelocity: function (params) {
 				var body = getBodyById(params.id);
 				if (!body) {
@@ -469,6 +493,7 @@ function (
 				}
 				body.setAngularVelocity(new Ammo.btVector3(params.velocity[0], params.velocity[1], params.velocity[2]));
 			}
+
 		};
 
 		onmessage = function (event) {

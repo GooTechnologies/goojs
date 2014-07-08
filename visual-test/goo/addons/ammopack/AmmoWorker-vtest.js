@@ -12,6 +12,7 @@ require([
 	'goo/entities/World',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
+	'goo/math/Quaternion',
 	'goo/entities/components/TransformComponent',
 	'goo/addons/ammopack/AmmoWorkerSystem',
 	'goo/addons/ammopack/AmmoWorkerRigidbodyComponent',
@@ -36,6 +37,7 @@ require([
 	World,
 	OrbitCamControlScript,
 	Vector3,
+	Quaternion,
 	TransformComponent,
 	AmmoWorkerSystem,
 	AmmoWorkerRigidbodyComponent,
@@ -103,6 +105,30 @@ require([
 		entity.setAngularVelocity(new Vector3(20, 0, 0));
 	}
 
+	var addRemoveEntity;
+	function addRemove() {
+		if (!addRemoveEntity) {
+			var h = new Vector3(1, 1, 1);
+			addRemoveEntity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
+				{mass: 1},
+				[0, 3, 0],
+				new AmmoBoxColliderComponent({
+					halfExtents : h
+				})
+			);
+		} else {
+			addRemoveEntity.removeFromWorld();
+			addRemoveEntity = undefined;
+		}
+	}
+
+	function setPosition() {
+		if (addRemoveEntity) {
+			console.log('here')
+			addRemoveEntity.setCenterOfMassTransform(new Vector3(2,2,2), new Quaternion());
+		}
+	}
+
 	addPrimitives();
 
 	document.addEventListener('keypress', function (event) {
@@ -113,6 +139,12 @@ require([
 			break;
 		case 'v':
 			setVelocity();
+			break;
+		case 'r':
+			addRemove();
+			break;
+		case 'p':
+			setPosition();
 			break;
 		}
 	}, false);
