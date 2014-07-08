@@ -57,15 +57,20 @@ require([
 
 	var goo = V.initGoo();
 
-	var ammoWorkerSystem = new AmmoWorkerSystem();
+	var ammoWorkerSystem = new AmmoWorkerSystem({
+		gravity: new Vector3(0, -10, 0)
+	});
 	goo.world.setSystem(ammoWorkerSystem);
 
-	function createEntity(goo, meshData, ammoSettings, pos, colliderComponent, material) {
+	function createEntity(goo, meshData, ammoSettings, pos, colliderComponent, material, name) {
 		material = material || V.getColoredMaterial();
 		var entity = goo.world.createEntity(meshData, material, pos);
 		entity.addToWorld();
 		entity.setComponent(colliderComponent);
 		entity.setComponent(new AmmoWorkerRigidbodyComponent(ammoSettings));
+		if (name) {
+			entity.name = name;
+		}
 		return entity;
 	}
 
@@ -81,8 +86,9 @@ require([
 					[x, y, z],
 					new AmmoBoxColliderComponent({
 						halfExtents : h
-					})
-				);
+					}),
+					null,
+					'primitive box');
 			} else {
 				var radius = 1 + V.rng.nextFloat();
 				createEntity(goo, new Sphere(10, 10, radius),
@@ -90,10 +96,20 @@ require([
 					[x, y, z],
 					new AmmoSphereColliderComponent({
 						radius : radius
-					})
+					}),
+					null,
+					'primitive sphere'
 				);
 			}
 		}
+	}
+
+	function rayCast() {
+		var start = new Vector3(0, 100, 0);
+		var end = new Vector3(0, -100, 0);
+		ammoWorkerSystem.rayCast(start, end).then(function (result) {
+			console.log(result.entity.name);
+		});
 	}
 
 	function addTerrain() {
@@ -116,6 +132,7 @@ require([
 		entity.setComponent(new AmmoWorkerRigidbodyComponent({
 			mass: 0 // static
 		}));
+		entity.name = 'terrain';
 
 		var colliderEntity = goo.world.createEntity();
 		colliderEntity.addToWorld();
@@ -130,7 +147,7 @@ require([
 	function setVelocity() {
 		var h = new Vector3(0.5, 0.5, 0.5);
 		var entity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
-			{mass: 1},
+			{ mass: 1 },
 			[0, 3, 0],
 			new AmmoBoxColliderComponent({
 				halfExtents : h
@@ -155,7 +172,7 @@ require([
 			entity.setLinearVelocity(new Vector3(sign * 3, 0, 0));
 			entity.setAngularVelocity(new Vector3(0, sign * 2, 0)); // Does not work yet
 			sign *= -1;
-		}, 2000);
+		}, 4000);
 	}
 
 	var addRemoveEntity;
@@ -196,6 +213,9 @@ require([
 	addPrimitives();
 	addKinematic();
 	addTerrain();
+	setTimeout(function () {
+		rayCast();
+	}, 10);
 
 	console.log([
 		'a: add primitives',
@@ -222,6 +242,9 @@ require([
 			break;
 		case 'p':
 			playPause();
+			break;
+		case 't':
+			rayCast();
 			break;
 		}
 	}, false);

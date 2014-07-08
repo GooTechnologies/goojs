@@ -2,14 +2,16 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/math/Quaternion',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/util/rsvp'
 ],
 /** @lends */
 function (
 	System,
 	SystemBus,
 	Quaternion,
-	Vector3
+	Vector3,
+	RSVP
 ) {
 	'use strict';
 
@@ -36,14 +38,41 @@ function (
 		 */
 		this._worker = null;
 
+		/**
+		 * Map between messageId's and Promises. Should be resolved when a message gets back from worker.
+		 * @private
+		 * @type {Object}
+		 */
+		this._pendingRayCasts = {};
+
 		this._initWorker();
-		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.numSubSteps) === 'number' ? settings.numSubSteps : 3);
+		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.maxSubSteps) === 'number' ? settings.maxSubSteps : 3);
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
 		this.run();
 	}
 	AmmoWorkerSystem.prototype = Object.create(System.prototype);
 
 	var tmpQuat = new Quaternion();
+	var messageId = 0;
+
+	var commandHandlers = {
+		rayCastResult: function (data) {
+			var pending = this._pendingRayCasts;
+			var result = {};
+			if (data.bodyId) {
+				for (var i = 0; i < this._activeEntities.length; i++) {
+					var entity = this._activeEntities[i];
+					if (entity.id === data.bodyId) {
+						result.entity = entity;
+						result.point = new Vector3(data.point);
+						result.normal = new Vector3(data.normal);
+					}
+				}
+			}
+			pending[data.messageId].resolve(result);
+			delete pending[data.messageId];
+		}
+	};
 
 	/**
 	 * Initialize the worker thread.
@@ -61,11 +90,9 @@ function (
 		worker.onmessage = function (event) {
 			var data = event.data;
 
-			/*
 			if (data.command) {
-				// TODO: Handle commands from worker...
+				commandHandlers[data.command].call(that, data);
 			}
-			*/
 
 			if (data.length) {
 
@@ -92,7 +119,6 @@ function (
 	 * @param {object} message
 	 */
 	AmmoWorkerSystem.prototype._postMessage = function (message) {
-		//console.log(JSON.stringify(message, 2, 2));
 		this._worker.postMessage(message);
 	};
 
@@ -122,6 +148,24 @@ function (
 			command: 'setGravity',
 			gravity: v2a(gravity)
 		});
+	};
+
+	/**
+	 * @param {Vector3} start
+	 * @param {Vector3} end
+	 * @return {RSVP.Promise} Promise that resolves with the raycast results.
+	 */
+	AmmoWorkerSystem.prototype.rayCast = function (start, end) {
+		var message = {
+			command: 'rayCast',
+			start: v2a(start),
+			end: v2a(end),
+			messageId: messageId++
+		};
+		this._postMessage(message);
+		var p = new RSVP.Promise();
+		this._pendingRayCasts[message.messageId] = p;
+		return p;
 	};
 
 	/**
@@ -203,6 +247,10 @@ function (
 		var idToBodyMap = {};
 		var bus = new ARRAY_TYPE(NUM_FLOATS_PER_BODY * BUS_RESIZE_STEP);
 
+		// Temp vars
+        var ammoRayStart = new Ammo.btVector3();
+        var ammoRayEnd = new Ammo.btVector3();
+
 		/**
 		 * Convert a shape config to an instance of Ammo shape.
 		 * @param  {object} shapeConfig
@@ -263,7 +311,7 @@ function (
 			return shape;
 		}
 
-		function bodyIsKinematic(body){
+		function bodyIsKinematic(body) {
 			return body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT;
 		}
 
@@ -271,7 +319,8 @@ function (
 			dt = dt || 1 / 60;
 			subSteps = typeof(subSteps) === 'number' ? subSteps : maxSubSteps;
 
-			ammoWorld.stepSimulation(dt, maxSubSteps, timeStep);
+			// TODO: handle substepping manually. This is needed for kinematic objects to work properly.
+			ammoWorld.stepSimulation(timeStep, 0, timeStep);
 
 			if (!bus || !bus.length) {
 				return;
@@ -288,7 +337,7 @@ function (
 
 				// Move kinematic bodies
 				if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
-					updateKinematic(body, bodyConfig, ammoTransform);
+					updateKinematic(body, bodyConfig, ammoTransform, dt);
 				}
 
 				var p = NUM_FLOATS_PER_BODY * i;
@@ -314,7 +363,7 @@ function (
 			}
 		}
 
-		function updateKinematic(body, bodyConfig, currentTransform) {
+		function updateKinematic(body, bodyConfig, currentTransform, dt) {
 			var v = bodyConfig.linearVelocity;
 			if (!v) {
 				return;
@@ -322,7 +371,7 @@ function (
 			var position = currentTransform.getOrigin();
 			var transform = new Ammo.btTransform();
 			transform.setIdentity();
-			transform.getOrigin().setValue(position.x() + v[0] * timeStep, position.y() + v[1] * timeStep, position.z() + v[2] * timeStep);
+			transform.getOrigin().setValue(position.x() + v[0] * dt, position.y() + v[1] * dt, position.z() + v[2] * dt);
 
 			// TODO: Integrate the quaternion, like this:
 			/*
@@ -374,6 +423,7 @@ function (
 			},
 			setTimeStep: function (params) {
 				timeStep = params.timeStep;
+				maxSubSteps = params.maxSubSteps;
 			},
 			addBody: function (bodyConfig) {
 				var shape, shapeConfig;
@@ -438,7 +488,6 @@ function (
 				bodies.push(body);
 				bodyConfigs.push(bodyConfig);
 				idToBodyMap[bodyConfig.id] = body;
-
 			},
 
 			removeBody: function (params) {
@@ -448,7 +497,6 @@ function (
 				}
 				bodies.splice(bodies.indexOf(body), 1);
 				delete idToBodyMap[params.id];
-				delete idToBodyConfigMap[params.id];
 				ammoWorld.removeRigidBody(body);
 				Ammo.destroy(body);
 			},
@@ -508,9 +556,48 @@ function (
 					return;
 				}
 				body.setAngularVelocity(new Ammo.btVector3(params.velocity[0], params.velocity[1], params.velocity[2]));
-			}
+			},
 
+			rayCast: function (params) {
+				ammoRayStart.setValue(params.start[0], params.start[1], params.start[2]);
+				ammoRayEnd.setValue(params.end[0], params.end[1], params.end[2]);
+				var rayCallback = new Ammo.ClosestRayResultCallback(ammoRayStart, ammoRayEnd);
+				ammoWorld.rayTest(ammoRayStart, ammoRayEnd, rayCallback);
+				var message = {
+					command: 'rayCastResult',
+					messageId: params.messageId
+				};
+				if (rayCallback.hasHit()) {
+					var collisionObjPtr = rayCallback.get_m_collisionObject();
+
+					var collisionObj = Ammo.wrapPointer(collisionObjPtr, Ammo.btCollisionObject);
+					var body = Ammo.btRigidBody.prototype.upcast(collisionObj);
+					if (body) {
+						var normal = rayCallback.get_m_hitNormalWorld();
+						var point = rayCallback.get_m_hitPointWorld();
+						var foundBody;
+						for (var i = 0; i < bodies.length; i++) {
+							if (bodies[i].a === collisionObjPtr.a) {
+								foundBody = bodies[i];
+								break;
+							}
+						}
+						if (foundBody) {
+							message.normal = [normal.x(), normal.y(), normal.z()];
+							message.point = [point.x(), point.y(), point.z()];
+							message.bodyId = bodyConfigs[bodies.indexOf(foundBody)].id;
+						}
+					}
+				}
+				sendCommand(message);
+
+				Ammo.destroy(rayCallback);
+	        }
 		};
+
+		function sendCommand(command) {
+			postMessage(command);
+		}
 
 		onmessage = function (event) {
 			var data = event.data;
