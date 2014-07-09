@@ -56,12 +56,15 @@ require([
 	'use strict';
 
 	var goo = V.initGoo();
+	var intervals = [];
 
 	var ammoWorkerSystem = new AmmoWorkerSystem({
 		gravity: new Vector3(0, -10, 0),
 		maxSubSteps: 1
 	});
 	goo.world.setSystem(ammoWorkerSystem);
+
+	init();
 
 	function createEntity(goo, meshData, ammoSettings, pos, colliderComponent, material, name) {
 		material = material || V.getColoredMaterial();
@@ -177,7 +180,7 @@ require([
 			entity.setAngularVelocity(new Vector3(0, sign * 2, 0)); // Does not work yet
 			sign *= -1;
 		}
-		//setInterval(func, 4000);
+		intervals.push(setInterval(func, 4000));
 		func();
 	}
 
@@ -219,6 +222,25 @@ require([
 		}
 	}
 
+	var cleared = false;
+	function reset() {
+		if (cleared) {
+			init();
+			ammoWorkerSystem.run();
+		} else {
+			while(intervals.length){
+				clearInterval(intervals.pop());
+			}
+			// Remove all entities from the world
+			var entities = goo.world.entityManager.getEntities();
+			for (var i = 0; i < entities.length; i++) {
+				entities[i].removeFromWorld();
+			}
+			ammoWorkerSystem.clear();
+		}
+		cleared = !cleared;
+	}
+
 	var paused = false;
 	function playPause() {
 		if (paused) {
@@ -229,13 +251,17 @@ require([
 		paused = !paused;
 	}
 
-	addPrimitives();
-	addKinematic();
-	addTerrain();
-	addCharacter();
-	setTimeout(function () {
-		rayCast();
-	}, 10);
+	function init() {
+		addPrimitives();
+		addKinematic();
+		addTerrain();
+		addCharacter();
+		addOther();
+
+		setTimeout(function () {
+			rayCast();
+		}, 10);
+	}
 
 	console.log([
 		'a: add primitives',
@@ -247,7 +273,7 @@ require([
 
 	function keyhandler(event) {
 		var speed = 4;
-		if(event.type === 'keyup'){
+		if (event.type === 'keyup') {
 			speed = 0;
 		}
 		switch (event.keyCode) {
@@ -279,6 +305,7 @@ require([
 		case 'm': setPosition(); break;
 		case 'p': playPause(); break;
 		case 't': rayCast(); break;
+		case 'z': reset(); break;
 		case ' ':
 			characterEntity.ammoWorkerRigidbodyComponent.characterJump(new Vector3(0, 10, 0));
 			break;
@@ -286,42 +313,45 @@ require([
 		}
 	}, false);
 
-	var h = new Vector3(10, 5, 0.5);
-	createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, 10],  new AmmoBoxColliderComponent({ halfExtents: h }));
-	createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, -10], new AmmoBoxColliderComponent({ halfExtents: h }));
-	h = new Vector3(0.5, 5, 10);
-	createEntity(goo, new Box(1, 10, 20), {mass: 0}, [10, -5, 0],  new AmmoBoxColliderComponent({ halfExtents: h }));
-	createEntity(goo, new Box(1, 10, 20), {mass: 0}, [-10, -5, 0], new AmmoBoxColliderComponent({ halfExtents: h }));
 
-	//createEntity(goo, new Box(100, 1, 100), { mass: 0, friction: 0 }, [0, -10, 0], new AmmoBoxColliderComponent({ halfExtents: new Vector3(50, 0.5, 50) }));
+	function addOther() {
+		var h = new Vector3(10, 5, 0.5);
+		createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, 10],  new AmmoBoxColliderComponent({ halfExtents: h }));
+		createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, -10], new AmmoBoxColliderComponent({ halfExtents: h }));
+		h = new Vector3(0.5, 5, 10);
+		createEntity(goo, new Box(1, 10, 20), {mass: 0}, [10, -5, 0],  new AmmoBoxColliderComponent({ halfExtents: h }));
+		createEntity(goo, new Box(1, 10, 20), {mass: 0}, [-10, -5, 0], new AmmoBoxColliderComponent({ halfExtents: h }));
 
-	// Create compound
-	var compoundEntity = goo.world.createEntity(new Vector3(0, 3, 0));
-	compoundEntity.addToWorld();
-	compoundEntity.setComponent(new AmmoWorkerRigidbodyComponent({
-		mass : 1
-	}));
-	var material = V.getColoredMaterial();
-	var h2 = new Vector3(1, 1, 1),
-		h3 = new Vector3(1, 1, 1),
-		radius = 1;
-	var subEntity1 = goo.world.createEntity(new Sphere(10, 10, radius), material, new Vector3(0, 0, 2));
-	var subEntity2 = goo.world.createEntity(new Box(h2.x * 2, h2.y * 2, h2.z * 2), material, new Vector3(0, 0, -2));
-	var subEntity3 = goo.world.createEntity(new Box(h3.x * 2, h3.y * 2, h3.z * 2), material, new Vector3(0, -2, -2));
-	subEntity1.addToWorld();
-	subEntity2.addToWorld();
-	subEntity3.addToWorld();
-	subEntity1.setComponent(new AmmoSphereColliderComponent({ radius: radius }));
-	subEntity2.setComponent(new AmmoBoxColliderComponent({ halfExtents: h2 }));
-	subEntity3.setComponent(new AmmoBoxColliderComponent({ halfExtents: h3 }));
-	compoundEntity.attachChild(subEntity1);
-	compoundEntity.attachChild(subEntity2);
-	compoundEntity.attachChild(subEntity3);
-	subEntity1.transformComponent.transform.rotation.fromAngles(Math.PI / 6, 0, 0);
-	subEntity1.transformComponent.setUpdated();
+		//createEntity(goo, new Box(100, 1, 100), { mass: 0, friction: 0 }, [0, -10, 0], new AmmoBoxColliderComponent({ halfExtents: new Vector3(50, 0.5, 50) }));
 
-	V.addLights();
+		// Create compound
+		var compoundEntity = goo.world.createEntity(new Vector3(0, 3, 0));
+		compoundEntity.addToWorld();
+		compoundEntity.setComponent(new AmmoWorkerRigidbodyComponent({
+			mass : 1
+		}));
+		var material = V.getColoredMaterial();
+		var h2 = new Vector3(1, 1, 1),
+			h3 = new Vector3(1, 1, 1),
+			radius = 1;
+		var subEntity1 = goo.world.createEntity(new Sphere(10, 10, radius), material, new Vector3(0, 0, 2));
+		var subEntity2 = goo.world.createEntity(new Box(h2.x * 2, h2.y * 2, h2.z * 2), material, new Vector3(0, 0, -2));
+		var subEntity3 = goo.world.createEntity(new Box(h3.x * 2, h3.y * 2, h3.z * 2), material, new Vector3(0, -2, -2));
+		subEntity1.addToWorld();
+		subEntity2.addToWorld();
+		subEntity3.addToWorld();
+		subEntity1.setComponent(new AmmoSphereColliderComponent({ radius: radius }));
+		subEntity2.setComponent(new AmmoBoxColliderComponent({ halfExtents: h2 }));
+		subEntity3.setComponent(new AmmoBoxColliderComponent({ halfExtents: h3 }));
+		compoundEntity.attachChild(subEntity1);
+		compoundEntity.attachChild(subEntity2);
+		compoundEntity.attachChild(subEntity3);
+		subEntity1.transformComponent.transform.rotation.fromAngles(Math.PI / 6, 0, 0);
+		subEntity1.transformComponent.setUpdated();
 
-	V.addOrbitCamera([50, 0, 0]);
+		V.addLights();
+
+		V.addOrbitCamera([50, 0, 0]);
+	}
 
 });
