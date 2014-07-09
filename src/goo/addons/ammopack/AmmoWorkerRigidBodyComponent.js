@@ -19,7 +19,7 @@ function (
 	 * @param {number} [settings.type] Must be set to AmmoWorkerRigidbodyComponent.DYNAMIC, KINEMATIC, or STATIC. Defaults to DYNAMIC.
 	 */
 	function AmmoWorkerRigidbodyComponent(settings) {
-		this.type = "AmmoWorkerRigidbodyComponent";
+		this.type = 'AmmoWorkerRigidbodyComponent';
 
 		settings = settings || {};
 
@@ -39,6 +39,18 @@ function (
 		 * @type {number}
 		 */
 		this._mass = typeof(settings.mass) === 'number' ? settings.mass : 1;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._friction = typeof(settings.friction) === 'number' ? settings.friction : null;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._restitution = typeof(settings.restitution) === 'number' ? settings.restitution : null;
 
 		/**
 		 * @private
@@ -101,6 +113,14 @@ function (
 		},
 		setCenterOfMassTransform: function () {
 			AmmoWorkerRigidbodyComponent.prototype.setCenterOfMassTransform.apply(this.ammoWorkerRigidbodyComponent, arguments);
+			return this;
+		},
+		setAngularFactor: function () {
+			AmmoWorkerRigidbodyComponent.prototype.setAngularFactor.apply(this.ammoWorkerRigidbodyComponent, arguments);
+			return this;
+		},
+		setLinearFactor: function () {
+			AmmoWorkerRigidbodyComponent.prototype.setLinearFactor.apply(this.ammoWorkerRigidbodyComponent, arguments);
 			return this;
 		}
 	};
@@ -175,6 +195,8 @@ function (
 			command: 'addBody',
 			id: entity.id,
 			mass: entity.ammoWorkerRigidbodyComponent._mass,
+			friction: entity.ammoWorkerRigidbodyComponent._friction,
+			restitution: entity.ammoWorkerRigidbodyComponent._restitution,
 			position: v2a(gooPos),
 			rotation: v2a(tmpQuat),
 			shapes: shapeConfigs,
@@ -197,9 +219,14 @@ function (
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setAngularFactor = function (angularFactor) {
+		if (typeof(angularFactor) === 'number') {
+			angularFactor = [angularFactor, angularFactor, angularFactor];
+		} else {
+			angularFactor = v2a(angularFactor);
+		}
 		this._postMessage({
 			command: 'setAngularFactor',
-			angularFactor: v2a(angularFactor)
+			angularFactor: angularFactor
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setFriction = function (friction) {
@@ -247,6 +274,24 @@ function (
 		this._postMessage({
 			command: 'applyCentralForce',
 			impulse: v2a(force)
+		});
+	};
+	AmmoWorkerRigidbodyComponent.prototype.enableCharacterController = function (ray) {
+		this._postMessage({
+			command: 'enableCharacterControl',
+			ray: v2a(ray)
+		});
+	};
+	AmmoWorkerRigidbodyComponent.prototype.setCharacterVelocity = function (velocity) {
+		this._postMessage({
+			command: 'setCharacterVelocity',
+			velocity: v2a(velocity)
+		});
+	};
+	AmmoWorkerRigidbodyComponent.prototype.characterJump = function (jumpImpulse) {
+		this._postMessage({
+			command: 'characterJump',
+			jumpImpulse: v2a(jumpImpulse)
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype._postMessage = function (message) {

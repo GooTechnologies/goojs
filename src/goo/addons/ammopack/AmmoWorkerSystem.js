@@ -23,6 +23,7 @@ function (
 	 * @param {Vector3} [settings.gravity] (defaults to [0, -10, 0])
 	 * @param {number} [settings.maxSubSteps=3]
 	 * @param {number} [settings.timeStep=1/60]
+	 * @param {number} [settings.run=true]
 	 * @example
 	 *     var ammoWorkerSystem = new AmmoWorkerSystem({
 	 *         gravity: new Vector3(0, -10, 0),
@@ -39,7 +40,7 @@ function (
 		this._worker = null;
 
 		/**
-		 * Map between messageId's and Promises. Should be resolved when a message gets back from worker.
+		 * Map between messageId's and Promises. Should be resolved when a message with a recognized ID gets back from worker.
 		 * @private
 		 * @type {Object}
 		 */
@@ -48,7 +49,11 @@ function (
 		this._initWorker();
 		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.maxSubSteps) === 'number' ? settings.maxSubSteps : 3);
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
-		this.run();
+
+		// Start automatically if the user didn't suppy false
+		if (typeof settings.run === 'undefined' || settings.run) {
+			this.run();
+		}
 	}
 	AmmoWorkerSystem.prototype = Object.create(System.prototype);
 
@@ -79,9 +84,9 @@ function (
 	 * @private
 	 */
 	AmmoWorkerSystem.prototype._initWorker = function () {
-	    // Create worker
-	    var code = workerCode.toString().replace(/^function workerCode\(\)\s\{/, '').replace(/\}$/, '');
-	    var blob = new Blob([code], { type: 'text/javascript' });
+		// Create worker
+		var code = workerCode.toString().replace(/^function workerCode\(\)\s\{/, '').replace(/\}$/, '');
+		var blob = new Blob([code], { type: 'text/javascript' });
 		var worker = new Worker(window.URL.createObjectURL(blob));
 
 		this._worker = worker;
@@ -92,6 +97,7 @@ function (
 
 			if (data.command) {
 				commandHandlers[data.command].call(that, data);
+				return;
 			}
 
 			if (data.length) {
@@ -101,9 +107,11 @@ function (
 					var entity = that._activeEntities[i];
 					tmpQuat.setd(data[7 * i + 3], data[7 * i + 4], data[7 * i + 5], data[7 * i + 6]);
 					entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);
-					entity.transformComponent.setTranslation(data[7 * i + 0], data[7 * i + 1], data[7 * i + 2]);
+					entity.transformComponent.transform.translation.setd(data[7 * i + 0], data[7 * i + 1], data[7 * i + 2]);
+					entity.transformComponent.setUpdated();
 				}
 
+				// Send back the buffer
 				worker.postMessage(data, [data.buffer]);
 			}
 		};
@@ -249,11 +257,11 @@ function (
 		};
 
 		var activationStates = {
-	        ACTIVE_TAG: 1,
-	        ISLAND_SLEEPING: 2,
-	        WANTS_DEACTIVATION: 3,
-	        DISABLE_DEACTIVATION: 4,
-	        DISABLE_SIMULATION: 5
+			ACTIVE_TAG: 1,
+			ISLAND_SLEEPING: 2,
+			WANTS_DEACTIVATION: 3,
+			DISABLE_DEACTIVATION: 4,
+			DISABLE_SIMULATION: 5
 		};
 
 		var interval;
@@ -275,6 +283,7 @@ function (
 		// Temp vars
 		var ammoRayStart = new Ammo.btVector3();
 		var ammoRayEnd = new Ammo.btVector3();
+		var ammoZeroVector = new Ammo.btVector3();
 
 		/**
 		 * Convert a shape config to an instance of Ammo shape.
@@ -344,7 +353,16 @@ function (
 			dt = dt || 1 / 60;
 			subSteps = typeof(subSteps) === 'number' ? subSteps : maxSubSteps;
 
-			// TODO: handle substepping manually. This is needed for kinematic objects to work properly.
+			// Move character bodies
+			for (var i = 0; i < bodies.length; i++) {
+				var body = bodies[i];
+				var bodyConfig = bodyConfigs[i];
+				if (bodyConfig.enableCharacterControl) {
+					body.getMotionState().getWorldTransform(ammoTransform);
+					updateCharacter(body, bodyConfig, ammoTransform, timeStep);
+				}
+			}
+
 			ammoWorld.stepSimulation(timeStep, 0, timeStep);
 
 			// Move kinematic bodies
@@ -358,6 +376,7 @@ function (
 					updateKinematic(body, bodyConfig, ammoTransform, timeStep);
 				}
 			}
+
 		}
 
 		function sendTransforms() {
@@ -398,6 +417,35 @@ function (
 			}
 		}
 
+		function updateCharacter(body, bodyConfig, currentTransform/*, dt*/) {
+
+			// Check if on ground
+			var position = currentTransform.getOrigin();
+
+			ammoRayStart.setValue(position.x(), position.y(), position.z());
+			ammoRayEnd.setValue(position.x() + bodyConfig.characterRay[0], position.y() + bodyConfig.characterRay[1], position.z() + bodyConfig.characterRay[2]);
+
+			var rayCallback = new Ammo.ClosestRayResultCallback(ammoRayStart, ammoRayEnd);
+			ammoWorld.rayTest(ammoRayStart, ammoRayEnd, rayCallback);
+			bodyConfig.characterOnGround = false;
+			if (rayCallback.hasHit()) {
+				var collisionObjPtr = rayCallback.get_m_collisionObject();
+				var collisionObj = Ammo.wrapPointer(collisionObjPtr, Ammo.btCollisionObject); // Needed?
+				var hitBody = Ammo.btRigidBody.prototype.upcast(collisionObj);
+				bodyConfig.characterOnGround = !!hitBody;
+			}
+			Ammo.destroy(rayCallback);
+			if (bodyConfig.characterVelocity && bodyConfig.characterOnGround) {
+				var v = body.getLinearVelocity();
+				body.activate();
+				body.setLinearVelocity(new Ammo.btVector3(
+					bodyConfig.characterVelocity[0],
+					bodyConfig.characterVelocity[1] + v.y(),
+					bodyConfig.characterVelocity[2]
+				));
+			}
+		}
+
 		function updateKinematic(body, bodyConfig, currentTransform, dt) {
 			var v = bodyConfig.linearVelocity;
 			if (!v) {
@@ -407,34 +455,35 @@ function (
 			currentTransform.getOrigin().setValue(position.x() + v[0] * dt, position.y() + v[1] * dt, position.z() + v[2] * dt);
 			// TODO: Integrate the quaternion, like this:
 			/*
+			var w = new Quaternion();
 			w.set(angularVelo.x, angularVelo.y, angularVelo.z, 0);
-			w.mult(quat,wq);
-			quat.x += half_dt * wq.x;
-			quat.y += half_dt * wq.y;
-			quat.z += half_dt * wq.z;
-			quat.w += half_dt * wq.w;
+			w.mult(quat, wq); // Quaternion multiplication
+			quat.x += 0.5 * dt * wq.x;
+			quat.y += 0.5 * dt * wq.y;
+			quat.z += 0.5 * dt * wq.z;
+			quat.w += 0.5 * dt * wq.w;
 			quat.normalize();
-            */
+			*/
 			currentTransform.setRotation(new Ammo.btQuaternion(0, 0, 0, 1));
 			body.getMotionState().setWorldTransform(currentTransform);
 			//Ammo.destroy(v);
 			/*
-            this._displacement.copy(this._linearVelocity).scale(timeStep);
-            this.entity.translate(this._displacement);
+			this._displacement.copy(this._linearVelocity).scale(timeStep);
+			this.entity.translate(this._displacement);
 
-            this._displacement.copy(this._angularVelocity).scale(timeStep);
-            this.entity.rotate(this._displacement.x, this._displacement.y, this._displacement.z);
+			this._displacement.copy(this._angularVelocity).scale(timeStep);
+			this.entity.rotate(this._displacement.x, this._displacement.y, this._displacement.z);
 
-            if (body.getMotionState()) {
-                var pos = this.entity.getPosition();
-                var rot = this.entity.getRotation();
+			if (body.getMotionState()) {
+				var pos = this.entity.getPosition();
+				var rot = this.entity.getRotation();
 
-                ammoTransform.getOrigin().setValue(pos.x(), pos.y(), pos.z());
-                //ammoQuat.setValue(rot.x, rot.y, rot.z, rot.w);
-                //ammoTransform.setRotation(ammoQuat);
-                body.getMotionState().setWorldTransform(ammoTransform);
-            }
-            */
+				ammoTransform.getOrigin().setValue(pos.x(), pos.y(), pos.z());
+				//ammoQuat.setValue(rot.x, rot.y, rot.z, rot.w);
+				//ammoTransform.setRotation(ammoQuat);
+				body.getMotionState().setWorldTransform(ammoTransform);
+			}
+			*/
 		}
 
 		var commandHandlers = {
@@ -505,11 +554,13 @@ function (
 				}
 
 				var info = new Ammo.btRigidBodyConstructionInfo(bodyConfig.mass, motionState, shape, localInertia);
-				info.set_m_friction(bodyConfig.friction);
-				info.set_m_restitution(bodyConfig.restitution);
+				if (typeof(bodyConfig.friction) === 'number') {
+					info.set_m_friction(bodyConfig.friction);
+				}
+				if (typeof(bodyConfig.restitution) === 'number') {
+					info.set_m_restitution(bodyConfig.restitution);
+				}
 				var body = new Ammo.btRigidBody(info);
-
-				body.setActivationState(activationStates.DISABLE_DEACTIVATION);
 
 				if (bodyConfig.type === 4) {
 					body.setCollisionFlags(body.getCollisionFlags() | collisionFlags.KINEMATIC_OBJECT);
@@ -636,10 +687,52 @@ function (
 					}
 				}
 				sendCommand(message);
-
 				Ammo.destroy(rayCallback);
-	        }
+			},
+
+			enableCharacterControl: function (params) {
+				var body = getBodyById(params.id);
+				if (!body) {
+					return;
+				}
+				var config = bodyConfigs[bodies.indexOf(body)];
+				body.setAngularFactor(0);
+				config.enableCharacterControl = true;
+				config.characterRay = params.ray;
+				config.characterVelocity = [0, 0, 0];
+				config.characterOnGround = false;
+			},
+
+			characterJump: function (params) {
+				var body = getBodyById(params.id);
+				if (!body) {
+					return;
+				}
+				var config = bodyConfigs[bodies.indexOf(body)];
+				if (config.characterOnGround) {
+					body.applyImpulse(arrayToTempAmmoVector(params.jumpImpulse), ammoZeroVector);
+				}
+			},
+
+			setCharacterVelocity: function (params) {
+				var body = getBodyById(params.id);
+				if (!body) {
+					return;
+				}
+				var config = bodyConfigs[bodies.indexOf(body)];
+				config.characterVelocity = params.velocity;
+			}
 		};
+
+		var tmpAmmoVec = new Ammo.btVector3();
+		function arrayToTempAmmoVector(a){
+			tmpAmmoVec.setValue(a[0], a[1], a[2]);
+			return tmpAmmoVec;
+		}
+		function arrayToAmmoVector(a, target){
+			target.setValue(a[0], a[1], a[2]);
+			return target;
+		}
 
 		function sendCommand(command) {
 			postMessage(command);

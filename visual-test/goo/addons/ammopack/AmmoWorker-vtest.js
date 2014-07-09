@@ -123,7 +123,6 @@ require([
 					Math.sin(i * 0.1) +
 					Math.cos(j * 0.1) +
 					Math.sin(Math.sqrt(i * i + j * j) * 0.3) * 2;
-				//value = 0;
 				matrix[i].push(value);
 			}
 		}
@@ -182,12 +181,25 @@ require([
 		func();
 	}
 
+	var characterEntity;
+	function addCharacter() {
+		var pos = [20, 3, -10];
+		var entity = characterEntity = createEntity(goo, new Sphere(10, 10, 1),
+			{ mass: 1, friction: 0.3 },
+			pos,
+			new AmmoSphereColliderComponent({
+				radius : 1
+			})
+		);
+		entity.ammoWorkerRigidbodyComponent.enableCharacterController(new Vector3(0, -1.5, 0));
+	}
+
 	var addRemoveEntity;
 	function addRemove() {
 		if (!addRemoveEntity) {
 			var h = new Vector3(1, 1, 1);
 			addRemoveEntity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
-				{mass: 1},
+				{ mass: 1 },
 				[0, 3, 0],
 				new AmmoBoxColliderComponent({
 					halfExtents : h
@@ -220,6 +232,7 @@ require([
 	addPrimitives();
 	addKinematic();
 	addTerrain();
+	addCharacter();
 	setTimeout(function () {
 		rayCast();
 	}, 10);
@@ -232,30 +245,44 @@ require([
 		'p: play/pause simulation'
 	].join('\n'));
 
+	function keyhandler(event) {
+		var speed = 4;
+		if(event.type === 'keyup'){
+			speed = 0;
+		}
+		switch (event.keyCode) {
+		case 37: // left
+			characterEntity.ammoWorkerRigidbodyComponent.setCharacterVelocity(new Vector3(0, 0, speed));
+			break;
+		case 38: // up
+			characterEntity.ammoWorkerRigidbodyComponent.setCharacterVelocity(new Vector3(-speed, 0, 0));
+			break;
+		case 39: // right
+			characterEntity.ammoWorkerRigidbodyComponent.setCharacterVelocity(new Vector3(0, 0, -speed));
+			break;
+		case 40: // down
+			characterEntity.ammoWorkerRigidbodyComponent.setCharacterVelocity(new Vector3(speed, 0, 0));
+			break;
+		}
+	}
+
+	document.addEventListener('keydown', keyhandler);
+	document.addEventListener('keyup', keyhandler);
+
 	document.addEventListener('keypress', function (event) {
 		var ch = String.fromCharCode(event.keyCode);
 		switch (ch) {
-		case 'a':
-			addPrimitives();
+		case 'a': addPrimitives(); break;
+		case 's': ammoWorkerSystem.step(); break;
+		case 'v': setVelocity(); break;
+		case 'r': addRemove(); break;
+		case 'm': setPosition(); break;
+		case 'p': playPause(); break;
+		case 't': rayCast(); break;
+		case ' ':
+			characterEntity.ammoWorkerRigidbodyComponent.characterJump(new Vector3(0, 10, 0));
 			break;
-		case 's':
-			ammoWorkerSystem.step();
-			break;
-		case 'v':
-			setVelocity();
-			break;
-		case 'r':
-			addRemove();
-			break;
-		case 'm':
-			setPosition();
-			break;
-		case 'p':
-			playPause();
-			break;
-		case 't':
-			rayCast();
-			break;
+
 		}
 	}, false);
 
@@ -265,6 +292,8 @@ require([
 	h = new Vector3(0.5, 5, 10);
 	createEntity(goo, new Box(1, 10, 20), {mass: 0}, [10, -5, 0],  new AmmoBoxColliderComponent({ halfExtents: h }));
 	createEntity(goo, new Box(1, 10, 20), {mass: 0}, [-10, -5, 0], new AmmoBoxColliderComponent({ halfExtents: h }));
+
+	//createEntity(goo, new Box(100, 1, 100), { mass: 0, friction: 0 }, [0, -10, 0], new AmmoBoxColliderComponent({ halfExtents: new Vector3(50, 0.5, 50) }));
 
 	// Create compound
 	var compoundEntity = goo.world.createEntity(new Vector3(0, 3, 0));
