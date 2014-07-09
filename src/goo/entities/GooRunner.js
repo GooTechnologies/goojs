@@ -402,9 +402,14 @@ function (
 
 		// update the stats if there are any
 		if (this.stats) {
+			var transformUpdates = 0;
+			var tSystem = this.world.getSystem('TransformSystem');
+			if (tSystem) {
+				transformUpdates = tSystem.numUpdates;
+			}
 			this.stats.update(
 				this.renderer.info.toString() + '<br/>' +
-				'transformUpdates: ' + this.world.getSystem('TransformSystem').numUpdates
+				'transformUpdates: ' + transformUpdates
 			);
 		}
 
