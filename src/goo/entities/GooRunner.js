@@ -654,10 +654,9 @@ function (
 			}
 			this._eventTriggered[type] = e;
 			this.pick(x, y, function (index, depth) {
-				x *= this.renderer.devicePixelRatio;
-				y *= this.renderer.devicePixelRatio;
+				var dpx = this.renderer.devicePixelRatio;
 				var entity = this.world.entityManager.getEntityByIndex(index);
-				var intersection = Renderer.mainCamera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, depth);
+				var intersection = Renderer.mainCamera.getWorldPosition(x*dpx, y*dpx, this.renderer.viewportWidth, this.renderer.viewportHeight, depth);
 				this._dispatchEvent({
 					entity: entity,
 					depth: depth,
