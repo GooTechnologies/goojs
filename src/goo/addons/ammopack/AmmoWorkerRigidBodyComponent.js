@@ -243,6 +243,11 @@ function (
 			angular: angular
 		});
 	};
+	AmmoWorkerRigidbodyComponent.prototype.activate = function () {
+		this._postMessage({
+			command: 'activateBody'
+		});
+	};
 	AmmoWorkerRigidbodyComponent.prototype.setCenterOfMassTransform = function (position, quaternion) {
 		this._postMessage({
 			command: 'setCenterOfMassTransform',

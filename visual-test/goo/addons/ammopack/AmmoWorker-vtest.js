@@ -124,6 +124,10 @@ require([
 		});
 	}
 
+	function activate() {
+		characterEntity.ammoWorkerRigidbodyComponent.activate();
+	}
+
 	function addTerrain() {
 		var nLin = 64, nCol = 64;
 		var matrix = [];
@@ -265,6 +269,7 @@ require([
 		addTerrain();
 		addCharacter();
 		addOther();
+		activate();
 
 		setTimeout(function () {
 			rayCast();

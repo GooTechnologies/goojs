@@ -401,6 +401,14 @@ var commandHandlers = {
 		Ammo.destroy(body);
 	},
 
+	activateBody: function (params) {
+		var body = getBodyById(params.id);
+		if (!body) {
+			return;
+		}
+		body.activate();
+	},
+
 	run: function (/*params*/) {
 		var last = performance.now() / 1000;
 		simulationStartTime = last;
