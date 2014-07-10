@@ -1,19 +1,18 @@
 define([
-	'goo/entities/components/Component'
+	'goo/addons/ammopack/Collider'
 ],
 /** @lends */
 function (
-	Component
+	Collider
 ) {
 	'use strict';
 
 	/**
 	 * @class
-	 * @param {object} settings
+	 * @param {object} [settings]
+	 * @param {array} [settings.heightMap] An array of arrays of number: 2D map of height data.
 	 */
-	function AmmoTerrainColliderComponent(settings) {
-		this.type = 'AmmoColliderComponent';
-
+	function TerrainCollider(settings) {
 		settings = settings || {};
 
 		/**
@@ -34,7 +33,7 @@ function (
 		 * Up axis. 0=x, 1=y, 2=z
 		 * @type {number}
 		 */
-		this.upAxis = 1;
+		this.upAxis = typeof(settings.upAxis) === 'number' ? settings.upAxis : 1;
 
 		this.flipQuadEdges = typeof(settings.flipQuadEdges) === 'boolean' ? settings.flipQuadEdges : false;
 
@@ -42,10 +41,10 @@ function (
 			this.setFromHeightMap(settings.heightMap);
 		}
 	}
-	AmmoTerrainColliderComponent.prototype = Object.create(Component.prototype);
-	AmmoTerrainColliderComponent.constructor = AmmoTerrainColliderComponent;
+	TerrainCollider.prototype = Object.create(Collider.prototype);
+	TerrainCollider.constructor = TerrainCollider;
 
-	AmmoTerrainColliderComponent.prototype.setFromHeightMap = function (heightMap) {
+	TerrainCollider.prototype.setFromHeightMap = function (heightMap) {
 		var min = heightMap[0][0];
 		var max = heightMap[0][0];
 		for (var i = 0; i < heightMap.length; i++) {
@@ -63,7 +62,7 @@ function (
 		this.maxHeight = max;
 	};
 
-	AmmoTerrainColliderComponent.prototype.serialize = function () {
+	TerrainCollider.prototype.serialize = function () {
 		return {
 			type: 'terrain',
 			heights: this.heights.slice(0),
@@ -79,5 +78,5 @@ function (
 		};
 	};
 
-	return AmmoTerrainColliderComponent;
+	return TerrainCollider;
 });

@@ -1,12 +1,10 @@
 define([
-	'goo/entities/components/Component',
-	'goo/shapes/Box',
+	'goo/addons/ammopack/Collider',
 	'goo/math/Vector3'
 ],
 /** @lends */
 function (
-	Component,
-	Box,
+	Collider,
 	Vector3
 ) {
 	'use strict';
@@ -15,16 +13,14 @@ function (
 	 * @class
 	 * @param {object} settings
 	 */
-	function AmmoPlaneColliderComponent(settings) {
-		this.type = 'AmmoColliderComponent';
-
+	function PlaneCollider(settings) {
 		settings = settings || {};
 
 		/**
 		 * Plane normal
 		 * @type {Vector3}
 		 */
-		this.normal = settings.normal || new Vector3(0, 1, 0);
+		this.normal = typeof(settings.normal) !== 'undefined' ? new Vector3(settings.normal) : new Vector3(0, 1, 0);
 
 		/**
 		 * Plane constant
@@ -32,10 +28,10 @@ function (
 		 */
 		this.planeConstant = typeof settings.planeConstant === 'number' ? settings.planeConstant : 0;
 	}
-	AmmoPlaneColliderComponent.prototype = Object.create(Component.prototype);
-	AmmoPlaneColliderComponent.constructor = AmmoPlaneColliderComponent;
+	PlaneCollider.prototype = Object.create(Collider.prototype);
+	PlaneCollider.constructor = PlaneCollider;
 
-	AmmoPlaneColliderComponent.prototype.serialize = function () {
+	PlaneCollider.prototype.serialize = function () {
 		return {
 			type: 'plane',
 			normal: Array.prototype.slice.call(this.normal.data, 0),
@@ -43,5 +39,5 @@ function (
 		};
 	};
 
-	return AmmoPlaneColliderComponent;
+	return PlaneCollider;
 });

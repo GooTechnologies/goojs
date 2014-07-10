@@ -134,13 +134,13 @@ function (
 		// Check if there are colliders on the second level
 		var colliders = [];
 		entity.traverse(function (child, level) {
-			if (level === 1 && child.ammoColliderComponent) {
+			if (level === 1 && child.colliderComponent) {
 				colliders.push(child);
 			}
 		});
 
 		// Check if the root entity has a collider
-		if (entity.ammoColliderComponent) {
+		if (entity.colliderComponent) {
 			colliders.push(entity);
 		}
 
@@ -162,8 +162,8 @@ function (
 		for (var j = 0; j < colliders.length; j++) {
 			var colliderEntity = colliders[j];
 
-			var colliderComponent = colliderEntity.ammoColliderComponent;
-			var shapeConfig = colliderComponent.serialize();
+			var colliderComponent = colliderEntity.colliderComponent;
+			var shapeConfig = colliderComponent.collider.serialize();
 
 			if (shapeConfig) {
 				if (colliderEntity !== entity) {

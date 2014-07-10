@@ -1,35 +1,21 @@
-define([
-	'goo/addons/ammopack/Collider'
-],
+define([],
 /** @lends */
-function (
-	Collider
-) {
+function () {
 	'use strict';
 
 	/**
 	 * @class
-	 * @param {object} settings
 	 */
-	function SphereCollider(settings) {
-		this.type = "AmmoColliderComponent";
-
-		settings = settings || {};
-
-		/**
-		 * @type {number}
-		 */
-		this.radius = typeof(settings.radius) === 'number' ? settings.radius : 0.5;
+	function Collider() {
 	}
-	SphereCollider.prototype = Object.create(Collider.prototype);
-	SphereCollider.constructor = SphereCollider;
+	Collider.constructor = Collider;
 
-	SphereCollider.prototype.serialize = function () {
-		return {
-			type: 'sphere',
-			radius: this.radius
-		};
+	/**
+	 * @return {object} JSON compatible object
+	 */
+	Collider.prototype.serialize = function () {
+		// To be implemented by subclasses
 	};
 
-	return SphereCollider;
+	return Collider;
 });

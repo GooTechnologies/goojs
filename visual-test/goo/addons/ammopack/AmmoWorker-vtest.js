@@ -16,11 +16,12 @@ require([
 	'goo/entities/components/TransformComponent',
 	'goo/addons/ammopack/AmmoWorkerSystem',
 	'goo/addons/ammopack/AmmoWorkerRigidbodyComponent',
-	'goo/addons/ammopack/AmmoSphereColliderComponent',
-	'goo/addons/ammopack/AmmoBoxColliderComponent',
-	'goo/addons/ammopack/AmmoCapsuleColliderComponent',
-	'goo/addons/ammopack/AmmoPlaneColliderComponent',
-	'goo/addons/ammopack/AmmoTerrainColliderComponent',
+	'goo/addons/ammopack/SphereCollider',
+	'goo/addons/ammopack/BoxCollider',
+	'goo/addons/ammopack/CapsuleCollider',
+	'goo/addons/ammopack/PlaneCollider',
+	'goo/addons/ammopack/TerrainCollider',
+	'goo/addons/ammopack/ColliderComponent',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
 	'goo/geometrypack/Surface',
@@ -43,11 +44,12 @@ require([
 	TransformComponent,
 	AmmoWorkerSystem,
 	AmmoWorkerRigidbodyComponent,
-	AmmoSphereColliderComponent,
-	AmmoBoxColliderComponent,
-	AmmoCapsuleColliderComponent,
-	AmmoPlaneColliderComponent,
-	AmmoTerrainColliderComponent,
+	SphereCollider,
+	BoxCollider,
+	CapsuleCollider,
+	PlaneCollider,
+	TerrainCollider,
+	ColliderComponent,
 	PointLight,
 	LightComponent,
 	Surface,
@@ -74,11 +76,11 @@ require([
 
 	init();
 
-	function createEntity(goo, meshData, ammoSettings, pos, colliderComponent, material, name) {
+	function createEntity(goo, meshData, ammoSettings, pos, collider, material, name) {
 		material = material || V.getColoredMaterial();
 		var entity = goo.world.createEntity(meshData, material, pos);
 		entity.addToWorld();
-		entity.setComponent(colliderComponent);
+		entity.setComponent(new ColliderComponent(collider));
 		entity.setComponent(new AmmoWorkerRigidbodyComponent(ammoSettings));
 		if (name) {
 			entity.name = name;
@@ -96,7 +98,7 @@ require([
 				createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
 					{mass: 1},
 					[x, y, z],
-					new AmmoBoxColliderComponent({
+					new BoxCollider({
 						halfExtents : h
 					}),
 					null,
@@ -106,7 +108,7 @@ require([
 				createEntity(goo, new Sphere(10, 10, radius),
 					{mass: 1},
 					[x, y, z],
-					new AmmoSphereColliderComponent({
+					new SphereCollider({
 						radius : radius
 					}),
 					null,
@@ -158,9 +160,9 @@ require([
 		entity.attachChild(colliderEntity);
 		colliderEntity.transformComponent.transform.translation.setd((nLin) / 2, 0, (nCol) / 2);
 		colliderEntity.transformComponent.setUpdated();
-		colliderEntity.setComponent(new AmmoTerrainColliderComponent({
+		colliderEntity.setComponent(new ColliderComponent(new TerrainCollider({
 			heightMap: matrix
-		}));
+		})));
 	}
 
 	function setVelocity() {
@@ -168,7 +170,7 @@ require([
 		var entity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
 			{ mass: 1 },
 			[0, 3, 0],
-			new AmmoBoxColliderComponent({
+			new BoxCollider({
 				halfExtents : h
 			})
 		);
@@ -182,13 +184,13 @@ require([
 		var entity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
 			{ mass: 1, type: AmmoWorkerRigidbodyComponent.KINEMATIC },
 			pos,
-			new AmmoBoxColliderComponent({
+			new BoxCollider({
 				halfExtents : h
 			})
 		);
 
 		pos[1] += 2;
-		createEntity(goo, new Box(2, 2, 2), {mass: 1}, pos,  new AmmoBoxColliderComponent({ halfExtents: new Vector3(1, 1, 1) }));
+		createEntity(goo, new Box(2, 2, 2), {mass: 1}, pos,  new BoxCollider({ halfExtents: new Vector3(1, 1, 1) }));
 
 		var sign = 1;
 		function func() {
@@ -203,13 +205,14 @@ require([
 	var characterEntity;
 	function addCharacter() {
 		var pos = [20, 3, -10];
-		var entity = characterEntity = createEntity(goo, new Sphere(10, 10, 1),
+		var entity = createEntity(goo, new Sphere(10, 10, 1),
 			{ mass: 1, friction: 0.3 },
 			pos,
-			new AmmoSphereColliderComponent({
+			new SphereCollider({
 				radius : 1
 			})
 		);
+		characterEntity = entity;
 		entity.ammoWorkerRigidbodyComponent.enableCharacterController(new Vector3(0, -1.5, 0));
 	}
 
@@ -220,7 +223,7 @@ require([
 			addRemoveEntity = createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
 				{ mass: 1 },
 				[0, 3, 0],
-				new AmmoBoxColliderComponent({
+				new BoxCollider({
 					halfExtents : h
 				})
 			);
@@ -244,7 +247,7 @@ require([
 			init();
 			ammoWorkerSystem.run();
 		} else {
-			while(intervals.length){
+			while (intervals.length) {
 				clearInterval(intervals.pop());
 			}
 			// Remove all entities from the world
@@ -334,13 +337,13 @@ require([
 
 	function addOther() {
 		var h = new Vector3(10, 5, 0.5);
-		createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, 10],  new AmmoBoxColliderComponent({ halfExtents: h }));
-		createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, -10], new AmmoBoxColliderComponent({ halfExtents: h }));
+		createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, 10],  new BoxCollider({ halfExtents: h }));
+		createEntity(goo, new Box(20, 10, 1), {mass: 0}, [0, -5, -10], new BoxCollider({ halfExtents: h }));
 		h = new Vector3(0.5, 5, 10);
-		createEntity(goo, new Box(1, 10, 20), {mass: 0}, [10, -5, 0],  new AmmoBoxColliderComponent({ halfExtents: h }));
-		createEntity(goo, new Box(1, 10, 20), {mass: 0}, [-10, -5, 0], new AmmoBoxColliderComponent({ halfExtents: h }));
+		createEntity(goo, new Box(1, 10, 20), {mass: 0}, [10, -5, 0],  new BoxCollider({ halfExtents: h }));
+		createEntity(goo, new Box(1, 10, 20), {mass: 0}, [-10, -5, 0], new BoxCollider({ halfExtents: h }));
 
-		//createEntity(goo, new Box(100, 1, 100), { mass: 0, friction: 0 }, [0, -10, 0], new AmmoBoxColliderComponent({ halfExtents: new Vector3(50, 0.5, 50) }));
+		//createEntity(goo, new Box(100, 1, 100), { mass: 0, friction: 0 }, [0, -10, 0], new BoxCollider({ halfExtents: new Vector3(50, 0.5, 50) }));
 
 		// Create compound
 		var compoundEntity = goo.world.createEntity(new Vector3(0, 3, 0));
@@ -358,9 +361,9 @@ require([
 		subEntity1.addToWorld();
 		subEntity2.addToWorld();
 		subEntity3.addToWorld();
-		subEntity1.setComponent(new AmmoSphereColliderComponent({ radius: radius }));
-		subEntity2.setComponent(new AmmoBoxColliderComponent({ halfExtents: h2 }));
-		subEntity3.setComponent(new AmmoBoxColliderComponent({ halfExtents: h3 }));
+		subEntity1.setComponent(new ColliderComponent(new SphereCollider({ radius: radius })));
+		subEntity2.setComponent(new ColliderComponent(new BoxCollider({ halfExtents: h2 })));
+		subEntity3.setComponent(new ColliderComponent(new BoxCollider({ halfExtents: h3 })));
 		compoundEntity.attachChild(subEntity1);
 		compoundEntity.attachChild(subEntity2);
 		compoundEntity.attachChild(subEntity3);
