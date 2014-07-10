@@ -7,6 +7,10 @@ function (
 ) {
 	'use strict';
 
+	/**
+	 * @class
+	 * @param {object} settings
+	 */
 	function AmmoTerrainColliderComponent(settings) {
 		this.type = 'AmmoColliderComponent';
 

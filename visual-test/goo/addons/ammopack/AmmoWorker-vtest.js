@@ -62,7 +62,6 @@ require([
 	var ammoUrl = '../../../../lib/ammo.small.js';
 	if (localStorage.gooPath) {
 		workerUrl = localStorage.gooPath + '/addons/ammopack/ammo_worker.js';
-		workerUrl = localStorage.gooPath + '/addons/ammopack/ammo_worker.js';
 	}
 	var ammoWorkerSystem = new AmmoWorkerSystem({
 		gravity: new Vector3(0, -10, 0),

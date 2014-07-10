@@ -53,6 +53,12 @@ function (
 		 */
 		this.workerUrl = typeof(settings.workerUrl) !== 'undefined' ? settings.workerUrl : 'ammo_worker.js';
 
+		/**
+		 * The URL to the ammo.js file.
+		 * @type {string}
+		 */
+		this.ammoUrl = typeof(settings.ammoUrl) !== 'undefined' ? settings.ammoUrl : 'ammo.small.js';
+
 		this._initWorker();
 		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.maxSubSteps) === 'number' ? settings.maxSubSteps : 3);
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));

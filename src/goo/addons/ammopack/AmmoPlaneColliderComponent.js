@@ -11,6 +11,10 @@ function (
 ) {
 	'use strict';
 
+	/**
+	 * @class
+	 * @param {object} settings
+	 */
 	function AmmoPlaneColliderComponent(settings) {
 		this.type = 'AmmoColliderComponent';
 
