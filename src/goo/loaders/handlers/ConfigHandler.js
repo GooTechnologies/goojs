@@ -123,7 +123,11 @@ define([
 	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
 	 */
 	ConfigHandler.prototype.update = function (ref, config, options) {
-		return this._loading[ref] = this._update(ref, config, options);
+		var that = this;
+		return this._loading[ref] = this._update(ref, config, options).then(function (object) {
+			delete that._loading[ref];
+			return object;
+		});
 	};
 
 
