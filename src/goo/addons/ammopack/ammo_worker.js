@@ -57,6 +57,7 @@ var maxSubSteps = 3;
 var bodies = [];
 var bodyConfigs = [];
 var idToBodyMap = {};
+var colliderIdToAmmoShapeMap = {};
 var bus = new ARRAY_TYPE(NUM_FLOATS_PER_BODY * BUS_RESIZE_STEP);
 var simulationStartTime = 0;
 var physicsTime = 0;
@@ -66,12 +67,19 @@ var ammoRayStart;
 var ammoRayEnd;
 var ammoZeroVector;
 
+function fillTerrainHeightBuffer(buffer, heights) {
+	var floatByteSize = 4;
+	for (var i = 0, il = heights.length; i < il; i ++) {
+		Ammo.setValue(buffer + i * floatByteSize, heights[i], 'float');
+	}
+}
+
 /**
  * Convert a shape config to an instance of Ammo shape.
  * @param  {object} shapeConfig
  * @return {Ammo.btBoxShape|Ammo.btSphereShape}
  */
-function getAmmoShape(shapeConfig) {
+function getAmmoShape(shapeConfig, bodyConfig) {
 	'use strict';
 
 	var shape;
@@ -79,7 +87,6 @@ function getAmmoShape(shapeConfig) {
 
 	case 'box':
 		var extents = new Ammo.btVector3(shapeConfig.halfExtents[0], shapeConfig.halfExtents[1], shapeConfig.halfExtents[2]);
-
 		shape = new Ammo.btBoxShape(extents);
 		Ammo.destroy(extents);
 		break;
@@ -95,11 +102,9 @@ function getAmmoShape(shapeConfig) {
 
 	case 'terrain':
 		var floatByteSize = 4;
-		var heightBuffer = Ammo.allocate(floatByteSize * shapeConfig.numWidthPoints * shapeConfig.numLengthPoints, "float", Ammo.ALLOC_NORMAL);
+		var heightBuffer = Ammo.allocate(floatByteSize * shapeConfig.numWidthPoints * shapeConfig.numLengthPoints, 'float', Ammo.ALLOC_NORMAL);
 
-		for (var i = 0, il = shapeConfig.heights.length; i < il; i ++) {
-			Ammo.setValue(heightBuffer + i * floatByteSize, shapeConfig.heights[i], 'float');
-		}
+		fillTerrainHeightBuffer(heightBuffer, shapeConfig.heights);
 
 		var heightDataType = 0;
 
@@ -115,10 +120,12 @@ function getAmmoShape(shapeConfig) {
 			shapeConfig.flipQuadEdges // false
 		);
 
+		shape.heightBuffer = heightBuffer;
+
 		var sx = shapeConfig.width / (shapeConfig.numWidthPoints - 1);
 		var sz = shapeConfig.length / (shapeConfig.numLengthPoints - 1);
 		var sy = 1.0;
-		var sizeVector = new Ammo.btVector3(sx, sy, sz);
+		var sizeVector = arrayToTempAmmoVector([sx, sy, sz]);
 		shape.setLocalScaling(sizeVector);
 		break;
 
@@ -162,6 +169,9 @@ function getAmmoShape(shapeConfig) {
 	default:
 		throw new Error('Shape type not recognized: ' + shapeConfig.type);
 	}
+
+	colliderIdToAmmoShapeMap[shapeConfig.id] = shape;
+
 	return shape;
 }
 
@@ -344,6 +354,7 @@ var commandHandlers = {
 		ammoWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		ammoTransform = new Ammo.btTransform();
 	},
+
 	destroy: function (/*params*/) {
 		bodies.length = bodyConfigs.length = 0;
 		idToBodyMap = {};
@@ -351,28 +362,31 @@ var commandHandlers = {
 			clearInterval(interval);
 		}
 	},
+
 	setGravity: function (params) {
 		var gravity = new Ammo.btVector3(params.gravity[0], params.gravity[1], params.gravity[2]);
 		ammoWorld.setGravity(gravity);
 		Ammo.destroy(gravity);
 	},
+
 	setTimeStep: function (params) {
 		timeStep = params.timeStep;
 		maxSubSteps = params.maxSubSteps;
 	},
+
 	addBody: function (bodyConfig) {
 		var shape, shapeConfig;
 
 		if (bodyConfig.shapes.length === 1 && !bodyConfig.shapes[0].localPosition) {
 			// One collider primitive
 			shapeConfig = bodyConfig.shapes[0];
-			shape = getAmmoShape(shapeConfig);
+			shape = getAmmoShape(shapeConfig, bodyConfig);
 		} else {
 			// More than one collider primitive or collider with offset
 			shape = new Ammo.btCompoundShape();
 			for (var j = 0; j < bodyConfig.shapes.length; j++) {
 				shapeConfig = bodyConfig.shapes[j];
-				var childAmmoShape = getAmmoShape(shapeConfig);
+				var childAmmoShape = getAmmoShape(shapeConfig, bodyConfig);
 				var localTrans = new Ammo.btTransform();
 				var pos = shapeConfig.localPosition;
 				var quat = shapeConfig.localRotation;
@@ -432,8 +446,17 @@ var commandHandlers = {
 		if (!body) {
 			return;
 		}
-		bodies.splice(bodies.indexOf(body), 1);
+		var idx = bodies.indexOf(body);
+		var bodyConfig = bodyConfigs[idx];
+		bodyConfigs.splice(idx, 1);
+		bodies.splice(idx, 1);
 		delete idToBodyMap[params.id];
+		for (var i = 0; i < bodyConfig.shapes.length; i++) {
+			var shapeId = bodyConfig.shapes[i].id;
+			var ammoShape = colliderIdToAmmoShapeMap[shapeId];
+			Ammo.destroy(ammoShape);
+			delete colliderIdToAmmoShapeMap[bodyConfig.shapes[i].id];
+		}
 		ammoWorld.removeRigidBody(body);
 		Ammo.destroy(body);
 	},
@@ -590,6 +613,22 @@ var commandHandlers = {
 		}
 		var config = bodyConfigs[bodies.indexOf(body)];
 		config.characterVelocity = params.velocity;
+	},
+
+	updateCollider: function (params) {
+		// Find the btShape
+		var shape = colliderIdToAmmoShapeMap[params.colliderId];
+
+
+		// Update it
+		switch (params.data.type) {
+		case 'terrain':
+			var heights = params.data.heights;
+			//console.log(heights);
+			var heightBuffer = shape.heightBuffer;
+			// For some reason this does not change anything!
+			fillTerrainHeightBuffer(heightBuffer, heights);
+		}
 	}
 };
 

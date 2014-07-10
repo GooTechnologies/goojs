@@ -165,6 +165,9 @@ function (
 			var colliderComponent = colliderEntity.colliderComponent;
 			var shapeConfig = colliderComponent.collider.serialize();
 
+			// Add collider id
+			shapeConfig.id = colliderEntity.id;
+
 			if (shapeConfig) {
 				if (colliderEntity !== entity) {
 
@@ -299,6 +302,19 @@ function (
 			jumpImpulse: v2a(jumpImpulse)
 		});
 	};
+
+	/**
+	 * Update collider information.
+	 * @param {Entity} colliderEntity The entity that holds the collider
+	 */
+	AmmoWorkerRigidbodyComponent.prototype.updateCollider = function (colliderEntity) {
+		this._postMessage({
+			command: 'updateCollider',
+			colliderId: colliderEntity.id,
+			data: colliderEntity.colliderComponent.collider.serialize()
+		});
+	};
+
 	AmmoWorkerRigidbodyComponent.prototype._postMessage = function (message) {
 		message.id = this.entity.id;
 		if (!this._system) {

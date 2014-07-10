@@ -61,6 +61,7 @@ function (
 	TerrainCollider.prototype.setFromHeightMap = function (heightMap) {
 		var min = heightMap[0][0];
 		var max = heightMap[0][0];
+		this.heights.length = 0;
 		for (var i = 0; i < heightMap.length; i++) {
 			var row = heightMap[i];
 			for (var j = 0; j < row.length; j++) {
