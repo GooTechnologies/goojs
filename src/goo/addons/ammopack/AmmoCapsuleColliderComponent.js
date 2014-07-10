@@ -1,9 +1,19 @@
 define([
 	'goo/entities/components/Component'
-], function(
+],
+/** @lends */
+function (
 	Component
-){
-	function AmmoCapsuleColliderComponent(entity, radius, height){
+) {
+	'use strict';
+
+	/**
+	 * @class
+	 * @param {Entity} entity
+	 * @param {number} radius
+	 * @param {number} height
+	 */
+	function AmmoCapsuleColliderComponent(entity, radius, height) {
 		this.type = "AmmoColliderComponent";
 		this.radius = typeof radius !== 'undefined' ? radius : 0.5;
 		this.height = typeof height !== 'undefined' ? height : 0.0;

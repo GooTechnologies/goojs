@@ -58,9 +58,16 @@ require([
 	var goo = V.initGoo();
 	var intervals = [];
 
+	var workerUrl = '../../../../lib/ammo_worker.js';
+	var ammoUrl = '../../../../lib/ammo.small.js';
+	if (localStorage.gooPath) {
+		workerUrl = localStorage.gooPath + '/addons/ammopack/ammo_worker.js';
+	}
 	var ammoWorkerSystem = new AmmoWorkerSystem({
 		gravity: new Vector3(0, -10, 0),
-		maxSubSteps: 1
+		maxSubSteps: 1,
+		workerUrl: workerUrl,
+		ammoUrl: ammoUrl
 	});
 	goo.world.setSystem(ammoWorkerSystem);
 

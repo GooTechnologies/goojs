@@ -1,9 +1,15 @@
 define([
 	'goo/entities/components/Component'
-], function(
+],
+/** @lends */
+function (
 	Component
-){
-	function AmmoMeshColliderComponent(entity){
+) {
+	/**
+	 * @class
+	 * @param {Entity} entity
+	 */
+	function AmmoMeshColliderComponent(entity) {
 		this.type = "AmmoColliderComponent";
 		this.ammoShape = createTriangleMeshShape(entity);
 	};

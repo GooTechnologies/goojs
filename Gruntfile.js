@@ -88,6 +88,13 @@ module.exports = function (grunt) {
 				}
 			}
 		},
+		uglify: {
+			ammoworker: {
+				files: {
+					'out/ammo_worker.js': ['src/goo/addons/ammopack/ammo_worker.js']
+				}
+			}
+		},
 		wrap: {
 			build: {
 				src: ['out/minified/goo.js'],
@@ -245,7 +252,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('default',	['minify']);
 	grunt.registerTask('docs',		['shell:jsdoc']);
 	grunt.registerTask('jsdoc',		['shell:jsdoc']);
-	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack']);
+	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack', 'uglify:ammoworker']);
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('test',		['unittest']);
 
