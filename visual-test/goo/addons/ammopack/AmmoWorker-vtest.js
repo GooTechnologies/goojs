@@ -128,6 +128,10 @@ require([
 		characterEntity.ammoWorkerRigidbodyComponent.activate();
 	}
 
+	function setSleepingThresholds() {
+		characterEntity.ammoWorkerRigidbodyComponent.setSleepingThresholds(1, 1);
+	}
+
 	function addTerrain() {
 		var nLin = 64, nCol = 64;
 		var matrix = [];
@@ -270,6 +274,7 @@ require([
 		addCharacter();
 		addOther();
 		activate();
+		setSleepingThresholds();
 
 		setTimeout(function () {
 			rayCast();

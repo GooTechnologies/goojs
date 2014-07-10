@@ -409,6 +409,14 @@ var commandHandlers = {
 		body.activate();
 	},
 
+	setSleepingThresholds: function (params) {
+		var body = getBodyById(params.id);
+		if (!body) {
+			return;
+		}
+		body.setSleepingThresholds(params.linear, params.angular);
+	},
+
 	run: function (/*params*/) {
 		var last = performance.now() / 1000;
 		simulationStartTime = last;
