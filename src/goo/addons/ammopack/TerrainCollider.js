@@ -11,6 +11,16 @@ function (
 	 * @class
 	 * @param {object} [settings]
 	 * @param {array} [settings.heightMap] An array of arrays of number: 2D map of height data.
+	 *
+	 * @example
+	 *     var collider = new TerrainCollider({
+	 *         heightMap: [
+	 *             [0, 0, 0, 0],
+	 *             [0, 1, 1, 0],
+	 *             [0, 1, 1, 0],
+	 *             [0, 0, 0, 0],
+	 *         ]
+	 *     });
 	 */
 	function TerrainCollider(settings) {
 		settings = settings || {};
@@ -44,6 +54,10 @@ function (
 	TerrainCollider.prototype = Object.create(Collider.prototype);
 	TerrainCollider.constructor = TerrainCollider;
 
+	/**
+	 * Set the height data from 2D heightmap data.
+	 * @param {array} heightMap
+	 */
 	TerrainCollider.prototype.setFromHeightMap = function (heightMap) {
 		var min = heightMap[0][0];
 		var max = heightMap[0][0];
