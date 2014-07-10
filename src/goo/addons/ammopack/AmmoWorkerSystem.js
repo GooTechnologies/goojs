@@ -28,7 +28,8 @@ function (
 	 *     var ammoWorkerSystem = new AmmoWorkerSystem({
 	 *         gravity: new Vector3(0, -10, 0),
 	 *         timeStep: 1 / 60,
-	 *         workerUrl: 'ammo_worker.js'
+	 *         workerUrl: 'ammo_worker.js',
+	 *         ammoUrl: 'ammo.js'
 	 *     });
 	 *     goo.world.setSystem(ammoWorkerSystem);
 	 */
@@ -130,7 +131,7 @@ function (
 		// Send starting message
 		this._postMessage({
 			command: 'init',
-			ammoUrl: 'http://code.gooengine.com/0.10.6/lib/ammo.small.js'
+			ammoUrl: this.ammoUrl
 		});
 	};
 

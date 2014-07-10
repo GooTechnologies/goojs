@@ -8,6 +8,7 @@ function (
 	/**
 	 * @class
 	 * @param {Entity} entity
+	 * @todo test and clean up
 	 */
 	function AmmoMeshColliderComponent(entity) {
 		this.type = "AmmoColliderComponent";

@@ -59,7 +59,8 @@ require([
 	var intervals = [];
 
 	var workerUrl = '../../../../lib/ammo_worker.js';
-	var ammoUrl = '../../../../lib/ammo.small.js';
+	var ammoUrl = window.location.href.replace(/\/[^\/]*$/, '') + '/../../../../lib/ammo.small.js';
+
 	if (localStorage.gooPath) {
 		workerUrl = localStorage.gooPath + '/addons/ammopack/ammo_worker.js';
 	}
