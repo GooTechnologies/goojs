@@ -76,6 +76,8 @@ for packName in (
 ):
     shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
 
+shutil.copy('out/ammo_worker.js', release_dir + '/lib/ammo_worker.js')
+
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')
 shutil.copy('lib/polyk.js', release_dir + '/lib/polyk.js')

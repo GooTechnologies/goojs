@@ -27,7 +27,8 @@ function (
 	 * @example
 	 *     var ammoWorkerSystem = new AmmoWorkerSystem({
 	 *         gravity: new Vector3(0, -10, 0),
-	 *         timeStep: 1 / 60
+	 *         timeStep: 1 / 60,
+	 *         workerUrl: 'ammo_worker.js'
 	 *     });
 	 *     goo.world.setSystem(ammoWorkerSystem);
 	 */
@@ -45,6 +46,12 @@ function (
 		 * @type {Object}
 		 */
 		this._pendingRayCasts = {};
+
+		/**
+		 * The URL to the ammo_worker.js file.
+		 * @type {string}
+		 */
+		this.workerUrl = typeof(settings.workerUrl) !== 'undefined' ? settings.workerUrl : 'ammo_worker.js';
 
 		this._initWorker();
 		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.maxSubSteps) === 'number' ? settings.maxSubSteps : 3);
@@ -85,7 +92,7 @@ function (
 	 */
 	AmmoWorkerSystem.prototype._initWorker = function () {
 		// Create worker
-		var worker = new Worker('ammo_worker.js');
+		var worker = new Worker(this.workerUrl);
 
 		this._worker = worker;
 		var that = this;
