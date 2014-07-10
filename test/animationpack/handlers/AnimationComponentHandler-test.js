@@ -5,7 +5,7 @@ define([
 	'goo/animationpack/layer/AnimationLayer',
 
 	'goo/loaders/DynamicLoader',
-	'../../loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	AnimationComponent,

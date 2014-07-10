@@ -1,7 +1,7 @@
 define([
 	'goo/entities/World',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs',
+	'test/loaders/Configs',
 
 	'goo/entities/components/TransformComponent'
 ], function(

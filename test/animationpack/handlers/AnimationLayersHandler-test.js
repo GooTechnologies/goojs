@@ -5,7 +5,7 @@ define([
 	'goo/animationpack/blendtree/ClipSource',
 	'goo/animationpack/clip/AnimationClip',
 	'goo/loaders/DynamicLoader',
-	'../../loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	AnimationLayer,

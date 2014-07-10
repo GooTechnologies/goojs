@@ -12,7 +12,7 @@ define([
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/systems/RenderSystem',
-	'loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	Entity,

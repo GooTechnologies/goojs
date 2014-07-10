@@ -2,7 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/animationpack/clip/AnimationClip',
 	'goo/loaders/DynamicLoader',
-	'../../loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	AnimationClip,

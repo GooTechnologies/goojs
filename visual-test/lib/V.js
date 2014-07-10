@@ -54,6 +54,9 @@ define([
 	 */
 	var V = {};
 
+	// determine if we're running the visual test for people or for machines
+	V.deterministic = !!purl().param().deterministic;
+
 	/**
 	 * Converts either 3 parameters, an array, a {x, y, z} object or a Vector3 a Vector3
 	 * @param obj
@@ -273,10 +276,6 @@ define([
 	 * @returns {GooRunner}
 	 */
 	V.initGoo = function (_options) {
-		// determine if we're running the visual test for people or for machines
-		var params = purl().param();
-		V.deterministic = !!params.deterministic;
-
 		var options = {
 			showStats: true,
 			logo: {
@@ -289,11 +288,16 @@ define([
 			options.showStats = false;
 			options.logo = false;
 			options.manuallyStartGameLoop = true;
+			options.preserveDrawingBuffer = true;
 		}
 		_.extend(options, _options);
 
 		V.goo = new GooRunner(options);
 		V.goo.renderer.domElement.id = 'goo';
+		if (V.deterministic) {
+			V.goo.renderer.domElement.style.width = '100px';
+			V.goo.renderer.domElement.style.height = '100px';
+		}
 		document.body.appendChild(V.goo.renderer.domElement);
 
 		// V.goo.renderer.setClearColor(154 / 255, 172 / 255, 192 / 255, 1.0); // bright blue-grey

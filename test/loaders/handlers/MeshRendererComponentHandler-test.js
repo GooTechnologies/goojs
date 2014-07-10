@@ -3,7 +3,7 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/Material',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	MeshRendererComponent,

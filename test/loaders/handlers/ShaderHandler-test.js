@@ -2,7 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/renderer/Shader',
 	'goo/loaders/DynamicLoader',
-	'loaders/Configs'
+	'test/loaders/Configs'
 ], function(
 	World,
 	Shader,
