@@ -15,26 +15,24 @@ function (
 	 * @class
 	 * @param {object} settings
 	 */
-	function AmmoBoxColliderComponent(settings) {
-		this.type = "AmmoColliderComponent";
-
+	function BoxCollider(settings) {
 		settings = settings || {};
 
 		/**
 		 * The half extents of the collider box.
 		 * @type {Vector3}
 		 */
-		this.halfExtents = settings.halfExtents || new Vector3(0.5, 0.5, 0.5);
+		this.halfExtents = typeof(settings.halfExtents) !== 'undefined' ? new Vector3(settings.halfExtents) : new Vector3(0.5, 0.5, 0.5);
 	}
-	AmmoBoxColliderComponent.prototype = Object.create(Component.prototype);
-	AmmoBoxColliderComponent.constructor = AmmoBoxColliderComponent;
+	BoxCollider.prototype = Object.create(Component.prototype);
+	BoxCollider.constructor = BoxCollider;
 
-	AmmoBoxColliderComponent.prototype.serialize = function () {
+	BoxCollider.prototype.serialize = function () {
 		return {
 			type: 'box',
 			halfExtents: Array.prototype.slice.call(this.halfExtents.data, 0)
 		};
 	};
 
-	return AmmoBoxColliderComponent;
+	return BoxCollider;
 });
