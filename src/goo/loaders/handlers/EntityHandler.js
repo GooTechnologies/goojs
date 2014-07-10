@@ -3,8 +3,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
-	'goo/util/PromiseUtil',
-	'goo/entities/EntityUtils'
+	'goo/util/PromiseUtil'
 ],
 /** @lends */
 function (
@@ -12,8 +11,7 @@ function (
 	ComponentHandler,
 	RSVP,
 	StringUtil,
-	PromiseUtil,
-	EntityUtils
+	PromiseUtil
 ) {
 	'use strict';
 
@@ -58,7 +56,10 @@ function (
 			var components = entity._components;
 			for (var i = 0; i < components.length; i++) {
 				var type = this._getComponentType(components[i]);
-				promises.push(this._updateComponent(entity, type, null));
+				var p = this._updateComponent(entity, type, null);
+				if (p instanceof RSVP.Promise) {
+					promises.push(p);
+				}
 			}
 			return RSVP.all(promises)
 			.then(function () {
