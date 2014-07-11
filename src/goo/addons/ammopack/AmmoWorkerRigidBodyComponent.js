@@ -308,23 +308,17 @@ function (
 		});
 	};
 	// Force is array with 4 values or 1 value
-	AmmoWorkerRigidbodyComponent.prototype.setVehicleEngineForce = function (forces) {
-		if (typeof(forces) === 'number') {
-			forces = [forces, forces, forces, forces];
-		}
+	AmmoWorkerRigidbodyComponent.prototype.setVehicleEngineForce = function (force) {
 		this._postMessage({
 			command: 'setVehicleEngineForce',
-			forces: forces
+			force: force
 		});
 	};
 	// Force is array with 4 values or 1 value
-	AmmoWorkerRigidbodyComponent.prototype.setVehicleSteeringValues = function (values) {
-		if (typeof(values) === 'number') {
-			values = [values, values, values, values];
-		}
+	AmmoWorkerRigidbodyComponent.prototype.setVehicleSteeringValue = function (value) {
 		this._postMessage({
-			command: 'setVehicleSteeringValues',
-			values: values
+			command: 'setVehicleSteeringValue',
+			value: value
 		});
 	};
 

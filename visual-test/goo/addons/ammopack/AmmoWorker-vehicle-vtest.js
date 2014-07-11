@@ -59,8 +59,8 @@ require([
 
 	var nLin = 64;
 	var nCol = 64;
-	var width = 200;
-	var height = 200;
+	var width = 100;
+	var length = 100;
 
 	var goo = V.initGoo();
 
@@ -94,6 +94,15 @@ require([
 		})));
 	}
 
+	/*
+	var boxEntity2;
+	function addBox() {
+		var material = V.getColoredMaterial();
+		var meshData = new Box(width, 1, length);
+		boxEntity2 = goo.world.createEntity(meshData, material, [0, 0, 0]).addToWorld();
+	}
+	*/
+
 	function getMatrix() {
 		var matrix = [];
 		var m = 1;
@@ -104,9 +113,11 @@ require([
 			matrix.push([]);
 			for (var j = 0; j < nCol; j++) {
 				var value =
-					Math.sin(i * a) +
+					Math.sin(i * a); +
 					Math.cos(j * b) +
-					Math.sin(Math.sqrt(i * i + j * j) * c) * 3;
+					Math.sin(Math.sqrt(i * i + j * j) * c) * 1;
+				//value = 0;
+				value = Math.cos(3 * i * b);
 				matrix[i].push(value);
 			}
 		}
@@ -117,13 +128,11 @@ require([
 	var colliderEntity;
 	function addTerrain() {
 		var matrix = getMatrix();
-		var xScale = width / nLin;
-		var zScale = height / nCol;
-		var totalX = xScale * nLin;
-		var totalZ = zScale * nCol;
+		var xScale = width / (nLin - 1);
+		var zScale = length / (nCol - 1);
 		var meshData = Surface.createFromHeightMap(matrix, xScale, 1, zScale);
 		var material = V.getColoredMaterial();
-		entity = goo.world.createEntity(meshData, material, [- totalX / 2, -5, - totalZ / 2]).addToWorld();
+		entity = goo.world.createEntity(meshData, material, [ - width / 2, -5, - length / 2]).addToWorld();
 
 		entity.setComponent(new AmmoWorkerRigidbodyComponent({
 			mass: 0 // static
@@ -132,36 +141,51 @@ require([
 		colliderEntity = goo.world.createEntity();
 		colliderEntity.addToWorld();
 		entity.attachChild(colliderEntity);
-		colliderEntity.transformComponent.transform.translation.setd(totalX / 2, 0, totalZ / 2);
+		colliderEntity.transformComponent.transform.translation.setd(width / 2, 0, length / 2);
 		colliderEntity.transformComponent.setUpdated();
 		colliderEntity.setComponent(new ColliderComponent(new TerrainCollider({
 			heightMap: matrix,
-			width: 100,
-			height: 100
+			width: width,
+			length: length
 		})));
 	}
 
+	var keys = {
+		'37': 0,
+		'38': 0,
+		'39': 0,
+		'40': 0,
+	};
 	var vehicleEntity;
+	var engineSpeed = 500;
 	function addVehicle() {
 		var material = V.getColoredMaterial();
 		var meshData = new Box(2, 1, 4);
 
 		vehicleEntity = goo.world.createEntity(meshData, material, [0, 2, 0]).addToWorld();
-		vehicleEntity.setComponent(new ColliderComponent(new BoxCollider({ halfExtents: new Vector3(0.5 * meshData.xExtent, 0.5 * meshData.yExtent, 0.5 * meshData.zExtent) })));
-
+		vehicleEntity.setComponent(new ColliderComponent(new BoxCollider({ halfExtents: new Vector3(meshData.xExtent, meshData.yExtent, meshData.zExtent) })));
 		vehicleEntity.setComponent(new AmmoWorkerRigidbodyComponent({
 			mass: 150
 		}));
 		vehicleEntity.ammoWorkerRigidbodyComponent.enableVehicle();
-		var maxSteering = Math.PI * 0.5;
-		vehicleEntity.ammoWorkerRigidbodyComponent.setVehicleSteeringValues([maxSteering, maxSteering, 0, 0]);
-		goo.callbacks.push(function(){
-			vehicleEntity.ammoWorkerRigidbodyComponent.setVehicleEngineForce(100);
+		var maxSteering = Math.PI * 0.01;
+		goo.callbacks.push(function () {
+			var engine = keys[38] * engineSpeed + keys[40] * -engineSpeed;
+			var steering = keys[37] * 0.3 + keys[39] * (-0.3);
+			vehicleEntity.ammoWorkerRigidbodyComponent.setVehicleEngineForce(engine);
+			vehicleEntity.ammoWorkerRigidbodyComponent.setVehicleSteeringValue(steering);
 		});
 	}
 
+	function keyhandler(event) {
+		keys[event.keyCode] = (event.type === 'keyup' ? 0 : 1);
+	}
+	document.addEventListener('keydown', keyhandler);
+	document.addEventListener('keyup', keyhandler);
+
 	function init() {
-		// addGround();
+		//addGround();
+		//addBox()
 		addTerrain();
 		addVehicle();
 		V.addLights();

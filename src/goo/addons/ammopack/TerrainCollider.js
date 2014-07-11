@@ -54,8 +54,8 @@ function (
 		if (typeof settings.width !== 'undefined') {
 			this.width = settings.width;
 		}
-		if (typeof settings.height !== 'undefined') {
-			this.height = settings.height;
+		if (typeof settings.length !== 'undefined') {
+			this.length = settings.length;
 		}
 	}
 	TerrainCollider.prototype = Object.create(Collider.prototype);

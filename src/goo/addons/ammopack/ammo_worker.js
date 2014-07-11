@@ -337,7 +337,71 @@ function getBodyById(id) {
 	return idToBodyMap[id];
 }
 
+function VehicleHelper(chassis, wheelRadius, suspensionLength) {
+	this.chassis = chassis;
+	this.wheelRadius = wheelRadius;
+	this.suspension = suspensionLength;
+	this.debugTires = [];
+
+	chassis.setActivationState(4); // 4 means to never deactivate the vehicle
+	this.tuning = new Ammo.btVehicleTuning();
+	var vehicleRaycaster = new Ammo.btDefaultVehicleRaycaster(ammoWorld);
+	this.vehicle = new Ammo.btRaycastVehicle(this.tuning, chassis, vehicleRaycaster);
+	ammoWorld.addVehicle(this.vehicle);
+	this.vehicle.setCoordinateSystem(0,1,2); // choose coordinate system
+	this.wheelDir = new Ammo.btVector3(0,-1,0);
+	this.wheelAxle = new Ammo.btVector3(-1,0,0);
+
+	//chassis.ammoComponent.body.setAngularFactor(new Ammo.btVector3(0,1,0)); restrict angular movement
+}
+VehicleHelper.prototype.resetAtPos = function( x, y, z) {
+	var b = this.chassis.ammoComponent.body;
+	var t = b.getCenterOfMassTransform();
+	t.setIdentity();
+	t.setOrigin(new Ammo.btVector3( x, y, z));
+	b.setCenterOfMassTransform(t);
+	b.setAngularVelocity( new Ammo.btVector3( 0, 0, 0));
+	b.setLinearVelocity( new Ammo.btVector3( 0, 0, 0));
+};
+VehicleHelper.prototype.setSteeringValue = function( steering) {
+	for(var i=0;i<this.vehicle.getNumWheels();i++){
+		if( this.vehicle.getWheelInfo(i).get_m_bIsFrontWheel() ) {
+			this.vehicle.setSteeringValue(steering,i);
+		}
+	}
+};
+VehicleHelper.prototype.applyEngineForce = function( force, front) {
+	for(var i=0;i<this.vehicle.getNumWheels();i++){
+		if( front === undefined || this.vehicle.getWheelInfo(i).get_m_bIsFrontWheel() === front) {
+			this.vehicle.applyEngineForce(force,i);
+		}
+	}
+};
+VehicleHelper.prototype.setBrake = function( force) {
+	for(var i=0;i<this.vehicle.getNumWheels();i++){
+		this.vehicle.setBrake(force,i);
+	}
+};
+VehicleHelper.prototype.setWheelAxle = function( x, y, z) {
+	this.wheelAxle = new Ammo.btVector3( x, y, z);
+};
+VehicleHelper.prototype.addFrontWheel = function( pos) {
+	this.addWheel( pos[0], pos[1], pos[2], true);
+};
+VehicleHelper.prototype.addRearWheel = function( pos) {
+	this.addWheel( pos[0], pos[1], pos[2], false);
+};
+VehicleHelper.prototype.addWheel = function( x,y,z, isFrontWheel) {
+	var wheel = this.vehicle.addWheel(new Ammo.btVector3(x, y, z),this.wheelDir,this.wheelAxle,this.suspension,this.wheelRadius,this.tuning,isFrontWheel);
+	wheel.set_m_suspensionStiffness(20);
+	wheel.set_m_wheelsDampingRelaxation(2.3);
+	wheel.set_m_wheelsDampingCompression(4.4);
+	wheel.set_m_frictionSlip(1000);
+	wheel.set_m_rollInfluence(0.01); // this value controls how easily a vehicle can tipp over. Lower values tipp less :)
+};
+
 function createVehicle(data, chassis) {
+	/*
 	var tuning = new Ammo.btVehicleTuning();
 	var vehicleRaycaster = new Ammo.btDefaultVehicleRaycaster(ammoWorld);
 	var vehicle = new Ammo.btRaycastVehicle(tuning, chassis, vehicleRaycaster);
@@ -349,7 +413,7 @@ function createVehicle(data, chassis) {
 	var wheelRadius = 0.5;
 	var suspension = 0.3;
 	function addWheel(x, y, z, isFrontWheel){
-		var wheel = vehicle.addWheel(new Ammo.btVector3(x, y, z),wheelDir,wheelAxle,suspension,wheelRadius,tuning,isFrontWheel);
+		var wheel = vehicle.addWheel(new Ammo.btVector3(x, y, z), wheelDir, wheelAxle, suspension, wheelRadius, tuning, isFrontWheel);
 		wheel.set_m_suspensionStiffness(20);
 		wheel.set_m_wheelsDampingRelaxation(2.3);
 		wheel.set_m_wheelsDampingCompression(4.4);
@@ -359,12 +423,20 @@ function createVehicle(data, chassis) {
 
 	addWheel(-1, 0,  1, true);
 	addWheel( 1, 0,  1, true);
-	addWheel(-1, 0, -1, true);
-	addWheel( 1, 0, -1, true);
+	addWheel(-1, 0, -1, false);
+	addWheel( 1, 0, -1, false);
 
 	chassis.setActivationState(activationStates.DISABLE_DEACTIVATION);
+	*/
 
-	return vehicle;
+	var vehicleHelper = new VehicleHelper(chassis, 0.5, 0.3, true);
+	vehicleHelper.setWheelAxle( -1, 0, 0);
+	vehicleHelper.addFrontWheel( [ -1, 0.0,  1.0] );
+	vehicleHelper.addFrontWheel( [  1, 0.0,  1.0]);
+	vehicleHelper.addRearWheel(  [ -1, 0.0, -1.0]);
+	vehicleHelper.addRearWheel(  [  1, 0.0, -1.0]);
+
+	return vehicleHelper;
 }
 
 function applyEngineForce(force, vehicle, wheelId) {
@@ -810,22 +882,17 @@ var commandHandlers = {
 			"speed": 0
 		};
 
-		var vehicle = createVehicle(vehicleData, body);
-		body.vehicle = vehicle;
-		ammoWorld.addVehicle(vehicle);
-		//vehicles.push(vehicle);
+		var vehicleHelper = createVehicle(vehicleData, body);
+		body.vehicleHelper = vehicleHelper;
 	},
 
-	setVehicleSteeringValues: function (params) {
+	setVehicleSteeringValue: function (params) {
 		var body = getBodyById(params.id);
 		if (!body) {
 			return;
 		}
-		var vehicle = body.vehicle;
-		// Set steering for each wheel
-		for (var i = 0; i < params.values.length; i++) {
-			vehicle.setSteeringValue(i, params.values[i]);
-		}
+		var vehicleHelper = body.vehicleHelper;
+		vehicleHelper.setSteeringValue(params.value);
 	},
 
 	setVehicleEngineForce: function (params) {
@@ -833,10 +900,8 @@ var commandHandlers = {
 		if (!body) {
 			return;
 		}
-		var vehicle = body.vehicle;
-		for (var i = 0; i < params.forces.length; i++) {
-			applyEngineForce(params.forces[i], vehicle, i);
-		}
+		var vehicleHelper = body.vehicleHelper;
+		vehicleHelper.applyEngineForce(params.force, true);
 	},
 
 	updateCollider: function (params) {
