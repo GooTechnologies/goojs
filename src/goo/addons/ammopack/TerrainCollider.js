@@ -50,6 +50,13 @@ function (
 		if (settings.heightMap) {
 			this.setFromHeightMap(settings.heightMap);
 		}
+
+		if (typeof settings.width !== 'undefined') {
+			this.width = settings.width;
+		}
+		if (typeof settings.height !== 'undefined') {
+			this.height = settings.height;
+		}
 	}
 	TerrainCollider.prototype = Object.create(Collider.prototype);
 	TerrainCollider.constructor = TerrainCollider;

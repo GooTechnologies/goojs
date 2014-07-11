@@ -337,72 +337,7 @@ function getBodyById(id) {
 	return idToBodyMap[id];
 }
 
-function createVehicleTuning(data) {
-
-	var tuning = new Ammo.btVehicleTuning();
-
-	var suspensionStiffness = ( data.suspensionStiffness !== undefined ) ? data.suspensionStiffness : 5.88;
-	var suspensionCompression = ( data.suspensionCompression !== undefined ) ? data.suspensionCompression: 0.83;
-	var suspensionDamping = ( data.suspensionDamping !== undefined ) ? data.suspensionDamping : 0.88;
-	var maxSuspensionTravelCm = ( data.maxSuspensionTravelCm !== undefined ) ? data.maxSuspensionTravelCm : 500.0;
-	var frictionSlip = ( data.frictionSlip !== undefined ) ? data.frictionSlip : 10.5;
-	var maxSuspensionForce = ( data.maxSuspensionForce !== undefined ) ? data.maxSuspensionForce : 6000.0;
-
-	tuning.set_m_suspensionStiffness( suspensionStiffness );
-	tuning.set_m_suspensionCompression( suspensionCompression );
-	tuning.set_m_suspensionDamping( suspensionDamping );
-	tuning.set_m_maxSuspensionTravelCm( maxSuspensionTravelCm );
-	tuning.set_m_frictionSlip( frictionSlip );
-	tuning.set_m_maxSuspensionForce( maxSuspensionForce );
-
-	return tuning;
-
-}
-
 function createVehicle(data, chassis) {
-	/*
-	var vehicleTuning = createVehicleTuning(data);
-	var rollInfluence = (data.rollInfluence !== undefined) ? data.rollInfluence : 0.1;
-
-	var raycaster = new Ammo.btDefaultVehicleRaycaster(ammoWorld);
-	var vehicle = new Ammo.btRaycastVehicle(vehicleTuning, chassis, raycaster);
-
-	chassis.setActivationState(activationStates.DISABLE_DEACTIVATION);
-	vehicle.setCoordinateSystem( 0, 1, 2 ); // right, up, forward
-
-	var numWheelsTotal = 0;
-	for ( var i = 0, il = data.wheels.length; i < il; i ++ ) {
-
-		var wheel = data.wheels[ i ];
-
-		console.log(JSON.stringify(wheel));
-
-		var connection = wheel.connectionPoint;
-		var direction = wheel.wheelDirection;
-		var axle = wheel.wheelAxle;
-
-		var suspensionRestLength = wheel.suspensionRestLength;
-		var wheelRadius = wheel.wheelRadius;
-		var isFrontWheel = wheel.isFrontWheel;
-
-		var tuning = ( wheel.tuning !== undefined ) ? createVehicleTuning( wheel.tuning ) : vehicleTuning;
-
-		var connectionPointCS0 = new Ammo.btVector3( connection[ 0 ], connection[ 1 ], connection[ 2 ] );
-		var wheelDirectionCS0 = new Ammo.btVector3( direction[ 0 ], direction[ 1 ], direction[ 2 ] );
-		var wheelAxleCS = new Ammo.btVector3( axle[ 0 ], axle[ 1 ], axle[ 2 ] );
-
-		vehicle.addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS,
-						  suspensionRestLength, wheelRadius, tuning, isFrontWheel );
-
-		if ( wheel.tuning && wheel.tuning.rollInfluence !== undefined ) rollInfluence = wheel.tuning.rollInfluence;
-
-		var wheelInfo = vehicle.getWheelInfo( i );
-		wheelInfo.set_m_rollInfluence(rollInfluence);
-
-		numWheelsTotal += 1;
-	}
-	*/
-
 	var tuning = new Ammo.btVehicleTuning();
 	var vehicleRaycaster = new Ammo.btDefaultVehicleRaycaster(ammoWorld);
 	var vehicle = new Ammo.btRaycastVehicle(tuning, chassis, vehicleRaycaster);
@@ -427,10 +362,12 @@ function createVehicle(data, chassis) {
 	addWheel(-1, 0, -1, true);
 	addWheel( 1, 0, -1, true);
 
+	chassis.setActivationState(activationStates.DISABLE_DEACTIVATION);
+
 	return vehicle;
 }
 
-function applyEngineForce( force, vehicle, wheelId ) {
+function applyEngineForce(force, vehicle, wheelId) {
 	if (wheelId === undefined) {
 		for (var i = 0, il = vehicle.getNumWheels(); i < il; i++) {
 			vehicle.applyEngineForce( force, i );
@@ -440,7 +377,7 @@ function applyEngineForce( force, vehicle, wheelId ) {
 	}
 }
 
-function setBrake( brake, vehicle, wheelId ) {
+function setBrake(brake, vehicle, wheelId) {
 	if (wheelId === undefined) {
 		for ( var i = 0, il = vehicle.getNumWheels(); i < il; i ++ ) {
 			vehicle.setBrake(brake, i);
