@@ -302,6 +302,31 @@ function (
 			jumpImpulse: v2a(jumpImpulse)
 		});
 	};
+	AmmoWorkerRigidbodyComponent.prototype.enableVehicle = function () {
+		this._postMessage({
+			command: 'enableVehicle'
+		});
+	};
+	// Force is array with 4 values or 1 value
+	AmmoWorkerRigidbodyComponent.prototype.setVehicleEngineForce = function (forces) {
+		if (typeof(forces) === 'number') {
+			forces = [forces, forces, forces, forces];
+		}
+		this._postMessage({
+			command: 'setVehicleEngineForce',
+			forces: forces
+		});
+	};
+	// Force is array with 4 values or 1 value
+	AmmoWorkerRigidbodyComponent.prototype.setVehicleSteeringValues = function (values) {
+		if (typeof(values) === 'number') {
+			values = [values, values, values, values];
+		}
+		this._postMessage({
+			command: 'setVehicleSteeringValues',
+			values: values
+		});
+	};
 
 	/**
 	 * Update collider information.
