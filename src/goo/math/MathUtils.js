@@ -44,7 +44,7 @@ function () {
 	* }
 	}
 	*/
-	MathUtils.EPSILON = 0.0000001;
+	MathUtils.EPSILON = 0.000001;
 
 	/**
 	 * Converts an angle from degrees to radians.
