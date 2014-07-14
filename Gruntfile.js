@@ -196,7 +196,7 @@ module.exports = function (grunt) {
 		},
 		karma: {
 			unit: {
-				configFile: 'test/karma.conf.js',
+				configFile: 'test/unit/karma.conf.js',
 				singleRun: true,
 				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
 			}

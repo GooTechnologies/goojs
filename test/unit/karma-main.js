@@ -14,14 +14,13 @@ requirejs.config({
     paths: {
         'jquery': '../lib/jquery',
         'underscore': '../lib/underscore',
-
         'goo': 'src/goo',
         'fsmpack': 'src/fsmpack',
-        'test': 'test',
+        'test': 'test/unit',
         'lib': 'lib',
         'goo/lib': 'lib',
-        'loaders': 'test/loaders',
-        'loaders/res': 'test/loaders/res'
+        'loaders': 'test/unit/loaders',
+        'loaders/res': 'test/unit/loaders/res'
     },
 
     waitSeconds: 5,
@@ -30,10 +29,10 @@ requirejs.config({
         'underscore': {
             exports: '_'
         }
-    },
+    }
 });
 
 require(['test/all-tests'], function() {
-    window.__karma__.externalResourceRootPath = "/base/test";
+    window.__karma__.externalResourceRootPath = '/base/test/unit';
     window.__karma__.start();
 });

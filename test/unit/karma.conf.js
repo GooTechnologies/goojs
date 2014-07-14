@@ -14,12 +14,12 @@ module.exports = function(config) {
 
 	// list of files / patterns to load in the browser
 	files: [
-		{ pattern: 'test/**/*.png',   included: false },
-		{ pattern: 'test/all-tests.js',   included: false },
-		'karma-main.js',
-		{ pattern: 'src/**/*.js',         included: false },
-		{ pattern: 'lib/**/*.js',         included: false },
-		{ pattern: 'test/**/*.js',        included: false },
+		{ pattern: 'test/unit/**/*.png', included: false },
+		{ pattern: 'test/unit/all-tests.js', included: false },
+		'test/unit/karma-main.js',
+		{ pattern: 'src/**/*.js', included: false },
+		{ pattern: 'lib/**/*.js', included: false },
+		{ pattern: 'test/unit/**/*.js', included: false }
 	],
 
 
@@ -81,6 +81,6 @@ module.exports = function(config) {
 	coverageReporter: {
 		type : 'html',
 		dir : 'coverage/'
-	},
+	}
   });
 };
