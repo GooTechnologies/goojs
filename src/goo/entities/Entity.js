@@ -42,11 +42,20 @@ function (
 		 */
 		this.skip = false;
 
-		/** Set to true to skip rendering of the entity. Scripts will still be processed.
+		/** Holds the hidden status of the entity. The hidden status will not however propagate to components or child entities.
+		 * @deprecated The usage of this flag changed. Please use entity.hide/show() instead to change the hidden status of the entity and entity.isHidden/isVisiblyHidden() to query the status
 		 * @type {boolean}
 		 * @default false
 		 */
 		this.hidden = false;
+		//! AT: users are always confused about this - I'll have to hide it
+
+		/**
+		 * Has the same function as the `hidden` property, except it's now private.
+		 * @type {boolean}
+		 * @private
+		 */
+		this._hidden = false;
 
 		/** Mark entity as static, to allow being mesh-combined.
 		 * @type {boolean}

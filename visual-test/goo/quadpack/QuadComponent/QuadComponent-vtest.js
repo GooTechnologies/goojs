@@ -15,6 +15,8 @@ require([
 ) {
 	'use strict';
 
+	V.describe('The quad component/handler are used to render 2 svgs to double-faced quads');
+
 	var svgData1 =	"<svg xmlns='http://www.w3.org/2000/svg' version='1.1' viewBox='0 -50 200 150' width='513' height='513'>" +
 		'<rect x="0" y="0" width="200" height="100" stroke="black" stroke-width="3" fill="blue" fill-opacity="0.5" />' +
 		'<circle cx="100" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />' +

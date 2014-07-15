@@ -126,7 +126,7 @@ function(
 			}
 		}
 
-		_.forEach(addedEntityIds, function(entityConfig) {
+		_.forEach(config.entities, function(entityConfig) {
 			promises.push(that._load(entityConfig.entityRef, options));
 		}, null, 'sortValue');
 
@@ -134,7 +134,9 @@ function(
 			// Adding new entities
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
-				entity.addToWorld();
+				if (addedEntityIds[entity.id]) {
+					entity.addToWorld();
+				}
 				scene.entities[entity.id] = entity;
 			}
 

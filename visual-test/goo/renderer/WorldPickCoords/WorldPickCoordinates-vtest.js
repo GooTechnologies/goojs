@@ -1,31 +1,30 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'goo/shapes/Quad',
-	'lib/V',
-	'goo/renderer/Camera'
-], function(
-	GooRunner,
+    'goo/renderer/Camera',
+	'lib/V'
+], function (
 	Material,
 	ShaderLib,
-	MeshDataComponent,
-	MeshRendererComponent,
 	Vector3,
 	Box,
 	Sphere,
 	Torus,
-	Quad,
-	V,
-	Camera
+    Camera,
+	V
 ) {
 	'use strict';
+
+	V.describe([
+		'Click on any object and a small red sphere should appear at the intersection between the pick ray originating from the camera and the clicked-on object',
+        'Change the projection mode by hitting P'
+	].join('\n'));
+
+    V.button('P', keyP);
 
 	// initialise goo
 	var goo = V.initGoo();
@@ -49,14 +48,23 @@ require([
 	// and a pointer
 	var pointer = world.createEntity(new Sphere(32, 32, 0.1), V.getColoredMaterial(1, 0, 0, 0)).addToWorld();
 
-	// register a listener for click events
-	goo.addEventListener('click', function (event) {
-		if (event.entity) {
-			console.log('Picked entity:' + event.entity + ' at ',event.intersection.x, event.intersection.y, event.intersection.z + ' at depth = ' + event.depth);
+    var onPick = function (event) {
+        if (event.entity) {
+            pointer.setTranslation(Math.random() * 3, Math.random() * 3, 0);
 
-			pointer.setTranslation(event.intersection);
-		}
-	});
+            console.log(
+                'Picked entity:', event.entity,
+                'at', event.intersection.x, event.intersection.y, event.intersection.z,
+                'at depth:', event.depth
+            );
+
+            pointer.setTranslation(event.intersection);
+        }
+    };
+
+	// register a listener for click events
+	goo.addEventListener('click', onPick);
+    goo.addEventListener('touchstart', onPick);
 
 	var size = 3;
 	var fov = camera.fov;
@@ -64,20 +72,20 @@ require([
 	var near = camera.near;
 	var far = camera.far;
 
+    function keyP() {
+        if (camera.projectionMode === Camera.Parallel){
+            camera.setProjectionMode(Camera.Perspective);
+            camera.setFrustumPerspective(fov, aspect, near, far);
+        } else {
+            camera.setProjectionMode(Camera.Parallel);
+            camera.setFrustum(near, far, -size, size, size, -size, aspect);
+        }
+    }
+
 	// register a listener for click events
 	document.addEventListener('keypress', function (event) {
-		switch(event.keyCode){
-			case 112: // p
-				if(camera.projectionMode === Camera.Parallel){
-					camera.setProjectionMode(Camera.Perspective);
-					camera.setFrustumPerspective(fov, aspect, near, far);
-				} else {
-					camera.setProjectionMode(Camera.Parallel);
-					camera.setFrustum(near, far, -size, size, size, -size, aspect);
-				}
-				break;
+		switch (event.keyCode){
+			case 112: keyP(); break;
 		}
 	});
-
-	//V.addDebugQuad();
 });

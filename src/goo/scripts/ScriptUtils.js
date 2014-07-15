@@ -71,6 +71,7 @@ define([
 		'Shift': 16,
 		'Ctrl': 17,
 		'Alt': 18,
+		'Meta': 91,
 		'Pause': 19,
 		'Capslock': 20,
 		'Esc': 27,

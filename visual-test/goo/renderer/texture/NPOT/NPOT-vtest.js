@@ -21,6 +21,8 @@ require([
 ) {
 	'use strict';
 
+	V.describe('NPOT textures were at some point believed to cause transparency issues. This is the minimal test scene to prove or disprove the bug.');
+
 	var goo = V.initGoo();
 	var world = goo.world;
 

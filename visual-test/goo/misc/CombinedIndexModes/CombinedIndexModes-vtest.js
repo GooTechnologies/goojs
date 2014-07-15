@@ -1,39 +1,22 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
-	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/light/SpotLight',
-	'goo/entities/components/LightComponent',
 	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
 	MeshData,
-	MeshRendererComponent,
 	Vector3,
-	PointLight,
-	DirectionalLight,
-	SpotLight,
-	LightComponent,
 	V
 	) {
 	'use strict';
+
+	V.describe([
+		'A 7x7 matrix of shapes using all possible combinations of index modes.',
+		'From left to right, top to bottom: GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_LINE_LOOP, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN'
+	].join('\n'));
 
 	function buildCombined(verts1, indices1, indexMode1, verts2, indices2, indexMode2) {
 		var nVerts1 = verts1.length / 3;
@@ -63,7 +46,7 @@ require([
 		x = x || 0;
 		y = y || 0;
 		z = z || 0;
-		var material = new Material(ShaderLib.simple, '');
+		var material = new Material(ShaderLib.simple);
 		var entity = goo.world.createEntity(meshData, material);
 		entity.transformComponent.transform.translation.set(x, y, z);
 		entity.addToWorld();

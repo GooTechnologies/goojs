@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="carousel.css">
+	<title>Visual test runner</title>
+	<script src="../../lib/require.js"></script>
+	<script src="../../lib/goo.js"></script>
+	<script src="vtUrls.js"></script>
+</head>
+<body>
+	<button id="start-all">Start/Resume all the tests</button>
+	<button id="start-short">Start/Resume the smoke</button>
+	<button id="pause">Pause</button>
+	<br>
+	<br>
+	<div>Status: <span id="status"></span></div>
+	<div>CurrentUrl: <span id="current"></span></div>
+	<br>
+	<iframe id="vtest-container" width="1024" height="600" src=""></iframe>
+
+	<script src="carousel.js"></script>
+</body>
+</html>

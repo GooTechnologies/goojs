@@ -54,13 +54,13 @@ function (
 	 * @param {ref}
 	 */
 	PosteffectsHandler.prototype._remove = function (ref) {
-		var composer = this._composer;
 		var renderSystem = this.world.getSystem('RenderSystem');
-		ArrayUtil.remove(renderSystem.composers, composer);
+		ArrayUtil.remove(renderSystem.composers, this._composer);
+
 		delete this._objects[ref];
 
 		if (this.world) {
-			composer.destroy(this.world.gooRunner.renderer);
+			this._composer.destroy(this.world.gooRunner.renderer);
 		}
 
 		this._composer = new Composer();
@@ -86,12 +86,32 @@ function (
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (posteffects) {
 			if (!posteffects) { return; }
-			var i = 0;
+//			var i = 0;
+//			_.forEach(config.posteffects, function (effectConfig) {
+//				posteffects[i++] = that._updateEffect(effectConfig, posteffects, options);
+//			}, null, 'sortValue');
+//			posteffects.length = i;
+//			return RSVP.all(posteffects);
+			var oldEffects = posteffects.slice();
+			var promises = [];
 			_.forEach(config.posteffects, function (effectConfig) {
-				posteffects[i++] = that._updateEffect(effectConfig, posteffects, options);
+				promises.push(that._updateEffect(effectConfig, oldEffects, options));
 			}, null, 'sortValue');
-			posteffects.length = i;
-			return RSVP.all(posteffects);
+			return RSVP.all(promises).then(function (effects) {
+				for (var i = 0; i < effects.length; i++) {
+					posteffects[i] = effects[i];
+				}
+				posteffects.length = i;
+				/*
+				for (var i = 0; i < oldEffects.length; i++) {
+					var effect = oldEffects[i];
+					if (posteffects.indexOf(effect) === -1) {
+						// Destroy posteffect rendertargets
+					}
+				}
+				*/
+				return posteffects;
+			});
 		}).then(function (posteffects) {
 			if (!posteffects) { return; }
 			var enabled = posteffects.some(function (effect) { return effect.enabled; });
@@ -152,13 +172,13 @@ function (
 			var key = option.key;
 			var type = option.type;
 			if (type === 'texture') {
-				if (config.options[key] && config.options[key].textureRef) {
+				if (config.options[key] && config.options[key].textureRef && config.options[key].enabled) {
 					promises.push(loadConfig(key, config.options[key].textureRef));
 				} else {
 					config.options[key] = null;
 				}
 			} else if (type === 'entity') {
-				if (config.options[key] && config.options[key].entityRef) {
+				if (config.options[key] && config.options[key].entityRef && config.options[key].enabled) {
 					promises.push(loadConfig(key, config.options[key].entityRef));
 				} else {
 					config.options[key] = null;

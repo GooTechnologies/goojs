@@ -39,6 +39,9 @@ define([
 			this.draw = false;
 			this.eventX = 0;
 			this.eventY = 0;
+			this.vegetationSettings = {
+				gridSize: 7
+			};
 		}
 
 		TerrainHandler.prototype.isEditing = function () {
@@ -392,7 +395,7 @@ define([
 
 				var forrestTypes = terrainData.forrestTypes;
 
-				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes);
+				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
 				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
 
 				return texturesPromise;

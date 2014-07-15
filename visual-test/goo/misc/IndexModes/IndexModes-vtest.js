@@ -13,6 +13,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('All possble index modes are featured in this scene: GL_POINTS, GL_LINES, GL_LINE_STRIP, GL_LINE_LOOP, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN');
+
 	// points =======
 	function buildPoints(verts) {
 		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), verts.length / 3);
@@ -20,6 +22,7 @@ require([
 		meshData.indexModes = ['Points'];
 		return meshData;
 	}
+
 	// lines ========
 	function buildLines(verts, indices) {
 		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), verts.length / 3, indices.length);

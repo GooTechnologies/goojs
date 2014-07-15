@@ -560,8 +560,8 @@ function(
 			if (yy !== clipmap.currentY) {
 				clipmap.currentY = yy;
 				var compSize = this.gridSize * clipmap.size * 2;
-				if (clipmap.clipmapEntity.hidden === false && y > compSize) {
-					EntityUtils.hide(clipmap.clipmapEntity);
+				if (clipmap.clipmapEntity._hidden === false && y > compSize) {
+					clipmap.clipmapEntity.hide();
 
 					if (i < this.clipmaps.length - 1) {
 						var childClipmap = this.clipmaps[i + 1];
@@ -571,8 +571,8 @@ function(
 					}
 
 					continue;
-				} else if (clipmap.clipmapEntity.hidden === true && y <= compSize) {
-					EntityUtils.show(clipmap.clipmapEntity);
+				} else if (clipmap.clipmapEntity._hidden === true && y <= compSize) {
+					clipmap.clipmapEntity.show();
 
 					if (i < this.clipmaps.length - 1) {
 						var childClipmap = this.clipmaps[i + 1];
@@ -869,16 +869,15 @@ function(
 					// 'vec3 detail = texture2D(detailMap, mapcoord).xyz;',
 					// 'final_color.rgb = mix(final_color.rgb, detail, smoothstep(30.0, 60.0, length(viewPosition)));',
 
-
-					'#ifdef FOG',
-					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
-					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
-					'#endif',
-
 					'#ifdef LIGHTMAP',
 					'final_color = final_color * texture2D(lightMap, mapcoord);',
 					'#else',
 					ShaderBuilder.light.fragment,
+					'#endif',
+
+					'#ifdef FOG',
+					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 					'#endif',
 
 					'gl_FragColor = final_color;',
@@ -1191,7 +1190,7 @@ function(
 		'void main(void)',
 		'{',
 		// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
-		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y) + vec2(0.0/512.0, 1.0/512.0)).r);',
+		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).r);',
 		'}'//
 		].join('\n')
 	};

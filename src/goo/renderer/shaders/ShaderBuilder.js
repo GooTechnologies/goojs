@@ -121,6 +121,10 @@ function(
 					attribute === 'PHYSICALLY_BASED_SHADING' ||
 					attribute === 'ENVIRONMENT_TYPE' ||
 					attribute === 'REFLECTIVE' ||
+					attribute === 'DISCARD' ||
+					attribute === 'FOG' ||
+					attribute === 'REFLECTION_TYPE' ||
+					attribute === 'SKIP_SPECULAR' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
 				}
@@ -145,7 +149,14 @@ function(
 				delete shader.defines.FOG;
 			}
 
+			// $dan: This is maybe a bit of secret property here for allowing multiplicative ambient on materials.
+			//       It should probably be default, although it'd break too much to just go ahead and change it.
+			if (material.multiplyAmbient) {
+				shader.defines.MULTIPLY_AMBIENT = true;
+			}
+
 			shader.defines.SKIP_SPECULAR = true;
+			shader.defines.REFLECTION_TYPE = material.uniforms.reflectionType !== undefined ? material.uniforms.reflectionType : 0;
 
 			//TODO: Hacky?
 			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
@@ -264,7 +275,10 @@ function(
 				}
 			}
 
-			shader.defines.LIGHT = lightDefines.join('');
+			var lightStr = lightDefines.join('');
+			if (shader.defines.LIGHT !== lightStr) {
+				shader.defines.LIGHT = lightStr;
+			}
 			lightDefines.length = 0;
 		},
 		builder: function (shader, shaderInfo) {
@@ -284,6 +298,7 @@ function(
 				'uniform vec4 materialSpecular;',
 				'uniform float materialSpecularPower;',
 				'uniform vec3 globalAmbient;',
+				'uniform vec2 wrapSettings;',
 
 				// 'float VsmFixLightBleed(in float pMax, in float amount) {',
 					// 'return clamp((pMax - amount) / (1.0 - amount), 0.0, 1.0);',
@@ -438,15 +453,9 @@ function(
 
 						'float dotProduct = dot(N, lVector);',
 
-						'#ifdef WRAP_AROUND',
-							'float pointDiffuseWeightFull = max(dotProduct, 0.0);',
-							'float pointDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
-
-							'float wrapRGB = 1.0;',
-							'vec3 pointDiffuseWeight = mix(vec3(pointDiffuseWeightFull), vec3(pointDiffuseWeightHalf), wrapRGB);',
-						'#else',
-							'float pointDiffuseWeight = max(dotProduct, 0.0);',
-						'#endif',
+						'float pointDiffuseWeightFull = max(dotProduct, 0.0);',
+						'float pointDiffuseWeightHalf = max(mix(dotProduct, 1.0, wrapSettings.x), 0.0);',
+						'vec3 pointDiffuseWeight = mix(vec3(pointDiffuseWeightFull), vec3(pointDiffuseWeightHalf), wrapSettings.y);',
 
 						'totalDiffuse += materialDiffuse.rgb * pointLightColor'+i+'.rgb * pointDiffuseWeight * lDistance * shadow;',
 
@@ -472,15 +481,9 @@ function(
 						'vec3 dirVector = normalize(-directionalLightDirection'+i+');',
 						'float dotProduct = dot(N, dirVector);',
 
-						'#ifdef WRAP_AROUND',
-							'float dirDiffuseWeightFull = max(dotProduct, 0.0);',
-							'float dirDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
-
-							'float wrapRGB = 1.0;',
-							'vec3 dirDiffuseWeight = mix(vec3(dirDiffuseWeightFull), vec3(dirDiffuseWeightHalf), wrapRGB);',
-						'#else',
-							'float dirDiffuseWeight = max(dotProduct, 0.0);',
-						'#endif',
+						'float dirDiffuseWeightFull = max(dotProduct, 0.0);',
+						'float dirDiffuseWeightHalf = max(mix(dotProduct, 1.0, wrapSettings.x), 0.0);',
+						'vec3 dirDiffuseWeight = mix(vec3(dirDiffuseWeightFull), vec3(dirDiffuseWeightHalf), wrapSettings.y);',
 
 						'vec3 cookie = vec3(1.0);'
 					);
@@ -530,15 +533,9 @@ function(
 
 							'float dotProduct = dot(N, lVector);',
 
-							'#ifdef WRAP_AROUND',
-								'float spotDiffuseWeightFull = max(dotProduct, 0.0);',
-								'float spotDiffuseWeightHalf = max(0.5 * dotProduct + 0.5, 0.0);',
-
-								'float wrapRGB = 1.0;',
-								'vec3 spotDiffuseWeight = mix(vec3(spotDiffuseWeightFull), vec3(spotDiffuseWeightHalf), wrapRGB);',
-							'#else',
-								'float spotDiffuseWeight = max(dotProduct, 0.0);',
-							'#endif',
+							'float spotDiffuseWeightFull = max(dotProduct, 0.0);',
+							'float spotDiffuseWeightHalf = max(mix(dotProduct, 1.0, wrapSettings.x), 0.0);',
+							'vec3 spotDiffuseWeight = mix(vec3(spotDiffuseWeightFull), vec3(spotDiffuseWeightHalf), wrapSettings.y);',
 
 							'vec3 cookie = vec3(1.0);'
 					);
@@ -577,10 +574,16 @@ function(
 					'vec3 emissive = materialEmissive.rgb;',
 				'#endif',
 
-				'#ifdef SKIP_SPECULAR',
-					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + globalAmbient + materialAmbient.rgb);',
+				'#if defined(MULTIPLY_AMBIENT)',
+					'vec3 ambient = globalAmbient * materialAmbient.rgb;',
 				'#else',
-					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + globalAmbient + materialAmbient.rgb) + totalSpecular;',
+					'vec3 ambient = globalAmbient + materialAmbient.rgb;',
+				'#endif',
+
+				'#ifdef SKIP_SPECULAR',
+					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + ambient);',
+				'#else',
+					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + ambient) + totalSpecular;',
 				'#endif',
 
 				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',

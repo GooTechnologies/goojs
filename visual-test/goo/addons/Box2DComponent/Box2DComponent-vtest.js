@@ -23,6 +23,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('All entities in the scene have a box2d component which updates their transform.');
+
 	function addStaticBox(width, x, y, angle) {
 		var worldHeight = 0.1;
 		var meshData = new Box(width, worldHeight, worldHeight * 5);
@@ -139,6 +141,10 @@ require([
 					);
 			}
 		});
+
+		V.button('Add Circle', function() {addCircle(pipeEntity.transformComponent.transform.translation.x, pipeY)});
+		V.button('Add Box', function() {addBox(pipeEntity.transformComponent.transform.translation.x, pipeY)});
+		V.button('Add Polygon', function() {addPolygon(pipeEntity.transformComponent.transform.translation.x, pipeY)});
 	}
 
 

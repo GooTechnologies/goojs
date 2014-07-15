@@ -19,20 +19,41 @@ require([
 ) {
 	'use strict';
 
+	V.describe([
+		'Select and entity and transform it using the transform gizmos.',
+		'Change the active gizmo by hitting 1, 2 or 3.'
+	].join('\n'));
+
+	V.button('1', key1);
+	V.button('2', key2);
+	V.button('3', key3);
+
+	function key1() {
+		console.log('translation');
+		gizmoRenderSystem.setActiveGizmo(0);
+	}
+
+	function key2() {
+		console.log('rotation');
+		gizmoRenderSystem.setActiveGizmo(1);
+	}
+
+	function key3() {
+		console.log('scale');
+		gizmoRenderSystem.setActiveGizmo(2);
+	}
+
 	function setupKeys() {
 		document.body.addEventListener('keypress', function (e) {
-			switch(e.which) {
+			switch (e.which) {
 				case 49: // 1
-					console.log('translation');
-					gizmoRenderSystem.setActiveGizmo(0);
+					key1();
 					break;
 				case 50: // 2
-					console.log('rotation');
-					gizmoRenderSystem.setActiveGizmo(1);
+					key2();
 					break;
 				case 51: // 3
-					console.log('scale');
-					gizmoRenderSystem.setActiveGizmo(2);
+					key3();
 					break;
 				default:
 					console.log('1: translate gizmo\n2: rotate gizmo\n3: scale gizmo');
@@ -41,7 +62,7 @@ require([
 	}
 
 	function setupMouse() {
-		goo.addEventListener('mousedown', function (e) {
+		function onPick(e) {
 			if (e.domEvent.button !== 0) { return; }
 			if (e.domEvent.shiftKey || e.domEvent.altKey) { return; }
 
@@ -57,11 +78,17 @@ require([
 			} else if (e.id < 16100) {
 				gizmoRenderSystem.activate(e.id, e.x, e.y);
 			}
-		});
+		}
 
-		document.addEventListener('mouseup', function(e) {
+		goo.addEventListener('mousedown', onPick);
+		goo.addEventListener('touchstart', onPick);
+
+		function onUnpick() {
 			gizmoRenderSystem.deactivate();
-		});
+		}
+
+		document.addEventListener('mouseup', onUnpick);
+		document.addEventListener('touchend', onUnpick);
 	}
 
 	function setupGizmos() {

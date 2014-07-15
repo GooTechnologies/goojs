@@ -1,6 +1,6 @@
 require([
 	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
+	'goo/passpack/ShaderLibExtra',
 	'goo/math/Vector3',
 	'goo/entities/components/TextComponent',
 	'goo/renderer/TextureCreator',
@@ -8,7 +8,7 @@ require([
 	'lib/V'
 ], function (
 	Material,
-	ShaderLib,
+	ShaderLibExtra,
 	Vector3,
 	TextComponent,
 	TextureCreator,
@@ -16,6 +16,8 @@ require([
 	V
 	) {
 	'use strict';
+
+	V.describe('Tests the TextComponent, which uses an image of the alphabet to display text.');
 
 	var resourcesPath = '../../../../resources/';
 
@@ -29,7 +31,7 @@ require([
 	world.setSystem(new TextSystem());
 
 	// get a font
-	var material = new Material(ShaderLib.billboard);
+	var material = new Material(ShaderLibExtra.billboard);
 	var texture = new TextureCreator().loadTexture2D(resourcesPath + 'font.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 	material.blendState.blending = 'AlphaBlending';

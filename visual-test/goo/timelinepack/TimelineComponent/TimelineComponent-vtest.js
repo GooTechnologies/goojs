@@ -27,6 +27,11 @@ require([
 ) {
 	'use strict';
 
+	V.describe([
+		'Value/event channels in action.',
+		'The shapes\' rotation and scale are controlled by a value channel and the messages in the console are triggered by event channels.'
+	].join('\n'));
+
 	/* global TWEEN */
 
 	var trace = [];

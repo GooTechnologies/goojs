@@ -166,17 +166,18 @@ define([
 
 		/**
 		 * Shows an entity and its descendants if they are not hidden
+		 * @deprecated Deprecated as of v0.10.x and scheduled for removal in v0.12.0; please consider using entity.show instead.
 		 * @param {Entity} entity The entity to show
 		 */
 		//! RB: refactor this out of here
 		EntityUtils.show = function (entity) {
-			entity.hidden = false;
+			entity._hidden = false;
 
 			// first search if it has hidden parents to determine if itself should be visible
 			var pointer = entity;
 			while (pointer.transformComponent.parent) {
 				pointer = pointer.transformComponent.parent.entity;
-				if (pointer.hidden) {
+				if (pointer._hidden) {
 					// extra check and set needed might be needed
 					if (entity.meshRendererComponent) {
 						entity.meshRendererComponent.hidden = true;
@@ -192,26 +193,27 @@ define([
 			}
 
 			entity.traverse(function (entity) {
-				if (entity.hidden) { return false; }
+				if (entity._hidden) { return false; }
 				if (entity.meshRendererComponent) {
-					entity.meshRendererComponent.hidden = entity.hidden;
+					entity.meshRendererComponent.hidden = entity._hidden;
 				}
 				if (entity.lightComponent) {
-					entity.lightComponent.hidden = entity.hidden;
+					entity.lightComponent.hidden = entity._hidden;
 				}
 				if (entity.htmlComponent) {
-					entity.htmlComponent.hidden = entity.hidden;
+					entity.htmlComponent.hidden = entity._hidden;
 				}
 			});
 		};
 
 		/**
 		 * Hides the entity and its descendants
+		 * @deprecated Deprecated as of v0.10.x and scheduled for removal in v0.12.0; please consider using entity.hide instead.
 		 * @param {Entity} entity The entity to hide
 		 */
 		//! RB: refactor this out of here
 		EntityUtils.hide = function (entity) {
-			entity.hidden = true;
+			entity._hidden = true;
 
 			// hide everything underneath this
 			entity.traverse(function (entity) {

@@ -90,8 +90,9 @@ function (Vector3) {
 			var distance = 0;
 			var bound = meshRendererComponent.worldBound;
 			if (bound !== null) {
-				/* REVIEW: even if it doesn't have a worldBound, you can still use the object's position (it's better than nothing) */
 				distance = tmpVec.setv(camera.translation).subv(bound.center).lengthSquared();
+			} else if (renderable.transformComponent) {
+				distance = tmpVec.setv(camera.translation).subv(renderable.transformComponent.worldTransform.translation).lengthSquared();
 			}
 			meshRendererComponent._renderDistance = distance;
 

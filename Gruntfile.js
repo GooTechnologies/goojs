@@ -196,7 +196,7 @@ module.exports = function (grunt) {
 		},
 		karma: {
 			unit: {
-				configFile: 'test/karma.conf.js',
+				configFile: 'test/unit/karma.conf.js',
 				singleRun: true,
 				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
 			}
@@ -299,6 +299,10 @@ module.exports = function (grunt) {
 	grunt.registerTask('examplestoc', function () {
 		var toc = require('./examples/toc');
 		toc.run();
+	});
+
+	grunt.registerTask('init-git', function () {
+		fs.writeFile('.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n');
 	});
 
 	// Generates reference screenshots

@@ -23,6 +23,11 @@ require([
 	) {
 	'use strict';
 
+	V.describe([
+		'The polyBounding script is used do prevent the camera entity from going into the pillars',
+		'Control the camera entity using WASD and a mouse'
+	].join('\n'));
+
 	function addBoxes(polyBoundingScript) {
 		var boxDim = 5;
 		var boxDimp2 = boxDim / 2;

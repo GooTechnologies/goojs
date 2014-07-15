@@ -150,9 +150,13 @@ function () {
 			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
+		} else {
+			curValue = this.location.value = [];
 		}
 		this.context.uniform3f(this.location, v0, v1, v2);
-		this.location.value = [v0, v1, v2];
+		curValue[0] = v0;
+		curValue[1] = v1;
+		curValue[2] = v2;
 	};
 
 	ShaderCall.prototype.uniform3fv = function (values) {

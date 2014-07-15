@@ -67,7 +67,8 @@ define([
 			fogColor: [1, 1, 1],
 			shadowDarkness: 0.5,
 			vertexColorAmount: 1.0,
-			lodBias: 0.0
+			lodBias: 0.0,
+			wrapSettings: [0.5, 0.0]
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -317,7 +318,11 @@ define([
 						'float fresnelVal = pow(1.0 - abs(dot(normalize(viewPosition), N)), fresnel * 4.0);',
 						'reflectionAmount *= fresnelVal;',
 
-						'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
+						'#if REFLECTION_TYPE == 0',
+							'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
+						'#elif REFLECTION_TYPE == 1',
+							'final_color.rgb += environment.rgb * reflectionAmount;',
+						'#endif',
 					'}',
 				'#endif',
 

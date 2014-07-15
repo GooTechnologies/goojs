@@ -1,13 +1,11 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/EntityUtils'
+	'goo/fsmpack/statemachine/actions/Action'
 ],
 /** @lends */
 function(
-	Action,
-	EntityUtils
+	Action
 ) {
-	"use strict";
+	'use strict';
 
 	function ShowAction(/*id, settings*/) {
 		Action.apply(this, arguments);
@@ -26,7 +24,7 @@ function(
 
 	ShowAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
-		EntityUtils.show(entity);
+		entity.show();
 	};
 
 	return ShowAction;

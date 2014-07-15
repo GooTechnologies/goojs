@@ -21,6 +21,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('All implemented shadow types');
+
 	function addPointLight() {
 		var pointLight = new PointLight(new Vector3(0.9, 0.0, 0.2));
 		pointLight.range = 5;

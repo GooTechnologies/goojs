@@ -45,20 +45,18 @@ require([
 		createMesh(new Torus(16, 16, 1, 3), material, 0, 0, -30);
 	}
 
-	function debuggerDemo() {
-		createShapes();
-
-		// Add camera
-		var camera = new Camera();
-		world.createEntity(camera, [0, 0, 10])
-			.lookAt([0, 0, 0])
-			.addToWorld();
-
-		new Debugger(true, true).inject(goo);
-	}
-
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	debuggerDemo();
+	createShapes();
+
+	// Add camera
+	var camera = new Camera();
+	world.createEntity(camera, [0, 0, 10])
+		.lookAt([0, 0, 0])
+		.addToWorld();
+
+	new Debugger(true, true).inject(goo);
+
+	V.process();
 });

@@ -48,7 +48,7 @@ function (
 		this.initDone = false;
 	}
 
-	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes) {
+	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes, settings) {
 		this.world = world;
 		this.terrainQuery = terrainQuery;
 
@@ -75,6 +75,12 @@ function (
 		this.patchDensity = 19;
 		this.gridSize = 7;
 
+		if (settings) {
+			this.patchSize = settings.patchSize || this.patchSize;
+			this.patchDensity = settings.patchDensity || this.patchDensity;
+			this.gridSize = settings.gridSize || this.gridSize;
+		}
+
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
 		this.grid = [];
@@ -95,6 +101,9 @@ function (
 				entity.meshRendererComponent.hidden = true;
 			}
 		}
+
+		material.uniforms.fadeDistMax = this.gridSizeHalf * this.patchSize;
+		material.uniforms.fadeDistMin = 0.70 * material.uniforms.fadeDistMax;
 
 		this.currentX = -10000;
 		this.currentZ = -10000;
@@ -350,7 +359,9 @@ function (
 			fogColor: function () {
 				return ShaderBuilder.FOG_COLOR;
 			},
-			time : Shader.TIME
+			time : Shader.TIME,
+			fadeDistMin : 40.0,
+			fadeDistMax : 50.0
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -367,6 +378,8 @@ function (
 			'uniform mat4 worldMatrix;',
 			'uniform vec3 cameraPosition;',
 			'uniform float time;',
+			'uniform float fadeDistMin;',
+			'uniform float fadeDistMax;',
 
 			ShaderBuilder.light.prevertex,
 
@@ -390,7 +403,7 @@ function (
 				'texCoord0 = vertexUV0;',
 				'color = vertexColor;',
 				'viewPosition = cameraPosition - worldPos.xyz;',
-				'dist = 1.0 - smoothstep(40.0, 50.0, length(viewPosition.xz));',
+				'dist = 1.0 - smoothstep(fadeDistMin, fadeDistMax, length(viewPosition.xz));',
 			'}'
 		].join('\n');
 		},

@@ -23,6 +23,21 @@ require([
 	) {
 	'use strict';
 
+	V.describe([
+		'Both the sphere and the cube have sound components',
+		'',
+		'Controls:',
+		'1: boing',
+		'2: squigly',
+		'3: pause boing',
+		'4: pause squigly'
+	].join('\n'));
+
+    V.button('1', key1);
+    V.button('2', key2);
+    V.button('3', key3);
+    V.button('4', key4);
+
 	var resourcePath = '../../../resources/';
 
 	var goo = V.initGoo();
@@ -52,6 +67,8 @@ require([
 
 	function loadSound(url) {
 		soundCreator.loadSound(url, {}, function (sound) {
+			// Make the sounds loop when played.
+			sound._loop = true;
 			sounds.push(sound);
 			if (sounds.length >= urls.length) {
 				allLoaded();
@@ -70,34 +87,47 @@ require([
 		soundComponent.addSound(sounds[1]);
 		sphereEntity.set(soundComponent);
 
+		// Start playing the booing sound automatically.
+		key1();
+
 		setupKeys();
 	}
 
+    // ---
+    function key1() {
+        cubeEntity.soundComponent.sounds[0].play()
+            .then(function () {
+                console.log('boing ended');
+            });
+        console.log('boing');
+    }
+
+    function key2() {
+        sphereEntity.soundComponent.sounds[0].play()
+            .then(function () {
+                console.log('squigly ended');
+            });
+        console.log('squigly');
+    }
+
+    function key3() {
+        cubeEntity.soundComponent.sounds[0].pause();
+        console.log('boing pause');
+    }
+
+    function key4() {
+        sphereEntity.soundComponent.sounds[0].pause();
+        console.log('squigly pause');
+    }
+    // ---
+
 	function setupKeys() {
 		document.body.addEventListener('keypress', function(e) {
-			switch(e.keyCode) {
-				case 49:
-					cubeEntity.soundComponent.sounds[0].play()
-						.then(function () {
-							console.log('boing ended');
-						});
-					console.log('boing');
-					break;
-				case 50:
-					sphereEntity.soundComponent.sounds[0].play()
-						.then(function () {
-							console.log('squigly ended');
-						});
-					console.log('squigly');
-					break;
-				case 51:
-					cubeEntity.soundComponent.sounds[0].pause();
-					console.log('boing pause');
-					break;
-				case 52:
-					sphereEntity.soundComponent.sounds[0].pause();
-					console.log('squigly pause');
-					break;
+			switch(e.which) {
+				case 49: key1(); break;
+				case 50: key2(); break;
+				case 51: key3(); break;
+				case 52: key4(); break;
 				default:
 					console.log('1: boing\n2: squigly\n3: pause boing\n4: pause squigly');
 			}

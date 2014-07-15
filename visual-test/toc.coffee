@@ -42,6 +42,10 @@ exports.getFilePathsSync = ->
 exports.run = ->
 	files = exports.getFilesSync()
 
+	# hardcoding it until the need to make it general arises
+	# the carousel should probably be hidden, for now
+	files = files.filter (fileName) -> fileName.indexOf('carousel') == -1
+
 	for file, i in files
 		files[i] = path.relative __dirname, file
 

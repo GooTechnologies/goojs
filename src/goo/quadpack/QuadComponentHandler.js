@@ -1,26 +1,16 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/shapes/Quad',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
-	'goo/entities/components/MeshDataComponent',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/quadpack/QuadComponent'
 ],
 /** @lends */
 function (
 	ComponentHandler,
-	Quad,
-	Material,
-	ShaderLib,
 	RSVP,
 	PromiseUtil,
 	_,
-	MeshDataComponent,
-	MeshRendererComponent,
 	QuadComponent
 ) {
 	'use strict';
@@ -78,6 +68,8 @@ function (
 
 			// Load material
 			return that._load(config.materialRef, options).then(function (material) {
+				// setting this here until the frontend sends good values
+				material.cullState.enabled = true;
 
 				// If the component already has got these components, they need to be overridden
 				if (entity.meshRendererComponent !== component.meshRendererComponent) {

@@ -33,6 +33,8 @@ require([
 ) {
 	'use strict';
 
+	V.describe('The entities in the scene hold a cannon component which updates their transform.');
+
 	var goo = V.initGoo();
 	var world = goo.world;
 
@@ -179,26 +181,26 @@ require([
 	var forcefieldEnabled = false;
 
 	document.addEventListener('keydown', function (evt) {
-		switch(evt.keyCode){
-		case 69:
-			explode();
-			break;
-		case 32:
-			// Add force field
-			forcefieldEnabled = true;
-			break;
-		default:
-			addPrimitives();
-			break;
+		switch (evt.keyCode) {
+			case 69:
+				explode();
+				break;
+			case 32:
+				// Add force field
+				forcefieldEnabled = true;
+				break;
+			default:
+				addPrimitives();
+				break;
 		}
 	}, false);
 
 	document.addEventListener('keyup', function (evt) {
-		switch(evt.keyCode){
-		case 32:
-			// Add force field
-			forcefieldEnabled = false;
-			break;
+		switch (evt.keyCode) {
+			case 32:
+				// Add force field
+				forcefieldEnabled = false;
+				break;
 		}
 	}, false);
 

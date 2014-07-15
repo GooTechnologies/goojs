@@ -55,7 +55,7 @@ function (
 			var entity = entities[i];
 			var component = entity.htmlComponent;
 
-			// Always show if not using transform (except if not hidden)
+			// Always show if not using transform (if not hidden)
 			if (!component.useTransformComponent) {
 				component.domElement.style.display = component.hidden ? 'none' : '';
 				setStyle(component.domElement, 'transform', '');

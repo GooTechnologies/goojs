@@ -13,20 +13,30 @@ define([
 ) {
 	'use strict';
 
+	var ZOOM_DISTANCE_FACTOR = 0.035;
+	var EPSILON = 1e-6;
 
 	/**
-	 * @param {Vector3} [properties.spherical=Vector3(15,0,0)] The initial position of the camera given in spherical coordinates (r, theta, phi).
-	 * Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis. Some examples:
-	 * <ul>
-	 * <li>View from right: <code>new Vector3(15,0,0); // y is up and z is left</code> </li>
-	 * <li>View from front: <code>new Vector3(15, Math.PI/2, 0) // y is up and x is right </code> </li>
-	 * <li>View from top: <code>new Vector3(15,Math.PI/2,Math.PI/2) // z is down and x is right</code> </li>
-	 * <li>View from top-right corner: <code>new Vector3(15, Math.PI/3, Math.PI/8)</code> </li>
-	 * </ul>
+	 * @param {object} args
+	 * @param {boolean} args.whenUsed When current entity is the camera in use
+	 * @param {string} args.dragButton Can be 'Any', 'Left', 'Middle', 'Right', 'None'. None disables dragging
+	 * @param {number} args.orbitSpeed
+	 * @param {number} args.zoomSpeed
+	 * @param {number} args.drag The inertia
+	 * @param {number} args.smoothness
+	 * @param {number} args.minZoomDistance
+	 * @param {number} args.maxZoomDistance
+	 * @param {number} args.minAscent in degrees
+	 * @param {number} args.maxAscent in degrees
+	 * @param {number} args.minAzimuth in degrees
+	 * @param {number} args.maxAzimuth in degress
+	 * @param {boolean} args.clampAzimuth If true, min and max azimuth are used.
+	 * @param {number} args.lookAtDistance distance to the lookatpoint
+	 * @param {number[3]} args.lookAtPoint the point in space to look
+	 * @deprecated
+	 * @param {number[3]} args.spherical The start position of the camera in [radius, azimuth, ascent] form, where 0 azimuth looks to -X
+	 * @deprecated
 	 */
-
-	var zoomDistanceFactor = 0.035;
-
 	function setup(args, ctx) {
 		ctx.dirty = true;
 		ctx.timeSamples = [0, 0, 0, 0, 0];
@@ -55,20 +65,37 @@ define([
 			ctx.dragButton = null;
 		}
 
-		// Getting script angles from transform
-		var angles = ctx.entity.getRotation();
-		var spherical = ctx.spherical = new Vector3(
-			args.spherical[0],
-			-angles[1] + Math.PI / 2,
-			-angles[0]
-		);
+		var spherical;
+		if (args.lookAtDistance) {
+			// Getting script angles from transform
+			var angles = ctx.entity.getRotation();
+			spherical = ctx.spherical = new Vector3(
+				args.lookAtDistance,
+				-angles[1] + Math.PI / 2,
+				-angles[0]
+			);
+		} else if (args.spherical) {
+			var spherical = ctx.spherical = new Vector3(
+				args.spherical[0],
+				args.spherical[1] * MathUtils.DEG_TO_RAD,
+				args.spherical[2] * MathUtils.DEG_TO_RAD
+			);
+		} else {
+			var spherical = ctx.spherical = new Vector3(15, 0, 0); // Just something so the script won't crash
+		}
 		ctx.targetSpherical = new Vector3(spherical);
 
-		// Setting look at point at a distance forward
-		var rotation = ctx.entity.transformComponent.transform.rotation;
-		ctx.lookAtPoint = new Vector3(0, 0, -args.spherical[0]);
-		rotation.applyPost(ctx.lookAtPoint);
-		ctx.lookAtPoint.addv(ctx.entity.getTranslation());
+		if (args.lookAtDistance) {
+			// Setting look at point at a distance forward
+			var rotation = ctx.entity.transformComponent.transform.rotation;
+			ctx.lookAtPoint = new Vector3(0, 0, -args.lookAtDistance);
+			rotation.applyPost(ctx.lookAtPoint);
+			ctx.lookAtPoint.addv(ctx.entity.getTranslation());
+		} else if (args.lookAtPoint) {
+			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
+		} else {
+			ctx.lookAtPoint = new Vector3();
+		}
 		ctx.goingToLookAt = new Vector3(ctx.lookAtPoint);
 
 		// Parallel camera size
@@ -158,7 +185,7 @@ define([
 
 	function applyWheel(e, args, ctx) {
 		var delta =  Math.max(-1, Math.min(1, -e.wheelDelta || e.detail));
-		delta *= zoomDistanceFactor * ctx.targetSpherical.data[0];
+		delta *= ZOOM_DISTANCE_FACTOR * ctx.targetSpherical.data[0];
 
 		var td = ctx.targetSpherical.data;
 		td[0] = MathUtils.clamp(
@@ -193,6 +220,11 @@ define([
 
 	function setupMouseControls(args, ctx) {
 		var oldDistance = 0;
+		var isAndroid = !!navigator.userAgent.match(/Android/i);
+		var fakeEvent = {
+			wheelDelta: 0
+		};
+
 		ctx.listeners = {
 			mousedown: function (event) {
 				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
@@ -235,7 +267,9 @@ define([
 				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
 					updateButtonState(ctx.dragButton, event.targetTouches.length === 1, args, ctx);
 				}
-				if( navigator.userAgent.match(/Android/i) ) {
+				// fix Android bug that stops touchmove events, unless prevented
+				// https://code.google.com/p/android/issues/detail?id=5491
+				if (isAndroid) {
 					event.preventDefault();
 				}
 			},
@@ -263,7 +297,8 @@ define([
 					if (oldDistance === 0) {
 						oldDistance = distance;
 					} else if (touches.length === 2 && Math.abs(scale) > 0.3) {
-						applyWheel({ wheelDelta: scale }, args, ctx);
+						fakeEvent.wheelDelta = scale;
+						applyWheel(fakeEvent, args, ctx);
 						oldDistance = distance;
 					}
 				}
@@ -288,7 +323,7 @@ define([
 	}
 
 	function updateVelocity(time, args, ctx) {
-		if (ctx.velocity.lengthSquared() > 0.000001) {
+		if (ctx.velocity.lengthSquared() > EPSILON) {
 			move(ctx.velocity.x, ctx.velocity.y, args, ctx);
 			var rate = MathUtils.lerp(ctx.inertia, 0, 1 - time / ctx.inertia);
 			ctx.velocity.mul(rate);
@@ -313,7 +348,7 @@ define([
 
 		var delta = MathUtils.lerp(ctx.smoothness, 1, ctx.world.tpf);
 
-		if (goingToLookAt.distanceSquared(lookAtPoint) < 1e-6) {
+		if (goingToLookAt.distanceSquared(lookAtPoint) < EPSILON) {
 			lookAtPoint.setv(goingToLookAt);
 		} else {
 			lookAtPoint.lerp(goingToLookAt, delta);
@@ -347,7 +382,7 @@ define([
 			transform.lookAt(lookAtPoint, ctx.worldUpVector);
 		}
 
-		if (spherical.distanceSquared(targetSpherical) < 1e-6 && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
+		if (spherical.distanceSquared(targetSpherical) < EPSILON && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
 			sd[1] = MathUtils.moduloPositive(sd[1], MathUtils.TWO_PI);
 			targetSpherical.setv(spherical);
 			ctx.dirty = false;
@@ -385,7 +420,7 @@ define([
 			key: 'whenUsed',
 			'default': true,
 			name: 'When Camera Used',
-			description:'Script only runs when the camera to which it is added is being used.',
+			description: 'Script only runs when the camera to which it is added is being used.',
 			type: 'boolean'
 		}, {
 			key: 'dragButton',
@@ -467,16 +502,11 @@ define([
 			min: 0,
 			max: 360
 		}, {
-			key: 'lookAtPoint',
+			key: 'lookAtDistance',
 			description: 'The point to orbit around',
-			'default': [0, 0, 0],
-			type: 'vec3'
-		}, {
-			key: 'spherical',
-			name: 'Start Point',
-			description: 'The initial position of the camera given in spherical coordinates (r, theta, phi). Theta is the angle from the x-axis towards the z-axis, and phi is the angle from the xz-plane towards the y-axis.',
-			'default': [15, 0, 0],
-			type: 'vec3'
+			'default': 15,
+			type: 'float',
+			min: 0.001
 		}]
 	};
 

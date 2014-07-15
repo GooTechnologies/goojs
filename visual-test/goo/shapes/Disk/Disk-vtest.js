@@ -13,6 +13,8 @@ require([
 	) {
 	'use strict';
 
+	V.describe('3 disks of different height (positive, zero and negative)');
+
 	var goo = V.initGoo();
 	var world = goo.world;
 

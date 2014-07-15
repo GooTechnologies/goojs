@@ -57,9 +57,11 @@ function (
 			this._remove(ref);
 			return PromiseUtil.createDummyPromise();
 		}
+
 		if (this._objects[ref]) {
 			return PromiseUtil.createDummyPromise(this._objects[ref]);
 		}
+
 		var that = this;
 		return this.loadObject(config.binaryRef, options).then(function (bindata) {
 			if (!bindata) {
@@ -67,6 +69,7 @@ function (
 			}
 			var meshData = that._createMeshData(config, bindata);
 			that._fillMeshData(meshData, config, bindata);
+
 			that._objects[ref] = meshData;
 			return meshData;
 		});

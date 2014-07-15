@@ -1,3 +1,39 @@
+v0.10.8 --- 2014-07-02
+======================
+
+Fixes:
+ * minor fix in the quadComponent handler
+
+v0.10.7 --- 2014-07-01
+======================
+
+Fixes:
+ * minor orbit camera script fixes
+ * dynamic loader now releases GPU resources when removing entities
+
+Deprecated:
+ - EntityUtils.hide/show; use entity.hide/show instead
+ - entity.hidden is no longer exposed; use entity.isHidden and entity.isVisiblyHidden instead
+
+v0.10.6 --- 2014-06-25
+======================
+
+Fixes:
+ * texture leaks when using posteffects
+ * animation start time related bugs
+ * can now hide htmlComponents that are unsynced with their entity (transform-wise)
+
+v0.10.5 --- 2014-06-17
+======================
+
+Additions:
+ + support for touchstart, touchmove and touchend on GooRunner
+
+Fixes:
+ * better parameter validation for scripts
+ * picking of entities with an HTML component
+ * textComponent visual-test not displaying anything
+
 v0.10.3 --- 2014-06-05
 ======================
 

@@ -44,7 +44,7 @@ function () {
 	* }
 	}
 	*/
-	MathUtils.EPSILON = 0.0000001;
+	MathUtils.EPSILON = 0.00001; //! AT: unfortunately Matrix.invert is too unstable to use a smaller epsilon
 
 	/**
 	 * Converts an angle from degrees to radians.

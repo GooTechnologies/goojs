@@ -1,7 +1,10 @@
-define(['goo/renderer/MeshData'],
-	/** @lends */
-	function (MeshData) {
-	"use strict";
+define([
+	'goo/renderer/MeshData'
+], /** @lends */
+function (
+	MeshData
+) {
+	'use strict';
 
 	/**
 	 * @class A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
@@ -19,21 +22,25 @@ define(['goo/renderer/MeshData'],
 			tileX = props.tileX;
 			tileY = props.tileY;
 		}
+
 		/** Half-extent along the local x axis.
 		 * @type {number}
 		 * @default 0.5
 		 */
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
+
 		/** Half-extent along the local y axis.
 		 * @type {number}
 		 * @default 0.5
 		 */
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;
+
 		/** Number of texture repetitions in the texture's x direction.
 		 * @type {number}
 		 * @default 1
 		 */
 		this.tileX = tileX || 1;
+
 		/** Number of texture repetitions in the texture's y direction.
 		 * @type {number}
 		 * @default 1
@@ -47,6 +54,7 @@ define(['goo/renderer/MeshData'],
 	}
 
 	Quad.prototype = Object.create(MeshData.prototype);
+	Quad.prototype.constructor = Quad;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.
