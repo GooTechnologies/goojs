@@ -99,7 +99,9 @@ define([
 				}
 				var skyTex = that._skysphereTexture;
 				skybox.textures = [texture];
-				skyTex.setImage(texture.image);
+				if (texture.image !== skyTex.image) {
+					skyTex.setImage(texture.image);
+				}
 
 				if (config.enabled) {
 					that._show(that._skysphere);
