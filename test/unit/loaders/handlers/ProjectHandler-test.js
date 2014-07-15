@@ -27,7 +27,6 @@ define([
 			var config = Configs.project();
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (project) {
-				console.log(project);
 				expect(project.mainScene).toBeDefined();
 				expect(project.mainScene.entities).toEqual(jasmine.any(Object));
 				done();
@@ -38,7 +37,6 @@ define([
 			var config = Configs.project(true);
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (project) {
-				console.log(project);
 				expect(project.mainScene).toBeDefined();
 				var entity;
 				for (var key in project.mainScene.entities) {

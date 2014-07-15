@@ -6,7 +6,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/loaders/DynamicLoader',
 	'test/loaders/Configs'
-], function(
+], function (
 	World,
 	Material,
 	Shader,
@@ -16,52 +16,52 @@ define([
 	Configs
 ) {
 	'use strict';
-	function wait(promise, time) {
-		time = time || 1;
-		waitsFor(function() { return promise.isResolved; }, 'promise does not get resolved', time);
-	}
-
-	describe('MaterialHandler', function() {
+	
+	describe('MaterialHandler', function () {
 		var loader;
-		beforeEach(function() {
+	
+		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: 'loaders/res/'
+				rootPath: window.__karma__ ? './' : 'loaders/res'
 			});
 		});
-		it('loads a material with a shader', function() {
+
+		it('loads a material with a shader', function (done) {
 			var config = Configs.material();
 			loader.preload(Configs.get());
-			var p = loader.load(config.id).then(function(material) {
+			loader.load(config.id).then(function (material) {
 				expect(material).toEqual(jasmine.any(Material));
 				expect(material.shader).toEqual(jasmine.any(Shader));
+				done();
 			});
-			wait(p);
 		});
-		it('loads a material with a shader and a texture', function() {
+
+		it('loads a material with a shader and a texture', function (done) {
 			var config = Configs.material();
 			config.texturesMapping.DIFFUSE_MAP = {
 				enabled: true,
 				textureRef: Configs.texture().id
 			};
 			loader.preload(Configs.get());
-			var p = loader.load(config.id).then(function(material) {
+			loader.load(config.id).then(function (material) {
 				var texture = material.getTexture('DIFFUSE_MAP');
 				expect(material.shader).toEqual(jasmine.any(Shader));
 				expect(texture).toEqual(jasmine.any(Texture));
 				expect(texture.image).toEqual(jasmine.any(Image));
+				done();
 			});
-			wait(p, 1000);
 		});
-		it('loads a material with an engine shader', function() {
+
+		it('loads a material with an engine shader', function () {
 			var config = Configs.material();
 			config.shaderRef = 'GOO_ENGINE_SHADERS/uber';
 			loader.preload(Configs.get());
-			var p = loader.load(config.id).then(function(material) {
+			loader.load(config.id).then(function (material) {
 				expect(material.shader.shaderDefinition).toBe(ShaderLib.uber);
+				done();
 			});
-			wait(p, 1000);
 		});
 	});
 });

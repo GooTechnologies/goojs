@@ -46,7 +46,7 @@ define([
 				minFilter: 'Trilinear',
 				offset: [0,0],
 				repeat: [1,1],
-				imageRef: 'checker.png',
+				imageRef: (window.__karma__ ? 'base/test/unit/loaders/res/' : '') + 'checker.png',
 				wrapS: 'Repeat',
 				wrapT: 'Repeat',
 				anisotropy: 1,

@@ -44,7 +44,7 @@ define([
 
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: 'loaders/res/'
+				rootPath: window.__karma__ ? './' : 'loaders/res'
 			});
 		});
 

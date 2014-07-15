@@ -31,8 +31,7 @@ module.exports = function(config) {
 
 	// test results reporter to use
 	// possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-//	reporters: ['dots','coverage'],
-	  reporters: ['dots'],
+	reporters: ['dots', 'coverage'],
 
 
 	// web server port
@@ -75,7 +74,7 @@ module.exports = function(config) {
 		// source files, that you wanna generate coverage for
 		// do not include tests or libraries
 		// (these files will be instrumented by Istanbul)
-		//'**/src/goo/**/*.js': ['coverage']
+		'**/src/goo/**/*.js': ['coverage']
 	},
 
 	// optionally, configure the reporter

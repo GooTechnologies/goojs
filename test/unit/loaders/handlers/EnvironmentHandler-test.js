@@ -37,7 +37,7 @@ define([
 
 			loader = new DynamicLoader({
 				world: world,
-				rootPath: 'loaders/res/'
+				rootPath: window.__karma__ ? './' : 'loaders/res'
 			});
 		});
 
@@ -45,7 +45,6 @@ define([
 			var config = Configs.environment();
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (environment) {
-				console.log(environment);
 				expect(ShaderBuilder.GLOBAL_AMBIENT).toEqual(environment.globalAmbient);
 
 				expect(ShaderBuilder.FOG_SETTINGS).toEqual([environment.fog.near, environment.fog.far]);
