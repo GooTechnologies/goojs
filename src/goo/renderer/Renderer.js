@@ -378,7 +378,8 @@ function (
 		//      cycle.
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
 			Renderer.mainCamera = newCam.camera;
-		});
+			this.checkResize(Renderer.mainCamera);
+		}.bind(this));
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
