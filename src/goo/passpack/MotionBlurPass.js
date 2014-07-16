@@ -49,9 +49,16 @@ define([
 		}
 	};
 
-	MotionBlurPass.prototype.updateSize = function (size) {
+	MotionBlurPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width;
 		var sizeY = size.height;
+
+		if (this.targetSwap) {
+			for (var i = 0; i < this.targetSwap.length; i++) {
+				renderer._deallocateRenderTarget(this.targetSwap[i]);
+			}
+		}
+
 		this.targetSwap = [
 			new RenderTarget(sizeX, sizeY),
 			new RenderTarget(sizeX, sizeY)
