@@ -46,6 +46,7 @@ var activationStates = {
 };
 
 var interval;
+var timeout;
 var ammoTransform;
 var collisionConfiguration;
 var dispatcher;
@@ -480,8 +481,8 @@ var commandHandlers = {
 	destroy: function (/*params*/) {
 		bodies.length = bodyConfigs.length = 0;
 		idToBodyMap = {};
-		if (interval) {
-			clearInterval(interval);
+		if (timeout) {
+			clearTimeout(timeout);
 		}
 	},
 
@@ -619,16 +620,17 @@ var commandHandlers = {
 				}
 			}
 			sendTransforms();
+			timeout = setTimeout(mainLoop, timeStep * 1000)
 		}
-		if (interval) {
-			clearInterval(interval);
+		if (timeout) {
+			clearTimeout(timeout);
 		}
-		interval = setInterval(mainLoop, timeStep * 1000);
+		timeout = setTimeout(mainLoop, timeStep * 1000);
 	},
 
 	pause: function (/*params*/) {
-		if (interval) {
-			clearInterval(interval);
+		if (timeout) {
+			clearTimeout(timeout);
 		}
 	},
 
