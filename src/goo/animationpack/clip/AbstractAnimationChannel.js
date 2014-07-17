@@ -5,7 +5,7 @@ define([
 function (
 /*	MathUtils */
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Base class for animation channels. An animation channel describes a single element of an animation (such as the movement of a single

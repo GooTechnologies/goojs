@@ -17,7 +17,7 @@ function (
 	RSVP,
 	PromiseUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading shaders into engine

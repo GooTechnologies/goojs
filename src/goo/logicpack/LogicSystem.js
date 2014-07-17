@@ -13,7 +13,7 @@ define([
 		LogicLayer,
 		LogicInterface
 	) {
-		"use strict";
+		'use strict';
 
 		// REVIEW: this description seems inaccurate
 		/**

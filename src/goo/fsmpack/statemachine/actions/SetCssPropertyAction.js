@@ -1,7 +1,7 @@
 define(['goo/fsmpack/statemachine/actions/Action'],
 /** @lends */
 function(Action) {
-	"use strict";
+	'use strict';
 
 	function SetCssPropertyAction(settings) {
 		settings = settings || {};

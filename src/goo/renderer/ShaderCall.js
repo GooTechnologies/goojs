@@ -1,7 +1,7 @@
 define(
 /** @lends */
 function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Makes sure shader calls are not done when already set

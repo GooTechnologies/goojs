@@ -9,6 +9,7 @@ function (System) {
 
 	/**
 	 * @class Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"
+	 * {@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
 	 * @extends System
 	 */
 	function TransformSystem() {

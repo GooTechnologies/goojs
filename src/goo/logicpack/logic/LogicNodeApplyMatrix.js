@@ -9,7 +9,7 @@ define(
 	],
 	/** @lends */
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3x3) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Logic node for vector < matrix computation

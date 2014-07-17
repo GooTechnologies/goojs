@@ -36,7 +36,7 @@ function (
 	SystemBus,
 	TaskScheduler
 ) {
-	"use strict";
+	'use strict';
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 

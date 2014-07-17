@@ -1,7 +1,7 @@
 define(['goo/math/Vector2'],
 	/** @lends */
 	function (Vector2) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * Creates a new RenderTarget object

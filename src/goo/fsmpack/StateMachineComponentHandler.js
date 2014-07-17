@@ -9,7 +9,7 @@ define([
 	RSVP,
 	_
 	) {
-	"use strict";
+	'use strict';
 
 	/*
 	 * @class For handling loading of state machine components

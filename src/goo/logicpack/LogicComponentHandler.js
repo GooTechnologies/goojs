@@ -36,7 +36,7 @@ function(
 	RSVP,
 	pu
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class

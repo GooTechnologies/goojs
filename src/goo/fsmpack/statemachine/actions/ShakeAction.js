@@ -7,7 +7,7 @@ function(
 	Action,
 	Vector3
 ) {
-	"use strict";
+	'use strict';
 
 	function ShakeAction(/*id, settings*/) {
 		Action.apply(this, arguments);

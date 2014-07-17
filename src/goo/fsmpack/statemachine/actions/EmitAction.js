@@ -7,7 +7,7 @@ function(
 	Action,
 	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	function EmitAction(/*id, settings*/) {
 		Action.apply(this, arguments);

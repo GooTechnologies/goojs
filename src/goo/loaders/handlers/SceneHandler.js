@@ -13,7 +13,7 @@ function(
 	_,
 	RSVP
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading scene into engine

@@ -1,7 +1,7 @@
 define(['goo/renderer/MeshData'],
 	/** @lends */
 	function (MeshData) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A disk shape

@@ -5,7 +5,7 @@ define([
 function(
 	Component
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class

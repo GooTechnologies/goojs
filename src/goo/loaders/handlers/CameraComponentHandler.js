@@ -15,7 +15,7 @@ function (
 	pu,
 	_
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of camera components

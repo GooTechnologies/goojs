@@ -19,7 +19,7 @@ function(
 	ArrayUtil,
 	RSVP
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of transform component

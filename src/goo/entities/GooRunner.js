@@ -126,10 +126,27 @@ function (
 			}
 		}
 
-		this.callbacks = [];
+		/** A list of callbacks to call every frame, before the world is processed.
+		 * @type {Array.<function(number)>}
+		 */
 		this.callbacksPreProcess = [];
+
+		/** A list of callbacks to call every frame, after the world is processed and before the rendering is done.
+		 * @type {Array.<function(number)>}
+		 */
 		this.callbacksPreRender = [];
+
+		/** A list of callbacks to call every frame, after the rendering is done.
+		 * @type {Array.<function(number)>}
+		 */
+		this.callbacks = [];
+
+		/** A list of callbacks to call once, in the following frame, before the world is processed.
+		 * @type {Array.<function(number)>}
+		 * @{@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example}
+		 */
 		this.callbacksNextFrame = [];
+
 		this._takeSnapshots = [];
 
 		this.start = -1;

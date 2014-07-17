@@ -1,7 +1,7 @@
 define(['goo/renderer/Camera'],
 	/** @lends */
 	function (Camera) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Culls entities based on camera frustum and boundings

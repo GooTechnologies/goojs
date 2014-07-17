@@ -10,7 +10,7 @@ function (
 	Vector4
 ) {
 
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A pass that renders provided renderlist to the rendertarget or screen

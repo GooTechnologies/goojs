@@ -5,7 +5,7 @@ define([
 function (
 	Vector3
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance

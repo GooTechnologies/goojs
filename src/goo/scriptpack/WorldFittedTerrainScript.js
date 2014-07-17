@@ -5,7 +5,7 @@ define([
     /** @lends */
 	function(HeightMapBoundingScript,
              Vector3) {
-		"use strict";
+		'use strict';
 
 
         var calcVec1 = new Vector3();

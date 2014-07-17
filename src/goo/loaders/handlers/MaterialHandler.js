@@ -19,7 +19,7 @@ function(
 	PromiseUtil,
 	_
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading materials into engine

@@ -3,7 +3,7 @@ define([
 ], function (
 	MeshData
 ) {
-	"use strict";
+	'use strict';
 
 	function MeshRendererDebug() {
 		this._meshes = [buildBox(1,1,1), null];

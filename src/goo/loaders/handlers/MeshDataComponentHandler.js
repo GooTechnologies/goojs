@@ -19,7 +19,7 @@ function(
 	_,
 	StringUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of meshdatacomponents

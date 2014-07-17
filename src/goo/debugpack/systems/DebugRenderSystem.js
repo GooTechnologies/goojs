@@ -17,7 +17,7 @@ function (
 	Util,
 	DebugDrawHelper
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Renders entities/renderables using a configurable partitioner for culling

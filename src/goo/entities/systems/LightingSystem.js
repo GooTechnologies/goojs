@@ -7,7 +7,7 @@ function (
 	System,
 	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Processes all entities with a light component making sure that lights are placed according to its transforms

@@ -7,7 +7,7 @@ function(
 	Action,
 	FSMUtil
 ) {
-	"use strict";
+	'use strict';
 
 	function MultiplyVariableAction(/*id, settings*/) {
 		Action.apply(this, arguments);

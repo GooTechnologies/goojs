@@ -5,7 +5,7 @@ define([
 	/** @lends */
 	function (SimplePartitioner, SoftwareRenderer) {
 
-		"use strict";
+		'use strict';
 
 		/**
 		*	@class Processes all entities with meshrenderer components.

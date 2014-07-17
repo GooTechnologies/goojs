@@ -15,7 +15,7 @@ function (
 	PromiseUtil,
 	_
 ) {
-	"use strict";
+	'use strict';
 	/**
 	 * @class Handler for loading sounds into engine
 	 * @extends ConfigHandler

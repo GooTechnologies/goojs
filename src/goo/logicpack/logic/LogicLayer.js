@@ -7,7 +7,7 @@ define(
 		LogicInterface
 	) {
 
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Handles a logic layer, which is a container for Logic Nodes and connections. It handles resolving and executing

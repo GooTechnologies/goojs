@@ -3,7 +3,7 @@ define([],
 function (
 
 ) {
-	"use strict";
+	'use strict';
 
 	function Machine(name) {
 		this.name = name;

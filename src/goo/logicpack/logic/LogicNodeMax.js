@@ -7,7 +7,7 @@ define(
 	],
 	/** @lends */
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Logic node that computes the max of two inputs.

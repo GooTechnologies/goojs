@@ -17,7 +17,7 @@ function(
 	BoundingBox,
 	BoundingSphere
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Runs a mesh combine optimization on the whole scene, based on

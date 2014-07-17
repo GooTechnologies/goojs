@@ -11,7 +11,7 @@ function (
 	ShaderLib,
 	Pass
 ) {
-	"use strict";
+	'use strict';
 
 	/** @class */
 	function FullscreenPass(shader) {

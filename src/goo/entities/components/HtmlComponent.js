@@ -1,6 +1,7 @@
 define([
 	'goo/entities/components/Component'
-], /** @lends */ function (
+], /** @lends */
+function (
 	Component
 ) {
 	'use strict';
@@ -8,6 +9,7 @@ define([
 	/**
 	 * HTML Component.
 	 * @class
+	 * {@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 * @extends Component
 	 */
 	function HtmlComponent(domElement) {

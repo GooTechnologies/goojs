@@ -6,7 +6,7 @@ define([
 function(
 	ConfigHandler
 ) {
-	"use strict";
+	'use strict';
 
 	/*jshint eqeqeq: false, -W041 */
 	/**

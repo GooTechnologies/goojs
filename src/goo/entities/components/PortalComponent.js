@@ -3,11 +3,11 @@ define([
 	'goo/renderer/pass/RenderTarget'
 ],
 /** @lends */
-function(
+function (
 	Component,
 	RenderTarget
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * Renders to the texture of the host object
@@ -19,6 +19,7 @@ function(
 	 * @param {boolean} [options.preciseRecursion=false] By default the "portal depth" (the number of portals seen through a portal) is of 4. By enabling this option the limitation disappears, but at the cost of using more memory.
 	 * @param {Material} [overrideMaterial=null] Optional override material to use when rendering to the host object
 	 * @constructor
+	 * {@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/components/PortalComponent/PortalComponent-vtest.html Working example}
 	 * @extends Component
 	 */
 	function PortalComponent(camera, height, options, overrideMaterial) {
@@ -57,7 +58,7 @@ function(
 	/**
 	 * Requests a rendering to be done to the material of the host object
 	 */
-	PortalComponent.prototype.requestUpdate = function() {
+	PortalComponent.prototype.requestUpdate = function () {
 		this.doUpdate = true;
 	};
 

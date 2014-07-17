@@ -9,7 +9,7 @@ function (
 	Matrix3x3,
 	Matrix4x4
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Transform models a transformation in 3d space as: Y = M*X+T, with M being a Matrix3 and T is a Vector3. Generally M will be a rotation

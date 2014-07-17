@@ -11,7 +11,7 @@ function (
 	ParticleEmitter,
 	MeshData
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Creates and modifies {@link MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or

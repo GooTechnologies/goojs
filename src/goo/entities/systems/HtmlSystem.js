@@ -17,6 +17,7 @@ function (
 
 	/**
 	 * @class
+	 * {@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 * @extends System
 	 */
 	function HtmlSystem(renderer) {

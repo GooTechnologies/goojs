@@ -29,7 +29,7 @@ function (
 	ScriptUtils,
 	Scripts
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class

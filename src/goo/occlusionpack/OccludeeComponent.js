@@ -5,7 +5,7 @@ define([
 ],
 	/** @lends */
 		function (Component, BoundingBox, BoundingSphere) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class

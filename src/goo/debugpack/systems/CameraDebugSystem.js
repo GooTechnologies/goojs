@@ -14,7 +14,7 @@ define([
 		ShaderLib,
 		FrustumViewer
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Processes all entities with a camera debug component

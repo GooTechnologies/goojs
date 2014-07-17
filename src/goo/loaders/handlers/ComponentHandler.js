@@ -3,7 +3,7 @@ define([
 ], /** @lends */ function(
 	PromiseUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Base class for component handlers. All different types of components that an entity

@@ -2,7 +2,7 @@
 define([],
 /** @lends */
 function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A collection of useful math-related functions, constants and helpers.

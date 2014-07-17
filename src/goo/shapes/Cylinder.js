@@ -5,7 +5,7 @@ define([
 function (
 	MeshData
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A 3D object representing a cylinder.

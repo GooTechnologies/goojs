@@ -7,7 +7,7 @@ define(
 	],
 	/** @lends */
 	function(LogicLayer, LogicNode, LogicInterface, LogicNodes) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Logic node implementing a time counter. Processed every frame and time is increased. Output

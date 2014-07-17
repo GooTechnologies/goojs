@@ -7,7 +7,7 @@ define([
 		Vector3,
 		Component
 		) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Holds the movement parameters of an entity.

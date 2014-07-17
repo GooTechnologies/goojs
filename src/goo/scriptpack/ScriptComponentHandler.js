@@ -21,7 +21,7 @@ function (
 	Scripts,
 	ScriptUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class
