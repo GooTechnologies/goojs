@@ -151,6 +151,8 @@ function (
 		this._postMessage({ command: 'destroy' });
 		this._worker.terminate();
 		this._initWorker();
+		this.setGravity(this.gravity);
+		this.setTimeStep(this.timeStep, this.maxSubSteps);
 	};
 
 	/**
@@ -192,6 +194,7 @@ function (
 	 * @param {Vector3} gravity
 	 */
 	AmmoWorkerSystem.prototype.setGravity = function (gravity) {
+		this.gravity = gravity;
 		this._postMessage({
 			command: 'setGravity',
 			gravity: v2a(gravity)
@@ -222,6 +225,8 @@ function (
 	 * @param {number} maxSubSteps
 	 */
 	AmmoWorkerSystem.prototype.setTimeStep = function (timeStep, maxSubSteps) {
+		this.timeStep = timeStep;
+		this.maxSubSteps = maxSubSteps;
 		this._postMessage({
 			command: 'setTimeStep',
 			timeStep: timeStep,
