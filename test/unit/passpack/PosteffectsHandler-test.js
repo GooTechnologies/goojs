@@ -1,11 +1,9 @@
 define([
-	'goo/entities/World',
 	'goo/entities/GooRunner',
 	'goo/loaders/DynamicLoader',
 	'goo/passpack/PosteffectsHandler',
 	'test/loaders/Configs'
 ], function (
-	World,
 	GooRunner,
 	DynamicLoader,
 	PosteffectsHandler,
@@ -14,34 +12,33 @@ define([
 	'use strict';
 
 	describe('PosteffectsHandler', function () {
-		var loader;
+		var gooRunner, loader;
 
 		beforeEach(function () {
-//			gooRunner = new GooRunner({
-//				logo: false
-//			});
-//			world = gooRunner.world;
-			var world = new World();
+			gooRunner = new GooRunner({
+				logo: false,
+				manuallyStartGameLoop: true
+			});
 			loader = new DynamicLoader({
-				world: world,
+				world: gooRunner.world,
 				rootPath: 'loaders/res/'
 			});
 		});
 
-//		afterEach(function () {
-//			gooRunner.clear();
-//		});
+		afterEach(function () {
+			gooRunner.clear();
+		});
 
-		xit('loads a post effect', function (done) {
+		it('loads a post effect', function (done) {
 			var config = Configs.posteffects();
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (/*posteffects*/) {
 				expect(gooRunner.renderSystem.composers.length).toEqual(1);
+				done();
 			});
-			done();
 		});
 
-		xit('clears posteffect buffers from the GPU', function (done) {
+		it('clears posteffect buffers from the GPU', function (done) {
 			var config = Configs.posteffects();
 			loader.preload(Configs.get());
 			var composer;

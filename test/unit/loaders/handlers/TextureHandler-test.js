@@ -1,11 +1,9 @@
 define([
-	'goo/entities/World',
 	'goo/entities/GooRunner',
 	'goo/renderer/Texture',
 	'goo/loaders/DynamicLoader',
 	'test/loaders/Configs'
 ], function (
-	World,
 	GooRunner,
 	Texture,
 	DynamicLoader,
@@ -14,23 +12,22 @@ define([
 	'use strict';
 
 	describe('TextureHandler', function () {
-		var loader;
+		var gooRunner, loader;
 
 		beforeEach(function () {
-//			gooRunner = new GooRunner({
-//				logo: false
-//			});
-//			world = gooRunner.world;
-			var world = new World();
+			gooRunner = new GooRunner({
+				logo: false,
+				manuallyStartGameLoop: true
+			});
 			loader = new DynamicLoader({
-				world: world,
-				rootPath: window.__karma__ ? './' : 'loaders/res'
+				world: gooRunner.world,
+				rootPath: window.__karma__ ? './' : 'loaders/res/'
 			});
 		});
 
-//		afterEach(function () {
-//			gooRunner.clear();
-//		});
+		afterEach(function () {
+			gooRunner.clear();
+		});
 
 		it('loads a texture with an image', function (done) {
 			var config = Configs.texture();
@@ -51,7 +48,7 @@ define([
 			});
 		});
 
-		xit('clears a texture from the context', function (done) {
+		it('clears a texture from the context', function (done) {
 			var config = Configs.texture();
 			loader.preload(Configs.get());
 			var t;

@@ -4,7 +4,7 @@ define([
 	'loaders/helpers/MaterialConfig',
 	'loaders/helpers/MeshConfig',
 	'loaders/helpers/SceneConfig',
-//	'loaders/helpers/PosteffectsConfig'
+	'loaders/helpers/PosteffectsConfig'
 ], function () {
 	'use strict';
 	var bundle = {};

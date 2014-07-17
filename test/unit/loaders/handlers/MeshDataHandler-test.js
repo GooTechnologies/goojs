@@ -1,11 +1,9 @@
 define([
-	'goo/entities/World',
 	'goo/entities/GooRunner',
 	'goo/renderer/MeshData',
 	'goo/loaders/DynamicLoader',
 	'test/loaders/Configs'
 ], function (
-	World,
 	GooRunner,
 	MeshData,
 	DynamicLoader,
@@ -14,23 +12,22 @@ define([
 	'use strict';
 
 	describe('MeshDataHandler', function () {
-		var loader;
+		var gooRunner, loader;
 
 		beforeEach(function () {
-//			gooRunner = new GooRunner({
-//				logo: false
-//			});
-//			world = gooRunner.world;
-			var world = new World();
+			gooRunner = new GooRunner({
+				logo: false,
+				manuallyStartGameLoop: true
+			});
 			loader = new DynamicLoader({
-				world: world,
+				world: gooRunner.world,
 				rootPath: 'loaders/res/'
 			});
 		});
 
-//		afterEach(function () {
-//			gooRunner.clear();
-//		});
+		afterEach(function () {
+			gooRunner.clear();
+		});
 
 		it('loads a meshdata object', function (done) {
 			var config = Configs.mesh();
@@ -48,7 +45,7 @@ define([
 			});
 		});
 
-		xit('clears meshdata from the GPU', function (done) {
+		it('clears meshdata from the GPU', function (done) {
 			var config = Configs.mesh();
 			loader.preload(Configs.get());
 			var m;

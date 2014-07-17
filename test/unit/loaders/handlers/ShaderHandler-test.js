@@ -1,37 +1,33 @@
 define([
-	'goo/entities/World',
 	'goo/renderer/Shader',
 	'goo/loaders/DynamicLoader',
-	'test/loaders/Configs'
-//	'goo/entities/GooRunner'
+	'test/loaders/Configs',
+	'goo/entities/GooRunner'
 ], function (
-	World,
 	Shader,
 	DynamicLoader,
-	Configs
-//	GooRunner
+	Configs,
+	GooRunner
 ) {
 	'use strict';
 
 	describe('ShaderHandler', function () {
-		var loader;
+		var gooRunner, loader;
 		
 		beforeEach(function () {
-//			gooRunner = new GooRunner({
-//				logo: false
-//			});
-//			world = gooRunner.world;
-			var world = new World();
-
+			gooRunner = new GooRunner({
+				logo: false,
+				manuallyStartGameLoop: true
+			});
 			loader = new DynamicLoader({
-				world: world,
+				world: gooRunner.world,
 				rootPath: 'loaders/res/'
 			});
 		});
 
-//		afterEach(function () {
-//			gooRunner.clear();
-//		});
+		afterEach(function () {
+			gooRunner.clear();
+		});
 
 		it('loads a shader', function (done) {
 			var config = Configs.shader();
@@ -42,7 +38,7 @@ define([
 			});
 		});
 
-		xit('clears shader from the GPU', function (done) {
+		it('clears shader from the GPU', function (done) {
 			var config = Configs.shader();
 			loader.preload(Configs.get());
 			var s;
