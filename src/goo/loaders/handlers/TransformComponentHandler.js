@@ -96,23 +96,12 @@ function(
 			return that.loadObject(ref, options).then(function(entity) {
 				if (entity && entity.transformComponent) {
 					component.attachChild(entity.transformComponent);
-					/* REVIEW: how about this for clarity
 					var entityInWorld = that.world.entityManager.containsEntity(entity) ||
 						that.world._addedEntities.indexOf(entity) !== -1;
 					var parentInWorld = that.world.entityManager.containsEntity(component.entity) ||
 						that.world._addedEntities.indexOf(component.entity) > -1;
 
 					if (!entityInWorld && parentInWorld) {
-					
-					*/
-					if (
-						// Not already in world
-						!that.world.entityManager.containsEntity(entity) &&
-						that.world._addedEntities.indexOf(entity) === -1 &&
-						// Parent is in world
-						(that.world.entityManager.containsEntity(component.entity) ||
-						that.world._addedEntities.indexOf(component.entity) > -1)
-					) {
 						entity.addToWorld();
 					}
 				} else {
