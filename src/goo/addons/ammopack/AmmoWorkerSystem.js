@@ -135,6 +135,14 @@ function (
 		});
 	};
 
+	AmmoWorkerSystem.prototype.reset = function () {
+		var entities = this._activeEntities;
+		this.clear();
+		for (var i = 0, len = entities.length; i < len; i++) {
+			this.added(entities[i]);
+		}
+	};
+
 	/**
 	 * Delete the worker and create a new one.
 	 */
