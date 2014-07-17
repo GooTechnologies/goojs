@@ -11,8 +11,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a text component
-	 * {@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
+	 * @class Processes all entities with a text component<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
 	 * @extends System
 	 */
 	function TextSystem() {

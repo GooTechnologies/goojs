@@ -21,6 +21,7 @@ function (
 
 	/**
 	 * @class
+	 * @{@linkplain http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example}
 	 * <pre>
 	 * settings: {
 	 *     strength : 1.0,

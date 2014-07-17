@@ -7,9 +7,8 @@ function (
 	'use strict';
 
 	/**
-	 * HTML Component.
-	 * @class
-	 * {@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
+	 * @class HTML Component.<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 * @extends Component
 	 */
 	function HtmlComponent(domElement) {

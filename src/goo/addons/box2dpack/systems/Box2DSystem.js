@@ -9,10 +9,10 @@ function(
 	/* global Box2D */
 
 	/**
-	 * @class Physics simulation using Box2D.
-	 * @desc Depends on the global Box2D object.
-	 * Load box2d.js using a &lt;script&gt; tag before using this system.
+	 * @class Physics simulation using Box2D.<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example}
+	 * @desc Depends on the global Box2D object.
+	 * Load box2d.js using a &lt;script&gt; tag before using this system
 	 * @extends System
 	 */
 	function Box2DSystem() {
@@ -21,6 +21,7 @@ function(
 		this.SCALE = 0.5;
 		this.world = new Box2D.b2World(new Box2D.b2Vec2(0.0, -9.81));
 
+		//! AT: vertices*; unused? why is it sitting here anyway?
 		this.sortVertexesClockWise = function (a, b) {
 			var aAngle = Math.atan2(a.get_y(), a.get_x());
 			var bAngle = Math.atan2(b.get_y(), b.get_x());

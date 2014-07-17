@@ -17,8 +17,8 @@ function (
 
 	/**
 	 * @class Holds the transform of an entity. It also allows for a scene graph to be created,
-	 * in which transforms are inherited down the tree.
-	 * {@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
+	 * in which transforms are inherited down the tree.<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
 	 * @extends Component
 	 */
 	function TransformComponent() {

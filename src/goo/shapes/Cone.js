@@ -4,7 +4,8 @@ define(['goo/renderer/MeshData'],
 	'use strict';
 
 	/**
-	 * @class A cone
+	 * @class A cone<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/shapes/Cone/Cone-vtest.html Working example}
 	 * @param {number} [radialSamples=8] Number of slices
 	 * @param {number} [radius=1] Radius of the cone
 	 * @param {number} [height=2] The height of the cone

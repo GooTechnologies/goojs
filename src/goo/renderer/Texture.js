@@ -76,6 +76,11 @@ function (
 		this.magFilter = settings.magFilter || 'Bilinear';
 		this.minFilter = settings.minFilter || 'Trilinear';
 
+		/**
+		 * The anisotropic filtering level.<br>
+		 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html Working example}
+		 * @type {number}
+		 */
 		this.anisotropy = settings.anisotropy !== undefined ? settings.anisotropy : 1;
 
 		this.format = settings.format || 'RGBA';

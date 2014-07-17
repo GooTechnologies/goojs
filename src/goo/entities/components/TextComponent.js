@@ -11,7 +11,7 @@ function (
 
 	/**
 	 * @class
-	 * {@linkplain http://127.0.0.1:8003/goojs/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
 	 * @extends Component
 	 */
 	function TextComponent(text) {

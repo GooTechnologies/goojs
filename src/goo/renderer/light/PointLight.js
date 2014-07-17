@@ -8,7 +8,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class A omni-directional source of light. So far it has the same effect as {@link Light}
+	 * @class A omni-directional source of light. So far it has the same effect as {@link Light}<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
 	 * @constructor
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
