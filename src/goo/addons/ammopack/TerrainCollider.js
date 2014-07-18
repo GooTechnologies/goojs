@@ -1,9 +1,11 @@
 define([
-	'goo/addons/ammopack/Collider'
+	'goo/addons/ammopack/Collider',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
-	Collider
+	Collider,
+	MathUtils
 ) {
 	'use strict';
 
@@ -84,6 +86,33 @@ function (
 		this.maxHeight = max;
 	};
 
+	TerrainCollider.prototype.getHeightAt = function (x, y) {
+		x = x * this.width;
+		y = y * this.length;
+		var x1 = Math.floor(x);
+		var x2 = Math.ceil(x);
+		var dx = x - x1;
+
+		var y1 = Math.floor(y);
+		var y2 = Math.ceil(y);
+		var dy = y - y1;
+
+		var idx;
+		idx = y1 * this.length + x1;
+		var bl = this.heights[idx];
+		idx = y1 * this.length + x2;
+		var br = this.heights[idx];
+		idx = y2 * this.length + x1;
+		var tl = this.heights[idx];
+		idx = y2 * this.length + x2;
+		var tr = this.heights[idx];
+		return MathUtils.lerp(
+			dy,
+			MathUtils.lerp(dx, bl, br),
+			MathUtils.lerp(dx, tl, tr)
+		);
+	};
+
 	TerrainCollider.prototype.serialize = function () {
 		return {
 			type: 'terrain',
@@ -96,7 +125,7 @@ function (
 			upAxis: this.upAxis,
 			flipQuadEdges: this.flipQuadEdges,
 			width: this.width,
-			length: this.length,
+			length: this.length
 		};
 	};
 
