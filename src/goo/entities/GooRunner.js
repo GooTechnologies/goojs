@@ -426,7 +426,7 @@ function (
 			}
 			this.stats.update(
 				this.renderer.info.toString() + '<br/>' +
-				'transformUpdates: ' + transformUpdates
+				'transformUpdates: ' + transformUpdates +
 				'<br>Cached shaders: ' + Object.keys(this.renderer.rendererRecord.shaderCache).length
 			);
 		}
