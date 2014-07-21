@@ -4,7 +4,7 @@ define([
 ],
 	/** @lends */
 		function (Matrix4x4, Vector4) {
-		"use strict";
+		'use strict';
 
 		var tempVec = new Vector4(0, 0, 0, 1);
 		var combinedMatrix = new Matrix4x4();

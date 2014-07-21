@@ -93,7 +93,9 @@ function (
 	 * @private
 	 */
 	TextureHandler.prototype._remove = function (ref) {
-		//TODO Some sort of gl texture release?
+		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
+			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
+		}
 		delete this._objects[ref];
 	};
 

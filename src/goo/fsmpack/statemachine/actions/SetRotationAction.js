@@ -7,7 +7,7 @@ function(
 	Action,
 	FSMUtil
 ) {
-	"use strict";
+	'use strict';
 
 	function SetRotationAction(/*id, settings*/) {
 		Action.apply(this, arguments);

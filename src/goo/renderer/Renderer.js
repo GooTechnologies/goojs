@@ -36,7 +36,7 @@ function (
 	SystemBus,
 	TaskScheduler
 ) {
-	"use strict";
+	'use strict';
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
@@ -378,7 +378,8 @@ function (
 		//      cycle.
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
 			Renderer.mainCamera = newCam.camera;
-		});
+			this.checkResize(Renderer.mainCamera);
+		}.bind(this));
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -567,11 +568,15 @@ function (
 	 * @param texture
 	 */
 	Renderer.prototype.preloadTexture = function (context, texture) {
+		//! schteppe: Is there any case where we want to preload a texture to another context than this.context?
+
 		// REVIEW: Veeeeery similar to loadTexture. Merge?
 		//! AT: the code will diverge; it was initially copy-pasted and adapted to suit the need, but it will have to be iterated on; adding more ifs for different code paths is not gonna make the code nicer
 
 		// this.bindTexture(context, texture, unit, record);
 		// context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit); // do I need this?
+
+		//! schteppe: What if the .glTexture is not allocated yet?
 		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
 
 		// set alignment to support images with width % 4 !== 0, as
@@ -714,7 +719,7 @@ function (
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables"
 	 * @param renderList
-	 * @param promise
+	 * @return {RSVP.Promise}
 	 */
 	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];
@@ -763,6 +768,7 @@ function (
 
 			// check defines. if no hit in cache -> add to cache. if hit in cache,
 			// replace with cache version and copy over uniforms.
+			// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
 			var defineArray = Object.keys(shader.defines);
 			var len = defineArray.length;
 			var shaderKeyArray = [];
@@ -799,6 +805,20 @@ function (
 		}
 
 		queue.push(function () { shader.precompile(this); }.bind(this));
+	};
+
+	/**
+	 * Remove all shaders from cache.
+	 */
+	Renderer.prototype.clearShaderCache = function () {
+		var cache = this.rendererRecord.shaderCache;
+		if (!cache) {
+			return;
+		}
+		var keys = Object.keys(cache);
+		for (var i = 0; i < keys.length; i++) {
+			delete cache[keys[i]];
+		}
 	};
 
 	/**
@@ -2098,7 +2118,9 @@ function (
 			record.write = true;
 		}
 
-		this.context.clear(bits);
+		if (bits) {
+			this.context.clear(bits);
+		}
 	};
 
 	Renderer.prototype.flush = function () {
@@ -2238,36 +2260,19 @@ function (
 	};
 
 	Renderer.prototype._deallocateMeshData = function (meshData) {
-		if (meshData.vertexData !== undefined  && meshData.vertexData.glBuffer !== undefined ) {
-			this.context.deleteBuffer(meshData.vertexData.glBuffer);
-		}
-		if (meshData.indexData !== undefined  && meshData.indexData.glBuffer !== undefined ) {
-			this.context.deleteBuffer(meshData.indexData.glBuffer);
-		}
+		meshData.destroy(this.context);
 	};
 
 	Renderer.prototype._deallocateTexture = function (texture) {
-		if (texture.glTexture) {
-			this.context.deleteTexture(texture.glTexture);
-		}
+		texture.destroy(this.context);
 	};
 
 	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
-		if (renderTarget.glTexture) {
-			this.context.deleteTexture(renderTarget.glTexture);
-		}
-		if (renderTarget._glRenderBuffer) {
-			this.context.deleteRenderbuffer(renderTarget._glRenderBuffer);
-		}
-		if (renderTarget._glFrameBuffer) {
-			this.context.deleteFramebuffer(renderTarget._glFrameBuffer);
-		}
+		renderTarget.destroy(this.context);
 	};
 
 	Renderer.prototype._deallocateShader = function (shader) {
-		if (shader.shaderProgram) {
-			this.context.deleteProgram(shader.shaderProgram);
-		}
+		shader.destroy();
 	};
 
 	return Renderer;

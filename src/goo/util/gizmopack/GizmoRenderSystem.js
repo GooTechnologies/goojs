@@ -36,7 +36,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class Renders entities/renderables using a configurable partitioner for culling
+	 * @class Renders transform gizmos<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/util/TransformGizmos/TransformGizmos-vtest.html Working example}
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */

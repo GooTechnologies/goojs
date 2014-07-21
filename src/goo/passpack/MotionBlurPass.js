@@ -5,7 +5,8 @@ define([
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/MeshData',
 	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/pass/FullscreenPass'
+	'goo/renderer/pass/FullscreenPass',
+	'goo/renderer/pass/Pass'
 ], function (
 	Material,
 	Shader,
@@ -13,7 +14,8 @@ define([
 	FullscreenUtil,
 	MeshData,
 	RenderTarget,
-	FullscreenPass
+	FullscreenPass,
+	Pass
 ) {
 	'use strict';
 
@@ -24,16 +26,39 @@ define([
 		var width = window.innerWidth || 1024;
 		var height = window.innerHeight || 1024;
 		this.updateSize({
-			x: 0, y: 0, width: width, height: height
+			x: 0,
+			y: 0,
+			width: width,
+			height: height
 		});
 		this.enabled = true;
 		this.clear = false;
 		this.needsSwap = true;
 	}
 
-	MotionBlurPass.prototype.updateSize = function(size, renderer) {
+	MotionBlurPass.prototype = Object.create(Pass.prototype);
+	MotionBlurPass.prototype.constructor = MotionBlurPass;
+
+	MotionBlurPass.prototype.destroy = function (renderer) {
+		this.inPass.destroy(renderer);
+		this.outPass.destroy(renderer);
+		if (this.targetSwap) {
+			this.targetSwap[0].destroy(renderer.context);
+			this.targetSwap[1].destroy(renderer.context);
+			this.targetSwap = undefined;
+		}
+	};
+
+	MotionBlurPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width;
 		var sizeY = size.height;
+
+		if (this.targetSwap) {
+			for (var i = 0; i < this.targetSwap.length; i++) {
+				renderer._deallocateRenderTarget(this.targetSwap[i]);
+			}
+		}
+
 		this.targetSwap = [
 			new RenderTarget(sizeX, sizeY),
 			new RenderTarget(sizeX, sizeY)

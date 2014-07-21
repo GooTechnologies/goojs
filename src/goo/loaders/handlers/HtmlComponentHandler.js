@@ -9,7 +9,7 @@ function (
 	HtmlComponent,
 	RSVP
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of HTML components

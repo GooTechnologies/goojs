@@ -23,7 +23,7 @@ function (
 	TextureCreator,
 	ShaderFragment
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.<br>

@@ -13,7 +13,7 @@ function (
 	MeshData,
 	Transform
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class

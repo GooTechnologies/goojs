@@ -43,7 +43,7 @@ function(
 	DirectionalLight,
 	Quad
 ) {
-	"use strict";
+	'use strict';
 
 	var Ammo = window.Ammo; // make jslint happy
 

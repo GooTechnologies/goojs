@@ -29,7 +29,7 @@ function (
 	ScriptUtils,
 	Scripts
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class
@@ -75,8 +75,9 @@ function (
 			} catch (e) {
 				// Some cleanup error
 			}
-			delete this._objects[ref];
 		}
+		delete this._objects[ref];
+		delete this._bodyCache[ref];
 	};
 
 
@@ -411,28 +412,28 @@ function (
 				errors.push({ message: 'Parameter exponential needs to be boolean' });
 				continue;
 			}
-			if (param['default'] == null) {
+			if (param['default'] === null) {
 				switch (param.type) {
-					case 'float':
-					case 'int':
-						param['default'] = 0.0;
-						break;
-					case 'string':
-						param['default'] = '';
-						break;
-					case 'vec3':
-						param['default'] = [0.0, 0.0, 0.0];
-						break;
-					case 'boolean':
-						param['default'] = false;
-						break;
-					case 'texture':
-					case 'entity':
-						param['default'] = {};
-						break;
-					default:
-						errors.push({ message: 'Parameter default is missing or of wrong type' });
-						continue;
+				case 'float':
+				case 'int':
+					param['default'] = 0.0;
+					break;
+				case 'string':
+					param['default'] = '';
+					break;
+				case 'vec3':
+					param['default'] = [0.0, 0.0, 0.0];
+					break;
+				case 'boolean':
+					param['default'] = false;
+					break;
+				case 'texture':
+				case 'entity':
+					param['default'] = {};
+					break;
+				default:
+					errors.push({ message: 'Parameter default is missing or of wrong type' });
+					continue;
 				}
 			}
 			outScript.externals.parameters.push(param);

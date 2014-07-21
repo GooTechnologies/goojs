@@ -5,7 +5,7 @@ define([
 function (
 	Vector3
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Various helper utils for particle systems.

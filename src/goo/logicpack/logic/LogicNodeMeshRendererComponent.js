@@ -9,7 +9,7 @@ define(
 	],
 	/** @lends */
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Logic node that connects to the MeshRendererComponent of an entity.

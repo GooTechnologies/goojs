@@ -2,7 +2,7 @@ define(['goo/entities/Bus'],
 /** @lends */
 function (Bus) {
 
-	"use strict";
+	'use strict';
 
 	/**
 	 * @name SystemBus

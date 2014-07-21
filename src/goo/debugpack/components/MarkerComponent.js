@@ -5,7 +5,7 @@ define([
 function(
 	Component,
 	BoundingVolumeMeshBuilder) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Holds the necessary data for a marker

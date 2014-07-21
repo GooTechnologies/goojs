@@ -8,7 +8,7 @@ define([
 	'goo/util/PromiseUtil'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	Material,
 	MeshData,
@@ -17,7 +17,7 @@ function(
 	RSVP,
 	PromiseUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading shaders into engine
@@ -40,8 +40,11 @@ function(
 	 * @param {ref}
 	 * @private
 	 */
-	ShaderHandler.prototype._remove = function(/*ref*/) {
-		// Some sort of gl release?
+	ShaderHandler.prototype._remove = function (ref) {
+		if (this._objects[ref] && this._objects[ref].destroy) {
+			this._objects[ref].destroy();
+		}
+		delete this._objects[ref];
 	};
 
 	/**
@@ -52,15 +55,15 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated shader or null if removed
 	 */
-	ShaderHandler.prototype._update = function(ref, config, options) {
+	ShaderHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
 			this._remove(ref);
 			return PromiseUtil.createDummyPromise();
 		}
-		if(!config.vshaderRef) {
+		if (!config.vshaderRef) {
 			return PromiseUtil.createDummyPromise(null, 'Shader error, missing vertex shader ref');
 		}
-		if(!config.fshaderRef) {
+		if (!config.fshaderRef) {
 			return PromiseUtil.createDummyPromise(null, 'Shader error, missing fragment shader ref');
 		}
 
@@ -69,7 +72,9 @@ function(
 			this.loadObject(config.fshaderRef, options)
 		];
 
-		return RSVP.all(promises).then(function(shaders) {
+		var that = this;
+
+		return RSVP.all(promises).then(function (shaders) {
 			var vshader = shaders[0];
 			var fshader = shaders[1];
 
@@ -99,7 +104,12 @@ function(
 					}
 				}
 			}
-			return Material.createShader(shaderDefinition, ref);
+
+			var shader = Material.createShader(shaderDefinition, ref);
+
+			that._objects[ref] = shader;
+
+			return shader;
 		});
 	};
 

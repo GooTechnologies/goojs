@@ -2,7 +2,7 @@
 define(['goo/loaders/dds/DdsUtils'],
 	/** @lends */
 	function (DdsUtils) {
-	"use strict";
+	'use strict';
 
 	function DdsPixelFormat() {
 		this.dwSize = 0;

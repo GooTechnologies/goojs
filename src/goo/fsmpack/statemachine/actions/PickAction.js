@@ -5,7 +5,7 @@ define([
 function(
 	Action
 ) {
-	"use strict";
+	'use strict';
 
 	function PickAction(/*id, settings*/) {
 		Action.apply(this, arguments);

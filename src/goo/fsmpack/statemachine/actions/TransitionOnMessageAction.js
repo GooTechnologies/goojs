@@ -7,7 +7,7 @@ function(
 	Action,
 	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	function TransitionOnMessageAction(/*id, settings*/) {
 		Action.apply(this, arguments);

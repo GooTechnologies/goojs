@@ -5,7 +5,7 @@ define([
 function(
 	System
 ) {
-	"use strict";
+	'use strict';
 	/*global Ammo */
 
 	/**

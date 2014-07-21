@@ -7,7 +7,7 @@ function(
 	Action,
 	MathUtils
 ) {
-	"use strict";
+	'use strict';
 
 	function RotateAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -1,7 +1,7 @@
 define(['goo/entities/systems/System'],
 	/** @lends */
 		function (System) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Processes all entities with movement components.

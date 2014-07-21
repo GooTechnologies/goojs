@@ -1,6 +1,6 @@
 // adapted from https://github.com/rauschma/enums
 define(/** @lends */function () {
-	"use strict";
+	'use strict';
 
 	function copyOwnFrom(target, source) {
 		Object.getOwnPropertyNames(source).forEach(function (propName) {

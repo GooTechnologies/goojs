@@ -5,7 +5,7 @@ define([
 function(
 	FSMUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class

@@ -19,7 +19,7 @@ function (
 	Material,
 	ShaderLib
 ) {
-	"use strict";
+	'use strict';
 
 	function SetRenderTargetAction(/*id, settings*/) {
 		Action.apply(this, arguments);

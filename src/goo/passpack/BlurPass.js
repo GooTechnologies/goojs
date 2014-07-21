@@ -3,15 +3,17 @@ define([
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/pass/RenderTarget',
 	'goo/renderer/Util',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/pass/Pass'
 ],
 /** @lends */
-function(
+function (
 	Material,
 	FullscreenUtil,
 	RenderTarget,
 	Util,
-	ShaderLib
+	ShaderLib,
+	Pass
 ) {
 	'use strict';
 
@@ -42,7 +44,10 @@ function(
 		var width = window.innerWidth || 1024;
 		var height = window.innerHeight || 1024;
 		this.updateSize({
-			x: 0, y: 0, width: width, height: height
+			x: 0,
+			y: 0,
+			width: width,
+			height: height
 		});
 
 		this.renderable = {
@@ -68,7 +73,21 @@ function(
 		this.needsSwap = false;
 	}
 
-	BlurPass.prototype.updateSize = function(size, renderer) {
+	BlurPass.prototype = Object.create(Pass.prototype);
+	BlurPass.prototype.constructor = BlurPass;
+
+	BlurPass.prototype.destroy = function (renderer) {
+		if (this.renderTargetX) {
+			this.renderTargetX.destroy(renderer.context);
+		}
+		if (this.renderTargetY) {
+			this.renderTargetY.destroy(renderer.context);
+		}
+		this.convolutionMaterial.shader.destroy();
+		this.copyMaterial.shader.destroy();
+	};
+
+	BlurPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width / this.downsampleAmount;
 		var sizeY = size.height / this.downsampleAmount;
 		if (this.renderTargetX) {
@@ -81,7 +100,7 @@ function(
 		this.renderTargetY = new RenderTarget(sizeX, sizeY);
 	};
 
-	BlurPass.prototype.render = function(renderer, writeBuffer, readBuffer) {
+	BlurPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 		this.renderable.materials[0] = this.convolutionMaterial;
 
 		this.convolutionMaterial.setTexture('DIFFUSE_MAP', readBuffer);

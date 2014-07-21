@@ -1,7 +1,7 @@
 define(
 /** @lends */
 function() {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Rc4 random generator with seeding

@@ -3,7 +3,7 @@ define([
 	],
 	/** @lends OccluderComponent */
 	function (Component) {
-	"use strict";
+	'use strict';
 
 	/**
 	*	@class This component contains the triangle mesh which forms an occluder shape for the

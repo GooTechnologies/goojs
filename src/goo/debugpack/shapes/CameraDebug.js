@@ -13,7 +13,7 @@ define([
 		Box,
 		Cylinder
 	) {
-	"use strict";
+	'use strict';
 
 	function CameraDebug() {
 		this._camera = CameraDebug.buildCamera();

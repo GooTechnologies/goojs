@@ -1,14 +1,15 @@
 define([
-        'goo/math/Vector3'
-        ],
+	'goo/math/Vector3'
+],
 /** @lends */
 function (
 	Vector3
-	) {
+) {
 	'use strict';
 
 	/**
-	 * @class A plain light source in the scene, to be handled by shaders
+	 * @class A plain light source in the scene, to be handled by shaders<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
 	 * @constructor
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
@@ -73,6 +74,22 @@ function (
 		this.changedProperties = false;
 		this.changedColor =  false;
 	}
+
+	Light.prototype.destroy = function (renderer) {
+		var shadowSettings = this.shadowSettings;
+		if (shadowSettings.shadowData) {
+			if (shadowSettings.shadowData.shadowTarget) {
+				shadowSettings.shadowData.shadowTarget.destroy(renderer.context);
+			}
+			if (shadowSettings.shadowData.shadowTargetDown) {
+				shadowSettings.shadowData.shadowTargetDown.destroy(renderer.context);
+			}
+			if (shadowSettings.shadowData.shadowBlurred) {
+				shadowSettings.shadowData.shadowBlurred.destroy(renderer.context);
+			}
+		}
+		delete shadowSettings.shadowData;
+	};
 
 	return Light;
 });

@@ -7,7 +7,7 @@ function(
 	Action,
 	EntityUtils
 ) {
-	"use strict";
+	'use strict';
 
 	function RemoveParticlesAction(/*id, settings*/) {
 		Action.apply(this, arguments);

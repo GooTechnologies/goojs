@@ -5,7 +5,7 @@ define([
 		function (
 		MeshData,
 		MathUtils) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class A grid-like surface shape

@@ -11,7 +11,7 @@ function (
 	ShaderLib,
 	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
@@ -21,6 +21,7 @@ function (
 	 * @property {RenderTarget} renderTarget Data to wrap
 	 */
 	function Composer(renderTarget) {
+		this._passedWriteBuffer = !!renderTarget;
 		this.writeBuffer = renderTarget;
 
 		if (this.writeBuffer === undefined) {
@@ -33,17 +34,46 @@ function (
 		this.readBuffer = this.writeBuffer.clone();
 
 		this.passes = [];
-		this._clearColor = [0,0,0,1];
+		this._clearColor = [0, 0, 0, 1];
 		this.copyPass = new FullscreenPass(ShaderLib.copy);
 
 		this.size = null;
 		this.dirty = false;
 
-		SystemBus.addListener('goo.viewportResize', function (size) {
+		this._viewportResizeHandler = function (size) {
 			this.dirty = true;
 			this.size = size;
-		}.bind(this), true);
+		}.bind(this);
+
+		SystemBus.addListener('goo.viewportResize', this._viewportResizeHandler, true);
 	}
+
+	/**
+	 * Deallocate all allocated WebGL buffers, listeners, and passes.
+	 * @param  {Renderer} renderer
+	 */
+	Composer.prototype.destroy = function (renderer) {
+		this.deallocateBuffers(renderer);
+		for (var i = 0; i < this.passes.length; i++) {
+			var pass = this.passes[i];
+			pass.destroy(renderer);
+		}
+		SystemBus.removeListener('goo.viewportResize', this._viewportResizeHandler);
+	};
+
+	/**
+	 * Deallocate the read and write buffers.
+	 * @param {Renderer} renderer
+	 */
+	Composer.prototype.deallocateBuffers = function (renderer) {
+		if (this.writeBuffer && !this._passedWriteBuffer) {
+			this.writeBuffer.destroy(renderer.context);
+		}
+		if (this.readBuffer) {
+			this.readBuffer.destroy(renderer.context);
+		}
+		this.copyPass.destroy(renderer);
+	};
 
 	Composer.prototype.swapBuffers = function () {
 		var tmp = this.readBuffer;
@@ -69,14 +99,14 @@ function (
 		}
 	};
 
-	Composer.prototype.setClearColor = function(color) {
+	Composer.prototype.setClearColor = function (color) {
 		this._clearColor[0] = color[0];
 		this._clearColor[1] = color[1];
 		this._clearColor[2] = color[2];
 		this._clearColor[3] = color[3];
 	};
 
-	Composer.prototype.updateSize = function(renderer) {
+	Composer.prototype.updateSize = function (renderer) {
 		var size = this.size;
 		if (!size) {
 			return;
@@ -84,12 +114,7 @@ function (
 		var width = size.width;
 		var height = size.height;
 
-		if (this.writeBuffer) {
-			renderer._deallocateRenderTarget(this.writeBuffer);
-		}
-		if (this.readBuffer) {
-			renderer._deallocateRenderTarget(this.readBuffer);
-		}
+		this.deallocateBuffers(renderer);
 
 		this.writeBuffer = new RenderTarget(width, height);
 		this.readBuffer = this.writeBuffer.clone();

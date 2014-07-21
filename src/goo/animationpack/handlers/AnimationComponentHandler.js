@@ -9,7 +9,7 @@ function(
 	AnimationComponent,
 	RSVP
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of animation components

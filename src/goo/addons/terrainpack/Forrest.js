@@ -51,7 +51,7 @@ function (
 	MathUtils,
 	RSVP
 ) {
-	"use strict";
+	'use strict';
 
 	function Forrest() {
 		this.calcVec = new Vector3();

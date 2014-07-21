@@ -14,7 +14,7 @@ define([
 		ShaderLib,
 		LightPointer
 	) {
-	"use strict";
+	'use strict';
 	/*
 	 * REVIEW:
 	 * I think all debug drawing should be collected in a DebugDrawComponent/System

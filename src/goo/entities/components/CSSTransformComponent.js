@@ -3,7 +3,7 @@ define([
 ], /** @lends */ function (
 	Component
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Connects a domElement to an entity and applies the transformComponent of the entity to the domElement with CSS3 3D transforms.

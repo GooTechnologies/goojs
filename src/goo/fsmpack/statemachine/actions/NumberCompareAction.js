@@ -7,7 +7,7 @@ function(
 	Action,
 	FSMUtil
 ) {
-	"use strict";
+	'use strict';
 
 	function NumberCompareAction(/*id, settings*/) {
 		Action.apply(this, arguments);

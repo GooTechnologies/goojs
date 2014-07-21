@@ -25,6 +25,8 @@ function (
 
 		// Nodes
 		this._buffer = null;
+		this._stream = null;
+		this._streamSource = null;
 		this._currentSource = null;
 		this._outNode = AudioContext.createGain();
 		this.connectTo();
@@ -48,7 +50,7 @@ function (
 			return this._endPromise;
 		}
 		this._endPromise = new RSVP.Promise();
-		if (!this._buffer) {
+		if (!this._buffer || this._stream) {
 			return this._endPromise;
 		}
 
@@ -226,8 +228,23 @@ function (
 	 * @param {AudioBuffer} buffer
 	 */
 	Sound.prototype.setAudioBuffer = function(buffer) {
+		this.setAudioStream(null);
 		this._buffer = buffer;
 		this._clampInterval();
+	};
+
+	Sound.prototype.setAudioStream = function (stream) {
+		if (!stream) {
+			if (this._streamSource) {
+				this._streamSource.disconnect();
+				this._streamSource = null;
+			}
+			return;
+		}
+		this.stop();
+		this._stream = stream;
+		this._streamSource = AudioContext.createMediaStreamSource(stream);
+		this._streamSource.connect(this._outNode);
 	};
 
 	return Sound;

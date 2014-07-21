@@ -7,7 +7,7 @@ function(
 	Action,
 	Vector3
 ) {
-	"use strict";
+	'use strict';
 
 	function TweenLookAtAction(/*id, settings*/) {
 		Action.apply(this, arguments);

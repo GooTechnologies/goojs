@@ -11,7 +11,7 @@ define([
 	 * Fill a passed parameters object with defaults from spec
 	 * @private
 	 * @param parameters {object} The type of object passed as parameters to a script
-	 * @param spec {{key, name, default, description}[]}
+	 * @param spec {Array.<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultValues = function (parameters, specs) {
 		if (!(specs instanceof Array)) { return; }
@@ -35,7 +35,7 @@ define([
 	/**
 	 * Fills specs' names with their prettyprinted keys (x -> x, maxX -> Max X, myBluePanda -> My Blue Panda)
 	 * @private
-	 * @param specs {{key, name, default, description}[]}
+	 * @param specs {Array.<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultNames = function (specs) {
 		if (!(specs instanceof Array)) { return; }

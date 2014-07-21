@@ -187,5 +187,17 @@ function (
 		}
 	};
 
+	ShapeCreatorMemoized.clearCache = function (context) {
+		var keys = Object.keys(_cache);
+		for (var i = 0; i < keys[i]; i++) {
+			var key = keys[i];
+			var shape = _cache[key];
+			if (context) {
+				shape.destroy(context);
+			}
+			delete _cache[key];
+		}
+	};
+
 	return ShapeCreatorMemoized;
 });

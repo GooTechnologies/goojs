@@ -11,7 +11,7 @@ function (
 	BoundingVolume,
 	MeshData
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class <code>BoundingSphere</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This

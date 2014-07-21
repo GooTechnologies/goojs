@@ -11,7 +11,7 @@ define([
 	Matrix3x3,
 	MathUtils
 	) {
-	"use strict";
+	'use strict';
 
 	function TweenRotationAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -44,14 +44,24 @@ function (
 		this.originalShaderDefinition = shaderDefinition;
 		this.shaderDefinition = shaderDefinition;
 
+		/** The shader name
+		 * @type {string}
+		 */
 		this.name = name;
+
 		this.origVertexSource = shaderDefinition.vshader;
 		this.origFragmentSource = shaderDefinition.fshader;
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 
-
 		this.shaderProgram = null;
+		this.vertexShader = null;
+		this.fragmentShader = null;
+
+		/** The renderer where the program and shaders were allocated.
+		 * @type {WebGLContext|null}
+		 */
+		this.renderer = null;
 
 		/**
 		 * Attributes detected in the shader source code.
@@ -368,16 +378,17 @@ function (
 
 	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
+		this.renderer = renderer;
 
 		// console.log('---------------------- vertex: '+ this.name +' --------------------------');
 		// console.log(this.vertexSource);
 		// console.log('---------------------- fragment: '+ this.name +' --------------------------');
 		// console.log(this.fragmentSource);
 
-		var vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
-		var fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
+		this.vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
+		this.fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
 
-		if (vertexShader === null || fragmentShader === null) {
+		if (this.vertexShader === null || this.fragmentShader === null) {
 			console.error("Shader error - no shaders");
 		}
 
@@ -389,8 +400,8 @@ function (
 			SystemBus.emit('goo.shader.error');
 		}
 
-		context.attachShader(this.shaderProgram, vertexShader);
-		context.attachShader(this.shaderProgram, fragmentShader);
+		context.attachShader(this.shaderProgram, this.vertexShader);
+		context.attachShader(this.shaderProgram, this.fragmentShader);
 
 		// Link the Shader Program
 		context.linkProgram(this.shaderProgram);
@@ -695,6 +706,22 @@ function (
 			attributes: this.attributes,
 			uniforms: this.uniforms
 		};
+	};
+
+	Shader.prototype.destroy = function () {
+		if (this.shaderProgram) {
+			this.renderer.context.deleteProgram(this.shaderProgram);
+			this.shaderProgram = null;
+		}
+		if (this.vertexShader) {
+			this.renderer.context.deleteShader(this.vertexShader);
+			this.vertexShader = null;
+		}
+		if (this.fragmentShader) {
+			this.renderer.context.deleteShader(this.fragmentShader);
+			this.fragmentShader = null;
+		}
+		this.renderer = null;
 	};
 
 	Shader.prototype.toString = function () {

@@ -1,7 +1,7 @@
 define(['goo/math/Vector3'],
 /** @lends */
 function (Vector3) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class The RenderQueue handles sorting of entities. Entities are ordered by their renderQueue value into buckets.

@@ -3,7 +3,7 @@ define([
 ],
     /** @lends */
         function (Edge) {
-        "use strict";
+        'use strict';
 
         /**
          * Stores the edges to render.

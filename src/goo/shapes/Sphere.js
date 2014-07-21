@@ -11,7 +11,7 @@ function (
 	Vector3,
 	MathUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A 3D object with all points equi-distance from a center point.

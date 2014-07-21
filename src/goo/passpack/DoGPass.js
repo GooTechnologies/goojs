@@ -1,20 +1,22 @@
 define([
-		'goo/renderer/Material',
-		'goo/renderer/pass/FullscreenUtil',
-		'goo/renderer/pass/RenderTarget',
-		'goo/renderer/Util',
-		'goo/renderer/shaders/ShaderLib',
-		'goo/passpack/ShaderLibExtra'
-	],
-	/** @lends */
-	function (
-		Material,
-		FullscreenUtil,
-		RenderTarget,
-		Util,
-		ShaderLib,
-		ShaderLibExtra
-	) {
+	'goo/renderer/Material',
+	'goo/renderer/pass/FullscreenUtil',
+	'goo/renderer/pass/RenderTarget',
+	'goo/renderer/Util',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/passpack/ShaderLibExtra',
+	'goo/renderer/pass/Pass'
+],
+/** @lends */
+function (
+	Material,
+	FullscreenUtil,
+	RenderTarget,
+	Util,
+	ShaderLib,
+	ShaderLibExtra,
+	Pass
+) {
 	'use strict';
 
 	/**
@@ -62,6 +64,32 @@ define([
 		this.clear = false;
 		this.needsSwap = true;
 	}
+
+	DoGPass.prototype = Object.create(Pass.prototype);
+	DoGPass.prototype.constructor = DoGPass;
+
+	DoGPass.prototype.destroy = function (renderer) {
+		var context = renderer.context;
+		if (this.convolutionMaterial1) {
+			this.convolutionMaterial1.shader.destroy();
+		}
+		if (this.convolutionMaterial2) {
+			this.convolutionMaterial2.shader.destroy();
+		}
+		this.differenceMaterial.shader.destroy();
+		if (this.gaussian1) {
+			this.gaussian1.destroy(context);
+		}
+		if (this.gaussian2) {
+			this.gaussian2.destroy(context);
+		}
+		if (this.renderTargetX) {
+			this.renderTargetX.destroy(context);
+		}
+		if (this.target) {
+			this.target.destroy(context);
+		}
+	};
 
 	DoGPass.prototype.updateThreshold = function (threshold) {
 		this.differenceMaterial.shader.uniforms.threshold = threshold;

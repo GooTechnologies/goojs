@@ -5,7 +5,7 @@ define([
 function(
 	Rectangle
 ) {
-	"use strict";
+	'use strict';
 
 
 	/**

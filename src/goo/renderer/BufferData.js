@@ -49,6 +49,7 @@ define(
 	 */
 	BufferData.prototype.destroy = function (context) {
 		context.deleteBuffer(this.glBuffer);
+		this.glBuffer = null;
 	};
 
 	return BufferData;
