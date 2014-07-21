@@ -54,7 +54,7 @@ Open up a server and the open [http://localhost:your-fav-port/goojs/test/test.ht
 
 OR
 
-Run `grunt unittest`
+Run `grunt test`
 
 This will start a browser and run all tests with Karma once. If you want to use the more convenient Karma server, continue with the following steps.
 
