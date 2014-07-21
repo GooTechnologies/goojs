@@ -1,5 +1,6 @@
 // An example configuration file.
 exports.config = {
+
 	// The address of a running selenium server.
 	//seleniumAddress: 'http://localhost:4444/wd/hub'
 
@@ -15,5 +16,6 @@ exports.config = {
 	jasmineNodeOpts: {
 		showColors: true,
 		defaultTimeoutInterval: 30000 // raise this value if loading times become a problem
-	}
+	},
+
 };

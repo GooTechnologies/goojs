@@ -2,23 +2,51 @@ var fs = require('fs');
 var path = require('path');
 var exec = require('child_process').exec;
 var ScreenShooter = require(__dirname + '/../ScreenShooter');
-var imgCompare = require(__dirname + '/../../../tools/imgcompare2/imgCompare');
+var imgcompare = require(__dirname + '/../../../tools/imgcompare');
 var toc = require(__dirname + '/../../../visual-test/toc');
-var filterList = require('../filterList').filterList;
 
-function filterArray(array, filters) {
-	return array.filter(function (entry) {
-		return filters.some(function (filter) {
-			return entry.indexOf(filter) === -1 && entry.indexOf('Ammo') !== -1;
-		});
-	});
-}
 
 jasmine.getEnv().defaultTimeoutInterval = 10000; // in microseconds.
 
-var shooter;
-var testFiles = toc.getFilePathsSync();
-testFiles = filterArray(testFiles, filterList);
+var shooter, testFiles=toc.getFilePathsSync();
+
+var ignoredTests = [
+	'example',
+	'carousel',
+	'goo/addons/Ammo/Ammo-vehicle-vtest',
+	'goo/addons/Ammo/Ammo-vtest',
+	'goo/addons/Cannon/Cannon-vtest',
+	'goo/addons/p2/p2-vtest',
+	'goo/components/Box2DComponent/Box2DComponent-vtest',
+	'goo/components/LightDebugComponent/LightDebugComponent-vtest',
+	'goo/entities/ApplyRemoveAPI/ApplyRemoveAPI-vtest',
+	'goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest',   // Animation
+	'goo/misc/FlatwaterAndParticles/FlatwaterAndParticles-vtest', // Animation fails this
+	'goo/util/FrustumViewer/FrustumViewer-vtest',
+	'goo/util/LightPointer/LightPointer-vtest',
+	'goo/components/CameraDebugComponent/CameraDebugComponent-vtest',
+	'goo/addons/Sound/Sound-vtest', // Animation
+	'goo/addons/Howler/Howler-vtest',
+	'AnimationComponent',
+	'FSMSystem',
+	'ProjectHandler',
+	'WalkAround-script',
+	'occlusionculling',
+	'FSMHandler',
+	'goo/addons/Water/water-vtest',
+	'DynamicLoaderDestroy'
+];
+
+console.log('Ignored tests (todo: fix these!): ', ignoredTests);
+
+for (var i = 0 ; i < ignoredTests.length; i++) {
+	for (var j = testFiles.length - 1; j >= 0; j--) {
+		if (testFiles[j].indexOf(ignoredTests[i]) !== -1) {
+			// Remove
+			var removed = testFiles.splice(j, 1);
+		}
+	}
+}
 
 var rootUrl = process.env.GOOJS_ROOT_URL;
 var gooRootPath = path.join(__dirname, '..', '..', '..');
@@ -42,7 +70,6 @@ function getTestInfo(testFilePath) {
 	};
 }
 
-
 describe('visual test', function () {
 	beforeEach(function (done) {
 		if (!shooter) {
@@ -51,91 +78,58 @@ describe('visual test', function () {
 		done();
 	});
 
-	function getTestFunc() {
-		var testCounter = 0;
+	var testCounter = 0;
+	function testFunc(done) {
+		var testFile = testFiles[testCounter++];
 
-		return function testFunc(done) {
-			var testFile = testFiles[testCounter++];
+		var info2 = getTestInfo(testFile);
 
-			var info2 = getTestInfo(testFile);
+		var url = info2.url;
+		var pngPath = info2.pngPath;
+		var refPath = info2.refPath;
 
-			var url = info2.url;
-			var pngPath = info2.pngPath;
-			var refPath = info2.refPath;
+		// Take a screenshot
+		shooter.takeScreenshot(url, pngPath, function (err) {
+			expect(err).toBeFalsy();
 
-			// Take a screenshot
-			shooter.takeScreenshot(url, pngPath, function (err) {
+			// Compare to the reference image
+			imgcompare.compare(pngPath, refPath, {
+				maxDist: 0.5,
+				maxSumSquares: 1e-6
+			}, function (err, result, stdout, stderr) {
 				expect(err).toBeFalsy();
+				//expect(result).toBeTruthy();
+				if (!result) {
+					// Only way to make custom message?
+					expect(stdout).toBeFalsy();
+				}
 
-				// Compare to the reference image
-				imgCompare.compare(pngPath, refPath, function (dissimilarity) {
-					expect(dissimilarity).toBeLessThan(0.02);
-
-					var severeLogEntries = [];
-					for (var j = 0; j < shooter.browserLog.length; j++) {
-						var entry = shooter.browserLog[j];
-						if (entry.level.name == 'SEVERE') {
-							severeLogEntries.push(entry);
-						}
+				var severeLogEntries = [];
+				for (var j = 0; j < shooter.browserLog.length; j++) {
+					var entry = shooter.browserLog[j];
+					if (entry.level.name == 'SEVERE') {
+						severeLogEntries.push(entry);
 					}
+				}
 
-					expect(severeLogEntries).toEqual([]);
+				expect(severeLogEntries).toEqual([]);
 
-					if (testCounter >= testFiles.length) {
-						// Shut down if there are no more tests
-						shooter.shutdown(function () {
-							done();
-						});
-					} else {
+				if (testCounter >= testFiles.length) {
+					// Shut down if there are no more tests
+					shooter.shutdown(function () {
 						done();
-					}
-				});
-
-				/*
-				imgcompare.compare(pngPath, refPath, {
-					maxDist: 0.5,
-					maxSumSquares: 1e-6
-				}, function (err, result, stdout, stderr) {
-					expect(err).toBeFalsy();
-					//expect(result).toBeTruthy();
-					if (!result) {
-						// Only way to make custom message?
-						expect(stdout).toBeFalsy();
-					}
-
-					var severeLogEntries = [];
-					for (var j = 0; j < shooter.browserLog.length; j++) {
-						var entry = shooter.browserLog[j];
-						if (entry.level.name == 'SEVERE') {
-							severeLogEntries.push(entry);
-						}
-					}
-
-					expect(severeLogEntries).toEqual([]);
-
-					if (testCounter >= testFiles.length) {
-						// Shut down if there are no more tests
-						shooter.shutdown(function () {
-							done();
-						});
-					} else {
-						done();
-					}
-				});
-				*/
+					});
+				} else {
+					done();
+				}
 			});
-		}
+		});
 	}
-
-	var testFunc = getTestFunc();
 
 	for (var i = 0; i < testFiles.length; i++) {
 		var info = getTestInfo(testFiles[i]);
 
 		// Register test
-		it('should render URL ' + info.url +
-			' correctly (ref: ' + info.refPath + ', screenshot: ' + info.pngPath + ')',
-			testFunc
-		);
+		it('should render URL ' + info.url + ' correctly (ref: ' + info.refPath + ', screenshot: ' + info.pngPath + ')', testFunc);
 	}
 });

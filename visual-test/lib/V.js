@@ -117,7 +117,7 @@ define([
 	 * Creates a random bright color
 	 * @returns {Array}
 	 */
-	V.getRandomColor = function () {
+	function getRandomColor() {
 		var angle = V.rng.nextFloat() * Math.PI * 2;
 		var color = [
 			angle,
@@ -143,7 +143,7 @@ define([
 		var material = new Material(ShaderLib.simpleLit);
 		if (arguments.length === 0) {
 			//material.materialState.diffuse = getRandomColor();
-			material.uniforms.materialDiffuse = V.getRandomColor();
+			material.uniforms.materialDiffuse = getRandomColor();
 		} else {
 			//material.materialState.diffuse = [r, g, b, a || 1];
 			material.uniforms.materialDiffuse = [r, g, b, a || 1];
@@ -277,7 +277,7 @@ define([
 	 */
 	V.initGoo = function (_options) {
 		var options = {
-			showStats: true && false,
+			showStats: true,
 			logo: {
 				position: 'bottomright',
 				color: '#FFF'

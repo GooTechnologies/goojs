@@ -11,6 +11,7 @@ module.exports = ScreenShooter;
  * @class ScreenShooter
  * @param {object} [options]
  * @param {number} [options.wait]   How long to wait before taking each screenshot.
+ * @param {string} [options.script]	JavaScript to run in the browser before each screenshot.
  * @param {number} [options.width]	Width of the browser window
  * @param {number} [options.height]	Height of the window
  */
@@ -19,6 +20,7 @@ function ScreenShooter(options) {
 
 	var settings = this.settings = {
 		wait   : 700,
+		script : ScreenShooter.removeGooStuffScript,
 		width  : 400, // This is sort of the smallest possible in Chrome
 		height : 300
 	};
@@ -38,6 +40,16 @@ function ScreenShooter(options) {
 
 ScreenShooter.prototype = new EventEmitter();
 
+// Script that removes stats, logos, dat.gui etc from a visual test
+ScreenShooter.removeGooStuffScript = [
+	"var statsEl = document.getElementById('stats');", // Remove stats box
+	"if (statsEl) statsEl.style.display='none';",
+	"var logoEl = document.getElementById('goologo');", // Remove logo
+	"if (logoEl) logoEl.style.display='none';",
+	"var dgEls = document.getElementsByClassName('dg ac');", // Remove dat gui
+	"if (dgEls && dgEls.length) dgEls[0].style.display='none';"
+].join('\n');
+
 // Take a screenshot on an url and store it to a file. Will emit a 'shoot' event
 ScreenShooter.prototype.takeScreenshot = function (url, pngPath, callback) {
 	var self = this;
@@ -46,33 +58,41 @@ ScreenShooter.prototype.takeScreenshot = function (url, pngPath, callback) {
 	// Point the browser to it
 	driver.get(url).then(function () {
 		setTimeout(function () {
-			// Take screenshot
-			driver.executeScript('return document.getElementById("goo").toDataURL();').then(function (data) {
-				data = data.replace(/^data:image\/\w+;base64,/, '');
 
-				// Create out folder if it does not exist
-				mkdirp.mkdirp(path.dirname(pngPath), function (err) {
-					if (err) {
-						return callback(err);
-					}
+			// Run our startup script
+			driver.executeScript(self.settings.script).then(function () {
+				// Wait for webgl to set up and so on
+				setTimeout(function () {
+					// Take screenshot
+					driver.executeScript('return document.getElementById("goo").toDataURL();').then(function (data) {
+//						data = data.substr(data.indexOf(',') + 1);
+						data = data.replace(/^data:image\/\w+;base64,/, '');
 
-					// Get the console log
-					var logs = new webdriver.WebDriver.Logs(driver);
-					logs.get('browser').then(function (browserLog) {
-						self.browserLog = browserLog;
+						// Create out folder if it does not exist
+						mkdirp.mkdirp(path.dirname(pngPath), function (err) {
+							if (err) {
+								return callback(err);
+							}
 
-						// Save screenshot
-						fs.writeFileSync(pngPath, data, 'base64');
+							// Get the console log
+							var logs = new webdriver.WebDriver.Logs(driver);
+							logs.get('browser').then(function (browserLog) {
+								self.browserLog = browserLog;
 
-						self.emit('shoot', {
-							url: url,
-							path: pngPath,
-							log: browserLog
+								// Save screenshot
+								fs.writeFileSync(pngPath, data, 'base64');
+
+								self.emit('shoot', {
+									url: url,
+									path: pngPath,
+									log: browserLog
+								});
+
+								callback();
+							});
 						});
-
-						callback();
-					});
-				});
+					}, self.settings.wait);
+				}, self.settings.wait);
 			}, self.settings.wait);
 		}, self.settings.wait);
 	});
@@ -90,6 +110,7 @@ ScreenShooter.prototype.takeScreenshots = function (urlToPathMap, callback) {
 
 	// Loop asynchronously over all files
 	async.eachSeries(urls, function (url, done) {
+
 		// Take screenshot
 		self.takeScreenshot(url, urlToPathMap[url], function () {
 			done();
