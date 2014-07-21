@@ -50,7 +50,8 @@
     "file": "~0.2.2",
     "graceful-fs": "~3.0.2",
     "grunt-shell": "^0.7.0",
-    "filesize": "^2.0.3"
+    "filesize": "^2.0.3",
+    "grunt-contrib-requirejs": "~0.4.4"
   },
   "engines": {
     "node": ">=0.8.2"
