@@ -207,6 +207,15 @@ module.exports = function (grunt) {
 			},
 			jsdoc_json: {
 				command: path.resolve('tools', 'generate_jsdoc_json.sh')
+			},
+			update_webdriver: {
+				options: {
+					stdout: true
+				},
+				command: path.resolve('node_modules/webdriver-manager/bin/webdriver-manager') + ' update --standalone --chrome'
+			},
+			e2e: {
+				command: 'node test/e2etesting/manualSpec.js'
 			}
 		},
 		/*
@@ -248,6 +257,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack']);
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('test',		['unittest']);
+	grunt.registerTask('e2e',		['shell:e2e']);
 
 	//! AT: no better place to put this
 	function extractFilename(path) {
