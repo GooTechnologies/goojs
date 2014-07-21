@@ -106,6 +106,10 @@ function (
 
 		worker.onmessage = function (event) {
 			var data = event.data;
+			if (that.passive) {
+				worker.postMessage(data, [data.buffer]);
+				return;
+			}
 
 			if (data.command) {
 				commandHandlers[data.command].call(that, data);
