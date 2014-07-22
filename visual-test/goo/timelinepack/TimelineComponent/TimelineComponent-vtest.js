@@ -205,5 +205,5 @@ require([
 		}
 	});
 
-	goo.startGameLoop();
+	V.process();
 });

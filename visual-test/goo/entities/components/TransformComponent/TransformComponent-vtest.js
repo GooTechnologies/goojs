@@ -204,4 +204,6 @@ require([
 	setupGUI();
 
 	new Debugger(true, true).inject(goo);
+
+	V.process();
 });

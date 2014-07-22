@@ -129,4 +129,6 @@ require([
 
 	// camera
 	V.addOrbitCamera();
+
+	V.process();
 });

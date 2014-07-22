@@ -54,34 +54,32 @@ require([
 		return entity;
 	}
 	//--------
-	function combinedIndexModesDemo() {
-		var goo = V.initGoo();
+	var goo = V.initGoo();
 
-		var modes = [
-			{ v: [0, 0, 0, 1, 0, 0,	1, 1, 0, 0, 2, 0], i: [], m: 'Points'},
-			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 0, 2, 0, 3], m: 'Lines'},
-			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'LineStrip'},
-			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'LineLoop'},
-			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, -1, 2, 0], i: [0, 1, 2, 0, 3, 4], m: 'Triangles'},
-			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, 2, 2, 0], i: [0, 1, 3, 2, 4], m: 'TriangleStrip'},
-			{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, -0.5, 1, 0], i: [0, 1, 2, 3, 4], m: 'TriangleFan'}];
+	var modes = [
+		{ v: [0, 0, 0, 1, 0, 0,	1, 1, 0, 0, 2, 0], i: [], m: 'Points'},
+		{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 0, 2, 0, 3], m: 'Lines'},
+		{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'LineStrip'},
+		{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0], i: [0, 1, 2, 3], m: 'LineLoop'},
+		{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, -1, 2, 0], i: [0, 1, 2, 0, 3, 4], m: 'Triangles'},
+		{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, 2, 2, 0], i: [0, 1, 3, 2, 4], m: 'TriangleStrip'},
+		{ v: [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 2, 0, -0.5, 1, 0], i: [0, 1, 2, 3, 4], m: 'TriangleFan'}];
 
-		// build a grid of all possible 7x7 combinations
-		for (var i = 0; i < modes.length; i++) {
-			for (var j = 0; j < modes.length; j++) {
-				var mode1 = modes[i];
-				var mode2 = modes[j];
-				var combinedMesh = buildCombined(mode1.v, mode1.i, mode1.m, mode2.v, mode2.i, mode2.m);
-				wrapAndAdd(goo, combinedMesh, (i - modes.length/2) * 8, -(j - modes.length/2) * 3);
-			}
+	// build a grid of all possible 7x7 combinations
+	for (var i = 0; i < modes.length; i++) {
+		for (var j = 0; j < modes.length; j++) {
+			var mode1 = modes[i];
+			var mode2 = modes[j];
+			var combinedMesh = buildCombined(mode1.v, mode1.i, mode1.m, mode2.v, mode2.i, mode2.m);
+			wrapAndAdd(goo, combinedMesh, (i - modes.length/2) * 8, -(j - modes.length/2) * 3);
 		}
-
-		// light
-		V.addLights();
-
-		// camera
-		V.addOrbitCamera(new Vector3(35, Math.PI / 2, 0));
 	}
 
-	combinedIndexModesDemo();
+	// light
+	V.addLights();
+
+	// camera
+	V.addOrbitCamera(new Vector3(35, Math.PI / 2, 0));
+
+	V.process();
 });

@@ -52,4 +52,6 @@ require([
 	composer.addPass(outPass);
 
 	goo.renderSystem.composers.push(composer);
+
+	V.process();
 });

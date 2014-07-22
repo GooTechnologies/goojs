@@ -132,4 +132,6 @@ require([
 	addBox(goo);
 	addWater(goo, 0);
 	addFire(goo);
+
+	V.process();
 });
