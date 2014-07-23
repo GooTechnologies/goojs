@@ -1,7 +1,7 @@
 var path = require('path');
 var program = require('commander');
 require('coffee-script'); //! AT: unused?
-var toc = require(__dirname + '/../../visual-test/toc');
+var toc = require(__dirname + '/../../tools/toc');
 var ScreenShooter = require('./ScreenShooter');
 var exec = require('child_process').exec;
 var filterList = require('./filterList').filterList;
@@ -33,7 +33,7 @@ shooter.on('shoot', function (evt) {
 });
 
 // Get all visual test files
-var files = toc.getFilePathsSync();
+var files = toc.getFilesSync(__dirname + '/../../visual-test');
 
 var urlToPathMap = {};
 for (var i = 0; i < files.length; i++) {

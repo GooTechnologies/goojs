@@ -106,7 +106,8 @@ module.exports = function (grunt) {
 			},
 			toc: {
 				src: [
-					'visual-test/index.html'
+					'visual-test/index.html',
+					'examples/index.html'
 				]
 			},
 			docs: [
@@ -307,18 +308,6 @@ module.exports = function (grunt) {
 		lines.push('});');
 
 		fs.writeFileSync('src/goo.js', lines.join('\n'));
-	});
-
-	// Creates an HTML list of tests in visual-test/index.html
-	grunt.registerTask('visualtoc', function () {
-		var toc = require('./visual-test/toc');
-		toc.run();
-	});
-
-	// Creates an example table of content HTML file: examples/index.html
-	grunt.registerTask('examplestoc', function () {
-		var toc = require('./examples/toc');
-		toc.run();
 	});
 
 	grunt.registerTask('init-git', function () {

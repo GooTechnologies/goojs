@@ -12,7 +12,7 @@ var exec = require('child_process').exec;
 var async = require('async');
 var ScreenShooter = require('./ScreenShooter');
 var imgCompare = require(__dirname + '/../../tools/imgcompare2/imgCompare');
-var toc = require(__dirname + '/../../visual-test/toc');
+var toc = require(__dirname + '/../../tools/toc');
 var filterList = require('./filterList').filterList;
 
 function filterArray(array, filters) {
@@ -23,7 +23,7 @@ function filterArray(array, filters) {
 	});
 }
 
-var testFiles = toc.getFilePathsSync();
+var testFiles = toc.getFilesSync(path.join(__dirname, '/../../visual-test'));
 testFiles = filterArray(testFiles, filterList);
 
 var rootUrl = process.env.GOOJS_ROOT_URL;
