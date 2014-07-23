@@ -29,4 +29,6 @@ require([
 
 	window.addEventListener('click', onPick);
 	window.addEventListener('touchstart', onPick);
+
+	V.process();
 });

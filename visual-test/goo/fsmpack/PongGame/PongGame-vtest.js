@@ -144,5 +144,5 @@ require([
 
 	ballEntity.setComponent(getFSMComponent(ballEntity, 30, 30));
 
-	window.ball = ballEntity;
+	V.process();
 });

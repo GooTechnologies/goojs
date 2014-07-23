@@ -109,4 +109,6 @@ require([
 	var lampEntities = addLamps();
 
 	addBoxes(lampEntities[0]);
+
+	V.process();
 });

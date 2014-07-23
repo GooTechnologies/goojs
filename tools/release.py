@@ -21,8 +21,7 @@ grunt_command = 'node_modules/grunt-cli/bin/grunt'
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
 
 subprocess.check_call([grunt_command, 'jsdoc'])
-subprocess.check_call([grunt_command, 'visualtoc'])
-subprocess.check_call([grunt_command, 'examplestoc'])
+subprocess.check_call([grunt_command, 'generate-toc'])
 
 release_dir = os.getenv('RELEASE_DIR', 'out/release/' + name)
 if os.path.isdir(release_dir):

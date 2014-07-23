@@ -113,7 +113,8 @@ module.exports = function (grunt) {
 			},
 			toc: {
 				src: [
-					'visual-test/index.html'
+					'visual-test/index.html',
+					'examples/index.html'
 				]
 			},
 			docs: [
@@ -196,6 +197,16 @@ module.exports = function (grunt) {
 				outBaseDir: 'out'
 			}
 		},
+		'generate-toc': {
+			'visual-test': {
+				path: 'visual-test',
+				title: 'Visual tests'
+			},
+			'examples': {
+				path: 'examples',
+				title: 'Examples'
+			}
+		},
 		'build-custom': {
 			myBundle: {
 				outFile: 'bundle.js'
@@ -214,6 +225,15 @@ module.exports = function (grunt) {
 			},
 			jsdoc_json: {
 				command: path.resolve('tools', 'generate_jsdoc_json.sh')
+			},
+			update_webdriver: {
+				options: {
+					stdout: true
+				},
+				command: path.resolve('node_modules/webdriver-manager/bin/webdriver-manager') + ' update --standalone --chrome'
+			},
+			e2e: {
+				command: 'node test/e2etesting/manualSpec.js'
 			}
 		},
 		/*
@@ -254,7 +274,8 @@ module.exports = function (grunt) {
 	grunt.registerTask('jsdoc',		['shell:jsdoc']);
 	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack', 'uglify:ammoworker']);
 	grunt.registerTask('unittest',	['karma:unit']);
-	grunt.registerTask('test',		['unittest']);
+	grunt.registerTask('e2e',		['shell:e2e']);
+	grunt.registerTask('test',		['unittest', 'e2e']);
 
 	//! AT: no better place to put this
 	function extractFilename(path) {
@@ -294,18 +315,6 @@ module.exports = function (grunt) {
 		lines.push('});');
 
 		fs.writeFileSync('src/goo.js', lines.join('\n'));
-	});
-
-	// Creates an HTML list of tests in visual-test/index.html
-	grunt.registerTask('visualtoc', function () {
-		var toc = require('./visual-test/toc');
-		toc.run();
-	});
-
-	// Creates an example table of content HTML file: examples/index.html
-	grunt.registerTask('examplestoc', function () {
-		var toc = require('./examples/toc');
-		toc.run();
 	});
 
 	grunt.registerTask('init-git', function () {

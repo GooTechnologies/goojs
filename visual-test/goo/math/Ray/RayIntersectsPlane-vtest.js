@@ -121,4 +121,6 @@ require([
 	// mark all ray-plane intersections with markers
 	addRayPlaneIntersections();
 	// ---
+
+	V.process();
 });

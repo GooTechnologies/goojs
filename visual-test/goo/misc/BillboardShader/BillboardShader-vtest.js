@@ -68,4 +68,6 @@ require([
 
 	addLamps();
 	addBox();
+
+	V.process();
 });

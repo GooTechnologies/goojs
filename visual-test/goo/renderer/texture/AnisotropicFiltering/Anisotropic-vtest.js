@@ -29,6 +29,17 @@ require([
 
 	var resourcePath = '../../../../resources/';
 
+	function createBoxEntity(anisotropy) {
+		var meshData = new Box(100, 1, 100, 200, 200);
+		var material = new Material(ShaderLib.texturedLit);
+		var entity = world.createEntity(meshData, material);
+
+		var texture = textureCreator.loadTexture2D(resourcePath + 'font.png', { anisotropy: anisotropy });
+		material.setTexture('DIFFUSE_MAP', texture);
+
+		return entity;
+	}
+
 	var goo = V.initGoo();
 	var world = goo.world;
 
@@ -50,14 +61,5 @@ require([
 	});
 	world.createEntity('CameraEntity', new Camera(45, 1, 0.1), orbitScript).addToWorld();
 
-	function createBoxEntity(anisotropy) {
-		var meshData = new Box(100, 1, 100, 200, 200);
-		var material = new Material(ShaderLib.texturedLit);
-		var entity = world.createEntity(meshData, material);
-
-		var texture = textureCreator.loadTexture2D(resourcePath + 'font.png', { anisotropy: anisotropy });
-		material.setTexture('DIFFUSE_MAP', texture);
-
-		return entity;
-	}
+	V.process();
 });

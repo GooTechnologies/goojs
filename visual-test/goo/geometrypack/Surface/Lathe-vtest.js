@@ -41,4 +41,6 @@ require([
 	V.addLights();
 
 	V.addOrbitCamera(new Vector3(10, Math.PI / 2, 0));
+
+	V.process();
 });

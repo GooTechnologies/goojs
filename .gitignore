@@ -38,3 +38,7 @@ new_engine.sh
 # *pack.js
 #! AT: why this?
 /.project
+
+# generated screenshots
+# NB! reference screenshots need to be included
+test/e2etesting/screenshots-tmp/
