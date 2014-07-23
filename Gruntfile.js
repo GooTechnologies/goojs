@@ -189,6 +189,16 @@ module.exports = function (grunt) {
 				outBaseDir: 'out'
 			}
 		},
+		'generate-toc': {
+			'visual-test': {
+				path: 'visual-test',
+				title: 'Visual tests'
+			},
+			'examples': {
+				path: 'examples',
+				title: 'Examples'
+			}
+		},
 		'build-custom': {
 			myBundle: {
 				outFile: 'bundle.js'
