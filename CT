@@ -1,0 +1,6 @@
+#!/bin/bash -e
+#
+# Continuous integration script
+#
+
+grunt test
