@@ -24,7 +24,6 @@ require([
 	V.describe('Create a single movie camera entity from different parts');
 
 	var goo = V.initGoo();
-	var world = goo.world;
 
 	var meshBuilder = new MeshBuilder();
 	var transform = new Transform();
