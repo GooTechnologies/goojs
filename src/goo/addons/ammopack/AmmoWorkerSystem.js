@@ -141,9 +141,16 @@ function (
 
 	AmmoWorkerSystem.prototype.reset = function () {
 		var entities = this._activeEntities;
+		/*
 		this.clear();
 		for (var i = 0, len = entities.length; i < len; i++) {
 			this.added(entities[i]);
+		}
+		*/
+		for (var i = 0, len = entities.length; i < len; i++) {
+			var entity = entities[i];
+			this.deleted(entity);
+			this.inserted(entity);
 		}
 	};
 

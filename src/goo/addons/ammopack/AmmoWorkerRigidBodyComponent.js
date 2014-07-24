@@ -34,6 +34,8 @@ function (
 		 */
 		this.entity = null;
 
+		this.vehicle = false;
+
 		/**
 		 * @private
 		 * @type {number}
@@ -203,7 +205,7 @@ function (
 			position: v2a(gooPos),
 			rotation: v2a(tmpQuat),
 			shapes: shapeConfigs,
-			type: entity.ammoWorkerRigidbodyComponent._bodyType,
+			type: entity.ammoWorkerRigidbodyComponent._bodyType
 		});
 
 		// Send messages accumulated in the queue
@@ -213,6 +215,9 @@ function (
 			this._postMessage(message);
 		}
 		queue.length = 0;
+		if (this.vehicle) {
+			this.enableVehicle();
+		}
 	};
 
 	AmmoWorkerRigidbodyComponent.prototype.setLinearFactor = function (linearFactor) {
@@ -303,6 +308,7 @@ function (
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.enableVehicle = function () {
+		this.vehicle = true;
 		this._postMessage({
 			command: 'enableVehicle'
 		});
