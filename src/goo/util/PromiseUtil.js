@@ -7,11 +7,32 @@ function (
 ) {
 	'use strict';
 
+	var nativePromise = !!window.Promise;
+
 	/**
 	* @class
 	*/
 	var PromiseUtil = {};
 
+	//! AT: converting from PromiseUtil.createPromise to new RSVP.Promise is going to be trivial
+	/**
+	 * Same as ES6 `new Promise`
+	 * @param fun
+	 * @returns {RSVP.Promise}
+	 */
+	PromiseUtil.createPromise = function (fun) {
+		var promise = new RSVP.Promise();
+
+		fun(function (value) {
+			promise.resolve(value);
+		}, function (reason) {
+			promise.reject(reason);
+		});
+
+		return promise;
+	};
+
+	//! AT: this will get replaced with the static methods Promise.resolve and Promise.reject
 	/**
 	 * Create a promise that resolves or rejects immediately with the given argument.
 	 *

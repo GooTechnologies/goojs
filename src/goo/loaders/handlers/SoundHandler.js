@@ -114,14 +114,15 @@ function (
 					} else {
 						/*jshint -W083 */
 						return that.loadObject(ref).then(function (buffer) {
-							var promise = new RSVP.Promise();
-							AudioContext.decodeAudioData(buffer, function (audioBuffer) {
-								promise.resolve(audioBuffer);
-							}, function (/*err*/) {
-								console.error('Could not decode audio ' + ref);
-								promise.resolve(null);
+							return PromiseUtil.createPromise(function (resolve, reject) {
+								AudioContext.decodeAudioData(buffer, function (audioBuffer) {
+									resolve(audioBuffer);
+								}, function (/*err*/) {
+									console.error('Could not decode audio ' + ref);
+									// shouldn't this just reject?
+									resolve(null);
+								});
 							});
-							return promise;
 						}).then(function (audioBuffer) {
 							if (audioBuffer) {
 								that._audioCache[ref] = audioBuffer;
