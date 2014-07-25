@@ -306,6 +306,12 @@ function (
 			}
 		}
 
+		// directly add to managers
+		for (var i = 0; i < this._managers.length; i++) {
+			var manager = this._managers[i];
+			manager.added(entity);
+		}
+
 		return this;
 	};
 
@@ -341,12 +347,24 @@ function (
 			}
 		}
 
+		// directly remove from managers
+		for (var i = 0; i < this._managers.length; i++) {
+			var manager = this._managers[i];
+			manager.removed(entity);
+		}
+
 		return this;
 	};
 
 	World.prototype._recursiveRemoval = function (entity, recursive) {
 		if (this._removedEntities.indexOf(entity) === -1) {
 			this._removedEntities.push(entity);
+		}
+
+		// this and the whole recursive removal needs refactoring
+		for (var i = 0; i < this._managers.length; i++) {
+			var manager = this._managers[i];
+			manager.removed(entity);
 		}
 
 		if (entity.transformComponent && (recursive === undefined || recursive === true)) {
@@ -433,17 +451,7 @@ function (
 	};
 
 	World.prototype._check = function (entities, callback) {
-		// go through all the managers first
-		for (var i = 0; i < entities.length; i++) {
-			var entity = entities[i];
-			for (var managerIndex = 0; managerIndex < this._managers.length; managerIndex++) {
-				var manager = this._managers[managerIndex];
-				callback(manager, entity);
-			}
-		}
-
-		// go through all systems
-		// yes, these loops need to be separate to avoid edge cases
+		// each entity needs to be "checked" against each system
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			for (var systemIndex = 0; systemIndex < this._systems.length; systemIndex++) {

@@ -17,7 +17,7 @@ define([
 	'goo/entities/Entity',
 	'goo/entities/systems/TransformSystem',
 	'goo/entities/managers/Manager'
-], function(
+], function (
 	World,
 	System,
 	Component,
@@ -39,10 +39,10 @@ define([
 ) {
 	'use strict';
 
-	describe('World with Systems', function() {
+	describe('World with Systems', function () {
 		var world;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			world = new World();
 		});
 
@@ -107,9 +107,9 @@ define([
 		});
 	});
 
-	describe('World with Components', function() {
+	describe('World with Components', function () {
 		var world;
-		beforeEach(function() {
+		beforeEach(function () {
 			world = new World();
 			world.registerComponent(TransformComponent);
 			world.registerComponent(MeshDataComponent);
@@ -124,10 +124,10 @@ define([
 			System.call(this, 'CucumberSystem', ['CucumberComponent']);
 		}
 		CucumberSystem.prototype = Object.create(System.prototype);
-		CucumberSystem.prototype.inserted = function() {};
-		CucumberSystem.prototype.deleted = function() {};
-		CucumberSystem.prototype.addedComponent = function() {};
-		CucumberSystem.prototype.removedComponent = function() {};
+		CucumberSystem.prototype.inserted = function () {};
+		CucumberSystem.prototype.deleted = function () {};
+		CucumberSystem.prototype.addedComponent = function () {};
+		CucumberSystem.prototype.removedComponent = function () {};
 
 		// Cucumber component
 		function CucumberComponent() {
@@ -136,7 +136,7 @@ define([
 
 		var cucumberComponent, cucumberSystem, entity;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			entity = world.createEntity();
 			entity.addToWorld();
 			// Process to prevent TransformComponent trigger addedComponent call on CucumberSystem
@@ -154,14 +154,14 @@ define([
 
 		CucumberComponent.prototype = Object.create(Component.prototype);
 
-		it('get added call when components in the interest list are added', function() {
+		it('get added call when components in the interest list are added', function () {
 			entity.setComponent(cucumberComponent);
 			world.process();
 			expect(cucumberSystem.inserted).toHaveBeenCalled();
 			expect(cucumberSystem.addedComponent).toHaveBeenCalled();
 		});
 
-		it('gets deleted call when components in the interest list are deleted', function() {
+		it('gets deleted call when components in the interest list are deleted', function () {
 			entity.setComponent(cucumberComponent);
 			world.process();
 			entity.clearComponent('CucumberComponent');
@@ -170,7 +170,7 @@ define([
 			expect(cucumberSystem.removedComponent).toHaveBeenCalled();
 		});
 
-		it('gets no update calls when deleting a non existant component', function() {
+		it('gets no update calls when deleting a non existent component', function () {
 			entity.clearComponent('CucumberComponent');
 			world.process();
 			expect(cucumberSystem.inserted).not.toHaveBeenCalled();
@@ -179,7 +179,7 @@ define([
 			expect(cucumberSystem.removedComponent).not.toHaveBeenCalled();
 		});
 
-		it('can create a typical entity holding all sorts of stuff in random order', function() {
+		it('can create a typical entity holding all sorts of stuff in random order', function () {
 			//
 			world.gooRunner = {
 				renderer: {
@@ -206,13 +206,13 @@ define([
 			expect(entity.hasComponent('ScriptComponent')).toBeTruthy();
 		});
 
-		it('automatically adds a TransformComponent on a newly created entity', function() {
+		it('automatically adds a TransformComponent on a newly created entity', function () {
 			var entity = world.createEntity();
 
 			expect(entity.transformComponent).toBeTruthy();
 		});
 
-		it('adds an entity using the \'add\' function', function() {
+		it('adds an entity using the \'add\' function', function () {
 			var entity = new Entity(world);
 
 			world.add(entity);
@@ -220,14 +220,14 @@ define([
 			expect(world.getEntities()).toContain(entity);
 		});
 
-		it('adds a system using the \'add\' function', function() {
+		it('adds a system using the \'add\' function', function () {
 			var system = new TransformSystem();
 
 			world.add(system);
 			expect(world._systems).toContain(system);
 		});
 
-		it('adds a manager using the \'add\' function', function() {
+		it('adds a manager using the \'add\' function', function () {
 			function FishManager() {
 			}
 			FishManager.prototype = Object.create(Manager.prototype);
@@ -238,7 +238,7 @@ define([
 			expect(world._managers).toContain(manager);
 		});
 
-		it('registers a component using the \'add\' function', function() {
+		it('registers a component using the \'add\' function', function () {
 			var component = new TransformComponent();
 
 			world.add(component);
@@ -246,18 +246,18 @@ define([
 		});
 
 		// api installing
-		it('installs the api of a manager', function() {
+		it('installs the api of a manager', function () {
 			var world = new World();
 			expect(world.by.id).toBeTruthy();
 			expect(world.by.name).toBeTruthy();
 		});
 
-		it('does not override existing methods on install', function() {
+		it('does not override existing methods on install', function () {
 			var a = 0;
 			function FishManager() {
 				this.type = 'FishManager';
 				this.api = {
-					color: function() { a += 123; }
+					color: function () { a += 123; }
 				};
 			}
 			FishManager.prototype = Object.create(Manager.prototype);
@@ -267,7 +267,7 @@ define([
 			function BananaManager() {
 				this.type = 'BananaManager';
 				this.api = {
-					color: function() { b += 234; }
+					color: function () { b += 234; }
 				};
 			}
 			BananaManager.prototype = Object.create(Manager.prototype);
