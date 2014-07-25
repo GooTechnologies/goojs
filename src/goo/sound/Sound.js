@@ -49,7 +49,7 @@ function (
 		if (this._currentSource) {
 			return this._endPromise;
 		}
-		this._endPromise = new RSVP.Promise();
+		this._endPromise = new RSVP.Promise(); //! AT: this needs refactoring
 		if (!this._buffer || this._stream) {
 			return this._endPromise;
 		}

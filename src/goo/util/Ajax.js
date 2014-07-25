@@ -75,25 +75,23 @@ function (
 			request.responseType = options.responseType;
 		}
 
-		var promise = new RSVP.Promise();
-
-		var handleStateChange = function () {
-			if (request.readyState === 4) {
-				if (request.status >= 200 && request.status <= 299) {
-					request.removeEventListener('readystatechange', handleStateChange);
-					promise.resolve(request);
-				} else {
-					request.removeEventListener('readystatechange', handleStateChange);
-					promise.reject(request.statusText);
+		return PromiseUtil.createPromise(function (resolve, reject) {
+			var handleStateChange = function () {
+				if (request.readyState === 4) {
+					if (request.status >= 200 && request.status <= 299) {
+						request.removeEventListener('readystatechange', handleStateChange);
+						resolve(request);
+					} else {
+						request.removeEventListener('readystatechange', handleStateChange);
+						reject(request.statusText);
+					}
 				}
-			}
-		};
+			};
 
-		request.addEventListener('readystatechange', handleStateChange);
+			request.addEventListener('readystatechange', handleStateChange);
 
-		request.send();
-
-		return promise;
+			request.send();
+		});
 	};
 
 	Ajax.ARRAY_BUFFER = 'arraybuffer';
@@ -196,49 +194,51 @@ function (
 			image.crossOrigin = 'anonymous';
 		}
 
-		var promise = new RSVP.Promise();
+		return PromiseUtil.createPromise(function (resolve, reject) {
+			var onLoad = function loadHandler() {
+				image.dataReady = true;
+				if (window.URL && window.URL.revokeObjectURL !== undefined) {
+					window.URL.revokeObjectURL(image.src);
+				}
+				image.removeEventListener('load', onLoad);
+				image.removeEventListener('error', onError);
+				resolve(image);
+			};
 
-		var onLoad = function loadHandler() {
-			image.dataReady = true;
-			if (window.URL && window.URL.revokeObjectURL !== undefined) {
-				window.URL.revokeObjectURL(image.src);
-			}
-			image.removeEventListener('load', onLoad);
-			image.removeEventListener('error', onError);
-			promise.resolve(image);
-		};
-		var onError = function errorHandler(e) {
-			image.removeEventListener('load', onLoad);
-			image.removeEventListener('error', onError);
-			promise.reject('Could not load image from ' + url + ', ' + e);
-		};
+			var onError = function errorHandler(e) {
+				image.removeEventListener('load', onLoad);
+				image.removeEventListener('error', onError);
+				reject('Could not load image from ' + url + ', ' + e);
+			};
 
-		image.addEventListener('load', onLoad, false);
-		image.addEventListener('error', onError, false);
+			image.addEventListener('load', onLoad, false);
+			image.addEventListener('error', onError, false);
 
-		image.src = url;
-		return promise;
+			image.src = url;
+		});
 	};
 
 	Ajax.prototype._loadVideo = function (url, mimeType) {
-		var promise = new RSVP.Promise();
-
 		var video = document.createElement('video');
 		if (Ajax.crossOrigin) {
 			video.crossOrigin = 'anonymous';
 		}
-		video.addEventListener('canplay', function () {
-			video.dataReady = true;
-			promise.resolve(video);
-		}, false);
-		video.addEventListener('onerror', function (e) {
-			promise.reject('Coult not load video from ' + url + ', ' + e);
-		}, false);
+
+		var promise = PromiseUtil.createPromise(function (resolve, reject) {
+			video.addEventListener('canplay', function () {
+				video.dataReady = true;
+				resolve(video);
+			}, false);
+			video.addEventListener('onerror', function (e) {
+				reject('Could not load video from ' + url + ', ' + e);
+			}, false);
+		});
 
 		var ajaxProperties = {
 			url: url,
 			responseType: Ajax.ARRAY_BUFFER
 		};
+
 		this.get(ajaxProperties).then(function (request) {
 			var blob = new Blob([request.response], { type: mimeType });
 			var url = window.URL.createObjectURL(blob);

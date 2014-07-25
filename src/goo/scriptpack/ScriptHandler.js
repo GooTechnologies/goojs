@@ -276,24 +276,25 @@ function (
 		scriptElem.src = url;
 		scriptElem.setAttribute('data-script-id', scriptId);
 
-		var promise = this._dependencyPromises[url] = new RSVP.Promise();
-		scriptElem.onload = function () {
-			promise.resolve();
-			delete that._dependencyPromises[url];
-		};
-		scriptElem.onerror = function () {
-			var err = {
-				message: 'Could not load dependency',
-				file: url
-			};
-			setError(script, err);
-			scriptElem.parentNode.removeChild(scriptElem);
-			promise.resolve();
-			delete that._dependencyPromises[url];
-		};
 		document.body.appendChild(scriptElem);
 
-		return promise;
+		return this._dependencyPromises[url] = PromiseUtil.createPromise(function (resolve, reject) {
+			scriptElem.onload = function () {
+				resolve();
+				delete that._dependencyPromises[url];
+			};
+
+			scriptElem.onerror = function () {
+				var err = {
+					message: 'Could not load dependency',
+					file: url
+				};
+				setError(script, err);
+				scriptElem.parentNode.removeChild(scriptElem);
+				resolve();
+				delete that._dependencyPromises[url];
+			};
+		});
 	};
 
 

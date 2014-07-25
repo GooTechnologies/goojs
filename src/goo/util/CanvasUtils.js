@@ -1,9 +1,9 @@
 define([
-	'goo/util/rsvp'
+	'goo/util/PromiseUtil'
 ],
 /** @lends */
 function(
-	RSVP
+	PromiseUtil
 ) {
 
 	'use strict';
@@ -162,24 +162,22 @@ function(
 	 * @param  {string} data
 	 * @return {RSVP.Promise} Promise that resolves with the Image.
 	 */
-	CanvasUtils.svgDataToImage = function(data){
+	CanvasUtils.svgDataToImage = function (data) {
 		var DOMURL = window.URL || window.webkitURL || window;
-		var p = new RSVP.Promise();
 
-		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+		var svg = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+
 		var img = new Image();
+		img.src = DOMURL.createObjectURL(svg);
 
-		var url = DOMURL.createObjectURL(svg);
-		img.src = url;
-
-		img.onload = function(){
-			p.resolve(img);
-		};
-		img.onerror = function(){
-			p.reject('Could not load SVG image.');
-		};
-
-		return p;
+		return PromiseUtil.createPromise(function (resolve, reject) {
+			img.onload = function () {
+				resolve(img);
+			};
+			img.onerror = function () {
+				reject('Could not load SVG image.');
+			};
+		});
 	};
 
 	return CanvasUtils;
