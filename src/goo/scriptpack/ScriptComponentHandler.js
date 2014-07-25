@@ -67,7 +67,7 @@ function (
 					var scriptName = ref.slice(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX.length);
 					promise = _createEngineScript(scriptName);
 				} else {
-					promise = that._load(scriptInstance.scriptRef, {reload: true});
+					promise = that._load(scriptInstance.scriptRef, { reload: true });
 				}
 
 				promise = promise.then(function (script) {
