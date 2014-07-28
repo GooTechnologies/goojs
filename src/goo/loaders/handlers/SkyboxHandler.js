@@ -108,12 +108,11 @@ define([
 				}
 				return that._skysphere;
 			});
-		}
-		else {
+		} else {
 			that._skysphereTexture.setImage(null);
 			that._hide(that._skysphere);
 		}
-		return PromiseUtil.createDummyPromise(that._skysphere);
+		return PromiseUtil.resolve(that._skysphere);
 	};
 
 	var sides = ['rightRef', 'leftRef', 'topRef', 'bottomRef', 'frontRef', 'backRef'];
@@ -135,7 +134,7 @@ define([
 		var that = this;
 
 		var promises = sides.map(function(side) {
-			return config[side] ? that._load(config[side], options) : PromiseUtil.createDummyPromise();
+			return config[side] ? that._load(config[side], options) : PromiseUtil.resolve();
 		});
 
 		// Load all textures

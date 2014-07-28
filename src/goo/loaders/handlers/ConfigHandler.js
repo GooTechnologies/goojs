@@ -80,7 +80,7 @@ define([
 		if (this._loading[ref]) {
 			return this._loading[ref];
 		} else if (this._objects[ref] && !options.reload) {
-			return PromiseUtil.createDummyPromise(this._objects[ref]);
+			return PromiseUtil.resolve(this._objects[ref]);
 		} else {
 			return this._loading[ref] = this.getConfig(ref, options).then(function (config) {
 				return that.update(ref, config, options);
@@ -134,13 +134,13 @@ define([
 	ConfigHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
 			this._remove(ref, options);
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 		if (!this._objects[ref]) {
 			this._objects[ref] = this._create();
 		}
 		this._prepare(config);
-		return PromiseUtil.createDummyPromise(this._objects[ref]);
+		return PromiseUtil.resolve(this._objects[ref]);
 	};
 
 	ConfigHandler.handlerClasses = {};
