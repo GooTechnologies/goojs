@@ -58,13 +58,13 @@ function (
 	ShaderHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
 			this._remove(ref);
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 		if (!config.vshaderRef) {
-			return PromiseUtil.createDummyPromise(null, 'Shader error, missing vertex shader ref');
+			return PromiseUtil.reject('Shader error, missing vertex shader ref');
 		}
 		if (!config.fshaderRef) {
-			return PromiseUtil.createDummyPromise(null, 'Shader error, missing fragment shader ref');
+			return PromiseUtil.reject('Shader error, missing fragment shader ref');
 		}
 
 		var promises = [
@@ -79,10 +79,10 @@ function (
 			var fshader = shaders[1];
 
 			if (!vshader) {
-				return PromiseUtil.createDummyPromise(null, 'Vertex shader', config.vshaderRef, 'in shader', ref, 'not found');
+				return PromiseUtil.reject('Vertex shader' + config.vshaderRef + 'in shader' + ref + 'not found');
 			}
 			if (!fshader) {
-				return PromiseUtil.createDummyPromise(null, 'Fragment shader', config.fshaderRef, 'in shader', ref, 'not found');
+				return PromiseUtil.reject('Fragment shader' + config.fshaderRef + 'in shader' + ref + 'not found');
 			}
 
 			var shaderDefinition = {

@@ -115,7 +115,7 @@ function (
 						return clipSource;
 					});
 				} else {
-					return PromiseUtil.createDummyPromise(clipSource);
+					return PromiseUtil.resolve(clipSource);
 				}
 				break;
 			case 'Lerp':
@@ -143,7 +143,7 @@ function (
 				});
 			default:
 				console.error('Unable to parse clip source');
-				return PromiseUtil.createDummyPromise();
+				return PromiseUtil.resolve();
 		}
 	};
 

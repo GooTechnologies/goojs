@@ -55,11 +55,11 @@ function (
 		// Don't call ConfigHandler.prototype.update, since we don't want to do ._create in the normal way
 		if (!config) {
 			this._remove(ref);
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 
 		if (this._objects[ref]) {
-			return PromiseUtil.createDummyPromise(this._objects[ref]);
+			return PromiseUtil.resolve(this._objects[ref]);
 		}
 
 		var that = this;
