@@ -197,10 +197,10 @@ function (
 		if (handler) {
 			return handler.update(ref, config, options);
 		} else if (DynamicLoader._isRefTypeInGroup(ref, 'binary') || type !== 'bundle') {
-			return PromiseUtil.createDummyPromise(config);
+			return PromiseUtil.resolve(config);
 		} else {
 			console.warn('No handler for type ' + type);
-			return PromiseUtil.createDummyPromise(config);
+			return PromiseUtil.resolve(config);
 		}
 	};
 

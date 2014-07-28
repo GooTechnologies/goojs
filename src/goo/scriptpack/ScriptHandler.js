@@ -269,7 +269,7 @@ function (
 		var that = this;
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
-			return this._dependencyPromises[url] || PromiseUtil.createDummyPromise();
+			return this._dependencyPromises[url] || PromiseUtil.resolve();
 		}
 
 		scriptElem = document.createElement('script');

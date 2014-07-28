@@ -97,7 +97,7 @@ function (
 	 */
 	SoundHandler.prototype._update = function (ref, config, options) {
 		if (!AudioContext) {
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (sound) {

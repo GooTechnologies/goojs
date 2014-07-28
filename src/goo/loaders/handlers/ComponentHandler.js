@@ -75,11 +75,11 @@ define([
 	 */
 	ComponentHandler.prototype.update = function(entity, config/*, options*/) {
 		if(!entity) {
-			return PromiseUtil.createDummyPromise(null, 'Entity is missing');
+			return PromiseUtil.reject('Entity is missing');
 		}
 		if (!config) {
 			this._remove(entity);
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 		var component = entity.getComponent(this._type);
 		if(!component) {
@@ -88,7 +88,7 @@ define([
 		}
 		this._prepare(config);
 
-		return PromiseUtil.createDummyPromise(component);
+		return PromiseUtil.resolve(component);
 	};
 
 

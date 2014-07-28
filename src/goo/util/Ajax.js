@@ -116,11 +116,11 @@ function (
 		}
 
 		if (!path) {
-			PromiseUtil.createDummyPromise(null, 'Path was undefined');
+			PromiseUtil.reject('Path was undefined');
 		}
 
 		if (path.indexOf(Ajax.ENGINE_SHADER_PREFIX) === 0) {
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 
 		if (this._cache[path] && !reload) {
@@ -130,7 +130,7 @@ function (
 			if (this._cache[path] instanceof RSVP.Promise) {
 				return this._cache[path];
 			} else {
-				return PromiseUtil.createDummyPromise(this._cache[path]);
+				return PromiseUtil.resolve(this._cache[path]);
 			}
 		}
 
@@ -174,7 +174,7 @@ function (
 
 	Ajax.prototype.update = function (path, config) {
 		this._cache[path] = config;
-		return PromiseUtil.createDummyPromise(config);
+		return PromiseUtil.resolve(config);
 	};
 
 	/**
