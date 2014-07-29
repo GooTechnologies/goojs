@@ -159,8 +159,15 @@ function (
 		}
 
 		if (this.preserveAspectRatio && image) {
-			var height = image.svgHeight || image.height;
-			var width = image.svgWidth || image.width;
+			var width, height;
+
+			if (image.originalHeight && image.originalWidth) {
+				width = image.originalWidth;
+				height = image.originalHeight;
+			} else {
+				width = image.svgWidth || image.width;
+				height = image.svgHeight || image.height;
+			}
 
 			this.width = width / 100;
 			this.height = height / 100;
