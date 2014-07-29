@@ -311,7 +311,7 @@ module.exports = function (grunt) {
 	});
 
 	grunt.registerTask('init-git', function () {
-		fs.writeFile('.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n');
+		fs.writeFileSync('.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n');
 	});
 
 	// Generates reference screenshots

@@ -76,14 +76,17 @@ exports.run = function (rootPath, title) {
 		'<html>',
 		'<head>',
 		'<title>' + title + '</title>',
+		'<link rel="stylesheet" type="text/css" href="style.css">',
 		'</head>',
 		'<body>',
+		'<article class="container">',
 		'<h1>Contents</h1>'
 	].join('\n');
 	
 	content += printTree(tree);
 
 	content += [
+		'</article>',
 		'</body>',
 		'</html>'
 	].join('\n');
