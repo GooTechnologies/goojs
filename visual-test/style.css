@@ -23,14 +23,10 @@ a:hover {
 
 ul {
 	padding: 0;
+	padding-left: 30px;
 	line-height: 1.6em;
 	list-style-type: lower-greek;
 }
-
-ul li  {
-	list-style-position: inside
-}
-
 
 h1 {
 	margin: 0 0 30px 0;
