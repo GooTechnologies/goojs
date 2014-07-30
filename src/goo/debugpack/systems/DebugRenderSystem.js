@@ -97,7 +97,12 @@ function (
 						tree[componentName] = renderables;
 					}
 
-					renderables.forEach(function (renderable) { renderable.transform.copy(entity.transformComponent.worldTransform); });
+					renderables.forEach(function (renderable) {
+						renderable.transform.translation.setv(entity.transformComponent.worldTransform.translation);
+						renderable.transform.rotation.copy(entity.transformComponent.worldTransform.rotation);
+						renderable.transform.scale.setd(1, 1, 1);
+						renderable.transform.update();
+					});
 					DebugDrawHelper.update(renderables, component, this.camera);
 					renderables.forEach(function (renderable) { this.renderList[count++] = renderable; }.bind(this));
 				}
