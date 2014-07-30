@@ -72,15 +72,15 @@ function (
         this.material = meshRendererComponent.materials[0];
         this.oldBlending = this.material.blendState.blending;
         this.oldQueue = this.material.renderQueue;
-        this.oldOpacity = this.material.shader.uniforms.opacity;
+        this.oldOpacity = this.material.uniforms.opacity;
 
         this.material.blendState.blending = 'CustomBlending';
         if (this.material.renderQueue < 2000) {
             this.material.renderQueue = 2000;
         }
 
-        if (this.material.shader.uniforms.opacity === undefined) {
-            this.material.shader.uniforms.opacity = 1;
+        if (this.material.uniforms.opacity === undefined) {
+            this.material.uniforms.opacity = 1;
         }
 	};
 
@@ -90,13 +90,14 @@ function (
 		}
         this.material.blendState.blending = this.oldBlending;
         this.material.renderQueue = this.oldQueue;
-        this.material.shader.uniforms.opacity = this.oldOpacity;
+        this.material.uniforms.opacity = this.oldOpacity;
 	};
 
 	TweenOpacityAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		if (entity.meshRendererComponent) {
-			var uniforms = this.material.shader.uniforms;
+			var uniforms = this.material.uniforms;
+
 			var time = entity._world.time * 1000;
 
 			var fakeFrom = { opacity: uniforms.opacity };
