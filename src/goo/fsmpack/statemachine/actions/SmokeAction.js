@@ -44,7 +44,7 @@ function (
 
 	SmokeAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (this.smokeEntity && entity.transformComponent.children.indexOf(this.smokeEntity) !== -1) {
+		if (this.smokeEntity && entity.transformComponent.children.indexOf(this.smokeEntity.transformComponent) !== -1) {
 			return;
 		}
 
