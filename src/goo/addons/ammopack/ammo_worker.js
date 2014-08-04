@@ -180,7 +180,21 @@ function bodyIsKinematic(body) {
 	return body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT;
 }
 
-function step(dt, subSteps) {
+function manualSubStepsStep(dt, numSubSteps, fixedTimeStep) {
+	var subSteps = 0;
+	var now = performance.now() / 1000;
+	var wallClockTime = now - simulationStartTime;
+	while (physicsTime < wallClockTime) {
+		step(fixedTimeStep, 0, fixedTimeStep);
+		physicsTime += timeStep;
+		subSteps++;
+		if (subSteps >= numSubSteps) {
+			break;
+		}
+	}
+}
+
+function step(dt, subSteps, fixedTimeStep) {
 	dt = dt || 1 / 60;
 	subSteps = typeof(subSteps) === 'number' ? subSteps : maxSubSteps;
 
@@ -194,7 +208,7 @@ function step(dt, subSteps) {
 		}
 	}
 
-	ammoWorld.stepSimulation(timeStep, 0, timeStep);
+	ammoWorld.stepSimulation(dt, subSteps, fixedTimeStep);//timeStep, 0, timeStep);
 
 	// Move kinematic bodies
 	for (var i = 0; i < bodies.length; i++) {
@@ -607,20 +621,12 @@ var commandHandlers = {
 
 		function mainLoop() {
 			var now = performance.now() / 1000;
-			var wallClockTime = now - simulationStartTime;
 			var dt = now - last;
 			last = now;
-			var subSteps = 0;
-			while (physicsTime < wallClockTime) {
-				step(dt);
-				physicsTime += timeStep;
-				subSteps++;
-				if (subSteps >= maxSubSteps) {
-					break;
-				}
-			}
+			//manualSubStepsStep(dt, maxSubSteps, timeStep);
+			step(dt, maxSubSteps, timeStep);
 			sendTransforms();
-			timeout = setTimeout(mainLoop, timeStep * 1000)
+			timeout = setTimeout(mainLoop, timeStep * 1000);
 		}
 		if (timeout) {
 			clearTimeout(timeout);
@@ -747,6 +753,7 @@ var commandHandlers = {
 		var config = bodyConfigs[bodies.indexOf(body)];
 		config.enableVehicle = true;
 
+		/*
 		var vehicleData = {
 			"chassisId": 10,
 			"maxSuspensionTravelCm": 1000,
@@ -883,8 +890,9 @@ var commandHandlers = {
 			],
 			"speed": 0
 		};
+		*/
 
-		var vehicleHelper = createVehicle(vehicleData, body);
+		var vehicleHelper = createVehicle(/*vehicleData*/{}, body);
 		body.vehicleHelper = vehicleHelper;
 	},
 
