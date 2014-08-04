@@ -88,9 +88,8 @@ function getAmmoShape(shapeConfig, bodyConfig) {
 	switch (shapeConfig.type) {
 
 	case 'box':
-		var extents = new Ammo.btVector3(shapeConfig.halfExtents[0], shapeConfig.halfExtents[1], shapeConfig.halfExtents[2]);
+		var extents = arrayToTempAmmoVector(shapeConfig.halfExtents);
 		shape = new Ammo.btBoxShape(extents);
-		Ammo.destroy(extents);
 		break;
 
 	case 'sphere':
@@ -98,8 +97,7 @@ function getAmmoShape(shapeConfig, bodyConfig) {
 		break;
 
 	case 'plane':
-		var n = shapeConfig.normal;
-		shape = new Ammo.btStaticPlaneShape(new Ammo.btVector3(n[0], n[1], n[2]), shapeConfig.planeConstant);
+		shape = new Ammo.btStaticPlaneShape(arrayToTempAmmoVector(shapeConfig.normal), shapeConfig.planeConstant);
 		break;
 
 	case 'terrain':
@@ -324,7 +322,7 @@ function updateCharacter(body, bodyConfig, currentTransform/*, dt*/) {
 	if (bodyConfig.characterVelocity && bodyConfig.characterOnGround) {
 		var v = body.getLinearVelocity();
 		body.activate();
-		body.setLinearVelocity(new Ammo.btVector3(
+		body.setLinearVelocity(numToTempAmmoVector(
 			bodyConfig.characterVelocity[0],
 			bodyConfig.characterVelocity[1] + v.y(),
 			bodyConfig.characterVelocity[2]
@@ -350,7 +348,7 @@ function updateKinematic(body, bodyConfig, currentTransform, dt) {
 	quat.w += 0.5 * dt * wq.w;
 	quat.normalize();
 	*/
-	currentTransform.setRotation(new Ammo.btQuaternion(0, 0, 0, 1));
+	currentTransform.setRotation(numToTempAmmoQuat(0, 0, 0, 1));
 	body.getMotionState().setWorldTransform(currentTransform);
 	//Ammo.destroy(v);
 	/*
@@ -374,11 +372,25 @@ function updateKinematic(body, bodyConfig, currentTransform, dt) {
 
 var tmpAmmoVec;
 function arrayToTempAmmoVector(a) {
+	return numToTempAmmoVector(a[0], a[1], a[2]);
+}
+function numToTempAmmoVector(x, y, z) {
 	if (!tmpAmmoVec) {
 		tmpAmmoVec = new Ammo.btVector3();
 	}
-	tmpAmmoVec.setValue(a[0], a[1], a[2]);
+	tmpAmmoVec.setValue(x, y, z);
 	return tmpAmmoVec;
+}
+var tmpAmmoQuat;
+function numToTempAmmoQuat(x, y, z, w) {
+	if (!tmpAmmoQuat) {
+		tmpAmmoQuat = new Ammo.btQuaternion();
+	}
+	tmpAmmoQuat.setValue(x, y, z, w);
+	return tmpAmmoQuat;
+}
+function arrayToTempAmmoQuat(a) {
+	return numToTempAmmoQuat(a[0], a[1], a[2], a[3]);
 }
 function arrayToAmmoVector(a, target) {
 	target.setValue(a[0], a[1], a[2]);
@@ -399,14 +411,14 @@ function VehicleHelper(chassis, wheelRadius, suspensionLength) {
 	this.suspension = suspensionLength;
 	this.debugTires = [];
 
-	chassis.setActivationState(4); // 4 means to never deactivate the vehicle
+	chassis.setActivationState(activationStates.DISABLE_DEACTIVATION); // never deactivate the vehicle
 	this.tuning = new Ammo.btVehicleTuning();
 	var vehicleRaycaster = new Ammo.btDefaultVehicleRaycaster(ammoWorld);
 	this.vehicle = new Ammo.btRaycastVehicle(this.tuning, chassis, vehicleRaycaster);
 	ammoWorld.addVehicle(this.vehicle);
-	this.vehicle.setCoordinateSystem(0,1,2); // choose coordinate system
-	this.wheelDir = new Ammo.btVector3(0,-1,0);
-	this.wheelAxle = new Ammo.btVector3(-1,0,0);
+	this.vehicle.setCoordinateSystem(0, 1, 2); // choose coordinate system
+	this.wheelDir = new Ammo.btVector3(0, -1, 0);
+	this.wheelAxle = new Ammo.btVector3(-1, 0, 0);
 
 	//chassis.ammoComponent.body.setAngularFactor(new Ammo.btVector3(0,1,0)); restrict angular movement
 }
@@ -414,10 +426,10 @@ VehicleHelper.prototype.resetAtPos = function(x, y, z) {
 	var b = this.chassis.ammoComponent.body;
 	var t = b.getCenterOfMassTransform();
 	t.setIdentity();
-	t.setOrigin(new Ammo.btVector3( x, y, z));
+	t.setOrigin(numToTempAmmoVector(x, y, z));
 	b.setCenterOfMassTransform(t);
-	b.setAngularVelocity( new Ammo.btVector3( 0, 0, 0));
-	b.setLinearVelocity( new Ammo.btVector3( 0, 0, 0));
+	b.setAngularVelocity(numToTempAmmoVector(0, 0, 0));
+	b.setLinearVelocity(numToTempAmmoVector(0, 0, 0));
 };
 VehicleHelper.prototype.setSteeringValue = function( steering) {
 	for(var i=0;i<this.vehicle.getNumWheels();i++){
@@ -433,22 +445,22 @@ VehicleHelper.prototype.applyEngineForce = function( force, front) {
 		}
 	}
 };
-VehicleHelper.prototype.setBrake = function( force) {
-	for(var i=0;i<this.vehicle.getNumWheels();i++){
-		this.vehicle.setBrake(force,i);
+VehicleHelper.prototype.setBrake = function (force) {
+	for (var i = 0; i < this.vehicle.getNumWheels(); i++) {
+		this.vehicle.setBrake(force, i);
 	}
 };
-VehicleHelper.prototype.setWheelAxle = function( x, y, z) {
-	this.wheelAxle = new Ammo.btVector3( x, y, z);
+VehicleHelper.prototype.setWheelAxle = function (x, y, z) {
+	this.wheelAxle.setValue(x, y, z);
 };
 VehicleHelper.prototype.addFrontWheel = function( pos) {
-	this.addWheel( pos[0], pos[1], pos[2], true);
+	this.addWheel(pos[0], pos[1], pos[2], true);
 };
 VehicleHelper.prototype.addRearWheel = function( pos) {
-	this.addWheel( pos[0], pos[1], pos[2], false);
+	this.addWheel(pos[0], pos[1], pos[2], false);
 };
 VehicleHelper.prototype.addWheel = function( x,y,z, isFrontWheel) {
-	var wheel = this.vehicle.addWheel(new Ammo.btVector3(x, y, z),this.wheelDir,this.wheelAxle,this.suspension,this.wheelRadius,this.tuning,isFrontWheel);
+	var wheel = this.vehicle.addWheel(numToTempAmmoVector(x, y, z), this.wheelDir, this.wheelAxle, this.suspension, this.wheelRadius, this.tuning, isFrontWheel);
 	wheel.set_m_suspensionStiffness(20);
 	wheel.set_m_wheelsDampingRelaxation(2.3);
 	wheel.set_m_wheelsDampingCompression(4.4);
@@ -543,9 +555,7 @@ var commandHandlers = {
 	},
 
 	setGravity: function (params) {
-		var gravity = new Ammo.btVector3(params.gravity[0], params.gravity[1], params.gravity[2]);
-		ammoWorld.setGravity(gravity);
-		Ammo.destroy(gravity);
+		ammoWorld.setGravity(arrayToTempAmmoVector(params.gravity));
 	},
 
 	setTimeStep: function (params) {
@@ -557,23 +567,24 @@ var commandHandlers = {
 		var shape, shapeConfig;
 
 		if (bodyConfig.shapes.length === 1 && !bodyConfig.shapes[0].localPosition) {
-			// One collider primitive
+			// One collider primitive, no local transform.
 			shapeConfig = bodyConfig.shapes[0];
 			shape = getAmmoShape(shapeConfig, bodyConfig);
 		} else {
 			// More than one collider primitive or collider with offset
 			shape = new Ammo.btCompoundShape();
+			var localTrans = new Ammo.btTransform();
 			for (var j = 0; j < bodyConfig.shapes.length; j++) {
 				shapeConfig = bodyConfig.shapes[j];
 				var childAmmoShape = getAmmoShape(shapeConfig, bodyConfig);
-				var localTrans = new Ammo.btTransform();
 				var pos = shapeConfig.localPosition;
 				var quat = shapeConfig.localRotation;
 				localTrans.setIdentity();
-				localTrans.setOrigin(new Ammo.btVector3(pos[0], pos[1], pos[2]));
-				localTrans.setRotation(new Ammo.btQuaternion(quat[0], quat[1], quat[2], quat[3]));
+				localTrans.setOrigin(arrayToTempAmmoVector(pos));
+				localTrans.setRotation(arrayToTempAmmoQuat(quat));
 				shape.addChildShape(localTrans, childAmmoShape);
 			}
+			Ammo.destroy(localTrans);
 		}
 
 		if (!shape) {
@@ -684,16 +695,13 @@ var commandHandlers = {
 		step(timeStep);
 	},
 
-	setCenterOfMassTransform: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
+	setCenterOfMassTransform: function (params, body) {
 		var transform = new Ammo.btTransform();
 		transform.setIdentity();
-		transform.setOrigin(new Ammo.btVector3(params.position[0], params.position[1], params.position[2]));
-		transform.setRotation(new Ammo.btQuaternion(params.quaternion[0], params.quaternion[1], params.quaternion[2], params.quaternion[3]));
+		transform.setOrigin(arrayToTempAmmoVector(params.position));
+		transform.setRotation(arrayToTempAmmoQuat(params.quaternion));
 		body.setCenterOfMassTransform(transform);
+		Ammo.destroy(transform);
 	},
 
 	setLinearVelocity: function (params, body) {
@@ -704,12 +712,8 @@ var commandHandlers = {
 		}
 	},
 
-	setAngularVelocity: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
-		body.setAngularVelocity(new Ammo.btVector3(params.velocity[0], params.velocity[1], params.velocity[2]));
+	setAngularVelocity: function (params, body) {
+		body.setAngularVelocity(arrayToTempAmmoVector(params.velocity));
 	},
 
 	rayCast: function (params) {
