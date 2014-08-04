@@ -222,12 +222,15 @@ function step(dt, subSteps, fixedTimeStep) {
 			updateKinematic(body, bodyConfig, ammoTransform, dt);
 		}
 	}
+
+	reportCollisions();
 }
 
 function reportCollisions() {
 	var dp = ammoWorld.getDispatcher();
 	var num = dp.getNumManifolds();
 
+	var pairIds = [];
 	for (var i = 0; i < num; i++) {
 		var manifold = dp.getManifoldByIndexInternal(i);
 
@@ -236,15 +239,15 @@ function reportCollisions() {
 			continue;
 		}
 
-		var bodyA = objects[manifold.getBody0()];
-		var bodyB = objects[manifold.getBody1()];
+		var bodyA = ptrToBodyMap[manifold.getBody0()];
+		var bodyB = ptrToBodyMap[manifold.getBody1()];
 
-		if(bodyA == sensorBody || bodyB == sensorBody){
-			sensorBodyOverlapped = true;
-		}
-
-		if(bodyA == body || bodyB == body){
-			bodyOverlapped = true;
+		if (bodyA && bodyB) {
+			var idxA = bodies.indexOf(bodyA);
+			var idxB = bodies.indexOf(bodyB);
+			if (idxA !== -1 && idxB !== -1) {
+				pairIds.push(bodyConfigs[idxA].id, bodyConfigs[idxB].id);
+			}
 		}
 
 		/*
@@ -256,6 +259,10 @@ function reportCollisions() {
 		}
 		*/
 	}
+	sendCommand({
+		command: 'collision',
+		pairIds: pairIds
+	});
 }
 
 function sendTransforms() {

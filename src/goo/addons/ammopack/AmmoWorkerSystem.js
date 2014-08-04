@@ -64,12 +64,38 @@ function (
 		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.maxSubSteps) === 'number' ? settings.maxSubSteps : 3);
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
 
+		this._eventListeners = {
+			collision: []
+		};
+
 		// Start automatically if the user didn't suppy false
 		if (typeof settings.run === 'undefined' || settings.run) {
 			this.run();
 		}
 	}
 	AmmoWorkerSystem.prototype = Object.create(System.prototype);
+
+	//! schteppe: Attach on System?
+	AmmoWorkerSystem.prototype.getEntityById = function (id) {
+		if (!id) {
+			return;
+		}
+		for (var i = 0; i < this._activeEntities.length; i++) {
+			var entity = this._activeEntities[i];
+			if (entity.id === id) {
+				return entity;
+			}
+		}
+	};
+
+	AmmoWorkerSystem.prototype.addEventListener = function (type, callback) {
+		if (!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
+			return;
+		}
+		if (typeof callback === 'function') {
+			this._eventListeners[type].push(callback);
+		}
+	};
 
 	var tmpQuat = new Quaternion();
 	var messageId = 0;
@@ -79,17 +105,26 @@ function (
 			var pending = this._pendingRayCasts;
 			var result = {};
 			if (data.bodyId) {
-				for (var i = 0; i < this._activeEntities.length; i++) {
-					var entity = this._activeEntities[i];
-					if (entity.id === data.bodyId) {
-						result.entity = entity;
-						result.point = new Vector3(data.point);
-						result.normal = new Vector3(data.normal);
-					}
-				}
+				result.entity = this.getEntityById(data.bodyId);
+				result.point = new Vector3(data.point);
+				result.normal = new Vector3(data.normal);
 			}
 			pending[data.messageId].resolve(result);
 			delete pending[data.messageId];
+		},
+
+		collision: function (data) {
+			var pairIds = data.pairIds;
+			for (var i = 0; i < pairIds.length; i += 2) {
+				var bodyA = this.getEntityById(pairIds[i]);
+				var bodyB = this.getEntityById(pairIds[i + 1]);
+				for (var j = 0; j < this._eventListeners.collision.length; j++) {
+					this._eventListeners.collision[j]({
+						bodyA: bodyA,
+						bodyB: bodyB
+					});
+				}
+			}
 		}
 	};
 
