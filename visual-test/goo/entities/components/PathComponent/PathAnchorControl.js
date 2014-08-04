@@ -69,5 +69,6 @@ define([
 
 	PathAnchorControl.SIZE = 0.08;
 
+
 	return PathAnchorControl;
 });
