@@ -129,6 +129,7 @@ require([
 	function activate() {
 		characterEntity.ammoWorkerRigidbodyComponent.activate();
 		characterEntity.ammoWorkerRigidbodyComponent.setActivationState(AmmoWorkerRigidbodyComponent.DISABLE_DEACTIVATION);
+		//characterEntity.ammoWorkerRigidbodyComponent.setCollisionFlags(AmmoWorkerRigidbodyComponent.NO_CONTACT_RESPONSE);
 	}
 
 	function setSleepingThresholds() {

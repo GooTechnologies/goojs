@@ -58,6 +58,7 @@ var maxSubSteps = 3;
 var bodies = [];
 var bodyConfigs = [];
 var idToBodyMap = {};
+var ptrToBodyMap = {};
 var colliderIdToAmmoShapeMap = {};
 var bus = new ARRAY_TYPE(NUM_FLOATS_PER_BODY * BUS_RESIZE_STEP);
 var simulationStartTime = 0;
@@ -218,10 +219,43 @@ function step(dt, subSteps, fixedTimeStep) {
 		body.getMotionState().getWorldTransform(ammoTransform);
 
 		if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
-			updateKinematic(body, bodyConfig, ammoTransform, timeStep);
+			updateKinematic(body, bodyConfig, ammoTransform, dt);
 		}
 	}
+}
 
+function reportCollisions() {
+	var dp = ammoWorld.getDispatcher();
+	var num = dp.getNumManifolds();
+
+	for (var i = 0; i < num; i++) {
+		var manifold = dp.getManifoldByIndexInternal(i);
+
+		var num_contacts = manifold.getNumContacts();
+		if (num_contacts === 0) {
+			continue;
+		}
+
+		var bodyA = objects[manifold.getBody0()];
+		var bodyB = objects[manifold.getBody1()];
+
+		if(bodyA == sensorBody || bodyB == sensorBody){
+			sensorBodyOverlapped = true;
+		}
+
+		if(bodyA == body || bodyB == body){
+			bodyOverlapped = true;
+		}
+
+		/*
+		// Optional:
+		for (var j = 0; j < num_contacts; j++ ) {
+			var pt = manifold.getContactPoint( j );
+			var normalOnB = pt.get_m_normalWorldOnB();
+			break;
+		}
+		*/
+	}
 }
 
 function sendTransforms() {
@@ -369,7 +403,7 @@ function VehicleHelper(chassis, wheelRadius, suspensionLength) {
 
 	//chassis.ammoComponent.body.setAngularFactor(new Ammo.btVector3(0,1,0)); restrict angular movement
 }
-VehicleHelper.prototype.resetAtPos = function( x, y, z) {
+VehicleHelper.prototype.resetAtPos = function(x, y, z) {
 	var b = this.chassis.ammoComponent.body;
 	var t = b.getCenterOfMassTransform();
 	t.setIdentity();
@@ -495,6 +529,7 @@ var commandHandlers = {
 	destroy: function (/*params*/) {
 		bodies.length = bodyConfigs.length = 0;
 		idToBodyMap = {};
+		ptrToBodyMap = {};
 		if (timeout) {
 			clearTimeout(timeout);
 		}
@@ -576,18 +611,15 @@ var commandHandlers = {
 		bodies.push(body);
 		bodyConfigs.push(bodyConfig);
 		idToBodyMap[bodyConfig.id] = body;
+		ptrToBodyMap[body.a || body.ptr] = body;
 	},
 
-	removeBody: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
+	removeBody: function (params, body, bodyConfig) {
 		var idx = bodies.indexOf(body);
-		var bodyConfig = bodyConfigs[idx];
 		bodyConfigs.splice(idx, 1);
 		bodies.splice(idx, 1);
 		delete idToBodyMap[params.id];
+		delete ptrToBodyMap[params.id];
 		for (var i = 0; i < bodyConfig.shapes.length; i++) {
 			var shapeId = bodyConfig.shapes[i].id;
 			var ammoShape = colliderIdToAmmoShapeMap[shapeId];
@@ -598,17 +630,16 @@ var commandHandlers = {
 		Ammo.destroy(body);
 	},
 
-	activateBody: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
+	activateBody: function (params, body) {
 		body.activate();
 	},
 
 	setBodyActivationState: function (params, body) {
 		body.setActivationState(params.activationState);
-		console.log('setactivationstate ' + params.activationState);
+	},
+
+	setBodyCollisionFlags: function (params, body) {
+		body.setCollisionFlags(params.collisionFlags);
 	},
 
 	setSleepingThresholds: function (params, body) {
@@ -627,7 +658,7 @@ var commandHandlers = {
 			//manualSubStepsStep(dt, maxSubSteps, timeStep);
 			step(dt, maxSubSteps, timeStep);
 			sendTransforms();
-			timeout = setTimeout(mainLoop, timeStep * 1000);
+			timeout = setTimeout(mainLoop, timeStep * 1000 / 10);
 		}
 		if (timeout) {
 			clearTimeout(timeout);
@@ -658,11 +689,7 @@ var commandHandlers = {
 		body.setCenterOfMassTransform(transform);
 	},
 
-	setLinearVelocity: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
+	setLinearVelocity: function (params, body) {
 		body.setLinearVelocity(arrayToTempAmmoVector(params.velocity));
 		if (bodyIsKinematic(body)) {
 			var bodyConfig = bodyConfigs[bodies.indexOf(body)];

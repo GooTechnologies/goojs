@@ -97,6 +97,14 @@ function (
 	AmmoWorkerRigidbodyComponent.DISABLE_DEACTIVATION = 4;
 	AmmoWorkerRigidbodyComponent.DISABLE_SIMULATION = 5;
 
+	AmmoWorkerRigidbodyComponent.STATIC_OBJECT = 1;
+	AmmoWorkerRigidbodyComponent.KINEMATIC_OBJECT = 2;
+	AmmoWorkerRigidbodyComponent.NO_CONTACT_RESPONSE = 4;
+	AmmoWorkerRigidbodyComponent.CUSTOM_MATERIAL_CALLBACK = 8;
+	AmmoWorkerRigidbodyComponent.CHARACTER_OBJECT = 16;
+	AmmoWorkerRigidbodyComponent.DISABLE_VISUALIZE_OBJECT = 32;
+	AmmoWorkerRigidbodyComponent.DISABLE_SPU_COLLISION_PROCESSING = 64;
+
 	/**
 	 * Handles attaching itself to an entity.
 	 * @private
@@ -109,6 +117,13 @@ function (
 	AmmoWorkerRigidbodyComponent.prototype.detached = function (/*entity*/) {
 		this.entity = null;
 	};
+
+	function proxy(name) {
+		AmmoWorkerRigidbodyComponent.prototype.api[name] = function () {
+			AmmoWorkerRigidbodyComponent.prototype[name].apply(this.ammoWorkerRigidbodyComponent, arguments);
+			return this;
+		};
+	}
 
 	AmmoWorkerRigidbodyComponent.prototype.api = {
 		setLinearVelocity: function () {
@@ -132,6 +147,8 @@ function (
 			return this;
 		}
 	};
+
+	proxy('setCollisionFlags');
 
 	/**
 	 * Scans attached colliders and instructs the worker to create the body.
@@ -266,6 +283,12 @@ function (
 		this._postMessage({
 			command: 'setBodyActivationState',
 			activationState: activationState
+		});
+	};
+	AmmoWorkerRigidbodyComponent.prototype.setCollisionFlags = function (collisionFlags) {
+		this._postMessage({
+			command: 'setBodyCollisionFlags',
+			collisionFlags: collisionFlags
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setCenterOfMassTransform = function (position, quaternion) {
