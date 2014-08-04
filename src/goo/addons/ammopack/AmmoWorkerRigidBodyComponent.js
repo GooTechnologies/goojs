@@ -91,6 +91,12 @@ function (
 	 */
 	AmmoWorkerRigidbodyComponent.KINEMATIC = 4;
 
+	AmmoWorkerRigidbodyComponent.ACTIVE = 1;
+	AmmoWorkerRigidbodyComponent.ISLAND_SLEEPING = 2;
+	AmmoWorkerRigidbodyComponent.WANTS_DEACTIVATION = 3;
+	AmmoWorkerRigidbodyComponent.DISABLE_DEACTIVATION = 4;
+	AmmoWorkerRigidbodyComponent.DISABLE_SIMULATION = 5;
+
 	/**
 	 * Handles attaching itself to an entity.
 	 * @private
@@ -254,6 +260,12 @@ function (
 	AmmoWorkerRigidbodyComponent.prototype.activate = function () {
 		this._postMessage({
 			command: 'activateBody'
+		});
+	};
+	AmmoWorkerRigidbodyComponent.prototype.setActivationState = function (activationState) {
+		this._postMessage({
+			command: 'setBodyActivationState',
+			activationState: activationState
 		});
 	};
 	AmmoWorkerRigidbodyComponent.prototype.setCenterOfMassTransform = function (position, quaternion) {

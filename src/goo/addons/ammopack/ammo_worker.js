@@ -415,7 +415,7 @@ VehicleHelper.prototype.addWheel = function( x,y,z, isFrontWheel) {
 	wheel.set_m_rollInfluence(0.01); // this value controls how easily a vehicle can tipp over. Lower values tipp less :)
 };
 
-function createVehicle(data, chassis) {
+function createVehicle(chassis) {
 	/*
 	var tuning = new Ammo.btVehicleTuning();
 	var vehicleRaycaster = new Ammo.btDefaultVehicleRaycaster(ammoWorld);
@@ -445,11 +445,11 @@ function createVehicle(data, chassis) {
 	*/
 
 	var vehicleHelper = new VehicleHelper(chassis, 0.5, 0.3, true);
-	vehicleHelper.setWheelAxle( -1, 0, 0);
-	vehicleHelper.addFrontWheel( [ -1, 0.0,  1.0] );
-	vehicleHelper.addFrontWheel( [  1, 0.0,  1.0]);
-	vehicleHelper.addRearWheel(  [ -1, 0.0, -1.0]);
-	vehicleHelper.addRearWheel(  [  1, 0.0, -1.0]);
+	vehicleHelper.setWheelAxle(-1, 0, 0);
+	vehicleHelper.addFrontWheel([-1, 0.0, 1.0]);
+	vehicleHelper.addFrontWheel([1, 0.0, 1.0]);
+	vehicleHelper.addRearWheel([-1, 0.0, -1.0]);
+	vehicleHelper.addRearWheel([1, 0.0, -1.0]);
 
 	return vehicleHelper;
 }
@@ -457,7 +457,7 @@ function createVehicle(data, chassis) {
 function applyEngineForce(force, vehicle, wheelId) {
 	if (wheelId === undefined) {
 		for (var i = 0, il = vehicle.getNumWheels(); i < il; i++) {
-			vehicle.applyEngineForce( force, i );
+			vehicle.applyEngineForce(force, i);
 		}
 	} else {
 		vehicle.applyEngineForce(force, wheelId);
@@ -466,11 +466,11 @@ function applyEngineForce(force, vehicle, wheelId) {
 
 function setBrake(brake, vehicle, wheelId) {
 	if (wheelId === undefined) {
-		for ( var i = 0, il = vehicle.getNumWheels(); i < il; i ++ ) {
+		for (var i = 0, il = vehicle.getNumWheels(); i < il; i ++) {
 			vehicle.setBrake(brake, i);
 		}
 	} else {
-		vehicle.setBrake( brake, wheelId );
+		vehicle.setBrake(brake, wheelId);
 	}
 }
 
@@ -606,11 +606,12 @@ var commandHandlers = {
 		body.activate();
 	},
 
-	setSleepingThresholds: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
+	setBodyActivationState: function (params, body) {
+		body.setActivationState(params.activationState);
+		console.log('setactivationstate ' + params.activationState);
+	},
+
+	setSleepingThresholds: function (params, body) {
 		body.setSleepingThresholds(params.linear, params.angular);
 	},
 
@@ -753,146 +754,7 @@ var commandHandlers = {
 		var config = bodyConfigs[bodies.indexOf(body)];
 		config.enableVehicle = true;
 
-		/*
-		var vehicleData = {
-			"chassisId": 10,
-			"maxSuspensionTravelCm": 1000,
-			"maxSuspensionForce": 20000,
-			"suspensionStiffness": 10,
-			"rollInfluence": 0.4,
-			"wheels": [
-				{
-					"mesh": 0,
-					"isFrontWheel": true,
-					"wheelRadius": 2.6,
-					"suspensionRestLength": 1,
-					"connectionPoint": [
-						-4,
-						0.55,
-						10.5
-					],
-					"wheelDirection": [
-						0,
-						-1,
-						0
-					],
-					"wheelAxle": [
-						-1,
-						0,
-						0
-					]
-				},
-				{
-					"mesh": 1,
-					"isFrontWheel": true,
-					"wheelRadius": 2.6,
-					"suspensionRestLength": 1,
-					"connectionPoint": [
-						4,
-						0.55,
-						10.5
-					],
-					"wheelDirection": [
-						0,
-						-1,
-						0
-					],
-					"wheelAxle": [
-						-1,
-						0,
-						0
-					]
-				},
-				{
-					"mesh": 2,
-					"isFrontWheel": false,
-					"wheelRadius": 2.6,
-					"suspensionRestLength": 1,
-					"connectionPoint": [
-						-4,
-						0.55,
-						-4.75
-					],
-					"wheelDirection": [
-						0,
-						-1,
-						0
-					],
-					"wheelAxle": [
-						-1,
-						0,
-						0
-					]
-				},
-				{
-					"mesh": 3,
-					"isFrontWheel": false,
-					"wheelRadius": 2.6,
-					"suspensionRestLength": 1,
-					"connectionPoint": [
-						-4,
-						0.55,
-						-10.5
-					],
-					"wheelDirection": [
-						0,
-						-1,
-						0
-					],
-					"wheelAxle": [
-						-1,
-						0,
-						0
-					]
-				},
-				{
-					"mesh": 4,
-					"isFrontWheel": false,
-					"wheelRadius": 2.6,
-					"suspensionRestLength": 1,
-					"connectionPoint": [
-						4,
-						0.55,
-						-4.75
-					],
-					"wheelDirection": [
-						0,
-						-1,
-						0
-					],
-					"wheelAxle": [
-						-1,
-						0,
-						0
-					]
-				},
-				{
-					"mesh": 5,
-					"isFrontWheel": false,
-					"wheelRadius": 2.6,
-					"suspensionRestLength": 1,
-					"connectionPoint": [
-						4,
-						0.55,
-						-10.5
-					],
-					"wheelDirection": [
-						0,
-						-1,
-						0
-					],
-					"wheelAxle": [
-						-1,
-						0,
-						0
-					]
-				}
-			],
-			"speed": 0
-		};
-		*/
-
-		var vehicleHelper = createVehicle(/*vehicleData*/{}, body);
+		var vehicleHelper = createVehicle(body);
 		body.vehicleHelper = vehicleHelper;
 	},
 
@@ -915,9 +777,9 @@ var commandHandlers = {
 	},
 
 	updateCollider: function (params) {
+
 		// Find the btShape
 		var shape = colliderIdToAmmoShapeMap[params.colliderId];
-
 
 		// Update it
 		switch (params.data.type) {
@@ -942,7 +804,12 @@ onmessage = function (event) {
 	if (data.command) {
 		if (commandHandlers[data.command]) {
 			//console.log('command: ' + JSON.stringify(data));
-			commandHandlers[data.command](data);
+			var body, bodyConfig;
+			if (data.id) {
+				body = getBodyById(data.id);
+				bodyConfig = bodyConfigs[bodies.indexOf(body)];
+			}
+			commandHandlers[data.command](data, body, bodyConfig);
 		} else {
 			console.warn('No handler for command "' + data.command + '"');
 		}
