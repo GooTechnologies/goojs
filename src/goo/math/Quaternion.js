@@ -105,22 +105,8 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a multiplication between two quaternions and stores the result in a separate quaternion.
- 	 * The result is a <b>quaternion product</b>.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
- 	 * @deprecated in 0.9.0, scheduled to be removed in 0.11.0. Use Quaternion.mul instead.
-	 */
-	Quaternion.mul2 = function(a, b, out) {
-		console.warn('Will be deprecated. Use Quaternion.mul instead.');
-		return Quaternion.mul(a, b, out);
-	}
-
-	/**
-	 * @static
 	 * @description Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -149,6 +135,7 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -361,6 +348,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise division between the current quaternion and another and stores the result locally.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -397,6 +385,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
