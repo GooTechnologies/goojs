@@ -304,6 +304,11 @@ function (
 			velocity: v2a(velocity)
 		});
 	};
+
+	/**
+	 * Set the angular velocity of the body
+	 * @param {Vector3} velocity
+	 */
 	AmmoWorkerRigidbodyComponent.prototype.setAngularVelocity = function (velocity) {
 		this._postMessage({
 			command: 'setAngularVelocity',
