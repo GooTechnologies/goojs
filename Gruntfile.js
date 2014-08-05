@@ -161,10 +161,6 @@ module.exports = function (grunt) {
 				packPath: 'addons/cannonpack',
 				outBaseDir: 'out'
 			},
-			howlerpack: {
-				packPath: 'addons/howlerpack',
-				outBaseDir: 'out'
-			},
 			waterpack: {
 				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
