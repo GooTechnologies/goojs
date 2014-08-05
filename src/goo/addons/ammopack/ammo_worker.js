@@ -45,7 +45,6 @@ var activationStates = {
 	DISABLE_SIMULATION: 5
 };
 
-var interval;
 var timeout;
 var ammoTransform;
 var collisionConfiguration;
@@ -69,6 +68,32 @@ var ammoRayStart;
 var ammoRayEnd;
 var ammoZeroVector;
 
+var tmpAmmoVec;
+function numToTempAmmoVector(x, y, z) {
+	if (!tmpAmmoVec) {
+		tmpAmmoVec = new Ammo.btVector3();
+	}
+	tmpAmmoVec.setValue(x, y, z);
+	return tmpAmmoVec;
+}
+function arrayToTempAmmoVector(a) {
+	return numToTempAmmoVector(a[0], a[1], a[2]);
+}
+var tmpAmmoQuat;
+function numToTempAmmoQuat(x, y, z, w) {
+	if (!tmpAmmoQuat) {
+		tmpAmmoQuat = new Ammo.btQuaternion();
+	}
+	tmpAmmoQuat.setValue(x, y, z, w);
+	return tmpAmmoQuat;
+}
+function arrayToTempAmmoQuat(a) {
+	return numToTempAmmoQuat(a[0], a[1], a[2], a[3]);
+}
+
+function sendCommand(command) {
+	postMessage(command);
+}
 function fillTerrainHeightBuffer(buffer, heights) {
 	var floatByteSize = 4;
 	for (var i = 0, il = heights.length; i < il; i ++) {
@@ -81,7 +106,7 @@ function fillTerrainHeightBuffer(buffer, heights) {
  * @param  {object} shapeConfig
  * @return {Ammo.btBoxShape|Ammo.btSphereShape}
  */
-function getAmmoShape(shapeConfig, bodyConfig) {
+function getAmmoShape(shapeConfig /*, bodyConfig*/) {
 	'use strict';
 
 	var shape;
@@ -179,51 +204,6 @@ function bodyIsKinematic(body) {
 	return body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT;
 }
 
-function manualSubStepsStep(dt, numSubSteps, fixedTimeStep) {
-	var subSteps = 0;
-	var now = performance.now() / 1000;
-	var wallClockTime = now - simulationStartTime;
-	while (physicsTime < wallClockTime) {
-		step(fixedTimeStep, 0, fixedTimeStep);
-		physicsTime += timeStep;
-		subSteps++;
-		if (subSteps >= numSubSteps) {
-			break;
-		}
-	}
-}
-
-function step(dt, subSteps, fixedTimeStep) {
-	dt = dt || 1 / 60;
-	subSteps = typeof(subSteps) === 'number' ? subSteps : maxSubSteps;
-
-	// Move character bodies
-	for (var i = 0; i < bodies.length; i++) {
-		var body = bodies[i];
-		var bodyConfig = bodyConfigs[i];
-		if (bodyConfig.enableCharacterControl) {
-			body.getMotionState().getWorldTransform(ammoTransform);
-			updateCharacter(body, bodyConfig, ammoTransform, timeStep);
-		}
-	}
-
-	ammoWorld.stepSimulation(dt, subSteps, fixedTimeStep);//timeStep, 0, timeStep);
-
-	// Move kinematic bodies
-	for (var i = 0; i < bodies.length; i++) {
-		var body = bodies[i];
-		var bodyConfig = bodyConfigs[i];
-
-		body.getMotionState().getWorldTransform(ammoTransform);
-
-		if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
-			updateKinematic(body, bodyConfig, ammoTransform, dt);
-		}
-	}
-
-	reportCollisions();
-}
-
 function reportCollisions() {
 	var dp = ammoWorld.getDispatcher();
 	var num = dp.getNumManifolds();
@@ -261,44 +241,6 @@ function reportCollisions() {
 		command: 'collision',
 		pairIds: pairIds
 	});
-}
-
-function sendTransforms() {
-
-	if (!bus || !bus.length) {
-		return;
-	}
-
-	checkResizeBus();
-
-	// Pack body data into bus
-	for (var i = 0; i < bodies.length; i++) {
-		var body = bodies[i];
-		var bodyConfig = bodyConfigs[i];
-
-		body.getMotionState().getWorldTransform(ammoTransform);
-
-		var p = NUM_FLOATS_PER_BODY * i;
-
-		var origin = ammoTransform.getOrigin();
-		bus[p + 0] = origin.x();
-		bus[p + 1] = origin.y();
-		bus[p + 2] = origin.z();
-
-		var ammoQuat = ammoTransform.getRotation();
-		bus[p + 3] = ammoQuat.x();
-		bus[p + 4] = ammoQuat.y();
-		bus[p + 5] = ammoQuat.z();
-		bus[p + 6] = ammoQuat.w();
-	}
-
-	postMessage(bus, [bus.buffer]);
-}
-
-function checkResizeBus() {
-	if (bodies.length * NUM_FLOATS_PER_BODY > bus.length) {
-		bus = new ARRAY_TYPE((bodies.length + BUS_RESIZE_STEP) * NUM_FLOATS_PER_BODY);
-	}
 }
 
 function updateCharacter(body, bodyConfig, currentTransform/*, dt*/) {
@@ -370,36 +312,89 @@ function updateKinematic(body, bodyConfig, currentTransform, dt) {
 	*/
 }
 
-var tmpAmmoVec;
-function arrayToTempAmmoVector(a) {
-	return numToTempAmmoVector(a[0], a[1], a[2]);
-}
-function numToTempAmmoVector(x, y, z) {
-	if (!tmpAmmoVec) {
-		tmpAmmoVec = new Ammo.btVector3();
+function step(dt, subSteps, fixedTimeStep) {
+	dt = dt || 1 / 60;
+	subSteps = typeof(subSteps) === 'number' ? subSteps : maxSubSteps;
+
+	// Move character bodies
+	for (var i = 0; i < bodies.length; i++) {
+		var body = bodies[i];
+		var bodyConfig = bodyConfigs[i];
+		if (bodyConfig.enableCharacterControl) {
+			body.getMotionState().getWorldTransform(ammoTransform);
+			updateCharacter(body, bodyConfig, ammoTransform, timeStep);
+		}
 	}
-	tmpAmmoVec.setValue(x, y, z);
-	return tmpAmmoVec;
-}
-var tmpAmmoQuat;
-function numToTempAmmoQuat(x, y, z, w) {
-	if (!tmpAmmoQuat) {
-		tmpAmmoQuat = new Ammo.btQuaternion();
+
+	ammoWorld.stepSimulation(dt, subSteps, fixedTimeStep);//timeStep, 0, timeStep);
+
+	// Move kinematic bodies
+	for (var i = 0; i < bodies.length; i++) {
+		var body = bodies[i];
+		var bodyConfig = bodyConfigs[i];
+
+		body.getMotionState().getWorldTransform(ammoTransform);
+
+		if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
+			updateKinematic(body, bodyConfig, ammoTransform, dt);
+		}
 	}
-	tmpAmmoQuat.setValue(x, y, z, w);
-	return tmpAmmoQuat;
-}
-function arrayToTempAmmoQuat(a) {
-	return numToTempAmmoQuat(a[0], a[1], a[2], a[3]);
-}
-function arrayToAmmoVector(a, target) {
-	target.setValue(a[0], a[1], a[2]);
-	return target;
+
+	reportCollisions();
 }
 
-function sendCommand(command) {
-	postMessage(command);
+function manualSubStepsStep(dt, numSubSteps, fixedTimeStep) {
+	var subSteps = 0;
+	var now = performance.now() / 1000;
+	var wallClockTime = now - simulationStartTime;
+	while (physicsTime < wallClockTime) {
+		step(fixedTimeStep, 0, fixedTimeStep);
+		physicsTime += timeStep;
+		subSteps++;
+		if (subSteps >= numSubSteps) {
+			break;
+		}
+	}
 }
+
+function checkResizeBus() {
+	if (bodies.length * NUM_FLOATS_PER_BODY > bus.length) {
+		bus = new ARRAY_TYPE((bodies.length + BUS_RESIZE_STEP) * NUM_FLOATS_PER_BODY);
+	}
+}
+
+function sendTransforms() {
+
+	if (!bus || !bus.length) {
+		return;
+	}
+
+	checkResizeBus();
+
+	// Pack body data into bus
+	for (var i = 0; i < bodies.length; i++) {
+		var body = bodies[i];
+		//var bodyConfig = bodyConfigs[i];
+
+		body.getMotionState().getWorldTransform(ammoTransform);
+
+		var p = NUM_FLOATS_PER_BODY * i;
+
+		var origin = ammoTransform.getOrigin();
+		bus[p + 0] = origin.x();
+		bus[p + 1] = origin.y();
+		bus[p + 2] = origin.z();
+
+		var ammoQuat = ammoTransform.getRotation();
+		bus[p + 3] = ammoQuat.x();
+		bus[p + 4] = ammoQuat.y();
+		bus[p + 5] = ammoQuat.z();
+		bus[p + 6] = ammoQuat.w();
+	}
+
+	postMessage(bus, [bus.buffer]);
+}
+
 
 function getBodyById(id) {
 	return idToBodyMap[id];
