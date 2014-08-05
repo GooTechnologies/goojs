@@ -422,7 +422,7 @@ function VehicleHelper(chassis, wheelRadius, suspensionLength) {
 
 	//chassis.ammoComponent.body.setAngularFactor(new Ammo.btVector3(0,1,0)); restrict angular movement
 }
-VehicleHelper.prototype.resetAtPos = function(x, y, z) {
+VehicleHelper.prototype.resetAtPos = function (x, y, z) {
 	var b = this.chassis.ammoComponent.body;
 	var t = b.getCenterOfMassTransform();
 	t.setIdentity();
@@ -431,17 +431,17 @@ VehicleHelper.prototype.resetAtPos = function(x, y, z) {
 	b.setAngularVelocity(numToTempAmmoVector(0, 0, 0));
 	b.setLinearVelocity(numToTempAmmoVector(0, 0, 0));
 };
-VehicleHelper.prototype.setSteeringValue = function( steering) {
-	for(var i=0;i<this.vehicle.getNumWheels();i++){
-		if( this.vehicle.getWheelInfo(i).get_m_bIsFrontWheel() ) {
-			this.vehicle.setSteeringValue(steering,i);
+VehicleHelper.prototype.setSteeringValue = function (steering) {
+	for (var i = 0; i < this.vehicle.getNumWheels(); i++) {
+		if (this.vehicle.getWheelInfo(i).get_m_bIsFrontWheel()) {
+			this.vehicle.setSteeringValue(steering, i);
 		}
 	}
 };
-VehicleHelper.prototype.applyEngineForce = function( force, front) {
-	for(var i=0;i<this.vehicle.getNumWheels();i++){
-		if( front === undefined || this.vehicle.getWheelInfo(i).get_m_bIsFrontWheel() === front) {
-			this.vehicle.applyEngineForce(force,i);
+VehicleHelper.prototype.applyEngineForce = function (force, front) {
+	for (var i = 0; i < this.vehicle.getNumWheels(); i++) {
+		if (front === undefined || this.vehicle.getWheelInfo(i).get_m_bIsFrontWheel() === front) {
+			this.vehicle.applyEngineForce(force, i);
 		}
 	}
 };
@@ -453,13 +453,13 @@ VehicleHelper.prototype.setBrake = function (force) {
 VehicleHelper.prototype.setWheelAxle = function (x, y, z) {
 	this.wheelAxle.setValue(x, y, z);
 };
-VehicleHelper.prototype.addFrontWheel = function( pos) {
+VehicleHelper.prototype.addFrontWheel = function (pos) {
 	this.addWheel(pos[0], pos[1], pos[2], true);
 };
-VehicleHelper.prototype.addRearWheel = function( pos) {
+VehicleHelper.prototype.addRearWheel = function (pos) {
 	this.addWheel(pos[0], pos[1], pos[2], false);
 };
-VehicleHelper.prototype.addWheel = function( x,y,z, isFrontWheel) {
+VehicleHelper.prototype.addWheel = function (x, y, z, isFrontWheel) {
 	var wheel = this.vehicle.addWheel(numToTempAmmoVector(x, y, z), this.wheelDir, this.wheelAxle, this.suspension, this.wheelRadius, this.tuning, isFrontWheel);
 	wheel.set_m_suspensionStiffness(20);
 	wheel.set_m_wheelsDampingRelaxation(2.3);
@@ -573,7 +573,7 @@ var commandHandlers = {
 		} else {
 			// More than one collider primitive or collider with offset
 			shape = new Ammo.btCompoundShape();
-			var localTrans = new Ammo.btTransform();
+			var localTrans = ammoTransform;
 			for (var j = 0; j < bodyConfig.shapes.length; j++) {
 				shapeConfig = bodyConfig.shapes[j];
 				var childAmmoShape = getAmmoShape(shapeConfig, bodyConfig);
@@ -584,7 +584,6 @@ var commandHandlers = {
 				localTrans.setRotation(arrayToTempAmmoQuat(quat));
 				shape.addChildShape(localTrans, childAmmoShape);
 			}
-			Ammo.destroy(localTrans);
 		}
 
 		if (!shape) {
@@ -594,17 +593,14 @@ var commandHandlers = {
 		// Get body transform
 		ammoTransform.setIdentity();
 		ammoTransform.setOrigin(arrayToTempAmmoVector(bodyConfig.position));
-		var q = bodyConfig.rotation;
-		var ammoQuat = new Ammo.btQuaternion(q[0], q[1], q[2], q[3]);
-		ammoTransform.setRotation(ammoQuat);
-		Ammo.destroy(ammoQuat);
+		ammoTransform.setRotation(arrayToTempAmmoQuat(bodyConfig.rotation));
 
 		if (bodyConfig.type === 4) {
 			bodyConfig.mass = 0;
 		}
 
 		var motionState = new Ammo.btDefaultMotionState(ammoTransform);
-		var localInertia = new Ammo.btVector3(0, 0, 0);
+		var localInertia = numToTempAmmoVector(0, 0, 0); // new Ammo.btVector3(0, 0, 0);
 
 		if (bodyConfig.mass !== 0) {
 			shape.calculateLocalInertia(bodyConfig.mass, localInertia);
@@ -618,6 +614,7 @@ var commandHandlers = {
 			info.set_m_restitution(bodyConfig.restitution);
 		}
 		var body = new Ammo.btRigidBody(info);
+		Ammo.destroy(info);
 
 		if (bodyConfig.type === 4) {
 			body.setCollisionFlags(body.getCollisionFlags() | collisionFlags.KINEMATIC_OBJECT);
