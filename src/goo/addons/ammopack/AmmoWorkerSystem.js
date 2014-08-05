@@ -60,6 +60,13 @@ function (
 		 */
 		this.ammoUrl = typeof(settings.ammoUrl) !== 'undefined' ? settings.ammoUrl : 'ammo.small.js';
 
+		/**
+		 * If true, transform updates from the worker will not be applied.
+		 * @default false
+		 * @type {Boolean}
+		 */
+		this.passive = false;
+
 		this._initWorker();
 		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.maxSubSteps) === 'number' ? settings.maxSubSteps : 3);
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
@@ -141,10 +148,6 @@ function (
 
 		worker.onmessage = function (event) {
 			var data = event.data;
-			if (that.passive) {
-				worker.postMessage(data, [data.buffer]);
-				return;
-			}
 
 			if (data.command) {
 				commandHandlers[data.command].call(that, data);
@@ -152,14 +155,15 @@ function (
 			}
 
 			if (data.length) {
-
-				// Unpack data
-				for (var i = 0; i < that._activeEntities.length; i++) {
-					var entity = that._activeEntities[i];
-					tmpQuat.setd(data[7 * i + 3], data[7 * i + 4], data[7 * i + 5], data[7 * i + 6]);
-					entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);
-					entity.transformComponent.transform.translation.setd(data[7 * i + 0], data[7 * i + 1], data[7 * i + 2]);
-					entity.transformComponent.setUpdated();
+				if (!that.passive) {
+					// Unpack data
+					for (var i = 0; i < that._activeEntities.length; i++) {
+						var entity = that._activeEntities[i];
+						tmpQuat.setd(data[7 * i + 3], data[7 * i + 4], data[7 * i + 5], data[7 * i + 6]);
+						entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);
+						entity.transformComponent.transform.translation.setd(data[7 * i + 0], data[7 * i + 1], data[7 * i + 2]);
+						entity.transformComponent.setUpdated();
+					}
 				}
 
 				// Send back the buffer
