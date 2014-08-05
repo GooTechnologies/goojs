@@ -79,6 +79,9 @@ function numToTempAmmoVector(x, y, z) {
 function arrayToTempAmmoVector(a) {
 	return numToTempAmmoVector(a[0], a[1], a[2]);
 }
+function arrayToAmmoVector(a) {
+	return new Ammo.btVector3(a[0], a[1], a[2]);
+}
 var tmpAmmoQuat;
 function numToTempAmmoQuat(x, y, z, w) {
 	if (!tmpAmmoQuat) {
@@ -462,8 +465,24 @@ VehicleHelper.prototype.addWheel = function (x, y, z, isFrontWheel) {
 	wheel.set_m_frictionSlip(1000);
 	wheel.set_m_rollInfluence(0.01); // this value controls how easily a vehicle can tipp over. Lower values tipp less :)
 };
+VehicleHelper.prototype.addWheel2 = function (config) {
+	var wheel = this.vehicle.addWheel(
+		arrayToAmmoVector(config.position),
+		arrayToAmmoVector(config.direction),
+		arrayToAmmoVector(config.axle),
+		config.suspensionLength,
+		config.radius,
+		this.tuning,
+		config.isFrontWheel
+	);
+	for (var key in config) {
+		if (key.match(/^m_/)) {
+			wheel['set_' + key](config[key]);
+		}
+	}
+};
 
-function createVehicle(chassis) {
+function createVehicle(chassis, config) {
 	/*
 	var tuning = new Ammo.btVehicleTuning();
 	var vehicleRaycaster = new Ammo.btDefaultVehicleRaycaster(ammoWorld);
@@ -493,11 +512,18 @@ function createVehicle(chassis) {
 	*/
 
 	var vehicleHelper = new VehicleHelper(chassis, 0.5, 0.3, true);
+
+	/*
 	vehicleHelper.setWheelAxle(-1, 0, 0);
 	vehicleHelper.addFrontWheel([-1, 0.0, 1.0]);
 	vehicleHelper.addFrontWheel([1, 0.0, 1.0]);
 	vehicleHelper.addRearWheel([-1, 0.0, -1.0]);
 	vehicleHelper.addRearWheel([1, 0.0, -1.0]);
+	*/
+
+	for (var i = 0; i < config.wheels.length; i++) {
+		vehicleHelper.addWheel2(config.wheels[i]);
+	}
 
 	return vehicleHelper;
 }
@@ -767,24 +793,18 @@ var commandHandlers = {
 		}
 	},
 
-	setCharacterVelocity: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
+	setCharacterVelocity: function (params, body) {
 		var config = bodyConfigs[bodies.indexOf(body)];
 		config.characterVelocity = params.velocity;
 	},
 
-	enableVehicle: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
+	enableVehicle: function (params, body) {
+		if (!params.vehicleConfig) {
 			return;
 		}
 		var config = bodyConfigs[bodies.indexOf(body)];
 		config.enableVehicle = true;
-
-		var vehicleHelper = createVehicle(body);
+		var vehicleHelper = createVehicle(body, params.vehicleConfig);
 		body.vehicleHelper = vehicleHelper;
 	},
 

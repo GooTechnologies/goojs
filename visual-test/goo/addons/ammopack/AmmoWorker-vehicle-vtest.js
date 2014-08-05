@@ -167,7 +167,57 @@ require([
 		vehicleEntity.setComponent(new AmmoWorkerRigidbodyComponent({
 			mass: 150
 		}));
-		vehicleEntity.ammoWorkerRigidbodyComponent.enableVehicle();
+		vehicleEntity.ammoWorkerRigidbodyComponent.enableVehicle({
+			wheels: [{
+				radius: 1,
+				position: [-1, 0.0, 1.0],
+				direction: [0, -1, 0],
+				axle: [-1, 0, 0],
+				suspensionLength: 0.3,
+				m_suspensionStiffness: 20,
+				m_wheelsDampingRelaxation: 2.3,
+				m_wheelsDampingCompression: 4.4,
+				m_frictionSlip: 1000,
+				m_rollInfluence: 0.01,
+				isFrontWheel: true,
+			}, {
+				radius: 1,
+				position: [1, 0.0, 1.0],
+				direction: [0, -1, 0],
+				axle: [-1, 0, 0],
+				suspensionLength: 0.3,
+				m_suspensionStiffness: 20,
+				m_wheelsDampingRelaxation: 2.3,
+				m_wheelsDampingCompression: 4.4,
+				m_frictionSlip: 1000,
+				m_rollInfluence: 0.01,
+				isFrontWheel: true,
+			}, {
+				radius: 1,
+				position: [-1, 0.0, -1.0],
+				direction: [0, -1, 0],
+				axle: [-1, 0, 0],
+				suspensionLength: 0.3,
+				m_suspensionStiffness: 20,
+				m_wheelsDampingRelaxation: 2.3,
+				m_wheelsDampingCompression: 4.4,
+				m_frictionSlip: 1000,
+				m_rollInfluence: 0.01,
+				isFrontWheel: false,
+			}, {
+				radius: 1,
+				position: [1, 0.0, -1.0],
+				direction: [0, -1, 0],
+				axle: [-1, 0, 0],
+				suspensionLength: 0.3,
+				m_suspensionStiffness: 20,
+				m_wheelsDampingRelaxation: 2.3,
+				m_wheelsDampingCompression: 4.4,
+				m_frictionSlip: 1000,
+				m_rollInfluence: 0.01,
+				isFrontWheel: false,
+			}]
+		});
 		var maxSteering = Math.PI * 0.01;
 		goo.callbacks.push(function () {
 			var engine = keys[38] * engineSpeed + keys[40] * -engineSpeed;

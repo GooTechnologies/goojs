@@ -34,8 +34,6 @@ function (
 		 */
 		this.entity = null;
 
-		this.vehicle = false;
-
 		/**
 		 * @private
 		 * @type {number}
@@ -238,9 +236,6 @@ function (
 			this._postMessage(message);
 		}
 		queue.length = 0;
-		if (this.vehicle) {
-			this.enableVehicle();
-		}
 	};
 
 	AmmoWorkerRigidbodyComponent.prototype.setLinearFactor = function (linearFactor) {
@@ -347,10 +342,64 @@ function (
 			jumpImpulse: v2a(jumpImpulse)
 		});
 	};
-	AmmoWorkerRigidbodyComponent.prototype.enableVehicle = function () {
-		this.vehicle = true;
+	AmmoWorkerRigidbodyComponent.prototype.enableVehicle = function (settings) {
+		if (!settings) {
+			// Default config
+			settings = {
+				wheels: [{
+					radius: 1,
+					position: [-1, 0.0, 1.0],
+					direction: [0, -1, 0],
+					axle: [-1, 0, 0],
+					suspensionLength: 0.3,
+					m_suspensionStiffness: 20,
+					m_wheelsDampingRelaxation: 2.3,
+					m_wheelsDampingCompression: 4.4,
+					m_frictionSlip: 1000,
+					m_rollInfluence: 0.01,
+					isFrontWheel: true,
+				}, {
+					radius: 1,
+					position: [1, 0.0, 1.0],
+					direction: [0, -1, 0],
+					axle: [-1, 0, 0],
+					suspensionLength: 0.3,
+					m_suspensionStiffness: 20,
+					m_wheelsDampingRelaxation: 2.3,
+					m_wheelsDampingCompression: 4.4,
+					m_frictionSlip: 1000,
+					m_rollInfluence: 0.01,
+					isFrontWheel: true,
+				}, {
+					radius: 1,
+					position: [-1, 0.0, -1.0],
+					direction: [0, -1, 0],
+					axle: [-1, 0, 0],
+					suspensionLength: 0.3,
+					m_suspensionStiffness: 20,
+					m_wheelsDampingRelaxation: 2.3,
+					m_wheelsDampingCompression: 4.4,
+					m_frictionSlip: 1000,
+					m_rollInfluence: 0.01,
+					isFrontWheel: false,
+				}, {
+					radius: 1,
+					position: [1, 0.0, -1.0],
+					direction: [0, -1, 0],
+					axle: [-1, 0, 0],
+					suspensionLength: 0.3,
+					m_suspensionStiffness: 20,
+					m_wheelsDampingRelaxation: 2.3,
+					m_wheelsDampingCompression: 4.4,
+					m_frictionSlip: 1000,
+					m_rollInfluence: 0.01,
+					isFrontWheel: false,
+				}]
+			};
+		}
 		this._postMessage({
-			command: 'enableVehicle'
+			command: 'enableVehicle',
+			vehicleConfig: settings
 		});
 	};
 	// Force is array with 4 values or 1 value

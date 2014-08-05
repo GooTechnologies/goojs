@@ -95,6 +95,11 @@ function (
 		}
 	};
 
+	/**
+	 * Add an event listener. Available events: 'collision'
+	 * @param {string}   type
+	 * @param {function} callback
+	 */
 	AmmoWorkerSystem.prototype.addEventListener = function (type, callback) {
 		if (!this._eventListeners[type] || this._eventListeners[type].indexOf(callback) > -1) {
 			return;
