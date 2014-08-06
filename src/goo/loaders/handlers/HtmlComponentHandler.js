@@ -120,9 +120,13 @@ function (
 				parentEl.appendChild(domElement);
 			}
 
-			var processedStyle = config.style.replace('__entity', '#' + safeEntityId);
-			var wrappedStyle = '<style>\n' + processedStyle + '\n</style>';
-			domElement.innerHTML = wrappedStyle + config.innerHtml; // seems like the easiest way
+			if (config.style) {
+				var processedStyle = config.style.replace('__entity', '#' + safeEntityId);
+				var wrappedStyle = '<style>\n' + processedStyle + '\n</style>';
+				domElement.innerHTML = wrappedStyle + config.innerHtml; // seems like the easiest way
+			} else {
+				domElement.innerHTML = config.innerHtml;
+			}
 
 
 			function loadImage(htmlImage, imageRef) {
