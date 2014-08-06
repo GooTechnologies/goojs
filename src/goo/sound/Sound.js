@@ -15,8 +15,12 @@ function (
 	 * @class A representation of a sound in the engine
 	 */
 	function Sound() {
-		// Settings
+		/** @type {string}
+		 */
 		this.id = null;
+		/** @type {string}
+		 */
+		this.name = null;
 		this._loop = false;
 		this._rate = 1.0;
 		this._offset = 0;
@@ -150,7 +154,8 @@ function (
 	 * @param {object} [config]
 	 * @param {boolean} [config.loop]
 	 * @param {number} [config.volume]
-	 * @param {number} [config.start] Start offset in seconds. 
+	 * @param {number} [config.name] The sound name
+	 * @param {number} [config.start] Start offset in seconds.
 	 * Will be clamped to be in actual soundclip duration
 	 * @param {number} [config.duration] Duration of the sound.
 	 * Will be clamped to be in actual soundclip duration
@@ -160,6 +165,9 @@ function (
 		config = config || {};
 		if (config.id !== undefined) {
 			this.id = config.id;
+		}
+		if (config.name !== undefined) {
+			this.name = config.name;
 		}
 		if (config.loop !== undefined) {
 			this._loop = !!config.loop;
