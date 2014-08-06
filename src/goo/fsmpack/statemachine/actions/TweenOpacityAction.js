@@ -64,33 +64,36 @@ function (
 	};
 
 	TweenOpacityAction.prototype._setup = function (fsm) {
-		this.tween = new window.TWEEN.Tween();
+		var entity = fsm.getOwnerEntity();
+		var meshRendererComponent = entity.meshRendererComponent;
 
-        var entity = fsm.getOwnerEntity();
-        var meshRendererComponent = entity.meshRendererComponent;
+		if (meshRendererComponent) {
+			this.tween = new window.TWEEN.Tween();
 
-        this.material = meshRendererComponent.materials[0];
-        this.oldBlending = this.material.blendState.blending;
-        this.oldQueue = this.material.renderQueue;
-        this.oldOpacity = this.material.uniforms.opacity;
+			this.material = meshRendererComponent.materials[0];
+			this.oldBlending = this.material.blendState.blending;
+			this.oldQueue = this.material.renderQueue;
+			this.oldOpacity = this.material.uniforms.opacity;
 
-        this.material.blendState.blending = 'CustomBlending';
-        if (this.material.renderQueue < 2000) {
-            this.material.renderQueue = 2000;
-        }
+			this.material.blendState.blending = 'CustomBlending';
+			if (this.material.renderQueue < 2000) {
+				this.material.renderQueue = 2000;
+			}
 
-        if (this.material.uniforms.opacity === undefined) {
-            this.material.uniforms.opacity = 1;
-        }
+			if (this.material.uniforms.opacity === undefined) {
+				this.material.uniforms.opacity = 1;
+			}
+		}
 	};
 
 	TweenOpacityAction.prototype.cleanup = function (/*fsm*/) {
 		if (this.tween) {
 			this.tween.stop();
+
+			this.material.blendState.blending = this.oldBlending;
+			this.material.renderQueue = this.oldQueue;
+			this.material.uniforms.opacity = this.oldOpacity;
 		}
-        this.material.blendState.blending = this.oldBlending;
-        this.material.renderQueue = this.oldQueue;
-        this.material.uniforms.opacity = this.oldOpacity;
 	};
 
 	TweenOpacityAction.prototype._run = function (fsm) {
