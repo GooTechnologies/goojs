@@ -1,11 +1,8 @@
-v0.11.1 --- 2014-07-12
+v0.11.0 --- 2014-08-12
 ======================
 
 Additions:
- + Sound instances now have a name property
-
-v0.11.0 --- 2014-08-05
-======================
+ + sound instances now have a name property
 
 Changes:
  * entities get added/removed to managers synchronously
