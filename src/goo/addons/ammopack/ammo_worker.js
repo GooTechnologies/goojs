@@ -483,69 +483,13 @@ VehicleHelper.prototype.addWheel2 = function (config) {
 };
 
 function createVehicle(chassis, config) {
-	/*
-	var tuning = new Ammo.btVehicleTuning();
-	var vehicleRaycaster = new Ammo.btDefaultVehicleRaycaster(ammoWorld);
-	var vehicle = new Ammo.btRaycastVehicle(tuning, chassis, vehicleRaycaster);
-	ammoWorld.addVehicle(vehicle);
-	vehicle.setCoordinateSystem(0,1,2); // choose coordinate system
-	var wheelDir = new Ammo.btVector3(0,-1,0);
-	var wheelAxle = new Ammo.btVector3(-1,0,0);
-
-	var wheelRadius = 0.5;
-	var suspension = 0.3;
-	function addWheel(x, y, z, isFrontWheel){
-		var wheel = vehicle.addWheel(new Ammo.btVector3(x, y, z), wheelDir, wheelAxle, suspension, wheelRadius, tuning, isFrontWheel);
-		wheel.set_m_suspensionStiffness(20);
-		wheel.set_m_wheelsDampingRelaxation(2.3);
-		wheel.set_m_wheelsDampingCompression(4.4);
-		wheel.set_m_frictionSlip(1000);
-		wheel.set_m_rollInfluence(0.01); // this value controls how easily a vehicle can tipp over. Lower values tipp less :)
-	}
-
-	addWheel(-1, 0,  1, true);
-	addWheel( 1, 0,  1, true);
-	addWheel(-1, 0, -1, false);
-	addWheel( 1, 0, -1, false);
-
-	chassis.setActivationState(activationStates.DISABLE_DEACTIVATION);
-	*/
-
 	var vehicleHelper = new VehicleHelper(chassis, 0.5, 0.3, true);
-
-	/*
-	vehicleHelper.setWheelAxle(-1, 0, 0);
-	vehicleHelper.addFrontWheel([-1, 0.0, 1.0]);
-	vehicleHelper.addFrontWheel([1, 0.0, 1.0]);
-	vehicleHelper.addRearWheel([-1, 0.0, -1.0]);
-	vehicleHelper.addRearWheel([1, 0.0, -1.0]);
-	*/
 
 	for (var i = 0; i < config.wheels.length; i++) {
 		vehicleHelper.addWheel2(config.wheels[i]);
 	}
 
 	return vehicleHelper;
-}
-
-function applyEngineForce(force, vehicle, wheelId) {
-	if (wheelId === undefined) {
-		for (var i = 0, il = vehicle.getNumWheels(); i < il; i++) {
-			vehicle.applyEngineForce(force, i);
-		}
-	} else {
-		vehicle.applyEngineForce(force, wheelId);
-	}
-}
-
-function setBrake(brake, vehicle, wheelId) {
-	if (wheelId === undefined) {
-		for (var i = 0, il = vehicle.getNumWheels(); i < il; i ++) {
-			vehicle.setBrake(brake, i);
-		}
-	} else {
-		vehicle.setBrake(brake, wheelId);
-	}
 }
 
 var commandHandlers = {
