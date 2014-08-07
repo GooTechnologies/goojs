@@ -337,6 +337,11 @@ function (
 			ray: v2a(ray)
 		});
 	};
+	AmmoWorkerRigidbodyComponent.prototype.disableCharacterController = function () {
+		this._postMessage({
+			command: 'disableCharacterControl'
+		});
+	};
 	AmmoWorkerRigidbodyComponent.prototype.setCharacterVelocity = function (velocity) {
 		this._postMessage({
 			command: 'setCharacterVelocity',

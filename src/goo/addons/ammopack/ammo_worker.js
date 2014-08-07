@@ -720,17 +720,17 @@ var commandHandlers = {
 		Ammo.destroy(rayCallback);
 	},
 
-	enableCharacterControl: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
-		var config = bodyConfigs[bodies.indexOf(body)];
+	enableCharacterControl: function (params, body, config) {
 		body.setAngularFactor(0);
 		config.enableCharacterControl = true;
 		config.characterRay = params.ray;
 		config.characterVelocity = [0, 0, 0];
 		config.characterOnGround = false;
+	},
+
+	disableCharacterControl: function (params, body, config) {
+		body.setAngularFactor(numToTempAmmoVector(1, 1, 1));
+		config.enableCharacterControl = false;
 	},
 
 	characterJump: function (params) {
