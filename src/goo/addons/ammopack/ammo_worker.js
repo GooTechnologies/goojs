@@ -586,6 +586,13 @@ var commandHandlers = {
 			body.setActivationState(activationStates.DISABLE_DEACTIVATION);
 		}
 
+		if (bodyConfig.collisionFlags) {
+			body.setCollisionFlags(bodyConfig.collisionFlags);
+		}
+		if (bodyConfig.activationState) {
+			body.setActivationState(bodyConfig.activationState);
+		}
+
 		ammoWorld.addRigidBody(body);
 
 		bodies.push(body);

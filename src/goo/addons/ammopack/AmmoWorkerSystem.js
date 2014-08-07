@@ -128,12 +128,12 @@ function (
 		collision: function (data) {
 			var pairIds = data.pairIds;
 			for (var i = 0; i < pairIds.length; i += 2) {
-				var bodyA = this.getEntityById(pairIds[i]);
-				var bodyB = this.getEntityById(pairIds[i + 1]);
+				var entityA = this.getEntityById(pairIds[i]);
+				var entityB = this.getEntityById(pairIds[i + 1]);
 				for (var j = 0; j < this._eventListeners.collision.length; j++) {
 					this._eventListeners.collision[j]({
-						bodyA: bodyA,
-						bodyB: bodyB
+						entityA: entityA,
+						entityB: entityB
 					});
 				}
 			}

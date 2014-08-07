@@ -56,6 +56,12 @@ function (
 		 * @private
 		 * @type {number}
 		 */
+		this._collisionFlags = typeof(settings.collisionFlags) === 'number' ? settings.collisionFlags : null;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
 		this._bodyType = typeof(settings.type) === 'number' ? settings.type : AmmoWorkerRigidbodyComponent.DYNAMIC;
 
 		/**
@@ -226,7 +232,8 @@ function (
 			position: v2a(gooPos),
 			rotation: v2a(tmpQuat),
 			shapes: shapeConfigs,
-			type: entity.ammoWorkerRigidbodyComponent._bodyType
+			type: entity.ammoWorkerRigidbodyComponent._bodyType,
+			collisionFlags: entity.ammoWorkerRigidbodyComponent._collisionFlags
 		});
 
 		// Send messages accumulated in the queue

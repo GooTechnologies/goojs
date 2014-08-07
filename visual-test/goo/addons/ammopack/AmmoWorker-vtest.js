@@ -218,6 +218,34 @@ require([
 		entity.ammoWorkerRigidbodyComponent.enableCharacterController(new Vector3(0, -1.5, 0));
 	}
 
+	var sensorEntity;
+	function addSensor() {
+		var entity = createEntity(goo, new Sphere(10, 10, 1), {
+				mass: 0, // static
+				friction: 0.3,
+				collisionFlags: AmmoWorkerRigidbodyComponent.NO_CONTACT_RESPONSE
+			},
+			[0, 3, 0],
+			new SphereCollider({
+				radius : 1
+			})
+		);
+		sensorEntity = entity;
+	}
+	function swapChannels(colors) {
+		var tmp;
+		tmp = colors[0];
+		colors[0] = colors[1];
+		colors[1] = colors[2];
+		colors[2] = tmp;
+	}
+	ammoWorkerSystem.addEventListener('collision', function (event) {
+		if (event.entityA === sensorEntity || event.entityB === sensorEntity) {
+			var color = sensorEntity.meshRendererComponent.materials[0].uniforms.materialDiffuse;
+			swapChannels(color);
+		}
+	});
+
 	var addRemoveEntity;
 	function addRemove() {
 		if (!addRemoveEntity) {
@@ -280,6 +308,7 @@ require([
 		addOther();
 		activate();
 		setSleepingThresholds();
+		addSensor();
 
 		setTimeout(function () {
 			rayCast();
