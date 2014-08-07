@@ -7,6 +7,18 @@ define([
 
 	var ScriptUtils = {};
 
+
+	ScriptUtils.defaultsByType = {
+		'float': 0,
+		'int': 0,
+		'string': '',
+		'vec3': [0.0, 0.0, 0.0],
+		'boolean': false,
+		'texture': {},
+		'entity': {}
+	};
+
+
 	/**
 	 * Fill a passed parameters object with defaults from spec
 	 * @private
@@ -17,9 +29,14 @@ define([
 		if (!(specs instanceof Array)) { return; }
 		var keys = [];
 		specs.forEach(function (spec) {
-			if (!spec || typeof spec.key !== 'string' || spec['default'] === undefined) {
+			if (!spec || typeof spec.key !== 'string') {
 				return;
 			}
+
+			if (spec['default'] === null || spec['default'] === undefined) {
+				spec['default'] = ScriptUtils.defaultsByType[spec.type];
+			}
+
 			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
 				parameters[spec.key] = _.clone(spec['default']);

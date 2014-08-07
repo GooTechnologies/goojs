@@ -414,25 +414,8 @@ function (
 				continue;
 			}
 			if (param['default'] === null) {
-				switch (param.type) {
-				case 'float':
-				case 'int':
-					param['default'] = 0.0;
-					break;
-				case 'string':
-					param['default'] = '';
-					break;
-				case 'vec3':
-					param['default'] = [0.0, 0.0, 0.0];
-					break;
-				case 'boolean':
-					param['default'] = false;
-					break;
-				case 'texture':
-				case 'entity':
-					param['default'] = {};
-					break;
-				default:
+				param['default'] = ScriptUtils.defaultsByType[param.type];
+				if (typeof param['default'] === 'undefined') {
 					errors.push({ message: 'Parameter default is missing or of wrong type' });
 					continue;
 				}

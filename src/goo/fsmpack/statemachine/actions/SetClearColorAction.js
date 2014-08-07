@@ -4,7 +4,7 @@ define([
 /** @lends */
 function (
 	Action
-	) {
+) {
 	'use strict';
 
 	function SetClearColorAction(/*id, settings*/) {
@@ -43,7 +43,7 @@ function (
 		var goo = entity._world.gooRunner;
 		goo.renderer.setClearColor(this.color[0], this.color[1], this.color[2], 1);
 	};
-	
+
 	SetClearColorAction.prototype.cleanup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var goo = entity._world.gooRunner;

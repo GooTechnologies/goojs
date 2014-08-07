@@ -2,7 +2,7 @@ define([
 	'goo/renderer/Shader'
 ],
 /** @lends */
-function(
+function (
 	Shader
 ) {
 	'use strict';
@@ -245,30 +245,13 @@ function(
 	};
 
 	/**
-	 * Creates a new Material object and sets the shader by calling createShader with the shaderDefinition
-	 *
-	 * @deprecated Use new Material() instead; Deprecated since 0.9.0 - scheduled to be removed in 0.11.0
-	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
-	 * @param {String} [name='DefaultMaterial'] The name of the newly created material
-	 * @return {Material}
-	 */
-	//! AT: this method has the parameters in the wrong order!!! // or the old constructor signature was
-	Material.createMaterial = function (shaderDefinition, name) {
-		var material = new Material(name || 'DefaultMaterial');
-
-		material.shader = Material.createShader(shaderDefinition);
-
-		return material;
-	};
-
-	/**
 	 * Creates an 'empty' material
 	 * @private
 	 * @param shaderDefinition see {@link Shader}
 	 * @param name [name='Empty Material'] The name of the newly created material
 	 * @returns {Material}
 	 */
-	Material.createEmptyMaterial = function(shaderDefinition, name) {
+	Material.createEmptyMaterial = function (shaderDefinition, name) {
 		var material = new Material(name || 'Empty Material');
 		material.empty();
 		if (shaderDefinition) {
@@ -284,7 +267,7 @@ function(
 	 * Removed the material's properties
 	 * @private
 	 */
-	Material.prototype.empty = function() {
+	Material.prototype.empty = function () {
 		this.cullState = {};
 		this.blendState = {};
 		this.depthState = {};

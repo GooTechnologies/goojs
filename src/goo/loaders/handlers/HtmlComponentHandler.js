@@ -60,10 +60,14 @@ function (
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
+			// ids and classes can contain '.' or start with digits in html but not in css selectors
+			// could have prefixed it with a simple '-' but that's sort of reserved for '-moz', '-webkit' and the like
+			var safeEntityId = '__' + entity.id.replace('.', '-');
+
 			var domElement = component.domElement;
 			if (!domElement) {
 				domElement = document.createElement('div');
-				domElement.id = entity.id;
+				domElement.id = safeEntityId;
 				domElement.className = 'goo-entity';
 				domElement.addEventListener('mousedown', function (domEvent) {
 					var gooRunner = entity._world.gooRunner;
@@ -110,30 +114,20 @@ function (
 				domElement.style.left = 0;
 				domElement.style.zIndex = 1;
 				domElement.style.display = 'none';
+
 				var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
-				// var containerEl = parentEl.querySelector('#goo-htmlcomponent-container-element');
-				// if (!containerEl) {
-				// 	containerEl = document.createElement('div');
-				// 	parentEl.appendChild(containerEl);
-				// 	containerEl.id = 'goo-htmlcomponent-container-element';
-				// 	containerEl.style.position = 'absolute';
-				// 	var canvas = entity._world.gooRunner.renderer.domElement;
-				// 	var resize = function() {
-				// 		containerEl.style.top = canvas.offsetTop + 'px';
-				// 		containerEl.style.left = canvas.offsetLeft + 'px';
-				// 		containerEl.style.height = canvas.offsetHeight + 'px';
-				// 		containerEl.style.width = canvas.offsetWidth + 'px';
-				// 	}
-				// 	resize();
-				// 	parentEl.addEventListener('resize', resize);
-				// }
-				// else {
-				// 	containerEl = containerEl.first();
-				// }
 
 				parentEl.appendChild(domElement);
 			}
-			domElement.innerHTML = config.innerHtml;
+
+			if (config.style) {
+				var processedStyle = config.style.replace('__entity', '#' + safeEntityId);
+				var wrappedStyle = '<style>\n' + processedStyle + '\n</style>';
+				domElement.innerHTML = wrappedStyle + config.innerHtml; // seems like the easiest way
+			} else {
+				domElement.innerHTML = config.innerHtml;
+			}
+
 
 			function loadImage(htmlImage, imageRef) {
 				return that.loadObject(imageRef, options)
