@@ -264,14 +264,22 @@ function updateCharacter(body, bodyConfig, currentTransform/*, dt*/) {
 		bodyConfig.characterOnGround = !!hitBody;
 	}
 	Ammo.destroy(rayCallback);
-	if (bodyConfig.characterVelocity && bodyConfig.characterOnGround) {
-		var v = body.getLinearVelocity();
-		body.activate();
-		body.setLinearVelocity(numToTempAmmoVector(
-			bodyConfig.characterVelocity[0],
-			bodyConfig.characterVelocity[1] + v.y(),
-			bodyConfig.characterVelocity[2]
-		));
+	if (bodyConfig.characterOnGround) {
+		if (bodyConfig.characterVelocity) {
+			var v = body.getLinearVelocity();
+			body.activate();
+			body.setLinearVelocity(numToTempAmmoVector(
+				bodyConfig.characterVelocity[0],
+				bodyConfig.characterVelocity[1] + v.y(),
+				bodyConfig.characterVelocity[2]
+			));
+		}
+
+		if (bodyConfig.characterAngularVelocity) {
+			//var v = body.getAngularVelocity();
+			body.activate();
+			body.setAngularVelocity(arrayToTempAmmoVector(bodyConfig.characterAngularVelocity));
+		}
 	}
 }
 
@@ -724,29 +732,29 @@ var commandHandlers = {
 		body.setAngularFactor(0);
 		config.enableCharacterControl = true;
 		config.characterRay = params.ray;
-		config.characterVelocity = [0, 0, 0];
 		config.characterOnGround = false;
+		config.characterVelocity = [0, 0, 0];
+		config.characterAngularVelocity = [0, 0, 0];
 	},
 
 	disableCharacterControl: function (params, body, config) {
 		body.setAngularFactor(numToTempAmmoVector(1, 1, 1));
 		config.enableCharacterControl = false;
+		delete config.characterVelocity;
+		delete config.characterAngularVelocity;
+		body.setLinearVelocity(numToTempAmmoVector(0, 0, 0));
+		body.setAngularVelocity(numToTempAmmoVector(0, 0, 0));
 	},
 
-	characterJump: function (params) {
-		var body = getBodyById(params.id);
-		if (!body) {
-			return;
-		}
-		var config = bodyConfigs[bodies.indexOf(body)];
+	characterJump: function (params, body, config) {
 		if (config.characterOnGround) {
 			body.applyImpulse(arrayToTempAmmoVector(params.jumpImpulse), ammoZeroVector);
 		}
 	},
 
-	setCharacterVelocity: function (params, body) {
-		var config = bodyConfigs[bodies.indexOf(body)];
+	setCharacterVelocity: function (params, body, config) {
 		config.characterVelocity = params.velocity;
+		config.characterAngularVelocity = params.angularVelocity;
 	},
 
 	enableVehicle: function (params, body) {

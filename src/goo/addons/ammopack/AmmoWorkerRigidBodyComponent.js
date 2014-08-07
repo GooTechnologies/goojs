@@ -342,11 +342,15 @@ function (
 			command: 'disableCharacterControl'
 		});
 	};
-	AmmoWorkerRigidbodyComponent.prototype.setCharacterVelocity = function (velocity) {
-		this._postMessage({
+	AmmoWorkerRigidbodyComponent.prototype.setCharacterVelocity = function (velocity, angularVelocity) {
+		var message = {
 			command: 'setCharacterVelocity',
 			velocity: v2a(velocity)
-		});
+		};
+		if (angularVelocity) {
+			message.angularVelocity = v2a(angularVelocity);
+		}
+		this._postMessage(message);
 	};
 	AmmoWorkerRigidbodyComponent.prototype.characterJump = function (jumpImpulse) {
 		this._postMessage({
