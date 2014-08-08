@@ -124,6 +124,10 @@ function getAmmoShape(shapeConfig /*, bodyConfig*/) {
 		shape = new Ammo.btSphereShape(shapeConfig.radius);
 		break;
 
+	case 'cylinder':
+		shape = new Ammo.btCylinderShapeZ(arrayToTempAmmoVector(shapeConfig.halfExtents));
+		break;
+
 	case 'plane':
 		shape = new Ammo.btStaticPlaneShape(arrayToTempAmmoVector(shapeConfig.normal), shapeConfig.planeConstant);
 		break;

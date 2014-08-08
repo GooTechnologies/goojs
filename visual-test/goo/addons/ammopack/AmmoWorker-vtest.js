@@ -5,6 +5,7 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
+	'goo/shapes/Cylinder',
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/TextureCreator',
 	'goo/entities/components/ScriptComponent',
@@ -22,6 +23,7 @@ require([
 	'goo/addons/ammopack/PlaneCollider',
 	'goo/addons/ammopack/TerrainCollider',
 	'goo/addons/ammopack/ColliderComponent',
+	'goo/addons/ammopack/CylinderCollider',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
 	'goo/geometrypack/Surface',
@@ -33,6 +35,7 @@ require([
 	Box,
 	Sphere,
 	Quad,
+	Cylinder,
 	CameraComponent,
 	TextureCreator,
 	ScriptComponent,
@@ -50,6 +53,7 @@ require([
 	PlaneCollider,
 	TerrainCollider,
 	ColliderComponent,
+	CylinderCollider,
 	PointLight,
 	LightComponent,
 	Surface,
@@ -93,7 +97,8 @@ require([
 			var x = V.rng.nextFloat() * 16 - 8;
 			var y = V.rng.nextFloat() * 16 + 8;
 			var z = V.rng.nextFloat() * 16 - 8;
-			if (V.rng.nextFloat() < 0.5) {
+			var rand = V.rng.nextFloat();
+			if (rand < 0.3) {
 				var h = new Vector3(0.5 + V.rng.nextFloat(), 0.5 + V.rng.nextFloat(), 0.5 + V.rng.nextFloat());
 				createEntity(goo, new Box(2 * h.x, 2 * h.y, 2 * h.z),
 					{mass: 1},
@@ -103,7 +108,7 @@ require([
 					}),
 					null,
 					'primitive box');
-			} else {
+			} else if (rand < 0.6) {
 				var radius = 1 + V.rng.nextFloat();
 				createEntity(goo, new Sphere(10, 10, radius),
 					{mass: 1},
@@ -113,6 +118,18 @@ require([
 					}),
 					null,
 					'primitive sphere'
+				);
+			} else {
+				var radius = 0.7 + V.rng.nextFloat();
+				var height = 0.5;
+				createEntity(goo, new Cylinder(10, radius, height),
+					{ mass: 1 },
+					[x, y, z],
+					new CylinderCollider({
+						halfExtents : new Vector3(radius, height, height)
+					}),
+					null,
+					'primitive cylinder'
 				);
 			}
 		}
