@@ -1,17 +1,21 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
+	'goo/loaders/handlers/SkyboxHandler',
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Snow', // TODO Should move!
-	'goo/util/rsvp'
+	'goo/util/rsvp',
+	'goo/util/PromiseUtil'
 ], function(
 	ConfigHandler,
+	SkyboxHandler,
 	_,
 	SystemBus,
 	ShaderBuilder,
 	Snow,
-	RSVP
+	RSVP,
+	PromiseUtil
 ) {
 	'use strict';
 
@@ -99,8 +103,6 @@ define([
 
 			object.fog = _.deepClone(config.fog);
 
-
-
 			// Background color
 			SystemBus.emit('goo.setClearColor', object.backgroundColor);
 
@@ -110,7 +112,6 @@ define([
 			ShaderBuilder.USE_FOG = object.fog.enabled;
 			ShaderBuilder.FOG_COLOR = object.fog.color.slice(0,3);
 			ShaderBuilder.FOG_SETTINGS = [object.fog.near, config.fog.far];
-
 
 			// Weather
 			for (var key in config.weather) {
@@ -124,7 +125,13 @@ define([
 
 			// Skybox
 			if (config.skyboxRef) {
-				var p = that._load(config.skyboxRef, options);
+				object.skyboxRef = config.skyboxRef;
+				promises.push(that._load(config.skyboxRef, {reload: true}));
+			} else if (object.skyboxRef) {
+				var p = that.updateObject(object.skyboxRef, null)
+				.then(function () {
+					delete object.skyboxRef;
+				});
 				promises.push(p);
 			}
 

@@ -37,7 +37,7 @@ function(
 	 */
 	CanvasUtils.loadCanvasFromPath = function (canvasPath, callback) {
 		var options = {};
-		if(arguments.length === 3){
+		if (arguments.length === 3) {
 			// Called with loadCanvasFromPath(path,options,callback)
 			options = arguments[1];
 			callback = arguments[2];
@@ -45,6 +45,10 @@ function(
 
 		// have the image load
 		var img = new Image();
+		img.onerror = function () {
+			console.error('Failed to load svg!');
+			callback();
+		};
 		img.src = canvasPath;
 
 		// create an off screen canvas
@@ -53,7 +57,7 @@ function(
 		// get its context
 		var context = canvas.getContext('2d');
 
-		img.onload = function() {
+		img.onload = function () {
 			// when ready, paint the image on the canvas
 
 			if (img.width === 0 && img.height === 0) {
