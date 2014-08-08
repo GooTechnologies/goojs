@@ -81,7 +81,10 @@ define([
 	SkyboxHandler.prototype._update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(skybox) {
-			if (!skybox) { return that._remove(ref); }
+			if (!skybox) {
+				that._remove(ref);
+				return PromiseUtil.resolve([]);
+			}
 
 			var promises = [];
 			if (config.box) {
@@ -91,10 +94,12 @@ define([
 				promises.push(that._updateSphere(config.sphere, options, skybox));
 			}
 
-			return RSVP.all(promises).then(function () {
+			return RSVP.all(promises).then(function (skyboxes) {
 				if (config.box || config.sphere) {
 					that._activeSkyboxRef = ref;
 				}
+
+				return skyboxes;
 			});
 		});
 	};

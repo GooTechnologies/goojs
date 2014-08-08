@@ -1,21 +1,17 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/loaders/handlers/SkyboxHandler',
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Snow', // TODO Should move!
-	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
+	'goo/util/rsvp'
 ], function(
 	ConfigHandler,
-	SkyboxHandler,
 	_,
 	SystemBus,
 	ShaderBuilder,
 	Snow,
-	RSVP,
-	PromiseUtil
+	RSVP
 ) {
 	'use strict';
 
