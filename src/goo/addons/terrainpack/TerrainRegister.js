@@ -1,6 +1,6 @@
 define([
 	'goo/scripts/Scripts',
-	'goo/addons/terrainpack/Forrest',
+	'goo/addons/terrainpack/Forest',
 	'goo/addons/terrainpack/Terrain',
 	'goo/addons/terrainpack/TerrainHandler',
 	'goo/addons/terrainpack/Vegetation'
@@ -9,7 +9,7 @@ define([
 
 	var defines = [
 		'goo/scripts/Scripts',
-		'goo/addons/terrainpack/Forrest',
+		'goo/addons/terrainpack/Forest',
 		'goo/addons/terrainpack/Terrain',
 		'goo/addons/terrainpack/TerrainHandler',
 		'goo/addons/terrainpack/Vegetation'

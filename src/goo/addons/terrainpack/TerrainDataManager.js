@@ -1,7 +1,7 @@
 define([
 	'goo/addons/terrainpack/Terrain',
 	'goo/addons/terrainpack/Vegetation',
-	'goo/addons/terrainpack/Forrest',
+	'goo/addons/terrainpack/Forest',
 	'goo/math/Vector3',
 	'goo/util/Ajax',
 	'goo/math/Transform',
