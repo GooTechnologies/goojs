@@ -71,8 +71,8 @@ function (
 		material.renderQueue = 3001;
 		this.material = material;
 
-		this.patchSize = 25;
-		this.patchDensity = 8;
+		this.patchSize = 45;
+		this.patchDensity = 18;
 		this.gridSize = 5;
 
         this.setVegetationDensities(settings.patchSize || this.patchSize, settings.patchDensity || this.patchDensity, settings.gridSize || this.gridSize)

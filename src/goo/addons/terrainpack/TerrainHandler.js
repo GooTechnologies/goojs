@@ -46,7 +46,9 @@ define([
 			this.eventX = 0;
 			this.eventY = 0;
 			this.vegetationSettings = {
-				gridSize: 7
+				gridSize: 4,
+				patchSize: 25,
+				patchDensity: 20
 			};
 		}
 
@@ -152,7 +154,9 @@ define([
 			}.bind(this));
 		};
 
-		TerrainHandler.prototype.applyTextures = function(parentMipmap, splatMap, textures) {
+		TerrainHandler.prototype.applyTextures = function(parentMipmap, splatMap, textures, materialsReadyCB) {
+
+
 			this.terrain.init({
 				heightMap: parentMipmap,
 				splatMap: splatMap,
@@ -162,7 +166,7 @@ define([
 				ground4: textures[3],
 				ground5: textures[4],
 				stone: textures[5]
-			});
+			}, materialsReadyCB);
 			return this.terrain.getTerrainData();
 		};
 
@@ -186,11 +190,14 @@ define([
 		};
 
 		TerrainHandler.prototype.loadTextureData = function (terrainData, parentMipmap, splatMap, queryReadyCallback) {
-			var texturesLoadedCallback = function (textures) {
 
-				this.terrainInfo = this.applyTextures(parentMipmap, splatMap, textures);
+			var terrainInfoReady = function() {
 				this.loadTerrainQuery();
-				queryReadyCallback()
+				queryReadyCallback();
+			}.bind(this);
+
+			var texturesLoadedCallback = function (textures) {
+				this.terrainInfo = this.applyTextures(parentMipmap, splatMap, textures, terrainInfoReady);
 			}.bind(this);
  			this.terrainDataManager._loadTextures(this.resourceFolder, terrainData, texturesLoadedCallback);
 		};

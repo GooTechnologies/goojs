@@ -144,7 +144,7 @@ function(
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
 	}
 
-	Terrain.prototype.init = function (terrainTextures) {
+	Terrain.prototype.init = function (terrainTextures, initDone) {
 		var world = this.world;
 		var count = this.count;
 
@@ -268,6 +268,7 @@ function(
 		this.copyPass.render(this.renderer, this.splat, this.splatTexture);
 
 		this.updateTextures();
+		if (initDone) initDone();
 	};
 
 	Terrain.prototype.toggleMarker = function () {
@@ -729,17 +730,16 @@ function(
 		return meshData;
 	};
 
-	var tileScales = {
-		scaleGround1: 120,
-		scaleGround2: 30,
-		scaleGround3: 40,
-		scaleGround4: 150,
-		scaleGround5: 60,
-		scaleBedrock: 20
+	var tileScales = {};
+
+	function setTileScale(uniform, value) {
+		tileScales[uniform] = value;
 	};
 
 	Terrain.prototype.setShaderUniform = function(uniform, value) {
-		tileScales[uniform] = value;
+		console.log(tileScales)
+		setTileScale(uniform, value)
+
 	};
 
 	var terrainShaderDefFloat = {
@@ -776,12 +776,12 @@ function(
 			groundMap5: 'GROUND_MAP5',
 			stoneMap: 'STONE_MAP',
 			lightMap: 'LIGHT_MAP',
-			scaleGround1: tileScales.scaleGround1,
-			scaleGround2: tileScales.scaleGround2,
-			scaleGround3: tileScales.scaleGround3,
-			scaleGround4: tileScales.scaleGround4,
-			scaleGround5: tileScales.scaleGround5,
-			scaleBedrock: tileScales.scaleBedrock,
+			scaleGround1: tileScales.scaleGround1 || 60,
+			scaleGround2: tileScales.scaleGround2 || 60,
+			scaleGround3: tileScales.scaleGround3 || 60,
+			scaleGround4: tileScales.scaleGround4 || 60,
+			scaleGround5: tileScales.scaleGround5 || 60,
+			scaleBedrock: tileScales.scaleBedrock || 60,
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
 			},
