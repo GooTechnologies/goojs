@@ -114,17 +114,21 @@ define([
 				this.draw = false;
 				LMB = false;
 			}
-
 			this.forest.toggle();
 			this.vegetation.toggle();
 		};
 
 		TerrainHandler.prototype.initLevel = function (terrainData, settings, forestLODEntityMap) {
+			this.terrainData = terrainData;
 			this.settings = settings;
 			var terrainSize = this.terrainSize;
 
 			var terrainPromise = this.terrainDataManager._loadData(terrainData.heightMap);
 			var splatPromise = this.terrainDataManager._loadData(terrainData.splatMap);
+
+			var queryReadyCallback = function() {
+				this.loadVegetationAndForest(forestLODEntityMap);
+			}.bind(this);
 
 			return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
 				var terrainBuffer = datas[0];
@@ -144,7 +148,7 @@ define([
 					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
 				}
 
-				return this._load(terrainData, terrainArray, splatArray, forestLODEntityMap);
+				return this.loadTextureData(terrainData, terrainArray, splatArray, queryReadyCallback);
 			}.bind(this));
 		};
 
@@ -162,33 +166,72 @@ define([
 			return this.terrain.getTerrainData();
 		};
 
+		TerrainHandler.prototype.loadTerrainQuery = function() {
+			this.terrainQuery = new TerrainQuery(this.terrainSize, this.terrainData, this.terrain);
+		};
+
+		TerrainHandler.prototype.addVegetation = function(atlasUrl, vegetationTypes, onLoaded) {
+			var vegetationAtlasTexture = new TextureCreator().loadTexture2D(atlasUrl, {}, onLoaded);
+			vegetationAtlasTexture.anisotropy = 4;
+			this.vegetation.init(this.goo.world, this.terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
+		};
+
+		TerrainHandler.prototype.addForest = function(atlasUrl, normalsUrl, forestTypes, onLoaded, forestLODEntityMap) {
+			var forestAtlasTexture = new TextureCreator().loadTexture2D(atlasUrl, {}, onLoaded);
+			forestAtlasTexture.anisotropy = 4;
+			var forestAtlasNormals = new TextureCreator().loadTexture2D(normalsUrl, {}, onLoaded);
+			console.log("FOREST INIT:",forestAtlasTexture, forestAtlasNormals, forestTypes, forestLODEntityMap)
+			this.forest.init(this.goo.world, this.terrainQuery, forestAtlasTexture, forestAtlasNormals, forestTypes, forestLODEntityMap);
+		    console.log(this.forest)
+		};
+
+		TerrainHandler.prototype.loadTextureData = function (terrainData, parentMipmap, splatMap, queryReadyCallback) {
+			var texturesLoadedCallback = function (textures) {
+
+				this.terrainInfo = this.applyTextures(parentMipmap, splatMap, textures);
+				this.loadTerrainQuery();
+				queryReadyCallback()
+			}.bind(this);
+ 			this.terrainDataManager._loadTextures(this.resourceFolder, terrainData, texturesLoadedCallback);
+		};
+
+		TerrainHandler.prototype.loadVegetationAndForest = function (forestLODEntityMap) {
+
+				var texturesPromise = new RSVP.Promise();
+
+				var loadCount = 3;
+				var onLoaded = function() {
+					if (!--loadCount)
+					texturesPromise.resolve();
+				};
+
+				this.addVegetation(this.resourceFolder + this.terrainData.vegetationAtlas,  this.terrainData.vegetationTypes, onLoaded);
+				var forestAtlasUrl = this.resourceFolder +  this.terrainData.forestAtlas
+				var forestNormalsUrl = this.resourceFolder +  this.terrainData.forestAtlasNormals
+				this.addForest(forestAtlasUrl, forestNormalsUrl, this.terrainData.forestTypes, onLoaded, forestLODEntityMap);
+
+				return texturesPromise;
+
+		};
+
 		TerrainHandler.prototype._load = function (terrainData, parentMipmap, splatMap, forestLODEntityMap) {
 			var texturesLoadedCallback = function (textures) {
 
 				this.terrainInfo = this.applyTextures(parentMipmap, splatMap, textures);
-
-				this.terrainQuery = new TerrainQuery(this.terrainSize, terrainData, this.terrain);
+				this.loadTerrainQuery();
 
 				var texturesPromise = new RSVP.Promise();
+
 				var loadCount = 3;
 				var onLoaded = function() {
 					if (!--loadCount)
-						texturesPromise.resolve();
+					texturesPromise.resolve();
 				};
 
-				var vegetationAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.vegetationAtlas, {}, onLoaded);
-
-				vegetationAtlasTexture.anisotropy = 4;
-				var vegetationTypes = terrainData.vegetationTypes;
-
-				var forestAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forestAtlas, {}, onLoaded);
-
-				forestAtlasTexture.anisotropy = 4;
-				var forestAtlasNormals = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forestAtlasNormals, {}, onLoaded);
-
-
-				this.vegetation.init(this.goo.world, this.terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
-				this.forest.init(this.goo.world, this.terrainQuery, forestAtlasTexture, forestAtlasNormals, terrainData.forestTypes, forestLODEntityMap);
+				this.addVegetation(this.resourceFolder + this.terrainData.vegetationAtlas,  this.terrainData.vegetationTypes, onLoaded);
+				var forestAtlasUrl = this.resourceFolder +  this.terrainData.forestAtlas
+				var forestNormalsUrl = this.resourceFolder +  this.terrainData.forestAtlasNormals
+				this.addForest(forestAtlasUrl, forestNormalsUrl, this.terrainData.forestTypes, onLoaded, forestLODEntityMap);
 
 				return texturesPromise;
 			}.bind(this);
@@ -199,6 +242,11 @@ define([
 
 		TerrainHandler.prototype.updatePhysics = function () {
 			this.terrain.updateAmmoBody();
+			this.heightsEdited();
+		};
+
+		TerrainHandler.prototype.heightsEdited = function () {
+			this.terrainQuery.updateTerrainInfo();
 		};
 
 		TerrainHandler.prototype.initPhysics = function () {

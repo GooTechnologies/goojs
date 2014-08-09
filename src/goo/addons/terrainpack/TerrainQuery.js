@@ -14,8 +14,11 @@ define([
 			this.terrainSize = terrainSize;
 			this.terrainData = terrainData;
 			this.terrain = terrain;
-			this.terrainInfo = this.terrain.getTerrainData();
+			this.updateTerrainInfo();
+		};
 
+		TerrainQuery.prototype.updateTerrainInfo = function() {
+			this.terrainInfo = this.terrain.getTerrainData();
 		};
 
 		TerrainQuery.prototype.getHeightAt = function(pos) {

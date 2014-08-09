@@ -152,6 +152,7 @@ function (
 		this.grid = [];
 		this.gridState = [];
 		var dummyMesh = this.createForestPatch(0, 0, 1);
+
 		for (var x = 0; x < this.gridSize; x++) {
 			this.grid[x] = [];
 			this.gridState[x] = [];
@@ -357,14 +358,13 @@ function (
 
                     if (vegetationType) {
                         this.addVegMeshToPatch(vegetationType, pos, meshBuilder, levelOfDetail, gridEntity);
-                        disableEntityReflections(gridEntity);
-                        gridEntity.meshRendererComponent.isReflectable = false;
+                        if (gridEntity) disableEntityReflections(gridEntity);
+                    //    gridEntity.meshRendererComponent.isReflectable = false;
                     }
 				// console.count('tree');
                 }
 			}
 		}
-
 
         var meshDatas = meshBuilder.build();
 

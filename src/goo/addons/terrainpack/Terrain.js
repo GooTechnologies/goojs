@@ -80,6 +80,8 @@ function(
 			materials: [mat],
 			transform: new Transform()
 		};
+		this.terrainMaterials = [];
+
 		this.renderable.transform.setRotationXYZ(0, 0, Math.PI*0.5);
 
 		this.copyPass = new FullscreenPass(ShaderLib.screenCopy);
@@ -149,6 +151,9 @@ function(
 		var entity = this.terrainRoot = world.createEntity('TerrainRoot');
 		entity.addToWorld();
 		this.clipmaps = [];
+
+
+
 		for (var i = 0; i < count; i++) {
 			var size = Math.pow(2, i);
 
@@ -159,6 +164,9 @@ function(
 			// material.wireframe = true;
 			material.uniforms.resolution = [1, 1 / size, this.size, this.size];
 			material.uniforms.resolutionNorm = [this.size, this.size];
+			this.terrainMaterials.push(material);
+
+			console.log("Terrain Material: ", material)
 
 			var clipmapEntity = this.createClipmapLevel(world, material, i);
 			clipmapEntity.setScale(size, 1, size);
@@ -721,6 +729,19 @@ function(
 		return meshData;
 	};
 
+	var tileScales = {
+		scaleGround1: 120,
+		scaleGround2: 30,
+		scaleGround3: 40,
+		scaleGround4: 150,
+		scaleGround5: 60,
+		scaleBedrock: 20
+	};
+
+	Terrain.prototype.setShaderUniform = function(uniform, value) {
+		tileScales[uniform] = value;
+	};
+
 	var terrainShaderDefFloat = {
 		defines: {
 			SKIP_SPECULAR: true
@@ -755,6 +776,12 @@ function(
 			groundMap5: 'GROUND_MAP5',
 			stoneMap: 'STONE_MAP',
 			lightMap: 'LIGHT_MAP',
+			scaleGround1: tileScales.scaleGround1,
+			scaleGround2: tileScales.scaleGround2,
+			scaleGround3: tileScales.scaleGround3,
+			scaleGround4: tileScales.scaleGround4,
+			scaleGround5: tileScales.scaleGround5,
+			scaleBedrock: tileScales.scaleBedrock,
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
 			},
@@ -828,6 +855,14 @@ function(
 				'uniform vec2 fogSettings;',
 				'uniform vec3 fogColor;',
 
+
+				'uniform float scaleGround1;',
+				'uniform float scaleGround2;',
+				'uniform float scaleGround3;',
+				'uniform float scaleGround4;',
+				'uniform float scaleGround5;',
+				'uniform float scaleBedrock;',
+
 				'uniform vec2 resolutionNorm;',
 
 				// 'uniform vec2 resolution;',
@@ -842,20 +877,28 @@ function(
 				'void main(void) {',
 					'if (alphaval.w < -1000.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
-					'vec2 coord = mapcoord * 96.0;',
+
 					'vec4 final_color = vec4(1.0);',
 
 					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
 					'N.y = 0.1;',
 					'N = normalize(N);',
 
+
+					'vec2 coord  = mapcoord * vec2(scaleGround1);',
+					'vec2 coord1 = mapcoord * vec2(scaleGround2);',
+					'vec2 coord2 = mapcoord * vec2(scaleGround3);',
+					'vec2 coord3 = mapcoord * vec2(scaleGround4);',
+					'vec2 coord4 = mapcoord * vec2(scaleGround5);',
+					'vec2 coord5 = mapcoord * vec2(scaleBedrock);',
+
 					'vec4 splat = texture2D(splatMap, mapcoord);',
 					'vec4 g1 = texture2D(groundMap1, coord);',
-					'vec4 g2 = texture2D(groundMap2, coord);',
-					'vec4 g3 = texture2D(groundMap3, coord);',
-					'vec4 g4 = texture2D(groundMap4, coord);',
-					'vec4 g5 = texture2D(groundMap5, coord);',
-					'vec4 stone = texture2D(stoneMap, coord);',
+					'vec4 g2 = texture2D(groundMap2, coord1);',
+					'vec4 g3 = texture2D(groundMap3, coord2);',
+					'vec4 g4 = texture2D(groundMap4, coord3);',
+					'vec4 g5 = texture2D(groundMap5, coord4);',
+					'vec4 stone = texture2D(stoneMap,coord5);',
 
 					'final_color = mix(g1, g2, splat.r);',
 					'final_color = mix(final_color, g3, splat.g);',
@@ -863,7 +906,7 @@ function(
 					'final_color = mix(final_color, g5, splat.a);',
 
 					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-					'slope = smoothstep(0.15, 0.25, slope);',
+					'slope = smoothstep(0.30, 0.37, slope);',
 					'final_color = mix(final_color, stone, slope);',
 
 					// 'vec3 detail = texture2D(detailMap, mapcoord).xyz;',
@@ -1194,6 +1237,8 @@ function(
 		'}'//
 		].join('\n')
 	};
+
+
 
 	var terrainPickingShader = {
 		attributes : {

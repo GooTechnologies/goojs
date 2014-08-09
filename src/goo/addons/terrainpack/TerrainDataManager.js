@@ -33,34 +33,6 @@ define([
 			this.resourceFolder = folder;
 		};
 
-		TerrainDataManager.prototype.initLevel = function (terrainData, settings, forestLODEntityMap) {
-			this.settings = settings;
-			var terrainSize = this.terrainSize;
-
-			var terrainPromise = this._loadData(terrainData.heightMap);
-			var splatPromise = this._loadData(terrainData.splatMap);
-
-			return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
-				var terrainBuffer = datas[0];
-				var splatBuffer = datas[1];
-
-				var terrainArray;
-				if (terrainBuffer) {
-					terrainArray = new Float32Array(terrainBuffer);
-				} else {
-					terrainArray = new Float32Array(terrainSize * terrainSize);
-				}
-
-				var splatArray;
-				if (splatBuffer) {
-					splatArray = new Uint8Array(splatBuffer);
-				} else {
-					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
-				}
-
-				return this._load(terrainData, terrainArray, splatArray, forestLODEntityMap);
-			}.bind(this));
-		};
 
 		TerrainDataManager.prototype._loadData = function (url) {
 			var promise = new RSVP.Promise();
