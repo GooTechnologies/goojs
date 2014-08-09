@@ -1,5 +1,7 @@
 define([
 		'goo/addons/terrainpack/Terrain',
+        'goo/addons/terrainpack/TerrainDataManager',
+		'goo/addons/terrainpack/TerrainQuery',
 		'goo/addons/terrainpack/Vegetation',
 		'goo/addons/terrainpack/Forrest',
 		'goo/math/Vector3',
@@ -12,8 +14,10 @@ define([
 	],
 	function(
 		Terrain,
+		TerrainDataManager,
+		TerrainQuery,
 		Vegetation,
-		Forrest,
+		Forest,
 		Vector3,
 		Ajax,
 		Transform,
@@ -29,8 +33,10 @@ define([
 			this.terrainSize = terrainSize;
 			this.resourceFolder = resourceFolder;
 			this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels);
+			this.terrainDataManager = new TerrainDataManager();
+			this.terrainDataManager.setResourceFolder(this.resourceFolder);
 			this.vegetation = new Vegetation();
-			this.forrest = new Forrest();
+			this.forest = new Forest();
 
 			this.hidden = false;
 			this.store = new Vector3();
@@ -109,16 +115,16 @@ define([
 				LMB = false;
 			}
 
-			this.forrest.toggle();
+			this.forest.toggle();
 			this.vegetation.toggle();
 		};
 
-		TerrainHandler.prototype.initLevel = function (terrainData, settings, forrestLODEntityMap) {
+		TerrainHandler.prototype.initLevel = function (terrainData, settings, forestLODEntityMap) {
 			this.settings = settings;
 			var terrainSize = this.terrainSize;
 
-			var terrainPromise = this._loadData(terrainData.heightMap);
-			var splatPromise = this._loadData(terrainData.splatMap);
+			var terrainPromise = this.terrainDataManager._loadData(terrainData.heightMap);
+			var splatPromise = this.terrainDataManager._loadData(terrainData.splatMap);
 
 			return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
 				var terrainBuffer = datas[0];
@@ -138,269 +144,30 @@ define([
 					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
 				}
 
-				return this._load(terrainData, terrainArray, splatArray, forrestLODEntityMap);
+				return this._load(terrainData, terrainArray, splatArray, forestLODEntityMap);
 			}.bind(this));
 		};
 
-		TerrainHandler.prototype._loadData = function (url) {
-			var promise = new RSVP.Promise();
-
-            var fromLocalStore = localStorage.getItem(url)
-            if (fromLocalStore) {
-
-                setTimeout(function() {
-
-
-                    function _base64ToArrayBuffer(string_base64)    {
-                        var binary_string =  window.atob(string_base64);
-                        var len = binary_string.length;
-                        var bytes = new Uint8Array( len );
-                        for (var i = 0; i < len; i++)        {
-                            var ascii = binary_string.charCodeAt(i);
-                            bytes[i] = ascii;
-                        }
-                        return bytes.buffer;
-                    }
-                    var parsed = JSON.parse(fromLocalStore)
-                    var data = _base64ToArrayBuffer(parsed.data)
-                    console.log("Loading Local Data: ", parsed.file);
-
-                    promise.resolve(data);
-                }, 0);
-
-            } else {
-                var ajax = new Ajax();
-                ajax.get({
-                    url: this.resourceFolder + url,
-                    responseType: 'arraybuffer'
-                }).then(function(request) {
-                    promise.resolve(request.response);
-                }.bind(this), function(err) {
-                    promise.resolve(null);
-                }.bind(this));
-            };
-
-
-            return promise;
-		};
-
-		TerrainHandler.prototype._textureLoad = function (url) {
-			var promise = new RSVP.Promise();
-			new TextureCreator().loadTexture2D(url, {
-				anisotropy: 4
-			}, function (texture) {
-				promise.resolve(texture);
+		TerrainHandler.prototype.applyTextures = function(parentMipmap, splatMap, textures) {
+			this.terrain.init({
+				heightMap: parentMipmap,
+				splatMap: splatMap,
+				ground1: textures[0],
+				ground2: textures[1],
+				ground3: textures[2],
+				ground4: textures[3],
+				ground5: textures[4],
+				stone: textures[5]
 			});
-			return promise;
+			return this.terrain.getTerrainData();
 		};
 
-		TerrainHandler.prototype._load = function (terrainData, parentMipmap, splatMap, forrestLODEntityMap) {
-			var promises = [];
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground1.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground2.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground3.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground4.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground5.texture));
-			promises.push(this._textureLoad(this.resourceFolder + terrainData.stone.texture));
-			return RSVP.all(promises).then(function (textures) {
-				this.terrain.init({
-					heightMap: parentMipmap,
-					splatMap: splatMap,
-					ground1: textures[0],
-					ground2: textures[1],
-					ground3: textures[2],
-					ground4: textures[3],
-					ground5: textures[4],
-					stone: textures[5]
-				});
-				this.terrainInfo = this.terrain.getTerrainData();
+		TerrainHandler.prototype._load = function (terrainData, parentMipmap, splatMap, forestLODEntityMap) {
+			var texturesLoadedCallback = function (textures) {
 
-				var terrainSize = this.terrainSize;
-				var calcVec = new Vector3();
+				this.terrainInfo = this.applyTextures(parentMipmap, splatMap, textures);
 
-				var terrainQuery = this.terrainQuery = {
-					getHeightAt: function (pos) {
-						if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
-							return -1000;
-						}
-
-						var x = pos[0];
-						var z = terrainSize - pos[2];
-
-						var col = Math.floor(x);
-						var row = Math.floor(z);
-
-						var intOnX = x - col,
-							intOnZ = z - row;
-
-						var col1 = col + 1;
-						var row1 = row + 1;
-
-						col = MathUtils.moduloPositive(col, terrainSize);
-						row = MathUtils.moduloPositive(row, terrainSize);
-						col1 = MathUtils.moduloPositive(col1, terrainSize);
-						row1 = MathUtils.moduloPositive(row1, terrainSize);
-
-						var topLeft = this.terrainInfo.heights[row * terrainSize + col];
-						var topRight = this.terrainInfo.heights[row * terrainSize + col1];
-						var bottomLeft = this.terrainInfo.heights[row1 * terrainSize + col];
-						var bottomRight = this.terrainInfo.heights[row1 * terrainSize + col1];
-
-						return MathUtils.lerp(intOnZ, MathUtils.lerp(intOnX, topLeft, topRight),
-							MathUtils.lerp(intOnX, bottomLeft, bottomRight));
-					}.bind(this),
-					getNormalAt: function (pos) {
-						var x = pos[0];
-						var z = terrainSize - pos[2];
-
-						var col = Math.floor(x);
-						var row = Math.floor(z);
-
-						var col1 = col + 1;
-						var row1 = row + 1;
-
-						col = MathUtils.moduloPositive(col, terrainSize);
-						row = MathUtils.moduloPositive(row, terrainSize);
-						col1 = MathUtils.moduloPositive(col1, terrainSize);
-						row1 = MathUtils.moduloPositive(row1, terrainSize);
-
-						var topLeft = this.terrainInfo.heights[row * terrainSize + col];
-						var topRight = this.terrainInfo.heights[row * terrainSize + col1];
-						var bottomLeft = this.terrainInfo.heights[row1 * terrainSize + col];
-
-						return calcVec.setd((topLeft - topRight), 1, (bottomLeft - topLeft)).normalize();
-					}.bind(this),
-					getVegetationType: function (xx, zz, slope) {
-						var rand = Math.random();
-						if (MathUtils.smoothstep(0.82, 0.91, slope) < rand) {
-							return null;
-						}
-
-						if (this.terrainInfo) {
-							xx = Math.floor(xx);
-							zz = Math.floor(zz);
-
-							if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-								return null;
-							}
-
-							xx *= this.terrain.splatMult;
-							zz *= this.terrain.splatMult;
-
-							var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
-							var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
-							var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
-							var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
-							var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
-							var type = splat1 > rand ? terrainData.ground2 : splat2 > rand ? terrainData.ground3 : splat3 > rand ? terrainData.ground4 : splat4 > rand ? terrainData.ground5 : terrainData.ground1;
-
-							var test = 0;
-							for (var veg in type.vegetation) {
-								test += type.vegetation[veg];
-								if (rand < test) {
-									return veg;
-								}
-							}
-							return null;
-						}
-						return null;
-					}.bind(this),
-					getForrestType: function (xx, zz, slope, rand) {
-						if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
-							return null;
-						}
-
-						if (this.terrainInfo) {
-							xx = Math.floor(xx);
-							zz = Math.floor(zz);
-
-							if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-								return null;
-							}
-
-							xx *= this.terrain.splatMult;
-							zz *= this.terrain.splatMult;
-
-							var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
-							var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
-							var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
-							var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
-							var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
-							var type = splat1 > rand ? terrainData.ground2 : splat2 > rand ? terrainData.ground3 : splat3 > rand ? terrainData.ground4 : splat4 > rand ? terrainData.ground5 : terrainData.ground1;
-
-							var test = 0;
-							for (var veg in type.forrest) {
-								test += type.forrest[veg];
-								if (rand < test) {
-									return veg;
-								}
-							}
-							return null;
-						}
-						return null;
-					}.bind(this),
-					getLightAt: function (pos) {
-						if (pos[0] < 0 || pos[0] > terrainSize - 1 || pos[2] < 0 || pos[2] > terrainSize - 1) {
-							return -1000;
-						}
-
-						if (!this.lightMapData || !this.lightMapSize)
-							return 1;
-
-						var x = pos[0] * this.lightMapSize / terrainSize;
-						var z = (terrainSize - pos[2]) * this.lightMapSize / terrainSize;
-
-						var col = Math.floor(x);
-						var row = Math.floor(z);
-
-						var intOnX = x - col;
-						var intOnZ = z - row;
-
-						var col1 = col + 1;
-						var row1 = row + 1;
-
-						col = MathUtils.moduloPositive(col, this.lightMapSize);
-						row = MathUtils.moduloPositive(row, this.lightMapSize);
-						col1 = MathUtils.moduloPositive(col1, this.lightMapSize);
-						row1 = MathUtils.moduloPositive(row1, this.lightMapSize);
-
-						var topLeft = this.lightMapData[row * this.lightMapSize + col];
-						var topRight = this.lightMapData[row * this.lightMapSize + col1];
-						var bottomLeft = this.lightMapData[row1 * this.lightMapSize + col];
-						var bottomRight = this.lightMapData[row1 * this.lightMapSize + col1];
-
-						return MathUtils.lerp(intOnZ, MathUtils.lerp(intOnX, topLeft, topRight),
-						       MathUtils.lerp(intOnX, bottomLeft, bottomRight)) / 255.0;
-					}.bind(this),
-
-                    getType: function (xx, zz, slope, rand) {
-                        if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
-                            return terrainData.stone;
-                        }
-
-                        if (this.terrainInfo) {
-                            xx = Math.floor(xx);
-                            zz = Math.floor(zz);
-
-                            if (xx < 0 || xx > terrainSize - 1 || zz < 0 || zz > terrainSize - 1) {
-                                return terrainData.stone;
-                            }
-
-                            xx *= this.terrain.splatMult;
-                            zz *= this.terrain.splatMult;
-
-                            var index = (zz * terrainSize * this.terrain.splatMult + xx) * 4;
-                            var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
-                            var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
-                            var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
-                            var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
-                            var type = splat1 > rand ? terrainData.ground2 : splat2 > rand ? terrainData.ground3 : splat3 > rand ? terrainData.ground4 : splat4 > rand ? terrainData.ground5 : terrainData.ground1;
-
-                            return type;
-                        }
-                        return terrainData.stone;
-                    }.bind(this)
-				};
+				this.terrainQuery = new TerrainQuery(this.terrainSize, terrainData, this.terrain);
 
 				var texturesPromise = new RSVP.Promise();
 				var loadCount = 3;
@@ -414,18 +181,20 @@ define([
 				vegetationAtlasTexture.anisotropy = 4;
 				var vegetationTypes = terrainData.vegetationTypes;
 
-				var forrestAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlas, {}, onLoaded);
+				var forestAtlasTexture = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forestAtlas, {}, onLoaded);
 
-				forrestAtlasTexture.anisotropy = 4;
-				var forrestAtlasNormals = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forrestAtlasNormals, {}, onLoaded);
+				forestAtlasTexture.anisotropy = 4;
+				var forestAtlasNormals = new TextureCreator().loadTexture2D(this.resourceFolder + terrainData.forestAtlasNormals, {}, onLoaded);
 
-				var forrestTypes = terrainData.forrestTypes;
 
-				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
-				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
+				this.vegetation.init(this.goo.world, this.terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
+				this.forest.init(this.goo.world, this.terrainQuery, forestAtlasTexture, forestAtlasNormals, terrainData.forestTypes, forestLODEntityMap);
 
 				return texturesPromise;
-			}.bind(this));
+			}.bind(this);
+
+			this.terrainDataManager._loadTextures(this.resourceFolder, terrainData, texturesLoadedCallback);
+
 		};
 
 		TerrainHandler.prototype.updatePhysics = function () {
@@ -497,8 +266,8 @@ define([
 			if (this.vegetation) {
 				this.vegetation.update(pos.x, pos.z);
 			}
-			if (this.forrest) {
-				this.forrest.update(pos.x, pos.z);
+			if (this.forest) {
+				this.forest.update(pos.x, pos.z);
 			}
 		};
 

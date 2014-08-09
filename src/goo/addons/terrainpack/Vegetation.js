@@ -71,18 +71,12 @@ function (
 		material.renderQueue = 3001;
 		this.material = material;
 
-		this.patchSize = 15;
-		this.patchDensity = 19;
-		this.gridSize = 7;
+		this.patchSize = 25;
+		this.patchDensity = 8;
+		this.gridSize = 5;
 
-		if (settings) {
-			this.patchSize = settings.patchSize || this.patchSize;
-			this.patchDensity = settings.patchDensity || this.patchDensity;
-			this.gridSize = settings.gridSize || this.gridSize;
-		}
+        this.setVegetationDensities(settings.patchSize || this.patchSize, settings.patchDensity || this.patchDensity, settings.gridSize || this.gridSize)
 
-		this.patchSpacing = this.patchSize / this.patchDensity;
-		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
 		this.grid = [];
 		var dummyMesh = this.createPatch(0, 0);
 		for (var x = 0; x < this.gridSize; x++) {
@@ -99,6 +93,7 @@ function (
 				this.grid[x][z] = entity;
 				entity.meshRendererComponent.cullMode = 'Never';
 				entity.meshRendererComponent.hidden = true;
+                entity.meshRendererComponent.isReflectable = false;
 			}
 		}
 
@@ -110,6 +105,14 @@ function (
 
 		this.initDone = true;
 	};
+
+    Vegetation.prototype.setVegetationDensities = function (patchSize, patchDensity, gridSize) {
+        this.patchSize = patchSize;
+        this.patchDensity = patchDensity;
+        this.gridSize = gridSize;
+        this.patchSpacing = this.patchSize / this.patchDensity;
+        this.gridSizeHalf = Math.floor(this.gridSize*0.5);
+    };
 
 	Vegetation.prototype.rebuild = function () {
 		this.currentX = -10000;
@@ -169,6 +172,7 @@ function (
 					entity.meshRendererComponent.hidden = true;
 				} else {
 					entity.meshRendererComponent.hidden = false;
+                    entity.meshRendererComponent.isReflectable = false;
 					entity.meshDataComponent.meshData = meshData;
 					entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 				}
@@ -204,7 +208,7 @@ function (
 				}
 				var slope = norm.dot(Vector3.UNIT_Y);
 
-				var vegetationType = this.terrainQuery.getVegetationType(xx, zz, slope);
+				var vegetationType = this.terrainQuery.getVegetationType(xx, yy, zz, slope);
 				if (!vegetationType) {
 					continue;
 				}
