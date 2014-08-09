@@ -422,7 +422,7 @@ function (
 			this.stats.update(
 				this.renderer.info.toString() + '<br>' +
 				'Transform updates: ' + this.world.getSystem('TransformSystem').numUpdates +
-				'<br>Cached shaders: ' + Object.keys(this.renderer.rendererRecord.shaderCache).length
+				'<br>Cached shaders: ' // + Object.keys(this.renderer.rendererRecord.shaderCache).length
 			);
 		}
 

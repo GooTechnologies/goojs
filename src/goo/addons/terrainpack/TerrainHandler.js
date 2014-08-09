@@ -145,17 +145,43 @@ define([
 		TerrainHandler.prototype._loadData = function (url) {
 			var promise = new RSVP.Promise();
 
-			var ajax = new Ajax();
-			ajax.get({
-				url: this.resourceFolder + url,
-				responseType: 'arraybuffer'
-			}).then(function (request) {
-				promise.resolve(request.response);
-			}.bind(this), function () {
-				promise.resolve(null);
-			}.bind(this));
+            var fromLocalStore = localStorage.getItem(url)
+            if (fromLocalStore) {
 
-			return promise;
+                setTimeout(function() {
+
+
+                    function _base64ToArrayBuffer(string_base64)    {
+                        var binary_string =  window.atob(string_base64);
+                        var len = binary_string.length;
+                        var bytes = new Uint8Array( len );
+                        for (var i = 0; i < len; i++)        {
+                            var ascii = binary_string.charCodeAt(i);
+                            bytes[i] = ascii;
+                        }
+                        return bytes.buffer;
+                    }
+                    var parsed = JSON.parse(fromLocalStore)
+                    var data = _base64ToArrayBuffer(parsed.data)
+                    console.log("Loading Local Data: ", parsed.file);
+
+                    promise.resolve(data);
+                }, 0);
+
+            } else {
+                var ajax = new Ajax();
+                ajax.get({
+                    url: this.resourceFolder + url,
+                    responseType: 'arraybuffer'
+                }).then(function(request) {
+                    promise.resolve(request.response);
+                }.bind(this), function(err) {
+                    promise.resolve(null);
+                }.bind(this));
+            };
+
+
+            return promise;
 		};
 
 		TerrainHandler.prototype._textureLoad = function (url) {
