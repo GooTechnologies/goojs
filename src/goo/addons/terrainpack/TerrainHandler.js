@@ -149,7 +149,8 @@ define([
 					this.terrainDataManager._loadData(terrainData.heightMap),
 					this.terrainDataManager._loadData(terrainData.splatMap),
 					this.terrainDataManager._loadData('Materials'),
-					this.terrainDataManager._loadData('Vegetation')
+					this.terrainDataManager._loadData('Vegetation'),
+					this.terrainDataManager._loadData('Forest')
 				];
 
 				return RSVP.all(promises).then(function (datas) {

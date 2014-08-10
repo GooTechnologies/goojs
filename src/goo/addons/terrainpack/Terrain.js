@@ -745,7 +745,14 @@ function(
 		return meshData;
 	};
 
-	var tileScales = {};
+	var tileScales = {
+		scaleGround1 : 60,
+		scaleGround2 : 40,
+		scaleGround3 : 60,
+		scaleGround4 : 80,
+		scaleGround5 : 50,
+		scaleBedrock : 20
+	};
 
 	function setTileScale(uniform, value) {
 		tileScales[uniform] = value;
