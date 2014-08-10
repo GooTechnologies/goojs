@@ -62,13 +62,13 @@ function (
 		var material = new Material(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', vegetationAtlasTexture);
 		material.cullState.enabled = false;
-		material.uniforms.discardThreshold = 0.2;
-		material.blendState.blending = 'CustomBlending';
+		material.uniforms.discardThreshold = 0.5;
+		material.blendState.blending = 'NoBlending';
 		// material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 0.3];
 		material.uniforms.materialAmbient = [0, 0, 0, 0];
 		material.uniforms.materialDiffuse = [1, 1, 1, 1];
 		material.uniforms.materialSpecular = [0, 0, 0, 0];
-		material.renderQueue = 3001;
+		material.renderQueue = 1001;
 		this.material = material;
 
 		this.patchSize = 45;

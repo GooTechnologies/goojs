@@ -78,8 +78,12 @@ define([
 
 		TerrainQuery.prototype.getVegetationType = function(xx, yy, zz, slope) {
 
-			if (yy < 0) return;
-
+			if (yy < -2) return;
+			if (yy < 0.1) {
+				if (this.getNormalAt([xx, yy, zz]).data[1] > 0.9) {
+					return "reeds_2";
+				}
+			}
 			var rand = Math.random();
 			if (MathUtils.smoothstep(0.52, 0.91, slope) < rand) {
 				return null;

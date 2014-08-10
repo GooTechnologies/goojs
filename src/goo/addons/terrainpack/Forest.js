@@ -307,7 +307,7 @@ function (
 
 	Forest.prototype.addVegMeshToPatch = function (vegetationType, pos, meshBuilder, levelOfDetail, gridEntity) {
 		var transform = new Transform();
-		var size = (MathUtils.fastRandom() * 0.5 + 0.75);
+		var size = (MathUtils.fastRandom() * 0.75 + 0.2);
 		transform.translation.set(pos);
 		transform.update();
 		// var meshData;
@@ -317,6 +317,7 @@ function (
 			var treeEntity = this.fetchTreeMesh(vegetationType);
 			treeEntity.transformComponent.transform.scale.mul(size);
 			treeEntity.transformComponent.transform.translation.set(pos);
+			treeEntity.transformComponent.transform.rotation.rotateY(Math.random()*55);
 			treeEntity.addToWorld();
 			gridEntity.attachChild(treeEntity);
 			if (this.onAddedVegMesh) {
