@@ -15,6 +15,7 @@ define([
 			this.terrainData = terrainData;
 			this.terrain = terrain;
 			this.updateTerrainInfo();
+			this.setWaterLevel(0);
 		};
 
 		TerrainQuery.prototype.updateTerrainInfo = function() {
@@ -76,16 +77,26 @@ define([
 			return calcVec.setd((topLeft - topRight), 1, (bottomLeft - topLeft)).normalize();
 		};
 
+		TerrainQuery.prototype.setWaterLevel = function(level) {
+			this.waterLevel = level;
+		};
+
+		TerrainQuery.prototype.getWaterPlants = function(yy, slope) {
+			if (yy < -1) return;
+			if (slope > 0.9) {
+				return "reeds_2";
+			}
+			return;
+		};
+
 		TerrainQuery.prototype.getVegetationType = function(xx, yy, zz, slope) {
 
-			if (yy < -2) return;
-			if (yy < 0.1) {
-				if (this.getNormalAt([xx, yy, zz]).data[1] > 0.9) {
-					return "reeds_2";
-				}
+
+			if (yy < this.waterLevel) {
+				return this.getWaterPlants(yy, slope)
 			}
 			var rand = Math.random();
-			if (MathUtils.smoothstep(0.52, 0.91, slope) < rand) {
+			if (MathUtils.smoothstep(0.72, 0.81, slope) < 0.5+rand*0.5) {
 				return null;
 			}
 

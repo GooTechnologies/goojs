@@ -97,9 +97,6 @@ function (
 			}
 		}
 
-		material.uniforms.fadeDistMax = this.gridSizeHalf * this.patchSize;
-		material.uniforms.fadeDistMin = 0.70 * material.uniforms.fadeDistMax;
-
 		this.currentX = -10000;
 		this.currentZ = -10000;
 
@@ -109,9 +106,13 @@ function (
     Vegetation.prototype.setVegetationDensities = function (patchSize, patchDensity, gridSize) {
         this.patchSize = patchSize;
         this.patchDensity = patchDensity;
-        this.gridSize = gridSize;
+    //    this.gridSize = gridSize;
         this.patchSpacing = this.patchSize / this.patchDensity;
         this.gridSizeHalf = Math.floor(this.gridSize*0.5);
+
+		this.material.uniforms.fadeDistMax = this.gridSizeHalf * this.patchSize;
+		this.material.uniforms.fadeDistMin = 0.70 * this.material.uniforms.fadeDistMax;
+
     };
 
 	Vegetation.prototype.rebuild = function () {
