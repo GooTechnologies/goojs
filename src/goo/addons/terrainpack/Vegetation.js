@@ -110,8 +110,11 @@ function (
         this.patchSpacing = this.patchSize / this.patchDensity;
         this.gridSizeHalf = Math.floor(this.gridSize*0.5);
 
-		this.material.uniforms.fadeDistMax = this.gridSizeHalf * this.patchSize;
-		this.material.uniforms.fadeDistMin = 0.70 * this.material.uniforms.fadeDistMax;
+		if (this.material) {
+			this.material.uniforms.fadeDistMax = this.gridSizeHalf * this.patchSize;
+			this.material.uniforms.fadeDistMin = 0.70 * this.material.uniforms.fadeDistMax;
+		}
+
 
     };
 

@@ -28,11 +28,11 @@ define([
 	) {
 		'use strict';
 
-		function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder) {
+		function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder, terrainSettings) {
 			this.goo = goo;
 			this.terrainSize = terrainSize;
 			this.resourceFolder = resourceFolder;
-			this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels);
+			this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels, terrainSettings.scale);
 			this.terrainDataManager = new TerrainDataManager();
 			this.terrainDataManager.setResourceFolder(this.resourceFolder);
 			this.vegetation = new Vegetation();
@@ -51,6 +51,10 @@ define([
 				patchDensity: 20
 			};
 		}
+
+		TerrainHandler.prototype.setTerrainScale = function(scale) {
+			this.terrain.scale = scale;
+		};
 
 		TerrainHandler.prototype.isEditing = function () {
 			return !this.hidden;
@@ -120,38 +124,111 @@ define([
 			this.vegetation.toggle();
 		};
 
+		TerrainHandler.prototype.loadTerrainData = function(terrainData) {
+
+			var checkForJson = function() {
+				var promise = this.terrainDataManager.loadJsonData('data.json')
+
+				return RSVP.all([promise]).then(function (datas) {
+
+					var jsonObj = JSON.parse(datas[0]);
+					console.log(jsonObj)
+					var loadedData = jsonObj;
+					/*
+					for (var i = 0; i < datas.length; i++) {
+						if (datas[i]) loadedData[datas[i].file] = datas[i].data
+					}
+					*/
+					console.log("Loaded from data.json", loadedData)
+					return loadedData;
+				});
+			}.bind(this);
+
+			var loadLocal = function() {
+				var promises = [
+					this.terrainDataManager._loadData(terrainData.heightMap),
+					this.terrainDataManager._loadData(terrainData.splatMap),
+					this.terrainDataManager._loadData('Materials'),
+					this.terrainDataManager._loadData('Vegetation')
+				];
+
+				return RSVP.all(promises).then(function (datas) {
+					var loadedData = {};
+					var dataFound = false;
+					for (var i = 0; i < datas.length; i++) {
+						if (datas[i]) {
+							loadedData[datas[i].file] = datas[i].data;
+							loadedData.local = datas[i].local
+							if (datas[i].local) dataFound = true;
+						}
+					}
+
+					if (!dataFound) return checkForJson();
+
+					console.log("Loaded from localStorage", loadedData)
+					return loadedData;
+				});
+			}.bind(this)
+
+			return loadLocal();
+
+		};
+
+
+		TerrainHandler.prototype.preload = function (terrainData) {
+
+			return this.loadTerrainData(terrainData).then(function (loadedData) {
+
+				if (loadedData.local) {
+					this.terrainBuffer = this.terrainDataManager.decodeBase64(loadedData['height_map.raw']);
+					this.splatBuffer = this.terrainDataManager.decodeBase64(loadedData['splat_map.raw']);
+				} else {
+					this.terrainBuffer = loadedData['height_map.raw'];
+					this.splatBuffer = loadedData['splat_map.raw'];
+				}
+
+				if (loadedData.Vegetation) {
+					this.vegetationSettings = {
+						gridSize: loadedData.Vegetation.gridSize,
+						patchSize: loadedData.Vegetation.patchSize,
+						patchDensity: loadedData.Vegetation.patchDensity
+					};
+				}
+
+				if (loadedData.Materials) {
+					for (var index in loadedData.Materials) {
+						this.terrain.setShaderUniform(index, loadedData.Materials[index]);
+					}
+				}
+			}.bind(this));
+		};
+
 		TerrainHandler.prototype.initLevel = function (terrainData, settings, forestLODEntityMap) {
 			this.terrainData = terrainData;
 			this.settings = settings;
 			var terrainSize = this.terrainSize;
 
-			var terrainPromise = this.terrainDataManager._loadData(terrainData.heightMap);
-			var splatPromise = this.terrainDataManager._loadData(terrainData.splatMap);
-
 			var queryReadyCallback = function() {
 				this.loadVegetationAndForest(forestLODEntityMap);
 			}.bind(this);
 
-			return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
-				var terrainBuffer = datas[0];
-				var splatBuffer = datas[1];
 
 				var terrainArray;
-				if (terrainBuffer) {
-					terrainArray = new Float32Array(terrainBuffer);
+				if (this.terrainBuffer) {
+					terrainArray = new Float32Array(this.terrainBuffer);
 				} else {
 					terrainArray = new Float32Array(terrainSize * terrainSize);
 				}
 
 				var splatArray;
-				if (splatBuffer) {
-					splatArray = new Uint8Array(splatBuffer);
+				if (this.splatBuffer) {
+					splatArray = new Uint8Array(this.splatBuffer);
 				} else {
 					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
 				}
 
 				return this.loadTextureData(terrainData, terrainArray, splatArray, queryReadyCallback);
-			}.bind(this));
+
 		};
 
 		TerrainHandler.prototype.applyTextures = function(parentMipmap, splatMap, textures, materialsReadyCB) {

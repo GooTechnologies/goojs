@@ -33,6 +33,33 @@ define([
 			this.resourceFolder = folder;
 		};
 
+		TerrainDataManager.prototype.decodeBase64 = function (base64string) {
+				var binary_string = window.atob(base64string);
+				var len = binary_string.length;
+				var bytes = new Uint8Array( len );
+				for (var i = 0; i < len; i++)        {
+					var ascii = binary_string.charCodeAt(i);
+					bytes[i] = ascii;
+				}
+				return bytes.buffer;
+		};
+
+		TerrainDataManager.prototype.loadJsonData = function (url) {
+			console.log("Look for "+url+" at:", this.resourceFolder)
+			var promise = new RSVP.Promise();
+
+				var ajax = new Ajax();
+				ajax.get({
+					url: this.resourceFolder + url,
+					responseType: 'application/json'
+				}).then(function(request) {
+					promise.resolve(request.response);
+				}.bind(this), function(err) {
+					promise.resolve(null);
+				}.bind(this));
+
+			return promise;
+		};
 
 		TerrainDataManager.prototype._loadData = function (url) {
 			var promise = new RSVP.Promise();
@@ -41,22 +68,17 @@ define([
 			if (fromLocalStore) {
 
 				setTimeout(function() {
-
-					function _base64ToArrayBuffer(string_base64)    {
-						var binary_string =  window.atob(string_base64);
-						var len = binary_string.length;
-						var bytes = new Uint8Array( len );
-						for (var i = 0; i < len; i++)        {
-							var ascii = binary_string.charCodeAt(i);
-							bytes[i] = ascii;
-						}
-						return bytes.buffer;
-					}
 					var parsed = JSON.parse(fromLocalStore)
-					var data = _base64ToArrayBuffer(parsed.data)
+				/*
+					var data;
+					try {
+						data = this.decodeBase64(parsed.data);
+					} catch(err) {
+						data = parsed.data;
+					}
+				*/
 					console.log("Loading Local Data: ", parsed.file);
-
-					promise.resolve(data);
+					promise.resolve({file:parsed.file, data:parsed.data, local:true});
 				}, 0);
 
 			} else {
@@ -65,7 +87,11 @@ define([
 					url: this.resourceFolder + url,
 					responseType: 'arraybuffer'
 				}).then(function(request) {
-					promise.resolve(request.response);
+
+					console.log("Get Ajax: ", request)
+
+				//	promise.resolve(request.response);
+					promise.resolve({file:url, data:request.response, local:false});
 				}.bind(this), function(err) {
 					promise.resolve(null);
 				}.bind(this));

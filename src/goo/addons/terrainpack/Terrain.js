@@ -50,10 +50,11 @@ function(
 	/**
 	 * @class A terrain
 	 */
-	function Terrain(goo, size, count) {
+	function Terrain(goo, size, count, scale) {
 		this.world = goo.world;
 		this.renderer = goo.renderer;
 		this.size = size;
+		this.scale = scale || 1;
 		this.count = count;
 		this.splatMult = 2;
 
@@ -144,12 +145,18 @@ function(
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
 	}
 
+	Terrain.prototype.setTerrainScale = function(scale) {
+		this.scale = scale;
+
+	};
+
 	Terrain.prototype.init = function (terrainTextures, initDone) {
 		var world = this.world;
 		var count = this.count;
 
 		var entity = this.terrainRoot = world.createEntity('TerrainRoot');
 		entity.addToWorld();
+
 		this.clipmaps = [];
 
 
@@ -665,8 +672,16 @@ function(
 	};
 
 	Terrain.prototype.createQuadEntity = function (world, material, level, parentEntity, x, y, w, h) {
+
+	//	x = x*this.scale;
+	//	y = y*this.scale;
+	//	w = w*this.scale;
+	//	h = h*this.scale;
+
 		var meshData = this.createGrid(w, h);
 		var entity = world.createEntity('mesh_' + w + '_' + h, meshData, material);
+
+	//	entity.transformComponent.transform.scale.set(this.scale);
 
 		entity.meshDataComponent.modelBound.xExtent = w * 0.5;
 		entity.meshDataComponent.modelBound.yExtent = 255;
@@ -736,10 +751,17 @@ function(
 		tileScales[uniform] = value;
 	};
 
+	function getTileScaleValue(uniform) {
+		return tileScales[uniform];
+	}
+
 	Terrain.prototype.setShaderUniform = function(uniform, value) {
-		console.log(tileScales)
+		console.log(uniform, value, tileScales)
 		setTileScale(uniform, value)
 
+		for (var i = 0; i < this.terrainMaterials.length; i++) {
+			this.terrainMaterials[i].shader.uniforms[uniform] = value;
+		}
 	};
 
 	var terrainShaderDefFloat = {
@@ -776,12 +798,12 @@ function(
 			groundMap5: 'GROUND_MAP5',
 			stoneMap: 'STONE_MAP',
 			lightMap: 'LIGHT_MAP',
-			scaleGround1: tileScales.scaleGround1 || 60,
-			scaleGround2: tileScales.scaleGround2 || 60,
-			scaleGround3: tileScales.scaleGround3 || 60,
-			scaleGround4: tileScales.scaleGround4 || 60,
-			scaleGround5: tileScales.scaleGround5 || 60,
-			scaleBedrock: tileScales.scaleBedrock || 60,
+			scaleGround1: getTileScaleValue('scaleGround1'),
+			scaleGround2: getTileScaleValue('scaleGround2'),
+			scaleGround3: getTileScaleValue('scaleGround3'),
+			scaleGround4: getTileScaleValue('scaleGround4'),
+			scaleGround5: getTileScaleValue('scaleGround5'),
+			scaleBedrock: getTileScaleValue('scaleBedrock'),
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
 			},
