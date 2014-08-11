@@ -121,12 +121,12 @@ require([
 				);
 			} else {
 				var radius = 0.7 + V.rng.nextFloat();
-				var height = 0.5;
-				createEntity(goo, new Cylinder(10, radius, height),
+				var height = 1;
+				createEntity(goo, new Cylinder(10, radius, radius, height),
 					{ mass: 1 },
 					[x, y, z],
 					new CylinderCollider({
-						halfExtents : new Vector3(radius, height, height)
+						halfExtents : new Vector3(radius, height, height / 2)
 					}),
 					null,
 					'primitive cylinder'
