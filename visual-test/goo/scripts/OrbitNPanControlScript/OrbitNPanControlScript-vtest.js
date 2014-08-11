@@ -28,7 +28,8 @@ require([
 	var script = Scripts.create('OrbitNPanControlScript', {
 		// Orbit
 		dragButton: 'Right',
-		spherical: new Vector3(30,60,5),
+		lookAtDistance: null,
+		spherical: [30, 60, 5],
 		whenUsed : true,
 		orbitSpeed : 0.005,
 		zoomSpeed : 1,
@@ -42,11 +43,11 @@ require([
 		clampAzimuth : false,
 		minAzimuth : 90,
 		maxAzimuth : 270,
-		lookAtPoint : new Vector3(0,0,0),
+		lookAtPoint : [0, 0, 0],
 
 		// Pan
 		panButton: 'Middle',
-		panSpeed : 0.005,
+		panSpeed : 0.005
 	});
 
 	// camera control set up
