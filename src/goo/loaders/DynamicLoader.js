@@ -5,6 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
+	'goo/util/ShapeCreatorMemoized',
 
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
@@ -31,7 +32,8 @@ function (
 	Ajax,
 	RSVP,
 	StringUtil,
-	PromiseUtil
+	PromiseUtil,
+	ShapeCreatorMemoized
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
@@ -91,6 +93,19 @@ function (
 		}
 		if (this._ajax.clear instanceof Function) {
 			this._ajax.clear();
+		}
+		if (this._world && this._world.gooRunner) {
+			ShapeCreatorMemoized.clearCache(this._world.gooRunner.renderer.context);
+			for (var i = 0; i < this._world.gooRunner.renderSystems.length; i++) {
+				var lights = this._world.gooRunner.renderSystems[i].lights;
+				if (lights) {
+					for (var j = 0; j < lights.length; j++) {
+						lights[j].destroy(this._world.gooRunner.renderer);
+					}
+				}
+			}
+
+			this._world.gooRunner.renderer.clearShaderCache();
 		}
 		return RSVP.all(promises);
 	};
@@ -184,10 +199,10 @@ function (
 		if (handler) {
 			return handler.update(ref, config, options);
 		} else if (DynamicLoader._isRefTypeInGroup(ref, 'binary') || type !== 'bundle') {
-			return PromiseUtil.createDummyPromise(config);
+			return PromiseUtil.resolve(config);
 		} else {
 			console.warn('No handler for type ' + type);
-			return PromiseUtil.createDummyPromise(config);
+			return PromiseUtil.resolve(config);
 		}
 	};
 

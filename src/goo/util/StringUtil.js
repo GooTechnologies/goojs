@@ -2,7 +2,7 @@
 define([],
 /** @lends */
 function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class
@@ -37,7 +37,9 @@ function () {
 				return (randomNumber & 0x3 | 0x8).toString(16);
 			}
 		});
-
+		if (type === undefined) {
+			return uuid;
+		}
 		return uuid + '.' + type;
 	};
 

@@ -21,7 +21,7 @@ define([
 		Box,
 		Cylinder
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class

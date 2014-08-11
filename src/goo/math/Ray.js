@@ -1,7 +1,7 @@
 define(['goo/math/Vector3', 'goo/math/MathUtils'],
 /** @lends */
 function (Vector3, MathUtils) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).

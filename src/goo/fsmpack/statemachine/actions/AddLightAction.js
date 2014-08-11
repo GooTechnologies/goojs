@@ -9,7 +9,7 @@ function(
 	LightComponent,
 	PointLight
 ) {
-	"use strict";
+	'use strict';
 
 	function AddLightAction(/*id, settings*/) {
 		Action.apply(this, arguments);

@@ -1,3 +1,22 @@
+v0.11.0 --- 2014-08-12
+======================
+
+Additions:
+ + sound instances now have a name property
+
+Changes:
+ * entities get added/removed to managers synchronously
+
+Fixes:
+ * cameras don't get scaled according to their parent entity anymore
+
+Deprecated:
+ - PromiseUtil.createDummyPromise; use PromiseUtil.resolve/reject instead
+ 
+Removed:
+ - Howler.js sound library support; use the Goo SoundComponent instead.
+ - Material.createMaterial(...); use new Material(...) instead.
+
 v0.10.8 --- 2014-07-02
 ======================
 

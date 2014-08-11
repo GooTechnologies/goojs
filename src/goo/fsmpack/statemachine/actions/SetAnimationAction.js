@@ -3,7 +3,7 @@ define(['goo/fsmpack/statemachine/actions/Action'],
 function (
 	Action
 	) {
-	"use strict";
+	'use strict';
 
 	function SetAnimationAction(/*id, settings*/) {
 		Action.apply(this, arguments);

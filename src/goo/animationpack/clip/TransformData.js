@@ -1,7 +1,7 @@
 define(['goo/math/Quaternion', 'goo/math/Vector3'],
 /** @lends */
 function (Quaternion, Vector3) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Describes a relative transform as a Quaternion-Vector-Vector tuple. We use QVV to make it simpler to do LERP blending.

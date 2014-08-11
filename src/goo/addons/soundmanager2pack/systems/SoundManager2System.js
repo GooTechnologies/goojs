@@ -5,7 +5,7 @@ define([
 function(
 	System
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handles integration with Sound Manager 2

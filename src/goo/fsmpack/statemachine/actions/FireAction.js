@@ -48,7 +48,7 @@ function (
 
 	FireAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
-		if (this.fireEntity && entity.transformComponent.children.indexOf(this.fireEntity) !== -1) {
+		if (this.fireEntity && entity.transformComponent.children.indexOf(this.fireEntity.transformComponent) !== -1) {
 			return;
 		}
 

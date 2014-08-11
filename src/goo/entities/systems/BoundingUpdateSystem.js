@@ -7,7 +7,7 @@ function (
 	System,
 	BoundingBox
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components

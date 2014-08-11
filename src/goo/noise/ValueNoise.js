@@ -2,7 +2,7 @@
 define(["goo/noise/Noise"],
 	/** @lends */
 	function (Noise) {
-	"use strict";
+	'use strict';
 
 	/* ====================================================================== */
 

@@ -2,14 +2,16 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/Material',
 	'goo/renderer/pass/FullscreenUtil',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/pass/Pass'
 ],
 /** @lends */
 function (
 	TextureCreator,
 	Material,
 	FullscreenUtil,
-	ShaderLib
+	ShaderLib,
+	Pass
 ) {
 	'use strict';
 
@@ -35,6 +37,9 @@ function (
 		this.clear = false;
 		this.needsSwap = true;
 	}
+
+	NesPass.prototype = Object.create(Pass.prototype);
+	NesPass.prototype.constructor = NesPass;
 
 	NesPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 		this.material.setTexture('DIFFUSE_MAP', readBuffer);

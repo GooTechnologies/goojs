@@ -6,7 +6,7 @@ define([
 		MeshData,
 		MathUtils
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class

@@ -19,7 +19,7 @@ function(
 	_,
 	StringUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of meshdatacomponents
@@ -56,6 +56,16 @@ function(
 	 */
 	MeshDataComponentHandler.prototype._create = function() {
 		return new MeshDataComponent();
+	};
+
+	/**
+	 * Removes the meshdata component
+	 * @param {string} ref
+	 */
+	MeshDataComponentHandler.prototype._remove = function (entity) {
+		if (entity.meshDataComponent && entity.meshDataComponent.meshData && this.world.gooRunner) {
+			entity.meshDataComponent.meshData.destroy(this.world.gooRunner.renderer.context);
+		}
 	};
 
 	/**

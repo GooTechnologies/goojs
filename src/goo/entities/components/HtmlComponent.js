@@ -1,13 +1,14 @@
 define([
 	'goo/entities/components/Component'
-], /** @lends */ function (
+], /** @lends */
+function (
 	Component
 ) {
 	'use strict';
 
 	/**
-	 * HTML Component.
-	 * @class
+	 * @class HTML Component.<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 * @extends Component
 	 */
 	function HtmlComponent(domElement) {
@@ -30,6 +31,11 @@ define([
 		 * @default
 		 */
 		this.useTransformComponent = true;
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
+		this.confineToScreen = false;
 	}
 
 	HtmlComponent.prototype = Object.create(Component.prototype);

@@ -15,7 +15,7 @@ function(
 	PromiseUtil,
 	_
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of sound components
@@ -81,7 +81,7 @@ function(
 	 */
 	SoundComponentHandler.prototype.update = function(entity, config, options) {
 		if (!AudioContext) {
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve(); //! AT: we're not really using reject
 		}
 
 		var that = this;

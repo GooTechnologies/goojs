@@ -1,7 +1,7 @@
 define(
 /** @lends */
 function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class AnimationClip manages a set of animation channels as a single clip entity.

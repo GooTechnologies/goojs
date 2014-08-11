@@ -136,4 +136,6 @@ require([
 	addLamps();
 
 	addCharacter(0, 0, 0);
+
+	V.process();
 });

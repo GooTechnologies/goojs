@@ -5,7 +5,7 @@ define([
 function(
 	Vector3
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class <code>BoundingVolume</code> Base class for boundings

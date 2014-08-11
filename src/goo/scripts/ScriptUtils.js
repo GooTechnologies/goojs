@@ -7,19 +7,36 @@ define([
 
 	var ScriptUtils = {};
 
+
+	ScriptUtils.defaultsByType = {
+		'float': 0,
+		'int': 0,
+		'string': '',
+		'vec3': [0.0, 0.0, 0.0],
+		'boolean': false,
+		'texture': {},
+		'entity': {}
+	};
+
+
 	/**
 	 * Fill a passed parameters object with defaults from spec
 	 * @private
 	 * @param parameters {object} The type of object passed as parameters to a script
-	 * @param spec {{key, name, default, description}[]}
+	 * @param spec {Array.<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultValues = function (parameters, specs) {
 		if (!(specs instanceof Array)) { return; }
 		var keys = [];
 		specs.forEach(function (spec) {
-			if (!spec || typeof spec.key !== 'string' || spec['default'] === undefined) {
+			if (!spec || typeof spec.key !== 'string') {
 				return;
 			}
+
+			if (spec['default'] === null || spec['default'] === undefined) {
+				spec['default'] = ScriptUtils.defaultsByType[spec.type];
+			}
+
 			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
 				parameters[spec.key] = _.clone(spec['default']);
@@ -35,7 +52,7 @@ define([
 	/**
 	 * Fills specs' names with their prettyprinted keys (x -> x, maxX -> Max X, myBluePanda -> My Blue Panda)
 	 * @private
-	 * @param specs {{key, name, default, description}[]}
+	 * @param specs {Array.<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultNames = function (specs) {
 		if (!(specs instanceof Array)) { return; }

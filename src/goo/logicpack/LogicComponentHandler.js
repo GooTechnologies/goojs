@@ -34,9 +34,9 @@ function(
 	ComponentHandler,
 	LogicComponent,
 	RSVP,
-	pu
+	PromiseUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class
@@ -60,7 +60,7 @@ function(
 	LogicComponentHandler.prototype.update = function(entity, config) {
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
 		component.configure(config);
-		return pu.createDummyPromise(component);
+		return PromiseUtil.resolve(component);
 	};
 
 	return LogicComponentHandler;

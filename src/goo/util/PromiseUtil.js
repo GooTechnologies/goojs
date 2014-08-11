@@ -7,19 +7,68 @@ function (
 ) {
 	'use strict';
 
+	var nativePromise = !!window.Promise;
+
 	/**
 	* @class
 	*/
 	var PromiseUtil = {};
 
+	//! AT: converting from PromiseUtil.createPromise to new RSVP.Promise is going to be trivial
+	/**
+	 * Same as ES6 `new Promise`
+	 * @param fun
+	 * @returns {RSVP.Promise}
+	 */
+	PromiseUtil.createPromise = function (fun) {
+		var promise = new RSVP.Promise();
+
+		fun(function (value) {
+			promise.resolve(value);
+		}, function (reason) {
+			promise.reject(reason);
+		});
+
+		return promise;
+	};
+
+	//! AT: in line with the native Promise.resolve
+	/**
+	 * Creates a promise that resolves with the given argument.
+	 * @param value
+	 */
+	PromiseUtil.resolve = function (value) {
+		var promise = new RSVP.Promise();
+		promise.resolve(value);
+		return promise;
+	};
+
+	//! AT: in line with the native Promise.reject
+	/**
+	 * Creates a promise that resolves with the given argument.
+	 * @param reason
+	 */
+	PromiseUtil.reject = function (reason) {
+		var promise = new RSVP.Promise();
+		promise.reject(reason);
+		return promise;
+	};
+
+
+	var createDummyPromiseWarn = false;
 	/**
 	 * Create a promise that resolves or rejects immediately with the given argument.
-	 *
+	 * @deprecated Use PromiseUtil.resolve/reject instead.
 	 * @param {any} arg
 	 * @param {any} error
 	 * @returns {RSVP.Promise}
 	 */
 	PromiseUtil.createDummyPromise = function (arg, error) {
+		if (!createDummyPromiseWarn) {
+			createDummyPromiseWarn = true;
+			console.warn('PromiseUtil.createDummyPromise is deprecated; please consider using PromiseUtil.resolve/reject instead');
+		}
+
 		var promise = new RSVP.Promise();
 		if (error) {
 			promise.reject(error);

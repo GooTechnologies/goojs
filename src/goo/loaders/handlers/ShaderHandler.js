@@ -8,7 +8,7 @@ define([
 	'goo/util/PromiseUtil'
 ],
 /** @lends */
-function(
+function (
 	ConfigHandler,
 	Material,
 	MeshData,
@@ -17,7 +17,7 @@ function(
 	RSVP,
 	PromiseUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handler for loading shaders into engine
@@ -40,8 +40,11 @@ function(
 	 * @param {ref}
 	 * @private
 	 */
-	ShaderHandler.prototype._remove = function(/*ref*/) {
-		// Some sort of gl release?
+	ShaderHandler.prototype._remove = function (ref) {
+		if (this._objects[ref] && this._objects[ref].destroy) {
+			this._objects[ref].destroy();
+		}
+		delete this._objects[ref];
 	};
 
 	/**
@@ -52,16 +55,16 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated shader or null if removed
 	 */
-	ShaderHandler.prototype._update = function(ref, config, options) {
+	ShaderHandler.prototype._update = function (ref, config, options) {
 		if (!config) {
 			this._remove(ref);
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
-		if(!config.vshaderRef) {
-			return PromiseUtil.createDummyPromise(null, 'Shader error, missing vertex shader ref');
+		if (!config.vshaderRef) {
+			return PromiseUtil.reject('Shader error, missing vertex shader ref');
 		}
-		if(!config.fshaderRef) {
-			return PromiseUtil.createDummyPromise(null, 'Shader error, missing fragment shader ref');
+		if (!config.fshaderRef) {
+			return PromiseUtil.reject('Shader error, missing fragment shader ref');
 		}
 
 		var promises = [
@@ -69,15 +72,17 @@ function(
 			this.loadObject(config.fshaderRef, options)
 		];
 
-		return RSVP.all(promises).then(function(shaders) {
+		var that = this;
+
+		return RSVP.all(promises).then(function (shaders) {
 			var vshader = shaders[0];
 			var fshader = shaders[1];
 
 			if (!vshader) {
-				return PromiseUtil.createDummyPromise(null, 'Vertex shader', config.vshaderRef, 'in shader', ref, 'not found');
+				return PromiseUtil.reject('Vertex shader' + config.vshaderRef + 'in shader' + ref + 'not found');
 			}
 			if (!fshader) {
-				return PromiseUtil.createDummyPromise(null, 'Fragment shader', config.fshaderRef, 'in shader', ref, 'not found');
+				return PromiseUtil.reject('Fragment shader' + config.fshaderRef + 'in shader' + ref + 'not found');
 			}
 
 			var shaderDefinition = {
@@ -99,7 +104,12 @@ function(
 					}
 				}
 			}
-			return Material.createShader(shaderDefinition, ref);
+
+			var shader = Material.createShader(shaderDefinition, ref);
+
+			that._objects[ref] = shader;
+
+			return shader;
 		});
 	};
 

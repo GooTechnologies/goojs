@@ -17,7 +17,7 @@ define([
 		DirectionalLight,
 		SpotLight
 	) {
-	"use strict";
+	'use strict';
 
 	function LightDebug() {
 		this._ball = new Sphere(12, 12, 0.3);

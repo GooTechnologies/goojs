@@ -29,7 +29,7 @@ function (
 	ScriptUtils,
 	Scripts
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class
@@ -75,8 +75,9 @@ function (
 			} catch (e) {
 				// Some cleanup error
 			}
-			delete this._objects[ref];
 		}
+		delete this._objects[ref];
+		delete this._bodyCache[ref];
 	};
 
 
@@ -268,31 +269,32 @@ function (
 		var that = this;
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
-			return this._dependencyPromises[url] || PromiseUtil.createDummyPromise();
+			return this._dependencyPromises[url] || PromiseUtil.resolve();
 		}
 
 		scriptElem = document.createElement('script');
 		scriptElem.src = url;
 		scriptElem.setAttribute('data-script-id', scriptId);
 
-		var promise = this._dependencyPromises[url] = new RSVP.Promise();
-		scriptElem.onload = function () {
-			promise.resolve();
-			delete that._dependencyPromises[url];
-		};
-		scriptElem.onerror = function () {
-			var err = {
-				message: 'Could not load dependency',
-				file: url
-			};
-			setError(script, err);
-			scriptElem.parentNode.removeChild(scriptElem);
-			promise.resolve();
-			delete that._dependencyPromises[url];
-		};
 		document.body.appendChild(scriptElem);
 
-		return promise;
+		return this._dependencyPromises[url] = PromiseUtil.createPromise(function (resolve, reject) {
+			scriptElem.onload = function () {
+				resolve();
+				delete that._dependencyPromises[url];
+			};
+
+			scriptElem.onerror = function () {
+				var err = {
+					message: 'Could not load dependency',
+					file: url
+				};
+				setError(script, err);
+				scriptElem.parentNode.removeChild(scriptElem);
+				resolve();
+				delete that._dependencyPromises[url];
+			};
+		});
 	};
 
 
@@ -411,28 +413,11 @@ function (
 				errors.push({ message: 'Parameter exponential needs to be boolean' });
 				continue;
 			}
-			if (param['default'] == null) {
-				switch (param.type) {
-					case 'float':
-					case 'int':
-						param['default'] = 0.0;
-						break;
-					case 'string':
-						param['default'] = '';
-						break;
-					case 'vec3':
-						param['default'] = [0.0, 0.0, 0.0];
-						break;
-					case 'boolean':
-						param['default'] = false;
-						break;
-					case 'texture':
-					case 'entity':
-						param['default'] = {};
-						break;
-					default:
-						errors.push({ message: 'Parameter default is missing or of wrong type' });
-						continue;
+			if (param['default'] === null) {
+				param['default'] = ScriptUtils.defaultsByType[param.type];
+				if (typeof param['default'] === 'undefined') {
+					errors.push({ message: 'Parameter default is missing or of wrong type' });
+					continue;
 				}
 			}
 			outScript.externals.parameters.push(param);

@@ -84,8 +84,10 @@ require([
 
 	// register a listener for click events
 	document.addEventListener('keypress', function (event) {
-		switch (event.keyCode){
+		switch (event.keyCode) {
 			case 112: keyP(); break;
 		}
 	});
+
+	V.process();
 });

@@ -17,6 +17,7 @@ function (
 
 	/**
 	 * @class
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 * @extends System
 	 */
 	function HtmlSystem(renderer) {
@@ -93,6 +94,13 @@ function (
 			var devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
 			var fx = Math.floor(tmpVector.x / devicePixelRatio);
 			var fy = Math.floor(tmpVector.y / devicePixelRatio);
+
+			if (component.confineToScreen) {
+				var halfWidth = component.domElement.offsetWidth / 2;
+				var halfHeight = component.domElement.offsetHeight / 2;
+				fx = MathUtils.clamp(fx, halfWidth, renderer.domElement.clientWidth - halfWidth);
+				fy = MathUtils.clamp(fy, halfHeight, renderer.domElement.clientHeight - halfHeight);
+			}
 
 			setStyle(component.domElement, 'transform',
 				'translate(-50%, -50%) ' +

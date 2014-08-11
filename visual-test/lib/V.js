@@ -54,6 +54,9 @@ define([
 	 */
 	var V = {};
 
+	// determine if we're running the visual test for people or for machines
+	V.deterministic = !!purl().param().deterministic;
+
 	/**
 	 * Converts either 3 parameters, an array, a {x, y, z} object or a Vector3 a Vector3
 	 * @param obj
@@ -114,7 +117,7 @@ define([
 	 * Creates a random bright color
 	 * @returns {Array}
 	 */
-	function getRandomColor() {
+	V.getRandomColor = function () {
 		var angle = V.rng.nextFloat() * Math.PI * 2;
 		var color = [
 			angle,
@@ -140,7 +143,7 @@ define([
 		var material = new Material(ShaderLib.simpleLit);
 		if (arguments.length === 0) {
 			//material.materialState.diffuse = getRandomColor();
-			material.uniforms.materialDiffuse = getRandomColor();
+			material.uniforms.materialDiffuse = V.getRandomColor();
 		} else {
 			//material.materialState.diffuse = [r, g, b, a || 1];
 			material.uniforms.materialDiffuse = [r, g, b, a || 1];
@@ -273,12 +276,8 @@ define([
 	 * @returns {GooRunner}
 	 */
 	V.initGoo = function (_options) {
-		// determine if we're running the visual test for people or for machines
-		var params = purl().param();
-		V.deterministic = !!params.deterministic;
-
 		var options = {
-			showStats: true,
+			showStats: true && false,
 			logo: {
 				position: 'bottomright',
 				color: '#FFF'
@@ -289,11 +288,16 @@ define([
 			options.showStats = false;
 			options.logo = false;
 			options.manuallyStartGameLoop = true;
+			options.preserveDrawingBuffer = true;
 		}
 		_.extend(options, _options);
 
 		V.goo = new GooRunner(options);
 		V.goo.renderer.domElement.id = 'goo';
+		if (V.deterministic) {
+			V.goo.renderer.domElement.style.width = '100px';
+			V.goo.renderer.domElement.style.height = '100px';
+		}
 		document.body.appendChild(V.goo.renderer.domElement);
 
 		// V.goo.renderer.setClearColor(154 / 255, 172 / 255, 192 / 255, 1.0); // bright blue-grey

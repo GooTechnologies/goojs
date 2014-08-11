@@ -14,7 +14,27 @@ define([
 	'use strict';
 
 	/**
-	 * @class Combines mesh datas
+	 * @class Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.
+	 * Combination is currently limited to 65536 vertices.
+	 * Keep in mind that combined MeshData can only use one diffuse color texture, so this is best suited for MeshData that can share the same texture.
+	 * @example
+	 * var meshBuilder = new MeshBuilder();
+	 * var transform = new Transform();
+	 * 
+	 * var box1 = new Box(0.3, 1, 1.6);
+	 * var box2 = new Box(0.2, 0.15, 0.7);
+	 * 
+	 * transform.translation.setd(0, 0, 1.3);
+	 * transform.update();
+	 * meshBuilder.addMeshData(box1, transform);
+     * 
+	 * transform.translation.setd(0, 0, 0);
+	 * transform.update();
+	 * meshBuilder.addMeshData(box2, transform);
+     * 
+	 * var meshData = meshBuilder.build()[0];
+	 * goo.world.createEntity( meshData, new Material(ShaderLib.simpleLit)).addToWorld();
+
 	 */
 	function MeshBuilder() {
 		this.meshDatas = [];
@@ -28,6 +48,10 @@ define([
 		this.indexModes = [];
 	}
 
+	/**
+	 * add the MeshData of an entity to this MeshBuilder
+	 * @param {Entity} entity
+	 */
 	MeshBuilder.prototype.addEntity = function (entity) {
 		entity.traverse(function (entity) {
 			if (entity.transformComponent._dirty) {
@@ -48,6 +72,10 @@ define([
 
 	// var normalMatrix = new Matrix3x3();
 	var vert = new Vector3();
+	/**
+	 * add MeshData to this MeshBuilder
+	 * @param {MeshData} meshData
+	 */
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
@@ -182,6 +210,11 @@ define([
 		this.indexModes = [];
 	};
 
+	/**
+	 * build the unified MeshData from all the added MeshData so far and then reset in the internal state.
+	 * @return {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
+	 * In the future we might create multiple entries if we hit the 65536 vertices limit instead of throwing an error.
+	 */
 	MeshBuilder.prototype.build = function () {
 		if (this.vertexCounter > 0) {
 			this._generateMesh();
@@ -190,6 +223,9 @@ define([
 		return this.meshDatas;
 	};
 
+	/**
+	 * reset in the internal state.
+	 */
 	MeshBuilder.prototype.reset = function () {
 		this.meshDatas = [];
 

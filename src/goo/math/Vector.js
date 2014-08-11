@@ -29,7 +29,6 @@ function (
 	 * @param {prototype} prototype The prototype to bind to.
 	 * @param {String[]} aliases Array of component aliases for each component index.
 	 */
-
 	Vector.setupAliases = function (prototype, aliases) {
 		for (var i = 0; i < aliases.length; i++) {
 			/*jshint loopfunc: true */

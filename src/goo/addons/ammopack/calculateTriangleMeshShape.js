@@ -1,5 +1,5 @@
 define( [], function(){
-	"use strict";
+	'use strict';
 	/*global Ammo */
 
 	// TODO: instead of using this scale parameter, "simply" scale the vertices with the real entity transform

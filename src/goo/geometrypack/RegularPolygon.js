@@ -7,7 +7,7 @@ define([
 		MeshData,
 		PolyLine
 	) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class

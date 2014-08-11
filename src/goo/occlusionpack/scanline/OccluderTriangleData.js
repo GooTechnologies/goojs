@@ -2,7 +2,7 @@ define([
 ],
 	/** @lends */
 function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * Container class, which holds the data needed to render triangles.

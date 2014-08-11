@@ -1,8 +1,10 @@
 var path = require('path');
 var program = require('commander');
-require('coffee-script');
-var toc = require(__dirname + '/../../visual-test/toc');
+require('coffee-script'); //! AT: unused?
+var toc = require(__dirname + '/../../tools/toc');
 var ScreenShooter = require('./ScreenShooter');
+var exec = require('child_process').exec;
+var filterList = require('./filterList').filterList;
 
 program
 	.version('0.0.0')
@@ -10,46 +12,51 @@ program
 	.option('-w, --wait [milliseconds]',	'Number of milliseconds to wait for the test to run before taking a screenshot.')
 	.parse(process.argv);
 
-program.url = program.url || process.env.GOOJS_ROOT_URL || 'http://localhost:3000';
+program.url = program.url || process.env.GOOJS_ROOT_URL || 'http://localhost:8003';
 
-var gooRootPath = path.join(__dirname,'..','..');
+var gooRootPath = path.join(__dirname, '..', '..');
 
-console.log('Using test URL: '+program.url);
+console.log('Using test URL: ' + program.url);
 
 var shooter = new ScreenShooter({
-	script : ScreenShooter.removeGooStuffScript,
+	script : ScreenShooter.removeGooStuffScript
 });
-if(typeof program.wait !== 'undefined'){
+
+if (typeof program.wait !== 'undefined') {
 	shooter.wait = program.wait;
 }
 
-shooter.on('shoot', function (evt){
+shooter.on('shoot', function (evt) {
 	console.log('Took a screenshot!');
 	console.log('    URL:  ' + evt.url);
 	console.log('    Path: ' + evt.path + '\n');
 });
 
 // Get all visual test files
-var files = toc.getFilePathsSync();
-
-var screenshotsPath = path.join(__dirname,'screenshots');
+var files = toc.getFilesSync(__dirname + '/../../visual-test');
 
 var urlToPathMap = {};
-for(var i=0; i<files.length; i++){
+for (var i = 0; i < files.length; i++) {
 	var file = files[i];
-	var basename = path.basename(file);
-	var dirname = path.dirname(file);
+	if (filterList.some(function (term) { return file.indexOf(term) !== -1; })) {
+		continue;
+	}
 
-	var pngPath = path.join(__dirname,'screenshots',path.relative(path.join(gooRootPath,'visual-test'),file)).replace(/\.html$/,'.png');
+	var pngPath = path.join(__dirname, 'screenshots', path.relative(path.join(gooRootPath, 'visual-test'), file)).replace(/\.html$/, '.png');
 
-	var url = program.url+'/'+path.relative(gooRootPath,file) + '?deterministic=1';
+	var url = program.url + '/' + path.relative(gooRootPath, file) + '?deterministic=1';
 
 	urlToPathMap[url] = pngPath;
 }
 
-shooter.takeScreenshots(urlToPathMap, function(err){
-	if(err){
+exec('rm -rf ' + __dirname + '/screenshots',function (err, out) {
+	if (err) {
 		throw err;
 	}
-	shooter.shutdown();
+	shooter.takeScreenshots(urlToPathMap, function (err) {
+		if (err) {
+			throw err;
+		}
+		shooter.shutdown();
+	});
 });

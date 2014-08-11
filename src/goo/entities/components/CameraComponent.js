@@ -86,13 +86,17 @@ function (
 	 */
 	CameraComponent.prototype.updateCamera = function (transform) {
 		this.camera._left.setv(this.leftVec);
-		transform.matrix.applyPostVector(this.camera._left);
+		//! AT: let's prevent scaling or skewing from spilling in the view(projection) matrix
+//		transform.matrix.applyPostVector(this.camera._left);
+		transform.rotation.applyPost(this.camera._left);
 
 		this.camera._up.setv(this.upVec);
-		transform.matrix.applyPostVector(this.camera._up);
+//		transform.matrix.applyPostVector(this.camera._up);
+		transform.rotation.applyPost(this.camera._up);
 
 		this.camera._direction.setv(this.dirVec);
-		transform.matrix.applyPostVector(this.camera._direction);
+//		transform.matrix.applyPostVector(this.camera._direction);
+		transform.rotation.applyPost(this.camera._direction);
 
 		transform.matrix.getTranslation(this.camera.translation);
 

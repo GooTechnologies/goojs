@@ -12,16 +12,16 @@ define([],
 	// Save bytes in the minified (but not gzipped) version:
 	var ArrayProto = Array.prototype;
 
-	var breaker = {};
-
 	// Create quick reference variables for speed access to core prototypes.
 	var slice = ArrayProto.slice;
 
 	var nativeForEach = ArrayProto.forEach;
 
-	_.defaults = function(obj) {
-		each(slice.call(arguments, 1), function(source) {
+	_.defaults = function (obj) {
+		each(slice.call(arguments, 1), function (source) {
 			if (source) {
+				//! AT: apparently for in loops are the source of all evil (function can't be optimised, yadayada)
+				// write a unit test before refactoring to ensure the semantics are the same
 				for (var prop in source) {
 					if (typeof obj[prop] === 'undefined' || obj[prop] === null) { obj[prop] = source[prop]; }
 				}
@@ -30,9 +30,11 @@ define([],
 		return obj;
 	};
 
-	_.extend = function(obj) {
-		each(slice.call(arguments, 1), function(source) {
+	_.extend = function (obj) {
+		each(slice.call(arguments, 1), function (source) {
 			if (source) {
+				//! AT: apparently for in loops are the source of all evil (function can't be optimised, yadayada)
+				// write a unit test before refactoring to ensure the semantics are the same
 				for (var prop in source) {
 					obj[prop] = source[prop];
 				}
@@ -60,17 +62,17 @@ define([],
 			obj.forEach(iterator, context);
 		} else if (obj.length === +obj.length) {
 			for (var i = 0, l = obj.length; i < l; i++) {
-				if (iterator.call(context, obj[i], i, obj) === breaker) {return;}
+				iterator.call(context, obj[i], i, obj);
 			}
 		} else {
 			var keys = Object.keys(obj);
 			if (sortProp !== undefined) {
 				keys.sort(function(a, b) {
-					return obj[a][sortProp] -  obj[b][sortProp];
+					return obj[a][sortProp] - obj[b][sortProp];
 				});
 			}
 			for (var i = 0, length = keys.length; i < length; i++) {
-				if (iterator.call(context, obj[keys[i]], keys[i], obj) === breaker) {return;}
+				iterator.call(context, obj[keys[i]], keys[i], obj);
 			}
 		}
 	};
@@ -78,37 +80,39 @@ define([],
 	/**
 	 * from http://stackoverflow.com/questions/4459928/how-to-deep-clone-in-javascript
 	 */
-	_.deepClone = function(item) {
+	_.deepClone = function (item) {
 		if (!item) { return item; } // null, undefined values check
 
-		var types = [ Number, String, Boolean ],
-			result;
+		var types = [Number, String, Boolean];
+		var result;
 
 		// normalizing primitives if someone did new String('aaa'), or new Number('444');
-		types.forEach(function(type) {
+		types.forEach(function (type) {
 			if (item instanceof type) {
-				result = type( item );
+				result = type(item);
 			}
 		});
 
-		if (typeof result === "undefined") {
-			if (Object.prototype.toString.call( item ) === "[object Array]") {
+		if (typeof result === 'undefined') {
+			if (Object.prototype.toString.call(item) === '[object Array]') {
 				result = [];
-				item.forEach(function(child, index) {
-					result[index] = _.deepClone( child );
+				item.forEach(function (child, index) {
+					result[index] = _.deepClone(child);
 				});
-			} else if (typeof item === "object") {
+			} else if (typeof item === 'object') {
 				// testing that this is DOM
-				if (item.nodeType && typeof item.cloneNode === "function") {
-					var result = item.cloneNode( true );
+				if (item.nodeType && typeof item.cloneNode === 'function') {
+					var result = item.cloneNode(true); // unused result?
 				} else if (!item.prototype) { // check that this is a literal
 					if (item instanceof Date) {
 						result = new Date(item);
 					} else {
 						// it is an object literal
 						result = {};
+						//! AT: apparently for in loops are the source of all evil (function can't be optimised, yadayada)
+						// write a unit test before refactoring to ensure the semantics are the same
 						for (var i in item) {
-							result[i] = _.deepClone( item[i] );
+							result[i] = _.deepClone(item[i]);
 						}
 					}
 				} else {

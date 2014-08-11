@@ -1,7 +1,7 @@
 define(
 	/** @lends */
 	function() {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Utility for creating index buffers of appropriate type

@@ -31,7 +31,7 @@ function(
 	DdsLoader,
 	DdsUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class

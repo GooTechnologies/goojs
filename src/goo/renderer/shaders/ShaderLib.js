@@ -14,8 +14,9 @@ define([
 	'use strict';
 
 	/**
-	 * @class Collection of useful shaders
-	 * Details of each can be printed using console.log().
+	 * @class Collection of useful shaders<br>
+	 * Details of each can be printed like this for example: console.log(ShaderLib.texturedLit).<br>
+	 * There are more special purpose shaders in {@link ShaderLibExtra}
 	 */
 	function ShaderLib() {}
 
@@ -318,7 +319,11 @@ define([
 						'float fresnelVal = pow(1.0 - abs(dot(normalize(viewPosition), N)), fresnel * 4.0);',
 						'reflectionAmount *= fresnelVal;',
 
-						'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
+						'#if REFLECTION_TYPE == 0',
+							'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
+						'#elif REFLECTION_TYPE == 1',
+							'final_color.rgb += environment.rgb * reflectionAmount;',
+						'#endif',
 					'}',
 				'#endif',
 

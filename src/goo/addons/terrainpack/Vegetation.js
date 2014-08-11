@@ -41,7 +41,7 @@ function (
 	Quad,
 	ShaderBuilder
 ) {
-	"use strict";
+	'use strict';
 
 	function Vegetation() {
 		this.calcVec = new Vector3();

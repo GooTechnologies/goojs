@@ -7,7 +7,7 @@ define([
 	Action,
 	Vector3
 	) {
-	"use strict";
+	'use strict';
 
 	function TweenScaleAction(/*id, settings*/) {
 		Action.apply(this, arguments);

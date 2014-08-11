@@ -7,7 +7,7 @@ define(
 	],
 	/** @lends */
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Logic node connecting to the LightComponent of an entity.

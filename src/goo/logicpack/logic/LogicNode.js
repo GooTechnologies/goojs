@@ -1,7 +1,7 @@
 define(
 	/** @lends */
 	function() {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Base class/module for all logic boxes

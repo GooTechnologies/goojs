@@ -1,0 +1,16 @@
+{
+    "source": {
+        "include": ["src","tools/jsdoc-template/static/README.md"],
+        "exclude": ["src/goo/addons/ammopack/ammo_worker.js"]
+    },
+    "plugins": [],
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false
+    },
+    "opts": {
+        "template": "./tools/jsdoc-template",
+        "destination": "./goojs-jsdoc",
+        "recurse": true
+    }
+}

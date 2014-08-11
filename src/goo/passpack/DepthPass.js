@@ -6,6 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
+	'goo/renderer/pass/Pass',
 	'goo/passpack/BlurPass'
 ],
 
@@ -18,6 +19,7 @@ function (
 	ShaderFragment,
 	RenderPass,
 	FullscreenPass,
+	Pass,
 	BlurPass
 ) {
 	'use strict';
@@ -48,6 +50,9 @@ function (
 		this.clear = false;
 		this.needsSwap = true;
 	}
+
+	DepthPass.prototype = Object.create(Pass.prototype);
+	DepthPass.prototype.constructor = DepthPass;
 
 	DepthPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta) {
 		this.depthPass.render(renderer, null, this.depthTarget, delta);

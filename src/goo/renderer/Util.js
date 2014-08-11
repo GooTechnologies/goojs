@@ -2,7 +2,7 @@
 define(
 /** @lends */
 function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Common utilities
@@ -211,6 +211,8 @@ function () {
 			//document.body.appendChild(canvas);
 			canvas.dataReady = true;
 			canvas.src = image.src;
+			canvas.originalWidth = width;
+			canvas.originalHeight = height;
 			if (index === undefined) {
 				texture.image = canvas;
 			} else {

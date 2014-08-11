@@ -7,7 +7,7 @@ define(
 	],
 	/** @lends */
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Logic node that provides a float value.

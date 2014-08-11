@@ -3,14 +3,15 @@ define([
 	'goo/renderer/pass/RenderTarget'
 ],
 /** @lends */
-function(
+function (
 	Component,
 	RenderTarget
 	) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * Renders to the texture of the host object
+	 * @class Renders to the texture of the host object<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/PortalComponent/PortalComponent-vtest.html Working example}
 	 * @param {Camera} camera The camera used for rendering
 	 * @param {number} [height=200] Height of the texture to render to (the width is calculated automatically from the camera's aspect ratio)
 	 * @param {Object} options
@@ -57,7 +58,7 @@ function(
 	/**
 	 * Requests a rendering to be done to the material of the host object
 	 */
-	PortalComponent.prototype.requestUpdate = function() {
+	PortalComponent.prototype.requestUpdate = function () {
 		this.doUpdate = true;
 	};
 

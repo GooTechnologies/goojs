@@ -91,8 +91,13 @@ define([
 		return function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
 
-			entity.transformComponent.transform[type].data[dimensionIndex] = value;
-			entity.transformComponent.setUpdated();
+			//! AT: this prevents the timeline from blowing up if the entity is absent
+			// it's a temporary fix in the engine until the issue is patched in create
+			// https://trello.com/c/cj8XQnUz/1588-normal-user-can-t-import-prefabs-with-timelines-if-not-all-animated-objects-are-in-the-prefab
+			if (entity) {
+				entity.transformComponent.transform[type].data[dimensionIndex] = value;
+				entity.transformComponent.setUpdated();
+			}
 		};
 	};
 
@@ -100,10 +105,13 @@ define([
 		var entity;
 		var func = function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
-			var rotation = func.rotation;
-			rotation[angleIndex] = value * MathUtils.DEG_TO_RAD;
-			entity.transformComponent.transform.rotation.fromAngles(rotation[0], rotation[1], rotation[2]);
-			entity.transformComponent.setUpdated();
+			//! AT: same here as above; a tmp fix
+			if (entity) {
+				var rotation = func.rotation;
+				rotation[angleIndex] = value * MathUtils.DEG_TO_RAD;
+				entity.transformComponent.transform.rotation.fromAngles(rotation[0], rotation[1], rotation[2]);
+				entity.transformComponent.setUpdated();
+			}
 		};
 		func.rotation = rotation;
 		return func;

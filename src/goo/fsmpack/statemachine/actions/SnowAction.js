@@ -15,7 +15,7 @@ function(
 	ParticleLib,
 	ParticleSystemUtils
 ) {
-	"use strict";
+	'use strict';
 
 	function SnowAction(/*id, settings*/) {
 		Action.apply(this, arguments);

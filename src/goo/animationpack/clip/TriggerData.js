@@ -1,7 +1,7 @@
 define(
 /** @lends */
 function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Transient class that maintains the current triggers and armed status for a {@link TriggerChannel}.

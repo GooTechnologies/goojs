@@ -6,7 +6,7 @@ function(
 	MathUtils
 ) {
 
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Handles the height data for a heightmap and

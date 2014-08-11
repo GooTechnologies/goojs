@@ -9,7 +9,8 @@ function (
 	/**
 	 * @class A rectangular, two dimensional shape. The local height of the
 	 * DoubleQuad defines it's size about the y-axis, while the width defines
-	 * the x-axis. The z-axis will always be 0.
+	 * the x-axis. The z-axis will always be 0.<br>
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/quadpack/DoubleQuad/DoubleQuad-vtest.html Working example}
 	 *
 	 * @param {number} [width=1] Total width of quad.
 	 * @param {number} [height=1] Total height of quad.

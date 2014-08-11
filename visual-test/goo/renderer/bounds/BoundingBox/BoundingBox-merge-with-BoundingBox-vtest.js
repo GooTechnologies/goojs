@@ -1,32 +1,18 @@
 require([
-	'goo/entities/GooRunner',
-	'goo/entities/World',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Camera',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
-	'goo/entities/components/CameraComponent',
-	'goo/scripts/OrbitCamControlScript',
-	'goo/entities/components/ScriptComponent',
 	'goo/renderer/MeshData',
-	'goo/entities/components/MeshRendererComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/math/Vector3',
 	'lib/V'
 ], function (
-	GooRunner,
-	World,
 	Material,
 	ShaderLib,
-	Camera,
 	Box,
 	Sphere,
-	CameraComponent,
-	OrbitCamControlScript,
-	ScriptComponent,
 	MeshData,
-	MeshRendererComponent,
 	BoundingBox,
 	Vector3,
 	V
@@ -48,47 +34,45 @@ require([
 		return meshData;
 	}
 
-	function boundingBoxDemo() {
-		var goo = V.initGoo();
+	var goo = V.initGoo();
 
-		var shape1MeshData = new Sphere();
-		var shape2MeshData = buildCustomTriangle([0, 0, 4, 0, 3, 5, 0, 0, 6]);
+	var shape1MeshData = new Sphere();
+	var shape2MeshData = buildCustomTriangle([0, 0, 4, 0, 3, 5, 0, 0, 6]);
 
-		// shapes and boundingBox material
-		var material1 = new Material(ShaderLib.simpleColored, '');
-		material1.uniforms.color = [0.3, 0.6, 0.9];
-		var material2 = new Material(ShaderLib.simpleColored, '');
-		material2.uniforms.color = [0.3, 0.9, 0.6];
-		material2.wireframe = true;
+	// shapes and boundingBox material
+	var material1 = new Material(ShaderLib.simpleColored);
+	material1.uniforms.color = [0.3, 0.6, 0.9];
+	var material2 = new Material(ShaderLib.simpleColored);
+	material2.uniforms.color = [0.3, 0.9, 0.6];
+	material2.wireframe = true;
 
-		// wrap shapeMeshData-s entities entity
-		goo.world.createEntity(shape1MeshData, material1).addToWorld();
-		goo.world.createEntity(shape2MeshData, material1).addToWorld();
+	// wrap shapeMeshData-s entities entity
+	goo.world.createEntity(shape1MeshData, material1).addToWorld();
+	goo.world.createEntity(shape2MeshData, material1).addToWorld();
 
-		// bounding box for shape 1
-		var boundingBox1 = new BoundingBox();
-		boundingBox1.computeFromPoints(shape1MeshData.dataViews.POSITION);
+	// bounding box for shape 1
+	var boundingBox1 = new BoundingBox();
+	boundingBox1.computeFromPoints(shape1MeshData.dataViews.POSITION);
 
-		// bounding box for shape 2
-		var boundingBox2 = new BoundingBox();
-		boundingBox2.computeFromPoints(shape2MeshData.dataViews.POSITION);
+	// bounding box for shape 2
+	var boundingBox2 = new BoundingBox();
+	boundingBox2.computeFromPoints(shape2MeshData.dataViews.POSITION);
 
-		// get mergedBoundingBox
-		var mergedBoundingBox = boundingBox1.merge(boundingBox2);
+	// get mergedBoundingBox
+	var mergedBoundingBox = boundingBox1.merge(boundingBox2);
 
-		var xSize = mergedBoundingBox.xExtent * 2;
-		var ySize = mergedBoundingBox.yExtent * 2;
-		var zSize = mergedBoundingBox.zExtent * 2;
-		var xCenter = mergedBoundingBox.center.data[0];
-		var yCenter = mergedBoundingBox.center.data[1];
-		var zCenter = mergedBoundingBox.center.data[2];
+	var xSize = mergedBoundingBox.xExtent * 2;
+	var ySize = mergedBoundingBox.yExtent * 2;
+	var zSize = mergedBoundingBox.zExtent * 2;
+	var xCenter = mergedBoundingBox.center.data[0];
+	var yCenter = mergedBoundingBox.center.data[1];
+	var zCenter = mergedBoundingBox.center.data[2];
 
-		var boxMeshData = new Box(xSize, ySize, zSize);
-		goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
+	var boxMeshData = new Box(xSize, ySize, zSize);
+	goo.world.createEntity(boxMeshData, material2, [xCenter, yCenter, zCenter]).addToWorld();
 
-		// camera
-		V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
-	}
+	// camera
+	V.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
 
-	boundingBoxDemo();
+	V.process();
 });

@@ -21,7 +21,7 @@ function (
 	Scripts,
 	ScriptUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	* @class
@@ -67,7 +67,7 @@ function (
 					var scriptName = ref.slice(ScriptComponentHandler.ENGINE_SCRIPT_PREFIX.length);
 					promise = _createEngineScript(scriptName);
 				} else {
-					promise = that._load(scriptInstance.scriptRef, {reload: true});
+					promise = that._load(scriptInstance.scriptRef, { reload: true });
 				}
 
 				promise = promise.then(function (script) {
@@ -105,7 +105,7 @@ function (
 
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
 		if (!externals || !externals.parameters) {
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 
 		var promises = [];
@@ -123,7 +123,7 @@ function (
 		if (external.type === 'texture') {
 			if (!config || !config.textureRef || config.enabled === false) {
 				parameters[key] = null;
-				return PromiseUtil.createDummyPromise();
+				return PromiseUtil.resolve();
 			} else {
 				return this._load(config.textureRef, options).then(function (texture) {
 					parameters[key] = texture;
@@ -132,7 +132,7 @@ function (
 		} else if (external.type === 'entity') {
 			if (!config || !config.entityRef || config.enabled === false) {
 				parameters[key] = null;
-				return PromiseUtil.createDummyPromise();
+				return PromiseUtil.resolve();
 			} else {
 				return this._load(config.entityRef, options).then(function (entity) {
 					parameters[key] = entity;
@@ -140,7 +140,7 @@ function (
 			}
 		} else {
 			parameters[key] = _.extend(config);
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 	};
 
@@ -167,7 +167,7 @@ function (
 			externals: script.externals
 		});
 
-		return PromiseUtil.createDummyPromise(script);
+		return PromiseUtil.resolve(script);
 	}
 
 

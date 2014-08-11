@@ -5,7 +5,7 @@ define([
 function (
 	ArrayUtil
 ) {
-	"use strict";
+	'use strict';
 
 	function State(uuid) {
 		this.uuid = uuid;

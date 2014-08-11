@@ -2,7 +2,7 @@
 define([],
 /** @lends */
 function () {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A collection of useful math-related functions, constants and helpers.
@@ -44,8 +44,10 @@ function () {
 	* }
 	}
 	*/
-	MathUtils.EPSILON = 0.0000001;
+	MathUtils.EPSILON = 0.00001; //! AT: unfortunately Matrix.invert is too unstable to use a smaller epsilon
 
+	//! AT: why do we have both these functions and the constant above?
+	// why are the constants named x_TO_y and and the functions y_FROM_x ?
 	/**
 	 * Converts an angle from degrees to radians.
 	 * @param {Float} degrees Angle in degrees.

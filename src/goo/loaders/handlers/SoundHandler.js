@@ -15,7 +15,7 @@ function (
 	PromiseUtil,
 	_
 ) {
-	"use strict";
+	'use strict';
 	/**
 	 * @class Handler for loading sounds into engine
 	 * @extends ConfigHandler
@@ -97,7 +97,7 @@ function (
 	 */
 	SoundHandler.prototype._update = function (ref, config, options) {
 		if (!AudioContext) {
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (sound) {
@@ -114,14 +114,15 @@ function (
 					} else {
 						/*jshint -W083 */
 						return that.loadObject(ref).then(function (buffer) {
-							var promise = new RSVP.Promise();
-							AudioContext.decodeAudioData(buffer, function (audioBuffer) {
-								promise.resolve(audioBuffer);
-							}, function (/*err*/) {
-								console.error('Could not decode audio ' + ref);
-								promise.resolve(null);
+							return PromiseUtil.createPromise(function (resolve, reject) {
+								AudioContext.decodeAudioData(buffer, function (audioBuffer) {
+									resolve(audioBuffer);
+								}, function (/*err*/) {
+									console.error('Could not decode audio ' + ref);
+									// shouldn't this just reject?
+									resolve(null);
+								});
 							});
-							return promise;
 						}).then(function (audioBuffer) {
 							if (audioBuffer) {
 								that._audioCache[ref] = audioBuffer;

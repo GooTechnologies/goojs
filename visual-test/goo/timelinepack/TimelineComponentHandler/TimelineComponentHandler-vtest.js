@@ -1,13 +1,10 @@
 require([
-	'goo/entities/GooRunner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/entities/components/MeshDataComponent',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'goo/math/Matrix3x3',
 	'lib/V',
 
 	'goo/loaders/DynamicLoader',
@@ -17,15 +14,12 @@ require([
 
 	'goo/entities/SystemBus'
 ], function (
-	GooRunner,
 	Material,
 	ShaderLib,
-	MeshDataComponent,
 	Vector3,
 	Box,
 	Sphere,
 	Torus,
-	Matrix3x3,
 	V,
 
 	DynamicLoader,

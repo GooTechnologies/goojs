@@ -1,7 +1,7 @@
 define(
 	/** @lends */
 	function() {
-		"use strict";
+		'use strict';
 
 		// REVIEW: description needs updating
 		/**

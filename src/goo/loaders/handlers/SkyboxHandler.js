@@ -18,9 +18,11 @@ define([
 	'use strict';
 
 
-
 	function SkyboxHandler() {
 		ConfigHandler.apply(this, arguments);
+
+		this._activeSkyboxRef = null;
+
 		// Skybox entity
 		var skybox = new Skybox('box', [], null, 0);
 		this._skybox = this.world.createEntity(skybox.meshData, skybox.materials[0], skybox.transform);
@@ -53,13 +55,20 @@ define([
 	ConfigHandler._registerClass('skybox', SkyboxHandler);
 
 	SkyboxHandler.prototype._remove = function(ref) {
-		this._hide(this._skybox);
-		this._hide(this._skysphere);
-		this._skyboxTexture.setImage(null);
-		this._activeSkyshape = null;
-		ShaderBuilder.SKYBOX = null;
-		ShaderBuilder.SKYSPHERE = null;
 		delete this._objects[ref];
+
+		// We can only remove the skybox if it is the on that is currently
+		// active. Otherwise the scene will be left with no skybox in cases
+		// where it shouldn't be.
+		if (this._activeSkyboxRef === ref) {
+			this._hide(this._skybox);
+			this._hide(this._skysphere);
+			this._skyboxTexture.setImage(null);
+			this._activeSkyshape = null;
+			ShaderBuilder.SKYBOX = null;
+			ShaderBuilder.SKYSPHERE = null;
+			this._activeSkyboxRef = null;
+		}
 	};
 
 	SkyboxHandler.prototype._create = function() {
@@ -72,7 +81,11 @@ define([
 	SkyboxHandler.prototype._update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(skybox) {
-			if (!skybox) { return; }
+			if (!skybox) {
+				that._remove(ref);
+				return PromiseUtil.resolve([]);
+			}
+
 			var promises = [];
 			if (config.box) {
 				promises.push(that._updateBox(config.box, options, skybox));
@@ -80,7 +93,14 @@ define([
 			if (config.sphere) {
 				promises.push(that._updateSphere(config.sphere, options, skybox));
 			}
-			return RSVP.all(promises);
+
+			return RSVP.all(promises).then(function (skyboxes) {
+				if (config.box || config.sphere) {
+					that._activeSkyboxRef = ref;
+				}
+
+				return skyboxes;
+			});
 		});
 	};
 
@@ -99,7 +119,9 @@ define([
 				}
 				var skyTex = that._skysphereTexture;
 				skybox.textures = [texture];
-				skyTex.setImage(texture.image);
+				if (texture.image !== skyTex.image) {
+					skyTex.setImage(texture.image);
+				}
 
 				if (config.enabled) {
 					that._show(that._skysphere);
@@ -108,12 +130,11 @@ define([
 				}
 				return that._skysphere;
 			});
-		}
-		else {
+		} else {
 			that._skysphereTexture.setImage(null);
 			that._hide(that._skysphere);
 		}
-		return PromiseUtil.createDummyPromise(that._skysphere);
+		return PromiseUtil.resolve(that._skysphere);
 	};
 
 	var sides = ['rightRef', 'leftRef', 'topRef', 'bottomRef', 'frontRef', 'backRef'];
@@ -135,7 +156,7 @@ define([
 		var that = this;
 
 		var promises = sides.map(function(side) {
-			return config[side] ? that._load(config[side], options) : PromiseUtil.createDummyPromise();
+			return config[side] ? that._load(config[side], options) : PromiseUtil.resolve();
 		});
 
 		// Load all textures

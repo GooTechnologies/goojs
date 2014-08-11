@@ -1,0 +1,6 @@
+#!/bin/bash -e
+#
+# Continuous test script (unit and e2e)
+#
+
+grunt unittest # test # e2e will fail until I update the screenshots

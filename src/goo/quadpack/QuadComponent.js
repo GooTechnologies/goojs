@@ -127,6 +127,10 @@ function (
 		entity.clearComponent('meshDataComponent');
 	};
 
+	QuadComponent.prototype.destroy = function (context) {
+		this.meshData.destroy(context);
+	};
+
 	/**
 	 * Set the current material for the quad
 	 * @param Material material
@@ -155,8 +159,8 @@ function (
 		}
 
 		if (this.preserveAspectRatio && image) {
-			var height = image.svgHeight || image.height;
-			var width = image.svgWidth || image.width;
+			var width = image.originalWidth || image.svgWidth || image.width;
+			var height = image.originalHeight || image.svgHeight || image.height;
 
 			this.width = width / 100;
 			this.height = height / 100;

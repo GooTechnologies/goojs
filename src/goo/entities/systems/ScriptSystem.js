@@ -33,9 +33,16 @@ define([
 			activeCameraEntity: null,
 			worldData: {}
 		};
+
 		SystemBus.addListener('goo.setCurrentCamera', function (data) {
 			this.context.activeCameraEntity = data.entity;
 		}.bind(this));
+
+		SystemBus.addListener('goo.viewportResize', function (data) {
+			this.context.viewportWidth = data.width;
+			this.context.viewportHeight = data.height;
+		}.bind(this));
+
 		this.manualSetup = false;
 
 		this.priority = 500;
@@ -52,13 +59,6 @@ define([
 	};*/
 
 	ScriptSystem.prototype.process = function (entities, tpf) {
-		// Update environment
-		var renderer = this._world.gooRunner.renderer;
-		_.extend(this.context, {
-			viewportWidth: renderer.viewportWidth,
-			viewportHeight: renderer.viewportHeight
-		});
-
 		// Update scripts
 		for (var i = 0; i < entities.length; i++) {
 			var scriptComponent = entities[i].scriptComponent;

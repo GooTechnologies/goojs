@@ -11,7 +11,7 @@ function (
 	BoundingSphere,
 	MathUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a

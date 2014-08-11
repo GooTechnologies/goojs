@@ -79,7 +79,6 @@ function (
 		shadowSettings.shadowRecord = shadowSettings.shadowRecord || {};
 		shadowSettings.shadowRecord.resolution = shadowSettings.shadowRecord.resolution || [];
 		shadowSettings.shadowRecord.resolution[0] = shadowX;
-		shadowSettings.shadowRecord.resolution[0] = shadowX;
 		shadowSettings.shadowRecord.shadowType = shadowSettings.shadowType;
 	};
 

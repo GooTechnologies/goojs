@@ -9,7 +9,7 @@ function(
 	Vector3,
 	Renderer
 ) {
-	"use strict";
+	'use strict';
 
 	function CompareDistanceAction(/*id, settings*/) {
 		Action.apply(this, arguments);

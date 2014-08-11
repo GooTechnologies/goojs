@@ -8,7 +8,7 @@ define(
 	],
 	/** @lends */
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class Logic node to provide a const Vec3

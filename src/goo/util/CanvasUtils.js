@@ -1,9 +1,9 @@
 define([
-	'goo/util/rsvp'
+	'goo/util/PromiseUtil'
 ],
 /** @lends */
 function(
-	RSVP
+	PromiseUtil
 ) {
 
 	'use strict';
@@ -37,7 +37,7 @@ function(
 	 */
 	CanvasUtils.loadCanvasFromPath = function (canvasPath, callback) {
 		var options = {};
-		if(arguments.length === 3){
+		if (arguments.length === 3) {
 			// Called with loadCanvasFromPath(path,options,callback)
 			options = arguments[1];
 			callback = arguments[2];
@@ -45,6 +45,10 @@ function(
 
 		// have the image load
 		var img = new Image();
+		img.onerror = function () {
+			console.error('Failed to load svg!');
+			callback();
+		};
 		img.src = canvasPath;
 
 		// create an off screen canvas
@@ -53,7 +57,7 @@ function(
 		// get its context
 		var context = canvas.getContext('2d');
 
-		img.onload = function() {
+		img.onload = function () {
 			// when ready, paint the image on the canvas
 
 			if (img.width === 0 && img.height === 0) {
@@ -162,24 +166,22 @@ function(
 	 * @param  {string} data
 	 * @return {RSVP.Promise} Promise that resolves with the Image.
 	 */
-	CanvasUtils.svgDataToImage = function(data){
+	CanvasUtils.svgDataToImage = function (data) {
 		var DOMURL = window.URL || window.webkitURL || window;
-		var p = new RSVP.Promise();
 
-		var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+		var svg = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+
 		var img = new Image();
+		img.src = DOMURL.createObjectURL(svg);
 
-		var url = DOMURL.createObjectURL(svg);
-		img.src = url;
-
-		img.onload = function(){
-			p.resolve(img);
-		};
-		img.onerror = function(){
-			p.reject('Could not load SVG image.');
-		};
-
-		return p;
+		return PromiseUtil.createPromise(function (resolve, reject) {
+			img.onload = function () {
+				resolve(img);
+			};
+			img.onerror = function () {
+				reject('Could not load SVG image.');
+			};
+		});
 	};
 
 	return CanvasUtils;

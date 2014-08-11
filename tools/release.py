@@ -21,8 +21,7 @@ grunt_command = 'node_modules/grunt-cli/bin/grunt'
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
 
 subprocess.check_call([grunt_command, 'jsdoc'])
-subprocess.check_call([grunt_command, 'visualtoc'])
-subprocess.check_call([grunt_command, 'examplestoc'])
+subprocess.check_call([grunt_command, 'generate-toc'])
 
 release_dir = os.getenv('RELEASE_DIR', 'out/release/' + name)
 if os.path.isdir(release_dir):
@@ -37,7 +36,6 @@ for directory in (
 	'lib/box2d',
 	'lib/cannon',
 	'lib/soundmanager2',
-	'lib/howler',
 	'lib/crunch',
 	'lib/hammerv2',
 	('goojs-jsdoc', 'docs'),
@@ -66,7 +64,6 @@ for packName in (
 	'terrain',
 	'ammo',
 	'cannon',
-	'howler',
 	'water',
 	'animation',
 	'soundmanager2',
@@ -75,6 +72,8 @@ for packName in (
 	'gizmo'
 ):
     shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
+
+shutil.copy('out/ammo_worker.js', release_dir + '/lib/ammo_worker.js')
 
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')

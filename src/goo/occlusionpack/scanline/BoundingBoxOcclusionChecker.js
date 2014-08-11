@@ -6,7 +6,7 @@ define([
 	],
 	/** @lends */
 		function (Matrix4x4, Vector4, Vector2, OccludeeTriangleData) {
-		"use strict";
+		'use strict';
 
 		// Cohen-Sutherland area constants.
 		// (Clipping method for the bounding box)

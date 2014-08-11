@@ -15,8 +15,12 @@ function (
 	 * @class A representation of a sound in the engine
 	 */
 	function Sound() {
-		// Settings
+		/** @type {string}
+		 */
 		this.id = null;
+		/** @type {string}
+		 */
+		this.name = null;
 		this._loop = false;
 		this._rate = 1.0;
 		this._offset = 0;
@@ -25,6 +29,8 @@ function (
 
 		// Nodes
 		this._buffer = null;
+		this._stream = null;
+		this._streamSource = null;
 		this._currentSource = null;
 		this._outNode = AudioContext.createGain();
 		this.connectTo();
@@ -43,12 +49,12 @@ function (
 	 * @returns {RSVP.Promise} Resolves when sound has played through or when it's stopped.
 	 * Looping sounds will never resolve
 	 */
-	Sound.prototype.play = function() {
+	Sound.prototype.play = function () {
 		if (this._currentSource) {
 			return this._endPromise;
 		}
-		this._endPromise = new RSVP.Promise();
-		if (!this._buffer) {
+		this._endPromise = new RSVP.Promise(); //! AT: this needs refactoring
+		if (!this._buffer || this._stream) {
 			return this._endPromise;
 		}
 
@@ -81,7 +87,7 @@ function (
 	/**
 	 * Pauses the sound if it's playing
 	 */
-	Sound.prototype.pause = function() {
+	Sound.prototype.pause = function () {
 
 		if (!this._currentSource) {
 			return;
@@ -96,7 +102,7 @@ function (
 	/**
 	 * Stops the sound if it's playing
 	 */
-	Sound.prototype.stop = function() {
+	Sound.prototype.stop = function () {
 		this._paused = false;
 		this._pausePos = 0;
 		if (this._endPromise) {
@@ -107,7 +113,7 @@ function (
 		}
 	};
 
-	Sound.prototype.fadeIn = function(time) {
+	Sound.prototype.fadeIn = function (time) {
 		this.stop();
 		var volume = this._volume;
 		this._outNode.gain.value = 0;
@@ -116,21 +122,21 @@ function (
 		return p;
 	};
 
-	Sound.prototype.fadeOut = function(time) {
+	Sound.prototype.fadeOut = function (time) {
 		return this.fade(0, time);
 	};
 
-	Sound.prototype.fade = function(volume, time) {
+	Sound.prototype.fade = function (volume, time) {
 		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.currentTime);
 		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.currentTime + time);
 		var p = new RSVP.Promise();
-		setTimeout(function() {
+		setTimeout(function () {
 			p.resolve();
 		}, time * 1000);
 		return p;
 	};
 
-	Sound.prototype.isPlaying = function() {
+	Sound.prototype.isPlaying = function () {
 		return !!this._currentSource;
 	};
 
@@ -138,7 +144,7 @@ function (
 	 * Does the actual stopping of the sound
 	 * @private
 	 */
-	Sound.prototype._stop = function() {
+	Sound.prototype._stop = function () {
 		this._currentSource.stop(0);
 		this._currentSource = null;
 	};
@@ -148,16 +154,20 @@ function (
 	 * @param {object} [config]
 	 * @param {boolean} [config.loop]
 	 * @param {number} [config.volume]
-	 * @param {number} [config.start] Start offset in seconds. 
+	 * @param {number} [config.name] The sound name
+	 * @param {number} [config.start] Start offset in seconds.
 	 * Will be clamped to be in actual soundclip duration
 	 * @param {number} [config.duration] Duration of the sound.
 	 * Will be clamped to be in actual soundclip duration
 	 * @param {number} [config.timeScale] Playback rate of the sound
 	 */
-	Sound.prototype.update = function(config) {
+	Sound.prototype.update = function (config) {
 		config = config || {};
 		if (config.id !== undefined) {
 			this.id = config.id;
+		}
+		if (config.name !== undefined) {
+			this.name = config.name;
 		}
 		if (config.loop !== undefined) {
 			this._loop = !!config.loop;
@@ -194,7 +204,7 @@ function (
 	 * Clamps the start offset and duration to be in sound range
 	 * @private
 	 */
-	Sound.prototype._clampInterval = function() {
+	Sound.prototype._clampInterval = function () {
 		this._offset = Math.min(this._offset, this._buffer.duration);
 		if (this._duration !== null) {
 			this._duration = Math.min(this._buffer.duration - this._offset, this._duration);
@@ -208,7 +218,7 @@ function (
 	 * Connect output of sound to audionodes
 	 * @param {AudioNode[]|AudioNode} nodes
 	 */
-	Sound.prototype.connectTo = function(nodes) {
+	Sound.prototype.connectTo = function (nodes) {
 		this._outNode.disconnect();
 		if (!nodes) {
 			return;
@@ -225,9 +235,24 @@ function (
 	 * Sets the audio buffer which will be the sound source
 	 * @param {AudioBuffer} buffer
 	 */
-	Sound.prototype.setAudioBuffer = function(buffer) {
+	Sound.prototype.setAudioBuffer = function (buffer) {
+		this.setAudioStream(null);
 		this._buffer = buffer;
 		this._clampInterval();
+	};
+
+	Sound.prototype.setAudioStream = function (stream) {
+		if (!stream) {
+			if (this._streamSource) {
+				this._streamSource.disconnect();
+				this._streamSource = null;
+			}
+			return;
+		}
+		this.stop();
+		this._stream = stream;
+		this._streamSource = AudioContext.createMediaStreamSource(stream);
+		this._streamSource.connect(this._outNode);
 	};
 
 	return Sound;

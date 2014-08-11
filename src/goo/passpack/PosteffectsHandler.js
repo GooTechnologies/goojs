@@ -56,8 +56,14 @@ function (
 	PosteffectsHandler.prototype._remove = function (ref) {
 		var renderSystem = this.world.getSystem('RenderSystem');
 		ArrayUtil.remove(renderSystem.composers, this._composer);
-		// TODO destroy rendertargets from passes and composer
+
 		delete this._objects[ref];
+
+		if (this.world) {
+			this._composer.destroy(this.world.gooRunner.renderer);
+		}
+
+		this._composer = new Composer();
 	};
 
 	/**
@@ -80,6 +86,12 @@ function (
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (posteffects) {
 			if (!posteffects) { return; }
+//			var i = 0;
+//			_.forEach(config.posteffects, function (effectConfig) {
+//				posteffects[i++] = that._updateEffect(effectConfig, posteffects, options);
+//			}, null, 'sortValue');
+//			posteffects.length = i;
+//			return RSVP.all(posteffects);
 			var oldEffects = posteffects.slice();
 			var promises = [];
 			_.forEach(config.posteffects, function (effectConfig) {

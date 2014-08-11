@@ -123,6 +123,7 @@ function(
 					attribute === 'REFLECTIVE' ||
 					attribute === 'DISCARD' ||
 					attribute === 'FOG' ||
+					attribute === 'REFLECTION_TYPE' ||
 					attribute === 'SKIP_SPECULAR' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
@@ -155,6 +156,7 @@ function(
 			}
 
 			shader.defines.SKIP_SPECULAR = true;
+			shader.defines.REFLECTION_TYPE = material.uniforms.reflectionType !== undefined ? material.uniforms.reflectionType : 0;
 
 			//TODO: Hacky?
 			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {

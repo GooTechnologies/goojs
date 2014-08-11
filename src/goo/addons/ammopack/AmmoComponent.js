@@ -27,7 +27,7 @@ function(
 	BoundingSphere,
 	_
 ) {
-	"use strict";
+	'use strict';
 
 	/*global Ammo */
 
@@ -80,7 +80,9 @@ function(
 		this.gooQuaternion = new Quaternion();
 		this.shape = undefined;
 	}
+
 	AmmoComponent.prototype = Object.create(Component.prototype);
+	AmmoComponent.prototype.constructor = AmmoComponent;
 
 	AmmoComponent.prototype.getAmmoShapefromGooShape = function(entity, gooTransform) {
 		var shape;

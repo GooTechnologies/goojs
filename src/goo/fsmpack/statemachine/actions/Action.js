@@ -2,10 +2,10 @@ define([
 	'goo/fsmpack/statemachine/FSMUtil'
 ],
 /** @lends */
-function(
+function (
 	FSMUtil
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class
@@ -47,7 +47,7 @@ function(
 		}
 	};
 
-	/* this is called when the machine stops and makes sure that any changes not undone by exit methods get undone */
+	/* this is called when the machine just started */
 	Action.prototype.ready = function (/*fsm*/) {
 	};
 

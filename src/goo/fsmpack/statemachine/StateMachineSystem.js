@@ -6,7 +6,7 @@ define([
 function (
 	System
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class Processes all entities with a FSM component

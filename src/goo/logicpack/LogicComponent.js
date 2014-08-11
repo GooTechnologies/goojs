@@ -11,7 +11,7 @@ define([
 		LogicNodes,
 		Component
 	) {
-		"use strict";
+		'use strict';
 
 		/**
 		 * @class A component that embeds a LogicLayer and processes it every frame.

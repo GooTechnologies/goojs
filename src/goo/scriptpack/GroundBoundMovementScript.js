@@ -4,7 +4,7 @@ define([
 /** @lends */
 function(Vector3
 	) {
-	"use strict";
+	'use strict';
 
 	var calcVec = new Vector3();
 	var _defaults = {

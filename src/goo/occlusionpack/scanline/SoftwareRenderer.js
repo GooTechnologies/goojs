@@ -14,7 +14,7 @@ define([
 
 	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
 				BoundingSphereOcclusionChecker, OccluderTriangleData, EdgeMap) {
-	"use strict";
+	'use strict';
 
 	// Variables used during creation of triangle data and rendering
 	var indices = new Uint8Array(4);

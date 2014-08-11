@@ -7,7 +7,7 @@ define([
 		MeshData,
 		Surface
 		) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A polygonal line

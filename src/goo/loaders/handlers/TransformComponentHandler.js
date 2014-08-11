@@ -1,25 +1,19 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/TransformComponent',
-	'goo/math/MathUtils',
-	'goo/math/Quaternion',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
-	'goo/util/ArrayUtil',
+	'goo/math/MathUtils',		
+	'goo/util/ObjectUtil',	
 	'goo/util/rsvp'
 ],
 /** @lends */
-function(
+function (
 	ComponentHandler,
 	TransformComponent,
-	MathUtils,
-	Quaternion,
-	PromiseUtil,
-	_,
-	ArrayUtil,
+	MathUtils,		
+	_,	
 	RSVP
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class For handling loading of transform component
@@ -44,7 +38,7 @@ function(
 	 * @param {object} config
 	 * @private
 	 */
-	TransformComponentHandler.prototype._prepare = function(config) {
+	TransformComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
 			translation: [0, 0, 0],
 			rotation: [0, 0, 0],
@@ -58,7 +52,7 @@ function(
 	 * @returns {TransformComponent} the created component object
 	 * @private
 	 */
-	TransformComponentHandler.prototype._create = function() {
+	TransformComponentHandler.prototype._create = function () {
 		return new TransformComponent();
 	};
 
@@ -67,7 +61,7 @@ function(
 	 * @param {Entity} entity The entity from which this component should be removed.
 	 * @private
 	 */
-	TransformComponentHandler.prototype._remove = function(entity) {
+	TransformComponentHandler.prototype._remove = function (entity) {
 		var component = entity.transformComponent;
 		// Reset
 		component.transform.translation.setd(0, 0, 0);
@@ -89,17 +83,23 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	TransformComponentHandler.prototype.update = function(entity, config, options) {
+	TransformComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 
 		function attachChild(component, ref) {
-			return that.loadObject(ref, options).then(function(entity) {
+			return that.loadObject(ref, options).then(function (entity) {
 				if (entity && entity.transformComponent) {
 					component.attachChild(entity.transformComponent);
-					entity.addToWorld();
-					// if (that.world.entityManager.containsEntity(entity) || that.world._addedEntities.indexOf(entity) > -1) {
-					// 	entity.addToWorld();
-					// }
+					var entityInWorld = that.world.entityManager.containsEntity(entity) ||
+						that.world._addedEntities.indexOf(entity) !== -1; //! AT: most probably not needed anymore
+						// entities are added synchronously to the managers
+					var parentInWorld = that.world.entityManager.containsEntity(component.entity) ||
+						that.world._addedEntities.indexOf(component.entity) > -1; //! AT: most probably not needed anymore
+					// also, why the inconsistency: "!== -1" vs "> -1" ?
+
+					if (!entityInWorld && parentInWorld) {
+						entity.addToWorld();
+					}
 				} else {
 					console.error('Failed to add child to transform component');
 				}
@@ -107,7 +107,7 @@ function(
 			});
 		}
 
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) {
 				// Component was removed
 				return;
@@ -117,9 +117,9 @@ function(
 			component.transform.translation.seta(config.translation);
 			// Rotation
 			component.transform.setRotationXYZ(
-				MathUtils.radFromDeg(config.rotation[0]),
-				MathUtils.radFromDeg(config.rotation[1]),
-				MathUtils.radFromDeg(config.rotation[2])
+				MathUtils.DEG_TO_RAD * config.rotation[0],
+				MathUtils.DEG_TO_RAD * config.rotation[1],
+				MathUtils.DEG_TO_RAD * config.rotation[2]
 			);
 			// Scale
 			component.transform.scale.seta(config.scale);
@@ -150,7 +150,7 @@ function(
 			}
 
 			// When all children are attached, return component
-			return RSVP.all(promises).then(function() {
+			return RSVP.all(promises).then(function () {
 				component.setUpdated();
 				return component;
 			});

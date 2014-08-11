@@ -42,6 +42,8 @@ require([
 
 	V.addOrbitCamera();
 
+	V.process();
+
 	function getImage(data, width, height) {
 		var canvas = document.createElement('canvas');
 		canvas.width = width;

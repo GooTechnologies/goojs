@@ -38,7 +38,6 @@ function (
 	 * @param {string} ref
 	 */
 	MeshDataHandler.prototype._remove = function (ref) {
-		console.log("Deleting meshdata " + ref);
 		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
 			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
 		}
@@ -53,11 +52,16 @@ function (
 	 * @returns {RSVP.Promise} Resolves with the Meshdata or null if removed
 	 */
 	MeshDataHandler.prototype._update = function (ref, config, options) {
+		// Don't call ConfigHandler.prototype.update, since we don't want to do ._create in the normal way
 		if (!config) {
 			this._remove(ref);
-			return PromiseUtil.createDummyPromise();
+			return PromiseUtil.resolve();
 		}
-		if (this._objects[ref]) { return PromiseUtil.createDummyPromise(this._objects[ref]); }
+
+		if (this._objects[ref]) {
+			return PromiseUtil.resolve(this._objects[ref]);
+		}
+
 		var that = this;
 		return this.loadObject(config.binaryRef, options).then(function (bindata) {
 			if (!bindata) {
@@ -65,7 +69,9 @@ function (
 			}
 			var meshData = that._createMeshData(config, bindata);
 			that._fillMeshData(meshData, config, bindata);
-			return that._objects[ref] = meshData;
+
+			that._objects[ref] = meshData;
+			return meshData;
 		});
 	};
 

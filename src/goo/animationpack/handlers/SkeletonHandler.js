@@ -12,7 +12,7 @@ function (
 	Joint,
 	Skeleton,
 	SkeletonPose,
-	pu,
+	PromiseUtil,
 	_
 ) {
 	'use strict';
@@ -44,7 +44,7 @@ function (
 	SkeletonHandler.prototype._update = function(ref, config/*, options*/) {
 		if (!this._objects[ref]) {
 			if (!config) {
-				return pu.createDummyPromise();
+				return PromiseUtil.resolve();
 			}
 			var joints = [];
 			_.forEach(config.joints, function(jointConfig) {
@@ -62,7 +62,7 @@ function (
 			this._objects[ref] = pose;
 		}
 
-		return pu.createDummyPromise(this._objects[ref]);
+		return PromiseUtil.resolve(this._objects[ref]);
 	};
 
 	return SkeletonHandler;

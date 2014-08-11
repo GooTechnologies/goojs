@@ -9,7 +9,7 @@ function (
 	Vector3,
 	MathUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * @class A donut-shaped model.

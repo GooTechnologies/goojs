@@ -3,6 +3,10 @@
 A very simple scene that features a particular feature of the engine or a bug that was once occurring.
 No new feature should be added to the engine unless it is unit tested and/or visual tested.
 
+All *.html* files in this folder are tested using an image comparator. If for some reason you wish to exclude your 
+visual test from this comparator add appropriate filters in the *test/e2etesting/filterList.js* file. Also, 
+be sure to consult the *README.md* file for e2e testing.
+
 **Any guidelines?**
 
 + Use *V* to write tests faster and have them working with the automatic checking

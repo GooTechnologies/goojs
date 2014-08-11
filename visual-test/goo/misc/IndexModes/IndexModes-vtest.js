@@ -85,68 +85,66 @@ require([
 		return entity;
 	}
 	//--------
-	function indexModesDemo() {
-		var goo = V.initGoo();
+	var goo = V.initGoo();
 
-		// points =======
-		var pointsMesh = buildPoints([
-			0, 0, 0,
-			1, 0, 0,
-			1, 1, 0,
-			0, 2, 0]);
-		wrapAndAdd(goo, pointsMesh, -5, 5);
-		// lines ========
-		var linesMesh = buildLines([
-			0, 0, 0,
-			1, 0, 0,
-			1, 1, 0,
-			0, 2, 0], [0, 1, 0, 2, 0, 3]);
-		wrapAndAdd(goo, linesMesh, -5, 0);
+	// points =======
+	var pointsMesh = buildPoints([
+		0, 0, 0,
+		1, 0, 0,
+		1, 1, 0,
+		0, 2, 0]);
+	wrapAndAdd(goo, pointsMesh, -5, 5);
+	// lines ========
+	var linesMesh = buildLines([
+		0, 0, 0,
+		1, 0, 0,
+		1, 1, 0,
+		0, 2, 0], [0, 1, 0, 2, 0, 3]);
+	wrapAndAdd(goo, linesMesh, -5, 0);
 
-		var lineStripMesh = buildLineStrip([
-			0, 0, 0,
-			1, 0, 0,
-			1, 1, 0,
-			0, 2, 0], [0, 1, 2, 3]);
-		wrapAndAdd(goo, lineStripMesh, 0, 0);
+	var lineStripMesh = buildLineStrip([
+		0, 0, 0,
+		1, 0, 0,
+		1, 1, 0,
+		0, 2, 0], [0, 1, 2, 3]);
+	wrapAndAdd(goo, lineStripMesh, 0, 0);
 
-		var lineLoopMesh = buildLineLoop([
-			0, 0, 0,
-			1, 0, 0,
-			1, 1, 0,
-			0, 2, 0], [0, 1, 2, 3]);
-		wrapAndAdd(goo, lineLoopMesh, 5, 0);
+	var lineLoopMesh = buildLineLoop([
+		0, 0, 0,
+		1, 0, 0,
+		1, 1, 0,
+		0, 2, 0], [0, 1, 2, 3]);
+	wrapAndAdd(goo, lineLoopMesh, 5, 0);
 
-		// triangles ====
-		var trianglesMesh = buildTriangles([
-			 0, 0, 0,
-			 1, 0, 0,
-			 1, 1, 0,
-			 0, 2, 0,
-			-1, 2, 0], [0, 1, 2, 0, 3, 4]);
-		wrapAndAdd(goo, trianglesMesh, -5, -5);
+	// triangles ====
+	var trianglesMesh = buildTriangles([
+		 0, 0, 0,
+		 1, 0, 0,
+		 1, 1, 0,
+		 0, 2, 0,
+		-1, 2, 0], [0, 1, 2, 0, 3, 4]);
+	wrapAndAdd(goo, trianglesMesh, -5, -5);
 
-		var triangleStripMesh = buildTriangleStrip([
-			0, 0, 0,
-			1, 0, 0,
-			1, 1, 0,
-			0, 2, 0,
-			2, 2, 0], [0, 1, 3, 2, 4]);
-		wrapAndAdd(goo, triangleStripMesh, 0, -5);
+	var triangleStripMesh = buildTriangleStrip([
+		0, 0, 0,
+		1, 0, 0,
+		1, 1, 0,
+		0, 2, 0,
+		2, 2, 0], [0, 1, 3, 2, 4]);
+	wrapAndAdd(goo, triangleStripMesh, 0, -5);
 
-		var triangleFanMesh = buildTriangleFan([
-			0, 0, 0,
-			1, 0, 0,
-			1, 1, 0,
-			0, 2, 0], [0, 1, 2, 3]);
-		wrapAndAdd(goo, triangleFanMesh, 5, -5);
+	var triangleFanMesh = buildTriangleFan([
+		0, 0, 0,
+		1, 0, 0,
+		1, 1, 0,
+		0, 2, 0], [0, 1, 2, 3]);
+	wrapAndAdd(goo, triangleFanMesh, 5, -5);
 
-		// light
-		V.addLights();
+	// light
+	V.addLights();
 
-		// camera
-		V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
-	}
+	// camera
+	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
-	indexModesDemo();
+	V.process();
 });
