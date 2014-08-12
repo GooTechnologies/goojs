@@ -55,7 +55,7 @@ function (
 	* Vector3 representing All Axis: (1, 1, 1)
 	* @type {Vector3}
 	* @example
-	* var v1 = Vector3.copy(Vector3.ONE); // v1 == (1, 1, 1)
+	* var v1 = Vector3.ONE.clone(); // v1 == (1, 1, 1)
 	*/
 	Vector3.ONE = new Vector3(1, 1, 1);
 
