@@ -64,6 +64,8 @@ function (
 	 * @param {boolean} [settings.premultiplyAlpha='false'] Premultiply alpha
 	 * @param {number} [settings.unpackAlignment=1] Unpack alignment setting
 	 * @param {boolean} [settings.flipY='true'] Flip texture in y-axis
+	 * @param {number} width Width of the texture
+	 * @param {number} height Height of the texture
 	 */
 	function Texture(image, settings, width, height) {
 		this.glTexture = null;
@@ -176,6 +178,37 @@ function (
 	Texture.prototype.destroy = function (context) {
 		context.deleteTexture(this.glTexture);
 		this.glTexture = null;
+	};
+
+	/**
+	 * Returns the number of bytes this texture occupies in memory
+	 * @returns {number}
+	 */
+	Texture.prototype.getSizeInMemory = function () {
+		var size;
+
+		if (this.format === 'Luminance' || this.format === 'Alpha') {
+			size = this.width * this.height;
+		} else if (this.format === 'LuminanceAlpha') {
+			size = this.width * this.height * 2;
+		} else if (this.format === 'RGB') {
+			size = this.width * this.height * 3;
+		} else if (this.format === 'RGBA') {
+			size = this.width * this.height * 4;
+		} else if (this.format === 'PrecompressedDXT1') {
+			size = this.width * this.height * 4 / 8; // 8 : 1 ratio
+		} else if (this.format === 'PrecompressedDXT1A') {
+			size = this.width * this.height * 4 / 6; // 6 : 1 ratio
+		} else if (this.format === 'PrecompressedDXT3' || this.format === 'PrecompressedDXT5') {
+			size = this.width * this.height * 4 / 4; // 4 : 1 ratio
+		}
+
+		// account for mip maps
+		if (this.generateMipmaps) {
+			size = Math.ceil(size * 4 / 3);
+		}
+
+		return size;
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];
