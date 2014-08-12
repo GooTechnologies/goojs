@@ -325,5 +325,13 @@ function (
 		return this;
 	};
 
+	/**
+	 * @description Clones the vector.
+	 * @return {Vector2} Clone of self.
+	 */
+	Vector2.prototype.clone = function () {
+		return new Vector2(this);
+	};
+
 	return Vector2;
 });

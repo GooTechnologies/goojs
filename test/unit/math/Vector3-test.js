@@ -192,5 +192,13 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34+56*56));
 			expect(a.z).toBeCloseTo(56/Math.sqrt(12*12+34*34+56*56));
 		});
+
+		it("can be cloned", function(){
+			var a = new Vector3(1, 2, 3);
+			var b = a.clone();
+			expect(a).toEqual(b);
+			expect(a === b).toEqual(false);
+			expect(b).toEqual(jasmine.any(Vector3));
+		});
 	});
 });

@@ -55,7 +55,7 @@ function (
 	* Vector3 representing All Axis: (1, 1, 1)
 	* @type {Vector3}
 	* @example
-	* var v1 = Vector3.copy(Vector3.ONE); // v1 == (1, 1, 1)
+	* var v1 = Vector3.ONE.clone(); // v1 == (1, 1, 1)
 	*/
 	Vector3.ONE = new Vector3(1, 1, 1);
 
@@ -918,7 +918,7 @@ function (
 		var x = lhs.data[0] - rhs.data[0],
 			y = lhs.data[1] - rhs.data[1],
 			z = lhs.data[2] - rhs.data[2];
-		return x*x + y*y + z*z;
+		return x * x + y * y + z * z;
 	};
 
 	/**
@@ -950,7 +950,7 @@ function (
 	 * var n1 = v1.distanceSquared(v2); // 81
 	 */
 	Vector3.prototype.distanceSquared = function (v) {
-		return Vector3.distanceSquared( this, v);
+		return Vector3.distanceSquared(this, v);
 	};
 
 	/**
@@ -965,7 +965,15 @@ function (
 	 * var n1 = v1.distance(v2); // n1 == 9
 	 */
 	Vector3.prototype.distance = function (v) {
-		return Vector3.distance( this, v);
+		return Vector3.distance(this, v);
+	};
+
+	/**
+	 * @description Clones the vector.
+	 * @return {Vector3} Clone of self.
+	 */
+	Vector3.prototype.clone = function () {
+		return new Vector3(this);
 	};
 
 	/* ====================================================================== */
