@@ -146,5 +146,13 @@ define(["goo/math/Vector4"], function(Vector4) {
 			a.set(0,0,0,0);
 			expect(a.lerp(b, 0.5)).toEqual(new Vector4(0.5, 0.5, 0.5, 0.5));
 		});
+
+		it("can be cloned", function () {
+			var a = new Vector4(1, 2, 3, 4);
+			var b = a.clone();
+			expect(a).toEqual(b);
+			expect(a === b).toEqual(false);
+			expect(b).toEqual(jasmine.any(Vector4));
+		});
 	});
 });

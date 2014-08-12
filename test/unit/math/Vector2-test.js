@@ -151,5 +151,13 @@ define(["goo/math/Vector2"], function(Vector2) {
 			expect(a.x).toBeCloseTo(12/Math.sqrt(12*12+34*34));
 			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34));
 		});
+
+		it("can be cloned", function(){
+			var a = new Vector2(1, 2);
+			var b = a.clone();
+			expect(a).toEqual(b);
+			expect(a === b).toEqual(false);
+			expect(b).toEqual(jasmine.any(Vector2));
+		});
 	});
 });
