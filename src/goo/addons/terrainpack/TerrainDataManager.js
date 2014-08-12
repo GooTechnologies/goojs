@@ -38,14 +38,59 @@ define([
 				var len = binary_string.length;
 				var bytes = new Uint8Array( len );
 				for (var i = 0; i < len; i++)        {
-					var ascii = binary_string.charCodeAt(i);
-					bytes[i] = ascii;
+					bytes[i] = binary_string.charCodeAt(i);
 				}
 				return bytes.buffer;
 		};
 
+		TerrainDataManager.prototype.loadProjectData = function (path) {
+
+			if (path) this.setResourceFolder(path);
+
+			var checkForJson = function() {
+				var promise = this.loadJsonData('data.json');
+
+				return RSVP.(promise).then(function (data) {
+					var loadedData = JSON.parse(data);
+					console.log("Loaded from data.json", loadedData);
+					return loadedData;
+				});
+			}.bind(this);
+
+			var loadLocal = function() {
+				var promises = [
+					this._loadData('height_map.raw'),
+					this._loadData('splat_map.raw'),
+					this._loadData('Materials'),
+					this._loadData('Vegetation'),
+					this._loadData('Forest')
+				];
+
+				return RSVP.all(promises).then(function (datas) {
+					var loadedData = {};
+					var dataFound = false;
+					for (var i = 0; i < datas.length; i++) {
+						if (datas[i]) {
+							loadedData[datas[i].file] = datas[i].data;
+							loadedData.local = datas[i].local;
+							if (datas[i].local) dataFound = true;
+						}
+					}
+
+					if (!dataFound) return checkForJson();
+
+					console.log("Loaded from localStorage", loadedData);
+					return loadedData;
+				});
+			}.bind(this);
+
+			return loadLocal();
+
+
+		};
+
 		TerrainDataManager.prototype.loadJsonData = function (url) {
-			console.log("Look for "+url+" at:", this.resourceFolder)
+			console.log("Look for "+url+" at:", this.resourceFolder);
 			var promise = new RSVP.Promise();
 
 				var ajax = new Ajax();
@@ -54,7 +99,7 @@ define([
 					responseType: 'application/json'
 				}).then(function(request) {
 					promise.resolve(request.response);
-				}.bind(this), function(err) {
+				}.bind(this), function() {
 					promise.resolve(null);
 				}.bind(this));
 
@@ -64,11 +109,11 @@ define([
 		TerrainDataManager.prototype._loadData = function (url) {
 			var promise = new RSVP.Promise();
 
-			var fromLocalStore = localStorage.getItem(url)
+			var fromLocalStore = localStorage.getItem(url);
 			if (fromLocalStore) {
 
 				setTimeout(function() {
-					var parsed = JSON.parse(fromLocalStore)
+					var parsed = JSON.parse(fromLocalStore);
 				/*
 					var data;
 					try {
@@ -88,11 +133,11 @@ define([
 					responseType: 'arraybuffer'
 				}).then(function(request) {
 
-					console.log("Get Ajax: ", request)
+					console.log("Get Ajax: ", request);
 
 				//	promise.resolve(request.response);
 					promise.resolve({file:url, data:request.response, local:false});
-				}.bind(this), function(err) {
+				}.bind(this), function() {
 					promise.resolve(null);
 				}.bind(this));
 			}

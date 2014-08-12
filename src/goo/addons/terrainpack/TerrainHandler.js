@@ -124,55 +124,8 @@ define([
 			this.vegetation.toggle();
 		};
 
-		TerrainHandler.prototype.loadTerrainData = function(terrainData) {
-
-			var checkForJson = function() {
-				var promise = this.terrainDataManager.loadJsonData('data.json')
-
-				return RSVP.all([promise]).then(function (datas) {
-
-					var jsonObj = JSON.parse(datas[0]);
-					console.log(jsonObj)
-					var loadedData = jsonObj;
-					/*
-					for (var i = 0; i < datas.length; i++) {
-						if (datas[i]) loadedData[datas[i].file] = datas[i].data
-					}
-					*/
-					console.log("Loaded from data.json", loadedData)
-					return loadedData;
-				});
-			}.bind(this);
-
-			var loadLocal = function() {
-				var promises = [
-					this.terrainDataManager._loadData(terrainData.heightMap),
-					this.terrainDataManager._loadData(terrainData.splatMap),
-					this.terrainDataManager._loadData('Materials'),
-					this.terrainDataManager._loadData('Vegetation'),
-					this.terrainDataManager._loadData('Forest')
-				];
-
-				return RSVP.all(promises).then(function (datas) {
-					var loadedData = {};
-					var dataFound = false;
-					for (var i = 0; i < datas.length; i++) {
-						if (datas[i]) {
-							loadedData[datas[i].file] = datas[i].data;
-							loadedData.local = datas[i].local
-							if (datas[i].local) dataFound = true;
-						}
-					}
-
-					if (!dataFound) return checkForJson();
-
-					console.log("Loaded from localStorage", loadedData)
-					return loadedData;
-				});
-			}.bind(this)
-
-			return loadLocal();
-
+		TerrainHandler.prototype.loadTerrainData = function(path) {
+			return this.terrainDataManager.loadProjectData(path);
 		};
 
 
