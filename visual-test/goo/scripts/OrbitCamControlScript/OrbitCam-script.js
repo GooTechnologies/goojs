@@ -29,7 +29,8 @@ require([
 	var scripts = new ScriptComponent();
 
 	var wasdScript = Scripts.create(OrbitCamControlScript, {
-		domElement: goo.renderer.domElement
+		domElement: goo.renderer.domElement,
+		lookAtDistance: 20
 	});
 
 	scripts.scripts.push(wasdScript);
