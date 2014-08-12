@@ -160,13 +160,15 @@ function (
 		{
 			key: 'edgeColor',
 			name: 'Edge Color',
-			type: 'color',
+			type: 'vec3',
+			control: 'color'
 			'default': [0.0, 1.0, 0.0]
 		},
 		{
 			key: 'backgroundColor',
 			name: 'Background Color',
-			type: 'color',
+			type: 'vec3',
+			control: 'color'
 			'default': [0.0, 0.0, 0.0]
 		}
 	];
@@ -527,7 +529,8 @@ function (
 	Colorify.options = [
 		{
 			key: 'color',
-			type: 'color',
+			type: 'vec3',
+			control: 'color'
 			name: 'Color',
 			'default': [1.0, 1.0, 1.0]
 		},
