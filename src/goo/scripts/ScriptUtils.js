@@ -23,10 +23,11 @@ define([
 	 * Fill a passed parameters object with defaults from spec
 	 * @private
 	 * @param parameters {object} The type of object passed as parameters to a script
-	 * @param spec {Array.<{key, name, default, description}>}
+	 * @param specs {Array.<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultValues = function (parameters, specs) {
-		if (!(specs instanceof Array)) { return; }
+		if (!(specs instanceof Array)) { return; } //! AT: why this?
+
 		var keys = [];
 		specs.forEach(function (spec) {
 			if (!spec || typeof spec.key !== 'string') {
@@ -42,6 +43,7 @@ define([
 				parameters[spec.key] = _.clone(spec['default']);
 			}
 		});
+
 		for (var key in parameters) {
 			if (keys.indexOf(key) === -1 && key !== 'enabled') {
 				delete parameters[key];
