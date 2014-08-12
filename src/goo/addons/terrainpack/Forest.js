@@ -56,7 +56,8 @@ function (
 	function Forest() {
 		this.calcVec = new Vector3();
 		this.initDone = false;
-        this.setTreeLODvalues(32, 5 ,7, 1.5)
+        this.setTreeLODvalues(32, 5 ,7, 1.5);
+		this.setTreeScale(1);
 	}
 
 	var chainBundleLoading = function (world, promise, bundle) {
@@ -99,6 +100,10 @@ function (
 		});
 
 		return this.loadLODTrees(world, terrainQuery, forestAtlasTexture, forestAtlasNormals, forestTypes, entityMap);
+	};
+
+	Forest.prototype.setTreeScale = function(scale)  {
+		this.treeScale = scale;
 	};
 
     Forest.prototype.setTreeLODvalues = function(patchSize, patchDensity, gridSize, minDist) {
@@ -307,7 +312,7 @@ function (
 
 	Forest.prototype.addVegMeshToPatch = function (vegetationType, pos, meshBuilder, levelOfDetail, gridEntity) {
 		var transform = new Transform();
-		var size = (MathUtils.fastRandom() * 0.75 + 0.2);
+		var size = (MathUtils.fastRandom() * 0.75 + 0.2) * this.treeScale;
 		transform.translation.set(pos);
 		transform.update();
 		// var meshData;
