@@ -161,14 +161,14 @@ function (
 			key: 'edgeColor',
 			name: 'Edge Color',
 			type: 'vec3',
-			control: 'color'
+			control: 'color',
 			'default': [0.0, 1.0, 0.0]
 		},
 		{
 			key: 'backgroundColor',
 			name: 'Background Color',
 			type: 'vec3',
-			control: 'color'
+			control: 'color',
 			'default': [0.0, 0.0, 0.0]
 		}
 	];
@@ -530,7 +530,7 @@ function (
 		{
 			key: 'color',
 			type: 'vec3',
-			control: 'color'
+			control: 'color',
 			name: 'Color',
 			'default': [1.0, 1.0, 1.0]
 		},
