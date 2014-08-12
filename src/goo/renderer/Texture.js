@@ -124,6 +124,7 @@ function (
 		this.needsUpdate = true;
 	};
 
+	//! AT: this takes the same parameters as the Texture function but in a different order!
 	/**
 	 * Sets an image on the texture object.
 	 *
@@ -187,20 +188,25 @@ function (
 	Texture.prototype.getSizeInMemory = function () {
 		var size;
 
+		var width = this.image.width || this.image.length;
+		var height = this.image.height || 1;
+
+		size = width * height;
+
 		if (this.format === 'Luminance' || this.format === 'Alpha') {
-			size = this.width * this.height;
-		} else if (this.format === 'LuminanceAlpha') {
-			size = this.width * this.height * 2;
+			size *= 1;
+		} else if (this.format === 'Lumin`anceAlpha') {
+			size *= 2;
 		} else if (this.format === 'RGB') {
-			size = this.width * this.height * 3;
+			size *= 3; // some dubious video cards may use 4 bits anyway
 		} else if (this.format === 'RGBA') {
-			size = this.width * this.height * 4;
+			size *= 4;
 		} else if (this.format === 'PrecompressedDXT1') {
-			size = this.width * this.height * 4 / 8; // 8 : 1 ratio
+			size *= 4 / 8; // 8 : 1 ratio
 		} else if (this.format === 'PrecompressedDXT1A') {
-			size = this.width * this.height * 4 / 6; // 6 : 1 ratio
+			size *= 4 / 6; // 6 : 1 ratio
 		} else if (this.format === 'PrecompressedDXT3' || this.format === 'PrecompressedDXT5') {
-			size = this.width * this.height * 4 / 4; // 4 : 1 ratio
+			size *= 4 / 4; // 4 : 1 ratio
 		}
 
 		// account for mip maps
