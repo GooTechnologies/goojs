@@ -129,42 +129,9 @@ define([
 		};
 
 
-		TerrainHandler.prototype.preload = function (terrainData) {
-
+		TerrainHandler.prototype.preload = function (terrainData, dataHandler) {
 			return this.loadTerrainData(terrainData).then(function (loadedData) {
-
-				if (loadedData.local) {
-					this.terrainBuffer = this.terrainDataManager.decodeBase64(loadedData['height_map.raw']);
-					this.splatBuffer = this.terrainDataManager.decodeBase64(loadedData['splat_map.raw']);
-				} else {
-					this.terrainBuffer = loadedData['height_map.raw'];
-					this.splatBuffer = loadedData['splat_map.raw'];
-				}
-
-				if (loadedData.Vegetation) {
-					this.vegetationSettings = {
-						gridSize: loadedData.Vegetation.gridSize,
-						patchSize: loadedData.Vegetation.patchSize,
-						patchDensity: loadedData.Vegetation.patchDensity
-					};
-				}
-
-
-				if (loadedData.Forest) {
-					this.forest.setTreeLODvalues(
-						loadedData.Forest.patchSize,
-						loadedData.Forest.patchDensity,
-						loadedData.Forest.gridSize,
-						loadedData.Forest.minDist
-					);
-					this.forest.setTreeScale(loadedData.Forest.treeScale);
-				}
-
-				if (loadedData.Materials) {
-					for (var index in loadedData.Materials) {
-						this.terrain.setShaderUniform(index, loadedData.Materials[index]);
-					}
-				}
+				dataHandler(loadedData);
 			}.bind(this));
 		};
 

@@ -81,7 +81,11 @@ function(
 			materials: [mat],
 			transform: new Transform()
 		};
-		this.terrainMaterials = [];
+		this.materialSettings = {
+			culling:true
+		};
+
+		this.terrainMaterials = []
 
 		this.renderable.transform.setRotationXYZ(0, 0, Math.PI*0.5);
 
@@ -168,6 +172,8 @@ function(
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
 			material.cullState.frontFace = 'CW';
+			material.cullState.enabled = this.materialSettings.culling;
+			console.log("Cull state..", getMaterialPropertyValue('culling'), this.materialSettings)
 			// material.wireframe = true;
 			material.uniforms.resolution = [1, 1 / size, this.size, this.size];
 			material.uniforms.resolutionNorm = [this.size, this.size];
@@ -754,22 +760,43 @@ function(
 		scaleBedrock : 20
 	};
 
+	var materialProperties = {
+		culling:true
+	};
+
 	function setTileScale(uniform, value) {
 		tileScales[uniform] = value;
-	};
+	}
 
 	function getTileScaleValue(uniform) {
 		return tileScales[uniform];
 	}
 
+	function setMaterialProperty(property, value) {
+		materialProperties[property] = value;
+	}
+
+	function getMaterialPropertyValue(property) {
+		return materialProperties[property];
+	}
+
 	Terrain.prototype.setShaderUniform = function(uniform, value) {
-		console.log(uniform, value, tileScales)
-		setTileScale(uniform, value)
+		console.log(uniform, value, tileScales);
+		setTileScale(uniform, value);
 
 		for (var i = 0; i < this.terrainMaterials.length; i++) {
 			this.terrainMaterials[i].shader.uniforms[uniform] = value;
 		}
 	};
+
+	Terrain.prototype.setMaterialProperty = function(property, value) {
+		this.materialSettings[property] = value;
+		console.log("Mat sets: ", this.materialSettings)
+		for (var i = 0; i < this.terrainMaterials.length; i++) {
+			this.terrainMaterials[i][property] = value;
+		}
+	};
+
 
 	var terrainShaderDefFloat = {
 		defines: {

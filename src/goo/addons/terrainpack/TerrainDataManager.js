@@ -52,7 +52,8 @@ define([
 				'splat_map.raw',
 				'Materials',
 				'Vegetation',
-				'Forest'
+				'Forest',
+				'Meta'
 			];
 
 			var checkForJson = function() {
