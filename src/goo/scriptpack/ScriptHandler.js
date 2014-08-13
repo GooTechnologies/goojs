@@ -414,6 +414,11 @@ function (
 				continue;
 			}
 
+			// create cares about this, in order to build the control panel for the script
+			if (param['default'] === null || param['default'] === undefined) {
+				param['default'] = ScriptUtils.defaultsByType[param.type];
+			}
+
 			outScript.externals.parameters.push(param);
 		}
 		if (errors.length) {
