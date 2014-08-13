@@ -657,7 +657,7 @@ var commandHandlers = {
 			//manualSubStepsStep(dt, maxSubSteps, timeStep);
 			step(dt, maxSubSteps, timeStep);
 			sendTransforms();
-			timeout = setTimeout(mainLoop, timeStep * 1000 / 10);
+			timeout = setTimeout(mainLoop, timeStep * 1000);
 		}
 		if (timeout) {
 			clearTimeout(timeout);
