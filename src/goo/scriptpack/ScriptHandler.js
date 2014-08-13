@@ -413,13 +413,7 @@ function (
 				errors.push({ message: 'Parameter exponential needs to be boolean' });
 				continue;
 			}
-			if (param['default'] === null) {
-				param['default'] = ScriptUtils.defaultsByType[param.type];
-				if (typeof param['default'] === 'undefined') {
-					errors.push({ message: 'Parameter default is missing or of wrong type' });
-					continue;
-				}
-			}
+
 			outScript.externals.parameters.push(param);
 		}
 		if (errors.length) {
