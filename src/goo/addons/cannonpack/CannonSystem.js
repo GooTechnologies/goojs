@@ -65,7 +65,7 @@ function (
 
 		var shape = rbComponent.createShape(entity);
 		if (!shape) {
-			entity.clearComponent('CannonComponent');
+			entity.clearComponent('CannonRigidbodyComponent');
 			return;
 		}
 
