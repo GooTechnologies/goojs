@@ -18,6 +18,8 @@ define([
 			this.setWaterLevel(0);
 		};
 
+
+
 		TerrainQuery.prototype.updateTerrainInfo = function() {
 			this.terrainInfo = this.terrain.getTerrainData();
 		};

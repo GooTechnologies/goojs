@@ -56,7 +56,7 @@ function (
 	function Forest() {
 		this.calcVec = new Vector3();
 		this.initDone = false;
-        this.setTreeLODvalues(32, 5 ,7, 1.5);
+        this.setTreeLODvalues(32, 5 , 5, 1.5);
 		this.setTreeScale(1);
 		this.setRandomSeed(1);
 	}
@@ -197,6 +197,7 @@ function (
 	Forest.prototype.rebuild = function () {
 		this.currentX = -10000;
 		this.currentZ = -10000;
+		this.update(999999, 999999)
 	};
 
 	var hidden = false;

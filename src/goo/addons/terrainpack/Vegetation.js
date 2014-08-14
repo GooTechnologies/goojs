@@ -121,6 +121,7 @@ function (
 	Vegetation.prototype.rebuild = function () {
 		this.currentX = -10000;
 		this.currentZ = -10000;
+		this.update(999999, 999999)
 	};
 
 	var hidden = false;

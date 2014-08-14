@@ -2,6 +2,7 @@ define([
 		'goo/addons/terrainpack/Terrain',
         'goo/addons/terrainpack/TerrainDataManager',
 		'goo/addons/terrainpack/TerrainQuery',
+		'goo/addons/terrainpack/HeightMapEditor',
 		'goo/addons/terrainpack/Vegetation',
 		'goo/addons/terrainpack/Forest',
 		'goo/math/Vector3',
@@ -16,6 +17,7 @@ define([
 		Terrain,
 		TerrainDataManager,
 		TerrainQuery,
+		HeightMapEditor,
 		Vegetation,
 		Forest,
 		Vector3,
@@ -33,6 +35,7 @@ define([
 			this.terrainSize = terrainSize;
 			this.resourceFolder = resourceFolder;
 			this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels, terrainSettings.scale);
+			this.heightMapEditor = new HeightMapEditor(goo, this);
 			this.terrainDataManager = new TerrainDataManager();
 			this.terrainDataManager.setResourceFolder(this.resourceFolder);
 			this.vegetation = new Vegetation();
@@ -50,6 +53,7 @@ define([
 				patchSize: 25,
 				patchDensity: 20
 			};
+			console.log('Terrain Handler : ', this);
 		}
 
 		TerrainHandler.prototype.setTerrainScale = function(scale) {
@@ -64,64 +68,8 @@ define([
 			return this.terrainQuery ? this.terrainQuery.getHeightAt(pos) : 0;
 		};
 
-		var LMB = false;
-		var altKey = false;
-
-		var mousedown = function (e) {
-			if (e.button === 0) {
-				this.eventX = e.clientX;
-				this.eventY = e.clientY;
-
-				LMB = true;
-				altKey = e.altKey;
-
-				this.pick = true;
-				this.draw = true;
-				console.log('mousedown');
-			}
-		};
-
-		var mouseup = function (e) {
-			if (e.button === 0) {
-				LMB = false;
-				this.draw = false;
-				console.log('mouseup');
-			}
-		};
-
-		var mousemove = function (e) {
-			this.eventX = e.clientX;
-			this.eventY = e.clientY;
-
-			this.pick = true;
-
-			if (LMB) {
-				altKey = e.altKey;
-				this.draw = true;
-			}
-		};
-
 		TerrainHandler.prototype.toggleEditMode = function () {
-			this.terrain.toggleMarker();
-
-			this.hidden = !this.hidden;
-
-			if (this.hidden) {
-				this.goo.renderer.domElement.addEventListener("mousedown", mousedown.bind(this), false);
-				this.goo.renderer.domElement.addEventListener("mouseup", mouseup.bind(this), false);
-				this.goo.renderer.domElement.addEventListener("mouseout", mouseup.bind(this), false);
-				this.goo.renderer.domElement.addEventListener("mousemove", mousemove.bind(this), false);
-			} else {
-				this.goo.renderer.domElement.removeEventListener("mousedown", mousedown);
-				this.goo.renderer.domElement.removeEventListener("mouseup", mouseup);
-				this.goo.renderer.domElement.removeEventListener("mouseout", mouseup);
-				this.goo.renderer.domElement.removeEventListener("mousemove", mousemove);
-				this.terrainInfo = this.terrain.getTerrainData();
-				this.draw = false;
-				LMB = false;
-			}
-			this.forest.toggle();
-			this.vegetation.toggle();
+			this.heightMapEditor.toggleEditMode();
 		};
 
 		TerrainHandler.prototype.loadTerrainData = function(path) {
@@ -164,7 +112,6 @@ define([
 		};
 
 		TerrainHandler.prototype.applyTextures = function(parentMipmap, splatMap, textures, materialsReadyCB) {
-
 
 			this.terrain.init({
 				heightMap: parentMipmap,
@@ -295,36 +242,7 @@ define([
 			var pos = cameraEntity.cameraComponent.camera.translation;
 
 			if (this.terrain) {
-				var settings = this.settings;
-
-				if (this.hidden && this.pick) {
-					this.terrain.pick(cameraEntity.cameraComponent.camera, this.eventX, this.eventY, this.store);
-					this.terrain.setMarker('add', settings.size, this.store.x, this.store.z, settings.power, settings.brushTexture);
-					this.pick = false;
-				}
-
-				if (this.hidden && this.draw) {
-					var type = 'add';
-					if (altKey) {
-						type = 'sub';
-					}
-
-					var rgba = [0, 0, 0, 0];
-					if (settings.rgba === 'ground2') {
-						rgba = [1, 0, 0, 0];
-					} else if (settings.rgba === 'ground3') {
-						rgba = [0, 1, 0, 0];
-					} else if (settings.rgba === 'ground4') {
-						rgba = [0, 0, 1, 0];
-					} else if (settings.rgba === 'ground5') {
-						rgba = [0, 0, 0, 1];
-					}
-
-					this.terrain.draw(settings.mode, type, settings.size, this.store.x, this.store.y, this.store.z,
-						settings.power * this.goo.world.tpf * 60 / 100, settings.brushTexture, rgba);
-					this.terrain.updateTextures();
-				}
-
+				this.heightMapEditor.update(cameraEntity);
 				this.terrain.update(pos);
 			}
 			if (this.vegetation) {
