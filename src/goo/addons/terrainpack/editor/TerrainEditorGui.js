@@ -238,10 +238,11 @@ define([
 		terrainFolder.add(terrainEditSettings, 'power', 0, 100);
 		terrainFolder.add(terrainEditSettings, 'rgba', ['ground1', 'ground2', 'ground3', 'ground4', 'ground5']);
 		TextureCreator.cache = [];
-		terrainEditSettings.brushTexture = new TextureCreator().loadTexture2D(terrainConfigurator.resourcePath + brushes[0]);
+		console.log("TH: ", terrainHandler)
+		terrainEditSettings.brushTexture = new TextureCreator().loadTexture2D(terrainHandler.resourcePath + brushes[0]);
 		var brush = terrainFolder.add(terrainEditSettings, 'brush', brushes);
 		brush.onFinishChange(function(value) {
-			terrainEditSettings.brushTexture = new TextureCreator().loadTexture2D(terrainConfigurator.resourcePath + value);
+			terrainEditSettings.brushTexture = new TextureCreator().loadTexture2D(terrainHandler.resourcePath + value);
 		});
 
 

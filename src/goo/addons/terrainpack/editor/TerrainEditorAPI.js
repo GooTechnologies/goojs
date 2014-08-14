@@ -1,17 +1,18 @@
 "use strict";
 
 define([
+	'goo/addons/terrainpack/editor/HeightMapEditor',
 	'goo/addons/terrainpack/editor/TerrainEditorGUI'
 ], function(
+	HeightMapEditor,
 	TerrainEditorGUI
 	) {
-
-
 
 	var TerrainEditorAPI = function(version, terrainApi) {
 		this.terrainApi = terrainApi;
 		this.editingActive = false;
 		this.editingIndex = null;
+		this.heightMapEditor = new HeightMapEditor(this.terrainApi.goo, this);
 		this.editorGui = new TerrainEditorGUI(version, this);
 		this.configuratos = [];
 		this.brushesActive = false;
@@ -22,7 +23,16 @@ define([
 			GROUND_MAP4:{scaleUniform:'scaleGround4', tx:null},
 			GROUND_MAP5:{scaleUniform:'scaleGround5', tx:null},
 			STONE_MAP  :{scaleUniform:'scaleBedrock', tx:null}
-		}
+		};
+		this.terrainEditSettings = {
+			edit: false,
+			scale: 1,
+			mode: 'height',
+			brush: 'flare.png',
+			size: 16,
+			power: 10,
+			rgba: 'ground2'
+		};
 	};
 
 	TerrainEditorAPI.prototype.getConfigIndex = function() {
@@ -116,9 +126,8 @@ define([
 	};
 
 	TerrainEditorAPI.prototype.toggleHeightMapEditing = function(bool) {
-
-		this.terrainHandler.toggleEditMode();
-		this.terrainHandler.updatePhysics();
+		this.heightMapEditor.toggleEditMode();
+		this.heightMapEditor.terrainHandler.updatePhysics();
 	};
 
 	TerrainEditorAPI.prototype.enableEditMode = function(configIndex, config) {
@@ -161,6 +170,21 @@ define([
 
 		var base64String = _arrayBufferToBase64(data);
         this.saveLocalStore(fileName, base64String);
+	};
+
+	TerrainEditorAPI.prototype.triggerEdits = function() {
+		this.heightMapEditor.terrainHandler.forest.toggle(true);
+		this.heightMapEditor.terrainHandler.vegetation.toggle(true);
+	};
+
+	TerrainEditorAPI.prototype.processEdits = function() {
+		this.heightMapEditor.terrainHandler.forest.toggle(false);
+		this.heightMapEditor.terrainHandler.vegetation.toggle(false);
+		this.heightMapEditor.terrainHandler.terrainQuery.updateTerrainInfo();
+	};
+
+	TerrainEditorAPI.prototype.update = function(cameraEntity) {
+		this.heightMapEditor.update(cameraEntity);
 	};
 
 	return TerrainEditorAPI;

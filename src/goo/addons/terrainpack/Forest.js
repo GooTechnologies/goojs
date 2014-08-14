@@ -201,8 +201,8 @@ function (
 	};
 
 	var hidden = false;
-	Forest.prototype.toggle = function () {
-		hidden = !hidden;
+	Forest.prototype.toggle = function (hide) {
+		hidden = hide;
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
 				var entity = this.grid[x][z];

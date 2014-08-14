@@ -14,6 +14,7 @@ define([
 			this.terrainSize = terrainSize;
 			this.terrainData = terrainData;
 			this.terrain = terrain;
+			this.randomSeed = 1;
 			this.updateTerrainInfo();
 			this.setWaterLevel(0);
 		};
@@ -91,13 +92,19 @@ define([
 			return;
 		};
 
+		TerrainQuery.prototype.randomFromSeed = function(seed) {
+			MathUtils.randomSeed = seed+this.randomSeed;
+			return MathUtils.fastRandom();
+		};
+
 		TerrainQuery.prototype.getVegetationType = function(xx, yy, zz, slope) {
 
 
 			if (yy < this.waterLevel) {
 				return this.getWaterPlants(yy, slope)
 			}
-			var rand = Math.random();
+			var rand = this.randomFromSeed(xx*99+yy*88+zz*9);
+		//	rand = Math.random()
 			if (MathUtils.smoothstep(0.72, 0.81, slope) < 0.5+rand*0.5) {
 				return null;
 			}

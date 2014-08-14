@@ -2,7 +2,6 @@ define([
 		'goo/addons/terrainpack/Terrain',
         'goo/addons/terrainpack/TerrainDataManager',
 		'goo/addons/terrainpack/TerrainQuery',
-		'goo/addons/terrainpack/HeightMapEditor',
 		'goo/addons/terrainpack/Vegetation',
 		'goo/addons/terrainpack/Forest',
 		'goo/math/Vector3',
@@ -17,7 +16,6 @@ define([
 		Terrain,
 		TerrainDataManager,
 		TerrainQuery,
-		HeightMapEditor,
 		Vegetation,
 		Forest,
 		Vector3,
@@ -30,14 +28,14 @@ define([
 	) {
 		'use strict';
 
-		function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder, terrainSettings) {
+		function TerrainHandler(goo, terrainSize, clipmapLevels, resourcePath, terrainSettings) {
 			this.goo = goo;
 			this.terrainSize = terrainSize;
-			this.resourceFolder = resourceFolder;
+			this.resourcePath = resourcePath;
 			this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels, terrainSettings.scale);
-			this.heightMapEditor = new HeightMapEditor(goo, this);
+
 			this.terrainDataManager = new TerrainDataManager();
-			this.terrainDataManager.setResourceFolder(this.resourceFolder);
+			this.terrainDataManager.setResourceFolder(this.resourcePath);
 			this.vegetation = new Vegetation();
 			this.forest = new Forest();
 
@@ -66,10 +64,6 @@ define([
 
 		TerrainHandler.prototype.getHeightAt = function (pos) {
 			return this.terrainQuery ? this.terrainQuery.getHeightAt(pos) : 0;
-		};
-
-		TerrainHandler.prototype.toggleEditMode = function () {
-			this.heightMapEditor.toggleEditMode();
 		};
 
 		TerrainHandler.prototype.loadTerrainData = function(path) {
@@ -155,7 +149,7 @@ define([
 			var texturesLoadedCallback = function (textures) {
 				this.terrainInfo = this.applyTextures(parentMipmap, splatMap, textures, terrainInfoReady);
 			}.bind(this);
- 			this.terrainDataManager._loadTextures(this.resourceFolder, terrainData, texturesLoadedCallback);
+ 			this.terrainDataManager._loadTextures(this.resourcePath, terrainData, texturesLoadedCallback);
 		};
 
 		TerrainHandler.prototype.loadVegetationAndForest = function (forestLODEntityMap) {
@@ -168,9 +162,9 @@ define([
 					texturesPromise.resolve();
 				};
 
-				this.addVegetation(this.resourceFolder + this.terrainData.vegetationAtlas,  this.terrainData.vegetationTypes, onLoaded);
-				var forestAtlasUrl = this.resourceFolder +  this.terrainData.forestAtlas
-				var forestNormalsUrl = this.resourceFolder +  this.terrainData.forestAtlasNormals
+				this.addVegetation(this.resourcePath + this.terrainData.vegetationAtlas,  this.terrainData.vegetationTypes, onLoaded);
+				var forestAtlasUrl = this.resourcePath +  this.terrainData.forestAtlas
+				var forestNormalsUrl = this.resourcePath +  this.terrainData.forestAtlasNormals
 				this.addForest(forestAtlasUrl, forestNormalsUrl, this.terrainData.forestTypes, onLoaded, forestLODEntityMap);
 
 				return texturesPromise;
@@ -191,15 +185,15 @@ define([
 					texturesPromise.resolve();
 				};
 
-				this.addVegetation(this.resourceFolder + this.terrainData.vegetationAtlas,  this.terrainData.vegetationTypes, onLoaded);
-				var forestAtlasUrl = this.resourceFolder +  this.terrainData.forestAtlas
-				var forestNormalsUrl = this.resourceFolder +  this.terrainData.forestAtlasNormals
+				this.addVegetation(this.resourcePath + this.terrainData.vegetationAtlas,  this.terrainData.vegetationTypes, onLoaded);
+				var forestAtlasUrl = this.resourcePath +  this.terrainData.forestAtlas
+				var forestNormalsUrl = this.resourcePath +  this.terrainData.forestAtlasNormals
 				this.addForest(forestAtlasUrl, forestNormalsUrl, this.terrainData.forestTypes, onLoaded, forestLODEntityMap);
 
 				return texturesPromise;
 			}.bind(this);
 
-			this.terrainDataManager._loadTextures(this.resourceFolder, terrainData, texturesLoadedCallback);
+			this.terrainDataManager._loadTextures(this.resourcePath, terrainData, texturesLoadedCallback);
 
 		};
 
@@ -242,7 +236,6 @@ define([
 			var pos = cameraEntity.cameraComponent.camera.translation;
 
 			if (this.terrain) {
-				this.heightMapEditor.update(cameraEntity);
 				this.terrain.update(pos);
 			}
 			if (this.vegetation) {

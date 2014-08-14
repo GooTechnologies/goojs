@@ -6,9 +6,9 @@ define([
 		) {
 		'use strict';
 
-		function HeightMapEditor(goo, terrainHandler) {
+		function HeightMapEditor(goo, terrainEditorApi) {
 			this.goo = goo;
-			this.terrainHandler = terrainHandler;
+			this.terrainEditorApi = terrainEditorApi;
 			this.hidden = false;
 			this.store = new Vector3();
 			this.settings = null;
@@ -20,12 +20,6 @@ define([
 
 		HeightMapEditor.prototype.isEditing = function () {
 			return !this.hidden;
-		};
-
-		HeightMapEditor.prototype.processEdits = function() {
-			this.terrainHandler.forest.rebuild();
-			this.terrainHandler.vegetation.rebuild();
-			this.terrainHandler.terrainQuery.updateTerrainInfo();
 		};
 
 		var LMB = false;
@@ -42,6 +36,7 @@ define([
 				this.pick = true;
 				this.draw = true;
 				console.log('mousedown');
+				this.terrainEditorApi.triggerEdits();
 			}
 		};
 
@@ -50,6 +45,7 @@ define([
 				LMB = false;
 				this.draw = false;
 				console.log('mouseup');
+				this.terrainEditorApi.processEdits();
 			}
 		};
 
@@ -66,9 +62,13 @@ define([
 		};
 
 		HeightMapEditor.prototype.toggleEditMode = function () {
+			this.terrainHandler = this.terrainEditorApi.terrainApi.configurations[0].terrainHandler;
 			this.terrainHandler.terrain.toggleMarker();
 
+
 			this.hidden = !this.hidden;
+
+			console.log(this.goo)
 
 			if (this.hidden) {
 				this.goo.renderer.domElement.addEventListener("mousedown", mousedown.bind(this), false);
@@ -92,8 +92,8 @@ define([
 		};
 
 		HeightMapEditor.prototype.update = function(cameraEntity) {
-			console.log("Terrain Editor Update")
-			var settings = this.terrainHandler.settings;
+			if (!this.terrainHandler) return;
+			var settings = this.terrainEditorApi.terrainEditSettings;
 
 			if (this.hidden && this.pick) {
 				this.terrainHandler.terrain.pick(cameraEntity.cameraComponent.camera, this.eventX, this.eventY, this.store);

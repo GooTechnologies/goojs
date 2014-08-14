@@ -70,7 +70,7 @@ function (
 		material.uniforms.materialSpecular = [0, 0, 0, 0];
 		material.renderQueue = 1001;
 		this.material = material;
-
+		this.randomSeed = 1;
 		this.patchSize = 45;
 		this.patchDensity = 18;
 		this.gridSize = 5;
@@ -125,8 +125,8 @@ function (
 	};
 
 	var hidden = false;
-	Vegetation.prototype.toggle = function () {
-		hidden = !hidden;
+	Vegetation.prototype.toggle = function (hide) {
+		hidden = hide;
 		for (var x = 0; x < this.gridSize; x++) {
 			for (var z = 0; z < this.gridSize; z++) {
 				var entity = this.grid[x][z];
@@ -190,6 +190,11 @@ function (
 		// console.timeEnd('vegetation update');
 	};
 
+	Vegetation.prototype.randomFromSeed = function(seed) {
+		MathUtils.randomSeed = seed+this.randomSeed;
+		return MathUtils.fastRandom();
+	};
+
 	Vegetation.prototype.createPatch = function (patchX, patchZ) {
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
@@ -199,8 +204,8 @@ function (
 		var pos = [0, 10, 0];
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + Math.random()*0.5) * patchSpacing;
-				var zz = patchZ + (z + Math.random()*0.5) * patchSpacing;
+				var xx = patchX + (x + this.randomFromSeed(x*9999+z*888)*0.5) * patchSpacing;
+				var zz = patchZ + (z + this.randomFromSeed(x*77777+z*33)*0.5) * patchSpacing;
 				pos[0] = xx;
 				pos[2] = zz + 0.5;
 				var yy = this.terrainQuery.getHeightAt(pos);
@@ -218,10 +223,10 @@ function (
 					continue;
 				}
 
-				var size = Math.random() * 0.4 + 0.8;
+				var size = this.randomFromSeed(x*999+z*88) * 0.4 + 0.8;
 				transform.scale.setd(size, size, size);
 				transform.translation.setd(0, 0, 0);
-				var angle = Math.random() * Math.PI * 2.0;
+				var angle = this.randomFromSeed(x*999+z*9888) * Math.PI * 2.0;
 				var anglex = Math.sin(angle);
 				var anglez = Math.cos(angle);
 				this.calcVec.setd(anglex, 0.0, anglez);

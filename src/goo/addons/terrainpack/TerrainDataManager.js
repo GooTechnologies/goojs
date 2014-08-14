@@ -30,7 +30,7 @@ define([
 
 
 		TerrainDataManager.prototype.setResourceFolder = function (folder) {
-			this.resourceFolder = folder;
+			this.resourcePath = folder;
 		};
 
 		TerrainDataManager.prototype.decodeBase64 = function (base64string) {
@@ -111,12 +111,12 @@ define([
 		};
 
 		TerrainDataManager.prototype.loadJsonData = function (url) {
-			console.log("Look for "+url+" at:", this.resourceFolder);
+			console.log("Look for "+url+" at:", this.resourcePath);
 			var promise = new RSVP.Promise();
 
 				var ajax = new Ajax();
 				ajax.get({
-					url: this.resourceFolder + url,
+					url: this.resourcePath + url,
 					responseType: 'application/json'
 
 				}).then(function(request) {
@@ -154,7 +154,7 @@ define([
 			} else {
 				var ajax = new Ajax();
 				ajax.get({
-					url: this.resourceFolder + url,
+					url: this.resourcePath + url,
 					responseType: 'arraybuffer'
 				}).then(function(request) {
 

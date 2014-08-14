@@ -12,7 +12,6 @@ define([
 		this.goo = goo;
 		this.worldLoader = worldLoader;
 		this.configurations = [];
-
 		this.includeEditor(version);
 	};
 
@@ -100,16 +99,22 @@ define([
 		for (var i = 0; i < this.configurations.length; i++) {
 			this.configurations[i].updateTerrain(tpf, cameraEntity);
 		}
+		if (this.edit) this.terrainEditorAPI.update(cameraEntity);
 	};
 
 	TerrainAPI.prototype.includeEditor = function(version) {
 		this.terrainEditorAPI = new TerrainEditorAPI(version, this);
+		this.edit = false;
+		var tApi = this;
 		var enableEditButton = function(editorApi) {
 
 			var button = document.getElementById("EditTerrain");
-
 			button.addEventListener('click', function() {
 				editorApi.editTerrain(0, version);
+				setTimeout(function() {
+					tApi.edit = ! tApi.edit;
+				}, 200);
+
 			}, false);
 
 			button.innerHTML = "Editor (v "+version+")";
