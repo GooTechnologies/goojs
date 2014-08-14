@@ -36,14 +36,16 @@ function(
 		}, {
 			name: 'Easing type',
 			key: 'easing1',
-			type: 'dropdown',
+			type: 'string',
+			control: 'dropdown',
 			description: 'Easing type',
 			'default': 'Linear',
 			options: ['Linear', 'Quadratic', 'Exponential', 'Circular', 'Elastic', 'Back', 'Bounce']
 		}, {
 			name: 'Direction',
 			key: 'easing2',
-			type: 'dropdown',
+			type: 'string',
+			control: 'dropdown',
 			description: 'Easing direction',
 			'default': 'In',
 			options: ['In', 'Out', 'InOut']

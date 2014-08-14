@@ -57,7 +57,8 @@ function (
 		 */
 		this._hidden = false;
 
-		/** Mark entity as static, to allow being mesh-combined.
+		/** Mark entity as static.
+		 * Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.
 		 * @type {boolean}
 		 * @default false
 		 */

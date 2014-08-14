@@ -77,6 +77,7 @@ function(
 			return;
 		}
 
+		// Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.
 		if (!subs || entity.static === false) {
 			subs = [];
 			baseSubs.put(entity, subs);
