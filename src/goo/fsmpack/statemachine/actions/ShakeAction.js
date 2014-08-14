@@ -42,7 +42,8 @@ function(
 		}, {
 			name: 'Speed',
 			key: 'speed',
-			type: 'dropdown',
+			type: 'string',
+			control: 'dropdown',
 			description: 'Speed of shaking',
 			'default': 'Fast',
 			options: ['Fast', 'Medium', 'Slow']

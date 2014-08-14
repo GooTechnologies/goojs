@@ -27,7 +27,8 @@ function(
 		parameters: [{
 			name: 'Tag',
 			key: 'tag',
-			type: 'dropdown',
+			type: 'string',
+			control: 'dropdown',
 			description: 'Checks for collisions with other objects having this tag',
 			'default': 'red',
 			options: ['red', 'blue', 'green', 'yellow']
