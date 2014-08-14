@@ -464,7 +464,7 @@ function (
 			return;
 		}
 
-		div.innerHTML = '<a style="text-decoration: none;" href="http://www.gooengine.com" target="_blank">' + svg + '</a>';
+		div.innerHTML = '<a style="text-decoration: none;" href="http://www.goocreate.com" target="_blank">' + svg + '</a>';
 		div.style.position = 'absolute';
 		div.style.zIndex = '2000';
 
