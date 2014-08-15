@@ -1,37 +1,13 @@
 define([
-	'goo/entities/EntityUtils',
-	'goo/entities/components/MeshDataComponent',
 	'goo/math/MathUtils',
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'goo/renderer/MeshData',
-	'goo/renderer/Material',
 	'goo/renderer/Shader',
-	'goo/renderer/shaders/ShaderBuilder',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/shaders/ShaderFragment',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/Texture',
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/light/DirectionalLight'
 ],
 	/** @lends */
 		function(
-		EntityUtils,
-		MeshDataComponent,
 		MathUtils,
-		Transform,
-		Vector3,
-		MeshData,
-		Material,
 		Shader,
-		ShaderBuilder,
-		ShaderLib,
-		ShaderFragment,
-		TextureCreator,
-		RenderTarget,
-		Texture,
 		FullscreenUtil,
 		DirectionalLight
 		) {
