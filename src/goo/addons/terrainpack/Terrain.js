@@ -261,21 +261,6 @@ function(
 			terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
 		}
 
-		// var normalAdd = new TextureCreator().loadTexture2D('res/terrain/grass2n.jpg', {
-			// anisotropy: 4
-		// }, function (texture) {});
-		// this.normalmapPass.material.setTexture('NORMAL_MAP', normalAdd);
-
-		// var material = this.detailmapPass.material;
-		// material.setTexture('NORMAL_MAP', this.normalMap);
-		// material.setTexture('SPLAT_MAP', this.splat);
-		// material.setTexture('GROUND_MAP1', terrainTextures.ground1);
-		// material.setTexture('GROUND_MAP2', terrainTextures.ground2);
-		// material.setTexture('GROUND_MAP3', terrainTextures.ground3);
-		// material.setTexture('GROUND_MAP4', terrainTextures.ground4);
-		// material.setTexture('GROUND_MAP5', terrainTextures.ground5);
-		// material.setTexture('STONE_MAP', terrainTextures.stone);
-
 		this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
 		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
 		this.copyPass.render(this.renderer, this.splat, this.splatTexture);

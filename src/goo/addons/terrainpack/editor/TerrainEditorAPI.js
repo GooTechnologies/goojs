@@ -145,8 +145,8 @@ define([
 		this.populateTextureSetup(config);
 
 		this.editorGui.addTextureData(config, this.getGroundTextures(config));
-		this.editorGui.addVegetation(config);
-		this.editorGui.addForest(config);
+		this.editorGui.addVegetation(this.terrainApi.configurations[0].vegetation);
+		this.editorGui.addForest(this.terrainApi.configurations[0].forest);
 	};
 
     TerrainEditorAPI.prototype.saveLocalStore = function(fileName, data) {

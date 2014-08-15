@@ -35,8 +35,8 @@ define([
 		this.buildGUI(terrainHandler);
 	};
 
-	EditorGUI.prototype.addVegetation = function(terrainConf) {
-		var vegetation = terrainConf.terrainHandler.vegetation;
+	EditorGUI.prototype.addVegetation = function(vegetation) {
+
 		var editSettings = {
 			patchSize   : vegetation.patchSize   ,
 			patchDensity: vegetation.patchDensity,
@@ -72,8 +72,8 @@ define([
 
 	};
 
-	EditorGUI.prototype.addForest = function(terrainConf) {
-		var forest = terrainConf.terrainHandler.forest;
+	EditorGUI.prototype.addForest = function(forest) {
+
 		var editSettings = {
 			patchSize   : forest.patchSize,
 			patchDensity: forest.patchDensity,

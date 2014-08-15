@@ -181,6 +181,7 @@ define([
 		};
 
 		TerrainDataManager.prototype._loadTextures = function (folder, terrainData, callback) {
+			console.log("Load TX: ",folder, terrainData )
 			var promises = [];
 			promises.push(this._textureLoad(folder + terrainData.ground1.texture));
 			promises.push(this._textureLoad(folder + terrainData.ground2.texture));

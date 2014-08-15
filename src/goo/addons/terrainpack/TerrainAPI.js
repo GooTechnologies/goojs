@@ -1,9 +1,15 @@
 "use strict";
 
 define([
-	'goo/addons/terrainpack/editor/TerrainEditorAPI'
+	'goo/addons/terrainpack/editor/TerrainEditorAPI',
+	'goo/renderer/TextureCreator',
+	'goo/addons/terrainpack/Forest',
+	'goo/addons/terrainpack/Vegetation'
 ], function(
-	TerrainEditorAPI
+	TerrainEditorAPI,
+	TextureCreator,
+	Forest,
+	Vegetation
 	) {
 
 	var version = 0.1;
@@ -77,8 +83,8 @@ define([
 	TerrainAPI.prototype.loadStoredVegetation = function() {
 		var foundCb = function(data) {
 			for (var i = 0; i < this.configurations.length; i++) {
-				this.configurations[i].terrainHandler.vegetation.setVegetationDensities(data.patchSize, data.patchDensity, data.gridSize);;
-				this.configurations[i].terrainHandler.vegetation.rebuild();
+				this.configurations[i].vegetation.setVegetationDensities(data.patchSize, data.patchDensity, data.gridSize);;
+				this.configurations[i].vegetation.rebuild();
 			}
 		}.bind(this);
 
@@ -95,10 +101,57 @@ define([
 
 	};
 
+	TerrainAPI.prototype.addVegetation = function(resourcePath, terrainQuery, vegetationSettings, onLoaded) {
+
+		this.vegetationSettings = {
+			gridSize: vegetationSettings.gridSize || 4,
+			patchSize: vegetationSettings.patchSize || 25,
+			patchDensity: vegetationSettings.patchDensity || 20
+		};
+
+		this.configurations[0].vegetation = new Vegetation();
+		   console.log("Add Vegetation: ", resourcePath, terrainQuery);
+		var vegetationAtlasTexture = new TextureCreator().loadTexture2D(resourcePath+terrainQuery.terrainData.vegetationAtlas, {}, onLoaded);
+		vegetationAtlasTexture.anisotropy = 4;
+		this.configurations[0].vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, terrainQuery.terrainData.vegetationTypes, this.vegetationSettings);
+	};
+
+	TerrainAPI.prototype.addForest = function(resourcePath, terrainQuery, forestLODEntityMap, onLoaded) {
+		         console.log("Add Forest: ", resourcePath, terrainQuery, forestLODEntityMap)
+		var loadCount = 2;
+		var loadedCount = function() {
+			if (!--loadCount)
+				onLoaded();
+		};
+
+		var atlasUrl = resourcePath +  terrainQuery.terrainData.forestAtlas
+		var normalsUrl = resourcePath +  terrainQuery.terrainData.forestAtlasNormals
+		var forestTypes = terrainQuery.terrainData.forestTypes;
+
+		this.configurations[0].forest = new Forest();
+		var forestAtlasTexture = new TextureCreator().loadTexture2D(atlasUrl, {}, loadedCount);
+		forestAtlasTexture.anisotropy = 4;
+		var forestAtlasNormals = new TextureCreator().loadTexture2D(normalsUrl, {}, loadedCount);
+		console.log("FOREST INIT:",forestAtlasTexture, forestAtlasNormals, forestTypes, forestLODEntityMap);
+		this.configurations[0].forest.init(this.goo.world, terrainQuery, forestAtlasTexture, forestAtlasNormals, forestTypes, forestLODEntityMap);
+		console.log(this.configurations[0].forest)
+
+	};
+
+
 	TerrainAPI.prototype.updateTerrain = function(tpf, cameraEntity) {
+		var pos = cameraEntity.cameraComponent.camera.translation;
+
 		for (var i = 0; i < this.configurations.length; i++) {
 			this.configurations[i].updateTerrain(tpf, cameraEntity);
+			if (this.configurations[i].vegetation) {
+				this.configurations[i].vegetation.update(pos.x, pos.z);
+			}
+			if (this.configurations[i].forest) {
+				this.configurations[i].forest.update(pos.x, pos.z);
+			}
 		}
+
 		if (this.edit) this.terrainEditorAPI.update(cameraEntity);
 	};
 
