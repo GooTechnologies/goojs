@@ -98,9 +98,9 @@ define([
 				this.renderable.transform.scale.setd(-size, size, size);
 				this.renderable.transform.update();
 
-				this.terrain.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
+				this.terrain.copyPass.render(this.terrain.renderer, this.terrain.texturesBounce[0], this.terrain.textures[0]);
 
-				this.terrain.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+				this.terrain.renderer.render(this.renderable, FullscreenUtil.camera, [], this.terrain.textures[0], false);
 			} else if (mode === 'flatten') {
 				this.renderable.materials[0] = this.terrain.drawMaterial4;
 				this.renderable.materials[0].uniforms.opacity = power;
@@ -109,16 +109,16 @@ define([
 				if (brushTexture) {
 					this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
 				} else {
-					this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
+					this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.terrain.defaultBrushTexture);
 				}
 
 				this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
 				this.renderable.transform.scale.setd(-size, size, size);
 				this.renderable.transform.update();
 
-				this.terrain.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
+				this.terrain.copyPass.render(this.terrain.renderer, this.terrain.texturesBounce[0], this.terrain.textures[0]);
 
-				this.terrain.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
+				this.terrain.renderer.render(this.renderable, FullscreenUtil.camera, [], this.terrain.textures[0], false);
 			} else {
 				this.renderable.materials[0] = this.terrain.drawMaterial1;
 				this.renderable.materials[0].uniforms.opacity = power;
