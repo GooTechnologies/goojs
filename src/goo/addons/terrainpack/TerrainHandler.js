@@ -6,9 +6,7 @@ define([
 		'goo/util/Ajax',
 		'goo/math/Transform',
 		'goo/math/MathUtils',
-		'goo/renderer/Texture',
-		'goo/renderer/TextureCreator',
-		'goo/util/rsvp'
+		'goo/renderer/Texture'
 	],
 	function(
 		Terrain,
@@ -18,9 +16,7 @@ define([
 		Ajax,
 		Transform,
 		MathUtils,
-		Texture,
-		TextureCreator,
-		RSVP
+		Texture
 	) {
 		'use strict';
 

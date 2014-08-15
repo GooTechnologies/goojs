@@ -49,7 +49,6 @@ define([
 		var foundCb = function(data) {
 			for (var i = 0; i < this.configurations.length; i++) {
 				for (var index in data) {
-					console.log("Writing to shader from local", index, data[index])
 					this.configurations[i].terrainHandler.terrain.setShaderUniform(index, data[index]);
 					this.configurations[i].tuneShaderUniform(index, data[index])
 				}
@@ -70,7 +69,6 @@ define([
 
 			for (var index in tileScales) {
 				for (var i = 0; i < this.configurations.length; i++) {
-					console.log("Writing to shader from default", tileScales)
 					this.configurations[i].terrainHandler.terrain.setShaderUniform(index, tileScales[index]);
 					this.configurations[i].tuneShaderUniform(index, tileScales[index])
 				}

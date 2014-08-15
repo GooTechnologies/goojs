@@ -173,14 +173,14 @@ define([
 	};
 
 	TerrainEditorAPI.prototype.triggerEdits = function() {
-		this.heightMapEditor.terrainHandler.forest.toggle(true);
-		this.heightMapEditor.terrainHandler.vegetation.toggle(true);
+		this.terrainApi.configurations[0].forest.toggle(true);
+		this.terrainApi.configurations[0].vegetation.toggle(true);
 	};
 
 	TerrainEditorAPI.prototype.processEdits = function() {
-		this.heightMapEditor.terrainHandler.forest.toggle(false);
-		this.heightMapEditor.terrainHandler.vegetation.toggle(false);
-		this.heightMapEditor.terrainHandler.terrainQuery.updateTerrainInfo();
+		this.terrainApi.configurations[0].forest.toggle(false);
+		this.terrainApi.configurations[0].vegetation.toggle(false);
+		this.terrainApi.configurations[0].terrainHandler.terrainQuery.updateTerrainInfo();
 	};
 
 	TerrainEditorAPI.prototype.update = function(cameraEntity) {

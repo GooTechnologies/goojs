@@ -1,13 +1,16 @@
 define([
+	'goo/addons/terrainpack/editor/TerrainBrush',
 	'goo/math/Vector3'
 ],
 	function(
+		TerrainBrush,
 		Vector3
 		) {
 		'use strict';
 
 		function HeightMapEditor(goo, terrainEditorApi) {
 			this.goo = goo;
+			this.terrainBrush = new TerrainBrush(goo);
 			this.terrainEditorApi = terrainEditorApi;
 			this.hidden = false;
 			this.store = new Vector3();
@@ -63,7 +66,8 @@ define([
 
 		HeightMapEditor.prototype.toggleEditMode = function () {
 			this.terrainHandler = this.terrainEditorApi.terrainApi.configurations[0].terrainHandler;
-			this.terrainHandler.terrain.toggleMarker();
+
+			this.terrainBrush.toggleMarker(this.terrainHandler.terrain);
 
 
 			this.hidden = !this.hidden;
@@ -97,7 +101,7 @@ define([
 
 			if (this.hidden && this.pick) {
 				this.terrainHandler.terrain.pick(cameraEntity.cameraComponent.camera, this.eventX, this.eventY, this.store);
-				this.terrainHandler.terrain.setMarker('add', settings.size, this.store.x, this.store.z, settings.power, settings.brushTexture);
+				this.terrainBrush.setMarker('add', settings.size, this.store.x, this.store.z, settings.power, settings.brushTexture);
 				this.pick = false;
 			}
 
@@ -118,7 +122,7 @@ define([
 					rgba = [0, 0, 0, 1];
 				}
 
-				this.terrainHandler.terrain.draw(settings.mode, type, settings.size, this.store.x, this.store.y, this.store.z,
+				this.terrainBrush.draw(settings.mode, type, settings.size, this.store.x, this.store.y, this.store.z,
 					settings.power * this.goo.world.tpf * 60 / 100, settings.brushTexture, rgba);
 				this.terrainHandler.terrain.updateTextures();
 			}

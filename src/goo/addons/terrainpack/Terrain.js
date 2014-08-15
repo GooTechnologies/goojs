@@ -214,15 +214,6 @@ function(
 			parentClipmap = clipmap;
 		}
 
-		// edit marker
-		var light = new DirectionalLight();
-		light.shadowSettings.size = 10;
-		var lightEntity = this.lightEntity = world.createEntity(light);
-		lightEntity.setTranslation(200, 200, 200);
-		lightEntity.setRotation(-Math.PI*0.5, 0, 0);
-		lightEntity.addToWorld();
-		this.lightEntity.lightComponent.hidden = true;
-
 		this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
 			magFilter: 'NearestNeighbor',
 			minFilter: 'NearestNeighborNoMipMaps',
@@ -269,18 +260,6 @@ function(
 		if (initDone) initDone();
 	};
 
-	Terrain.prototype.toggleMarker = function () {
-		this.lightEntity.lightComponent.hidden = !this.lightEntity.lightComponent.hidden;
-	};
-
-	Terrain.prototype.setMarker = function (type, size, x, y, power, brushTexture) {
-		this.lightEntity.lightComponent.light.shadowSettings.size = size * 0.5;
-		brushTexture.wrapS = 'EdgeClamp';
-		brushTexture.wrapT = 'EdgeClamp';
-		this.lightEntity.lightComponent.light.lightCookie = brushTexture;
-		this.lightEntity.setTranslation(x, 200, y);
-	};
-
 	Terrain.prototype.pick = function (camera, x, y, store) {
 		var entities = [];
 		this.terrainRoot.traverse(function (entity) {
@@ -314,99 +293,6 @@ function(
 					entity.meshRendererComponent.materials[0] = clipmap.origMaterial;
 				}
 			});
-		}
-	};
-
-	Terrain.prototype.draw = function (mode, type, size, x, y, z, power, brushTexture, rgba) {
-		power = MathUtils.clamp(power, 0, 1);
-
-		x = (x - this.size/2) * 2;
-		z = (z - this.size/2) * 2;
-
-		if (mode === 'paint') {
-			this.renderable.materials[0] = this.drawMaterial2;
-			this.renderable.materials[0].uniforms.opacity = power;
-
-			if (type === 'add') {
-				this.renderable.materials[0].blendState.blendEquationColor = 'AddEquation';
-				this.renderable.materials[0].blendState.blendEquationAlpha = 'AddEquation';
-			} else if (type === 'sub') {
-				this.renderable.materials[0].blendState.blendEquationColor = 'ReverseSubtractEquation';
-				this.renderable.materials[0].blendState.blendEquationAlpha = 'ReverseSubtractEquation';
-			}
-
-			if (brushTexture) {
-				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
-			} else {
-				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
-			}
-
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
-			this.renderable.transform.update();
-
-			this.copyPass.render(this.renderer, this.splatCopy, this.splat);
-
-			this.renderable.materials[0].uniforms.rgba = rgba || [1,1,1,1];
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.splat, false);
-		} else if (mode === 'smooth') {
-			this.renderable.materials[0] = this.drawMaterial3;
-			this.renderable.materials[0].uniforms.opacity = power;
-
-			if (brushTexture) {
-				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
-			} else {
-				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
-			}
-
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
-			this.renderable.transform.update();
-
-			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
-
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
-		} else if (mode === 'flatten') {
-			this.renderable.materials[0] = this.drawMaterial4;
-			this.renderable.materials[0].uniforms.opacity = power;
-			this.renderable.materials[0].uniforms.height = y;
-
-			if (brushTexture) {
-				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
-			} else {
-				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
-			}
-
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
-			this.renderable.transform.update();
-
-			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
-
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
-		} else {
-			this.renderable.materials[0] = this.drawMaterial1;
-			this.renderable.materials[0].uniforms.opacity = power;
-
-			if (type === 'add') {
-				this.renderable.materials[0].blendState.blending = 'AdditiveBlending';
-			} else if (type === 'sub') {
-				this.renderable.materials[0].blendState.blending = 'SubtractiveBlending';
-			} else if (type === 'mul') {
-				this.renderable.materials[0].blendState.blending = 'MultiplyBlending';
-			}
-
-			if (brushTexture) {
-				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, brushTexture);
-			} else {
-				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
-			}
-
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
-			this.renderable.transform.update();
-
-			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
 		}
 	};
 
