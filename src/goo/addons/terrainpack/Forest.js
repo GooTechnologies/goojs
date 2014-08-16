@@ -59,7 +59,7 @@ function (
 		this.initDone = false;
         this.setTreeLODvalues(32, 5 , 5, 1.5);
 		this.setTreeScale(1);
-		this.setRandomSeed(1);
+		this.setRandomSeed(0);
 	}
 
 	Forest.prototype.init = function (world, forestData, forestAtlasTexture, forestAtlasNormals, trees, entityMap) {
@@ -282,13 +282,15 @@ function (
 
 
 	Forest.prototype.randomFromSeed = function(seed) {
-		MathUtils.randomSeed = seed+this.randomSeed;
-		return MathUtils.fastRandom();
+		MathUtils.randomSeed = seed+1;
+		return (MathUtils.fastRandom()-0.21)*12;
 	};
 
 	Forest.prototype.addVegMeshToPatch = function (vegetationType, pos, meshBuilder, levelOfDetail, gridEntity) {
 		var transform = new Transform();
-		var size = (this.randomFromSeed(pos[0]+pos[2]*100) * 0.75 + 0.2) * this.treeScale;
+		var random = this.randomFromSeed(Math.sin(pos[0]+pos[2]*100+this.randomSeed))
+
+		var size = (random * 0.75 + 0.2) * this.treeScale;
 		transform.translation.set(pos);
 		transform.update();
 		// var meshData;
@@ -298,7 +300,7 @@ function (
 			var treeEntity = this.fetchTreeMesh(vegetationType);
 			treeEntity.transformComponent.transform.scale.mul(size);
 			treeEntity.transformComponent.transform.translation.set(pos);
-			treeEntity.transformComponent.transform.rotation.rotateY(this.randomFromSeed(pos[0]+pos[2]*100)*55);
+			treeEntity.transformComponent.transform.rotation.rotateY(this.randomFromSeed(Math.sin(pos[0]+this.randomSeed+pos[2]*100))*55);
 			treeEntity.addToWorld();
 			gridEntity.attachChild(treeEntity);
 			if (this.onAddedVegMesh) {

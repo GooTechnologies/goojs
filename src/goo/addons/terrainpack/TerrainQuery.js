@@ -91,8 +91,8 @@ define([
 		};
 
 		TerrainQuery.prototype.randomFromSeed = function(seed) {
-			MathUtils.randomSeed = seed+this.randomSeed;
-			return MathUtils.fastRandom();
+			MathUtils.randomSeed = seed+1;
+			return (MathUtils.fastRandom()-0.21)*12;
 		};
 
 		TerrainQuery.prototype.getTypeFromGroundData = function(rand, xx, zz) {
@@ -109,12 +109,8 @@ define([
 
 		TerrainQuery.prototype.getVegetationType = function(xx, yy, zz, slope) {
 
-
-			if (yy < this.waterLevel) {
-				return this.getWaterPlants(yy, slope)
-			}
-			var rand = this.randomFromSeed(xx*99+yy*88+zz*9);
-		//	rand = Math.random()
+			var rand = this.randomFromSeed(Math.sin(xx*99+this.randomSeed));
+			//		var	rand = Math.random()
 			if (MathUtils.smoothstep(0.72, 0.81, slope) < 0.5+rand*0.5) {
 				return null;
 			}
@@ -132,9 +128,16 @@ define([
 
 				var type = this.getTypeFromGroundData(rand, xx, zz);
 
+				var vegSource = type.vegetation;
+
+				if (yy < this.waterLevel) {
+					vegSource = type.waterPlants;
+					if (!vegSource || slope < 0.7 || yy < -1) return null;
+				}
+
 				var test = 0;
-				for (var veg in type.vegetation) {
-					test += type.vegetation[veg];
+				for (var veg in vegSource) {
+					test += vegSource[veg];
 					if (rand < test) {
 						return veg;
 					}

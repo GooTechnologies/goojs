@@ -52,10 +52,10 @@ function (
 	Vegetation.prototype.init = function (world, areaConfig, vegetationAtlasTexture, settings) {
 		this.world = world;
 
-		var vegetationBillboards = areaConfig.plantsConfig.data.vegetationBillboards;
+		this.vegetationBillboards = areaConfig.plantsConfig.data.vegetationBillboards;
 		this.vegetationList = {};
-		for (var type in vegetationBillboards) {
-			var typeSettings = vegetationBillboards[type];
+		for (var type in this.vegetationBillboards) {
+			var typeSettings = this.vegetationBillboards[type];
 			var meshData = this.createBase(typeSettings);
 			this.vegetationList[type] = meshData;
 		}
@@ -115,7 +115,6 @@ function (
 			this.material.uniforms.fadeDistMax = this.gridSizeHalf * this.patchSize;
 			this.material.uniforms.fadeDistMin = 0.70 * this.material.uniforms.fadeDistMax;
 		}
-
 
     };
 
@@ -192,8 +191,8 @@ function (
 	};
 
 	Vegetation.prototype.randomFromSeed = function(seed) {
-		MathUtils.randomSeed = seed+this.randomSeed;
-		return MathUtils.fastRandom();
+		MathUtils.randomSeed = seed+1;
+		return (MathUtils.fastRandom()-0.21)*12;
 	};
 
 	Vegetation.prototype.createPatch = function (patchX, patchZ) {
@@ -205,10 +204,10 @@ function (
 		var pos = [0, 10, 0];
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + this.randomFromSeed(x*9999+z*888)*0.5) * patchSpacing;
-				var zz = patchZ + (z + this.randomFromSeed(x*77777+z*33)*0.5) * patchSpacing;
+				var xx = patchX + (x + (this.randomFromSeed(Math.sin(x*201+this.randomSeed+z*0.31)))) * patchSpacing;
+				var zz = patchZ + (z + (this.randomFromSeed(Math.cos(x*2.99+z*1.99+this.randomSeed)))) * patchSpacing;
 				pos[0] = xx;
-				pos[2] = zz + 0.5;
+				pos[2] = zz;
 				var yy = this.terrainQuery.getHeightAt(pos);
 				var norm = this.terrainQuery.getNormalAt(pos);
 				if (yy === null) {
@@ -224,20 +223,24 @@ function (
 					continue;
 				}
 
-				var size = this.randomFromSeed(x*999+z*88) * 0.4 + 0.8;
+				var random = this.randomFromSeed(Math.cos(x*10+this.randomSeed+z*8.30));
+
+				var size = random * 0.75 + 0.5;
+			//	console.log(random)
 				transform.scale.setd(size, size, size);
-				transform.translation.setd(0, 0, 0);
-				var angle = this.randomFromSeed(x*999+z*9888) * Math.PI * 2.0;
+				var angle = this.randomFromSeed(Math.cos(x*621+z*0.2)) * 7.0;
 				var anglex = Math.sin(angle);
 				var anglez = Math.cos(angle);
 				this.calcVec.setd(anglex, 0.0, anglez);
 				// norm.y = 0.5;
 				// norm.normalize();
 				this.lookAt(transform.rotation, this.calcVec, norm);
-				transform.translation.setd(xx, yy, zz);
-				transform.update();
 
 				var meshData = this.vegetationList[vegetationType];
+				transform.translation.setd(xx, yy, zz);
+				var ww = this.vegetationBillboards[vegetationType].w;
+				transform.translation.setd(xx, yy, zz-1);
+				transform.update();
 				meshBuilder.addMeshData(meshData, transform);
 
 				// console.count('grass');
