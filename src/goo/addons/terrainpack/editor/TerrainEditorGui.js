@@ -1,10 +1,8 @@
 "use strict";
 
 define([
-	'js/terrain/TerrainConfigurator',
 	'goo/renderer/TextureCreator'
 ], function(
-	TerrainConfigurator,
 	TextureCreator
 	) {
 

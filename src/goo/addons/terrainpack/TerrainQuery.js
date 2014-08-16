@@ -10,16 +10,14 @@ define([
 
 		var calcVec = new Vector3();
 
-		var TerrainQuery = function(terrainSize, terrainData, terrain) {
+		var TerrainQuery = function(terrainSize, groundData, terrain) {
 			this.terrainSize = terrainSize;
-			this.terrainData = terrainData;
+			this.groundData = groundData.ground.data;
 			this.terrain = terrain;
 			this.randomSeed = 1;
 			this.updateTerrainInfo();
 			this.setWaterLevel(0);
 		};
-
-
 
 		TerrainQuery.prototype.updateTerrainInfo = function() {
 			this.terrainInfo = this.terrain.getTerrainData();
@@ -97,6 +95,18 @@ define([
 			return MathUtils.fastRandom();
 		};
 
+		TerrainQuery.prototype.getTypeFromGroundData = function(rand, xx, zz) {
+
+			var index = (zz * this.terrainSize * this.terrain.splatMult + xx) * 4;
+			var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
+			var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
+			var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
+			var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
+			var type = splat1 > rand ? this.groundData.ground2 : splat2 > rand ? this.groundData.ground3 : splat3 > rand ? this.groundData.ground4 : splat4 > rand ? this.groundData.ground5 : this.groundData.ground1;
+
+			return type;
+		};
+
 		TerrainQuery.prototype.getVegetationType = function(xx, yy, zz, slope) {
 
 
@@ -120,12 +130,7 @@ define([
 				xx *= this.terrain.splatMult;
 				zz *= this.terrain.splatMult;
 
-				var index = (zz * this.terrainSize * this.terrain.splatMult + xx) * 4;
-				var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
-				var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
-				var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
-				var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
-				var type = splat1 > rand ? this.terrainData.ground2 : splat2 > rand ? this.terrainData.ground3 : splat3 > rand ? this.terrainData.ground4 : splat4 > rand ? this.terrainData.ground5 : this.terrainData.ground1;
+				var type = this.getTypeFromGroundData(rand, xx, zz);
 
 				var test = 0;
 				for (var veg in type.vegetation) {
@@ -155,12 +160,8 @@ define([
 				xx *= this.terrain.splatMult;
 				zz *= this.terrain.splatMult;
 
-				var index = (zz * this.terrainSize * this.terrain.splatMult + xx) * 4;
-				var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
-				var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
-				var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
-				var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
-				var type = splat1 > rand ? this.terrainData.ground2 : splat2 > rand ? this.terrainData.ground3 : splat3 > rand ? this.terrainData.ground4 : splat4 > rand ? this.terrainData.ground5 : this.terrainData.ground1;
+
+				var type = this.getTypeFromGroundData(rand, xx, zz);
 
 				var test = 0;
 				for (var veg in type.forest) {
@@ -209,8 +210,8 @@ define([
 		};
 
 		TerrainQuery.prototype.getType = function(xx, zz, slope, rand) {
-			if (MathUtils.smoothstep(0.8, 0.88, slope) < rand) {
-				return this.terrainData.stone;
+			if (MathUtils.smoothstep(0.75, 0.88, slope) < rand) {
+				return this.groundData.stone;
 			}
 
 			if (this.terrainInfo) {
@@ -218,22 +219,18 @@ define([
 				zz = Math.floor(zz);
 
 				if (xx < 0 || xx > this.terrainSize - 1 || zz < 0 || zz > this.terrainSize - 1) {
-					return this.terrainData.stone;
+					return this.groundData.stone;
 				}
 
 				xx *= this.terrain.splatMult;
 				zz *= this.terrain.splatMult;
 
-				var index = (zz * this.terrainSize * this.terrain.splatMult + xx) * 4;
-				var splat1 = this.terrainInfo.splat[index + 0] / 255.0;
-				var splat2 = this.terrainInfo.splat[index + 1] / 255.0;
-				var splat3 = this.terrainInfo.splat[index + 2] / 255.0;
-				var splat4 = this.terrainInfo.splat[index + 3] / 255.0;
-				var type = splat1 > rand ? this.terrainData.ground2 : splat2 > rand ? this.terrainData.ground3 : splat3 > rand ? this.terrainData.ground4 : splat4 > rand ? this.terrainData.ground5 : this.terrainData.ground1;
+
+				var type = this.getTypeFromGroundData(rand, xx, zz);
 
 				return type;
 			}
-			return this.terrainData.stone;
+			return this.groundData.stone;
 		};
 
 		return TerrainQuery;

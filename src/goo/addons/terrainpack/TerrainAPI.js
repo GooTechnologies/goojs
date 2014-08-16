@@ -2,11 +2,13 @@
 
 define([
 	'goo/addons/terrainpack/editor/TerrainEditorAPI',
+	'goo/addons/terrainpack/ConfiguredArea',
 	'goo/renderer/TextureCreator',
 	'goo/addons/terrainpack/Forest',
 	'goo/addons/terrainpack/Vegetation'
 ], function(
 	TerrainEditorAPI,
+	ConfiguredArea,
 	TextureCreator,
 	Forest,
 	Vegetation
@@ -21,28 +23,30 @@ define([
 		this.includeEditor(version);
 	};
 
-	var terrainEditSettings = {
-		edit: false,
-		scale: 1,
-		mode: 'height',
-		brush: 'flare.png',
-		size: 16,
-		power: 10,
-		rgba: 'ground2'
-	};
+	TerrainAPI.prototype.loadTerrainResources = function(resourcePath, areaData, TerrainTypes, readyCallback) {
 
-	var terrainSettings = {
-		scale: 1.4
-	};
+		var terrainEditSettings = {
+			edit: false,
+			scale: 1,
+			mode: 'height',
+			brush: 'flare.png',
+			size: 16,
+			power: 10,
+			rgba: 'ground2'
+		};
 
-	TerrainAPI.prototype.loadTerrainResources = function(resourcePath, configurator, readyCallback) {
+		var terrainSettings = {
+			scale: 1.4
+		};
+
 
 		var loadedCallback = function() {
-			configurator.init(version, this.goo, resourcePath, readyCallback, terrainSettings, terrainEditSettings);
-			this.configurations.push(configurator);
+			var areaConf = new ConfiguredArea(version, this.goo, resourcePath, areaData, TerrainTypes, readyCallback, terrainSettings, terrainEditSettings);
+			this.configurations.push(areaConf);
 		}.bind(this);
 
-		this.worldLoader.loadWorld(loadedCallback)
+		this.worldLoader.loadWorld(loadedCallback);
+
 	};
 
 	TerrainAPI.prototype.loadStoredMaterial = function() {
@@ -99,7 +103,7 @@ define([
 
 	};
 
-	TerrainAPI.prototype.addVegetation = function(resourcePath, terrainQuery, vegetationSettings, onLoaded) {
+	TerrainAPI.prototype.addVegetation = function(resourcePath, areaConfig, vegetationSettings, onLoaded) {
 
 		this.vegetationSettings = {
 			gridSize: vegetationSettings.gridSize || 4,
@@ -107,32 +111,32 @@ define([
 			patchDensity: vegetationSettings.patchDensity || 20
 		};
 
-		this.configurations[0].vegetation = new Vegetation();
-		   console.log("Add Vegetation: ", resourcePath, terrainQuery);
-		var vegetationAtlasTexture = new TextureCreator().loadTexture2D(resourcePath+terrainQuery.terrainData.vegetationAtlas, {}, onLoaded);
+		areaConfig.vegetation = new Vegetation(areaConfig.getTerrainQuery());
+		console.log("Add Vegetation: ", resourcePath, areaConfig.plantsConfig.data.vegetationAtlas, areaConfig);
+		var vegetationAtlasTexture = new TextureCreator().loadTexture2D(resourcePath+areaConfig.plantsConfig.data.vegetationAtlas, {}, onLoaded);
 		vegetationAtlasTexture.anisotropy = 4;
-		this.configurations[0].vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, terrainQuery.terrainData.vegetationTypes, this.vegetationSettings);
+		areaConfig.vegetation.init(this.goo.world, areaConfig, vegetationAtlasTexture, this.vegetationSettings);
 	};
 
-	TerrainAPI.prototype.addForest = function(resourcePath, terrainQuery, forestLODEntityMap, onLoaded) {
-		         console.log("Add Forest: ", resourcePath, terrainQuery, forestLODEntityMap)
+	TerrainAPI.prototype.addForest = function(resourcePath, areaConfig, forestLODEntityMap, onLoaded) {
+		console.log("Add Forest: ", resourcePath, areaConfig, forestLODEntityMap);
+		var forestData = areaConfig.forestConfig;
+
 		var loadCount = 2;
 		var loadedCount = function() {
 			if (!--loadCount)
-				onLoaded();
+				onLoaded("Forest Textures OK");
 		};
 
-		var atlasUrl = resourcePath +  terrainQuery.terrainData.forestAtlas
-		var normalsUrl = resourcePath +  terrainQuery.terrainData.forestAtlasNormals
-		var forestTypes = terrainQuery.terrainData.forestTypes;
+		var atlasUrl = resourcePath +  forestData.atlas.data.forestAtlas
+		var normalsUrl = resourcePath +  forestData.atlas.data.forestAtlasNormals
+		var trees = forestData.trees;
 
-		this.configurations[0].forest = new Forest();
+		areaConfig.forest = new Forest(areaConfig.getTerrainQuery());
 		var forestAtlasTexture = new TextureCreator().loadTexture2D(atlasUrl, {}, loadedCount);
 		forestAtlasTexture.anisotropy = 4;
 		var forestAtlasNormals = new TextureCreator().loadTexture2D(normalsUrl, {}, loadedCount);
-		console.log("FOREST INIT:",forestAtlasTexture, forestAtlasNormals, forestTypes, forestLODEntityMap);
-		this.configurations[0].forest.init(this.goo.world, terrainQuery, forestAtlasTexture, forestAtlasNormals, forestTypes, forestLODEntityMap);
-		console.log(this.configurations[0].forest)
+		areaConfig.forest.init(this.goo.world, forestData, forestAtlasTexture, forestAtlasNormals, trees, forestLODEntityMap);
 
 	};
 

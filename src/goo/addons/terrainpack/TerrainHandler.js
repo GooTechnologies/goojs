@@ -37,7 +37,6 @@ define([
 			this.eventX = 0;
 			this.eventY = 0;
 
-			console.log('Terrain Handler : ', this);
 		}
 
 		TerrainHandler.prototype.setTerrainScale = function(scale) {
@@ -67,31 +66,30 @@ define([
 
 		TerrainHandler.prototype.initLevel = function (terrainData, settings, callback) {
 			this.terrainData = terrainData;
+			var groundData = terrainData.ground.data;
 			this.settings = settings;
 			var terrainSize = this.terrainSize;
-			console.log("Init TH")
+
+
 			var queryReadyCallback = function(terrainQuery) {
 				callback(terrainQuery);
 			}.bind(this);
 
+			var terrainArray;
+			if (this.terrainBuffer) {
+				terrainArray = new Float32Array(this.terrainBuffer);
+			} else {
+				terrainArray = new Float32Array(terrainSize * terrainSize);
+			}
 
-				var terrainArray;
-				if (this.terrainBuffer) {
-					terrainArray = new Float32Array(this.terrainBuffer);
-				} else {
-					terrainArray = new Float32Array(terrainSize * terrainSize);
-				}
+			var splatArray;
+			if (this.splatBuffer) {
+				splatArray = new Uint8Array(this.splatBuffer);
+			} else {
+				splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
+			}
 
-				var splatArray;
-				if (this.splatBuffer) {
-					splatArray = new Uint8Array(this.splatBuffer);
-				} else {
-					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
-				}
-
-
-				return this.loadTextureData(terrainData, terrainArray, splatArray, queryReadyCallback);
-
+			return this.loadTextureData(groundData, terrainArray, splatArray, queryReadyCallback);
 		};
 
 		TerrainHandler.prototype.applyTextures = function(parentMipmap, splatMap, textures, materialsReadyCB) {
@@ -114,10 +112,7 @@ define([
 			return this.terrainQuery;
 		};
 
-
-
-		TerrainHandler.prototype.loadTextureData = function (terrainData, parentMipmap, splatMap, queryReadyCallback) {
-			console.log("textures loadTextureData", terrainData)
+		TerrainHandler.prototype.loadTextureData = function (groundData, parentMipmap, splatMap, queryReadyCallback) {
 			var terrainInfoReady = function() {
 				queryReadyCallback(this.loadTerrainQuery());
 			}.bind(this);
@@ -126,10 +121,8 @@ define([
 				console.log("textures loaded", textures)
 				this.terrainInfo = this.applyTextures(parentMipmap, splatMap, textures, terrainInfoReady);
 			}.bind(this);
- 			this.terrainDataManager._loadTextures(this.resourcePath, terrainData, texturesLoadedCallback);
+ 			this.terrainDataManager._loadTextures(this.resourcePath, groundData, texturesLoadedCallback);
 		};
-
-
 
 		TerrainHandler.prototype.updatePhysics = function () {
 			this.terrain.updateAmmoBody();

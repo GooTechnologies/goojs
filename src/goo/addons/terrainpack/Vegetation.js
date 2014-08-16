@@ -43,18 +43,19 @@ function (
 ) {
 	'use strict';
 
-	function Vegetation() {
+	function Vegetation(terrainQuery) {
+		this.terrainQuery = terrainQuery;
 		this.calcVec = new Vector3();
 		this.initDone = false;
 	}
 
-	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes, settings) {
+	Vegetation.prototype.init = function (world, areaConfig, vegetationAtlasTexture, settings) {
 		this.world = world;
-		this.terrainQuery = terrainQuery;
 
+		var vegetationBillboards = areaConfig.plantsConfig.data.vegetationBillboards;
 		this.vegetationList = {};
-		for (var type in vegetationTypes) {
-			var typeSettings = vegetationTypes[type];
+		for (var type in vegetationBillboards) {
+			var typeSettings = vegetationBillboards[type];
 			var meshData = this.createBase(typeSettings);
 			this.vegetationList[type] = meshData;
 		}

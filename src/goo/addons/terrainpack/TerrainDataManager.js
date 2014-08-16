@@ -60,12 +60,12 @@ define([
 				var promise = this.loadJsonData('data.json');
 
 				return RSVP.all([promise]).then(function (data) {
-					console.log("Data retrieved: ", data);
+	//				console.log("Data retrieved: ", data);
 					if (!data) console.log("No json data found");
 
 					var jsonObj = data[0];
 					var loadedData = JSON.parse(jsonObj);
-					console.log("Loaded from data.json", loadedData);
+	//				console.log("Loaded from data.json", loadedData);
 					return loadedData;
 				});
 			}.bind(this);
@@ -81,7 +81,7 @@ define([
 				return RSVP.all(promises).then(function (datas) {
 					var loadedData = {};
 					var dataFound = false;
-					console.log("Datas: ", datas)
+	//				console.log("Datas: ", datas)
 					for (var i = 0; i < datas.length; i++) {
 
 
@@ -90,17 +90,17 @@ define([
 							loadedData.local = datas[i].local;
 							if (datas[i].local) dataFound = true;
 						} else {
-							console.log("Missing data: ", i, projectFiles[i], dataFound);
+	//						console.log("Missing data: ", i, projectFiles[i], dataFound);
 							missingIndexes.push(i);
 
 						}
 					}
 					if (missingIndexes.length != 0) {
-						console.log("some localStorage data missing:", missingIndexes);
+	//					console.log("some localStorage data missing:", missingIndexes);
 						return checkForJson();
 					}
 
-					console.log("Loaded from localStorage", loadedData);
+	//				console.log("Loaded from localStorage", loadedData);
 					return loadedData;
 				});
 			}.bind(this);
@@ -111,7 +111,7 @@ define([
 		};
 
 		TerrainDataManager.prototype.loadJsonData = function (url) {
-			console.log("Look for "+url+" at:", this.resourcePath);
+	//		console.log("Look for "+url+" at:", this.resourcePath);
 			var promise = new RSVP.Promise();
 
 				var ajax = new Ajax();
@@ -121,7 +121,7 @@ define([
 
 				}).then(function(request) {
 
-					console.log("Get Ajax: ", request);
+		//			console.log("Get Ajax: ", request);
 
 					promise.resolve(request.response);
 				}.bind(this), function(err) {
@@ -147,7 +147,7 @@ define([
 						data = parsed.data;
 					}
 				*/
-					console.log("Loading Local Data: ", parsed.file);
+				//	console.log("Loading Local Data: ", parsed.file);
 					promise.resolve({file:parsed.file, data:parsed.data, local:true});
 				}, 0);
 
@@ -181,7 +181,7 @@ define([
 		};
 
 		TerrainDataManager.prototype._loadTextures = function (folder, terrainData, callback) {
-			console.log("Load TX: ",folder, terrainData )
+	//		console.log("Load TX: ",folder, terrainData )
 			var promises = [];
 			promises.push(this._textureLoad(folder + terrainData.ground1.texture));
 			promises.push(this._textureLoad(folder + terrainData.ground2.texture));

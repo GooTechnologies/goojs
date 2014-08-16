@@ -53,7 +53,8 @@ function (
 ) {
 	'use strict';
 
-	function Forest() {
+	function Forest(terrainQuery) {
+		this.terrainQuery = terrainQuery;
 		this.calcVec = new Vector3();
 		this.initDone = false;
         this.setTreeLODvalues(32, 5 , 5, 1.5);
@@ -61,46 +62,9 @@ function (
 		this.setRandomSeed(1);
 	}
 
-	var chainBundleLoading = function (world, promise, bundle) {
-		var loader = new DynamicLoader({
-			world: world,
-			preloadBinaries: true,
-			rootPath: "res/trees2"
-		});
-		return promise.then(function () {
-			console.log("loading bundle ", bundle);
-			return loader.load("root.bundle");
-		}).then(function (configs) {
-			// find scene and update it.
-			for (var ref in configs) {
-				console.log(ref);
-				// if (ref.indexOf(".scene") != -1) {
-				// 	return loader.update(ref, configs[ref]).then(function () {
-				// 		return configs;
-				// 	});
-				// }
-			}
-			console.error("Config in bundle ", bundle, " contained no scene?!");
-		});
-	};
+	Forest.prototype.init = function (world, forestData, forestAtlasTexture, forestAtlasNormals, trees, entityMap) {
 
-	Forest.prototype.init = function (world, terrainQuery, forestAtlasTexture, forestAtlasNormals, forestTypes, entityMap) {
-		var p = new RSVP.Promise();
-
-		var bundlesToLoad = ["fish"];
-		for (var i = 0; i < bundlesToLoad.length; i++) {
-			p = chainBundleLoading(world, p, bundlesToLoad[i]);
-		}
-
-		p.then(function () {
-			console.log("loaded forest", forestTypes);
-		}, function (e) {
-			console.log("Error! ", e);
-		}).then(null, function (e) {
-			console.log("Error! ", e);
-		});
-
-		return this.loadLODTrees(world, terrainQuery, forestAtlasTexture, forestAtlasNormals, forestTypes, entityMap);
+		return this.loadLODTrees(world, forestData, forestAtlasTexture, forestAtlasNormals, trees, entityMap);
 	};
 
 	Forest.prototype.setTreeScale = function(scale)  {
@@ -129,9 +93,8 @@ function (
         }
     };
 
-	Forest.prototype.loadLODTrees = function (world, terrainQuery, forestAtlasTexture, forestAtlasNormals, forestTypes, entityMap) {
-		this.terrainQuery = terrainQuery;
-		this.forestTypes = forestTypes;
+	Forest.prototype.loadLODTrees = function (world, forestData, forestAtlasTexture, forestAtlasNormals, trees, entityMap) {
+		this.forestTypes = trees;
 		this.entityMap = entityMap || {};
 
         for (var ents in this.entityMap) {
@@ -142,9 +105,10 @@ function (
 		this.world = world;
 
 		this.vegetationList = {};
-		for (var type in forestTypes) {
-			var typeSettings = forestTypes[type];
-			var meshData = this.createBase(typeSettings);
+		for (var type in trees) {
+			var billboard = trees[type].lod.bb;
+			console.log(billboard)
+			var meshData = this.createBase(billboard);
 			this.vegetationList[type] = meshData;
 		}
 
@@ -152,11 +116,11 @@ function (
 		material.setTexture('DIFFUSE_MAP', forestAtlasTexture);
 		material.setTexture('NORMAL_MAP', forestAtlasNormals);
 		material.uniforms.discardThreshold = 0.6;
-		// material.blendState.blending = 'CustomBlending';
+		material.blendState.blending = 'NoBlending';
 		material.uniforms.materialAmbient = [0, 0, 0, 0];
 		material.uniforms.materialDiffuse = [1, 1, 1, 1];
 		material.uniforms.materialSpecular = [0, 0, 0, 0];
-		material.renderQueue = 2001;
+		material.renderQueue = 1001;
 		this.material = material;
 
 		this.grid = [];
@@ -292,7 +256,7 @@ function (
 
 	Forest.prototype.fetchTreeBillboard = function (vegetationType, size) {
 		var meshData = this.vegetationList[vegetationType];
-		var type = this.forestTypes[vegetationType];
+		var type = this.forestTypes[vegetationType].lod.bb;
 		var w = type.w * size;
 		var h = type.h * size;
 		meshData.getAttributeBuffer('OFFSET').set([
@@ -399,32 +363,32 @@ function (
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};
 
-	Forest.prototype.createBase = function (type) {
+	Forest.prototype.createBase = function (bb) {
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.TEXCOORD0]);
 		attributeMap.BASE = MeshData.createAttribute(1, 'Float');
 		attributeMap.OFFSET = MeshData.createAttribute(2, 'Float');
 		var meshData = new MeshData(attributeMap, 4, 6);
 
 		meshData.getAttributeBuffer(MeshData.POSITION).set([
-			0, -type.h * 0.1, 0,
-			0, -type.h * 0.1, 0,
-			0, -type.h * 0.1, 0,
-			0, -type.h * 0.1, 0
+			0, -bb.h * 0.1, 0,
+			0, -bb.h * 0.1, 0,
+			0, -bb.h * 0.1, 0,
+			0, -bb.h * 0.1, 0
 		]);
 		meshData.getAttributeBuffer(MeshData.TEXCOORD0).set([
-			type.tx, type.ty,
-			type.tx, type.ty + type.th,
-			type.tx + type.tw, type.ty + type.th,
-			type.tx + type.tw, type.ty
+			bb.tx, bb.ty,
+			bb.tx, bb.ty + bb.th,
+			bb.tx + bb.tw, bb.ty + bb.th,
+			bb.tx + bb.tw, bb.ty
 		]);
 		meshData.getAttributeBuffer('BASE').set([
-			0, type.h, type.h, 0
+			0, bb.h, bb.h, 0
 		]);
 		meshData.getAttributeBuffer('OFFSET').set([
-			-type.w*0.5, 0,
-			-type.w*0.5, type.h,
-			type.w*0.5, type.h,
-			type.w*0.5, 0
+			-bb.w*0.5, 0,
+			-bb.w*0.5, bb.h,
+			bb.w*0.5, bb.h,
+			bb.w*0.5, 0
 		]);
 
 		meshData.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
