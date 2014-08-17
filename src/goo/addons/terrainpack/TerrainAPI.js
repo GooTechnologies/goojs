@@ -64,6 +64,10 @@ define([
 					for (var vegType in loadedData.Ground[index].vegetation) {
 						areaConfig.ground.data[index].vegetation[vegType] = loadedData.Ground[index].vegetation[vegType];
 					}
+
+					for (var treeType in loadedData.Ground[index].forest) {
+						areaConfig.ground.data[index].forest[treeType] = loadedData.Ground[index].forest[treeType];
+					}
 				}
 			}
 

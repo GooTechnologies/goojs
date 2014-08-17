@@ -164,21 +164,34 @@ define([
 	EditorGUI.prototype.addGroundTypeControl = function(terrainConf, ground, groundFolder) {
 		var typeFolder = groundFolder.addFolder(ground.id);
 
-		var addVegControl = function(editSettings, vegType) {
-			var vegProb = typeFolder.add(editSettings, vegType, 0, 0.99);
+		var plantsFolder = typeFolder.addFolder("plants");
+		var treesFolder = typeFolder.addFolder("trees")
 
-			vegProb.onChange(function(value) {
-				ground.vegetation[vegType] = value;
-			});
-
-			vegProb.onFinishChange(function() {
-				terrainConf.vegetation.rebuild();
-			})
-
+		var addVegControl = function(folder, editSettings, vegType) {
+			var control = folder.add(editSettings, vegType, 0, 0.99);
+		    return control;
 		};
 
 		for (var index in ground.vegetation) {
-			addVegControl(ground.vegetation, index)
+			var control = addVegControl(plantsFolder, ground.vegetation, index);
+			control.onChange(function(value) {
+				ground.vegetation[index] = value;
+			});
+
+			control.onFinishChange(function() {
+				terrainConf.vegetation.rebuild();
+			})
+		}
+
+		for (var index in ground.forest) {
+			var control = addVegControl(treesFolder, ground.forest, index);
+			control.onChange(function(value) {
+				ground.forest[index] = value;
+			});
+
+			control.onFinishChange(function() {
+				terrainConf.forest.rebuild();
+			})
 		}
 
 	};

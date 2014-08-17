@@ -39,12 +39,14 @@ define([
 		var ground = {};
 		var groundData = groundConfig.data;
 
-		console.log(plants)
+		console.log("Forest Data:", forest)
 		var plantData = plants.data.vegetationBillboards
+
+		var treeData = forest.trees;
 
 		for (var index in groundData) {
 			var conf = groundData[index];
-
+			   console.log("Conf:",conf)
 			ground[index] = new GroundType(index, conf.texture, conf.material);
 
 			for (var plant in plantData) {
@@ -54,18 +56,14 @@ define([
 				}
 				ground[index].addVegetationType(plant, val);
 			}
-		/*
-			if (conf.vegetation) {
 
-				for (var vegType in conf.vegetation) {
-					ground[index].addVegetationType(vegType, conf.vegetation[vegType]);
+			for (var tree in treeData) {
+				var val = 0;
+				if (conf.forest) {
+					val = conf.forest[tree] || 0;
+					console.log(tree, val)
 				}
-			}
-        */
-			if (conf.forest) {
-				for (var forestType in conf.forest) {
-					ground[index].addForestType(forestType, conf.forest[forestType]);
-				}
+				ground[index].addForestType(tree, val);
 			}
 
 			if (conf.waterPlants) {
