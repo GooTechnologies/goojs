@@ -204,8 +204,8 @@ function (
 		var pos = [0, 10, 0];
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + (this.randomFromSeed(Math.sin(x*201+this.randomSeed+z*0.31)))) * patchSpacing;
-				var zz = patchZ + (z + (this.randomFromSeed(Math.cos(x*2.99+z*1.99+this.randomSeed)))) * patchSpacing;
+				var xx = patchX + (x + (this.randomFromSeed(Math.sin(x*3+this.randomSeed+z*2.31)))) * patchSpacing;
+				var zz = patchZ + (z + (this.randomFromSeed(Math.cos(x*2.99+z*2.99+this.randomSeed)))) * patchSpacing;
 				pos[0] = xx;
 				pos[2] = zz;
 				var yy = this.terrainQuery.getHeightAt(pos);

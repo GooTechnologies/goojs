@@ -53,7 +53,8 @@ define([
 				'Materials',
 				'Vegetation',
 				'Forest',
-				'Meta'
+				'Meta',
+				'Ground'
 			];
 
 			var checkForJson = function() {

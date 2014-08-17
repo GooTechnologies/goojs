@@ -161,11 +161,11 @@ define([
 		});
 	};
 
-	EditorGUI.prototype.addGroundTypeControl = function(terrainConf, ground, folder) {
-		var groundFolder = folder.addFolder(ground.id);
+	EditorGUI.prototype.addGroundTypeControl = function(terrainConf, ground, groundFolder) {
+		var typeFolder = groundFolder.addFolder(ground.id);
 
-		var addVegControl = function(editSettings, vegType, probability) {
-			var vegProb = groundFolder.add(editSettings, vegType, 0, 0.99)
+		var addVegControl = function(editSettings, vegType) {
+			var vegProb = typeFolder.add(editSettings, vegType, 0, 0.99);
 
 			vegProb.onChange(function(value) {
 				ground.vegetation[vegType] = value;
@@ -178,7 +178,7 @@ define([
 		};
 
 		for (var index in ground.vegetation) {
-			addVegControl(ground.vegetation, index, ground.vegetation[index])
+			addVegControl(ground.vegetation, index)
 		}
 
 	};
@@ -207,16 +207,24 @@ define([
 			}
 		}
 
+
+		var groundFolder = this.gui.addFolder('Ground');
+
 		for (var ground in terrainConf.ground.data) {
-			this.addGroundTypeControl(terrainConf, terrainConf.ground.data[ground], matFolder)
+			this.addGroundTypeControl(terrainConf, terrainConf.ground.data[ground], groundFolder)
 		}
 
 		var editorApi = this.editorAPI;
+
+		var saveGround = function() {
+			editorApi.saveLocalStore("Ground", terrainConf.ground.data)
+		};
 
 		var	save = function() {
 			editorApi.saveLocalStore("Materials", txEditSettings);
 		};
 
+		this.saveFunctions.push(saveGround);
 		this.saveFunctions.push(save)
 
 	};

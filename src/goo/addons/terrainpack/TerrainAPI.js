@@ -26,7 +26,7 @@ define([
 	TerrainAPI.prototype.createArea = function(resourcePath, areaData, forestLodMap, readyCallback) {
 
 		var terrainReady = function(areaConfig, terrainQuery, loadedData) {
-			console.log("AreaConf", areaConfig);
+			console.log("AreaConf", areaConfig, loadedData);
 			areaConfig.setTerrainQuery(terrainQuery);
 			var go = 0;
 			function onLoaded(thing) {
@@ -44,20 +44,29 @@ define([
 			}
 
 			this.addVegetation(resourcePath, areaConfig, vegetationSettings, onLoaded);
-			this.addForest(resourcePath, areaConfig, forestLodMap, onLoaded);
+			var forest = this.addForest(resourcePath, areaConfig, forestLodMap, onLoaded);
 
 			if (loadedData.Forest) {
-				this.forest.setTreeLODvalues(
+				forest.setTreeLODvalues(
 					loadedData.Forest.patchSize,
 					loadedData.Forest.patchDensity,
 					loadedData.Forest.gridSize,
 					loadedData.Forest.minDist
 				);
-				this.forest.setTreeScale(loadedData.Forest.treeScale);
-				this.forest.setRandomSeed(loadedData.Forest.randomSeed);
+				forest.setTreeScale(loadedData.Forest.treeScale);
+				forest.setRandomSeed(loadedData.Forest.randomSeed);
 			} else {
-				this.forest.setTreeLODvalues(45, 5, 15, 1.4);
+				forest.setTreeLODvalues(45, 5, 15, 1.4);
 			}
+
+			if (loadedData.Ground) {
+				for (var index in loadedData.Ground) {
+					for (var vegType in loadedData.Ground[index].vegetation) {
+						areaConfig.ground.data[index].vegetation[vegType] = loadedData.Ground[index].vegetation[vegType];
+					}
+				}
+			}
+
 
 		}.bind(this);
 
@@ -134,6 +143,7 @@ define([
 		this.worldLoader.loadLocalStorage('Vegetation', foundCb, notFoundCb);
 	};
 
+
 	TerrainAPI.prototype.loadStoredConfigs = function() {
 		this.loadStoredMaterial();
 		this.loadStoredVegetation();
@@ -173,7 +183,7 @@ define([
 		forestAtlasTexture.anisotropy = 4;
 		var forestAtlasNormals = new TextureCreator().loadTexture2D(normalsUrl, {}, loadedCount);
 		areaConfig.forest.init(this.goo.world, forestData, forestAtlasTexture, forestAtlasNormals, trees, forestLODEntityMap);
-
+		return areaConfig.forest;
 	};
 
 
