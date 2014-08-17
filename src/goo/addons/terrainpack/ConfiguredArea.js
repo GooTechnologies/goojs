@@ -1,28 +1,30 @@
 "use strict";
 
 define([
-	'goo/addons/terrainpack/TerrainHandler'
+	'goo/addons/terrainpack/TerrainHandler',
+	'goo/addons/terrainpack/GroundType'
 ], function(
-	TerrainHandler
+	TerrainHandler,
+	GroundType
 	) {
 
-	var ConfiguredArea = function(version, goo, resourcePath, areaData, TerrainTypes, readyCallback, terrainSettings, terrainEditSettings) {
+	var ConfiguredArea = function(version, goo, resourcePath, areaData, readyCallback, terrainEditSettings) {
 		this.version = version;
 		this.cullState = true;
-		this.terrainHandler = new TerrainHandler(goo, 256, 4, resourcePath, terrainSettings);
+		this.terrainHandler = new TerrainHandler(goo, 256, 4, resourcePath);
 
 		this.resourcePath = resourcePath;
 		this.terrainEditSettings = terrainEditSettings;
 		this.editorActive = false;
 
-		this.setGroundConfig(areaData.ground);
+		this.configureGround(areaData.ground);
 		this.setPlantsConfig(areaData.plants);
 		this.setForestConfig(areaData.forest);
 
-		var terrainData = this.buildTerrainData(areaData, TerrainTypes);
+		var terrainData = this.buildTerrainData(areaData);
 
 	//	console.log("Terrain ConfData: ", terrainData);
-		readyCallback(this, terrainData, terrainEditSettings)
+		readyCallback(this, terrainEditSettings)
 	};
 
 	ConfiguredArea.prototype.setTerrainQuery = function(query) {
@@ -33,8 +35,42 @@ define([
 		return this.terrainQuery;
 	};
 
-	ConfiguredArea.prototype.setGroundConfig = function(groundConfig) {
-		this.groundConfig = groundConfig;
+	ConfiguredArea.prototype.configureGround = function(groundConfig) {
+		var ground = {};
+		var groundData = groundConfig.data;
+
+		for (var index in groundData) {
+			var conf = groundData[index];
+
+			ground[index] = new GroundType(index, conf.texture, conf.material);
+			if (conf.vegetation) {
+				for (var vegType in conf.vegetation) {
+					ground[index].addVegetationType(vegType, conf.vegetation[vegType]);
+				}
+			}
+
+			if (conf.forest) {
+				for (var forestType in conf.forest) {
+					ground[index].addForestType(forestType, conf.forest[forestType]);
+				}
+			}
+
+			if (conf.waterPlants) {
+				for (var plantType in conf.waterPlants) {
+					ground[index].addWaterPlantType(plantType, conf.waterPlants[plantType]);
+				}
+			}
+		}
+
+		var data = {
+			id:groundConfig.id,
+			data:ground
+
+		};
+
+		console.log("GROUNDS -- ",data, groundConfig);
+
+		this.ground = data;
 	};
 
 	ConfiguredArea.prototype.setForestConfig = function(forestConfig) {
@@ -45,13 +81,11 @@ define([
 		this.plantsConfig = plantsConfig;
 	};
 
-	ConfiguredArea.prototype.buildTerrainData = function(terrainData, TerrainTypes) {
+	ConfiguredArea.prototype.buildTerrainData = function(terrainData) {
 
-		terrainData.ground = this.groundConfig;
-		terrainData.forest = this.forestConfig;
-		terrainData.plants = this.plantsConfig;
-
-		return terrainData;
+	//	this.ground = this.groundConfig;
+		this.forest = this.forestConfig;
+		this.plants = this.plantsConfig;
 	};
 
 	ConfiguredArea.prototype.readShaderUniform = function(uniform) {
@@ -135,7 +169,7 @@ define([
 		}
 	};
 
-	ConfiguredArea.prototype.applyConfiguredTerrain = function(terrainData, readyCallback, terrainEditSettings) {
+	ConfiguredArea.prototype.applyConfiguredTerrain = function(readyCallback, terrainEditSettings) {
 //		console.log("Apply Conf Terrain", terrainData)
 		var loadedData;
 		var dataHandler = function(data) {
@@ -143,17 +177,17 @@ define([
 			loadedData = data;
 		}.bind(this);
 
-		this.terrainHandler.preload(terrainData, dataHandler).then(function() {
+		this.terrainHandler.preload(this, dataHandler).then(function() {
 
 			//	console.log("FOREST LOD MAP:", this.forestLodMap);
 //			console.log("LOADED TERRAIN ", this.terrainHandler.terrain);
 
 			var queryCallback = function(terrainQuery) {
 //				console.log("query Callback", terrainQuery)
-				readyCallback(terrainQuery, loadedData);
-			};
+				readyCallback(this, terrainQuery, loadedData);
+			}.bind(this);
 
-			this.terrainHandler.initLevel(terrainData, terrainEditSettings, queryCallback);
+			this.terrainHandler.initLevel(this, terrainEditSettings, queryCallback);
 
 		}.bind(this));
 

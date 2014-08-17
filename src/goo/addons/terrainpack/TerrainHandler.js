@@ -20,11 +20,11 @@ define([
 	) {
 		'use strict';
 
-		function TerrainHandler(goo, terrainSize, clipmapLevels, resourcePath, terrainSettings) {
+		function TerrainHandler(goo, terrainSize, clipmapLevels, resourcePath) {
 			this.goo = goo;
 			this.terrainSize = terrainSize;
 			this.resourcePath = resourcePath;
-			this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels, terrainSettings.scale);
+			this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels);
 
 			this.terrainDataManager = new TerrainDataManager();
 			this.terrainDataManager.setResourceFolder(this.resourcePath);

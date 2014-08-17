@@ -109,7 +109,7 @@ define([
 
 		TerrainQuery.prototype.getVegetationType = function(xx, yy, zz, slope) {
 
-			var rand = this.randomFromSeed(Math.sin(xx*99+this.randomSeed));
+			var rand = this.randomFromSeed(Math.sin(xx*99+yy*88+this.randomSeed));
 			//		var	rand = Math.random()
 			if (MathUtils.smoothstep(0.72, 0.81, slope) < 0.5+rand*0.5) {
 				return null;

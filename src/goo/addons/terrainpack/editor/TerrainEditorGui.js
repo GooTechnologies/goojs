@@ -150,6 +150,39 @@ define([
 
 	};
 
+	EditorGUI.prototype.addTextureControls = function(terrainConf, txEditSettings, txFolder, tile) {
+
+		txEditSettings[tile.scaleUniform] = terrainConf.readShaderUniform(tile.scaleUniform);
+
+		var scale = txFolder.add(txEditSettings, tile.scaleUniform, 5, 200);
+
+		scale.onChange(function(value) {
+			terrainConf.tuneShaderUniform(tile.scaleUniform, value)
+		});
+	};
+
+	EditorGUI.prototype.addGroundTypeControl = function(terrainConf, ground, folder) {
+		var groundFolder = folder.addFolder(ground.id);
+
+		var addVegControl = function(editSettings, vegType, probability) {
+			var vegProb = groundFolder.add(editSettings, vegType, 0, 0.99)
+
+			vegProb.onChange(function(value) {
+				ground.vegetation[vegType] = value;
+			});
+
+			vegProb.onFinishChange(function() {
+				terrainConf.vegetation.rebuild();
+			})
+
+		};
+
+		for (var index in ground.vegetation) {
+			addVegControl(ground.vegetation, index, ground.vegetation[index])
+		}
+
+	};
+
 	EditorGUI.prototype.addTextureData = function(terrainConf, txData) {
 		console.log("Add Texture Data to Gui: ", terrainConf, txData);
 
@@ -174,6 +207,10 @@ define([
 			}
 		}
 
+		for (var ground in terrainConf.ground.data) {
+			this.addGroundTypeControl(terrainConf, terrainConf.ground.data[ground], matFolder)
+		}
+
 		var editorApi = this.editorAPI;
 
 		var	save = function() {
@@ -184,16 +221,6 @@ define([
 
 	};
 
-	EditorGUI.prototype.addTextureControls = function(terrainConf, txEditSettings, txFolder, tile) {
-
-		txEditSettings[tile.scaleUniform] = terrainConf.readShaderUniform(tile.scaleUniform)
-
-		var scale = txFolder.add(txEditSettings, tile.scaleUniform, 5, 200);
-
-		scale.onChange(function(value) {
-			terrainConf.tuneShaderUniform(tile.scaleUniform, value)
-		});
-	};
 
 	EditorGUI.prototype.removeEditorGui = function() {
 		try {
@@ -268,9 +295,9 @@ define([
 
 		var	save = function() {
 			var data = terrainHandler.terrain.getTerrainData();
-			var mapName = terrainConfigData.heightMap;
+			var mapName = 'height_map.raw';
 			editorApi.saveBinary( mapName, data.heights.buffer);
-			mapName = terrainConfigData.splatMap;
+			mapName = 'splat_map.raw';
 			editorApi.saveBinary( mapName, data.splat.buffer);
 			editorApi.saveLocalStore('Meta', this.metaData);
 		}.bind(this);

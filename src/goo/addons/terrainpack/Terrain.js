@@ -36,11 +36,11 @@ function(
 	/**
 	 * @class A terrain
 	 */
-	function Terrain(goo, size, count, scale) {
+	function Terrain(goo, size, count) {
 		this.world = goo.world;
 		this.renderer = goo.renderer;
 		this.size = size;
-		this.scale = scale || 1;
+		this.scale = 1;
 		this.count = count;
 		this.splatMult = 2;
 
@@ -71,7 +71,7 @@ function(
 			culling:true
 		};
 
-		this.terrainMaterials = []
+		this.terrainMaterials = [];
 
 		this.renderable.transform.setRotationXYZ(0, 0, Math.PI*0.5);
 

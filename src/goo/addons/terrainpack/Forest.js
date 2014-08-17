@@ -107,7 +107,6 @@ function (
 		this.vegetationList = {};
 		for (var type in trees) {
 			var billboard = trees[type].lod.bb;
-			console.log(billboard)
 			var meshData = this.createBase(billboard);
 			this.vegetationList[type] = meshData;
 		}
@@ -120,7 +119,7 @@ function (
 		material.uniforms.materialAmbient = [0, 0, 0, 0];
 		material.uniforms.materialDiffuse = [1, 1, 1, 1];
 		material.uniforms.materialSpecular = [0, 0, 0, 0];
-		material.renderQueue = 1001;
+		material.renderQueue = 801;
 		this.material = material;
 
 		this.grid = [];

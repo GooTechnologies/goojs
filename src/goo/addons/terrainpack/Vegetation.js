@@ -225,7 +225,7 @@ function (
 
 				var random = this.randomFromSeed(Math.cos(x*10+this.randomSeed+z*8.30));
 
-				var size = random * 0.75 + 0.5;
+				var size = random * 0.5 + 0.75;
 			//	console.log(random)
 				transform.scale.setd(size, size, size);
 				var angle = this.randomFromSeed(Math.cos(x*621+z*0.2)) * 7.0;
@@ -235,7 +235,6 @@ function (
 				// norm.y = 0.5;
 				// norm.normalize();
 				this.lookAt(transform.rotation, this.calcVec, norm);
-
 				var meshData = this.vegetationList[vegetationType];
 				transform.translation.setd(xx, yy, zz);
 				var ww = this.vegetationBillboards[vegetationType].w;

@@ -23,7 +23,53 @@ define([
 		this.includeEditor(version);
 	};
 
-	TerrainAPI.prototype.loadTerrainResources = function(resourcePath, areaData, TerrainTypes, readyCallback) {
+	TerrainAPI.prototype.createArea = function(resourcePath, areaData, forestLodMap, readyCallback) {
+
+		var terrainReady = function(areaConfig, terrainQuery, loadedData) {
+			console.log("AreaConf", areaConfig);
+			areaConfig.setTerrainQuery(terrainQuery);
+			var go = 0;
+			function onLoaded(thing) {
+				go += 1;
+				if (go != 2) return;
+				readyCallback(areaConfig)
+			}
+
+			if (loadedData.Vegetation) {
+				var vegetationSettings = {
+					gridSize: loadedData.Vegetation.gridSize,
+					patchSize: loadedData.Vegetation.patchSize,
+					patchDensity: loadedData.Vegetation.patchDensity
+				};
+			}
+
+			this.addVegetation(resourcePath, areaConfig, vegetationSettings, onLoaded);
+			this.addForest(resourcePath, areaConfig, forestLodMap, onLoaded);
+
+			if (loadedData.Forest) {
+				this.forest.setTreeLODvalues(
+					loadedData.Forest.patchSize,
+					loadedData.Forest.patchDensity,
+					loadedData.Forest.gridSize,
+					loadedData.Forest.minDist
+				);
+				this.forest.setTreeScale(loadedData.Forest.treeScale);
+				this.forest.setRandomSeed(loadedData.Forest.randomSeed);
+			} else {
+				this.forest.setTreeLODvalues(45, 5, 15, 1.4);
+			}
+
+		}.bind(this);
+
+		var terrainConfigured = function(areaConfig, terrainEditSettings) {
+			areaConfig.applyConfiguredTerrain(terrainReady, terrainEditSettings);
+		};
+
+		this.loadTerrainResources(resourcePath, areaData, terrainConfigured);
+	};
+
+
+	TerrainAPI.prototype.loadTerrainResources = function(resourcePath, areaData, readyCallback) {
 
 		var terrainEditSettings = {
 			edit: false,
@@ -35,18 +81,9 @@ define([
 			rgba: 'ground2'
 		};
 
-		var terrainSettings = {
-			scale: 1.4
-		};
 
-
-		var loadedCallback = function() {
-			var areaConf = new ConfiguredArea(version, this.goo, resourcePath, areaData, TerrainTypes, readyCallback, terrainSettings, terrainEditSettings);
-			this.configurations.push(areaConf);
-		}.bind(this);
-
-		this.worldLoader.loadWorld(loadedCallback);
-
+		var areaConf = new ConfiguredArea(version, this.goo, resourcePath, areaData, readyCallback, terrainEditSettings);
+		this.configurations.push(areaConf);
 	};
 
 	TerrainAPI.prototype.loadStoredMaterial = function() {
@@ -85,7 +122,7 @@ define([
 	TerrainAPI.prototype.loadStoredVegetation = function() {
 		var foundCb = function(data) {
 			for (var i = 0; i < this.configurations.length; i++) {
-				this.configurations[i].vegetation.setVegetationDensities(data.patchSize, data.patchDensity, data.gridSize);;
+				this.configurations[i].vegetation.setVegetationDensities(data.patchSize, data.patchDensity, data.gridSize);
 				this.configurations[i].vegetation.rebuild();
 			}
 		}.bind(this);
@@ -100,7 +137,6 @@ define([
 	TerrainAPI.prototype.loadStoredConfigs = function() {
 		this.loadStoredMaterial();
 		this.loadStoredVegetation();
-
 	};
 
 	TerrainAPI.prototype.addVegetation = function(resourcePath, areaConfig, vegetationSettings, onLoaded) {
@@ -128,8 +164,8 @@ define([
 				onLoaded("Forest Textures OK");
 		};
 
-		var atlasUrl = resourcePath +  forestData.atlas.data.forestAtlas
-		var normalsUrl = resourcePath +  forestData.atlas.data.forestAtlasNormals
+		var atlasUrl = resourcePath +  forestData.atlas.data.forestAtlas;
+		var normalsUrl = resourcePath +  forestData.atlas.data.forestAtlasNormals;
 		var trees = forestData.trees;
 
 		areaConfig.forest = new Forest(areaConfig.getTerrainQuery());
@@ -185,8 +221,7 @@ define([
 	};
 
     TerrainAPI.prototype.getHeightAt = function(posVector) {
-        var height = this.configurations[0].terrainHandler.getHeightAt(posVector.data)
-        return height;
+        return this.configurations[0].terrainHandler.getHeightAt(posVector.data)
     };
 
 	TerrainAPI.prototype.setTerrainDimensions = function(size) {
@@ -194,7 +229,6 @@ define([
 	};
 
 	TerrainAPI.prototype.getTerrainForDownload = function(index, callback) {
-		console.log(this)
 		return this.configurations[index].fetchProjectData(callback);
 	};
 
