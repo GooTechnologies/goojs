@@ -58,10 +58,10 @@ define([
 
 		TerrainQuery.prototype.getNormalAt = function(pos) {
 			var x = pos[0];
-			var z = this.terrainSize - (pos[2]+1);
+			var z = this.terrainSize - (pos[2]);
 
 			var col = Math.floor(x);
-			var row = Math.floor(z);
+			var row = Math.floor(z-1);
 
 			var col1 = col + 1;
 			var row1 = row + 1;
