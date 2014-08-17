@@ -17,7 +17,7 @@ define([
 		this.terrainEditSettings = terrainEditSettings;
 		this.editorActive = false;
 
-		this.configureGround(areaData.ground);
+		this.configureGround(areaData.ground, areaData.plants, areaData.forest);
 		this.setPlantsConfig(areaData.plants);
 		this.setForestConfig(areaData.forest);
 
@@ -35,20 +35,33 @@ define([
 		return this.terrainQuery;
 	};
 
-	ConfiguredArea.prototype.configureGround = function(groundConfig) {
+	ConfiguredArea.prototype.configureGround = function(groundConfig, plants, forest) {
 		var ground = {};
 		var groundData = groundConfig.data;
+
+		console.log(plants)
+		var plantData = plants.data.vegetationBillboards
 
 		for (var index in groundData) {
 			var conf = groundData[index];
 
 			ground[index] = new GroundType(index, conf.texture, conf.material);
+
+			for (var plant in plantData) {
+				var val = 0;
+				if (conf.vegetation) {
+					val = conf.vegetation[plant] || 0;
+				}
+				ground[index].addVegetationType(plant, val);
+			}
+		/*
 			if (conf.vegetation) {
+
 				for (var vegType in conf.vegetation) {
 					ground[index].addVegetationType(vegType, conf.vegetation[vegType]);
 				}
 			}
-
+        */
 			if (conf.forest) {
 				for (var forestType in conf.forest) {
 					ground[index].addForestType(forestType, conf.forest[forestType]);
