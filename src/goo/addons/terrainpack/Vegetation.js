@@ -238,7 +238,7 @@ function (
 				var meshData = this.vegetationList[vegetationType];
 				transform.translation.setd(xx, yy, zz);
 				var ww = this.vegetationBillboards[vegetationType].w;
-				transform.translation.setd(xx, yy, zz-1);
+			//	transform.translation.setd(xx, yy, zz-1);
 				transform.update();
 				meshBuilder.addMeshData(meshData, transform);
 

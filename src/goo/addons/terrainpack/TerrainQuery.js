@@ -29,7 +29,7 @@ define([
 			}
 
 			var x = pos[0];
-			var z = this.terrainSize - pos[2];
+			var z = this.terrainSize - (pos[2]+1);
 
 			var col = Math.floor(x);
 			var row = Math.floor(z);
@@ -37,8 +37,8 @@ define([
 			var intOnX = x - col,
 				intOnZ = z - row;
 
-			var col1 = col + 1;
-			var row1 = row + 1;
+			var col1 = col + 1 // 1;
+			var row1 = row + 1 // 1;
 
 			col = MathUtils.moduloPositive(col, this.terrainSize);
 			row = MathUtils.moduloPositive(row, this.terrainSize);
@@ -58,7 +58,7 @@ define([
 
 		TerrainQuery.prototype.getNormalAt = function(pos) {
 			var x = pos[0];
-			var z = this.terrainSize - pos[2];
+			var z = this.terrainSize - (pos[2]+1);
 
 			var col = Math.floor(x);
 			var row = Math.floor(z);
