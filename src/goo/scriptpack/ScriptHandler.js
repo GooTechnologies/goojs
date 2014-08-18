@@ -269,6 +269,12 @@ function (
 	 */
 	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
 		var that = this;
+
+		// Strip schema
+		if (url.charAt(0) !== '/') {
+			url = url.substr(url.indexOf('//'));
+		}
+
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
 			return this._dependencyPromises[url] || PromiseUtil.resolve();
