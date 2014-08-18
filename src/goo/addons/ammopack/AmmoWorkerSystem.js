@@ -1,3 +1,4 @@
+/* global Ammo */
 define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
@@ -14,6 +15,8 @@ function (
 	RSVP
 ) {
 	'use strict';
+
+	var ammoTransform;
 
 	/**
 	 * @class Handles integration with Ammo.js, using a worker thread.
@@ -37,50 +40,64 @@ function (
 		System.call(this, 'AmmoWorkerSystem', ['AmmoWorkerRigidbodyComponent', 'TransformComponent']);
 		settings = settings || {};
 
-		/** @private
-		 */
-		this._worker = null;
+		// Temp vars
+		ammoRayStart = new Ammo.btVector3();
+		ammoRayEnd = new Ammo.btVector3();
+		ammoZeroVector = new Ammo.btVector3();
 
-		/**
-		 * Map between messageId's and Promises. Should be resolved when a message with a recognized ID gets back from worker.
-		 * @private
-		 * @type {Object}
-		 */
-		this._pendingRayCasts = {};
+		ammoTransform = new Ammo.btTransform();
 
-		/**
-		 * The URL to the ammo_worker.js file.
-		 * @type {string}
-		 */
-		this.workerUrl = typeof(settings.workerUrl) !== 'undefined' ? settings.workerUrl : 'ammo_worker.js';
-
-		/**
-		 * The URL to the ammo.js file.
-		 * @type {string}
-		 */
-		this.ammoUrl = typeof(settings.ammoUrl) !== 'undefined' ? settings.ammoUrl : 'ammo.small.js';
-
-		/**
-		 * If true, transform updates from the worker will not be applied.
-		 * @default false
-		 * @type {Boolean}
-		 */
-		this.passive = false;
-
-		this._initWorker();
-		this.setTimeStep(settings.timeStep || 1 / 60, typeof(settings.maxSubSteps) === 'number' ? settings.maxSubSteps : 3);
-		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
-
+		this.ptrToEntityMap = {};
 		this._eventListeners = {
 			collision: []
 		};
 
-		// Start automatically if the user didn't suppy false
-		if (typeof settings.run === 'undefined' || settings.run) {
-			this.run();
-		}
+		this.fixedTime = typeof(settings.timeStep) === 'number' ? settings.timeStep : 1 / 60;
+		this.maxSubSteps = settings.maxSubSteps || 5;
+		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+		var dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+		var overlappingPairCache = new Ammo.btDbvtBroadphase();
+		var solver = new Ammo.btSequentialImpulseConstraintSolver();
+		this.ammoWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+		var gravity = settings.gravity;
+		if (typeof(gravity) !== 'number') {
+			gravity = -9.81
+		};
+		this.setGravity(new Vector3(0, gravity, 0));
 	}
 	AmmoWorkerSystem.prototype = Object.create(System.prototype);
+
+	var tmpAmmoVec;
+	function numToTempAmmoVector(x, y, z) {
+		if (!tmpAmmoVec) {
+			tmpAmmoVec = new Ammo.btVector3();
+		}
+		tmpAmmoVec.setValue(x, y, z);
+		return tmpAmmoVec;
+	}
+	function arrayToTempAmmoVector(a) {
+		return numToTempAmmoVector(a[0], a[1], a[2]);
+	}
+	function arrayToAmmoVector(a) {
+		return new Ammo.btVector3(a[0], a[1], a[2]);
+	}
+	var tmpAmmoQuat;
+	function numToTempAmmoQuat(x, y, z, w) {
+		if (!tmpAmmoQuat) {
+			tmpAmmoQuat = new Ammo.btQuaternion();
+		}
+		tmpAmmoQuat.setValue(x, y, z, w);
+		return tmpAmmoQuat;
+	}
+	function arrayToTempAmmoQuat(a) {
+		return numToTempAmmoQuat(a[0], a[1], a[2], a[3]);
+	}
+	function fillTerrainHeightBuffer(buffer, heights) {
+		var floatByteSize = 4;
+		for (var i = 0, il = heights.length; i < il; i ++) {
+			Ammo.setValue(buffer + i * floatByteSize, heights[i], 'float');
+		}
+	}
 
 	//! schteppe: Attach on System?
 	AmmoWorkerSystem.prototype.getEntityById = function (id) {
@@ -110,40 +127,12 @@ function (
 	};
 
 	var tmpQuat = new Quaternion();
-	var messageId = 0;
-
-	var commandHandlers = {
-		rayCastResult: function (data) {
-			var pending = this._pendingRayCasts;
-			var result = {};
-			if (data.bodyId) {
-				result.entity = this.getEntityById(data.bodyId);
-				result.point = new Vector3(data.point);
-				result.normal = new Vector3(data.normal);
-			}
-			pending[data.messageId].resolve(result);
-			delete pending[data.messageId];
-		},
-
-		collision: function (data) {
-			var pairIds = data.pairIds;
-			for (var i = 0; i < pairIds.length; i += 2) {
-				var entityA = this.getEntityById(pairIds[i]);
-				var entityB = this.getEntityById(pairIds[i + 1]);
-				for (var j = 0; j < this._eventListeners.collision.length; j++) {
-					this._eventListeners.collision[j]({
-						entityA: entityA,
-						entityB: entityB
-					});
-				}
-			}
-		}
-	};
 
 	/**
 	 * Initialize the worker thread.
 	 * @private
 	 */
+	/*
 	AmmoWorkerSystem.prototype._initWorker = function () {
 		// Create worker
 		var worker = new Worker(this.workerUrl);
@@ -182,6 +171,7 @@ function (
 			ammoUrl: this.ammoUrl
 		});
 	};
+	*/
 
 	AmmoWorkerSystem.prototype.reset = function () {
 		var entities = this._activeEntities;
@@ -203,108 +193,154 @@ function (
 	 */
 	AmmoWorkerSystem.prototype.clear = function () {
 		System.prototype.clear.apply(this);
-		this._postMessage({ command: 'destroy' });
-		this._worker.terminate();
-		this._initWorker();
-		this.setGravity(this.gravity);
-		this.setTimeStep(this.timeStep, this.maxSubSteps);
-	};
-
-	/**
-	 * @private
-	 * @param {object} message
-	 */
-	AmmoWorkerSystem.prototype._postMessage = function (message) {
-		this._worker.postMessage(message);
-	};
-
-	/**
-	 * Starts the physics simulation.
-	 */
-	AmmoWorkerSystem.prototype.run = function () {
-		this._postMessage({
-			command: 'run'
-		});
-	};
-
-	/**
-	 * Steps the physics simulation.
-	 */
-	AmmoWorkerSystem.prototype.step = function () {
-		this._postMessage({
-			command: 'step'
-		});
-	};
-
-	/**
-	 * Stops the physics simulation.
-	 */
-	AmmoWorkerSystem.prototype.pause = function () {
-		this._postMessage({
-			command: 'pause'
-		});
+		// this._postMessage({ command: 'destroy' });
 	};
 
 	/**
 	 * @param {Vector3} gravity
 	 */
 	AmmoWorkerSystem.prototype.setGravity = function (gravity) {
-		this.gravity = gravity;
-		this._postMessage({
-			command: 'setGravity',
-			gravity: v2a(gravity)
-		});
+		console.log(gravity.x, gravity.y, gravity.z);
+		this.ammoWorld.setGravity(new Ammo.btVector3(gravity.x, gravity.y, gravity.z));
 	};
+
+	var ammoRayStart;
+	var ammoRayEnd;
+	var ammoZeroVector;
 
 	/**
 	 * @param {Vector3} start
 	 * @param {Vector3} end
-	 * @return {RSVP.Promise} Promise that resolves with the raycast results.
+	 * @return {object|false}
 	 */
 	AmmoWorkerSystem.prototype.rayCast = function (start, end) {
-		var message = {
-			command: 'rayCast',
-			start: v2a(start),
-			end: v2a(end),
-			messageId: messageId++
-		};
-		this._postMessage(message);
-		var p = new RSVP.Promise();
-		this._pendingRayCasts[message.messageId] = p;
-		return p;
-	};
+		if(!ammoRayStart) ammoRayStart = new Ammo.btVector3();
+		if(!ammoRayEnd) ammoRayEnd = new Ammo.btVector3();
+		if(!ammoZeroVector) ammoZeroVector = new Ammo.btVector3();
 
-	/**
-	 * Set the time step for physics simulation, along with the maximum number of substeps.
-	 * @param {number} timeStep
-	 * @param {number} maxSubSteps
-	 */
-	AmmoWorkerSystem.prototype.setTimeStep = function (timeStep, maxSubSteps) {
-		this.timeStep = timeStep;
-		this.maxSubSteps = maxSubSteps;
-		this._postMessage({
-			command: 'setTimeStep',
-			timeStep: timeStep,
-			maxSubSteps: maxSubSteps
-		});
+		var ammoWorld = this.ammoWorld;
+
+		ammoRayStart.setValue(start.x, start.y, start.z);
+		ammoRayEnd.setValue(end.x, end.y, end.z);
+		var rayCallback = new Ammo.ClosestRayResultCallback(ammoRayStart, ammoRayEnd);
+		ammoWorld.rayTest(ammoRayStart, ammoRayEnd, rayCallback);
+		if (rayCallback.hasHit()) {
+			var collisionObjPtr = rayCallback.get_m_collisionObject();
+
+			var collisionObj = Ammo.wrapPointer(collisionObjPtr, Ammo.btCollisionObject);
+			var body = Ammo.btRigidBody.prototype.upcast(collisionObj);
+			if (body) {
+				var normal = rayCallback.get_m_hitNormalWorld();
+				var point = rayCallback.get_m_hitPointWorld();
+				var foundEntity;
+				for (var i = 0; i < this._activeEntities.length; i++) {
+
+					if (this._activeEntities[i].ammoWorkerRigidbodyComponent.body.a === collisionObjPtr.a) {
+						foundEntity = this._activeEntities[i].ammoWorkerRigidbodyComponent.body[i];
+						break;
+					}
+				}
+				if (foundEntity) {
+					return {
+						normal : new Vector3(normal.x(), normal.y(), normal.z()),
+						point : new Vector3(point.x(), point.y(), point.z()),
+						entity: foundEntity
+					};
+				}
+			}
+		}
+		Ammo.destroy(rayCallback);
 	};
 
 	AmmoWorkerSystem.prototype.inserted = function (entity) {
 		entity.ammoWorkerRigidbodyComponent._system = this;
 		entity.ammoWorkerRigidbodyComponent._add();
+		var body = entity.ammoWorkerRigidbodyComponent.body;
+		if(body)
+		this.ptrToEntityMap[body.a || body.ptr] = body;
 	};
 
 	AmmoWorkerSystem.prototype.deleted = function (entity) {
-		this._postMessage({
-			command: 'removeBody',
-			id: entity.id
-		});
-		delete entity.ammoWorkerRigidbodyComponent._system;
+		var body = entity.ammoWorkerRigidbodyComponent.body;
+		/*
+		delete idToBodyMap[entity.id];
+		delete ptrToBodyMap[entity.id];
+		for (var i = 0; i < bodyConfig.shapes.length; i++) {
+			var shapeId = bodyConfig.shapes[i].id;
+			var ammoShape = colliderIdToAmmoShapeMap[shapeId];
+			Ammo.destroy(ammoShape);
+			delete colliderIdToAmmoShapeMap[bodyConfig.shapes[i].id];
+		}
+		*/
+		this.ammoWorld.removeRigidBody(body);
+		Ammo.destroy(body);
 	};
 
-	AmmoWorkerSystem.prototype.process = function (/*entities, tpf*/) {
+	AmmoWorkerSystem.prototype.process = function (entities, tpf) {
+		/*
+		// Move character bodies
+		for (var i = 0; i < entities.length; i++) {
+			var body = entities[i].ammoWorkerRigidbodyComponent.body;
+			var bodyConfig = bodyConfigs[i];
+			if (bodyConfig.enableCharacterControl) {
+				body.getMotionState().getWorldTransform(ammoTransform);
+				updateCharacter(body, bodyConfig, ammoTransform, timeStep);
+			}
+		}
+		*/
 
+		this.ammoWorld.stepSimulation(tpf, this.maxSubSteps, this.fixedTime);
+
+		// Move kinematic bodies
+		/*for (var i = 0; i < entities.length; i++) {
+			var body = entities[i].ammoWorkerRigidbodyComponent.body;
+			var bodyConfig = bodyConfigs[i];
+
+			body.getMotionState().getWorldTransform(ammoTransform);
+
+			if (body.getCollisionFlags() & collisionFlags.KINEMATIC_OBJECT) {
+				updateKinematic(body, bodyConfig, ammoTransform, tpf);
+			}
+		}*/
+
+		this.updateVisuals(entities);
+		// this.reportCollisions();
 	};
+
+	AmmoWorkerSystem.prototype.updateVisuals = function(entities) {
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			if(entity.ammoWorkerRigidbodyComponent._mass > 0)
+				entity.ammoWorkerRigidbodyComponent.copyPhysicalTransformToVisual(entity);
+		}
+	};
+
+	AmmoWorkerSystem.prototype.reportCollisions = function() {
+		var dp = this.ammoWorld.getDispatcher();
+		var num = dp.getNumManifolds();
+
+		var pairIds = [];
+		for (var i = 0; i < num; i++) {
+			var manifold = dp.getManifoldByIndexInternal(i);
+
+			var num_contacts = manifold.getNumContacts();
+			if (num_contacts === 0) {
+				continue;
+			}
+
+			var entityA = this.ptrToEntityMap[manifold.getBody0()];
+			var entityB = this.ptrToEntityMap[manifold.getBody1()];
+
+			if (entityA && entityB) {
+				for (var j = 0; j < this._eventListeners.collision.length; j++) {
+					this._eventListeners.collision[j]({
+						entityA: entityA,
+						entityB: entityB
+					});
+				}
+			}
+		}
+	}
 
 	function v2a(v) {
 		return Array.prototype.slice.call(v.data, 0);

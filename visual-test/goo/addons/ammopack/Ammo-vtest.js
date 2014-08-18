@@ -40,7 +40,9 @@ require([
 			.addToWorld();
 	}
 
-	var goo = V.initGoo();
+	var goo = V.initGoo({
+		showStats: true
+	});
 	var world = goo.world;
 
 	world.setSystem(new AmmoSystem());
@@ -85,4 +87,8 @@ require([
 	V.addOrbitCamera(new Vector3(40, 0, Math.PI / 4));
 
 	V.process();
+
+	setInterval(function(){
+		addPrimitives();
+	}, 5000)
 });

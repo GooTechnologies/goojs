@@ -35,7 +35,9 @@ require([
 
 	V.describe('The entities in the scene hold a cannon component which updates their transform.');
 
-	var goo = V.initGoo();
+	var goo = V.initGoo({
+		showStats: true
+	});
 	var world = goo.world;
 
 	var cannonSystem = new CannonSystem({
