@@ -10,7 +10,7 @@ function(
 
 	/**
 	 * @class Handles integration with Ammo.js.
-	 * Depends on the global Ammo object, 
+	 * Depends on the global Ammo object,
 	 * so load ammo.small.js using a script tag before using this system.
 	 * Direct access to the ammoWorld is available like this: myAmmoSystem.ammoWorld
 	 * See also {@link AmmoComponent}
