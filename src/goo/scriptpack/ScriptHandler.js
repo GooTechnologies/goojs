@@ -288,7 +288,7 @@ function (
 
 			function fireError(message) {
 				var err = {
-					message: message
+					message: message,
 					file: url
 				};
 				setError(script, err);
