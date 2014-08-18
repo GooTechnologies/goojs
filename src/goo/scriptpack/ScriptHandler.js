@@ -31,6 +31,8 @@ function (
 ) {
 	'use strict';
 
+	var DEPENDENCY_LOAD_TIMEOUT = 6000;
+
 	/**
 	* @class
 	* @private
@@ -284,17 +286,27 @@ function (
 				delete that._dependencyPromises[url];
 			};
 
-			scriptElem.onerror = function () {
-				console.log('Dependency loading caused errors');
+			function fireError(message) {
 				var err = {
-					message: 'Could not load dependency',
+					message: message
 					file: url
 				};
 				setError(script, err);
 				scriptElem.parentNode.removeChild(scriptElem);
 				resolve();
 				delete that._dependencyPromises[url];
+			}
+
+			scriptElem.onerror = function (e) {
+				console.error(e);
+				fireError('Could not load dependency');
 			};
+
+			// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
+			setTimeout(function() {
+				fireError('Could not load dependency, timeout');
+			}, DEPENDENCY_LOAD_TIMEOUT);
+
 		});
 	};
 
