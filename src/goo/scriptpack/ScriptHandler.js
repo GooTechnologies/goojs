@@ -304,7 +304,7 @@ function (
 
 			// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
 			setTimeout(function() {
-				fireError('Could not load dependency, timeout');
+				fireError('Loading dependency failed (time out).');
 			}, DEPENDENCY_LOAD_TIMEOUT);
 
 		});
