@@ -285,6 +285,7 @@ function (
 			};
 
 			scriptElem.onerror = function () {
+				console.log('Dependency loading caused errors');
 				var err = {
 					message: 'Could not load dependency',
 					file: url
