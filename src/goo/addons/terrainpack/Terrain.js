@@ -1207,11 +1207,12 @@ function(
 			'float byte1 = (sign * 128.0 + remaining_bits_of_biased_exponent) / 255.0;',
 			'return vec4(byte4, byte3, byte2, byte1);',
 		'}',
+		ShaderFragment.methods.unpackDepth16,
 
 		'void main(void)',
 		'{',
 		// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
-		'	gl_FragColor = encode_float(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).r);',
+		'	gl_FragColor = encode_float(unpackDepth16(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).rg));',
 		'}'//
 		].join('\n')
 	};
