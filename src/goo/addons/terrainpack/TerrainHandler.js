@@ -441,6 +441,9 @@ define([
 					var forrestTypes = terrainData.forrestTypes;
 					this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
 				}
+				if (!this.vegetation && !this.forrest) {
+					texturesPromise.resolve();
+				}
 
 
 				return texturesPromise;
