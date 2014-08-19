@@ -56,7 +56,7 @@ define([
 		var altKey = false;
 
 		var mousedown = function (e) {
-			if (e.button === 1) {
+			if (e.button === 0) {
 				this.eventX = e.clientX;
 				this.eventY = e.clientY;
 
@@ -70,7 +70,7 @@ define([
 		};
 
 		var mouseup = function (e) {
-			if (e.button === 1) {
+			if (e.button === 0) {
 				LMB = false;
 				this.draw = false;
 				console.log('mouseup');
@@ -509,7 +509,7 @@ define([
 						rgba = [0, 0, 0, 1];
 					}
 
-					this.terrain.draw(settings.mode, type, settings.size, this.store.x, this.store.y, this.store.z,
+					this.terrain.draw(settings.mode, settings.type, settings.size, this.store.x, this.store.y, this.store.z,
 						settings.power * this.goo.world.tpf * 60 / 100, settings.brushTexture, rgba);
 					this.terrain.updateTextures();
 				}

@@ -298,7 +298,8 @@ function(
 		this.renderer.renderToPick(entities, camera, true, false, false, x, y, null, true);
 		var pickStore = {};
 		this.renderer.pick(x, y, pickStore, camera);
-		camera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, pickStore.depth, store);
+		var dp = this.renderer.devicePixelRatio;
+		camera.getWorldPosition(x * dp, y * dp, this.renderer.viewportWidth, this.renderer.viewportHeight, pickStore.depth, store);
 
 		for (var i = 0; i < this.clipmaps.length; i++) {
 			var clipmap = this.clipmaps[i];
@@ -1212,7 +1213,7 @@ function(
 		'void main(void)',
 		'{',
 		// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
-		'	gl_FragColor = encode_float(unpackDepth16(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).rg));',
+		'	gl_FragColor = encode_float(unpackDepth16(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).rg) * 50.0);',
 		'}'//
 		].join('\n')
 	};
