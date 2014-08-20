@@ -31,6 +31,8 @@ function (
 ) {
 	'use strict';
 
+	var DEPENDENCY_LOAD_TIMEOUT = 6000;
+
 	/**
 	* @class
 	* @private
@@ -267,6 +269,12 @@ function (
 	 */
 	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
 		var that = this;
+
+		// Strip schema
+		if (url.charAt(0) !== '/') {
+			url = url.substr(url.indexOf('//'));
+		}
+
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
 			return this._dependencyPromises[url] || PromiseUtil.resolve();
@@ -284,16 +292,27 @@ function (
 				delete that._dependencyPromises[url];
 			};
 
-			scriptElem.onerror = function () {
+			function fireError(message) {
 				var err = {
-					message: 'Could not load dependency',
+					message: message,
 					file: url
 				};
 				setError(script, err);
 				scriptElem.parentNode.removeChild(scriptElem);
 				resolve();
 				delete that._dependencyPromises[url];
+			}
+
+			scriptElem.onerror = function (e) {
+				console.error(e);
+				fireError('Could not load dependency');
 			};
+
+			// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
+			setTimeout(function() {
+				fireError('Loading dependency failed (time out).');
+			}, DEPENDENCY_LOAD_TIMEOUT);
+
 		});
 	};
 
