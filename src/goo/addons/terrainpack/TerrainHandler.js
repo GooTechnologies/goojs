@@ -155,9 +155,10 @@ define([
 		TerrainHandler.prototype.initLevel = function (terrainData, settings, forrestLODEntityMap) {
 			this.settings = settings;
 			var terrainSize = this.terrainSize;
+			var ajax = new Ajax(this.resourceFolder);
 
-			var terrainPromise = this._loadData(terrainData.heightMap);
-			var splatPromise = this._loadData(terrainData.splatMap);
+			var terrainPromise = ajax.load(terrainData.heightMap).then(null, function(){});
+			var splatPromise = ajax.load(terrainData.splatMap).then(null, function(){});
 
 			return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
 				var terrainBuffer = datas[0];
@@ -165,14 +166,16 @@ define([
 
 				var terrainArray;
 				if (terrainBuffer) {
-					terrainArray = new Float32Array(terrainBuffer);
+					// terrainArray = terrainBuffer;
+					terrainArray = new Uint8Array(terrainBuffer);
 				} else {
 					terrainArray = new Float32Array(terrainSize * terrainSize);
 				}
 
 				var splatArray;
 				if (splatBuffer) {
-					splatArray = new Uint8Array(splatBuffer);
+					splatArray = splatBuffer;
+					// splatArray = new Uint8Array(splatBuffer);
 				} else {
 					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
 				}
