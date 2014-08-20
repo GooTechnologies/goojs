@@ -219,8 +219,8 @@ function(
 			wrapS: 'EdgeClamp',
 			wrapT: 'EdgeClamp',
 			generateMipmaps: false,
-			flipY: true
-		});//, this.size * this.splatMult, this.size * this.splatMult);
+			flipY: false
+		}, this.size * this.splatMult, this.size * this.splatMult);
 
 		for (var i = 0; i < this.count; i++) {
 			var material = this.clipmaps[i].origMaterial;
@@ -898,7 +898,6 @@ function(
 					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
 					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 					'#endif',
-					'final_color = vec4(vWorldPos.y / 50.0);',
 
 					'gl_FragColor = final_color;',
 				'}'
@@ -1189,42 +1188,13 @@ function(
 
 		'varying vec2 texCoord0;',
 
-		'float shift_right (float v, float amt) {',
-			'v = floor(v) + 0.5;',
-			'return floor(v / exp2(amt));',
-		'}',
-		'float shift_left (float v, float amt) {',
-			'return floor(v * exp2(amt) + 0.5);',
-		'}',
-		'float mask_last (float v, float bits) {',
-			'return mod(v, shift_left(1.0, bits));',
-		'}',
-		'float extract_bits (float num, float from, float to) {',
-			'from = floor(from + 0.5); to = floor(to + 0.5);',
-			'return mask_last(shift_right(num, from), to - from);',
-		'}',
-		'vec4 encode_float (float val) {',
-			'if (val == 0.0) return vec4(0, 0, 0, 0);',
-			'float sign = val > 0.0 ? 0.0 : 1.0;',
-			'val = abs(val);',
-			'float exponent = floor(log2(val));',
-			'float biased_exponent = exponent + 127.0;',
-			'float fraction = ((val / exp2(exponent)) - 1.0) * 8388608.0;',
-			'float t = biased_exponent / 2.0;',
-			'float last_bit_of_biased_exponent = fract(t) * 2.0;',
-			'float remaining_bits_of_biased_exponent = floor(t);',
-			'float byte4 = extract_bits(fraction, 0.0, 8.0) / 255.0;',
-			'float byte3 = extract_bits(fraction, 8.0, 16.0) / 255.0;',
-			'float byte2 = (last_bit_of_biased_exponent * 128.0 + extract_bits(fraction, 16.0, 23.0)) / 255.0;',
-			'float byte1 = (sign * 128.0 + remaining_bits_of_biased_exponent) / 255.0;',
-			'return vec4(byte4, byte3, byte2, byte1);',
-		'}',
 		ShaderFragment.methods.unpackDepth16,
+		ShaderFragment.methods.packFloat,
 
 		'void main(void)',
 		'{',
 		// '	gl_FragColor = encode_float(texture2D(diffuseMap, texCoord0).r);',
-		'	gl_FragColor = encode_float(unpackDepth16(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).rg) * 50.0);',
+		'	gl_FragColor = packFloat(unpackDepth16(texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y)).rg) * 50.0);',
 		'}'//
 		].join('\n')
 	};
@@ -1258,59 +1228,13 @@ function(
 
 		'varying vec2 texCoord0;',
 
-		'float shift_right (float v, float amt) {',
-			'v = floor(v) + 0.5;',
-			'return floor(v / exp2(amt));',
-		'}',
-		'float shift_left (float v, float amt) {',
-			'return floor(v * exp2(amt) + 0.5);',
-		'}',
-		'float mask_last (float v, float bits) {',
-			'return mod(v, shift_left(1.0, bits));',
-		'}',
-		'float extract_bits (float num, float from, float to) {',
-			'from = floor(from + 0.5); to = floor(to + 0.5);',
-			'return mask_last(shift_right(num, from), to - from);',
-		'}',
-		'vec4 encode_float (float val) {',
-			'if (val == 0.0) return vec4(0, 0, 0, 0);',
-			'float sign = val > 0.0 ? 0.0 : 1.0;',
-			'val = abs(val);',
-			'float exponent = floor(log2(val));',
-			'float biased_exponent = exponent + 127.0;',
-			'float fraction = ((val / exp2(exponent)) - 1.0) * 8388608.0;',
-			'float t = biased_exponent / 2.0;',
-			'float last_bit_of_biased_exponent = fract(t) * 2.0;',
-			'float remaining_bits_of_biased_exponent = floor(t);',
-			'float byte4 = extract_bits(fraction, 0.0, 8.0) / 255.0;',
-			'float byte3 = extract_bits(fraction, 8.0, 16.0) / 255.0;',
-			'float byte2 = (last_bit_of_biased_exponent * 128.0 + extract_bits(fraction, 16.0, 23.0)) / 255.0;',
-			'float byte1 = (sign * 128.0 + remaining_bits_of_biased_exponent) / 255.0;',
-			'return vec4(byte4, byte3, byte2, byte1);',
-		'}',
-		'float decode_float (vec4 val) {',
-			// 'if (val == vec4(0.0)) return 0.0;',
-			'val = val * vec4(255.0);',
-			'float sign = - shift_right(val.w, 7.0) * 2.0 + 1.0;',
-
-			'float mantissa = ',
-				'val.x +',
-				'shift_left(val.y, 8.0) +',
-				'shift_left(extract_bits(val.z, 0.0, 7.0), 16.0);',
-			' mantissa = mantissa / 8388608.0 + 1.0;',
-
-			'float exponent = ',
-				'shift_left(extract_bits(val.w, 0.0, 7.0), 1.0) +',
-				'shift_right(val.z, 7.0) - 127.0;',
-
-			'return sign * mantissa * exp2(exponent);',
-		'}',
 		ShaderFragment.methods.packDepth16,
+		ShaderFragment.methods.unpackFloat,
 
 		'void main(void)',
 		'{',
-			'vec4 codedHeight = texture2D(diffuseMap, vec2(texCoord0.x, 1.0 - texCoord0.y));',
-			'float height = decode_float(codedHeight);',
+			'vec4 codedHeight = texture2D(diffuseMap, vec2(texCoord0.x, texCoord0.y));',
+			'float height = unpackFloat(codedHeight);',
 			'gl_FragColor.rg = packDepth16(height / 50.0);',
 			'gl_FragColor.ba = vec2(0.0);',
 		'}'//

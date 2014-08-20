@@ -174,8 +174,12 @@ define([
 
 				var splatArray;
 				if (splatBuffer) {
-					splatArray = splatBuffer;
-					// splatArray = new Uint8Array(splatBuffer);
+					// splatArray = splatBuffer;
+					if (splatBuffer instanceof ArrayBuffer) {
+						splatArray = new Uint8Array(splatBuffer);
+					} else {
+						splatArray = splatBuffer;
+					}
 				} else {
 					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
 				}
