@@ -361,8 +361,44 @@ function (
 	};
 
 
+	// The allowed types for the script parameters.
+	var types = [
+		'string',
+		'int',
+		'float',
+		'vec3',
+		'vec4',
+		'boolean',
+		'texture',
+		'image',
+		'sound',
+		'camera',
+		'entity',
+		'animation'
+	];
 
-	var types = ['string', 'float', 'int', 'vec3', 'boolean', 'texture', 'entity'];
+	// Specifies which controls can be used with each type.
+	var typesControls = {
+		'string': ['key'],
+		'int': ['spinner', 'slider', 'jointSelector'],
+		'float': ['spinner', 'slider'],
+		'vec3': ['color'],
+		'vec4': ['color'],
+		'boolean': ['checkbox'],
+		'texture': [],
+		'image': [],
+		'sound': [],
+		'camera': [],
+		'entity': [],
+		'animation': []
+	};
+
+	// Add the controls that can be used with any type to the mapping of
+	// controls that ca be used for each type.
+	for (var type in typesControls) {
+		Array.prototype.push.apply(typesControls[type], ['dropdown', 'select']);
+	}
+
 
 	/**
 	 * Validate external parameters
@@ -388,48 +424,65 @@ function (
 		outScript.externals.parameters = [];
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var param = externals.parameters[i];
+
 			if (typeof param.key !== 'string' || param.key.length === 0) {
-				errors.push({ message: 'Parameter key needs to be a non-empty string' });
+				errors.push({ message: 'Parameter "key" needs to be a non-empty string.' });
 				continue;
 			}
+
 			if (param.name !== undefined && (typeof param.name !== 'string' || param.name.length === 0)) {
-				errors.push({ message: 'Parameter name needs to be a non-empty string' });
+				errors.push({ message: 'Parameter "name" needs to be a non-empty string.' });
 				continue;
 			}
+
 			if (types.indexOf(param.type) === -1) {
-				errors.push({ message: 'Parameter type needs to be one of (' + types.join(', ') + ')' });
+				errors.push({ message: 'Parameter "type" needs to be one of: ' + types.join(', ') + '.' });
 				continue;
 			}
+
 			if (param.control !== undefined && (typeof param.control !== 'string' || param.control.length === 0)) {
-				errors.push({ message: 'Parameter control needs to be a non-empty string' });
+				errors.push({ message: 'Parameter "control" needs to be a non-empty string.' });
 				continue;
 			}
+
+			var allowedControls = typesControls[param.type];
+			if (param.control !== undefined && allowedControls.indexOf(param.control) === -1) {
+				errors.push({ message: 'Parameter "control" needs to be one of: ' + allowedControls.join(', ') + '.' });
+				continue;
+			}
+
 			if (param.options !== undefined && !(param.options instanceof Array)) {
-				errors.push({ message: 'Parameter key needs to be array' });
+				errors.push({ message: 'Parameter "key" needs to be array' });
 				continue;
 			}
+
 			if (param.min !== undefined && typeof param.min !== 'number') {
-				errors.push({ message: 'Parameter min needs to be number' });
+				errors.push({ message: 'Parameter "min" needs to be a number.' });
 				continue;
 			}
+
 			if (param.max !== undefined && typeof param.max !== 'number') {
-				errors.push({ message: 'Parameter max needs to be number' });
+				errors.push({ message: 'Parameter "max" needs to be a number.' });
 				continue;
 			}
+
 			if (param.scale !== undefined && typeof param.scale !== 'number') {
-				errors.push({ message: 'Parameter scale needs to be number' });
+				errors.push({ message: 'Parameter "scale" needs to be a number.' });
 				continue;
 			}
+
 			if (param.decimals !== undefined && typeof param.decimals !== 'number') {
-				errors.push({ message: 'Parameter decimals needs to be number' });
+				errors.push({ message: 'Parameter "decimals" needs to be a number.' });
 				continue;
 			}
+
 			if (param.precision !== undefined && typeof param.precision !== 'number') {
-				errors.push({ message: 'Parameter precision needs to be number' });
+				errors.push({ message: 'Parameter "precision" needs to be a number.' });
 				continue;
 			}
+
 			if (param.exponential !== undefined && typeof param.exponential !== 'boolean') {
-				errors.push({ message: 'Parameter exponential needs to be boolean' });
+				errors.push({ message: 'Parameter "exponential" needs to be a boolean.' });
 				continue;
 			}
 
