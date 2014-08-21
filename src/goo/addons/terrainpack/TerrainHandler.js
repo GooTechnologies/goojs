@@ -179,7 +179,11 @@ define([
 					// terrainArray = terrainBuffer;
 					terrainArray = new Uint8Array(terrainBuffer);
 				} else {
-					terrainArray = new Float32Array(terrainSize * terrainSize);
+					var floatArray = new Float32Array(terrainSize * terrainSize);
+					for (var i = 0; i < floatArray.length; i++) {
+						floatArray[i] = 25;
+					}
+					terrainArray = new Uint8Array(floatArray.buffer);
 				}
 
 				var splatArray;
