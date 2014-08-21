@@ -223,6 +223,8 @@ define([
 				'varying vec2 texCoord1;',
 			'#endif',
 
+			'#define M_PI 3.14159265358979323846264338328',
+
 			ShaderBuilder.light.prefragment,
 
 			'void main(void)',
@@ -281,16 +283,16 @@ define([
 
 				'#ifdef REFLECTIVE',
 					'if (refractivity > 0.0) {',
-						'vec3 refractionVector = refract(normalize(viewPosition), N, etaRatio);',
-						// 'refractionVector.yz = -refractionVector.yz;',
-						'refractionVector.x = -refractionVector.x;',
 						'vec4 environment = vec4(0.0);',
 						'#ifdef ENVIRONMENT_CUBE',
+							'vec3 refractionVector = refract(normalize(viewPosition), N, etaRatio);',
+							'refractionVector.x = -refractionVector.x;',
 							'environment = textureCube(environmentCube, refractionVector);',
 						'#elif defined(ENVIRONMENT_SPHERE)',
-							'refractionVector = -refractionVector;',
-							'float m = 4.0 * sqrt(refractionVector.x*refractionVector.x + refractionVector.y*refractionVector.y + (refractionVector.z+1.0)*(refractionVector.z+1.0));',
-							'environment = texture2D(environmentSphere, (refractionVector.xy / m) + 0.5);',
+							'vec3 refractionVector = refract(normalize(viewPosition), N, etaRatio);',
+							'float xx = (atan(refractionVector.z, refractionVector.x) + M_PI) / (2.0 * M_PI);',
+							'float yy = refractionVector.y * 0.5 + 0.5;',
+							'environment = texture2D(environmentSphere, vec2(xx, yy));',
 						'#endif',
 						'environment.rgb = mix(clearColor.rgb, environment.rgb, environment.a);',
 
@@ -298,16 +300,16 @@ define([
 					'}',
 
 					'if (reflectivity > 0.0) {',
-						'vec3 reflectionVector = reflect(viewPosition, N);',
-						'reflectionVector.yz = -reflectionVector.yz;',
-
 						'vec4 environment = vec4(0.0);',
 						'#ifdef ENVIRONMENT_CUBE',
+							'vec3 reflectionVector = reflect(normalize(viewPosition), N);',
+							'reflectionVector.yz = -reflectionVector.yz;',
 							'environment = textureCube(environmentCube, reflectionVector);',
 						'#elif defined(ENVIRONMENT_SPHERE)',
-							'reflectionVector = -reflectionVector;',
-							'float m = 4.0 * sqrt(reflectionVector.x*reflectionVector.x + reflectionVector.y*reflectionVector.y + (reflectionVector.z+1.0)*(reflectionVector.z+1.0));',
-							'environment = texture2D(environmentSphere, (reflectionVector.xy / m) + 0.5);',
+							'vec3 reflectionVector = reflect(normalize(viewPosition), N);',
+							'float xx = (atan(reflectionVector.z, reflectionVector.x) + M_PI) / (2.0 * M_PI);',
+							'float yy = reflectionVector.y * 0.5 + 0.5;',
+							'environment = texture2D(environmentSphere, vec2(xx, yy));',
 						'#endif',
 						'environment.rgb = mix(clearColor.rgb, environment.rgb, environment.a);',
 
@@ -318,6 +320,8 @@ define([
 
 						'float fresnelVal = pow(1.0 - abs(dot(normalize(viewPosition), N)), fresnel * 4.0);',
 						'reflectionAmount *= fresnelVal;',
+						// 'float fresnelVal = 1.0 - abs(dot(normalize(viewPosition), N)) * fresnel * 2.0;',
+						// 'reflectionAmount *= clamp(fresnelVal, 0.0, 1.0);',
 
 						'#if REFLECTION_TYPE == 0',
 							'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
