@@ -94,6 +94,7 @@ define([
 
 		var orbitCamOptions = {
 			domElement        : V.goo.renderer.domElement,
+			lookAtDistance    : null,
 			spherical         : spherical,
 			lookAtPoint       : lookAt,
 			releaseVelocity   : true,

@@ -23,7 +23,7 @@ Optionally, if you want to runt Grunt using just the `grunt` command,
 install Grunt globally (may need to be run as root):
 
     npm install -g grunt-cli
-    
+
 
 Style checks
 ------------
@@ -109,14 +109,14 @@ The resulting documentation will be generated in the goojs-jsdoc directory and a
 
 ## Releasing
 
-See [https://bitbucket.org/gootech/goonguide/src/51fdadf22988605065d61c035139a56219609c79/release-engine.md?at=master]()
+See [https://bitbucket.org/gootech/goonguide/wiki/release-engine.md]()
 
 ## Building
 
 To build a regular goo minified version, run
 
 	grunt
-	
+
 This will build the engine and all registered packs. The output is in the *out* folder. To build individual packs run
 
     node tools/buildPack.js packName

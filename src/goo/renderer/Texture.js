@@ -64,6 +64,8 @@ function (
 	 * @param {boolean} [settings.premultiplyAlpha='false'] Premultiply alpha
 	 * @param {number} [settings.unpackAlignment=1] Unpack alignment setting
 	 * @param {boolean} [settings.flipY='true'] Flip texture in y-axis
+	 * @param {number} width Width of the texture
+	 * @param {number} height Height of the texture
 	 */
 	function Texture(image, settings, width, height) {
 		this.glTexture = null;
@@ -107,10 +109,18 @@ function (
 		}
 	}
 
+	/**
+	* Checks if the texture's data is ready.
+	* @return {Boolean} True if ready.
+	*/
 	Texture.prototype.checkDataReady = function () {
 		return this.image && (this.image.dataReady || this.image instanceof HTMLImageElement) || this.readyCallback !== null && this.readyCallback();
 	};
 
+	/**
+	* Checks if the texture needs an update.
+	* @return {Boolean} True if needed.
+	*/
 	Texture.prototype.checkNeedsUpdate = function () {
 		return this.needsUpdate || this.updateCallback !== null && this.updateCallback();
 	};
@@ -122,6 +132,7 @@ function (
 		this.needsUpdate = true;
 	};
 
+	//! AT: this takes the same parameters as the Texture function but in a different order!
 	/**
 	 * Sets an image on the texture object.
 	 *
@@ -176,6 +187,42 @@ function (
 	Texture.prototype.destroy = function (context) {
 		context.deleteTexture(this.glTexture);
 		this.glTexture = null;
+	};
+
+	/**
+	 * Returns the number of bytes this texture occupies in memory
+	 * @returns {number}
+	 */
+	Texture.prototype.getSizeInMemory = function () {
+		var size;
+
+		var width = this.image.width || this.image.length;
+		var height = this.image.height || 1;
+
+		size = width * height;
+
+		if (this.format === 'Luminance' || this.format === 'Alpha') {
+			size *= 1;
+		} else if (this.format === 'Lumin`anceAlpha') {
+			size *= 2;
+		} else if (this.format === 'RGB') {
+			size *= 3; // some dubious video cards may use 4 bits anyway
+		} else if (this.format === 'RGBA') {
+			size *= 4;
+		} else if (this.format === 'PrecompressedDXT1') {
+			size *= 4 / 8; // 8 : 1 ratio
+		} else if (this.format === 'PrecompressedDXT1A') {
+			size *= 4 / 6; // 6 : 1 ratio
+		} else if (this.format === 'PrecompressedDXT3' || this.format === 'PrecompressedDXT5') {
+			size *= 4 / 4; // 4 : 1 ratio
+		}
+
+		// account for mip maps
+		if (this.generateMipmaps) {
+			size = Math.ceil(size * 4 / 3);
+		}
+
+		return size;
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];

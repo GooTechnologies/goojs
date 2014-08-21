@@ -31,6 +31,8 @@ function (
 ) {
 	'use strict';
 
+	var DEPENDENCY_LOAD_TIMEOUT = 6000;
+
 	/**
 	* @class
 	* @private
@@ -267,6 +269,12 @@ function (
 	 */
 	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
 		var that = this;
+
+		// Strip schema
+		if (url.charAt(0) !== '/') {
+			url = url.substr(url.indexOf('//'));
+		}
+
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
 			return this._dependencyPromises[url] || PromiseUtil.resolve();
@@ -284,16 +292,27 @@ function (
 				delete that._dependencyPromises[url];
 			};
 
-			scriptElem.onerror = function () {
+			function fireError(message) {
 				var err = {
-					message: 'Could not load dependency',
+					message: message,
 					file: url
 				};
 				setError(script, err);
 				scriptElem.parentNode.removeChild(scriptElem);
 				resolve();
 				delete that._dependencyPromises[url];
+			}
+
+			scriptElem.onerror = function (e) {
+				console.error(e);
+				fireError('Could not load dependency');
 			};
+
+			// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
+			setTimeout(function() {
+				fireError('Loading dependency failed (time out).');
+			}, DEPENDENCY_LOAD_TIMEOUT);
+
 		});
 	};
 
@@ -342,8 +361,44 @@ function (
 	};
 
 
+	// The allowed types for the script parameters.
+	var types = [
+		'string',
+		'int',
+		'float',
+		'vec3',
+		'vec4',
+		'boolean',
+		'texture',
+		'image',
+		'sound',
+		'camera',
+		'entity',
+		'animation'
+	];
 
-	var types = ['string', 'float', 'int', 'vec3', 'boolean', 'texture', 'entity'];
+	// Specifies which controls can be used with each type.
+	var typesControls = {
+		'string': ['key'],
+		'int': ['spinner', 'slider', 'jointSelector'],
+		'float': ['spinner', 'slider'],
+		'vec3': ['color'],
+		'vec4': ['color'],
+		'boolean': ['checkbox'],
+		'texture': [],
+		'image': [],
+		'sound': [],
+		'camera': [],
+		'entity': [],
+		'animation': []
+	};
+
+	// Add the controls that can be used with any type to the mapping of
+	// controls that ca be used for each type.
+	for (var type in typesControls) {
+		Array.prototype.push.apply(typesControls[type], ['dropdown', 'select']);
+	}
+
 
 	/**
 	 * Validate external parameters
@@ -369,57 +424,73 @@ function (
 		outScript.externals.parameters = [];
 		for (var i = 0; i < externals.parameters.length; i++) {
 			var param = externals.parameters[i];
+
 			if (typeof param.key !== 'string' || param.key.length === 0) {
-				errors.push({ message: 'Parameter key needs to be a non-empty string' });
+				errors.push({ message: 'Parameter "key" needs to be a non-empty string.' });
 				continue;
 			}
+
 			if (param.name !== undefined && (typeof param.name !== 'string' || param.name.length === 0)) {
-				errors.push({ message: 'Parameter name needs to be a non-empty string' });
+				errors.push({ message: 'Parameter "name" needs to be a non-empty string.' });
 				continue;
 			}
+
 			if (types.indexOf(param.type) === -1) {
-				errors.push({ message: 'Parameter type needs to be one of (' + types.join(', ') + ')' });
+				errors.push({ message: 'Parameter "type" needs to be one of: ' + types.join(', ') + '.' });
 				continue;
 			}
+
 			if (param.control !== undefined && (typeof param.control !== 'string' || param.control.length === 0)) {
-				errors.push({ message: 'Parameter control needs to be a non-empty string' });
+				errors.push({ message: 'Parameter "control" needs to be a non-empty string.' });
 				continue;
 			}
+
+			var allowedControls = typesControls[param.type];
+			if (param.control !== undefined && allowedControls.indexOf(param.control) === -1) {
+				errors.push({ message: 'Parameter "control" needs to be one of: ' + allowedControls.join(', ') + '.' });
+				continue;
+			}
+
 			if (param.options !== undefined && !(param.options instanceof Array)) {
-				errors.push({ message: 'Parameter key needs to be array' });
+				errors.push({ message: 'Parameter "key" needs to be array' });
 				continue;
 			}
+
 			if (param.min !== undefined && typeof param.min !== 'number') {
-				errors.push({ message: 'Parameter min needs to be number' });
+				errors.push({ message: 'Parameter "min" needs to be a number.' });
 				continue;
 			}
+
 			if (param.max !== undefined && typeof param.max !== 'number') {
-				errors.push({ message: 'Parameter max needs to be number' });
+				errors.push({ message: 'Parameter "max" needs to be a number.' });
 				continue;
 			}
+
 			if (param.scale !== undefined && typeof param.scale !== 'number') {
-				errors.push({ message: 'Parameter scale needs to be number' });
+				errors.push({ message: 'Parameter "scale" needs to be a number.' });
 				continue;
 			}
+
 			if (param.decimals !== undefined && typeof param.decimals !== 'number') {
-				errors.push({ message: 'Parameter decimals needs to be number' });
+				errors.push({ message: 'Parameter "decimals" needs to be a number.' });
 				continue;
 			}
+
 			if (param.precision !== undefined && typeof param.precision !== 'number') {
-				errors.push({ message: 'Parameter precision needs to be number' });
+				errors.push({ message: 'Parameter "precision" needs to be a number.' });
 				continue;
 			}
+
 			if (param.exponential !== undefined && typeof param.exponential !== 'boolean') {
-				errors.push({ message: 'Parameter exponential needs to be boolean' });
+				errors.push({ message: 'Parameter "exponential" needs to be a boolean.' });
 				continue;
 			}
-			if (param['default'] === null) {
+
+			// create cares about this, in order to build the control panel for the script
+			if (param['default'] === null || param['default'] === undefined) {
 				param['default'] = ScriptUtils.defaultsByType[param.type];
-				if (typeof param['default'] === 'undefined') {
-					errors.push({ message: 'Parameter default is missing or of wrong type' });
-					continue;
-				}
 			}
+
 			outScript.externals.parameters.push(param);
 		}
 		if (errors.length) {

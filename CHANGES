@@ -1,4 +1,16 @@
-v0.11.0 --- 2014-08-12
+v0.11.2 --- 2014-08-19
+======================
+
+Fixes:
+ * graceful handling of http/https issues when loading external dependencies for scripts
+
+v0.11.1 --- 2014-08-14
+======================
+
+Fixes:
+ * state machine issues when interfacing with Create
+
+v0.11.0 --- 2014-08-13
 ======================
 
 Additions:
@@ -12,7 +24,7 @@ Fixes:
 
 Deprecated:
  - PromiseUtil.createDummyPromise; use PromiseUtil.resolve/reject instead
- 
+
 Removed:
  - Howler.js sound library support; use the Goo SoundComponent instead.
  - Material.createMaterial(...); use new Material(...) instead.

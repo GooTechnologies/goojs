@@ -50,7 +50,8 @@ function(
 		}, {
 			name: 'Type',
 			key: 'distanceType',
-			type: 'dropdown',
+			type: 'string',
+			control: 'dropdown',
 			description: 'The type of distance',
 			'default': 'Euclidean',
 			options: ['Euclidean', 'Manhattan']
