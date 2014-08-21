@@ -8,6 +8,7 @@ define([
 		'goo/math/MathUtils',
 		'goo/renderer/Texture',
 		'goo/renderer/TextureCreator',
+		'goo/util/PromiseUtil',
 		'goo/util/rsvp'
 	],
 	function(
@@ -20,6 +21,7 @@ define([
 		MathUtils,
 		Texture,
 		TextureCreator,
+		PromiseUtil,
 		RSVP
 	) {
 		'use strict';
@@ -157,8 +159,16 @@ define([
 			var terrainSize = this.terrainSize;
 			var ajax = new Ajax(this.resourceFolder);
 
-			var terrainPromise = ajax.load(terrainData.heightMap).then(null, function(){});
-			var splatPromise = ajax.load(terrainData.splatMap).then(null, function(){});
+			if (terrainData.heightMap) {
+				var terrainPromise = ajax.load(terrainData.heightMap).then(null, function(){});
+			} else {
+				var terrainPromise = PromiseUtil.resolve();
+			}
+			if (terrainData.splatMap) {
+				var splatPromise = ajax.load(terrainData.splatMap).then(null, function(){});
+			} else {
+				var splatPromise = PromiseUtil.resolve();
+			}
 
 			return RSVP.all([terrainPromise, splatPromise]).then(function (datas) {
 				var terrainBuffer = datas[0];

@@ -879,7 +879,7 @@ function(
 					'final_color = mix(g1, g2, splat.r);',
 					'final_color = mix(final_color, g3, splat.g);',
 					'final_color = mix(final_color, g4, splat.b);',
-					//'final_color = mix(final_color, g5, splat.a);',
+					'final_color = mix(final_color, g5, splat.a);',
 
 					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
 					'slope = smoothstep(0.15, 0.25, slope);',
