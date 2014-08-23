@@ -282,6 +282,15 @@ define([
 		var editTerrain = terrainFolder.add(terrainEditSettings, 'edit');
 		var editorApi = this.editorAPI;
 
+		var dimensionsFolder = terrainFolder.addFolder('Dimensions');
+		var scaleValue = dimensionsFolder.add(terrainHandler.terrain.dimensions, 'scale', [0.5, 1, 2, 4, 8, 16]);
+
+
+		scaleValue.onFinishChange(function(value) {
+			terrainHandler.terrain.rebuild();
+		});
+
+
 		editTerrain.onFinishChange(function(value) {
 			editorApi.toggleHeightMapEditing(value);
 		});

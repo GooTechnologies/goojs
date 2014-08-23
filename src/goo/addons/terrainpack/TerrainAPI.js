@@ -28,6 +28,10 @@ define([
 		var terrainReady = function(areaConfig, terrainQuery, loadedData) {
 			console.log("AreaConf", areaConfig, loadedData);
 			areaConfig.setTerrainQuery(terrainQuery);
+
+		//	readyCallback(areaConfig)
+		//	return;
+
 			var go = 0;
 			function onLoaded(thing) {
 				go += 1;
@@ -50,16 +54,12 @@ define([
 				forest.setTreeLODvalues(
 					loadedData.Forest.patchSize,
 					loadedData.Forest.patchDensity,
-					loadedData.Forest.gridSize,
+					3,
 					loadedData.Forest.minDist
 				);
 				forest.setTreeScale(loadedData.Forest.treeScale);
 				forest.setRandomSeed(loadedData.Forest.randomSeed);
-			} else {
-				forest.setTreeLODvalues(45, 5, 15, 1.4);
-			}
-
-			if (loadedData.Ground) {
+			} 			if (loadedData.Ground) {
 				for (var index in loadedData.Ground) {
 					for (var vegType in loadedData.Ground[index].vegetation) {
 						areaConfig.ground.data[index].vegetation[vegType] = loadedData.Ground[index].vegetation[vegType];

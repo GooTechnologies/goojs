@@ -52,7 +52,7 @@ define([
 		};
 
 		TerrainBrush.prototype.draw = function (mode, type, size, x, y, z, power, brushTexture, rgba) {
-			console.log("Draw: ", mode, type, size, x, y, z, power, brushTexture, rgba);
+		//	console.log("Draw: ", mode, type, size, x, y, z, power, brushTexture, rgba);
 			power = MathUtils.clamp(power, 0, 1);
 
 			x = (x - this.size/2) * 2;

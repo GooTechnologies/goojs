@@ -14,6 +14,7 @@ define([
 			this.terrainSize = terrainSize;
 			this.groundData = groundData.ground.data;
 			this.terrain = terrain;
+			this.scale = terrain.dimensions.scale;
 			this.randomSeed = 1;
 			this.updateTerrainInfo();
 			this.setWaterLevel(0);
@@ -24,12 +25,12 @@ define([
 		};
 
 		TerrainQuery.prototype.getHeightAt = function(pos) {
-			if (pos[0] < 0 || pos[0] > this.terrainSize - 1 || pos[2] < 0 || pos[2] > this.terrainSize - 1) {
+			if (pos[0] < 0 || pos[0] > this.terrainSize*this.scale - 1 || pos[2] < 0 || pos[2] > this.terrainSize*this.scale - 1) {
 				return -1000;
 			}
 
-			var x = pos[0];
-			var z = this.terrainSize - (pos[2]+1);
+			var x = pos[0] / this.scale;
+			var z = (this.terrainSize*this.scale - (pos[2]+1)) / this.scale;
 
 			var col = Math.floor(x);
 			var row = Math.floor(z);
@@ -45,10 +46,10 @@ define([
 			col1 = MathUtils.moduloPositive(col1, this.terrainSize);
 			row1 = MathUtils.moduloPositive(row1, this.terrainSize);
 
-			var topLeft = this.terrainInfo.heights[row * this.terrainSize + col];
-			var topRight = this.terrainInfo.heights[row * this.terrainSize + col1];
-			var bottomLeft = this.terrainInfo.heights[row1 * this.terrainSize + col];
-			var bottomRight = this.terrainInfo.heights[row1 * this.terrainSize + col1];
+			var topLeft = 		this.terrainInfo.heights[row * this.terrainSize + 	col];
+			var topRight = 		this.terrainInfo.heights[row * this.terrainSize +  col1];
+			var bottomLeft = 	this.terrainInfo.heights[row1 * this.terrainSize + 	col];
+			var bottomRight = 	this.terrainInfo.heights[row1 * this.terrainSize + col1];
 
 			return MathUtils.lerp(intOnZ,
 				MathUtils.lerp(intOnX, topLeft, topRight),
@@ -57,8 +58,8 @@ define([
 		};
 
 		TerrainQuery.prototype.getNormalAt = function(pos) {
-			var x = pos[0];
-			var z = this.terrainSize - (pos[2]);
+			var x = pos[0] / this.scale;
+			var z = this.terrainSize - (pos[2] / this.scale);
 
 			var col = Math.floor(x);
 			var row = Math.floor(z-1);
@@ -116,8 +117,8 @@ define([
 			}
 
 			if (this.terrainInfo) {
-				xx = Math.floor(xx);
-				zz = Math.floor(zz);
+				xx = Math.floor(xx / this.scale);
+				zz = Math.floor(zz / this.scale);
 
 				if (xx < 0 || xx > this.terrainSize - 1 || zz < 0 || zz > this.terrainSize - 1) {
 					return null;
@@ -153,8 +154,8 @@ define([
 			}
 
 			if (this.terrainInfo) {
-				xx = Math.floor(xx);
-				zz = Math.floor(zz);
+				xx = Math.floor(xx / this.scale);
+				zz = Math.floor(zz / this.scale);
 
 				if (xx < 0 || xx > this.terrainSize - 1 || zz < 0 || zz > this.terrainSize - 1) {
 					return null;
@@ -179,7 +180,7 @@ define([
 		};
 
 		TerrainQuery.prototype.getLightAt = function(pos) {
-			if (pos[0] < 0 || pos[0] > this.terrainSize - 1 || pos[2] < 0 || pos[2] > this.terrainSize - 1) {
+			if (pos[0] < 0 || pos[0] > this.terrainSize*this.scale - 1 || pos[2] < 0 || pos[2] > this.terrainSize*this.scale - 1) {
 				return -1000;
 			}
 

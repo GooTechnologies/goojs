@@ -57,7 +57,7 @@ function (
 		this.terrainQuery = terrainQuery;
 		this.calcVec = new Vector3();
 		this.initDone = false;
-        this.setTreeLODvalues(32, 5 , 5, 1.5);
+        this.setTreeLODvalues(32, 5 , 3, 1.5);
 		this.setTreeScale(1);
 		this.setRandomSeed(0);
 	}

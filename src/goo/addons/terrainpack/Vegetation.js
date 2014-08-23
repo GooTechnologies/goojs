@@ -45,6 +45,7 @@ function (
 
 	function Vegetation(terrainQuery) {
 		this.terrainQuery = terrainQuery;
+		this.scale = this.terrainQuery.scale;
 		this.calcVec = new Vector3();
 		this.initDone = false;
 	}
@@ -74,7 +75,7 @@ function (
 		this.randomSeed = 1;
 		this.patchSize = 45;
 		this.patchDensity = 18;
-		this.gridSize = 5;
+		this.gridSize = 3;
 
         this.setVegetationDensities(settings.patchSize || this.patchSize, settings.patchDensity || this.patchDensity, settings.gridSize || this.gridSize)
 

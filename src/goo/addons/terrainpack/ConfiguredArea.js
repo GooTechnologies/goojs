@@ -11,7 +11,7 @@ define([
 	var ConfiguredArea = function(version, goo, resourcePath, areaData, readyCallback, terrainEditSettings) {
 		this.version = version;
 		this.cullState = true;
-		this.terrainHandler = new TerrainHandler(goo, 256, 4, resourcePath);
+		this.terrainHandler = new TerrainHandler(goo, 256, 2, resourcePath);
 
 		this.resourcePath = resourcePath;
 		this.terrainEditSettings = terrainEditSettings;
@@ -95,8 +95,8 @@ define([
 	ConfiguredArea.prototype.buildTerrainData = function(terrainData) {
 
 	//	this.ground = this.groundConfig;
-		this.forest = this.forestConfig;
-		this.plants = this.plantsConfig;
+	//	this.forest = this.forestConfig;
+	//	this.plants = this.plantsConfig;
 	};
 
 	ConfiguredArea.prototype.readShaderUniform = function(uniform) {
