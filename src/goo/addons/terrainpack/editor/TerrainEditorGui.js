@@ -84,9 +84,9 @@ define([
 		var folder = this.gui.addFolder('Forest');
 
 		//	var gridSize = vegFolder.add(editSettings, 'gridSize', 2, 30);
-		var patchSize = folder.add(editSettings, 'patchSize', 2, 150);
-		var patchDensity = folder.add(editSettings, 'patchDensity', 1, 40);
-		var minDist = folder.add(editSettings, 'minDist', 0.5, 40);
+		var patchSize = folder.add(editSettings, 'patchSize', 15, 450);
+		var patchDensity = folder.add(editSettings, 'patchDensity', 0.1, 20);
+		var minDist = folder.add(editSettings, 'minDist', 0.1, 4);
 		var treeScale = folder.add(editSettings, 'treeScale', 0.1, 3);
 		var randomSeed = folder.add(editSettings, 'randomSeed', 0.1, 2);
 

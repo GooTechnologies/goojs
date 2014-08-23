@@ -41,13 +41,13 @@ function(
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.dimensions = {
-			scale:  2
+			scale:  16
 		};
 	//	setHeightScale(this.dimensions.scale);
 
-			this.n = Math.floor(31 * this.dimensions.scale);
+		//	this.n = Math.floor(31 * this.dimensions.scale);
 
-		//	this.n = 31;
+			this.n = 31;
 
 		this.materialSettings = {
 			culling:true
@@ -787,8 +787,8 @@ function(
 				'worldPos.y = z * resolution.x;',
 				'gl_Position = viewProjectionMatrix * worldPos;',
 
-				'vWorldPos = worldPos.xyz / vec3(scaleHeightWidth, 1.0, scaleHeightWidth);',
-				'viewPosition = cameraPosition/vec3(scaleHeightWidth, 1.0, scaleHeightWidth) - vWorldPos;',
+				'vWorldPos = worldPos.xyz / vec3(scaleHeightWidth, scaleHeightWidth, scaleHeightWidth);',
+				'viewPosition = cameraPosition/vec3(scaleHeightWidth, scaleHeightWidth, scaleHeightWidth) - vWorldPos;',
 
 				ShaderBuilder.light.vertex,
 				'}'
@@ -876,7 +876,7 @@ function(
 					'#endif',
 
 					'#ifdef FOG',
-					'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)*scaleHeightWidth), 1.0);',
+					'float d = pow(smoothstep(fogSettings.x/scaleHeightWidth, fogSettings.y/scaleHeightWidth, length(viewPosition)), 1.0);',
 					'final_color.rgb = mix(final_color.rgb, fogColor, d);',
 					'#endif',
 
