@@ -115,11 +115,19 @@ define([
 		}
 	};
 
+	ConfiguredArea.prototype.setWireframeEnabled = function(value) {
+		this.wireframe = value;
+		this.terrainHandler.terrain.setMaterialProperty('wireframe', value);
+		for (var i = 0; i < this.terrainHandler.terrain.terrainMaterials.length; i++) {
+	//		this.terrainHandler.terrain.terrainMaterials[i].cullState.enabled = value
+		}
+	};
+
 	ConfiguredArea.prototype.setCullStateEnabled = function(value) {
 		this.cullState = value;
 		this.terrainHandler.terrain.setMaterialProperty('culling', value);
 		for (var i = 0; i < this.terrainHandler.terrain.terrainMaterials.length; i++) {
-			this.terrainHandler.terrain.terrainMaterials[i].cullState.enabled = value
+	//		this.terrainHandler.terrain.terrainMaterials[i].cullState.enabled = value
 		}
 	};
 

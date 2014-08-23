@@ -200,7 +200,7 @@ define([
 		console.log("Add Texture Data to Gui: ", terrainConf, txData);
 
 		var count = 0;
-		var txEditSettings = {culling: terrainConf.cullState};
+		var txEditSettings = {culling: terrainConf.cullState, wireframe:false};
 
         var matFolder = this.gui.addFolder('Material');
         var culling = matFolder.add(txEditSettings, 'culling');
@@ -209,6 +209,13 @@ define([
 			terrainConf.setCullStateEnabled(value);
             console.log("Toggle terrain culling", value)
         });
+
+		var wireframe = matFolder.add(txEditSettings, 'wireframe');
+
+		wireframe.onChange(function(value) {
+			terrainConf.setWireframeEnabled(value);
+			console.log("Toggle terrain wireframe", value)
+		});
 
 
 		for (var tx in txData) {
