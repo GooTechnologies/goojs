@@ -75,7 +75,7 @@ function (
 		this.randomSeed = 1;
 		this.patchSize = 45;
 		this.patchDensity = 18;
-		this.gridSize = 3;
+		this.gridSize = 5;
 
         this.setVegetationDensities(settings.patchSize || this.patchSize, settings.patchDensity || this.patchDensity, settings.gridSize || this.gridSize)
 

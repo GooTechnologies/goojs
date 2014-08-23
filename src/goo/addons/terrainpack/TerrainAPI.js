@@ -54,7 +54,7 @@ define([
 				forest.setTreeLODvalues(
 					loadedData.Forest.patchSize,
 					loadedData.Forest.patchDensity,
-					3,
+					5,
 					loadedData.Forest.minDist
 				);
 				forest.setTreeScale(loadedData.Forest.treeScale);
