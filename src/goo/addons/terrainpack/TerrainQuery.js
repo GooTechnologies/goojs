@@ -76,7 +76,7 @@ define([
 			var topRight = this.terrainInfo.heights[row * this.terrainSize + col1];
 			var bottomLeft = this.terrainInfo.heights[row1 * this.terrainSize + col];
 
-			return calcVec.setd((topLeft - topRight), 1, (bottomLeft - topLeft)).normalize();
+			return calcVec.setd((topLeft - topRight), this.scale, (bottomLeft - topLeft)).normalize();
 		};
 
 		TerrainQuery.prototype.setWaterLevel = function(level) {
@@ -112,7 +112,7 @@ define([
 
 			var rand = this.randomFromSeed(Math.sin(xx*99+yy*88+this.randomSeed));
 			//		var	rand = Math.random()
-			if (MathUtils.smoothstep(0.72, 0.81, slope) < 0.5+rand*0.5) {
+			if (MathUtils.smoothstep(0.82, 0.91, slope) < 0.5+rand*0.5) {
 				return null;
 			}
 

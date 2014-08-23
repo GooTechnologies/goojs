@@ -568,10 +568,10 @@ function(
 
 		var meshData = this.createGrid(w, h, this.dimensions.scale);
 
-	// 	x = x*this.dimensions.scale;
-	// 	y = y*this.dimensions.scale;
-	//	w = w*this.dimensions.scale;
-	//	h = h*this.dimensions.scale;
+	 	x = x*this.dimensions.scale;
+	 	y = y*this.dimensions.scale;
+		w = w*this.dimensions.scale;
+		h = h*this.dimensions.scale;
 
 
 		var entity = world.createEntity('mesh_' + w + '_' + h, meshData, material);
