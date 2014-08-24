@@ -24,6 +24,9 @@ define([
 			GROUND_MAP5:{scaleUniform:'scaleGround5', tx:null},
 			STONE_MAP  :{scaleUniform:'scaleBedrock', tx:null}
 		};
+		this.groundUniforms = {
+			rockSlope:'rockSlope'
+		};
 		this.terrainEditSettings = {
 			edit: false,
 			scale: 1,
@@ -119,6 +122,10 @@ define([
 		return this.groundTextures;
 	};
 
+	TerrainEditorAPI.prototype.getGroundUniforms = function() {
+		return this.groundUniforms;
+	};
+
 	TerrainEditorAPI.prototype.endEditMode = function(terrainConfigurator) {
 		console.log("TerrainConfigurator: ", terrainConfigurator);
 		if (terrainConfigurator.editorActive) terrainConfigurator.toggleEditing();
@@ -144,7 +151,7 @@ define([
 
 		this.populateTextureSetup(config);
 
-		this.editorGui.addTextureData(config, this.getGroundTextures(config));
+		this.editorGui.addTextureData(config, this.getGroundTextures(config), this.getGroundUniforms(config));
 		this.editorGui.addVegetation(this.terrainApi.configurations[0].vegetation);
 		this.editorGui.addForest(this.terrainApi.configurations[0].forest);
 	};

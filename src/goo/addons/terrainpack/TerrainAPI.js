@@ -118,7 +118,8 @@ define([
 				scaleGround3 : 60,
 				scaleGround4 : 80,
 				scaleGround5 : 50,
-				scaleBedrock : 20
+				scaleBedrock : 20,
+				rockSlope    : 0.3
 			};
 
 			for (var index in tileScales) {

@@ -11,7 +11,7 @@ define([
 	var ConfiguredArea = function(version, goo, resourcePath, areaData, readyCallback, terrainEditSettings) {
 		this.version = version;
 		this.cullState = true;
-		this.terrainHandler = new TerrainHandler(goo, 256, 2, resourcePath);
+		this.terrainHandler = new TerrainHandler(goo, 256, 4, resourcePath);
 
 		this.resourcePath = resourcePath;
 		this.terrainEditSettings = terrainEditSettings;

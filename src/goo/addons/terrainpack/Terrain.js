@@ -41,13 +41,14 @@ function(
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.dimensions = {
-			scale:  2
+			scale:  16
 		};
 	//	setHeightScale(this.dimensions.scale);
 
 		//	this.n = Math.floor(31 * this.dimensions.scale);
 
-			this.n = 31;
+		//	this.n = 31;
+		this.n = 62;
 
 		this.materialSettings = {
 			culling:true
@@ -470,15 +471,15 @@ function(
 
 			if (yy !== clipmap.currentY) {
 				clipmap.currentY = yy;
-				var compSize = this.gridSize * clipmap.size * 2;
+				var compSize = this.gridSize * clipmap.size * 2 * s;
 				if (clipmap.clipmapEntity._hidden === false && y > compSize) {
 					clipmap.clipmapEntity.hide();
 
 					if (i < this.clipmaps.length - 1) {
 						var childClipmap = this.clipmaps[i + 1];
 						childClipmap.clipmapEntity.innermost.meshRendererComponent.hidden = false;
-						childClipmap.clipmapEntity.interior1.meshRendererComponent.hidden = true;
-						childClipmap.clipmapEntity.interior2.meshRendererComponent.hidden = true;
+				//		childClipmap.clipmapEntity.interior1.meshRendererComponent.hidden = true;
+				//		childClipmap.clipmapEntity.interior2.meshRendererComponent.hidden = true;
 					}
 
 					continue;
@@ -488,8 +489,8 @@ function(
 					if (i < this.clipmaps.length - 1) {
 						var childClipmap = this.clipmaps[i + 1];
 						childClipmap.clipmapEntity.innermost.meshRendererComponent.hidden = true;
-						childClipmap.clipmapEntity.interior1.meshRendererComponent.hidden = false;
-						childClipmap.clipmapEntity.interior2.meshRendererComponent.hidden = false;
+				//		childClipmap.clipmapEntity.interior1.meshRendererComponent.hidden = false;
+				//		childClipmap.clipmapEntity.interior2.meshRendererComponent.hidden = false;
 					}
 				}
 			}
@@ -499,13 +500,13 @@ function(
 			}
 
 			var n = this.n*s;
-
+		/*
 			if (clipmap.parentClipmap) {
 				var interior1 = clipmap.parentClipmap.clipmapEntity.interior1;
 				var interior2 = clipmap.parentClipmap.clipmapEntity.interior2;
 
-				var xxx = MathUtils.moduloPositive(xx + 1, 2);
-				var zzz = MathUtils.moduloPositive(zz + 1, 2);
+				var xxx = MathUtils.moduloPositive(xx + -1, 2);
+				var zzz = MathUtils.moduloPositive(zz + -1, 2);
 				var xmove = xxx % 2 === 0 ? -n : n + 1;
 				var zmove = zzz % 2 === 0 ? -n : n + 1;
 				interior1.setTranslation(-n, 0, zmove);
@@ -513,7 +514,7 @@ function(
 				zmove = zzz % 2 === 0 ? -n : -n + 1;
 				interior2.setTranslation(xmove, 0, zmove);
 			}
-
+        */
 			clipmap.clipmapEntity.setTranslation(xx * clipmap.size * 2, 0, zz * clipmap.size * 2);
 
 			clipmap.currentX = xx // *this.dimensions.scale;
@@ -559,8 +560,8 @@ function(
 			entity.innermost.meshRendererComponent.hidden = true;
 
 			// interior
-			entity.interior1 = this.createQuadEntity(world, material, level, entity, -n, -n, (n * 2 + 2), 1);
-			entity.interior2 = this.createQuadEntity(world, material, level, entity, -n, -n, 1, (n * 2 + 1));
+		//	entity.interior1 = this.createQuadEntity(world, material, level, entity, -n, -n, (n * 2 + 2), 1);
+		//	entity.interior2 = this.createQuadEntity(world, material, level, entity, -n, -n, 1, (n * 2 + 1));
 		}
 
 		return entity;
@@ -569,10 +570,10 @@ function(
 	Terrain.prototype.createQuadEntity = function (world, material, level, parentEntity, x, y, w, h) {
 
 
-		var meshData = this.createGrid(w, h, this.dimensions.scale);
+		var meshData = this.createGrid(w+2, h+2, this.dimensions.scale);
 
-	 	x = x*this.dimensions.scale;
-	 	y = y*this.dimensions.scale;
+	 	x = (x-1)*this.dimensions.scale;
+	 	y = (y-1)*this.dimensions.scale;
 		w = w*this.dimensions.scale;
 		h = h*this.dimensions.scale;
 
@@ -656,6 +657,18 @@ function(
 		scaleBedrock : 20
 	};
 
+	var tunableUniforms = {
+		rockSlope    : 0.3
+	};
+
+	function getTunableUniform(uniform) {
+		return tunableUniforms[uniform];
+	};
+
+	function setTunableUniform(uniform, value) {
+		tunableUniforms[uniform, value];
+	};
+
 	var materialProperties = {
 		culling:true
 	};
@@ -734,6 +747,7 @@ function(
 			groundMap5: 'GROUND_MAP5',
 			stoneMap: 'STONE_MAP',
 			lightMap: 'LIGHT_MAP',
+			rockSlope: getTunableUniform('rockSlope'),
 			scaleGround1: getTileScaleValue('scaleGround1'),
 			scaleGround2: getTileScaleValue('scaleGround2'),
 			scaleGround3: getTileScaleValue('scaleGround3'),
@@ -747,7 +761,7 @@ function(
 				return ShaderBuilder.FOG_COLOR;
 			},
 			resolution: [255, 1, 1024, 1024],
-			resolutionNorm: [1024, 1024],
+			resolutionNorm: [255, 255],
 			col: [0, 0, 0]
 		},
 		builder: function (shader, shaderInfo) {
@@ -781,7 +795,7 @@ function(
 				'float zf = heightCol.r;',
 				'float zd = heightCol.g;',
 
-				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
+				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y / scaleHeightWidth - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
 				'float z = mix(zf, zd, alpha.x);',
 				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
@@ -813,7 +827,7 @@ function(
 
 				'uniform vec2 fogSettings;',
 				'uniform vec3 fogColor;',
-
+				'uniform float rockSlope;',
 
 				'uniform float scaleGround1;',
 				'uniform float scaleGround2;',
@@ -835,12 +849,14 @@ function(
 				ShaderBuilder.light.prefragment,
 
 				'void main(void) {',
-					'if (alphaval.w < -1000.0) discard;',
+					'if (alphaval.w < -10000.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 
 					'vec4 final_color = vec4(1.0);',
 
 					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
+				//	'N.x = N.x / scaleHeightWidth;',
+				//	'N.z = N.z / scaleHeightWidth;',
 					'N.y = 0.1;',
 					'N = normalize(N);',
 
@@ -866,7 +882,7 @@ function(
 					'final_color = mix(final_color, g5, splat.a);',
 
 					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-					'slope = smoothstep(0.30, 0.37, slope/scaleHeightWidth);',
+					'slope = smoothstep(rockSlope, rockSlope*1.04, slope);',
 					'final_color = mix(final_color, stone, slope);',
 
 					// 'vec3 detail = texture2D(detailMap, mapcoord).xyz;',

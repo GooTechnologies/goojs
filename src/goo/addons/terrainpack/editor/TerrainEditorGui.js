@@ -84,7 +84,7 @@ define([
 		var folder = this.gui.addFolder('Forest');
 
 		//	var gridSize = vegFolder.add(editSettings, 'gridSize', 2, 30);
-		var patchSize = folder.add(editSettings, 'patchSize', 15, 450);
+		var patchSize = folder.add(editSettings, 'patchSize', 15, 2450);
 		var patchDensity = folder.add(editSettings, 'patchDensity', 0.1, 20);
 		var minDist = folder.add(editSettings, 'minDist', 0.1, 4);
 		var treeScale = folder.add(editSettings, 'treeScale', 0.1, 3);
@@ -150,11 +150,22 @@ define([
 
 	};
 
+	EditorGUI.prototype.addUniformControls = function(terrainConf, txEditSettings, txFolder, uniform) {
+
+		txEditSettings[uniform] = terrainConf.readShaderUniform(uniform);
+
+		var scale = txFolder.add(txEditSettings, uniform, txEditSettings[uniform]*0.1, Math.ceil(txEditSettings[uniform]*5));
+
+		scale.onChange(function(value) {
+			terrainConf.tuneShaderUniform(uniform, value)
+		});
+	};
+
 	EditorGUI.prototype.addTextureControls = function(terrainConf, txEditSettings, txFolder, tile) {
 
 		txEditSettings[tile.scaleUniform] = terrainConf.readShaderUniform(tile.scaleUniform);
 
-		var scale = txFolder.add(txEditSettings, tile.scaleUniform, 5, 200);
+		var scale = txFolder.add(txEditSettings, tile.scaleUniform, txEditSettings[tile.scaleUniform]*0.1, Math.ceil(txEditSettings[tile.scaleUniform]*5));
 
 		scale.onChange(function(value) {
 			terrainConf.tuneShaderUniform(tile.scaleUniform, value)
@@ -196,7 +207,7 @@ define([
 
 	};
 
-	EditorGUI.prototype.addTextureData = function(terrainConf, txData) {
+	EditorGUI.prototype.addTextureData = function(terrainConf, txData, groundUniforms) {
 		console.log("Add Texture Data to Gui: ", terrainConf, txData);
 
 		var count = 0;
@@ -217,6 +228,12 @@ define([
 			console.log("Toggle terrain wireframe", value)
 		});
 
+		for (var uni in groundUniforms) {
+			if (groundUniforms[uni]) {
+
+				this.addUniformControls(terrainConf, txEditSettings, matFolder, groundUniforms[uni]);
+			}
+		}
 
 		for (var tx in txData) {
 			if (txData[tx]) {
