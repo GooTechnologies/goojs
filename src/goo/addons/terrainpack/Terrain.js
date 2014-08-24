@@ -41,7 +41,7 @@ function(
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.dimensions = {
-			scale:  16
+			scale:  2
 		};
 	//	setHeightScale(this.dimensions.scale);
 
@@ -145,6 +145,10 @@ function(
 
 		this.drawMaterial4 = new Material(brushShader4);
 		this.drawMaterial4.cullState.cullFace = 'Front';
+		this.drawMaterial1.shader.uniforms.scaleHeightWidth = this.dimensions.scale;
+		this.drawMaterial2.shader.uniforms.scaleHeightWidth = this.dimensions.scale;
+		this.drawMaterial3.shader.uniforms.scaleHeightWidth = this.dimensions.scale;
+		this.drawMaterial4.shader.uniforms.scaleHeightWidth = this.dimensions.scale;
 
 		this.renderable = {
 			meshData: brush,
@@ -219,7 +223,6 @@ function(
 		material.setTexture('GROUND_MAP4', this.terrainTextures.ground4);
 		material.setTexture('GROUND_MAP5', this.terrainTextures.ground5);
 		material.setTexture('STONE_MAP', this.terrainTextures.stone);
-		console.log("MAt: ", material)
 		var terrainPickingMaterial = clipmap.terrainPickingMaterial;
 		terrainPickingMaterial.setTexture('HEIGHT_MAP', texture);
 	};
@@ -461,9 +464,9 @@ function(
 		for (var i = 0; i < this.clipmaps.length; i++) {
 			var clipmap = this.clipmaps[i];
 
-			var xx = Math.floor(x * 0.5 / (clipmap.size));
-			var yy = Math.floor(y * 0.5 / (clipmap.size));
-			var zz = Math.floor(z * 0.5 / (clipmap.size));
+			var xx = Math.floor(x * 0.5 / (clipmap.size*s))*s;
+			var yy = Math.floor(y * 0.5 / (clipmap.size*s))*s;
+			var zz = Math.floor(z * 0.5 / (clipmap.size*s))*s;
 
 			if (yy !== clipmap.currentY) {
 				clipmap.currentY = yy;
@@ -495,7 +498,7 @@ function(
 				continue;
 			}
 
-			var n = this.n;
+			var n = this.n*s;
 
 			if (clipmap.parentClipmap) {
 				var interior1 = clipmap.parentClipmap.clipmapEntity.interior1;
@@ -863,7 +866,7 @@ function(
 					'final_color = mix(final_color, g5, splat.a);',
 
 					'float slope = clamp(1.0 - dot(N, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);',
-					'slope = smoothstep(0.30, 0.37, slope);',
+					'slope = smoothstep(0.30, 0.37, slope/scaleHeightWidth);',
 					'final_color = mix(final_color, stone, slope);',
 
 					// 'vec3 detail = texture2D(detailMap, mapcoord).xyz;',
@@ -945,6 +948,7 @@ function(
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
+			scaleHeightWidth:1,
 			diffuseMap : Shader.DIFFUSE_MAP
 		},
 		vshader : [
@@ -964,7 +968,7 @@ function(
 		fshader : [//
 		'uniform sampler2D diffuseMap;',
 		'uniform float opacity;',
-
+			'uniform float scaleHeightWidth;',
 		'varying vec2 texCoord0;',
 
 		'void main(void)',
@@ -985,13 +989,14 @@ function(
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
 			rgba: [1,1,1,1],
+			scaleHeightWidth:1,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			splatMap : 'SPLAT_MAP'
 		},
 		vshader : [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
-
+		'uniform float scaleHeightWidth;',
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',
 
@@ -1034,13 +1039,14 @@ function(
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
 			size: 1/512,
+			scaleHeightWidth:1,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			heightMap : 'HEIGHT_MAP'
 		},
 		vshader : [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
-
+		'uniform float scaleHeightWidth;',
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',
 
@@ -1087,6 +1093,7 @@ function(
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
+			scaleHeightWidth:1,
 			height: 0,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			heightMap : 'HEIGHT_MAP'
@@ -1094,7 +1101,7 @@ function(
 		vshader : [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
-
+		'uniform float scaleHeightWidth;',
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform mat4 worldMatrix;',
 

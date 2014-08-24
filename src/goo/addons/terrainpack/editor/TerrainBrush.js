@@ -44,7 +44,7 @@ define([
 		};
 
 		TerrainBrush.prototype.setMarker = function (type, size, x, y, power, brushTexture) {
-			this.lightEntity.lightComponent.light.shadowSettings.size = size * 0.5;
+			this.lightEntity.lightComponent.light.shadowSettings.size = size * 0.5 * this.terrain.dimensions.scale;
 			brushTexture.wrapS = 'EdgeClamp';
 			brushTexture.wrapT = 'EdgeClamp';
 			this.lightEntity.lightComponent.light.lightCookie = brushTexture;
@@ -55,8 +55,10 @@ define([
 		//	console.log("Draw: ", mode, type, size, x, y, z, power, brushTexture, rgba);
 			power = MathUtils.clamp(power, 0, 1);
 
-			x = (x - this.size/2) * 2;
-			z = (z - this.size/2) * 2;
+			var s = this.terrain.dimensions.scale
+			x = (x/s - this.size/2) * 2;
+			z = (z/s - this.size/2) * 2;
+
 
 			if (mode === 'paint') {
 				this.renderable.materials[0] = this.terrain.drawMaterial2;
