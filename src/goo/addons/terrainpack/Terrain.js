@@ -41,14 +41,14 @@ function(
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.dimensions = {
-			scale:  16
+			scale:  32
 		};
 	//	setHeightScale(this.dimensions.scale);
 
 		//	this.n = Math.floor(31 * this.dimensions.scale);
 
-		//	this.n = 31;
-		this.n = 62;
+			this.n = 31;
+		//	this.n = 62;
 
 		this.materialSettings = {
 			culling:true
