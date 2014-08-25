@@ -1258,7 +1258,7 @@ function (
 	};
 
 	/**
-	 * Read pixels to a typed array (ArrayBufferView)
+	 * Read pixels from current framebuffer to a typed array (ArrayBufferView)
 	 *
 	 * @param x x offset of rectangle to read from
 	 * @param y y offset of rectangle to read from
@@ -1267,7 +1267,31 @@ function (
 	 * @param store ArrayBufferView to store data in (Uint8Array)
 	 */
 	Renderer.prototype.readPixels = function (x, y, width, height, store) {
+		store = store || new Uint8Array(width * height * 4);
 		this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
+		return store;
+	};
+
+	/**
+	 * Read pixels from a texture to a typed array (ArrayBufferView)
+	 *
+	 * @param texture texture to read pixels from
+	 * @param x x offset of rectangle to read from
+	 * @param y y offset of rectangle to read from
+	 * @param width width of rectangle to read from
+	 * @param height height of rectangle to read from
+	 * @param store ArrayBufferView to store data in (Uint8Array)
+	 */
+	Renderer.prototype.readTexturePixels = function (texture, x, y, width, height, store) {
+		store = store || new Uint8Array(width * height * 4);
+		var glFrameBuffer = this.context.createFramebuffer();
+		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, glFrameBuffer);
+		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, 
+			WebGLRenderingContext.TEXTURE_2D, texture.glTexture, 0);
+		if (this.context.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
+			this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
+		}
+		return store;
 	};
 
 	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {

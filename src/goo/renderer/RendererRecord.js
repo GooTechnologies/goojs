@@ -39,6 +39,8 @@ function() {
 		this.offsetRecord = {};
 		this.lineRecord = {};
 		this.pointRecord = {};
+
+		this.shaderCache = {};
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function (target) {
