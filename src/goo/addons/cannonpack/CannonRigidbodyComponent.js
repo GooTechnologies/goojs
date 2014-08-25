@@ -21,7 +21,7 @@ function (
 ) {
 	'use strict';
 
-	var CANNON = window.CANNON;
+	/* global CANNON */
 
 	/**
 	 * @class Adds Cannon physics to an entity. Should be combined with one of the CannonCollider components, such as the {@link CannonSphereColliderComponent}. Also see {@link CannonSystem}.

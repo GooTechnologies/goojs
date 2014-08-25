@@ -9,7 +9,7 @@ function (
 ) {
 	'use strict';
 
-	var CANNON = window.CANNON;
+	/* global CANNON */
 
 	/**
 	 * @class Distance joint. Add to an entity with a {@link CannonRigidbodyComponent} and physically link it to another entity!<br>
