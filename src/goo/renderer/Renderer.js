@@ -1260,11 +1260,11 @@ function (
 	/**
 	 * Read pixels from current framebuffer to a typed array (ArrayBufferView)
 	 *
-	 * @param x x offset of rectangle to read from
-	 * @param y y offset of rectangle to read from
-	 * @param width width of rectangle to read from
-	 * @param height height of rectangle to read from
-	 * @param store ArrayBufferView to store data in (Uint8Array)
+	 * @param {number} x x offset of rectangle to read from
+	 * @param {number} y y offset of rectangle to read from
+	 * @param {number} width width of rectangle to read from
+	 * @param {number} height height of rectangle to read from
+	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array)
 	 */
 	Renderer.prototype.readPixels = function (x, y, width, height, store) {
 		store = store || new Uint8Array(width * height * 4);
@@ -1275,12 +1275,12 @@ function (
 	/**
 	 * Read pixels from a texture to a typed array (ArrayBufferView)
 	 *
-	 * @param texture texture to read pixels from
-	 * @param x x offset of rectangle to read from
-	 * @param y y offset of rectangle to read from
-	 * @param width width of rectangle to read from
-	 * @param height height of rectangle to read from
-	 * @param store ArrayBufferView to store data in (Uint8Array)
+	 * @param {Texture} texture texture to read pixels from
+	 * @param {number} x x offset of rectangle to read from
+	 * @param {number} y y offset of rectangle to read from
+	 * @param {number} width width of rectangle to read from
+	 * @param {number} height height of rectangle to read from
+	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array)
 	 */
 	Renderer.prototype.readTexturePixels = function (texture, x, y, width, height, store) {
 		store = store || new Uint8Array(width * height * 4);
