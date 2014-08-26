@@ -127,14 +127,6 @@
 			"translation": [1.9425232410430908, 2.4878907203674316, -5.100433349609375],
 			"scale"      : [1, 1, 1],
 			"rotation"   : [-24.505373194739256, -200.84956293605944, 0]
-		},
-		"script"   : {
-			"scripts": {
-				"ef998d1cbbfa4f43876a66e8455e5834.script": {
-					"scriptRef": "ef998d1cbbfa4f43876a66e8455e5834.script",
-					"sortValue": 0
-				}
-			}
 		}
 	},
 	"hidden"          : false,
@@ -177,20 +169,6 @@
 	},
 	"hidden"          : false,
 	"id"              : "fc52862c57434421b50e9acaeaf68638.entity"
-}, "ef998d1cbbfa4f43876a66e8455e5834.script"  : {
-	"name"            : "OrbitNPan",
-	"license"         : "CC0",
-	"created"         : "2014-04-01T15:38:47.053Z",
-	"deleted"         : false,
-	"_readOnly"       : false,
-	"modified"        : "2014-04-01T15:41:43.425927+00:00",
-	"dataModelVersion": 2,
-	"className"       : "OrbitNPanControlScript",
-	"id"              : "ef998d1cbbfa4f43876a66e8455e5834.script",
-	"options"         : {
-		"spherical"  : [5.998117923736572, 5.076282501220703, 0.4276994466781616],
-		"lookAtPoint": [0, 0, 0]
-	}
 }, "420728334d96424e999a6738a6bfd7c5.entity"  : {
 	"name"            : "Default Lights",
 	"license"         : "CC0",
