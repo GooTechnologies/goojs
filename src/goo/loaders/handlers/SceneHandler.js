@@ -84,6 +84,9 @@ function(
 			if (config.environmentRef) {
 				promises.push(that._load(config.environmentRef, options));
 			}
+			if (config.terrainRef) {
+				promises.push(that._load(config.terrainRef, options));
+			}
 			if (!options.scene || !options.scene.dontSetCamera) {
 				if (config.initialCameraRef && config.initialCameraRef !== scene.initialCameraRef) {
 					promises.push(that._load(config.initialCameraRef, options).then(function(cameraEntity) {

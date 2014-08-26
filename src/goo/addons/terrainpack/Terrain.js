@@ -222,6 +222,7 @@ function(
 			flipY: false
 		}, this.size * this.splatMult, this.size * this.splatMult);
 
+
 		for (var i = 0; i < this.count; i++) {
 			var material = this.clipmaps[i].origMaterial;
 			var texture = this.textures[i];
@@ -256,7 +257,12 @@ function(
 		// material.setTexture('GROUND_MAP4', terrainTextures.ground4);
 		// material.setTexture('GROUND_MAP5', terrainTextures.ground5);
 		// material.setTexture('STONE_MAP', terrainTextures.stone);
+		this.updateFromTextures(this.floatTexture, this.splatTexture);
+	};
 
+	Terrain.prototype.updateFromTextures = function (heightmap, splatmap) {
+		this.floatTexture = heightmap;
+		this.splatTexture = splatmap;
 		this.unpackPass.render(this.renderer, this.textures[0], this.floatTexture);
 
 		// this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
@@ -264,7 +270,8 @@ function(
 		this.copyPass.render(this.renderer, this.splat, this.splatTexture);
 
 		this.updateTextures();
-	};
+
+	}
 
 	Terrain.prototype.toggleMarker = function () {
 		this.lightEntity.lightComponent.hidden = !this.lightEntity.lightComponent.hidden;
