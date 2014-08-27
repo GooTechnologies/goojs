@@ -7,7 +7,7 @@ function (
 ) {
 	'use strict';
 
-	var CANNON = window.CANNON;
+	/* global CANNON */
 
 	/**
 	 * @class Plane collider. Attach to an entity with a {@link CannonRigidbodyComponent}.<br>

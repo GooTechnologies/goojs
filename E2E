@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export GOOJS_ROOT_URL=http\://127.0.0.1:8003/goojs
+grunt shell:e2e

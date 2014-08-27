@@ -10,7 +10,8 @@ var filterList = [
 	'stress',
 	'goofy',
 	'Obj',
-	'TimelineComponentHandler'
+	'TimelineComponentHandler',
+	'HTMLComponent'
 ];
 
 exports.filterList = filterList;

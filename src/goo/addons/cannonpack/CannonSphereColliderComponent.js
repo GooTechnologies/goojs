@@ -7,7 +7,7 @@ function (
 ) {
 	'use strict';
 
-	var CANNON = window.CANNON;
+	/* global CANNON */
 
 	/**
 	 * @class Sphere collider for the {@link CannonSystem}.<br>

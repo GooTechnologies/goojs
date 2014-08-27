@@ -82,7 +82,6 @@ define([
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(skybox) {
 			if (!skybox) {
-				that._remove(ref);
 				return PromiseUtil.resolve([]);
 			}
 
