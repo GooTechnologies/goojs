@@ -104,7 +104,9 @@ function (
 						renderable.transform.update();
 					});
 					DebugDrawHelper.update(renderables, component, this.camera);
-					renderables.forEach(function (renderable) { this.renderList[count++] = renderable; }.bind(this));
+					renderables.forEach(function (renderable) {
+						this.renderList[count++] = renderable;
+					}.bind(this));
 				}
 			}
 			// Skeleton debug
