@@ -69,5 +69,11 @@ function (
 		this._computeWorldBound = callback;
 	};
 
+	BoundingUpdateSystem.prototype.deleted = function (entity) {
+		if (entity.meshRendererComponent) {
+			entity.meshRendererComponent.worldBound = new BoundingBox();
+		}
+	};
+
 	return BoundingUpdateSystem;
 });

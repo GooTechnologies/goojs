@@ -114,16 +114,14 @@ function (
 	 * @return {mixed} Any of the collider types, or NULL if not found
 	 */
 	CannonRigidbodyComponent.getCollider = function (entity) {
-		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || null;
+		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || entity.cannonTerrainColliderComponent || null;
 	};
 
-	CannonRigidbodyComponent.prototype.createShape = function (entity) {
-		var shape;
+	CannonRigidbodyComponent.prototype.addShapesToBody = function (entity) {
+		var body = entity.cannonRigidbodyComponent.body;
 
 		var collider = CannonRigidbodyComponent.getCollider(entity);
 		if (!collider) {
-			// No collider. Check children.
-			shape = new CANNON.Compound();
 
 			// Needed for getting the Rigidbody-local transform of each collider
 			var bodyTransform = entity.transformComponent.worldTransform;
@@ -132,7 +130,6 @@ function (
 			invBodyTransform.invert(invBodyTransform);
 			//var gooTrans = new Transform();
 
-			var that = this;
 			entity.traverse(function (entity) {
 				var collider = CannonRigidbodyComponent.getCollider(entity);
 				if (collider) {
@@ -151,7 +148,7 @@ function (
 					var q = tmpQuat;
 					q.fromRotationMatrix(rot);
 					var orientation = new CANNON.Quaternion(q.x, q.y, q.z, q.w);
-					shape.addChild(collider.cannonShape, offset, orientation);
+					body.addShape(collider.cannonShape, offset, orientation);
 				}
 			});
 
@@ -159,10 +156,8 @@ function (
 
 			// Entity has a collider on the root
 			// Create a simple shape
-			shape = collider.cannonShape;
+			body.addShape(collider.cannonShape);
 		}
-
-		return shape;
 	};
 
 	return CannonRigidbodyComponent;

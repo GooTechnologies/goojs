@@ -63,9 +63,11 @@ function(
 	 * @param {string} ref
 	 */
 	MeshDataComponentHandler.prototype._remove = function (entity) {
+		//! AT: why is this check needed?
 		if (entity.meshDataComponent && entity.meshDataComponent.meshData && this.world.gooRunner) {
 			entity.meshDataComponent.meshData.destroy(this.world.gooRunner.renderer.context);
 		}
+		entity.clearComponent('MeshDataComponent');
 	};
 
 	/**

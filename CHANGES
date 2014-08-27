@@ -1,3 +1,12 @@
+v0.11.3 --- 2014-08-??
+
+Changes:
+ * Updated Cannon.js to bleeding edge dev version.
+ * CannonRigidbodyComponent.prototype.createShape changed name to addShapesToBody
+
+Additions:
+ + Added CannonTerrainColliderComponent class.
+
 v0.11.2 --- 2014-08-19
 ======================
 
