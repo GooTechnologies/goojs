@@ -63,18 +63,22 @@ function (
 		var rbComponent = entity.cannonRigidbodyComponent;
 		var transformComponent = entity.transformComponent;
 
-		var shape = rbComponent.createShape(entity);
-		if (!shape) {
-			entity.clearComponent('CannonComponent');
+		var body = new CANNON.Body({
+			mass: rbComponent.mass
+		});
+		rbComponent.body = body;
+		rbComponent.addShapesToBody(entity);
+		if (!body.shapes.length) {
+			entity.clearComponent('CannonRigidbodyComponent');
 			return;
 		}
 
-		var body = new CANNON.RigidBody(rbComponent.mass, shape);
-		rbComponent.body = body;
-		entity.setPosition(transformComponent.transform.translation);
+		// Get the world transform from the entity and set on the body
+		entity.transformComponent.updateWorldTransform();
+		entity.setPosition(transformComponent.worldTransform.translation);
 		entity.setVelocity(rbComponent._initialVelocity);
 		var q = tmpQuat;
-		q.fromRotationMatrix(transformComponent.transform.rotation);
+		q.fromRotationMatrix(transformComponent.worldTransform.rotation);
 		body.quaternion.set(q.x, q.y, q.z, q.w);
 
 		this.world.add(body);
