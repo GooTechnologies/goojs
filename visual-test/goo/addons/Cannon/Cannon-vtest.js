@@ -2,6 +2,7 @@ require([
 	'goo/renderer/Material',
 	'goo/shapes/Sphere',
 	'goo/shapes/Box',
+	'goo/shapes/Cylinder',
 	'goo/shapes/Quad',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
@@ -10,6 +11,7 @@ require([
 	'goo/addons/cannonpack/CannonSystem',
 	'goo/addons/cannonpack/CannonRigidbodyComponent',
 	'goo/addons/cannonpack/CannonBoxColliderComponent',
+	'goo/addons/cannonpack/CannonCylinderColliderComponent',
 	'goo/addons/cannonpack/CannonSphereColliderComponent',
 	'goo/addons/cannonpack/CannonPlaneColliderComponent',
 	'goo/addons/cannonpack/CannonDistanceJointComponent',
@@ -18,6 +20,7 @@ require([
 	Material,
 	Sphere,
 	Box,
+	Cylinder,
 	Quad,
 	TextureCreator,
 	ShaderLib,
@@ -26,6 +29,7 @@ require([
 	CannonSystem,
 	CannonRigidbodyComponent,
 	CannonBoxColliderComponent,
+	CannonCylinderColliderComponent,
 	CannonSphereColliderComponent,
 	CannonPlaneColliderComponent,
 	CannonDistanceJointComponent,
@@ -46,27 +50,44 @@ require([
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {
-			var x = V.rng.nextFloat() * 16 - 8;
-			var y = V.rng.nextFloat() * 16 + 8;
-			var z = V.rng.nextFloat() * 16 - 8;
+			var position = [
+				V.rng.nextFloat() * 16 - 8,
+				V.rng.nextFloat() * 16 + 8,
+				V.rng.nextFloat() * 16 - 8
+			];
 
 			var rigidBodyComponent = new CannonRigidbodyComponent();
 			var entity;
-			if (V.rng.nextFloat() > 0.7) {
+			var colliderComponent;
+			var mat = V.getColoredMaterial();
+
+			if (V.rng.nextFloat() > 0.2) {
+
 				var radius = 1 + V.rng.nextFloat();
-				entity = world.createEntity(new Box(radius * 2, radius * 2, radius * 2), V.getColoredMaterial(), [x, y, z]);
-				var boxColliderComponent = new CannonBoxColliderComponent({
+				entity = world.createEntity(new Box(radius * 2, radius * 2, radius * 2), mat, position);
+				colliderComponent = new CannonBoxColliderComponent({
 					halfExtents: new Vector3(radius, radius, radius)
 				});
-				entity.set(rigidBodyComponent)
-					.set(boxColliderComponent);
-			} else {
+
+			} else if (V.rng.nextFloat() > 0.7) {
+
 				var radius = 1 + V.rng.nextFloat();
-				entity = world.createEntity(new Sphere(10, 10, radius), V.getColoredMaterial(), [x, y, z]);
-				var sphereColliderComponent = new CannonSphereColliderComponent({ radius: radius });
-				entity.set(rigidBodyComponent)
-					.set(sphereColliderComponent);
+				entity = world.createEntity(new Cylinder(10, radius, radius, radius * 2), mat, position);
+				colliderComponent = new CannonCylinderColliderComponent({
+					height: radius * 2,
+					radiusTop: radius,
+					radiusBottom: radius,
+					numSegments: 10
+				});
+
+			} else {
+
+				var radius = 1 + V.rng.nextFloat();
+				entity = world.createEntity(new Sphere(10, 10, radius), mat, position);
+				colliderComponent = new CannonSphereColliderComponent({ radius: radius });
+
 			}
+			entity.set(rigidBodyComponent).set(colliderComponent);
 			entity.addToWorld();
 		}
 	}
