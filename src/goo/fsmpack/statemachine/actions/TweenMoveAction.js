@@ -100,35 +100,55 @@ function(
 		if (this.relative) {
 			var to = Vector3.add(initialTranslation, this.to);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				translation.data[0] += this.x - old.x;
-				translation.data[1] += this.y - old.y;
-				translation.data[2] += this.z - old.z;
 
-				old.x = this.x;
-				old.y = this.y;
-				old.z = this.z;
-
+			// it's a string until property controls are fixed
+			if (this.time === '0') {
+				// have to do this manually since tween.js chokes for time = 0
+				translation.data[0] += fakeTo.x - old.x;
+				translation.data[1] += fakeTo.y - old.y;
+				translation.data[2] += fakeTo.z - old.z;
 				transformComponent.setUpdated();
-			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(time);
+			} else {
+				this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
+					translation.data[0] += this.x - old.x;
+					translation.data[1] += this.y - old.y;
+					translation.data[2] += this.z - old.z;
+
+					old.x = this.x;
+					old.y = this.y;
+					old.z = this.z;
+
+					transformComponent.setUpdated();
+				}).onComplete(function () {
+					fsm.send(this.eventToEmit.channel);
+				}.bind(this)).start(time);
+			}
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				translation.data[0] += this.x - old.x;
-				translation.data[1] += this.y - old.y;
-				translation.data[2] += this.z - old.z;
-
-				old.x = this.x;
-				old.y = this.y;
-				old.z = this.z;
-
+			if (this.time === '0') {
+				// have to do this manually since tween.js chokes for time = 0
+				translation.data[0] += fakeTo.x - old.x;
+				translation.data[1] += fakeTo.y - old.y;
+				translation.data[2] += fakeTo.z - old.z;
 				transformComponent.setUpdated();
-			}).onComplete(function() {
 				fsm.send(this.eventToEmit.channel);
-			}.bind(this)).start(time);
+			} else {
+				this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
+					translation.data[0] += this.x - old.x;
+					translation.data[1] += this.y - old.y;
+					translation.data[2] += this.z - old.z;
+
+					old.x = this.x;
+					old.y = this.y;
+					old.z = this.z;
+
+					transformComponent.setUpdated();
+				}).onComplete(function () {
+					fsm.send(this.eventToEmit.channel);
+				}.bind(this)).start(time);
+			}
 		}
 	};
 
