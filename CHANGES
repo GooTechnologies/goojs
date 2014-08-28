@@ -1,11 +1,14 @@
 v0.11.3 --- 2014-08-??
 
+Additions:
+ + Added CannonTerrainColliderComponent class
+
 Changes:
- * Updated Cannon.js to bleeding edge dev version.
+ * updated Cannon.js to bleeding edge dev version
  * CannonRigidbodyComponent.prototype.createShape changed name to addShapesToBody
 
-Additions:
- + Added CannonTerrainColliderComponent class.
+Fixes:
+ * transform gizmos do not vary size with FOV
 
 v0.11.2 --- 2014-08-19
 ======================

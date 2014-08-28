@@ -114,7 +114,7 @@ function (
 	 * @return {mixed} Any of the collider types, or NULL if not found
 	 */
 	CannonRigidbodyComponent.getCollider = function (entity) {
-		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || entity.cannonTerrainColliderComponent || null;
+		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || entity.cannonTerrainColliderComponent || entity.cannonCylinderColliderComponent || null;
 	};
 
 	CannonRigidbodyComponent.prototype.addShapesToBody = function (entity) {

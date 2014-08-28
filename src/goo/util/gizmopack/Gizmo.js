@@ -9,7 +9,8 @@ define([
 	'goo/math/Plane',
 	'goo/math/Ray',
 	'goo/math/Vector3',
-	'goo/renderer/Camera'
+	'goo/renderer/Camera',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function(
@@ -23,7 +24,8 @@ function(
 	Plane,
 	Ray,
 	Vector3,
-	Camera
+	Camera,
+	MathUtils
 ) {
 	'use strict';
 
@@ -131,6 +133,7 @@ function(
 			if (camera.projectionMode === Camera.Perspective) {
 				var dist = camera.translation.distance(this.transform.translation);
 				scale = dist * this._gizmoSize;
+				scale *= Math.tan(camera.fov * MathUtils.DEG_TO_RAD / 2) * 2;
 			} else {
 				scale = (camera._frustumTop - camera._frustumBottom) / 30;
 			}
