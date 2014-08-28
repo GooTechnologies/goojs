@@ -6,6 +6,7 @@ define([
 	'goo/addons/cannonpack/CannonTerrainColliderComponent',
 	'goo/addons/cannonpack/CannonRigidbodyComponent',
 	'goo/addons/cannonpack/CannonSphereColliderComponent',
+	'goo/addons/cannonpack/CannonCylinderColliderComponent',
 	'goo/addons/cannonpack/CannonSystem'
 ], function (Scripts) {
 	'use strict';
@@ -17,6 +18,7 @@ define([
 		'goo/addons/cannonpack/CannonTerrainColliderComponent',
 		'goo/addons/cannonpack/CannonRigidbodyComponent',
 		'goo/addons/cannonpack/CannonSphereColliderComponent',
+		'goo/addons/cannonpack/CannonCylinderColliderComponent',
 		'goo/addons/cannonpack/CannonSystem'
 	];
 
