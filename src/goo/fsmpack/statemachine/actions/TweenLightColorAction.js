@@ -22,7 +22,8 @@ function(
 		parameters: [{
 			name: 'Color',
 			key: 'to',
-			type: 'color',
+			type: 'vec3',
+			control: 'color',
 			description: 'Color of the light',
 			'default': [1, 1, 1]
 		}, {
