@@ -127,7 +127,7 @@ define([
 		this.cullState = value;
 		this.terrainHandler.terrain.setMaterialProperty('culling', value);
 		for (var i = 0; i < this.terrainHandler.terrain.terrainMaterials.length; i++) {
-	//		this.terrainHandler.terrain.terrainMaterials[i].cullState.enabled = value
+			this.terrainHandler.terrain.terrainMaterials[i].cullState.enabled = value
 		}
 	};
 

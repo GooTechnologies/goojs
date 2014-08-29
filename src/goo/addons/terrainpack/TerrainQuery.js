@@ -24,13 +24,58 @@ define([
 			this.terrainInfo = this.terrain.getTerrainData();
 		};
 
+
+		// get a height at point from matrix
+		TerrainQuery.prototype.getPointInMatrix = function(y, x) {
+			return this.matrixData[x][y];
+		};
+
+		// get the value at the precise integer (x, y) coordinates
+		TerrainQuery.prototype.getAt = function(x, y) {
+			return this.terrainInfo.heights[x * this.terrainSize + y];
+		};
+
+		TerrainQuery.prototype.getTriangleAt = function(x, y) {
+			var xc = Math.ceil(x);
+			var xf = Math.floor(x);
+			var yc = Math.ceil(y);
+			var yf = Math.floor(y);
+
+			var fracX = x - xf;
+			var fracY = y - yf;
+
+
+			var p1  = {x:xf, y:yc, z:this.getAt(xf, yc)};
+			var p2  = {x:xc, y:yf, z:this.getAt(xc, yf)};
+
+			var p3;
+
+			if (fracX < 1-fracY) {
+				p3 = {x:xf, y:yf, z:this.getAt(xf, yf)};
+			} else {
+				p3 = {x:xc, y:yc, z:this.getAt(xc, yc)};
+			}
+			return [p1, p2, p3];
+		};
+
+		TerrainQuery.prototype.getPreciseHeight = function(x, y) {
+			var tri = this.getTriangleAt(x, y);
+			var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:x, y:y, z:0});
+			return find.z;
+		};
+
 		TerrainQuery.prototype.getHeightAt = function(pos) {
 			if (pos[0] < 0 || pos[0] > this.terrainSize*this.scale - 1 || pos[2] < 0 || pos[2] > this.terrainSize*this.scale - 1) {
 				return -1000;
 			}
 
 			var x = pos[0] / this.scale;
-			var z = (this.terrainSize*this.scale - (pos[2]+1)) / this.scale;
+
+			var z = (this.terrainSize*this.scale - (pos[2]+1));
+
+		//	var z = (this.terrainSize*this.scale - (pos[2]+1)) / this.scale;
+
+			return this.getPreciseHeight(x, z);
 
 			var col = Math.floor(x);
 			var row = Math.floor(z);
