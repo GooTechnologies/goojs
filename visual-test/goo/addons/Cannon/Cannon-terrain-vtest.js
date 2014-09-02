@@ -92,21 +92,30 @@ require([
 		return boxEntity;
 	}
 
-	function getMatrix() {
+	function getMatrix(reverse) {
 		var matrix = [];
 		var m = Math.cos((Date.now() - start) / 1000 * 0.05);
 		var a = m * 0.2;
 		var b = m * 0.2;
 		//var c = m * 0.4;
 		for (var i = 0; i < nLin; i++) {
-			matrix.push([]);
+			var row = [];
+			if (reverse) {
+				matrix.unshift(row);
+			} else {
+				matrix.push(row);
+			}
 			for (var j = 0; j < nCol; j++) {
-				var value = Math.sin(i * a) * Math.cos(j * b) / 3 + 1;
+				var value = Math.sin(i * a) * Math.sin(j * b) + 1;
 				//value = i * 0.1;
 				//value = (nLin - i -1) * 0.1;
 				//value = (nCol - j - 1) * 0.1;
 				//value = j * 0.1;
-				matrix[i].push(value);
+				if (reverse) {
+					row.unshift(value);
+				} else {
+					row.push(value);
+				}
 			}
 		}
 		return matrix;
@@ -124,12 +133,21 @@ require([
 			mass: 0 // static
 		}));
 
-		var meshEntity = goo.world.createEntity(meshData, material, [-(nCol - 1) / 2 * elementSize, 0, -(nLin - 1) / 2 * elementSize]).addToWorld();
+		var meshEntity = goo.world.createEntity(meshData, material, [
+			-(nCol - 1) / 2 * elementSize,
+			0,
+			-(nLin - 1) / 2 * elementSize
+		]).addToWorld();
 		entity.attachChild(meshEntity);
 
 		// Cannon terrain is facing in Z direction. Move it to center and rotate to compensate.
-		colliderEntity = goo.world.createEntity([-(nLin - 1) / 2 * elementSize, -(nCol - 1) / 2 * elementSize, 0]);
-		colliderEntity.setRotation(-Math.PI / 2, -Math.PI / 2, 0);
+		colliderEntity = goo.world.createEntity([
+			(nCol - 1) / 2 * elementSize,
+			0,
+			(nLin - 1) / 2 * elementSize,
+		]);
+		//colliderEntity.setRotation(-Math.PI / 2, -Math.PI / 2, 0);
+		colliderEntity.setRotation(-Math.PI / 2, Math.PI / 2, 0);
 		colliderEntity.addToWorld();
 		var terrainColliderComp = new CannonTerrainColliderComponent({
 			data: getMatrix(true),

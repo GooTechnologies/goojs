@@ -61,33 +61,40 @@ require([
 			var colliderComponent;
 			var mat = V.getColoredMaterial();
 
-			if (V.rng.nextFloat() > 0.2) {
+			if (false && V.rng.nextFloat() > 0.2) {
 
 				var radius = 1 + V.rng.nextFloat();
 				entity = world.createEntity(new Box(radius * 2, radius * 2, radius * 2), mat, position);
 				colliderComponent = new CannonBoxColliderComponent({
 					halfExtents: new Vector3(radius, radius, radius)
 				});
+				entity.set(rigidBodyComponent).set(colliderComponent);
 
 			} else if (V.rng.nextFloat() > 0.7) {
 
 				var radius = 1 + V.rng.nextFloat();
-				entity = world.createEntity(new Cylinder(10, radius, radius, radius * 2), mat, position);
+				entity = world.createEntity(position);
 				colliderComponent = new CannonCylinderColliderComponent({
 					height: radius * 2,
 					radiusTop: radius,
 					radiusBottom: radius,
 					numSegments: 10
 				});
+				var colliderEntity = world.createEntity(new Cylinder(10, radius, radius, radius * 2), mat);
+				colliderEntity.set(colliderComponent);
+				colliderEntity.setRotation(-Math.PI / 2, 0, 0);
+				entity.set(rigidBodyComponent);
+				entity.attachChild(colliderEntity);
 
 			} else {
 
 				var radius = 1 + V.rng.nextFloat();
 				entity = world.createEntity(new Sphere(10, 10, radius), mat, position);
 				colliderComponent = new CannonSphereColliderComponent({ radius: radius });
+				entity.set(rigidBodyComponent).set(colliderComponent);
 
 			}
-			entity.set(rigidBodyComponent).set(colliderComponent);
+
 			entity.addToWorld();
 		}
 	}

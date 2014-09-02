@@ -52,8 +52,10 @@ function (
 		}); //! AT: this is modifying the settings object which is bad practice (as in 'unintended side effects')
 
 		this.mass = settings.mass;
+		this._initialPosition = null;
 		this._initialVelocity = new Vector3();
 		this._initialVelocity.setv(settings.velocity);
+		this.body = null;
 	}
 
 	CannonRigidbodyComponent.prototype = Object.create(Component.prototype);
@@ -98,7 +100,11 @@ function (
 	 * @param {Vector3} position
 	 */
 	CannonRigidbodyComponent.prototype.setPosition = function (pos) {
-		this.body.position.set(pos.x, pos.y, pos.z);
+		if (this.body) {
+			this.body.position.set(pos.x, pos.y, pos.z);
+		} else {
+			this._initialPosition = new Vector3(pos);
+		}
 	};
 
 	/**
@@ -124,30 +130,42 @@ function (
 		if (!collider) {
 
 			// Needed for getting the Rigidbody-local transform of each collider
+			// entity.transformComponent.updateTransform();
+			// entity.transformComponent.updateWorldTransform();
 			var bodyTransform = entity.transformComponent.worldTransform;
 			var invBodyTransform = new Transform();
 			invBodyTransform.copy(bodyTransform);
 			invBodyTransform.invert(invBodyTransform);
-			//var gooTrans = new Transform();
+			var gooTrans = new Transform();
 
-			entity.traverse(function (entity) {
-				var collider = CannonRigidbodyComponent.getCollider(entity);
+			entity.traverse(function (childEntity) {
+				var collider = CannonRigidbodyComponent.getCollider(childEntity);
 				if (collider) {
 
-					// TODO: Should look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
-					// Like this:
-					//gooTrans.copy(entity.transformComponent.worldTransform);
-					//Transform.combine(invBodyTransform, gooTrans, gooTrans);
-					//var t = gooTrans;
-					// But for now it does not work.. just do this instead:
-					var t = entity.transformComponent.transform;
+					// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
+					// childEntity.transformComponent.updateTransform();
+					// childEntity.transformComponent.updateWorldTransform();
 
-					var trans = t.translation;
-					var rot = t.rotation;
+					gooTrans.copy(childEntity.transformComponent.worldTransform);
+					var gooTrans2 = new Transform();
+					Transform.combine(invBodyTransform, gooTrans, gooTrans2);
+					gooTrans2.update();
+
+					// var gooTrans2 = new Transform();
+					// gooTrans2.copy(childEntity.transformComponent.transform);
+
+					var trans = gooTrans2.translation;
+					var rot = gooTrans2.rotation;
+
 					var offset = new CANNON.Vec3(trans.x, trans.y, trans.z);
 					var q = tmpQuat;
 					q.fromRotationMatrix(rot);
 					var orientation = new CANNON.Quaternion(q.x, q.y, q.z, q.w);
+
+					// var o2 = orientation.clone();
+					// o2.w *= -1;
+					// o2.vmult(offset, offset);
+
 					body.addShape(collider.cannonShape, offset, orientation);
 				}
 			});
