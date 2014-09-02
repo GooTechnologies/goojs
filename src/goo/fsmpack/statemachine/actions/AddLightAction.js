@@ -25,13 +25,14 @@ function(
 		parameters: [{
 			name: 'Color',
 			key: 'color',
-			type: 'color',
+			type: 'vec3',
+			control: 'color',
 			description: 'Color of the light',
 			'default': [1, 1, 1]
 		}, {
 			name: 'Range',
 			key: 'range',
-			type: 'int',
+			type: 'float',
 			control: 'slider',
 			min: 0,
 			max: 5000,

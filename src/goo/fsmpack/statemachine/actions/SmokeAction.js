@@ -35,7 +35,8 @@ function (
 		parameters: [{
 			name: 'Color',
 			key: 'color',
-			type: 'color',
+			type: 'vec3',
+			control: 'color',
 			description: 'Smoke color',
 			'default': [0, 0, 0]
 		}],

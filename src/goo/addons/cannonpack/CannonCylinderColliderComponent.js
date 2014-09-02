@@ -24,8 +24,8 @@ function (
 
 		var radiusTop = typeof(settings.radiusTop) === 'number' ? settings.radiusTop : 0.5;
 		var radiusBottom = typeof(settings.radiusBottom) === 'number' ? settings.radiusBottom : 0.5;
-		var height = typeof(settings.height) === 'number' ? settings.height : 0.5;
-		var numSegments = typeof(settings.numSegments) === 'number' ? settings.numSegments : 0.5;
+		var height = typeof(settings.height) === 'number' ? settings.height : 1;
+		var numSegments = typeof(settings.numSegments) === 'number' ? settings.numSegments : 10;
 
 		this.cannonShape = new CANNON.Cylinder(
 			radiusTop,
