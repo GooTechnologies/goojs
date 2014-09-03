@@ -15,6 +15,7 @@ define([
 			this.groundData = groundData.ground.data;
 			this.terrain = terrain;
 			this.scale = terrain.dimensions.scale;
+            this.actualSize = (this.terrainSize- 1)*this.scale;
 			this.randomSeed = 1;
 			this.updateTerrainInfo();
 			this.setWaterLevel(0);
@@ -35,7 +36,18 @@ define([
 			return this.terrainInfo.heights[x * this.terrainSize + y];
 		};
 
-		TerrainQuery.prototype.getTriangleAt = function(x, y) {
+		TerrainQuery.prototype.getTriangleAt = function(y, x) {
+
+            x = (x+0)/this.scale;
+            x = (this.terrainSize)-x;
+            //	var z = (this.terrainSize*this.scale - (pos[2]+1));
+
+
+            y = (y+0) / this.scale;
+            //   x = (this.terrainSize)-x
+            y=y+0 // this.scale;
+            x=x+0 // this.scale;
+
 			var xc = Math.ceil(x);
 			var xf = Math.floor(x);
 			var yc = Math.ceil(y);
@@ -60,7 +72,18 @@ define([
 
 		TerrainQuery.prototype.getPreciseHeight = function(x, y) {
 			var tri = this.getTriangleAt(x, y);
-			var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:x, y:y, z:0});
+
+            x = (x+0)/this.scale;
+            //    x = (this.terrainSize)-x;
+            //	var z = (this.terrainSize*this.scale - (pos[2]+1));
+
+
+            y = (y+0) / this.scale;
+               y = (this.terrainSize)-y;
+            y=y+0 // this.scale;
+            x=x+0 // this.scale;
+
+			var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:y, y:x, z:0});
 			return find.z;
 		};
 
@@ -69,40 +92,32 @@ define([
 				return -1000;
 			}
 
-			var x = pos[0] / this.scale;
-
-			var z = (this.terrainSize*this.scale - (pos[2]+1));
-
-		//	var z = (this.terrainSize*this.scale - (pos[2]+1)) / this.scale;
-
-			return this.getPreciseHeight(x, z);
-
-			var col = Math.floor(x);
-			var row = Math.floor(z);
-
-			var intOnX = x - col,
-				intOnZ = z - row;
-
-			var col1 = col + 1 // 1;
-			var row1 = row + 1 // 1;
-
-			col = MathUtils.moduloPositive(col, this.terrainSize);
-			row = MathUtils.moduloPositive(row, this.terrainSize);
-			col1 = MathUtils.moduloPositive(col1, this.terrainSize);
-			row1 = MathUtils.moduloPositive(row1, this.terrainSize);
-
-			var topLeft = 		this.terrainInfo.heights[row * this.terrainSize + 	col];
-			var topRight = 		this.terrainInfo.heights[row * this.terrainSize +  col1];
-			var bottomLeft = 	this.terrainInfo.heights[row1 * this.terrainSize + 	col];
-			var bottomRight = 	this.terrainInfo.heights[row1 * this.terrainSize + col1];
-
-			return MathUtils.lerp(intOnZ,
-				MathUtils.lerp(intOnX, topLeft, topRight),
-				MathUtils.lerp(intOnX, bottomLeft, bottomRight)
-			);
+			return this.getPreciseHeight(pos[0], pos[2]);
 		};
 
+        var calcVec1 = new Vector3();
+        var calcVec2 = new Vector3();
+
 		TerrainQuery.prototype.getNormalAt = function(pos) {
+
+            var tri = this.getTriangleAt(pos[0], pos[2]);
+
+            for (var i = 0; i < tri.length; i++) {
+                tri[i].x = tri[i].x*this.scale;
+                tri[i].z = tri[i].z // *this.scale;
+                tri[i].y = tri[i].y*this.scale;
+            }
+
+            calcVec1.set((tri[1].x-tri[0].x), (tri[1].z-tri[0].z), (tri[1].y-tri[0].y));
+            calcVec2.set((tri[2].x-tri[0].x), (tri[2].z-tri[0].z), (tri[2].y-tri[0].y));
+            calcVec1.cross(calcVec2);
+            if (calcVec1.data[1] < 0) {
+                calcVec1.muld(-1, -1, -1);
+            }
+
+            calcVec1.normalize();
+            return calcVec1;
+
 			var x = pos[0] / this.scale;
 			var z = this.terrainSize - (pos[2] / this.scale);
 
@@ -225,8 +240,8 @@ define([
 		};
 
 		TerrainQuery.prototype.getLightAt = function(pos) {
-			if (pos[0] < 0 || pos[0] > this.terrainSize*this.scale - 1 || pos[2] < 0 || pos[2] > this.terrainSize*this.scale - 1) {
-				return -1000;
+			if (pos[0] < 0 || pos[0] > this.actualSize  || pos[2] < 0 || pos[2] > this.actualSize) {
+                    return -1000;
 			}
 
 			if (!this.lightMapData || !this.lightMapSize)

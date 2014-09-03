@@ -41,7 +41,7 @@ function(
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.dimensions = {
-			scale:  2
+			scale:  8
 		};
 	//	setHeightScale(this.dimensions.scale);
 
