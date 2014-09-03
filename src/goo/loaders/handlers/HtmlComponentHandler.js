@@ -1,13 +1,15 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/HtmlComponent',
-	'goo/util/rsvp'
+	'goo/util/rsvp',
+	'goo/util/PromiseUtil'
 ],
 /** @lends */
 function (
 	ComponentHandler,
 	HtmlComponent,
-	RSVP
+	RSVP,
+	PromiseUtil
 ) {
 	'use strict';
 
@@ -23,6 +25,7 @@ function (
 	function HtmlComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'HtmlComponent';
+		this._configs = {};
 	}
 
 	HtmlComponentHandler.prototype = Object.create(ComponentHandler.prototype);
@@ -120,14 +123,23 @@ function (
 				parentEl.appendChild(domElement);
 			}
 
-			if (config.style) {
-				var processedStyle = config.style.replace('__entity', '#' + safeEntityId);
-				var wrappedStyle = '<style>\n' + processedStyle + '\n</style>';
-				domElement.innerHTML = wrappedStyle + config.innerHtml; // seems like the easiest way
-			} else {
-				domElement.innerHTML = config.innerHtml;
+			var innerHtmlChanged = config.innerHtml !== domElement.prevInnerHtml;
+			var styleChanged = config.style !== domElement.prevStyle;
+			domElement.prevInnerHtml = config.innerHtml;
+			domElement.prevStyle = config.style;
+
+			if (!innerHtmlChanged && !styleChanged) {
+				return PromiseUtil.resolve();
 			}
 
+			var wrappedStyle = '';
+			if (config.style) {
+				var processedStyle = config.style.replace('__entity', '#' + safeEntityId);
+				wrappedStyle = '<style>\n' + processedStyle + '\n</style>';
+			}
+
+			domElement.innerHTML = wrappedStyle + config.innerHtml;
+			component.useTransformComponent = config.useTransformComponent == null ? true : config.useTransformComponent;
 
 			function loadImage(htmlImage, imageRef) {
 				return that.loadObject(imageRef, options)
@@ -141,7 +153,7 @@ function (
 				});
 			}
 
-			// Fix images
+			// Fix images.
 			var images = domElement.getElementsByTagName('IMG');
 			var imagePromises = [];
 			for (var i = 0; i < images.length; i++) {
@@ -152,7 +164,7 @@ function (
 					imagePromises.push(promise);
 				}
 			}
-			component.useTransformComponent = config.useTransformComponent == null ? true: config.useTransformComponent;
+
 			return RSVP.all(imagePromises);
 		});
 	};
