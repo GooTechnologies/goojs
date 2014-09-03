@@ -3,8 +3,13 @@ var exec = require('child_process').exec;
 var regex = /\((\d+(?:\.\d+)?)\)/;
 
 function extractNumber(string) {
+	if (!regex.test(string)) {
+		console.error('Imagemagick\'s compare method failed');
+		console.error(string);
+		return Infinity;
+	}
+
 	var match = string.match(regex);
-//	console.log(string, match);
 	return +match[1];
 }
 

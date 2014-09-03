@@ -190,6 +190,7 @@ define([
 	'test/scripts/HeightMapBoundingScript-test',
 	'test/scripts/WorldFittedTerrainScript-test',
 	'test/scripts/GroundBoundMovementScript-test',
+	'test/scripts/ScriptUtils-test',
 	'test/entities/components/MovementComponent-test',
 	'test/entities/World-test',
 	'test/entities/components/MeshRendererComponent-test',

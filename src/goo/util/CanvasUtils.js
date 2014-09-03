@@ -19,6 +19,7 @@ function(
 
 	/**
 	 * Loads an image element from a given URL and returns the image rendered on a canvas within a callback.
+	 * REVIEW: add documentation about what happens if the image is corrupt
 	 *
 	 * @param {string} canvasPath	                 The URL to the image to render to the canvas.
 	 * @param {object} [options]

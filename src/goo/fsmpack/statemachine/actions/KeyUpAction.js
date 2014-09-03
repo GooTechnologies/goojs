@@ -32,7 +32,8 @@ function(
 		parameters: [{
 			name: 'Key',
 			key: 'key',
-			type: 'key',
+			type: 'string',
+			control: 'key',
 			description: 'Key to listen for',
 			'default': 'A'
 		}],

@@ -358,6 +358,14 @@ function (
 		return this;
 	};
 
+	/**
+	 * @description Clones the vector.
+	 * @return {Vector4} Clone of self.
+	 */
+	Vector4.prototype.clone = function () {
+		return new Vector4(this);
+	};
+
 	/* ====================================================================== */
 
 	return Vector4;
