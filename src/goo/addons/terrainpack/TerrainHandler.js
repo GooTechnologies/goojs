@@ -183,7 +183,7 @@ define([
 					for (var i = 0; i < floatArray.length; i++) {
 						floatArray[i] = 25;
 					}
-					terrainArray = new Uint8Array(floatArray.buffer);
+					// terrainArray = new Uint8Array(floatArray.buffer);
 				}
 
 				var splatArray;
@@ -195,7 +195,7 @@ define([
 						splatArray = splatBuffer;
 					}
 				} else {
-					splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
+					// splatArray = new Uint8Array(terrainSize * terrainSize * 4 * 4);
 				}
 
 				return this._load(terrainData, terrainArray, splatArray, forrestLODEntityMap);

@@ -143,6 +143,25 @@ function(
 				generateMipmaps: false
 		});
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
+
+
+		this.floatTexture = new Texture(null, {
+			magFilter: 'NearestNeighbor',
+			minFilter: 'NearestNeighborNoMipMaps',
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+			generateMipmaps: false,
+			format: 'RGBA'
+		}, this.size, this.size);
+
+		this.splatTexture = new Texture(null, {
+			magFilter: 'NearestNeighbor',
+			minFilter: 'NearestNeighborNoMipMaps',
+			wrapS: 'EdgeClamp',
+			wrapT: 'EdgeClamp',
+			generateMipmaps: false,
+			flipY: false
+		}, this.size * this.splatMult, this.size * this.splatMult);
 	}
 
 	Terrain.prototype.init = function (terrainTextures) {
@@ -205,23 +224,26 @@ function(
 		lightEntity.addToWorld();
 		this.lightEntity.lightComponent.hidden = true;
 
-		this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
-			magFilter: 'NearestNeighbor',
-			minFilter: 'NearestNeighborNoMipMaps',
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
-			generateMipmaps: false,
-			format: 'RGBA'
-		}, this.size, this.size);
-		this.splatTexture = terrainTextures.splatMap instanceof Texture ? terrainTextures.splatMap : new Texture(terrainTextures.splatMap, {
-			magFilter: 'NearestNeighbor',
-			minFilter: 'NearestNeighborNoMipMaps',
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
-			generateMipmaps: false,
-			flipY: false
-		}, this.size * this.splatMult, this.size * this.splatMult);
-
+		if (terrainTextures.heightMap) {
+			this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps',
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false,
+				format: 'RGBA'
+			}, this.size, this.size);
+		}
+		if (terrainTextures.splatMap) {
+			this.splatTexture = terrainTextures.splatMap instanceof Texture ? terrainTextures.splatMap : new Texture(terrainTextures.splatMap, {
+				magFilter: 'NearestNeighbor',
+				minFilter: 'NearestNeighborNoMipMaps',
+				wrapS: 'EdgeClamp',
+				wrapT: 'EdgeClamp',
+				generateMipmaps: false,
+				flipY: false
+			}, this.size * this.splatMult, this.size * this.splatMult);
+		}
 
 		for (var i = 0; i < this.count; i++) {
 			var material = this.clipmaps[i].origMaterial;
@@ -261,13 +283,21 @@ function(
 	};
 
 	Terrain.prototype.updateFromTextures = function (heightmap, splatmap) {
+		if (this.floatTexture && this.floatTexture !== heightmap) {
+			this.floatTexture.destroy(this.renderer.context);
+		}
+		if (this.splatTexture && this.splatTexture !== splatmap) {
+			this.splatTexture.destroy(this.renderer.context);
+		}
 		this.floatTexture = heightmap;
 		this.splatTexture = splatmap;
-		this.unpackPass.render(this.renderer, this.textures[0], this.floatTexture);
+		if (heightmap && splatmap) {
+			this.unpackPass.render(this.renderer, this.textures[0], this.floatTexture);
 
-		// this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
-		this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
-		this.copyPass.render(this.renderer, this.splat, this.splatTexture);
+			// this.copyPass.render(this.renderer, this.textures[0], this.floatTexture);
+			this.copyPass.render(this.renderer, this.splatCopy, this.splatTexture);
+			this.copyPass.render(this.renderer, this.splat, this.splatTexture);
+		}
 
 		this.updateTextures();
 
