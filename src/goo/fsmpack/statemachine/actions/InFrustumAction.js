@@ -33,7 +33,7 @@ function (
 		}, {
 			name: 'Camera',
 			key: 'cameraEntityRef',
-			type: 'cameraEntity',
+			type: 'camera',
 			description: 'Other camera; Will be ignored if the previous option is checked',
 			'default': null
 		}, {

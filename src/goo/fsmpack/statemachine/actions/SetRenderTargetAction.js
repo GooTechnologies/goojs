@@ -35,7 +35,7 @@ function (
 		parameters: [{
 			name: 'Camera',
 			key: 'cameraEntityRef',
-			type: 'cameraEntity',
+			type: 'camera',
 			description: 'Camera to use as source',
 			'default': null
 		}],

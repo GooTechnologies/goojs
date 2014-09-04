@@ -20,7 +20,7 @@ function (
 		parameters: [{
 			name: 'Animation',
 			key: 'animation',
-			type: 'animstate'
+			type: 'animation'
 		}],
 		transitions: [{
 			key: 'complete',

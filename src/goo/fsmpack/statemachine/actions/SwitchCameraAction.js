@@ -26,7 +26,7 @@ function(
 		parameters: [{
 			name: 'Camera',
 			key: 'cameraEntityRef',
-			type: 'cameraEntity',
+			type: 'camera',
 			description: 'Camera to switch to',
 			'default': null
 		}],
