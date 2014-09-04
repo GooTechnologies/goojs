@@ -903,7 +903,7 @@ function (
 			key: 'url',
 			name: 'Texture',
 			type: 'texture',
-			'default': {}
+			'default': { enabled: true }
 		},
 		{
 			key: 'blendmode',
