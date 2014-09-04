@@ -33,20 +33,26 @@ define([
 
 		// get the value at the precise integer (x, y) coordinates
 		TerrainQuery.prototype.getAt = function(x, y) {
-			return this.terrainInfo.heights[x * this.terrainSize + y];
+			return this.terrainInfo.heights[(this.terrainSize - y) * this.terrainSize + x];
 		};
 
-		TerrainQuery.prototype.getTriangleAt = function(y, x) {
 
-            x = (x+0)/this.scale;
-            x = (this.terrainSize)-x;
-            //	var z = (this.terrainSize*this.scale - (pos[2]+1));
+        TerrainQuery.prototype.displaceAxisDimensions = function(axPos, axMin, axMax, quadCount) {
+            var matrixPos = axPos-axMin;
+            return quadCount*matrixPos/(axMax - axMin);
+        };
 
 
-            y = (y+0) / this.scale;
-            //   x = (this.terrainSize)-x
-            y=y+0 // this.scale;
-            x=x+0 // this.scale;
+        TerrainQuery.prototype.returnToWorldDimensions = function(axPos, axMin, axMax, quadCount) {
+            var quadSize = (axMax-axMin) / quadCount;
+            var insidePos = axPos * quadSize;
+            return axMin+insidePos;
+        };
+
+		TerrainQuery.prototype.getTriangleAt = function(x, y) {
+
+            //    x-=1;
+            // y-=1;
 
 			var xc = Math.ceil(x);
 			var xf = Math.floor(x);
@@ -72,41 +78,42 @@ define([
 
 		TerrainQuery.prototype.getPreciseHeight = function(x, y) {
 			var tri = this.getTriangleAt(x, y);
-
-            x = (x+0)/this.scale;
-            //    x = (this.terrainSize)-x;
-            //	var z = (this.terrainSize*this.scale - (pos[2]+1));
-
-
-            y = (y+0) / this.scale;
-               y = (this.terrainSize)-y;
-            y=y+0 // this.scale;
-            x=x+0 // this.scale;
-
-			var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:y, y:x, z:0});
+			var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:x, y:y, z:0});
 			return find.z;
 		};
 
 		TerrainQuery.prototype.getHeightAt = function(pos) {
-			if (pos[0] < 0 || pos[0] > this.terrainSize*this.scale - 1 || pos[2] < 0 || pos[2] > this.terrainSize*this.scale - 1) {
+			if (pos[0] < 0 || pos[0] > this.actualSize || pos[2] < 0 || pos[2] > this.actualSize) {
 				return -1000;
 			}
 
-			return this.getPreciseHeight(pos[0], pos[2]);
-		};
+            var tx = this.displaceAxisDimensions(pos[0], 0, this.actualSize, this.terrainSize-1);
+            var tz = this.displaceAxisDimensions(pos[2]+this.scale*0, 0, this.actualSize, this.terrainSize-1);
+
+            return this.getPreciseHeight(tx, tz);
+        };
 
         var calcVec1 = new Vector3();
         var calcVec2 = new Vector3();
 
 		TerrainQuery.prototype.getNormalAt = function(pos) {
+            var tx = this.displaceAxisDimensions(pos[0], 0, this.actualSize, this.terrainSize-1);
+            var tz = this.displaceAxisDimensions(pos[2]+this.scale*0, 0, this.actualSize, this.terrainSize-1);
 
-            var tri = this.getTriangleAt(pos[0], pos[2]);
-
+            var tri = this.getTriangleAt(tx, tz);
+        /*
             for (var i = 0; i < tri.length; i++) {
                 tri[i].x = tri[i].x*this.scale;
                 tri[i].z = tri[i].z // *this.scale;
                 tri[i].y = tri[i].y*this.scale;
             }
+        */
+            for (var i = 0; i < tri.length; i++) {
+                tri[i].x = this.returnToWorldDimensions(tri[i].x, 0, this.actualSize, this.terrainSize-1);
+            //    tri[i].z = this.returnToWorldDimensions(tri[i].z, dims.minY, dims.maxY, 1);
+                tri[i].y = this.returnToWorldDimensions(tri[i].y-this.scale*0, 0, this.actualSize, this.terrainSize-1);
+            }
+
 
             calcVec1.set((tri[1].x-tri[0].x), (tri[1].z-tri[0].z), (tri[1].y-tri[0].y));
             calcVec2.set((tri[2].x-tri[0].x), (tri[2].z-tri[0].z), (tri[2].y-tri[0].y));

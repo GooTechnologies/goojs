@@ -47,8 +47,8 @@ function(
 
 		//	this.n = Math.floor(31 * this.dimensions.scale);
 
-			this.n = 31;
-		//	this.n = 62;
+        	this.n = 31;
+        //	this.n = 15;
 
 		this.materialSettings = {
 			culling:true
@@ -760,7 +760,7 @@ function(
 			fogColor: function () {
 				return ShaderBuilder.FOG_COLOR;
 			},
-			resolution: [255, 1, 1024, 1024],
+			resolution: [255, 1, 512, 512],
 			resolutionNorm: [255, 255],
 			col: [0, 0, 0]
 		},
