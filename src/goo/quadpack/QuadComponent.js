@@ -181,13 +181,13 @@ function (
 			this.oldTileX = this.tileX;
 			this.oldTileY = this.tileY;
 
-			var md = this.meshData;
-			md.xExtent = this.width * 0.5;
-			md.yExtent = this.height * 0.5;
-			md.tileX = this.tileX;
-			md.tileY = this.tileY;
-			this.meshData.rebuild();
-			this.meshData.setVertexDataUpdated();
+			var meshData = this.meshData;
+			meshData.xExtent = this.width * 0.5;
+			meshData.yExtent = this.height * 0.5;
+			meshData.tileX = this.tileX;
+			meshData.tileY = this.tileY;
+			meshData.rebuild();
+			meshData.setVertexDataUpdated();
 		}
 	};
 
