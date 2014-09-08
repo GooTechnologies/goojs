@@ -53,21 +53,25 @@ function (
 		 * The width of the component in 3D space
 		 */
 		this.width = settings.width;
+		this.oldWidth = 0;
 
 		/**
 		 * The height of the component in 3D space
 		 */
 		this.height = settings.height;
+		this.oldHeight = 0;
 
 		/**
 		 * Tiling in x direction
 		 */
 		this.tileX = settings.tileX;
+		this.oldTileX = 0;
 
 		/**
 		 * Tiling in y direction
 		 */
 		this.tileY = settings.tileY;
+		this.oldTileY = 0;
 
 		/**
 		 * Whether to preserve aspect ratio or not. If this property is true, the component will have a maximum dimension of 1 in the 3D space.
@@ -166,12 +170,25 @@ function (
 			this.height = height / 100;
 		}
 
-		var md = this.meshData;
-		md.xExtent = this.width * 0.5;
-		md.yExtent = this.height * 0.5;
-		md.tileX = this.tileX;
-		md.tileY = this.tileY;
-		this.meshData.rebuild();
+		// Only rebuild the mesh if any of its properties actually changed.
+		if (this.width !== this.oldWidth ||
+			this.height !== this.oldHeight ||
+			this.tileX !== this.oldTileX ||
+			this.tileY !== this.oldTileY
+		) {
+			this.oldWidth = this.width;
+			this.oldHeight = this.height;
+			this.oldTileX = this.tileX;
+			this.oldTileY = this.tileY;
+
+			var meshData = this.meshData;
+			meshData.xExtent = this.width * 0.5;
+			meshData.yExtent = this.height * 0.5;
+			meshData.tileX = this.tileX;
+			meshData.tileY = this.tileY;
+			meshData.rebuild();
+			meshData.setVertexDataUpdated();
+		}
 	};
 
 	return QuadComponent;

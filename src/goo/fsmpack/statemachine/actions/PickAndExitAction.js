@@ -10,20 +10,29 @@ function (
 	function PickAndExitAction(/*id, settings*/) {
 		Action.apply(this, arguments);
 
-		this.eventListener = function (evt) {
+		this.eventListener = function (event) {
 
 			var htmlCmp = this.ownerEntity.getComponent('HtmlComponent');
-			var clickedHtmlCmp = (htmlCmp && htmlCmp.domElement.contains(evt.target));
+			var clickedHtmlCmp = (htmlCmp && htmlCmp.domElement.contains(event.target));
 			if (clickedHtmlCmp) {
 				this.handleExit();
 				return;
 			}
 
-			if (evt.target !== this.canvasElement) {
+			if (event.target !== this.canvasElement) {
 				return;
 			}
 
-			var pickResult = this.goo.pickSync(evt.offsetX, evt.offsetY);
+			var x, y;
+			if (event.touches) {
+				x = event.touches[0].clientX;
+				y = event.touches[0].clientY;
+			} else {
+				x = event.offsetX;
+				y = event.offsetY;
+			}
+
+			var pickResult = this.goo.pickSync(x, y);
 			if (pickResult.id === -1) {
 				return;
 			}
@@ -75,6 +84,7 @@ function (
 		//
 		this.domElement = this.canvasElement.parentNode;
 		this.domElement.addEventListener('click', this.eventListener, false);
+		this.domElement.addEventListener('touchstart', this.eventListener, false);
 	};
 
 	PickAndExitAction.prototype._run = function () {
@@ -93,6 +103,7 @@ function (
 	PickAndExitAction.prototype.exit = function () {
 		if (this.domElement) {
 			this.domElement.removeEventListener('click', this.eventListener);
+			this.domElement.removeEventListener('touchstart', this.eventListener, false);
 		}
 	};
 

@@ -2,20 +2,11 @@ define([], function () {
 	'use strict';
 
 	function PickAndRotateScript() {
-		var env;
 		var gooRunner;
 		var pickedEntity;
-		var parameters;
+		var args, ctx;
 
-		var mouseState = {
-			down: false,
-			x: 0,
-			y: 0,
-			ox: 0,
-			oy: 0,
-			dx: 0,
-			dy: 0
-		};
+		var mouseState;
 
 		function getButton(event) {
 			var pressedButton = event.button;
@@ -30,18 +21,26 @@ define([], function () {
 		}
 
 		function mouseDown(event) {
-			if (parameters.disable) { return; }
+			if (args.disable) { return; }
+
 			var pressedButton = getButton(event.domEvent);
-			if (pressedButton === env.dragButton || env.dragButton === -1) {
+			if (pressedButton === ctx.dragButton || ctx.dragButton === -1) {
 				pickedEntity = event.entity;
-				onPressEvent();
+				onPressEvent(event);
 			}
 		}
 
-		function onPressEvent() {
+		function onPressEvent(event) {
 			var pickResult = gooRunner.pickSync(mouseState.x, mouseState.y);
 			var entity = gooRunner.world.entityManager.getEntityByIndex(pickResult.id);
-			mouseState.down = entity === env.entity;
+
+			mouseState.x = event.x;
+			mouseState.y = event.y;
+
+			mouseState.ox = mouseState.x;
+			mouseState.oy = mouseState.y;
+
+			mouseState.down = entity === ctx.entity;
 		}
 
 		function mouseMove(event) {
@@ -51,41 +50,62 @@ define([], function () {
 			mouseState.x = event.clientX;
 			mouseState.y = event.clientY;
 
-			mouseState.dx = mouseState.x - mouseState.ox;
-			mouseState.dy = mouseState.y - mouseState.oy;
-
 			if (pickedEntity && mouseState.down) {
-				pickedEntity.transformComponent.transform.rotation.fromAngles(mouseState.y / -180, mouseState.x / 180, 0.0);
+				mouseState.dx = mouseState.x - mouseState.ox;
+				mouseState.dy = mouseState.y - mouseState.oy;
+
+
+				mouseState.ax += mouseState.dx;
+				mouseState.ay += mouseState.dy;
+
+				pickedEntity.transformComponent.transform.rotation.setIdentity();
+				pickedEntity.transformComponent.transform.rotation.rotateX(mouseState.ay / 300 * args.yMultiplier);
+				pickedEntity.transformComponent.transform.rotation.rotateY(mouseState.ax / 200 * args.xMultiplier);
+
 				pickedEntity.transformComponent.setUpdated();
 			}
 		}
-		function mouseUp(/*event*/) {
+
+		function mouseUp(event) {
 			mouseState.down = false;
 		}
 
-		function setup(_parameters, ctx) {
-			parameters = _parameters;
-			env = ctx;
+		function setup(_args, _ctx, goo) {
+			args = _args;
+			ctx = _ctx;
 
-			env.dragButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(parameters.dragButton) - 1;
-			if (env.dragButton < -1) {
-				env.dragButton = -1;
+			ctx.dragButton = ['Any', 'Left', 'Middle', 'Right'].indexOf(args.dragButton) - 1;
+			if (ctx.dragButton < -1) {
+				ctx.dragButton = -1;
 			}
 
-			gooRunner = env.world.gooRunner;
+			gooRunner = ctx.world.gooRunner;
 
 			gooRunner.addEventListener('mousedown', mouseDown);
 			gooRunner.renderer.domElement.addEventListener('mousemove', mouseMove);
 			gooRunner.renderer.domElement.addEventListener('mouseup', mouseUp);
+
+			mouseState = {
+				down: false,
+				x: 0,
+				y: 0,
+				ox: 0,
+				oy: 0,
+				dx: 0,
+				dy: 0,
+				ax: 0,
+				ay: 0
+			};
 		}
 
-		function update(/*parameters, env*/) {}
+		function update(args, ctx, goo) {}
 
-		function cleanup(_parameters, env) {
-			env.domElement.removeEventListener('mousemove', mouseMove, false);
-			env.domElement.removeEventListener('mouseup', mouseUp, false);
+		function cleanup(args, ctx, goo) {
+			ctx.domElement.removeEventListener('mousemove', mouseMove, false);
+			ctx.domElement.removeEventListener('mouseup', mouseUp, false);
 			gooRunner.removeEventListener('mousedown', mouseDown);
 		}
+
 
 		return {
 			setup: setup,
@@ -110,6 +130,22 @@ define([], function () {
 			options: ['Any', 'Left', 'Middle', 'Right'],
 			type: 'string',
 			control: 'select'
+		}, {
+			key: 'xMultiplier',
+			description: 'Horizontal rotation multiplier',
+			'default': 1,
+			type: 'float',
+			control: 'slider',
+			min: -4,
+			max: 4
+		}, {
+			key: 'yMultiplier',
+			description: 'Vertical rotation multiplier',
+			'default': 1,
+			type: 'float',
+			control: 'slider',
+			min: -4,
+			max: 4
 		}]
 	};
 
