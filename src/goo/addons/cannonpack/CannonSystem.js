@@ -55,6 +55,7 @@ function (
 		world.gravity.z = settings.gravity.z;
 		this.setBroadphaseAlgorithm(settings.broadphase);
 		this.stepFrequency = settings.stepFrequency;
+		this.maxSubSteps = settings.maxSubSteps || 0;
 	}
 	var tmpQuat = new Quaternion();
 
@@ -95,13 +96,13 @@ function (
 		}
 	};
 
-	CannonSystem.prototype.process = function (entities /*, tpf */) {
+	CannonSystem.prototype.process = function (entities, tpf) {
 
 		// Add unadded entities
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var rbComponent = entity.cannonRigidbodyComponent;
-			if (rbComponent.added) {
+			if (rbComponent && rbComponent.added) {
 				continue;
 			}
 
@@ -114,7 +115,7 @@ function (
 			rbComponent.addShapesToBody(entity);
 			if (!body.shapes.length) {
 				entity.clearComponent('CannonRigidbodyComponent');
-				return;
+				continue;
 			}
 
 			// Get the world transform from the entity and set on the body
@@ -139,13 +140,19 @@ function (
 		}
 
 		// Step the world forward in time
-		// Todo: use substepping
-		this.world.step(1 / this.stepFrequency);
+		if (this.maxSubSteps) {
+			this.world.step(1 / this.stepFrequency, tpf, this.maxSubSteps);
+		} else {
+			this.world.step(1 / this.stepFrequency);
+		}
 
 		// Update positions of entities from the physics data
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var cannonComponent = entity.cannonRigidbodyComponent;
+			if (!cannonComponent) {
+				continue;
+			}
 
 			var position = cannonComponent.body.position;
 			entity.transformComponent.setTranslation(position.x, position.y, position.z);
