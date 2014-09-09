@@ -4,18 +4,16 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/StringUtil'
 ],
 /** @lends */
-function(
+function (
 	ComponentHandler,
 	MeshDataComponent,
 	BoundingBox,
 	ShapeCreatorMemoized,
 	RSVP,
-	pu,
 	_,
 	StringUtil
 ) {
@@ -44,7 +42,7 @@ function(
 	 * @returns {object}
 	 * @private
 	 */
-	MeshDataComponentHandler.prototype._prepare = function(config) {
+	MeshDataComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
 		});
 	};
@@ -54,7 +52,7 @@ function(
 	 * @returns {MeshDataComponent} the created component object
 	 * @private
 	 */
-	MeshDataComponentHandler.prototype._create = function() {
+	MeshDataComponentHandler.prototype._create = function () {
 		return new MeshDataComponent();
 	};
 
@@ -77,9 +75,9 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	 MeshDataComponentHandler.prototype.update = function(entity, config, options) {
+	 MeshDataComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			if (config.shape) {
 				var shapeCreator = ShapeCreatorMemoized['create' + StringUtil.capitalize(config.shape)];
@@ -91,7 +89,7 @@ function(
 			} else if (config.meshRef) {
 				var promises = [];
 				// MeshData
-				promises.push(that._load(config.meshRef, options).then(function(meshData) {
+				promises.push(that._load(config.meshRef, options).then(function (meshData) {
 					component.meshData = meshData;
 					if (meshData.boundingBox) {
 						var min = meshData.boundingBox.min;
@@ -109,15 +107,17 @@ function(
 				}));
 				// Skeleton pose
 				if (config.poseRef) {
-					promises.push(that._load(config.poseRef, options).then(function(pose) {
+					promises.push(that._load(config.poseRef, options).then(function (pose) {
 						component.currentPose = pose;
 					}));
 				} else {
 					component.currentPose = null;
 				}
-				return RSVP.all(promises).then(function() {
+				return RSVP.all(promises).then(function () {
 					return component;
 				});
+			} else {
+				console.warn('MeshDataComponent config does not contain a primitive spec or a reference to a mesh');
 			}
 		});
 	};
