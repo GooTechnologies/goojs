@@ -135,7 +135,7 @@ define([
 		}
 
 		function update(args, ctx) {
-			if (ctx.entity.isVisible) {
+			if (ctx.entity.isVisible !== false) {
 				flareGeometry.updateFrameGeometry(lightEntity, ctx.activeCameraEntity);
 				if (!isActive) {
 					flares = createFlareQuads(quadData, lightColor, args.scale, args.edgeDampen, args.edgeScaling);
