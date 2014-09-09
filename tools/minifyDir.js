@@ -1,3 +1,12 @@
+/**
+ * Minifies and require-ifies a subdir of src/goo - will exclude any external dependencies (anything outside of this dir) from the resulting 'pack'.
+ * Usage
+ *
+ * node tools/minifyDir.js sourceDirectory [outDirectory='out']
+ * sourceDirectory must be under 'src/goo'
+ * Ex: if you want to minify only the contents of 'src/goo/math' then sourceDirectory is 'math'
+ */
+
 'use strict';
 
 var requirejs = require('requirejs');
