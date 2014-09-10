@@ -19,7 +19,7 @@ function (
 ) {
 	'use strict';
 
-	/* global CANNON */
+	/* global CANNON, performance */
 
 	/**
 	 * @class Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
@@ -141,7 +141,12 @@ function (
 
 		// Step the world forward in time
 		if (this.maxSubSteps) {
-			this.world.step(1 / this.stepFrequency, tpf, this.maxSubSteps);
+			if (!this._lastTime) {
+				this._lastTime = performance.now() / 1000.0;
+			}
+			var dt = performance.now() / 1000.0 - this._lastTime;
+			this._lastTime = performance.now() / 1000.0;
+			this.world.step(1 / this.stepFrequency, dt, this.maxSubSteps);
 		} else {
 			this.world.step(1 / this.stepFrequency);
 		}
