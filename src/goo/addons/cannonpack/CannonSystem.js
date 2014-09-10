@@ -96,7 +96,8 @@ function (
 		}
 	};
 
-	CannonSystem.prototype.process = function (entities, tpf) {
+	CannonSystem.prototype.process = function (entities) {
+		var world = this.world;
 
 		// Add unadded entities
 		for (var i = 0; i < entities.length; i++) {
@@ -130,25 +131,28 @@ function (
 			q.fromRotationMatrix(transformComponent.transform.rotation);
 			body.quaternion.set(q.x, q.y, q.z, q.w);
 
-			this.world.add(body);
+			world.add(body);
 
 			var c = entity.cannonDistanceJointComponent;
 			if (c) {
-				this.world.addConstraint(c.createConstraint(entity));
+				world.addConstraint(c.createConstraint(entity));
 			}
 			rbComponent.added = true;
 		}
 
 		// Step the world forward in time
-		if (this.maxSubSteps) {
+		var fixedTimeStep = 1 / this.stepFrequency;
+		var maxSubSteps = this.maxSubSteps;
+		if (maxSubSteps) {
+			var now = performance.now() / 1000.0;
 			if (!this._lastTime) {
-				this._lastTime = performance.now() / 1000.0;
+				this._lastTime = now;
 			}
-			var dt = performance.now() / 1000.0 - this._lastTime;
-			this._lastTime = performance.now() / 1000.0;
-			this.world.step(1 / this.stepFrequency, dt, this.maxSubSteps);
+			var dt = now - this._lastTime;
+			this._lastTime = now;
+			world.step(fixedTimeStep, dt, maxSubSteps);
 		} else {
-			this.world.step(1 / this.stepFrequency);
+			world.step(fixedTimeStep);
 		}
 
 		// Update positions of entities from the physics data
