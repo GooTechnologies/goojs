@@ -4,6 +4,8 @@
  * `define('moduleName', [dependencies...], function (solvedDependencies...) { return Module; }`
  * with
  * `goo.Module = (function (solvedDependencies...) { return Module })(namespacedDependencies...);`
+ *
+ * Note: use this on minified modules obtained with the minifyDir script
  */
 
 'use strict';
