@@ -12,6 +12,7 @@ var esprima = require('esprima');
 var escodegen = require('escodegen');
 var _ = require('underscore');
 var fs = require('fs');
+var uglify = require('uglify-js');
 
 
 function prefix(moduleName) {
@@ -116,5 +117,11 @@ var generatorOptions = {
 
 var outSource = escodegen.generate(program, generatorOptions);
 
-fs.writeFileSync(outFileName, outSource);
+var uglifyOptions = {
+	fromString: true
+};
+
+var outMinifiedSource = uglify.minify(outSource, uglifyOptions);
+
+fs.writeFileSync(outFileName, outMinifiedSource.code);
 console.log('Done; see ' + outFileName);
