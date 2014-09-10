@@ -101,8 +101,8 @@ define([], function () {
 		function update(args, ctx, goo) {}
 
 		function cleanup(args, ctx, goo) {
-			ctx.domElement.removeEventListener('mousemove', mouseMove, false);
-			ctx.domElement.removeEventListener('mouseup', mouseUp, false);
+			ctx.domElement.removeEventListener('mousemove', mouseMove);
+			ctx.domElement.removeEventListener('mouseup', mouseUp);
 			gooRunner.removeEventListener('mousedown', mouseDown);
 		}
 
