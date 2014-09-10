@@ -9,10 +9,9 @@
 'use strict';
 
 var esprima = require('esprima');
-var escodagen = require('escodegen');
+var escodegen = require('escodegen');
 var _ = require('underscore');
 var fs = require('fs');
-
 
 
 function prefix(moduleName) {
@@ -103,6 +102,19 @@ var processedModules = moduleDefinitions.map(transform);
 var sequence = getSequence(processedModules);
 var program = getProgram(sequence);
 
-var outSource = escodagen.generate(program);
+
+var generatorOptions = {
+	format: {
+		indent: {
+			style: ''
+		}
+	},
+	newline: '',
+	space: '',
+	compact: true
+};
+
+var outSource = escodegen.generate(program, generatorOptions);
 
 fs.writeFileSync(outFileName, outSource);
+console.log('Done; see ' + outFileName);
