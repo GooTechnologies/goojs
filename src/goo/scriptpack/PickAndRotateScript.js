@@ -3,7 +3,7 @@ define([], function () {
 
 	function PickAndRotateScript() {
 		var gooRunner;
-		var pickedEntity;
+		var validPick;
 		var args, ctx;
 
 		var mouseState;
@@ -25,22 +25,28 @@ define([], function () {
 
 			var pressedButton = getButton(event.domEvent);
 			if (pressedButton === ctx.dragButton || ctx.dragButton === -1) {
-				pickedEntity = event.entity;
-				onPressEvent(event);
+				validPick = false;
+				event.entity.traverseUp(function (entity) {
+					if (entity === ctx.entity) {
+						validPick = true;
+						return false;
+					}
+				});
+
+				if (validPick) {
+					onPressEvent(event);
+				}
 			}
 		}
 
 		function onPressEvent(event) {
-			var pickResult = gooRunner.pickSync(mouseState.x, mouseState.y);
-			var entity = gooRunner.world.entityManager.getEntityByIndex(pickResult.id);
-
 			mouseState.x = event.x;
 			mouseState.y = event.y;
 
 			mouseState.ox = mouseState.x;
 			mouseState.oy = mouseState.y;
 
-			mouseState.down = entity === ctx.entity;
+			mouseState.down = true;
 		}
 
 		function mouseMove(event) {
@@ -50,7 +56,7 @@ define([], function () {
 			mouseState.x = event.clientX;
 			mouseState.y = event.clientY;
 
-			if (pickedEntity && mouseState.down) {
+			if (validPick && mouseState.down) {
 				mouseState.dx = mouseState.x - mouseState.ox;
 				mouseState.dy = mouseState.y - mouseState.oy;
 
@@ -58,11 +64,11 @@ define([], function () {
 				mouseState.ax += mouseState.dx;
 				mouseState.ay += mouseState.dy;
 
-				pickedEntity.transformComponent.transform.rotation.setIdentity();
-				pickedEntity.transformComponent.transform.rotation.rotateX(mouseState.ay / 300 * args.yMultiplier);
-				pickedEntity.transformComponent.transform.rotation.rotateY(mouseState.ax / 200 * args.xMultiplier);
+				ctx.entity.transformComponent.transform.rotation.setIdentity();
+				ctx.entity.transformComponent.transform.rotation.rotateX(mouseState.ay / 300 * args.yMultiplier);
+				ctx.entity.transformComponent.transform.rotation.rotateY(mouseState.ax / 200 * args.xMultiplier);
 
-				pickedEntity.transformComponent.setUpdated();
+				ctx.entity.transformComponent.setUpdated();
 			}
 		}
 
@@ -101,8 +107,8 @@ define([], function () {
 		function update(args, ctx, goo) {}
 
 		function cleanup(args, ctx, goo) {
-			ctx.domElement.removeEventListener('mousemove', mouseMove, false);
-			ctx.domElement.removeEventListener('mouseup', mouseUp, false);
+			ctx.domElement.removeEventListener('mousemove', mouseMove);
+			ctx.domElement.removeEventListener('mouseup', mouseUp);
 			gooRunner.removeEventListener('mousedown', mouseDown);
 		}
 
