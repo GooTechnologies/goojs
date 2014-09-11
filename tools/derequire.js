@@ -4,15 +4,17 @@
  * `define('moduleName', [dependencies...], function (solvedDependencies...) { return Module; }`
  * with
  * `goo.Module = (function (solvedDependencies...) { return Module })(namespacedDependencies...);`
+ *
+ * Note: use this on minified modules obtained with the minifyDir script
  */
 
 'use strict';
 
 var esprima = require('esprima');
-var escodagen = require('escodegen');
+var escodegen = require('escodegen');
 var _ = require('underscore');
 var fs = require('fs');
-
+var uglify = require('uglify-js');
 
 
 function prefix(moduleName) {
@@ -103,6 +105,25 @@ var processedModules = moduleDefinitions.map(transform);
 var sequence = getSequence(processedModules);
 var program = getProgram(sequence);
 
-var outSource = escodagen.generate(program);
 
-fs.writeFileSync(outFileName, outSource);
+var generatorOptions = {
+	format: {
+		indent: {
+			style: ''
+		}
+	},
+	newline: '',
+	space: '',
+	compact: true
+};
+
+var outSource = escodegen.generate(program, generatorOptions);
+
+var uglifyOptions = {
+	fromString: true
+};
+
+var outMinifiedSource = uglify.minify(outSource, uglifyOptions);
+
+fs.writeFileSync(outFileName, outMinifiedSource.code);
+console.log('Done; see ' + outFileName);
