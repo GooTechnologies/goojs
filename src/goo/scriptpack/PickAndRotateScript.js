@@ -43,26 +43,25 @@ define([], function () {
 			mouseState.x = event.x;
 			mouseState.y = event.y;
 
-			mouseState.ox = mouseState.x;
-			mouseState.oy = mouseState.y;
+			mouseState.oldX = mouseState.x;
+			mouseState.oldY = mouseState.y;
 
 			mouseState.down = true;
 		}
 
 		function mouseMove(event) {
-			mouseState.ox = mouseState.x;
-			mouseState.oy = mouseState.y;
+			mouseState.oldX = mouseState.x;
+			mouseState.oldY = mouseState.y;
 
 			mouseState.x = event.clientX;
 			mouseState.y = event.clientY;
 
 			if (validPick && mouseState.down) {
-				mouseState.dx = mouseState.x - mouseState.ox;
-				mouseState.dy = mouseState.y - mouseState.oy;
+				var deltaX = mouseState.x - mouseState.oldX;
+				var deltaY = mouseState.y - mouseState.oldY;
 
-
-				mouseState.ax += mouseState.dx;
-				mouseState.ay += mouseState.dy;
+				mouseState.ax += deltaX;
+				mouseState.ay += deltaY;
 
 				ctx.entity.transformComponent.transform.rotation.setIdentity();
 				ctx.entity.transformComponent.transform.rotation.rotateX(mouseState.ay / 300 * args.yMultiplier);
@@ -95,10 +94,8 @@ define([], function () {
 				down: false,
 				x: 0,
 				y: 0,
-				ox: 0,
-				oy: 0,
-				dx: 0,
-				dy: 0,
+				oldX: 0,
+				oldY: 0,
 				ax: 0,
 				ay: 0
 			};

@@ -56,6 +56,7 @@ function (
 		this._initialVelocity = new Vector3();
 		this._initialVelocity.setv(settings.velocity);
 		this.body = null;
+		this.centerOfMassOffset = new Vector3();
 	}
 
 	CannonRigidbodyComponent.prototype = Object.create(Component.prototype);
@@ -138,6 +139,8 @@ function (
 			invBodyTransform.invert(invBodyTransform);
 			var gooTrans = new Transform();
 
+			var cmOffset = this.centerOfMassOffset;
+
 			entity.traverse(function (childEntity) {
 				var collider = CannonRigidbodyComponent.getCollider(childEntity);
 				if (collider) {
@@ -166,6 +169,10 @@ function (
 					// o2.w *= -1;
 					// o2.vmult(offset, offset);
 
+					// Subtract center of mass offset
+					offset.vadd(cmOffset, offset);
+
+					// Add the shape
 					body.addShape(collider.cannonShape, offset, orientation);
 				}
 			});
