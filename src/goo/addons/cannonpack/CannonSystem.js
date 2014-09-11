@@ -96,6 +96,7 @@ function (
 		}
 	};
 
+	var tmpVec = new Vector3();
 	CannonSystem.prototype.process = function (entities) {
 		var world = this.world;
 
@@ -163,10 +164,14 @@ function (
 				continue;
 			}
 
-			var position = cannonComponent.body.position;
-			entity.transformComponent.setTranslation(position.x, position.y, position.z);
-
 			var cannonQuat = cannonComponent.body.quaternion;
+			var position = cannonComponent.body.position;
+
+			// Add center of mass offset
+			cannonQuat.vmult(cannonComponent.centerOfMassOffset, tmpVec);
+			position.vadd(tmpVec, tmpVec);
+			entity.transformComponent.setTranslation(tmpVec.x, tmpVec.y, tmpVec.z);
+
 			tmpQuat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
 			entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);
 			entity.transformComponent.setUpdated();
