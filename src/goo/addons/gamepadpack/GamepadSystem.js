@@ -35,11 +35,11 @@ define([
 
 			var that = this;
 			window.addEventListener('gamepadconnected', function(e) {
-					that.mozGamepadHandler(e, true); }
-				, false);
+					that.mozGamepadHandler(e, true);
+			}, false);
 			window.addEventListener('gamepaddisconnected', function(e) {
-					that.mozGamepadHandler(e, false); }
-				, false);
+					that.mozGamepadHandler(e, false);
+			}, false);
 		}
 	}
 

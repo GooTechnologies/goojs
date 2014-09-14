@@ -86,7 +86,7 @@ function (
 	/**
 	 * @static
 	 * @description Performs a multiplication between two quaternions and stores the result in a separate quaternion.
- 	 * The result is a <b>quaternion product</b>.
+	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.

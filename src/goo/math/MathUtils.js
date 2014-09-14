@@ -134,7 +134,7 @@ function () {
 		if (value > MathUtils.TWO_PI && max < MathUtils.TWO_PI) { max += MathUtils.TWO_PI; }
 
 		return _value < _min ? min : _value > _max ? max : value;
-	}
+	};
 
 
 	/**
