@@ -172,6 +172,10 @@ function (
 					// Subtract center of mass offset
 					offset.vadd(cmOffset, offset);
 
+					if (collider.isTrigger) {
+						collider.cannonShape.collisionResponse = false;
+					}
+
 					// Add the shape
 					body.addShape(collider.cannonShape, offset, orientation);
 				}
