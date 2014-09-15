@@ -135,7 +135,7 @@ define([
 		}
 
 		function update(args, ctx) {
-			if (ctx.entity.isVisible) {
+			if (ctx.entity.isVisible !== false) {
 				flareGeometry.updateFrameGeometry(lightEntity, ctx.activeCameraEntity);
 				if (!isActive) {
 					flares = createFlareQuads(quadData, lightColor, args.scale, args.edgeDampen, args.edgeScaling);
@@ -164,7 +164,7 @@ define([
 
 	LensFlareScript.externals = {
 		key: 'LensFlareScript',
-		name: 'LensFlareScript',
+		name: 'Lens Flare Script',
 		description: 'Makes an entity shine with some lensflare effect.',
 		parameters : [{
 			key: 'scale',
@@ -249,14 +249,14 @@ define([
 	FlareGeometry.prototype.updateFrameGeometry = function (lightEntity, cameraEntity) {
 		this.camRot = cameraEntity.transformComponent.transform.rotation;
 		this.centerVector.set(cameraEntity.cameraComponent.camera.translation);
-		this.displacementVector.set(lightEntity.getTranslation());
+		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
 		this.displacementVector.sub(this.centerVector);
 		this.distance = this.displacementVector.length();
 		this.distanceVector.set(0, 0, -this.distance);
 		this.camRot.applyPost(this.distanceVector);
 		this.centerVector.add(this.distanceVector);
 		this.positionVector.set(this.centerVector);
-		this.displacementVector.set(lightEntity.getTranslation());
+		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
 		this.displacementVector.sub(this.positionVector);
 		this.offset = this.displacementVector.length();
 		this.centerRatio = 1 - (1 / (this.positionVector.length() / (this.offset * this.edgeRelevance)));

@@ -11,7 +11,7 @@ function (
 ) {
 	'use strict';
 
-	var CANNON = window.CANNON;
+	/* global CANNON */
 
 	/**
 	 * @class Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.<br>
@@ -28,6 +28,8 @@ function (
 
 		// Create shape
 		this.cannonShape = new CANNON.Box(new CANNON.Vec3(e.x, e.y, e.z));
+
+		this.isTrigger = typeof(settings.isTrigger) !== 'undefined' ? settings.isTrigger : false;
 	}
 
 	CannonBoxColliderComponent.prototype = Object.create(Component.prototype);

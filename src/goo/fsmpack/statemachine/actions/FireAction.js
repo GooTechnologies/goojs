@@ -33,13 +33,15 @@ function (
 		parameters: [{
 			name: 'Start Color',
 			key: 'startColor',
-			type: 'color',
+			type: 'vec3',
+			control: 'color',
 			description: 'Flame color at source',
 			'default': [1, 1, 0]
 		}, {
 			name: 'End color',
 			key: 'endColor',
-			type: 'color',
+			type: 'vec3',
+			control: 'color',
 			description: 'Color near the end of a flame\'s life',
 			'default': [1, 0, 0]
 		}],

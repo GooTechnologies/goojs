@@ -1,3 +1,33 @@
+v0.11.3 --- 2014-09-10
+======================
+
+Additions:
+ + added CannonTerrainColliderComponent class
+
+Changes:
+ * updated Cannon.js to bleeding edge dev version
+ * CannonRigidbodyComponent.prototype.createShape changed name to addShapesToBody
+
+Fixes:
+ * transform gizmos do not vary size with FOV
+ * lens flare script not working for entities without a MeshDataComponent
+ * safed up against MeshDataComponents without MeshData
+
+
+v0.11.2 --- 2014-08-19
+======================
+
+Fixes:
+ * graceful handling of http/https issues when loading external dependencies for scripts
+
+
+v0.11.1 --- 2014-08-14
+======================
+
+Fixes:
+ * state machine issues when interfacing with Create
+
+
 v0.11.0 --- 2014-08-13
 ======================
 
@@ -12,16 +42,18 @@ Fixes:
 
 Deprecated:
  - PromiseUtil.createDummyPromise; use PromiseUtil.resolve/reject instead
- 
+
 Removed:
  - Howler.js sound library support; use the Goo SoundComponent instead.
  - Material.createMaterial(...); use new Material(...) instead.
+
 
 v0.10.8 --- 2014-07-02
 ======================
 
 Fixes:
  * minor fix in the quadComponent handler
+
 
 v0.10.7 --- 2014-07-01
 ======================
@@ -34,6 +66,7 @@ Deprecated:
  - EntityUtils.hide/show; use entity.hide/show instead
  - entity.hidden is no longer exposed; use entity.isHidden and entity.isVisiblyHidden instead
 
+
 v0.10.6 --- 2014-06-25
 ======================
 
@@ -41,6 +74,7 @@ Fixes:
  * texture leaks when using posteffects
  * animation start time related bugs
  * can now hide htmlComponents that are unsynced with their entity (transform-wise)
+
 
 v0.10.5 --- 2014-06-17
 ======================
@@ -53,11 +87,13 @@ Fixes:
  * picking of entities with an HTML component
  * textComponent visual-test not displaying anything
 
+
 v0.10.3 --- 2014-06-05
 ======================
 
 Breaking changes:
  * transparency map now uses alpha value
+
 
 v0.10.2 --- 2014-06-05
 ======================
@@ -84,12 +120,14 @@ Breaking changes:
       goo/passpack contains the former goo/renderer/pass/PassLib along with pass-related shaders which used to be in goo/renderer/shaders/ShaderLib, any post-effect related passes (Bloom, Blur, Depth, DOF, DOG, MotionBlur, Nes, SSAO) and the PosteffectsHandler. To be able to load posteffects using the dynamic loader you need to require the PosteffectsHandler (which will register itself).
  * the transform gizmos have been relocated to their own pack, under goo/util/gizmopack
 
+
 v0.10.1 --- 2014-05-27
 ======================
 
 Fixes:
  * animations can have timescale and loopcount 0
  * fixed .preloadTextures/.procompileShaders crashing on devices without support for the global 'performance'
+
 
 v0.10.0 --- 2014-05-20
 ======================
@@ -113,6 +151,7 @@ Breaking changes:
  - EntityUtils.traverse has been removed as scheduled; use entity.traverse instead
  - ShapeCreator has been removed as scheduled; use new Box/Sphere/Quad... instead
 
+
 v.0.9.10 --- 2014-05-14
 =======================
 
@@ -122,6 +161,7 @@ Additions:
 Fixes:
  * fixed video looping bug
  * made sure projects loads even if sound decoding fails
+
 
 v0.9.9 --- 2014-05-06
 =====================
@@ -139,17 +179,20 @@ Fixes:
 Changes:
  * Camera.prototype.getWorldCoordinates now uses the correct Y direction of screen coordinates
 
+
 v0.9.8 --- 2014-04-24
 =====================
 
 Fixes:
  * SetRenderTargetAction, InFrustumAction fixes
 
+
 v0.9.7 --- 2014-04-22
 =====================
 
 Fixes:
  * numerous tiny bugfixes
+
 
 v0.9.6 --- 2014-04-15
 =====================
@@ -158,6 +201,7 @@ Fixes:
  * Renamed file "CannonRigidBodyComponent.js" to "CannonRigidbodyComponent.js"
  * Grabbing the global window.Ammo object after it is loaded
  * Stop forcing aspect ratio when loading camera
+
 
 v0.9.0 --- 2014-03-07
 =====================

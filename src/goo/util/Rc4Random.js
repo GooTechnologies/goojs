@@ -24,7 +24,7 @@ function() {
 				keySchedule[i] = keySchedule[j];
 				keySchedule[j] = t;
 			}
-		}
+		};
 		this.init(seed);
 
 		function getRandomByte() {

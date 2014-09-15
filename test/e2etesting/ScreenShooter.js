@@ -18,7 +18,7 @@ function ScreenShooter(options) {
 	options = options || {};
 
 	var settings = this.settings = {
-		wait   : 700,
+		wait   : 1200, // used to be 700 but is a tad too little for intel-nuc; will have to come up with a more robust solution if this becomes a problem
 		width  : 400, // This is sort of the smallest possible in Chrome
 		height : 300
 	};

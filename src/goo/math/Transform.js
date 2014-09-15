@@ -263,7 +263,7 @@ function (
 
 		result.scale.setv(Vector3.ONE).div(this.scale);
 		result.translation.copy(this.translation).invert().mulv(result.scale);
-		result.rotation.applyPost(result.translation)
+		result.rotation.applyPost(result.translation);
 
 		// result.update();
 

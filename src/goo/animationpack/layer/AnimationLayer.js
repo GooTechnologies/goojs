@@ -182,7 +182,7 @@ function (
 			state.onFinished = function () {
 				this.setCurrentState(state._targetState || null, false, undefined, finishCallback);
 				if (state instanceof SteadyState && finishCallback instanceof Function) {
-					finishCallback()
+					finishCallback();
 				}
 				this.update();
 			}.bind(this);

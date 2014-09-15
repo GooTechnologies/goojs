@@ -22,7 +22,8 @@ function (
 		parameters: [{
 			name: 'Color',
 			key: 'color',
-			type: 'color',
+			type: 'vec3',
+			control: 'color',
 			description: 'Color',
 			'default': [1, 1, 1]
 		}],

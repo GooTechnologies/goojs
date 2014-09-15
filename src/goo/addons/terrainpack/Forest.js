@@ -207,8 +207,9 @@ function (
 				var testX = Math.abs(x - this.gridSizeHalf);
 				var testZ = Math.abs(z - this.gridSizeHalf);
 				var levelOfDetail = 1;
-				if (testX < this.minDist & testZ < this.minDist)
+				if (testX < this.minDist && testZ < this.minDist) {
 					levelOfDetail = 2;
+				}
 
 				// recycle if same settings
 				if (state.lod === levelOfDetail && state.x === patchX && state.z === patchZ) {

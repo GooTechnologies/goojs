@@ -1082,7 +1082,7 @@ function (
 
 	Renderer.prototype.renderMesh = function (renderInfo) {
 		var meshData = renderInfo.meshData;
-		if (meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
+		if (!meshData || meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
 			&& meshData.indexData.data.byteLength === 0) {
 			return;
 		}
@@ -1258,16 +1258,40 @@ function (
 	};
 
 	/**
-	 * Read pixels to a typed array (ArrayBufferView)
+	 * Read pixels from current framebuffer to a typed array (ArrayBufferView)
 	 *
-	 * @param x x offset of rectangle to read from
-	 * @param y y offset of rectangle to read from
-	 * @param width width of rectangle to read from
-	 * @param height height of rectangle to read from
-	 * @param store ArrayBufferView to store data in (Uint8Array)
+	 * @param {number} x x offset of rectangle to read from
+	 * @param {number} y y offset of rectangle to read from
+	 * @param {number} width width of rectangle to read from
+	 * @param {number} height height of rectangle to read from
+	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array)
 	 */
 	Renderer.prototype.readPixels = function (x, y, width, height, store) {
+		store = store || new Uint8Array(width * height * 4);
 		this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
+		return store;
+	};
+
+	/**
+	 * Read pixels from a texture to a typed array (ArrayBufferView)
+	 *
+	 * @param {Texture} texture texture to read pixels from
+	 * @param {number} x x offset of rectangle to read from
+	 * @param {number} y y offset of rectangle to read from
+	 * @param {number} width width of rectangle to read from
+	 * @param {number} height height of rectangle to read from
+	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array)
+	 */
+	Renderer.prototype.readTexturePixels = function (texture, x, y, width, height, store) {
+		store = store || new Uint8Array(width * height * 4);
+		var glFrameBuffer = this.context.createFramebuffer();
+		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, glFrameBuffer);
+		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0,
+			WebGLRenderingContext.TEXTURE_2D, texture.glTexture, 0);
+		if (this.context.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
+			this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
+		}
+		return store;
 	};
 
 	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
@@ -2238,7 +2262,7 @@ function (
 		var caps = [];
 		var isArrayBufferView = function(value) {
 			return value && value.buffer instanceof ArrayBuffer && value.byteLength !== undefined;
-		}
+		};
 		for (var name in this.capabilities) {
 			var cap = this.capabilities[name];
 			var str = '';

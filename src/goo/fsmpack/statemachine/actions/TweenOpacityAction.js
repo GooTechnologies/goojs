@@ -21,13 +21,15 @@ function (
 		parameters: [{
 			name: 'Opacity',
 			key: 'to',
-			type: 'number',
+			type: 'float',
+			control: 'spinner',
 			description: 'Opacity',
 			'default': 1
 		}, {
 			name: 'Time (ms)',
 			key: 'time',
-			type: 'number',
+			type: 'float',
+			control: 'spinner',
 			description: 'Time it takes for the transition to complete',
 			'default': 1000
 		}, {

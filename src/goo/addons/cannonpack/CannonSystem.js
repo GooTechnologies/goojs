@@ -19,7 +19,7 @@ function (
 ) {
 	'use strict';
 
-	var CANNON = window.CANNON;
+	/* global CANNON, performance */
 
 	/**
 	 * @class Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
@@ -47,67 +47,131 @@ function (
 			broadphase :	'naive'
 		});
 
+		this.priority = 1; // make sure it processes after transformsystem
+
 		var world = this.world = new CANNON.World();
 		world.gravity.x = settings.gravity.x;
 		world.gravity.y = settings.gravity.y;
 		world.gravity.z = settings.gravity.z;
 		this.setBroadphaseAlgorithm(settings.broadphase);
-
 		this.stepFrequency = settings.stepFrequency;
+		this.maxSubSteps = settings.maxSubSteps || 0;
 	}
 	var tmpQuat = new Quaternion();
 
 	CannonSystem.prototype = Object.create(System.prototype);
 
+	CannonSystem.prototype.reset = function () {
+		for (var i = 0; i < this._activeEntities.length; i++) {
+			var entity = this._activeEntities[i];
+			// this.deleted(entity);
+			// this.inserted(entity);
+
+			if (entity.cannonRigidbodyComponent.added) {
+				var body = entity.cannonRigidbodyComponent.body;
+				var p = entity.transformComponent.worldTransform.translation;
+				var q = new Quaternion();
+				q.fromRotationMatrix(entity.transformComponent.worldTransform.rotation);
+				body.position.set(p.x, p.y, p.z);
+				body.quaternion.set(q.x, q.y, q.z, q.w);
+				body.velocity.set(0, 0, 0);
+				body.angularVelocity.set(0, 0, 0);
+			}
+		}
+	};
+
+
 	CannonSystem.prototype.inserted = function (entity) {
 		var rbComponent = entity.cannonRigidbodyComponent;
-		var transformComponent = entity.transformComponent;
-
-		var shape = rbComponent.createShape(entity);
-		if (!shape) {
-			entity.clearComponent('CannonComponent');
-			return;
-		}
-
-		var body = new CANNON.RigidBody(rbComponent.mass, shape);
-		rbComponent.body = body;
-		entity.setPosition(transformComponent.transform.translation);
-		entity.setVelocity(rbComponent._initialVelocity);
-		var q = tmpQuat;
-		q.fromRotationMatrix(transformComponent.transform.rotation);
-		body.quaternion.set(q.x, q.y, q.z, q.w);
-
-		this.world.add(body);
-
-		var c = entity.cannonDistanceJointComponent;
-		if (c) {
-			this.world.addConstraint(c.createConstraint(entity));
-		}
+		rbComponent.body = null;
 	};
 
 	CannonSystem.prototype.deleted = function (entity) {
 		var rbComponent = entity.cannonRigidbodyComponent;
 
-		if (rbComponent) {
+		if (rbComponent && rbComponent.body) {
 			// TODO: remove joints?
 			this.world.remove(rbComponent.body);
+			rbComponent.body = null;
 		}
 	};
 
-	CannonSystem.prototype.process = function (entities /*, tpf */) {
+	var tmpVec = new Vector3();
+	CannonSystem.prototype.process = function (entities) {
+		var world = this.world;
+
+		// Add unadded entities
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			var rbComponent = entity.cannonRigidbodyComponent;
+			if (rbComponent && rbComponent.added) {
+				continue;
+			}
+
+			var transformComponent = entity.transformComponent;
+
+			var body = new CANNON.Body({
+				mass: rbComponent.mass
+			});
+			rbComponent.body = body;
+			rbComponent.addShapesToBody(entity);
+			if (!body.shapes.length) {
+				entity.clearComponent('CannonRigidbodyComponent');
+				continue;
+			}
+
+			// Get the world transform from the entity and set on the body
+			// entity.transformComponent.updateWorldTransform();
+			if (!rbComponent._initialPosition) {
+				entity.setPosition(transformComponent.transform.translation);
+			} else {
+				entity.setPosition(rbComponent._initialPosition);
+			}
+			entity.setVelocity(rbComponent._initialVelocity);
+			var q = tmpQuat;
+			q.fromRotationMatrix(transformComponent.transform.rotation);
+			body.quaternion.set(q.x, q.y, q.z, q.w);
+
+			world.add(body);
+
+			var c = entity.cannonDistanceJointComponent;
+			if (c) {
+				world.addConstraint(c.createConstraint(entity));
+			}
+			rbComponent.added = true;
+		}
 
 		// Step the world forward in time
-		this.world.step(1 / this.stepFrequency);
+		var fixedTimeStep = 1 / this.stepFrequency;
+		var maxSubSteps = this.maxSubSteps;
+		if (maxSubSteps) {
+			var now = performance.now() / 1000.0;
+			if (!this._lastTime) {
+				this._lastTime = now;
+			}
+			var dt = now - this._lastTime;
+			this._lastTime = now;
+			world.step(fixedTimeStep, dt, maxSubSteps);
+		} else {
+			world.step(fixedTimeStep);
+		}
 
 		// Update positions of entities from the physics data
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var cannonComponent = entity.cannonRigidbodyComponent;
-
-			var position = cannonComponent.body.position;
-			entity.transformComponent.setTranslation(position.x, position.y, position.z);
+			if (!cannonComponent) {
+				continue;
+			}
 
 			var cannonQuat = cannonComponent.body.quaternion;
+			var position = cannonComponent.body.position;
+
+			// Add center of mass offset
+			cannonQuat.vmult(cannonComponent.centerOfMassOffset, tmpVec);
+			position.vadd(tmpVec, tmpVec);
+			entity.transformComponent.setTranslation(tmpVec.x, tmpVec.y, tmpVec.z);
+
 			tmpQuat.set(cannonQuat.x, cannonQuat.y, cannonQuat.z, cannonQuat.w);
 			entity.transformComponent.transform.rotation.copyQuaternion(tmpQuat);
 			entity.transformComponent.setUpdated();

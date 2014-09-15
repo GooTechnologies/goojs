@@ -1,14 +1,14 @@
 define([
-        'goo/math/Vector2',
-        'goo/math/Vector3',
-        'goo/renderer/MeshData'
-        ],
-	/** @lends */
-	function (
-		Vector2,
-		Vector3,
-		MeshData
-	) {
+	'goo/math/Vector2',
+	'goo/math/Vector3',
+	'goo/renderer/MeshData'
+	],
+/** @lends */
+function (
+	Vector2,
+	Vector3,
+	MeshData
+) {
 	'use strict';
 
 	/**

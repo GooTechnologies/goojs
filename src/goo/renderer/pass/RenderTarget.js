@@ -75,6 +75,20 @@ define(['goo/math/Vector2'],
 	};
 
 	/**
+	 * Returns the number of bytes this render target occupies in memory
+	 * @returns {number}
+	 */
+	RenderTarget.prototype.getSizeInMemory = function () {
+		var size = this.width * this.height * 4;
+		
+		if (this.generateMipmaps) {
+			size = Math.ceil(size * 4 / 3);
+		}
+
+		return size;
+	};
+
+	/**
 	 * Deallocates all allocated resources from the WebGL context.
 	 * @param  {WebGLContext} context
 	 */

@@ -109,10 +109,18 @@ function (
 		}
 	}
 
+	/**
+	* Checks if the texture's data is ready.
+	* @return {Boolean} True if ready.
+	*/
 	Texture.prototype.checkDataReady = function () {
 		return this.image && (this.image.dataReady || this.image instanceof HTMLImageElement) || this.readyCallback !== null && this.readyCallback();
 	};
 
+	/**
+	* Checks if the texture needs an update.
+	* @return {Boolean} True if needed.
+	*/
 	Texture.prototype.checkNeedsUpdate = function () {
 		return this.needsUpdate || this.updateCallback !== null && this.updateCallback();
 	};

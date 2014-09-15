@@ -162,40 +162,45 @@ define([
 			'default': true
 		}, {
 			key: 'crawlKey',
-			type: 'key',
+			type: 'string',
+			control: 'key',
 			'default': 'Shift'
 		}, {
 			key: 'forwardKey',
-			type: 'key',
+			type: 'string',
+			control: 'key',
 			'default': 'W'
 		}, {
 			key: 'backKey',
-			type: 'key',
+			type: 'string',
+			control: 'key',
 			'default': 'S'
 		}, {
 			key: 'strafeLeftKey',
-			type: 'key',
+			type: 'string',
+			control: 'key',
 			'default': 'A'
 		}, {
 			key: 'strafeRightKey',
-			type: 'key',
+			type: 'string',
+			control: 'key',
 			'default': 'D'
 		}, {
 			key: 'walkSpeed',
 			type: 'int',
+			control: 'slider',
 			'default': 10,
 			min: 1,
 			max: 100,
-			exponential: true,
-			control: 'slider'
+			exponential: true
 		}, {
 			key: 'crawlSpeed',
+			control: 'slider',
 			type: 'int',
 			'default': 1,
 			min: 0.1,
 			max: 10,
-			exponential: true,
-			control: 'slider'
+			exponential: true
 		}]
 	};
 

@@ -134,7 +134,7 @@ function (
 			if (this._isPanned) {
 				this._inNode.disconnect();
 				this._inNode.connect(this._outDryNode);
-				this._isPanned = false
+				this._isPanned = false;
 			}
 			this._pannerNode.setPosition(0, 0, 0);
 			this._pannerNode.setVelocity(0, 0, 0);

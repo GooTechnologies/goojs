@@ -97,5 +97,5 @@ function(
 		return Math.max(Math.abs(x), Math.abs(y));
 	};
 
-	return GamepadData
+	return GamepadData;
 });

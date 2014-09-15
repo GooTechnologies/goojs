@@ -17,8 +17,8 @@ var filterList = require('./filterList').filterList;
 
 function filterArray(array, filters) {
 	return array.filter(function (entry) {
-		return filters.some(function (filter) {
-			return entry.indexOf(filter) === -1 && entry.indexOf('Ammo') !== -1;
+		return filters.every(function (filter) {
+			return entry.indexOf(filter) === -1;
 		});
 	});
 }

@@ -59,9 +59,9 @@ function(
 			linearFactor : new Ammo.btVector3(1, 1, 1),
 			isTrigger : false,
 			onInitializeBody : null,
-            scale: null,
-            translation: null,
-            rotation: null
+			scale: null,
+			translation: null,
+			rotation: null
 		});
 
 		this.mass = settings.mass;
@@ -71,9 +71,9 @@ function(
 		this.linearFactor = settings.linearFactor;
 		this.onInitializeBody = settings.onInitializeBody;
 		this.isTrigger = settings.isTrigger;
-        this.scale = settings.scale;
-        this.translation = settings.translation;
-        this.rotation = settings.rotation;
+		this.scale = settings.scale;
+		this.translation = settings.translation;
+		this.rotation = settings.rotation;
 
 		this.type = 'AmmoComponent';
 		this.ammoTransform = new Ammo.btTransform();
@@ -88,11 +88,11 @@ function(
 		var shape;
 
 		// Need to abs since negative scales are fine for meshes but not for bounding boxes.
-        var scale = [Math.abs(gooTransform.scale.x), Math.abs(gooTransform.scale.y), Math.abs(gooTransform.scale.z)];
-        // if a scale value is used in settings
-        if(this.scale)
-		    scale = [Math.abs(this.scale.x),Math.abs(this.scale.y),Math.abs(this.scale.z)]
-
+		var scale = [Math.abs(gooTransform.scale.x), Math.abs(gooTransform.scale.y), Math.abs(gooTransform.scale.z)];
+		// if a scale value is used in settings
+		if (this.scale) {
+			scale = [Math.abs(this.scale.x), Math.abs(this.scale.y), Math.abs(this.scale.z)];
+		}
 
 		if (entity.meshDataComponent && entity.meshDataComponent.meshData) {
 			var meshData = entity.meshDataComponent.meshData;
@@ -149,14 +149,14 @@ function(
 		}
 
 		var gooPos = this.translation || gooTransform.translation;
-        var gooRot = this.rotation || gooTransform.rotation;
+		var gooRot = this.rotation || gooTransform.rotation;
 
 		var ammoTransform = new Ammo.btTransform();
 		ammoTransform.setIdentity(); // TODO: is this needed ?
 		ammoTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
 		this.gooQuaternion.fromRotationMatrix(gooRot);
-        var q = this.gooQuaternion;
-        ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		var q = this.gooQuaternion;
+		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
 
 		if (this.useWorldBounds) {
 			entity._world.process();
