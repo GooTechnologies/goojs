@@ -33,7 +33,7 @@ define([
 
 		// get the value at the precise integer (x, y) coordinates
 		TerrainQuery.prototype.getAt = function(x, y) {
-			return this.terrainInfo.heights[(this.terrainSize - y) * this.terrainSize + x];
+			return this.terrainInfo.heights[((this.terrainSize - y) * this.terrainSize) + x];
 		};
 
 

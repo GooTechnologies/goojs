@@ -41,7 +41,7 @@ function(
 		this.renderer = goo.renderer;
 		this.size = size;
 		this.dimensions = {
-			scale:  8
+			scale:  32
 		};
 	//	setHeightScale(this.dimensions.scale);
 
@@ -849,7 +849,7 @@ function(
 				ShaderBuilder.light.prefragment,
 
 				'void main(void) {',
-					'if (alphaval.w < -10000.0) discard;',
+				//	'if (alphaval.w < -10000.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
 
 					'vec4 final_color = vec4(1.0);',
@@ -857,7 +857,7 @@ function(
 					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
 				//	'N.x = N.x / scaleHeightWidth;',
 				//	'N.z = N.z / scaleHeightWidth;',
-					'N.y = 0.1;',
+				//	'N.y = N.y / scaleHeightWidth;',
 					'N = normalize(N);',
 
 
