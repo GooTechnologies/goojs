@@ -26,8 +26,9 @@ define([
 	) {
 		'use strict';
 
-		function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder) {
+		function TerrainHandler(goo, terrainSize, clipmapLevels, resourceFolder, drawCallback) {
 			this.goo = goo;
+			this.drawCallback = drawCallback || function(settings, type, position) {};
 			this.terrainSize = terrainSize;
 			this.resourceFolder = resourceFolder;
 			this.terrain = new Terrain(goo, this.terrainSize, clipmapLevels);
@@ -533,6 +534,7 @@ define([
 					this.terrain.draw(settings.mode, settings.type, settings.size, this.store.x, this.store.y, this.store.z,
 						settings.power * this.goo.world.tpf * 60 / 100, settings.brushTexture, rgba);
 					this.terrain.updateTextures();
+					this.drawCallback(settings, type, this.store)
 				}
 
 				this.terrain.update(pos);
