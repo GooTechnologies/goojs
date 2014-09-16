@@ -57,6 +57,8 @@ function(
 		this.count = count;
 		this.splatMult = 2;
 
+		this.tileScale = 96;
+
 		this._gridCache = {};
 
 		var brush = new Quad(2 / size, 2 / size);
@@ -80,7 +82,7 @@ function(
 			materials: [mat],
 			transform: new Transform()
 		};
-		this.renderable.transform.setRotationXYZ(0, 0, Math.PI*0.5);
+		this.renderable.transform.setRotationXYZ(0, 0, Math.PI * 0.5);
 
 		this.copyPass = new FullscreenPass(ShaderLib.screenCopy);
 		this.copyPass.material.depthState.enabled = false;
@@ -177,6 +179,7 @@ function(
 			var material = new Material(terrainShaderDefFloat, 'clipmap' + i);
 			material.uniforms.materialAmbient = [0.0, 0.0, 0.0, 1.0];
 			material.uniforms.materialDiffuse = [1.0, 1.0, 1.0, 1.0];
+			material.uniforms.tileScale = this.tileScale;
 			material.cullState.frontFace = 'CW';
 			// material.wireframe = true;
 			material.uniforms.resolution = [50, 1 / size, this.size, this.size];
@@ -766,6 +769,14 @@ function(
 		return meshData;
 	};
 
+	Terrain.prototype.setTileScale = function (scale) {
+		this.tileScale = scale;
+		for (var i = 0; i < this.clipmaps.length; i++) {
+			var clipmap = this.clipmaps[i];
+			clipmap.origMaterial.uniforms.tileScale = scale;
+		}
+	};
+
 	var terrainShaderDefFloat = {
 		defines: {
 			SKIP_SPECULAR: true
@@ -808,7 +819,8 @@ function(
 			},
 			resolution: [255, 1, 1024, 1024],
 			resolutionNorm: [1024, 1024],
-			col: [0, 0, 0]
+			col: [0, 0, 0],
+			tileScale: 96
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -871,6 +883,7 @@ function(
 				'uniform sampler2D groundMap5;',
 				'uniform sampler2D stoneMap;',
 				'uniform sampler2D lightMap;',
+				'uniform float tileScale;',
 
 				'uniform vec2 fogSettings;',
 				'uniform vec3 fogColor;',
@@ -891,7 +904,7 @@ function(
 					//'gl_FragColor = vec4(heightCol.a); return;',
 					'if (alphaval.w < -1000.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
-					'vec2 coord = mapcoord * 96.0;',
+					'vec2 coord = mapcoord * tileScale;',
 					'vec4 final_color = vec4(1.0);',
 
 					'vec3 N = (texture2D(normalMap, mapcoord).xyz * vec3(2.0) - vec3(1.0)).xzy;',
