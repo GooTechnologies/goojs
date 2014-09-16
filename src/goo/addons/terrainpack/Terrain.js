@@ -667,10 +667,11 @@ function(
 
 
 		if (this.useSimpleClipmap) {
-			this.createQuadEntity(world, material, level, entity, (-2 * n -0), (-2 * n), (4*n +2), n);
-			this.createQuadEntity(world, material, level, entity, (-2 * n), (-1 * n), n, (2*n+2));
-			this.createQuadEntity(world, material, level, entity, (2 + 1 * n)	, (-1 * n), n, (2*n +2));
-			this.createQuadEntity(world, material, level, entity, (-2 * n -0), 	(2 + 1 * n), (4*n +2), n);
+			n*=4;
+		//	this.createQuadEntity(world, material, level, entity, (-2 * n -0), (-2 * n), (4*n +2), n);
+		//	this.createQuadEntity(world, material, level, entity, (-2 * n), (-1 * n), n, (2*n+2));
+		//	this.createQuadEntity(world, material, level, entity, (2 + 1 * n)	, (-1 * n), n, (2*n +2));
+		//	this.createQuadEntity(world, material, level, entity, (-2 * n -0), 	(2 + 1 * n), (4*n +2), n);
 			entity.innermost = this.createQuadEntity(world, material, level, entity, -n, -n, (n * 2 + 2), (n * 2 + 2));
 
 			if (level !== 0) {
