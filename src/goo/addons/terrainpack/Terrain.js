@@ -638,7 +638,7 @@ function(
 
 			var n = this.n;
 
-			if (clipmap.parentClipmap) {
+			if (clipmap.parentClipmap && !this.useSimpleClipmap) {
 				var interior1 = clipmap.parentClipmap.clipmapEntity.interior1;
 				var interior2 = clipmap.parentClipmap.clipmapEntity.interior2;
 
