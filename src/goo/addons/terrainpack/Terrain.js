@@ -56,6 +56,7 @@ function(
 		this.size = size;
 		this.count = count;
 		this.splatMult = 2;
+		this.useSimpleClipmap = true;
 
 		this.tileScale = 96;
 
@@ -664,41 +665,57 @@ function(
 
 		var n = this.n;
 
-		// 0
-		this.createQuadEntity(world, material, level, entity, -2 * n, -2 * n, n, n);
-		this.createQuadEntity(world, material, level, entity, -1 * n, -2 * n, n, n);
-		this.createQuadEntity(world, material, level, entity, 0 * n, -2 * n, 2, n);
-		this.createQuadEntity(world, material, level, entity, 2, -2 * n, n, n);
-		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, -2 * n, n, n);
 
-		// 1
-		this.createQuadEntity(world, material, level, entity, -2 * n, -1 * n, n, n);
-		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, -1 * n, n, n);
+		if (this.useSimpleClipmap) {
+			this.createQuadEntity(world, material, level, entity, (-2 * n -0), (-2 * n), (4*n +2), n);
+			this.createQuadEntity(world, material, level, entity, (-2 * n), (-1 * n), n, (2*n+2));
+			this.createQuadEntity(world, material, level, entity, (2 + 1 * n)	, (-1 * n), n, (2*n +2));
+			this.createQuadEntity(world, material, level, entity, (-2 * n -0), 	(2 + 1 * n), (4*n +2), n);
+			entity.innermost = this.createQuadEntity(world, material, level, entity, -n, -n, (n * 2 + 2), (n * 2 + 2));
 
-		// 2
-		this.createQuadEntity(world, material, level, entity, -2 * n, 0, n, 2);
-		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 0, n, 2);
+			if (level !== 0) {
+				entity.innermost.meshRendererComponent.hidden = true;
+			}
 
-		// 3
-		this.createQuadEntity(world, material, level, entity, -2 * n, 2, n, n);
-		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 2, n, n);
+		} else {
+			// 0
+			this.createQuadEntity(world, material, level, entity, -2 * n, -2 * n, n, n);
+			this.createQuadEntity(world, material, level, entity, -1 * n, -2 * n, n, n);
+			this.createQuadEntity(world, material, level, entity, 0 * n, -2 * n, 2, n);
+			this.createQuadEntity(world, material, level, entity, 2, -2 * n, n, n);
+			this.createQuadEntity(world, material, level, entity, 2 + 1 * n, -2 * n, n, n);
 
-		// 4
-		this.createQuadEntity(world, material, level, entity, -2 * n, 2 + 1 * n, n, n);
-		this.createQuadEntity(world, material, level, entity, -1 * n, 2 + 1 * n, n, n);
-		this.createQuadEntity(world, material, level, entity, 0, 2 + 1 * n, 2, n);
-		this.createQuadEntity(world, material, level, entity, 2, 2 + 1 * n, n, n);
-		this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 2 + 1 * n, n, n);
+			// 1
+			this.createQuadEntity(world, material, level, entity, -2 * n, -1 * n, n, n);
+			this.createQuadEntity(world, material, level, entity, 2 + 1 * n, -1 * n, n, n);
 
-		entity.innermost = this.createQuadEntity(world, material, level, entity, -n, -n, n * 2 + 2, n * 2 + 2);
+			// 2
+			this.createQuadEntity(world, material, level, entity, -2 * n, 0, n, 2);
+			this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 0, n, 2);
 
-		if (level !== 0) {
-			entity.innermost.meshRendererComponent.hidden = true;
+			// 3
+			this.createQuadEntity(world, material, level, entity, -2 * n, 2, n, n);
+			this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 2, n, n);
 
-			// interior
-			entity.interior1 = this.createQuadEntity(world, material, level, entity, -n, -n, n * 2 + 2, 1);
-			entity.interior2 = this.createQuadEntity(world, material, level, entity, -n, -n, 1, n * 2 + 1);
+			// 4
+			this.createQuadEntity(world, material, level, entity, -2 * n, 2 + 1 * n, n, n);
+			this.createQuadEntity(world, material, level, entity, -1 * n, 2 + 1 * n, n, n);
+			this.createQuadEntity(world, material, level, entity, 0, 2 + 1 * n, 2, n);
+			this.createQuadEntity(world, material, level, entity, 2, 2 + 1 * n, n, n);
+			this.createQuadEntity(world, material, level, entity, 2 + 1 * n, 2 + 1 * n, n, n);
+
+			entity.innermost = this.createQuadEntity(world, material, level, entity, -n, -n, n * 2 + 2, n * 2 + 2);
+
+			if (level !== 0) {
+				entity.innermost.meshRendererComponent.hidden = true;
+
+				// interior
+				entity.interior1 = this.createQuadEntity(world, material, level, entity, -n, -n, n * 2 + 2, 1);
+				entity.interior2 = this.createQuadEntity(world, material, level, entity, -n, -n, 1, n * 2 + 1);
+			}
+
 		}
+
 
 		return entity;
 	};
@@ -917,13 +934,7 @@ function(
 					'vec4 g3 = texture2D(groundMap3, coord * tileScale);',
 					'vec4 g4 = texture2D(groundMap4, coord * tileScale);',
 					'vec4 g5 = texture2D(groundMap5, coord * tileScale);',
-					'if (abs(N.x) > abs(N.z)) {',
-						'coord.x = coord.y;',
-						'coord.y = vWorldPos.y;',
-					'} else {',
-						'coord.y = coord.x;',
-						'coord.x = vWorldPos.y;',
-					'}',
+
 					'vec4 stone = texture2D(stoneMap, coord * tileScale);',
 
 					'final_color = mix(g1, g2, splat.r);',
