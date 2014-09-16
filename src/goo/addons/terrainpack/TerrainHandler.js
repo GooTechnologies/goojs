@@ -379,8 +379,9 @@ define([
 							return -1000;
 						}
 
-						if (!this.lightMapData || !this.lightMapSize)
+						if (!this.lightMapData || !this.lightMapSize) {
 							return 1;
+						}
 
 						var x = pos[0] * this.lightMapSize / terrainSize;
 						var z = (terrainSize - pos[2]) * this.lightMapSize / terrainSize;
@@ -440,8 +441,9 @@ define([
 				var texturesPromise = new RSVP.Promise();
 				var loadCount = 0;
 				var onLoaded = function() {
-					if (!--loadCount)
+					if (!--loadCount) {
 						texturesPromise.resolve();
+					}
 				};
 
 

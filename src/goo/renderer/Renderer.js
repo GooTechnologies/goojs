@@ -1286,7 +1286,7 @@ function (
 		store = store || new Uint8Array(width * height * 4);
 		var glFrameBuffer = this.context.createFramebuffer();
 		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, glFrameBuffer);
-		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, 
+		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0,
 			WebGLRenderingContext.TEXTURE_2D, texture.glTexture, 0);
 		if (this.context.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
 			this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
@@ -2262,7 +2262,7 @@ function (
 		var caps = [];
 		var isArrayBufferView = function(value) {
 			return value && value.buffer instanceof ArrayBuffer && value.byteLength !== undefined;
-		}
+		};
 		for (var name in this.capabilities) {
 			var cap = this.capabilities[name];
 			var str = '';

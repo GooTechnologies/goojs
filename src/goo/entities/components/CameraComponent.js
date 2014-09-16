@@ -35,7 +35,7 @@ function (
 		/** Up vector.
 		 * @type {Vector3}
 		 * @default (0, 1, 0)
-		 */	
+		 */
 		this.upVec = new Vector3(0, 1, 0);
 
 		/** Direction vector.

@@ -1,16 +1,16 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/TransformComponent',
-	'goo/math/MathUtils',		
-	'goo/util/ObjectUtil',	
+	'goo/math/MathUtils',
+	'goo/util/ObjectUtil',
 	'goo/util/rsvp'
 ],
 /** @lends */
 function (
 	ComponentHandler,
 	TransformComponent,
-	MathUtils,		
-	_,	
+	MathUtils,
+	_,
 	RSVP
 ) {
 	'use strict';
