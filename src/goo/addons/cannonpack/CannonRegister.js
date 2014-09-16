@@ -1,24 +1,24 @@
 define([
 	'goo/scripts/Scripts',
-	'goo/addons/cannonpack/CannonBoxColliderComponent',
+	'goo/addons/cannonpack/CannonBoxCollider',
 	'goo/addons/cannonpack/CannonDistanceJointComponent',
-	'goo/addons/cannonpack/CannonPlaneColliderComponent',
-	'goo/addons/cannonpack/CannonTerrainColliderComponent',
+	'goo/addons/cannonpack/CannonPlaneCollider',
+	'goo/addons/cannonpack/CannonTerrainCollider',
 	'goo/addons/cannonpack/CannonRigidbodyComponent',
-	'goo/addons/cannonpack/CannonSphereColliderComponent',
-	'goo/addons/cannonpack/CannonCylinderColliderComponent',
+	'goo/addons/cannonpack/CannonSphereCollider',
+	'goo/addons/cannonpack/CannonCylinderCollider',
 	'goo/addons/cannonpack/CannonSystem'
 ], function (Scripts) {
 	'use strict';
 
 	var defines = [
 		'goo/scripts/Scripts',
-		'goo/addons/cannonpack/CannonBoxColliderComponent',
+		'goo/addons/cannonpack/CannonBoxCollider',
 		'goo/addons/cannonpack/CannonDistanceJointComponent',
-		'goo/addons/cannonpack/CannonTerrainColliderComponent',
+		'goo/addons/cannonpack/CannonTerrainCollider',
 		'goo/addons/cannonpack/CannonRigidbodyComponent',
-		'goo/addons/cannonpack/CannonSphereColliderComponent',
-		'goo/addons/cannonpack/CannonCylinderColliderComponent',
+		'goo/addons/cannonpack/CannonSphereCollider',
+		'goo/addons/cannonpack/CannonCylinderCollider',
 		'goo/addons/cannonpack/CannonSystem'
 	];
 

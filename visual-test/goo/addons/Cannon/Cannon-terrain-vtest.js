@@ -16,9 +16,10 @@ require([
 	'goo/entities/components/TransformComponent',
 	'goo/addons/cannonpack/CannonSystem',
 	'goo/addons/cannonpack/CannonRigidbodyComponent',
-	'goo/addons/cannonpack/CannonSphereColliderComponent',
-	'goo/addons/cannonpack/CannonBoxColliderComponent',
-	'goo/addons/cannonpack/CannonTerrainColliderComponent',
+	'goo/addons/cannonpack/CannonSphereCollider',
+	'goo/addons/cannonpack/CannonBoxCollider',
+	'goo/addons/cannonpack/CannonTerrainCollider',
+	'goo/addons/cannonpack/CannonColliderComponent',
 	'goo/renderer/light/PointLight',
 	'goo/entities/components/LightComponent',
 	'goo/geometrypack/Surface',
@@ -41,9 +42,10 @@ require([
 	TransformComponent,
 	CannonSystem,
 	CannonRigidbodyComponent,
-	CannonSphereColliderComponent,
-	CannonBoxColliderComponent,
-	CannonTerrainColliderComponent,
+	CannonSphereCollider,
+	CannonBoxCollider,
+	CannonTerrainCollider,
+	CannonColliderComponent,
 	PointLight,
 	LightComponent,
 	Surface,
@@ -76,7 +78,9 @@ require([
 		boxEntity.setComponent(new CannonRigidbodyComponent({
 			mass: 1
 		}));
-		boxEntity.setComponent(new CannonSphereColliderComponent({ radius: radius }));
+		boxEntity.setComponent(new CannonColliderComponent({
+			collider: new CannonSphereCollider({ radius: radius })
+		}));
 		return boxEntity;
 	}
 
@@ -88,7 +92,7 @@ require([
 		boxEntity.setComponent(new CannonRigidbodyComponent({
 			mass: 1
 		}));
-		boxEntity.setComponent(new CannonBoxColliderComponent({ halfExtents: halfExtents }));
+		boxEntity.setComponent(new CannonColliderComponent({ collider: new CannonBoxCollider({ halfExtents: halfExtents }) }));
 		return boxEntity;
 	}
 
@@ -149,11 +153,13 @@ require([
 		//colliderEntity.setRotation(-Math.PI / 2, -Math.PI / 2, 0);
 		colliderEntity.setRotation(-Math.PI / 2, Math.PI / 2, 0);
 		colliderEntity.addToWorld();
-		var terrainColliderComp = new CannonTerrainColliderComponent({
-			data: getMatrix(true),
-			shapeOptions: {
-				elementSize: elementSize
-			}
+		var terrainColliderComp = new CannonColliderComponent({
+			collider: new CannonTerrainCollider({
+				data: getMatrix(true),
+				shapeOptions: {
+					elementSize: elementSize
+				}
+			})
 		});
 		colliderEntity.setComponent(terrainColliderComp);
 		entity.attachChild(colliderEntity);

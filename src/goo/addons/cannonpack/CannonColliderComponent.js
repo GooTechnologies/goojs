@@ -1,17 +1,11 @@
 define([
-	'goo/entities/components/Component',
-	'goo/shapes/Box',
-	'goo/math/Vector3'
+	'goo/entities/components/Component'
 ],
 /** @lends */
 function (
-	Component,
-	Box,
-	Vector3
+	Component
 ) {
 	'use strict';
-
-	/* global CANNON */
 
 	/**
 	 * @class Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.<br>
@@ -20,20 +14,24 @@ function (
 	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
 	 * @extends Component
 	 */
-	function CannonBoxColliderComponent(settings) {
-		this.type = 'CannonBoxColliderComponent';
+	function CannonColliderComponent(settings) {
+		this.type = 'CannonColliderComponent';
 
 		settings = settings || {};
-		var e = this.halfExtents = settings.halfExtents || new Vector3(0.5, 0.5, 0.5);
 
-		// Create shape
-		this.cannonShape = new CANNON.Box(new CANNON.Vec3(e.x, e.y, e.z));
+		/**
+		 * @type {CannonCollider}
+		 */
+		this.collider = settings.collider || null;
 
+		/**
+		 * @type {boolean}
+		 */
 		this.isTrigger = typeof(settings.isTrigger) !== 'undefined' ? settings.isTrigger : false;
 	}
 
-	CannonBoxColliderComponent.prototype = Object.create(Component.prototype);
-	CannonBoxColliderComponent.constructor = CannonBoxColliderComponent;
+	CannonColliderComponent.prototype = Object.create(Component.prototype);
+	CannonColliderComponent.constructor = CannonColliderComponent;
 
-	return CannonBoxColliderComponent;
+	return CannonColliderComponent;
 });

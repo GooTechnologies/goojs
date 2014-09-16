@@ -36,8 +36,10 @@ function (
 	 *   mass : 1
 	 * });
 	 * entity.setComponent(rigidBodyComponent);
-	 * var boxColliderComponent = new CannonBoxColliderComponent({
-	 *   halfExtents : new Vector3(1, 1, 1)
+	 * var boxColliderComponent = new CannonColliderComponent({
+	 *     collider: new CannonBoxCollider({
+	 *         halfExtents : new Vector3(1, 1, 1)
+	 *     })
 	 * });
 	 * entity.setComponent(boxColliderComponent);
 	 */
@@ -116,18 +118,10 @@ function (
 		this.body.angularVelocity.set(angularVelocity.x, angularVelocity.y, angularVelocity.z);
 	};
 
-	/**
-	 * Get the collider component from an entity, if one exist.
-	 * @return {mixed} Any of the collider types, or NULL if not found
-	 */
-	CannonRigidbodyComponent.getCollider = function (entity) {
-		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || entity.cannonTerrainColliderComponent || entity.cannonCylinderColliderComponent || null;
-	};
-
 	CannonRigidbodyComponent.prototype.addShapesToBody = function (entity) {
 		var body = entity.cannonRigidbodyComponent.body;
 
-		var collider = CannonRigidbodyComponent.getCollider(entity);
+		var collider = entity.cannonColliderComponent && entity.cannonColliderComponent.collider;
 		if (!collider) {
 
 			// Needed for getting the Rigidbody-local transform of each collider
@@ -142,7 +136,7 @@ function (
 			var cmOffset = this.centerOfMassOffset;
 
 			entity.traverse(function (childEntity) {
-				var collider = CannonRigidbodyComponent.getCollider(childEntity);
+				var collider = childEntity.cannonColliderComponent;
 				if (collider) {
 
 					// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
@@ -173,11 +167,11 @@ function (
 					offset.vadd(cmOffset, offset);
 
 					if (collider.isTrigger) {
-						collider.cannonShape.collisionResponse = false;
+						collider.collider.cannonShape.collisionResponse = false;
 					}
 
 					// Add the shape
-					body.addShape(collider.cannonShape, offset, orientation);
+					body.addShape(collider.collider.cannonShape, offset, orientation);
 				}
 			});
 
