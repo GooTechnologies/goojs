@@ -166,6 +166,8 @@ function (
 			|| this.context.getExtension('MOZ_WEBGL_depth_texture');
 		/** @type {boolean} */
 		this.glExtensionElementIndexUInt = this.context.getExtension('OES_element_index_uint');
+		/** @type {boolean} */
+		this.glExtensionInstancedArrays = this.context.getExtension('ANGLE_instanced_arrays');
 
 		if (!this.glExtensionTextureFloat) {
 			console.log('Float textures not supported.');
@@ -1590,6 +1592,12 @@ function (
 			context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}
+	};
+
+	Renderer.prototype.unbindTexture = function (context, texture, unit, record) {
+		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
+		context.bindTexture(this.getGLType(texture.variant), null);
+		record.boundTexture = undefined;
 	};
 
 	Renderer.prototype.getGLType = function (type) {
