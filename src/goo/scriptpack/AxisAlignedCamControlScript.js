@@ -92,9 +92,9 @@ define([
 			type: 'float',
 			description:'Camera distance from lookat point',
 			control: 'slider',
-			'default': 1e1,
+			'default': 1,
 			min: 1,
-			max: 1e5
+			max: 1e3
 		},{
 			key: 'view',
 			type:'string',
