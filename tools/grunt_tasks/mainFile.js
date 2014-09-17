@@ -37,10 +37,11 @@ module.exports = function (grunt) {
 
 		lines.push('\t' + fileNames.join(',\n\t'));
 		lines.push(') {');
-		lines.push('\twindow.goo = {}; var goo = window.goo;'); // var goo = window.goo;if (!goo) { return; }
+		lines.push('\twindow.goo = {'); // var goo = window.goo;if (!goo) { return; }
 		fileNames.forEach(function (fileName) {
-			lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
+			lines.push('\t\t' + fileName + ': ' + fileName + ',');
 		});
+		lines.push('\t};');
 
 		lines.push('});');
 
