@@ -24,7 +24,7 @@ define([], function () {
 			if (args.disable) { return; }
 
 			var pressedButton = getButton(event.domEvent);
-			if (pressedButton === ctx.dragButton || ctx.dragButton === -1) {
+			if ((pressedButton === ctx.dragButton || ctx.dragButton === -1) && event.entity) {
 				validPick = false;
 				event.entity.traverseUp(function (entity) {
 					if (entity === ctx.entity) {
@@ -53,8 +53,8 @@ define([], function () {
 			mouseState.oldX = mouseState.x;
 			mouseState.oldY = mouseState.y;
 
-			mouseState.x = event.clientX;
-			mouseState.y = event.clientY;
+			mouseState.x = event.clientX || event.touches[0].clientX;
+			mouseState.y = event.clientY || event.touches[0].clientY;
 
 			if (validPick && mouseState.down) {
 				var deltaX = mouseState.x - mouseState.oldX;
@@ -87,8 +87,11 @@ define([], function () {
 			gooRunner = ctx.world.gooRunner;
 
 			gooRunner.addEventListener('mousedown', mouseDown);
+			gooRunner.addEventListener('touchstart', mouseDown);
 			gooRunner.renderer.domElement.addEventListener('mousemove', mouseMove);
+			gooRunner.renderer.domElement.addEventListener('touchmove', mouseMove);
 			gooRunner.renderer.domElement.addEventListener('mouseup', mouseUp);
+			gooRunner.renderer.domElement.addEventListener('touchend', mouseUp);
 
 			mouseState = {
 				down: false,
@@ -105,8 +108,11 @@ define([], function () {
 
 		function cleanup(args, ctx, goo) {
 			ctx.domElement.removeEventListener('mousemove', mouseMove);
+			ctx.domElement.removeEventListener('touchmove', mouseMove);
 			ctx.domElement.removeEventListener('mouseup', mouseUp);
+			ctx.domElement.removeEventListener('touchend', mouseUp);
 			gooRunner.removeEventListener('mousedown', mouseDown);
+			gooRunner.removeEventListener('touchstart', mouseDown);
 		}
 
 
