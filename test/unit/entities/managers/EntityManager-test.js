@@ -24,27 +24,36 @@ define([
 			});
 
 			it('adds nothing and contains nothing', function() {
-				expect(entityManager.containsEntity(entity1)).toBe(false);
-				expect(entityManager.containsEntity(entity2)).toBe(false);
+				expect(entityManager.containsEntity(entity1)).toBeFalsy();
+				expect(entityManager.containsEntity(entity2)).toBeFalsy();
 			});
 
 			it('adds an entity and contains it', function() {
 				entityManager.added(entity1);
-				expect(entityManager.containsEntity(entity1)).toBe(true);
-				expect(entityManager.containsEntity(entity2)).toBe(false);
+				expect(entityManager.containsEntity(entity1)).toBeTruthy();
+				expect(entityManager.containsEntity(entity2)).toBeFalsy();
 			});
 
 			it('adds 2 entities and contains them both', function() {
 				entityManager.added(entity1);
 				entityManager.added(entity2);
-				expect(entityManager.containsEntity(entity1)).toBe(true);
-				expect(entityManager.containsEntity(entity2)).toBe(true);
+				expect(entityManager.containsEntity(entity1)).toBeTruthy();
+				expect(entityManager.containsEntity(entity2)).toBeTruthy();
 			});
 
 			it('tries to add the same entity twice and contains it', function() {
 				entityManager.added(entity1);
 				entityManager.added(entity1); //add again to see what happens
-				expect(entityManager.containsEntity(entity1)).toBe(true);
+				expect(entityManager.containsEntity(entity1)).toBeTruthy();
+			});
+
+			it('adds 2 entities with the same id but different indices', function() {
+				entity1.id = 'asd';
+				entity2.id = 'asd';
+				entityManager.added(entity1);
+				entityManager.added(entity2);
+				expect(entityManager.containsEntity(entity1)).toBeTruthy();
+				expect(entityManager.containsEntity(entity2)).toBeTruthy();
 			});
 		});
 
@@ -58,28 +67,28 @@ define([
 
 			it('tries to remove a non-added entity', function() {
 				entityManager.removed(entity1);
-				expect(entityManager.containsEntity(entity1)).toBe(false);
+				expect(entityManager.containsEntity(entity1)).toBeFalsy();
 			});
 
 			it('removes an entity', function() {
 				entityManager.added(entity1);
 				entityManager.removed(entity1);
-				expect(entityManager.containsEntity(entity1)).toBe(false);
+				expect(entityManager.containsEntity(entity1)).toBeFalsy();
 			});
 
 			it('removes one entity and leaves the other intact', function() {
 				entityManager.added(entity1);
 				entityManager.added(entity2);
 				entityManager.removed(entity1);
-				expect(entityManager.containsEntity(entity1)).toBe(false);
-				expect(entityManager.containsEntity(entity2)).toBe(true);
+				expect(entityManager.containsEntity(entity1)).toBeFalsy();
+				expect(entityManager.containsEntity(entity2)).toBeTruthy();
 			});
 
 			it('tries to remove the same entity twice', function() {
 				entityManager.added(entity1);
 				entityManager.removed(entity1);
 				entityManager.removed(entity1);
-				expect(entityManager.containsEntity(entity1)).toBe(false);
+				expect(entityManager.containsEntity(entity1)).toBeFalsy();
 			});
 		});
 
@@ -180,16 +189,16 @@ define([
 			var entity1 = world.createEntity('entity1');
 			var entity2 = world.createEntity('entity2');
 
-			expect(entityManager.size()).toBe(0);
+			expect(entityManager.size()).toEqual(0);
 
 			entityManager.added(entity1);
-			expect(entityManager.size()).toBe(1);
+			expect(entityManager.size()).toEqual(1);
 
 			entityManager.added(entity2);
-			expect(entityManager.size()).toBe(2);
+			expect(entityManager.size()).toEqual(2);
 
 			entityManager.removed(entity2);
-			expect(entityManager.size()).toBe(1);
+			expect(entityManager.size()).toEqual(1);
 		});
 
 		describe('by.id', function() {
