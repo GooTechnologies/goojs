@@ -222,8 +222,7 @@ function (
 			projectionMatrix: Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 	        normalMatrix: Shader.NORMAL_MATRIX,
-			cameraPosition: Shader.CAMERA,
-
+			cameraTranslation: Shader.CAMERA_TRANSLATION,
 			normalMap: 'NORMAL_MAP',
 			reflection: 'REFLECTION_MAP',
 			refraction: 'REFRACTION_MAP',
@@ -269,6 +268,7 @@ function (
 			'uniform mat4 worldMatrix;',//
 			'uniform mat4 normalMatrix;',
 			'uniform vec3 cameraPosition;', //
+			'uniform vec3 cameraTranslation;', //
 			'uniform float waterScale;',
 
 			'varying vec2 texCoord0;',//
@@ -279,7 +279,8 @@ function (
 			'void main(void) {', //
 			'	worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 
-			'	texCoord0 = worldPos.xz * waterScale;',//
+			'	texCoord0 = (worldPos.xz + cameraTranslation.xz) * waterScale;',//
+
 
 			'	vec3 n = normalize((normalMatrix * vec4(vertexNormal.x, vertexNormal.y, -vertexNormal.z, 0.0)).xyz);',
 			'	vec3 t = normalize((normalMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',

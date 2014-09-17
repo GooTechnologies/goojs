@@ -585,17 +585,27 @@ function (
 	};
 
 	function setupDefaultCallbacks(defaultCallbacks) {
+		var tmpMatrix = new Matrix4x4();
+
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.VIEW_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewMatrix();
+			var matrix = shaderInfo.camera.getViewMatrix().clone();
+			matrix.e03 = 0;
+			matrix.e13 = 0;
+			matrix.e23 = 0;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
+			var mat = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
+			//	var camMat = shaderInfo.camera.translation.x;
+			var matrix = mat.clone();
+			matrix.e03 -= shaderInfo.camera.translation.x;
+			matrix.e13 -= shaderInfo.camera.translation.y;
+			matrix.e23 -= shaderInfo.camera.translation.z;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
@@ -605,16 +615,27 @@ function (
 		};
 
 		defaultCallbacks[Shader.VIEW_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewInverseMatrix();
+			var matrix = shaderInfo.camera.getViewInverseMatrix().clone();
+			matrix.e03 = 0;
+			matrix.e13 = 0;
+			matrix.e23 = 0;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.VIEW_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewProjectionMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
+			var matrix = shaderInfo.camera.getViewMatrix().clone();
+			matrix.e03 = 0;
+			matrix.e13 = 0;
+			matrix.e23 = 0;
+			tmpMatrix.copy(shaderInfo.camera.getProjectionMatrix()).combine(matrix);
+			uniformCall.uniformMatrix4fv(tmpMatrix);
 		};
 		defaultCallbacks[Shader.VIEW_PROJECTION_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewProjectionInverseMatrix();
+			var matrix = shaderInfo.camera.getViewProjectionInverseMatrix().clone();
+			//    matrix.e03 = 0;
+			//    matrix.e13 = 0;
+			//    matrix.e23 = 0;
 			uniformCall.uniformMatrix4fv(matrix);
+
 		};
 
 		for (var i = 0; i < 16; i++) {
@@ -644,9 +665,14 @@ function (
 		};
 
 		defaultCallbacks[Shader.CAMERA] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform3f(0, 0, 0);
+		};
+
+		defaultCallbacks[Shader.CAMERA_TRANSLATION] = function (uniformCall, shaderInfo) {
 			var cameraPosition = shaderInfo.camera.translation;
 			uniformCall.uniform3f(cameraPosition.data[0], cameraPosition.data[1], cameraPosition.data[2]);
 		};
+
 		defaultCallbacks[Shader.NEAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.camera.near);
 		};
@@ -739,6 +765,7 @@ function (
 		Shader['LIGHT' + i] = 'LIGHT' + i;
 	}
 	Shader.CAMERA = 'CAMERA';
+	Shader.CAMERA_TRANSLATION = 'CAMERA_TRANSLATION';
 	Shader.AMBIENT = 'AMBIENT';
 	Shader.EMISSIVE = 'EMISSIVE';
 	Shader.DIFFUSE = 'DIFFUSE';
