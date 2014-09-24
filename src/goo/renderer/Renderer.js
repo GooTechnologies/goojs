@@ -1007,7 +1007,8 @@ function (
 			mainCamera: Renderer.mainCamera,
 			lights: lights,
 			shadowHandler: this.shadowHandler,
-			renderer: this
+			renderer: this,
+			material: null
 		};
 
 		if (Array.isArray(renderList)) {
