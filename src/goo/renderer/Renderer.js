@@ -380,6 +380,20 @@ function (
 			Renderer.mainCamera = newCam.camera;
 			this.checkResize(Renderer.mainCamera);
 		}.bind(this));
+
+		var that = this;
+		var el = that.domElement;
+		if (document.querySelector) {
+			this.adjustWidth = el.offsetWidth;
+			this.adjustHeight = el.offsetHeight;
+			window.addEventListener('resize', function (evt) {
+				that.adjustWidth = el.offsetWidth;
+				that.adjustHeight = el.offsetHeight;
+			});
+		} else {
+			this.adjustWidth = window.innerWidth;
+			this.adjustHeight = window.innerHeight;
+		}
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -419,12 +433,13 @@ function (
 
 		var adjustWidth, adjustHeight;
 		if (document.querySelector) {
-			adjustWidth = this.domElement.offsetWidth;
-			adjustHeight = this.domElement.offsetHeight;
+			adjustWidth = this.adjustWidth;
+			adjustHeight = this.adjustHeight;
 		} else {
 			adjustWidth = window.innerWidth;
 			adjustHeight = window.innerHeight;
 		}
+
 		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
 		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;
 
