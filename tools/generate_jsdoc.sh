@@ -11,7 +11,7 @@ README=tools/jsdoc-template/static/README.md
 # Run JSDoc to generate documentation
 rm -rf ${DOC_DIR}
 # Custom template
-${JSDOC_BIN} -r "src" -d ${DOC_DIR} -t ${TEMPLATE_DIR} ${README}
+${JSDOC_BIN} -c tools/jsdoc.json # -r "src" -d ${DOC_DIR} -t ${TEMPLATE_DIR} ${README}
 
 # Package files into tar.gz
 rm -f goojs-jsdoc*.tar.gz

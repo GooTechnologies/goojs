@@ -31,6 +31,11 @@ function (
 		 * @default
 		 */
 		this.useTransformComponent = true;
+		/**
+		 * @type {boolean}
+		 * @default
+		 */
+		this.confineToScreen = false;
 	}
 
 	HtmlComponent.prototype = Object.create(Component.prototype);

@@ -192,6 +192,12 @@ function (
 						}
 						return texture;
 					});
+				} else if (type === 'bin') {
+					ret = that.loadObject(imageRef, options).then(function (data) {
+						var image = new Uint8Array(data);
+						texture.setImage(image, config.width, config.height);
+						return texture;
+					});
 				} else {
 					throw new Error('Unknown texture type');
 				}

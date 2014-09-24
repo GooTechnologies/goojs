@@ -382,6 +382,23 @@ function (
 			Renderer.mainCamera = newCam.camera;
 			this.checkResize(Renderer.mainCamera);
 		}.bind(this));
+
+		var that = this;
+		var el = that.domElement;
+		if (document.querySelector) {
+			this.adjustWidth = el.offsetWidth;
+			this.adjustHeight = el.offsetHeight;
+			window.addEventListener('resize', function (evt) {
+				that.adjustWidth = el.offsetWidth;
+				that.adjustHeight = el.offsetHeight;
+			});
+		} else {
+			this.adjustWidth = window.innerWidth;
+			this.adjustHeight = window.innerHeight;
+		}
+
+		this.prevAdjustWidth = -1;
+		this.prevAdjustHeight = -1;
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -421,12 +438,13 @@ function (
 
 		var adjustWidth, adjustHeight;
 		if (document.querySelector) {
-			adjustWidth = this.domElement.offsetWidth;
-			adjustHeight = this.domElement.offsetHeight;
+			adjustWidth = this.adjustWidth;
+			adjustHeight = this.adjustHeight;
 		} else {
 			adjustWidth = window.innerWidth;
 			adjustHeight = window.innerHeight;
 		}
+
 		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
 		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;
 
@@ -438,7 +456,11 @@ function (
 		}
 
 		var aspect = adjustWidth / adjustHeight;
-		this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
+
+		if (this.prevAdjustWidth !== adjustWidth || this.prevAdjustHeight !== adjustHeight) {
+			this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
+		}
+		this.prevAdjustWidth = adjustWidth;
 
 		if (camera && camera.lockedRatio === false && camera.aspect !== aspect) {
 			camera.aspect = aspect;
@@ -994,7 +1016,8 @@ function (
 			mainCamera: Renderer.mainCamera,
 			lights: lights,
 			shadowHandler: this.shadowHandler,
-			renderer: this
+			renderer: this,
+			material: null
 		};
 
 		if (Array.isArray(renderList)) {
@@ -1109,53 +1132,11 @@ function (
 
 		for (var i = 0; i < count; i++) {
 			var material = null, orMaterial = null;
-
 			if (i < materials.length) {
 				material = materials[i];
 			}
-			if (i < this._overrideMaterials.length) {
-				orMaterial = this._overrideMaterials[i];
-			}
+			this.configureRenderInfo(renderInfo, i, material, orMaterial, originalData, meshData, flatOrWire);
 
-			if (material && orMaterial) {
-				this._override(orMaterial, material, this._mergedMaterial);
-				material = this._mergedMaterial;
-			} else if (orMaterial) {
-				material = orMaterial;
-			}
-
-			if (!material.shader) {
-				if (!material.errorOnce) {
-					console.warn('No shader set on material: ' + material.name);
-					material.errorOnce = true;
-				}
-				continue;
-			} else {
-				material.errorOnce = false;
-			}
-
-			if (material.wireframe && flatOrWire !== 'wire') {
-				if (!meshData.wireframeData) {
-					meshData.wireframeData = meshData.buildWireframeData();
-				}
-				meshData = meshData.wireframeData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = 'wire';
-			} else if (material.flat && flatOrWire !== 'flat') {
-				if (!meshData.flatMeshData) {
-					meshData.flatMeshData = meshData.buildFlatMeshData();
-				}
-				meshData = meshData.flatMeshData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = 'flat';
-			} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
-				meshData = originalData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = null;
-			}
-
-			renderInfo.material = material;
-			renderInfo.meshData = meshData;
 
 			//! AT: this should stay in a method
 
@@ -1169,43 +1150,7 @@ function (
 					}
 				}
 
-				// check defines. if no hit in cache -> add to cache. if hit in cache,
-				// replace with cache version and copy over uniforms.
-				var defineArray = Object.keys(shader.defines);
-				var len = defineArray.length;
-				var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
-				shaderKeyArray.length = 0;
-				for (var j = 0; j < len; j++) {
-					var key = defineArray[j];
-					shaderKeyArray.push(key + '_' + shader.defines[key]);
-				}
-				shaderKeyArray.sort();
-				var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
-
-				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
-
-				if (!shaderCache[defineKey]) {
-					if (shader.builder) {
-						shader.builder(shader, renderInfo);
-					}
-					shader = material.shader = shader.clone();
-					shaderCache[defineKey] = shader;
-				} else {
-					shader = shaderCache[defineKey];
-					if (shader !== material.shader) {
-						var uniforms = material.shader.uniforms;
-						var keys = Object.keys(uniforms);
-						for (var ii = 0, l = keys.length; ii < l; ii++) {
-							var key = keys[ii];
-							var origUniform = shader.uniforms[key] = uniforms[key];
-							if (origUniform instanceof Array) {
-								shader.uniforms[key] = origUniform.slice(0);
-							}
-						}
-
-						material.shader = shader;
-					}
-				}
+				material.shader = this.materialShaderFromCache(material, shader, renderInfo);
 			}
 
 			shader.apply(renderInfo, this);
@@ -1244,6 +1189,111 @@ function (
 				this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 			}
 		}
+	};
+
+	Renderer.prototype.configureRenderInfo = function(renderInfo, i, material, orMaterial, originalData, meshData, flatOrWire) {
+
+
+		if (i < this._overrideMaterials.length) {
+			orMaterial = this._overrideMaterials[i];
+		}
+
+		if (material && orMaterial) {
+			this._override(orMaterial, material, this._mergedMaterial);
+			material = this._mergedMaterial;
+		} else if (orMaterial) {
+			material = orMaterial;
+		}
+
+		if (!material.shader) {
+			if (!material.errorOnce) {
+				console.warn('No shader set on material: ' + material.name);
+				material.errorOnce = true;
+			}
+			return;
+		} else {
+			material.errorOnce = false;
+		}
+
+		if (material.wireframe && flatOrWire !== 'wire') {
+			if (!meshData.wireframeData) {
+				meshData.wireframeData = meshData.buildWireframeData();
+			}
+			meshData = meshData.wireframeData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = 'wire';
+		} else if (material.flat && flatOrWire !== 'flat') {
+			if (!meshData.flatMeshData) {
+				meshData.flatMeshData = meshData.buildFlatMeshData();
+			}
+			meshData = meshData.flatMeshData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = 'flat';
+		} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
+			meshData = originalData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = null;
+		}
+
+
+		renderInfo.material = material;
+		renderInfo.meshData = meshData;
+
+	};
+
+	Renderer.prototype.materialShaderFromCache = function(material, shader, renderInfo) {
+
+		// check defines. if no hit in cache -> add to cache. if hit in cache,
+		// replace with cache version and copy over uniforms.
+		// var defineArray = Object.keys(shader.defines);
+		// var len = defineArray.length;
+		// var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
+		// shaderKeyArray.length = 0;
+		// for (var j = 0; j < len; j++) {
+		// 	var key = defineArray[j];
+		// 	shaderKeyArray.push(key + '_' + shader.defines[key]);
+		// }
+		// shaderKeyArray.sort();
+		// var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+
+		var defineKey = this.makeKey(shader);
+
+		var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
+
+		if (!shaderCache[defineKey]) {
+			if (shader.builder) {
+				shader.builder(shader, renderInfo);
+			}
+			shader = shader.clone();
+			shaderCache[defineKey] = shader;
+		} else {
+			shader = shaderCache[defineKey];
+			if (shader !== material.shader) {
+				var uniforms = material.shader.uniforms;
+				var keys = Object.keys(uniforms);
+				for (var ii = 0, l = keys.length; ii < l; ii++) {
+					var key = keys[ii];
+					var origUniform = shader.uniforms[key] = uniforms[key];
+					if (origUniform instanceof Array) {
+						shader.uniforms[key] = origUniform.slice(0);
+					}
+				}
+			}
+		}
+		return shader;
+	};
+
+	Renderer.prototype.makeKey = function (shader) {
+		var defineArray = Object.keys(shader.defines);
+		var len = defineArray.length;
+		var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
+		shaderKeyArray.length = 0;
+		for (var j = 0; j < len; j++) {
+			var key = defineArray[j];
+			shaderKeyArray.push(key + '_' + shader.defines[key]);
+		}
+		shaderKeyArray.sort();
+		return shaderKeyArray.join('_') + '_' + shader.name;
 	};
 
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {
