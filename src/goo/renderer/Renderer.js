@@ -1168,44 +1168,7 @@ function (
 						shader.processors[j](shader, renderInfo);
 					}
 				}
-
-				// check defines. if no hit in cache -> add to cache. if hit in cache,
-				// replace with cache version and copy over uniforms.
-				var defineArray = Object.keys(shader.defines);
-				var len = defineArray.length;
-				var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
-				shaderKeyArray.length = 0;
-				for (var j = 0; j < len; j++) {
-					var key = defineArray[j];
-					shaderKeyArray.push(key + '_' + shader.defines[key]);
-				}
-				shaderKeyArray.sort();
-				var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
-
-				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
-
-				if (!shaderCache[defineKey]) {
-					if (shader.builder) {
-						shader.builder(shader, renderInfo);
-					}
-					shader = material.shader = shader.clone();
-					shaderCache[defineKey] = shader;
-				} else {
-					shader = shaderCache[defineKey];
-					if (shader !== material.shader) {
-						var uniforms = material.shader.uniforms;
-						var keys = Object.keys(uniforms);
-						for (var ii = 0, l = keys.length; ii < l; ii++) {
-							var key = keys[ii];
-							var origUniform = shader.uniforms[key] = uniforms[key];
-							if (origUniform instanceof Array) {
-								shader.uniforms[key] = origUniform.slice(0);
-							}
-						}
-
-						material.shader = shader;
-					}
-				}
+				material.shader = this.materialShaderFromCache(material, shader, renderInfo);
 			}
 
 			shader.apply(renderInfo, this);
@@ -1244,6 +1207,61 @@ function (
 				this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 			}
 		}
+	};
+
+	Renderer.prototype.materialShaderFromCache = function(material, shader, renderInfo) {
+
+		// check defines. if no hit in cache -> add to cache. if hit in cache,
+		// replace with cache version and copy over uniforms.
+		// var defineArray = Object.keys(shader.defines);
+		// var len = defineArray.length;
+		// var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
+		// shaderKeyArray.length = 0;
+		// for (var j = 0; j < len; j++) {
+		// 	var key = defineArray[j];
+		// 	shaderKeyArray.push(key + '_' + shader.defines[key]);
+		// }
+		// shaderKeyArray.sort();
+		// var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+
+		var defineKey = this.makeKey(shader);
+
+		var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
+
+		if (!shaderCache[defineKey]) {
+			if (shader.builder) {
+				shader.builder(shader, renderInfo);
+			}
+			shader = shader.clone();
+			shaderCache[defineKey] = shader;
+		} else {
+			shader = shaderCache[defineKey];
+			if (shader !== material.shader) {
+				var uniforms = material.shader.uniforms;
+				var keys = Object.keys(uniforms);
+				for (var ii = 0, l = keys.length; ii < l; ii++) {
+					var key = keys[ii];
+					var origUniform = shader.uniforms[key] = uniforms[key];
+					if (origUniform instanceof Array) {
+						shader.uniforms[key] = origUniform.slice(0);
+					}
+				}
+			}
+		}
+		return shader;
+	};
+
+	Renderer.prototype.makeKey = function (shader) {
+		var defineArray = Object.keys(shader.defines);
+		var len = defineArray.length;
+		var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
+		shaderKeyArray.length = 0;
+		for (var j = 0; j < len; j++) {
+			var key = defineArray[j];
+			shaderKeyArray.push(key + '_' + shader.defines[key]);
+		}
+		shaderKeyArray.sort();
+		return shaderKeyArray.join('_') + '_' + shader.name;
 	};
 
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {
