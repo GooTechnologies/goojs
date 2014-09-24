@@ -394,6 +394,9 @@ function (
 			this.adjustWidth = window.innerWidth;
 			this.adjustHeight = window.innerHeight;
 		}
+
+		this.prevAdjustWidth = -1;
+		this.prevAdjustHeight = -1;
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -451,7 +454,11 @@ function (
 		}
 
 		var aspect = adjustWidth / adjustHeight;
-		this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
+
+		if (this.prevAdjustWidth !== adjustWidth || this.prevAdjustHeight !== adjustHeight) {
+			this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
+		}
+		this.prevAdjustWidth = adjustWidth;
 
 		if (camera && camera.lockedRatio === false && camera.aspect !== aspect) {
 			camera.aspect = aspect;
@@ -1185,16 +1192,18 @@ function (
 
 				// check defines. if no hit in cache -> add to cache. if hit in cache,
 				// replace with cache version and copy over uniforms.
-				var defineArray = Object.keys(shader.defines);
-				var len = defineArray.length;
-				var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
-				shaderKeyArray.length = 0;
-				for (var j = 0; j < len; j++) {
-					var key = defineArray[j];
-					shaderKeyArray.push(key + '_' + shader.defines[key]);
-				}
-				shaderKeyArray.sort();
-				var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+				// var defineArray = Object.keys(shader.defines);
+				// var len = defineArray.length;
+				// var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
+				// shaderKeyArray.length = 0;
+				// for (var j = 0; j < len; j++) {
+				// 	var key = defineArray[j];
+				// 	shaderKeyArray.push(key + '_' + shader.defines[key]);
+				// }
+				// shaderKeyArray.sort();
+				// var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+
+				var defineKey = this.makeKey(shader);
 
 				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 
@@ -1258,6 +1267,19 @@ function (
 				this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 			}
 		}
+	};
+
+	Renderer.prototype.makeKey = function (shader) {
+		var defineArray = Object.keys(shader.defines);
+		var len = defineArray.length;
+		var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
+		shaderKeyArray.length = 0;
+		for (var j = 0; j < len; j++) {
+			var key = defineArray[j];
+			shaderKeyArray.push(key + '_' + shader.defines[key]);
+		}
+		shaderKeyArray.sort();
+		return shaderKeyArray.join('_') + '_' + shader.name;
 	};
 
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {
