@@ -259,7 +259,12 @@ define([
 		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
 		this.displacementVector.sub(this.positionVector);
 		this.offset = this.displacementVector.length();
-		this.centerRatio = 1 - (1 / (this.positionVector.length() / (this.offset * this.edgeRelevance)));
+		var positionVectorLength = this.positionVector.length();
+		if (positionVectorLength) {
+			this.centerRatio = 1 - (this.offset * this.edgeRelevance) / this.positionVector.length();
+		} else {
+			this.centerRatio = 1 - (this.offset * this.edgeRelevance);
+		}
 		this.centerRatio = Math.max(0, this.centerRatio);
 	};
 

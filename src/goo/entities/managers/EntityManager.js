@@ -67,7 +67,7 @@ define([
 	 * @returns {Boolean} true if the entity exists
 	 */
 	EntityManager.prototype.containsEntity = function (entity) {
-		return this._entitiesById[entity.id] !== undefined;
+		return this._entitiesByIndex[entity._index] !== undefined;
 	};
 
 	/**

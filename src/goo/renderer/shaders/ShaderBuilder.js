@@ -325,13 +325,17 @@ function(
 			);
 
 			var lights = shaderInfo.lights;
+			if (lights.length > 0) {
+				fragment.push(
+					'vec3 normalizedViewPosition = normalize(viewPosition);'
+				);
+			}
 			for (var i = 0; i < lights.length; i++) {
 				var light = lights[i];
 
 				fragment.push(
 					'{',
-						'float shadow = 1.0;',
-						'vec3 normalizedViewPosition = normalize(viewPosition);'
+						'float shadow = 1.0;'
 				);
 
 				var useLightCookie = light.lightCookie instanceof Texture;

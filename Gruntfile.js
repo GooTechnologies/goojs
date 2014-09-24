@@ -1,9 +1,9 @@
 /* global module */
-var glob = require('glob');
+
 var _ = require('underscore');
 var fs = require('fs');
 var path = require('path');
-//var buildPack = require('./tools/buildPack');
+
 
 module.exports = function (grunt) {
 	'use strict';
@@ -266,49 +266,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('e2e',		['shell:e2e']);
 	grunt.registerTask('test',		['unittest', 'e2e']); // this gruntfile is a mess
 
-	//! AT: no better place to put this
-	function extractFilename(path) {
-		var index = path.lastIndexOf('/');
-		return index === -1 ? path : path.substr(index + 1);
-	}
-
-	// Creates src/goo.js that depends on all engine modules
-	grunt.registerTask('main-file', function () {
-		// prefiltering out files in packs on the 'ground' level
-		var sourceFiles = glob.sync('!(*pack)/**/*.js', { cwd: 'src/goo/', nonegate: true });
-
-		// filtering files in packs that are not on the 'ground' level
-		var regexp = /.+pack\/.+/;
-		sourceFiles = sourceFiles.filter(function (sourceFile) {
-			return !regexp.test(sourceFile);
-		});
-
-		var allModules = _.map(sourceFiles, function (f) {
-			return 'goo/' + f.replace(/\.js/, '');
-		});
-
-		var lines = [];
-		lines.push('require([');
-		lines.push(_.map(allModules, function (m) { return "\t'" + m + "'"; }).join(',\n'));
-		lines.push('], function (');
-
-		var fileNames = allModules.map(extractFilename);
-
-		lines.push('\t' + fileNames.join(',\n\t'));
-		lines.push(') {');
-		lines.push('\tvar goo = window.goo;\n\tif (!goo) { return; }');
-		fileNames.forEach(function (fileName) {
-			lines.push('\tgoo.' + fileName + ' = ' + fileName + ';');
-		});
-
-		lines.push('});');
-
-		fs.writeFileSync('src/goo.js', lines.join('\n'));
-	});
-
-	grunt.registerTask('init-git', function () {
-		fs.writeFileSync('.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n');
-	});
 
 	// Generates reference screenshots
 	grunt.registerTask('refs', function () {
