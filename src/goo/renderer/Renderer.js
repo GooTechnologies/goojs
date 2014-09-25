@@ -15,7 +15,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
 	'goo/entities/SystemBus',
-	'goo/renderer/TaskScheduler'
+	'goo/renderer/TaskScheduler',
+	'goo/renderer/RenderInfo'
 ],
 /** @lends */
 function (
@@ -34,7 +35,8 @@ function (
 	ShaderLib,
 	ShadowHandler,
 	SystemBus,
-	TaskScheduler
+	TaskScheduler,
+	RenderInfo
 ) {
 	'use strict';
 
@@ -723,9 +725,11 @@ function (
 	 * @param renderList
 	 * @return {RSVP.Promise}
 	 */
+	var preloadMaterials_renderInfo = new RenderInfo();
 	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];
-		var renderInfo = {};
+		var renderInfo = preloadMaterials_renderInfo;
+		renderInfo.reset();
 
 		if (Array.isArray(renderList)) {
 			for (var i = 0; i < renderList.length; i++) {
@@ -736,14 +740,14 @@ function (
 
 				// this function does so much more than I need it to do
 				// I only need the material of the renderable
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 
 				for (var j = 0; j < renderInfo.materials.length; j++) {
 					this.preloadTextures(renderInfo.materials[j], queue);
 				}
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			for (var j = 0; j < renderInfo.materials.length; j++) {
 				this.preloadTextures(renderInfo.materials[j], queue);
 			}
@@ -829,9 +833,9 @@ function (
 	 * @param lights
 	 */
 	Renderer.prototype.precompileShaders = function (renderList, lights) {
-		var renderInfo = {
+		var renderInfo = new RenderInfo({
 			lights: lights
-		};
+		});
 
 		var queue = [];
 
@@ -841,7 +845,7 @@ function (
 				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
 					continue;
 				}
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 
 				for (var j = 0; j < renderInfo.materials.length; j++) {
 					renderInfo.material = renderInfo.materials[j];
@@ -849,7 +853,7 @@ function (
 				}
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			for (var j = 0; j < renderInfo.materials.length; j++) {
 				renderInfo.material = renderInfo.materials[j];
 				this.precompileShader(renderInfo.materials[j], renderInfo, queue);
@@ -860,8 +864,7 @@ function (
 	};
 
 	Renderer.prototype.preloadBuffers = function (renderList) {
-		var renderInfo = {
-		};
+		var renderInfo = new RenderInfo();
 
 		if (Array.isArray(renderList)) {
 			for (var i = 0; i < renderList.length; i++) {
@@ -869,14 +872,14 @@ function (
 				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
 					continue;
 				}
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 				for (var j = 0; j < renderInfo.materials.length; j++) {
 					renderInfo.material = renderInfo.materials[j];
 					this.preloadBuffer(renderable, renderInfo.materials[j], renderInfo);
 				}
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			for (var j = 0; j < renderInfo.materials.length; j++) {
 				renderInfo.material = renderInfo.materials[j];
 				this.preloadBuffer(renderList, renderInfo.materials[j], renderInfo);
@@ -969,6 +972,7 @@ function (
 	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
 	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
+	var render_renderInfo = new RenderInfo();
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
 		if (overrideMaterials) {
 			this._overrideMaterials = (overrideMaterials instanceof Array) ? overrideMaterials : [overrideMaterials];
@@ -989,13 +993,13 @@ function (
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
-		var renderInfo = {
-			camera: camera,
-			mainCamera: Renderer.mainCamera,
-			lights: lights,
-			shadowHandler: this.shadowHandler,
-			renderer: this
-		};
+		var renderInfo = render_renderInfo;
+		renderInfo.reset();
+		renderInfo.camera = camera;
+		renderInfo.mainCamera = Renderer.mainCamera;
+		renderInfo.lights = lights;
+		renderInfo.shadowHandler = this.shadowHandler;
+		renderInfo.renderer = this;
 
 		if (Array.isArray(renderList)) {
 			this.renderQueue.sort(renderList, camera);
@@ -1005,11 +1009,11 @@ function (
 				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
 					continue;
 				}
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 				this.renderMesh(renderInfo);
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			this.renderMesh(renderInfo);
 		}
 
@@ -1017,31 +1021,6 @@ function (
 		if (renderTarget && renderTarget.generateMipmaps && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
 			this.updateRenderTargetMipmap(renderTarget);
 		}
-	};
-
-	// REVIEW: make a RenderInfo class?
-	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {
-		if (renderable instanceof Entity) {
-			renderInfo.meshData = renderable.meshDataComponent.meshData;
-			renderInfo.materials = renderable.meshRendererComponent.materials;
-			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.worldTransform;
-			if(renderable.meshDataComponent.currentPose) {
-				renderInfo.currentPose = renderable.meshDataComponent.currentPose;
-			} else {
-				renderInfo.currentPose = undefined;
-			}
-		} else {
-			renderInfo.meshData = renderable.meshData;
-			renderInfo.materials = renderable.materials;
-			renderInfo.transform = renderable.transform;
-			if(renderable.currentPose) {
-				renderInfo.currentPose = renderable.currentPose;
-			} else {
-				renderInfo.currentPose = undefined;
-			}
-		}
-
-		renderInfo.renderable = renderable;
 	};
 
 	/*
