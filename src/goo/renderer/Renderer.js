@@ -1129,7 +1129,7 @@ function (
 				material.shader = this.materialShaderFromCache(material, shader, renderInfo);
 			}
 
-			shader.apply(renderInfo, this);
+			material.shader.apply(renderInfo, this);
 
 			this.updateDepthTest(material);
 			this.updateCulling(material);
