@@ -37,6 +37,8 @@ define([
 
 			this.hidden = false;
 			this.store = new Vector3();
+			this.drawPosition = new Vector3();
+			this.prevDrawPosition = new Vector3();
 			this.settings = null;
 			this.pick = true;
 			this.draw = false;
@@ -44,6 +46,28 @@ define([
 			this.eventY = 0;
 			this.vegetationSettings = {
 				gridSize: 7
+			};
+			// Custom callbacks
+			this.powerMultiplyFunc = function () {
+				return 1 + this.drawPosition.distance(this.prevDrawPosition) * 0.05 / this.goo.world.tpf;
+			};
+			this.getDrawPoints = function () {
+				var distance = this.drawPosition.distance(this.prevDrawPosition);
+				var radius = this.settings.size / 2;
+				if (distance > radius * 2) {
+					var num = Math.floor(distance / radius);
+					var points = [];
+					for (var i = 1; i < num; i++) {
+						var point = new Vector3();
+						point.setv(this.prevDrawPosition);
+						point.lerp(this.drawPosition, i / num);
+						points.push(point);
+					}
+					console.log(distance, radius, num);
+					return points;
+				} else {
+					return [this.drawPosition];
+				}
 			};
 		}
 
@@ -68,6 +92,7 @@ define([
 
 				this.pick = true;
 				this.draw = true;
+				this.first = true;
 				console.log('mousedown');
 			}
 		};
@@ -100,6 +125,7 @@ define([
 				LMB = true;
 				this.pick = true;
 				this.draw = true;
+				this.first = true;
 				console.log('touchdown');
 			} else {
 				LMB = false;
@@ -509,11 +535,18 @@ define([
 
 			if (this.terrain) {
 				var settings = this.settings;
+				this.prevDrawPosition.setv(this.drawPosition);
+				var store = this.drawPosition;
 
 				if (this.hidden && this.pick) {
-					this.terrain.pick(cameraEntity.cameraComponent.camera, this.eventX, this.eventY, this.store);
-					this.terrain.setMarker('add', settings.size, this.store.x, this.store.z, settings.power, settings.brushTexture);
+					this.terrain.pick(cameraEntity.cameraComponent.camera, this.eventX, this.eventY, store);
+					this.terrain.setMarker('add', settings.size, store.x, store.z, settings.power, settings.brushTexture);
 					this.pick = false;
+				}
+
+				if (this.first) {
+					this.prevDrawPosition.setv(this.drawPosition);
+					this.first = false;
 				}
 
 				if (this.hidden && this.draw) {
@@ -533,10 +566,17 @@ define([
 						rgba = [0, 0, 0, 1];
 					}
 
-					this.terrain.draw(settings.mode, settings.type, settings.size, this.store.x, this.store.y, this.store.z,
-						settings.power * this.goo.world.tpf * 60 / 100, settings.brushTexture, rgba);
+					var power = settings.power * this.goo.world.tpf * 60 / 100;
+					var drawPoints = this.getDrawPoints();
+					if (drawPoints.length <= 1) {
+						power *= this.powerMultiplyFunc();
+					}
+					for (var i = 0; i < drawPoints.length; i++) {
+						var point = drawPoints[i];
+						this.terrain.draw(settings.mode, settings.type, settings.size, point.x, point.y, point.z, power, settings.brushTexture, rgba);
+					}
 					this.terrain.updateTextures();
-					this.drawCallback(settings, type, this.store)
+					this.drawCallback(settings, type, store);
 				}
 
 				this.terrain.update(pos);
