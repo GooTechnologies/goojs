@@ -137,6 +137,14 @@ function(
 				if (addedEntityIds[entity.id]) {
 					entity.addToWorld();
 				}
+
+				// readding back entities removed by the scripts/fsm
+				if (!addedEntityIds[entity.id] &&
+					!removedEntityIds[entity.id] &&
+					!entity._world.entityManager.containsEntity(entity)) {
+					entity.addToWorld();
+				}
+
 				scene.entities[entity.id] = entity;
 			}
 
