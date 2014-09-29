@@ -1108,11 +1108,53 @@ function (
 
 		for (var i = 0; i < count; i++) {
 			var material = null, orMaterial = null;
+
 			if (i < materials.length) {
 				material = materials[i];
 			}
-			this.configureRenderInfo(renderInfo, i, material, orMaterial, originalData, meshData, flatOrWire);
+			if (i < this._overrideMaterials.length) {
+				orMaterial = this._overrideMaterials[i];
+			}
 
+			if (material && orMaterial) {
+				this._override(orMaterial, material, this._mergedMaterial);
+				material = this._mergedMaterial;
+			} else if (orMaterial) {
+				material = orMaterial;
+			}
+
+			if (!material.shader) {
+				if (!material.errorOnce) {
+					console.warn('No shader set on material: ' + material.name);
+					material.errorOnce = true;
+				}
+				continue;
+			} else {
+				material.errorOnce = false;
+			}
+
+			if (material.wireframe && flatOrWire !== 'wire') {
+				if (!meshData.wireframeData) {
+					meshData.wireframeData = meshData.buildWireframeData();
+				}
+				meshData = meshData.wireframeData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = 'wire';
+			} else if (material.flat && flatOrWire !== 'flat') {
+				if (!meshData.flatMeshData) {
+					meshData.flatMeshData = meshData.buildFlatMeshData();
+				}
+				meshData = meshData.flatMeshData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = 'flat';
+			} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
+				meshData = originalData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = null;
+			}
+
+			renderInfo.material = material;
+			renderInfo.meshData = meshData;
 
 			//! AT: this should stay in a method
 
@@ -1165,56 +1207,6 @@ function (
 				this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 			}
 		}
-	};
-
-	Renderer.prototype.configureRenderInfo = function(renderInfo, i, material, orMaterial, originalData, meshData, flatOrWire) {
-
-
-		if (i < this._overrideMaterials.length) {
-			orMaterial = this._overrideMaterials[i];
-		}
-
-		if (material && orMaterial) {
-			this._override(orMaterial, material, this._mergedMaterial);
-			material = this._mergedMaterial;
-		} else if (orMaterial) {
-			material = orMaterial;
-		}
-
-		if (!material.shader) {
-			if (!material.errorOnce) {
-				console.warn('No shader set on material: ' + material.name);
-				material.errorOnce = true;
-			}
-			return;
-		} else {
-			material.errorOnce = false;
-		}
-
-		if (material.wireframe && flatOrWire !== 'wire') {
-			if (!meshData.wireframeData) {
-				meshData.wireframeData = meshData.buildWireframeData();
-			}
-			meshData = meshData.wireframeData;
-			this.bindData(meshData.vertexData);
-			flatOrWire = 'wire';
-		} else if (material.flat && flatOrWire !== 'flat') {
-			if (!meshData.flatMeshData) {
-				meshData.flatMeshData = meshData.buildFlatMeshData();
-			}
-			meshData = meshData.flatMeshData;
-			this.bindData(meshData.vertexData);
-			flatOrWire = 'flat';
-		} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
-			meshData = originalData;
-			this.bindData(meshData.vertexData);
-			flatOrWire = null;
-		}
-
-
-		renderInfo.material = material;
-		renderInfo.meshData = meshData;
-
 	};
 
 	Renderer.prototype.materialShaderFromCache = function(material, shader, renderInfo) {
