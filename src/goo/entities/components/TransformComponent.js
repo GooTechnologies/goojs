@@ -24,17 +24,12 @@ function (
 	function TransformComponent() {
 		this.type = 'TransformComponent';
 
-		/**
-		 * @type {Entity}
-		 */
 		this.entity = null;
-
 		/** Parent TransformComponent in the "scene graph".
 		 * @type {TransformComponent}
 		 * @default
 		 */
 		this.parent = null;
-
 		/**
 		 * Child TransformComponents in the "scene graph".
 		 * @type {TransformComponent[]}

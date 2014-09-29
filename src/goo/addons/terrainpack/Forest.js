@@ -413,7 +413,6 @@ function (
 		],
 		attributes : {
 			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL,
 			vertexUV0 : MeshData.TEXCOORD0,
 			base : 'BASE',
 			offset : 'OFFSET'
@@ -423,7 +422,6 @@ function (
 			cameraPosition : Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
 			normalMap : Shader.NORMAL_MAP,
-			worldMatrix : Shader.WORLD_MATRIX,
 			discardThreshold: -0.01,
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
@@ -439,11 +437,10 @@ function (
 		vshader: function () {
 			return [
 		'attribute vec3 vertexPosition;',
-		'attribute vec3 vertexNormal;',
 		'attribute vec2 vertexUV0;',
 		'attribute float base;',
 		'attribute vec2 offset;',
-		'uniform mat4 worldMatrix;',
+
 		'uniform mat4 viewProjectionMatrix;',
 		'uniform vec3 cameraPosition;',
 		'uniform float time;',
@@ -458,17 +455,26 @@ function (
 		'varying vec2 texCoord0;',
 
 		'void main(void) {',
-				'vec3 swayPos = vertexPosition;',
-				'swayPos.x += sin(time * 1.0 + swayPos.x * 0.5) * base * sin(time * 1.8 + swayPos.y * 0.6) * 0.1 + 0.08;',
-				'vec4 worldPos = worldMatrix * vec4(swayPos, 1.0);',
-				'vWorldPos = worldPos.xyz;',
-				'gl_Position = viewProjectionMatrix * worldPos;',
+			'vec3 swayPos = vertexPosition;',
 
-				ShaderBuilder.light.vertex,
+			'vec3 nn = cameraPosition - swayPos.xyz;',
+			'nn.y = 0.0;',
+			'normal = normalize(nn);',
+			'tangent = cross(vec3(0.0, 1.0, 0.0), normal);',
+			'binormal = cross(normal, tangent);',
+			'swayPos.xz += tangent.xz * offset.x;',
+			'swayPos.y += offset.y;',
 
-				'normal = (worldMatrix * vec4(vertexNormal, 0.0)).xyz;',
-				'texCoord0 = vertexUV0;',
-				'viewPosition = cameraPosition - worldPos.xyz;',
+			'swayPos.x += sin(time * 0.5 + swayPos.x * 0.4) * base * sin(time * 1.5 + swayPos.y * 0.4) * 0.02 + 0.01;',
+
+		'	vec4 worldPos = vec4(swayPos, 1.0);',
+		'	vWorldPos = worldPos.xyz;',
+		'	gl_Position = viewProjectionMatrix * worldPos;',
+
+			ShaderBuilder.light.vertex,
+
+		'	texCoord0 = vertexUV0;',
+		'	viewPosition = cameraPosition - worldPos.xyz;',
 		'}'//
 		].join('\n');
 		},
@@ -492,6 +498,7 @@ function (
 		'void main(void)',
 		'{',
 		'	vec4 final_color = texture2D(diffuseMap, texCoord0);',
+			'if (final_color.a < discardThreshold) discard;',
 			// 'final_color = vec4(1.0);',
 
 			'mat3 tangentToWorld = mat3(tangent, binormal, normal);',

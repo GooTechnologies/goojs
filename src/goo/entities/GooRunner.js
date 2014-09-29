@@ -25,9 +25,7 @@ define([
 	'goo/util/Logo',
 
 	'goo/entities/SystemBus',
-	'goo/renderer/Material',
-
-	'goo/util/Tap'
+	'goo/renderer/Material'
 ],
 /** @lends */
 function (
@@ -57,9 +55,7 @@ function (
 	Logo,
 
 	SystemBus,
-	Material,
-
-	Tap
+	Material
 ) {
 	'use strict';
 
@@ -172,8 +168,7 @@ function (
 			mousemove: null,
 			touchstart: null,
 			touchend: null,
-			touchmove: null,
-			tap: null
+			touchmove: null
 		};
 		this._eventListeners = {
 			click: [],
@@ -182,8 +177,7 @@ function (
 			mousemove: [],
 			touchstart: [],
 			touchend: [],
-			touchmove: [],
-			tap: []
+			touchmove: []
 		};
 		this._eventTriggered = {
 			click: null,
@@ -192,8 +186,7 @@ function (
 			mousemove: null,
 			touchstart: null,
 			touchend: null,
-			touchmove: null,
-			tap: null
+			touchmove: null
 		};
 
 		GameUtils.addVisibilityChangeListener(function (paused) {
@@ -217,8 +210,6 @@ function (
 		};
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
-
-		this._tap = new Tap(this.renderer.domElement);
 	}
 
 	/**
@@ -428,16 +419,10 @@ function (
 
 		// update the stats if there are any
 		if (this.stats) {
-			var transformUpdates = 0;
-			var tSystem = this.world.getSystem('TransformSystem');
-			if (tSystem) {
-				transformUpdates = tSystem.numUpdates;
-			}
 			this.stats.update(
-
-				this.renderer.info.toString() + '<br/>' +
-				'transformUpdates: ' + transformUpdates +
-				'<br>Cached shaders: ' + Object.keys(this.renderer.rendererRecord.shaderCache).length
+				this.renderer.info.toString() + '<br>' +
+				'Transform updates: ' + this.world.getSystem('TransformSystem').numUpdates +
+				'<br>Cached shaders: ' // + Object.keys(this.renderer.rendererRecord.shaderCache).length
 			);
 		}
 
@@ -571,7 +556,7 @@ function (
 	 * Adds an event listener to the GooRunner.<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example}
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
-	 * 'touchstart', 'touchend', 'touchmove' or 'tap'.
+	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @param  {function(event)} callback Callback function.
 	 * @param {Entity} callback.event.entity Picked entity, undefined if no entity is picked.
 	 * @param {Vector3} callback.event.intersection Point of pick ray intersection with scene.
@@ -605,7 +590,7 @@ function (
 	/**
 	 * Removes an event listener from the GooRunner.
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
-	 * 'touchstart', 'touchend', 'touchmove' or 'tap'.
+	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @param {function(event)} callback Callback to remove from event listener.
 	 */
 	GooRunner.prototype.removeEventListener = function (type, callback) {
@@ -624,7 +609,7 @@ function (
 	/**
 	 * Triggers an event on the GooRunner (force).
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
-	 * 'touchstart', 'touchend', 'touchmove' or 'tap'.
+	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @param {object} evt The GooRunner-style event
 	 * @param {Entity} evt.entity Event entity.
 	 * @param {number} evt.x Event canvas X coordinate.
@@ -701,9 +686,7 @@ function (
 				});
 			}.bind(this));
 		}.bind(this);
-
 		this.renderer.domElement.addEventListener(type, func);
-
 		this._events[type] = func;
 	};
 
@@ -856,8 +839,6 @@ function (
 		this.callbacksNextFrame = null;
 		this._takeSnapshots = null;
 		this._events = null;
-
-		this._tap.destroy();
 	};
 
 	return GooRunner;

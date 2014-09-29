@@ -335,6 +335,8 @@ function () {
 		this.context.uniformMatrix3fv(this.location, transpose, matrix.data);
 	};
 
+
+
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix4fv = function (matrix, transpose) {
 		transpose = transpose === true;
@@ -370,7 +372,12 @@ function () {
 			this.location.value = matrix.clone();
 		}
 
-		this.context.uniformMatrix4fv(this.location, transpose, matrix.data);
+
+		for (var i = 0; i < matrix.data.length; i++) {
+			matrix.data32[i] = matrix.data[i];
+		}
+
+		this.context.uniformMatrix4fv(this.location, transpose, matrix.data32);
 	};
 
 	return ShaderCall;

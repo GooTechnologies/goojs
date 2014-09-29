@@ -33,7 +33,8 @@ define([
 			var idx = settings.skeletonMap.originals.indexOf(skeletonPose);
 			var clonedSkeletonPose;
 			if (idx === -1) {
-				clonedSkeletonPose = skeletonPose.clone();
+				console.log(skeletonPose)
+				clonedSkeletonPose = skeletonPose // .clone();
 				settings.skeletonMap.originals.push(skeletonPose);
 				settings.skeletonMap.clones.push(clonedSkeletonPose);
 			} else {

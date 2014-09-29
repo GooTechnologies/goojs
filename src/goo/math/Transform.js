@@ -89,7 +89,18 @@ function (
 
 	// TODO: sort this crap out!
 	Transform.prototype.multiply = function (a, b) {
+		for (var i = 0; i < a.matrix.data.length; i++) {
+			a.matrix.data[i]*=0.0001;
+			b.matrix.data[i]*=0.0001;
+		}
+
 		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
+
+		for (var i = 0; i < a.matrix.data.length; i++) {
+			a.matrix.data[i]*=10000;
+			b.matrix.data[i]*=10000;
+			this.matrix.data[i]*=100000000;
+		}
 
 		tmpMat1.data.set(a.rotation.data);
 		//tmpMat1.multiplyDiagonalPost(a.scale, tmpMat1);

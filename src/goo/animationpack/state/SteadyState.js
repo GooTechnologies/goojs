@@ -76,8 +76,7 @@ function (
 		}
 
 		cloned._sourceTree = this._sourceTree.clone();
-		cloned._sourceTree._name = this._sourceTree.name;
-
+		 cloned._sourceTree._name = this._sourceTree.name;
 		return cloned;
 	};
 

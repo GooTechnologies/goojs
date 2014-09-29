@@ -95,13 +95,6 @@ function (
 			var fx = Math.floor(tmpVector.x / devicePixelRatio);
 			var fy = Math.floor(tmpVector.y / devicePixelRatio);
 
-			if (component.confineToScreen) {
-				var halfWidth = component.domElement.offsetWidth / 2;
-				var halfHeight = component.domElement.offsetHeight / 2;
-				fx = MathUtils.clamp(fx, halfWidth, renderer.domElement.clientWidth - halfWidth);
-				fy = MathUtils.clamp(fy, halfHeight, renderer.domElement.clientHeight - halfHeight);
-			}
-
 			setStyle(component.domElement, 'transform',
 				'translate(-50%, -50%) ' +
 				'translate(' + fx + 'px, ' + fy + 'px)' +

@@ -26,7 +26,6 @@ function() {
 		this.currentTextureArraysUnit = 0;
 
 		this.textureRecord = [];
-		this.shaderCache = {};
 
 		this.usedProgram = null;
 		this.boundAttributes = [];

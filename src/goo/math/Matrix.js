@@ -22,7 +22,8 @@ function (
 		/** Column-major storage for the matrix components.
 		 * @type {Float32Array}
 		 */
-		this.data = new Float32Array(this.rows * this.cols);
+		this.data = new Float64Array(this.rows * this.cols);
+		this.data32 = new Float32Array(this.rows * this.cols);
 	}
 
 	/* ====================================================================== */

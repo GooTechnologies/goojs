@@ -734,7 +734,7 @@ function(
 		uniforms: {
 			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
-			cameraPosition: Shader.CAMERA_TRANSLATION,
+			cameraPosition: Shader.CAMERA,
 			heightMap: 'HEIGHT_MAP',
 			scaleHeightWidth:1,
 			normalMap: 'NORMAL_MAP',
@@ -788,12 +788,7 @@ function(
 				'const vec2 oneOverWidth = vec2(1.0 / 16.0);',
 
 				'void main(void) {',
-				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0) ;',
-
-				'worldPos.x = worldPos.x +cameraPosition.x;',
-				'worldPos.y = worldPos.y +cameraPosition.y;',
-				'worldPos.z = worldPos.z +cameraPosition.z;',
-
+				'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
 				'vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw/vec2(scaleHeightWidth, scaleHeightWidth);',
 
 				'vec4 heightCol = texture2D(heightMap, coord);',
@@ -807,14 +802,9 @@ function(
 				'alphaval = vec4(zf, zd, alpha.x, z);',
 
 				'worldPos.y = z * resolution.x;',
-
-				'worldPos.x = worldPos.x - cameraPosition.x;',
-				'worldPos.y = worldPos.y - cameraPosition.y;',
-				'worldPos.z = worldPos.z - cameraPosition.z;',
-
 				'gl_Position = viewProjectionMatrix * worldPos;',
 
-				'vWorldPos = (worldPos.xyz / vec3(scaleHeightWidth, scaleHeightWidth, scaleHeightWidth))+(cameraPosition/scaleHeightWidth);',
+				'vWorldPos = worldPos.xyz / vec3(scaleHeightWidth, scaleHeightWidth, scaleHeightWidth);',
 				'viewPosition = cameraPosition/vec3(scaleHeightWidth, scaleHeightWidth, scaleHeightWidth) - vWorldPos;',
 
 				ShaderBuilder.light.vertex,
@@ -850,7 +840,7 @@ function(
 
 				// 'uniform vec2 resolution;',
 				// 'uniform sampler2D heightMap;',
-				'uniform vec3 cameraPosition;',
+
 				'varying vec3 vWorldPos;',
 				'varying vec3 viewPosition;',
 				'varying vec4 alphaval;',
@@ -861,8 +851,6 @@ function(
 				'void main(void) {',
 				//	'if (alphaval.w < -10000.0) discard;',
 					'vec2 mapcoord = vWorldPos.xz / resolutionNorm;',
-
-				//	'mapcoord = mapcoord;',
 
 					'vec4 final_color = vec4(1.0);',
 
@@ -1241,7 +1229,7 @@ function(
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraFar : Shader.FAR_PLANE,
-			cameraPosition: Shader.CAMERA_TRANSLATION,
+			cameraPosition: Shader.CAMERA,
 			scaleHeightWidth:1,
 			heightMap: 'HEIGHT_MAP',
 			resolution: [255, 1, 1, 1],
@@ -1267,7 +1255,7 @@ function(
 
 		'void main(void) {',
 			'vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
-			'vec2 coord = (cameraPosition.xz + worldPos.xz + vec2(0.5, 0.5)) / resolution.zw/vec2(scaleHeightWidth, scaleHeightWidth);',
+			'vec2 coord = (worldPos.xz + vec2(0.5, 0.5)) / resolution.zw/vec2(scaleHeightWidth, scaleHeightWidth);',
 
 			'vec4 heightCol = texture2D(heightMap, coord);',
 			'float zf = heightCol.r;',

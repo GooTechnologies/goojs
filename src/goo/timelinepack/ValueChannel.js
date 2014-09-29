@@ -91,6 +91,13 @@ define([
 		return function (time, value) {
 			if (!entity) { entity = resolver(entityId); }
 
+			//
+			// REVIEW:
+			// what about a guard instead?
+			// if (!entity) { return; }
+			// I used to be pro-guard as it reduces indentation, but is it easier to read..?
+			//
+
 			//! AT: this prevents the timeline from blowing up if the entity is absent
 			// it's a temporary fix in the engine until the issue is patched in create
 			// https://trello.com/c/cj8XQnUz/1588-normal-user-can-t-import-prefabs-with-timelines-if-not-all-animated-objects-are-in-the-prefab

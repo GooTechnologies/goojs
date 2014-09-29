@@ -327,7 +327,7 @@ function (
 	 * @returns {AnimationLayer}
 	 */
 	AnimationLayer.prototype.clone = function () {
-		var cloned = new AnimationLayer(this._name);
+		var cloned = new AnimationLayer(this._name, this.id+'_');
 
 
 		for (var key in this._steadyStates) {

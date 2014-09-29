@@ -18,7 +18,7 @@ function (
 	 */
 
 	function Vector(size) {
-		this.data = new Float32Array(size || 0);
+		this.data = new Float64Array(size || 0);
 	}
 
 	/* ====================================================================== */
