@@ -1062,6 +1062,7 @@ function(
 		' float currentHeight = unpackDepth16(texture2D(heightMap, texCoord1).rg);',
 		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
 		' currentHeight += brush.r * brush.a * opacity;',
+		//' currentHeight = currentHeight * smoothstep(0.0, 0.1, texCoord1.x) * smoothstep(0.0, 0.1, texCoord1.y) * smoothstep(1.0, 0.9, texCoord1.x) * smoothstep(1.0, 0.9, texCoord1.y);',
 		' gl_FragColor.rg = packDepth16(currentHeight);',
 		'}'//
 		].join('\n')
