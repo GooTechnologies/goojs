@@ -795,6 +795,14 @@ function(
 		}
 	};
 
+	// Hack to get smooth clamping of the terrain near edges.
+	// Should be using uniform parameters, but that would remove the hackiness.
+	var clampCurrentHeight = [
+		' float lim = 0.15;',
+		' float mult = smoothstep(0.0, lim, texCoord1.x) * smoothstep(0.0, lim, texCoord1.y) * smoothstep(1.0, 1.0-lim, texCoord1.x) * smoothstep(1.0, 1.0-lim, texCoord1.y);',
+		' currentHeight = clamp(currentHeight, mix(0.5, 0.0, mult), mix(0.72, 1.0, mult));'
+	].join('\n');
+
 	var terrainShaderDefFloat = {
 		defines: {
 			SKIP_SPECULAR: true
@@ -1059,10 +1067,11 @@ function(
 		ShaderFragment.methods.unpackDepth16,
 		'void main(void)',
 		'{',
+		// Note: currentHeight is between 0 and 1
 		' float currentHeight = unpackDepth16(texture2D(heightMap, texCoord1).rg);',
-		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
+		' vec4 brush = texture2D(diffuseMap, texCoord0);',
 		' currentHeight += brush.r * brush.a * opacity;',
-		//' currentHeight = currentHeight * smoothstep(0.0, 0.1, texCoord1.x) * smoothstep(0.0, 0.1, texCoord1.y) * smoothstep(1.0, 0.9, texCoord1.x) * smoothstep(1.0, 0.9, texCoord1.y);',
+		clampCurrentHeight,
 		' gl_FragColor.rg = packDepth16(currentHeight);',
 		'}'//
 		].join('\n')
@@ -1217,6 +1226,7 @@ function(
 		'	float currentHeight = unpackDepth16(texture2D(heightMap, texCoord1).rg);',
 		'	vec4 brush = texture2D(diffuseMap, texCoord0);',
 		'	currentHeight = mix(currentHeight, height, brush.r * brush.a * opacity);',
+		clampCurrentHeight,
 		' gl_FragColor.rg = packDepth16(currentHeight);',
 		'}'//
 		].join('\n')
