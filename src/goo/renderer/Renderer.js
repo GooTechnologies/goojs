@@ -795,15 +795,17 @@ function (
 			// check defines. if no hit in cache -> add to cache. if hit in cache,
 			// replace with cache version and copy over uniforms.
 			// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
-			var defineArray = Object.keys(shader.defines);
-			var len = defineArray.length;
-			var shaderKeyArray = [];
-			for (var j = 0; j < len; j++) {
-				var key = defineArray[j];
-				shaderKeyArray.push(key + '_' + shader.defines[key]);
-			}
-			shaderKeyArray.sort();
-			var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+		//	var defineArray = Object.keys(shader.defines);
+		//	var len = defineArray.length;
+		//	var shaderKeyArray = [];
+		//	for (var j = 0; j < len; j++) {
+		//		var key = defineArray[j];
+		//		shaderKeyArray.push(key + '_' + shader.defines[key]);
+		//	}
+		//	shaderKeyArray.sort();
+		//	var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+
+			var defineKey = this.makeKey(shader);
 
 			var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 			if (!shaderCache[defineKey]) {
@@ -1264,17 +1266,22 @@ function (
 		return shader;
 	};
 
+	var definesIndexes = [];
+
 	Renderer.prototype.makeKey = function (shader) {
 		var defineArray = Object.keys(shader.defines);
-		var len = defineArray.length;
-		var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
-		shaderKeyArray.length = 0;
-		for (var j = 0; j < len; j++) {
-			var key = defineArray[j];
-			shaderKeyArray.push(key + '_' + shader.defines[key]);
+		var key = '';
+
+		for (var i = 0, l = defineArray.length; i < l; i++) {
+			var defineInt = definesIndexes.indexOf(shader.defines[defineArray[i]]);
+			if (defineInt === -1) {
+				definesIndexes.push(shader.defines[defineArray[i]]);
+				defineInt = definesIndexes.length;
+			}
+			key += defineInt;
 		}
-		shaderKeyArray.sort();
-		return shaderKeyArray.join('_') + '_' + shader.name;
+
+		return key;
 	};
 
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {
