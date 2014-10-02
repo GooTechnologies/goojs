@@ -384,6 +384,27 @@ function (
 			Renderer.mainCamera = newCam.camera;
 			this.checkResize(Renderer.mainCamera);
 		}.bind(this));
+
+		// OÅ For fast shader chache lookup
+		this._definesIndexes = [];
+
+
+		var that = this;
+		var el = that.domElement;
+		if (document.querySelector) {
+			this.adjustWidth = el.offsetWidth;
+			this.adjustHeight = el.offsetHeight;
+			window.addEventListener('resize', function (evt) {
+				that.adjustWidth = el.offsetWidth;
+				that.adjustHeight = el.offsetHeight;
+			});
+		} else {
+			this.adjustWidth = window.innerWidth;
+			this.adjustHeight = window.innerHeight;
+		}
+
+		this.prevAdjustWidth = -1;
+		this.prevAdjustHeight = -1;
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
@@ -1245,17 +1266,15 @@ function (
 		return shader;
 	};
 
-	var definesIndexes = [];
-
 	Renderer.prototype.makeKey = function (shader) {
 		var defineArray = Object.keys(shader.defines);
 		var key = '';
 
 		for (var i = 0, l = defineArray.length; i < l; i++) {
-			var defineInt = definesIndexes.indexOf(shader.defines[defineArray[i]]);
+			var defineInt = this._definesIndexes.indexOf(shader.defines[defineArray[i]]);
 			if (defineInt === -1) {
-				definesIndexes.push(shader.defines[defineArray[i]]);
-				defineInt = definesIndexes.length;
+				this._definesIndexes.push(shader.defines[defineArray[i]]);
+				defineInt = this._definesIndexes.length;
 			}
 			key += defineInt;
 		}
