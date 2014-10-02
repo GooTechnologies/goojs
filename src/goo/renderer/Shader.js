@@ -175,59 +175,55 @@ function (
 	 */
 	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
 
-	Shader.prototype.apply = function (shaderInfo, renderer) {
-		var context = renderer.context;
-		var record = renderer.rendererRecord;
-
+	Shader.prototype.compileProgram = function(renderer) {
 		if (this.shaderProgram === null) {
 			this._investigateShaders();
 			this.addDefines(this.defines);
 			this.addPrecision(this.overridePrecision || renderer.shaderPrecision);
 			this.compile(renderer);
 		}
+	};
 
-		// Set the ShaderProgram active
-		var switchedProgram = false;
+	Shader.prototype.activateProgram = function(context, record) {
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
-			switchedProgram = true;
+			return true
+		}
+	};
+
+	Shader.prototype.bindAttributeKey = function(record, renderer, attributeMap, key) {
+		var attribute = attributeMap[this.attributes[key]];
+		if (!attribute) {
+			// TODO: log or what?
+			return;
 		}
 
-		record.newlyEnabledAttributes.length = 0;
+		var attributeIndex = this.attributeIndexMapping[key];
+		if (attributeIndex === undefined) {
+			// console.warn('Attribute binding [' + name + '] does not exist in the shader.');
+			return;
+		}
 
-		// Bind attributes
-		//TODO: good?
+		record.newlyEnabledAttributes[attributeIndex] = true;
+		// if (switchedProgram) {
+		// renderer.context.enableVertexAttribArray(attributeIndex);
+		// }
+		renderer.bindVertexAttribute(attributeIndex, attribute);
+	};
+
+	Shader.prototype.bindAttributes = function(record, renderer, attributeMap) {
 		if (this.attributes) {
-		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
+			// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
 			// record.attributes = this.attributes;
 			// record.meshData = shaderInfo.meshData;
-			var attributeMap = shaderInfo.meshData.attributeMap;
-
-			var attributes = this.attributes;
-			var keys = this.attributeKeys;
-			for (var i = 0, l = keys.length; i < l; i++) {
-				var key = keys[i];
-				var attribute = attributeMap[attributes[key]];
-				if (!attribute) {
-					// TODO: log or what?
-					continue;
-				}
-
-				var attributeIndex = this.attributeIndexMapping[key];
-				if (attributeIndex === undefined) {
-					// console.warn('Attribute binding [' + name + '] does not exist in the shader.');
-					continue;
-				}
-
-				record.newlyEnabledAttributes[attributeIndex] = true;
-				// if (switchedProgram) {
-					// renderer.context.enableVertexAttribArray(attributeIndex);
-				// }
-				renderer.bindVertexAttribute(attributeIndex, attribute);
+			for (var i = 0, l = this.attributeKeys.length; i < l; i++) {
+				this.bindAttributeKey(record, renderer, attributeMap, this.attributeKeys[i]);
 			}
 		}
+	};
 
+	Shader.prototype.disableAttributes = function(record, renderer) {
 		for (var i = 0, l = record.enabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
@@ -236,6 +232,9 @@ function (
 				record.enabledAttributes[i] = false;
 			}
 		}
+	};
+
+	Shader.prototype.enableAttributes = function(record, renderer) {
 		for (var i = 0, l = record.newlyEnabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
@@ -244,7 +243,9 @@ function (
 				record.enabledAttributes[i] = true;
 			}
 		}
+	};
 
+	Shader.prototype.matchUniforms = function(shaderInfo) {
 		if (this.matchedUniforms) {
 			this.textureIndex = 0;
 
@@ -255,6 +256,26 @@ function (
 				this._bindUniform(this.matchedUniforms[i], shaderInfo);
 			}
 		}
+	};
+
+	Shader.prototype.apply = function (shaderInfo, renderer) {
+		var context = renderer.context;
+		var record = renderer.rendererRecord;
+
+		this.compileProgram(renderer);
+		// Set the ShaderProgram active
+		var switchedProgram = this.activateProgram(context, record);
+
+		record.newlyEnabledAttributes.length = 0;
+
+		// Bind attributes
+		//TODO: good?
+		this.bindAttributes(record, renderer, shaderInfo.meshData.attributeMap);
+
+		this.disableAttributes(record, renderer);
+		this.enableAttributes(record, renderer);
+		this.matchUniforms(shaderInfo);
+
 
 		// if (this.uniforms) {
 		// 	this.textureIndex = 0;
@@ -265,44 +286,64 @@ function (
 		// }
 	};
 
+	Shader.prototype.defineValue = function(shaderInfo, name) {
+		var defValue = shaderInfo.material.uniforms[name];
+		if (defValue === undefined) {
+			defValue = this.uniforms[name];
+		}
+		return defValue;
+	};
+
+
+	Shader.prototype.mapSlot = function(shaderInfo, mapping, slot) {
+		var maps = shaderInfo.material.getTexture(slot.mapping);
+		if (maps instanceof Array) {
+			this.arrayType(mapping, slot, maps);
+		} else {
+			slot.index = this.textureIndex;
+			mapping.call(this.textureIndex++);
+		}
+	};
+
+	Shader.prototype.arrayType = function(mapping, slot) {
+		var arr = [];
+		slot.index = [];
+		for (var i = 0; i < maps.length; i++) {
+			slot.index.push(this.textureIndex);
+			arr.push(this.textureIndex++);
+		}
+		mapping.call(arr);
+	};
+
+	Shader.prototype.stringType = function(shaderInfo, name, mapping, defValue) {
+		var callback = this.currentCallbacks[name];
+		if (callback) {
+			callback(mapping, shaderInfo);
+		} else {
+			var slot = this.textureSlotsNaming[name];
+			if (slot !== undefined) {
+				this.mapSlot(shaderInfo, mapping, slot);
+			}
+		}
+	};
+
+	Shader.prototype.callMapping = function(shaderInfo, name, mapping) {
+		var defValue = this.defineValue(shaderInfo, name);
+		var type = typeof defValue;
+		if (type === 'string') {
+			this.stringType(shaderInfo, name, mapping, defValue)
+		} else {
+			var value = type === 'function' ? defValue(shaderInfo) : defValue;
+			mapping.call(value);
+		}
+	};
+
 	Shader.prototype._bindUniform = function (name, shaderInfo) {
 		var mapping = this.uniformCallMapping[name];
 		if (mapping === undefined) {
 			return;
 		}
-
-		var defValue = shaderInfo.material.uniforms[name];
-		if (defValue === undefined) {
-			defValue = this.uniforms[name];
-		}
-
-		var type = typeof defValue;
-		if (type === 'string') {
-			var callback = this.currentCallbacks[name];
-			if (callback) {
-				callback(mapping, shaderInfo);
-			} else {
-				var slot = this.textureSlotsNaming[name];
-				if (slot !== undefined) {
-					var maps = shaderInfo.material.getTexture(slot.mapping);
-					if (maps instanceof Array) {
-						var arr = [];
-						slot.index = [];
-						for (var i = 0; i < maps.length; i++) {
-							slot.index.push(this.textureIndex);
-							arr.push(this.textureIndex++);
-						}
-						mapping.call(arr);
-					} else {
-						slot.index = this.textureIndex;
-						mapping.call(this.textureIndex++);
-					}
-				}
-			}
-		} else {
-			var value = type === 'function' ? defValue(shaderInfo) : defValue;
-			mapping.call(value);
-		}
+		this.callMapping(shaderInfo, name, mapping)
 	};
 
 	Shader.prototype.rebuild = function () {
