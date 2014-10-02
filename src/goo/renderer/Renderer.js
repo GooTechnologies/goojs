@@ -1282,9 +1282,9 @@ function (
 		var key = '';
 
 		for (var i = 0, l = defineArray.length; i < l; i++) {
-			var defineInt = this._definesIndexes.indexOf(shader.defines[defineArray[i]]);
+			var defineInt = this._definesIndexes.indexOf(defineArray[i]);
 			if (defineInt === -1) {
-				this._definesIndexes.push(shader.defines[defineArray[i]]);
+				this._definesIndexes.push(defineArray[i]);
 				defineInt = this._definesIndexes.length;
 			}
 			key += defineInt;
