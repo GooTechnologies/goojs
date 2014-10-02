@@ -1110,50 +1110,56 @@ function (
 		}
 
 		for (var i = 0; i < count; i++) {
-			var material = null, orMaterial = null;
-
-			if (i < materials.length) {
-				material = materials[i];
-			}
-			if (i < this._overrideMaterials.length) {
-				orMaterial = this._overrideMaterials[i];
-			}
-
-			material = this.configureRenderInfo(renderInfo, i, material, orMaterial, originalData, meshData, flatOrWire);
-
-			//! AT: this should stay in a method
-
-			// Check for caching of shader that use defines
-			var shader = material.shader;
-			if (shader.processors || shader.defines) {
-				// Call processors
-				if (shader.processors) {
-					for (var j = 0; j < shader.processors.length; j++) {
-						shader.processors[j](shader, renderInfo);
-					}
-				}
-				material.shader = this.materialShaderFromCache(material, shader, renderInfo);
-			}
-
-			material.shader.apply(renderInfo, this);
-
-			this.updateDepthTest(material);
-			this.updateCulling(material);
-			this.updateBlending(material);
-			this.updateOffset(material);
-			this.updateTextures(material);
-
-			this.updateLineAndPointSettings(material);
-
-			this._checkDualTransparency(material, meshData);
-
-			this.updateCulling(material);
-			this._drawBuffers(meshData);
-
-			this.info.calls++;
-			this.info.vertices += meshData.vertexCount;
-			this.info.indices += meshData.indexCount;
+			this.renderMeshMaterial(i, materials, flatOrWire, originalData, meshData, renderInfo);
 		}
+	};
+
+	Renderer.prototype.renderMeshMaterial = function (i, materials, flatOrWire, originalData, meshData, renderInfo) {
+		var material = null, orMaterial = null;
+
+		if (i < materials.length) {
+			material = materials[i];
+		}
+		if (i < this._overrideMaterials.length) {
+			orMaterial = this._overrideMaterials[i];
+		}
+
+		material = this.configureRenderInfo(renderInfo, i, material, orMaterial, originalData, meshData, flatOrWire);
+
+
+		//! AT: this should stay in a method
+
+		// Check for caching of shader that use defines
+		var shader = material.shader;
+		if (shader.processors || shader.defines) {
+			// Call processors
+			if (shader.processors) {
+				for (var j = 0; j < shader.processors.length; j++) {
+					shader.processors[j](shader, renderInfo);
+				}
+			}
+
+			material.shader = this.materialShaderFromCache(material, shader, renderInfo);
+		}
+
+		material.shader.apply(renderInfo, this);
+
+		this.updateDepthTest(material);
+		this.updateCulling(material);
+		this.updateBlending(material);
+		this.updateOffset(material);
+		this.updateTextures(material);
+
+		this.updateLineAndPointSettings(material);
+
+		this._checkDualTransparency(material, meshData);
+
+		this.updateCulling(material);
+		this._drawBuffers(meshData);
+
+		this.info.calls++;
+		this.info.vertices += meshData.vertexCount;
+		this.info.indices += meshData.indexCount;
 	};
 
 	Renderer.prototype._drawBuffers = function (meshData) {
