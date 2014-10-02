@@ -1117,6 +1117,22 @@ function (
 		}
 	};
 
+	Renderer.prototype.callShaderProcessors = function(material, renderInfo) {
+
+		// Check for caching of shader that use defines
+		if (material.shader.processors || material.shader.defines) {
+			var shader = material.shader;
+			// Call processors
+			if (shader.processors) {
+				for (var j = 0; j < shader.processors.length; j++) {
+					shader.processors[j](shader, renderInfo);
+				}
+			}
+
+			material.shader = this.materialShaderFromCache(material, shader, renderInfo);
+		}
+	};
+
 	Renderer.prototype.renderMeshMaterial = function (i, materials, flatOrWire, originalData, meshData, renderInfo) {
 		var material = null, orMaterial = null;
 
@@ -1131,18 +1147,7 @@ function (
 
 		//! AT: this should stay in a method
 
-		// Check for caching of shader that use defines
-		var shader = material.shader;
-		if (shader.processors || shader.defines) {
-			// Call processors
-			if (shader.processors) {
-				for (var j = 0; j < shader.processors.length; j++) {
-					shader.processors[j](shader, renderInfo);
-				}
-			}
-
-			material.shader = this.materialShaderFromCache(material, shader, renderInfo);
-		}
+		this.callShaderProcessors(material, renderInfo);
 
 		material.shader.apply(renderInfo, this);
 
