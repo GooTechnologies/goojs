@@ -386,6 +386,7 @@ function (
 		}.bind(this));
 
 		// OÅ For fast shader chache lookup
+		this._shaderKeys = [];
 		this._definesIndexes = [];
 
 
@@ -1279,7 +1280,7 @@ function (
 
 	Renderer.prototype.makeKey = function (shader) {
 		var defineArray = Object.keys(shader.defines);
-		var key = '';
+		var key = 'Key:'+shader.name;
 
 		for (var i = 0, l = defineArray.length; i < l; i++) {
 			var defineInt = this._definesIndexes.indexOf(defineArray[i]);
@@ -1287,7 +1288,13 @@ function (
 				this._definesIndexes.push(defineArray[i]);
 				defineInt = this._definesIndexes.length;
 			}
-			key += defineInt;
+			key += '_'+defineInt+':'+shader.defines[defineArray[i]];
+		}
+
+		// For keeping all those keys somewhere
+		if (this._shaderKeys.indexOf(key) === -1) {
+			this._shaderKeys.push(key);
+		//	console.log("Shader Key added: ", this._shaderKeys)
 		}
 
 		return key;
