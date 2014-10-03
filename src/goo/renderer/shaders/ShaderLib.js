@@ -1173,9 +1173,9 @@ define([
 			ShaderBuilder.animation.vertex,
 
 			'#ifdef NORMAL',
-				'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
+				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
 			'#else',
-				'vec4 mvPosition = viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
 			'#endif',
 
 			// 'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
