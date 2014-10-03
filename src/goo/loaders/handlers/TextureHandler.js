@@ -132,6 +132,7 @@ function (
 			if (TextureHandler.minFilters.indexOf(config.minFilter) !== -1) {
 				texture.minFilter = config.minFilter;
 			}
+
 			texture.anisotropy = Math.max(config.anisotropy, 1);
 
 			texture.offset.set(config.offset);
@@ -140,6 +141,11 @@ function (
 
 			if (texture.flipY !== config.flipY) {
 				texture.flipY = config.flipY;
+				texture.setNeedsUpdate();
+			}
+
+			if (texture.generateMipmaps !== config.generateMipmaps) {
+				texture.generateMipmaps = config.generateMipmaps;
 				texture.setNeedsUpdate();
 			}
 
