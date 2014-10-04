@@ -574,6 +574,10 @@ define([
 					for (var i = 0; i < drawPoints.length; i++) {
 						var point = drawPoints[i];
 						this.terrain.draw(settings.mode, settings.type, settings.size, point.x, point.y, point.z, power, settings.brushTexture, rgba);
+						if(settings.mode === 'height'){
+							// Do some flattening too
+							this.terrain.draw('flatten', settings.type, settings.size * 2, point.x, point.y, point.z, power, settings.brushTexture, rgba);
+						}
 					}
 					this.terrain.updateTextures();
 					this.drawCallback(settings, type, store);
