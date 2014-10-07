@@ -576,7 +576,7 @@ define([
 						this.terrain.draw(settings.mode, settings.type, settings.size, point.x, point.y, point.z, power, settings.brushTexture, rgba);
 						if(settings.mode === 'height'){
 							// Do some flattening too
-							this.terrain.draw('flatten', settings.type, settings.size * 2, point.x, point.y, point.z, power, settings.brushTexture, rgba);
+							this.terrain.draw('flatten', settings.type, settings.size * 3, point.x, point.y, point.z, power * 3, settings.brushTexture, rgba);
 						}
 					}
 					this.terrain.updateTextures();
