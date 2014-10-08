@@ -46,7 +46,8 @@ define([
 
 	EntityManager.prototype.added = function (entity) {
 		if (!this.containsEntity(entity)) {
-			this._entitiesById[entity.id] = entity;
+			this._entitiesById[entity.id] = entity; //! AT: more entities can share the same id!
+			// happens if you're loading the same entity more than once with the dynamic loader
 			this._entitiesByIndex[entity._index] = entity;
 			this._entityCount++;
 		}
@@ -54,7 +55,8 @@ define([
 
 	EntityManager.prototype.removed = function (entity) {
 		if (this.containsEntity(entity)) {
-			delete this._entitiesById[entity.id];
+			delete this._entitiesById[entity.id]; //! AT: more entities can share the same id!
+			// happens if you're loading the same entity more than once with the dynamic loader
 			delete this._entitiesByIndex[entity._index];
 			this._entityCount--;
 		}
@@ -77,7 +79,8 @@ define([
 	 * @returns Entity or undefined if not existing
 	 */
 	EntityManager.prototype.getEntityById = function (id) {
-		return this._entitiesById[id];
+		return this._entitiesById[id]; //! AT: more entities can share the same id!
+		// happens if you're loading the same entity more than once with the dynamic loader
 	};
 
 	/**
@@ -89,7 +92,6 @@ define([
 	EntityManager.prototype.getEntityByIndex = function (index) {
 		return this._entitiesByIndex[index];
 	};
-
 
 	/**
 	 * Retrieve an entity based on its name
@@ -123,8 +125,8 @@ define([
 	//! AT: this need to return an EntitySelection object
 	EntityManager.prototype.getEntities = function () {
 		var entities = [];
-		for (var i in this._entitiesById) {
-			entities.push(this._entitiesById[i]);
+		for (var i in this._entitiesByIndex) {
+			entities.push(this._entitiesByIndex[i]);
 		}
 		return entities;
 	};
@@ -136,8 +138,8 @@ define([
 	 */
 	EntityManager.prototype.getTopEntities = function () {
 		var entities = [];
-		for (var i in this._entitiesById) {
-			var entity = this._entitiesById[i];
+		for (var i in this._entitiesByIndex) {
+			var entity = this._entitiesByIndex[i];
 			if (entity.transformComponent) {
 				if (!entity.transformComponent.parent) {
 					entities.push(entity);
