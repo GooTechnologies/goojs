@@ -15,6 +15,7 @@ define([
 		'goo/scripts/Scripts',
 		'goo/addons/cannonpack/CannonBoxColliderComponent',
 		'goo/addons/cannonpack/CannonDistanceJointComponent',
+		'goo/addons/cannonpack/CannonPlaneColliderComponent',
 		'goo/addons/cannonpack/CannonTerrainColliderComponent',
 		'goo/addons/cannonpack/CannonRigidbodyComponent',
 		'goo/addons/cannonpack/CannonSphereColliderComponent',

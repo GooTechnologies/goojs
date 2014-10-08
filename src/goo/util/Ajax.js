@@ -229,7 +229,7 @@ function (
 				video.dataReady = true;
 				resolve(video);
 			}, false);
-			video.addEventListener('onerror', function (e) {
+			video.addEventListener('error', function (e) {
 				reject('Could not load video from ' + url + ', ' + e);
 			}, false);
 		});
