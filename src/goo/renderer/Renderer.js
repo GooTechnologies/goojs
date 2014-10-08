@@ -450,6 +450,20 @@ function (
 			adjustHeight = window.innerHeight;
 		}
 
+		// Check if still zero
+		if (adjustWidth === 0) {
+			var el = this.domElement;
+			if (document.querySelector) {
+				adjustWidth = el.offsetWidth;
+				adjustHeight = el.offsetHeight;
+			} else {
+				adjustWidth = window.innerWidth;
+				adjustHeight = window.innerHeight;
+			}
+			this.adjustWidth = adjustWidth;
+			this.adjustHeight = adjustHeight;
+		}
+
 		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
 		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;
 
@@ -466,6 +480,7 @@ function (
 			this.setSize(adjustWidth, adjustHeight, fullWidth, fullHeight);
 		}
 		this.prevAdjustWidth = adjustWidth;
+		this.prevAdjustHeight = adjustHeight;
 
 		if (camera && camera.lockedRatio === false && camera.aspect !== aspect) {
 			camera.aspect = aspect;
