@@ -145,7 +145,7 @@ function (
 			}
 
 			if (texture.generateMipmaps !== config.generateMipmaps) {
-				texture.generateMipmaps = config.generateMipmaps;
+				texture.generateMipmaps = config.generateMipmaps !== false;
 				texture.setNeedsUpdate();
 			}
 
