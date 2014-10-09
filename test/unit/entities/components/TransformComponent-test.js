@@ -94,6 +94,17 @@ define([
 			expect(vec).toEqual(new Vector3(1,2,3));
 		});
 
+		it('can move', function () {
+			var tc = new TransformComponent();
+			tc.lookAt(new Vector3(1,0,0)); // look along the positive x axis
+			tc.move(0,0,-10); // this moves forward in a right handed coordinate system.
+			// in our case this will move us 10 unity in the direction of the positive x axis.
+			var vec = tc.getTranslation();
+			expect(vec).toEqual(new Vector3(10,0,0));
+			tc.move(new Vector3(0,0,1));
+			expect(vec).toEqual(new Vector3(9,0,0));
+		});
+
 		it('handles attaching itself to an entity', function () {
 			var transformComponent = new TransformComponent();
 			var entity = new Entity(world);

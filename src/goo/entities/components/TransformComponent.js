@@ -408,23 +408,19 @@ function (
 	 * So for example move(0,0,-1) moves forward (because of the right handed coordinate system).<br/>
 	 * <i>Injected into entity when adding component.</i>
 	 *
-	 * @param {Vector3} localDirection.
+	 * @param {Vector | number[] | number...} component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
-	TransformComponent.prototype.move = function (localDirection) {
-		if(this.move_localDirection === undefined) {
-			this.move_localDirection = new Vector3();
+	TransformComponent.prototype.move = function () {
+		if(this.moveLocalDirection === undefined) {
+			this.moveLocalDirection = new Vector3();
 		}
-		if( this.move_worldDirection === undefined) {
-			this.move_worldDirection = new Vector3();
+		if( this.moveWorldDirection === undefined) {
+			this.moveWorldDirection = new Vector3();
 		}
-		if(arguments.length === 3) {
-			this.move_localDirection.set(arguments);
-		} else {
-			this.move_localDirection.set(localDirection);
-		}
-		this.transform.applyForwardVector( this.move_localDirection, this.move_worldDirection);
-		this.addTranslation( this.move_worldDirection);
+		this.moveLocalDirection.set.apply(this.moveLocalDirection, arguments);
+		this.transform.applyForwardVector( this.moveLocalDirection, this.moveWorldDirection);
+		this.addTranslation( this.moveWorldDirection);
 		return this;
 	};
 
