@@ -412,15 +412,15 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.move = function () {
-		if(this.moveLocalDirection === undefined) {
+		if (this.moveLocalDirection === undefined) {
 			this.moveLocalDirection = new Vector3();
 		}
-		if( this.moveWorldDirection === undefined) {
+		if (this.moveWorldDirection === undefined) {
 			this.moveWorldDirection = new Vector3();
 		}
 		this.moveLocalDirection.set.apply(this.moveLocalDirection, arguments);
-		this.transform.applyForwardVector( this.moveLocalDirection, this.moveWorldDirection);
-		this.addTranslation( this.moveWorldDirection);
+		this.transform.applyForwardVector(this.moveLocalDirection, this.moveWorldDirection);
+		this.addTranslation(this.moveWorldDirection);
 		return this;
 	};
 
