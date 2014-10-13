@@ -18,7 +18,16 @@ require([
 	V.addOrbitCamera();
 
 	function onPick(e) {
-		var pickResult = goo.pickSync(e.clientX, e.clientY);
+		var x, y;
+		if (event.touches) {
+			x = event.touches[0].clientX;
+			y = event.touches[0].clientY;
+		} else {
+			x = event.offsetX;
+			y = event.offsetY;
+		}
+
+		var pickResult = goo.pickSync(x, y);
 
 		var entity = goo.world.entityManager.getEntityByIndex(pickResult.id);
 		if (entity) {
