@@ -99,10 +99,10 @@ function(
 		this.normalmapPass.material.uniforms.height = 10 / 20;
 
 		this.extractFloatPass = new FullscreenPass(extractShader);
-		// this.detailmapPass = new FullscreenPass(detailShader);
+		//// this.detailmapPass = new FullscreenPass(detailShader);
 
 		this.normalMap = new RenderTarget(size, size);
-		// this.detailMap = new RenderTarget(size, size);
+		//// this.detailMap = new RenderTarget(size, size);
 
 		this.textures = [];
 		this.texturesBounce = [];
@@ -255,7 +255,7 @@ function(
 
 			material.setTexture('HEIGHT_MAP', texture);
 			material.setTexture('NORMAL_MAP', this.normalMap);
-			material.setTexture('DETAIL_MAP', this.detailMap);
+			//material.setTexture('DETAIL_MAP', this.detailMap);
 
 			material.setTexture('SPLAT_MAP', this.splat);
 			material.setTexture('GROUND_MAP1', terrainTextures.ground1);
@@ -828,7 +828,7 @@ function(
 			cameraPosition: Shader.CAMERA,
 			heightMap: 'HEIGHT_MAP',
 			normalMap: 'NORMAL_MAP',
-			detailMap: 'DETAIL_MAP',
+			//detailMap: 'DETAIL_MAP',
 			splatMap: 'SPLAT_MAP',
 			groundMap1: 'GROUND_MAP1',
 			groundMap2: 'GROUND_MAP2',
@@ -901,7 +901,7 @@ function(
 				'uniform vec3 col;',
 				'uniform sampler2D normalMap;',
 				'uniform sampler2D splatMap;',
-				'uniform sampler2D detailMap;',
+				//'uniform sampler2D detailMap;',
 				'uniform sampler2D groundMap1;',
 				'uniform sampler2D groundMap2;',
 				'uniform sampler2D groundMap3;',
@@ -944,7 +944,7 @@ function(
 					'vec4 g4 = texture2D(groundMap4, coord * tileScale);',
 					'vec4 g5 = texture2D(groundMap5, coord * tileScale);',
 
-					'vec4 stone = texture2D(stoneMap, coord * tileScale);',
+					'vec4 stone = ' + (navigator.userAgent.match(/iPad/i) != null ? 'vec4(0.06274509803921569, 0.4666666666666667, 0.6431372549019608, 1.0);' : 'texture2D(stoneMap, coord * tileScale);'),
 
 					'final_color = mix(g1, g2, splat.r);',
 					'final_color = mix(final_color, g3, splat.g);',
