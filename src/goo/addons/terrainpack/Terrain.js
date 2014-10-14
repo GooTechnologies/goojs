@@ -225,7 +225,8 @@ function(
 		var lightEntity = this.lightEntity = world.createEntity(light);
 		lightEntity.setTranslation(200, 200, 200);
 		lightEntity.setRotation(-Math.PI*0.5, 0, 0);
-		lightEntity.addToWorld();
+		if(!navigator.userAgent.match(/iPad/i))
+			lightEntity.addToWorld();
 		this.lightEntity.lightComponent.hidden = true;
 
 		if (terrainTextures.heightMap) {
@@ -312,6 +313,10 @@ function(
 	};
 
 	Terrain.prototype.setMarker = function (type, size, x, y, power, brushTexture) {
+		if(navigator.userAgent.match(/iPad/i) != null){
+			this.lightEntity.lightComponent.hidden = true;
+			return;
+		}
 		this.lightEntity.lightComponent.light.shadowSettings.size = size * 0.5;
 		brushTexture.wrapS = 'EdgeClamp';
 		brushTexture.wrapT = 'EdgeClamp';
