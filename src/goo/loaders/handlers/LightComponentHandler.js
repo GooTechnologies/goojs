@@ -40,22 +40,36 @@ function(
 	LightComponentHandler.prototype.constructor = LightComponentHandler;
 	ComponentHandler._registerClass('light', LightComponentHandler);
 
+
+	//! AT: would be nice to have a FuncUtil.memoize()
+	var cachedSupportsShadows;
+	var supportsShadows = function () {
+		if (cachedSupportsShadows === undefined) {
+			var isIos = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+			cachedSupportsShadows = !isIos;
+		}
+		return cachedSupportsShadows;
+	};
+
+
 	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 * @private
 	 */
-	LightComponentHandler.prototype._prepare = function(config) {
+	LightComponentHandler.prototype._prepare = function (config) {
 		_.defaults(config, {
 			direction: [0, 0, 0],
 			color: [1, 1, 1],
 			shadowCaster: false,
 			lightCookie: null
 		});
+
 		if (config.type !== 'DirectionalLight') {
 			config.range = (config.range !== undefined) ? config.range : 1000;
 		}
-		if (config.shadowCaster) {
+
+		if (config.shadowCaster && supportsShadows(this.world.gooRunner.renderer)) {
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
 				shadowType: 'Basic',
@@ -64,7 +78,9 @@ function(
 				resolution: [512, 512],
 				darkness: 0.5
 			});
+
 			var settings = config.shadowSettings;
+
 			if (settings.projection === 'Parallel') {
 				settings.size = (settings.size !== undefined) ? settings.size : 400;
 			} else {
@@ -104,6 +120,7 @@ function(
 				light = new Light[config.type]();
 				component.light = light;
 			}
+
 			for (var key in config) {
 				var value = config[key];
 				if (light.hasOwnProperty(key)) {
@@ -124,7 +141,7 @@ function(
 				}
 			}
 
-			if (config.type === 'PointLight') {
+			if (config.type === 'PointLight' || !supportsShadows(that.world.gooRunner.renderer)) {
 				light.shadowCaster = false;
 			}
 
