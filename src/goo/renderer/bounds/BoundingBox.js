@@ -426,12 +426,12 @@ function (
 		}
 
 		var notEntirelyClipped = //
-			BoundingBox.clip(direction.x, -diff.x - x, t) && //
-				BoundingBox.clip(-direction.x, diff.x - x, t) && //
-				BoundingBox.clip(direction.y, -diff.y - y, t) && //
-				BoundingBox.clip(-direction.y, diff.y - y, t) && //
-				BoundingBox.clip(direction.z, -diff.z - z, t) && //
-				BoundingBox.clip(-direction.z, diff.z - z, t);
+			BoundingBox.clip(direction.data[0], -diff.data[0] - x, t) && //
+				BoundingBox.clip(-direction.data[0], diff.data[0] - x, t) && //
+				BoundingBox.clip(direction.data[1], -diff.data[1] - y, t) && //
+				BoundingBox.clip(-direction.data[1], diff.data[1] - y, t) && //
+				BoundingBox.clip(direction.data[2], -diff.data[2] - z, t) && //
+				BoundingBox.clip(-direction.data[2], diff.data[2] - z, t);
 
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {
