@@ -39,6 +39,7 @@ function(
 		this.ownerEntity = fsm.getOwnerEntity();
 		this.goo = this.ownerEntity._world.gooRunner;
 		this.goo.addEventListener('click', this.eventListener);
+		this.goo.addEventListener('touchstart', this.eventListener);
 	};
 
 	PickAction.prototype._run = function (fsm) {
@@ -51,6 +52,7 @@ function(
 	PickAction.prototype.exit = function () {
 		if (this.goo) {
 			this.goo.removeEventListener('click', this.eventListener);
+			this.goo.removeEventListener('touchstart', this.eventListener);
 		}
 	};
 
