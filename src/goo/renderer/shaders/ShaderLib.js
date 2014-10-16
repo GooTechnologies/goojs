@@ -290,6 +290,7 @@ define([
 							'environment = textureCube(environmentCube, refractionVector);',
 						'#elif defined(ENVIRONMENT_SPHERE)',
 							'vec3 refractionVector = refract(normalize(viewPosition), N, etaRatio);',
+							'refractionVector = -refractionVector;',
 							'float xx = (atan(refractionVector.z, refractionVector.x) + M_PI) / (2.0 * M_PI);',
 							'float yy = refractionVector.y * 0.5 + 0.5;',
 							'environment = texture2D(environmentSphere, vec2(xx, yy));',
@@ -320,14 +321,13 @@ define([
 
 						'float fresnelVal = pow(1.0 - abs(dot(normalize(viewPosition), N)), fresnel * 4.0);',
 						'reflectionAmount *= fresnelVal;',
-						// 'float fresnelVal = 1.0 - abs(dot(normalize(viewPosition), N)) * fresnel * 2.0;',
-						// 'reflectionAmount *= clamp(fresnelVal, 0.0, 1.0);',
 
 						'#if REFLECTION_TYPE == 0',
 							'final_color.rgb = mix(final_color.rgb, environment.rgb, reflectionAmount);',
 						'#elif REFLECTION_TYPE == 1',
 							'final_color.rgb += environment.rgb * reflectionAmount;',
 						'#endif',
+						'final_color.a = min(final_color.a + reflectionAmount, 1.0);',
 					'}',
 				'#endif',
 
