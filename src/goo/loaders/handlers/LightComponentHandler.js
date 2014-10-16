@@ -9,7 +9,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/util/ObjectUtil'
 ],
 /** @lends */
-function(
+function (
 	ComponentHandler,
 	LightComponent,
 	PointLight,
@@ -69,7 +69,7 @@ function(
 			config.range = (config.range !== undefined) ? config.range : 1000;
 		}
 
-		if (config.shadowCaster && supportsShadows(this.world.gooRunner.renderer)) {
+		if (config.shadowCaster && supportsShadows()) {
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
 				shadowType: 'Basic',
@@ -94,7 +94,7 @@ function(
 	 * @returns {LightComponent} the created component object
 	 * @private
 	 */
-	LightComponentHandler.prototype._create = function() {
+	LightComponentHandler.prototype._create = function () {
 		return new LightComponent();
 	};
 
@@ -105,7 +105,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	LightComponentHandler.prototype.update = function(entity, config, options) {
+	LightComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 		var Light = {
 			SpotLight: SpotLight,
@@ -113,7 +113,7 @@ function(
 			PointLight: PointLight
 		};
 
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			var light = component.light;
 			if(!light || Light[config.type] !== light.constructor) {
@@ -141,7 +141,7 @@ function(
 				}
 			}
 
-			if (config.type === 'PointLight' || !supportsShadows(that.world.gooRunner.renderer)) {
+			if (config.type === 'PointLight' || !supportsShadows()) {
 				light.shadowCaster = false;
 			}
 
