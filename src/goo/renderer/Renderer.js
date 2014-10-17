@@ -375,6 +375,8 @@ function (
 			this.svg = { currentScale: 1 };
 		}
 
+		this._definesIndexes = [];
+		this._shaderKeys = [];
 		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
 		//      this needs to be re-added her again for each new GooRunner/Renderer
 		//      cycle.
@@ -771,15 +773,15 @@ function (
 			// check defines. if no hit in cache -> add to cache. if hit in cache,
 			// replace with cache version and copy over uniforms.
 			// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
-			var defineArray = Object.keys(shader.defines);
-			var len = defineArray.length;
-			var shaderKeyArray = [];
-			for (var j = 0; j < len; j++) {
-				var key = defineArray[j];
-				shaderKeyArray.push(key + '_' + shader.defines[key]);
-			}
-			shaderKeyArray.sort();
-			var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+		//	var defineArray = Object.keys(shader.defines);
+		//	var len = defineArray.length;
+		//	var shaderKeyArray = [];
+		//	for (var j = 0; j < len; j++) {
+		//		var key = defineArray[j];
+		//		shaderKeyArray.push(key + '_' + shader.defines[key]);
+		//	}
+		//	shaderKeyArray.sort();
+			var defineKey = this.makeKey(shader);
 
 			var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 			if (!shaderCache[defineKey]) {
@@ -1231,15 +1233,26 @@ function (
 
 	Renderer.prototype.makeKey = function (shader) {
 		var defineArray = Object.keys(shader.defines);
-		var len = defineArray.length;
-		var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
-		shaderKeyArray.length = 0;
-		for (var j = 0; j < len; j++) {
-			var key = defineArray[j];
-			shaderKeyArray.push(key + '_' + shader.defines[key]);
+		var key = 'Key:'+shader.name;
+
+		for (var i = 0, l = defineArray.length; i < l; i++) {
+			var defineInt = this._definesIndexes.indexOf(defineArray[i]);
+			if (defineInt == -1) {
+				this._definesIndexes.push(defineArray[i]);
+				defineInt = this._definesIndexes.length;
+			}
+			key += defineInt+''+shader.defines[defineArray[i]];
 		}
-		shaderKeyArray.sort();
-		return shaderKeyArray.join('_') + '_' + shader.name;
+
+		// For keeping all those keys somewhere
+		var keyIndex = this._shaderKeys.indexOf(key)
+		if (keyIndex == -1) {
+			this._shaderKeys.push(key);
+			keyIndex = this._shaderKeys.length;
+			//	console.log("Shader Key added: ", this._shaderKeys)
+		}
+
+		return key;
 	};
 
 	Renderer.prototype._drawBuffers = function (meshData) {
