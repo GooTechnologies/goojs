@@ -402,8 +402,6 @@ function (
 		return this;
 	};
 
-	var moveLocalDirection = new Vector3();
-	var moveWorldDirection = new Vector3();
 	/**
 	 * Adds to the translation in a local direction.<br/>
 	 * This is similar to addTranslation but this function takes the argument in local coordinate space and converts it for you.<br/>
@@ -413,12 +411,16 @@ function (
 	 * @param {Vector | number[] | number...} component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
-	TransformComponent.prototype.move = function () {
-		this.moveLocalDirection.set.apply(this.moveLocalDirection, arguments);
-		this.transform.applyForwardVector(this.moveLocalDirection, this.moveWorldDirection);
-		this.addTranslation(this.moveWorldDirection);
-		return this;
-	};
+	TransformComponent.prototype.move = (function(){
+		var moveLocalDirection = new Vector3();
+		var moveWorldDirection = new Vector3();
+		return function () {
+			moveLocalDirection.set.apply(moveLocalDirection, arguments);
+			this.transform.applyForwardVector(moveLocalDirection, moveWorldDirection);
+			this.addTranslation(moveWorldDirection);
+			return this;
+		};
+	})();
 
 	/**
 	 * Mark the component for updates of world transform. Needs to be called after manually changing the transform without using helper functions.
