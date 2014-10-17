@@ -74,6 +74,10 @@ function (
 			TransformComponent.prototype.lookAt.apply(this.transformComponent, arguments);
 			return this;
 		},
+		move: function () {
+			TransformComponent.prototype.move.apply(this.transformComponent, arguments);
+			return this;
+		},
 
 		getTranslation: function () {
 			return TransformComponent.prototype.getTranslation.apply(this.transformComponent, arguments);
@@ -397,6 +401,26 @@ function (
 		this._dirty = true;
 		return this;
 	};
+
+	/**
+	 * Adds to the translation in a local direction.<br/>
+	 * This is similar to addTranslation but this function takes the argument in local coordinate space and converts it for you.<br/>
+	 * So for example move(0,0,-1) moves forward (because of the right handed coordinate system).<br/>
+	 * <i>Injected into entity when adding component.</i>
+	 *
+	 * @param {Vector | number[] | number...} component values.
+	 * @return {TransformComponent} Self for chaining.
+	 */
+	TransformComponent.prototype.move = (function(){
+		var moveLocalDirection = new Vector3();
+		var moveWorldDirection = new Vector3();
+		return function () {
+			moveLocalDirection.set.apply(moveLocalDirection, arguments);
+			this.transform.applyForwardVector(moveLocalDirection, moveWorldDirection);
+			this.addTranslation(moveWorldDirection);
+			return this;
+		};
+	})();
 
 	/**
 	 * Mark the component for updates of world transform. Needs to be called after manually changing the transform without using helper functions.

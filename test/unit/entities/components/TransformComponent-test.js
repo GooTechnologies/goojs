@@ -7,7 +7,8 @@ define([
 	'goo/math/Transform',
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/LightComponent',
-	'goo/entities/components/HtmlComponent'
+	'goo/entities/components/HtmlComponent',
+	'test/CustomMatchers'
 ], function (
 	World,
 	TransformComponent,
@@ -17,7 +18,8 @@ define([
 	Transform,
 	MeshRendererComponent,
 	LightComponent,
-	HtmlComponent
+	HtmlComponent,
+	CustomMatchers
 ) {
 	'use strict';
 
@@ -25,6 +27,7 @@ define([
 		var world;
 
 		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
 			world = new World();
 			world.registerComponent(TransformComponent);
 		});
@@ -92,6 +95,17 @@ define([
 			expect(vec).toEqual(new Vector3(1,2,2));
 			tc.addTranslation(0,0,1);
 			expect(vec).toEqual(new Vector3(1,2,3));
+		});
+
+		it('can move', function () {
+			var tc = new TransformComponent();
+			tc.lookAt(new Vector3(1,0,0)); // look along the positive x axis
+			tc.move(0,0,-10); // this moves forward in a right handed coordinate system.
+			// in our case this will move us 10 unity in the direction of the positive x axis.
+			var translation = tc.getTranslation();
+			expect(translation).toBeCloseToVector(new Vector3(10,0,0));
+			tc.move(new Vector3(0,0,1));
+			expect(translation).toBeCloseToVector(new Vector3(9,0,0));
 		});
 
 		it('handles attaching itself to an entity', function () {
