@@ -1102,6 +1102,8 @@ function (
 		var flatOrWire = null;
 		var originalData = meshData;
 
+
+
 		// number of materials to render - own materials or overriding materials
 		var count = 0;
 		if (this._overrideMaterials.length === 0) {
@@ -1694,6 +1696,48 @@ function (
 		}
 	};
 
+
+	Renderer.prototype.apply2dNonImage = function(context, texture) {
+		context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+			this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+	};
+
+	Renderer.prototype.apply2dDataImage = function(context, texture, image) {
+		if (image.isCompressed) {
+			this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
+		} else {
+			context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), image.width,
+				image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+					.getGLPixelDataType(texture.type), image.data);
+		}
+	};
+
+	Renderer.prototype.apply2dNonDataImage = function(context, texture, image) {
+		context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
+			.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image);
+	};
+
+
+	Renderer.prototype.apply2dImage = function(context, texture, image) {
+		if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
+			this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
+			image = texture.image;
+		}
+
+		if (image.isData === true) {
+			this.apply2dDataImage(context, texture, image);
+		} else {
+			this.apply2dNonDataImage(context, texture, image)
+		}
+
+		if (texture.generateMipmaps && !image.isCompressed) {
+			context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+		}
+	};
+
+
+
+
 	Renderer.prototype.updateTexture = function (context, texture, unit, record) {
 		// this.bindTexture(context, texture, unit, record);
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
@@ -1717,30 +1761,10 @@ function (
 		var image = texture.image;
 		if (texture.variant === '2D') {
 			if (!image) {
-				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
-					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+				  this.apply2dNonImage(context, texture)
 			} else {
-				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
-					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
-					image = texture.image;
-				}
+				this.apply2dImage(context, texture, image);
 
-				if (image.isData === true) {
-					if (image.isCompressed) {
-						this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
-					} else {
-						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), image.width,
-							image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-								.getGLPixelDataType(texture.type), image.data);
-					}
-				} else {
-					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
-						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image);
-				}
-
-				if (texture.generateMipmaps && !image.isCompressed) {
-					context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
-				}
 			}
 		} else if (texture.variant === 'CUBE') {
 			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
