@@ -402,8 +402,10 @@ function (
 		return this;
 	};
 
+	var moveLocalDirection = new Vector3();
+	var moveWorldDirection = new Vector3();
 	/**
-	 * Moves the entity in a specific direction.<br/>
+	 * Adds to the translation in a local direction.<br/>
 	 * This is similar to addTranslation but this function takes the argument in local coordinate space and converts it for you.<br/>
 	 * So for example move(0,0,-1) moves forward (because of the right handed coordinate system).<br/>
 	 * <i>Injected into entity when adding component.</i>
@@ -412,12 +414,6 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.move = function () {
-		if (this.moveLocalDirection === undefined) {
-			this.moveLocalDirection = new Vector3();
-		}
-		if (this.moveWorldDirection === undefined) {
-			this.moveWorldDirection = new Vector3();
-		}
 		this.moveLocalDirection.set.apply(this.moveLocalDirection, arguments);
 		this.transform.applyForwardVector(this.moveLocalDirection, this.moveWorldDirection);
 		this.addTranslation(this.moveWorldDirection);
