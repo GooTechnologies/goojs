@@ -11,7 +11,6 @@ function (
 		Action.apply(this, arguments);
 
 		this.eventListener = function (event) {
-
 			var htmlCmp = this.ownerEntity.getComponent('HtmlComponent');
 			var clickedHtmlCmp = (htmlCmp && htmlCmp.domElement.contains(event.target));
 			if (clickedHtmlCmp) {
@@ -103,7 +102,7 @@ function (
 	PickAndExitAction.prototype.exit = function () {
 		if (this.domElement) {
 			this.domElement.removeEventListener('click', this.eventListener);
-			this.domElement.removeEventListener('touchstart', this.eventListener, false);
+			this.domElement.removeEventListener('touchstart', this.eventListener);
 		}
 	};
 

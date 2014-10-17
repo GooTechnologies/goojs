@@ -9,7 +9,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/util/ObjectUtil'
 ],
 /** @lends */
-function(
+function (
 	ComponentHandler,
 	LightComponent,
 	PointLight,
@@ -40,22 +40,36 @@ function(
 	LightComponentHandler.prototype.constructor = LightComponentHandler;
 	ComponentHandler._registerClass('light', LightComponentHandler);
 
+
+	//! AT: would be nice to have a FuncUtil.memoize()
+	var cachedSupportsShadows;
+	var supportsShadows = function () {
+		if (cachedSupportsShadows === undefined) {
+			var isIos = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+			cachedSupportsShadows = !isIos;
+		}
+		return cachedSupportsShadows;
+	};
+
+
 	/**
 	 * Prepare component. Set defaults on config here.
 	 * @param {object} config
 	 * @private
 	 */
-	LightComponentHandler.prototype._prepare = function(config) {
+	LightComponentHandler.prototype._prepare = function (config) {
 		_.defaults(config, {
 			direction: [0, 0, 0],
 			color: [1, 1, 1],
 			shadowCaster: false,
 			lightCookie: null
 		});
+
 		if (config.type !== 'DirectionalLight') {
 			config.range = (config.range !== undefined) ? config.range : 1000;
 		}
-		if (config.shadowCaster) {
+
+		if (config.shadowCaster && supportsShadows()) {
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
 				shadowType: 'Basic',
@@ -64,7 +78,9 @@ function(
 				resolution: [512, 512],
 				darkness: 0.5
 			});
+
 			var settings = config.shadowSettings;
+
 			if (settings.projection === 'Parallel') {
 				settings.size = (settings.size !== undefined) ? settings.size : 400;
 			} else {
@@ -78,7 +94,7 @@ function(
 	 * @returns {LightComponent} the created component object
 	 * @private
 	 */
-	LightComponentHandler.prototype._create = function() {
+	LightComponentHandler.prototype._create = function () {
 		return new LightComponent();
 	};
 
@@ -89,7 +105,7 @@ function(
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	LightComponentHandler.prototype.update = function(entity, config, options) {
+	LightComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 		var Light = {
 			SpotLight: SpotLight,
@@ -97,13 +113,14 @@ function(
 			PointLight: PointLight
 		};
 
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			var light = component.light;
 			if(!light || Light[config.type] !== light.constructor) {
 				light = new Light[config.type]();
 				component.light = light;
 			}
+
 			for (var key in config) {
 				var value = config[key];
 				if (light.hasOwnProperty(key)) {
@@ -124,7 +141,7 @@ function(
 				}
 			}
 
-			if (config.type === 'PointLight') {
+			if (config.type === 'PointLight' || !supportsShadows()) {
 				light.shadowCaster = false;
 			}
 

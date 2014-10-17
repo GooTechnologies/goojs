@@ -42,12 +42,12 @@ function (
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
-			min.x = x < min.x ? x : min.x;
-			min.y = y < min.y ? y : min.y;
-			min.z = z < min.z ? z : min.z;
-			max.x = x > max.x ? x : max.x;
-			max.y = y > max.y ? y : max.y;
-			max.z = z > max.z ? z : max.z;
+			min.data[0] = x < min.data[0] ? x : min.data[0];
+			min.data[1] = y < min.data[1] ? y : min.data[1];
+			min.data[2] = z < min.data[2] ? z : min.data[2];
+			max.data[0] = x > max.data[0] ? x : max.data[0];
+			max.data[1] = y > max.data[1] ? y : max.data[1];
+			max.data[2] = z > max.data[2] ? z : max.data[2];
 		}
 		var newCenter = max.addv(min).div(2.0);
 		var size = 0, test;

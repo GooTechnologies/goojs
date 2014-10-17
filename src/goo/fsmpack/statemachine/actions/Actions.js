@@ -92,7 +92,7 @@ function (
 		var keys = Object.keys(_actions);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			if (key === 'Eval' || key === 'HTMLPick') {
+			if (key === 'Eval' || key === 'HTMLPick' || key == 'Remove') {
 				continue;
 			}
 			actions[key] = _actions[key];
