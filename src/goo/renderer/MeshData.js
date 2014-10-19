@@ -555,6 +555,12 @@ function (
 		wireframeData.indexModes[0] = 'Lines';
 
 		var origI = this.getIndexBuffer();
+
+		var getIndex = function (primitiveIndex, point, section) {
+			var vertInd = this.getVertexIndex(primitiveIndex, point, section);
+			return origI ? origI[vertInd] : vertInd;
+		}.bind(this);
+
 		var targetI = [];
 		var indexCount = 0;
 		this.updatePrimitiveCounts();
@@ -567,9 +573,9 @@ function (
 				case "Triangles":
 				case "TriangleFan":
 				case "TriangleStrip":
-					var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
-					var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
-					var i3 = origI[this.getVertexIndex(primitiveIndex, 2, section)];
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
+					var i3 = getIndex(primitiveIndex, 2, section);
 
 					targetI[indexCount + 0] = i1;
 					targetI[indexCount + 1] = i2;
@@ -581,18 +587,18 @@ function (
 					break;
 				case "Lines":
 				case "LineStrip":
-					var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
-					var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
 
 					targetI[indexCount + 0] = i1;
 					targetI[indexCount + 1] = i2;
 					indexCount += 2;
 					break;
 				case "LineLoop":
-					var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
-					var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
 					if (primitiveIndex === primitiveCount - 1) {
-						i2 = origI[this.getVertexIndex(0, 0, section)];
+						i2 = getIndex(0, 0, section);
 					}
 
 					targetI[indexCount + 0] = i1;
