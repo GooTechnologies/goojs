@@ -8,6 +8,7 @@ define([
 	'goo/math/Vector4',
 	'goo/renderer/Material',
 	'goo/renderer/TextureCreator',
+	'goo/renderer/shaders/ShaderBuilder',
 	'goo/renderer/shaders/ShaderFragment'
 ],
 /** @lends */
@@ -21,6 +22,7 @@ function (
 	Vector4,
 	Material,
 	TextureCreator,
+	ShaderBuilder,
 	ShaderFragment
 ) {
 	'use strict';
@@ -259,27 +261,27 @@ function (
 			doFog: true,
 			resolution: Shader.RESOLUTION
 		},
-		vshader: [ //
-			'attribute vec3 vertexPosition;', //
-			'attribute vec3 vertexNormal;', //
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec3 vertexNormal;',
 
-			'uniform vec4 vertexTangent;', //
-			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
+			'uniform vec4 vertexTangent;',
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
 			'uniform mat4 normalMatrix;',
-			'uniform vec3 cameraPosition;', //
+			'uniform vec3 cameraPosition;',
 			'uniform float waterScale;',
 
-			'varying vec2 texCoord0;',//
-			'varying vec3 eyeVec;',//
+			'varying vec2 texCoord0;',
+			'varying vec3 eyeVec;',
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
 
-			'void main(void) {', //
+			'void main(void) {',
 			'	worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 
-			'	texCoord0 = worldPos.xz * waterScale;',//
+			'	texCoord0 = worldPos.xz * waterScale;',
 
 			'	vec3 n = normalize((normalMatrix * vec4(vertexNormal.x, vertexNormal.y, -vertexNormal.z, 0.0)).xyz);',
 			'	vec3 t = normalize((normalMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
@@ -289,16 +291,16 @@ function (
 			'	vec3 eyeDir = worldPos - cameraPosition;',
 			'	eyeVec = eyeDir * rotMat;',
 
-			'	viewCoords = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'	viewCoords = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 			'	gl_Position = viewCoords;',
-			'}'//
+			'}'
 		].join('\n'),
-		fshader: [//
-			'uniform sampler2D normalMap;',//
-			'uniform sampler2D reflection;',//
+		fshader: [
+			'uniform sampler2D normalMap;',
+			'uniform sampler2D reflection;',
 			'#ifdef REFRACTION',
-			'uniform sampler2D refraction;',//
-			'uniform sampler2D depthmap;',//
+			'uniform sampler2D refraction;',
+			'uniform sampler2D depthmap;',
 			'#endif',
 
 			'uniform vec3 waterColor;',
@@ -319,8 +321,8 @@ function (
 			'uniform bool doFog;',
 			'uniform vec2 resolution;',
 
-			'varying vec2 texCoord0;',//
-			'varying vec3 eyeVec;',//
+			'varying vec2 texCoord0;',
+			'varying vec3 eyeVec;',
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
 
@@ -334,11 +336,11 @@ function (
 			'}',
 
 			'#ifdef REFRACTION',
-			ShaderFragment.methods.unpackDepth,//
+			ShaderFragment.methods.unpackDepth,
 			'#endif',
 
-			'void main(void)',//
-			'{',//
+			'void main(void)',
+			'{',
 			'	float fogDist = clamp((viewCoords.z-fogStart)/fogScale,0.0,1.0);',
 
 			'	vec2 normCoords = texCoord0;',
@@ -414,40 +416,55 @@ function (
 	};
 
 	var packDepthY = {
-		attributes: {
-			vertexPosition: MeshData.POSITION
+		processors: [
+			ShaderBuilder.animation.processor
+		],
+		defines: {
+			SHADOW_TYPE: 0,
+			WEIGHTS: true,
+			JOINTIDS: true
+		},
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexJointIDs: MeshData.JOINTIDS,
+			vertexWeights: MeshData.WEIGHTS
 		},
 		uniforms: {
-			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			farPlane: Shader.FAR_PLANE
 		},
-		vshader: [ //
-			'attribute vec3 vertexPosition;', //
+		vshader: [
+			'attribute vec3 vertexPosition;',
 
-			'uniform mat4 viewProjectionMatrix;',
-			'uniform mat4 worldMatrix;',//
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
 
-			'varying vec4 vPosition;',//
+			'varying vec4 worldPosition;',
 
-			'void main(void) {', //
-			'	vPosition = worldMatrix * vec4(vertexPosition, 1.0);', //
-			'	gl_Position = viewProjectionMatrix * vPosition;', //
-			'}'//
+			ShaderBuilder.animation.prevertex,
+
+			'void main(void) {',
+				'mat4 wMatrix = worldMatrix;',
+				ShaderBuilder.animation.vertex,
+				'worldPosition = viewMatrix * wMatrix * vec4(vertexPosition, 1.0);',
+				'gl_Position = projectionMatrix * worldPosition;',
+			'}'
 		].join('\n'),
-		fshader: [//
-			'uniform float farPlane;',//
+		fshader: [
+			'uniform float farPlane;',
 
-			ShaderFragment.methods.packDepth,//
+			ShaderFragment.methods.packDepth,
 
-			'varying vec4 vPosition;',//
+			'varying vec4 worldPosition;',
 
-			'void main(void)',//
-			'{',//
-			// '	float linearDepth = -vPosition.y / farPlane;',//
-			'	float linearDepth = abs(vPosition.y) / farPlane;',//
-			'	gl_FragColor = packDepth(linearDepth);',//
-			'}'//
+			'void main(void)',
+			'{',
+				'float linearDepth = abs(worldPosition.y) / farPlane;',
+				'gl_FragColor = packDepth(linearDepth);',
+			'}'
 		].join('\n')
 	};
 
