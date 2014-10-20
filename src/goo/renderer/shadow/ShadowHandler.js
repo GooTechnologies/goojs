@@ -34,7 +34,7 @@ function (
 		this.fullscreenPass = new FullscreenPass();
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 
-		var sigma = 1;
+		var sigma = 2;
 		this.blurfilter = Material.createShader(ShaderLib.convolution, 'blurfilter');
 		var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
 		this.blurfilter.defines = {

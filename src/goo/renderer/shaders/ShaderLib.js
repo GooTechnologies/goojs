@@ -792,8 +792,13 @@ define([
 			'vec2 imageCoord = vUv;',
 			'vec4 sum = vec4( 0.0 );',
 
-			'for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
-				'sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];',
+			// 'for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
+				// 'sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];',
+				// 'imageCoord += uImageIncrement * size;',
+			// '}',
+			// Hack for Android, who seems to crash on int looping
+			'for(float i = 0.0; i < KERNEL_SIZE_FLOAT; i++) {',
+				'sum += texture2D( tDiffuse, imageCoord ) * cKernel[int(i)];',
 				'imageCoord += uImageIncrement * size;',
 			'}',
 
