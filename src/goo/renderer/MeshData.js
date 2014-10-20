@@ -556,10 +556,16 @@ function (
 
 		var origI = this.getIndexBuffer();
 
-		var getIndex = function (primitiveIndex, point, section) {
-			var vertInd = this.getVertexIndex(primitiveIndex, point, section);
-			return origI ? origI[vertInd] : vertInd;
-		}.bind(this);
+		var getIndex;
+		if (origI) {
+			getIndex = function(primitiveIndex, point, section) {
+				return origI[this.getVertexIndex(primitiveIndex, point, section)];
+			}.bind(this);
+		} else {
+			getIndex = function(primitiveIndex, point, section) {
+				return this.getVertexIndex(primitiveIndex, point, section);
+			}.bind(this);
+		}
 
 		var targetI = [];
 		var indexCount = 0;
