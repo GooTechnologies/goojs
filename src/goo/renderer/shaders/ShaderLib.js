@@ -1050,6 +1050,65 @@ define([
 		].join('\n')
 	};
 
+	ShaderLib.relaxedCone = {
+		attributes : {
+			vertexPosition : MeshData.POSITION,
+			vertexUV0 : MeshData.TEXCOORD0
+		},
+		uniforms : {
+			viewMatrix : Shader.VIEW_MATRIX,
+			projectionMatrix : Shader.PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX,
+			tDiffuse : Shader.DIFFUSE_MAP
+		},
+		vshader: [
+			'attribute vec3 vertexPosition;',
+			'attribute vec2 vertexUV0;',
+
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+
+			'varying vec2 vUv;',
+			'void main() {',
+				'vUv = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
+		fshader: [
+			'uniform sampler2D tDiffuse;',
+			'uniform vec3 offset;',
+
+			'varying vec2 vUv;',
+
+			'const float search_steps = 128.0;',
+
+			'void main() {',
+				'vec3 src = vec3(vUv, 0);',
+				'vec3 dst = src + offset;',
+				'dst.z = texture2D(tDiffuse, dst.xy).w;',
+				'vec3 vec = dst - src;',
+				'vec /= vec.z;',
+				'vec *= 1.0 - dst.z;',
+				'vec3 step_fwd = vec / search_steps;',
+				'vec3 ray_pos = dst + step_fwd;',
+				'for (float i = 1.0; i < search_steps; i++) {',
+					'float current_depth = texture2D(tDiffuse, ray_pos.xy).w;',
+					'if (current_depth <= ray_pos.z)',
+						'ray_pos += step_fwd;',
+				'}',
+				'float src_texel_depth = texture2D(tDiffuse, vUv).w;',
+				'float cone_ratio = (ray_pos.z >= src_texel_depth) ? 1.0 : length(ray_pos.xy - vUv) / (src_texel_depth - ray_pos.z);',
+				// what is this?
+				// 'float best_ratio = texture2D(ResultSampler, vUv).x;',
+				// 'if (cone_ratio > best_ratio)',
+				// 	'cone_ratio = best_ratio;',
+
+				'gl_FragColor = vec4(cone_ratio, cone_ratio, cone_ratio, src_texel_depth);',
+			'}'
+		].join('\n')
+	};
+
 	/**
 	 * @static
 	*/
