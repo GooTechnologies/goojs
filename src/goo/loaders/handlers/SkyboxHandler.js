@@ -43,7 +43,7 @@ define([
 		this._skysphere.name = 'Skybox_sphere';
 
 		// Skysphere texture
-		this._skysphereTexture = new Texture(null, { flipY: false });
+		this._skysphereTexture = new Texture(null, { flipY: false, wrapS: 'EdgeClamp', wrapT: 'EdgeClamp' });
 		this._skysphere.meshRendererComponent.materials[0].setTexture('DIFFUSE_MAP', this._skysphereTexture);
 
 		//! AT: unused?
