@@ -128,6 +128,8 @@ function (
 			domElement.prevInnerHtml = config.innerHtml;
 			domElement.prevStyle = config.style;
 
+			component.useTransformComponent = config.useTransformComponent == null ? true : config.useTransformComponent;
+
 			if (!innerHtmlChanged && !styleChanged) {
 				return PromiseUtil.resolve();
 			}
@@ -139,7 +141,6 @@ function (
 			}
 
 			domElement.innerHTML = wrappedStyle + config.innerHtml;
-			component.useTransformComponent = config.useTransformComponent == null ? true : config.useTransformComponent;
 
 			function loadImage(htmlImage, imageRef) {
 				return that.loadObject(imageRef, options)
