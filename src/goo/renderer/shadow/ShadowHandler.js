@@ -79,7 +79,6 @@ function (
 				type.magFilter = 'NearestNeighbor';
 				type.minFilter = 'NearestNeighborNoMipMaps';
 			}
-			console.log(linearFloat);
 			if (shadowSettings.shadowData.shadowTargetDown) {
 				renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowTargetDown);
 			}
