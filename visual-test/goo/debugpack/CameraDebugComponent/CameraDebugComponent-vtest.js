@@ -7,6 +7,7 @@ require([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
+	'goo/debugpack/systems/CameraDebugSystem',
 	'goo/debugpack/components/CameraDebugComponent',
 	'goo/entities/SystemBus',
 	'lib/V'
@@ -19,6 +20,7 @@ require([
 	OrbitCamControlScript,
 	ScriptComponent,
 	Vector3,
+	CameraDebugSystem,
 	CameraDebugComponent,
 	SystemBus,
 	V
@@ -41,6 +43,8 @@ require([
 
 	var goo = V.initGoo();
 	var world = goo.world;
+
+	world.setSystem(new CameraDebugSystem());
 
 	// add spheres to have the cameras view them
 	V.addColoredSpheres();
@@ -79,12 +83,15 @@ require([
 
 	// camera 1 - spinning
 	var camera1Entity = world.createEntity(new Camera(), [0, 0, 3]).lookAt(new Vector3(0, 0, 0)).addToWorld();
+	// camera1Entity.cameraComponent.camera.setProjectionMode(1);
+	// camera1Entity.cameraComponent.camera.setFrustum(1, 100, -5, 5, 5, -5, 1);
 
 	camera1Entity.set(new ScriptComponent({
 		run: function (entity) {
 			if (cameraState.spin) {
-				cameraState.angle += 0.01;
-				entity.setRotation([cameraState.angle, 0, 0]);
+				cameraState.angle = Math.sin(goo.world.time);
+				entity.setRotation(cameraState.angle, 0, 0);
+				entity.setTranslation(Math.sin(goo.world.time), Math.cos(goo.world.time), 3);
 			}
 		}
 	}));
@@ -94,6 +101,8 @@ require([
 	// attach camera debug components
 	camera1Entity.set(new CameraDebugComponent());
 	camera2Entity.set(new CameraDebugComponent());
+
+	goo.renderSystem.camera2 = camera1Entity.cameraComponent.camera;
 
 	V.process();
 });

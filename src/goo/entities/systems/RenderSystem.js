@@ -106,7 +106,11 @@ function (
 				preRenderer.process(renderer, this.entities, this.partitioner, this.camera, this.lights);
 			}
 
-			this.partitioner.process(this.camera, this.entities, this.renderList);
+			if (!this.camera2) {
+				this.partitioner.process(this.camera, this.entities, this.renderList);
+			} else {
+				this.partitioner.process(this.camera2, this.entities, this.renderList);
+			}
 
 			if (this.composers.length > 0 && this._composersActive) {
 				for (var i = 0; i < this.composers.length; i++) {

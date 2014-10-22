@@ -29,7 +29,7 @@ define([
 	function FrustumViewer() {
 	}
 
-	function buildFrustum(fov, aspect, near, far) {
+	function buildFrustum(fov, aspect, near, far, camera) {
 		var angle = (fov * Math.PI/180) / 2;
 		/* REVIEW:
 		 * Would be nice to make it unit size and use transforms to display it.
@@ -115,7 +115,29 @@ define([
 		indices.push(2, 6);
 		indices.push(3, 7);
 
-		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 8, 24);
+		var meshData;
+		if (camera) {
+			// camera.update();
+			// camera.changedProperties = false;
+			var plane = camera._worldPlane[0];
+			verts.push((n0.x + n1.x) / 2, (n0.y + n1.y) / 2, (n0.z + n1.z) / 2);
+			verts.push((n0.x + n1.x) / 2 + plane.normal.x, (n0.y + n1.y) / 2 + plane.normal.y, (n0.z + n1.z) / 2 + plane.normal.z);
+			indices.push(8, 9);
+
+			plane = camera._worldPlane[1];
+			verts.push((n2.x + n3.x) / 2, (n2.y + n3.y) / 2, (n2.z + n3.z) / 2);
+			verts.push((n2.x + n3.x) / 2 + plane.normal.x, (n2.y + n3.y) / 2 + plane.normal.y, (n2.z + n3.z) / 2 + plane.normal.z);
+			indices.push(10, 11);
+
+			plane = camera._worldPlane[3];
+			verts.push((n0.x + n3.x) / 2, (n0.y + n3.y) / 2, (n0.z + n3.z) / 2);
+			verts.push((n0.x + n3.x) / 2 + plane.normal.x, (n0.y + n3.y) / 2 + plane.normal.y, (n0.z + n3.z) / 2 + plane.normal.z);
+			indices.push(12, 13);
+
+			meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), verts.length/3, indices.length);
+		} else {
+			meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 8, 24);
+		}
 
 		meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
 		meshData.getIndexBuffer().set(indices);
@@ -130,7 +152,7 @@ define([
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 
-		var frustumMeshData = buildFrustum(camera.fov, camera.aspect, camera.near, camera.far);
+		var frustumMeshData = buildFrustum(camera.fov, camera.aspect, camera.near, camera.far, camera);
 		meshBuilder.addMeshData(frustumMeshData, transform);
 
 		var cameraBox1 = new Cylinder(32, 0.6);

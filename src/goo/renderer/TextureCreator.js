@@ -3,8 +3,7 @@ define([
 	'goo/renderer/Util',
 	'goo/loaders/handlers/TextureHandler',
 	'goo/util/Ajax',
-	'goo/util/StringUtil',
-	'goo/util/Latch'
+	'goo/util/StringUtil'
 ],
 /** @lends */
 function (
@@ -12,8 +11,7 @@ function (
 	Util,
 	TextureHandler,
 	Ajax,
-	StringUtil,
-	Latch
+	StringUtil
 ) {
 	'use strict';
 
@@ -158,29 +156,32 @@ function (
 		texture.variant = 'CUBE';
 		var images = [];
 
-		var latch = new Latch(6, {
-			done: function () {
-				var w = images[0].width;
-				var h = images[0].height;
-				for (var i = 0; i < 6; i++) {
-					var img = images[i];
-					if (w !== img.width || h !== img.height) {
-						texture.generateMipmaps = false;
-						texture.minFilter = 'BilinearNoMipMaps';
-						console.error('Images not all the same size!');
-					}
-				}
-
-				texture.setImage(images);
-				texture.image.dataReady = true;
-				texture.image.width = w;
-				texture.image.height = h;
-
-				if (callback) {
-					callback();
+		var imageCount = 6;
+		var countAndCheck = function () {
+			imageCount--;
+			if (imageCount > 0) {
+				return;
+			}
+			var w = images[0].width;
+			var h = images[0].height;
+			for (var i = 0; i < 6; i++) {
+				var img = images[i];
+				if (w !== img.width || h !== img.height) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+					console.error('Images not all the same size!');
 				}
 			}
-		});
+
+			texture.setImage(images);
+			texture.image.dataReady = true;
+			texture.image.width = w;
+			texture.image.height = h;
+
+			if (callback) {
+				callback();
+			}
+		};	
 
 		var that = this;
 		for (var i = 0; i < imageDataArray.length; i++) {
@@ -190,11 +191,11 @@ function (
 				if (typeof queryImage === 'string') {
 					that.ajax._loadImage(queryImage).then(function (image) {
 						images[index] = image;
-						latch.countDown();
+						countAndCheck();
 					});
 				} else {
 					images[index] = queryImage;
-					latch.countDown();
+					countAndCheck();
 				}
 			})(i);
 		}

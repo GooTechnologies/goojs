@@ -1,5 +1,4 @@
 define([
-	'goo/util/Handy',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
@@ -12,7 +11,6 @@ define([
 ],
 /** @lends */
 function (
-	Handy,
 	Vector3,
 	Vector4,
 	Matrix4x4,
@@ -45,15 +43,7 @@ function (
 		this._up = new Vector3(0, 1, 0);
 		this._direction = new Vector3(0, 0, -1);
 
-		Handy.defineProperty(this, 'this._depthRangeNear', 0.0, function () {
-			this._depthRangeDirty = true;
-		});
-		Handy.defineProperty(this, 'this._depthRangeFar', 1.0, function () {
-			this._depthRangeDirty = true;
-		});
-		this._depthRangeDirty = true;
-
-		// TODO: needs onFurstumChange()
+		// These need an onFrustumChange() after being modified
 		this._frustumNear = 1.0;
 		this._frustumFar = 2.0;
 		this._frustumLeft = -0.5;
@@ -61,6 +51,7 @@ function (
 		this._frustumTop = 0.5;
 		this._frustumBottom = -0.5;
 
+		// Used to speed up world-plane normal calculation in onFrameChange. Only calculated when frustum values are changed
 		this._coeffLeft = [];
 		this._coeffRight = [];
 		this._coeffBottom = [];
@@ -93,9 +84,6 @@ function (
 		this.projection = new Matrix4x4();
 		this.modelViewProjection = new Matrix4x4();
 		this.modelViewProjectionInverse = new Matrix4x4();
-
-		this._depthRangeDirty = true;
-		this._viewPortDirty = true;
 
 		this._planeState = 0;
 		this._clipPlane = new Vector4();
@@ -282,7 +270,6 @@ function (
 
 		this.projectionMode = source.projectionMode;
 
-		this._depthRangeDirty = true;
 		this.onFrustumChange();
 		this.onFrameChange();
 		// this.setFrustumPerspective();
@@ -340,19 +327,12 @@ function (
 		this.onFrameChange();
 	};
 
-	Camera.prototype.makeDirty = function () {
-		this._depthRangeDirty = true;
-		this._viewPortDirty = true;
-	};
-
 	/**
 	 * Forces all aspect of the camera to be updated from internal values, and sets all dirty flags to true so that the next apply() call will fully
 	 * set this camera to the render context.
 	 */
 	Camera.prototype.update = function () {
-		this._depthRangeDirty = true;
 		this.onFrustumChange();
-		// this.onViewPortChange();
 		this.onFrameChange();
 	};
 
@@ -387,6 +367,8 @@ function (
 
 	/**
 	 * Updates internal frustum coefficient values to reflect the current frustum plane values.
+	 * This is an optimization to move normalization/rotation of plane normals out to be done
+	 * only when the frustum values change.
 	 */
 	Camera.prototype.onFrustumChange = function () {
 		if (this.projectionMode === Camera.Perspective) {
@@ -397,11 +379,11 @@ function (
 			var topSquared = this._frustumTop * this._frustumTop;
 
 			var inverseLength = 1.0 / Math.sqrt(nearSquared + leftSquared);
-			this._coeffLeft[0] = this._frustumNear * inverseLength;
+			this._coeffLeft[0] = -this._frustumNear * inverseLength;
 			this._coeffLeft[1] = -this._frustumLeft * inverseLength;
 
 			inverseLength = 1.0 / Math.sqrt(nearSquared + rightSquared);
-			this._coeffRight[0] = -this._frustumNear * inverseLength;
+			this._coeffRight[0] = this._frustumNear * inverseLength;
 			this._coeffRight[1] = this._frustumRight * inverseLength;
 
 			inverseLength = 1.0 / Math.sqrt(nearSquared + bottomSquared);
@@ -453,68 +435,69 @@ function (
 	 * Updates the values of the world planes associated with this camera.
 	 */
 	Camera.prototype.onFrameChange = function () {
-		var dirDotLocation = this._direction.dot(this.translation);
-
-		var planeNormal = this.planeNormal;
+		var plane;
 
 		// left plane
-		planeNormal.x = this._left.x * this._coeffLeft[0];
-		planeNormal.y = this._left.y * this._coeffLeft[0];
-		planeNormal.z = this._left.z * this._coeffLeft[0];
-		planeNormal.add_d(this._direction.x * this._coeffLeft[1], this._direction.y * this._coeffLeft[1], this._direction.z * this._coeffLeft[1]);
-		this._worldPlane[Camera.LEFT_PLANE].normal.setv(planeNormal);
-		this._worldPlane[Camera.LEFT_PLANE].constant = Vector3.dotv(this.translation, planeNormal);
+		plane = this._worldPlane[Camera.LEFT_PLANE];
+		plane.normal.x = this._left.x * this._coeffLeft[0] + this._direction.x * this._coeffLeft[1];
+		plane.normal.y = this._left.y * this._coeffLeft[0] + this._direction.y * this._coeffLeft[1];
+		plane.normal.z = this._left.z * this._coeffLeft[0] + this._direction.z * this._coeffLeft[1];
+		plane.constant = Vector3.dotv(this.translation, plane.normal);
 
 		// right plane
-		planeNormal.x = this._left.x * this._coeffRight[0];
-		planeNormal.y = this._left.y * this._coeffRight[0];
-		planeNormal.z = this._left.z * this._coeffRight[0];
-		planeNormal.add_d(this._direction.x * this._coeffRight[1], this._direction.y * this._coeffRight[1], this._direction.z * this._coeffRight[1]);
-		this._worldPlane[Camera.RIGHT_PLANE].normal.setv(planeNormal);
-		this._worldPlane[Camera.RIGHT_PLANE].constant = Vector3.dotv(this.translation, planeNormal);
+		plane = this._worldPlane[Camera.RIGHT_PLANE];
+		plane.normal.x = this._left.x * this._coeffRight[0] + this._direction.x * this._coeffRight[1];
+		plane.normal.y = this._left.y * this._coeffRight[0] + this._direction.y * this._coeffRight[1];
+		plane.normal.z = this._left.z * this._coeffRight[0] + this._direction.z * this._coeffRight[1];
+		plane.constant = Vector3.dotv(this.translation, plane.normal);
 
 		// bottom plane
-		planeNormal.x = this._up.x * this._coeffBottom[0];
-		planeNormal.y = this._up.y * this._coeffBottom[0];
-		planeNormal.z = this._up.z * this._coeffBottom[0];
-		planeNormal.add_d(this._direction.x * this._coeffBottom[1], this._direction.y * this._coeffBottom[1], this._direction.z * this._coeffBottom[1]);
-		this._worldPlane[Camera.BOTTOM_PLANE].normal.setv(planeNormal);
-		this._worldPlane[Camera.BOTTOM_PLANE].constant = Vector3.dotv(this.translation, planeNormal);
+		plane = this._worldPlane[Camera.BOTTOM_PLANE];
+		plane.normal.x = this._up.x * this._coeffBottom[0] + this._direction.x * this._coeffBottom[1];
+		plane.normal.y = this._up.y * this._coeffBottom[0] + this._direction.y * this._coeffBottom[1];
+		plane.normal.z = this._up.z * this._coeffBottom[0] + this._direction.z * this._coeffBottom[1];
+		plane.constant = Vector3.dotv(this.translation, plane.normal);
 
 		// top plane
-		planeNormal.x = this._up.x * this._coeffTop[0];
-		planeNormal.y = this._up.y * this._coeffTop[0];
-		planeNormal.z = this._up.z * this._coeffTop[0];
-		planeNormal.add_d(this._direction.x * this._coeffTop[1], this._direction.y * this._coeffTop[1], this._direction.z * this._coeffTop[1]);
-		this._worldPlane[Camera.TOP_PLANE].normal.setv(planeNormal);
-		this._worldPlane[Camera.TOP_PLANE].constant = Vector3.dotv(this.translation, planeNormal);
+		plane = this._worldPlane[Camera.TOP_PLANE];
+		plane.normal.x = this._up.x * this._coeffTop[0] + this._direction.x * this._coeffTop[1];
+		plane.normal.y = this._up.y * this._coeffTop[0] + this._direction.y * this._coeffTop[1];
+		plane.normal.z = this._up.z * this._coeffTop[0] + this._direction.z * this._coeffTop[1];
+		plane.constant = Vector3.dotv(this.translation, plane.normal);
 
 		if (this.projectionMode === Camera.Parallel) {
 			if (this._frustumRight > this._frustumLeft) {
-				this._worldPlane[Camera.LEFT_PLANE].constant = this._worldPlane[Camera.LEFT_PLANE].constant + this._frustumLeft;
-				this._worldPlane[Camera.RIGHT_PLANE].constant = this._worldPlane[Camera.RIGHT_PLANE].constant - this._frustumRight;
+				this._worldPlane[Camera.LEFT_PLANE].constant += this._frustumLeft;
+				this._worldPlane[Camera.RIGHT_PLANE].constant -= this._frustumRight;
 			} else {
-				this._worldPlane[Camera.LEFT_PLANE].constant = this._worldPlane[Camera.LEFT_PLANE].constant - this._frustumLeft;
-				this._worldPlane[Camera.RIGHT_PLANE].constant = this._worldPlane[Camera.RIGHT_PLANE].constant + this._frustumRight;
+				this._worldPlane[Camera.LEFT_PLANE].constant -= this._frustumLeft;
+				this._worldPlane[Camera.RIGHT_PLANE].constant += this._frustumRight;
 			}
 
 			if (this._frustumBottom > this._frustumTop) {
-				this._worldPlane[Camera.TOP_PLANE].constant = this._worldPlane[Camera.TOP_PLANE].constant + this._frustumTop;
-				this._worldPlane[Camera.BOTTOM_PLANE].constant = this._worldPlane[Camera.BOTTOM_PLANE].constant - this._frustumBottom;
+				this._worldPlane[Camera.TOP_PLANE].constant += this._frustumTop;
+				this._worldPlane[Camera.BOTTOM_PLANE].constant -= this._frustumBottom;
 			} else {
-				this._worldPlane[Camera.TOP_PLANE].constant = this._worldPlane[Camera.TOP_PLANE].constant - this._frustumTop;
-				this._worldPlane[Camera.BOTTOM_PLANE].constant = this._worldPlane[Camera.BOTTOM_PLANE].constant + this._frustumBottom;
+				this._worldPlane[Camera.TOP_PLANE].constant -= this._frustumTop;
+				this._worldPlane[Camera.BOTTOM_PLANE].constant += this._frustumBottom;
 			}
 		}
 
+		var dirDotLocation = this._direction.dot(this.translation);
+
 		// far plane
-		planeNormal.setv(this._direction).invert();
-		this._worldPlane[Camera.FAR_PLANE].normal.setv(planeNormal);
-		this._worldPlane[Camera.FAR_PLANE].constant = -(dirDotLocation + this._frustumFar);
+		plane = this._worldPlane[Camera.FAR_PLANE];
+		plane.normal.x = -this._direction.x;
+		plane.normal.y = -this._direction.y;
+		plane.normal.z = -this._direction.z;
+		plane.constant = -(dirDotLocation + this._frustumFar);
 
 		// near plane
-		this._worldPlane[Camera.NEAR_PLANE].normal.setv(this._direction);
-		this._worldPlane[Camera.NEAR_PLANE].constant = dirDotLocation + this._frustumNear;
+		plane = this._worldPlane[Camera.NEAR_PLANE];
+		plane.normal.x = this._direction.x;
+		plane.normal.y = this._direction.y;
+		plane.normal.z = this._direction.z;
+		plane.constant = dirDotLocation + this._frustumNear;
 
 		this._updateMVMatrix = true;
 		this._updateMVPMatrix = true;
