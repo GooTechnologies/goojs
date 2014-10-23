@@ -187,7 +187,7 @@ define([
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 			});
 
 			it('modifies the TransformComponent if it already exists when trying to add a 3 element array', function () {
@@ -199,7 +199,7 @@ define([
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBe(transformComponent);
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 				expect(entity.transformComponent._dirty).toBeTruthy();
 			});
 
@@ -209,7 +209,7 @@ define([
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 				expect(entity.transformComponent._dirty).toBeTruthy();
 			});
 
@@ -220,7 +220,7 @@ define([
 				entity.set(transform);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 				expect(entity.transformComponent._dirty).toBeTruthy();
 			});
 
