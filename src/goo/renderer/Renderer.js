@@ -1111,7 +1111,7 @@ function (
 		}
 
 		for (var i = 0; i < count; i++) {
-			this.renderMeshMaterial(i, materials, flatOrWire, originalData, meshData, renderInfo);
+			this.renderMeshMaterial(i, materials, flatOrWire, originalData, renderInfo);
 		}
 	};
 
@@ -1131,7 +1131,7 @@ function (
 		}
 	};
 
-	Renderer.prototype.renderMeshMaterial = function (i, materials, flatOrWire, originalData, meshData, renderInfo) {
+	Renderer.prototype.renderMeshMaterial = function (i, materials, flatOrWire, originalData, renderInfo) {
 		var material = null, orMaterial = null;
 
 		if (i < materials.length) {
@@ -1141,8 +1141,8 @@ function (
 			orMaterial = this._overrideMaterials[i];
 		}
 
-		material = this.configureRenderInfo(renderInfo, i, material, orMaterial, originalData, meshData, flatOrWire);
-
+		material = this.configureRenderInfo(renderInfo, i, material, orMaterial, originalData, flatOrWire);
+		var meshData = renderInfo.meshData;
 
 		//! AT: this should stay in a method
 
@@ -1185,9 +1185,9 @@ function (
 		}
 	};
 
-	Renderer.prototype.configureRenderInfo = function(renderInfo, i, material, orMaterial, originalData, meshData, flatOrWire) {
+	Renderer.prototype.configureRenderInfo = function(renderInfo, i, material, orMaterial, originalData, flatOrWire) {
 
-
+		var meshData = renderInfo.meshData;
 		if (i < this._overrideMaterials.length) {
 			orMaterial = this._overrideMaterials[i];
 		}
