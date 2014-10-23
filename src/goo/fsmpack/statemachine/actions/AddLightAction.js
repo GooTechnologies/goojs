@@ -35,7 +35,7 @@ function(
 			type: 'float',
 			control: 'slider',
 			min: 0,
-			max: 5000,
+			max: 1000,
 			description: 'Range of the light',
 			'default': 200
 		}],
