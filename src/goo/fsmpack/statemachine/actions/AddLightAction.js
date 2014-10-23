@@ -1,13 +1,17 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/entities/components/LightComponent',
-	'goo/renderer/light/PointLight'
+	'goo/renderer/light/PointLight',
+	'goo/renderer/light/DirectionalLight',
+	'goo/renderer/light/SpotLight'
 ],
 /** @lends */
 function(
 	Action,
 	LightComponent,
-	PointLight
+	PointLight,
+	DirectionalLight,
+	SpotLight
 ) {
 	'use strict';
 
@@ -30,6 +34,14 @@ function(
 			description: 'Color of the light',
 			'default': [1, 1, 1]
 		}, {
+			name: 'Light type',
+			key: 'type',
+			type: 'string',
+			control: 'dropdown',
+			description: 'Light type',
+			'default': 'Point',
+			options: ['Point', 'Directional', 'Spot']
+		}, {
 			name: 'Range',
 			key: 'range',
 			type: 'float',
@@ -38,6 +50,24 @@ function(
 			max: 1000,
 			description: 'Range of the light',
 			'default': 200
+		}, {
+			name: 'Cone Angle',
+			key: 'angle',
+			type: 'float',
+			control: 'slider',
+			min: 1,
+			max: 170,
+			description: 'Cone angle (applies only to spot lights)',
+			'default': 30
+		}, {
+			name: 'Penumbra',
+			key: 'penumbra',
+			type: 'float',
+			control: 'slider',
+			min: 0,
+			max: 170,
+			description: 'Penumbra (applies only to spot lights)',
+			'default': 30
 		}],
 		transitions: []
 	};
@@ -49,8 +79,19 @@ function(
 			return;
 		}
 
-		var light = new PointLight();
-		light.range = +this.range;
+		var light;
+		if (this.type === 'Directional') {
+			light = new DirectionalLight();
+		} else if (this.type === 'Spot') {
+			light = new SpotLight();
+			light.range = +this.range;
+			light.angle = +this.angle;
+			light.penumbra = +this.penumbra;
+		} else {
+			light = new PointLight();
+			light.range = +this.range;
+		}
+
 		light.color.setd(this.color[0], this.color[1], this.color[2]);
 
 		entity.setComponent(new LightComponent(light));
