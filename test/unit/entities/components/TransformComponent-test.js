@@ -200,6 +200,7 @@ define([
 
 				expect(entity.transformComponent).toBe(transformComponent);
 				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent._dirty).toBeTruthy();
 			});
 
 			it('sets a TransformComponent when trying to add a {x, y, z} object', function () {
@@ -209,6 +210,7 @@ define([
 
 				expect(entity.transformComponent).toBeTruthy();
 				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent._dirty).toBeTruthy();
 			});
 
 			it('sets a TransformComponent when trying to add a Transform', function () {
@@ -219,6 +221,7 @@ define([
 
 				expect(entity.transformComponent).toBeTruthy();
 				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent._dirty).toBeTruthy();
 			});
 
 			it('applies all of the API functions correctly', function(){

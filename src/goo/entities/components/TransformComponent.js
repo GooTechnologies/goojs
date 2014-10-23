@@ -556,6 +556,7 @@ function (
 		}
 
 		if (matched) {
+			transformComponent.setUpdated();
 			entity.setComponent(transformComponent);
 			return true;
 		}
