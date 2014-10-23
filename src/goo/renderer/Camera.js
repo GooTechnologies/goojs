@@ -44,12 +44,12 @@ function (
 		this._direction = new Vector3(0, 0, -1);
 
 		// These need an onFrustumChange() after being modified
-		this._frustumNear = 1.0;
-		this._frustumFar = 2.0;
-		this._frustumLeft = -0.5;
-		this._frustumRight = 0.5;
-		this._frustumTop = 0.5;
-		this._frustumBottom = -0.5;
+		this._frustumNear = this.near = 1.0;
+		this._frustumFar = this.far = 2.0;
+		this._frustumLeft = this.left = -0.5;
+		this._frustumRight = this.right = 0.5;
+		this._frustumTop = this.top = 0.5;
+		this._frustumBottom = this.bottom = -0.5;
 
 		// Used to speed up world-plane normal calculation in onFrameChange. Only calculated when frustum values are changed
 		this._coeffLeft = [];
@@ -98,10 +98,9 @@ function (
 		// Temp decl
 		this.vNearPlaneCenter = new Vector3();
 		this.vFarPlaneCenter = new Vector3();
-		this.direction = new Vector3(); //! AT: unused
-		this.left = new Vector3();
-		this.up = new Vector3();
-		this.planeNormal = new Vector3();
+
+		this.calcLeft = new Vector3();
+		this.calcUp = new Vector3();
 
 		this.changedProperties = true;
 
@@ -260,6 +259,10 @@ function (
 		this.aspect = source.aspect;
 		this.near = source.near;
 		this.far = source.far;
+		this.left = source.left;
+		this.up = source.up;
+		this.top = source.top;
+		this.bottom = source.bottom;
 
 		this._frustumLeft = source._frustumLeft;
 		this._frustumRight = source._frustumRight;
@@ -882,14 +885,16 @@ function (
 
 		var vNearPlaneCenter = this.vNearPlaneCenter;
 		var vFarPlaneCenter = this.vFarPlaneCenter;
-		var direction = this.direction;
-		var left = this.left;
-		var up = this.up;
+
+		var direction = this.calcLeft;
 
 		direction.setv(this._direction).mul(fNear);
 		vNearPlaneCenter.setv(this.translation).addv(direction);
 		direction.setv(this._direction).mul(fFar);
 		vFarPlaneCenter.setv(this.translation).addv(direction);
+
+		var left = this.calcLeft;
+		var up = this.calcUp;
 
 		left.setv(this._left).mul(fNearPlaneWidth);
 		up.setv(this._up).mul(fNearPlaneHeight);
