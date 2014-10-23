@@ -7,11 +7,10 @@ require([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
 	'goo/math/Vector3',
-	'goo/debugpack/systems/CameraDebugSystem',
-	'goo/debugpack/components/CameraDebugComponent',
+	'goo/debugpack/systems/DebugRenderSystem',
 	'goo/entities/SystemBus',
 	'lib/V'
-], function (
+], function(
 	Material,
 	ShaderLib,
 	Camera,
@@ -20,11 +19,10 @@ require([
 	OrbitCamControlScript,
 	ScriptComponent,
 	Vector3,
-	CameraDebugSystem,
-	CameraDebugComponent,
+	DebugRenderSystem,
 	SystemBus,
 	V
-	) {
+) {
 	'use strict';
 
 	var cameraState = {
@@ -41,10 +39,15 @@ require([
 		});
 	}
 
+	V.describe('Keys 1, 2 switch main camera\nkey 3 starts/stops the spinning of camera 1');
+
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	world.setSystem(new CameraDebugSystem());
+	var debugRenderSystem = new DebugRenderSystem();
+	debugRenderSystem.doRender.CameraComponent = true;
+	goo.renderSystems.push(debugRenderSystem);
+	world.setSystem(debugRenderSystem);
 
 	// add spheres to have the cameras view them
 	V.addColoredSpheres();
@@ -53,7 +56,7 @@ require([
 	V.addLights();
 
 	document.body.addEventListener('keypress', function(e) {
-		switch(e.keyCode) {
+		switch (e.keyCode) {
 			case 49:
 				if (cameraState.mainCameraId === 1) {
 					setMainCamera(0, [camera1Entity, camera2Entity]);
@@ -69,25 +72,14 @@ require([
 			case 51:
 				cameraState.spin = !cameraState.spin;
 				break;
-			case 52:
-				if (camera1Entity.hasComponent('CameraDebugComponent')) {
-					camera1Entity.clearComponent('CameraDebugComponent');
-				} else {
-					camera1Entity.set(new CameraDebugComponent());
-				}
-				break;
-			default:
-				console.log('Keys 1, 2 switch main camera\nkey 3 starts/stops the spinning of camera 1\nkey 4 adds/removes camera debug component on camera 1');
 		}
 	});
 
 	// camera 1 - spinning
 	var camera1Entity = world.createEntity(new Camera(), [0, 0, 3]).lookAt(new Vector3(0, 0, 0)).addToWorld();
-	// camera1Entity.cameraComponent.camera.setProjectionMode(1);
-	// camera1Entity.cameraComponent.camera.setFrustum(1, 100, -5, 5, 5, -5, 1);
 
 	camera1Entity.set(new ScriptComponent({
-		run: function (entity) {
+		run: function(entity) {
 			if (cameraState.spin) {
 				cameraState.angle = Math.sin(goo.world.time);
 				entity.setRotation(cameraState.angle, 0, 0);
@@ -96,13 +88,11 @@ require([
 		}
 	}));
 
-	var camera2Entity = V.addOrbitCamera(new Vector3(25, Math.PI / 4, 0));
+	var camera2Entity = V.addOrbitCamera(new Vector3(25, Math.PI / 3, 0));
+	setMainCamera(1, [camera1Entity, camera2Entity]);
+	cameraState.mainCameraId = 1;
 
-	// attach camera debug components
-	camera1Entity.set(new CameraDebugComponent());
-	camera2Entity.set(new CameraDebugComponent());
-
-	goo.renderSystem.camera2 = camera1Entity.cameraComponent.camera;
+	goo.renderSystem.partitioningCamera = camera1Entity.cameraComponent.camera;
 
 	V.process();
 });

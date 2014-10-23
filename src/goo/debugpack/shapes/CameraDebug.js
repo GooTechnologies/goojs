@@ -116,14 +116,7 @@ define([
 		indices.push(2, 6);
 		indices.push(3, 7);
 
-		camera.update();
-		plane = this._worldPlane[Camera.LEFT_PLANE];
-		verts.push((n0.x + n1.x) / 2, (n0.y + n1.y) / 2, (n0.z + n1.z) / 2);
-		verts.push((n0.x + n1.x) / 2 + plane.normal.x, (n0.y + n1.y) / 2 + plane.normal.y, (n0.z + n1.z) / 2 + plane.normal.z);
-		indices.push(8, 9);
-
-		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 10, 26);
-		// var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 8, 24);
+		var meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 8, 24);
 
 		meshData.getAttributeBuffer(MeshData.POSITION).set(verts);
 		meshData.getIndexBuffer().set(indices);

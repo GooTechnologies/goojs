@@ -5,9 +5,8 @@ require([
 	'goo/renderer/TextureCreator',
 	'goo/quadpack/DoubleQuad',
 	'lib/V',
-	'goo/renderer/light/PointLight',
-	'goo/debugpack/components/LightDebugComponent',
-	'goo/debugpack/systems/LightDebugSystem'
+	'goo/debugpack/systems/DebugRenderSystem',
+	'goo/renderer/light/PointLight'
 ], function (
 	Material,
 	ShaderLib,
@@ -15,9 +14,8 @@ require([
 	TextureCreator,
 	DoubleQuad,
 	V,
-	PointLight,
-	LightDebugComponent,
-	LightDebugSystem
+	DebugRenderSystem,
+	PointLight
 	) {
 	'use strict';
 
@@ -26,7 +24,9 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	world.setSystem(new LightDebugSystem());
+	var debugRenderSystem = new DebugRenderSystem();
+	goo.renderSystems.push(debugRenderSystem);
+	world.setSystem(debugRenderSystem);
 
 	var material = new Material(ShaderLib.uber);
 	material.blendState.blending = 'CustomBlending';	// Needed if the quad has transparency
@@ -39,7 +39,7 @@ require([
 	var normalConeEntity = world.createEntity(normalConeMeshData, material).addToWorld();
 	V.showNormals(normalConeEntity);
 
-	world.createEntity(new LightDebugComponent(), [0, 0, -10], new PointLight()).addToWorld();
+	world.createEntity([0, 0, -10], new PointLight()).addToWorld();
 	//V.addLights();
 
 	V.addOrbitCamera(new Vector3(25, Math.PI / 2, 0));

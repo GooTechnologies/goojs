@@ -36,20 +36,19 @@ function (
 
 		this._debugMaterials = {};
 		this.overrideMaterials = [];
+		this.partitioningCamera = null;
 
 		this.camera = null;
 		this.lights = [];
 		this.currentTpf = 0.0;
 
-		// stop using this pattern!
-		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			that.camera = newCam.camera;
-		});
+			this.camera = newCam.camera;
+		}.bind(this));
 
 		SystemBus.addListener('goo.setLights', function (lights) {
-			that.lights = lights;
-		});
+			this.lights = lights;
+		}.bind(this));
 
 		this.picking = {
 			doPick: false,
@@ -61,7 +60,6 @@ function (
 			},
 			skipUpdateBuffer: false
 		};
-		//this.setDebugMaterial('wireframe');
 	}
 
 	RenderSystem.prototype = Object.create(System.prototype);
@@ -106,10 +104,10 @@ function (
 				preRenderer.process(renderer, this.entities, this.partitioner, this.camera, this.lights);
 			}
 
-			if (!this.camera2) {
-				this.partitioner.process(this.camera, this.entities, this.renderList);
+			if (this.partitioningCamera) {
+				this.partitioner.process(this.partitioningCamera, this.entities, this.renderList);
 			} else {
-				this.partitioner.process(this.camera2, this.entities, this.renderList);
+				this.partitioner.process(this.camera, this.entities, this.renderList);
 			}
 
 			if (this.composers.length > 0 && this._composersActive) {
