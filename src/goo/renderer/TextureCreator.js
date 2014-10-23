@@ -150,6 +150,7 @@ function (
 	/**
 	 *
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
+	 * @param {Object} settings
 	 * @param {Function} callback Called when loading has finished
 	 * @returns {Texture} cubemap
 	 */
