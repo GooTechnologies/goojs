@@ -43,19 +43,24 @@ function(
 	};
 
 	AddLightAction.prototype._run = function (fsm) {
+		var entity = fsm.getOwnerEntity();
+		if (entity.lightComponent) {
+			this._untouched = true;
+			return;
+		}
+
 		var light = new PointLight();
 		light.range = +this.range;
 		light.color.setd(this.color[0], this.color[1], this.color[2]);
 
-		var entity = fsm.getOwnerEntity();
 		entity.setComponent(new LightComponent(light));
 	};
 
 	AddLightAction.prototype.cleanup = function (fsm) {
+		if (this._untouched) { return; }
+
 		var entity = fsm.getOwnerEntity();
-		if (entity.hasComponent('LightComponent')) {
-			entity.clearComponent('LightComponent');
-		}
+		entity.clearComponent('LightComponent');
 	};
 
 	return AddLightAction;
