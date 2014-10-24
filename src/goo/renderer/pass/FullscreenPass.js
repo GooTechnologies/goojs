@@ -1,21 +1,19 @@
 define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/FullscreenUtil',
-	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/Pass'
 ],
 /** @lends */
 function (
 	Material,
 	FullscreenUtil,
-	ShaderLib,
 	Pass
 ) {
 	'use strict';
 
 	/** @class */
 	function FullscreenPass(shader) {
-		this.material = new Material(shader || ShaderLib.simple);
+		this.material = new Material(shader);
 		this.useReadBuffer = true;
 
 		this.renderToScreen = false;

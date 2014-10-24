@@ -15,6 +15,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
 	'goo/entities/SystemBus',
+	'goo/renderer/shaders/ReliefBuilder',
 	'goo/renderer/TaskScheduler'
 ],
 /** @lends */
@@ -34,6 +35,7 @@ function (
 	ShaderLib,
 	ShadowHandler,
 	SystemBus,
+	ReliefBuilder,
 	TaskScheduler
 ) {
 	'use strict';
@@ -561,6 +563,15 @@ function (
 	};
 
 	Renderer.prototype.updateShadows = function (partitioner, entities, lights) {
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			if (entity.meshRendererComponent && entity.meshRendererComponent.hidden == false) {
+				var material = entity.meshRendererComponent.materials[0];
+
+				ReliefBuilder.process(material, this);
+			}
+		}
+
 		this.shadowHandler.checkShadowRendering(this, partitioner, entities, lights);
 	};
 
