@@ -714,6 +714,11 @@ function (
 			uniformCall.uniform3f(cameraPosition.data[0], cameraPosition.data[1], cameraPosition.data[2]);
 		};
 
+		defaultCallbacks[Shader.CAMERA_FOV] = function (uniformCall, shaderInfo) {
+			uniformCall.uniform1f(shaderInfo.camera.fov);
+		};
+
+
 		defaultCallbacks[Shader.NEAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.camera.near);
 		};
@@ -807,6 +812,7 @@ function (
 	}
 	Shader.CAMERA = 'CAMERA';
 	Shader.CAMERA_TRANSLATION = 'CAMERA_TRANSLATION';
+	Shader.CAMERA_FOV = 'CAMERA_FOV';
 	Shader.AMBIENT = 'AMBIENT';
 	Shader.EMISSIVE = 'EMISSIVE';
 	Shader.DIFFUSE = 'DIFFUSE';
