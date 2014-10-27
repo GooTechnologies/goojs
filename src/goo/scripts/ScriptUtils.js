@@ -12,7 +12,9 @@ define([
 		'float': 0,
 		'int': 0,
 		'string': '',
-		'vec3': [0.0, 0.0, 0.0],
+		'vec2': [0, 0],
+		'vec3': [0, 0, 0],
+		'vec4': [0, 0, 0, 0],
 		'boolean': false,
 		'texture': {},
 		'entity': {}
