@@ -183,22 +183,17 @@ function (
 			}
 		});
 
-		var that = this;
-		for (var i = 0; i < imageDataArray.length; i++) {
-			/*jshint loopfunc: true */
-			(function (index) {
-				var queryImage = imageDataArray[index];
-				if (typeof queryImage === 'string') {
-					that.ajax._loadImage(queryImage).then(function (image) {
-						images[index] = image;
-						latch.countDown();
-					});
-				} else {
-					images[index] = queryImage;
+		imageDataArray.forEach(function (queryImage, index) {
+			if (typeof queryImage === 'string') {
+				this.ajax._loadImage(queryImage).then(function (image) {
+					images[index] = image;
 					latch.countDown();
-				}
-			})(i);
-		}
+				});
+			} else {
+				images[index] = queryImage;
+				latch.countDown();
+			}
+		}.bind(this));
 
 		return texture;
 	};
