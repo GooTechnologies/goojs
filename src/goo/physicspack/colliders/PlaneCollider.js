@@ -1,9 +1,9 @@
 define([
-	'goo/addons/cannonpack/CannonCollider'
+	'goo/physicspack/colliders/Collider'
 ],
 /** @lends */
 function (
-	CannonCollider
+	Collider
 ) {
 	'use strict';
 
@@ -14,15 +14,15 @@ function (
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
 	 * @param {object} [settings]
 	 */
-	function CannonPlaneCollider(settings) {
+	function PlaneCollider(settings) {
 		settings = settings || {};
 
-		CannonCollider.call(this, {
+		Collider.call(this, {
 			cannonShape: new CANNON.Plane()
 		});
 	}
-	CannonPlaneCollider.prototype = Object.create(CannonCollider.prototype);
-	CannonPlaneCollider.constructor = CannonPlaneCollider;
+	PlaneCollider.prototype = Object.create(Collider.prototype);
+	PlaneCollider.constructor = PlaneCollider;
 
-	return CannonPlaneCollider;
+	return PlaneCollider;
 });

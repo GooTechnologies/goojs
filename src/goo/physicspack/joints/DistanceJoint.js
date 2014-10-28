@@ -1,11 +1,13 @@
 define([
 	'goo/entities/components/Component',
-	'goo/util/ObjectUtil'
+	'goo/util/ObjectUtil',
+	'goo/physicspack/joints/Joint'
 ],
 /** @lends */
 function (
 	Component,
-	_
+	_,
+	Joint
 ) {
 	'use strict';
 
@@ -19,9 +21,8 @@ function (
 	 * @param {number} [settings.distance=1]
 	 * @param {CannonRigidbodyComponent} settings.connectedBody
 	 */
-	function CannonDistanceJointComponent(settings) {
+	function BallJoint(settings) {
 		settings = settings || {};
-		this.type = 'CannonDistanceJointComponent';
 
 		_.defaults(settings, {
 			distance : 1,
@@ -33,15 +34,15 @@ function (
 
 		this.cannonConstraint = null;
 	}
-	CannonDistanceJointComponent.prototype = Object.create(Component.prototype);
-	CannonDistanceJointComponent.constructor = CannonDistanceJointComponent;
+	BallJoint.prototype = Object.create(Joint.prototype);
+	BallJoint.constructor = BallJoint;
 
-	CannonDistanceJointComponent.prototype.createConstraint = function (entity) {
+	BallJoint.prototype.createConstraint = function (entity) {
 		var bodyA = entity.cannonRigidbodyComponent.body;
 		var bodyB = this.connectedBody.body;
 		this.cannonConstraint = new CANNON.DistanceConstraint(bodyA, bodyB, this.distance);
 		return this.cannonConstraint;
 	};
 
-	return CannonDistanceJointComponent;
+	return BallJoint;
 });
