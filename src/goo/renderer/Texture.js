@@ -157,8 +157,8 @@ function (
 			level:0,
 			xoffset:xoffset,
 			yoffset:yoffset,
-			width:width,
-			height:height,
+		//	width:width,
+		//	height:height,
 			format:this.format,
 			type:this.type,
 			pixels:pixels}

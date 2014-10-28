@@ -1606,25 +1606,30 @@ define([
 						texture.needsUpdate = false;
 					} else {
 						this.bindTexture(context, texture, texIndex, unitrecord);
+
+
 					}
 
-					if (texture.subImageChangelist.length) {
-						for (var si = 0; si < texture.subImageChangelist.length; si++) {
-							var subImg = texture.subImageChangelist[si];
-							context.texSubImage2D(
-								WebGLRenderingContext.TEXTURE_2D,
-								subImg.level,
-								subImg.xoffset,
-								subImg.yoffset,
-								subImg.width,
-								subImg.height,
-								this.getGLInternalFormat(subImg.format),
-								this.getGLPixelDataType(subImg.type),
-								subImg.pixels
-							)
+					if (texture.subImageChangelist) {
+						if (texture.subImageChangelist.length) {
+							for (var si = 0; si < texture.subImageChangelist.length; si++) {
+								var subImg = texture.subImageChangelist[si];
+								context.texSubImage2D(
+									WebGLRenderingContext.TEXTURE_2D,
+									subImg.level,
+									subImg.xoffset,
+									subImg.yoffset,
+								//	subImg.width,
+								//	subImg.height,
+									this.getGLInternalFormat(subImg.format),
+									WebGLRenderingContext.UNSIGNED_BYTE, // this.getGLPixelDataType(subImg.type),
+									subImg.pixels
+								)
+							}
+							texture.subImageChangelist.length = 0;
 						}
-						texture.subImageChangelist.length = 0;
 					}
+
 
 					var imageObject = texture.image !== undefined ? texture.image : texture;
 					var isTexturePowerOfTwo = Util.isPowerOfTwo(imageObject.width) && Util.isPowerOfTwo(imageObject.height);
