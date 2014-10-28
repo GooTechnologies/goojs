@@ -1983,6 +1983,18 @@ function (
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
 				context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
+			} else if (blending === 'TransparencyBlending') {
+				context.enable(WebGLRenderingContext.BLEND);
+				context.blendEquationSeparate(
+					WebGLRenderingContext.FUNC_ADD,
+					WebGLRenderingContext.FUNC_ADD
+				);
+				context.blendFuncSeparate(
+					WebGLRenderingContext.SRC_ALPHA,
+					WebGLRenderingContext.ONE_MINUS_SRC_ALPHA,
+					WebGLRenderingContext.ONE,
+					WebGLRenderingContext.ONE_MINUS_SRC_ALPHA
+				);
 			} else if (blending === 'CustomBlending') {
 				context.enable(WebGLRenderingContext.BLEND);
 			} else if (blending === 'SeparateBlending') {
