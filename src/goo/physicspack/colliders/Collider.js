@@ -6,6 +6,7 @@ function () {
 	/**
 	 * @class
 	 * @param {object} [settings]
+	 * @extends Collider
 	 */
 	function Collider(settings) {
 		settings = settings || {};

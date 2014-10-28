@@ -10,6 +10,7 @@ require([
 	'goo/math/Vector3',
 	'goo/physicspack/ColliderComponent',
 	'goo/physicspack/CannonPhysicsSystem',
+	'goo/physicspack/AmmoPhysicsSystem',
 	'goo/physicspack/RigidbodyComponent',
 	'goo/physicspack/colliders/BoxCollider',
 	'goo/physicspack/colliders/CylinderCollider',
@@ -28,6 +29,7 @@ require([
 	Vector3,
 	ColliderComponent,
 	CannonPhysicsSystem,
+	AmmoPhysicsSystem,
 	RigidbodyComponent,
 	BoxCollider,
 	CylinderCollider,
@@ -42,8 +44,8 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	var cannonSystem = new CannonPhysicsSystem();
-	world.setSystem(cannonSystem);
+	world.setSystem(new CannonPhysicsSystem());
+	//world.setSystem(new AmmoPhysicsSystem());
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {

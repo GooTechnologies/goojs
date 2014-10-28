@@ -23,9 +23,9 @@ function (
 ) {
 	'use strict';
 
-	/* global CANNON */
+	/* global Ammo */
 
-	function CannonRigidbody(cannonWorld, settings) {
+	function AmmoRigidbody(cannonWorld, settings) {
 		settings = settings || {};
 		Rigidbody.call(this, settings);
 
@@ -38,10 +38,10 @@ function (
 		cannonWorld.addBody(this.cannonBody);
 	}
 
-	CannonRigidbody.prototype = Object.create(Rigidbody.prototype);
-	CannonRigidbody.constructor = CannonRigidbody;
+	AmmoRigidbody.prototype = Object.create(Rigidbody.prototype);
+	AmmoRigidbody.constructor = AmmoRigidbody;
 
-	CannonRigidbody.prototype.setKinematic = function () {
+	AmmoRigidbody.prototype.setKinematic = function () {
 		var body = this.cannonBody;
 		body.mass = 0;
 		body.type = CANNON.Body.KINEMATIC;
@@ -50,7 +50,7 @@ function (
 	var tmpQuat = new Quaternion();
 
 	// Get the world transform from the entity and set on the body
-	CannonRigidbody.prototype.setTransformFromEntity = function (entity) {
+	AmmoRigidbody.prototype.setTransformFromEntity = function (entity) {
 		var t = entity.transformComponent.transform;
 		var body = this.cannonBody;
 		body.position.copy(t.translation);
@@ -60,43 +60,43 @@ function (
 
 	};
 
-	CannonRigidbody.prototype.setMass = function (mass) {
+	AmmoRigidbody.prototype.setMass = function (mass) {
 		var body = this.cannonBody;
 		body.mass = mass;
 		body.type = CANNON.Body.DYNAMIC;
 	};
 
-	CannonRigidbody.prototype.setForce = function (force) {
+	AmmoRigidbody.prototype.setForce = function (force) {
 		this.cannonBody.force.copy(force);
 	};
 
-	CannonRigidbody.prototype.setVelocity = function (velocity) {
+	AmmoRigidbody.prototype.setVelocity = function (velocity) {
 		this.cannonBody.velocity.copy(velocity);
 	};
 
-	CannonRigidbody.prototype.setPosition = function (pos) {
+	AmmoRigidbody.prototype.setPosition = function (pos) {
 		this.cannonBody.position.copy(pos);
 	};
 
-	CannonRigidbody.prototype.getPosition = function (targetVector) {
+	AmmoRigidbody.prototype.getPosition = function (targetVector) {
 		var p = this.cannonBody.position;
 		targetVector.setd(p.x, p.y, p.z);
 	};
 
-	CannonRigidbody.prototype.setQuaternion = function (pos) {
+	AmmoRigidbody.prototype.setQuaternion = function (pos) {
 		this.cannonBody.quaternion.copy(pos);
 	};
 
-	CannonRigidbody.prototype.getQuaternion = function (targetQuat) {
+	AmmoRigidbody.prototype.getQuaternion = function (targetQuat) {
 		var q = this.cannonBody.quaternion;
 		targetQuat.setd(q.x, q.y, q.z, q.w);
 	};
 
-	CannonRigidbody.prototype.setAngularVelocity = function (angularVelocity) {
+	AmmoRigidbody.prototype.setAngularVelocity = function (angularVelocity) {
 		this.cannonBody.angularVelocity.copy(angularVelocity);
 	};
 
-	CannonRigidbody.prototype.getCannonShape = function (collider) {
+	AmmoRigidbody.prototype.getShape = function (collider) {
 		var shape;
 		if (collider instanceof BoxCollider) {
 			var halfExtents = new CANNON.Vec3();
@@ -119,10 +119,10 @@ function (
 		return shape;
 	};
 
-	CannonRigidbody.prototype.addCollider = function (collider, position, quaternion) {
+	AmmoRigidbody.prototype.addCollider = function (collider, position, quaternion) {
 		var body = this.cannonBody;
 
-		collider.cannonShape = this.getCannonShape(collider);
+		collider.cannonShape = this.getShape(collider);
 
 		if (collider.isTrigger) {
 			collider.cannonShape.collisionResponse = false;
@@ -140,5 +140,5 @@ function (
 		body.addShape(collider.cannonShape, cannonPos, cannonQuat);
 	};
 
-	return CannonRigidbody;
+	return AmmoRigidbody;
 });

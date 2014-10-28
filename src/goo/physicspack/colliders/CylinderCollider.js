@@ -8,13 +8,13 @@ function (
 	'use strict';
 
 	/**
-	 * @class Sphere collider for the {@link CannonSystem}.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
+	 * @class
 	 * @param {object} [settings]
 	 * @param {number} [settings.radiusTop=0.5]
 	 * @param {number} [settings.radiusBottom=0.5]
 	 * @param {number} [settings.height=0.5]
 	 * @param {number} [settings.numSegments=10]
+	 * @extends Collider
 	 */
 	function CylinderCollider(settings) {
 		settings = settings || {};

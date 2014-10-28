@@ -7,19 +7,15 @@ function (
 ) {
 	'use strict';
 
-	/* global CANNON */
-
 	/**
-	 * @class Plane collider. Attach to an entity with a {@link CannonRigidbodyComponent}.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
+	 * @class
 	 * @param {object} [settings]
+	 * @extends Collider
 	 */
 	function PlaneCollider(settings) {
 		settings = settings || {};
 
-		Collider.call(this, {
-			cannonShape: new CANNON.Plane()
-		});
+		Collider.call(this);
 	}
 	PlaneCollider.prototype = Object.create(Collider.prototype);
 	PlaneCollider.constructor = PlaneCollider;
