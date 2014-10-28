@@ -140,7 +140,9 @@ function (
 		newScriptElement.innerHTML = scriptFactoryStr;
 		newScriptElement.async = false;
 		this._currentScriptLoading = config.id;
-		document.body.appendChild(newScriptElement);
+
+		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
+		parentElement.appendChild(newScriptElement);
 
 		var newScript = window._gooScriptFactories[config.id];
 		if (newScript) {
@@ -270,11 +272,6 @@ function (
 	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
 		var that = this;
 
-		// Strip schema
-		if (url.charAt(0) !== '/') {
-			url = url.substr(url.indexOf('//'));
-		}
-
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
 			return this._dependencyPromises[url] || PromiseUtil.resolve();
@@ -284,7 +281,8 @@ function (
 		scriptElem.src = url;
 		scriptElem.setAttribute('data-script-id', scriptId);
 
-		document.body.appendChild(scriptElem);
+		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
+		parentElement.appendChild(scriptElem);
 
 		return this._dependencyPromises[url] = PromiseUtil.createPromise(function (resolve, reject) {
 			scriptElem.onload = function () {
@@ -366,6 +364,7 @@ function (
 		'string',
 		'int',
 		'float',
+		'vec2',
 		'vec3',
 		'vec4',
 		'boolean',
@@ -382,6 +381,7 @@ function (
 		'string': ['key'],
 		'int': ['spinner', 'slider', 'jointSelector'],
 		'float': ['spinner', 'slider'],
+		'vec2': [],
 		'vec3': ['color'],
 		'vec4': ['color'],
 		'boolean': ['checkbox'],

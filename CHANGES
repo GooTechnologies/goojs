@@ -1,3 +1,23 @@
+v0.11.4 --- 2014-10-14
+======================
+
+Additions:
+ + .centerOfMassOffset method to CannonRigidbodyComponent
+ + trigger option for CannonBoxCollider
+ + .unbindTexture method to Renderer
+ + TextureHandler can now take a *generateMipmaps* option
+
+Changes:
+ * goo installs itself in a global *goo* namespace even if RequireJS is present
+ * improved the minification process a bit, resulting in slightly smaller builds
+
+Fixes:
+ * issues with entities sharing the same id
+ * lens flare script glitching out in edge cases
+ * lens flare not working on child entities
+ * various fixes in the pick-and-rotate script
+
+
 v0.11.3 --- 2014-09-10
 ======================
 

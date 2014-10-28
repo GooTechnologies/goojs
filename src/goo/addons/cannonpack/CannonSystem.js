@@ -164,6 +164,7 @@ function (
 				continue;
 			}
 
+			cannonComponent.body.computeAABB(); // Quick fix
 			var cannonQuat = cannonComponent.body.quaternion;
 			var position = cannonComponent.body.position;
 

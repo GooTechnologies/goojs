@@ -223,6 +223,8 @@ define([
 				'varying vec2 texCoord1;',
 			'#endif',
 
+			'#define M_PI 3.14159265358979323846264338328',
+
 			ShaderBuilder.light.prefragment,
 
 			'void main(void)',
@@ -281,16 +283,17 @@ define([
 
 				'#ifdef REFLECTIVE',
 					'if (refractivity > 0.0) {',
-						'vec3 refractionVector = refract(normalize(viewPosition), N, etaRatio);',
-						// 'refractionVector.yz = -refractionVector.yz;',
-						'refractionVector.x = -refractionVector.x;',
 						'vec4 environment = vec4(0.0);',
 						'#ifdef ENVIRONMENT_CUBE',
+							'vec3 refractionVector = refract(normalize(viewPosition), N, etaRatio);',
+							'refractionVector.x = -refractionVector.x;',
 							'environment = textureCube(environmentCube, refractionVector);',
 						'#elif defined(ENVIRONMENT_SPHERE)',
+							'vec3 refractionVector = refract(normalize(viewPosition), N, etaRatio);',
 							'refractionVector = -refractionVector;',
-							'float m = 4.0 * sqrt(refractionVector.x*refractionVector.x + refractionVector.y*refractionVector.y + (refractionVector.z+1.0)*(refractionVector.z+1.0));',
-							'environment = texture2D(environmentSphere, (refractionVector.xy / m) + 0.5);',
+							'float xx = (atan(refractionVector.z, refractionVector.x) + M_PI) / (2.0 * M_PI);',
+							'float yy = refractionVector.y * 0.5 + 0.5;',
+							'environment = texture2D(environmentSphere, vec2(xx, yy));',
 						'#endif',
 						'environment.rgb = mix(clearColor.rgb, environment.rgb, environment.a);',
 
@@ -298,16 +301,16 @@ define([
 					'}',
 
 					'if (reflectivity > 0.0) {',
-						'vec3 reflectionVector = reflect(viewPosition, N);',
-						'reflectionVector.yz = -reflectionVector.yz;',
-
 						'vec4 environment = vec4(0.0);',
 						'#ifdef ENVIRONMENT_CUBE',
+							'vec3 reflectionVector = reflect(normalize(viewPosition), N);',
+							'reflectionVector.yz = -reflectionVector.yz;',
 							'environment = textureCube(environmentCube, reflectionVector);',
 						'#elif defined(ENVIRONMENT_SPHERE)',
-							'reflectionVector = -reflectionVector;',
-							'float m = 4.0 * sqrt(reflectionVector.x*reflectionVector.x + reflectionVector.y*reflectionVector.y + (reflectionVector.z+1.0)*(reflectionVector.z+1.0));',
-							'environment = texture2D(environmentSphere, (reflectionVector.xy / m) + 0.5);',
+							'vec3 reflectionVector = reflect(normalize(viewPosition), N);',
+							'float xx = (atan(reflectionVector.z, reflectionVector.x) + M_PI) / (2.0 * M_PI);',
+							'float yy = reflectionVector.y * 0.5 + 0.5;',
+							'environment = texture2D(environmentSphere, vec2(xx, yy));',
 						'#endif',
 						'environment.rgb = mix(clearColor.rgb, environment.rgb, environment.a);',
 
@@ -324,6 +327,7 @@ define([
 						'#elif REFLECTION_TYPE == 1',
 							'final_color.rgb += environment.rgb * reflectionAmount;',
 						'#endif',
+						'final_color.a = min(final_color.a + reflectionAmount, 1.0);',
 					'}',
 				'#endif',
 
@@ -792,8 +796,13 @@ define([
 			'vec2 imageCoord = vUv;',
 			'vec4 sum = vec4( 0.0 );',
 
-			'for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
-				'sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];',
+			// 'for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
+				// 'sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];',
+				// 'imageCoord += uImageIncrement * size;',
+			// '}',
+			// Hack for Android, who seems to crash on int looping
+			'for(float i = 0.0; i < KERNEL_SIZE_FLOAT; i++) {',
+				'sum += texture2D( tDiffuse, imageCoord ) * cKernel[int(i)];',
 				'imageCoord += uImageIncrement * size;',
 			'}',
 

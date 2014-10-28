@@ -16,6 +16,7 @@ define([
 		'goo/addons/cannonpack/CannonBoxCollider',
 		'goo/addons/cannonpack/CannonDistanceJointComponent',
 		'goo/addons/cannonpack/CannonTerrainCollider',
+		'goo/addons/cannonpack/CannonPlaneCollider',
 		'goo/addons/cannonpack/CannonRigidbodyComponent',
 		'goo/addons/cannonpack/CannonSphereCollider',
 		'goo/addons/cannonpack/CannonCylinderCollider',
