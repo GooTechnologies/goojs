@@ -104,6 +104,8 @@ function (
 		this.updateCallback = null;
 		this.readyCallback = null;
 
+		this.subImageChangelist = [];
+
 		if (image) {
 			this.setImage(image, width, height, settings);
 		}
@@ -131,6 +133,39 @@ function (
 	Texture.prototype.setNeedsUpdate = function () {
 		this.needsUpdate = true;
 	};
+
+
+	/**
+	 * OÅ:
+	 * Experimental sub image update request to the texture data. Processed later in the renderer using:
+	 *
+	 * WebGLRenderingContext.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+	 * Source: http://msdn.microsoft.com/en-us/library/ie/dn302438(v=vs.85).aspx
+	 *
+	 * @param xoffset
+	 * @param yoffset
+	 * @param width
+	 * @param height
+	 * @param format
+	 * @param type
+	 * @param pixels
+	 */
+
+	Texture.prototype.addSubImageDataUpdate = function (xoffset, yoffset, width, height, format, type, pixels) {
+		this.subImageChangelist.push({
+			target:this.glTexture,
+			level:0,
+			xoffset:xoffset,
+			yoffset:yoffset,
+			width:width,
+			height:height,
+			format:this.format,
+			type:this.type,
+			pixels:pixels}
+		);
+	};
+
+
 
 	//! AT: this takes the same parameters as the Texture function but in a different order!
 	/**
