@@ -207,6 +207,94 @@ function(
 	var lightDefines = [];
 
 	ShaderBuilder.light = {
+		pointLight: function (light, uniforms, i) {
+			uniforms['pointLight' + i] = uniforms['pointLight' + i] || [];
+			uniforms['pointLightColor' + i] = uniforms['pointLightColor' + i] || [];
+
+			var pointLightN = uniforms['pointLight' + i];
+			var translation = light.translation.data;
+			pointLightN[0] = translation[0];
+			pointLightN[1] = translation[1];
+			pointLightN[2] = translation[2];
+			pointLightN[3] = light.range;
+
+			var pointLightColorN = uniforms['pointLightColor' + i];
+			var color = light.color.data;
+			pointLightColorN[0] = color[0] * light.intensity;
+			pointLightColorN[1] = color[1] * light.intensity;
+			pointLightColorN[2] = color[2] * light.intensity;
+			pointLightColorN[3] = light.specularIntensity;
+
+			lightDefines.push('P');
+		},
+		directionalLight: function (light, uniforms, i) {
+			uniforms['directionalLightDirection' + i] = uniforms['directionalLightDirection' + i] || [];
+			uniforms['directionalLightColor' + i] = uniforms['directionalLightColor' + i] || [];
+
+			var directionalLightDir = uniforms['directionalLightDirection' + i];
+			var direction = light.direction.data;
+			directionalLightDir[0] = direction[0];
+			directionalLightDir[1] = direction[1];
+			directionalLightDir[2] = direction[2];
+
+			var directionalLightColorN = uniforms['directionalLightColor' + i];
+			var color = light.color.data;
+			directionalLightColorN[0] = color[0] * light.intensity;
+			directionalLightColorN[1] = color[1] * light.intensity;
+			directionalLightColorN[2] = color[2] * light.intensity;
+			directionalLightColorN[3] = light.specularIntensity;
+
+			lightDefines.push('D');
+		},
+		spotLight: function (light, uniforms, i) {
+			uniforms['spotLight'+i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
+			uniforms['spotLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
+			uniforms['spotLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
+
+			uniforms['spotLightAngle'+i] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
+			uniforms['spotLightPenumbra'+i] = light.penumbra !== undefined ? Math.sin(light.penumbra * MathUtils.DEG_TO_RAD / 4) : 0;
+			lightDefines.push('S');
+		},
+		shadows: function (light, uniforms, i, shader, shaderInfo) {
+			var useLightCookie = light.lightCookie instanceof Texture;
+			if ((useLightCookie || (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
+				shaderInfo.renderable.meshRendererComponent.receiveShadows)) && light.shadowSettings.shadowData) {
+				var shadowData = light.shadowSettings.shadowData;
+
+				if (light.shadowCaster) {
+					uniforms['shadowMaps'+i] = 'SHADOW_MAP'+i;
+					shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
+
+					var translationData = shadowData.lightCamera.translation.data;
+					var pos = uniforms['shadowLightPositions'+i] = uniforms['shadowLightPositions'+i] || [];
+					pos[0] = translationData[0];
+					pos[1] = translationData[1];
+					pos[2] = translationData[2];
+
+					uniforms['cameraScales'+i] = shadowData.lightCamera.cameraScale;
+					uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
+
+					if (light.shadowSettings.shadowType === 'PCF') {
+						var sizes = uniforms['shadowMapSizes'+i] = uniforms['shadowMapSizes'+i] || [];
+						sizes[0] = light.shadowSettings.resolution[0];
+						sizes[1] = light.shadowSettings.resolution[1];
+					}
+
+					lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
+				}
+				
+				if (useLightCookie) {
+					uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
+					shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
+					lightDefines.push('C');
+					shader.defines.COOKIE = true;
+				} else if (shader.defines.COOKIE) {
+					delete shader.defines.COOKIE;
+				}
+
+				uniforms['shadowLightMatrices'+i] = shadowData.lightCamera.vpm;
+			}
+		},
 		processor: function (shader, shaderInfo) {
 			var uniforms = shader.uniforms;
 			uniforms.materialAmbient = uniforms.materialAmbient || 'AMBIENT';
@@ -223,95 +311,14 @@ function(
 				var light = lights[i];
 
 				if (light instanceof PointLight) {
-					uniforms['pointLight' + i] = uniforms['pointLight' + i] || [];
-					uniforms['pointLightColor' + i] = uniforms['pointLightColor' + i] || [];
-
-					var pointLightN = uniforms['pointLight' + i];
-					var translation = light.translation.data;
-					pointLightN[0] = translation[0];
-					pointLightN[1] = translation[1];
-					pointLightN[2] = translation[2];
-					pointLightN[3] = light.range;
-
-					var pointLightColorN = uniforms['pointLightColor' + i];
-					var color = light.color.data;
-					pointLightColorN[0] = color[0] * light.intensity;
-					pointLightColorN[1] = color[1] * light.intensity;
-					pointLightColorN[2] = color[2] * light.intensity;
-					pointLightColorN[3] = light.specularIntensity;
-
-					lightDefines.push('P');
+					ShaderBuilder.light.pointLight(light, uniforms, i);
 				} else if (light instanceof DirectionalLight) {
-					uniforms['directionalLightDirection' + i] = uniforms['directionalLightDirection' + i] || [];
-					uniforms['directionalLightColor' + i] = uniforms['directionalLightColor' + i] || [];
-
-					var directionalLightDir = uniforms['directionalLightDirection' + i];
-					var direction = light.direction.data;
-					directionalLightDir[0] = direction[0];
-					directionalLightDir[1] = direction[1];
-					directionalLightDir[2] = direction[2];
-
-					var directionalLightColorN = uniforms['directionalLightColor' + i];
-					var color = light.color.data;
-					directionalLightColorN[0] = color[0] * light.intensity;
-					directionalLightColorN[1] = color[1] * light.intensity;
-					directionalLightColorN[2] = color[2] * light.intensity;
-					directionalLightColorN[3] = light.specularIntensity;
-
-					lightDefines.push('D');
+					ShaderBuilder.light.directionalLight(light, uniforms, i);
 				} else if (light instanceof SpotLight) {
-					uniforms['spotLight'+i] = [light.translation.data[0], light.translation.data[1], light.translation.data[2], light.range];
-					uniforms['spotLightColor'+i] = [light.color.data[0] * light.intensity, light.color.data[1] * light.intensity, light.color.data[2] * light.intensity, light.specularIntensity];
-					uniforms['spotLightDirection'+i] = [light.direction.data[0], light.direction.data[1], light.direction.data[2]];
-
-					uniforms['spotLightAngle'+i] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
-					uniforms['spotLightPenumbra'+i] = light.penumbra !== undefined ? Math.sin(light.penumbra * MathUtils.DEG_TO_RAD / 4) : 0;
-					lightDefines.push('S');
+					ShaderBuilder.light.spotLight(light, uniforms, i);
 				}
 
-				var useLightCookie = light.lightCookie instanceof Texture;
-				if ((useLightCookie || (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
-					shaderInfo.renderable.meshRendererComponent.receiveShadows)) && light.shadowSettings.shadowData) {
-					var shadowData = light.shadowSettings.shadowData;
-
-					if (light.shadowCaster) {
-						uniforms['shadowMaps'+i]	= 'SHADOW_MAP'+i;
-						shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
-					}
-					if (useLightCookie) {
-						uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
-						shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
-						lightDefines.push('C');
-						shader.defines.COOKIE = true;
-					} else {
-						delete shader.defines.COOKIE;
-					}
-
-					var matrix = shadowData.lightCamera.getViewProjectionMatrix().data;
-					var mat = uniforms['shadowLightMatrices'+i] = uniforms['shadowLightMatrices'+i] || [];
-					for (var j = 0; j < 16; j++) {
-						mat[j] = matrix[j];
-					}
-
-					if (light.shadowCaster) {
-						var translationData = shadowData.lightCamera.translation.data;
-						var pos = uniforms['shadowLightPositions'+i] = uniforms['shadowLightPositions'+i] || [];
-						pos[0] = translationData[0];
-						pos[1] = translationData[1];
-						pos[2] = translationData[2];
-
-						uniforms['cameraScales'+i] = 1.0 / (shadowData.lightCamera.far - shadowData.lightCamera.near);
-						uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
-
-						if (light.shadowSettings.shadowType === 'PCF') {
-							var sizes = uniforms['shadowMapSizes'+i] = uniforms['shadowMapSizes'+i] || [];
-							sizes[0] = light.shadowSettings.resolution[0];
-							sizes[1] = light.shadowSettings.resolution[1];
-						}
-
-						lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
-					}
-				}
+				ShaderBuilder.light.shadows(light, uniforms, i, shader, shaderInfo);
 			}
 
 			var lightStr = lightDefines.join('');
