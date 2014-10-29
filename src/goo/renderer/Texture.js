@@ -151,19 +151,19 @@ function (
 	 * @param pixels
 	 */
 
-	Texture.prototype.addSubImageDataUpdate = function (xoffset, yoffset, width, height, format, type, pixels) {
-		this.subImageChangelist.push({
-			target:this.glTexture,
-			level:0,
-			xoffset:xoffset,
-			yoffset:yoffset,
-		//	width:width,
-		//	height:height,
-			format:this.format,
-			type:this.type,
-			pixels:pixels}
-		);
-	};
+	    Texture.prototype.addSubImageDataUpdate = function (xoffset, yoffset, width, height, format, type, pixels) {
+	    	this.subImageChangelist.push({
+	    		target:this.glTexture,
+	    		level:0,
+	    		xoffset:xoffset,
+	    		yoffset:yoffset,
+	    		width:width,
+	    		height:height,
+	    		format:this.format,
+	    		type:this.type,
+	    		pixels:pixels}
+	    	);
+	    };
 
 
 

@@ -627,27 +627,28 @@ function (
 
 	function setupDefaultCallbacks(defaultCallbacks) {
 		var tmpMatrix = new Matrix4x4();
+		var tmpMatrix2 = new Matrix4x4();
 
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
 			var matrix = shaderInfo.camera.getProjectionMatrix();
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.VIEW_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewMatrix().clone();
-			matrix.e03 = 0;
-			matrix.e13 = 0;
-			matrix.e23 = 0;
-			uniformCall.uniformMatrix4fv(matrix);
+			tmpMatrix.copy(shaderInfo.camera.getViewMatrix());
+			tmpMatrix.e03 = 0;
+			tmpMatrix.e13 = 0;
+			tmpMatrix.e23 = 0;
+			uniformCall.uniformMatrix4fv(tmpMatrix);
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
 			var mat = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
 			//	var camMat = shaderInfo.camera.translation.x;
-			var matrix = mat.clone();
-			matrix.e03 -= shaderInfo.camera.translation.x;
-			matrix.e13 -= shaderInfo.camera.translation.y;
-			matrix.e23 -= shaderInfo.camera.translation.z;
-			uniformCall.uniformMatrix4fv(matrix);
+			tmpMatrix.copy(mat);
+			tmpMatrix.e03 -= shaderInfo.camera.translation.x;
+			tmpMatrix.e13 -= shaderInfo.camera.translation.y;
+			tmpMatrix.e23 -= shaderInfo.camera.translation.z;
+			uniformCall.uniformMatrix4fv(tmpMatrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
@@ -656,26 +657,22 @@ function (
 		};
 
 		defaultCallbacks[Shader.VIEW_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewInverseMatrix().clone();
-			matrix.e03 = 0;
-			matrix.e13 = 0;
-			matrix.e23 = 0;
-			uniformCall.uniformMatrix4fv(matrix);
-		};
-		defaultCallbacks[Shader.VIEW_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewMatrix().clone();
-			matrix.e03 = 0;
-			matrix.e13 = 0;
-			matrix.e23 = 0;
-			tmpMatrix.copy(shaderInfo.camera.getProjectionMatrix()).combine(matrix);
+			tmpMatrix.copy(shaderInfo.camera.getViewInverseMatrix());
+			tmpMatrix.e03 = 0;
+			tmpMatrix.e13 = 0;
+			tmpMatrix.e23 = 0;
 			uniformCall.uniformMatrix4fv(tmpMatrix);
 		};
+		defaultCallbacks[Shader.VIEW_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
+			tmpMatrix.copy(shaderInfo.camera.getViewMatrix());
+			tmpMatrix.e03 = 0;
+			tmpMatrix.e13 = 0;
+			tmpMatrix.e23 = 0;
+			tmpMatrix2.copy(shaderInfo.camera.getProjectionMatrix()).combine(tmpMatrix);
+			uniformCall.uniformMatrix4fv(tmpMatrix2);
+		};
 		defaultCallbacks[Shader.VIEW_PROJECTION_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewProjectionInverseMatrix().clone();
-			//    matrix.e03 = 0;
-			//    matrix.e13 = 0;
-			//    matrix.e23 = 0;
-			uniformCall.uniformMatrix4fv(matrix);
+			uniformCall.uniformMatrix4fv(shaderInfo.camera.getViewProjectionInverseMatrix());
 
 		};
 
