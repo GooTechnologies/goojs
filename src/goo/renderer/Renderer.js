@@ -829,6 +829,8 @@ function (
 	 * @param lights
 	 */
 	Renderer.prototype.precompileShaders = function (renderList, lights) {
+		window.shaderlightfirst = true;
+
 		var renderInfo = {
 			lights: lights
 		};
@@ -970,6 +972,8 @@ function (
 	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
+		window.shaderlightfirst = true;
+
 		if (overrideMaterials) {
 			this._overrideMaterials = (overrideMaterials instanceof Array) ? overrideMaterials : [overrideMaterials];
 		} else {
