@@ -1121,7 +1121,7 @@ function (
 				orMaterial = this._overrideMaterials[i];
 			}
 
-			if (material && orMaterial) {
+			if (material && orMaterial && orMaterial.fullOverride === false) {
 				this._override(orMaterial, material, this._mergedMaterial);
 				material = this._mergedMaterial;
 			} else if (orMaterial) {

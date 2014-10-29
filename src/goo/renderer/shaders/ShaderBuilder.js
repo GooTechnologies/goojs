@@ -272,7 +272,7 @@ function(
 
 			lightDefines.push('S');
 		},
-		shadows: function (light, uniforms, i, shader, shaderInfo) {
+		shadows: function (light, uniforms, i, shader, shaderInfo, shadowIndex) {
 			var useLightCookie = light.lightCookie instanceof Texture;
 			if ((useLightCookie || (light.shadowCaster && shaderInfo.renderable.meshRendererComponent &&
 				shaderInfo.renderable.meshRendererComponent.receiveShadows)) && light.shadowSettings.shadowData) {
@@ -282,20 +282,43 @@ function(
 					uniforms['shadowMaps'+i] = 'SHADOW_MAP'+i;
 					shaderInfo.material.setTexture('SHADOW_MAP'+i, shadowData.shadowResult);
 
+
+
+					var uniform = uniforms['shadowData'] = uniforms['shadowData'] || [];
+
+					var ind = shadowIndex * 8;
+
 					var translationData = shadowData.lightCamera.translation.data;
-					var pos = uniforms['shadowLightPositions'+i] = uniforms['shadowLightPositions'+i] || [];
-					pos[0] = translationData[0];
-					pos[1] = translationData[1];
-					pos[2] = translationData[2];
+					uniform[ind + 0] = translationData[0];
+					uniform[ind + 1] = translationData[1];
+					uniform[ind + 2] = translationData[2];
+					uniform[ind + 3] = 0; // padding
 
-					uniforms['cameraScales'+i] = shadowData.lightCamera.cameraScale;
-					uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
-
+					uniform[ind + 4] = shadowData.lightCamera.cameraScale;
+					uniform[ind + 5] = light.shadowSettings.darkness;
+					uniform[ind + 6] = 0;
+					uniform[ind + 7] = 0;
 					if (light.shadowSettings.shadowType === 'PCF') {
-						var sizes = uniforms['shadowMapSizes'+i] = uniforms['shadowMapSizes'+i] || [];
-						sizes[0] = light.shadowSettings.resolution[0];
-						sizes[1] = light.shadowSettings.resolution[1];
+						uniform[ind + 6] = light.shadowSettings.resolution[0];
+						uniform[ind + 7] = light.shadowSettings.resolution[1];
 					}
+
+					shadowIndex++;
+
+					// var translationData = shadowData.lightCamera.translation.data;
+					// var pos = uniforms['shadowLightPositions'+i] = uniforms['shadowLightPositions'+i] || [];
+					// pos[0] = translationData[0];
+					// pos[1] = translationData[1];
+					// pos[2] = translationData[2];
+
+					// uniforms['cameraScales'+i] = shadowData.lightCamera.cameraScale;
+					// uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
+
+					// if (light.shadowSettings.shadowType === 'PCF') {
+					// 	var sizes = uniforms['shadowMapSizes'+i] = uniforms['shadowMapSizes'+i] || [];
+					// 	sizes[0] = light.shadowSettings.resolution[0];
+					// 	sizes[1] = light.shadowSettings.resolution[1];
+					// }
 
 					lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
 				}
@@ -311,6 +334,8 @@ function(
 
 				uniforms['shadowLightMatrices'+i] = shadowData.lightCamera.vpm;
 			}
+
+			return shadowIndex;
 		},
 		processor: function (shader, shaderInfo) {
 			if (window.shaderlightfirst === false) {
@@ -348,6 +373,7 @@ function(
 			var pointIndex = 0;
 			var directionalIndex = 0;
 			var spotIndex = 0;
+			var shadowIndex = 0;
 
 			var lights = shaderInfo.lights;
 			if (lights.length > 0) {
@@ -365,7 +391,7 @@ function(
 						spotIndex++;
 					}
 
-					ShaderBuilder.light.shadows(light, uniforms, i, shader, shaderInfo);
+					shadowIndex = ShaderBuilder.light.shadows(light, uniforms, i, shader, shaderInfo, shadowIndex);
 				}
 
 				var lightStr = lightDefines.join('');
@@ -429,6 +455,7 @@ function(
 				var pointIndex = 0;
 				var directionalIndex = 0;
 				var spotIndex = 0;
+				var shadowIndex = 0;
 			
 				for (var i = 0; i < lights.length; i++) {
 					var light = lights[i];
@@ -438,6 +465,14 @@ function(
 						directionalIndex++;
 					} else if (light instanceof SpotLight) {
 						spotIndex++;
+					}
+
+					var useLightCookie = light.lightCookie instanceof Texture;
+					if ((useLightCookie || (light.shadowCaster &&
+						shaderInfo.renderable.meshRendererComponent &&
+						shaderInfo.renderable.meshRendererComponent.receiveShadows))
+					) {
+						shadowIndex++;
 					}
 				}
 				if (pointIndex > 0) {
@@ -455,10 +490,16 @@ function(
 						'uniform vec4 spotLights['+(spotIndex*4)+'];'
 					);
 				}
+				if (shadowIndex > 0) {
+					prefragment.push(
+						'uniform vec4 shadowData['+(shadowIndex*2)+'];'
+					);
+				}
 
 				pointIndex = 0;
 				directionalIndex = 0;
 				spotIndex = 0;
+				shadowIndex = 0;
 
 				for (var i = 0; i < lights.length; i++) {
 					var light = lights[i];
@@ -469,9 +510,9 @@ function(
 					);
 
 					var useLightCookie = light.lightCookie instanceof Texture;
-					if (useLightCookie || (light.shadowCaster &&
+					if ((useLightCookie || (light.shadowCaster &&
 						shaderInfo.renderable.meshRendererComponent &&
-						shaderInfo.renderable.meshRendererComponent.receiveShadows)
+						shaderInfo.renderable.meshRendererComponent.receiveShadows))
 					) {
 						prevertex.push(
 							'uniform mat4 shadowLightMatrices'+i+';',
@@ -484,10 +525,15 @@ function(
 
 						if (light.shadowCaster) {
 							prefragment.push(
-								'uniform sampler2D shadowMaps'+i+';',
-								'uniform vec3 shadowLightPositions'+i+';',
-								'uniform float cameraScales'+i+';',
-								'uniform float shadowDarkness'+i+';'
+								'uniform sampler2D shadowMaps'+i+';'
+								// 'uniform vec3 shadowLightPositions'+i+';',
+								// 'uniform float cameraScales'+i+';',
+								// 'uniform float shadowDarkness'+i+';'
+							);
+							fragment.push(
+								'vec3 shadowLightPositions'+i+' = shadowData['+(shadowIndex * 2 + 0)+'].xyz;',
+								'float cameraScales'+i+' = shadowData['+(shadowIndex * 2 + 1)+'].x;',
+								'float shadowDarkness'+i+' = shadowData['+(shadowIndex * 2 + 1)+'].y;'
 							);
 						}
 						if (useLightCookie) {
@@ -502,8 +548,11 @@ function(
 						);
 
 						if (light.shadowCaster && light.shadowSettings.shadowType === 'PCF') {
-							prefragment.push(
-								'uniform vec2 shadowMapSizes'+i+';'
+							// prefragment.push(
+							// 	'uniform vec2 shadowMapSizes'+i+';'
+							// );
+							fragment.push(
+								'vec2 shadowMapSizes'+i+' = shadowData['+(shadowIndex * 2 + 1)+'].zw;'
 							);
 						}
 
@@ -512,6 +561,7 @@ function(
 						);
 
 						if (light.shadowCaster) {
+							shadowIndex++;
 							fragment.push(
 								'depth.z = length(vWorldPos.xyz - shadowLightPositions'+i+') * cameraScales'+i+';',
 
