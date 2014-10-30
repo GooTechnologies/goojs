@@ -34,7 +34,7 @@ function (
 		this.fullscreenPass = new FullscreenPass();
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 
-		var sigma = 2.0;
+		var sigma = 2;
 		this.blurfilter = Material.createShader(ShaderLib.convolution, 'blurfilter');
 		var kernelSize = 2 * Math.ceil(sigma * 3.0) + 1;
 		this.blurfilter.defines = {
@@ -54,11 +54,15 @@ function (
 
 	var tmpVec = new Vector3();
 
-	ShadowHandler.prototype._createShadowData = function (shadowSettings) {
+	ShadowHandler.prototype._createShadowData = function (shadowSettings, renderer) {
 		var shadowX = shadowSettings.resolution[0];
 		var shadowY = shadowSettings.resolution[1];
 
-		shadowSettings.shadowData = shadowSettings.shadowData || {};
+		var linearFloat = !!renderer.glExtensionTextureFloatLinear;
+
+		if (shadowSettings.shadowData.shadowTarget) {
+			renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowTarget);
+		}
 
 		shadowSettings.shadowData.shadowTarget = new RenderTarget(shadowX, shadowY, {
 				type: 'Float',
@@ -68,15 +72,23 @@ function (
 		shadowSettings.shadowData.shadowResult = null;
 
 		if (shadowSettings.shadowType === 'VSM') {
-			shadowSettings.shadowData.shadowTargetDown = new RenderTarget(shadowX / 2, shadowY / 2, {
+			var type = {
 				type: 'Float'
-			});
-			shadowSettings.shadowData.shadowBlurred = new RenderTarget(shadowX / 2, shadowY / 2, {
-				type: 'Float'
-			});
+			};
+			if (!linearFloat) {
+				type.magFilter = 'NearestNeighbor';
+				type.minFilter = 'NearestNeighborNoMipMaps';
+			}
+			if (shadowSettings.shadowData.shadowTargetDown) {
+				renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowTargetDown);
+			}
+			shadowSettings.shadowData.shadowTargetDown = new RenderTarget(shadowX / 2, shadowY / 2, type);
+			if (shadowSettings.shadowData.shadowBlurred) {
+				renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowBlurred);
+			}
+			shadowSettings.shadowData.shadowBlurred = new RenderTarget(shadowX / 2, shadowY / 2, type);
 		}
 
-		shadowSettings.shadowRecord = shadowSettings.shadowRecord || {};
 		shadowSettings.shadowRecord.resolution = shadowSettings.shadowRecord.resolution || [];
 		shadowSettings.shadowRecord.resolution[0] = shadowX;
 		shadowSettings.shadowRecord.shadowType = shadowSettings.shadowType;
@@ -109,7 +121,8 @@ function (
 				var shadowSettings = light.shadowSettings;
 
 				if (!shadowSettings.shadowData) {
-					this._createShadowData(shadowSettings);
+					shadowSettings.shadowData = {};
+					shadowSettings.shadowRecord = {};
 					shadowSettings.shadowData.lightCamera = new Camera(55, 1, 1, 1000);
 				}
 
@@ -126,7 +139,8 @@ function (
 				}
 
 				// Update settings
-				if (record.angle !== light.angle ||
+				if (!shadowSettings.shadowData.shadowTarget ||
+					record.angle !== light.angle ||
 					!record.resolution ||
 					record.resolution[0] !== shadowSettings.resolution[0] ||
 					record.resolution[1] !== shadowSettings.resolution[1] ||
@@ -137,7 +151,7 @@ function (
 					if (!record.resolution ||
 						record.resolution[0] !== shadowSettings.resolution[0] ||
 						record.resolution[1] !== shadowSettings.resolution[1]) {
-						this._createShadowData(shadowSettings);
+						this._createShadowData(shadowSettings, renderer);
 					}
 
 					if (light instanceof SpotLight) {
@@ -162,7 +176,7 @@ function (
 				}
 
 				if (shadowSettings.shadowType === 'VSM' && record.shadowType !== shadowSettings.shadowType) {
-					this._createShadowData(shadowSettings);
+					this._createShadowData(shadowSettings, renderer);
 
 					record.shadowType = shadowSettings.shadowType;
 				}
