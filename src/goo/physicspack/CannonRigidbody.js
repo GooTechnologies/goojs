@@ -41,12 +41,6 @@ function (
 	CannonRigidbody.prototype = Object.create(Rigidbody.prototype);
 	CannonRigidbody.constructor = CannonRigidbody;
 
-	CannonRigidbody.prototype.setKinematic = function () {
-		var body = this.cannonBody;
-		body.mass = 0;
-		body.type = CANNON.Body.KINEMATIC;
-	};
-
 	var tmpQuat = new Quaternion();
 
 	// Get the world transform from the entity and set on the body
@@ -57,13 +51,6 @@ function (
 		var q = tmpQuat;
 		q.fromRotationMatrix(t.rotation);
 		body.quaternion.copy(q);
-
-	};
-
-	CannonRigidbody.prototype.setMass = function (mass) {
-		var body = this.cannonBody;
-		body.mass = mass;
-		body.type = CANNON.Body.DYNAMIC;
 	};
 
 	CannonRigidbody.prototype.setForce = function (force) {
@@ -117,6 +104,12 @@ function (
 			shape = new CANNON.Heightfield(collider.data);
 		}
 		return shape;
+	};
+
+	CannonRigidbody.prototype.initialize = function (entity) {
+		this.traverseColliders(entity, function (colliderEntity, collider, position, quaternion) {
+			this.addCollider(collider, position, quaternion);
+		});
 	};
 
 	CannonRigidbody.prototype.addCollider = function (collider, position, quaternion) {

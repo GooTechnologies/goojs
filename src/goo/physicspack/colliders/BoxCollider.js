@@ -15,7 +15,7 @@ function (
 	 * @class Physics box collider.
 	 * @param {object} [settings]
 	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
-	 * @extends Component
+	 * @extends Collider
 	 */
 	function BoxCollider(settings) {
 		settings = settings || {};

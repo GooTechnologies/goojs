@@ -14,9 +14,9 @@ function (
 	/**
 	 * @class
 	 */
-	function CannonPhysicsSystem() {
+	function CannonPhysicsSystem(settings) {
 		this.world = new CANNON.World();
-		PhysicsSystem.call(this);
+		PhysicsSystem.call(this, settings);
 	}
 	CannonPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
 

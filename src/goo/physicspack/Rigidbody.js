@@ -13,9 +13,20 @@ function (
 	 * @class Base class for rigid body wrappers.
 	 */
 	function Rigidbody() {
-		this._dirtyColliders = true;
+
+		// Set to true if any of the colliders were changed
+		this._dirty = true;
+
+		this.isKinematic = false;
+		this.mass = 1.0;
 	}
 	Rigidbody.constructor = Rigidbody;
+
+	/**
+	 * Get the world transform from the entity and set on the body
+	 * @param {Entity} entity
+	 */
+	Rigidbody.prototype.setTransformFromEntity = function (entity) {};
 
 	/**
 	 * Set the force on the body
@@ -51,7 +62,17 @@ function (
 
 	var tmpQuat = new Quaternion();
 
-	Rigidbody.prototype.addColliders = function (entity) {
+	/**
+	 * Creates the physics engine rigid body and adds it to the simulation
+	 */
+	Rigidbody.prototype.initialize = function () {};
+
+	/**
+	 * Traverse the tree of colliders from a root entity and down
+	 * @param  {Entity}   entity
+	 * @param  {Function} callback Will be called with colliderEntity, collider, localPosition and localQuaternion as arguments
+	 */
+	Rigidbody.prototype.traverseColliders = function (entity, callback) {
 		if (entity.colliderComponent && entity.colliderComponent.collider) {
 
 			// Entity has a collider on the root
@@ -101,7 +122,7 @@ function (
 				//offset.add(cmOffset);
 
 				// Add the shape
-				that.addCollider(collider.collider, offset, q);
+				callback(childEntity, collider.collider, offset, q);
 			}
 		});
 	};

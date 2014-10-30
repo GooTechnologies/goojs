@@ -14,14 +14,20 @@ function (
 	/**
 	 * @class
 	 */
-	function AmmoPhysicsSystem() {
-		this.world = new CANNON.World();
-		PhysicsSystem.call(this);
+	function AmmoPhysicsSystem(settings) {
+		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+		var dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+		var overlappingPairCache = new Ammo.btDbvtBroadphase();
+		var solver = new Ammo.btSequentialImpulseConstraintSolver();
+		this.world = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+		PhysicsSystem.call(this, settings);
 	}
 	AmmoPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
 
 	AmmoPhysicsSystem.prototype.setGravity = function (gravityVector) {
-		this.world.gravity.copy(gravityVector);
+		var g = new Ammo.btVector3(gravityVector.x, gravityVector.y, gravityVector.z);
+		this.world.setGravity(g);
+		Ammo.destroy(g);
 	};
 
 	AmmoPhysicsSystem.prototype.addBody = function (entity) {
@@ -34,11 +40,8 @@ function (
 		// Step the world forward in time
 		var fixedTimeStep = 1 / this.stepFrequency;
 		var maxSubSteps = this.maxSubSteps;
-		if (maxSubSteps) {
-			world.step(fixedTimeStep, deltaTime, maxSubSteps);
-		} else {
-			world.step(fixedTimeStep);
-		}
+
+		// TODO
 	};
 
 	return AmmoPhysicsSystem;

@@ -25,45 +25,29 @@ function (
 
 	/* global Ammo */
 
-	function AmmoRigidbody(cannonWorld, settings) {
+	function AmmoRigidbody(ammoWorld, settings) {
 		settings = settings || {};
 		Rigidbody.call(this, settings);
 
 		/**
-		 * The CANNON.Body instance
+		 * The Ammo.btRigidbody instance. Will be created on .initialize()
 		 */
-		this.cannonBody = new CANNON.Body({
-			mass: 1
-		});
-		cannonWorld.addBody(this.cannonBody);
+		this.ammoBody = null;
 	}
 
 	AmmoRigidbody.prototype = Object.create(Rigidbody.prototype);
 	AmmoRigidbody.constructor = AmmoRigidbody;
-
-	AmmoRigidbody.prototype.setKinematic = function () {
-		var body = this.cannonBody;
-		body.mass = 0;
-		body.type = CANNON.Body.KINEMATIC;
-	};
 
 	var tmpQuat = new Quaternion();
 
 	// Get the world transform from the entity and set on the body
 	AmmoRigidbody.prototype.setTransformFromEntity = function (entity) {
 		var t = entity.transformComponent.transform;
-		var body = this.cannonBody;
+		var body = this.ammoBody;
 		body.position.copy(t.translation);
 		var q = tmpQuat;
 		q.fromRotationMatrix(t.rotation);
 		body.quaternion.copy(q);
-
-	};
-
-	AmmoRigidbody.prototype.setMass = function (mass) {
-		var body = this.cannonBody;
-		body.mass = mass;
-		body.type = CANNON.Body.DYNAMIC;
 	};
 
 	AmmoRigidbody.prototype.setForce = function (force) {
@@ -94,6 +78,44 @@ function (
 
 	AmmoRigidbody.prototype.setAngularVelocity = function (angularVelocity) {
 		this.cannonBody.angularVelocity.copy(angularVelocity);
+	};
+
+	AmmoRigidbody.prototype.initialize = function (entity) {
+		var gooTransform = entity.transformComponent.worldTransform;
+		var gooPos = gooTransform.translation;
+		var gooRot = gooTransform.rotation;
+
+		var ammoTransform = new Ammo.btTransform();
+		ammoTransform.setIdentity();
+		ammoTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
+		var q = tmpQuat;
+		q.fromRotationMatrix(gooRot);
+		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+
+		var shape = this.constructAmmoShape(entity);
+
+		var motionState = new Ammo.btDefaultMotionState(ammoTransform);
+		var localInertia = new Ammo.btVector3(0, 0, 0);
+
+		// rigidbody is dynamic if and only if mass is non zero, otherwise static
+		if (this.mass !== 0.0) {
+			shape.calculateLocalInertia(this.mass, localInertia);
+		}
+
+		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
+		this.localInertia = localInertia;
+		this.body = new Ammo.btRigidBody(info);
+		//this.body.setLinearFactor(this.linearFactor);
+
+		// if (this.onInitializeBody) {
+		// 	this.onInitializeBody(this.body);
+		// }
+	};
+
+	AmmoRigidbody.prototype.constructAmmoShape = function (entity) {
+		this.traverseColliders(entity, function(colliderEntity, collider, localPosition, localQuaternion){
+
+		});
 	};
 
 	AmmoRigidbody.prototype.getShape = function (collider) {

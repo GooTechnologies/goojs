@@ -46,9 +46,9 @@ function (
 			var entity = entities[i];
 			var rb = entity.rigidbodyComponent.rigidbody;
 			var tc = entity.transformComponent;
-			if (rb._dirtyColliders) {
-				rb.addColliders(entity);
-				rb._dirtyColliders = false;
+			if (rb._dirty) {
+				rb.initialize(entity);
+				rb._dirty = false;
 			}
 
 			rb.getPosition(tc.transform.translation);
