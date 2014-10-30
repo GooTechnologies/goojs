@@ -1,6 +1,10 @@
 define([
 	'goo/math/MathUtils',
 	'goo/renderer/Shader',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/entities/components/MeshDataComponent',
+	'goo/shapes/Sphere',
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/light/DirectionalLight'
 ],
@@ -8,6 +12,10 @@ define([
 		function(
 		MathUtils,
 		Shader,
+		Material,
+		ShaderLib,
+		MeshDataComponent,
+		Sphere,
 		FullscreenUtil,
 		DirectionalLight
 		) {
@@ -31,6 +39,16 @@ define([
 			lightEntity.addToWorld();
 			this.lightEntity.lightComponent.hidden = true;
 
+			this.brushBall = this.world.createEntity().addToWorld();
+
+
+			var meshDataComponent = new MeshDataComponent(new Sphere(32, 32));
+			this.brushBall.setComponent(meshDataComponent);
+
+			this.brushBall.transformComponent.transform.scale.set(110, 310, 110);
+
+			this.brushBall.set(new Material(ShaderLib.simpleLit));
+
 		}
 
 
@@ -51,14 +69,20 @@ define([
 			this.lightEntity.setTranslation(x, 200, y);
 		};
 
-		TerrainBrush.prototype.draw = function (mode, type, size, x, y, z, power, brushTexture, rgba) {
+		TerrainBrush.prototype.draw = function (mode, type, size, scale, x, y, z, power, brushTexture, rgba) {
 		//	console.log("Draw: ", mode, type, size, x, y, z, power, brushTexture, rgba);
-			power = MathUtils.clamp(power, 0, 1);
+			power = MathUtils.clamp(power, 0, 1) * scale;
 
-			var s = this.terrain.dimensions.scale
-			x = (x/s - this.size/2) * 2;
-			z = (z/s - this.size/2) * 2;
+			this.brushBall.transformComponent.transform.translation.set(x, y, z);
+			this.brushBall.transformComponent.setUpdated();
 
+			//	var s = scale;
+			x /= scale;
+			z /= scale;
+			x = (x  - (this.size/2))  / 2;
+			z = (z  - (this.size/2))  / 2;
+
+			console.log("Draw", x, y, z, size, this.size, scale);
 
 			if (mode === 'paint') {
 				this.renderable.materials[0] = this.terrain.drawMaterial2;

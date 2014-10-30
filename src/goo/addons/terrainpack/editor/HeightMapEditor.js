@@ -122,7 +122,7 @@ define([
 					rgba = [0, 0, 0, 1];
 				}
 
-				this.terrainBrush.draw(settings.mode, type, settings.size, this.store.x, this.store.y, this.store.z,
+				this.terrainBrush.draw(settings.mode, type, settings.size, this.terrainHandler.terrain.dimensions.scale, this.store.x, this.store.y, this.store.z,
 					settings.power * this.goo.world.tpf * 60 / 100, settings.brushTexture, rgba);
 				this.terrainHandler.terrain.updateTextures();
 			}

@@ -299,6 +299,7 @@ function(
 		this.renderer.renderToPick(entities, Renderer.mainCamera, true, false, false, x, y, null, true);
 		var pickStore = {};
 		this.renderer.pick(x, y, pickStore, Renderer.mainCamera);
+	//	console.log("Pick: ", x, y);
 		camera.getWorldPosition(x, y, this.renderer.viewportWidth, this.renderer.viewportHeight, pickStore.depth, store);
 
 		for (var i = 0; i < this.clipmaps.length; i++) {
