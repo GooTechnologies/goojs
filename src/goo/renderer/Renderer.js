@@ -1619,8 +1619,8 @@ define([
 									subImg.level,
 									subImg.xoffset,
 									subImg.yoffset,
-								//	subImg.width,
-								//	subImg.height,
+									subImg.width,
+									subImg.height,
 									this.getGLInternalFormat(subImg.format),
 									WebGLRenderingContext.UNSIGNED_BYTE, // this.getGLPixelDataType(subImg.type),
 									subImg.pixels
