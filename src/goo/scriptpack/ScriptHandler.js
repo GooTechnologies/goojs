@@ -285,6 +285,8 @@ function (
 		parentElement.appendChild(scriptElem);
 
 		return this._dependencyPromises[url] = PromiseUtil.createPromise(function (resolve, reject) {
+			var handled = false;
+
 			scriptElem.onload = function () {
 				resolve();
 				delete that._dependencyPromises[url];
@@ -296,21 +298,28 @@ function (
 					file: url
 				};
 				setError(script, err);
-				scriptElem.parentNode.removeChild(scriptElem);
+
+				// remove element if it was attached to the document
+				if (scriptElem.parentNode) {
+					scriptElem.parentNode.removeChild(scriptElem);
+				}
 				resolve();
 				delete that._dependencyPromises[url];
 			}
 
 			scriptElem.onerror = function (e) {
+				handled = true;
+				if (timeoutHandler) { clearTimeout(timeoutHandler); }
 				console.error(e);
 				fireError('Could not load dependency');
 			};
 
-			// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
-			setTimeout(function() {
-				fireError('Loading dependency failed (time out).');
-			}, DEPENDENCY_LOAD_TIMEOUT);
-
+			if (!handled) {
+				// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
+				var timeoutHandler = setTimeout(function () {
+					fireError('Loading dependency failed (time out).');
+				}, DEPENDENCY_LOAD_TIMEOUT);
+			}
 		});
 	};
 
@@ -512,7 +521,7 @@ function (
 		if (error.file) {
 			var message = error.message;
 			if (error.line) {
-				message += ' - on line ' + error.line;
+				message += ' - on line ' + error.line; //! AT: this isn't used
 			}
 			script.dependencyErrors = script.dependencyErrors || {};
 			script.dependencyErrors[error.file] = error;
@@ -520,7 +529,7 @@ function (
 			script.errors = script.errors || [];
 			var message = error.message;
 			if (error.line) {
-				message += ' - on line ' + error.line;
+				message += ' - on line ' + error.line; //! AT: this isn't used
 			}
 			script.errors.push(error);
 
