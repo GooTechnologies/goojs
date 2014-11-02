@@ -613,7 +613,7 @@ function(
 
 					if (light instanceof PointLight) {
 						fragment.push(
-							'vec3 pointLight'+i+' = pointLights['+(pointIndex * 2 + 0)+'].xyz;',
+							'vec4 pointLight'+i+' = pointLights['+(pointIndex * 2 + 0)+'];',
 							'vec4 pointLightColor'+i+' = pointLights['+(pointIndex * 2 + 1)+'];'
 						);
 

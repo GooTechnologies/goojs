@@ -206,9 +206,6 @@ function (
 		}
 
 		record.newlyEnabledAttributes[attributeIndex] = true;
-		// if (switchedProgram) {
-		// renderer.context.enableVertexAttribArray(attributeIndex);
-		// }
 		renderer.bindVertexAttribute(attributeIndex, attribute);
 	};
 
@@ -246,14 +243,12 @@ function (
 	};
 
 	Shader.prototype.matchUniforms = function(shaderInfo) {
-		if (this.matchedUniforms) {
+		var uniforms = this.matchedUniforms;
+		if (uniforms) {
 			this.textureIndex = 0;
 
-			// var uniformCallMapping = this.uniformCallMapping;
-			// var materialuniforms = shaderInfo.material.uniforms;
-
-			for (var i = 0, l = this.matchedUniforms.length; i < l; i++) {
-				this._bindUniform(this.matchedUniforms[i], shaderInfo);
+			for (var i = 0, l = uniforms.length; i < l; i++) {
+				this._bindUniform(uniforms[i], shaderInfo);
 			}
 		}
 	};
@@ -264,7 +259,7 @@ function (
 
 		this.compileProgram(renderer);
 		// Set the ShaderProgram active
-		var switchedProgram = this.activateProgram(context, record);
+		this.activateProgram(context, record);
 
 		record.newlyEnabledAttributes.length = 0;
 
@@ -275,15 +270,6 @@ function (
 		this.disableAttributes(record, renderer);
 		this.enableAttributes(record, renderer);
 		this.matchUniforms(shaderInfo);
-
-
-		// if (this.uniforms) {
-		// 	this.textureIndex = 0;
-		// 	var names = this.uniformKeys;
-		// 	for (var i = 0, l = names.length; i < l; i++) {
-		// 		this._bindUniform(names[i], shaderInfo);
-		// 	}
-		// }
 	};
 
 	Shader.prototype.defineValue = function(shaderInfo, name) {
