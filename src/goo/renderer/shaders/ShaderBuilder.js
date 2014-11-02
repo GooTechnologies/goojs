@@ -209,7 +209,7 @@ function(
 
 	ShaderBuilder.light = {
 		pointLight: function (light, uniforms, pointIndex) {
-			var uniform = uniforms['pointLights'] = uniforms['pointLights'] || [];
+			var uniform = uniforms.pointLights = uniforms.pointLights || [];
 
 			var ind = pointIndex * 8;
 
@@ -228,7 +228,7 @@ function(
 			lightDefines.push('P');
 		},
 		directionalLight: function (light, uniforms, directionalIndex) {
-			var uniform = uniforms['directionalLights'] = uniforms['directionalLights'] || [];
+			var uniform = uniforms.directionalLights = uniforms.directionalLights || [];
 
 			var ind = directionalIndex * 8;
 
@@ -247,7 +247,7 @@ function(
 			lightDefines.push('D');
 		},
 		spotLight: function (light, uniforms, spotIndex) {
-			var uniform = uniforms['spotLights'] = uniforms['spotLights'] || [];
+			var uniform = uniforms.spotLights = uniforms.spotLights || [];
 
 			var ind = spotIndex * 16;
 			uniform[ind + 0] = light.translation.data[0];
@@ -284,7 +284,7 @@ function(
 
 
 
-					var uniform = uniforms['shadowData'] = uniforms['shadowData'] || [];
+					var uniform = uniforms.shadowData = uniforms.shadowData || [];
 
 					var ind = shadowIndex * 8;
 
@@ -305,20 +305,6 @@ function(
 
 					shadowIndex++;
 
-					// var translationData = shadowData.lightCamera.translation.data;
-					// var pos = uniforms['shadowLightPositions'+i] = uniforms['shadowLightPositions'+i] || [];
-					// pos[0] = translationData[0];
-					// pos[1] = translationData[1];
-					// pos[2] = translationData[2];
-
-					// uniforms['cameraScales'+i] = shadowData.lightCamera.cameraScale;
-					// uniforms['shadowDarkness'+i] = light.shadowSettings.darkness;
-
-					// if (light.shadowSettings.shadowType === 'PCF') {
-					// 	var sizes = uniforms['shadowMapSizes'+i] = uniforms['shadowMapSizes'+i] || [];
-					// 	sizes[0] = light.shadowSettings.resolution[0];
-					// 	sizes[1] = light.shadowSettings.resolution[1];
-					// }
 
 					lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
 				}
@@ -338,7 +324,7 @@ function(
 			return shadowIndex;
 		},
 		processor: function (shader, shaderInfo) {
-			if (window.shaderlightfirst === false) {
+			if (!shader.frameStart) {
 				var lights = shaderInfo.lights;
 				for (var i = 0; i < lights.length; i++) {
 					var light = lights[i];
@@ -358,7 +344,7 @@ function(
 
 				return;
 			}
-			window.shaderlightfirst = false;
+			shader.frameStart = false;
 
 			var uniforms = shader.uniforms;
 			uniforms.materialAmbient = uniforms.materialAmbient || 'AMBIENT';
