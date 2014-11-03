@@ -116,10 +116,7 @@ function(
 			var keys = Object.keys(shader.defines);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var attribute = keys[i];
-				if (attribute === 'MAX_POINT_LIGHTS' ||
-					attribute === 'MAX_DIRECTIONAL_LIGHTS' ||
-					attribute === 'MAX_SPOT_LIGHTS' ||
-					attribute === 'SHADOW_TYPE' ||
+				if (attribute === 'SHADOW_TYPE' ||
 					attribute === 'JOINT_COUNT' ||
 					attribute === 'WEIGHTS' ||
 					attribute === 'PHYSICALLY_BASED_SHADING' ||
@@ -130,6 +127,7 @@ function(
 					attribute === 'REFLECTION_TYPE' ||
 					attribute === 'SKIP_SPECULAR' ||
 					attribute === 'LIGHT' ||
+					attribute === 'COOKIE' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
 				}
