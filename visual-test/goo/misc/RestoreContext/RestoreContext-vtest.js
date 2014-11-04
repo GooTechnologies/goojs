@@ -1,12 +1,8 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/passpack/ShaderLibExtra',
-	'goo/shapes/Box',
-	'goo/shapes/Quad',
-	'goo/shapes/Sphere',
+	'goo/shapes/Cone',
 	'goo/math/Vector3',
-	'goo/renderer/light/PointLight',
 	'goo/renderer/TextureCreator',
 	'lib/V',
 
@@ -14,12 +10,8 @@ require([
 ], function (
 	Material,
 	ShaderLib,
-	ShaderLibExtra,
-	Box,
-	Quad,
-	Sphere,
+	Cone,
 	Vector3,
-	PointLight,
 	TextureCreator,
 	V
 	) {
@@ -40,7 +32,18 @@ require([
 	});
 
 
-	V.addColoredSpheres();
+	// --- test shape
+	var material = new Material(ShaderLib.texturedLit);
+	var texture = new TextureCreator().loadTexture2D('../../../resources/cone.png');
+	material.setTexture('DIFFUSE_MAP', texture);
+
+	var coneMeshData = new Cone(8, 4, 8);
+	var coneEntity = goo.world.createEntity(coneMeshData, material).addToWorld();
+	V.showNormals(coneEntity);
+	// ---
+
+
+	V.addLights();
 	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
 	V.process();
