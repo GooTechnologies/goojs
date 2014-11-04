@@ -97,6 +97,7 @@ function (
 		this.textureSlots = [];
 		this.textureSlotsNaming = {};
 
+		// corpse!
 		//this.defaultCallbacks = {};
 		//setupDefaultCallbacks(this.defaultCallbacks);
 		this.currentCallbacks = {};
@@ -108,7 +109,7 @@ function (
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
 		this.attributeKeys = null;
-		this.uniformKeys = null;
+		this.uniformKeys = null; // unused
 		this.matchedUniforms = [];
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
@@ -191,7 +192,7 @@ function (
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
-			switchedProgram = true;
+			switchedProgram = true; // unused
 		}
 
 		record.newlyEnabledAttributes.length = 0;
@@ -199,6 +200,7 @@ function (
 		// Bind attributes
 		//TODO: good?
 		if (this.attributes) {
+			//! AT: what's up with all these corpses?!
 		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
 			// record.attributes = this.attributes;
 			// record.meshData = shaderInfo.meshData;
@@ -380,6 +382,7 @@ function (
 		var context = renderer.context;
 		this.renderer = renderer;
 
+		// corpses!
 		// console.log('---------------------- vertex: '+ this.name +' --------------------------');
 		// console.log(this.vertexSource);
 		// console.log('---------------------- fragment: '+ this.name +' --------------------------');
@@ -414,6 +417,7 @@ function (
 		for (var key in this.attributeMapping) {
 			var attributeIndex = context.getAttribLocation(this.shaderProgram, key);
 			if (attributeIndex === -1) {
+				// more corpses!
 				// if (this.attributes[key]) {
 					// delete this.attributes[key];
 				// }
@@ -452,6 +456,7 @@ function (
 		}
 
 		if (this.attributes) {
+			// corpse!
 		// 	for (var name in this.attributeIndexMapping) {
 		// 		var mapping = this.attributes[name];
 		// 		if (mapping === undefined) {

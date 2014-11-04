@@ -38,6 +38,7 @@ function (
 ) {
 	'use strict';
 
+	var STUB_METHOD = function () {};
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
@@ -74,7 +75,7 @@ function (
 		this._useDevicePixelRatio = parameters.useDevicePixelRatio !== undefined ? parameters.useDevicePixelRatio : false;
 		this._onError = parameters.onError;
 
-		var settings = {
+		this._contextSettings = {
 			alpha: this._alpha,
 			premultipliedAlpha: this._premultipliedAlpha,
 			antialias: this._antialias,
@@ -84,36 +85,9 @@ function (
 
 		/** @type {WebGLRenderingContext} */
 		this.context = null;
-		if (!!window.WebGLRenderingContext) {
-			var contextNames = ["experimental-webgl", "webgl", "moz-webgl", "webkit-3d"];
-			for (var i = 0; i < contextNames.length; i++) {
-				try {
-					this.context = _canvas.getContext(contextNames[i], settings);
-					if (this.context && typeof(this.context.getParameter) === "function") {
-						// WebGL is supported & enabled
-						break;
-					}
-				} catch (e){}
-			}
-			if (!this.context) {
-				// WebGL is supported but disabled
-				throw {
-					name: 'GooWebGLError',
-					message: 'WebGL is supported but disabled',
-					supported: true,
-					enabled: false
-				};
-			}
-		}
-		else {
-			// WebGL is not supported
-			throw {
-				name: 'GooWebGLError',
-				message: 'WebGL is not supported',
-				supported: false,
-				enabled: false
-			};
-		}
+		this.establishContext();
+
+		this._setupContextLost();
 
 		if (parameters.debug) {
 			// XXX: This is a temporary solution to easily enable webgl debugging during development...
@@ -383,6 +357,61 @@ function (
 			this.checkResize(Renderer.mainCamera);
 		}.bind(this));
 	}
+
+	Renderer.prototype.establishContext = function () {
+		if (!!window.WebGLRenderingContext) {
+			//! AT: this list may require cleanup
+			var contextNames = ["experimental-webgl", "webgl", "moz-webgl", "webkit-3d"];
+			for (var i = 0; i < contextNames.length; i++) {
+				try {
+					this.context = this.domElement.getContext(contextNames[i], this._contextSettings);
+					if (this.context && typeof(this.context.getParameter) === "function") {
+						// WebGL is supported & enabled
+						break;
+					}
+				} catch (e) {}
+			}
+			if (!this.context) {
+				// WebGL is supported but disabled
+				throw {
+					name: 'GooWebGLError',
+					message: 'WebGL is supported but disabled',
+					supported: true,
+					enabled: false
+				};
+			}
+		} else {
+			// WebGL is not supported
+			throw {
+				name: 'GooWebGLError',
+				message: 'WebGL is not supported',
+				supported: false,
+				enabled: false
+			};
+		}
+	};
+
+	/**
+	 * Sets up handlers for context lost/restore
+	 * @private
+	 */
+	Renderer.prototype._setupContextLost = function () {
+		this.domElement.addEventListener('webglcontextlost', function (event) {
+			event.preventDefault();
+			SystemBus.emit('goo.contextLost');
+		}, false);
+
+		this.domElement.addEventListener('webglcontextrestored', function () {
+			this._restoreContext();
+			SystemBus.emit('goo.contextRestored');
+		}.bind(this), false);
+	};
+
+	/**
+	 * Restores thw webgl context
+	 * @private
+	 */
+	Renderer.prototype._restoreContext = STUB_METHOD; // will be overriden
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
 		for (var ii = 0; ii < args.length; ++ii) {

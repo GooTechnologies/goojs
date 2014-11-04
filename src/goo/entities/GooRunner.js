@@ -210,7 +210,20 @@ function (
 		};
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
+
+		this._setupContextLost();
 	}
+
+	GooRunner.prototype._setupContextLost = function () {
+		SystemBus.addListener('goo.contextLost', function () {
+			this.renderSystem.invalidateHandles(this.renderer);
+			this.stopGameLoop();
+		}.bind(this));
+
+		SystemBus.addListener('goo.contextRestored', function () {
+			this.startGameLoop();
+		}.bind(this));
+	};
 
 	/**
 	 * Sets the base systems on the world.
@@ -253,6 +266,7 @@ function (
 	 */
 	//! TODO: private until documented
 	GooRunner.prototype.run = function (time) {
+		//! AT: move the conditional out; assign either variants to the run method
 		if (this.useTryCatch) {
 			this._callSafe(this._updateFrame, time);// this._updateFrameSafe(time);
 		} else {
