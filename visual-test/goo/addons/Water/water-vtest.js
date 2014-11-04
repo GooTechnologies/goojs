@@ -112,13 +112,13 @@ require([
 	var material = new Material(ShaderLib.simpleLit);
 
 	//! AT: should live in V instead
-	var count = 3;
+	var count = 2;
 	for (var x = 0; x < count; x++) {
-		for (var y = 0; y < count * 2; y++) {
+		for (var y = -count * 2; y < count * 3; y++) {
 			for (var z = 0; z < count; z++) {
 				world.createEntity(meshData, material, [
 						(x - count / 2) * 15 + (y - count * 0.5) * 8,
-						(y - count / 2) * 10 - 10,
+						(y - count / 2) * 10,
 						(z - count / 2) * 15
 				]).addToWorld();
 			}
@@ -133,8 +133,8 @@ require([
 
 	meshData = new Quad(200, 200, 10, 10);
 	material = new Material(ShaderLib.simple);
-	var waterEntity = world.createEntity(meshData, material, function (entity, tpf) {
-		entity.setTranslation(0, Math.sin(world.time * 3) * 5, 0);
+	var waterEntity = world.createEntity('Water', meshData, material, function (entity, tpf) {
+		entity.setTranslation(0, Math.sin(world.time * 1) * 5, 0);
 	}).setRotation([-Math.PI / 2, 0, 0]).addToWorld();
 
 	var waterRenderer = new FlatWaterRenderer({

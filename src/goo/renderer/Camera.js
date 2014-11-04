@@ -932,10 +932,12 @@ function (
 	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig) {
 		var clipPlane = this._clipPlane.setv(clipPlaneOrig);
 
+		// bring the clip-plane into camera space which is needed for the calculation
 		clipPlane.w = 0;
 		this.getViewMatrix().applyPost(clipPlane);
-		clipPlane.w = this.translation.y - clipPlaneOrig.w;
+		clipPlane.w = this.translation.y * clipPlaneOrig.y - clipPlaneOrig.w;
 
+		// calculate oblique camera projection matrix
 		this._updatePMatrix = true;
 		var projection = this.getProjectionMatrix();
 
