@@ -1,9 +1,11 @@
 define([
 	'goo/renderer/Renderer',
-	'goo/renderer/RendererRecord'
+	'goo/renderer/RendererRecord',
+	'goo/renderer/pass/RenderTarget'
 ], function (
 	Renderer,
-	RendererRecord
+	RendererRecord,
+	RenderTarget
 ) {
 	'use strict';
 
@@ -20,6 +22,7 @@ define([
 
 	Renderer.prototype.invalidateTexture = function (texture) {
 		texture.glTexture = null;
+		delete texture.textureRecord;
 	};
 
 	Renderer.prototype.invalidateShader = function (shader) {
@@ -37,6 +40,34 @@ define([
 		}
 
 		this.invalidateShader(material.shader);
+	};
+
+	Renderer.prototype.invalidateRenderTarget = function (renderTarget) {
+		renderTarget.glTexture = null;
+		renderTarget._glRenderBuffer = null;
+		renderTarget._glFrameBuffer = null;
+	};
+
+	Renderer.prototype.invalidateComposer = function (composer) {
+		if (composer.writeBuffer && !composer._passedWriteBuffer) {
+			this.invalidateRenderTarget(composer.writeBuffer);
+		}
+		if (composer.readBuffer) {
+			this.invalidateRenderTarget(composer.readBuffer);
+		}
+
+		composer.copyPass.invalidateHandles(this);
+
+		for (var i = 0; i < composer.passes.length; i++) {
+			var pass = composer.passes[i];
+			// every pass has to do its own internal cleaning
+			pass.invalidateHandles(this);
+		}
+
+		// should not need to do this
+//		composer.writeBuffer = new RenderTarget(composer.size.width, composer.size.height);
+		composer.readBuffer = composer.writeBuffer.clone();
+		// composer.dirty = true; // should not be needed
 	};
 
 	Renderer.prototype._restoreContext = function () {

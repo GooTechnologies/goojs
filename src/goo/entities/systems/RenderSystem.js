@@ -205,6 +205,13 @@ function (
 			}
 			renderer.invalidateMeshData(entity.meshDataComponent.meshData);
 		}
+
+		for (var i = 0; i < this.composers.length; i++) {
+			var composer = this.composers[i];
+			renderer.invalidateComposer(composer);
+		}
+
+		renderer.rendererRecord = null; // might hold on to stuff
 	};
 
 	return RenderSystem;

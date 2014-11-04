@@ -120,53 +120,7 @@ function (
 		/** @type {RendererRecord} */
 		this.rendererRecord = new RendererRecord();
 
-		/** @type {boolean} */
-		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
-		/** @type {boolean} */
-		this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
-		/** @type {boolean} */
-		this.glExtensionTextureFloatLinear = this.context.getExtension('OES_texture_float_linear');
-		/** @type {boolean} */
-		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
-		/** @type {boolean} */
-		this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
-		/** @type {boolean} */
-		this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
-			|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
-			|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
-		/** @type {boolean} */
-		this.glExtensionDepthTexture = this.context.getExtension('WEBGL_depth_texture')
-			|| this.context.getExtension('WEBKIT_WEBGL_depth_texture')
-			|| this.context.getExtension('MOZ_WEBGL_depth_texture');
-		/** @type {boolean} */
-		this.glExtensionElementIndexUInt = this.context.getExtension('OES_element_index_uint');
-		/** @type {boolean} */
-		this.glExtensionInstancedArrays = this.context.getExtension('ANGLE_instanced_arrays');
 
-		if (!this.glExtensionTextureFloat) {
-			console.log('Float textures not supported.');
-		}
-		if (!this.glExtensionTextureFloatLinear) {
-			console.log('Float textures with linear filtering not supported.');
-		}
-//		if (!this.glExtensionTextureHalfFloat) {
-//			console.log('Half Float textures not supported.');
-//		}
-		if (!this.glExtensionStandardDerivatives) {
-			console.log('Standard derivatives not supported.');
-		}
-		if (!this.glExtensionTextureFilterAnisotropic) {
-			console.log('Anisotropic texture filtering not supported.');
-		}
-		if (!this.glExtensionCompressedTextureS3TC) {
-			console.log('S3TC compressed textures not supported.');
-		}
-		if (!this.glExtensionDepthTexture) {
-			console.log('Depth textures not supported.');
-		}
-		if (!this.glExtensionElementIndexUInt) {
-			console.log('32 bit indices not supported.');
-		}
 
 		if (this.context.getShaderPrecisionFormat === undefined) {
 			this.context.getShaderPrecisionFormat = function () {
@@ -388,6 +342,54 @@ function (
 				supported: false,
 				enabled: false
 			};
+		}
+
+		/** @type {boolean} */
+		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
+		/** @type {boolean} */
+		this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
+		/** @type {boolean} */
+		this.glExtensionTextureFloatLinear = this.context.getExtension('OES_texture_float_linear');
+		/** @type {boolean} */
+		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
+		/** @type {boolean} */
+		this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
+		/** @type {boolean} */
+		this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
+			|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
+			|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
+		/** @type {boolean} */
+		this.glExtensionDepthTexture = this.context.getExtension('WEBGL_depth_texture')
+			|| this.context.getExtension('WEBKIT_WEBGL_depth_texture')
+			|| this.context.getExtension('MOZ_WEBGL_depth_texture');
+		/** @type {boolean} */
+		this.glExtensionElementIndexUInt = this.context.getExtension('OES_element_index_uint');
+		/** @type {boolean} */
+		this.glExtensionInstancedArrays = this.context.getExtension('ANGLE_instanced_arrays');
+
+		if (!this.glExtensionTextureFloat) {
+			console.log('Float textures not supported.');
+		}
+		if (!this.glExtensionTextureFloatLinear) {
+			console.log('Float textures with linear filtering not supported.');
+		}
+//		if (!this.glExtensionTextureHalfFloat) {
+//			console.log('Half Float textures not supported.');
+//		}
+		if (!this.glExtensionStandardDerivatives) {
+			console.log('Standard derivatives not supported.');
+		}
+		if (!this.glExtensionTextureFilterAnisotropic) {
+			console.log('Anisotropic texture filtering not supported.');
+		}
+		if (!this.glExtensionCompressedTextureS3TC) {
+			console.log('S3TC compressed textures not supported.');
+		}
+		if (!this.glExtensionDepthTexture) {
+			console.log('Depth textures not supported.');
+		}
+		if (!this.glExtensionElementIndexUInt) {
+			console.log('32 bit indices not supported.');
 		}
 	};
 
@@ -2233,6 +2235,7 @@ function (
 
 	Renderer.prototype.setRenderTarget = function (renderTarget) {
 		if (renderTarget && !renderTarget._glFrameBuffer) {
+			//! AT: no need to do these checks, the data should be correct
 			if (renderTarget.depthBuffer === undefined) {
 				renderTarget.depthBuffer = true;
 			}
