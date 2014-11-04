@@ -928,14 +928,13 @@ function (
 	/**
 	 * Clip using an oblique frustum different from the the view frustum
 	 * @param {Vector4} clipPlane Clipping plane.
-	 * @param {number} offset Offset.
 	 */
-	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig, offset) {
-		offset = offset || 0;
+	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig) {
 		var clipPlane = this._clipPlane.setv(clipPlaneOrig);
 
+		clipPlane.w = 0;
 		this.getViewMatrix().applyPost(clipPlane);
-		clipPlane.w = this.translation.y * clipPlaneOrig.y + offset;
+		clipPlane.w = this.translation.y - clipPlaneOrig.w;
 
 		this._updatePMatrix = true;
 		var projection = this.getProjectionMatrix();

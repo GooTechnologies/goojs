@@ -92,7 +92,7 @@ function (
 
 		this.waterCamera.copy(camera);
 		if (this.updateWaterPlaneFromEntity) {
-			waterPlane.constant = this.waterEntity.transformComponent.transform.translation.y;
+			waterPlane.constant = this.waterEntity.transformComponent.worldTransform.translation.y;
 		}
 		var aboveWater = camera.translation.y > waterPlane.constant;
 

@@ -71,34 +71,33 @@ require([
 			cameraPosition: Shader.CAMERA,
 			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader: [ //
-			'attribute vec3 vertexPosition;', //
+		vshader: [
+			'attribute vec3 vertexPosition;',
 
-			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
-			'uniform vec3 cameraPosition;', //
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
+			'uniform vec3 cameraPosition;',
 
-			'varying vec3 eyeVec;',//
+			'varying vec3 eyeVec;',
 
-			'void main(void) {', //
-			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);', //
-			'	gl_Position = projectionMatrix * viewMatrix * worldPos;', //
-			'	eyeVec = cameraPosition - worldPos.xyz;', //
+			'void main(void) {',
+			'	vec4 worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
+			'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
+			'	eyeVec = cameraPosition - worldPos.xyz;',
 			'}'//
 		].join('\n'),
 		fshader: [//
-			'precision mediump float;',//
+			'precision mediump float;',
 
-			'uniform samplerCube diffuseMap;',//
+			'uniform samplerCube diffuseMap;',
 
-			'varying vec3 eyeVec;',//
+			'varying vec3 eyeVec;',
 
-			'void main(void)',//
-			'{',//
-			'	vec4 cube = textureCube(diffuseMap, eyeVec);',//
-			'	gl_FragColor = cube;',//
-			// ' gl_FragColor = vec4(1.0,0.0,0.0,1.0);',//
+			'void main(void)',
+			'{',
+			'	vec4 cube = textureCube(diffuseMap, eyeVec);',
+			'	gl_FragColor = cube;',
 			'}'//
 		].join('\n')
 	};
@@ -118,8 +117,8 @@ require([
 		for (var y = 0; y < count * 2; y++) {
 			for (var z = 0; z < count; z++) {
 				world.createEntity(meshData, material, [
-						(x - count / 2) * 15,
-						(y - count / 2) * 15 - 10,
+						(x - count / 2) * 15 + (y - count * 0.5) * 8,
+						(y - count / 2) * 10 - 10,
 						(z - count / 2) * 15
 				]).addToWorld();
 			}
@@ -134,28 +133,20 @@ require([
 
 	meshData = new Quad(200, 200, 10, 10);
 	material = new Material(ShaderLib.simple);
-	var waterEntity = world.createEntity(meshData, material)
-		.setRotation([-Math.PI / 2, 0, 0])
-		.addToWorld();
-
-	//! AT: this does nothing!
-	/*waterEntity.set(function (entity) {
-			var transformComponent = entity.transformComponent;
-			// transformComponent.transform.translation.x = Math.sin(World.time * 1.0) * 30;
-			transformComponent.transform.translation.y = 0;
-			// transformComponent.transform.translation.z = Math.cos(World.time * 1.0) * 30;
-			transformComponent.setUpdated();
-		});
-	*/
+	var waterEntity = world.createEntity(meshData, material, function (entity, tpf) {
+		entity.setTranslation(0, Math.sin(world.time * 3) * 5, 0);
+	}).setRotation([-Math.PI / 2, 0, 0]).addToWorld();
 
 	var waterRenderer = new FlatWaterRenderer({
-		normalsUrl: 'resources/water/waternormals3.png'
+		normalsUrl: 'resources/water/waternormals3.png',
+		useRefraction: true
 	});
 	goo.renderSystem.preRenderers.push(waterRenderer);
 
 	waterRenderer.setWaterEntity(waterEntity);
 	waterRenderer.setSkyBox(skybox);
 
+	waterRenderer.waterMaterial.shader.uniforms.normalMultiplier = 1;
 	waterRenderer.waterMaterial.shader.uniforms.fogColor = [1.0, 1.0, 1.0];
 	waterRenderer.waterMaterial.shader.uniforms.fogStart = 0;
 
