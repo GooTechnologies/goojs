@@ -37,7 +37,7 @@ function (
 		if (arguments.length === 0) {
 			this.setIdentity();
 		} else {
-			this.set(arguments);
+			Matrix.prototype.set.apply(this, arguments);
 		}
 	}
 
