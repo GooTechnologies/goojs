@@ -4,7 +4,8 @@ define([
 	'goo/loaders/handlers/TextureHandler',
 	'goo/util/Ajax',
 	'goo/util/StringUtil',
-	'goo/util/Latch'
+	'goo/util/PromiseUtil',
+	'goo/util/rsvp'
 ],
 /** @lends */
 function (
@@ -13,7 +14,8 @@ function (
 	TextureHandler,
 	Ajax,
 	StringUtil,
-	Latch
+	PromiseUtil,
+	RSVP
 ) {
 	'use strict';
 
@@ -150,54 +152,45 @@ function (
 	/**
 	 *
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
+	 * @param {Object} settings
 	 * @param {Function} callback Called when loading has finished
 	 * @returns {Texture} cubemap
 	 */
 	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings, callback) {
 		var texture = new Texture(null, settings);
 		texture.variant = 'CUBE';
-		var images = [];
 
-		var latch = new Latch(6, {
-			done: function () {
-				var w = images[0].width;
-				var h = images[0].height;
-				for (var i = 0; i < 6; i++) {
-					var img = images[i];
-					if (w !== img.width || h !== img.height) {
-						texture.generateMipmaps = false;
-						texture.minFilter = 'BilinearNoMipMaps';
-						console.error('Images not all the same size!');
-					}
+		var promises = imageDataArray.map(function (queryImage) {
+			return PromiseUtil.createPromise(function (resolve, reject) {
+				if (typeof queryImage === 'string') {
+					this.ajax._loadImage(queryImage).then(resolve);
+				} else {
+					resolve(queryImage);
 				}
+			}.bind(this));
+		}.bind(this));
 
-				texture.setImage(images);
-				texture.image.dataReady = true;
-				texture.image.width = w;
-				texture.image.height = h;
-
-				if (callback) {
-					callback();
+		RSVP.all(promises).then(function (images) {
+			var width = images[0].width;
+			var height = images[0].height;
+			for (var i = 0; i < 6; i++) {
+				var image = images[i];
+				if (width !== image.width || height !== image.height) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+					console.error('Images not all the same size!');
 				}
 			}
-		});
 
-		var that = this;
-		for (var i = 0; i < imageDataArray.length; i++) {
-			/*jshint loopfunc: true */
-			(function (index) {
-				var queryImage = imageDataArray[index];
-				if (typeof queryImage === 'string') {
-					that.ajax._loadImage(queryImage).then(function (image) {
-						images[index] = image;
-						latch.countDown();
-					});
-				} else {
-					images[index] = queryImage;
-					latch.countDown();
-				}
-			})(i);
-		}
+			texture.setImage(images);
+			texture.image.dataReady = true;
+			texture.image.width = width;
+			texture.image.height = height;
+
+			if (callback) {
+				callback();
+			}
+		});
 
 		return texture;
 	};
