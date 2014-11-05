@@ -18,7 +18,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		if (arguments.length === 0) {
 			this.setIdentity();
 		} else {
-			this.set(arguments);
+			Matrix.prototype.set.apply(this, arguments);
 		}
 	}
 
