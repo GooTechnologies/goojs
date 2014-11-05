@@ -1,11 +1,9 @@
 define([
 	'goo/renderer/Renderer',
-	'goo/renderer/RendererRecord',
-	'goo/renderer/pass/RenderTarget'
+	'goo/renderer/RendererRecord'
 ], function (
 	Renderer,
-	RendererRecord,
-	RenderTarget
+	RendererRecord
 ) {
 	'use strict';
 
@@ -46,6 +44,7 @@ define([
 		renderTarget.glTexture = null;
 		renderTarget._glRenderBuffer = null;
 		renderTarget._glFrameBuffer = null;
+		delete renderTarget.textureRecord;
 	};
 
 	Renderer.prototype.invalidateComposer = function (composer) {
@@ -63,11 +62,6 @@ define([
 			// every pass has to do its own internal cleaning
 			pass.invalidateHandles(this);
 		}
-
-		// should not need to do this
-//		composer.writeBuffer = new RenderTarget(composer.size.width, composer.size.height);
-		composer.readBuffer = composer.writeBuffer.clone();
-		// composer.dirty = true; // should not be needed
 	};
 
 	Renderer.prototype._restoreContext = function () {
