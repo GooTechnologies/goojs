@@ -43,7 +43,6 @@ require([
 		extension.restoreContext();
 	});
 
-
 	// --- test shape
 	var material = new Material(ShaderLib.texturedLit);
 	var texture = new TextureCreator().loadTexture2D('../../../resources/cone.png');
@@ -57,8 +56,9 @@ require([
 	var outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
 	outPass.renderToScreen = true;
 
-	var blur = new PassLib.Blur();
+//	var blur = new PassLib.Blur();
 //	var blur = new PassLib.Sepia();
+	var blur = new PassLib.Bloom();
 
 	var composer = new Composer();
 	composer.addPass(renderPass);

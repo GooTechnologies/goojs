@@ -46,10 +46,12 @@ define(['goo/math/Vector2'],
 
 		var id = Math.random().toFixed(3).slice(2);
 		Object.observe(this, function (changes) {
+			console.log('render target ', id);
 			changes.forEach(function (change) {
-				console.log(id, change.type, change.name, change.oldValue);
-			});
-		});
+				console.log(' ', change.type, change.name, change.oldValue, this[change.name]);
+			}.bind(this));
+			console.log('--------------------');
+		}.bind(this));
 	}
 
 	RenderTarget.prototype.clone = function () {
