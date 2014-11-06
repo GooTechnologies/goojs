@@ -3,7 +3,9 @@ define([
 	'goo/renderer/Util',
 	'goo/loaders/handlers/TextureHandler',
 	'goo/util/Ajax',
-	'goo/util/StringUtil'
+	'goo/util/StringUtil',
+	'goo/util/PromiseUtil',
+	'goo/util/rsvp'
 ],
 /** @lends */
 function (
@@ -11,7 +13,9 @@ function (
 	Util,
 	TextureHandler,
 	Ajax,
-	StringUtil
+	StringUtil,
+	PromiseUtil,
+	RSVP
 ) {
 	'use strict';
 
@@ -148,25 +152,30 @@ function (
 	/**
 	 *
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
+	 * @param {Object} settings
 	 * @param {Function} callback Called when loading has finished
 	 * @returns {Texture} cubemap
 	 */
 	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings, callback) {
 		var texture = new Texture(null, settings);
 		texture.variant = 'CUBE';
-		var images = [];
 
-		var imageCount = 6;
-		var countAndCheck = function () {
-			imageCount--;
-			if (imageCount > 0) {
-				return;
-			}
-			var w = images[0].width;
-			var h = images[0].height;
+		var promises = imageDataArray.map(function (queryImage) {
+			return PromiseUtil.createPromise(function (resolve, reject) {
+				if (typeof queryImage === 'string') {
+					this.ajax._loadImage(queryImage).then(resolve);
+				} else {
+					resolve(queryImage);
+				}
+			}.bind(this));
+		}.bind(this));
+
+		RSVP.all(promises).then(function (images) {
+			var width = images[0].width;
+			var height = images[0].height;
 			for (var i = 0; i < 6; i++) {
-				var img = images[i];
-				if (w !== img.width || h !== img.height) {
+				var image = images[i];
+				if (width !== image.width || height !== image.height) {
 					texture.generateMipmaps = false;
 					texture.minFilter = 'BilinearNoMipMaps';
 					console.error('Images not all the same size!');
@@ -175,30 +184,13 @@ function (
 
 			texture.setImage(images);
 			texture.image.dataReady = true;
-			texture.image.width = w;
-			texture.image.height = h;
+			texture.image.width = width;
+			texture.image.height = height;
 
 			if (callback) {
 				callback();
 			}
-		};	
-
-		var that = this;
-		for (var i = 0; i < imageDataArray.length; i++) {
-			/*jshint loopfunc: true */
-			(function (index) {
-				var queryImage = imageDataArray[index];
-				if (typeof queryImage === 'string') {
-					that.ajax._loadImage(queryImage).then(function (image) {
-						images[index] = image;
-						countAndCheck();
-					});
-				} else {
-					images[index] = queryImage;
-					countAndCheck();
-				}
-			})(i);
-		}
+		});
 
 		return texture;
 	};

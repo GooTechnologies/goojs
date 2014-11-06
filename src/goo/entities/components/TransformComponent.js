@@ -408,6 +408,7 @@ function (
 	 * So for example move(0,0,-1) moves forward (because of the right handed coordinate system).<br/>
 	 * <i>Injected into entity when adding component.</i>
 	 *
+	 * @function
 	 * @param {Vector | number[] | number...} component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -556,6 +557,7 @@ function (
 		}
 
 		if (matched) {
+			transformComponent.setUpdated();
 			entity.setComponent(transformComponent);
 			return true;
 		}

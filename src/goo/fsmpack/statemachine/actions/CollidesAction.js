@@ -61,11 +61,15 @@ function(
 		var collides = false;
 		entity.traverse(function (entity) {
 			var worldBound;
-			if (entity.meshRendererComponent) {
+			if (entity.meshRendererComponent &&
+				!entity.particleComponent) {
 				worldBound = entity.meshRendererComponent.worldBound;
 				for (var i = 0; i < collection.length; i++) {
 					collection[i].traverse(function (entity) {
-						if (entity.meshRendererComponent && entity.meshRendererComponent.worldBound && worldBound.intersects(entity.meshRendererComponent.worldBound)) {
+						if (entity.meshRendererComponent &&
+							entity.meshRendererComponent.worldBound &&
+							!entity.particleComponent &&
+							worldBound.intersects(entity.meshRendererComponent.worldBound)) {
 							collides = true;
 							return false;
 						}
