@@ -57,8 +57,8 @@ require([
 	outPass.renderToScreen = true;
 
 //	var blur = new PassLib.Blur();
-//	var blur = new PassLib.Sepia();
-	var blur = new PassLib.Bloom();
+	var blur = new PassLib.Sepia();
+//	var blur = new PassLib.Bloom();
 
 	var composer = new Composer();
 	composer.addPass(renderPass);

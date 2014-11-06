@@ -75,12 +75,5 @@ define([
 			this._clearColor[2],
 			this._clearColor[3]
 		);
-
-		this.context.clearDepth(1);
-		this.context.clearStencil(0);
-		this.context.stencilMask(0);
-
-		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
-		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 	};
 });

@@ -14,6 +14,7 @@ define([
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
+	'goo/renderer/RenderStats',
 	'goo/entities/SystemBus',
 	'goo/renderer/TaskScheduler'
 ],
@@ -33,6 +34,7 @@ function (
 	RenderQueue,
 	ShaderLib,
 	ShadowHandler,
+	RenderStats,
 	SystemBus,
 	TaskScheduler
 ) {
@@ -90,38 +92,13 @@ function (
 		this._setupContextLost();
 
 		if (parameters.debug) {
-			// XXX: This is a temporary solution to easily enable webgl debugging during development...
-			var request = new XMLHttpRequest();
-			request.open('GET', '/js/goo/lib/webgl-debug.js', false);
-			request.onreadystatechange = function () {
-				if (request.readyState === 4) {
-					if (request.status >= 200 && request.status <= 299) {
-						// Yes, eval is intended, sorry checkstyle
-						// jshint evil:true
-						window['eval'].call(window, request.responseText);
-					}
-				}
-			};
-			request.send(null);
-
-			if (typeof (window.WebGLDebugUtils) === 'undefined') {
-				console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
-			} else {
-				console.log('Running in webgl debug mode.');
-				if (parameters.validate) {
-					console.log('Running with "undefined arguments" validation.');
-					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this), validateNoneOfTheArgsAreUndefined);
-				} else {
-					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this));
-				}
-			}
+			this.setupDebugging(parameters);
 		}
 
 		/** @type {RendererRecord} */
 		this.rendererRecord = new RendererRecord();
 
-
-
+		//! AT: is this still necessary?
 		if (this.context.getShaderPrecisionFormat === undefined) {
 			this.context.getShaderPrecisionFormat = function () {
 				return {
@@ -158,7 +135,96 @@ function (
 		 * @property {number} version Version string
 		 * @property {number} shadingLanguageVersion Shadinglanguage version string
 		 */
-		this.capabilities = {
+		this.capabilities = this.getCapabilities();
+
+		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxTexureSize) : this.capabilities.maxTexureSize;
+		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxCubemapSize) : this.capabilities.maxCubemapSize;
+
+		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
+		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
+		 * @type {string}
+		 */
+		this.shaderPrecision = parameters.shaderPrecision || 'highp';
+		if (this.shaderPrecision === 'highp' && this.capabilities.vertexShaderHighpFloat.precision > 0 && this.capabilities.fragmentShaderHighpFloat.precision > 0) {
+			this.shaderPrecision = 'highp';
+		} else if (this.shaderPrecision !== 'lowp' && this.capabilities.vertexShaderMediumpFloat.precision > 0 && this.capabilities.fragmentShaderMediumpFloat.precision > 0) {
+			this.shaderPrecision = 'mediump';
+		} else {
+			this.shaderPrecision = 'lowp';
+		}
+		//console.log("Shader precision: " + this.shaderPrecision);
+
+		this.downScale = parameters.downScale || 1;
+
+		// Default setup
+		this.clearColor = new Vector4();
+		// You need 64 bits for number equality
+		this._clearColor = new Float64Array(4);
+		this.setClearColor(0.3, 0.3, 0.3, 1.0);
+
+
+		/** @type {number} */
+		this.viewportX = 0;
+		/** @type {number} */
+		this.viewportY = 0;
+		/** @type {number} */
+		this.viewportWidth = 0;
+		/** @type {number} */
+		this.viewportHeight = 0;
+		/** @type {number} */
+		this.currentWidth = 0;
+		/** @type {number} */
+		this.currentHeight = 0;
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.devicePixelRatio = 1;
+
+		//this.overrideMaterial = null;
+		this._overrideMaterials = [];
+		this._mergedMaterial = new Material('Merged Material');
+
+		this.renderQueue = new RenderQueue();
+
+		this.info = new RenderStats();
+
+		this.shadowHandler = new ShadowHandler();
+
+		// Hardware picking
+		this.hardwarePicking = null;
+
+		SystemBus.addListener('goo.setClearColor', function(color) {
+			this.setClearColor.apply(this, color);
+		}.bind(this));
+
+		// ---
+		//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
+		// apparently this is the only way to find out the user zoom level
+
+		if (document.createElementNS) {
+			this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+			this.svg.setAttribute('version', '1.1');
+			this.svg.style.position = 'absolute';
+			this.svg.style.display = 'none';
+			document.body.appendChild(this.svg);
+		} else {
+			//! AT: placeholder to avoid another conditional below in checkResize
+			this.svg = { currentScale: 1 };
+		}
+
+		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
+		//      this needs to be re-added her again for each new GooRunner/Renderer
+		//      cycle.
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			Renderer.mainCamera = newCam.camera;
+			this.checkResize(Renderer.mainCamera);
+		}.bind(this));
+	}
+
+	Renderer.prototype.getCapabilities = function () {
+		return {
 			maxTexureSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
 			maxCubemapSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
 			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
@@ -204,113 +270,35 @@ function (
 			fragmentShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_INT),
 			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
 		};
-		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxTexureSize) : this.capabilities.maxTexureSize;
-		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxCubemapSize) : this.capabilities.maxCubemapSize;
+	};
 
-		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
-		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
-		 * @type {string}
-		 */
-		this.shaderPrecision = parameters.shaderPrecision || 'highp';
-		if (this.shaderPrecision === 'highp' && this.capabilities.vertexShaderHighpFloat.precision > 0 && this.capabilities.fragmentShaderHighpFloat.precision > 0) {
-			this.shaderPrecision = 'highp';
-		} else if (this.shaderPrecision !== 'lowp' && this.capabilities.vertexShaderMediumpFloat.precision > 0 && this.capabilities.fragmentShaderMediumpFloat.precision > 0) {
-			this.shaderPrecision = 'mediump';
-		} else {
-			this.shaderPrecision = 'lowp';
-		}
-		//console.log("Shader precision: " + this.shaderPrecision);
-
-		this.downScale = parameters.downScale || 1;
-
-		// Default setup
-
-		this.clearColor = new Vector4();
-		// You need 64 bits for number equality
-		this._clearColor = new Float64Array(4);
-		this.setClearColor(0.3, 0.3, 0.3, 1.0);
-		this.context.clearDepth(1);
-		this.context.clearStencil(0);
-		this.context.stencilMask(0);
-
-		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
-		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
-
-		/** @type {number} */
-		this.viewportX = 0;
-		/** @type {number} */
-		this.viewportY = 0;
-		/** @type {number} */
-		this.viewportWidth = 0;
-		/** @type {number} */
-		this.viewportHeight = 0;
-		/** @type {number} */
-		this.currentWidth = 0;
-		/** @type {number} */
-		this.currentHeight = 0;
-		/**
-		 * @type {number}
-		 * @readonly
-		 */
-		this.devicePixelRatio = 1;
-
-		//this.overrideMaterial = null;
-		this._overrideMaterials = [];
-		this._mergedMaterial = new Material('Merged Material');
-
-		this.renderQueue = new RenderQueue();
-
-		this.info = {
-			calls: 0,
-			vertices: 0,
-			indices: 0,
-			reset: function () {
-				this.calls = 0;
-				this.vertices = 0;
-				this.indices = 0;
-			},
-			toString: function () {
-				return (
-					'Calls: ' + this.calls +
-					'<br/>Vertices: ' + this.vertices +
-					'<br/>Indices: ' + this.indices
-				);
+	Renderer.prototype.setupDebugging = function (parameters) {
+		// XXX: This is a temporary solution to easily enable webgl debugging during development...
+		var request = new XMLHttpRequest();
+		request.open('GET', '/js/goo/lib/webgl-debug.js', false);
+		request.onreadystatechange = function () {
+			if (request.readyState === 4) {
+				if (request.status >= 200 && request.status <= 299) {
+					// Yes, eval is intended, sorry checkstyle
+					// jshint evil:true
+					window['eval'].call(window, request.responseText);
+				}
 			}
 		};
+		request.send(null);
 
-		this.shadowHandler = new ShadowHandler();
-
-		// Hardware picking
-		this.hardwarePicking = null;
-
-		SystemBus.addListener('goo.setClearColor', function(color) {
-			this.setClearColor.apply(this, color);
-		}.bind(this));
-
-		// ---
-		//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
-		// apparently this is the only way to find out the user zoom level
-
-		if (document.createElementNS) {
-			this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-			this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-			this.svg.setAttribute('version', '1.1');
-			this.svg.style.position = 'absolute';
-			this.svg.style.display = 'none';
-			document.body.appendChild(this.svg);
+		if (typeof (window.WebGLDebugUtils) === 'undefined') {
+			console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
 		} else {
-			//! AT: placeholder to avoid another conditional below in checkResize
-			this.svg = { currentScale: 1 };
+			console.log('Running in webgl debug mode.');
+			if (parameters.validate) {
+				console.log('Running with "undefined arguments" validation.');
+				this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this), validateNoneOfTheArgsAreUndefined);
+			} else {
+				this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this));
+			}
 		}
-
-		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
-		//      this needs to be re-added her again for each new GooRunner/Renderer
-		//      cycle.
-		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			Renderer.mainCamera = newCam.camera;
-			this.checkResize(Renderer.mainCamera);
-		}.bind(this));
-	}
+	};
 
 	Renderer.prototype.establishContext = function () {
 		if (!!window.WebGLRenderingContext) {
@@ -343,6 +331,13 @@ function (
 				enabled: false
 			};
 		}
+
+		this.context.clearDepth(1);
+		this.context.clearStencil(0);
+		this.context.stencilMask(0);
+
+		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
+		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 
 		/** @type {boolean} */
 		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
