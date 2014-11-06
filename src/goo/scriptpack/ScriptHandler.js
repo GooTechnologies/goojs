@@ -315,6 +315,7 @@ function (
 			};
 
 			if (!handled) {
+				handled = true;
 				// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
 				var timeoutHandler = setTimeout(function () {
 					fireError('Loading dependency failed (time out).');
