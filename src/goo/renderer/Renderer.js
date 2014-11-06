@@ -378,7 +378,7 @@ function (
 		}
 
 		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
-		//      this needs to be re-added her again for each new GooRunner/Renderer
+		//      this needs to be re-added here again for each new GooRunner/Renderer
 		//      cycle.
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
 			Renderer.mainCamera = newCam.camera;
@@ -387,18 +387,18 @@ function (
 
 		// OÅ For fast shader chache lookup
 		this._shaderKeys = [];
-		this._definesIndexes = [];
+		this._definesIndices = [];
 
 
-		var that = this;
-		var el = that.domElement;
+
+		var handleResize = function() {
+			this.adjustWidth = this.domElement.offsetWidth;
+			this.adjustHeight = this.domElement.offsetHeight;
+		}.bind(this);
+
 		if (document.querySelector) {
-			this.adjustWidth = el.offsetWidth;
-			this.adjustHeight = el.offsetHeight;
-			window.addEventListener('resize', function (evt) {
-				that.adjustWidth = el.offsetWidth;
-				that.adjustHeight = el.offsetHeight;
-			});
+			window.addEventListener('resize', handleResize);
+			handleResize();
 		} else {
 			this.adjustWidth = window.innerWidth;
 			this.adjustHeight = window.innerHeight;
@@ -747,10 +747,10 @@ function (
 	 * @param renderList
 	 * @return {RSVP.Promise}
 	 */
-	var preloadMaterials_renderInfo = new RenderInfo();
+	var preloadMaterialsRenderInfo = new RenderInfo();
 	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];
-		var renderInfo = preloadMaterials_renderInfo;
+		var renderInfo = preloadMaterialsRenderInfo;
 		renderInfo.reset();
 
 		if (Array.isArray(renderList)) {
@@ -797,19 +797,10 @@ function (
 			// check defines. if no hit in cache -> add to cache. if hit in cache,
 			// replace with cache version and copy over uniforms.
 			// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
-		//	var defineArray = Object.keys(shader.defines);
-		//	var len = defineArray.length;
-		//	var shaderKeyArray = [];
-		//	for (var j = 0; j < len; j++) {
-		//		var key = defineArray[j];
-		//		shaderKeyArray.push(key + '_' + shader.defines[key]);
-		//	}
-		//	shaderKeyArray.sort();
-		//	var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
 
 			var defineKey = this.makeKey(shader);
 
-			var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
+			var shaderCache = this.rendererRecord.shaderCache;
 			if (!shaderCache[defineKey]) {
 				if (shader.builder) {
 					shader.builder(shader, renderInfo);
@@ -857,9 +848,11 @@ function (
 	 * @param lights
 	 */
 	Renderer.prototype.precompileShaders = function (renderList, lights) {
-		var renderInfo = new RenderInfo({
-			lights: lights
-		});
+		var renderInfo = new RenderInfo();
+
+		if (lights) {
+			renderInfo.lights = lights;
+		}
 
 		var queue = [];
 
@@ -996,7 +989,9 @@ function (
 	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
 	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
-	var render_renderInfo = new RenderInfo();
+
+	var renderRenderInfo = new RenderInfo();
+
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
 		if (overrideMaterials) {
 			this._overrideMaterials = (overrideMaterials instanceof Array) ? overrideMaterials : [overrideMaterials];
@@ -1017,7 +1012,7 @@ function (
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
-		var renderInfo = render_renderInfo;
+		var renderInfo = renderRenderInfo;
 		renderInfo.reset();
 		renderInfo.camera = camera;
 		renderInfo.mainCamera = Renderer.mainCamera;
@@ -1127,21 +1122,21 @@ function (
 				}
 			}
 
-			material.shader = this.materialShaderFromCache(material, shader, renderInfo);
+			material.shader = this.findOrCacheMaterialShader(material, shader, renderInfo);
 		}
 	};
 
-	Renderer.prototype.renderMeshMaterial = function (i, materials, flatOrWire, originalData, renderInfo) {
+	Renderer.prototype.renderMeshMaterial = function (materialIndex, materials, flatOrWire, originalData, renderInfo) {
 		var material = null, orMaterial = null;
 
-		if (i < materials.length) {
-			material = materials[i];
+		if (materialIndex < materials.length) {
+			material = materials[materialIndex];
 		}
-		if (i < this._overrideMaterials.length) {
-			orMaterial = this._overrideMaterials[i];
+		if (materialIndex < this._overrideMaterials.length) {
+			orMaterial = this._overrideMaterials[materialIndex];
 		}
 
-		material = this.configureRenderInfo(renderInfo, i, material, orMaterial, originalData, flatOrWire);
+		material = this.configureRenderInfo(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire);
 		var meshData = renderInfo.meshData;
 
 		//! AT: this should stay in a method
@@ -1185,11 +1180,11 @@ function (
 		}
 	};
 
-	Renderer.prototype.configureRenderInfo = function(renderInfo, i, material, orMaterial, originalData, flatOrWire) {
+	Renderer.prototype.configureRenderInfo = function(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire) {
 
 		var meshData = renderInfo.meshData;
-		if (i < this._overrideMaterials.length) {
-			orMaterial = this._overrideMaterials[i];
+		if (materialIndex < this._overrideMaterials.length) {
+			orMaterial = this._overrideMaterials[materialIndex];
 		}
 
 		if (material && orMaterial) {
@@ -1236,24 +1231,16 @@ function (
 	};
 
 
-	Renderer.prototype.materialShaderFromCache = function(material, shader, renderInfo) {
+	Renderer.prototype.findOrCacheMaterialShader = function(material, shader, renderInfo) {
 
 		// check defines. if no hit in cache -> add to cache. if hit in cache,
 		// replace with cache version and copy over uniforms.
-		// var defineArray = Object.keys(shader.defines);
-		// var len = defineArray.length;
-		// var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
-		// shaderKeyArray.length = 0;
-		// for (var j = 0; j < len; j++) {
-		// 	var key = defineArray[j];
-		// 	shaderKeyArray.push(key + '_' + shader.defines[key]);
-		// }
-		// shaderKeyArray.sort();
-		// var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
 
 		var defineKey = this.makeKey(shader);
 
-		var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
+		var shaderCache = this.rendererRecord.shaderCache;
+
+
 
 		if (!shaderCache[defineKey]) {
 			if (shader.builder) {
@@ -1266,8 +1253,8 @@ function (
 			if (shader !== material.shader) {
 				var uniforms = material.shader.uniforms;
 				var keys = Object.keys(uniforms);
-				for (var ii = 0, l = keys.length; ii < l; ii++) {
-					var key = keys[ii];
+				for (var i = 0, l = keys.length; i < l; i++) {
+					var key = keys[i];
 					var origUniform = shader.uniforms[key] = uniforms[key];
 					if (origUniform instanceof Array) {
 						shader.uniforms[key] = origUniform.slice(0);
@@ -1283,18 +1270,12 @@ function (
 		var key = 'Key:'+shader.name;
 
 		for (var i = 0, l = defineArray.length; i < l; i++) {
-			var defineInt = this._definesIndexes.indexOf(defineArray[i]);
-			if (defineInt === -1) {
-				this._definesIndexes.push(defineArray[i]);
-				defineInt = this._definesIndexes.length;
+			var defineIndex = this._definesIndices.indexOf(defineArray[i]);
+			if (defineIndex === -1) {
+				this._definesIndices.push(defineArray[i]);
+				defineIndex = this._definesIndices.length;
 			}
-			key += '_'+defineInt+':'+shader.defines[defineArray[i]];
-		}
-
-		// For keeping all those keys somewhere
-		if (this._shaderKeys.indexOf(key) === -1) {
-			this._shaderKeys.push(key);
-		//	console.log("Shader Key added: ", this._shaderKeys)
+			key += '_'+defineIndex+':'+shader.defines[defineArray[i]];
 		}
 
 		return key;

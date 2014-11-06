@@ -13,19 +13,8 @@ function (
 	/**
 	 * @class
 	 */
-	function RenderInfo(parameters) {
-		parameters = parameters || {};
-		this.lights = typeof(parameters.lights) !== 'undefined' ? parameters.lights : null;
-		this.materials = typeof(parameters.materials) !== 'undefined' ? parameters.materials : null;
-		this.meshData = typeof(parameters.meshData) !== 'undefined' ? parameters.meshData : null;
-		this.camera = typeof(parameters.camera) !== 'undefined' ? parameters.camera : null;
-		this.mainCamera = typeof(parameters.mainCamera) !== 'undefined' ? parameters.mainCamera : null;
-		this.lights = typeof(parameters.lights) !== 'undefined' ? parameters.lights : null;
-		this.shadowHandler = typeof(parameters.shadowHandler) !== 'undefined' ? parameters.shadowHandler : null;
-		this.renderer = typeof(parameters.renderer) !== 'undefined' ? parameters.renderer : null;
-		this.material = typeof(parameters.material) !== 'undefined' ? parameters.material : null;
-		this.transform = typeof(parameters.transform) !== 'undefined' ? parameters.transform : null;
-		this.currentPose = typeof(parameters.currentPose) !== 'undefined' ? parameters.currentPose : null;
+	function RenderInfo() {
+		this.reset();
 	}
 
 	RenderInfo.prototype.reset = function () {
