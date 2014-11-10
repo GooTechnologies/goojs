@@ -64,6 +64,15 @@ define([
 		}
 	};
 
+	Renderer.prototype.invalidatePicking = function () {
+		if (this.hardwarePicking) {
+			if (this.hardwarePicking.pickingTarget) {
+				this.invalidateRenderTarget(this.hardwarePicking.pickingTarget);
+			}
+			this.invalidateMaterial(this.hardwarePicking.pickingMaterial);
+		}
+	};
+
 	Renderer.prototype._restoreContext = function () {
 		this.establishContext();
 

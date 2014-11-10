@@ -216,7 +216,17 @@ function (
 
 	GooRunner.prototype._setupContextLost = function () {
 		SystemBus.addListener('goo.contextLost', function () {
-			this.renderSystem.invalidateHandles(this.renderer);
+			for (var i = 0; i < this.renderSystems.length; i++) {
+				var renderSystem = this.renderSystems[i];
+				if (renderSystem.invalidateHandles) {
+					renderSystem.invalidateHandles(this.renderer);
+				}
+			}
+
+			// invalidate shadows
+			// this renderer.invalidateCache ?
+			this.renderer.invalidatePicking();
+
 			this.stopGameLoop();
 		}.bind(this));
 

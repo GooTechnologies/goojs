@@ -29,8 +29,8 @@ function (
 
 		this._renderablesTree = {};
 		this.renderList = [];
-		this.preRenderers = [];
-		this.composers = [];
+		this.preRenderers = []; // unused
+		this.composers = []; // unused
 		this.doRender = {
 			CameraComponent: false,
 			LightComponent: false,
@@ -71,7 +71,7 @@ function (
 	};
 
 	DebugRenderSystem.prototype.deleted = function (entity) {
-		delete this._renderablesTree[entity.id]
+		delete this._renderablesTree[entity.id];
 	};
 
 	DebugRenderSystem.prototype.process = function (entities, tpf) {
@@ -145,6 +145,37 @@ function (
 
 	DebugRenderSystem.prototype.renderToPick = function (renderer, skipUpdateBuffer) {
 		renderer.renderToPick(this.renderList, this.camera, false, skipUpdateBuffer);
+	};
+
+	DebugRenderSystem.prototype.invalidateHandles = function (renderer) {
+		var ids = Object.keys(this._renderablesTree);
+		for (var i = 0; i < ids.length; i++) {
+			var id = ids[i];
+			var components = this._renderablesTree[id];
+
+			var keys = Object.keys(components);
+			for (var j = 0; j < keys.length; j++) {
+				var key = keys[j];
+				var renderables = components[key];
+
+				for (var k = 0; k < renderables.length; k++) {
+					var renderable = renderables[k];
+
+					renderable.materials.forEach(function (material) {
+						renderer.invalidateMaterial(material);
+					});
+
+					renderer.invalidateMeshData(renderable.meshData);
+				}
+			}
+		}
+
+		// there are 2 selection renderables, but one has a null meshData (it's beyond me why it's like that)
+		this.selectionRenderable[0].materials.forEach(function (material) {
+			renderer.invalidateMaterial(material);
+		});
+
+		renderer.invalidateMeshData(this.selectionRenderable[0].meshData);
 	};
 
 	return DebugRenderSystem;
