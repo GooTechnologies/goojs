@@ -35,12 +35,12 @@ require([
 		'6: add cube'
 	].join('\n'));
 
-    V.button('1', key1);
-    V.button('2', key2);
-    V.button('3', key3);
-    V.button('4', key4);
-    V.button('5', key5);
-    V.button('6', key6);
+	V.button('1', key1);
+	V.button('2', key2);
+	V.button('3', key3);
+	V.button('4', key4);
+	V.button('5', key5);
+	V.button('6', key6);
 
 	var resourcePath = '../../../resources/';
 
@@ -100,44 +100,44 @@ require([
 		setupKeys();
 	}
 
-    // ---
-    function key1() {
-        cubeEntity.soundComponent.sounds[0].play()
-            .then(function () {
-                console.log('boing ended');
-            });
-        console.log('boing');
-    }
+	// ---
+	function key1() {
+		cubeEntity.soundComponent.sounds[0].play()
+			.then(function () {
+				console.log('boing ended');
+			});
+		console.log('boing');
+	}
 
-    function key2() {
-        sphereEntity.soundComponent.sounds[0].play()
-            .then(function () {
-                console.log('squigly ended');
-            });
-        console.log('squigly');
-    }
+	function key2() {
+		sphereEntity.soundComponent.sounds[0].play()
+			.then(function () {
+				console.log('squigly ended');
+			});
+		console.log('squigly');
+	}
 
-    function key3() {
-        cubeEntity.soundComponent.sounds[0].pause();
-        console.log('boing pause');
-    }
+	function key3() {
+		cubeEntity.soundComponent.sounds[0].pause();
+		console.log('boing pause');
+	}
 
-    function key4() {
-        sphereEntity.soundComponent.sounds[0].pause();
-        console.log('squigly pause');
-    }
+	function key4() {
+		sphereEntity.soundComponent.sounds[0].pause();
+		console.log('squigly pause');
+	}
 
-    function key5() {
-    	cubeEntity.removeFromWorld();
-        console.log('Remove cube');
-    }
+	function key5() {
+		cubeEntity.removeFromWorld();
+		console.log('Remove cube');
+	}
 
-    function key6() {
-    	cubeEntity.addToWorld();
-    	cubeEntity.soundComponent.sounds[0].play();
-        console.log('Add cube');
-    }
-    // ---
+	function key6() {
+		cubeEntity.addToWorld();
+		cubeEntity.soundComponent.sounds[0].play();
+		console.log('Add cube');
+	}
+	// ---
 
 	function setupKeys() {
 		document.body.addEventListener('keypress', function(e) {
