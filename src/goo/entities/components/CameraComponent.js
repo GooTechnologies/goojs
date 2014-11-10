@@ -100,7 +100,9 @@ function (
 
 		transform.matrix.getTranslation(this.camera.translation);
 
-		this.camera.update();
+		// RH: Don't update the frustum only the frame
+		// this.camera.update();
+		this.camera.onFrameChange();
 	};
 
 	CameraComponent.applyOnEntity = function(obj, entity) {

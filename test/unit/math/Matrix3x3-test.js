@@ -16,6 +16,51 @@ define([
 			jasmine.addMatchers(CustomMatchers);
 		});
 
+		describe('constructor', function () {
+			it('creates an identity matrix when given no parameters', function () {
+				expect(new Matrix3x3()).toBeCloseToMatrix(Matrix3x3.IDENTITY);
+			});
+
+			it('creates a matrix when given 9 parameters', function () {
+				var matrix = new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99);
+				var expected = new Matrix3x3();
+
+				for (var i = 0; i < 9; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given an array', function () {
+				var matrix = new Matrix3x3([11, 22, 33, 44, 55, 66, 77, 88, 99]);
+				var expected = new Matrix3x3();
+
+				for (var i = 0; i < 9; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given a matrix', function () {
+				var original = new Matrix3x3();
+				for (var i = 0; i < 9; i++) {
+					original.data[i] = (i + 1) * 11;
+				}
+
+				var matrix = new Matrix3x3(original);
+
+				var expected = new Matrix3x3();
+
+				for (var i = 0; i < 9; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+		});
+
 		//! AT: every one of these it 'statements' should be part of a describe statement for the method under test
 		it('can combine multiple matrices into a single matrix', function () {
 			var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);

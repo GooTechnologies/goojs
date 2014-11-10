@@ -43,6 +43,10 @@ function (
 		this._needsUpdate = true;
 	};
 
+	LightingSystem.prototype.inserted = function (entity) {
+		entity.lightComponent.updateLight(entity.transformComponent.worldTransform);
+	};
+
 	LightingSystem.prototype.process = function (entities) {
 		// do we use this anymore?
 		// we used to have this feature for the early days of create

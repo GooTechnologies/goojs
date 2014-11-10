@@ -36,8 +36,6 @@ define([
 	'test/debugpack/DebugDrawHelper-test',
 	'test/debugpack/Debugger-test',
 	'test/debugpack/EntityCounter-test',
-	'test/debugpack/FrustumViewer-test',
-	'test/debugpack/LightPointer-test',
 	'test/debugpack/systems/MarkerSystem-test',
 	'test/entities/Bus-test',
 	'test/entities/components/CameraComponent-test',
