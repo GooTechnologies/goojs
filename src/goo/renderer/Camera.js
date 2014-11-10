@@ -1,5 +1,4 @@
 define([
-	'goo/util/Handy',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
@@ -12,7 +11,6 @@ define([
 ],
 /** @lends */
 function (
-	Handy,
 	Vector3,
 	Vector4,
 	Matrix4x4,
@@ -45,22 +43,15 @@ function (
 		this._up = new Vector3(0, 1, 0);
 		this._direction = new Vector3(0, 0, -1);
 
-		Handy.defineProperty(this, 'this._depthRangeNear', 0.0, function () {
-			this._depthRangeDirty = true;
-		});
-		Handy.defineProperty(this, 'this._depthRangeFar', 1.0, function () {
-			this._depthRangeDirty = true;
-		});
-		this._depthRangeDirty = true;
+		// These need an onFrustumChange() after being modified
+		this._frustumNear = this.near = 1.0;
+		this._frustumFar = this.far = 2.0;
+		this._frustumLeft = this.left = -0.5;
+		this._frustumRight = this.right = 0.5;
+		this._frustumTop = this.top = 0.5;
+		this._frustumBottom = this.bottom = -0.5;
 
-		// TODO: needs onFurstumChange()
-		this._frustumNear = 1.0;
-		this._frustumFar = 2.0;
-		this._frustumLeft = -0.5;
-		this._frustumRight = 0.5;
-		this._frustumTop = 0.5;
-		this._frustumBottom = -0.5;
-
+		// Used to speed up world-plane normal calculation in onFrameChange. Only calculated when frustum values are changed
 		this._coeffLeft = [];
 		this._coeffRight = [];
 		this._coeffBottom = [];
@@ -94,9 +85,6 @@ function (
 		this.modelViewProjection = new Matrix4x4();
 		this.modelViewProjectionInverse = new Matrix4x4();
 
-		this._depthRangeDirty = true;
-		this._viewPortDirty = true;
-
 		this._planeState = 0;
 		this._clipPlane = new Vector4();
 		this._qCalc = new Vector4();
@@ -110,10 +98,9 @@ function (
 		// Temp decl
 		this.vNearPlaneCenter = new Vector3();
 		this.vFarPlaneCenter = new Vector3();
-		this.direction = new Vector3(); //! AT: unused
-		this.left = new Vector3();
-		this.up = new Vector3();
-		this.planeNormal = new Vector3();
+
+		this.calcLeft = new Vector3();
+		this.calcUp = new Vector3();
 
 		this.changedProperties = true;
 
@@ -272,6 +259,10 @@ function (
 		this.aspect = source.aspect;
 		this.near = source.near;
 		this.far = source.far;
+		this.left = source.left;
+		this.up = source.up;
+		this.top = source.top;
+		this.bottom = source.bottom;
 
 		this._frustumLeft = source._frustumLeft;
 		this._frustumRight = source._frustumRight;
@@ -282,7 +273,6 @@ function (
 
 		this.projectionMode = source.projectionMode;
 
-		this._depthRangeDirty = true;
 		this.onFrustumChange();
 		this.onFrameChange();
 		// this.setFrustumPerspective();
@@ -297,10 +287,10 @@ function (
 	 * @param {Vector3} direction
 	 */
 	Camera.prototype.setFrame = function (location, left, up, direction) {
-		this._left.copy(left);
-		this._up.copy(up);
-		this._direction.copy(direction);
-		this.translation.copy(location);
+		this._left.setv(left);
+		this._up.setv(up);
+		this._direction.setv(direction);
+		this.translation.setv(location);
 
 		this.onFrameChange();
 	};
@@ -314,35 +304,30 @@ function (
 	 * @param {Vector3} worldUpVector A vector indicating the up direction of the world. (often Vector3.UNIT_Y or Vector3.UNIT_Z).
 	 */
 	Camera.prototype.lookAt = function (pos, worldUpVector) {
-		newDirection.copy(pos).sub(this.translation).normalize();
+		newDirection.setv(pos).subv(this.translation).normalize();
 
 		// check to see if we haven't really updated camera -- no need to call
 		// sets.
 		if (newDirection.equals(this._direction)) {
 			return;
 		}
-		this._direction.copy(newDirection);
+		this._direction.setv(newDirection);
 
-		this._up.copy(worldUpVector).normalize();
+		this._up.setv(worldUpVector).normalize();
 		if (this._up.equals(Vector3.ZERO)) {
-			this._up.copy(Vector3.UNIT_Y);
+			this._up.setv(Vector3.UNIT_Y);
 		}
-		this._left.copy(this._up).cross(this._direction).normalize();
+		this._left.setv(this._up).cross(this._direction).normalize();
 		if (this._left.equals(Vector3.ZERO)) {
 			if (this._direction.x !== 0.0) {
-				this._left.set(this._direction.y, -this._direction.x, 0);
+				this._left.set_d(this._direction.y, -this._direction.x, 0);
 			} else {
-				this._left.set(0, this._direction.z, -this._direction.y);
+				this._left.set_d(0, this._direction.z, -this._direction.y);
 			}
 		}
-		this._up.copy(this._direction).cross(this._left).normalize();
+		this._up.setv(this._direction).cross(this._left).normalize();
 
 		this.onFrameChange();
-	};
-
-	Camera.prototype.makeDirty = function () {
-		this._depthRangeDirty = true;
-		this._viewPortDirty = true;
 	};
 
 	/**
@@ -350,9 +335,7 @@ function (
 	 * set this camera to the render context.
 	 */
 	Camera.prototype.update = function () {
-		this._depthRangeDirty = true;
 		this.onFrustumChange();
-		// this.onViewPortChange();
 		this.onFrameChange();
 	};
 
@@ -387,6 +370,8 @@ function (
 
 	/**
 	 * Updates internal frustum coefficient values to reflect the current frustum plane values.
+	 * This is an optimization to move normalization/rotation of plane normals out to be done
+	 * only when the frustum values change.
 	 */
 	Camera.prototype.onFrustumChange = function () {
 		if (this.projectionMode === Camera.Perspective) {
@@ -397,11 +382,11 @@ function (
 			var topSquared = this._frustumTop * this._frustumTop;
 
 			var inverseLength = 1.0 / Math.sqrt(nearSquared + leftSquared);
-			this._coeffLeft[0] = this._frustumNear * inverseLength;
+			this._coeffLeft[0] = -this._frustumNear * inverseLength;
 			this._coeffLeft[1] = -this._frustumLeft * inverseLength;
 
 			inverseLength = 1.0 / Math.sqrt(nearSquared + rightSquared);
-			this._coeffRight[0] = -this._frustumNear * inverseLength;
+			this._coeffRight[0] = this._frustumNear * inverseLength;
 			this._coeffRight[1] = this._frustumRight * inverseLength;
 
 			inverseLength = 1.0 / Math.sqrt(nearSquared + bottomSquared);
@@ -453,68 +438,69 @@ function (
 	 * Updates the values of the world planes associated with this camera.
 	 */
 	Camera.prototype.onFrameChange = function () {
-		var dirDotLocation = this._direction.dot(this.translation);
-
-		var planeNormal = this.planeNormal;
+		var plane;
 
 		// left plane
-		planeNormal.x = this._left.x * this._coeffLeft[0];
-		planeNormal.y = this._left.y * this._coeffLeft[0];
-		planeNormal.z = this._left.z * this._coeffLeft[0];
-		planeNormal.add([this._direction.x * this._coeffLeft[1], this._direction.y * this._coeffLeft[1], this._direction.z * this._coeffLeft[1]]);
-		this._worldPlane[Camera.LEFT_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.LEFT_PLANE].constant = this.translation.dot(planeNormal);
+		plane = this._worldPlane[Camera.LEFT_PLANE];
+		plane.normal.x = this._left.x * this._coeffLeft[0] + this._direction.x * this._coeffLeft[1];
+		plane.normal.y = this._left.y * this._coeffLeft[0] + this._direction.y * this._coeffLeft[1];
+		plane.normal.z = this._left.z * this._coeffLeft[0] + this._direction.z * this._coeffLeft[1];
+		plane.constant = Vector3.dotv(this.translation, plane.normal);
 
 		// right plane
-		planeNormal.x = this._left.x * this._coeffRight[0];
-		planeNormal.y = this._left.y * this._coeffRight[0];
-		planeNormal.z = this._left.z * this._coeffRight[0];
-		planeNormal.add([this._direction.x * this._coeffRight[1], this._direction.y * this._coeffRight[1], this._direction.z * this._coeffRight[1]]);
-		this._worldPlane[Camera.RIGHT_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.RIGHT_PLANE].constant = this.translation.dot(planeNormal);
+		plane = this._worldPlane[Camera.RIGHT_PLANE];
+		plane.normal.x = this._left.x * this._coeffRight[0] + this._direction.x * this._coeffRight[1];
+		plane.normal.y = this._left.y * this._coeffRight[0] + this._direction.y * this._coeffRight[1];
+		plane.normal.z = this._left.z * this._coeffRight[0] + this._direction.z * this._coeffRight[1];
+		plane.constant = Vector3.dotv(this.translation, plane.normal);
 
 		// bottom plane
-		planeNormal.x = this._up.x * this._coeffBottom[0];
-		planeNormal.y = this._up.y * this._coeffBottom[0];
-		planeNormal.z = this._up.z * this._coeffBottom[0];
-		planeNormal.add([this._direction.x * this._coeffBottom[1], this._direction.y * this._coeffBottom[1], this._direction.z * this._coeffBottom[1]]);
-		this._worldPlane[Camera.BOTTOM_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.BOTTOM_PLANE].constant = this.translation.dot(planeNormal);
+		plane = this._worldPlane[Camera.BOTTOM_PLANE];
+		plane.normal.x = this._up.x * this._coeffBottom[0] + this._direction.x * this._coeffBottom[1];
+		plane.normal.y = this._up.y * this._coeffBottom[0] + this._direction.y * this._coeffBottom[1];
+		plane.normal.z = this._up.z * this._coeffBottom[0] + this._direction.z * this._coeffBottom[1];
+		plane.constant = Vector3.dotv(this.translation, plane.normal);
 
 		// top plane
-		planeNormal.x = this._up.x * this._coeffTop[0];
-		planeNormal.y = this._up.y * this._coeffTop[0];
-		planeNormal.z = this._up.z * this._coeffTop[0];
-		planeNormal.add([this._direction.x * this._coeffTop[1], this._direction.y * this._coeffTop[1], this._direction.z * this._coeffTop[1]]);
-		this._worldPlane[Camera.TOP_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.TOP_PLANE].constant = this.translation.dot(planeNormal);
+		plane = this._worldPlane[Camera.TOP_PLANE];
+		plane.normal.x = this._up.x * this._coeffTop[0] + this._direction.x * this._coeffTop[1];
+		plane.normal.y = this._up.y * this._coeffTop[0] + this._direction.y * this._coeffTop[1];
+		plane.normal.z = this._up.z * this._coeffTop[0] + this._direction.z * this._coeffTop[1];
+		plane.constant = Vector3.dotv(this.translation, plane.normal);
 
 		if (this.projectionMode === Camera.Parallel) {
 			if (this._frustumRight > this._frustumLeft) {
-				this._worldPlane[Camera.LEFT_PLANE].constant = this._worldPlane[Camera.LEFT_PLANE].contant + this._frustumLeft;
-				this._worldPlane[Camera.RIGHT_PLANE].constant = this._worldPlane[Camera.RIGHT_PLANE].contant - this._frustumRight;
+				this._worldPlane[Camera.LEFT_PLANE].constant += this._frustumLeft;
+				this._worldPlane[Camera.RIGHT_PLANE].constant -= this._frustumRight;
 			} else {
-				this._worldPlane[Camera.LEFT_PLANE].constant = this._worldPlane[Camera.LEFT_PLANE].contant - this._frustumLeft;
-				this._worldPlane[Camera.RIGHT_PLANE].constant = this._worldPlane[Camera.RIGHT_PLANE].contant + this._frustumRight;
+				this._worldPlane[Camera.LEFT_PLANE].constant -= this._frustumLeft;
+				this._worldPlane[Camera.RIGHT_PLANE].constant += this._frustumRight;
 			}
 
 			if (this._frustumBottom > this._frustumTop) {
-				this._worldPlane[Camera.TOP_PLANE].constant = this._worldPlane[Camera.TOP_PLANE].contant + this._frustumTop;
-				this._worldPlane[Camera.BOTTOM_PLANE].constant = this._worldPlane[Camera.BOTTOM_PLANE].contant - this._frustumBottom;
+				this._worldPlane[Camera.TOP_PLANE].constant += this._frustumTop;
+				this._worldPlane[Camera.BOTTOM_PLANE].constant -= this._frustumBottom;
 			} else {
-				this._worldPlane[Camera.TOP_PLANE].constant = this._worldPlane[Camera.TOP_PLANE].contant - this._frustumTop;
-				this._worldPlane[Camera.BOTTOM_PLANE].constant = this._worldPlane[Camera.BOTTOM_PLANE].contant + this._frustumBottom;
+				this._worldPlane[Camera.TOP_PLANE].constant -= this._frustumTop;
+				this._worldPlane[Camera.BOTTOM_PLANE].constant += this._frustumBottom;
 			}
 		}
 
+		var dirDotLocation = this._direction.dot(this.translation);
+
 		// far plane
-		planeNormal.copy(this._direction).invert();
-		this._worldPlane[Camera.FAR_PLANE].normal.copy(planeNormal);
-		this._worldPlane[Camera.FAR_PLANE].constant = -(dirDotLocation + this._frustumFar);
+		plane = this._worldPlane[Camera.FAR_PLANE];
+		plane.normal.x = -this._direction.x;
+		plane.normal.y = -this._direction.y;
+		plane.normal.z = -this._direction.z;
+		plane.constant = -(dirDotLocation + this._frustumFar);
 
 		// near plane
-		this._worldPlane[Camera.NEAR_PLANE].normal.copy(this._direction);
-		this._worldPlane[Camera.NEAR_PLANE].constant = dirDotLocation + this._frustumNear;
+		plane = this._worldPlane[Camera.NEAR_PLANE];
+		plane.normal.x = this._direction.x;
+		plane.normal.y = this._direction.y;
+		plane.normal.z = this._direction.z;
+		plane.constant = dirDotLocation + this._frustumNear;
 
 		this._updateMVMatrix = true;
 		this._updateMVPMatrix = true;
@@ -591,7 +577,7 @@ function (
 			store = new Ray();
 		}
 		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, store.origin);
-		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).sub(store.origin).normalize();
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).subv(store.origin).normalize();
 		return store;
 	};
 
@@ -649,7 +635,7 @@ function (
 		}
 		*/
 
-		position.set(x, y, zDepth * 2 - 1, 1);
+		position.setd(x, y, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPost(position);
 		position.mul(1.0 / position.w);
 		store.x = position.x;
@@ -720,7 +706,7 @@ function (
 		}
 		this.checkModelViewProjection();
 		var position = new Vector4();
-		position.set(worldPosition.x, worldPosition.y, worldPosition.z, 1);
+		position.setd(worldPosition.x, worldPosition.y, worldPosition.z, 1);
 		this.modelViewProjection.applyPost(position);
 		position.mul(1.0 / position.w);
 		store.x = position.x;
@@ -899,14 +885,16 @@ function (
 
 		var vNearPlaneCenter = this.vNearPlaneCenter;
 		var vFarPlaneCenter = this.vFarPlaneCenter;
-		var direction = this.direction;
-		var left = this.left;
-		var up = this.up;
+
+		var direction = this.calcLeft;
 
 		direction.setv(this._direction).mul(fNear);
 		vNearPlaneCenter.setv(this.translation).addv(direction);
 		direction.setv(this._direction).mul(fFar);
 		vFarPlaneCenter.setv(this.translation).addv(direction);
+
+		var left = this.calcLeft;
+		var up = this.calcUp;
 
 		left.setv(this._left).mul(fNearPlaneWidth);
 		up.setv(this._up).mul(fNearPlaneHeight);

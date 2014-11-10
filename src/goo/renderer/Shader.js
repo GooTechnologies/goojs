@@ -248,21 +248,10 @@ function (
 		if (this.matchedUniforms) {
 			this.textureIndex = 0;
 
-			// var uniformCallMapping = this.uniformCallMapping;
-			// var materialuniforms = shaderInfo.material.uniforms;
-
 			for (var i = 0, l = this.matchedUniforms.length; i < l; i++) {
 				this._bindUniform(this.matchedUniforms[i], shaderInfo);
 			}
 		}
-
-		// if (this.uniforms) {
-		// 	this.textureIndex = 0;
-		// 	var names = this.uniformKeys;
-		// 	for (var i = 0, l = names.length; i < l; i++) {
-		// 		this._bindUniform(names[i], shaderInfo);
-		// 	}
-		// }
 	};
 
 	Shader.prototype._bindUniform = function (name, shaderInfo) {
@@ -284,24 +273,28 @@ function (
 			} else {
 				var slot = this.textureSlotsNaming[name];
 				if (slot !== undefined) {
-					var maps = shaderInfo.material.getTexture(slot.mapping);
-					if (maps instanceof Array) {
-						var arr = [];
-						slot.index = [];
-						for (var i = 0; i < maps.length; i++) {
-							slot.index.push(this.textureIndex);
-							arr.push(this.textureIndex++);
-						}
-						mapping.call(arr);
-					} else {
-						slot.index = this.textureIndex;
-						mapping.call(this.textureIndex++);
-					}
+					this._bindTextureUniforms(shaderInfo, mapping, slot);
 				}
 			}
 		} else {
 			var value = type === 'function' ? defValue(shaderInfo) : defValue;
 			mapping.call(value);
+		}
+	};
+
+	Shader.prototype._bindTextureUniforms = function (shaderInfo, mapping, slot) {
+		var maps = shaderInfo.material.getTexture(slot.mapping);
+		if (maps instanceof Array) {
+			var arr = [];
+			slot.index = [];
+			for (var i = 0; i < maps.length; i++) {
+				slot.index.push(this.textureIndex);
+				arr.push(this.textureIndex++);
+			}
+			mapping.call(arr);
+		} else {
+			slot.index = this.textureIndex;
+			mapping.call(this.textureIndex++);
 		}
 	};
 
