@@ -223,8 +223,16 @@ function (
 				}
 			}
 
-			// invalidate shadows
-			// this renderer.invalidateCache ?
+			// invalidate shadow-related webgl resources
+			var lightingSystem = this.world.getSystem('LightingSystem');
+			if (lightingSystem) {
+				lightingSystem.invalidateHandles(this.renderer);
+			}
+
+			if (this.renderer.shadowHandler) {
+				this.renderer.shadowHandler.invalidateHandles(this.renderer);
+			}
+
 			this.renderer.invalidatePicking();
 
 			this.stopGameLoop();

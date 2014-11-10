@@ -229,5 +229,12 @@ function (
 		}
 	};
 
+	ShadowHandler.prototype.invalidateHandles = function (renderer) {
+		this.fullscreenPass.invalidateHandles(renderer);
+		renderer.invalidateMaterial(this.depthMaterial);
+		renderer.invalidateShader(this.downsample);
+		renderer.invalidateShader(this.blurfilter);
+	};
+
 	return ShadowHandler;
 });

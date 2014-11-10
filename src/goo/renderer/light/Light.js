@@ -70,6 +70,7 @@ function (
 			darkness: 1.0,
 			shadowType: 'VSM'
 		};
+		//! AT: please extract this in its own class
 
 		this.changedProperties = false;
 		this.changedColor =  false;
@@ -89,6 +90,22 @@ function (
 			}
 		}
 		delete shadowSettings.shadowData;
+	};
+
+	// should be overridable by light type (some may have more/less allocated resources)
+	Light.prototype.invalidateHandles = function (renderer) {
+		var shadowSettings = this.shadowSettings;
+		if (shadowSettings.shadowData) {
+			if (shadowSettings.shadowData.shadowTarget) {
+				renderer.invalidateRenderTarget(shadowSettings.shadowData.shadowTarget);
+			}
+			if (shadowSettings.shadowData.shadowTargetDown) {
+				renderer.invalidateRenderTarget(shadowSettings.shadowData.shadowTargetDown);
+			}
+			if (shadowSettings.shadowData.shadowBlurred) {
+				renderer.invalidateRenderTarget(shadowSettings.shadowData.shadowBlurred);
+			}
+		}
 	};
 
 	return Light;

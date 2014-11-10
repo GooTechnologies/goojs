@@ -44,6 +44,8 @@ function (
 	};
 
 	LightingSystem.prototype.process = function (entities) {
+		// do we use this anymore?
+		// we used to have this feature for the early days of create
 		if (!this.overrideLights) {
 			this.lights.length = 0;
 
@@ -64,6 +66,12 @@ function (
 
 			SystemBus.emit('goo.setLights', this.lights);
 		}
+	};
+
+	LightingSystem.prototype.invalidateHandles = function (renderer) {
+		this._activeEntities.forEach(function (entity) {
+			entity.lightComponent.light.invalidateHandles(renderer);
+		});
 	};
 
 	return LightingSystem;
