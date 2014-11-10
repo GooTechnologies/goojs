@@ -30,18 +30,25 @@ require([
 		'1: boing',
 		'2: squigly',
 		'3: pause boing',
-		'4: pause squigly'
+		'4: pause squigly',
+		'5: remove cube',
+		'6: add cube'
 	].join('\n'));
 
     V.button('1', key1);
     V.button('2', key2);
     V.button('3', key3);
     V.button('4', key4);
+    V.button('5', key5);
+    V.button('6', key6);
 
 	var resourcePath = '../../../resources/';
 
 	var goo = V.initGoo();
 	var world = goo.world;
+
+	var soundSystem = world.getSystem('SoundSystem');
+	console.log(soundSystem);
 
 	// create panning cube
 	var meshData = new Box();
@@ -119,6 +126,17 @@ require([
         sphereEntity.soundComponent.sounds[0].pause();
         console.log('squigly pause');
     }
+
+    function key5() {
+    	cubeEntity.removeFromWorld();
+        console.log('Remove cube');
+    }
+
+    function key6() {
+    	cubeEntity.addToWorld();
+    	cubeEntity.soundComponent.sounds[0].play();
+        console.log('Add cube');
+    }
     // ---
 
 	function setupKeys() {
@@ -128,6 +146,8 @@ require([
 				case 50: key2(); break;
 				case 51: key3(); break;
 				case 52: key4(); break;
+				case 53: key5(); break;
+				case 54: key6(); break;
 				default:
 					console.log('1: boing\n2: squigly\n3: pause boing\n4: pause squigly');
 			}
