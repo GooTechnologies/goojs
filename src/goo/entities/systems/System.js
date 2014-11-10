@@ -64,6 +64,19 @@ function () {
 		}
 	};
 
+	/**
+	 * Called when the system is removed from the world.
+	 * By default it will call the deleted method on all entities it is keeping track of.
+	 */
+	System.prototype.cleanup = function () {
+		if (this.deleted) {
+			for (var i = 0; i < this._activeEntities.length; i++) {
+				var entity = this._activeEntities[i];
+				this.deleted(entity);
+			}
+		}
+	};
+
 	function getTypeAttributeName(type) {
 		return type.charAt(0).toLowerCase() + type.substr(1);
 	}
