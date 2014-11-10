@@ -16,6 +16,12 @@ define([
 		if (meshData.indexData) {
 			this.invalidateBuffer(meshData.indexData);
 		}
+		if (meshData.wireframeData) {
+			this.invalidateMeshData(meshData.wireframeData);
+		}
+		if (meshData.flatMeshData) {
+			this.invalidateMeshData(meshData.flatMeshData);
+		}
 	};
 
 	Renderer.prototype.invalidateTexture = function (texture) {

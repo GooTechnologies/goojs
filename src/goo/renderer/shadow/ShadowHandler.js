@@ -94,6 +94,8 @@ function (
 		shadowSettings.shadowRecord.shadowType = shadowSettings.shadowType;
 	};
 
+	//! AT: unused;
+	// what is this doing here? looks like a generic shallow object equality test that should stay elsewhere
 	ShadowHandler.prototype._testStatesEqual = function (state1, state2) {
 		var keys1 = Object.keys(state1);
 		var keys2 = Object.keys(state2);
