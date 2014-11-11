@@ -80,6 +80,10 @@ function (
 	}
 
 	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {
+		if (!this.waterEntity) {
+			return;
+		}
+
 		entities = entities.filter(function(entity) {
 			return entity.meshRendererComponent.isReflectable;
 		});
@@ -426,7 +430,7 @@ function (
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
 			waterHeight: 0,
-			waterDensity: 0.1
+			waterDensity: 0.05
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -456,7 +460,7 @@ function (
 
 			'void main(void)',
 			'{',
-				'float linearDepth = clamp((waterHeight - worldPosition.y) * waterDensity, 0.0, 0.999);',
+				'float linearDepth = clamp(pow((waterHeight - worldPosition.y) * waterDensity, 0.25), 0.0, 0.999);',
 				'gl_FragColor = packDepth(linearDepth);',
 			'}'
 		].join('\n')
