@@ -69,6 +69,7 @@ function (
 		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 		this.waterMaterial = waterMaterial;
 
+		this.skybox = null;
 		this.followCam = true;
 		this.updateWaterPlaneFromEntity = settings.updateWaterPlaneFromEntity !== undefined ? this.updateWaterPlaneFromEntity : true;
 
