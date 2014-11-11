@@ -927,33 +927,33 @@ function (
 
 	/**
 	 * Clip using an oblique frustum different from the the view frustum
-	 * @param {Vector4} clipPlane Clipping plane.
+	 * @param {Vector4} clipPlane Clipping plane. (nx, ny, nz, constant)
 	 */
-	Camera.prototype.setToObliqueMatrix = function (clipPlaneOrig) {
-		var clipPlane = this._clipPlane.setv(clipPlaneOrig);
+	Camera.prototype.setToObliqueMatrix = function (clipPlane) {
+		var transformedClipPlane = this._clipPlane.setv(clipPlane);
 
 		// bring the clip-plane into camera space which is needed for the calculation
-		clipPlane.w = 0;
-		this.getViewMatrix().applyPost(clipPlane);
-		clipPlane.w = this.translation.y * clipPlaneOrig.y - clipPlaneOrig.w;
+		transformedClipPlane.w = 0;
+		this.getViewMatrix().applyPost(transformedClipPlane);
+		transformedClipPlane.w = this.translation.y * clipPlane.y - clipPlane.w;
 
 		// calculate oblique camera projection matrix
 		this._updatePMatrix = true;
 		var projection = this.getProjectionMatrix();
 
 		this._qCalc.setd(
-			(MathUtils.sign(clipPlane.x) + projection[8]) / projection[0],
-			(MathUtils.sign(clipPlane.y) + projection[9]) / projection[5],
+			(MathUtils.sign(transformedClipPlane.x) + projection[8]) / projection[0],
+			(MathUtils.sign(transformedClipPlane.y) + projection[9]) / projection[5],
 			-1,
 			(1.0 + projection[10]) / projection[14]
 		);
 
-		clipPlane.mul(2.0 / Vector4.dot(clipPlane, this._qCalc));
+		transformedClipPlane.mul(2.0 / Vector4.dot(transformedClipPlane, this._qCalc));
 
-		projection[2] = clipPlane.x;
-		projection[6] = clipPlane.y;
-		projection[10] = clipPlane.z + 1.0;
-		projection[14] = clipPlane.w;
+		projection[2] = transformedClipPlane.x;
+		projection[6] = transformedClipPlane.y;
+		projection[10] = transformedClipPlane.z + 1.0;
+		projection[14] = transformedClipPlane.w;
 
 		this._updateMVPMatrix = true;
 		this._updateInverseMVPMatrix = true;

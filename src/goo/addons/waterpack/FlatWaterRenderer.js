@@ -30,8 +30,12 @@ function (
 	/**
 	 * @class Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Water/water-vtest.html Working example}
-	 * @param {ArrayBuffer} data Data to wrap
-	 * @property {ArrayBuffer} data Data to wrap
+	 * @param {Object} [settings] Water settings passed in a JSON object
+	 * @param {boolean} [settings.useRefraction=true] Render refraction in water
+	 * @param {boolean} [settings.divider=2] Resolution divider for reflection/refraction
+	 * @param {boolean} [settings.normalsUrl] Url to texture to use as normalmap
+	 * @param {boolean} [settings.normalsTexture] Texture instance to use as normalmap
+	 * @param {boolean} [settings.updateWaterPlaneFromEntity=true] Use water entity y for water plane position
 	 */
 	function FlatWaterRenderer(settings) {
 		settings = settings || {};
@@ -55,9 +59,13 @@ function (
 		var waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
 		waterMaterial.shader.defines.REFRACTION = this.useRefraction;
 		waterMaterial.cullState.enabled = false;
-		var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
 
-		waterMaterial.setTexture('NORMAL_MAP', new TextureCreator().loadTexture2D(normalsTextureUrl));
+		var texture = settings.normalsTexture;
+		if (!texture) {
+			var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
+			texture = new TextureCreator().loadTexture2D(normalsTextureUrl);
+		}
+		waterMaterial.setTexture('NORMAL_MAP', texture);
 		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 		this.waterMaterial = waterMaterial;
 
@@ -123,27 +131,27 @@ function (
 			var camLocation = this.camLocation;
 			var camReflectPos = this.camReflectPos;
 
-			camLocation.set(camera.translation);
-			var planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectPos.set(camLocation.sub(calcVect));
+			camLocation.setv(camera.translation);
+			var planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
+			calcVect.setv(waterPlane.normal).muld(planeDistance, planeDistance, planeDistance);
+			camReflectPos.setv(camLocation.subv(calcVect));
 
-			camLocation.set(camera.translation).add(camera._direction);
-			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectDir.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
+			camLocation.setv(camera.translation).addv(camera._direction);
+			planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
+			calcVect.setv(waterPlane.normal).muld(planeDistance, planeDistance, planeDistance);
+			camReflectDir.setv(camLocation.subv(calcVect)).subv(camReflectPos).normalize();
 
-			camLocation.set(camera.translation).add(camera._up);
-			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectUp.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
+			camLocation.setv(camera.translation).addv(camera._up);
+			planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
+			calcVect.setv(waterPlane.normal).muld(planeDistance, planeDistance, planeDistance);
+			camReflectUp.setv(camLocation.subv(calcVect)).subv(camReflectPos).normalize();
 
-			camReflectLeft.set(camReflectUp).cross(camReflectDir).normalize();
+			camReflectLeft.setv(camReflectUp).cross(camReflectDir).normalize();
 
-			this.waterCamera.translation.set(camReflectPos);
-			this.waterCamera._direction.set(camReflectDir);
-			this.waterCamera._up.set(camReflectUp);
-			this.waterCamera._left.set(camReflectLeft);
+			this.waterCamera.translation.setv(camReflectPos);
+			this.waterCamera._direction.setv(camReflectDir);
+			this.waterCamera._up.setv(camReflectUp);
+			this.waterCamera._left.setv(camReflectLeft);
 			this.waterCamera.normalize();
 			this.waterCamera.update();
 
