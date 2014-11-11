@@ -264,22 +264,4 @@ module.exports = function (grunt) {
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('e2e',		['shell:e2e']);
 	grunt.registerTask('test',		['unittest', 'e2e']); // this gruntfile is a mess
-
-	grunt.registerTask('init-git', function () {
-		fs.writeFileSync('.git/hooks/pre-commit', '#!/bin/sh\nexec node tools/pre-commit.js\n');
-		fs.chmodSync('.git/hooks/pre-commit', '777');
-	});
-
-	// Generates reference screenshots
-	grunt.registerTask('refs', function () {
-		var done = this.async();
-		require('child_process').exec('node test/e2etesting/generate-reference-screenshots', function (error, stdout, stderr) {
-		    console.log('stdout: ' + stdout);
-		    console.log('stderr: ' + stderr);
-		    if (error !== null) {
-				console.log('exec error: ' + error);
-		    }
-		    done();
-		});
-	});
 };
