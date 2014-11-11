@@ -161,5 +161,5 @@ module.exports = function (grunt) {
 	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack']);
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('e2e',		['shell:e2e']);
-	grunt.registerTask('test',		['unittest', 'e2e']); // this gruntfile is a mess
+	grunt.registerTask('test',		['unittest', 'e2e']);
 };
