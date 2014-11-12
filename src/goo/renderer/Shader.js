@@ -97,8 +97,6 @@ function (
 		this.textureSlots = [];
 		this.textureSlotsNaming = {};
 
-		//this.defaultCallbacks = {};
-		//setupDefaultCallbacks(this.defaultCallbacks);
 		this.currentCallbacks = {};
 
 		this.overridePrecision = shaderDefinition.precision || null;
@@ -107,6 +105,8 @@ function (
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
+		this.defineKey = shaderDefinition.defineKey || 'fuck';
+		this.frameStart = true;
 		this.attributeKeys = null;
 		this.matchedUniforms = [];
 
@@ -138,10 +138,9 @@ function (
 			attributes: this.attributes,
 			uniforms: this.uniforms,
 			vshader: this.origVertexSource,
-			fshader: this.origFragmentSource
+			fshader: this.origFragmentSource,
+			defineKey: this.defineKey
 		}));
-
-		// return new Shader(this.name, this.shaderDefinition);
 	};
 
 	Shader.prototype.cloneOriginal = function () {
@@ -168,11 +167,11 @@ function (
 	 * Match groups:
 	 *
 	 *   1: type (attribute|uniform)
-	 *   2: format (float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)
+	 *   2: format (float|int|bool|vec2|vec3|vec4|mat2|mat3|mat4|sampler2D|sampler3D|samplerCube)
 	 *   3: variable name
 	 *   4: if exists, the variable is an array
 	 */
-	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
+	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat2|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
 
 	Shader.prototype.compileProgram = function(renderer) {
 		if (this.shaderProgram === null) {
@@ -183,7 +182,7 @@ function (
 		}
 	};
 
-	Shader.prototype.activateProgram = function(context, record) {
+	Shader.prototype.activateProgram = function(record, context) {
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
@@ -194,7 +193,6 @@ function (
 	Shader.prototype.bindAttributeKey = function(record, renderer, attributeMap, key) {
 		var attribute = attributeMap[this.attributes[key]];
 		if (!attribute) {
-			// TODO: log or what?
 			return;
 		}
 
@@ -210,32 +208,29 @@ function (
 
 	Shader.prototype.bindAttributes = function(record, renderer, attributeMap) {
 		if (this.attributes) {
-			// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
-			// record.attributes = this.attributes;
-			// record.meshData = shaderInfo.meshData;
 			for (var i = 0, l = this.attributeKeys.length; i < l; i++) {
 				this.bindAttributeKey(record, renderer, attributeMap, this.attributeKeys[i]);
 			}
 		}
 	};
 
-	Shader.prototype.disableAttributes = function(record, renderer) {
+	Shader.prototype.disableAttributes = function(record, context) {
 		for (var i = 0, l = record.enabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
 			if (!newEnabled && enabled) {
-				renderer.context.disableVertexAttribArray(i);
+				context.disableVertexAttribArray(i);
 				record.enabledAttributes[i] = false;
 			}
 		}
 	};
 
-	Shader.prototype.enableAttributes = function(record, renderer) {
+	Shader.prototype.enableAttributes = function(record, context) {
 		for (var i = 0, l = record.newlyEnabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
 			if (newEnabled && !enabled) {
-				renderer.context.enableVertexAttribArray(i);
+				context.enableVertexAttribArray(i);
 				record.enabledAttributes[i] = true;
 			}
 		}
@@ -258,15 +253,15 @@ function (
 
 		this.compileProgram(renderer);
 		// Set the ShaderProgram active
-		this.activateProgram(context, record);
+		this.activateProgram(record, context);
 
 		record.newlyEnabledAttributes.length = 0;
 
 		// Bind attributes
 		this.bindAttributes(record, renderer, shaderInfo.meshData.attributeMap);
 
-		this.disableAttributes(record, renderer);
-		this.enableAttributes(record, renderer);
+		this.disableAttributes(record, context);
+		this.enableAttributes(record, context);
 		this.matchUniforms(shaderInfo);
 	};
 
@@ -289,7 +284,7 @@ function (
 		}
 	};
 
-	Shader.prototype.arrayType = function(mapping, slot) {
+	Shader.prototype.arrayType = function(mapping, slot, maps) {
 		var arr = [];
 		slot.index = [];
 		for (var i = 0; i < maps.length; i++) {
@@ -299,7 +294,7 @@ function (
 		mapping.call(arr);
 	};
 
-	Shader.prototype.stringType = function(shaderInfo, name, mapping, defValue) {
+	Shader.prototype.stringType = function(shaderInfo, name, mapping) {
 		var callback = this.currentCallbacks[name];
 		if (callback) {
 			callback(mapping, shaderInfo);
@@ -315,7 +310,7 @@ function (
 		var defValue = this.defineValue(shaderInfo, name);
 		var type = typeof defValue;
 		if (type === 'string') {
-			this.stringType(shaderInfo, name, mapping, defValue)
+			this.stringType(shaderInfo, name, mapping, defValue);
 		} else {
 			var value = type === 'function' ? defValue(shaderInfo) : defValue;
 			mapping.call(value);
@@ -327,7 +322,40 @@ function (
 		if (mapping === undefined) {
 			return;
 		}
-		this.callMapping(shaderInfo, name, mapping)
+		this.callMapping(shaderInfo, name, mapping);
+	};
+
+	Shader.prototype.startFrame = function () {
+		this.frameStart = true;
+	};
+
+	Shader.prototype.endFrame = function () {
+		this.frameStart = false;
+	};
+
+	Shader.prototype.updateProcessors = function (renderInfo) {
+		if (this.processors) {
+			for (var j = 0; j < this.processors.length; j++) {
+				this.processors[j](this, renderInfo);
+			}
+		}
+	};
+
+	Shader.prototype.getDefineKey = function () {
+		if (this.frameStart) {
+			var shaderKeyArray = this.shaderKeyArray = this.shaderKeyArray || [];
+			var defineArray = Object.keys(this.defines);
+			var len = defineArray.length;
+			shaderKeyArray.length = len;
+			for (var j = 0; j < len; j++) {
+				var key = defineArray[j];
+				shaderKeyArray[j] = key + '_' + this.defines[key];
+			}
+			shaderKeyArray.sort();
+			this.defineKey = shaderKeyArray.join('_') + '_' + this.name;
+		}
+
+		return this.defineKey;
 	};
 
 	Shader.prototype.rebuild = function () {

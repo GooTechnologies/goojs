@@ -762,11 +762,7 @@ function (
 		var shader = material.shader;
 		if (shader.processors || shader.defines) {
 			// Call processors
-			if (shader.processors) {
-				for (var j = 0; j < shader.processors.length; j++) {
-					shader.processors[j](shader, renderInfo);
-				}
-			}
+			shader.updateProcessors(renderInfo);
 
 			// check defines. if no hit in cache -> add to cache. if hit in cache,
 			// replace with cache version and copy over uniforms.
@@ -993,7 +989,7 @@ function (
 		var keys = Object.keys(cache);
 		for (var i = 0; i < keys.length; i++) {
 			var shader = cache[keys[i]];
-			shader.frameStart = true;
+			shader.startFrame();
 		}
 
 		var renderInfo = {
@@ -1170,25 +1166,14 @@ function (
 			var shader = material.shader;
 			if (shader.processors || shader.defines) {
 				// Call processors
-				if (shader.processors) {
-					for (var j = 0; j < shader.processors.length; j++) {
-						shader.processors[j](shader, renderInfo);
-					}
-				}
+				shader.updateProcessors(renderInfo);
 
 				// check defines. if no hit in cache -> add to cache. if hit in cache,
 				// replace with cache version and copy over uniforms.
 				if (shader.defines) {
-					var defineArray = Object.keys(shader.defines);
-					var len = defineArray.length;
-					var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
-					shaderKeyArray.length = 0;
-					for (var j = 0; j < len; j++) {
-						var key = defineArray[j];
-						shaderKeyArray.push(key + '_' + shader.defines[key]);
-					}
-					shaderKeyArray.sort();
-					var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
+					var defineKey = shader.getDefineKey();
+
+					shader.endFrame();
 
 					var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
 

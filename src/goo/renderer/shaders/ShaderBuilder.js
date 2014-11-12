@@ -48,7 +48,6 @@ function(
 					shader.defines[attribute] = true;
 				}
 			}
-			shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || defaultOffsetRepeat;
 		},
 
 		txMaps: function(shader, textureMaps) {
@@ -209,7 +208,7 @@ function(
 		pointLight: function (light, uniforms, pointIndex) {
 			var uniform = uniforms.pointLights = uniforms.pointLights || [];
 
-			var ind = pointIndex * 8;
+			var ind = pointIndex * 8; // 2 vec4 = 8 floats
 
 			var translation = light.translation.data;
 			uniform[ind + 0] = translation[0];
@@ -228,7 +227,7 @@ function(
 		directionalLight: function (light, uniforms, directionalIndex) {
 			var uniform = uniforms.directionalLights = uniforms.directionalLights || [];
 
-			var ind = directionalIndex * 8;
+			var ind = directionalIndex * 8; // 2 vec4 = 8 floats
 
 			var direction = light.direction.data;
 			uniform[ind + 0] = direction[0];
@@ -247,7 +246,7 @@ function(
 		spotLight: function (light, uniforms, spotIndex) {
 			var uniform = uniforms.spotLights = uniforms.spotLights || [];
 
-			var ind = spotIndex * 16;
+			var ind = spotIndex * 16; // 4 vec4 = 16 floats
 			uniform[ind + 0] = light.translation.data[0];
 			uniform[ind + 1] = light.translation.data[1];
 			uniform[ind + 2] = light.translation.data[2];
@@ -294,15 +293,15 @@ function(
 
 					uniform[ind + 4] = shadowData.lightCamera.cameraScale;
 					uniform[ind + 5] = light.shadowSettings.darkness;
-					uniform[ind + 6] = 0;
-					uniform[ind + 7] = 0;
 					if (light.shadowSettings.shadowType === 'PCF') {
 						uniform[ind + 6] = light.shadowSettings.resolution[0];
 						uniform[ind + 7] = light.shadowSettings.resolution[1];
+					} else {
+						uniform[ind + 6] = 0;
+						uniform[ind + 7] = 0;
 					}
 
 					shadowIndex++;
-
 
 					lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
 				}
@@ -342,7 +341,6 @@ function(
 
 				return;
 			}
-			shader.frameStart = false;
 
 			var uniforms = shader.uniforms;
 			uniforms.materialAmbient = uniforms.materialAmbient || 'AMBIENT';
