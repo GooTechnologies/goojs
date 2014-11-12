@@ -105,7 +105,7 @@ function (
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
-		this.defineKey = shaderDefinition.defineKey || 'fuck';
+		this.defineKey = shaderDefinition.defineKey;
 		this.frameStart = true;
 		this.attributeKeys = null;
 		this.matchedUniforms = [];
