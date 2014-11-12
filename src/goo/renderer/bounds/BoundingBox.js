@@ -69,6 +69,22 @@ function (
 		this.center.setv(max).addv(min).mul(0.5);
 	};
 
+	/**
+	 * Method to test whether a point is inside the bounding box or not
+	 * @param {Vector3} point
+	 * @returns {boolean}
+	 */
+	BoundingBox.prototype.containsPoint = function (point) {
+		var center = this.center;
+		var x = point.x - center.x;
+		var y = point.y - center.y;
+		var z = point.z - center.z;
+
+		return x >= -this.xExtent && x <= this.xExtent &&
+			y >= -this.yExtent && y <= this.yExtent &&
+			z >= -this.zExtent && z <= this.zExtent;
+	};
+
 	var tmpArray = [];
 
 	BoundingBox.prototype.computeFromPrimitives = function (data, section, indices, start, end) {
