@@ -1,3 +1,29 @@
+v0.11.7 --- 2014-10-30
+======================
+
+Additions:
+ + 'TransparencyBlending' for materials; this allows correct blending with the background
+
+
+v0.11.6 --- 2014-10-28
+======================
+
+** Identical to v0.11.5                     **
+** caused by a fluke in the release process **
+
+
+v0.11.5 --- 2014-10-28
+======================
+
+Additions:
+ + .move method on the TransformComponent and Entity
+
+Fixes:
+ * VSM shadows work on Android
+ * opacity, reflection issues
+ * refraction of animated meshes
+
+
 v0.11.4 --- 2014-10-14
 ======================
 

@@ -108,7 +108,6 @@ function (
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
 		this.attributeKeys = null;
-		this.uniformKeys = null;
 		this.matchedUniforms = [];
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
@@ -188,7 +187,7 @@ function (
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
-			return true
+			return true;
 		}
 	};
 
@@ -264,7 +263,6 @@ function (
 		record.newlyEnabledAttributes.length = 0;
 
 		// Bind attributes
-		//TODO: good?
 		this.bindAttributes(record, renderer, shaderInfo.meshData.attributeMap);
 
 		this.disableAttributes(record, renderer);
@@ -407,11 +405,6 @@ function (
 		var context = renderer.context;
 		this.renderer = renderer;
 
-		// console.log('---------------------- vertex: '+ this.name +' --------------------------');
-		// console.log(this.vertexSource);
-		// console.log('---------------------- fragment: '+ this.name +' --------------------------');
-		// console.log(this.fragmentSource);
-
 		this.vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
 		this.fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
 
@@ -527,8 +520,6 @@ function (
 
 			this.uniformKeys = Object.keys(this.uniforms);
 		}
-
-		//console.log('Shader [' + this.name + '][' + this._id + '] compiled');
 	};
 
 	var errorRegExp = /\b\d+:(\d+):\s(.+)\b/g;
