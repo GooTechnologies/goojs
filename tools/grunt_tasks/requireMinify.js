@@ -75,7 +75,7 @@ module.exports = function (grunt) {
 			return moduleName.slice(1, moduleName.length - 3) + '_';
 		});
 
-		var command = "node node_modules/uglify-js2/bin/uglifyjs2 out/minified/goo.js -m -r '" +
+		var command = "node node_modules/uglify-js/bin/uglifyjs out/minified/goo.js -m -r '" +
 			moduleList.join(',') +
 			"' --screw-ie8 -c -o out/goo.js";
 
