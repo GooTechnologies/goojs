@@ -14,7 +14,7 @@ MeshData) {
 	 * @param {number} [length=1] Total length of box.
 	 */
 
-	function SimpleBox(width, height, length) {
+	function SimpleBox_(width, height, length) {
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;
 		this.zExtent = length !== undefined ? length * 0.5 : 0.5;
@@ -24,6 +24,8 @@ MeshData) {
 
 		this.rebuild();
 	}
+
+	var SimpleBox = SimpleBox_;
 
 	SimpleBox.prototype = Object.create(MeshData.prototype);
 
