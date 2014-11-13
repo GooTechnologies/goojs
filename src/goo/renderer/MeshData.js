@@ -27,7 +27,7 @@ function (
 	 * @param {number} vertexCount Number of vertices in buffer
 	 * @param {number} indexCount Number of indices in buffer
 	 */
-	function MeshData(attributeMap, vertexCount, indexCount) {
+	function MeshData_(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
 		this.vertexCount = vertexCount !== undefined ? vertexCount : 0;
@@ -46,6 +46,8 @@ function (
 
 		this.rebuildData(this.vertexCount, this.indexCount);
 	}
+
+	var MeshData = MeshData_;
 
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
