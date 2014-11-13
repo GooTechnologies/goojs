@@ -15,8 +15,9 @@ define([
 		 * @class Utilities for entity creation etc
 		 * @description Only used to define the class. Should never be instantiated.
 		 */
-		function EntityUtils() {
-		}
+		function EntityUtils_() {}
+
+		var EntityUtils = EntityUtils_;
 
 		/*
 		* @description Returns a clone of the given SkeletonPose. Also stores the cloned poses into settings, in order not to

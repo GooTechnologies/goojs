@@ -8,7 +8,7 @@ define([],
 	 * @class
 	 * @constructor
 	 */
-	function Selection() {
+	function Selection_() {
 		this.stack = [];
 
 		//! AT: may rather use toArray
@@ -33,6 +33,8 @@ define([],
 
 		this.top = this.stack.length === 0 ? null : this.stack[0];
 	}
+
+	var Selection = Selection_;
 
 	/**
 	 * Empty selection

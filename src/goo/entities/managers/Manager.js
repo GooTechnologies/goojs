@@ -7,9 +7,9 @@ define(
 	/**
 	 * @class Base class for managers.
 	 */
-	function Manager() {
+	function Manager_() {}
 
-	}
+	var Manager = Manager_;
 
 	Manager.prototype.applyAPI = function(worldBy) {
 		if (!this.installedAPI) {
