@@ -7,7 +7,7 @@ define(
 	 * @class Base class/module for all components.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 */
-	function Component() {
+	function Component_() {
 		/** If the component should be processed for containing entities.
 		 * @type {boolean}
 		 * @default
@@ -16,6 +16,8 @@ define(
 
 		this.installedAPI = {};
 	}
+
+	var Component = Component_;
 
 	/**
 	 * Injects public methods of this component into the host entity.

@@ -18,7 +18,7 @@ function () {
 	 * @property {String} type System type
 	 * @property {String[]} interests Array of component types this system is interested in
 	 */
-	function System(type, interests) {
+	function System_(type, interests) {
 		this.type = type;
 		this.interests = interests;
 
@@ -31,6 +31,8 @@ function () {
 		 */
 		this.priority = 0;
 	}
+
+	var System = System_;
 
 	/**
 	 * Called when an entity is added to the world and systems need to be informed

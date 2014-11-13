@@ -14,12 +14,14 @@ function (
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
 	 * @extends Component
 	 */
-	function TextComponent(text) {
+	function TextComponent_(text) {
 		this.type = 'TextComponent';
 
 		this.text = text || '';
 		this.dirty = true;
 	}
+
+	var TextComponent = TextComponent_;
 
 	TextComponent.prototype = Object.create(Component.prototype);
 	TextComponent.prototype.constructor = TextComponent;

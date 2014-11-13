@@ -17,7 +17,7 @@ define([
 	 * @class Processes all entities with script components, running the scripts where applicable
 	 * @extends System
 	 */
-	function ScriptSystem(world) {
+	function ScriptSystem_(world) {
 		System.call(this, 'ScriptSystem', ['ScriptComponent']);
 
 		//! AT: why this?
@@ -47,6 +47,8 @@ define([
 
 		this.priority = 500;
 	}
+
+	var ScriptSystem = ScriptSystem_;
 
 	ScriptSystem.prototype = Object.create(System.prototype);
 	ScriptSystem.prototype.constructor = ScriptSystem;
