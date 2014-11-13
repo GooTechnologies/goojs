@@ -11,11 +11,16 @@ function (
 	'use strict';
 
 	/**
-	 * @class
+	 * @class Holds configuration data for renderable objects.
 	 */
+
 	function RenderInfo() {
 		this.reset();
 	}
+
+	/**
+	 * Reset for switching renderable
+	 */
 
 	RenderInfo.prototype.reset = function () {
 		this.lights = null;
@@ -30,6 +35,10 @@ function (
 		this.transform = null;
 		this.currentPose = null;
 	};
+
+	/**
+	 * Populates data from renderable
+	 */
 
 	RenderInfo.prototype.fill = function (renderable) {
 		if (renderable instanceof Entity) {
