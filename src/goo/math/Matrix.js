@@ -16,7 +16,7 @@ function (
 	 * @param {number} cols Number of columns.
 	 */
 
-	function Matrix(rows, cols) {
+	function Matrix_(rows, cols) {
 		this.rows = rows || 0;
 		this.cols = cols || 0;
 		/** Column-major storage for the matrix components.
@@ -24,6 +24,8 @@ function (
 		 */
 		this.data = new Float32Array(this.rows * this.cols);
 	}
+
+	var Matrix = Matrix_;
 
 	/* ====================================================================== */
 

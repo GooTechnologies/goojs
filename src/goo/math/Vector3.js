@@ -27,7 +27,7 @@ function (
 	 * // Passing in no arguments
 	 * var v4 = new Vector3(); // v4 == (0, 0, 0)
 	 */
-	function Vector3() {
+	function Vector3_() {
 		Vector.call(this, 3);
 
 		if (arguments.length !== 0) {
@@ -36,6 +36,8 @@ function (
 			this.setd(0, 0, 0);
 		}
 	}
+
+	var Vector3 = Vector3_;
 
 	Vector3.prototype = Object.create(Vector.prototype);
 	Vector.setupAliases(Vector3.prototype,[['x', 'u', 'r'], ['y', 'v', 'g'], ['z', 'w', 'b']]);
