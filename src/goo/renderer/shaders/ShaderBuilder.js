@@ -22,8 +22,9 @@ function(
 	/**
 	 * @class Builds shaders
 	 */
-	function ShaderBuilder() {
-	}
+	function ShaderBuilder_() {}
+
+	var ShaderBuilder = ShaderBuilder_;
 
 	var defaultLight = new DirectionalLight();
 	defaultLight.translation.setd(10, 10, 10);

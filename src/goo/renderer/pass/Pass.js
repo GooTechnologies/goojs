@@ -6,8 +6,9 @@ function () {
 	/**
 	 * @class
 	 */
-	function Pass() {
-	}
+	function Pass_() {}
+
+	var Pass = Pass_;
 
 	Pass.prototype.destroy = function (/* renderer */) {
 	};

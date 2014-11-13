@@ -20,10 +20,12 @@ function (
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
-	function BoundingSphere(center, radius) {
+	function BoundingSphere_(center, radius) {
 		BoundingVolume.call(this, center);
 		this.radius = radius !== undefined ? radius : 1;
 	}
+
+	var BoundingSphere = BoundingSphere_;
 
 	var tmpVec = new Vector3();
 

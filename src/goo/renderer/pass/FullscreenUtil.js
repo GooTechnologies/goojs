@@ -14,8 +14,9 @@ function (
 	/**
 	 * @class Utility class with a default setup parallel camera and fullscreen quad for fullscreen pass usage
 	 */
-	function FullscreenUtil() {
-	}
+	function FullscreenUtil_() {}
+
+	var FullscreenUtil = FullscreenUtil_;
 
 	var camera = new Camera();
 	camera.projectionMode = Camera.Parallel;
