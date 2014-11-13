@@ -385,11 +385,7 @@ function (
 			this.checkResize(Renderer.mainCamera);
 		}.bind(this));
 
-		// OÅ For fast shader chache lookup
-		this._shaderKeys = [];
 		this._definesIndices = [];
-
-
 
 		var handleResize = function() {
 			this.adjustWidth = this.domElement.offsetWidth;
