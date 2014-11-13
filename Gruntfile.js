@@ -158,7 +158,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('default',	['minify']);
 	grunt.registerTask('docs',		['shell:jsdoc']);
 	grunt.registerTask('jsdoc',		['shell:jsdoc']);
-	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack']);
+	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'minify-main', 'wrap', 'build-pack']);
 	grunt.registerTask('unittest',	['karma:unit']);
 	grunt.registerTask('e2e',		['shell:e2e']);
 	grunt.registerTask('test',		['unittest', 'e2e']);
