@@ -43,12 +43,6 @@ function (
 	 * @returns {Transform} target
 	 */
 	Transform.combine = function (lhs, rhs, target) {
-		if (lhs.scale.data[0] !== lhs.scale.data[1] || lhs.scale.data[0] !== lhs.scale.data[2]) {
-			throw {
-				name: 'NonUniformScaleException',
-				message: 'Non-uniform scaling in left hand transform, cannot resolve combined transform'
-			};
-		}
 		target = target || new Transform();
 
 		// Translation

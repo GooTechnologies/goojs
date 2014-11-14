@@ -404,7 +404,6 @@ function (
 	 * Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
-	 * @throws {SingularMatrix} If the matrix is singular and cannot be inverted.
 	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -421,7 +420,6 @@ function (
 
 		if (Math.abs(det) < MathUtils.EPSILON) {
 			return target;
-			// throw { name: "Singular Matrix", message: "The matrix is singular and cannot be inverted." };
 		}
 
 		det = 1.0 / det;

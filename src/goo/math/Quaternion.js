@@ -110,7 +110,6 @@ function (
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
 	Quaternion.div = function (lhs, rhs, target) {
@@ -125,6 +124,8 @@ function (
 		target.data[2] = (clean &= rhs.data[2] < 0.0 || rhs.data[2] > 0.0) ? lhs.data[2] / rhs.data[2] : 0.0;
 		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
 
+		//! AT: this would have never functioned &= coerces to int
+		// this function is deprecated and will be removed - component wise division of quats is our invention anyways
 		if (clean === false) {
 			console.warn("[Quaternion.div] Attempted to divide by zero!");
 		}
@@ -202,7 +203,6 @@ function (
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
 
@@ -220,6 +220,7 @@ function (
 		target.data[2] = lhs.data[2] * rhs;
 		target.data[3] = lhs.data[3] * rhs;
 
+		//! AT: clean will get coerced to int by &= which is never === false
 		if (clean === false) {
 			console.warn("[Quaternion.scalarDiv] Attempted to divide by zero!");
 		}

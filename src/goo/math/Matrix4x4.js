@@ -439,7 +439,6 @@ function (
 	 * @description Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} [target] Target matrix.
-	 * @throws {SingularMatrix} If the matrix is singular and cannot be inverted.
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -454,9 +453,8 @@ function (
 
 		var det = source.determinant();
 
-		if (!det) {
+		if (!det) { //! AT: why not Math.abs(det) < MathUtils.EPSILON ? (I don't dare change it)
 			return target;
-			// throw { name: "Singular Matrix", message: "The matrix is singular and cannot be inverted." };
 		}
 
 		var s = source.data;
