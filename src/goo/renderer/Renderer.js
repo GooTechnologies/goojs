@@ -386,22 +386,6 @@ function (
 		}.bind(this));
 
 		this._definesIndices = [];
-
-		var handleResize = function() {
-			this.adjustWidth = this.domElement.offsetWidth;
-			this.adjustHeight = this.domElement.offsetHeight;
-		}.bind(this);
-
-		if (document.querySelector) {
-			window.addEventListener('resize', handleResize);
-			handleResize();
-		} else {
-			this.adjustWidth = window.innerWidth;
-			this.adjustHeight = window.innerHeight;
-		}
-
-		this.prevAdjustWidth = -1;
-		this.prevAdjustHeight = -1;
 	}
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
