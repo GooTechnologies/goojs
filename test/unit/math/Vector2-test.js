@@ -97,7 +97,7 @@ define([
 				expect(Vector2.sub([1, 2], b)).toEqual(new Vector2(0, 0));
 			});
 
-			it('performs partial subtraction when adding vectors of different size', function () {
+			it('performs partial subtraction when applied to vectors of different size', function () {
 				expect(Vector2.sub([1, 2], [7])).toBeCloseToVector(new Vector2(-6, NaN));
 			});
 		});
@@ -119,7 +119,7 @@ define([
 				expect(Vector2.mul([1, 2], b)).toEqual(new Vector2(1, 4));
 			});
 
-			it('performs partial multiplication when adding vectors of different size', function () {
+			it('performs partial multiplication when applied to vectors of different size', function () {
 				expect(Vector2.mul([1, 2], [7])).toBeCloseToVector(new Vector2(7, NaN));
 			});
 		});
@@ -141,7 +141,7 @@ define([
 				expect(Vector2.div([1, 2], b)).toEqual(new Vector2(1, 1));
 			});
 
-			it('performs partial division when adding vectors of different size', function () {
+			it('performs partial division when applied to vectors of different size', function () {
 				expect(Vector2.div([1, 2], [7])).toBeCloseToVector(new Vector2(1 / 7, NaN));
 			});
 		});

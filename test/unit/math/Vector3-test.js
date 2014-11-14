@@ -1,8 +1,18 @@
-define(["goo/math/Vector3"], function(Vector3) {
-	"use strict";
+define([
+	'goo/math/Vector3',
+	'test/CustomMatchers'
+], function (
+	Vector3,
+	CustomMatchers
+) {
+	'use strict';
 
-	describe("Vector3", function() {
-		it("can be accessed through indices", function() {
+	describe('Vector3', function () {
+		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
+		});
+		
+		it('can be accessed through indices', function () {
 			var a = new Vector3(1, 2, 3);
 
 			expect(a[0]).toEqual(1);
@@ -10,7 +20,7 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(a[2]).toEqual(3);
 		});
 
-		it("can be modified through indices", function() {
+		it('can be modified through indices', function () {
 			var a = new Vector3();
 
 			a[0] = 1;
@@ -20,7 +30,7 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(a).toEqual(new Vector3(1, 2, 3));
 		});
 
-		it("can be accessed through aliases", function() {
+		it('can be accessed through aliases', function () {
 			var a = new Vector3(1, 2, 3);
 
 			expect(a.x).toEqual(1);
@@ -34,7 +44,7 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(a.b).toEqual(3);
 		});
 
-		it("can be modified through aliases", function() {
+		it('can be modified through aliases', function () {
 			var a = new Vector3();
 
 			a.x = 1;
@@ -56,42 +66,48 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(a).toEqual(new Vector3(3, 4, 5));
 		});
 
-		it("can perform addition", function() {
-			var a = new Vector3(1, 2, 3);
-			var b = new Vector3(1, 2, 3);
+		describe('add', function () {
+			it('can perform addition', function () {
+				var a = new Vector3(1, 2, 3);
+				var b = new Vector3(1, 2, 3);
 
-			a.add(a);
+				a.add(a);
 
-			expect(a).toEqual(new Vector3(2, 4, 6));
-			expect(Vector3.add(b, b)).toEqual(new Vector3(2, 4, 6));
+				expect(a).toEqual(new Vector3(2, 4, 6));
+				expect(Vector3.add(b, b)).toEqual(new Vector3(2, 4, 6));
 
-			expect(Vector3.add(b, 1)).toEqual(new Vector3(2, 3, 4));
-			expect(Vector3.add(1, b)).toEqual(new Vector3(2, 3, 4));
+				expect(Vector3.add(b, 1)).toEqual(new Vector3(2, 3, 4));
+				expect(Vector3.add(1, b)).toEqual(new Vector3(2, 3, 4));
 
-			expect(Vector3.add(b, [1, 2, 3])).toEqual(new Vector3(2, 4, 6));
-			expect(Vector3.add([1, 2, 3], b)).toEqual(new Vector3(2, 4, 6));
+				expect(Vector3.add(b, [1, 2, 3])).toEqual(new Vector3(2, 4, 6));
+				expect(Vector3.add([1, 2, 3], b)).toEqual(new Vector3(2, 4, 6));
+			});
 
-			expect(function() { Vector3.add(b, [1]); }).toThrow();
-			expect(function() { Vector3.add([1], b); }).toThrow();
+			it('performs partial addition when applied to vectors of different size', function () {
+				expect(Vector3.add([1, 2], [7])).toBeCloseToVector(new Vector3(1 + 7, NaN, NaN));
+			});
 		});
 
-		it("can perform subtraction", function() {
-			var a = new Vector3(1, 2, 3);
-			var b = new Vector3(1, 2, 3);
+		describe('sub', function () {
+			it('can perform subtraction', function () {
+				var a = new Vector3(1, 2, 3);
+				var b = new Vector3(1, 2, 3);
 
-			a.sub(a);
+				a.sub(a);
 
-			expect(a).toEqual(new Vector3(0, 0, 0));
-			expect(Vector3.sub(b, b)).toEqual(new Vector3(0, 0, 0));
+				expect(a).toEqual(new Vector3(0, 0, 0));
+				expect(Vector3.sub(b, b)).toEqual(new Vector3(0, 0, 0));
 
-			expect(Vector3.sub(b, 1)).toEqual(new Vector3(0, 1, 2));
-			expect(Vector3.sub(1, b)).toEqual(new Vector3(0, -1, -2));
+				expect(Vector3.sub(b, 1)).toEqual(new Vector3(0, 1, 2));
+				expect(Vector3.sub(1, b)).toEqual(new Vector3(0, -1, -2));
 
-			expect(Vector3.sub(b, [1, 2, 3])).toEqual(new Vector3(0, 0, 0));
-			expect(Vector3.sub([1, 2, 3], b)).toEqual(new Vector3(0, 0, 0));
+				expect(Vector3.sub(b, [1, 2, 3])).toEqual(new Vector3(0, 0, 0));
+				expect(Vector3.sub([1, 2, 3], b)).toEqual(new Vector3(0, 0, 0));
+			});
 
-			expect(function() { Vector3.sub(b, [1]); }).toThrow();
-			expect(function() { Vector3.sub([1], b); }).toThrow();
+			it('performs partial subtraction when applied to vectors of different size', function () {
+				expect(Vector3.sub([1, 2], [7])).toBeCloseToVector(new Vector3(1 - 7, NaN, NaN));
+			});
 		});
 
 		it('can be negated', function () {
@@ -102,50 +118,62 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(vector).toEqual(new Vector3(-123, -345, 567));
 		});
 
-		it("can perform multiplication", function() {
-			var a = new Vector3(1, 2, 3);
-			var b = new Vector3(1, 2, 3);
+		describe('mul', function () {
+			it('can perform multiplication', function () {
+				var a = new Vector3(1, 2, 3);
+				var b = new Vector3(1, 2, 3);
 
-			a.mul(a);
+				a.mul(a);
 
-			expect(a).toEqual(new Vector3(1, 4, 9));
-			expect(Vector3.mul(b, b)).toEqual(new Vector3(1, 4, 9));
+				expect(a).toEqual(new Vector3(1, 4, 9));
+				expect(Vector3.mul(b, b)).toEqual(new Vector3(1, 4, 9));
 
-			expect(Vector3.mul(b, 1)).toEqual(new Vector3(1, 2, 3));
-			expect(Vector3.mul(1, b)).toEqual(new Vector3(1, 2, 3));
+				expect(Vector3.mul(b, 1)).toEqual(new Vector3(1, 2, 3));
+				expect(Vector3.mul(1, b)).toEqual(new Vector3(1, 2, 3));
 
-			expect(Vector3.mul(b, [1, 2, 3])).toEqual(new Vector3(1, 4, 9));
-			expect(Vector3.mul([1, 2, 3], b)).toEqual(new Vector3(1, 4, 9));
+				expect(Vector3.mul(b, [1, 2, 3])).toEqual(new Vector3(1, 4, 9));
+				expect(Vector3.mul([1, 2, 3], b)).toEqual(new Vector3(1, 4, 9));
+			});
 
-			expect(function() { Vector3.mul(b, [1]); }).toThrow();
-			expect(function() { Vector3.mul([1], b); }).toThrow();
+			it('performs partial subtraction when applied to vectors of different size', function () {
+				expect(Vector3.mul([1, 2], [7])).toBeCloseToVector(new Vector3(1 * 7, NaN, NaN));
+			});
 		});
 
-		it("can perform division", function() {
-			var a = new Vector3(1, 2, 3);
-			var b = new Vector3(1, 2, 3);
+		describe('div', function () {
+			it('can perform division', function () {
+				var a = new Vector3(1, 2, 3);
+				var b = new Vector3(1, 2, 3);
 
-			a.div(a);
+				a.div(a);
 
-			expect(a).toEqual(new Vector3(1, 1, 1));
-			expect(Vector3.div(b, b)).toEqual(new Vector3(1, 1, 1));
+				expect(a).toEqual(new Vector3(1, 1, 1));
+				expect(Vector3.div(b, b)).toEqual(new Vector3(1, 1, 1));
 
-			expect(Vector3.div(b, 1)).toEqual(new Vector3(1, 2, 3));
-			expect(Vector3.div(1, b)).toEqual(new Vector3(1, 1/2, 1/3));
+				expect(Vector3.div(b, 1)).toEqual(new Vector3(1, 2, 3));
+				expect(Vector3.div(1, b)).toEqual(new Vector3(1, 1/2, 1/3));
 
-			expect(Vector3.div(b, [1, 2, 3])).toEqual(new Vector3(1, 1, 1));
-			expect(Vector3.div([1, 2, 3], b)).toEqual(new Vector3(1, 1, 1));
+				expect(Vector3.div(b, [1, 2, 3])).toEqual(new Vector3(1, 1, 1));
+				expect(Vector3.div([1, 2, 3], b)).toEqual(new Vector3(1, 1, 1));
+			});
 
-			expect(function() { Vector3.div(b, [1]); }).toThrow();
-			expect(function() { Vector3.div([1], b); }).toThrow();
+			it('performs partial division when applied to vectors of different size', function () {
+				expect(Vector3.div([1, 2], [7])).toBeCloseToVector(new Vector3(1 / 7, NaN, NaN));
+			});
 		});
 
-		it("can calculate dot products", function() {
-			var a = new Vector3(1, 2);
-			var b = new Vector3(1, 2);
+		describe('dot', function () {
+			it('can calculate dot products', function () {
+				var a = new Vector3(1, 2, 0);
+				var b = new Vector3(1, 2, 0);
 
-			expect(a.dot(b)).toEqual(5);
-			expect(Vector3.dot(a, b)).toEqual(5);
+				expect(a.dot(b)).toEqual(5);
+				expect(Vector3.dot(a, b)).toEqual(5);
+			});
+
+			it('returns garbage if supplied with garbage', function () {
+				expect(Vector3.dot([1, 2], [5])).toEqual(NaN);
+			});
 		});
 
 		describe('cross', function () {
@@ -165,7 +193,7 @@ define(["goo/math/Vector3"], function(Vector3) {
 			});
 		});
 
-		it("can calculate the distance", function() {
+		it('can calculate the distance', function () {
 			var a = new Vector3(3, 2, 1);
 			var b = new Vector3(1, 2, 3);
 
@@ -174,7 +202,7 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(dist).toEqual(8);
 		});
 
-		it("can be normalized", function() {
+		it('can be normalized', function () {
 			var a = new Vector3();
 
 			a.set(0, 0, 0).normalize();
@@ -193,7 +221,7 @@ define(["goo/math/Vector3"], function(Vector3) {
 			expect(a.z).toBeCloseTo(56/Math.sqrt(12*12+34*34+56*56));
 		});
 
-		it("can be cloned", function(){
+		it('can be cloned', function () {
 			var a = new Vector3(1, 2, 3);
 			var b = a.clone();
 			expect(a).toEqual(b);

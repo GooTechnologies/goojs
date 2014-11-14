@@ -126,13 +126,12 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * Adds 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned. Equivalent of "return (target = lhs + rhs);".
+	 * Adds 'lhs' and 'rhs' and stores the result in 'target'. If target is not supplied, a new Vector3 object is created and returned. Equivalent of "return (target = lhs + rhs);".
 	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @param {Vector3} [target] Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
+	 * @param {Vector3} [target] Vector3 to store the result. If one is not supplied, a new Vector3 object is created.
 	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Adds two Vector3 with no target, returns a new Vector3 object as the result
@@ -151,11 +150,11 @@ function (
 	 * Vector3.add(5, v1, v1); // v1 == (6, 7, 8)
 	 */
 	Vector3.add = function (lhs, rhs, target) {
-		if (typeof (lhs) === "number") {
+		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs];
 		}
 
-		if (typeof (rhs) === "number") {
+		if (typeof rhs === 'number') {
 			rhs = [rhs, rhs, rhs];
 		}
 
@@ -165,13 +164,6 @@ function (
 
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
-
-		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
 
 		target.data[0] = ldata[0] + rdata[0];
 		target.data[1] = ldata[1] + rdata[1];
@@ -241,7 +233,6 @@ function (
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Subtracts Vector3 'v2' from Vector3 'v1', returns a new Vector3 object as the result
@@ -260,11 +251,11 @@ function (
 	 * Vector3.sub(v1, 5, v1); // v1 == (-4, -3, -2)
 	 */
 	Vector3.sub = function (lhs, rhs, target) {
-		if (typeof (lhs) === "number") {
+		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs];
 		}
 
-		if (typeof (rhs) === "number") {
+		if (typeof rhs === 'number') {
 			rhs = [rhs, rhs, rhs];
 		}
 
@@ -274,13 +265,6 @@ function (
 
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
-
-		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
 
 		target.data[0] = ldata[0] - rdata[0];
 		target.data[1] = ldata[1] - rdata[1];
@@ -362,7 +346,6 @@ function (
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Multiplies two Vector3 with no target, returns a new Vector3 object as the result
@@ -385,30 +368,21 @@ function (
 			target = new Vector3();
 		}
 
-		if (typeof (lhs) === 'number') {
-
+		if (typeof lhs === 'number') {
 			var rdata = rhs.data || rhs;
+
 			target.data[0] = lhs * rdata[0];
 			target.data[1] = lhs * rdata[1];
 			target.data[2] = lhs * rdata[2];
-
-		} else if (typeof (rhs) === 'number') {
-
+		} else if (typeof rhs === 'number') {
 			var ldata = lhs.data || lhs;
+
 			target.data[0] = ldata[0] * rhs;
 			target.data[1] = ldata[1] * rhs;
 			target.data[2] = ldata[2] * rhs;
-
 		} else {
 			var ldata = lhs.data || lhs;
 			var rdata = rhs.data || rhs;
-
-			if (ldata.length !== 3 || rdata.length !== 3) {
-				throw {
-					name: 'Illegal Arguments',
-					message: 'The arguments are of incompatible sizes.'
-				};
-			}
 
 			target.data[0] = ldata[0] * rdata[0];
 			target.data[1] = ldata[1] * rdata[1];
@@ -450,7 +424,6 @@ function (
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Divides two Vector3: v1 by v2, returns a new Vector3 object as the result
@@ -473,31 +446,22 @@ function (
 			target = new Vector3();
 		}
 
-		if (typeof (lhs) === 'number') {
-
+		if (typeof lhs === 'number') {
 			var rdata = rhs.data || rhs;
+
 			target.data[0] = lhs / rdata[0];
 			target.data[1] = lhs / rdata[1];
 			target.data[2] = lhs / rdata[2];
-
-		} else if (typeof (rhs) === 'number') {
-
+		} else if (typeof rhs === 'number') {
 			var irhs = 1 / rhs;
 			var ldata = lhs.data || lhs;
+
 			target.data[0] = ldata[0] * irhs;
 			target.data[1] = ldata[1] * irhs;
 			target.data[2] = ldata[2] * irhs;
-
 		} else {
 			var ldata = lhs.data || lhs;
 			var rdata = rhs.data || rhs;
-
-			if (ldata.length !== 3 || rdata.length !== 3) {
-				throw {
-					name: 'Illegal Arguments',
-					message: 'The arguments are of incompatible sizes.'
-				};
-			}
 
 			target.data[0] = ldata[0] / rdata[0];
 			target.data[1] = ldata[1] / rdata[1];
@@ -538,7 +502,6 @@ function (
 	 *            every component.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {number} Dot product number.
 	 * @example
 	 * // Passing in two Vector3
@@ -555,44 +518,29 @@ function (
 	 * var r1 = Vector3.dot(v1, 1.0); // r1 == 1.0
 	 */
 	Vector3.dot = function (lhs, rhs) {
-		if (typeof (lhs) === "number") {
+		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs];
 		}
 
-		if (typeof (rhs) === "number") {
+		if (typeof rhs === 'number') {
 			rhs = [rhs, rhs, rhs];
 		}
 
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
-		var sum = 0.0;
-
-		sum += ldata[0] * rdata[0];
-		sum += ldata[1] * rdata[1];
-		sum += ldata[2] * rdata[2];
-
-		return sum;
+		return ldata[0] * rdata[0] +
+			ldata[1] * rdata[1] +
+			ldata[2] * rdata[2];
 	};
 
 	Vector3.dotv = function (lhs, rhs) {
 		var ldata = lhs.data;
 		var rdata = rhs.data;
 
-		var sum = 0.0;
-
-		sum += ldata[0] * rdata[0];
-		sum += ldata[1] * rdata[1];
-		sum += ldata[2] * rdata[2];
-
-		return sum;
+		return ldata[0] * rdata[0] +
+			ldata[1] * rdata[1] +
+			ldata[2] * rdata[2];
 	};
 
 	/**
@@ -625,7 +573,6 @@ function (
 	 * @param {Vector3|number[]} lhs Vector3 or array of numbers on the left-hand side.
 	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Passing in two Vector3, returns a new Vector3 object as the result
@@ -645,16 +592,10 @@ function (
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		if (ldata.length !== 3 || rdata.length !== 3) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
 		var x = rdata[2] * ldata[1] - rdata[1] * ldata[2];
 		var y = rdata[0] * ldata[2] - rdata[2] * ldata[0];
 		var z = rdata[1] * ldata[0] - rdata[0] * ldata[1];
+
 		target.data[0] = x;
 		target.data[1] = y;
 		target.data[2] = z;
