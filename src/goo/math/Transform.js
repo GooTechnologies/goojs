@@ -217,10 +217,7 @@ function (
 		if (!up) {
 			up = Vector3.UNIT_Y;
 		}
-		// REVIEW: this is actually using the wrong direction, it should be reversed.
-		//   tmpVec.setv(position).subv(this.translation).normalize();
-		// However we might need the old behavior for lights and cameras.
-		tmpVec.setv(this.translation).subv(position).normalize();
+		tmpVec.setv(position).subv(this.translation).normalize();
 		this.rotation.lookAt(tmpVec, up);
 	};
 

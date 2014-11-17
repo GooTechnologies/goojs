@@ -165,7 +165,7 @@ define([
 		});
 
 		it('can be set to look in a specific direction', function () {
-			var a = new Matrix3x3().lookAt(new Vector3(0.0, 0.0, 1.0), new Vector3(0.0, 1.0, 0.0));
+			var a = new Matrix3x3().lookAt(new Vector3(0.0, 0.0, -1.0), new Vector3(0.0, 1.0, 0.0));
 			var b = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
 			expect(a).toBeCloseToMatrix(b);
