@@ -894,7 +894,7 @@ function (
 	Matrix3x3.prototype.lookAt = function (direction, up) {
 		var x = Matrix3x3._tempX, y = Matrix3x3._tempY, z = Matrix3x3._tempZ;
 
-		z.setv(direction).normalize();
+		z.setv(direction).normalize().muld(-1, -1, -1); // .scale(-1) when that is implemented
 
 		x.setv(up).cross(z).normalize();
 
