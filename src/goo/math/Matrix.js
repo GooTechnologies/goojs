@@ -79,18 +79,10 @@ function (
 		}
 
 		if (rhs instanceof Matrix) {
-			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
 			for (var i = 0; i < lhs.data.length; i++) {
 				target.data[i] = lhs.data[i] + rhs.data[i];
 			}
 		} else {
-			if (target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
 			for (var i = 0; i < lhs.data.length; i++) {
 				target.data[i] = lhs.data[i] + rhs;
 			}
@@ -128,18 +120,10 @@ function (
 		}
 
 		if (rhs instanceof Matrix) {
-			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
 			for (var i = 0; i < lhs.data.length; i++) {
 				target.data[i] = lhs.data[i] - rhs.data[i];
 			}
 		} else {
-			if (target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
 			for (var i = 0; i < lhs.data.length; i++) {
 				target.data[i] = lhs.data[i] - rhs;
 			}
@@ -177,18 +161,10 @@ function (
 		}
 
 		if (rhs instanceof Matrix) {
-			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
 			for (var i = 0; i < lhs.data.length; i++) {
 				target.data[i] = lhs.data[i] * rhs.data[i];
 			}
 		} else {
-			if (target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
 			for (var i = 0; i < lhs.data.length; i++) {
 				target.data[i] = lhs.data[i] * rhs;
 			}
@@ -226,18 +202,10 @@ function (
 		}
 
 		if (rhs instanceof Matrix) {
-			if (rhs.rows !== rows || rhs.cols !== cols || target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
 			for (var i = 0; i < lhs.data.length; i++) {
 				target.data[i] = lhs.data[i] / rhs.data[i];
 			}
 		} else {
-			if (target.rows !== rows || target.cols !== cols) {
-				throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-			}
-
 			rhs = 1.0 / rhs;
 
 			for (var i = 0; i < lhs.data.length; i++) {
@@ -275,10 +243,6 @@ function (
 
 		if (!target) {
 			target = new Matrix(rows, cols);
-		}
-
-		if (lhs.cols !== size || rhs.rows !== size || target.rows !== rows || target.cols !== cols) {
-			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 		}
 
 		if (target === lhs || target === rhs) {
@@ -329,10 +293,6 @@ function (
 			target = new Matrix(rows, cols);
 		}
 
-		if (target.rows !== rows || target.cols !== cols) {
-			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
-		}
-
 		if (target === source) {
 			return Matrix.copy(Matrix.transpose(source), target);
 		}
@@ -372,10 +332,6 @@ function (
 
 		if (!target) {
 			target = new Matrix(rows, cols);
-		}
-
-		if (target.rows !== rows || target.cols !== cols) {
-			throw { name: "Illegal Arguments", message: "The arguments are of incompatible sizes." };
 		}
 
 		target.data.set(source.data);
@@ -505,12 +461,10 @@ function (
 	 * Sets the components of the matrix.
 	 * @param {Matrix|number[]|number} arguments Component values.
 	 * @return {Matrix} Self for chaining.
-	 * 
-	 * 
 	 */
 
 	Matrix.prototype.set = function () {
-		if (arguments.length === 1 && typeof(arguments[0]) === "object") {
+		if (arguments.length === 1 && typeof(arguments[0]) === 'object') {
 			if (arguments[0] instanceof Matrix) {
 				this.copy(arguments[0]);
 			} else {
@@ -535,19 +489,19 @@ function (
 	 */
 
 	Matrix.prototype.toString = function () {
-		var string = "";
+		var string = '';
 
 		for (var c = 0; c < this.cols; c++) {
 			var offset = c * this.rows;
 
-			string += "[";
+			string += '[';
 
 			for (var r = 0; r < this.rows; r++) {
 				string += this.data[offset + r];
-				string += r !== this.rows - 1 ? ", " : "";
+				string += r !== this.rows - 1 ? ', ' : '';
 			}
 
-			string += c !== this.cols - 1 ? "], " : "]";
+			string += c !== this.cols - 1 ? '], ' : ']';
 		}
 
 		return string;

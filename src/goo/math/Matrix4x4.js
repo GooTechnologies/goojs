@@ -25,7 +25,7 @@ function (
 		if (arguments.length === 0) {
 			this.setIdentity();
 		} else {
-			this.set(arguments);
+			Matrix.prototype.set.apply(this, arguments);
 		}
 	}
 
@@ -439,7 +439,6 @@ function (
 	 * @description Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} [target] Target matrix.
-	 * @throws {SingularMatrix} If the matrix is singular and cannot be inverted.
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -454,9 +453,8 @@ function (
 
 		var det = source.determinant();
 
-		if (!det) {
+		if (!det) { //! AT: why not Math.abs(det) < MathUtils.EPSILON ? (I don't dare change it)
 			return target;
-			// throw { name: "Singular Matrix", message: "The matrix is singular and cannot be inverted." };
 		}
 
 		var s = source.data;
@@ -625,7 +623,7 @@ function (
 			d[5] * d[2] * d[11] -
 			d[1] * d[10] * d[7];
 
-		return    d[0] * val1 -
+		return d[0] * val1 -
 			d[4] * val2 +
 			d[8] * val3 -
 			d[12] * val4;

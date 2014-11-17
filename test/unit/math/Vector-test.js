@@ -1,72 +1,96 @@
-define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
-	"use strict";
+define([
+	'goo/math/Matrix',
+	'goo/math/Vector',
+	'test/CustomMatchers'
+], function (
+	Matrix,
+	Vector,
+	CustomMatchers
+) {
+	'use strict';
 
-	describe("Vector", function() {
-		it("can perform addition", function() {
-			var a = new Vector(2).set(1, 2);
-			var b = new Vector(2).set(1, 2);
-
-			a.add(a);
-
-			expect(a).toEqual(new Vector(2).set(2, 4));
-			expect(Vector.add(b, b)).toEqual(new Vector(2).set(2, 4));
-
-			expect(Vector.add(b, [1, 2])).toEqual(new Vector(2).set(2, 4));
-			expect(Vector.add([1, 2], b)).toEqual(new Vector(2).set(2, 4));
-
-			expect(function() { Vector.add(b, [1]); }).toThrow();
-			expect(function() { Vector.add([1], b); }).toThrow();
+	describe('Vector', function () {
+		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
 		});
 
-		it("can perform subtraction", function() {
-			var a = new Vector(2).set(1, 2);
-			var b = new Vector(2).set(1, 2);
+		describe('add', function () {
+			it('can perform addition', function () {
+				var a = new Vector(2).set(1, 2);
+				var b = new Vector(2).set(1, 2);
 
-			a.sub(a);
+				a.add(a);
 
-			expect(a).toEqual(new Vector(2).set(0, 0));
-			expect(Vector.sub(b, b)).toEqual(new Vector(2).set(0, 0));
+				expect(a).toEqual(new Vector(2).set(2, 4));
+				expect(Vector.add(b, b)).toEqual(new Vector(2).set(2, 4));
 
-			expect(Vector.sub(b, [1, 2])).toEqual(new Vector(2).set(0, 0));
-			expect(Vector.sub([1, 2], b)).toEqual(new Vector(2).set(0, 0));
+				expect(Vector.add(b, [1, 2])).toEqual(new Vector(2).set(2, 4));
+				expect(Vector.add([1, 2], b)).toEqual(new Vector(2).set(2, 4));
+			});
 
-			expect(function() { Vector.sub(b, [1]); }).toThrow();
-			expect(function() { Vector.sub([1], b); }).toThrow();
+			it('performs partial addition when applied to vectors of different size', function () {
+				expect(Vector.add([1, 2], [7])).toBeCloseToVector(new Vector(2).set(1 + 7, NaN));
+			});
 		});
 
-		it("can perform multiplication", function() {
-			var a = new Vector(2).set(1, 2);
-			var b = new Vector(2).set(1, 2);
+		describe('sub', function () {
+			it('can perform subtraction', function () {
+				var a = new Vector(2).set(1, 2);
+				var b = new Vector(2).set(1, 2);
 
-			a.mul(a);
+				a.sub(a);
 
-			expect(a).toEqual(new Vector(2).set(1, 4));
-			expect(Vector.mul(b, b)).toEqual(new Vector(2).set(1, 4));
+				expect(a).toEqual(new Vector(2).set(0, 0));
+				expect(Vector.sub(b, b)).toEqual(new Vector(2).set(0, 0));
 
-			expect(Vector.mul(b, [1, 2])).toEqual(new Vector(2).set(1, 4));
-			expect(Vector.mul([1, 2], b)).toEqual(new Vector(2).set(1, 4));
+				expect(Vector.sub(b, [1, 2])).toEqual(new Vector(2).set(0, 0));
+				expect(Vector.sub([1, 2], b)).toEqual(new Vector(2).set(0, 0));
+			});
 
-			expect(function() { Vector.mul(b, [1]); }).toThrow();
-			expect(function() { Vector.mul([1], b); }).toThrow();
+			it('performs partial subtraction when applied to vectors of different size', function () {
+				expect(Vector.sub([1, 2], [7])).toBeCloseToVector(new Vector(2).set(1 - 7, NaN));
+			});
 		});
 
-		it("can perform division", function() {
-			var a = new Vector(2).set(1, 2);
-			var b = new Vector(2).set(1, 2);
+		describe('mul', function () {
+			it('can perform multiplication', function () {
+				var a = new Vector(2).set(1, 2);
+				var b = new Vector(2).set(1, 2);
 
-			a.div(a);
+				a.mul(a);
 
-			expect(a).toEqual(new Vector(2).set(1, 1));
-			expect(Vector.div(b, b)).toEqual(new Vector(2).set(1, 1));
+				expect(a).toEqual(new Vector(2).set(1, 4));
+				expect(Vector.mul(b, b)).toEqual(new Vector(2).set(1, 4));
 
-			expect(Vector.div(b, [1, 2])).toEqual(new Vector(2).set(1, 1));
-			expect(Vector.div([1, 2], b)).toEqual(new Vector(2).set(1, 1));
+				expect(Vector.mul(b, [1, 2])).toEqual(new Vector(2).set(1, 4));
+				expect(Vector.mul([1, 2], b)).toEqual(new Vector(2).set(1, 4));
+			});
 
-			expect(function() { Vector.div(b, [1]); }).toThrow();
-			expect(function() { Vector.div([1], b); }).toThrow();
+			it('performs partial multiplication when applied to vectors of different size', function () {
+				expect(Vector.mul([1, 2], [7])).toBeCloseToVector(new Vector(2).set(1 * 7, NaN));
+			});
 		});
 
-		it("can copy values", function() {
+		describe('', function () {
+			it('can perform division', function () {
+				var a = new Vector(2).set(1, 2);
+				var b = new Vector(2).set(1, 2);
+
+				a.div(a);
+
+				expect(a).toEqual(new Vector(2).set(1, 1));
+				expect(Vector.div(b, b)).toEqual(new Vector(2).set(1, 1));
+
+				expect(Vector.div(b, [1, 2])).toEqual(new Vector(2).set(1, 1));
+				expect(Vector.div([1, 2], b)).toEqual(new Vector(2).set(1, 1));
+			});
+
+			it('performs partial division when applied to vectors of different size', function () {
+				expect(Vector.div([1, 2], [7])).toBeCloseToVector(new Vector(2).set(1 / 7, NaN));
+			});
+		});
+
+		it('can copy values', function () {
 			var a = new Vector(2).set(1, 2);
 			var b = new Vector(2);
 
@@ -76,7 +100,7 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(Vector.copy(a)).toEqual(new Vector(2).set(1, 2));
 		});
 
-		it("can calculate dot products", function() {
+		it('can calculate dot products', function () {
 			var a = new Vector(2).set(1, 2);
 			var b = new Vector(2).set(1, 2);
 
@@ -84,7 +108,7 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(Vector.dot(a, b)).toEqual(5);
 		});
 
-		it("can apply matrices", function() {
+		it('can apply matrices', function () {
 			var a = new Vector(2).set(1, 2);
 			var b = new Vector(2).set(1, 2);
 			var c = new Matrix(2, 2).set(1, 2, 3, 4);
@@ -95,7 +119,7 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(Vector.apply(c, b)).toEqual(new Vector(2).set(7, 10));
 		});
 
-		it("can be tested for approximate equaltiy", function() {
+		it('can be tested for approximate equaltiy', function () {
 			var a = new Vector(2).set(1, 2);
 			var b = new Vector(2).set(1, 2);
 			var c = new Vector(2).set(2, 3);
@@ -106,14 +130,14 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(Vector.equals(a, c)).toEqual(false);
 		});
 
-		it("can calculate lengths", function() {
+		it('can calculate lengths', function () {
 			var a = new Vector(2).set(3, 4);
 
 			expect(a.length()).toEqual(5);
 			expect(a.lengthSquared()).toEqual(25);
 		});
 
-		it("can calculate distances", function() {
+		it('can calculate distances', function () {
 			var a = new Vector(2).set(3, 4);
 			var b = new Vector(2).set(6, 8);
 
@@ -123,7 +147,7 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(Vector.distanceSquared(a, b)).toEqual(25);
 		});
 
-		it("can be inverted", function() {
+		it('can be inverted', function () {
 			var a = new Vector(2).set(1, 2);
 
 			a.invert();
@@ -131,7 +155,7 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(a).toEqual(new Vector(2).set(-1, -2));
 		});
 
-		it("can be normalized", function() {
+		it('can be normalized', function () {
 			var a = new Vector(2).set(3, 4);
 
 			a.normalize();
@@ -139,7 +163,7 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(a).toEqual(new Vector(2).set(0.6, 0.8));
 		});
 
-		it("can be cloned", function() {
+		it('can be cloned', function () {
 			var a = new Vector(2).set(1, 2);
 			var b = a.clone();
 
@@ -149,7 +173,7 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(b).toEqual(new Vector(2).set(2, 3));
 		});
 
-		it("can be set", function() {
+		it('can be set', function () {
 			var a = new Vector(2).set(1, 2);
 			var b = new Vector(2).set([1, 2]);
 			var c = new Vector(2).set(a);
@@ -159,10 +183,10 @@ define(["goo/math/Matrix", "goo/math/Vector"], function(Matrix, Vector) {
 			expect(c).toEqual(new Vector(2).set(1, 2));
 		});
 
-		it("can be printed", function() {
+		it('can be printed', function () {
 			var a = new Vector(2).set(1, 2);
 
-			expect(a.toString()).toEqual("[1, 2]");
+			expect(a.toString()).toEqual('[1, 2]');
 		});
 	});
 });

@@ -97,7 +97,7 @@ define([
 		// Remove old actions
 		for (var i = 0; i < state._actions.length; i++) {
 			var action = state._actions[i];
-			if (!stateConfig.actions[action.id]) {
+			if (!stateConfig.actions || !stateConfig.actions[action.id]) {
 				state.removeAction(action);
 				i--;
 			}

@@ -5,23 +5,21 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/debugpack/LightPointer',
-	'goo/debugpack/components/LightDebugComponent',
-	'goo/debugpack/systems/LightDebugSystem',
+	'goo/debugpack/systems/DebugRenderSystem',
 	'lib/V'
-], function (
+], function(
 	Sphere,
 	Vector3,
 	PointLight,
 	DirectionalLight,
 	SpotLight,
 	LightComponent,
-	LightPointer,
-	LightDebugComponent,
-	LightDebugSystem,
+	DebugRenderSystem,
 	V
-	) {
+) {
 	'use strict';
+
+	V.describe('Shows visual feedback for lights using the DebugRenderSystem\nKeys 1 to 3 switch light on/off');
 
 	var lightsState = {
 		pointLightOn: false,
@@ -29,24 +27,19 @@ require([
 		spotLightOn: false
 	};
 
-	function addSpin(entity/*, radiusX, radiusZ, speed, altitude*/) {
+	function addSpin(entity /*, radiusX, radiusZ, speed, altitude*/ ) {
 		var offset = V.rng.nextFloat() * 12;
-		entity.set(function (entity) {
-				var light = entity.getComponent('LightComponent').light;
+		entity.set(function(entity) {
+			var light = entity.getComponent('LightComponent').light;
 
-				light.color.data[0] = Math.cos(world.time + offset) * 0.5 + 0.5;
-				light.color.data[1] = Math.cos(world.time + offset + Math.PI * 2 / 3) * 0.5 + 0.5;
-				light.color.data[2] = Math.cos(world.time + offset + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
-				light.range = (Math.cos(world.time) * 0.5 + 0.5) * 6 + 2;
+			light.color.data[0] = Math.cos(world.time + offset) * 0.5 + 0.5;
+			light.color.data[1] = Math.cos(world.time + offset + Math.PI * 2 / 3) * 0.5 + 0.5;
+			light.color.data[2] = Math.cos(world.time + offset + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
+			light.range = (Math.cos(world.time) * 0.5 + 0.5) * 6 + 2;
 
-				/*
-				if(light.angle) {
-					light.angle = (Math.cos(World.time+0.3) * 0.5 + 0.5) * 40 + 20;
-				}
-				*/
-				light.changedProperties = true;
-				light.changedColor = true;
-			});
+			light.changedProperties = true;
+			light.changedColor = true;
+		});
 	}
 
 	function addPointLight() {
@@ -57,7 +50,7 @@ require([
 		var pointLightOrbitSpeed = 0.5;
 		var pointLightAltitude = 0;
 
-		var pointLightEntity = world.createEntity(pointLight, new LightDebugComponent(), [0, 0, 3]);
+		var pointLightEntity = world.createEntity('pointLight', pointLight, [0, 0, 3]);
 
 		addSpin(pointLightEntity, pointLightOrbitRadius, pointLightOrbitRadius, pointLightOrbitSpeed, pointLightAltitude);
 		pointLightEntity.addToWorld();
@@ -74,7 +67,7 @@ require([
 		var directionalLightOrbitSpeed = 0.7;
 		var directionalLightAltitude = -5;
 
-		var directionalLightEntity = world.createEntity(directionalLight, new LightDebugComponent(), [0, -5, 3]);
+		var directionalLightEntity = world.createEntity('directionalLight', directionalLight, [0, -5, 3]);
 
 		addSpin(directionalLightEntity, directionalLightOrbitRadius, directionalLightOrbitRadius, directionalLightOrbitSpeed, directionalLightAltitude);
 		directionalLightEntity.addToWorld();
@@ -93,7 +86,7 @@ require([
 		var spotLightOrbitSpeed = 0.3;
 		var spotLightAltitude = 5;
 
-		var spotLightEntity = world.createEntity(spotLight, new LightDebugComponent(), [0, 5, 5]);
+		var spotLightEntity = world.createEntity('spotLight', spotLight, [0, 5, 5]);
 
 		addSpin(spotLightEntity, spotLightOrbitRadius, spotLightOrbitRadius * 2, spotLightOrbitSpeed, spotLightAltitude);
 		spotLightEntity.addToWorld();
@@ -120,7 +113,11 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	world.setSystem(new LightDebugSystem());
+	var debugRenderSystem = new DebugRenderSystem();
+	debugRenderSystem.doRender.CameraComponent = true;
+	debugRenderSystem.doRender.LightComponent = true;
+	goo.renderSystems.push(debugRenderSystem);
+	world.setSystem(debugRenderSystem);
 
 	// add spheres to cast light on
 	V.addSpheres();
@@ -130,26 +127,33 @@ require([
 	addSpotLight();
 
 	document.body.addEventListener('keypress', function(e) {
-		switch(e.keyCode) {
+		switch (e.keyCode) {
 			case 49:
-				if(lightsState.spotLightOn) { removeSpotLight();	}
-				else { addSpotLight(); }
+				if (lightsState.spotLightOn) {
+					removeSpotLight();
+				} else {
+					addSpotLight();
+				}
 				break;
 			case 50:
-				if(lightsState.pointLightOn) { removePointLight(); }
-				else { addPointLight(); }
+				if (lightsState.pointLightOn) {
+					removePointLight();
+				} else {
+					addPointLight();
+				}
 				break;
 			case 51:
-				if(lightsState.directionalLightOn) { removeDirectionalLight(); }
-				else { addDirectionalLight(); }
+				if (lightsState.directionalLightOn) {
+					removeDirectionalLight();
+				} else {
+					addDirectionalLight();
+				}
 				break;
-			default:
-				console.log('Keys 1 to 3 switch light on/off');
 		}
 	});
 
 	// camera
-	V.addOrbitCamera();
+	V.addOrbitCamera(new Vector3(25, Math.PI / 3, 0));
 
 	V.process();
 });

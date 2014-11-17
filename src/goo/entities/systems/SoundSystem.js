@@ -95,7 +95,7 @@ function(
 			for (var i = 0; i < sounds.length; i++) {
 				sounds[i].stop();
 			}
-			entity.soundComponent.connectTo(this._outNode);
+			entity.soundComponent.connectTo();
 		}
 	};
 

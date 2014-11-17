@@ -70,7 +70,8 @@ function (
 	DebugRenderSystem.prototype.inserted = function (/*entity*/) {
 	};
 
-	DebugRenderSystem.prototype.deleted = function (/*entity*/) {
+	DebugRenderSystem.prototype.deleted = function (entity) {
+		delete this._renderablesTree[entity.id]
 	};
 
 	DebugRenderSystem.prototype.process = function (entities, tpf) {
