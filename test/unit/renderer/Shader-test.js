@@ -3,6 +3,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Camera',
 	'goo/renderer/RendererRecord',
+	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/light/DirectionalLight',
 	'goo/shapes/Box'
@@ -11,6 +12,7 @@ define([
 	Material,
 	Camera,
 	RendererRecord,
+	Texture,
 	ShaderLib,
 	DirectionalLight,
 	Box
@@ -19,16 +21,9 @@ define([
 
 	describe('Shader', function() {
 		describe('Build and compile shader', function() {
-			var shaderInfo;
 			var renderer;
 			beforeEach(function() {
-				var material = new Material('test', ShaderLib.simpleLit);
-				shaderInfo = {
-					meshData: new Box(),
-					material: material,
-					lights: [new DirectionalLight()],
-					camera: new Camera()
-				};
+				/* jshint unused:false */
 				renderer = {
 					context: {
 						createShader: function(type) { return {}; },
@@ -59,17 +54,57 @@ define([
 					rendererRecord: new RendererRecord()
 				};
 			});
-			it('has applied the correct mappings', function() {
+			var createShaderInfo = function (shaderDefinition) {
+				var material = new Material('test', shaderDefinition);
+				material.setTexture(Shader.DIFFUSE_MAP, new Texture());
+				return {
+					meshData: new Box(),
+					material: material,
+					lights: [new DirectionalLight()],
+					camera: new Camera()
+				};
+			};
+			var updateShader = function (shaderInfo) {
 				var shader = shaderInfo.material.shader;
-
 				shader.updateProcessors(shaderInfo);
 				if (shader.builder) {
 					shader.builder(shader, shaderInfo);
 				}
 				shader.apply(shaderInfo, renderer);
+			};
 
+			it('has applied the correct mappings to simple shader (simple)', function() {
+				var shaderDefinition = ShaderLib.simple;
+				var shaderInfo = createShaderInfo(shaderDefinition);
+				updateShader(shaderInfo);
 
+				var shader = shaderInfo.material.shader;
 				console.log(shader);
+				console.log(shaderInfo);
+
+				expect(shader.attributes).toEqual(shaderDefinition.attributes);
+				expect(shader.matchedUniforms).toEqual(Object.keys(shaderDefinition.uniforms));
+				expect(shader.textureSlots.length).toEqual(0);
+
+				// add a uniform that does not exist in shader
+				shader.uniforms.doesnotexist = 1;
+				updateShader(shaderInfo);
+				console.log(shader);
+			});
+			it('has applied the correct mappings to complex shader (uber)', function() {
+				var shaderDefinition = ShaderLib.uber;
+				var shaderInfo = createShaderInfo(shaderDefinition);
+				updateShader(shaderInfo);
+
+				var shader = shaderInfo.material.shader;
+				console.log(shader);
+				console.log(shaderInfo);
+				console.log(shader.matchedUniforms);
+				console.log(Object.keys(shaderDefinition.uniforms));
+
+				expect(shader.attributes).toEqual(shaderDefinition.attributes);
+				// expect(shader.matchedUniforms).toEqual(Object.keys(shaderDefinition.uniforms));
+				expect(shader.textureSlots.length).toEqual(1);
 			});
 		});
 		describe('investigateShader', function() {
