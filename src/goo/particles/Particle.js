@@ -84,7 +84,7 @@ function (
 			colorBuffer.set(this.color.data, this.index * 16 + 4);
 			colorBuffer.set(this.color.data, this.index * 16 + 8);
 			colorBuffer.set(this.color.data, this.index * 16 + 12);
-			this.lastColor.setv(this.color);
+			this.lastColor.setVector(this.color);
 		}
 
 		// determine our particle plane
@@ -98,7 +98,7 @@ function (
 			var cA = Math.cos(this.spin) * this.size;
 			var sA = Math.sin(this.spin) * this.size;
 			var upX = this.bbY.x, upY = this.bbY.y, upZ = this.bbY.z;
-			this.bbY.setv(this.bbX);
+			this.bbY.setVector(this.bbX);
 			this.bbX.muld(cA, cA, cA).add_d(upX * sA, upY * sA, upZ * sA);
 			this.bbY.muld(-sA, -sA, -sA).add_d(upX * cA, upY * cA, upZ * cA);
 		}

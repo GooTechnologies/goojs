@@ -238,7 +238,7 @@ function (
 				} else {
 					entity.meshRendererComponent.hidden = true;
 				}
-				entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+				entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 			}
 		}
 

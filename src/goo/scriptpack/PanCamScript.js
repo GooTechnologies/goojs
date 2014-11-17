@@ -183,11 +183,11 @@ define([
 					calcVector.z,
 					calcVector
 				);
-				lookAtPoint.setv(calcVector);
+				lookAtPoint.setVector(calcVector);
 
 			} else {
-				calcVector.setv(fwdVector).scale(mouseState.dy);
-				calcVector2.setv(leftVector).scale(mouseState.dx);
+				calcVector.setVector(fwdVector).scale(mouseState.dy);
+				calcVector2.setVector(leftVector).scale(mouseState.dx);
 
 				//! schteppe: use world coordinates for both by default?
 				//if (parameters.screenMove){

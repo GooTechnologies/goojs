@@ -86,7 +86,7 @@ function (
 				xBottom, yBottom, -halfHeight  // side bottom
 			);
 
-			normal.setd(cos, sin, tan);
+			normal.setDirect(cos, sin, tan);
 			normal.normalize();
 
 			norms.push(

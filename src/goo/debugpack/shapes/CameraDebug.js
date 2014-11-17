@@ -143,22 +143,22 @@ define([
 				vert.z];
 		});
 
-		transform.translation.setd(0, 0.0, 0);
+		transform.translation.setDirect(0.0, 0.0, 0.0);
 		transform.update();
 		meshBuilder.addMeshData(cameraBox4, transform);
 
-		transform.translation.setd(0, 0.0, 1.3);
+		transform.translation.setDirect(0.0, 0.0, 1.3);
 		transform.update();
 		meshBuilder.addMeshData(cameraBox3, transform);
 
-		transform.scale.setd(1, 1, 0.5);
-		transform.setRotationXYZ(0, Math.PI/2, 0);
+		transform.scale.setDirect(1.0, 1.0, 0.5);
+		transform.setRotationXYZ(0.0, Math.PI / 2, 0.0);
 
-		transform.translation.setd(0, 1.2, 0.6);
+		transform.translation.setDirect(0.0, 1.2, 0.6);
 		transform.update();
 		meshBuilder.addMeshData(cameraBox1, transform);
 
-		transform.translation.setd(0, 1.2, 2.0);
+		transform.translation.setDirect(0.0, 1.2, 2.0);
 		transform.update();
 		meshBuilder.addMeshData(cameraBox2, transform);
 

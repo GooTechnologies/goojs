@@ -780,9 +780,9 @@ function (
 	 */
 
 	Matrix4x4.prototype.getScale = function (store) {
-		var sx = Math.sqrt(store.setd(this.data[0], this.data[4], this.data[8]).lengthSquared());
-		var sy = Math.sqrt(store.setd(this.data[1], this.data[5], this.data[9]).lengthSquared());
-		var sz = Math.sqrt(store.setd(this.data[2], this.data[6], this.data[10]).lengthSquared());
+		var sx = Math.sqrt(store.setDirect(this.data[0], this.data[4], this.data[8]).lengthSquared());
+		var sy = Math.sqrt(store.setDirect(this.data[1], this.data[5], this.data[9]).lengthSquared());
+		var sz = Math.sqrt(store.setDirect(this.data[2], this.data[6], this.data[10]).lengthSquared());
 
 		store.x = sx;
 		store.y = sy;

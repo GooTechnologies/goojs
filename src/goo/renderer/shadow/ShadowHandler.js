@@ -132,7 +132,7 @@ function (
 				// Update transformation
 				lightCamera.translation.copy(light.translation);
 				if (light.direction) {
-					tmpVec.setv(light.translation).addv(light.direction);
+					tmpVec.setVector(light.translation).addv(light.direction);
 					lightCamera.lookAt(tmpVec, shadowSettings.upVector);
 				} else {
 					lightCamera.lookAt(Vector3.ZERO, shadowSettings.upVector);

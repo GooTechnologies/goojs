@@ -92,11 +92,11 @@ function (
 
 		var mainCameraLocation = mainCamera.translation;
 		if (mainCameraLocation.y > 0.0 && mainCameraLocation.y < upperBound + mainCamera.near) {
-			mainCamera.translation.setd(mainCameraLocation.x, upperBound + mainCamera.near,
+			mainCamera.translation.setDirect(mainCameraLocation.x, upperBound + mainCamera.near,
 				mainCameraLocation.z);
 		} else if (mainCameraLocation.y < 0.0
 			&& mainCameraLocation.y > -upperBound - mainCamera.near) {
-			mainCamera.translation.setd(mainCameraLocation.x, -upperBound - mainCamera.near,
+			mainCamera.translation.setDirect(mainCameraLocation.x, -upperBound - mainCamera.near,
 				mainCameraLocation.z);
 		}
 		var corners = mainCamera.calculateFrustumCorners();
@@ -142,8 +142,8 @@ function (
 			projectorCamera._direction.y = -projectorCamera._direction.y;
 
 			var tmpVec = new Vector3();
-			tmpVec.setv(projectorCamera._direction).cross(projectorCamera._left).normalize();
-			projectorCamera._up.setv(tmpVec);
+			tmpVec.setVector(projectorCamera._direction).cross(projectorCamera._left).normalize();
+			projectorCamera._up.setVector(tmpVec);
 		}
 
 		// find the plane intersection point
@@ -158,12 +158,12 @@ function (
 		if (cameraLocation.y > 0.0 && cameraLocation.y < this.projectorMinHeight * 2) {
 			var delta = (this.projectorMinHeight * 2 - cameraLocation.y) / (this.projectorMinHeight * 2);
 
-			projectorCamera.translation.setd(cameraLocation.x, this.projectorMinHeight * 2 - this.projectorMinHeight * delta,
+			projectorCamera.translation.setDirect(cameraLocation.x, this.projectorMinHeight * 2 - this.projectorMinHeight * delta,
 				cameraLocation.z);
 		} else if (cameraLocation.y < 0.0 && cameraLocation.y > -this.projectorMinHeight * 2) {
 			var delta = (-this.projectorMinHeight * 2 - cameraLocation.y) / (-this.projectorMinHeight * 2);
 
-			projectorCamera.translation.setd(cameraLocation.x, -this.projectorMinHeight * 2 + this.projectorMinHeight * delta,
+			projectorCamera.translation.setDirect(cameraLocation.x, -this.projectorMinHeight * 2 + this.projectorMinHeight * delta,
 				cameraLocation.z);
 		}
 
@@ -242,17 +242,17 @@ function (
 
 	ProjectedGrid.prototype.getWorldIntersectionHomogenous = function (planeHeight, screenPosition, modelViewProjectionInverseMatrix, store) {
 		this.calculateIntersection(planeHeight, screenPosition, modelViewProjectionInverseMatrix);
-		store.setv(this.origin);
+		store.setVector(this.origin);
 	};
 
 	ProjectedGrid.prototype.getWorldIntersection = function (planeHeight, screenPosition, modelViewProjectionInverseMatrix, store) {
 		this.calculateIntersection(planeHeight, screenPosition, modelViewProjectionInverseMatrix);
-		store.setd(this.origin.x, this.origin.y, this.origin.z).div(this.origin.w);
+		store.setDirect(this.origin.x, this.origin.y, this.origin.z).div(this.origin.w);
 	};
 
 	ProjectedGrid.prototype.getWorldIntersectionSimple = function (planeHeight, source, destination, store, tmpStorage) {
-		var origin = store.setv(source);
-		var direction = tmpStorage.setv(destination).sub(origin);
+		var origin = store.setVector(source);
+		var direction = tmpStorage.setVector(destination).sub(origin);
 
 		var t = (planeHeight - origin.y) / (direction.y);
 
@@ -263,8 +263,8 @@ function (
 	};
 
 	ProjectedGrid.prototype.calculateIntersection = function (planeHeight, screenPosition, modelViewProjectionInverseMatrix) {
-		this.origin.setd(screenPosition.x * 2 - 1, screenPosition.y * 2 - 1, -1, 1);
-		this.direction.setd(screenPosition.x * 2 - 1, screenPosition.y * 2 - 1, 1, 1);
+		this.origin.setDirect(screenPosition.x * 2 - 1, screenPosition.y * 2 - 1, -1, 1);
+		this.direction.setDirect(screenPosition.x * 2 - 1, screenPosition.y * 2 - 1, 1, 1);
 
 		modelViewProjectionInverseMatrix.applyPost(this.origin);
 		modelViewProjectionInverseMatrix.applyPost(this.direction);

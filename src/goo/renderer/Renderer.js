@@ -538,7 +538,7 @@ function (
 		this._clearColor[1] = g;
 		this._clearColor[2] = b;
 		this._clearColor[3] = a;
-		this.clearColor.seta(this._clearColor);
+		this.clearColor.setArray(this._clearColor);
 		this.context.clearColor(r, g, b, a);
 	};
 
@@ -1384,7 +1384,7 @@ function (
 		}
 
 		if (!skipUpdateBuffer) {
-			this.hardwarePicking.clearColorStore.setv(this.clearColor);
+			this.hardwarePicking.clearColorStore.setVector(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
 				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 

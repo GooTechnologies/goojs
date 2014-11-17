@@ -892,19 +892,19 @@ function (
 	Matrix3x3.prototype.lookAt = function (direction, up) {
 		var x = Matrix3x3._tempX, y = Matrix3x3._tempY, z = Matrix3x3._tempZ;
 
-		z.setv(direction).normalize().muld(-1, -1, -1); // .scale(-1) when that is implemented
+		z.setVector(direction).normalize().muld(-1, -1, -1); // .scale(-1) when that is implemented
 
-		x.setv(up).cross(z).normalize();
+		x.setVector(up).cross(z).normalize();
 
 		if (x.equals(Vector3.ZERO)) {
 			if (z.data[0] !== 0.0) {
-				x.setd(z.data[1], -z.data[0], 0);
+				x.setDirect(z.data[1], -z.data[0], 0);
 			} else {
-				x.setd(0, z.data[2], -z.data[1]);
+				x.setDirect(0, z.data[2], -z.data[1]);
 			}
 		}
 
-		y.setv(z).cross(x);
+		y.setVector(z).cross(x);
 
 		var d = this.data;
 		d[0] = x.data[0];

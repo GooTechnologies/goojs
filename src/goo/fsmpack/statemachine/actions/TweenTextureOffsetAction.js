@@ -104,7 +104,7 @@ function (
 			var fakeTo = { x: this.toX, y: this.toY };
 
 			this.tween.from(fakeFrom).to(fakeTo, this.time).easing(this.easing).onUpdate(function () {
-				texture.offset.setd(this.x, this.y);
+				texture.offset.setDirect(this.x, this.y);
 			}).onComplete(function () {
 				fsm.send(this.eventToEmit.channel);
 			}.bind(this)).start(time);

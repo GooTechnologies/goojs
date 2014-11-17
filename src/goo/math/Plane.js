@@ -90,7 +90,7 @@ function (
 
 		var d = pMinusL0DotN / lDotN;
 
-		return store.setv(ray.direction).muld(d,d,d).addv(ray.origin);
+		return store.setVector(ray.direction).muld(d,d,d).addv(ray.origin);
 	};
 
 	return Plane;

@@ -43,7 +43,7 @@ function (
 
 		lights = lights || [];
 		if (clearColor && false) {
-			this.oldClearColor.setv(renderer.clearColor);
+			this.oldClearColor.setVector(renderer.clearColor);
 			renderer.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 		}
 

@@ -279,7 +279,7 @@ function (
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
-	 * v1.setd(2, 4); // v1 == (2, 4)
+	 * v1.setDirect(2, 4); // v1 == (2, 4)
 	 */
 	Vector2.prototype.setDirect = function (x, y) {
 		this.data[0] = x;
@@ -297,7 +297,7 @@ function (
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
-	 * v1.seta([2, 4]); // v1 == (2, 4)
+	 * v1.setArray([2, 4]); // v1 == (2, 4)
 	 */
 	Vector2.prototype.setArray = function (array) {
 		this.data[0] = array[0];
@@ -315,7 +315,7 @@ function (
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
-	 * v1.setv(new Vector2(2, 4)); // v1 == (2, 4)
+	 * v1.setVector(new Vector2(2, 4)); // v1 == (2, 4)
 	 */
 	Vector2.prototype.setVector = function (vector) {
 		this.data[0] = vector.data[0];

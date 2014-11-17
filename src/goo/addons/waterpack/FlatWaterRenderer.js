@@ -102,7 +102,7 @@ function (
 			if (this.useRefraction) {
 				partitioner.process(this.waterCamera, entities, this.renderList);
 
-				this.clipPlane.setd(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+				this.clipPlane.setDirect(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 				this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
 				//renderer.overrideMaterial = this.depthMaterial;
@@ -145,7 +145,7 @@ function (
 
 			if (this.skybox && this.followCam) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setv(camReflectPos);
+				target.translation.setVector(camReflectPos);
 				target.update();
 			}
 		}
@@ -159,7 +159,7 @@ function (
 
 		if (this.skybox) {
 			if (this.skybox instanceof Array) {
-				this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+				this.clipPlane.setDirect(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 				this.waterCamera.setToObliqueMatrix(this.clipPlane, 10.0);
 				for (var i = 0; i < this.skybox.length; i++) {
 					renderer.render(this.skybox[i], this.waterCamera, lights, this.reflectionTarget, false);
@@ -171,7 +171,7 @@ function (
 			}
 		}
 
-		this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+		this.clipPlane.setDirect(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 		this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
 		renderer.render(this.renderList, this.waterCamera, lights, this.reflectionTarget, false);
@@ -190,7 +190,7 @@ function (
 		if (aboveWater && this.skybox && this.followCam) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setv(source).addv(this.offset);
+			target.translation.setVector(source).addv(this.offset);
 			target.update();
 			this.waterCamera._updatePMatrix = true;
 		}

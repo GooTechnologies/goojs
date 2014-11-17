@@ -31,7 +31,7 @@ function (
 		if (arguments.length !== 0) {
 			this.set(arguments);
 		} else {
-			this.setd(0, 0, 0, 1);
+			this.data[3] = 1;
 		}
 	}
 
@@ -230,18 +230,18 @@ function (
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
 		if (changeAmnt === 0.0) {
-			return workQuat.setv(startQuat);
+			return workQuat.setVector(startQuat);
 		} else if (changeAmnt === 1.0) {
-			return workQuat.setv(endQuat);
+			return workQuat.setVector(endQuat);
 		}
 
 		// Check for equality and skip operation.
 		if (startQuat.equals(endQuat)) {
-			return workQuat.setv(startQuat);
+			return workQuat.setVector(startQuat);
 		}
 
 		var result = startQuat.dot(endQuat);
-		workQuat.setv(endQuat);
+		workQuat.setVector(endQuat);
 
 		if (result < 0.0) {
 			// Negate the second quaternion and the result of the dot product
@@ -273,7 +273,7 @@ function (
 		var z = scale0 * startQuat.data[2] + scale1 * workQuat.data[2];
 		var w = scale0 * startQuat.data[3] + scale1 * workQuat.data[3];
 
-		workQuat.setd(x, y, z, w);
+		workQuat.setDirect(x, y, z, w);
 
 		// Return the interpolated quaternion
 		return workQuat;
@@ -647,8 +647,20 @@ function (
 			&& Math.abs(this.data[2] - o.data[2]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[3] - o.data[3]) < Quaternion.ALLOWED_DEVIANCE;
 	};
 
+
+	function addWarning(method, warning) {
+		var warned = false;
+		return function () {
+			if (!warned) {
+				warned = true;
+				console.warn(warning);
+			}
+			return method.apply(this, arguments);
+		};
+	}
+
 	// Performance methods
-	Quaternion.prototype.setd = function (x, y, z, w) {
+	Quaternion.prototype.setDirect = function (x, y, z, w) {
 		this.data[0] = x;
 		this.data[1] = y;
 		this.data[2] = z;
@@ -656,7 +668,11 @@ function (
 
 		return this;
 	};
-	Quaternion.prototype.seta = function (array) {
+
+	Quaternion.prototype.setd = addWarning(
+		Quaternion.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
+
+	Quaternion.prototype.setArray = function (array) {
 		this.data[0] = array[0];
 		this.data[1] = array[1];
 		this.data[2] = array[2];
@@ -664,7 +680,12 @@ function (
 
 		return this;
 	};
-	Quaternion.prototype.setv = function (quat) {
+
+	Quaternion.prototype.seta = addWarning(
+		Quaternion.prototype.setArray, '.seta is deprecated; please use .setArray instead');
+
+	// may sound unintuitive, setv instead of setq but it ties in with the other setv methods
+	Quaternion.prototype.setVector = function (quat) {
 		this.data[0] = quat.data[0];
 		this.data[1] = quat.data[1];
 		this.data[2] = quat.data[2];
@@ -672,6 +693,9 @@ function (
 
 		return this;
 	};
+
+	Quaternion.prototype.setv = addWarning(
+		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
 	return Quaternion;
 });

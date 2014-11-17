@@ -334,8 +334,8 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.splatCopy, this.splat);
@@ -352,8 +352,8 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
@@ -370,8 +370,8 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
@@ -395,8 +395,8 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
@@ -662,7 +662,7 @@ function(
 		entity.meshDataComponent.modelBound.xExtent = w * 0.5;
 		entity.meshDataComponent.modelBound.yExtent = 255;
 		entity.meshDataComponent.modelBound.zExtent = h * 0.5;
-		entity.meshDataComponent.modelBound.center.setd(w * 0.5, 128, h * 0.5);
+		entity.meshDataComponent.modelBound.center.setDirect(w * 0.5, 128, h * 0.5);
 		entity.meshDataComponent.autoCompute = false;
 		entity.meshRendererComponent.isPickable = false;
 

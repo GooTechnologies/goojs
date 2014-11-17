@@ -45,7 +45,7 @@ function (
 	* @type {Vector3}
 	* @example
 	* var oldValue = new Vector3(5, 2, 1);
-	* oldValue.setv(Vector3.ZERO); // oldValue == (0, 0, 0)
+	* oldValue.setVector(Vector3.ZERO); // oldValue == (0, 0, 0)
 	*/
 	Vector3.ZERO = new Vector3(0, 0, 0);
 
@@ -666,7 +666,7 @@ function (
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.setd(2, 4, 6); // v1 == (2, 4, 6)
+	 * v1.setDirect(2, 4, 6); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.setDirect = function (x, y, z) {
 		this.data[0] = x;
@@ -685,7 +685,7 @@ function (
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.seta([2, 4, 6]); // v1 == (2, 4, 6)
+	 * v1.setArray([2, 4, 6]); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.setArray = function (array) {
 		this.data[0] = array[0];
@@ -705,7 +705,7 @@ function (
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(1, 2, 3);
-	 * v1.setv(v2); // v1 == (1, 2, 3)
+	 * v1.setVector(v2); // v1 == (1, 2, 3)
 	 */
 	Vector3.prototype.setVector = function (vector) {
 		this.data[0] = vector.data[0];
