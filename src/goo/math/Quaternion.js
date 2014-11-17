@@ -152,6 +152,7 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Quaternion vector for storage.
@@ -194,6 +195,7 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -348,6 +350,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -357,6 +360,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -383,7 +387,7 @@ function (
 		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
-	 var slerp_work_quat;
+	var slerp_work_quat;
 	/**
 	 * Computes the spherical linear interpolation from the current quaternion towards endQuat.
 	 * @param {Quaternion} endQuat End quaternion.
