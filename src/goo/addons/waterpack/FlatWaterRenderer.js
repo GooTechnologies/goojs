@@ -7,6 +7,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/renderer/Material',
+	'goo/renderer/Texture',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/renderer/shaders/ShaderFragment'
@@ -21,6 +22,7 @@ function (
 	Vector3,
 	Vector4,
 	Material,
+	Texture,
 	TextureCreator,
 	ShaderBuilder,
 	ShaderFragment
@@ -60,10 +62,15 @@ function (
 		waterMaterial.shader.defines.REFRACTION = this.useRefraction;
 		waterMaterial.cullState.enabled = false;
 
-		var texture = settings.normalsTexture;
-		if (!texture) {
+		var texture = null;
+		if (settings.normalsTexture) {
+			texture = settings.normalsTexture;
+		} else if (settings.normalsUrl) {
 			var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
 			texture = new TextureCreator().loadTexture2D(normalsTextureUrl);
+		} else {
+			var flatNormalData = new Uint8Array([127, 127, 255, 255]);
+			texture = new Texture(flatNormalData, null, 1, 1);
 		}
 		waterMaterial.setTexture('NORMAL_MAP', texture);
 		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
