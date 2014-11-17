@@ -265,7 +265,7 @@ define([
 
 
 		describe('mulDirect', function () {
-			it('can add to a vector', function () {
+			it('can multiply with 2 numbers', function () {
 				var vector = new Vector2(11, 22);
 				vector.mulDirect(55, 66);
 				expect(vector).toBeCloseToVector(new Vector2(11 * 55, 22 * 66));
@@ -273,7 +273,7 @@ define([
 		});
 
 		describe('mulVector', function () {
-			it('can add to a vector', function () {
+			it('can multiply with a vector', function () {
 				var vector = new Vector2(11, 22);
 				vector.mulVector(new Vector2(55, 66));
 				expect(vector).toBeCloseToVector(new Vector2(11 * 55, 22 * 66));
@@ -282,7 +282,7 @@ define([
 
 
 		describe('subDirect', function () {
-			it('can add to a vector', function () {
+			it('can subtract from a vector', function () {
 				var vector = new Vector2(11, 22);
 				vector.subDirect(55, 66);
 				expect(vector).toBeCloseToVector(new Vector2(11 - 55, 22 - 66));
@@ -290,7 +290,7 @@ define([
 		});
 
 		describe('subVector', function () {
-			it('can add to a vector', function () {
+			it('can subtract from a vector', function () {
 				var vector = new Vector2(11, 22);
 				vector.subVector(new Vector2(55, 66));
 				expect(vector).toBeCloseToVector(new Vector2(11 - 55, 22 - 66));

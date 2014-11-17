@@ -367,7 +367,7 @@ function (
 	};
 
 	Vector4.prototype.setv = addWarning(
-		Vector4.prototype.setDirect, '.setv is deprecated; please use .setVector instead');
+		Vector4.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
 	/**
 	 * Adds arguments 'x', 'y', 'z', 'w' to the current vector

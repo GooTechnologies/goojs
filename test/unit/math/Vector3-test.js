@@ -236,5 +236,157 @@ define([
 			expect(a === b).toEqual(false);
 			expect(b).toEqual(jasmine.any(Vector3));
 		});
+
+
+		describe('setd (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.setd(55, 66, 77);
+				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
+			});
+		});
+
+		describe('seta (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.seta([55, 66, 77]);
+				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
+			});
+		});
+
+		describe('setv (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.setv(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
+			});
+		});
+
+
+		describe('setDirect', function () {
+			it('can set a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.setDirect(55, 66, 77);
+				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
+			});
+		});
+
+		describe('setArray', function () {
+			it('can set a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.setArray([55, 66, 77]);
+				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
+			});
+		});
+
+		describe('setVector', function () {
+			it('can set a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.setVector(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
+			});
+		});
+
+
+		describe('add_d (deprecated)', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.add_d(55, 66, 77);
+				expect(vector).toBeCloseToVector(new Vector3(11 + 55, 22 + 66, 33 + 77));
+			});
+		});
+
+		describe('addv (deprecated)', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.addv(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(11 + 55, 22 + 66, 33 + 77));
+			});
+		});
+
+
+		describe('addDirect', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.addDirect(55, 66, 77);
+				expect(vector).toBeCloseToVector(new Vector3(11 + 55, 22 + 66, 33 + 77));
+			});
+		});
+
+		describe('addVector', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.addVector(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(11 + 55, 22 + 66, 33 + 77));
+			});
+		});
+
+
+		describe('muld (deprecated)', function () {
+			it('can multiply with 3 numbers', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.muld(55, 66, 77);
+				expect(vector).toBeCloseToVector(new Vector3(11 * 55, 22 * 66, 33 * 77));
+			});
+		});
+
+		describe('mulv (deprecated)', function () {
+			it('can multiply with a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.mulv(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(11 * 55, 22 * 66, 33 * 77));
+			});
+		});
+
+
+		describe('mulDirect', function () {
+			it('can multiply with 3 numbers', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.mulDirect(55, 66, 77);
+				expect(vector).toBeCloseToVector(new Vector3(11 * 55, 22 * 66, 33 * 77));
+			});
+		});
+
+		describe('mulVector', function () {
+			it('can multiply with a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.mulVector(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(11 * 55, 22 * 66, 33 * 77));
+			});
+		});
+
+
+		describe('sub_d (deprecated)', function () {
+			it('can subtract from a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.sub_d(55, 66, 77);
+				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
+			});
+		});
+
+		describe('subv (deprecated)', function () {
+			it('can subtract from a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.subv(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
+			});
+		});
+
+
+		describe('subDirect', function () {
+			it('can subtract from a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.subDirect(55, 66, 77);
+				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
+			});
+		});
+
+		describe('subVector', function () {
+			it('can subtract from a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.subVector(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
+			});
+		});
 	});
 });
