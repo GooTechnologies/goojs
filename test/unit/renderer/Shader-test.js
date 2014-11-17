@@ -1,6 +1,7 @@
 define([
 	'goo/renderer/Shader',
 	'goo/renderer/Material',
+	'goo/renderer/MeshData',
 	'goo/renderer/Camera',
 	'goo/renderer/RendererRecord',
 	'goo/renderer/Texture',
@@ -10,6 +11,7 @@ define([
 ], function(
 	Shader,
 	Material,
+	MeshData,
 	Camera,
 	RendererRecord,
 	Texture,
@@ -21,10 +23,9 @@ define([
 
 	describe('Shader', function() {
 		describe('Build and compile shader', function() {
-			var renderer;
-			beforeEach(function() {
+			var createRenderer = function (shaderDefinition) {
 				/* jshint unused:false */
-				renderer = {
+				return {
 					context: {
 						createShader: function(type) { return {}; },
 						shaderSource: function(shader, source) {},
@@ -53,15 +54,17 @@ define([
 					bindVertexAttribute: function(attributeIndex, attribute) {},
 					rendererRecord: new RendererRecord()
 				};
-			});
+			};
 			var createShaderInfo = function (shaderDefinition) {
 				var material = new Material('test', shaderDefinition);
 				material.setTexture(Shader.DIFFUSE_MAP, new Texture());
+				var renderer = createRenderer(shaderDefinition);
 				return {
 					meshData: new Box(),
 					material: material,
 					lights: [new DirectionalLight()],
-					camera: new Camera()
+					camera: new Camera(),
+					renderer: renderer
 				};
 			};
 			var updateShader = function (shaderInfo) {
@@ -70,41 +73,98 @@ define([
 				if (shader.builder) {
 					shader.builder(shader, shaderInfo);
 				}
-				shader.apply(shaderInfo, renderer);
+				shader.apply(shaderInfo, shaderInfo.renderer);
 			};
 
 			it('has applied the correct mappings to simple shader (simple)', function() {
-				var shaderDefinition = ShaderLib.simple;
+				var shaderDefinition = miniShaderDefinition;
 				var shaderInfo = createShaderInfo(shaderDefinition);
 				updateShader(shaderInfo);
 
+				spyOn(shaderInfo.renderer.context, 'uniform1i').and.callThrough();
+				spyOn(shaderInfo.renderer.context, 'uniform1f').and.callThrough();
+				spyOn(shaderInfo.renderer.context, 'uniformMatrix4fv').and.callThrough();
+
 				var shader = shaderInfo.material.shader;
-				console.log(shader);
-				console.log(shaderInfo);
 
 				expect(shader.attributes).toEqual(shaderDefinition.attributes);
+
+				// all matched uniforms should equal the shader definition uniforms
 				expect(shader.matchedUniforms).toEqual(Object.keys(shaderDefinition.uniforms));
+
+				// textures should be zero even though material has a texture since the shader does not
 				expect(shader.textureSlots.length).toEqual(0);
 
-				// add a uniform that does not exist in shader
-				shader.uniforms.doesnotexist = 1;
+				// add a uniform that does not exist in shader (and should not be matched)
+				shader.uniforms.doesNotExist = 1;
+				shader.rebuild();
 				updateShader(shaderInfo);
-				console.log(shader);
+
+				expect(shader.matchedUniforms).not.toContain('doesNotExist');
+
+				// check that the ShaderCalls have been executed
+				expect(shaderInfo.renderer.context.uniform1i.calls.count()).toEqual(0);
+				expect(shaderInfo.renderer.context.uniform1f.calls.count()).toEqual(0);
+				expect(shaderInfo.renderer.context.uniformMatrix4fv.calls.count()).toEqual(2);
+
+				// add a uniform that does exist in shader (and should be matched)
+				shader.uniforms.doesExist = 1;
+				shader.rebuild();
+				updateShader(shaderInfo);
+
+				expect(shader.matchedUniforms).toContain('doesExist');
+
+				// check that the ShaderCalls have been executed
+				expect(shaderInfo.renderer.context.uniform1i.calls.count()).toEqual(0);
+				expect(shaderInfo.renderer.context.uniform1f.calls.count()).toEqual(1);
+				expect(shaderInfo.renderer.context.uniformMatrix4fv.calls.count()).toEqual(4);
+
+				// console.log(shaderInfo.renderer.context.uniformMatrix4fv.calls.count());
 			});
 			it('has applied the correct mappings to complex shader (uber)', function() {
-				var shaderDefinition = ShaderLib.uber;
+				var shaderDefinition = miniShaderDefinition;
 				var shaderInfo = createShaderInfo(shaderDefinition);
 				updateShader(shaderInfo);
 
+				spyOn(shaderInfo.renderer.context, 'uniform1i').and.callThrough();
+				spyOn(shaderInfo.renderer.context, 'uniform1f').and.callThrough();
+				spyOn(shaderInfo.renderer.context, 'uniformMatrix4fv').and.callThrough();
+
 				var shader = shaderInfo.material.shader;
-				console.log(shader);
-				console.log(shaderInfo);
-				console.log(shader.matchedUniforms);
-				console.log(Object.keys(shaderDefinition.uniforms));
 
 				expect(shader.attributes).toEqual(shaderDefinition.attributes);
-				// expect(shader.matchedUniforms).toEqual(Object.keys(shaderDefinition.uniforms));
-				expect(shader.textureSlots.length).toEqual(1);
+
+				// all matched uniforms should equal the shader definition uniforms
+				expect(shader.matchedUniforms).toEqual(Object.keys(shaderDefinition.uniforms));
+
+				// textures should be zero even though material has a texture since the shader does not
+				expect(shader.textureSlots.length).toEqual(0);
+
+				// add a uniform that does not exist in shader (and should not be matched)
+				shader.uniforms.doesNotExist = 1;
+				shader.rebuild();
+				updateShader(shaderInfo);
+
+				expect(shader.matchedUniforms).not.toContain('doesNotExist');
+
+				// check that the ShaderCalls have been executed
+				expect(shaderInfo.renderer.context.uniform1i.calls.count()).toEqual(0);
+				expect(shaderInfo.renderer.context.uniform1f.calls.count()).toEqual(0);
+				expect(shaderInfo.renderer.context.uniformMatrix4fv.calls.count()).toEqual(2);
+
+				// add a uniform that does exist in shader (and should be matched)
+				shader.uniforms.doesExist = 1;
+				shader.rebuild();
+				updateShader(shaderInfo);
+
+				expect(shader.matchedUniforms).toContain('doesExist');
+
+				// check that the ShaderCalls have been executed
+				expect(shaderInfo.renderer.context.uniform1i.calls.count()).toEqual(0);
+				expect(shaderInfo.renderer.context.uniform1f.calls.count()).toEqual(1);
+				expect(shaderInfo.renderer.context.uniformMatrix4fv.calls.count()).toEqual(4);
+
+				// console.log(shaderInfo.renderer.context.uniformMatrix4fv.calls.count());
 			});
 		});
 		describe('investigateShader', function() {
@@ -155,4 +215,34 @@ define([
 			});
 		});
 	});
+
+	var miniShaderDefinition = {
+		attributes : {
+			vertexPosition : MeshData.POSITION
+		},
+		uniforms : {
+			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix : Shader.WORLD_MATRIX
+		},
+		vshader : [
+		'attribute vec3 vertexPosition;',
+
+		'uniform mat4 viewProjectionMatrix;',
+		'uniform mat4 worldMatrix;',
+
+		'uniform float doesExist;',
+		'varying float test;',
+
+		'void main(void) {',
+			'gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+		'}'
+		].join('\n'),
+		fshader : [
+		'varying float test;',
+		'void main(void)',
+		'{',
+			'gl_FragColor = vec4(test);',
+		'}'
+		].join('\n')
+	};
 });
