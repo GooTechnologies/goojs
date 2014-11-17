@@ -269,7 +269,7 @@ function (
 				warned = true;
 				console.warn(warning);
 			}
-			method.apply(this, arguments);
+			return method.apply(this, arguments);
 		};
 	}
 

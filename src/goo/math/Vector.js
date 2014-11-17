@@ -337,7 +337,11 @@ function (
 		}
 
 		for (var i = 0; i < lhsLength; i++) {
-			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
+			// why the backwards check? because otherwise if NaN is present in either lhs or rhs
+			// then Math.abs(NaN) is NaN which is neither bigger or smaller than EPSILON
+			// which never satisfies the condition
+			// NaN is not close to to NaN and we want to preserve that for vectors as well
+			if (!(Math.abs(lhs.data[i] - rhs.data[i]) <= MathUtils.EPSILON)) {
 				return false;
 			}
 		}

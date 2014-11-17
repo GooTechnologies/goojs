@@ -655,7 +655,7 @@ function (
 				warned = true;
 				console.warn(warning);
 			}
-			method.apply(this, arguments);
+			return method.apply(this, arguments);
 		};
 	}
 
@@ -791,7 +791,7 @@ function (
 	 * var v2 = new Vector3(2, 2, 2);
 	 * v1.mulv(v2); // v1 == (2, 4, 6)
 	 */
-	Vector3.prototype.mulv = function (vec3) {
+	Vector3.prototype.mulVector = function (vec3) {
 		this.data[0] *= vec3.data[0];
 		this.data[1] *= vec3.data[1];
 		this.data[2] *= vec3.data[2];

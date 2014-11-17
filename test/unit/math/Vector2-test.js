@@ -195,5 +195,106 @@ define([
 			expect(a === b).toEqual(false);
 			expect(b).toEqual(jasmine.any(Vector2));
 		});
+
+
+		describe('setd (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.setd(55, 66);
+				expect(vector).toBeCloseToVector(new Vector2(55, 66));
+			});
+		});
+
+		describe('seta (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.seta([55, 66]);
+				expect(vector).toBeCloseToVector(new Vector2(55, 66));
+			});
+		});
+
+		describe('setv (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.setv(new Vector2(55, 66));
+				expect(vector).toBeCloseToVector(new Vector2(55, 66));
+			});
+		});
+
+
+		describe('setDirect', function () {
+			it('can set a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.setDirect(55, 66);
+				expect(vector).toBeCloseToVector(new Vector2(55, 66));
+			});
+		});
+
+		describe('setArray', function () {
+			it('can set a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.setArray([55, 66]);
+				expect(vector).toBeCloseToVector(new Vector2(55, 66));
+			});
+		});
+
+		describe('setVector', function () {
+			it('can set a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.setVector(new Vector2(55, 66));
+				expect(vector).toBeCloseToVector(new Vector2(55, 66));
+			});
+		});
+
+
+		describe('addDirect', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.addDirect(55, 66);
+				expect(vector).toBeCloseToVector(new Vector2(66, 88));
+			});
+		});
+
+		describe('addVector', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.addVector(new Vector2(55, 66));
+				expect(vector).toBeCloseToVector(new Vector2(66, 88));
+			});
+		});
+
+
+		describe('mulDirect', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.mulDirect(55, 66);
+				expect(vector).toBeCloseToVector(new Vector2(11 * 55, 22 * 66));
+			});
+		});
+
+		describe('mulVector', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.mulVector(new Vector2(55, 66));
+				expect(vector).toBeCloseToVector(new Vector2(11 * 55, 22 * 66));
+			});
+		});
+
+
+		describe('subDirect', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.subDirect(55, 66);
+				expect(vector).toBeCloseToVector(new Vector2(11 - 55, 22 - 66));
+			});
+		});
+
+		describe('subVector', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.subVector(new Vector2(55, 66));
+				expect(vector).toBeCloseToVector(new Vector2(11 - 55, 22 - 66));
+			});
+		});
 	});
 });
