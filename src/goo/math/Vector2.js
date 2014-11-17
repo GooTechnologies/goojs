@@ -262,6 +262,17 @@ function (
 
 	/* ====================================================================== */
 
+	function addWarning(method, warning) {
+		var warned = false;
+		return function () {
+			if (!warned) {
+				warned = true;
+				console.warn(warning);
+			}
+			method.apply(this, arguments);
+		};
+	}
+
 	// Performance methods
 	/**
 	 * Sets the vector's values from 2 numeric arguments
@@ -272,12 +283,15 @@ function (
 	 * var v1 = new Vector2(); // v1 == (0, 0)
 	 * v1.setd(2, 4); // v1 == (2, 4)
 	 */
-	Vector2.prototype.setd = function (x, y) {
+	Vector2.prototype.setDirect = function (x, y) {
 		this.data[0] = x;
 		this.data[1] = y;
 
 		return this;
 	};
+
+	Vector2.prototype.setd = addWarning(
+		Vector2.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
 
 	/**
 	 * Sets the vector's values from an array
@@ -287,28 +301,33 @@ function (
 	 * var v1 = new Vector2(); // v1 == (0, 0)
 	 * v1.seta([2, 4]); // v1 == (2, 4)
 	 */
-	Vector2.prototype.seta = function (array) {
+	Vector2.prototype.setArray = function (array) {
 		this.data[0] = array[0];
 		this.data[1] = array[1];
 
 		return this;
 	};
 
+	Vector2.prototype.seta = addWarning(
+		Vector2.prototype.setArray, '.seta is deprecated; please use .setArray instead');
+
 	/**
 	 * Sets the vector's values from another vector
-	 * @param {number[]} array
+	 * @param {Vector2} vector
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
 	 * v1.setv(new Vector2(2, 4)); // v1 == (2, 4)
 	 */
-	Vector2.prototype.setv = function (vec2) {
-		this.data[0] = vec2.data[0];
-		this.data[1] = vec2.data[1];
+	Vector2.prototype.setVector = function (vector) {
+		this.data[0] = vector.data[0];
+		this.data[1] = vector.data[1];
 
 		return this;
 	};
 
+	Vector2.prototype.setv = addWarning(
+		Vector2.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
 	/**
 	 * Adds arguments 'x', 'y' to the current vector
@@ -319,7 +338,7 @@ function (
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
 	 * v1.addd(2, 4); // v1 == (3, 6)
 	 */
-	Vector2.prototype.addd = function (x, y) {
+	Vector2.prototype.addDirect = function (x, y) {
 		this.data[0] += x;
 		this.data[1] += y;
 
@@ -334,7 +353,7 @@ function (
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
 	 * v1.addv(new Vector2(2, 4)); // v1 == (3, 6)
 	 */
-	Vector2.prototype.addv = function (vector) {
+	Vector2.prototype.addVector = function (vector) {
 		this.data[0] += vector.data[0];
 		this.data[1] += vector.data[1];
 
@@ -351,7 +370,7 @@ function (
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
 	 * v1.muld(2, 4); // v1 == (2, 8)
 	 */
-	Vector2.prototype.muld = function (x, y) {
+	Vector2.prototype.mulDirect = function (x, y) {
 		this.data[0] *= x;
 		this.data[1] *= y;
 
@@ -366,7 +385,7 @@ function (
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
 	 * v1.mulv(new Vector2(2, 4)); // v1 == (2, 8)
 	 */
-	Vector2.prototype.mulv = function (vector) {
+	Vector2.prototype.mulVector = function (vector) {
 		this.data[0] *= vector.data[0];
 		this.data[1] *= vector.data[1];
 
@@ -383,7 +402,7 @@ function (
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
 	 * v1.subd(2, 4); // v1 == (-1, -2)
 	 */
-	Vector2.prototype.subd = function (x, y) {
+	Vector2.prototype.subDirect = function (x, y) {
 		this.data[0] -= x;
 		this.data[1] -= y;
 
@@ -398,7 +417,7 @@ function (
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
 	 * v1.addv(new Vector2(2, 4)); // v1 == (-1, -2)
 	 */
-	Vector2.prototype.subv = function (vector) {
+	Vector2.prototype.subVector = function (vector) {
 		this.data[0] -= vector.data[0];
 		this.data[1] -= vector.data[1];
 
