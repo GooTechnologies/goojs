@@ -293,6 +293,17 @@ function (
 	};
 
 	// Performance methods
+	/**
+	 * Sets the vector's values from 4 numeric arguments
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
+	 * @returns {Vector4} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * v1.setd(2, 4, 6, 8); // v1 == (2, 4, 6, 8)
+	 */
 	Vector4.prototype.setd = function (x, y, z, w) {
 		this.data[0] = x;
 		this.data[1] = y;
@@ -302,6 +313,14 @@ function (
 		return this;
 	};
 
+	/**
+	 * Sets the vector's values from an array
+	 * @param {number[]} array
+	 * @returns {Vector4} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * v1.seta([2, 4, 6, 8]); // v1 == (2, 4, 6, 8)
+	 */
 	Vector4.prototype.seta = function (array) {
 		this.data[0] = array[0];
 		this.data[1] = array[1];
@@ -311,14 +330,137 @@ function (
 		return this;
 	};
 
-	Vector4.prototype.setv = function (vec4) {
-		this.data[0] = vec4.data[0];
-		this.data[1] = vec4.data[1];
-		this.data[2] = vec4.data[2];
-		this.data[3] = vec4.data[3];
+	/**
+	 * Sets the vector's values from another vector
+	 * @param {Vector4} vector
+	 * @returns {Vector4} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * v1.setv(new Vector4(2, 4, 6, 8)); // v1 == (2, 4, 6, 8)
+	 */
+	Vector4.prototype.setv = function (vector) {
+		this.data[0] = vector.data[0];
+		this.data[1] = vector.data[1];
+		this.data[2] = vector.data[2];
+		this.data[3] = vector.data[3];
 
 		return this;
 	};
+
+
+	/**
+	 * Adds arguments 'x', 'y', 'z', 'w' to the current vector
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2); // v1 == (1, 2, 3, 4)
+	 * v1.addd(2, 4, 6, 8); // v1 == (3, 6, 9, 12)
+	 */
+	Vector4.prototype.addd = function (x, y, z, w) {
+		this.data[0] += x;
+		this.data[1] += y;
+		this.data[2] += z;
+		this.data[3] += w;
+
+		return this;
+	};
+
+	/**
+	 * Adds the vector argument to the current vector
+	 * @param {Vector4} vector
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2); // v1 == (1, 2)
+	 * v1.addv(new Vector4(2, 4)); // v1 == (3, 6)
+	 */
+	Vector4.prototype.addv = function (vector) {
+		this.data[0] += vector.data[0];
+		this.data[1] += vector.data[1];
+		this.data[2] += vector.data[2];
+		this.data[3] += vector.data[3];
+
+		return this;
+	};
+
+
+	/**
+	 * Multiplies the vector by arguments 'x', 'y', 'z', 'w'
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} t
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
+	 * v1.muld(2, 4, 6, 8); // v1 == (2, 8, 18, 32)
+	 */
+	Vector4.prototype.muld = function (x, y, z, w) {
+		this.data[0] *= x;
+		this.data[1] *= y;
+		this.data[2] *= z;
+		this.data[3] *= w;
+
+		return this;
+	};
+
+	/**
+	 * Multiplies the vector by the argument
+	 * @param {Vector4} vector
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
+	 * v1.mulv(new Vector4(2, 4, 6, 8)); // v1 == (2, 8, 18, 32)
+	 */
+	Vector4.prototype.mulv = function (vector) {
+		this.data[0] *= vector.data[0];
+		this.data[1] *= vector.data[1];
+		this.data[2] *= vector.data[2];
+		this.data[3] *= vector.data[3];
+
+		return this;
+	};
+
+
+	/**
+	 * Subtracts arguments 'x', 'y', 'z', 'w' form the current vector
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
+	 * v1.subd(2, 4, 6, 8); // v1 == (-1, -2, -3, -4)
+	 */
+	Vector4.prototype.subd = function (x, y, z, w) {
+		this.data[0] -= x;
+		this.data[1] -= y;
+		this.data[2] -= z;
+		this.data[3] -= w;
+
+		return this;
+	};
+
+	/**
+	 * Subtracts the vector argument from the current vector
+	 * @param {Vector2} vector
+	 * @returns {Vector2} this for chaining
+	 * @example
+	 * var v1 = new Vector2(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
+	 * v1.addv(new Vector2(2, 4, 6, 8)); // v1 == (-1, -2, -3, -4)
+	 */
+	Vector4.prototype.subv = function (vector) {
+		this.data[0] -= vector.data[0];
+		this.data[1] -= vector.data[1];
+		this.data[2] -= vector.data[2];
+		this.data[3] -= vector.data[3];
+
+		return this;
+	};
+
 
 	/**
 	 * Scales the vector by a factor

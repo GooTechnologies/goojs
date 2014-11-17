@@ -638,7 +638,6 @@ function (
 	 *     entity.transformComponent.setUpdated();
 	 * }
 	 */
-	 // Review: this function looks like it could be generalized in Vector.js instead
 	Vector3.prototype.lerp = function (end, factor) {
 		this.data[0] = (1.0 - factor) * this.data[0] + factor * end.data[0];
 		this.data[1] = (1.0 - factor) * this.data[1] + factor * end.data[1];
@@ -649,7 +648,7 @@ function (
 
 	// Performance methods
 	/**
-	 * Sets Vector3 values with numbers as inputs.  The current Vector3 is modified.
+	 * Sets the vector's values from 3 numeric arguments
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
@@ -667,7 +666,7 @@ function (
 	};
 
 	/**
-	 * Sets Vector3 values with an Array of numbers as input.  The current Vector3 is modified.
+	 * Sets Vector3 values with an Array of numbers as input. The current Vector3 is modified.
 	 * @param {number[]} array
 	 * @returns {Vector3} this for chaining
 	 * @example
@@ -700,7 +699,7 @@ function (
 	};
 
 	/**
-	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values.  The current Vector3 is modified.
+	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
@@ -709,7 +708,7 @@ function (
 	 * var v1 = new Vector3(1, 2, 3);
 	 * v1.add_d(2, 4, 6); // v1 == (3, 6, 9)
 	 */
-	Vector3.prototype.add_d = function (x, y, z) {
+	Vector3.prototype.addd = function (x, y, z) {
 		this.data[0] += x;
 		this.data[1] += y;
 		this.data[2] += z;
@@ -717,8 +716,13 @@ function (
 		return this;
 	};
 
+	Vector3.prototype.add_d = function () {
+		console.warn('.add_d is deprecated; please use .addd instead');
+		Vector3.prototype.addd.apply(this, arguments);
+	};
+
 	/**
-	 * Adds another {@link Vector3} to the current Vector3.  The current Vector3 is modified.
+	 * Adds another {@link Vector3} to the current Vector3
 	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
 	 * @example
@@ -735,7 +739,7 @@ function (
 	};
 
 	/**
-	 * Multiplies the current Vector3 by another {@link Vector3}.  The current Vector3 is modified.
+	 * Multiplies the current Vector3 by another {@link Vector3}
 	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
 	 * @example
@@ -752,7 +756,7 @@ function (
 	};
 
 	/**
-	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs.  The current Vector3 is modified.
+	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
@@ -770,7 +774,7 @@ function (
 	};
 
 	/**
-	 * Subtracts another {@link Vector3} from the current Vector3.  The current Vector3 is modified.
+	 * Subtracts another {@link Vector3} from the current Vector3
 	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
 	 * @example
@@ -787,7 +791,7 @@ function (
 	};
 
 	/**
-	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3.  The current Vector3 is modified.
+	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
@@ -796,12 +800,17 @@ function (
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * v1.sub_d(1, 2, 3); // v1 == (-1, -2, -3)
 	 */
-	Vector3.prototype.sub_d = function (x, y, z) {
+	Vector3.prototype.subd = function (x, y, z) {
 		this.data[0] -= x;
 		this.data[1] -= y;
 		this.data[2] -= z;
 
 		return this;
+	};
+
+	Vector3.prototype.sub_d = function () {
+		console.warn('.sub_d is deprecated; please use .subd instead');
+		Vector3.prototype.subd.apply(this, arguments);
 	};
 
 	/**
