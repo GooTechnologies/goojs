@@ -321,6 +321,19 @@ function (
 	};
 
 	/**
+	 * Scales the vector by a factor
+	 * @param {number} factor
+	 * @returns {Vector4} Self for chaining
+	 */
+	Vector4.prototype.scale = function (factor) {
+		this.data[0] *= factor;
+		this.data[1] *= factor;
+		this.data[2] *= factor;
+		this.data[3] *= factor;
+		return this;
+	};
+
+	/**
 	 * @description Clones the vector.
 	 * @return {Vector4} Clone of self.
 	 */

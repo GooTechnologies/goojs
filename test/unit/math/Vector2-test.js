@@ -124,6 +124,14 @@ define([
 			});
 		});
 
+		describe('scale', function () {
+			it('scales a vector', function () {
+				var vector = new Vector2(1, 2);
+				vector.scale(123);
+				expect(vector).toBeCloseToVector(new Vector2(1 * 123, 2 * 123));
+			});
+		});
+
 		describe('div', function () {
 			it('can perform division', function () {
 				var a = new Vector2(1, 2);

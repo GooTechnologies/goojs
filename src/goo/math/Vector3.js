@@ -805,6 +805,18 @@ function (
 	};
 
 	/**
+	 * Scales the vector by a factor
+	 * @param {number} factor
+	 * @returns {Vector3} Self for chaining
+	 */
+	Vector3.prototype.scale = function (factor) {
+		this.data[0] *= factor;
+		this.data[1] *= factor;
+		this.data[2] *= factor;
+		return this;
+	};
+
+	/**
 	 * Calculates the length(magnitude) squared of the current Vector3.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.

@@ -140,6 +140,14 @@ define([
 			});
 		});
 
+		describe('scale', function () {
+			it('scales a vector', function () {
+				var vector = new Vector3(1, 2, 3);
+				vector.scale(123);
+				expect(vector).toBeCloseToVector(new Vector3(1 * 123, 2 * 123, 3 * 123));
+			});
+		});
+
 		describe('div', function () {
 			it('can perform division', function () {
 				var a = new Vector3(1, 2, 3);
