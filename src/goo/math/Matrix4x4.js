@@ -623,7 +623,7 @@ function (
 			d[5] * d[2] * d[11] -
 			d[1] * d[10] * d[7];
 
-		return    d[0] * val1 -
+		return d[0] * val1 -
 			d[4] * val2 +
 			d[8] * val3 -
 			d[12] * val4;

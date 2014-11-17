@@ -41,7 +41,7 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
+	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
 	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
@@ -51,11 +51,11 @@ function (
 	 */
 
 	Vector2.add = function (lhs, rhs, target) {
-		if (typeof lhs === "number") {
+		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs];
 		}
 
-		if (typeof rhs === "number") {
+		if (typeof rhs === 'number') {
 			rhs = [rhs, rhs];
 		}
 
@@ -73,7 +73,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
+	 * @description Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector2} Self for chaining.
@@ -87,7 +87,7 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
+	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
 	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
@@ -120,7 +120,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction and stores the result locally. Equivalent of "return (this = this - rhs);".
+	 * @description Performs a component-wise subtraction and stores the result locally. Equivalent of 'return (this = this - rhs);'.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector2} Self for chaining.
@@ -134,7 +134,7 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
+	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
 	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
@@ -166,7 +166,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication and stores the result locally. Equivalent of "return (this = this * rhs);".
+	 * @description Performs a component-wise multiplication and stores the result locally. Equivalent of 'return (this = this * rhs);'.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector2} Self for chaining.
@@ -180,7 +180,7 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
+	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
 	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
@@ -212,7 +212,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
+	 * @description Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {Vector2} Self for chaining.
@@ -225,7 +225,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
+	 * @description Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
 	 * @param {Vector2|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
@@ -250,7 +250,7 @@ function (
 	};
 
 	/**
-	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
+	 * @description Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
 	 * @param {Vector2|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @return {number} Dot product.
