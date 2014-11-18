@@ -26,7 +26,7 @@ function (
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 * @param {GooRunner} gooRunner GooRunner for updating the world and calling the renderers.
 	 */
-	function World(gooRunner) {
+	function World_(gooRunner) {
 
 		/** GooRunner for updating the world and calling the renderers.
 		 * @type {GooRunner}
@@ -61,6 +61,8 @@ function (
 
 		this._components = [];
 	}
+
+	var World = World_;
 
 	//! AT: these need to go
 	World.time = 0.0;

@@ -14,7 +14,7 @@ define([
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function PointLight(color) {
+	function PointLight_(color) {
 		Light.call(this, color);
 
 		/**
@@ -23,6 +23,8 @@ define([
 		 */
 		this.range = 1000;
 	}
+
+	var PointLight = PointLight_;
 
 	PointLight.prototype = Object.create(Light.prototype);
 	PointLight.prototype.constructor = PointLight;

@@ -8,7 +8,7 @@ function (Vector3) {
 	 * Entities within the opaque buckets are sorted front to back and entities within the transparent buckets are sorted
 	 * back to front.
 	 */
-	function RenderQueue() {
+	function RenderQueue_() {
 		this.opaqueSorter = function (a, b) {
 			//TODO: Add texture checks on material
 
@@ -61,6 +61,8 @@ function (Vector3) {
 			return a - b;
 		};
 	}
+
+	var RenderQueue = RenderQueue_;
 
 	var bucketSortList = [];
 

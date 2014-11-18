@@ -11,7 +11,7 @@ define([
 	 * @param {boolean} faceCamera
 	 * @extends Component
 	 */
-	function CSSTransformComponent(domElement, faceCamera) {
+	function CSSTransformComponent_(domElement, faceCamera) {
 		Component.call(this);
 
 		this.type = "CSSTransformComponent";
@@ -32,6 +32,8 @@ define([
 		 */
 		this.faceCamera = (typeof faceCamera === 'undefined') ? false : faceCamera;
 	}
+
+	var CSSTransformComponent = CSSTransformComponent_;
 
 	CSSTransformComponent.prototype = Object.create(Component.prototype);
 

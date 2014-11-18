@@ -20,7 +20,7 @@ function (
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
 	 *        <code>averagePoints</code>. A call to <code>computeFramePoint</code> in turn calls <code>containAABB</code>.
 	 */
-	function BoundingBox(center, xExtent, yExtent, zExtent) {
+	function BoundingBox_(center, xExtent, yExtent, zExtent) {
 		BoundingVolume.call(this, center);
 
 		// x/y/z Extent is actually width/height/depth * 0.5
@@ -28,6 +28,8 @@ function (
 		this.yExtent = yExtent !== undefined ? yExtent : 1;
 		this.zExtent = zExtent !== undefined ? zExtent : 1;
 	}
+
+	var BoundingBox = BoundingBox_;
 
 	var tmpVec1 = new Vector3();
 	var tmpVec2 = new Vector3();

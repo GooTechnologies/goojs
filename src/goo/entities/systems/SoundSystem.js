@@ -23,7 +23,7 @@ function(
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
 	 * @extends {System}
 	 */
-	function SoundSystem() {
+	function SoundSystem_() {
 		if (!AudioContext) {
 			console.warn('Cannot create soundsystem, webaudio not supported');
 			return;
@@ -67,6 +67,8 @@ function(
 			that._camera = camConfig.camera;
 		});
 	}
+
+	var SoundSystem = SoundSystem_;
 
 	SoundSystem.prototype = Object.create(System.prototype);
 	SoundSystem.prototype.constructor = SoundSystem;

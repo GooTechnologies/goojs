@@ -13,7 +13,7 @@ define([
 	 * @class Main handler of all entities in the world.
 	 * @extends Manager
 	 */
-	function EntityManager() {
+	function EntityManager_() {
 		this.type = 'EntityManager';
 
 		this._entitiesById = {};
@@ -41,6 +41,8 @@ define([
 			}.bind(this)
 		};
 	}
+
+	var EntityManager = EntityManager_;
 
 	EntityManager.prototype = Object.create(Manager.prototype);
 

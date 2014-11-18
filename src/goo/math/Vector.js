@@ -16,10 +16,11 @@ function (
 	 * @description Creates a new vector.
 	 * @param {number} size Number of vector components.
 	 */
-
-	function Vector(size) {
+	function Vector_(size) {
 		this.data = new Float32Array(size);
 	}
+
+	var Vector = Vector_;
 
 	/* ====================================================================== */
 

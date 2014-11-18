@@ -6,8 +6,9 @@ define(
 	/**
 	 * @class Utility for creating index buffers of appropriate type
 	 */
-	function BufferUtils() {
-	}
+	function BufferUtils_() {}
+
+	var BufferUtils = BufferUtils_;
 
 	BufferUtils.createIndexBuffer = function(indexCount, vertexCount) {
 		var indices;

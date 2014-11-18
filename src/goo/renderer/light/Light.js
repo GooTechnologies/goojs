@@ -13,7 +13,7 @@ function (
 	 * @constructor
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function Light(color) {
+	function Light_(color) {
 		/**
 		 * The light's translation in world space
 		 * @type {Vector3}
@@ -74,6 +74,8 @@ function (
 		this.changedProperties = false;
 		this.changedColor =  false;
 	}
+
+	var Light = Light_;
 
 	Light.prototype.destroy = function (renderer) {
 		var shadowSettings = this.shadowSettings;

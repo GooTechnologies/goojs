@@ -17,7 +17,7 @@ function (
 	 * @param {Vector2|number[]|...number} arguments Initial values for the components.
 	 */
 
-	function Vector2() {
+	function Vector2_() {
 		Vector.call(this, 2);
 
 		if (arguments.length !== 0) {
@@ -26,6 +26,8 @@ function (
 			this.setd(0,0);
 		}
 	}
+
+	var Vector2 = Vector2_;
 
 	Vector2.prototype = Object.create(Vector.prototype);
 	Vector.setupAliases(Vector2.prototype, [['x', 'u', 's'], ['y', 'v', 't']]);

@@ -25,7 +25,7 @@ function (
 	 * @class Takes away the pain of creating textures of various sorts.
 	 * @param {Settings} settings Texturing settings
 	 */
-	function TextureCreator() {
+	function TextureCreator_() {
 		var ajax = this.ajax = new Ajax();
 		this.textureHandler = new TextureHandler(
 			{},
@@ -38,6 +38,8 @@ function (
 			}
 		);
 	}
+
+	var TextureCreator = TextureCreator_;
 
 	//! AT: unused?
 	TextureCreator.UNSUPPORTED_FALLBACK = '.png';

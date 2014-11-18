@@ -1,24 +1,37 @@
-define(["goo/entities/systems/System", "goo/renderer/Renderer", "goo/math/Matrix4x4", 'goo/math/MathUtils', 'goo/math/Vector3'], /** @lends */
-function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
+define([
+	'goo/entities/systems/System', 
+	'goo/renderer/Renderer', 
+	'goo/math/Matrix4x4', 
+	'goo/math/MathUtils', 
+	'goo/math/Vector3'
+], /** @lends */
+function (
+	System, 
+	Renderer, 
+	Matrix4x4, 
+	MathUtils, 
+	Vector3
+) {
 	'use strict';
 
 	/**
 	* @class
 	* @extends System
 	*/
-	function CSSTransformSystem(renderer) {
-		System.call(this, "CSSTransformSystem", ["TransformComponent", "CSSTransformComponent"]);
+	function CSSTransformSystem_(renderer) {
+		System.call(this, 'CSSTransformSystem', ['TransformComponent', 'CSSTransformComponent']);
 
 		this.renderer = renderer;
 
-
         if (document.querySelector) {
-		    this.viewDom = document.querySelector("#view");
-		    this.containerDom = document.querySelector("#cam1");
-		    this.containerDom2 = document.querySelector("#cam2");
+		    this.viewDom = document.querySelector('#view');
+		    this.containerDom = document.querySelector('#cam1');
+		    this.containerDom2 = document.querySelector('#cam2');
         }
 
 	}
+	
+	var CSSTransformSystem = CSSTransformSystem_;
 
 	var tmpMatrix = new Matrix4x4();
 	var tmpMatrix2 = new Matrix4x4();

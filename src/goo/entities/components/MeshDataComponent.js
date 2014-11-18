@@ -17,7 +17,7 @@ function (
 	 * @param {MeshData} meshData Target mesh data for this component.
 	 * @extends Component
 	 */
-	function MeshDataComponent(meshData) {
+	function MeshDataComponent_(meshData) {
 		this.type = 'MeshDataComponent';
 
 		/**
@@ -42,6 +42,8 @@ function (
 		 */
 		this.currentPose = null; // SkeletonPose
 	}
+
+	var MeshDataComponent = MeshDataComponent_;
 
 	MeshDataComponent.type = 'MeshDataComponent';
 

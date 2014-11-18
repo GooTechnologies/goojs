@@ -18,7 +18,7 @@ function (
 	 * @param {Camera} camera Camera to contain in this component.
 	 * @extends Component
 	 */
-	function CameraComponent (camera) {
+	function CameraComponent_(camera) {
 		this.type = 'CameraComponent';
 
 		/** The camera contained by the component.
@@ -44,6 +44,8 @@ function (
 		 */
 		this.dirVec = new Vector3(0, 0, -1);
 	}
+
+	var CameraComponent = CameraComponent_;
 
 	CameraComponent.type = 'CameraComponent';
 

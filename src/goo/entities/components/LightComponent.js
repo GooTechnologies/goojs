@@ -15,7 +15,7 @@ define([
 	 * @param {Light} light Light to contain in this component (directional, spot, point)
 	 * @extends Component
 	 */
-	function LightComponent(light) {
+	function LightComponent_(light) {
 		this.type = 'LightComponent';
 
         /**
@@ -29,6 +29,8 @@ define([
 		 */
 		this.hidden = false;
 	}
+
+	var LightComponent = LightComponent_;
 
 	LightComponent.prototype = Object.create(Component.prototype);
 
