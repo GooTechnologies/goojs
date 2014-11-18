@@ -35,7 +35,8 @@ define([
 
 				shaderCall.call(value1);
 				expect(context[method]).toHaveBeenCalled();
-				expect(context[method]).toHaveBeenCalledWith({value:value1}, value1);
+				var args = context[method].calls.mostRecent().args;
+				expect(args[args.length - 1]).toEqual(value1);
 
 				context[method].calls.reset();
 
@@ -46,13 +47,31 @@ define([
 
 				shaderCall.call(value2);
 				expect(context[method]).toHaveBeenCalled();
-				expect(context[method]).toHaveBeenCalledWith({value:value2}, value2);
+				args = context[method].calls.mostRecent().args;
+				expect(args[args.length - 1]).toEqual(value2);
 			};
 			it('can optimize calls to ShaderCall uniforms', function() {
 				testShaderCall(context, 'uniform1f', 'float', 2.3, 5.5);
 				testShaderCall(context, 'uniform1fv', 'floatarray', [1.2, 2.3], [3.4, 4.5]);
 				testShaderCall(context, 'uniform1i', 'int', 5, 8);
 				testShaderCall(context, 'uniform1iv', 'intarray', [1, 2], [3, 4]);
+
+				testShaderCall(context, 'uniform2fv', 'vec2', [1.2, 2.3], [3.4, 4.5]);
+				testShaderCall(context, 'uniform3fv', 'vec3', [1.2, 2.3, 3.4], [3.4, 4.5, 5.6]);
+				testShaderCall(context, 'uniform4fv', 'vec4', [1.2, 2.3, 3.4, 4.5], [3.4, 4.5, 5.6, 6.7]);
+
+				testShaderCall(context, 'uniformMatrix2fv', 'mat2', 
+					[1.2, 2.3, 3.4, 4.5], 
+					[3.4, 4.5, 5.6, 6.7]
+				);
+				testShaderCall(context, 'uniformMatrix3fv', 'mat3', 
+					[1, 2, 3, 4, 5, 6, 7, 8, 9], 
+					[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1]
+				);
+				testShaderCall(context, 'uniformMatrix4fv', 'mat4', 
+					[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], 
+					[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1, 11.1, 12.1, 13.1, 14.1, 15.1, 16.1]
+				);
 			});
 		});
 		describe('Build and compile shader', function() {
@@ -234,6 +253,8 @@ define([
 			uniform2fv: function(location, values) {},
 			uniform3fv: function(location, values) {},
 			uniform4fv: function(location, values) {},
+			uniformMatrix2fv: function(location, transpose, data) {},
+			uniformMatrix3fv: function(location, transpose, data) {},
 			uniformMatrix4fv: function(location, transpose, data) {},
 		};
 	};
