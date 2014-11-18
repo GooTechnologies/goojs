@@ -1143,14 +1143,9 @@ define([
 			// ShaderBuilder.uber.processor,
 			ShaderBuilder.animation.processor,
 
-			function (shader, shaderInfo) {
-				var attributeMap = shaderInfo.meshData.attributeMap;
-
+			function (shader) {
 				shader.defines = shader.defines || {};
-
-				if (!shader.defines.NORMAL) {
-					shader.defines.NORMAL = true;
-				}
+				shader.setDefine('NORMAL', true);
 			}
 		],
 		vshader : [

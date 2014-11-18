@@ -44,9 +44,7 @@ function(
 			var keys = Object.keys(attributeMap);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var attribute = keys[i];
-				if (!shader.defines[attribute]) {
-					shader.defines[attribute] = true;
-				}
+				shader.setDefine(attribute, true);
 			}
 		},
 
@@ -62,19 +60,17 @@ function(
 					continue;
 				}
 
-				if (!shader.defines[type]) {
-					shader.defines[type] = true;
-				}
+				shader.setDefine(type, true);
 			}
 		},
 
 		reflectivity: function(shader, material) {
 			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
-				shader.defines.REFLECTIVE = true;
-			} else if (shader.defines.REFLECTIVE !== undefined) {
-				delete shader.defines.REFLECTIVE;
+				shader.setDefine('REFLECTIVE', true);
+			} else {
+				shader.removeDefine('REFLECTIVE');
 			}
-			shader.defines.REFLECTION_TYPE = material.uniforms.reflectionType !== undefined ? material.uniforms.reflectionType : 0;
+			shader.setDefine('REFLECTION_TYPE', material.uniforms.reflectionType !== undefined ? material.uniforms.reflectionType : 0);
 		},
 
 		sky: function(shader, material) {
@@ -85,7 +81,7 @@ function(
 			}
 			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
 				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
-				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
+				shader.setDefine('ENVIRONMENT_TYPE', ShaderBuilder.ENVIRONMENT_TYPE);
 			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
 				material.removeTexture('ENVIRONMENT_SPHERE');
 			}
@@ -131,7 +127,7 @@ function(
 					continue;
 				}
 				if (!attributeMap[attribute] && !textureMaps[attribute]) {
-					delete shader.defines[attribute];
+					shader.removeDefine(attribute);
 				}
 			}
 
@@ -140,9 +136,9 @@ function(
 		discard: function(shader, material) {
 			// discard
 			if (material.uniforms.discardThreshold >= 0.0) {
-				shader.defines.DISCARD = true;
-			} else if (shader.defines.DISCARD !== undefined) {
-				delete shader.defines.DISCARD;
+				shader.setDefine('DISCARD', true);
+			} else {
+				shader.removeDefine('DISCARD');
 			}
 
 		},
@@ -150,18 +146,19 @@ function(
 		fog: function(shader) {
 			// fog
 			if (ShaderBuilder.USE_FOG) {
-				shader.defines.FOG = true;
+				shader.setDefine('FOG', true);
 				shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
 				shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
-			} else if (shader.defines.FOG !== undefined) {
-				delete shader.defines.FOG;
+			} else {
+				shader.removeDefine('FOG');
 			}
 
 		},
 
 		normalTangents: function(shader, shaderInfo) {
 			//TODO: Hacky?
-			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
+			if (shader.hasDefine('NORMAL') && shader.hasDefine('NORMAL_MAP') && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
+			// if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
 				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
 			}
 		},
@@ -194,10 +191,10 @@ function(
 			// $dan: This is maybe a bit of secret property here for allowing multiplicative ambient on materials.
 			//       It should probably be default, although it'd break too much to just go ahead and change it.
 			if (material.multiplyAmbient) {
-				shader.defines.MULTIPLY_AMBIENT = true;
+				shader.setDefine('MULTIPLY_AMBIENT', true);
 			}
 
-			shader.defines.SKIP_SPECULAR = true;
+			shader.setDefine('SKIP_SPECULAR', true);
 			ShaderBuilder.uber.normalTangents(shader, shaderInfo);
 		}
 	};
@@ -310,9 +307,9 @@ function(
 					uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
 					shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
 					lightDefines.push('C');
-					shader.defines.COOKIE = true;
-				} else if (shader.defines.COOKIE) {
-					delete shader.defines.COOKIE;
+					shader.setDefine('COOKIE', true);
+				} else {
+					shader.removeDefine('COOKIE');
 				}
 
 				uniforms['shadowLightMatrices'+i] = shadowData.lightCamera.vpm;
@@ -377,12 +374,10 @@ function(
 				}
 
 				var lightStr = lightDefines.join('');
-				if (shader.defines.LIGHT !== lightStr) {
-					shader.defines.LIGHT = lightStr;
-				}
+				shader.setDefine('LIGHT', lightStr);
 				lightDefines.length = 0;
-			} else if (shader.defines.LIGHT) {
-				delete shader.defines.LIGHT;
+			} else {
+				shader.removeDefine('LIGHT');
 			}
 		},
 		builder: function (shader, shaderInfo) {
@@ -779,9 +774,9 @@ function(
 				if (!shader.uniforms.jointPalette) {
 					shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;
 				}
-				shader.defines.JOINT_COUNT = Math.max(shaderInfo.meshData.paletteMap.length * 3, 80);
+				shader.setDefine('JOINT_COUNT', Math.max(shaderInfo.meshData.paletteMap.length * 3, 80));
 			} else {
-				delete shader.defines.JOINT_COUNT;
+				shader.removeDefine('JOINT_COUNT');
 			}
 		},
 		jointPalette: function (shaderInfo) {

@@ -106,6 +106,7 @@ function (
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
 		this.defineKey = shaderDefinition.defineKey;
+		this.defineKeyDirty = true;
 		this.frameStart = true;
 		this.attributeKeys = null;
 		this.matchedUniforms = [];
@@ -325,6 +326,24 @@ function (
 		this.callMapping(shaderInfo, name, mapping);
 	};
 
+	Shader.prototype.setDefine = function (key, value) {
+		this.defines = this.defines || {};
+		this.defineKeyDirty = this.defines[key] !== value;
+		this.defines[key] = value;
+	};
+
+	Shader.prototype.removeDefine = function (key) {
+		if (!this.defines) {
+			return;
+		}
+		this.defineKeyDirty = this.defines[key] !== undefined;
+		this.defines[key] = undefined;
+	};
+
+	Shader.prototype.hasDefine = function (key) {
+		return this.defines && this.defines[key] !== false && this.defines[key] !== undefined;
+	};
+
 	Shader.prototype.startFrame = function () {
 		this.frameStart = true;
 	};
@@ -341,18 +360,25 @@ function (
 		}
 	};
 
-	Shader.prototype.getDefineKey = function () {
-		if (this.frameStart) {
-			var shaderKeyArray = this.shaderKeyArray = this.shaderKeyArray || [];
+	Shader.prototype.getDefineKey = function (definesIndices) {
+		if (this.defineKeyDirty) {
 			var defineArray = Object.keys(this.defines);
-			var len = defineArray.length;
-			shaderKeyArray.length = len;
-			for (var j = 0; j < len; j++) {
-				var key = defineArray[j];
-				shaderKeyArray[j] = key + '_' + this.defines[key];
+			var key = 'Key:'+this.name;
+			for (var i = 0, l = defineArray.length; i < l; i++) {
+				var defineArrayKey = defineArray[i];
+				var defineValue = this.defines[defineArrayKey];
+				if (defineValue === undefined) {
+					continue;
+				}
+				var defineIndex = definesIndices.indexOf(defineArrayKey);
+				if (defineIndex === -1) {
+					definesIndices.push(defineArrayKey);
+					defineIndex = definesIndices.length;
+				}
+				key += '_'+defineIndex+':'+defineValue;
 			}
-			shaderKeyArray.sort();
-			this.defineKey = shaderKeyArray.join('_') + '_' + this.name;
+			this.defineKey = key;
+			this.defineKeyDirty = false;
 		}
 
 		return this.defineKey;
@@ -619,7 +645,7 @@ function (
 		var chunks = [];
 		for (var d in defines) {
 			var value = defines[d];
-			if (value === false) {
+			if (value === false || value === undefined) {
 				continue;
 			}
 
