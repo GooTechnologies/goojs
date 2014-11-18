@@ -315,6 +315,7 @@ function (
 		scriptElem = document.createElement('script');
 		scriptElem.src = url;
 		scriptElem.setAttribute('data-script-id', scriptId);
+		scriptElem.isDependency = true
 		that._addReference(scriptElem, scriptId)
 
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
@@ -326,10 +327,7 @@ function (
 			scriptElem.onload = function () {
 				resolve();
 
-				if (!script.externalDependencyUrls) {
-					script.externalDependencyUrls = []
-				}
-				script.externalDependencyUrls.push(url)
+				if (timeoutHandler) { clearTimeout(timeoutHandler); }
 
 				delete that._dependencyPromises[url];
 			};
@@ -379,7 +377,7 @@ function (
 
 		for (var i = 0; i < scriptElements.length; ++i) {
 			var scriptElement = scriptElements[i];
-			if (!that._hasReferences(scriptElement) && scriptElement.parentNode) {
+			if (scriptElement.isDependency && !that._hasReferences(scriptElement) && scriptElement.parentNode) {
 				scriptElement.parentNode.removeChild(scriptElement);
 			}
 		}
