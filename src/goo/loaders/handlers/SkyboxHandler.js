@@ -46,7 +46,6 @@ define([
 		this._skysphereTexture = new Texture(null, { flipY: false, wrapS: 'EdgeClamp', wrapT: 'EdgeClamp' });
 		this._skysphere.meshRendererComponent.materials[0].setTexture('DIFFUSE_MAP', this._skysphereTexture);
 
-		//! AT: unused?
 		this._activeSkyshape = null;
 	}
 
@@ -190,6 +189,7 @@ define([
 			skyTex.image.height = h;
 			skyTex.image.dataReady = true;
 			skyTex.setNeedsUpdate();
+
 			if (config.enabled) {
 				that._show(that._skybox);
 			} else {
@@ -212,6 +212,9 @@ define([
 
 	SkyboxHandler.prototype._show = function(skyshape) {
 		var renderSystem = this.world.getSystem('RenderSystem');
+		if (this._activeSkyshape) {
+			renderSystem.removed(this._activeSkyshape);
+		}
 		renderSystem.added(skyshape);
 		this._activeSkyshape = skyshape;
 		ShaderBuilder.SKYBOX = skyshape === this._skybox ? this._skyboxTexture : null;
