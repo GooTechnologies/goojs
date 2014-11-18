@@ -90,7 +90,7 @@ define([
 			var rotation = ctx.entity.transformComponent.transform.rotation;
 			ctx.lookAtPoint = new Vector3(0, 0, -args.lookAtDistance);
 			rotation.applyPost(ctx.lookAtPoint);
-			ctx.lookAtPoint.addv(ctx.entity.getTranslation());
+			ctx.lookAtPoint.addVector(ctx.entity.getTranslation());
 		} else if (args.lookAtPoint) {
 			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
 		} else {

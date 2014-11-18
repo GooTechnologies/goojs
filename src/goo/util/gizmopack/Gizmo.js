@@ -182,29 +182,29 @@ function(
 			// Gizmo handle points in screen space
 			Renderer.mainCamera.getScreenCoordinates(worldCenter, 1, 1, screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldX, 1, 1, screenX);
-			screenX.subv(screenCenter);
+			screenX.subVector(screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldY, 1, 1, screenY);
-			screenY.subv(screenCenter);
+			screenY.subVector(screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldZ, 1, 1, screenZ);
-			screenZ.subv(screenCenter);
+			screenZ.subVector(screenCenter);
 			// Set plane to active axis's adjacent plane with the biggest screen area
 			if(this._activeHandle.axis === 0) {
 				if(screenY.cross(screenX).length() > screenZ.cross(screenX).length()) {
-					normal.setVector(worldZ).subv(worldCenter).normalize();
+					normal.setVector(worldZ).subVector(worldCenter).normalize();
 				} else {
-					normal.setVector(worldY).subv(worldCenter).normalize();
+					normal.setVector(worldY).subVector(worldCenter).normalize();
 				}
 			} else if (this._activeHandle.axis === 1) {
 				if(screenZ.cross(screenY).length() > screenX.cross(screenY).length()) {
-					normal.setVector(worldX).subv(worldCenter).normalize();
+					normal.setVector(worldX).subVector(worldCenter).normalize();
 				} else {
-					normal.setVector(worldZ).subv(worldCenter).normalize();
+					normal.setVector(worldZ).subVector(worldCenter).normalize();
 				}
 			} else {
 				if(screenX.cross(screenZ).length() > screenY.cross(screenZ).length()) {
-					normal.setVector(worldY).subv(worldCenter).normalize();
+					normal.setVector(worldY).subVector(worldCenter).normalize();
 				} else {
-					normal.setVector(worldX).subv(worldCenter).normalize();
+					normal.setVector(worldX).subVector(worldCenter).normalize();
 				}
 			}
 			// Plane constant is world translation projected on normal

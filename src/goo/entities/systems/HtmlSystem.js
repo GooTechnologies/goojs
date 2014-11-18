@@ -71,7 +71,7 @@ function (
 
 			// Behind camera
 			tmpVector.setVector(camera.translation)
-				.subv(entity.transformComponent.worldTransform.translation);
+				.subVector(entity.transformComponent.worldTransform.translation);
 			if (camera._direction.dot(tmpVector) > 0) {
 				component.domElement.style.display = 'none';
 				continue;

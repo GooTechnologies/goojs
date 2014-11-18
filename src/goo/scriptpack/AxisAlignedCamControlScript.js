@@ -53,7 +53,7 @@ define([
 			}
 			var entity = env.entity;
 			var transform = entity.transformComponent.transform;
-			transform.translation.setVector(env.axis).scale(env.distance).addv(env.lookAtPoint);
+			transform.translation.setVector(env.axis).scale(env.distance).addVector(env.lookAtPoint);
 			// REVIEW: Collision with pancamscript? Make new panscript for the 2d camera, or bake the panning logic into the axisaligned camera script?
 			transform.lookAt(env.lookAtPoint, env.upAxis);
 			entity.transformComponent.setUpdated();

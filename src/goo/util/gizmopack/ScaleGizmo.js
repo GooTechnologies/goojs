@@ -81,7 +81,7 @@ function(
 		var cameraEntityDistance = mainCameraTranslation.distance(boundEntityTranslation);
 		scale += cameraEntityDistance / 200000 * MathUtils.sign(scale - 1);
 
-		this._transformScale.muld(scale, scale, scale);
+		this._transformScale.mulDirect(scale, scale, scale);
 	};
 
 	ScaleGizmo.prototype._scaleNonUniform = function() {
@@ -99,11 +99,11 @@ function(
 		// Project mousemove to plane
 		this._plane.rayIntersect(this._oldRay, oldWorldPos);
 		this._plane.rayIntersect(this._newRay, worldPos);
-		result.setVector(worldPos).subv(oldWorldPos);
+		result.setVector(worldPos).subVector(oldWorldPos);
 		result.div(this.transform.scale).scale(0.07);
 		// Then project plane diff to line
 		var d = result.dot(line);
-		result.setVector(line).muld(d, d, d);
+		result.setVector(line).mulDirect(d, d, d);
 		var scale = Math.pow(1 + d, this._scale);
 
 		switch(this._activeHandle.axis) {

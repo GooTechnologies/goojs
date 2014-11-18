@@ -50,14 +50,14 @@ function (
 		// Rotate translation
 		lhs.rotation.applyPost(tmpVec);
 		// Scale translation
-		tmpVec.mulv(lhs.scale);
+		tmpVec.mulVector(lhs.scale);
 		// Translate translation
-		tmpVec.addv(lhs.translation);
+		tmpVec.addVector(lhs.translation);
 
 		// Scale
 		tmpVec2.setVector(rhs.scale);
 		// Scale scale
-		tmpVec2.mulv(lhs.scale);
+		tmpVec2.mulVector(lhs.scale);
 
 		// Rotation
 		// Rotate rotation
@@ -91,10 +91,10 @@ function (
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
 		Matrix3x3.combine(tmpMat1, this.rotation, this.rotation);
 		this.translation.setVector(b.translation);
-		this.translation.mulv(a.scale);
-		tmpMat1.applyPost(this.translation).addv(a.translation);
+		this.translation.mulVector(a.scale);
+		tmpMat1.applyPost(this.translation).addVector(a.translation);
 
-		tmpVec.setVector(a.scale).mulv(b.scale);
+		tmpVec.setVector(a.scale).mulVector(b.scale);
 		this.scale.setVector(tmpVec);
 	};
 
@@ -217,7 +217,7 @@ function (
 		if (!up) {
 			up = Vector3.UNIT_Y;
 		}
-		tmpVec.setVector(position).subv(this.translation).normalize();
+		tmpVec.setVector(position).subVector(this.translation).normalize();
 		this.rotation.lookAt(tmpVec, up);
 	};
 
@@ -253,7 +253,7 @@ function (
 		// }
 
 		result.scale.setVector(Vector3.ONE).div(this.scale);
-		result.translation.copy(this.translation).invert().mulv(result.scale);
+		result.translation.copy(this.translation).invert().mulVector(result.scale);
 		result.rotation.applyPost(result.translation);
 
 		// result.update();

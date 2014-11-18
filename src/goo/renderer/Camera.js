@@ -304,7 +304,7 @@ function (
 	 * @param {Vector3} worldUpVector A vector indicating the up direction of the world. (often Vector3.UNIT_Y or Vector3.UNIT_Z).
 	 */
 	Camera.prototype.lookAt = function (pos, worldUpVector) {
-		newDirection.setVector(pos).subv(this.translation).normalize();
+		newDirection.setVector(pos).subVector(this.translation).normalize();
 
 		// check to see if we haven't really updated camera -- no need to call
 		// sets.
@@ -577,7 +577,7 @@ function (
 			store = new Ray();
 		}
 		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, store.origin);
-		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).subv(store.origin).normalize();
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).subVector(store.origin).normalize();
 		return store;
 	};
 
@@ -831,14 +831,14 @@ function (
 			extents.setDirect(sceneBounds.radius, sceneBounds.radius, sceneBounds.radius);
 		}
 
-		corners[0].add_d(extents.x, extents.y, extents.z);
-		corners[1].add_d(extents.x, -extents.y, extents.z);
-		corners[2].add_d(extents.x, extents.y, -extents.z);
-		corners[3].add_d(extents.x, -extents.y, -extents.z);
-		corners[4].add_d(-extents.x, extents.y, extents.z);
-		corners[5].add_d(-extents.x, -extents.y, extents.z);
-		corners[6].add_d(-extents.x, extents.y, -extents.z);
-		corners[7].add_d(-extents.x, -extents.y, -extents.z);
+		corners[0].addDirect(extents.x, extents.y, extents.z);
+		corners[1].addDirect(extents.x, -extents.y, extents.z);
+		corners[2].addDirect(extents.x, extents.y, -extents.z);
+		corners[3].addDirect(extents.x, -extents.y, -extents.z);
+		corners[4].addDirect(-extents.x, extents.y, extents.z);
+		corners[5].addDirect(-extents.x, -extents.y, extents.z);
+		corners[6].addDirect(-extents.x, extents.y, -extents.z);
+		corners[7].addDirect(-extents.x, -extents.y, -extents.z);
 
 		var mvMatrix = this.getViewMatrix();
 		var optimalCameraNear = Number.MAX_VALUE;
@@ -889,26 +889,26 @@ function (
 		var direction = this.calcLeft;
 
 		direction.setVector(this._direction).mul(fNear);
-		vNearPlaneCenter.setVector(this.translation).addv(direction);
+		vNearPlaneCenter.setVector(this.translation).addVector(direction);
 		direction.setVector(this._direction).mul(fFar);
-		vFarPlaneCenter.setVector(this.translation).addv(direction);
+		vFarPlaneCenter.setVector(this.translation).addVector(direction);
 
 		var left = this.calcLeft;
 		var up = this.calcUp;
 
 		left.setVector(this._left).mul(fNearPlaneWidth);
 		up.setVector(this._up).mul(fNearPlaneHeight);
-		this._corners[0].setVector(vNearPlaneCenter).subv(left).subv(up);
-		this._corners[1].setVector(vNearPlaneCenter).addv(left).subv(up);
-		this._corners[2].setVector(vNearPlaneCenter).addv(left).addv(up);
-		this._corners[3].setVector(vNearPlaneCenter).subv(left).addv(up);
+		this._corners[0].setVector(vNearPlaneCenter).subVector(left).subVector(up);
+		this._corners[1].setVector(vNearPlaneCenter).addVector(left).subVector(up);
+		this._corners[2].setVector(vNearPlaneCenter).addVector(left).addVector(up);
+		this._corners[3].setVector(vNearPlaneCenter).subVector(left).addVector(up);
 
 		left.setVector(this._left).mul(fFarPlaneWidth);
 		up.setVector(this._up).mul(fFarPlaneHeight);
-		this._corners[4].setVector(vFarPlaneCenter).subv(left).subv(up);
-		this._corners[5].setVector(vFarPlaneCenter).addv(left).subv(up);
-		this._corners[6].setVector(vFarPlaneCenter).addv(left).addv(up);
-		this._corners[7].setVector(vFarPlaneCenter).subv(left).addv(up);
+		this._corners[4].setVector(vFarPlaneCenter).subVector(left).subVector(up);
+		this._corners[5].setVector(vFarPlaneCenter).addVector(left).subVector(up);
+		this._corners[6].setVector(vFarPlaneCenter).addVector(left).addVector(up);
+		this._corners[7].setVector(vFarPlaneCenter).subVector(left).addVector(up);
 
 		return this._corners;
 	};

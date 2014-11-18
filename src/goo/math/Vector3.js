@@ -180,12 +180,12 @@ function (
 	 * // Adds two Vector3 objects and returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * var v3 = Vector3.addv(v1, v2); // v3 == (5, 7, 9)
+	 * var v3 = Vector3.addVector(v1, v2); // v3 == (5, 7, 9)
 	 *
 	 * // Adds two Vector3 objects, and stores the result in the target Vector3
 	 * var v1 = new Vector3(2, 4, 6);
 	 * var v2 = new Vector3(4, 6, 8);
-	 * Vector3.addv(v1, v2, v1); // v1 == (6, 10, 14)
+	 * Vector3.addVector(v1, v2, v1); // v1 == (6, 10, 14)
 	 */
 	Vector3.addv = function (lhs, rhs, target) {
 		if (!target) {
@@ -281,12 +281,12 @@ function (
 	 * // Subtracts two Vector3: v2 from v1, and returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * var v3 = Vector3.subv(v1, v2); // v3 == (-3, -3, -3)
+	 * var v3 = Vector3.subVector(v1, v2); // v3 == (-3, -3, -3)
 	 *
 	 * // Subtracts two Vector3: v2 from v1, and stores the result in the target Vector3: v1
 	 * var v1 = new Vector3(2, 4, 6);
 	 * var v2 = new Vector3(4, 6, 8);
-	 * Vector3.subv(v1, v2, v1); // v1 == (-2, -2, -2)
+	 * Vector3.subVector(v1, v2, v1); // v1 == (-2, -2, -2)
 	 */
 	Vector3.subv = function (lhs, rhs, target) {
 		if (!target) {
@@ -726,7 +726,7 @@ function (
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
-	 * v1.add_d(2, 4, 6); // v1 == (3, 6, 9)
+	 * v1.addDirect(2, 4, 6); // v1 == (3, 6, 9)
 	 */
 	Vector3.prototype.addDirect = function (x, y, z) {
 		this.data[0] += x;
@@ -746,7 +746,7 @@ function (
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * v1.addv(v2); // v1 == (5, 7, 9)
+	 * v1.addVector(v2); // v1 == (5, 7, 9)
 	 */
 	Vector3.prototype.addVector = function (vector) {
 		this.data[0] += vector.data[0];
@@ -767,7 +767,7 @@ function (
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
-	 * v1.muld(2, 4, 6); // v1 == (2, 8, 18)
+	 * v1.mulDirect(2, 4, 6); // v1 == (2, 8, 18)
 	 */
 	Vector3.prototype.mulDirect = function (x, y, z) {
 		this.data[0] *= x;
@@ -787,7 +787,7 @@ function (
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(2, 2, 2);
-	 * v1.mulv(v2); // v1 == (2, 4, 6)
+	 * v1.mulVector(v2); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.mulVector = function (vec3) {
 		this.data[0] *= vec3.data[0];
@@ -808,7 +808,7 @@ function (
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.sub_d(1, 2, 3); // v1 == (-1, -2, -3)
+	 * v1.subDirect(1, 2, 3); // v1 == (-1, -2, -3)
 	 */
 	Vector3.prototype.subDirect = function (x, y, z) {
 		this.data[0] -= x;
@@ -828,7 +828,7 @@ function (
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(2, 4, 6);
-	 * v1.subv(v2); // v1 == (-2, -4, -6)
+	 * v1.subVector(v2); // v1 == (-2, -4, -6)
 	 */
 	Vector3.prototype.subVector = function (vector) {
 		this.data[0] -= vector.data[0];

@@ -349,7 +349,7 @@ function (
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.addv(new Vector2(2, 4)); // v1 == (3, 6)
+	 * v1.addVector(new Vector2(2, 4)); // v1 == (3, 6)
 	 */
 	Vector2.prototype.addVector = function (vector) {
 		this.data[0] += vector.data[0];
@@ -366,7 +366,7 @@ function (
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.muld(2, 4); // v1 == (2, 8)
+	 * v1.mulDirect(2, 4); // v1 == (2, 8)
 	 */
 	Vector2.prototype.mulDirect = function (x, y) {
 		this.data[0] *= x;
@@ -381,7 +381,7 @@ function (
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.mulv(new Vector2(2, 4)); // v1 == (2, 8)
+	 * v1.mulVector(new Vector2(2, 4)); // v1 == (2, 8)
 	 */
 	Vector2.prototype.mulVector = function (vector) {
 		this.data[0] *= vector.data[0];
@@ -413,7 +413,7 @@ function (
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
-	 * v1.addv(new Vector2(2, 4)); // v1 == (-1, -2)
+	 * v1.addVector(new Vector2(2, 4)); // v1 == (-1, -2)
 	 */
 	Vector2.prototype.subVector = function (vector) {
 		this.data[0] -= vector.data[0];

@@ -190,7 +190,7 @@ function (
 		if (aboveWater && this.skybox && this.followCam) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setVector(source).addv(this.offset);
+			target.translation.setVector(source).addVector(this.offset);
 			target.update();
 			this.waterCamera._updatePMatrix = true;
 		}

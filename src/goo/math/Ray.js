@@ -80,7 +80,7 @@ function (Vector3, MathUtils) {
 						var inv = 1.0 / dirDotNorm;
 						var t = diffDotNorm * inv;
 						if (!doPlanar) {
-							locationStore.setVector(this.origin).add_d(this.direction.x * t, this.direction.y * t, this.direction.z * t);
+							locationStore.setVector(this.origin).addDirect(this.direction.x * t, this.direction.y * t, this.direction.z * t);
 						} else {
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.
@@ -134,7 +134,7 @@ function (Vector3, MathUtils) {
 		}
 
 		if (locationStore) {
-			locationStore.setVector(this.direction).scale(ratio).addv(this.origin);
+			locationStore.setVector(this.direction).scale(ratio).addVector(this.origin);
 		}
 
 		return true;
@@ -148,12 +148,12 @@ function (Vector3, MathUtils) {
 	Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = tmpVec1;
 
-		vectorA.setVector(point).subv(this.origin);
+		vectorA.setVector(point).subVector(this.origin);
 		var t0 = this.direction.dot(vectorA);
 		if (t0 > 0) {
 			// d = |P - (O + t*D)|
 			vectorA.setVector(this.direction).scale(t0);
-			vectorA.addv(this.origin);
+			vectorA.addVector(this.origin);
 		} else {
 			// ray is closest to origin point
 			vectorA.setVector(this.origin);
@@ -164,7 +164,7 @@ function (Vector3, MathUtils) {
 			store.setVector(vectorA);
 		}
 
-		vectorA.subv(point);
+		vectorA.subVector(point);
 		return vectorA.lengthSquared();
 	};
 

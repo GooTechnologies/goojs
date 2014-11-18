@@ -86,11 +86,11 @@ function (
 			return null;
 		}
 		var c = this.constant;
-		var pMinusL0DotN = p0.set(this.normal).muld(c,c,c).subv(ray.origin).dot(this.normal);
+		var pMinusL0DotN = p0.set(this.normal).mulDirect(c,c,c).subVector(ray.origin).dot(this.normal);
 
 		var d = pMinusL0DotN / lDotN;
 
-		return store.setVector(ray.direction).muld(d,d,d).addv(ray.origin);
+		return store.setVector(ray.direction).mulDirect(d,d,d).addVector(ray.origin);
 	};
 
 	return Plane;

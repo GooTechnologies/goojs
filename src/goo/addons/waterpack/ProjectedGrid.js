@@ -168,19 +168,19 @@ function (
 		}
 
 		// restrict the intersection point to be a certain distance from the camera in plane coords
-		planeIntersection.subv(projectorCamera.translation);
+		planeIntersection.subVector(projectorCamera.translation);
 		planeIntersection.y = 0.0;
 		var length = planeIntersection.length();
 		if (length > Math.abs(projectorCamera.translation.y)) {
 			planeIntersection.normalize();
 			planeIntersection.mul(Math.abs(projectorCamera.translation.y));
 		} else if (length < MathUtils.EPSILON) {
-			planeIntersection.addv(projectorCamera._up);
+			planeIntersection.addVector(projectorCamera._up);
 			planeIntersection.y = 0.0;
 			planeIntersection.normalize();
 			planeIntersection.mul(0.1); // TODO: magic number
 		}
-		planeIntersection.addv(projectorCamera.translation);
+		planeIntersection.addVector(projectorCamera.translation);
 		planeIntersection.y = 0.0;
 
 		// point projector at the new intersection point
@@ -257,7 +257,7 @@ function (
 		var t = (planeHeight - origin.y) / (direction.y);
 
 		direction.mul(t);
-		origin.addv(direction);
+		origin.addVector(direction);
 
 		return t >= 0.0 && t <= 1.0;
 	};

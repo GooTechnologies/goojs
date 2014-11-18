@@ -81,20 +81,20 @@ function(
 				1,1,
 				ray
 			);
-			pickedPoint.setVector(ray.origin).subv(worldCenter);
+			pickedPoint.setVector(ray.origin).subVector(worldCenter);
 			var d = pickedPoint.length() * 0.9;
-			pickedPoint.setVector(ray.direction).muld(d,d,d).addv(ray.origin);
+			pickedPoint.setVector(ray.direction).mulDirect(d,d,d).addVector(ray.origin);
 
 			// Get vector from center to picked point, cross it with rotation axis and get drag direction
-			rotationDirection.setVector(pickedPoint).subv(worldCenter);
+			rotationDirection.setVector(pickedPoint).subVector(worldCenter);
 			Vector3.cross(axis, rotationDirection, rotationDirection);
-			rotationDirection.addv(pickedPoint);
+			rotationDirection.addVector(pickedPoint);
 			Renderer.mainCamera.getScreenCoordinates(
 				rotationDirection,
 				1,1,
 				this._direction
 			);
-			this._direction.sub_d(props.x, props.y, 0);
+			this._direction.subDirect(props.x, props.y, 0);
 
 			this._direction.z = 0;
 			this._direction.normalize();

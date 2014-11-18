@@ -61,12 +61,12 @@ function (
 			max.data[2] = z > max.data[2] ? z : max.data[2];
 		}
 
-		vec.setVector(max).subv(min).mul(0.5);
+		vec.setVector(max).subVector(min).mul(0.5);
 		this.xExtent = vec.data[0];
 		this.yExtent = vec.data[1];
 		this.zExtent = vec.data[2];
 
-		this.center.setVector(max).addv(min).mul(0.5);
+		this.center.setVector(max).addVector(min).mul(0.5);
 	};
 
 	/**
@@ -383,7 +383,7 @@ function (
 		}
 
 		// var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
-		var diff = tmpVec1.setVector(ray.origin).subv(this.center);
+		var diff = tmpVec1.setVector(ray.origin).subVector(this.center);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -540,7 +540,7 @@ function (
 			calcVec2.z = center.z + zExtent;
 		}
 
-		store.center.set(calcVec2).addv(calcVec1).muld(0.5, 0.5, 0.5);
+		store.center.set(calcVec2).addVector(calcVec1).mulDirect(0.5, 0.5, 0.5);
 
 		store.xExtent = calcVec2.x - store.center.x;
 		store.yExtent = calcVec2.y - store.center.y;

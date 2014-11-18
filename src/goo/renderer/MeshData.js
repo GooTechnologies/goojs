@@ -704,8 +704,8 @@ function (
 								attribs[key].values[(indexCount + 2) * 3 + 1],
 								attribs[key].values[(indexCount + 2) * 3 + 2]
 							);
-							v2.subv(v1);
-							v3.subv(v1);
+							v2.subVector(v1);
+							v3.subVector(v1);
 							v2.cross(v3).normalize();
 
 							if (attribs[MeshData.NORMAL]) {
