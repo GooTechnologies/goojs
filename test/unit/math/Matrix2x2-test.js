@@ -17,7 +17,7 @@ define([
 				expect(new Matrix2x2()).toBeCloseToMatrix(Matrix2x2.IDENTITY);
 			});
 
-			it('creates a matrix when given 9 parameters', function () {
+			it('creates a matrix when given 4 parameters', function () {
 				var matrix = new Matrix2x2(11, 22, 33, 44);
 				var expected = new Matrix2x2();
 
@@ -80,13 +80,11 @@ define([
 		it('can be inverted', function () {
 			var a = new Matrix2x2(1, 2, 3, 4);
 			var b = new Matrix2x2(1, 2, 3, 4);
-			var c = new Matrix2x2(0, 0, 1, 2);
 
 			a.invert();
 
 			expect(a).toEqual(new Matrix2x2(-2, 1, 1.5, -0.5));
 			expect(Matrix2x2.invert(b)).toEqual(new Matrix2x2(-2, 1, 1.5, -0.5));
-			expect(function () { c.invert(); }).toThrow();
 		});
 
 		it('can determine orthogonality', function () {

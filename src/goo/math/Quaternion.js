@@ -112,7 +112,6 @@ function (
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
 	Quaternion.div = function (lhs, rhs, target) {
@@ -126,10 +125,6 @@ function (
 		target.data[1] = (clean &= rhs.data[1] < 0.0 || rhs.data[1] > 0.0) ? lhs.data[1] / rhs.data[1] : 0.0;
 		target.data[2] = (clean &= rhs.data[2] < 0.0 || rhs.data[2] > 0.0) ? lhs.data[2] / rhs.data[2] : 0.0;
 		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
-
-		if (clean === false) {
-			console.warn("[Quaternion.div] Attempted to divide by zero!");
-		}
 
 		return target;
 	};
@@ -159,6 +154,7 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Quaternion vector for storage.
@@ -201,10 +197,10 @@ function (
 	/**
 	 * @static
 	 * @description Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
 
@@ -221,10 +217,6 @@ function (
 		target.data[1] = lhs.data[1] * rhs;
 		target.data[2] = lhs.data[2] * rhs;
 		target.data[3] = lhs.data[3] * rhs;
-
-		if (clean === false) {
-			console.warn("[Quaternion.scalarDiv] Attempted to divide by zero!");
-		}
 
 		return target;
 	};
@@ -360,6 +352,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -369,6 +362,7 @@ function (
 
 	/**
 	 * @description Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -395,7 +389,7 @@ function (
 		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
-	 var slerp_work_quat;
+	var slerp_work_quat;
 	/**
 	 * Computes the spherical linear interpolation from the current quaternion towards endQuat.
 	 * @param {Quaternion} endQuat End quaternion.

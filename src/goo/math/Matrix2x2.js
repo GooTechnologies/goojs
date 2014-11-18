@@ -272,7 +272,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix2x2} source Source matrix.
 	 * @param {Matrix2x2} [target] Target matrix.
-	 * @throws {SingularMatrix} If the matrix is singular and cannot be inverted.
 	 * @return {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -288,7 +287,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		var det = source.determinant();
 
 		if (Math.abs(det) < MathUtils.EPSILON) {
-			throw { name : "Singular Matrix", message : "The matrix is singular and cannot be inverted." };
+			return target;
 		}
 
 		det = 1.0 / det;

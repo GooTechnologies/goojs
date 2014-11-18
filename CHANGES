@@ -1,3 +1,27 @@
+v0.12.0 --- 2014-11-18
+======================
+
+Additions:
+ + visual tests for Skybox, Box, Sphere, .lookAt
+ + bounding box/sphere .containsPoint
+
+Changes:
+ * math classes do not throw errors anymore
+ * various speed optimizations
+
+Fixes:
+ * .setToObliqueMatrix of Camera
+ * calling .set([1, 2, 3]) on entities not working
+ * lights not having their transform updated when added to existing entities
+ * refraction bugs with animation
+ * .lookAt on matrices pointing in the opposite direction
+ * Matrix constructors not working properly with arrays or other matrices
+
+Removed:
+ - EntityUtils.hide/show; please use entity.hide/show instead
+ - util/Enum, util/Latch, util/Handy
+
+
 v0.11.7 --- 2014-10-30
 ======================
 

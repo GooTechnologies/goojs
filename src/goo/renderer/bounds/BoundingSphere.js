@@ -65,6 +65,19 @@ function (
 		this.center.setv(newCenter);
 	};
 
+	(function () {
+		var relativePoint = new Vector3();
+
+		/**
+		 * Method to test whether a point is inside the bounding box or not
+		 * @param {Vector3} point
+		 * @returns {boolean}
+		 */
+		BoundingSphere.prototype.containsPoint = function (point) {
+			return relativePoint.setv(point).subv(this.center).lengthSquared() <= Math.pow(this.radius, 2);
+		};
+	})();
+
 	BoundingSphere.prototype.computeFromPrimitives = function (data, section, indices, start, end) {
 		if (end - start <= 0) {
 			return;

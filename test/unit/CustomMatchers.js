@@ -56,7 +56,7 @@ define([
 						result.message = 'Expected an instance of Matrix';
 					} else if (actual.rows !== expected.rows || actual.cols !== expected.cols) {
 						result.message = 'Expected a matrix of size (' + expected.rows + ', ' + expected.cols + ') '+
-							' but got a vector of size (' + expected.rows + ', ' + expected.cols + ')';
+							'but got a matrix of size (' + actual.rows + ', ' + actual.cols + ')';
 					} else {
 						var expectedSerialized = serializeArrayBuffer(expected.data);
 						var actualSerialized = serializeArrayBuffer(actual.data);

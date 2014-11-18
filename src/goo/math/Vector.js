@@ -16,9 +16,8 @@ function (
 	 * @description Creates a new vector.
 	 * @param {number} size Number of vector components.
 	 */
-
 	function Vector_(size) {
-		this.data = new Float32Array(size || 0);
+		this.data = new Float32Array(size);
 	}
 
 	var Vector = Vector_;
@@ -62,11 +61,10 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of "return (target = lhs + rhs);".
+	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -79,13 +77,6 @@ function (
 			target = new Vector(size);
 		}
 
-		if (rdata.length !== size || target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
 		for (var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] + rdata[i];
 		}
@@ -94,7 +85,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this + rhs);".
+	 * @description Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @return {Vector} Self for chaining.
 	 */
@@ -107,11 +98,10 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of "return (target = lhs - rhs);".
+	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -124,13 +114,6 @@ function (
 			target = new Vector(size);
 		}
 
-		if (rdata.length !== size || target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
 		for (var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] - rdata[i];
 		}
@@ -139,7 +122,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this - rhs);".
+	 * @description Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this - rhs);'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @return {Vector} Self for chaining.
 	 */
@@ -152,11 +135,10 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of "return (target = lhs * rhs);".
+	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -169,13 +151,6 @@ function (
 			target = new Vector(size);
 		}
 
-		if (rdata.length !== size || target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
 		for (var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] * rdata[i];
 		}
@@ -184,7 +159,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition and stores the result locally. Equivalent of "return (this = this * rhs);".
+	 * @description Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this * rhs);'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @return {Vector} Self for chaining.
 	 */
@@ -197,11 +172,10 @@ function (
 
 	/**
 	 * @static
-	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of "return (target = lhs / rhs);".
+	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -214,13 +188,6 @@ function (
 			target = new Vector(size);
 		}
 
-		if (rdata.length !== size || target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
 		for (var i = 0; i < size; i++) {
 			target.data[i] = ldata[i] / rdata[i];
 		}
@@ -229,7 +196,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise division and stores the result locally. Equivalent of "return (this = this / rhs);".
+	 * @description Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @return {Vector} Self for chaining.
 	 */
@@ -242,10 +209,9 @@ function (
 
 	/**
 	 * @static
-	 * @description Copies component values and stores them in a separate vector. Equivalent of "return (target = source);".
+	 * @description Copies component values and stores them in a separate vector. Equivalent of 'return (target = source);'.
 	 * @param {Vector} source Source vector.
 	 * @param {Vector} [target] Target vector.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -256,20 +222,13 @@ function (
 			target = new Vector(size);
 		}
 
-		if (target.data.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
-
 		target.data.set(source.data);
 
 		return target;
 	};
 
 	/**
-	 * @description Copies component values and stores them locally. Equivalent of "return (this = source);".
+	 * @description Copies component values and stores them locally. Equivalent of 'return (this = source);'.
 	 * @param {Vector} source Source vector.
 	 * @return {Vector} Self for chaining.
 	 */
@@ -281,10 +240,9 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Computes the dot product between two vectors. Equivalent of "return lhs•rhs;".
+	 * @description Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {number} Dot product.
 	 */
 
@@ -292,13 +250,6 @@ function (
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 		var size = ldata.length;
-
-		if (rdata.length !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
-		}
 
 		var sum = 0.0;
 
@@ -310,7 +261,7 @@ function (
 	};
 
 	/**
-	 * @description Computes the dot product between two vectors. Equivalent of "return this•rhs;".
+	 * @description Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @return {number} Dot product.
 	 */
@@ -323,11 +274,10 @@ function (
 
 	/**
 	 * @static
-	 * @description Applys a matrix to a vector and stores the result in a separate vector. Equivalent of "return (target = lhs•rhs);".
+	 * @description Applys a matrix to a vector and stores the result in a separate vector. Equivalent of 'return (target = lhs•rhs);'.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @return {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
 
@@ -338,13 +288,6 @@ function (
 
 		if (!target) {
 			target = new Vector(rows);
-		}
-
-		if (target.data.length !== rows || cols !== size) {
-			throw {
-				name: "Illegal Arguments",
-				message: "The arguments are of incompatible sizes."
-			};
 		}
 
 		if (target === rhs) {
@@ -369,7 +312,7 @@ function (
 	};
 
 	/**
-	 * @description Applys a matrix to a vector and stores the result locally. Equivalent of "return (this = lhs•this);".
+	 * @description Applys a matrix to a vector and stores the result locally. Equivalent of 'return (this = lhs•this);'.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @return {Vector} Self for chaining.
 	 */
@@ -382,7 +325,7 @@ function (
 
 	/**
 	 * @static
-	 * @description Compares two vectors for approximate equality. Equivalent of "return (lhs ~ rhs);".
+	 * @description Compares two vectors for approximate equality. Equivalent of 'return (lhs ~ rhs);'.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @return {Boolean} True if equal.
@@ -404,7 +347,7 @@ function (
 	};
 
 	/**
-	 * @description Compares two vectors for approximate equality. Equivalent of "return (this ~ rhs);"
+	 * @description Compares two vectors for approximate equality. Equivalent of 'return (this ~ rhs);'
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @return {Boolean} True if equal.
 	 */
@@ -417,7 +360,7 @@ function (
 
 	/**
 	 * @static
-	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - lhs)•(rhs - lhs);". When comparing the relative
+	 * @description Computes the squared distance between two vectors. Equivalent of 'return (rhs - lhs)•(rhs - lhs);'. When comparing the relative
 	 *              distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root
 	 *              operation.
 	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
@@ -430,7 +373,7 @@ function (
 	};
 
 	/**
-	 * @description Computes the squared distance between two vectors. Equivalent of "return (rhs - this)•(rhs - this);". When comparing the
+	 * @description Computes the squared distance between two vectors. Equivalent of 'return (rhs - this)•(rhs - this);'. When comparing the
 	 *              relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square
 	 *              root operation.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
@@ -445,7 +388,7 @@ function (
 
 	/**
 	 * @static
-	 * @description Computes the distance between two vectors. Equivalent of "return sqrt((rhs - lhs)•(rhs - lhs));".
+	 * @description Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - lhs)•(rhs - lhs));'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @return {number} Distance.
@@ -456,7 +399,7 @@ function (
 	};
 
 	/**
-	 * @description Computes the distance between two vectors. Equivalent of "return sqrt((rhs - this)•(rhs - this));".
+	 * @description Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - this)•(rhs - this));'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @return {number} Distance.
 	 */
@@ -468,7 +411,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Computes the squared length of the vector. Equivalent of "return this•this;".
+	 * @description Computes the squared length of the vector. Equivalent of 'return this•this;'.
 	 * @return {number} Square length.
 	 */
 
@@ -479,7 +422,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Computes the length of the vector. Equivalent of "return sqrt(this•this);".
+	 * @description Computes the length of the vector. Equivalent of 'return sqrt(this•this);'.
 	 * @return {number} Length.
 	 */
 
@@ -502,7 +445,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Inverts all component values of the vector. Equivalent of "return (this = 0.0 - this);".
+	 * @description Inverts all component values of the vector. Equivalent of 'return (this = 0.0 - this);'.
 	 * @return {Vector} Self for chaining.
 	 */
 
@@ -517,8 +460,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Normalizes the vector to unit length. Equivalent of "return (this = this/sqrt(this•this));".
-	 * @throws {NormalizationError} If the magnitude of the vector is incredibly small.
+	 * @description Normalizes the vector to unit length. Equivalent of 'return (this = this/sqrt(this•this));'.
 	 * @return {Vector} Self for chaining.
 	 */
 
@@ -543,7 +485,7 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @description Clones the vector. Equivalent of "return (clone = this)".
+	 * @description Clones the vector. Equivalent of 'return (clone = this)'.
 	 * @return {Vector} Clone of self.
 	 */
 
@@ -560,7 +502,7 @@ function (
 	 */
 
 	Vector.prototype.set = function () {
-		if (arguments.length === 1 && typeof (arguments[0]) === "object") {
+		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
 			if (arguments[0] instanceof Vector) {
 				this.copy(arguments[0]);
 			} else if (arguments[0].length > 1) {
@@ -587,16 +529,16 @@ function (
 	 */
 
 	Vector.prototype.toString = function () {
-		var string = "";
+		var string = '';
 
-		string += "[";
+		string += '[';
 
 		for (var i = 0; i < this.data.length; i++) {
 			string += this.data[i];
-			string += i !== this.data.length - 1 ? ", " : "";
+			string += i !== this.data.length - 1 ? ', ' : '';
 		}
 
-		string += "]";
+		string += ']';
 
 		return string;
 	};
