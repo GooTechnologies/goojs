@@ -109,7 +109,7 @@ function (
 		moveVector.setVector(worldPos).subVector(oldWorldPos);
 		// Then project plane diff to line
 		var d = moveVector.dot(line);
-		moveVector.setVector(line).mulDirect(d, d, d);
+		moveVector.setVector(line).scale(d);
 
 		this.transform.translation.addVector(moveVector);
 	};

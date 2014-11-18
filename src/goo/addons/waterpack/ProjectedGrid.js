@@ -150,7 +150,7 @@ function (
 		var source = this.source;
 		var planeIntersection = this.planeIntersection;
 
-		source.set(0.5, 0.5);
+		source.setDirect(0.5, 0.5);
 		this.getWorldIntersection(0.0, source, projectorCamera.getViewProjectionInverseMatrix(), planeIntersection);
 
 		// force the projector to be a certain distance above the plane
@@ -173,12 +173,12 @@ function (
 		var length = planeIntersection.length();
 		if (length > Math.abs(projectorCamera.translation.y)) {
 			planeIntersection.normalize();
-			planeIntersection.mul(Math.abs(projectorCamera.translation.y));
+			planeIntersection.scale(Math.abs(projectorCamera.translation.y));
 		} else if (length < MathUtils.EPSILON) {
 			planeIntersection.addVector(projectorCamera._up);
 			planeIntersection.y = 0.0;
 			planeIntersection.normalize();
-			planeIntersection.mul(0.1); // TODO: magic number
+			planeIntersection.scale(0.1); // TODO: magic number
 		}
 		planeIntersection.addVector(projectorCamera.translation);
 		planeIntersection.y = 0.0;
@@ -191,9 +191,9 @@ function (
 		var spaceTransformation = new Vector4();
 		var intersections = this.intersections;
 		for (var i = 0; i < nrPoints; i++) {
-			spaceTransformation.set(intersections[i].x, 0.0, this.intersections[i].z, 1.0);
+			spaceTransformation.setDirect(intersections[i].x, 0.0, this.intersections[i].z, 1.0);
 			modelViewProjectionMatrix.applyPost(spaceTransformation);
-			intersections[i].set(spaceTransformation.x, spaceTransformation.y, 0);
+			intersections[i].setDirect(spaceTransformation.x, spaceTransformation.y, 0);
 			intersections[i].div(spaceTransformation.w);
 		}
 
@@ -228,13 +228,13 @@ function (
 		var modelViewProjectionInverseMatrix = projectorCamera.getViewProjectionInverseMatrix();
 		Matrix4x4.combine(modelViewProjectionInverseMatrix, rangeMatrix, rangeMatrix);
 
-		source.set(0.5, 0.5);
+		source.setDirect(0.5, 0.5);
 		this.getWorldIntersectionHomogenous(0.0, source, rangeMatrix, this.intersectBottomLeft);
-		source.set(0.5, 1);
+		source.setDirect(0.5, 1);
 		this.getWorldIntersectionHomogenous(0.0, source, rangeMatrix, this.intersectTopLeft);
-		source.set(1, 1);
+		source.setDirect(1, 1);
 		this.getWorldIntersectionHomogenous(0.0, source, rangeMatrix, this.intersectTopRight);
-		source.set(1, 0.5);
+		source.setDirect(1, 0.5);
 		this.getWorldIntersectionHomogenous(0.0, source, rangeMatrix, this.intersectBottomRight);
 
 		return true;
@@ -256,7 +256,7 @@ function (
 
 		var t = (planeHeight - origin.y) / (direction.y);
 
-		direction.mul(t);
+		direction.scale(t);
 		origin.addVector(direction);
 
 		return t >= 0.0 && t <= 1.0;
@@ -276,7 +276,7 @@ function (
 
 		if (Math.abs(this.direction.y) > MathUtils.EPSILON) {
 			var t = (planeHeight - this.origin.y) / this.direction.y;
-			this.direction.mul(t);
+			this.direction.scale(t);
 		} else {
 			this.direction.normalize();
 			this.direction.mul(this.mainCamera._frustumFar);

@@ -150,7 +150,7 @@ function (
 	Transform.prototype.applyForwardVector = function (vector, store) {
 		store.copy(vector);
 
-		store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
+		store.setDirect(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		this.rotation.applyPost(store);
 
 		return store;

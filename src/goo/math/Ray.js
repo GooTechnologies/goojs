@@ -46,10 +46,10 @@ function (Vector3, MathUtils) {
 	 * @return true if this ray intersects a triangle formed by the given three points.
 	 */
 	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
-		var diff = tmpVec1.set(this.origin).sub(pointA);
-		var edge1 = tmpVec2.set(pointB).sub(pointA);
-		var edge2 = tmpVec3.set(pointC).sub(pointA);
-		var norm = tmpVec4.set(edge1).cross(edge2);
+		var diff = tmpVec1.setVector(this.origin).subVector(pointA);
+		var edge1 = tmpVec2.setVector(pointB).subVector(pointA);
+		var edge2 = tmpVec3.setVector(pointC).subVector(pointA);
+		var norm = tmpVec4.setVector(edge1).cross(edge2);
 
 		var dirDotNorm = this.direction.dot(norm);
 		var sign;

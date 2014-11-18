@@ -326,7 +326,7 @@ define([
 		if (ctx.velocity.lengthSquared() > EPSILON) {
 			move(ctx.velocity.x, ctx.velocity.y, args, ctx);
 			var rate = MathUtils.lerp(ctx.inertia, 0, 1 - time / ctx.inertia);
-			ctx.velocity.mul(rate);
+			ctx.velocity.scale(rate);
 		} else {
 			ctx.velocity.setDirect(0, 0, 0);
 		}

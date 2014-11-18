@@ -83,7 +83,7 @@ function(
 			);
 			pickedPoint.setVector(ray.origin).subVector(worldCenter);
 			var d = pickedPoint.length() * 0.9;
-			pickedPoint.setVector(ray.direction).mulDirect(d,d,d).addVector(ray.origin);
+			pickedPoint.setVector(ray.direction).scale(d).addVector(ray.origin);
 
 			// Get vector from center to picked point, cross it with rotation axis and get drag direction
 			rotationDirection.setVector(pickedPoint).subVector(worldCenter);

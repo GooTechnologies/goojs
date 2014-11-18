@@ -104,7 +104,7 @@ function (
 		}
 
 		var quantity = 1.0 / points.length;
-		this.center.mul(quantity);
+		this.center.scale(quantity);
 
 		var maxRadiusSqr = 0.0;
 		for (var i = 0; i < points.length; i++) {
@@ -237,7 +237,7 @@ function (
 			discr = a1 * a1 - a;
 			root = Math.sqrt(discr);
 			var distances = [root - a1];
-			var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin)];
+			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -256,8 +256,8 @@ function (
 		} else if (discr >= 0.00001) {
 			root = Math.sqrt(discr);
 			var distances = [-a1 - root, -a1 + root];
-			var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin),
-				new Vector3().copy(ray.direction).mul(distances[1]).add(ray.origin)];
+			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin),
+				new Vector3().copy(ray.direction).scale(distances[1]).add(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -265,7 +265,7 @@ function (
 		}
 
 		var distances = [-a1];
-		var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin)];
+		var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
 		return {
 			"distances": distances,
 			"points": points
@@ -317,7 +317,7 @@ function (
 		if (length > MathUtils.EPSILON) {
 			// place us between the two centers, weighted by radii
 			var coeff = (length + radiusDiff) / (2.0 * length);
-			rCenter.addVector(diff.mul(coeff));
+			rCenter.addVector(diff.scale(coeff));
 		}
 
 		// Set radius

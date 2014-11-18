@@ -297,7 +297,7 @@ function (
 
 		if (useMesh && this.entityMap[vegetationType]) {
 			var treeEntity = this.fetchTreeMesh(vegetationType);
-			treeEntity.transformComponent.transform.scale.mul(size);
+			treeEntity.transformComponent.transform.scale.scale(size);
 			treeEntity.transformComponent.transform.translation.set(pos);
 			treeEntity.addToWorld();
 			gridEntity.attachChild(treeEntity);

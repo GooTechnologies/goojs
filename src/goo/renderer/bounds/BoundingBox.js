@@ -61,12 +61,12 @@ function (
 			max.data[2] = z > max.data[2] ? z : max.data[2];
 		}
 
-		vec.setVector(max).subVector(min).mul(0.5);
+		vec.setVector(max).subVector(min).scale(0.5);
 		this.xExtent = vec.data[0];
 		this.yExtent = vec.data[1];
 		this.zExtent = vec.data[2];
 
-		this.center.setVector(max).addVector(min).mul(0.5);
+		this.center.setVector(max).addVector(min).scale(0.5);
 	};
 
 	/**
@@ -106,7 +106,7 @@ function (
 		}
 
 		this.center.copy(min.add(max));
-		this.center.mul(0.5);
+		this.center.scale(0.5);
 
 		this.xExtent = max.x - this.center.x;
 		this.yExtent = max.y - this.center.y;
@@ -362,7 +362,7 @@ function (
 
 		// The mtd vector for that axis
 		// var sep = axis * (overlap / axisLengthSquared);
-		var sep = new Vector3().copy(axis).mul(overlap / axisLengthSquared);
+		var sep = new Vector3().copy(axis).scale(overlap / axisLengthSquared);
 
 		// The mtd vector length squared
 		var sepLengthSquared = Vector3.dot(sep, sep);
@@ -452,8 +452,8 @@ function (
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {
 				var distances = t;
-				var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin),
-					new Vector3(ray.direction).mul(distances[1]).add(ray.origin)];
+				var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin),
+					new Vector3(ray.direction).scale(distances[1]).add(ray.origin)];
 				return {
 					"distances": distances,
 					"points": points
@@ -461,7 +461,7 @@ function (
 			}
 
 			var distances = [t[0]];
-			var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin)];
+			var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -540,7 +540,7 @@ function (
 			calcVec2.z = center.z + zExtent;
 		}
 
-		store.center.set(calcVec2).addVector(calcVec1).mulDirect(0.5, 0.5, 0.5);
+		store.center.set(calcVec2).addVector(calcVec1).scale(0.5);
 
 		store.xExtent = calcVec2.x - store.center.x;
 		store.yExtent = calcVec2.y - store.center.y;

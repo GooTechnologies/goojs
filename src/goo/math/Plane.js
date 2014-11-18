@@ -41,7 +41,7 @@ function (
 	 * @return {Plane} Self for chaining.
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
-		this.normal.set(pointB).sub(pointA);
+		this.normal.setVector(pointB).subVector(pointA);
 		this.normal.cross([pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z]).normalize();
 		this.constant = this.normal.dot(pointA);
 		return this;
@@ -86,11 +86,11 @@ function (
 			return null;
 		}
 		var c = this.constant;
-		var pMinusL0DotN = p0.set(this.normal).mulDirect(c,c,c).subVector(ray.origin).dot(this.normal);
+		var pMinusL0DotN = p0.set(this.normal).scale(c).subVector(ray.origin).dot(this.normal);
 
 		var d = pMinusL0DotN / lDotN;
 
-		return store.setVector(ray.direction).mulDirect(d,d,d).addVector(ray.origin);
+		return store.setVector(ray.direction).scale(d).addVector(ray.origin);
 	};
 
 	return Plane;

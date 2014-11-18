@@ -450,7 +450,7 @@ function (
 			w = (matrix.e10 - matrix.e01) * s;
 		}
 
-		return this.set(x, y, z, w);
+		return this.setDirect(x, y, z, w);
 	};
 
 	/**
@@ -536,7 +536,7 @@ function (
 			}
 			return this.fromAngleAxis(theta, pivotVector);
 		} else {
-			return this.set(Quaternion.IDENTITY);
+			return this.setVector(Quaternion.IDENTITY);
 		}
 	};
 
@@ -550,7 +550,7 @@ function (
 		var yy = this.y * n;
 		var zz = this.z * n;
 		var ww = this.w * n;
-		return this.set(xx, yy, zz, ww);
+		return this.setDirect(xx, yy, zz, ww);
 	};
 
 	/**
@@ -595,7 +595,7 @@ function (
 	 */
 	Quaternion.prototype.fromAngleNormalAxis = function (angle, axis) {
 		if (axis.equals(Vector3.ZERO)) {
-			return this.set(Quaternion.IDENTITY);
+			return this.setVector(Quaternion.IDENTITY);
 		}
 
 		var halfAngle = 0.5 * angle;
@@ -604,7 +604,7 @@ function (
 		var x = sin * axis.x;
 		var y = sin * axis.y;
 		var z = sin * axis.z;
-		return this.set(x, y, z, w);
+		return this.setDirect(x, y, z, w);
 	};
 
 	/**

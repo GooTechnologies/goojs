@@ -637,7 +637,7 @@ function (
 
 		position.setDirect(x, y, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPost(position);
-		position.mul(1.0 / position.w);
+		position.scale(1.0 / position.w);
 		store.x = position.x;
 		store.y = position.y;
 		store.z = position.z;
@@ -708,7 +708,7 @@ function (
 		var position = new Vector4();
 		position.setDirect(worldPosition.x, worldPosition.y, worldPosition.z, 1);
 		this.modelViewProjection.applyPost(position);
-		position.mul(1.0 / position.w);
+		position.scale(1.0 / position.w);
 		store.x = position.x;
 		store.y = position.y;
 		store.z = position.z;
@@ -888,23 +888,23 @@ function (
 
 		var direction = this.calcLeft;
 
-		direction.setVector(this._direction).mul(fNear);
+		direction.setVector(this._direction).scale(fNear);
 		vNearPlaneCenter.setVector(this.translation).addVector(direction);
-		direction.setVector(this._direction).mul(fFar);
+		direction.setVector(this._direction).scale(fFar);
 		vFarPlaneCenter.setVector(this.translation).addVector(direction);
 
 		var left = this.calcLeft;
 		var up = this.calcUp;
 
-		left.setVector(this._left).mul(fNearPlaneWidth);
-		up.setVector(this._up).mul(fNearPlaneHeight);
+		left.setVector(this._left).scale(fNearPlaneWidth);
+		up.setVector(this._up).scale(fNearPlaneHeight);
 		this._corners[0].setVector(vNearPlaneCenter).subVector(left).subVector(up);
 		this._corners[1].setVector(vNearPlaneCenter).addVector(left).subVector(up);
 		this._corners[2].setVector(vNearPlaneCenter).addVector(left).addVector(up);
 		this._corners[3].setVector(vNearPlaneCenter).subVector(left).addVector(up);
 
-		left.setVector(this._left).mul(fFarPlaneWidth);
-		up.setVector(this._up).mul(fFarPlaneHeight);
+		left.setVector(this._left).scale(fFarPlaneWidth);
+		up.setVector(this._up).scale(fFarPlaneHeight);
 		this._corners[4].setVector(vFarPlaneCenter).subVector(left).subVector(up);
 		this._corners[5].setVector(vFarPlaneCenter).addVector(left).subVector(up);
 		this._corners[6].setVector(vFarPlaneCenter).addVector(left).addVector(up);
@@ -935,7 +935,7 @@ function (
 			(1.0 + projection[10]) / projection[14]
 		);
 
-		clipPlane.mul(2.0 / Vector4.dot(clipPlane, this._qCalc));
+		clipPlane.scale(2.0 / Vector4.dot(clipPlane, this._qCalc));
 
 		projection[2] = clipPlane.x;
 		projection[6] = clipPlane.y;
