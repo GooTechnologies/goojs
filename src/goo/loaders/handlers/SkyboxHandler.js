@@ -57,7 +57,7 @@ define([
 	SkyboxHandler.prototype._remove = function(ref) {
 		delete this._objects[ref];
 
-		// We can only remove the skybox if it is the on that is currently
+		// We can only remove the skybox if it is the one that is currently
 		// active. Otherwise the scene will be left with no skybox in cases
 		// where it shouldn't be.
 		if (this._activeSkyboxRef === ref) {
