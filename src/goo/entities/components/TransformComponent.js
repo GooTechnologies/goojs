@@ -3,7 +3,8 @@ define([
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4x4',
+	'goo/math/Vector'
 ],
 /** @lends */
 function (
@@ -11,7 +12,8 @@ function (
 	Vector3,
 	Component,
 	EntitySelection,
-	Matrix4x4
+	Matrix4x4,
+	Vector
 ) {
 	'use strict';
 
@@ -247,7 +249,7 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		this.transform.translation.set(arguments);
+		Vector.prototype.set.apply(this.transform.translation, arguments);
 		this._dirty = true;
 		return this;
 	};
@@ -277,7 +279,7 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
-		this.transform.scale.set(arguments);
+		Vector.prototype.set.apply(this.transform.scale, arguments);
 		this._dirty = true;
 		return this;
 	};
