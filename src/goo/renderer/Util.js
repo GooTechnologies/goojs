@@ -7,9 +7,9 @@ function () {
 	/**
 	 * @class Common utilities
 	 */
-	function Util_() {}
+	function Util() {
 
-	var Util = Util_;
+	}
 
 	/**
 	 * Get size in bytes of a specific type.

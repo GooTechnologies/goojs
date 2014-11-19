@@ -16,7 +16,7 @@ function (
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function DirectionalLight_(color) {
+	function DirectionalLight(color) {
 		Light.call(this, color);
 
 		/**
@@ -26,8 +26,6 @@ function (
 		 */
 		this.direction = new Vector3();
 	}
-
-	var DirectionalLight = DirectionalLight_;
 
 	DirectionalLight.prototype = Object.create(Light.prototype);
 	DirectionalLight.prototype.constructor = DirectionalLight;

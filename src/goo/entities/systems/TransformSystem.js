@@ -12,12 +12,10 @@ function (System) {
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
 	 * @extends System
 	 */
-	function TransformSystem_() {
+	function TransformSystem() {
 		System.call(this, 'TransformSystem', ['TransformComponent']);
 		this.numUpdates = 0;
 	}
-
-	var TransformSystem = TransformSystem_;
 
 	TransformSystem.prototype = Object.create(System.prototype);
 

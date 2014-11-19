@@ -22,7 +22,7 @@ function (
 	 * The script object can also define the function <code>setup({@link Entity} entity)</code>, called upon script creation.
 	 * @extends Component
 	 */
-	function ScriptComponent_(scripts) {
+	function ScriptComponent(scripts) {
 		this.type = 'ScriptComponent';
 		this._gooClasses = Scripts.getClasses();
 
@@ -44,8 +44,6 @@ function (
 			this.scripts = [];
 		}
 	}
-
-	var ScriptComponent = ScriptComponent_;
 
 	ScriptComponent.prototype = Object.create(Component.prototype);
 	ScriptComponent.prototype.constructor = ScriptComponent;

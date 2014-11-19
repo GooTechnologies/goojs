@@ -6,11 +6,9 @@ define(['goo/util/ArrayUtil'],
 	/**
 	* @class
 	*/
-	function Bus_() {
+	function Bus() {
 		this.trie = { name: '', listeners: [], children: {} };
 	}
-
-	var Bus = Bus_;
 
 	/**
 	 * Sends messages to all listeners with provided callback function.

@@ -16,7 +16,7 @@ function (
 	 * @param {number} [radiusBottom=radiusTop] Radius of the cylinder at the bottom. Defaults to radiusTop.
 	 * @param {number} [height=1] Height
 	 */
-	function Cylinder_(radialSamples, radiusTop, radiusBottom, height) {
+	function Cylinder(radialSamples, radiusTop, radiusBottom, height) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			radialSamples = props.radialSamples;
@@ -42,8 +42,6 @@ function (
 
 		this.rebuild();
 	}
-
-	var Cylinder = Cylinder_;
 
 	Cylinder.prototype = Object.create(MeshData.prototype);
 

@@ -13,13 +13,11 @@ function (
 	 * @class Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
 	 * @extends System
 	 */
-	function BoundingUpdateSystem_() {
+	function BoundingUpdateSystem () {
 		System.call(this, 'BoundingUpdateSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent']);
 		this._worldBound = new BoundingBox();
 		this._computeWorldBound = null;
 	}
-
-	var BoundingUpdateSystem = BoundingUpdateSystem_;
 
 	BoundingUpdateSystem.prototype = Object.create(System.prototype);
 

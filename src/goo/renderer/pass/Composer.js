@@ -20,7 +20,7 @@ function (
 	 * @param {RenderTarget} renderTarget Data to wrap
 	 * @property {RenderTarget} renderTarget Data to wrap
 	 */
-	function Composer_(renderTarget) {
+	function Composer(renderTarget) {
 		this._passedWriteBuffer = !!renderTarget;
 		this.writeBuffer = renderTarget;
 
@@ -47,8 +47,6 @@ function (
 
 		SystemBus.addListener('goo.viewportResize', this._viewportResizeHandler, true);
 	}
-
-	var Composer = Composer_;
 
 	/**
 	 * Deallocate all allocated WebGL buffers, listeners, and passes.

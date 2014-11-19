@@ -14,7 +14,7 @@ function (
 	'use strict';
 
 	/** @class */
-	function FullscreenPass_(shader) {
+	function FullscreenPass(shader) {
 		this.material = new Material(shader || ShaderLib.simple);
 		this.useReadBuffer = true;
 
@@ -29,8 +29,6 @@ function (
 		this.clear = false;
 		this.needsSwap = true;
 	}
-
-	var FullscreenPass = FullscreenPass_;
 
 	FullscreenPass.prototype = Object.create(Pass.prototype);
 	FullscreenPass.prototype.constructor = FullscreenPass;

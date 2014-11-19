@@ -35,7 +35,7 @@ function (
 	 * @param {number} [settings.particleCount=100]
 	 * @extends Component
 	 */
-	function ParticleComponent_(settings) {
+	function ParticleComponent (settings) {
 		this.type = 'ParticleComponent';
 
 		Component.call(this);
@@ -59,8 +59,6 @@ function (
 
 		this.enabled = true;
 	}
-
-	var ParticleComponent = ParticleComponent_;
 
 	ParticleComponent.prototype = Object.create(Component.prototype);
 	ParticleComponent.prototype.constructor = ParticleComponent;

@@ -21,7 +21,7 @@ function (
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
 	 * @extends {Component}
 	 */
-	function SoundComponent_() {
+	function SoundComponent() {
 		this.type = 'SoundComponent';
 
 		/**
@@ -44,8 +44,6 @@ function (
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
 	}
-
-	var SoundComponent = SoundComponent_;
 
 	SoundComponent.prototype = Object.create(Component.prototype);
 	SoundComponent.prototype.constructor = SoundComponent;

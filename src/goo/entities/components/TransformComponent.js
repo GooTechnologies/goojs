@@ -21,7 +21,7 @@ function (
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
 	 * @extends Component
 	 */
-	function TransformComponent_() {
+	function TransformComponent() {
 		this.type = 'TransformComponent';
 
 		this.entity = null;
@@ -51,8 +51,6 @@ function (
 		this._dirty = true;
 		this._updated = false;
 	}
-
-	var TransformComponent = TransformComponent_;
 
 	TransformComponent.type = 'TransformComponent';
 

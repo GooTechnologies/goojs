@@ -14,7 +14,7 @@ define([
 	 * {@linkplain http://code.gooengine.com/latest/examples/goo/entities/components/MeshRendererComponent/MeshRendererComponent-example.html Working example}
 	 * @extends Component
 	 */
-	function MeshRendererComponent_(materials) {
+	function MeshRendererComponent(materials) {
 		this.type = 'MeshRendererComponent';
 
 		//! schteppe: Don't chain or nest ternary operators as it hard to read and confusing
@@ -63,8 +63,6 @@ define([
 
 		this._renderDistance = 0;
 	}
-
-	var MeshRendererComponent = MeshRendererComponent_;
 
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
 	MeshRendererComponent.prototype.constructor = MeshRendererComponent;

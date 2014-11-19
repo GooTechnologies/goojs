@@ -22,7 +22,7 @@ function (
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function SpotLight_(color) {
+	function SpotLight(color) {
 		Light.call(this, color);
 
 		/**
@@ -53,8 +53,6 @@ function (
 		/** @type {number} */
 		this.exponent = 16.0;
 	}
-
-	var SpotLight = SpotLight_;
 
 	SpotLight.prototype = Object.create(Light.prototype);
 	SpotLight.prototype.constructor = SpotLight;

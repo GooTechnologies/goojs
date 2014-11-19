@@ -9,9 +9,8 @@ function () {
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.
 	 */
-	function MathUtils_() {}
-
-	var MathUtils = MathUtils_;
+	function MathUtils() {
+	}
 
 	/** @type {number}
 	* @example

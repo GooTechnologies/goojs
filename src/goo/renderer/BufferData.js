@@ -10,7 +10,7 @@ define(
 	 * @property {ArrayBuffer} data Data to wrap
 	 * @property {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
 	 */
-	function BufferData_(data, target) {
+	function BufferData(data, target) {
 		this.data = data;
 		this.target = target;
 
@@ -19,8 +19,6 @@ define(
 		this._dataUsage = 'StaticDraw';
 		this._dataNeedsRefresh = false;
 	}
-
-	var BufferData = BufferData_;
 
 	/**
 	 * Set the usage type of this bufferdata.

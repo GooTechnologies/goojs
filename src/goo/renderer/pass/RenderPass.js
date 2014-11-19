@@ -15,7 +15,7 @@ function (
 	/**
 	 * @class A pass that renders provided renderlist to the rendertarget or screen
 	 */
-	function RenderPass_(renderList, filter) {
+	function RenderPass(renderList, filter) {
 		this.renderList = renderList;
 		this.filter = filter;
 
@@ -29,8 +29,6 @@ function (
 		this.clear = true;
 		this.needsSwap = false;
 	}
-
-	var RenderPass = RenderPass_;
 
 	RenderPass.prototype = Object.create(Pass.prototype);
 	RenderPass.prototype.constructor = RenderPass;

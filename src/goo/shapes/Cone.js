@@ -10,7 +10,7 @@ define(['goo/renderer/MeshData'],
 	 * @param {number} [radius=1] Radius of the cone
 	 * @param {number} [height=2] The height of the cone
 	 */
-	function Cone_(radialSamples, radius, height) {
+	function Cone(radialSamples, radius, height) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			radialSamples = props.radialSamples;
@@ -28,8 +28,6 @@ define(['goo/renderer/MeshData'],
 
 		this.rebuild();
 	}
-
-	var Cone = Cone_;
 
 	Cone.prototype = Object.create(MeshData.prototype);
 

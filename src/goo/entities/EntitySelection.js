@@ -8,11 +8,9 @@ define(['goo/entities/Selection'],
 	 * @extends Selection
 	 * @constructor
 	 */
-	function EntitySelection_() {
+	function EntitySelection() {
 		Selection.apply(this, arguments);
 	}
-
-	var EntitySelection = EntitySelection_;
 
 	EntitySelection.prototype = Object.create(Selection.prototype);
 	EntitySelection.prototype.constructor = EntitySelection;

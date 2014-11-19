@@ -7,7 +7,7 @@ function (System) {
 	 * @class Helps gather pickable entities
 	 * @extends System
 	 */
-	function PickingSystem_(settings) {
+	function PickingSystem (settings) {
 		System.call(this, 'PickingSystem', ['MeshRendererComponent', 'TransformComponent']);
 		this.passive = true;
 		this.pickRay = null;
@@ -17,8 +17,6 @@ function (System) {
 
 		this.setPickLogic(settings.pickLogic || null);
 	}
-
-	var PickingSystem = PickingSystem_;
 
 	PickingSystem.prototype = Object.create(System.prototype);
 

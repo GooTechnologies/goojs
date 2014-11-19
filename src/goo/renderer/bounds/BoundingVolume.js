@@ -10,7 +10,7 @@ function(
 	/**
 	 * @class <code>BoundingVolume</code> Base class for boundings
 	 */
-	function BoundingVolume_(center) {
+	function BoundingVolume(center) {
 		this.center = new Vector3();
 		if (center) {
 			this.center.setv(center);
@@ -19,8 +19,6 @@ function(
 		this.min = new Vector3(Infinity, Infinity, Infinity);
 		this.max = new Vector3(-Infinity, -Infinity, -Infinity);
 	}
-
-	var BoundingVolume = BoundingVolume_;
 
 	/**
 	 * Intersection type

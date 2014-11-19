@@ -6,9 +6,8 @@ define(
 	/**
 	 * @class Collection of useful shader fragments
 	 */
-	function ShaderFragment_() {}
-
-	var ShaderFragment = ShaderFragment_;
+	function ShaderFragment() {
+	}
 
 	ShaderFragment.noisecommon = [
 		'vec4 mod289(vec4 x) {',

@@ -25,7 +25,7 @@ function (
 	 * @constructor
 	 * @param {Vector|number[]|...number} arguments Initial values for the components.
 	 */
-	function Quaternion_() {
+	function Quaternion () {
 		Vector.call(this, 4);
 
 		if (arguments.length !== 0) {
@@ -34,8 +34,6 @@ function (
 			this.setd(0, 0, 0, 1);
 		}
 	}
-
-	var Quaternion = Quaternion_;
 
 	Quaternion.prototype = Object.create(Vector.prototype);
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);

@@ -6,9 +6,8 @@ define(['goo/renderer/Camera'],
 	/**
 	 * @class Culls entities based on camera frustum and boundings
 	 */
-	function SimplePartitioner_() {}
-
-	var SimplePartitioner = SimplePartitioner_;
+	function SimplePartitioner() {
+	}
 
 	SimplePartitioner.prototype.added = function () {
 		// needed for things like quadtrees etc

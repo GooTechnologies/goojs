@@ -18,9 +18,7 @@ define([
 	 * Details of each can be printed like this for example: console.log(ShaderLib.texturedLit).<br>
 	 * There are more special purpose shaders in {@link ShaderLibExtra}
 	 */
-	function ShaderLib_() {}
-
-	var ShaderLib = ShaderLib_;
+	function ShaderLib() {}
 
 	/**
 	 * The uber shader is the default Goo shader supporting the most common realistic render features.

@@ -7,12 +7,10 @@ function (System) {
 	 * @class Manages and reacts to particle components on entities.
 	 * @extends System
 	 */
-	function ParticlesSystem_() {
+	function ParticlesSystem() {
 		System.call(this, 'ParticlesSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent', 'ParticleComponent']);
 		this.passive = false;
 	}
-
-	var ParticlesSystem = ParticlesSystem_;
 
 	ParticlesSystem.prototype = Object.create(System.prototype);
 

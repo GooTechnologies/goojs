@@ -9,9 +9,9 @@ define(['goo/math/Vector2'],
 	 * @class Post processing handler
 	 * @param {Number} width Width of rendertarget
 	 * @param {Number} height Height of rendertarget
-	 * @param {Object} options Options
+	 * @param {Parameters} parameters Settings
 	 */
-	function RenderTarget_(width, height, options) {
+	function RenderTarget(width, height, options) {
 		this.glTexture = null;
 		this._glRenderBuffer = null;
 		this._glFrameBuffer = null;
@@ -44,8 +44,6 @@ define(['goo/math/Vector2'],
 		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
 		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
 	}
-
-	var RenderTarget = RenderTarget_;
 
 	RenderTarget.prototype.clone = function () {
 		var tmp = new RenderTarget(this.width, this.height);

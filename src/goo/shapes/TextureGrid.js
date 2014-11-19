@@ -7,7 +7,7 @@ define(['goo/renderer/MeshData'],
 	/**
 	* @class
 	*/
-	function TextureGrid_(matrix, textureUnitsPerLine) {
+	function TextureGrid(matrix, textureUnitsPerLine) {
 	    this.matrix = matrix;
 		this.textureUnitsPerLine = textureUnitsPerLine || 8;
 
@@ -17,8 +17,6 @@ define(['goo/renderer/MeshData'],
 
 		this.rebuild();
 	}
-
-	var TextureGrid = TextureGrid_;
 
 	TextureGrid.prototype = Object.create(MeshData.prototype);
 

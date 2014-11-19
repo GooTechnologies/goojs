@@ -11,7 +11,7 @@ function (
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 * @extends Component
 	 */
-	function HtmlComponent_(domElement) {
+	function HtmlComponent(domElement) {
 		Component.call(this);
 		this.type = 'HtmlComponent';
 
@@ -32,8 +32,6 @@ function (
 		 */
 		this.useTransformComponent = true;
 	}
-
-	var HtmlComponent = HtmlComponent_;
 
 	HtmlComponent.prototype = Object.create(Component.prototype);
 	HtmlComponent.prototype.constructor = HtmlComponent;

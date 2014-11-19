@@ -10,7 +10,7 @@ define(['goo/renderer/MeshData'],
 	 * @param {number} [radius=1] Radius of the disk
 	 * @param {number} [pointiness=0] The center of the disk can be offset in both directions from its outer edge by setting a positive or negative pointiness.
 	 */
-	function Disk_(nSegments, radius, pointiness) {
+	function Disk(nSegments, radius, pointiness) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			nSegments = props.nSegments;
@@ -28,8 +28,6 @@ define(['goo/renderer/MeshData'],
 
 		this.rebuild();
 	}
-
-	var Disk = Disk_;
 
 	Disk.prototype = Object.create(MeshData.prototype);
 

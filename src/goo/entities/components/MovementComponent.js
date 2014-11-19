@@ -15,13 +15,11 @@ define([
 		 * rotation.
 		 * @extends Component
 		 */
-		function MovementComponent_() {
+		function MovementComponent() {
 			this.type = 'MovementComponent';
 			this.velocity = new Vector3();
 			this.rotationVelocity = new Vector3();
 		}
-
-		var MovementComponent = MovementComponent_;
 
 		MovementComponent.prototype = Object.create(Component.prototype);
 

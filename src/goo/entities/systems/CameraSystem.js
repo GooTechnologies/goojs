@@ -15,12 +15,10 @@ function (
 	 * @class Updates cameras/cameracomponents with their transform component transforms
 	 * @extends System
 	 */
-	function CameraSystem_() {
+	function CameraSystem() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
 		this.mainCamera = null; //! AT: what's up with this? is it unused?
 	}
-
-	var CameraSystem = CameraSystem_;
 
 	CameraSystem.prototype = Object.create(System.prototype);
 	CameraSystem.prototype.constructor = CameraSystem;

@@ -12,7 +12,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2|number[]|...number} arguments Initial values for the components.
 	 */
 
-	function Matrix2x2_() {
+	function Matrix2x2() {
 		Matrix.call(this, 2, 2);
 
 		if (arguments.length === 0) {
@@ -21,8 +21,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 			Matrix.prototype.set.apply(this, arguments);
 		}
 	}
-
-	var Matrix2x2 = Matrix2x2_;
 
 	Matrix2x2.prototype = Object.create(Matrix.prototype);
 	Matrix.setupAliases(Matrix2x2.prototype,[['e00'], ['e10'], ['e01'], ['e11']]);

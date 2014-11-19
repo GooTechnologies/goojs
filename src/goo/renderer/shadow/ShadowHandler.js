@@ -28,7 +28,7 @@ function (
 	/**
 	 * @class Handles shadow techniques
 	 */
-	function ShadowHandler_() {
+	function ShadowHandler() {
 		this.depthMaterial = new Material(ShaderLib.lightDepth, 'depthMaterial');
 		this.depthMaterial.cullState.cullFace = 'Back';
 		this.fullscreenPass = new FullscreenPass();
@@ -51,8 +51,6 @@ function (
 
 		this.first = true;
 	}
-
-	var ShadowHandler = ShadowHandler_;
 
 	var tmpVec = new Vector3();
 

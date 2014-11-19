@@ -17,7 +17,7 @@ define([
 	 * @param {Number} [tileY=1] Number of texture repetitions in the texture's y direction.
 	 * @param {Enum} [textureMode=Box.TextureModes.Uniform] Texture wrapping mode.
 	 */
-	function Box_(width, height, length, tileX, tileY, textureMode) {
+	function Box(width, height, length, tileX, tileY, textureMode) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			width = props.width;
@@ -67,8 +67,6 @@ define([
 
 		this.rebuild();
 	}
-
-	var Box = Box_;
 
 	Box.prototype = Object.create(MeshData.prototype);
 

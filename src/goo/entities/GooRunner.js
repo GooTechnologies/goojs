@@ -83,7 +83,7 @@ function (
 	 * @param {boolean} [parameters.useTryCatch=true]
 	 */
 
-	function GooRunner_(parameters) {
+	function GooRunner(parameters) {
 		parameters = parameters || {};
 
 		GameUtils.initAllShims();
@@ -211,8 +211,6 @@ function (
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
 	}
-
-	var GooRunner = GooRunner_;
 
 	/**
 	 * Sets the base systems on the world.

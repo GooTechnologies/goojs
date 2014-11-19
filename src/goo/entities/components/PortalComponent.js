@@ -22,7 +22,7 @@ function (
 	 * @constructor
 	 * @extends Component
 	 */
-	function PortalComponent_(camera, height, options, overrideMaterial) {
+	function PortalComponent(camera, height, options, overrideMaterial) {
 		height = height || 200;
 
 		this.options = options || {};
@@ -52,8 +52,6 @@ function (
 			this.secondaryTarget = new RenderTarget(height, height / aspect);
 		}
 	}
-
-	var PortalComponent = PortalComponent_;
 
 	PortalComponent.prototype = Object.create(Component.prototype);
 
