@@ -8,6 +8,7 @@ define([
 	'goo/scriptpack/BasicControlScript',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
+	'goo/util/ArrayUtil',
 	'goo/entities/SystemBus',
 
 	'goo/scripts/ScriptUtils',
@@ -24,6 +25,7 @@ function (
 	BasicControlScript,
 	PromiseUtil,
 	_,
+	ArrayUtil,
 	SystemBus,
 
 	ScriptUtils,
@@ -211,20 +213,46 @@ function (
 
 	ScriptHandler.prototype._update = function (ref, config, options) {
 		var that = this;
+
 		return ConfigHandler.prototype._update.call(this, ref, config, options)
 		.then(function (script) {
 			if (!script) { return; }
 
-			var promises = [];
+			var addDependencyPromises = [];
 
 			if (config.body && config.dependencies) {
 				delete script.dependencyErrors;
+
+				// Get all the script HTML elements which refer to the current
+				// script. As we add dependencies, we remove the script elements
+				// which are still needed. After everything, we remove the
+				// reference to the current script from the remaining ones.
+				var scriptsElementsToRemove = getReferringDependencies(config.id);
+
 				_.forEach(config.dependencies, function (dependencyConfig) {
-					promises.push(that._addDependency(script, dependencyConfig.url, config.id));
+					var url = dependencyConfig.url;
+
+					// If the dependency being added is already loaded in a script
+					// element we remove it from the array of script elements to remove
+					// because we still need it.
+					var neededScriptElement = ArrayUtil.find(scriptsElementsToRemove, function (scriptElement) {
+						return scriptElement.src === url;
+					});
+					if (neededScriptElement) {
+						ArrayUtil.remove(scriptsElementsToRemove, neededScriptElement);
+					}
+
+					addDependencyPromises.push(that._addDependency(script, url, config.id))
 				}, null, 'sortValue');
+
+				// Remove references to the current script from all the script
+				// elements that are not needed anymore.
+				_.forEach(scriptsElementsToRemove, function (scriptElement) {
+					removeReference(scriptElement, config.id);
+				});
 			}
 
-			return RSVP.all(promises)
+			return RSVP.all(addDependencyPromises)
 			.then(function () {
 				if (config.className) { // Engine script.
 					that._updateFromClass(script, config, options);
@@ -232,7 +260,8 @@ function (
 					that._updateFromCustom(script, config, options);
 				}
 
-
+				// Let the world (e.g. Create) that there are new externals so
+				// that things (e.g. UI) can get updated.
 				if (config.body) {
 					SystemBus.emit('goo.scriptExternals', {
 						id: config.id,
@@ -253,7 +282,13 @@ function (
 				else {
 					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
 				}
+
 				_.extend(script.parameters, config.options);
+
+				// Remove any script HTML elements that are not needed by any
+				// script.
+				removeDeadScriptElements();
+
 				return script;
 			});
 		});
@@ -274,12 +309,15 @@ function (
 
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
+			addReference(scriptElem, scriptId)
 			return this._dependencyPromises[url] || PromiseUtil.resolve();
 		}
 
 		scriptElem = document.createElement('script');
 		scriptElem.src = url;
 		scriptElem.setAttribute('data-script-id', scriptId);
+		scriptElem.isDependency = true
+		addReference(scriptElem, scriptId)
 
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(scriptElem);
@@ -289,6 +327,9 @@ function (
 
 			scriptElem.onload = function () {
 				resolve();
+
+				if (timeoutHandler) { clearTimeout(timeoutHandler); }
+
 				delete that._dependencyPromises[url];
 			};
 
@@ -324,6 +365,114 @@ function (
 		});
 	};
 
+
+	/**
+	 * Removes all the script HTML elements that are not needed by any script
+	 * anymore (i.e. have no references to scripts).
+	 */
+	function removeDeadScriptElements() {
+		var scriptElements = document.querySelectorAll('script');
+
+		for (var i = 0; i < scriptElements.length; ++i) {
+			var scriptElement = scriptElements[i];
+			if (scriptElement.isDependency && !hasReferences(scriptElement) && scriptElement.parentNode) {
+				scriptElement.parentNode.removeChild(scriptElement);
+			}
+		}
+	}
+
+
+	/**
+	 * Adds a reference pointing to the specified custom script into the specified
+	 * script element/node.
+	 *
+	 * @param {HTMLScriptElement} scriptElement
+	 *		The script element into which a reference is to be added.
+	 * @param {string} scriptId
+	 *		The identifier of the custom script whose reference is to be added.
+	 */
+	function addReference(scriptElement, scriptId) {
+		if (!scriptElement.scriptRefs) {
+			scriptElement.scriptRefs = [scriptId];
+			return;
+		}
+
+		var index = scriptElement.scriptRefs.indexOf(scriptId);
+		if (index === -1) {
+			scriptElement.scriptRefs.push(scriptId);
+		}
+	}
+
+
+	/**
+	 * Removes a reference to the specified custom script from the specified
+	 * script element/node.
+	 *
+	 * @param {HTMLScriptElement} scriptElement
+	 *		The script element from which the reference is to be removed.
+	 * @param {string} scriptId
+	 *		The identifier of the custom script whose reference is to be removed.
+	 */
+	function removeReference(scriptElement, scriptId) {
+		if (!scriptElement.scriptRefs) {
+			return;
+		}
+
+		ArrayUtil.remove(scriptElement.scriptRefs, scriptId);
+	}
+
+	/**
+	 * Gets whether the specified script element/node has any references to
+	 * custom scripts.
+	 *
+	 * @param {HTMLScriptElement} scriptElement
+	 *		The script element which is to be checked for references.
+	 *
+	 * @return {boolean}
+	 */
+	function hasReferences(scriptElement) {
+		return scriptElement.scriptRefs && scriptElement.scriptRefs.length > 0;
+	}
+
+
+	/**
+	 * Gets whether the specified script element has a reference to the specified
+	 * custom script.
+	 *
+	 * @param {HTMLScriptElement} scriptElement
+	 *		The script element/node which is to be checked.
+	 * @param {string} scriptId
+	 *		The identifier of the custom script which is to be checked.
+	 *
+	 * @return {boolean}
+	 */
+	function hasReferenceTo(scriptElement, scriptId) {
+		return scriptElement.scriptRefs && scriptElement.scriptRefs.indexOf(scriptId) > -1;
+	}
+
+
+	/**
+	 * Gets all the script elements that refer to the specified custom script.
+	 *
+	 * @param {string} scriptId
+	 *		The identifier of the custom script whose dependencies are to be
+	 *		returned.
+	 *
+	 * @return {Array.<HTMLScriptElement>}
+	 */
+	function getReferringDependencies(scriptId) {
+		var dependencies = [];
+		var scriptElements = document.querySelectorAll('script');
+
+		for (var i = 0; i < scriptElements.length; ++i) {
+			var scriptElement = scriptElements[i];
+			if (hasReferenceTo(scriptElement, scriptId)) {
+				dependencies.push(scriptElement);
+			}
+		}
+
+		return dependencies;
+	}
 
 	/**
 	 * Add a global error listener that catches script errors, and tries to match
