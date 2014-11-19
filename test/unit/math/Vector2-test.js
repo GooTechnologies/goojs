@@ -70,7 +70,7 @@ define([
 			a[0] = 1;
 			a[1] = 2;
 
-			expect(a).toEqual(new Vector2(1, 2));
+			expect(a).toBeCloseToVector(new Vector2(1, 2));
 		});
 
 		it('can be accessed through aliases', function () {
@@ -90,17 +90,17 @@ define([
 			a.x = 1;
 			a.y = 2;
 
-			expect(a).toEqual(new Vector2(1, 2));
+			expect(a).toBeCloseToVector(new Vector2(1, 2));
 
 			a.u = 2;
 			a.v = 3;
 
-			expect(a).toEqual(new Vector2(2, 3));
+			expect(a).toBeCloseToVector(new Vector2(2, 3));
 
 			a.s = 3;
 			a.t = 4;
 
-			expect(a).toEqual(new Vector2(3, 4));
+			expect(a).toBeCloseToVector(new Vector2(3, 4));
 		});
 
 		describe('add', function () {
@@ -110,14 +110,14 @@ define([
 
 				a.add(a);
 
-				expect(a).toEqual(new Vector2(2, 4));
-				expect(Vector2.add(b, b)).toEqual(new Vector2(2, 4));
+				expect(a).toBeCloseToVector(new Vector2(2, 4));
+				expect(Vector2.add(b, b)).toBeCloseToVector(new Vector2(2, 4));
 
-				expect(Vector2.add(b, 1)).toEqual(new Vector2(2, 3));
-				expect(Vector2.add(1, b)).toEqual(new Vector2(2, 3));
+				expect(Vector2.add(b, 1)).toBeCloseToVector(new Vector2(2, 3));
+				expect(Vector2.add(1, b)).toBeCloseToVector(new Vector2(2, 3));
 
-				expect(Vector2.add(b, [1, 2])).toEqual(new Vector2(2, 4));
-				expect(Vector2.add([1, 2], b)).toEqual(new Vector2(2, 4));
+				expect(Vector2.add(b, [1, 2])).toBeCloseToVector(new Vector2(2, 4));
+				expect(Vector2.add([1, 2], b)).toBeCloseToVector(new Vector2(2, 4));
 			});
 
 			it('performs partial addition when adding vectors of different size', function () {
@@ -132,14 +132,14 @@ define([
 
 				a.sub(a);
 
-				expect(a).toEqual(new Vector2(0, 0));
-				expect(Vector2.sub(b, b)).toEqual(new Vector2(0, 0));
+				expect(a).toBeCloseToVector(new Vector2(0, 0));
+				expect(Vector2.sub(b, b)).toBeCloseToVector(new Vector2(0, 0));
 
-				expect(Vector2.sub(b, 1)).toEqual(new Vector2(0, 1));
-				expect(Vector2.sub(1, b)).toEqual(new Vector2(0, -1));
+				expect(Vector2.sub(b, 1)).toBeCloseToVector(new Vector2(0, 1));
+				expect(Vector2.sub(1, b)).toBeCloseToVector(new Vector2(0, -1));
 
-				expect(Vector2.sub(b, [1, 2])).toEqual(new Vector2(0, 0));
-				expect(Vector2.sub([1, 2], b)).toEqual(new Vector2(0, 0));
+				expect(Vector2.sub(b, [1, 2])).toBeCloseToVector(new Vector2(0, 0));
+				expect(Vector2.sub([1, 2], b)).toBeCloseToVector(new Vector2(0, 0));
 			});
 
 			it('performs partial subtraction when applied to vectors of different size', function () {
@@ -154,14 +154,14 @@ define([
 
 				a.mul(a);
 
-				expect(a).toEqual(new Vector2(1, 4));
-				expect(Vector2.mul(b, b)).toEqual(new Vector2(1, 4));
+				expect(a).toBeCloseToVector(new Vector2(1, 4));
+				expect(Vector2.mul(b, b)).toBeCloseToVector(new Vector2(1, 4));
 
-				expect(Vector2.mul(b, 1)).toEqual(new Vector2(1, 2));
-				expect(Vector2.mul(1, b)).toEqual(new Vector2(1, 2));
+				expect(Vector2.mul(b, 1)).toBeCloseToVector(new Vector2(1, 2));
+				expect(Vector2.mul(1, b)).toBeCloseToVector(new Vector2(1, 2));
 
-				expect(Vector2.mul(b, [1, 2])).toEqual(new Vector2(1, 4));
-				expect(Vector2.mul([1, 2], b)).toEqual(new Vector2(1, 4));
+				expect(Vector2.mul(b, [1, 2])).toBeCloseToVector(new Vector2(1, 4));
+				expect(Vector2.mul([1, 2], b)).toBeCloseToVector(new Vector2(1, 4));
 			});
 
 			it('performs partial multiplication when applied to vectors of different size', function () {
@@ -184,14 +184,14 @@ define([
 
 				a.div(a);
 
-				expect(a).toEqual(new Vector2(1, 1));
-				expect(Vector2.div(b, b)).toEqual(new Vector2(1, 1));
+				expect(a).toBeCloseToVector(new Vector2(1, 1));
+				expect(Vector2.div(b, b)).toBeCloseToVector(new Vector2(1, 1));
 
-				expect(Vector2.div(b, 1)).toEqual(new Vector2(1, 2));
-				expect(Vector2.div(1, b)).toEqual(new Vector2(1, 1/2));
+				expect(Vector2.div(b, 1)).toBeCloseToVector(new Vector2(1, 2));
+				expect(Vector2.div(1, b)).toBeCloseToVector(new Vector2(1, 1/2));
 
-				expect(Vector2.div(b, [1, 2])).toEqual(new Vector2(1, 1));
-				expect(Vector2.div([1, 2], b)).toEqual(new Vector2(1, 1));
+				expect(Vector2.div(b, [1, 2])).toBeCloseToVector(new Vector2(1, 1));
+				expect(Vector2.div([1, 2], b)).toBeCloseToVector(new Vector2(1, 1));
 			});
 
 			it('performs partial division when applied to vectors of different size', function () {
@@ -236,7 +236,7 @@ define([
 		it('can be cloned', function (){
 			var a = new Vector2(1, 2);
 			var b = a.clone();
-			expect(a).toEqual(b);
+			expect(a).toBeCloseToVector(b);
 			expect(a === b).toEqual(false);
 			expect(b).toEqual(jasmine.any(Vector2));
 		});
