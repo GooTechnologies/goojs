@@ -766,39 +766,45 @@ function (
 	 */
 	Renderer.prototype.precompileShader = function (material, renderInfo, queue) {
 		var shader = material.shader;
-		if (shader.processors || shader.defines) {
-			// Call processors
+		if (shader.processors) {
 			shader.updateProcessors(renderInfo);
-
-			// check defines. if no hit in cache -> add to cache. if hit in cache,
-			// replace with cache version and copy over uniforms.
-			// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
-			var defineKey = shader.getDefineKey(this._definesIndices);
-
-			var shaderCache = this.rendererRecord.shaderCache;
-			if (!shaderCache[defineKey]) {
-				if (shader.builder) {
-					shader.builder(shader, renderInfo);
-				}
-				shader = material.shader = shader.clone();
-				shaderCache[defineKey] = shader;
-			} else {
-				shader = shaderCache[defineKey];
-				if (shader !== material.shader) {
-					var uniforms = material.shader.uniforms;
-					var keys = Object.keys(uniforms);
-					for (var ii = 0, l = keys.length; ii < l; ii++) {
-						var key = keys[ii];
-						var origUniform = shader.uniforms[key] = uniforms[key];
-						if (origUniform instanceof Array) {
-							shader.uniforms[key] = origUniform.slice(0);
-						}
-					}
-
-					material.shader = shader;
-				}
-			}
 		}
+		this.findOrCacheMaterialShader(material, shader, renderInfo);
+
+		// var shader = material.shader;
+		// if (shader.processors || shader.defines) {
+		// 	// Call processors
+		// 	shader.updateProcessors(renderInfo);
+
+		// 	// check defines. if no hit in cache -> add to cache. if hit in cache,
+		// 	// replace with cache version and copy over uniforms.
+		// 	// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
+		// 	var defineKey = shader.getDefineKey(this._definesIndices);
+
+		// 	var shaderCache = this.rendererRecord.shaderCache;
+		// 	if (!shaderCache[defineKey]) {
+		// 		if (shader.builder) {
+		// 			shader.builder(shader, renderInfo);
+		// 		}
+		// 		shader = material.shader = shader.clone();
+		// 		shaderCache[defineKey] = shader;
+		// 	} else {
+		// 		shader = shaderCache[defineKey];
+		// 		if (shader !== material.shader) {
+		// 			var uniforms = material.shader.uniforms;
+		// 			var keys = Object.keys(uniforms);
+		// 			for (var ii = 0, l = keys.length; ii < l; ii++) {
+		// 				var key = keys[ii];
+		// 				var origUniform = shader.uniforms[key] = uniforms[key];
+		// 				if (origUniform instanceof Array) {
+		// 					shader.uniforms[key] = origUniform.slice(0);
+		// 				}
+		// 			}
+
+		// 			material.shader = shader;
+		// 		}
+		// 	}
+		// }
 
 		queue.push(function () { shader.precompile(this); }.bind(this));
 	};
@@ -1098,9 +1104,7 @@ function (
 		if (shader.processors) {
 			shader.updateProcessors(renderInfo);
 		}
-		if (shader.defines) {
-			this.findOrCacheMaterialShader(material, shader, renderInfo);
-		}
+		this.findOrCacheMaterialShader(material, shader, renderInfo);
 	};
 
 	Renderer.prototype.renderMeshMaterial = function (materialIndex, materials, flatOrWire, originalData, renderInfo) {
@@ -1233,7 +1237,9 @@ function (
 				}
 			}
 		}
+		
 		material.shader = shader;
+		
 		return shader;
 	};
 

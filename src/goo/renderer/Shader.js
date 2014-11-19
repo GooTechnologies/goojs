@@ -105,7 +105,7 @@ function (
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
-		this.defineKey = shaderDefinition.defineKey;
+		this.defineKey = 'shit'; //shaderDefinition.defineKey;
 		this.defineKeyDirty = true;
 		this.frameStart = true;
 		this.attributeKeys = null;
@@ -328,7 +328,7 @@ function (
 
 	Shader.prototype.setDefine = function (key, value) {
 		this.defines = this.defines || {};
-		this.defineKeyDirty = this.defines[key] !== value;
+		this.defineKeyDirty = this.defineKeyDirty || this.defines[key] !== value;
 		this.defines[key] = value;
 	};
 
@@ -336,8 +336,9 @@ function (
 		if (!this.defines) {
 			return;
 		}
-		this.defineKeyDirty = this.defines[key] !== undefined;
+		this.defineKeyDirty = this.defineKeyDirty || this.defines[key] !== undefined;
 		this.defines[key] = undefined;
+		// delete this.defines[key];
 	};
 
 	Shader.prototype.hasDefine = function (key) {
@@ -362,20 +363,22 @@ function (
 
 	Shader.prototype.getDefineKey = function (definesIndices) {
 		if (this.defineKeyDirty) {
-			var defineArray = Object.keys(this.defines);
 			var key = 'Key:'+this.name;
-			for (var i = 0, l = defineArray.length; i < l; i++) {
-				var defineArrayKey = defineArray[i];
-				var defineValue = this.defines[defineArrayKey];
-				if (defineValue === undefined) {
-					continue;
+			if (this.defines) {
+				var defineArray = Object.keys(this.defines);
+				for (var i = 0, l = defineArray.length; i < l; i++) {
+					var defineArrayKey = defineArray[i];
+					var defineValue = this.defines[defineArrayKey];
+					if (defineValue === undefined || defineValue === false) {
+						continue;
+					}
+					var defineIndex = definesIndices.indexOf(defineArrayKey);
+					if (defineIndex === -1) {
+						definesIndices.push(defineArrayKey);
+						defineIndex = definesIndices.length;
+					}
+					key += '_'+defineIndex+':'+defineValue;
 				}
-				var defineIndex = definesIndices.indexOf(defineArrayKey);
-				if (defineIndex === -1) {
-					definesIndices.push(defineArrayKey);
-					defineIndex = definesIndices.length;
-				}
-				key += '_'+defineIndex+':'+defineValue;
 			}
 			this.defineKey = key;
 			this.defineKeyDirty = false;
