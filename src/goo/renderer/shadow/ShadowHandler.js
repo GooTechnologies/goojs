@@ -191,7 +191,6 @@ function (
 				
 				if (light.shadowCaster) {
 					this.depthMaterial.shader.setDefine('SHADOW_TYPE', shadowSettings.shadowType === 'VSM' ? 2 : 0);
-					// this.depthMaterial.shader.defines.SHADOW_TYPE = shadowSettings.shadowType === 'VSM' ? 2 : 0;
 					this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
 					lightCamera.cameraScale = this.depthMaterial.uniforms.cameraScale;
 

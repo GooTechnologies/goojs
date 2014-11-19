@@ -158,7 +158,6 @@ function(
 		normalTangents: function(shader, shaderInfo) {
 			//TODO: Hacky?
 			if (shader.hasDefine('NORMAL') && shader.hasDefine('NORMAL_MAP') && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
-			// if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
 				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
 			}
 		},

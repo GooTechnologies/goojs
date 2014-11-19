@@ -1333,14 +1333,14 @@ define([
 		processors: [function(shader, shaderInfo) {
 			var overlayTex = shaderInfo.material._textureMaps.OVERLAY_MAP;
 			if (overlayTex) {
-				shader.defines.OVERLAY_MAP = true;
+				shader.setDefine('OVERLAY_MAP', true);
 				var offsetRepeat = shader.uniforms.offsetRepeat;
 				offsetRepeat[0] = overlayTex.offset.data[0];
 				offsetRepeat[1] = overlayTex.offset.data[1];
 				offsetRepeat[2] = overlayTex.repeat.data[0];
 				offsetRepeat[3] = overlayTex.repeat.data[1];
 			} else {
-				delete shader.defines.OVERLAY_MAP;
+				shader.removeDefine('OVERLAY_MAP');
 			}
 		}],
 		attributes: {

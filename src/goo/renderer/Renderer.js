@@ -766,9 +766,8 @@ function (
 	 */
 	Renderer.prototype.precompileShader = function (material, renderInfo, queue) {
 		var shader = material.shader;
-		if (shader.processors) {
-			shader.updateProcessors(renderInfo);
-		}
+
+		shader.updateProcessors(renderInfo);
 		this.findOrCacheMaterialShader(material, shader, renderInfo);
 
 		queue.push(function () { shader.precompile(this); }.bind(this));
@@ -1066,9 +1065,8 @@ function (
 	Renderer.prototype.callShaderProcessors = function(material, renderInfo) {
 		// Check for caching of shader that use defines
 		var shader = material.shader;
-		if (shader.processors) {
-			shader.updateProcessors(renderInfo);
-		}
+
+		shader.updateProcessors(renderInfo);
 		this.findOrCacheMaterialShader(material, shader, renderInfo);
 	};
 

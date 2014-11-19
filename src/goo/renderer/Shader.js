@@ -105,7 +105,7 @@ function (
 		this.defines = shaderDefinition.defines;
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
-		this.defineKey = 'shit'; //shaderDefinition.defineKey;
+		this.defineKey = shaderDefinition.defineKey;
 		this.defineKeyDirty = true;
 		this.frameStart = true;
 		this.attributeKeys = null;

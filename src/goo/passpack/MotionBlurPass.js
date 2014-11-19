@@ -76,9 +76,9 @@ define([
 		defines: {},
 		processors: [function (shader, shaderInfo) {
 			if(shaderInfo.material._textureMaps.MOTION_MAP.glTexture) {
-				shader.defines.MOTION_MAP = true;
+				shader.setDefine('MOTION_MAP', true);
 			} else {
-				delete shader.defines.MOTION_MAP;
+				shader.removeDefine('MOTION_MAP');
 			}
 		}],
 		attributes : {
