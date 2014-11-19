@@ -79,16 +79,6 @@ define([
 			expect(v2).toBeCloseToVector(new Vector3(10, -30, 20));
 		});
 
-		it('centers the lookAt point in the view', function () {
-			var lookAt = new Vector3(5, 0, -10);
-			var up = new Vector3(0, 1, 0);
-			var distance = lookAt.length();
-			t.lookAt(lookAt, up);
-			t.update();
-			t.invert().applyForwardVector(lookAt, v2);
-			expect(v2).toBeCloseToVector(new Vector3(0, 0, -distance));
-		});
-
 		it('can be inverted if identity', function () {
 			checkInversion(t);
 		});
@@ -123,29 +113,55 @@ define([
 			expect(t3.matrix).toBeCloseToMatrix(t.matrix);
 		});
 
-		it('defaults up parameter of lookAt to UNIT_Y', function () {
-			var transform1 = new Transform();
-			var transform2 = new Transform();
+		describe('lookAt', function () {
+			it('centers the lookAt point in the view', function () {
+				var lookAt = new Vector3(5, 0, -10);
+				var up = new Vector3(0, 1, 0);
+				var distance = lookAt.length();
+				t.lookAt(lookAt, up);
+				t.update();
+				t.invert().applyForwardVector(lookAt, v2);
+				expect(v2).toBeCloseToVector(new Vector3(0, 0, -distance));
+			});
 
-			transform1.lookAt(new Vector3(1, 2, 3));
-			transform2.lookAt(new Vector3(1, 2, 3), Vector3.UNIT_Y);
+			it('defaults up parameter of lookAt to UNIT_Y', function () {
+				var transform1 = new Transform();
+				var transform2 = new Transform();
 
-			transform1.update();
-			transform2.update();
+				transform1.lookAt(new Vector3(1, 2, 3));
+				transform2.lookAt(new Vector3(1, 2, 3), Vector3.UNIT_Y);
 
-			expect(transform1.matrix.equals(transform2.matrix)).toBeTruthy();
+				transform1.update();
+				transform2.update();
 
-			// --- check to see if other up vector can be set
-			var transform1 = new Transform();
-			var transform2 = new Transform();
+				expect(transform1.matrix.equals(transform2.matrix)).toBeTruthy();
 
-			transform1.lookAt(new Vector3(1, 2, 3));
-			transform2.lookAt(new Vector3(1, 2, 3), Vector3.UNIT_Z);
+				// --- check to see if other up vector can be set
+				var transform1 = new Transform();
+				var transform2 = new Transform();
 
-			transform1.update();
-			transform2.update();
+				transform1.lookAt(new Vector3(1, 2, 3));
+				transform2.lookAt(new Vector3(1, 2, 3), Vector3.UNIT_Z);
 
-			expect(transform1.matrix.equals(transform2.matrix)).toBeFalsy();
+				transform1.update();
+				transform2.update();
+
+				expect(transform1.matrix.equals(transform2.matrix)).toBeFalsy();
+			});
+
+			it('does nothing when trying to look at itself', function () {
+				var transform = new Transform();
+				transform.translation.setDirect(11, 22, 33);
+				transform.lookAt(new Vector3(11, 22, 33));
+				transform.update();
+
+				var expected = new Transform();
+				expected.translation.setDirect(11, 22, 33);
+				expected.update();
+
+				expect(transform.rotation).toBeCloseToMatrix(expected.rotation);
+				expect(transform.matrix).toBeCloseToMatrix(expected.matrix);
+			});
 		});
 
 		describe('combine', function () {
