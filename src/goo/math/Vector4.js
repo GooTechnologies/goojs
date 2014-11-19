@@ -21,7 +21,7 @@ function (
 		Vector.call(this, 4);
 
 		if (arguments.length !== 0) {
-			this.set(arguments);
+			Vector.prototype.set.apply(this, arguments);
 		}
 	}
 

@@ -31,7 +31,7 @@ function (
 		Vector.call(this, 3);
 
 		if (arguments.length !== 0) {
-			this.set(arguments);
+			Vector.prototype.set.apply(this, arguments);
 		}
 	}
 

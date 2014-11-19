@@ -12,6 +12,51 @@ define([
 			jasmine.addMatchers(CustomMatchers);
 		});
 
+		describe('constructor', function () {
+			it('creates a zero vector when given no parameters', function () {
+				expect(new Vector2()).toBeCloseToVector(Vector2.ZERO);
+			});
+
+			it('creates a vector when given 2 parameters', function () {
+				var vector = new Vector2(11, 22);
+				var expected = new Vector2();
+
+				for (var i = 0; i < 2; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(vector).toBeCloseToVector(expected);
+			});
+
+			it('creates a vector when given an array', function () {
+				var vector = new Vector2([11, 22]);
+				var expected = new Vector2();
+
+				for (var i = 0; i < 2; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(vector).toBeCloseToVector(expected);
+			});
+
+			it('creates a vector when given a vector', function () {
+				var original = new Vector2();
+				for (var i = 0; i < 2; i++) {
+					original.data[i] = (i + 1) * 11;
+				}
+
+				var vector = new Vector2(original);
+
+				var expected = new Vector2();
+
+				for (var i = 0; i < 2; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(vector).toBeCloseToVector(expected);
+			});
+		});
+
 		it('can be accessed through indices', function () {
 			var a = new Vector2(1, 2);
 

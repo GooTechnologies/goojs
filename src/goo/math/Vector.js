@@ -505,15 +505,13 @@ function (
 	 */
 
 	Vector.prototype.set = function () {
-		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
+		if (arguments.length === 1 && typeof arguments[0] === 'object') {
 			if (arguments[0] instanceof Vector) {
 				this.copy(arguments[0]);
-			} else if (arguments[0].length > 1) {
+			} else {
 				for (var i = 0; i < arguments[0].length; i++) {
 					this.data[i] = arguments[0][i];
 				}
-			} else {
-				this.set(arguments[0][0]);
 			}
 		} else {
 			for (var i = 0; i < arguments.length; i++) {

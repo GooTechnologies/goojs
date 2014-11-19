@@ -463,12 +463,12 @@ function (
 
 	/**
 	 * Sets the components of the matrix.
-	 * @param {Matrix|number[]|number} arguments Component values.
+	 * @param {Matrix|number[]|...number} arguments Component values.
 	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.set = function () {
-		if (arguments.length === 1 && typeof(arguments[0]) === 'object') {
+		if (arguments.length === 1 && typeof arguments[0] === 'object') {
 			if (arguments[0] instanceof Matrix) {
 				this.copy(arguments[0]);
 			} else {
