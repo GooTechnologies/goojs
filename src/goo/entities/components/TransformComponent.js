@@ -101,15 +101,12 @@ function (
 		},
 		// no, there's no addScale
 
-
-		// attachChild: Entity | Selection, boolean -> this
-		attachChild: function (entity) {
-			this.transformComponent.attachChild(entity.transformComponent);
+		attachChild: function (entity, keepTransform) {
+			this.transformComponent.attachChild(entity.transformComponent, keepTransform);
 			return this;
 		},
-		// detachChild: Entity | Selection, boolean -> this
-		detachChild: function (entity) {
-			this.transformComponent.detachChild(entity.transformComponent);
+		detachChild: function (entity, keepTransform) {
+			this.transformComponent.detachChild(entity.transformComponent, keepTransform);
 			return this;
 		},
 
