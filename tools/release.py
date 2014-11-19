@@ -20,7 +20,7 @@ if os.path.isdir('out'):
 grunt_command = 'node_modules/grunt-cli/bin/grunt'
 subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
 
-subprocess.check_call([grunt_command, 'jsdoc'])
+#subprocess.check_call([grunt_command, 'jsdoc'])
 subprocess.check_call([grunt_command, 'generate-toc'])
 
 release_dir = os.getenv('RELEASE_DIR', 'out/release/' + name)
@@ -38,7 +38,7 @@ for directory in (
 	'lib/soundmanager2',
 	'lib/crunch',
 	'lib/hammerv2',
-	('goojs-jsdoc', 'docs'),
+#	('goojs-jsdoc', 'docs'),
 	'visual-test',
 	'examples'
 ):
