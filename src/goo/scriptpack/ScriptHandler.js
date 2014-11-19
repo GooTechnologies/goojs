@@ -213,6 +213,7 @@ function (
 
 	ScriptHandler.prototype._update = function (ref, config, options) {
 		var that = this;
+
 		return ConfigHandler.prototype._update.call(this, ref, config, options)
 		.then(function (script) {
 			if (!script) { return; }
@@ -226,7 +227,7 @@ function (
 				// script. As we add dependencies, we remove the script elements
 				// which are still needed. After everything, we remove the
 				// reference to the current script from the remaining ones.
-				var scriptsElementsToRemove = that._getReferringDependencies(config.id);
+				var scriptsElementsToRemove = getReferringDependencies(config.id);
 
 				_.forEach(config.dependencies, function (dependencyConfig) {
 					var url = dependencyConfig.url;
@@ -247,12 +248,12 @@ function (
 				// Remove references to the current script from all the script
 				// elements that are not needed anymore.
 				_.forEach(scriptsElementsToRemove, function (scriptElement) {
-					that._removeReference(scriptElement, config.id);
+					removeReference(scriptElement, config.id);
 				});
 			}
 
 			return RSVP.all(addDependencyPromises)
-			.then(function (dependencyUrls) {
+			.then(function () {
 				if (config.className) { // Engine script.
 					that._updateFromClass(script, config, options);
 				} else if (config.body) { // Custom script.
@@ -286,7 +287,7 @@ function (
 
 				// Remove any script HTML elements that are not needed by any
 				// script.
-				that._removeDeadScriptElements();
+				removeDeadScriptElements();
 
 				return script;
 			});
@@ -308,7 +309,7 @@ function (
 
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
-			that._addReference(scriptElem, scriptId)
+			addReference(scriptElem, scriptId)
 			return this._dependencyPromises[url] || PromiseUtil.resolve();
 		}
 
@@ -316,7 +317,7 @@ function (
 		scriptElem.src = url;
 		scriptElem.setAttribute('data-script-id', scriptId);
 		scriptElem.isDependency = true
-		that._addReference(scriptElem, scriptId)
+		addReference(scriptElem, scriptId)
 
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(scriptElem);
@@ -369,19 +370,16 @@ function (
 	 * Removes all the script HTML elements that are not needed by any script
 	 * anymore (i.e. have no references to scripts).
 	 */
-	ScriptHandler.prototype._removeDeadScriptElements = function () {
-		var that = this;
-
-		var toRemove = [];
+	function removeDeadScriptElements() {
 		var scriptElements = document.querySelectorAll('script');
 
 		for (var i = 0; i < scriptElements.length; ++i) {
 			var scriptElement = scriptElements[i];
-			if (scriptElement.isDependency && !that._hasReferences(scriptElement) && scriptElement.parentNode) {
+			if (scriptElement.isDependency && !hasReferences(scriptElement) && scriptElement.parentNode) {
 				scriptElement.parentNode.removeChild(scriptElement);
 			}
 		}
-	};
+	}
 
 
 	/**
@@ -393,16 +391,17 @@ function (
 	 * @param {string} scriptId
 	 *		The identifier of the custom script whose reference is to be added.
 	 */
-	ScriptHandler.prototype._addReference = function (scriptElement, scriptId) {
+	function addReference(scriptElement, scriptId) {
 		if (!scriptElement.scriptRefs) {
-			scriptElement.scriptRefs = [];
+			scriptElement.scriptRefs = [scriptId];
+			return;
 		}
 
-		var idx = scriptElement.scriptRefs.indexOf(scriptId);
-		if (idx === -1) {
+		var index = scriptElement.scriptRefs.indexOf(scriptId);
+		if (index === -1) {
 			scriptElement.scriptRefs.push(scriptId);
 		}
-	};
+	}
 
 
 	/**
@@ -414,14 +413,13 @@ function (
 	 * @param {string} scriptId
 	 *		The identifier of the custom script whose reference is to be removed.
 	 */
-	ScriptHandler.prototype._removeReference = function (scriptElement, scriptId) {
+	function removeReference(scriptElement, scriptId) {
 		if (!scriptElement.scriptRefs) {
-			scriptElement.scriptRefs = [];
+			return;
 		}
 
 		ArrayUtil.remove(scriptElement.scriptRefs, scriptId);
-	};
-
+	}
 
 	/**
 	 * Gets whether the specified script element/node has any references to
@@ -432,9 +430,9 @@ function (
 	 *
 	 * @return {boolean}
 	 */
-	ScriptHandler.prototype._hasReferences = function (scriptElement) {
-		return scriptElement.scriptRefs && scriptElement.scriptRefs.length > 0
-	};
+	function hasReferences(scriptElement) {
+		return scriptElement.scriptRefs && scriptElement.scriptRefs.length > 0;
+	}
 
 
 	/**
@@ -448,9 +446,9 @@ function (
 	 *
 	 * @return {boolean}
 	 */
-	ScriptHandler.prototype._hasReferenceTo = function (scriptElement, scriptId) {
+	function hasReferenceTo(scriptElement, scriptId) {
 		return scriptElement.scriptRefs && scriptElement.scriptRefs.indexOf(scriptId) > -1;
-	};
+	}
 
 
 	/**
@@ -462,21 +460,19 @@ function (
 	 *
 	 * @return {Array.<HTMLScriptElement>}
 	 */
-	ScriptHandler.prototype._getReferringDependencies = function (scriptId) {
-		var that = this;
-
+	function getReferringDependencies(scriptId) {
 		var dependencies = [];
 		var scriptElements = document.querySelectorAll('script');
 
 		for (var i = 0; i < scriptElements.length; ++i) {
 			var scriptElement = scriptElements[i];
-			if (that._hasReferenceTo(scriptElement, scriptId)) {
+			if (hasReferenceTo(scriptElement, scriptId)) {
 				dependencies.push(scriptElement);
 			}
 		}
 
 		return dependencies;
-	};
+	}
 
 	/**
 	 * Add a global error listener that catches script errors, and tries to match
