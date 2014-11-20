@@ -85,7 +85,7 @@ define([
 		});
 
 		function inScene(id) {
-			if (loader._world.entityManager._entitiesById[id]) {
+			if (loader._world.entityManager.getEntityById(id)) {
 				return true;
 			}
 			var addedEntities = loader._world._addedEntities;
@@ -134,6 +134,6 @@ define([
 				expect(inScene(parentConfig.id)).toBeTruthy();
 				done();
 			});
-		})
+		});
 	});
 });
