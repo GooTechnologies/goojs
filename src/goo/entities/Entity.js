@@ -27,7 +27,7 @@ function (
 		this._index = Entity.entityCount;
 
 		this._tags = new Set();
-		this._attributes = {};
+		this._attributes = new Map();
 
 		/*Object.defineProperty(this, 'id', {
 			value : Entity.entityCount++,
@@ -280,7 +280,7 @@ function (
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setAttribute = function (attribute, value) {
-		this._attributes[attribute] = value;
+		this._attributes.set(attribute, value);
 		return this;
 	};
 
@@ -290,7 +290,7 @@ function (
 	 * @returns {boolean}
 	 */
 	Entity.prototype.hasAttribute = function (attribute) {
-		return typeof this._attributes[attribute] !== 'undefined';
+		return this._attributes.has(attribute);
 	};
 
 	/**
@@ -305,7 +305,7 @@ function (
 	 * @returns {*}
 	 */
 	Entity.prototype.getAttribute = function (attribute) {
-		return this._attributes[attribute];
+		return this._attributes.get(attribute);
 	};
 
 	/**
@@ -314,7 +314,7 @@ function (
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearAttribute = function (attribute) {
-		delete this._attributes[attribute];
+		this._attributes.delete(attribute);
 		return this;
 	};
 
