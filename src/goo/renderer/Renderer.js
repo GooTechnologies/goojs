@@ -768,6 +768,10 @@ function (
 		var shader = material.shader;
 
 		shader.updateProcessors(renderInfo);
+		if (shader.builder) {
+			shader.builder(shader, renderInfo);
+			shader.rebuild();
+		}
 		this.findOrCacheMaterialShader(material, shader, renderInfo);
 
 		queue.push(function () { shader.precompile(this); }.bind(this));

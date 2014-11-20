@@ -176,6 +176,7 @@ require([
 
 	var transformSystem = world.getSystem('TransformSystem');
 	var cameraSystem = world.getSystem('CameraSystem');
+	var lightingSystem = world.getSystem('LightingSystem');
 	var boundingSystem = world.getSystem('BoundingUpdateSystem');
 	var renderSystem = world.getSystem('RenderSystem');
 	var renderer = goo.renderer;
@@ -185,6 +186,7 @@ require([
 		world.processEntityChanges();
 		transformSystem._process();
 		cameraSystem._process();
+		lightingSystem._process();
 		boundingSystem._process();
 		if (Renderer.mainCamera) { goo.renderer.checkResize(Renderer.mainCamera); }
 	}).then(function () {
@@ -237,6 +239,8 @@ require([
 		cameraSystem._process();
 		boundingSystem._process();
 		renderSystem._process();
+
+		renderSystem.enableComposers(false);
 
 		var goon = world.by.name('goon_mesh').first();
 		goon.meshRendererComponent.isReflectable = true;

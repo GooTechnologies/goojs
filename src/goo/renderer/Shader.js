@@ -44,15 +44,13 @@ function (
 		this.originalShaderDefinition = shaderDefinition;
 		this.shaderDefinition = shaderDefinition;
 
+		this.origVertexSource = shaderDefinition.vshader;
+		this.origFragmentSource = shaderDefinition.fshader;
+
 		/** The shader name
 		 * @type {string}
 		 */
 		this.name = name;
-
-		this.origVertexSource = shaderDefinition.vshader;
-		this.origFragmentSource = shaderDefinition.fshader;
-		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
-		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 
 		this.shaderProgram = null;
 		this.vertexShader = null;
@@ -126,6 +124,12 @@ function (
 		this._id = Shader.id++;
 
 		this.errorOnce = false;
+
+		// if (this.builder) {
+		// 	this.builder(this, {renderable:{}, lights: []});
+		// }
+		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
+		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	}
 
 	Shader.id = 0;

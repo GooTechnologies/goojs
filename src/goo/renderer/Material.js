@@ -224,16 +224,16 @@ function (
 	 * @return {Shader}
 	 */
 	Material.createShader = function (shaderDefinition, name) {
-		var index = Material.store.indexOf(shaderDefinition);
-		if (index !== -1) {
-			return Material.hash[index];
-		}
+		// var index = Material.store.indexOf(shaderDefinition);
+		// if (index !== -1) {
+		// 	return Material.hash[index];
+		// }
 		var shader = new Shader(name || null, shaderDefinition);
 		if (shader.name === null) {
 			shader.name = 'DefaultShader' + shader._id;
 		}
-		Material.store.push(shaderDefinition);
-		Material.hash.push(shader);
+		// Material.store.push(shaderDefinition);
+		// Material.hash.push(shader);
 		return shader;
 	};
 
