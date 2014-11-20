@@ -26,7 +26,7 @@ function (
 		this.id = id !== undefined ? id : StringUtil.createUniqueId('entity');
 		this._index = Entity.entityCount;
 
-		this._tags = {};
+		this._tags = new Set();
 		this._attributes = {};
 
 		/*Object.defineProperty(this, 'id', {
@@ -229,7 +229,7 @@ function (
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setTag = function (tag) {
-		this._tags[tag] = true;
+		this._tags.add(tag);
 		return this;
 	};
 
@@ -244,7 +244,7 @@ function (
 	 * @returns {boolean}.
 	 */
 	Entity.prototype.hasTag = function (tag) {
-		return !!this._tags[tag];
+		return this._tags.has(tag);
 	};
 
 	/**
@@ -259,7 +259,7 @@ function (
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearTag = function (tag) {
-		delete this._tags[tag];
+		this._tags.delete(tag);
 		return this;
 	};
 

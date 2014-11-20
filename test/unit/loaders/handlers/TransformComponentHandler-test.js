@@ -124,7 +124,6 @@ define([
 			var childConfig = Configs.entity();
 			var parentId = Object.keys(sceneConfig.entities)[0];
 			var parentConfig = Configs.get()[parentId];
-			console.log(childConfig);
 
 			Configs.attachChild(parentConfig, childConfig);
 			loader.preload(Configs.get());
