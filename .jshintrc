@@ -29,7 +29,10 @@
         "beforeEach": true,
         "afterEach": true,
         "waitsFor": true,
-        "spyOn": true
+        "spyOn": true,
+
+		"Map": true,
+		"Set": true
     },
 
     // The Good Parts.
