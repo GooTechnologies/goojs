@@ -240,8 +240,6 @@ require([
 		boundingSystem._process();
 		renderSystem._process();
 
-		renderSystem.enableComposers(false);
-
 		var goon = world.by.name('goon_mesh').first();
 		goon.meshRendererComponent.isReflectable = true;
 		goon.setTranslation(0, -1000, 3000);
