@@ -236,15 +236,25 @@ define([
 			expect(b.isOrthonormal()).toEqual(true);
 		});
 
-		it('can be tested for approximate equaltiy', function () {
-			var a = new Matrix(2, 2).set(1, 2, 3, 4);
-			var b = new Matrix(2, 2).set(1, 2, 3, 4);
-			var c = new Matrix(2, 2).set(0, 1, 2, 3);
+		describe('', function () {
+			it('can be tested for approximate equaltiy', function () {
+				var a = new Matrix(2, 2).set(1, 2, 3, 4);
+				var b = new Matrix(2, 2).set(1, 2, 3, 4);
+				var c = new Matrix(2, 2).set(0, 1, 2, 3);
 
-			expect(a.equals(b)).toEqual(true);
-			expect(Matrix.equals(a, b)).toEqual(true);
-			expect(a.equals(c)).toEqual(false);
-			expect(Matrix.equals(a, c)).toEqual(false);
+				expect(a.equals(b)).toEqual(true);
+				expect(Matrix.equals(a, b)).toEqual(true);
+				expect(a.equals(c)).toEqual(false);
+				expect(Matrix.equals(a, c)).toEqual(false);
+			});
+
+			it('preserves behaviour of comparing with NaN', function () {
+				// 1 === NaN // false in JS, so (1, 2) === (1, NaN) should return the same
+				var m1 = new Matrix(2, 2).set(1, 2, 3, 4);
+				var m2 = new Matrix(2, 2).set(1, 2, 3, NaN);
+
+				expect(m1.equals(m2)).toBeFalsy();
+			});
 		});
 	});
 });

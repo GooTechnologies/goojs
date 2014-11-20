@@ -119,15 +119,26 @@ define([
 			expect(Vector.apply(c, b)).toBeCloseToVector(new Vector(2).set(7, 10));
 		});
 
-		it('can be tested for approximate equaltiy', function () {
-			var a = new Vector(2).set(1, 2);
-			var b = new Vector(2).set(1, 2);
-			var c = new Vector(2).set(2, 3);
 
-			expect(a.equals(b)).toEqual(true);
-			expect(Vector.equals(a, b)).toEqual(true);
-			expect(a.equals(c)).toEqual(false);
-			expect(Vector.equals(a, c)).toEqual(false);
+		describe('equals', function () {
+			it('can be tested for approximate equaltiy', function () {
+				var a = new Vector(2).set(1, 2);
+				var b = new Vector(2).set(1, 2);
+				var c = new Vector(2).set(2, 3);
+
+				expect(a.equals(b)).toEqual(true);
+				expect(Vector.equals(a, b)).toEqual(true);
+				expect(a.equals(c)).toEqual(false);
+				expect(Vector.equals(a, c)).toEqual(false);
+			});
+
+			it('preserves behaviour of comparing with NaN', function () {
+				// 1 === NaN // false in JS, so (1, 2) === (1, NaN) should return the same
+				var v1 = new Vector(2).set(1, 2);
+				var v2 = new Vector(2).set(1, NaN);
+
+				expect(v1.equals(v2)).toBeFalsy();
+			});
 		});
 
 		it('can calculate lengths', function () {
