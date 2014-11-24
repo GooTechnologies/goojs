@@ -185,8 +185,8 @@ require([
 	loadProject(goo).then(function () {
 		world.processEntityChanges();
 		transformSystem._process();
-		cameraSystem._process();
 		lightingSystem._process();
+		cameraSystem._process();
 		boundingSystem._process();
 		if (Renderer.mainCamera) { goo.renderer.checkResize(Renderer.mainCamera); }
 	}).then(function () {
@@ -236,6 +236,7 @@ require([
 
 		world.processEntityChanges();
 		transformSystem._process();
+		lightingSystem._process();
 		cameraSystem._process();
 		boundingSystem._process();
 		renderSystem._process();
