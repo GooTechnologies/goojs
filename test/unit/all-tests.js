@@ -173,6 +173,7 @@ define([
 	'test/statemachine/actions/InBoxAction-test',
 	'test/statemachine/StateMachineComponent-test',
 	'test/util/Ajax-test',
+	'test/util/ArrayUtil-test',
 	'test/util/CanvasUtils-test',
 	'test/util/StringUtil-test',
 	'test/util/PromiseUtil-test',
