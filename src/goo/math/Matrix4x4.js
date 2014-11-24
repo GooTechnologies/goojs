@@ -9,21 +9,21 @@ function (
 ) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
 	 * @class Matrix with 4x4 components.
 	 * @extends Matrix
 	 * @constructor
 	 * @description Creates a new matrix.
-	 * @param {Matrix4x4|Float[]|...Float} arguments Initial values for the components.
+	 * @param {Matrix4x4|number[]|...number} arguments Initial values for the components.
 	 */
-
 	function Matrix4x4() {
 		Matrix.call(this, 4, 4);
 
 		if (arguments.length === 0) {
-			this.setIdentity();
+			this.data[0] = 1;
+			this.data[5] = 1;
+			this.data[10] = 1;
+			this.data[15] = 1;
 		} else {
 			Matrix.prototype.set.apply(this, arguments);
 		}

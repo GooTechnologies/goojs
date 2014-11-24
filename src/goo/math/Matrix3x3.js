@@ -11,10 +11,8 @@ function (
 ) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
-	 * @class Matrix with 3x3 components.  Used to store 3D rotations.  It also contains common 3D Rotation operations.
+	 * @class Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.
 	 * @extends Matrix
 	 * @description Creates a new Matrix3x3 by passing in either a current Matrix3x3, number Array, or a set of 9 numbers.
 	 * @param {Matrix3x3|number[]|...number} arguments Initial values for the components.
@@ -35,7 +33,9 @@ function (
 		Matrix.call(this, 3, 3);
 
 		if (arguments.length === 0) {
-			this.setIdentity();
+			this.data[0] = 1;
+			this.data[4] = 1;
+			this.data[8] = 1;
 		} else {
 			Matrix.prototype.set.apply(this, arguments);
 		}
