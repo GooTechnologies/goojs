@@ -38,7 +38,6 @@ function(
 	ComponentHandler._registerClass('meshRenderer', MeshRendererComponentHandler);
 
 	MeshRendererComponentHandler.DEFAULT_MATERIAL = new Material(ShaderLib.uber, 'Default material');
-	MeshRendererComponentHandler.DEFAULT_MATERIAL.shader.name += '_shit';
 
 	/**
 	 * Prepare component. Set defaults on config here.

@@ -193,7 +193,9 @@ define([
 				'#endif',
 			'#endif',
 
-			'uniform float opacity;',
+			'#ifdef OPACITY',
+				'uniform float opacity;',
+			'#endif',
 			'#ifdef DISCARD',
 				'uniform float discardThreshold;',
 			'#endif',
@@ -242,7 +244,9 @@ define([
 				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
 					'final_color.a = texture2D(transparencyMap, texCoord0).a;',
 				'#endif',
-				'final_color.a *= opacity;',
+				'#ifdef OPACITY',
+					'final_color.a *= opacity;',
+				'#endif',
 
 				'#ifdef DISCARD',
 					'if (final_color.a < discardThreshold) discard;',

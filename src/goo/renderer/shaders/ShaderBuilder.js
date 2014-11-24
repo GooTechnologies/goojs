@@ -43,8 +43,7 @@ function(
 		defines: function(shader, attributeMap) {
 			var keys = Object.keys(attributeMap);
 			for (var i = 0, l = keys.length; i < l; i++) {
-				var attribute = keys[i];
-				shader.setDefine(attribute, true);
+				shader.setDefine(keys[i], true);
 			}
 		},
 
@@ -118,6 +117,7 @@ function(
 					attribute === 'ENVIRONMENT_TYPE' ||
 					attribute === 'REFLECTIVE' ||
 					attribute === 'DISCARD' ||
+					attribute === 'OPACITY' ||
 					attribute === 'FOG' ||
 					attribute === 'REFLECTION_TYPE' ||
 					attribute === 'SKIP_SPECULAR' ||
@@ -139,6 +139,17 @@ function(
 				shader.setDefine('DISCARD', true);
 			} else {
 				shader.removeDefine('DISCARD');
+			}
+
+		},
+
+		opacity: function(shader, material) {
+			// opacity
+			var opacity = material.uniforms.opacity;
+			if (opacity !== undefined && opacity < 1.0) {
+				shader.setDefine('OPACITY', true);
+			} else {
+				shader.removeDefine('OPACITY');
 			}
 
 		},
@@ -184,6 +195,7 @@ function(
 			ShaderBuilder.uber.attributes(shader, attributeMap, textureMaps);
 
 			ShaderBuilder.uber.discard(shader, material);
+			ShaderBuilder.uber.opacity(shader, material);
 
 			ShaderBuilder.uber.fog(shader);
 
@@ -343,7 +355,7 @@ function(
 			uniforms.materialEmissive = uniforms.materialEmissive || 'EMISSIVE';
 			uniforms.materialDiffuse = uniforms.materialDiffuse || 'DIFFUSE';
 			uniforms.materialSpecular = uniforms.materialSpecular || 'SPECULAR';
-			uniforms.materialSpecularPower = uniforms.materialSpecularPower || 'SPECULAR_POWER';
+			// uniforms.materialSpecularPower = uniforms.materialSpecularPower || 'SPECULAR_POWER';
 			uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
 
 			shader.defines = shader.defines || {};
@@ -394,7 +406,7 @@ function(
 				'uniform vec4 materialEmissive;',
 				'uniform vec4 materialDiffuse;',
 				'uniform vec4 materialSpecular;',
-				'uniform float materialSpecularPower;',
+				// 'uniform float materialSpecularPower;',
 				'uniform vec3 globalAmbient;',
 				'uniform vec2 wrapSettings;',
 
@@ -621,10 +633,10 @@ function(
 
 							'vec3 pointHalfVector = normalize(lVector + normalizedViewPosition);',
 							'float pointDotNormalHalf = max(dot(N, pointHalfVector), 0.0);',
-							'float pointSpecularWeight = pointLightColor'+i+'.a * specularStrength * max(pow(pointDotNormalHalf, materialSpecularPower), 0.0);',
+							'float pointSpecularWeight = pointLightColor'+i+'.a * specularStrength * max(pow(pointDotNormalHalf, materialSpecular.a), 0.0);',
 
 							'#ifdef PHYSICALLY_BASED_SHADING',
-								'float specularNormalization = (materialSpecularPower + 2.0001 ) / 8.0;',
+								'float specularNormalization = (materialSpecular.a + 2.0001 ) / 8.0;',
 								'vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(lVector, pointHalfVector), 5.0);',
 								'totalSpecular += schlick * pointLightColor'+i+'.rgb * pointSpecularWeight * pointDiffuseWeight * lDistance * specularNormalization * shadow;',
 							'#else',
@@ -660,10 +672,10 @@ function(
 
 							'vec3 dirHalfVector = normalize(dirVector + normalizedViewPosition);',
 							'float dirDotNormalHalf = max(dot(N, dirHalfVector), 0.0);',
-							'float dirSpecularWeight = directionalLightColor'+i+'.a * specularStrength * max(pow(dirDotNormalHalf, materialSpecularPower), 0.0);',
+							'float dirSpecularWeight = directionalLightColor'+i+'.a * specularStrength * max(pow(dirDotNormalHalf, materialSpecular.a), 0.0);',
 
 							'#ifdef PHYSICALLY_BASED_SHADING',
-								'float specularNormalization = (materialSpecularPower + 2.0001) / 8.0;',
+								'float specularNormalization = (materialSpecular.a + 2.0001) / 8.0;',
 								'vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(dirVector, dirHalfVector), 5.0);',
 								'totalSpecular += schlick * directionalLightColor'+i+'.rgb * dirSpecularWeight * dirDiffuseWeight * specularNormalization * shadow * cookie;',
 							'#else',
@@ -713,10 +725,10 @@ function(
 
 								'vec3 spotHalfVector = normalize(lVector + normalizedViewPosition);',
 								'float spotDotNormalHalf = max(dot(N, spotHalfVector), 0.0);',
-								'float spotSpecularWeight = spotLightColor'+i+'.a * specularStrength * max(pow(spotDotNormalHalf, materialSpecularPower), 0.0);',
+								'float spotSpecularWeight = spotLightColor'+i+'.a * specularStrength * max(pow(spotDotNormalHalf, materialSpecular.a), 0.0);',
 
 								'#ifdef PHYSICALLY_BASED_SHADING',
-									'float specularNormalization = (materialSpecularPower + 2.0001) / 8.0;',
+									'float specularNormalization = (materialSpecular.a + 2.0001) / 8.0;',
 									'vec3 schlick = materialSpecular.rgb + vec3(1.0 - materialSpecular.rgb) * pow(1.0 - dot(lVector, spotHalfVector), 5.0);',
 									'totalSpecular += schlick * spotLightColor'+i+'.rgb * spotSpecularWeight * spotDiffuseWeight * lDistance * specularNormalization * spotEffect * shadow * cookie;',
 								'#else',

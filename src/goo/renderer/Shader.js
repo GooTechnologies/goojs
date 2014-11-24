@@ -372,8 +372,8 @@ function (
 				var defineArray = Object.keys(this.defines);
 				for (var i = 0, l = defineArray.length; i < l; i++) {
 					var defineArrayKey = defineArray[i];
-					var defineValue = this.defines[defineArrayKey];
-					if (defineValue === undefined || defineValue === false) {
+					var defineVal = this.defines[defineArrayKey];
+					if (defineVal === undefined || defineVal === false) {
 						continue;
 					}
 					var defineIndex = definesIndices.indexOf(defineArrayKey);
@@ -381,7 +381,7 @@ function (
 						definesIndices.push(defineArrayKey);
 						defineIndex = definesIndices.length;
 					}
-					key += '_'+defineIndex+':'+defineValue;
+					key += '_'+defineIndex+':'+defineVal;
 				}
 			}
 			this.defineKey = key;
@@ -756,7 +756,11 @@ function (
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR] = function (uniformCall, shaderInfo) {
-			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular : Shader.DEFAULT_SPECULAR;
+			var materialState = Shader.DEFAULT_SPECULAR;
+			if (shaderInfo.material.materialState !== undefined) {
+				materialState = shaderInfo.material.materialState.specular;
+				materialState[3] = Math.max(shaderInfo.material.materialState.shininess, 1);
+			}
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR_POWER] = function (uniformCall, shaderInfo) {
@@ -844,7 +848,7 @@ function (
 	Shader.DEFAULT_AMBIENT = [0.1, 0.1, 0.1, 1.0];
 	Shader.DEFAULT_EMISSIVE = [0, 0, 0, 0];
 	Shader.DEFAULT_DIFFUSE = [0.8, 0.8, 0.8, 1.0];
-	Shader.DEFAULT_SPECULAR = [0.6, 0.6, 0.6, 1.0];
+	Shader.DEFAULT_SPECULAR = [0.6, 0.6, 0.6, 64.0];
 	Shader.DEFAULT_SHININESS = 64.0;
 
 	Shader.prototype.defaultCallbacks = {};
