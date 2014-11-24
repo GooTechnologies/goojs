@@ -71,7 +71,7 @@ define([
 			});
 		});
 
-		describe('', function () {
+		describe('div', function () {
 			it('can perform division', function () {
 				var a = new Vector(2).set(1, 2);
 				var b = new Vector(2).set(1, 2);
@@ -90,14 +90,17 @@ define([
 			});
 		});
 
-		it('can copy values', function () {
-			var a = new Vector(2).set(1, 2);
-			var b = new Vector(2);
+		describe('copy', function () {
+			it('can copy values', function () {
+				var source = new Vector(2).set(1, 2);
+				var target = new Vector(2);
 
-			b.copy(a);
+				var result = target.copy(source);
 
-			expect(b).toBeCloseToVector(new Vector(2).set(1, 2));
-			expect(Vector.copy(a)).toBeCloseToVector(new Vector(2).set(1, 2));
+				expect(target).toBeCloseToVector(new Vector(2).set(1, 2));
+				expect(result).toBe(target);
+				expect(Vector.copy(source)).toBeCloseToVector(new Vector(2).set(1, 2));
+			});
 		});
 
 		it('can calculate dot products', function () {

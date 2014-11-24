@@ -231,9 +231,9 @@ function (
 	 * @param {Vector} source Source vector.
 	 * @return {Vector} Self for chaining.
 	 */
-
 	Vector.prototype.copy = function (source) {
-		return Vector.copy(source, this);
+		this.data.set(source.data);
+		return this;
 	};
 
 	/* ====================================================================== */
