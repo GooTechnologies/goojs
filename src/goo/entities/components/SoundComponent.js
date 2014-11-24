@@ -147,9 +147,9 @@ function (
 		}
 
 		mvMat.getTranslation(this._position);
-		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
-		this._oldPosition.setv(this._position);
-		this._orientation.setd(0, 0, -1);
+		this._velocity.setVector(this._position).subVector(this._oldPosition).div(tpf);
+		this._oldPosition.setVector(this._position);
+		this._orientation.setDirect(0, 0, -1);
 		mvMat.applyPostVector(this._orientation);
 
 		var pd = this._position.data;

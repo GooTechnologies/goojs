@@ -13,7 +13,7 @@ function(
 	function BoundingVolume(center) {
 		this.center = new Vector3();
 		if (center) {
-			this.center.setv(center);
+			this.center.setVector(center);
 		}
 
 		this.min = new Vector3(Infinity, Infinity, Infinity);

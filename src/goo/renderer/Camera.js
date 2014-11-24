@@ -250,10 +250,10 @@ function (
 	 * @param {Camera} source
 	 */
 	Camera.prototype.copy = function (source) {
-		this.translation.setv(source.translation);
-		this._left.setv(source._left);
-		this._up.setv(source._up);
-		this._direction.setv(source._direction);
+		this.translation.setVector(source.translation);
+		this._left.setVector(source._left);
+		this._up.setVector(source._up);
+		this._direction.setVector(source._direction);
 
 		this.fov = source.fov;
 		this.aspect = source.aspect;
@@ -287,10 +287,10 @@ function (
 	 * @param {Vector3} direction
 	 */
 	Camera.prototype.setFrame = function (location, left, up, direction) {
-		this._left.setv(left);
-		this._up.setv(up);
-		this._direction.setv(direction);
-		this.translation.setv(location);
+		this._left.setVector(left);
+		this._up.setVector(up);
+		this._direction.setVector(direction);
+		this.translation.setVector(location);
 
 		this.onFrameChange();
 	};
@@ -304,28 +304,28 @@ function (
 	 * @param {Vector3} worldUpVector A vector indicating the up direction of the world. (often Vector3.UNIT_Y or Vector3.UNIT_Z).
 	 */
 	Camera.prototype.lookAt = function (pos, worldUpVector) {
-		newDirection.setv(pos).subv(this.translation).normalize();
+		newDirection.setVector(pos).subVector(this.translation).normalize();
 
 		// check to see if we haven't really updated camera -- no need to call
 		// sets.
 		if (newDirection.equals(this._direction)) {
 			return;
 		}
-		this._direction.setv(newDirection);
+		this._direction.setVector(newDirection);
 
-		this._up.setv(worldUpVector).normalize();
+		this._up.setVector(worldUpVector).normalize();
 		if (this._up.equals(Vector3.ZERO)) {
-			this._up.setv(Vector3.UNIT_Y);
+			this._up.setVector(Vector3.UNIT_Y);
 		}
-		this._left.setv(this._up).cross(this._direction).normalize();
+		this._left.setVector(this._up).cross(this._direction).normalize();
 		if (this._left.equals(Vector3.ZERO)) {
 			if (this._direction.x !== 0.0) {
-				this._left.set_d(this._direction.y, -this._direction.x, 0);
+				this._left.setDirect(this._direction.y, -this._direction.x, 0);
 			} else {
-				this._left.set_d(0, this._direction.z, -this._direction.y);
+				this._left.setDirect(0, this._direction.z, -this._direction.y);
 			}
 		}
-		this._up.setv(this._direction).cross(this._left).normalize();
+		this._up.setVector(this._direction).cross(this._left).normalize();
 
 		this.onFrameChange();
 	};
@@ -577,7 +577,7 @@ function (
 			store = new Ray();
 		}
 		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, store.origin);
-		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).subv(store.origin).normalize();
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).subVector(store.origin).normalize();
 		return store;
 	};
 
@@ -635,9 +635,9 @@ function (
 		}
 		*/
 
-		position.setd(x, y, zDepth * 2 - 1, 1);
+		position.setDirect(x, y, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPost(position);
-		position.mul(1.0 / position.w);
+		position.scale(1.0 / position.w);
 		store.x = position.x;
 		store.y = position.y;
 		store.z = position.z;
@@ -706,7 +706,7 @@ function (
 		}
 		this.checkModelViewProjection();
 		var position = new Vector4();
-		position.setd(worldPosition.x, worldPosition.y, worldPosition.z, 1);
+		position.setDirect(worldPosition.x, worldPosition.y, worldPosition.z, 1);
 		this.modelViewProjection.applyPost(position);
 		position.mul(1.0 / position.w);
 		store.x = position.x;
@@ -826,26 +826,26 @@ function (
 		}
 
 		if (sceneBounds instanceof BoundingBox) {
-			extents.setd(sceneBounds.xExtent, sceneBounds.yExtent, sceneBounds.zExtent);
+			extents.setDirect(sceneBounds.xExtent, sceneBounds.yExtent, sceneBounds.zExtent);
 		} else if (sceneBounds instanceof BoundingSphere) {
-			extents.setd(sceneBounds.radius, sceneBounds.radius, sceneBounds.radius);
+			extents.setDirect(sceneBounds.radius, sceneBounds.radius, sceneBounds.radius);
 		}
 
-		corners[0].add_d(extents.x, extents.y, extents.z);
-		corners[1].add_d(extents.x, -extents.y, extents.z);
-		corners[2].add_d(extents.x, extents.y, -extents.z);
-		corners[3].add_d(extents.x, -extents.y, -extents.z);
-		corners[4].add_d(-extents.x, extents.y, extents.z);
-		corners[5].add_d(-extents.x, -extents.y, extents.z);
-		corners[6].add_d(-extents.x, extents.y, -extents.z);
-		corners[7].add_d(-extents.x, -extents.y, -extents.z);
+		corners[0].addDirect(extents.x, extents.y, extents.z);
+		corners[1].addDirect(extents.x, -extents.y, extents.z);
+		corners[2].addDirect(extents.x, extents.y, -extents.z);
+		corners[3].addDirect(extents.x, -extents.y, -extents.z);
+		corners[4].addDirect(-extents.x, extents.y, extents.z);
+		corners[5].addDirect(-extents.x, -extents.y, extents.z);
+		corners[6].addDirect(-extents.x, extents.y, -extents.z);
+		corners[7].addDirect(-extents.x, -extents.y, -extents.z);
 
 		var mvMatrix = this.getViewMatrix();
 		var optimalCameraNear = Number.MAX_VALUE;
 		var optimalCameraFar = -Number.MAX_VALUE;
 		var position = new Vector4();
 		for (var i = 0; i < corners.length; i++) {
-			position.setd(corners[i].x, corners[i].y, corners[i].z, 1);
+			position.setDirect(corners[i].x, corners[i].y, corners[i].z, 1);
 			mvMatrix.applyPre(position);
 
 			optimalCameraNear = Math.min(-position.z, optimalCameraNear);
@@ -888,27 +888,27 @@ function (
 
 		var direction = this.calcLeft;
 
-		direction.setv(this._direction).mul(fNear);
-		vNearPlaneCenter.setv(this.translation).addv(direction);
-		direction.setv(this._direction).mul(fFar);
-		vFarPlaneCenter.setv(this.translation).addv(direction);
+		direction.setVector(this._direction).scale(fNear);
+		vNearPlaneCenter.setVector(this.translation).addVector(direction);
+		direction.setVector(this._direction).scale(fFar);
+		vFarPlaneCenter.setVector(this.translation).addVector(direction);
 
 		var left = this.calcLeft;
 		var up = this.calcUp;
 
-		left.setv(this._left).mul(fNearPlaneWidth);
-		up.setv(this._up).mul(fNearPlaneHeight);
-		this._corners[0].setv(vNearPlaneCenter).subv(left).subv(up);
-		this._corners[1].setv(vNearPlaneCenter).addv(left).subv(up);
-		this._corners[2].setv(vNearPlaneCenter).addv(left).addv(up);
-		this._corners[3].setv(vNearPlaneCenter).subv(left).addv(up);
+		left.setVector(this._left).scale(fNearPlaneWidth);
+		up.setVector(this._up).scale(fNearPlaneHeight);
+		this._corners[0].setVector(vNearPlaneCenter).subVector(left).subVector(up);
+		this._corners[1].setVector(vNearPlaneCenter).addVector(left).subVector(up);
+		this._corners[2].setVector(vNearPlaneCenter).addVector(left).addVector(up);
+		this._corners[3].setVector(vNearPlaneCenter).subVector(left).addVector(up);
 
-		left.setv(this._left).mul(fFarPlaneWidth);
-		up.setv(this._up).mul(fFarPlaneHeight);
-		this._corners[4].setv(vFarPlaneCenter).subv(left).subv(up);
-		this._corners[5].setv(vFarPlaneCenter).addv(left).subv(up);
-		this._corners[6].setv(vFarPlaneCenter).addv(left).addv(up);
-		this._corners[7].setv(vFarPlaneCenter).subv(left).addv(up);
+		left.setVector(this._left).scale(fFarPlaneWidth);
+		up.setVector(this._up).scale(fFarPlaneHeight);
+		this._corners[4].setVector(vFarPlaneCenter).subVector(left).subVector(up);
+		this._corners[5].setVector(vFarPlaneCenter).addVector(left).subVector(up);
+		this._corners[6].setVector(vFarPlaneCenter).addVector(left).addVector(up);
+		this._corners[7].setVector(vFarPlaneCenter).subVector(left).addVector(up);
 
 		return this._corners;
 	};
@@ -918,7 +918,7 @@ function (
 	 * @param {Vector4} clipPlane Clipping plane. (nx, ny, nz, constant)
 	 */
 	Camera.prototype.setToObliqueMatrix = function (clipPlane) {
-		var transformedClipPlane = this._clipPlane.setv(clipPlane);
+		var transformedClipPlane = this._clipPlane.setVector(clipPlane);
 
 		// bring the clip-plane into camera space which is needed for the calculation
 		transformedClipPlane.w = 0;
@@ -929,7 +929,7 @@ function (
 		this._updatePMatrix = true;
 		var projection = this.getProjectionMatrix();
 
-		this._qCalc.setd(
+		this._qCalc.setDirect(
 			(MathUtils.sign(transformedClipPlane.x) + projection[8]) / projection[0],
 			(MathUtils.sign(transformedClipPlane.y) + projection[9]) / projection[5],
 			-1,

@@ -21,9 +21,7 @@ function (
 		Vector.call(this, 4);
 
 		if (arguments.length !== 0) {
-			this.set(arguments);
-		} else {
-			this.setd(0, 0, 0, 0);
+			Vector.prototype.set.apply(this, arguments);
 		}
 	}
 
@@ -292,8 +290,32 @@ function (
 		return this;
 	};
 
+	/* ====================================================================== */
+
+	function addWarning(method, warning) {
+		var warned = false;
+		return function () {
+			if (!warned) {
+				warned = true;
+				console.warn(warning);
+			}
+			return method.apply(this, arguments);
+		};
+	}
+
 	// Performance methods
-	Vector4.prototype.setd = function (x, y, z, w) {
+	/**
+	 * Sets the vector's values from 4 numeric arguments
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
+	 * @returns {Vector4} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * v1.setDirect(2, 4, 6, 8); // v1 == (2, 4, 6, 8)
+	 */
+	Vector4.prototype.setDirect = function (x, y, z, w) {
 		this.data[0] = x;
 		this.data[1] = y;
 		this.data[2] = z;
@@ -302,7 +324,18 @@ function (
 		return this;
 	};
 
-	Vector4.prototype.seta = function (array) {
+	Vector4.prototype.setd = addWarning(
+		Vector4.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
+
+	/**
+	 * Sets the vector's values from an array
+	 * @param {number[]} array
+	 * @returns {Vector4} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * v1.setArray([2, 4, 6, 8]); // v1 == (2, 4, 6, 8)
+	 */
+	Vector4.prototype.setArray = function (array) {
 		this.data[0] = array[0];
 		this.data[1] = array[1];
 		this.data[2] = array[2];
@@ -311,14 +344,142 @@ function (
 		return this;
 	};
 
-	Vector4.prototype.setv = function (vec4) {
-		this.data[0] = vec4.data[0];
-		this.data[1] = vec4.data[1];
-		this.data[2] = vec4.data[2];
-		this.data[3] = vec4.data[3];
+	Vector4.prototype.seta = addWarning(
+		Vector4.prototype.setArray, '.seta is deprecated; please use .setArray instead');
+
+	/**
+	 * Sets the vector's values from another vector
+	 * @param {Vector4} vector
+	 * @returns {Vector4} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * v1.setVector(new Vector4(2, 4, 6, 8)); // v1 == (2, 4, 6, 8)
+	 */
+	Vector4.prototype.setVector = function (vector) {
+		this.data[0] = vector.data[0];
+		this.data[1] = vector.data[1];
+		this.data[2] = vector.data[2];
+		this.data[3] = vector.data[3];
 
 		return this;
 	};
+
+	Vector4.prototype.setv = addWarning(
+		Vector4.prototype.setVector, '.setv is deprecated; please use .setVector instead');
+
+	/**
+	 * Adds arguments 'x', 'y', 'z', 'w' to the current vector
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2); // v1 == (1, 2, 3, 4)
+	 * v1.addDirect(2, 4, 6, 8); // v1 == (3, 6, 9, 12)
+	 */
+	Vector4.prototype.addDirect = function (x, y, z, w) {
+		this.data[0] += x;
+		this.data[1] += y;
+		this.data[2] += z;
+		this.data[3] += w;
+
+		return this;
+	};
+
+	/**
+	 * Adds the vector argument to the current vector
+	 * @param {Vector4} vector
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2); // v1 == (1, 2)
+	 * v1.addVector(new Vector4(2, 4)); // v1 == (3, 6)
+	 */
+	Vector4.prototype.addVector = function (vector) {
+		this.data[0] += vector.data[0];
+		this.data[1] += vector.data[1];
+		this.data[2] += vector.data[2];
+		this.data[3] += vector.data[3];
+
+		return this;
+	};
+
+
+	/**
+	 * Multiplies the vector by arguments 'x', 'y', 'z', 'w'
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} t
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
+	 * v1.mulDirect(2, 4, 6, 8); // v1 == (2, 8, 18, 32)
+	 */
+	Vector4.prototype.mulDirect = function (x, y, z, w) {
+		this.data[0] *= x;
+		this.data[1] *= y;
+		this.data[2] *= z;
+		this.data[3] *= w;
+
+		return this;
+	};
+
+	/**
+	 * Multiplies the vector by the argument
+	 * @param {Vector4} vector
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
+	 * v1.mulVector(new Vector4(2, 4, 6, 8)); // v1 == (2, 8, 18, 32)
+	 */
+	Vector4.prototype.mulVector = function (vector) {
+		this.data[0] *= vector.data[0];
+		this.data[1] *= vector.data[1];
+		this.data[2] *= vector.data[2];
+		this.data[3] *= vector.data[3];
+
+		return this;
+	};
+
+
+	/**
+	 * Subtracts arguments 'x', 'y', 'z', 'w' form the current vector
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
+	 * @returns {Vector4} this for chaining
+	 * @example
+	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
+	 * v1.subDirect(2, 4, 6, 8); // v1 == (-1, -2, -3, -4)
+	 */
+	Vector4.prototype.subDirect = function (x, y, z, w) {
+		this.data[0] -= x;
+		this.data[1] -= y;
+		this.data[2] -= z;
+		this.data[3] -= w;
+
+		return this;
+	};
+
+	/**
+	 * Subtracts the vector argument from the current vector
+	 * @param {Vector2} vector
+	 * @returns {Vector2} this for chaining
+	 * @example
+	 * var v1 = new Vector2(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
+	 * v1.addVector(new Vector2(2, 4, 6, 8)); // v1 == (-1, -2, -3, -4)
+	 */
+	Vector4.prototype.subVector = function (vector) {
+		this.data[0] -= vector.data[0];
+		this.data[1] -= vector.data[1];
+		this.data[2] -= vector.data[2];
+		this.data[3] -= vector.data[3];
+
+		return this;
+	};
+
 
 	/**
 	 * Scales the vector by a factor
@@ -340,6 +501,12 @@ function (
 	Vector4.prototype.clone = function () {
 		return new Vector4(this);
 	};
+
+	/**
+	 * Copies the values of another vector to this vector; an alias for .setVector
+	 * @param {Vector4} Source vector
+	 */
+	Vector4.prototype.copy = Vector4.prototype.setVector;
 
 	/* ====================================================================== */
 

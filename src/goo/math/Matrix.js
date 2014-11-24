@@ -364,7 +364,11 @@ function (
 		}
 
 		for (var i = 0; i < lhs.data.length; i++) {
-			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
+			// why the backwards check? because otherwise if NaN is present in either lhs or rhs
+			// then Math.abs(NaN) is NaN which is neither bigger or smaller than EPSILON
+			// which never satisfies the condition
+			// NaN is not close to NaN and we want to preserve that for matrices as well
+			if (!(Math.abs(lhs.data[i] - rhs.data[i]) <= MathUtils.EPSILON)) {
 				return false;
 			}
 		}
@@ -459,12 +463,12 @@ function (
 
 	/**
 	 * Sets the components of the matrix.
-	 * @param {Matrix|number[]|number} arguments Component values.
+	 * @param {Matrix|number[]|...number} arguments Component values.
 	 * @return {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.set = function () {
-		if (arguments.length === 1 && typeof(arguments[0]) === 'object') {
+		if (arguments.length === 1 && typeof arguments[0] === 'object') {
 			if (arguments[0] instanceof Matrix) {
 				this.copy(arguments[0]);
 			} else {

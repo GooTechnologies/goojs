@@ -26,8 +26,8 @@ function(
 	}
 
 	var defaultLight = new DirectionalLight();
-	defaultLight.translation.setd(10, 10, 10);
-	defaultLight.direction.setd(1, 1, 1).normalize();
+	defaultLight.translation.setDirect(10, 10, 10);
+	defaultLight.direction.setDirect(1, 1, 1).normalize();
 	ShaderBuilder.defaultLight = defaultLight;
 
 	ShaderBuilder.SKYBOX = null;

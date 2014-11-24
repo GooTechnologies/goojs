@@ -35,8 +35,8 @@ function (
 		var max = this.max;
 		var vec = tmpVec;
 
-		min.setd(Infinity, Infinity, Infinity);
-		max.setd(-Infinity, -Infinity, -Infinity);
+		min.setDirect(Infinity, Infinity, Infinity);
+		max.setDirect(-Infinity, -Infinity, -Infinity);
 		var x, y, z;
 		for (var i = 0; i < verts.length; i += 3) {
 			x = verts[i + 0];
@@ -49,18 +49,18 @@ function (
 			max.data[1] = y > max.data[1] ? y : max.data[1];
 			max.data[2] = z > max.data[2] ? z : max.data[2];
 		}
-		var newCenter = max.addv(min).div(2.0);
+		var newCenter = max.addVector(min).div(2.0);
 		var size = 0, test;
 		for (var i = 0; i < verts.length; i += 3) {
-			vec.setd(verts[i], verts[i + 1], verts[i + 2]);
-			test = vec.subv(newCenter).lengthSquared();
+			vec.setDirect(verts[i], verts[i + 1], verts[i + 2]);
+			test = vec.subVector(newCenter).lengthSquared();
 			if (test > size) {
 				size = test;
 			}
 		}
 
 		this.radius = Math.sqrt(size);
-		this.center.setv(newCenter);
+		this.center.setVector(newCenter);
 	};
 
 	(function () {
@@ -72,7 +72,7 @@ function (
 		 * @returns {boolean}
 		 */
 		BoundingSphere.prototype.containsPoint = function (point) {
-			return relativePoint.setv(point).subv(this.center).lengthSquared() <= Math.pow(this.radius, 2);
+			return relativePoint.setVector(point).subVector(this.center).lengthSquared() <= Math.pow(this.radius, 2);
 		};
 	})();
 
@@ -104,7 +104,7 @@ function (
 		}
 
 		var quantity = 1.0 / points.length;
-		this.center.mul(quantity);
+		this.center.scale(quantity);
 
 		var maxRadiusSqr = 0.0;
 		for (var i = 0; i < points.length; i++) {
@@ -201,7 +201,7 @@ function (
 	};
 
 	BoundingSphere.prototype.intersectsSphere = function (bs) {
-		var diff = tmpVec.setv(this.center).subv(bs.center);
+		var diff = tmpVec.setVector(this.center).subVector(bs.center);
 		var rsum = this.radius + bs.radius;
 		return diff.dot(diff) <= rsum * rsum;
 		//return this.center.distanceSquared(bs.center) <= rsum * rsum;
@@ -237,7 +237,7 @@ function (
 			discr = a1 * a1 - a;
 			root = Math.sqrt(discr);
 			var distances = [root - a1];
-			var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin)];
+			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -256,8 +256,8 @@ function (
 		} else if (discr >= 0.00001) {
 			root = Math.sqrt(discr);
 			var distances = [-a1 - root, -a1 + root];
-			var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin),
-				new Vector3().copy(ray.direction).mul(distances[1]).add(ray.origin)];
+			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin),
+				new Vector3().copy(ray.direction).scale(distances[1]).add(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -265,7 +265,7 @@ function (
 		}
 
 		var distances = [-a1];
-		var points = [new Vector3().copy(ray.direction).mul(distances[0]).add(ray.origin)];
+		var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
 		return {
 			"distances": distances,
 			"points": points
@@ -276,7 +276,7 @@ function (
 		if (bv instanceof BoundingSphere) {
 			return this.mergeSphere(bv.center, bv.radius, this);
 		} else {
-			var boxRadius = tmpVec.setd(bv.xExtent, bv.yExtent, bv.zExtent).length();
+			var boxRadius = tmpVec.setDirect(bv.xExtent, bv.yExtent, bv.zExtent).length();
 			return this.mergeSphere(bv.center, boxRadius, this);
 		}
 	};
@@ -286,7 +286,7 @@ function (
 			store = new BoundingSphere();
 		}
 
-		var diff = tmpVec.setv(center).subv(this.center);
+		var diff = tmpVec.setVector(center).subVector(this.center);
 		var lengthSquared = diff.lengthSquared();
 		var radiusDiff = radius - this.radius;
 		var radiusDiffSqr = radiusDiff * radiusDiff;
@@ -295,13 +295,13 @@ function (
 		if (radiusDiffSqr >= lengthSquared) {
 			// if we contain the other
 			if (radiusDiff <= 0.0) {
-				store.center.setv(this.center);
+				store.center.setVector(this.center);
 				store.radius = this.radius;
 				return store;
 			}
 			// else the other contains us
 			else {
-				store.center.setv(center);
+				store.center.setVector(center);
 				store.radius = radius;
 				return store;
 			}
@@ -317,7 +317,7 @@ function (
 		if (length > MathUtils.EPSILON) {
 			// place us between the two centers, weighted by radii
 			var coeff = (length + radiusDiff) / (2.0 * length);
-			rCenter.addv(diff.mul(coeff));
+			rCenter.addVector(diff.scale(coeff));
 		}
 
 		// Set radius
@@ -328,7 +328,7 @@ function (
 
 	BoundingSphere.prototype.clone = function (store) {
 		if (store && store instanceof BoundingSphere) {
-			store.center.setv(this.center);
+			store.center.setVector(this.center);
 			store.radius = this.radius;
 			return store;
 		}

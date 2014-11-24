@@ -242,7 +242,7 @@ define([
 						var topRight = this.terrainInfo.heights[row * terrainSize + col1];
 						var bottomLeft = this.terrainInfo.heights[row1 * terrainSize + col];
 
-						return calcVec.setd((topLeft - topRight), 1, (bottomLeft - topLeft)).normalize();
+						return calcVec.setDirect((topLeft - topRight), 1, (bottomLeft - topLeft)).normalize();
 					}.bind(this),
 					getVegetationType: function (xx, zz, slope) {
 						var rand = Math.random();

@@ -100,7 +100,7 @@ function (
 						bounding.xExtent = size[0] / 2;
 						bounding.yExtent = size[1] / 2;
 						bounding.zExtent = size[2] / 2;
-						bounding.center.seta(center);
+						bounding.center.setArray(center);
 						component.modelBound = bounding;
 						component.autoCompute = false;
 					}

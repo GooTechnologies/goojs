@@ -165,7 +165,7 @@ function (
 
 			if (this.skybox) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setv(camReflectPos);
+				target.translation.setVector(camReflectPos);
 				target.update();
 			}
 		}
@@ -188,7 +188,7 @@ function (
 		if (aboveWater && this.skybox) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setv(source);
+			target.translation.setVector(source);
 			target.update();
 		}
 	};

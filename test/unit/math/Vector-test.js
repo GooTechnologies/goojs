@@ -21,11 +21,11 @@ define([
 
 				a.add(a);
 
-				expect(a).toEqual(new Vector(2).set(2, 4));
-				expect(Vector.add(b, b)).toEqual(new Vector(2).set(2, 4));
+				expect(a).toBeCloseToVector(new Vector(2).set(2, 4));
+				expect(Vector.add(b, b)).toBeCloseToVector(new Vector(2).set(2, 4));
 
-				expect(Vector.add(b, [1, 2])).toEqual(new Vector(2).set(2, 4));
-				expect(Vector.add([1, 2], b)).toEqual(new Vector(2).set(2, 4));
+				expect(Vector.add(b, [1, 2])).toBeCloseToVector(new Vector(2).set(2, 4));
+				expect(Vector.add([1, 2], b)).toBeCloseToVector(new Vector(2).set(2, 4));
 			});
 
 			it('performs partial addition when applied to vectors of different size', function () {
@@ -40,11 +40,11 @@ define([
 
 				a.sub(a);
 
-				expect(a).toEqual(new Vector(2).set(0, 0));
-				expect(Vector.sub(b, b)).toEqual(new Vector(2).set(0, 0));
+				expect(a).toBeCloseToVector(new Vector(2).set(0, 0));
+				expect(Vector.sub(b, b)).toBeCloseToVector(new Vector(2).set(0, 0));
 
-				expect(Vector.sub(b, [1, 2])).toEqual(new Vector(2).set(0, 0));
-				expect(Vector.sub([1, 2], b)).toEqual(new Vector(2).set(0, 0));
+				expect(Vector.sub(b, [1, 2])).toBeCloseToVector(new Vector(2).set(0, 0));
+				expect(Vector.sub([1, 2], b)).toBeCloseToVector(new Vector(2).set(0, 0));
 			});
 
 			it('performs partial subtraction when applied to vectors of different size', function () {
@@ -59,11 +59,11 @@ define([
 
 				a.mul(a);
 
-				expect(a).toEqual(new Vector(2).set(1, 4));
-				expect(Vector.mul(b, b)).toEqual(new Vector(2).set(1, 4));
+				expect(a).toBeCloseToVector(new Vector(2).set(1, 4));
+				expect(Vector.mul(b, b)).toBeCloseToVector(new Vector(2).set(1, 4));
 
-				expect(Vector.mul(b, [1, 2])).toEqual(new Vector(2).set(1, 4));
-				expect(Vector.mul([1, 2], b)).toEqual(new Vector(2).set(1, 4));
+				expect(Vector.mul(b, [1, 2])).toBeCloseToVector(new Vector(2).set(1, 4));
+				expect(Vector.mul([1, 2], b)).toBeCloseToVector(new Vector(2).set(1, 4));
 			});
 
 			it('performs partial multiplication when applied to vectors of different size', function () {
@@ -71,18 +71,18 @@ define([
 			});
 		});
 
-		describe('', function () {
+		describe('div', function () {
 			it('can perform division', function () {
 				var a = new Vector(2).set(1, 2);
 				var b = new Vector(2).set(1, 2);
 
 				a.div(a);
 
-				expect(a).toEqual(new Vector(2).set(1, 1));
-				expect(Vector.div(b, b)).toEqual(new Vector(2).set(1, 1));
+				expect(a).toBeCloseToVector(new Vector(2).set(1, 1));
+				expect(Vector.div(b, b)).toBeCloseToVector(new Vector(2).set(1, 1));
 
-				expect(Vector.div(b, [1, 2])).toEqual(new Vector(2).set(1, 1));
-				expect(Vector.div([1, 2], b)).toEqual(new Vector(2).set(1, 1));
+				expect(Vector.div(b, [1, 2])).toBeCloseToVector(new Vector(2).set(1, 1));
+				expect(Vector.div([1, 2], b)).toBeCloseToVector(new Vector(2).set(1, 1));
 			});
 
 			it('performs partial division when applied to vectors of different size', function () {
@@ -90,14 +90,17 @@ define([
 			});
 		});
 
-		it('can copy values', function () {
-			var a = new Vector(2).set(1, 2);
-			var b = new Vector(2);
+		describe('copy', function () {
+			it('can copy values', function () {
+				var source = new Vector(2).set(1, 2);
+				var target = new Vector(2);
 
-			b.copy(a);
+				var result = target.copy(source);
 
-			expect(b).toEqual(new Vector(2).set(1, 2));
-			expect(Vector.copy(a)).toEqual(new Vector(2).set(1, 2));
+				expect(target).toBeCloseToVector(new Vector(2).set(1, 2));
+				expect(result).toBe(target);
+				expect(Vector.copy(source)).toBeCloseToVector(new Vector(2).set(1, 2));
+			});
 		});
 
 		it('can calculate dot products', function () {
@@ -115,19 +118,30 @@ define([
 
 			a.apply(c);
 
-			expect(a).toEqual(new Vector(2).set(7, 10));
-			expect(Vector.apply(c, b)).toEqual(new Vector(2).set(7, 10));
+			expect(a).toBeCloseToVector(new Vector(2).set(7, 10));
+			expect(Vector.apply(c, b)).toBeCloseToVector(new Vector(2).set(7, 10));
 		});
 
-		it('can be tested for approximate equaltiy', function () {
-			var a = new Vector(2).set(1, 2);
-			var b = new Vector(2).set(1, 2);
-			var c = new Vector(2).set(2, 3);
 
-			expect(a.equals(b)).toEqual(true);
-			expect(Vector.equals(a, b)).toEqual(true);
-			expect(a.equals(c)).toEqual(false);
-			expect(Vector.equals(a, c)).toEqual(false);
+		describe('equals', function () {
+			it('can be tested for approximate equaltiy', function () {
+				var a = new Vector(2).set(1, 2);
+				var b = new Vector(2).set(1, 2);
+				var c = new Vector(2).set(2, 3);
+
+				expect(a.equals(b)).toEqual(true);
+				expect(Vector.equals(a, b)).toEqual(true);
+				expect(a.equals(c)).toEqual(false);
+				expect(Vector.equals(a, c)).toEqual(false);
+			});
+
+			it('preserves behaviour of comparing with NaN', function () {
+				// 1 === NaN // false in JS, so (1, 2) === (1, NaN) should return the same
+				var v1 = new Vector(2).set(1, 2);
+				var v2 = new Vector(2).set(1, NaN);
+
+				expect(v1.equals(v2)).toBeFalsy();
+			});
 		});
 
 		it('can calculate lengths', function () {
@@ -152,7 +166,7 @@ define([
 
 			a.invert();
 
-			expect(a).toEqual(new Vector(2).set(-1, -2));
+			expect(a).toBeCloseToVector(new Vector(2).set(-1, -2));
 		});
 
 		it('can be normalized', function () {
@@ -160,7 +174,7 @@ define([
 
 			a.normalize();
 
-			expect(a).toEqual(new Vector(2).set(0.6, 0.8));
+			expect(a).toBeCloseToVector(new Vector(2).set(0.6, 0.8));
 		});
 
 		it('can be cloned', function () {
@@ -169,8 +183,8 @@ define([
 
 			b.set(2, 3);
 
-			expect(a).toEqual(new Vector(2).set(1, 2));
-			expect(b).toEqual(new Vector(2).set(2, 3));
+			expect(a).toBeCloseToVector(new Vector(2).set(1, 2));
+			expect(b).toBeCloseToVector(new Vector(2).set(2, 3));
 		});
 
 		it('can be set', function () {
@@ -178,9 +192,9 @@ define([
 			var b = new Vector(2).set([1, 2]);
 			var c = new Vector(2).set(a);
 
-			expect(a).toEqual(new Vector(2).set(1, 2));
-			expect(b).toEqual(new Vector(2).set(1, 2));
-			expect(c).toEqual(new Vector(2).set(1, 2));
+			expect(a).toBeCloseToVector(new Vector(2).set(1, 2));
+			expect(b).toBeCloseToVector(new Vector(2).set(1, 2));
+			expect(c).toBeCloseToVector(new Vector(2).set(1, 2));
 		});
 
 		it('can be printed', function () {

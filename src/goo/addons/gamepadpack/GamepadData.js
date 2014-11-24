@@ -85,7 +85,7 @@ function(
 	 * @param {Number} y
 	 */
 	GamepadData.prototype.calculateStickDirection = function(dirVector, x, y) {
-		dirVector.setd(x, y);
+		dirVector.setDirect(x, y);
 		var length = dirVector.length();
 		if (length > 0.0000001) {
 			dirVector.data[0] /= length;

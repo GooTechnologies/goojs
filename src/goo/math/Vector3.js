@@ -31,9 +31,7 @@ function (
 		Vector.call(this, 3);
 
 		if (arguments.length !== 0) {
-			this.set(arguments);
-		} else {
-			this.setd(0, 0, 0);
+			Vector.prototype.set.apply(this, arguments);
 		}
 	}
 
@@ -47,7 +45,7 @@ function (
 	* @type {Vector3}
 	* @example
 	* var oldValue = new Vector3(5, 2, 1);
-	* oldValue.setv(Vector3.ZERO); // oldValue == (0, 0, 0)
+	* oldValue.setVector(Vector3.ZERO); // oldValue == (0, 0, 0)
 	*/
 	Vector3.ZERO = new Vector3(0, 0, 0);
 
@@ -182,12 +180,12 @@ function (
 	 * // Adds two Vector3 objects and returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * var v3 = Vector3.addv(v1, v2); // v3 == (5, 7, 9)
+	 * var v3 = Vector3.addVector(v1, v2); // v3 == (5, 7, 9)
 	 *
 	 * // Adds two Vector3 objects, and stores the result in the target Vector3
 	 * var v1 = new Vector3(2, 4, 6);
 	 * var v2 = new Vector3(4, 6, 8);
-	 * Vector3.addv(v1, v2, v1); // v1 == (6, 10, 14)
+	 * Vector3.addVector(v1, v2, v1); // v1 == (6, 10, 14)
 	 */
 	Vector3.addv = function (lhs, rhs, target) {
 		if (!target) {
@@ -283,12 +281,12 @@ function (
 	 * // Subtracts two Vector3: v2 from v1, and returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * var v3 = Vector3.subv(v1, v2); // v3 == (-3, -3, -3)
+	 * var v3 = Vector3.subVector(v1, v2); // v3 == (-3, -3, -3)
 	 *
 	 * // Subtracts two Vector3: v2 from v1, and stores the result in the target Vector3: v1
 	 * var v1 = new Vector3(2, 4, 6);
 	 * var v2 = new Vector3(4, 6, 8);
-	 * Vector3.subv(v1, v2, v1); // v1 == (-2, -2, -2)
+	 * Vector3.subVector(v1, v2, v1); // v1 == (-2, -2, -2)
 	 */
 	Vector3.subv = function (lhs, rhs, target) {
 		if (!target) {
@@ -638,7 +636,6 @@ function (
 	 *     entity.transformComponent.setUpdated();
 	 * }
 	 */
-	 // Review: this function looks like it could be generalized in Vector.js instead
 	Vector3.prototype.lerp = function (end, factor) {
 		this.data[0] = (1.0 - factor) * this.data[0] + factor * end.data[0];
 		this.data[1] = (1.0 - factor) * this.data[1] + factor * end.data[1];
@@ -647,18 +644,31 @@ function (
 		return this;
 	};
 
+	/* ====================================================================== */
+
+	function addWarning(method, warning) {
+		var warned = false;
+		return function () {
+			if (!warned) {
+				warned = true;
+				console.warn(warning);
+			}
+			return method.apply(this, arguments);
+		};
+	}
+
 	// Performance methods
 	/**
-	 * Sets Vector3 values with numbers as inputs.  The current Vector3 is modified.
+	 * Sets the vector's values from 3 numeric arguments
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.setd(2, 4, 6); // v1 == (2, 4, 6)
+	 * v1.setDirect(2, 4, 6); // v1 == (2, 4, 6)
 	 */
-	Vector3.prototype.setd = function (x, y, z) {
+	Vector3.prototype.setDirect = function (x, y, z) {
 		this.data[0] = x;
 		this.data[1] = y;
 		this.data[2] = z;
@@ -666,15 +676,18 @@ function (
 		return this;
 	};
 
+	Vector3.prototype.setd = addWarning(
+		Vector3.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
+
 	/**
-	 * Sets Vector3 values with an Array of numbers as input.  The current Vector3 is modified.
+	 * Sets Vector3 values with an Array of numbers as input. The current Vector3 is modified.
 	 * @param {number[]} array
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.seta([2, 4, 6]); // v1 == (2, 4, 6)
+	 * v1.setArray([2, 4, 6]); // v1 == (2, 4, 6)
 	 */
-	Vector3.prototype.seta = function (array) {
+	Vector3.prototype.setArray = function (array) {
 		this.data[0] = array[0];
 		this.data[1] = array[1];
 		this.data[2] = array[2];
@@ -682,34 +695,40 @@ function (
 		return this;
 	};
 
+	Vector3.prototype.seta = addWarning(
+		Vector3.prototype.setArray, '.seta is deprecated; please use .setArray instead');
+
 	/**
 	 * Sets Vector3 values with another {@link Vector3} as input.  The current Vector3 is modified.
-	 * @param {Vector3} vec3
+	 * @param {Vector3} vector
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(1, 2, 3);
-	 * v1.setv(v2); // v1 == (1, 2, 3)
+	 * v1.setVector(v2); // v1 == (1, 2, 3)
 	 */
-	Vector3.prototype.setv = function (vec3) {
-		this.data[0] = vec3.data[0];
-		this.data[1] = vec3.data[1];
-		this.data[2] = vec3.data[2];
+	Vector3.prototype.setVector = function (vector) {
+		this.data[0] = vector.data[0];
+		this.data[1] = vector.data[1];
+		this.data[2] = vector.data[2];
 
 		return this;
 	};
 
+	Vector3.prototype.setv = addWarning(
+		Vector3.prototype.setVector, '.setv is deprecated; please use .setVector instead');
+
 	/**
-	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values.  The current Vector3 is modified.
+	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
-	 * v1.add_d(2, 4, 6); // v1 == (3, 6, 9)
+	 * v1.addDirect(2, 4, 6); // v1 == (3, 6, 9)
 	 */
-	Vector3.prototype.add_d = function (x, y, z) {
+	Vector3.prototype.addDirect = function (x, y, z) {
 		this.data[0] += x;
 		this.data[1] += y;
 		this.data[2] += z;
@@ -717,51 +736,40 @@ function (
 		return this;
 	};
 
+	Vector3.prototype.add_d = addWarning(
+		Vector3.prototype.addDirect, '.add_d is deprecated; please use .addDirect instead');
+
 	/**
-	 * Adds another {@link Vector3} to the current Vector3.  The current Vector3 is modified.
-	 * @param {Vector3} vec3
+	 * Adds another {@link Vector3} to the current Vector3
+	 * @param {Vector3} vector
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * v1.addv(v2); // v1 == (5, 7, 9)
+	 * v1.addVector(v2); // v1 == (5, 7, 9)
 	 */
-	Vector3.prototype.addv = function (vec3) {
-		this.data[0] += vec3.data[0];
-		this.data[1] += vec3.data[1];
-		this.data[2] += vec3.data[2];
+	Vector3.prototype.addVector = function (vector) {
+		this.data[0] += vector.data[0];
+		this.data[1] += vector.data[1];
+		this.data[2] += vector.data[2];
 
 		return this;
 	};
 
-	/**
-	 * Multiplies the current Vector3 by another {@link Vector3}.  The current Vector3 is modified.
-	 * @param {Vector3} vec3
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(2, 2, 2);
-	 * v1.mulv(v2); // v1 == (2, 4, 6)
-	 */
-	Vector3.prototype.mulv = function (vec3) {
-		this.data[0] *= vec3.data[0];
-		this.data[1] *= vec3.data[1];
-		this.data[2] *= vec3.data[2];
-
-		return this;
-	};
+	Vector3.prototype.addv = addWarning(
+		Vector3.prototype.addVector, '.addv is deprecated; please use .addVector instead');
 
 	/**
-	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs.  The current Vector3 is modified.
+	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
-	 * v1.muld(2, 4, 6); // v1 == (2, 8, 18)
+	 * v1.mulDirect(2, 4, 6); // v1 == (2, 8, 18)
 	 */
-	Vector3.prototype.muld = function (x, y, z) {
+	Vector3.prototype.mulDirect = function (x, y, z) {
 		this.data[0] *= x;
 		this.data[1] *= y;
 		this.data[2] *= z;
@@ -769,40 +777,70 @@ function (
 		return this;
 	};
 
+	Vector3.prototype.muld = addWarning(
+		Vector3.prototype.mulDirect, '.muld is deprecated; please use .mulDirect instead');
+
 	/**
-	 * Subtracts another {@link Vector3} from the current Vector3.  The current Vector3 is modified.
+	 * Multiplies the current Vector3 by another {@link Vector3}
 	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
 	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(2, 4, 6);
-	 * v1.subv(v2); // v1 == (-2, -4, -6)
+	 * var v1 = new Vector3(1, 2, 3);
+	 * var v2 = new Vector3(2, 2, 2);
+	 * v1.mulVector(v2); // v1 == (2, 4, 6)
 	 */
-	Vector3.prototype.subv = function (vec3) {
-		this.data[0] -= vec3.data[0];
-		this.data[1] -= vec3.data[1];
-		this.data[2] -= vec3.data[2];
+	Vector3.prototype.mulVector = function (vec3) {
+		this.data[0] *= vec3.data[0];
+		this.data[1] *= vec3.data[1];
+		this.data[2] *= vec3.data[2];
 
 		return this;
 	};
 
+	Vector3.prototype.mulv = addWarning(
+		Vector3.prototype.mulVector, '.mulv is deprecated; please use .mulVector instead');
+
 	/**
-	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3.  The current Vector3 is modified.
+	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.sub_d(1, 2, 3); // v1 == (-1, -2, -3)
+	 * v1.subDirect(1, 2, 3); // v1 == (-1, -2, -3)
 	 */
-	Vector3.prototype.sub_d = function (x, y, z) {
+	Vector3.prototype.subDirect = function (x, y, z) {
 		this.data[0] -= x;
 		this.data[1] -= y;
 		this.data[2] -= z;
 
 		return this;
 	};
+
+	Vector3.prototype.sub_d = addWarning(
+		Vector3.prototype.subDirect, '.sub_d is deprecated; please use .subDirect instead');
+
+	/**
+	 * Subtracts another {@link Vector3} from the current Vector3
+	 * @param {Vector3} vector
+	 * @returns {Vector3} this for chaining
+	 * @example
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * var v2 = new Vector3(2, 4, 6);
+	 * v1.subVector(v2); // v1 == (-2, -4, -6)
+	 */
+	Vector3.prototype.subVector = function (vector) {
+		this.data[0] -= vector.data[0];
+		this.data[1] -= vector.data[1];
+		this.data[2] -= vector.data[2];
+
+		return this;
+	};
+
+	Vector3.prototype.subv = addWarning(
+		Vector3.prototype.subVector, '.subv is deprecated; please use .subVector instead');
+
 
 	/**
 	 * Scales the vector by a factor
@@ -929,7 +967,11 @@ function (
 		return new Vector3(this);
 	};
 
-	/* ====================================================================== */
+	/**
+	 * Copies the values of another vector to this vector; an alias for .setVector
+	 * @param {Vector3} Source vector
+	 */
+	Vector3.prototype.copy = Vector3.prototype.setVector;
 
 	return Vector3;
 });

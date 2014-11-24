@@ -64,9 +64,9 @@ function (
 	TransformComponentHandler.prototype._remove = function (entity) {
 		var component = entity.transformComponent;
 		// Reset
-		component.transform.translation.setd(0, 0, 0);
+		component.transform.translation.setDirect(0, 0, 0);
 		component.transform.setRotationXYZ(0, 0, 0);
-		component.transform.scale.setd(1, 1, 1);
+		component.transform.scale.setDirect(1, 1, 1);
 
 		// Detach all children
 		for (var i = 0; i < component.children.length; i++) {
@@ -114,7 +114,7 @@ function (
 			}
 
 			// Translation
-			component.transform.translation.seta(config.translation);
+			component.transform.translation.setArray(config.translation);
 			// Rotation
 			component.transform.setRotationXYZ(
 				MathUtils.DEG_TO_RAD * config.rotation[0],
@@ -122,7 +122,7 @@ function (
 				MathUtils.DEG_TO_RAD * config.rotation[2]
 			);
 			// Scale
-			component.transform.scale.seta(config.scale);
+			component.transform.scale.setArray(config.scale);
 
 			var promises = [];
 			if (config.children) {

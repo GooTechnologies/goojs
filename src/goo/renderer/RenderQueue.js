@@ -90,9 +90,9 @@ function (Vector3) {
 			var distance = 0;
 			var bound = meshRendererComponent.worldBound;
 			if (bound !== null) {
-				distance = tmpVec.setv(camera.translation).subv(bound.center).lengthSquared();
+				distance = tmpVec.setVector(camera.translation).subVector(bound.center).lengthSquared();
 			} else if (renderable.transformComponent) {
-				distance = tmpVec.setv(camera.translation).subv(renderable.transformComponent.worldTransform.translation).lengthSquared();
+				distance = tmpVec.setVector(camera.translation).subVector(renderable.transformComponent.worldTransform.translation).lengthSquared();
 			}
 			meshRendererComponent._renderDistance = distance;
 

@@ -19,8 +19,8 @@ define([
 
 				a.add(a);
 
-				expect(a).toEqual(new Matrix(2, 2).set(4, 8, 12, 16));
-				expect(Matrix.add(b, b)).toEqual(new Matrix(2, 2).set(4, 8, 12, 16));
+				expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(4, 8, 12, 16));
+				expect(Matrix.add(b, b)).toBeCloseToMatrix(new Matrix(2, 2).set(4, 8, 12, 16));
 			});
 
 			it('performs partial addition when applied to matrices of different size', function () {
@@ -42,8 +42,8 @@ define([
 
 				a.sub(a);
 
-				expect(a).toEqual(new Matrix(2, 2).set(0, 0, 0, 0));
-				expect(Matrix.sub(b, b)).toEqual(new Matrix(2, 2).set(0, 0, 0, 0));
+				expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(0, 0, 0, 0));
+				expect(Matrix.sub(b, b)).toBeCloseToMatrix(new Matrix(2, 2).set(0, 0, 0, 0));
 			});
 
 			it('performs partial subtraction when applied to matrices of different size', function () {
@@ -65,8 +65,8 @@ define([
 
 				a.mul(a);
 
-				expect(a).toEqual(new Matrix(2, 2).set(4, 16, 36, 64));
-				expect(Matrix.mul(b, b)).toEqual(new Matrix(2, 2).set(4, 16, 36, 64));
+				expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(4, 16, 36, 64));
+				expect(Matrix.mul(b, b)).toBeCloseToMatrix(new Matrix(2, 2).set(4, 16, 36, 64));
 			});
 
 			it('performs partial multiplication when applied to matrices of different size', function () {
@@ -88,8 +88,8 @@ define([
 
 				a.div(a);
 
-				expect(a).toEqual(new Matrix(2, 2).set(1, 1, 1, 1));
-				expect(Matrix.div(b, b)).toEqual(new Matrix(2, 2).set(1, 1, 1, 1));
+				expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(1, 1, 1, 1));
+				expect(Matrix.div(b, b)).toBeCloseToMatrix(new Matrix(2, 2).set(1, 1, 1, 1));
 			});
 
 			it('performs partial multiplication when applied to matrices of different size', function () {
@@ -110,8 +110,8 @@ define([
 
 			a.add(2);
 
-			expect(a).toEqual(new Matrix(2, 2).set(4, 6, 8, 10));
-			expect(Matrix.add(b, 2)).toEqual(new Matrix(2, 2).set(4, 6, 8, 10));
+			expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(4, 6, 8, 10));
+			expect(Matrix.add(b, 2)).toBeCloseToMatrix(new Matrix(2, 2).set(4, 6, 8, 10));
 		});
 
 		it('can perform component-wise subtraction between a matrix and a scalar', function () {
@@ -120,8 +120,8 @@ define([
 
 			a.sub(2);
 
-			expect(a).toEqual(new Matrix(2, 2).set(0, 2, 4, 6));
-			expect(Matrix.sub(b, 2)).toEqual(new Matrix(2, 2).set(0, 2, 4, 6));
+			expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(0, 2, 4, 6));
+			expect(Matrix.sub(b, 2)).toBeCloseToMatrix(new Matrix(2, 2).set(0, 2, 4, 6));
 		});
 
 		it('can perform component-wise multiplication between a matrix and a scalar', function () {
@@ -130,8 +130,8 @@ define([
 
 			a.mul(2);
 
-			expect(a).toEqual(new Matrix(2, 2).set(4, 8, 12, 16));
-			expect(Matrix.mul(b, 2)).toEqual(new Matrix(2, 2).set(4, 8, 12, 16));
+			expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(4, 8, 12, 16));
+			expect(Matrix.mul(b, 2)).toBeCloseToMatrix(new Matrix(2, 2).set(4, 8, 12, 16));
 		});
 
 		it('can perform component-wise division between a matrix and a scalar', function () {
@@ -140,8 +140,8 @@ define([
 
 			a.div(2);
 
-			expect(a).toEqual(new Matrix(2, 2).set(1, 2, 3, 4));
-			expect(Matrix.div(b, 2)).toEqual(new Matrix(2, 2).set(1, 2, 3, 4));
+			expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(1, 2, 3, 4));
+			expect(Matrix.div(b, 2)).toBeCloseToMatrix(new Matrix(2, 2).set(1, 2, 3, 4));
 		});
 
 		describe('combine', function () {
@@ -151,8 +151,8 @@ define([
 
 				a.combine(a);
 
-				expect(a).toEqual(new Matrix(2, 2).set(28, 40, 60, 88));
-				expect(Matrix.combine(b, b)).toEqual(new Matrix(2, 2).set(28, 40, 60, 88));
+				expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(28, 40, 60, 88));
+				expect(Matrix.combine(b, b)).toBeCloseToMatrix(new Matrix(2, 2).set(28, 40, 60, 88));
 			});
 
 			it('performs partial combination when applied to matrices of different size', function () {
@@ -173,9 +173,9 @@ define([
 
 				a.transpose();
 
-				expect(a).toEqual(new Matrix(2, 2).set(0, 2, 1, 3));
-				expect(Matrix.transpose(b, b)).toEqual(new Matrix(2, 2).set(0, 2, 1, 3));
-				expect(Matrix.transpose(c)).toEqual(new Matrix(2, 3).set(0, 3, 1, 4, 2, 5));
+				expect(a).toBeCloseToMatrix(new Matrix(2, 2).set(0, 2, 1, 3));
+				expect(Matrix.transpose(b, b)).toBeCloseToMatrix(new Matrix(2, 2).set(0, 2, 1, 3));
+				expect(Matrix.transpose(c)).toBeCloseToMatrix(new Matrix(2, 3).set(0, 3, 1, 4, 2, 5));
 			});
 
 			it('performs partial combination when applied to matrices of different size', function () {
@@ -201,9 +201,9 @@ define([
 			var b = new Matrix(2, 2);
 			var c = new Matrix(2, 2);
 
-			expect(a.set(0, 1, 2, 3)).toEqual(new Matrix(2, 2).set(0, 1, 2, 3));
+			expect(a.set(0, 1, 2, 3)).toBeCloseToMatrix(new Matrix(2, 2).set(0, 1, 2, 3));
 			expect(b.set(a)).toEqual(a);
-			expect(c.set([0, 1, 2, 3])).toEqual(new Matrix(2, 2).set(0, 1, 2, 3));
+			expect(c.set([0, 1, 2, 3])).toBeCloseToMatrix(new Matrix(2, 2).set(0, 1, 2, 3));
 		});
 
 		it('can be converted to a string', function () {
@@ -236,15 +236,25 @@ define([
 			expect(b.isOrthonormal()).toEqual(true);
 		});
 
-		it('can be tested for approximate equaltiy', function () {
-			var a = new Matrix(2, 2).set(1, 2, 3, 4);
-			var b = new Matrix(2, 2).set(1, 2, 3, 4);
-			var c = new Matrix(2, 2).set(0, 1, 2, 3);
+		describe('', function () {
+			it('can be tested for approximate equaltiy', function () {
+				var a = new Matrix(2, 2).set(1, 2, 3, 4);
+				var b = new Matrix(2, 2).set(1, 2, 3, 4);
+				var c = new Matrix(2, 2).set(0, 1, 2, 3);
 
-			expect(a.equals(b)).toEqual(true);
-			expect(Matrix.equals(a, b)).toEqual(true);
-			expect(a.equals(c)).toEqual(false);
-			expect(Matrix.equals(a, c)).toEqual(false);
+				expect(a.equals(b)).toEqual(true);
+				expect(Matrix.equals(a, b)).toEqual(true);
+				expect(a.equals(c)).toEqual(false);
+				expect(Matrix.equals(a, c)).toEqual(false);
+			});
+
+			it('preserves behaviour of comparing with NaN', function () {
+				// 1 === NaN // false in JS, so (1, 2) === (1, NaN) should return the same
+				var m1 = new Matrix(2, 2).set(1, 2, 3, 4);
+				var m2 = new Matrix(2, 2).set(1, 2, 3, NaN);
+
+				expect(m1.equals(m2)).toBeFalsy();
+			});
 		});
 	});
 });
