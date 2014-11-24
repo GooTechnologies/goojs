@@ -222,6 +222,14 @@ define([
 			expect(a.lerp(b, 0.5)).toBeCloseToVector(new Vector4(0.5, 0.5, 0.5, 0.5));
 		});
 
+		describe('copy', function () {
+			it('can copy values from a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.copy(new Vector4(55, 66, 77, 88));
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
+		});
+
 		it('can be cloned', function () {
 			var a = new Vector4(1, 2, 3, 4);
 			var b = a.clone();

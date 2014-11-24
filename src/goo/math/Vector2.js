@@ -442,5 +442,11 @@ function (
 		return new Vector2(this);
 	};
 
+	/**
+	 * Copies the values of another vector to this vector; an alias for .setVector
+	 * @param {Vector2} Source vector
+	 */
+	Vector2.prototype.copy = Vector2.prototype.setVector;
+
 	return Vector2;
 });

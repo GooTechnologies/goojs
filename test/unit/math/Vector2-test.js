@@ -233,6 +233,14 @@ define([
 			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34));
 		});
 
+		describe('copy', function () {
+			it('can copy values from a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.setVector(new Vector2(55, 66));
+				expect(vector).toBeCloseToVector(new Vector2(55, 66));
+			});
+		});
+
 		it('can be cloned', function (){
 			var a = new Vector2(1, 2);
 			var b = a.clone();

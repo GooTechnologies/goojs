@@ -274,6 +274,14 @@ define([
 			expect(a.z).toBeCloseTo(56/Math.sqrt(12*12+34*34+56*56));
 		});
 
+		describe('copy', function () {
+			it('can copy values from a vector', function () {
+				var vector = new Vector3(11, 22, 33);
+				vector.setVector(new Vector3(55, 66, 77));
+				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
+			});
+		});
+
 		it('can be cloned', function () {
 			var a = new Vector3(1, 2, 3);
 			var b = a.clone();

@@ -502,6 +502,12 @@ function (
 		return new Vector4(this);
 	};
 
+	/**
+	 * Copies the values of another vector to this vector; an alias for .setVector
+	 * @param {Vector4} Source vector
+	 */
+	Vector4.prototype.copy = Vector4.prototype.setVector;
+
 	/* ====================================================================== */
 
 	return Vector4;

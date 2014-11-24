@@ -967,7 +967,11 @@ function (
 		return new Vector3(this);
 	};
 
-	/* ====================================================================== */
+	/**
+	 * Copies the values of another vector to this vector; an alias for .setVector
+	 * @param {Vector3} Source vector
+	 */
+	Vector3.prototype.copy = Vector3.prototype.setVector;
 
 	return Vector3;
 });
