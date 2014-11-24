@@ -38,10 +38,10 @@ function (
 	 * @param {string} ref
 	 */
 	MeshDataHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
-			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
+		if (this._objects.has(ref) && this._objects.get(ref).destroy && this.world.gooRunner) {
+			this._objects.get(ref).destroy(this.world.gooRunner.renderer.context);
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -58,21 +58,20 @@ function (
 			return PromiseUtil.resolve();
 		}
 
-		if (this._objects[ref]) {
-			return PromiseUtil.resolve(this._objects[ref]);
+		if (this._objects.has(ref)) {
+			return PromiseUtil.resolve(this._objects.get(ref));
 		}
 
-		var that = this;
 		return this.loadObject(config.binaryRef, options).then(function (bindata) {
 			if (!bindata) {
 				throw new Error('Binary mesh data was empty');
 			}
-			var meshData = that._createMeshData(config, bindata);
-			that._fillMeshData(meshData, config, bindata);
+			var meshData = this._createMeshData(config, bindata);
+			this._fillMeshData(meshData, config, bindata);
 
-			that._objects[ref] = meshData;
+			this._objects.set(ref, meshData);
 			return meshData;
-		});
+		}.bind(this));
 	};
 
 	/**

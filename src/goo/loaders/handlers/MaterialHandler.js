@@ -96,13 +96,13 @@ function(
 	};
 
 	MaterialHandler.prototype._remove = function (ref) {
-		var material = this._objects[ref];
+		var material = this._objects.get(ref);
 		if (!material) {
 			return;
 		}
 		material.shader.destroy();
 		material.empty();
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**

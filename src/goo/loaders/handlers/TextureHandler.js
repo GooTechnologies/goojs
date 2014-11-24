@@ -93,10 +93,10 @@ function (
 	 * @private
 	 */
 	TextureHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
-			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
+		if (this._objects.has(ref) && this._objects.get(ref).destroy && this.world.gooRunner) {
+			this._objects.get(ref).destroy(this.world.gooRunner.renderer.context);
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -228,10 +228,10 @@ function (
 	};
 
 	TextureHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
-			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
+		if (this._objects.has(ref) && this._objects.get(ref).destroy && this.world.gooRunner) {
+			this._objects.get(ref).destroy(this.world.gooRunner.renderer.context);
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	return TextureHandler;

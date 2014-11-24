@@ -64,7 +64,7 @@ function (
 		}
 
 		// Will hold the engine objects
-		this._objects = {};
+		this._objects = new Map();
 		// Will hold instances of handler classes by type
 		this._handlers = {};
 	}
@@ -181,7 +181,7 @@ function (
 	};
 
 	DynamicLoader.prototype.remove = function (ref) {
-		delete this._objects[ref];
+		this._objects.delete(ref);
 		return this.update(ref, null);
 	};
 

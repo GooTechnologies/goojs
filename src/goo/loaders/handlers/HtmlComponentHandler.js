@@ -25,7 +25,7 @@ function (
 	function HtmlComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'HtmlComponent';
-		this._configs = {};
+		this._configs = {}; // unused
 	}
 
 	HtmlComponentHandler.prototype = Object.create(ComponentHandler.prototype);
@@ -128,7 +128,7 @@ function (
 			domElement.prevInnerHtml = config.innerHtml;
 			domElement.prevStyle = config.style;
 
-			component.useTransformComponent = config.useTransformComponent == null ? true : config.useTransformComponent;
+			component.useTransformComponent = !!config.useTransformComponent;
 
 			if (!innerHtmlChanged && !styleChanged) {
 				return PromiseUtil.resolve();

@@ -89,7 +89,7 @@ define([
 				expect(world.getSystem('TransformSystem')._activeEntities.length).toBeGreaterThan(0);
 
 				// Someloaders are populated
-				expect(Object.keys(loader._handlers.entity._objects).length).toBeGreaterThan(0);
+				expect(loader._handlers.entity._objects.size).toBeGreaterThan(0);
 
 				// Ajax has some cache
 				expect(Object.keys(loader._ajax._cache).length).toBeGreaterThan(0);
@@ -114,8 +114,7 @@ define([
 
 				// No objects in handlers
 				for (var key in loader._handlers) {
-					var objects = Object.keys(loader._handlers[key]._objects);
-					expect(objects.length).toBe(0);
+					expect(loader._handlers[key]._objects.size).toBe(0);
 				}
 
 				// No configs in ajax
