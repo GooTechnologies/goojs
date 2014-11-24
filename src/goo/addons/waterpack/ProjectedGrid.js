@@ -252,7 +252,7 @@ function (
 
 	ProjectedGrid.prototype.getWorldIntersectionSimple = function (planeHeight, source, destination, store, tmpStorage) {
 		var origin = store.setVector(source);
-		var direction = tmpStorage.setVector(destination).sub(origin);
+		var direction = tmpStorage.setVector(destination).subVector(origin);
 
 		var t = (planeHeight - origin.y) / (direction.y);
 
