@@ -161,7 +161,6 @@ define([
 				var shader = shaderInfo.material.shader;
 
 				expect(shader.attributes).toEqual(shaderDefinition.attributes);
-				console.log(shader.attributes);
 
 				// all matched uniforms should equal the shader definition uniforms
 				expect(shader.matchedUniforms).toContain('viewProjectionMatrix');

@@ -178,8 +178,6 @@ function(
 			var material = shaderInfo.material;
 			var textureMaps = material._textureMaps;
 
-			shader.defines = shader.defines || {};
-
 			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
 
 			ShaderBuilder.uber.reflectivity(shader, material);
@@ -357,8 +355,6 @@ function(
 			uniforms.materialSpecular = uniforms.materialSpecular || 'SPECULAR';
 			// uniforms.materialSpecularPower = uniforms.materialSpecularPower || 'SPECULAR_POWER';
 			uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
-
-			shader.defines = shader.defines || {};
 
 			var pointIndex = 0;
 			var directionalIndex = 0;
@@ -780,7 +776,6 @@ function(
 	ShaderBuilder.animation = {
 		processor: function(shader, shaderInfo) {
 			var pose = shaderInfo.currentPose;
-			shader.defines = shader.defines || {};
 			if (pose) {
 				if (!shader.uniforms.jointPalette) {
 					shader.uniforms.jointPalette = ShaderBuilder.animation.jointPalette;

@@ -100,7 +100,7 @@ function (
 		this.overridePrecision = shaderDefinition.precision || null;
 		this.processors = shaderDefinition.processors;
 		this.builder = shaderDefinition.builder;
-		this.defines = shaderDefinition.defines;
+		this.defines = shaderDefinition.defines || {};
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
 		this.defineKey = shaderDefinition.defineKey;
@@ -331,22 +331,17 @@ function (
 	};
 
 	Shader.prototype.setDefine = function (key, value) {
-		this.defines = this.defines || {};
 		this.defineKeyDirty = this.defineKeyDirty || this.defines[key] !== value;
 		this.defines[key] = value;
 	};
 
 	Shader.prototype.removeDefine = function (key) {
-		if (!this.defines) {
-			return;
-		}
 		this.defineKeyDirty = this.defineKeyDirty || this.defines[key] !== undefined;
 		this.defines[key] = undefined;
-		// delete this.defines[key];
 	};
 
 	Shader.prototype.hasDefine = function (key) {
-		return this.defines && this.defines[key] !== false && this.defines[key] !== undefined;
+		return this.defines[key] !== false && this.defines[key] !== undefined;
 	};
 
 	Shader.prototype.startFrame = function () {
@@ -368,21 +363,19 @@ function (
 	Shader.prototype.getDefineKey = function (definesIndices) {
 		if (this.defineKeyDirty) {
 			var key = 'Key:'+this.name;
-			if (this.defines) {
-				var defineArray = Object.keys(this.defines);
-				for (var i = 0, l = defineArray.length; i < l; i++) {
-					var defineArrayKey = defineArray[i];
-					var defineVal = this.defines[defineArrayKey];
-					if (defineVal === undefined || defineVal === false) {
-						continue;
-					}
-					var defineIndex = definesIndices.indexOf(defineArrayKey);
-					if (defineIndex === -1) {
-						definesIndices.push(defineArrayKey);
-						defineIndex = definesIndices.length;
-					}
-					key += '_'+defineIndex+':'+defineVal;
+			var defineArray = Object.keys(this.defines);
+			for (var i = 0, l = defineArray.length; i < l; i++) {
+				var defineArrayKey = defineArray[i];
+				var defineVal = this.defines[defineArrayKey];
+				if (defineVal === undefined || defineVal === false) {
+					continue;
 				}
+				var defineIndex = definesIndices.indexOf(defineArrayKey);
+				if (defineIndex === -1) {
+					definesIndices.push(defineArrayKey);
+					defineIndex = definesIndices.length;
+				}
+				key += '_'+defineIndex+':'+defineVal;
 			}
 			this.defineKey = key;
 			this.defineKeyDirty = false;
@@ -399,7 +392,6 @@ function (
 		this.uniformCallMapping = {};
 		this.currentCallbacks = {};
 		this.attributeKeys = null;
-		this.uniformKeys = null;
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	};
@@ -578,8 +570,6 @@ function (
 			// 		console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
 			// 	}
 			// }
-
-			this.uniformKeys = Object.keys(this.uniforms);
 		}
 	};
 

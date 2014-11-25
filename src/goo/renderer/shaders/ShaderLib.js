@@ -1148,7 +1148,6 @@ define([
 			ShaderBuilder.animation.processor,
 
 			function (shader) {
-				shader.defines = shader.defines || {};
 				shader.setDefine('NORMAL', true);
 			}
 		],
