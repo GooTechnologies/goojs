@@ -766,44 +766,13 @@ function (
 	 */
 	Renderer.prototype.precompileShader = function (material, renderInfo, queue) {
 		var shader = material.shader;
-		if (shader.processors || shader.defines) {
-			// Call processors
-			if (shader.processors) {
-				for (var j = 0; j < shader.processors.length; j++) {
-					shader.processors[j](shader, renderInfo);
-				}
-			}
 
-			// check defines. if no hit in cache -> add to cache. if hit in cache,
-			// replace with cache version and copy over uniforms.
-			// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
-
-			var defineKey = this.makeKey(shader);
-
-			var shaderCache = this.rendererRecord.shaderCache;
-			if (!shaderCache[defineKey]) {
-				if (shader.builder) {
-					shader.builder(shader, renderInfo);
-				}
-				shader = material.shader = shader.clone();
-				shaderCache[defineKey] = shader;
-			} else {
-				shader = shaderCache[defineKey];
-				if (shader !== material.shader) {
-					var uniforms = material.shader.uniforms;
-					var keys = Object.keys(uniforms);
-					for (var ii = 0, l = keys.length; ii < l; ii++) {
-						var key = keys[ii];
-						var origUniform = shader.uniforms[key] = uniforms[key];
-						if (origUniform instanceof Array) {
-							shader.uniforms[key] = origUniform.slice(0);
-						}
-					}
-
-					material.shader = shader;
-				}
-			}
+		shader.updateProcessors(renderInfo);
+		if (shader.builder) {
+			shader.builder(shader, renderInfo);
+			shader.rebuild();
 		}
+		this.findOrCacheMaterialShader(material, shader, renderInfo);
 
 		queue.push(function () { shader.precompile(this); }.bind(this));
 	};
@@ -992,6 +961,13 @@ function (
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
+		var cache = this.rendererRecord.shaderCache;
+		var keys = Object.keys(cache);
+		for (var i = 0; i < keys.length; i++) {
+			var shader = cache[keys[i]];
+			shader.startFrame();
+		}
+
 		var renderInfo = renderRenderInfo;
 		renderInfo.reset();
 		renderInfo.camera = camera;
@@ -1091,19 +1067,11 @@ function (
 	};
 
 	Renderer.prototype.callShaderProcessors = function(material, renderInfo) {
-
 		// Check for caching of shader that use defines
-		if (material.shader.processors || material.shader.defines) {
-			var shader = material.shader;
-			// Call processors
-			if (shader.processors) {
-				for (var j = 0; j < shader.processors.length; j++) {
-					shader.processors[j](shader, renderInfo);
-				}
-			}
+		var shader = material.shader;
 
-			material.shader = this.findOrCacheMaterialShader(material, shader, renderInfo);
-		}
+		shader.updateProcessors(renderInfo);
+		this.findOrCacheMaterialShader(material, shader, renderInfo);
 	};
 
 	Renderer.prototype.renderMeshMaterial = function (materialIndex, materials, flatOrWire, originalData, renderInfo) {
@@ -1118,8 +1086,6 @@ function (
 
 		material = this.configureRenderInfo(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire);
 		var meshData = renderInfo.meshData;
-
-		//! AT: this should stay in a method
 
 		this.callShaderProcessors(material, renderInfo);
 
@@ -1167,7 +1133,7 @@ function (
 			orMaterial = this._overrideMaterials[materialIndex];
 		}
 
-		if (material && orMaterial) {
+		if (material && orMaterial && orMaterial.fullOverride !== true) {
 			this._override(orMaterial, material, this._mergedMaterial);
 			material = this._mergedMaterial;
 		} else if (orMaterial) {
@@ -1212,16 +1178,12 @@ function (
 
 
 	Renderer.prototype.findOrCacheMaterialShader = function(material, shader, renderInfo) {
-
 		// check defines. if no hit in cache -> add to cache. if hit in cache,
 		// replace with cache version and copy over uniforms.
-
-		var defineKey = this.makeKey(shader);
+		var defineKey = shader.getDefineKey(this._definesIndices);
+		shader.endFrame();
 
 		var shaderCache = this.rendererRecord.shaderCache;
-
-
-
 		if (!shaderCache[defineKey]) {
 			if (shader.builder) {
 				shader.builder(shader, renderInfo);
@@ -1242,23 +1204,10 @@ function (
 				}
 			}
 		}
+		
+		material.shader = shader;
+		
 		return shader;
-	};
-
-	Renderer.prototype.makeKey = function (shader) {
-		var defineArray = Object.keys(shader.defines);
-		var key = 'Key:'+shader.name;
-
-		for (var i = 0, l = defineArray.length; i < l; i++) {
-			var defineIndex = this._definesIndices.indexOf(defineArray[i]);
-			if (defineIndex === -1) {
-				this._definesIndices.push(defineArray[i]);
-				defineIndex = this._definesIndices.length;
-			}
-			key += '_'+defineIndex+':'+shader.defines[defineArray[i]];
-		}
-
-		return key;
 	};
 
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {

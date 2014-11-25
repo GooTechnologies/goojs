@@ -256,14 +256,6 @@ function () {
 			}
 		}
 		return true;
-		/*
-		for (var i = size - 1; i >= 0; i--) {
-			if (e1[i] !== e2[i]) {
-				return false;
-			}
-		}
-		return true;
-		*/
 	}
 
 	function compareArrays(a1, a2) {
@@ -274,26 +266,26 @@ function () {
 			}
 		}
 		return true;
-		/*
-		if (l !== a2.length) {
-			return false;
-		}
-
-		for (var i = 0; i < l; i++) {
-			if (a1[i] !== a2[i]) {
-				return false;
-			}
-		}
-
-		return true;
-		*/
 	}
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix2fv = function (matrix, transpose) {
 		transpose = transpose === true;
 		if (!matrix.data) {
-			this.context.uniformMatrix2fv(this.location, transpose, matrix);
+			var values = matrix;
+			var curValue = this.location.value;
+			if (curValue !== undefined) {
+				if (compareArrays(values, curValue)) {
+					return;
+				}
+			} else {
+				curValue = this.location.value = new Float64Array(values.length);
+			}
+			this.context.uniformMatrix2fv(this.location, transpose, values);
+			var l = values.length;
+			while(l--) {
+				curValue[l] = values[l];
+			}
 			return;
 		}
 
@@ -316,7 +308,20 @@ function () {
 	ShaderCall.prototype.uniformMatrix3fv = function (matrix, transpose) {
 		transpose = transpose === true;
 		if (!matrix.data) {
-			this.context.uniformMatrix3fv(this.location, transpose, matrix);
+			var values = matrix;
+			var curValue = this.location.value;
+			if (curValue !== undefined) {
+				if (compareArrays(values, curValue)) {
+					return;
+				}
+			} else {
+				curValue = this.location.value = new Float64Array(values.length);
+			}
+			this.context.uniformMatrix3fv(this.location, transpose, values);
+			var l = values.length;
+			while(l--) {
+				curValue[l] = values[l];
+			}
 			return;
 		}
 
@@ -335,7 +340,6 @@ function () {
 		this.context.uniformMatrix3fv(this.location, transpose, matrix.data);
 	};
 
-	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix4fv = function (matrix, transpose) {
 		transpose = transpose === true;
 		if (!matrix.data) {
@@ -353,8 +357,6 @@ function () {
 			while(l--) {
 				curValue[l] = values[l];
 			}
-
-			// this.context.uniformMatrix4fv(this.location, transpose, matrix);
 			return;
 		}
 

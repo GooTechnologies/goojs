@@ -44,15 +44,13 @@ function (
 		this.originalShaderDefinition = shaderDefinition;
 		this.shaderDefinition = shaderDefinition;
 
+		this.origVertexSource = shaderDefinition.vshader;
+		this.origFragmentSource = shaderDefinition.fshader;
+
 		/** The shader name
 		 * @type {string}
 		 */
 		this.name = name;
-
-		this.origVertexSource = shaderDefinition.vshader;
-		this.origFragmentSource = shaderDefinition.fshader;
-		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
-		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 
 		this.shaderProgram = null;
 		this.vertexShader = null;
@@ -97,18 +95,18 @@ function (
 		this.textureSlots = [];
 		this.textureSlotsNaming = {};
 
-		//this.defaultCallbacks = {};
-		//setupDefaultCallbacks(this.defaultCallbacks);
 		this.currentCallbacks = {};
 
 		this.overridePrecision = shaderDefinition.precision || null;
 		this.processors = shaderDefinition.processors;
 		this.builder = shaderDefinition.builder;
-		this.defines = shaderDefinition.defines;
+		this.defines = shaderDefinition.defines || {};
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
+		this.defineKey = shaderDefinition.defineKey;
+		this.defineKeyDirty = true;
+		this.frameStart = true;
 		this.attributeKeys = null;
-		this.uniformKeys = null;
 		this.matchedUniforms = [];
 
 		/** Determines the order in which an object is drawn. There are four pre-defined render queues:
@@ -126,6 +124,12 @@ function (
 		this._id = Shader.id++;
 
 		this.errorOnce = false;
+
+		// if (this.builder) {
+		// 	this.builder(this, {renderable:{}, lights: []});
+		// }
+		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
+		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	}
 
 	Shader.id = 0;
@@ -139,10 +143,9 @@ function (
 			attributes: this.attributes,
 			uniforms: this.uniforms,
 			vshader: this.origVertexSource,
-			fshader: this.origFragmentSource
+			fshader: this.origFragmentSource,
+			defineKey: this.defineKey
 		}));
-
-		// return new Shader(this.name, this.shaderDefinition);
 	};
 
 	Shader.prototype.cloneOriginal = function () {
@@ -169,88 +172,153 @@ function (
 	 * Match groups:
 	 *
 	 *   1: type (attribute|uniform)
-	 *   2: format (float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)
+	 *   2: format (float|int|bool|vec2|vec3|vec4|mat2|mat3|mat4|sampler2D|sampler3D|samplerCube)
 	 *   3: variable name
 	 *   4: if exists, the variable is an array
 	 */
-	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
+	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat2|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
 
-	Shader.prototype.apply = function (shaderInfo, renderer) {
-		var context = renderer.context;
-		var record = renderer.rendererRecord;
-
+	Shader.prototype.compileProgram = function(renderer) {
 		if (this.shaderProgram === null) {
 			this._investigateShaders();
 			this.addDefines(this.defines);
 			this.addPrecision(this.overridePrecision || renderer.shaderPrecision);
 			this.compile(renderer);
 		}
+	};
 
-		// Set the ShaderProgram active
-		var switchedProgram = false;
+	Shader.prototype.activateProgram = function(record, context) {
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
-			switchedProgram = true;
+			return true;
+		}
+	};
+
+	Shader.prototype.bindAttributeKey = function(record, renderer, attributeMap, key) {
+		var attribute = attributeMap[this.attributes[key]];
+		if (!attribute) {
+			return;
 		}
 
-		record.newlyEnabledAttributes.length = 0;
+		var attributeIndex = this.attributeIndexMapping[key];
+		if (attributeIndex === undefined) {
+			// console.warn('Attribute binding [' + name + '] does not exist in the shader.');
+			return;
+		}
 
-		// Bind attributes
-		//TODO: good?
+		record.newlyEnabledAttributes[attributeIndex] = true;
+		renderer.bindVertexAttribute(attributeIndex, attribute);
+	};
+
+	Shader.prototype.bindAttributes = function(record, renderer, attributeMap) {
 		if (this.attributes) {
-		// if (this.attributes !== record.attributes || shaderInfo.meshData !== record.meshData) {
-			// record.attributes = this.attributes;
-			// record.meshData = shaderInfo.meshData;
-			var attributeMap = shaderInfo.meshData.attributeMap;
-
-			var attributes = this.attributes;
-			var keys = this.attributeKeys;
-			for (var i = 0, l = keys.length; i < l; i++) {
-				var key = keys[i];
-				var attribute = attributeMap[attributes[key]];
-				if (!attribute) {
-					// TODO: log or what?
-					continue;
-				}
-
-				var attributeIndex = this.attributeIndexMapping[key];
-				if (attributeIndex === undefined) {
-					// console.warn('Attribute binding [' + name + '] does not exist in the shader.');
-					continue;
-				}
-
-				record.newlyEnabledAttributes[attributeIndex] = true;
-				// if (switchedProgram) {
-					// renderer.context.enableVertexAttribArray(attributeIndex);
-				// }
-				renderer.bindVertexAttribute(attributeIndex, attribute);
+			for (var i = 0, l = this.attributeKeys.length; i < l; i++) {
+				this.bindAttributeKey(record, renderer, attributeMap, this.attributeKeys[i]);
 			}
 		}
+	};
 
+	Shader.prototype.disableAttributes = function(record, context) {
 		for (var i = 0, l = record.enabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
 			if (!newEnabled && enabled) {
-				renderer.context.disableVertexAttribArray(i);
+				context.disableVertexAttribArray(i);
 				record.enabledAttributes[i] = false;
 			}
 		}
+	};
+
+	Shader.prototype.enableAttributes = function(record, context) {
 		for (var i = 0, l = record.newlyEnabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
 			if (newEnabled && !enabled) {
-				renderer.context.enableVertexAttribArray(i);
+				context.enableVertexAttribArray(i);
 				record.enabledAttributes[i] = true;
 			}
 		}
+	};
 
-		if (this.matchedUniforms) {
+	Shader.prototype.matchUniforms = function(shaderInfo) {
+		var uniforms = this.matchedUniforms;
+		if (uniforms) {
 			this.textureIndex = 0;
 
-			for (var i = 0, l = this.matchedUniforms.length; i < l; i++) {
-				this._bindUniform(this.matchedUniforms[i], shaderInfo);
+			for (var i = 0, l = uniforms.length; i < l; i++) {
+				this._bindUniform(uniforms[i], shaderInfo);
 			}
+		}
+	};
+
+	Shader.prototype.apply = function (shaderInfo, renderer) {
+		var context = renderer.context;
+		var record = renderer.rendererRecord;
+
+		this.compileProgram(renderer);
+		// Set the ShaderProgram active
+		this.activateProgram(record, context);
+
+		record.newlyEnabledAttributes.length = 0;
+
+		// Bind attributes
+		this.bindAttributes(record, renderer, shaderInfo.meshData.attributeMap);
+
+		this.disableAttributes(record, context);
+		this.enableAttributes(record, context);
+		this.matchUniforms(shaderInfo);
+	};
+
+	Shader.prototype.defineValue = function(shaderInfo, name) {
+		var defValue = shaderInfo.material.uniforms[name];
+		if (defValue === undefined) {
+			defValue = this.uniforms[name];
+		}
+		return defValue;
+	};
+
+
+	Shader.prototype.mapSlot = function(shaderInfo, mapping, slot) {
+		var maps = shaderInfo.material.getTexture(slot.mapping);
+		if (maps instanceof Array) {
+			this.arrayType(mapping, slot, maps);
+		} else {
+			slot.index = this.textureIndex;
+			mapping.call(this.textureIndex++);
+		}
+	};
+
+	Shader.prototype.arrayType = function(mapping, slot, maps) {
+		var arr = [];
+		slot.index = [];
+		for (var i = 0; i < maps.length; i++) {
+			slot.index.push(this.textureIndex);
+			arr.push(this.textureIndex++);
+		}
+		mapping.call(arr);
+	};
+
+	Shader.prototype.stringType = function(shaderInfo, name, mapping) {
+		var callback = this.currentCallbacks[name];
+		if (callback) {
+			callback(mapping, shaderInfo);
+		} else {
+			var slot = this.textureSlotsNaming[name];
+			if (slot !== undefined) {
+				this.mapSlot(shaderInfo, mapping, slot);
+			}
+		}
+	};
+
+	Shader.prototype.callMapping = function(shaderInfo, name, mapping) {
+		var defValue = this.defineValue(shaderInfo, name);
+		var type = typeof defValue;
+		if (type === 'string') {
+			this.stringType(shaderInfo, name, mapping, defValue);
+		} else {
+			var value = type === 'function' ? defValue(shaderInfo) : defValue;
+			mapping.call(value);
 		}
 	};
 
@@ -259,43 +327,61 @@ function (
 		if (mapping === undefined) {
 			return;
 		}
+		this.callMapping(shaderInfo, name, mapping);
+	};
 
-		var defValue = shaderInfo.material.uniforms[name];
-		if (defValue === undefined) {
-			defValue = this.uniforms[name];
-		}
+	Shader.prototype.setDefine = function (key, value) {
+		this.defineKeyDirty = this.defineKeyDirty || this.defines[key] !== value;
+		this.defines[key] = value;
+	};
 
-		var type = typeof defValue;
-		if (type === 'string') {
-			var callback = this.currentCallbacks[name];
-			if (callback) {
-				callback(mapping, shaderInfo);
-			} else {
-				var slot = this.textureSlotsNaming[name];
-				if (slot !== undefined) {
-					this._bindTextureUniforms(shaderInfo, mapping, slot);
-				}
+	Shader.prototype.removeDefine = function (key) {
+		this.defineKeyDirty = this.defineKeyDirty || this.defines[key] !== undefined;
+		this.defines[key] = undefined;
+	};
+
+	Shader.prototype.hasDefine = function (key) {
+		return this.defines[key] !== false && this.defines[key] !== undefined;
+	};
+
+	Shader.prototype.startFrame = function () {
+		this.frameStart = true;
+	};
+
+	Shader.prototype.endFrame = function () {
+		this.frameStart = false;
+	};
+
+	Shader.prototype.updateProcessors = function (renderInfo) {
+		if (this.processors) {
+			for (var j = 0; j < this.processors.length; j++) {
+				this.processors[j](this, renderInfo);
 			}
-		} else {
-			var value = type === 'function' ? defValue(shaderInfo) : defValue;
-			mapping.call(value);
 		}
 	};
 
-	Shader.prototype._bindTextureUniforms = function (shaderInfo, mapping, slot) {
-		var maps = shaderInfo.material.getTexture(slot.mapping);
-		if (maps instanceof Array) {
-			var arr = [];
-			slot.index = [];
-			for (var i = 0; i < maps.length; i++) {
-				slot.index.push(this.textureIndex);
-				arr.push(this.textureIndex++);
+	Shader.prototype.getDefineKey = function (definesIndices) {
+		if (this.defineKeyDirty) {
+			var key = 'Key:'+this.name;
+			var defineArray = Object.keys(this.defines);
+			for (var i = 0, l = defineArray.length; i < l; i++) {
+				var defineArrayKey = defineArray[i];
+				var defineVal = this.defines[defineArrayKey];
+				if (defineVal === undefined || defineVal === false) {
+					continue;
+				}
+				var defineIndex = definesIndices.indexOf(defineArrayKey);
+				if (defineIndex === -1) {
+					definesIndices.push(defineArrayKey);
+					defineIndex = definesIndices.length;
+				}
+				key += '_'+defineIndex+':'+defineVal;
 			}
-			mapping.call(arr);
-		} else {
-			slot.index = this.textureIndex;
-			mapping.call(this.textureIndex++);
+			this.defineKey = key;
+			this.defineKeyDirty = false;
 		}
+
+		return this.defineKey;
 	};
 
 	Shader.prototype.rebuild = function () {
@@ -306,7 +392,6 @@ function (
 		this.uniformCallMapping = {};
 		this.currentCallbacks = {};
 		this.attributeKeys = null;
-		this.uniformKeys = null;
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	};
@@ -372,11 +457,6 @@ function (
 	Shader.prototype.compile = function (renderer) {
 		var context = renderer.context;
 		this.renderer = renderer;
-
-		// console.log('---------------------- vertex: '+ this.name +' --------------------------');
-		// console.log(this.vertexSource);
-		// console.log('---------------------- fragment: '+ this.name +' --------------------------');
-		// console.log(this.fragmentSource);
 
 		this.vertexShader = this._getShader(context, WebGLRenderingContext.VERTEX_SHADER, this.vertexSource);
 		this.fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
@@ -490,11 +570,7 @@ function (
 			// 		console.warn('No binding found for uniform: ' + name + ' [' + this.name + '][' + this._id + ']');
 			// 	}
 			// }
-
-			this.uniformKeys = Object.keys(this.uniforms);
 		}
-
-		//console.log('Shader [' + this.name + '][' + this._id + '] compiled');
 	};
 
 	var errorRegExp = /\b\d+:(\d+):\s(.+)\b/g;
@@ -566,7 +642,7 @@ function (
 		var chunks = [];
 		for (var d in defines) {
 			var value = defines[d];
-			if (value === false) {
+			if (value === false || value === undefined) {
 				continue;
 			}
 
@@ -670,7 +746,11 @@ function (
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR] = function (uniformCall, shaderInfo) {
-			var materialState = shaderInfo.material.materialState !== undefined ? shaderInfo.material.materialState.specular : Shader.DEFAULT_SPECULAR;
+			var materialState = Shader.DEFAULT_SPECULAR;
+			if (shaderInfo.material.materialState !== undefined) {
+				materialState = shaderInfo.material.materialState.specular;
+				materialState[3] = Math.max(shaderInfo.material.materialState.shininess, 1);
+			}
 			uniformCall.uniform4fv(materialState);
 		};
 		defaultCallbacks[Shader.SPECULAR_POWER] = function (uniformCall, shaderInfo) {
@@ -758,7 +838,7 @@ function (
 	Shader.DEFAULT_AMBIENT = [0.1, 0.1, 0.1, 1.0];
 	Shader.DEFAULT_EMISSIVE = [0, 0, 0, 0];
 	Shader.DEFAULT_DIFFUSE = [0.8, 0.8, 0.8, 1.0];
-	Shader.DEFAULT_SPECULAR = [0.6, 0.6, 0.6, 1.0];
+	Shader.DEFAULT_SPECULAR = [0.6, 0.6, 0.6, 64.0];
 	Shader.DEFAULT_SHININESS = 64.0;
 
 	Shader.prototype.defaultCallbacks = {};

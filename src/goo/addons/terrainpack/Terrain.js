@@ -443,9 +443,9 @@ function(
 					var material = entity.meshRendererComponent.materials[0];
 					if (lightMap) {
 						material.setTexture("LIGHT_MAP", lightMap);
-						material.shader.defines.LIGHTMAP = true;
+						material.shader.setDefine('LIGHTMAP', true);
 					} else {
-						material.shader.defines.LIGHTMAP = false;
+						material.shader.removeDefine('LIGHTMAP');
 					}
 				}
 			});
@@ -729,11 +729,11 @@ function(
 			ShaderBuilder.light.processor,
 			function (shader) {
 				if (ShaderBuilder.USE_FOG) {
-					shader.defines.FOG = true;
+					shader.setDefine('FOG', true);
 					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
 					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
 				} else {
-					delete shader.defines.FOG;
+					shader.removeDefine('FOG');
 				}
 			}
 		],

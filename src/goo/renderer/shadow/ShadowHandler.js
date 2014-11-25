@@ -31,6 +31,7 @@ function (
 	function ShadowHandler() {
 		this.depthMaterial = new Material(ShaderLib.lightDepth, 'depthMaterial');
 		this.depthMaterial.cullState.cullFace = 'Back';
+		this.depthMaterial.fullOverride = true;
 		this.fullscreenPass = new FullscreenPass();
 		this.downsample = Material.createShader(ShaderLib.downsample, 'downsample');
 
@@ -182,9 +183,16 @@ function (
 				}
 				lightCamera.onFrameChange();
 
+				var matrix = lightCamera.getViewProjectionMatrix().data;
+				lightCamera.vpm = lightCamera.vpm || [];
+				for (var j = 0; j < 16; j++) {
+					lightCamera.vpm[j] = matrix[j];
+				}
+				
 				if (light.shadowCaster) {
-					this.depthMaterial.shader.defines.SHADOW_TYPE = shadowSettings.shadowType === 'VSM' ? 2 : 0;
+					this.depthMaterial.shader.setDefine('SHADOW_TYPE', shadowSettings.shadowType === 'VSM' ? 2 : 0);
 					this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
+					lightCamera.cameraScale = this.depthMaterial.uniforms.cameraScale;
 
 					this.oldClearColor.copy(renderer.clearColor);
 					renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);
@@ -202,13 +210,13 @@ function (
 					switch (shadowSettings.shadowType) {
 					case 'VSM':
 						this.fullscreenPass.material.shader = this.downsample;
-						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowTarget, 0);
+						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowTarget);
 
 						this.fullscreenPass.material.shader = this.blurfilter;
 						this.fullscreenPass.material.uniforms.uImageIncrement = [2 / shadowSettings.resolution[0], 0.0];
-						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowBlurred, shadowSettings.shadowData.shadowTargetDown, 0);
+						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowBlurred, shadowSettings.shadowData.shadowTargetDown);
 						this.fullscreenPass.material.uniforms.uImageIncrement = [0.0, 2 / shadowSettings.resolution[1]];
-						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowBlurred, 0);
+						this.fullscreenPass.render(renderer, shadowSettings.shadowData.shadowTargetDown, shadowSettings.shadowData.shadowBlurred);
 
 						shadowSettings.shadowData.shadowResult = shadowSettings.shadowData.shadowTargetDown;
 						break;

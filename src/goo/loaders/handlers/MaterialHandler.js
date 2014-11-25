@@ -145,6 +145,11 @@ function(
 				}
 			}
 
+			// TODO: This is a temporary hack until we fully moved shininess into the last entry of specular [r, g, b, spec_power]
+			if (material.uniforms.materialSpecular !== undefined && material.uniforms.materialSpecularPower !== undefined) {
+				material.uniforms.materialSpecular[3] = material.uniforms.materialSpecularPower;
+			}
+
 			// Shader
 			var shaderRef = config.shaderRef;
 			if (!shaderRef) {

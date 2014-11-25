@@ -296,9 +296,7 @@ function (
 				shader.defines = shader.defines || {};
 
 				for (var attribute in attributeMap) {
-					if (!shader.defines[attribute]) {
-						shader.defines[attribute] = true;
-					}
+					shader.setDefine(attribute, true);
 				}
 			}
 		],

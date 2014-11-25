@@ -59,7 +59,7 @@ function (
 		}
 
 		var waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
-		waterMaterial.shader.defines.REFRACTION = this.useRefraction;
+		waterMaterial.shader.setDefine('REFRACTION', this.useRefraction);
 		waterMaterial.cullState.enabled = false;
 
 		var texture = null;

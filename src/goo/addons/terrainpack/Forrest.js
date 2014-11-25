@@ -385,11 +385,11 @@ function (
 			ShaderBuilder.light.processor,
 			function (shader) {
 				if (ShaderBuilder.USE_FOG) {
-					shader.defines.FOG = true;
+					shader.setDefine('FOG', true);
 					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
 					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
 				} else {
-					delete shader.defines.FOG;
+					shader.removeDefine('FOG');
 				}
 			}
 		],
