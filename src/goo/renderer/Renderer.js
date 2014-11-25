@@ -2194,7 +2194,6 @@ function (
 
 	Renderer.prototype.setRenderTarget = function (renderTarget) {
 		if (renderTarget && !renderTarget._glFrameBuffer) {
-			//! AT: no need to do these checks, the data should be correct
 			if (renderTarget.depthBuffer === undefined) {
 				renderTarget.depthBuffer = true;
 			}
