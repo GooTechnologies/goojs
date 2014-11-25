@@ -808,14 +808,7 @@ function (
 	 * Remove all shaders from cache.
 	 */
 	Renderer.prototype.clearShaderCache = function () {
-		var cache = this.rendererRecord.shaderCache;
-		if (!cache) {
-			return;
-		}
-		var keys = Object.keys(cache);
-		for (var i = 0; i < keys.length; i++) {
-			delete cache[keys[i]];
-		}
+		this.rendererRecord.shaderCache.clear();
 	};
 
 	/**
@@ -987,12 +980,9 @@ function (
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
-		var cache = this.rendererRecord.shaderCache;
-		var keys = Object.keys(cache);
-		for (var i = 0; i < keys.length; i++) {
-			var shader = cache[keys[i]];
+		this.rendererRecord.shaderCache.forEach(function (shader) {
 			shader.startFrame();
-		}
+		});
 
 		var renderInfo = renderRenderInfo;
 		renderInfo.reset();
@@ -1210,14 +1200,14 @@ function (
 		shader.endFrame();
 
 		var shaderCache = this.rendererRecord.shaderCache;
-		if (!shaderCache[defineKey]) {
+		if (!shaderCache.has(defineKey)) {
 			if (shader.builder) {
 				shader.builder(shader, renderInfo);
 			}
 			shader = shader.clone();
-			shaderCache[defineKey] = shader;
+			shaderCache.set(defineKey, shader);
 		} else {
-			shader = shaderCache[defineKey];
+			shader = shaderCache.get(defineKey);
 			if (shader !== material.shader) {
 				var uniforms = material.shader.uniforms;
 				var keys = Object.keys(uniforms);
