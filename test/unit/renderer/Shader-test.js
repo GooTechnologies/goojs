@@ -8,6 +8,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/light/DirectionalLight',
+	'goo/renderer/Util',
 	'goo/shapes/Box'
 ], function(
 	Shader,
@@ -19,11 +20,71 @@ define([
 	Texture,
 	ShaderLib,
 	DirectionalLight,
+	Util,
 	Box
 ) {
 	'use strict';
 
 	describe('Shader', function() {
+		describe('DefineKey', function() {
+			var shader;
+			beforeEach(function() {
+				shader = new Shader('TestName', Util.clone(ShaderLib.simple));
+			});
+			it('can generate define key when no defines', function() {
+				var defineIndices = [];
+				var key = shader.getDefineKey(defineIndices);
+				expect(key).toEqual('Key:TestName');
+				expect(defineIndices).toEqual([]);
+			});
+			it('can generate define key with one define', function() {
+				var defineIndices = [];
+
+				shader.setDefine('TEST_DEFINE', true);
+
+				var key = shader.getDefineKey(defineIndices);
+				expect(key).toEqual('Key:TestName_1:true');
+				expect(defineIndices).toEqual(['TEST_DEFINE']);
+			});
+			it('can generate define key with various define types (added)', function() {
+				var defineIndices = [];
+
+				shader.setDefine('TEST_DEFINE1', true);
+				shader.setDefine('TEST_DEFINE2', 5);
+
+				var key = shader.getDefineKey(defineIndices);
+				expect(key).toEqual('Key:TestName_1:true_2:5');
+				expect(defineIndices).toEqual(['TEST_DEFINE1', 'TEST_DEFINE2']);
+			});
+			it('can generate define key with various define types (added+removed)', function() {
+				var defineIndices = [];
+
+				shader.setDefine('TEST_DEFINE1', true);
+				shader.setDefine('TEST_DEFINE2', 5);
+				shader.removeDefine('TEST_DEFINE1');
+
+				var key = shader.getDefineKey(defineIndices);
+				expect(key).toEqual('Key:TestName_1:5');
+				expect(defineIndices).toEqual(['TEST_DEFINE2']);
+			});
+			it('only re-generate key when dirty', function() {
+				var defineIndices = [];
+
+				shader.defineKey = 'unset';
+
+				shader.setDefine('TEST_DEFINE1', true);
+
+				var key = shader.getDefineKey(defineIndices);
+
+				expect(key).toEqual('Key:TestName_1:true');
+
+				shader.defineKey = 'unset';
+
+				key = shader.getDefineKey(defineIndices);
+
+				expect(key).toEqual('unset');
+			});
+		});
 		describe('ShaderCall', function() {
 			var context;
 			beforeEach(function() {
