@@ -93,6 +93,7 @@ function (
 		this.id = id;
 	}
 
+	//! AT: we use both "DiffOfGaussians" and "DoG"
 	DiffOfGaussians.prototype = Object.create(DoGPass.prototype);
 	DiffOfGaussians.prototype.constructor = DiffOfGaussians;
 

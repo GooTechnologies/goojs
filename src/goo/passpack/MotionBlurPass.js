@@ -49,6 +49,13 @@ define([
 		}
 	};
 
+	MotionBlurPass.prototype.invalidateHandles = function (renderer) {
+		this.inPass.invalidateHandles(renderer);
+		this.outPass.invalidateHandles(renderer);
+		renderer.invalidateRenderTarget(this.targetSwap[0]);
+		renderer.invalidateRenderTarget(this.targetSwap[1]);
+	};
+
 	MotionBlurPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width;
 		var sizeY = size.height;

@@ -487,6 +487,7 @@ function (
 		for (var key in this.attributeMapping) {
 			var attributeIndex = context.getAttribLocation(this.shaderProgram, key);
 			if (attributeIndex === -1) {
+				// more corpses!
 				// if (this.attributes[key]) {
 					// delete this.attributes[key];
 				// }
@@ -525,6 +526,7 @@ function (
 		}
 
 		if (this.attributes) {
+			// corpse!
 		// 	for (var name in this.attributeIndexMapping) {
 		// 		var mapping = this.attributes[name];
 		// 		if (mapping === undefined) {

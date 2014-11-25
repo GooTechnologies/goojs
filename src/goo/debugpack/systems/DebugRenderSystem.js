@@ -29,8 +29,8 @@ function (
 
 		this._renderablesTree = {};
 		this.renderList = [];
-		this.preRenderers = [];
-		this.composers = [];
+		this.preRenderers = []; // unused
+		this.composers = []; // unused
 		this.doRender = {
 			CameraComponent: false,
 			LightComponent: false,
@@ -71,7 +71,7 @@ function (
 	};
 
 	DebugRenderSystem.prototype.deleted = function (entity) {
-		delete this._renderablesTree[entity.id]
+		delete this._renderablesTree[entity.id];
 	};
 
 	DebugRenderSystem.prototype.process = function (entities, tpf) {
@@ -145,6 +145,33 @@ function (
 
 	DebugRenderSystem.prototype.renderToPick = function (renderer, skipUpdateBuffer) {
 		renderer.renderToPick(this.renderList, this.camera, false, skipUpdateBuffer);
+	};
+
+	DebugRenderSystem.prototype.invalidateHandles = function (renderer) {
+		var entityIds = Object.keys(this._renderablesTree);
+		entityIds.forEach(function (entityId) {
+			var components = this._renderablesTree[entityId];
+
+			var componentTypes = Object.keys(components);
+			componentTypes.forEach(function (componentType) {
+				var renderables = components[componentType];
+
+				renderables.forEach(function (renderable) {
+					renderable.materials.forEach(function (material) {
+						renderer.invalidateMaterial(material);
+					});
+
+					renderer.invalidateMeshData(renderable.meshData);
+				});
+			});
+		}.bind(this));
+
+		// there are 2 selection renderables, but one has a null meshData (it's beyond me why it's like that)
+		this.selectionRenderable[0].materials.forEach(function (material) {
+			renderer.invalidateMaterial(material);
+		});
+
+		renderer.invalidateMeshData(this.selectionRenderable[0].meshData);
 	};
 
 	return DebugRenderSystem;

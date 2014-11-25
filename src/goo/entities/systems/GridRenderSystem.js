@@ -114,6 +114,15 @@ function (
 		}
 	};
 
+	GridRenderSystem.prototype.invalidateHandles = function (renderer) {
+		this.renderList.forEach(function (renderable) {
+			renderable.materials.forEach(function (material) {
+				renderer.invalidateMaterial(material);
+			});
+			renderer.invalidateMeshData(renderable.meshData);
+		});
+	};
+
 	var gridShaderDef = {
 		attributes : {
 			vertexPosition : MeshData.POSITION

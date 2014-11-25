@@ -95,21 +95,6 @@ function (
 		shadowSettings.shadowRecord.shadowType = shadowSettings.shadowType;
 	};
 
-	ShadowHandler.prototype._testStatesEqual = function (state1, state2) {
-		var keys1 = Object.keys(state1);
-		var keys2 = Object.keys(state2);
-		if (keys1.length !== keys2.length) {
-			return false;
-		}
-		for (var i = 0; i < keys1.length; i++) {
-			var key = keys1[i];
-			if (state1[key] !== state2[key]) {
-				return false;
-			}
-		}
-		return true;
-	};
-
 	ShadowHandler.prototype.checkShadowRendering = function (renderer, partitioner, entities, lights) {
 		if (this.first === true) {
 			this.first = false;
@@ -235,6 +220,13 @@ function (
 				}
 			}
 		}
+	};
+
+	ShadowHandler.prototype.invalidateHandles = function (renderer) {
+		this.fullscreenPass.invalidateHandles(renderer);
+		renderer.invalidateMaterial(this.depthMaterial);
+		renderer.invalidateShader(this.downsample);
+		renderer.invalidateShader(this.blurfilter);
 	};
 
 	return ShadowHandler;

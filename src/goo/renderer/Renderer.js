@@ -14,6 +14,7 @@ define([
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
+	'goo/renderer/RenderStats',
 	'goo/entities/SystemBus',
 	'goo/renderer/TaskScheduler',
 	'goo/renderer/RenderInfo'
@@ -34,12 +35,14 @@ function (
 	RenderQueue,
 	ShaderLib,
 	ShadowHandler,
+	RenderStats,
 	SystemBus,
 	TaskScheduler,
 	RenderInfo
 ) {
 	'use strict';
 
+	var STUB_METHOD = function () {};
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
@@ -76,7 +79,7 @@ function (
 		this._useDevicePixelRatio = parameters.useDevicePixelRatio !== undefined ? parameters.useDevicePixelRatio : false;
 		this._onError = parameters.onError;
 
-		var settings = {
+		this._contextSettings = {
 			alpha: this._alpha,
 			premultipliedAlpha: this._premultipliedAlpha,
 			antialias: this._antialias,
@@ -86,16 +89,233 @@ function (
 
 		/** @type {WebGLRenderingContext} */
 		this.context = null;
+		this.establishContext();
+
+		this._setupContextLost();
+
+		if (parameters.debug) {
+			this.setupDebugging(parameters);
+		}
+
+		/** @type {RendererRecord} */
+		this.rendererRecord = new RendererRecord();
+
+		//! AT: is this still necessary?
+		if (this.context.getShaderPrecisionFormat === undefined) {
+			this.context.getShaderPrecisionFormat = function () {
+				return {
+					"rangeMin": 1,
+					"rangeMax": 1,
+					"precision": 1
+				};
+			};
+		}
+
+		// Check capabilities (move out to separate module)
+		/** @type {object}
+		 * @property {number} maxTexureSize Maximum 2D texture size
+		 * @property {number} maxCubemapSize Maximum cubemap size
+		 * @property {number} maxRenderbufferSize Maximum renderbuffer size
+		 * @property {number[]} maxViewPortDims Maximum viewport size [x, y]
+		 * @property {number} maxVertexTextureUnits Maximum vertex shader texture units
+		 * @property {number} maxFragmentTextureUnits Maximum fragment shader texture units
+		 * @property {number} maxCombinedTextureUnits Maximum total texture units
+		 * @property {number} maxVertexAttributes Maximum vertex attributes
+		 * @property {number} maxVertexUniformVectors Maximum vertex uniform vectors
+		 * @property {number} maxFragmentUniformVectors Maximum fragment uniform vectors
+		 * @property {number} maxVaryingVectors Maximum varying vectors
+		 * @property {number} aliasedPointSizeRange Point size min/max [min, max]
+		 * @property {number} aliasedLineWidthRange Line width min/max [min, max]
+		 * @property {number} samples Antialiasing sample size
+		 * @property {number} sampleBuffers Sample buffer count
+		 * @property {number} depthBits Depth bits
+		 * @property {number} stencilBits Stencil bits
+		 * @property {number} subpixelBits Sub-pixel bits
+		 * @property {number} supportedExtensionsList Supported extension as an array
+		 * @property {number} renderer Renderer name
+		 * @property {number} vendor Vendor name
+		 * @property {number} version Version string
+		 * @property {number} shadingLanguageVersion Shadinglanguage version string
+		 */
+		this.capabilities = this.getCapabilities();
+
+		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxTexureSize) : this.capabilities.maxTexureSize;
+		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxCubemapSize) : this.capabilities.maxCubemapSize;
+
+		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
+		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
+		 * @type {string}
+		 */
+		this.shaderPrecision = parameters.shaderPrecision || 'highp';
+		if (this.shaderPrecision === 'highp' && this.capabilities.vertexShaderHighpFloat.precision > 0 && this.capabilities.fragmentShaderHighpFloat.precision > 0) {
+			this.shaderPrecision = 'highp';
+		} else if (this.shaderPrecision !== 'lowp' && this.capabilities.vertexShaderMediumpFloat.precision > 0 && this.capabilities.fragmentShaderMediumpFloat.precision > 0) {
+			this.shaderPrecision = 'mediump';
+		} else {
+			this.shaderPrecision = 'lowp';
+		}
+		//console.log("Shader precision: " + this.shaderPrecision);
+
+		this.downScale = parameters.downScale || 1;
+
+		// Default setup
+		this.clearColor = new Vector4();
+		// You need 64 bits for number equality
+		this._clearColor = new Float64Array(4);
+		this.setClearColor(0.3, 0.3, 0.3, 1.0);
+
+
+		/** @type {number} */
+		this.viewportX = 0;
+		/** @type {number} */
+		this.viewportY = 0;
+		/** @type {number} */
+		this.viewportWidth = 0;
+		/** @type {number} */
+		this.viewportHeight = 0;
+		/** @type {number} */
+		this.currentWidth = 0;
+		/** @type {number} */
+		this.currentHeight = 0;
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.devicePixelRatio = 1;
+
+		//this.overrideMaterial = null;
+		this._overrideMaterials = [];
+		this._mergedMaterial = new Material('Merged Material');
+
+		this.renderQueue = new RenderQueue();
+
+		this.info = new RenderStats();
+
+		this.shadowHandler = new ShadowHandler();
+
+		// Hardware picking
+		this.hardwarePicking = null;
+
+		SystemBus.addListener('goo.setClearColor', function(color) {
+			this.setClearColor.apply(this, color);
+		}.bind(this));
+
+		// ---
+		//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
+		// apparently this is the only way to find out the user zoom level
+
+		if (document.createElementNS) {
+			this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+			this.svg.setAttribute('version', '1.1');
+			this.svg.style.position = 'absolute';
+			this.svg.style.display = 'none';
+			document.body.appendChild(this.svg);
+		} else {
+			//! AT: placeholder to avoid another conditional below in checkResize
+			this.svg = { currentScale: 1 };
+		}
+
+		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
+		//      this needs to be re-added here again for each new GooRunner/Renderer
+		//      cycle.
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			Renderer.mainCamera = newCam.camera;
+			this.checkResize(Renderer.mainCamera);
+		}.bind(this));
+
+		this._definesIndices = [];
+	}
+
+	Renderer.prototype.getCapabilities = function () {
+		return {
+			maxTexureSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
+			maxCubemapSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
+			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
+			maxViewPortDims: this.context.getParameter(WebGLRenderingContext.MAX_VIEWPORT_DIMS), // [x, y]
+			maxAnisotropy: this.glExtensionTextureFilterAnisotropic ? this.context.getParameter(this.glExtensionTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0,
+
+			maxVertexTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
+			maxFragmentTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
+			maxCombinedTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+
+			maxVertexAttributes: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
+			maxVertexUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
+			maxFragmentUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
+			maxVaryingVectors: this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS),
+
+			aliasedPointSizeRange: this.context.getParameter(WebGLRenderingContext.ALIASED_POINT_SIZE_RANGE), // [min, max]
+			aliasedLineWidthRange: this.context.getParameter(WebGLRenderingContext.ALIASED_LINE_WIDTH_RANGE), // [min, max]
+
+			samples: this.context.getParameter(WebGLRenderingContext.SAMPLES),
+			sampleBuffers: this.context.getParameter(WebGLRenderingContext.SAMPLE_BUFFERS),
+
+			depthBits: this.context.getParameter(WebGLRenderingContext.DEPTH_BITS),
+			stencilBits: this.context.getParameter(WebGLRenderingContext.STENCIL_BITS),
+			subpixelBits: this.context.getParameter(WebGLRenderingContext.SUBPIXEL_BITS),
+			supportedExtensionsList: this.context.getSupportedExtensions(),
+
+			renderer: this.context.getParameter(WebGLRenderingContext.RENDERER),
+			vendor: this.context.getParameter(WebGLRenderingContext.VENDOR),
+			version: this.context.getParameter(WebGLRenderingContext.VERSION),
+			shadingLanguageVersion: this.context.getParameter(WebGLRenderingContext.SHADING_LANGUAGE_VERSION),
+
+			vertexShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_FLOAT),
+			vertexShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_FLOAT),
+			vertexShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_FLOAT),
+			fragmentShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_FLOAT),
+			fragmentShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_FLOAT),
+			fragmentShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_FLOAT),
+
+			vertexShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_INT),
+			vertexShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_INT),
+			vertexShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_INT),
+			fragmentShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_INT),
+			fragmentShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_INT),
+			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
+		};
+	};
+
+	Renderer.prototype.setupDebugging = function (parameters) {
+		// XXX: This is a temporary solution to easily enable webgl debugging during development...
+		var request = new XMLHttpRequest();
+		request.open('GET', '/js/goo/lib/webgl-debug.js', false);
+		request.onreadystatechange = function () {
+			if (request.readyState === 4) {
+				if (request.status >= 200 && request.status <= 299) {
+					// Yes, eval is intended, sorry checkstyle
+					// jshint evil:true
+					window['eval'].call(window, request.responseText);
+				}
+			}
+		};
+		request.send(null);
+
+		if (typeof (window.WebGLDebugUtils) === 'undefined') {
+			console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
+		} else {
+			console.log('Running in webgl debug mode.');
+			if (parameters.validate) {
+				console.log('Running with "undefined arguments" validation.');
+				this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this), validateNoneOfTheArgsAreUndefined);
+			} else {
+				this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this));
+			}
+		}
+	};
+
+	Renderer.prototype.establishContext = function () {
 		if (!!window.WebGLRenderingContext) {
+			//! AT: this list may require cleanup
 			var contextNames = ["experimental-webgl", "webgl", "moz-webgl", "webkit-3d"];
 			for (var i = 0; i < contextNames.length; i++) {
 				try {
-					this.context = _canvas.getContext(contextNames[i], settings);
+					this.context = this.domElement.getContext(contextNames[i], this._contextSettings);
 					if (this.context && typeof(this.context.getParameter) === "function") {
 						// WebGL is supported & enabled
 						break;
 					}
-				} catch (e){}
+				} catch (e) {}
 			}
 			if (!this.context) {
 				// WebGL is supported but disabled
@@ -106,8 +326,7 @@ function (
 					enabled: false
 				};
 			}
-		}
-		else {
+		} else {
 			// WebGL is not supported
 			throw {
 				name: 'GooWebGLError',
@@ -117,36 +336,12 @@ function (
 			};
 		}
 
-		if (parameters.debug) {
-			// XXX: This is a temporary solution to easily enable webgl debugging during development...
-			var request = new XMLHttpRequest();
-			request.open('GET', '/js/goo/lib/webgl-debug.js', false);
-			request.onreadystatechange = function () {
-				if (request.readyState === 4) {
-					if (request.status >= 200 && request.status <= 299) {
-						// Yes, eval is intended, sorry checkstyle
-						// jshint evil:true
-						window['eval'].call(window, request.responseText);
-					}
-				}
-			};
-			request.send(null);
+		this.context.clearDepth(1);
+		this.context.clearStencil(0);
+		this.context.stencilMask(0);
 
-			if (typeof (window.WebGLDebugUtils) === 'undefined') {
-				console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
-			} else {
-				console.log('Running in webgl debug mode.');
-				if (parameters.validate) {
-					console.log('Running with "undefined arguments" validation.');
-					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this), validateNoneOfTheArgsAreUndefined);
-				} else {
-					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this));
-				}
-			}
-		}
-
-		/** @type {RendererRecord} */
-		this.rendererRecord = new RendererRecord();
+		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
+		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 
 		/** @type {boolean} */
 		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
@@ -195,198 +390,29 @@ function (
 		if (!this.glExtensionElementIndexUInt) {
 			console.log('32 bit indices not supported.');
 		}
+	};
 
-		if (this.context.getShaderPrecisionFormat === undefined) {
-			this.context.getShaderPrecisionFormat = function () {
-				return {
-					"rangeMin": 1,
-					"rangeMax": 1,
-					"precision": 1
-				};
-			};
-		}
+	/**
+	 * Sets up handlers for context lost/restore
+	 * @private
+	 */
+	Renderer.prototype._setupContextLost = function () {
+		this.domElement.addEventListener('webglcontextlost', function (event) {
+			event.preventDefault();
+			SystemBus.emit('goo.contextLost');
+		}, false);
 
-		// Check capabilities (move out to separate module)
-		/** @type {object}
-		 * @property {number} maxTexureSize Maximum 2D texture size
-		 * @property {number} maxCubemapSize Maximum cubemap size
-		 * @property {number} maxRenderbufferSize Maximum renderbuffer size
-		 * @property {number[]} maxViewPortDims Maximum viewport size [x, y]
-		 * @property {number} maxVertexTextureUnits Maximum vertex shader texture units
-		 * @property {number} maxFragmentTextureUnits Maximum fragment shader texture units
-		 * @property {number} maxCombinedTextureUnits Maximum total texture units
-		 * @property {number} maxVertexAttributes Maximum vertex attributes
-		 * @property {number} maxVertexUniformVectors Maximum vertex uniform vectors
-		 * @property {number} maxFragmentUniformVectors Maximum fragment uniform vectors
-		 * @property {number} maxVaryingVectors Maximum varying vectors
-		 * @property {number} aliasedPointSizeRange Point size min/max [min, max]
-		 * @property {number} aliasedLineWidthRange Line width min/max [min, max]
-		 * @property {number} samples Antialiasing sample size
-		 * @property {number} sampleBuffers Sample buffer count
-		 * @property {number} depthBits Depth bits
-		 * @property {number} stencilBits Stencil bits
-		 * @property {number} subpixelBits Sub-pixel bits
-		 * @property {number} supportedExtensionsList Supported extension as an array
-		 * @property {number} renderer Renderer name
-		 * @property {number} vendor Vendor name
-		 * @property {number} version Version string
-		 * @property {number} shadingLanguageVersion Shadinglanguage version string
-		 */
-		this.capabilities = {
-			maxTexureSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
-			maxCubemapSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
-			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
-			maxViewPortDims: this.context.getParameter(WebGLRenderingContext.MAX_VIEWPORT_DIMS), // [x, y]
-			maxAnisotropy: this.glExtensionTextureFilterAnisotropic ? this.context.getParameter(this.glExtensionTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0,
+		this.domElement.addEventListener('webglcontextrestored', function () {
+			this._restoreContext();
+			SystemBus.emit('goo.contextRestored');
+		}.bind(this), false);
+	};
 
-			maxVertexTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
-			maxFragmentTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
-			maxCombinedTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
-
-			maxVertexAttributes: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
-			maxVertexUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
-			maxFragmentUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
-			maxVaryingVectors: this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS),
-
-			aliasedPointSizeRange: this.context.getParameter(WebGLRenderingContext.ALIASED_POINT_SIZE_RANGE), // [min, max]
-			aliasedLineWidthRange: this.context.getParameter(WebGLRenderingContext.ALIASED_LINE_WIDTH_RANGE), // [min, max]
-
-			samples: this.context.getParameter(WebGLRenderingContext.SAMPLES),
-			sampleBuffers: this.context.getParameter(WebGLRenderingContext.SAMPLE_BUFFERS),
-
-			depthBits: this.context.getParameter(WebGLRenderingContext.DEPTH_BITS),
-			stencilBits: this.context.getParameter(WebGLRenderingContext.STENCIL_BITS),
-			subpixelBits: this.context.getParameter(WebGLRenderingContext.SUBPIXEL_BITS),
-			supportedExtensionsList: this.context.getSupportedExtensions(),
-
-			renderer: this.context.getParameter(WebGLRenderingContext.RENDERER),
-			vendor: this.context.getParameter(WebGLRenderingContext.VENDOR),
-			version: this.context.getParameter(WebGLRenderingContext.VERSION),
-			shadingLanguageVersion: this.context.getParameter(WebGLRenderingContext.SHADING_LANGUAGE_VERSION),
-
-			vertexShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_FLOAT),
-			vertexShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_FLOAT),
-			vertexShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_FLOAT),
-			fragmentShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_FLOAT),
-			fragmentShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_FLOAT),
-			fragmentShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_FLOAT),
-
-			vertexShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_INT),
-			vertexShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_INT),
-			vertexShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_INT),
-			fragmentShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_INT),
-			fragmentShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_INT),
-			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
-		};
-		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxTexureSize) : this.capabilities.maxTexureSize;
-		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxCubemapSize) : this.capabilities.maxCubemapSize;
-
-		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
-		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
-		 * @type {string}
-		 */
-		this.shaderPrecision = parameters.shaderPrecision || 'highp';
-		if (this.shaderPrecision === 'highp' && this.capabilities.vertexShaderHighpFloat.precision > 0 && this.capabilities.fragmentShaderHighpFloat.precision > 0) {
-			this.shaderPrecision = 'highp';
-		} else if (this.shaderPrecision !== 'lowp' && this.capabilities.vertexShaderMediumpFloat.precision > 0 && this.capabilities.fragmentShaderMediumpFloat.precision > 0) {
-			this.shaderPrecision = 'mediump';
-		} else {
-			this.shaderPrecision = 'lowp';
-		}
-		//console.log("Shader precision: " + this.shaderPrecision);
-
-		this.downScale = parameters.downScale || 1;
-
-		// Default setup
-
-		this.clearColor = new Vector4();
-		// You need 64 bits for number equality
-		this._clearColor = new Float64Array(4);
-		this.setClearColor(0.3, 0.3, 0.3, 1.0);
-		this.context.clearDepth(1);
-		this.context.clearStencil(0);
-		this.context.stencilMask(0);
-
-		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
-		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
-
-		/** @type {number} */
-		this.viewportX = 0;
-		/** @type {number} */
-		this.viewportY = 0;
-		/** @type {number} */
-		this.viewportWidth = 0;
-		/** @type {number} */
-		this.viewportHeight = 0;
-		/** @type {number} */
-		this.currentWidth = 0;
-		/** @type {number} */
-		this.currentHeight = 0;
-		/**
-		 * @type {number}
-		 * @readonly
-		 */
-		this.devicePixelRatio = 1;
-
-		//this.overrideMaterial = null;
-		this._overrideMaterials = [];
-		this._mergedMaterial = new Material('Merged Material');
-
-		this.renderQueue = new RenderQueue();
-
-		this.info = {
-			calls: 0,
-			vertices: 0,
-			indices: 0,
-			reset: function () {
-				this.calls = 0;
-				this.vertices = 0;
-				this.indices = 0;
-			},
-			toString: function () {
-				return (
-					'Calls: ' + this.calls +
-					'<br/>Vertices: ' + this.vertices +
-					'<br/>Indices: ' + this.indices
-				);
-			}
-		};
-
-		this.shadowHandler = new ShadowHandler();
-
-		// Hardware picking
-		this.hardwarePicking = null;
-
-		SystemBus.addListener('goo.setClearColor', function(color) {
-			this.setClearColor.apply(this, color);
-		}.bind(this));
-
-		// ---
-		//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
-		// apparently this is the only way to find out the user zoom level
-
-		if (document.createElementNS) {
-			this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-			this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-			this.svg.setAttribute('version', '1.1');
-			this.svg.style.position = 'absolute';
-			this.svg.style.display = 'none';
-			document.body.appendChild(this.svg);
-		} else {
-			//! AT: placeholder to avoid another conditional below in checkResize
-			this.svg = { currentScale: 1 };
-		}
-
-		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
-		//      this needs to be re-added here again for each new GooRunner/Renderer
-		//      cycle.
-		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			Renderer.mainCamera = newCam.camera;
-			this.checkResize(Renderer.mainCamera);
-		}.bind(this));
-
-		this._definesIndices = [];
-	}
+	/**
+	 * Restores thw webgl context
+	 * @private
+	 */
+	Renderer.prototype._restoreContext = STUB_METHOD; // will be overriden
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
 		for (var ii = 0; ii < args.length; ++ii) {

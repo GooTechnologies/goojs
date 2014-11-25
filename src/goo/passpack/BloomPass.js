@@ -91,6 +91,16 @@ function (
 		this.bcMaterial.shader.destroy();
 	};
 
+	BloomPass.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.convolutionMaterial);
+		renderer.invalidateMaterial(this.copyMaterial);
+		renderer.invalidateMaterial(this.convolutionMaterial);
+		renderer.invalidateMaterial(this.bcMaterial);
+		renderer.invalidateRenderTarget(this.renderTargetX);
+		renderer.invalidateRenderTarget(this.renderTargetY);
+		renderer.invalidateMeshData(this.renderable.meshData);
+	};
+
 	BloomPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width / this.downsampleAmount;
 		var sizeY = size.height / this.downsampleAmount;
