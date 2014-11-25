@@ -208,8 +208,6 @@ function (
 
 	/**
 	 * Sets the transform to look in a specific direction.
-	 * Please note: This function contains a known bug resulting in looking in the opposite direction
-	 * for non-camera and non-light entities.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 */
