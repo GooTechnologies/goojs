@@ -414,7 +414,7 @@ function (
 
 		if (attributeName === MeshData.POSITION) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.matrix.applyPostPoint(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -422,7 +422,7 @@ function (
 			}
 		} else if (attributeName === MeshData.NORMAL) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.rotation.applyPost(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -430,7 +430,7 @@ function (
 			}
 		} else if (attributeName === MeshData.TANGENT) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.rotation.applyPost(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -464,7 +464,7 @@ function (
 		case 2:
 			vert = new Vector2();
 			for (var i = 0; i < viewLength; i += 2) {
-				vert.setd(view[i + 0], view[i + 1]);
+				vert.setDirect(view[i + 0], view[i + 1]);
 
 				outVert = fun(vert);
 
@@ -475,7 +475,7 @@ function (
 		case 3:
 			vert = new Vector3();
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 
 				outVert = fun(vert);
 
@@ -487,7 +487,7 @@ function (
 		case 4:
 			vert = new Vector4();
 			for (var i = 0; i < viewLength; i += 4) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
 
 				outVert = fun(vert);
 
@@ -689,23 +689,23 @@ function (
 							attribs[key].values[(indexCount + 2) * count + i] = attribs[key].oldBuffer[i3 * count + i];
 						}
 						if (key === MeshData.POSITION) {
-							v1.setd(
+							v1.setDirect(
 								attribs[key].values[indexCount * 3],
 								attribs[key].values[indexCount * 3 + 1],
 								attribs[key].values[indexCount * 3 + 2]
 							);
-							v2.setd(
+							v2.setDirect(
 								attribs[key].values[(indexCount + 1) * 3],
 								attribs[key].values[(indexCount + 1) * 3 + 1],
 								attribs[key].values[(indexCount + 1) * 3 + 2]
 							);
-							v3.setd(
+							v3.setDirect(
 								attribs[key].values[(indexCount + 2) * 3],
 								attribs[key].values[(indexCount + 2) * 3 + 1],
 								attribs[key].values[(indexCount + 2) * 3 + 2]
 							);
-							v2.subv(v1);
-							v3.subv(v1);
+							v2.subVector(v1);
+							v3.subVector(v1);
 							v2.cross(v3).normalize();
 
 							if (attribs[MeshData.NORMAL]) {

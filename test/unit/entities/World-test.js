@@ -105,6 +105,19 @@ define([
 
 			expect(world._systems).toEqual([systemB]);
 		});
+
+		it('calls the cleanup function of a system when removing it from the world', function () {
+			var systemA = {
+				type: 'A',
+				cleanup: jasmine.createSpy('cleanup')
+			};
+
+			world.setSystem(systemA);
+
+			world.clearSystem('A');
+
+			expect(systemA.cleanup).toHaveBeenCalled();
+		});
 	});
 
 	describe('World with Components', function () {

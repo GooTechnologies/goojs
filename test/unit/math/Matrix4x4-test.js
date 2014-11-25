@@ -182,37 +182,37 @@ define([
 		it('can add two matrices component-wise', function () {
 			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
-			expect(Matrix4x4.add(a,a)).toBeCloseToMatrix(Matrix4x4.mul(a,2));
+			expect(Matrix4x4.add(a, a)).toBeCloseToMatrix(Matrix4x4.mul(a, 2));
 		});
 
 		it('can add a scalar to all components of a matrix', function () {
 			var a = new Matrix4x4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-			expect(Matrix4x4.add(a,1)).toBeCloseToMatrix(Matrix4x4.mul(a,2));
+			expect(Matrix4x4.add(a, 1)).toBeCloseToMatrix(Matrix4x4.mul(a, 2));
 		});
 
 		it('can subtract two matrices component-wise', function () {
 			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
-			expect(Matrix4x4.sub(a,a)).toBeCloseToMatrix(Matrix4x4.mul(a,0));
+			expect(Matrix4x4.sub(a, a)).toBeCloseToMatrix(Matrix4x4.mul(a, 0));
 		});
 
 		it('can subtract a scalar to all components of a matrix', function () {
 			var a = new Matrix4x4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-			expect(Matrix4x4.sub(a,1)).toBeCloseToMatrix(Matrix4x4.mul(a,0));
+			expect(Matrix4x4.sub(a, 1)).toBeCloseToMatrix(Matrix4x4.mul(a, 0));
 		});
 
 		it('can multiply two matrices component-wise', function () {
 			var a = new Matrix4x4(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
-			expect(Matrix4x4.mul(a,a)).toBeCloseToMatrix(Matrix4x4.mul(a,2));
+			expect(Matrix4x4.mul(a, a)).toBeCloseToMatrix(Matrix4x4.mul(a, 2));
 		});
 
 		it('can divide two matrices component-wise', function () {
 			var a = new Matrix4x4(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
-			expect(Matrix4x4.div(a,a)).toBeCloseToMatrix(Matrix4x4.div(a,2));
+			expect(Matrix4x4.div(a, a)).toBeCloseToMatrix(Matrix4x4.div(a, 2));
 		});
 
 		describe('copy', function () {

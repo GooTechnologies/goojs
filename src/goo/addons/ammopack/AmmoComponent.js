@@ -225,7 +225,7 @@ function(
 		}
 		this.body.getMotionState().getWorldTransform(this.ammoTransform);
 		var ammoQuat = this.ammoTransform.getRotation();
-		this.gooQuaternion.setd(ammoQuat.x(), ammoQuat.y(), ammoQuat.z(), ammoQuat.w());
+		this.gooQuaternion.setDirect(ammoQuat.x(), ammoQuat.y(), ammoQuat.z(), ammoQuat.w());
 		tc.transform.rotation.copyQuaternion(this.gooQuaternion);
 		var origin = this.ammoTransform.getOrigin();
 		tc.setTranslation(origin.x(), origin.y(), origin.z());

@@ -247,15 +247,15 @@ function (
 		function traverse(refs) {
 			var binaryRefs = {};
 			var jsonRefs = {};
-			var promises = [];
 
 			// Loads config for traversal
 			function loadFn(ref) {
-				promises.push(that._loadRef(ref, options).then(traverseFn));
+				return that._loadRef(ref, options).then(traverseFn);
 			}
 
 			// Looks through config for binaries
 			function traverseFn(config) {
+				var promises = [];
 				var refs = that._getRefsFromConfig(config);
 
 				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
@@ -266,14 +266,16 @@ function (
 					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs[ref]) {
 						// If it's a json-config, look deeper
 						jsonRefs[ref] = true;
-						loadFn(ref);
+						promises.push(loadFn(ref));
 					}
 				}
+				return RSVP.all(promises);
 			}
 
-			traverseFn({ collectionRefs: refs });
 			// Resolved when everything is loaded and traversed
-			return RSVP.all(promises).then(function () { return Object.keys(binaryRefs); });
+			return traverseFn({ collectionRefs: refs }).then(function () {
+				return Object.keys(binaryRefs);
+			});
 		}
 
 		return traverse(references).then(loadBinaryRefs);

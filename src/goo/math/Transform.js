@@ -43,35 +43,29 @@ function (
 	 * @returns {Transform} target
 	 */
 	Transform.combine = function (lhs, rhs, target) {
-		if (lhs.scale.data[0] !== lhs.scale.data[1] || lhs.scale.data[0] !== lhs.scale.data[2]) {
-			throw {
-				name: 'NonUniformScaleException',
-				message: 'Non-uniform scaling in left hand transform, cannot resolve combined transform'
-			};
-		}
 		target = target || new Transform();
 
 		// Translation
-		tmpVec.setv(rhs.translation);
+		tmpVec.setVector(rhs.translation);
 		// Rotate translation
 		lhs.rotation.applyPost(tmpVec);
 		// Scale translation
-		tmpVec.mulv(lhs.scale);
+		tmpVec.mulVector(lhs.scale);
 		// Translate translation
-		tmpVec.addv(lhs.translation);
+		tmpVec.addVector(lhs.translation);
 
 		// Scale
-		tmpVec2.setv(rhs.scale);
+		tmpVec2.setVector(rhs.scale);
 		// Scale scale
-		tmpVec2.mulv(lhs.scale);
+		tmpVec2.mulVector(lhs.scale);
 
 		// Rotation
 		// Rotate rotation
 		Matrix3x3.combine(lhs.rotation, rhs.rotation, tmpMat1);
 
 		target.rotation.copy(tmpMat1);
-		target.scale.setv(tmpVec2);
-		target.translation.setv(tmpVec);
+		target.scale.setVector(tmpVec2);
+		target.translation.setVector(tmpVec);
 
 		target.update();
 
@@ -96,12 +90,12 @@ function (
 		this.rotation.data.set(b.rotation.data);
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
 		Matrix3x3.combine(tmpMat1, this.rotation, this.rotation);
-		this.translation.setv(b.translation);
-		this.translation.mulv(a.scale);
-		tmpMat1.applyPost(this.translation).addv(a.translation);
+		this.translation.setVector(b.translation);
+		this.translation.mulVector(a.scale);
+		tmpMat1.applyPost(this.translation).addVector(a.translation);
 
-		tmpVec.setv(a.scale).mulv(b.scale);
-		this.scale.setv(tmpVec);
+		tmpVec.setVector(a.scale).mulVector(b.scale);
+		this.scale.setVector(tmpVec);
 	};
 
 	/**
@@ -110,9 +104,9 @@ function (
 	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
 
-		this.translation.setv(Vector3.ZERO);
+		this.translation.setVector(Vector3.ZERO);
 		this.rotation.setIdentity();
-		this.scale.setv(Vector3.ONE);
+		this.scale.setVector(Vector3.ONE);
 	};
 
 	/**
@@ -129,7 +123,7 @@ function (
 	 * entity.transformComponent.transform.applyForward(v1, localPos);
 	 */
 	Transform.prototype.applyForward = function (point, store) {
-		store.setv(point);
+		store.setVector(point);
 
 		// store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		// this.rotation.applyPost(store);
@@ -156,7 +150,7 @@ function (
 	Transform.prototype.applyForwardVector = function (vector, store) {
 		store.copy(vector);
 
-		store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
+		store.setDirect(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		this.rotation.applyPost(store);
 
 		return store;
@@ -196,9 +190,9 @@ function (
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
 
-		this.translation.setv(transform.translation);
+		this.translation.setVector(transform.translation);
 		this.rotation.copy(transform.rotation);
-		this.scale.setv(transform.scale);
+		this.scale.setVector(transform.scale);
 	};
 
 	/**
@@ -223,10 +217,7 @@ function (
 		if (!up) {
 			up = Vector3.UNIT_Y;
 		}
-		// REVIEW: this is actually using the wrong direction, it should be reversed.
-		//   tmpVec.setv(position).subv(this.translation).normalize();
-		// However we might need the old behavior for lights and cameras.
-		tmpVec.setv(this.translation).subv(position).normalize();
+		tmpVec.setVector(position).subVector(this.translation).normalize();
 		this.rotation.lookAt(tmpVec, up);
 	};
 
@@ -261,8 +252,8 @@ function (
 		//newRotation.multiplyDiagonalPost(this.scale, newRotation).invert();
 		// }
 
-		result.scale.setv(Vector3.ONE).div(this.scale);
-		result.translation.copy(this.translation).invert().mulv(result.scale);
+		result.scale.setVector(Vector3.ONE).div(this.scale);
+		result.translation.copy(this.translation).invert().mulVector(result.scale);
 		result.rotation.applyPost(result.translation);
 
 		// result.update();

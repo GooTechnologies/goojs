@@ -99,9 +99,9 @@ function (
 					}
 
 					renderables.forEach(function (renderable) {
-						renderable.transform.translation.setv(entity.transformComponent.worldTransform.translation);
+						renderable.transform.translation.setVector(entity.transformComponent.worldTransform.translation);
 						renderable.transform.rotation.copy(entity.transformComponent.worldTransform.rotation);
-						renderable.transform.scale.setd(1, 1, 1);
+						renderable.transform.scale.setDirect(1, 1, 1);
 						renderable.transform.update();
 					});
 					DebugDrawHelper.update(renderables, component, this.camera);

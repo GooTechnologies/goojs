@@ -124,5 +124,30 @@ define([
 				done();
 			});
 		});
+
+		it('preloads all binaries in json structure', function (done) {
+			var entities = [];
+			for (var i = 0; i < 4; i++) {
+				entities[i] = Configs.entity(['transform', 'meshData']);
+				if (i > 0) {
+					Configs.attachChild(entities[i - 1], entities[i]);
+				}
+			}
+
+			var bundleRef = Configs.randomRef('bundle');
+			loader.update(bundleRef, Configs.get());
+
+			var progress = jasmine.createSpy('progress');
+			loader.load(bundleRef).then(function () {
+				return loader.load(entities[0].id, {
+					preloadBinaries: true,
+					progressCallback: progress
+				});
+			}).then(function () {
+				var l = entities.length;
+				expect(progress).toHaveBeenCalledWith(l, l);
+				done();
+			});
+		});
 	});
 });

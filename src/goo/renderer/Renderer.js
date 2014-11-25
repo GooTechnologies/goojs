@@ -16,7 +16,8 @@ define([
 	'goo/renderer/shadow/ShadowHandler',
 	'goo/renderer/RenderStats',
 	'goo/entities/SystemBus',
-	'goo/renderer/TaskScheduler'
+	'goo/renderer/TaskScheduler',
+	'goo/renderer/RenderInfo'
 ],
 /** @lends */
 function (
@@ -36,7 +37,8 @@ function (
 	ShadowHandler,
 	RenderStats,
 	SystemBus,
-	TaskScheduler
+	TaskScheduler,
+	RenderInfo
 ) {
 	'use strict';
 
@@ -215,12 +217,14 @@ function (
 		}
 
 		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
-		//      this needs to be re-added her again for each new GooRunner/Renderer
+		//      this needs to be re-added here again for each new GooRunner/Renderer
 		//      cycle.
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
 			Renderer.mainCamera = newCam.camera;
 			this.checkResize(Renderer.mainCamera);
 		}.bind(this));
+
+		this._definesIndices = [];
 	}
 
 	Renderer.prototype.getCapabilities = function () {
@@ -560,7 +564,7 @@ function (
 		this._clearColor[1] = g;
 		this._clearColor[2] = b;
 		this._clearColor[3] = a;
-		this.clearColor.seta(this._clearColor);
+		this.clearColor.setArray(this._clearColor);
 		this.context.clearColor(r, g, b, a);
 	};
 
@@ -744,6 +748,8 @@ function (
 		}.bind(this));
 	};
 
+	var preloadMaterialsRenderInfo = new RenderInfo();
+
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables"
 	 * @param renderList
@@ -751,7 +757,8 @@ function (
 	 */
 	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];
-		var renderInfo = {};
+		var renderInfo = preloadMaterialsRenderInfo;
+		renderInfo.reset();
 
 		if (Array.isArray(renderList)) {
 			for (var i = 0; i < renderList.length; i++) {
@@ -762,14 +769,14 @@ function (
 
 				// this function does so much more than I need it to do
 				// I only need the material of the renderable
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 
 				for (var j = 0; j < renderInfo.materials.length; j++) {
 					this.preloadTextures(renderInfo.materials[j], queue);
 				}
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			for (var j = 0; j < renderInfo.materials.length; j++) {
 				this.preloadTextures(renderInfo.materials[j], queue);
 			}
@@ -786,51 +793,13 @@ function (
 	 */
 	Renderer.prototype.precompileShader = function (material, renderInfo, queue) {
 		var shader = material.shader;
-		if (shader.processors || shader.defines) {
-			// Call processors
-			if (shader.processors) {
-				for (var j = 0; j < shader.processors.length; j++) {
-					shader.processors[j](shader, renderInfo);
-				}
-			}
 
-			// check defines. if no hit in cache -> add to cache. if hit in cache,
-			// replace with cache version and copy over uniforms.
-			// TODO: schteppe notes that the cache key does not match the old key when reloading the whole bundle. Why?
-			var defineArray = Object.keys(shader.defines);
-			var len = defineArray.length;
-			var shaderKeyArray = [];
-			for (var j = 0; j < len; j++) {
-				var key = defineArray[j];
-				shaderKeyArray.push(key + '_' + shader.defines[key]);
-			}
-			shaderKeyArray.sort();
-			var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
-
-			var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
-			if (!shaderCache[defineKey]) {
-				if (shader.builder) {
-					shader.builder(shader, renderInfo);
-				}
-				shader = material.shader = shader.clone();
-				shaderCache[defineKey] = shader;
-			} else {
-				shader = shaderCache[defineKey];
-				if (shader !== material.shader) {
-					var uniforms = material.shader.uniforms;
-					var keys = Object.keys(uniforms);
-					for (var ii = 0, l = keys.length; ii < l; ii++) {
-						var key = keys[ii];
-						var origUniform = shader.uniforms[key] = uniforms[key];
-						if (origUniform instanceof Array) {
-							shader.uniforms[key] = origUniform.slice(0);
-						}
-					}
-
-					material.shader = shader;
-				}
-			}
+		shader.updateProcessors(renderInfo);
+		if (shader.builder) {
+			shader.builder(shader, renderInfo);
+			shader.rebuild();
 		}
+		this.findOrCacheMaterialShader(material, shader, renderInfo);
 
 		queue.push(function () { shader.precompile(this); }.bind(this));
 	};
@@ -855,9 +824,11 @@ function (
 	 * @param lights
 	 */
 	Renderer.prototype.precompileShaders = function (renderList, lights) {
-		var renderInfo = {
-			lights: lights
-		};
+		var renderInfo = new RenderInfo();
+
+		if (lights) {
+			renderInfo.lights = lights;
+		}
 
 		var queue = [];
 
@@ -867,7 +838,7 @@ function (
 				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
 					continue;
 				}
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 
 				for (var j = 0; j < renderInfo.materials.length; j++) {
 					renderInfo.material = renderInfo.materials[j];
@@ -875,7 +846,7 @@ function (
 				}
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			for (var j = 0; j < renderInfo.materials.length; j++) {
 				renderInfo.material = renderInfo.materials[j];
 				this.precompileShader(renderInfo.materials[j], renderInfo, queue);
@@ -886,8 +857,7 @@ function (
 	};
 
 	Renderer.prototype.preloadBuffers = function (renderList) {
-		var renderInfo = {
-		};
+		var renderInfo = new RenderInfo();
 
 		if (Array.isArray(renderList)) {
 			for (var i = 0; i < renderList.length; i++) {
@@ -895,14 +865,14 @@ function (
 				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
 					continue;
 				}
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 				for (var j = 0; j < renderInfo.materials.length; j++) {
 					renderInfo.material = renderInfo.materials[j];
 					this.preloadBuffer(renderable, renderInfo.materials[j], renderInfo);
 				}
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			for (var j = 0; j < renderInfo.materials.length; j++) {
 				renderInfo.material = renderInfo.materials[j];
 				this.preloadBuffer(renderList, renderInfo.materials[j], renderInfo);
@@ -987,6 +957,8 @@ function (
 		}
 	};
 
+	var renderRenderInfo = new RenderInfo();
+
 	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
 	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
@@ -1015,13 +987,20 @@ function (
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
-		var renderInfo = {
-			camera: camera,
-			mainCamera: Renderer.mainCamera,
-			lights: lights,
-			shadowHandler: this.shadowHandler,
-			renderer: this
-		};
+		var cache = this.rendererRecord.shaderCache;
+		var keys = Object.keys(cache);
+		for (var i = 0; i < keys.length; i++) {
+			var shader = cache[keys[i]];
+			shader.startFrame();
+		}
+
+		var renderInfo = renderRenderInfo;
+		renderInfo.reset();
+		renderInfo.camera = camera;
+		renderInfo.mainCamera = Renderer.mainCamera;
+		renderInfo.lights = lights;
+		renderInfo.shadowHandler = this.shadowHandler;
+		renderInfo.renderer = this;
 
 		if (Array.isArray(renderList)) {
 			this.renderQueue.sort(renderList, camera);
@@ -1031,11 +1010,11 @@ function (
 				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
 					continue;
 				}
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 				this.renderMesh(renderInfo);
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			this.renderMesh(renderInfo);
 		}
 
@@ -1043,31 +1022,6 @@ function (
 		if (renderTarget && renderTarget.generateMipmaps && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
 			this.updateRenderTargetMipmap(renderTarget);
 		}
-	};
-
-	// REVIEW: make a RenderInfo class?
-	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {
-		if (renderable instanceof Entity) {
-			renderInfo.meshData = renderable.meshDataComponent.meshData;
-			renderInfo.materials = renderable.meshRendererComponent.materials;
-			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.worldTransform;
-			if(renderable.meshDataComponent.currentPose) {
-				renderInfo.currentPose = renderable.meshDataComponent.currentPose;
-			} else {
-				renderInfo.currentPose = undefined;
-			}
-		} else {
-			renderInfo.meshData = renderable.meshData;
-			renderInfo.materials = renderable.materials;
-			renderInfo.transform = renderable.transform;
-			if(renderable.currentPose) {
-				renderInfo.currentPose = renderable.currentPose;
-			} else {
-				renderInfo.currentPose = undefined;
-			}
-		}
-
-		renderInfo.renderable = renderable;
 	};
 
 	/*
@@ -1134,125 +1088,51 @@ function (
 		}
 
 		for (var i = 0; i < count; i++) {
-			var material = null, orMaterial = null;
-
-			if (i < materials.length) {
-				material = materials[i];
-			}
-			if (i < this._overrideMaterials.length) {
-				orMaterial = this._overrideMaterials[i];
-			}
-
-			if (material && orMaterial) {
-				this._override(orMaterial, material, this._mergedMaterial);
-				material = this._mergedMaterial;
-			} else if (orMaterial) {
-				material = orMaterial;
-			}
-
-			if (!material.shader) {
-				if (!material.errorOnce) {
-					console.warn('No shader set on material: ' + material.name);
-					material.errorOnce = true;
-				}
-				continue;
-			} else {
-				material.errorOnce = false;
-			}
-
-			if (material.wireframe && flatOrWire !== 'wire') {
-				if (!meshData.wireframeData) {
-					meshData.wireframeData = meshData.buildWireframeData();
-				}
-				meshData = meshData.wireframeData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = 'wire';
-			} else if (material.flat && flatOrWire !== 'flat') {
-				if (!meshData.flatMeshData) {
-					meshData.flatMeshData = meshData.buildFlatMeshData();
-				}
-				meshData = meshData.flatMeshData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = 'flat';
-			} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
-				meshData = originalData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = null;
-			}
-
-			renderInfo.material = material;
-			renderInfo.meshData = meshData;
-
-			//! AT: this should stay in a method
-
-			// Check for caching of shader that use defines
-			var shader = material.shader;
-			if (shader.processors || shader.defines) {
-				// Call processors
-				if (shader.processors) {
-					for (var j = 0; j < shader.processors.length; j++) {
-						shader.processors[j](shader, renderInfo);
-					}
-				}
-
-				// check defines. if no hit in cache -> add to cache. if hit in cache,
-				// replace with cache version and copy over uniforms.
-				var defineArray = Object.keys(shader.defines);
-				var len = defineArray.length;
-				var shaderKeyArray = this.rendererRecord.shaderKeyArray = this.rendererRecord.shaderKeyArray || [];
-				shaderKeyArray.length = 0;
-				for (var j = 0; j < len; j++) {
-					var key = defineArray[j];
-					shaderKeyArray.push(key + '_' + shader.defines[key]);
-				}
-				shaderKeyArray.sort();
-				var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
-
-				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
-
-				if (!shaderCache[defineKey]) {
-					if (shader.builder) {
-						shader.builder(shader, renderInfo);
-					}
-					shader = material.shader = shader.clone();
-					shaderCache[defineKey] = shader;
-				} else {
-					shader = shaderCache[defineKey];
-					if (shader !== material.shader) {
-						var uniforms = material.shader.uniforms;
-						var keys = Object.keys(uniforms);
-						for (var ii = 0, l = keys.length; ii < l; ii++) {
-							var key = keys[ii];
-							var origUniform = shader.uniforms[key] = uniforms[key];
-							if (origUniform instanceof Array) {
-								shader.uniforms[key] = origUniform.slice(0);
-							}
-						}
-
-						material.shader = shader;
-					}
-				}
-			}
-
-			shader.apply(renderInfo, this);
-
-			this.updateDepthTest(material);
-			this.updateCulling(material);
-			this.updateBlending(material);
-			this.updateOffset(material);
-			this.updateTextures(material);
-
-			this.updateLineAndPointSettings(material);
-
-			this._checkDualTransparency(material, meshData);
-
-			this.updateCulling(material);
-			this._drawBuffers(meshData);
-
-			this.info.calls++;
-			this.info.vertices += meshData.vertexCount;
-			this.info.indices += meshData.indexCount;
+			this.renderMeshMaterial(i, materials, flatOrWire, originalData, renderInfo);
 		}
+	};
+
+	Renderer.prototype.callShaderProcessors = function(material, renderInfo) {
+		// Check for caching of shader that use defines
+		var shader = material.shader;
+
+		shader.updateProcessors(renderInfo);
+		this.findOrCacheMaterialShader(material, shader, renderInfo);
+	};
+
+	Renderer.prototype.renderMeshMaterial = function (materialIndex, materials, flatOrWire, originalData, renderInfo) {
+		var material = null, orMaterial = null;
+
+		if (materialIndex < materials.length) {
+			material = materials[materialIndex];
+		}
+		if (materialIndex < this._overrideMaterials.length) {
+			orMaterial = this._overrideMaterials[materialIndex];
+		}
+
+		material = this.configureRenderInfo(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire);
+		var meshData = renderInfo.meshData;
+
+		this.callShaderProcessors(material, renderInfo);
+
+		material.shader.apply(renderInfo, this);
+
+		this.updateDepthTest(material);
+		this.updateCulling(material);
+		this.updateBlending(material);
+		this.updateOffset(material);
+		this.updateTextures(material);
+
+		this.updateLineAndPointSettings(material);
+
+		this._checkDualTransparency(material, meshData);
+
+		this.updateCulling(material);
+		this._drawBuffers(meshData);
+
+		this.info.calls++;
+		this.info.vertices += meshData.vertexCount;
+		this.info.indices += meshData.indexCount;
 	};
 
 	Renderer.prototype._drawBuffers = function (meshData) {
@@ -1270,6 +1150,90 @@ function (
 				this.drawArraysVBO(meshData.getIndexModes(), [meshData.vertexCount]);
 			}
 		}
+	};
+
+	Renderer.prototype.configureRenderInfo = function(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire) {
+
+		var meshData = renderInfo.meshData;
+		if (materialIndex < this._overrideMaterials.length) {
+			orMaterial = this._overrideMaterials[materialIndex];
+		}
+
+		if (material && orMaterial && orMaterial.fullOverride !== true) {
+			this._override(orMaterial, material, this._mergedMaterial);
+			material = this._mergedMaterial;
+		} else if (orMaterial) {
+			material = orMaterial;
+		}
+
+		if (!material.shader) {
+			if (!material.errorOnce) {
+				console.warn('No shader set on material: ' + material.name);
+				material.errorOnce = true;
+			}
+			return;
+		} else {
+			material.errorOnce = false;
+		}
+
+		if (material.wireframe && flatOrWire !== 'wire') {
+			if (!meshData.wireframeData) {
+				meshData.wireframeData = meshData.buildWireframeData();
+			}
+			meshData = meshData.wireframeData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = 'wire';
+		} else if (material.flat && flatOrWire !== 'flat') {
+			if (!meshData.flatMeshData) {
+				meshData.flatMeshData = meshData.buildFlatMeshData();
+			}
+			meshData = meshData.flatMeshData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = 'flat';
+		} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
+			meshData = originalData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = null;
+		}
+
+
+		renderInfo.material = material;
+		renderInfo.meshData = meshData;
+		return material;
+	};
+
+
+	Renderer.prototype.findOrCacheMaterialShader = function(material, shader, renderInfo) {
+		// check defines. if no hit in cache -> add to cache. if hit in cache,
+		// replace with cache version and copy over uniforms.
+		var defineKey = shader.getDefineKey(this._definesIndices);
+		shader.endFrame();
+
+		var shaderCache = this.rendererRecord.shaderCache;
+		if (!shaderCache[defineKey]) {
+			if (shader.builder) {
+				shader.builder(shader, renderInfo);
+			}
+			shader = shader.clone();
+			shaderCache[defineKey] = shader;
+		} else {
+			shader = shaderCache[defineKey];
+			if (shader !== material.shader) {
+				var uniforms = material.shader.uniforms;
+				var keys = Object.keys(uniforms);
+				for (var i = 0, l = keys.length; i < l; i++) {
+					var key = keys[i];
+					var origUniform = shader.uniforms[key] = uniforms[key];
+					if (origUniform instanceof Array) {
+						shader.uniforms[key] = origUniform.slice(0);
+					}
+				}
+			}
+		}
+		
+		material.shader = shader;
+		
+		return shader;
 	};
 
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {
@@ -1395,7 +1359,7 @@ function (
 		}
 
 		if (!skipUpdateBuffer) {
-			this.hardwarePicking.clearColorStore.setv(this.clearColor);
+			this.hardwarePicking.clearColorStore.setVector(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
 				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 

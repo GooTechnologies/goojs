@@ -21,8 +21,8 @@ function (Quaternion, Vector3) {
 		transform.setIdentity();
 		// TODO: matrix vs quaternion?
 		transform.rotation.copyQuaternion(this._rotation);
-		transform.scale.setv(this._scale);
-		transform.translation.setv(this._translation);
+		transform.scale.setVector(this._scale);
+		transform.translation.setVector(this._translation);
 		transform.update();
 	};
 
@@ -46,8 +46,8 @@ function (Quaternion, Vector3) {
 	TransformData.prototype.blend = function (blendTo, blendWeight, store) {
 		var tData = store ? store : new TransformData();
 
-		tData._translation.setv(this._translation).lerp(blendTo._translation, blendWeight);
-		tData._scale.setv(this._scale).lerp(blendTo._scale, blendWeight);
+		tData._translation.setVector(this._translation).lerp(blendTo._translation, blendWeight);
+		tData._scale.setVector(this._scale).lerp(blendTo._scale, blendWeight);
 		Quaternion.slerp(this._rotation, blendTo._rotation, blendWeight, tData._rotation);
 		return tData;
 	};

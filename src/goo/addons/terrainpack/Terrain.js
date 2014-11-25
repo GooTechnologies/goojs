@@ -334,8 +334,8 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.splatCopy, this.splat);
@@ -352,8 +352,8 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
@@ -370,8 +370,8 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.copyPass.render(this.renderer, this.texturesBounce[0], this.textures[0]);
@@ -395,8 +395,8 @@ function(
 				this.renderable.materials[0].setTexture(Shader.DIFFUSE_MAP, this.defaultBrushTexture);
 			}
 
-			this.renderable.transform.translation.setd(x/this.size, z/this.size, 0);
-			this.renderable.transform.scale.setd(-size, size, size);
+			this.renderable.transform.translation.setDirect(x/this.size, z/this.size, 0);
+			this.renderable.transform.scale.setDirect(-size, size, size);
 			this.renderable.transform.update();
 
 			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.textures[0], false);
@@ -443,9 +443,9 @@ function(
 					var material = entity.meshRendererComponent.materials[0];
 					if (lightMap) {
 						material.setTexture("LIGHT_MAP", lightMap);
-						material.shader.defines.LIGHTMAP = true;
+						material.shader.setDefine('LIGHTMAP', true);
 					} else {
-						material.shader.defines.LIGHTMAP = false;
+						material.shader.removeDefine('LIGHTMAP');
 					}
 				}
 			});
@@ -662,7 +662,7 @@ function(
 		entity.meshDataComponent.modelBound.xExtent = w * 0.5;
 		entity.meshDataComponent.modelBound.yExtent = 255;
 		entity.meshDataComponent.modelBound.zExtent = h * 0.5;
-		entity.meshDataComponent.modelBound.center.setd(w * 0.5, 128, h * 0.5);
+		entity.meshDataComponent.modelBound.center.setDirect(w * 0.5, 128, h * 0.5);
 		entity.meshDataComponent.autoCompute = false;
 		entity.meshRendererComponent.isPickable = false;
 
@@ -729,11 +729,11 @@ function(
 			ShaderBuilder.light.processor,
 			function (shader) {
 				if (ShaderBuilder.USE_FOG) {
-					shader.defines.FOG = true;
+					shader.setDefine('FOG', true);
 					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
 					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
 				} else {
-					delete shader.defines.FOG;
+					shader.removeDefine('FOG');
 				}
 			}
 		],

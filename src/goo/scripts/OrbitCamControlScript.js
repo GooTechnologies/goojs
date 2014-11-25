@@ -90,7 +90,7 @@ define([
 			var rotation = ctx.entity.transformComponent.transform.rotation;
 			ctx.lookAtPoint = new Vector3(0, 0, -args.lookAtDistance);
 			rotation.applyPost(ctx.lookAtPoint);
-			ctx.lookAtPoint.addv(ctx.entity.getTranslation());
+			ctx.lookAtPoint.addVector(ctx.entity.getTranslation());
 		} else if (args.lookAtPoint) {
 			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
 		} else {
@@ -115,9 +115,9 @@ define([
 			if (down) {
 				mouseState.lastX = NaN;
 				mouseState.lastY = NaN;
-				ctx.velocity.setd(0, 0);
+				ctx.velocity.setDirect(0, 0);
 				ctx.spherical.data[1] = MathUtils.moduloPositive(ctx.spherical.data[1], MathUtils.TWO_PI);
-				ctx.targetSpherical.setv(ctx.spherical);
+				ctx.targetSpherical.setVector(ctx.spherical);
 			} else {
 				applyReleaseDrift(args, ctx);
 			}
@@ -151,7 +151,7 @@ define([
 			ctx.sample = 0;
 		}
 
-		ctx.velocity.setd(0, 0);
+		ctx.velocity.setDirect(0, 0);
 		move(args.orbitSpeed * dx, args.orbitSpeed * dy, args, ctx);
 	}
 
@@ -209,12 +209,12 @@ define([
 			}
 		}
 		if (found) {
-			ctx.velocity.setd(
+			ctx.velocity.setDirect(
 				dx * args.orbitSpeed / timeSamples.length,
 				dy * args.orbitSpeed / timeSamples.length
 			);
 		} else {
-			ctx.velocity.setd(0, 0);
+			ctx.velocity.setDirect(0, 0);
 		}
 	}
 
@@ -326,9 +326,9 @@ define([
 		if (ctx.velocity.lengthSquared() > EPSILON) {
 			move(ctx.velocity.x, ctx.velocity.y, args, ctx);
 			var rate = MathUtils.lerp(ctx.inertia, 0, 1 - time / ctx.inertia);
-			ctx.velocity.mul(rate);
+			ctx.velocity.scale(rate);
 		} else {
-			ctx.velocity.setd(0, 0, 0);
+			ctx.velocity.setDirect(0, 0, 0);
 		}
 	}
 
@@ -349,7 +349,7 @@ define([
 		var delta = MathUtils.lerp(ctx.smoothness, 1, ctx.world.tpf);
 
 		if (goingToLookAt.distanceSquared(lookAtPoint) < EPSILON) {
-			lookAtPoint.setv(goingToLookAt);
+			lookAtPoint.setVector(goingToLookAt);
 		} else {
 			lookAtPoint.lerp(goingToLookAt, delta);
 		}
@@ -384,7 +384,7 @@ define([
 
 		if (spherical.distanceSquared(targetSpherical) < EPSILON && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
 			sd[1] = MathUtils.moduloPositive(sd[1], MathUtils.TWO_PI);
-			targetSpherical.setv(spherical);
+			targetSpherical.setVector(spherical);
 			ctx.dirty = false;
 		}
 

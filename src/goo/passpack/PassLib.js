@@ -881,7 +881,7 @@ function (
 		if (options.blendmode !== undefined) {
 			var newBlendMode = Overlay.blendmodes.indexOf(options.blendmode);
 			if (newBlendMode !== shader.defines.OVERLAY_TYPE) {
-				shader.defines.OVERLAY_TYPE = newBlendMode;
+				shader.setDefine('OVERLAY_TYPE', newBlendMode);
 				shader.uniforms.amount = options.amount - 0.01;
 			}
 		}

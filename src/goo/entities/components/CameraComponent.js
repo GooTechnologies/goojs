@@ -66,17 +66,17 @@ function (
 	 */
 	CameraComponent.prototype.setUpVector = function (axisId) {
 		if (axisId === 0) {
-			this.leftVec.setd(0, -1, 0);
-			this.upVec.setd(1, 0, 0);
-			this.dirVec.setd(0, 0, -1);
+			this.leftVec.setDirect(0, -1, 0);
+			this.upVec.setDirect(1, 0, 0);
+			this.dirVec.setDirect(0, 0, -1);
 		} else if (axisId === 2) {
-			this.leftVec.setd(-1, 0, 0);
-			this.upVec.setd(0, 0, 1);
-			this.dirVec.setd(0, -1, 0);
+			this.leftVec.setDirect(-1, 0, 0);
+			this.upVec.setDirect(0, 0, 1);
+			this.dirVec.setDirect(0, -1, 0);
 		} else {
-			this.leftVec.setd(-1, 0, 0);
-			this.upVec.setd(0, 1, 0);
-			this.dirVec.setd(0, 0, -1);
+			this.leftVec.setDirect(-1, 0, 0);
+			this.upVec.setDirect(0, 1, 0);
+			this.dirVec.setDirect(0, 0, -1);
 		}
 	};
 
@@ -85,16 +85,16 @@ function (
 	 * @param {Transform} transform
 	 */
 	CameraComponent.prototype.updateCamera = function (transform) {
-		this.camera._left.setv(this.leftVec);
+		this.camera._left.setVector(this.leftVec);
 		//! AT: let's prevent scaling or skewing from spilling in the view(projection) matrix
 //		transform.matrix.applyPostVector(this.camera._left);
 		transform.rotation.applyPost(this.camera._left);
 
-		this.camera._up.setv(this.upVec);
+		this.camera._up.setVector(this.upVec);
 //		transform.matrix.applyPostVector(this.camera._up);
 		transform.rotation.applyPost(this.camera._up);
 
-		this.camera._direction.setv(this.dirVec);
+		this.camera._direction.setVector(this.dirVec);
 //		transform.matrix.applyPostVector(this.camera._direction);
 		transform.rotation.applyPost(this.camera._direction);
 
