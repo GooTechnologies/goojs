@@ -722,12 +722,13 @@ function (
 		}.bind(this));
 	};
 
+	var preloadMaterialsRenderInfo = new RenderInfo();
+
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables"
 	 * @param renderList
 	 * @return {RSVP.Promise}
 	 */
-	var preloadMaterialsRenderInfo = new RenderInfo();
 	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];
 		var renderInfo = preloadMaterialsRenderInfo;
@@ -930,6 +931,8 @@ function (
 		}
 	};
 
+	var renderRenderInfo = new RenderInfo();
+
 	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
 	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
@@ -938,9 +941,6 @@ function (
 	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
 	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
-
-	var renderRenderInfo = new RenderInfo();
-
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
 		if (overrideMaterials) {
 			this._overrideMaterials = (overrideMaterials instanceof Array) ? overrideMaterials : [overrideMaterials];
