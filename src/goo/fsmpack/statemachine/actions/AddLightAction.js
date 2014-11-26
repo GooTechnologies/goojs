@@ -92,7 +92,7 @@ function(
 			light.range = +this.range;
 		}
 
-		light.color.setd(this.color[0], this.color[1], this.color[2]);
+		light.color.setDirect(this.color[0], this.color[1], this.color[2]);
 
 		entity.setComponent(new LightComponent(light));
 	};

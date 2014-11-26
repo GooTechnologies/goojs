@@ -242,7 +242,7 @@ function (
 						ArrayUtil.remove(scriptsElementsToRemove, neededScriptElement);
 					}
 
-					addDependencyPromises.push(that._addDependency(script, url, config.id))
+					addDependencyPromises.push(that._addDependency(script, url, config.id));
 				}, null, 'sortValue');
 
 				// Remove references to the current script from all the script
@@ -309,15 +309,15 @@ function (
 
 		var scriptElem = document.querySelector('script[src="' + url + '"]');
 		if (scriptElem) {
-			addReference(scriptElem, scriptId)
+			addReference(scriptElem, scriptId);
 			return this._dependencyPromises[url] || PromiseUtil.resolve();
 		}
 
 		scriptElem = document.createElement('script');
 		scriptElem.src = url;
 		scriptElem.setAttribute('data-script-id', scriptId);
-		scriptElem.isDependency = true
-		addReference(scriptElem, scriptId)
+		scriptElem.isDependency = true;
+		addReference(scriptElem, scriptId);
 
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(scriptElem);

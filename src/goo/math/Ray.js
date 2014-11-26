@@ -46,10 +46,10 @@ function (Vector3, MathUtils) {
 	 * @return true if this ray intersects a triangle formed by the given three points.
 	 */
 	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
-		var diff = tmpVec1.set(this.origin).sub(pointA);
-		var edge1 = tmpVec2.set(pointB).sub(pointA);
-		var edge2 = tmpVec3.set(pointC).sub(pointA);
-		var norm = tmpVec4.set(edge1).cross(edge2);
+		var diff = tmpVec1.setVector(this.origin).subVector(pointA);
+		var edge1 = tmpVec2.setVector(pointB).subVector(pointA);
+		var edge2 = tmpVec3.setVector(pointC).subVector(pointA);
+		var norm = tmpVec4.setVector(edge1).cross(edge2);
 
 		var dirDotNorm = this.direction.dot(norm);
 		var sign;
@@ -80,7 +80,7 @@ function (Vector3, MathUtils) {
 						var inv = 1.0 / dirDotNorm;
 						var t = diffDotNorm * inv;
 						if (!doPlanar) {
-							locationStore.setv(this.origin).add_d(this.direction.x * t, this.direction.y * t, this.direction.z * t);
+							locationStore.setVector(this.origin).addDirect(this.direction.x * t, this.direction.y * t, this.direction.z * t);
 						} else {
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.
@@ -90,7 +90,7 @@ function (Vector3, MathUtils) {
 							var w1 = dirDotDiffxEdge2 * inv;
 							var w2 = dirDotEdge1xDiff * inv;
 							// float w0 = 1.0 - w1 - w2;
-							locationStore.setd(t, w1, w2);
+							locationStore.setDirect(t, w1, w2);
 						}
 						result = true;
 					}
@@ -134,7 +134,7 @@ function (Vector3, MathUtils) {
 		}
 
 		if (locationStore) {
-			locationStore.setv(this.direction).scale(ratio).addv(this.origin);
+			locationStore.setVector(this.direction).scale(ratio).addVector(this.origin);
 		}
 
 		return true;
@@ -148,23 +148,23 @@ function (Vector3, MathUtils) {
 	Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = tmpVec1;
 
-		vectorA.setv(point).subv(this.origin);
+		vectorA.setVector(point).subVector(this.origin);
 		var t0 = this.direction.dot(vectorA);
 		if (t0 > 0) {
 			// d = |P - (O + t*D)|
-			vectorA.setv(this.direction).scale(t0);
-			vectorA.addv(this.origin);
+			vectorA.setVector(this.direction).scale(t0);
+			vectorA.addVector(this.origin);
 		} else {
 			// ray is closest to origin point
-			vectorA.setv(this.origin);
+			vectorA.setVector(this.origin);
 		}
 
 		// Save away the closest point if requested.
 		if (store) {
-			store.setv(vectorA);
+			store.setVector(vectorA);
 		}
 
-		vectorA.subv(point);
+		vectorA.subVector(point);
 		return vectorA.lengthSquared();
 	};
 

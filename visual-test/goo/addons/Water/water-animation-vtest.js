@@ -176,6 +176,7 @@ require([
 
 	var transformSystem = world.getSystem('TransformSystem');
 	var cameraSystem = world.getSystem('CameraSystem');
+	var lightingSystem = world.getSystem('LightingSystem');
 	var boundingSystem = world.getSystem('BoundingUpdateSystem');
 	var renderSystem = world.getSystem('RenderSystem');
 	var renderer = goo.renderer;
@@ -184,6 +185,7 @@ require([
 	loadProject(goo).then(function () {
 		world.processEntityChanges();
 		transformSystem._process();
+		lightingSystem._process();
 		cameraSystem._process();
 		boundingSystem._process();
 		if (Renderer.mainCamera) { goo.renderer.checkResize(Renderer.mainCamera); }
@@ -234,6 +236,7 @@ require([
 
 		world.processEntityChanges();
 		transformSystem._process();
+		lightingSystem._process();
 		cameraSystem._process();
 		boundingSystem._process();
 		renderSystem._process();

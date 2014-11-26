@@ -72,7 +72,7 @@ function(
 			var dy = FSMUtil.getValue(this.amountY, fsm);
 			var dz = FSMUtil.getValue(this.amountZ, fsm);
 
-			this.entity.transformComponent.transform.translation.add_d(
+			this.entity.transformComponent.transform.translation.addDirect(
 				dx * this.speed * tpf,
 				dy * this.speed * tpf,
 				dz * this.speed * tpf

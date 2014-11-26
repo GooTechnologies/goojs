@@ -197,5 +197,24 @@ function (
 		}
 	};
 
+	RenderSystem.prototype.invalidateHandles = function (renderer) {
+		for (var i = 0; i < this.entities.length; i++) {
+			var entity = this.entities[i];
+
+			var materials = entity.meshRendererComponent.materials;
+			for (var j = 0; j < materials.length; j++) {
+				renderer.invalidateMaterial(materials[j]);
+			}
+			renderer.invalidateMeshData(entity.meshDataComponent.meshData);
+		}
+
+		for (var i = 0; i < this.composers.length; i++) {
+			var composer = this.composers[i];
+			renderer.invalidateComposer(composer);
+		}
+
+		renderer.rendererRecord = null; // might hold on to stuff
+	};
+
 	return RenderSystem;
 });

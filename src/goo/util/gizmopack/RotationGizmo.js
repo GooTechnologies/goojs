@@ -67,11 +67,11 @@ function(
 
 		if(this._activeHandle.axis < 3) {
 			// Get rotation axis
-			axis.setv([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+			axis.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 			this.transform.rotation.applyPost(axis);
 
 			// Get rotation center
-			worldCenter.setv(Vector3.ZERO);
+			worldCenter.setVector(Vector3.ZERO);
 			this.transform.matrix.applyPostPoint(worldCenter);
 
 			// Get picked point in world space (sort of)
@@ -81,20 +81,20 @@ function(
 				1,1,
 				ray
 			);
-			pickedPoint.setv(ray.origin).subv(worldCenter);
+			pickedPoint.setVector(ray.origin).subVector(worldCenter);
 			var d = pickedPoint.length() * 0.9;
-			pickedPoint.setv(ray.direction).muld(d,d,d).addv(ray.origin);
+			pickedPoint.setVector(ray.direction).scale(d).addVector(ray.origin);
 
 			// Get vector from center to picked point, cross it with rotation axis and get drag direction
-			rotationDirection.setv(pickedPoint).subv(worldCenter);
+			rotationDirection.setVector(pickedPoint).subVector(worldCenter);
 			Vector3.cross(axis, rotationDirection, rotationDirection);
-			rotationDirection.addv(pickedPoint);
+			rotationDirection.addVector(pickedPoint);
 			Renderer.mainCamera.getScreenCoordinates(
 				rotationDirection,
 				1,1,
 				this._direction
 			);
-			this._direction.sub_d(props.x, props.y, 0);
+			this._direction.subDirect(props.x, props.y, 0);
 
 			this._direction.z = 0;
 			this._direction.normalize();
@@ -246,7 +246,7 @@ function(
 
 	RotationGizmo.prototype._buildBall = function() {
 		var transform = new Transform();
-		transform.scale.setd(1.2, 1.2, 1.2);
+		transform.scale.setDirect(1.2, 1.2, 1.2);
 		this.addRenderable({
 			meshData: this._ballMesh,
 			materials: [this._buildMaterialForAxis(3, 0.6)],
@@ -257,7 +257,7 @@ function(
 
 	RotationGizmo.prototype._buildTorus = function(dim) {
 		var transform = new Transform();
-		transform.scale.setd(1.7, 1.7, 1.7);
+		transform.scale.setDirect(1.7, 1.7, 1.7);
 		if(dim === 0) {
 			transform.setRotationXYZ(0, Math.PI/2, 0);
 		} else if (dim === 1) {

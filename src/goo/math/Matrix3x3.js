@@ -11,10 +11,8 @@ function (
 ) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
-	 * @class Matrix with 3x3 components.  Used to store 3D rotations.  It also contains common 3D Rotation operations.
+	 * @class Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.
 	 * @extends Matrix
 	 * @description Creates a new Matrix3x3 by passing in either a current Matrix3x3, number Array, or a set of 9 numbers.
 	 * @param {Matrix3x3|number[]|...number} arguments Initial values for the components.
@@ -35,7 +33,9 @@ function (
 		Matrix.call(this, 3, 3);
 
 		if (arguments.length === 0) {
-			this.setIdentity();
+			this.data[0] = 1;
+			this.data[4] = 1;
+			this.data[8] = 1;
 		} else {
 			Matrix.prototype.set.apply(this, arguments);
 		}
@@ -892,19 +892,19 @@ function (
 	Matrix3x3.prototype.lookAt = function (direction, up) {
 		var x = Matrix3x3._tempX, y = Matrix3x3._tempY, z = Matrix3x3._tempZ;
 
-		z.setv(direction).normalize().muld(-1, -1, -1); // .scale(-1) when that is implemented
+		z.setVector(direction).normalize().scale(-1);
 
-		x.setv(up).cross(z).normalize();
+		x.setVector(up).cross(z).normalize();
 
 		if (x.equals(Vector3.ZERO)) {
 			if (z.data[0] !== 0.0) {
-				x.setd(z.data[1], -z.data[0], 0);
+				x.setDirect(z.data[1], -z.data[0], 0);
 			} else {
-				x.setd(0, z.data[2], -z.data[1]);
+				x.setDirect(0, z.data[2], -z.data[1]);
 			}
 		}
 
-		y.setv(z).cross(x);
+		y.setVector(z).cross(x);
 
 		var d = this.data;
 		d[0] = x.data[0];

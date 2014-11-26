@@ -12,6 +12,51 @@ define([
 			jasmine.addMatchers(CustomMatchers);
 		});
 
+		describe('constructor', function () {
+			it('creates a zero vector when given no parameters', function () {
+				expect(new Vector4()).toBeCloseToVector(Vector4.ZERO);
+			});
+
+			it('creates a vector when given 2 parameters', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				var expected = new Vector4();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(vector).toBeCloseToVector(expected);
+			});
+
+			it('creates a vector when given an array', function () {
+				var vector = new Vector4([11, 22, 33, 44]);
+				var expected = new Vector4();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(vector).toBeCloseToVector(expected);
+			});
+
+			it('creates a vector when given a vector', function () {
+				var original = new Vector4();
+				for (var i = 0; i < 4; i++) {
+					original.data[i] = (i + 1) * 11;
+				}
+
+				var vector = new Vector4(original);
+
+				var expected = new Vector4();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(vector).toBeCloseToVector(expected);
+			});
+		});
+
 		it('can be accessed through indices', function () {
 			var a = new Vector4(1, 2, 3, 4);
 
@@ -29,7 +74,7 @@ define([
 			a[2] = 3;
 			a[3] = 4;
 
-			expect(a).toEqual(new Vector4(1, 2, 3, 4));
+			expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
 		});
 
 		it('can be accessed through aliases', function () {
@@ -53,14 +98,14 @@ define([
 			a.z = 3;
 			a.w = 4;
 
-			expect(a).toEqual(new Vector4(1, 2, 3, 4));
+			expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
 
 			a.r = 2;
 			a.g = 3;
 			a.b = 4;
 			a.a = 5;
 
-			expect(a).toEqual(new Vector4(2, 3, 4, 5));
+			expect(a).toBeCloseToVector(new Vector4(2, 3, 4, 5));
 		});
 
 		describe('add', function () {
@@ -70,14 +115,14 @@ define([
 
 				a.add(a);
 
-				expect(a).toEqual(new Vector4(2, 4, 6, 8));
-				expect(Vector4.add(b, b)).toEqual(new Vector4(2, 4, 6, 8));
+				expect(a).toBeCloseToVector(new Vector4(2, 4, 6, 8));
+				expect(Vector4.add(b, b)).toBeCloseToVector(new Vector4(2, 4, 6, 8));
 
-				expect(Vector4.add(b, 1)).toEqual(new Vector4(2, 3, 4, 5));
-				expect(Vector4.add(1, b)).toEqual(new Vector4(2, 3, 4, 5));
+				expect(Vector4.add(b, 1)).toBeCloseToVector(new Vector4(2, 3, 4, 5));
+				expect(Vector4.add(1, b)).toBeCloseToVector(new Vector4(2, 3, 4, 5));
 
-				expect(Vector4.add(b, [1, 2, 3, 4])).toEqual(new Vector4(2, 4, 6, 8));
-				expect(Vector4.add([1, 2, 3, 4], b)).toEqual(new Vector4(2, 4, 6, 8));
+				expect(Vector4.add(b, [1, 2, 3, 4])).toBeCloseToVector(new Vector4(2, 4, 6, 8));
+				expect(Vector4.add([1, 2, 3, 4], b)).toBeCloseToVector(new Vector4(2, 4, 6, 8));
 			});
 
 			it('performs partial addition when applied to vectors of different size', function () {
@@ -92,14 +137,14 @@ define([
 
 				a.sub(a);
 
-				expect(a).toEqual(new Vector4(0, 0, 0, 0));
-				expect(Vector4.sub(b, b)).toEqual(new Vector4(0, 0, 0, 0));
+				expect(a).toBeCloseToVector(new Vector4(0, 0, 0, 0));
+				expect(Vector4.sub(b, b)).toBeCloseToVector(new Vector4(0, 0, 0, 0));
 
-				expect(Vector4.sub(b, 1)).toEqual(new Vector4(0, 1, 2, 3));
-				expect(Vector4.sub(1, b)).toEqual(new Vector4(0, -1, -2, -3));
+				expect(Vector4.sub(b, 1)).toBeCloseToVector(new Vector4(0, 1, 2, 3));
+				expect(Vector4.sub(1, b)).toBeCloseToVector(new Vector4(0, -1, -2, -3));
 
-				expect(Vector4.sub(b, [1, 2, 3, 4])).toEqual(new Vector4(0, 0, 0, 0));
-				expect(Vector4.sub([1, 2, 3, 4], b)).toEqual(new Vector4(0, 0, 0, 0));
+				expect(Vector4.sub(b, [1, 2, 3, 4])).toBeCloseToVector(new Vector4(0, 0, 0, 0));
+				expect(Vector4.sub([1, 2, 3, 4], b)).toBeCloseToVector(new Vector4(0, 0, 0, 0));
 			});
 
 			it('performs partial subtraction when applied to vectors of different size', function () {
@@ -114,14 +159,14 @@ define([
 
 				a.mul(a);
 
-				expect(a).toEqual(new Vector4(1, 4, 9, 16));
-				expect(Vector4.mul(b, b)).toEqual(new Vector4(1, 4, 9, 16));
+				expect(a).toBeCloseToVector(new Vector4(1, 4, 9, 16));
+				expect(Vector4.mul(b, b)).toBeCloseToVector(new Vector4(1, 4, 9, 16));
 
-				expect(Vector4.mul(b, 1)).toEqual(new Vector4(1, 2, 3, 4));
-				expect(Vector4.mul(1, b)).toEqual(new Vector4(1, 2, 3, 4));
+				expect(Vector4.mul(b, 1)).toBeCloseToVector(new Vector4(1, 2, 3, 4));
+				expect(Vector4.mul(1, b)).toBeCloseToVector(new Vector4(1, 2, 3, 4));
 
-				expect(Vector4.mul(b, [1, 2, 3, 4])).toEqual(new Vector4(1, 4, 9, 16));
-				expect(Vector4.mul([1, 2, 3, 4], b)).toEqual(new Vector4(1, 4, 9, 16));
+				expect(Vector4.mul(b, [1, 2, 3, 4])).toBeCloseToVector(new Vector4(1, 4, 9, 16));
+				expect(Vector4.mul([1, 2, 3, 4], b)).toBeCloseToVector(new Vector4(1, 4, 9, 16));
 			});
 
 			it('performs partial subtraction when applied to vectors of different size', function () {
@@ -144,14 +189,14 @@ define([
 
 				a.div(a);
 
-				expect(a).toEqual(new Vector4(1, 1, 1, 1));
-				expect(Vector4.div(b, b)).toEqual(new Vector4(1, 1, 1, 1));
+				expect(a).toBeCloseToVector(new Vector4(1, 1, 1, 1));
+				expect(Vector4.div(b, b)).toBeCloseToVector(new Vector4(1, 1, 1, 1));
 
-				expect(Vector4.div(b, 1)).toEqual(new Vector4(1, 2, 3, 4));
-				expect(Vector4.div(1, b)).toEqual(new Vector4(1, 1 / 2, 1 / 3, 1 / 4));
+				expect(Vector4.div(b, 1)).toBeCloseToVector(new Vector4(1, 2, 3, 4));
+				expect(Vector4.div(1, b)).toBeCloseToVector(new Vector4(1, 1 / 2, 1 / 3, 1 / 4));
 
-				expect(Vector4.div(b, [1, 2, 3, 4])).toEqual(new Vector4(1, 1, 1, 1));
-				expect(Vector4.div([1, 2, 3, 4], b)).toEqual(new Vector4(1, 1, 1, 1));
+				expect(Vector4.div(b, [1, 2, 3, 4])).toBeCloseToVector(new Vector4(1, 1, 1, 1));
+				expect(Vector4.div([1, 2, 3, 4], b)).toBeCloseToVector(new Vector4(1, 1, 1, 1));
 			});
 
 			it('performs partial division when applied to vectors of different size', function () {
@@ -171,18 +216,127 @@ define([
 			var a = new Vector4(0, 0, 0, 0);
 			var b = new Vector4(1, 1, 1, 1);
 
-			expect(a.lerp(b, 0.0)).toEqual(new Vector4(0, 0, 0, 0));
-			expect(a.lerp(b, 1.0)).toEqual(new Vector4(1, 1, 1, 1));
+			expect(a.lerp(b, 0.0)).toBeCloseToVector(new Vector4(0, 0, 0, 0));
+			expect(a.lerp(b, 1.0)).toBeCloseToVector(new Vector4(1, 1, 1, 1));
 			a.set(0, 0, 0, 0);
-			expect(a.lerp(b, 0.5)).toEqual(new Vector4(0.5, 0.5, 0.5, 0.5));
+			expect(a.lerp(b, 0.5)).toBeCloseToVector(new Vector4(0.5, 0.5, 0.5, 0.5));
+		});
+
+		describe('copy', function () {
+			it('can copy values from a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.copy(new Vector4(55, 66, 77, 88));
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
 		});
 
 		it('can be cloned', function () {
 			var a = new Vector4(1, 2, 3, 4);
 			var b = a.clone();
-			expect(a).toEqual(b);
+			expect(a).toBeCloseToVector(b);
 			expect(a === b).toEqual(false);
 			expect(b).toEqual(jasmine.any(Vector4));
+		});
+
+
+		describe('setd (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.setd(55, 66, 77, 88);
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
+		});
+
+		describe('seta (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.seta([55, 66, 77, 88]);
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
+		});
+
+		describe('setv (deprecated)', function () {
+			it('can set a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.setv(new Vector4(55, 66, 77, 88));
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
+		});
+
+
+		describe('setDirect', function () {
+			it('can set a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.setDirect(55, 66, 77, 88);
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
+		});
+
+		describe('setArray', function () {
+			it('can set a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.setArray([55, 66, 77, 88]);
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
+		});
+
+		describe('setVector', function () {
+			it('can set a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.setVector(new Vector4(55, 66, 77, 88));
+				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
+			});
+		});
+
+
+		describe('addDirect', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.addDirect(55, 66, 77, 88);
+				expect(vector).toBeCloseToVector(new Vector4(11 + 55, 22 + 66, 33 + 77, 44 + 88));
+			});
+		});
+
+		describe('addVector', function () {
+			it('can add to a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.addVector(new Vector4(55, 66, 77, 88));
+				expect(vector).toBeCloseToVector(new Vector4(11 + 55, 22 + 66, 33 + 77, 44 + 88));
+			});
+		});
+
+
+		describe('mulDirect', function () {
+			it('can multiply with 4 numbers', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.mulDirect(55, 66, 77, 88);
+				expect(vector).toBeCloseToVector(new Vector4(11 * 55, 22 * 66, 33 * 77, 44 * 88));
+			});
+		});
+
+		describe('mulVector', function () {
+			it('can multiply with a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.mulVector(new Vector4(55, 66, 77, 88));
+				expect(vector).toBeCloseToVector(new Vector4(11 * 55, 22 * 66, 33 * 77, 44 * 88));
+			});
+		});
+
+
+		describe('subDirect', function () {
+			it('can subtract from a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.subDirect(55, 66, 77, 88);
+				expect(vector).toBeCloseToVector(new Vector4(11 - 55, 22 - 66, 33 - 77, 44 - 88));
+			});
+		});
+
+		describe('subVector', function () {
+			it('can subtract from a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.subVector(new Vector4(55, 66, 77, 88));
+				expect(vector).toBeCloseToVector(new Vector4(11 - 55, 22 - 66, 33 - 77, 44 - 88));
+			});
 		});
 	});
 });

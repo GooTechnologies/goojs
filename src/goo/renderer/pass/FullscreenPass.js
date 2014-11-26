@@ -49,5 +49,10 @@ function (
 		this.material.shader.destroy();
 	};
 
+	FullscreenPass.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.renderable.materials[0]);
+		renderer.invalidateMeshData(this.renderable.meshData);
+	};
+
 	return FullscreenPass;
 });

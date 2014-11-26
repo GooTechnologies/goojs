@@ -3,7 +3,8 @@ define([
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4x4',
+	'goo/math/Vector'
 ],
 /** @lends */
 function (
@@ -11,7 +12,8 @@ function (
 	Vector3,
 	Component,
 	EntitySelection,
-	Matrix4x4
+	Matrix4x4,
+	Vector
 ) {
 	'use strict';
 
@@ -99,15 +101,12 @@ function (
 		},
 		// no, there's no addScale
 
-
-		// attachChild: Entity | Selection, boolean -> this
-		attachChild: function (entity) {
-			this.transformComponent.attachChild(entity.transformComponent);
+		attachChild: function (entity, keepTransform) {
+			this.transformComponent.attachChild(entity.transformComponent, keepTransform);
 			return this;
 		},
-		// detachChild: Entity | Selection, boolean -> this
-		detachChild: function (entity) {
-			this.transformComponent.detachChild(entity.transformComponent);
+		detachChild: function (entity, keepTransform) {
+			this.transformComponent.detachChild(entity.transformComponent, keepTransform);
 			return this;
 		},
 
@@ -247,7 +246,7 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		this.transform.translation.set(arguments);
+		Vector.prototype.set.apply(this.transform.translation, arguments);
 		this._dirty = true;
 		return this;
 	};
@@ -277,7 +276,7 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
-		this.transform.scale.set(arguments);
+		Vector.prototype.set.apply(this.transform.scale, arguments);
 		this._dirty = true;
 		return this;
 	};
@@ -542,14 +541,14 @@ function (
 
 		var matched = false;
 		if (Array.isArray(obj) && obj.length === 3) {
-			transformComponent.transform.translation.setd(obj[0], obj[1], obj[2]);
+			transformComponent.transform.translation.setDirect(obj[0], obj[1], obj[2]);
 			matched = true;
 		} else if (obj instanceof Vector3) {
-			transformComponent.transform.translation.setd(obj.data[0], obj.data[1], obj.data[2]);
+			transformComponent.transform.translation.setDirect(obj.data[0], obj.data[1], obj.data[2]);
 			matched = true;
 		} else if (typeof obj === 'object' &&
 			typeof obj.x !== 'undefined' && typeof obj.y !== 'undefined' && typeof obj.z !== 'undefined') {
-			transformComponent.transform.translation.setd(obj.x, obj.y, obj.z);
+			transformComponent.transform.translation.setDirect(obj.x, obj.y, obj.z);
 			matched = true;
 		} else if (obj instanceof Transform) {
 			transformComponent.transform = obj;

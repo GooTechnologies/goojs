@@ -10,6 +10,28 @@ module.exports = function (grunt) {
 		return index === -1 ? path : path.substr(index + 1);
 	}
 
+	var safeName = /\w+/;
+
+	function isSafe(name) {
+		return !safeName.test(name);
+	}
+
+	function getSafeIdentifier(name) {
+		if (isSafe(name)) {
+			return name;
+		} else {
+			return name.replace(/\W/g, '');
+		}
+	}
+
+	function getSafeMember(name) {
+		if (isSafe(name)) {
+			return name;
+		} else {
+			return '"' + name + '"';
+		}
+	}
+
 	grunt.registerTask('main-file', 'Generates the "main-file" of goo, that requires every core module and installs it in the global window.goo', function () {
 		var done = this.async();
 
@@ -35,11 +57,11 @@ module.exports = function (grunt) {
 
 		var fileNames = allModules.map(extractFilename);
 
-		lines.push('\t' + fileNames.join(',\n\t'));
+		lines.push('\t' + fileNames.map(getSafeIdentifier).join(',\n\t'));
 		lines.push(') {');
 		lines.push('\twindow.goo = {'); // var goo = window.goo;if (!goo) { return; }
 		fileNames.forEach(function (fileName) {
-			lines.push('\t\t' + fileName + ': ' + fileName + ',');
+			lines.push('\t\t' + getSafeMember(fileName) + ': ' + getSafeIdentifier(fileName) + ',');
 		});
 		lines.push('\t};');
 

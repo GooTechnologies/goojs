@@ -15,11 +15,29 @@ define([
 		return '[' + Array.prototype.join.call(array, ', ') + ']';
 	};
 
+	// in this case NaN is equal to NaN
+	// you need matchers that check if a result is explicitly NaN
+	var arrayEq = function (array1, array2) {
+		if (array1.length !== array2.length) {
+			return false;
+		}
+
+		for (var i = 0; i < array1.length; i++) {
+			if (!(isNaN(array1[i]) && isNaN(array2[i]))) {
+				if (!(Math.abs(array1[i] - array2[i]) <= MathUtils.EPSILON)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	};
+
 	CustomMatchers.toBeCloseToVector = function (util, customEqualityTesters) {
 		return {
 			compare: function (actual, expected) {
 				var result = {};
-				result.pass = actual instanceof Vector && actual.equals(expected);
+				result.pass = actual instanceof Vector && arrayEq(actual.data, expected.data);
 
 				if (result.pass) {
 					result.message = 'Expected vectors to be different';
@@ -47,7 +65,7 @@ define([
 		return {
 			compare: function (actual, expected) {
 				var result = {};
-				result.pass = actual instanceof Matrix && actual.equals(expected);
+				result.pass = actual instanceof Matrix && arrayEq(actual.data, expected.data);
 
 				if (result.pass) {
 					result.message = 'Expected matrices to be different';
@@ -74,20 +92,8 @@ define([
 	CustomMatchers.toBeCloseToArray = function (util, customEqualityTesters) {
 		return {
 			compare: function (actual, expected) {
-				var result = {
-					pass: true
-				};
-
-				if (!Array.isArray(actual) || actual.length !== expected.length) {
-					result.pass = false;
-				} else {
-					for (var i = 0; i < actual.length; i++) {
-						if (Math.abs(actual[i] - expected[i]) > MathUtils.EPSILON) {
-							result.pass = false;
-							break;
-						}
-					}
-				}
+				var result = {};
+				result.pass = actual instanceof Array && arrayEq(actual, expected);
 
 				if (result.pass) {
 					result.message = 'Expected arrays to be different';

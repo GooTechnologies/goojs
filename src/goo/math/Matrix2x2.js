@@ -3,20 +3,18 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	function (MathUtils, Matrix) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
 	 * @class Matrix with 2x2 components.
 	 * @extends Matrix
 	 * @description Creates a new matrix.
 	 * @param {Matrix2x2|number[]|...number} arguments Initial values for the components.
 	 */
-
 	function Matrix2x2() {
 		Matrix.call(this, 2, 2);
 
 		if (arguments.length === 0) {
-			this.setIdentity();
+			this.data[0] = 1;
+			this.data[3] = 1;
 		} else {
 			Matrix.prototype.set.apply(this, arguments);
 		}

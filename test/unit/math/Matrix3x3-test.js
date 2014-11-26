@@ -1,11 +1,11 @@
 define([
-	'goo/math/Matrix3x3', 
-	'goo/math/Vector3', 
+	'goo/math/Matrix3x3',
+	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'test/CustomMatchers'
 ], function (
-	Matrix3x3, 
-	Vector3, 
+	Matrix3x3,
+	Vector3,
 	Quaternion,
 	CustomMatchers
 	) {

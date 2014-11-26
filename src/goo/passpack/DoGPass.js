@@ -188,5 +188,16 @@ function (
 		}
 	};
 
+	DoGPass.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.convolutionMaterial1);
+		renderer.invalidateMaterial(this.convolutionMaterial2);
+		renderer.invalidateMaterial(this.differenceMaterial);
+		renderer.invalidateMeshData(this.renderable.meshData);
+
+		renderer.invalidateRenderTarget(this.renderTargetX);
+		renderer.invalidateRenderTarget(this.gaussian1);
+		renderer.invalidateRenderTarget(this.gaussian2);
+	};
+
 	return DoGPass;
 });

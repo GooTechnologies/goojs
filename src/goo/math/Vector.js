@@ -231,9 +231,9 @@ function (
 	 * @param {Vector} source Source vector.
 	 * @return {Vector} Self for chaining.
 	 */
-
 	Vector.prototype.copy = function (source) {
-		return Vector.copy(source, this);
+		this.data.set(source.data);
+		return this;
 	};
 
 	/* ====================================================================== */
@@ -337,7 +337,11 @@ function (
 		}
 
 		for (var i = 0; i < lhsLength; i++) {
-			if (Math.abs(lhs.data[i] - rhs.data[i]) > MathUtils.EPSILON) {
+			// why the backwards check? because otherwise if NaN is present in either lhs or rhs
+			// then Math.abs(NaN) is NaN which is neither bigger or smaller than EPSILON
+			// which never satisfies the condition
+			// NaN is not close to to NaN and we want to preserve that for vectors as well
+			if (!(Math.abs(lhs.data[i] - rhs.data[i]) <= MathUtils.EPSILON)) {
 				return false;
 			}
 		}
@@ -501,15 +505,13 @@ function (
 	 */
 
 	Vector.prototype.set = function () {
-		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
+		if (arguments.length === 1 && typeof arguments[0] === 'object') {
 			if (arguments[0] instanceof Vector) {
 				this.copy(arguments[0]);
-			} else if (arguments[0].length > 1) {
+			} else {
 				for (var i = 0; i < arguments[0].length; i++) {
 					this.data[i] = arguments[0][i];
 				}
-			} else {
-				this.set(arguments[0][0]);
 			}
 		} else {
 			for (var i = 0; i < arguments.length; i++) {

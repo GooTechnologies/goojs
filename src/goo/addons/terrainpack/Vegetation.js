@@ -170,7 +170,7 @@ function (
 				} else {
 					entity.meshRendererComponent.hidden = false;
 					entity.meshDataComponent.meshData = meshData;
-					entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+					entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 				}
 			}
 		}
@@ -210,16 +210,16 @@ function (
 				}
 
 				var size = Math.random() * 0.4 + 0.8;
-				transform.scale.setd(size, size, size);
-				transform.translation.setd(0, 0, 0);
+				transform.scale.setDirect(size, size, size);
+				transform.translation.setDirect(0, 0, 0);
 				var angle = Math.random() * Math.PI * 2.0;
 				var anglex = Math.sin(angle);
 				var anglez = Math.cos(angle);
-				this.calcVec.setd(anglex, 0.0, anglez);
+				this.calcVec.setDirect(anglex, 0.0, anglez);
 				// norm.y = 0.5;
 				// norm.normalize();
 				this.lookAt(transform.rotation, this.calcVec, norm);
-				transform.translation.setd(xx, yy, zz);
+				transform.translation.setDirect(xx, yy, zz);
 				transform.update();
 
 				var meshData = this.vegetationList[vegetationType];
@@ -254,9 +254,9 @@ function (
 	Vegetation.prototype.lookAt = function (matrix, direction, up) {
 		var x = _tempX, y = _tempY, z = _tempZ;
 
-		y.setv(up).normalize();
-		x.setv(up).cross(direction).normalize();
-		z.setv(y).cross(x);
+		y.setVector(up).normalize();
+		x.setVector(up).cross(direction).normalize();
+		z.setVector(y).cross(x);
 
 		var d = matrix.data;
 		d[0] = x.data[0];
@@ -332,11 +332,11 @@ function (
 			ShaderBuilder.light.processor,
 			function (shader) {
 				if (ShaderBuilder.USE_FOG) {
-					shader.defines.FOG = true;
+					shader.setDefine('FOG', true);
 					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
 					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
 				} else {
-					delete shader.defines.FOG;
+					shader.removeDefine('FOG');
 				}
 			}
 		],
