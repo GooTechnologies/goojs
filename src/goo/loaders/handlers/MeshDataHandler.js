@@ -39,7 +39,7 @@ function (
 	 */
 	MeshDataHandler.prototype._remove = function (ref) {
 		var meshData = this._objects.get(ref);
-		if (meshData && meshData.destroy && this.world.gooRunner) {
+		if (meshData && this.world.gooRunner) {
 			meshData.destroy(this.world.gooRunner.renderer.context);
 		}
 		this._objects.delete(ref);

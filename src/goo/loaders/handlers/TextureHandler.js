@@ -94,7 +94,7 @@ function (
 	 */
 	TextureHandler.prototype._remove = function (ref) {
 		var texture = this._objects.get(ref);
-		if (texture && texture.destroy && this.world.gooRunner) {
+		if (texture && this.world.gooRunner) {
 			texture.destroy(this.world.gooRunner.renderer.context);
 		}
 		this._objects.delete(ref);
@@ -136,8 +136,8 @@ function (
 
 			texture.anisotropy = Math.max(config.anisotropy, 1);
 
-			texture.offset.set(config.offset);
-			texture.repeat.set(config.repeat);
+			texture.offset.setArray(config.offset);
+			texture.repeat.setArray(config.repeat);
 			texture.lodBias = config.lodBias;
 
 			if (texture.flipY !== config.flipY) {

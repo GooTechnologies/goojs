@@ -38,6 +38,28 @@ define([
 				expect(/[^\-\w]/.test(entity.htmlComponent.domElement.id)).toBeFalsy();
 				expect(document.getElementById(entity.htmlComponent.domElement.id)).not.toBeNull();
 				done();
+			}, function () {
+				expect('').toEqual('Should never get here');
+				done();
+			});
+		});
+
+		it('removes an html entity', function (done) {
+			var config = Configs.entity(['html']);
+			loader.preload(Configs.get());
+
+			var entity, htmlComponent;
+			loader.load(config.id).then(function (_entity) {
+				entity = _entity;
+				htmlComponent = entity.htmlComponent;
+				return loader.remove(config.id);
+			}).then(function () {
+				expect(entity.htmlComponent).toBeUndefined();
+				expect(document.getElementById(htmlComponent.domElement.id)).toBeNull();
+				done();
+			}, function () {
+				expect('').toEqual('Should never get here');
+				done();
 			});
 		});
 	});

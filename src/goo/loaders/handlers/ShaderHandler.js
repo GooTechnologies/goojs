@@ -41,10 +41,11 @@ function (
 	 * @private
 	 */
 	ShaderHandler.prototype._remove = function (ref) {
-		if (this._objects.has(ref) && this._objects.get(ref).destroy) {
-			this._objects.get(ref).destroy();
+		var shader = this._objects.get(ref);
+		if (shader && this.world.gooRunner) {
+			shader.destroy(this.world.gooRunner.renderer.context);
+			this._objects.delete(ref);
 		}
-		this._objects.delete(ref);
 	};
 
 	/**
