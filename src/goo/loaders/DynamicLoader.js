@@ -5,6 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
+	'goo/util/ArrayUtil',
 	'goo/util/ShapeCreatorMemoized',
 
 	'goo/loaders/handlers/CameraComponentHandler',
@@ -33,6 +34,7 @@ function (
 	RSVP,
 	StringUtil,
 	PromiseUtil,
+	ArrayUtil,
 	ShapeCreatorMemoized
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
@@ -64,7 +66,7 @@ function (
 		}
 
 		// Will hold the engine objects
-		this._objects = {};
+		this._objects = new Map();
 		// Will hold instances of handler classes by type
 		this._handlers = {};
 	}
@@ -181,7 +183,7 @@ function (
 	};
 
 	DynamicLoader.prototype.remove = function (ref) {
-		delete this._objects[ref];
+		this._objects.delete(ref);
 		return this.update(ref, null);
 	};
 
@@ -245,8 +247,8 @@ function (
 		}
 
 		function traverse(refs) {
-			var binaryRefs = {};
-			var jsonRefs = {};
+			var binaryRefs = new Set();
+			var jsonRefs = new Set();
 
 			// Loads config for traversal
 			function loadFn(ref) {
@@ -260,12 +262,12 @@ function (
 
 				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
 					var ref = refs[keys[i]];
-					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs[ref]) {
+					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs.has(ref)) {
 						// If it's a binary ref, store it in the list
-						binaryRefs[ref] = true;
-					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs[ref]) {
+						binaryRefs.add(ref);
+					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs.has(ref)) {
 						// If it's a json-config, look deeper
-						jsonRefs[ref] = true;
+						jsonRefs.add(ref);
 						promises.push(loadFn(ref));
 					}
 				}
@@ -274,7 +276,7 @@ function (
 
 			// Resolved when everything is loaded and traversed
 			return traverseFn({ collectionRefs: refs }).then(function () {
-				return Object.keys(binaryRefs);
+				return ArrayUtil.fromKeys(binaryRefs);
 			});
 		}
 

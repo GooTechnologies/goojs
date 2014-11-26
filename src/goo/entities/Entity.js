@@ -26,8 +26,8 @@ function (
 		this.id = id !== undefined ? id : StringUtil.createUniqueId('entity');
 		this._index = Entity.entityCount;
 
-		this._tags = {};
-		this._attributes = {};
+		this._tags = new Set();
+		this._attributes = new Map();
 
 		/*Object.defineProperty(this, 'id', {
 			value : Entity.entityCount++,
@@ -229,7 +229,7 @@ function (
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setTag = function (tag) {
-		this._tags[tag] = true;
+		this._tags.add(tag);
 		return this;
 	};
 
@@ -244,7 +244,7 @@ function (
 	 * @returns {boolean}.
 	 */
 	Entity.prototype.hasTag = function (tag) {
-		return !!this._tags[tag];
+		return this._tags.has(tag);
 	};
 
 	/**
@@ -259,7 +259,7 @@ function (
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearTag = function (tag) {
-		delete this._tags[tag];
+		this._tags.delete(tag);
 		return this;
 	};
 
@@ -280,7 +280,7 @@ function (
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setAttribute = function (attribute, value) {
-		this._attributes[attribute] = value;
+		this._attributes.set(attribute, value);
 		return this;
 	};
 
@@ -290,7 +290,7 @@ function (
 	 * @returns {boolean}
 	 */
 	Entity.prototype.hasAttribute = function (attribute) {
-		return typeof this._attributes[attribute] !== 'undefined';
+		return this._attributes.has(attribute);
 	};
 
 	/**
@@ -305,7 +305,7 @@ function (
 	 * @returns {*}
 	 */
 	Entity.prototype.getAttribute = function (attribute) {
-		return this._attributes[attribute];
+		return this._attributes.get(attribute);
 	};
 
 	/**
@@ -314,7 +314,7 @@ function (
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearAttribute = function (attribute) {
-		delete this._attributes[attribute];
+		this._attributes.delete(attribute);
 		return this;
 	};
 

@@ -48,7 +48,7 @@ function (
 	 * @private
 	 */
 	EntityHandler.prototype._remove = function (ref) {
-		var entity = this._objects[ref];
+		var entity = this._objects.get(ref);
 		var that = this;
 		if (entity) {
 			// Remove components
@@ -64,7 +64,7 @@ function (
 			return RSVP.all(promises)
 			.then(function () {
 				entity.removeFromWorld();
-				delete that._objects[ref];
+				that._objects.delete(ref);
 			});
 		}
 	};
@@ -102,7 +102,6 @@ function (
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
-			window.entities = window.entities || {};
 			entity.static = !!config.static;
 
 			updateTags(entity, config.tags);

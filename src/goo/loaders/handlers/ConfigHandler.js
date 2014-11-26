@@ -28,8 +28,8 @@ define([
 		this.getConfig = getConfig;
 		this.updateObject = updateObject;
 		this.loadObject = loadObject;
-		this._objects = {};
-		this._loading = {};
+		this._objects = new Map();
+		this._loading = new Map();
 	}
 
 	/**
@@ -49,7 +49,7 @@ define([
 	 * @private
 	 */
 	ConfigHandler.prototype._remove = function (ref) {
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -57,9 +57,7 @@ define([
 	 * @param {object} config
 	 * @private
 	 */
-	ConfigHandler.prototype._prepare = function (config) {
-		config = config;
-	};
+	ConfigHandler.prototype._prepare = function (config) {};
 
 	/**
 	 * Loads object for given ref
@@ -76,40 +74,38 @@ define([
 		if (type !== this.constructor._type) {
 			throw new Error('Trying to load type' + type + ' with handler for ' + this._type);
 		}
-		var that = this;
-		if (this._loading[ref]) {
-			return this._loading[ref];
-		} else if (this._objects[ref] && !options.reload) {
-			return PromiseUtil.resolve(this._objects[ref]);
+
+		if (this._loading.has(ref)) {
+			return this._loading.get(ref);
+		} else if (this._objects.has(ref) && !options.reload) {
+			return PromiseUtil.resolve(this._objects.get(ref));
 		} else {
-			return this._loading[ref] = this.getConfig(ref, options).then(function (config) {
-				return that.update(ref, config, options);
-			})
+			var promise = this.getConfig(ref, options).then(function (config) {
+				return this.update(ref, config, options);
+			}.bind(this))
 			.then(function (object) {
-				delete that._loading[ref];
+				this._loading.delete(ref);
 				return object;
-			})
+			}.bind(this))
 			.then(null, function (err) {
-				delete that._loading[ref];
+				this._loading.delete(ref);
 				throw err;
-			});
+			}.bind(this));
+
+			this._loading.set(ref, promise);
+
+			return promise;
 		}
 	};
 
 	ConfigHandler.prototype.clear = function () {
 		var promises = [];
-		for (var ref in this._objects) {
+		this._objects.forEach(function (value, ref) {
 			promises.push(this.update(ref, null, {}));
-		}
+		}.bind(this));
 
-		//! AT: clearing it one key at a time in case anyone holds a reference to the object
-		for (var key in this._objects) {
-			delete this._objects[key];
-		}
-
-		for (var key in this._loading) {
-			delete this._loading[key];
-		}
+		this._objects.clear();
+		this._loading.clear();
 
 		return RSVP.all(promises);
 	};
@@ -123,11 +119,14 @@ define([
 	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
 	 */
 	ConfigHandler.prototype.update = function (ref, config, options) {
-		var that = this;
-		return this._loading[ref] = this._update(ref, config, options).then(function (object) {
-			delete that._loading[ref];
+		var promise = this._update(ref, config, options).then(function (object) {
+			this._loading.delete(ref);
 			return object;
-		});
+		}.bind(this));
+
+		this._loading.set(ref, promise);
+
+		return promise;
 	};
 
 
@@ -136,11 +135,11 @@ define([
 			this._remove(ref, options);
 			return PromiseUtil.resolve();
 		}
-		if (!this._objects[ref]) {
-			this._objects[ref] = this._create();
+		if (!this._objects.has(ref)) {
+			this._objects.set(ref, this._create());
 		}
 		this._prepare(config);
-		return PromiseUtil.resolve(this._objects[ref]);
+		return PromiseUtil.resolve(this._objects.get(ref));
 	};
 
 	ConfigHandler.handlerClasses = {};

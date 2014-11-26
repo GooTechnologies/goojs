@@ -37,7 +37,7 @@ define([
 			bus.addListener(channel, listener);
 			bus.addListener(channel, listener);
 
-			expect(bus.trie.children[channel].listeners.length).toBe(1);
+			expect(bus.trie.children.get(channel).listeners.length).toBe(1);
 		});
 
 		it('can send to multiple channels', function () {

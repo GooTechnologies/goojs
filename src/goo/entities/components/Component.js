@@ -14,7 +14,7 @@ define(
 		 */
 		this.enabled = true;
 
-		this.installedAPI = {};
+		this.installedAPI = new Set();
 	}
 
 	/**
@@ -24,7 +24,7 @@ define(
 	 */
 	Component.prototype.applyAPI = function (entity) {
 		if (!this.installedAPI) {
-			this.installedAPI = {};
+			this.installedAPI = new Set();
 		}
 
 		var api = this.api;
@@ -36,7 +36,7 @@ define(
 			var key = keys[i];
 			if (typeof entity[key] === 'undefined') {
 				entity[key] = api[key];
-				this.installedAPI[key] = true;
+				this.installedAPI.add(key);
 			} else {
 				console.warn('Could not install method ' + key + ' of ' + this.type + ' as it is already taken');
 			}
@@ -49,12 +49,9 @@ define(
 	 * @private
 	 */
 	Component.prototype.removeAPI = function (entity) {
-		var installedAPI = this.installedAPI;
-		var keys = Object.keys(installedAPI);
-		for (var i = 0; i < keys.length; i++) {
-			var key = keys[i];
+		this.installedAPI.forEach(function (key) {
 			delete entity[key];
-		}
+		});
 	};
 
 	return Component;
