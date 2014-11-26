@@ -91,7 +91,8 @@ define([
 				context = createContext();
 			});
 			var testSingleCall = function (shaderCall, method, value) {
-				shaderCall.call.apply(shaderCall, value);
+				console.log(value);
+				shaderCall.call(value);
 				expect(method).toHaveBeenCalled();
 				var args = method.calls.mostRecent().args;
 				expect(args[args.length - 1]).toEqual(value);
@@ -100,43 +101,46 @@ define([
 				var shaderCall = new ShaderCall(context, {}, type);
 				spyOn(context, method);
 
+				// check that methods are correctly called for value1
 				testSingleCall(shaderCall, context[method], value1);
 
 				context[method].calls.reset();
 
-				shaderCall.call.apply(shaderCall, value1);
+				// check that no methods are called due to same value opt
+				shaderCall.call(value1);
 				expect(context[method]).not.toHaveBeenCalled();
 
 				context[method].calls.reset();
 
+				// check that methods are correctly called for value2
 				testSingleCall(shaderCall, context[method], value2);
 			};
 			it('can optimize calls to ShaderCall uniforms', function() {
-				testShaderCall(context, 'uniform1f', 'float', [2.3], [5.5]);
-				testShaderCall(context, 'uniform1i', 'int', [5], [8]);
+				testShaderCall(context, 'uniform1f', 'float', 2.3, 5.5);
+				testShaderCall(context, 'uniform1i', 'int', 5, 8);
 
 				// arrays
-				testShaderCall(context, 'uniform1iv', 'intarray', [[1, 2]], [[3, 4]]);
-				testShaderCall(context, 'uniform2iv', 'ivec2', [[1, 2]], [[3, 4]]);
-				testShaderCall(context, 'uniform3iv', 'ivec3', [[1, 2, 3]], [[3, 4, 5]]);
-				testShaderCall(context, 'uniform4iv', 'ivec4', [[1, 2, 3, 4]], [[3, 4, 5, 6]]);
+				testShaderCall(context, 'uniform1iv', 'intarray', [1, 2], [3, 4]);
+				testShaderCall(context, 'uniform2iv', 'ivec2', [1, 2], [3, 4]);
+				testShaderCall(context, 'uniform3iv', 'ivec3', [1, 2, 3], [3, 4, 5]);
+				testShaderCall(context, 'uniform4iv', 'ivec4', [1, 2, 3, 4], [3, 4, 5, 6]);
 
-				testShaderCall(context, 'uniform1fv', 'floatarray', [[1.2, 2.3]], [[3.4, 4.5]]);
-				testShaderCall(context, 'uniform2fv', 'vec2', [[1.2, 2.3]], [[3.4, 4.5]]);
-				testShaderCall(context, 'uniform3fv', 'vec3', [[1.2, 2.3, 3.4]], [[3.4, 4.5, 5.6]]);
-				testShaderCall(context, 'uniform4fv', 'vec4', [[1.2, 2.3, 3.4, 4.5]], [[3.4, 4.5, 5.6, 6.7]]);
+				testShaderCall(context, 'uniform1fv', 'floatarray', [1.2, 2.3], [3.4, 4.5]);
+				testShaderCall(context, 'uniform2fv', 'vec2', [1.2, 2.3], [3.4, 4.5]);
+				testShaderCall(context, 'uniform3fv', 'vec3', [1.2, 2.3, 3.4], [3.4, 4.5, 5.6]);
+				testShaderCall(context, 'uniform4fv', 'vec4', [1.2, 2.3, 3.4, 4.5], [3.4, 4.5, 5.6, 6.7]);
 
 				testShaderCall(context, 'uniformMatrix2fv', 'mat2', 
-					[[1.2, 2.3, 3.4, 4.5]],
-					[[3.4, 4.5, 5.6, 6.7]]
+					[1.2, 2.3, 3.4, 4.5],
+					[3.4, 4.5, 5.6, 6.7]
 				);
 				testShaderCall(context, 'uniformMatrix3fv', 'mat3', 
-					[[1, 2, 3, 4, 5, 6, 7, 8, 9]],
-					[[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1]]
+					[1, 2, 3, 4, 5, 6, 7, 8, 9],
+					[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1]
 				);
 				testShaderCall(context, 'uniformMatrix4fv', 'mat4', 
-					[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]],
-					[[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1, 11.1, 12.1, 13.1, 14.1, 15.1, 16.1]]
+					[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+					[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1, 11.1, 12.1, 13.1, 14.1, 15.1, 16.1]
 				);
 			});
 		});
