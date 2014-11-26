@@ -1,13 +1,15 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4x4',
+	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
 	Vector3,
 	Matrix3x3,
-	Matrix4x4
+	Matrix4x4,
+	MathUtils
 ) {
 	'use strict';
 
@@ -208,8 +210,6 @@ function (
 
 	/**
 	 * Sets the transform to look in a specific direction.
-	 * Please note: This function contains a known bug resulting in looking in the opposite direction
-	 * for non-camera and non-light entities.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 */
@@ -217,8 +217,12 @@ function (
 		if (!up) {
 			up = Vector3.UNIT_Y;
 		}
-		tmpVec.setVector(position).subVector(this.translation).normalize();
-		this.rotation.lookAt(tmpVec, up);
+
+		tmpVec.setVector(position).subVector(this.translation);
+		if (tmpVec.lengthSquared() > MathUtils.EPSILON) { // should be epsilon^2 but it hopefully doesn't matter
+			tmpVec.normalize();
+			this.rotation.lookAt(tmpVec, up);
+		}
 	};
 
 	/**
