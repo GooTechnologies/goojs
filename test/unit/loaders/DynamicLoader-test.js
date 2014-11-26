@@ -62,18 +62,21 @@ define([
 			});
 		});
 
-		it('loads bundle', function () {
+		it('loads bundle', function (done) {
 			// Create a bundlewrapper to preload and skip ajax
 			var config = Configs.entity();
 			var bundleRef = Configs.randomRef('bundle');
 
 			loader.update(bundleRef, Configs.get());
 			// Load bundle
-			loader.load(bundleRef).then(function (done) {
-				var keys = Object.keys(loader._ajax._cache);
+			loader.load(bundleRef).then(function (bundle) {
+				var keys = Object.keys(loader._ajax._cache); // this needs to change when _cache becomes a map
 
 				expect(keys).toContain(config.id);
 				expect(loader._ajax._cache[config.id].components).toBeDefined();
+				done();
+			}, function () {
+				expect('').toEqual('Should never get here');
 				done();
 			});
 		});
@@ -121,6 +124,9 @@ define([
 				var cacheCount = Object.keys(loader._ajax._cache);
 				expect(cacheCount.length).toBe(0);
 				done();
+			}, function () {
+				expect('').toEqual('Should never get here');
+				done();
 			});
 		});
 
@@ -145,6 +151,9 @@ define([
 			}).then(function () {
 				var l = entities.length;
 				expect(progress).toHaveBeenCalledWith(l, l);
+				done();
+			}, function () {
+				expect('').toEqual('Should never get here');
 				done();
 			});
 		});
