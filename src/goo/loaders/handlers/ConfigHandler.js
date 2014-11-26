@@ -57,10 +57,7 @@ define([
 	 * @param {object} config
 	 * @private
 	 */
-	ConfigHandler.prototype._prepare = function (config) {
-		config = config;
-		//! AT: what is this?!
-	};
+	ConfigHandler.prototype._prepare = function (config) {};
 
 	/**
 	 * Loads object for given ref

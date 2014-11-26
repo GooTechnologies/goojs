@@ -88,6 +88,7 @@ define([
 	'test/loaders/handlers/ComponentHandler-test',
 	'test/loaders/handlers/ConfigHandler-test',
 	'test/loaders/handlers/EntityHandler-test',
+	'test/loaders/handlers/HtmlComponentHandler-test',
 	'test/loaders/handlers/LightComponentHandler-test',
 	'test/loaders/handlers/MeshDataComponentHandler-test',
 	'test/loaders/handlers/MeshDataHandler-test',
