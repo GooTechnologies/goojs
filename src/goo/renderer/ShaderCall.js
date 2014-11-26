@@ -31,6 +31,15 @@ function () {
 				case 'samplerArray':
 					this.call = this.uniform1iv;
 					break;
+				case 'ivec2':
+					this.call = this.uniform2iv;
+					break;
+				case 'ivec3':
+					this.call = this.uniform3iv;
+					break;
+				case 'ivec4':
+					this.call = this.uniform4iv;
+					break;
 				case 'vec2':
 					this.call = this.uniform2fv;
 					break;

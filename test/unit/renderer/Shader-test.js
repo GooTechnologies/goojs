@@ -90,48 +90,53 @@ define([
 			beforeEach(function() {
 				context = createContext();
 			});
+			var testSingleCall = function (shaderCall, method, value) {
+				shaderCall.call.apply(shaderCall, value);
+				expect(method).toHaveBeenCalled();
+				var args = method.calls.mostRecent().args;
+				expect(args[args.length - 1]).toEqual(value);
+			};
 			var testShaderCall = function (context, method, type, value1, value2) {
 				var shaderCall = new ShaderCall(context, {}, type);
 				spyOn(context, method);
 
-				shaderCall.call(value1);
-				expect(context[method]).toHaveBeenCalled();
-				var args = context[method].calls.mostRecent().args;
-				expect(args[args.length - 1]).toEqual(value1);
+				testSingleCall(shaderCall, context[method], value1);
 
 				context[method].calls.reset();
 
-				shaderCall.call(value1);
+				shaderCall.call.apply(shaderCall, value1);
 				expect(context[method]).not.toHaveBeenCalled();
 
 				context[method].calls.reset();
 
-				shaderCall.call(value2);
-				expect(context[method]).toHaveBeenCalled();
-				args = context[method].calls.mostRecent().args;
-				expect(args[args.length - 1]).toEqual(value2);
+				testSingleCall(shaderCall, context[method], value2);
 			};
 			it('can optimize calls to ShaderCall uniforms', function() {
-				testShaderCall(context, 'uniform1f', 'float', 2.3, 5.5);
-				testShaderCall(context, 'uniform1fv', 'floatarray', [1.2, 2.3], [3.4, 4.5]);
-				testShaderCall(context, 'uniform1i', 'int', 5, 8);
-				testShaderCall(context, 'uniform1iv', 'intarray', [1, 2], [3, 4]);
+				testShaderCall(context, 'uniform1f', 'float', [2.3], [5.5]);
+				testShaderCall(context, 'uniform1i', 'int', [5], [8]);
 
-				testShaderCall(context, 'uniform2fv', 'vec2', [1.2, 2.3], [3.4, 4.5]);
-				testShaderCall(context, 'uniform3fv', 'vec3', [1.2, 2.3, 3.4], [3.4, 4.5, 5.6]);
-				testShaderCall(context, 'uniform4fv', 'vec4', [1.2, 2.3, 3.4, 4.5], [3.4, 4.5, 5.6, 6.7]);
+				// arrays
+				testShaderCall(context, 'uniform1iv', 'intarray', [[1, 2]], [[3, 4]]);
+				testShaderCall(context, 'uniform2iv', 'ivec2', [[1, 2]], [[3, 4]]);
+				testShaderCall(context, 'uniform3iv', 'ivec3', [[1, 2, 3]], [[3, 4, 5]]);
+				testShaderCall(context, 'uniform4iv', 'ivec4', [[1, 2, 3, 4]], [[3, 4, 5, 6]]);
+
+				testShaderCall(context, 'uniform1fv', 'floatarray', [[1.2, 2.3]], [[3.4, 4.5]]);
+				testShaderCall(context, 'uniform2fv', 'vec2', [[1.2, 2.3]], [[3.4, 4.5]]);
+				testShaderCall(context, 'uniform3fv', 'vec3', [[1.2, 2.3, 3.4]], [[3.4, 4.5, 5.6]]);
+				testShaderCall(context, 'uniform4fv', 'vec4', [[1.2, 2.3, 3.4, 4.5]], [[3.4, 4.5, 5.6, 6.7]]);
 
 				testShaderCall(context, 'uniformMatrix2fv', 'mat2', 
-					[1.2, 2.3, 3.4, 4.5], 
-					[3.4, 4.5, 5.6, 6.7]
+					[[1.2, 2.3, 3.4, 4.5]],
+					[[3.4, 4.5, 5.6, 6.7]]
 				);
 				testShaderCall(context, 'uniformMatrix3fv', 'mat3', 
-					[1, 2, 3, 4, 5, 6, 7, 8, 9], 
-					[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1]
+					[[1, 2, 3, 4, 5, 6, 7, 8, 9]],
+					[[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1]]
 				);
 				testShaderCall(context, 'uniformMatrix4fv', 'mat4', 
-					[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], 
-					[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1, 11.1, 12.1, 13.1, 14.1, 15.1, 16.1]
+					[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]],
+					[[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1, 11.1, 12.1, 13.1, 14.1, 15.1, 16.1]]
 				);
 			});
 		});
@@ -306,13 +311,24 @@ define([
 			getUniformLocation: function(program, key) { return {}; },
 
 			uniform1f: function(location, v0) {},
-			uniform1fv: function(location, v0) {},
 			uniform1i: function(location, v0) {},
-			uniform1iv: function(location, v0) {},
+			uniform2f: function(location, v0, v1) {},
+			uniform2i: function(location, v0, v1) {},
 			uniform3f: function(location, v0, v1, v2) {},
+			uniform3i: function(location, v0, v1, v2) {},
+			uniform4f: function(location, v0, v1, v2, v3) {},
+			uniform4i: function(location, v0, v1, v2, v3) {},
+
+			uniform1iv: function(location, values) {},
+			uniform2iv: function(location, values) {},
+			uniform3iv: function(location, values) {},
+			uniform4iv: function(location, values) {},
+
+			uniform1fv: function(location, values) {},
 			uniform2fv: function(location, values) {},
 			uniform3fv: function(location, values) {},
 			uniform4fv: function(location, values) {},
+
 			uniformMatrix2fv: function(location, transpose, data) {},
 			uniformMatrix3fv: function(location, transpose, data) {},
 			uniformMatrix4fv: function(location, transpose, data) {},
