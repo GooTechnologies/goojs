@@ -35,7 +35,6 @@ define([
 			loader.load(config.id).then(function (entity) {
 				expect(entity.htmlComponent).toEqual(jasmine.any(HtmlComponent));
 				expect(entity.htmlComponent.useTransformComponent).toBeTruthy();
-				console.log(entity.htmlComponent.domElement.id);
 				expect(/[^\-\w]/.test(entity.htmlComponent.domElement.id)).toBeFalsy();
 				expect(document.getElementById(entity.htmlComponent.domElement.id)).not.toBeNull();
 				done();
