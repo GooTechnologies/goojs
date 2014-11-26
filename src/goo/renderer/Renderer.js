@@ -1192,22 +1192,18 @@ function (
 		return material;
 	};
 
-
-	Renderer.prototype.findOrCacheMaterialShader = function(material, shader, renderInfo) {
+	//! AT: this doesn't need to take 3 params, the passed shader is always the material's shader
+	Renderer.prototype.findOrCacheMaterialShader = function (material, shader, renderInfo) {
 		// check defines. if no hit in cache -> add to cache. if hit in cache,
 		// replace with cache version and copy over uniforms.
 		var defineKey = shader.getDefineKey(this._definesIndices);
 		shader.endFrame();
 
 		var shaderCache = this.rendererRecord.shaderCache;
-		if (!shaderCache.has(defineKey)) {
-			if (shader.builder) {
-				shader.builder(shader, renderInfo);
-			}
-			shader = shader.clone();
-			shaderCache.set(defineKey, shader);
-		} else {
-			shader = shaderCache.get(defineKey);
+		var cachedShader = shaderCache.get(defineKey);
+
+		if (cachedShader) {
+			shader = cachedShader;
 			if (shader !== material.shader) {
 				var uniforms = material.shader.uniforms;
 				var keys = Object.keys(uniforms);
@@ -1219,6 +1215,12 @@ function (
 					}
 				}
 			}
+		} else {
+			if (shader.builder) {
+				shader.builder(shader, renderInfo);
+			}
+			shader = shader.clone();
+			shaderCache.set(defineKey, shader);
 		}
 		
 		material.shader = shader;
