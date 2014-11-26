@@ -93,8 +93,9 @@ function (
 	 * @private
 	 */
 	TextureHandler.prototype._remove = function (ref) {
-		if (this._objects.has(ref) && this._objects.get(ref).destroy && this.world.gooRunner) {
-			this._objects.get(ref).destroy(this.world.gooRunner.renderer.context);
+		var texture = this._objects.get(ref);
+		if (texture && texture.destroy && this.world.gooRunner) {
+			texture.destroy(this.world.gooRunner.renderer.context);
 		}
 		this._objects.delete(ref);
 	};
@@ -225,13 +226,6 @@ function (
 				return ret;
 			}
 		});
-	};
-
-	TextureHandler.prototype._remove = function (ref) {
-		if (this._objects.has(ref) && this._objects.get(ref).destroy && this.world.gooRunner) {
-			this._objects.get(ref).destroy(this.world.gooRunner.renderer.context);
-		}
-		this._objects.delete(ref);
 	};
 
 	return TextureHandler;

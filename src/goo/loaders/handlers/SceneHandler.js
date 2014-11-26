@@ -37,8 +37,8 @@ function(
 	 */
 	SceneHandler.prototype._remove = function(ref) {
 		//Todo Clear engine
-		if (this._objects.has(ref)) {
-			var scene = this._objects.get(ref);
+		var scene = this._objects.get(ref);
+		if (scene) {
 			for (var i = 0; i < scene.entities.length; i++) {
 				scene.entities[i].removeFromWorld();
 			}

@@ -38,8 +38,9 @@ function (
 	 * @param {string} ref
 	 */
 	MeshDataHandler.prototype._remove = function (ref) {
-		if (this._objects.has(ref) && this._objects.get(ref).destroy && this.world.gooRunner) {
-			this._objects.get(ref).destroy(this.world.gooRunner.renderer.context);
+		var meshData = this._objects.get(ref);
+		if (meshData && meshData.destroy && this.world.gooRunner) {
+			meshData.destroy(this.world.gooRunner.renderer.context);
 		}
 		this._objects.delete(ref);
 	};
@@ -58,8 +59,9 @@ function (
 			return PromiseUtil.resolve();
 		}
 
-		if (this._objects.has(ref)) {
-			return PromiseUtil.resolve(this._objects.get(ref));
+		var meshData = this._objects.get(ref);
+		if (meshData) {
+			return PromiseUtil.resolve(meshData);
 		}
 
 		return this.loadObject(config.binaryRef, options).then(function (bindata) {

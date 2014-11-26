@@ -59,9 +59,9 @@ function (
 	 */
 	SoundHandler.prototype._remove = function (ref) {
 		var sound = this._objects.get(ref);
-		if (sound) {
-			sound.stop();
-		}
+		if (!sound) { return; }
+
+		sound.stop();
 		this._objects.delete(ref);
 	};
 
