@@ -1,6 +1,6 @@
 define(
 /** @lends */
-function() {
+function () {
 	'use strict';
 
 	/**
@@ -32,14 +32,14 @@ function() {
 		this.enabledAttributes = [];
 		this.newlyEnabledAttributes = [];
 
-		this.depthRecord = {};
+		this.depthRecord = {}; // these can be initialized with their default values
 		this.cullRecord = {};
 		this.blendRecord = {};
 		this.offsetRecord = {};
 		this.lineRecord = {};
 		this.pointRecord = {};
 
-		this.shaderCache = {};
+		this.shaderCache = new Map();
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function (target) {
