@@ -222,5 +222,17 @@ function () {
 		}
 	};
 
+	Util.insertionSort = function (array, comparator) {
+		for (var i = 1; i < array.length; i++) {
+			var tmp = array[i];
+			var j = i;
+			while (comparator(array[j - 1], tmp) > 0 && j > 0) {
+				array[j] = array[j - 1];
+				j--;
+			}
+			array[j] = tmp;
+		}
+	};
+
 	return Util;
 });

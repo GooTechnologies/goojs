@@ -1,6 +1,11 @@
-define(['goo/math/Vector3'],
-/** @lends */
-function (Vector3) {
+define([
+	'goo/math/Vector3',
+	'goo/renderer/Util'
+], /** @lends */
+function (
+	Vector3,
+	Util
+) {
 	'use strict';
 
 	/**
@@ -107,6 +112,7 @@ function (Vector3) {
 
 		if (bucketSortList.length > 1) {
 			bucketSortList.sort(this.bucketSorter);
+//			Util.insertionSort(bucketSortList, this.bucketSorter)
 		}
 		for (var bucketIndex = 0; bucketIndex < bucketSortList.length; bucketIndex++) {
 			var key = bucketSortList[bucketIndex];
@@ -114,8 +120,10 @@ function (Vector3) {
 			if (key >= 0) {
 				if (key < RenderQueue.TRANSPARENT) {
 					bucket.sort(this.opaqueSorter);
+//					Util.insertionSort(bucket, this.opaqueSorter)
 				} else {
 					bucket.sort(this.transparentSorter);
+//					Util.insertionSort(bucket, this.transparentSorter)
 				}
 			}
 			for (var i = 0; i < bucket.length; i++) {
