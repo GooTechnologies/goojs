@@ -1,3 +1,9 @@
+v0.12.2 --- 2014-11-27
+======================
+
+Fixes:
+ * could not load entities with tags using the DynamicLoader
+
 v0.12.1 --- 2014-11-27
 ======================
 

@@ -70,22 +70,20 @@ function (
 	};
 
 	function updateTags(entity, tags) {
-		entity._tags = {};
+		entity._tags.clear();
 		if (!tags) { return; }
 
-		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
 		for (var tag in tags) {
 			entity.setTag(tag);
 		}
 	}
 
-	function updateAttributes(entity, config) {
-		entity._attributes = {};
-		if (!config) { return; }
+	function updateAttributes(entity, attributes) {
+		entity._attributes.clear();
+		if (!attributes) { return; }
 
-		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
-		for (var attribute in config) {
-			entity.setAttribute(attribute, config[attribute]);
+		for (var attribute in attributes) {
+			entity.setAttribute(attribute, attributes[attribute]);
 		}
 	}
 
