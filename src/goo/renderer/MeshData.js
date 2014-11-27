@@ -60,6 +60,12 @@ function (
 		var savedAttributes = {};
 		var savedIndices = null;
 
+		for (var key in this.attributeMap) {
+			var attribute = this.attributeMap[key];
+			attribute.hashKey = attribute.count + '_' + attribute.type + '_' + 
+				attribute.stride + '_' + attribute.offset + '_' + attribute.normalized;
+		}
+
 		if (saveOldData) {
 			for (var i in this.attributeMap) {
 				var view = this.dataViews[i];

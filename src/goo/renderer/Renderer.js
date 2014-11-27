@@ -1068,6 +1068,7 @@ function (
 			&& meshData.indexData.data.byteLength === 0) {
 			return;
 		}
+
 		this.bindData(meshData.vertexData);
 
 		var materials = renderInfo.materials;
@@ -2066,9 +2067,14 @@ function (
 	};
 
 	// Was: function (attribIndex, attribute, record)
+	var attributeCache = new Map();
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
 		// this.context.enableVertexAttribArray(attribIndex);
-		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
+		var hashKey = attributeCache.get(attribIndex);
+		if (hashKey !== attribute.hashKey) {
+			this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
+			attributeCache.set(attribIndex, attribute.hashKey);
+		}
 	};
 
 	Renderer.prototype.getGLDataType = function (type) {

@@ -189,19 +189,12 @@ function(
 
 
 			ShaderBuilder.uber.uniforms(shader, textureMaps);
-
 			ShaderBuilder.uber.attributes(shader, attributeMap, textureMaps);
 
 			ShaderBuilder.uber.discard(shader, material);
 			ShaderBuilder.uber.opacity(shader, material);
 
 			ShaderBuilder.uber.fog(shader);
-
-			// $dan: This is maybe a bit of secret property here for allowing multiplicative ambient on materials.
-			//       It should probably be default, although it'd break too much to just go ahead and change it.
-			if (material.multiplyAmbient) {
-				shader.setDefine('MULTIPLY_AMBIENT', true);
-			}
 
 			shader.setDefine('SKIP_SPECULAR', true);
 			ShaderBuilder.uber.normalTangents(shader, shaderInfo);
@@ -349,12 +342,26 @@ function(
 			}
 
 			var uniforms = shader.uniforms;
-			uniforms.materialAmbient = uniforms.materialAmbient || 'AMBIENT';
+			uniforms.materialAmbient = uniforms.materialAmbient || [0.1, 0.1, 0.1, 1.0];
+			uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
+			uniforms.totalAmbient = uniforms.totalAmbient || [];
+			// $dan: This is maybe a bit of secret property here for allowing multiplicative ambient on materials.
+			//       It should probably be default, although it'd break too much to just go ahead and change it.
+			if (shaderInfo.material.multiplyAmbient) {
+				// shader.setDefine('MULTIPLY_AMBIENT', true);
+				uniforms.totalAmbient[0] = uniforms.materialAmbient[0] * uniforms.globalAmbient[0];
+				uniforms.totalAmbient[1] = uniforms.materialAmbient[1] * uniforms.globalAmbient[1];
+				uniforms.totalAmbient[2] = uniforms.materialAmbient[2] * uniforms.globalAmbient[2];
+			} else {
+				uniforms.totalAmbient[0] = uniforms.materialAmbient[0] + uniforms.globalAmbient[0];
+				uniforms.totalAmbient[1] = uniforms.materialAmbient[1] + uniforms.globalAmbient[1];
+				uniforms.totalAmbient[2] = uniforms.materialAmbient[2] + uniforms.globalAmbient[2];
+			}
+
 			uniforms.materialEmissive = uniforms.materialEmissive || 'EMISSIVE';
 			uniforms.materialDiffuse = uniforms.materialDiffuse || 'DIFFUSE';
 			uniforms.materialSpecular = uniforms.materialSpecular || 'SPECULAR';
 			// uniforms.materialSpecularPower = uniforms.materialSpecularPower || 'SPECULAR_POWER';
-			uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
 
 			var pointIndex = 0;
 			var directionalIndex = 0;
@@ -398,12 +405,14 @@ function(
 			);
 
 			prefragment.push(
-				'uniform vec4 materialAmbient;',
+				// 'uniform vec4 materialAmbient;',
+				// 'uniform vec3 globalAmbient;',
+				'uniform vec3 totalAmbient;',
+
 				'uniform vec4 materialEmissive;',
 				'uniform vec4 materialDiffuse;',
 				'uniform vec4 materialSpecular;',
 				// 'uniform float materialSpecularPower;',
-				'uniform vec3 globalAmbient;',
 				'uniform vec2 wrapSettings;',
 
 				// 'float VsmFixLightBleed(in float pMax, in float amount) {',
@@ -749,16 +758,16 @@ function(
 					'vec3 emissive = materialEmissive.rgb;',
 				'#endif',
 
-				'#if defined(MULTIPLY_AMBIENT)',
-					'vec3 ambient = globalAmbient * materialAmbient.rgb;',
-				'#else',
-					'vec3 ambient = globalAmbient + materialAmbient.rgb;',
-				'#endif',
+				// '#if defined(MULTIPLY_AMBIENT)',
+				// 	'vec3 ambient = globalAmbient * materialAmbient.rgb;',
+				// '#else',
+				// 	'vec3 ambient = globalAmbient + materialAmbient.rgb;',
+				// '#endif',
 
 				'#ifdef SKIP_SPECULAR',
-					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + ambient);',
+					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + totalAmbient);',
 				'#else',
-					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + ambient) + totalSpecular;',
+					'final_color.xyz = final_color.xyz * (emissive + totalDiffuse + totalAmbient) + totalSpecular;',
 				'#endif',
 
 				'#if defined(EMISSIVE_MAP) && defined(TEXCOORD0)',

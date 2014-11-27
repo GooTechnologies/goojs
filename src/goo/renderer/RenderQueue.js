@@ -76,7 +76,7 @@ function (Vector3) {
 		this.camera = camera;
 		var buckets = {};
 		bucketSortList.length = 0;
-		for (var i = 0; i < renderList.length; i++) {
+		for (var i = 0, l = renderList.length; i < l; i++) {
 			var renderable = renderList[i];
 			var meshRendererComponent = renderable.meshRendererComponent;
 
@@ -108,7 +108,7 @@ function (Vector3) {
 		if (bucketSortList.length > 1) {
 			bucketSortList.sort(this.bucketSorter);
 		}
-		for (var bucketIndex = 0; bucketIndex < bucketSortList.length; bucketIndex++) {
+		for (var bucketIndex = 0, l = bucketSortList.length; bucketIndex < l; bucketIndex++) {
 			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
 			if (key >= 0) {
@@ -118,7 +118,7 @@ function (Vector3) {
 					bucket.sort(this.transparentSorter);
 				}
 			}
-			for (var i = 0; i < bucket.length; i++) {
+			for (var i = 0, bl = bucket.length; i < bl; i++) {
 				renderList[index] = bucket[i];
 				index++;
 			}

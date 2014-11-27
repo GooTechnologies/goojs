@@ -98,7 +98,7 @@ function () {
 	ShaderCall.prototype.uniform2f = function (v0, v1) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 2 && curValue[0] === v0 && curValue[1] === v1) {
+			if (curValue[0] === v0 && curValue[1] === v1) {
 				return;
 			}
 		}
@@ -125,7 +125,7 @@ function () {
 	ShaderCall.prototype.uniform2i = function (v0, v1) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 2 && curValue[0] === v0 && curValue[1] === v1) {
+			if (curValue[0] === v0 && curValue[1] === v1) {
 				return;
 			}
 		}
@@ -147,7 +147,7 @@ function () {
 	ShaderCall.prototype.uniform3f = function (v0, v1, v2) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
 		} else {
@@ -178,7 +178,7 @@ function () {
 	ShaderCall.prototype.uniform3i = function (v0, v1, v2) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
 		}
@@ -200,7 +200,7 @@ function () {
 	ShaderCall.prototype.uniform4f = function (v0, v1, v2, v3) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
 				return;
 			}
 		}
@@ -227,7 +227,7 @@ function () {
 	ShaderCall.prototype.uniform4i = function (v0, v1, v2, v3) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
 				return;
 			}
 		}
