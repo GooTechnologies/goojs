@@ -2066,14 +2066,11 @@ function (
 		}
 	};
 
-	// Was: function (attribIndex, attribute, record)
-	var attributeCache = new Map();
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
-		// this.context.enableVertexAttribArray(attribIndex);
-		var hashKey = attributeCache.get(attribIndex);
+		var hashKey = this.rendererRecord.attributeCache.get(attribIndex);
 		if (hashKey !== attribute.hashKey) {
 			this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
-			attributeCache.set(attribIndex, attribute.hashKey);
+			this.rendererRecord.attributeCache.set(attribIndex, attribute.hashKey);
 		}
 	};
 

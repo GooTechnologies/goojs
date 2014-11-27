@@ -40,6 +40,7 @@ function() {
 		this.pointRecord = {};
 
 		this.shaderCache = {};
+		this.attributeCache = new Map();
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function (target) {
