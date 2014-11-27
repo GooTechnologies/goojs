@@ -65,7 +65,7 @@ exports.run = function (rootPath, title) {
 
 	for (var i = 0; i < files.length; i++) {
 		var file = files[i];
-		files[i] = path.relative(rootPath, file);
+		files[i] = path.relative(rootPath, file).replace(/\\/g, '/');
 	}
 
 	var tree = makeTree(files);
