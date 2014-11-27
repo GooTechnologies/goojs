@@ -2063,7 +2063,9 @@ function (
 			this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
 			targetBuffer.buffer = buffer;
 			targetBuffer.valid = true;
-			this.rendererRecord.attributeCache.clear();
+			if (target === 'ArrayBuffer') {
+				this.rendererRecord.attributeCache.clear();
+			}
 		}
 	};
 

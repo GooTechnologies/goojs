@@ -9,46 +9,30 @@ function (Vector3) {
 	 * back to front.
 	 */
 	function RenderQueue() {
-		this.opaqueSorter = function (a, b) {
-			//TODO: Add texture checks on material
-
-			var m1 = a.meshRendererComponent.materials[0];
-			var m2 = b.meshRendererComponent.materials[0];
-
-			if (m1 === null || m2 === null) {
+		this.compareDist = function (a, b) {
+			var bound1 = a.meshRendererComponent.worldBound;
+			var bound2 = b.meshRendererComponent.worldBound;
+			if (bound1 === null || bound2 === null) {
 				return 0;
 			}
-			if (m1 === m2) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
-				if (bound1 === null || bound2 === null) {
-					return 0;
-				}
 
-				var dist1 = a.meshRendererComponent._renderDistance;
-				var dist2 = b.meshRendererComponent._renderDistance;
+			var dist1 = a.meshRendererComponent._renderDistance;
+			var dist2 = b.meshRendererComponent._renderDistance;
 
-				return dist1 - dist2;
-			}
+			return dist1 - dist2;
+		};
 
-			var shader1 = m1.shader;
-			var shader2 = m2.shader;
+		this.opaqueSorter = function (a, b) {
+			//TODO: Add texture checks on material
+			var shader1 = a.meshRendererComponent.materials[0].shader;
+			var shader2 = b.meshRendererComponent.materials[0].shader;
 			if (shader1 === null || shader2 === null) {
 				return 0;
 			}
-			if (shader1._id === shader2._id) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
-				if (bound1 === null || bound2 === null) {
-					return 0;
-				}
-
-				var dist1 = a.meshRendererComponent._renderDistance;
-				var dist2 = b.meshRendererComponent._renderDistance;
-
-				return dist1 - dist2;
+			if (shader1.defineKey === shader2.defineKey) {
+				return this.compareDist(a, b);
 			}
-			return shader1._id - shader2._id;
+			return shader2.defineKey.length - shader1.defineKey.length;
 		};
 
 		this.transparentSorter = function (a, b) {
