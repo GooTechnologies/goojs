@@ -61,6 +61,9 @@ define([
 	EnvironmentHandler.prototype._remove = function(ref) {
 		var object = this._objects.get(ref);
 		this._objects.delete(ref);
+		if (!object) {
+			return;
+		}
 
 		// Remove weather
 		for (var key in object.weatherState) {
