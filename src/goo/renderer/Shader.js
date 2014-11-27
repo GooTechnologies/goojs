@@ -94,6 +94,7 @@ function (
 		 */
 		this.textureSlots = [];
 		this.textureSlotsNaming = {};
+		this.textureIndex = 0;
 
 		this.currentCallbacks = {};
 
@@ -103,7 +104,7 @@ function (
 		this.defines = shaderDefinition.defines || {};
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
-		this.defineKey = shaderDefinition.defineKey;
+		this.defineKey = shaderDefinition.defineKey || '';
 		this.defineKeyDirty = true;
 		this.frameStart = true;
 		this.attributeKeys = null;

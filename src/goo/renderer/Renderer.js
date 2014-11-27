@@ -1539,10 +1539,6 @@ function (
 		var context = this.context;
 
 		var texrecord = texture.textureRecord;
-		if (texrecord === undefined) {
-			texrecord = {};
-			texture.textureRecord = texrecord;
-		}
 
 		var glType = this.getGLType(texture.variant);
 		if (texrecord.magFilter !== texture.magFilter) {

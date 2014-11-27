@@ -9,19 +9,6 @@ function (Vector3) {
 	 * back to front.
 	 */
 	function RenderQueue() {
-		this.compareDist = function (a, b) {
-			var bound1 = a.meshRendererComponent.worldBound;
-			var bound2 = b.meshRendererComponent.worldBound;
-			if (bound1 === null || bound2 === null) {
-				return 0;
-			}
-
-			var dist1 = a.meshRendererComponent._renderDistance;
-			var dist2 = b.meshRendererComponent._renderDistance;
-
-			return dist1 - dist2;
-		};
-
 		this.opaqueSorter = function (a, b) {
 			//TODO: Add texture checks on material
 			var shader1 = a.meshRendererComponent.materials[0].shader;
@@ -30,7 +17,16 @@ function (Vector3) {
 				return 0;
 			}
 			if (shader1.defineKey === shader2.defineKey) {
-				return this.compareDist(a, b);
+				var bound1 = a.meshRendererComponent.worldBound;
+				var bound2 = b.meshRendererComponent.worldBound;
+				if (bound1 === null || bound2 === null) {
+					return 0;
+				}
+
+				var dist1 = a.meshRendererComponent._renderDistance;
+				var dist2 = b.meshRendererComponent._renderDistance;
+
+				return dist1 - dist2;
 			}
 			return shader2.defineKey.length - shader1.defineKey.length;
 		};
@@ -57,7 +53,6 @@ function (Vector3) {
 	RenderQueue.prototype.sort = function (renderList, camera) {
 		// TODO: Reuse objects more
 		var index = 0;
-		this.camera = camera;
 		var buckets = {};
 		bucketSortList.length = 0;
 		for (var i = 0, l = renderList.length; i < l; i++) {

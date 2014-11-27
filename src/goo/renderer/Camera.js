@@ -260,7 +260,7 @@ function (
 		this.near = source.near;
 		this.far = source.far;
 		this.left = source.left;
-		this.up = source.up;
+		this.right = source.right;
 		this.top = source.top;
 		this.bottom = source.bottom;
 

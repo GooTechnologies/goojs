@@ -30,7 +30,7 @@ function (
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
-		this.vertexCount = vertexCount !== undefined ? vertexCount : 0;
+		this.vertexCount = this._vertexCountStore = vertexCount !== undefined ? vertexCount : 0;
 		this.indexCount = indexCount !== undefined ? indexCount : 0;
 		this.primitiveCounts = [0];
 
@@ -43,6 +43,12 @@ function (
 		this.indexModes = ['Triangles'];
 
 		this.type = MeshData.MESH;
+
+		//!RH: added to not mutate object
+		this.paletteMap = undefined;
+		this.weightsPerVertex = undefined;
+		this.boundingBox = undefined;
+		this.store = undefined;
 
 		this.rebuildData(this.vertexCount, this.indexCount);
 	}

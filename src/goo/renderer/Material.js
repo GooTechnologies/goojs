@@ -139,6 +139,9 @@ function (
 		 * @type {number}
 		 */
 		this.renderQueue = null;
+
+		this.fullOverride = false;
+		this.errorOnce = false;
 	}
 
 	/**

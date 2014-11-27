@@ -15,6 +15,8 @@ define([
 	 * @extends Component
 	 */
 	function MeshRendererComponent(materials) {
+		Component.call(this);
+
 		this.type = 'MeshRendererComponent';
 
 		//! schteppe: Don't chain or nest ternary operators as it hard to read and confusing
