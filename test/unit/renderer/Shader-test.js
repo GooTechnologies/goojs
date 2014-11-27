@@ -91,7 +91,6 @@ define([
 				context = createContext();
 			});
 			var testSingleCall = function (shaderCall, method, value) {
-				console.log(value);
 				shaderCall.call(value);
 				expect(method).toHaveBeenCalled();
 				var args = method.calls.mostRecent().args;
