@@ -394,6 +394,7 @@ function (
 		this.attributeKeys = null;
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
+		this.defineKeyDirty = true;
 	};
 
 	Shader.prototype._investigateShaders = function () {
