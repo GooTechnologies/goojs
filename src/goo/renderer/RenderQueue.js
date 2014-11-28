@@ -29,9 +29,7 @@ function (Vector3) {
 		};
 
 		this.transparentSorter = function (a, b) {
-			var dist1 = a.meshRendererComponent._renderDistance;
-			var dist2 = b.meshRendererComponent._renderDistance;
-			return dist2 - dist1;
+			return b.meshRendererComponent._renderDistance - a.meshRendererComponent._renderDistance;
 		};
 
 		this.bucketSorter = function (a, b) {
