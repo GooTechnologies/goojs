@@ -90,12 +90,15 @@ function() {
 	ArrayUtil.fromKeys = function (collection) {
 		var array = [];
 
-		var iterator = collection.keys();
-		var entry = iterator.next();
-		while (!entry.done) {
-			array.push(entry.value);
-			entry = iterator.next();
-		}
+		collection.forEach(function (value, key) {
+			array.push(key);
+		});
+//		var iterator = collection.keys();
+//		var entry = iterator.next();
+//		while (!entry.done) {
+//			array.push(entry.value);
+//			entry = iterator.next();
+//		}
 		return array;
 	};
 
@@ -107,12 +110,15 @@ function() {
 	ArrayUtil.fromValues = function (collection) {
 		var array = [];
 
-		var iterator = collection.values();
-		var entry = iterator.next();
-		while (!entry.done) {
-			array.push(entry.value);
-			entry = iterator.next();
-		}
+		collection.forEach(function (value) {
+			array.push(value);
+		});
+//		var iterator = collection.values();
+//		var entry = iterator.next();
+//		while (!entry.done) {
+//			array.push(entry.value);
+//			entry = iterator.next();
+//		}
 		return array;
 	};
 

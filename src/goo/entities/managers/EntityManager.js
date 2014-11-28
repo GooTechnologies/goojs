@@ -101,17 +101,15 @@ define([
 	 */
 	EntityManager.prototype.getEntityByName = function (name) {
 		if (this._entityCount <= 0) { return; }
-		var iterator = this._entitiesByIndex.values();
 
-		var entry = iterator.next();
-		while (!entry.done) {
-			var entity = entry.value;
+		var foundEntity;
+		this._entitiesByIndex.forEach(function (entity) {
 			if (entity.name === name) {
-				return entity;
+				foundEntity = entity;
 			}
+		});
 
-			entry = iterator.next();
-		}
+		return foundEntity;
 	};
 
 	/**
