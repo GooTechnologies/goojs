@@ -1,8 +1,16 @@
+v0.12.3 --- 2014-11-28
+======================
+
+Fixes:
+ * accounted for partial support of Map and Set in Safari and IE
+
+
 v0.12.2 --- 2014-11-27
 ======================
 
 Fixes:
  * could not load entities with tags using the DynamicLoader
+
 
 v0.12.1 --- 2014-11-27
 ======================

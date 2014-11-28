@@ -276,7 +276,7 @@ function (
 
 			// Resolved when everything is loaded and traversed
 			return traverseFn({ collectionRefs: refs }).then(function () {
-				return ArrayUtil.fromKeys(binaryRefs);
+				return ArrayUtil.fromValues(binaryRefs);
 			});
 		}
 
