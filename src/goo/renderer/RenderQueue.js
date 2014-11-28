@@ -10,25 +10,22 @@ function (Vector3) {
 	 */
 	function RenderQueue() {
 		this.opaqueSorter = function (a, b) {
-			//TODO: Add texture checks on material
 			var shader1 = a.meshRendererComponent.materials[0].shader;
 			var shader2 = b.meshRendererComponent.materials[0].shader;
 			if (shader1 === null || shader2 === null) {
 				return 0;
 			}
 			if (shader1.defineKey === shader2.defineKey) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
-				if (bound1 === null || bound2 === null) {
-					return 0;
-				}
-
-				var dist1 = a.meshRendererComponent._renderDistance;
-				var dist2 = b.meshRendererComponent._renderDistance;
-
-				return dist1 - dist2;
+				return a.meshRendererComponent._renderDistance - b.meshRendererComponent._renderDistance;
 			}
-			return shader2.defineKey.length - shader1.defineKey.length;
+
+			if (shader2.defineKey < shader1.defineKey) {
+				return -1;
+			} else if (shader2.defineKey > shader1.defineKey) {
+				return 1;
+			} else {
+				return 0;
+			}
 		};
 
 		this.transparentSorter = function (a, b) {
