@@ -2060,16 +2060,16 @@ function (
 			targetBuffer.buffer = buffer;
 			targetBuffer.valid = true;
 			if (target === 'ArrayBuffer') {
-				this.rendererRecord.attributeCache.clear();
+				this.rendererRecord.attributeCache.length = 0;
 			}
 		}
 	};
 
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
-		var hashKey = this.rendererRecord.attributeCache.get(attribIndex);
+		var hashKey = this.rendererRecord.attributeCache[attribIndex];
 		if (hashKey !== attribute.hashKey) {
 			this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
-			this.rendererRecord.attributeCache.set(attribIndex, attribute.hashKey);
+			this.rendererRecord.attributeCache[attribIndex] = attribute.hashKey;
 		}
 	};
 

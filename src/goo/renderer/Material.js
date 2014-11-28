@@ -216,9 +216,6 @@ function (
 		this.renderQueue = queue;
 	};
 
-	Material.store = [];
-	Material.hash = [];
-
 	/**
 	 * Creates a new or finds an existing, cached Shader object
 	 *
@@ -227,24 +224,18 @@ function (
 	 * @return {Shader}
 	 */
 	Material.createShader = function (shaderDefinition, name) {
-		// var index = Material.store.indexOf(shaderDefinition);
-		// if (index !== -1) {
-		// 	return Material.hash[index];
-		// }
 		var shader = new Shader(name || null, shaderDefinition);
 		if (shader.name === null) {
 			shader.name = 'DefaultShader' + shader._id;
 		}
-		// Material.store.push(shaderDefinition);
-		// Material.hash.push(shader);
 		return shader;
 	};
 
-	/** Clears the shader cache.
+	/** 
+	 * Clears the shader cache.
+	 * @deprecated Deprecated since x and scheduled for removal in x
 	 */
 	Material.clearShaderCache = function () {
-		Material.store.length = 0;
-		Material.hash.length = 0;
 	};
 
 	/**

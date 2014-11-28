@@ -122,7 +122,14 @@ function (
 		 */
 		this.renderQueue = RenderQueue.OPAQUE;
 
-		this._id = Shader.id++;
+		// this._id = Shader.id++;
+		if (Shader.cache.has(shaderDefinition)) {
+			this._id = Shader.cache.get(shaderDefinition);
+		} else {
+			this._id = Shader.cache.size;
+			Shader.cache.set(shaderDefinition, this._id);
+		}
+		console.log('creating shader', this._id, shaderDefinition);
 
 		this.errorOnce = false;
 
@@ -134,6 +141,7 @@ function (
 	}
 
 	Shader.id = 0;
+	Shader.cache = new Map();
 
 	Shader.prototype.clone = function () {
 		return new Shader(this.name, Util.clone({
