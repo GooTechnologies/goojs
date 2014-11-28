@@ -366,7 +366,7 @@ function (
 	};
 
 
-	/**
+	/*
 	 * Removes all the script HTML elements that are not needed by any script
 	 * anymore (i.e. have no references to scripts).
 	 */
@@ -382,7 +382,7 @@ function (
 	}
 
 
-	/**
+	/*
 	 * Adds a reference pointing to the specified custom script into the specified
 	 * script element/node.
 	 *
@@ -404,7 +404,7 @@ function (
 	}
 
 
-	/**
+	/*
 	 * Removes a reference to the specified custom script from the specified
 	 * script element/node.
 	 *
@@ -421,7 +421,7 @@ function (
 		ArrayUtil.remove(scriptElement.scriptRefs, scriptId);
 	}
 
-	/**
+	/*
 	 * Gets whether the specified script element/node has any references to
 	 * custom scripts.
 	 *
@@ -435,7 +435,7 @@ function (
 	}
 
 
-	/**
+	/*
 	 * Gets whether the specified script element has a reference to the specified
 	 * custom script.
 	 *
@@ -451,7 +451,7 @@ function (
 	}
 
 
-	/**
+	/*
 	 * Gets all the script elements that refer to the specified custom script.
 	 *
 	 * @param {string} scriptId
