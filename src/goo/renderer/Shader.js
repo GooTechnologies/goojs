@@ -133,14 +133,11 @@ function (
 
 		this.errorOnce = false;
 
-		// if (this.builder) {
-		// 	this.builder(this, {renderable:{}, lights: []});
-		// }
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	}
 
-	Shader.id = 0;
+	// Shader.id = 0;
 	Shader.cache = new Map();
 
 	Shader.prototype.clone = function () {
