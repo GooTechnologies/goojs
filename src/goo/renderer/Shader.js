@@ -129,7 +129,7 @@ function (
 			this._id = Shader.cache.size;
 			Shader.cache.set(shaderDefinition, this._id);
 		}
-		console.log('creating shader', this._id, shaderDefinition);
+		// console.log('creating shader', this._id, shaderDefinition);
 
 		this.errorOnce = false;
 
