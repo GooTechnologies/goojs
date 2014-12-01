@@ -1,3 +1,11 @@
+v0.12.4 --- 2014-12-01
+======================
+
+Fixes:
+ * local environment map now showing
+ * shader precompilation issues
+
+
 v0.12.3 --- 2014-11-28
 ======================
 
