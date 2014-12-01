@@ -73,18 +73,25 @@ function(
 		},
 
 		sky: function(shader, material) {
-			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
-				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
-			} else if (material.getTexture('ENVIRONMENT_CUBE')) {
-				material.removeTexture('ENVIRONMENT_CUBE');
+			if (material.getTexture('LOCAL_ENVIRONMENT')) {
+				material.setTexture('ENVIRONMENT_SPHERE', material.getTexture('LOCAL_ENVIRONMENT'));
+				shader.setDefine('ENVIRONMENT_TYPE', 0);
+				if (material.getTexture('ENVIRONMENT_CUBE')) {
+					material.removeTexture('ENVIRONMENT_CUBE');
+				}
+			} else {
+				if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
+					material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
+				} else if (material.getTexture('ENVIRONMENT_CUBE')) {
+					material.removeTexture('ENVIRONMENT_CUBE');
+				}
+				if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
+					material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
+					shader.setDefine('ENVIRONMENT_TYPE', ShaderBuilder.ENVIRONMENT_TYPE);
+				} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
+					material.removeTexture('ENVIRONMENT_SPHERE');
+				}
 			}
-			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
-				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
-				shader.setDefine('ENVIRONMENT_TYPE', ShaderBuilder.ENVIRONMENT_TYPE);
-			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
-				material.removeTexture('ENVIRONMENT_SPHERE');
-			}
-
 		},
 
 		uniforms: function(shader, textureMaps) {
