@@ -286,12 +286,12 @@ function (
 	 * // Subtracts two Vector3: v2 from v1, and returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * var v3 = Vector3.subVector(v1, v2); // v3 == (-3, -3, -3)
+	 * var v3 = Vector3.subv(v1, v2); // v3 == (-3, -3, -3)
 	 *
 	 * // Subtracts two Vector3: v2 from v1, and stores the result in the target Vector3: v1
 	 * var v1 = new Vector3(2, 4, 6);
 	 * var v2 = new Vector3(4, 6, 8);
-	 * Vector3.subVector(v1, v2, v1); // v1 == (-2, -2, -2)
+	 * Vector3.subv(v1, v2, v1); // v1 == (-2, -2, -2)
 	 */
 	Vector3.subv = addWarning(
 		function (lhs, rhs, target) {
