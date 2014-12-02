@@ -200,7 +200,7 @@ function (
 
 			return target;
 		},
-		'the static method .addv is deprecated; please use the instance method .addVector instead'
+		'The static method .addv is deprecated; please use the instance method .addVector instead'
 	);
 
 	/**
@@ -305,7 +305,7 @@ function (
 
 			return target;
 		},
-		'the static method .subv is deprecated; please use the instance method .subVector instead'
+		'The static method .subv is deprecated; please use the instance method .subVector instead'
 	);
 
 	/**
@@ -540,17 +540,8 @@ function (
 			ldata[2] * rdata[2];
 	};
 
-	Vector3.dotv = function (lhs, rhs) {
-		var ldata = lhs.data;
-		var rdata = rhs.data;
-
-		return ldata[0] * rdata[0] +
-			ldata[1] * rdata[1] +
-			ldata[2] * rdata[2];
-	};
-
 	/**
-	 * Computes the dot product between the current Vector3 and 'rhs'.  Equivalent of 'return this•rhs;'.
+	 * Computes the dot product between the current Vector3 and 'rhs'. Equivalent of 'return this•rhs;'.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @return {number} Dot product.
@@ -570,6 +561,33 @@ function (
 	 */
 	Vector3.prototype.dot = function (rhs) {
 		return Vector3.dot(this, rhs);
+	};
+
+	//! AT: undocumented, used in only one place in the engine
+	Vector3.dotv = addWarning(
+		function (lhs, rhs) {
+			var ldata = lhs.data;
+			var rdata = rhs.data;
+
+			return ldata[0] * rdata[0] +
+				ldata[1] * rdata[1] +
+				ldata[2] * rdata[2];
+		},
+		'The static method .dotv is deprecated; please use the instance method .dotVector instead'
+	);
+
+	/**
+	 * Computes the dot product between the current vector and 'rhs'.
+	 * @param {Vector3} rhs
+	 * @return {number}
+	 */
+	Vector3.prototype.dotVector = function (rhs) {
+		var ldata = this.data;
+		var rdata = rhs.data;
+
+		return ldata[0] * rdata[0] +
+			ldata[1] * rdata[1] +
+			ldata[2] * rdata[2];
 	};
 
 	/* ====================================================================== */

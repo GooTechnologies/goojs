@@ -229,6 +229,15 @@ define([
 			});
 		});
 
+		describe('dotVector', function () {
+			it('can calculate dot products', function () {
+				var a = new Vector3(1, 2, 0);
+				var b = new Vector3(1, 2, 0);
+
+				expect(a.dotVector(b)).toEqual(5);
+			});
+		});
+
 		describe('cross', function () {
 			it('can calculate cross products', function () {
 				var a = new Vector3(3, 2, 1);

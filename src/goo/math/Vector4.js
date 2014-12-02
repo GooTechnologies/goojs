@@ -268,9 +268,23 @@ function (
 	 *            every component.
 	 * @return {number} Dot product.
 	 */
-
 	Vector4.prototype.dot = function (rhs) {
 		return Vector4.dot(this, rhs);
+	};
+
+	/**
+	 * Computes the dot product between the current vector and 'rhs'.
+	 * @param {Vector4} rhs
+	 * @return {number}
+	 */
+	Vector4.prototype.dotVector = function (rhs) {
+		var ldata = this.data;
+		var rdata = rhs.data;
+
+		return ldata[0] * rdata[0] +
+			ldata[1] * rdata[1] +
+			ldata[2] * rdata[2] +
+			ldata[3] * rdata[3];
 	};
 
 	/* ====================================================================== */
