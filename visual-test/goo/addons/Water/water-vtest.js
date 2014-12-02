@@ -49,7 +49,7 @@ require([
 		goo.callbacksPreRender.push(function () {
 			var source = cameraEntity.transformComponent.worldTransform;
 			var target = skybox.transformComponent.worldTransform;
-			target.translation.setv(source.translation);
+			target.translation.setVector(source.translation);
 			target.update();
 		});
 	}

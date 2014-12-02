@@ -62,7 +62,7 @@ require([
 
 	var cone2 = addCone();
 	cone2.set(function (entity) {
-		var delta = getSphereTranslation().clone().subv(entity.transformComponent.worldTransform.translation);
+		var delta = getSphereTranslation().clone().subVector(entity.transformComponent.worldTransform.translation);
 		entity.transformComponent.transform.rotation.lookAt(delta, Vector3.UNIT_Y);
 		entity.transformComponent.setUpdated();
 	}).set([-5, 4, 3]);
