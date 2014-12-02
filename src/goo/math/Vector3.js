@@ -171,33 +171,37 @@ function (
 	};
 
 	/**
-	 * Optimized for Vector3 objects.  Adds 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.
+	 * Optimized for Vector3 objects. Adds 'lhs' and 'rhs' and stores the result in 'target'. If target is not supplied, a new Vector3 object is created and returned.
+	 * @deprecated Deprecated as of v0.12.x and scheduled for removal in 0.14.0
 	 * @param {Vector3} lhs Vector3 on the left-hand side.
 	 * @param {Vector3} rhs Vector3 on the right-hand side.
-	 * @param {Vector3} target Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
+	 * @param {Vector3} target Vector3 to store the result. If one is not supplied, a new Vector3 object is created.
 	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Adds two Vector3 objects and returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * var v3 = Vector3.addVector(v1, v2); // v3 == (5, 7, 9)
+	 * var v3 = Vector3.addv(v1, v2); // v3 == (5, 7, 9)
 	 *
 	 * // Adds two Vector3 objects, and stores the result in the target Vector3
 	 * var v1 = new Vector3(2, 4, 6);
 	 * var v2 = new Vector3(4, 6, 8);
-	 * Vector3.addVector(v1, v2, v1); // v1 == (6, 10, 14)
+	 * Vector3.addv(v1, v2, v1); // v1 == (6, 10, 14)
 	 */
-	Vector3.addv = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Vector3();
-		}
+	Vector3.addv = addWarning(
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Vector3();
+			}
 
-		target.data[0] = lhs.data[0] + rhs.data[0];
-		target.data[1] = lhs.data[1] + rhs.data[1];
-		target.data[2] = lhs.data[2] + rhs.data[2];
+			target.data[0] = lhs.data[0] + rhs.data[0];
+			target.data[1] = lhs.data[1] + rhs.data[1];
+			target.data[2] = lhs.data[2] + rhs.data[2];
 
-		return target;
-	};
+			return target;
+		},
+		'the static method .addv is deprecated; please use the instance method .addVector instead'
+	);
 
 	/**
 	 * Adds 'rhs' to the current Vector3. Equivalent to 'return (this += rhs);'.
@@ -273,6 +277,7 @@ function (
 
 	/**
 	 * Optimized for Vector3 objects.  Subtracts 'rhs' from 'lhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.
+	 * @deprecated Deprecated as of v0.12.x and scheduled for removal in 0.14.0
 	 * @param {Vector3} lhs Vector3 on the left-hand side.
 	 * @param {Vector3} rhs Vector3 on the right-hand side.
 	 * @param {Vector3} target Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
@@ -288,17 +293,20 @@ function (
 	 * var v2 = new Vector3(4, 6, 8);
 	 * Vector3.subVector(v1, v2, v1); // v1 == (-2, -2, -2)
 	 */
-	Vector3.subv = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Vector3();
-		}
+	Vector3.subv = addWarning(
+		function (lhs, rhs, target) {
+			if (!target) {
+				target = new Vector3();
+			}
 
-		target.data[0] = lhs.data[0] - rhs.data[0];
-		target.data[1] = lhs.data[1] - rhs.data[1];
-		target.data[2] = lhs.data[2] - rhs.data[2];
+			target.data[0] = lhs.data[0] - rhs.data[0];
+			target.data[1] = lhs.data[1] - rhs.data[1];
+			target.data[2] = lhs.data[2] - rhs.data[2];
 
-		return target;
-	};
+			return target;
+		},
+		'the static method .subv is deprecated; please use the instance method .subVector instead'
+	);
 
 	/**
 	 * Subtracts 'rhs' from the current Vector3. Equivalent of 'return (this -= rhs);'.
