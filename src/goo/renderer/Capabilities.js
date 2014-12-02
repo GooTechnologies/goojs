@@ -59,9 +59,9 @@ function () {
 										|| context.getExtension('WEBKIT_WEBGL_depth_texture')
 										|| context.getExtension('MOZ_WEBGL_depth_texture');
 		Capabilities.ElementIndexUInt = context.getExtension('OES_element_index_uint');
-		Capabilities.InstancedArrays = context.getExtension('ANGLE_instanced_arrays');
 
 		// verify these
+		Capabilities.InstancedArrays = context.getExtension('ANGLE_instanced_arrays');
 		Capabilities.BlendMinmax = context.getExtension('EXT_blend_minmax');
 		Capabilities.FragDepth = context.getExtension('EXT_frag_depth');
 		Capabilities.ShaderTextureLod = context.getExtension('EXT_shader_texture_lod');
