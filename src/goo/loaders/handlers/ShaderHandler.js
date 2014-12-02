@@ -41,10 +41,11 @@ function (
 	 * @private
 	 */
 	ShaderHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy) {
-			this._objects[ref].destroy();
+		var shader = this._objects.get(ref);
+		if (shader && this.world.gooRunner) {
+			shader.destroy(this.world.gooRunner.renderer.context);
+			this._objects.delete(ref);
 		}
-		delete this._objects[ref];
 	};
 
 	/**
@@ -71,8 +72,6 @@ function (
 			this.loadObject(config.vshaderRef, options),
 			this.loadObject(config.fshaderRef, options)
 		];
-
-		var that = this;
 
 		return RSVP.all(promises).then(function (shaders) {
 			var vshader = shaders[0];
@@ -107,10 +106,10 @@ function (
 
 			var shader = Material.createShader(shaderDefinition, ref);
 
-			that._objects[ref] = shader;
+			this._objects.set(ref, shader);
 
 			return shader;
-		});
+		}.bind(this));
 	};
 
 	return ShaderHandler;

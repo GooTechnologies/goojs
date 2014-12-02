@@ -1,25 +1,69 @@
+v0.12.4 --- 2014-12-01
+======================
+
+Fixes:
+ * local environment map now showing
+ * shader precompilation issues
+
+
+v0.12.3 --- 2014-11-28
+======================
+
+Fixes:
+ * accounted for partial support of Map and Set in Safari and IE
+
+
+v0.12.2 --- 2014-11-27
+======================
+
+Fixes:
+ * could not load entities with tags using the DynamicLoader
+
+
+v0.12.1 --- 2014-11-27
+======================
+
+Additions:
+ + the engine will not safely shut down when the WebGL context was lost and restart when the context was regained
+ + `setDirect`, `setArray`, `setDirect`, `add/sub/mul Vector`, `add/sub/mul Direct` for *Vector2/3/4*
+ + `ArrayUtil.fromKeys(map | set)`, `ArrayUtil.fromValues(map | set)`
+ + `fromAngleNormalAxis` visual test
+
+Changes:
+ * major optimizations in how shaders are cached and reused
+ * faster math-related methods
+ * passing a transform's translation to `transform.lookAt` will do nothing
+
+Fixes:
+ * `new Vector3(1, 2, NaN).equals(new Vector(1, 2, 10)` returning true
+ * `entity.attach/detachChild` ignoring the second parameter, *keepTransform*
+
+Deprecated:
+ - all short `setd`, `seta`, `setv`, `add_d`, `addv`, `sub_d`, `subv`, `mulv`, `muld` methods on *Vector2/3/4*
+
+
 v0.12.0 --- 2014-11-18
 ======================
 
 Additions:
- + visual tests for Skybox, Box, Sphere, .lookAt
- + bounding box/sphere .containsPoint
+ + visual tests for *Skybox*, *Box*, *Sphere*, *.lookAt*
+ + bounding box/sphere `.containsPoint`
 
 Changes:
  * math classes do not throw errors anymore
  * various speed optimizations
 
 Fixes:
- * .setToObliqueMatrix of Camera
- * calling .set([1, 2, 3]) on entities not working
+ * `.setToObliqueMatrix` of *Camera*
+ * calling `.set([1, 2, 3])` on entities not working
  * lights not having their transform updated when added to existing entities
  * refraction bugs with animation
- * .lookAt on matrices pointing in the opposite direction
- * Matrix constructors not working properly with arrays or other matrices
+ * `.lookAt` on matrices pointing in the opposite direction
+ * *Matrix* constructors not working properly with arrays or other matrices
 
 Removed:
- - EntityUtils.hide/show; please use entity.hide/show instead
- - util/Enum, util/Latch, util/Handy
+ - `EntityUtils.hide/show`; please use `entity.hide/show` instead
+ - *util/Enum*, *util/Latch*, *util/Handy*
 
 
 v0.11.7 --- 2014-10-30

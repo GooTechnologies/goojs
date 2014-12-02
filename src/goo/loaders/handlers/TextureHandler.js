@@ -93,10 +93,11 @@ function (
 	 * @private
 	 */
 	TextureHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
-			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
+		var texture = this._objects.get(ref);
+		if (texture && this.world.gooRunner) {
+			texture.destroy(this.world.gooRunner.renderer.context);
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -135,8 +136,8 @@ function (
 
 			texture.anisotropy = Math.max(config.anisotropy, 1);
 
-			texture.offset.set(config.offset);
-			texture.repeat.set(config.repeat);
+			texture.offset.setArray(config.offset);
+			texture.repeat.setArray(config.repeat);
 			texture.lodBias = config.lodBias;
 
 			if (texture.flipY !== config.flipY) {
@@ -225,13 +226,6 @@ function (
 				return ret;
 			}
 		});
-	};
-
-	TextureHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
-			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
-		}
-		delete this._objects[ref];
 	};
 
 	return TextureHandler;

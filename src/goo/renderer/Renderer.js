@@ -795,27 +795,16 @@ function (
 		var shader = material.shader;
 
 		shader.updateProcessors(renderInfo);
-		if (shader.builder) {
-			shader.builder(shader, renderInfo);
-			shader.rebuild();
-		}
-		this.findOrCacheMaterialShader(material, shader, renderInfo);
-
-		queue.push(function () { shader.precompile(this); }.bind(this));
+		this.findOrCacheMaterialShader(material, renderInfo);
+		shader = material.shader;
+		shader.precompile(this);
 	};
 
 	/**
 	 * Remove all shaders from cache.
 	 */
 	Renderer.prototype.clearShaderCache = function () {
-		var cache = this.rendererRecord.shaderCache;
-		if (!cache) {
-			return;
-		}
-		var keys = Object.keys(cache);
-		for (var i = 0; i < keys.length; i++) {
-			delete cache[keys[i]];
-		}
+		this.rendererRecord.shaderCache.clear();
 	};
 
 	/**
@@ -987,12 +976,9 @@ function (
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
-		var cache = this.rendererRecord.shaderCache;
-		var keys = Object.keys(cache);
-		for (var i = 0; i < keys.length; i++) {
-			var shader = cache[keys[i]];
+		this.rendererRecord.shaderCache.forEach(function (shader) {
 			shader.startFrame();
-		}
+		});
 
 		var renderInfo = renderRenderInfo;
 		renderInfo.reset();
@@ -1094,10 +1080,8 @@ function (
 
 	Renderer.prototype.callShaderProcessors = function(material, renderInfo) {
 		// Check for caching of shader that use defines
-		var shader = material.shader;
-
-		shader.updateProcessors(renderInfo);
-		this.findOrCacheMaterialShader(material, shader, renderInfo);
+		material.shader.updateProcessors(renderInfo);
+		this.findOrCacheMaterialShader(material, renderInfo);
 	};
 
 	Renderer.prototype.renderMeshMaterial = function (materialIndex, materials, flatOrWire, originalData, renderInfo) {
@@ -1202,38 +1186,37 @@ function (
 		return material;
 	};
 
-
-	Renderer.prototype.findOrCacheMaterialShader = function(material, shader, renderInfo) {
+	Renderer.prototype.findOrCacheMaterialShader = function (material, renderInfo) {
 		// check defines. if no hit in cache -> add to cache. if hit in cache,
 		// replace with cache version and copy over uniforms.
+		var shader = material.shader;
 		var defineKey = shader.getDefineKey(this._definesIndices);
 		shader.endFrame();
 
 		var shaderCache = this.rendererRecord.shaderCache;
-		if (!shaderCache[defineKey]) {
-			if (shader.builder) {
-				shader.builder(shader, renderInfo);
-			}
-			shader = shader.clone();
-			shaderCache[defineKey] = shader;
-		} else {
-			shader = shaderCache[defineKey];
-			if (shader !== material.shader) {
+		var cachedShader = shaderCache.get(defineKey);
+
+		if (cachedShader) {
+			if (cachedShader !== material.shader) {
 				var uniforms = material.shader.uniforms;
 				var keys = Object.keys(uniforms);
 				for (var i = 0, l = keys.length; i < l; i++) {
 					var key = keys[i];
-					var origUniform = shader.uniforms[key] = uniforms[key];
+					var origUniform = cachedShader.uniforms[key] = uniforms[key];
 					if (origUniform instanceof Array) {
-						shader.uniforms[key] = origUniform.slice(0);
+						cachedShader.uniforms[key] = origUniform.slice(0);
 					}
 				}
 			}
+			material.shader = cachedShader;
+		} else {
+			if (shader.builder) {
+				shader.builder(shader, renderInfo);
+			}
+			shader = shader.clone();
+			shaderCache.set(defineKey, shader);
+			material.shader = shader;
 		}
-		
-		material.shader = shader;
-		
-		return shader;
 	};
 
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {

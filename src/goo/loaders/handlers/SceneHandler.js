@@ -37,7 +37,7 @@ function(
 	 */
 	SceneHandler.prototype._remove = function(ref) {
 		//Todo Clear engine
-		var scene = this._objects[ref];
+		var scene = this._objects.get(ref);
 		if (scene) {
 			for (var i = 0; i < scene.entities.length; i++) {
 				scene.entities[i].removeFromWorld();
@@ -46,7 +46,7 @@ function(
 		// Remove posteffects
 		// Remove environment
 
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**

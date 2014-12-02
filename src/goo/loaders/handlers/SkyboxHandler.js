@@ -54,7 +54,7 @@ define([
 	ConfigHandler._registerClass('skybox', SkyboxHandler);
 
 	SkyboxHandler.prototype._remove = function(ref) {
-		delete this._objects[ref];
+		this._objects.delete(ref);
 
 		// We can only remove the skybox if it is the one that is currently
 		// active. Otherwise the scene will be left with no skybox in cases
@@ -134,6 +134,8 @@ define([
 	};
 
 	var sides = ['rightRef', 'leftRef', 'topRef', 'bottomRef', 'frontRef', 'backRef'];
+
+	//! AT: this can definitely be moved elsewhere
 	function isEqual(a, b) {
 		var len = a.length;
 		if (len !== b.length) {

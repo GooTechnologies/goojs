@@ -7,7 +7,7 @@ define(['goo/util/ArrayUtil'],
 	* @class
 	*/
 	function Bus() {
-		this.trie = { name: '', listeners: [], children: {} };
+		this.trie = { name: '', listeners: [], children: new Map() };
 	}
 
 	/**
@@ -49,12 +49,12 @@ define(['goo/util/ArrayUtil'],
 		for (var i = 0; i < channelPath.length; i++) {
 			var channelSub = channelPath[i];
 
-			if (node.children[channelSub]) {
-				node = node.children[channelSub];
+			if (node.children.has(channelSub)) {
+				node = node.children.get(channelSub);
 			} else {
 				if (storeEmit) {
-					var newNode = { listeners: [], children: [] };
-					node.children[channelSub] = newNode;
+					var newNode = { listeners: [], children: new Map() };
+					node.children.set(channelSub, newNode);
 					node = newNode;
 				} else {
 					return;
@@ -80,10 +80,9 @@ define(['goo/util/ArrayUtil'],
 			node.listeners[i](data);
 		}
 
-		var childrenKeys = Object.keys(node.children);
-		for (var i = 0; i < childrenKeys.length; i++) {
-			this._emitToAll(node.children[childrenKeys], data);
-		}
+		node.children.forEach(function (child) {
+			this._emitToAll(child, data);
+		}.bind(this));
 	};
 
 	/**
@@ -101,11 +100,11 @@ define(['goo/util/ArrayUtil'],
 		for (var i = 0; i < channelPath.length; i++) {
 			var channelSub = channelPath[i];
 
-			if (node.children[channelSub]) {
-				node = node.children[channelSub];
+			if (node.children.has(channelSub)) {
+				node = node.children.get(channelSub);
 			} else {
-				var newNode = { listeners: [], children: [] };
-				node.children[channelSub] = newNode;
+				var newNode = { listeners: [], children: new Map() };
+				node.children.set(channelSub, newNode);
 				node = newNode;
 			}
 		}
@@ -153,9 +152,9 @@ define(['goo/util/ArrayUtil'],
 			var parentChannelName = channelParts.join('.');
 			var parentNode = this._getNode(parentChannelName);
 
-			delete parentNode.children[leafChannelName];
+			parentNode.children.delete(leafChannelName);
 		} else {
-			delete this.trie.children[channelName];
+			this.trie.children.delete(channelName);
 		}
 
 		return this;
@@ -164,10 +163,9 @@ define(['goo/util/ArrayUtil'],
 	Bus.prototype._removeListener = function (node, callbackToRemove) {
 		ArrayUtil.remove(node.listeners, callbackToRemove);
 
-		var childrenKeys = Object.keys(node.children);
-		for (var i = 0; i < childrenKeys.length; i++) {
-			this._removeListener(node.children[childrenKeys[i]], callbackToRemove);
-		}
+		node.children.forEach(function (child) {
+			this._removeListener(child, callbackToRemove);
+		}.bind(this));
 	};
 
 	/**
@@ -180,7 +178,7 @@ define(['goo/util/ArrayUtil'],
 	};
 
 	Bus.prototype.clear = function () {
-		this.trie = { name: '', listeners: [], children: {} };
+		this.trie = { name: '', listeners: [], children: new Map() };
 	};
 
 	return Bus;

@@ -48,7 +48,7 @@ function (
 	 * @private
 	 */
 	EntityHandler.prototype._remove = function (ref) {
-		var entity = this._objects[ref];
+		var entity = this._objects.get(ref);
 		var that = this;
 		if (entity) {
 			// Remove components
@@ -64,28 +64,26 @@ function (
 			return RSVP.all(promises)
 			.then(function () {
 				entity.removeFromWorld();
-				delete that._objects[ref];
+				that._objects.delete(ref);
 			});
 		}
 	};
 
 	function updateTags(entity, tags) {
-		entity._tags = {};
+		entity._tags.clear();
 		if (!tags) { return; }
 
-		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
 		for (var tag in tags) {
 			entity.setTag(tag);
 		}
 	}
 
-	function updateAttributes(entity, config) {
-		entity._attributes = {};
-		if (!config) { return; }
+	function updateAttributes(entity, attributes) {
+		entity._attributes.clear();
+		if (!attributes) { return; }
 
-		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
-		for (var attribute in config) {
-			entity.setAttribute(attribute, config[attribute]);
+		for (var attribute in attributes) {
+			entity.setAttribute(attribute, attributes[attribute]);
 		}
 	}
 
@@ -102,7 +100,6 @@ function (
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
-			window.entities = window.entities || {};
 			entity.static = !!config.static;
 
 			updateTags(entity, config.tags);
