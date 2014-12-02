@@ -5,6 +5,12 @@ function () {
 
 	/**
 	 * @class The purpose of this class is to xxx
+
+	 * Extensions
+	 * @property {object} CompressedTextureS3TC Supports S3TC (DXT) compression
+	 * ... fill up with the rest
+
+	 * Properties
 	 * @property {number} maxTexureSize Maximum 2D texture size
 	 * @property {number} maxCubemapSize Maximum cubemap size
 	 * @property {number} maxRenderbufferSize Maximum renderbuffer size
@@ -37,12 +43,14 @@ function () {
 	 * @param {WebGLRenderingContext} context WebGLRenderingContext
 	 */
 	Capabilities.init = function (context) {
+		// Extensions
 		Capabilities.CompressedTextureS3TC = context.getExtension("WEBGL_compressed_texture_s3tc")
 										|| context.getExtension("MOZ_WEBGL_compressed_texture_s3tc")
 										|| context.getExtension("WEBKIT_WEBGL_compressed_texture_s3tc");
 		Capabilities.TextureFloat = context.getExtension('OES_texture_float');
 		Capabilities.TextureFloatLinear = context.getExtension('OES_texture_float_linear');
 		Capabilities.TextureHalfFloat = context.getExtension('OES_texture_half_float');
+		Capabilities.TextureHalfFloatLinear = context.getExtension('OES_texture_half_float_linear');
 		Capabilities.StandardDerivatives = context.getExtension('OES_standard_derivatives');
 		Capabilities.TextureFilterAnisotropic = context.getExtension('EXT_texture_filter_anisotropic')
 										|| context.getExtension('MOZ_EXT_texture_filter_anisotropic')
@@ -53,11 +61,20 @@ function () {
 		Capabilities.ElementIndexUInt = context.getExtension('OES_element_index_uint');
 		Capabilities.InstancedArrays = context.getExtension('ANGLE_instanced_arrays');
 
+		// verify these
+		Capabilities.BlendMinmax = context.getExtension('EXT_blend_minmax');
+		Capabilities.FragDepth = context.getExtension('EXT_frag_depth');
+		Capabilities.ShaderTextureLod = context.getExtension('EXT_shader_texture_lod');
+		Capabilities.VertexArrayObject = context.getExtension('OES_vertex_array_object');
+		Capabilities.DrawBuffers = context.getExtension('WEBGL_draw_buffers');
+		// end verify
+
+		// Parameters
 		Capabilities.maxTexureSize = context.getParameter(context.MAX_TEXTURE_SIZE);
 		Capabilities.maxCubemapSize = context.getParameter(context.MAX_CUBE_MAP_TEXTURE_SIZE);
 		Capabilities.maxRenderbufferSize = context.getParameter(context.MAX_RENDERBUFFER_SIZE);
 		Capabilities.maxViewPortDims = context.getParameter(context.MAX_VIEWPORT_DIMS); // [x, y]
-		Capabilities.maxAnisotropy = Capabilities.glExtensionTextureFilterAnisotropic ? context.getParameter(Capabilities.glExtensionTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
+		Capabilities.maxAnisotropy = Capabilities.TextureFilterAnisotropic ? context.getParameter(Capabilities.TextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
 
 		Capabilities.maxVertexTextureUnits = context.getParameter(context.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
 		Capabilities.maxFragmentTextureUnits = context.getParameter(context.MAX_TEXTURE_IMAGE_UNITS);
@@ -97,6 +114,8 @@ function () {
 		Capabilities.fragmentShaderHighpInt = context.getShaderPrecisionFormat(context.FRAGMENT_SHADER, context.HIGH_INT);
 		Capabilities.fragmentShaderMediumpInt = context.getShaderPrecisionFormat(context.FRAGMENT_SHADER, context.MEDIUM_INT);
 		Capabilities.fragmentShaderLowpInt = context.getShaderPrecisionFormat(context.FRAGMENT_SHADER, context.LOW_INT);
+	
+		console.log(Capabilities.getCapabilitiesString());
 	};
 
 	/**
@@ -110,6 +129,9 @@ function () {
 		};
 		for (var name in Capabilities) {
 			var cap = Capabilities[name];
+			if (cap instanceof Function) {
+				continue;
+			}
 			var str = '';
 			if (isArrayBufferView(cap)) {
 				str += '[';

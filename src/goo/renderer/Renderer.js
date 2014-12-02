@@ -862,7 +862,7 @@ function (
 		//TODO: 
 		// handle some fallbacks
 		lights.forEach(function (light) {
-			light.shadowCaster = light.shadowCaster && this.glExtensionTextureFloat;
+			light.shadowCaster = light.shadowCaster && Capabilities.TextureFloat;
 		}.bind(this));
 		// fallbacks end
 
@@ -1436,10 +1436,10 @@ function (
 			texrecord.wrapT = wrapT;
 		}
 
-		if (this.glExtensionTextureFilterAnisotropic && texture.type !== 'Float') {
+		if (Capabilities.TextureFilterAnisotropic && texture.type !== 'Float') {
 			var anisotropy = texture.anisotropy;
 			if (texrecord.anisotropy !== anisotropy) {
-				context.texParameterf(glType, this.glExtensionTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisotropy, Capabilities.maxAnisotropy));
+				context.texParameterf(glType, Capabilities.TextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisotropy, Capabilities.maxAnisotropy));
 				texrecord.anisotropy = anisotropy;
 			}
 		}

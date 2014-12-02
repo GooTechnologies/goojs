@@ -59,7 +59,7 @@ function (
 		var shadowX = shadowSettings.resolution[0];
 		var shadowY = shadowSettings.resolution[1];
 
-		var linearFloat = !!renderer.glExtensionTextureFloatLinear;
+		var linearFloat = !!Capabilities.TextureFloatLinear;
 
 		if (shadowSettings.shadowData.shadowTarget) {
 			renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowTarget);
