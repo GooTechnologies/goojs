@@ -1,0 +1,12 @@
+body {
+    background-color: #222222;
+}
+
+iframe {
+    border: 1px solid white;
+    margin: 4px 6px;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
