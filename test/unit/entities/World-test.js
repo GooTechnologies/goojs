@@ -354,12 +354,14 @@ define([
 				var entity2 = new Entity();
 				var entity3 = new Entity().setComponent(new CoconutComponent());
 
-				new EntitySelection(entity1, entity2, entity3).a(123, 456);
+				var entitySelection = new EntitySelection(entity1, entity2, entity3);
+				var result = entitySelection.a(123, 456);
 
 				expect(spyA.calls.count()).toEqual(2);
 				expect(spyA.calls.thisFor(0)).toEqual(entity1);
 				expect(spyA.calls.thisFor(1)).toEqual(entity3);
 				expect(spyA.calls.argsFor(0)).toEqual([123, 456]);
+				expect(result).toBe(entitySelection);
 			});
 		});
 	});
