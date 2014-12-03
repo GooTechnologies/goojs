@@ -533,14 +533,7 @@ function (
 			this.worldTransform.copy(this.transform);
 		}
 
-		// update the normal matrix
-		var scale = this.worldTransform.scale;
-		if (scale.x !== scale.y || scale.x !== scale.z) {
-			Matrix4x4.invert(this.worldTransform.matrix, this.worldTransform.normalMatrix);
-			Matrix4x4.transpose(this.worldTransform.normalMatrix, this.worldTransform.normalMatrix);
-		} else {
-			this.worldTransform.normalMatrix.copy(this.worldTransform.matrix);
-		}
+		this.worldTransform.updateNormalMatrix();
 
 		this._dirty = false;
 		this._updated = true;

@@ -28,6 +28,7 @@ function (
 		this.enabled = true;
 		this.clear = false;
 		this.needsSwap = true;
+		this.viewportSize = undefined;
 	}
 
 	FullscreenPass.prototype = Object.create(Pass.prototype);

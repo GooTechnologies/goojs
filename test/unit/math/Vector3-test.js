@@ -229,6 +229,15 @@ define([
 			});
 		});
 
+		describe('dotVector', function () {
+			it('can calculate dot products', function () {
+				var a = new Vector3(1, 2, 0);
+				var b = new Vector3(1, 2, 0);
+
+				expect(a.dotVector(b)).toEqual(5);
+			});
+		});
+
 		describe('cross', function () {
 			it('can calculate cross products', function () {
 				var a = new Vector3(3, 2, 1);
@@ -357,6 +366,21 @@ define([
 			});
 		});
 
+		describe('static addv (deprecated)', function () {
+			it('can add to a vector', function () {
+				var vector1 = new Vector3(11, 22, 33);
+				var vector2 = new Vector3(55, 66, 77);
+				var result = new Vector3();
+
+				var addOver1 = Vector3.addv(vector1, vector2, result);
+				expect(result).toBeCloseToVector(new Vector3(11 + 55, 22 + 66, 33 + 77));
+				expect(addOver1).toBe(result);
+
+				var addOver2 = Vector3.addv(vector1, vector2);
+				expect(addOver2).toBeCloseToVector(new Vector3(11 + 55, 22 + 66, 33 + 77));
+			});
+		});
+
 
 		describe('addDirect', function () {
 			it('can add to a vector', function () {
@@ -422,6 +446,21 @@ define([
 				var vector = new Vector3(11, 22, 33);
 				vector.subv(new Vector3(55, 66, 77));
 				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
+			});
+		});
+
+		describe('static subv (deprecated)', function () {
+			it('can subtract from a vector', function () {
+				var vector1 = new Vector3(11, 22, 33);
+				var vector2 = new Vector3(55, 66, 77);
+				var result = new Vector3();
+
+				var addOver1 = Vector3.subv(vector1, vector2, result);
+				expect(result).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
+				expect(addOver1).toBe(result);
+
+				var addOver2 = Vector3.subv(vector1, vector2);
+				expect(addOver2).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
 			});
 		});
 

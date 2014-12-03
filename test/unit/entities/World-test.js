@@ -195,7 +195,6 @@ define([
 		});
 
 		it('can create a typical entity holding all sorts of stuff in random order', function () {
-			//
 			world.gooRunner = {
 				renderer: {
 					domElement: null,
@@ -204,7 +203,6 @@ define([
 				}
 			};
 			world.add(new ScriptSystem(world));
-
 
 			var camera = new Camera();
 			var meshData = new Box();
@@ -244,6 +242,7 @@ define([
 
 		it('adds a manager using the \'add\' function', function () {
 			function FishManager() {
+				Manager.call(this);
 			}
 			FishManager.prototype = Object.create(Manager.prototype);
 
@@ -270,6 +269,7 @@ define([
 		it('does not override existing methods on install', function () {
 			var a = 0;
 			function FishManager() {
+				Manager.call(this);
 				this.type = 'FishManager';
 				this.api = {
 					color: function () { a += 123; }
@@ -378,7 +378,7 @@ define([
 			var world = new World();
 
 			var entity1 = world.createEntity().set(new ProgrammerComponent()).addToWorld();
-			var entity2 = world.createEntity().addToWorld();
+			world.createEntity().addToWorld();
 			var entity3 = world.createEntity().set(new ProgrammerComponent()).addToWorld();
 
 			world.process();
@@ -392,7 +392,7 @@ define([
 			world.add(new TransformSystem());
 
 			var entity1 = world.createEntity().addToWorld();
-			var entity2 = new Entity(world).addToWorld();
+			new Entity(world).addToWorld();
 			var entity3 = world.createEntity().addToWorld();
 
 			world.process();
@@ -405,7 +405,7 @@ define([
 			var world = new World();
 
 			var entity1 = world.createEntity().setTag('t1').addToWorld();
-			var entity2 = world.createEntity().setTag('t2').addToWorld();
+			world.createEntity().setTag('t2').addToWorld();
 			var entity3 = world.createEntity().setTag('t1').addToWorld();
 
 			world.process();
@@ -418,7 +418,7 @@ define([
 			var world = new World();
 
 			var entity1 = world.createEntity().setAttribute('a1', 10).addToWorld();
-			var entity2 = world.createEntity().setAttribute('a2', {}).addToWorld();
+			world.createEntity().setAttribute('a2', {}).addToWorld();
 			var entity3 = world.createEntity().setAttribute('a1', '20').addToWorld();
 
 			world.process();

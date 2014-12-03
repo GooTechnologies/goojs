@@ -55,7 +55,7 @@ require([
 				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
 			];
 			var sphereEntity = goo.world.createEntity(meshData, material);
-			sphereEntity.transformComponent.transform.translation.setd(i, 0, 0);
+			sphereEntity.transformComponent.transform.translation.setDirect(i, 0, 0);
 
 			var scripts = new ScriptComponent();
 			(function(i) {

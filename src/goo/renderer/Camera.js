@@ -260,7 +260,7 @@ function (
 		this.near = source.near;
 		this.far = source.far;
 		this.left = source.left;
-		this.up = source.up;
+		this.right = source.right;
 		this.top = source.top;
 		this.bottom = source.bottom;
 
@@ -445,28 +445,28 @@ function (
 		plane.normal.x = this._left.x * this._coeffLeft[0] + this._direction.x * this._coeffLeft[1];
 		plane.normal.y = this._left.y * this._coeffLeft[0] + this._direction.y * this._coeffLeft[1];
 		plane.normal.z = this._left.z * this._coeffLeft[0] + this._direction.z * this._coeffLeft[1];
-		plane.constant = Vector3.dotv(this.translation, plane.normal);
+		plane.constant = this.translation.dotVector(plane.normal);
 
 		// right plane
 		plane = this._worldPlane[Camera.RIGHT_PLANE];
 		plane.normal.x = this._left.x * this._coeffRight[0] + this._direction.x * this._coeffRight[1];
 		plane.normal.y = this._left.y * this._coeffRight[0] + this._direction.y * this._coeffRight[1];
 		plane.normal.z = this._left.z * this._coeffRight[0] + this._direction.z * this._coeffRight[1];
-		plane.constant = Vector3.dotv(this.translation, plane.normal);
+		plane.constant = this.translation.dotVector(plane.normal);
 
 		// bottom plane
 		plane = this._worldPlane[Camera.BOTTOM_PLANE];
 		plane.normal.x = this._up.x * this._coeffBottom[0] + this._direction.x * this._coeffBottom[1];
 		plane.normal.y = this._up.y * this._coeffBottom[0] + this._direction.y * this._coeffBottom[1];
 		plane.normal.z = this._up.z * this._coeffBottom[0] + this._direction.z * this._coeffBottom[1];
-		plane.constant = Vector3.dotv(this.translation, plane.normal);
+		plane.constant = this.translation.dotVector(plane.normal);
 
 		// top plane
 		plane = this._worldPlane[Camera.TOP_PLANE];
 		plane.normal.x = this._up.x * this._coeffTop[0] + this._direction.x * this._coeffTop[1];
 		plane.normal.y = this._up.y * this._coeffTop[0] + this._direction.y * this._coeffTop[1];
 		plane.normal.z = this._up.z * this._coeffTop[0] + this._direction.z * this._coeffTop[1];
-		plane.constant = Vector3.dotv(this.translation, plane.normal);
+		plane.constant = this.translation.dotVector(plane.normal);
 
 		if (this.projectionMode === Camera.Parallel) {
 			if (this._frustumRight > this._frustumLeft) {

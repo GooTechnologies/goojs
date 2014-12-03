@@ -17,7 +17,7 @@ define([
 				expect(new Vector4()).toBeCloseToVector(Vector4.ZERO);
 			});
 
-			it('creates a vector when given 2 parameters', function () {
+			it('creates a vector when given 4 parameters', function () {
 				var vector = new Vector4(11, 22, 33, 44);
 				var expected = new Vector4();
 
@@ -210,6 +210,15 @@ define([
 
 			expect(a.dot(b)).toEqual(40);
 			expect(Vector4.dot(a, b)).toEqual(40);
+		});
+
+		describe('dotVector', function () {
+			it('can calculate dot products', function () {
+				var a = new Vector4(1, 2, 3, 4);
+				var b = new Vector4(2, 3, 4, 5);
+
+				expect(a.dotVector(b)).toEqual(40);
+			});
 		});
 
 		it('can linearly interpolate', function () {
