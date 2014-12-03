@@ -216,6 +216,13 @@ function (
 	};
 
 	TransformComponent.entitySelectionAPI = {
+		setTranslation: TransformComponent.prototype.api.setTranslation,
+		setRotation: TransformComponent.prototype.api.setRotation,
+		setScale: TransformComponent.prototype.api.setScale,
+		lookAt: TransformComponent.prototype.api.lookAt,
+		move: TransformComponent.prototype.api.move,
+		addTranslation: TransformComponent.prototype.api.addTranslation,
+		addRotation: TransformComponent.prototype.api.addRotation,
 		hide: TransformComponent.prototype.api.hide,
 		show: TransformComponent.prototype.api.show
 	};
