@@ -103,8 +103,8 @@ require([
 				Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
 			];
 			var sphereEntity = goo.world.createEntity(meshData, material);
-			sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
-			sphereEntity.transformComponent.transform.scale.setd(2, 3, 5);
+			sphereEntity.transformComponent.transform.translation.setDirect(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
+			sphereEntity.transformComponent.transform.scale.setDirect(2, 3, 5);
 			addMovementToEntity(sphereEntity, worldFittedTerrainScript);
 		}
 	}
@@ -117,47 +117,47 @@ require([
 		material.uniforms.color = [0.98, 0.6, 0.2];
 
 		var rootEntity = goo.world.createEntity(meshData, material);
-		rootEntity.transformComponent.transform.translation.setd(dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
-		rootEntity.transformComponent.transform.scale.setd(1, 1, 1);
+		rootEntity.transformComponent.transform.translation.setDirect(dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
+		rootEntity.transformComponent.transform.scale.setDirect(1, 1, 1);
 
 		var body = goo.world.createEntity(meshData, material);
-		body.transformComponent.transform.translation.setd(0,0.7,0);
-		body.transformComponent.transform.scale.setd(2.2, 1.4, 5);
+		body.transformComponent.transform.translation.setDirect(0,0.7,0);
+		body.transformComponent.transform.scale.setDirect(2.2, 1.4, 5);
 		rootEntity.transformComponent.attachChild(body.transformComponent);
 
 		var wheel1 = goo.world.createEntity(meshData, material);
-		wheel1.transformComponent.transform.translation.setd(1,0.4,2.0);
-		wheel1.transformComponent.transform.scale.setd(0.3, 1, 1);
+		wheel1.transformComponent.transform.translation.setDirect(1,0.4,2.0);
+		wheel1.transformComponent.transform.scale.setDirect(0.3, 1, 1);
 		rootEntity.transformComponent.attachChild(wheel1.transformComponent);
 
 		var wheel2 = goo.world.createEntity(meshData, material);
-		wheel2.transformComponent.transform.translation.setd(-1,0.4,2.0);
-		wheel2.transformComponent.transform.scale.setd(0.3, 1, 1);
+		wheel2.transformComponent.transform.translation.setDirect(-1,0.4,2.0);
+		wheel2.transformComponent.transform.scale.setDirect(0.3, 1, 1);
 		rootEntity.transformComponent.attachChild(wheel2.transformComponent);
 
 		var wheel3 = goo.world.createEntity(meshData, material);
-		wheel3.transformComponent.transform.translation.setd(1,0.4,-2.0);
-		wheel3.transformComponent.transform.scale.setd(0.3, 1, 1);
+		wheel3.transformComponent.transform.translation.setDirect(1,0.4,-2.0);
+		wheel3.transformComponent.transform.scale.setDirect(0.3, 1, 1);
 		rootEntity.transformComponent.attachChild(wheel3.transformComponent);
 
 		var wheel4 = goo.world.createEntity(meshData, material);
-		wheel4.transformComponent.transform.translation.setd(-1,0.4,-2.0);
-		wheel4.transformComponent.transform.scale.setd(0.3, 1, 1);
+		wheel4.transformComponent.transform.translation.setDirect(-1,0.4,-2.0);
+		wheel4.transformComponent.transform.scale.setDirect(0.3, 1, 1);
 		rootEntity.transformComponent.attachChild(wheel4.transformComponent);
 
 		var light1 = goo.world.createEntity(meshData, material);
-		light1.transformComponent.transform.translation.setd(0.8,1, 2.4);
-		light1.transformComponent.transform.scale.setd(0.5, 0.5, 0.5);
+		light1.transformComponent.transform.translation.setDirect(0.8,1, 2.4);
+		light1.transformComponent.transform.scale.setDirect(0.5, 0.5, 0.5);
 		rootEntity.transformComponent.attachChild(light1.transformComponent);
 
 		var light2 = goo.world.createEntity(meshData, material);
-		light2.transformComponent.transform.translation.setd(-0.8,1, 2.4);
-		light2.transformComponent.transform.scale.setd(0.5, 0.5, 0.5);
+		light2.transformComponent.transform.translation.setDirect(-0.8,1, 2.4);
+		light2.transformComponent.transform.scale.setDirect(0.5, 0.5, 0.5);
 		rootEntity.transformComponent.attachChild(light2.transformComponent);
 
 		var coup = goo.world.createEntity(meshData, material);
-		coup.transformComponent.transform.translation.setd(0,0.6,-0.12);
-		coup.transformComponent.transform.scale.setd(0.8, 1.3, 0.4);
+		coup.transformComponent.transform.translation.setDirect(0,0.6,-0.12);
+		coup.transformComponent.transform.scale.setDirect(0.8, 1.3, 0.4);
 		body.transformComponent.attachChild(coup.transformComponent);
 
 		var movementProperties = {
@@ -181,32 +181,32 @@ require([
 		material.uniforms.color = [0.98, 0.6, 0.2];
 
 		var rootEntity = goo.world.createEntity(meshData, material);
-		rootEntity.transformComponent.transform.translation.setd(dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
-		rootEntity.transformComponent.transform.scale.setd(1, 1, 1);
+		rootEntity.transformComponent.transform.translation.setDirect(dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
+		rootEntity.transformComponent.transform.scale.setDirect(1, 1, 1);
 
 		var chest = goo.world.createEntity(meshData, material);
-		chest.transformComponent.transform.translation.setd(0,1.5,0);
-		chest.transformComponent.transform.scale.setd(1.7, 1.6, 1.3);
+		chest.transformComponent.transform.translation.setDirect(0,1.5,0);
+		chest.transformComponent.transform.scale.setDirect(1.7, 1.6, 1.3);
 		rootEntity.transformComponent.attachChild(chest.transformComponent);
 
 		var armr = goo.world.createEntity(meshData, material);
-		armr.transformComponent.transform.translation.setd(-0.6,-0.2,-0.1);
-		armr.transformComponent.transform.scale.setd(0.3, 0.9, 0.3);
+		armr.transformComponent.transform.translation.setDirect(-0.6,-0.2,-0.1);
+		armr.transformComponent.transform.scale.setDirect(0.3, 0.9, 0.3);
 		chest.transformComponent.attachChild(armr.transformComponent);
 
 		var arml = goo.world.createEntity(meshData, material);
-		arml.transformComponent.transform.translation.setd(0.6,-0.2,-0.1);
-		arml.transformComponent.transform.scale.setd(0.3, 0.9, 0.3);
+		arml.transformComponent.transform.translation.setDirect(0.6,-0.2,-0.1);
+		arml.transformComponent.transform.scale.setDirect(0.3, 0.9, 0.3);
 		chest.transformComponent.attachChild(arml.transformComponent);
 
 		var head = goo.world.createEntity(meshData, material);
-		head.transformComponent.transform.translation.setd(0,2.6,0);
-		head.transformComponent.transform.scale.setd(0.8, 0.8, 0.8);
+		head.transformComponent.transform.translation.setDirect(0,2.6,0);
+		head.transformComponent.transform.scale.setDirect(0.8, 0.8, 0.8);
 		rootEntity.transformComponent.attachChild(head.transformComponent);
 
 		var nose = goo.world.createEntity(meshData, material);
-		nose.transformComponent.transform.translation.setd(0,0,0.7);
-		nose.transformComponent.transform.scale.setd(0.5, 0.5, 0.5);
+		nose.transformComponent.transform.translation.setDirect(0,0,0.7);
+		nose.transformComponent.transform.scale.setDirect(0.5, 0.5, 0.5);
 		head.transformComponent.attachChild(nose.transformComponent);
 
 		addMovementToEntity(rootEntity, worldFittedTerrainScript);
@@ -249,7 +249,7 @@ require([
 		material.uniforms.materialSpecularPower = 0.1;
 
 		var surfaceEntity = gooWorld.createEntity(meshData, material, id);
-		surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+		surfaceEntity.transformComponent.transform.translation.setDirect(dimensions.minX, dimensions.minY, dimensions.minZ);
 		surfaceEntity.transformComponent.setUpdated();
 		surfaceEntity.addToWorld();
 	}
@@ -259,7 +259,7 @@ require([
 		var material = new Material(ShaderLib.simpleLit, '');
 		material.wireframe = true;
 		var surfaceEntity = EntityUtils.createTypicalEntity(gooWorld, meshData, material, id);
-		surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+		surfaceEntity.transformComponent.transform.translation.setDirect(dimensions.minX, dimensions.minY, dimensions.minZ);
 		surfaceEntity.transformComponent.setUpdated();
 		surfaceEntity.addToWorld();
 	}
