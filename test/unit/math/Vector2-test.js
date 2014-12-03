@@ -213,6 +213,15 @@ define([
 			});
 		});
 
+		describe('dotVector', function () {
+			it('can calculate dot products', function () {
+				var a = new Vector2(1, 2);
+				var b = new Vector2(1, 2);
+
+				expect(a.dotVector(b)).toEqual(5);
+			});
+		});
+
 		it('can be normalized', function () {
 			var a = new Vector2();
 

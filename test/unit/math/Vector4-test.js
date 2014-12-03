@@ -212,6 +212,15 @@ define([
 			expect(Vector4.dot(a, b)).toEqual(40);
 		});
 
+		describe('dotVector', function () {
+			it('can calculate dot products', function () {
+				var a = new Vector4(1, 2, 3, 4);
+				var b = new Vector4(2, 3, 4, 5);
+
+				expect(a.dotVector(b)).toEqual(40);
+			});
+		});
+
 		it('can linearly interpolate', function () {
 			var a = new Vector4(0, 0, 0, 0);
 			var b = new Vector4(1, 1, 1, 1);
