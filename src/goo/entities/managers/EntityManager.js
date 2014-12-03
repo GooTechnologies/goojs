@@ -14,6 +14,8 @@ define([
 	 * @extends Manager
 	 */
 	function EntityManager() {
+		Manager.call(this);
+
 		this.type = 'EntityManager';
 
 		this._entitiesById = new Map();

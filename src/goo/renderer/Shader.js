@@ -94,6 +94,7 @@ function (
 		 */
 		this.textureSlots = [];
 		this.textureSlotsNaming = {};
+		this.textureIndex = 0;
 
 		this.currentCallbacks = {};
 
@@ -103,7 +104,7 @@ function (
 		this.defines = shaderDefinition.defines || {};
 		this.attributes = shaderDefinition.attributes || {};
 		this.uniforms = shaderDefinition.uniforms || {};
-		this.defineKey = shaderDefinition.defineKey;
+		this.defineKey = shaderDefinition.defineKey || '';
 		this.defineKeyDirty = true;
 		this.frameStart = true;
 		this.attributeKeys = null;
@@ -121,18 +122,23 @@ function (
 		 */
 		this.renderQueue = RenderQueue.OPAQUE;
 
-		this._id = Shader.id++;
+		// this._id = Shader.id++;
+		if (Shader.cache.has(shaderDefinition)) {
+			this._id = Shader.cache.get(shaderDefinition);
+		} else {
+			this._id = Shader.cache.size;
+			Shader.cache.set(shaderDefinition, this._id);
+		}
+		// console.log('creating shader', this._id, shaderDefinition);
 
 		this.errorOnce = false;
 
-		// if (this.builder) {
-		// 	this.builder(this, {renderable:{}, lights: []});
-		// }
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 	}
 
-	Shader.id = 0;
+	// Shader.id = 0;
+	Shader.cache = new Map();
 
 	Shader.prototype.clone = function () {
 		return new Shader(this.name, Util.clone({

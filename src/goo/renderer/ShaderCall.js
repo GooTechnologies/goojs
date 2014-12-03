@@ -107,7 +107,7 @@ function () {
 	ShaderCall.prototype.uniform2f = function (v0, v1) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 2 && curValue[0] === v0 && curValue[1] === v1) {
+			if (curValue[0] === v0 && curValue[1] === v1) {
 				return;
 			}
 		}
@@ -134,7 +134,7 @@ function () {
 	ShaderCall.prototype.uniform2i = function (v0, v1) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 2 && curValue[0] === v0 && curValue[1] === v1) {
+			if (curValue[0] === v0 && curValue[1] === v1) {
 				return;
 			}
 		}
@@ -156,7 +156,7 @@ function () {
 	ShaderCall.prototype.uniform3f = function (v0, v1, v2) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
 		} else {
@@ -187,7 +187,7 @@ function () {
 	ShaderCall.prototype.uniform3i = function (v0, v1, v2) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
 		}
@@ -209,7 +209,7 @@ function () {
 	ShaderCall.prototype.uniform4f = function (v0, v1, v2, v3) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
 				return;
 			}
 		}
@@ -236,7 +236,7 @@ function () {
 	ShaderCall.prototype.uniform4i = function (v0, v1, v2, v3) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
 				return;
 			}
 		}
@@ -254,18 +254,6 @@ function () {
 		this.context.uniform4iv(this.location, values);
 		this.location.value = values.slice();
 	};
-
-	function compareMatrices(e1, e2, size) {
-		if (size < 0) {
-			return false;
-		}
-		while(size--) {
-			if(e1[size] !== e2[size]) {
-				return false;
-			}
-		}
-		return true;
-	}
 
 	function compareArrays(a1, a2) {
 		var l = a1.length;
@@ -300,7 +288,7 @@ function () {
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 4);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {
@@ -336,7 +324,7 @@ function () {
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 9);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {
@@ -371,7 +359,7 @@ function () {
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 16);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {

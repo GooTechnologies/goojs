@@ -28,6 +28,7 @@ function (
 		this.enabled = true;
 		this.clear = true;
 		this.needsSwap = false;
+		this.viewportSize = undefined;
 	}
 
 	RenderPass.prototype = Object.create(Pass.prototype);

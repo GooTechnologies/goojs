@@ -104,9 +104,12 @@ function (
 		this.updateCallback = null;
 		this.readyCallback = null;
 
+		this.image = null;
 		if (image) {
 			this.setImage(image, width, height, settings);
 		}
+
+		this.textureRecord = {};
 	}
 
 	/**

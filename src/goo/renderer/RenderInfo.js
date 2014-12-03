@@ -23,6 +23,7 @@ function (
 	 */
 
 	RenderInfo.prototype.reset = function () {
+		this.renderable = null;
 		this.lights = null;
 		this.materials = null;
 		this.meshData = null;
