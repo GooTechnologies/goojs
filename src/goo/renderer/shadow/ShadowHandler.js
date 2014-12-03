@@ -1,4 +1,5 @@
 define([
+	'goo/renderer/Capabilities',
 	'goo/math/Vector3',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/Camera',
@@ -12,6 +13,7 @@ define([
 ],
 /** @lends */
 function (
+	Capabilities,
 	Vector3,
 	FullscreenPass,
 	Camera,

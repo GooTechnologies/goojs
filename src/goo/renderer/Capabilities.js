@@ -4,11 +4,24 @@ function () {
 	'use strict';
 
 	/**
-	 * @class The purpose of this class is to xxx
+	 * @class Enabled and stores webgl extensions and capabilities
 
 	 * Extensions
-	 * @property {object} CompressedTextureS3TC Supports S3TC (DXT) compression
-	 * ... fill up with the rest
+	 * @property {object} CompressedTextureS3TC Supports S3TC (DXT) compression, WEBGL_compressed_texture_s3tc
+	 * @property {object} TextureFloat Supports floating point textures, OES_texture_float
+	 * @property {object} TextureFloatLinear Supports linear filtering of floating point textures, OES_texture_float_linear
+	 * @property {object} TextureHalfFloat
+	 * @property {object} TextureHalfFloatLinear
+	 * @property {object} StandardDerivatives
+	 * @property {object} TextureFilterAnisotropic
+	 * @property {object} DepthTexture
+	 * @property {object} ElementIndexUInt
+	 * @property {object} InstancedArrays
+	 * @property {object} BlendMinmax
+	 * @property {object} FragDepth
+	 * @property {object} ShaderTextureLod
+	 * @property {object} VertexArrayObject
+	 * @property {object} DrawBuffers
 
 	 * Properties
 	 * @property {number} maxTexureSize Maximum 2D texture size
@@ -114,13 +127,11 @@ function () {
 		Capabilities.fragmentShaderHighpInt = context.getShaderPrecisionFormat(context.FRAGMENT_SHADER, context.HIGH_INT);
 		Capabilities.fragmentShaderMediumpInt = context.getShaderPrecisionFormat(context.FRAGMENT_SHADER, context.MEDIUM_INT);
 		Capabilities.fragmentShaderLowpInt = context.getShaderPrecisionFormat(context.FRAGMENT_SHADER, context.LOW_INT);
-	
-		console.log(Capabilities.getCapabilitiesString());
 	};
 
 	/**
-	 * TODO
-	 * @returns {string} TODO
+	 * Gets a string representation of the current capabilities
+	 * @return {string} string representation of capabilities
 	 */
 	Capabilities.getCapabilitiesString = function () {
 		var caps = [];
@@ -129,7 +140,7 @@ function () {
 		};
 		for (var name in Capabilities) {
 			var cap = Capabilities[name];
-			if (cap instanceof Function) {
+			if (cap instanceof Function || (typeof cap === 'object' && !(cap instanceof Array || isArrayBufferView(cap)))) {
 				continue;
 			}
 			var str = '';
