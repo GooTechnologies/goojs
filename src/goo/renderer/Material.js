@@ -233,7 +233,7 @@ function (
 
 	/** 
 	 * Clears the shader cache.
-	 * @deprecated Deprecated since x and scheduled for removal in x
+	 * @deprecated Deprecated since 0.12.0 and scheduled for removal in 0.14.0
 	 */
 	Material.clearShaderCache = function () {
 	};

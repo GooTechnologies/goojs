@@ -255,18 +255,6 @@ function () {
 		this.location.value = values.slice();
 	};
 
-	function compareMatrices(e1, e2, size) {
-		if (size < 0) {
-			return false;
-		}
-		while(size--) {
-			if(e1[size] !== e2[size]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	function compareArrays(a1, a2) {
 		var l = a1.length;
 		while(l--) {
@@ -300,7 +288,7 @@ function () {
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 4);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {
@@ -336,7 +324,7 @@ function () {
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 9);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {
@@ -371,7 +359,7 @@ function () {
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 16);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {
