@@ -17,7 +17,7 @@ define([
 				expect(new Vector4()).toBeCloseToVector(Vector4.ZERO);
 			});
 
-			it('creates a vector when given 2 parameters', function () {
+			it('creates a vector when given 4 parameters', function () {
 				var vector = new Vector4(11, 22, 33, 44);
 				var expected = new Vector4();
 
