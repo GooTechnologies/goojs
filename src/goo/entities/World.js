@@ -162,6 +162,7 @@ function (
 	World.prototype.registerComponent = function (componentConstructor) {
 		if (this._components.indexOf(componentConstructor) === -1) {
 			this._components.push(componentConstructor);
+			Component.applyEntitySelectionAPI(componentConstructor.entitySelectionAPI, componentConstructor.type);
 		}
 		return this;
 	};

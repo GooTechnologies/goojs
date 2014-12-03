@@ -16,7 +16,8 @@ define([
 	'goo/entities/systems/ScriptSystem',
 	'goo/entities/Entity',
 	'goo/entities/systems/TransformSystem',
-	'goo/entities/managers/Manager'
+	'goo/entities/managers/Manager',
+	'goo/entities/EntitySelection'
 ], function (
 	World,
 	System,
@@ -35,7 +36,8 @@ define([
 	ScriptSystem,
 	Entity,
 	TransformSystem,
-	Manager
+	Manager,
+	EntitySelection
 ) {
 	'use strict';
 
@@ -201,7 +203,7 @@ define([
 					viewportHeight: null
 				}
 			};
-			world.add(new ScriptSystem(world))
+			world.add(new ScriptSystem(world));
 
 
 			var camera = new Camera();
@@ -295,6 +297,70 @@ define([
 
 			expect(a).toEqual(123);
 			expect(b).toEqual(0);
+		});
+
+		describe('with EntitySelection', function () {
+			// if this is useful provide it in some test-util class
+			function getSuperSpy() {
+				// we need a spy that can track on what object it has been called
+				// sadly jasmine spies are not self aware
+				var history = [];
+
+				function superSpy() {
+					var entry = {
+						this_: this,
+						arguments_: Array.prototype.slice.call(arguments, 0) // proper array
+					};
+					history.push(entry);
+				}
+
+				superSpy.calls = {
+					argsFor: function (index) {
+						return history[index].arguments_;
+					},
+					thisFor: function (index) {
+						return history[index].this_;
+					},
+					count: function () {
+						return history.length;
+					}
+				};
+
+				return superSpy;
+			}
+
+			it('installs component methods on EntitySelection', function () {
+				var spyA = getSuperSpy();
+				var spyB = getSuperSpy();
+
+				function CoconutComponent() {
+					this.type = 'CoconutComponent';
+				}
+
+				CoconutComponent.type = 'CoconutComponent';
+
+				CoconutComponent.entitySelectionAPI = {
+					a: spyA,
+					b: spyB
+				};
+
+				CoconutComponent.prototype = Object.create(Component.prototype);
+				CoconutComponent.prototype.constructor = CoconutComponent;
+
+				var world = new World();
+				world.registerComponent(CoconutComponent);
+
+				var entity1 = new Entity().setComponent(new CoconutComponent());
+				var entity2 = new Entity();
+				var entity3 = new Entity().setComponent(new CoconutComponent());
+
+				new EntitySelection(entity1, entity2, entity3).a(123, 456);
+
+				expect(spyA.calls.count()).toEqual(2);
+				expect(spyA.calls.thisFor(0)).toEqual(entity1);
+				expect(spyA.calls.thisFor(1)).toEqual(entity3);
+				expect(spyA.calls.argsFor(0)).toEqual([123, 456]);
+			});
 		});
 	});
 

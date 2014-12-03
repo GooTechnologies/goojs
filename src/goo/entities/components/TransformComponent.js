@@ -59,6 +59,8 @@ function (
 	TransformComponent.prototype = Object.create(Component.prototype);
 	TransformComponent.prototype.constructor = TransformComponent;
 
+	//! AT: can this stay not on the prototype, but on the constructor?
+	// it would require Transform.prototype.constructor = TransformComponent; (for all components)
 	TransformComponent.prototype.api = {
 		setTranslation: function () {
 			TransformComponent.prototype.setTranslation.apply(this.transformComponent, arguments);
@@ -211,6 +213,11 @@ function (
 		isHidden: function () {
 			return this._hidden;
 		}
+	};
+
+	TransformComponent.entitySelectionAPI = {
+		hide: TransformComponent.prototype.api.hide,
+		show: TransformComponent.prototype.api.show
 	};
 
 	var tmpVec = new Vector3();
