@@ -186,6 +186,20 @@ function (
 	};
 
 	/**
+	 * Updates the normal matrix. This is done automatically by the engine.
+	 */
+	Transform.prototype.updateNormalMatrix = function () {
+		//!RH: Make normal matrix be a 3x3 instead?
+		var scale = this.scale;
+		if (scale.x !== scale.y || scale.x !== scale.z) {
+			Matrix4x4.invert(this.matrix, this.normalMatrix);
+			Matrix4x4.transpose(this.normalMatrix, this.normalMatrix);
+		} else {
+			this.normalMatrix.copy(this.matrix);
+		}
+	};
+
+	/**
 	 * Copy supplied transform into this transform
 	 * @param {Transform} transform
 	 */

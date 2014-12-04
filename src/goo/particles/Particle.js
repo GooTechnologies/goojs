@@ -107,19 +107,19 @@ function (
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
 
 		// bottom right point
-		Vector3.subv(this.position, this.bbX, calcVec).subVector(this.bbY);
+		calcVec.setVector(this.position).subVector(this.bbX).subVector(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 0);
 
 		// top right point
-		Vector3.subv(this.position, this.bbX, calcVec).addVector(this.bbY);
+		calcVec.setVector(this.position).subVector(this.bbX).addVector(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 3);
 
 		// top left point
-		Vector3.addv(this.position, this.bbX, calcVec).addVector(this.bbY);
+		calcVec.setVector(this.position).addVector(this.bbX).addVector(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 6);
 
 		// bottom left corner
-		Vector3.addv(this.position, this.bbX, calcVec).subVector(this.bbY);
+		calcVec.setVector(this.position).addVector(this.bbX).subVector(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 9);
 
 		if (this.lastUVIndex !== this.uvIndex) {

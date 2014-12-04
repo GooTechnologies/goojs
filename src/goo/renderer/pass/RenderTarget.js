@@ -43,6 +43,8 @@ define(['goo/math/Vector2'],
 
 		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
 		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
+
+		this.textureRecord = {};
 	}
 
 	RenderTarget.prototype.clone = function () {

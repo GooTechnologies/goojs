@@ -60,11 +60,11 @@ require([
 	var transform = new Transform();
 
 	var shape1MeshData = new Sphere();
-	transform.translation.setd(2, 0, 0);
+	transform.translation.setDirect(2, 0, 0);
 	transform.update();
 	shape1MeshData.applyTransform(MeshData.POSITION, transform);
 	var shape2MeshData = new Quad();
-	transform.translation.setd(0, 2, 0);
+	transform.translation.setDirect(0, 2, 0);
 	transform.update();
 	shape1MeshData.applyTransform(MeshData.POSITION, transform);
 

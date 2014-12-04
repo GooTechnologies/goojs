@@ -940,6 +940,7 @@ function (
 			&& meshData.indexData.data.byteLength === 0) {
 			return;
 		}
+
 		this.bindData(meshData.vertexData);
 
 		var materials = renderInfo.materials;
@@ -1407,10 +1408,6 @@ function (
 		var context = this.context;
 
 		var texrecord = texture.textureRecord;
-		if (texrecord === undefined) {
-			texrecord = {};
-			texture.textureRecord = texrecord;
-		}
 
 		var glType = this.getGLType(texture.variant);
 		if (texrecord.magFilter !== texture.magFilter) {
@@ -1931,13 +1928,18 @@ function (
 			this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
 			targetBuffer.buffer = buffer;
 			targetBuffer.valid = true;
+			if (target === 'ArrayBuffer') {
+				this.rendererRecord.attributeCache.length = 0;
+			}
 		}
 	};
 
-	// Was: function (attribIndex, attribute, record)
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
-		// this.context.enableVertexAttribArray(attribIndex);
-		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
+		var hashKey = this.rendererRecord.attributeCache[attribIndex];
+		if (hashKey !== attribute.hashKey) {
+			this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
+			this.rendererRecord.attributeCache[attribIndex] = attribute.hashKey;
+		}
 	};
 
 	Renderer.prototype.getGLDataType = function (type) {

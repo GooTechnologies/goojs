@@ -58,7 +58,6 @@ require([
 
 
     function addSpheres(goo, worldFittedTerrainScript, dims) {
-        /*jshint loopfunc: true */
         var meshData = new Sphere(32, 32);
 
         var nSpheres = 4;
@@ -71,8 +70,8 @@ require([
                 Math.cos(k + Math.PI / 3 * 4) * 0.5 + 0.5
             ];
             var sphereEntity = goo.world.createEntity(meshData, material);
-            sphereEntity.transformComponent.transform.translation.setd(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
-			sphereEntity.transformComponent.transform.scale.setd(1, 5, 2);
+			sphereEntity.transformComponent.transform.translation.setDirect(i+dims.minX*0.5+dims.maxX*0.5, dims.maxY*0.5+dims.minY*0.5, dims.maxZ*0.5+dims.minZ*0.5);
+			sphereEntity.transformComponent.transform.scale.setDirect(1, 5, 2);
 
 			sphereEntity.setComponent(new MovementComponent());
 			var groundBoundMovementScript = new GroundBoundMovementScript();
@@ -106,7 +105,6 @@ require([
     }
 
 	function addNormalPointers(goo, worldFittedTerrainScript, dims) {
-		/*jshint loopfunc: true */
 		var meshData = new Sphere(32, 32);
 
 		var nSpheres = 20;
@@ -124,8 +122,8 @@ require([
 			var pz = dims.minZ+(i/nSpheres*(dims.maxZ-dims.minZ));
 			var py = worldFittedTerrainScript.getTerrainHeightAt([px, dims.minY, pz]);
 
-			sphereEntity.transformComponent.transform.translation.setd(px,py,pz);
-			sphereEntity.transformComponent.transform.scale.setd(0.3, 0.3, 3);
+			sphereEntity.transformComponent.transform.translation.setDirect(px,py,pz);
+			sphereEntity.transformComponent.transform.scale.setDirect(0.3, 0.3, 3);
 
 			var normal = worldFittedTerrainScript.getTerrainNormalAt([px, py, pz]);
 			sphereEntity.transformComponent.transform.rotation.lookAt(normal, Vector3.UNIT_Y);
@@ -161,7 +159,7 @@ require([
         material.uniforms.materialSpecularPower = 0.1;
 
         var surfaceEntity = gooWorld.createEntity(meshData, material, id);
-        surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+        surfaceEntity.transformComponent.transform.translation.setDirect(dimensions.minX, dimensions.minY, dimensions.minZ);
         surfaceEntity.transformComponent.setUpdated();
         surfaceEntity.addToWorld();
     }
@@ -171,7 +169,7 @@ require([
         var material = new Material(ShaderLib.simpleLit);
         material.wireframe = true;
         var surfaceEntity = gooWorld.createEntity(meshData, material, id);
-        surfaceEntity.transformComponent.transform.translation.setd(dimensions.minX, dimensions.minY, dimensions.minZ);
+        surfaceEntity.transformComponent.transform.translation.setDirect(dimensions.minX, dimensions.minY, dimensions.minZ);
         surfaceEntity.transformComponent.setUpdated();
         surfaceEntity.addToWorld();
     }
