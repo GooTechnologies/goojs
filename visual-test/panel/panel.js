@@ -3,7 +3,7 @@
 
 	var IFRAME_WIDTH = 384;
 	var IFRAME_HEIGHT = 256;
-	var MAX_IFRAMES = 4;
+	var MAX_IFRAMES = 12;
 
 	var vtList = adaptUrls(window.vtUrls.all.slice(0));
 
