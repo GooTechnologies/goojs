@@ -63,7 +63,7 @@ define([],
 
 	/**
 	 * Applies a function on each element until `false` is returned
-	 * @param fun The function to apply
+	 * @param {Function} fun The function to apply
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.each = function (fun) {
