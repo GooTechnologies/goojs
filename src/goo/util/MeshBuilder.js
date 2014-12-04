@@ -1,21 +1,21 @@
 define([
         'goo/renderer/MeshData',
         'goo/math/Vector3',
-        // 'goo/math/Matrix3x3',
+        // 'goo/renderer/Capabilities',
         'goo/entities/EntityUtils'
         ],
 	/** @lends */
 	function (
 		MeshData,
 		Vector3,
-		// Matrix3x3,
+		// Capabilities,
 		EntityUtils
 	) {
 	'use strict';
 
 	/**
 	 * @class Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.
-	 * Combination is currently limited to 65536 vertices.
+	 * Combination is currently limited to 65536 vertices if you don't have the OES_element_index_uint extension.
 	 * Keep in mind that combined MeshData can only use one diffuse color texture, so this is best suited for MeshData that can share the same texture.
 	 * @example
 	 * var meshBuilder = new MeshBuilder();
@@ -77,6 +77,7 @@ define([
 	 * @param {MeshData} meshData
 	 */
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
+		// TODO: check Capabilities when that is merged to master
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
 		} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
@@ -213,7 +214,6 @@ define([
 	/**
 	 * build the unified MeshData from all the added MeshData so far and then reset in the internal state.
 	 * @return {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
-	 * In the future we might create multiple entries if we hit the 65536 vertices limit instead of throwing an error.
 	 */
 	MeshBuilder.prototype.build = function () {
 		if (this.vertexCounter > 0) {
