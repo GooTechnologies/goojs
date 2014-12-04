@@ -80,6 +80,12 @@ define([],
 	};
 
 	/**
+	 * Alias for `each`
+	 * @type {Function}
+	 */
+	Selection.prototype.forEach = Selection.prototype.each;
+
+	/**
 	 * Applies a filter on the elements of this selection
 	 * @param predicate The filter used for filtering
 	 * @returns {Selection} Returns self to allow chaining

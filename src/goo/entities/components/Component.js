@@ -1,6 +1,6 @@
-define(
+define(['goo/entities/EntitySelection'],
 	/** @lends */
-	function () {
+function (EntitySelection) {
 	'use strict';
 
 	/**
@@ -52,6 +52,20 @@ define(
 		this.installedAPI.forEach(function (key) {
 			delete entity[key];
 		});
+	};
+
+	Component.applyEntitySelectionAPI = function (entitySelectionAPI, componentType) {
+		if (!entitySelectionAPI) { return; }
+
+		var keys = Object.keys(entitySelectionAPI);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			if (typeof EntitySelection[key] === 'undefined') {
+				EntitySelection.installMethod(entitySelectionAPI[key], key, componentType);
+			} else {
+				console.warn('Could not install method ' + key + ' on EntitySelection as it is already taken');
+			}
+		}
 	};
 
 	return Component;

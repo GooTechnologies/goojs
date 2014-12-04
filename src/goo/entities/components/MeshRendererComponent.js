@@ -66,6 +66,8 @@ define([
 		this._renderDistance = 0;
 	}
 
+	MeshRendererComponent.type = 'MeshRendererComponent';
+
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
 	MeshRendererComponent.prototype.constructor = MeshRendererComponent;
 
@@ -101,6 +103,10 @@ define([
 		getDiffuse: function () {
 			return this.meshRendererComponent.materials[0].uniforms.materialDiffuse;
 		}
+	};
+
+	MeshRendererComponent.entitySelectionAPI = {
+		setDiffuse: MeshRendererComponent.prototype.api.setDiffuse
 	};
 
 	/**
