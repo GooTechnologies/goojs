@@ -460,7 +460,7 @@ define([
      * @param onClick
      */
     V.button = function (text, onClick) {
-        if (V.deterministic) { return; }
+        if (V.deterministic || V.minimal) { return; }
 
         var panel = document.getElementById('vt-panel');
         if (!panel) {
