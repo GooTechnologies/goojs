@@ -289,7 +289,7 @@ function (
 			'uniform mat4 viewMatrix;',
 			'uniform mat4 projectionMatrix;',
 			'uniform mat4 worldMatrix;',
-			'uniform mat4 normalMatrix;',
+			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 			'uniform float waterScale;',
 
@@ -303,8 +303,8 @@ function (
 
 			'	texCoord0 = worldPos.xz * waterScale;',
 
-			'	vec3 n = normalize((normalMatrix * vec4(vertexNormal.x, vertexNormal.y, -vertexNormal.z, 0.0)).xyz);',
-			'	vec3 t = normalize((normalMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+			'	vec3 n = normalize(normalMatrix * vec3(vertexNormal.x, vertexNormal.y, -vertexNormal.z));',
+			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
 			'	vec3 b = cross(n, t) * vertexTangent.w;',
 			'	mat3 rotMat = mat3(t, b, n);',
 

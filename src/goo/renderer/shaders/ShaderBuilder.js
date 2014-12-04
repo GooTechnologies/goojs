@@ -882,7 +882,7 @@ function(
 
 			'wMatrix = wMatrix * mat / mat[3][3];',
 			'#ifdef NORMAL',
-				'nMatrix = nMatrix * mat / mat[3][3];',
+				'nMatrix = nMatrix * mat3(mat) / mat[3][3];',
 			'#endif',
 			'#endif'
 		].join('\n')

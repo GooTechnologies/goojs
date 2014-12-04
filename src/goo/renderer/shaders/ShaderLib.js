@@ -99,7 +99,7 @@ define([
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
-			'uniform mat4 normalMatrix;',
+			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 
 			'varying vec3 vWorldPos;',
@@ -122,7 +122,7 @@ define([
 			'void main(void) {',
 				'mat4 wMatrix = worldMatrix;',
 				'#ifdef NORMAL',
-					'mat4 nMatrix = normalMatrix;',
+					'mat3 nMatrix = normalMatrix;',
 				'#endif',
 				ShaderBuilder.animation.vertex,
 				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
@@ -132,10 +132,10 @@ define([
 				'viewPosition = cameraPosition - worldPos.xyz;',
 
 				'#ifdef NORMAL',
-				'	normal = normalize((nMatrix * vec4(vertexNormal, 0.0)).xyz);',
+				'	normal = normalize(nMatrix * vertexNormal);',
 				'#endif',
 				'#ifdef TANGENT',
-				'	tangent = normalize((nMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+				'	tangent = normalize(nMatrix * vertexTangent.xyz);',
 				'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 				'#endif',
 				'#ifdef COLOR',
@@ -1163,7 +1163,7 @@ define([
 		'uniform mat4 worldMatrix;',
 		'uniform float cameraFar;',
 		'uniform float thickness;',
-		'uniform mat4 normalMatrix;',
+		'uniform mat3 normalMatrix;',
 
 		ShaderBuilder.animation.prevertex,
 
@@ -1172,7 +1172,7 @@ define([
 		'void main() {',
 
 			'#ifdef NORMAL',
-				'mat4 nMatrix = normalMatrix;',
+				'mat3 nMatrix = normalMatrix;',
 			'#endif',
 
 			'mat4 wMatrix = worldMatrix;',
