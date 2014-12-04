@@ -205,6 +205,10 @@ function(
 
 			shader.setDefine('SKIP_SPECULAR', true);
 			ShaderBuilder.uber.normalTangents(shader, shaderInfo);
+
+			var bound = shaderInfo.renderable.meshDataComponent.modelBound;
+			shader.uniforms.bmin = [bound.min.x, bound.min.y, bound.min.z];
+			shader.uniforms.bmax = [bound.max.x, bound.max.y, bound.max.z];
 		}
 	};
 
