@@ -7,21 +7,21 @@ function () {
 	 * @class Enabled and stores webgl extensions and capabilities
 
 	 * Extensions
-	 * @property {object} CompressedTextureS3TC Supports S3TC (DXT) compression, WEBGL_compressed_texture_s3tc
-	 * @property {object} TextureFloat Supports floating point textures, OES_texture_float
-	 * @property {object} TextureFloatLinear Supports linear filtering of floating point textures, OES_texture_float_linear
-	 * @property {object} TextureHalfFloat
-	 * @property {object} TextureHalfFloatLinear
-	 * @property {object} StandardDerivatives
-	 * @property {object} TextureFilterAnisotropic
-	 * @property {object} DepthTexture
-	 * @property {object} ElementIndexUInt
-	 * @property {object} InstancedArrays
-	 * @property {object} BlendMinmax
-	 * @property {object} FragDepth
-	 * @property {object} ShaderTextureLod
-	 * @property {object} VertexArrayObject
-	 * @property {object} DrawBuffers
+	 * @property {object} CompressedTextureS3TC S3TC (DXT) compression, WEBGL_compressed_texture_s3tc
+	 * @property {object} TextureFloat Floating point textures, OES_texture_float
+	 * @property {object} TextureFloatLinear Linear filtering of floating point textures, OES_texture_float_linear
+	 * @property {object} TextureHalfFloat 16-bit floating point textures, OES_texture_half_float
+	 * @property {object} TextureHalfFloatLinear Linear filtering of 16-bit floating point textures, OES_texture_half_float_linear
+	 * @property {object} StandardDerivatives Enabled dFdx/dFdy/fwidth in fragment shaders, OES_standard_derivatives
+	 * @property {object} TextureFilterAnisotropic Anisotropic filtering of textures, EXT_texture_filter_anisotropic
+	 * @property {object} DepthTexture Depth textures, WEBGL_depth_texture
+	 * @property {object} ElementIndexUInt 32-bit index buffers, OES_element_index_uint
+	 * @property {object} InstancedArrays Instanced arrays, ANGLE_instanced_arrays
+	 * @property {object} BlendMinmax BlendMinmax, EXT_blend_minmax
+	 * @property {object} FragDepth FragDepth, EXT_frag_depth
+	 * @property {object} ShaderTextureLod ShaderTextureLod, EXT_shader_texture_lod
+	 * @property {object} VertexArrayObject VertexArrayObject, OES_vertex_array_object
+	 * @property {object} DrawBuffers Multiple rendertargets, WEBGL_draw_buffers
 
 	 * Properties
 	 * @property {number} maxTexureSize Maximum 2D texture size
