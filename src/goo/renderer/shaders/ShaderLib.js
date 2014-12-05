@@ -148,16 +148,16 @@ define([
 				'vec3 vpos = vertexPosition;',
 				'vec3 vnorm = vertexNormal;',
 
-				// 'vec3 lim = mods * M_PI * 2.0 * (vpos - bmin) / (bmax - bmin);',
-				'vec3 lim = M_PI * 2.0 * (vpos) / (bmax - bmin);',
+				// 'vec3 lim = M_PI * 2.0 * (vpos) / (bmax - bmin);',
 
-				'vpos.y += bmin.y;',
+				// 'vpos.z += 5.0;',
+				// 'vpos.y += bmin.y;',
 
-				'mat3 rotmat = mat3(0.0);',
+				// 'mat3 rotmat = mat3(0.0);',
 
-				'rotmat = rotationMatrix(vec3(0.0, 1.0, 0.0), (lim.x) * mods.x);',
-				'vpos = rotmat * vpos;',
-				'vnorm = rotmat * vnorm;',
+				// 'rotmat = rotationMatrix(vec3(0.0, 1.0, 0.0), (lim.x) * mods.x);',
+				// 'vpos = rotmat * vpos;',
+				// 'vnorm = rotmat * vnorm;',
 				// 'rotmat = rotationMatrix(vec3(0.0, 1.0, 0.0), lim.z * mods.x);',
 				// 'vpos = rotmat * vpos;',
 				// 'vnorm = rotmat * vnorm;',
@@ -165,7 +165,8 @@ define([
 				// 'vpos = rotmat * vpos;',
 				// 'vnorm = rotmat * vnorm;',
 
-				'vpos.y -= bmin.y;',
+				// 'vpos.z -= 5.0;',
+				// 'vpos.y -= bmin.y;',
 
 				'vec4 worldPos = wMatrix * vec4(vpos, 1.0);',
 				'vWorldPos = worldPos.xyz;',
