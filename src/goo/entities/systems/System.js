@@ -37,6 +37,7 @@ function () {
 	 * @param entity
 	 */
 	System.prototype.added = function (entity) {
+		//! AT: added shouldn't call _check as it doesn't need to do as much as _check
 		this._check(entity);
 	};
 
@@ -45,6 +46,7 @@ function () {
 	 * @param entity
 	 */
 	System.prototype.changed = function (entity) {
+		//! AT: can directly say: System.prototype.changed = _check;
 		this._check(entity);
 	};
 

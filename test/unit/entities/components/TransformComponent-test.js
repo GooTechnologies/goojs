@@ -1,6 +1,7 @@
 define([
 	'goo/entities/World',
 	'goo/entities/components/TransformComponent',
+	'goo/entities/systems/TransformSystem',
 	'goo/math/Matrix3x3',
 	'goo/math/Vector3',
 	'goo/entities/Entity',
@@ -12,6 +13,7 @@ define([
 ], function (
 	World,
 	TransformComponent,
+	TransformSystem,
 	Matrix3x3,
 	Vector3,
 	Entity,
@@ -187,19 +189,23 @@ define([
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 			});
 
 			it('modifies the TransformComponent if it already exists when trying to add a 3 element array', function () {
 				var entity = new Entity(world);
 				var transformComponent = new TransformComponent();
+				var transformSystem = new TransformSystem();
+
 				entity.set(transformComponent);
+				transformSystem.process([entity]);
 
 				var translation = [1, 2, 3];
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBe(transformComponent);
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
+				expect(entity.transformComponent._dirty).toBeTruthy();
 			});
 
 			it('sets a TransformComponent when trying to add a {x, y, z} object', function () {
@@ -208,7 +214,7 @@ define([
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 			});
 
 			it('sets a TransformComponent when trying to add a Transform', function () {
@@ -218,7 +224,7 @@ define([
 				entity.set(transform);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 			});
 
 			it('applies all of the API functions correctly', function(){

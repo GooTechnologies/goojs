@@ -36,6 +36,7 @@ function(
 	 * Ammo is a powerful physics engine converted from the C language project Bullet.
 	 * Use Ammo.js if you need to support any 3D shape (trimesh).
 	 * Also see {@link AmmoSystem}.
+	 * @deprecated Deprecated as of v0.11.x and scheduled for removal in v0.13.0; consider using the Cannon system/component instead.
 	 * @extends Component
 	 * @param {Object} [settings] The settings object can contain the following properties:
 	 * @param {number} [settings.mass=0] (0 means immovable)

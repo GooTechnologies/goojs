@@ -43,6 +43,10 @@ function (
 		this._needsUpdate = true;
 	};
 
+	LightingSystem.prototype.inserted = function (entity) {
+		entity.lightComponent.updateLight(entity.transformComponent.worldTransform);
+	};
+
 	LightingSystem.prototype.process = function (entities) {
 		if (!this.overrideLights) {
 			this.lights.length = 0;

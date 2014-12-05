@@ -1,11 +1,62 @@
 define([
-	'goo/math/Matrix2x2'
+	'goo/math/Matrix2x2',
+	'test/CustomMatchers'
 ], function (
-	Matrix2x2
+	Matrix2x2,
+	CustomMatchers
 ) {
 	'use strict';
 
 	describe('Matrix2x2', function () {
+		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
+		});
+
+		describe('constructor', function () {
+			it('creates an identity matrix when given no parameters', function () {
+				expect(new Matrix2x2()).toBeCloseToMatrix(Matrix2x2.IDENTITY);
+			});
+
+			it('creates a matrix when given 9 parameters', function () {
+				var matrix = new Matrix2x2(11, 22, 33, 44);
+				var expected = new Matrix2x2();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given an array', function () {
+				var matrix = new Matrix2x2([11, 22, 33, 44]);
+				var expected = new Matrix2x2();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given a matrix', function () {
+				var original = new Matrix2x2();
+				for (var i = 0; i < 4; i++) {
+					original.data[i] = (i + 1) * 11;
+				}
+
+				var matrix = new Matrix2x2(original);
+
+				var expected = new Matrix2x2();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+		});
+
 		it('can combine multiple matrices into a single matrix', function () {
 			var a = new Matrix2x2(1, 2, 3, 4);
 			var b = new Matrix2x2(1, 2, 3, 4);

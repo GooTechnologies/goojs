@@ -17,6 +17,51 @@ define([
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
 		});
+
+		describe('constructor', function () {
+			it('creates an identity matrix when given no parameters', function () {
+				expect(new Matrix4x4()).toBeCloseToMatrix(Matrix4x4.IDENTITY);
+			});
+
+			it('creates a matrix when given 9 parameters', function () {
+				var matrix = new Matrix4x4(11, 22, 33, 44, 55, 66, 77, 88, 99, 110, 121, 132, 143, 154, 165, 176);
+				var expected = new Matrix4x4();
+
+				for (var i = 0; i < 16; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given an array', function () {
+				var matrix = new Matrix4x4([11, 22, 33, 44, 55, 66, 77, 88, 99, 110, 121, 132, 143, 154, 165, 176]);
+				var expected = new Matrix4x4();
+
+				for (var i = 0; i < 16; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given a matrix', function () {
+				var original = new Matrix4x4();
+				for (var i = 0; i < 16; i++) {
+					original.data[i] = (i + 1) * 11;
+				}
+
+				var matrix = new Matrix4x4(original);
+
+				var expected = new Matrix4x4();
+
+				for (var i = 0; i < 16; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+		});
 		
 		it('can combine multiple matrices into a single matrix', function () {
 			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);

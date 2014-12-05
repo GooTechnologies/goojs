@@ -25,12 +25,11 @@ function(
 	function ShaderBuilder() {
 	}
 
-	var defaultOffsetRepeat = [0, 0, 1, 1];
 	var defaultLight = new DirectionalLight();
 	defaultLight.translation.setd(10, 10, 10);
 	defaultLight.direction.setd(1, 1, 1).normalize();
-
 	ShaderBuilder.defaultLight = defaultLight;
+
 	ShaderBuilder.SKYBOX = null;
 	ShaderBuilder.SKYSPHERE = null;
 	ShaderBuilder.ENVIRONMENT_TYPE = 0;
@@ -41,8 +40,41 @@ function(
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
 
 	ShaderBuilder.uber = {
+		processor: function (shader, shaderInfo) {
+			var attributeMap = shaderInfo.meshData.attributeMap;
+			var material = shaderInfo.material;
+			var textureMaps = material._textureMaps;
 
-		defines: function(shader, attributeMap) {
+			shader.defines = shader.defines || {};
+
+			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
+
+			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
+				shader.defines.REFLECTIVE = true;
+			} else if (shader.defines.REFLECTIVE !== undefined) {
+				delete shader.defines.REFLECTIVE;
+			}
+
+			if (material.getTexture('LOCAL_ENVIRONMENT')) {
+				material.setTexture('ENVIRONMENT_SPHERE', material.getTexture('LOCAL_ENVIRONMENT'));
+				shader.defines.ENVIRONMENT_TYPE = 0;
+				if (material.getTexture('ENVIRONMENT_CUBE')) {
+					material.removeTexture('ENVIRONMENT_CUBE');
+				}
+			} else {
+				if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
+					material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
+				} else if (material.getTexture('ENVIRONMENT_CUBE')) {
+					material.removeTexture('ENVIRONMENT_CUBE');
+				}
+				if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
+					material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
+					shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
+				} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
+					material.removeTexture('ENVIRONMENT_SPHERE');
+				}
+			}
+
 			var keys = Object.keys(attributeMap);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var attribute = keys[i];
@@ -50,10 +82,7 @@ function(
 					shader.defines[attribute] = true;
 				}
 			}
-			shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || defaultOffsetRepeat;
-		},
 
-		txMaps: function(shader, textureMaps) {
 			var keys = Object.keys(textureMaps);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var type = keys[i];
@@ -69,33 +98,8 @@ function(
 					shader.defines[type] = true;
 				}
 			}
-		},
 
-		reflectivity: function(shader, material) {
-			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
-				shader.defines.REFLECTIVE = true;
-			} else if (shader.defines.REFLECTIVE !== undefined) {
-				delete shader.defines.REFLECTIVE;
-			}
-			shader.defines.REFLECTION_TYPE = material.uniforms.reflectionType !== undefined ? material.uniforms.reflectionType : 0;
-		},
-
-		sky: function(shader, material) {
-			if (ShaderBuilder.SKYBOX && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
-				material.setTexture('ENVIRONMENT_CUBE', ShaderBuilder.SKYBOX);
-			} else if (material.getTexture('ENVIRONMENT_CUBE')) {
-				material.removeTexture('ENVIRONMENT_CUBE');
-			}
-			if (ShaderBuilder.SKYSPHERE && (material.uniforms.reflectivity || material.uniforms.refractivity)) {
-				material.setTexture('ENVIRONMENT_SPHERE', ShaderBuilder.SKYSPHERE);
-				shader.defines.ENVIRONMENT_TYPE = ShaderBuilder.ENVIRONMENT_TYPE;
-			} else if (material.getTexture('ENVIRONMENT_SPHERE')) {
-				material.removeTexture('ENVIRONMENT_SPHERE');
-			}
-
-		},
-
-		uniforms: function(shader, textureMaps) {
+			shader.uniforms.offsetRepeat = shader.uniforms.offsetRepeat || [0, 0, 1, 1];
 			if (textureMaps.DIFFUSE_MAP) {
 				var offset = textureMaps.DIFFUSE_MAP.offset;
 				var repeat = textureMaps.DIFFUSE_MAP.repeat;
@@ -111,9 +115,7 @@ function(
 				shader.uniforms.offsetRepeat[3] = 1;
 				shader.uniforms.lodBias = 0;
 			}
-		},
 
-		attributes: function(shader, attributeMap, textureMaps) {
 			// Exclude in a nicer way
 			var keys = Object.keys(shader.defines);
 			for (var i = 0, l = keys.length; i < l; i++) {
@@ -139,9 +141,6 @@ function(
 				}
 			}
 
-		},
-
-		discard: function(shader, material) {
 			// discard
 			if (material.uniforms.discardThreshold >= 0.0) {
 				shader.defines.DISCARD = true;
@@ -149,9 +148,6 @@ function(
 				delete shader.defines.DISCARD;
 			}
 
-		},
-
-		fog: function(shader) {
 			// fog
 			if (ShaderBuilder.USE_FOG) {
 				shader.defines.FOG = true;
@@ -161,40 +157,6 @@ function(
 				delete shader.defines.FOG;
 			}
 
-		},
-
-		normalTangents: function(shader, shaderInfo) {
-			//TODO: Hacky?
-			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
-				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
-			}
-		},
-
-		processor: function (shader, shaderInfo) {
-			var attributeMap = shaderInfo.meshData.attributeMap;
-			var material = shaderInfo.material;
-			var textureMaps = material._textureMaps;
-
-			shader.defines = shader.defines || {};
-
-			shader.uniforms.clearColor = ShaderBuilder.CLEAR_COLOR;
-
-			ShaderBuilder.uber.reflectivity(shader, material);
-			ShaderBuilder.uber.sky(shader, material);
-
-
-			ShaderBuilder.uber.defines(shader, attributeMap);
-			ShaderBuilder.uber.txMaps(shader, textureMaps);
-
-
-			ShaderBuilder.uber.uniforms(shader, textureMaps);
-
-			ShaderBuilder.uber.attributes(shader, attributeMap, textureMaps);
-
-			ShaderBuilder.uber.discard(shader, material);
-
-			ShaderBuilder.uber.fog(shader);
-
 			// $dan: This is maybe a bit of secret property here for allowing multiplicative ambient on materials.
 			//       It should probably be default, although it'd break too much to just go ahead and change it.
 			if (material.multiplyAmbient) {
@@ -202,7 +164,12 @@ function(
 			}
 
 			shader.defines.SKIP_SPECULAR = true;
-			ShaderBuilder.uber.normalTangents(shader, shaderInfo);
+			shader.defines.REFLECTION_TYPE = material.uniforms.reflectionType !== undefined ? material.uniforms.reflectionType : 0;
+
+			//TODO: Hacky?
+			if (shader.defines.NORMAL && shader.defines.NORMAL_MAP && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
+				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
+			}
 		}
 	};
 

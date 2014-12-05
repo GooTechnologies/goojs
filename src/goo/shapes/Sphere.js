@@ -1,13 +1,11 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/util/Enum',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
 ],
 /** @lends */
 function (
 	MeshData,
-	Enum,
 	Vector3,
 	MathUtils
 ) {
@@ -400,10 +398,15 @@ function (
 		buf[to * 3 + 2] = buf[from * 3 + 2];
 	}
 
-	/** Possible texture wrapping modes: Linear, Projected, Polar
-	 * @type {Enum}
+	/** Possible texture wrapping modes: Linear, Projected, Polar, Chromeball
+	 * @type {Object}
 	 */
-	Sphere.TextureModes = new Enum('Linear', 'Projected', 'Polar', 'Chromeball');
+	Sphere.TextureModes = {
+		Linear: 'Linear',
+		Projected: 'Projected',
+		Polar: 'Polar',
+		Chromeball: 'Chromeball'
+	};
 
 	return Sphere;
 });

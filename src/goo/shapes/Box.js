@@ -1,11 +1,9 @@
 define([
-	'goo/renderer/MeshData',
-	'goo/util/Enum'
+	'goo/renderer/MeshData'
 ],
 	/** @lends */
 	function (
-		MeshData,
-		Enum
+		MeshData
 	) {
 	'use strict';
 
@@ -177,10 +175,13 @@ define([
 		return this;
 	};
 
-	/** Possible texture wrapping modes: Uniform, Dice
-	 * @type {Enum}
+	/** Possible texture wrapping modes: Uniform, Unfolded
+	 * @type {Object}
 	 */
-	Box.TextureModes = new Enum('Uniform', 'Unfolded');
+	Box.TextureModes = {
+		Uniform: 'Uniform',
+		Unfolded: 'Unfolded'
+	};
 
 	return Box;
 });

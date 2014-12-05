@@ -333,7 +333,7 @@ define([
 
 				'#ifndef LIGHT_MAP',
 					'final_color.rgb += totalSpecular;',
-					'final_color.a += min(length(totalSpecular), 1.0);',
+					'final_color.a = min(final_color.a + length(totalSpecular) / 3.0, 1.0);',
 				'#endif',
 
 				'#ifdef FOG',
