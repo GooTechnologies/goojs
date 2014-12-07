@@ -31,20 +31,41 @@ require([
 	var root = world.createEntity().addToWorld();
 	var entity;
 
-	// entity = world.createEntity([0, 0, 2], new Torus(40, 20, 1, 6), material).addToWorld();
+	// entity = world.createEntity([0, 0, 10], new Torus(40, 20, 1, 6), material).addToWorld();
 	// root.attachChild(entity);
 
-	var count = 20;
+	var count = 40;
 	var spread = 1.1;
 	for (var i = 0; i < count; i++) {
-		entity = world.createEntity([(i - count/2) * spread, 0, 0], new Box(1, 1, 1), material).addToWorld();
+		entity = world.createEntity(
+			[
+				(i - count/2) * spread, 
+				0, 
+				0
+			], 
+			new Box(1, 1, 1), material).addToWorld();
 		root.attachChild(entity);
-
-		// for (var j = 0; j < 6; j++) {
-		// 	var childentity = world.createEntity([0, (j - 3) * spread * 2, -5], new Box(0.5, 0.5, 1), material).addToWorld();
-		// 	entity.attachChild(childentity);
-		// }
 	}
+	// for (var i = 0; i < count; i++) {
+	// 	entity = world.createEntity(
+	// 		[
+	// 			0, 
+	// 			(i - count/2) * spread, 
+	// 			0
+	// 		], 
+	// 		new Box(1, 1, 1), material).addToWorld();
+	// 	root.attachChild(entity);
+	// }
+	// for (var i = 0; i < count; i++) {
+	// 	entity = world.createEntity(
+	// 		[
+	// 			0, 
+	// 			0,
+	// 			(i - count/2) * spread
+	// 		], 
+	// 		new Box(1, 1, 1), material).addToWorld();
+	// 	root.attachChild(entity);
+	// }
 
 	world.setSystem(new ModifierSystem());
 
@@ -71,45 +92,45 @@ require([
 	controller = gui.add(data, 'modifierType', [ 'X', 'Y', 'Z' ] );
 	controller.onChange(function(val) {
 		modifierComponent.modifierType = val;
-		modifierComponent.updateValues();
+		modifierComponent.updateVertexModifiers();
 	});
 
 	controller = gui.add(data, 'bend', -1, 1);
 	controller.onChange(function(val) {
 		modifierComponent.bend = val;
-		modifierComponent.updateValues();
+		modifierComponent.updateVertexModifiers();
 	});
 
 	controller = gui.add(data, 'spinx', -1, 1);
 	controller.onChange(function(val) {
 		modifierComponent.spin.x = val;
-		modifierComponent.updateValues();
+		modifierComponent.updateVertexModifiers();
 	});
 	controller = gui.add(data, 'spiny', -1, 1);
 	controller.onChange(function(val) {
 		modifierComponent.spin.y = val;
-		modifierComponent.updateValues();
+		modifierComponent.updateVertexModifiers();
 	});
 	controller = gui.add(data, 'spinz', -1, 1);
 	controller.onChange(function(val) {
 		modifierComponent.spin.z = val;
-		modifierComponent.updateValues();
+		modifierComponent.updateVertexModifiers();
 	});
 
 	controller = gui.add(data, 'offsetx', -10, 10);
 	controller.onChange(function(val) {
 		modifierComponent.offset.x = val;
-		modifierComponent.updateValues();
+		modifierComponent.updateVertexModifiers();
 	});
 	controller = gui.add(data, 'offsety', -10, 10);
 	controller.onChange(function(val) {
 		modifierComponent.offset.y = val;
-		modifierComponent.updateValues();
+		modifierComponent.updateVertexModifiers();
 	});
 	controller = gui.add(data, 'offsetz', -10, 10);
 	controller.onChange(function(val) {
 		modifierComponent.offset.z = val;
-		modifierComponent.updateValues();
+		modifierComponent.updateVertexModifiers();
 	});
 
 });

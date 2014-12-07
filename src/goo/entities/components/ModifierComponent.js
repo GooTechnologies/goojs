@@ -23,7 +23,10 @@ function (
 		Component.call(this);
 		this.type = 'ModifierComponent';
 
-		this.mods = new Map();
+		this.modifierTargets = new Map();
+
+		this.objectModifiers = [];
+		this.vertexModifiers = [];
 
 		this.offset = new Vector3(0, 0, 0);
 		this.bend = 0;
@@ -36,10 +39,12 @@ function (
 	ModifierComponent.prototype = Object.create(Component.prototype);
 	ModifierComponent.prototype.constructor = ModifierComponent;
 
-	ModifierComponent.prototype.api = {
-		// setTranslation: function () {
-			// return this;
-		// },
+	function BendModifier() {
+		this.modifierType = 'Y';
+		this.bendAngle = 0;
+	}
+	BendModifier.prototype.update = function (position, normal, normalizedVert) {
+
 	};
 
 	ModifierComponent.prototype._copyMeshData = function (meshData) {
@@ -56,77 +61,86 @@ function (
 		return newMeshData;
 	};
 
-	ModifierComponent.prototype.updateValues = function () {
+	ModifierComponent.prototype.updateVertexModifiers = function () {
 		var matrix3 = new Matrix3x3();
 		// var matrix4 = new Matrix4x4();
 
-		var lim = new Vector3();
+		var normalizedVert = new Vector3();
 		var calcvec = new Vector3();
 		var calcvec2 = new Vector3();
 		var dirvec = new Vector3();
 
-		this.mods.forEach(function (storeObj) {
-			var posSource = storeObj.origMeshData.getAttributeBuffer(MeshData.POSITION);
-			var posTarget = storeObj.newMeshData.getAttributeBuffer(MeshData.POSITION);
-			var normalSource = storeObj.origMeshData.getAttributeBuffer(MeshData.NORMAL);
-			var normalTarget = storeObj.newMeshData.getAttributeBuffer(MeshData.NORMAL);
+		this.modifierTargets.forEach(function (modifierTarget) {
+			var posSource = modifierTarget.origMeshData.getAttributeBuffer(MeshData.POSITION);
+			var posTarget = modifierTarget.newMeshData.getAttributeBuffer(MeshData.POSITION);
+			var normalSource = modifierTarget.origMeshData.getAttributeBuffer(MeshData.NORMAL);
+			var normalTarget = modifierTarget.newMeshData.getAttributeBuffer(MeshData.NORMAL);
 
-			calcvec.setVector(storeObj.bound.max).subVector(storeObj.bound.min);
+			calcvec.setVector(modifierTarget.bound.max).subVector(modifierTarget.bound.min);
 			// calcvec2.setVector(Vector3.ONE).scale(Math.PI * 4.0).div(calcvec);
 			calcvec2.setVector(Vector3.ONE).scale(2.0).div(calcvec);
 
-			var worldTrans = storeObj.entity.transformComponent.worldTransform.matrix;
-			var worldTransInv = Matrix4x4.invert(storeObj.entity.transformComponent.worldTransform.matrix);
+			var worldTrans = modifierTarget.entity.transformComponent.worldTransform.matrix;
+			var worldTransInv = Matrix4x4.invert(modifierTarget.entity.transformComponent.worldTransform.matrix);
 
 			var viewLength = posSource.length;
-			var vert = new Vector3();
-			var norm = new Vector3();
+			var position = new Vector3();
+			var normal = new Vector3();
+			var modifierCount = this.vertexModifiers.length;
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setDirect(posSource[i + 0], posSource[i + 1], posSource[i + 2]);
-				worldTrans.applyPostPoint(vert);
-				vert.subVector(storeObj.bound.center);
+				position.setDirect(posSource[i + 0], posSource[i + 1], posSource[i + 2]);
+				worldTrans.applyPostPoint(position);
+				position.subVector(modifierTarget.bound.center);
 
-				norm.setDirect(normalSource[i + 0], normalSource[i + 1], normalSource[i + 2]);
-				worldTrans.applyPostVector(norm);
+				normal.setDirect(normalSource[i + 0], normalSource[i + 1], normalSource[i + 2]);
+				worldTrans.applyPostVector(normal);
 
-				lim.setVector(vert);
-				lim.mulVector(calcvec2);
+				normalizedVert.setVector(position);
+				normalizedVert.mulVector(calcvec2);
+
+				for (var j = 0; j < modifierCount; j++) {
+					this.vertexModifiers[j].update(position, normal, normalizedVert);
+				}
 
 				var angleval = 0;
 				if (this.modifierType === 'X') {
-					calcvec.setDirect(0, 0, -vert.z);
-					angleval = (this.bend * lim.z);
+					calcvec.setDirect(0, 0, -position.z);
+					angleval = (this.bend * normalizedVert.z);
 					dirvec.setDirect(
 						0,
 						0,
-						vert.z * MathUtils.lerp(Math.abs(angleval*angleval), 1, 2/Math.PI)
+						position.z * MathUtils.lerp(Math.abs(angleval*angleval), 1, 2/Math.PI)
 					);
 				} else if (this.modifierType === 'Y') {
-					calcvec.setDirect(-vert.x, 0, 0);
-					angleval = (this.bend * lim.x);
+					calcvec.setDirect(-position.x, 0, 0);
+					angleval = (this.bend * normalizedVert.x);
 					dirvec.setDirect(
-						vert.x * MathUtils.lerp(Math.abs(angleval*angleval), 1, 2/Math.PI),
+						position.x * MathUtils.lerp(Math.abs(angleval*angleval), 1, 2/Math.PI),
 						0,
 						0
 					);
 				} else if (this.modifierType === 'Z') {
-					calcvec.setDirect(0, -vert.y, 0);
-					angleval = (this.bend * lim.y);
+					calcvec.setDirect(0, -position.y, 0);
+					angleval = (this.bend * normalizedVert.y);
 					dirvec.setDirect(
 						0,
-						vert.y * MathUtils.lerp(Math.abs(angleval*angleval), 1, 2/Math.PI),
+						position.y * MathUtils.lerp(Math.abs(angleval*angleval), 1, 2/Math.PI),
 						0
 					);
 				}
 
-				vert.addVector(this.offset);
-				vert.addVector(calcvec);
+				position.addVector(this.offset);
+				position.addVector(calcvec);
 
 				matrix3.setIdentity();
-				matrix3.rotateX(this.spin.x * lim.x * 2 * Math.PI);
-				matrix3.rotateY(this.spin.y * lim.y * 2 * Math.PI);
-				matrix3.rotateZ(this.spin.z * lim.z * 2 * Math.PI);
+				matrix3.rotateX(this.spin.x * normalizedVert.x * 2 * Math.PI);
+				matrix3.rotateY(this.spin.y * normalizedVert.y * 2 * Math.PI);
+				matrix3.rotateZ(this.spin.z * normalizedVert.z * 2 * Math.PI);
 
+				matrix3.applyPost(position);
+				matrix3.applyPost(normal);
+
+				matrix3.setIdentity();
 				if (this.modifierType === 'X') {
 					matrix3.rotateX(angleval * 1 * Math.PI);
 				} else if (this.modifierType === 'Y') {
@@ -134,8 +148,8 @@ function (
 				} else if (this.modifierType === 'Z') {
 					matrix3.rotateZ(angleval * 1 * Math.PI);
 				}
-				matrix3.applyPost(vert);
-				matrix3.applyPost(norm);
+				matrix3.applyPost(position);
+				matrix3.applyPost(normal);
 
 				matrix3.setIdentity();
 				if (this.modifierType === 'X') {
@@ -148,36 +162,42 @@ function (
 				matrix3.applyPost(dirvec);
 		
 
-				// vert.subVector(calcvec);
-				vert.addVector(dirvec);
+				// position.subVector(calcvec);
+				position.addVector(dirvec);
 
-				vert.addVector(storeObj.bound.center);
-				worldTransInv.applyPostPoint(vert);
+				position.addVector(modifierTarget.bound.center);
+				worldTransInv.applyPostPoint(position);
 
-				worldTransInv.applyPostVector(norm);
+				worldTransInv.applyPostVector(normal);
 
-				posTarget[i + 0] = vert.x;
-				posTarget[i + 1] = vert.y;
-				posTarget[i + 2] = vert.z;
+				posTarget[i + 0] = position.x;
+				posTarget[i + 1] = position.y;
+				posTarget[i + 2] = position.z;
 
-				normalTarget[i + 0] = norm.x;
-				normalTarget[i + 1] = norm.y;
-				normalTarget[i + 2] = norm.z;
+				normalTarget[i + 0] = normal.x;
+				normalTarget[i + 1] = normal.y;
+				normalTarget[i + 2] = normal.z;
 			}
 
-			storeObj.newMeshData.setVertexDataUpdated();
+			modifierTarget.newMeshData.setVertexDataUpdated();
 		}.bind(this));
 	};
 
 	ModifierComponent.prototype.updateModifiers = function (entity) {
-		this.mods.clear();
-		var bound = new BoundingBox();
+		this.modifierTargets.clear();
+		var bound = null;
 		entity.traverse(function (entity) {
 			// if (entity.meshDataComponent) {
 			// 	bound.merge(entity.meshDataComponent.modelBound);
 			// }
 			if (entity.meshRendererComponent) {
-				bound.merge(entity.meshRendererComponent.worldBound);
+				var entityBound = entity.meshRendererComponent.worldBound;
+				if (!bound) {
+					bound = new BoundingBox(entityBound.center, entityBound.xExtent, 
+						entityBound.yExtent, entityBound.zExtent);
+				} else {
+					bound.merge(entityBound);
+				}
 			}
 		}.bind(this));
 		bound.center.subVector(entity.transformComponent.worldTransform.translation);
@@ -191,16 +211,16 @@ function (
 		entity.traverse(function (entity) {
 			if (entity.meshDataComponent) {
 				var newMeshData = this._copyMeshData(entity.meshDataComponent.meshData);
-				var storeObj = {
+				var modifierTarget = {
 					bound: bound,
 					origMeshData: entity.meshDataComponent.meshData,
 					newMeshData: newMeshData,
 					entity: entity
 				};
-				console.log(storeObj);
+				console.log(modifierTarget);
 				entity.meshDataComponent.autoCompute = true;
 				entity.meshDataComponent.meshData = newMeshData;
-				this.mods.set(entity, storeObj);
+				this.modifierTargets.set(entity, modifierTarget);
 			}
 		}.bind(this));
 	};

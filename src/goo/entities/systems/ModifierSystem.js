@@ -22,7 +22,6 @@ function (
 
 			if (transformComponent._updated) {
 				modifierComponent.updateModifiers(entity);
-				// modifierComponent.updateValues();
 			}
 		}
 	};
