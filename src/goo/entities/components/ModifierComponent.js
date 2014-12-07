@@ -48,6 +48,17 @@ function(
 		return newMeshData;
 	};
 
+	ModifierComponent.prototype.shallowClone = function() {
+	};
+
+
+	ModifierComponent.prototype.updateObjectModifiers = function() {
+		var modifierCount = this.objectModifiers.length;
+		for (var j = 0; j < modifierCount; j++) {
+			this.objectModifiers[j].update(objects);
+		}
+	};
+
 	ModifierComponent.prototype.updateVertexModifiers = function() {
 		var calcvec = new Vector3();
 		var calcvec2 = new Vector3();

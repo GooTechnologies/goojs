@@ -39,39 +39,45 @@ require([
 
 	entity = world.createEntity([0, 0, 10], new Torus(40, 20, 1, 6), material).addToWorld();
 	root.attachChild(entity);
+	entity = world.createEntity([0, 0, 5], new Torus(40, 20, 1, 6), material).addToWorld();
+	root.attachChild(entity);
+	entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
+	root.attachChild(entity);
+	entity = world.createEntity([0, 0, -5], new Torus(40, 20, 1, 6), material).addToWorld();
+	root.attachChild(entity);
 
-	var count = 30;
-	var spread = 1.1;
-	for (var i = 0; i < count; i++) {
-		entity = world.createEntity(
-			[
-				(i - count/2) * spread, 
-				0, 
-				0
-			], 
-			new Box(1, 1, 1), material).addToWorld();
-		root.attachChild(entity);
-	}
-	for (var i = 0; i < count; i++) {
-		entity = world.createEntity(
-			[
-				0, 
-				(i - count/2) * spread, 
-				0
-			], 
-			new Box(1, 1, 1), material).addToWorld();
-		root.attachChild(entity);
-	}
-	for (var i = 0; i < count; i++) {
-		entity = world.createEntity(
-			[
-				0, 
-				0,
-				(i - count/2) * spread
-			], 
-			new Box(1, 1, 1), material).addToWorld();
-		root.attachChild(entity);
-	}
+	// var count = 30;
+	// var spread = 1.1;
+	// for (var i = 0; i < count; i++) {
+	// 	entity = world.createEntity(
+	// 		[
+	// 			(i - count/2) * spread, 
+	// 			0, 
+	// 			0
+	// 		], 
+	// 		new Box(1, 1, 1), material).addToWorld();
+	// 	root.attachChild(entity);
+	// }
+	// for (var i = 0; i < count; i++) {
+	// 	entity = world.createEntity(
+	// 		[
+	// 			0, 
+	// 			(i - count/2) * spread, 
+	// 			0
+	// 		], 
+	// 		new Box(1, 1, 1), material).addToWorld();
+	// 	root.attachChild(entity);
+	// }
+	// for (var i = 0; i < count; i++) {
+	// 	entity = world.createEntity(
+	// 		[
+	// 			0, 
+	// 			0,
+	// 			(i - count/2) * spread
+	// 		], 
+	// 		new Box(1, 1, 1), material).addToWorld();
+	// 	root.attachChild(entity);
+	// }
 
 	world.setSystem(new ModifierSystem());
 
