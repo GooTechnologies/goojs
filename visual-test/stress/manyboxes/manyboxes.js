@@ -4,6 +4,9 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/systems/System',
 	'goo/entities/components/ModifierComponent',
+	'goo/entities/components/modifiers/SpinModifier',
+	'goo/entities/components/modifiers/OffsetModifier',
+	'goo/entities/components/modifiers/BendModifier',
 	'goo/entities/systems/ModifierSystem',
 	'goo/shapes/Box',
 	'goo/shapes/Torus',
@@ -14,6 +17,9 @@ require([
 	ShaderLib,
 	System,
 	ModifierComponent,
+	SpinModifier,
+	OffsetModifier,
+	BendModifier,
 	ModifierSystem,
 	Box,
 	Torus,
@@ -31,10 +37,10 @@ require([
 	var root = world.createEntity().addToWorld();
 	var entity;
 
-	// entity = world.createEntity([0, 0, 10], new Torus(40, 20, 1, 6), material).addToWorld();
-	// root.attachChild(entity);
+	entity = world.createEntity([0, 0, 10], new Torus(40, 20, 1, 6), material).addToWorld();
+	root.attachChild(entity);
 
-	var count = 40;
+	var count = 30;
 	var spread = 1.1;
 	for (var i = 0; i < count; i++) {
 		entity = world.createEntity(
@@ -46,91 +52,103 @@ require([
 			new Box(1, 1, 1), material).addToWorld();
 		root.attachChild(entity);
 	}
-	// for (var i = 0; i < count; i++) {
-	// 	entity = world.createEntity(
-	// 		[
-	// 			0, 
-	// 			(i - count/2) * spread, 
-	// 			0
-	// 		], 
-	// 		new Box(1, 1, 1), material).addToWorld();
-	// 	root.attachChild(entity);
-	// }
-	// for (var i = 0; i < count; i++) {
-	// 	entity = world.createEntity(
-	// 		[
-	// 			0, 
-	// 			0,
-	// 			(i - count/2) * spread
-	// 		], 
-	// 		new Box(1, 1, 1), material).addToWorld();
-	// 	root.attachChild(entity);
-	// }
+	for (var i = 0; i < count; i++) {
+		entity = world.createEntity(
+			[
+				0, 
+				(i - count/2) * spread, 
+				0
+			], 
+			new Box(1, 1, 1), material).addToWorld();
+		root.attachChild(entity);
+	}
+	for (var i = 0; i < count; i++) {
+		entity = world.createEntity(
+			[
+				0, 
+				0,
+				(i - count/2) * spread
+			], 
+			new Box(1, 1, 1), material).addToWorld();
+		root.attachChild(entity);
+	}
 
 	world.setSystem(new ModifierSystem());
 
+	var spinModifier = new SpinModifier();
+	var bendModifier = new BendModifier();
+	var offsetModifier = new OffsetModifier();
+
 	var modifierComponent = new ModifierComponent();
+	modifierComponent.vertexModifiers.push(spinModifier);
+	modifierComponent.vertexModifiers.push(offsetModifier);
+	modifierComponent.vertexModifiers.push(bendModifier);
+
 	root.set(modifierComponent);
 
 
 	var gui = new window.dat.GUI();
 
-	var data = {
-		modifierType: 'Y',
-		bend: 0,
-		spinx: 0,
-		spiny: 0,
-		spinz: 0,
-		offsetx: 0,
-		offsety: 0,
-		offsetz: 0,
-	};
-
 	material.uniforms.mods = [0, 0, 0];
 	var controller;
 
-	controller = gui.add(data, 'modifierType', [ 'X', 'Y', 'Z' ] );
-	controller.onChange(function(val) {
-		modifierComponent.modifierType = val;
-		modifierComponent.updateVertexModifiers();
-	});
+	for (var i = 0; i < modifierComponent.vertexModifiers.length; i++) {
+		var mod = modifierComponent.vertexModifiers[i];
+		var modgui = mod.gui;
+		var f1 = gui.addFolder(mod.name);
+		for (var j = 0; j < modgui.length; j++) {
+			var guipart = modgui[j];
 
-	controller = gui.add(data, 'bend', -1, 1);
-	controller.onChange(function(val) {
-		modifierComponent.bend = val;
-		modifierComponent.updateVertexModifiers();
-	});
+			var key = guipart.key;
+			var name = guipart.name;
+			var type = guipart.type;
+			var limit = guipart.limit;
 
-	controller = gui.add(data, 'spinx', -1, 1);
-	controller.onChange(function(val) {
-		modifierComponent.spin.x = val;
-		modifierComponent.updateVertexModifiers();
-	});
-	controller = gui.add(data, 'spiny', -1, 1);
-	controller.onChange(function(val) {
-		modifierComponent.spin.y = val;
-		modifierComponent.updateVertexModifiers();
-	});
-	controller = gui.add(data, 'spinz', -1, 1);
-	controller.onChange(function(val) {
-		modifierComponent.spin.z = val;
-		modifierComponent.updateVertexModifiers();
-	});
-
-	controller = gui.add(data, 'offsetx', -10, 10);
-	controller.onChange(function(val) {
-		modifierComponent.offset.x = val;
-		modifierComponent.updateVertexModifiers();
-	});
-	controller = gui.add(data, 'offsety', -10, 10);
-	controller.onChange(function(val) {
-		modifierComponent.offset.y = val;
-		modifierComponent.updateVertexModifiers();
-	});
-	controller = gui.add(data, 'offsetz', -10, 10);
-	controller.onChange(function(val) {
-		modifierComponent.offset.z = val;
-		modifierComponent.updateVertexModifiers();
-	});
-
+			var f2 = f1.addFolder(name);
+			if (type === 'vec3') {
+				var data = {
+					x: 0, y: 0, z: 0
+				};
+				for (var d in data) {
+					if (limit) {
+						controller = f2.add(data, d, limit[0], limit[1]);
+					} else {
+						controller = f2.add(data, d);
+					}
+					(function(d, mod, key, modifierComponent) {
+						controller.onChange(function(val) {
+							mod[key][d] = val;
+							modifierComponent.updateVertexModifiers();
+						});
+					})(d, mod, key, modifierComponent);
+				}
+			} else  if (type === 'float') {
+				var data = {
+					val: 0
+				};
+				if (limit) {
+					controller = f2.add(data, 'val', limit[0], limit[1]);
+				} else {
+					controller = f2.add(data, 'val');
+				}
+				(function(mod, key, modifierComponent) {
+					controller.onChange(function(val) {
+						mod[key] = val;
+						modifierComponent.updateVertexModifiers();
+					});
+				})(mod, key, modifierComponent);
+			} else if (type === 'dropdown') {
+				var data = {
+					type: 'Y'
+				};
+				controller = f2.add(data, 'type', guipart.choices);
+				(function(mod, key, modifierComponent) {
+					controller.onChange(function(val) {
+						mod[key] = val;
+						modifierComponent.updateVertexModifiers();
+					});
+				})(mod, key, modifierComponent);
+			}
+		}
+	}
 });
