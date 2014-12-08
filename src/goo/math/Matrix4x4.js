@@ -316,14 +316,14 @@ function (
 		}
 
 		var s1d = lhs.data;
-		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12], //
-			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13], //
-			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14], //
+		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
+			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
+			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14],
 			m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
 		var s2d = rhs.data;
-		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12], //
-			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13], //
-			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14], //
+		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12],
+			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13],
+			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14],
 			n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
 
 		var rd = target.data;

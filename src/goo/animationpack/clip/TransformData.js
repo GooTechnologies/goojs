@@ -18,7 +18,8 @@ function (Quaternion, Vector3) {
 	 * @param {Transform}
 	 */
 	TransformData.prototype.applyTo = function (transform) {
-		transform.setIdentity();
+		// No need to set to identity since we overwrite them all
+		// transform.setIdentity();
 		// TODO: matrix vs quaternion?
 		transform.rotation.copyQuaternion(this._rotation);
 		transform.scale.setVector(this._scale);

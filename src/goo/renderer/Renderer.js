@@ -1,5 +1,6 @@
 /*jshint bitwise: false*/
 define([
+	'goo/renderer/Capabilities',
 	'goo/renderer/RendererRecord',
 	'goo/renderer/Util',
 	'goo/renderer/TextureCreator',
@@ -21,6 +22,7 @@ define([
 ],
 /** @lends */
 function (
+	Capabilities,
 	RendererRecord,
 	Util,
 	TextureCreator,
@@ -111,45 +113,17 @@ function (
 			};
 		}
 
-		// Check capabilities (move out to separate module)
-		/** @type {object}
-		 * @property {number} maxTexureSize Maximum 2D texture size
-		 * @property {number} maxCubemapSize Maximum cubemap size
-		 * @property {number} maxRenderbufferSize Maximum renderbuffer size
-		 * @property {number[]} maxViewPortDims Maximum viewport size [x, y]
-		 * @property {number} maxVertexTextureUnits Maximum vertex shader texture units
-		 * @property {number} maxFragmentTextureUnits Maximum fragment shader texture units
-		 * @property {number} maxCombinedTextureUnits Maximum total texture units
-		 * @property {number} maxVertexAttributes Maximum vertex attributes
-		 * @property {number} maxVertexUniformVectors Maximum vertex uniform vectors
-		 * @property {number} maxFragmentUniformVectors Maximum fragment uniform vectors
-		 * @property {number} maxVaryingVectors Maximum varying vectors
-		 * @property {number} aliasedPointSizeRange Point size min/max [min, max]
-		 * @property {number} aliasedLineWidthRange Line width min/max [min, max]
-		 * @property {number} samples Antialiasing sample size
-		 * @property {number} sampleBuffers Sample buffer count
-		 * @property {number} depthBits Depth bits
-		 * @property {number} stencilBits Stencil bits
-		 * @property {number} subpixelBits Sub-pixel bits
-		 * @property {number} supportedExtensionsList Supported extension as an array
-		 * @property {number} renderer Renderer name
-		 * @property {number} vendor Vendor name
-		 * @property {number} version Version string
-		 * @property {number} shadingLanguageVersion Shadinglanguage version string
-		 */
-		this.capabilities = this.getCapabilities();
-
-		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxTexureSize) : this.capabilities.maxTexureSize;
-		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, this.capabilities.maxCubemapSize) : this.capabilities.maxCubemapSize;
+		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, Capabilities.maxTexureSize) : Capabilities.maxTexureSize;
+		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, Capabilities.maxCubemapSize) : Capabilities.maxCubemapSize;
 
 		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
 		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
 		 * @type {string}
 		 */
 		this.shaderPrecision = parameters.shaderPrecision || 'highp';
-		if (this.shaderPrecision === 'highp' && this.capabilities.vertexShaderHighpFloat.precision > 0 && this.capabilities.fragmentShaderHighpFloat.precision > 0) {
+		if (this.shaderPrecision === 'highp' && Capabilities.vertexShaderHighpFloat.precision > 0 && Capabilities.fragmentShaderHighpFloat.precision > 0) {
 			this.shaderPrecision = 'highp';
-		} else if (this.shaderPrecision !== 'lowp' && this.capabilities.vertexShaderMediumpFloat.precision > 0 && this.capabilities.fragmentShaderMediumpFloat.precision > 0) {
+		} else if (this.shaderPrecision !== 'lowp' && Capabilities.vertexShaderMediumpFloat.precision > 0 && Capabilities.fragmentShaderMediumpFloat.precision > 0) {
 			this.shaderPrecision = 'mediump';
 		} else {
 			this.shaderPrecision = 'lowp';
@@ -227,55 +201,6 @@ function (
 		this._definesIndices = [];
 	}
 
-	Renderer.prototype.getCapabilities = function () {
-		return {
-			maxTexureSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
-			maxCubemapSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
-			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
-			maxViewPortDims: this.context.getParameter(WebGLRenderingContext.MAX_VIEWPORT_DIMS), // [x, y]
-			maxAnisotropy: this.glExtensionTextureFilterAnisotropic ? this.context.getParameter(this.glExtensionTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0,
-
-			maxVertexTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
-			maxFragmentTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
-			maxCombinedTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
-
-			maxVertexAttributes: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
-			maxVertexUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
-			maxFragmentUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
-			maxVaryingVectors: this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS),
-
-			aliasedPointSizeRange: this.context.getParameter(WebGLRenderingContext.ALIASED_POINT_SIZE_RANGE), // [min, max]
-			aliasedLineWidthRange: this.context.getParameter(WebGLRenderingContext.ALIASED_LINE_WIDTH_RANGE), // [min, max]
-
-			samples: this.context.getParameter(WebGLRenderingContext.SAMPLES),
-			sampleBuffers: this.context.getParameter(WebGLRenderingContext.SAMPLE_BUFFERS),
-
-			depthBits: this.context.getParameter(WebGLRenderingContext.DEPTH_BITS),
-			stencilBits: this.context.getParameter(WebGLRenderingContext.STENCIL_BITS),
-			subpixelBits: this.context.getParameter(WebGLRenderingContext.SUBPIXEL_BITS),
-			supportedExtensionsList: this.context.getSupportedExtensions(),
-
-			renderer: this.context.getParameter(WebGLRenderingContext.RENDERER),
-			vendor: this.context.getParameter(WebGLRenderingContext.VENDOR),
-			version: this.context.getParameter(WebGLRenderingContext.VERSION),
-			shadingLanguageVersion: this.context.getParameter(WebGLRenderingContext.SHADING_LANGUAGE_VERSION),
-
-			vertexShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_FLOAT),
-			vertexShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_FLOAT),
-			vertexShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_FLOAT),
-			fragmentShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_FLOAT),
-			fragmentShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_FLOAT),
-			fragmentShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_FLOAT),
-
-			vertexShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_INT),
-			vertexShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_INT),
-			vertexShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_INT),
-			fragmentShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_INT),
-			fragmentShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_INT),
-			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
-		};
-	};
-
 	Renderer.prototype.setupDebugging = function (parameters) {
 		// XXX: This is a temporary solution to easily enable webgl debugging during development...
 		var request = new XMLHttpRequest();
@@ -343,53 +268,7 @@ function (
 		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
 		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 
-		/** @type {boolean} */
-		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
-		/** @type {boolean} */
-		this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
-		/** @type {boolean} */
-		this.glExtensionTextureFloatLinear = this.context.getExtension('OES_texture_float_linear');
-		/** @type {boolean} */
-		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
-		/** @type {boolean} */
-		this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
-		/** @type {boolean} */
-		this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
-			|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
-			|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
-		/** @type {boolean} */
-		this.glExtensionDepthTexture = this.context.getExtension('WEBGL_depth_texture')
-			|| this.context.getExtension('WEBKIT_WEBGL_depth_texture')
-			|| this.context.getExtension('MOZ_WEBGL_depth_texture');
-		/** @type {boolean} */
-		this.glExtensionElementIndexUInt = this.context.getExtension('OES_element_index_uint');
-		/** @type {boolean} */
-		this.glExtensionInstancedArrays = this.context.getExtension('ANGLE_instanced_arrays');
-
-		if (!this.glExtensionTextureFloat) {
-			console.log('Float textures not supported.');
-		}
-		if (!this.glExtensionTextureFloatLinear) {
-			console.log('Float textures with linear filtering not supported.');
-		}
-//		if (!this.glExtensionTextureHalfFloat) {
-//			console.log('Half Float textures not supported.');
-//		}
-		if (!this.glExtensionStandardDerivatives) {
-			console.log('Standard derivatives not supported.');
-		}
-		if (!this.glExtensionTextureFilterAnisotropic) {
-			console.log('Anisotropic texture filtering not supported.');
-		}
-		if (!this.glExtensionCompressedTextureS3TC) {
-			console.log('S3TC compressed textures not supported.');
-		}
-		if (!this.glExtensionDepthTexture) {
-			console.log('Depth textures not supported.');
-		}
-		if (!this.glExtensionElementIndexUInt) {
-			console.log('32 bit indices not supported.');
-		}
+		Capabilities.init(this.context);
 	};
 
 	/**
@@ -1547,10 +1426,10 @@ function (
 			texrecord.wrapT = wrapT;
 		}
 
-		if (this.glExtensionTextureFilterAnisotropic && texture.type !== 'Float') {
+		if (Capabilities.TextureFilterAnisotropic && texture.type !== 'Float') {
 			var anisotropy = texture.anisotropy;
 			if (texrecord.anisotropy !== anisotropy) {
-				context.texParameterf(glType, this.glExtensionTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisotropy, this.capabilities.maxAnisotropy));
+				context.texParameterf(glType, Capabilities.TextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisotropy, Capabilities.maxAnisotropy));
 				texrecord.anisotropy = anisotropy;
 			}
 		}
@@ -1584,7 +1463,7 @@ function (
 		var mipSizes = texture.image.mipmapSizes;
 		var dataOffset = 0, dataLength = 0;
 		var width = texture.image.width, height = texture.image.height;
-		var ddsExt = DdsUtils.getDdsExtension(context);
+		var ddsExt = Capabilities.CompressedTextureS3TC;
 		var internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
 		if (texture.format === 'PrecompressedDXT1') {
 			internalFormat = ddsExt.COMPRESSED_RGB_S3TC_DXT1_EXT;
@@ -2251,31 +2130,6 @@ function (
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, renderTarget.glTexture);
 		this.context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
-	};
-
-	Renderer.prototype.getCapabilitiesString = function () {
-		var caps = [];
-		var isArrayBufferView = function(value) {
-			return value && value.buffer instanceof ArrayBuffer && value.byteLength !== undefined;
-		};
-		for (var name in this.capabilities) {
-			var cap = this.capabilities[name];
-			var str = '';
-			if (isArrayBufferView(cap)) {
-				str += '[';
-				for (var i = 0; i < cap.length; i++) {
-					str += cap[i];
-					if (i < cap.length - 1) {
-						str += ',';
-					}
-				}
-				str += ']';
-			} else {
-				str = cap;
-			}
-			caps.push(name + ': ' + str);
-		}
-		return caps.join('\n');
 	};
 
 	Renderer.prototype._deallocateMeshData = function (meshData) {

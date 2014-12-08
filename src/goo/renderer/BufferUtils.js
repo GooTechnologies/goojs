@@ -1,6 +1,10 @@
-define(
-	/** @lends */
-	function() {
+define([
+	'goo/renderer/Capabilities'
+],
+/** @lends */
+function(
+	Capabilities
+) {
 	'use strict';
 
 	/**
@@ -19,11 +23,10 @@ define(
 			}
 		} else if (vertexCount <= 65536) { // 2^16
 			indices = new Uint16Array(indexCount);
-		} else { // 2^32
-			// XXX: Currently not allowed in WebGL. Max is 16 bits. Should check for 
-			// availability of OES_element_index_uint and create for real.
+		} else if (Capabilities.ElementIndexUInt) { // 2^32
+			indices = new Uint32Array(indexCount);
+		} else {
 			throw new Error("Maximum number of vertices is 65536. Got: " + vertexCount);
-			// indices = new Uint32Array(indexCount);
 		}
 		return indices;
 	};
