@@ -33,51 +33,58 @@ require([
 	V.addLights();
 
 	var material = new Material(ShaderLib.uber);
+	var material2 = new Material(ShaderLib.uber);
+	material2.uniforms.materialDiffuse = [1,0,0,1];
 
 	var root = world.createEntity().addToWorld();
 	var entity;
 
-	entity = world.createEntity([0, 0, 10], new Torus(40, 20, 1, 6), material).addToWorld();
-	root.attachChild(entity);
-	entity = world.createEntity([0, 0, 5], new Torus(40, 20, 1, 6), material).addToWorld();
-	root.attachChild(entity);
-	entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
-	root.attachChild(entity);
-	entity = world.createEntity([0, 0, -5], new Torus(40, 20, 1, 6), material).addToWorld();
-	root.attachChild(entity);
+	// entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
+	// root.attachChild(entity);
+	// entity = world.createEntity([0, 0, 5], new Torus(40, 20, 1, 6), material).addToWorld();
+	// root.attachChild(entity);
+	// entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
+	// root.attachChild(entity);
+	// entity = world.createEntity([0, 0, -5], new Torus(40, 20, 1, 6), material).addToWorld();
+	// root.attachChild(entity);
 
-	// var count = 30;
-	// var spread = 1.1;
-	// for (var i = 0; i < count; i++) {
-	// 	entity = world.createEntity(
-	// 		[
-	// 			(i - count/2) * spread, 
-	// 			0, 
-	// 			0
-	// 		], 
-	// 		new Box(1, 1, 1), material).addToWorld();
-	// 	root.attachChild(entity);
-	// }
-	// for (var i = 0; i < count; i++) {
-	// 	entity = world.createEntity(
-	// 		[
-	// 			0, 
-	// 			(i - count/2) * spread, 
-	// 			0
-	// 		], 
-	// 		new Box(1, 1, 1), material).addToWorld();
-	// 	root.attachChild(entity);
-	// }
-	// for (var i = 0; i < count; i++) {
-	// 	entity = world.createEntity(
-	// 		[
-	// 			0, 
-	// 			0,
-	// 			(i - count/2) * spread
-	// 		], 
-	// 		new Box(1, 1, 1), material).addToWorld();
-	// 	root.attachChild(entity);
-	// }
+	var countX = 40;
+	var countY = 0;
+	var countZ = 0;
+
+	var spread = 1.1;
+	for (var j = 0; j < 5; j++) {
+	for (var i = 0; i < countX; i++) {
+		entity = world.createEntity(
+			[
+				(i - countX/2) * spread, 
+				Math.random()*5, 
+				Math.random()*5
+			], 
+			new Box(1, 1, 1), Math.random() > 0.5 ? material : material2).addToWorld();
+		root.attachChild(entity);
+	}
+	}
+	for (var i = 0; i < countY; i++) {
+		entity = world.createEntity(
+			[
+				0, 
+				(i - countY/2) * spread, 
+				0
+			], 
+			new Box(1, 1, 1), material).addToWorld();
+		root.attachChild(entity);
+	}
+	for (var i = 0; i < countZ; i++) {
+		entity = world.createEntity(
+			[
+				0, 
+				0,
+				(i - countZ/2) * spread
+			], 
+			new Box(1, 1, 1), material).addToWorld();
+		root.attachChild(entity);
+	}
 
 	world.setSystem(new ModifierSystem());
 
@@ -109,6 +116,7 @@ require([
 			var name = guipart.name;
 			var type = guipart.type;
 			var limit = guipart.limit;
+			var mult = guipart.mult || 1;
 
 			var f2 = f1.addFolder(name);
 			if (type === 'vec3') {
@@ -121,12 +129,29 @@ require([
 					} else {
 						controller = f2.add(data, d);
 					}
-					(function(d, mod, key, modifierComponent) {
+					(function(d, mod, key, modifierComponent, mult) {
 						controller.onChange(function(val) {
-							mod[key][d] = val;
+							mod[key][d] = val * mult;
 							modifierComponent.updateVertexModifiers();
 						});
-					})(d, mod, key, modifierComponent);
+					})(d, mod, key, modifierComponent, mult);
+				}
+			} else if (type === 'ivec3') {
+				var data = {
+					x: 0, y: 0, z: 0
+				};
+				for (var d in data) {
+					if (limit) {
+						controller = f2.add(data, d, limit[0], limit[1]);
+					} else {
+						controller = f2.add(data, d);
+					}
+					(function(d, mod, key, modifierComponent, mult) {
+						controller.onChange(function(val) {
+							mod[key][d] = val * mult;
+							modifierComponent.updateVertexModifiers();
+						});
+					})(d, mod, key, modifierComponent, mult);
 				}
 			} else  if (type === 'float') {
 				var data = {
@@ -137,12 +162,12 @@ require([
 				} else {
 					controller = f2.add(data, 'val');
 				}
-				(function(mod, key, modifierComponent) {
+				(function(mod, key, modifierComponent, mult) {
 					controller.onChange(function(val) {
-						mod[key] = val;
+						mod[key] = val * mult;
 						modifierComponent.updateVertexModifiers();
 					});
-				})(mod, key, modifierComponent);
+				})(mod, key, modifierComponent, mult);
 			} else if (type === 'dropdown') {
 				var data = {
 					type: 'Y'

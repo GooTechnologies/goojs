@@ -22,7 +22,8 @@ function (
 			key: 'spinAngles',
 			name: 'Spin Angles',
 			type: 'vec3',
-			limit: [-1, 1]
+			mult: 0.01
+			// limit: [-1, 1]
 		}
 	];
 

@@ -39,7 +39,8 @@ function (
 		{
 			key: 'offset',
 			name: 'Offset',
-			type: 'vec3'
+			type: 'vec3',
+			mult: 0.25
 		}
 	];
 

@@ -53,6 +53,8 @@ function(
 
 
 	ModifierComponent.prototype.updateObjectModifiers = function() {
+		var objects = [];
+		
 		var modifierCount = this.objectModifiers.length;
 		for (var j = 0; j < modifierCount; j++) {
 			this.objectModifiers[j].update(objects);
@@ -162,7 +164,6 @@ function(
 					newMeshData: newMeshData,
 					entity: entity
 				};
-				console.log(modifierTarget);
 				entity.meshDataComponent.autoCompute = true;
 				entity.meshDataComponent.meshData = newMeshData;
 				this.modifierTargets.set(entity, modifierTarget);
