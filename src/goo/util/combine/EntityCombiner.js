@@ -34,21 +34,31 @@ function(
 
 		this.invertTransform = new Transform();
 		this.calcTransform = new Transform();
+
+		this.oldEntities = new Set();
 	}
 
 	/**
 	 * Runs the combiner
 	 */
 	EntityCombiner.prototype.combine = function() {
+		this.oldEntities.clear();
+
 		this.world.processEntityChanges();
 		this.world.getSystem('TransformSystem')._process();
 		this.world.getSystem('BoundingUpdateSystem')._process();
 
 		var topEntities = this.world.entityManager.getTopEntities();
-		if (this.gridSize > 1) {
+		if (this.gridCount > 1) {
 			this.gridSize = this._calculateBounds(topEntities) / this.gridCount;
 		}
 		this._combineList(topEntities);
+	};
+
+	/**
+	 * Runs the uncombiner
+	 */
+	EntityCombiner.prototype.uncombine = function() {
 	};
 
 	EntityCombiner.prototype._combineList = function(entities) {
@@ -64,14 +74,8 @@ function(
 		var baseSubs = new Map();
 		this._buildSubs(root, baseSubs);
 
-		// var keys = baseSubs.keys();
 		baseSubs.forEach(function (combineList, entity) {
-		// for (var i = 0; i < keys.length; i++) {
-			// var entity = keys[i];
-			// var combineList = baseSubs.get(entity);
-
 			this._combine(entity, combineList);
-		// }
 		}.bind(this));
 	};
 
@@ -162,13 +166,13 @@ function(
 					} else {
 						entity.skip = true;
 						entity._hidden = true;
+						this.oldEntities.add(entity);
 					}
 				}
 				var meshDatas = meshBuilder.build();
 
 				for (var i = 0; i < meshDatas.length; i++) {
-					var entity = that.world.createEntity(meshDatas[i], material);
-					entity.addToWorld();
+					var entity = that.world.createEntity(meshDatas[i], material).addToWorld();
 					root.attachChild(entity);
 				}
 			});

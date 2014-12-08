@@ -1,14 +1,14 @@
 define([
         'goo/renderer/MeshData',
         'goo/math/Vector3',
-        // 'goo/renderer/Capabilities',
+        'goo/renderer/Capabilities',
         'goo/entities/EntityUtils'
         ],
 	/** @lends */
 	function (
 		MeshData,
 		Vector3,
-		// Capabilities,
+		Capabilities,
 		EntityUtils
 	) {
 	'use strict';
@@ -77,11 +77,12 @@ define([
 	 * @param {MeshData} meshData
 	 */
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
-		// TODO: check Capabilities when that is merged to master
-		if (meshData.vertexCount >= 65536) {
-			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
-		} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
-			this._generateMesh();
+		if (!Capabilities.ElementIndexUInt) {
+			if (meshData.vertexCount >= 65536) {
+				throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
+			} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
+				this._generateMesh();
+			}
 		}
 
 		var matrix = transform.matrix;
@@ -182,7 +183,7 @@ define([
 		var indexCount = 0;
 		var indexModes = [];
 		var indexLengths = [];
-		for (var i = 0; i < meshData.indexModes.length; i++) {
+		for (var i = 0, l = meshData.indexModes.length; i < l; i++) {
 			var mode = meshData.indexModes[i];
 			if (indexMode !== mode) {
 				indexModes.push(indexMode);
@@ -191,7 +192,7 @@ define([
 				indexCount = 0;
 			}
 			indexCount += meshData.indexLengths[i];
-			if (i === meshData.indexModes.length - 1) {
+			if (i === l - 1) {
 				indexModes.push(mode);
 				indexLengths.push(indexCount);
 				indexMode = mode;
