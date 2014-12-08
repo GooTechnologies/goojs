@@ -27,6 +27,9 @@ function(
 
 		this.objectModifiers = [];
 		this.vertexModifiers = [];
+
+		this.calcvec = new Vector3();
+		this.calcvec2 = new Vector3();
 	}
 
 	ModifierComponent.type = 'ModifierComponent';
@@ -62,22 +65,19 @@ function(
 	};
 
 	ModifierComponent.prototype.updateVertexModifiers = function() {
-		var calcvec = new Vector3();
-		var calcvec2 = new Vector3();
-
 		this.modifierTargets.forEach(function(modifierTarget) {
 			var posSource = modifierTarget.origMeshData.getAttributeBuffer(MeshData.POSITION);
 			var posTarget = modifierTarget.newMeshData.getAttributeBuffer(MeshData.POSITION);
 			var normalSource = modifierTarget.origMeshData.getAttributeBuffer(MeshData.NORMAL);
 			var normalTarget = modifierTarget.newMeshData.getAttributeBuffer(MeshData.NORMAL);
 
-			calcvec.setVector(modifierTarget.bound.max).subVector(modifierTarget.bound.min);
-			calcvec2.setVector(Vector3.ONE).scale(2.0).div(calcvec);
+			this.calcvec.setVector(modifierTarget.bound.max).subVector(modifierTarget.bound.min);
+			this.calcvec2.setVector(Vector3.ONE).scale(2.0).div(this.calcvec);
 
 			var worldTrans = modifierTarget.entity.transformComponent.worldTransform.matrix;
 			var worldTransInv = Matrix4x4.invert(modifierTarget.entity.transformComponent.worldTransform.matrix);
 
-			var datas = [];
+			var datas = modifierTarget.datas;
 			var viewLength = posSource.length;
 			var vertexCount = viewLength / 3;
 			var modifierCount = this.vertexModifiers.length;
@@ -99,7 +99,7 @@ function(
 				worldTrans.applyPostVector(data.normal);
 
 				data.normalizedVert.setVector(data.position);
-				data.normalizedVert.mulVector(calcvec2);
+				data.normalizedVert.mulVector(this.calcvec2);
 			}
 
 			// apply modifiers
@@ -162,7 +162,8 @@ function(
 					bound: bound,
 					origMeshData: entity.meshDataComponent.meshData,
 					newMeshData: newMeshData,
-					entity: entity
+					entity: entity,
+					datas: []
 				};
 				entity.meshDataComponent.autoCompute = true;
 				entity.meshDataComponent.meshData = newMeshData;

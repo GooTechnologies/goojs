@@ -6,6 +6,7 @@ require([
 	'goo/entities/components/ModifierComponent',
 	'goo/entities/components/modifiers/SpinModifier',
 	'goo/entities/components/modifiers/OffsetModifier',
+	'goo/entities/components/modifiers/ScaleModifier',
 	'goo/entities/components/modifiers/BendModifier',
 	'goo/entities/systems/ModifierSystem',
 	'goo/shapes/Box',
@@ -19,6 +20,7 @@ require([
 	ModifierComponent,
 	SpinModifier,
 	OffsetModifier,
+	ScaleModifier,
 	BendModifier,
 	ModifierSystem,
 	Box,
@@ -53,7 +55,7 @@ require([
 	var countZ = 0;
 
 	var spread = 1.1;
-	for (var j = 0; j < 5; j++) {
+	for (var j = 0; j < 8; j++) {
 	for (var i = 0; i < countX; i++) {
 		entity = world.createEntity(
 			[
@@ -90,12 +92,15 @@ require([
 
 	var spinModifier = new SpinModifier();
 	var bendModifier = new BendModifier();
+	var scaleModifier = new ScaleModifier();
 	var offsetModifier = new OffsetModifier();
 
 	var modifierComponent = new ModifierComponent();
+	modifierComponent.vertexModifiers.push(scaleModifier);
 	modifierComponent.vertexModifiers.push(spinModifier);
 	modifierComponent.vertexModifiers.push(offsetModifier);
 	modifierComponent.vertexModifiers.push(bendModifier);
+	modifierComponent.vertexModifiers.push(new BendModifier());
 
 	root.set(modifierComponent);
 
@@ -105,10 +110,17 @@ require([
 	material.uniforms.mods = [0, 0, 0];
 	var controller;
 
+	var names = new Map();
 	for (var i = 0; i < modifierComponent.vertexModifiers.length; i++) {
 		var mod = modifierComponent.vertexModifiers[i];
 		var modgui = mod.gui;
-		var f1 = gui.addFolder(mod.name);
+
+		var nr = names.get(mod.name);
+		if (nr === undefined) {
+			nr = 0;
+			names.set(mod.name, nr+1);
+		}
+		var f1 = gui.addFolder(mod.name + '_' + nr);
 		for (var j = 0; j < modgui.length; j++) {
 			var guipart = modgui[j];
 
@@ -121,7 +133,7 @@ require([
 			var f2 = f1.addFolder(name);
 			if (type === 'vec3') {
 				var data = {
-					x: 0, y: 0, z: 0
+					x: mod[key].x, y: mod[key].y, z: mod[key].z
 				};
 				for (var d in data) {
 					if (limit) {
@@ -138,7 +150,7 @@ require([
 				}
 			} else if (type === 'ivec3') {
 				var data = {
-					x: 0, y: 0, z: 0
+					x: mod[key].x, y: mod[key].y, z: mod[key].z
 				};
 				for (var d in data) {
 					if (limit) {
@@ -155,7 +167,7 @@ require([
 				}
 			} else  if (type === 'float') {
 				var data = {
-					val: 0
+					val: mod[key]
 				};
 				if (limit) {
 					controller = f2.add(data, 'val', limit[0], limit[1]);
