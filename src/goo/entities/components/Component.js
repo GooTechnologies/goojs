@@ -8,9 +8,9 @@ function (EntitySelection) {
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 */
 	function Component() {
-		/** If the component should be processed for containing entities.
+		/**
+		 * If the component should be processed for containing entities.
 		 * @type {boolean}
-		 * @default
 		 */
 		this.enabled = true;
 
@@ -23,6 +23,7 @@ function (EntitySelection) {
 	 * @private
 	 */
 	Component.prototype.applyAPI = function (entity) {
+		// remove this!
 		if (!this.installedAPI) {
 			this.installedAPI = new Set();
 		}

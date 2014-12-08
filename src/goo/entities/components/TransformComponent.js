@@ -24,12 +24,14 @@ function (
 	 * @extends Component
 	 */
 	function TransformComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'TransformComponent';
 
 		this.entity = null;
-		/** Parent TransformComponent in the "scene graph".
+		/**
+		 * Parent TransformComponent in the "scene graph".
 		 * @type {TransformComponent}
-		 * @default
 		 */
 		this.parent = null;
 		/**
@@ -44,8 +46,9 @@ function (
 		 */
 		this.transform = new Transform();
 
-		/** The entity's transform in world space.
-		 * Read only. Automatically updated.
+		/**
+		 * The entity's transform in world space.
+		 * @readonly
 		 * @type {Transform}
 		 */
 		this.worldTransform = new Transform();
