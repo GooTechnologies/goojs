@@ -8,6 +8,8 @@ require([
 	'goo/entities/components/modifiers/OffsetModifier',
 	'goo/entities/components/modifiers/ScaleModifier',
 	'goo/entities/components/modifiers/BendModifier',
+	'goo/entities/components/modifiers/NoiseModifier',
+	'goo/entities/components/modifiers/BulgeNoiseModifier',
 	'goo/entities/systems/ModifierSystem',
 	'goo/shapes/Box',
 	'goo/shapes/Torus',
@@ -22,6 +24,8 @@ require([
 	OffsetModifier,
 	ScaleModifier,
 	BendModifier,
+	NoiseModifier,
+	BulgeNoiseModifier,
 	ModifierSystem,
 	Box,
 	Torus,
@@ -41,8 +45,8 @@ require([
 	var root = world.createEntity().addToWorld();
 	var entity;
 
-	// entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
-	// root.attachChild(entity);
+	entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
+	root.attachChild(entity);
 	// entity = world.createEntity([0, 0, 5], new Torus(40, 20, 1, 6), material).addToWorld();
 	// root.attachChild(entity);
 	// entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
@@ -50,9 +54,11 @@ require([
 	// entity = world.createEntity([0, 0, -5], new Torus(40, 20, 1, 6), material).addToWorld();
 	// root.attachChild(entity);
 
-	var countX = 40;
+	var countX = 0;
 	var countY = 0;
 	var countZ = 0;
+
+	var box = new Box(1, 1, 1);
 
 	var spread = 1.1;
 	for (var j = 0; j < 8; j++) {
@@ -63,7 +69,7 @@ require([
 				Math.random()*5, 
 				Math.random()*5
 			], 
-			new Box(1, 1, 1), Math.random() > 0.5 ? material : material2).addToWorld();
+			box, Math.random() > 0.5 ? material : material2).addToWorld();
 		root.attachChild(entity);
 	}
 	}
@@ -74,7 +80,7 @@ require([
 				(i - countY/2) * spread, 
 				0
 			], 
-			new Box(1, 1, 1), material).addToWorld();
+			box, material).addToWorld();
 		root.attachChild(entity);
 	}
 	for (var i = 0; i < countZ; i++) {
@@ -84,23 +90,19 @@ require([
 				0,
 				(i - countZ/2) * spread
 			], 
-			new Box(1, 1, 1), material).addToWorld();
+			box, material).addToWorld();
 		root.attachChild(entity);
 	}
 
 	world.setSystem(new ModifierSystem());
 
-	var spinModifier = new SpinModifier();
-	var bendModifier = new BendModifier();
-	var scaleModifier = new ScaleModifier();
-	var offsetModifier = new OffsetModifier();
-
 	var modifierComponent = new ModifierComponent();
-	modifierComponent.vertexModifiers.push(scaleModifier);
-	modifierComponent.vertexModifiers.push(spinModifier);
-	modifierComponent.vertexModifiers.push(offsetModifier);
-	modifierComponent.vertexModifiers.push(bendModifier);
+	modifierComponent.vertexModifiers.push(new ScaleModifier());
+	modifierComponent.vertexModifiers.push(new SpinModifier());
+	modifierComponent.vertexModifiers.push(new OffsetModifier());
 	modifierComponent.vertexModifiers.push(new BendModifier());
+	modifierComponent.vertexModifiers.push(new BendModifier());
+	modifierComponent.vertexModifiers.push(new NoiseModifier());
 
 	root.set(modifierComponent);
 
