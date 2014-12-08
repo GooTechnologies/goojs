@@ -859,13 +859,6 @@ function (
 			shader.startFrame();
 		});
 
-		//TODO: 
-		// handle some fallbacks
-		lights.forEach(function (light) {
-			light.shadowCaster = light.shadowCaster && Capabilities.TextureFloat;
-		}.bind(this));
-		// fallbacks end
-
 		var renderInfo = renderRenderInfo;
 		renderInfo.reset();
 		renderInfo.camera = camera;
