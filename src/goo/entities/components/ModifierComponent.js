@@ -2,6 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/renderer/MeshData',
 	'goo/renderer/bounds/BoundingBox',
+	'goo/math/Transform',
 	'goo/math/MathUtils',
 	'goo/math/Matrix3x3',
 	'goo/math/Matrix4x4',
@@ -12,6 +13,7 @@ function(
 	Component,
 	MeshData,
 	BoundingBox,
+	Transform,
 	MathUtils,
 	Matrix3x3,
 	Matrix4x4,
@@ -54,13 +56,19 @@ function(
 	ModifierComponent.prototype.shallowClone = function() {
 	};
 
+	ModifierComponent.prototype.update = function() {
+		this.updateVertexModifiers();
+		this.updateObjectModifiers();
+	};
 
 	ModifierComponent.prototype.updateObjectModifiers = function() {
-		var objects = [];
-		
 		var modifierCount = this.objectModifiers.length;
 		for (var j = 0; j < modifierCount; j++) {
-			this.objectModifiers[j].update(objects);
+			this.modifierTargets.forEach(function(modifierTarget) {
+				modifierTarget.transform.copy(modifierTarget.origTransform);
+				this.objectModifiers[j].updateObject(modifierTarget, this.modifierTargets);
+				modifierTarget.entity.transformComponent.setUpdated();
+			}.bind(this));
 		}
 	};
 
@@ -158,11 +166,16 @@ function(
 		entity.traverse(function(entity) {
 			if (entity.meshDataComponent) {
 				var newMeshData = this._copyMeshData(entity.meshDataComponent.meshData);
+				var origTransform = new Transform();
+				origTransform.copy(entity.transformComponent.transform);
+
 				var modifierTarget = {
 					bound: bound,
 					origMeshData: entity.meshDataComponent.meshData,
 					newMeshData: newMeshData,
 					entity: entity,
+					transform: entity.transformComponent.transform,
+					origTransform: origTransform,
 					datas: []
 				};
 				entity.meshDataComponent.autoCompute = true;

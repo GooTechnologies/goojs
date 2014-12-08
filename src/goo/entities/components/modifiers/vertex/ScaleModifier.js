@@ -25,6 +25,7 @@ function (
 
 	ScaleModifier.prototype.updateVertex = function(data) {
 		data.position.mulVector(this.scale);
+		data.normal.mulDirect(1/this.scale.x, 1/this.scale.y, 1/this.scale.z);
 	};
 
 	return ScaleModifier;

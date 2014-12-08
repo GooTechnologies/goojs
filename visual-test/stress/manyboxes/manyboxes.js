@@ -4,12 +4,13 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/systems/System',
 	'goo/entities/components/ModifierComponent',
-	'goo/entities/components/modifiers/SpinModifier',
-	'goo/entities/components/modifiers/OffsetModifier',
-	'goo/entities/components/modifiers/ScaleModifier',
-	'goo/entities/components/modifiers/BendModifier',
-	'goo/entities/components/modifiers/NoiseModifier',
-	'goo/entities/components/modifiers/BulgeNoiseModifier',
+	'goo/entities/components/modifiers/vertex/SpinModifier',
+	'goo/entities/components/modifiers/vertex/OffsetModifier',
+	'goo/entities/components/modifiers/vertex/ScaleModifier',
+	'goo/entities/components/modifiers/vertex/BendModifier',
+	'goo/entities/components/modifiers/vertex/NoiseModifier',
+	'goo/entities/components/modifiers/vertex/BulgeNoiseModifier',
+	'goo/entities/components/modifiers/object/AlignModifier',
 	'goo/entities/systems/ModifierSystem',
 	'goo/shapes/Box',
 	'goo/shapes/Torus',
@@ -26,6 +27,7 @@ require([
 	BendModifier,
 	NoiseModifier,
 	BulgeNoiseModifier,
+	AlignModifier,
 	ModifierSystem,
 	Box,
 	Torus,
@@ -45,8 +47,8 @@ require([
 	var root = world.createEntity().addToWorld();
 	var entity;
 
-	entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
-	root.attachChild(entity);
+	// entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
+	// root.attachChild(entity);
 	// entity = world.createEntity([0, 0, 5], new Torus(40, 20, 1, 6), material).addToWorld();
 	// root.attachChild(entity);
 	// entity = world.createEntity([0, 0, 0], new Torus(40, 20, 1, 6), material).addToWorld();
@@ -54,7 +56,7 @@ require([
 	// entity = world.createEntity([0, 0, -5], new Torus(40, 20, 1, 6), material).addToWorld();
 	// root.attachChild(entity);
 
-	var countX = 0;
+	var countX = 40;
 	var countY = 0;
 	var countZ = 0;
 
@@ -97,12 +99,15 @@ require([
 	world.setSystem(new ModifierSystem());
 
 	var modifierComponent = new ModifierComponent();
+
 	modifierComponent.vertexModifiers.push(new ScaleModifier());
 	modifierComponent.vertexModifiers.push(new SpinModifier());
 	modifierComponent.vertexModifiers.push(new OffsetModifier());
 	modifierComponent.vertexModifiers.push(new BendModifier());
 	modifierComponent.vertexModifiers.push(new BendModifier());
 	modifierComponent.vertexModifiers.push(new NoiseModifier());
+
+	modifierComponent.objectModifiers.push(new AlignModifier());
 
 	root.set(modifierComponent);
 
@@ -113,8 +118,8 @@ require([
 	var controller;
 
 	var names = new Map();
-	for (var i = 0; i < modifierComponent.vertexModifiers.length; i++) {
-		var mod = modifierComponent.vertexModifiers[i];
+
+	function addGui(mod) {
 		var modgui = mod.gui;
 
 		var nr = names.get(mod.name);
@@ -146,7 +151,7 @@ require([
 					(function(d, mod, key, modifierComponent, mult) {
 						controller.onChange(function(val) {
 							mod[key][d] = val * mult;
-							modifierComponent.updateVertexModifiers();
+							modifierComponent.update();
 						});
 					})(d, mod, key, modifierComponent, mult);
 				}
@@ -163,7 +168,7 @@ require([
 					(function(d, mod, key, modifierComponent, mult) {
 						controller.onChange(function(val) {
 							mod[key][d] = val * mult;
-							modifierComponent.updateVertexModifiers();
+							modifierComponent.update();
 						});
 					})(d, mod, key, modifierComponent, mult);
 				}
@@ -179,7 +184,7 @@ require([
 				(function(mod, key, modifierComponent, mult) {
 					controller.onChange(function(val) {
 						mod[key] = val * mult;
-						modifierComponent.updateVertexModifiers();
+						modifierComponent.update();
 					});
 				})(mod, key, modifierComponent, mult);
 			} else if (type === 'dropdown') {
@@ -190,10 +195,20 @@ require([
 				(function(mod, key, modifierComponent) {
 					controller.onChange(function(val) {
 						mod[key] = val;
-						modifierComponent.updateVertexModifiers();
+						modifierComponent.update();
 					});
 				})(mod, key, modifierComponent);
 			}
 		}
+	}
+
+	for (var i = 0; i < modifierComponent.vertexModifiers.length; i++) {
+		var mod = modifierComponent.vertexModifiers[i];
+		addGui(mod);
+	}
+
+	for (var i = 0; i < modifierComponent.objectModifiers.length; i++) {
+		var mod = modifierComponent.objectModifiers[i];
+		addGui(mod);
 	}
 });
