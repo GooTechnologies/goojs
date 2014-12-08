@@ -1,7 +1,13 @@
 /*jshint bitwise: false */
-define(['goo/loaders/dds/DdsUtils'],
-	/** @lends */
-	function (DdsUtils) {
+define([
+	'goo/loaders/dds/DdsUtils',
+	'goo/renderer/Capabilities'
+],
+/** @lends */
+function (
+	DdsUtils,
+	Capabilities
+) {
 	'use strict';
 
 	function DdsPixelFormat() {
@@ -502,10 +508,8 @@ define(['goo/loaders/dds/DdsUtils'],
 		tex.needsUpdate = true;
 	};
 
-	DdsLoader.SUPPORTS_DDS = false;
-
 	DdsLoader.prototype.isSupported = function () {
-		return DdsLoader.SUPPORTS_DDS;
+		return !!Capabilities.CompressedTextureS3TC;
 	};
 
 	DdsLoader.prototype.toString = function () {

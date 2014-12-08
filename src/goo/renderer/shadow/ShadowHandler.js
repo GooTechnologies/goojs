@@ -1,4 +1,5 @@
 define([
+	'goo/renderer/Capabilities',
 	'goo/math/Vector3',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/Camera',
@@ -12,6 +13,7 @@ define([
 ],
 /** @lends */
 function (
+	Capabilities,
 	Vector3,
 	FullscreenPass,
 	Camera,
@@ -59,7 +61,7 @@ function (
 		var shadowX = shadowSettings.resolution[0];
 		var shadowY = shadowSettings.resolution[1];
 
-		var linearFloat = !!renderer.glExtensionTextureFloatLinear;
+		var linearFloat = !!Capabilities.TextureFloatLinear;
 
 		if (shadowSettings.shadowData.shadowTarget) {
 			renderer._deallocateRenderTarget(shadowSettings.shadowData.shadowTarget);

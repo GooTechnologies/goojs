@@ -24,12 +24,14 @@
 /*jshint bitwise: false */
 define([
 	'goo/loaders/dds/DdsLoader',
-	'goo/loaders/dds/DdsUtils'
+	'goo/loaders/dds/DdsUtils',
+	'goo/renderer/Capabilities'
 ],
 /** @lends */
 function(
 	DdsLoader,
-	DdsUtils
+	DdsUtils,
+	Capabilities
 ) {
 	'use strict';
 
@@ -233,7 +235,7 @@ function(
 	};
 
 	CrunchLoader.prototype.isSupported = function () {
-		return DdsLoader.SUPPORTS_DDS;
+		return !!Capabilities.CompressedTextureS3TC;
 	};
 
 	CrunchLoader.prototype.toString = function () {

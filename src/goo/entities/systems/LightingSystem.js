@@ -1,9 +1,11 @@
 define([
+	'goo/renderer/Capabilities',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
+	Capabilities,
 	System,
 	SystemBus
 ) {
@@ -63,7 +65,9 @@ function (
 				}
 
 				if (!lightComponent.hidden) {
-					this.lights.push(lightComponent.light);
+					var light = lightComponent.light;
+					light.shadowCaster = light.shadowCaster && Capabilities.TextureFloat; // Needs float texture for shadows (for now)
+					this.lights.push(light);
 				}
 			}
 			this._needsUpdate = false;
