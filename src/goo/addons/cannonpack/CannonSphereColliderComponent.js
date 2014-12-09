@@ -16,6 +16,8 @@ function (
 	 * @param {number} [settings.radius=0.5]
 	 */
 	function CannonSphereColliderComponent(settings) {
+		Component.apply(this, arguments);
+
 		settings = settings || {};
 		this.type = 'CannonSphereColliderComponent';
 		this.radius = settings.radius || 0.5;

@@ -14,6 +14,8 @@ define([
 		 * @constructor
 		 */
 		function OccludeeComponent(meshData, useBoundingBox) {
+			Component.apply(this, arguments);
+
 			this.type = 'OccludeeComponent';
 
 			if (useBoundingBox === true){

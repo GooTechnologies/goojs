@@ -36,6 +36,8 @@ function (
 	 * entity.setComponent(p2comp);
 	 */
 	function P2Component(settings) {
+		Component.apply(this, arguments);
+
 		this.type = 'P2Component';
 		this.settings = settings || {};
 		this.mass =             settings.mass           !== undefined ? settings.mass            : 0;

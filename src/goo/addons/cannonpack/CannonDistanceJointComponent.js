@@ -20,6 +20,8 @@ function (
 	 * @param {CannonRigidbodyComponent} settings.connectedBody
 	 */
 	function CannonDistanceJointComponent(settings) {
+		Component.apply(this, arguments);
+
 		settings = settings || {};
 		this.type = 'CannonDistanceJointComponent';
 

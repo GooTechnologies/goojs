@@ -19,6 +19,8 @@ function (
 	 * @param {number} [settings.numSegments=10]
 	 */
 	function CannonCylinderColliderComponent(settings) {
+		Component.apply(this, arguments);
+
 		settings = settings || {};
 		this.type = 'CannonCylinderColliderComponent';
 

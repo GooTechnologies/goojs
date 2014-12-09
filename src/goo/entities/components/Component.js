@@ -23,11 +23,6 @@ function (EntitySelection) {
 	 * @private
 	 */
 	Component.prototype.applyAPI = function (entity) {
-		// remove this!
-		if (!this.installedAPI) {
-			this.installedAPI = new Set();
-		}
-
 		var api = this.api;
 		if (!api) {
 			return;

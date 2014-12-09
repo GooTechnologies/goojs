@@ -21,6 +21,8 @@ function (
 	 * @extends Component
 	 */
 	function CannonBoxColliderComponent(settings) {
+		Component.apply(this, arguments);
+
 		this.type = 'CannonBoxColliderComponent';
 
 		settings = settings || {};

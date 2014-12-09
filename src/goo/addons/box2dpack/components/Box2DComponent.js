@@ -13,6 +13,8 @@ function (
 	 * @extends Component
 	 */
 	function Box2DComponent(settings) {
+		Component.apply(this, arguments);
+
 		this.type = 'Box2DComponent';
 
 		this.body = null;
