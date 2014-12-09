@@ -17,7 +17,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('4000 spheres spinning in an entity hierarchy. Leaf boxes have static set to true.\nPress 1 to combine and 2 to uncombine');
+	V.describe('4000 spheres spinning in an entity hierarchy. Leaf spheres have static set to true.\nPress 1 to combine and 2 to uncombine');
 
 	var goo = V.initGoo({
 		showStats: true
@@ -54,10 +54,11 @@ require([
 	rootEntity.set(function (entity) {
 		entity.setRotation(0, world.time, 0);
 	});
-	rootEntity.attachChild(createSphereGrid([-5, 0, 5], 10, 0.5, 1.5));
-	rootEntity.attachChild(createSphereGrid([5, 0, 5], 10, 0.5, 1.5));
-	rootEntity.attachChild(createSphereGrid([-5, 0, -5], 10, 0.5, 1.5));
-	rootEntity.attachChild(createSphereGrid([5, 0, -5], 10, 0.5, 1.5));
+	var sphereCount = 2;
+	rootEntity.attachChild(createSphereGrid([-5, 0, 5], sphereCount, 0.5, 1.5));
+	rootEntity.attachChild(createSphereGrid([5, 0, 5], sphereCount, 0.5, 1.5));
+	rootEntity.attachChild(createSphereGrid([-5, 0, -5], sphereCount, 0.5, 1.5));
+	rootEntity.attachChild(createSphereGrid([5, 0, -5], sphereCount, 0.5, 1.5));
 
 	var entityCombiner = null;
 
@@ -72,11 +73,11 @@ require([
 				// console.timeEnd('combine');
 				break;
 			case 50: // 2
-				entityCombiner = new EntityCombiner(world, 8, true);
+				entityCombiner = new EntityCombiner(world, 1, false);
 				entityCombiner.combine();
 				break;
 			case 51: // 3
-				entityCombiner = new EntityCombiner(world, 1, false);
+				entityCombiner = new EntityCombiner(world, 8, false);
 				entityCombiner.combine();
 				break;
 			case 52: // 4
