@@ -19,6 +19,7 @@ define(['goo/renderer/MeshData'],
 	}
 
 	TextureGrid.prototype = Object.create(MeshData.prototype);
+	TextureGrid.prototype.constructor = TextureGrid;
 
 	function countCells(matrix) {
 		var count = 0;

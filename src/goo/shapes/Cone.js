@@ -30,6 +30,7 @@ define(['goo/renderer/MeshData'],
 	}
 
 	Cone.prototype = Object.create(MeshData.prototype);
+	Cone.prototype.constructor = Cone;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.

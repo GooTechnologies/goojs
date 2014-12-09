@@ -23,6 +23,7 @@ function(
 	}
 
 	MarkerComponent.prototype = Object.create(Component.prototype);
+	MarkerComponent.prototype.constructor = MarkerComponent;
 
 	return MarkerComponent;
 });

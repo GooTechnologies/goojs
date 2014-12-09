@@ -32,7 +32,9 @@ function (
 		this._buildArrow(1);
 		this._buildArrow(2);
 	}
+
 	TranslationGizmo.prototype = Object.create(Gizmo.prototype);
+	TranslationGizmo.prototype.constructor = TranslationGizmo;
 
 	// Triggered when you have mousedown on a gizmo handle
 	TranslationGizmo.prototype.activate = function(props) {

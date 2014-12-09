@@ -54,7 +54,9 @@ function(
 		this.oldAngleY = 0;
 		this.oldAngleZ = 0;
 	}
+
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
+	RotationGizmo.prototype.constructor = RotationGizmo;
 
 	RotationGizmo.prototype.activate = function(props) {
 		Gizmo.prototype.activate.call(this, props);

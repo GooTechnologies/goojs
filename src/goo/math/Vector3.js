@@ -36,6 +36,8 @@ function (
 	}
 
 	Vector3.prototype = Object.create(Vector.prototype);
+	Vector3.prototype.constructor = Vector3;
+
 	Vector.setupAliases(Vector3.prototype,[['x', 'u', 'r'], ['y', 'v', 'g'], ['z', 'w', 'b']]);
 
 	/* ====================================================================== */

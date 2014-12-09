@@ -26,6 +26,8 @@ function (
 	}
 
 	Vector2.prototype = Object.create(Vector.prototype);
+	Vector2.prototype.constructor = Vector2;
+
 	Vector.setupAliases(Vector2.prototype, [['x', 'u', 's'], ['y', 'v', 't']]);
 
 	/* ====================================================================== */
