@@ -255,6 +255,16 @@ define([
 			});
 		});
 
+		describe('reflect', function () {
+			it('can reflect a vector', function () {
+				var plane = new Vector3(-1, 0, 1).normalize();
+				var original = new Vector3(1, 0, 0);
+				var reflection = original.clone().reflect(plane);
+
+				expect(reflection).toBeCloseToVector(new Vector3(0, 0, 1));
+			});
+		});
+
 		it('can calculate the distance', function () {
 			var a = new Vector3(3, 2, 1);
 			var b = new Vector3(1, 2, 3);
