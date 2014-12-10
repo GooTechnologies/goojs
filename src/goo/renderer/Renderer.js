@@ -465,6 +465,10 @@ function (
 		}
 	};
 
+	Renderer.prototype.updateAttributeData = function (attributeData) {
+		this.context.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, attributeData);
+	};
+
 	Renderer.prototype.setShadowType = function (type) {
 		this.shadowHandler.shadowType = type;
 	};
@@ -935,6 +939,15 @@ function (
 		}
 
 		this.bindData(meshData.vertexData);
+
+		if (meshData._attributeDataNeedsRefresh) {
+			meshData._dirtyAttributeNames.forEach(function (name) {
+				this.updateAttributeData(meshData.dataViews[name]);
+			}.bind(this));
+
+			meshData._attributeDataNeedsRefresh = false;
+			meshData._dirtyAttributeNames.clear();
+		}
 
 		var materials = renderInfo.materials;
 
