@@ -242,6 +242,16 @@ define([
 			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34));
 		});
 
+		describe('reflect', function () {
+			it('can reflect a vector', function () {
+				var plane = new Vector2(-1, 1).normalize(); // more like a vector
+				var original = new Vector2(1, 0);
+				var reflection = original.clone().reflect(plane);
+
+				expect(reflection).toBeCloseToVector(new Vector2(0, 1));
+			});
+		});
+
 		describe('copy', function () {
 			it('can copy values from a vector', function () {
 				var vector = new Vector2(11, 22);
