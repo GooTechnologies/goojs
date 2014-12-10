@@ -50,6 +50,9 @@ function (
 		this.boundingBox = undefined;
 		this.store = undefined;
 
+		this._attributeDataNeedsRefresh = false;
+		this._dirtyAttributeNames = new Set();
+
 		this.rebuildData(this.vertexCount, this.indexCount);
 	}
 
@@ -139,6 +142,11 @@ function (
 	 */
 	MeshData.prototype.setVertexDataUpdated = function () {
 		this.vertexData._dataNeedsRefresh = true;
+	};
+
+	MeshData.prototype.setAttributeDataUpdated = function (name) {
+		this._dirtyAttributeNames.add(name);
+		this._attributeDataNeedsRefresh = true;
 	};
 
 	MeshData.prototype.getSectionCount = function () {
@@ -328,7 +336,7 @@ function (
 	//! AT: unused
 	MeshData.prototype.makeInterleavedData = function () {
 		var stride = 0;
-		var offset = 0;
+		var offset = 0; // unused
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = stride;
@@ -457,6 +465,7 @@ function (
 	 * @returns {MeshData} Self to allow chaining
 	 */
 	MeshData.prototype.applyFunction = function (attributeName, fun) {
+		//! AT: fun should return a vector3, not an array
 		var vert;
 		var outVert;
 		var view = this.getAttributeBuffer(attributeName);
