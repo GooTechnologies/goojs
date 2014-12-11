@@ -1,3 +1,24 @@
+v0.12.5 --- 2014-12-11
+----------------------
+
+###Additions:
+ + components can now inject methods on the *EntitySelection* prototype which makes `world.by.tag('cake').show()` possible; other available component-specific methods are: `setTranslation`, `setRotation`, `setScale`, `lookAt`, `move`, `addTranslation`, `addRotation`, `hide`, `setDiffuse` - and even more are planned
+ + a new module, *goo/renderer/Capabilities* which holds information regarding available WebGL extensions
+ + can update individual attribute data using `MeshData.prototype.setAttributeDataUpdated`
+ + new visual test, [BufferSubData](http://code.gooengine.com/0.12.5/visual-test/goo/renderer/BufferSubData/BufferSubData-vtest.html)
+ + support for meshes with more than 65536 indices
+ + `.reflect` for *Vector2* and *Vector3* which reflects a vector intersecting another vector/plane
+ + `.dotVector` for *Vector2/3/4*
+
+###Fixes:
+ * the engine adjusts for the lack of supported WebGL extensions
+
+###Deprecated:
+ - the static method `Vector3.dotv`; please use the instance method `Vector3.prototype.dotVector` instead
+ - the static method `Vector3.addv`; please use the instance method `Vector3.prototype.addVector` instead
+ - the static method `Vector3.subv`; please use the instance method `Vector3.prototype.subVector` instead
+
+
 v0.12.4 --- 2014-12-01
 ----------------------
 
