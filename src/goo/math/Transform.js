@@ -204,9 +204,10 @@ function (
 
 		var scale = this.scale;
 		// invert + transpose if non-uniform scaling
+		// RH: Should we check against epsilon here?
 		if (scale.x !== scale.y || scale.x !== scale.z) {
-			Matrix3x3.invert(this.normalMatrix);
-			Matrix3x3.transpose(this.normalMatrix, this.normalMatrix);
+			Matrix3x3.invert(this.normalMatrix, tmpMat1);
+			Matrix3x3.transpose(tmpMat1, this.normalMatrix);
 		}
 	};
 
