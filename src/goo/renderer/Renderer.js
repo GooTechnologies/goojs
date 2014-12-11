@@ -465,8 +465,8 @@ function (
 		}
 	};
 
-	Renderer.prototype.updateAttributeData = function (attributeData) {
-		this.context.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, 0, attributeData);
+	Renderer.prototype.updateAttributeData = function (attributeData, offset) {
+		this.context.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, offset, attributeData);
 	};
 
 	Renderer.prototype.setShadowType = function (type) {
@@ -942,7 +942,7 @@ function (
 
 		if (meshData._attributeDataNeedsRefresh) {
 			meshData._dirtyAttributeNames.forEach(function (name) {
-				this.updateAttributeData(meshData.dataViews[name]);
+				this.updateAttributeData(meshData.dataViews[name], meshData.attributeMap[name].offset);
 			}.bind(this));
 
 			meshData._attributeDataNeedsRefresh = false;

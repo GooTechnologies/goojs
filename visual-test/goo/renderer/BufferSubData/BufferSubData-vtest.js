@@ -33,35 +33,45 @@ require([
 	var texture = new TextureCreator().loadTexture2D('../../../resources/check.png');
 	material.setTexture('DIFFUSE_MAP', texture);
 
+	var sphere0 = new Sphere(32, 32);
 	var sphere1 = new Sphere(32, 32);
 	var sphere2 = new Sphere(32, 32);
 
-	world.createEntity(sphere1, material, [ 1, 0, 0]).addToWorld();
-	world.createEntity(sphere2, material, [-1, 0, 0]).addToWorld();
+	world.createEntity(sphere0, material, [ 0, 0, 0]).addToWorld();
+	world.createEntity(sphere1, material, [ 1.2, 0, 0]).addToWorld();
+	world.createEntity(sphere2, material, [-1.2, 0, 0]).addToWorld();
 
-	function noiseIt() {
+	function noiseIt(mesh) {
 		// altering the vertex positions
-		sphere1.applyFunction(MeshData.POSITION, function (vertex) {
+		mesh.applyFunction(MeshData.POSITION, function (vertex) {
+			vertex.scale(0.95 + Math.random() * 0.1);
 			return [
-				vertex.x + Math.random() * 0.05,
-				vertex.y + Math.random() * 0.05,
-				vertex.z + Math.random() * 0.05
+				vertex.x,
+				vertex.y,
+				vertex.z
 			];
 		});
 
 		// altering the texture coordinates
-		sphere1.applyFunction(MeshData.TEXCOORD0, function (vertex) {
+		mesh.applyFunction(MeshData.TEXCOORD0, function (vertex) {
 			return [
-				vertex.x + 0.1,
-				vertex.y + 0.1
+				vertex.x + Math.random() * 0.08,
+				vertex.y + Math.random() * 0.08
 			];
 		});
-
-		// only updating the vertex positions
-		sphere1.setAttributeDataUpdated(MeshData.POSITION);
 	}
 
-	setTimeout(noiseIt, 1000);
+	setTimeout(function () {
+		noiseIt(sphere1);
+		// update only the vertex positions on one sphere
+		sphere1.setAttributeDataUpdated(MeshData.POSITION);
+	}, 500);
+
+	setTimeout(function () {
+		noiseIt(sphere2);
+		// update only the texture coords on the other sphere
+		sphere2.setAttributeDataUpdated(MeshData.TEXCOORD0);
+	}, 1000);
 
 	V.process();
 });
