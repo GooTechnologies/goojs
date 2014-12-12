@@ -1,3 +1,10 @@
+v0.12.6 --- 2014-12-12
+----------------------
+
+###Fixes
+ * normal matrix not being updated properly
+ * derived 'classes' have their `prototype.constructor` pointing to the derived constructors
+
 v0.12.5 --- 2014-12-11
 ----------------------
 
