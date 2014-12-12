@@ -21,7 +21,8 @@ require([
 	var material1 = new Material(ShaderLib.uber);
 
 	var material2 = new Material(ShaderLib.uber);
-	material2.uniforms.opacity = 0.25;
+	material2.uniforms.materialDiffuse = [1.0, 0.0, 0.0, 1.0];
+	material2.uniforms.opacity = 0.5;
 	material2.renderQueue = 2000;
 	material2.blendState.blending = 'CustomBlending';
 

@@ -250,13 +250,11 @@ function (
 	};
 
 	Shader.prototype.matchUniforms = function(shaderInfo) {
-		var uniforms = this.matchedUniforms;
-		if (uniforms) {
-			this.textureIndex = 0;
+		this.textureIndex = 0;
 
-			for (var i = 0, l = uniforms.length; i < l; i++) {
-				this._bindUniform(uniforms[i], shaderInfo);
-			}
+		var uniforms = this.matchedUniforms;
+		for (var i = 0, l = uniforms.length; i < l; i++) {
+			this._bindUniform(uniforms[i], shaderInfo);
 		}
 	};
 
@@ -277,15 +275,6 @@ function (
 		this.enableAttributes(record, context);
 		this.matchUniforms(shaderInfo);
 	};
-
-	Shader.prototype.defineValue = function(shaderInfo, name) {
-		var defValue = shaderInfo.material.uniforms[name];
-		if (defValue === undefined) {
-			defValue = this.uniforms[name];
-		}
-		return defValue;
-	};
-
 
 	Shader.prototype.mapSlot = function(shaderInfo, mapping, slot) {
 		var maps = shaderInfo.material.getTexture(slot.mapping);
@@ -319,7 +308,16 @@ function (
 		}
 	};
 
-	Shader.prototype.callMapping = function(shaderInfo, name, mapping) {
+	Shader.prototype.defineValue = function(shaderInfo, name) {
+		var defValue = shaderInfo.material.uniforms[name];
+		if (defValue === undefined) {
+			defValue = this.uniforms[name];
+		}
+		return defValue;
+	};
+
+	Shader.prototype._bindUniform = function (name, shaderInfo) {
+		var mapping = this.uniformCallMapping[name];
 		var defValue = this.defineValue(shaderInfo, name);
 		var type = typeof defValue;
 		if (type === 'string') {
@@ -328,14 +326,6 @@ function (
 			var value = type === 'function' ? defValue(shaderInfo) : defValue;
 			mapping.call(value);
 		}
-	};
-
-	Shader.prototype._bindUniform = function (name, shaderInfo) {
-		var mapping = this.uniformCallMapping[name];
-		if (mapping === undefined) {
-			return;
-		}
-		this.callMapping(shaderInfo, name, mapping);
 	};
 
 	Shader.prototype.setDefine = function (key, value) {
@@ -559,7 +549,7 @@ function (
 				delete this.uniforms.$link;
 			}
 
-			this.matchedUniforms = [];
+			this.matchedUniforms.length = 0;
 			for (var name in this.uniforms) {
 				var mapping = this.uniformCallMapping[name];
 				if (mapping !== undefined) {
@@ -666,35 +656,35 @@ function (
 
 	function setupDefaultCallbacks(defaultCallbacks) {
 		defaultCallbacks[Shader.PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getProjectionMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
+			// var matrix = shaderInfo.camera.getProjectionMatrix();
+			uniformCall.uniformMatrix4fv(shaderInfo.camera.getProjectionMatrix());
 		};
 		defaultCallbacks[Shader.VIEW_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
+			// var matrix = shaderInfo.camera.getViewMatrix();
+			uniformCall.uniformMatrix4fv(shaderInfo.camera.getViewMatrix());
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
-			uniformCall.uniformMatrix4fv(matrix);
+			// var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
+			uniformCall.uniformMatrix4fv(shaderInfo.transform.matrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix3x3.IDENTITY;
-			uniformCall.uniformMatrix3fv(matrix);
+			// var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix3x3.IDENTITY;
+			uniformCall.uniformMatrix3fv(shaderInfo.transform.normalMatrix);
 		};
 
 		defaultCallbacks[Shader.VIEW_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewInverseMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
+			// var matrix = shaderInfo.camera.getViewInverseMatrix();
+			uniformCall.uniformMatrix4fv(shaderInfo.camera.getViewInverseMatrix());
 		};
 		defaultCallbacks[Shader.VIEW_PROJECTION_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewProjectionMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
+			// var matrix = shaderInfo.camera.getViewProjectionMatrix();
+			uniformCall.uniformMatrix4fv(shaderInfo.camera.getViewProjectionMatrix());
 		};
 		defaultCallbacks[Shader.VIEW_PROJECTION_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
-			var matrix = shaderInfo.camera.getViewProjectionInverseMatrix();
-			uniformCall.uniformMatrix4fv(matrix);
+			// var matrix = shaderInfo.camera.getViewProjectionInverseMatrix();
+			uniformCall.uniformMatrix4fv(shaderInfo.camera.getViewProjectionInverseMatrix());
 		};
 
 		for (var i = 0; i < 16; i++) {

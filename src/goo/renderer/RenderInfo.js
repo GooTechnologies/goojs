@@ -54,7 +54,7 @@ function (
 		} else {
 			this.meshData = renderable.meshData;
 			this.materials = renderable.materials;
-			this.transform = renderable.transform;
+			this.transform = renderable.transform || Transform.IDENTITY;
 			if (renderable.currentPose) {
 				this.currentPose = renderable.currentPose;
 			} else {

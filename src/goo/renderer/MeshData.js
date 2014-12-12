@@ -363,6 +363,9 @@ function (
 					fun.apply(targetView, [(offset + stride * i + j * size), view[i * count + j], true]);
 				}
 			}
+
+			attribute.hashKey = attribute.count + '_' + attribute.type + '_' + 
+				attribute.stride + '_' + attribute.offset + '_' + attribute.normalized;
 		}
 
 		this.vertexData = newVertexData;

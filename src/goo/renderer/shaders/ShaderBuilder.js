@@ -41,6 +41,12 @@ function(
 
 	ShaderBuilder.uber = {
 		defines: function(shader, attributeMap) {
+			if (shader.prevMap === attributeMap) {
+				return;
+			} else {
+				shader.prevMap = attributeMap;
+			}
+
 			var keys = Object.keys(attributeMap);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				shader.setDefine(keys[i], true);
@@ -48,6 +54,12 @@ function(
 		},
 
 		txMaps: function(shader, textureMaps) {
+			if (shader.prevTxMap === textureMaps) {
+				return;
+			} else {
+				shader.prevTxMap = textureMaps;
+			}
+
 			var keys = Object.keys(textureMaps);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var type = keys[i];
@@ -196,7 +208,7 @@ function(
 
 
 			ShaderBuilder.uber.uniforms(shader, textureMaps);
-			ShaderBuilder.uber.attributes(shader, attributeMap, textureMaps);
+			// ShaderBuilder.uber.attributes(shader, attributeMap, textureMaps);
 
 			ShaderBuilder.uber.discard(shader, material);
 			ShaderBuilder.uber.opacity(shader, material);

@@ -33,6 +33,8 @@ function (
 		this.scale = new Vector3(1, 1, 1);
 	}
 
+	Transform.IDENTITY = new Transform();
+
 	var tmpVec = new Vector3();
 	var tmpVec2 = new Vector3();
 	var tmpMat1 = new Matrix3x3();
