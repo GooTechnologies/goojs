@@ -114,7 +114,7 @@ function (
 
 		// get a script factory in string form
 		var scriptFactoryStr = [
-			"window._gooScriptFactories['" + config.id + "'] = function () { 'use " + "strict';",
+			"window._gooScriptFactories['" + config.id + "'] = function () {",
 			config.body,
 			' var obj = {',
 			'  externals: {}',
