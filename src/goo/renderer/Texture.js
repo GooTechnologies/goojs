@@ -199,6 +199,7 @@ function (
 	Texture.prototype.getSizeInMemory = function () {
 		var size;
 
+		if (!this.image) { return 0; }
 		var width = this.image.width || this.image.length;
 		var height = this.image.height || 1;
 
