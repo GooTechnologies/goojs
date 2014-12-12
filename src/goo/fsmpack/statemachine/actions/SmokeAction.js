@@ -56,7 +56,7 @@ function (
 			var texture = ParticleSystemUtils.createFlareTexture();
 			texture.generateMipmaps = true;
 			SmokeAction.material.setTexture('DIFFUSE_MAP', texture);
-			SmokeAction.material.blendState.blending = 'AlphaBlending';
+			SmokeAction.material.blendState.blending = 'TransparencyBlending';
 			SmokeAction.material.cullState.enabled = false;
 			SmokeAction.material.depthState.write = false;
 			SmokeAction.material.renderQueue = 2001;
