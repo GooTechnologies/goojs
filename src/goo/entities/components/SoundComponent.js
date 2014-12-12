@@ -22,6 +22,8 @@ function (
 	 * @extends {Component}
 	 */
 	function SoundComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'SoundComponent';
 
 		/**
@@ -44,6 +46,8 @@ function (
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
 	}
+
+	SoundComponent.type = 'SoundComponent';
 
 	SoundComponent.prototype = Object.create(Component.prototype);
 	SoundComponent.prototype.constructor = SoundComponent;

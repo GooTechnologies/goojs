@@ -13,6 +13,7 @@ function (System) {
 	}
 
 	ParticlesSystem.prototype = Object.create(System.prototype);
+	ParticlesSystem.prototype.constructor = ParticlesSystem;
 
 	ParticlesSystem.prototype.process = function (entities, tpf) {
 		if (tpf > 1) {

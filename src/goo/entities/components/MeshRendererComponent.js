@@ -15,7 +15,7 @@ define([
 	 * @extends Component
 	 */
 	function MeshRendererComponent(materials) {
-		Component.call(this);
+		Component.apply(this, arguments);
 
 		this.type = 'MeshRendererComponent';
 

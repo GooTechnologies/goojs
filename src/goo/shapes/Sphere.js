@@ -77,6 +77,7 @@ function (
 	}
 
 	Sphere.prototype = Object.create(MeshData.prototype);
+	Sphere.prototype.constructor = Sphere;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.

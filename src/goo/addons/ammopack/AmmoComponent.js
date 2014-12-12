@@ -50,6 +50,8 @@ function(
 	 * entity.setComponent(new AmmoComponent({ mass:5 }));
 	 */
 	function AmmoComponent(settings) {
+		Component.apply(this, arguments);
+
 		this.settings = settings = settings || {};
 
 		_.defaults(settings,{

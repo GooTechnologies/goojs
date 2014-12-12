@@ -46,6 +46,7 @@ function (
 	}
 
 	Torus.prototype = Object.create(MeshData.prototype);
+	Torus.prototype.constructor = Torus;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.

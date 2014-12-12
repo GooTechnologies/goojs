@@ -37,6 +37,8 @@ function (
 	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/quadpack/QuadComponent/QuadComponent-vtest.html Working example}</caption>
 	 */
 	function QuadComponent(image, settings) {
+		Component.apply(this, arguments);
+
 		settings = settings || {};
 		var defaults = {
 			width	: 1,

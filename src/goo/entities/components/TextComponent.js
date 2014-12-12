@@ -15,11 +15,15 @@ function (
 	 * @extends Component
 	 */
 	function TextComponent(text) {
+		Component.apply(this, arguments);
+
 		this.type = 'TextComponent';
 
 		this.text = text || '';
 		this.dirty = true;
 	}
+
+	TextComponent.type = 'TextComponent';
 
 	TextComponent.prototype = Object.create(Component.prototype);
 	TextComponent.prototype.constructor = TextComponent;

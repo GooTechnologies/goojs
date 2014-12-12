@@ -23,6 +23,8 @@ function (
 	 * @extends Component
 	 */
 	function ScriptComponent(scripts) {
+		Component.apply(this, arguments);
+
 		this.type = 'ScriptComponent';
 		this._gooClasses = Scripts.getClasses();
 
@@ -44,6 +46,8 @@ function (
 			this.scripts = [];
 		}
 	}
+
+	ScriptComponent.type = 'ScriptComponent';
 
 	ScriptComponent.prototype = Object.create(Component.prototype);
 	ScriptComponent.prototype.constructor = ScriptComponent;

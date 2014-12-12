@@ -42,6 +42,8 @@ function (
 	 * entity.setComponent(boxColliderComponent);
 	 */
 	function CannonRigidbodyComponent(settings) {
+		Component.apply(this, arguments);
+
 		settings = settings || {};
 		this.type = 'CannonRigidbodyComponent';
 

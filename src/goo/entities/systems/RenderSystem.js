@@ -63,6 +63,7 @@ function (
 	}
 
 	RenderSystem.prototype = Object.create(System.prototype);
+	RenderSystem.prototype.constructor = RenderSystem;
 
 	RenderSystem.prototype.pick = function (x, y, callback, skipUpdateBuffer) {
 		this.picking.x = x;

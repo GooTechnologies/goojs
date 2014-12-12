@@ -105,6 +105,7 @@ function (
 	}
 
 	GizmoRenderSystem.prototype = Object.create(System.prototype);
+	GizmoRenderSystem.prototype.constructor = GizmoRenderSystem;
 
 	GizmoRenderSystem.prototype.activate = function (id, x, y) {
 		this.active = true;

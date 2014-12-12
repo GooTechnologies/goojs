@@ -26,6 +26,7 @@ function (
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);
+	LightingSystem.prototype.constructor = LightingSystem;
 
 	/**
 	 * Replaces the lights tracked by the system with custom ones.

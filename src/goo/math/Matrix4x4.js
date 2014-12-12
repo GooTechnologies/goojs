@@ -30,6 +30,8 @@ function (
 	}
 
 	Matrix4x4.prototype = Object.create(Matrix.prototype);
+	Matrix4x4.prototype.constructor = Matrix4x4;
+
 	Matrix.setupAliases(Matrix4x4.prototype, [['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
 
 	/* ====================================================================== */

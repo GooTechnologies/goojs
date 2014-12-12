@@ -36,6 +36,8 @@ function (
 	}
 
 	Quaternion.prototype = Object.create(Vector.prototype);
+	Quaternion.prototype.constructor = Quaternion;
+
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);

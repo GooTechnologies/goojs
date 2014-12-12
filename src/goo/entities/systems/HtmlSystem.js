@@ -26,6 +26,7 @@ function (
 	}
 
 	HtmlSystem.prototype = Object.create(System.prototype);
+	HtmlSystem.prototype.constructor = HtmlSystem;
 
 	//
 	// Browsers implement z-index as signed 32bit int.

@@ -15,6 +15,8 @@ function (
 	 * @param {object} [settings]
 	 */
 	function CannonPlaneColliderComponent(settings) {
+		Component.apply(this, arguments);
+
 		this.type = "CannonPlaneColliderComponent";
 
 		settings = settings || {};

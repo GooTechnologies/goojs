@@ -16,6 +16,8 @@ function (
 	 * @param {object} [settings.shapeOptions]
 	 */
 	function CannonTerrainColliderComponent(settings) {
+		Component.apply(this, arguments);
+
 		this.type = "CannonTerrainColliderComponent";
 
 		settings = settings || {
