@@ -327,6 +327,21 @@ function(
 			return shadowIndex;
 		},
 		processor: function (shader, shaderInfo) {
+			var uniforms = shader.uniforms;
+			uniforms.totalAmbient = uniforms.totalAmbient || [0.1, 0.1, 0.1];
+			shaderInfo.material.uniforms.totalAmbient = shaderInfo.material.uniforms.totalAmbient || [0.1, 0.1, 0.1];
+			var materialAmbient = shaderInfo.material.uniforms.materialAmbient || uniforms.materialAmbient || [0.1, 0.1, 0.1, 1.0];
+			var totalAmbient = shaderInfo.material.uniforms.totalAmbient;
+			if (shaderInfo.material.multiplyAmbient) {
+				totalAmbient[0] = materialAmbient[0] * ShaderBuilder.GLOBAL_AMBIENT[0];
+				totalAmbient[1] = materialAmbient[1] * ShaderBuilder.GLOBAL_AMBIENT[1];
+				totalAmbient[2] = materialAmbient[2] * ShaderBuilder.GLOBAL_AMBIENT[2];
+			} else {
+				totalAmbient[0] = materialAmbient[0] + ShaderBuilder.GLOBAL_AMBIENT[0];
+				totalAmbient[1] = materialAmbient[1] + ShaderBuilder.GLOBAL_AMBIENT[1];
+				totalAmbient[2] = materialAmbient[2] + ShaderBuilder.GLOBAL_AMBIENT[2];
+			}
+
 			if (!shader.frameStart) {
 				var lights = shaderInfo.lights;
 				for (var i = 0; i < lights.length; i++) {
@@ -348,27 +363,7 @@ function(
 				return;
 			}
 
-			var uniforms = shader.uniforms;
-
-			uniforms.materialAmbient = uniforms.materialAmbient || [0.1, 0.1, 0.1, 1.0];
-			uniforms.totalAmbient = uniforms.totalAmbient || [0.1, 0.1, 0.1];
-			shaderInfo.material.uniforms.totalAmbient = shaderInfo.material.uniforms.totalAmbient || [];
-
-			var materialAmbient = shaderInfo.material.uniforms.materialAmbient || uniforms.materialAmbient;
-			uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
-			// $dan: This is maybe a bit of secret property here for allowing multiplicative ambient on materials.
-			//       It should probably be default, although it'd break too much to just go ahead and change it.
-			var totalAmbient = shaderInfo.material.uniforms.totalAmbient;
-			if (shaderInfo.material.multiplyAmbient) {
-				totalAmbient[0] = materialAmbient[0] * uniforms.globalAmbient[0];
-				totalAmbient[1] = materialAmbient[1] * uniforms.globalAmbient[1];
-				totalAmbient[2] = materialAmbient[2] * uniforms.globalAmbient[2];
-			} else {
-				totalAmbient[0] = materialAmbient[0] + uniforms.globalAmbient[0];
-				totalAmbient[1] = materialAmbient[1] + uniforms.globalAmbient[1];
-				totalAmbient[2] = materialAmbient[2] + uniforms.globalAmbient[2];
-			}
-
+			// code below only has to be once per frame
 			uniforms.materialEmissive = uniforms.materialEmissive || 'EMISSIVE';
 			uniforms.materialDiffuse = uniforms.materialDiffuse || 'DIFFUSE';
 			uniforms.materialSpecular = uniforms.materialSpecular || 'SPECULAR';

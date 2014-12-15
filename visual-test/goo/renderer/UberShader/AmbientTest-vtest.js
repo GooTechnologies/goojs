@@ -29,15 +29,15 @@ require([
 	V.addOrbitCamera(new Vector3(8, Math.PI / 2, 0));
 	V.addLights();
 
-	var material1 = new Material(ShaderLib.uber);
+	var material1 = new Material('Material1', ShaderLib.uber);
 	var sphere0 = new Sphere(20, 20);
 	world.createEntity(sphere0, material1, [ -1.2, 0, 0]).addToWorld();
 
-	var material2 = new Material(ShaderLib.uber);
+	var material2 = new Material('Material1', ShaderLib.uber);
 	var sphere1 = new Sphere(20, 20);
 	world.createEntity(sphere1, material2, [ 0, 0, 0]).addToWorld();
 
-	var material3 = new Material(ShaderLib.uber);
+	var material3 = new Material('Material1', ShaderLib.uber);
 	var sphere2 = new Sphere(20, 20);
 	world.createEntity(sphere2, material3, [1.2, 0, 0]).addToWorld();
 
