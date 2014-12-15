@@ -349,27 +349,29 @@ function(
 			}
 
 			var uniforms = shader.uniforms;
+
 			uniforms.materialAmbient = uniforms.materialAmbient || [0.1, 0.1, 0.1, 1.0];
+			uniforms.totalAmbient = uniforms.totalAmbient || [0.1, 0.1, 0.1];
+			shaderInfo.material.uniforms.totalAmbient = shaderInfo.material.uniforms.totalAmbient || [];
+
 			var materialAmbient = shaderInfo.material.uniforms.materialAmbient || uniforms.materialAmbient;
 			uniforms.globalAmbient = ShaderBuilder.GLOBAL_AMBIENT;
-			uniforms.totalAmbient = uniforms.totalAmbient || [];
 			// $dan: This is maybe a bit of secret property here for allowing multiplicative ambient on materials.
 			//       It should probably be default, although it'd break too much to just go ahead and change it.
+			var totalAmbient = shaderInfo.material.uniforms.totalAmbient;
 			if (shaderInfo.material.multiplyAmbient) {
-				// shader.setDefine('MULTIPLY_AMBIENT', true);
-				uniforms.totalAmbient[0] = materialAmbient[0] * uniforms.globalAmbient[0];
-				uniforms.totalAmbient[1] = materialAmbient[1] * uniforms.globalAmbient[1];
-				uniforms.totalAmbient[2] = materialAmbient[2] * uniforms.globalAmbient[2];
+				totalAmbient[0] = materialAmbient[0] * uniforms.globalAmbient[0];
+				totalAmbient[1] = materialAmbient[1] * uniforms.globalAmbient[1];
+				totalAmbient[2] = materialAmbient[2] * uniforms.globalAmbient[2];
 			} else {
-				uniforms.totalAmbient[0] = materialAmbient[0] + uniforms.globalAmbient[0];
-				uniforms.totalAmbient[1] = materialAmbient[1] + uniforms.globalAmbient[1];
-				uniforms.totalAmbient[2] = materialAmbient[2] + uniforms.globalAmbient[2];
+				totalAmbient[0] = materialAmbient[0] + uniforms.globalAmbient[0];
+				totalAmbient[1] = materialAmbient[1] + uniforms.globalAmbient[1];
+				totalAmbient[2] = materialAmbient[2] + uniforms.globalAmbient[2];
 			}
 
 			uniforms.materialEmissive = uniforms.materialEmissive || 'EMISSIVE';
 			uniforms.materialDiffuse = uniforms.materialDiffuse || 'DIFFUSE';
 			uniforms.materialSpecular = uniforms.materialSpecular || 'SPECULAR';
-			// uniforms.materialSpecularPower = uniforms.materialSpecularPower || 'SPECULAR_POWER';
 
 			var pointIndex = 0;
 			var directionalIndex = 0;
