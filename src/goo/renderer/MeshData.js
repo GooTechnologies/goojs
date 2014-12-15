@@ -763,11 +763,15 @@ function (
 
 	/**
 	 * Destroys all attached vertex and index data.
-	 * @param  {WebGLContext} context
+	 * @param {WebGLContext} context
 	 */
 	MeshData.prototype.destroy = function (context) {
-		this.vertexData.destroy(context);
-		this.indexData.destroy(context);
+		if (this.vertexData) {
+			this.vertexData.destroy(context);
+		}
+		if (this.indexData) {
+			this.indexData.destroy(context);
+		}
 	};
 
 	/**
