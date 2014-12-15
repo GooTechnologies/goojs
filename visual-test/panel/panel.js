@@ -12,13 +12,11 @@
 	var iframes;
 
 	function adaptUrl(url) {
-		return url.replace('http://127.0.0.1:8003', window.location.origin) + '?minimal=t';
+		return '../' + url + '?minimal=t';
 	}
 
 	function adaptUrls(urls) {
-		return urls.map(function (url) {
-			return adaptUrl(url);
-		});
+		return urls.map(adaptUrl);
 	}
 
 	function createIframes() {
