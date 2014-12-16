@@ -2,6 +2,10 @@
 
 var util = require('./util');
 
+var SUPPORTED_TAGS = [
+	'description', '@param', '@returns', '@example', '@example-link',
+	'@type', '@default', '@deprecated', '@property', '@extends'
+];
 
 var stripStars = function (string) {
 	var stripped = string.replace(/^[ \t\n]*\*?[ \t\n]*|[ \t\n]+$/g, '');
@@ -49,6 +53,15 @@ var partition = function (doc) {
 	});
 
 	return tags;
+};
+
+var warnOnRogueTags = function (tags) {
+	for (var i = 0; i < tags.length; i++) {
+		var tag = tags[i];
+		if (SUPPORTED_TAGS.indexOf(tag) === -1) {
+			console.warn('Unsupported tag ' + tag);
+		}
+	}
 };
 
 var extractType = function (string, offset) {
@@ -223,6 +236,8 @@ var extract = function (doc) {
 	var stripped = stripStars(doc);
 
 	var tags = partition(stripped);
+
+	warnOnRogueTags(Object.keys(tags));
 
 	if (tags['@param']) {
 		tags['@param'] = tags['@param'].map(extractTagParam);

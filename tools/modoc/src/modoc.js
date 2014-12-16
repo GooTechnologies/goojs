@@ -142,6 +142,8 @@ function filterPrivates(class_) {
 
 function buildDoc() {
 	files.forEach(function (file) {
+		console.log('compiling doc for ' + util.getFileName(file));
+
 		var source = fs.readFileSync(file, { encoding: 'utf8' });
 
 		var data = {};
@@ -163,8 +165,6 @@ function buildDoc() {
 			mapping[file].current = false;
 
 			fs.writeFileSync(args.outPath + '/' + data.class.constructor.name + HTML_SUFFIX, result);
-
-			console.log('done writing ' + args.outPath + '/' + data.class.constructor.name + HTML_SUFFIX);
 		}
 	});
 }
