@@ -2,6 +2,7 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Camera',
+	'goo/renderer/Capabilities',
 	'goo/shapes/Box',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/entities/components/ScriptComponent',
@@ -13,6 +14,7 @@ require([
 	Material,
 	ShaderLib,
 	Camera,
+	Capabilities,
 	Box,
 	OrbitCamControlScript,
 	ScriptComponent,
@@ -48,7 +50,7 @@ require([
 	var boxEntity = createBoxEntity();
 	boxEntity.set([-50, -0.5, 0]).addToWorld();
 
-	boxEntity = createBoxEntity(goo.renderer.capabilities.maxAnisotropy);
+	boxEntity = createBoxEntity(Capabilities.maxAnisotropy);
 	boxEntity.set([50, -0.5, 0]).addToWorld();
 
 	V.addLights();
