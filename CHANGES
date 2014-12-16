@@ -1,10 +1,13 @@
 v0.12.7 --- 2014-12-16
 ----------------------
 
-Fixes:
+###Additions
+ + a new visual-test [AmbientTest](http://code.gooengine.com/0.12.7/visual-test/goo/renderer/UberShader/AmbientTest-vtest.html)
+
+###Fixes
  * uniform updating bug
  * ambient-light bug
- * MeshData.prototype.destroy when indexData or vertexData are un-initialised
+ * `MeshData.prototype.destroy` when *indexData* or *vertexData* are un-initialised
 
 
 v0.12.6 --- 2014-12-12
