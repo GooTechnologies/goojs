@@ -1,9 +1,19 @@
+v0.12.7 --- 2014-12-16
+----------------------
+
+Fixes:
+ * uniform updating bug
+ * ambient-light bug
+ * MeshData.prototype.destroy when indexData or vertexData are un-initialised
+
+
 v0.12.6 --- 2014-12-12
 ----------------------
 
 ###Fixes
  * normal matrix not being updated properly
  * derived 'classes' have their `prototype.constructor` pointing to the derived constructors
+
 
 v0.12.5 --- 2014-12-11
 ----------------------
