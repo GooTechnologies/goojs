@@ -8,6 +8,7 @@ module.exports = function (grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		// is this task ever called?
 		clean: {
 			build: {
 				src: [
@@ -22,9 +23,7 @@ module.exports = function (grunt) {
 				]
 			},
 			docs: [
-				'goojs-jsdoc/',
-				'goojs-jsdoc-json/',
-				'goojs-jsdoc_*.tar.gz'
+				'out-doc/'
 			]
 		},
 		'build-pack': {
