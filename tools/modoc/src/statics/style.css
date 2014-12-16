@@ -56,7 +56,7 @@ a:hover, a:active {color: #38b3f6;}
 TYPOGRAPHY
 ******************************************************************************/
 
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,300);
+@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);
 @import url(http://weloveiconfonts.com/api/?family=entypo);
 
 .icon-warning:before {

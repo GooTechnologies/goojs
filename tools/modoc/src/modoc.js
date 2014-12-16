@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+var childProcess = require('child_process');
 var glob = require('glob');
 var mustache = require('mustache');
 var _ = require('underscore');
@@ -66,15 +67,15 @@ function getIndex(files) {
 					link: fileName + HTML_SUFFIX
 				};
 				mapping[file] = entry;
-				return entry
+				return entry;
 			})
-		}
+		};
 	});
 
 	return {
 		index: index,
 		mapping: mapping
-	}
+	};
 }
 // --- --- ---
 
@@ -90,7 +91,7 @@ var getFiles = function (sourcePath, ignore) {
 	});
 };
 
-var HTML_SUFFIX = '-doc.html'
+var HTML_SUFFIX = '-doc.html';
 
 var args = processArguments();
 
@@ -103,8 +104,23 @@ var index = indexAndMapping.index;
 var mapping = indexAndMapping.mapping;
 
 function copyStaticFiles(callback) {
-	require('child_process')
-		.exec('cp -r ' + args.staticsPath + '/. ' + args.outPath, function (error, stdout, stderr) {
+	childProcess.exec(
+		'cp -r ' + args.staticsPath + '/. ' + args.outPath,
+		function (error, stdout, stderr) {
+			console.log('stdout: ' + stdout);
+			console.log('stderr: ' + stderr);
+			if (error !== null) {
+				console.log('exec error: ' + error);
+			}
+			callback();
+		});
+}
+
+function buildStartPage(page, callback) {
+	// just copy over Entity.js since it's the central piece
+	childProcess.exec(
+		'cp ' + args.outPath + '/' + page + ' ' + args.outPath + '/index.html',
+		function (error, stdout, stderr) {
 			console.log('stdout: ' + stdout);
 			console.log('stderr: ' + stderr);
 			if (error !== null) {
@@ -166,5 +182,8 @@ function buildChangelog(file) {
 
 copyStaticFiles(function () {
 	buildDoc();
-	buildChangelog('../goojs/CHANGES');
+	buildChangelog('CHANGES');
+	buildStartPage('Entity-doc.html', function () {
+		console.log('documentation built');
+	});
 });
