@@ -1,0 +1,91 @@
+/******************************************************************************
+OVERIDES & GLOBALS
+******************************************************************************/
+
+body {
+	height: 100%;
+	max-width: 800px;
+	margin: 0;
+	padding: 50px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	font-size: 15px;
+	color: #9f9f9f;
+	background-color: #262626;
+}
+
+::-webkit-scrollbar {width: 10px;}
+::-webkit-scrollbar-track {background: #292929;}
+::-webkit-scrollbar-thumb {background-color: #555555;}
+
+a {
+	color: #38b3f6;
+	text-decoration: none;
+}
+
+a:hover, a:active {color: #81cff9;}
+
+/******************************************************************************
+TYPOGRAPHY
+******************************************************************************/
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,300);
+
+h1 {
+	margin-top: 0;
+	margin-bottom: 5px;
+	font-size: 30px;
+	font-weight: 400;
+}
+
+h2 {
+	margin-top: 0;
+	margin-top: 50px;
+	margin-bottom: 15px;
+	font-size: 20px;
+	font-weight: 400;
+	color: #38b3f6;
+}
+
+h3 {
+	margin-top: 30px;
+	font-weight: 300;
+	font-size: 15px;
+	font-weight: 400;
+	text-transform: uppercase;
+}
+
+code {
+	font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace, sans-serif;
+	color: #c8c651;
+}
+
+/******************************************************************************
+MAIN
+******************************************************************************/
+
+ul {
+	padding-left: 16px;
+	list-style-type: disc;
+}
+
+li {
+	margin-bottom: 10px;
+	line-height: 1.6em;
+}
+
+/******************************************************************************
+SYNTAX & COLORS
+******************************************************************************/
+
+.goo-rainbow {
+	color: #38b3f6;
+	color: #6c9eed;
+	color: #8a8eea;
+	color: #cc76a4;
+	color: #f76162;
+	color: #fb905c;
+	color: #ffbe55;
+	color: #c8c651;
+	color: #91cf4b;
+}

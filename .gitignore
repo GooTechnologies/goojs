@@ -42,3 +42,5 @@ new_engine.sh
 # generated screenshots
 # NB! reference screenshots need to be included
 test/e2etesting/screenshots-tmp/
+
+out-doc
