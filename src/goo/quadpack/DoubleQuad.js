@@ -64,7 +64,7 @@ function (
 	DoubleQuad.prototype.constructor = DoubleQuad;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {DoubleQuad} Self for chaining.
 	 */
 	DoubleQuad.prototype.rebuild = function () {

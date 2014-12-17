@@ -42,8 +42,7 @@ define([
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise addition between two quaternions and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -63,8 +62,7 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise subtraction between two quaternions and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -84,8 +82,7 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Performs a multiplication between two quaternions and stores the result in a separate quaternion.
+	 * Performs a multiplication between two quaternions and stores the result in a separate quaternion.
 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
@@ -104,8 +101,7 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
@@ -128,8 +124,7 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
@@ -150,8 +145,7 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
@@ -172,8 +166,7 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -193,15 +186,13 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
-
 	Quaternion.scalarDiv = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
@@ -311,7 +302,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise addition between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise addition between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -320,7 +311,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -329,7 +320,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a multiplication between the current quaternion and another and stores the result locally.
+	 * Performs a multiplication between the current quaternion and another and stores the result locally.
 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -339,7 +330,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise division between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise division between the current quaternion and another and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -349,7 +340,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -359,7 +350,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -369,7 +360,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -378,7 +369,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -405,7 +396,7 @@ define([
 	};
 
 	/**
-	 * @description Sets the value of this quaternion to the rotation described by the given matrix values.
+	 * Sets the value of this quaternion to the rotation described by the given matrix values.
 	 * @param {Matrix3x3} Rotation matrix.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -496,7 +487,7 @@ define([
 	};
 
 	/**
-	 * @description Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
+	 * Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
 	 * @param {Vector3} from The source vector.
 	 * @param {Vector3} to The destination vector into which to rotate the source vector.
 	 * @returns {Quaternion} Self for chaining.
@@ -575,7 +566,7 @@ define([
 	};
 
 	/**
-	 * @description Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
+	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
 	 *              an object, so use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation.
@@ -587,7 +578,7 @@ define([
 	};
 
 	/**
-	 * @description Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
+	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
 	 *              the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation (already normalized - unit length).
@@ -608,7 +599,7 @@ define([
 	};
 
 	/**
-	 * @description Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in
+	 * Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in
 	 *              that vector as well.
 	 * @param {Vector3} axisStore The object to store the computed axis in. If null, no computations are done to determine axis.
 	 * @returns {number} The angle of rotation in radians.

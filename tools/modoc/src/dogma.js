@@ -4,7 +4,7 @@ var util = require('./util');
 
 var SUPPORTED_TAGS = [
 	'description', '@param', '@returns', '@example', '@example-link',
-	'@type', '@default', '@deprecated', '@property', '@extends'
+	'@type', '@default', '@deprecated', '@property', '@extends', '@hidden', '@private'
 ];
 
 var stripStars = function (string) {

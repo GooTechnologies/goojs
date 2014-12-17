@@ -36,7 +36,7 @@ define([
 	Cone.prototype.constructor = Cone;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Cone} Self for chaining.
 	 */
 	Cone.prototype.rebuild = function () {

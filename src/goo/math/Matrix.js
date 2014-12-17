@@ -5,15 +5,11 @@ define([
 ) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
 	 * Matrix with RxC components.
-	 * @description Creates a new matrix.
 	 * @param {number} rows Number of rows.
 	 * @param {number} cols Number of columns.
 	 */
-
 	function Matrix(rows, cols) {
 		this.rows = rows || 0;
 		this.cols = cols || 0;
@@ -23,11 +19,9 @@ define([
 		this.data = new Float32Array(this.rows * this.cols);
 	}
 
-	/* ====================================================================== */
-
 	/**
+	 * Binds aliases to the different matrix components.
 	 * @private
-	 * @description Binds aliases to the different matrix components.
 	 * @param {prototype} prototype The prototype to bind to.
 	 * @param {string[]} aliases Array of component aliases for each component index.
 	 */

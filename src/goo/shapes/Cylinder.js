@@ -46,7 +46,7 @@ define([
 	Cylinder.prototype.constructor = Cylinder;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Cylinder} Self for chaining.
 	 */
 	Cylinder.prototype.rebuild = function () {

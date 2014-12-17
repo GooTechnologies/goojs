@@ -5,25 +5,18 @@ define([
 ) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
 	 * Vector with N components.
 	 * @property {Float32Array} data Storage for the vector components.
-	 * @constructor
-	 * @description Creates a new vector.
 	 * @param {number} size Number of vector components.
 	 */
-
 	function Vector(size) {
 		this.data = new Float32Array(size);
 	}
 
-	/* ====================================================================== */
-
 	/**
+	 * Binds aliases to the different vector components.
 	 * @private
-	 * @description Binds aliases to the different vector components.
 	 * @param {prototype} prototype The prototype to bind to.
 	 * @param {String[]} aliases Array of component aliases for each component index.
 	 */
@@ -54,17 +47,13 @@ define([
 		}
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
+	 * Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector.add = function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
@@ -82,26 +71,21 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
+	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @returns {Vector} Self for chaining.
 	 */
-
 	Vector.prototype.add = function (rhs) {
 		return Vector.add(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
+	 * Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector.sub = function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
@@ -119,26 +103,21 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this - rhs);'.
+	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this - rhs);'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @returns {Vector} Self for chaining.
 	 */
-
 	Vector.prototype.sub = function (rhs) {
 		return Vector.sub(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
+	 * Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector.mul = function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
@@ -156,26 +135,21 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this * rhs);'.
+	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this * rhs);'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @returns {Vector} Self for chaining.
 	 */
-
 	Vector.prototype.mul = function (rhs) {
 		return Vector.mul(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
+	 * Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector.div = function (lhs, rhs, target) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
@@ -193,7 +167,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
+	 * Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -202,16 +176,12 @@ define([
 		return Vector.div(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Copies component values and stores them in a separate vector. Equivalent of 'return (target = source);'.
+	 * Copies component values and stores them in a separate vector. Equivalent of 'return (target = source);'.
 	 * @param {Vector} source Source vector.
 	 * @param {Vector} [target] Target vector.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector.copy = function (source, target) {
 		var size = source.data.length;
 
@@ -225,7 +195,7 @@ define([
 	};
 
 	/**
-	 * @description Copies component values and stores them locally. Equivalent of 'return (this = source);'.
+	 * Copies component values and stores them locally. Equivalent of 'return (this = source);'.
 	 * @param {Vector} source Source vector.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -234,15 +204,12 @@ define([
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
+	 * Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Dot product.
 	 */
-
 	Vector.dot = function (lhs, rhs) {
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
@@ -258,26 +225,21 @@ define([
 	};
 
 	/**
-	 * @description Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
+	 * Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Dot product.
 	 */
-
 	Vector.prototype.dot = function (rhs) {
 		return Vector.dot(this, rhs);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Applys a matrix to a vector and stores the result in a separate vector. Equivalent of 'return (target = lhs•rhs);'.
+	 * Applies a matrix to a vector and stores the result in a separate vector. Equivalent of 'return (target = lhs•rhs);'.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @param {Vector} [target] Target vector for storage.
 	 * @returns {Vector} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector.apply = function (lhs, rhs, target) {
 		var rows = lhs.rows;
 		var cols = lhs.cols;
@@ -309,7 +271,7 @@ define([
 	};
 
 	/**
-	 * @description Applys a matrix to a vector and stores the result locally. Equivalent of 'return (this = lhs•this);'.
+	 * Applys a matrix to a vector and stores the result locally. Equivalent of 'return (this = lhs•this);'.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @returns {Vector} Self for chaining.
 	 */
@@ -318,16 +280,12 @@ define([
 		return Vector.apply(lhs, this, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Compares two vectors for approximate equality. Equivalent of 'return (lhs ~ rhs);'.
+	 * Compares two vectors for approximate equality. Equivalent of 'return (lhs ~ rhs);'.
 	 * @param {Vector} lhs Vector on the left-hand side.
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Boolean} True if equal.
 	 */
-
 	Vector.equals = function (lhs, rhs) {
 		var lhsLength = lhs.data.length;
 		if (lhsLength !== rhs.data.length) {
@@ -348,85 +306,68 @@ define([
 	};
 
 	/**
-	 * @description Compares two vectors for approximate equality. Equivalent of 'return (this ~ rhs);'
+	 * Compares two vectors for approximate equality. Equivalent of 'return (this ~ rhs);'
 	 * @param {Vector} rhs Vector on the right-hand side.
 	 * @returns {Boolean} True if equal.
 	 */
-
 	Vector.prototype.equals = function (rhs) {
 		return Vector.equals(this, rhs);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Computes the squared distance between two vectors. Equivalent of 'return (rhs - lhs)•(rhs - lhs);'. When comparing the relative
+	 * Computes the squared distance between two vectors. Equivalent of 'return (rhs - lhs)•(rhs - lhs);'. When comparing the relative
 	 *              distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square root
 	 *              operation.
 	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Squared distance.
 	 */
-
 	Vector.distanceSquared = function (lhs, rhs) {
 		return Vector.sub(lhs, rhs).lengthSquared();
 	};
 
 	/**
-	 * @description Computes the squared distance between two vectors. Equivalent of 'return (rhs - this)•(rhs - this);'. When comparing the
+	 * Computes the squared distance between two vectors. Equivalent of 'return (rhs - this)•(rhs - this);'. When comparing the
 	 *              relative distances between two points it is usually sufficient to compare the squared distances, thus avoiding an expensive square
 	 *              root operation.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Squared distance.
 	 */
-
 	Vector.prototype.distanceSquared = function (rhs) {
 		return Vector.sub(this, rhs).lengthSquared();
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - lhs)•(rhs - lhs));'.
+	 * Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - lhs)•(rhs - lhs));'.
 	 * @param {Vector|number[]} lhs Vector or array of scalars on the left-hand side.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Distance.
 	 */
-
 	Vector.distance = function (lhs, rhs) {
 		return Vector.sub(lhs, rhs).length();
 	};
 
 	/**
-	 * @description Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - this)•(rhs - this));'.
+	 * Computes the distance between two vectors. Equivalent of 'return sqrt((rhs - this)•(rhs - this));'.
 	 * @param {Vector|number[]} rhs Vector or array of scalars on the right-hand side.
 	 * @returns {number} Distance.
 	 */
-
 	Vector.prototype.distance = function (rhs) {
 		return Vector.sub(this, rhs).length();
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Computes the squared length of the vector. Equivalent of 'return this•this;'.
+	 * Computes the squared length of the vector. Equivalent of 'return this•this;'.
 	 * @returns {number} Square length.
 	 */
-
 	Vector.prototype.lengthSquared = function () {
 		return Vector.dot(this, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Computes the length of the vector. Equivalent of 'return sqrt(this•this);'.
+	 * Computes the length of the vector. Equivalent of 'return sqrt(this•this);'.
 	 * @returns {number} Length.
 	 */
-
 	Vector.prototype.length = function () {
 		return Math.sqrt(Vector.dot(this, this));
 	};
@@ -443,13 +384,10 @@ define([
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Inverts all component values of the vector. Equivalent of 'return (this = 0.0 - this);'.
+	 * Inverts all component values of the vector. Equivalent of 'return (this = 0.0 - this);'.
 	 * @returns {Vector} Self for chaining.
 	 */
-
 	Vector.prototype.invert = function () {
 		for (var i = 0; i < this.data.length; i++) {
 			this.data[i] = 0.0 - this.data[i];
@@ -458,13 +396,10 @@ define([
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Normalizes the vector to unit length. Equivalent of 'return (this = this/sqrt(this•this));'.
+	 * Normalizes the vector to unit length. Equivalent of 'return (this = this/sqrt(this•this));'.
 	 * @returns {Vector} Self for chaining.
 	 */
-
 	Vector.prototype.normalize = function () {
 		var l = this.length();
 		var dataLength = this.data.length;
@@ -483,25 +418,19 @@ define([
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Clones the vector. Equivalent of 'return (clone = this)'.
+	 * Clones the vector. Equivalent of 'return (clone = this)'.
 	 * @returns {Vector} Clone of self.
 	 */
-
 	Vector.prototype.clone = function () {
 		return Vector.copy(this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Sets the components of the vector.
+	 * Sets the components of the vector.
 	 * @param {Vector|number[]|...number} arguments Component values.
 	 * @returns {Vector} Self for chaining.
 	 */
-
 	Vector.prototype.set = function () {
 		if (arguments.length === 1 && typeof arguments[0] === 'object') {
 			if (arguments[0] instanceof Vector) {
@@ -520,13 +449,10 @@ define([
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Converts the vector to a string.
+	 * Converts the vector to a string.
 	 * @returns {String} String of component values.
 	 */
-
 	Vector.prototype.toString = function () {
 		var string = '';
 
@@ -541,8 +467,6 @@ define([
 
 		return string;
 	};
-
-	/* ====================================================================== */
 
 	return Vector;
 });

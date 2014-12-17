@@ -73,7 +73,7 @@ define([
 	Box.prototype.constructor = Box;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Box} Self for chaining.
 	 */
 	Box.prototype.rebuild = function () {

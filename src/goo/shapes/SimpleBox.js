@@ -27,7 +27,7 @@ define([
 	SimpleBox.prototype.constructor = SimpleBox;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {SimpleBox} Self for chaining.
 	 */
 

@@ -1,4 +1,10 @@
-define(['goo/math/Vector3', 'goo/math/MathUtils'], function (Vector3, MathUtils) {
+define([
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
+], function (
+	Vector3,
+	MathUtils
+) {
 	'use strict';
 
 	/**
@@ -15,8 +21,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function (Vector3, MathUtils)
 	var tmpVec4 = new Vector3();
 
 	/**
-	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
-	 * true)
+	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar == true)
 	 *
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
@@ -140,7 +145,7 @@ define(['goo/math/Vector3', 'goo/math/MathUtils'], function (Vector3, MathUtils)
 
 	/**
 	 * @param {Vector3} point
-	 * @param {Vecotr3} [store] if not null, the closest point is stored in this param
+	 * @param {Vector3} [store] if not null, the closest point is stored in this param
 	 * @returns the squared distance from this ray to the given point.
 	 */
 	Ray.prototype.distanceSquared = function (point, store) {

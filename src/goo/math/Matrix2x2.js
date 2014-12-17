@@ -1,12 +1,15 @@
-define(["goo/math/MathUtils", "goo/math/Matrix"],
-
-	function (MathUtils, Matrix) {
+define([
+	'goo/math/MathUtils',
+	'goo/math/Matrix'
+], function (
+	MathUtils,
+	Matrix
+) {
 	'use strict';
 
 	/**
 	 * Matrix with 2x2 components.
 	 * @extends Matrix
-	 * @description Creates a new matrix.
 	 * @param {Matrix2x2|number[]|...number} arguments Initial values for the components.
 	 */
 	function Matrix2x2() {
@@ -25,12 +28,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 	Matrix.setupAliases(Matrix2x2.prototype,[['e00'], ['e10'], ['e01'], ['e11']]);
 
-	/* ====================================================================== */
-
 	/* @type {Matrix2x2} */
 	Matrix2x2.IDENTITY = new Matrix2x2(1, 0, 0, 1);
-
-	/* ====================================================================== */
 
 	/**
 	 * Performs a component-wise addition.
@@ -39,7 +38,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix2x2.add = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
@@ -65,21 +63,17 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
-
 	Matrix2x2.prototype.add = function (rhs) {
 		return Matrix2x2.add(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Performs a component-wise subtraction.
+	 * Performs a component-wise subtraction.
 	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
 	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix2x2.sub = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
@@ -105,12 +99,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
-
 	Matrix2x2.prototype.sub = function (rhs) {
 		return Matrix2x2.sub(this, rhs, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Performs a component-wise multiplication.
@@ -119,7 +110,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix2x2.mul = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
@@ -145,12 +135,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
-
 	Matrix2x2.prototype.mul = function (rhs) {
 		return Matrix2x2.mul(this, rhs, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Performs a component-wise division.
@@ -159,7 +146,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix2x2.div = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
@@ -187,12 +173,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
-
 	Matrix2x2.prototype.div = function (rhs) {
 		return Matrix2x2.div(this, rhs, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
@@ -201,7 +184,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2} [target] Target matrix for storage.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix2x2.combine = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix2x2();
@@ -224,12 +206,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2} rhs Matrix on the right-hand side.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
-
 	Matrix2x2.prototype.combine = function (rhs) {
 		return Matrix2x2.combine(this, rhs, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
@@ -237,7 +216,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2} [target] Target matrix.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix2x2.transpose = function (source, target) {
 		if (!target) {
 			target = new Matrix2x2();
@@ -259,12 +237,9 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
-
 	Matrix2x2.prototype.transpose = function () {
 		return Matrix2x2.transpose(this, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Computes the analytical inverse and stores the result in a separate matrix.
@@ -272,7 +247,6 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @param {Matrix2x2} [target] Target matrix.
 	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix2x2.invert = function (source, target) {
 		if (!target) {
 			target = new Matrix2x2();
@@ -302,18 +276,14 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * Computes the analytical inverse and stores the result locally.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
-
 	Matrix2x2.prototype.invert = function () {
 		return Matrix2x2.invert(this, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Tests if the matrix is orthogonal.
 	 * @returns {Boolean} True if orthogonal.
 	 */
-
 	Matrix2x2.prototype.isOrthogonal = function () {
 		var dot;
 
@@ -326,13 +296,10 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		return true;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Tests if the matrix is normal.
 	 * @returns {boolean} True if normal.
 	 */
-
 	Matrix2x2.prototype.isNormal = function () {
 		var l;
 
@@ -344,6 +311,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 
 		l = this.e01 * this.e01 + this.e11 * this.e11;
 
+		//! AT: why wrap the condition in an if?!
 		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
 			return false;
 		}
@@ -351,42 +319,31 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 		return true;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Tests if the matrix is orthonormal.
 	 * @returns {boolean} True if orthonormal.
 	 */
-
 	Matrix2x2.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Computes the determinant of the matrix.
 	 * @returns {number} Determinant of matrix.
 	 */
-
 	Matrix2x2.prototype.determinant = function () {
 		return this.e00 * this.e11 - this.e01 * this.e10;
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Sets the matrix to identity.
 	 * @returns {Matrix2x2} Self for chaining.
 	 */
-
 	Matrix2x2.prototype.setIdentity = function () {
 		this.set(Matrix2x2.IDENTITY);
 		return this;
 	};
 
-
-	/* ====================================================================== */
 
 	/**
 	 * Copies component values and stores them locally.

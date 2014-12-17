@@ -48,7 +48,7 @@ define([
 	Torus.prototype.constructor = Torus;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Torus} Self for chaining.
 	 */
 	Torus.prototype.rebuild = function () {

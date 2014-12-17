@@ -14,7 +14,7 @@ define([
 	};
 
 	/**
-	 * @description Get the necessary bit shifts needed to align mask with 0.
+	 * Get the necessary bit shifts needed to align mask with 0.
 	 * @param mask the bit mask to test
 	 * @returns number of bits to shift to the right to align mask with 0.
 	 */
@@ -36,7 +36,7 @@ define([
 	};
 
 	/**
-	 * @description Check a value against a bit mask to see if it is set.
+	 * Check a value against a bit mask to see if it is set.
 	 * @param value the value to check
 	 * @param bitMask our mask
 	 * @returns true if the mask passes
@@ -46,7 +46,7 @@ define([
 	};
 
 	/**
-	 * @description Get the string as a dword int value.
+	 * Get the string as a dword int value.
 	 * @param string our string... should only be 1-4 chars long. Expected to be 1 byte chars.
 	 * @returns the int value
 	 */
@@ -59,7 +59,7 @@ define([
 	};
 
 	/**
-	 * @description Get the byte array as a dword int value.
+	 * Get the byte array as a dword int value.
 	 * @param bytes our array... should only be 1-4 bytes long.
 	 * @returns the int value
 	 */
@@ -104,7 +104,7 @@ define([
 	};
 
 	/**
-	 * @description Flip a dxt mipmap/image. Inspired by similar code in opentk and the nvidia sdk.
+	 * Flip a dxt mipmap/image. Inspired by similar code in opentk and the nvidia sdk.
 	 * @param rawData our unflipped image as raw bytes
 	 * @param width our image's width
 	 * @param height our image's height

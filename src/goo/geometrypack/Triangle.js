@@ -25,7 +25,7 @@ define([
 	Triangle.prototype = Object.create(MeshData.prototype);
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Triangle} Self for chaining.
 	 */
 	Triangle.prototype.rebuild = function () {

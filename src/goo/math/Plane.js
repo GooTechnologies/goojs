@@ -32,7 +32,7 @@ define([
 	};
 
 	/**
-	 * @description Sets this plane to the plane defined by the given three points.
+	 * Sets this plane to the plane defined by the given three points.
 	 * @param {Vector3} pointA
 	 * @param {Vector3} pointB
 	 * @param {Vector3} pointC
@@ -46,7 +46,7 @@ define([
 	};
 
 	/**
-	 * @description Reflects an incoming vector across the normal of this Plane.
+	 * Reflects an incoming vector across the normal of this Plane.
 	 * @param {Vector3} unitVector the incoming vector. Must be a unit vector.
 	 * @param {Vector3} [store] Vector to store the result in. May be the same as the unitVector.
 	 * @returns {Vector3} The reflected vector.

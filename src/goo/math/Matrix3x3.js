@@ -11,8 +11,8 @@ define([
 
 	/**
 	 * Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.
+	 * Creates a new Matrix3x3 by passing in either a current Matrix3x3, number Array, or a set of 9 numbers.
 	 * @extends Matrix
-	 * @description Creates a new Matrix3x3 by passing in either a current Matrix3x3, number Array, or a set of 9 numbers.
 	 * @param {Matrix3x3|number[]|...number} arguments Initial values for the components.
 	 * @example
 	 * // Passing in no arguments
@@ -48,12 +48,8 @@ define([
 
 	Matrix.setupAliases(Matrix3x3.prototype, [['e00'], ['e10'], ['e20'], ['e01'], ['e11'], ['e21'], ['e02'], ['e12'], ['e22']]);
 
-	/* ====================================================================== */
-
 	/** @type {Matrix3x3} */
 	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
-
-	/* ====================================================================== */
 
 	/**
 	 * Adds 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Matrix3x3 object is created and returned.
@@ -120,8 +116,6 @@ define([
 		return Matrix3x3.add(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Subtracts 'rhs' from 'lhs', and stores the reseult in 'target'.  If target is not supplied, a new Matrix3x3 object is created and returned.
 	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
@@ -184,12 +178,9 @@ define([
 	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 * m1.sub(1); // m1 == (0, -1, -1, -1, 0, -1, -1, -1, 0)
 	 */
-
 	Matrix3x3.prototype.sub = function (rhs) {
 		return Matrix3x3.sub(this, rhs, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Performs a component-wise multiplication.
@@ -198,7 +189,6 @@ define([
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix3x3.mul = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
@@ -236,12 +226,9 @@ define([
 	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.mul = function (rhs) {
 		return Matrix3x3.mul(this, rhs, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Performs a component-wise division.
@@ -250,7 +237,6 @@ define([
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix3x3.div = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
@@ -284,16 +270,13 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise division.
+	 * Performs a component-wise division.
 	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.div = function (rhs) {
 		return Matrix3x3.div(this, rhs, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
@@ -302,7 +285,6 @@ define([
 	 * @param {Matrix3x3} [target] Target matrix for storage.
 	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix3x3.combine = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix3x3();
@@ -338,20 +320,16 @@ define([
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.combine = function (rhs) {
 		return Matrix3x3.combine(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
+	 * Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
 	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix3x3.transpose = function (source, target) {
 		if (!target) {
 			target = new Matrix3x3();
@@ -393,12 +371,9 @@ define([
 	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.transpose = function () {
 		return Matrix3x3.transpose(this, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Computes the analytical inverse and stores the result in a separate matrix.
@@ -406,7 +381,6 @@ define([
 	 * @param {Matrix3x3} [target] Target matrix.
 	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix3x3.invert = function (source, target) {
 		if (!target) {
 			target = new Matrix3x3();
@@ -444,18 +418,14 @@ define([
 	 * Computes the analytical inverse and stores the result locally.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.invert = function () {
 		return Matrix3x3.invert(this, this);
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Tests if the matrix is orthogonal.
 	 * @returns {Boolean} True if orthogonal.
 	 */
-
 	Matrix3x3.prototype.isOrthogonal = function () {
 		var d = this.data;
 
@@ -480,13 +450,10 @@ define([
 		return true;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Tests if the matrix is normal.
 	 * @returns {boolean} True if normal.
 	 */
-
 	Matrix3x3.prototype.isNormal = function () {
 		var d = this.data;
 
@@ -511,24 +478,18 @@ define([
 		return true;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Tests if the matrix is orthonormal.
 	 * @returns {boolean} True if orthonormal.
 	 */
-
 	Matrix3x3.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Computes the determinant of the matrix.
 	 * @returns {number} Determinant of matrix.
 	 */
-
 	Matrix3x3.prototype.determinant = function () {
 		var d = this.data;
 		return d[0] * (d[4] * d[8] - d[7] * d[5]) -
@@ -536,13 +497,10 @@ define([
 					d[6] * (d[1] * d[5] - d[4] * d[2]);
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Sets the matrix to identity: (1, 0, 0, 0, 1, 0, 0, 0, 1).
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-
 	Matrix3x3.prototype.setIdentity = function () {
 		var d = this.data;
 
@@ -561,8 +519,6 @@ define([
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector3 on the right-hand side.  The Vector3 passed in IS modified.
@@ -572,7 +528,6 @@ define([
 	 * entity.applyPost(forward); // now 'forward' is in local space
 	 * 
 	 */
-
 	Matrix3x3.prototype.applyPost = function (rhs) {
 		var target = rhs.data;
 		var source = this.data;
@@ -588,14 +543,11 @@ define([
 		return rhs;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the left-hand side.
 	 * @returns {Vector3} Transformed left-hand side vector.
 	 */
-
 	Matrix3x3.prototype.applyPre = function (rhs) {
 		var target = rhs.data;
 		var source = this.data;
@@ -611,15 +563,12 @@ define([
 		return rhs;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Post-multiplies the matrix ("before") with a scaling vector.
 	 * @param {Vector3} vec Vector on the right-hand side.
 	 * @result {Matrix3x3} result Storage matrix.
 	 * @returns {Matrix3x3} Storage matrix.
 	 */
-
 	Matrix3x3.prototype.multiplyDiagonalPost = function (vec, result) {
 		var x = vec.data[0];
 		var y = vec.data[1];
@@ -640,8 +589,6 @@ define([
 		return result;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Sets the Matrix3x3 from rotational angles in radians.
 	 * @param {number} pitch Pitch (X axis) angle in radians.
@@ -652,7 +599,6 @@ define([
 	 * // sets the rotation to Math.PI (180 degrees) on the Y axis
 	 * entity.transformComponent.transform.rotation.fromAngles(0, Math.PI, 0);
 	 */
-
 	Matrix3x3.prototype.fromAngles = function (pitch, yaw, roll) {
 		var cy = Math.cos(pitch);
 		var sy = Math.sin(pitch);
@@ -835,8 +781,6 @@ define([
 		return result;
 	};
 
-	/* ====================================================================== */
-
 	/**
 	 * Sets this matrix to the rotation indicated by the given angle and a unit-length axis of rotation.
 	 * @param {number} angle the angle to rotate (in radians).
@@ -845,7 +789,6 @@ define([
 	 * @param {number} z
 	 * @returns {Matrix3x3} this for chaining
 	 */
-
 	Matrix3x3.prototype.fromAngleNormalAxis = function (angle, x, y, z) {
 		var fCos = Math.cos(angle);
 		var fSin = Math.sin(angle);
@@ -873,8 +816,6 @@ define([
 
 		return this;
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Sets the Matrix3x3 to look in a specific direction.
@@ -919,8 +860,6 @@ define([
 
 		return this;
 	};
-
-	/* ====================================================================== */
 
 	/**
 	 * Sets the matrix from a quaternion.

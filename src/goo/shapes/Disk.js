@@ -34,7 +34,7 @@ define(['goo/renderer/MeshData'],
 	Disk.prototype.constructor = Disk;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Disk} Self for chaining.
 	 */
 	Disk.prototype.rebuild = function () {

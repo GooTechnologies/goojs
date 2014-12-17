@@ -34,7 +34,7 @@ define([
 	}
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {TextureGrid} Self for chaining.
 	 */
 	TextureGrid.prototype.rebuild = function () {

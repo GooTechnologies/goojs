@@ -285,7 +285,7 @@ define([
 	};
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {ProjectedGrid} Self for chaining.
 	 */
 	ProjectedGrid.prototype.rebuild = function () {

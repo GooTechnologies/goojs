@@ -30,7 +30,7 @@ define([
 	Surface.prototype.constructor = Surface;
 
 	/**
-	 * @description Builds or rebuilds the mesh data
+	 * Builds or rebuilds the mesh data
 	 * @returns {Surface} Self for chaining
 	 */
 	Surface.prototype.rebuild = function () {
@@ -160,7 +160,7 @@ define([
 	}
 
 	/**
-	 * @description Create a Surface from a supplied height map in the form of a matrix
+	 * Create a Surface from a supplied height map in the form of a matrix
 	 * @param {number[]} [heightMap] The height map
 	 * @param {number} [xScale=1]
 	 * @param {number} [yScale=1]
@@ -185,7 +185,7 @@ define([
 	};
 
 	/**
-	 * @description Create a tessellated Surface typically useful for a waterplane to reduce z-fighting
+	 * Create a tessellated Surface typically useful for a waterplane to reduce z-fighting
 	 * @param {number} xSize x axis size in units
 	 * @param {number} ySize y axis size in numbers
 	 * @param {number} xCount x axis vertex count

@@ -5,12 +5,9 @@ define([
 ) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
-	 * Vector with 3 components.  Used to store 3D translation and directions.  It also contains common 3D Vector operations.
+	 * Vector with 3 components. Used to store 3D translation and directions. It also contains common 3D Vector operations. Creates a new Vector3 by passing in either a current Vector3, number Array, or a set of three numbers.
 	 * @extends Vector
-	 * @description Creates a new Vector3 by passing in either a current Vector3, number Array, or a set of three numbers.
 	 * @param {Vector3|number[]|...number} arguments Initial values for the components.
 	 * @example
 	 * // Passing in three numbers
@@ -934,8 +931,7 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Computes the distance squared between two Vector3.
+	 * Computes the distance squared between two Vector3.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} lhs Vector3.
@@ -954,8 +950,7 @@ define([
 	};
 
 	/**
-	 * @static
-	 * @description Computes the distance between two Vector3.
+	 * Computes the distance between two Vector3.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} lhs Vector3.
@@ -971,7 +966,7 @@ define([
 	};
 
 	/**
-	 * @description Computes the distance squared between the current Vector3 and another Vector3.
+	 * Computes the distance squared between the current Vector3 and another Vector3.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} v Vector3.
@@ -986,7 +981,7 @@ define([
 	};
 
 	/**
-	 * @description Computes the distance between the current Vector3 and another Vector3.
+	 * Computes the distance between the current Vector3 and another Vector3.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} v Vector3.
@@ -1001,7 +996,7 @@ define([
 	};
 
 	/**
-	 * @description Clones the vector.
+	 * Clones the vector.
 	 * @returns {Vector3} Clone of self.
 	 */
 	Vector3.prototype.clone = function () {

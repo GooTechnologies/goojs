@@ -5,16 +5,11 @@ define([
 ) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
 	 * Vector with 4 components.
 	 * @extends Vector
-	 * @constructor
-	 * @description Creates a new vector.
 	 * @param {Vector4|number[]|...number} arguments Initial values for the components.
 	 */
-
 	function Vector4() {
 		Vector.call(this, 4);
 
@@ -28,8 +23,6 @@ define([
 
 	Vector.setupAliases(Vector4.prototype,[['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
 
-	/* ====================================================================== */
-
 	Vector4.ZERO = new Vector4(0, 0, 0, 0);
 	Vector4.ONE = new Vector4(1, 1, 1, 1);
 	Vector4.UNIT_X = new Vector4(1, 0, 0, 0);
@@ -37,11 +30,8 @@ define([
 	Vector4.UNIT_Z = new Vector4(0, 0, 1, 0);
 	Vector4.UNIT_W = new Vector4(0, 0, 0, 1);
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
+	 * Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
 	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
@@ -50,7 +40,6 @@ define([
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector4.add = function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
@@ -76,30 +65,24 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
+	 * Performs a component-wise addition and stores the result locally. Equivalent of 'return (this = this + rhs);'.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @returns {Vector4} Self for chaining.
 	 */
-
 	Vector4.prototype.add = function (rhs) {
 		return Vector4.add(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
+	 * Performs a component-wise subtraction and stores the result in a separate vector. Equivalent of 'return (target = lhs - rhs);'.
 	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector4.sub = function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
@@ -125,7 +108,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction and stores the result locally. Equivalent of 'return (this = this - rhs);'.
+	 * Performs a component-wise subtraction and stores the result locally. Equivalent of 'return (this = this - rhs);'.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @returns {Vector4} Self for chaining.
@@ -135,11 +118,8 @@ define([
 		return Vector4.sub(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
+	 * Performs a component-wise multiplication and stores the result in a separate vector. Equivalent of 'return (target = lhs * rhs);'.
 	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
@@ -148,7 +128,6 @@ define([
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector4.mul = function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
@@ -174,21 +153,17 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication and stores the result locally. Equivalent of 'return (this = this * rhs);'.
+	 * Performs a component-wise multiplication and stores the result locally. Equivalent of 'return (this = this * rhs);'.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @returns {Vector4} Self for chaining.
 	 */
-
 	Vector4.prototype.mul = function (rhs) {
 		return Vector4.mul(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
+	 * Performs a component-wise division and stores the result in a separate vector. Equivalent of 'return (target = lhs / rhs);'.
 	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
@@ -197,7 +172,6 @@ define([
 	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
-
 	Vector4.div = function (lhs, rhs, target) {
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
@@ -223,7 +197,7 @@ define([
 	};
 
 	/**
-	 * @description Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
+	 * Performs a component-wise division and stores the result locally. Equivalent of 'return (this = this / rhs);'.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @returns {Vector4} Self for chaining.
@@ -236,7 +210,7 @@ define([
 	/* ====================================================================== */
 
 	/**
-	 * @description Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
+	 * Computes the dot product between two vectors. Equivalent of 'return lhs•rhs;'.
 	 * @param {Vector4|number[]|number} lhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
@@ -263,7 +237,7 @@ define([
 	};
 
 	/**
-	 * @description Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
+	 * Computes the dot product between two vectors. Equivalent of 'return this•rhs;'.
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the left-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @returns {number} Dot product.
@@ -290,7 +264,7 @@ define([
 	/* ====================================================================== */
 
 	/**
-	 * @description Linearly interpolates between two vectors and stores the result locally.
+	 * Linearly interpolates between two vectors and stores the result locally.
 	 * @param {Vector3} end End vector.
 	 * @param {number} factor Interpolation factor between zero and one.
 	 * @returns {Vector3} Self for chaining.
@@ -509,7 +483,7 @@ define([
 	};
 
 	/**
-	 * @description Clones the vector.
+	 * Clones the vector.
 	 * @returns {Vector4} Clone of self.
 	 */
 	Vector4.prototype.clone = function () {

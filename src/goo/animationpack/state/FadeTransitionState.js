@@ -17,7 +17,7 @@ define([
 	FadeTransitionState.prototype.constructor = FadeTransitionState;
 
 	/**
-	 * @description Update this state using the current global time.
+	 * Update this state using the current global time.
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */

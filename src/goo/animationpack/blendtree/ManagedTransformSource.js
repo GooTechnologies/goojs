@@ -26,7 +26,7 @@ define([
 	}
 
 	/**
-	 * @description Sets a translation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Sets a translation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Vector3} translation the translation to set
 	 */
@@ -53,7 +53,7 @@ define([
 	};
 
 	/**
-	 * @description Sets a scale to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Sets a scale to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Vector3} scale the scale to set
 	 */
@@ -65,7 +65,7 @@ define([
 	};
 
 	/**
-	 * @description Gets the scale from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Gets the scale from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Vector3} [store] to store the result in
 	 * @returns {Vector3} new vector with result or store
@@ -80,7 +80,7 @@ define([
 	};
 
 	/**
-	 * @description Sets a rotation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Sets a rotation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Quaternion} rotation the rotation to set
 	 */
@@ -92,7 +92,7 @@ define([
 	};
 
 	/**
-	 * @description Gets rotation from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Gets rotation from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Quaternion} [store] to store the result in
 	 */
@@ -106,7 +106,7 @@ define([
 	};
 
 	/**
-	 * @description Setup transform data for specific joints on this source, using the first frame from a given clip.
+	 * Setup transform data for specific joints on this source, using the first frame from a given clip.
 	 * @param {AnimationClip} clip the animation clip to pull data from
 	 * @param {string[]} jointIndices the indices of the joints to initialize data for.
 	 */

@@ -4,44 +4,45 @@ define([], function () {
 
 	/**
 	 * A collection of useful math-related functions, constants and helpers.
-	 * @constructor
-	 * @description Only used to define the class. Should never be instantiated.
+	 * Only used to define the class. Should never be instantiated.
 	 */
-	function MathUtils() {
-	}
+	function MathUtils() {}
 
 	/** @type {number}
-	* @example
-	* // converts 75 degrees to radians
-	* var rot = 75 * MathUtils.DEG_TO_RAD;
-	*/
+	 * @example
+	 * // converts 75 degrees to radians
+	 * var rot = 75 * MathUtils.DEG_TO_RAD;
+	 */
 	MathUtils.DEG_TO_RAD = Math.PI / 180.0;
+
 	/** @type {number}
-	* @example
-	* // converts Math.PI to 180 degrees
-	* var rot = Math.PI  MathUtils.RAD_TO_DEG;
-	*/
+	 * @example
+	 * // converts Math.PI to 180 degrees
+	 * var rot = Math.PI  MathUtils.RAD_TO_DEG;
+	 */
 	MathUtils.RAD_TO_DEG = 180.0 / Math.PI;
+
 	/** @type {number}
-	* @example
-	* // uses HALF_PI and converts it to degress
-	* var rot = MathUtils.HALF_PI * MathUtils.RAD_TO_DEG; // rot == 90
-	*/
+	 * @example
+	 * // uses HALF_PI and converts it to degress
+	 * var rot = MathUtils.HALF_PI * MathUtils.RAD_TO_DEG; // rot == 90
+	 */
 	MathUtils.HALF_PI = 0.5 * Math.PI;
+
 	/** @type {number}
-	* @example
-	* // uses TWO_PI and converts it to degrees
-	* var rot = MathUtils.TWO_PI * RAD_TO_DEG; // rot == 360
-	*/
+	 * @example
+	 * // uses TWO_PI and converts it to degrees
+	 * var rot = MathUtils.TWO_PI * RAD_TO_DEG; // rot == 360
+	 */
 	MathUtils.TWO_PI = 2.0 * Math.PI;
+
 	/** @type {number}
-	* @example
-	* // uses EPSILON to approximate floating point equality
-	* if(Math.abs(a - b) > MathUtils.EPSILON){
-	* 		// not equal
-	* }
-	}
-	*/
+	 * @example
+	 * // uses EPSILON to approximate floating point equality
+	 * if (Math.abs(a - b) > MathUtils.EPSILON) {
+	 * 		// not equal
+	 * }
+	 */
 	MathUtils.EPSILON = 0.00001; //! AT: unfortunately Matrix.invert is too unstable to use a smaller epsilon
 
 	//! AT: why do we have both these functions and the constant above?

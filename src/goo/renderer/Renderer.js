@@ -47,8 +47,7 @@ define([
 
 	/**
 	 * The renderer handles displaying of graphics data to a render context.
-	 *
-	 * @description Constructor. It accepts a JSON object containing the settings for the renderer.
+	 * It accepts an object containing the settings for the renderer.
 	 * @param {object} parameters Renderer settings.
 	 * @param {boolean} [parameters.alpha=false] Enables the possibility to render non-opaque pixels
 	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.

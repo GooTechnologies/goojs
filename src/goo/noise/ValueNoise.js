@@ -4,22 +4,16 @@ define(["goo/noise/Noise"],
 	function (Noise) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
 	 * Value noise is simpler and computationally lighter than Perlin noise yet produce visually similar results when used in fractals.
-	 * @constructor
-	 * @description Only used to define the class. Should never be instantiated.
+	 *  Only used to define the class. Should never be instantiated.
 	 */
-
 	function ValueNoise() {
 		Noise.call(this);
 	}
 
 	ValueNoise.prototype = Object.create(Noise.prototype);
 	ValueNoise.prototype.constructor = ValueNoise;
-
-	/* ====================================================================== */
 
 	ValueNoise.sources = [
 		0.0 / 15.0, 1.0 / 15.0, 2.0 / 15.0, 3.0 / 15.0, 4.0 / 15.0,
@@ -28,16 +22,12 @@ define(["goo/noise/Noise"],
 		15.0 / 15.0
 	];
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Evaluates the one-dimensional value noise function at a specific position.
+	 * Evaluates the one-dimensional value noise function at a specific position.
 	 * @param {Float} px Evaluation position x.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
 	 * @returns {Float} Noise value.
 	 */
-
 	ValueNoise.evaluate1d = function (px, scale) {
 		var x = Noise.split(px / scale);
 
@@ -52,17 +42,13 @@ define(["goo/noise/Noise"],
 		return result;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Evaluates the two-dimensional value noise function at a specific position.
+	 * Evaluates the two-dimensional value noise function at a specific position.
 	 * @param {Float} px Evaluation position x.
 	 * @param {Float} py Evaluation position y.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
 	 * @returns {Float} Noise value.
 	 */
-
 	ValueNoise.evaluate2d = function (px, py, scale) {
 		var x = Noise.split(px / scale);
 		var y = Noise.split(py / scale);
@@ -82,18 +68,14 @@ define(["goo/noise/Noise"],
 		return result;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Evaluates the three-dimensional value noise function at a specific position.
+	 * Evaluates the three-dimensional value noise function at a specific position.
 	 * @param {Float} px Evaluation position x.
 	 * @param {Float} py Evaluation position y.
 	 * @param {Float} pz Evaluation position z.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
 	 * @returns {Float} Noise value.
 	 */
-
 	ValueNoise.evaluate3d = function (px, py, pz, scale) {
 		var x = Noise.split(px / scale);
 		var y = Noise.split(py / scale);
@@ -122,11 +104,8 @@ define(["goo/noise/Noise"],
 		return result;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Evaluates the four-dimensional value noise function at a specific position.
+	 * Evaluates the four-dimensional value noise function at a specific position.
 	 * @param {Float} px Evaluation position x.
 	 * @param {Float} py Evaluation position y.
 	 * @param {Float} pz Evaluation position z.
@@ -134,7 +113,6 @@ define(["goo/noise/Noise"],
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
 	 * @returns {Float} Noise value.
 	 */
-
 	ValueNoise.evaluate4d = function (px, py, pz, pw, scale) {
 		var x = Noise.split(px / scale);
 		var y = Noise.split(py / scale);
@@ -179,8 +157,6 @@ define(["goo/noise/Noise"],
 
 		return result;
 	};
-
-	/* ====================================================================== */
 
 	return ValueNoise;
 });

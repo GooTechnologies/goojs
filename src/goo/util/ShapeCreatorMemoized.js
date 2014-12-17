@@ -22,7 +22,7 @@ function (
 
 	/**
 	 * Factory for shape creation.
-	 * @description Only used to define the class. Should never be instantiated.
+	 * Only used to define the class. Should never be instantiated.
 	 */
 	function ShapeCreatorMemoized() {
 	}

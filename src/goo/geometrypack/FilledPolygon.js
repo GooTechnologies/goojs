@@ -92,7 +92,7 @@ define([
 	}
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {FilledPolygon} Self for chaining.
 	 */
 	FilledPolygon.prototype.rebuild = function () {

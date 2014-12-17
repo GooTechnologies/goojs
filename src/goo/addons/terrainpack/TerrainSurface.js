@@ -36,7 +36,7 @@ define([
 		TerrainSurface.prototype = Object.create(MeshData.prototype);
 
 		/**
-		 * @description Builds or rebuilds the mesh data
+		 * Builds or rebuilds the mesh data
 		 * @returns {Surface} Self for chaining
 		 */
 		TerrainSurface.prototype.rebuild = function () {

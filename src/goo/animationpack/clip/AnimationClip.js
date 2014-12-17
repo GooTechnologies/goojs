@@ -39,7 +39,7 @@ function () {
 	};
 
 	/**
-	 * @description Remove a given channel from this clip.
+	 * Remove a given channel from this clip.
 	 * @param {AbstractAnimationChannel} channel the channel to remove.
 	 * @returns {boolean} true if this clip had the given channel and it was removed.
 	 */

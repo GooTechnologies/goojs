@@ -58,7 +58,7 @@ function (
 	Quad.prototype.constructor = Quad;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Quad} Self for chaining.
 	 */
 	Quad.prototype.rebuild = function () {

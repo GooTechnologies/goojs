@@ -79,7 +79,7 @@ define([
 	Sphere.prototype.constructor = Sphere;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Sphere} Self for chaining.
 	 */
 	Sphere.prototype.rebuild = function () {

@@ -289,6 +289,7 @@ define([
 		return result;
 	};
 
+	//! AT: the second toString in the whole engine
 	Transform.prototype.toString = function () {
 		return '' + this.matrix;
 	};

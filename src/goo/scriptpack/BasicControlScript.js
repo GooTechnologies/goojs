@@ -258,8 +258,9 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3'], function (Vector3, Matrix3x3)
 		this.domElement.addEventListener('keyup', this.keyup.bind(this), false);
 	};
 
+	//! AT: what is this?!?!
 	/*
-	 * @description Test on how to expose variables to a tool.
+	 * Test on how to expose variables to a tool.
 	 * @returns {Array}
 	 */
 	BasicControlScript.prototype.externals = function () {
