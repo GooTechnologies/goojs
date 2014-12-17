@@ -20,7 +20,6 @@ define([
 	 * Quaternions are non-commutative and provide a convenient way to interpolate between rotations (using the <i>slerp</i> function).
 	 * The four numbers in a quaternion are internally represented by a vector, and therefore inherits from it.
 	 * @extends Vector
-	 * @constructor
 	 * @param {Vector|number[]|...number} arguments Initial values for the components.
 	 */
 	function Quaternion () {

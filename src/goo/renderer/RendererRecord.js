@@ -4,7 +4,8 @@ function () {
 	'use strict';
 
 	/**
-	 * @constructor
+	 * Holds the renderer's state
+	 * @hidden
 	 */
 	function RendererRecord() {
 		this.currentBuffer = {

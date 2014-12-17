@@ -1,6 +1,6 @@
 define([
 	'goo/util/PromiseUtil'
-],  function(
+],  function (
 	PromiseUtil
 ) {
 	'use strict';
@@ -12,13 +12,11 @@ define([
 	 * as needed ({update} must be overridden). In your class, call <code>@_register('yourComponentType')</code> to _register
 	 * the handler with the loader.
 	 *
-	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @returns {ComponentHandler}
-	 * @private
-	 *
+	 * @hidden
 	 */
 	function ComponentHandler(world, getConfig, updateObject, loadObject) {
 		//! schteppe: this._type seem to be assumed to be set by the subclass. Why not pass it as a parameter to this constructor?

@@ -57,9 +57,7 @@ define([
 		/**
 		 * Creates and exposes a square heightmap terrain fitted within given world dimensions.
          * This does not do any visualizing of the heightMap. That needs to be done elsewhere.
-		 * @constructor
 		 */
-
 		function WorldFittedTerrainScript() {
 			this.heightMapData = [];
             this.yMargin = 1;
@@ -70,7 +68,6 @@ define([
 		 * @param {Array} [heightMatrix] file to load height data from
 		 * @param {Object} [dimensions] dimensions to fit the data within
 		 */
-
 		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
             var scriptContainer = registerHeightData(heightMatrix, dimensions, this.heightMapData);
 			this.heightMapData.push(scriptContainer);

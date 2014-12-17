@@ -40,12 +40,10 @@ define([
 
 	/**
 	 * Class to load objects into the engine, or to update objects based on the data model.
-	 *
-	 * @constructor
-	 * @param {object} parameters
-	 * @param {World} parameters.world The target World object.
-	 * @param {string} parameters.rootPath The root path from where to get resources.
-	 * @param {Ajax} [parameters.ajax=new Ajax(parameters.rootPath)]
+	 * @param {object} options
+	 * @param {World} options.world The target World object.
+	 * @param {string} options.rootPath The root path from where to get resources.
+	 * @param {Ajax} [options.ajax=new Ajax(options.rootPath)]
 	 * Can be used to overwrite how the loader fetches refs. Good for testing.
 	 */
 	function DynamicLoader(options) {

@@ -7,7 +7,6 @@ define([
 
 	/**
 	 * Primitive pick logic
-	 * @constructor
 	 */
 	function PrimitivePickLogic () {}
 

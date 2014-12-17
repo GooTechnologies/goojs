@@ -11,13 +11,13 @@ define([
 	) {
 	'use strict';
 
-	/*
+	/**
 	 * For handling loading of state machine components
-	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
+	 * @hidden
 	 */
 	function StateMachineComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -28,10 +28,10 @@ define([
 	StateMachineComponentHandler.prototype.constructor = StateMachineComponentHandler;
 	ComponentHandler._registerClass('stateMachine', StateMachineComponentHandler);
 
-	/*
+	/**
 	 * Create statemachine component
 	 * @returns {StateMachineComponent} the created component object
-	 * @private
+	 * @hidden
 	 */
 	StateMachineComponentHandler.prototype._create = function() {
 		return new StateMachineComponent();

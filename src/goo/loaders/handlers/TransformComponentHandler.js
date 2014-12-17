@@ -15,12 +15,11 @@ define([
 
 	/**
 	 * For handling loading of transform component
-	 * @constructor
+	 * @extends ComponentHandler
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
-	 * @private
-	 * @extends ComponentHandler
+	 * @hidden
 	 */
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);

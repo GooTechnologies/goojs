@@ -3,16 +3,13 @@ define([
 ], function (
 	MathUtils
 ) {
-
 	'use strict';
 
 	/**
 	 * Handles the height data for a heightmap and
 	 * provides functions for getting elevation at given coordinates.
 	 * @param {Array} matrixData The height data. Needs to be power of two.
-	 * @constructor
 	 */
-
 	function HeightMapBoundingScript(matrixData) {
 		this.matrixData = matrixData;
 		this.width = matrixData.length - 1;
@@ -22,7 +19,6 @@ define([
 	 * Gets the terrain matrix data
 	 * @returns {Array} the height data matrix
 	 */
-
 	HeightMapBoundingScript.prototype.getMatrixData = function() {
 		return this.matrixData;
 	};
@@ -82,7 +78,6 @@ define([
 		}
 		return [p1, p2, p3];
 	};
-
 
 	// get the exact height of the triangle at point
 	HeightMapBoundingScript.prototype.getPreciseHeight = function(x, y) {

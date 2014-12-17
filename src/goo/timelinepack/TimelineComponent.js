@@ -8,7 +8,6 @@ define([
 	/**
 	 * Timeline component
 	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example}</caption>
-	 * @constructor
 	 */
 	function TimelineComponent() {
 		Component.apply(this, arguments);

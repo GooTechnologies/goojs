@@ -1,7 +1,7 @@
 define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], /*@lends */ function (
+], function (
 	RSVP,
 	PromiseUtil
 ) {
@@ -15,13 +15,11 @@ define([
 	 * In your class, call <code>@_register('yourResourceExtension')</code> to _register
 	 * the handler with the loader.
 	 *
-	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @returns {ComponentHandler}
-	 * @private
-	 *
+	 * @hidden
 	 */
 	function ConfigHandler(world, getConfig, updateObject, loadObject) {
 		this.world = world;

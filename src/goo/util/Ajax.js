@@ -17,7 +17,6 @@ define([
 
 	/**
 	 * Ajax helper class
-	 * @constructor
 	 * @param {string} rootPath
 	 * @param {object} options
 	 */
@@ -53,9 +52,9 @@ define([
 		this._cache = {};
 	};
 
-	/*
+	/**
 	 * Uses GET to retrieve data at a remote location.
-	 *
+	 * @hidden
 	 * @param {object} options
 	 * @param {string} options.url
 	 * @returns {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.

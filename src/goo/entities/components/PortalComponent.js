@@ -4,7 +4,7 @@ define([
 ], function (
 	Component,
 	RenderTarget
-	) {
+) {
 	'use strict';
 
 	/**
@@ -17,7 +17,6 @@ define([
 	 * @param {boolean} [options.alwaysRender=false] By default the rendering done on the material is disabled if the host object is culled.
 	 * @param {boolean} [options.preciseRecursion=false] By default the "portal depth" (the number of portals seen through a portal) is of 4. By enabling this option the limitation disappears, but at the cost of using more memory.
 	 * @param {Material} [overrideMaterial=null] Optional override material to use when rendering to the host object
-	 * @constructor
 	 * @extends Component
 	 */
 	function PortalComponent(camera, height, options, overrideMaterial) {

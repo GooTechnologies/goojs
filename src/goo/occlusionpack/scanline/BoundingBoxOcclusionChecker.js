@@ -68,8 +68,7 @@ define([
 		var combinedMatrix = new Matrix4x4();
 
 		/**
-		 *  @param {SoftwareRenderer} renderer
-		 *  @constructor
+		 * @param {SoftwareRenderer} renderer
 		 */
 		function BoundingBoxOcclusionChecker (renderer) {
 

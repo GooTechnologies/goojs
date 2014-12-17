@@ -1,12 +1,13 @@
-define(['goo/entities/Selection'],
-
-	function (Selection) {
+define([
+	'goo/entities/Selection'
+], function (
+	Selection
+) {
 	'use strict';
 
 	/**
 	 * A specialised selection object for entities
 	 * @extends Selection
-	 * @constructor
 	 */
 	function EntitySelection() {
 		Selection.apply(this, arguments);
