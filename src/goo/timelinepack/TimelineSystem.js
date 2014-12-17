@@ -7,7 +7,7 @@ define([
 
 	/**
 	 * Manages entities with a TimelineComponent
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example
 	 */
 	function TimelineSystem() {
 		System.call(this, 'TimelineSystem', ['TimelineComponent']);

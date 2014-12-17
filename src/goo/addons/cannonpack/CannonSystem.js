@@ -26,8 +26,8 @@ define([
 	 * @param {number} [settings.stepFrequency=60]
 	 * @param {Vector3} [settings.gravity] The gravity to use in the scene. Default is (0,-10,0)
 	 * @param {string} [settings.broadphase='naive'] One of: 'naive' (NaiveBroadphase), 'sap' (SAPBroadphase)
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}</caption>
 	 * var cannonSystem = new CannonSystem({
 	 *     stepFrequency: 60,
 	 *     gravity: new Vector3(0, -10, 0)

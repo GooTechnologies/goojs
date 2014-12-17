@@ -32,7 +32,7 @@ define([
 	 * @param {number} [settings.tileY=1]
 	 * @param {number} [settings.preserveAspectRatio=true] Will resize the Quad mesh so that the aspect is preserved.
 	 * @extends {Component}
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/quadpack/QuadComponent/QuadComponent-vtest.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/quadpack/QuadComponent/QuadComponent-vtest.html Working example
 	 */
 	function QuadComponent(image, settings) {
 		Component.apply(this, arguments);

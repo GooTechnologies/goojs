@@ -165,8 +165,7 @@ define([
 	 * @param {number} [xScale=1]
 	 * @param {number} [yScale=1]
 	 * @returns {Surface} The created surface
-	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/HeightMap-vtest.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/HeightMap-vtest.html Working example
 	 */
 	Surface.createFromHeightMap = function (heightMap, xScale, yScale, zScale) {
 		xScale = xScale || 1;

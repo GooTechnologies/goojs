@@ -67,8 +67,8 @@ define([
 	//! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
 	/**
 	 * Sets components on the entity or tries to create and set components out of the supplied parameters.
-	 *
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-set-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-set-example.html Working example
+	 * @example
 	 * // Create three entities with different components, add them to world
 	 * var sphereEntity = new Entity(world).set(sphere, material, [2, 0, 0]).addToWorld();
 	 * var lightEntity = new Entity(world).set(light, [0, 1, 0]).addToWorld();
@@ -220,9 +220,9 @@ define([
 	/**
 	 * Adds a tag to the entity.
 	 * @param {string} tag
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example
+	 * @example
 	 * var banana = world.createEntity().setTag('fruit').setTag('green');
-	 *
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.setTag = function (tag) {
@@ -233,11 +233,11 @@ define([
 	/**
 	 * Checks whether an entity has a tag or not.
 	 * @param {string} tag
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example
+	 * @example
 	 * if (banana.hasTag('yellow')) {
 	 *     console.log('The banana is yellow');
 	 * }
-	 *
 	 * @returns {boolean}.
 	 */
 	Entity.prototype.hasTag = function (tag) {
@@ -247,12 +247,12 @@ define([
 	/**
 	 * Clears a tag on an entity.
 	 * @param {string} tag
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-tags-example.html Working example
+	 * @example
 	 * // Remove 'alive' tag if hit points drops to zero
 	 * if (hero.getAttribute('hit-points') <= 0) {
 	 *     hero.clearTag('alive');
 	 * }
-	 *
 	 * @returns {Entity} Returns self to allow chaining.
 	 */
 	Entity.prototype.clearTag = function (tag) {
@@ -265,7 +265,8 @@ define([
 	 *
 	 * @param {string} attribute
 	 * @param value
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-attributes-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/Entity/Entity-attributes-example.html Working example
+	 * @example
 	 * // Create an entity with tags and attributes, and add it to world
 	 * var hero = world.createEntity()
 	 *                 .setTag('hero')

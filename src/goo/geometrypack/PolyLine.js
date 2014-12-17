@@ -55,7 +55,7 @@ define([
 	 * Builds a surface as a result of multiplying 2 polyLines
 	 * @param {PolyLine} [that] The second operand
 	 * @returns {Surface} The resulting surface
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example
 	 */
 	PolyLine.prototype.mul = function (that) {
 		if(!(that instanceof PolyLine)) {

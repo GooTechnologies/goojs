@@ -24,10 +24,10 @@ define([
 	/**
 	 * Adds Cannon physics to an entity. Should be combined with one of the CannonCollider components, such as the {@link CannonSphereColliderComponent}. Also see {@link CannonSystem}.
 	 * @extends Component
-	 * @param {Object}  [settings]
-	 * @param {number}  [settings.mass=1]
+	 * @param {Object} [settings]
+	 * @param {number} [settings.mass=1]
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}</caption>
 	 * world.setSystem(new CannonSystem());
 	 * var entity = world.createEntity();
 	 * var rigidBodyComponent = new CannonRigidBodyComponent({

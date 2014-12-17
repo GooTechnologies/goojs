@@ -13,11 +13,11 @@ define([
 	 * so load p2.js using a script tag before using this system.
 	 * See also {@link P2Component}
 	 * @extends System
-	 * @param {Object}                      [settings]
-	 * @param {number}                      settings.stepFrequency=60
-	 * @param {Array.<number>}              settings.gravity=[0,-9.82]
+	 * @param {Object} [settings]
+	 * @param {number} [settings.stepFrequency=60]
+	 * @param {Array.<number>} [settings.gravity=[0,-9.82]]
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example
 	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example}</caption>
 	 * var p2System = new P2System({
 	 *     stepFrequency: 60,
 	 *     gravity: [0,-10]
@@ -52,6 +52,7 @@ define([
 		var p2Component = entity.p2Component;
 		var transformComponent = entity.transformComponent;
 
+		// what's up with this body?! it gets overridden by the following one!
 		var body = new p2.Body({
 			mass: p2Component.mass,
 			damping: p2Component.damping,
