@@ -65,7 +65,7 @@ define([
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.add = function (lhs, rhs, target) {
@@ -92,7 +92,7 @@ define([
 	/**
 	 * Performs a component-wise addition.
 	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix} Self for chaining.
+	 * @returns {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.add = function (rhs) {
@@ -106,7 +106,7 @@ define([
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.sub = function (lhs, rhs, target) {
@@ -133,7 +133,7 @@ define([
 	/**
 	 * Performs a component-wise subtraction.
 	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix} Self for chaining.
+	 * @returns {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.sub = function (rhs) {
@@ -147,7 +147,7 @@ define([
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.mul = function (lhs, rhs, target) {
@@ -174,7 +174,7 @@ define([
 	/**
 	 * Performs a component-wise multiplication.
 	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix} Self for chaining.
+	 * @returns {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.mul = function (rhs) {
@@ -188,7 +188,7 @@ define([
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.div = function (lhs, rhs, target) {
@@ -217,7 +217,7 @@ define([
 	/**
 	 * Performs a component-wise division.
 	 * @param {Matrix|number} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix} Self for chaining.
+	 * @returns {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.div = function (rhs) {
@@ -231,7 +231,7 @@ define([
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
 	 * @param {Matrix} [target] Target matrix for storage.
-	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.combine = function (lhs, rhs, target) {
@@ -267,7 +267,7 @@ define([
 	/**
 	 * Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @return {Matrix} Self for chaining.
+	 * @returns {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.combine = function (rhs) {
@@ -280,7 +280,7 @@ define([
 	 * Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix} source Source matrix.
 	 * @param {Matrix} [target] Target matrix.
-	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.transpose = function (source, target) {
@@ -308,7 +308,7 @@ define([
 
 	/**
 	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @return {Matrix} Self for chaining.
+	 * @returns {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.transpose = function () {
@@ -321,7 +321,7 @@ define([
 	 * Copies component values and stores them in a separate matrix.
 	 * @param {Matrix} source Source matrix.
 	 * @param {Matrix} [target] Target matrix.
-	 * @return {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix.copy = function (source, target) {
@@ -340,7 +340,7 @@ define([
 	/**
 	 * Copies component values and stores them locally.
 	 * @param {Matrix} source Source matrix.
-	 * @return {Matrix} Self for chaining.
+	 * @returns {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.copy = function (source) {
@@ -353,7 +353,7 @@ define([
 	 * Compares two matrices for approximate equality.
 	 * @param {Matrix} lhs Matrix on the left-hand side.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @return {boolean} True if equal.
+	 * @returns {boolean} True if equal.
 	 */
 
 	Matrix.equals = function (lhs, rhs) {
@@ -377,7 +377,7 @@ define([
 	/**
 	 * Compares two matrices for approximate equality.
 	 * @param {Matrix} rhs Matrix on the right-hand side.
-	 * @return {boolean} True if equal.
+	 * @returns {boolean} True if equal.
 	 */
 
 	Matrix.prototype.equals = function (rhs) {
@@ -388,7 +388,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthogonal.
-	 * @return {boolean} True if orthogonal.
+	 * @returns {boolean} True if orthogonal.
 	 */
 
 	Matrix.prototype.isOrthogonal = function () {
@@ -415,7 +415,7 @@ define([
 
 	/**
 	 * Tests if the matrix is normal.
-	 * @return {boolean} True if normal.
+	 * @returns {boolean} True if normal.
 	 */
 
 	Matrix.prototype.isNormal = function () {
@@ -439,7 +439,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthonormal.
-	 * @return {boolean} True if orthonormal.
+	 * @returns {boolean} True if orthonormal.
 	 */
 
 	Matrix.prototype.isOrthonormal = function () {
@@ -450,7 +450,7 @@ define([
 
 	/**
 	 * Clones the matrix.
-	 * @return {Matrix} Clone of self.
+	 * @returns {Matrix} Clone of self.
 	 */
 
 	Matrix.prototype.clone = function () {
@@ -462,7 +462,7 @@ define([
 	/**
 	 * Sets the components of the matrix.
 	 * @param {Matrix|number[]|...number} arguments Component values.
-	 * @return {Matrix} Self for chaining.
+	 * @returns {Matrix} Self for chaining.
 	 */
 
 	Matrix.prototype.set = function () {
@@ -487,7 +487,7 @@ define([
 
 	/**
 	 * Converts the matrix into a string.
-	 * @return {string} String of component values.
+	 * @returns {string} String of component values.
 	 */
 
 	Matrix.prototype.toString = function () {

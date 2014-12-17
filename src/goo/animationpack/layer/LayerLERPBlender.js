@@ -15,7 +15,7 @@ define([
 	}
 
 	/**
-	 * @return a key-value map representing the blended data from both animation layers.
+	 * @returns a key-value map representing the blended data from both animation layers.
 	 */
 	LayerLERPBlender.prototype.getBlendedSourceData = function () {
 		// grab our data maps from the two layers...

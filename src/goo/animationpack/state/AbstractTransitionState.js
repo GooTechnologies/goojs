@@ -66,7 +66,7 @@ define([
 	};
 
 	/**
-	 * @return the current map of source channel data for this layer.
+	 * @returns the current map of source channel data for this layer.
 	 */
 	AbstractTransitionState.prototype.getCurrentSourceData = function () {
 		// grab our data maps from the two states

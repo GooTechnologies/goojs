@@ -634,7 +634,7 @@ define([
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables"
 	 * @param renderList
-	 * @return {RSVP.Promise}
+	 * @returns {RSVP.Promise}
 	 */
 	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];

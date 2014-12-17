@@ -299,7 +299,7 @@ define([
 	 * @param {object} script config
 	 * @param {string} url location of the javascript lib
 	 * @param {string} scriptId the guid of the script
-	 * @return {RSVP.Promise} a promise that resolves when the dependency is loaded
+	 * @returns {RSVP.Promise} a promise that resolves when the dependency is loaded
 	 */
 	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
 		var that = this;
@@ -425,7 +425,7 @@ define([
 	 * @param {HTMLScriptElement} scriptElement
 	 *		The script element which is to be checked for references.
 	 *
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	function hasReferences(scriptElement) {
 		return scriptElement.scriptRefs && scriptElement.scriptRefs.length > 0;
@@ -441,7 +441,7 @@ define([
 	 * @param {string} scriptId
 	 *		The identifier of the custom script which is to be checked.
 	 *
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	function hasReferenceTo(scriptElement, scriptId) {
 		return scriptElement.scriptRefs && scriptElement.scriptRefs.indexOf(scriptId) > -1;
@@ -455,7 +455,7 @@ define([
 	 *		The identifier of the custom script whose dependencies are to be
 	 *		returned.
 	 *
-	 * @return {Array.<HTMLScriptElement>}
+	 * @returns {Array.<HTMLScriptElement>}
 	 */
 	function getReferringDependencies(scriptId) {
 		var dependencies = [];

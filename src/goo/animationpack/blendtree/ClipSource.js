@@ -142,7 +142,7 @@ define([
 	};
 
 	/**
-	 * @return a source data mapping for the channels in this clip source
+	 * @returns a source data mapping for the channels in this clip source
 	 * @private
 	 */
 	ClipSource.prototype.getSourceData = function () {

@@ -42,7 +42,7 @@ define(
 		 * @param instance The object that exposes the logic interface defined by iface.
 		 * @param name The name (ref) for adding connections by name. Supply null for automatically generated name.
 		 * @param wantsProcessCall If the instance passed wants processLogic per-frame calls
-		 * @return An instance descriptor
+		 * @returns An instance descriptor
 		 */
 		LogicLayer.prototype.addInterfaceInstance = function(iface, instance, name, wantsProcessCall) {
 
@@ -280,7 +280,7 @@ define(
 		 * Read a (possibly cached) value from an input port on a particular node.
 		 * @param instDesc instDesc of the node to read from
 		 * @param portID portID of interest
-		 * @return Returns the value at the port
+		 * @returns Returns the value at the port
 		 */
 		LogicLayer.readPort = function(instDesc, portID) {
 			// 2-step lookup. note that value will first be

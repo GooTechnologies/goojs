@@ -58,7 +58,7 @@ define([
 	 *
 	 * @param {object} options
 	 * @param {string} options.url
-	 * @return {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
+	 * @returns {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
 	 */
 	Ajax.prototype.get = function (options) {
 		options = options || {};

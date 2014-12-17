@@ -156,7 +156,7 @@ define([
 	 * Gets a texture in a specific slot
 	 *
 	 * @param {String} name Name of texture slot to retrieve texture from
-	 * @return {Texture} Texture if found, or undefined if not in slot
+	 * @returns {Texture} Texture if found, or undefined if not in slot
 	 */
 	Material.prototype.getTexture = function (name) {
 		return this._textureMaps[name];
@@ -174,7 +174,7 @@ define([
 	/**
 	 * Get all textures as an array
 	 *
-	 * @return {Texture[]} Array containing all set textures
+	 * @returns {Texture[]} Array containing all set textures
 	 */
 	Material.prototype.getTextures = function () {
 		var textures = [];
@@ -187,7 +187,7 @@ define([
 	/**
 	 * Get the map of [slot_name]: [Texture]
 	 *
-	 * @return {Object} Mapping of slot - textures
+	 * @returns {Object} Mapping of slot - textures
 	 */
 	Material.prototype.getTextureEntries = function () {
 		return this._textureMaps;
@@ -219,7 +219,7 @@ define([
 	 *
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
 	 * @param {String} [name=DefaultShader]
-	 * @return {Shader}
+	 * @returns {Shader}
 	 */
 	Material.createShader = function (shaderDefinition, name) {
 		var shader = new Shader(name || null, shaderDefinition);

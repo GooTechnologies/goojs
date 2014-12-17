@@ -242,7 +242,7 @@ define([
 	 * var boxTranslation2 = boxEntity.getTranslation();
 	 * console.log(boxTranslation1 === boxTranslation2); // true
 	 *
-	 * @return {Vector3} translation
+	 * @returns {Vector3} translation
 	 */
 	TransformComponent.prototype.getTranslation = function () {
 		return this.transform.translation;
@@ -258,7 +258,7 @@ define([
 	 * sphereEntity.setTranslation(new Vector3(1, 1, 0));
 	 *
 	 * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
 		Vector.prototype.set.apply(this.transform.translation, arguments);
@@ -277,7 +277,7 @@ define([
 	 * var scale2 = entity.getScale();
 	 * console.log(scale1 === scale2); // true
 	 *
-	 * @return {Vector3} scale
+	 * @returns {Vector3} scale
 	 */
 	TransformComponent.prototype.getScale = function () {
 		return this.transform.scale;
@@ -288,7 +288,7 @@ define([
 	 * <br /><i>Injected into entity when adding component.</i>
 	 *
 	 * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
 		Vector.prototype.set.apply(this.transform.scale, arguments);
@@ -305,7 +305,7 @@ define([
 	 * boxEntity.transformComponent.addTranslation(1, 2, 1);
 	 *
      * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
 		if (arguments.length === 3) {
@@ -327,7 +327,7 @@ define([
 	 * console.log(rot1 === rot2); // true
 	 *
 	 * @param {Vector3} [target] Target vector for storage.
-	 * @return {Vector3} rotation
+	 * @returns {Vector3} rotation
 	 */
 	TransformComponent.prototype.getRotation = function (target) {
 		target = target || new Vector3();
@@ -344,7 +344,7 @@ define([
 	 * console.log(boxEntity.getRotation().toString()); // [1.57, 0, 0]
 	 *
 	 * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addRotation = function () {
 		this.getRotation(tmpVec);
@@ -372,7 +372,7 @@ define([
 	 * console.log(boxEntity.getRotation().toString()); // [3.14, 0, 0]
 	 *
 	 * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setRotation = function () {
 		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
@@ -396,7 +396,7 @@ define([
 	 *
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.lookAt = function (position, up) {
 		//! AT: needs updating of transform before the actual lookAt to account for changes in translation
@@ -424,7 +424,7 @@ define([
 	 *
 	 * @function
 	 * @param {Vector | number[] | number...} component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.move = (function(){
 		var moveLocalDirection = new Vector3();

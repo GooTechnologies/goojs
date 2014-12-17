@@ -24,7 +24,7 @@ define([
 
 	/**
 	 * @param {Vector3} point
-	 * @return {Number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
+	 * @returns {Number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
 	 *         otherwise it is positive. If the point is on the plane, it is zero.
 	 */
 	Plane.prototype.pseudoDistance = function (point) {
@@ -36,7 +36,7 @@ define([
 	 * @param {Vector3} pointA
 	 * @param {Vector3} pointB
 	 * @param {Vector3} pointC
-	 * @return {Plane} Self for chaining.
+	 * @returns {Plane} Self for chaining.
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
 		this.normal.setVector(pointB).subVector(pointA);
@@ -49,7 +49,7 @@ define([
 	 * @description Reflects an incoming vector across the normal of this Plane.
 	 * @param {Vector3} unitVector the incoming vector. Must be a unit vector.
 	 * @param {Vector3} [store] Vector to store the result in. May be the same as the unitVector.
-	 * @return {Vector3} The reflected vector.
+	 * @returns {Vector3} The reflected vector.
 	 */
 	Plane.prototype.reflectVector = function (unitVector, store) {
 		var result = store;

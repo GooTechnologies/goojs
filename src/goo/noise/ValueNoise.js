@@ -35,7 +35,7 @@ define(["goo/noise/Noise"],
 	 * @description Evaluates the one-dimensional value noise function at a specific position.
 	 * @param {Float} px Evaluation position x.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
 
 	ValueNoise.evaluate1d = function (px, scale) {
@@ -60,7 +60,7 @@ define(["goo/noise/Noise"],
 	 * @param {Float} px Evaluation position x.
 	 * @param {Float} py Evaluation position y.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
 
 	ValueNoise.evaluate2d = function (px, py, scale) {
@@ -91,7 +91,7 @@ define(["goo/noise/Noise"],
 	 * @param {Float} py Evaluation position y.
 	 * @param {Float} pz Evaluation position z.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
 
 	ValueNoise.evaluate3d = function (px, py, pz, scale) {
@@ -132,7 +132,7 @@ define(["goo/noise/Noise"],
 	 * @param {Float} pz Evaluation position z.
 	 * @param {Float} pw Evaluation position w.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
 
 	ValueNoise.evaluate4d = function (px, py, pz, pw, scale) {

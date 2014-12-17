@@ -189,7 +189,7 @@ define([
 
 	/**
 	 * Get the current state
-	 * @return {AbstractState|null}
+	 * @returns {AbstractState|null}
 	 */
 	AnimationLayer.prototype.getCurrentState = function () {
 		return this._currentState;
@@ -210,7 +210,7 @@ define([
 	/**
 	 * Get the current state by id.
 	 * @param {string} id
-	 * @return {AbstractState|null}
+	 * @returns {AbstractState|null}
 	 */
 	AnimationLayer.prototype.getStateById = function (id) {
 		return this._steadyStates[id];
@@ -219,7 +219,7 @@ define([
 	/**
 	 * Get the current state by name.
 	 * @param {string} name
-	 * @return {AbstractState|null}
+	 * @returns {AbstractState|null}
 	 */
 	AnimationLayer.prototype.getStateByName = function (name) {
 		for (var id in this._steadyStates) {
@@ -251,7 +251,7 @@ define([
 	};
 
 	/**
-	 * @return a source data mapping for the channels involved in the current state/transition of this layer.
+	 * @returns a source data mapping for the channels involved in the current state/transition of this layer.
 	 */
 	AnimationLayer.prototype.getCurrentSourceData = function () {
 		if (this._layerBlender) {

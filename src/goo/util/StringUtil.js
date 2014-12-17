@@ -170,7 +170,7 @@ define([], function () {
 	 * @param  {string} text
 	 * The string whose HTML entities are to be encoded.
 	 *
-	 * @return {string}
+	 * @returns {string}
 	 * The specified string with all its HTML entities encoded.
 	 */
 	StringUtil.escapeHtmlEntities = function (text) {

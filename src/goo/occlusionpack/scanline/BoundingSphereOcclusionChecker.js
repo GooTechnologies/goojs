@@ -202,7 +202,7 @@ define([
 		 *	Creates a screen space axis aligned bounding box from the bounding sphere's
 		 *	coordinates and performs scanline tests against the depthbuffer with the given nearest depth.
 		 *
-		 *	@return {Boolean} occluded or not occluded.
+		 *	@returns {Boolean} occluded or not occluded.
 		 */
 		BoundingSphereOcclusionChecker.prototype._isSSAABBScanlineOccluded = function () {
 
@@ -463,7 +463,7 @@ define([
 		 *	otherwise the coordinate is assumed to be occluded.
 		 *
 		 *	@param {Vector} coordinate The coordinate to look-up
-		 *	@return {Boolean} true or false, occluded or not occluded.
+		 *	@returns {Boolean} true or false, occluded or not occluded.
 		 * @param nearestDepth
 		 * @param color
 		 */
@@ -488,7 +488,7 @@ define([
 		 *	Returns true if the coordinate is inside the screen pixel space. Otherwise it returns false.
 		 *
 		 *	@param {Vector} coordinate
-		 *	@return {Boolean} true/false
+		 *	@returns {Boolean} true/false
 		 */
 		BoundingSphereOcclusionChecker.prototype._isCoordinateInsideScreen = function (coordinate) {
 			return coordinate.data[0] >= 0 && coordinate.data[0] <= this._clipX && coordinate.data[1] <= this._clipY && coordinate.data[1] >= 0;

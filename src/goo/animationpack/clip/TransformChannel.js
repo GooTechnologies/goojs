@@ -114,7 +114,7 @@ define([
 	 * Apply a specific index of this channel to a {@link TransformData} object.
 	 * @param {number} index the index to grab.
 	 * @param {TransformData} [store] the TransformData to store in. If null, a new one is created.
-	 * @return {TransformData} our resulting TransformData.
+	 * @returns {TransformData} our resulting TransformData.
 	 */
 	TransformChannel.prototype.getData = function (index, store) {
 		var rVal = store ? store : new TransformData();

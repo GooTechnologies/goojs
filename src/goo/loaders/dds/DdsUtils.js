@@ -16,7 +16,7 @@ define([
 	/**
 	 * @description Get the necessary bit shifts needed to align mask with 0.
 	 * @param mask the bit mask to test
-	 * @return number of bits to shift to the right to align mask with 0.
+	 * @returns number of bits to shift to the right to align mask with 0.
 	 */
 	DdsUtils.shiftCount = function (mask) {
 		if (mask === 0) {
@@ -39,7 +39,7 @@ define([
 	 * @description Check a value against a bit mask to see if it is set.
 	 * @param value the value to check
 	 * @param bitMask our mask
-	 * @return true if the mask passes
+	 * @returns true if the mask passes
 	 */
 	DdsUtils.isSet = function (value, bitMask) {
 		return (value & bitMask) === bitMask;
@@ -48,7 +48,7 @@ define([
 	/**
 	 * @description Get the string as a dword int value.
 	 * @param string our string... should only be 1-4 chars long. Expected to be 1 byte chars.
-	 * @return the int value
+	 * @returns the int value
 	 */
 	DdsUtils.getIntFromString = function (string) {
 		var bytes = [];
@@ -61,7 +61,7 @@ define([
 	/**
 	 * @description Get the byte array as a dword int value.
 	 * @param bytes our array... should only be 1-4 bytes long.
-	 * @return the int value
+	 * @returns the int value
 	 */
 	DdsUtils.getIntFromBytes = function (bytes) {
 		var rVal = 0;
@@ -109,7 +109,7 @@ define([
 	 * @param width our image's width
 	 * @param height our image's height
 	 * @param format our image's format
-	 * @return the flipped image as raw bytes.
+	 * @returns the flipped image as raw bytes.
 	 */
 	DdsUtils.flipDXT = function (rawData, width, height, format) {
 		var returnData = new Uint8Array(rawData.length);

@@ -103,7 +103,7 @@ define([
          * @param {Number} axMin
          * @param {Number} axMax
          * @param {Number} quadCount
-         * @return {Number}
+         * @returns {Number}
          */
 
 		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function(axPos, axMin, axMax, quadCount) {
@@ -117,7 +117,7 @@ define([
 		 * @param {Number} axMin
 		 * @param {Number} axMax
 		 * @param {Number} quadCount
-		 * @return {Number}
+		 * @returns {Number}
 		 */
 
 		WorldFittedTerrainScript.prototype.returnToWorldDimensions = function(axPos, axMin, axMax, quadCount) {

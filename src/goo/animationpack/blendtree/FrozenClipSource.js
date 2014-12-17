@@ -15,7 +15,7 @@ function () {
 	}
 
 	/**
-	 * @return a source data mapping for the channels in this clip source
+	 * @returns a source data mapping for the channels in this clip source
 	 */
 	FrozenClipSource.prototype.getSourceData = function () {
 		return this._source.getSourceData();

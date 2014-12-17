@@ -60,7 +60,7 @@ define([
 	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
 	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
 	 * @param {Matrix3x3} [target] Matrix3x3 to store the result.  If one is not supplied, a new Matrix3x3 object is created.
-	 * @return {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
+	 * @returns {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
 	 * @example
 	 * // Adds two Matrix3x3 with no target, returns a new Matrix3x3 object as the result
 	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
@@ -106,7 +106,7 @@ define([
 	/**
 	 * Adds 'rhs' to the current Matrix3x3.
 	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 * @example
 	 * // Adds a Matrix3x3 to the current Matrix3x3
 	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
@@ -127,7 +127,7 @@ define([
 	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
 	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
 	 * @param {Matrix3x3} [target] Matrix3x3 to store the result.  If one is not supplied, a new Matrix3x3 object is created.
-	 * @return {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
+	 * @returns {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
 	 * @example
 	 * // Subtracts 'right' from 'left' with no target, returns a new Matrix3x3 object as the result
 	 * var left = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
@@ -173,7 +173,7 @@ define([
 	/**
 	 * Subtracts 'rhs' from the current Matrix3x3.
 	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 * @example
 	 * // Subtracts a Matrix3x3 from the current Matrix3x3
 	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
@@ -196,7 +196,7 @@ define([
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
 	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
-	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.mul = function (lhs, rhs, target) {
@@ -234,7 +234,7 @@ define([
 	/**
 	 * Performs a component-wise multiplication.
 	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.mul = function (rhs) {
@@ -248,7 +248,7 @@ define([
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
 	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
-	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.div = function (lhs, rhs, target) {
@@ -286,7 +286,7 @@ define([
 	/**
 	 * @description Performs a component-wise division.
 	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.div = function (rhs) {
@@ -300,7 +300,7 @@ define([
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
 	 * @param {Matrix3x3} [target] Target matrix for storage.
-	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.combine = function (lhs, rhs, target) {
@@ -336,7 +336,7 @@ define([
 	/**
 	 * Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.combine = function (rhs) {
@@ -349,7 +349,7 @@ define([
 	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
-	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.transpose = function (source, target) {
@@ -391,7 +391,7 @@ define([
 
 	/**
 	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.transpose = function () {
@@ -404,7 +404,7 @@ define([
 	 * Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @param {Matrix3x3} [target] Target matrix.
-	 * @return {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix3x3.invert = function (source, target) {
@@ -442,7 +442,7 @@ define([
 
 	/**
 	 * Computes the analytical inverse and stores the result locally.
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.invert = function () {
@@ -453,7 +453,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthogonal.
-	 * @return {Boolean} True if orthogonal.
+	 * @returns {Boolean} True if orthogonal.
 	 */
 
 	Matrix3x3.prototype.isOrthogonal = function () {
@@ -484,7 +484,7 @@ define([
 
 	/**
 	 * Tests if the matrix is normal.
-	 * @return {boolean} True if normal.
+	 * @returns {boolean} True if normal.
 	 */
 
 	Matrix3x3.prototype.isNormal = function () {
@@ -515,7 +515,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthonormal.
-	 * @return {boolean} True if orthonormal.
+	 * @returns {boolean} True if orthonormal.
 	 */
 
 	Matrix3x3.prototype.isOrthonormal = function () {
@@ -526,7 +526,7 @@ define([
 
 	/**
 	 * Computes the determinant of the matrix.
-	 * @return {number} Determinant of matrix.
+	 * @returns {number} Determinant of matrix.
 	 */
 
 	Matrix3x3.prototype.determinant = function () {
@@ -540,7 +540,7 @@ define([
 
 	/**
 	 * Sets the matrix to identity: (1, 0, 0, 0, 1, 0, 0, 0, 1).
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 */
 
 	Matrix3x3.prototype.setIdentity = function () {
@@ -843,7 +843,7 @@ define([
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
-	 * @return {Matrix3x3} this for chaining
+	 * @returns {Matrix3x3} this for chaining
 	 */
 
 	Matrix3x3.prototype.fromAngleNormalAxis = function (angle, x, y, z) {
@@ -934,7 +934,7 @@ define([
 	/**
 	 * Copies component values and stores them locally.
 	 * @param {Matrix3x3} source Source matrix.
-	 * @return {Matrix3x3} Self for chaining.
+	 * @returns {Matrix3x3} Self for chaining.
 	 */
 	Matrix3x3.prototype.copy = function (source) {
 		var t = this.data;
@@ -955,7 +955,7 @@ define([
 
 	/**
 	 * Returns a new matrix with the same values as the existing one.
-	 * @return {Matrix3x3} The new matrix.
+	 * @returns {Matrix3x3} The new matrix.
 	 */
 	Matrix3x3.prototype.clone = function () {
 		var d = this.data;

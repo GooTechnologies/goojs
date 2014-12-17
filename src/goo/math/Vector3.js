@@ -133,7 +133,7 @@ define([
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Vector3 to store the result. If one is not supplied, a new Vector3 object is created.
-	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Adds two Vector3 with no target, returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
@@ -210,7 +210,7 @@ define([
 	 * Adds 'rhs' to the current Vector3. Equivalent to 'return (this += rhs);'.
 	 * @param {Vector3|number[]|number} rhs Vector3, Array of numbers, or single number. For a single number, the value is repeated for
 	 *            every component.
-	 * @return {Vector3} Self for chaining.
+	 * @returns {Vector3} Self for chaining.
 	 * @example
 	 * // Passing in an existing Vector3
 	 * var v1 = new Vector3(1, 2, 3);
@@ -238,7 +238,7 @@ define([
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
-	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Subtracts Vector3 'v2' from Vector3 'v1', returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
@@ -315,7 +315,7 @@ define([
 	 * Subtracts 'rhs' from the current Vector3. Equivalent of 'return (this -= rhs);'.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single number, the value is repeated for
 	 *            every component.
-	 * @return {Vector3} Self for chaining.
+	 * @returns {Vector3} Self for chaining.
 	 * @example
 	 * // Passing in an existing Vector3
 	 * var v1 = new Vector3(1, 2, 3);
@@ -355,7 +355,7 @@ define([
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Multiplies two Vector3 with no target, returns a new Vector3 object as the result
 	 * var v1 = new Vector3(1, 2, 3);
@@ -405,7 +405,7 @@ define([
 	 * Multiplies the current Vector3 by 'rhs'.  Equivalent of 'return (this *= rhs);'.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numberss, the value is repeated for
 	 *            every component.
-	 * @return {Vector3} Self for chaining.
+	 * @returns {Vector3} Self for chaining.
 	 * @example
 	 * // Passing in an existing Vector3
 	 * var v1 = new Vector3(1, 2, 3);
@@ -433,7 +433,7 @@ define([
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
 	 *            every component.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Divides two Vector3: v1 by v2, returns a new Vector3 object as the result
 	 * var v1 = new Vector3(2, 4, 8);
@@ -484,7 +484,7 @@ define([
 	 * Divides the current Vector3 by 'rhs'.  Equivalent of 'return (this /= rhs);'.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or single number on the right-hand side. For a single number, the value is repeated for
 	 *            every component.
-	 * @return {Vector3} Self for chaining.
+	 * @returns {Vector3} Self for chaining.
 	 * @example
 	 * // Passing in an existing Vector3
 	 * var v1 = new Vector3(4, 2, 3);
@@ -511,7 +511,7 @@ define([
 	 *            every component.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @return {number} Dot product number.
+	 * @returns {number} Dot product number.
 	 * @example
 	 * // Passing in two Vector3
 	 * var v1 = new Vector3(0, 1.0, 0);
@@ -547,7 +547,7 @@ define([
 	 * Computes the dot product between the current Vector3 and 'rhs'. Equivalent of 'return this•rhs;'.
 	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
 	 *            every component.
-	 * @return {number} Dot product.
+	 * @returns {number} Dot product.
 	 * @example
 	 * // Passing in an existing Vector3
 	 * var v1 = new Vector3(0, 1.0, 0);
@@ -582,7 +582,7 @@ define([
 	/**
 	 * Computes the dot product between the current vector and 'rhs'.
 	 * @param {Vector3} rhs
-	 * @return {number}
+	 * @returns {number}
 	 */
 	Vector3.prototype.dotVector = function (rhs) {
 		var ldata = this.data;
@@ -600,7 +600,7 @@ define([
 	 * @param {Vector3|number[]} lhs Vector3 or array of numbers on the left-hand side.
 	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
 	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @return {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
 	 * @example
 	 * // Passing in two Vector3, returns a new Vector3 object as the result
 	 * var v1 = new Vector3(0, 1, 0);
@@ -633,7 +633,7 @@ define([
 	/**
 	 * Computes the cross product between the current Vector3 and 'rhs'.  The current Vector3 becomes the result.  Equivalent of 'return (this = this x rhs);'.
 	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
-	 * @return {Vector3} Self for chaining.
+	 * @returns {Vector3} Self for chaining.
 	 * @example
 	 * // Passing in a Vector3
 	 * var v1 = new Vector3(0, 1, 0);
@@ -654,7 +654,7 @@ define([
 	 * Linearly interpolates between the current Vector3 and an 'end' Vector3.  The current Vector3 is modified.
 	 * @param {Vector3} end End Vector3.
 	 * @param {number} factor Interpolation factor between 0.0 and 1.0.
-	 * @return {Vector3} Self for chaining.
+	 * @returns {Vector3} Self for chaining.
 	 * @example
 	 * var goal = new Vector3(5, 0, 0);
 	 *
@@ -940,7 +940,7 @@ define([
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} lhs Vector3.
 	 * @param {Vector3} rhs Vector3.
-	 * @return {number} distance squared.
+	 * @returns {number} distance squared.
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
@@ -960,7 +960,7 @@ define([
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} lhs Vector3.
 	 * @param {Vector3} rhs Vector3.
-	 * @return {number} distance.
+	 * @returns {number} distance.
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
@@ -975,7 +975,7 @@ define([
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} v Vector3.
-	 * @return {number} distance squared.
+	 * @returns {number} distance squared.
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
@@ -990,7 +990,7 @@ define([
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @param {Vector3} v Vector3.
-	 * @return {number} distance.
+	 * @returns {number} distance.
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
@@ -1002,7 +1002,7 @@ define([
 
 	/**
 	 * @description Clones the vector.
-	 * @return {Vector3} Clone of self.
+	 * @returns {Vector3} Clone of self.
 	 */
 	Vector3.prototype.clone = function () {
 		return new Vector3(this);

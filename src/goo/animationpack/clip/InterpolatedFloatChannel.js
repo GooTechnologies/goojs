@@ -44,7 +44,7 @@ define([
 	 * Apply a specific index of this channel to a {@link TransformData} object.
 	 * @param {number} index the index to grab.
 	 * @param {number[]} [store] the TransformData to store in. If null, a new one is created.
-	 * @return {number[]} our resulting TransformData.
+	 * @returns {number[]} our resulting TransformData.
 	 */
 	InterpolatedFloatChannel.prototype.getData = function(index, store) {
 		var rVal = store || [];

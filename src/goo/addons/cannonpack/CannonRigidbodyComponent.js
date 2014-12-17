@@ -118,7 +118,7 @@ define([
 
 	/**
 	 * Get the collider component from an entity, if one exist.
-	 * @return {mixed} Any of the collider types, or NULL if not found
+	 * @returns {mixed} Any of the collider types, or NULL if not found
 	 */
 	CannonRigidbodyComponent.getCollider = function (entity) {
 		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || entity.cannonTerrainColliderComponent || entity.cannonCylinderColliderComponent || null;

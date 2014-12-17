@@ -131,7 +131,7 @@ function () {
 
 	/**
 	 * Gets a string representation of the current capabilities
-	 * @return {string} string representation of capabilities
+	 * @returns {string} string representation of capabilities
 	 */
 	Capabilities.getCapabilitiesString = function () {
 		var caps = [];

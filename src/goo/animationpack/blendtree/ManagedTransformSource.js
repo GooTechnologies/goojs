@@ -148,7 +148,7 @@ define([
 
 	/*
 	 * This has no effect, but will be called by owning {@link SteadyState}
-	 * @return true to stay active
+	 * @returns true to stay active
 	 */
 	ManagedTransformSource.prototype.setTime = function () {
 		return true;
@@ -166,7 +166,7 @@ define([
 	};
 
 	/*
-	 * @return a source data mapping for the channels in this clip source
+	 * @returns a source data mapping for the channels in this clip source
 	 */
 	ManagedTransformSource.prototype.getSourceData = function () {
 		return this._data;

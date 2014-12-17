@@ -161,7 +161,7 @@ define([
 	/**
 	 * Convert SVG XML content to an HTMLImageElement.
 	 * @param  {string} data
-	 * @return {RSVP.Promise} Promise that resolves with the Image.
+	 * @returns {RSVP.Promise} Promise that resolves with the Image.
 	 */
 	CanvasUtils.svgDataToImage = function (data) {
 		var DOMURL = window.URL || window.webkitURL || window;

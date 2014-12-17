@@ -44,7 +44,7 @@ define([
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix4x4.add = function (lhs, rhs, target) {
@@ -94,7 +94,7 @@ define([
 	/**
 	 * @description Performs a component-wise addition.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
 	Matrix4x4.prototype.add = function (rhs) {
@@ -109,7 +109,7 @@ define([
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix4x4.sub = function (lhs, rhs, target) {
@@ -159,7 +159,7 @@ define([
 	/**
 	 * @description Performs a component-wise subtraction.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
 	Matrix4x4.prototype.sub = function (rhs) {
@@ -174,7 +174,7 @@ define([
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix4x4.mul = function (lhs, rhs, target) {
@@ -224,7 +224,7 @@ define([
 	/**
 	 * @description Performs a component-wise multiplication.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
 	Matrix4x4.prototype.mul = function (rhs) {
@@ -239,7 +239,7 @@ define([
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix4x4.div = function (lhs, rhs, target) {
@@ -292,7 +292,7 @@ define([
 	/**
 	 * @description Performs a component-wise division.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
 	Matrix4x4.prototype.div = function (rhs) {
@@ -307,7 +307,7 @@ define([
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix4x4.combine = function (lhs, rhs, target) {
@@ -353,7 +353,7 @@ define([
 	/**
 	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
 	Matrix4x4.prototype.combine = function (rhs) {
@@ -367,7 +367,7 @@ define([
 	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} [target] Target matrix.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix4x4.transpose = function (source, target) {
@@ -425,7 +425,7 @@ define([
 
 	/**
 	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
 	Matrix4x4.prototype.transpose = function () {
@@ -439,7 +439,7 @@ define([
 	 * @description Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} [target] Target matrix.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
 	Matrix4x4.invert = function (source, target) {
@@ -484,7 +484,7 @@ define([
 
 	/**
 	 * @description Computes the analytical inverse and stores the result locally.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
 	Matrix4x4.prototype.invert = function () {
@@ -495,7 +495,7 @@ define([
 
 	/**
 	 * @description Tests if the matrix is orthogonal.
-	 * @return {Boolean} True if orthogonal.
+	 * @returns {Boolean} True if orthogonal.
 	 */
 
 	Matrix4x4.prototype.isOrthogonal = function () {
@@ -544,7 +544,7 @@ define([
 
 	/**
 	 * @description Tests if the matrix is normal.
-	 * @return {Boolean} True if normal.
+	 * @returns {Boolean} True if normal.
 	 */
 
 	Matrix4x4.prototype.isNormal = function () {
@@ -581,7 +581,7 @@ define([
 
 	/**
 	 * @description Tests if the matrix is orthonormal.
-	 * @return {Boolean} True if orthonormal.
+	 * @returns {Boolean} True if orthonormal.
 	 */
 
 	Matrix4x4.prototype.isOrthonormal = function () {
@@ -592,7 +592,7 @@ define([
 
 	/**
 	 * @description Computes the determinant of the matrix.
-	 * @return {Float} Determinant of matrix.
+	 * @returns {Float} Determinant of matrix.
 	 */
 
 	Matrix4x4.prototype.determinant = function () {
@@ -633,7 +633,7 @@ define([
 
 	/**
 	 * @description Sets the matrix to identity.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 
 	Matrix4x4.prototype.setIdentity = function () {
@@ -905,7 +905,7 @@ define([
 	/**
 	 * @description Copies component values and stores them locally.
 	 * @param {Matrix4x4} source Source matrix.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 	Matrix4x4.prototype.copy = function (source) {
 		var t = this.data;
@@ -933,7 +933,7 @@ define([
 
 	/**
 	 * Returns a new matrix with the same values as the existing one.
-	 * @return {Matrix4x4} The new matrix.
+	 * @returns {Matrix4x4} The new matrix.
 	 */
 	Matrix4x4.prototype.clone = function () {
 		var d = this.data;

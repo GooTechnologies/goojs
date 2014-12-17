@@ -225,7 +225,7 @@ define([
 	 * @param {Quaternion} endQuat End quaternion.
 	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
 	 * @param {Quaternion} workQuat Work quaternion.
-	 * @return {Quaternion} workQuat The interpolated work quaternion.
+	 * @returns {Quaternion} workQuat The interpolated work quaternion.
 	 */
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme

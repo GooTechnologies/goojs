@@ -23,7 +23,7 @@ define([], function () {
 	 * 'uint16'
 	 * 'uint8'
 	 *
-	 * @return Typed array
+	 * @returns Typed array
 	 */
 	ArrayUtil.getTypedArray = function(arrayBuffer, pointer) {
 		var start = pointer[0];

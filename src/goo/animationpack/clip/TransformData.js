@@ -40,7 +40,7 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function (Quaternion, Vector
 	 * @param {TransformData} blendTo The TransformData to blend to
 	 * @param {number} blendWeight The blend weight
 	 * @param {TransformData} store The TransformData store.
-	 * @return {TransformData} The blended transform.
+	 * @returns {TransformData} The blended transform.
 	 */
 	TransformData.prototype.blend = function (blendTo, blendWeight, store) {
 		var tData = store ? store : new TransformData();

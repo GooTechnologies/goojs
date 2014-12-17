@@ -43,7 +43,7 @@ define(["goo/math/MathUtils"],
 	 * @private
 	 * @description Splits a real-valued number into a record for use in smooth interpolation.
 	 * @param {Float} x Input value.
-	 * @return {object} Object containing "i0", "i1", "f0" and "f1" members. (Integer,Integer,Float,Float)
+	 * @returns {object} Object containing "i0", "i1", "f0" and "f1" members. (Integer,Integer,Float,Float)
 	 */
 
 	Noise.split = function (x) {
@@ -64,7 +64,7 @@ define(["goo/math/MathUtils"],
 	 * @param {Float} persistance Amplitude persistance between octaves.
 	 * @param {Float} lacunarity Frequency scale between octaves.
 	 * @param {Noise} type Name of noise class extending from Noise.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
 
 	Noise.fractal1d = function (x, scale, octaves, persistance, lacunarity, type) {
@@ -94,7 +94,7 @@ define(["goo/math/MathUtils"],
 	 * @param {Float} persistance Amplitude persistance between octaves.
 	 * @param {Float} lacunarity Frequency scale between octaves.
 	 * @param {Noise} type Name of noise class extending from Noise.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
 
 	Noise.fractal2d = function (x, y, scale, octaves, persistance, lacunarity, type) {
@@ -126,7 +126,7 @@ define(["goo/math/MathUtils"],
 	 * @param {Float} persistance Amplitude persistance between octaves.
 	 * @param {Float} lacunarity Frequency scale between octaves.
 	 * @param {Noise} type Name of noise class extending from Noise.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
 
 	Noise.fractal3d = function (x, y, z, scale, octaves, persistance, lacunarity, type) {
@@ -160,7 +160,7 @@ define(["goo/math/MathUtils"],
 	 * @param {Float} persistance Amplitude persistance between octaves.
 	 * @param {Float} lacunarity Frequency scale between octaves.
 	 * @param {Noise} type Name of noise class extending from Noise.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
 
 	Noise.fractal4d = function (x, y, z, w, scale, octaves, persistance, lacunarity, type) {
