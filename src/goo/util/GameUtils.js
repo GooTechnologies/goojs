@@ -24,10 +24,8 @@ function () {
 	 * Attempts to request fullscreen.
 	 */
 	GameUtils.requestFullScreen = function () {
-		if (!document.fullscreenElement) {
-			if (document.documentElement.requestFullScreen) {
-				document.documentElement.requestFullScreen();
-			}
+		if (!document.fullscreenElement && document.documentElement.requestFullScreen) {
+			document.documentElement.requestFullScreen();
 		}
 	};
 
@@ -35,10 +33,8 @@ function () {
 	 * Attempts to exit fullscreen.
 	 */
 	GameUtils.exitFullScreen = function () {
-		if (document.fullscreenElement) {
-			if (document.cancelFullScreen) {
-				document.cancelFullScreen();
-			}
+		if (document.fullscreenElement && document.cancelFullScreen) {
+			document.cancelFullScreen();
 		}
 	};
 

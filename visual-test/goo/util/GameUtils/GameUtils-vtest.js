@@ -25,6 +25,26 @@ require([
 		entity.addRotation(0, tpf, 0);
 	}).addToWorld();
 
+	V.button('requestFullScreen', function () {
+		GameUtils.requestFullScreen();
+	});
+	V.button('exitFullScreen', function () {
+		GameUtils.exitFullScreen();
+	});
+	V.button('toggleFullScreen', function () {
+		GameUtils.toggleFullScreen();
+	});
+
+	V.button('requestPointerLock', function () {
+		GameUtils.requestPointerLock();
+	});
+	V.button('exitPointerLock', function () {
+		GameUtils.exitPointerLock();
+	});
+	V.button('togglePointerLock', function () {
+		GameUtils.togglePointerLock();
+	});
+
 	document.addEventListener('keydown', function (evt) {
 		switch (evt.keyCode) {
 			case 49: // 1
