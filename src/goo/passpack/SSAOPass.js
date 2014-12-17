@@ -10,9 +10,7 @@ define([
 	'goo/passpack/BlurPass',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	RenderTarget,
 	Util,

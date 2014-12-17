@@ -6,9 +6,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection'
-],
-/** @lends */
-function (
+], function (
 	Entity,
 	EntityManager,
 	TransformComponent,

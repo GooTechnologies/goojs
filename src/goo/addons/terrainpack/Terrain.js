@@ -19,9 +19,7 @@ define([
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/light/DirectionalLight',
 	'goo/shapes/Quad'
-],
-/** @lends */
-function(
+], function (
 	EntityUtils,
 	MeshDataComponent,
 	MeshRendererComponent,

@@ -1,9 +1,7 @@
 define([
 	'goo/animationpack/clip/TransformChannel',
 	'goo/animationpack/clip/JointData'
-],
-/** @lends */
-function (
+], function (
 	TransformChannel,
 	JointData
 ) {

@@ -3,7 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ObjectUtil'
 ],
-	/** @lends */
+
 	function (
 		Scripts,
 		BoundingBox,

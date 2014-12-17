@@ -6,9 +6,7 @@ define([
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	Texture,
 	Util,
 	TextureHandler,

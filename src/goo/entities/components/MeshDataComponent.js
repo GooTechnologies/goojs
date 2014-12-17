@@ -2,9 +2,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/entities/components/Component',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	BoundingBox,
 	Component,
 	MeshData

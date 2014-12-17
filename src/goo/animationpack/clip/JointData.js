@@ -1,8 +1,6 @@
 define([
 	'goo/animationpack/clip/TransformData'
-],
-/** @lends */
-function (
+], function (
 	TransformData
 ) {
 	'use strict';

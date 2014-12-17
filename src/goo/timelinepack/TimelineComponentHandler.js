@@ -8,7 +8,7 @@ define([
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil'
 	],
-/** @lends */
+
 	function(
 	ComponentHandler,
 	TimelineComponent,

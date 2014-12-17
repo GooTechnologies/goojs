@@ -1,8 +1,6 @@
 define([
 	'goo/math/Vector2'
-],
-/** @lends */
-function(
+], function (
 	Vector2
 	) {
 

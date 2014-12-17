@@ -3,9 +3,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	AudioContext,
 	Vector3,

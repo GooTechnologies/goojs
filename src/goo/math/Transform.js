@@ -3,9 +3,7 @@ define([
 	'goo/math/Matrix3x3',
 	'goo/math/Matrix4x4',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	Matrix3x3,
 	Matrix4x4,

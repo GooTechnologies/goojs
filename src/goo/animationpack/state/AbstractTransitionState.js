@@ -2,9 +2,7 @@ define([
 	'goo/animationpack/state/AbstractState',
 	'goo/animationpack/blendtree/BinaryLERPSource',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	AbstractState,
 	BinaryLERPSource,
 	MathUtils

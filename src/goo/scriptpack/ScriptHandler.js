@@ -13,9 +13,7 @@ define([
 
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	RSVP,
 	OrbitCamControlScript,

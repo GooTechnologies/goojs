@@ -1,8 +1,6 @@
 define([
 	'goo/renderer/Capabilities'
-],
-/** @lends */
-function(
+], function (
 	Capabilities
 ) {
 	'use strict';

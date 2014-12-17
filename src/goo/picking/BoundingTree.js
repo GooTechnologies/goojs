@@ -1,6 +1,4 @@
-define(['goo/renderer/bounds/BoundingBox', 'goo/renderer/bounds/BoundingSphere', 'goo/math/Vector3'],
-/** @lends */
-function (BoundingBox, BoundingSphere, Vector3) {
+define(['goo/renderer/bounds/BoundingBox', 'goo/renderer/bounds/BoundingSphere', 'goo/math/Vector3'], function (BoundingBox, BoundingSphere, Vector3) {
 	'use strict';
 
 	/**

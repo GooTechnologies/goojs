@@ -6,9 +6,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil',
 	'goo/util/StringUtil'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	MeshDataComponent,
 	BoundingBox,

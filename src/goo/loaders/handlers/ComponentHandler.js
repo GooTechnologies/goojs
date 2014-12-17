@@ -1,6 +1,6 @@
 define([
 	'goo/util/PromiseUtil'
-], /** @lends */ function(
+],  function(
 	PromiseUtil
 ) {
 	'use strict';

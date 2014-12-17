@@ -1,8 +1,6 @@
 define([
 	'goo/renderer/Shader'
-],
-/** @lends */
-function (
+], function (
 	Shader
 ) {
 	'use strict';

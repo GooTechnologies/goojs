@@ -1,8 +1,6 @@
 define([
 	'goo/util/combine/Rectangle'
-],
-/** @lends */
-function(
+], function (
 	Rectangle
 ) {
 	'use strict';

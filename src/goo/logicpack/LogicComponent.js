@@ -4,7 +4,7 @@ define([
 		'goo/logic/LogicNodes',
 		'goo/entities/components/Component'
 	],
-	/** @lends */
+
 	function(
 		LogicInterface,
 		LogicLayer,

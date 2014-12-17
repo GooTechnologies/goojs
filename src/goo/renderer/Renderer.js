@@ -19,9 +19,7 @@ define([
 	'goo/entities/SystemBus',
 	'goo/renderer/TaskScheduler',
 	'goo/renderer/RenderInfo'
-],
-/** @lends */
-function (
+], function (
 	Capabilities,
 	RendererRecord,
 	Util,

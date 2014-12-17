@@ -7,7 +7,7 @@ define(
 		'goo/entities/components/MeshRendererComponent',
 		'goo/math/Vector3'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {
 		'use strict';
 

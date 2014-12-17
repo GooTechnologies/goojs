@@ -1,5 +1,5 @@
 define(['goo/entities/Selection'],
-	/** @lends */
+
 	function (Selection) {
 	'use strict';
 

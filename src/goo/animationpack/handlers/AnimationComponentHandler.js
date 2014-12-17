@@ -2,9 +2,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/animationpack/components/AnimationComponent',
 	'goo/util/rsvp'
-],
-/** @lends */
-function(
+], function (
 	ComponentHandler,
 	AnimationComponent,
 	RSVP

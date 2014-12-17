@@ -6,7 +6,7 @@ define([
 	'goo/renderer/Renderer',
 	'goo/math/Transform'
 ],
-	/** @lends */
+
 	function (
 		System,
 		Material,

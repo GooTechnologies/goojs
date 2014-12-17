@@ -4,9 +4,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	ParticleUtils,
 	Vector,
 	Vector3,

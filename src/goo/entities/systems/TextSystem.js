@@ -2,7 +2,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/shapes/TextureGrid',
 	'goo/entities/components/MeshDataComponent'],
-	/** @lends */
+
 	function (
 		System,
 		TextureGrid,

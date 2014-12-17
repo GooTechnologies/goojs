@@ -1,8 +1,6 @@
 define([
 	'goo/animationpack/state/AbstractTransitionState'
-],
-/** @lends */
-function (
+], function (
 	AbstractTransitionState
 ) {
 	'use strict';

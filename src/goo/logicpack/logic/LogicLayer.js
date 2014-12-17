@@ -2,7 +2,7 @@ define(
 	[
 		"goo/logic/LogicInterface"
 	],
-	/** @lends */
+
 	function(
 		LogicInterface
 	) {

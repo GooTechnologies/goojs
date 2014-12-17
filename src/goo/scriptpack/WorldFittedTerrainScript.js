@@ -2,7 +2,7 @@ define([
 	'goo/scriptpack/HeightMapBoundingScript',
     'goo/math/Vector3'
 	],
-    /** @lends */
+
 	function(HeightMapBoundingScript,
              Vector3) {
 		'use strict';

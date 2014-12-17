@@ -2,7 +2,7 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/scanline/SoftwareRenderer'
 	],
-	/** @lends */
+
 	function (SimplePartitioner, SoftwareRenderer) {
 
 		'use strict';

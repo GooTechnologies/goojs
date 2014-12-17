@@ -3,9 +3,7 @@ define([
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	SystemBus,
 	Scripts,

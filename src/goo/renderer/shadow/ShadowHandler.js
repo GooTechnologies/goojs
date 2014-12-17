@@ -10,9 +10,7 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight'
-],
-/** @lends */
-function (
+], function (
 	Capabilities,
 	Vector3,
 	FullscreenPass,

@@ -4,9 +4,7 @@ define([
 	'goo/util/MeshBuilder',
 	'goo/renderer/MeshData',
 	'goo/math/Transform'
-],
-	/** @lends */
-function (
+], function (
 	BoundingBox,
 	BoundingSphere,
 	MeshBuilder,

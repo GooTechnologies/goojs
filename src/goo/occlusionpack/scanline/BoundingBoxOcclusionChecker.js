@@ -4,7 +4,7 @@ define([
 	'goo/math/Vector2',
 	'goo/renderer/scanline/OccludeeTriangleData'
 	],
-	/** @lends */
+
 		function (Matrix4x4, Vector4, Vector2, OccludeeTriangleData) {
 		'use strict';
 

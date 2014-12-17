@@ -2,9 +2,7 @@
 define([
 	'goo/loaders/dds/DdsUtils',
 	'goo/renderer/Capabilities'
-],
-/** @lends */
-function (
+], function (
 	DdsUtils,
 	Capabilities
 ) {

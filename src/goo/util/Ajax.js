@@ -5,9 +5,7 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/util/StringUtil',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	TextureHandler,
 	AudioContext,
 	PromiseUtil,

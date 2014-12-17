@@ -4,9 +4,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,

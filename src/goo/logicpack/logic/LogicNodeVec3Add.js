@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface',
 		'goo/math/Vector3'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
 		'use strict';
 

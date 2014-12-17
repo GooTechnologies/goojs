@@ -2,9 +2,7 @@ define([
 	'goo/shapes/Quad',
 	'goo/renderer/Camera',
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Quad,
 	Camera,
 	Vector3

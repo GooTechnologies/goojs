@@ -1,9 +1,7 @@
 define([
 	'goo/math/MathUtils',
 	'goo/math/Matrix'
-],
-/** @lends */
-function (
+], function (
 	MathUtils,
 	Matrix
 ) {

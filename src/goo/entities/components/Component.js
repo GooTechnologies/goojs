@@ -1,6 +1,4 @@
-define(['goo/entities/EntitySelection'],
-	/** @lends */
-function (EntitySelection) {
+define(['goo/entities/EntitySelection'], function (EntitySelection) {
 	'use strict';
 
 	/**

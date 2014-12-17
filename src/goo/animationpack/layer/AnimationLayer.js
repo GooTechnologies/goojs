@@ -6,9 +6,7 @@ define([
 	'goo/animationpack/layer/LayerLERPBlender',
 	'goo/entities/World', //! AT: this should not exist
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	FadeTransitionState,
 	SyncFadeTransitionState,
 	FrozenTransitionState,

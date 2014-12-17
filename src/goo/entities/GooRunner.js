@@ -26,9 +26,7 @@ define([
 
 	'goo/entities/SystemBus',
 	'goo/renderer/Material'
-],
-/** @lends */
-function (
+], function (
 	World,
 	Renderer,
 	TransformSystem,

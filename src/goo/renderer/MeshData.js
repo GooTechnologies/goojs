@@ -5,9 +5,7 @@ define([
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/math/Vector4'
-],
-/** @lends */
-function (
+], function (
 	BufferData,
 	Util,
 	BufferUtils,

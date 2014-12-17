@@ -3,9 +3,7 @@ define([
 	'goo/entities/components/HtmlComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	HtmlComponent,
 	RSVP,

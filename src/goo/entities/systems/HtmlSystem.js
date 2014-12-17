@@ -4,9 +4,7 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/MathUtils',
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	System,
 	Renderer,
 	Matrix4x4,

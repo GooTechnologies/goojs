@@ -1,6 +1,4 @@
-define(['goo/math/Vector3', 'goo/math/Matrix3x3'],
-/** @lends */
-function (Vector3, Matrix3x3) {
+define(['goo/math/Vector3', 'goo/math/Matrix3x3'], function (Vector3, Matrix3x3) {
 	'use strict';
 
 	/**

@@ -6,9 +6,7 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/renderer/Camera',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	MeshData,
 	Vector2,
 	Vector3,

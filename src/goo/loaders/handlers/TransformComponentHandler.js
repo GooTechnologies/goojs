@@ -4,9 +4,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/util/ObjectUtil',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,

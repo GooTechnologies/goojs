@@ -2,9 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/shapes/TextureGrid',
 	'goo/entities/components/MeshDataComponent'
-],
-/** @lends */
-function (
+], function (
 	Component
 ) {
 	'use strict';

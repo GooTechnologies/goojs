@@ -1,8 +1,6 @@
 define([
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	RSVP
 ) {
 	'use strict';

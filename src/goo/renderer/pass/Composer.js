@@ -3,9 +3,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	RenderTarget,
 	FullscreenPass,
 	ShaderLib,

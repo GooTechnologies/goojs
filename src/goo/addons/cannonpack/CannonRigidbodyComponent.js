@@ -7,9 +7,7 @@ define([
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	Quaternion,
 	Vector3,

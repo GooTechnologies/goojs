@@ -10,7 +10,7 @@ define([
 	'goo/passpack/BlurPass'
 ],
 
-/** @lends */
+
 function (
 	Material,
 	RenderTarget,

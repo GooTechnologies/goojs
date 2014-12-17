@@ -5,9 +5,7 @@ define([
 	'goo/entities/EntitySelection',
 	'goo/math/Matrix4x4',
 	'goo/math/Vector'
-],
-/** @lends */
-function (
+], function (
 	Transform,
 	Vector3,
 	Component,

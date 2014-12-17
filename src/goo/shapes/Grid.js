@@ -1,8 +1,6 @@
 define([
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function(
+], function (
 	MeshData
 ) {
 	'use strict';

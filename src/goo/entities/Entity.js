@@ -1,9 +1,7 @@
 define([
 	'goo/entities/components/Component',
 	'goo/util/StringUtil'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	StringUtil
 	) {

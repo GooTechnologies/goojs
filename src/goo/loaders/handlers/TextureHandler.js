@@ -10,9 +10,7 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/util/CanvasUtils',
 	'goo/util/StringUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	Texture,
 	DdsLoader,

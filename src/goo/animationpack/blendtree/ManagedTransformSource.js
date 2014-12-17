@@ -5,9 +5,7 @@ define([
 	'goo/animationpack/clip/JointData',
 	'goo/math/Vector3',
 	'goo/math/Quaternion'
-],
-/** @lends */
-function (
+], function (
 	JointChannel,
 	JointData,
 	TransformChannel,

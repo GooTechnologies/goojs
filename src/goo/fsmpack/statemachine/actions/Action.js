@@ -1,8 +1,6 @@
 define([
 	'goo/fsmpack/statemachine/FSMUtil'
-],
-/** @lends */
-function (
+], function (
 	FSMUtil
 ) {
 	'use strict';

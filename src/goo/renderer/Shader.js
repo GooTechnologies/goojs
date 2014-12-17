@@ -6,9 +6,7 @@ define([
 	'goo/renderer/RenderQueue',
 	'goo/renderer/Util',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	ShaderCall,
 	Matrix3x3,
 	Matrix4x4,

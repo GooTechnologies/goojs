@@ -1,5 +1,5 @@
 define(['goo/util/ArrayUtil'],
-	/** @lends */
+
 	function (ArrayUtil) {
 	'use strict';
 

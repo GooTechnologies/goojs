@@ -6,9 +6,7 @@ define([
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil',
 	'goo/math/Matrix4x4'
-],
-/** @lends */
-function(
+], function (
 	System,
 	AudioContext,
 	Vector3,

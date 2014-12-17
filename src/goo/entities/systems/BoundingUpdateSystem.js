@@ -1,9 +1,7 @@
 define([
 	'goo/entities/systems/System',
 	'goo/renderer/bounds/BoundingBox'
-],
-/** @lends */
-function (
+], function (
 	System,
 	BoundingBox
 ) {

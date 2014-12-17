@@ -2,9 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/shapes/Box',
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	Box,
 	Vector3

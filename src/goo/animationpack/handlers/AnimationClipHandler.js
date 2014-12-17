@@ -7,9 +7,7 @@ define([
 	'goo/animationpack/clip/TriggerChannel',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	AnimationClip,
 	JointChannel,

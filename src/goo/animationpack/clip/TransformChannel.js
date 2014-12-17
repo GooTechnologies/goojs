@@ -2,9 +2,7 @@ define([
 	'goo/animationpack/clip/AbstractAnimationChannel',
 	'goo/animationpack/clip/TransformData',
 	'goo/math/Quaternion'
-],
-/** @lends */
-function (
+], function (
 	AbstractAnimationChannel,
 	TransformData,
 	Quaternion

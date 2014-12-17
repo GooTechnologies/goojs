@@ -8,9 +8,7 @@ define([
 
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	ScriptComponent,
 	RSVP,

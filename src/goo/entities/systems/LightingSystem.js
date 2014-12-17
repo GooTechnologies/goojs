@@ -2,9 +2,7 @@ define([
 	'goo/renderer/Capabilities',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	Capabilities,
 	System,
 	SystemBus

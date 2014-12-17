@@ -10,7 +10,7 @@ define([
 	'goo/renderer/scanline/OccluderTriangleData',
 	'goo/renderer/scanline/EdgeMap'
 	],
-	/** @lends */
+
 
 	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
 				BoundingSphereOcclusionChecker, OccluderTriangleData, EdgeMap) {

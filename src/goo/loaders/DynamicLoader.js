@@ -25,9 +25,7 @@ define([
 	'goo/loaders/handlers/EnvironmentHandler',
 	'goo/loaders/handlers/SkyboxHandler',
 	'goo/loaders/handlers/HtmlComponentHandler'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	ComponentHandler,
 	Ajax,

@@ -3,9 +3,7 @@ define([
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	FullscreenUtil,
 	ShaderLib,

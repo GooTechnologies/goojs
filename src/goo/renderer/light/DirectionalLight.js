@@ -1,9 +1,7 @@
 define([
 		'goo/math/Vector3',
 		'goo/renderer/light/Light'
-		],
-/** @lends */
-function (
+		], function (
 	Vector3,
 	Light
 	) {

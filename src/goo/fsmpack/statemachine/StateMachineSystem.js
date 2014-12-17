@@ -1,9 +1,7 @@
 define([
 	'goo/entities/systems/System',
 	'goo/fsmpack/statemachine/actions/Actions'
-],
-/** @lends */
-function (
+], function (
 	System
 ) {
 	'use strict';

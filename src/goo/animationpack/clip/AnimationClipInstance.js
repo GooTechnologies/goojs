@@ -1,8 +1,6 @@
 define([
 	'goo/entities/World'
-],
-/** @lends */
-function (
+], function (
 	World
 ) {
 	'use strict';

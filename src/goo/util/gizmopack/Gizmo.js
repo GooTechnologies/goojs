@@ -11,9 +11,7 @@ define([
 	'goo/math/Vector3',
 	'goo/renderer/Camera',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function(
+], function (
 	ShaderBuilder,
 	MeshData,
 	Shader,

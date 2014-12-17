@@ -1,8 +1,6 @@
 define([
 	'goo/animationpack/Joint'
-],
-/** @lends */
-function (
+], function (
 	Joint
 ) {
 	'use strict';

@@ -10,9 +10,7 @@ define([
 	'goo/math/Transform',
 	'goo/shapes/Grid',
 	'goo/shapes/Quad'
-],
-/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,

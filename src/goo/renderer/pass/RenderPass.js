@@ -2,9 +2,7 @@ define([
 	'goo/renderer/Renderer',
 	'goo/renderer/pass/Pass',
 	'goo/math/Vector4'
-],
-/** @lends */
-function (
+], function (
 	Renderer,
 	Pass,
 	Vector4

@@ -1,9 +1,7 @@
 /*jshint bitwise: false */
 define([
 	'goo/renderer/Capabilities'
-],
-/** @lends */
-function (
+], function (
 	Capabilities
 ) {
 	'use strict';

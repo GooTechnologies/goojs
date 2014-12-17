@@ -7,7 +7,7 @@ define([
 	'goo/shapes/Disk',
 	'goo/shapes/Cone'
 ],
-/** @lends */
+
 
 function (
 	Box,

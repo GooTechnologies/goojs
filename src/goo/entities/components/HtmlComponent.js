@@ -1,6 +1,6 @@
 define([
 	'goo/entities/components/Component'
-], /** @lends */
+],
 function (
 	Component
 ) {

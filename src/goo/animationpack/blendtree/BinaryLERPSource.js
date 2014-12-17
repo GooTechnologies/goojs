@@ -1,9 +1,7 @@
 define([
 	'goo/math/MathUtils',
 	'goo/animationpack/clip/TransformData'
-],
-/** @lends */
-function (
+], function (
 	MathUtils,
 	TransformData
 ) {

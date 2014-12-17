@@ -6,9 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	FullscreenUtil,
 	RenderTarget,

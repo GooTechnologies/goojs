@@ -3,7 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere'
 ],
-	/** @lends */
+
 		function (Component, BoundingBox, BoundingSphere) {
 		'use strict';
 

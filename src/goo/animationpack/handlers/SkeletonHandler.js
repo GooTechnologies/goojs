@@ -5,9 +5,7 @@ define([
 	'goo/animationpack/SkeletonPose',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	Joint,
 	Skeleton,

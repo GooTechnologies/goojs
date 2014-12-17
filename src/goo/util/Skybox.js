@@ -7,7 +7,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/math/Transform'
 
-], /** @lends */ function (
+],  function (
 	Box,
 	Sphere,
 	MeshData,

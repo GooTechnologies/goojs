@@ -1,9 +1,7 @@
 define([
 	'goo/math/MathUtils',
 	'goo/animationpack/clip/AnimationClipInstance'
-],
-/** @lends */
-function (
+], function (
 	MathUtils,
 	AnimationClipInstance
 ) {

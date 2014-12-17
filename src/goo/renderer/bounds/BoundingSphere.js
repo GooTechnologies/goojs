@@ -3,9 +3,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	MathUtils,
 	BoundingVolume,

@@ -1,7 +1,7 @@
 define([
 	'goo/renderer/MeshData'
 ],
-	/** @lends */
+
 	function (
 		MeshData
 	) {

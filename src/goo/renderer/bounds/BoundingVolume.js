@@ -1,8 +1,6 @@
 define([
 	'goo/math/Vector3'
-],
-/** @lends */
-function(
+], function (
 	Vector3
 ) {
 	'use strict';

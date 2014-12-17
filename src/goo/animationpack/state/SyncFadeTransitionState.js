@@ -1,8 +1,6 @@
 define([
 	'goo/animationpack/state/FadeTransitionState'
-],
-/** @lends */
-function (
+], function (
 	FadeTransitionState
 ) {
 	'use strict';

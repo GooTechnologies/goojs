@@ -11,9 +11,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function(
+], function (
 	EntityUtils,
 	Component,
 	Quaternion,
@@ -32,7 +30,7 @@ function(
 	/*global Ammo */
 
 	/**
-	 * @class Adds Ammo physics to a Goo entity.
+	 * Adds Ammo physics to a Goo entity.
 	 * Ammo is a powerful physics engine converted from the C language project Bullet.
 	 * Use Ammo.js if you need to support any 3D shape (trimesh).
 	 * Also see {@link AmmoSystem}.

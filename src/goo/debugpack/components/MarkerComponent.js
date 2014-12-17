@@ -1,8 +1,6 @@
 define([
 	'goo/entities/components/Component',
-	'goo/debugpack/BoundingVolumeMeshBuilder'],
-/** @lends */
-function(
+	'goo/debugpack/BoundingVolumeMeshBuilder'], function (
 	Component,
 	BoundingVolumeMeshBuilder) {
 	'use strict';

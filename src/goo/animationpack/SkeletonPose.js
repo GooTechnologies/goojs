@@ -2,9 +2,7 @@ define([
 	'goo/math/Transform',
 	'goo/animationpack/Joint',
 	'goo/math/Matrix4x4'
-],
-/** @lends */
-function (
+], function (
 	Transform,
 	Joint,
 	Matrix4x4

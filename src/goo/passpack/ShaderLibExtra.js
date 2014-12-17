@@ -7,7 +7,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/World' //! AT: this should not exist - why would shaders care about importing the world?!
 ],
-/** @lends */
+
 	function (
 	MeshData,
 	Shader,

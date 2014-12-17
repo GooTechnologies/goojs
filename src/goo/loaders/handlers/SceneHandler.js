@@ -4,9 +4,7 @@ define([
 	'goo/util/ArrayUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/rsvp'
-],
-/** @lends */
-function(
+], function (
 	ConfigHandler,
 	SystemBus,
 	ArrayUtil,

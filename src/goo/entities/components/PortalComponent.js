@@ -1,9 +1,7 @@
 define([
 	'goo/entities/components/Component',
 	'goo/renderer/pass/RenderTarget'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	RenderTarget
 	) {

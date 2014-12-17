@@ -2,9 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/util/ArrayUtil',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	ArrayUtil,
 	SystemBus

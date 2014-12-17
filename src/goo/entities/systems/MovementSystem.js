@@ -1,5 +1,5 @@
 define(['goo/entities/systems/System'],
-	/** @lends */
+
 		function (System) {
 		'use strict';
 

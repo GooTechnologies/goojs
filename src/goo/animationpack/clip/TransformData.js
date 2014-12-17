@@ -1,6 +1,4 @@
-define(['goo/math/Quaternion', 'goo/math/Vector3'],
-/** @lends */
-function (Quaternion, Vector3) {
+define(['goo/math/Quaternion', 'goo/math/Vector3'], function (Quaternion, Vector3) {
 	'use strict';
 
 	/**

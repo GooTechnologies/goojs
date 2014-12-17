@@ -10,9 +10,7 @@ define([
 	'goo/renderer/Util',
 	'goo/util/Skybox',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	RenderTarget,
 	MeshData,

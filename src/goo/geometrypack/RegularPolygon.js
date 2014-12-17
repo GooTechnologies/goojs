@@ -2,7 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/geometrypack/PolyLine'
 	],
-	/** @lends */
+
 	function (
 		MeshData,
 		PolyLine

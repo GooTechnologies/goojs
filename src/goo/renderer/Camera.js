@@ -8,9 +8,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingVolume'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	Vector4,
 	Matrix4x4,

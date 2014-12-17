@@ -1,7 +1,7 @@
 define([
 	'goo/renderer/light/Light'
 	],
-/** @lends */
+
 	function (
 	Light
 	) {

@@ -6,9 +6,7 @@ define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	System,
 	BoundingBox,
 	BoundingSphere,

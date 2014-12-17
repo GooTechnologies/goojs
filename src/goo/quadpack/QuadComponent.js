@@ -8,9 +8,7 @@ define([
 	'goo/renderer/Material',
 	'goo/util/ObjectUtil',
 	'goo/renderer/Texture'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	MeshData,
 	DoubleQuad,

@@ -5,9 +5,7 @@ define([
 	'goo/animationpack/clip/JointData',
 	'goo/animationpack/clip/TransformData',
 	'goo/animationpack/clip/TriggerData'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	World,
 	AnimationLayer,

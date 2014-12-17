@@ -4,9 +4,7 @@ define([
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	TextureCreator,
 	Material,
 	FullscreenUtil,

@@ -1,7 +1,5 @@
 /*jshint bitwise: false */
-define([],
-/** @lends */
-function () {
+define([], function () {
 	'use strict';
 
 	/**

@@ -1,8 +1,6 @@
 define([
 	'goo/entities/systems/System'
-],
-/** @lends */
-function (System) {
+], function (System) {
 	'use strict';
 
 	// has to stay here because it's used by traverseFunc below

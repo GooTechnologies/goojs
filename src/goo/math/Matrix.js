@@ -1,8 +1,6 @@
 define([
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	MathUtils
 ) {
 	'use strict';

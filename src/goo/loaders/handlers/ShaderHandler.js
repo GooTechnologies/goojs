@@ -6,9 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	Material,
 	MeshData,

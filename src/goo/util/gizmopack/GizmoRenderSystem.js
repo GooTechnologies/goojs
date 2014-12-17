@@ -14,9 +14,7 @@ define([
 	'goo/util/gizmopack/TranslationGizmo',
 	'goo/util/gizmopack/RotationGizmo',
 	'goo/util/gizmopack/ScaleGizmo'
-],
-/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,

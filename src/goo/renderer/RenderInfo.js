@@ -1,9 +1,7 @@
 define([
 	'goo/entities/Entity',
 	'goo/math/Transform'
-],
-/** @lends */
-function (
+], function (
 	Entity,
 	Transform
 ) {

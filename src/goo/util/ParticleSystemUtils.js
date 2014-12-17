@@ -5,7 +5,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/particles/ParticleEmitter'
 	],
-	/** @lends */
+
 	function (
 		ParticleComponent,
 		MeshRendererComponent,

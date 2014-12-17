@@ -1,9 +1,7 @@
 define([
 	'goo/animationpack/clip/AbstractAnimationChannel',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	AbstractAnimationChannel,
 	MathUtils
 ) {

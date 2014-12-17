@@ -1,6 +1,4 @@
-define(['goo/picking/BoundingTree'],
-/** @lends */
-function (BoundingTree) {
+define(['goo/picking/BoundingTree'], function (BoundingTree) {
 	'use strict';
 
 	/**

@@ -7,9 +7,7 @@ define([
 	'goo/util/ParticleSystemUtils',
 	'goo/renderer/Renderer',
 	'goo/math/Vector3'
-],
-	/** @lends */
-function (
+], function (
 	SystemBus,
 	Material,
 	ShaderLib,

@@ -4,7 +4,7 @@ define([
         // 'goo/math/Matrix3x3',
         'goo/entities/EntityUtils'
         ],
-	/** @lends */
+
 	function (
 		MeshData,
 		Vector3,

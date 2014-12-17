@@ -1,8 +1,6 @@
 define([
 	'goo/animationpack/blendtree/BinaryLERPSource'
-],
-/** @lends */
-function (
+], function (
 	BinaryLERPSource
 ) {
 	'use strict';

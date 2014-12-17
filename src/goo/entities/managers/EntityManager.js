@@ -2,7 +2,7 @@ define([
 	'goo/entities/managers/Manager',
 	'goo/entities/EntitySelection'
 ],
-	/** @lends */
+
 	function (
 		Manager,
 		EntitySelection

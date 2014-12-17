@@ -2,7 +2,7 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/Vector4'
 ],
-	/** @lends */
+
 		function (Matrix4x4, Vector4) {
 		'use strict';
 

@@ -2,7 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/renderer/Material'
 ],
-	/** @lends */
+
 	function (
 		Component,
 		Material

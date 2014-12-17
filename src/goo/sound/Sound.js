@@ -2,9 +2,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/math/MathUtils',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	AudioContext,
 	MathUtils,
 	RSVP

@@ -2,7 +2,7 @@ define([
 	'goo/debugpack/components/MarkerComponent',
 	'goo/debugpack/systems/MarkerSystem'
 ],
-	/** @lends */
+
 	function (
 	MarkerComponent,
 	MarkerSystem

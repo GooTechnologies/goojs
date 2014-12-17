@@ -2,7 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/geometrypack/Surface'
 ],
-	/** @lends */
+
 	function (
 		MeshData,
 		Surface

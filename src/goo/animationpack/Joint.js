@@ -1,6 +1,4 @@
-define(['goo/math/Transform'],
-/** @lends */
-function (Transform) {
+define(['goo/math/Transform'], function (Transform) {
 	'use strict';
 
 	/**

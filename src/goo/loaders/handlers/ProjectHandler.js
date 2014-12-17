@@ -1,9 +1,7 @@
 define([
 	'goo/loaders/handlers/ConfigHandler'
 
-],
-/** @lends */
-function(
+], function (
 	ConfigHandler
 ) {
 	'use strict';

@@ -6,9 +6,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/math/MathUtils',
 	'goo/util/TangentGenerator'
-],
-/** @lends */
-function(
+], function (
 	MeshData,
 	PointLight,
 	DirectionalLight,

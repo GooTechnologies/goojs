@@ -4,9 +4,7 @@ define([
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/quadpack/QuadComponent'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	RSVP,
 	PromiseUtil,

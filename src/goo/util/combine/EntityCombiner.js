@@ -6,9 +6,7 @@ define([
 	'goo/math/Vector3',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere'
-],
-/** @lends */
-function(
+], function (
 	EntityUtils,
 	Entity,
 	MeshBuilder,

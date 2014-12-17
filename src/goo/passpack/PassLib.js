@@ -6,9 +6,7 @@ define([
 	'goo/passpack/DoGPass',
 	'goo/passpack/MotionBlurPass',
 	'goo/renderer/Util'
-],
-/** @lends */
-function (
+], function (
 	ShaderLibExtra,
 	FullscreenPass,
 	BloomPass,

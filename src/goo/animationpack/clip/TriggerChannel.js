@@ -1,9 +1,7 @@
 define([
 	'goo/animationpack/clip/AbstractAnimationChannel',
 	'goo/animationpack/clip/TriggerData'
-],
-/** @lends */
-function (
+], function (
 	AbstractAnimationChannel,
 	TriggerData
 ) {

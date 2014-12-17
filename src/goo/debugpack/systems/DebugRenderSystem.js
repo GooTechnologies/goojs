@@ -6,9 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
 	'goo/debugpack/DebugDrawHelper'
-],
-/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
