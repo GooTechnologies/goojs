@@ -412,7 +412,6 @@ define([
 
 	/**
 	 * Extract shader variable definitions from shader source code.
-	 * @static
 	 * @param {string} source The source code.
 	 * @param {object} target
 	 * @param {object} target.attributeMapping

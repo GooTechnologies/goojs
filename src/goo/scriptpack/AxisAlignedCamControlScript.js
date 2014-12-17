@@ -73,10 +73,6 @@ define([
 		};
 	}
 
-	/**
-	 * @static
-	 * @type {Object}
-	 */
 	AxisAlignedCamControlScript.externals = {
 		key: 'AxisAlignedCamControlScript',
 		name: 'Axis-aligned Camera Control',

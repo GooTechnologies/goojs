@@ -349,9 +349,6 @@ define([
 	};
 
 	// only terrain depends on this
-	/**
-	 * @static
-	*/
 	ShaderLib.screenCopy = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -383,9 +380,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.copy = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -424,9 +418,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.copyPure = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -466,9 +457,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simple = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -495,9 +483,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simpleColored = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -532,9 +517,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simpleLit = {
 		processors: [
 			ShaderBuilder.light.processor
@@ -622,9 +604,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.textured = {
 		defines: {
 			TEXCOORD0: true,
@@ -671,9 +650,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.texturedLit = {
 		processors: [
 			ShaderBuilder.light.processor
@@ -746,9 +722,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.convolution = {
 		defines : {
 			KERNEL_SIZE_FLOAT : '25.0',
@@ -837,9 +810,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.showNormals = {
 		defines: {
 			NORMAL: true
@@ -883,9 +853,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.particles = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -929,11 +896,6 @@ define([
 		].join('\n')
 	};
 
-
-
-	/**
-	 * @static
-	*/
 	ShaderLib.normalmap = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -978,9 +940,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.point = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1017,9 +976,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.downsample = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1056,9 +1012,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.lightDepth = {
 		processors: [
 			ShaderBuilder.animation.processor
@@ -1115,9 +1068,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.pickingShader = {
 		defines: {
 			WEIGHTS: true,

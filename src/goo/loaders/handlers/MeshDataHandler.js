@@ -4,9 +4,7 @@ define([
 	'goo/renderer/BufferUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
-],
-/* @lends */
-function (
+], function (
 	ConfigHandler,
 	MeshData,
 	BufferUtils,
