@@ -90,7 +90,7 @@ define([
 	/**
 	 * Connect output of component to audionodes
 	 * @param {object} [nodes]
-	 * @param {AudioNode} [nodes.dry]
+	 * @param {AudioNode} [nodes.dry]
 	 * @param {AudioNode} [nodes.wet]
 	 */
 	SoundComponent.prototype.connectTo = function (nodes) {
@@ -123,9 +123,9 @@ define([
 	 * Updates position, velocity and orientation of component and thereby all connected sounds.
 	 * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
 	 * @param {object} settings See {@link SoundSystem}
-	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
+	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
 	 * @param {number} tpf
-	 * @private
+	 * @hidden
 	 */
 	SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;

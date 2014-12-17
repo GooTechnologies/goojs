@@ -37,7 +37,6 @@ define([
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 	Vector4.add = function (lhs, rhs, target) {
@@ -125,7 +124,6 @@ define([
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 	Vector4.mul = function (lhs, rhs, target) {
@@ -169,7 +167,6 @@ define([
 	 * @param {Vector4|number[]|number} rhs Vector, array of scalars or scalar on the right-hand side. For single scalars, the value is repeated for
 	 *            every component.
 	 * @param {Vector4} [target] Target vector for storage.
-	 * @throws {IllegalArguments} If the arguments are of incompatible sizes.
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 	Vector4.div = function (lhs, rhs, target) {
