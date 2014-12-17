@@ -347,6 +347,7 @@ define([
 				time += 100;
 				V.goo._updateFrame(time);
 				V.goo.stopGameLoop();
+				window.testLoaded = true;
 			});
 		});
 	};

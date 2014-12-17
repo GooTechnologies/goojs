@@ -1,11 +1,11 @@
+'use strict';
+
 var webdriver = require('selenium-webdriver');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var mkdirp = require('mkdirp');
 var EventEmitter = require('events').EventEmitter;
-
-module.exports = ScreenShooter;
 
 /**
  * @class ScreenShooter
@@ -18,7 +18,7 @@ function ScreenShooter(options) {
 	options = options || {};
 
 	var settings = this.settings = {
-		wait   : 1200, // used to be 700 but is a tad too little for intel-nuc; will have to come up with a more robust solution if this becomes a problem
+		wait   : 100, // Milliseconds to wait if example is not done rendering
 		width  : 400, // This is sort of the smallest possible in Chrome
 		height : 300
 	};
@@ -38,6 +38,57 @@ function ScreenShooter(options) {
 
 ScreenShooter.prototype = new EventEmitter();
 
+ScreenShooter.prototype._storeImage = function (data, url, pngPath, callback) {
+	var self = this;
+	var driver = this.driver;
+	data = data.replace(/^data:image\/\w+;base64,/, '');
+
+	// Create out folder if it does not exist
+	mkdirp.mkdirp(path.dirname(pngPath), function (err) {
+		if (err) {
+			return callback(err);
+		}
+
+		// Get the console log
+		var logs = new webdriver.WebDriver.Logs(driver);
+		logs.get('browser').then(function (browserLog) {
+			self.browserLog = browserLog;
+
+			// Save screenshot
+			fs.writeFileSync(pngPath, data, 'base64');
+
+			self.emit('shoot', {
+				url: url,
+				path: pngPath,
+				log: browserLog
+			});
+
+			callback();
+		});
+	});
+};
+
+ScreenShooter.prototype._getData = function (url, pngPath, callback) {
+	var self = this;
+	var driver = this.driver;
+
+	driver.executeScript('return window.testLoaded;').then(function (testLoaded) {
+		if (testLoaded) {
+			driver.executeScript('return document.getElementById("goo").toDataURL();').then(function (data) {
+				self._storeImage(data, url, pngPath, callback);
+			}, function () {
+				setTimeout(function () {
+					self._getData(url, pngPath, callback);
+				}, self.settings.wait);
+			});
+		} else {
+			setTimeout(function () {
+				self._getData(url, pngPath, callback);
+			}, self.settings.wait);
+		}
+	});
+};
+
 // Take a screenshot on an url and store it to a file. Will emit a 'shoot' event
 ScreenShooter.prototype.takeScreenshot = function (url, pngPath, callback) {
 	var self = this;
@@ -45,36 +96,7 @@ ScreenShooter.prototype.takeScreenshot = function (url, pngPath, callback) {
 
 	// Point the browser to it
 	driver.get(url).then(function () {
-		setTimeout(function () {
-			// Take screenshot
-			driver.executeScript('return document.getElementById("goo").toDataURL();').then(function (data) {
-				data = data.replace(/^data:image\/\w+;base64,/, '');
-
-				// Create out folder if it does not exist
-				mkdirp.mkdirp(path.dirname(pngPath), function (err) {
-					if (err) {
-						return callback(err);
-					}
-
-					// Get the console log
-					var logs = new webdriver.WebDriver.Logs(driver);
-					logs.get('browser').then(function (browserLog) {
-						self.browserLog = browserLog;
-
-						// Save screenshot
-						fs.writeFileSync(pngPath, data, 'base64');
-
-						self.emit('shoot', {
-							url: url,
-							path: pngPath,
-							log: browserLog
-						});
-
-						callback();
-					});
-				});
-			}, self.settings.wait);
-		}, self.settings.wait);
+		self._getData(url, pngPath, callback);
 	});
 };
 
@@ -112,4 +134,4 @@ ScreenShooter.prototype.shutdown = function (callback) {
 	});
 };
 
-
+module.exports = ScreenShooter;
