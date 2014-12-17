@@ -21,6 +21,28 @@ function () {
 	};
 
 	/**
+	 * Attempts to request fullscreen.
+	 */
+	GameUtils.requestFullScreen = function () {
+		if (!document.fullscreenElement) {
+			if (document.documentElement.requestFullScreen) {
+				document.documentElement.requestFullScreen();
+			}
+		}
+	};
+
+	/**
+	 * Attempts to exit fullscreen.
+	 */
+	GameUtils.exitFullScreen = function () {
+		if (document.fullscreenElement) {
+			if (document.cancelFullScreen) {
+				document.cancelFullScreen();
+			}
+		}
+	};
+
+	/**
 	 * Attempts to toggle fullscreen.
 	 */
 	GameUtils.toggleFullScreen = function () {
