@@ -26,7 +26,7 @@ define([
 
 	Renderer.prototype.invalidateTexture = function (texture) {
 		texture.glTexture = null;
-		delete texture.textureRecord;
+		texture.textureRecord = {};
 	};
 
 	Renderer.prototype.invalidateShader = function (shader) {
