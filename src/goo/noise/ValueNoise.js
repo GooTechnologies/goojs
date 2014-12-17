@@ -7,7 +7,7 @@ define(["goo/noise/Noise"],
 	/* ====================================================================== */
 
 	/**
-	 * @class Value noise is simpler and computationally lighter than Perlin noise yet produce visually similar results when used in fractals.
+	 * Value noise is simpler and computationally lighter than Perlin noise yet produce visually similar results when used in fractals.
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.
 	 */

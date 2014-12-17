@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class StateMachineComponent
+	 * StateMachineComponent
 	 * @private
 	 */
 	function StateMachineComponent() {

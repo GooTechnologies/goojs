@@ -26,7 +26,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Handler for loading posteffects into engine
+	 * Handler for loading posteffects into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig

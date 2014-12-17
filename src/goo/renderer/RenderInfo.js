@@ -9,7 +9,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Holds configuration data for renderable objects.
+	 * Holds configuration data for renderable objects.
 	 */
 
 	function RenderInfo() {

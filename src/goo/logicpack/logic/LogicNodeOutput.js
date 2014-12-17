@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node to be used as layer output.
+		 * Logic node to be used as layer output.
 		 * @private
 		 */
 		function LogicNodeOutput() {

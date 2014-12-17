@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a light component making sure that lights are placed according to its transforms<br>
+	 * Processes all entities with a light component making sure that lights are placed according to its transforms<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
 	 * @extends System
 	 */

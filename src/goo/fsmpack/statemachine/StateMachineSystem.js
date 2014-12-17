@@ -7,7 +7,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a FSM component
+	 * Processes all entities with a FSM component
 	 * @private
 	 */
 	function StateMachineSystem(engine) {

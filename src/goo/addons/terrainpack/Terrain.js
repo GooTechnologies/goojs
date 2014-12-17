@@ -46,7 +46,7 @@ define([
 	var Ammo = window.Ammo; // make jslint happy
 
 	/**
-	 * @class A terrain
+	 * A terrain
 	 */
 	function Terrain(goo, size, count) {
 		this.world = goo.world;

@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A polygonal line
+	 * A polygonal line
 	 * @param {number[]} [verts] The vertices data array
 	 * @param {boolean} [closed=false] True if its ends should be connected
 	 */

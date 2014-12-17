@@ -12,7 +12,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Provides a simple way to load sounds
+	 * Provides a simple way to load sounds
 	 */
 	function SoundCreator() {
 		var ajax = this.ajax = new Ajax();

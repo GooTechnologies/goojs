@@ -12,7 +12,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that connects to the MeshRendererComponent of an entity.
+		 * Logic node that connects to the MeshRendererComponent of an entity.
 		 * @private
 		 */
 		function LogicNodeMeshRendererComponent() {

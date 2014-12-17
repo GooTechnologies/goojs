@@ -39,7 +39,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Class to load objects into the engine, or to update objects based on the data model.
+	 * Class to load objects into the engine, or to update objects based on the data model.
 	 *
 	 * @constructor
 	 * @param {object} parameters

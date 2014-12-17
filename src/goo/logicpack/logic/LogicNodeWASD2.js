@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node handling WASD input.
+		 * Logic node handling WASD input.
 		 * @private
 		 */
 		function LogicNodeWASD2() {

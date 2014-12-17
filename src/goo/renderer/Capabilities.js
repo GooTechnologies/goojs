@@ -4,7 +4,7 @@ function () {
 	'use strict';
 
 	/**
-	 * @class Enabled and stores webgl extensions and capabilities
+	 * Enabled and stores webgl extensions and capabilities
 
 	 * Extensions
 	 * @property {object} CompressedTextureS3TC S3TC (DXT) compression, WEBGL_compressed_texture_s3tc

@@ -12,7 +12,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node for vector < matrix computation
+		 * Logic node for vector < matrix computation
 		 * @private
 		 */
 		function LogicNodeApplyMatrix() {

@@ -6,7 +6,7 @@ function () {
 	/**
 	 * Creates a new System
 	 *
-	 * @class Base class for all entity systems
+	 * Base class for all entity systems
 	 *        <ul>
 	 *        <li> interests = null -> listen to all entities
 	 *        <li> interests = [] -> don't listen to any entities

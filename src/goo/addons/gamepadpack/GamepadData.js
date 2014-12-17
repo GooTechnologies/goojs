@@ -7,9 +7,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class
 	 * Used for storing derived data from gamepads
-	 * @constructor
 	 */
 	function GamepadData() {
 		this.leftStickDirection = new Vector2();

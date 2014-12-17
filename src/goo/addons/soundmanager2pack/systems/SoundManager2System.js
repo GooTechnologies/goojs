@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Handles integration with Sound Manager 2
+	 * Handles integration with Sound Manager 2
 	 * @desc Depends on the global soundManager object.
 	 * Load soundmanager2 with a script tag before using this system.
 	 * @extends System

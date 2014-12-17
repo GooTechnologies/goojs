@@ -10,7 +10,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class A 3D object with all points equi-distance from a center point.
+	 * A 3D object with all points equi-distance from a center point.
+	 * @extends MeshData
 	 * @param {Number} [zSamples=8] Number of segments.
 	 * @param {Number} [radialSamples=8] Number of slices.
 	 * @param {Number} [radius=0.5] Radius.

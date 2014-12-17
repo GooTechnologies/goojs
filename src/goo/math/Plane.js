@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance
+	 * A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance
 	 *        from the origin to the plane. It is generally calculated by taking a point (X) on the plane and finding its dot-product with the plane's
 	 *        normal vector. In other words: d = N dot X
 	 * @param {Vector3} normal Normal of the plane.

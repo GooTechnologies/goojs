@@ -21,7 +21,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Factory for shape creation.
+	 * Factory for shape creation.
 	 * @description Only used to define the class. Should never be instantiated.
 	 */
 	function ShapeCreatorMemoized() {

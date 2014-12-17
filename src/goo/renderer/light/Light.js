@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A plain light source in the scene, to be handled by shaders<br>
+	 * A plain light source in the scene, to be handled by shaders<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
 	 * @constructor
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light

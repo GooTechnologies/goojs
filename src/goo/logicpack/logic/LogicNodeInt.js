@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that provides an integer.
+		 * Logic node that provides an integer.
 		 * @private
 		 */
 		function LogicNodeInt() {

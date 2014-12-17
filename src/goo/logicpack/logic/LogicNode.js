@@ -4,7 +4,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Base class/module for all logic boxes
+		 * Base class/module for all logic boxes
 		 * @private
 		 */
 		function LogicNode() {

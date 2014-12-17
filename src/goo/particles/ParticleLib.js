@@ -3,7 +3,7 @@ define([], function (
 	'use strict';
 
 	/**
-	 * @class Library of particles<br>
+	 * Library of particles<br>
 	 * @{@linkplain http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example}
 	 */
 	var ParticleLib = {};

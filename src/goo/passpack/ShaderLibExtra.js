@@ -20,7 +20,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Collection of additional useful shaders
+	 * Collection of additional useful shaders
 	 * Details of each can be printed using console.log().
 	 */
 	function ShaderLibExtra() {}

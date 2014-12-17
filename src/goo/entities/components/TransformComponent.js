@@ -16,7 +16,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Holds the transform of an entity. It also allows for a scene graph to be created,
+	 * Holds the transform of an entity. It also allows for a scene graph to be created,
 	 * in which transforms are inherited down the tree.<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
 	 * @extends Component

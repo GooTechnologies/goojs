@@ -182,7 +182,7 @@ define([
 	};
 
 	/**
-	 * @class Loads dds format images into a format usable by Goo.
+	 * Loads dds format images into a format usable by Goo.
 	 * @private
 	 */
 	function DdsLoader() {

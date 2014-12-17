@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for example.)
+	 * A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for example.)
 	 * @extends AbstractState
 	 * @param {string} name Name of state
 	 */

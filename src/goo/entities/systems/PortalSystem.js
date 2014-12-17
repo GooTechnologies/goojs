@@ -6,11 +6,11 @@ define([
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a portal component, a mesh renderer component and a mesh data component<br>
+	 * Processes all entities with a portal component, a mesh renderer component and a mesh data component
+	 * @extends System
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/PortalComponent/PortalComponent-vtest.html Working example}
 	 * @param {Renderer} renderer
 	 * @param {RenderSystem} renderSystem
-	 * @extends System
 	 */
 	function PortalSystem(renderer, renderSystem) {
 		System.call(this, 'PortalSystem', ['MeshRendererComponent', 'MeshDataComponent', 'PortalComponent']);

@@ -8,7 +8,7 @@ define([
 		'use strict';
 
 		/**
-		 * @class A grid-like surface shape
+		 * A grid-like surface shape
 		 * @param {array} heightMatrix The height data by x and z axis.
 		 * @param {number} xWidth x axis size in units
          * @param {number} yHeight y axis size in units

@@ -4,26 +4,23 @@ define([
 	'goo/entities/components/MeshDataComponent',
 	'goo/renderer/Texture',
 	'goo/particles/ParticleEmitter'
-	],
-
-	function (
-		ParticleComponent,
-		MeshRendererComponent,
-		MeshDataComponent,
-		Texture,
-		ParticleEmitter
-	) {
+], function (
+	ParticleComponent,
+	MeshRendererComponent,
+	MeshDataComponent,
+	Texture,
+	ParticleEmitter
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
-	function ParticleSystemUtils() {
-	}
+	 * Provides utility methods for particle systems
+	 */
+	function ParticleSystemUtils() {}
 
 	/**
 	 * Creates an Entity based on an object holding particle emitter parameters and a material
-	 * @private
+	 * @hidden
 	 * @param world
 	 * @param particleParameters
 	 * @param material

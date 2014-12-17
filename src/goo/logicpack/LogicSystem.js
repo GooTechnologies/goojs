@@ -17,7 +17,7 @@ define([
 
 		// REVIEW: this description seems inaccurate
 		/**
-		 * @class Updates cameras/cameracomponents with ther transform component transforms
+		 * Updates cameras/cameracomponents with ther transform component transforms
 		 * @private
 		 */
 		function LogicSystem() {

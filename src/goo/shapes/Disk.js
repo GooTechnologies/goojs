@@ -4,7 +4,8 @@ define(['goo/renderer/MeshData'],
 	'use strict';
 
 	/**
-	 * @class A disk shape<br>
+	 * A disk shape
+	 * @extends MeshData
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/shapes/Disk/Disk-vtest.html Working example}
 	 * @param {number} [nSegments=8] Number of slices
 	 * @param {number} [radius=1] Radius of the disk

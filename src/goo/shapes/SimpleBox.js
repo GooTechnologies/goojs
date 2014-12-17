@@ -1,19 +1,17 @@
 define([
-	'goo/renderer/MeshData'],
-
-
-function(
-MeshData) {
+	'goo/renderer/MeshData'
+], function (
+	MeshData
+) {
 	'use strict';
 
 	/**
-	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.
-	 * @description Creates a new box.
+	 * An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii) from that center.
+	 * @extends MeshData
 	 * @param {number} [width=1] Total width of box.
 	 * @param {number} [height=1] Total height of box.
 	 * @param {number} [length=1] Total length of box.
 	 */
-
 	function SimpleBox(width, height, length) {
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;

@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Defines a light<br>
+	 * Defines a light<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
 	 * @param {Light} light Light to contain in this component (directional, spot, point)
 	 * @extends Component

@@ -14,7 +14,7 @@ define([
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class Post processing handler
+	 * Post processing handler
 	 * @param {RenderTarget} renderTarget Data to wrap
 	 * @property {RenderTarget} renderTarget Data to wrap
 	 */

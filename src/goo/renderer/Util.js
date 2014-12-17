@@ -5,7 +5,7 @@ function () {
 	'use strict';
 
 	/**
-	 * @class Common utilities
+	 * Common utilities
 	 */
 	function Util() {
 

@@ -6,10 +6,9 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	* @extends Component
-	* @deprecated Deprecated since 0.10.x and scheduled for removal in 0.12.0
-	*/
+	 * @extends Component
+	 * @deprecated Deprecated since 0.10.x and scheduled for removal in 0.12.0
+	 */
 	function SoundManager2Component(settings) {
 		this.type = 'SoundManager2Component';
 

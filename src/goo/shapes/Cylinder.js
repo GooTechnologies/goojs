@@ -8,7 +8,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class A 3D object representing a cylinder.
+	 * A 3D object representing a cylinder.
+	 * @extends MeshData
 	 * @param {number} [radialSamples=8] Number of slices
 	 * @param {number} [radiusTop=0.5] Radius of the cylinder at the top.
 	 * @param {number} [radiusBottom=radiusTop] Radius of the cylinder at the bottom. Defaults to radiusTop.

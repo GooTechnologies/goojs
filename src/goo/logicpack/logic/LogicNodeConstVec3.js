@@ -11,7 +11,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node to provide a const Vec3
+		 * Logic node to provide a const Vec3
 		 * @private
 		 */
 		function LogicNodeConstVec3() {

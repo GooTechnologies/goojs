@@ -1,11 +1,15 @@
-define(['goo/picking/BoundingTree'], function (BoundingTree) {
+define([
+	'goo/picking/BoundingTree'
+], function (
+	BoundingTree
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
-	function PrimitivePickLogic () {
-	}
+	 * Primitive pick logic
+	 * @constructor
+	 */
+	function PrimitivePickLogic () {}
 
 	PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
 		// look in pick tree for intersection

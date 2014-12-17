@@ -18,8 +18,9 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * @extends Gizmo
+	 * @hidden
+	 */
 	function TranslationGizmo() {
 		Gizmo.call(this, 'TranslationGizmo');
 

@@ -3,7 +3,7 @@ define([], function () {
 	'use strict';
 
 	/**
-	 * @class A collection of useful math-related functions, constants and helpers.
+	 * A collection of useful math-related functions, constants and helpers.
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.
 	 */

@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that calculates sin & cos.
+		 * Logic node that calculates sin & cos.
 		 * @private
 		 */
 		function LogicNodeSine() {

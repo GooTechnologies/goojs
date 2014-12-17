@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Utility for creating index buffers of appropriate type
+	 * Utility for creating index buffers of appropriate type
 	 */
 	function BufferUtils() {
 	}

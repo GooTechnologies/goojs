@@ -10,7 +10,7 @@ define([
 	/* global CANNON */
 
 	/**
-	 * @class Distance joint. Add to an entity with a {@link CannonRigidbodyComponent} and physically link it to another entity!<br>
+	 * Distance joint. Add to an entity with a {@link CannonRigidbodyComponent} and physically link it to another entity!<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
 	 * @extends Component
 	 * @param {object} [settings]

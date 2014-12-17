@@ -16,7 +16,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Holds the animation data.
+	 * Holds the animation data.
 	 * @extends Component
 	 */
 	function AnimationComponent(pose) {

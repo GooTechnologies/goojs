@@ -19,7 +19,7 @@ define([
 	var Uint8ClampedArray = window.Uint8ClampedArray;
 
 	/**
-	 * @class Stores all buffers for geometric data and similar attributes
+	 * Stores all buffers for geometric data and similar attributes
 	 * @constructor
 	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes
 	 * @param {number} vertexCount Number of vertices in buffer

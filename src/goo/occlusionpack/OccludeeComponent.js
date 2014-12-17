@@ -2,16 +2,16 @@ define([
 	'goo/entities/components/Component',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere'
-],
-
-		function (Component, BoundingBox, BoundingSphere) {
+], function (
+	Component,
+	BoundingBox,
+	BoundingSphere
+) {
 		'use strict';
 
 		/**
-		 * @class
 		 * @param meshData
 		 * @param useBoundingBox
-		 * @constructor
 		 */
 		function OccludeeComponent(meshData, useBoundingBox) {
 			Component.apply(this, arguments);

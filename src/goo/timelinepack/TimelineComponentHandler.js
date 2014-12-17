@@ -7,9 +7,7 @@ define([
 	'goo/util/ArrayUtil',
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil'
-	],
-
-	function(
+], function (
 	ComponentHandler,
 	TimelineComponent,
 	ValueChannel,
@@ -18,13 +16,13 @@ define([
 	ArrayUtil,
 	SystemBus,
 	_
-	) {
+) {
 	'use strict';
 
 	var TWEEN = window.TWEEN;
+
 	/**
-	 * @class
-	 * @private
+	 * @hidden
 	 */
 	function TimelineComponentHandler() {
 		ComponentHandler.apply(this, arguments);

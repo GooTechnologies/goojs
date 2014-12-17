@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Various helper utils for particle systems.
+	 * Various helper utils for particle systems.
 	 */
 	function ParticleUtils() {
 	}

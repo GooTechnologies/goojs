@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Base class for resource handlers, used to load all types of resources into the engine.
+	 * Base class for resource handlers, used to load all types of resources into the engine.
 	 * All the resource types in the bundle (noted by their extension) need to have a registered config
 	 * handler.
 	 * To handle a new type of component, create a class that inherits from this class, and override {update}.

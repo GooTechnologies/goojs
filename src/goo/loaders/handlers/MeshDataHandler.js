@@ -19,7 +19,7 @@ function (
 
 	/*jshint eqeqeq: false, -W041, bitwise: false */
 	/**
-	 * @class Handler for meshdata. Will not update, only create once
+	 * Handler for meshdata. Will not update, only create once
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject

@@ -22,7 +22,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Handler for loading animation layers
+	 * Handler for loading animation layers
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject

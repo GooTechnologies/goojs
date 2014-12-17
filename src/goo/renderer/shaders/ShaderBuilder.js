@@ -18,7 +18,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Builds shaders
+	 * Builds shaders
 	 */
 	function ShaderBuilder() {
 	}

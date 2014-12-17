@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that computes the max of two inputs.
+		 * Logic node that computes the max of two inputs.
 		 * @private
 		 */
 		function LogicNodeMax() {

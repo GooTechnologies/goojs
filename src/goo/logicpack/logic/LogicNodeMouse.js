@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that reads mouse input.
+		 * Logic node that reads mouse input.
 		 * @private
 		 */
 		function LogicNodeMouse() {

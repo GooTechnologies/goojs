@@ -16,7 +16,6 @@ define([
 	'use strict';
 
 	/**
-	 * @class
 	 * <pre>
 	 * settings: {
 	 *     target : null,

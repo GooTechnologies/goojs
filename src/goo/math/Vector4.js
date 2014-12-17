@@ -8,7 +8,7 @@ define([
 	/* ====================================================================== */
 
 	/**
-	 * @class Vector with 4 components.
+	 * Vector with 4 components.
 	 * @extends Vector
 	 * @constructor
 	 * @description Creates a new vector.

@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Updates cameras/cameracomponents with their transform component transforms
+	 * Updates cameras/cameracomponents with their transform component transforms
 	 * @extends System
 	 */
 	function CameraSystem() {

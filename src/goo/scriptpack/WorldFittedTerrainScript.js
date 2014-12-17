@@ -55,7 +55,7 @@ define([
 		}
 
 		/**
-		 * @class Creates and exposes a square heightmap terrain fitted within given world dimensions.
+		 * Creates and exposes a square heightmap terrain fitted within given world dimensions.
          * This does not do any visualizing of the heightMap. That needs to be done elsewhere.
 		 * @constructor
 		 */

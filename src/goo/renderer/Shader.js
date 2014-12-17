@@ -20,7 +20,7 @@ define([
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class Defines vertex and fragment shader and uniforms to shader callbacks
+	 * Defines vertex and fragment shader and uniforms to shader callbacks
 	 * @param {String} name Shader name (mostly for debug/tool use)
 	 * @param {ShaderDefinition} shaderDefinition Shader data
 	 *

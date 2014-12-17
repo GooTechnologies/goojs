@@ -34,7 +34,7 @@ define([
 	};
 
 	/**
-	 * @class Handling environments
+	 * Handling environments
 	 * @param {World} world
 	 * @param {Function} getConfig
 	 * @param {Function} updateObject

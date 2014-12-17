@@ -25,8 +25,10 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Depth pass
+	 * @param renderList
+	 * @param outShader
+	 */
 	function DepthPass(renderList, outShader) {
 		this.depthPass = new RenderPass(renderList);
 		var packDepthMaterial = new Material(packDepth);

@@ -4,7 +4,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	'use strict';
 
 	/**
-	 * @class Matrix with 2x2 components.
+	 * Matrix with 2x2 components.
 	 * @extends Matrix
 	 * @description Creates a new matrix.
 	 * @param {Matrix2x2|number[]|...number} arguments Initial values for the components.

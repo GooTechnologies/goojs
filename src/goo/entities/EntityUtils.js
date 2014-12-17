@@ -12,7 +12,7 @@ define([
 		'use strict';
 
 		/**
-		 * @class Utilities for entity creation etc
+		 * Utilities for entity creation etc
 		 * @description Only used to define the class. Should never be instantiated.
 		 */
 		function EntityUtils() {

@@ -2,13 +2,12 @@ define([
 	'goo/entities/components/Component'
 ], function (
 	Component
-	) {
+) {
 	'use strict';
 
 	/**
-	 * @class
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Gamepad/Gamepad-example.html Working example}
 	 * @extends Component
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Gamepad/Gamepad-example.html Working example}
 	 * @param gamepadIndex
 	 * @constructor
 	 */

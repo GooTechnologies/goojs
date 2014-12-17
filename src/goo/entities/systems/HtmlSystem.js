@@ -14,9 +14,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 * @extends System
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 */
 	function HtmlSystem(renderer) {
 		System.call(this, 'HtmlSystem', ['TransformComponent', 'HtmlComponent']);

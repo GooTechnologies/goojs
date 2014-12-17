@@ -26,8 +26,10 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Deph of field pass
+	 * @param renderList
+	 * @param outShader
+	 */
 	function DOFPass(renderList, outShader) {
 		this.depthPass = new RenderPass(renderList, function(item) {
 			return !(item instanceof Skybox);

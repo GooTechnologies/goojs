@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that multiplies two floats.
+		 * Logic node that multiplies two floats.
 		 * @private
 		 */
 		function LogicNodeMultiplyFloat() {

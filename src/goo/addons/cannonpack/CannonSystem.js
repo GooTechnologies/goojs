@@ -20,7 +20,7 @@ define([
 	/* global CANNON, performance */
 
 	/**
-	 * @class Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
+	 * Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
 	 * @extends System
 	 * @param [Object] [settings]
 	 * @param {number} [settings.stepFrequency=60]

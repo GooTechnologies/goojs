@@ -6,7 +6,7 @@ define(["goo/math/MathUtils"],
 	/* ====================================================================== */
 
 	/**
-	 * @class A base class for procedural noise functions.
+	 * A base class for procedural noise functions.
 	 * @constructor
 	 * @description Only used to define the class. Should never be instantiated.
 	 */

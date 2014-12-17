@@ -10,7 +10,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class A donut-shaped model.
+	 * A donut-shaped model.
+	 * @extends MeshData
 	 * @param {number} [circleSamples=8] Number of segments.
 	 * @param {number} [radialSamples=8] Number of slices.
 	 * @param {number} [tubeRadius=1] Radius of tube.

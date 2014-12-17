@@ -17,8 +17,11 @@ define([
 ) {
 	'use strict';
 
-	/** @class */
-
+	/**
+	 *
+	 * @param id
+	 * @constructor
+	 */
 	function Bloom(id) {
 		BloomPass.call(this);
 		this.id = id;

@@ -4,7 +4,7 @@ function() {
 	'use strict';
 
 	/**
-	 * @class Rc4 random generator with seeding
+	 * Rc4 random generator with seeding
 	 */
 	function Rc4Random(seed) {
 		var keySchedule = [];

@@ -8,7 +8,7 @@ define([
 	/* ====================================================================== */
 
 	/**
-	 * @class Vector with N components.
+	 * Vector with N components.
 	 * @property {Float32Array} data Storage for the vector components.
 	 * @constructor
 	 * @description Creates a new vector.

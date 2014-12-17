@@ -37,8 +37,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'use strict';
 
 	/**
-	* @class
-	* @private
+	* 	* @private
 	*/
 	function LogicComponentHandler() {
 		ComponentHandler.apply(this, arguments);

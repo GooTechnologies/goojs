@@ -11,7 +11,10 @@ define([
 ) {
 	'use strict';
 
-	/** @class */
+	/**
+	 * Fullscreen pass
+	 * @param shader
+	 */
 	function FullscreenPass(shader) {
 		this.material = new Material(shader || ShaderLib.simple);
 		this.useReadBuffer = true;

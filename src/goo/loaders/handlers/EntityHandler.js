@@ -14,7 +14,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Handler for loading entities into engine
+	 * Handler for loading entities into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig

@@ -5,10 +5,12 @@ define([
 ) {
 	'use strict';
 
-
 	/**
-	* @class
-	*/
+	 * Atlas node
+	 * @hidden
+	 * @param w
+	 * @param h
+	 */
 	function AtlasNode(w, h) {
 		this.isLeaf = true;
 		this.isSet = false;

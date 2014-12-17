@@ -38,7 +38,7 @@ define([
 	var edges = [new Edge(), new Edge(), new Edge()];
 
 	/**
-	*	@class A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
+	*	A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
 	*	@constructor
 	*	@param {{width:Number, height:Number, camera:Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
 	*/

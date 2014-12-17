@@ -18,7 +18,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Handler for loading shaders into engine
+	 * Handler for loading shaders into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig

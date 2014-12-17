@@ -12,7 +12,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Contains scripts to be executed each frame when set on an active entity.
+	 * Contains scripts to be executed each frame when set on an active entity.
 	 * @param {object[]|object} [scripts] A script-object or an array of script-objects to attach to the entity.
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>,
 	 * which runs on every frame update.

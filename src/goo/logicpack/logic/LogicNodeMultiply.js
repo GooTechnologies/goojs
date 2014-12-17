@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that multiplies two inputs.
+		 * Logic node that multiplies two inputs.
 		 * @private
 		 */
 		function LogicNodeMultiply() {

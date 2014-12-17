@@ -8,7 +8,7 @@ define([
 	var p2 = window.p2;
 
 	/**
-	 * @class Handles integration with p2.js.
+	 * Handles integration with p2.js.
 	 * Depends on the global p2 object,
 	 * so load p2.js using a script tag before using this system.
 	 * See also {@link P2Component}

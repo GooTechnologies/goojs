@@ -16,7 +16,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class This tree source maintains its own source data, which can be modified directly using instance functions. This source is meant to be used for
+	 * This tree source maintains its own source data, which can be modified directly using instance functions. This source is meant to be used for
 	 *        controlling a particular joint or set of joints programatically.
 	 * @param {string} [sourceName] Name of source we were initialized from, if given.
 	 */

@@ -1,16 +1,15 @@
 define([
-		'goo/math/Vector3',
-		'goo/renderer/light/Light'
-		], function (
+	'goo/math/Vector3',
+	'goo/renderer/light/Light'
+], function (
 	Vector3,
 	Light
-	) {
+) {
 	'use strict';
 
 	/**
-	 * @class A directional light<br>
+	 * A directional light
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
-	 * @constructor
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
@@ -30,7 +29,7 @@ define([
 
 	/**
 	 * Updates the light's translation and orientation
-	 * @private
+	 * @hidden
 	 * @param {Transform} transform
 	 */
 	DirectionalLight.prototype.update = function (transform) {

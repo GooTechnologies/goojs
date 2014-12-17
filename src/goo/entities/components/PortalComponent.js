@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Renders to the texture of the host object<br>
+	 * Renders to the texture of the host object<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/PortalComponent/PortalComponent-vtest.html Working example}
 	 * @param {Camera} camera The camera used for rendering
 	 * @param {number} [height=200] Height of the texture to render to (the width is calculated automatically from the camera's aspect ratio)

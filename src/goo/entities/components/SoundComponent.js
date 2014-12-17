@@ -15,7 +15,7 @@ define([
 	//Or, isn't just one (the first) warning enough - it might ruing everything if flooding the console
 
 	/**
-	 * @class Component that adds sound to an entity.
+	 * Component that adds sound to an entity.
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
 	 * @extends {Component}
 	 */

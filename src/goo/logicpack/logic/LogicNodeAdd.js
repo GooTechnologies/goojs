@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node to add values.
+		 * Logic node to add values.
 		 * @private
 		 */
 		function LogicNodeAdd() {

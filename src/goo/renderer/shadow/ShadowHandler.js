@@ -26,7 +26,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Handles shadow techniques
+	 * Handles shadow techniques
 	 */
 	function ShadowHandler() {
 		this.depthMaterial = new Material(ShaderLib.lightDepth, 'depthMaterial');

@@ -12,7 +12,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Processes all entities with script components, running the scripts where applicable
+	 * Processes all entities with script components, running the scripts where applicable
 	 * @extends System
 	 */
 	function ScriptSystem(world) {

@@ -5,9 +5,8 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	* @private
-	*/
+	 * @private
+	 */
 	function TgaLoader() {
 		this.header = null;
 		this.offset = 0;

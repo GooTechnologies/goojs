@@ -7,7 +7,7 @@ define([
 	/* global Box2D */
 
 	/**
-	 * @class Physics simulation using Box2D.<br>
+	 * Physics simulation using Box2D.<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example}
 	 * @desc Depends on the global Box2D object.
 	 * Load box2d.js using a &lt;script&gt; tag before using this system

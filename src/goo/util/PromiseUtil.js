@@ -5,12 +5,10 @@ define([
 ) {
 	'use strict';
 
-	var nativePromise = !!window.Promise;
-
 	/**
-	* @class
-	*/
-	var PromiseUtil = {};
+	 * Provides promise-related utility methods
+	 */
+	function PromiseUtil() {}
 
 	//! AT: converting from PromiseUtil.createPromise to new RSVP.Promise is going to be trivial
 	/**

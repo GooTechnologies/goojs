@@ -19,8 +19,12 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Skybox
+	 * @param type
+	 * @param images
+	 * @param textureMode
+	 * @param yRotation
+	 */
 	function Skybox(type, images, textureMode, yRotation) {
 		var texture;
 		if (type === Skybox.SPHERE) {

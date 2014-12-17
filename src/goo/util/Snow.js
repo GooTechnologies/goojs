@@ -16,12 +16,13 @@ define([
 	ParticleSystemUtils,
 	Renderer,
 	Vector3
-	) {
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Snow
+	 * @param {GooRunner} gooRunner
+	 */
 	function Snow(gooRunner) {
 		this.velocity = 10;
 		this.height = 25;

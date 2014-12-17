@@ -8,7 +8,7 @@ define([
 	/* global CANNON */
 
 	/**
-	 * @class Sphere collider for the {@link CannonSystem}.<br>
+	 * Sphere collider for the {@link CannonSystem}.<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
 	 * @param {object} [settings]
 	 * @param {number} [settings.radiusTop=0.5]

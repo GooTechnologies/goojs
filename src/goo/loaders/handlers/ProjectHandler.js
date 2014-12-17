@@ -8,7 +8,7 @@ define([
 
 	/*jshint eqeqeq: false, -W041 */
 	/**
-	 * @class Handler for loading project into engine (actually loading mainScene)
+	 * Handler for loading project into engine (actually loading mainScene)
 	 * @private
 	 * @extends ConfigHandler
 	 * @param {World} world

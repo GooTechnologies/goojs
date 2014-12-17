@@ -8,7 +8,7 @@ define([
 	/* ====================================================================== */
 
 	/**
-	 * @class Matrix with RxC components.
+	 * Matrix with RxC components.
 	 * @description Creates a new matrix.
 	 * @param {number} rows Number of rows.
 	 * @param {number} cols Number of columns.

@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A representation of a sound in the engine
+	 * A representation of a sound in the engine
 	 */
 	function Sound() {
 		/** @type {string}

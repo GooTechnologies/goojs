@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Processes all entities with animation components, updating the animations
+	 * Processes all entities with animation components, updating the animations
 	 * @extends System
 	 */
 	function AnimationSystem() {

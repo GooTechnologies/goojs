@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Matrix with 4x4 components.
+	 * Matrix with 4x4 components.
 	 * @extends Matrix
 	 * @constructor
 	 * @description Creates a new matrix.

@@ -2,7 +2,7 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 	'use strict';
 
 	/**
-	 * @class Base class/module for all components.
+	 * Base class/module for all components.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 */
 	function Component() {

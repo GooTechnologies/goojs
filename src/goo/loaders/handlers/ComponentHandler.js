@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Base class for component handlers. All different types of components that an entity
+	 * Base class for component handlers. All different types of components that an entity
 	 * can have need to have a registered component handler. To handle a new type of component,
 	 * create a class that inherits from this class, and override {_prepare}, {_create}, {update} and {remove}
 	 * as needed ({update} must be overridden). In your class, call <code>@_register('yourComponentType')</code> to _register

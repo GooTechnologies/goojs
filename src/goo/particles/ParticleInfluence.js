@@ -4,7 +4,7 @@ function () {
 	'use strict';
 
 	/**
-	 * @class A Particle influence modifies particles in some way over time
+	 * A Particle influence modifies particles in some way over time
 	 */
 	function ParticleInfluence (settings) {
 		settings = settings || {};

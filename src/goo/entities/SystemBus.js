@@ -1,12 +1,12 @@
-define(['goo/entities/Bus'], function (Bus) {
-
+define([
+	'goo/entities/Bus'
+], function (
+	Bus
+) {
 	'use strict';
 
 	/**
-	 * @name SystemBus
-	 * @class
 	 * SystemBus is a global instance of the {@link Bus} class.
 	 */
-
 	return new Bus();
 });

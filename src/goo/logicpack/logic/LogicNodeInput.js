@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node to be used as Layer input.
+		 * Logic node to be used as Layer input.
 		 * @private
 		 */
 		function LogicNodeInput() {

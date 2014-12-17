@@ -18,8 +18,7 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	* Difference of Gaussian Filter pass.
+	* 	* Difference of Gaussian Filter pass.
 	* Usable for edge detection.
 	*
 	* A lower sigma will create thinner edgelines, tune to get the sweetspot.

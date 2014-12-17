@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that subtracts inputs.
+		 * Logic node that subtracts inputs.
 		 * @private
 		 */
 		function LogicNodeSub() {

@@ -12,7 +12,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class For handling loading of HTML components
+	 * For handling loading of HTML components
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.

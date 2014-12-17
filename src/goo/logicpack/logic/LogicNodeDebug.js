@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that writes output to the console.
+		 * Logic node that writes output to the console.
 		 * @private
 		 */
 		function LogicNodeDebug() {

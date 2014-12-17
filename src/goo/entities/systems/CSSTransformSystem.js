@@ -14,9 +14,8 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	* @extends System
-	*/
+	 * @extends System
+	 */
 	function CSSTransformSystem(renderer) {
 		System.call(this, 'CSSTransformSystem', ['TransformComponent', 'CSSTransformComponent']);
 

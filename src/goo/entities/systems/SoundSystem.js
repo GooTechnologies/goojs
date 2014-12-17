@@ -17,7 +17,7 @@ define([
 ) {
 	'use strict';
 	/**
-	 * @class System responsible for sound.
+	 * System responsible for sound.
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
 	 * @extends {System}
 	 */

@@ -10,7 +10,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that provides a float value.
+		 * Logic node that provides a float value.
 		 * @private
 		 */
 		function LogicNodeFloat() {

@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Transform animation channel, specifically geared towards describing the motion of skeleton joints.
+	 * Transform animation channel, specifically geared towards describing the motion of skeleton joints.
 	 * @param {string} jointName our joint name.
 	 * @param {number} jointIndex our joint index
 	 * @param {number[]} times our time offset values.

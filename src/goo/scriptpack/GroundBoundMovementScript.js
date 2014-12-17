@@ -18,7 +18,7 @@ define([
 	};
 
 	/**
-	 * @class A script for handling basic movement and jumping over a terrain.
+	 * A script for handling basic movement and jumping over a terrain.
 	 * The standard usage of this script will likely also need some input listener and camera handling.
 	 * @constructor
 	 */

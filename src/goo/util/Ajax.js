@@ -16,7 +16,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Ajax helper class
+	 * Ajax helper class
 	 * @constructor
 	 * @param {string} rootPath
 	 * @param {object} options

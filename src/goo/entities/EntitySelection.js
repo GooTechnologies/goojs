@@ -4,7 +4,7 @@ define(['goo/entities/Selection'],
 	'use strict';
 
 	/**
-	 * @class A specialised selection object for entities
+	 * A specialised selection object for entities
 	 * @extends Selection
 	 * @constructor
 	 */

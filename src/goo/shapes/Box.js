@@ -8,8 +8,9 @@ define([
 	'use strict';
 
 	/**
-	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii)
+	 * An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii)
 	 * from that center (a box).
+	 * @extends MeshData
 	 * @param {Number} [width=1] Total width of box.
 	 * @param {Number} [height=1] Total height of box.
 	 * @param {Number} [length=1] Total length of box.

@@ -34,8 +34,7 @@ define([
 	var DEPENDENCY_LOAD_TIMEOUT = 6000;
 
 	/**
-	* @class
-	* @private
+	* 	* @private
 	*/
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);

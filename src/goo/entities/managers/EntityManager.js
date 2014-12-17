@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Main handler of all entities in the world.
+	 * Main handler of all entities in the world.
 	 * @extends Manager
 	 */
 	function EntityManager() {

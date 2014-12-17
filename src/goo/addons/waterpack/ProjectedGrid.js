@@ -18,7 +18,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Projected grid mesh
+	 * Projected grid mesh
 	 * @param {number} [densityX=20] Density in X of grid
 	 * @param {number} [densityY=20] Density in Y of grid
 	 */

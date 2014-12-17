@@ -7,9 +7,9 @@ function (
 	'use strict';
 
 	/**
-	 * @class HTML Component.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
+	 * HTML Component.
 	 * @extends Component
+	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 */
 	function HtmlComponent(domElement) {
 		Component.apply(this, arguments);

@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.
+	 * Matrix with 3x3 components. Used to store 3D rotations. It also contains common 3D Rotation operations.
 	 * @extends Matrix
 	 * @description Creates a new Matrix3x3 by passing in either a current Matrix3x3, number Array, or a set of 9 numbers.
 	 * @param {Matrix3x3|number[]|...number} arguments Initial values for the components.

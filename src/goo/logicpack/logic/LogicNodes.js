@@ -5,7 +5,7 @@ define(
 
 		// REVIEW: description needs updating
 		/**
-		 * @class Base class/module for all logic boxes
+		 * Base class/module for all logic boxes
 		 * @private
 		 */
 		function LogicNodes() {}

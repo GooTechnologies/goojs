@@ -18,7 +18,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Runs a mesh combine optimization on the whole scene, based on
+	 * Runs a mesh combine optimization on the whole scene, based on
 	 * material, components etc
 	 * @param {World} gooWorld An instance of a goo.world object
 	 * @param {number} [gridCount=1] Number of grid segments to split the world in during combine

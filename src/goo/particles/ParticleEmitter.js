@@ -2,7 +2,7 @@ define(['goo/particles/ParticleUtils', 'goo/renderer/Renderer'], function (Parti
 	'use strict';
 
 	/**
-	 * @class A Particle Emitter spawns particles - controlling spawn rate, lifetime, initial velocity vector and position of each particle.
+	 * A Particle Emitter spawns particles - controlling spawn rate, lifetime, initial velocity vector and position of each particle.
 	 * @param {Object} [settings] Particle emitter settings passed as an object
 	 * @param {number} [settings.totalParticlesToSpawn=-1] Specifies how many particles this emitter should spawn (-1 for an unlimited amount)
 	 * @param {number} [settings.maxLifetime=3.0] The maximum lifetime of a particle emitted by this emitter (in seconds)

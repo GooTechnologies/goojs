@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A Material defines the look of an object
+	 * A Material defines the look of an object
 	 * @param {string} [name='Default Material'] Material name
 	 * @param {{ vshader, fshader }} [shaderDefinition] Optional shader to associate with the material
 	 */

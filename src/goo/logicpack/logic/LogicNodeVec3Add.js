@@ -11,7 +11,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that adds Vec3 inputs.
+		 * Logic node that adds Vec3 inputs.
 		 * @private
 		 */
 		function LogicNodeVec3Add() {

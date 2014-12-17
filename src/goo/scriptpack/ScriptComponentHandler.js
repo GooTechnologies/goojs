@@ -22,28 +22,24 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	* @private
-	*/
+	 * @hidden
+	 */
 	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'ScriptComponent';
 	}
+
 	ScriptComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ScriptComponentHandler.prototype.constructor = ScriptComponentHandler;
 	ComponentHandler._registerClass('script', ScriptComponentHandler);
 
-
-	ScriptComponentHandler.ENGINE_SCRIPT_PREFIX = "GOO_ENGINE_SCRIPTS/";
-
+	ScriptComponentHandler.ENGINE_SCRIPT_PREFIX = 'GOO_ENGINE_SCRIPTS/';
 
 	ScriptComponentHandler.prototype._prepare = function (/*config*/) {};
-
 
 	ScriptComponentHandler.prototype._create = function () {
 		return new ScriptComponent();
 	};
-
 
 	ScriptComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
@@ -100,7 +96,6 @@ define([
 		});
 	};
 
-
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
 		if (!externals || !externals.parameters) {
 			return PromiseUtil.resolve();
@@ -114,7 +109,6 @@ define([
 		parameters.enabled = (config.enabled !== undefined) ? config.enabled : true;
 		return RSVP.all(promises);
 	};
-
 
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
 		var key = external.key;
@@ -142,7 +136,6 @@ define([
 		}
 	};
 
-
 	/**
 	 * Creates a new script engine.
 	 *
@@ -167,7 +160,6 @@ define([
 
 		return PromiseUtil.resolve(script);
 	}
-
 
 	return ScriptComponentHandler;
 });

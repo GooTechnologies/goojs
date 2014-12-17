@@ -46,7 +46,7 @@ define([
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class The renderer handles displaying of graphics data to a render context.
+	 * The renderer handles displaying of graphics data to a render context.
 	 *
 	 * @description Constructor. It accepts a JSON object containing the settings for the renderer.
 	 * @param {object} parameters Renderer settings.

@@ -7,7 +7,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Handles the height data for a heightmap and
+	 * Handles the height data for a heightmap and
 	 * provides functions for getting elevation at given coordinates.
 	 * @param {Array} matrixData The height data. Needs to be power of two.
 	 * @constructor

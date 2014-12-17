@@ -21,7 +21,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'use strict';
 
 	/**
-	 * @class For handling loading of light components
+	 * For handling loading of light components
 	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.

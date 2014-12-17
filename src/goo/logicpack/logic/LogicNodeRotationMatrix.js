@@ -12,7 +12,7 @@ define(
 		'use strict';
 
 		/**
-		 * @class Logic node that constructs a rotation matrix.
+		 * Logic node that constructs a rotation matrix.
 		 * @private
 		 */
 		function LogicNodeRotationMatrix() {

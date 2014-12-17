@@ -6,7 +6,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A layer blender that uses linear interpolation to merge the results of two layers.
+	 * A layer blender that uses linear interpolation to merge the results of two layers.
 	 */
 	function LayerLERPBlender() {
 		this._blendWeight = null;

@@ -6,7 +6,7 @@ define(['goo/math/Vector2'],
 	/**
 	 * Creates a new RenderTarget object
 	 *
-	 * @class Post processing handler
+	 * Post processing handler
 	 * @param {Number} width Width of rendertarget
 	 * @param {Number} height Height of rendertarget
 	 * @param {Parameters} parameters Settings

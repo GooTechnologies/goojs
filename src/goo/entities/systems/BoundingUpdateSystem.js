@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
+	 * Calculates and updates all boundings on entities with both transform, meshrenderer and meshdata components
 	 * @extends System
 	 */
 	function BoundingUpdateSystem () {
