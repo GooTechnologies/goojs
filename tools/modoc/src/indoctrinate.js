@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('underscore');
 var dogma = require('./dogma');
 var util = require('./util');
@@ -88,7 +90,6 @@ var inject = function (data) {
 
 	if (parsed['@example-link']) {
 		data.comment.exampleLink = parsed['@example-link'];
-		console.log(data.comment.exampleLink);
 	}
 
 	// properties declared inside the constructor may have the @type tag

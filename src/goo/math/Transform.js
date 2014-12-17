@@ -211,7 +211,7 @@ define([
 
 	/**
 	 * Copy supplied transform into this transform
-	 * @param {Transform} transform
+	 * @param {Transform} transform
 	 */
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
@@ -225,8 +225,8 @@ define([
 	 * Set this transform's rotation to rotation around X, Y and Z axis.
 	 * The rotation is applied in XYZ order.
 	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
+	 * @param {number} y
+	 * @param {number} z
 	 */
 	Transform.prototype.setRotationXYZ = function (x, y, z) {
 		this.rotation.fromAngles(x, y, z);
