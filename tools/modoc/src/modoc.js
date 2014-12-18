@@ -108,31 +108,45 @@ function filterPrivates(class_) {
 	class_.hasMethods = class_.methods.length > 0;
 }
 
-function buildDoc() {
+function compileDoc(files) {
+	var classes = {};
+
 	files.forEach(function (file) {
 		console.log('compiling doc for ' + util.getFileName(file));
 
 		var source = fs.readFileSync(file, { encoding: 'utf8' });
 
-		var data = {};
-		data.index = index;
+		var class_ = extractor.extract(source, file);
 
-		data.class = extractor.extract(source, file);
+		if (class_.constructor) {
+			indoctrinate.all(class_, files);
 
-		// skipping files which lack a class for now (poor SystemBus)
-		// if no constructor is found then the extractor will have to extract the first @class comment
-		if (data.class.constructor) {
-			indoctrinate.all(data.class, files);
+			filterPrivates(class_);
 
-			filterPrivates(data.class);
+			class_.path = mapping[file].path;
 
-			data.class.path = mapping[file].path;
+			classes[class_.constructor.name] = class_;
+		}
+	});
 
+	return classes;
+}
+
+function renderDoc(files, classes) {
+	files.forEach(function (file) {
+		var fileName = util.getFileName(file);
+
+		var data = {
+			index: index,
+			class_: classes[fileName]
+		};
+
+		if (classes[fileName] && data.class_.constructor) {
 			mapping[file].current = true;
 			var result = mustache.render(template, data);
 			mapping[file].current = false;
 
-			fs.writeFileSync(args.outPath + '/' + data.class.constructor.name + HTML_SUFFIX, result);
+			fs.writeFileSync(args.outPath + '/' + data.class_.constructor.name + HTML_SUFFIX, result);
 		}
 	});
 }
@@ -149,7 +163,8 @@ function buildChangelog(file) {
 }
 
 copyStaticFiles(function () {
-	buildDoc();
+	var classes = compileDoc(files);
+	renderDoc(files, classes);
 	buildChangelog('CHANGES');
 	buildStartPage('Entity-doc.html', function () {
 		console.log('documentation built');
