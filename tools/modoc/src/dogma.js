@@ -247,12 +247,6 @@ var extract = function (doc) {
 		tags['@returns'] = extractTagReturn(tags['@returns'][0]);
 	}
 
-	// have to account for inconsistencies in the doc
-	// either @return or @returns this will disappear in the final version
-	if (tags['@return']) {
-		tags['@return'] = extractTagReturn(tags['@return'][0]);
-	}
-
 	if (tags['@example']) {
 		tags['@example'] = tags['@example'][0];
 	}

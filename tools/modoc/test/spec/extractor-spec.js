@@ -76,9 +76,24 @@ describe('extractor', function () {
 			expect(result.members).toEqual([]);
 		});
 
-		it('extracts members from a constructor if they are not preceeded by doc', function () {
+		it('extracts members from a constructor if they are not preceded by doc', function () {
 			var result = extract('function A() { /* asd */ this.a = 123; }', 'A.js');
 			expect(result.members).toEqual([]);
+		});
+	});
+
+	describe('static members', function () {
+		it('extracts static members', function () {
+			var result = extract('/** asd */\nA.a = 123;', 'A.js');
+			expect(result.staticMembers).toEqual([{
+				name: 'a',
+				rawComment: '* asd '
+			}]);
+		});
+
+		it('ignores static members if they are not preceded by doc', function () {
+			var result = extract('/* asd */\nA.a = 123;', 'A.js');
+			expect(result.staticMembers).toEqual([]);
 		});
 	});
 });
