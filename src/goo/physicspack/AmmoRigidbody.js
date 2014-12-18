@@ -42,12 +42,22 @@ function (
 
 	// Get the world transform from the entity and set on the body
 	AmmoRigidbody.prototype.setTransformFromEntity = function (entity) {
-		var t = entity.transformComponent.transform;
-		var body = this.ammoBody;
-		body.position.copy(t.translation);
-		var q = tmpQuat;
-		q.fromRotationMatrix(t.rotation);
-		body.quaternion.copy(q);
+		// var t = entity.transformComponent.transform;
+		// var body = this.ammoBody;
+		// body.setPosition.copy(t.translation);
+		// var q = tmpQuat;
+		// q.fromRotationMatrix(t.rotation);
+		// body.quaternion.copy(q);
+
+		var gooPos = entity.transformComponent.transform.translation;
+		var ammoTransform = new Ammo.btTransform();
+		ammoTransform.setIdentity();
+		ammoTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
+		var gooQuaternion = new Quaternion();
+		gooQuaternion.fromRotationMatrix(entity.transformComponent.transform.rotation);
+		var q = gooQuaternion;
+		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		this.ammoBody.setWorldTransform(this.ammoTransform);
 	};
 
 	AmmoRigidbody.prototype.setForce = function (force) {
@@ -63,24 +73,30 @@ function (
 	};
 
 	AmmoRigidbody.prototype.getPosition = function (targetVector) {
-		var p = this.cannonBody.position;
-		targetVector.setd(p.x, p.y, p.z);
+		var ammoTransform = new Ammo.btTransform();
+		var p = this.ammoBody.getWorldTransform(ammoTransform);
+		targetVector.setDirect(p.getOrigin().getX(), p.getOrigin().getY(), p.getOrigin().getZ());
 	};
 
 	AmmoRigidbody.prototype.setQuaternion = function (pos) {
-		this.cannonBody.quaternion.copy(pos);
+		//this.cannonBody.quaternion.copy(pos);
+		//
 	};
 
 	AmmoRigidbody.prototype.getQuaternion = function (targetQuat) {
-		var q = this.cannonBody.quaternion;
-		targetQuat.setd(q.x, q.y, q.z, q.w);
+		var ammoTransform = new Ammo.btTransform();
+		var p = this.ammoBody.getWorldTransform(ammoTransform);
+
+		var q = new Ammo.btQuaternion();
+		ammoTransform.getRotation(q);
+		targetQuat.setDirect(q.getX(), q.getY(), q.getZ(), q.getW());
 	};
 
 	AmmoRigidbody.prototype.setAngularVelocity = function (angularVelocity) {
 		this.cannonBody.angularVelocity.copy(angularVelocity);
 	};
 
-	AmmoRigidbody.prototype.initialize = function (entity) {
+	AmmoRigidbody.prototype.initialize = function (entity, world) {
 		var gooTransform = entity.transformComponent.worldTransform;
 		var gooPos = gooTransform.translation;
 		var gooRot = gooTransform.rotation;
@@ -104,7 +120,8 @@ function (
 
 		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
 		this.localInertia = localInertia;
-		this.body = new Ammo.btRigidBody(info);
+		this.ammoBody = new Ammo.btRigidBody(info);
+		world.world.addRigidBody(this.ammoBody);
 		//this.body.setLinearFactor(this.linearFactor);
 
 		// if (this.onInitializeBody) {
@@ -113,9 +130,10 @@ function (
 	};
 
 	AmmoRigidbody.prototype.constructAmmoShape = function (entity) {
-		this.traverseColliders(entity, function(colliderEntity, collider, localPosition, localQuaternion){
+		this.traverseColliders(entity, function (colliderEntity, collider, localPosition, localQuaternion){
 
 		});
+		return new Ammo.btSphereShape(1);
 	};
 
 	AmmoRigidbody.prototype.getShape = function (collider) {
@@ -144,22 +162,22 @@ function (
 	AmmoRigidbody.prototype.addCollider = function (collider, position, quaternion) {
 		var body = this.cannonBody;
 
-		collider.cannonShape = this.getShape(collider);
+		// collider.cannonShape = this.getShape(collider);
 
-		if (collider.isTrigger) {
-			collider.cannonShape.collisionResponse = false;
-		}
+		// if (collider.isTrigger) {
+		// 	collider.cannonShape.collisionResponse = false;
+		// }
 
-		// Add the shape
-		var cannonPos = new CANNON.Vec3();
-		if (position) {
-			cannonPos.copy(position);
-		}
-		var cannonQuat = new CANNON.Quaternion();
-		if (position) {
-			cannonQuat.copy(quaternion);
-		}
-		body.addShape(collider.cannonShape, cannonPos, cannonQuat);
+		// // Add the shape
+		// var cannonPos = new CANNON.Vec3();
+		// if (position) {
+		// 	cannonPos.copy(position);
+		// }
+		// var cannonQuat = new CANNON.Quaternion();
+		// if (position) {
+		// 	cannonQuat.copy(quaternion);
+		// }
+		// body.addShape(collider.cannonShape, cannonPos, cannonQuat);
 	};
 
 	return AmmoRigidbody;

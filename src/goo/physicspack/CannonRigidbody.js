@@ -33,7 +33,7 @@ function (
 		 * The CANNON.Body instance
 		 */
 		this.cannonBody = new CANNON.Body({
-			mass: 1
+			mass: this.mass
 		});
 		cannonWorld.addBody(this.cannonBody);
 	}
@@ -67,7 +67,7 @@ function (
 
 	CannonRigidbody.prototype.getPosition = function (targetVector) {
 		var p = this.cannonBody.position;
-		targetVector.setd(p.x, p.y, p.z);
+		targetVector.setDirect(p.x, p.y, p.z);
 	};
 
 	CannonRigidbody.prototype.setQuaternion = function (pos) {
@@ -76,7 +76,7 @@ function (
 
 	CannonRigidbody.prototype.getQuaternion = function (targetQuat) {
 		var q = this.cannonBody.quaternion;
-		targetQuat.setd(q.x, q.y, q.z, q.w);
+		targetQuat.setDirect(q.x, q.y, q.z, q.w);
 	};
 
 	CannonRigidbody.prototype.setAngularVelocity = function (angularVelocity) {
@@ -114,6 +114,7 @@ function (
 		if (this.isKinematic) {
 			this.cannonBody.type = CANNON.Body.KINEMATIC;
 		}
+		this.setTransformFromEntity(entity);
 	};
 
 	CannonRigidbody.prototype.addCollider = function (collider, position, quaternion) {

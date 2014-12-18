@@ -31,15 +31,16 @@ function (
 	};
 
 	AmmoPhysicsSystem.prototype.addBody = function (entity) {
-		entity.rigidbodyComponent.rigidbody = new AmmoRigidbody(this.world, entity.rigidbodyComponent);
+		entity.rigidbodyComponent.rigidbody = new AmmoRigidbody(this.world, entity.rigidbodyComponent.settings);
 	};
 
-	AmmoPhysicsSystem.prototype.step = function (deltaTime) {
+	AmmoPhysicsSystem.prototype.step = function (tpf) {
 		var world = this.world;
 
 		// Step the world forward in time
 		var fixedTimeStep = 1 / this.stepFrequency;
 		var maxSubSteps = this.maxSubSteps;
+		world.stepSimulation(tpf, maxSubSteps, fixedTimeStep);
 
 		// TODO
 	};

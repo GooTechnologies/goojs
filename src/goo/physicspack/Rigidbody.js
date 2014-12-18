@@ -12,13 +12,17 @@ function (
 	/**
 	 * @class Base class for rigid body wrappers.
 	 */
-	function Rigidbody() {
+	function Rigidbody(settings) {
+		settings = settings || {};
 
 		// Set to true if any of the colliders were changed
 		this._dirty = true;
 
-		this.isKinematic = false;
-		this.mass = 1.0;
+		this.isKinematic = settings.isKinematic || false;
+		this.mass = settings.mass || 1.0;
+		if (this.isKinematic) {
+			this.mass = 0;
+		}
 	}
 	Rigidbody.constructor = Rigidbody;
 
@@ -39,14 +43,6 @@ function (
 	 * @param {Vector3} velocity
 	 */
 	Rigidbody.prototype.setVelocity = function (velocity) {};
-
-	/**
-	 * Set the velocity on the body
-	 * @param {Vector3} velocity
-	 */
-	Rigidbody.prototype.setKinematic = function () {
-		this.isKinematic = true;
-	};
 
 	/**
 	 * Set the body position.

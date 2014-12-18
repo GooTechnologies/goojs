@@ -47,7 +47,7 @@ function (
 			var rb = entity.rigidbodyComponent.rigidbody;
 			var tc = entity.transformComponent;
 			if (rb._dirty) {
-				rb.initialize(entity);
+				rb.initialize(entity, this);
 				rb._dirty = false;
 			}
 

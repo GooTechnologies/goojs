@@ -64,7 +64,7 @@ require([
 				var radius = 1 + V.rng.nextFloat();
 				entity = world.createEntity(new Box(radius * 2, radius * 2, radius * 2), mat, position);
 				colliderComponent = new ColliderComponent({
-					collider: new BoxCollider({
+					collider: new BoxCollider({ // TODO: set automatically from meshdata
 						halfExtents: new Vector3(radius, radius, radius)
 					})
 				});
@@ -97,12 +97,8 @@ require([
 					collider: new SphereCollider({ radius: radius })
 				});
 				entity.set(rigidBodyComponent).set(colliderComponent);
-
 			}
-
 			entity.addToWorld();
-			world.processEntityChanges();
-			entity.rigidbodyComponent.rigidbody.setTransformFromEntity(entity);
 		}
 	}
 
@@ -110,19 +106,16 @@ require([
 		var entity = world.createEntity(new Quad(1000, 1000, 100, 100), V.getColoredMaterial(0.7, 0.7, 0.7))
 			.set([0, -10, 0])
 			.setRotation(-Math.PI / 2, 0, 0);
-		var rigidBodyComponent = new RigidbodyComponent();
+		var rigidBodyComponent = new RigidbodyComponent({ isKinematic: true });
 		var planeColliderComponent = new ColliderComponent({ collider: new PlaneCollider() });
 		entity.set(rigidBodyComponent)
 			.set(planeColliderComponent)
 			.addToWorld();
-		world.processEntityChanges();
-		entity.rigidbodyComponent.rigidbody.setTransformFromEntity(entity);
-		entity.rigidbodyComponent.rigidbody.setKinematic();
 	}
 
 	function createStaticBox(x, y, z, w, d, h) {
 		var entity = world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
-			.set(new RigidbodyComponent())
+			.set(new RigidbodyComponent({ isKinematic: true }))
 			.set(
 				new ColliderComponent({
 					collider: new BoxCollider({
@@ -130,9 +123,6 @@ require([
 					})
 				})
 			).addToWorld();
-		world.processEntityChanges();
-		entity.rigidbodyComponent.rigidbody.setTransformFromEntity(entity);
-		entity.rigidbodyComponent.rigidbody.setKinematic();
 		return entity;
 	}
 

@@ -25,7 +25,7 @@ function (
 	};
 
 	CannonPhysicsSystem.prototype.addBody = function (entity) {
-		entity.rigidbodyComponent.rigidbody = new CannonRigidbody(this.world, entity.rigidbodyComponent);
+		entity.rigidbodyComponent.rigidbody = new CannonRigidbody(this.world, entity.rigidbodyComponent.settings);
 	};
 
 	CannonPhysicsSystem.prototype.step = function (deltaTime) {
