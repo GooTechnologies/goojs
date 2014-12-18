@@ -144,11 +144,6 @@ var all = function (jsData, files) {
 	jsData.statics.forEach(function (static_) { link(static_.comment); });
 	jsData.staticMembers.forEach(function (staticMember) { link(staticMember.comment); });
 	jsData.members.forEach(function (member) { link(member.comment); });
-
-	jsData.hasMethods = jsData.methods.length > 0;
-	jsData.hasStatics = jsData.statics.length > 0;
-	jsData.hasStaticMembers = jsData.staticMembers.length > 0;
-	jsData.hasMembers = jsData.members.length > 0;
 };
 
 

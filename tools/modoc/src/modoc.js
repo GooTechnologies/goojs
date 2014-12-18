@@ -4,11 +4,11 @@ var fs = require('fs');
 var childProcess = require('child_process');
 var glob = require('glob');
 var mustache = require('mustache');
-var _ = require('underscore');
 var marked = require('marked');
 
 var extractor = require('./extractor');
 var indoctrinate = require('./indoctrinate');
+var indexBuilder = require('./indexBuilder');
 var util = require('./util');
 
 
@@ -30,55 +30,6 @@ function processArguments() {
 	};
 }
 
-// extract this into its own file ---
-function getDifferentiatorIndex(strings) {
-	var minLength = strings.reduce(function (prev, cur) {
-		return Math.min(prev, cur.length);
-	}, strings[0].length);
-
-	for (var i = 0; i < minLength; i++) {
-		for (var j = 0; j < strings.length; j++) {
-			var string = strings[j];
-			if (string[i] !== strings[0][i]) {
-				return i;
-			}
-		}
-	}
-}
-
-function getIndex(files) {
-	var differentiator = getDifferentiatorIndex(files);
-
-	var groups = _.groupBy(files, function (file) {
-		return file.substring(differentiator, file.indexOf('/', differentiator));
-	});
-
-	var mapping = {};
-	var index = Object.keys(groups).map(function (name) {
-		var group = groups[name];
-		return {
-			name: name,
-			classes: group.map(function (file) {
-				var fileName = util.getFileName(file);
-				var path = file.substring(differentiator, file.length - 3);
-				var entry = {
-					name: fileName,
-					path: path,
-					link: fileName + HTML_SUFFIX
-				};
-				mapping[file] = entry;
-				return entry;
-			})
-		};
-	});
-
-	return {
-		index: index,
-		mapping: mapping
-	};
-}
-// --- --- ---
-
 var getFiles = function (sourcePath, ignore) {
 	if (/\.js$/.test(sourcePath)) {
 		return [sourcePath];
@@ -99,7 +50,7 @@ var template = fs.readFileSync(args.templatesPath + '/t1.mustache', { encoding: 
 
 var files = getFiles(args.sourcePath, ['goo.js', 'pack', '+']);
 
-var indexAndMapping = getIndex(files, 'goo');
+var indexAndMapping = indexBuilder.getIndex(files, 'goo');
 var index = indexAndMapping.index;
 var mapping = indexAndMapping.mapping;
 
@@ -136,8 +87,14 @@ function filterPrivates(class_) {
 	};
 
 	class_.members = class_.members.filter(predicate);
+	class_.staticMembers = class_.staticMembers.filter(predicate);
 	class_.methods = class_.methods.filter(predicate);
 	class_.statics = class_.statics.filter(predicate);
+
+	class_.hasMembers = class_.members.length > 0;
+	class_.hasStatics = class_.statics.length > 0;
+	class_.hasStaticMembers = class_.staticMembers.length > 0;
+	class_.hasMethods = class_.methods.length > 0;
 }
 
 function buildDoc() {
