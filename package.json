@@ -55,7 +55,8 @@
     "uglify-js": "~2.4.15",
     "mustache": "~0.8.2",
     "marked": "~0.3.2",
-    "estraverse": "~1.9.0"
+    "estraverse": "~1.9.0",
+    "jasmine-node": "~2.0.0"
   },
   "engines": {
     "node": ">=0.8.2"

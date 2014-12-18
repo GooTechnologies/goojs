@@ -130,6 +130,9 @@ module.exports = function (grunt) {
 			},
 			e2e: {
 				command: 'node test/e2etesting/manualSpec.js'
+			},
+			'modoc-test': {
+				command: 'node_modules/jasmine-node/bin/jasmine-node tools/modoc/test/spec'
 			}
 		},
 		jshint: {
@@ -151,11 +154,12 @@ module.exports = function (grunt) {
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default',	['minify']);
-	grunt.registerTask('jsdoc',		['shell:jsdoc']);
-	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack']);
-	grunt.registerTask('unittest',	['karma:unit']);
-	grunt.registerTask('coverage',	['unittest']);
-	grunt.registerTask('e2e',		['shell:e2e']);
-	grunt.registerTask('test',		['unittest', 'e2e']);
+	grunt.registerTask('default',	 ['minify']);
+	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
+	grunt.registerTask('minify',	 ['main-file', 'requirejs:build', 'wrap', 'build-pack']);
+	grunt.registerTask('unittest',	 ['karma:unit']);
+	grunt.registerTask('coverage',	 ['unittest']);
+	grunt.registerTask('e2e',		 ['shell:e2e']);
+	grunt.registerTask('test',		 ['unittest', 'e2e']);
+	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 };
