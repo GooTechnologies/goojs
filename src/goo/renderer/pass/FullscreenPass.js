@@ -28,6 +28,7 @@ function (
 		this.enabled = true;
 		this.clear = false;
 		this.needsSwap = true;
+		this.viewportSize = undefined;
 	}
 
 	FullscreenPass.prototype = Object.create(Pass.prototype);
@@ -47,6 +48,11 @@ function (
 
 	FullscreenPass.prototype.destroy = function (/* renderer */) {
 		this.material.shader.destroy();
+	};
+
+	FullscreenPass.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.renderable.materials[0]);
+		renderer.invalidateMeshData(this.renderable.meshData);
 	};
 
 	return FullscreenPass;

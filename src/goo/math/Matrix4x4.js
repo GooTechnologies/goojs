@@ -9,27 +9,29 @@ function (
 ) {
 	'use strict';
 
-	/* ====================================================================== */
-
 	/**
 	 * @class Matrix with 4x4 components.
 	 * @extends Matrix
 	 * @constructor
 	 * @description Creates a new matrix.
-	 * @param {Matrix4x4|Float[]|...Float} arguments Initial values for the components.
+	 * @param {Matrix4x4|number[]|...number} arguments Initial values for the components.
 	 */
-
 	function Matrix4x4() {
 		Matrix.call(this, 4, 4);
 
 		if (arguments.length === 0) {
-			this.setIdentity();
+			this.data[0] = 1;
+			this.data[5] = 1;
+			this.data[10] = 1;
+			this.data[15] = 1;
 		} else {
-			this.set(arguments);
+			Matrix.prototype.set.apply(this, arguments);
 		}
 	}
 
 	Matrix4x4.prototype = Object.create(Matrix.prototype);
+	Matrix4x4.prototype.constructor = Matrix4x4;
+
 	Matrix.setupAliases(Matrix4x4.prototype, [['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
 
 	/* ====================================================================== */
@@ -316,14 +318,14 @@ function (
 		}
 
 		var s1d = lhs.data;
-		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12], //
-			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13], //
-			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14], //
+		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
+			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
+			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14],
 			m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
 		var s2d = rhs.data;
-		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12], //
-			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13], //
-			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14], //
+		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12],
+			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13],
+			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14],
 			n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
 
 		var rd = target.data;
@@ -439,7 +441,6 @@ function (
 	 * @description Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} [target] Target matrix.
-	 * @throws {SingularMatrix} If the matrix is singular and cannot be inverted.
 	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
 
@@ -454,9 +455,8 @@ function (
 
 		var det = source.determinant();
 
-		if (!det) {
+		if (!det) { //! AT: why not Math.abs(det) < MathUtils.EPSILON ? (I don't dare change it)
 			return target;
-			// throw { name: "Singular Matrix", message: "The matrix is singular and cannot be inverted." };
 		}
 
 		var s = source.data;
@@ -625,7 +625,7 @@ function (
 			d[5] * d[2] * d[11] -
 			d[1] * d[10] * d[7];
 
-		return    d[0] * val1 -
+		return d[0] * val1 -
 			d[4] * val2 +
 			d[8] * val3 -
 			d[12] * val4;
@@ -782,9 +782,9 @@ function (
 	 */
 
 	Matrix4x4.prototype.getScale = function (store) {
-		var sx = Math.sqrt(store.setd(this.data[0], this.data[4], this.data[8]).lengthSquared());
-		var sy = Math.sqrt(store.setd(this.data[1], this.data[5], this.data[9]).lengthSquared());
-		var sz = Math.sqrt(store.setd(this.data[2], this.data[6], this.data[10]).lengthSquared());
+		var sx = Math.sqrt(store.setDirect(this.data[0], this.data[4], this.data[8]).lengthSquared());
+		var sy = Math.sqrt(store.setDirect(this.data[1], this.data[5], this.data[9]).lengthSquared());
+		var sz = Math.sqrt(store.setDirect(this.data[2], this.data[6], this.data[10]).lengthSquared());
 
 		store.x = sx;
 		store.y = sy;

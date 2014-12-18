@@ -96,13 +96,13 @@ function(
 	};
 
 	MaterialHandler.prototype._remove = function (ref) {
-		var material = this._objects[ref];
+		var material = this._objects.get(ref);
 		if (!material) {
 			return;
 		}
 		material.shader.destroy();
 		material.empty();
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -143,6 +143,11 @@ function(
 				} else if (config.uniforms[name].enabled) {
 					material.uniforms[name] = _.clone(config.uniforms[name].value);
 				}
+			}
+
+			// TODO: This is a temporary hack until we fully moved shininess into the last entry of specular [r, g, b, spec_power]
+			if (material.uniforms.materialSpecular !== undefined && material.uniforms.materialSpecularPower !== undefined) {
+				material.uniforms.materialSpecular[3] = material.uniforms.materialSpecularPower;
 			}
 
 			// Shader

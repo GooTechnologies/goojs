@@ -49,6 +49,13 @@ define([
 		}
 	};
 
+	MotionBlurPass.prototype.invalidateHandles = function (renderer) {
+		this.inPass.invalidateHandles(renderer);
+		this.outPass.invalidateHandles(renderer);
+		renderer.invalidateRenderTarget(this.targetSwap[0]);
+		renderer.invalidateRenderTarget(this.targetSwap[1]);
+	};
+
 	MotionBlurPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width;
 		var sizeY = size.height;
@@ -76,9 +83,9 @@ define([
 		defines: {},
 		processors: [function (shader, shaderInfo) {
 			if(shaderInfo.material._textureMaps.MOTION_MAP.glTexture) {
-				shader.defines.MOTION_MAP = true;
+				shader.setDefine('MOTION_MAP', true);
 			} else {
-				delete shader.defines.MOTION_MAP;
+				shader.removeDefine('MOTION_MAP');
 			}
 		}],
 		attributes : {

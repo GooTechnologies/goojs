@@ -41,6 +41,14 @@ function (
 	Rigidbody.prototype.setVelocity = function (velocity) {};
 
 	/**
+	 * Set the velocity on the body
+	 * @param {Vector3} velocity
+	 */
+	Rigidbody.prototype.setKinematic = function () {
+		this.isKinematic = true;
+	};
+
+	/**
 	 * Set the body position.
 	 * @param {Vector3} position
 	 */

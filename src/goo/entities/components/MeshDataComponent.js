@@ -18,6 +18,8 @@ function (
 	 * @extends Component
 	 */
 	function MeshDataComponent(meshData) {
+		Component.apply(this, arguments);
+
 		this.type = 'MeshDataComponent';
 
 		/**

@@ -3,7 +3,8 @@ define([
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4x4',
+	'goo/math/Vector'
 ],
 /** @lends */
 function (
@@ -11,7 +12,8 @@ function (
 	Vector3,
 	Component,
 	EntitySelection,
-	Matrix4x4
+	Matrix4x4,
+	Vector
 ) {
 	'use strict';
 
@@ -22,12 +24,14 @@ function (
 	 * @extends Component
 	 */
 	function TransformComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'TransformComponent';
 
 		this.entity = null;
-		/** Parent TransformComponent in the "scene graph".
+		/**
+		 * Parent TransformComponent in the "scene graph".
 		 * @type {TransformComponent}
-		 * @default
 		 */
 		this.parent = null;
 		/**
@@ -42,8 +46,9 @@ function (
 		 */
 		this.transform = new Transform();
 
-		/** The entity's transform in world space.
-		 * Read only. Automatically updated.
+		/**
+		 * The entity's transform in world space.
+		 * @readonly
 		 * @type {Transform}
 		 */
 		this.worldTransform = new Transform();
@@ -57,6 +62,8 @@ function (
 	TransformComponent.prototype = Object.create(Component.prototype);
 	TransformComponent.prototype.constructor = TransformComponent;
 
+	//! AT: can this stay not on the prototype, but on the constructor?
+	// it would require Transform.prototype.constructor = TransformComponent; (for all components)
 	TransformComponent.prototype.api = {
 		setTranslation: function () {
 			TransformComponent.prototype.setTranslation.apply(this.transformComponent, arguments);
@@ -99,15 +106,12 @@ function (
 		},
 		// no, there's no addScale
 
-
-		// attachChild: Entity | Selection, boolean -> this
-		attachChild: function (entity) {
-			this.transformComponent.attachChild(entity.transformComponent);
+		attachChild: function (entity, keepTransform) {
+			this.transformComponent.attachChild(entity.transformComponent, keepTransform);
 			return this;
 		},
-		// detachChild: Entity | Selection, boolean -> this
-		detachChild: function (entity) {
-			this.transformComponent.detachChild(entity.transformComponent);
+		detachChild: function (entity, keepTransform) {
+			this.transformComponent.detachChild(entity.transformComponent, keepTransform);
 			return this;
 		},
 
@@ -214,6 +218,18 @@ function (
 		}
 	};
 
+	TransformComponent.entitySelectionAPI = {
+		setTranslation: TransformComponent.prototype.api.setTranslation,
+		setRotation: TransformComponent.prototype.api.setRotation,
+		setScale: TransformComponent.prototype.api.setScale,
+		lookAt: TransformComponent.prototype.api.lookAt,
+		move: TransformComponent.prototype.api.move,
+		addTranslation: TransformComponent.prototype.api.addTranslation,
+		addRotation: TransformComponent.prototype.api.addRotation,
+		hide: TransformComponent.prototype.api.hide,
+		show: TransformComponent.prototype.api.show
+	};
+
 	var tmpVec = new Vector3();
 
 	/**
@@ -247,7 +263,7 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		this.transform.translation.set(arguments);
+		Vector.prototype.set.apply(this.transform.translation, arguments);
 		this._dirty = true;
 		return this;
 	};
@@ -277,7 +293,7 @@ function (
 	 * @return {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
-		this.transform.scale.set(arguments);
+		Vector.prototype.set.apply(this.transform.scale, arguments);
 		this._dirty = true;
 		return this;
 	};
@@ -408,6 +424,7 @@ function (
 	 * So for example move(0,0,-1) moves forward (because of the right handed coordinate system).<br/>
 	 * <i>Injected into entity when adding component.</i>
 	 *
+	 * @function
 	 * @param {Vector | number[] | number...} component values.
 	 * @return {TransformComponent} Self for chaining.
 	 */
@@ -519,14 +536,7 @@ function (
 			this.worldTransform.copy(this.transform);
 		}
 
-		// update the normal matrix
-		var scale = this.worldTransform.scale;
-		if (scale.x !== scale.y || scale.x !== scale.z) {
-			Matrix4x4.invert(this.worldTransform.matrix, this.worldTransform.normalMatrix);
-			Matrix4x4.transpose(this.worldTransform.normalMatrix, this.worldTransform.normalMatrix);
-		} else {
-			this.worldTransform.normalMatrix.copy(this.worldTransform.matrix);
-		}
+		this.worldTransform.updateNormalMatrix();
 
 		this._dirty = false;
 		this._updated = true;
@@ -541,14 +551,14 @@ function (
 
 		var matched = false;
 		if (Array.isArray(obj) && obj.length === 3) {
-			transformComponent.transform.translation.setd(obj[0], obj[1], obj[2]);
+			transformComponent.transform.translation.setDirect(obj[0], obj[1], obj[2]);
 			matched = true;
 		} else if (obj instanceof Vector3) {
-			transformComponent.transform.translation.setd(obj.data[0], obj.data[1], obj.data[2]);
+			transformComponent.transform.translation.setDirect(obj.data[0], obj.data[1], obj.data[2]);
 			matched = true;
 		} else if (typeof obj === 'object' &&
 			typeof obj.x !== 'undefined' && typeof obj.y !== 'undefined' && typeof obj.z !== 'undefined') {
-			transformComponent.transform.translation.setd(obj.x, obj.y, obj.z);
+			transformComponent.transform.translation.setDirect(obj.x, obj.y, obj.z);
 			matched = true;
 		} else if (obj instanceof Transform) {
 			transformComponent.transform = obj;
@@ -556,6 +566,7 @@ function (
 		}
 
 		if (matched) {
+			transformComponent.setUpdated();
 			entity.setComponent(transformComponent);
 			return true;
 		}

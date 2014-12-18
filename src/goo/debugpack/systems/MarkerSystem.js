@@ -41,7 +41,7 @@ define([
 					var transform = new Transform();
 					transform.copy(entity.transformComponent.worldTransform);
 					transform.setRotationXYZ(0, 0, 0);
-					transform.scale.setd(1, 1, 1);
+					transform.scale.setDirect(1, 1, 1);
 					transform.update();
 
 					var renderableMarker = {

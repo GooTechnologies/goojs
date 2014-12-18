@@ -1,11 +1,11 @@
 define([
-	'goo/math/Matrix3x3', 
-	'goo/math/Vector3', 
+	'goo/math/Matrix3x3',
+	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'test/CustomMatchers'
 ], function (
-	Matrix3x3, 
-	Vector3, 
+	Matrix3x3,
+	Vector3,
 	Quaternion,
 	CustomMatchers
 	) {
@@ -14,6 +14,51 @@ define([
 	describe('Matrix3x3', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
+		});
+
+		describe('constructor', function () {
+			it('creates an identity matrix when given no parameters', function () {
+				expect(new Matrix3x3()).toBeCloseToMatrix(Matrix3x3.IDENTITY);
+			});
+
+			it('creates a matrix when given 9 parameters', function () {
+				var matrix = new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99);
+				var expected = new Matrix3x3();
+
+				for (var i = 0; i < 9; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given an array', function () {
+				var matrix = new Matrix3x3([11, 22, 33, 44, 55, 66, 77, 88, 99]);
+				var expected = new Matrix3x3();
+
+				for (var i = 0; i < 9; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given a matrix', function () {
+				var original = new Matrix3x3();
+				for (var i = 0; i < 9; i++) {
+					original.data[i] = (i + 1) * 11;
+				}
+
+				var matrix = new Matrix3x3(original);
+
+				var expected = new Matrix3x3();
+
+				for (var i = 0; i < 9; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
 		});
 
 		//! AT: every one of these it 'statements' should be part of a describe statement for the method under test
@@ -120,7 +165,7 @@ define([
 		});
 
 		it('can be set to look in a specific direction', function () {
-			var a = new Matrix3x3().lookAt(new Vector3(0.0, 0.0, 1.0), new Vector3(0.0, 1.0, 0.0));
+			var a = new Matrix3x3().lookAt(new Vector3(0.0, 0.0, -1.0), new Vector3(0.0, 1.0, 0.0));
 			var b = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
 			expect(a).toBeCloseToMatrix(b);

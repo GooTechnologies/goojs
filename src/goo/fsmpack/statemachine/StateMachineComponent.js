@@ -16,6 +16,8 @@ function (
 	 * @private
 	 */
 	function StateMachineComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'StateMachineComponent';
 
 		this._machines = [];

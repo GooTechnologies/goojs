@@ -19,6 +19,7 @@ function (System) {
 	}
 
 	PickingSystem.prototype = Object.create(System.prototype);
+	PickingSystem.prototype.constructor = PickingSystem;
 
 	PickingSystem.prototype.setPickLogic = function (pickLogic) {
 		this.pickLogic = pickLogic;

@@ -87,6 +87,14 @@ function (
 		this.copyMaterial.shader.destroy();
 	};
 
+	BlurPass.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.convolutionMaterial);
+		renderer.invalidateMaterial(this.copyMaterial);
+		renderer.invalidateRenderTarget(this.renderTargetX);
+		renderer.invalidateRenderTarget(this.renderTargetY);
+		renderer.invalidateMeshData(this.renderable.meshData);
+	};
+
 	BlurPass.prototype.updateSize = function (size, renderer) {
 		var sizeX = size.width / this.downsampleAmount;
 		var sizeY = size.height / this.downsampleAmount;

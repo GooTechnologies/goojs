@@ -22,6 +22,8 @@ function (
 	 * @extends {Component}
 	 */
 	function SoundComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'SoundComponent';
 
 		/**
@@ -44,6 +46,8 @@ function (
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
 	}
+
+	SoundComponent.type = 'SoundComponent';
 
 	SoundComponent.prototype = Object.create(Component.prototype);
 	SoundComponent.prototype.constructor = SoundComponent;
@@ -147,9 +151,9 @@ function (
 		}
 
 		mvMat.getTranslation(this._position);
-		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
-		this._oldPosition.setv(this._position);
-		this._orientation.setd(0, 0, -1);
+		this._velocity.setVector(this._position).subVector(this._oldPosition).div(tpf);
+		this._oldPosition.setVector(this._position);
+		this._orientation.setDirect(0, 0, -1);
 		mvMat.applyPostVector(this._orientation);
 
 		var pd = this._position.data;

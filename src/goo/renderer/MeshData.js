@@ -30,7 +30,7 @@ function (
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
-		this.vertexCount = vertexCount !== undefined ? vertexCount : 0;
+		this.vertexCount = this._vertexCountStore = vertexCount !== undefined ? vertexCount : 0;
 		this.indexCount = indexCount !== undefined ? indexCount : 0;
 		this.primitiveCounts = [0];
 
@@ -43,6 +43,15 @@ function (
 		this.indexModes = ['Triangles'];
 
 		this.type = MeshData.MESH;
+
+		//!RH: added to not mutate object
+		this.paletteMap = undefined;
+		this.weightsPerVertex = undefined;
+		this.boundingBox = undefined;
+		this.store = undefined;
+
+		this._attributeDataNeedsRefresh = false;
+		this._dirtyAttributeNames = new Set();
 
 		this.rebuildData(this.vertexCount, this.indexCount);
 	}
@@ -133,6 +142,11 @@ function (
 	 */
 	MeshData.prototype.setVertexDataUpdated = function () {
 		this.vertexData._dataNeedsRefresh = true;
+	};
+
+	MeshData.prototype.setAttributeDataUpdated = function (name) {
+		this._dirtyAttributeNames.add(name);
+		this._attributeDataNeedsRefresh = true;
 	};
 
 	MeshData.prototype.getSectionCount = function () {
@@ -313,13 +327,16 @@ function (
 			}
 
 			this.dataViews[key] = view;
+
+			attribute.hashKey = attribute.count + '_' + attribute.type + '_' + 
+				attribute.stride + '_' + attribute.offset + '_' + attribute.normalized;
 		}
 	};
 
 	//! AT: unused
 	MeshData.prototype.makeInterleavedData = function () {
 		var stride = 0;
-		var offset = 0;
+		var offset = 0; // unused
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = stride;
@@ -414,7 +431,7 @@ function (
 
 		if (attributeName === MeshData.POSITION) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.matrix.applyPostPoint(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -422,7 +439,7 @@ function (
 			}
 		} else if (attributeName === MeshData.NORMAL) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.rotation.applyPost(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -430,7 +447,7 @@ function (
 			}
 		} else if (attributeName === MeshData.TANGENT) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.rotation.applyPost(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -448,6 +465,7 @@ function (
 	 * @returns {MeshData} Self to allow chaining
 	 */
 	MeshData.prototype.applyFunction = function (attributeName, fun) {
+		//! AT: fun should return a vector3, not an array
 		var vert;
 		var outVert;
 		var view = this.getAttributeBuffer(attributeName);
@@ -464,7 +482,7 @@ function (
 		case 2:
 			vert = new Vector2();
 			for (var i = 0; i < viewLength; i += 2) {
-				vert.setd(view[i + 0], view[i + 1]);
+				vert.setDirect(view[i + 0], view[i + 1]);
 
 				outVert = fun(vert);
 
@@ -475,7 +493,7 @@ function (
 		case 3:
 			vert = new Vector3();
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 
 				outVert = fun(vert);
 
@@ -487,7 +505,7 @@ function (
 		case 4:
 			vert = new Vector4();
 			for (var i = 0; i < viewLength; i += 4) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
 
 				outVert = fun(vert);
 
@@ -689,23 +707,23 @@ function (
 							attribs[key].values[(indexCount + 2) * count + i] = attribs[key].oldBuffer[i3 * count + i];
 						}
 						if (key === MeshData.POSITION) {
-							v1.setd(
+							v1.setDirect(
 								attribs[key].values[indexCount * 3],
 								attribs[key].values[indexCount * 3 + 1],
 								attribs[key].values[indexCount * 3 + 2]
 							);
-							v2.setd(
+							v2.setDirect(
 								attribs[key].values[(indexCount + 1) * 3],
 								attribs[key].values[(indexCount + 1) * 3 + 1],
 								attribs[key].values[(indexCount + 1) * 3 + 2]
 							);
-							v3.setd(
+							v3.setDirect(
 								attribs[key].values[(indexCount + 2) * 3],
 								attribs[key].values[(indexCount + 2) * 3 + 1],
 								attribs[key].values[(indexCount + 2) * 3 + 2]
 							);
-							v2.subv(v1);
-							v3.subv(v1);
+							v2.subVector(v1);
+							v3.subVector(v1);
 							v2.cross(v3).normalize();
 
 							if (attribs[MeshData.NORMAL]) {
@@ -745,11 +763,15 @@ function (
 
 	/**
 	 * Destroys all attached vertex and index data.
-	 * @param  {WebGLContext} context
+	 * @param {WebGLContext} context
 	 */
 	MeshData.prototype.destroy = function (context) {
-		this.vertexData.destroy(context);
-		this.indexData.destroy(context);
+		if (this.vertexData) {
+			this.vertexData.destroy(context);
+		}
+		if (this.indexData) {
+			this.indexData.destroy(context);
+		}
 	};
 
 	/**

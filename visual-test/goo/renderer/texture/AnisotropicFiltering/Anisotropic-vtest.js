@@ -53,13 +53,7 @@ require([
 
 	V.addLights();
 
-	var orbitScript = Scripts.create(OrbitCamControlScript, {
-		spherical: new Vector3(1, 90, 0.1 * 180 / Math.PI),
-		minAscent: 0.1,
-		turnSpeedHorizontal: 0.001,
-		turnSpeedVertical: 0.001
-	});
-	world.createEntity('CameraEntity', new Camera(45, 1, 0.1), orbitScript).addToWorld();
+	V.addOrbitCamera(new Vector3(10, Math.PI / 2, 0), new Vector3(0, 0.5, 0));
 
 	V.process();
 });

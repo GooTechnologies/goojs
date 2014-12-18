@@ -46,7 +46,6 @@ define([
 		this._skysphereTexture = new Texture(null, { flipY: false, wrapS: 'EdgeClamp', wrapT: 'EdgeClamp' });
 		this._skysphere.meshRendererComponent.materials[0].setTexture('DIFFUSE_MAP', this._skysphereTexture);
 
-		//! AT: unused?
 		this._activeSkyshape = null;
 	}
 
@@ -55,9 +54,9 @@ define([
 	ConfigHandler._registerClass('skybox', SkyboxHandler);
 
 	SkyboxHandler.prototype._remove = function(ref) {
-		delete this._objects[ref];
+		this._objects.delete(ref);
 
-		// We can only remove the skybox if it is the on that is currently
+		// We can only remove the skybox if it is the one that is currently
 		// active. Otherwise the scene will be left with no skybox in cases
 		// where it shouldn't be.
 		if (this._activeSkyboxRef === ref) {
@@ -135,6 +134,8 @@ define([
 	};
 
 	var sides = ['rightRef', 'leftRef', 'topRef', 'bottomRef', 'frontRef', 'backRef'];
+
+	//! AT: this can definitely be moved elsewhere
 	function isEqual(a, b) {
 		var len = a.length;
 		if (len !== b.length) {
@@ -190,6 +191,7 @@ define([
 			skyTex.image.height = h;
 			skyTex.image.dataReady = true;
 			skyTex.setNeedsUpdate();
+
 			if (config.enabled) {
 				that._show(that._skybox);
 			} else {
@@ -212,6 +214,9 @@ define([
 
 	SkyboxHandler.prototype._show = function(skyshape) {
 		var renderSystem = this.world.getSystem('RenderSystem');
+		if (this._activeSkyshape) {
+			renderSystem.removed(this._activeSkyshape);
+		}
 		renderSystem.added(skyshape);
 		this._activeSkyshape = skyshape;
 		ShaderBuilder.SKYBOX = skyshape === this._skybox ? this._skyboxTexture : null;

@@ -12,12 +12,13 @@ function (
 	 * @extends Component
 	 */
 	function HtmlComponent(domElement) {
-		Component.call(this);
+		Component.apply(this, arguments);
+
 		this.type = 'HtmlComponent';
 
 		/**
-		* DOM element.
-		*/
+		 * DOM element.
+		 */
 		this.domElement = domElement;
 
 		/**
@@ -32,6 +33,8 @@ function (
 		 */
 		this.useTransformComponent = true;
 	}
+
+	HtmlComponent.type = 'HtmlComponent';
 
 	HtmlComponent.prototype = Object.create(Component.prototype);
 	HtmlComponent.prototype.constructor = HtmlComponent;

@@ -24,6 +24,7 @@ function (
 	}
 
 	PortalSystem.prototype = Object.create(System.prototype);
+	PortalSystem.prototype.constructor = PortalSystem;
 
 	PortalSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {

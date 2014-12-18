@@ -45,7 +45,7 @@ function (
 		this.lights = [];
 		this.transform = new Transform();
 		this.transform.rotation.rotateX(-Math.PI / 2);
-		this.transform.scale.setd(1000, 1000, 1000);
+		this.transform.scale.setDirect(1000, 1000, 1000);
 		this.transform.update();
 
 		var gridMaterial = new Material(gridShaderDef, 'Grid Material');
@@ -88,12 +88,11 @@ function (
 	}
 
 	GridRenderSystem.prototype = Object.create(System.prototype);
+	GridRenderSystem.prototype.constructor = GridRenderSystem;
 
-	GridRenderSystem.prototype.inserted = function (/*entity*/) {
-	};
+	GridRenderSystem.prototype.inserted = function (/*entity*/) {};
 
-	GridRenderSystem.prototype.deleted = function (/*entity*/) {
-	};
+	GridRenderSystem.prototype.deleted = function (/*entity*/) {};
 
 	GridRenderSystem.prototype.process = function (/*entities, tpf*/) {
 		var count = this.renderList.length = 0;
@@ -112,6 +111,15 @@ function (
 		if (this.camera) {
 			renderer.render(this.renderList, this.camera, this.lights, null, false);
 		}
+	};
+
+	GridRenderSystem.prototype.invalidateHandles = function (renderer) {
+		this.renderList.forEach(function (renderable) {
+			renderable.materials.forEach(function (material) {
+				renderer.invalidateMaterial(material);
+			});
+			renderer.invalidateMeshData(renderable.meshData);
+		});
 	};
 
 	var gridShaderDef = {

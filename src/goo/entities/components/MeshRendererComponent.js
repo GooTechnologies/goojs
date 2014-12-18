@@ -15,6 +15,8 @@ define([
 	 * @extends Component
 	 */
 	function MeshRendererComponent(materials) {
+		Component.apply(this, arguments);
+
 		this.type = 'MeshRendererComponent';
 
 		//! schteppe: Don't chain or nest ternary operators as it hard to read and confusing
@@ -64,6 +66,8 @@ define([
 		this._renderDistance = 0;
 	}
 
+	MeshRendererComponent.type = 'MeshRendererComponent';
+
 	MeshRendererComponent.prototype = Object.create(Component.prototype);
 	MeshRendererComponent.prototype.constructor = MeshRendererComponent;
 
@@ -99,6 +103,10 @@ define([
 		getDiffuse: function () {
 			return this.meshRendererComponent.materials[0].uniforms.materialDiffuse;
 		}
+	};
+
+	MeshRendererComponent.entitySelectionAPI = {
+		setDiffuse: MeshRendererComponent.prototype.api.setDiffuse
 	};
 
 	/**

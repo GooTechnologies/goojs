@@ -5,6 +5,8 @@ define([
 function (System) {
 	'use strict';
 
+	// has to stay here because it's used by traverseFunc below
+	// it's pretty crappy how it's sprinkled over the code
 	var numUpdates;
 
 	/**
@@ -18,6 +20,7 @@ function (System) {
 	}
 
 	TransformSystem.prototype = Object.create(System.prototype);
+	TransformSystem.prototype.constructor = TransformSystem;
 
 	TransformSystem.prototype.process = function (entities) {
 		numUpdates = 0;

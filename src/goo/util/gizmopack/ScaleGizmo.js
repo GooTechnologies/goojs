@@ -30,14 +30,16 @@ function(
 		this._arrowMesh = this._buildArrowMesh();
 		this._scale = 1;
 		this._transformScale = new Vector3();
-		this._transformScale.setd(1,1,1);
+		this._transformScale.setDirect(1, 1, 1);
 
 		this._buildBox();
 		this._buildArrow(0);
 		this._buildArrow(1);
 		this._buildArrow(2);
 	}
+
 	ScaleGizmo.prototype = Object.create(Gizmo.prototype);
+	ScaleGizmo.prototype.constructor = ScaleGizmo;
 
 	ScaleGizmo.prototype.activate = function(props) {
 		Gizmo.prototype.activate.call(this, props);
@@ -49,7 +51,7 @@ function(
 
 	ScaleGizmo.prototype.copyTransform = function(transform) {
 		Gizmo.prototype.copyTransform.call(this, transform);
-		this._transformScale.setv(transform.scale);
+		this._transformScale.setVector(transform.scale);
 	};
 
 	ScaleGizmo.prototype.process = function() {
@@ -81,7 +83,7 @@ function(
 		var cameraEntityDistance = mainCameraTranslation.distance(boundEntityTranslation);
 		scale += cameraEntityDistance / 200000 * MathUtils.sign(scale - 1);
 
-		this._transformScale.muld(scale, scale, scale);
+		this._transformScale.scale(scale);
 	};
 
 	ScaleGizmo.prototype._scaleNonUniform = function() {
@@ -99,11 +101,11 @@ function(
 		// Project mousemove to plane
 		this._plane.rayIntersect(this._oldRay, oldWorldPos);
 		this._plane.rayIntersect(this._newRay, worldPos);
-		result.setv(worldPos).subv(oldWorldPos);
+		result.setVector(worldPos).subVector(oldWorldPos);
 		result.div(this.transform.scale).scale(0.07);
 		// Then project plane diff to line
 		var d = result.dot(line);
-		result.setv(line).muld(d, d, d);
+		result.setVector(line).scale(d);
 		var scale = Math.pow(1 + d, this._scale);
 
 		switch(this._activeHandle.axis) {
@@ -159,13 +161,13 @@ function(
 
 		// Box
 		var transform = new Transform();
-		transform.translation.setd(0, 0, 8);
+		transform.translation.setDirect(0, 0, 8);
 		transform.update();
 		meshBuilder.addMeshData(mesh1Data, transform);
 
 		// Line
 		var transform = new Transform();
-		transform.scale.setd(1, 1, 8);
+		transform.scale.setDirect(1, 1, 8);
 		transform.update();
 		meshBuilder.addMeshData(mesh2Data, transform);
 

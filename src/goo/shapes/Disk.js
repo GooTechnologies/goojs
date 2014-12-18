@@ -30,6 +30,7 @@ define(['goo/renderer/MeshData'],
 	}
 
 	Disk.prototype = Object.create(MeshData.prototype);
+	Disk.prototype.constructor = Disk;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.

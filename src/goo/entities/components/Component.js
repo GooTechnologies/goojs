@@ -1,6 +1,6 @@
-define(
+define(['goo/entities/EntitySelection'],
 	/** @lends */
-	function () {
+function (EntitySelection) {
 	'use strict';
 
 	/**
@@ -8,13 +8,13 @@ define(
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 */
 	function Component() {
-		/** If the component should be processed for containing entities.
+		/**
+		 * If the component should be processed for containing entities.
 		 * @type {boolean}
-		 * @default
 		 */
 		this.enabled = true;
 
-		this.installedAPI = {};
+		this.installedAPI = new Set();
 	}
 
 	/**
@@ -23,10 +23,6 @@ define(
 	 * @private
 	 */
 	Component.prototype.applyAPI = function (entity) {
-		if (!this.installedAPI) {
-			this.installedAPI = {};
-		}
-
 		var api = this.api;
 		if (!api) {
 			return;
@@ -36,7 +32,7 @@ define(
 			var key = keys[i];
 			if (typeof entity[key] === 'undefined') {
 				entity[key] = api[key];
-				this.installedAPI[key] = true;
+				this.installedAPI.add(key);
 			} else {
 				console.warn('Could not install method ' + key + ' of ' + this.type + ' as it is already taken');
 			}
@@ -49,11 +45,22 @@ define(
 	 * @private
 	 */
 	Component.prototype.removeAPI = function (entity) {
-		var installedAPI = this.installedAPI;
-		var keys = Object.keys(installedAPI);
+		this.installedAPI.forEach(function (key) {
+			delete entity[key];
+		});
+	};
+
+	Component.applyEntitySelectionAPI = function (entitySelectionAPI, componentType) {
+		if (!entitySelectionAPI) { return; }
+
+		var keys = Object.keys(entitySelectionAPI);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			delete entity[key];
+			if (typeof EntitySelection[key] === 'undefined') {
+				EntitySelection.installMethod(entitySelectionAPI[key], key, componentType);
+			} else {
+				console.warn('Could not install method ' + key + ' on EntitySelection as it is already taken');
+			}
 		}
 	};
 

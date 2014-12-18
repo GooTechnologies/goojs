@@ -7,6 +7,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/renderer/Material',
+	'goo/renderer/Texture',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/renderer/shaders/ShaderFragment'
@@ -21,6 +22,7 @@ function (
 	Vector3,
 	Vector4,
 	Material,
+	Texture,
 	TextureCreator,
 	ShaderBuilder,
 	ShaderFragment
@@ -30,8 +32,12 @@ function (
 	/**
 	 * @class Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.<br>
 	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Water/water-vtest.html Working example}
-	 * @param {ArrayBuffer} data Data to wrap
-	 * @property {ArrayBuffer} data Data to wrap
+	 * @param {Object} [settings] Water settings passed in a JSON object
+	 * @param {boolean} [settings.useRefraction=true] Render refraction in water
+	 * @param {boolean} [settings.divider=2] Resolution divider for reflection/refraction
+	 * @param {boolean} [settings.normalsUrl] Url to texture to use as normalmap
+	 * @param {boolean} [settings.normalsTexture] Texture instance to use as normalmap
+	 * @param {boolean} [settings.updateWaterPlaneFromEntity=true] Use water entity y for water plane position
 	 */
 	function FlatWaterRenderer(settings) {
 		settings = settings || {};
@@ -53,18 +59,24 @@ function (
 		}
 
 		var waterMaterial = new Material(waterShaderDef, 'WaterMaterial');
-		waterMaterial.shader.defines.REFRACTION = this.useRefraction;
+		waterMaterial.shader.setDefine('REFRACTION', this.useRefraction);
 		waterMaterial.cullState.enabled = false;
-		var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
 
-		waterMaterial.setTexture('NORMAL_MAP', new TextureCreator().loadTexture2D(normalsTextureUrl));
-		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
-		if (this.useRefraction) {
-			waterMaterial.setTexture('REFRACTION_MAP', this.refractionTarget);
-			waterMaterial.setTexture('DEPTH_MAP', this.depthTarget);
+		var texture = null;
+		if (settings.normalsTexture) {
+			texture = settings.normalsTexture;
+		} else if (settings.normalsUrl) {
+			var normalsTextureUrl = settings.normalsUrl || '../resources/water/waternormals3.png';
+			texture = new TextureCreator().loadTexture2D(normalsTextureUrl);
+		} else {
+			var flatNormalData = new Uint8Array([127, 127, 255, 255]);
+			texture = new Texture(flatNormalData, null, 1, 1);
 		}
+		waterMaterial.setTexture('NORMAL_MAP', texture);
+		waterMaterial.setTexture('REFLECTION_MAP', this.reflectionTarget);
 		this.waterMaterial = waterMaterial;
 
+		this.skybox = null;
 		this.followCam = true;
 		this.updateWaterPlaneFromEntity = settings.updateWaterPlaneFromEntity !== undefined ? this.updateWaterPlaneFromEntity : true;
 
@@ -84,6 +96,10 @@ function (
 	}
 
 	FlatWaterRenderer.prototype.process = function (renderer, entities, partitioner, camera, lights) {
+		if (!this.waterEntity) {
+			return;
+		}
+
 		entities = entities.filter(function(entity) {
 			return entity.meshRendererComponent.isReflectable;
 		});
@@ -92,7 +108,7 @@ function (
 
 		this.waterCamera.copy(camera);
 		if (this.updateWaterPlaneFromEntity) {
-			waterPlane.constant = this.waterEntity.transformComponent.transform.translation.y;
+			waterPlane.constant = this.waterEntity.transformComponent.worldTransform.translation.y;
 		}
 		var aboveWater = camera.translation.y > waterPlane.constant;
 
@@ -102,14 +118,18 @@ function (
 			if (this.useRefraction) {
 				partitioner.process(this.waterCamera, entities, this.renderList);
 
-				this.clipPlane.setd(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+				this.clipPlane.setDirect(waterPlane.normal.x, -waterPlane.normal.y, waterPlane.normal.z, -waterPlane.constant);
 				this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
-				//renderer.overrideMaterial = this.depthMaterial;
+				this.depthMaterial.uniforms.waterHeight = waterPlane.constant;
 				renderer.render(this.renderList, this.waterCamera, lights, this.depthTarget, true, this.depthMaterial);
-				//renderer.overrideMaterial = null;
 
 				renderer.render(this.renderList, this.waterCamera, lights, this.refractionTarget, true);
+
+				if (!this.waterMaterial.getTexture('REFRACTION_MAP')) {
+					this.waterMaterial.setTexture('REFRACTION_MAP', this.refractionTarget);
+					this.waterMaterial.setTexture('DEPTH_MAP', this.depthTarget);
+				}
 			}
 
 			var calcVect = this.calcVect;
@@ -119,33 +139,33 @@ function (
 			var camLocation = this.camLocation;
 			var camReflectPos = this.camReflectPos;
 
-			camLocation.set(camera.translation);
-			var planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectPos.set(camLocation.sub(calcVect));
+			camLocation.setVector(camera.translation);
+			var planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
+			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectPos.setVector(camLocation.subVector(calcVect));
 
-			camLocation.set(camera.translation).add(camera._direction);
-			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectDir.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
+			camLocation.setVector(camera.translation).addVector(camera._direction);
+			planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
+			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectDir.setVector(camLocation.subVector(calcVect)).subVector(camReflectPos).normalize();
 
-			camLocation.set(camera.translation).add(camera._up);
-			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectUp.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
+			camLocation.setVector(camera.translation).addVector(camera._up);
+			planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
+			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectUp.setVector(camLocation.subVector(calcVect)).subVector(camReflectPos).normalize();
 
-			camReflectLeft.set(camReflectUp).cross(camReflectDir).normalize();
+			camReflectLeft.setVector(camReflectUp).cross(camReflectDir).normalize();
 
-			this.waterCamera.translation.set(camReflectPos);
-			this.waterCamera._direction.set(camReflectDir);
-			this.waterCamera._up.set(camReflectUp);
-			this.waterCamera._left.set(camReflectLeft);
+			this.waterCamera.translation.setVector(camReflectPos);
+			this.waterCamera._direction.setVector(camReflectDir);
+			this.waterCamera._up.setVector(camReflectUp);
+			this.waterCamera._left.setVector(camReflectLeft);
 			this.waterCamera.normalize();
 			this.waterCamera.update();
 
 			if (this.skybox && this.followCam) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setv(camReflectPos);
+				target.translation.setVector(camReflectPos);
 				target.update();
 			}
 		}
@@ -159,7 +179,7 @@ function (
 
 		if (this.skybox) {
 			if (this.skybox instanceof Array) {
-				this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+				this.clipPlane.setDirect(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 				this.waterCamera.setToObliqueMatrix(this.clipPlane, 10.0);
 				for (var i = 0; i < this.skybox.length; i++) {
 					renderer.render(this.skybox[i], this.waterCamera, lights, this.reflectionTarget, false);
@@ -171,7 +191,7 @@ function (
 			}
 		}
 
-		this.clipPlane.setd(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
+		this.clipPlane.setDirect(waterPlane.normal.x, waterPlane.normal.y, waterPlane.normal.z, waterPlane.constant);
 		this.waterCamera.setToObliqueMatrix(this.clipPlane);
 
 		renderer.render(this.renderList, this.waterCamera, lights, this.reflectionTarget, false);
@@ -190,7 +210,7 @@ function (
 		if (aboveWater && this.skybox && this.followCam) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setv(source).addv(this.offset);
+			target.translation.setVector(source).addVector(this.offset);
 			target.update();
 			this.waterCamera._updatePMatrix = true;
 		}
@@ -269,7 +289,7 @@ function (
 			'uniform mat4 viewMatrix;',
 			'uniform mat4 projectionMatrix;',
 			'uniform mat4 worldMatrix;',
-			'uniform mat4 normalMatrix;',
+			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 			'uniform float waterScale;',
 
@@ -283,8 +303,8 @@ function (
 
 			'	texCoord0 = worldPos.xz * waterScale;',
 
-			'	vec3 n = normalize((normalMatrix * vec4(vertexNormal.x, vertexNormal.y, -vertexNormal.z, 0.0)).xyz);',
-			'	vec3 t = normalize((normalMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+			'	vec3 n = normalize(normalMatrix * vec3(vertexNormal.x, vertexNormal.y, -vertexNormal.z));',
+			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
 			'	vec3 b = cross(n, t) * vertexTangent.w;',
 			'	mat3 rotMat = mat3(t, b, n);',
 
@@ -363,16 +383,11 @@ function (
 			'	projCoord.y -= 1.0 / resolution.y;',
 
 			'#ifdef REFRACTION',
-			'	float depthUnpack = unpackDepth(texture2D(depthmap, projCoord));',
-			'	if (depthUnpack > 0.5) {depthUnpack = 0.0;}',
-			'	float depth2 = clamp(depthUnpack * 400.0, 0.0, 1.0);',
-			'	vec2 projCoordRefr = vec2(projCoord);',
-			'	projCoordRefr += (normalVector.xy * distortionMultiplier) * (depth2);',
+			'	float depth = unpackDepth(texture2D(depthmap, projCoord));',
+			'	vec2 projCoordRefr = projCoord;',
+			'	projCoordRefr += (normalVector.xy * distortionMultiplier) * smoothstep(0.0, 0.5, depth);',
 			'	projCoordRefr = clamp(projCoordRefr, 0.001, 0.999);',
-			'	depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
-			'	float depth = clamp(depthUnpack * 40.0, 0.8, 1.0);',
-			// '#else',
-			// '	projCoord += (normalVector.xy * distortionMultiplier);',
+			'	depth = unpackDepth(texture2D(depthmap, projCoordRefr));',
 			'#endif',
 
 			'	projCoord += (normalVector.xy * distortionMultiplier);',
@@ -398,9 +413,7 @@ function (
 
 			'		vec4 endColor = waterColorX;',
 			'#ifdef REFRACTION',
-			// '		float depthUnpack = unpackDepth(texture2D(depthmap, projCoordRefr));',
-			// '		float depth = clamp(depthUnpack * 120.0, 0.0, 1.0);',
-			'		vec4 refractionColor = texture2D(refraction, projCoordRefr) * vec4(0.6);',
+			'		vec4 refractionColor = texture2D(refraction, projCoordRefr) * vec4(0.7);',
 			'		endColor = mix(refractionColor, waterColorX, depth);',
 			'#endif',
 			'		endColor = mix(endColor, reflectionColor, fresnelTerm);',
@@ -420,7 +433,6 @@ function (
 			ShaderBuilder.animation.processor
 		],
 		defines: {
-			SHADOW_TYPE: 0,
 			WEIGHTS: true,
 			JOINTIDS: true
 		},
@@ -433,7 +445,8 @@ function (
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix: Shader.WORLD_MATRIX,
-			farPlane: Shader.FAR_PLANE
+			waterHeight: 0,
+			waterDensity: 0.05
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -449,12 +462,13 @@ function (
 			'void main(void) {',
 				'mat4 wMatrix = worldMatrix;',
 				ShaderBuilder.animation.vertex,
-				'worldPosition = viewMatrix * wMatrix * vec4(vertexPosition, 1.0);',
-				'gl_Position = projectionMatrix * worldPosition;',
+				'worldPosition = wMatrix * vec4(vertexPosition, 1.0);',
+				'gl_Position = projectionMatrix * viewMatrix * worldPosition;',
 			'}'
 		].join('\n'),
 		fshader: [
-			'uniform float farPlane;',
+			'uniform float waterHeight;',
+			'uniform float waterDensity;',
 
 			ShaderFragment.methods.packDepth,
 
@@ -462,7 +476,7 @@ function (
 
 			'void main(void)',
 			'{',
-				'float linearDepth = abs(worldPosition.y) / farPlane;',
+				'float linearDepth = clamp(pow((waterHeight - worldPosition.y) * waterDensity, 0.25), 0.0, 0.999);',
 				'gl_FragColor = packDepth(linearDepth);',
 			'}'
 		].join('\n')

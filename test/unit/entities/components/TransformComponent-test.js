@@ -1,6 +1,7 @@
 define([
 	'goo/entities/World',
 	'goo/entities/components/TransformComponent',
+	'goo/entities/systems/TransformSystem',
 	'goo/math/Matrix3x3',
 	'goo/math/Vector3',
 	'goo/entities/Entity',
@@ -8,10 +9,12 @@ define([
 	'goo/entities/components/MeshRendererComponent',
 	'goo/entities/components/LightComponent',
 	'goo/entities/components/HtmlComponent',
+	'goo/entities/EntitySelection',
 	'test/CustomMatchers'
 ], function (
 	World,
 	TransformComponent,
+	TransformSystem,
 	Matrix3x3,
 	Vector3,
 	Entity,
@@ -19,6 +22,7 @@ define([
 	MeshRendererComponent,
 	LightComponent,
 	HtmlComponent,
+	EntitySelection,
 	CustomMatchers
 ) {
 	'use strict';
@@ -179,6 +183,39 @@ define([
 			expect(child.transformComponent.parent).toBeFalsy();
 		});
 
+		describe('called from EntitySelection', function () {
+			it('sets the translation of some entities', function () {
+				var entity1 = new Entity(world).setComponent(new TransformComponent());
+				var entity2 = new Entity(world).setComponent(new TransformComponent());
+
+				new EntitySelection(entity1, entity2).setTranslation(1, 2, 3);
+
+				expect(entity1.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
+				expect(entity2.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
+			});
+
+			it('translates some entities', function () {
+				var entity1 = new Entity(world).setComponent(new TransformComponent());
+				var entity2 = new Entity(world).setComponent(new TransformComponent());
+
+				entity1.setTranslation(11, 22, 33);
+				entity2.setTranslation(44, 55, 66);
+
+				new EntitySelection(entity1, entity2).addTranslation(1, 2, 3);
+
+				expect(entity1.transformComponent.transform.translation)
+				.toBeCloseToVector(new Vector3(11 + 1, 22 + 2, 33 + 3));
+
+				expect(entity2.transformComponent.transform.translation)
+				.toBeCloseToVector(new Vector3(44 + 1, 55 + 2, 66 + 3));
+			});
+
+			it('hides some entities', function () {
+				var entity = new Entity(world).setComponent(new TransformComponent());
+				new EntitySelection(entity).hide();
+				expect(entity._hidden).toBeTruthy();
+			});
+		});
 
 		describe('.applyOnEntity', function () {
 			it('sets a TransformComponent when trying to add a 3 element array', function () {
@@ -187,19 +224,23 @@ define([
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 			});
 
 			it('modifies the TransformComponent if it already exists when trying to add a 3 element array', function () {
 				var entity = new Entity(world);
 				var transformComponent = new TransformComponent();
+				var transformSystem = new TransformSystem();
+
 				entity.set(transformComponent);
+				transformSystem.process([entity]);
 
 				var translation = [1, 2, 3];
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBe(transformComponent);
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
+				expect(entity.transformComponent._dirty).toBeTruthy();
 			});
 
 			it('sets a TransformComponent when trying to add a {x, y, z} object', function () {
@@ -208,7 +249,7 @@ define([
 				entity.set(translation);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 			});
 
 			it('sets a TransformComponent when trying to add a Transform', function () {
@@ -218,7 +259,7 @@ define([
 				entity.set(transform);
 
 				expect(entity.transformComponent).toBeTruthy();
-				expect(entity.transformComponent.transform.translation.equals(new Vector3(1, 2, 3))).toBeTruthy();
+				expect(entity.transformComponent.transform.translation).toBeCloseToVector(new Vector3(1, 2, 3));
 			});
 
 			it('applies all of the API functions correctly', function(){

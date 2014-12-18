@@ -66,9 +66,10 @@ function (
 	 * Update the global and palette transforms of our posed joints based on the current local joint transforms.
 	 */
 	SkeletonPose.prototype.updateTransforms = function () {
-		for (var i = 0; i < this._skeleton._joints.length; i++) {
+		var joints = this._skeleton._joints;
+		for (var i = 0, l = joints.length; i < l; i++) {
 
-			var parentIndex = this._skeleton._joints[i]._parentIndex;
+			var parentIndex = joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We have a parent, so take us from local->parent->model space by multiplying by parent's local->model
 				Matrix4x4.combine(this._globalTransforms[parentIndex].matrix, this._localTransforms[i].matrix, this._globalTransforms[i].matrix);
@@ -83,7 +84,7 @@ function (
 			 * vertex from bind pose (model space) to current pose (model space).
 			 */
 			Matrix4x4
-				.combine(this._globalTransforms[i].matrix, this._skeleton._joints[i]._inverseBindPose.matrix, this._matrixPalette[i]);
+				.combine(this._globalTransforms[i].matrix, joints[i]._inverseBindPose.matrix, this._matrixPalette[i]);
 		}
 
 		this.firePoseUpdated();

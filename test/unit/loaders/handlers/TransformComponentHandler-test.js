@@ -85,7 +85,7 @@ define([
 		});
 
 		function inScene(id) {
-			if (loader._world.entityManager._entitiesById[id]) {
+			if (loader._world.entityManager.getEntityById(id)) {
 				return true;
 			}
 			var addedEntities = loader._world._addedEntities;
@@ -124,7 +124,6 @@ define([
 			var childConfig = Configs.entity();
 			var parentId = Object.keys(sceneConfig.entities)[0];
 			var parentConfig = Configs.get()[parentId];
-			console.log(childConfig);
 
 			Configs.attachChild(parentConfig, childConfig);
 			loader.preload(Configs.get());
@@ -134,6 +133,6 @@ define([
 				expect(inScene(parentConfig.id)).toBeTruthy();
 				done();
 			});
-		})
+		});
 	});
 });

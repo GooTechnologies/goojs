@@ -3,16 +3,14 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
-	'goo/debugpack/components/LightDebugComponent',
-	'goo/debugpack/systems/LightDebugSystem',
+	'goo/debugpack/systems/DebugRenderSystem',
 	'lib/V'
 ], function (
 	Vector3,
 	PointLight,
 	DirectionalLight,
 	SpotLight,
-	LightDebugComponent,
-	LightDebugSystem,
+	DebugRenderSystem,
 	V
 	) {
 	'use strict';
@@ -23,9 +21,7 @@ require([
 		var pointLight = new PointLight(new Vector3(0.9, 0.0, 0.2));
 		pointLight.range = 5;
 
-		goo.world.createEntity('pointLight', pointLight, [0, 0, 3])
-			.set(new LightDebugComponent())
-			.addToWorld();
+		goo.world.createEntity('pointLight', pointLight, [0, 0, 3]).addToWorld();
 
 
 		var pointlightGui = gui.addFolder('Point Light');
@@ -53,9 +49,7 @@ require([
 		var directionalLight = new DirectionalLight(new Vector3(0.2, 0.9, 0.0));
 		directionalLight.intensity = 0.05;
 
-		goo.world.createEntity('directionalLight', directionalLight, [0, -5, 3])
-			.set(new LightDebugComponent())
-			.addToWorld();
+		goo.world.createEntity('directionalLight', directionalLight, [0, -5, 3]).addToWorld();
 
 
 		var directionallightGui = gui.addFolder('Directional Light');
@@ -81,9 +75,7 @@ require([
 		spotLight.range = 10;
 		spotLight.penumbra = 5;
 
-		goo.world.createEntity('spotLight', spotLight, [0, 5, 5])
-			.set(new LightDebugComponent())
-			.addToWorld();
+		goo.world.createEntity('spotLight', spotLight, [0, 5, 5]).addToWorld();
 
 		var spotLightGui = gui.addFolder('Spot Light');
 		var data = {
@@ -118,7 +110,11 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	world.setSystem(new LightDebugSystem());
+	var debugRenderSystem = new DebugRenderSystem();
+	debugRenderSystem.doRender.CameraComponent = true;
+	debugRenderSystem.doRender.LightComponent = true;
+	goo.renderSystems.push(debugRenderSystem);
+	world.setSystem(debugRenderSystem);
 
 	// add some spheres to cast the light on
 	V.addSpheres();

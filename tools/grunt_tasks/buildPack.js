@@ -145,7 +145,7 @@ module.exports = function (grunt) {
 		return '/* Goo Engine ' + packName + ' ' + version + '\n' +
 			' * Copyright 2014 Goo Technologies AB\n' +
 			' */\n' +
-			'(function(window){function f(){\n';
+			'(function(window){function f(){"use strict";\n';
 	}
 
 	function getTailWrapping(packName) {

@@ -191,10 +191,10 @@ function(
 						if (bound instanceof BoundingBox) {
 							bound.clone(wb);
 						} else if (bound instanceof BoundingSphere) {
-							wb.center.setv(bound.center);
+							wb.center.setVector(bound.center);
 							wb.xExtent = wb.yExtent = wb.zExtent = bound.radius;
 						} else {
-							wb.center.setv(Vector3.ZERO);
+							wb.center.setVector(Vector3.ZERO);
 							wb.xExtent = wb.yExtent = wb.zExtent = 10;
 						}
 

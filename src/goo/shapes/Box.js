@@ -1,11 +1,9 @@
 define([
-	'goo/renderer/MeshData',
-	'goo/util/Enum'
+	'goo/renderer/MeshData'
 ],
 	/** @lends */
 	function (
-		MeshData,
-		Enum
+		MeshData
 	) {
 	'use strict';
 
@@ -71,6 +69,7 @@ define([
 	}
 
 	Box.prototype = Object.create(MeshData.prototype);
+	Box.prototype.constructor = Box;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.
@@ -177,10 +176,13 @@ define([
 		return this;
 	};
 
-	/** Possible texture wrapping modes: Uniform, Dice
-	 * @type {Enum}
+	/** Possible texture wrapping modes: Uniform, Unfolded
+	 * @type {Object}
 	 */
-	Box.TextureModes = new Enum('Uniform', 'Unfolded');
+	Box.TextureModes = {
+		Uniform: 'Uniform',
+		Unfolded: 'Unfolded'
+	};
 
 	return Box;
 });

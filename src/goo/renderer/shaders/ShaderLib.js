@@ -99,7 +99,7 @@ define([
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
-			'uniform mat4 normalMatrix;',
+			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 
 			'varying vec3 vWorldPos;',
@@ -122,7 +122,7 @@ define([
 			'void main(void) {',
 				'mat4 wMatrix = worldMatrix;',
 				'#ifdef NORMAL',
-					'mat4 nMatrix = normalMatrix;',
+					'mat3 nMatrix = normalMatrix;',
 				'#endif',
 				ShaderBuilder.animation.vertex,
 				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
@@ -132,10 +132,10 @@ define([
 				'viewPosition = cameraPosition - worldPos.xyz;',
 
 				'#ifdef NORMAL',
-				'	normal = normalize((nMatrix * vec4(vertexNormal, 0.0)).xyz);',
+				'	normal = normalize(nMatrix * vertexNormal);',
 				'#endif',
 				'#ifdef TANGENT',
-				'	tangent = normalize((nMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+				'	tangent = normalize(nMatrix * vertexTangent.xyz);',
 				'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 				'#endif',
 				'#ifdef COLOR',
@@ -193,7 +193,9 @@ define([
 				'#endif',
 			'#endif',
 
-			'uniform float opacity;',
+			'#ifdef OPACITY',
+				'uniform float opacity;',
+			'#endif',
 			'#ifdef DISCARD',
 				'uniform float discardThreshold;',
 			'#endif',
@@ -242,7 +244,9 @@ define([
 				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
 					'final_color.a = texture2D(transparencyMap, texCoord0).a;',
 				'#endif',
-				'final_color.a *= opacity;',
+				'#ifdef OPACITY',
+					'final_color.a *= opacity;',
+				'#endif',
 
 				'#ifdef DISCARD',
 					'if (final_color.a < discardThreshold) discard;',
@@ -333,7 +337,7 @@ define([
 
 				'#ifndef LIGHT_MAP',
 					'final_color.rgb += totalSpecular;',
-					'final_color.a += min(length(totalSpecular), 1.0);',
+					'final_color.a = min(final_color.a + length(totalSpecular) / 3.0, 1.0);',
 				'#endif',
 
 				'#ifdef FOG',
@@ -346,7 +350,7 @@ define([
 		].join('\n');
 		}
 	};
-	
+
 	// only terrain depends on this
 	/**
 	 * @static
@@ -1124,38 +1128,63 @@ define([
 		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
-	  vertexJointIDs: MeshData.JOINTIDS,
-	  vertexWeights: MeshData.WEIGHTS
+			vertexJointIDs: MeshData.JOINTIDS,
+			vertexWeights: MeshData.WEIGHTS,
+			vertexNormal : MeshData.NORMAL
 		},
 		uniforms : {
+			normalMatrix: Shader.NORMAL_MATRIX,
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraFar : Shader.FAR_PLANE,
+			thickness: 0.0,
 			id : function(shaderInfo) {
 				return shaderInfo.renderable._index != null ? shaderInfo.renderable._index + 1 : shaderInfo.renderable.id + 1;
 			}
 		},
 		processors: [
-			//ShaderBuilder.uber.processor,
-			ShaderBuilder.animation.processor
+			// ShaderBuilder.uber.processor,
+			ShaderBuilder.animation.processor,
+
+			function (shader) {
+				shader.setDefine('NORMAL', true);
+			}
 		],
 		vshader : [
 		'attribute vec3 vertexPosition;',
+
+		'#ifdef NORMAL',
+			'attribute vec3 vertexNormal;',
+		'#endif',
 
 		'uniform mat4 viewMatrix;',
 		'uniform mat4 projectionMatrix;',
 		'uniform mat4 worldMatrix;',
 		'uniform float cameraFar;',
+		'uniform float thickness;',
+		'uniform mat3 normalMatrix;',
 
 		ShaderBuilder.animation.prevertex,
 
 		'varying float depth;',
 
 		'void main() {',
+
+			'#ifdef NORMAL',
+				'mat3 nMatrix = normalMatrix;',
+			'#endif',
+
 			'mat4 wMatrix = worldMatrix;',
 			ShaderBuilder.animation.vertex,
-			'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
+
+			'#ifdef NORMAL',
+				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
+			'#else',
+				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
+			'#endif',
+
+			// 'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
 			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'

@@ -1,5 +1,16 @@
-define(["goo/entities/systems/System", "goo/renderer/Renderer", "goo/math/Matrix4x4", 'goo/math/MathUtils', 'goo/math/Vector3'], /** @lends */
-function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
+define([
+	'goo/entities/systems/System', 
+	'goo/renderer/Renderer', 
+	'goo/math/Matrix4x4', 
+	'goo/math/MathUtils', 
+	'goo/math/Vector3'
+], /** @lends */ function (
+	System, 
+	Renderer, 
+	Matrix4x4, 
+	MathUtils, 
+	Vector3
+) {
 	'use strict';
 
 	/**
@@ -7,17 +18,15 @@ function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 	* @extends System
 	*/
 	function CSSTransformSystem(renderer) {
-		System.call(this, "CSSTransformSystem", ["TransformComponent", "CSSTransformComponent"]);
+		System.call(this, 'CSSTransformSystem', ['TransformComponent', 'CSSTransformComponent']);
 
 		this.renderer = renderer;
 
-
         if (document.querySelector) {
-		    this.viewDom = document.querySelector("#view");
-		    this.containerDom = document.querySelector("#cam1");
-		    this.containerDom2 = document.querySelector("#cam2");
+		    this.viewDom = document.querySelector('#view');
+		    this.containerDom = document.querySelector('#cam1');
+		    this.containerDom2 = document.querySelector('#cam2');
         }
-
 	}
 
 	var tmpMatrix = new Matrix4x4();
@@ -25,12 +34,13 @@ function (System, Renderer, Matrix4x4, MathUtils, Vector3) {
 	var tmpVector = new Vector3();
 
 	CSSTransformSystem.prototype = Object.create(System.prototype);
+	CSSTransformSystem.prototype.constructor = CSSTransformSystem;
 
 	var epsilon = function (value) {
 		return Math.abs(value) < 0.000001 ? 0 : value;
 	};
 
-	var prefixes = ["", "-webkit-", "-moz-", "-ms-", "-o-"];
+	var prefixes = ['', '-webkit-', '-moz-', '-ms-', '-o-'];
 	var setStyle = function (element, property, style) {
 		for (var j = 0; j < prefixes.length; j++) {
 			element.style[prefixes[j] + property] = style;

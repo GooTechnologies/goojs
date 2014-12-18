@@ -70,8 +70,8 @@ function (
 		};
 		this._devicePixelRatio = 1;
 
-		this.mouseMove = function(evt) {
-			if(!this.activeGizmo) {
+		this.mouseMove = function (evt) {
+			if (!this.activeGizmo) {
 				return;
 			}
 			var x = (evt.offsetX !== undefined) ? evt.offsetX : evt.layerX;
@@ -84,7 +84,7 @@ function (
 
 			/*
 			var camera = this.camera;
-			if(camera && camera.projectionMode === Camera.Parallel){
+			if (camera && camera.projectionMode === Camera.Parallel){
 				mousePos[0] = x / (this.viewportWidth  / this._devicePixelRatio) / (camera._frustumRight - camera._frustumLeft);
 				mousePos[1] = y / (this.viewportHeight / this._devicePixelRatio) / (camera._frustumTop  - camera._frustumBottom);
 			}
@@ -105,8 +105,9 @@ function (
 	}
 
 	GizmoRenderSystem.prototype = Object.create(System.prototype);
+	GizmoRenderSystem.prototype.constructor = GizmoRenderSystem;
 
-	GizmoRenderSystem.prototype.activate = function(id, x, y) {
+	GizmoRenderSystem.prototype.activate = function (id, x, y) {
 		this.active = true;
 		var handle = Gizmo.getHandle(id);
 		if (handle && this.activeGizmo) {
@@ -120,7 +121,7 @@ function (
 		}
 	};
 
-	GizmoRenderSystem.prototype.deactivate = function() {
+	GizmoRenderSystem.prototype.deactivate = function () {
 		this.activeGizmo.deactivate();
 
 		this.active = false;
@@ -131,11 +132,11 @@ function (
 		}
 	};
 
-	GizmoRenderSystem.prototype.getGizmo = function(id) {
+	GizmoRenderSystem.prototype.getGizmo = function (id) {
 		return this.gizmos[id];
 	};
 
-	GizmoRenderSystem.prototype.show = function(entity) {
+	GizmoRenderSystem.prototype.show = function (entity) {
 		this.entity = entity;
 		if (this.activeGizmo) {
 			if (this.entity) {
@@ -146,7 +147,7 @@ function (
 		}
 	};
 
-	GizmoRenderSystem.prototype.showGizmo = function(gizmo) {
+	GizmoRenderSystem.prototype.showGizmo = function (gizmo) {
 		gizmo.copyTransform(this.entity.transformComponent.worldTransform, this.global);
 		if (!gizmo.visible) {
 			this.renderables = gizmo.renderables;
@@ -154,14 +155,14 @@ function (
 		}
 	};
 
-	GizmoRenderSystem.prototype.hideGizmo = function(gizmo) {
+	GizmoRenderSystem.prototype.hideGizmo = function (gizmo) {
 		if (gizmo.visible) {
 			this.renderables = [];
 			gizmo.visible = false;
 		}
 	};
 
-	GizmoRenderSystem.prototype.setActiveGizmo = function(id) {
+	GizmoRenderSystem.prototype.setActiveGizmo = function (id) {
 		if (this.active) {
 			this.nextGizmo = id;
 			return;
@@ -174,17 +175,18 @@ function (
 			this.showGizmo(this.activeGizmo);
 		}
 	};
-	GizmoRenderSystem.prototype.setGlobal = function(global) {
-		if(this.global !== global) {
+
+	GizmoRenderSystem.prototype.setGlobal = function (global) {
+		if (this.global !== global) {
 			this.global = !!global;
-			if(this.entity && this.activeGizmo) {
+			if (this.entity && this.activeGizmo) {
 				this.showGizmo(this.activeGizmo);
 			}
 		}
 	};
 
-	GizmoRenderSystem.prototype.setupCallbacks = function(callbacks) {
-		if(callbacks && callbacks.length === 3) {
+	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
+		if (callbacks && callbacks.length === 3) {
 			this.gizmos[0].onChange = callbacks[0];
 			this.gizmos[1].onChange = callbacks[1];
 			this.gizmos[2].onChange = callbacks[2];
@@ -195,10 +197,10 @@ function (
 		var inverseTransformation = new Matrix4x4();
 
 		// Set bound entities translation
-		this.gizmos[0].onChange = function(change) {
+		this.gizmos[0].onChange = function (change) {
 			if (this.entity) {
 				var translation = this.entity.transformComponent.transform.translation;
-				translation.setv(change);
+				translation.setVector(change);
 				if (this.entity.transformComponent.parent) {
 					inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
 					inverseTransformation.invert();
@@ -209,7 +211,7 @@ function (
 		}.bind(this);
 
 		// Set bound entities rotation
-		this.gizmos[1].onChange = function(change) {
+		this.gizmos[1].onChange = function (change) {
 			if (this.entity) {
 				this.entity.transformComponent.transform.rotation.copy(change);
 				if (this.entity.transformComponent.parent) {
@@ -226,10 +228,10 @@ function (
 		}.bind(this);
 
 		// Set bound entities scale
-		this.gizmos[2].onChange = function(change) {
+		this.gizmos[2].onChange = function (change) {
 			if (this.entity) {
 				var scale = this.entity.transformComponent.transform.scale;
-				scale.setv(change);
+				scale.setVector(change);
 				if (this.entity.transformComponent.parent) {
 					scale.div(this.entity.transformComponent.parent.worldTransform.scale);
 				}
@@ -257,7 +259,7 @@ function (
 		renderer.checkResize(this.camera);
 		this._devicePixelRatio = renderer._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / renderer.svg.currentScale : 1;
 
-		if(!this.domElement) {
+		if (!this.domElement) {
 			this.domElement = renderer.domElement;
 		}
 		this.viewportHeight = renderer.viewportHeight;
@@ -268,7 +270,21 @@ function (
 		}
 	};
 
-	GizmoRenderSystem.prototype.renderToPick = function(renderer, skipUpdateBuffer) {
+	GizmoRenderSystem.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.pickingMaterial);
+
+		this.gizmos.forEach(function (gizmo) {
+			gizmo.renderables.forEach(function (renderable) {
+				renderable.materials.forEach(function (material) {
+					renderer.invalidateMaterial(material);
+				});
+
+				renderer.invalidateMeshData(renderable.meshData);
+			});
+		});
+	};
+
+	GizmoRenderSystem.prototype.renderToPick = function (renderer, skipUpdateBuffer) {
 		for (var i = 0; i < this.renderables.length; i++) {
 			var renderable = this.renderables[i];
 			if (renderable.thickness !== undefined) {
@@ -296,9 +312,7 @@ function (
 				shader.defines = shader.defines || {};
 
 				for (var attribute in attributeMap) {
-					if (!shader.defines[attribute]) {
-						shader.defines[attribute] = true;
-					}
+					shader.setDefine(attribute, true);
 				}
 			}
 		],
@@ -308,7 +322,7 @@ function (
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraFar : Shader.FAR_PLANE,
 			thickness: 0.0,
-			id : function(shaderInfo) {
+			id : function (shaderInfo) {
 				return shaderInfo.renderable.id + 1;
 			}
 		},

@@ -40,7 +40,7 @@ function(
 	 * @param {object} options
 	 */
 	ProjectHandler.prototype._remove = function(ref, options) {
-		var project = this._objects[ref];
+		var project = this._objects.get(ref);
 		if (project) {
 			this.updateObject(project.mainScene.id, null, options);
 		}

@@ -82,5 +82,45 @@ function() {
 		return null;
 	};
 
+	/**
+	 * Returns an array of keys for the given Set or Map
+	 * @param {Set|Map} collection
+	 * @returns {Array}
+	 */
+	ArrayUtil.fromKeys = function (collection) {
+		var array = [];
+
+		collection.forEach(function (value, key) {
+			array.push(key);
+		});
+//		var iterator = collection.keys();
+//		var entry = iterator.next();
+//		while (!entry.done) {
+//			array.push(entry.value);
+//			entry = iterator.next();
+//		}
+		return array;
+	};
+
+	/**
+	 * Returns an array of values for the given Set or Map
+	 * @param {Set|Map} collection
+	 * @returns {Array}
+	 */
+	ArrayUtil.fromValues = function (collection) {
+		var array = [];
+
+		collection.forEach(function (value) {
+			array.push(value);
+		});
+//		var iterator = collection.values();
+//		var entry = iterator.next();
+//		while (!entry.done) {
+//			array.push(entry.value);
+//			entry = iterator.next();
+//		}
+		return array;
+	};
+
 	return ArrayUtil;
 });

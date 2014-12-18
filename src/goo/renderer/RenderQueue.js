@@ -10,51 +10,26 @@ function (Vector3) {
 	 */
 	function RenderQueue() {
 		this.opaqueSorter = function (a, b) {
-			//TODO: Add texture checks on material
-
-			var m1 = a.meshRendererComponent.materials[0];
-			var m2 = b.meshRendererComponent.materials[0];
-
-			if (m1 === null || m2 === null) {
-				return 0;
-			}
-			if (m1 === m2) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
-				if (bound1 === null || bound2 === null) {
-					return 0;
-				}
-
-				var dist1 = a.meshRendererComponent._renderDistance;
-				var dist2 = b.meshRendererComponent._renderDistance;
-
-				return dist1 - dist2;
-			}
-
-			var shader1 = m1.shader;
-			var shader2 = m2.shader;
+			var shader1 = a.meshRendererComponent.materials[0].shader;
+			var shader2 = b.meshRendererComponent.materials[0].shader;
 			if (shader1 === null || shader2 === null) {
 				return 0;
 			}
-			if (shader1._id === shader2._id) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
-				if (bound1 === null || bound2 === null) {
-					return 0;
-				}
-
-				var dist1 = a.meshRendererComponent._renderDistance;
-				var dist2 = b.meshRendererComponent._renderDistance;
-
-				return dist1 - dist2;
+			if (shader1.defineKey === shader2.defineKey) {
+				return a.meshRendererComponent._renderDistance - b.meshRendererComponent._renderDistance;
 			}
-			return shader1._id - shader2._id;
+
+			if (shader2.defineKey < shader1.defineKey) {
+				return -1;
+			} else if (shader2.defineKey > shader1.defineKey) {
+				return 1;
+			} else {
+				return 0;
+			}
 		};
 
 		this.transparentSorter = function (a, b) {
-			var dist1 = a.meshRendererComponent._renderDistance;
-			var dist2 = b.meshRendererComponent._renderDistance;
-			return dist2 - dist1;
+			return b.meshRendererComponent._renderDistance - a.meshRendererComponent._renderDistance;
 		};
 
 		this.bucketSorter = function (a, b) {
@@ -73,10 +48,9 @@ function (Vector3) {
 	RenderQueue.prototype.sort = function (renderList, camera) {
 		// TODO: Reuse objects more
 		var index = 0;
-		this.camera = camera;
 		var buckets = {};
 		bucketSortList.length = 0;
-		for (var i = 0; i < renderList.length; i++) {
+		for (var i = 0, l = renderList.length; i < l; i++) {
 			var renderable = renderList[i];
 			var meshRendererComponent = renderable.meshRendererComponent;
 
@@ -90,9 +64,9 @@ function (Vector3) {
 			var distance = 0;
 			var bound = meshRendererComponent.worldBound;
 			if (bound !== null) {
-				distance = tmpVec.setv(camera.translation).subv(bound.center).lengthSquared();
+				distance = tmpVec.setVector(camera.translation).subVector(bound.center).lengthSquared();
 			} else if (renderable.transformComponent) {
-				distance = tmpVec.setv(camera.translation).subv(renderable.transformComponent.worldTransform.translation).lengthSquared();
+				distance = tmpVec.setVector(camera.translation).subVector(renderable.transformComponent.worldTransform.translation).lengthSquared();
 			}
 			meshRendererComponent._renderDistance = distance;
 
@@ -108,7 +82,7 @@ function (Vector3) {
 		if (bucketSortList.length > 1) {
 			bucketSortList.sort(this.bucketSorter);
 		}
-		for (var bucketIndex = 0; bucketIndex < bucketSortList.length; bucketIndex++) {
+		for (var bucketIndex = 0, l = bucketSortList.length; bucketIndex < l; bucketIndex++) {
 			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
 			if (key >= 0) {
@@ -118,7 +92,7 @@ function (Vector3) {
 					bucket.sort(this.transparentSorter);
 				}
 			}
-			for (var i = 0; i < bucket.length; i++) {
+			for (var i = 0, bl = bucket.length; i < bl; i++) {
 				renderList[index] = bucket[i];
 				index++;
 			}

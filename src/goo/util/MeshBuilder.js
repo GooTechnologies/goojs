@@ -24,11 +24,11 @@ define([
 	 * var box1 = new Box(0.3, 1, 1.6);
 	 * var box2 = new Box(0.2, 0.15, 0.7);
 	 * 
-	 * transform.translation.setd(0, 0, 1.3);
+	 * transform.translation.setDirect(0, 0, 1.3);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box1, transform);
      * 
-	 * transform.translation.setd(0, 0, 0);
+	 * transform.translation.setDirect(0, 0, 0);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box2, transform);
      * 
@@ -114,7 +114,7 @@ define([
 			var vertexPos = this.vertexCounter * count;
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < viewLength; i += count) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 					matrix.applyPostPoint(vert);
 					array[vertexPos + i + 0] = vert.data[0];
 					array[vertexPos + i + 1] = vert.data[1];
@@ -122,7 +122,7 @@ define([
 				}
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < viewLength; i += count) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 					rotation.applyPost(vert);
 					array[vertexPos + i + 0] = vert.data[0];
 					array[vertexPos + i + 1] = vert.data[1];
@@ -130,7 +130,7 @@ define([
 				}
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < viewLength; i += count) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 					rotation.applyPost(vert);
 					array[vertexPos + i + 0] = vert.data[0];
 					array[vertexPos + i + 1] = vert.data[1];

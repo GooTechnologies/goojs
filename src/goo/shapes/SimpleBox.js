@@ -26,6 +26,7 @@ MeshData) {
 	}
 
 	SimpleBox.prototype = Object.create(MeshData.prototype);
+	SimpleBox.prototype.constructor = SimpleBox;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.

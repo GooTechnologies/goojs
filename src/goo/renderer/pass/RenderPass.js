@@ -28,6 +28,7 @@ function (
 		this.enabled = true;
 		this.clear = true;
 		this.needsSwap = false;
+		this.viewportSize = undefined;
 	}
 
 	RenderPass.prototype = Object.create(Pass.prototype);
@@ -43,7 +44,7 @@ function (
 
 		lights = lights || [];
 		if (clearColor && false) {
-			this.oldClearColor.setv(renderer.clearColor);
+			this.oldClearColor.setVector(renderer.clearColor);
 			renderer.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 		}
 

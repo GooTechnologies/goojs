@@ -162,6 +162,7 @@ function (
 	World.prototype.registerComponent = function (componentConstructor) {
 		if (this._components.indexOf(componentConstructor) === -1) {
 			this._components.push(componentConstructor);
+			Component.applyEntitySelectionAPI(componentConstructor.entitySelectionAPI, componentConstructor.type);
 		}
 		return this;
 	};
@@ -239,6 +240,9 @@ function (
 		for (var i = 0; i < this._systems.length; i++) {
 			var system = this._systems[i];
 			if (system.type === type) {
+				if (system.cleanup) {
+					system.cleanup();
+				}
 				this._systems.splice(i, 1);
 			}
 		}

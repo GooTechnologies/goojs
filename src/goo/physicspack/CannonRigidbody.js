@@ -107,9 +107,13 @@ function (
 	};
 
 	CannonRigidbody.prototype.initialize = function (entity) {
+		var that = this;
 		this.traverseColliders(entity, function (colliderEntity, collider, position, quaternion) {
-			this.addCollider(collider, position, quaternion);
+			that.addCollider(collider, position, quaternion);
 		});
+		if (this.isKinematic) {
+			this.cannonBody.type = CANNON.Body.KINEMATIC;
+		}
 	};
 
 	CannonRigidbody.prototype.addCollider = function (collider, position, quaternion) {

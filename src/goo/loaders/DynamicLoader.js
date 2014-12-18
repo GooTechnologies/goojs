@@ -5,6 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
+	'goo/util/ArrayUtil',
 	'goo/util/ShapeCreatorMemoized',
 
 	'goo/loaders/handlers/CameraComponentHandler',
@@ -33,6 +34,7 @@ function (
 	RSVP,
 	StringUtil,
 	PromiseUtil,
+	ArrayUtil,
 	ShapeCreatorMemoized
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
@@ -64,7 +66,7 @@ function (
 		}
 
 		// Will hold the engine objects
-		this._objects = {};
+		this._objects = new Map();
 		// Will hold instances of handler classes by type
 		this._handlers = {};
 	}
@@ -181,7 +183,7 @@ function (
 	};
 
 	DynamicLoader.prototype.remove = function (ref) {
-		delete this._objects[ref];
+		this._objects.delete(ref);
 		return this.update(ref, null);
 	};
 
@@ -245,35 +247,37 @@ function (
 		}
 
 		function traverse(refs) {
-			var binaryRefs = {};
-			var jsonRefs = {};
-			var promises = [];
+			var binaryRefs = new Set();
+			var jsonRefs = new Set();
 
 			// Loads config for traversal
 			function loadFn(ref) {
-				promises.push(that._loadRef(ref, options).then(traverseFn));
+				return that._loadRef(ref, options).then(traverseFn);
 			}
 
 			// Looks through config for binaries
 			function traverseFn(config) {
+				var promises = [];
 				var refs = that._getRefsFromConfig(config);
 
 				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
 					var ref = refs[keys[i]];
-					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs[ref]) {
+					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs.has(ref)) {
 						// If it's a binary ref, store it in the list
-						binaryRefs[ref] = true;
-					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs[ref]) {
+						binaryRefs.add(ref);
+					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs.has(ref)) {
 						// If it's a json-config, look deeper
-						jsonRefs[ref] = true;
-						loadFn(ref);
+						jsonRefs.add(ref);
+						promises.push(loadFn(ref));
 					}
 				}
+				return RSVP.all(promises);
 			}
 
-			traverseFn({ collectionRefs: refs });
 			// Resolved when everything is loaded and traversed
-			return RSVP.all(promises).then(function () { return Object.keys(binaryRefs); });
+			return traverseFn({ collectionRefs: refs }).then(function () {
+				return ArrayUtil.fromValues(binaryRefs);
+			});
 		}
 
 		return traverse(references).then(loadBinaryRefs);

@@ -16,18 +16,22 @@ define([
 		 * @extends Component
 		 */
 		function MovementComponent() {
+			Component.apply(this, arguments);
+
 			this.type = 'MovementComponent';
 			this.velocity = new Vector3();
 			this.rotationVelocity = new Vector3();
 		}
 
+		MovementComponent.type = 'MovementComponent';
+
 		MovementComponent.prototype = Object.create(Component.prototype);
+		MovementComponent.prototype.constructor = MovementComponent;
 
 		/**
 		 * Adds velocity to movement. Typically useful for things such as gravity and slingshots.
 		 * @param {Vector3} vec3 velocity impulse vector.
 		 */
-
 		MovementComponent.prototype.addVelocity = function(vec3) {
 			this.velocity.add(vec3);
 		};

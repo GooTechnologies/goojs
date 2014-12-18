@@ -26,6 +26,7 @@ function (
 	}
 
 	HtmlSystem.prototype = Object.create(System.prototype);
+	HtmlSystem.prototype.constructor = HtmlSystem;
 
 	//
 	// Browsers implement z-index as signed 32bit int.
@@ -70,8 +71,8 @@ function (
 			}
 
 			// Behind camera
-			tmpVector.setv(camera.translation)
-				.subv(entity.transformComponent.worldTransform.translation);
+			tmpVector.setVector(camera.translation)
+				.subVector(entity.transformComponent.worldTransform.translation);
 			if (camera._direction.dot(tmpVector) > 0) {
 				component.domElement.style.display = 'none';
 				continue;

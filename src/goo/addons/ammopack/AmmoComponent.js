@@ -36,6 +36,7 @@ function(
 	 * Ammo is a powerful physics engine converted from the C language project Bullet.
 	 * Use Ammo.js if you need to support any 3D shape (trimesh).
 	 * Also see {@link AmmoSystem}.
+	 * @deprecated Deprecated as of v0.11.x and scheduled for removal in v0.13.0; consider using the Cannon system/component instead.
 	 * @extends Component
 	 * @param {Object} [settings] The settings object can contain the following properties:
 	 * @param {number} [settings.mass=0] (0 means immovable)
@@ -49,6 +50,8 @@ function(
 	 * entity.setComponent(new AmmoComponent({ mass:5 }));
 	 */
 	function AmmoComponent(settings) {
+		Component.apply(this, arguments);
+
 		this.settings = settings = settings || {};
 
 		_.defaults(settings,{
@@ -224,7 +227,7 @@ function(
 		}
 		this.body.getMotionState().getWorldTransform(this.ammoTransform);
 		var ammoQuat = this.ammoTransform.getRotation();
-		this.gooQuaternion.setd(ammoQuat.x(), ammoQuat.y(), ammoQuat.z(), ammoQuat.w());
+		this.gooQuaternion.setDirect(ammoQuat.x(), ammoQuat.y(), ammoQuat.z(), ammoQuat.w());
 		tc.transform.rotation.copyQuaternion(this.gooQuaternion);
 		var origin = this.ammoTransform.getOrigin();
 		tc.setTranslation(origin.x(), origin.y(), origin.z());

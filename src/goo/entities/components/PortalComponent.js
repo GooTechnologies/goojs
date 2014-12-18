@@ -23,6 +23,8 @@ function (
 	 * @extends Component
 	 */
 	function PortalComponent(camera, height, options, overrideMaterial) {
+		Component.apply(this, arguments);
+
 		height = height || 200;
 
 		this.options = options || {};
@@ -53,7 +55,10 @@ function (
 		}
 	}
 
+	PortalComponent.type = 'PortalComponent';
+
 	PortalComponent.prototype = Object.create(Component.prototype);
+	PortalComponent.prototype.constructor = PortalComponent;
 
 	/**
 	 * Requests a rendering to be done to the material of the host object

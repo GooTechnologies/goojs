@@ -109,12 +109,12 @@ require([
 		var material = V.getColoredMaterial();
 		var moveAroundScript = function(entity/*, tpf*/) {
 			var oldY = entity.transformComponent.transform.translation.y;
-			entity.transformComponent.transform.translation.setd(Math.sin(world.time) * sceneWidth, oldY, 0);
+			entity.transformComponent.transform.translation.setDirect(Math.sin(world.time) * sceneWidth, oldY, 0);
 			entity.transformComponent.setUpdated();
 		};
 		pipeEntity = world.createEntity(meshData, material, [0, pipeY + pipeScale / 2, 0], moveAroundScript);
 		pipeEntity.transformComponent.transform.rotation.rotateX(Math.PI / 2);
-		pipeEntity.transformComponent.transform.scale.setd(1, 1, pipeScale);
+		pipeEntity.transformComponent.transform.scale.setDirect(1, 1, pipeScale);
 		pipeEntity.addToWorld();
 
 	}
@@ -142,9 +142,15 @@ require([
 			}
 		});
 
-		V.button('Add Circle', function() {addCircle(pipeEntity.transformComponent.transform.translation.x, pipeY)});
-		V.button('Add Box', function() {addBox(pipeEntity.transformComponent.transform.translation.x, pipeY)});
-		V.button('Add Polygon', function() {addPolygon(pipeEntity.transformComponent.transform.translation.x, pipeY)});
+		V.button('Add Circle', function () {
+			addCircle(pipeEntity.transformComponent.transform.translation.x, pipeY);
+		});
+		V.button('Add Box', function () {
+			addBox(pipeEntity.transformComponent.transform.translation.x, pipeY);
+		});
+		V.button('Add Polygon', function () {
+			addPolygon(pipeEntity.transformComponent.transform.translation.x, pipeY);
+		});
 	}
 
 

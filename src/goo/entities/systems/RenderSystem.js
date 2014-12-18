@@ -36,20 +36,19 @@ function (
 
 		this._debugMaterials = {};
 		this.overrideMaterials = [];
+		this.partitioningCamera = null;
 
 		this.camera = null;
 		this.lights = [];
 		this.currentTpf = 0.0;
 
-		// stop using this pattern!
-		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			that.camera = newCam.camera;
-		});
+			this.camera = newCam.camera;
+		}.bind(this));
 
 		SystemBus.addListener('goo.setLights', function (lights) {
-			that.lights = lights;
-		});
+			this.lights = lights;
+		}.bind(this));
 
 		this.picking = {
 			doPick: false,
@@ -61,10 +60,10 @@ function (
 			},
 			skipUpdateBuffer: false
 		};
-		//this.setDebugMaterial('wireframe');
 	}
 
 	RenderSystem.prototype = Object.create(System.prototype);
+	RenderSystem.prototype.constructor = RenderSystem;
 
 	RenderSystem.prototype.pick = function (x, y, callback, skipUpdateBuffer) {
 		this.picking.x = x;
@@ -106,7 +105,11 @@ function (
 				preRenderer.process(renderer, this.entities, this.partitioner, this.camera, this.lights);
 			}
 
-			this.partitioner.process(this.camera, this.entities, this.renderList);
+			if (this.partitioningCamera) {
+				this.partitioner.process(this.partitioningCamera, this.entities, this.renderList);
+			} else {
+				this.partitioner.process(this.camera, this.entities, this.renderList);
+			}
 
 			if (this.composers.length > 0 && this._composersActive) {
 				for (var i = 0; i < this.composers.length; i++) {
@@ -193,6 +196,25 @@ function (
 				this.overrideMaterials.push(this._debugMaterials[key]);
 			}
 		}
+	};
+
+	RenderSystem.prototype.invalidateHandles = function (renderer) {
+		for (var i = 0; i < this.entities.length; i++) {
+			var entity = this.entities[i];
+
+			var materials = entity.meshRendererComponent.materials;
+			for (var j = 0; j < materials.length; j++) {
+				renderer.invalidateMaterial(materials[j]);
+			}
+			renderer.invalidateMeshData(entity.meshDataComponent.meshData);
+		}
+
+		for (var i = 0; i < this.composers.length; i++) {
+			var composer = this.composers[i];
+			renderer.invalidateComposer(composer);
+		}
+
+		renderer.rendererRecord = null; // might hold on to stuff
 	};
 
 	return RenderSystem;

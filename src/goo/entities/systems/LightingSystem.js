@@ -1,9 +1,11 @@
 define([
+	'goo/renderer/Capabilities',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
+	Capabilities,
 	System,
 	SystemBus
 ) {
@@ -24,6 +26,7 @@ function (
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);
+	LightingSystem.prototype.constructor = LightingSystem;
 
 	/**
 	 * Replaces the lights tracked by the system with custom ones.
@@ -43,7 +46,13 @@ function (
 		this._needsUpdate = true;
 	};
 
+	LightingSystem.prototype.inserted = function (entity) {
+		entity.lightComponent.updateLight(entity.transformComponent.worldTransform);
+	};
+
 	LightingSystem.prototype.process = function (entities) {
+		// do we use this anymore?
+		// we used to have this feature for the early days of create
 		if (!this.overrideLights) {
 			this.lights.length = 0;
 
@@ -57,13 +66,21 @@ function (
 				}
 
 				if (!lightComponent.hidden) {
-					this.lights.push(lightComponent.light);
+					var light = lightComponent.light;
+					light.shadowCaster = light.shadowCaster && Capabilities.TextureFloat; // Needs float texture for shadows (for now)
+					this.lights.push(light);
 				}
 			}
 			this._needsUpdate = false;
 
 			SystemBus.emit('goo.setLights', this.lights);
 		}
+	};
+
+	LightingSystem.prototype.invalidateHandles = function (renderer) {
+		this._activeEntities.forEach(function (entity) {
+			entity.lightComponent.light.invalidateHandles(renderer);
+		});
 	};
 
 	return LightingSystem;

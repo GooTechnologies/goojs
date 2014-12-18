@@ -44,8 +44,8 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	//world.setSystem(new CannonPhysicsSystem());
-	world.setSystem(new AmmoPhysicsSystem());
+	world.setSystem(new CannonPhysicsSystem());
+	//world.setSystem(new AmmoPhysicsSystem());
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {

@@ -126,7 +126,7 @@ require([
 
 	var goo = V.initGoo();
 
-	V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0));
+	V.addOrbitCamera(new Vector3(60, Math.PI / 2, 0), new Vector3(0, 5, 0));
 	V.addLights();
 
 	addBox(goo);

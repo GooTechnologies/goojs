@@ -1,19 +1,70 @@
 define([
-	'goo/math/Matrix2x2'
+	'goo/math/Matrix2x2',
+	'test/CustomMatchers'
 ], function (
-	Matrix2x2
+	Matrix2x2,
+	CustomMatchers
 ) {
 	'use strict';
 
 	describe('Matrix2x2', function () {
+		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
+		});
+
+		describe('constructor', function () {
+			it('creates an identity matrix when given no parameters', function () {
+				expect(new Matrix2x2()).toBeCloseToMatrix(Matrix2x2.IDENTITY);
+			});
+
+			it('creates a matrix when given 4 parameters', function () {
+				var matrix = new Matrix2x2(11, 22, 33, 44);
+				var expected = new Matrix2x2();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given an array', function () {
+				var matrix = new Matrix2x2([11, 22, 33, 44]);
+				var expected = new Matrix2x2();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+
+			it('creates a matrix when given a matrix', function () {
+				var original = new Matrix2x2();
+				for (var i = 0; i < 4; i++) {
+					original.data[i] = (i + 1) * 11;
+				}
+
+				var matrix = new Matrix2x2(original);
+
+				var expected = new Matrix2x2();
+
+				for (var i = 0; i < 4; i++) {
+					expected.data[i] = (i + 1) * 11;
+				}
+
+				expect(matrix).toBeCloseToMatrix(expected);
+			});
+		});
+
 		it('can combine multiple matrices into a single matrix', function () {
 			var a = new Matrix2x2(1, 2, 3, 4);
 			var b = new Matrix2x2(1, 2, 3, 4);
 
 			a.combine(a);
 
-			expect(a).toEqual(new Matrix2x2(7, 10, 15, 22));
-			expect(Matrix2x2.combine(b, b)).toEqual(new Matrix2x2(7, 10, 15, 22));
+			expect(a).toBeCloseToMatrix(new Matrix2x2(7, 10, 15, 22));
+			expect(Matrix2x2.combine(b, b)).toBeCloseToMatrix(new Matrix2x2(7, 10, 15, 22));
 		});
 
 		it('can be transposed', function () {
@@ -22,20 +73,18 @@ define([
 
 			a.transpose();
 
-			expect(a).toEqual(new Matrix2x2(1, 3, 2, 4));
-			expect(Matrix2x2.transpose(b)).toEqual(new Matrix2x2(1, 3, 2, 4));
+			expect(a).toBeCloseToMatrix(new Matrix2x2(1, 3, 2, 4));
+			expect(Matrix2x2.transpose(b)).toBeCloseToMatrix(new Matrix2x2(1, 3, 2, 4));
 		});
 
 		it('can be inverted', function () {
 			var a = new Matrix2x2(1, 2, 3, 4);
 			var b = new Matrix2x2(1, 2, 3, 4);
-			var c = new Matrix2x2(0, 0, 1, 2);
 
 			a.invert();
 
-			expect(a).toEqual(new Matrix2x2(-2, 1, 1.5, -0.5));
-			expect(Matrix2x2.invert(b)).toEqual(new Matrix2x2(-2, 1, 1.5, -0.5));
-			expect(function () { c.invert(); }).toThrow();
+			expect(a).toBeCloseToMatrix(new Matrix2x2(-2, 1, 1.5, -0.5));
+			expect(Matrix2x2.invert(b)).toBeCloseToMatrix(new Matrix2x2(-2, 1, 1.5, -0.5));
 		});
 
 		it('can determine orthogonality', function () {
@@ -82,32 +131,32 @@ define([
 			var a = new Matrix2x2(1, 2, 3, 4);
 			var b = new Matrix2x2();
 			Matrix2x2.add(a,a,b);
-			expect(b).toEqual(new Matrix2x2(2,4,6,8));
-			expect(Matrix2x2.add(a,a)).toEqual(new Matrix2x2(2,4,6,8));
-			expect(a.add(a)).toEqual(new Matrix2x2(2,4,6,8));
+			expect(b).toBeCloseToMatrix(new Matrix2x2(2, 4, 6, 8));
+			expect(Matrix2x2.add(a,a)).toBeCloseToMatrix(new Matrix2x2(2, 4, 6, 8));
+			expect(a.add(a)).toBeCloseToMatrix(new Matrix2x2(2, 4, 6, 8));
 		});
 
 		it('can add scalar', function () {
 			var a = new Matrix2x2(1, 2, 3, 4);
 			var b = new Matrix2x2();
-			Matrix2x2.add(a,1,b);
-			expect(b).toEqual(new Matrix2x2(2,3,4,5));
+			Matrix2x2.add(a, 1,b);
+			expect(b).toBeCloseToMatrix(new Matrix2x2(2, 3, 4, 5));
 		});
 
 		it('can subtract', function () {
 			var a = new Matrix2x2(1, 2, 3, 4);
 			var b = new Matrix2x2();
 			Matrix2x2.sub(a,a,b);
-			expect(b).toEqual(new Matrix2x2(0,0,0,0));
-			expect(Matrix2x2.sub(a,a)).toEqual(new Matrix2x2(0,0,0,0));
-			expect(a.sub(a)).toEqual(new Matrix2x2(0,0,0,0));
+			expect(b).toBeCloseToMatrix(new Matrix2x2(0, 0, 0, 0));
+			expect(Matrix2x2.sub(a,a)).toBeCloseToMatrix(new Matrix2x2(0, 0, 0, 0));
+			expect(a.sub(a)).toBeCloseToMatrix(new Matrix2x2(0, 0, 0, 0));
 		});
 
 		it('can subtract scalar', function () {
 			var a = new Matrix2x2(1, 2, 3, 4);
 			var b = new Matrix2x2();
-			Matrix2x2.sub(a,1,b);
-			expect(b).toEqual(new Matrix2x2(0,1,2,3));
+			Matrix2x2.sub(a, 1,b);
+			expect(b).toBeCloseToMatrix(new Matrix2x2(0, 1, 2, 3));
 		});
 
 		describe('copy', function () {
@@ -115,7 +164,7 @@ define([
     			var original = new Matrix2x2(11, 22, 33, 44);
     			var copy = new Matrix2x2(55, 66, 77, 88);
     			copy.copy(original);
-    			expect(copy).toEqual(new Matrix2x2(11, 22, 33, 44));
+    			expect(copy).toBeCloseToMatrix(new Matrix2x2(11, 22, 33, 44));
     		});
 		});
 
@@ -125,7 +174,7 @@ define([
     			var clone = original.clone();
     
     			expect(clone).not.toBe(original);
-    			expect(clone).toEqual(new Matrix2x2(11, 22, 33, 44));
+    			expect(clone).toBeCloseToMatrix(new Matrix2x2(11, 22, 33, 44));
     		});
 		});
 	});

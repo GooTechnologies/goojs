@@ -17,6 +17,7 @@ define(["goo/noise/Noise"],
 	}
 
 	ValueNoise.prototype = Object.create(Noise.prototype);
+	ValueNoise.prototype.constructor = ValueNoise;
 
 	/* ====================================================================== */
 

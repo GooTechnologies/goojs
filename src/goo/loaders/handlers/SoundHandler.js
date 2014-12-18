@@ -58,11 +58,11 @@ function (
 	 * @private
 	 */
 	SoundHandler.prototype._remove = function (ref) {
-		var sound = this._objects[ref];
-		if (sound) {
-			sound.stop();
-		}
-		delete this._objects[ref];
+		var sound = this._objects.get(ref);
+		if (!sound) { return; }
+
+		sound.stop();
+		this._objects.delete(ref);
 	};
 
 	/**
