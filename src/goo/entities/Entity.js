@@ -4,7 +4,7 @@ define([
 ], function (
 	Component,
 	StringUtil
-	) {
+) {
 	'use strict';
 
 	/**

@@ -1,6 +1,5 @@
 'use strict';
 
-var _ = require('underscore');
 var dogma = require('./dogma');
 var util = require('./util');
 
@@ -137,15 +136,18 @@ var all = function (jsData, files) {
 	inject(jsData.constructor);
 	jsData.methods.forEach(inject);
 	jsData.statics.forEach(inject);
+	jsData.staticMembers.forEach(inject);
 	jsData.members.forEach(inject);
 
 	link(jsData.constructor.comment);
 	jsData.methods.forEach(function (method) { link(method.comment); });
 	jsData.statics.forEach(function (static_) { link(static_.comment); });
+	jsData.staticMembers.forEach(function (staticMember) { link(staticMember.comment); });
 	jsData.members.forEach(function (member) { link(member.comment); });
 
 	jsData.hasMethods = jsData.methods.length > 0;
 	jsData.hasStatics = jsData.statics.length > 0;
+	jsData.hasStaticMembers = jsData.staticMembers.length > 0;
 	jsData.hasMembers = jsData.members.length > 0;
 };
 

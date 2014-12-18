@@ -1,3 +1,5 @@
+'use strict';
+
 var esprima = require('../lib/esprima');
 var estraverse = require('estraverse');
 
@@ -29,7 +31,6 @@ var extractTree = function (tree, fileName, options) {
 				if (leadingComments) {
 					comment = getFirstJSDoc(leadingComments);
 				}
-
 
 				return {
 					name: node.id.name,
@@ -94,6 +95,30 @@ var extractTree = function (tree, fileName, options) {
 				};
 			}
 		},
+		staticMembers: {
+			match: function (node, parent, fileName) {
+				return node.type === 'AssignmentExpression' && node.operator === '=' &&
+					node.left.type === 'MemberExpression' &&
+					node.left.object.name === fileName &&
+					node.right.type !== 'FunctionExpression' &&
+					parent.leadingComments &&
+					getFirstJSDoc(parent.leadingComments) &&
+					options.nameFilter(node.left.property.name);
+			},
+			extract: function (node, parent) {
+				var comment;
+				var leadingComments = parent.leadingComments;
+
+				if (leadingComments) {
+					comment = getFirstJSDoc(leadingComments);
+				}
+
+				return {
+					name: node.left.property.name,
+					rawComment: comment
+				};
+			}
+		},
 		member: {
 			match: function (node, parent, fileName) {
 				return node.type === 'AssignmentExpression' && node.operator === '=' &&
@@ -116,7 +141,7 @@ var extractTree = function (tree, fileName, options) {
 
 
 
-	var constructor, statics = [], methods = [], members;
+	var constructor, statics = [], methods = [], members, staticMembers = [];
 
 	var collectMembers = function (node) {
 		var members = [];
@@ -139,6 +164,8 @@ var extractTree = function (tree, fileName, options) {
 				methods.push(extractors.method.extract(node));
 			} else if (extractors.static_.match(node, fileName)) {
 				statics.push(extractors.static_.extract(node));
+			} else if (extractors.staticMembers.match(node, parent, fileName)) {
+				staticMembers.push(extractors.staticMembers.extract(node, parent));
 			}
 		}
 	});
@@ -146,9 +173,10 @@ var extractTree = function (tree, fileName, options) {
 	return {
 		constructor: constructor,
 		statics: statics,
+		staticMembers: staticMembers,
 		methods: methods,
 		members: members
-	}
+	};
 };
 
 var extract = function (source, file, options) {

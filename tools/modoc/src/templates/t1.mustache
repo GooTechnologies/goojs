@@ -103,6 +103,31 @@
 	</section>
 	{{/hasMembers}}
 
+
+	{{! static members }}
+	{{#hasStaticMembers}}
+	<section>
+		<h2>Static members</h2>
+
+		{{#staticMembers}}
+			<div>
+				<a id="{{name}}" href="#{{name}}">
+					<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
+				</a>
+				{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
+				{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
+				{{#comment.default_}}<span class="parameter-default">default = {{default_}}</span>{{/comment.default_}}
+				<span class="parameter-description">{{{comment.description}}}</span>
+			</div>
+
+			{{#comment.deprecated}}
+				<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
+			{{/comment.deprecated}}
+		{{/staticMembers}}
+	</section>
+	{{/hasStaticMembers}}
+
+
 	{{! instance methods }}
 	{{#hasMethods}}
 	<section>
