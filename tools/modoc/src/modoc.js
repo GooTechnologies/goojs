@@ -1,5 +1,16 @@
 'use strict';
 
+/**
+ Main file
+ + parses comment line args
+ + gets the source files to be processed
+ + gets data for the index (nav bar)
+ + gets the processed documentation
+ + generates every -doc file
+ + generates an index file (in this case Entity.js)
+ + generates the changelog in a pretty format
+ */
+
 var fs = require('fs');
 var childProcess = require('child_process');
 var glob = require('glob');
