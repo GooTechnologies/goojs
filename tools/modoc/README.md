@@ -40,32 +40,32 @@ If you wish to document anything that is not covered by either of these cases yo
 
 ###Supported tags/transformations:
 
-+ `@param {<type>} <name> <description>` - any known classes mentioned in *type* are transformed in links
-+ `@example` followed by any number of lines of code
-+ `@returns {<type>} <description>`
-+ `@deprecated <description>` - deprecated items are collected in a list and rendered in a special place
-+ `@hidden` to exclude a method from rendering
-+ `@private` same as `@hidden` and to communicate that this method should not be used from outside of its class
-+ `@type {<type>}` for documenting the type of members of `this` in a constructor
-+ `@default <value>` for documenting the default value of members of `this` in a constructor
-+ `@property` same effect as `@type`, only that it appears in the constructor's jsdoc
-+ `@readonly` to inform the user that this property should not be modified
-+ `@extends <base-class>`
-+ `@example-link <link> <text>` to link to a jsfiddle or a visual-test
-+ `@target-class <target-class> <item-name> method|member|static-method|static-member` to document fictitious stuff 
-+ `[text]{@link url}` will generate a link for *text* pointing to *url*. This can stay in any *description* field.
-+ `{@linkplain url text}` same as above; will be removed once the doc is normalised
+ + `@param {<type>} <name> <description>` - any known classes mentioned in *type* are transformed in links
+ + `@example` followed by any number of lines of code
+ + `@returns {<type>} <description>`
+ + `@deprecated <description>` - deprecated items are collected in a list and rendered in a special place
+ + `@hidden` to exclude a method from rendering
+ + `@private` same as `@hidden` and to communicate that this method should not be used from outside of its class
+ + `@type {<type>}` for documenting the type of members of `this` in a constructor
+ + `@default <value>` for documenting the default value of members of `this` in a constructor
+ + `@property` same effect as `@type`, only that it appears in the constructor's jsdoc
+ + `@readonly` to inform the user that this property should not be modified
+ + `@extends <base-class>`
+ + `@example-link <link> <text>` to link to a jsfiddle or a visual-test
+ + `@target-class <target-class> <item-name> method|member|static-method|static-member` to document fictitious items. 
+ + `[text]{@link url}` will generate a link for *text* pointing to *url*. This can stay in any *description* field.
+ + `{@linkplain url text}` same as above; will be removed once the doc is normalised
 
 ###Tags/transformations under consideration:
 
-+ `@signature` to allow for multiple signatures
-+ `@include file` to include lengthy descriptions stored in other files
+ + `@signature` to allow for multiple signatures
+ + `@include file` to include lengthy descriptions stored in other files
 
 ###Uses 
 
-+ *esprima* to parse the javascript code holding the docs
-+ a custom extractor to retrieve relevant data: comments and signatures for constructors, instance methods, 
+ + *esprima* to parse the javascript code holding the docs
+ + a custom extractor to retrieve relevant data: comments and signatures for constructors, instance methods, 
 members, etc.
-+ *dogma*, our in-house jsdoc parser (*doctrine* does not suit us perfectly)
-+ *mustache* to render the doc
-+ *highlight.js* for syntax highlighting of examples
+ + *dogma*, our in-house jsdoc parser (*doctrine* does not suit us perfectly)
+ + *mustache* to render the doc
+ + *highlight.js* for syntax highlighting of examples
