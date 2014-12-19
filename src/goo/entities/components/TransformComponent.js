@@ -63,18 +63,47 @@ define([
 	//! AT: can this stay not on the prototype, but on the constructor?
 	// it would require Transform.prototype.constructor = TransformComponent; (for all components)
 	TransformComponent.prototype.api = {
+		// these @target-class comments can sit anywhere in the source (as far as modoc is concerned)
+		// I'm placing it here however since it's near the code it documents
+		/**
+		 * Sets the translation of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity setTranslation method
+		 * @param {Vector3|number[]} translation
+		 * @returns {Entity} Self to allow chaining
+		 */
 		setTranslation: function () {
 			TransformComponent.prototype.setTranslation.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Sets the rotation of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity setRotation method
+		 * @param {Vector3|number[]} angle
+		 * @returns {Entity} Self to allow chaining
+		 */
 		setRotation: function () {
 			TransformComponent.prototype.setRotation.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Sets the scale of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity setScale method
+		 * @param {Vector3|number[]} scale
+		 * @returns {Entity} Self to allow chaining
+		 */
 		setScale: function () {
 			TransformComponent.prototype.setScale.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Orients the entity so it faces the supplied look at point. Injected on entities with a transformComponent
+		 * @target-class Entity lookAt method
+		 * @param {Vector3|number[]} lookAtPoint
+		 * @returns {Entity} Self to allow chaining
+		 */
 		lookAt: function () {
 			TransformComponent.prototype.lookAt.apply(this.transformComponent, arguments);
 			return this;
@@ -141,6 +170,11 @@ define([
 			return this;
 		},
 
+		/**
+		 * Hides the entity and its children. Injected on entities with a transformComponent
+		 * @target-class Entity hide method
+		 * @returns {Entity} Self to allow chaining
+		 */
 		hide: function () {
 			this._hidden = true;
 
@@ -158,6 +192,11 @@ define([
 			return this;
 		},
 
+		/**
+		 * Clears the hidden flag on this entity. The entity may still not show if it has a hidden ancestor. Injected on entities with a transformComponent
+		 * @target-class Entity show method
+		 * @returns {Entity} Self to allow chaining
+		 */
 		// will not show the entity (and it's children) if any of its ancestors are hidden
 		show: function () {
 			this._hidden = false;

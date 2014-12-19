@@ -61,71 +61,80 @@ var hasParamData = function (params) {
 	});
 };
 
-var inject = function (data) {
-	if (!data.rawComment) { return; }
-
+var compileComment = function (rawComment) {
 	// parse the raw comment
-	var parsed = dogma.extract(data.rawComment);
+	var parsed = dogma.extract(rawComment);
 
-	data.comment = {};
-	data.comment.description = parsed.description;
+	var comment = {};
+	comment.description = parsed.description;
 
 	if (parsed['@param']) {
-		data.comment.param = parsed['@param'];
+		comment.param = parsed['@param'];
 
 		// if there's nothing interesting then don't bother
-		if (!hasParamData(data.comment.param)) {
-			data.comment.param = [];
+		if (!hasParamData(comment.param)) {
+			comment.param = [];
 		}
 	}
 
 	if (parsed['@returns']) {
-		data.comment.returns = parsed['@returns'];
+		comment.returns = parsed['@returns'];
 	}
 
 	if (parsed['@example']) {
-		data.comment.example = parsed['@example'];
+		comment.example = parsed['@example'];
 	}
 
 	if (parsed['@example-link']) {
-		data.comment.exampleLink = parsed['@example-link'];
+		comment.exampleLink = parsed['@example-link'];
 	}
 
 	// properties declared inside the constructor may have the @type tag
 	if (parsed['@type']) {
-		data.comment.type = parsed['@type'];
+		comment.type = parsed['@type'];
 	}
 
 	// properties declared inside the constructor may have the @default tag
 	if (parsed['@default']) {
-		data.comment.default_ = parsed['@default'];
+		comment.default_ = parsed['@default'];
 	}
 
 	if (parsed['@private']) {
-		data.comment.private = !!parsed['@private'];
+		comment.private = !!parsed['@private'];
 	}
 
 	if (parsed['@hidden']) {
-		data.comment.hidden = !!parsed['@hidden'];
+		comment.hidden = !!parsed['@hidden'];
 	}
 
 	if (parsed['@readonly']) {
-		data.comment.readonly = !!parsed['@readonly'];
+		comment.readonly = !!parsed['@readonly'];
 	}
 
 	if (parsed['@deprecated']) {
-		data.comment.deprecated = parsed['@deprecated'];
+		comment.deprecated = parsed['@deprecated'];
 	}
 
 	if (parsed['@property']) {
-		data.comment.property = parsed['@property'];
+		comment.property = parsed['@property'];
 	}
 
 	if (parsed['@extends']) {
-		data.comment.extends = parsed['@extends'];
+		comment.extends = parsed['@extends'];
 	}
+
+	if (parsed['@target-class']) {
+		comment.targetClass = parsed['@target-class'];
+	}
+
+	return comment;
 };
 
+var inject = function (data) {
+	if (!data.rawComment) { return; }
+
+	data.comment = compileComment(data.rawComment);
+};
 
 var all = function (jsData, files) {
 	if (!typesRegex) {
@@ -135,18 +144,20 @@ var all = function (jsData, files) {
 
 	inject(jsData.constructor);
 	jsData.methods.forEach(inject);
-	jsData.statics.forEach(inject);
+	jsData.staticMethods.forEach(inject);
 	jsData.staticMembers.forEach(inject);
 	jsData.members.forEach(inject);
 
+	// jsData.extraComments
+
 	link(jsData.constructor.comment);
 	jsData.methods.forEach(function (method) { link(method.comment); });
-	jsData.statics.forEach(function (static_) { link(static_.comment); });
+	jsData.staticMethods.forEach(function (staticMethod) { link(staticMethod.comment); });
 	jsData.staticMembers.forEach(function (staticMember) { link(staticMember.comment); });
 	jsData.members.forEach(function (member) { link(member.comment); });
 };
 
 
 exports.all = all;
-exports._inject = inject; // only for debugging
-exports._link = link;
+exports.compileComment = compileComment;
+exports.link = link;

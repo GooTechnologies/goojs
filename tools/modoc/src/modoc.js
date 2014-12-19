@@ -16,6 +16,7 @@ var childProcess = require('child_process');
 var glob = require('glob');
 var mustache = require('mustache');
 var marked = require('marked');
+var _ = require('underscore');
 
 var extractor = require('./extractor');
 var indoctrinate = require('./indoctrinate');
@@ -100,10 +101,10 @@ function filterPrivates(class_) {
 	class_.members = class_.members.filter(predicate);
 	class_.staticMembers = class_.staticMembers.filter(predicate);
 	class_.methods = class_.methods.filter(predicate);
-	class_.statics = class_.statics.filter(predicate);
+	class_.staticMethods = class_.staticMethods.filter(predicate);
 
 	class_.hasMembers = class_.members.length > 0;
-	class_.hasStatics = class_.statics.length > 0;
+	class_.hasStaticMethods = class_.staticMethods.length > 0;
 	class_.hasStaticMembers = class_.staticMembers.length > 0;
 	class_.hasMethods = class_.methods.length > 0;
 }
@@ -111,6 +112,7 @@ function filterPrivates(class_) {
 function compileDoc(files) {
 	var classes = {};
 
+	// extract information from classes
 	files.forEach(function (file) {
 		console.log('compiling doc for ' + util.getFileName(file));
 
@@ -127,6 +129,68 @@ function compileDoc(files) {
 
 			classes[class_.constructor.name] = class_;
 		}
+	});
+
+	// --- should stay elsewhere
+	var constructorFromComment = function (comment) {
+		return {
+			name: comment.targetClass.itemName,
+			params: _.pluck(comment.param, 'name'),
+			comment: comment
+		};
+	};
+
+	var memberFromComment = function (comment) {
+		return {
+			name: comment.targetClass.itemName,
+			comment: comment
+		};
+	};
+
+	var methodFromComment = constructorFromComment;
+	var staticMethodFromComment = constructorFromComment;
+	var staticMemberFromComment = memberFromComment;
+	// ---
+
+	// copy over the extra info from other classes
+	Object.keys(classes).forEach(function (className) {
+		var class_ = classes[className];
+
+		var extraComments = class_.extraComments.map(indoctrinate.compileComment);
+
+		// adding extras mentioned in @target-class
+		extraComments.forEach(function (extraComment) {
+			var targetClassName = extraComment.targetClass.className;
+			var targetClass = classes[targetClassName];
+
+			if (!targetClass) {
+				classes[targetClassName] = {
+					constructor: null,
+					staticMethods: [],
+					staticMembers: [],
+					methods: [],
+					members: []
+				};
+			}
+
+			switch (extraComment.targetClass.itemType) {
+				case 'constructor':
+					targetClass.constructor = constructorFromComment(extraComment);
+					break;
+				case 'member':
+					targetClass.members.push(memberFromComment(extraComment));
+					break;
+				case 'method':
+					targetClass.methods.push(methodFromComment(extraComment));
+					break;
+				case 'static-member':
+					targetClass.staticMembers.push(staticMemberFromComment(extraComment));
+					break;
+				case 'static-method':
+					targetClass.staticMethods.push(staticMethodFromComment(extraComment));
+					break;
+			}
+		});
 	});
 
 	return classes;

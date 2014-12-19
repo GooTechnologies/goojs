@@ -232,6 +232,17 @@ var extractTagExampleLink = function (exampleLink) {
 	};
 };
 
+var extractTagTargetClass = function (targetClass) {
+	// @target-class <class> <name> method|member|static-member|static-method
+	var match = targetClass.match(/^\s*(\w+)\s+(\w+)\s+(method|member|static-method|static-member)/);
+	if (!match) { throw new Error('malformed @target-class'); }
+	return {
+		className: match[1],
+		itemName: match[2],
+		itemType: match[3]
+	};
+};
+
 var extract = function (doc) {
 	var stripped = stripStars(doc);
 
@@ -275,6 +286,11 @@ var extract = function (doc) {
 		tags['@extends'] = extractTagExtends(tags['@extends'][0]);
 	}
 
+	// --- only in when @target-class is present ---
+	if (tags['@target-class']) {
+		tags['@target-class'] = extractTagTargetClass(tags['@target-class'][0]);
+	}
+
 	return tags;
 };
 
@@ -285,4 +301,5 @@ exports._extractDescription = extractDescription;
 exports._extractTagParam = extractTagParam;
 exports._extractTagReturn = extractTagReturn;
 exports._extractTagType = extractTagType;
+exports._extractTagTargetClass = extractTagTargetClass;
 exports.extract = extract;

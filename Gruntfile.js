@@ -120,7 +120,7 @@ module.exports = function (grunt) {
 		},
 		shell: {
 			jsdoc: {
-				command: 'node tools/modoc/src/modoc.js src/goo tools/modoc/src/templates tools/modoc/src/statics out-doc'
+				command: 'node tools/modoc/src/modoc.js src/goo/entities tools/modoc/src/templates tools/modoc/src/statics out-doc'
 			},
 			update_webdriver: {
 				options: {

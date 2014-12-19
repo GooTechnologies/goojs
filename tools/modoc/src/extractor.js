@@ -68,7 +68,7 @@ var extractTree = function (tree, fileName, options) {
 				};
 			}
 		},
-		static_: {
+		staticMethod: {
 			match: function (node, fileName) {
 				return node.type === 'AssignmentExpression' && node.operator === '=' &&
 					node.left.type === 'MemberExpression' &&
@@ -95,7 +95,7 @@ var extractTree = function (tree, fileName, options) {
 				};
 			}
 		},
-		staticMembers: {
+		staticMember: {
 			match: function (node, parent, fileName) {
 				return node.type === 'AssignmentExpression' && node.operator === '=' &&
 					node.left.type === 'MemberExpression' &&
@@ -141,7 +141,7 @@ var extractTree = function (tree, fileName, options) {
 
 
 
-	var constructor, statics = [], methods = [], members, staticMembers = [];
+	var constructor, staticMethods = [], methods = [], members, staticMembers = [];
 
 	var collectMembers = function (node) {
 		var members = [];
@@ -162,20 +162,29 @@ var extractTree = function (tree, fileName, options) {
 				members = collectMembers(node.body);
 			} else if (extractors.method.match(node, fileName)) {
 				methods.push(extractors.method.extract(node));
-			} else if (extractors.static_.match(node, fileName)) {
-				statics.push(extractors.static_.extract(node));
-			} else if (extractors.staticMembers.match(node, parent, fileName)) {
-				staticMembers.push(extractors.staticMembers.extract(node, parent));
+			} else if (extractors.staticMethod.match(node, fileName)) {
+				staticMethods.push(extractors.staticMethod.extract(node));
+			} else if (extractors.staticMember.match(node, parent, fileName)) {
+				staticMembers.push(extractors.staticMember.extract(node, parent));
 			}
 		}
 	});
 
+	var extraComments = tree.comments.filter(function (comment) {
+		return comment.value[0] === '*' &&
+			comment.type === 'Block' &&
+			comment.value.indexOf('@target-class') !== -1;
+	}).map(function (comment) {
+		return comment.value;
+	});
+
 	return {
 		constructor: constructor,
-		statics: statics,
+		staticMethods: staticMethods,
 		staticMembers: staticMembers,
 		methods: methods,
-		members: members
+		members: members,
+		extraComments: extraComments
 	};
 };
 

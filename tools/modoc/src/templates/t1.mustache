@@ -173,11 +173,11 @@
 	{{/hasMethods}}
 
 	{{! static methods }}
-	{{#hasStatics}}
+	{{#hasStaticMethods}}
 	<section>
 		<h2>Static methods</h2>
 
-		{{#statics}}
+		{{#staticMethods}}
 		<div>
 			<a id="{{name}}" href="#{{name}}">
 			<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
@@ -212,10 +212,10 @@
 				{{/comment.example}}
 			</div>
 		</div>
-		{{/statics}}
+		{{/staticMethods}}
 
 	</section>
-	{{/hasStatics}}
+	{{/hasStaticMethods}}
 
 {{/class_}}
 </article>

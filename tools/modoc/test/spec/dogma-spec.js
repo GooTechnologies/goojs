@@ -78,11 +78,7 @@ describe('dogma', function () {
 		});
 	});
 
-	describe('extractDescription', function () {
-
-	});
-
-	describe('extractReturn', function () {
+	describe('extractTagReturn', function () {
 		var extract = dogma._extractTagReturn;
 
 		it('extracts the type and description from an @returns', function () {
@@ -101,24 +97,18 @@ describe('dogma', function () {
 		});
 	});
 
-	/*describe('extractParam', function () {
-		var extract = dogma._extractTagParam;
+	describe('extractTagTargetClass', function () {
+		var extract = dogma._extractTagTargetClass;
 
-		it('extracts the type, name and description from an @returns', function () {
-			expect(extract('@param {type} name Description goes here'))
-			.toEqual({ type: 'type', description: 'Description goes here' });
+		it('extracts the type, target and name of an @target-class', function () {
+			expect(extract('class name method'))
+			.toEqual({
+				className: 'class',
+				itemName: 'name',
+				itemType: 'method'
+			});
 		});
-
-		it('extracts the type and name from an @param', function () {
-			expect(extract('@param {type} name'))
-			.toEqual({ type: 'type', description: '' });
-		});
-
-		it('extracts the description from an @returns', function () {
-			expect(extract('@param Description goes here'))
-			.toEqual({ type: '', description: 'Description goes here' });
-		});
-	});*/
+	});
 
 	describe('extract', function () {
 		var extract = dogma.extract;
