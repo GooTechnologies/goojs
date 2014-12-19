@@ -34,7 +34,7 @@ The jsdoc extractor (*extractor.js*) can figure out what the constructor of a cl
  
 The extractor can figure out what members do instances of classes have by looking for assignments to `this` in the constructor of a class.
 
-Methods, static methods and static members are also detectable by looking for assignments to the prototype of the class or to the constructor itself.
+Methods, static methods and static members are also detectable by looking for assignments to the prototype of the class or to the constructor itself. Members and static members are not extracted unless they are accompanied by a jsdoc comment. Methods and static methods are extracted default (even if and accompanying jsdoc comment is missing). Items whose names begin with an `_` are filtered out and so are items with an `@private` or an `@hidden`.
 
 If you wish to document anything that is not covered by either of these cases you can just place a jsdoc comment (block, starting with a `*`) that contains an `@target-class` anywhere (in any file). 
 
