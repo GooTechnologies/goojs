@@ -3,16 +3,13 @@ modoc
 
 Documentation extractor and renderer.
 
-**Disclaimer:**<br>
-Modoc does not support (nor does it need to) the full set of tags - see a list of supported tags and annotations below.<br>
+**Disclaimer:**
+Modoc does not support (nor does it need to) the full set of tags - see a list of supported tags and annotations below.
 Modoc does not come with any guarantee that it will run well on anything else than goojs. Modoc works well by making assumptions about the structure of the code - goojs code.
 
 ###Setup
 
 `npm install`
-
-Manually copy [esprima.js](https://raw.githubusercontent.com/ariya/esprima/master/esprima.js) into 
-*node_modules/esprima/esprima.js* 
 
 ###Usage
 

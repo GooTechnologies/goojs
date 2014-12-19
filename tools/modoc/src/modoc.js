@@ -228,10 +228,76 @@ function buildChangelog(file) {
 	fs.writeFileSync(args.outPath + '/changelog.html', result);
 }
 
+function compileDeprecated(classes) {
+	var constructors = [], methods = [], staticMethods = [], members = [], staticMembers = [];
+
+	Object.keys(classes).forEach(function (className) {
+		var class_ = classes[className];
+
+		var getEntry = function (item) {
+			return {
+				class_: className,
+				item: item
+			}
+		};
+
+		if (!class_.constructor || !class_.constructor.comment) {
+			return;
+		}
+
+		if (class_.constructor.comment.deprecated) {
+			constructors.push(getEntry(class_.constructor));
+		}
+
+		class_.methods.forEach(function (method) {
+			if (method.comment.deprecated) {
+				methods.push(getEntry(method));
+			}
+		});
+
+		class_.staticMethods.forEach(function (staticMethod) {
+			if (staticMethod.comment.deprecated) {
+				staticMethods.push(getEntry(staticMethod));
+			}
+		});
+
+		class_.members.forEach(function (member) {
+			if (member.comment.deprecated) {
+				members.push(getEntry(member));
+			}
+		});
+
+		class_.staticMembers.forEach(function (staticMember) {
+			if (staticMember.comment.deprecated) {
+				staticMembers.push(getEntry(staticMember));
+			}
+		});
+	});
+
+	return {
+		constructors: constructors,
+		methods: methods,
+		staticMethods: staticMethods,
+		members: members,
+		staticMembers: staticMembers
+	};
+}
+
+function buildDeprecated(classes) {
+	var template = fs.readFileSync(args.templatesPath + '/deprecated.mustache', { encoding: 'utf8' });
+
+	var data = compileDeprecated(classes);
+
+	var result = mustache.render(template, data);
+
+	fs.writeFileSync(args.outPath + '/deprecated.html', result);
+}
+
 copyStaticFiles(function () {
 	var classes = compileDoc(files);
 	renderDoc(files, classes);
 	buildChangelog('CHANGES');
+	buildDeprecated(classes);
 	buildStartPage('Entity-doc.html', function () {
 		console.log('documentation built');
 	});

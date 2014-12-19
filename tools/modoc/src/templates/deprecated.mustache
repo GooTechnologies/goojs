@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Goo Engine Changelog</title>
+
+	<link rel="stylesheet" href="lib/styles/goo.css">
+	<link rel="stylesheet" href="changelog.css">
+</head>
+<body>
+	<h1>Goo DEPRECATED</h1>
+	<a href="index.html">Back to the Goo Docs</a>
+
+	<section>
+		<h2>Constructors</h2>
+		{{#constructors}}
+			<div>
+				{{class_}}
+				{{item.name}}
+				{{item.comment.deprecated.description}}
+			</div>
+		{{/constructors}}
+	</section>
+
+	<section>
+		<h2>Members</h2>
+		{{#members}}
+			<div>
+				{{class_}}
+				{{item.name}}
+				{{item.comment.deprecated.description}}
+			</div>
+		{{/members}}
+	</section>
+
+	<section>
+		<h2>Static members</h2>
+		{{#staticMembers}}
+			<div>
+				{{class_}}
+				{{item.name}}
+				{{item.comment.deprecated.description}}
+			</div>
+		{{/staticMembers}}
+	</section>
+
+	<section>
+		<h2>Methods</h2>
+		{{#methods}}
+			<div>
+				{{class_}}
+				{{item.name}}
+				{{item.comment.deprecated.description}}
+			</div>
+		{{/methods}}
+	</section>
+
+	<section>
+		<h2>Static methods</h2>
+		{{#staticMethods}}
+			<div>
+				{{class_}}
+				{{item.name}}
+				{{item.comment.deprecated.description}}
+			</div>
+		{{/staticMethods}}
+	</section>
+</body>
+</html>
