@@ -13,6 +13,8 @@ function(
 	 * @extends Component
 	 */
 	function MarkerComponent(hostEntity) {
+		Component.apply(this, arguments);
+
 		this.type = 'MarkerComponent';
 
 		var hostModelBound = hostEntity.meshRendererComponent.worldBound;
@@ -21,6 +23,7 @@ function(
 	}
 
 	MarkerComponent.prototype = Object.create(Component.prototype);
+	MarkerComponent.prototype.constructor = MarkerComponent;
 
 	return MarkerComponent;
 });

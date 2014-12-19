@@ -38,6 +38,7 @@ function(
 	}
 
 	Grid.prototype = Object.create(MeshData.prototype);
+	Grid.prototype.constructor = Grid;
 
 	Grid.prototype.rebuild = function() {
 		var xExtent = this.width / 2;

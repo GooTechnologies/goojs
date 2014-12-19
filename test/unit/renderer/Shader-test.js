@@ -224,6 +224,7 @@ define([
 				spyOn(shaderInfo.renderer.context, 'uniform1i').and.callThrough();
 				spyOn(shaderInfo.renderer.context, 'uniform1f').and.callThrough();
 				spyOn(shaderInfo.renderer.context, 'uniform4fv').and.callThrough();
+				spyOn(shaderInfo.renderer.context, 'uniformMatrix3fv').and.callThrough();
 				spyOn(shaderInfo.renderer.context, 'uniformMatrix4fv').and.callThrough();
 
 				updateShader(shaderInfo);
@@ -242,7 +243,8 @@ define([
 				expect(shaderInfo.renderer.context.uniform1i.calls.count()).toEqual(10);
 				expect(shaderInfo.renderer.context.uniform1f.calls.count()).toEqual(9);
 				expect(shaderInfo.renderer.context.uniform4fv.calls.count()).toEqual(2);
-				expect(shaderInfo.renderer.context.uniformMatrix4fv.calls.count()).toEqual(3);
+				expect(shaderInfo.renderer.context.uniformMatrix3fv.calls.count()).toEqual(1);
+				expect(shaderInfo.renderer.context.uniformMatrix4fv.calls.count()).toEqual(2);
 			});
 		});
 		describe('investigateShader', function() {

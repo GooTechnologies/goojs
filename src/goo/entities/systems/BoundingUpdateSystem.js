@@ -20,6 +20,7 @@ function (
 	}
 
 	BoundingUpdateSystem.prototype = Object.create(System.prototype);
+	BoundingUpdateSystem.prototype.constructor = BoundingUpdateSystem;
 
 	BoundingUpdateSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {

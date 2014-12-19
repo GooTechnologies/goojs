@@ -26,6 +26,8 @@ function (
 	}
 
 	Vector2.prototype = Object.create(Vector.prototype);
+	Vector2.prototype.constructor = Vector2;
+
 	Vector.setupAliases(Vector2.prototype, [['x', 'u', 's'], ['y', 'v', 't']]);
 
 	/* ====================================================================== */
@@ -34,6 +36,9 @@ function (
 	Vector2.ONE = new Vector2(1, 1);
 	Vector2.UNIT_X = new Vector2(1, 0);
 	Vector2.UNIT_Y = new Vector2(0, 1);
+
+	// general purpose vector for holding intermediate data that has no better than 'tmpVec'
+	var tmpVec = new Vector2();
 
 	/* ====================================================================== */
 
@@ -268,6 +273,18 @@ function (
 
 		return ldata[0] * rdata[0] +
 			ldata[1] * rdata[1];
+	};
+
+	/**
+	 * Reflects a vector relative to the plane obtained from the normal parameter.
+	 * @param {Vector2} normal Defines the plane that reflects the vector. Assumed to be of unit length.
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.reflect = function (normal) {
+		tmpVec.copy(normal);
+		tmpVec.scale(2 * this.dot(normal));
+		this.subVector(tmpVec);
+		return this;
 	};
 
 	/* ====================================================================== */

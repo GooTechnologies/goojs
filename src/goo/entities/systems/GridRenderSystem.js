@@ -88,12 +88,11 @@ function (
 	}
 
 	GridRenderSystem.prototype = Object.create(System.prototype);
+	GridRenderSystem.prototype.constructor = GridRenderSystem;
 
-	GridRenderSystem.prototype.inserted = function (/*entity*/) {
-	};
+	GridRenderSystem.prototype.inserted = function (/*entity*/) {};
 
-	GridRenderSystem.prototype.deleted = function (/*entity*/) {
-	};
+	GridRenderSystem.prototype.deleted = function (/*entity*/) {};
 
 	GridRenderSystem.prototype.process = function (/*entities, tpf*/) {
 		var count = this.renderList.length = 0;

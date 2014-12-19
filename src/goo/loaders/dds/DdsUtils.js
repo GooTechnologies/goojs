@@ -1,25 +1,18 @@
 /*jshint bitwise: false */
-define(
-	/** @lends */
-	function () {
+define([
+	'goo/renderer/Capabilities'
+],
+/** @lends */
+function (
+	Capabilities
+) {
 	'use strict';
 
 	function DdsUtils() {
 	}
 
-	DdsUtils.getDdsExtension = function (context) {
-		var vendorPrefixes = ["", "WEBKIT_", "MOZ_"];
-		for (var i = 0; i < vendorPrefixes.length; i++) {
-			var ext = context.getExtension(vendorPrefixes[i] + "WEBGL_compressed_texture_s3tc");
-			if (typeof ext !== 'undefined' && ext !== null) {
-				return ext;
-			}
-		}
-		return null;
-	};
-
-	DdsUtils.isSupported = function (context) {
-		return DdsUtils.getDdsExtension(context) !== null;
+	DdsUtils.isSupported = function () {
+		return !!Capabilities.CompressedTextureS3TC;
 	};
 
 	/**

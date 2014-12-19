@@ -66,6 +66,7 @@ function (
 	}
 
 	ProjectedGrid.prototype = Object.create(MeshData.prototype);
+	ProjectedGrid.prototype.constructor = ProjectedGrid;
 
 	ProjectedGrid.prototype.update = function (camera) {
 		var upperBound = this.upperBound;

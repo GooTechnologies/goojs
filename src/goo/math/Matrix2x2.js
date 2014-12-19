@@ -21,6 +21,8 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	}
 
 	Matrix2x2.prototype = Object.create(Matrix.prototype);
+	Matrix2x2.prototype.constructor = Matrix2x2;
+
 	Matrix.setupAliases(Matrix2x2.prototype,[['e00'], ['e10'], ['e01'], ['e11']]);
 
 	/* ====================================================================== */

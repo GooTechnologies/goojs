@@ -69,11 +69,7 @@ define([
 			shadowDarkness: 0.5,
 			vertexColorAmount: 1.0,
 			lodBias: 0.0,
-			wrapSettings: [0.5, 0.0],
-
-			bmin: [-1, -1, -1],
-			bmax: [1, 1, 1],
-			mods: [0, 0, 0]
+			wrapSettings: [0.5, 0.0]
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
@@ -103,7 +99,7 @@ define([
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
-			'uniform mat4 normalMatrix;',
+			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 
 			'varying vec3 vWorldPos;',
@@ -123,62 +119,23 @@ define([
 
 			ShaderBuilder.animation.prevertex,
 
-			'uniform vec3 bmin;',
-			'uniform vec3 bmax;',
-			'uniform vec3 mods;',
-			'#define M_PI 3.14159265358979323846264338328',
-
-			'mat3 rotationMatrix(vec3 axis, float angle) {',
-				'axis = normalize(axis);',
-				'float s = sin(angle);',
-				'float c = cos(angle);',
-				'float oc = 1.0 - c;',
-				'return mat3(oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,',
-					'oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c, oc * axis.y * axis.z - axis.x * s,',
-					'oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c);',
-			'}',
-
 			'void main(void) {',
 				'mat4 wMatrix = worldMatrix;',
 				'#ifdef NORMAL',
-					'mat4 nMatrix = normalMatrix;',
+					'mat3 nMatrix = normalMatrix;',
 				'#endif',
 				ShaderBuilder.animation.vertex,
-
-				'vec3 vpos = vertexPosition;',
-				'vec3 vnorm = vertexNormal;',
-
-				// 'vec3 lim = M_PI * 2.0 * (vpos) / (bmax - bmin);',
-
-				// 'vpos.z += 5.0;',
-				// 'vpos.y += bmin.y;',
-
-				// 'mat3 rotmat = mat3(0.0);',
-
-				// 'rotmat = rotationMatrix(vec3(0.0, 1.0, 0.0), (lim.x) * mods.x);',
-				// 'vpos = rotmat * vpos;',
-				// 'vnorm = rotmat * vnorm;',
-				// 'rotmat = rotationMatrix(vec3(0.0, 1.0, 0.0), lim.z * mods.x);',
-				// 'vpos = rotmat * vpos;',
-				// 'vnorm = rotmat * vnorm;',
-				// 'rotmat = rotationMatrix(vec3(1.0, 0.0, 0.0), lim.y * 0.0);',
-				// 'vpos = rotmat * vpos;',
-				// 'vnorm = rotmat * vnorm;',
-
-				// 'vpos.z -= 5.0;',
-				// 'vpos.y -= bmin.y;',
-
-				'vec4 worldPos = wMatrix * vec4(vpos, 1.0);',
+				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
 				'vWorldPos = worldPos.xyz;',
 				'gl_Position = viewProjectionMatrix * worldPos;',
 
 				'viewPosition = cameraPosition - worldPos.xyz;',
 
 				'#ifdef NORMAL',
-				'	normal = normalize((nMatrix * vec4(vnorm, 0.0)).xyz);',
+				'	normal = normalize(nMatrix * vertexNormal);',
 				'#endif',
 				'#ifdef TANGENT',
-				'	tangent = normalize((nMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+				'	tangent = normalize(nMatrix * vertexTangent.xyz);',
 				'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 				'#endif',
 				'#ifdef COLOR',
@@ -1206,7 +1163,7 @@ define([
 		'uniform mat4 worldMatrix;',
 		'uniform float cameraFar;',
 		'uniform float thickness;',
-		'uniform mat4 normalMatrix;',
+		'uniform mat3 normalMatrix;',
 
 		ShaderBuilder.animation.prevertex,
 
@@ -1215,7 +1172,7 @@ define([
 		'void main() {',
 
 			'#ifdef NORMAL',
-				'mat4 nMatrix = normalMatrix;',
+				'mat3 nMatrix = normalMatrix;',
 			'#endif',
 
 			'mat4 wMatrix = worldMatrix;',

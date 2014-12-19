@@ -22,6 +22,8 @@ function (
 	 * @extends Component
 	 */
 	function AnimationComponent(pose) {
+		Component.apply(this, arguments);
+
 		/**
 		 * @type {string}
 		 * @readonly
@@ -47,7 +49,10 @@ function (
 		this.lastTimeOfPause = -1;
 	}
 
+	AnimationComponent.type = 'AnimationComponent';
+
 	AnimationComponent.prototype = Object.create(Component.prototype);
+	AnimationComponent.prototype.constructor = AnimationComponent;
 
 	/**
 	 * Transition to another state. This is shorthand for applying transitions on the base layer, see {@link AnimationLayer.transitionTo} for more info

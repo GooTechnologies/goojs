@@ -57,7 +57,7 @@ define([
 					viewportHeight: null
 				}
 			};
-			world.add(new ScriptSystem(world))
+			world.add(new ScriptSystem(world));
 		});
 
 		it('addToWorld', function() {
@@ -241,6 +241,7 @@ define([
 		it('does not override existing methods on install', function() {
 			var a = 0;
 			function FishComponent() {
+				Component.apply(this, arguments);
 				this.type = 'FishComponent';
 				this.api = {
 					swim: function() { a += 123; }
@@ -251,6 +252,7 @@ define([
 
 			var b = 0;
 			function BananaComponent() {
+				Component.apply(this, arguments);
 				this.type = 'BananaComponent';
 				this.api = {
 					swim: function() { b += 234; }
@@ -273,6 +275,7 @@ define([
 		it('does not remove what it did not manage to install', function() {
 			var a = 0;
 			function FishComponent() {
+				Component.apply(this, arguments);
 				this.type = 'FishComponent';
 				this.api = {
 					swim: function() { a += 123; }
@@ -283,6 +286,7 @@ define([
 
 			var b = 0;
 			function BananaComponent() {
+				Component.apply(this, arguments);
 				this.type = 'BananaComponent';
 				this.api = {
 					swim: function() { b += 234; }

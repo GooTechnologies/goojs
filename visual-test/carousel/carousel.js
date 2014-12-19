@@ -31,7 +31,7 @@
 				return url.indexOf(excludedTerm) === -1;
 			});
 		}).map(function (url) {
-			return url.replace('http://127.0.0.1:8003', window.location.origin);
+			return '../' + url;
 		});
 	}
 

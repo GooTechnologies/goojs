@@ -20,6 +20,7 @@ define([
 	}
 
 	TextSystem.prototype = Object.create(System.prototype);
+	TextSystem.prototype.constructor = TextSystem;
 
 	TextSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {

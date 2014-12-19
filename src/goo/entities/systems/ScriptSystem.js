@@ -1,14 +1,12 @@
 define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil',
 	'goo/scripts/Scripts'
 ],
 	/** @lends */
 	function (
 		System,
 		SystemBus,
-		_,
 		Scripts
 	) {
 	'use strict';

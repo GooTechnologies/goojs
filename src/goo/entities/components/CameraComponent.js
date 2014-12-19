@@ -19,26 +19,32 @@ function (
 	 * @extends Component
 	 */
 	function CameraComponent (camera) {
+		Component.apply(this, arguments);
+
 		this.type = 'CameraComponent';
 
-		/** The camera contained by the component.
+		/**
+		 * The camera contained by the component.
 		 * @type {Camera}
 		 */
 		this.camera = camera;
 
-		/** Left vector.
+		/**
+		 * Left vector.
 		 * @type {Vector3}
 		 * @default (-1, 0, 0)
 		 */
 		this.leftVec = new Vector3(-1, 0, 0);
 
-		/** Up vector.
+		/**
+		 * Up vector.
 		 * @type {Vector3}
 		 * @default (0, 1, 0)
 		 */
 		this.upVec = new Vector3(0, 1, 0);
 
-		/** Direction vector.
+		/**
+		 * Direction vector.
 		 * @type {Vector3}
 		 * @default (0, 0, -1)
 		 */

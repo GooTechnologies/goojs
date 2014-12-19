@@ -13,6 +13,7 @@ define([
 	 * @constructor
 	 */
 	function GamepadComponent(gamepadIndex) {
+		Component.apply(this, arguments);
 
 		this.type = 'GamepadComponent';
 

@@ -16,6 +16,8 @@ define([
 	 * @extends Component
 	 */
 	function LightComponent(light) {
+		Component.apply(this, arguments);
+
 		this.type = 'LightComponent';
 
         /**
@@ -30,7 +32,10 @@ define([
 		this.hidden = false;
 	}
 
+	LightComponent.type = 'LightComponent';
+
 	LightComponent.prototype = Object.create(Component.prototype);
+	LightComponent.prototype.constructor = LightComponent;
 
 	LightComponent.prototype.updateLight = function (transform) {
 		this.light.update(transform);

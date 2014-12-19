@@ -11,6 +11,8 @@ define([
 	 * @constructor
 	 */
 	function TimelineComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'TimelineComponent';
 
 		this.channels = [];

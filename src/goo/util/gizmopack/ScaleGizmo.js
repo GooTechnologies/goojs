@@ -37,7 +37,9 @@ function(
 		this._buildArrow(1);
 		this._buildArrow(2);
 	}
+
 	ScaleGizmo.prototype = Object.create(Gizmo.prototype);
+	ScaleGizmo.prototype.constructor = ScaleGizmo;
 
 	ScaleGizmo.prototype.activate = function(props) {
 		Gizmo.prototype.activate.call(this, props);

@@ -146,6 +146,7 @@ define([
 
 		// Cucumber component
 		function CucumberComponent() {
+			Component.apply(this, arguments);
 			this.type = 'CucumberComponent';
 		}
 

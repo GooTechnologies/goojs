@@ -52,6 +52,7 @@ define([
 	};
 
 	GamepadSystem.prototype = Object.create(System.prototype);
+	GamepadSystem.prototype.constructor = GamepadSystem;
 
 	GamepadSystem.prototype.mozGamepadHandler = function(event, connecting) {
 		var gamepad = event.gamepad;

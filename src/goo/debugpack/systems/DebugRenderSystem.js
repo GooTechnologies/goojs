@@ -66,6 +66,7 @@ function (
 	}
 
 	DebugRenderSystem.prototype = Object.create(System.prototype);
+	DebugRenderSystem.prototype.constructor = DebugRenderSystem;
 
 	DebugRenderSystem.prototype.inserted = function (/*entity*/) {
 	};

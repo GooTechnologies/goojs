@@ -1,9 +1,11 @@
 define([
+	'goo/renderer/Capabilities',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
+	Capabilities,
 	System,
 	SystemBus
 ) {
@@ -24,6 +26,7 @@ function (
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);
+	LightingSystem.prototype.constructor = LightingSystem;
 
 	/**
 	 * Replaces the lights tracked by the system with custom ones.
@@ -63,7 +66,9 @@ function (
 				}
 
 				if (!lightComponent.hidden) {
-					this.lights.push(lightComponent.light);
+					var light = lightComponent.light;
+					light.shadowCaster = light.shadowCaster && Capabilities.TextureFloat; // Needs float texture for shadows (for now)
+					this.lights.push(light);
 				}
 			}
 			this._needsUpdate = false;

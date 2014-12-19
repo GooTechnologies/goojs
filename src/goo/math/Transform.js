@@ -23,7 +23,7 @@ function (
 		 * @type {Matrix4x4}
 		 */
 		this.matrix = new Matrix4x4();
-		this.normalMatrix = new Matrix4x4();
+		this.normalMatrix = new Matrix3x3();
 
 		/** @type {Vector3} */
 		this.translation = new Vector3();
@@ -189,13 +189,25 @@ function (
 	 * Updates the normal matrix. This is done automatically by the engine.
 	 */
 	Transform.prototype.updateNormalMatrix = function () {
-		//!RH: Make normal matrix be a 3x3 instead?
-		var scale = this.scale;
-		if (scale.x !== scale.y || scale.x !== scale.z) {
-			Matrix4x4.invert(this.matrix, this.normalMatrix);
-			Matrix4x4.transpose(this.normalMatrix, this.normalMatrix);
-		} else {
-			this.normalMatrix.copy(this.matrix);
+		// Copy upper left of 4x4 to 3x3
+		var t = this.normalMatrix.data;
+		var s = this.matrix.data;
+		t[0] = s[0];
+		t[1] = s[1];
+		t[2] = s[2];
+		t[3] = s[4];
+		t[4] = s[5];
+		t[5] = s[6];
+		t[6] = s[8];
+		t[7] = s[9];
+		t[8] = s[10];
+
+		// invert + transpose if non-uniform scaling
+		// RH: Should we check against epsilon here?
+		var scale = this.scale.data;
+		if (scale[0] !== scale[1] || scale[0] !== scale[2]) {
+			Matrix3x3.invert(this.normalMatrix, tmpMat1);
+			Matrix3x3.transpose(tmpMat1, this.normalMatrix);
 		}
 	};
 

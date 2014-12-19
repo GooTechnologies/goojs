@@ -36,6 +36,8 @@ function (
 	}
 
 	Vector3.prototype = Object.create(Vector.prototype);
+	Vector3.prototype.constructor = Vector3;
+
 	Vector.setupAliases(Vector3.prototype,[['x', 'u', 'r'], ['y', 'v', 'g'], ['z', 'w', 'b']]);
 
 	/* ====================================================================== */
@@ -120,6 +122,9 @@ function (
 	* var moveVector = Vector3.mul(Vector3.UNIT_Z, moveSpeed);
 	*/
 	Vector3.UNIT_Z = new Vector3(0, 0, 1);
+
+	// general purpose vector for holding intermediate data that has no better than 'tmpVec'
+	var tmpVec = new Vector3();
 
 	/* ====================================================================== */
 
@@ -667,6 +672,18 @@ function (
 		this.data[1] = (1.0 - factor) * this.data[1] + factor * end.data[1];
 		this.data[2] = (1.0 - factor) * this.data[2] + factor * end.data[2];
 
+		return this;
+	};
+
+	/**
+	 * Reflects a vector relative to the plane obtained from the normal parameter.
+ 	 * @param {Vector3} normal Defines the plane that reflects the vector. Assumed to be of unit length.
+	 * @returns {Vector3} Self to allow chaining
+	 */
+	Vector3.prototype.reflect = function (normal) {
+		tmpVec.copy(normal);
+		tmpVec.scale(2 * this.dot(normal));
+		this.subVector(tmpVec);
 		return this;
 	};
 

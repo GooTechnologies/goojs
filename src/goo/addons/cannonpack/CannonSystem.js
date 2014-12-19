@@ -60,6 +60,7 @@ function (
 	var tmpQuat = new Quaternion();
 
 	CannonSystem.prototype = Object.create(System.prototype);
+	CannonSystem.prototype.constructor = CannonSystem;
 
 	CannonSystem.prototype.reset = function () {
 		for (var i = 0; i < this._activeEntities.length; i++) {

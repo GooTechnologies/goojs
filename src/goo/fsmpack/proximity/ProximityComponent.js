@@ -11,6 +11,8 @@ function(
 	 * @private
 	 */
 	function ProximityComponent(tag) {
+		Component.apply(this, arguments);
+
 		this.type = 'ProximityComponent';
 
 		Object.defineProperty(this, 'tag', {

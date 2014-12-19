@@ -69,6 +69,7 @@ define([
 	}
 
 	Box.prototype = Object.create(MeshData.prototype);
+	Box.prototype.constructor = Box;
 
 	/**
 	 * @description Builds or rebuilds the mesh data.
