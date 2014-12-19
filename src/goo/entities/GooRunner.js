@@ -140,7 +140,7 @@ define([
 		this.callbacks = [];
 
 		/** A list of callbacks to call once, in the following frame, before the world is processed.<br>
-		 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example}
+		 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example
 		 * @type {Array.<function(number)>}
 		 */
 		this.callbacksNextFrame = [];
@@ -584,7 +584,7 @@ define([
 
 	/**
 	 * Adds an event listener to the GooRunner.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @param  {function(event)} callback Callback function.
@@ -797,7 +797,7 @@ define([
 
 	/**
 	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/misc/PickSync/PickSync-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickSync/PickSync-vtest.html Working example
 	 * @param {number} x screen coordinate
 	 * @param {number} y screen coordinate
 	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer

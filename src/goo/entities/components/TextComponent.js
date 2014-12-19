@@ -10,7 +10,7 @@ define([
 	/**
 	 * Provides ways for the entity to display text
 	 * @extends Component
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example
 	 */
 	function TextComponent(text) {
 		Component.apply(this, arguments);

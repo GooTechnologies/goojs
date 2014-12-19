@@ -18,7 +18,7 @@ define([
 	'use strict';
 
 	/**
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example
 	 * <pre>
 	 * settings: {
 	 *     strength : 1.0,

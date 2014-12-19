@@ -12,7 +12,7 @@ define([
 
 	/**
 	 * Processes all entities with a text component<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example
 	 * @extends System
 	 */
 	function TextSystem() {

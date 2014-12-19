@@ -15,7 +15,7 @@ define([
 
 	/**
 	 * @extends System
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example
 	 */
 	function HtmlSystem(renderer) {
 		System.call(this, 'HtmlSystem', ['TransformComponent', 'HtmlComponent']);

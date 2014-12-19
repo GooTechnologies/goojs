@@ -9,7 +9,7 @@ function (
 	/**
 	 * HTML Component.
 	 * @extends Component
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example
 	 */
 	function HtmlComponent(domElement) {
 		Component.apply(this, arguments);
@@ -23,13 +23,11 @@ function (
 
 		/**
 		 * @type {boolean}
-		 * @default 
 		 */
 		this.hidden = false;
 
 		/**
 		 * @type {boolean}
-		 * @default
 		 */
 		this.useTransformComponent = true;
 	}

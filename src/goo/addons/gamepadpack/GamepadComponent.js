@@ -7,7 +7,7 @@ define([
 
 	/**
 	 * @extends Component
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Gamepad/Gamepad-example.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Gamepad/Gamepad-example.html Working example
 	 * @param gamepadIndex
 	 */
 	function GamepadComponent(gamepadIndex) {

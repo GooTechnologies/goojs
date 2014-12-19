@@ -4,7 +4,7 @@ define([], function (
 
 	/**
 	 * Library of particles<br>
-	 * @{@linkplain http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example}
+	 * @@example-link http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example
 	 */
 	var ParticleLib = {};
 

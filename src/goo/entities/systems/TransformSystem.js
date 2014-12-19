@@ -9,7 +9,7 @@ define([
 
 	/**
 	 * Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example
 	 * @extends System
 	 */
 	function TransformSystem() {

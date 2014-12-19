@@ -29,7 +29,7 @@ define([
 
 	/**
 	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Water/water-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Water/water-vtest.html Working example
 	 * @param {Object} [settings] Water settings passed in a JSON object
 	 * @param {boolean} [settings.useRefraction=true] Render refraction in water
 	 * @param {boolean} [settings.divider=2] Resolution divider for reflection/refraction

@@ -18,7 +18,7 @@ define([
 	'use strict';
 	/**
 	 * System responsible for sound.
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
 	 * @extends {System}
 	 */
 	function SoundSystem() {

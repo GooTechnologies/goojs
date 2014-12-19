@@ -6,7 +6,7 @@ define(['goo/renderer/MeshData'],
 	/**
 	 * A disk shape
 	 * @extends MeshData
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/shapes/Disk/Disk-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/shapes/Disk/Disk-vtest.html Working example
 	 * @param {number} [nSegments=8] Number of slices
 	 * @param {number} [radius=1] Radius of the disk
 	 * @param {number} [pointiness=0] The center of the disk can be offset in both directions from its outer edge by setting a positive or negative pointiness.

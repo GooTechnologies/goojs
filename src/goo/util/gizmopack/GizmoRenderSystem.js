@@ -35,7 +35,7 @@ define([
 
 	/**
 	 * Renders transform gizmos<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/util/TransformGizmos/TransformGizmos-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/util/TransformGizmos/TransformGizmos-vtest.html Working example
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */

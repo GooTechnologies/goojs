@@ -8,7 +8,7 @@ define([
 	/**
 	 * Cone mesh data
 	 * @extends MeshData
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/shapes/Cone/Cone-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/shapes/Cone/Cone-vtest.html Working example
 	 * @param {number} [radialSamples=8] Number of slices
 	 * @param {number} [radius=1] Radius of the cone
 	 * @param {number} [height=2] The height of the cone
