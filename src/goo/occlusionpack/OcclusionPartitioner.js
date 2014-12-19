@@ -1,6 +1,6 @@
 define([
 	'goo/renderer/SimplePartitioner',
-	'goo/renderer/scanline/SoftwareRenderer'
+	'goo/occlusionpack/scanline/SoftwareRenderer'
 	],
 	/** @lends */
 	function (SimplePartitioner, SoftwareRenderer) {
