@@ -34,7 +34,7 @@ define([
 			function (shader,shaderInfo)
 			{
 				//console.log(shader,shaderInfo);
-				if(shaderInfo.renderable.meshRendererComponent.SHCoeff)
+				if(shaderInfo.renderable.meshRendererComponent.SHCoeff) //Every object that uses this shader should have it at runtime from json
 				shader.uniforms.gSHLight = shaderInfo.renderable.meshRendererComponent.SHCoeff;
 			}
 		],
@@ -152,7 +152,22 @@ define([
 
 				'}',
 
+/*
+				'float k0 = 0.28209479177;',
+				'float k1 = 0.4886025119;',
+				'float k20 = 1.09254843059;',
+				'float k22 = 0.31539156525;',
 
+				'return', 
+																		 'gSHLight[0] * k0',
+										'+ k1 * (gSHLight[1]*inNormal.z + gSHLight[2]*inNormal.y + gSHLight[3]*inNormal.x)',
+										'+ k20 * (gSHLight[4]*inNormal.z*inNormal.x + gSHLight[5]*inNormal.z*inNormal.y)',
+										'+ k22 * gSHLight[6] * (3.0*squaredNormal.y-squaredNormal.x-squaredNormal.z)',
+										'+ k20 * (gSHLight[7] * inNormal.y*inNormal.x + gSHLight[8] *(squaredNormal.x - squaredNormal.z));',
+
+
+				'}',
+*/
 			'void main(void) {',
 				'mat4 wMatrix = worldMatrix;',
 				'#ifdef NORMAL',
@@ -372,7 +387,7 @@ define([
 					'}',
 				'#endif',
 
-				'vec3 finalIrradiance = irradianceColor;',
+				'vec3 finalIrradiance = mix(irradianceColor,final_color.xyz,0.5);',
 
 				'#ifndef LIGHT_MAP',
 					'final_color.rgb += totalSpecular;',
@@ -390,7 +405,7 @@ define([
 				//'float scalar = pow(2.0,exposure);',
 				//'irradianceColor.rgb = irradianceColor.rgb * scalar;',
 
-				'gl_FragColor = vec4(albedo.rgb*finalIrradiance.rgb*0.5, 1.0);',
+				'gl_FragColor = vec4(albedo.rgb*finalIrradiance.rgb, 1.0);',
 			'}'
 		].join('\n');
 		}
