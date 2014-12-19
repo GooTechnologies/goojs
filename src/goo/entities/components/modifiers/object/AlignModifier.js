@@ -13,6 +13,7 @@ function (
 
 	function AlignModifier() {
 		this.name = 'AlignModifier';
+		this.type = 'Object';
 
 		this.power = 0;
 	}

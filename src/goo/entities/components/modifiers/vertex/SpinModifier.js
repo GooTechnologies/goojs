@@ -11,6 +11,7 @@ function (
 
 	function SpinModifier() {
 		this.name = 'SpinModifier';
+		this.type = 'Vertex';
 
 		this.matrix3 = new Matrix3x3();
 

@@ -1,19 +1,19 @@
 define([
-	'goo/math/MathUtils',
 	'goo/math/Matrix3x3',
+	'goo/math/MathUtils',
 	'goo/math/Vector3'
 ],
 /** @lends */
 function (
-	MathUtils,
 	Matrix3x3,
+	MathUtils,
 	Vector3
 ) {
 	'use strict';
 
-	function BendModifier() {
-		this.name = 'BendModifier';
-		this.type = 'Vertex';
+	function ObjectBendModifier() {
+		this.name = 'ObjectBendModifier';
+		this.type = 'Object';
 
 		this.matrix3 = new Matrix3x3();
 		this.calcvec = new Vector3();
@@ -24,7 +24,7 @@ function (
 		this.offset = new Vector3(0, 0, 0);
 	}
 
-	BendModifier.prototype.gui = [
+	ObjectBendModifier.prototype.gui = [
 		{
 			key: 'modifierType',
 			name: 'Axis',
@@ -45,10 +45,8 @@ function (
 		}
 	];
 
-	BendModifier.prototype.updateVertex = function(data) {
-		var position = data.position;
-		var normal = data.normal;
-		var normalizedVert = data.normalizedVert;
+	ObjectBendModifier.prototype.updateObject = function(target, allTargets, normalizedVert) {
+		var position = target.transform.translation;
 
 		position.addVector(this.offset);
 
@@ -89,7 +87,9 @@ function (
 			this.matrix3.rotateZ(angleval * 1 * Math.PI);
 		}
 		this.matrix3.applyPost(position);
-		this.matrix3.applyPost(normal);
+		// this.matrix3.applyPost(normal);
+		
+		Matrix3x3.combine(target.transform.rotation, this.matrix3, target.transform.rotation);
 
 		this.matrix3.setIdentity();
 		if (this.modifierType === 'X') {
@@ -103,7 +103,8 @@ function (
 		position.addVector(this.dirvec);
 
 		position.subVector(this.offset);
+
 	};
 
-	return BendModifier;
+	return ObjectBendModifier;
 });

@@ -11,6 +11,7 @@ function (
 
 	function NoiseModifier() {
 		this.name = 'NoiseModifier';
+		this.type = 'Vertex';
 
 		this.vec = new Vector3();
 		this.vec2 = new Vector3();

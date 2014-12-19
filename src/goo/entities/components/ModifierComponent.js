@@ -30,6 +30,8 @@ function(
 		this.objectModifiers = [];
 		this.vertexModifiers = [];
 
+		this.clones = [];
+
 		this.calcvec = new Vector3();
 		this.calcvec2 = new Vector3();
 	}
@@ -56,17 +58,35 @@ function(
 	ModifierComponent.prototype.shallowClone = function() {
 	};
 
-	ModifierComponent.prototype.update = function() {
-		this.updateVertexModifiers();
-		this.updateObjectModifiers();
+	ModifierComponent.prototype.update = function(mod) {
+		// if (mod.type === 'Vertex') {
+			this.updateVertexModifiers();
+		// } else {
+			this.updateObjectModifiers();
+		// }
 	};
 
 	ModifierComponent.prototype.updateObjectModifiers = function() {
+		this.modifierTargets.forEach(function(modifierTarget) {
+			modifierTarget.transform.copy(modifierTarget.origTransform);
+		}.bind(this));
+
 		var modifierCount = this.objectModifiers.length;
 		for (var j = 0; j < modifierCount; j++) {
+			var objectModifier = this.objectModifiers[j];
+			if (objectModifier.setup) {
+				objectModifier.setup();			
+			}
+
+			var index = 0;
 			this.modifierTargets.forEach(function(modifierTarget) {
-				modifierTarget.transform.copy(modifierTarget.origTransform);
-				this.objectModifiers[j].updateObject(modifierTarget, this.modifierTargets);
+
+				this.calcvec.setVector(modifierTarget.bound.max).subVector(modifierTarget.bound.min);
+				this.calcvec2.setVector(Vector3.ONE).scale(2.0).div(this.calcvec);
+				this.calcvec.setVector(modifierTarget.transform.translation);
+				this.calcvec.mulVector(this.calcvec2);
+
+				objectModifier.updateObject(modifierTarget, this.modifierTargets, this.calcvec, index++);
 				modifierTarget.entity.transformComponent.setUpdated();
 			}.bind(this));
 		}
@@ -136,6 +156,44 @@ function(
 
 			modifierTarget.newMeshData.setVertexDataUpdated();
 		}.bind(this));
+	};
+
+	ModifierComponent.prototype._cloneDeep = function(entity) {
+		// var newMeshData = this._copyMeshData(entity.meshDataComponent.meshData);
+		var ent = entity._world.createEntity(entity.meshDataComponent.meshData, entity.meshRendererComponent.materials[0]);
+		ent.addToWorld();
+		return ent;
+	};
+
+	ModifierComponent.prototype.clone = function(entity, count) {
+		count = Math.floor(count);
+		if (count < 1) {
+			return;
+		}
+
+		for (var i = 0; i < this.clones.length; i++) {
+			this.clones[i].removeFromWorld();
+		}
+		this.clones = [];
+
+		for (var i = 0; i < count; i++) {
+			entity.traverse(function(entity) {
+				if (entity.meshRendererComponent) {
+					var clone = this._cloneDeep(entity);
+					this.clones.push(clone);
+				}
+			}.bind(this));
+		}		
+
+		for (var i = 0; i < this.clones.length; i++) {
+			entity.attachChild(this.clones[i]);
+		}
+
+		this.updateModifiers(entity);
+
+		this.update();
+
+		// entity._world.processEntityChanges();
 	};
 
 	ModifierComponent.prototype.updateModifiers = function(entity) {

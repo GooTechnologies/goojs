@@ -11,6 +11,7 @@ function (
 
 	function OffsetModifier() {
 		this.name = 'OffsetModifier';
+		this.type = 'Vertex';
 
 		this.offset = new Vector3(0, 0, 0);
 	}

@@ -11,6 +11,7 @@ function (
 
 	function RandomNoiseModifier() {
 		this.name = 'RandomNoiseModifier';
+		this.type = 'Vertex';
 
 		this.noise = new Vector3(0, 0, 0);
 	}

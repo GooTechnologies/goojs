@@ -11,6 +11,7 @@ function (
 
 	function ScaleModifier() {
 		this.name = 'ScaleModifier';
+		this.type = 'Vertex';
 
 		this.scale = new Vector3(1, 1, 1);
 	}

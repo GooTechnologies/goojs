@@ -11,6 +11,7 @@ function (
 
 	function BulgeNoiseModifier() {
 		this.name = 'BulgeNoiseModifier';
+		this.type = 'Vertex';
 
 		this.scale = new Vector3(1, 1, 1);
 	}

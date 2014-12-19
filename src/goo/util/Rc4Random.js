@@ -12,6 +12,9 @@ function() {
 		var keySchedule_j = 0;
 
 		this.init = function(seed) {
+			keySchedule_i = 0;
+			keySchedule_j = 0;
+
 			for (var i = 0; i < 256; i++) {
 				keySchedule[i] = i;
 			}
