@@ -76,12 +76,10 @@ define([
 		}
 
 		OcclusionPartitioner.prototype.added = function (entity) {
-			// needed for things like quadtrees etc
 			this._viewFrustumCuller.added(entity);
 		};
 
 		OcclusionPartitioner.prototype.removed = function (entity) {
-			// needed for things like quadtrees etc
 			this._viewFrustumCuller.added(entity);
 		};
 
