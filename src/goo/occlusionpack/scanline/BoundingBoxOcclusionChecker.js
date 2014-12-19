@@ -2,7 +2,7 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/Vector4',
 	'goo/math/Vector2',
-	'goo/renderer/scanline/OccludeeTriangleData'
+	'goo/occlusionpack/scanline/OccludeeTriangleData'
 	],
 	/** @lends */
 		function (Matrix4x4, Vector4, Vector2, OccludeeTriangleData) {

@@ -1,5 +1,5 @@
 define([
-    'goo/renderer/scanline/Edge'
+    'goo/occlusionpack/scanline/Edge'
 ],
     /** @lends */
         function (Edge) {

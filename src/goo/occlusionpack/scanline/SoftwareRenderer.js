@@ -1,14 +1,14 @@
 define([
 	'goo/math/Vector4',
 	'goo/math/Matrix4x4',
-	'goo/renderer/scanline/Edge',
+	'goo/occlusionpack/scanline/Edge',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/scanline/EdgeData',
-	'goo/renderer/scanline/BoundingBoxOcclusionChecker',
-	'goo/renderer/scanline/BoundingSphereOcclusionChecker',
-	'goo/renderer/scanline/OccluderTriangleData',
-	'goo/renderer/scanline/EdgeMap'
+	'goo/occlusionpack/scanline/EdgeData',
+	'goo/occlusionpack/scanline/BoundingBoxOcclusionChecker',
+	'goo/occlusionpack/scanline/BoundingSphereOcclusionChecker',
+	'goo/occlusionpack/scanline/OccluderTriangleData',
+	'goo/occlusionpack/scanline/EdgeMap'
 	],
 	/** @lends */
 

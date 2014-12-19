@@ -52,6 +52,10 @@ module.exports = function (grunt) {
 				packPath: 'scriptpack',
 				outBaseDir: 'out'
 			},
+			occlusionpack: {
+				packPath: 'occlusionpack',
+				outBaseDir: 'out'
+			},
 			p2pack: {
 				packPath: 'addons/p2pack',
 				outBaseDir: 'out'
