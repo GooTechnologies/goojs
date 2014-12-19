@@ -3,8 +3,8 @@
 var util = require('./util');
 
 var SUPPORTED_TAGS = [
-	'description', '@param', '@returns', '@example', '@example-link', '@readonly',
-	'@type', '@default', '@deprecated', '@property', '@extends', '@hidden', '@private'
+	'description', '@param', '@returns', '@example', '@example-link', '@readonly', '@type',
+	'@default', '@deprecated', '@property', '@extends', '@hidden', '@private', '@target-class'
 ];
 
 var stripStars = function (string) {
@@ -249,6 +249,8 @@ var extract = function (doc) {
 	var tags = partition(stripped);
 
 	warnOnRogueTags(Object.keys(tags));
+
+	tags['description'] = tags['description'][0];
 
 	if (tags['@param']) {
 		tags['@param'] = tags['@param'].map(extractTagParam);

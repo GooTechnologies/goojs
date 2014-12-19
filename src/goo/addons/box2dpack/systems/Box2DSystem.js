@@ -7,11 +7,10 @@ define([
 	/* global Box2D */
 
 	/**
-	 * Physics simulation using Box2D.<br>
-	 * @example-link http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example
-	 * @desc Depends on the global Box2D object.
-	 * Load box2d.js using a &lt;script&gt; tag before using this system
+	 * Physics simulation using Box2D.
+	 * Depends on the global Box2D object. Load box2d.js using a &lt;script&gt; tag before using this system
 	 * @extends System
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example
 	 */
 	function Box2DSystem() {
 		System.call(this, 'Box2DSystem', ['Box2DComponent', 'MeshDataComponent']);

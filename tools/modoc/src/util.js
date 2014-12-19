@@ -16,6 +16,13 @@ var stringFrom = function (string, from) {
 	return string.slice(string.indexOf(from) + 1);
 };
 
+var pipe = function (f, g) {
+	return function () {
+		return g(f.apply(null, arguments));
+	};
+};
+
 exports.getFileName = getFileName;
 exports.stringUntil = stringUntil;
 exports.stringFrom = stringFrom;
+exports.pipe = pipe;

@@ -18,7 +18,7 @@ Manually copy [esprima.js](https://raw.githubusercontent.com/ariya/esprima/maste
 
 `node src/modoc.js <sourcesPath> <templatesPath> <staticsPath> <outPath>`
 
-Where 
+Where
 
  + *sourcesPath* points to the engine or any other source rich in jsdoc
  + *templatesPath* points to the folder storing the templates used to generate doc pages
@@ -38,7 +38,7 @@ Methods, static methods and static members are also detectable by looking for as
 
 If you wish to document anything that is not covered by either of these cases you can just place a jsdoc comment (block, starting with a `*`) that contains an `@target-class` anywhere (in any file). 
 
-###Supported tags/transformations:
+###Supported tags/transformations
 
  + `@param {<type>} <name> <description>` - any known classes mentioned in *type* are transformed in links
  + `@example` followed by any number of lines of code
@@ -54,9 +54,9 @@ If you wish to document anything that is not covered by either of these cases yo
  + `@example-link <link> <text>` to link to a jsfiddle or a visual-test
  + `@target-class <target-class> <item-name> method|member|static-method|static-member` to document fictitious items. 
  + `[text]{@link url}` will generate a link for *text* pointing to *url*. This can stay in any *description* field.
- + `{@linkplain url text}` same as above; will be removed once the doc is normalised
+ + `(!)` adds a yellow-warning-triangle
 
-###Tags/transformations under consideration:
+###Tags/transformations under consideration
 
  + `@signature` to allow for multiple signatures
  + `@include file` to include lengthy descriptions stored in other files

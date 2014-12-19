@@ -115,7 +115,12 @@ ICOMOON
 .icon-warning:before {
 	content: "\e600";
 	padding-right: 5px;
-	color: #f76162;;
+	color: #f76162;
+}
+
+.icon-warning-yellow:before {
+    content: "\e600";
+    color: #c8c651;
 }
 
 /******************************************************************************

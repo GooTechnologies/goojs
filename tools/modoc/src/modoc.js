@@ -133,6 +133,7 @@ function compileDoc(files) {
 
 	// --- should stay elsewhere
 	var constructorFromComment = function (comment) {
+		indoctrinate.link(comment);
 		return {
 			name: comment.targetClass.itemName,
 			params: _.pluck(comment.param, 'name'),
@@ -141,6 +142,7 @@ function compileDoc(files) {
 	};
 
 	var memberFromComment = function (comment) {
+		indoctrinate.link(comment);
 		return {
 			name: comment.targetClass.itemName,
 			comment: comment

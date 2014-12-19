@@ -28,12 +28,15 @@ var escapeType = function (string) {
 	return string.replace('>', '&gt;').replace('<', '&lt;');
 };
 
+var warningRegex = /\(!\)/g;
+var expandIcons = function (string) {
+	return string.replace(warningRegex, '<span class="icon-warning-yellow"></span>');
+};
+
 var link = function (comment) {
 	if (!comment) { return; }
 
-	if (comment.description) {
-		comment.description = comment.description.map(linkUrls);
-	}
+	comment.description = linkUrls(expandIcons(comment.description));
 
 	if (comment.param) {
 		comment.param.forEach(function (param) {
