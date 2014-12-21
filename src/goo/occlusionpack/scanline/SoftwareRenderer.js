@@ -12,8 +12,18 @@ define([
 	],
 	/** @lends */
 
-	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
-				BoundingSphereOcclusionChecker, OccluderTriangleData, EdgeMap) {
+	function (
+	Vector4,
+	Matrix4x4, 
+	Edge, 
+	BoundingSphere, 
+	BoundingBox, 
+	EdgeData, 
+	BoundingBoxOcclusionChecker,
+	BoundingSphereOcclusionChecker, 
+	OccluderTriangleData, 
+	EdgeMap) {
+	
 	'use strict';
 
 	// Variables used during creation of triangle data and rendering
@@ -40,19 +50,24 @@ define([
 	/**
 	*	@class A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
 	*	@constructor
-	*	@param {{width:Number, height:Number, camera:Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
+	*	@param {{width:Number, height:Number, camera:Camera, maxVertCount:Number, maxIndexCount:Number}} parameters A JSON object which has to contain width, height and the camera object to be used.
 	*/
 	function SoftwareRenderer (parameters) {
 		parameters = parameters || {};
 
-		this.width = parameters.width;
-		this.height = parameters.height;
+		this.width = parameters.width !== undefined ? parameters.width : 64;
+		this.height = parameters.height !== undefined ? parameters.height : 32;
 
 		this._clipY = this.height - 1;
 		this._clipX = this.width - 1;
 		this._halfClipX = this._clipX / 2;
 		this._halfClipY = this._clipY / 2;
 
+		// TODO: Any way of fetching the World's main camera ? 
+
+		if (parameters.camera === undefined) {
+			throw 'ERROR: SoftwareRenderer(): Missing parameter "camera"';
+		}
 		this.camera = parameters.camera;
 
 		var numOfPixels = this.width * this.height;
@@ -73,9 +88,12 @@ define([
 			this._depthClear[i] = 0.0;
 		}
 
-		this._triangleData = new OccluderTriangleData({'vertCount': parameters.maxVertCount, 'indexCount': parameters.maxIndexCount});
+		var maxVertCount = parameters.maxVertCount !== undefined ? parameters.maxVertCount : 104;
+		var maxIndexCount = parameters.maxIndexCount !== undefined ? parameters.maxIndexCount : 96;
 
-		this.edgeMap = new EdgeMap(parameters.maxVertCount);
+		this._triangleData = new OccluderTriangleData({'vertCount': maxVertCount, 'indexCount': maxIndexCount});
+
+		this.edgeMap = new EdgeMap(maxVertCount);
 
 		this.boundingBoxModule = new BoundingBoxOcclusionChecker(this);
 		this.boundingSphereModule = new BoundingSphereOcclusionChecker(this);
