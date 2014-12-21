@@ -27,7 +27,8 @@ define([
 			if (parameters.debugContext !== undefined) {
 				this.debugContext = parameters.debugContext;
 				this.imagedata = this.debugContext.createImageData(parameters.width, parameters.height);
-				// Process function with debug writes.
+				
+				// Process function with function call to write debug data
 				this.processFunc = function (camera, entities, renderList) {
 					// View frustum culling
 					this._viewFrustumCuller.process(camera, entities, renderList);
@@ -35,9 +36,6 @@ define([
 					this._addVisibleOccluders(renderList);
 					// Render the depth buffer using occluder geometries.
 					this.renderer.render(this.occluderList);
-
-					// TODO: Remove later , used for debugging.
-					this.renderer.copyDepthToColor();
 
 					// Perform the occlusion culling, an array
 					var visibleList = this.renderer.performOcclusionCulling(renderList);
@@ -47,7 +45,6 @@ define([
 						renderList[i] = visibleList[i];
 					}
 
-					// TODO: Remove later , used for debugging.
 					this._writeDebugData();
 				};
 			} else {
@@ -71,9 +68,7 @@ define([
 					}
 				};
 			}
-
-
-		}
+		};
 
 		OcclusionPartitioner.prototype.added = function (entity) {
 			this._viewFrustumCuller.added(entity);
@@ -91,6 +86,7 @@ define([
 		 *  Writes the color data , used to debug the culling.
 		 */
 		OcclusionPartitioner.prototype._writeDebugData = function () {
+			this.renderer.copyDepthToColor();
 			this.imagedata.data.set(this.renderer.getColorData());
 			this.debugContext.putImageData(this.imagedata, 0, 0);
 		};

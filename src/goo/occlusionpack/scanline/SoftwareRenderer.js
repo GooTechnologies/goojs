@@ -1452,7 +1452,7 @@ define([
 		for (var i = leftX; i <= rightX; i++) {
 
 			// TODO : Remove this debugg add of color in prod....
-			this._colorData.set([Math.min(depth * 255 + 50, 255), 0, 0], index * 4);
+			// this._colorData.set([Math.min(depth * 255 + 50, 255), 0, 0], index * 4);
 
 			// Check if the value is closer than the stored one. z-test.
 			if (depth > this._depthData[index]) {
