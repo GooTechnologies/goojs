@@ -4,6 +4,7 @@ define([
 	'goo/occlusionpack/scanline/Edge',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingBox',
+	'goo/renderer/Renderer',
 	'goo/occlusionpack/scanline/EdgeData',
 	'goo/occlusionpack/scanline/BoundingBoxOcclusionChecker',
 	'goo/occlusionpack/scanline/BoundingSphereOcclusionChecker',
@@ -18,7 +19,8 @@ define([
 	Edge, 
 	BoundingSphere, 
 	BoundingBox, 
-	EdgeData, 
+	Renderer,
+	EdgeData,
 	BoundingBoxOcclusionChecker,
 	BoundingSphereOcclusionChecker, 
 	OccluderTriangleData, 
@@ -63,12 +65,11 @@ define([
 		this._halfClipX = this._clipX / 2;
 		this._halfClipY = this._clipY / 2;
 
-		// TODO: Any way of fetching the World's main camera ? 
-
-		if (parameters.camera === undefined) {
-			throw 'ERROR: SoftwareRenderer(): Missing parameter "camera"';
+		
+		this.camera = parameters.camera !=== undefined ? parameters.camera : Renderer.mainCamera;
+		if (this.camera === undefined || this.camera === null) {
+			throw 'ERROR: SoftwareRenderer(): Missing parameter "camera". No set camera on the Renderer either.';
 		}
-		this.camera = parameters.camera;
 
 		var numOfPixels = this.width * this.height;
 
