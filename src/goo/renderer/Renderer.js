@@ -288,7 +288,7 @@ function (
 	};
 
 	/**
-	 * Restores thw webgl context
+	 * Restores the webgl context
 	 * @private
 	 */
 	Renderer.prototype._restoreContext = STUB_METHOD; // will be overriden
