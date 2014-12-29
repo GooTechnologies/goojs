@@ -110,6 +110,7 @@ The resulting documentation will be generated in the goojs-jsdoc directory and a
 ## Releasing
 
 See [https://bitbucket.org/gootech/goonguide/wiki/release-engine.md]()
+soon not needed
 
 ## Building
 
