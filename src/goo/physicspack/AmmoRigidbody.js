@@ -103,7 +103,21 @@ function (
 	};
 
 	AmmoRigidbody.prototype.setAngularVelocity = function (angularVelocity) {
-		this.cannonBody.angularVelocity.copy(angularVelocity);
+		tmpVector.setValue(angularVelocity.x, angularVelocity.y, angularVelocity.z);
+		this.ammoBody.setAngularVelocity(tmpVector);
+	};
+
+	AmmoRigidbody.prototype.updateKinematic = function (entity) {
+		var body = this.ammoBody;
+        if (body.getMotionState()) {
+            var pos = entity.transformComponent.worldTransform.translation;
+            tmpGooQuat.fromRotationMatrix(entity.transformComponent.worldTransform.rotation);
+            tmpTransform.setIdentity();
+            tmpTransform.getOrigin().setValue(pos.x, pos.y, pos.z);
+            tmpQuat.setValue(tmpGooQuat.x, tmpGooQuat.y, tmpGooQuat.z, tmpGooQuat.w);
+            tmpTransform.setRotation(tmpQuat);
+            body.getMotionState().setWorldTransform(tmpTransform);
+        }
 	};
 
 	AmmoRigidbody.prototype.initialize = function (entity, system) {
@@ -130,10 +144,32 @@ function (
 
 		var info = new Ammo.btRigidBodyConstructionInfo(entity.rigidbodyComponent.mass, motionState, shape, localInertia);
 		this.localInertia = localInertia;
-		this.ammoBody = new Ammo.btRigidBody(info);
+		var body = this.ammoBody = new Ammo.btRigidBody(info);
+		if (entity.rigidbodyComponent.isKinematic) {
+			body.setCollisionFlags(body.getCollisionFlags() | AmmoRigidbody.AmmoFlags.CF_KINEMATIC_OBJECT);
+			body.setActivationState(AmmoRigidbody.AmmoFlags.DISABLE_DEACTIVATION);
+		}
 		system.world.addRigidBody(this.ammoBody);
 		this.setVelocity(entity.rigidbodyComponent.initialVelocity);
 		//this.body.setLinearFactor(this.linearFactor);
+	};
+
+	AmmoRigidbody.AmmoFlags = {
+		// See http://bulletphysics.org/Bullet/BulletFull/classbtCollisionObject.html
+		CF_STATIC_OBJECT: 1,
+		CF_KINEMATIC_OBJECT: 2,
+		CF_NO_CONTACT_RESPONSE: 4,
+		CF_CUSTOM_MATERIAL_CALLBACK: 8,
+		CF_CHARACTER_OBJECT: 16,
+		CF_DISABLE_VISUALIZE_OBJECT: 32,
+		CF_DISABLE_SPU_COLLISION_PROCESSING: 64,
+
+		// http://bulletphysics.org/Bullet/BulletFull/btCollisionObject_8h.html
+		ACTIVE_TAG: 1,
+		ISLAND_SLEEPING: 2,
+		WANTS_DEACTIVATION: 3,
+		DISABLE_DEACTIVATION: 4,
+		DISABLE_SIMULATION: 5
 	};
 
 	AmmoRigidbody.prototype.constructAmmoShape = function (entity) {
