@@ -7,7 +7,8 @@ define([
 	'goo/physicspack/colliders/SphereCollider',
 	'goo/physicspack/colliders/CylinderCollider',
 	'goo/physicspack/colliders/PlaneCollider',
-	'goo/physicspack/colliders/TerrainCollider'
+	'goo/physicspack/colliders/TerrainCollider',
+	'goo/physicspack/joints/BallJoint'
 ],
 /** @lends */
 function (
@@ -19,23 +20,15 @@ function (
 	SphereCollider,
 	CylinderCollider,
 	PlaneCollider,
-	TerrainCollider
+	TerrainCollider,
+	BallJoint
 ) {
 	'use strict';
 
 	/* global CANNON */
 
-	function CannonRigidbody(cannonWorld, settings) {
-		settings = settings || {};
-		Rigidbody.call(this, settings);
-
-		/**
-		 * The CANNON.Body instance
-		 */
-		this.cannonBody = new CANNON.Body({
-			mass: this.mass
-		});
-		cannonWorld.addBody(this.cannonBody);
+	function CannonRigidbody(entity) {
+		Rigidbody.call(this, entity);
 	}
 
 	CannonRigidbody.prototype = Object.create(Rigidbody.prototype);
@@ -105,15 +98,49 @@ function (
 		return shape;
 	};
 
-	CannonRigidbody.prototype.initialize = function (entity) {
+	CannonRigidbody.prototype.initialize = function (entity, system) {
+		if (!entity.rigidbodyComponent._dirty) {
+			return;
+		}
+		var rbc = entity.rigidbodyComponent;
+		this.cannonBody = new CANNON.Body({
+			mass: entity.rigidbodyComponent.mass
+		});
+		system.world.addBody(this.cannonBody);
+
+		var initialVelocity = new CANNON.Vec3();
+		initialVelocity.copy(rbc.initialVelocity);
+		this.cannonBody.velocity.copy(initialVelocity);
+
 		var that = this;
 		this.traverseColliders(entity, function (colliderEntity, collider, position, quaternion) {
 			that.addCollider(collider, position, quaternion);
 		});
-		if (this.isKinematic) {
+		if (rbc.isKinematic) {
 			this.cannonBody.type = CANNON.Body.KINEMATIC;
 		}
 		this.setTransformFromEntity(entity);
+	};
+
+	CannonRigidbody.prototype.initializeJoint = function (joint, entity, system) {
+		var bodyA = entity.rigidbodyComponent.rigidbody.cannonBody;
+		var bodyB = joint.connectedEntity.rigidbodyComponent.rigidbody.cannonBody;
+		var constraint;
+		if (joint instanceof BallJoint) {
+			var pivotInA = new CANNON.Vec3();
+			var pivotInB = new CANNON.Vec3();
+			pivotInA.copy(joint.localPivot);
+
+			// Get the local pivot in bodyB
+			bodyA.pointToWorldFrame(joint.localPivot, pivotInB);
+			bodyB.pointToLocalFrame(pivotInB, pivotInB);
+
+			constraint = new CANNON.PointToPointConstraint(bodyA, pivotInA, bodyB, pivotInB);
+		}
+		if (constraint) {
+			bodyA.world.addConstraint(constraint);
+			joint.joint = constraint;
+		}
 	};
 
 	CannonRigidbody.prototype.addCollider = function (collider, position, quaternion) {

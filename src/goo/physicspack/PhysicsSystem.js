@@ -39,6 +39,34 @@ function (
 	var tmpQuat = new Quaternion();
 
 	PhysicsSystem.prototype.process = function (entities, tpf) {
+
+		// Initialize bodies
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+			var rb = entity.rigidbodyComponent;
+
+			if (rb._dirty) {
+				rb.rigidbody.initialize(entity, this);
+				rb._dirty = false;
+			}
+		}
+
+		// Initialize joints - must be done *after* all bodies were initialized
+		for (var i = 0; i < entities.length; i++) {
+			var entity = entities[i];
+
+			var joints = entity.rigidbodyComponent.joints;
+			//var bodyA = entity.rigidbodyComponent.rigidbody.cannonBody;
+			for (var j = 0; j < joints.length; j++) {
+				var joint = joints[j];
+				if (!joint._dirty) {
+					continue;
+				}
+				entity.rigidbodyComponent.rigidbody.initializeJoint(joint, entity, this);
+				joint._dirty = false;
+			}
+		}
+
 		this.step(tpf);
 
 		// Update positions of entities from the physics data
@@ -46,11 +74,6 @@ function (
 			var entity = entities[i];
 			var rb = entity.rigidbodyComponent.rigidbody;
 			var tc = entity.transformComponent;
-			if (rb._dirty) {
-				rb.initialize(entity, this);
-				rb._dirty = false;
-			}
-
 			rb.getPosition(tc.transform.translation);
 			rb.getQuaternion(tmpQuat);
 			tc.transform.rotation.copyQuaternion(tmpQuat);

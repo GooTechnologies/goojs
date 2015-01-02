@@ -16,6 +16,7 @@ require([
 	'goo/physicspack/colliders/CylinderCollider',
 	'goo/physicspack/colliders/SphereCollider',
 	'goo/physicspack/colliders/PlaneCollider',
+	'goo/physicspack/joints/BallJoint',
 	'lib/V'
 ], function (
 	Material,
@@ -35,6 +36,7 @@ require([
 	CylinderCollider,
 	SphereCollider,
 	PlaneCollider,
+	BallJoint,
 	V
 ) {
 	'use strict';
@@ -44,7 +46,7 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	// world.setSystem(new CannonPhysicsSystem());
+	//world.setSystem(new CannonPhysicsSystem());
 	world.setSystem(new AmmoPhysicsSystem());
 
 	function addPrimitives() {
@@ -113,7 +115,7 @@ require([
 	}
 
 	function createStaticBox(x, y, z, w, d, h) {
-		var entity = world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
+		return world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
 			.set(new RigidbodyComponent({ isKinematic: true }))
 			.set(
 				new ColliderComponent({
@@ -122,7 +124,6 @@ require([
 					})
 				})
 			).addToWorld();
-		return entity;
 	}
 
 	// Create a 'G' compound box body
@@ -174,44 +175,38 @@ require([
 	}
 
 	function createChain(x, y, z, numLinks, linkDistance, radius) {
-		x = x || 0;
-		y = y || 0;
-		z = z || 0;
-		numLinks = numLinks || 5;
-		linkDistance = linkDistance || 1;
-		radius = radius || 1;
-		/*
-		var lastBody;
+		var lastEntity;
 		for (var i = 0; i < numLinks; i++) {
-			var body = new CannonRigidbodyComponent({
+			var rbComponent = new RigidbodyComponent({
 				mass: i ? 1 : 0,
-				velocity: new Vector3(0, 0, i * 3)
+				initialVelocity: new Vector3(0, 0, 3 * i)
 			});
-			var e = world.createEntity(new Sphere(10, 10, radius), V.getColoredMaterial(), [x, y - i * radius * 2, z])
-				.set(body)
+			var e = world.createEntity(new Sphere(10, 10, radius), V.getColoredMaterial(), [x, y - i * linkDistance, z])
+				.set(rbComponent)
 				.set(
-					new CannonColliderComponent({
-						collider: new CannonSphereCollider({
+					new ColliderComponent({
+						collider: new SphereCollider({
 							radius: radius
 						})
 					})
 				).addToWorld();
-			if (lastBody) {
-				e.set(new CannonDistanceJointComponent({
-					distance: linkDistance,
-					connectedBody: lastBody
+
+			if (lastEntity) {
+				e.rigidbodyComponent.addJoint(new BallJoint({
+					connectedEntity: lastEntity,
+					localPivot: new Vector3(0, linkDistance / 2, 0)
 				}));
 			}
-			lastBody = body;
+
+			lastEntity = e;
 		}
-		*/
 	}
 
 	addPrimitives();
 	var radius = 0.9;
 	var dist = 2;
 	var N = 5;
-	//createChain(0, 4, 10, N, dist, radius);
+	createChain(0, 4, 10, N, dist, radius);
 	createGround();
 	createCompound(0, 5, 0);
 
@@ -255,14 +250,14 @@ require([
 			// Add some force to all bodies
 			world.by.system('CannonSystem').each(function (entity) {
 				// Force is directed to the origin
-	            force.copy(entity.getTranslation(force)).mul(-1);
+				force.copy(entity.getTranslation(force)).mul(-1);
 
-	            // Set a proper length of it
-	            force.normalize();
-	            force.mul(700);
+				// Set a proper length of it
+				force.normalize();
+				force.mul(700);
 
-	            // Apply it to the entity
-	            entity.setForce(force);
+				// Apply it to the entity
+				entity.setForce(force);
 			});
 		}
 	});
@@ -271,14 +266,14 @@ require([
 		// Add some force to all bodies
 		world.by.system('CannonSystem').each(function (entity) {
 			// Force is directed to the origin
-            force.copy(entity.getTranslation(force));
+			force.copy(entity.getTranslation(force));
 
-            // Set a proper length of it
-            force.normalize();
-            force.mul(5000);
+			// Set a proper length of it
+			force.normalize();
+			force.mul(5000);
 
-            // Apply it to the entity
-            entity.setForce(force);
+			// Apply it to the entity
+			entity.setForce(force);
 		});
 	}
 

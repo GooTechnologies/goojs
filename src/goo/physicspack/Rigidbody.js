@@ -10,19 +10,10 @@ function (
 	'use strict';
 
 	/**
-	 * @class Base class for rigid body wrappers.
+	 * @class Base class for rigid body. Made for interaction with a physics engine.
 	 */
 	function Rigidbody(settings) {
 		settings = settings || {};
-
-		// Set to true if any of the colliders were changed
-		this._dirty = true;
-
-		this.isKinematic = settings.isKinematic || false;
-		this.mass = settings.mass || 1.0;
-		if (this.isKinematic) {
-			this.mass = 0;
-		}
 	}
 	Rigidbody.constructor = Rigidbody;
 
@@ -70,6 +61,11 @@ function (
 	 * Creates the physics engine rigid body and adds it to the simulation
 	 */
 	Rigidbody.prototype.initialize = function () {};
+
+	/**
+	 * Creates all joints in the physics engine.
+	 */
+	Rigidbody.prototype.initializeJoint = function (joint, entity, system) {};
 
 	/**
 	 * Traverse the tree of colliders from a root entity and down

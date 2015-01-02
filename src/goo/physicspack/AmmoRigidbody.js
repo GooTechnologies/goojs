@@ -7,7 +7,8 @@ define([
 	'goo/physicspack/colliders/SphereCollider',
 	'goo/physicspack/colliders/CylinderCollider',
 	'goo/physicspack/colliders/PlaneCollider',
-	'goo/physicspack/colliders/TerrainCollider'
+	'goo/physicspack/colliders/TerrainCollider',
+	'goo/physicspack/joints/BallJoint'
 ],
 /** @lends */
 function (
@@ -19,7 +20,8 @@ function (
 	SphereCollider,
 	CylinderCollider,
 	PlaneCollider,
-	TerrainCollider
+	TerrainCollider,
+	BallJoint
 ) {
 	'use strict';
 
@@ -30,9 +32,8 @@ function (
 	var tmpQuat;
 	var tmpGooQuat = new Quaternion();
 
-	function AmmoRigidbody(ammoWorld, settings) {
-		settings = settings || {};
-		Rigidbody.call(this, settings);
+	function AmmoRigidbody(entity) {
+		Rigidbody.call(this, entity);
 
 		/**
 		 * The Ammo.btRigidbody instance. Will be created on .initialize()
@@ -99,7 +100,7 @@ function (
 		this.cannonBody.angularVelocity.copy(angularVelocity);
 	};
 
-	AmmoRigidbody.prototype.initialize = function (entity, world) {
+	AmmoRigidbody.prototype.initialize = function (entity, system) {
 		var gooTransform = entity.transformComponent.worldTransform;
 		var gooPos = gooTransform.translation;
 		var gooRot = gooTransform.rotation;
@@ -117,14 +118,15 @@ function (
 		var localInertia = new Ammo.btVector3(0, 0, 0);
 
 		// rigidbody is dynamic if and only if mass is non zero, otherwise static
-		if (this.mass !== 0.0) {
-			shape.calculateLocalInertia(this.mass, localInertia);
+		if (entity.rigidbodyComponent.mass !== 0.0) {
+			shape.calculateLocalInertia(entity.rigidbodyComponent.mass, localInertia);
 		}
 
-		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
+		var info = new Ammo.btRigidBodyConstructionInfo(entity.rigidbodyComponent.mass, motionState, shape, localInertia);
 		this.localInertia = localInertia;
 		this.ammoBody = new Ammo.btRigidBody(info);
-		world.world.addRigidBody(this.ammoBody);
+		system.world.addRigidBody(this.ammoBody);
+		this.setVelocity(entity.rigidbodyComponent.initialVelocity);
 		//this.body.setLinearFactor(this.linearFactor);
 	};
 
@@ -173,6 +175,27 @@ function (
 		});
 
 		return shape;
+	};
+
+	AmmoRigidbody.prototype.initializeJoint = function (joint, entity, system) {
+		var bodyA = entity.rigidbodyComponent.rigidbody.ammoBody;
+		var bodyB = joint.connectedEntity.rigidbodyComponent.rigidbody.ammoBody;
+
+		var constraint;
+
+		if (joint instanceof BallJoint) {
+			var pivotInA = new Ammo.btVector3();
+			var pivotInB = new Ammo.btVector3();
+			pivotInA.setValue(joint.localPivot.x, joint.localPivot.y, joint.localPivot.z);
+			pivotInB = bodyA.getWorldTransform().op_mul(pivotInA);
+			pivotInB = bodyB.getWorldTransform().inverse().op_mul(pivotInB);
+			constraint = new Ammo.btPoint2PointConstraint(bodyA, bodyB, pivotInA, pivotInB);
+		}
+
+		if (constraint) {
+			system.world.addConstraint(constraint, joint.collideConnected);
+			joint.joint = constraint;
+		}
 	};
 
 	// AmmoRigidbody.prototype.getShape = function (collider) {

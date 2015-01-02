@@ -16,6 +16,8 @@ function (
 		settings = settings || {};
 		this.connectedEntity = settings.connectedEntity || null;
 		this.collideConnected = typeof(settings.collideConnected) ? settings.collideConnected : false;
+		this.joint = null; // The physics engine joint
+		this._dirty = true;
 	}
 	Joint.constructor = Joint;
 

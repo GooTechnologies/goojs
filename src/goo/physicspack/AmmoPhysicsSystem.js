@@ -31,7 +31,7 @@ function (
 	};
 
 	AmmoPhysicsSystem.prototype.addBody = function (entity) {
-		entity.rigidbodyComponent.rigidbody = new AmmoRigidbody(this.world, entity.rigidbodyComponent.settings);
+		entity.rigidbodyComponent.rigidbody = new AmmoRigidbody(entity, this);
 	};
 
 	AmmoPhysicsSystem.prototype.step = function (tpf) {

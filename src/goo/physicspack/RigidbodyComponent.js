@@ -1,9 +1,11 @@
 define([
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/math/Vector3'
 ],
 /** @lends */
 function (
-	Component
+	Component,
+	Vector3
 ) {
 	'use strict';
 
@@ -18,6 +20,16 @@ function (
 		this.rigidbody = null; // Will be set by the PhysicsSystem
 		this.settings = settings;
 		this.joints = [];
+
+		// Set to true if any of the settings (or colliders) were changed
+		this._dirty = true;
+
+		this.isKinematic = settings.isKinematic || false;
+		this.mass = typeof(settings.mass) !== 'undefined' ? settings.mass : 1.0;
+		if (this.isKinematic) {
+			this.mass = 0;
+		}
+		this.initialVelocity = settings.initialVelocity ? settings.initialVelocity.clone() : new Vector3();
 	}
 
 	RigidbodyComponent.prototype = Object.create(Component.prototype);
