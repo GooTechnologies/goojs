@@ -5,7 +5,7 @@ Documentation extractor and renderer.
 
 **Disclaimer:**
 Modoc does not support (nor does it need to) the full set of tags - see a list of supported tags and annotations below.
-Modoc does not come with any guarantee that it will run well on anything else than goojs. Modoc works well by making assumptions about the structure of the code - goojs code.
+Modoc does not come with any guarantee that it runs well on anything else than goojs. Modoc works well by making assumptions about the structure of the code - goojs code.
 
 ###Setup
 
@@ -19,7 +19,7 @@ Where
 
  + *sourcesPath* points to the engine or any other source rich in jsdoc
  + *templatesPath* points to the folder storing the templates used to generate doc pages
- + *staticsPath* points to where the styles and additional scripts are located - these files will just be copied over 
+ + *staticsPath* points to where the styles and additional scripts are located - these files are just be copied over 
 to the *outPath* directory
  + *outPath* points to where the result should be stored
 
@@ -27,7 +27,7 @@ to the *outPath* directory
 
 ###Writing jsdoc
 
-The jsdoc extractor (*extractor.js*) can figure out what the constructor of a class is by searching for a function with the same name as the file name. It sound very specific but 99% of engine classes match this criteria (the exception is *SystemBus* which will have to be documented with `@target-class`). 
+The jsdoc extractor (*extractor.js*) can figure out what the constructor of a class is by searching for a function with the same name as the file name. It sound very specific but 99% of engine classes match this criteria (the exception is *SystemBus* which is documented using `@target-class`). 
  
 The extractor can figure out what members do instances of classes have by looking for assignments to `this` in the constructor of a class.
 
@@ -53,8 +53,8 @@ If you wish to document anything that is not covered by either of these cases yo
   
 ###Other transformations
 
- + `[text]{@link url}` will generate a link for *text* pointing to *url*. This can stay in any *description* field.
- + `{@link class}` will generate a link for class pointing to *class-doc.html*.
+ + `[text]{@link url}` generates a link for *text* pointing to *url*. This can stay in any *description* field.
+ + `{@link class}` generates a link for class pointing to *class-doc.html*.
  + `(!)` adds a yellow-warning-triangle
 
 ###Tags/transformations under consideration
