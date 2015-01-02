@@ -3,11 +3,14 @@
 var dogma = require('./dogma');
 var util = require('./util');
 
-
+// regex compilation for `[]()` links, `@link` and types (big mess)
 var typesRegex;
 var compileTypesRegex = function (types) {
-	var regexStr = '\\b(' + types.join('|') + ')\\b';
-	return new RegExp(regexStr, 'g');
+	var typesRegexStr = '\\b(' + types.join('|') + ')\\b';
+	typesRegex = new RegExp(typesRegexStr, 'g');
+
+	var urlRegex2Str = '\\{@link\\s(' + types.join('|') + ')\\}';
+	urlRegex2 =	new RegExp(urlRegex2Str, 'g');
 };
 
 var linkTypes = function (string) {
@@ -15,13 +18,14 @@ var linkTypes = function (string) {
 };
 
 var urlRegex1 = /\[(.+?)\]\{@link (.+?)\}/g;
-var urlRegex2 = /\{@linkplain (\S+) ([^\}]+)\}/g;
+var urlRegex2;
 var linkUrls = function (string) {
 	var tmp = string;
 	tmp = tmp.replace(urlRegex1, '<a href="$2">$1</a>');
-	tmp = tmp.replace(urlRegex2, '<a href="$1">$2</a>');
+	tmp = tmp.replace(urlRegex2, '<a href="$1-doc.html">$1</a>');
 	return tmp;
 };
+// ---
 
 // just concerned about < and > which might appear in type expressions
 var escapeType = function (string) {
@@ -151,7 +155,7 @@ var inject = function (data) {
 var all = function (jsData, files) {
 	if (!typesRegex) {
 		var types = files.map(util.getFileName);
-		typesRegex = compileTypesRegex(types);
+		compileTypesRegex(types);
 	}
 
 	inject(jsData.constructor);

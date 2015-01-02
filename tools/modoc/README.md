@@ -35,7 +35,7 @@ Methods, static methods and static members are also detectable by looking for as
 
 If you wish to document anything that is not covered by either of these cases you can just place a jsdoc comment (block, starting with a `*`) that contains an `@target-class` anywhere (in any file). 
 
-###Supported tags/transformations
+###Supported tags
 
  + `@param {<type>} <name> <description>` - any known classes mentioned in *type* are transformed in links
  + `@example` followed by any number of lines of code
@@ -49,8 +49,12 @@ If you wish to document anything that is not covered by either of these cases yo
  + `@readonly` to inform the user that this property should not be modified
  + `@extends <base-class>`
  + `@example-link <link> <text>` to link to a jsfiddle or a visual-test
- + `@target-class <target-class> <item-name> method|member|static-method|static-member` to document fictitious items. 
+ + `@target-class <target-class> <item-name> constructor|method|member|static-method|static-member` to document fictitious items
+  
+###Other transformations
+
  + `[text]{@link url}` will generate a link for *text* pointing to *url*. This can stay in any *description* field.
+ + `{@link class}` will generate a link for class pointing to *class-doc.html*.
  + `(!)` adds a yellow-warning-triangle
 
 ###Tags/transformations under consideration
