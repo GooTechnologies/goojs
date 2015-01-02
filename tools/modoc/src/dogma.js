@@ -95,6 +95,7 @@ var extractName = function (string, offset) {
 	var name, default_, optional = false, end;
 	if (string[i] === '[') {
 		optional = true;
+		// should instead find the matching ']'
 		var endParen = string.indexOf(']', i);
 		end = endParen;
 		var equals = string.indexOf('=', i);
@@ -234,12 +235,26 @@ var extractTagExampleLink = function (exampleLink) {
 
 var extractTagTargetClass = function (targetClass) {
 	// @target-class <class> <name> method|member|static-member|static-method
-	var match = targetClass.match(/^\s*(\w+)\s+(\w+)\s+(method|member|static-method|static-member)/);
-	if (!match) { throw new Error('malformed @target-class'); }
+	var match = targetClass.match(/^\s*(\w+)\s+(\w+)\s+(method|member|static-method|static-member|constructor)/);
+	if (!match) { throw new Error('malformed @target-class; got ' + targetClass); }
 	return {
 		className: match[1],
 		itemName: match[2],
 		itemType: match[3]
+	};
+};
+
+var extractTagGroup = function (group) {
+	// no processing required
+	return {
+		group: group
+	};
+};
+
+var extractTagRequirePath = function (requirePath) {
+	// no processing required
+	return {
+		requirePath: requirePath
 	};
 };
 
@@ -288,9 +303,17 @@ var extract = function (doc) {
 		tags['@extends'] = extractTagExtends(tags['@extends'][0]);
 	}
 
-	// --- only in when @target-class is present ---
+	// --- only when @target-class is present ---
 	if (tags['@target-class']) {
 		tags['@target-class'] = extractTagTargetClass(tags['@target-class'][0]);
+	}
+
+	if (tags['@group']) {
+		tags['@group'] = extractTagGroup(tags['@group'][0]);
+	}
+
+	if (tags['@require-path']) {
+		tags['@require-path'] = extractTagRequirePath(tags['@require-path'][0]);
 	}
 
 	return tags;

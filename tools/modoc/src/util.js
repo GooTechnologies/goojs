@@ -22,7 +22,24 @@ var pipe = function (f, g) {
 	};
 };
 
+// underscore doesn't have it
+// NB! this is not a general-purpose deepClone
+var deepClone = function (obj) {
+	if (obj instanceof Array) {
+		return obj.map(deepClone);
+	} else if (typeof obj === 'object') {
+		var clone = {};
+		Object.keys(obj).forEach(function (key) {
+			clone[key] = deepClone(obj[key]);
+		});
+		return clone;
+	} else {
+		return obj;
+	}
+};
+
 exports.getFileName = getFileName;
 exports.stringUntil = stringUntil;
 exports.stringFrom = stringFrom;
 exports.pipe = pipe;
+exports.deepClone = deepClone;

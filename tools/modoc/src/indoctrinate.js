@@ -126,8 +126,17 @@ var compileComment = function (rawComment) {
 		comment.extends = parsed['@extends'];
 	}
 
+	// --- only when @target-class is present ---
 	if (parsed['@target-class']) {
 		comment.targetClass = parsed['@target-class'];
+	}
+
+	if (parsed['@group']) {
+		comment.group = parsed['@group'];
+	}
+
+	if (parsed['@require-path']) {
+		comment.requirePath = parsed['@require-path'];
 	}
 
 	return comment;

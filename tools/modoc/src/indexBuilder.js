@@ -24,36 +24,46 @@ function getDifferentiatorIndex(strings) {
 	}
 }
 
-function getIndex(files) {
+function getIndex(classes) {
+	var files = _.pluck(classes, 'file').filter(Boolean);
 	var differentiator = getDifferentiatorIndex(files);
 
 	var groups = _.groupBy(files, function (file) {
 		return file.substring(differentiator, file.indexOf('/', differentiator));
 	});
 
-	var mapping = {};
-	var index = Object.keys(groups).map(function (name) {
+	Object.keys(classes).forEach(function (className) {
+		var class_ = classes[className];
+		if (class_.group) {
+			groups[class_.group].push({
+				name: class_.constructor.name,
+				requirePath: class_.requirePath,
+				link: class_.constructor.name + HTML_SUFFIX
+			});
+		}
+	});
+
+	return Object.keys(groups).map(function (name) {
 		var group = groups[name];
+
 		return {
 			name: name,
 			classes: group.map(function (file) {
+				if (typeof file === 'object') { return file; }
+
 				var fileName = util.getFileName(file);
-				var path = file.substring(differentiator, file.length - 3);
-				var entry = {
+				var requirePath = file.substring(differentiator, file.length - 3);
+				return {
 					name: fileName,
-					path: path,
+					requirePath: requirePath,
 					link: fileName + HTML_SUFFIX
 				};
-				mapping[file] = entry;
-				return entry;
+			}).sort(function (classA, classB) {
+				return classA.name < classB.name ? -1 :
+					classA.name > classB.name ? 1 : 0;
 			})
 		};
 	});
-
-	return {
-		index: index,
-		mapping: mapping
-	};
 }
 
 

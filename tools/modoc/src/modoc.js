@@ -62,10 +62,6 @@ var template = fs.readFileSync(args.templatesPath + '/t1.mustache', { encoding: 
 
 var files = getFiles(args.sourcePath, ['goo.js', 'pack', '+']);
 
-var indexAndMapping = indexBuilder.getIndex(files, 'goo');
-var index = indexAndMapping.index;
-var mapping = indexAndMapping.mapping;
-
 function copyStaticFiles(callback) {
 	childProcess.exec(
 		'cp -r ' + args.staticsPath + '/. ' + args.outPath,
@@ -111,6 +107,7 @@ function filterPrivates(class_) {
 
 function compileDoc(files) {
 	var classes = {};
+	var extraComments = [];
 
 	// extract information from classes
 	files.forEach(function (file) {
@@ -120,12 +117,14 @@ function compileDoc(files) {
 
 		var class_ = extractor.extract(source, file);
 
+		Array.prototype.push.apply(extraComments, class_.extraComments);
+
 		if (class_.constructor) {
 			indoctrinate.all(class_, files);
 
 			filterPrivates(class_);
 
-			class_.path = mapping[file].path;
+			class_.file = file;
 
 			classes[class_.constructor.name] = class_;
 		}
@@ -155,64 +154,97 @@ function compileDoc(files) {
 	// ---
 
 	// copy over the extra info from other classes
-	Object.keys(classes).forEach(function (className) {
-		var class_ = classes[className];
+	// adding extras mentioned in @target-class
+	extraComments.map(indoctrinate.compileComment)
+	.forEach(function (extraComment) {
+		var targetClassName = extraComment.targetClass.className;
+		var targetClass = classes[targetClassName];
 
-		var extraComments = class_.extraComments.map(indoctrinate.compileComment);
+		if (!targetClass) {
+			targetClass = {
+				constructor: null,
+				staticMethods: [],
+				staticMembers: [],
+				methods: [],
+				members: []
+			};
+			classes[targetClassName] = targetClass;
+		}
 
-		// adding extras mentioned in @target-class
-		extraComments.forEach(function (extraComment) {
-			var targetClassName = extraComment.targetClass.className;
-			var targetClass = classes[targetClassName];
-
-			if (!targetClass) {
-				classes[targetClassName] = {
-					constructor: null,
-					staticMethods: [],
-					staticMembers: [],
-					methods: [],
-					members: []
-				};
-			}
-
-			switch (extraComment.targetClass.itemType) {
-				case 'constructor':
-					targetClass.constructor = constructorFromComment(extraComment);
-					break;
-				case 'member':
-					targetClass.members.push(memberFromComment(extraComment));
-					break;
-				case 'method':
-					targetClass.methods.push(methodFromComment(extraComment));
-					break;
-				case 'static-member':
-					targetClass.staticMembers.push(staticMemberFromComment(extraComment));
-					break;
-				case 'static-method':
-					targetClass.staticMethods.push(staticMethodFromComment(extraComment));
-					break;
-			}
-		});
+		switch (extraComment.targetClass.itemType) {
+			case 'constructor':
+				targetClass.constructor = constructorFromComment(extraComment);
+				targetClass.requirePath = extraComment.requirePath.requirePath;
+				targetClass.group = extraComment.group.group;
+				break;
+			case 'member':
+				targetClass.members.push(memberFromComment(extraComment));
+				break;
+			case 'method':
+				targetClass.methods.push(methodFromComment(extraComment));
+				break;
+			case 'static-member':
+				targetClass.staticMembers.push(staticMemberFromComment(extraComment));
+				break;
+			case 'static-method':
+				targetClass.staticMethods.push(staticMethodFromComment(extraComment));
+				break;
+		}
 	});
 
 	return classes;
 }
 
-function renderDoc(files, classes) {
-	files.forEach(function (file) {
-		var fileName = util.getFileName(file);
+function compileBundles(classes) {
+	var index = indexBuilder.getIndex(classes, 'goo');
 
-		var data = {
-			index: index,
-			class_: classes[fileName]
-		};
+	// assemble the index for every class for the nav bar
+	var bundles = {};
 
-		if (classes[fileName] && data.class_.constructor) {
-			mapping[file].current = true;
-			var result = mustache.render(template, data);
-			mapping[file].current = false;
+	Object.keys(classes).forEach(function (className) {
+		var class_ = classes[className];
 
-			fs.writeFileSync(args.outPath + '/' + data.class_.constructor.name + HTML_SUFFIX, result);
+		var clonedIndex = util.deepClone(index);
+
+		// locate class className and make it active
+		// slow and stupid
+		var groupNames = Object.keys(clonedIndex);
+		for (var i = 0; i < groupNames.length; i++) {
+			var group = clonedIndex[groupNames[i]];
+
+			for (var j = 0; j < group.classes.length; j++) {
+				var entry = group.classes[j];
+				if (entry.name === className) {
+					// if the requirePath was not explicitly specified then add it from the index
+					if (!class_.requirePath) {
+						class_.requirePath = entry.requirePath;
+					}
+
+					// set it active
+					entry.current = true;
+
+					// make the bundle
+					bundles[className] = {
+						class_: class_,
+						index: clonedIndex
+					};
+				}
+			}
+		}
+	});
+
+	return bundles;
+}
+
+function renderDoc(bundles) {
+	Object.keys(bundles).forEach(function (className) {
+		var bundle = bundles[className];
+
+		// this filtering should take place elsewhere
+		if (bundle.class_.constructor) {
+			var result = mustache.render(template, bundle);
+
+			fs.writeFileSync(args.outPath + '/' + className + HTML_SUFFIX, result);
 		}
 	});
 }
@@ -300,7 +332,8 @@ function buildDeprecated(classes) {
 
 copyStaticFiles(function () {
 	var classes = compileDoc(files);
-	renderDoc(files, classes);
+	var bundles = compileBundles(classes);
+	renderDoc(bundles);
 	buildChangelog('CHANGES');
 	buildDeprecated(classes);
 	buildStartPage('Entity-doc.html', function () {
