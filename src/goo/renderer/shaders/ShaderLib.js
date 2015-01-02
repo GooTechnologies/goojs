@@ -26,6 +26,7 @@ define([
 	 * @static
 	 */
 	ShaderLib.uber = {
+		name: 'Uber Shader',
 		processors: [
 			ShaderBuilder.uber.processor,
 			ShaderBuilder.light.processor,
@@ -71,6 +72,184 @@ define([
 			lodBias: 0.0,
 			wrapSettings: [0.5, 0.0]
 		},
+		parameterGroups: [
+			{
+				name: 'Color (Diffuse)',
+				parameters: [
+					{
+						label: 'Color',
+						type: 'vec3',
+						control: 'color',
+						uniform: 'materialDiffuse'
+					}, {
+						label: 'Texture',
+						type: 'texture',
+						uniform: 'DIFFUSE_MAP'
+					}
+				]
+			}, {
+				name: 'Normal',
+				parameters: [
+					{
+						label: 'Texture',
+						type: 'texture',
+						uniform: 'NORMAL_MAP'
+					}, {
+						label: 'Strength',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 2,
+						step: 0.01,
+						uniform: 'normalMultiplier'
+					}
+				]
+			}, {
+				name: 'Specular',
+				parameters: [
+					{
+						label: 'Color',
+						type: 'vec3',
+						control: 'color',
+						uniform: 'materialSpecular'
+					}, {
+						label: 'Texture',
+						type: 'texture',
+						uniform: 'SPECULAR_MAP'
+					}, {
+						label: 'Shininess',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 1000,
+						step: 1,
+						exponential: true,
+						uniform: 'normalMultiplier'
+					}
+				]
+			}, {
+				name: 'Emissive',
+				parameters: [
+					{
+						label: 'Color',
+						type: 'vec3',
+						control: 'color',
+						uniform: 'materialEmissive'
+					}, {
+						label: 'Texture',
+						type: 'texture',
+						uniform: 'EMISSIVE_MAP'
+					}
+				]
+			}, {
+				name: 'Ambient',
+				parameters: [
+					{
+						label: 'Color',
+						type: 'vec3',
+						control: 'color',
+						uniform: 'materialAmbient'
+					}, {
+						label: 'Texture',
+						type: 'texture',
+						uniform: 'AO_MAP'
+					}
+				]
+			}, {
+				name: 'Opacity',
+				parameters: [
+					{
+						label: 'Texture',
+						type: 'texture',
+						uniform: 'TRANSPARENCY_MAP'
+					}, {
+						label: 'Strength',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 1,
+						step: 0.01,
+						uniform: 'opacity'
+					}, {
+						label: 'Threshold',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 1,
+						step: 0.01,
+						uniform: 'discardThreshold'
+					}, {
+						label: 'Dual Transparency',
+						type: 'boolean',
+						uniform: 'dualTransparency'
+					}
+				]
+			}, {
+				name: 'Reflectivity',
+				parameters: [
+					{
+						label: 'Texture',
+						type: 'texture',
+						uniform: 'REFLECTION_MAP'
+					}, {
+						label: 'Texture',
+						type: 'texture',
+						uniform: 'LOCAL_ENVIRONMENT'
+					}, {
+						label: 'Type',
+						type: 'string',
+						control: 'dropdown',
+						options: [
+							{
+								label: 'Blend',
+								value: 0
+							}, {
+								label: 'Add',
+								value: 1
+							}
+						],
+						uniform: 'opacity'
+					}, {
+						label: 'Amount',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 1,
+						step: 0.01,
+						uniform: 'reflectivity'
+					}, {
+						label: 'Fresnel',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 1,
+						step: 0.01,
+						uniform: 'fresnel'
+					}
+				]
+			}, {
+				name: 'Refractivity',
+				parameters: [
+					{
+						label: 'Amount',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 1,
+						step: 0.01,
+						uniform: 'refractivity'
+					}, {
+						label: 'Refraction',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 1,
+						step: 0.01,
+						uniform: 'etaRatio'
+					}
+				]
+			}
+		],
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);
 		},
@@ -356,6 +535,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.screenCopy = {
+		name: 'Screen Copy',
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -390,6 +570,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.copy = {
+		name: 'Copy',
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -431,6 +612,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.copyPure = {
+		name: 'Copy Pure',
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -473,6 +655,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.simple = {
+		name: 'Simple',
 		attributes : {
 			vertexPosition : MeshData.POSITION
 		},
@@ -502,6 +685,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.simpleColored = {
+		name: 'Simple Colored',
 		attributes : {
 			vertexPosition : MeshData.POSITION
 		},
@@ -511,6 +695,32 @@ define([
 			color : [1.0, 1.0, 1.0],
 			opacity : 1.0
 		},
+		parameterGroups: [
+			{
+				name: 'Color (Diffuse)',
+				parameters: [
+					{
+						label: 'Color',
+						type: 'vec3',
+						//control: 'color',
+						uniform: 'color'
+					}
+				]
+			}, {
+				name: 'Opacity',
+				parameters: [
+					{
+						label: 'Opacity',
+						type: 'float',
+						control: 'slider',
+						min: 0,
+						max: 1,
+						step: 0.01,
+						uniform: 'opacity'
+					}
+				]
+			}
+		],
 		vshader : [
 		'attribute vec3 vertexPosition;',
 
@@ -539,6 +749,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.simpleLit = {
+		name: 'Simple Lit',
 		processors: [
 			ShaderBuilder.light.processor
 		],
@@ -629,6 +840,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.textured = {
+		name: 'Textured',
 		defines: {
 			TEXCOORD0: true,
 			DIFFUSE_MAP: true
@@ -678,6 +890,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.texturedLit = {
+		name: 'Textured Lit',
 		processors: [
 			ShaderBuilder.light.processor
 		],
@@ -753,6 +966,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.convolution = {
+		name: 'Convolution',
 		defines : {
 			KERNEL_SIZE_FLOAT : '25.0',
 			KERNEL_SIZE_INT : '25'
@@ -844,6 +1058,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.showNormals = {
+		name: 'Show Normals',
 		defines: {
 			NORMAL: true
 		},
@@ -890,6 +1105,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.particles = {
+		name: 'Particles',
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexColor : MeshData.COLOR,
@@ -938,6 +1154,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.normalmap = {
+		name: 'Normal Map',
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -985,6 +1202,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.point = {
+		name: 'Point',
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexColor : MeshData.COLOR
@@ -1024,6 +1242,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.downsample = {
+		name: 'Down Sample',
 		attributes : {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
@@ -1063,6 +1282,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.lightDepth = {
+		name: 'Light Depth',
 		processors: [
 			ShaderBuilder.animation.processor
 		],
@@ -1122,6 +1342,7 @@ define([
 	 * @static
 	*/
 	ShaderLib.pickingShader = {
+		name: 'Picking Shader',
 		defines: {
 			WEIGHTS: true,
 			JOINTIDS: true
