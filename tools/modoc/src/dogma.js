@@ -64,25 +64,34 @@ var warnOnRogueTags = function (tags) {
 	}
 };
 
+var indexOfMatchingParen = function (string, offset, openParen, closeParen) {
+	var i = offset;
+	var parens = 1;
+
+	while (i < string.length) {
+		i++;
+		if (string[i] === openParen) {
+			parens++;
+		} else if (string[i] === closeParen) {
+			parens--;
+			if (parens === 0) {
+				return i;
+			}
+		}
+	}
+
+	return -1;
+};
+
 var extractType = function (string, offset) {
 	var i = string.indexOf('{', offset);
 	if (i === -1) { return { type: '', end: offset }; }
 
-	var start = i + 1;
-	var parens = 1;
-
-	while (parens > 0) {
-		i++;
-		if (string[i] === '{') {
-			parens++;
-		} else if (string[i] === '}') {
-			parens--;
-		}
-	}
+	var end = indexOfMatchingParen(string, i, '{', '}');
 
 	return {
-		end: i + 1,
-		type: string.substring(start, i)
+		end: end + 1,
+		type: string.substring(i + 1, end)
 	};
 };
 
@@ -96,7 +105,7 @@ var extractName = function (string, offset) {
 	if (string[i] === '[') {
 		optional = true;
 		// should instead find the matching ']'
-		var endParen = string.indexOf(']', i);
+		var endParen = indexOfMatchingParen(string, i, '[', ']');
 		end = endParen;
 		var equals = string.indexOf('=', i);
 

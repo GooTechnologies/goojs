@@ -76,6 +76,11 @@ describe('dogma', function () {
 			expect(extract('{number} [name=123] description'))
 			.toEqual({ name: 'name', end: '{number} [name=123] '.length, optional: true, default_: '123' });
 		});
+
+		it('extracts an optional name with a default value that contains []', function () {
+			expect(extract('{number} [name=[1, 2, 3]] description'))
+			.toEqual({ name: 'name', end: '{number} [name=[1, 2, 3]] '.length, optional: true, default_: '[1, 2, 3]' });
+		});
 	});
 
 	describe('extractTagReturn', function () {
@@ -115,7 +120,7 @@ describe('dogma', function () {
 
 		it('extracts the description', function () {
 			expect(extract('*\n* description'))
-			.toEqual({ description: ['description'] });
+			.toEqual({ description: 'description' });
 		});
 	});
 });
