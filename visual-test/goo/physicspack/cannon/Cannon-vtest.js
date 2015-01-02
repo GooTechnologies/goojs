@@ -41,13 +41,14 @@ require([
 ) {
 	'use strict';
 
-	V.describe('The entities in the scene hold a cannon component which updates their transform.');
+	V.describe('The entities in the scene hold a rigidbody component which updates their transform.');
 
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	//world.setSystem(new CannonPhysicsSystem());
-	world.setSystem(new AmmoPhysicsSystem());
+	var physicsSystem = new CannonPhysicsSystem();
+	//var physicsSystem = new AmmoPhysicsSystem();
+	world.setSystem(physicsSystem);
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {
@@ -248,7 +249,7 @@ require([
 	goo.callbacks.push(function () {
 		if (forcefieldEnabled) {
 			// Add some force to all bodies
-			world.by.system('CannonSystem').each(function (entity) {
+			world.by.system(physicsSystem.type).each(function (entity) {
 				// Force is directed to the origin
 				force.copy(entity.getTranslation(force)).mul(-1);
 
@@ -257,14 +258,14 @@ require([
 				force.mul(700);
 
 				// Apply it to the entity
-				entity.setForce(force);
+				entity.rigidbodyComponent.rigidbody.applyForce(force);
 			});
 		}
 	});
 
 	function explode() {
 		// Add some force to all bodies
-		world.by.system('CannonSystem').each(function (entity) {
+		world.by.system(physicsSystem.type).each(function (entity) {
 			// Force is directed to the origin
 			force.copy(entity.getTranslation(force));
 
@@ -273,7 +274,7 @@ require([
 			force.mul(5000);
 
 			// Apply it to the entity
-			entity.setForce(force);
+			entity.rigidbodyComponent.rigidbody.applyForce(force);
 		});
 	}
 

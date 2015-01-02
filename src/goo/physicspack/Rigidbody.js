@@ -47,14 +47,6 @@ function (
 	 */
 	Rigidbody.prototype.setAngularVelocity = function (angularVelocity) {};
 
-	/**
-	 * Add a collider to the body
-	 * @param {Collider} collider
-	 * @param {Vector3} position
-	 * @param {Quaternion} quaternion
-	 */
-	Rigidbody.prototype.addCollider = function (collider, position, quaternion) {};
-
 	var tmpQuat = new Quaternion();
 
 	/**
@@ -73,13 +65,6 @@ function (
 	 * @param  {Function} callback Will be called with colliderEntity, collider, localPosition and localQuaternion as arguments
 	 */
 	Rigidbody.prototype.traverseColliders = function (entity, callback) {
-		if (entity.colliderComponent && entity.colliderComponent.collider) {
-
-			// Entity has a collider on the root
-			// Create a simple shape
-			this.addCollider(entity.colliderComponent.collider);
-		}
-
 		// Needed for getting the Rigidbody-local transform of each collider
 		// entity.transformComponent.updateTransform();
 		// entity.transformComponent.updateWorldTransform();

@@ -26,15 +26,22 @@ function (
 	'use strict';
 
 	/* global CANNON */
+	var tmpQuat = new Quaternion();
+	var tmpCannonVec;
+	var tmpCannonVec2;
 
 	function CannonRigidbody(entity) {
 		Rigidbody.call(this, entity);
+		if (!tmpCannonVec) {
+			tmpCannonVec = new CANNON.Vec3();
+		}
+		if (!tmpCannonVec2) {
+			tmpCannonVec2 = new CANNON.Vec3();
+		}
 	}
 
 	CannonRigidbody.prototype = Object.create(Rigidbody.prototype);
 	CannonRigidbody.constructor = CannonRigidbody;
-
-	var tmpQuat = new Quaternion();
 
 	// Get the world transform from the entity and set on the body
 	CannonRigidbody.prototype.setTransformFromEntity = function (entity) {
@@ -47,6 +54,9 @@ function (
 	};
 
 	CannonRigidbody.prototype.applyForce = function (force) {
+		tmpCannonVec.copy(force);
+		tmpCannonVec2.set(0, 0, 0);
+		this.cannonBody.applyForce(tmpCannonVec, tmpCannonVec2);
 	};
 
 	CannonRigidbody.prototype.setVelocity = function (velocity) {
