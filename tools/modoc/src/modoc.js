@@ -276,10 +276,15 @@ function compileDeprecated(classes) {
 
 	return {
 		constructors: constructors,
+		hasConstructors: constructors.length > 0,
 		methods: methods,
+		hasMethods: methods.length > 0,
 		staticMethods: staticMethods,
+		hasStaticMethods: staticMethods.length > 0,
 		members: members,
-		staticMembers: staticMembers
+		hasMembers: members.length > 0,
+		staticMembers: staticMembers,
+		hasStaticMembers: staticMembers.length > 0
 	};
 }
 

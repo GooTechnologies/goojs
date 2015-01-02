@@ -3,7 +3,7 @@
 <head lang="en">
 	<meta charset="UTF-8">
 	<title>Goo Engine Changelog</title>
-
+	<link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="lib/styles/goo.css">
 	<link rel="stylesheet" href="changelog.css">
 </head>
@@ -11,59 +11,69 @@
 	<h1>Goo DEPRECATED</h1>
 	<a href="index.html">Back to the Goo Docs</a>
 
-	<section>
-		<h2>Constructors</h2>
-		{{#constructors}}
-			<div>
-				{{class_}}
-				{{item.name}}
-				{{item.comment.deprecated.description}}
-			</div>
-		{{/constructors}}
-	</section>
+	{{#hasConstructors}}
+		<section>
+			<h2>Constructors</h2>
+			{{#constructors}}
+				<div>
+					{{class_}}
+					{{item.name}}
+					{{item.comment.deprecated.description}}
+				</div>
+			{{/constructors}}
+		</section>
+	{{/hasConstructors}}
 
-	<section>
-		<h2>Members</h2>
-		{{#members}}
-			<div>
-				{{class_}}
-				{{item.name}}
-				{{item.comment.deprecated.description}}
-			</div>
-		{{/members}}
-	</section>
+	{{#hasMembers}}
+		<section>
+			<h2>Members</h2>
+			{{#members}}
+				<div>
+					{{class_}}
+					{{item.name}}
+					{{item.comment.deprecated.description}}
+				</div>
+			{{/members}}
+		</section>
+	{{/hasMembers}}
 
-	<section>
-		<h2>Static members</h2>
-		{{#staticMembers}}
-			<div>
-				{{class_}}
-				{{item.name}}
-				{{item.comment.deprecated.description}}
-			</div>
-		{{/staticMembers}}
-	</section>
+	{{#hasStaticMembers}}
+		<section>
+			<h2>Static members</h2>
+			{{#staticMembers}}
+				<div>
+					{{class_}}
+					{{item.name}}
+					{{item.comment.deprecated.description}}
+				</div>
+			{{/staticMembers}}
+		</section>
+	{{/hasStaticMembers}}
 
-	<section>
-		<h2>Methods</h2>
-		{{#methods}}
-			<div>
-				{{class_}}
-				{{item.name}}
-				{{item.comment.deprecated.description}}
-			</div>
-		{{/methods}}
-	</section>
+	{{#hasMethods}}
+		<section>
+			<h2>Methods</h2>
+			{{#methods}}
+				<div>
+					{{class_}}
+					{{item.name}}
+					{{item.comment.deprecated.description}}
+				</div>
+			{{/methods}}
+		</section>
+	{{/hasMethods}}
 
-	<section>
-		<h2>Static methods</h2>
-		{{#staticMethods}}
-			<div>
-				{{class_}}
-				{{item.name}}
-				{{item.comment.deprecated.description}}
-			</div>
-		{{/staticMethods}}
-	</section>
+	{{#hasStaticMethods}}
+		<section>
+			<h2>Static methods</h2>
+			{{#staticMethods}}
+				<div>
+					{{class_}}
+					{{item.name}}
+					{{item.comment.deprecated.description}}
+				</div>
+			{{/staticMethods}}
+		</section>
+	{{/hasStaticMethods}}
 </body>
 </html>
