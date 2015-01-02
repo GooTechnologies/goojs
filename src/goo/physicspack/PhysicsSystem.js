@@ -54,6 +54,7 @@ function (
 			rb.getPosition(tc.transform.translation);
 			rb.getQuaternion(tmpQuat);
 			tc.transform.rotation.copyQuaternion(tmpQuat);
+			tc.transform.update();
 			tc.setUpdated();
 		}
 	};
