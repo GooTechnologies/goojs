@@ -46,8 +46,8 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	var physicsSystem = new CannonPhysicsSystem();
-	//var physicsSystem = new AmmoPhysicsSystem();
+	//var physicsSystem = new CannonPhysicsSystem();
+	var physicsSystem = new AmmoPhysicsSystem();
 	world.setSystem(physicsSystem);
 
 	function addPrimitives() {
@@ -203,6 +203,27 @@ require([
 		}
 	}
 
+
+	function createKinematic() {
+		var rbComponent = new RigidbodyComponent({
+			mass: 0,
+			initialVelocity: new Vector3(0, 0, 3),
+			isKinematic: true
+		});
+
+		var halfExtents = new Vector3(1, 1, 1)
+		var e = world.createEntity(new Box(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2), V.getColoredMaterial(), [0, 0, 5])
+			.set(rbComponent)
+			.set(
+				new ColliderComponent({
+					collider: new BoxCollider({
+						halfExtents: halfExtents
+					})
+				})
+			).addToWorld();
+	}
+
+	createKinematic();
 	addPrimitives();
 	var radius = 0.9;
 	var dist = 2;
