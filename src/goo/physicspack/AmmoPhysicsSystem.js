@@ -42,7 +42,7 @@ function (
 		var maxSubSteps = this.maxSubSteps;
 		world.stepSimulation(tpf, maxSubSteps, fixedTimeStep);
 
-		// TODO
+		// TODO: Update kinematic bodies etc
 	};
 
 	return AmmoPhysicsSystem;

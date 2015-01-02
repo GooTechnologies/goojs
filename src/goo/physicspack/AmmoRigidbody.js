@@ -45,6 +45,9 @@ function (
 		if (!tmpVector) {
 			tmpVector = new Ammo.btVector3();
 		}
+		if (!tmpQuat) {
+			tmpQuat = new Ammo.btQuaternion();
+		}
 	}
 
 	AmmoRigidbody.prototype = Object.create(Rigidbody.prototype);
@@ -60,16 +63,18 @@ function (
 		this.ammoBody.setWorldTransform(tmpTransform);
 	};
 
-	AmmoRigidbody.prototype.setForce = function (force) {
-		this.cannonBody.force.copy(force);
+	AmmoRigidbody.prototype.applyForce = function (force) {
+		// TODO
 	};
 
 	AmmoRigidbody.prototype.setVelocity = function (velocity) {
-		this.cannonBody.velocity.copy(velocity);
+		tmpVector.setValue(velocity.x, velocity.y, velocity.z);
+		this.ammoBody.setLinearVelocity(tmpVector);
 	};
 
 	AmmoRigidbody.prototype.setPosition = function (pos) {
-		this.cannonBody.position.copy(pos);
+		tmpVector.setValue(pos.x, pos.y, pos.z);
+		this.ammoBody.getWorldTransform().setOrigin(tmpVector);
 	};
 
 	AmmoRigidbody.prototype.getPosition = function (targetVector) {
@@ -80,7 +85,8 @@ function (
 
 	AmmoRigidbody.prototype.setQuaternion = function (quat) {
 		var p = this.ammoBody.getWorldTransform();
-		p.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+		tmpQuat.setValue(quat.x, quat.y, quat.z, quat.w);
+		p.setRotation(tmpQuat);
 	};
 
 	AmmoRigidbody.prototype.getQuaternion = function (targetQuat) {
@@ -120,10 +126,6 @@ function (
 		this.ammoBody = new Ammo.btRigidBody(info);
 		world.world.addRigidBody(this.ammoBody);
 		//this.body.setLinearFactor(this.linearFactor);
-
-		// if (this.onInitializeBody) {
-		// 	this.onInitializeBody(this.body);
-		// }
 	};
 
 	AmmoRigidbody.prototype.constructAmmoShape = function (entity) {

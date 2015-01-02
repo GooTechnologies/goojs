@@ -64,7 +64,7 @@ require([
 				var radius = 1 + V.rng.nextFloat();
 				entity = world.createEntity(new Box(radius * 2, radius * 2, radius * 2), mat, position);
 				colliderComponent = new ColliderComponent({
-					collider: new BoxCollider({ // TODO: set automatically from meshdata
+					collider: new BoxCollider({
 						halfExtents: new Vector3(radius, radius, radius)
 					})
 				});
@@ -72,7 +72,6 @@ require([
 
 			} else if (V.rng.nextFloat() < 0.5) {
 
-				// rigidBodyComponent.centerOfMassOffset.setd(0,3,0);
 				var radius = 1 + V.rng.nextFloat();
 				entity = world.createEntity(position);
 				colliderComponent = new ColliderComponent({

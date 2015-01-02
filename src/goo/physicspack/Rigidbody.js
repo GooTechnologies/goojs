@@ -36,7 +36,7 @@ function (
 	 * Set the force on the body
 	 * @param {Vector3} force
 	 */
-	Rigidbody.prototype.setForce = function (force) {};
+	Rigidbody.prototype.applyForce = function (force) {};
 
 	/**
 	 * Set the velocity on the body
@@ -92,41 +92,24 @@ function (
 		invBodyTransform.copy(bodyTransform);
 		invBodyTransform.invert(invBodyTransform);
 		var gooTrans = new Transform();
-
-		//var cmOffset = this.centerOfMassOffset;
-
 		var gooTrans2 = new Transform();
 
-		var that = this;
 		entity.traverse(function (childEntity) {
 			var collider = childEntity.colliderComponent;
 			if (collider) {
 
 				// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
-				// childEntity.transformComponent.updateTransform();
-				// childEntity.transformComponent.updateWorldTransform();
 
 				gooTrans.copy(childEntity.transformComponent.worldTransform);
 				Transform.combine(invBodyTransform, gooTrans, gooTrans2);
 				gooTrans2.update();
 
-				// var gooTrans2 = new Transform();
-				// gooTrans2.copy(childEntity.transformComponent.transform);
-
 				var offset = gooTrans2.translation;
 				var rot = gooTrans2.rotation;
-				var q = tmpQuat;
-				q.fromRotationMatrix(rot);
-
-				// var o2 = orientation.clone();
-				// o2.w *= -1;
-				// o2.vmult(offset, offset);
-
-				// Add center of mass offset
-				//offset.add(cmOffset);
+				tmpQuat.fromRotationMatrix(rot);
 
 				// Add the shape
-				callback(childEntity, collider.collider, offset, q);
+				callback(childEntity, collider.collider, offset, tmpQuat);
 			}
 		});
 	};

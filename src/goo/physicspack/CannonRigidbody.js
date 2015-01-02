@@ -53,8 +53,7 @@ function (
 		body.quaternion.copy(q);
 	};
 
-	CannonRigidbody.prototype.setForce = function (force) {
-		this.cannonBody.force.copy(force);
+	CannonRigidbody.prototype.applyForce = function (force) {
 	};
 
 	CannonRigidbody.prototype.setVelocity = function (velocity) {
