@@ -5,10 +5,11 @@
 	<title>Goo Engine Changelog</title>
 	<link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="lib/styles/goo.css">
+	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="changelog.css">
 </head>
 <body>
-	<h1>Goo DEPRECATED</h1>
+	<h1>Goo engine API deprecation list</h1>
 	<a href="index.html">Back to the Goo Docs</a>
 
 	{{#hasConstructors}}
@@ -16,9 +17,9 @@
 			<h2>Constructors</h2>
 			{{#constructors}}
 				<div>
-					{{class_}}
-					{{item.name}}
-					{{item.comment.deprecated.description}}
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
 				</div>
 			{{/constructors}}
 		</section>
@@ -29,9 +30,9 @@
 			<h2>Members</h2>
 			{{#members}}
 				<div>
-					{{class_}}
-					{{item.name}}
-					{{item.comment.deprecated.description}}
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
 				</div>
 			{{/members}}
 		</section>
@@ -42,9 +43,9 @@
 			<h2>Static members</h2>
 			{{#staticMembers}}
 				<div>
-					{{class_}}
-					{{item.name}}
-					{{item.comment.deprecated.description}}
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
 				</div>
 			{{/staticMembers}}
 		</section>
@@ -55,9 +56,9 @@
 			<h2>Methods</h2>
 			{{#methods}}
 				<div>
-					{{class_}}
-					{{item.name}}
-					{{item.comment.deprecated.description}}
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
 				</div>
 			{{/methods}}
 		</section>
@@ -68,9 +69,9 @@
 			<h2>Static methods</h2>
 			{{#staticMethods}}
 				<div>
-					{{class_}}
-					{{item.name}}
-					{{item.comment.deprecated.description}}
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
 				</div>
 			{{/staticMethods}}
 		</section>
