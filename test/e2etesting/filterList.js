@@ -15,7 +15,9 @@ var filterList = [
 	'HTMLComponent',
 	'Cannon-terrain', // needs fixing
 	'HtmlComponentHandler', // displays nothing on the canvas
-	'CrunchLoader'
+	'CrunchLoader',
+	'GameUtils',
+	'AmbientTest'
 ];
 
 exports.filterList = filterList;

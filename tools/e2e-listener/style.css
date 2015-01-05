@@ -1,0 +1,19 @@
+body {
+    font-family: sans-serif;
+}
+
+.status-ok {
+    font-family: Consolas, Inconsolata, Monaco, monospace;
+    color: #65ac14;
+    margin: 2px 16px;
+}
+
+.status-fail {
+    font-family: Consolas, Inconsolata, Monaco, monospace;
+    color: #c60500;
+    margin: 2px 16px;
+}
+
+.date {
+    font-size: small;
+}
