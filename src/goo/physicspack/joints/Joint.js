@@ -1,16 +1,12 @@
-define([
-],
+define([],
 /** @lends */
-function (
-) {
+function () {
 	'use strict';
 
 	/**
-	 * Joint base class
 	 * @class
 	 * @param {object} [settings]
-	 * @param {number} [settings.connectedEntity=null]
-	 * @param {boolean} [settings.collideConnected=false]
+	 * @variation 2
 	 */
 	function Joint(settings) {
 		settings = settings || {};

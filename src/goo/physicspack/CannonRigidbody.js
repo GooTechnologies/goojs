@@ -30,6 +30,11 @@ function (
 	var tmpCannonVec;
 	var tmpCannonVec2;
 
+	/**
+	 * @class
+	 * @param {Entity} entity
+	 * @extends Rigidbody
+	 */
 	function CannonRigidbody(entity) {
 		Rigidbody.call(this, entity);
 		if (!tmpCannonVec) {
@@ -85,6 +90,30 @@ function (
 		this.cannonBody.angularVelocity.copy(angularVelocity);
 	};
 
+	CannonRigidbody.prototype.setLinearDamping = function (linearDamping) {
+		this.cannonBody.damping = linearDamping;
+	};
+
+	CannonRigidbody.prototype.setAngularDamping = function (angularDamping) {
+		this.cannonBody.angularDamping = angularDamping;
+	};
+
+	CannonRigidbody.prototype.setCollisionGroup = function (collisionGroup) {
+		this.cannonBody.collisionFilterGroup = collisionGroup;
+	};
+
+	CannonRigidbody.prototype.setCollisionMask = function (collisionMask) {
+		this.cannonBody.collisionFilterMask = collisionMask;
+	};
+
+	CannonRigidbody.prototype.setFriction = function (/*friction*/) {
+		// TODO: Implement per-body friction in Cannon
+	};
+
+	CannonRigidbody.prototype.setRestitution = function (/*restitution*/) {
+		// TODO: Implement per-body restitution in Cannon
+	};
+
 	CannonRigidbody.prototype.getCannonShape = function (collider) {
 		var shape;
 		if (collider instanceof BoxCollider) {
@@ -132,7 +161,7 @@ function (
 		this.setTransformFromEntity(entity);
 	};
 
-	CannonRigidbody.prototype.initializeJoint = function (joint, entity, system) {
+	CannonRigidbody.prototype.initializeJoint = function (joint, entity/*, system*/) {
 		var bodyA = entity.rigidbodyComponent.rigidbody.cannonBody;
 		var bodyB = joint.connectedEntity.rigidbodyComponent.rigidbody.cannonBody;
 		var constraint;

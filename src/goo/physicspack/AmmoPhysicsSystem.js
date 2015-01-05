@@ -13,12 +13,17 @@ function (
 
 	/**
 	 * @class
+	 * @extends PhysicsSystem
 	 */
 	function AmmoPhysicsSystem(settings) {
 		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
 		var dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
 		var solver = new Ammo.btSequentialImpulseConstraintSolver();
+
+		/**
+		 * @type {Ammo.btDiscreteDynamicsWorld}
+		 */
 		this.world = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 		PhysicsSystem.call(this, settings);
 	}

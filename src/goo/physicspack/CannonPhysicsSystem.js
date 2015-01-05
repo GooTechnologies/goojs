@@ -13,10 +13,15 @@ function (
 
 	/**
 	 * @class
+	 * @extends PhysicsSystem
 	 */
 	function CannonPhysicsSystem(settings) {
-		this.world = new CANNON.World();
 		PhysicsSystem.call(this, settings);
+
+		/**
+		 * @type {CANNON.World}
+		 */
+		this.world = new CANNON.World();
 	}
 	CannonPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
 

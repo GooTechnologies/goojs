@@ -26,6 +26,7 @@ function (
 	'use strict';
 
 	/* global Ammo */
+	/* jslint bitwise: true */
 
 	var tmpTransform;
 	var tmpVector;
@@ -33,6 +34,11 @@ function (
 	var tmpQuat;
 	var tmpGooQuat = new Quaternion();
 
+	/**
+	 * @class
+	 * @param {Entity} entity
+	 * @extends Rigidbody
+	 */
 	function AmmoRigidbody(entity) {
 		Rigidbody.call(this, entity);
 
@@ -107,6 +113,30 @@ function (
 		this.ammoBody.setAngularVelocity(tmpVector);
 	};
 
+	AmmoRigidbody.prototype.setLinearDamping = function (linearDamping) {
+		this.ammoBody.setDamping(linearDamping, this.entity.rigidbodyComponent.angularDamping);
+	};
+
+	AmmoRigidbody.prototype.setAngularDamping = function (angularDamping) {
+		this.ammoBody.setDamping(this.entity.rigidbodyComponent.linearDamping, angularDamping);
+	};
+
+	AmmoRigidbody.prototype.setCollisionGroup = function (/*collisionGroup*/) {
+		this.entity.rigidbodyComponent._dirty = true;
+	};
+
+	AmmoRigidbody.prototype.setCollisionMask = function (/*collisionMask*/) {
+		this.entity.rigidbodyComponent._dirty = true;
+	};
+
+	AmmoRigidbody.prototype.setFriction = function (friction) {
+		this.ammoBody.set_m_friction(friction);
+	};
+
+	AmmoRigidbody.prototype.setRestitution = function (restitution) {
+		this.ammoBody.set_m_restitution(restitution);
+	};
+
 	AmmoRigidbody.prototype.updateKinematic = function (entity) {
 		var body = this.ammoBody;
         if (body.getMotionState()) {
@@ -121,6 +151,7 @@ function (
 	};
 
 	AmmoRigidbody.prototype.initialize = function (entity, system) {
+		var rbc = entity.rigidbodyComponent;
 		var gooTransform = entity.transformComponent.worldTransform;
 		var gooPos = gooTransform.translation;
 		var gooRot = gooTransform.rotation;
@@ -138,19 +169,24 @@ function (
 		var localInertia = new Ammo.btVector3(0, 0, 0);
 
 		// rigidbody is dynamic if and only if mass is non zero, otherwise static
-		if (entity.rigidbodyComponent.mass !== 0.0) {
-			shape.calculateLocalInertia(entity.rigidbodyComponent.mass, localInertia);
+		if (rbc.mass !== 0.0) {
+			shape.calculateLocalInertia(rbc.mass, localInertia);
 		}
 
-		var info = new Ammo.btRigidBodyConstructionInfo(entity.rigidbodyComponent.mass, motionState, shape, localInertia);
+		var info = new Ammo.btRigidBodyConstructionInfo(rbc.mass, motionState, shape, localInertia);
 		this.localInertia = localInertia;
 		var body = this.ammoBody = new Ammo.btRigidBody(info);
-		if (entity.rigidbodyComponent.isKinematic) {
+		if (rbc.isKinematic) {
 			body.setCollisionFlags(body.getCollisionFlags() | AmmoRigidbody.AmmoFlags.CF_KINEMATIC_OBJECT);
 			body.setActivationState(AmmoRigidbody.AmmoFlags.DISABLE_DEACTIVATION);
 		}
-		system.world.addRigidBody(this.ammoBody);
-		this.setVelocity(entity.rigidbodyComponent.initialVelocity);
+
+		if (typeof(rbc.collisionGroup) !== 'undefined' && typeof(rbc.collisionMask) !== 'undefined') {
+			system.world.addRigidBody(this.ammoBody, rbc.collisionGroup, rbc.collisionMask);
+		} else {
+			system.world.addRigidBody(this.ammoBody);
+		}
+		this.setVelocity(rbc.initialVelocity);
 		//this.body.setLinearFactor(this.linearFactor);
 	};
 
@@ -178,11 +214,11 @@ function (
 		var collider;
 		this.traverseColliders(entity, function (colliderEntity, _collider) {
 			numColliders++;
-			collider =_collider;
+			collider = _collider;
 		});
 
 		shape = new Ammo.btCompoundShape();
-		this.traverseColliders(entity, function (colliderEntity, collider, localPosition, localQuaternion){
+		this.traverseColliders(entity, function (colliderEntity, collider, localPosition, localQuaternion) {
 
 			// Get local transform
 			var localTrans = tmpTransform;
@@ -207,7 +243,7 @@ function (
 			} else if (collider instanceof CylinderCollider) {
 				childShape = new Ammo.btCylinderShapeZ(new Ammo.btVector3(collider.height / 2, collider.radiusTop, collider.radiusTop));
 
-			} else if (collider instanceof TerrainCollider) {
+			//} else if (collider instanceof TerrainCollider) {
 				// childShape = new CANNON.Heightfield(collider.data);
 			}
 

@@ -15,13 +15,16 @@ function (
 
 	/**
 	 * @class
-	 * @extends Joint
 	 * @param {object} [settings]
+	 * @extends Joint
 	 */
 	function BallJoint(settings) {
 		settings = settings || {};
 		Joint.call(this, settings);
 
+		/**
+		 * @type {Vector3}
+		 */
 		this.localPivot = settings.localPivot ? settings.localPivot.clone() : new Vector3();
 	}
 	BallJoint.prototype = Object.create(Joint.prototype);

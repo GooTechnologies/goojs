@@ -13,8 +13,11 @@ function (
 ) {
 	'use strict';
 
+	var tmpQuat = new Quaternion();
+
 	/**
 	 * @class
+	 * @extends {System}
 	 */
 	function PhysicsSystem(settings) {
 		System.call(this, 'PhysicsSystem', ['TransformComponent', 'RigidbodyComponent']);
@@ -23,10 +26,23 @@ function (
 
 		this.priority = 1; // make sure it processes after transformsystem
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
+
+		/**
+		 * @type {number}
+		 */
 		this.stepFrequency = settings.stepFrequency || 60;
+
+		/**
+		 * @type {number}
+		 */
 		this.maxSubSteps = settings.maxSubSteps || 10;
 	}
 	PhysicsSystem.prototype = Object.create(System.prototype);
+
+	/**
+	 * @param {Vector3} gravityVector
+	 */
+	PhysicsSystem.prototype.setGravity = function (/*gravityVector*/) {};
 
 	PhysicsSystem.prototype.inserted = function (entity) {
 		this.addBody(entity);
@@ -35,8 +51,6 @@ function (
 	PhysicsSystem.prototype.deleted = function (entity) {
 		this.removeBody(entity);
 	};
-
-	var tmpQuat = new Quaternion();
 
 	PhysicsSystem.prototype.process = function (entities, tpf) {
 
