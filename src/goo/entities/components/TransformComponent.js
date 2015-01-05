@@ -108,47 +108,120 @@ define([
 			TransformComponent.prototype.lookAt.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Translates the entity with the supplied amount multipled by the entity's orientation. Injected on entities with a transformComponent
+		 * @target-class Entity move method
+		 * @param {Vector3|number[]} translation
+		 * @returns {Entity} Self to allow chaining
+		 */
 		move: function () {
 			TransformComponent.prototype.move.apply(this.transformComponent, arguments);
 			return this;
 		},
 
+		/**
+		 * Returns the local translation of the entity. Injected on entities with a transformComponent
+		 * @target-class Entity getTranslation method
+		 * @returns {Vector3} Translation
+		 */
 		getTranslation: function () {
 			return TransformComponent.prototype.getTranslation.apply(this.transformComponent, arguments);
 		},
+
+		/**
+		 * Returns the local rotation of the entity. Injected on entities with a transformComponent
+		 * @target-class Entity getRotation method
+		 * @returns {Vector3} Rotation
+		 */
 		getRotation: function () {
 			return TransformComponent.prototype.getRotation.apply(this.transformComponent, arguments);
 		},
+
+		/**
+		 * Returns the local scale of the entity. Injected on entities with a transformComponent
+		 * @target-class Entity getScale method
+		 * @returns {Vector3} Scale
+		 */
 		getScale: function () {
 			return TransformComponent.prototype.getScale.apply(this.transformComponent, arguments);
 		},
 
+		/**
+		 * Translates the entity with the given amount. Injected on entities with a transformComponent
+		 * @target-class Entity addTranslation method
+		 * @param {Vector3|number[]} translation
+		 * @returns {Entity} Self to allow chaining
+		 */
 		addTranslation: function () {
 			TransformComponent.prototype.addTranslation.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Rotates the entity with the given amount. Injected on entities with a transformComponent
+		 * @target-class Entity addRotation method
+		 * @param {Vector3|number[]} rotation
+		 * @returns {Entity} Self to allow chaining
+		 */
 		addRotation: function () {
 			TransformComponent.prototype.addRotation.apply(this.transformComponent, arguments);
 			return this;
 		},
+
 		// no, there's no addScale
 
-		attachChild: function (entity, keepTransform) {
-			this.transformComponent.attachChild(entity.transformComponent, keepTransform);
-			return this;
-		},
-		detachChild: function (entity, keepTransform) {
-			this.transformComponent.detachChild(entity.transformComponent, keepTransform);
+		/**
+		 * Attaches the supplied entity to this entity as a child. Injected on entities with a transformComponent
+		 * @target-class Entity attachChild method
+		 * @param {Entity} childEntity
+		 * @param {boolean} keepTransform If enabled will preserve the world transform of the child entity
+		 * @returns {Entity} Self to allow chaining
+		 */
+		attachChild: function (childEntity, keepTransform) {
+			this.transformComponent.attachChild(childEntity.transformComponent, keepTransform);
 			return this;
 		},
 
+		/**
+		 * Detaches the supplied entity from this entity. Injected on entities with a transformComponent
+		 * @target-class Entity detachChild method
+		 * @param {Entity} childEntity
+		 * @param {boolean} keepTransform If enabled will preserve the world transform of the child entity
+		 * @returns {Entity} Self to allow chaining
+		 */
+		detachChild: function (childEntity, keepTransform) {
+			this.transformComponent.detachChild(childEntity.transformComponent, keepTransform);
+			return this;
+		},
+
+		/**
+		 * Returns an {@link EntitySelection} of the children of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity children method
+		 * @returns {EntitySelection}
+		 */
 		children: function () {
 			return new EntitySelection(this).children();
 		},
+
+		/**
+		 * Returns an {@link EntitySelection} of the parent of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity parent method
+		 * @returns {EntitySelection}
+		 */
 		parent: function () {
 			return new EntitySelection(this).parent();
 		},
 
+		/**
+		 * Traverses the entity hierarchy downwards starting from this entity and applies a function to all entities traversed.
+		 * Traversal can be stopped if the function returns 'false'.
+		 * Injected on entities with a transformComponent
+		 * @target-class Entity traverse method
+		 * @param {(Entity, number) -> boolean} callback The function to be applied to traversed entities. Takes an entity and the current deph level and returns a boolean.
+		 * @param {number} [levelOffset=0]
+		 * @returns {Entity} Self to allow chaining
+		 */
 		traverse: function (callback, level) {
 			level = level !== undefined ? level : 0;
 
@@ -161,6 +234,15 @@ define([
 
 			return this;
 		},
+
+		/**
+		 * Traverses the entity hierarchy upwards starting from this entity and applies a function to all entities traversed.
+		 * Traversal can be stopped if the function returns 'false'.
+		 * Injected on entities with a transformComponent
+		 * @target-class Entity traverseUp method
+		 * @param {(Entity) -> boolean} callback The function to be applied to traversed entities. Takes an entity and returns a boolean.
+		 * @returns {Entity} Self to allow chaining
+		 */
 		traverseUp: function (callback) {
 			var transformComponent = this.transformComponent;
 			while (callback(transformComponent.entity) !== false && transformComponent.parent) {
@@ -230,7 +312,11 @@ define([
 			return this;
 		},
 
-		// entity.show().isHidden() will return false if any ancestor of entity is hidden
+		/**
+		 * Returns whether the entity or any of its ancestors are hidden. Injected on entities with a transformComponent
+		 * @target-class Entity isVisiblyHidden method
+		 * @returns {boolean}
+		 */
 		isVisiblyHidden: function () {
 			var pointer = this;
 
@@ -248,8 +334,11 @@ define([
 			return false;
 		},
 
-		// entity.isHidden returns the hidden status of the entity and may not reflect what is visible
-		// an entity can have a hidden status of 'visible', but visually it may be hidden due to one of its ancestors being hidden
+		/**
+		 * Returns the 'hidden' status of this entity. The entity may still be hidden if one of its ancestors is hidden. Injected on entities with a transformComponent
+		 * @target-class Entity isHidden method
+		 * @returns {boolean}
+		 */
 		isHidden: function () {
 			return this._hidden;
 		}
