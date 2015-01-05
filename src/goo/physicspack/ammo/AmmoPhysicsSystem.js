@@ -25,7 +25,6 @@ function (
 		 * @type {Ammo.btDiscreteDynamicsWorld}
 		 */
 		this.world = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-		PhysicsSystem.call(this, settings);
 
 		/**
 		 * Maps Ammo pointers to entities
@@ -33,6 +32,8 @@ function (
 		 * @type {Object}
 		 */
 		this._entities = {};
+
+		PhysicsSystem.call(this, settings);
 	}
 	AmmoPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
 

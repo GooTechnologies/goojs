@@ -114,14 +114,12 @@ function (
 		this.cannonBody.collisionFilterMask = collisionMask;
 	};
 
-	CannonRigidbody.prototype.setFriction = function (/*friction*/) {
-		// TODO: Implement per-body friction in Cannon
-		console.warn('Per-body friction is not implemented in Cannon yet');
+	CannonRigidbody.prototype.setFriction = function (friction) {
+		this.cannonBody.material.friction = friction;
 	};
 
-	CannonRigidbody.prototype.setRestitution = function (/*restitution*/) {
-		// TODO: Implement per-body restitution in Cannon
-		console.warn('Per-body restitution is not implemented in Cannon yet');
+	CannonRigidbody.prototype.setRestitution = function (restitution) {
+		this.cannonBody.material.restitution = restitution;
 	};
 
 	CannonRigidbody.prototype.getCannonShape = function (collider) {
@@ -153,7 +151,8 @@ function (
 		}
 		var rbc = entity.rigidbodyComponent;
 		var body = this.cannonBody = new CANNON.Body({
-			mass: entity.rigidbodyComponent.mass
+			mass: entity.rigidbodyComponent.mass,
+			material: new CANNON.Material()
 		});
 		system.world.addBody(body);
 		system._entities[body.id] = entity;
