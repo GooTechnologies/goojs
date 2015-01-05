@@ -3,11 +3,13 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'goo/math/Transform',
+	'goo/math/Matrix3x3',
 	'goo/physicspack/colliders/BoxCollider',
 	'goo/physicspack/colliders/SphereCollider',
 	'goo/physicspack/colliders/CylinderCollider',
 	'goo/physicspack/colliders/PlaneCollider',
 	'goo/physicspack/colliders/TerrainCollider',
+	'goo/physicspack/joints/BallJoint',
 	'goo/physicspack/joints/BallJoint'
 ],
 /** @lends */
@@ -16,12 +18,14 @@ function (
 	Vector3,
 	Quaternion,
 	Transform,
+	Matrix3x3,
 	BoxCollider,
 	SphereCollider,
 	CylinderCollider,
 	PlaneCollider,
 	TerrainCollider,
-	BallJoint
+	BallJoint,
+	HingeJoint
 ) {
 	'use strict';
 
@@ -31,8 +35,11 @@ function (
 	var tmpTransform;
 	var tmpVector;
 	var tmpVector2;
+	var tmpVector3;
+	var tmpVector4;
 	var tmpQuat;
 	var tmpGooQuat = new Quaternion();
+	var tmpGooMat3 = new Matrix3x3();
 
 	/**
 	 * @class
@@ -56,6 +63,12 @@ function (
 		}
 		if (!tmpVector2) {
 			tmpVector2 = new Ammo.btVector3();
+		}
+		if (!tmpVector3) {
+			tmpVector3 = new Ammo.btVector3();
+		}
+		if (!tmpVector4) {
+			tmpVector4 = new Ammo.btVector3();
 		}
 		if (!tmpQuat) {
 			tmpQuat = new Ammo.btQuaternion();
@@ -268,12 +281,48 @@ function (
 		var constraint;
 
 		if (joint instanceof BallJoint) {
-			var pivotInA = new Ammo.btVector3();
-			var pivotInB = new Ammo.btVector3();
-			pivotInA.setValue(joint.localPivot.x, joint.localPivot.y, joint.localPivot.z);
+			var pivotInA = tmpVector;
+			var pivotInB = tmpVector2;
+			var localPivot = joint.localPivot;
+			pivotInA.setValue(localPivot.x, localPivot.y, localPivot.z);
+
+			// Get the local pivot in B
 			pivotInB = bodyA.getWorldTransform().op_mul(pivotInA);
 			pivotInB = bodyB.getWorldTransform().inverse().op_mul(pivotInB);
+
+			// Create constraint
 			constraint = new Ammo.btPoint2PointConstraint(bodyA, bodyB, pivotInA, pivotInB);
+
+		} else if (joint instanceof HingeJoint) {
+			var pivotInA = tmpVector;
+			var pivotInB = tmpVector2;
+			var axisInA = tmpVector3;
+			var axisInB = tmpVector4;
+
+			var localPivot = joint.localPivot;
+			var localAxis = joint.localAxis;
+			pivotInA.setValue(localPivot.x, localPivot.y, localPivot.z);
+			axisInA.setValue(localAxis.x, localAxis.y, localAxis.z);
+
+			// Get the pivot in B
+			pivotInB = bodyA.getWorldTransform().op_mul(pivotInA);
+			pivotInB = bodyB.getWorldTransform().inverse().op_mul(pivotInB);
+
+			// Get the local axis in B
+			var quatA = bodyA.getWorldTransform().getRotation();
+			tmpGooQuat.set(quatA.x, quatA.y, quatA.z, quatA.w);
+			tmpGooMat3.copyQuaternion(tmpGooQuat);
+			var worldAxis = new Vector3();
+			worldAxis.setVector(joint.localAxis);
+			tmpGooMat3.applyPre(worldAxis); // Transform the localAxisA into world
+
+			var quatB = bodyB.getWorldTransform().getRotation();
+			tmpGooQuat.set(quatB.x, quatB.y, quatB.z, quatB.w);
+			tmpGooMat3.copyQuaternion(tmpGooQuat);
+			tmpGooMat3.invert().applyPre(worldAxis); // Transform the world axis to local in B
+			axisInB.setValue(worldAxis.x, worldAxis.y, worldAxis.z);
+
+			constraint = new Ammo.btHingeConstraint(bodyA, bodyB, pivotInA, axisInA, pivotInB, axisInB);
 		}
 
 		if (constraint) {

@@ -185,8 +185,34 @@ function (
 			bodyB.pointToLocalFrame(pivotInB, pivotInB);
 
 			constraint = new CANNON.PointToPointConstraint(bodyA, pivotInA, bodyB, pivotInB);
+
 		} else if (joint instanceof HingeJoint) {
-			console.warn('HingeJoint is not implemented in the CannonRigidbody yet.');
+			var pivotInA = new CANNON.Vec3();
+			var pivotInB = new CANNON.Vec3();
+			var axisInA = new CANNON.Vec3();
+			var axisInB = new CANNON.Vec3();
+
+			pivotInA.copy(joint.localPivot);
+			axisInA.copy(joint.localAxis);
+
+			pivotInB.copy(joint.localPivot);
+			axisInB.copy(joint.localAxis);
+
+			// Get the local pivot in bodyB
+			bodyA.pointToWorldFrame(joint.localPivot, pivotInB);
+			bodyB.pointToLocalFrame(pivotInB, pivotInB);
+
+			// Get the local axis in bodyB
+			bodyA.vectorToWorldFrame(joint.localAxis, axisInB);
+			bodyB.vectorToLocalFrame(axisInB, axisInB);
+
+			constraint = new CANNON.HingeConstraint(bodyA, bodyB, {
+				pivotInA: pivotInA,
+				pivotInB: pivotInB,
+				axisInA: axisInA,
+				axisInB: axisInB,
+				collideConnected: joint.collideConnected
+			});
 		}
 
 		if (constraint) {
