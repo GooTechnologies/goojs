@@ -80,8 +80,7 @@ require([
 				colliderComponent = new ColliderComponent({
 					collider: new CylinderCollider({
 						height: radius * 2,
-						radiusTop: radius,
-						radiusBottom: radius,
+						radius: radius,
 						numSegments: 10
 					})
 				});

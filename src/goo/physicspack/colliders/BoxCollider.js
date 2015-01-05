@@ -1,11 +1,9 @@
 define([
-	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/physicspack/colliders/Collider'
 ],
 /** @lends */
 function (
-	Box,
 	Vector3,
 	Collider
 ) {

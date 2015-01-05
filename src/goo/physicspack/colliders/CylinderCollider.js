@@ -10,8 +10,7 @@ function (
 	/**
 	 * @class
 	 * @param {object} [settings]
-	 * @param {number} [settings.radiusTop=0.5]
-	 * @param {number} [settings.radiusBottom=0.5]
+	 * @param {number} [settings.radius=0.5]
 	 * @param {number} [settings.height=1]
 	 * @param {number} [settings.numSegments=10]
 	 * @extends Collider
@@ -22,12 +21,7 @@ function (
 		/**
 		 * @type {number}
 		 */
-		this.radiusTop = typeof(settings.radiusTop) === 'number' ? settings.radiusTop : 0.5;
-
-		/**
-		 * @type {number}
-		 */
-		this.radiusBottom = typeof(settings.radiusBottom) === 'number' ? settings.radiusBottom : 0.5;
+		this.radius = typeof(settings.radius) === 'number' ? settings.radius : 0.5;
 
 		/**
 		 * @type {number}

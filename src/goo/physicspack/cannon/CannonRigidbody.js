@@ -8,6 +8,7 @@ define([
 	'goo/physicspack/colliders/CylinderCollider',
 	'goo/physicspack/colliders/PlaneCollider',
 	'goo/physicspack/colliders/TerrainCollider',
+	'goo/physicspack/colliders/MeshCollider',
 	'goo/physicspack/joints/BallJoint',
 	'goo/physicspack/joints/HingeJoint'
 ],
@@ -22,6 +23,7 @@ function (
 	CylinderCollider,
 	PlaneCollider,
 	TerrainCollider,
+	MeshCollider,
 	BallJoint,
 	HingeJoint
 ) {
@@ -134,13 +136,24 @@ function (
 			shape = new CANNON.Plane();
 		} else if (collider instanceof CylinderCollider) {
 			shape = new CANNON.Cylinder(
-				collider.radiusTop,
-				collider.radiusBottom,
+				collider.radius,
+				collider.radius,
 				collider.height,
 				collider.numSegments
 			);
 		} else if (collider instanceof TerrainCollider) {
 			shape = new CANNON.Heightfield(collider.data);
+		} else if (collider instanceof MeshCollider) {
+			// Assume triangles
+			if (collider.meshData.indexModes[0] !== 'triangles') {
+				throw new Error('MeshCollider data must be a triangle mesh!');
+			}
+			shape = new CANNON.Trimesh(
+				collider.meshData.getAttributeBuffer('POSITION'),
+				collider.meshData.getIndexBuffer()
+			);
+		} else {
+			console.warn('Unhandled collider: ', collider);
 		}
 		return shape;
 	};
