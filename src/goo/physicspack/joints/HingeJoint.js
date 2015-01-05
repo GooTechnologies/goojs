@@ -18,7 +18,7 @@ function (
 	 * @param {object} [settings]
 	 * @extends Joint(2)
 	 */
-	function BallJoint(settings) {
+	function HingeJoint(settings) {
 		settings = settings || {};
 		Joint.call(this, settings);
 
@@ -26,9 +26,14 @@ function (
 		 * @type {Vector3}
 		 */
 		this.localPivot = settings.localPivot ? settings.localPivot.clone() : new Vector3();
-	}
-	BallJoint.prototype = Object.create(Joint.prototype);
-	BallJoint.constructor = BallJoint;
 
-	return BallJoint;
+		/**
+		 * @type {Vector3}
+		 */
+		this.localAxis = settings.localAxis ? settings.localAxis.clone() : new Vector3(0, 1, 0);
+	}
+	HingeJoint.prototype = Object.create(Joint.prototype);
+	HingeJoint.constructor = HingeJoint;
+
+	return HingeJoint;
 });

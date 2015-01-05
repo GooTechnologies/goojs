@@ -36,6 +36,11 @@ function (
 		 * @type {number}
 		 */
 		this.maxSubSteps = settings.maxSubSteps || 10;
+
+		this._inContactCurrentStepA = [];
+		this._inContactCurrentStepB = [];
+		this._inContactLastStepA = [];
+		this._inContactLastStepB = [];
 	}
 	PhysicsSystem.prototype = Object.create(System.prototype);
 
@@ -50,6 +55,54 @@ function (
 
 	PhysicsSystem.prototype.deleted = function (entity) {
 		this.removeBody(entity);
+	};
+
+	PhysicsSystem.beginContactEvent = {
+		entityA: null,
+		entityB: null
+	};
+
+	PhysicsSystem.duringContactEvent = {
+		entityA: null,
+		entityB: null
+	};
+
+	PhysicsSystem.endContactEvent = {
+		entityA: null,
+		entityB: null
+	};
+
+	PhysicsSystem.prototype.emitBeginContact = function (entityA, entityB) {
+		var evt = PhysicsSystem.beginContactEvent;
+		evt.entityA = entityA;
+		evt.entityB = entityB;
+		SystemBus.emit('goo.physics.beginContact', evt);
+	};
+
+	PhysicsSystem.prototype.emitDuringContact = function (entityA, entityB) {
+		var evt = PhysicsSystem.duringContactEvent;
+		evt.entityA = entityA;
+		evt.entityB = entityB;
+		SystemBus.emit('goo.physics.duringContact', evt);
+	};
+
+	PhysicsSystem.prototype.emitEndContact = function (entityA, entityB) {
+		var evt = PhysicsSystem.endContactEvent;
+		evt.entityA = entityA;
+		evt.entityB = entityB;
+		SystemBus.emit('goo.physics.endContact', evt);
+	};
+
+	PhysicsSystem.prototype._swapContactLists = function () {
+		var tmp = this._inContactCurrentStepA;
+		this._inContactCurrentStepA = this._inContactLastStepA;
+		this._inContactLastStepA = tmp;
+		this._inContactCurrentStepA.length = 0;
+
+		tmp = this._inContactCurrentStepB;
+		this._inContactCurrentStepB = this._inContactLastStepB;
+		this._inContactLastStepB = tmp;
+		this._inContactCurrentStepB.length = 0;
 	};
 
 	PhysicsSystem.prototype.process = function (entities, tpf) {
@@ -95,6 +148,8 @@ function (
 			tc.setUpdated();
 		}
 	};
+
+
 
 	return PhysicsSystem;
 });

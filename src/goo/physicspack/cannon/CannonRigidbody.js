@@ -8,7 +8,8 @@ define([
 	'goo/physicspack/colliders/CylinderCollider',
 	'goo/physicspack/colliders/PlaneCollider',
 	'goo/physicspack/colliders/TerrainCollider',
-	'goo/physicspack/joints/BallJoint'
+	'goo/physicspack/joints/BallJoint',
+	'goo/physicspack/joints/HingeJoint'
 ],
 /** @lends */
 function (
@@ -21,7 +22,8 @@ function (
 	CylinderCollider,
 	PlaneCollider,
 	TerrainCollider,
-	BallJoint
+	BallJoint,
+	HingeJoint
 ) {
 	'use strict';
 
@@ -37,6 +39,12 @@ function (
 	 */
 	function CannonRigidbody(entity) {
 		Rigidbody.call(this, entity);
+
+		/**
+		 * @type {CANNON.Body}
+		 */
+		this.cannonBody = null;
+
 		if (!tmpCannonVec) {
 			tmpCannonVec = new CANNON.Vec3();
 		}
@@ -108,10 +116,12 @@ function (
 
 	CannonRigidbody.prototype.setFriction = function (/*friction*/) {
 		// TODO: Implement per-body friction in Cannon
+		console.warn('Per-body friction is not implemented in Cannon yet');
 	};
 
 	CannonRigidbody.prototype.setRestitution = function (/*restitution*/) {
 		// TODO: Implement per-body restitution in Cannon
+		console.warn('Per-body restitution is not implemented in Cannon yet');
 	};
 
 	CannonRigidbody.prototype.getCannonShape = function (collider) {
@@ -142,21 +152,22 @@ function (
 			return;
 		}
 		var rbc = entity.rigidbodyComponent;
-		this.cannonBody = new CANNON.Body({
+		var body = this.cannonBody = new CANNON.Body({
 			mass: entity.rigidbodyComponent.mass
 		});
-		system.world.addBody(this.cannonBody);
+		system.world.addBody(body);
+		system._entities[body.id] = entity;
 
 		var initialVelocity = new CANNON.Vec3();
 		initialVelocity.copy(rbc.initialVelocity);
-		this.cannonBody.velocity.copy(initialVelocity);
+		body.velocity.copy(initialVelocity);
 
 		var that = this;
 		this.traverseColliders(entity, function (colliderEntity, collider, position, quaternion) {
 			that.addCollider(collider, position, quaternion);
 		});
 		if (rbc.isKinematic) {
-			this.cannonBody.type = CANNON.Body.KINEMATIC;
+			body.type = CANNON.Body.KINEMATIC;
 		}
 		this.setTransformFromEntity(entity);
 	};
@@ -175,7 +186,10 @@ function (
 			bodyB.pointToLocalFrame(pivotInB, pivotInB);
 
 			constraint = new CANNON.PointToPointConstraint(bodyA, pivotInA, bodyB, pivotInB);
+		} else if (joint instanceof HingeJoint) {
+			console.warn('HingeJoint is not implemented in the CannonRigidbody yet.');
 		}
+
 		if (constraint) {
 			bodyA.world.addConstraint(constraint);
 			joint.joint = constraint;

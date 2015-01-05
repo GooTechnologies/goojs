@@ -9,8 +9,8 @@ require([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
 	'goo/physicspack/ColliderComponent',
-	'goo/physicspack/CannonPhysicsSystem',
-	'goo/physicspack/AmmoPhysicsSystem',
+	'goo/physicspack/cannon/CannonPhysicsSystem',
+	'goo/physicspack/ammo/AmmoPhysicsSystem',
 	'goo/physicspack/RigidbodyComponent',
 	'goo/physicspack/colliders/BoxCollider',
 	'goo/physicspack/colliders/CylinderCollider',
@@ -211,8 +211,8 @@ require([
 			isKinematic: true
 		});
 
-		var halfExtents = new Vector3(1, 1, 1)
-		var e = world.createEntity(new Box(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2), V.getColoredMaterial(), [0, 0, 5])
+		var halfExtents = new Vector3(1, 1, 1);
+		world.createEntity(new Box(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2), V.getColoredMaterial(), [0, 0, 5])
 			.set(rbComponent)
 			.set(
 				new ColliderComponent({

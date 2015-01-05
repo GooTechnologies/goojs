@@ -6,13 +6,15 @@ function () {
 	/**
 	 * @class
 	 * @param {object} [settings]
-	 * @extends Collider
+	 * @param {boolean} [settings.isTrigger]
 	 */
 	function Collider(settings) {
 		settings = settings || {};
 
-		this.isTrigger = false;
-		this.shape = settings.shape || null;
+		/**
+		 * @type {Boolean}
+		 */
+		this.isTrigger = typeof(settings.isTrigger) !== 'undefined' ? settings.isTrigger : false;
 	}
 	Collider.constructor = Collider;
 

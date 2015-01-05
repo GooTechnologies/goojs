@@ -21,10 +21,6 @@ function (
 		this.data = settings.data || [];
 
 		Collider.call(this);
-
-		// , {
-		// 	cannonShape: new CANNON.Heightfield(settings.data, settings.shapeOptions)
-		// });
 	}
 	TerrainCollider.prototype = Object.create(Collider.prototype);
 	TerrainCollider.constructor = TerrainCollider;

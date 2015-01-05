@@ -44,6 +44,7 @@ function (
 
 		/**
 		 * The Ammo.btRigidbody instance. Will be created on .initialize()
+		 * @type {Ammo.btRigidBody}
 		 */
 		this.ammoBody = null;
 
@@ -176,6 +177,11 @@ function (
 		var info = new Ammo.btRigidBodyConstructionInfo(rbc.mass, motionState, shape, localInertia);
 		this.localInertia = localInertia;
 		var body = this.ammoBody = new Ammo.btRigidBody(info);
+
+		// Register the body pointer, needed by the system
+		var ptr = body.a || body.ptr;
+		system._entities[ptr] = body;
+
 		if (rbc.isKinematic) {
 			body.setCollisionFlags(body.getCollisionFlags() | AmmoRigidbody.AmmoFlags.CF_KINEMATIC_OBJECT);
 			body.setActivationState(AmmoRigidbody.AmmoFlags.DISABLE_DEACTIVATION);
