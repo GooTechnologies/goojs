@@ -123,6 +123,8 @@ define([
 	'test/particles/ParticleInfluence-test',
 	'test/particles/ParticleLib-test',
 	'test/particles/ParticleUtils-test',
+	'test/physicspack/ammo/AmmoPhysicsSystem-test',
+	'test/physicspack/cannon/CannonPhysicsSystem-test',
 	'test/picking/BoundingTree-test',
 	'test/picking/PrimitivePickLogic-test',
 	'test/quadpack/QuadComponent-test',

@@ -1,11 +1,13 @@
 define([
 	'goo/physicspack/PhysicsSystem',
-	'goo/physicspack/ammo/AmmoRigidbody'
+	'goo/physicspack/ammo/AmmoRigidbody',
+	'goo/physicspack/RaycastResult'
 ],
 /** @lends */
 function (
 	PhysicsSystem,
-	AmmoRigidbody
+	AmmoRigidbody,
+	RaycastResult
 ) {
 	'use strict';
 
@@ -13,6 +15,7 @@ function (
 
 	var tmpVec1;
 	var tmpVec2;
+	var tmpRaycastResult = new RaycastResult();
 
 	/**
 	 * @class
@@ -45,20 +48,61 @@ function (
 	}
 	AmmoPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
 
-	AmmoPhysicsSystem.prototype.raycastAll = function (/* start, end, mask, callback */) {
-		// TODO
+	AmmoPhysicsSystem.prototype.raycastAll = function (start, end, mask, callback) {
+		if (typeof(mask) === 'function') {
+			callback = mask;
+			mask = null;
+		}
+		var ammoStart = tmpVec1;
+		var ammoEnd = tmpVec2;
+		ammoStart.setValue(start.x, start.y, start.z);
+		ammoEnd.setValue(end.x, end.y, end.z);
+
+		var result = tmpRaycastResult;
+		var rayCallback = new Ammo.AllHitsRayResultCallback(ammoStart, ammoEnd);
+
+		if (mask) {
+			rayCallback.set_m_collisionFilterMask(mask);
+			rayCallback.set_m_collisionFilterGroup(mask);
+		}
+
+		this.world.rayTest(ammoStart, ammoEnd, rayCallback);
+
+		if (rayCallback.hasHit()) {
+			var collisionObj = rayCallback.get_m_collisionObjects();
+			var body = Ammo.castObject(collisionObj, Ammo.btRigidBody);
+			var point = rayCallback.get_m_hitPointWorld();
+			var normal = rayCallback.get_m_hitNormalWorld();
+
+			if (body) {
+				result.entity = this._entities[body.a || body.ptr];
+				result.point.setDirect(point.x(), point.y(), point.z());
+				result.normal.setDirect(normal.x(), normal.y(), normal.z());
+				callback(result);
+			}
+		}
+		Ammo.destroy(rayCallback);
 	};
+
 	AmmoPhysicsSystem.prototype.raycastFirst = function (/* start, end, mask, result */) {
 		// TODO
 	};
+
 	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, mask, result) {
-		start.setValue(start.x, start.y, start.z);
-		end.setValue(end.x, end.y, end.z);
+		if (typeof(mask) !== 'number') {
+			result = mask;
+			mask = null;
+		}
+		var ammoStart = tmpVec1;
+		var ammoEnd = tmpVec2;
+		ammoStart.setValue(start.x, start.y, start.z);
+		ammoEnd.setValue(end.x, end.y, end.z);
 
-		var rayCallback = new Ammo.ClosestRayResultCallback(start, end);
-		//rayCallback.set_m_
+		var rayCallback = new Ammo.ClosestRayResultCallback(ammoStart, ammoEnd);
+		// rayCallback.set_m_collisionFilterGroup();
+		// rayCallback.set_m_collisionFilterMask(mask);
 
-		this.world.rayTest(start, end, rayCallback);
+		this.world.rayTest(ammoStart, ammoEnd, rayCallback);
 
 		var hit = false;
 		if (rayCallback.hasHit()) {

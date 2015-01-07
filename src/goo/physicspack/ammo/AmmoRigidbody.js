@@ -98,7 +98,7 @@ function (
 	AmmoRigidbody.prototype.getPosition = function (targetVector) {
 		var p = this.ammoBody.getWorldTransform();
 		var origin = p.getOrigin();
-		targetVector.setDirect(origin.getX(), origin.getY(), origin.getZ());
+		targetVector.setDirect(origin.x(), origin.y(), origin.z());
 	};
 
 	AmmoRigidbody.prototype.setQuaternion = function (quat) {
@@ -110,7 +110,7 @@ function (
 	AmmoRigidbody.prototype.getQuaternion = function (targetQuat) {
 		var t = this.ammoBody.getWorldTransform();
 		var aq = t.getRotation();
-		targetQuat.setDirect(aq.getX(), aq.getY(), aq.getZ(), aq.getW());
+		targetQuat.setDirect(aq.x(), aq.y(), aq.z(), aq.w());
 	};
 
 	AmmoRigidbody.prototype.setAngularVelocity = function (angularVelocity) {
@@ -157,7 +157,7 @@ function (
 
 	AmmoRigidbody.prototype.initialize = function (entity, system) {
 		var rbc = entity.rigidbodyComponent;
-		var gooTransform = entity.transformComponent.worldTransform;
+		var gooTransform = entity.transformComponent.transform;
 		var gooPos = gooTransform.translation;
 		var gooRot = gooTransform.rotation;
 
@@ -184,7 +184,7 @@ function (
 
 		// Register the body pointer, needed by the system
 		var ptr = body.a || body.ptr;
-		system._entities[ptr] = body;
+		system._entities[ptr] = entity;
 
 		if (rbc.isKinematic) {
 			body.setCollisionFlags(body.getCollisionFlags() | AmmoRigidbody.AmmoFlags.CF_KINEMATIC_OBJECT);
