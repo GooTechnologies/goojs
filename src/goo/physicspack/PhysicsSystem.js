@@ -10,13 +10,12 @@ function (
 	System,
 	SystemBus,
 	Vector3,
-	Quaternion,
-	RaycastResult
+	Quaternion
+	// RaycastResult
 ) {
 	'use strict';
 
 	var tmpQuat = new Quaternion();
-	var tmpRaycastResult = new RaycastResult();
 
 	/**
 	 * @class

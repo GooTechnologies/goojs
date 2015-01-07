@@ -45,10 +45,10 @@ function (
 	}
 	AmmoPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
 
-	AmmoPhysicsSystem.prototype.raycastAll = function (start, end, mask, callback) {
+	AmmoPhysicsSystem.prototype.raycastAll = function (/* start, end, mask, callback */) {
 		// TODO
 	};
-	AmmoPhysicsSystem.prototype.raycastFirst = function (start, end, mask, result) {
+	AmmoPhysicsSystem.prototype.raycastFirst = function (/* start, end, mask, result */) {
 		// TODO
 	};
 	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, mask, result) {
