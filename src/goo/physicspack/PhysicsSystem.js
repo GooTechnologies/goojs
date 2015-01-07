@@ -2,18 +2,21 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/math/Vector3',
-	'goo/math/Quaternion'
+	'goo/math/Quaternion',
+	'goo/physicspack/RaycastResult'
 ],
 /** @lends */
 function (
 	System,
 	SystemBus,
 	Vector3,
-	Quaternion
+	Quaternion,
+	RaycastResult
 ) {
 	'use strict';
 
 	var tmpQuat = new Quaternion();
+	var tmpRaycastResult = new RaycastResult();
 
 	/**
 	 * @class
@@ -104,6 +107,27 @@ function (
 		this._inContactLastStepB = tmp;
 		this._inContactCurrentStepB.length = 0;
 	};
+
+	/**
+	 * @param  {Vector3} start
+	 * @param  {Vector3} end
+	 * @param  {Function} callback
+	 */
+	PhysicsSystem.prototype.raycastAll = function (/*start, end, callback*/) {};
+
+	/**
+	 * @param  {Vector3} start
+	 * @param  {Vector3} end
+	 * @param  {RaycastResult} result
+	 */
+	PhysicsSystem.prototype.raycastFirst = function (/*start, end, result*/) {};
+
+	/**
+	 * @param  {Vector3} start
+	 * @param  {Vector3} end
+	 * @param  {RaycastResult} result
+	 */
+	PhysicsSystem.prototype.raycastClosest = function (/*start, end, result*/) {};
 
 	PhysicsSystem.prototype.process = function (entities, tpf) {
 

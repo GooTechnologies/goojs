@@ -49,8 +49,6 @@ function (
 
 		if (!tmpCannonVec) {
 			tmpCannonVec = new CANNON.Vec3();
-		}
-		if (!tmpCannonVec2) {
 			tmpCannonVec2 = new CANNON.Vec3();
 		}
 	}

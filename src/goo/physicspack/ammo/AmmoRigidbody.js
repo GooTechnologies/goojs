@@ -38,6 +38,7 @@ function (
 	var tmpVector3;
 	var tmpVector4;
 	var tmpQuat;
+
 	var tmpGooQuat = new Quaternion();
 	var tmpGooMat3 = new Matrix3x3();
 
@@ -57,20 +58,10 @@ function (
 
 		if (!tmpTransform) {
 			tmpTransform = new Ammo.btTransform();
-		}
-		if (!tmpVector) {
 			tmpVector = new Ammo.btVector3();
-		}
-		if (!tmpVector2) {
 			tmpVector2 = new Ammo.btVector3();
-		}
-		if (!tmpVector3) {
 			tmpVector3 = new Ammo.btVector3();
-		}
-		if (!tmpVector4) {
 			tmpVector4 = new Ammo.btVector3();
-		}
-		if (!tmpQuat) {
 			tmpQuat = new Ammo.btQuaternion();
 		}
 	}

@@ -11,6 +11,9 @@ function (
 
 	/* global Ammo */
 
+	var tmpVec1;
+	var tmpVec2;
+
 	/**
 	 * @class
 	 * @extends PhysicsSystem
@@ -33,9 +36,49 @@ function (
 		 */
 		this._entities = {};
 
+		if (!tmpVec1) {
+			tmpVec1	= new Ammo.btVector3();
+			tmpVec2	= new Ammo.btVector3();
+		}
+
 		PhysicsSystem.call(this, settings);
 	}
 	AmmoPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
+
+	AmmoPhysicsSystem.prototype.raycastAll = function (start, end, mask, callback) {
+		// TODO
+	};
+	AmmoPhysicsSystem.prototype.raycastFirst = function (start, end, mask, result) {
+		// TODO
+	};
+	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, mask, result) {
+		start.setValue(start.x, start.y, start.z);
+		end.setValue(end.x, end.y, end.z);
+
+		var rayCallback = new Ammo.ClosestRayResultCallback(start, end);
+		//rayCallback.set_m_
+
+		this.world.rayTest(start, end, rayCallback);
+
+		var hit = false;
+		if (rayCallback.hasHit()) {
+			var collisionObj = rayCallback.get_m_collisionObject();
+			var body = Ammo.castObject(collisionObj, Ammo.btRigidBody);
+			var point = rayCallback.get_m_hitPointWorld();
+			var normal = rayCallback.get_m_hitNormalWorld();
+
+			if (body) {
+				result.entity = this._entities[body.a || body.ptr];
+				result.point.setDirect(point.x(), point.y(), point.z());
+				result.normal.setDirect(normal.x(), normal.y(), normal.z());
+				hit = true;
+			}
+		}
+
+		Ammo.destroy(rayCallback);
+
+		return hit;
+	};
 
 	AmmoPhysicsSystem.prototype.setGravity = function (gravityVector) {
 		var g = new Ammo.btVector3(gravityVector.x, gravityVector.y, gravityVector.z);
