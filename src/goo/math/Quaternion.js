@@ -699,5 +699,13 @@ function (
 	Quaternion.prototype.setv = addWarning(
 		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
+	/**
+	 * Clones the quaternion
+	 * @returns {Quaternion} Clone of self
+	 */
+	Quaternion.prototype.clone = function () {
+		return new Quaternion(this);
+	};
+
 	return Quaternion;
 });
