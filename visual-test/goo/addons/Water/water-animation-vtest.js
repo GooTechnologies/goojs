@@ -165,9 +165,7 @@ require([
 		});
 	}
 
-	var goo = V.initGoo({
-		manuallyStartGameLoop: true
-	});
+	var goo = V.initGoo();
 	var world = goo.world;
 	goo.world.add(new AnimationSystem());
 	goo.world.add(new StateMachineSystem(goo));
