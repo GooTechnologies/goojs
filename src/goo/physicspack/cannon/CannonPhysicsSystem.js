@@ -11,6 +11,10 @@ function (
 
 	/* global CANNON */
 
+	var tmpVec1;
+	var tmpVec2;
+	var tmpCannonResult;
+
 	/**
 	 * @class
 	 * @extends PhysicsSystem
@@ -27,6 +31,12 @@ function (
 		});
 
 		this._entities = {};
+
+		if (!tmpVec1) {
+			tmpVec1 = new CANNON.Vec3();
+			tmpVec2 = new CANNON.Vec3();
+			tmpCannonResult = new CANNON.RaycastResult();
+		}
 
 		PhysicsSystem.call(this, settings);
 	}
@@ -101,6 +111,29 @@ function (
 				this.emitEndContact(entityA, entityB);
 			}
 		}
+	};
+
+	CannonPhysicsSystem.prototype.raycastClosest = function (start, end, mask, result) {
+		if (typeof(mask) !== 'number') {
+			result = mask;
+			mask = null;
+		}
+		var cannonStart = tmpVec1;
+		var cannonEnd = tmpVec2;
+		cannonStart.copy(start);
+		cannonEnd.copy(end);
+
+		this.world.rayTest(cannonStart, cannonEnd, tmpCannonResult);
+
+		if (tmpCannonResult.hasHit) {
+			result.entity = this._entities[tmpCannonResult.body.id];
+			var p = tmpCannonResult.hitPointWorld;
+			var n = tmpCannonResult.hitNormalWorld;
+			result.point.setDirect(p.x, p.y, p.z);
+			result.normal.setDirect(n.x, n.y, n.z);
+		}
+
+		return tmpCannonResult.hasHit;
 	};
 
 	return CannonPhysicsSystem;
