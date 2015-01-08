@@ -1,4 +1,5 @@
 #!/bin/bash
 
 export GOOJS_ROOT_URL=http\://127.0.0.1:8003/goojs
+export PATH=$PATH:/opt/google/chromedriver/
 grunt shell:e2e
