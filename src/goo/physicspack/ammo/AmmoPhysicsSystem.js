@@ -1,13 +1,11 @@
 define([
 	'goo/physicspack/PhysicsSystem',
-	'goo/physicspack/ammo/AmmoRigidbody',
-	'goo/physicspack/RaycastResult'
+	'goo/physicspack/ammo/AmmoRigidbody'
 ],
 /** @lends */
 function (
 	PhysicsSystem,
-	AmmoRigidbody,
-	RaycastResult
+	AmmoRigidbody
 ) {
 	'use strict';
 
@@ -15,7 +13,6 @@ function (
 
 	var tmpVec1;
 	var tmpVec2;
-	var tmpRaycastResult = new RaycastResult();
 
 	/**
 	 * @class
@@ -47,46 +44,6 @@ function (
 		PhysicsSystem.call(this, settings);
 	}
 	AmmoPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
-
-	AmmoPhysicsSystem.prototype.raycastAll = function (start, end, mask, callback) {
-		if (typeof(mask) === 'function') {
-			callback = mask;
-			mask = null;
-		}
-		var ammoStart = tmpVec1;
-		var ammoEnd = tmpVec2;
-		ammoStart.setValue(start.x, start.y, start.z);
-		ammoEnd.setValue(end.x, end.y, end.z);
-
-		var result = tmpRaycastResult;
-		var rayCallback = new Ammo.AllHitsRayResultCallback(ammoStart, ammoEnd);
-
-		if (mask) {
-			rayCallback.set_m_collisionFilterMask(mask);
-			rayCallback.set_m_collisionFilterGroup(mask);
-		}
-
-		this.world.rayTest(ammoStart, ammoEnd, rayCallback);
-
-		if (rayCallback.hasHit()) {
-			var collisionObj = rayCallback.get_m_collisionObjects();
-			var body = Ammo.castObject(collisionObj, Ammo.btRigidBody);
-			var point = rayCallback.get_m_hitPointWorld();
-			var normal = rayCallback.get_m_hitNormalWorld();
-
-			if (body) {
-				result.entity = this._entities[body.a || body.ptr];
-				result.point.setDirect(point.x(), point.y(), point.z());
-				result.normal.setDirect(normal.x(), normal.y(), normal.z());
-				callback(result);
-			}
-		}
-		Ammo.destroy(rayCallback);
-	};
-
-	AmmoPhysicsSystem.prototype.raycastFirst = function (/* start, end, mask, result */) {
-		// TODO
-	};
 
 	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, mask, result) {
 		if (typeof(mask) !== 'number') {
@@ -173,7 +130,7 @@ function (
 				entityB = tmp;
 			}
 
-			if (this._inContactLastStepA.indexOf(entityA) !== -1) {
+			if (this._inContactLastStepA.indexOf(entityA) === -1) {
 				this.emitBeginContact(entityA, entityB);
 			} else {
 				this.emitDuringContact(entityA, entityB);
@@ -185,12 +142,12 @@ function (
 
 		// Emit end contact events
 		for (var i = 0; i !== this._inContactLastStepA.length; i++) {
-			var entityA = this._inContactLastStepA;
-			var entityB = this._inContactLastStepB;
+			var entityA = this._inContactLastStepA[i];
+			var entityB = this._inContactLastStepB[i];
 
 			var found = false;
 			for (var j = 0; j !== this._inContactCurrentStepA.length; j++) {
-				if (entityA === this._inContactLastStepA[i] && entityB === this._inContactLastStepB[i]) {
+				if (entityA === this._inContactCurrentStepA[i] && entityB === this._inContactCurrentStepB[i]) {
 					found = true;
 					break;
 				}

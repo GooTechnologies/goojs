@@ -110,23 +110,10 @@ function (
 	/**
 	 * @param  {Vector3} start
 	 * @param  {Vector3} end
-	 * @param  {Function} callback
-	 */
-	PhysicsSystem.prototype.raycastAll = function (/*start, end, callback*/) {};
-
-	/**
-	 * @param  {Vector3} start
-	 * @param  {Vector3} end
+	 * @param  {number} mask
 	 * @param  {RaycastResult} result
 	 */
-	PhysicsSystem.prototype.raycastFirst = function (/*start, end, result*/) {};
-
-	/**
-	 * @param  {Vector3} start
-	 * @param  {Vector3} end
-	 * @param  {RaycastResult} result
-	 */
-	PhysicsSystem.prototype.raycastClosest = function (/*start, end, result*/) {};
+	PhysicsSystem.prototype.raycastClosest = function (/*start, end, mask, result*/) {};
 
 	PhysicsSystem.prototype.process = function (entities, tpf) {
 

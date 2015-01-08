@@ -85,7 +85,7 @@ function (
 				entityB = tmp;
 			}
 
-			if (this._inContactLastStepA.indexOf(entityA) !== -1) {
+			if (this._inContactLastStepA.indexOf(entityA) === -1) {
 				this.emitBeginContact(entityA, entityB);
 			} else {
 				this.emitDuringContact(entityA, entityB);
@@ -97,12 +97,12 @@ function (
 
 		// Emit end contact events
 		for (var i = 0; i !== this._inContactLastStepA.length; i++) {
-			var entityA = this._inContactLastStepA;
-			var entityB = this._inContactLastStepB;
+			var entityA = this._inContactLastStepA[i];
+			var entityB = this._inContactLastStepB[i];
 
 			var found = false;
 			for (var j = 0; j !== this._inContactCurrentStepA.length; j++) {
-				if (entityA === this._inContactLastStepA[i] && entityB === this._inContactLastStepB[i]) {
+				if (entityA === this._inContactCurrentStepA[i] && entityB === this._inContactCurrentStepB[i]) {
 					found = true;
 					break;
 				}
