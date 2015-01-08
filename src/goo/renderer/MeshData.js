@@ -4,7 +4,8 @@ define([
 	'goo/renderer/BufferUtils',
 	'goo/math/Vector2',
 	'goo/math/Vector3',
-	'goo/math/Vector4'
+	'goo/math/Vector4',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function (
@@ -13,7 +14,8 @@ function (
 	BufferUtils,
 	Vector2,
 	Vector3,
-	Vector4
+	Vector4,
+	_
 ) {
 	'use strict';
 
@@ -93,7 +95,7 @@ function (
 					view.set(saved);
 				}
 			}
-			savedAttributes = {};
+			savedAttributes = {}; //! AT: unused
 			if (savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
@@ -772,6 +774,44 @@ function (
 		if (this.indexData) {
 			this.indexData.destroy(context);
 		}
+	};
+
+	MeshData.prototype.copy = function (source) {
+
+	};
+
+	MeshData.prototype.clone = function () {
+		var attributeMapClone = _.deepClone(this.attributeMap);
+
+		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
+
+		clone.primitiveCounts = this.primitiveCounts.slice(0);
+
+//		clone.vertexData = this.vertexData.clone();
+//		clone.indexData = this.indexData.clone();
+
+		clone.vertexData.copy(this.vertexData);
+		clone.indexData.copy(this.indexData);
+
+//		clone.dataViews = {}; ///filled by something else
+
+		clone.indexLengths = this.indexLengths;
+		clone.indexModes = this.indexModes.slice(0);
+
+		clone.type = this.type;
+
+		//!RH: added to not mutate object
+//		clone.paletteMap = undefined; /// what types are these???
+//		clone.weightsPerVertex = undefined;
+//		clone.boundingBox = undefined;
+//		clone.store = undefined;
+
+//		clone._attributeDataNeedsRefresh = false;
+//		clone._dirtyAttributeNames = new Set();
+
+//		clone.rebuildData(clone.vertexCount, clone.indexCount);
+
+		return clone;
 	};
 
 	/**
