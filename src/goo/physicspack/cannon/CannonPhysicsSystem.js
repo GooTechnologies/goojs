@@ -113,11 +113,7 @@ function (
 		}
 	};
 
-	CannonPhysicsSystem.prototype.raycastClosest = function (start, end, mask, result) {
-		if (typeof(mask) !== 'number') {
-			result = mask;
-			mask = null;
-		}
+	CannonPhysicsSystem.prototype.raycastClosest = function (start, end, result) {
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
 		cannonStart.copy(start);

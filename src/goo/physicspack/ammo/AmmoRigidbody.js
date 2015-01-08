@@ -191,6 +191,7 @@ function (
 			body.setActivationState(AmmoRigidbody.AmmoFlags.DISABLE_DEACTIVATION);
 		}
 
+
 		if (typeof(rbc.collisionGroup) !== 'undefined' && typeof(rbc.collisionMask) !== 'undefined') {
 			system.world.addRigidBody(this.ammoBody, rbc.collisionGroup, rbc.collisionMask);
 		} else {

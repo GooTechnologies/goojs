@@ -45,23 +45,26 @@ function (
 	}
 	AmmoPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
 
-	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, mask, result) {
-		if (typeof(mask) !== 'number') {
-			result = mask;
-			mask = null;
-		}
+	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, result) {
+
 		var ammoStart = tmpVec1;
 		var ammoEnd = tmpVec2;
 		ammoStart.setValue(start.x, start.y, start.z);
 		ammoEnd.setValue(end.x, end.y, end.z);
-
 		var rayCallback = new Ammo.ClosestRayResultCallback(ammoStart, ammoEnd);
-		// rayCallback.set_m_collisionFilterGroup();
-		// rayCallback.set_m_collisionFilterMask(mask);
+
+		// if (typeof(mask) !== 'number') {
+		// 	result = mask;
+		// 	mask = null;
+		// } else {
+		// 	rayCallback.set_m_collisionFilterGroup(-1);
+		// 	rayCallback.set_m_collisionFilterMask(mask);
+		// }
 
 		this.world.rayTest(ammoStart, ammoEnd, rayCallback);
 
 		var hit = false;
+		result.entity = null;
 		if (rayCallback.hasHit()) {
 			var collisionObj = rayCallback.get_m_collisionObject();
 			var body = Ammo.castObject(collisionObj, Ammo.btRigidBody);

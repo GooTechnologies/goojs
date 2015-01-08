@@ -82,13 +82,13 @@ function (
 		 * @private
 		 * @type {number}
 		 */
-		this._collisionGroup = undefined;
+		this._collisionGroup = typeof(settings.collisionGroup) !== 'undefined' ? settings.collisionGroup : undefined;
 
 		/**
 		 * @private
 		 * @type {number}
 		 */
-		this._collisionMask = undefined;
+		this._collisionMask = typeof(settings.collisionMask) !== 'undefined' ? settings.collisionMask : undefined;
 	}
 	RigidbodyComponent.prototype = Object.create(Component.prototype);
 	RigidbodyComponent.constructor = RigidbodyComponent;
