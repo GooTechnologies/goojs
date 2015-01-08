@@ -326,6 +326,32 @@ function (
 		return this.name;
 	};
 
+	Entity.prototype.copy = function (source) {
+		for (var i = 0; i < source._components.length; i++) {
+			var component = source._components[i];
+			if (component.clone) {
+				this.setComponent(component.clone());
+			}
+		}
+
+		// need util methods for cloning maps and sets
+		// will share them for now
+		this._tags = source._tags;
+		this._attributes = source._attributes;
+
+		this.skip = source.skip;
+
+		this.hidden = source.hidden;
+		this._hidden = source._hidden;
+		this.static = source.static;
+	};
+
+	Entity.prototype.clone = function () {
+		var clone = new Entity(this._world, this.name, this.id);
+		clone.copy(this);
+		return clone;
+	};
+
 	Entity.entityCount = 0;
 
 	return Entity;

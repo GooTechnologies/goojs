@@ -108,5 +108,28 @@ function (
 		}
 	};
 
+	Light.prototype.copy = function (source) {
+		this.translation.copy(source.translation);
+		this.color.copy(source.color);
+		this.intensity = source.intensity;
+		this.specularIntensity = source.specularIntensity;
+		this.shadowCaster = source.shadowCaster;
+
+		// what type is this? if it's just json then deep clone is enough
+		this.lightCookie = source.lightCookie;
+
+		this.shadowSettings.size = source.shadowSettings.size;
+		this.shadowSettings.near = source.shadowSettings.near;
+		this.shadowSettings.far = source.shadowSettings.far;
+		this.shadowSettings.resolution = source.shadowSettings.resolution;
+		this.shadowSettings.upVector = source.shadowSettings.upVector;
+		this.shadowSettings.darkness = source.shadowSettings.darkness;
+		this.shadowSettings.shadowType = source.shadowSettings.shadowType;
+
+		// since these are brand new they should probably be whatever value they are set in the constructor
+		this.changedProperties = source.changedProperties; // false?
+		this.changedColor = source.changedColor; // false?
+	};
+
 	return Light;
 });

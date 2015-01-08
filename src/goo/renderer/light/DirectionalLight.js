@@ -41,5 +41,17 @@ function (
 		transform.matrix.applyPostVector(this.direction);
 	};
 
+	DirectionalLight.prototype.copy = function (source) {
+		Light.prototype.copy.call(this, source);
+
+		this.direction.copy(source.direction);
+	};
+
+	DirectionalLight.prototype.clone = function () {
+		var clone = new DirectionalLight(this.color);
+		clone.copy(this);
+		return clone;
+	};
+
 	return DirectionalLight;
 });

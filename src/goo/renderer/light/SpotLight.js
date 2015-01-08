@@ -69,5 +69,21 @@ function (
 		transform.matrix.applyPostVector(this.direction);
 	};
 
+	SpotLight.prototype.copy = function (source) {
+		Light.prototype.copy.call(this, source);
+
+		source.direction.copy(this.direction);
+		this.range = source.range;
+		this.angle = source.angle;
+		this.penumbra = source.penumbra;
+		this.exponent = source.exponent;
+	};
+
+	SpotLight.prototype.clone = function () {
+		var clone = new SpotLight(this.color);
+		clone.copy(this);
+		return clone;
+	};
+
 	return SpotLight;
 });

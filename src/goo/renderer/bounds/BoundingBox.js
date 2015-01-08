@@ -549,6 +549,7 @@ function (
 		return store;
 	};
 
+	// not clone, but a clone-copy hybrid
 	BoundingBox.prototype.clone = function (store) {
 		if (store && store instanceof BoundingBox) {
 			store.center.setVector(this.center);
@@ -560,6 +561,8 @@ function (
 
 		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
 	};
+
+
 
 	return BoundingBox;
 });
