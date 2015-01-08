@@ -1,11 +1,11 @@
 define([
-	'goo/physicspack/PhysicsSystem',
-	'goo/physicspack/ammo/AmmoRigidbody'
+	'goo/physicspack/AbstractPhysicsSystem',
+	'goo/math/Quaternion'
 ],
 /** @lends */
 function (
-	PhysicsSystem,
-	AmmoRigidbody
+	AbstractPhysicsSystem,
+	Quaternion
 ) {
 	'use strict';
 
@@ -13,12 +13,13 @@ function (
 
 	var tmpVec1;
 	var tmpVec2;
+	var tmpQuat = new Quaternion();
 
 	/**
 	 * @class
-	 * @extends PhysicsSystem
+	 * @extends AbstractPhysicsSystem
 	 */
-	function AmmoPhysicsSystem(settings) {
+	function AmmoSystem() {
 		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
 		var dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
@@ -37,15 +38,32 @@ function (
 		this._entities = {};
 
 		if (!tmpVec1) {
-			tmpVec1	= new Ammo.btVector3();
-			tmpVec2	= new Ammo.btVector3();
+			tmpVec1 = new Ammo.btVector3();
+			tmpVec2 = new Ammo.btVector3();
 		}
 
-		PhysicsSystem.call(this, settings);
-	}
-	AmmoPhysicsSystem.prototype = Object.create(PhysicsSystem.prototype);
+		this._inContactCurrentStepA = [];
+		this._inContactCurrentStepB = [];
+		this._inContactLastStepA = [];
+		this._inContactLastStepB = [];
 
-	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, result) {
+		AbstractPhysicsSystem.call(this, 'AmmoSystem', ['AmmoComponent']);
+	}
+	AmmoSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
+
+	AmmoSystem.prototype._swapContactLists = function () {
+		var tmp = this._inContactCurrentStepA;
+		this._inContactCurrentStepA = this._inContactLastStepA;
+		this._inContactLastStepA = tmp;
+		this._inContactCurrentStepA.length = 0;
+
+		tmp = this._inContactCurrentStepB;
+		this._inContactCurrentStepB = this._inContactLastStepB;
+		this._inContactLastStepB = tmp;
+		this._inContactCurrentStepB.length = 0;
+	};
+
+	AmmoSystem.prototype.raycastClosest = function (start, end, result) {
 
 		var ammoStart = tmpVec1;
 		var ammoEnd = tmpVec2;
@@ -84,17 +102,13 @@ function (
 		return hit;
 	};
 
-	AmmoPhysicsSystem.prototype.setGravity = function (gravityVector) {
+	AmmoSystem.prototype.setGravity = function (gravityVector) {
 		var g = new Ammo.btVector3(gravityVector.x, gravityVector.y, gravityVector.z);
 		this.world.setGravity(g);
 		Ammo.destroy(g);
 	};
 
-	AmmoPhysicsSystem.prototype.addBody = function (entity) {
-		entity.rigidbodyComponent.rigidbody = new AmmoRigidbody(entity, this);
-	};
-
-	AmmoPhysicsSystem.prototype.step = function (tpf) {
+	AmmoSystem.prototype.step = function (tpf) {
 		var world = this.world;
 
 		// Step the world forward in time
@@ -107,7 +121,7 @@ function (
 		this.emitContactEvents();
 	};
 
-	AmmoPhysicsSystem.prototype.emitContactEvents = function () {
+	AmmoSystem.prototype.emitContactEvents = function () {
 		// Get overlapping entities
 		var dp = this.world.getDispatcher(),
 			num = dp.getNumManifolds(),
@@ -161,5 +175,49 @@ function (
 		}
 	};
 
-	return AmmoPhysicsSystem;
+	AmmoSystem.prototype.process = function (entities, tpf) {
+		var N = entities.length;
+
+		// Initialize bodies
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+			var rb = entity.ammoComponent;
+
+			if (rb._dirty) {
+				rb.initialize(entity, this);
+				rb._dirty = false;
+			}
+		}
+
+		// Initialize joints - must be done *after* all bodies were initialized
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+
+			var joints = entity.ammoComponent.joints;
+			for (var j = 0; j < joints.length; j++) {
+				var joint = joints[j];
+				if (!joint._dirty) {
+					continue;
+				}
+				entity.ammoComponent.initializeJoint(joint, entity, this);
+				joint._dirty = false;
+			}
+		}
+
+		this.step(tpf);
+
+		// Update positions of entities from the physics data
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+			var rb = entity.ammoComponent;
+			var tc = entity.transformComponent;
+			rb.getPosition(tc.transform.translation);
+			rb.getQuaternion(tmpQuat);
+			tc.transform.rotation.copyQuaternion(tmpQuat);
+			tc.transform.update();
+			tc.setUpdated();
+		}
+	};
+
+	return AmmoSystem;
 });

@@ -2,11 +2,11 @@ define([
 
 	'goo/scripts/Scripts',
 
-	'goo/physicspack/ammo/AmmoPhysicsSystem',
-	'goo/physicspack/ammo/AmmoRigidbody',
+	'goo/physicspack/ammo/AmmoSystem',
+	'goo/physicspack/ammo/AmmoComponent',
 
-	'goo/physicspack/cannon/CannonPhysicsSystem',
-	'goo/physicspack/cannon/CannonRigidbody',
+	'goo/physicspack/PhysicsSystem',
+	'goo/physicspack/Rigidbody',
 
 	'goo/physicspack/colliders/BoxCollider',
 	'goo/physicspack/colliders/Collider',
@@ -31,11 +31,11 @@ define([
 	var defines = [
 		'goo/scripts/Scripts',
 
-		'goo/physicspack/ammo/AmmoPhysicsSystem',
-		'goo/physicspack/ammo/AmmoRigidbody',
+		'goo/physicspack/ammo/AmmoSystem',
+		'goo/physicspack/ammo/AmmoComponent',
 
-		'goo/physicspack/cannon/CannonPhysicsSystem',
-		'goo/physicspack/cannon/CannonRigidbody',
+		'goo/physicspack/PhysicsSystem',
+		'goo/physicspack/Rigidbody',
 
 		'goo/physicspack/colliders/BoxCollider',
 		'goo/physicspack/colliders/Collider',

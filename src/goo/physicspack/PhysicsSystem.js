@@ -1,32 +1,52 @@
 define([
-	'goo/entities/systems/System',
-	'goo/entities/SystemBus',
+	'goo/physicspack/AbstractPhysicsSystem',
+	'goo/physicspack/RigidbodyComponent',
 	'goo/math/Vector3',
-	'goo/math/Quaternion',
-	'goo/physicspack/RaycastResult'
+	'goo/math/Quaternion'
 ],
 /** @lends */
 function (
-	System,
-	SystemBus,
+	AbstractPhysicsSystem,
+	CannonRigidbody,
 	Vector3,
 	Quaternion
-	// RaycastResult
 ) {
 	'use strict';
 
+	/* global CANNON */
+
+	var tmpVec1;
+	var tmpVec2;
 	var tmpQuat = new Quaternion();
+	var tmpCannonResult;
 
 	/**
 	 * @class
-	 * @extends {System}
+	 * @extends AbstractPhysicsSystem
 	 */
 	function PhysicsSystem(settings) {
-		System.call(this, 'PhysicsSystem', ['TransformComponent', 'RigidbodyComponent']);
-
 		settings = settings || {};
 
+		/**
+		 * @type {CANNON.World}
+		 */
+		this.world = new CANNON.World();
+
+		var that = this;
+		this.world.addEventListener('postStep', function () {
+			that.emitContactEvents();
+		});
+
+		this._entities = {};
+
+		if (!tmpVec1) {
+			tmpVec1 = new CANNON.Vec3();
+			tmpVec2 = new CANNON.Vec3();
+			tmpCannonResult = new CANNON.RaycastResult();
+		}
+
 		this.priority = 1; // make sure it processes after transformsystem
+
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
 
 		/**
@@ -43,57 +63,11 @@ function (
 		this._inContactCurrentStepB = [];
 		this._inContactLastStepA = [];
 		this._inContactLastStepB = [];
+
+		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidbodyComponent']);
 	}
-	PhysicsSystem.prototype = Object.create(System.prototype);
-
-	/**
-	 * @param {Vector3} gravityVector
-	 */
-	PhysicsSystem.prototype.setGravity = function (/*gravityVector*/) {};
-
-	PhysicsSystem.prototype.inserted = function (entity) {
-		this.addBody(entity);
-	};
-
-	PhysicsSystem.prototype.deleted = function (entity) {
-		this.removeBody(entity);
-	};
-
-	PhysicsSystem.beginContactEvent = {
-		entityA: null,
-		entityB: null
-	};
-
-	PhysicsSystem.duringContactEvent = {
-		entityA: null,
-		entityB: null
-	};
-
-	PhysicsSystem.endContactEvent = {
-		entityA: null,
-		entityB: null
-	};
-
-	PhysicsSystem.prototype.emitBeginContact = function (entityA, entityB) {
-		var evt = PhysicsSystem.beginContactEvent;
-		evt.entityA = entityA;
-		evt.entityB = entityB;
-		SystemBus.emit('goo.physics.beginContact', evt);
-	};
-
-	PhysicsSystem.prototype.emitDuringContact = function (entityA, entityB) {
-		var evt = PhysicsSystem.duringContactEvent;
-		evt.entityA = entityA;
-		evt.entityB = entityB;
-		SystemBus.emit('goo.physics.duringContact', evt);
-	};
-
-	PhysicsSystem.prototype.emitEndContact = function (entityA, entityB) {
-		var evt = PhysicsSystem.endContactEvent;
-		evt.entityA = entityA;
-		evt.entityB = entityB;
-		SystemBus.emit('goo.physics.endContact', evt);
-	};
+	PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
+	PhysicsSystem.constructor = PhysicsSystem;
 
 	PhysicsSystem.prototype._swapContactLists = function () {
 		var tmp = this._inContactCurrentStepA;
@@ -107,38 +81,121 @@ function (
 		this._inContactCurrentStepB.length = 0;
 	};
 
-	/**
-	 * @param  {Vector3} start
-	 * @param  {Vector3} end
-	 * @param  {RaycastResult} result
-	 */
-	PhysicsSystem.prototype.raycastClosest = function (/*start, end, result*/) {};
+	PhysicsSystem.prototype.setGravity = function (gravityVector) {
+		this.world.gravity.copy(gravityVector);
+	};
+
+	PhysicsSystem.prototype.addBody = function (entity) {
+		entity.rigidbodyComponent.rigidbody = new CannonRigidbody(entity);
+	};
+
+	PhysicsSystem.prototype.step = function (deltaTime) {
+		var world = this.world;
+
+		// Step the world forward in time
+		var fixedTimeStep = 1 / this.stepFrequency;
+		var maxSubSteps = this.maxSubSteps;
+		if (maxSubSteps) {
+			world.step(fixedTimeStep, deltaTime, maxSubSteps);
+		} else {
+			world.step(fixedTimeStep);
+		}
+	};
+
+	PhysicsSystem.prototype.emitContactEvents = function () {
+		// Get overlapping entities
+		var contacts = this.world.contacts,
+			num = contacts.length,
+			entities = this._entities;
+
+		this._swapContactLists();
+
+		for (var i = 0; i !== num; i++) {
+			var contact = contacts[i];
+
+			var bodyA = contact.bi;
+			var bodyB = contact.bj;
+			var entityA = entities[bodyA.id];
+			var entityB = entities[bodyB.id];
+
+			if (bodyA.id > bodyB.id) {
+				var tmp = entityA;
+				entityA = entityB;
+				entityB = tmp;
+			}
+
+			if (this._inContactLastStepA.indexOf(entityA) === -1) {
+				this.emitBeginContact(entityA, entityB);
+			} else {
+				this.emitDuringContact(entityA, entityB);
+			}
+
+			this._inContactCurrentStepA.push(entityA);
+			this._inContactCurrentStepB.push(entityB);
+		}
+
+		// Emit end contact events
+		for (var i = 0; i !== this._inContactLastStepA.length; i++) {
+			var entityA = this._inContactLastStepA[i];
+			var entityB = this._inContactLastStepB[i];
+
+			var found = false;
+			for (var j = 0; j !== this._inContactCurrentStepA.length; j++) {
+				if (entityA === this._inContactCurrentStepA[i] && entityB === this._inContactCurrentStepB[i]) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				this.emitEndContact(entityA, entityB);
+			}
+		}
+	};
+
+	PhysicsSystem.prototype.raycastClosest = function (start, end, result) {
+		var cannonStart = tmpVec1;
+		var cannonEnd = tmpVec2;
+		cannonStart.copy(start);
+		cannonEnd.copy(end);
+
+		this.world.rayTest(cannonStart, cannonEnd, tmpCannonResult);
+
+		if (tmpCannonResult.hasHit) {
+			result.entity = this._entities[tmpCannonResult.body.id];
+			var p = tmpCannonResult.hitPointWorld;
+			var n = tmpCannonResult.hitNormalWorld;
+			result.point.setDirect(p.x, p.y, p.z);
+			result.normal.setDirect(n.x, n.y, n.z);
+		}
+
+		return tmpCannonResult.hasHit;
+	};
 
 	PhysicsSystem.prototype.process = function (entities, tpf) {
+		var N = entities.length;
 
 		// Initialize bodies
-		for (var i = 0; i < entities.length; i++) {
+		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
 			var rb = entity.rigidbodyComponent;
 
 			if (rb._dirty) {
-				rb.rigidbody.initialize(entity, this);
+				rb.initialize(entity, this);
 				rb._dirty = false;
 			}
 		}
 
 		// Initialize joints - must be done *after* all bodies were initialized
-		for (var i = 0; i < entities.length; i++) {
+		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
 
 			var joints = entity.rigidbodyComponent.joints;
-			//var bodyA = entity.rigidbodyComponent.rigidbody.cannonBody;
 			for (var j = 0; j < joints.length; j++) {
 				var joint = joints[j];
 				if (!joint._dirty) {
 					continue;
 				}
-				entity.rigidbodyComponent.rigidbody.initializeJoint(joint, entity, this);
+				entity.rigidbodyComponent.initializeJoint(joint, entity, this);
 				joint._dirty = false;
 			}
 		}
@@ -146,9 +203,9 @@ function (
 		this.step(tpf);
 
 		// Update positions of entities from the physics data
-		for (var i = 0; i < entities.length; i++) {
+		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rb = entity.rigidbodyComponent.rigidbody;
+			var rb = entity.rigidbodyComponent;
 			var tc = entity.transformComponent;
 			rb.getPosition(tc.transform.translation);
 			rb.getQuaternion(tmpQuat);
@@ -157,8 +214,6 @@ function (
 			tc.setUpdated();
 		}
 	};
-
-
 
 	return PhysicsSystem;
 });

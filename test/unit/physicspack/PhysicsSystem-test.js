@@ -1,7 +1,6 @@
 define([
 	'goo/entities/World',
-	'goo/physicspack/ammo/AmmoPhysicsSystem',
-	'goo/entities/systems/TransformSystem',
+	'goo/physicspack/PhysicsSystem',
 	'goo/math/Vector3',
 	'goo/physicspack/RigidbodyComponent',
 	'goo/physicspack/ColliderComponent',
@@ -10,8 +9,7 @@ define([
 	'goo/entities/SystemBus'
 ], function (
 	World,
-	AmmoPhysicsSystem,
-	TransformSystem,
+	PhysicsSystem,
 	Vector3,
 	RigidbodyComponent,
 	ColliderComponent,
@@ -21,17 +19,16 @@ define([
 ) {
 	'use strict';
 
-	describe('AmmoPhysicsSystem', function () {
+	describe('PhysicsSystem', function () {
 		var world, system;
 
 		beforeEach(function () {
 			world = new World();
-			system = new AmmoPhysicsSystem({
+			system = new PhysicsSystem({
 				maxSubSteps: 1
 			});
 			system.setGravity(new Vector3());
 			world.setSystem(system);
-			world.setSystem(new TransformSystem());
 		});
 
 		it('can raycast closest', function (done) {
@@ -53,8 +50,8 @@ define([
 			expect(result.entity).toEqual(entityB);
 
 			// Now swap so that entityA is closer
-			rbcA.rigidbody.setPosition(new Vector3(0, 0, -3));
-			rbcB.rigidbody.setPosition(new Vector3(0, 0, 3));
+			rbcA.setPosition(new Vector3(0, 0, -3));
+			rbcB.setPosition(new Vector3(0, 0, 3));
 			world.process();
 
 			system.raycastClosest(start, end, result);
@@ -105,8 +102,8 @@ define([
 			expect(numDuringContact).toEqual(0);
 			expect(numEndContact).toEqual(0);
 
-			rbcA.rigidbody.setPosition(new Vector3(0, 0, 0.1));
-			rbcB.rigidbody.setPosition(new Vector3(0, 0, -0.1));
+			rbcA.setPosition(new Vector3(0, 0, 0.1));
+			rbcB.setPosition(new Vector3(0, 0, -0.1));
 
 			world.process();
 
@@ -120,14 +117,57 @@ define([
 			expect(numDuringContact).toEqual(1);
 			expect(numEndContact).toEqual(0);
 
-			rbcA.rigidbody.setPosition(new Vector3(0, 0, 3));
-			rbcB.rigidbody.setPosition(new Vector3(0, 0, -3));
+			rbcA.setPosition(new Vector3(0, 0, 3));
+			rbcB.setPosition(new Vector3(0, 0, -3));
 
 			world.process();
 
 			expect(numBeginContact).toEqual(1);
 			expect(numDuringContact).toEqual(1);
 			expect(numEndContact).toEqual(1);
+
+			for (var key in listeners) {
+				SystemBus.removeListener(key, listeners[key]);
+			}
+
+			done();
+		});
+
+		it('filters collisions', function (done) {
+
+			var numBeginContact = 0;
+			var listeners = {
+				'goo.physics.beginContact': function () {
+					numBeginContact++;
+				}
+			};
+			for (var key in listeners) {
+				SystemBus.addListener(key, listeners[key]);
+			}
+
+			var rbcA = new RigidbodyComponent({ mass: 1 });
+			var rbcB = new RigidbodyComponent({ mass: 1 });
+			var ccA = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var ccB = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var entityA = world.createEntity(rbcA, ccA).addToWorld();
+			var entityB = world.createEntity(rbcB, ccB).addToWorld();
+			entityA.setTranslation(0, 0, 0.1);
+			entityB.setTranslation(0, 0, -0.1);
+
+			world.process(); // Needed to initialize bodies
+
+			expect(numBeginContact).toEqual(1);
+
+			rbcA.collisionMask = 0; // none
+			rbcB.collisionMask = 0;
+
+			world.process(); // Needed to initialize bodies
+
+			expect(numBeginContact).toEqual(1);
 
 			for (var key in listeners) {
 				SystemBus.removeListener(key, listeners[key]);

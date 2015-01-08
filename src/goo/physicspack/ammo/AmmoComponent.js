@@ -1,5 +1,5 @@
 define([
-	'goo/physicspack/Rigidbody',
+	'goo/physicspack/AbstractRigidbodyComponent',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'goo/math/Transform',
@@ -14,7 +14,7 @@ define([
 ],
 /** @lends */
 function (
-	Rigidbody,
+	AbstractRigidbodyComponent,
 	Vector3,
 	Quaternion,
 	Transform,
@@ -45,16 +45,26 @@ function (
 	/**
 	 * @class
 	 * @param {Entity} entity
-	 * @extends Rigidbody
+	 * @extends AbstractRigidbodyComponent
 	 */
-	function AmmoRigidbody(entity) {
-		Rigidbody.call(this, entity);
+	function AmmoComponent(settings) {
+		settings = settings || {};
+
+		AbstractRigidbodyComponent.apply(this, arguments);
 
 		/**
 		 * The Ammo.btRigidbody instance. Will be created on .initialize()
 		 * @type {Ammo.btRigidBody}
 		 */
 		this.ammoBody = null;
+
+		this.mass = settings.mass !== undefined ? settings.mass : 1;
+		this.isKinematic = settings.isKinematic !== undefined ? settings.isKinematic : false;
+		if (this.isKinematic) {
+			this.mass = 0;
+		}
+
+		this.type = 'AmmoComponent';
 
 		if (!tmpTransform) {
 			tmpTransform = new Ammo.btTransform();
@@ -65,11 +75,11 @@ function (
 			tmpQuat = new Ammo.btQuaternion();
 		}
 	}
+	AmmoComponent.prototype = Object.create(AbstractRigidbodyComponent.prototype);
+	AmmoComponent.constructor = AmmoComponent;
+	AmmoComponent.type = 'AmmoComponent';
 
-	AmmoRigidbody.prototype = Object.create(Rigidbody.prototype);
-	AmmoRigidbody.constructor = AmmoRigidbody;
-
-	AmmoRigidbody.prototype.setTransformFromEntity = function (entity) {
+	AmmoComponent.prototype.setTransformFromEntity = function (entity) {
 		var gooPos = entity.transformComponent.transform.translation;
 		tmpTransform.setIdentity();
 		tmpTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z)); // TODO: use tmp vec/quat
@@ -79,70 +89,70 @@ function (
 		this.ammoBody.setWorldTransform(tmpTransform);
 	};
 
-	AmmoRigidbody.prototype.applyForce = function (force) {
+	AmmoComponent.prototype.applyForce = function (force) {
 		tmpVector.setValue(force.x, force.y, force.z);
 		tmpVector2.setValue(0, 0, 0);
 		this.ammoBody.applyForce(tmpVector, tmpVector2);
 	};
 
-	AmmoRigidbody.prototype.setVelocity = function (velocity) {
+	AmmoComponent.prototype.setVelocity = function (velocity) {
 		tmpVector.setValue(velocity.x, velocity.y, velocity.z);
 		this.ammoBody.setLinearVelocity(tmpVector);
 	};
 
-	AmmoRigidbody.prototype.setPosition = function (pos) {
+	AmmoComponent.prototype.setPosition = function (pos) {
 		tmpVector.setValue(pos.x, pos.y, pos.z);
 		this.ammoBody.getWorldTransform().setOrigin(tmpVector);
 	};
 
-	AmmoRigidbody.prototype.getPosition = function (targetVector) {
+	AmmoComponent.prototype.getPosition = function (targetVector) {
 		var p = this.ammoBody.getWorldTransform();
 		var origin = p.getOrigin();
 		targetVector.setDirect(origin.x(), origin.y(), origin.z());
 	};
 
-	AmmoRigidbody.prototype.setQuaternion = function (quat) {
+	AmmoComponent.prototype.setQuaternion = function (quat) {
 		var p = this.ammoBody.getWorldTransform();
 		tmpQuat.setValue(quat.x, quat.y, quat.z, quat.w);
 		p.setRotation(tmpQuat);
 	};
 
-	AmmoRigidbody.prototype.getQuaternion = function (targetQuat) {
+	AmmoComponent.prototype.getQuaternion = function (targetQuat) {
 		var t = this.ammoBody.getWorldTransform();
 		var aq = t.getRotation();
 		targetQuat.setDirect(aq.x(), aq.y(), aq.z(), aq.w());
 	};
 
-	AmmoRigidbody.prototype.setAngularVelocity = function (angularVelocity) {
+	AmmoComponent.prototype.setAngularVelocity = function (angularVelocity) {
 		tmpVector.setValue(angularVelocity.x, angularVelocity.y, angularVelocity.z);
 		this.ammoBody.setAngularVelocity(tmpVector);
 	};
 
-	AmmoRigidbody.prototype.setLinearDamping = function (linearDamping) {
+	AmmoComponent.prototype.setLinearDamping = function (linearDamping) {
 		this.ammoBody.setDamping(linearDamping, this.entity.rigidbodyComponent.angularDamping);
 	};
 
-	AmmoRigidbody.prototype.setAngularDamping = function (angularDamping) {
+	AmmoComponent.prototype.setAngularDamping = function (angularDamping) {
 		this.ammoBody.setDamping(this.entity.rigidbodyComponent.linearDamping, angularDamping);
 	};
 
-	AmmoRigidbody.prototype.setCollisionGroup = function (/*collisionGroup*/) {
+	AmmoComponent.prototype.setCollisionGroup = function (/*collisionGroup*/) {
 		this.entity.rigidbodyComponent._dirty = true;
 	};
 
-	AmmoRigidbody.prototype.setCollisionMask = function (/*collisionMask*/) {
+	AmmoComponent.prototype.setCollisionMask = function (/*collisionMask*/) {
 		this.entity.rigidbodyComponent._dirty = true;
 	};
 
-	AmmoRigidbody.prototype.setFriction = function (friction) {
+	AmmoComponent.prototype.setFriction = function (friction) {
 		this.ammoBody.set_m_friction(friction);
 	};
 
-	AmmoRigidbody.prototype.setRestitution = function (restitution) {
+	AmmoComponent.prototype.setRestitution = function (restitution) {
 		this.ammoBody.set_m_restitution(restitution);
 	};
 
-	AmmoRigidbody.prototype.updateKinematic = function (entity) {
+	AmmoComponent.prototype.updateKinematic = function (entity) {
 		var body = this.ammoBody;
         if (body.getMotionState()) {
             var pos = entity.transformComponent.worldTransform.translation;
@@ -155,8 +165,12 @@ function (
         }
 	};
 
-	AmmoRigidbody.prototype.initialize = function (entity, system) {
-		var rbc = entity.rigidbodyComponent;
+	AmmoComponent.prototype.initialize = function (entity, system) {
+		if (this.ammoBody) {
+			system.world.removeRigidBody(this.ammoBody);
+			Ammo.destroy(this.ammoBody);
+		}
+
 		var gooTransform = entity.transformComponent.transform;
 		var gooPos = gooTransform.translation;
 		var gooRot = gooTransform.rotation;
@@ -174,11 +188,11 @@ function (
 		var localInertia = new Ammo.btVector3(0, 0, 0);
 
 		// rigidbody is dynamic if and only if mass is non zero, otherwise static
-		if (rbc.mass !== 0.0) {
-			shape.calculateLocalInertia(rbc.mass, localInertia);
+		if (this.mass !== 0.0) {
+			shape.calculateLocalInertia(this.mass, localInertia);
 		}
 
-		var info = new Ammo.btRigidBodyConstructionInfo(rbc.mass, motionState, shape, localInertia);
+		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
 		this.localInertia = localInertia;
 		var body = this.ammoBody = new Ammo.btRigidBody(info);
 
@@ -186,22 +200,21 @@ function (
 		var ptr = body.a || body.ptr;
 		system._entities[ptr] = entity;
 
-		if (rbc.isKinematic) {
-			body.setCollisionFlags(body.getCollisionFlags() | AmmoRigidbody.AmmoFlags.CF_KINEMATIC_OBJECT);
-			body.setActivationState(AmmoRigidbody.AmmoFlags.DISABLE_DEACTIVATION);
+		if (this.isKinematic) {
+			body.setCollisionFlags(body.getCollisionFlags() | AmmoComponent.AmmoFlags.CF_KINEMATIC_OBJECT);
+			body.setActivationState(AmmoComponent.AmmoFlags.DISABLE_DEACTIVATION);
 		}
 
-
-		if (typeof(rbc.collisionGroup) !== 'undefined' && typeof(rbc.collisionMask) !== 'undefined') {
-			system.world.addRigidBody(this.ammoBody, rbc.collisionGroup, rbc.collisionMask);
+		if (typeof(this.collisionGroup) !== 'undefined' && typeof(this.collisionMask) !== 'undefined') {
+			system.world.addRigidBody(this.ammoBody, this.collisionGroup, this.collisionMask);
 		} else {
 			system.world.addRigidBody(this.ammoBody);
 		}
-		this.setVelocity(rbc.initialVelocity);
+		//this.setVelocity(this.initialVelocity);
 		//this.body.setLinearFactor(this.linearFactor);
 	};
 
-	AmmoRigidbody.AmmoFlags = {
+	AmmoComponent.AmmoFlags = {
 		// See http://bulletphysics.org/Bullet/BulletFull/classbtCollisionObject.html
 		CF_STATIC_OBJECT: 1,
 		CF_KINEMATIC_OBJECT: 2,
@@ -219,7 +232,7 @@ function (
 		DISABLE_SIMULATION: 5
 	};
 
-	AmmoRigidbody.prototype.constructAmmoShape = function (entity) {
+	AmmoComponent.prototype.constructAmmoShape = function (entity) {
 		var shape;
 		var numColliders = 0;
 		var collider;
@@ -306,9 +319,9 @@ function (
 		return shape;
 	};
 
-	AmmoRigidbody.prototype.initializeJoint = function (joint, entity, system) {
-		var bodyA = entity.rigidbodyComponent.rigidbody.ammoBody;
-		var bodyB = joint.connectedEntity.rigidbodyComponent.rigidbody.ammoBody;
+	AmmoComponent.prototype.initializeJoint = function (joint, entity, system) {
+		var bodyA = this.ammoBody;
+		var bodyB = joint.connectedEntity.ammoComponent.ammoBody;
 
 		var constraint;
 
@@ -363,5 +376,5 @@ function (
 		}
 	};
 
-	return AmmoRigidbody;
+	return AmmoComponent;
 });
