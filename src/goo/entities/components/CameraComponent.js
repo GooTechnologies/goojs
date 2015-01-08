@@ -111,6 +111,23 @@ function (
 		this.camera.onFrameChange();
 	};
 
+	CameraComponent.prototype.copy = function (source) {
+		this.camera.copy(source.camera);
+		this.leftVec.copy(source.leftVec);
+		this.upVec.copy(source.upVec);
+		this.dirVec.copy(source.dirVec);
+	};
+
+	CameraComponent.prototype.clone = function () {
+		var clone = new CameraComponent(this.camera.clone());
+
+		clone.leftVec.copy(this.leftVec);
+		clone.upVec.copy(this.upVec);
+		clone.dirVec.copy(this.dirVec);
+
+		return clone;
+	};
+
 	CameraComponent.applyOnEntity = function(obj, entity) {
 		if (obj instanceof Camera) {
 			var cameraComponent = new CameraComponent(obj);

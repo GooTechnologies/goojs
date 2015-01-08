@@ -41,15 +41,20 @@ define([
 		this.light.update(transform);
 	};
 
-	LightComponent.prototype.copy = function (form) {
+	LightComponent.prototype.copy = function (source) {
+		// has to be the same sort of light
+		this.light.copy(source);
+
 		// updated by someone else hopefully
 		// the status depends on the entity and its ancestors
-		this.hidden = form.hidden;
+		this.hidden = source.hidden;
 	};
 
 	LightComponent.prototype.clone = function () {
 		var clone = new LightComponent(this.light.clone());
-		clone.copy(this);
+
+		// this status needs updating
+		clone.hidden = this.hidden;
 		return clone;
 	};
 

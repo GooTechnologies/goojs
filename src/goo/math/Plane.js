@@ -78,19 +78,29 @@ function (
 		precision = typeof(precision)==='undefined' ? 1e-7 : precision;
 		store = store || new Vector3();
 
-		var lDotN = ray.direction.dot(this.normal);
-		if(Math.abs(lDotN) < precision) {
-			if(!suppressWarnings){
+		var lDotN = ray.direction.dotVector(this.normal);
+		if (Math.abs(lDotN) < precision) {
+			//! AT: this is the only function where we have this suppressWarnings mechanism
+			if (!suppressWarnings) {
 				console.warn('Ray parallell with plane');
 			}
 			return null;
 		}
 		var c = this.constant;
-		var pMinusL0DotN = p0.set(this.normal).scale(c).subVector(ray.origin).dot(this.normal);
+		var pMinusL0DotN = p0.setVector(this.normal).scale(c).subVector(ray.origin).dotVector(this.normal);
 
 		var d = pMinusL0DotN / lDotN;
 
 		return store.setVector(ray.direction).scale(d).addVector(ray.origin);
+	};
+
+	Plane.prototype.copy = function (source) {
+		this.normal.copy(source.normal);
+		this.constant = source.constant;
+	};
+
+	Plane.prototype.clone = function () {
+		return new Plane(this.normal.clone(), this.constant);
 	};
 
 	return Plane;

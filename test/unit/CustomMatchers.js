@@ -117,5 +117,69 @@ define([
 		};
 	};
 
+	CustomMatchers.toBeCloned = function (util, customEqualityTesters) {
+		// performs a deep equal check and verifies if all corresponding references are different
+		function deepEquality(obj1, obj2, path) {
+			if (obj1 instanceof Array) {
+				if (obj1 === obj2) {
+					return {
+						type: 'same-reference',
+						path: path
+					};
+				}
+
+				for (var i = 0; i < obj1.length; i++) {
+					var partialResult = deepEquality(obj1[i], obj2[i], path + '.' + i);
+					if (partialResult) { return partialResult; }
+				}
+			} else if (typeof obj1 === 'object') {
+				if (obj1 === null && obj2 === null) { return; }
+
+				if (obj1 === obj2) {
+					return {
+						type: 'same-reference',
+						path: path
+					};
+				}
+
+				if (obj1.constructor !== obj2.constructor) {
+					return {
+						type: 'different-constructors',
+						path: path
+					};
+				}
+
+				var keys = Object.keys(obj1);
+				for (var i = 0; i < keys.length; i++) {
+					var key = keys[i];
+					var partialResult = deepEquality(obj1[key], obj2[key], path + '.' + key);
+					if (partialResult) { return partialResult; }
+				}
+			} else if (obj1 !== obj2) {
+				return {
+					type: 'different-value',
+					path: path
+				};
+			}
+		}
+
+		return {
+			compare: function (actual, expected) {
+				var result = {};
+				var equalityResult = deepEquality(expected, actual, '');
+				result.pass = !equalityResult;
+
+				if (result.pass) {
+					result.message = 'Expected objects to not be clones';
+				} else {
+					result.message = 'Expected objects to be clones; ' +
+						equalityResult.type + ' on ' + equalityResult.path;
+				}
+
+				return result;
+			}
+		};
+	};
+
 	return CustomMatchers;
 });
