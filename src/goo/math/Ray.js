@@ -9,6 +9,7 @@ function (Vector3, MathUtils) {
 	function Ray(origin, direction) {
 		this.origin = origin || new Vector3();
 		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
+		this.length;
 	}
 
 	var tmpVec1 = new Vector3();
@@ -141,6 +142,48 @@ function (Vector3, MathUtils) {
 	};
 
 	/**
+	 * @param boundMin
+	 * @param boundMax
+	 * @param locationStore if not null, and this ray intersects the plane, the world location of the point of intersection is stored in this vector.
+	 * @return false if behind ray origin or no intersection else distance to intersection point
+	 */
+	Ray.prototype.intersectsAABox = function (boundMin, boundMax, inverseDir){
+		//
+		//@source: http://gamedev.stackexchange.com/a/18459
+		//
+
+		var tXMin = (boundMin.x - this.origin.x)*inverseDir.x;
+		var tXMax = (boundMax.x - this.origin.x)*inverseDir.x;
+		var tYMin = (boundMin.y - this.origin.y)*inverseDir.y;
+		var tYMax = (boundMax.y - this.origin.y)*inverseDir.y;
+		var tZMin = (boundMin.z - this.origin.z)*inverseDir.z;
+		var tZMax = (boundMax.z - this.origin.z)*inverseDir.z;
+
+		var tMin = Math.max(Math.max(Math.min(tXMin, tXMax), Math.min(tYMin, tYMax)), Math.min(tZMin, tZMax));
+		var tMax = Math.min(Math.min(Math.max(tXMin, tXMax), Math.max(tYMin, tYMax)), Math.max(tZMin, tZMax));
+
+		var distance = 0;
+
+		//intersecting AABB, but whole AABB is behind us
+		if (tMax < 0)
+		{
+			distance = tMax;
+			return false;
+		}
+
+		//doesn't intersect AABB
+		if (tMin > tMax)
+		{
+			distance = tMax;
+			return false;
+		}
+
+		distance = tMin;
+
+		return distance;
+	}
+	
+	/**
 	 * @param {Vector3} point
 	 * @param {Vecotr3} [store] if not null, the closest point is stored in this param
 	 * @return the squared distance from this ray to the given point.
@@ -168,5 +211,26 @@ function (Vector3, MathUtils) {
 		return vectorA.lengthSquared();
 	};
 
+	Ray.prototype.normalizeDirection = function(){
+		var length = this.direction.length();
+		var oldLength = length;
+
+		if (length < 0.0000001)
+		{
+			this.direction.data[0] = 0;
+			this.direction.data[1] = 0;
+			this.direction.data[2] = 0;
+		}
+		else
+		{
+			length = 1.0 / length;
+			this.direction.data[0] *= length;
+			this.direction.data[1] *= length;
+			this.direction.data[2] *= length;
+		}
+
+		this.length = oldLength;
+	};
+	
 	return Ray;
 });
