@@ -2,14 +2,16 @@ define([
 	'goo/entities/components/Component',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
-	'goo/math/Transform'
+	'goo/math/Transform',
+	'goo/entities/SystemBus'
 ],
 /** @lends */
 function (
 	Component,
 	Vector3,
 	Quaternion,
-	Transform
+	Transform,
+	SystemBus
 ) {
 	'use strict';
 
@@ -31,7 +33,7 @@ function (
 		this.joints = [];
 
 		/**
-		 * Will be set to true if any of the colliders were changed
+		 * Will be set to true if any of the colliders were changed, and that the body needs to be reinitialized.
 		 * @type {Boolean}
 		 */
 		this._dirty = true;
@@ -44,9 +46,17 @@ function (
 	 */
 	AbstractRigidbodyComponent.prototype.addJoint = function (joint) {
 		this.joints.push(joint);
-		if (this.rigidbody) {
-			this.rigidbody.addJoint(joint);
-		}
+	};
+
+	AbstractRigidbodyComponent.initializedEvent = {
+		entity: null
+	};
+
+	AbstractRigidbodyComponent.prototype.emitInitialized = function (entity) {
+		var evt = AbstractRigidbodyComponent.initializedEvent;
+		evt.entity = entity;
+		SystemBus.emit('goo.physics.initialized', evt);
+		evt.entity = null; // Remove reference, don't need it any more
 	};
 
 	/**
@@ -56,7 +66,7 @@ function (
 	AbstractRigidbodyComponent.prototype.initialize = function () {};
 
 	/**
-	 * Creates all joints in the physics engine.
+	 * Creates a joint in the physics engine.
 	 * @virtual
 	 * @private
 	 * @param {Joint} joint

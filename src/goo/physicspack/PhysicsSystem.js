@@ -30,10 +30,10 @@ function (
 		/**
 		 * @type {CANNON.World}
 		 */
-		this.world = new CANNON.World();
+		this.cannonWorld = new CANNON.World();
 
 		var that = this;
-		this.world.addEventListener('postStep', function () {
+		this.cannonWorld.addEventListener('postStep', function () {
 			that.emitContactEvents();
 		});
 
@@ -82,7 +82,7 @@ function (
 	};
 
 	PhysicsSystem.prototype.setGravity = function (gravityVector) {
-		this.world.gravity.copy(gravityVector);
+		this.cannonWorld.gravity.copy(gravityVector);
 	};
 
 	PhysicsSystem.prototype.addBody = function (entity) {
@@ -90,7 +90,7 @@ function (
 	};
 
 	PhysicsSystem.prototype.step = function (deltaTime) {
-		var world = this.world;
+		var world = this.cannonWorld;
 
 		// Step the world forward in time
 		var fixedTimeStep = 1 / this.stepFrequency;
@@ -104,7 +104,7 @@ function (
 
 	PhysicsSystem.prototype.emitContactEvents = function () {
 		// Get overlapping entities
-		var contacts = this.world.contacts,
+		var contacts = this.cannonWorld.contacts,
 			num = contacts.length,
 			entities = this._entities;
 
@@ -158,7 +158,7 @@ function (
 		cannonStart.copy(start);
 		cannonEnd.copy(end);
 
-		this.world.rayTest(cannonStart, cannonEnd, tmpCannonResult);
+		this.cannonWorld.rayTest(cannonStart, cannonEnd, tmpCannonResult);
 
 		if (tmpCannonResult.hasHit) {
 			result.entity = this._entities[tmpCannonResult.body.id];

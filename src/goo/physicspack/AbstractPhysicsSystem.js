@@ -20,6 +20,7 @@ function (
 	AbstractPhysicsSystem.prototype = Object.create(System.prototype);
 
 	/**
+	 * @virtual
 	 * @param {Vector3} gravityVector
 	 */
 	AbstractPhysicsSystem.prototype.setGravity = function (/*gravityVector*/) {};
@@ -44,6 +45,8 @@ function (
 		evt.entityA = entityA;
 		evt.entityB = entityB;
 		SystemBus.emit('goo.physics.beginContact', evt);
+		evt.entityA = null;
+		evt.entityB = null;
 	};
 
 	AbstractPhysicsSystem.prototype.emitDuringContact = function (entityA, entityB) {
@@ -51,6 +54,8 @@ function (
 		evt.entityA = entityA;
 		evt.entityB = entityB;
 		SystemBus.emit('goo.physics.duringContact', evt);
+		evt.entityA = null;
+		evt.entityB = null;
 	};
 
 	AbstractPhysicsSystem.prototype.emitEndContact = function (entityA, entityB) {
@@ -58,14 +63,9 @@ function (
 		evt.entityA = entityA;
 		evt.entityB = entityB;
 		SystemBus.emit('goo.physics.endContact', evt);
+		evt.entityA = null;
+		evt.entityB = null;
 	};
-
-	/**
-	 * @param  {Vector3} start
-	 * @param  {Vector3} end
-	 * @param  {RaycastResult} result
-	 */
-	AbstractPhysicsSystem.prototype.raycastClosest = function (/*start, end, result*/) {};
 
 	return AbstractPhysicsSystem;
 });

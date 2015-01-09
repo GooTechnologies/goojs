@@ -52,42 +52,43 @@ function (
 		 */
 		this.cannonBody = null;
 
+		/**
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._dirty = true;
 
 		/**
+		 * @private
 		 * @type {Boolean}
 		 */
-		this.isKinematic = settings.isKinematic || false;
+		this._isKinematic = !!settings.isKinematic;
 
 		/**
 		 * @type {number}
 		 */
-		this.mass = typeof(settings.mass) !== 'undefined' ? settings.mass : 1.0;
-		if (this.isKinematic) {
+		this.mass = settings.mass !== undefined ? settings.mass : 1.0;
+		if (this._isKinematic) {
 			this.mass = 0;
 		}
 
 		/**
-		 * @type {Vector3|null}
+		 * @private
+		 * @type {boolean}
 		 */
-		this.initialVelocity = settings.initialVelocity ? settings.initialVelocity.clone() : null;
-
-		/**
-		 * @type {Vector3|null}
-		 */
-		this.initialAngularVelocity = settings.initialAngularVelocity ? settings.initialAngularVelocity.clone() : null;
+		this._initialized = false;
 
 		/**
 		 * @private
-		 * @type {number}
+		 * @type {Vector3}
 		 */
-		this._linearDamping = 0.01;
+		this._velocity = settings.velocity ? settings.velocity.clone() : new Vector3();
 
 		/**
 		 * @private
-		 * @type {number}
+		 * @type {Vector3}
 		 */
-		this._angularDamping = 0.01;
+		this._angularVelocity = settings.angularVelocity ? settings.angularVelocity.clone() : new Vector3();
 
 		/**
 		 * @private
@@ -105,13 +106,25 @@ function (
 		 * @private
 		 * @type {number}
 		 */
-		this._collisionGroup = typeof(settings.collisionGroup) !== 'undefined' ? settings.collisionGroup : undefined;
+		this._collisionGroup = settings.collisionGroup !== undefined ? settings.collisionGroup : 1;
 
 		/**
 		 * @private
 		 * @type {number}
 		 */
-		this._collisionMask = typeof(settings.collisionMask) !== 'undefined' ? settings.collisionMask : undefined;
+		this._collisionMask = settings.collisionMask !== undefined ? settings.collisionMask : 1;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._linearDamping = settings.linearDamping !== undefined ? settings.linearDamping : 0.01;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._angularDamping = settings.angularDamping !== undefined ? settings.angularDamping : 0.05;
 
 		if (!tmpCannonVec) {
 			tmpCannonVec = new CANNON.Vec3();
@@ -139,7 +152,16 @@ function (
 	};
 
 	RigidbodyComponent.prototype.setVelocity = function (velocity) {
-		this.cannonBody.velocity.copy(velocity);
+		if (this.cannonBody) {
+			this.cannonBody.velocity.copy(velocity);
+		}
+		this._velocity.setVector(velocity);
+	};
+
+	RigidbodyComponent.prototype.getVelocity = function (targetVector) {
+		var body = this.cannonBody;
+		var v = body ? body.velocity : this._velocity;
+		targetVector.setDirect(v.x, v.y, v.z);
 	};
 
 	RigidbodyComponent.prototype.setPosition = function (pos) {
@@ -160,63 +182,87 @@ function (
 		targetQuat.setDirect(q.x, q.y, q.z, q.w);
 	};
 
-	RigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
-		this.cannonBody.angularVelocity.copy(angularVelocity);
-	};
-
 	Object.defineProperties(RigidbodyComponent.prototype, {
 
 		restitution: {
 			get: function () {
-				return this.cannonBody.material.restitution;
+				return this._restitution;
 			},
 			set: function (value) {
-				this.cannonBody.material.restitution = value;
+				if (this.cannonBody) {
+					this.cannonBody.material.restitution = value;
+				}
+				this._restitution = value;
 			}
 		},
 
 		friction: {
 			get: function () {
-				return this.cannonBody.material.friction;
+				return this._friction;
 			},
 			set: function (value) {
-				this.cannonBody.material.friction = value;
+				if (this.cannonBody) {
+					this.cannonBody.material.friction = value;
+				}
+				this._friction = value;
 			}
 		},
 
 		collisionMask: {
 			get: function () {
-				return this.cannonBody.collisionFilterMask;
+				return this._collisionMask;
 			},
 			set: function (value) {
-				this.cannonBody.collisionFilterMask = value;
+				if (this.cannonBody) {
+					this.cannonBody.collisionFilterMask = value;
+				}
+				this._collisionMask = value;
 			}
 		},
 
 		collisionGroup: {
 			get: function () {
-				return this.cannonBody.collisionFilterGroup;
+				return this._collisionGroup;
 			},
 			set: function (value) {
-				this.cannonBody.collisionFilterGroup = value;
+				if (this.cannonBody) {
+					this.cannonBody.collisionFilterGroup = value;
+				}
+				this._collisionGroup = value;
 			}
 		},
 
 		linearDamping: {
 			get: function () {
-				return this.cannonBody.linearDamping;
+				return this._linearDamping;
 			},
 			set: function (value) {
-				this.cannonBody.linearDamping = value;
+				if (this.cannonBody) {
+					this.cannonBody.linearDamping = value;
+				}
+				this._linearDamping = value;
 			}
 		},
 
 		angularDamping: {
 			get: function () {
-				return this.cannonBody.angularDamping;
+				return this._angularDamping;
 			},
 			set: function (value) {
-				this.cannonBody.angularDamping = value;
+				if (this.cannonBody) {
+					this.cannonBody.angularDamping = value;
+				}
+				this._angularDamping = value;
+			}
+		},
+
+		isKinematic: {
+			get: function () {
+				return this._isKinematic;
+			},
+			set: function (value) {
+				this._isKinematic = value;
+				this._dirty = true;
 			}
 		}
 	});
@@ -255,40 +301,51 @@ function (
 		return shape;
 	};
 
+	RigidbodyComponent.prototype.destroy = function () {
+		var body = this.cannonBody;
+		if (body) {
+			body.world.removeBody(body);
+			delete this._system._entities[body.id];
+		}
+	};
+
 	RigidbodyComponent.prototype.initialize = function (entity, system) {
 		if (!this._dirty) {
 			return;
 		}
 
-		if (this.cannonBody) {
-			this.world.removeBody(this.cannonBody);
-		}
+		this._system = system;
+		this.destroy();
+
+		var mat = new CANNON.Material();
+
+		mat.friction = this._friction;
+		mat.restitution = this._restitution;
 
 		var body = this.cannonBody = new CANNON.Body({
 			mass: this.mass,
-			material: new CANNON.Material()
+			material: mat,
+			linearDamping: this._linearDamping,
+			angularDamping: this._angularDamping
 		});
-		system.world.addBody(body);
+		system.cannonWorld.addBody(body);
 		system._entities[body.id] = entity;
 
-		if (this.initialVelocity) {
-			body.velocity.copy(this.initialVelocity);
-			this.initialVelocity = null;
-		}
-
-		if (this.initialAngularVelocity) {
-			body.velocity.copy(this.initialAngularVelocity);
-			this.initialAngularVelocity = null;
+		if (!this._initialized) {
+			body.velocity.copy(this._velocity);
+			body.angularVelocity.copy(this._angularVelocity);
 		}
 
 		var that = this;
 		this.traverseColliders(entity, function (colliderEntity, collider, position, quaternion) {
 			that.addCollider(collider, position, quaternion);
 		});
-		if (this.isKinematic) {
+		if (this._isKinematic) {
 			body.type = CANNON.Body.KINEMATIC;
 		}
 		this.setTransformFromEntity(entity);
+
+		this._initialized = true;
 	};
 
 	RigidbodyComponent.prototype.initializeJoint = function (joint) {

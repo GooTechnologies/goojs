@@ -1,14 +1,14 @@
 define([
 	'goo/entities/components/Component',
 	'goo/util/ObjectUtil',
-	'goo/physicspack/joints/Joint',
+	'goo/physicspack/joints/PhysicsJoint',
 	'goo/math/Vector3'
 ],
 /** @lends */
 function (
 	Component,
 	_,
-	Joint,
+	PhysicsJoint,
 	Vector3
 ) {
 	'use strict';
@@ -16,11 +16,11 @@ function (
 	/**
 	 * @class
 	 * @param {object} [settings]
-	 * @extends Joint(2)
+	 * @extends PhysicsJoint
 	 */
 	function HingeJoint(settings) {
 		settings = settings || {};
-		Joint.call(this, settings);
+		PhysicsJoint.call(this, settings);
 
 		/**
 		 * @type {Vector3}
@@ -32,7 +32,7 @@ function (
 		 */
 		this.localAxis = settings.localAxis ? settings.localAxis.clone() : new Vector3(0, 1, 0);
 	}
-	HingeJoint.prototype = Object.create(Joint.prototype);
+	HingeJoint.prototype = Object.create(PhysicsJoint.prototype);
 	HingeJoint.constructor = HingeJoint;
 
 	return HingeJoint;

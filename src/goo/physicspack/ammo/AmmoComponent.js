@@ -45,6 +45,8 @@ function (
 	/**
 	 * @class
 	 * @param {Entity} entity
+	 * @param {object} [settings]
+	 * @param {object} [settings.mass=1]
 	 * @extends AbstractRigidbodyComponent
 	 */
 	function AmmoComponent(settings) {
@@ -52,19 +54,38 @@ function (
 
 		AbstractRigidbodyComponent.apply(this, arguments);
 
+		this.type = 'AmmoComponent';
+
 		/**
 		 * The Ammo.btRigidbody instance. Will be created on .initialize()
 		 * @type {Ammo.btRigidBody}
 		 */
 		this.ammoBody = null;
 
+		/**
+		 * @type {number}
+		 */
 		this.mass = settings.mass !== undefined ? settings.mass : 1;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._collisionGroup = null;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._collisionMask = null;
+
+		/**
+		 * @type {Boolean}
+		 */
 		this.isKinematic = settings.isKinematic !== undefined ? settings.isKinematic : false;
 		if (this.isKinematic) {
 			this.mass = 0;
 		}
-
-		this.type = 'AmmoComponent';
 
 		if (!tmpTransform) {
 			tmpTransform = new Ammo.btTransform();
@@ -128,29 +149,46 @@ function (
 		this.ammoBody.setAngularVelocity(tmpVector);
 	};
 
-	AmmoComponent.prototype.setLinearDamping = function (linearDamping) {
-		this.ammoBody.setDamping(linearDamping, this.entity.rigidbodyComponent.angularDamping);
-	};
+	Object.defineProperties(AmmoComponent.prototype, {
 
-	AmmoComponent.prototype.setAngularDamping = function (angularDamping) {
-		this.ammoBody.setDamping(this.entity.rigidbodyComponent.linearDamping, angularDamping);
-	};
+		restitution: {
+			get: function () {
+				return this.ammoBody.get_m_restitution();
+			},
+			set: function (value) {
+				this.ammoBody.set_m_restitution(value);
+			}
+		},
 
-	AmmoComponent.prototype.setCollisionGroup = function (/*collisionGroup*/) {
-		this.entity.rigidbodyComponent._dirty = true;
-	};
+		friction: {
+			get: function () {
+				return this.ammoBody.get_m_friction();
+			},
+			set: function (value) {
+				this.ammoBody.set_m_friction(value);
+			}
+		},
 
-	AmmoComponent.prototype.setCollisionMask = function (/*collisionMask*/) {
-		this.entity.rigidbodyComponent._dirty = true;
-	};
+		collisionMask: {
+			get: function () {
+				return this._collisionMask;
+			},
+			set: function (value) {
+				this._dirty = true;
+				this._collisionMask = value;
+			}
+		},
 
-	AmmoComponent.prototype.setFriction = function (friction) {
-		this.ammoBody.set_m_friction(friction);
-	};
-
-	AmmoComponent.prototype.setRestitution = function (restitution) {
-		this.ammoBody.set_m_restitution(restitution);
-	};
+		collisionGroup: {
+			get: function () {
+				return this._collisionGroup;
+			},
+			set: function (value) {
+				this._dirty = true;
+				this._collisionGroup = value;
+			}
+		}
+	});
 
 	AmmoComponent.prototype.updateKinematic = function (entity) {
 		var body = this.ammoBody;
@@ -205,13 +243,11 @@ function (
 			body.setActivationState(AmmoComponent.AmmoFlags.DISABLE_DEACTIVATION);
 		}
 
-		if (typeof(this.collisionGroup) !== 'undefined' && typeof(this.collisionMask) !== 'undefined') {
+		if (typeof(this.collisionGroup) === 'number' && typeof(this.collisionMask) === 'number') {
 			system.world.addRigidBody(this.ammoBody, this.collisionGroup, this.collisionMask);
 		} else {
 			system.world.addRigidBody(this.ammoBody);
 		}
-		//this.setVelocity(this.initialVelocity);
-		//this.body.setLinearFactor(this.linearFactor);
 	};
 
 	AmmoComponent.AmmoFlags = {

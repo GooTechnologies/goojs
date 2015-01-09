@@ -8,9 +8,8 @@ function () {
 	 * @param {object} [settings]
 	 * @param {Entity} [settings.connectedEntity]
 	 * @param {boolean} [settings.collideConnected]
-	 * @variation 2
 	 */
-	function Joint(settings) {
+	function PhysicsJoint(settings) {
 		settings = settings || {};
 
 		/**
@@ -32,7 +31,7 @@ function () {
 
 		this._dirty = true;
 	}
-	Joint.constructor = Joint;
+	PhysicsJoint.constructor = PhysicsJoint;
 
-	return Joint;
+	return PhysicsJoint;
 });

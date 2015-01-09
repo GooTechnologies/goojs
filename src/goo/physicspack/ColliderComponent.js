@@ -10,7 +10,8 @@ function (
 	/**
 	 * @class
 	 * @param {object} [settings]
-	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
+	 * @param {Collider} [settings.collider]
+	 * @param {boolean} [settings.isTrigger]
 	 * @extends Component
 	 */
 	function ColliderComponent(settings) {
