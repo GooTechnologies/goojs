@@ -5,7 +5,6 @@ function () {
 	'use strict';
 
 	/**
-	 *
 	 * @constructor
 	 */
 	function Edge() {
