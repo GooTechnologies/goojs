@@ -159,13 +159,22 @@ function (Vector3, MathUtils) {
 			vectorA.setVector(this.origin);
 		}
 
-		// Save away the closest point if requested.
+		// Save away the closest point if requested
 		if (store) {
 			store.setVector(vectorA);
 		}
 
 		vectorA.subVector(point);
 		return vectorA.lengthSquared();
+	};
+
+	Ray.prototype.copy = function (source) {
+		this.origin.copy(source.origin);
+		this.direction.copy(source.direction);
+	};
+
+	Ray.prototype.clone = function () {
+		return new Ray(this.origin.clone(), this.direction.clone());
 	};
 
 	return Ray;

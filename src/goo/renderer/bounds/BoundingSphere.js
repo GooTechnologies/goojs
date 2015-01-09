@@ -326,6 +326,7 @@ function (
 		return store;
 	};
 
+	// doesn't actually clone, center is shared
 	BoundingSphere.prototype.clone = function (store) {
 		if (store && store instanceof BoundingSphere) {
 			store.center.setVector(this.center);

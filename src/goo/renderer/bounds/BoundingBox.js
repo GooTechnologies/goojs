@@ -550,6 +550,7 @@ function (
 	};
 
 	// not clone, but a clone-copy hybrid
+	// doesn't even clone; center is shared
 	BoundingBox.prototype.clone = function (store) {
 		if (store && store instanceof BoundingBox) {
 			store.center.setVector(this.center);
