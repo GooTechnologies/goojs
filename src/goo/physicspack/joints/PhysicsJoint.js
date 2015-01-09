@@ -7,7 +7,7 @@ function () {
 	 * @class
 	 * @param {object} [settings]
 	 * @param {Entity} [settings.connectedEntity]
-	 * @param {boolean} [settings.collideConnected]
+	 * @param {boolean} [settings.collideConnected=false]
 	 */
 	function PhysicsJoint(settings) {
 		settings = settings || {};
@@ -29,6 +29,10 @@ function () {
 		 */
 		this.joint = null;
 
+		/**
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._dirty = true;
 	}
 	PhysicsJoint.constructor = PhysicsJoint;

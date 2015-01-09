@@ -7,6 +7,8 @@ function (
 ) {
 	'use strict';
 
+	// TODO: should this collider have an axis along Y?
+
 	/**
 	 * @class
 	 * @param {object} [settings]
@@ -21,22 +23,36 @@ function (
 		/**
 		 * @type {number}
 		 */
-		this.radius = typeof(settings.radius) === 'number' ? settings.radius : 0.5;
+		this.radius = settings.radius !== undefined ? settings.radius : 0.5;
 
 		/**
 		 * @type {number}
 		 */
-		this.height = typeof(settings.height) === 'number' ? settings.height : 1;
+		this.height = settings.height !== undefined ? settings.height : 1;
 
 		/**
 		 * @type {number}
 		 */
-		this.numSegments = typeof(settings.numSegments) === 'number' ? settings.numSegments : 10;
+		this.numSegments = settings.numSegments !== undefined ? settings.numSegments : 10;
 
 		Collider.call(this);
 	}
 	CylinderCollider.prototype = Object.create(Collider.prototype);
 	CylinderCollider.constructor = CylinderCollider;
+
+	CylinderCollider.prototype.transform = function (transform, targetCollider) {
+		var s = transform.scale;
+		targetCollider.radius = Math.max(s[0], s[1]) * this.radius;
+		targetCollider.height = s[2] * this.height;
+	};
+
+	CylinderCollider.prototype.clone = function () {
+		return new CylinderCollider({
+			radius: this.radius,
+			height: this.height,
+			numSegments: this.numSegments
+		});
+	};
 
 	return CylinderCollider;
 });

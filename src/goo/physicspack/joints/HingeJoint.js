@@ -16,6 +16,8 @@ function (
 	/**
 	 * @class
 	 * @param {object} [settings]
+	 * @param {Vector3} [settings.localPivot]
+	 * @param {Vector3} [settings.localAxis]
 	 * @extends PhysicsJoint
 	 */
 	function HingeJoint(settings) {

@@ -25,9 +25,18 @@ function (
 
 		Collider.call(this);
 	}
-
 	BoxCollider.prototype = Object.create(Collider.prototype);
 	BoxCollider.constructor = BoxCollider;
+
+	BoxCollider.prototype.transform = function (transform, targetCollider) {
+		targetCollider.halfExtents.setVector(transform.scale).mulVector(this.halfExtents);
+	};
+
+	BoxCollider.prototype.clone = function () {
+		return new BoxCollider({
+			halfExtents: this.halfExtents
+		});
+	};
 
 	return BoxCollider;
 });

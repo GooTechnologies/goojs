@@ -12,5 +12,13 @@ function () {
 	}
 	Collider.constructor = Collider;
 
+	/**
+	 * @virtual
+	 * @return {Collider}
+	 */
+	Collider.prototype.clone = function () {
+		return new Collider();
+	};
+
 	return Collider;
 });

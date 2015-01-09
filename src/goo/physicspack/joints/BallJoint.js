@@ -16,6 +16,7 @@ function (
 	/**
 	 * @class
 	 * @param {object} [settings]
+	 * @param {Vector3} [settings.localPivot]
 	 * @extends PhysicsJoint
 	 */
 	function BallJoint(settings) {

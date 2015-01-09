@@ -10,6 +10,7 @@ require([
 	'goo/math/Vector3',
 	'goo/physicspack/ColliderComponent',
 	'goo/physicspack/PhysicsSystem',
+	'goo/physicspack/ColliderSystem',
 	'goo/physicspack/RigidbodyComponent',
 	'goo/physicspack/colliders/BoxCollider',
 	'goo/physicspack/colliders/CylinderCollider',
@@ -29,6 +30,7 @@ require([
 	Vector3,
 	ColliderComponent,
 	PhysicsSystem,
+	ColliderSystem,
 	RigidbodyComponent,
 	BoxCollider,
 	CylinderCollider,
@@ -46,6 +48,7 @@ require([
 
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
+	world.setSystem(new ColliderSystem());
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {
