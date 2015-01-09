@@ -119,7 +119,7 @@ define([
 
 	CustomMatchers.toBeCloned = function (util, customEqualityTesters) {
 		// performs a deep equal check and verifies if all corresponding references are different
-		function deepEquality(obj1, obj2, path) {
+		function deepEquality(obj1, obj2, path, excluded) {
 			if (obj1 instanceof Array) {
 				if (obj1 === obj2) {
 					return {
@@ -129,7 +129,7 @@ define([
 				}
 
 				for (var i = 0; i < obj1.length; i++) {
-					var partialResult = deepEquality(obj1[i], obj2[i], path + '.' + i);
+					var partialResult = deepEquality(obj1[i], obj2[i], path + '.' + i, excluded);
 					if (partialResult) { return partialResult; }
 				}
 			} else if (typeof obj1 === 'object') {
@@ -152,7 +152,8 @@ define([
 				var keys = Object.keys(obj1);
 				for (var i = 0; i < keys.length; i++) {
 					var key = keys[i];
-					var partialResult = deepEquality(obj1[key], obj2[key], path + '.' + key);
+					if (excluded.has(key)) { continue; }
+					var partialResult = deepEquality(obj1[key], obj2[key], path + '.' + key, excluded);
 					if (partialResult) { return partialResult; }
 				}
 			} else if (obj1 !== obj2) {
@@ -165,8 +166,22 @@ define([
 
 		return {
 			compare: function (actual, expected) {
+				var excluded, value;
+
+				// optional parameters for custom matchers; not sure if best way but so far looks like the only way
+				if (typeof expected === 'object' &&
+					expected.hasOwnProperty('value') &&
+					expected.hasOwnProperty('excluded')
+					) {
+					excluded = new Set(expected.excluded);
+					value = expected.value;
+				} else {
+					excluded = new Set();
+					value = expected;
+				}
+
 				var result = {};
-				var equalityResult = deepEquality(expected, actual, '');
+				var equalityResult = deepEquality(value, actual, '', excluded);
 				result.pass = !equalityResult;
 
 				if (result.pass) {

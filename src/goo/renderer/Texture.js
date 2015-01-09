@@ -1,9 +1,11 @@
 define([
-	'goo/math/Vector2'
+	'goo/math/Vector2',
+	'goo/renderer/BufferUtils'
 ],
 /** @lends */
 function (
-	Vector2
+	Vector2,
+	BufferUtils
 ) {
 	'use strict';
 
@@ -110,6 +112,10 @@ function (
 		}
 
 		this.textureRecord = {};
+
+		this._originalImage = null;
+		this._originalWidth = 0;
+		this._originalHeight = 0;
 	}
 
 	/**
@@ -144,13 +150,19 @@ function (
 	 * @param {Number} [height]
 	 */
 	Texture.prototype.setImage = function (image, width, height, settings) {
-		this.image = image;
+		//! AT: thi is not a general pattern; it is applied here only because of the complexity of this function
+		this._originalImage = image;
+		this._originalWidth = width;
+		this._originalHeight = height;
+
+		this.image = image; //! AT: is this always overriden? if so then why set it?
 
 		var data = image instanceof Array ? image[0] : image;
 		if (data instanceof Uint8Array || data instanceof Uint8ClampedArray || data instanceof Uint16Array || data instanceof Float32Array) {
 			width = width || image.width;
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
+				//! AT: why initialise it with data and add the rest in a different way?
 				this.image = {
 					data: image
 				};
@@ -158,6 +170,7 @@ function (
 				this.image.height = height;
 				this.image.isData = true;
 				this.image.dataReady = true;
+
 				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
 					this.type = 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
@@ -230,6 +243,7 @@ function (
 	};
 
 	Texture.prototype.clone = function () {
+		// reconstructing original settings object passed to the constructor
 		var settings = {
 			wrapS: this.wrapS,
 			wrapT: this.wrapT,
@@ -246,7 +260,7 @@ function (
 			flipY: this.flipY
 		};
 
-		var clone = new Texture(this.image, settings, this.width, this.height);
+		var clone = new Texture(this._originalImage, settings, this._originalWidth, this._originalHeight);
 		clone.hasBorder = this.hasBorder;
 		return clone;
 	};
