@@ -57,7 +57,7 @@ function (
 	};
 
 	BufferData.prototype.copy = function (source) {
-		this.data = source.data;
+		this.data.set(source.data);
 		this.target = source.target;
 
 		this.glBuffer = null;

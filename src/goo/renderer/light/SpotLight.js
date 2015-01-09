@@ -80,7 +80,7 @@ function (
 	};
 
 	SpotLight.prototype.clone = function () {
-		var clone = new SpotLight(this.color);
+		var clone = new SpotLight(this.color.clone());
 		clone.copy(this);
 		return clone;
 	};

@@ -48,7 +48,7 @@ function (
 	};
 
 	DirectionalLight.prototype.clone = function () {
-		var clone = new DirectionalLight(this.color);
+		var clone = new DirectionalLight(this.color.clone());
 		clone.copy(this);
 		return clone;
 	};

@@ -43,7 +43,7 @@ define([
 	};
 
 	PointLight.prototype.clone = function () {
-		var clone = new PointLight(this.color);
+		var clone = new PointLight(this.color.clone());
 		clone.copy(this);
 		return clone;
 	};

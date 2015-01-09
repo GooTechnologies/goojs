@@ -229,6 +229,28 @@ function (
 		return size;
 	};
 
+	Texture.prototype.clone = function () {
+		var settings = {
+			wrapS: this.wrapS,
+			wrapT: this.wrapT,
+			magFilter: this.magFilter,
+			minFilter: this.minFilter,
+			anisotropy: this.anisotropy,
+			format: this.format,
+			type: this.type,
+			offset: this.offset,
+			repeat: this.repeat,
+			generateMipmaps: this.generateMipmaps,
+			premultiplyAlpha: this.premultiplyAlpha,
+			unpackAlignment: this.unpackAlignment,
+			flipY: this.flipY
+		};
+
+		var clone = new Texture(this.image, settings, this.width, this.height);
+		clone.hasBorder = this.hasBorder;
+		return clone;
+	};
+
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];
 
 	return Texture;

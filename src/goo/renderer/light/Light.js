@@ -66,7 +66,7 @@ function (
 			near: 1,
 			far: 1000,
 			resolution: [512, 512],
-			upVector: Vector3.UNIT_Y,
+			upVector: Vector3.UNIT_Y.clone(),
 			darkness: 1.0,
 			shadowType: 'VSM'
 		};
@@ -115,14 +115,16 @@ function (
 		this.specularIntensity = source.specularIntensity;
 		this.shadowCaster = source.shadowCaster;
 
-		// what type is this? if it's just json then deep clone is enough
-		this.lightCookie = source.lightCookie;
+		if (source.lightCookie) {
+			this.lightCookie = source.lightCookie.clone();
+		}
 
 		this.shadowSettings.size = source.shadowSettings.size;
 		this.shadowSettings.near = source.shadowSettings.near;
 		this.shadowSettings.far = source.shadowSettings.far;
-		this.shadowSettings.resolution = source.shadowSettings.resolution;
-		this.shadowSettings.upVector = source.shadowSettings.upVector;
+		this.shadowSettings.resolution[0] = source.shadowSettings.resolution[0];
+		this.shadowSettings.resolution[1] = source.shadowSettings.resolution[1];
+		this.shadowSettings.upVector.copy(source.shadowSettings.upVector);
 		this.shadowSettings.darkness = source.shadowSettings.darkness;
 		this.shadowSettings.shadowType = source.shadowSettings.shadowType;
 
