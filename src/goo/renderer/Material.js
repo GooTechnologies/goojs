@@ -1,9 +1,11 @@
 define([
-	'goo/renderer/Shader'
+	'goo/renderer/Shader',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function (
-	Shader
+	Shader,
+	_
 ) {
 	'use strict';
 
@@ -216,6 +218,59 @@ function (
 		this.renderQueue = queue;
 	};
 
+	Material.prototype.clone = function (options) {
+		var clone = new Material(this.name);
+
+		clone.id = this.id;
+		clone.name = this.name;
+		clone.shader = this.shader.clone();
+
+		// what type is this? is it json only?
+		clone.uniforms = _.clone(this.uniforms);
+
+		if (options.shareTextures) {
+			var textureKeys = Object.keys(this._textureMaps);
+			for (var i = 0; i < textureKeys.length; i++) {
+				var textureKey = textureKeys[i];
+				clone._textureKeys[textureKey] = this._textureKeys[textureKey];
+			}
+		} else {
+			var textureKeys = Object.keys(this._textureMaps);
+			for (var i = 0; i < textureKeys.length; i++) {
+				var textureKey = textureKeys[i];
+				clone._textureKeys[textureKey] = this._textureKeys[textureKey].clone();
+			}
+		}
+
+		clone.cullState.enabled = this.cullState.enabled;
+		clone.cullState.cullFace = this.cullState.cullFace;
+		clone.cullState.frontFace = this.cullState.frontFace;
+
+		clone.blendState.blending = this.blendState.blending;
+		clone.blendState.blendEquation = this.blendState.blendEquation;
+		clone.blendState.blendSrc = this.blendState.blendSrc;
+		clone.blendState.blendDst = this.blendState.blendDst;
+
+		clone.depthState.enabled = this.depthState.enabled;
+		clone.depthState.write = this.depthState.write;
+
+		clone.offsetState.enabled = this.offsetState.enabled;
+		clone.offsetState.factor = this.offsetState.factor;
+		clone.offsetState.units = this.offsetState.units;
+
+		clone.dualTransparency = this.dualTransparency;
+
+		clone.wireframe = this.wireframe;
+		clone.flat = this.flat;
+
+		clone.renderQueue = this.renderQueue;
+
+		clone.fullOverride = this.fullOverride;
+		clone.errorOnce = this.errorOnce;
+
+		return clone;
+	};
+
 	/**
 	 * Creates a new or finds an existing, cached Shader object
 	 *
@@ -224,6 +279,7 @@ function (
 	 * @return {Shader}
 	 */
 	Material.createShader = function (shaderDefinition, name) {
+		//! AT: function has parameters in reverse order than the constructor
 		var shader = new Shader(name || null, shaderDefinition);
 		if (shader.name === null) {
 			shader.name = 'DefaultShader' + shader._id;
