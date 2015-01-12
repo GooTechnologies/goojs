@@ -189,7 +189,7 @@ function(
 					if (first) {
 						var bound = entity.meshRendererComponent.worldBound;
 						if (bound instanceof BoundingBox) {
-							bound.clone(wb);
+							wb.copy(bound);
 						} else if (bound instanceof BoundingSphere) {
 							wb.center.setVector(bound.center);
 							wb.xExtent = wb.yExtent = wb.zExtent = bound.radius;

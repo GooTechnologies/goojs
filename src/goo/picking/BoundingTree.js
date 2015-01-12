@@ -125,9 +125,9 @@ function (BoundingBox, BoundingSphere, Vector3) {
 
 		// Ok, now since we technically have no primitives, we need our bounds to be the merging of our children bounds
 		// instead:
-		this.localBound = this.leftTree.localBound.clone(this.localBound);
+		this.localBound = this.leftTree.localBound.clone();
 		this.localBound.merge(this.rightTree.localBound);
-		this.worldBound = this.localBound.clone(this.worldBound);
+		this.worldBound = this.localBound.clone();
 	};
 
 	BoundingTree.prototype.createBounds = function () {
