@@ -337,11 +337,21 @@ function (
 		return this;
 	};
 
+	// ---
+	var warned = false;
+
 	/**
 	 * Returns a clone of this bounding sphere
 	 * @returns {BoundingSphere}
 	 */
 	BoundingSphere.prototype.clone = function () {
+		if (arguments.length > 0 && !warned) {
+			warned = true;
+			console.warn(
+				'BoundingSphere::clone no longer takes an optional "store" parameter; ' +
+				'please use BoundingSphere::copy instead'
+			);
+		}
 		// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
 		// when/if that ever changes this needs adapted accordingly
 		return new BoundingSphere(this.center, this.radius);

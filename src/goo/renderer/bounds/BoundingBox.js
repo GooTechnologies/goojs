@@ -562,11 +562,21 @@ function (
 		return this;
 	};
 
+	// ---
+	var warned = false;
+
 	/**
 	 * Returns a clone of this bounding box
 	 * @returns {BoundingBox}
 	 */
 	BoundingBox.prototype.clone = function () {
+		if (arguments.length > 0 && !warned) {
+			warned = true;
+			console.warn(
+				'BoundingBox::clone no longer takes an optional "store" parameter; ' +
+				'please use BoundingBox::copy instead'
+			);
+		}
 		// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
 		// when/if that ever changes this needs adapted accordingly
 		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);

@@ -19,6 +19,7 @@ function(
 		}
 
 		//! AT: can these be private?
+		// they are updated only by some methods and would therefore be useless for external use
 		this.min = new Vector3(Infinity, Infinity, Infinity);
 		this.max = new Vector3(-Infinity, -Infinity, -Infinity);
 	}
