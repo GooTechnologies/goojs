@@ -549,20 +549,28 @@ function (
 		return store;
 	};
 
-	// not clone, but a clone-copy hybrid
-	// doesn't even clone; center is shared
-	BoundingBox.prototype.clone = function (store) {
-		if (store && store instanceof BoundingBox) {
-			store.center.setVector(this.center);
-			store.xExtent = this.xExtent;
-			store.yExtent = this.yExtent;
-			store.zExtent = this.zExtent;
-			return store;
-		}
-
-		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
+	/**
+	 * Copies data from another bounding box
+	 * @param {BoundingBox} source bounding box to copy from
+	 * @returns {BoundingBox} Returns self to allow chaining
+	 */
+	BoundingBox.prototype.copy = function (source) {
+		BoundingVolume.prototype.copy.call(this, source);
+		this.xExtent = source.xExtent;
+		this.yExtent = source.yExtent;
+		this.zExtent = source.zExtent;
+		return this;
 	};
 
+	/**
+	 * Returns a clone of this bounding box
+	 * @returns {BoundingBox}
+	 */
+	BoundingBox.prototype.clone = function () {
+		// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
+		// when/if that ever changes this needs adapted accordingly
+		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
+	};
 
 
 	return BoundingBox;

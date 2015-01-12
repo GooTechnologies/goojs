@@ -176,7 +176,7 @@ define([
 					if (first) {
 						var boundingVolume = entity.meshRendererComponent.worldBound;
 						if (boundingVolume instanceof BoundingBox) {
-							boundingVolume.clone(mergedWorldBound);
+							mergedWorldBound.copy(boundingVolume);
 						} else {
 							mergedWorldBound.center.setVector(boundingVolume.center);
 							mergedWorldBound.xExtent = mergedWorldBound.yExtent = mergedWorldBound.zExtent = boundingVolume.radius;

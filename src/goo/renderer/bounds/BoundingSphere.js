@@ -326,7 +326,8 @@ function (
 		return store;
 	};
 
-	// doesn't actually clone, center is shared
+	// not clone, but a clone-copy hybrid
+	// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
 	BoundingSphere.prototype.clone = function (store) {
 		if (store && store instanceof BoundingSphere) {
 			store.center.setVector(this.center);

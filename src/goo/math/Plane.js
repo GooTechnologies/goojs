@@ -94,11 +94,21 @@ function (
 		return store.setVector(ray.direction).scale(d).addVector(ray.origin);
 	};
 
+	/**
+	 * Copies data from another plane
+	 * @param source {Plane} Source plane to copy from
+	 * @returns {Plane} Returns self to allow chaining
+	 */
 	Plane.prototype.copy = function (source) {
 		this.normal.copy(source.normal);
 		this.constant = source.constant;
+		return this;
 	};
 
+	/**
+	 * Returns a clone of this plane
+	 * @returns {Plane}
+	 */
 	Plane.prototype.clone = function () {
 		return new Plane(this.normal.clone(), this.constant);
 	};
