@@ -572,6 +572,5 @@ function (
 		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
 	};
 
-
 	return BoundingBox;
 });
