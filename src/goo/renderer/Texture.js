@@ -106,16 +106,16 @@ function (
 		this.updateCallback = null;
 		this.readyCallback = null;
 
+		this._originalImage = null;
+		this._originalWidth = 0;
+		this._originalHeight = 0;
+
 		this.image = null;
 		if (image) {
 			this.setImage(image, width, height, settings);
 		}
 
 		this.textureRecord = {};
-
-		this._originalImage = null;
-		this._originalWidth = 0;
-		this._originalHeight = 0;
 	}
 
 	/**
@@ -131,6 +131,7 @@ function (
 	* @return {Boolean} True if needed.
 	*/
 	Texture.prototype.checkNeedsUpdate = function () {
+		//! AT: what's the precedence here? || first and then && or the other way around?
 		return this.needsUpdate || this.updateCallback !== null && this.updateCallback();
 	};
 
@@ -150,10 +151,8 @@ function (
 	 * @param {Number} [height]
 	 */
 	Texture.prototype.setImage = function (image, width, height, settings) {
-		//! AT: thi is not a general pattern; it is applied here only because of the complexity of this function
+		//! AT: this is not a general pattern; it is applied here only because of the complexity of this function
 		this._originalImage = image;
-		this._originalWidth = width;
-		this._originalHeight = height;
 
 		this.image = image; //! AT: is this always overriden? if so then why set it?
 
@@ -162,14 +161,13 @@ function (
 			width = width || image.width;
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
-				//! AT: why initialise it with data and add the rest in a different way?
 				this.image = {
-					data: image
+					data: image,
+					width: width,
+					height: height,
+					isData: true,
+					dataReady: true
 				};
-				this.image.width = width;
-				this.image.height = height;
-				this.image.isData = true;
-				this.image.dataReady = true;
 
 				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
 					this.type = 'UnsignedByte';
@@ -181,7 +179,7 @@ function (
 					this.format = settings.format || 'RGBA';
 				}
 			} else {
-				throw 'Data textures need width and height';
+				throw new Error('Data textures need width and height');
 			}
 		} else {
 			if (image instanceof Array) {
@@ -194,6 +192,11 @@ function (
 			}
 		}
 		this.setNeedsUpdate();
+
+		//! AT: this is not a general pattern; it is applied here only because of the complexity of this function
+		// these are delayed here in case width and height are modified in this function
+		this._originalWidth = width;
+		this._originalHeight = height;
 	};
 
 	/**
@@ -261,6 +264,8 @@ function (
 		};
 
 		var clone = new Texture(this._originalImage, settings, this._originalWidth, this._originalHeight);
+		clone.variant = this.variant;
+		clone.lodBias = this.lodBias;
 		clone.hasBorder = this.hasBorder;
 		return clone;
 	};
