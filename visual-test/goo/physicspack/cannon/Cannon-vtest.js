@@ -43,6 +43,8 @@ require([
 ) {
 	'use strict';
 
+	/* global CANNON */
+
 	V.describe('The entities in the scene hold a rigidbody component which updates their transform.');
 
 	var goo = V.initGoo();
