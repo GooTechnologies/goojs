@@ -10,7 +10,7 @@ define([
 	'goo/physicspack/colliders/PlaneCollider',
 	'goo/physicspack/colliders/TerrainCollider',
 	'goo/physicspack/joints/BallJoint',
-	'goo/physicspack/joints/BallJoint'
+	'goo/physicspack/joints/HingeJoint'
 ],
 /** @lends */
 function (
@@ -80,6 +80,36 @@ function (
 		this._collisionMask = null;
 
 		/**
+		 * @private
+		 * @type {boolean}
+		 */
+		this._initialized = false;
+
+		/**
+		 * @private
+		 * @type {Vector3}
+		 */
+		this._velocity = settings.velocity ? settings.velocity.clone() : new Vector3();
+
+		/**
+		 * @private
+		 * @type {Vector3}
+		 */
+		this._angularVelocity = settings.angularVelocity ? settings.angularVelocity.clone() : new Vector3();
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._friction = 0.3;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._restitution = 0;
+
+		/**
 		 * @type {Boolean}
 		 */
 		this.isKinematic = settings.isKinematic !== undefined ? settings.isKinematic : false;
@@ -119,6 +149,7 @@ function (
 	AmmoComponent.prototype.setVelocity = function (velocity) {
 		tmpVector.setValue(velocity.x, velocity.y, velocity.z);
 		this.ammoBody.setLinearVelocity(tmpVector);
+		this._velocity.setVector(velocity);
 	};
 
 	AmmoComponent.prototype.setPosition = function (pos) {
@@ -147,6 +178,7 @@ function (
 	AmmoComponent.prototype.setAngularVelocity = function (angularVelocity) {
 		tmpVector.setValue(angularVelocity.x, angularVelocity.y, angularVelocity.z);
 		this.ammoBody.setAngularVelocity(tmpVector);
+		this._angularVelocity.setVector(angularVelocity);
 	};
 
 	Object.defineProperties(AmmoComponent.prototype, {
@@ -247,6 +279,12 @@ function (
 			system.world.addRigidBody(this.ammoBody, this.collisionGroup, this.collisionMask);
 		} else {
 			system.world.addRigidBody(this.ammoBody);
+		}
+
+		if (!this._initialized) {
+			this._initialized = true;
+			this.setVelocity(this._velocity);
+			this.setAngularVelocity(this._velocity);
 		}
 	};
 
@@ -391,19 +429,19 @@ function (
 
 			// Get the local axis in B
 			var quatA = bodyA.getWorldTransform().getRotation();
-			tmpGooQuat.set(quatA.x, quatA.y, quatA.z, quatA.w);
+			tmpGooQuat.set(quatA.x(), quatA.y(), quatA.z(), quatA.w());
 			tmpGooMat3.copyQuaternion(tmpGooQuat);
 			var worldAxis = new Vector3();
 			worldAxis.setVector(joint.localAxis);
 			tmpGooMat3.applyPre(worldAxis); // Transform the localAxisA into world
 
 			var quatB = bodyB.getWorldTransform().getRotation();
-			tmpGooQuat.set(quatB.x, quatB.y, quatB.z, quatB.w);
+			tmpGooQuat.set(quatB.x(), quatB.y(), quatB.z(), quatB.w());
 			tmpGooMat3.copyQuaternion(tmpGooQuat);
 			tmpGooMat3.invert().applyPre(worldAxis); // Transform the world axis to local in B
 			axisInB.setValue(worldAxis.x, worldAxis.y, worldAxis.z);
 
-			constraint = new Ammo.btHingeConstraint(bodyA, bodyB, pivotInA, axisInA, pivotInB, axisInB);
+			constraint = new Ammo.btHingeConstraint(bodyA, bodyB, pivotInA, pivotInB, axisInA, axisInB, false);
 		}
 
 		if (constraint) {

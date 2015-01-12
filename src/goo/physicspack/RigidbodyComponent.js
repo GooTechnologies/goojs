@@ -384,10 +384,10 @@ function (
 			bodyB.vectorToLocalFrame(axisInB, axisInB);
 
 			constraint = new CANNON.HingeConstraint(bodyA, bodyB, {
-				pivotInA: pivotInA,
-				pivotInB: pivotInB,
-				axisInA: axisInA,
-				axisInB: axisInB,
+				pivotA: pivotInA,
+				pivotB: pivotInB,
+				axisA: axisInA,
+				axisB: axisInB,
 				collideConnected: joint.collideConnected
 			});
 		} else {

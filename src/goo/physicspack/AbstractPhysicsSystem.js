@@ -15,6 +15,8 @@ function (
 	 */
 	function AbstractPhysicsSystem() {
 		System.apply(this, arguments);
+
+		this.priority = 2; // make sure it processes after transformsystem and collidersystem
 	}
 	AbstractPhysicsSystem.constructor = AbstractPhysicsSystem;
 	AbstractPhysicsSystem.prototype = Object.create(System.prototype);

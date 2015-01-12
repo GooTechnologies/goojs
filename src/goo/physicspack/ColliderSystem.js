@@ -22,12 +22,12 @@ function (System) {
 
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var transformComp = entity.transformComp;
-			var colliderComp = entity.colliderComp;
+			var transformComp = entity.transformComponent;
+			var colliderComp = entity.colliderComponent;
 
 			colliderComp._updated = false;
 			if (transformComp._updated) {
-				entity.colliderComp.updateWorldCollider(transformComp.worldTransform);
+				entity.colliderComponent.updateWorldCollider(transformComp.worldTransform);
 			}
 		}
 	};

@@ -45,8 +45,6 @@ function (
 			tmpCannonResult = new CANNON.RaycastResult();
 		}
 
-		this.priority = 1; // make sure it processes after transformsystem
-
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
 
 		/**

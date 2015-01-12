@@ -39,6 +39,7 @@ function (
 	}
 	ColliderComponent.prototype = Object.create(Component.prototype);
 	ColliderComponent.constructor = ColliderComponent;
+	ColliderComponent.type = "ColliderComponent";
 
 	/**
 	 * Updates the .worldCollider
@@ -65,6 +66,16 @@ function (
 	ColliderComponent.prototype.detached = function (/*entity*/) {
 		this.entity = null;
 	};
+
+	// ColliderComponent.applyOnEntity = function (obj, entity) {
+	// 	if (obj instanceof Collider) {
+	// 		var colliderComponent = new ColliderComponent({
+	// 			collider: obj
+	// 		});
+	// 		entity.setComponent(colliderComponent);
+	// 		return true;
+	// 	}
+	// };
 
 	return ColliderComponent;
 });

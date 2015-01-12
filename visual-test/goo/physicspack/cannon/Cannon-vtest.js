@@ -17,6 +17,7 @@ require([
 	'goo/physicspack/colliders/SphereCollider',
 	'goo/physicspack/colliders/PlaneCollider',
 	'goo/physicspack/joints/BallJoint',
+	'goo/physicspack/joints/HingeJoint',
 	'lib/V'
 ], function (
 	Material,
@@ -37,6 +38,7 @@ require([
 	SphereCollider,
 	PlaneCollider,
 	BallJoint,
+	HingeJoint,
 	V
 ) {
 	'use strict';
@@ -179,17 +181,12 @@ require([
 		for (var i = 0; i < numLinks; i++) {
 			var rbComponent = new RigidbodyComponent({
 				mass: i ? 1 : 0,
-				initialVelocity: new Vector3(0, 0, 3 * i)
+				velocity: new Vector3(0, 0, 3 * i)
 			});
 			var e = world.createEntity(new Sphere(10, 10, radius), V.getColoredMaterial(), [x, y - i * linkDistance, z])
 				.set(rbComponent)
-				.set(
-					new ColliderComponent({
-						collider: new SphereCollider({
-							radius: radius
-						})
-					})
-				).addToWorld();
+				.set(new ColliderComponent({ collider: new SphereCollider({ radius: radius }) }))
+				.addToWorld();
 
 			if (lastEntity) {
 				e.rigidbodyComponent.addJoint(new BallJoint({
@@ -202,11 +199,37 @@ require([
 		}
 	}
 
+	function createHinge(x, y, z) {
+		var lastEntity;
+		var r = 1;
+		var a = 0.9;
+		var b = 0.1;
+		for (var i = 0; i < 5; i++) {
+			var rbComponent = new RigidbodyComponent({
+				mass: i ? 1 : 0,
+				velocity: new Vector3(0, 0, 3 * i)
+			});
+			var e = world.createEntity(new Box(2 * r * a, 2 * r * a, 2 * r * b), V.getColoredMaterial(), [x, y - i * r * 2, z])
+				.set(rbComponent)
+				.set(new ColliderComponent({ collider: new BoxCollider({ halfExtents: new Vector3(r * a, r * a, r * b) }) }))
+				.addToWorld();
+
+			if (lastEntity) {
+				e.rigidbodyComponent.addJoint(new HingeJoint({
+					connectedEntity: lastEntity,
+					localPivot: new Vector3(0, r, 0),
+					localAxis: new Vector3(1, 0, 0)
+				}));
+			}
+
+			lastEntity = e;
+		}
+	}
 
 	function createKinematic() {
 		var rbComponent = new RigidbodyComponent({
 			mass: 0,
-			initialVelocity: new Vector3(0, 0, 3),
+			velocity: new Vector3(0, 0, 3),
 			isKinematic: true
 		});
 
@@ -230,6 +253,7 @@ require([
 	createChain(0, 4, 10, N, dist, radius);
 	createGround();
 	createCompound(0, 5, 0);
+	createHinge(5, 5, 0);
 
 	var forcefieldEnabled = false;
 
