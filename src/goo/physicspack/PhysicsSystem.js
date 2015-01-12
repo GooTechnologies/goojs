@@ -1,6 +1,7 @@
 define([
 	'goo/physicspack/AbstractPhysicsSystem',
 	'goo/physicspack/RigidbodyComponent',
+	'goo/physicspack/RaycastResult',
 	'goo/math/Vector3',
 	'goo/math/Quaternion'
 ],
@@ -8,6 +9,7 @@ define([
 function (
 	AbstractPhysicsSystem,
 	CannonRigidbody,
+	RaycastResult,
 	Vector3,
 	Quaternion
 ) {
@@ -23,6 +25,10 @@ function (
 	/**
 	 * @class
 	 * @extends AbstractPhysicsSystem
+	 * @param {object} [settings]
+	 * @param {Vector3} [settings.gravity]
+	 * @param {number} [settings.stepFrequency=60]
+	 * @param {number} [settings.maxSubSteps=10]
 	 */
 	function PhysicsSystem(settings) {
 		settings = settings || {};
@@ -79,14 +85,25 @@ function (
 		this._inContactCurrentStepB.length = 0;
 	};
 
+	/**
+	 * @param {Vector3} gravityVector
+	 */
 	PhysicsSystem.prototype.setGravity = function (gravityVector) {
 		this.cannonWorld.gravity.copy(gravityVector);
 	};
 
+	/**
+	 * @private
+	 * @param {Entity} entity
+	 */
 	PhysicsSystem.prototype.addBody = function (entity) {
 		entity.rigidbodyComponent.rigidbody = new CannonRigidbody(entity);
 	};
 
+	/**
+	 * @private
+	 * @param {number} deltaTime
+	 */
 	PhysicsSystem.prototype.step = function (deltaTime) {
 		var world = this.cannonWorld;
 
@@ -100,6 +117,9 @@ function (
 		}
 	};
 
+	/**
+	 * @private
+	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
 		// Get overlapping entities
 		var contacts = this.cannonWorld.contacts,
@@ -150,7 +170,15 @@ function (
 		}
 	};
 
+	/**
+	 * Make a ray cast into the world of colliders.
+	 * @param  {Vector3} start
+	 * @param  {Vector3} end
+	 * @param  {RaycastResult} [result]
+	 * @return {boolean} True if hit, else false
+	 */
 	PhysicsSystem.prototype.raycastClosest = function (start, end, result) {
+		result = result || new RaycastResult();
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
 		cannonStart.copy(start);

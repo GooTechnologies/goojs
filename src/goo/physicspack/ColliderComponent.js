@@ -28,11 +28,13 @@ function (
 		this.collider = settings.collider;
 
 		/**
+		 * The world-scaled version of the collider. Use .updateWorldCollider() to update it.
 		 * @type {Collider}
 		 */
 		this.worldCollider = this.collider.clone();
 
 		/**
+		 * If the collider is a Trigger, it will not interact with other objects, but it will emit contact events.
 		 * @type {boolean}
 		 */
 		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
@@ -66,16 +68,6 @@ function (
 	ColliderComponent.prototype.detached = function (/*entity*/) {
 		this.entity = null;
 	};
-
-	// ColliderComponent.applyOnEntity = function (obj, entity) {
-	// 	if (obj instanceof Collider) {
-	// 		var colliderComponent = new ColliderComponent({
-	// 			collider: obj
-	// 		});
-	// 		entity.setComponent(colliderComponent);
-	// 		return true;
-	// 	}
-	// };
 
 	return ColliderComponent;
 });

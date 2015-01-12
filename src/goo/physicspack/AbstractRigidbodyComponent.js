@@ -20,6 +20,7 @@ function (
 	/**
 	 * @class
 	 * @extends Component
+	 * @param {object} [settings]
 	 */
 	function AbstractRigidbodyComponent(settings) {
 		settings = settings || {};
@@ -27,13 +28,13 @@ function (
 		Component.call(this, arguments);
 
 		/**
-		 * Joints on the body. Use .addJoint to add one.
+		 * Joints on the body. Use .addJoint to add one, or .removeJoint to remove.
 		 * @type {Array}
 		 */
 		this.joints = [];
 
 		/**
-		 * Will be set to true if any of the colliders were changed, and that the body needs to be reinitialized.
+		 * Will be set to true if any the body needs to be reinitialized.
 		 * @type {Boolean}
 		 */
 		this._dirty = true;
@@ -48,10 +49,26 @@ function (
 		this.joints.push(joint);
 	};
 
+	/**
+	 * @param {Joint} joint
+	 */
+	AbstractRigidbodyComponent.prototype.removeJoint = function (joint) {
+		var joints = this.joints;
+		var idx = joints.indexOf(joint);
+		if (idx !== -1) {
+			joints.splice(idx, 1);
+			this.destroyJoint(joint);
+		}
+	};
+
 	AbstractRigidbodyComponent.initializedEvent = {
 		entity: null
 	};
 
+	/**
+	 * Should be called by subclasses when initializing the physics engine body.
+	 * @param  {Entity} entity
+	 */
 	AbstractRigidbodyComponent.prototype.emitInitialized = function (entity) {
 		var evt = AbstractRigidbodyComponent.initializedEvent;
 		evt.entity = entity;
@@ -68,7 +85,6 @@ function (
 	/**
 	 * Creates a joint in the physics engine.
 	 * @virtual
-	 * @private
 	 * @param {Joint} joint
 	 * @param {Entity} entity
 	 * @param {System} system
@@ -76,7 +92,18 @@ function (
 	AbstractRigidbodyComponent.prototype.initializeJoint = function (/*joint, entity, system*/) {};
 
 	/**
-	 * Traverse the tree of colliders from a root entity and down
+	 * Removes a joint from the physics engine.
+	 * @virtual
+	 * @param {Joint} joint
+	 */
+	AbstractRigidbodyComponent.prototype.destroyJoint = function (/*joint*/) {};
+
+	var invBodyTransform = new Transform();
+	var gooTrans = new Transform();
+	var gooTrans2 = new Transform();
+
+	/**
+	 * Traverse the tree of colliders from a root entity and down.
 	 * @param  {Entity}   entity
 	 * @param  {Function} callback Will be called with colliderEntity, collider, localPosition and localQuaternion as arguments
 	 */
@@ -85,11 +112,8 @@ function (
 		// entity.transformComponent.updateTransform();
 		// entity.transformComponent.updateWorldTransform();
 		var bodyTransform = entity.transformComponent.worldTransform;
-		var invBodyTransform = new Transform();
 		invBodyTransform.copy(bodyTransform);
 		invBodyTransform.invert(invBodyTransform);
-		var gooTrans = new Transform();
-		var gooTrans2 = new Transform();
 
 		entity.traverse(function (childEntity) {
 			var collider = childEntity.colliderComponent;

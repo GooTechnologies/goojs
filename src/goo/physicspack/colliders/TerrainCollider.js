@@ -36,6 +36,9 @@ function (
 		targetCollider.scale.setVector(transform.scale);
 	};
 
+	/**
+	 * @return {TerrainCollider}
+	 */
 	TerrainCollider.prototype.clone = function () {
 		return new TerrainCollider({
 			meshData: this.meshData

@@ -35,6 +35,9 @@ function (
 		);
 	};
 
+	/**
+	 * @return {SphereCollider}
+	 */
 	SphereCollider.prototype.clone = function () {
 		return new SphereCollider({
 			radius: this.radius

@@ -11,7 +11,7 @@ function (
 
 	/**
 	 * @class
-	 * @extends {System}
+	 * @extends System
 	 */
 	function AbstractPhysicsSystem() {
 		System.apply(this, arguments);
@@ -42,6 +42,11 @@ function (
 		entityB: null
 	};
 
+	/**
+	 * @private
+	 * @param  {Entity} entityA
+	 * @param  {Entity} entityB
+	 */
 	AbstractPhysicsSystem.prototype.emitBeginContact = function (entityA, entityB) {
 		var evt = AbstractPhysicsSystem.beginContactEvent;
 		evt.entityA = entityA;
@@ -51,6 +56,11 @@ function (
 		evt.entityB = null;
 	};
 
+	/**
+	 * @private
+	 * @param  {Entity} entityA
+	 * @param  {Entity} entityB
+	 */
 	AbstractPhysicsSystem.prototype.emitDuringContact = function (entityA, entityB) {
 		var evt = AbstractPhysicsSystem.duringContactEvent;
 		evt.entityA = entityA;
@@ -60,6 +70,11 @@ function (
 		evt.entityB = null;
 	};
 
+	/**
+	 * @private
+	 * @param  {Entity} entityA
+	 * @param  {Entity} entityB
+	 */
 	AbstractPhysicsSystem.prototype.emitEndContact = function (entityA, entityB) {
 		var evt = AbstractPhysicsSystem.endContactEvent;
 		evt.entityA = entityA;

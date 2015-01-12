@@ -125,6 +125,7 @@ define([
 	'test/particles/ParticleUtils-test',
 	'test/physicspack/ammo/AmmoSystem-test',
 	'test/physicspack/PhysicsSystem-test',
+	'test/physicspack/RigidbodyComponent-test',
 	'test/picking/BoundingTree-test',
 	'test/picking/PrimitivePickLogic-test',
 	'test/quadpack/QuadComponent-test',

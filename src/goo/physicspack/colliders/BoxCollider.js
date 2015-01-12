@@ -32,6 +32,10 @@ function (
 		targetCollider.halfExtents.setVector(transform.scale).mulVector(this.halfExtents);
 	};
 
+	/**
+	 * Clone the collider
+	 * @return {BoxCollider}
+	 */
 	BoxCollider.prototype.clone = function () {
 		return new BoxCollider({
 			halfExtents: this.halfExtents

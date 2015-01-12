@@ -22,6 +22,9 @@ function (
 
 	PlaneCollider.prototype.transform = function (/*transform, targetCollider*/) {};
 
+	/**
+	 * @return {PlaneCollider}
+	 */
 	PlaneCollider.prototype.clone = function () {
 		return new PlaneCollider();
 	};

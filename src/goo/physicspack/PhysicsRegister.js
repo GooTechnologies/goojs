@@ -2,11 +2,8 @@ define([
 
 	'goo/scripts/Scripts',
 
-	'goo/physicspack/ammo/AmmoSystem',
 	'goo/physicspack/ammo/AmmoComponent',
-
-	'goo/physicspack/PhysicsSystem',
-	'goo/physicspack/Rigidbody',
+	'goo/physicspack/ammo/AmmoSystem',
 
 	'goo/physicspack/colliders/BoxCollider',
 	'goo/physicspack/colliders/Collider',
@@ -18,11 +15,14 @@ define([
 
 	'goo/physicspack/joints/BallJoint',
 	'goo/physicspack/joints/HingeJoint',
-	'goo/physicspack/joints/Joint',
+	'goo/physicspack/joints/PhysicsJoint',
 
+	'goo/physicspack/AbstractPhysicsSystem',
+	'goo/physicspack/AbstractRigidbodyComponent',
 	'goo/physicspack/ColliderComponent',
+	'goo/physicspack/ColliderSystem',
 	'goo/physicspack/PhysicsSystem',
-	'goo/physicspack/Rigidbody',
+	'goo/physicspack/RaycastResult',
 	'goo/physicspack/RigidbodyComponent'
 
 ], function (Scripts) {
@@ -31,11 +31,8 @@ define([
 	var defines = [
 		'goo/scripts/Scripts',
 
-		'goo/physicspack/ammo/AmmoSystem',
 		'goo/physicspack/ammo/AmmoComponent',
-
-		'goo/physicspack/PhysicsSystem',
-		'goo/physicspack/Rigidbody',
+		'goo/physicspack/ammo/AmmoSystem',
 
 		'goo/physicspack/colliders/BoxCollider',
 		'goo/physicspack/colliders/Collider',
@@ -47,11 +44,14 @@ define([
 
 		'goo/physicspack/joints/BallJoint',
 		'goo/physicspack/joints/HingeJoint',
-		'goo/physicspack/joints/Joint',
+		'goo/physicspack/joints/PhysicsJoint',
 
+		'goo/physicspack/AbstractPhysicsSystem',
+		'goo/physicspack/AbstractRigidbodyComponent',
 		'goo/physicspack/ColliderComponent',
+		'goo/physicspack/ColliderSystem',
 		'goo/physicspack/PhysicsSystem',
-		'goo/physicspack/Rigidbody',
+		'goo/physicspack/RaycastResult',
 		'goo/physicspack/RigidbodyComponent'
 	];
 

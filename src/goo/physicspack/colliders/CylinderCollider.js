@@ -46,6 +46,9 @@ function (
 		targetCollider.height = s[2] * this.height;
 	};
 
+	/**
+	 * @return {CylinderCollider}
+	 */
 	CylinderCollider.prototype.clone = function () {
 		return new CylinderCollider({
 			radius: this.radius,
