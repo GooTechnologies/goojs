@@ -39,13 +39,13 @@ require([
 	originalLight.range = 10;
 	world.createEntity(originalLight, [0, 0, 5]).addToWorld();
 
-	var cloneLight1 = originalLight.clone();
-	cloneLight1.color.set(0, 1, 0);
-	world.createEntity(cloneLight1, [-2, 0, 5]).addToWorld();
+	var clonedLight1 = originalLight.clone();
+	clonedLight1.color.set(0, 1, 0);
+	world.createEntity(clonedLight1, [-2, 0, 5]).addToWorld();
 
-	var cloneLight2 = originalLight.clone();
-	cloneLight2.color.set(0, 0, 1);
-	world.createEntity(cloneLight2, [ 2, 0, 5]).addToWorld();
+	var clonedLight2 = originalLight.clone();
+	clonedLight2.color.set(0, 0, 1);
+	world.createEntity(clonedLight2, [ 2, 0, 5]).addToWorld();
 
 
 	V.process();
