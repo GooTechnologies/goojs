@@ -30,11 +30,6 @@ function (
 		 */
 		this.height = settings.height !== undefined ? settings.height : 1;
 
-		/**
-		 * @type {number}
-		 */
-		this.numSegments = settings.numSegments !== undefined ? settings.numSegments : 10;
-
 		Collider.call(this);
 	}
 	CylinderCollider.prototype = Object.create(Collider.prototype);
@@ -52,8 +47,7 @@ function (
 	CylinderCollider.prototype.clone = function () {
 		return new CylinderCollider({
 			radius: this.radius,
-			height: this.height,
-			numSegments: this.numSegments
+			height: this.height
 		});
 	};
 

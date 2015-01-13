@@ -82,13 +82,11 @@ require([
 				colliderComponent = new ColliderComponent({
 					collider: new CylinderCollider({
 						height: radius * 2,
-						radius: radius,
-						numSegments: 10
+						radius: radius
 					})
 				});
 				var colliderEntity = world.createEntity(new Cylinder(10, radius, radius, radius * 2), mat);
 				colliderEntity.set(colliderComponent);
-				colliderEntity.setRotation(-Math.PI / 2, 0, 0);
 				entity.set(rigidBodyComponent);
 				entity.attachChild(colliderEntity);
 

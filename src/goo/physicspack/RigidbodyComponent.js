@@ -144,6 +144,12 @@ function (
 	RigidbodyComponent.type = 'RigidbodyComponent';
 
 	/**
+	 * Cannon.js uses ConvexPolyhedron shapes for collision checking sometimes. Therefore it needs a number of segments to use.
+	 * @type {Number}
+	 */
+	RigidbodyComponent.numCylinderSegments = 10;
+
+	/**
 	 * Get the world transform from the entity and set on the body
 	 * @private
 	 * @param {Entity} entity
@@ -352,8 +358,13 @@ function (
 				collider.radius,
 				collider.radius,
 				collider.height,
-				collider.numSegments
+				RigidbodyComponent.numCylinderSegments
 			);
+			var quat = new CANNON.Quaternion();
+			quat.setFromAxisAngle(new Vector3(0, 0, 1), -Math.PI / 2);
+			shape.transformAllPoints(new Vector3(), quat);
+			shape.computeEdges();
+			shape.updateBoundingSphereRadius();
 		} else if (collider instanceof TerrainCollider) {
 			shape = new CANNON.Heightfield(collider.data);
 		} else if (collider instanceof MeshCollider) {
@@ -416,7 +427,7 @@ function (
 
 		var that = this;
 		this.traverseColliders(entity, function (colliderEntity, collider, position, quaternion) {
-			that.addCollider(entity, position, quaternion);
+			that.addCollider(colliderEntity, position, quaternion);
 		});
 		if (this._isKinematic) {
 			body.type = CANNON.Body.KINEMATIC;
