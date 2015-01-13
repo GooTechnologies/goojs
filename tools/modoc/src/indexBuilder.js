@@ -29,7 +29,7 @@ function getIndex(classes) {
 	var differentiator = getDifferentiatorIndex(files);
 
 	var groups = _.groupBy(files, function (file) {
-		return file.substring(differentiator, file.indexOf('/', differentiator));
+		return file.substring(differentiator, file.indexOf(util.PATH_SEPARATOR, differentiator));
 	});
 
 	Object.keys(classes).forEach(function (className) {

@@ -2,6 +2,8 @@
 
 var isWin = /^win/.test(process.platform);
 
+var PATH_SEPARATOR = isWin ? '\\' : '/';
+
 var regex = isWin ? /\\?(\w+)\.js$/ : /\/?(\w+)\.js$/;
 
 var getFileName = function (file) {
@@ -43,3 +45,4 @@ exports.stringUntil = stringUntil;
 exports.stringFrom = stringFrom;
 exports.pipe = pipe;
 exports.deepClone = deepClone;
+exports.PATH_SEPARATOR = PATH_SEPARATOR;

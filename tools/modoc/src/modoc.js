@@ -58,7 +58,7 @@ var HTML_SUFFIX = '-doc.html';
 
 var args = processArguments();
 
-var template = fs.readFileSync(args.templatesPath + '/t1.mustache', { encoding: 'utf8' });
+var template = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 't1.mustache', { encoding: 'utf8' });
 
 var files = getFiles(args.sourcePath, ['goo.js', 'pack', '+']);
 
@@ -78,7 +78,7 @@ function copyStaticFiles(callback) {
 function buildStartPage(page, callback) {
 	// just copy over Entity.js since it's the central piece
 	childProcess.exec(
-		'cp ' + args.outPath + '/' + page + ' ' + args.outPath + '/index.html',
+		'cp ' + args.outPath + util.PATH_SEPARATOR + page + ' ' + args.outPath + util.PATH_SEPARATOR + 'index.html',
 		function (error, stdout, stderr) {
 			console.log('stdout: ' + stdout);
 			console.log('stderr: ' + stderr);
@@ -244,7 +244,7 @@ function renderDoc(bundles) {
 		if (bundle.class_.constructor) {
 			var result = mustache.render(template, bundle);
 
-			fs.writeFileSync(args.outPath + '/' + className + HTML_SUFFIX, result);
+			fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + className + HTML_SUFFIX, result);
 		}
 	});
 }
@@ -253,11 +253,11 @@ function buildChangelog(file) {
 	var changelog = fs.readFileSync(file, { encoding: 'utf8' });
 	var formatted = marked(changelog);
 
-	var template = fs.readFileSync(args.templatesPath + '/changelog.mustache', { encoding: 'utf8' });
+	var template = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 'changelog.mustache', { encoding: 'utf8' });
 	var data = { content: formatted };
 	var result = mustache.render(template, data);
 
-	fs.writeFileSync(args.outPath + '/changelog.html', result);
+	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'changelog.html', result);
 }
 
 function compileDeprecated(classes) {
@@ -321,13 +321,13 @@ function compileDeprecated(classes) {
 }
 
 function buildDeprecated(classes) {
-	var template = fs.readFileSync(args.templatesPath + '/deprecated.mustache', { encoding: 'utf8' });
+	var template = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 'deprecated.mustache', { encoding: 'utf8' });
 
 	var data = compileDeprecated(classes);
 
 	var result = mustache.render(template, data);
 
-	fs.writeFileSync(args.outPath + '/deprecated.html', result);
+	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'deprecated.html', result);
 }
 
 copyStaticFiles(function () {
