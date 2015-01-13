@@ -219,26 +219,31 @@ function (
 	};
 
 	Material.prototype.clone = function (options) {
+		options = options || {};
+
 		var clone = new Material(this.name);
 
 		clone.id = this.id;
 		clone.name = this.name;
 		clone.shader = this.shader.clone();
 
-		// what type is this? is it json only?
-		clone.uniforms = _.clone(this.uniforms);
+		if (options.shareUniforms) {
+			clone.uniforms = this.uniforms;
+		} else {
+			clone.uniforms = _.clone(this.uniforms);
+		}
 
 		if (options.shareTextures) {
 			var textureKeys = Object.keys(this._textureMaps);
 			for (var i = 0; i < textureKeys.length; i++) {
 				var textureKey = textureKeys[i];
-				clone._textureKeys[textureKey] = this._textureKeys[textureKey];
+				clone._textureMaps[textureKey] = this._textureMaps[textureKey];
 			}
 		} else {
 			var textureKeys = Object.keys(this._textureMaps);
 			for (var i = 0; i < textureKeys.length; i++) {
 				var textureKey = textureKeys[i];
-				clone._textureKeys[textureKey] = this._textureKeys[textureKey].clone();
+				clone._textureMaps[textureKey] = this._textureMaps[textureKey].clone();
 			}
 		}
 
