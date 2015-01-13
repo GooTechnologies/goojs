@@ -12,7 +12,7 @@ require([
 	Vector3,
 	TextureCreator,
 	V
-	) {
+) {
 	'use strict';
 
 	V.describe('Cloning materials');
@@ -34,8 +34,7 @@ require([
 
 	function createClones() {
 		// cloning is delayed until the first texture loads
-		// original texture gets updated by the texture creator
-		// but the clones can not
+		// original texture gets updated by the texture creator but the clones don't
 		// it's just a matter of cloning at the right moment
 
 		var clonedMaterial1 = originalMaterial.clone();
@@ -46,13 +45,6 @@ require([
 
 		world.createEntity(new Box(), clonedMaterial1, [-2, 0, 0]).addToWorld();
 		world.createEntity(new Box(), clonedMaterial2, [ 2, 0, 0]).addToWorld();
-
-
-		setTimeout(function () {
-			originalMaterial;
-			clonedMaterial1;
-//			debugger;
-		}, 1000);
 	}
 
 

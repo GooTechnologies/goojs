@@ -14,7 +14,7 @@ require([
 	SpotLight,
 	DebugRenderSystem,
 	V
-	) {
+) {
 	'use strict';
 
 	V.describe('Cloning lights');
