@@ -369,7 +369,7 @@ function (
 			shape = new CANNON.Heightfield(collider.data);
 		} else if (collider instanceof MeshCollider) {
 			// Assume triangles
-			if (collider.meshData.indexModes[0] !== 'triangles') {
+			if (collider.meshData.indexModes[0] !== 'Triangles') {
 				throw new Error('MeshCollider data must be a triangle mesh!');
 			}
 			shape = new CANNON.Trimesh(
@@ -511,7 +511,8 @@ function (
 	RigidbodyComponent.prototype.addCollider = function (entity, position, quaternion) {
 		var body = this.cannonBody;
 		var cc = entity.colliderComponent;
-		var collider = cc.collider;
+		cc.updateWorldCollider(entity.transformComponent.worldTransform);
+		var collider = cc.worldCollider;
 
 		collider.cannonShape = this.getCannonShape(collider);
 

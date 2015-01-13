@@ -41,7 +41,7 @@ define([
 			entity.setTranslation(1, 2, 3);
 			entity.setScale(1, 2, 3);
 
-			world.process();
+			world.process(); // Update the transformsystem
 
 			cc.updateWorldCollider();
 

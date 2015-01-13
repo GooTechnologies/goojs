@@ -13,6 +13,7 @@ function (
 	 * @class Physics mesh collider.
 	 * @param {object} [settings]
 	 * @param {MeshData} [settings.meshData]
+	 * @param {Vector3} [settings.scale]
 	 * @extends Collider
 	 */
 	function MeshCollider(settings) {
