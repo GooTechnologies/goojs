@@ -1,26 +1,22 @@
 require([
 	'goo/entities/SystemBus',
 	'goo/shapes/Sphere',
-	'goo/shapes/Quad',
 	'goo/math/Vector3',
 	'goo/physicspack/ColliderComponent',
 	'goo/physicspack/PhysicsSystem',
 	'goo/physicspack/ColliderSystem',
 	'goo/physicspack/RigidbodyComponent',
 	'goo/physicspack/colliders/SphereCollider',
-	'goo/physicspack/colliders/PlaneCollider',
 	'lib/V'
 ], function (
 	SystemBus,
 	Sphere,
-	Quad,
 	Vector3,
 	ColliderComponent,
 	PhysicsSystem,
 	ColliderSystem,
 	RigidbodyComponent,
 	SphereCollider,
-	PlaneCollider,
 	V
 ) {
 	'use strict';
@@ -31,16 +27,23 @@ require([
 	var world = goo.world;
 
 	var physicsSystem = new PhysicsSystem();
-	// physicsSystem.setGravity(Vector3.ZERO);
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
+	world.registerComponent(ColliderComponent);
+	world.registerComponent(RigidbodyComponent);
 
 	var material = V.getColoredMaterial();
 	var radius = 5;
 	var sphereMesh = new Sphere(20, 20, radius);
 
+	// Adding the components, style 1
+	var collider = new SphereCollider({ radius: radius });
+	var position = [0, radius * 2 + 1, 0];
+	var body = new RigidbodyComponent({ mass: 1 });
+	world.createEntity(sphereMesh, material, position, collider, body).addToWorld();
 
-	var entityA = world.createEntity(sphereMesh, material)
+	// Adding the components, style 2
+	world.createEntity(sphereMesh, material)
 		.set(new ColliderComponent({
 			collider: new SphereCollider({ radius: radius }),
 			isTrigger: true
@@ -50,25 +53,20 @@ require([
 		}))
 		.addToWorld();
 
-	var entityB = world.createEntity(sphereMesh, material, [0, radius * 2 + 1, 0])
-		.set(new ColliderComponent({
-			collider: new SphereCollider({ radius: radius })
-		}))
-		.set(new RigidbodyComponent({
-			mass: 1
-		}))
-		.addToWorld();
-
 	SystemBus.addListener('goo.physics.beginContact', function (evt) {
 		material.uniforms.materialDiffuse = [1, 0, 0, 1];
+		console.log('Contact begins between', evt.entityA, 'and', evt.entityB);
+	});
 
-		console.log('goo.physics.beginContact', evt);
+	SystemBus.addListener('goo.physics.duringContact', function (/*evt*/) {
+		console.log('During contact event is emitted!');
+		// evt.entityA
+		// evt.entityB
 	});
 
 	SystemBus.addListener('goo.physics.endContact', function (evt) {
 		material.uniforms.materialDiffuse = [0, 1, 0, 1];
-
-		console.log('goo.physics.endContact', evt);
+		console.log('Contact ends between', evt.entityA, 'and', evt.entityB);
 	});
 
 	V.addLights();

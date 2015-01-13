@@ -1,9 +1,11 @@
 define([
-	'goo/entities/components/Component'
+	'goo/entities/components/Component',
+	'goo/physicspack/colliders/Collider'
 ],
 /** @lends */
 function (
-	Component
+	Component,
+	Collider
 ) {
 	'use strict';
 
@@ -67,6 +69,15 @@ function (
 	 */
 	ColliderComponent.prototype.detached = function (/*entity*/) {
 		this.entity = null;
+	};
+
+	ColliderComponent.applyOnEntity = function (obj, entity) {
+		if (obj instanceof Collider) {
+			entity.setComponent(new ColliderComponent({
+				collider: obj
+			}));
+			return true;
+		}
 	};
 
 	return ColliderComponent;
