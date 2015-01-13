@@ -218,6 +218,11 @@ function (
 		this.renderQueue = queue;
 	};
 
+	/**
+	 * Returns a clone of this material
+	 * @param {object} [options={}] Options to be passed to clone methods encountered in the object graph
+	 * @returns {Material}
+	 */
 	Material.prototype.clone = function (options) {
 		options = options || {};
 
