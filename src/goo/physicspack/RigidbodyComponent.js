@@ -416,7 +416,7 @@ function (
 
 		var that = this;
 		this.traverseColliders(entity, function (colliderEntity, collider, position, quaternion) {
-			that.addCollider(collider, position, quaternion);
+			that.addCollider(entity, position, quaternion);
 		});
 		if (this._isKinematic) {
 			body.type = CANNON.Body.KINEMATIC;
@@ -497,12 +497,14 @@ function (
 	/**
 	 * @private
 	 */
-	RigidbodyComponent.prototype.addCollider = function (collider, position, quaternion) {
+	RigidbodyComponent.prototype.addCollider = function (entity, position, quaternion) {
 		var body = this.cannonBody;
+		var cc = entity.colliderComponent;
+		var collider = cc.collider;
 
 		collider.cannonShape = this.getCannonShape(collider);
 
-		if (collider.isTrigger) {
+		if (cc.isTrigger) {
 			collider.cannonShape.collisionResponse = false;
 		}
 
