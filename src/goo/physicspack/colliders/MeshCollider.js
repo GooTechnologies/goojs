@@ -33,13 +33,22 @@ function (
 	MeshCollider.prototype = Object.create(Collider.prototype);
 	MeshCollider.constructor = MeshCollider;
 
+	/**
+	 * @private
+	 * @param {Transform} transform
+	 * @param {Collider} targetCollider
+	 */
 	MeshCollider.prototype.transform = function (transform, targetCollider) {
 		targetCollider.scale.setVector(transform.scale);
 	};
 
+	/**
+	 * @return {MeshCollider}
+	 */
 	MeshCollider.prototype.clone = function () {
 		return new MeshCollider({
-			meshData: this.meshData
+			meshData: this.meshData,
+			scale: this.scale
 		});
 	};
 

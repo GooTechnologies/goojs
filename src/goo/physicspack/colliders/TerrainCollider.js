@@ -20,7 +20,7 @@ function (
 		/**
 		 * @type {array}
 		 */
-		this.data = settings.data || null;
+		this.data = settings.data ? new Float32Array(settings.data) : null;
 
 		/**
 		 * @type {Vector3}
@@ -32,6 +32,11 @@ function (
 	TerrainCollider.prototype = Object.create(Collider.prototype);
 	TerrainCollider.constructor = TerrainCollider;
 
+	/**
+	 * @private
+	 * @param {Transform} transform
+	 * @param {Collider} targetCollider
+	 */
 	TerrainCollider.prototype.transform = function (transform, targetCollider) {
 		targetCollider.scale.setVector(transform.scale);
 	};
@@ -41,7 +46,7 @@ function (
 	 */
 	TerrainCollider.prototype.clone = function () {
 		return new TerrainCollider({
-			meshData: this.meshData
+			data: this.data
 		});
 	};
 

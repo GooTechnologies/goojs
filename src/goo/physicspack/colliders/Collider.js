@@ -5,11 +5,8 @@ function () {
 
 	/**
 	 * @class
-	 * @param {object} [settings]
 	 */
-	function Collider(settings) {
-		settings = settings || {};
-	}
+	function Collider() {}
 	Collider.constructor = Collider;
 
 	/**
@@ -19,6 +16,14 @@ function () {
 	Collider.prototype.clone = function () {
 		return new Collider();
 	};
+
+	/**
+	 * @private
+	 * @virtual
+	 * @param {Transform} transform
+	 * @param {Collider} targetCollider
+	 */
+	Collider.prototype.transform = function (/*transform, targetCollider*/) {};
 
 	return Collider;
 });

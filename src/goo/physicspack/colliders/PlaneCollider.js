@@ -8,7 +8,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class
+	 * @class Plane collider, that faces in the Z direction.
 	 * @param {object} [settings]
 	 * @extends Collider
 	 */
@@ -20,6 +20,11 @@ function (
 	PlaneCollider.prototype = Object.create(Collider.prototype);
 	PlaneCollider.constructor = PlaneCollider;
 
+	/**
+	 * @private
+	 * @param {Transform} transform
+	 * @param {Collider} targetCollider
+	 */
 	PlaneCollider.prototype.transform = function (/*transform, targetCollider*/) {};
 
 	/**

@@ -8,11 +8,10 @@ function (
 	'use strict';
 
 	/**
-	 * @class
+	 * @class Cylinder collider, that extends along the Z axis.
 	 * @param {object} [settings]
 	 * @param {number} [settings.radius=0.5]
 	 * @param {number} [settings.height=1]
-	 * @param {number} [settings.numSegments=10]
 	 * @extends Collider
 	 */
 	function CylinderCollider(settings) {
@@ -33,6 +32,11 @@ function (
 	CylinderCollider.prototype = Object.create(Collider.prototype);
 	CylinderCollider.constructor = CylinderCollider;
 
+	/**
+	 * @private
+	 * @param {Transform} transform
+	 * @param {Collider} targetCollider
+	 */
 	CylinderCollider.prototype.transform = function (transform, targetCollider) {
 		var s = transform.scale;
 		targetCollider.radius = Math.max(s[0], s[1]) * this.radius;

@@ -26,6 +26,11 @@ function (
 	SphereCollider.prototype = Object.create(Collider.prototype);
 	SphereCollider.constructor = SphereCollider;
 
+	/**
+	 * @private
+	 * @param {Transform} transform
+	 * @param {Collider} targetCollider
+	 */
 	SphereCollider.prototype.transform = function (transform, targetCollider) {
 		var s = transform.scale.data;
 		targetCollider.radius = this.radius * Math.max(

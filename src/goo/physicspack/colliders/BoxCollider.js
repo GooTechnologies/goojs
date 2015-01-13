@@ -28,6 +28,11 @@ function (
 	BoxCollider.prototype = Object.create(Collider.prototype);
 	BoxCollider.constructor = BoxCollider;
 
+	/**
+	 * @private
+	 * @param {Transform} transform
+	 * @param {Collider} targetCollider
+	 */
 	BoxCollider.prototype.transform = function (transform, targetCollider) {
 		targetCollider.halfExtents.setVector(transform.scale).mulVector(this.halfExtents);
 	};
