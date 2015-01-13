@@ -17,7 +17,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('Cloning materials');
+	V.describe('Cloning mesh renderer components');
 
 	var goo = V.initGoo();
 	var world = goo.world;

@@ -17,7 +17,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('Cloning lights');
+	V.describe('Cloning cameras');
 
 	var goo = V.initGoo();
 	var world = goo.world;

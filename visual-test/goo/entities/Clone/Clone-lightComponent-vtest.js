@@ -4,6 +4,7 @@ require([
 	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/renderer/light/SpotLight',
+	'goo/entities/components/LightComponent',
 	'goo/debugpack/systems/DebugRenderSystem',
 	'lib/V'
 ], function (
@@ -12,12 +13,13 @@ require([
 	Box,
 	Vector3,
 	SpotLight,
+	LightComponent,
 	DebugRenderSystem,
 	V
 ) {
 	'use strict';
 
-	V.describe('Cloning lights');
+	V.describe('Cloning light components');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -35,19 +37,19 @@ require([
 	world.createEntity(new Box(), new Material(ShaderLib.simpleLit), [ 2, 0, 0]).addToWorld();
 
 
-	var originalLight = new SpotLight(new Vector3(1, 0, 0));
-	originalLight.range = 10;
-	world.createEntity(originalLight, [0, 0, 5]).addToWorld();
+	var originalLightComponent = new LightComponent(new SpotLight(new Vector3(1, 0, 0)));
+	originalLightComponent.light.range = 10;
+	world.createEntity(originalLightComponent, [0, 0, 5]).addToWorld();
 
-	var clonedLight1 = originalLight.clone();
-	clonedLight1.range = 5;
-	clonedLight1.color.set(0, 1, 0);
-	world.createEntity(clonedLight1, [-2, 0, 5]).addToWorld();
+	var clonedLightComponent1 = originalLightComponent.clone();
+	clonedLightComponent1.light.range = 5;
+	clonedLightComponent1.light.color.set(0, 1, 0);
+	world.createEntity(clonedLightComponent1, [-2, 0, 5]).addToWorld();
 
-	var clonedLight2 = originalLight.clone();
-	clonedLight2.angle = 10;
-	clonedLight2.color.set(0, 0, 1);
-	world.createEntity(clonedLight2, [ 2, 0, 5]).addToWorld();
+	var clonedLightComponent2 = originalLightComponent.clone();
+	clonedLightComponent2.light.angle = 10;
+	clonedLightComponent2.light.color.set(0, 0, 1);
+	world.createEntity(clonedLightComponent2, [ 2, 0, 5]).addToWorld();
 
 
 	V.process();
