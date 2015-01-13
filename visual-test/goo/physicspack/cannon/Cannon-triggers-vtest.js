@@ -27,6 +27,7 @@ require([
 	var world = goo.world;
 
 	var physicsSystem = new PhysicsSystem();
+	physicsSystem.setGravity(Vector3.ZERO);
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
 	world.registerComponent(ColliderComponent);
@@ -38,9 +39,8 @@ require([
 
 	// Adding the components, style 1
 	var collider = new SphereCollider({ radius: radius });
-	var position = [0, radius * 2 + 1, 0];
-	var body = new RigidbodyComponent({ mass: 1 });
-	world.createEntity(sphereMesh, material, position, collider, body).addToWorld();
+	var body = new RigidbodyComponent({ mass: 1, isKinematic: true, velocity: new Vector3(0, 0, 10) });
+	world.createEntity(sphereMesh, material, collider, body).addToWorld();
 
 	// Adding the components, style 2
 	world.createEntity(sphereMesh, material)
@@ -49,7 +49,7 @@ require([
 			isTrigger: true
 		}))
 		.set(new RigidbodyComponent({
-			mass: 0
+			mass: 1
 		}))
 		.addToWorld();
 
@@ -67,6 +67,17 @@ require([
 	SystemBus.addListener('goo.physics.endContact', function (evt) {
 		material.uniforms.materialDiffuse = [0, 1, 0, 1];
 		console.log('Contact ends between', evt.entityA, 'and', evt.entityB);
+	});
+
+	var position = new Vector3();
+	var velocity = new Vector3();
+	goo.callbacks.push(function () {
+		body.getPosition(position);
+		if (Math.abs(position.z) > radius * 3) {
+			body.getVelocity(velocity);
+			velocity.z = -Math.sign(position.z) * 10;
+			body.setVelocity(velocity);
+		}
 	});
 
 	V.addLights();
