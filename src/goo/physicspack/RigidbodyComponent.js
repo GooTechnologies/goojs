@@ -365,8 +365,6 @@ function (
 			shape.transformAllPoints(new Vector3(), quat);
 			shape.computeEdges();
 			shape.updateBoundingSphereRadius();
-		} else if (collider instanceof TerrainCollider) {
-			shape = new CANNON.Heightfield(collider.data);
 		} else if (collider instanceof MeshCollider) {
 			// Assume triangles
 			if (collider.meshData.indexModes[0] !== 'Triangles') {

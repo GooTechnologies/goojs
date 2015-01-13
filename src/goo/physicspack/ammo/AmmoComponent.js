@@ -8,7 +8,6 @@ define([
 	'goo/physicspack/colliders/SphereCollider',
 	'goo/physicspack/colliders/CylinderCollider',
 	'goo/physicspack/colliders/PlaneCollider',
-	'goo/physicspack/colliders/TerrainCollider',
 	'goo/physicspack/colliders/MeshCollider',
 	'goo/physicspack/joints/BallJoint',
 	'goo/physicspack/joints/HingeJoint'
@@ -24,7 +23,6 @@ function (
 	SphereCollider,
 	CylinderCollider,
 	PlaneCollider,
-	TerrainCollider,
 	MeshCollider,
 	BallJoint,
 	HingeJoint
@@ -342,9 +340,6 @@ function (
 
 			} else if (collider instanceof CylinderCollider) {
 				childShape = new Ammo.btCylinderShapeZ(new Ammo.btVector3(collider.height / 2, collider.radius, collider.radius));
-
-			//} else if (collider instanceof TerrainCollider) {
-				// childShape = new CANNON.Heightfield(collider.data); // TODO
 
 			} else if (collider instanceof MeshCollider) {
 
