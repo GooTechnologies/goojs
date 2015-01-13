@@ -8,7 +8,7 @@ var SUPPORTED_TAGS = [
 ];
 
 var stripStars = function (string) {
-	var stripped = string.replace(/^[ \t\n]*\*?[ \t\n]*|[ \t\n]+$/g, '');
+	var stripped = string.replace(/^[ \t\n\r]*\*?[ \t\n\r]*|[ \t\n\r]+$/g, '');
 	return stripped.replace(/^[ \t]*\* ?/gm, '');
 };
 
