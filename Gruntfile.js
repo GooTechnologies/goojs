@@ -132,7 +132,7 @@ module.exports = function (grunt) {
 				command: 'node test/e2etesting/manualSpec.js'
 			},
 			'modoc-test': {
-				command: 'node_modules/jasmine-node/bin/jasmine-node tools/modoc/test/spec'
+				command: 'node node_modules/jasmine-node/bin/jasmine-node tools/modoc/test/spec'
 			}
 		},
 		jshint: {
