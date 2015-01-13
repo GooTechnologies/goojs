@@ -7,8 +7,6 @@ function (
 ) {
 	'use strict';
 
-	// TODO: should this collider have an axis along Y?
-
 	/**
 	 * @class
 	 * @param {object} [settings]
