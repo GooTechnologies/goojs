@@ -343,13 +343,13 @@ function (
 
 			} else if (collider instanceof MeshCollider) {
 
-				var scale = scale || [1, 1, 1];
+				var scale = collider.scale.data;
 				var floatByteSize = 4;
 				var use32bitIndices = true;
 				var intByteSize = use32bitIndices ? 4 : 2;
 				var intType = use32bitIndices ? 'i32' : 'i16';
 
-				var meshData = entity.meshDataComponent.meshData;
+				var meshData = collider.meshData;
 
 				var vertices = meshData.getAttributeBuffer('POSITION');
 				var vertexBuffer = Ammo.allocate(floatByteSize * vertices.length, 'float', Ammo.ALLOC_NORMAL);
