@@ -131,6 +131,7 @@ define([
 	'test/physicspack/colliders/BoxCollider-test',
 	'test/physicspack/colliders/CylinderCollider-test',
 	'test/physicspack/colliders/TerrainCollider-test',
+	'test/physicspack/ColliderComponent-test',
 	'test/picking/BoundingTree-test',
 	'test/picking/PrimitivePickLogic-test',
 	'test/quadpack/QuadComponent-test',

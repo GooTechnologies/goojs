@@ -20,8 +20,16 @@ function (
 		this.type = 'ColliderComponent';
 		settings = settings || {};
 
+		/**
+		 * @private
+		 * @type {Entity|null}
+		 */
 		this.entity = null;
 
+		/**
+		 * @private
+		 * @type {boolean}
+		 */
 		this._updated = false;
 
 		/**
@@ -71,6 +79,12 @@ function (
 		this.entity = null;
 	};
 
+	/**
+	 * @private
+	 * @param  {object} obj
+	 * @param  {Entity} entity
+	 * @return {boolean}
+	 */
 	ColliderComponent.applyOnEntity = function (obj, entity) {
 		if (obj instanceof Collider) {
 			entity.setComponent(new ColliderComponent({

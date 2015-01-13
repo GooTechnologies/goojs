@@ -39,7 +39,8 @@ function (
 	 * @param {Collider} targetCollider
 	 */
 	MeshCollider.prototype.transform = function (transform, targetCollider) {
-		targetCollider.scale.setVector(transform.scale);
+		targetCollider.scale.setVector(this.scale);
+		targetCollider.scale.mulVector(transform.scale);
 	};
 
 	/**
