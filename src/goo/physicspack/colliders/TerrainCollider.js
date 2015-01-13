@@ -10,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class
+	 * @class A 2D grid of height values that extends in the X/Z plane.
 	 * @param {object} [settings]
 	 * @param {object} [settings.data] An array of height values
 	 * @extends Collider
