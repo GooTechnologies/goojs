@@ -250,5 +250,17 @@ define([
 
 			done();
 		});
+
+		it('can clone', function (done) {
+			var a = rbc;
+			a.collisionMask = 4;
+			a.collisionGroup = 4;
+			var b = rbc.clone();
+
+			expect(a.collisionMask).toEqual(b.collisionMask);
+			expect(a.collisionGroup).toEqual(b.collisionGroup);
+
+			done();
+		});
 	});
 });

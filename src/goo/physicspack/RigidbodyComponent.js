@@ -530,5 +530,23 @@ function (
 		body.addShape(collider.cannonShape, cannonPos, cannonQuat);
 	};
 
+	/**
+	 * @return RigidbodyComponent
+	 */
+	RigidbodyComponent.prototype.clone = function () {
+		return new RigidbodyComponent({
+			isKinematic: this.isKinematic,
+			mass: this.mass,
+			velocity: this._velocity,
+			angularVelocity: this._angularVelocity,
+			friction: this.friction,
+			restitution: this.restitution,
+			collisionGroup: this.collisionGroup,
+			collisionMask: this.collisionMask,
+			linearDamping: this.linearDamping,
+			angularDamping: this.angularDamping
+		});
+	};
+
 	return RigidbodyComponent;
 });
