@@ -509,7 +509,7 @@ function (
 	RigidbodyComponent.prototype.addCollider = function (entity, position, quaternion) {
 		var body = this.cannonBody;
 		var cc = entity.colliderComponent;
-		cc.updateWorldCollider(entity.transformComponent.worldTransform);
+		cc.updateWorldCollider();
 		var collider = cc.worldCollider;
 
 		collider.cannonShape = this.getCannonShape(collider);

@@ -57,6 +57,25 @@ function (
 	 * Updates the .worldCollider
 	 */
 	ColliderComponent.prototype.updateWorldCollider = function () {
+
+		// Update the world transform of the entity
+		// Get the root and update on the walk down
+		var updateEntities = [];
+		this.entity.traverseUp(function (entity) {
+			updateEntities.push(entity);
+		});
+		var len = updateEntities.length;
+		var doUpdate = false;
+		for (var i = 0; i !== len; i++) {
+			var entity = updateEntities[i];
+			var tc = entity.transformComponent;
+			if (tc._dirty || doUpdate) {
+				tc.updateTransform();
+				tc.updateWorldTransform();
+				doUpdate = true;
+			}
+		}
+
 		this.collider.transform(this.entity.transformComponent.worldTransform, this.worldCollider);
 		this._updated = true;
 	};
