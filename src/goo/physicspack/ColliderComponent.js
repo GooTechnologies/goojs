@@ -35,13 +35,13 @@ function (
 		/**
 		 * @type {Collider}
 		 */
-		this.collider = settings.collider;
+		this.collider = settings.collider || null;
 
 		/**
 		 * The world-scaled version of the collider. Use .updateWorldCollider() to update it.
 		 * @type {Collider}
 		 */
-		this.worldCollider = this.collider.clone();
+		this.worldCollider = this.collider ? this.collider.clone() : null;
 
 		/**
 		 * If the collider is a Trigger, it will not interact with other objects, but it will emit contact events.
