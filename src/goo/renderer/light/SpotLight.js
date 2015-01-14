@@ -77,6 +77,8 @@ function (
 		this.angle = source.angle;
 		this.penumbra = source.penumbra;
 		this.exponent = source.exponent;
+
+		return this;
 	};
 
 	SpotLight.prototype.clone = function () {

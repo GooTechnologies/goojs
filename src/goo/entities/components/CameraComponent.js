@@ -116,6 +116,7 @@ function (
 		this.leftVec.copy(source.leftVec);
 		this.upVec.copy(source.upVec);
 		this.dirVec.copy(source.dirVec);
+		return this;
 	};
 
 	CameraComponent.prototype.clone = function () {

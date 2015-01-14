@@ -70,6 +70,8 @@ function (
 
 		this._dataUsage = source._dataUsage;
 		this._dataNeedsRefresh = false; //?
+
+		return this;
 	};
 
 	BufferData.prototype.clone = function () {

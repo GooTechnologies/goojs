@@ -131,6 +131,8 @@ function (
 		// since these are brand new they should probably be whatever value they are set in the constructor
 		this.changedProperties = source.changedProperties; // false?
 		this.changedColor = source.changedColor; // false?
+
+		return this;
 	};
 
 	return Light;

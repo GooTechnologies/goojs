@@ -40,6 +40,8 @@ define([
 		Light.prototype.copy.call(this, source);
 
 		this.range = source.range;
+
+		return this;
 	};
 
 	PointLight.prototype.clone = function () {

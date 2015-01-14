@@ -45,9 +45,10 @@ define([
 		// has to be the same sort of light
 		this.light.copy(source);
 
-		// updated by someone else hopefully
 		// the status depends on the entity and its ancestors
 		this.hidden = source.hidden;
+
+		return this;
 	};
 
 	LightComponent.prototype.clone = function () {

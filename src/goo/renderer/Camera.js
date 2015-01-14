@@ -275,7 +275,8 @@ function (
 
 		this.onFrustumChange();
 		this.onFrameChange();
-		// this.setFrustumPerspective();
+
+		return this;
 	};
 
 	/**

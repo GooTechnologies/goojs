@@ -45,6 +45,8 @@ function (
 		Light.prototype.copy.call(this, source);
 
 		this.direction.copy(source.direction);
+
+		return this;
 	};
 
 	DirectionalLight.prototype.clone = function () {
