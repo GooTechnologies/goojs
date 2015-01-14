@@ -83,6 +83,11 @@ function (
 	AbstractRigidbodyComponent.prototype.initialize = function () {};
 
 	/**
+	 * @virtual
+	 */
+	AbstractRigidbodyComponent.prototype.destroy = function () {};
+
+	/**
 	 * Creates a joint in the physics engine.
 	 * @virtual
 	 * @param {Joint} joint
@@ -133,6 +138,30 @@ function (
 				callback(childEntity, collider.collider, offset, tmpQuat);
 			}
 		});
+	};
+
+	/**
+	 * @private
+	 * @param entity
+	 */
+	AbstractRigidbodyComponent.prototype.attached = function (/*entity*/) {};
+
+	/**
+	 * @private
+	 * @param entity
+	 */
+	AbstractRigidbodyComponent.prototype.detached = function (/*entity*/) {
+
+		// Destroy joints
+		var joints = this.joints;
+		var len = joints.length;
+		for (var i = 0; i !== len; i++) {
+			this.destroyJoint(joints[i]);
+		}
+		joints.length = 0;
+
+		// Destroy the body
+		this.destroy();
 	};
 
 	return AbstractRigidbodyComponent;

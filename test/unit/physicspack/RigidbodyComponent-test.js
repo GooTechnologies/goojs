@@ -165,14 +165,39 @@ define([
 			var joint = new BallJoint({
 				connectedEntity: entity // Self, just for testing!
 			});
+
 			rbc.addJoint(joint);
 			world.process();
+			expect(joint.joint).toBeTruthy();
+
+			rbc.removeJoint(joint);
+			world.process();
+			expect(joint.joint).toBeFalsy();
+
+			done();
+		});
+
+		it('cleans up if its detached', function (done) {
+			var joint = new BallJoint({
+				connectedEntity: entity
+			});
+
+			rbc.addJoint(joint);
+			world.process();
+
+			entity.clearComponent('RigidbodyComponent');
+
+			world.process();
+
+			expect(joint.joint).toBeFalsy();
+			expect(rbc.cannonBody).toBeFalsy();
+
 			done();
 		});
 
 		it('can add and remove a HingeJoint', function (done) {
 			var joint = new HingeJoint({
-				connectedEntity: entity // Self, just for testing!
+				connectedEntity: entity
 			});
 
 			rbc.addJoint(joint);
