@@ -1,9 +1,11 @@
 define([
-	'goo/renderer/MeshData'
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function(
-	MeshData
+	MeshData,
+	_
 ) {
 	'use strict';
 
@@ -87,6 +89,16 @@ function(
 		}
 		this.getAttributeBuffer(MeshData.POSITION).set(verts);
 		this.getIndexBuffer().set(indices);
+	};
+
+	/**
+	 * Returns a clone of this grid
+	 * @returns {Grid}
+	 */
+	Grid.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['xSegments', 'ySegments', 'width', 'height']);
+
+		return new Grid(options);
 	};
 
 

@@ -1,9 +1,11 @@
 define([
-	'goo/renderer/MeshData'
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
 ],
 	/** @lends */
 	function (
-		MeshData
+		MeshData,
+		_
 	) {
 	'use strict';
 
@@ -174,6 +176,17 @@ define([
 		]);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this box
+	 * @returns {Box}
+	 */
+	Box.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this,
+			['width', 'height', 'length', 'tileX', 'tileY', 'textureMode']);
+
+		return new Box(options);
 	};
 
 	/** Possible texture wrapping modes: Uniform, Unfolded

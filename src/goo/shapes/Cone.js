@@ -1,6 +1,6 @@
-define(['goo/renderer/MeshData'],
+define(['goo/renderer/MeshData', 'goo/util/ObjectUtil'],
 	/** @lends */
-	function (MeshData) {
+	function (MeshData, _) {
 	'use strict';
 
 	/**
@@ -96,6 +96,16 @@ define(['goo/renderer/MeshData'],
 		this.getIndexBuffer().set(indices);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this cone
+	 * @returns {Cone}
+	 */
+	Cone.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['radialSamples', 'radius', 'height']);
+
+		return new Cone(options);
 	};
 
 	return Cone;

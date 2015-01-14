@@ -1,9 +1,13 @@
 define([
-	'goo/renderer/MeshData'],
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
+	],
 /** @lends */
 
 function(
-MeshData) {
+	MeshData,
+	_
+) {
 	'use strict';
 
 	/**
@@ -15,6 +19,13 @@ MeshData) {
 	 */
 
 	function SimpleBox(width, height, length) {
+		if (arguments.length === 1 && arguments[0] instanceof Object) {
+			var props = arguments[0];
+			width = props.width;
+			height = props.height;
+			length = props.length;
+		}
+
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;
 		this.zExtent = length !== undefined ? length * 0.5 : 0.5;
@@ -32,7 +43,6 @@ MeshData) {
 	 * @description Builds or rebuilds the mesh data.
 	 * @returns {SimpleBox} Self for chaining.
 	 */
-
 	SimpleBox.prototype.rebuild = function() {
 		var xExtent = this.xExtent;
 		var yExtent = this.yExtent;
@@ -66,6 +76,16 @@ MeshData) {
 		]);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this quad
+	 * @returns {SimpleBox}
+	 */
+	SimpleBox.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['xExtent', 'yExtent', 'zExtent']);
+
+		return new SimpleBox(options);
 	};
 
 	return SimpleBox;

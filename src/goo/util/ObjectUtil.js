@@ -133,5 +133,15 @@ define([],
 		return result;
 	};
 
+	_.shallowSelectiveClone = function (source, keys) {
+		var clone = {};
+
+		keys.forEach(function (key) {
+			clone[key] = source[key];
+		});
+
+		return clone;
+	};
+
 	return _;
 });

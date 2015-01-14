@@ -1,6 +1,6 @@
-define(['goo/renderer/MeshData'],
+define(['goo/renderer/MeshData', 'goo/util/ObjectUtil'],
 	/** @lends */
-	function (MeshData) {
+	function (MeshData, _) {
 	'use strict';
 
 	/**
@@ -17,6 +17,7 @@ define(['goo/renderer/MeshData'],
 			radius = props.radius;
 			pointiness = props.pointiness;
 		}
+		//! AT: in cylinder and cone this is called radialSamples
 		this.nSegments = nSegments || 8;
 		this.radius = radius || 1;
 		this.pointiness = pointiness || 0;
@@ -73,6 +74,16 @@ define(['goo/renderer/MeshData'],
 		this.getIndexBuffer().set(indices);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this disk
+	 * @returns {Disk}
+	 */
+	Disk.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['nSegments', 'radius', 'pointiness']);
+
+		return new Disk(options);
 	};
 
 	return Disk;

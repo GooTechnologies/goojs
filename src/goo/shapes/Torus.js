@@ -1,13 +1,15 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'goo/util/ObjectUtil'
 ],
 /** @lends */
 function (
 	MeshData,
 	Vector3,
-	MathUtils
+	MathUtils,
+	_
 ) {
 	'use strict';
 
@@ -156,6 +158,7 @@ function (
 		return this;
 	};
 
+	//! AT: there's a method for doing this exact thing on typed arrays, copyWithin()
 	function copyInternal(buf, from, to) {
 		buf[to * 3 + 0] = buf[from * 3 + 0];
 		buf[to * 3 + 1] = buf[from * 3 + 1];
@@ -166,6 +169,17 @@ function (
 		buf[to * 2 + 0] = buf[from * 2 + 0];
 		buf[to * 2 + 1] = buf[from * 2 + 1];
 	}
+
+	/**
+	 * Returns a clone of this texture torus
+	 * @returns {Torus}
+	 */
+	Torus.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this,
+			['circleSamples', 'radialSamples', 'tubeRadius', 'centerRadius']);
+
+		return new Torus(options);
+	};
 
 	return Torus;
 });
