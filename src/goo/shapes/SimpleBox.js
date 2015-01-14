@@ -17,7 +17,6 @@ function(
 	 * @param {number} [height=1] Total height of box.
 	 * @param {number} [length=1] Total length of box.
 	 */
-
 	function SimpleBox(width, height, length) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
@@ -62,15 +61,15 @@ function(
 
 		this.getIndexBuffer().set([
 			//front
-			0, 1, 2, 2, 3, 0,
+			2, 1, 0, 0, 3, 2,
 			//back
-			7, 6, 5, 5, 4, 7,
+			5, 6, 7, 7, 4, 5,
 			//left
-			0, 3, 7, 7, 4, 0,
+			7, 3, 0, 0, 4, 7,
 			//right
 			1, 2, 6, 6, 5, 1,
 			//top
-			3, 2, 6, 6, 7, 3,
+			6, 2, 3, 3, 7, 6,
 			//bottom
 			0, 1, 5, 5, 4, 0
 		]);
