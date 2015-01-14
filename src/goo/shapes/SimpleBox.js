@@ -1,12 +1,10 @@
 define([
-	'goo/renderer/MeshData',
-	'goo/util/ObjectUtil'
+	'goo/renderer/MeshData'
 	],
 /** @lends */
 
 function(
-	MeshData,
-	_
+	MeshData
 ) {
 	'use strict';
 
@@ -82,7 +80,11 @@ function(
 	 * @returns {SimpleBox}
 	 */
 	SimpleBox.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['xExtent', 'yExtent', 'zExtent']);
+		var options = {
+			width: this.xExtent * 2,
+			height: this.yExtent * 2,
+			length: this.zExtent * 2
+		};
 
 		return new SimpleBox(options);
 	};

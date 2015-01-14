@@ -45,7 +45,7 @@ require([
 		return meshData;
 	});
 
-	//clone them all
+	// clone them all
 	originalShapes.forEach(function (originalShape, i) {
 		var clonedShape = originalShape.clone();
 		world.createEntity(clonedShape, new Material(ShaderLib.simpleLit), [(i - 4) * 2,  3, 0]).addToWorld();

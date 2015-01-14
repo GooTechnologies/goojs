@@ -183,8 +183,12 @@ define([
 	 * @returns {Box}
 	 */
 	Box.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this,
-			['width', 'height', 'length', 'tileX', 'tileY', 'textureMode']);
+		var options = _.shallowSelectiveClone(this, ['tileX', 'tileY', 'textureMode']);
+
+		// converting xExtent to width so the constructor will convert it the other way around again
+		options.width = this.xExtent * 2;
+		options.height = this.yExtent * 2;
+		options.length = this.zExtent * 2;
 
 		return new Box(options);
 	};

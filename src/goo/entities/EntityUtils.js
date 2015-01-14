@@ -46,29 +46,24 @@ define([
 		//! AT: this is a huge mess
 		// cloneEntity will only work for very few cases anyways, for very specific components
 		function cloneEntity(world, entity, settings) {
+			// settings is also used to store stuff on it, like animation skeletons
 			var newEntity = world.createEntity(entity.name);
+
+			newEntity._tags = _.cloneSet(entity._tags);
+			newEntity._attributes = _.cloneMap(entity._attributes);
+			newEntity._hidden = entity._hidden;
+			newEntity.static = entity.static;
 
 			for (var i = 0; i < entity._components.length; i++) {
 				var component = entity._components[i];
 				if (component.type === 'TransformComponent') {
 					newEntity.transformComponent.transform.copy(component.transform);
 				} else if (component.type === 'MeshDataComponent') {
-					var meshDataComponent = new component.constructor(component.meshData);
-					meshDataComponent.modelBound = new component.modelBound.constructor();
+					var clonedMeshDataComponent = component.clone(settings);
 					if (component.currentPose) {
-						meshDataComponent.currentPose = cloneSkeletonPose(component.currentPose, settings);
+						clonedMeshDataComponent.currentPose = cloneSkeletonPose(component.currentPose, settings);
 					}
-					newEntity.setComponent(meshDataComponent);
-				} else if (component.type === 'MeshRendererComponent') {
-					// REVIEW: Should the cloned new meshrendercomponent not get all the set member varialbes from the
-					// cloned component? Now it gets defaulted from the constructor instead. The materials are also shared.
-					// Maybe this is something to be pushed to another story, to actually use the settings sent to cloneEntity, as
-					// stated in the old review comment in clone()
-					var meshRendererComponent = new component.constructor();
-					for (var j = 0; j < component.materials.length; j++) {
-						meshRendererComponent.materials.push(component.materials[j]);
-					}
-					newEntity.setComponent(meshRendererComponent);
+					newEntity.setComponent(clonedMeshDataComponent);
 				} else if (component.type === 'AnimationComponent') {
 					var clonedAnimationComponent = component.clone();
 					clonedAnimationComponent._skeletonPose = cloneSkeletonPose(component._skeletonPose, settings);
@@ -99,6 +94,8 @@ define([
 					if (world.getSystem('ScriptSystem').manualSetup && component.scripts[0].context) {
 						scriptComponent.setup(newEntity);
 					}
+				} else if (component.clone) {
+					newEntity.setComponent(component.clone(settings));
 				} else {
 					newEntity.setComponent(component);
 				}
