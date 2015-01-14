@@ -776,40 +776,30 @@ function (
 		}
 	};
 
-	MeshData.prototype.copy = function (source) {
-
-	};
-
+	/**
+	 * Returns a clone of this mesh data
+	 * @returns {MeshData}
+	 */
 	MeshData.prototype.clone = function () {
 		var attributeMapClone = _.deepClone(this.attributeMap);
 
 		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
 
-		clone.primitiveCounts = this.primitiveCounts.slice(0);
+		clone.primitiveCounts = this.primitiveCounts.slice(0); // an array
 
-//		clone.vertexData = this.vertexData.clone();
-//		clone.indexData = this.indexData.clone();
+		clone.vertexData.copy(this.vertexData); // BufferData
+		clone.indexData.copy(this.indexData); // BufferData
 
-		clone.vertexData.copy(this.vertexData);
-		clone.indexData.copy(this.indexData);
-
-//		clone.dataViews = {}; ///filled by something else
-
-		clone.indexLengths = this.indexLengths;
+		clone.indexLengths = this.indexLengths.slice(0);
 		clone.indexModes = this.indexModes.slice(0);
 
 		clone.type = this.type;
 
-		//!RH: added to not mutate object
-//		clone.paletteMap = undefined; /// what types are these???
-//		clone.weightsPerVertex = undefined;
-//		clone.boundingBox = undefined;
-//		clone.store = undefined;
+		if (this.paletteMap) {
+			clone.paletteMap = this.paletteMap.slice(0); // an array
+		}
 
-//		clone._attributeDataNeedsRefresh = false;
-//		clone._dirtyAttributeNames = new Set();
-
-//		clone.rebuildData(clone.vertexCount, clone.indexCount);
+		clone.weightsPerVertex = this.weightsPerVertex; // a number
 
 		return clone;
 	};

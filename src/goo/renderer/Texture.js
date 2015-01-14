@@ -1,11 +1,9 @@
 define([
-	'goo/math/Vector2',
-	'goo/renderer/BufferUtils'
+	'goo/math/Vector2'
 ],
 /** @lends */
 function (
-	Vector2,
-	BufferUtils
+	Vector2
 ) {
 	'use strict';
 
@@ -245,6 +243,10 @@ function (
 		return size;
 	};
 
+	/**
+	 * Returns a clone of this plane
+	 * @returns {Texture}
+	 */
 	Texture.prototype.clone = function () {
 		// reconstructing original settings object passed to the constructor
 		var settings = {

@@ -936,8 +936,14 @@ define([
 					var store = skMesh.store;
 					if (!store) {
 						store = new Float32Array(buffLength);
+						//! AT: better names pls
+						// store is supergeneric
+						// what does 'sk' stand for?
 						skMesh.store = store;
 					}
+					// whenever you're reading this code you have to
+					// keep a table in your head with arbitrary abbreviations
+					// reference material?
 					var refMat;
 					for (var index = 0; index < skMesh.paletteMap.length; index++) {
 						refMat = palette[skMesh.paletteMap[index]];

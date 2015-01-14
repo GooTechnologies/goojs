@@ -57,7 +57,13 @@ function (
 	};
 
 	BufferData.prototype.copy = function (source) {
-		this.data.set(source.data);
+		if (this.data instanceof ArrayBuffer) {
+			var sourceView = new Uint8Array(source.data);
+			var destinationView = new Uint8Array(this.data);
+			destinationView.set(sourceView);
+		} else { // TypedArray
+			this.data.set(source.data);
+		}
 		this.target = source.target;
 
 		this.glBuffer = null;
@@ -67,7 +73,14 @@ function (
 	};
 
 	BufferData.prototype.clone = function () {
-		var clone = new BufferData(BufferUtils.cloneTypedArray(this.data), this.target);
+		var clonedData;
+		if (this.data instanceof ArrayBuffer) {
+			clonedData = this.data.slice(0);
+		} else { // TypedArray
+			clonedData = BufferUtils.cloneTypedArray(this.data);
+		}
+
+		var clone = new BufferData(clonedData, this.target);
 		clone._dataUsage = this._dataUsage;
 		clone._dataNeedsRefresh = false; //?
 		return clone;
