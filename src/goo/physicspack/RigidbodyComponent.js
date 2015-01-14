@@ -433,6 +433,7 @@ function (
 		this.setTransformFromEntity(entity);
 
 		this._initialized = true;
+		this._dirty = false;
 
 		this.emitInitialized(entity);
 	};

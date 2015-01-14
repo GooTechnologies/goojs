@@ -197,6 +197,25 @@ function (
 		return tmpCannonResult.hasHit;
 	};
 
+	/**
+	 * Stops updating the entities
+	 */
+	PhysicsSystem.prototype.pause = function () {
+		this.passive = true;
+	};
+
+	/**
+	 * Resumes updating the entities
+	 */
+	PhysicsSystem.prototype.play = function () {
+		this.passive = false;
+	};
+
+	/**
+	 * @private
+	 * @param  {array} entities
+	 * @param  {number} tpf
+	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
 		var N = entities.length;
 
@@ -207,7 +226,6 @@ function (
 
 			if (rb._dirty) {
 				rb.initialize(entity, this);
-				rb._dirty = false;
 			}
 		}
 

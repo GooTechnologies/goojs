@@ -175,5 +175,13 @@ define([
 
 			done();
 		});
+
+		it('can pause and play', function (done) {
+			system.pause();
+			expect(system.passive).toBeTruthy();
+			system.play();
+			expect(system.passive).toBeFalsy();
+			done();
+		});
 	});
 });

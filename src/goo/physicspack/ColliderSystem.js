@@ -27,7 +27,7 @@ function (System) {
 
 			colliderComp._updated = false;
 			if (transformComp._updated) {
-				//entity.colliderComponent.updateWorldCollider(transformComp.worldTransform);
+				entity.colliderComponent.updateWorldCollider();
 			}
 		}
 	};
