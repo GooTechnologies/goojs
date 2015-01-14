@@ -36,11 +36,14 @@ define([
 			var end = new Vector3(0, 0, 10);
 			var rbcA = new RigidbodyComponent();
 			var rbcB = new RigidbodyComponent();
-			var cc = new ColliderComponent({
+			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			var entityA = world.createEntity(rbcA, cc).addToWorld();
-			var entityB = world.createEntity(rbcB, cc).addToWorld();
+			var ccB = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var entityA = world.createEntity(rbcA, ccA).addToWorld();
+			var entityB = world.createEntity(rbcB, ccB).addToWorld();
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
 			world.process(); // Needed to initialize bodies
@@ -54,6 +57,7 @@ define([
 			rbcB.setPosition(new Vector3(0, 0, 3));
 			world.process();
 
+			result = new RaycastResult();
 			system.raycastClosest(start, end, result);
 			expect(result.entity).toEqual(entityA);
 

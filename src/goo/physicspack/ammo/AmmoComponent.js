@@ -443,7 +443,7 @@ function (
 
 		if (constraint) {
 			system.world.addConstraint(constraint, joint.collideConnected);
-			joint.joint = constraint;
+			joint.ammoJoint = constraint;
 		}
 	};
 

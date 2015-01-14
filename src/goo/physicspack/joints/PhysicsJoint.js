@@ -25,11 +25,6 @@ function () {
 		this.collideConnected = typeof(settings.collideConnected) ? settings.collideConnected : false;
 
 		/**
-		 * The physics engine joint
-		 */
-		this.joint = null;
-
-		/**
 		 * @private
 		 * @type {Boolean}
 		 */

@@ -168,11 +168,11 @@ define([
 
 			rbc.addJoint(joint);
 			world.process();
-			expect(joint.joint).toBeTruthy();
+			expect(joint.cannonJoint).toBeTruthy();
 
 			rbc.removeJoint(joint);
 			world.process();
-			expect(joint.joint).toBeFalsy();
+			expect(joint.cannonJoint).toBeFalsy();
 
 			done();
 		});
@@ -189,7 +189,7 @@ define([
 
 			world.process();
 
-			expect(joint.joint).toBeFalsy();
+			expect(joint.cannonJoint).toBeFalsy();
 			expect(rbc.cannonBody).toBeFalsy();
 
 			done();
@@ -202,11 +202,11 @@ define([
 
 			rbc.addJoint(joint);
 			world.process();
-			expect(joint.joint).toBeTruthy();
+			expect(joint.cannonJoint).toBeTruthy();
 
 			rbc.removeJoint(joint);
 			world.process();
-			expect(joint.joint).toBeFalsy();
+			expect(joint.cannonJoint).toBeFalsy();
 
 			done();
 		});
@@ -228,6 +228,25 @@ define([
 			world.process();
 
 			expect(numEvents).toBe(1);
+
+			done();
+		});
+
+		it('can be initialized manually', function (done) {
+			rbc = new RigidbodyComponent({ mass: 1 });
+			cc = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			entity = world.createEntity(rbc, cc).addToWorld();
+
+			var numEvents = 0;
+			SystemBus.addListener('goo.physics.initialized', function () {
+				numEvents++;
+			});
+			rbc.initialize();
+
+			expect(numEvents).toBe(1);
+			expect(rbc.cannonBody).toBeTruthy();
 
 			done();
 		});

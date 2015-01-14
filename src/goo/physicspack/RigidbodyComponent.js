@@ -396,12 +396,11 @@ function (
 	/**
 	 * @private
 	 */
-	RigidbodyComponent.prototype.initialize = function (entity, system) {
+	RigidbodyComponent.prototype.initialize = function () {
 		if (!this._dirty) {
 			return;
 		}
 
-		this._system = system;
 		this.destroy();
 
 		var mat = new CANNON.Material();
@@ -415,8 +414,8 @@ function (
 			linearDamping: this._linearDamping,
 			angularDamping: this._angularDamping
 		});
-		system.cannonWorld.addBody(body);
-		system._entities[body.id] = entity;
+		this._system.cannonWorld.addBody(body);
+		this._system._entities[body.id] = this._entity;
 
 		if (!this._initialized) {
 			body.velocity.copy(this._velocity);
@@ -424,18 +423,18 @@ function (
 		}
 
 		var that = this;
-		this.traverseColliders(entity, function (colliderEntity, collider, position, quaternion) {
+		this.traverseColliders(this._entity, function (colliderEntity, collider, position, quaternion) {
 			that.addCollider(colliderEntity, position, quaternion);
 		});
 		if (this._isKinematic) {
 			body.type = CANNON.Body.KINEMATIC;
 		}
-		this.setTransformFromEntity(entity);
+		this.setTransformFromEntity(this._entity);
 
 		this._initialized = true;
 		this._dirty = false;
 
-		this.emitInitialized(entity);
+		this.emitInitialized(this._entity);
 	};
 
 	/**
@@ -489,7 +488,7 @@ function (
 
 		if (constraint) {
 			bodyA.world.addConstraint(constraint);
-			joint.joint = constraint;
+			joint.cannonJoint = constraint;
 		}
 	};
 
@@ -498,9 +497,9 @@ function (
 	 */
 	RigidbodyComponent.prototype.destroyJoint = function (joint) {
 		var body = this.cannonBody;
-		if (body && joint.joint) {
-			body.world.removeConstraint(joint.joint);
-			joint.joint = null;
+		if (body && joint.cannonJoint) {
+			body.world.removeConstraint(joint.cannonJoint);
+			joint.cannonJoint = null;
 		}
 	};
 

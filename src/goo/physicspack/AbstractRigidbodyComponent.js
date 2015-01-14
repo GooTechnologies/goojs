@@ -144,7 +144,10 @@ function (
 	 * @private
 	 * @param entity
 	 */
-	AbstractRigidbodyComponent.prototype.attached = function (/*entity*/) {};
+	AbstractRigidbodyComponent.prototype.attached = function (entity) {
+		this._entity = entity;
+		this._system = entity._world.getSystem('PhysicsSystem');
+	};
 
 	/**
 	 * @private
@@ -162,6 +165,9 @@ function (
 
 		// Destroy the body
 		this.destroy();
+
+		this._entity = null;
+		this._system = null;
 	};
 
 	return AbstractRigidbodyComponent;
