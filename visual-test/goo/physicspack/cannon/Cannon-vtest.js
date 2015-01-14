@@ -254,7 +254,7 @@ require([
 	createHinge(5, 5, 0);
 
 	var forcefieldEnabled = false;
-
+	var paused = false;
 	document.addEventListener('keydown', function (evt) {
 		switch (evt.keyCode) {
 		case 69:
@@ -263,6 +263,15 @@ require([
 		case 32:
 			// Add force field
 			forcefieldEnabled = true;
+			break;
+		case 80: // p
+			// toggle pause
+			if (!paused) {
+				physicsSystem.pause();
+			} else {
+				physicsSystem.play();
+			}
+			paused = !paused;
 			break;
 		default:
 			addPrimitives();
@@ -279,7 +288,7 @@ require([
 		}
 	}, false);
 
-	console.log('SPACE: force field\nE: Explode!\nANY OTHER KEY: add bodies');
+	console.log('SPACE: force field\nE: Explode!\nP: Toggle pause\nANY OTHER KEY: add bodies');
 
 	var w = 1;
 	createStaticBox(0, -7.5,  10 + w / 2, 20 + w, 5,  w);
