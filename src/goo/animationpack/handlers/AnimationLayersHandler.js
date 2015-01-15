@@ -46,7 +46,7 @@ function (
 	 * @private
 	 */
 	AnimationLayersHandler.prototype._create = function (ref) {
-		return this._objects[ref] = [];
+		return this._objects.set(ref, []);
 	};
 
 	/**

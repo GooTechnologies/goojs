@@ -57,7 +57,7 @@ function (
 		var renderSystem = this.world.getSystem('RenderSystem');
 		ArrayUtil.remove(renderSystem.composers, this._composer);
 
-		delete this._objects[ref];
+		this._objects.delete(ref);
 
 		if (this.world) {
 			this._composer.destroy(this.world.gooRunner.renderer);

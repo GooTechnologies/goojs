@@ -45,7 +45,9 @@ function (
 	 * @private
 	 */
 	AnimationStateHandler.prototype._create = function (ref) {
-		return this._objects[ref] = new SteadyState();
+		var steadyState = new SteadyState();
+		this._objects.set(ref, steadyState);
+		return steadyState;
 	};
 
 	/**

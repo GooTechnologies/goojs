@@ -42,7 +42,7 @@ function (
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
 	SkeletonHandler.prototype._update = function(ref, config/*, options*/) {
-		if (!this._objects[ref]) {
+		if (!this._objects.has(ref)) {
 			if (!config) {
 				return PromiseUtil.resolve();
 			}
@@ -59,10 +59,10 @@ function (
 			var skeleton = new Skeleton(config.name, joints);
 			var pose = new SkeletonPose(skeleton);
 			pose.setToBindPose();
-			this._objects[ref] = pose;
+			this._objects.set(ref, pose);
 		}
 
-		return PromiseUtil.resolve(this._objects[ref]);
+		return PromiseUtil.resolve(this._objects.get(ref));
 	};
 
 	return SkeletonHandler;
