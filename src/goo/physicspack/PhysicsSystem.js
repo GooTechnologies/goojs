@@ -1,6 +1,5 @@
 define([
 	'goo/physicspack/AbstractPhysicsSystem',
-	'goo/physicspack/RigidbodyComponent',
 	'goo/physicspack/RaycastResult',
 	'goo/math/Vector3',
 	'goo/math/Quaternion'
@@ -8,7 +7,6 @@ define([
 /** @lends */
 function (
 	AbstractPhysicsSystem,
-	CannonRigidbody,
 	RaycastResult,
 	Vector3,
 	Quaternion
@@ -55,11 +53,14 @@ function (
 
 		/**
 		 * @type {number}
+		 * @default 60
 		 */
 		this.stepFrequency = settings.stepFrequency || 60;
 
 		/**
+		 * The maximum number of timesteps to use for making the physics clock catch up with the wall clock. If set to zero, a variable timestep will be used (not recommended).
 		 * @type {number}
+		 * @default 10
 		 */
 		this.maxSubSteps = settings.maxSubSteps || 10;
 
@@ -73,6 +74,9 @@ function (
 	PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 	PhysicsSystem.constructor = PhysicsSystem;
 
+	/**
+	 * @private
+	 */
 	PhysicsSystem.prototype._swapContactLists = function () {
 		var tmp = this._inContactCurrentStepA;
 		this._inContactCurrentStepA = this._inContactLastStepA;
@@ -94,14 +98,6 @@ function (
 
 	/**
 	 * @private
-	 * @param {Entity} entity
-	 */
-	PhysicsSystem.prototype.addBody = function (entity) {
-		entity.rigidbodyComponent.rigidbody = new CannonRigidbody(entity);
-	};
-
-	/**
-	 * @private
 	 * @param {number} deltaTime
 	 */
 	PhysicsSystem.prototype.step = function (deltaTime) {
@@ -111,9 +107,11 @@ function (
 		var fixedTimeStep = 1 / this.stepFrequency;
 		var maxSubSteps = this.maxSubSteps;
 		if (maxSubSteps) {
+			// Fixed time step
 			world.step(fixedTimeStep, deltaTime, maxSubSteps);
 		} else {
-			world.step(fixedTimeStep);
+			// Variable time step
+			world.step(deltaTime);
 		}
 	};
 
