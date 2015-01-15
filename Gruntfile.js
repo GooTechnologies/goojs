@@ -95,6 +95,10 @@ module.exports = function (grunt) {
 			gizmopack: {
 				packPath: 'util/gizmopack',
 				outBaseDir: 'out'
+			},
+			physicspack: {
+				packPath: 'physicspack',
+				outBaseDir: 'out'
 			}
 		},
 		'generate-toc': {
