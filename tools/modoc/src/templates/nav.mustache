@@ -11,7 +11,7 @@
 
 {{! SIDEBAR }}
 <nav>
-	<section>
+	<section id="top">
 		<h1>Goo Docs</h1>
 		<a class="link" href="changelog.html">Read the Changelog</a><br>
 		<a class="link" href="deprecated.html">Deprecation list</a>
@@ -20,10 +20,20 @@
 		<input id="search" type="text" placeholder="Start typing to search...">
 	</section>
 
+	<div class="index-summary">
+		<ul>
+			{{#index}}
+				<a class="summary-dir" href="#{{name}}">{{name}}</a>
+			{{/index}}
+		</ul>
+	</div>
+
+	<hr>
+
 	<div class="index-container">
 		<ul>
 			{{#index}}
-				<div class="top-dir">{{name}}</div>
+				<div class="top-dir" id="{{name}}">{{name}}</div>
 				<ul>
 					{{#classes}}
 						<li class="item">
@@ -31,6 +41,7 @@
 						</li>
 					{{/classes}}
 				</ul>
+				<a href="#top" class="to-top">Top</a>
 			{{/index}}
 		</ul>
 	</div>

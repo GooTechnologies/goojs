@@ -172,6 +172,15 @@ a.link:hover, a.link:active { color: #81cff9; }
 	text-transform: uppercase;
 }
 
+.to-top {
+	color: #91cf4b;
+	font-weight: 400;
+}
+
+.summary-dir {
+	display: block;
+}
+
 /******************************************************************************
 MAIN
 ******************************************************************************/
