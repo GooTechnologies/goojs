@@ -1,10 +1,6 @@
 (function () {
 	'use strict';
 
-	var searchInput;
-	var items;
-	var parameters;
-
 	function filterClasses(substring) {
 		var regex = new RegExp(substring, 'i');
 		items.each(function (index, item) {
@@ -19,12 +15,8 @@
 	}
 
 	function setupSearch() {
-		items = $('.item');
-		searchInput = $('#search');
-
 		var searchText = '';
 
-		parameters = purl().param();
 		if (parameters.q) {
 			searchText = parameters.q;
 			searchInput.val(parameters.q);
@@ -35,16 +27,23 @@
 			searchText = $(this).val();
 			filterClasses(searchText);
 		});
+	}
 
+	function setupIframe() {
 		items.each(function (index, item) {
 			item = $(item);
 
-			item.click(function (event) {
-				event.preventDefault();
-				window.location.href = item.find('a').attr('href') + '?q=' + searchText;
+			item.find('a').click(function () {
+				iframe.attr('src', item.find('a').attr('phony'));
 			});
 		});
 	}
 
+	var iframe = $('iframe.class-panel');
+	var items = $('.item');
+	var searchInput = $('#search');
+	var parameters = purl().param();
+
 	setupSearch();
+	setupIframe();
 })();

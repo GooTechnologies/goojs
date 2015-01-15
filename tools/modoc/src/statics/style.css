@@ -12,10 +12,10 @@ body {
 	background-color: #262626;
 }
 
-::-webkit-scrollbar {width: 10px;}
-::-webkit-scrollbar-track {background: #292929;}
-::-webkit-scrollbar-thumb {background-color: #555555;}
-nav::-webkit-scrollbar-track {background: #343434;}
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #292929; }
+::-webkit-scrollbar-thumb { background-color: #555555; }
+nav::-webkit-scrollbar-track { background: #343434; }
 
 button {
 	border-radius: 3px;
@@ -39,18 +39,18 @@ input:hover, input:focus, input:active {
 	outline: none;
 }
 
-::-webkit-input-placeholder {color: #555555;}
-:-ms-input-placeholder {color: #555555;}
+::-webkit-input-placeholder { color: #555555; }
+:-ms-input-placeholder { color: #555555; }
 
-input:focus::-webkit-input-placeholder {color:transparent;}
-input:focus:-ms-input-placeholder {color:transparent;}
+input:focus::-webkit-input-placeholder { color: transparent; }
+input:focus:-ms-input-placeholder { color: transparent; }
 
 a {
 	color: #9f9f9f;
 	text-decoration: none;
 }
 
-a:hover, a:active {color: #38b3f6;}
+a:hover, a:active { color: #38b3f6; }
 
 /******************************************************************************
 TYPOGRAPHY
@@ -79,9 +79,9 @@ h2 {
 	font-family: 'Roboto', sans-serif;
 }
 
-.mono {font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace, sans-serif;}
+.mono { font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace, sans-serif; }
 
-.roboto {font-family: 'Roboto', sans-serif;}
+.roboto { font-family: 'Roboto', sans-serif; }
 
 /******************************************************************************
 ICOMOON
@@ -137,7 +137,7 @@ nav {
 	overflow-y: auto;
 }
 
-nav section {margin-bottom: 40px;}
+nav section { margin-bottom: 40px; }
 
 a.link {
 	display: block;
@@ -145,9 +145,9 @@ a.link {
 	color: #38b3f6;
 }
 
-a.link:hover, a.link:active {color: #81cff9;}
+a.link:hover, a.link:active { color: #81cff9; }
 
-.index-container {padding-bottom: 90px;}
+.index-container { padding-bottom: 90px; }
 
 .active a {
 	color: #EEEEEE;
@@ -176,17 +176,25 @@ a.link:hover, a.link:active {color: #81cff9;}
 MAIN
 ******************************************************************************/
 
+iframe.class-panel {
+	position: relative;
+	left: 350px;
+	width: 1024px;
+	height: 768px;
+	border: none;
+}
+
 article {
 	max-width: 800px;
-	margin-left: 350px;
+	margin-left: 16px;
 	padding: 50px;
 	font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace, sans-serif;
 	line-height: 1.4em;
 }
 
-section {margin-bottom: 50px;}
+section { margin-bottom: 50px; }
 
-div {margin-bottom: 15px;}
+div { margin-bottom: 15px; }
 
 ul {
 	padding: 0;
@@ -198,7 +206,7 @@ li {
 	line-height: 1.4em;
 }
 
-.header {margin-bottom: 50px;}
+.header { margin-bottom: 50px; }
 
 .class-description {
     margin-top: 15px;
@@ -224,9 +232,9 @@ li {
 	font-family: 'Roboto', sans-serif;
 }
 
-.parameter-doc {margin-left: 20px;}
+.parameter-doc { margin-left: 20px; }
 
-.parameter-doc:last-child {margin-bottom: 50px;}
+.parameter-doc:last-child { margin-bottom: 50px; }
 
 .deprecated-description {
 	display: block;
@@ -273,31 +281,31 @@ SYNTAX & COLORS
 	color: #91cf4b;
 }
 
-.readonly {color: #91cf4b;}
+.readonly { color: #91cf4b; }
 
 .extends {
 	color: #555555;
 	font-weight: 100;
 }
 
-.extends a {color: #555555;}
+.extends a { color: #555555; }
 
-.extends a:hover {color: #38b3f6;}
+.extends a:hover { color: #38b3f6; }
 
-.method, .static {margin-bottom: 60px;}
+.method, .static {margin-bottom: 60px; }
 
-.method-name {color: #f76162;}
+.method-name { color: #f76162; }
 
-.static-name {color: #ffbe55;}
+.static-name { color: #ffbe55; }
 
-.parameter {color: #91cf4b;}
+.parameter { color: #91cf4b; }
 
-.parameter-name {color: #91cf4b;}
+.parameter-name { color: #91cf4b; }
 
-.parameter-type {color: #ffbe55;}
+.parameter-type { color: #ffbe55; }
 
-.parameter-type a {color: #ffbe55 !important;}
+.parameter-type a { color: #ffbe55 !important; }
 
-.parameter-optional {color: #8a8eea;}
+.parameter-optional { color: #8a8eea; }
 
-.parameter-default {color: #38b3f6;}
+.parameter-default { color: #38b3f6; }

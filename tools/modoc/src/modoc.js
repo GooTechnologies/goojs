@@ -58,27 +58,11 @@ var HTML_SUFFIX = '-doc.html';
 
 var args = processArguments();
 
-var template = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 't1.mustache', { encoding: 'utf8' });
-
 var files = getFiles(args.sourcePath, ['goo.js', 'pack', '+']);
 
 function copyStaticFiles(callback) {
 	childProcess.exec(
 		'cp -r ' + args.staticsPath + '/. ' + args.outPath,
-		function (error, stdout, stderr) {
-			console.log('stdout: ' + stdout);
-			console.log('stderr: ' + stderr);
-			if (error !== null) {
-				console.log('exec error: ' + error);
-			}
-			callback();
-		});
-}
-
-function buildStartPage(page, callback) {
-	// just copy over Entity.js since it's the central piece
-	childProcess.exec(
-		'cp ' + args.outPath + util.PATH_SEPARATOR + page + ' ' + args.outPath + util.PATH_SEPARATOR + 'index.html',
 		function (error, stdout, stderr) {
 			console.log('stdout: ' + stdout);
 			console.log('stderr: ' + stderr);
@@ -195,67 +179,52 @@ function compileDoc(files) {
 	return classes;
 }
 
-function compileBundles(classes) {
-	var index = indexBuilder.getIndex(classes, 'goo');
+function resolveRequirePaths(classes, index) {
+	index.forEach(function (group) {
+		group.classes.forEach(function (entry) {
+			var className = entry.name;
+			var class_ = classes[className];
 
-	// assemble the index for every class for the nav bar
-	var bundles = {};
+			if (!class_.requirePath) {
+				class_.requirePath = entry.requirePath;
+			}
+		});
+	});
+}
+
+function buildClasses(classes) {
+	var classTemplate = fs.readFileSync(
+		args.templatesPath + util.PATH_SEPARATOR + 'class.mustache', { encoding: 'utf8' });
 
 	Object.keys(classes).forEach(function (className) {
 		var class_ = classes[className];
 
-		var clonedIndex = util.deepClone(index);
-
-		// locate class className and make it active
-		// slow and stupid
-		var groupNames = Object.keys(clonedIndex);
-		for (var i = 0; i < groupNames.length; i++) {
-			var group = clonedIndex[groupNames[i]];
-
-			for (var j = 0; j < group.classes.length; j++) {
-				var entry = group.classes[j];
-				if (entry.name === className) {
-					// if the requirePath was not explicitly specified then add it from the index
-					if (!class_.requirePath) {
-						class_.requirePath = entry.requirePath;
-					}
-
-					// set it active
-					entry.current = true;
-
-					// make the bundle
-					bundles[className] = {
-						class_: class_,
-						index: clonedIndex
-					};
-				}
-			}
-		}
-	});
-
-	return bundles;
-}
-
-function renderDoc(bundles) {
-	Object.keys(bundles).forEach(function (className) {
-		var bundle = bundles[className];
-
 		// this filtering should take place elsewhere
-		if (bundle.class_.constructor) {
-			var result = mustache.render(template, bundle);
+		if (class_.constructor) {
+			var result = mustache.render(classTemplate, class_);
 
 			fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + className + HTML_SUFFIX, result);
 		}
 	});
 }
 
+function buildIndex(index) {
+	var navTemplate = fs.readFileSync(
+		args.templatesPath + util.PATH_SEPARATOR + 'nav.mustache', { encoding: 'utf8' });
+
+	var data = { index: index };
+	var result = mustache.render(navTemplate, data);
+
+	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'index.html', result);
+}
+
 function buildChangelog(file) {
 	var changelog = fs.readFileSync(file, { encoding: 'utf8' });
 	var formatted = marked(changelog);
 
-	var template = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 'changelog.mustache', { encoding: 'utf8' });
+	var changelogTemplate = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 'changelog.mustache', { encoding: 'utf8' });
 	var data = { content: formatted };
-	var result = mustache.render(template, data);
+	var result = mustache.render(changelogTemplate, data);
 
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'changelog.html', result);
 }
@@ -270,7 +239,7 @@ function compileDeprecated(classes) {
 			return {
 				class_: className,
 				item: item
-			}
+			};
 		};
 
 		if (!class_.constructor || !class_.constructor.comment) {
@@ -321,22 +290,27 @@ function compileDeprecated(classes) {
 }
 
 function buildDeprecated(classes) {
-	var template = fs.readFileSync(args.templatesPath + util.PATH_SEPARATOR + 'deprecated.mustache', { encoding: 'utf8' });
+	var deprecatedTemplate = fs.readFileSync(
+		args.templatesPath + util.PATH_SEPARATOR + 'deprecated.mustache', { encoding: 'utf8' });
 
 	var data = compileDeprecated(classes);
 
-	var result = mustache.render(template, data);
+	var result = mustache.render(deprecatedTemplate, data);
 
 	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'deprecated.html', result);
 }
 
 copyStaticFiles(function () {
 	var classes = compileDoc(files);
-	var bundles = compileBundles(classes);
-	renderDoc(bundles);
+	var index = indexBuilder.getIndex(classes, 'goo');
+	resolveRequirePaths(classes, index);
+
+	buildClasses(classes);
+	buildIndex(index);
+
+
 	buildChangelog('CHANGES');
 	buildDeprecated(classes);
-	buildStartPage('Entity-doc.html', function () {
-		console.log('documentation built');
-	});
+
+	console.log('documentation built');
 });
