@@ -8,13 +8,12 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
-	'goo/addons/cannonpack/CannonColliderComponent',
 	'goo/addons/cannonpack/CannonSystem',
 	'goo/addons/cannonpack/CannonRigidbodyComponent',
-	'goo/addons/cannonpack/CannonBoxCollider',
-	'goo/addons/cannonpack/CannonCylinderCollider',
-	'goo/addons/cannonpack/CannonSphereCollider',
-	'goo/addons/cannonpack/CannonPlaneCollider',
+	'goo/addons/cannonpack/CannonBoxColliderComponent',
+	'goo/addons/cannonpack/CannonCylinderColliderComponent',
+	'goo/addons/cannonpack/CannonSphereColliderComponent',
+	'goo/addons/cannonpack/CannonPlaneColliderComponent',
 	'goo/addons/cannonpack/CannonDistanceJointComponent',
 	'lib/V'
 ], function (
@@ -27,13 +26,12 @@ require([
 	ShaderLib,
 	OrbitCamControlScript,
 	Vector3,
-	CannonColliderComponent,
 	CannonSystem,
 	CannonRigidbodyComponent,
-	CannonBoxCollider,
-	CannonCylinderCollider,
-	CannonSphereCollider,
-	CannonPlaneCollider,
+	CannonBoxColliderComponent,
+	CannonCylinderColliderComponent,
+	CannonSphereColliderComponent,
+	CannonPlaneColliderComponent,
 	CannonDistanceJointComponent,
 	V
 ) {
@@ -66,10 +64,8 @@ require([
 			if (V.rng.nextFloat() < 0.2) {
 				var radius = 1 + V.rng.nextFloat();
 				entity = world.createEntity(new Box(radius * 2, radius * 2, radius * 2), mat, position);
-				colliderComponent = new CannonColliderComponent({
-					collider: new CannonBoxCollider({
-						halfExtents: new Vector3(radius, radius, radius)
-					})
+				colliderComponent = new CannonBoxColliderComponent({
+					halfExtents: new Vector3(radius, radius, radius)
 				});
 				entity.set(rigidBodyComponent).set(colliderComponent);
 
@@ -78,13 +74,11 @@ require([
 				// rigidBodyComponent.centerOfMassOffset.setd(0,3,0);
 				var radius = 1 + V.rng.nextFloat();
 				entity = world.createEntity(position);
-				colliderComponent = new CannonColliderComponent({
-					collider: new CannonCylinderCollider({
-						height: radius * 2,
-						radiusTop: radius,
-						radiusBottom: radius,
-						numSegments: 10
-					})
+				colliderComponent = new CannonCylinderColliderComponent({
+					height: radius * 2,
+					radiusTop: radius,
+					radiusBottom: radius,
+					numSegments: 10
 				});
 				var colliderEntity = world.createEntity(new Cylinder(10, radius, radius, radius * 2), mat);
 				colliderEntity.set(colliderComponent);
@@ -96,9 +90,7 @@ require([
 
 				var radius = 1 + V.rng.nextFloat();
 				entity = world.createEntity(new Sphere(10, 10, radius), mat, position);
-				colliderComponent = new CannonColliderComponent({
-					collider: new CannonSphereCollider({ radius: radius })
-				});
+				colliderComponent = new CannonSphereColliderComponent({ radius: radius });
 				entity.set(rigidBodyComponent).set(colliderComponent);
 
 			}
@@ -114,7 +106,7 @@ require([
 		var rigidBodyComponent = new CannonRigidbodyComponent({
 			mass : 0
 		});
-		var planeColliderComponent = new CannonColliderComponent({ collider: new CannonPlaneCollider() });
+		var planeColliderComponent = new CannonPlaneColliderComponent();
 		groundEntity.set(rigidBodyComponent)
 			.set(planeColliderComponent)
 			.addToWorld();
@@ -123,13 +115,10 @@ require([
 	function createStaticBox(x, y, z, w, d, h) {
 		return world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
 			.set(new CannonRigidbodyComponent({ mass: 0 }))
-			.set(
-				new CannonColliderComponent({
-					collider: new CannonBoxCollider({
-						halfExtents: new Vector3(w / 2, d / 2, h / 2)
-					})
-				})
-			).addToWorld();
+			.set(new CannonBoxColliderComponent({
+				halfExtents: new Vector3(w / 2, d / 2, h / 2)
+			}))
+			.addToWorld();
 	}
 
 	// Create a 'G' compound box body
@@ -153,11 +142,11 @@ require([
 		var subEntity3 = world.createEntity(new Box(h3.x * 2, h3.y * 2, h3.z * 2), V.getColoredMaterial(), new Vector3(    1, 0,   0).mul(2));
 		var subEntity4 = world.createEntity(new Box(h4.x * 2, h4.y * 2, h4.z * 2), V.getColoredMaterial(), new Vector3(  1.5,-1,   0).mul(2));
 		var subEntity5 = world.createEntity(new Box(h5.x * 2, h5.y * 2, h5.z * 2), V.getColoredMaterial(), new Vector3(    0,-2,   0).mul(2));
-		subEntity1.set(new CannonColliderComponent({ collider: new CannonBoxCollider({ halfExtents: h1 }) }));
-		subEntity2.set(new CannonColliderComponent({ collider: new CannonBoxCollider({ halfExtents: h2 }) }));
-		subEntity3.set(new CannonColliderComponent({ collider: new CannonBoxCollider({ halfExtents: h3 }) }));
-		subEntity4.set(new CannonColliderComponent({ collider: new CannonBoxCollider({ halfExtents: h4 }) }));
-		subEntity5.set(new CannonColliderComponent({ collider: new CannonBoxCollider({ halfExtents: h5 }) }));
+		subEntity1.set(new CannonBoxColliderComponent({ halfExtents:h1 }));
+		subEntity2.set(new CannonBoxColliderComponent({ halfExtents:h2 }));
+		subEntity3.set(new CannonBoxColliderComponent({ halfExtents:h3 }));
+		subEntity4.set(new CannonBoxColliderComponent({ halfExtents:h4 }));
+		subEntity5.set(new CannonBoxColliderComponent({ halfExtents:h5 }));
 
 		// Attach the children to the root
 		compoundEntity.attachChild(subEntity1)
@@ -193,16 +182,13 @@ require([
 				mass: i ? 1 : 0,
 				velocity: new Vector3(0, 0, i * 3)
 			});
-			var e = world.createEntity(new Sphere(10, 10, radius), V.getColoredMaterial(), [x, y - i * radius * 2, z])
+			var e = world.createEntity(new Sphere(10, 10, radius), V.getColoredMaterial(), [x, y-i*radius*2, z])
 				.set(body)
-				.set(
-					new CannonColliderComponent({
-						collider: new CannonSphereCollider({
-							radius: radius
-						})
-					})
-				).addToWorld();
-			if (lastBody) {
+				.set(new CannonSphereColliderComponent({
+					radius : radius
+				}))
+				.addToWorld();
+			if(lastBody){
 				e.set(new CannonDistanceJointComponent({
 					distance: linkDistance,
 					connectedBody: lastBody
@@ -218,7 +204,7 @@ require([
 	var N = 5;
 	createChain(0, 4, 10, N, dist, radius);
 	createGround();
-	createCompound(0, 5, 0);
+	createCompound(0,5,0);
 
 	var forcefieldEnabled = false;
 
