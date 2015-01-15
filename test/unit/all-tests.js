@@ -124,6 +124,7 @@ define([
 	'test/particles/ParticleLib-test',
 	'test/particles/ParticleUtils-test',
 	'test/physicspack/ammo/AmmoPhysicsSystem-test',
+	'test/physicspack/ammo/AmmoRigidbodyComponent-test',
 	'test/physicspack/PhysicsSystem-test',
 	'test/physicspack/RigidbodyComponent-test',
 	'test/physicspack/colliders/MeshCollider-test',

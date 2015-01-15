@@ -22,7 +22,7 @@ function () {
 		 * Indicates if the connected entities should collide.
 		 * @type {boolean}
 		 */
-		this.collideConnected = typeof(settings.collideConnected) ? settings.collideConnected : false;
+		this.collideConnected = settings.collideConnected !== undefined ? settings.collideConnected : false;
 
 		/**
 		 * @private

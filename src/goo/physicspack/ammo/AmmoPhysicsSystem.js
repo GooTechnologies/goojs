@@ -47,9 +47,24 @@ function (
 		this._inContactLastStepA = [];
 		this._inContactLastStepB = [];
 
+		this._destroyList = [
+			collisionConfiguration,
+			dispatcher,
+			overlappingPairCache,
+			solver
+		];
+
 		AbstractPhysicsSystem.call(this, 'AmmoPhysicsSystem', ['AmmoRigidbodyComponent']);
 	}
 	AmmoPhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
+
+	AmmoPhysicsSystem.prototype.cleanup = function () {
+		// for (var i = 0; i < this._destroyList.length; i++) {
+		// 	//Ammo.destroy(this._destroyList[i]);
+		// }
+		//Ammo.destroy(this.ammoWorld);
+		this._destroyList.length = 0;
+	};
 
 	AmmoPhysicsSystem.prototype._swapContactLists = function () {
 		var tmp = this._inContactCurrentStepA;
@@ -103,9 +118,8 @@ function (
 	};
 
 	AmmoPhysicsSystem.prototype.setGravity = function (gravityVector) {
-		var g = new Ammo.btVector3(gravityVector.x, gravityVector.y, gravityVector.z);
-		this.ammoWorld.setGravity(g);
-		Ammo.destroy(g);
+		tmpVec1.setValue(gravityVector.x, gravityVector.y, gravityVector.z);
+		this.ammoWorld.setGravity(tmpVec1);
 	};
 
 	AmmoPhysicsSystem.prototype.step = function (tpf) {
@@ -218,6 +232,21 @@ function (
 			tc.setUpdated();
 		}
 	};
+
+	/**
+	 * Stops updating the entities
+	 */
+	AmmoPhysicsSystem.prototype.pause = function () {
+		this.passive = true;
+	};
+
+	/**
+	 * Resumes updating the entities
+	 */
+	AmmoPhysicsSystem.prototype.play = function () {
+		this.passive = false;
+	};
+
 
 	return AmmoPhysicsSystem;
 });

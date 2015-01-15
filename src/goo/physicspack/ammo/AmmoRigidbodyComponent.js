@@ -70,13 +70,25 @@ function (
 		 * @private
 		 * @type {number}
 		 */
-		this._collisionGroup = null;
+		this._collisionGroup = settings.collisionGroup !== undefined ? settings.collisionGroup : null;
 
 		/**
 		 * @private
 		 * @type {number}
 		 */
-		this._collisionMask = null;
+		this._collisionMask = settings.collisionMask !== undefined ? settings.collisionMask : null;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._linearDamping = settings.linearDamping !== undefined ? settings.linearDamping : 0.01;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._angularDamping = settings.angularDamping !== undefined ? settings.angularDamping : 0.05;
 
 		/**
 		 * @private
@@ -100,13 +112,13 @@ function (
 		 * @private
 		 * @type {number}
 		 */
-		this._friction = 0.3;
+		this._friction = settings.friction !== undefined ? settings.friction : 0.5;
 
 		/**
 		 * @private
 		 * @type {number}
 		 */
-		this._restitution = 0;
+		this._restitution = settings.restitution !== undefined ? settings.restitution : 0;
 
 		/**
 		 * @type {Boolean}
@@ -131,12 +143,15 @@ function (
 
 	AmmoRigidbodyComponent.prototype.setTransformFromEntity = function (entity) {
 		var gooPos = entity.transformComponent.transform.translation;
-		tmpTransform.setIdentity();
-		tmpTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z)); // TODO: use tmp vec/quat
+		var transform = tmpTransform;
+		transform.setIdentity();
+		tmpVector.setValue(gooPos.x, gooPos.y, gooPos.z);
+		transform.setOrigin(tmpVector);
 		tmpGooQuat.fromRotationMatrix(entity.transformComponent.transform.rotation);
 		var q = tmpGooQuat;
-		tmpTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
-		this.ammoBody.setWorldTransform(tmpTransform);
+		tmpQuat.setValue(q.x, q.y, q.z, q.w);
+		transform.setRotation(tmpQuat);
+		this.ammoBody.setWorldTransform(transform);
 	};
 
 	AmmoRigidbodyComponent.prototype.applyForce = function (force) {
@@ -149,6 +164,22 @@ function (
 		tmpVector.setValue(velocity.x, velocity.y, velocity.z);
 		this.ammoBody.setLinearVelocity(tmpVector);
 		this._velocity.setVector(velocity);
+	};
+
+	AmmoRigidbodyComponent.prototype.getVelocity = function (velocity) {
+		var v = this.ammoBody.getLinearVelocity();
+		velocity.setDirect(v.x(), v.y(), v.z());
+	};
+
+	AmmoRigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
+		tmpVector.setValue(angularVelocity.x, angularVelocity.y, angularVelocity.z);
+		this.ammoBody.setAngularVelocity(tmpVector);
+		this._angularVelocity.setVector(angularVelocity);
+	};
+
+	AmmoRigidbodyComponent.prototype.getAngularVelocity = function (velocity) {
+		var v = this.ammoBody.getAngularVelocity();
+		velocity.setDirect(v.x(), v.y(), v.z());
 	};
 
 	AmmoRigidbodyComponent.prototype.setPosition = function (pos) {
@@ -174,29 +205,24 @@ function (
 		targetQuat.setDirect(aq.x(), aq.y(), aq.z(), aq.w());
 	};
 
-	AmmoRigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
-		tmpVector.setValue(angularVelocity.x, angularVelocity.y, angularVelocity.z);
-		this.ammoBody.setAngularVelocity(tmpVector);
-		this._angularVelocity.setVector(angularVelocity);
-	};
 
 	Object.defineProperties(AmmoRigidbodyComponent.prototype, {
 
 		restitution: {
 			get: function () {
-				return this.ammoBody.get_m_restitution();
+				return this.ammoBody.getRestitution();
 			},
 			set: function (value) {
-				this.ammoBody.set_m_restitution(value);
+				this.ammoBody.setRestitution(value);
 			}
 		},
 
 		friction: {
 			get: function () {
-				return this.ammoBody.get_m_friction();
+				return this.ammoBody.getFriction();
 			},
 			set: function (value) {
-				this.ammoBody.set_m_friction(value);
+				this.ammoBody.setFriction(value);
 			}
 		},
 
@@ -218,7 +244,39 @@ function (
 				this._dirty = true;
 				this._collisionGroup = value;
 			}
-		}
+		},
+
+		/**
+		 * @memberOf AmmoRigidbodyComponent#
+		 * @type {number}
+		 */
+		linearDamping: {
+			get: function () {
+				return this._linearDamping;
+			},
+			set: function (value) {
+				if (this.ammoBody) {
+					this.ammoBody.setDamping(value, this._angularDamping);
+				}
+				this._linearDamping = value;
+			}
+		},
+
+		/**
+		 * @memberOf AmmoRigidbodyComponent#
+		 * @type {number}
+		 */
+		angularDamping: {
+			get: function () {
+				return this._angularDamping;
+			},
+			set: function (value) {
+				if (this.ammoBody) {
+					this.ammoBody.setDamping(this._linearDamping, value);
+				}
+				this._angularDamping = value;
+			}
+		},
 	});
 
 	AmmoRigidbodyComponent.prototype.updateKinematic = function (entity) {
@@ -234,27 +292,53 @@ function (
         }
 	};
 
-	AmmoRigidbodyComponent.prototype.initialize = function (entity, system) {
+	AmmoRigidbodyComponent.prototype.destroy = function () {
 		if (this.ammoBody) {
-			system.ammoWorld.removeRigidBody(this.ammoBody);
+			var world = this._system.ammoWorld;
+			while (this.joints.length) {
+				var joint = this.joints.pop();
+				world.removeConstraint(joint.ammoJoint);
+				Ammo.destroy(joint.ammoJoint);
+				joint.ammoJoint = null;
+			}
+
+			world.removeRigidBody(this.ammoBody);
 			Ammo.destroy(this.ammoBody);
+			this.ammoBody = null;
+		}
+		if (this._ammoShape) {
+			Ammo.destroy(this._ammoShape);
+			this._ammoShape = null;
+		}
+	};
+
+	AmmoRigidbodyComponent.prototype.initialize = function () {
+		var system = this._system;
+		var entity = this._entity;
+
+		if (this.ammoBody) {
+			this.destroy();
 		}
 
 		var gooTransform = entity.transformComponent.transform;
 		var gooPos = gooTransform.translation;
 		var gooRot = gooTransform.rotation;
 
-		var ammoTransform = new Ammo.btTransform();
+		var ammoTransform = tmpTransform;
 		ammoTransform.setIdentity();
-		ammoTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
+		tmpVector.setValue(gooPos.x, gooPos.y, gooPos.z);
+		ammoTransform.setOrigin(tmpVector);
+
 		var q = tmpGooQuat;
 		q.fromRotationMatrix(gooRot);
-		ammoTransform.setRotation(new Ammo.btQuaternion(q.x, q.y, q.z, q.w));
+		tmpQuat.setValue(q.x, q.y, q.z, q.w);
+		ammoTransform.setRotation(tmpQuat);
 
 		var shape = this.constructAmmoShape(entity);
 
 		var motionState = new Ammo.btDefaultMotionState(ammoTransform);
-		var localInertia = new Ammo.btVector3(0, 0, 0);
+		var localInertia = tmpVector;
+		localInertia.setValue(0, 0, 0);
 
 		// rigidbody is dynamic if and only if mass is non zero, otherwise static
 		if (this.mass !== 0.0) {
@@ -262,7 +346,6 @@ function (
 		}
 
 		var info = new Ammo.btRigidBodyConstructionInfo(this.mass, motionState, shape, localInertia);
-		this.localInertia = localInertia;
 		var body = this.ammoBody = new Ammo.btRigidBody(info);
 
 		// Register the body pointer, needed by the system
@@ -274,17 +357,28 @@ function (
 			body.setActivationState(AmmoRigidbodyComponent.AmmoFlags.DISABLE_DEACTIVATION);
 		}
 
-		if (typeof(this.collisionGroup) === 'number' && typeof(this.collisionMask) === 'number') {
-			system.ammoWorld.addRigidBody(this.ammoBody, this.collisionGroup, this.collisionMask);
+		if (typeof(this._collisionGroup) === 'number' && typeof(this._collisionMask) === 'number') {
+			system.ammoWorld.addRigidBody(body, this._collisionGroup, this._collisionMask);
 		} else {
-			system.ammoWorld.addRigidBody(this.ammoBody);
+			system.ammoWorld.addRigidBody(body);
 		}
 
+		// Set initial values
 		if (!this._initialized) {
 			this._initialized = true;
 			this.setVelocity(this._velocity);
-			this.setAngularVelocity(this._velocity);
+			this.setAngularVelocity(this._angularVelocity);
+			this.linearDamping = this._linearDamping;
+			this.angularDamping = this._angularDamping;
+			this.friction = this._friction;
+			this.restitution = this._restitution;
 		}
+
+		this._ammoShape = shape;
+
+		// //Ammo.destroy(motionState);
+		// //Ammo.destroy(info);
+		this.emitInitialized(entity);
 	};
 
 	AmmoRigidbodyComponent.AmmoFlags = {
@@ -318,10 +412,12 @@ function (
 		this.traverseColliders(entity, function (colliderEntity, collider, localPosition, localQuaternion) {
 
 			// Get local transform
-			var localTrans = tmpTransform;
+			var localTrans = new Ammo.btTransform();
 			localTrans.setIdentity();
-			localTrans.setOrigin(new Ammo.btVector3(localPosition.x, localPosition.y, localPosition.z));
-			localTrans.setRotation(new Ammo.btQuaternion(localQuaternion.x, localQuaternion.y, localQuaternion.z, localQuaternion.w));
+			tmpVector.setValue(localPosition.x, localPosition.y, localPosition.z);
+			localTrans.setOrigin(tmpVector);
+			tmpQuat.setValue(localQuaternion.x, localQuaternion.y, localQuaternion.z, localQuaternion.w);
+			localTrans.setRotation(tmpQuat);
 
 			// Get the shape
 			var childShape;
@@ -389,6 +485,16 @@ function (
 		return shape;
 	};
 
+	/**
+	 * @private
+	 */
+	AmmoRigidbodyComponent.prototype.destroyJoint = function (joint) {
+		if (joint.ammoJoint) {
+			this._system.ammoWorld.removeConstraint(joint.ammoJoint);
+			joint.ammoJoint = null;
+		}
+	};
+
 	AmmoRigidbodyComponent.prototype.initializeJoint = function (joint, entity, system) {
 		var bodyA = this.ammoBody;
 		var bodyB = joint.connectedEntity.ammoRigidbodyComponent.ammoBody;
@@ -396,8 +502,8 @@ function (
 		var constraint;
 
 		if (joint instanceof BallJoint) {
-			var pivotInA = tmpVector;
-			var pivotInB = tmpVector2;
+			var pivotInA = new Ammo.btVector3();
+			var pivotInB = new Ammo.btVector3();
 			var localPivot = joint.localPivot;
 			pivotInA.setValue(localPivot.x, localPivot.y, localPivot.z);
 
@@ -409,10 +515,10 @@ function (
 			constraint = new Ammo.btPoint2PointConstraint(bodyA, bodyB, pivotInA, pivotInB);
 
 		} else if (joint instanceof HingeJoint) {
-			var pivotInA = tmpVector;
-			var pivotInB = tmpVector2;
-			var axisInA = tmpVector3;
-			var axisInB = tmpVector4;
+			var pivotInA = new Ammo.btVector3();
+			var pivotInB = new Ammo.btVector3();
+			var axisInA = new Ammo.btVector3();
+			var axisInB = new Ammo.btVector3();
 
 			var localPivot = joint.localPivot;
 			var localAxis = joint.localAxis;
@@ -444,6 +550,29 @@ function (
 			system.ammoWorld.addConstraint(constraint, joint.collideConnected);
 			joint.ammoJoint = constraint;
 		}
+	};
+
+	AmmoRigidbodyComponent.prototype.clone = function () {
+		return new AmmoRigidbodyComponent({
+			mass: this._mass,
+			isKinematic: this._isKinematic,
+			linearDamping: this._linearDamping,
+			angularDamping: this._angularDamping,
+			collisionMask: this._collisionMask,
+			collisionGroup: this._collisionGroup,
+			friction: this._friction,
+			restitution: this._restitution
+		});
+	};
+
+	/**
+	 * @private
+	 * @virtual
+	 * @param entity
+	 */
+	AmmoRigidbodyComponent.prototype.attached = function (entity) {
+		this._entity = entity;
+		this._system = entity._world.getSystem('AmmoPhysicsSystem');
 	};
 
 	return AmmoRigidbodyComponent;

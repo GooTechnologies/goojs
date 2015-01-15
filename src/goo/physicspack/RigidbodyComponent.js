@@ -548,5 +548,15 @@ function (
 		});
 	};
 
+	/**
+	 * @private
+	 * @virtual
+	 * @param entity
+	 */
+	RigidbodyComponent.prototype.attached = function (entity) {
+		this._entity = entity;
+		this._system = entity._world.getSystem('PhysicsSystem');
+	};
+
 	return RigidbodyComponent;
 });

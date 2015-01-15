@@ -250,8 +250,8 @@ require([
 	var radius = 0.9;
 	var dist = 2;
 	var N = 5;
-	createChain(0, 4, 10, N, dist, radius);
 	createGround();
+	createChain(0, 4, 10, N, dist, radius);
 	createCompound(0, 5, 0);
 	createHinge(5, 5, 0);
 

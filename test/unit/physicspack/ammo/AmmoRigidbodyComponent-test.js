@@ -1,9 +1,9 @@
 define([
 	'goo/entities/World',
-	'goo/physicspack/PhysicsSystem',
+	'goo/physicspack/ammo/AmmoPhysicsSystem',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
-	'goo/physicspack/RigidbodyComponent',
+	'goo/physicspack/ammo/AmmoRigidbodyComponent',
 	'goo/physicspack/ColliderComponent',
 	'goo/physicspack/colliders/SphereCollider',
 	'goo/physicspack/colliders/BoxCollider',
@@ -12,10 +12,10 @@ define([
 	'goo/entities/SystemBus'
 ], function (
 	World,
-	PhysicsSystem,
+	AmmoPhysicsSystem,
 	Vector3,
 	Quaternion,
-	RigidbodyComponent,
+	AmmoRigidbodyComponent,
 	ColliderComponent,
 	SphereCollider,
 	BoxCollider,
@@ -25,60 +25,66 @@ define([
 ) {
 	'use strict';
 
-	/* global CANNON */
+	/* global Ammo */
 
-	describe('RigidbodyComponent', function () {
+	describe('AmmoRigidbodyComponent', function () {
 		var world, system, rbc, cc, entity;
 
 		beforeEach(function () {
-			world = new World();
-			system = new PhysicsSystem({
-				maxSubSteps: 1
-			});
-			system.setGravity(new Vector3());
-			world.setSystem(system);
+			if (!world) {
+				world = new World();
+				system = new AmmoPhysicsSystem({
+					maxSubSteps: 1
+				});
+				system.setGravity(new Vector3());
+				world.setSystem(system);
 
-			rbc = new RigidbodyComponent({ mass: 1 });
-			cc = new ColliderComponent({
-				collider: new SphereCollider({ radius: 1 })
-			});
-			entity = world.createEntity(rbc, cc).addToWorld();
-			world.process();
+				rbc = new AmmoRigidbodyComponent({ mass: 1 });
+				cc = new ColliderComponent({
+					collider: new SphereCollider({ radius: 1 })
+				});
+				entity = world.createEntity(rbc, cc).addToWorld();
+				world.process();
+			}
+
+		});
+
+		afterEach(function () {
 		});
 
 		it('can set collision group', function (done) {
 			rbc.collisionGroup = 2;
-			expect(rbc.cannonBody.collisionFilterGroup).toEqual(2);
+			expect(rbc.collisionGroup).toEqual(2);
 			done();
 		});
 
 		it('can set collision mask', function (done) {
 			rbc.collisionMask = 2;
-			expect(rbc.cannonBody.collisionFilterMask).toEqual(2);
+			expect(rbc.collisionMask).toEqual(2);
 			done();
 		});
 
 		it('can set friction', function (done) {
-			rbc.friction = 123;
-			expect(rbc.cannonBody.material.friction).toEqual(123);
+			rbc.friction = 0.5;
+			expect(rbc.ammoBody.getFriction()).toEqual(0.5);
 			done();
 		});
 
 		it('can set restitution', function (done) {
-			rbc.restitution = 123;
-			expect(rbc.cannonBody.material.restitution).toEqual(123);
+			rbc.restitution = 0.5;
+			expect(rbc.ammoBody.getRestitution()).toEqual(0.5);
 			done();
 		});
 
 		it('can set linearDamping', function (done) {
 			rbc.linearDamping = 123;
-			expect(rbc.cannonBody.linearDamping).toEqual(123);
+			expect(rbc.linearDamping).toEqual(123);
 			done();
 		});
 
 		it('can set angularDamping', function (done) {
 			rbc.angularDamping = 123;
-			expect(rbc.cannonBody.angularDamping).toEqual(123);
+			expect(rbc.angularDamping).toEqual(123);
 			done();
 		});
 
@@ -87,24 +93,24 @@ define([
 			rbc.setTransformFromEntity(entity);
 			var position = new Vector3();
 			rbc.getPosition(position);
-			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
+			expect(rbc.ammoBody.getCenterOfMassPosition().z()).toEqual(3);
 			done();
 		});
 
 		it('can apply force', function (done) {
 			rbc.applyForce(new Vector3(1, 2, 3));
-			expect(rbc.cannonBody.force).toEqual(new CANNON.Vec3(1, 2, 3));
+			expect(rbc.ammoBody.getTotalForce().z()).toEqual(3);
 			done();
 		});
 
 		it('can set velocity', function (done) {
 			rbc.setVelocity(new Vector3(1, 2, 3));
-			expect(rbc.cannonBody.velocity).toEqual(new CANNON.Vec3(1, 2, 3));
+			expect(rbc.ammoBody.getLinearVelocity().z()).toEqual(3);
 			done();
 		});
 
 		it('can get velocity', function (done) {
-			rbc.cannonBody.velocity.set(1, 2, 3);
+			rbc.ammoBody.setLinearVelocity(new Ammo.btVector3(1, 2, 3));
 			var velocity = new Vector3();
 			rbc.getVelocity(velocity);
 			expect(velocity).toEqual(new Vector3(1, 2, 3));
@@ -113,51 +119,36 @@ define([
 
 		it('can set position', function (done) {
 			rbc.setPosition(new Vector3(1, 2, 3));
-			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
-			done();
-		});
-
-		it('can set position', function (done) {
-			rbc.setPosition(new Vector3(1, 2, 3));
-			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
+			expect(rbc.ammoBody.getCenterOfMassPosition().z()).toEqual(3);
 			done();
 		});
 
 		it('can set quaternion', function (done) {
-			rbc.setQuaternion(new Quaternion(1, 2, 3, 4));
-			expect(rbc.cannonBody.quaternion).toEqual(new CANNON.Quaternion(1, 2, 3, 4));
+			rbc.setQuaternion(new Quaternion(0, 0, 0, 1));
+			expect(rbc.ammoBody.getOrientation().w()).toEqual(1);
 			done();
 		});
 
 		it('can get quaternion', function (done) {
-			rbc.cannonBody.quaternion.set(1, 2, 3, 4);
+			rbc.setQuaternion(new Quaternion(0, 0, 0, 1));
 			var quat = new Quaternion();
 			rbc.getQuaternion(quat);
-			expect(quat).toEqual(new Quaternion(1, 2, 3, 4));
+			expect(quat).toEqual(new Quaternion(0, 0, 0, 1));
 			done();
 		});
 
 		it('can set kinematic', function (done) {
 			rbc.isKinematic = true;
 			world.process();
-			expect(rbc.cannonBody.type).toEqual(CANNON.Body.KINEMATIC);
+			/* jslint bitwise: true */
+			expect(rbc.ammoBody.getCollisionFlags() | AmmoRigidbodyComponent.AmmoFlags.CF_KINEMATIC_OBJECT).toBeTruthy();
 			done();
 		});
 
-		it('can get cannon shape from box collider', function (done) {
-			var c = new BoxCollider({
-				halfExtents: new Vector3(1, 2, 3)
-			});
-			var cannonShape = rbc.getCannonShape(c);
-			expect(cannonShape).toEqual(new CANNON.Box(new CANNON.Vec3(1, 2, 3)));
-			done();
-		});
-
-		it('can destroy itself and rebuild', function (done) {
+		it('can destroy itself', function (done) {
 			rbc.destroy();
-			expect(rbc.cannonBody).toBeFalsy();
-			world.process();
-			expect(rbc.cannonBody).toBeTruthy();
+			expect(rbc.ammoBody).toBeFalsy();
+			rbc.initialize();
 			done();
 		});
 
@@ -168,11 +159,11 @@ define([
 
 			rbc.addJoint(joint);
 			world.process();
-			expect(joint.cannonJoint).toBeTruthy();
+			expect(joint.ammoJoint).toBeTruthy();
 
 			rbc.removeJoint(joint);
 			world.process();
-			expect(joint.cannonJoint).toBeFalsy();
+			expect(joint.ammoJoint).toBeFalsy();
 
 			done();
 		});
@@ -185,12 +176,16 @@ define([
 			rbc.addJoint(joint);
 			world.process();
 
-			entity.clearComponent('RigidbodyComponent');
+			entity.clearComponent('AmmoRigidbodyComponent');
 
 			world.process();
 
-			expect(joint.cannonJoint).toBeFalsy();
-			expect(rbc.cannonBody).toBeFalsy();
+			expect(joint.ammoJoint).toBeFalsy();
+			expect(rbc.ammoBody).toBeFalsy();
+
+			entity.set(rbc);
+			rbc.initialize();
+			world.process();
 
 			done();
 		});
@@ -202,27 +197,27 @@ define([
 
 			rbc.addJoint(joint);
 			world.process();
-			expect(joint.cannonJoint).toBeTruthy();
+			expect(joint.ammoJoint).toBeTruthy();
 
 			rbc.removeJoint(joint);
 			world.process();
-			expect(joint.cannonJoint).toBeFalsy();
+			expect(joint.ammoJoint).toBeFalsy();
 
 			done();
 		});
 
 		it('emits initialized', function (done) {
 
-			rbc = new RigidbodyComponent({ mass: 1 });
-			cc = new ColliderComponent({
+			var rbc1 = new AmmoRigidbodyComponent({ mass: 1 });
+			var cc1 = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			entity = world.createEntity(rbc, cc).addToWorld();
+			var entity1 = world.createEntity(rbc1, cc1).addToWorld();
 
 			var numEvents = 0;
 			var listener = function (evt) {
 				numEvents++;
-				expect(evt.entity).toEqual(entity);
+				expect(evt.entity).toEqual(entity1);
 			};
 			SystemBus.addListener('goo.physics.initialized', listener);
 
@@ -236,7 +231,7 @@ define([
 		});
 
 		it('can be initialized manually', function (done) {
-			rbc = new RigidbodyComponent({ mass: 1 });
+			rbc = new AmmoRigidbodyComponent({ mass: 1 });
 			cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -248,10 +243,10 @@ define([
 			};
 			SystemBus.addListener('goo.physics.initialized', listener);
 			rbc.initialize();
-
 			SystemBus.removeListener('goo.physics.initialized', listener);
+
 			expect(numEvents).toBe(1);
-			expect(rbc.cannonBody).toBeTruthy();
+			expect(rbc.ammoBody).toBeTruthy();
 
 			done();
 		});

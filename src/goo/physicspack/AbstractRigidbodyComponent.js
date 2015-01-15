@@ -142,12 +142,10 @@ function (
 
 	/**
 	 * @private
+	 * @virtual
 	 * @param entity
 	 */
-	AbstractRigidbodyComponent.prototype.attached = function (entity) {
-		this._entity = entity;
-		this._system = entity._world.getSystem('PhysicsSystem');
-	};
+	AbstractRigidbodyComponent.prototype.attached = function (/*entity*/) {};
 
 	/**
 	 * @private

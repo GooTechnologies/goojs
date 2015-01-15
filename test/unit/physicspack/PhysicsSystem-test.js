@@ -31,6 +31,10 @@ define([
 			world.setSystem(system);
 		});
 
+		afterEach(function () {
+			world.clearSystem('PhysicsSystem');
+		});
+
 		it('can raycast closest', function (done) {
 			var start = new Vector3(0, 0, -10);
 			var end = new Vector3(0, 0, 10);
@@ -176,6 +180,8 @@ define([
 			for (var key in listeners) {
 				SystemBus.removeListener(key, listeners[key]);
 			}
+
+			window.SystemBus = SystemBus;
 
 			done();
 		});
