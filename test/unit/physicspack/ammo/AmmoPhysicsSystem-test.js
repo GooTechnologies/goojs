@@ -1,19 +1,19 @@
 define([
 	'goo/entities/World',
-	'goo/physicspack/ammo/AmmoSystem',
+	'goo/physicspack/ammo/AmmoPhysicsSystem',
 	'goo/entities/systems/TransformSystem',
 	'goo/math/Vector3',
-	'goo/physicspack/ammo/AmmoComponent',
+	'goo/physicspack/ammo/AmmoRigidbodyComponent',
 	'goo/physicspack/ColliderComponent',
 	'goo/physicspack/RaycastResult',
 	'goo/physicspack/colliders/SphereCollider',
 	'goo/entities/SystemBus'
 ], function (
 	World,
-	AmmoSystem,
+	AmmoPhysicsSystem,
 	TransformSystem,
 	Vector3,
-	AmmoComponent,
+	AmmoRigidbodyComponent,
 	ColliderComponent,
 	RaycastResult,
 	SphereCollider,
@@ -26,7 +26,7 @@ define([
 
 		beforeEach(function () {
 			world = new World();
-			system = new AmmoSystem({
+			system = new AmmoPhysicsSystem({
 				maxSubSteps: 1
 			});
 			system.setGravity(new Vector3());
@@ -37,8 +37,8 @@ define([
 		it('can raycast closest', function (done) {
 			var start = new Vector3(0, 0, -10);
 			var end = new Vector3(0, 0, 10);
-			var rbcA = new AmmoComponent();
-			var rbcB = new AmmoComponent();
+			var rbcA = new AmmoRigidbodyComponent();
+			var rbcB = new AmmoRigidbodyComponent();
 			var cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -64,8 +64,8 @@ define([
 		});
 
 		it('emits contact events', function (done) {
-			var rbcA = new AmmoComponent({ mass: 1 });
-			var rbcB = new AmmoComponent({ mass: 1 });
+			var rbcA = new AmmoRigidbodyComponent({ mass: 1 });
+			var rbcB = new AmmoRigidbodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -148,8 +148,8 @@ define([
 		// 		SystemBus.addListener(key, listeners[key]);
 		// 	}
 
-		// 	var rbcA = new AmmoComponent({ mass: 1 });
-		// 	var rbcB = new AmmoComponent({ mass: 1 });
+		// 	var rbcA = new AmmoRigidbodyComponent({ mass: 1 });
+		// 	var rbcB = new AmmoRigidbodyComponent({ mass: 1 });
 		// 	var ccA = new ColliderComponent({
 		// 		collider: new SphereCollider({ radius: 1 })
 		// 	});

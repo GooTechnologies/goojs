@@ -44,17 +44,16 @@ function (
 
 	/**
 	 * @class
-	 * @param {Entity} entity
 	 * @param {object} [settings]
 	 * @param {object} [settings.mass=1]
 	 * @extends AbstractRigidbodyComponent
 	 */
-	function AmmoComponent(settings) {
+	function AmmoRigidbodyComponent(settings) {
 		settings = settings || {};
 
 		AbstractRigidbodyComponent.apply(this, arguments);
 
-		this.type = 'AmmoComponent';
+		this.type = 'AmmoRigidbodyComponent';
 
 		/**
 		 * The Ammo.btRigidbody instance. Will be created on .initialize()
@@ -126,11 +125,11 @@ function (
 			tmpQuat = new Ammo.btQuaternion();
 		}
 	}
-	AmmoComponent.prototype = Object.create(AbstractRigidbodyComponent.prototype);
-	AmmoComponent.constructor = AmmoComponent;
-	AmmoComponent.type = 'AmmoComponent';
+	AmmoRigidbodyComponent.prototype = Object.create(AbstractRigidbodyComponent.prototype);
+	AmmoRigidbodyComponent.constructor = AmmoRigidbodyComponent;
+	AmmoRigidbodyComponent.type = 'AmmoRigidbodyComponent';
 
-	AmmoComponent.prototype.setTransformFromEntity = function (entity) {
+	AmmoRigidbodyComponent.prototype.setTransformFromEntity = function (entity) {
 		var gooPos = entity.transformComponent.transform.translation;
 		tmpTransform.setIdentity();
 		tmpTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z)); // TODO: use tmp vec/quat
@@ -140,48 +139,48 @@ function (
 		this.ammoBody.setWorldTransform(tmpTransform);
 	};
 
-	AmmoComponent.prototype.applyForce = function (force) {
+	AmmoRigidbodyComponent.prototype.applyForce = function (force) {
 		tmpVector.setValue(force.x, force.y, force.z);
 		tmpVector2.setValue(0, 0, 0);
 		this.ammoBody.applyForce(tmpVector, tmpVector2);
 	};
 
-	AmmoComponent.prototype.setVelocity = function (velocity) {
+	AmmoRigidbodyComponent.prototype.setVelocity = function (velocity) {
 		tmpVector.setValue(velocity.x, velocity.y, velocity.z);
 		this.ammoBody.setLinearVelocity(tmpVector);
 		this._velocity.setVector(velocity);
 	};
 
-	AmmoComponent.prototype.setPosition = function (pos) {
+	AmmoRigidbodyComponent.prototype.setPosition = function (pos) {
 		tmpVector.setValue(pos.x, pos.y, pos.z);
 		this.ammoBody.getWorldTransform().setOrigin(tmpVector);
 	};
 
-	AmmoComponent.prototype.getPosition = function (targetVector) {
+	AmmoRigidbodyComponent.prototype.getPosition = function (targetVector) {
 		var p = this.ammoBody.getWorldTransform();
 		var origin = p.getOrigin();
 		targetVector.setDirect(origin.x(), origin.y(), origin.z());
 	};
 
-	AmmoComponent.prototype.setQuaternion = function (quat) {
+	AmmoRigidbodyComponent.prototype.setQuaternion = function (quat) {
 		var p = this.ammoBody.getWorldTransform();
 		tmpQuat.setValue(quat.x, quat.y, quat.z, quat.w);
 		p.setRotation(tmpQuat);
 	};
 
-	AmmoComponent.prototype.getQuaternion = function (targetQuat) {
+	AmmoRigidbodyComponent.prototype.getQuaternion = function (targetQuat) {
 		var t = this.ammoBody.getWorldTransform();
 		var aq = t.getRotation();
 		targetQuat.setDirect(aq.x(), aq.y(), aq.z(), aq.w());
 	};
 
-	AmmoComponent.prototype.setAngularVelocity = function (angularVelocity) {
+	AmmoRigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
 		tmpVector.setValue(angularVelocity.x, angularVelocity.y, angularVelocity.z);
 		this.ammoBody.setAngularVelocity(tmpVector);
 		this._angularVelocity.setVector(angularVelocity);
 	};
 
-	Object.defineProperties(AmmoComponent.prototype, {
+	Object.defineProperties(AmmoRigidbodyComponent.prototype, {
 
 		restitution: {
 			get: function () {
@@ -222,7 +221,7 @@ function (
 		}
 	});
 
-	AmmoComponent.prototype.updateKinematic = function (entity) {
+	AmmoRigidbodyComponent.prototype.updateKinematic = function (entity) {
 		var body = this.ammoBody;
         if (body.getMotionState()) {
             var pos = entity.transformComponent.worldTransform.translation;
@@ -235,9 +234,9 @@ function (
         }
 	};
 
-	AmmoComponent.prototype.initialize = function (entity, system) {
+	AmmoRigidbodyComponent.prototype.initialize = function (entity, system) {
 		if (this.ammoBody) {
-			system.world.removeRigidBody(this.ammoBody);
+			system.ammoWorld.removeRigidBody(this.ammoBody);
 			Ammo.destroy(this.ammoBody);
 		}
 
@@ -271,14 +270,14 @@ function (
 		system._entities[ptr] = entity;
 
 		if (this.isKinematic) {
-			body.setCollisionFlags(body.getCollisionFlags() | AmmoComponent.AmmoFlags.CF_KINEMATIC_OBJECT);
-			body.setActivationState(AmmoComponent.AmmoFlags.DISABLE_DEACTIVATION);
+			body.setCollisionFlags(body.getCollisionFlags() | AmmoRigidbodyComponent.AmmoFlags.CF_KINEMATIC_OBJECT);
+			body.setActivationState(AmmoRigidbodyComponent.AmmoFlags.DISABLE_DEACTIVATION);
 		}
 
 		if (typeof(this.collisionGroup) === 'number' && typeof(this.collisionMask) === 'number') {
-			system.world.addRigidBody(this.ammoBody, this.collisionGroup, this.collisionMask);
+			system.ammoWorld.addRigidBody(this.ammoBody, this.collisionGroup, this.collisionMask);
 		} else {
-			system.world.addRigidBody(this.ammoBody);
+			system.ammoWorld.addRigidBody(this.ammoBody);
 		}
 
 		if (!this._initialized) {
@@ -288,7 +287,7 @@ function (
 		}
 	};
 
-	AmmoComponent.AmmoFlags = {
+	AmmoRigidbodyComponent.AmmoFlags = {
 		// See http://bulletphysics.org/Bullet/BulletFull/classbtCollisionObject.html
 		CF_STATIC_OBJECT: 1,
 		CF_KINEMATIC_OBJECT: 2,
@@ -306,7 +305,7 @@ function (
 		DISABLE_SIMULATION: 5
 	};
 
-	AmmoComponent.prototype.constructAmmoShape = function (entity) {
+	AmmoRigidbodyComponent.prototype.constructAmmoShape = function (entity) {
 		var shape;
 		var numColliders = 0;
 		var collider;
@@ -390,9 +389,9 @@ function (
 		return shape;
 	};
 
-	AmmoComponent.prototype.initializeJoint = function (joint, entity, system) {
+	AmmoRigidbodyComponent.prototype.initializeJoint = function (joint, entity, system) {
 		var bodyA = this.ammoBody;
-		var bodyB = joint.connectedEntity.ammoComponent.ammoBody;
+		var bodyB = joint.connectedEntity.ammoRigidbodyComponent.ammoBody;
 
 		var constraint;
 
@@ -442,10 +441,10 @@ function (
 		}
 
 		if (constraint) {
-			system.world.addConstraint(constraint, joint.collideConnected);
+			system.ammoWorld.addConstraint(constraint, joint.collideConnected);
 			joint.ammoJoint = constraint;
 		}
 	};
 
-	return AmmoComponent;
+	return AmmoRigidbodyComponent;
 });

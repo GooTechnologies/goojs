@@ -2,8 +2,8 @@ define([
 
 	'goo/scripts/Scripts',
 
-	'goo/physicspack/ammo/AmmoComponent',
-	'goo/physicspack/ammo/AmmoSystem',
+	'goo/physicspack/ammo/AmmoRigidbodyComponent',
+	'goo/physicspack/ammo/AmmoPhysicsSystem',
 
 	'goo/physicspack/colliders/BoxCollider',
 	'goo/physicspack/colliders/Collider',
@@ -31,8 +31,8 @@ define([
 	var defines = [
 		'goo/scripts/Scripts',
 
-		'goo/physicspack/ammo/AmmoComponent',
-		'goo/physicspack/ammo/AmmoSystem',
+		'goo/physicspack/ammo/AmmoRigidbodyComponent',
+		'goo/physicspack/ammo/AmmoPhysicsSystem',
 
 		'goo/physicspack/colliders/BoxCollider',
 		'goo/physicspack/colliders/Collider',

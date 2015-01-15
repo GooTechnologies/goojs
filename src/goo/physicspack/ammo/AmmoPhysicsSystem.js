@@ -16,10 +16,10 @@ function (
 	var tmpQuat = new Quaternion();
 
 	/**
-	 * @class
+	 * @class Physics system using the Ammo.js physics engine.
 	 * @extends AbstractPhysicsSystem
 	 */
-	function AmmoSystem() {
+	function AmmoPhysicsSystem() {
 		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
 		var dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
 		var overlappingPairCache = new Ammo.btDbvtBroadphase();
@@ -28,7 +28,7 @@ function (
 		/**
 		 * @type {Ammo.btDiscreteDynamicsWorld}
 		 */
-		this.world = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+		this.ammoWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
 		/**
 		 * Maps Ammo pointers to entities
@@ -47,11 +47,11 @@ function (
 		this._inContactLastStepA = [];
 		this._inContactLastStepB = [];
 
-		AbstractPhysicsSystem.call(this, 'AmmoSystem', ['AmmoComponent']);
+		AbstractPhysicsSystem.call(this, 'AmmoPhysicsSystem', ['AmmoRigidbodyComponent']);
 	}
-	AmmoSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
+	AmmoPhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 
-	AmmoSystem.prototype._swapContactLists = function () {
+	AmmoPhysicsSystem.prototype._swapContactLists = function () {
 		var tmp = this._inContactCurrentStepA;
 		this._inContactCurrentStepA = this._inContactLastStepA;
 		this._inContactLastStepA = tmp;
@@ -63,7 +63,7 @@ function (
 		this._inContactCurrentStepB.length = 0;
 	};
 
-	AmmoSystem.prototype.raycastClosest = function (start, end, result) {
+	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, result) {
 
 		var ammoStart = tmpVec1;
 		var ammoEnd = tmpVec2;
@@ -79,7 +79,7 @@ function (
 		// 	rayCallback.set_m_collisionFilterMask(mask);
 		// }
 
-		this.world.rayTest(ammoStart, ammoEnd, rayCallback);
+		this.ammoWorld.rayTest(ammoStart, ammoEnd, rayCallback);
 
 		var hit = false;
 		result.entity = null;
@@ -102,14 +102,14 @@ function (
 		return hit;
 	};
 
-	AmmoSystem.prototype.setGravity = function (gravityVector) {
+	AmmoPhysicsSystem.prototype.setGravity = function (gravityVector) {
 		var g = new Ammo.btVector3(gravityVector.x, gravityVector.y, gravityVector.z);
-		this.world.setGravity(g);
+		this.ammoWorld.setGravity(g);
 		Ammo.destroy(g);
 	};
 
-	AmmoSystem.prototype.step = function (tpf) {
-		var world = this.world;
+	AmmoPhysicsSystem.prototype.step = function (tpf) {
+		var world = this.ammoWorld;
 
 		// Step the world forward in time
 		var fixedTimeStep = 1 / this.stepFrequency;
@@ -121,9 +121,9 @@ function (
 		this.emitContactEvents();
 	};
 
-	AmmoSystem.prototype.emitContactEvents = function () {
+	AmmoPhysicsSystem.prototype.emitContactEvents = function () {
 		// Get overlapping entities
-		var dp = this.world.getDispatcher(),
+		var dp = this.ammoWorld.getDispatcher(),
 			num = dp.getNumManifolds(),
 			entities = this._entities;
 
@@ -175,13 +175,13 @@ function (
 		}
 	};
 
-	AmmoSystem.prototype.process = function (entities, tpf) {
+	AmmoPhysicsSystem.prototype.process = function (entities, tpf) {
 		var N = entities.length;
 
 		// Initialize bodies
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rb = entity.ammoComponent;
+			var rb = entity.ammoRigidbodyComponent;
 
 			if (rb._dirty) {
 				rb.initialize(entity, this);
@@ -193,13 +193,13 @@ function (
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
 
-			var joints = entity.ammoComponent.joints;
+			var joints = entity.ammoRigidbodyComponent.joints;
 			for (var j = 0; j < joints.length; j++) {
 				var joint = joints[j];
 				if (!joint._dirty) {
 					continue;
 				}
-				entity.ammoComponent.initializeJoint(joint, entity, this);
+				entity.ammoRigidbodyComponent.initializeJoint(joint, entity, this);
 				joint._dirty = false;
 			}
 		}
@@ -209,7 +209,7 @@ function (
 		// Update positions of entities from the physics data
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rb = entity.ammoComponent;
+			var rb = entity.ammoRigidbodyComponent;
 			var tc = entity.transformComponent;
 			rb.getPosition(tc.transform.translation);
 			rb.getQuaternion(tmpQuat);
@@ -219,5 +219,5 @@ function (
 		}
 	};
 
-	return AmmoSystem;
+	return AmmoPhysicsSystem;
 });
