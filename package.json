@@ -53,9 +53,9 @@
     "escodegen": "~1.4.1",
     "esprima": "~1.2.2",
     "uglify-js": "~2.4.15",
-    "mustache": "~0.8.2",
+    "mustache": "~1.0.0",
     "marked": "~0.3.2",
-    "estraverse": "~1.9.0",
+    "estraverse": "~1.9.1",
     "jasmine-node": "~2.0.0"
   },
   "engines": {
