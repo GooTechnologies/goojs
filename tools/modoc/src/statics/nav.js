@@ -15,16 +15,8 @@
 	}
 
 	function setupSearch() {
-		var searchText = '';
-
-		if (parameters.q) {
-			searchText = parameters.q;
-			searchInput.val(parameters.q);
-			filterClasses(parameters.q);
-		}
-
 		searchInput.keyup(function () {
-			searchText = $(this).val();
+			var searchText = $(this).val();
 			filterClasses(searchText);
 		});
 	}
@@ -42,7 +34,11 @@
 	var iframe = $('iframe.class-panel');
 	var items = $('.item');
 	var searchInput = $('#search');
+
 	var parameters = purl().param();
+	if (parameters.c) {
+		iframe.attr('src', parameters.c + '-doc.html');
+	}
 
 	setupSearch();
 	setupIframe();
