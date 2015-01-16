@@ -165,9 +165,7 @@ require([
 		});
 	}
 
-	var goo = V.initGoo({
-		manuallyStartGameLoop: true
-	});
+	var goo = V.initGoo();
 	var world = goo.world;
 	goo.world.add(new AnimationSystem());
 	goo.world.add(new StateMachineSystem(goo));
@@ -232,8 +230,6 @@ require([
 		waterRenderer.waterMaterial.shader.uniforms.fogColor = [1.0, 1.0, 1.0];
 		waterRenderer.waterMaterial.shader.uniforms.fogStart = 0;
 
-		V.process();
-
 		world.processEntityChanges();
 		transformSystem._process();
 		lightingSystem._process();
@@ -251,8 +247,7 @@ require([
 		return renderer.preloadMaterials(renderSystem._activeEntities);
 	}).then(function () {
 		// Start the rendering loop!
-		goo.startGameLoop();
-		goo.renderer.domElement.focus();
+		V.process();
 	}).then(null, function (e) {
 		// If something goes wrong, 'e' is the error message from the engine.
 		alert('Failed to load project: ' + e);

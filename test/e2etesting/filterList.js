@@ -3,6 +3,7 @@ var filterList = [
 	'carousel',
 	'Destroy',
 	'GooToImage',
+	'RestoreContext',
 	'GroundBound',
 	'Gamepad',
 	'Script',
@@ -11,7 +12,12 @@ var filterList = [
 	'goofy',
 	'Obj',
 	'TimelineComponentHandler',
-	'HTMLComponent'
+	'HTMLComponent',
+	'Cannon-terrain', // needs fixing
+	'HtmlComponentHandler', // displays nothing on the canvas
+	'CrunchLoader',
+	'Clone',
+	'Portal' // this used to work when the wait time was high
 ];
 
 exports.filterList = filterList;
