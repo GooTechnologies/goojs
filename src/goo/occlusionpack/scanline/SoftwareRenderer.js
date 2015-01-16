@@ -66,9 +66,9 @@ define([
 		this._halfClipY = this._clipY / 2;
 
 		
-		this.camera = parameters.camera !=== undefined ? parameters.camera : Renderer.mainCamera;
+		this.camera = parameters.camera !== undefined ? parameters.camera : Renderer.mainCamera;
 		if (this.camera === undefined || this.camera === null) {
-			throw 'ERROR: SoftwareRenderer(): Missing parameter "camera". No set camera on the Renderer either.';
+			throw Error('ERROR: SoftwareRenderer(): Missing parameter "camera". No set camera on the Renderer either.');
 		}
 
 		var numOfPixels = this.width * this.height;
@@ -92,7 +92,7 @@ define([
 		var maxVertCount = parameters.maxVertCount !== undefined ? parameters.maxVertCount : 104;
 		var maxIndexCount = parameters.maxIndexCount !== undefined ? parameters.maxIndexCount : 96;
 
-		this._triangleData = new OccluderTriangleData({'vertCount': maxVertCount, 'indexCount': maxIndexCount});
+		this._triangleData = new OccluderTriangleData({vertCount: maxVertCount, indexCount: maxIndexCount});
 
 		this.edgeMap = new EdgeMap(maxVertCount);
 
