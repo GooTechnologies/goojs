@@ -2,6 +2,7 @@ require([
 	'lib/V',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/Util',
 	'goo/entities/systems/System',
 	'goo/entities/components/ModifierComponent',
 	'goo/entities/components/modifiers/vertex/SpinModifier',
@@ -18,12 +19,16 @@ require([
 	'goo/entities/components/modifiers/object/PlaceModifier',
 	'goo/entities/systems/ModifierSystem',
 	'goo/shapes/Box',
+	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
+	'goo/math/MathUtils',
+	'goo/geometrypack/Surface',
 	'goo/math/Vector3'
 ], function (
 	V,
 	Material,
 	ShaderLib,
+	Util,
 	System,
 	ModifierComponent,
 	SpinModifier,
@@ -40,7 +45,10 @@ require([
 	PlaceModifier,
 	ModifierSystem,
 	Box,
+	Sphere,
 	Torus,
+	MathUtils,
+	Surface,
 	Vector3
 ) {
 	'use strict';
@@ -57,7 +65,8 @@ require([
 	var root = world.createEntity().addToWorld();
 	var entity;
 
-	entity = world.createEntity([0, 0, 0], new Torus(6, 6, 1, 6), material).addToWorld();
+	var torus = new Torus(16, 12, 1, 6);
+	entity = world.createEntity([0, 0, 0], torus, material).addToWorld();
 	root.attachChild(entity);
 	// entity = world.createEntity([0, 0, 5], new Torus(40, 20, 1, 6), material).addToWorld();
 	// root.attachChild(entity);
@@ -66,50 +75,71 @@ require([
 	// entity = world.createEntity([0, 0, -5], new Torus(40, 20, 1, 6), material).addToWorld();
 	// root.attachChild(entity);
 
-	var countX = 0;
-	var countY = 0;
-	var countZ = 0;
-
 	var box = new Box(5, 5, 5);
-
 	entity = world.createEntity(
 		[0,0,0], 
 		box, material2).addToWorld();
 	root.attachChild(entity);
 
-	var spread = 1.1;
-	for (var j = 0; j < 8; j++) {
-	for (var i = 0; i < countX; i++) {
-		entity = world.createEntity(
-			[
-				// Math.random()*5, 
-				(i - countX/2) * spread, 
-				Math.random()*5, 
-				Math.random()*5
-			], 
-			box, Math.random() > 0.5 ? material : material2).addToWorld();
-		root.attachChild(entity);
+	// function getHeightMap(nLin, nCol) {
+	// 	var matrix = [];
+	// 	for (var i = 0; i < nLin; i++) {
+	// 		matrix.push([]);
+	// 		for (var j = 0; j < nCol; j++) {
+	// 			var value =
+	// 				Math.sin(i * 0.3) +
+	// 				Math.cos(j * 0.3) +
+	// 				Math.sin(Math.sqrt(i*i + j*j) * 0.7) * 2;
+	// 			matrix[i].push(value);
+	// 		}
+	// 	}
+	// 	return matrix;
+	// }
+
+	// var heightMapSize = 64;
+
+	// var matrix = getHeightMap(heightMapSize, heightMapSize);
+	// var cool = Surface.createFromHeightMap(matrix);
+	// var entity = world.createEntity([0, 0, 0], cool, material).addToWorld();
+
+	var sphere = new Sphere(8, 8, 0.2);
+	var box2 = new Box(0.2, 1, 0.2);
+
+	var positionStore = new Vector3();
+	var normalStore = new Vector3();
+	var vec = new Vector3();
+	for (var i = 0; i < 200; i++) {
+		Util.getRandomSurfacePosition(box, positionStore, normalStore);
+
+		var entity = world.createEntity([positionStore.x, positionStore.y, positionStore.z], box2, material).addToWorld();
+		vec.setVector(Vector3.ZERO);
+		while (vec.lengthSquared() < MathUtils.EPSILON) {
+			vec.setDirect(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).cross(normalStore);
+		}
+		entity.transformComponent.transform.rotation.lookAt(vec, normalStore);
+		entity.transformComponent.setUpdated();
 	}
-	}
-	for (var i = 0; i < countY; i++) {
-		entity = world.createEntity(
-			[
-				0, 
-				(i - countY/2) * spread, 
-				0
-			], 
-			box, material).addToWorld();
-		root.attachChild(entity);
-	}
-	for (var i = 0; i < countZ; i++) {
-		entity = world.createEntity(
-			[
-				0, 
-				0,
-				(i - countZ/2) * spread
-			], 
-			box, material).addToWorld();
-		root.attachChild(entity);
+	// for (var i = 0; i < 200; i++) {
+	// 	Util.getRandomSurfacePosition(cool, positionStore, normalStore);
+
+	// 	var entity = world.createEntity([positionStore.x, positionStore.y, positionStore.z], box2, material).addToWorld();
+	// 	vec.setVector(Vector3.ZERO);
+	// 	while (vec.lengthSquared() < MathUtils.EPSILON) {
+	// 		vec.setDirect(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).cross(normalStore);
+	// 	}
+	// 	entity.transformComponent.transform.rotation.lookAt(vec, normalStore);
+	// 	entity.transformComponent.setUpdated();
+	// }
+	for (var i = 0; i < 200; i++) {
+		Util.getRandomSurfacePosition(torus, positionStore, normalStore);
+
+		var entity = world.createEntity([positionStore.x, positionStore.y, positionStore.z], box2, material).addToWorld();
+		vec.setVector(Vector3.ZERO);
+		while (vec.lengthSquared() < MathUtils.EPSILON) {
+			vec.setDirect(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).cross(normalStore);
+		}
+		entity.transformComponent.transform.rotation.lookAt(vec, normalStore);
+		entity.transformComponent.setUpdated();
 	}
 
 	world.setSystem(new ModifierSystem());

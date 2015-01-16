@@ -160,7 +160,7 @@ function (
 		return 0;
 	};
 
-	MeshData.prototype.getPrimitiveVertices = function (primitiveIndex, section, store) {
+	MeshData.prototype.getPrimitiveVertices = function (primitiveIndex, section, positionStore, normalStore) {
 		var count = this.getPrimitiveCount(section);
 		if (primitiveIndex >= count || primitiveIndex < 0) {
 			throw new Error("Invalid primitiveIndex '" + primitiveIndex + "'.  Count is " + count);
@@ -168,26 +168,39 @@ function (
 
 		var mode = this.indexModes[section];
 		var rSize = MeshData.getVertexCount(mode);
-		var result = store || [];
+		var result = positionStore || [];
 		result.length = rSize;
 
 		var verts = this.getAttributeBuffer(MeshData.POSITION);
+		var normals = this.getAttributeBuffer(MeshData.NORMAL);
+		if (!normals) {
+			normalStore = null;
+		}
+
+		var vert = 0;
 		for (var i = 0; i < rSize; i++) {
 			if (!result[i]) {
 				result[i] = new Vector3();
 			}
+			if (normalStore && !normalStore[i]) {
+				normalStore[i] = new Vector3();				
+			}
+
 			if (this.getIndexBuffer()) {
 				// indexed geometry
-				var vert = this.getIndexBuffer()[this.getVertexIndex(primitiveIndex, i, section)];
-				result[i].x = verts[vert * 3 + 0];
-				result[i].y = verts[vert * 3 + 1];
-				result[i].z = verts[vert * 3 + 2];
+				vert = this.getIndexBuffer()[this.getVertexIndex(primitiveIndex, i, section)];
 			} else {
 				// non-indexed geometry
-				var vert = this.getVertexIndex(primitiveIndex, i, section);
-				result[i].x = verts[vert * 3 + 0];
-				result[i].y = verts[vert * 3 + 1];
-				result[i].z = verts[vert * 3 + 2];
+				vert = this.getVertexIndex(primitiveIndex, i, section);
+			}
+
+			result[i].x = verts[vert * 3 + 0];
+			result[i].y = verts[vert * 3 + 1];
+			result[i].z = verts[vert * 3 + 2];
+			if (normalStore) {
+				normalStore[i].x = normals[vert * 3 + 0];
+				normalStore[i].y = normals[vert * 3 + 1];
+				normalStore[i].z = normals[vert * 3 + 2];
 			}
 		}
 

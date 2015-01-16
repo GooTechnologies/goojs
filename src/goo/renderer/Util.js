@@ -222,5 +222,70 @@ function () {
 		}
 	};
 
+	function haltonRand(index, base) {
+		var result = 0;
+		var f = 1 / base;
+		var i = index;
+		while (i > 0) {
+			result = result + f * (i % base);
+			i = Math.floor(i / base);
+			f = f / base;
+		}
+		return result;
+	}
+
+	/**
+	 * Gets a random position on a meshData surface
+	 * @param {MeshData} meshData MeshData to extract surface position from
+	 * @param {Vector3} store The vector to store the random position in
+	 * @param {Vector3} store The vector to store the random position in
+	 * @return {Vector3} The store, for chaining
+	 */
+	var triangleVerts = [];
+	var triangleNormals = [];
+	var randIndex1 = 100;
+	var randIndex2 = 100;
+	Util.getRandomSurfacePosition = function(meshData, positionStore, normalStore) {
+		if (meshData.primitiveCounts[0] === 0) {
+			meshData.updatePrimitiveCounts();
+		}
+
+		var sectionCount = meshData.getSectionCount();
+		var sectionIndex = Math.floor(Math.random() * sectionCount);
+
+		var primitiveCount = meshData.getPrimitiveCount(sectionIndex);
+		var primitiveIndex = Math.floor(Math.random() * primitiveCount);
+		// var primitiveIndex = Math.floor(haltonRand(randIndex2, 4) * primitiveCount);
+		// console.log(haltonRand(randIndex2, 3));
+		// var r = Math.random() * primitiveCount;
+		// var r = haltonRand(randIndex2, 3) * primitiveCount;
+		// var primitiveIndex = Math.floor(r);
+
+		if (normalStore) {
+			meshData.getPrimitiveVertices(primitiveIndex, sectionIndex, triangleVerts, triangleNormals);
+		} else {
+			meshData.getPrimitiveVertices(primitiveIndex, sectionIndex, triangleVerts);
+		}
+
+		var r1 = Math.sqrt(Math.random());
+		// var r1 = Math.sqrt(haltonRand(randIndex2, 2));
+		// var r1 = Math.sqrt(r%1);
+		// var r2 = haltonRand(randIndex2++, 4);
+		var r2 = Math.random();
+		// var r2 = r % 1;
+
+		positionStore.setVector(triangleVerts[0].scale(1 - r1));
+		positionStore.addVector(triangleVerts[1].scale(r1 * (1 - r2)));
+		positionStore.addVector(triangleVerts[2].scale(r1 * r2));
+
+		if (normalStore) {
+			normalStore.setVector(triangleNormals[0].scale(1 - r1));
+			normalStore.addVector(triangleNormals[1].scale(r1 * (1 - r2)));
+			normalStore.addVector(triangleNormals[2].scale(r1 * r2));
+		}
+
+		return positionStore;
+	};
+
 	return Util;
 });
