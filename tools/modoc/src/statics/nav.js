@@ -26,7 +26,23 @@
 			item = $(item);
 
 			item.find('a').click(function () {
-				iframe.attr('src', item.find('a').attr('phony'));
+				iframe.attr('src', this.getAttribute('phony'));
+			});
+		});
+	}
+
+	function setupActiveClass() {
+		var activeClass;
+
+		items.each(function (index, item) {
+			item = $(item);
+
+			item.find('a').click(function () {
+				if (activeClass !== this.parentNode) {
+					if (activeClass) { activeClass.classList.remove('active'); }
+					this.parentNode.classList.add('active');
+					activeClass = this.parentNode;
+				}
 			});
 		});
 	}
@@ -39,6 +55,8 @@
 	if (parameters.c) {
 		iframe.attr('src', parameters.c + '-doc.html');
 	}
+
+	setupActiveClass();
 
 	setupSearch();
 	setupIframe();
