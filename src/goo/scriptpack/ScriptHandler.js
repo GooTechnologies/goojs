@@ -112,10 +112,29 @@ function (
 			window._gooScriptFactories = {};
 		}
 
+
+		var body = config.body;
+		if (body.indexOf("'coffeescript'\n") !== -1 && window.CoffeeScript) {
+			try {
+				body = CoffeeScript.compile(body, {bare: true});
+			}
+			catch (e) {
+				var err = {
+					message: 'Syntax Error: ' + e.message
+				}
+				var m = e.stack.split('\n')[0].match(/(\d+):\d+:/);
+				if (m) {
+					err.line = parseInt(m[1], 10);
+				}
+				setError(script, err);
+				body = '';
+			}
+		}
+
 		// get a script factory in string form
 		var scriptFactoryStr = [
 			"window._gooScriptFactories['" + config.id + "'] = function () {",
-			config.body,
+			body,
 			' var obj = {',
 			'  externals: {}',
 			' };',
