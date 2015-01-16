@@ -130,6 +130,7 @@ function(
 					attribute === 'SKIP_SPECULAR' ||
 					attribute === 'LIGHT' ||
 					attribute === 'COOKIE' ||
+					attribute === 'TRANSPARENCY_BW' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
 				}
@@ -159,6 +160,12 @@ function(
 				shader.removeDefine('OPACITY');
 			}
 
+			// Alpha or "Black and white" transparency
+			if (material.uniforms.useBWTransparency === true) {
+				shader.setDefine('TRANSPARENCY_BW', true);
+			} else {
+				shader.removeDefine('TRANSPARENCY_BW');
+			}
 		},
 
 		fog: function(shader) {
