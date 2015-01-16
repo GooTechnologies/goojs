@@ -86,7 +86,7 @@ function DemoWorld(world) {
 	camera.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 	var camEntity = world.createEntity(camera, [0, 0, 10]);
 	var scriptComponent = new ScriptComponent();
-	
+
 	scriptComponent.scripts.push(Scripts.create('MouseLookScript'));
 	scriptComponent.scripts.push(Scripts.create('WASD', {'walkSpeed': 50}));
 	camEntity.setComponent(scriptComponent);

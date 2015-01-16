@@ -3,12 +3,14 @@ require([
 	'goo/occlusionpack/OcclusionPartitioner',
 	'DemoWorld',
 	'goo/scripts/ScriptUtils',
+	'goo/scriptpack/ScriptRegister',
 	'lib/V'
 ], function (
 	GooRunner,
 	OcclusionPartitioner,
 	DemoWorld,
 	ScriptUtils,
+	ScriptRegister,
 	V
 	) {
 
