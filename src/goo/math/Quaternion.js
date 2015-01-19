@@ -294,6 +294,25 @@ function (
 	};
 
 	/**
+	 * Conjugates this quaternion
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	Quaternion.prototype.conjugate = function () {
+		this.data[0] *= -1;
+		this.data[1] *= -1;
+		this.data[2] *= -1;
+		return this;
+	};
+
+	/**
+	 * Inverts this quaternion
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	Quaternion.prototype.invert = function () {
+		return this.conjugate().normalize();
+	};
+
+	/**
 	* Calculates the dot product between the current quaternion and another quaternion.
 	* @param rhs Quaternion on the right-hand side.
 	* @returns {number} The dot product.

@@ -17,7 +17,7 @@ define([
 		});
 		
 		describe('constructor', function () {
-			it('creates a zero vector when given no parameters', function () {
+			it('creates a zero quaternion when given no parameters', function () {
 				var quaternion = new Quaternion();
 				expect(quaternion.data[0]).toBeCloseTo(0);
 				expect(quaternion.data[1]).toBeCloseTo(0);
@@ -150,6 +150,22 @@ define([
 			var q = new Quaternion(1,1,1,1);
 			q.negate();
 			expect(q).toEqual(new Quaternion(-1,-1,-1,-1));
+		});
+
+		describe('conjugate', function () {
+			it('conjugates a quaternion', function () {
+				var original = new Quaternion(1, 2, 3, 4);
+				var conjugate = new Quaternion().copy(original).conjugate();
+				expect(conjugate).toBeCloseToVector(new Quaternion(-1, -2, -3, 4));
+			});
+		});
+
+		describe('invert', function () {
+			it('inverts a quaternion', function () {
+				var original = new Quaternion(1, 2, 3, 4).normalize();
+				var inverse = new Quaternion().copy(original).invert();
+				expect(inverse).toBeCloseToVector(new Quaternion(-1/30, -2/30, -3/30, 4/30).normalize());
+			});
 		});
 
 		it('can dot',function () {
