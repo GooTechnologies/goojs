@@ -34,7 +34,9 @@ function (
 		/**
 		 * @type {CANNON.World}
 		 */
-		this.cannonWorld = new CANNON.World();
+		this.cannonWorld = new CANNON.World({
+			broadphase: new CANNON.SAPBroadphase()
+		});
 
 		var that = this;
 		this.cannonWorld.addEventListener('postStep', function () {
@@ -209,6 +211,15 @@ function (
 		this.passive = false;
 	};
 
+	PhysicsSystem.prototype.inserted = function (entity) {
+		var rb = entity.rigidbodyComponent;
+		if (rb._dirty) {
+			rb.initialize();
+		}
+	};
+
+	// PhysicsSystem.prototype.deleted = function (entity) {};
+
 	/**
 	 * @private
 	 * @param  {array} entities
@@ -223,7 +234,7 @@ function (
 			var rb = entity.rigidbodyComponent;
 
 			if (rb._dirty) {
-				rb.initialize(entity, this);
+				rb.initialize();
 			}
 		}
 

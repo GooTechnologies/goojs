@@ -64,7 +64,7 @@ function (
 		// Get the root and update on the walk down
 		var updateEntities = [];
 		this.entity.traverseUp(function (entity) {
-			updateEntities.push(entity);
+			updateEntities.unshift(entity);
 		});
 		var len = updateEntities.length;
 		var doUpdate = false;

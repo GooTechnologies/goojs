@@ -256,6 +256,32 @@ define([
 			done();
 		});
 
+		it('is initialized properly on world.processEntityChanges', function (done) {
+			rbc = new RigidbodyComponent({ mass: 1 });
+			cc = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			entity = world.createEntity()
+				.set(rbc)
+				.set(cc)
+				.addToWorld();
+
+			var numEvents = 0;
+			var listener = function () {
+				numEvents++;
+			};
+			SystemBus.addListener('goo.physics.initialized', listener);
+			world.processEntityChanges();
+
+			expect(numEvents).toBe(1);
+			expect(rbc.cannonBody).toBeTruthy();
+			expect(rbc.cannonBody.shapes.length).toBe(1);
+
+			SystemBus.removeListener('goo.physics.initialized', listener);
+
+			done();
+		});
+
 		it('can clone', function (done) {
 			var a = rbc;
 			a.collisionMask = 4;
