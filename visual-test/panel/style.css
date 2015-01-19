@@ -2,11 +2,6 @@ body {
     background-color: #222222;
 }
 
-iframe {
-    border: 1px solid #999999;
-    margin: 4px 6px;
-}
-
 ::-webkit-scrollbar {
     display: none;
 }
@@ -26,4 +21,18 @@ button {
     position: fixed;
     left: 14px;
     bottom: 14px;
+}
+
+.container {
+    display: inline-block;
+    margin: 4px 6px;
+}
+
+iframe {
+    border: 1px solid #999999;
+}
+
+.title {
+    color: #ffffff;
+    font-family: Consolas, "Lucida Console", Inconsolata, Monaco, monospace;
 }
