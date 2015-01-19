@@ -1,14 +1,20 @@
-define(['goo/math/Vector3', 'goo/math/MathUtils'],
+define([
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
+	],
 /** @lends */
-function (Vector3, MathUtils) {
+function (
+	Vector3,
+	MathUtils
+) {
 	'use strict';
 
 	/**
 	 * @class Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
 	 */
 	function Ray(origin, direction) {
-		this.origin = origin || new Vector3();
-		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
+		this.origin = origin ? origin.clone() : new Vector3();
+		this.direction = direction ? direction.clone() : Vector3.UNIT_Z.clone();
 	}
 
 	var tmpVec1 = new Vector3();
