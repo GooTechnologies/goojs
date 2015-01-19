@@ -48,6 +48,8 @@ function (
 		 * @type {boolean}
 		 */
 		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
+
+		Component.apply(this);
 	}
 	ColliderComponent.prototype = Object.create(Component.prototype);
 	ColliderComponent.constructor = ColliderComponent;
@@ -112,6 +114,8 @@ function (
 			return true;
 		}
 	};
+
+	ColliderComponent.prototype.api = {};
 
 	return ColliderComponent;
 });

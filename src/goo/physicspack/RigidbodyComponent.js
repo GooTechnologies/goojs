@@ -558,5 +558,7 @@ function (
 		this._system = entity._world.getSystem('PhysicsSystem');
 	};
 
+	RigidbodyComponent.prototype.api = {};
+
 	return RigidbodyComponent;
 });

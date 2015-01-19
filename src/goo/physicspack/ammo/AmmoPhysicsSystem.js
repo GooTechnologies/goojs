@@ -58,6 +58,9 @@ function (
 	}
 	AmmoPhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 
+	/**
+	 * @private
+	 */
 	AmmoPhysicsSystem.prototype.cleanup = function () {
 		// for (var i = 0; i < this._destroyList.length; i++) {
 		// 	//Ammo.destroy(this._destroyList[i]);
@@ -66,6 +69,9 @@ function (
 		this._destroyList.length = 0;
 	};
 
+	/**
+	 * @private
+	 */
 	AmmoPhysicsSystem.prototype._swapContactLists = function () {
 		var tmp = this._inContactCurrentStepA;
 		this._inContactCurrentStepA = this._inContactLastStepA;
@@ -78,6 +84,11 @@ function (
 		this._inContactCurrentStepB.length = 0;
 	};
 
+	/**
+	 * @param {Vector3} start
+	 * @param {Vector3} end
+	 * @param {RaycastResult} result
+	 */
 	AmmoPhysicsSystem.prototype.raycastClosest = function (start, end, result) {
 
 		var ammoStart = tmpVec1;
@@ -117,11 +128,17 @@ function (
 		return hit;
 	};
 
+	/**
+	 * @param {Vector3} gravity
+	 */
 	AmmoPhysicsSystem.prototype.setGravity = function (gravityVector) {
 		tmpVec1.setValue(gravityVector.x, gravityVector.y, gravityVector.z);
 		this.ammoWorld.setGravity(tmpVec1);
 	};
 
+	/**
+	 * @private
+	 */
 	AmmoPhysicsSystem.prototype.step = function (tpf) {
 		var world = this.ammoWorld;
 
@@ -135,6 +152,9 @@ function (
 		this.emitContactEvents();
 	};
 
+	/**
+	 * @private
+	 */
 	AmmoPhysicsSystem.prototype.emitContactEvents = function () {
 		// Get overlapping entities
 		var dp = this.ammoWorld.getDispatcher(),
@@ -189,6 +209,9 @@ function (
 		}
 	};
 
+	/**
+	 * @private
+	 */
 	AmmoPhysicsSystem.prototype.process = function (entities, tpf) {
 		var N = entities.length;
 

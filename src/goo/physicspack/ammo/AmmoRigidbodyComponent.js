@@ -141,6 +141,10 @@ function (
 	AmmoRigidbodyComponent.constructor = AmmoRigidbodyComponent;
 	AmmoRigidbodyComponent.type = 'AmmoRigidbodyComponent';
 
+	/**
+	 * Use the local transform in the entity and set on the rigid body.
+	 * @param {Entity} entity
+	 */
 	AmmoRigidbodyComponent.prototype.setTransformFromEntity = function (entity) {
 		var gooPos = entity.transformComponent.transform.translation;
 		var transform = tmpTransform;
@@ -154,51 +158,87 @@ function (
 		this.ammoBody.setWorldTransform(transform);
 	};
 
+	/**
+	 * Apply force on the center of mass.
+	 * @param  {Vector3} force
+	 */
 	AmmoRigidbodyComponent.prototype.applyForce = function (force) {
 		tmpVector.setValue(force.x, force.y, force.z);
 		tmpVector2.setValue(0, 0, 0);
 		this.ammoBody.applyForce(tmpVector, tmpVector2);
 	};
 
+	/**
+	 * Set the current velocity of the body.
+	 * @param  {Vector3} velocity
+	 */
 	AmmoRigidbodyComponent.prototype.setVelocity = function (velocity) {
 		tmpVector.setValue(velocity.x, velocity.y, velocity.z);
 		this.ammoBody.setLinearVelocity(tmpVector);
 		this._velocity.setVector(velocity);
 	};
 
-	AmmoRigidbodyComponent.prototype.getVelocity = function (velocity) {
+	/**
+	 * Get the current velocity from the body.
+	 * @param  {Vector3} targetVector
+	 */
+	AmmoRigidbodyComponent.prototype.getVelocity = function (targetVector) {
 		var v = this.ammoBody.getLinearVelocity();
-		velocity.setDirect(v.x(), v.y(), v.z());
+		targetVector.setDirect(v.x(), v.y(), v.z());
 	};
 
+	/**
+	 * Set the current angular velocity of the body.
+	 * @param  {Vector3} angularVelocity
+	 */
 	AmmoRigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
 		tmpVector.setValue(angularVelocity.x, angularVelocity.y, angularVelocity.z);
 		this.ammoBody.setAngularVelocity(tmpVector);
 		this._angularVelocity.setVector(angularVelocity);
 	};
 
-	AmmoRigidbodyComponent.prototype.getAngularVelocity = function (velocity) {
+	/**
+	 * Get the current angular velocity from the body.
+	 * @param  {Vector3} targetVector
+	 */
+	AmmoRigidbodyComponent.prototype.getAngularVelocity = function (targetVector) {
 		var v = this.ammoBody.getAngularVelocity();
-		velocity.setDirect(v.x(), v.y(), v.z());
+		targetVector.setDirect(v.x(), v.y(), v.z());
 	};
 
+	/**
+	 * Set the position of (teleport) the body.
+	 * @param  {Vector3} position
+	 */
 	AmmoRigidbodyComponent.prototype.setPosition = function (pos) {
 		tmpVector.setValue(pos.x, pos.y, pos.z);
 		this.ammoBody.getWorldTransform().setOrigin(tmpVector);
 	};
 
+	/**
+	 * Get the position of the body.
+	 * @param  {Vector3} targetVector
+	 */
 	AmmoRigidbodyComponent.prototype.getPosition = function (targetVector) {
 		var p = this.ammoBody.getWorldTransform();
 		var origin = p.getOrigin();
 		targetVector.setDirect(origin.x(), origin.y(), origin.z());
 	};
 
+	/**
+	 * Set the orientation of the body.
+	 * @param  {Quaternion} quaternion
+	 */
 	AmmoRigidbodyComponent.prototype.setQuaternion = function (quat) {
 		var p = this.ammoBody.getWorldTransform();
 		tmpQuat.setValue(quat.x, quat.y, quat.z, quat.w);
 		p.setRotation(tmpQuat);
 	};
 
+	/**
+	 * Get the orientation of the body.
+	 * @param  {Quaternion} targetQuat
+	 */
 	AmmoRigidbodyComponent.prototype.getQuaternion = function (targetQuat) {
 		var t = this.ammoBody.getWorldTransform();
 		var aq = t.getRotation();
@@ -208,6 +248,10 @@ function (
 
 	Object.defineProperties(AmmoRigidbodyComponent.prototype, {
 
+		/**
+		 * @memberOf AmmoRigidbodyComponent#
+		 * @type {number}
+		 */
 		restitution: {
 			get: function () {
 				return this.ammoBody.getRestitution();
@@ -217,6 +261,10 @@ function (
 			}
 		},
 
+		/**
+		 * @memberOf AmmoRigidbodyComponent#
+		 * @type {number}
+		 */
 		friction: {
 			get: function () {
 				return this.ammoBody.getFriction();
@@ -226,6 +274,10 @@ function (
 			}
 		},
 
+		/**
+		 * @memberOf AmmoRigidbodyComponent#
+		 * @type {number}
+		 */
 		collisionMask: {
 			get: function () {
 				return this._collisionMask;
@@ -236,6 +288,10 @@ function (
 			}
 		},
 
+		/**
+		 * @memberOf AmmoRigidbodyComponent#
+		 * @type {number}
+		 */
 		collisionGroup: {
 			get: function () {
 				return this._collisionGroup;
@@ -279,6 +335,10 @@ function (
 		},
 	});
 
+	/**
+	 * @private
+	 * @param  {Entity} entity
+	 */
 	AmmoRigidbodyComponent.prototype.updateKinematic = function (entity) {
 		var body = this.ammoBody;
         if (body.getMotionState()) {
@@ -292,6 +352,9 @@ function (
         }
 	};
 
+	/**
+	 * @private
+	 */
 	AmmoRigidbodyComponent.prototype.destroy = function () {
 		if (this.ammoBody) {
 			var world = this._system.ammoWorld;
@@ -312,6 +375,9 @@ function (
 		}
 	};
 
+	/**
+	 * @private
+	 */
 	AmmoRigidbodyComponent.prototype.initialize = function () {
 		var system = this._system;
 		var entity = this._entity;
@@ -381,6 +447,9 @@ function (
 		this.emitInitialized(entity);
 	};
 
+	/**
+	 * @static
+	 */
 	AmmoRigidbodyComponent.AmmoFlags = {
 		// See http://bulletphysics.org/Bullet/BulletFull/classbtCollisionObject.html
 		CF_STATIC_OBJECT: 1,
@@ -399,6 +468,9 @@ function (
 		DISABLE_SIMULATION: 5
 	};
 
+	/**
+	 * @private
+	 */
 	AmmoRigidbodyComponent.prototype.constructAmmoShape = function (entity) {
 		var shape;
 		var numColliders = 0;
@@ -495,6 +567,9 @@ function (
 		}
 	};
 
+	/**
+	 * @private
+	 */
 	AmmoRigidbodyComponent.prototype.initializeJoint = function (joint, entity, system) {
 		var bodyA = this.ammoBody;
 		var bodyB = joint.connectedEntity.ammoRigidbodyComponent.ammoBody;
@@ -552,6 +627,9 @@ function (
 		}
 	};
 
+	/**
+	 * Clone the component.
+	 */
 	AmmoRigidbodyComponent.prototype.clone = function () {
 		return new AmmoRigidbodyComponent({
 			mass: this._mass,
