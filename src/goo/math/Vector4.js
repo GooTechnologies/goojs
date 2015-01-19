@@ -515,7 +515,7 @@ function (
 	 * @return {Vector4} Clone of self.
 	 */
 	Vector4.prototype.clone = function () {
-		return new Vector4(this);
+		return new Vector4().copy(this);
 	};
 
 	/**

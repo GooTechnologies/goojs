@@ -410,11 +410,7 @@ define(["goo/math/MathUtils", "goo/math/Matrix"],
 	 * @return {Matrix2x2} The new matrix.
 	 */
 	Matrix2x2.prototype.clone = function () {
-		var d = this.data;
-		return new Matrix2x2(
-			d[0], d[1],
-			d[2], d[3]
-		);
+		return new Matrix2x2().copy(this);
 	};
 
 	return Matrix2x2;
