@@ -242,7 +242,11 @@ define([
 				'#endif',
 
 				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
-					'final_color.a = texture2D(transparencyMap, texCoord0).a;',
+					'#ifdef TRANSPARENCY_BW',
+						'final_color.a = texture2D(transparencyMap, texCoord0).r;',
+					'#else',
+						'final_color.a = texture2D(transparencyMap, texCoord0).a;',
+					'#endif',
 				'#endif',
 				'#ifdef OPACITY',
 					'final_color.a *= opacity;',
