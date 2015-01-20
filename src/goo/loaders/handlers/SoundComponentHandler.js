@@ -80,7 +80,7 @@ function(
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	SoundComponentHandler.prototype.update = function(entity, config, options) {
-		if (!AudioContext) {
+		if (!AudioContext.isSupported()) {
 			return PromiseUtil.resolve(); //! AT: we're not really using reject
 		}
 

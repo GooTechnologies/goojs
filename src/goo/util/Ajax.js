@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/TextureHandler',
-	'goo/sound/AudioContext',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/StringUtil',
@@ -9,7 +8,6 @@ define([
 /** @lends */
 function (
 	TextureHandler,
-	AudioContext,
 	PromiseUtil,
 	_,
 	StringUtil,

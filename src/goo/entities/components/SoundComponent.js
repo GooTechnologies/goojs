@@ -32,13 +32,13 @@ function (
 		 */
 		this.sounds = [];
 		this._isPanned = true;
-		this._outDryNode = AudioContext.createGain();
-		this._outWetNode = AudioContext.createGain();
+		this._outDryNode = AudioContext.getContext().createGain();
+		this._outWetNode = AudioContext.getContext().createGain();
 		this.connectTo();
-		this._pannerNode = AudioContext.createPanner();
+		this._pannerNode = AudioContext.getContext().createPanner();
 
 		this._pannerNode.connect(this._outDryNode);
-		this._inNode = AudioContext.createGain();
+		this._inNode = AudioContext.getContext().createGain();
 		this._inNode.connect(this._pannerNode);
 		this._oldPosition = new Vector3();
 		this._position = new Vector3();
