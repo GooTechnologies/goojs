@@ -36,6 +36,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 		this.intersectedRayObjects = [];
 		this.intersectedNodes = [];
+		this.hitTriangleIndexes = [];
 
 		//statistics
 		this.rayCastsPerFrame = 0;
@@ -65,7 +66,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		return false;
 	};
 
-	RaySystem.prototype.rayCastSurfaceObject = function(surfaceObject, doBackfaces, breakOnHit) {
+	RaySystem.prototype.rayCastSurfaceObject = function(surfaceObject, doBackfaces) {
 		//bounding sphere of triangle check
 		if(!surfaceObject.intersectsBoundingSphere(this.ray)) return false;
 		this.result.hit = surfaceObject.intersectsTriangle(this.ray, doBackfaces, this.result.localHitLocation, this.result.vertexWeights);
@@ -78,9 +79,9 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				return false;
 			}
 
-			if(breakOnHit) return true;
-
 			this.result.surfaceObject = surfaceObject;
+
+			return true;
 		}
 		return false;
 	};
@@ -116,6 +117,14 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 	RaySystem.prototype._castEnd = function(hit) {
 	};
 
+	RaySystem.prototype.hitTriangleIndexBefore = function(triangleIndex){
+		if(this.hitTriangleIndexes.indexOf(triangleIndex) === -1) {
+			this.hitTriangleIndexes.push(triangleIndex);
+			return false;
+		}
+		return true;
+	};
+
 	//raycast against all RayObject's unsorted and run hitCallback for each of the hits
 	//hitCallback contains one parameter "hitResult" and returns true to continue iterating hits
 	RaySystem.prototype.castCallback = function(lineStart, lineEnd, doBackfaces, hitCallback){
@@ -137,6 +146,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				this.intersectedRayObjects.push(rayObject);
 			}
 		}
+
+		this.hitTriangleIndexes.length = 0;
 
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
@@ -170,22 +181,26 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				{
 					//get surfaceObject from the node data array
 					var surfaceObject = node.data[k];
-					this.rayCastSurfaceObject(surfaceObject, doBackfaces, false);
-					
-					//run the callback and feed it the current hit result
-					if(this.result.hit)
+					if(this.hitTriangleIndexBefore(surfaceObject.triangleIndex))
 					{
-						this.bestResult.copyFrom(this.result);
+						if (this.rayCastSurfaceObject(surfaceObject, doBackfaces))
+						{
+							//run the callback and feed it the current hit result
+							if (this.result.hit)
+							{
+								this.bestResult.copyFrom(this.result);
 
-						//run the callback and feed it the hit result
-						if(!hitCallback(this.bestResult))
-						{
-							this._castEnd(false);
-							return this.bestResult;
-						}
-						else
-						{
-							this._castHit(this.bestResult);
+								//run the callback and feed it the hit result
+								if (!hitCallback(this.bestResult))
+								{
+									this._castEnd(false);
+									return this.bestResult;
+								}
+								else
+								{
+									this._castHit(this.bestResult);
+								}
+							}
 						}
 					}
 				}
@@ -239,6 +254,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 		this.intersectedRayObjects.sort(this.sortIntersectedRayObjects);
 
+		this.hitTriangleIndexes.length = 0;
+
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
 			//reset ray
@@ -271,10 +288,14 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				{
 					//get surfaceObject from the node data array
 					var surfaceObject = node.data[k];
-					this.rayCastSurfaceObject(surfaceObject, doBackfaces, false);
-					
-					//compare for a new best hit
-					this.closestHitCompare();
+					if(this.hitTriangleIndexBefore(surfaceObject.triangleIndex))
+					{
+						if(this.rayCastSurfaceObject(surfaceObject, doBackfaces))
+						{
+							//compare for a new best hit
+							this.closestHitCompare();
+						}
+					}
 				}
 			}
 		}
@@ -342,7 +363,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 					var surfaceObject = node.data[k];
 
 					//We hit a triangle return true
-					if(this.rayCastSurfaceObject(surfaceObject, doBackfaces, true))
+					if(this.rayCastSurfaceObject(surfaceObject, doBackfaces))
 					{
 						this._castEnd(true);
 						//this._castHit(this.result);
