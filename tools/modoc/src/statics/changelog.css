@@ -10,8 +10,8 @@ body {
 	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
 	font-size: 15px;
-	color: #dddddd;
-	background-color: #262626;
+	color: #b5b5b5;
+	background-color: #1d1d1d;
 }
 
 ::-webkit-scrollbar {width: 10px;}
@@ -59,6 +59,8 @@ code {
 	font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace, sans-serif;
 	color: #c8c651;
 }
+
+.deprecated {color: #b5b5b5;}
 
 /******************************************************************************
 MAIN
