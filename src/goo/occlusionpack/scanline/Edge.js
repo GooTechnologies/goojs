@@ -3,7 +3,6 @@ define([
 	'use strict';
 
 	/**
-	 *
 	 * @constructor
 	 */
 	function Edge() {

@@ -14,7 +14,7 @@ require([
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
 	'goo/entities/components/LightComponent',
-	'goo/shapes/TerrainSurface',
+	'goo/addons/terrainpack/TerrainSurface',
 	'goo/shapes/Sphere',
 	'goo/scriptpack/WorldFittedTerrainScript',
 	'goo/scriptpack/GroundBoundMovementScript',
