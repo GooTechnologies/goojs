@@ -8,20 +8,27 @@ function (Vector3, BoundingSphere, MathUtils) {
 		'use strict';
 
 	//SURFACE OBJECT
-	function SurfaceObject(rayObject, triangle){
+	function SurfaceObject(rayObject, triangle, triangleIndex){
 		this.rayObject = rayObject;
 		this.triangle = triangle;
+		this.triangleIndex = triangleIndex;
 		this.boundingSphere = new BoundingSphere();
-		//Bounding radius in square(^2)
+
+		//cache variables below
+		this.edge1 = new Vector3();
+		this.edge2 = new Vector3();
+		this.edge1CrossEdge2 = new Vector3();
+		this.localNormal = new Vector3();
 		this.boundingRadiusSquare = 0;
-		this.computeBoundingSphere();
+
+		this.updateCache();
 	}
 
 	var tmpVec1 = new Vector3();
 	var tmpVec2 = new Vector3();
 	var tmpVec3 = new Vector3();
 	var tmpVec4 = new Vector3();
-
+	
 	SurfaceObject.prototype.computeBoundingSphere = function(){
 		this.boundingRadiusSquare = 0;
 
@@ -58,6 +65,21 @@ function (Vector3, BoundingSphere, MathUtils) {
 		}
 		this.boundingSphere.radius = Math.sqrt(this.boundingRadiusSquare);
 	};
+	
+	SurfaceObject.prototype.updateCache = function(){
+		this.computeBoundingSphere();
+		
+		//calculate edges 1 and 2 of the triangle
+		this.edge1.setArray(this.triangle[1]).subDirect(this.triangle[0][0],this.triangle[0][1],this.triangle[0][2]);
+		this.edge2.setArray(this.triangle[2]).subDirect(this.triangle[0][0],this.triangle[0][1],this.triangle[0][2]);
+
+		//calculate cross
+		this.edge1CrossEdge2.setVector(this.edge1).cross(this.edge2);
+
+		//normalize the cross which gives a unit-normal
+		this.localNormal.setVector(this.edge1CrossEdge2);
+		this.localNormal.normalize();
+	};
 
 	SurfaceObject.prototype.intersectsBoundingSphere = function(ray){
 		var diff = tmpVec1.setVector(ray.origin).subVector(this.boundingSphere.center);
@@ -73,13 +95,9 @@ function (Vector3, BoundingSphere, MathUtils) {
 		return b * b >= a;
 	};
 
-	SurfaceObject.prototype.intersectsTriangle = function(ray, doPlanar, doBackface, locationStore)
+	SurfaceObject.prototype.intersectsTriangle = function(ray, doBackface, locationStore, vertexWeights)
 	{
-		var edge1 = tmpVec2.setArray(this.triangle[1]).subDirect(this.triangle[0][0],this.triangle[0][1],this.triangle[0][2]);
-		var edge2 = tmpVec3.setArray(this.triangle[2]).subDirect(this.triangle[0][0],this.triangle[0][1],this.triangle[0][2]);
-		var norm = tmpVec4.setVector(edge1).cross(edge2);
-
-		var dirDotNorm = ray.direction.dotVector(norm);
+		var dirDotNorm = ray.direction.dotVector(this.edge1CrossEdge2);
 		var sign;
 		if (dirDotNorm > MathUtils.EPSILON) {
 			if(!doBackface) return false;
@@ -95,34 +113,31 @@ function (Vector3, BoundingSphere, MathUtils) {
 
 		var diff = tmpVec1.setVector(ray.origin).subDirect(this.triangle[0][0],this.triangle[0][1],this.triangle[0][2]);
 
-		var dirDotDiffxEdge2 = sign * ray.direction.dotVector(Vector3.cross(diff, edge2, edge2));
+		var diffEdge2Cross = tmpVec2.setVector(diff).cross(this.edge2);
+		var edge1DiffCross = tmpVec3.setVector(this.edge1).cross(diff);
+
+		var dirDotDiffxEdge2 = sign * ray.direction.dotVector(diffEdge2Cross);
 		var result = false;
 		if (dirDotDiffxEdge2 >= 0.0) {
-			var dirDotEdge1xDiff = sign * ray.direction.dotVector(edge1.cross(diff));
+			var dirDotEdge1xDiff =sign * ray.direction.dotVector(edge1DiffCross);
 			if (dirDotEdge1xDiff >= 0.0) {
 				if (dirDotDiffxEdge2 + dirDotEdge1xDiff <= dirDotNorm) {
-					var diffDotNorm = -sign * diff.dotVector(norm);
+					var diffDotNorm = -sign * diff.dotVector(this.edge1CrossEdge2);
 					if (diffDotNorm >= 0.0) {
 						// ray intersects triangle
-						// if locationStore is null, just return true,
-						if (!locationStore) {
-							return true;
-						}
-						// else fill in.
+
 						var inv = 1.0 / dirDotNorm;
 						var t = diffDotNorm * inv;
-						if (!doPlanar) {
-							locationStore.setVector(ray.origin).addDirect(ray.direction.x * t, ray.direction.y * t, ray.direction.z * t);
-						} else {
-							// these weights can be used to determine
-							// interpolated values, such as texture coord.
-							// eg. texcoord s,t at intersection point:
-							// s = w0*s0 + w1*s1 + w2*s2;
-							// t = w0*t0 + w1*t1 + w2*t2;
-							var w1 = dirDotDiffxEdge2 * inv;
-							var w2 = dirDotEdge1xDiff * inv;
-							// float w0 = 1.0 - w1 - w2;
-							locationStore.setDirect(t, w1, w2);
+
+						if(vertexWeights) {
+							//calculate the vertex weights
+							vertexWeights[1] = dirDotDiffxEdge2*inv;
+							vertexWeights[2] = dirDotEdge1xDiff*inv;
+							vertexWeights[0] = 1-vertexWeights[1]-vertexWeights[2];
+						}
+
+						if (locationStore) {
+							locationStore.setVector(ray.direction).mul(t).addVector(ray.origin);
 						}
 						result = true;
 					}
@@ -131,34 +146,35 @@ function (Vector3, BoundingSphere, MathUtils) {
 		}
 		return result;
 	};
+	
+	SurfaceObject.prototype.isFacingLocalRay = function(ray){
+		return ray.direction.dotVector(this.localNormal) < 0;
+	};
+	
+	//return a non unit normal vector
+	SurfaceObject.prototype.getLocalNormal = function(store){
+		store.setVector(this.localNormal);
+		return store;
+	};
 
+	//return a unit world vector
 	SurfaceObject.prototype.getNormal = function(store){
-		tmpVec1.setDirect(this.triangle[0][0], this.triangle[0][1], this.triangle[0][2]);
-		tmpVec2.setDirect(this.triangle[1][0], this.triangle[1][1], this.triangle[1][2]);
-		tmpVec3.setDirect(this.triangle[2][0], this.triangle[2][1], this.triangle[2][2]);
-
-		this.rayObject.regularMatrix.applyPostVector(tmpVec1);
-		this.rayObject.regularMatrix.applyPostVector(tmpVec2);
-		this.rayObject.regularMatrix.applyPostVector(tmpVec3);
-
-		tmpVec3.subVector(tmpVec1);
-		tmpVec2.subVector(tmpVec1);
-
-		tmpVec2.cross(tmpVec3);
-
-		tmpVec2.normalize();
-
-		store.setVector(tmpVec2);
+		//get local normal
+		this.getLocalNormal(store);
+		//transform local normal to worldspace
+		this.rayObject.regularMatrix.applyPostVector(store);
+		store.normalize();
 		return store;
 	};
 
 	SurfaceObject.prototype.reflectVector = function(vector, store){
 		this.getNormal(tmpVec1);
-		tmpVec1.mul(tmpVec1.dot(vector)*2.0);
+		this.tmpVec1.mul(this.tmpVec1.dot(vector)*2.0);
 		store.setVector(vector);
 		store.subVector(tmpVec1);
 		return store;
 	};
+
 
 	return SurfaceObject;
 });

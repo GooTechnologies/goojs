@@ -1,18 +1,22 @@
 define([
+	'goo/entities/systems/System',
 	'goo/math/Vector3',
 	'goo/math/Ray',
-	'goo/raycastpack/RayObject'
+	'goo/raycastpack/RayObject',
+	'goo/raycastpack/HitResult'
 ],
 	/** @lends */
-		function (Vector3, Ray, RayObject) {
-		'use strict';
+function (System, Vector3, Ray, RayObject, HitResult) {
+	'use strict';
 
-	//HIT DATA
-	function HitResult(){
-		this.hit = false;
-		this.location = new Vector3();
-		this.surfaceObject;
+	function fraction(vector, store) {
+		//fix broken math
+		store.x = vector.x===0 ? Number.MAX_SAFE_INTEGER : 1/vector.x;
+		store.y = vector.y===0 ? Number.MAX_SAFE_INTEGER : 1/vector.y;
+		store.z = vector.z===0 ? Number.MAX_SAFE_INTEGER : 1/vector.z;
+		return store;
 	}
+
 
 	//RAY SYSTEM
 	function RaySystem(){
@@ -32,13 +36,16 @@ define([
 
 		this.intersectedRayObjects = [];
 		this.intersectedNodes = [];
+
+		//statistics
+		this.rayCastsPerFrame = 0;
 	}
 
 	RaySystem.prototype = Object.create(System.prototype);
 	RaySystem.prototype.constructor = RaySystem;
 
 	//Assumes and requires the entity to have geometry
-	RaySystem.prototype.addEntity = function(entity, octreeDepth){
+	RaySystem.prototype.addEntity = function(entity, octreeDepth) {
 		if(!this.containsEntity(entity))
 		{
 			var rayObject = new RayObject(this, entity, octreeDepth);
@@ -46,11 +53,11 @@ define([
 		}
 	};
 
-	RaySystem.prototype.containsEntity = function(entity){
+	RaySystem.prototype.containsEntity = function(entity) {
 		for(var i=0; i<this.rayObjects.length; i++)
 		{
 			var rayObject = this.rayObjects[i];
-			if(rayObject.entity === entity)
+			if(rayObject.entity.id === entity.id)
 			{
 				return true;
 			}
@@ -58,32 +65,27 @@ define([
 		return false;
 	};
 
-	RaySystem.prototype.rayCastSurfaceObject = function(surfaceObject, doBackfaces, breakOnHit){
+	RaySystem.prototype.rayCastSurfaceObject = function(surfaceObject, doBackfaces, breakOnHit) {
 		//bounding sphere of triangle check
 		if(!surfaceObject.intersectsBoundingSphere(this.ray)) return false;
-
-		this.result.hit = surfaceObject.intersectsTriangle(this.ray, false, doBackfaces, this.result.location);
-
+		this.result.hit = surfaceObject.intersectsTriangle(this.ray, doBackfaces, this.result.localHitLocation, this.result.vertexWeights);
 		if(this.result.hit)
 		{
 			//check if the hit is within the rays reach
-			if(this.ray.origin.distanceSquared(this.result.location) > this.rayLengthSquare)
+			if(this.ray.origin.distanceSquared(this.result.localHitLocation) > this.rayLengthSquare)
 			{
 				this.result.hit = false;
 				return false;
 			}
+
 			if(breakOnHit) return true;
 
 			this.result.surfaceObject = surfaceObject;
-
-			//transform to world coordinates
-			surfaceObject.rayObject.regularMatrix.applyPostPoint(this.result.location);
 		}
 		return false;
 	};
 	
-	RaySystem.prototype._castBegin = function(lineStart, lineEnd)
-	{
+	RaySystem.prototype._castBegin = function(lineStart, lineEnd) {
 		this.ray.origin.setVector(lineStart);
 
 		//get direction vector from start to end
@@ -97,17 +99,21 @@ define([
 		//normalizes and puts length of vector into rayLength
 		this.ray.normalizeDirection();
 		this.rayLength = this.ray.length;
-		
-		//calculates the inverse direction
-		this.inverseDir.setVector(Vector3.ONE);
-		this.inverseDir.div(this.ray.direction);
+
+		//calculate the direction fraction
+		fraction(this.ray.direction, this.inverseDir);
 
 		//empty intersectedRayObjects array
 		this.intersectedRayObjects.length = 0;
+
+		//increase statics on how many rays we've casted
+		this.rayCastsPerFrame++;
+	};
+
+	RaySystem.prototype._castHit = function(result) {
 	};
 	
-	RaySystem.prototype._castEnd = function(hit)
-	{
+	RaySystem.prototype._castEnd = function(hit) {
 	};
 
 	//raycast against all RayObject's unsorted and run hitCallback for each of the hits
@@ -116,7 +122,7 @@ define([
 		
 		//call the cast start
 		this._castBegin(lineStart, lineEnd);
-		
+
 		this.bestResult.hit = false;
 
 		for(var i=0; i<this.rayObjects.length; i++)
@@ -147,8 +153,8 @@ define([
 			this.rayLength = this.ray.length;
 			this.rayLengthSquare = this.rayLength*this.rayLength;
 
-			this.inverseDir.setVector(Vector3.ONE);
-			this.inverseDir.div(this.ray.direction);
+			//calculate the direction fraction
+			fraction(this.ray.direction, this.inverseDir);
 
 			//empty intersectedNodes list
 			this.intersectedNodes.length = 0;
@@ -169,48 +175,48 @@ define([
 					//run the callback and feed it the current hit result
 					if(this.result.hit)
 					{
-						this.bestResult.hit = true;
-						this.bestResult.location.setVector(this.result.location);
-						this.bestResult.surfaceObject = this.result.surfaceObject;
-						
-						if(!hitCallback(this.result))
+						this.bestResult.copyFrom(this.result);
+
+						//run the callback and feed it the hit result
+						if(!hitCallback(this.bestResult))
 						{
+							this._castEnd(false);
 							return this.bestResult;
+						}
+						else
+						{
+							this._castHit(this.bestResult);
 						}
 					}
 				}
 			}
 		}
-		
+
 		this._castEnd(this.bestResult.hit);
-		
+
 		return this.bestResult;
 	};
 	
 	//
-	RaySystem.prototype.closestHitCompare = function()
-	{
+	RaySystem.prototype.closestHitCompare = function() {
 		if(this.result.hit)
 		{
-			var traceDistance = this.oldRayOrigin.distanceSquared(this.result.location);
+			var traceDistance = this.oldRayOrigin.distanceSquared(this.result.localHitLocation);
 			if(traceDistance < this.bestDistance || this.bestDistance == -1)
 			{
 				this.bestDistance = traceDistance;
-				this.bestResult.hit = true;
-				this.bestResult.location.setVector(this.result.location);
-				this.bestResult.surfaceObject = this.result.surfaceObject;
+				this.bestResult.copyFrom(this.result);
 			}
 		}
 	};
 	
-	RaySystem.prototype.sortIntersectedRayObjects = function(a, b)
-	{
+	RaySystem.prototype.sortIntersectedRayObjects = function(a, b) {
 		return a.distanceToRay - b.distanceToRay;
 	};
 
 	
 	//cast towards all entitys and return the closest hit result
-	RaySystem.prototype.castClosest = function(lineStart, lineEnd, doBackfaces){
+	RaySystem.prototype.castClosest = function(lineStart, lineEnd, doBackfaces) {
 		
 		//call the cast start
 		this._castBegin(lineStart, lineEnd);
@@ -248,8 +254,8 @@ define([
 			this.rayLength = this.ray.length;
 			this.rayLengthSquare = this.rayLength*this.rayLength;
 
-			this.inverseDir.setVector(Vector3.ONE);
-			this.inverseDir.div(this.ray.direction);
+			//calculate the direction fraction
+			fraction(this.ray.direction, this.inverseDir);
 
 			//empty intersectedNodes list
 			this.intersectedNodes.length = 0;
@@ -272,9 +278,14 @@ define([
 				}
 			}
 		}
-		
+
 		this._castEnd(this.bestResult.hit);
-		
+
+		if(this.bestResult.hit)
+		{
+			this._castHit(this.bestResult);
+		}
+
 		return this.bestResult;
 	};
 	
@@ -312,8 +323,8 @@ define([
 			this.rayLength = this.ray.length;
 			this.rayLengthSquare = this.rayLength*this.rayLength;
 
-			this.inverseDir.setVector(Vector3.ONE);
-			this.inverseDir.div(this.ray.direction);
+			//calculate the direction fraction
+			fraction(this.ray.direction, this.inverseDir);
 
 			//empty intersectedNodes list
 			this.intersectedNodes.length = 0;
@@ -331,7 +342,12 @@ define([
 					var surfaceObject = node.data[k];
 
 					//We hit a triangle return true
-					if(this.rayCastSurfaceObject(surfaceObject, doBackfaces, true)) return true;
+					if(this.rayCastSurfaceObject(surfaceObject, doBackfaces, true))
+					{
+						this._castEnd(true);
+						//this._castHit(this.result);
+						return true;
+					}
 				}
 			}
 		}
@@ -350,6 +366,10 @@ define([
 	};
 	
 	RaySystem.prototype.process = function() {
+		if(this.rayCastsPerFrame !== 0)
+		{
+			this.rayCastsPerFrame = 0;
+		}
 		this.updateRayObjects();
 	};
 	

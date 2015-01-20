@@ -6,14 +6,14 @@ define([
 	'goo/renderer/MeshData'
 ],
 	/** @lends */
-		function (
-		Vector3,
-		Matrix4x4,
-		Octree,
-		SurfaceObject,
-		MeshData
-		) {
-		'use strict';
+function (
+Vector3,
+Matrix4x4,
+Octree,
+SurfaceObject,
+MeshData
+) {
+	'use strict';
 
 	//RAY OBJECT
 	function RayObject(raySystem, entity, octreeDepth){
@@ -25,9 +25,10 @@ define([
 		this.inverseMatrix = new Matrix4x4();
 		this.regularMatrix = this.entity.transformComponent.worldTransform.matrix;
 
-		var bounds = this.updateMeshDataBounds();
+		//update the local bounds
+		var meshBounds = this.updateBoundingVolumeBounds(this.entity.meshDataComponent.modelBound);
 
-		this.octree = new Octree(this, bounds.min, bounds.max, octreeDepth);
+		this.octree = new Octree(this, meshBounds.min, meshBounds.max, octreeDepth);
 
 		this.initialize();
 
@@ -37,43 +38,34 @@ define([
 
 	var tmpVec1 = new Vector3();
 
-	RayObject.prototype.updateMeshDataBounds = function(){
-		//Update MeshData bounds
-		var bounds = this.entity.meshDataComponent.modelBound;
-
-		halfExtent = tmpVec1;
-		halfExtent.setDirect(bounds.xExtent, bounds.yExtent, bounds.zExtent);
-
-		bounds.min.setVector(bounds.center);
-		bounds.min.subVector(halfExtent);
-
-		bounds.max.setVector(bounds.center);
-		bounds.max.addVector(halfExtent);
-
-		return bounds;
-	};
-	
-	RayObject.prototype.updateWorldBounds = function(){
-		//Update MeshRenderer bounds
-		var worldBounds = this.entity.meshRendererComponent.worldBound;
+	RayObject.prototype.updateBoundingVolumeBounds = function(boundingVolume){
+		//Update volume bounds
 		var halfExtent = tmpVec1;
-		halfExtent.setDirect(worldBounds.xExtent, worldBounds.yExtent, worldBounds.zExtent);
+		halfExtent.setDirect(boundingVolume.xExtent, boundingVolume.yExtent, boundingVolume.zExtent);
 
-		worldBounds.min.setVector(worldBounds.center);
-		worldBounds.min.subVector(halfExtent);
+		boundingVolume.min.setVector(boundingVolume.center);
+		boundingVolume.min.subVector(halfExtent);
 
-		worldBounds.max.setVector(worldBounds.center);
-		worldBounds.max.addVector(halfExtent);	
+		boundingVolume.max.setVector(boundingVolume.center);
+		boundingVolume.max.addVector(halfExtent);
+
+		return boundingVolume;
 	};
 
 	RayObject.prototype.update = function(){
-		this.updateWorldBounds();
+		//update the world bounds
+		this.updateBoundingVolumeBounds(this.entity.meshRendererComponent.worldBound);
 		this.updateInverse();
 
 	};
 
 	RayObject.prototype.updateInverse = function(){
 		Matrix4x4.invert(this.regularMatrix, this.inverseMatrix);
+	};
+
+
+	var getVertexIndexByTriangleIndex = function(indices, triIndex, pointIndex) {
+		return indices[triIndex + pointIndex]*3;
 	};
 
 	RayObject.prototype.loadTriangleData = function(){
@@ -86,21 +78,24 @@ define([
 
 		for(var i=0; i<nTriangles; i++)
 		{
-			var triangleIndexes = [indices[i*3], indices[i*3+1], indices[i*3+2]];
+			var triangleIndex = i*3;
 
 			//an array containing an array of positions.
 			var triangle = [];
 
-			for(k=0; k<3; k++)
+			for(var k=0; k<3; k++)
 			{
 				triangle[k] = [];
 
-				triangle[k][0] = vertices[triangleIndexes[k]*3];
-				triangle[k][1] = vertices[triangleIndexes[k]*3+1];
-				triangle[k][2] = vertices[triangleIndexes[k]*3+2];
+				var vertexIndex = getVertexIndexByTriangleIndex(indices, triangleIndex, k);
+
+				//get X Y Z
+				triangle[k][0] = vertices[vertexIndex];
+				triangle[k][1] = vertices[vertexIndex+1];
+				triangle[k][2] = vertices[vertexIndex+2];
 			}
 
-			var surfaceObject = new SurfaceObject(this, triangle);
+			var surfaceObject = new SurfaceObject(this, triangle, triangleIndex);
 			this.octree.pushObject(surfaceObject, surfaceObject.boundingSphere.min, surfaceObject.boundingSphere.max);
 		}
 	};
@@ -116,4 +111,4 @@ define([
 	};
 	
 	return RayObject;
-}):
+});

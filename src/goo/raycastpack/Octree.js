@@ -3,13 +3,13 @@ define([
 ],
 	/** @lends */
 function (OctreeNode) {
-		'use strict';
+	'use strict';
 		
 	//OCTREE
 	function Octree(owner, boundMin, boundMax, maxDepth){
 		this.owner = owner;
 		this.parentNode = new OctreeNode(this, boundMin, boundMax, 0);
-		this.maxDepth = maxDepth || 3;
+		this.maxDepth = maxDepth!==undefined ? maxDepth : 3;
 	}
 
 	Octree.prototype.generate = function(){

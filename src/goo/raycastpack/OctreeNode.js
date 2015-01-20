@@ -3,7 +3,7 @@ define([
 ],
 	/** @lends */
 function (Vector3) {
-		'use strict';
+	'use strict';
 
 	//move to ArrayUtil?
 	var RemoveArrayElement = function(array, element) {
