@@ -69,7 +69,7 @@ define([
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false] By default the drawing buffer will be cleared after it is presented to the HTML compositor. Enable this option to not clear the drawing buffer
 	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
-	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
+	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
 	 * @param {boolean | string | { position, color }} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
 	 * If the parameter is not specified then the logo is placed in the top right corner.
@@ -204,7 +204,7 @@ define([
 			doPick: false,
 			pickingCallback: null,
 			pickingStore: {},
-			clearColorStore: []
+			clearColorStore: []
 		};
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
@@ -417,7 +417,7 @@ define([
 				this._picking.clearColorStore[3] = cc[3];
 				this.renderer.setClearColor(0, 0, 0, 1);
 
-				for (var i = 0; i < this.renderSystems.length; i++) {
+				for (var i = 0; i < this.renderSystems.length; i++) {
 					if (this.renderSystems[i].renderToPick && !this.renderSystems[i].passive) {
 						this.renderSystems[i].renderToPick(this.renderer, this._picking.skipUpdateBuffer);
 					}
@@ -726,7 +726,7 @@ define([
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @private
 	 */
-	GooRunner.prototype._disableEvent = function (type) {
+	GooRunner.prototype._disableEvent = function (type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
 		}

@@ -52,7 +52,7 @@ define([
 
 	/**
 	 * Preparing config by populating it with defaults. Should be overwritten in subclasses.
-	 * @param {object} config
+	 * @param {object} config
 	 * @private
 	 */
 	ConfigHandler.prototype._prepare = function (config) {};
@@ -69,7 +69,7 @@ define([
 
 	ConfigHandler.prototype.load = function (ref, options) {
 		var type = ref.substr(ref.lastIndexOf('.') + 1);
-		if (type !== this.constructor._type) {
+		if (type !== this.constructor._type) {
 			throw new Error('Trying to load type' + type + ' with handler for ' + this._type);
 		}
 

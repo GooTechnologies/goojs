@@ -110,8 +110,8 @@ define(['goo/loaders/handlers/ComponentHandler',
 			PointLight: PointLight
 		};
 
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
-			if (!component) { return; }
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
+			if (!component) { return; }
 			var light = component.light;
 			if(!light || Light[config.type] !== light.constructor) {
 				light = new Light[config.type]();

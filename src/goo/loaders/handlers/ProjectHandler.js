@@ -11,9 +11,9 @@ define([
 	 * Handler for loading project into engine (actually loading mainScene)
 	 * @private
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 */
 	function ProjectHandler() {
 		ConfigHandler.apply(this, arguments);

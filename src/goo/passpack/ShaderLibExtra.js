@@ -1271,7 +1271,7 @@ define([
 		},
 		processors: [function(shader, shaderInfo) {
 			var overlayTex = shaderInfo.material._textureMaps.OVERLAY_MAP;
-			if (overlayTex) {
+			if (overlayTex) {
 				shader.setDefine('OVERLAY_MAP', true);
 				var offsetRepeat = shader.uniforms.offsetRepeat;
 				offsetRepeat[0] = overlayTex.offset.data[0];

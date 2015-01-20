@@ -35,7 +35,7 @@ define([
 
 	/**
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward
-	 * @param {number} globalTime
+	 * @param {number} globalTime
 	 */
 	BinaryLERPSource.prototype.setTime = function (globalTime) {
 		// set our time on the two sub sources
@@ -52,7 +52,7 @@ define([
 
 	/**
 	 * Sets start time of clipinstance. If set to current time, clip is reset
-	 * @param {number} globalStartTime
+	 * @param {number} globalStartTime
 	 */
 	BinaryLERPSource.prototype.resetClips = function (globalStartTime) {
 		// reset our two sub sources
@@ -84,7 +84,7 @@ define([
 	};
 
 	/**
-	 * @returns {boolean} from calling the isActive method on sources A or B
+	 * @returns {boolean} from calling the isActive method on sources A or B
 	 */
 	BinaryLERPSource.prototype.isActive = function () {
 		var foundActive = false;
@@ -101,7 +101,7 @@ define([
 	 * Blends two sourceData maps together
 	 * @param {object} sourceAData
 	 * @param {object} sourceBData
-	 * @param {number} blendWeight
+	 * @param {number} blendWeight
 	 * @param {object} [store] If store is supplied, the result is stored there
 	 * @returns {object} The blended result,
 	 */
@@ -150,8 +150,8 @@ define([
 	/**
 	 * Blends two float values and stores them in rVal
 	 * @param {object} rVal The object in which to store result
-	 * @param {string} key The key to object rVal, so rVal[key] is the store
-	 * @param {number} blendWeight
+	 * @param {string} key The key to object rVal, so rVal[key] is the store
+	 * @param {number} blendWeight
 	 * @param {number[]} dataA The float is wrapped in an array
 	 * @param {number[]} dataB The float is wrapped in an array
 	 */

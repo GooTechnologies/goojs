@@ -76,9 +76,9 @@ define([
 	DebugRenderSystem.prototype.process = function (entities, tpf) {
 		var count = this.renderList.length = 0;
 		var renderables;
-		for (var i = 0; i < entities.length; i++) {
+		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
+			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
 				var componentName = this._interestComponents[j];
 				if (!entity._hidden && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);

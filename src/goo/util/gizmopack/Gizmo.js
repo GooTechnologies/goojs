@@ -123,7 +123,7 @@ define([
 	};
 
 
-	Gizmo.prototype.updateTransforms = function() {
+	Gizmo.prototype.updateTransforms = function() {
 		if (Renderer.mainCamera) {
 			var camera = Renderer.mainCamera;
 			var scale;

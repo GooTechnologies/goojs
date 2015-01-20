@@ -138,8 +138,8 @@ define([], function () {
 
 	/**
 	 * Calculates the positive modulo
-	 * @param {number} value
-	 * @param {number} size
+	 * @param {number} value
+	 * @param {number} size
 	 * @returns {number} Wrapped value
 	 */
 	MathUtils.moduloPositive = function (value, size) {

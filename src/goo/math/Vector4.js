@@ -291,10 +291,10 @@ define([
 	// Performance methods
 	/**
 	 * Sets the vector's values from 4 numeric arguments
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 * @param {number} w
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
@@ -314,7 +314,7 @@ define([
 
 	/**
 	 * Sets the vector's values from an array
-	 * @param {number[]} array
+	 * @param {number[]} array
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
@@ -334,7 +334,7 @@ define([
 
 	/**
 	 * Sets the vector's values from another vector
-	 * @param {Vector4} vector
+	 * @param {Vector4} vector
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
@@ -354,10 +354,10 @@ define([
 
 	/**
 	 * Adds arguments 'x', 'y', 'z', 'w' to the current vector
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 * @param {number} w
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
 	 * @returns {Vector4} this for chaining
 	 * @example
 	 * var v1 = new Vector4(1, 2); // v1 == (1, 2, 3, 4)
@@ -374,7 +374,7 @@ define([
 
 	/**
 	 * Adds the vector argument to the current vector
-	 * @param {Vector4} vector
+	 * @param {Vector4} vector
 	 * @returns {Vector4} this for chaining
 	 * @example
 	 * var v1 = new Vector4(1, 2); // v1 == (1, 2)
@@ -392,10 +392,10 @@ define([
 
 	/**
 	 * Multiplies the vector by arguments 'x', 'y', 'z', 'w'
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 * @param {number} t
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} t
 	 * @returns {Vector4} this for chaining
 	 * @example
 	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
@@ -412,7 +412,7 @@ define([
 
 	/**
 	 * Multiplies the vector by the argument
-	 * @param {Vector4} vector
+	 * @param {Vector4} vector
 	 * @returns {Vector4} this for chaining
 	 * @example
 	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
@@ -430,10 +430,10 @@ define([
 
 	/**
 	 * Subtracts arguments 'x', 'y', 'z', 'w' form the current vector
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 * @param {number} w
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
 	 * @returns {Vector4} this for chaining
 	 * @example
 	 * var v1 = new Vector4(1, 2, 3, 4); // v1 == (1, 2, 3, 4)
@@ -450,7 +450,7 @@ define([
 
 	/**
 	 * Subtracts the vector argument from the current vector
-	 * @param {Vector2} vector
+	 * @param {Vector2} vector
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2, 3, 4); // v1 == (1, 2, 3, 4)

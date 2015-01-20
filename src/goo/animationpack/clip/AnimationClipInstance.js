@@ -22,7 +22,7 @@ define([
 	/**
 	 * Sets the timescale of the animation, speeding it up or slowing it down
 	 * @param {number} scale
-	 * @param {number} [globalTime=World.time]
+	 * @param {number} [globalTime=World.time]
 	 */
 	AnimationClipInstance.prototype.setTimeScale = function (scale, globalTime) {
 		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;

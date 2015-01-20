@@ -144,7 +144,7 @@ define([
 		parentElement.appendChild(newScriptElement);
 
 		var newScript = window._gooScriptFactories[config.id];
-		if (newScript) {
+		if (newScript) {
 			try {
 				newScript = newScript();
 				script.id = config.id;
@@ -212,7 +212,7 @@ define([
 		var that = this;
 
 		return ConfigHandler.prototype._update.call(this, ref, config, options)
-		.then(function (script) {
+		.then(function (script) {
 			if (!script) { return; }
 
 			var addDependencyPromises = [];
@@ -497,7 +497,7 @@ define([
 					scriptElem.parentNode.removeChild(scriptElem);
 				}
 			}
-			if (that._currentScriptLoading) {
+			if (that._currentScriptLoading) {
 				var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + that._currentScriptLoading);
 				if (oldScriptElement) {
 					oldScriptElement.parentNode.removeChild(oldScriptElement);
@@ -570,7 +570,7 @@ define([
 		if (externals.parameters && !(externals.parameters instanceof Array)) {
 			errors.push('externals.parameters needs to be an array');
 		}
-		if (errors.length) {
+		if (errors.length) {
 			outScript.errors = errors;
 			return;
 		}
@@ -649,7 +649,7 @@ define([
 
 			outScript.externals.parameters.push(param);
 		}
-		if (errors.length) {
+		if (errors.length) {
 			outScript.errors = errors;
 		}
 	}
@@ -665,7 +665,7 @@ define([
 	 * @private
 	 */
 	function setError(script, error) {
-		if (error.file) {
+		if (error.file) {
 			var message = error.message;
 			if (error.line) {
 				message += ' - on line ' + error.line; //! AT: this isn't used
@@ -675,7 +675,7 @@ define([
 		} else {
 			script.errors = script.errors || [];
 			var message = error.message;
-			if (error.line) {
+			if (error.line) {
 				message += ' - on line ' + error.line; //! AT: this isn't used
 			}
 			script.errors.push(error);

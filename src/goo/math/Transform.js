@@ -23,7 +23,7 @@ define([
 		this.matrix = new Matrix4x4();
 		this.normalMatrix = new Matrix3x3();
 
-		/** @type {Vector3} */
+		/** @type {Vector3} */
 		this.translation = new Vector3();
 		/** @type {Matrix3x3} */
 		this.rotation = new Matrix3x3();

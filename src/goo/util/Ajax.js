@@ -33,10 +33,10 @@ define([
 
 	/**
 	 * Prefill ajax cache with data
-	 * @param {object} bundle Pairs of key-configs
+	 * @param {object} bundle Pairs of key-configs
 	 * @param {boolean} [clear=false] If set to true will overwrite cache, otherwise extend it
 	 */
-	Ajax.prototype.prefill = function (bundle, clear) {
+	Ajax.prototype.prefill = function (bundle, clear) {
 		if (clear) {
 			this._cache = bundle;
 		} else {
@@ -98,7 +98,7 @@ define([
 	 * Loads data at specified path which is returned in a Promise object.
 	 *
 	 * @param {string} path Path to whatever shall be loaded.
-	 * @param {boolean} [reload=false] If set to true, reloads even if url is cached
+	 * @param {boolean} [reload=false] If set to true, reloads even if url is cached
 	 *
 	 * @returns {RSVP.Promise} The promise is resolved with the data loaded. If a parser is specified
 	 * the data will be of the type resolved by the parser promise.
@@ -160,7 +160,7 @@ define([
 				that.prefill(bundle, reload);
 				return bundle;
 			}
-			if (typeInGroup(type, 'json')) {
+			if (typeInGroup(type, 'json')) {
 				return JSON.parse(request.response);
 			}
 			return request.response;

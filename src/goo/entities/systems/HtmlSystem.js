@@ -62,7 +62,7 @@ define([
 			}
 
 			// Hidden
-			if (component.hidden) {
+			if (component.hidden) {
 				component.domElement.style.display = 'none';
 				continue;
 			}

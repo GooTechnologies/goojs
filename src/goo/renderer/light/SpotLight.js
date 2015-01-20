@@ -55,7 +55,7 @@ define([
 	/**
 	 * Updates the light's translation and orientation
 	 * @hidden
-	 * @param {Transform} transform
+	 * @param {Transform} transform
 	 */
 	SpotLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);

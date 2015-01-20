@@ -126,7 +126,7 @@ define([
 		entity.setComponent(entity.quadComponent.meshDataComponent);
 	};
 
-	QuadComponent.prototype.detached = function (entity) {
+	QuadComponent.prototype.detached = function (entity) {
 		entity.clearComponent('meshRendererComponent');
 		entity.clearComponent('meshDataComponent');
 	};
@@ -139,7 +139,7 @@ define([
 	 * Set the current material for the quad
 	 * @param Material material
 	 */
-	QuadComponent.prototype.setMaterial = function (material) {
+	QuadComponent.prototype.setMaterial = function (material) {
 		this.material = material;
 		this.meshRendererComponent.materials = [material];
 		// REVIEW: Don't set this stuff here, set it in the data model

@@ -95,13 +95,13 @@ define([
 			_.forEach(config.posteffects, function (effectConfig) {
 				promises.push(that._updateEffect(effectConfig, oldEffects, options));
 			}, null, 'sortValue');
-			return RSVP.all(promises).then(function (effects) {
+			return RSVP.all(promises).then(function (effects) {
 				for (var i = 0; i < effects.length; i++) {
 					posteffects[i] = effects[i];
 				}
 				posteffects.length = i;
 				/*
-				for (var i = 0; i < oldEffects.length; i++) {
+				for (var i = 0; i < oldEffects.length; i++) {
 					var effect = oldEffects[i];
 					if (posteffects.indexOf(effect) === -1) {
 						// Destroy posteffect rendertargets

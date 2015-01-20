@@ -84,10 +84,10 @@ define([
 	/**
 	 * Be sure to stop all playing sounds when a component is removed. Called by world.process()
 	 * Sometimes this has already been done by the loader
-	 * @param {Entity} entity
+	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundSystem.prototype.deleted = function(entity) {
+	SoundSystem.prototype.deleted = function(entity) {
 		if (entity.soundComponent) {
 			var sounds = entity.soundComponent.sounds;
 			for (var i = 0; i < sounds.length; i++) {
@@ -99,12 +99,12 @@ define([
 
 	/**
 	 * Update the environmental sound system properties
-	 * @param {object} [config]
-	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
+	 * @param {object} [config]
+	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
 	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
 	 * @param {number} [config.maxDistance] After this distance, sound will keep its volume.
 	 * @param {number} [config.volume] Will be clamped between 0 and 1.
-	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
+	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
 	 */
 	SoundSystem.prototype.updateConfig = function(config) {
 		if (!AudioContext) {
@@ -149,7 +149,7 @@ define([
 		this._pausedSounds = {};
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
-			for (var j = 0; j < sounds.length; j++) {
+			for (var j = 0; j < sounds.length; j++) {
 				var sound = sounds[j];
 				if (sound.isPlaying()) {
 					sound.pause();
@@ -165,7 +165,7 @@ define([
 	SoundSystem.prototype.stop = function() {
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
-			for (var j = 0; j < sounds.length; j++) {
+			for (var j = 0; j < sounds.length; j++) {
 				var sound = sounds[j];
 				sound.stop();
 			}
@@ -180,7 +180,7 @@ define([
 		if (!this._pausedSounds) { return; }
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
-			for (var j = 0; j < sounds.length; j++) {
+			for (var j = 0; j < sounds.length; j++) {
 				var sound = sounds[j];
 				if (this._pausedSounds[sound.id]) {
 					sound.play();

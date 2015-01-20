@@ -46,7 +46,7 @@ define([
 	 */
 	 StateMachineComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
 
 			var promises = [];
@@ -62,7 +62,7 @@ define([
 					}
 				}
 				// Removing old machines
-				for (var i = 0; i < component._machines.length; i++) {
+				for (var i = 0; i < component._machines.length; i++) {
 					if (machines.indexOf(component._machines[i]) === -1) {
 						component.removeMachine(component._machines[i]);
 					}

@@ -286,7 +286,7 @@ define([
 		}
 	];
 
-	function Grain(id) {
+	function Grain(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLibExtra.film));
 		this.id = id;
 	}
@@ -340,7 +340,7 @@ define([
 		}
 	];
 
-	function Noise(id) {
+	function Noise(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLibExtra.noise));
 		this.id = id;
 	}

@@ -84,7 +84,7 @@ define([
 		var that = this;
 
 		function attachChild(component, ref) {
-			return that.loadObject(ref, options).then(function (entity) {
+			return that.loadObject(ref, options).then(function (entity) {
 				if (entity && entity.transformComponent) {
 					component.attachChild(entity.transformComponent);
 					var entityInWorld = that.world.entityManager.containsEntity(entity) ||
@@ -105,7 +105,7 @@ define([
 		}
 
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
-			if (!component) {
+			if (!component) {
 				// Component was removed
 				return;
 			}
@@ -127,7 +127,7 @@ define([
 				// TODO: Watch out for circular dependencies
 				// TODO: Use sort values
 				var keys = Object.keys(config.children);
-				for (var i = 0; i < keys.length; i++) {
+				for (var i = 0; i < keys.length; i++) {
 					var childRef = config.children[keys[i]].entityRef;
 					promises.push(attachChild(component, childRef));
 				}
