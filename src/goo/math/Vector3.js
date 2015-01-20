@@ -698,8 +698,8 @@ define([
 	// Performance methods
 	/**
 	 * Sets the vector's values from 3 numeric arguments
-	 * @param {number} x
-	 * @param {number} y
+	 * @param {number} x
+	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
 	 * @example
@@ -719,7 +719,7 @@ define([
 
 	/**
 	 * Sets Vector3 values with an Array of numbers as input. The current Vector3 is modified.
-	 * @param {number[]} array
+	 * @param {number[]} array
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
@@ -738,7 +738,7 @@ define([
 
 	/**
 	 * Sets Vector3 values with another {@link Vector3} as input.  The current Vector3 is modified.
-	 * @param {Vector3} vector
+	 * @param {Vector3} vector
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
@@ -758,8 +758,8 @@ define([
 
 	/**
 	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values
-	 * @param {number} x
-	 * @param {number} y
+	 * @param {number} x
+	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
 	 * @example
@@ -779,7 +779,7 @@ define([
 
 	/**
 	 * Adds another {@link Vector3} to the current Vector3
-	 * @param {Vector3} vector
+	 * @param {Vector3} vector
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
@@ -799,8 +799,8 @@ define([
 
 	/**
 	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs
-	 * @param {number} x
-	 * @param {number} y
+	 * @param {number} x
+	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
 	 * @example
@@ -820,7 +820,7 @@ define([
 
 	/**
 	 * Multiplies the current Vector3 by another {@link Vector3}
-	 * @param {Vector3} vec3
+	 * @param {Vector3} vec3
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
@@ -840,8 +840,8 @@ define([
 
 	/**
 	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3
-	 * @param {number} x
-	 * @param {number} y
+	 * @param {number} x
+	 * @param {number} y
 	 * @param {number} z
 	 * @returns {Vector3} this for chaining
 	 * @example
@@ -861,7 +861,7 @@ define([
 
 	/**
 	 * Subtracts another {@link Vector3} from the current Vector3
-	 * @param {Vector3} vector
+	 * @param {Vector3} vector
 	 * @returns {Vector3} this for chaining
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)

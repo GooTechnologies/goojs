@@ -42,7 +42,7 @@ define([
 
 	/**
 	 * Resets the clips to start at given time
-	 * @param {number} globalTime
+	 * @param {number} globalTime
 	 */
 	FrozenTransitionState.prototype.resetClips = function(globalTime) {
 		AbstractTransitionState.prototype.resetClips.call(this, globalTime);

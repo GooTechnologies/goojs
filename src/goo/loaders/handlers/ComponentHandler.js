@@ -72,7 +72,7 @@ define([
 	 * @returns {RSVP.Promise} promise that resolves with the created component when loading is done.
 	 */
 	ComponentHandler.prototype.update = function(entity, config/*, options*/) {
-		if(!entity) {
+		if(!entity) {
 			return PromiseUtil.reject('Entity is missing');
 		}
 		if (!config) {

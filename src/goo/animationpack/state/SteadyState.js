@@ -50,7 +50,7 @@ define([
 
 	/*
 	 * Resets the animationclips in the sourcetree
-	 * @param {number} globalStartTime Usually current time
+	 * @param {number} globalStartTime Usually current time
 	 */
 	SteadyState.prototype.resetClips = function (globalStartTime) {
 		AbstractState.prototype.resetClips.call(this, globalStartTime);

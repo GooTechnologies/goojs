@@ -93,7 +93,7 @@ define([
 	 * @param {AudioNode} [nodes.dry]
 	 * @param {AudioNode} [nodes.wet]
 	 */
-	SoundComponent.prototype.connectTo = function (nodes) {
+	SoundComponent.prototype.connectTo = function (nodes) {
 		this._outDryNode.disconnect();
 		this._outWetNode.disconnect();
 		if (nodes && nodes.dry) {
@@ -111,7 +111,7 @@ define([
 	 * @param {number} config.reverb
 	 */
 	SoundComponent.prototype.updateConfig = function (config) {
-		if (config.volume !== undefined) {
+		if (config.volume !== undefined) {
 			this._outDryNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
 		}
 		if (config.reverb !== undefined) {

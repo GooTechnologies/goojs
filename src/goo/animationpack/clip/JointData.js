@@ -31,7 +31,7 @@ define([
 	 * @param {TransformData} blendTo The transform to blend to
 	 * @param {number} blendWeight The blend weight
 	 * @param {TransformData} store The transform store.
-	 * @returns {TransformData} The blended transform.
+	 * @returns {TransformData} The blended transform.
 	 */
 	JointData.prototype.blend = function (blendTo, blendWeight, store) {
 		var rVal = store;

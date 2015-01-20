@@ -415,8 +415,8 @@ define([
 	 * @param {string} source The source code.
 	 * @param {object} target
 	 * @param {object} target.attributeMapping
-	 * @param {object} target.uniformMapping
-	 * @param {object[]} target.textureSlots
+	 * @param {object} target.uniformMapping
+	 * @param {object[]} target.textureSlots
 	 */
 	Shader.investigateShader = function (source, target) {
 		regExp.lastIndex = 0;

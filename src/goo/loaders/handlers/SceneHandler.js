@@ -16,9 +16,9 @@ define([
 	/**
 	 * Handler for loading scene into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function SceneHandler() {
@@ -71,7 +71,7 @@ define([
 	 */
 	SceneHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(scene) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(scene) {
 			if (!scene) { return; }
 			scene.id = ref;
 			var promises = [];
@@ -130,7 +130,7 @@ define([
 
 		return RSVP.all(promises).then(function(entities) {
 			// Adding new entities
-			for (var i = 0; i < entities.length; i++) {
+			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
 				if (addedEntityIds[entity.id]) {
 					entity.addToWorld();

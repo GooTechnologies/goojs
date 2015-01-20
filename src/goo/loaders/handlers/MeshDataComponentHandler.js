@@ -56,7 +56,7 @@ define([
 
 	/**
 	 * Removes the meshdata component
-	 * @param {string} ref
+	 * @param {string} ref
 	 */
 	MeshDataComponentHandler.prototype._remove = function (entity) {
 		//! AT: why is this check needed?

@@ -269,8 +269,8 @@ define([
 
 	/**
 	 * Sets the vector's values from 2 numeric arguments
-	 * @param {number} x
-	 * @param {number} y
+	 * @param {number} x
+	 * @param {number} y
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
@@ -288,7 +288,7 @@ define([
 
 	/**
 	 * Sets the vector's values from an array
-	 * @param {number[]} array
+	 * @param {number[]} array
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
@@ -306,7 +306,7 @@ define([
 
 	/**
 	 * Sets the vector's values from another vector
-	 * @param {Vector2} vector
+	 * @param {Vector2} vector
 	 * @returns {Vector2} Self to allow chaining
 	 * @example
 	 * var v1 = new Vector2(); // v1 == (0, 0)
@@ -324,8 +324,8 @@ define([
 
 	/**
 	 * Adds arguments 'x', 'y' to the current vector
-	 * @param {number} x
-	 * @param {number} y
+	 * @param {number} x
+	 * @param {number} y
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
@@ -340,7 +340,7 @@ define([
 
 	/**
 	 * Adds the vector argument to the current vector
-	 * @param {Vector2} vector
+	 * @param {Vector2} vector
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
@@ -356,8 +356,8 @@ define([
 
 	/**
 	 * Multiplies the vector by arguments 'x', 'y'
-	 * @param {number} x
-	 * @param {number} y
+	 * @param {number} x
+	 * @param {number} y
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
@@ -372,7 +372,7 @@ define([
 
 	/**
 	 * Multiplies the vector by the argument
-	 * @param {Vector2} vector
+	 * @param {Vector2} vector
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
@@ -388,8 +388,8 @@ define([
 
 	/**
 	 * Subtracts arguments 'x', 'y' form the current vector
-	 * @param {number} x
-	 * @param {number} y
+	 * @param {number} x
+	 * @param {number} y
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)
@@ -404,7 +404,7 @@ define([
 
 	/**
 	 * Subtracts the vector argument from the current vector
-	 * @param {Vector2} vector
+	 * @param {Vector2} vector
 	 * @returns {Vector2} this for chaining
 	 * @example
 	 * var v1 = new Vector2(1, 2); // v1 == (1, 2)

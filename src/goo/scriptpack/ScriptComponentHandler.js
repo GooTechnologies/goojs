@@ -81,7 +81,7 @@ define([
 					newScript.enabled = false;
 
 					return that._setParameters(newScript.parameters, scriptInstance.options, script.externals, options)
-					.then(function () {
+					.then(function () {
 						return newScript;
 					});
 				});
@@ -126,7 +126,7 @@ define([
 				parameters[key] = null;
 				return PromiseUtil.resolve();
 			} else {
-				return this._load(config.entityRef, options).then(function (entity) {
+				return this._load(config.entityRef, options).then(function (entity) {
 					parameters[key] = entity;
 				});
 			}

@@ -17,12 +17,12 @@ define([
 	/**
 	 * Handler for loading sounds into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
-	function SoundHandler() {
+	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._audioCache = {};
 
@@ -33,7 +33,7 @@ define([
 				{
 					type: 'mp3',
 					enabled: !!audioTest.canPlayType('audio/mpeg;')
-				}, {
+				}, {
 					type: 'ogg',
 					enabled: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"')
 				}, {
@@ -65,7 +65,7 @@ define([
 
 	/**
 	 * Preparing sound config by populating it with defaults.
-	 * @param {object} config
+	 * @param {object} config
 	 * @private
 	 */
 	SoundHandler.prototype._prepare = function (config) {

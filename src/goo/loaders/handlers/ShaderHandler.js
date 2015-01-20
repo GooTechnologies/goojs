@@ -20,9 +20,9 @@ define([
 	/**
 	 * Handler for loading shaders into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function ShaderHandler() {

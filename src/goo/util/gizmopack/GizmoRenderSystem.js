@@ -160,12 +160,12 @@ define([
 		}
 	};
 
-	GizmoRenderSystem.prototype.setActiveGizmo = function (id) {
+	GizmoRenderSystem.prototype.setActiveGizmo = function (id) {
 		if (this.active) {
 			this.nextGizmo = id;
 			return;
 		}
-		if (this.activeGizmo) {
+		if (this.activeGizmo) {
 			this.hideGizmo(this.activeGizmo);
 		}
 		this.activeGizmo = this.gizmos[id] || null;
@@ -183,7 +183,7 @@ define([
 		}
 	};
 
-	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
+	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
 		if (callbacks && callbacks.length === 3) {
 			this.gizmos[0].onChange = callbacks[0];
 			this.gizmos[1].onChange = callbacks[1];
@@ -212,7 +212,7 @@ define([
 		this.gizmos[1].onChange = function (change) {
 			if (this.entity) {
 				this.entity.transformComponent.transform.rotation.copy(change);
-				if (this.entity.transformComponent.parent) {
+				if (this.entity.transformComponent.parent) {
 					inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
 					inverseRotation.invert();
 				}
@@ -227,7 +227,7 @@ define([
 
 		// Set bound entities scale
 		this.gizmos[2].onChange = function (change) {
-			if (this.entity) {
+			if (this.entity) {
 				var scale = this.entity.transformComponent.transform.scale;
 				scale.setVector(change);
 				if (this.entity.transformComponent.parent) {

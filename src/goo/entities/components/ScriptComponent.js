@@ -76,7 +76,7 @@ define([
 				if (script.setup && script.enabled) {
 					try {
 						script.setup(script.parameters, script.context, this._gooClasses);
-					} catch (e) {
+					} catch (e) {
 						this._handleError(script, e, 'setup');
 					}
 				}
@@ -122,11 +122,11 @@ define([
 	ScriptComponent.prototype.cleanup = function () {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			if (script.context) {
+			if (script.context) {
 				if (script.cleanup) {
 					try {
 						script.cleanup(script.parameters, script.context, this._gooClasses);
-					} catch (e) {
+					} catch (e) {
 						this._handleError(script, e, 'cleanup');
 					}
 				}

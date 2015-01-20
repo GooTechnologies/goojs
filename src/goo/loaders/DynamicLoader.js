@@ -86,7 +86,7 @@ define([
 	 */
 	DynamicLoader.prototype.clear = function () {
 		var promises = [];
-		for (var type in this._handlers) {
+		for (var type in this._handlers) {
 			promises.push(this._handlers[type].clear());
 		}
 		if (this._ajax.clear instanceof Function) {
@@ -185,7 +185,7 @@ define([
 
 	/**
 	 * Updates object identified by ref according to config
-	 * @param {string} ref
+	 * @param {string} ref
 	 * @param {object} config
 	 * @param {object} options
 	 * @returns {object} Depending on what's being updated
@@ -258,7 +258,7 @@ define([
 
 				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
 					var ref = refs[keys[i]];
-					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs.has(ref)) {
+					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs.has(ref)) {
 						// If it's a binary ref, store it in the list
 						binaryRefs.add(ref);
 					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs.has(ref)) {
@@ -281,7 +281,7 @@ define([
 
 	/**
 	 * Gets cached handler for type or creates a new one.
-	 * @param {string} type Type.
+	 * @param {string} type Type.
 	 * @returns {ConfigHandler} Config handler.
 	 * @private
 	 */
@@ -343,7 +343,7 @@ define([
 	 * Gets the type of a reference.
 	 *
 	 * @param {string} ref Reference.
-	 * @returns {string} Type of reference.
+	 * @returns {string} Type of reference.
 	 */
 	DynamicLoader.getTypeForRef = function (ref) {
 		return ref.substr(ref.lastIndexOf('.') + 1).toLowerCase();
@@ -354,7 +354,7 @@ define([
 	 * Different groups are found in the top of the file
 	 * @private
 	 * @param {string} ref
-	 * @param {string} group
+	 * @param {string} group
 	 * @returns {boolean}
 	 */
 	DynamicLoader._isRefTypeInGroup = function (ref, group) {

@@ -23,9 +23,9 @@ define([
 
 	/**
 	 * Handler for loading animation states into engine
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @extends ConfigHandler
 	 * @private
 	 */

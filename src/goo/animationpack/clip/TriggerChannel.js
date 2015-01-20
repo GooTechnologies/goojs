@@ -32,7 +32,7 @@ define([
 
 	/**
 	 * Applies the channels animation state to supplied data item
-	 * @param {number} sampleIndex
+	 * @param {number} sampleIndex
 	 * @param {number} progressPercent
 	 * @param {TriggerData} value The data item to apply animation to
 	 */

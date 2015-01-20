@@ -9,7 +9,7 @@ define([
 
 	/**
 	 * Transform animation channel, specifically geared towards describing the motion of skeleton joints.
-	 * @param {string} jointName our joint name.
+	 * @param {string} jointName our joint name.
 	 * @param {number} jointIndex our joint index
 	 * @param {number[]} times our time offset values.
 	 * @param {number[]} rotations the rotations to set on this channel at each time offset.
@@ -42,7 +42,7 @@ define([
 
 	/*
 	 * Applies the channels animation state to supplied data item
-	 * @param {number} sampleIndex
+	 * @param {number} sampleIndex
 	 * @param {number} progressPercent
 	 * @param {JointData} value The data item to apply animation to
 	 */

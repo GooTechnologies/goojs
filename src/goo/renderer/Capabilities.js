@@ -31,7 +31,7 @@ function () {
 	 * @property {number} maxVertexTextureUnits Maximum vertex shader texture units
 	 * @property {number} maxFragmentTextureUnits Maximum fragment shader texture units
 	 * @property {number} maxCombinedTextureUnits Maximum total texture units
-	 * @property {number} maxVertexAttributes Maximum vertex attributes
+	 * @property {number} maxVertexAttributes Maximum vertex attributes
 	 * @property {number} maxVertexUniformVectors Maximum vertex uniform vectors
 	 * @property {number} maxFragmentUniformVectors Maximum fragment uniform vectors
 	 * @property {number} maxVaryingVectors Maximum varying vectors

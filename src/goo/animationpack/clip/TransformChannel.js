@@ -44,7 +44,7 @@ define([
 
 	/*
 	 * Applies the channels animation state to supplied data item
-	 * @param {number} sampleIndex
+	 * @param {number} sampleIndex
 	 * @param {number} fraction
 	 * @param {TransformData} value The data item to apply animation to
 	 */

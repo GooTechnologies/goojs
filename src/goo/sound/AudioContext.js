@@ -4,7 +4,7 @@ define([], function () {
 	try {
 		var Context = window.AudioContext || window.webkitAudioContext;
 		return new Context();
-	} catch (e) {
+	} catch (e) {
 		console.warn('Web audio not supported');
 	}
 });

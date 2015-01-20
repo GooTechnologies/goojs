@@ -296,7 +296,7 @@ define([
 	};
 
 	AnimationLayer.prototype.setTimeScale = function (timeScale) {
-		if (this._currentState) {
+		if (this._currentState) {
 			this._currentState.setTimeScale(timeScale);
 		}
 	};
