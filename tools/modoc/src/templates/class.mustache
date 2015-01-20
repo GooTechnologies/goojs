@@ -40,6 +40,31 @@
 		</div>
 	</section>
 
+	{{! constructor }}
+	{{#constructor.comment}}
+		<section>
+			<span class="method-name">constructor</span>
+			 :: (
+			{{#constructor.params}}
+				<span class="parameter">{{.}}</span>
+			{{/constructor.params}}
+			)
+			{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
+
+			<div class="comment">
+				{{#param}}
+					<div class="parameter-doc">
+						<span class="parameter-name">{{name}}</span>
+						{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
+						{{#optional}}<span class="parameter-optional">optional</span>{{/optional}}
+						{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
+						<span class="parameter-description">{{{description}}}</span>
+					</div>
+				{{/param}}
+			</div>
+		</section>
+	{{/constructor.comment}}
+
 	{{! members }}
 	{{#hasMembers}}
 		<section>
