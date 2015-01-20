@@ -42,7 +42,7 @@ function (
 		ConfigHandler.apply(this, arguments);
 		var that = this;
 		SystemBus.addListener('playStateChanged', function(playState) {
-			that._objects.forEach(function (texture) {
+			this._objects.forEach(function (texture) {
 				if (texture.image.play && texture.image.pause) {
 					var video = texture.image;
 					if (playState === 'play') {
@@ -57,7 +57,7 @@ function (
 					}
 				}
 			});
-		});
+		}.bind(this));
 	}
 
 	TextureHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -214,7 +214,7 @@ function (
 						texture.updateCallback = function () {
 							return !video.paused;
 						};
-						if ((config.autoPlay === undefined || config.autoPlay) && !options.editMode) {
+						if (config.autoPlay !== false && !options.editMode) {
 							video.play();
 						}
 						else {
