@@ -1,14 +1,12 @@
 define([
 	'goo/entities/components/Component',
-	'goo/debugpack/BoundingVolumeMeshBuilder'],
-/** @lends */
-function(
+	'goo/debugpack/BoundingVolumeMeshBuilder'], function (
 	Component,
 	BoundingVolumeMeshBuilder) {
 	'use strict';
 
 	/**
-	 * @class Holds the necessary data for a marker
+	 * Holds the necessary data for a marker
 	 * @param {Entity} entity The entity this component is attached to
 	 * @extends Component
 	 */

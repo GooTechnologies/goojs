@@ -1,17 +1,13 @@
 define([
 	'goo/math/Vector2'
-],
-/** @lends */
-function(
+], function (
 	Vector2
 	) {
 
 	'use strict';
 
 	/**
-	 * @class
 	 * Used for storing derived data from gamepads
-	 * @constructor
 	 */
 	function GamepadData() {
 		this.leftStickDirection = new Vector2();

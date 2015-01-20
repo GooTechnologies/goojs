@@ -3,9 +3,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	MathUtils,
 	BoundingVolume,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class <code>BoundingSphere</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This
+	 * <code>BoundingSphere</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This
 	 *        sphere defines a radius and a center. <br>
 	 *        <br>
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or

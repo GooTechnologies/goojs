@@ -7,9 +7,7 @@ define([
 	'goo/animationpack/clip/TriggerChannel',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	AnimationClip,
 	JointChannel,
@@ -22,11 +20,11 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading animation clips into engine
+	 * Handler for loading animation clips into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function AnimationClipHandler() {
@@ -56,7 +54,7 @@ function (
 	 */
 	AnimationClipHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(clip) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(clip) {
 			if(!clip) { return clip; }
 			return that.loadObject(config.binaryRef, options).then(function(bindata) {
 				if (!bindata) {
@@ -70,7 +68,7 @@ function (
 	/**
 	 * Does the actual updating of animation clip and channels
 	 * It creates new channels on every update, but clips are practically never updated
-	 * @param {object} clipConfig
+	 * @param {object} clipConfig
 	 * @param {ArrayBuffer} binData
 	 * @param {AnimationClip} clip
 	 * @private

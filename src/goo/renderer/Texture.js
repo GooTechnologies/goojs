@@ -1,14 +1,12 @@
 define([
 	'goo/math/Vector2'
-],
-/** @lends */
-function (
+], function (
 	Vector2
 ) {
 	'use strict';
 
 	/**
-	 * @class <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
+	 * <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
 	 *        defined by the <code>Image</code> class. All attributes required for texture mapping are contained within this class. This includes
 	 *        mipmapping if desired, magnificationFilter options, apply options and correction options. Default values are as follows:
 	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S,T and R, apply - Modulate,
@@ -80,7 +78,7 @@ function (
 
 		/**
 		 * The anisotropic filtering level.<br>
-		 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html Working example}
+		 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html Working example
 		 * @type {number}
 		 */
 		this.anisotropy = settings.anisotropy !== undefined ? settings.anisotropy : 1;
@@ -114,7 +112,7 @@ function (
 
 	/**
 	* Checks if the texture's data is ready.
-	* @return {Boolean} True if ready.
+	* @returns {Boolean} True if ready.
 	*/
 	Texture.prototype.checkDataReady = function () {
 		return this.image && (this.image.dataReady || this.image instanceof HTMLImageElement) || this.readyCallback !== null && this.readyCallback();
@@ -122,7 +120,7 @@ function (
 
 	/**
 	* Checks if the texture needs an update.
-	* @return {Boolean} True if needed.
+	* @returns {Boolean} True if needed.
 	*/
 	Texture.prototype.checkNeedsUpdate = function () {
 		return this.needsUpdate || this.updateCallback !== null && this.updateCallback();

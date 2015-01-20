@@ -4,7 +4,7 @@ define([
 	'goo/math/Matrix4x4', 
 	'goo/math/MathUtils', 
 	'goo/math/Vector3'
-], /** @lends */ function (
+],  function (
 	System, 
 	Renderer, 
 	Matrix4x4, 
@@ -14,9 +14,8 @@ define([
 	'use strict';
 
 	/**
-	* @class
-	* @extends System
-	*/
+	 * @extends System
+	 */
 	function CSSTransformSystem(renderer) {
 		System.call(this, 'CSSTransformSystem', ['TransformComponent', 'CSSTransformComponent']);
 

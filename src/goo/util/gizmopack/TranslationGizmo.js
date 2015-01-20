@@ -6,9 +6,7 @@ define([
 	'goo/shapes/Quad',
 	'goo/math/Transform',
 	'goo/renderer/Renderer'
-],
-/** @lends */
-function (
+], function (
 	Gizmo,
 	MeshData,
 	MeshBuilder,
@@ -20,8 +18,9 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * @extends Gizmo
+	 * @hidden
+	 */
 	function TranslationGizmo() {
 		Gizmo.call(this, 'TranslationGizmo');
 

@@ -82,7 +82,7 @@ define([
 	var blendShader = {
 		defines: {},
 		processors: [function (shader, shaderInfo) {
-			if(shaderInfo.material._textureMaps.MOTION_MAP.glTexture) {
+			if(shaderInfo.material._textureMaps.MOTION_MAP.glTexture) {
 				shader.setDefine('MOTION_MAP', true);
 			} else {
 				shader.removeDefine('MOTION_MAP');

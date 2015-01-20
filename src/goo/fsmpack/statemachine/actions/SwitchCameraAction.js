@@ -2,9 +2,7 @@ define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/entities/SystemBus',
 	'goo/renderer/Renderer'
-],
-/** @lends */
-function(
+], function (
 	Action,
 	SystemBus,
 	Renderer

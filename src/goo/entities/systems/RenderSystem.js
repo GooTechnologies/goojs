@@ -5,9 +5,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util'
-],
-/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
@@ -18,7 +16,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Renders entities/renderables using a configurable partitioner for culling
+	 * Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */

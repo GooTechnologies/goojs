@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Goo Engine API deprecation list</title>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="lib/styles/goo.css">
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="changelog.css">
+</head>
+<body>
+	<h1>Goo engine API deprecation list</h1>
+	<a href="index.html">Back to the Goo Docs</a>
+
+	{{#hasConstructors}}
+		<section>
+			<h2>Constructors</h2>
+			{{#constructors}}
+				<div>
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
+				</div>
+			{{/constructors}}
+		</section>
+	{{/hasConstructors}}
+
+	{{#hasMembers}}
+		<section>
+			<h2>Members</h2>
+			{{#members}}
+				<div>
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
+				</div>
+			{{/members}}
+		</section>
+	{{/hasMembers}}
+
+	{{#hasStaticMembers}}
+		<section>
+			<h2>Static members</h2>
+			{{#staticMembers}}
+				<div>
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
+				</div>
+			{{/staticMembers}}
+		</section>
+	{{/hasStaticMembers}}
+
+	{{#hasMethods}}
+		<section>
+			<h2>Methods</h2>
+			{{#methods}}
+				<div>
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
+				</div>
+			{{/methods}}
+		</section>
+	{{/hasMethods}}
+
+	{{#hasStaticMethods}}
+		<section>
+			<h2>Static methods</h2>
+			{{#staticMethods}}
+				<div>
+					<span class="class-name">{{class_}}</span>
+					<span class="method-name mono">{{item.name}}</span>
+					<span class="deprecated-description">{{item.comment.deprecated.description}}</span>
+				</div>
+			{{/staticMethods}}
+		</section>
+	{{/hasStaticMethods}}
+</body>
+</html>

@@ -1,16 +1,14 @@
 define([
 	'goo/math/MathUtils',
 	'goo/animationpack/clip/TransformData'
-],
-/** @lends */
-function (
+], function (
 	MathUtils,
 	TransformData
 ) {
 	'use strict';
 
 	/**
-	 * @class Takes two blend sources and uses linear interpolation to merge {@link TransformData} values. If one of the sources is null, or does not have a
+	 * Takes two blend sources and uses linear interpolation to merge {@link TransformData} values. If one of the sources is null, or does not have a
 	 *        key that the other does, we disregard weighting and use the non-null side's full value. Source data that is not {@link TransformData}, {@link JointData} or float data is not
 	 *        combined, rather A's value will always be used unless it is null.
 	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} sourceA our first source.
@@ -25,7 +23,7 @@ function (
 	}
 
 	/*
-	 * @return a source data mapping for the channels in this clip source
+	 * @returns a source data mapping for the channels in this clip source
 	 */
 	BinaryLERPSource.prototype.getSourceData = function () {
 		// grab our data maps from the two sources
@@ -37,7 +35,7 @@ function (
 
 	/**
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward
-	 * @param {number} globalTime
+	 * @param {number} globalTime
 	 */
 	BinaryLERPSource.prototype.setTime = function (globalTime) {
 		// set our time on the two sub sources
@@ -54,7 +52,7 @@ function (
 
 	/**
 	 * Sets start time of clipinstance. If set to current time, clip is reset
-	 * @param {number} globalStartTime
+	 * @param {number} globalStartTime
 	 */
 	BinaryLERPSource.prototype.resetClips = function (globalStartTime) {
 		// reset our two sub sources
@@ -86,7 +84,7 @@ function (
 	};
 
 	/**
-	 * @returns {boolean} from calling the isActive method on sources A or B
+	 * @returns {boolean} from calling the isActive method on sources A or B
 	 */
 	BinaryLERPSource.prototype.isActive = function () {
 		var foundActive = false;
@@ -103,7 +101,7 @@ function (
 	 * Blends two sourceData maps together
 	 * @param {object} sourceAData
 	 * @param {object} sourceBData
-	 * @param {number} blendWeight
+	 * @param {number} blendWeight
 	 * @param {object} [store] If store is supplied, the result is stored there
 	 * @returns {object} The blended result,
 	 */
@@ -152,8 +150,8 @@ function (
 	/**
 	 * Blends two float values and stores them in rVal
 	 * @param {object} rVal The object in which to store result
-	 * @param {string} key The key to object rVal, so rVal[key] is the store
-	 * @param {number} blendWeight
+	 * @param {string} key The key to object rVal, so rVal[key] is the store
+	 * @param {number} blendWeight
 	 * @param {number[]} dataA The float is wrapped in an array
 	 * @param {number[]} dataB The float is wrapped in an array
 	 */

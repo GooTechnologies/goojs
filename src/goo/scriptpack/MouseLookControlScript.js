@@ -40,7 +40,7 @@ define([
 
 		function mouseMove(e) {
 			if (!_parameters.whenUsed || _environment.entity === _environment.activeCameraEntity) {
-				if (buttonPressed) {
+				if (buttonPressed) {
 					if (e.movementX !== undefined) {
 						x += e.movementX;
 						y += e.movementY;
@@ -66,7 +66,7 @@ define([
 			}
 		}
 
-		function setup(parameters, environment) {
+		function setup(parameters, environment) {
 			_environment = environment;
 			_parameters = parameters;
 			button = ['Any', 'Left', 'Middle', 'Right', 'None'].indexOf(parameters.button) - 1;

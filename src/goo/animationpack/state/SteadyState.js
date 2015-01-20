@@ -1,14 +1,12 @@
 define([
 	'goo/animationpack/state/AbstractState'
-],
-/** @lends */
-function (
+], function (
 	AbstractState
 ) {
 	'use strict';
 
 	/**
-	 * @class A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for example.)
+	 * A "steady" state is an animation state that is concrete and stand-alone (vs. a state that handles transitioning between two states, for example.)
 	 * @extends AbstractState
 	 * @param {string} name Name of state
 	 */
@@ -52,7 +50,7 @@ function (
 
 	/*
 	 * Resets the animationclips in the sourcetree
-	 * @param {number} globalStartTime Usually current time
+	 * @param {number} globalStartTime Usually current time
 	 */
 	SteadyState.prototype.resetClips = function (globalStartTime) {
 		AbstractState.prototype.resetClips.call(this, globalStartTime);

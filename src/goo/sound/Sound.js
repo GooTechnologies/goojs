@@ -2,9 +2,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/math/MathUtils',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	AudioContext,
 	MathUtils,
 	RSVP
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class A representation of a sound in the engine
+	 * A representation of a sound in the engine
 	 */
 	function Sound() {
 		/** @type {string}
@@ -153,11 +151,11 @@ function (
 	 * Updates the sound according to config
 	 * @param {object} [config]
 	 * @param {boolean} [config.loop]
-	 * @param {number} [config.volume]
-	 * @param {number} [config.name] The sound name
-	 * @param {number} [config.start] Start offset in seconds.
+	 * @param {number} [config.volume]
+	 * @param {number} [config.name] The sound name
+	 * @param {number} [config.start] Start offset in seconds.
 	 * Will be clamped to be in actual soundclip duration
-	 * @param {number} [config.duration] Duration of the sound.
+	 * @param {number} [config.duration] Duration of the sound.
 	 * Will be clamped to be in actual soundclip duration
 	 * @param {number} [config.timeScale] Playback rate of the sound
 	 */

@@ -1,15 +1,12 @@
 /*jshint bitwise: false */
 define([
-],
-/** @lends */
-function(
+], function (
 ) {
 	'use strict';
 
 	/**
-	* @class
-	* @private
-	*/
+	 * @private
+	 */
 	function TgaLoader() {
 		this.header = null;
 		this.offset = 0;

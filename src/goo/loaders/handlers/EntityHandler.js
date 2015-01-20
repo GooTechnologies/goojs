@@ -4,9 +4,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,
@@ -16,11 +14,11 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading entities into engine
+	 * Handler for loading entities into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function EntityHandler() {
@@ -96,7 +94,7 @@ function (
 	 */
 	EntityHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (entity) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (entity) {
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
@@ -141,7 +139,7 @@ function (
 	/**
 	 * Adds/updates/removes a component on an entity
 	 * @param {Entity} entity
-	 * @param {string} type
+	 * @param {string} type
 	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with updated entity
@@ -160,8 +158,8 @@ function (
 	/**
 	 * Get the type for the component. Needed to match engine components against data model
 	 * component types.
-	 * @param {Component} component
-	 * @returns {string} 
+	 * @param {Component} component
+	 * @returns {string}
 	 * @private
 	 */
 	EntityHandler.prototype._getComponentType = function (component) {
@@ -174,7 +172,7 @@ function (
 
 	/**
 	 * Gets the handler for a component type or creates a new one if necessary
-	 * @param {string} type
+	 * @param {string} type
 	 * @returns {ComponentHandler}
 	 */
 	EntityHandler.prototype._getHandler = function (type) {

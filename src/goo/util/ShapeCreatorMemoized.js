@@ -7,7 +7,7 @@ define([
 	'goo/shapes/Disk',
 	'goo/shapes/Cone'
 ],
-/** @lends */
+
 
 function (
 	Box,
@@ -21,8 +21,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class Factory for shape creation.
-	 * @description Only used to define the class. Should never be instantiated.
+	 * Factory for shape creation.
+	 * Only used to define the class. Should never be instantiated.
 	 */
 	function ShapeCreatorMemoized() {
 	}

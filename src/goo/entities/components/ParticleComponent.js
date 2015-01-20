@@ -3,9 +3,7 @@ define([
 	'goo/particles/Particle',
 	'goo/particles/ParticleEmitter',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	Particle,
 	ParticleEmitter,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Creates and modifies {@link MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
+	 * Creates and modifies {@link MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
 	 * more emitters. Each emitter spawns particles, controlling spawn rate, lifetime, initial velocity vector and
 	 * position of each particle. Each Particle System also contains a timeline describing changes each particle should
 	 * perform over its lifetime, including:

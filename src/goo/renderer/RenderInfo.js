@@ -1,9 +1,7 @@
 define([
 	'goo/entities/Entity',
 	'goo/math/Transform'
-],
-/** @lends */
-function (
+], function (
 	Entity,
 	Transform
 ) {
@@ -11,7 +9,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Holds configuration data for renderable objects.
+	 * Holds configuration data for renderable objects.
 	 */
 
 	function RenderInfo() {

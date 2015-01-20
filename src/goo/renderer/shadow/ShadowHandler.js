@@ -10,9 +10,7 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight'
-],
-/** @lends */
-function (
+], function (
 	Capabilities,
 	Vector3,
 	FullscreenPass,
@@ -28,7 +26,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handles shadow techniques
+	 * Handles shadow techniques
 	 */
 	function ShadowHandler() {
 		this.depthMaterial = new Material(ShaderLib.lightDepth, 'depthMaterial');

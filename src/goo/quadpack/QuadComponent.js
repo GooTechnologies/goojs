@@ -8,9 +8,7 @@ define([
 	'goo/renderer/Material',
 	'goo/util/ObjectUtil',
 	'goo/renderer/Texture'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	MeshData,
 	DoubleQuad,
@@ -24,7 +22,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Quad component that holds a unit [Quad]{@link Quad} mesh and a [Material]{@link Material}. It makes it easy to create a textured quad in 3D space, for example a logotype. When the component is added to the world, all other needed components are automatically added to the entity. Make sure your add a [QuadSystem]{@link QuadSystem} to the world before you start using this component.
+	 * Quad component that holds a unit [Quad]{@link Quad} mesh and a [Material]{@link Material}. It makes it easy to create a textured quad in 3D space, for example a logotype. When the component is added to the world, all other needed components are automatically added to the entity. Make sure your add a [QuadSystem]{@link QuadSystem} to the world before you start using this component.
 	 * @see QuadSystem
 	 * @param {HTMLImageElement} [image]
 	 * @param {object} [settings]
@@ -34,7 +32,7 @@ function (
 	 * @param {number} [settings.tileY=1]
 	 * @param {number} [settings.preserveAspectRatio=true] Will resize the Quad mesh so that the aspect is preserved.
 	 * @extends {Component}
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/quadpack/QuadComponent/QuadComponent-vtest.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/quadpack/QuadComponent/QuadComponent-vtest.html Working example
 	 */
 	function QuadComponent(image, settings) {
 		Component.apply(this, arguments);
@@ -128,7 +126,7 @@ function (
 		entity.setComponent(entity.quadComponent.meshDataComponent);
 	};
 
-	QuadComponent.prototype.detached = function (entity) {
+	QuadComponent.prototype.detached = function (entity) {
 		entity.clearComponent('meshRendererComponent');
 		entity.clearComponent('meshDataComponent');
 	};
@@ -141,7 +139,7 @@ function (
 	 * Set the current material for the quad
 	 * @param Material material
 	 */
-	QuadComponent.prototype.setMaterial = function (material) {
+	QuadComponent.prototype.setMaterial = function (material) {
 		this.material = material;
 		this.meshRendererComponent.materials = [material];
 		// REVIEW: Don't set this stuff here, set it in the data model

@@ -2,9 +2,7 @@ define([
 	'goo/renderer/Capabilities',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	Capabilities,
 	System,
 	SystemBus
@@ -12,8 +10,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a light component making sure that lights are placed according to its transforms<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
+	 * Processes all entities with a light component making sure that lights are placed according to its transforms<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @extends System
 	 */
 	function LightingSystem() {

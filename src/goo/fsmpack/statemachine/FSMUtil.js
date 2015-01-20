@@ -1,6 +1,6 @@
 /*jshint bitwise: false */
 define(
-/** @lends */
+
 function() {
 	'use strict';
 

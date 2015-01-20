@@ -1,11 +1,7 @@
 define([
-	'goo/fsmpack/statemachine/actions/Action',
-	'goo/entities/EntityUtils'
-],
-/** @lends */
-function(
-	Action,
-	EntityUtils
+	'goo/fsmpack/statemachine/actions/Action'
+], function (
+	Action
 ) {
 	'use strict';
 

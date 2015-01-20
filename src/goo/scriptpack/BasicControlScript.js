@@ -1,10 +1,8 @@
-define(['goo/math/Vector3', 'goo/math/Matrix3x3'],
-/** @lends */
-function (Vector3, Matrix3x3) {
+define(['goo/math/Vector3', 'goo/math/Matrix3x3'], function (Vector3, Matrix3x3) {
 	'use strict';
 
 	/**
-	 * @class Make an entity controllable via mouse and keyboard. WASD keys move the entity towards the back, left,
+	 * Make an entity controllable via mouse and keyboard. WASD keys move the entity towards the back, left,
 	 * front and right respectively. Shift causes speed to drop to a tenth. R and F move it up or down. Q and E roll it
 	 * towards the left or right. The arrow keys cause the entity to rotate, as does dragging with the mouse.
 	 *
@@ -260,8 +258,9 @@ function (Vector3, Matrix3x3) {
 		this.domElement.addEventListener('keyup', this.keyup.bind(this), false);
 	};
 
+	//! AT: what is this?!?!
 	/*
-	 * @description Test on how to expose variables to a tool.
+	 * Test on how to expose variables to a tool.
 	 * @returns {Array}
 	 */
 	BasicControlScript.prototype.externals = function () {

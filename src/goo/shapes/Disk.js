@@ -1,11 +1,12 @@
 define(['goo/renderer/MeshData'],
-	/** @lends */
+
 	function (MeshData) {
 	'use strict';
 
 	/**
-	 * @class A disk shape<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/shapes/Disk/Disk-vtest.html Working example}
+	 * A disk shape
+	 * @extends MeshData
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/shapes/Disk/Disk-vtest.html Working example
 	 * @param {number} [nSegments=8] Number of slices
 	 * @param {number} [radius=1] Radius of the disk
 	 * @param {number} [pointiness=0] The center of the disk can be offset in both directions from its outer edge by setting a positive or negative pointiness.
@@ -33,7 +34,7 @@ define(['goo/renderer/MeshData'],
 	Disk.prototype.constructor = Disk;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Disk} Self for chaining.
 	 */
 	Disk.prototype.rebuild = function () {

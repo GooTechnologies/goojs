@@ -2,7 +2,7 @@ define([
 	'goo/math/Vector3',
 	'goo/entities/components/Component'
 ],
-	/** @lends */
+
 		function (
 		Vector3,
 		Component
@@ -10,7 +10,7 @@ define([
 		'use strict';
 
 		/**
-		 * @class Holds the movement parameters of an entity.
+		 * Holds the movement parameters of an entity.
 		 * Typically useful for anything which has a speed and/or
 		 * rotation.
 		 * @extends Component

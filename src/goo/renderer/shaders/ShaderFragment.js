@@ -1,10 +1,10 @@
 define(
-/** @lends */
+
 function () {
 	'use strict';
 
 	/**
-	 * @class Collection of useful shader fragments
+	 * Collection of useful shader fragments
 	 */
 	function ShaderFragment() {
 	}

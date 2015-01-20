@@ -2,9 +2,7 @@
 define([
 	'goo/loaders/dds/DdsUtils',
 	'goo/renderer/Capabilities'
-],
-/** @lends */
-function (
+], function (
 	DdsUtils,
 	Capabilities
 ) {
@@ -184,7 +182,7 @@ function (
 	};
 
 	/**
-	 * @class Loads dds format images into a format usable by Goo.
+	 * Loads dds format images into a format usable by Goo.
 	 * @private
 	 */
 	function DdsLoader() {
