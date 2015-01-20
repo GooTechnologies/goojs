@@ -17,7 +17,7 @@ function (Vector3) {
     HitResult.prototype.copyFrom = function (hitResult) {
         this.hit = hitResult.hit;
         this.localHitLocation = hitResult.localHitLocation;
-        this.vertexWeights = hitResult.vertexWeight;
+        this.vertexWeights = hitResult.vertexWeights;
         this.surfaceObject = hitResult.surfaceObject;
     };
 
