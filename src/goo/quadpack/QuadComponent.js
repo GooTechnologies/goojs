@@ -1,6 +1,5 @@
 define([
 	'goo/entities/components/Component',
-	'goo/renderer/MeshData',
 	'goo/quadpack/DoubleQuad',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
@@ -10,7 +9,6 @@ define([
 	'goo/renderer/Texture'
 ], function (
 	Component,
-	MeshData,
 	DoubleQuad,
 	MeshDataComponent,
 	MeshRendererComponent,
