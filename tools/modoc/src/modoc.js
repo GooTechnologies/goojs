@@ -58,7 +58,7 @@ var HTML_SUFFIX = '-doc.html';
 
 var args = processArguments();
 
-var files = getFiles(args.sourcePath, ['goo.js', 'pack', '+']);
+var files = getFiles(args.sourcePath, ['goo.js', 'pack.js', 'logicpack', 'soundmanager', '+']);
 
 function copyStaticFiles(callback) {
 	childProcess.exec(

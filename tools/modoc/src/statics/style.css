@@ -7,7 +7,7 @@ body {
 	margin: 0;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
-	font-size: 16px;
+	font-size: 15px;
 	color: #b5b5b5;
 	background-color: #1d1d1d;
 }
@@ -139,7 +139,7 @@ nav {
 	height: 100%;
 	padding: 50px;
 	padding-bottom: 60px;
-	background: #272727;
+	background: #262626;
 	overflow-y: auto;
 	z-index: 1;
 	cursor: default;
@@ -282,7 +282,7 @@ li {
 	font-family: 'Roboto', sans-serif;
 	line-height: 1.6em;
 	color: #777777;
-	background: #303030;
+	background: #262626;
 	border-radius: 3px;
 }
 
@@ -300,7 +300,7 @@ pre {
 	line-height: 1.6em;
 	word-break: break-word;
 	color: #b5b5b5;
-	background: #303030;
+	background: #262626;
 	border-radius: 3px;
 }
 
