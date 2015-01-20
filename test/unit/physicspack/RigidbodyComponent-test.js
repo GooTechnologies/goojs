@@ -293,5 +293,13 @@ define([
 
 			done();
 		});
+
+		it('can set sleeping parameters', function (done) {
+			rbc.sleepingThreshold = 4;
+			rbc.sleepingTimeLimit = 6;
+			expect(rbc.cannonBody.sleepSpeedLimit).toEqual(4);
+			expect(rbc.cannonBody.sleepTimeLimit).toEqual(6);
+			done();
+		});
 	});
 });

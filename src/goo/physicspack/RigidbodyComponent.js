@@ -134,6 +134,18 @@ function (
 		 */
 		this._angularDamping = settings.angularDamping !== undefined ? settings.angularDamping : 0.05;
 
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._sleepingThreshold = settings.sleepingThreshold !== undefined ? settings.sleepingThreshold : 0.2;
+
+		/**
+		 * @private
+		 * @type {number}
+		 */
+		this._sleepingTimeLimit = settings.sleepingTimeLimit !== undefined ? settings.sleepingTimeLimit : 1;
+
 		if (!tmpCannonVec) {
 			tmpCannonVec = new CANNON.Vec3();
 			tmpCannonVec2 = new CANNON.Vec3();
@@ -337,6 +349,38 @@ function (
 				this._isKinematic = value;
 				this._dirty = true;
 			}
+		},
+
+		/**
+		 * @memberOf RigidbodyComponent#
+		 * @type {number}
+		 */
+		sleepingThreshold: {
+			get: function () {
+				return this._sleepingThreshold;
+			},
+			set: function (value) {
+				this._sleepingThreshold = value;
+				if (this.cannonBody) {
+					this.cannonBody.sleepSpeedLimit = value;
+				}
+			}
+		},
+
+		/**
+		 * @memberOf RigidbodyComponent#
+		 * @type {number}
+		 */
+		sleepingTimeLimit: {
+			get: function () {
+				return this._sleepingTimeLimit;
+			},
+			set: function (value) {
+				this._sleepingTimeLimit = value;
+				if (this.cannonBody) {
+					this.cannonBody.sleepTimeLimit = value;
+				}
+			}
 		}
 	});
 
@@ -412,7 +456,11 @@ function (
 			mass: this.mass,
 			material: mat,
 			linearDamping: this._linearDamping,
-			angularDamping: this._angularDamping
+			angularDamping: this._angularDamping,
+			sleepSpeedLimit: this._sleepingThreshold,
+			sleepTimeLimit: this._sleepingTimeLimit,
+			collisionFilterGroup: this._collisionGroup,
+			collisionFilterMask: this._collisionMask
 		});
 		this._system.cannonWorld.addBody(body);
 		this._system._entities[body.id] = this._entity;
@@ -544,7 +592,9 @@ function (
 			collisionGroup: this.collisionGroup,
 			collisionMask: this.collisionMask,
 			linearDamping: this.linearDamping,
-			angularDamping: this.angularDamping
+			angularDamping: this.angularDamping,
+			sleepingThreshold: this.sleepingThreshold,
+			sleepTimeLimit: this.sleepTimeLimit
 		});
 	};
 

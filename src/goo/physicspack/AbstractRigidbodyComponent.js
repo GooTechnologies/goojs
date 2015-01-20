@@ -128,7 +128,6 @@ function (
 
 				gooTrans.copy(childEntity.transformComponent.worldTransform);
 				Transform.combine(invBodyTransform, gooTrans, gooTrans2);
-				gooTrans2.update();
 
 				var offset = gooTrans2.translation;
 				var rot = gooTrans2.rotation;
