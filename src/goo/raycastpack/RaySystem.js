@@ -147,8 +147,6 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			}
 		}
 
-		this.hitTriangleIndexes.length = 0;
-
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
 			//reset ray
@@ -169,6 +167,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 			//empty intersectedNodes list
 			this.intersectedNodes.length = 0;
+			//empty hitTriangleIndexes list
+			this.hitTriangleIndexes.length = 0;
 
 			//THIS IS OPEN FOR OPTIMIZATION, DO TRIANGLE LEVEL CHECKS INSIDE THE OCTREE RAYSTEP
 			//raycast against octree and fill the intersectedNodes list with hit nodes
@@ -254,8 +254,6 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 		this.intersectedRayObjects.sort(this.sortIntersectedRayObjects);
 
-		this.hitTriangleIndexes.length = 0;
-
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
 			//reset ray
@@ -276,6 +274,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 			//empty intersectedNodes list
 			this.intersectedNodes.length = 0;
+			//empty hitTriangleIndexes list
+			this.hitTriangleIndexes.length = 0;
 
 			//THIS IS OPEN FOR OPTIMIZATION, DO TRIANGLE LEVEL CHECKS INSIDE THE OCTREE RAYSTEP
 			//raycast against octree and fill intersectedNodes list with hit nodes
