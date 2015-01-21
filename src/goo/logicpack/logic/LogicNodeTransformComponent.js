@@ -8,12 +8,12 @@ define(
 		'goo/math/Vector3',
 		'goo/math/Matrix3x3'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, TransformComponent, Vector3, Matrix3x3) {
 		'use strict';
 
 		/**
-		 * @class Logic node that connects to the transform component of an entity.
+		 * Logic node that connects to the transform component of an entity.
 		 * @private
 		 */
 		function LogicNodeTransformComponent() {

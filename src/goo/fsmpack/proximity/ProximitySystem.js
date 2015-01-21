@@ -2,9 +2,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/util/StringUtil'
-],
-/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	StringUtil
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a proximity component
+	 * Processes all entities with a proximity component
 	 * @param {Renderer} renderer
 	 * @param {RenderSystem} renderSystem
 	 * @private

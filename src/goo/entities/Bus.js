@@ -1,11 +1,13 @@
-define(['goo/util/ArrayUtil'],
-	/** @lends */
-	function (ArrayUtil) {
+define([
+	'goo/util/ArrayUtil'
+], function (
+	ArrayUtil
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * A generic message bus. Offers ways to receive and subscribe to messages on a hierarchy of channels.
+	 */
 	function Bus() {
 		this.trie = { name: '', listeners: [], children: new Map() };
 	}

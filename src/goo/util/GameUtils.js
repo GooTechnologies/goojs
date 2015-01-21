@@ -1,14 +1,13 @@
 define(
-/** @lends */
+
 function () {
 	'use strict';
 
 	/**
-	 * @class Shims for standard gaming features
-	 * @description Only used to define the class. Should never be instantiated.
+	 * Shims for standard gaming features
+	 * Only used to define the class. Should never be instantiated.
 	 */
-	function GameUtils () {
-	}
+	function GameUtils () {}
 
 	/** Supported features. All true by default.
 	 * @type {Object}

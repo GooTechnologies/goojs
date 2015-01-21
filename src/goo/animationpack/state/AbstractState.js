@@ -1,12 +1,10 @@
 define([
-],
-/** @lends */
-function (
+], function (
 ) {
 	'use strict';
 
 	/**
-	 * @class Base class for a state in our animation system
+	 * Base class for a state in our animation system
 	 * @private
 	 */
 	function AbstractState () {

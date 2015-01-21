@@ -7,9 +7,7 @@ define([
 	'goo/util/ParticleSystemUtils',
 	'goo/renderer/Renderer',
 	'goo/math/Vector3'
-],
-	/** @lends */
-function (
+], function (
 	SystemBus,
 	Material,
 	ShaderLib,
@@ -18,12 +16,13 @@ function (
 	ParticleSystemUtils,
 	Renderer,
 	Vector3
-	) {
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Snow
+	 * @param {GooRunner} gooRunner
+	 */
 	function Snow(gooRunner) {
 		this.velocity = 10;
 		this.height = 25;

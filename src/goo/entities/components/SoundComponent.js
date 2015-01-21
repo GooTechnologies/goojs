@@ -3,9 +3,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	AudioContext,
 	Vector3,
@@ -17,8 +15,8 @@ function (
 	//Or, isn't just one (the first) warning enough - it might ruing everything if flooding the console
 
 	/**
-	 * @class Component that adds sound to an entity.
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
+	 * Component that adds sound to an entity.
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
 	 * @extends {Component}
 	 */
 	function SoundComponent() {
@@ -92,10 +90,10 @@ function (
 	/**
 	 * Connect output of component to audionodes
 	 * @param {object} [nodes]
-	 * @param {AudioNode} [nodes.dry]
+	 * @param {AudioNode} [nodes.dry]
 	 * @param {AudioNode} [nodes.wet]
 	 */
-	SoundComponent.prototype.connectTo = function (nodes) {
+	SoundComponent.prototype.connectTo = function (nodes) {
 		this._outDryNode.disconnect();
 		this._outWetNode.disconnect();
 		if (nodes && nodes.dry) {
@@ -113,7 +111,7 @@ function (
 	 * @param {number} config.reverb
 	 */
 	SoundComponent.prototype.updateConfig = function (config) {
-		if (config.volume !== undefined) {
+		if (config.volume !== undefined) {
 			this._outDryNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
 		}
 		if (config.reverb !== undefined) {
@@ -125,9 +123,9 @@ function (
 	 * Updates position, velocity and orientation of component and thereby all connected sounds.
 	 * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
 	 * @param {object} settings See {@link SoundSystem}
-	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
+	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
 	 * @param {number} tpf
-	 * @private
+	 * @hidden
 	 */
 	SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;

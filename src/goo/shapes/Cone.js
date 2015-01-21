@@ -1,11 +1,14 @@
-define(['goo/renderer/MeshData'],
-	/** @lends */
-	function (MeshData) {
+define([
+	'goo/renderer/MeshData'
+], function (
+	MeshData
+) {
 	'use strict';
 
 	/**
-	 * @class A cone<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/shapes/Cone/Cone-vtest.html Working example}
+	 * Cone mesh data
+	 * @extends MeshData
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/shapes/Cone/Cone-vtest.html Working example
 	 * @param {number} [radialSamples=8] Number of slices
 	 * @param {number} [radius=1] Radius of the cone
 	 * @param {number} [height=2] The height of the cone
@@ -33,7 +36,7 @@ define(['goo/renderer/MeshData'],
 	Cone.prototype.constructor = Cone;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Cone} Self for chaining.
 	 */
 	Cone.prototype.rebuild = function () {

@@ -1,6 +1,4 @@
-define(['goo/fsmpack/statemachine/actions/Action'],
-/** @lends */
-function(Action) {
+define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 	'use strict';
 
 	function TestSpeedAction(settings) {

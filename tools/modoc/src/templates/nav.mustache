@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Goo Engine Documentation</title>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="lib/styles/goo.css">
+	<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+{{! SIDEBAR }}
+<nav>
+	<div id="top"></div>
+	<a href="#top" class="icon-arrow-up to-top"></a>
+	<section>
+		<h1>Goo Docs</h1>
+		<a class="link" href="changelog.html">Read the Changelog</a><br>
+		<a class="link" href="deprecated.html">Deprecation List</a>
+	</section>
+	<section>
+		<input id="search" type="text" placeholder="Start typing to search...">
+	</section>
+	<section>
+		<div class="top-dir">Shortcuts</div>
+		<ul>
+			{{#index}}
+				<li><a href="#{{name}}">{{name}}</a></li>
+			{{/index}}
+		</ul>
+	</section>
+	<div class="index-container">
+		<ul>
+			{{#index}}
+				<div class="top-dir" id="{{name}}">{{name}}</div>
+				<ul>
+					{{#classes}}
+						<li class="item"><a phony="{{{link}}}">{{name}}</a></li>
+					{{/classes}}
+				</ul>
+			{{/index}}
+		</ul>
+	</div>
+</nav>
+
+{{! CONTENT }}
+<iframe class="class-panel" src="Entity-doc.html"></iframe>
+
+
+{{! FOOTER }}
+<script src="lib/jquery-2.1.1.min.js"></script>
+<script src="lib/purl.js"></script>
+<script src="nav.js"></script>
+<script src="lib/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>

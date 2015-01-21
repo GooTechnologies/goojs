@@ -2,7 +2,7 @@ define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Vector3'
 ],
-/** @lends */
+
 	function(
 	Action,
 	Vector3

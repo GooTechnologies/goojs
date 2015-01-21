@@ -3,18 +3,16 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/shaders/ShaderBuilder'
-],
-	/** @lends */
-	function (
-		MeshData,
-		Shader,
-		ShaderFragment,
-		ShaderBuilder
-		) {
+], function (
+	MeshData,
+	Shader,
+	ShaderFragment,
+	ShaderBuilder
+) {
 	'use strict';
 
 	/**
-	 * @class Collection of useful shaders<br>
+	 * Collection of useful shaders<br>
 	 * Details of each can be printed like this for example: console.log(ShaderLib.texturedLit).<br>
 	 * There are more special purpose shaders in {@link ShaderLibExtra}
 	 */
@@ -23,7 +21,6 @@ define([
 	/**
 	 * The uber shader is the default Goo shader supporting the most common realistic render features.
 	 * It supports lights, animations, reflective materials, normal, diffuse, AO and light textures, transparency, fog and shadows.
-	 * @static
 	 */
 	ShaderLib.uber = {
 		processors: [
@@ -242,7 +239,11 @@ define([
 				'#endif',
 
 				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
-					'final_color.a = texture2D(transparencyMap, texCoord0).a;',
+					'#ifdef TRANSPARENCY_BW',
+						'final_color.a = texture2D(transparencyMap, texCoord0).r;',
+					'#else',
+						'final_color.a = texture2D(transparencyMap, texCoord0).a;',
+					'#endif',
 				'#endif',
 				'#ifdef OPACITY',
 					'final_color.a *= opacity;',
@@ -352,9 +353,6 @@ define([
 	};
 
 	// only terrain depends on this
-	/**
-	 * @static
-	*/
 	ShaderLib.screenCopy = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -386,9 +384,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.copy = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -427,9 +422,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.copyPure = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -469,9 +461,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simple = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -498,9 +487,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simpleColored = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -535,9 +521,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simpleLit = {
 		processors: [
 			ShaderBuilder.light.processor
@@ -625,9 +608,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.textured = {
 		defines: {
 			TEXCOORD0: true,
@@ -674,9 +654,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.texturedLit = {
 		processors: [
 			ShaderBuilder.light.processor
@@ -749,9 +726,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.convolution = {
 		defines : {
 			KERNEL_SIZE_FLOAT : '25.0',
@@ -840,9 +814,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.showNormals = {
 		defines: {
 			NORMAL: true
@@ -886,9 +857,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.particles = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -932,11 +900,6 @@ define([
 		].join('\n')
 	};
 
-
-
-	/**
-	 * @static
-	*/
 	ShaderLib.normalmap = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -981,9 +944,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.point = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1020,9 +980,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.downsample = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1059,9 +1016,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.lightDepth = {
 		processors: [
 			ShaderBuilder.animation.processor
@@ -1118,9 +1072,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.pickingShader = {
 		defines: {
 			WEIGHTS: true,

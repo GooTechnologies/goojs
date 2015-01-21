@@ -7,12 +7,12 @@ define(
 		'goo/entities/components/MeshRendererComponent',
 		'goo/math/Vector3'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {
 		'use strict';
 
 		/**
-		 * @class Logic node that connects to the MeshRendererComponent of an entity.
+		 * Logic node that connects to the MeshRendererComponent of an entity.
 		 * @private
 		 */
 		function LogicNodeMeshRendererComponent() {

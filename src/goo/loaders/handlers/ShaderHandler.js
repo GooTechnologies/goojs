@@ -6,9 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	Material,
 	MeshData,
@@ -20,11 +18,11 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading shaders into engine
+	 * Handler for loading shaders into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function ShaderHandler() {

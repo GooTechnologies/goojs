@@ -1,10 +1,10 @@
 define(
-/** @lends */
+
 function () {
 	'use strict';
 
 	/**
-	 * @class AnimationClip manages a set of animation channels as a single clip entity.
+	 * AnimationClip manages a set of animation channels as a single clip entity.
 	 * @param {string} name Name of joint
 	 * @param {AbstractAnimationChannel[]} [channels=[]] an array of channels to shallow copy locally.
 	 */
@@ -39,9 +39,9 @@ function () {
 	};
 
 	/**
-	 * @description Remove a given channel from this clip.
+	 * Remove a given channel from this clip.
 	 * @param {AbstractAnimationChannel} channel the channel to remove.
-	 * @return {boolean} true if this clip had the given channel and it was removed.
+	 * @returns {boolean} true if this clip had the given channel and it was removed.
 	 */
 	AnimationClip.prototype.removeChannel = function (channel) {
 		var idx = this._channels.indexOf(channel);
@@ -56,7 +56,7 @@ function () {
 	/**
 	 * Locate a channel in this clip using its channel name.
 	 * @param {string} channelName the name to match against.
-	 * @return {AbstractAnimationChannel} the first channel with a name matching the given channelName, or null if no matches are found.
+	 * @returns {AbstractAnimationChannel} the first channel with a name matching the given channelName, or null if no matches are found.
 	 */
 	AnimationClip.prototype.findChannelByName = function (channelName) {
 		for ( var i = 0, max = this._channels.length; i < max; ++i) {

@@ -68,9 +68,7 @@ define([
 	'goo/fsmpack/statemachine/actions/HTMLAction',
 	'goo/fsmpack/statemachine/actions/CopyJointTransformAction',
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction'
-],
-/** @lends */
-function (
+], function (
 
 ) {
 	'use strict';

@@ -5,9 +5,7 @@ define([
 	'goo/animationpack/clip/JointData',
 	'goo/math/Vector3',
 	'goo/math/Quaternion'
-],
-/** @lends */
-function (
+], function (
 	JointChannel,
 	JointData,
 	TransformChannel,
@@ -18,7 +16,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class This tree source maintains its own source data, which can be modified directly using instance functions. This source is meant to be used for
+	 * This tree source maintains its own source data, which can be modified directly using instance functions. This source is meant to be used for
 	 *        controlling a particular joint or set of joints programatically.
 	 * @param {string} [sourceName] Name of source we were initialized from, if given.
 	 */
@@ -28,7 +26,7 @@ function (
 	}
 
 	/**
-	 * @description Sets a translation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Sets a translation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Vector3} translation the translation to set
 	 */
@@ -55,7 +53,7 @@ function (
 	};
 
 	/**
-	 * @description Sets a scale to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Sets a scale to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Vector3} scale the scale to set
 	 */
@@ -67,7 +65,7 @@ function (
 	};
 
 	/**
-	 * @description Gets the scale from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Gets the scale from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Vector3} [store] to store the result in
 	 * @returns {Vector3} new vector with result or store
@@ -82,7 +80,7 @@ function (
 	};
 
 	/**
-	 * @description Sets a rotation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Sets a rotation to the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Quaternion} rotation the rotation to set
 	 */
@@ -94,7 +92,7 @@ function (
 	};
 
 	/**
-	 * @description Gets rotation from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
+	 * Gets rotation from the local transformdata for a given channelName. The channel has to be an instance of {@link TransformChannel}
 	 * @param {string} channelName
 	 * @param {Quaternion} [store] to store the result in
 	 */
@@ -108,7 +106,7 @@ function (
 	};
 
 	/**
-	 * @description Setup transform data for specific joints on this source, using the first frame from a given clip.
+	 * Setup transform data for specific joints on this source, using the first frame from a given clip.
 	 * @param {AnimationClip} clip the animation clip to pull data from
 	 * @param {string[]} jointIndices the indices of the joints to initialize data for.
 	 */
@@ -150,7 +148,7 @@ function (
 
 	/*
 	 * This has no effect, but will be called by owning {@link SteadyState}
-	 * @return true to stay active
+	 * @returns true to stay active
 	 */
 	ManagedTransformSource.prototype.setTime = function () {
 		return true;
@@ -168,7 +166,7 @@ function (
 	};
 
 	/*
-	 * @return a source data mapping for the channels in this clip source
+	 * @returns a source data mapping for the channels in this clip source
 	 */
 	ManagedTransformSource.prototype.getSourceData = function () {
 		return this._data;

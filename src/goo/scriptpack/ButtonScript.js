@@ -15,7 +15,6 @@ define([
 
 	/**
 	 * Attaches mouse events to an entity.
-	 * @class
 	 */
 	function ButtonScript() {
 

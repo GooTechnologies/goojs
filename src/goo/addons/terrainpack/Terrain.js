@@ -19,9 +19,7 @@ define([
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/light/DirectionalLight',
 	'goo/shapes/Quad'
-],
-/** @lends */
-function(
+], function (
 	EntityUtils,
 	MeshDataComponent,
 	MeshRendererComponent,
@@ -48,7 +46,7 @@ function(
 	var Ammo = window.Ammo; // make jslint happy
 
 	/**
-	 * @class A terrain
+	 * A terrain
 	 */
 	function Terrain(goo, size, count) {
 		this.world = goo.world;

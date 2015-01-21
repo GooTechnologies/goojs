@@ -7,9 +7,7 @@ define([
 	'goo/renderer/Renderer',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function(
+], function (
 	Gizmo,
 	MeshData,
 	MeshBuilder,
@@ -22,8 +20,9 @@ function(
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * @extends Gizmo
+	 * @hidden
+	 */
 	function ScaleGizmo(gizmoRenderSystem) {
 		Gizmo.call(this, 'ScaleGizmo', gizmoRenderSystem);
 		this._boxMesh = new Box(1.4, 1.4, 1.4);
@@ -43,7 +42,7 @@ function(
 
 	ScaleGizmo.prototype.activate = function(props) {
 		Gizmo.prototype.activate.call(this, props);
-		if(this._activeHandle.axis !== 3) {
+		if(this._activeHandle.axis !== 3) {
 			this._setPlane();
 			this._setLine();
 		}
@@ -58,7 +57,7 @@ function(
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
 
-		if(this._activeHandle.axis === 3) {
+		if(this._activeHandle.axis === 3) {
 			this._scaleUniform();
 		} else {
 			this._scaleNonUniform();
@@ -108,7 +107,7 @@ function(
 		result.setVector(line).scale(d);
 		var scale = Math.pow(1 + d, this._scale);
 
-		switch(this._activeHandle.axis) {
+		switch(this._activeHandle.axis) {
 			case 0:
 				this._transformScale.data[0] *= scale;
 				break;

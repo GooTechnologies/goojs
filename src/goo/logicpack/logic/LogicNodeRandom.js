@@ -5,12 +5,12 @@ define(
 		'goo/logic/LogicInterface',
 		'goo/logic/LogicNodes'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicInterface, LogicNodes) {
 		'use strict';
 
 		/**
-		 * @class Logic node implementing a random value. Every frame a new random value is written
+		 * Logic node implementing a random value. Every frame a new random value is written
 		 * to its output.
 		 * @private
 		 */

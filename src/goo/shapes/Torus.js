@@ -2,9 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	MeshData,
 	Vector3,
 	MathUtils
@@ -12,7 +10,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class A donut-shaped model.
+	 * A donut-shaped model.
+	 * @extends MeshData
 	 * @param {number} [circleSamples=8] Number of segments.
 	 * @param {number} [radialSamples=8] Number of slices.
 	 * @param {number} [tubeRadius=1] Radius of tube.
@@ -49,7 +48,7 @@ function (
 	Torus.prototype.constructor = Torus;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Torus} Self for chaining.
 	 */
 	Torus.prototype.rebuild = function () {

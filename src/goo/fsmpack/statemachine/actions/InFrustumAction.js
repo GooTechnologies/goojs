@@ -2,9 +2,7 @@ define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/renderer/Camera',
 	'goo/renderer/bounds/BoundingSphere'
-],
-/** @lends */
-function (
+], function (
 	Action,
 	Camera,
 	BoundingSphere

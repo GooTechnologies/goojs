@@ -2,9 +2,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/renderer/Renderer'
-],
-	/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	Renderer
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Updates cameras/cameracomponents with their transform component transforms
+	 * Updates cameras/cameracomponents with their transform component transforms
 	 * @extends System
 	 */
 	function CameraSystem() {

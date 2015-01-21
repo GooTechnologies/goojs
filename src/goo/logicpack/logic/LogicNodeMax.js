@@ -5,12 +5,12 @@ define(
 		'goo/logic/LogicNodes',
 		'goo/logic/LogicInterface'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
-		 * @class Logic node that computes the max of two inputs.
+		 * Logic node that computes the max of two inputs.
 		 * @private
 		 */
 		function LogicNodeMax() {

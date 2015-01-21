@@ -5,9 +5,7 @@ define([
 	'goo/animationpack/clip/JointData',
 	'goo/animationpack/clip/TransformData',
 	'goo/animationpack/clip/TriggerData'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	World,
 	AnimationLayer,
@@ -18,7 +16,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Holds the animation data.
+	 * Holds the animation data.
 	 * @extends Component
 	 */
 	function AnimationComponent(pose) {

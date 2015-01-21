@@ -290,6 +290,7 @@ define([
 			options.logo = false;
 			options.manuallyStartGameLoop = true;
 			options.preserveDrawingBuffer = true;
+			options.antialias = false;
 		}
 
 		if (V.minimal) {

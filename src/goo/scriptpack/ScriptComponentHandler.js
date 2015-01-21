@@ -8,9 +8,7 @@ define([
 
 	'goo/scripts/Scripts',
 	'goo/scripts/ScriptUtils'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	ScriptComponent,
 	RSVP,
@@ -24,28 +22,24 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	* @private
-	*/
+	 * @hidden
+	 */
 	function ScriptComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'ScriptComponent';
 	}
+
 	ScriptComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	ScriptComponentHandler.prototype.constructor = ScriptComponentHandler;
 	ComponentHandler._registerClass('script', ScriptComponentHandler);
 
-
-	ScriptComponentHandler.ENGINE_SCRIPT_PREFIX = "GOO_ENGINE_SCRIPTS/";
-
+	ScriptComponentHandler.ENGINE_SCRIPT_PREFIX = 'GOO_ENGINE_SCRIPTS/';
 
 	ScriptComponentHandler.prototype._prepare = function (/*config*/) {};
-
 
 	ScriptComponentHandler.prototype._create = function () {
 		return new ScriptComponent();
 	};
-
 
 	ScriptComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
@@ -87,7 +81,7 @@ function (
 					newScript.enabled = false;
 
 					return that._setParameters(newScript.parameters, scriptInstance.options, script.externals, options)
-					.then(function () {
+					.then(function () {
 						return newScript;
 					});
 				});
@@ -102,7 +96,6 @@ function (
 		});
 	};
 
-
 	ScriptComponentHandler.prototype._setParameters = function (parameters, config, externals, options) {
 		if (!externals || !externals.parameters) {
 			return PromiseUtil.resolve();
@@ -116,7 +109,6 @@ function (
 		parameters.enabled = (config.enabled !== undefined) ? config.enabled : true;
 		return RSVP.all(promises);
 	};
-
 
 	ScriptComponentHandler.prototype._setParameter = function (parameters, config, external, options) {
 		var key = external.key;
@@ -134,7 +126,7 @@ function (
 				parameters[key] = null;
 				return PromiseUtil.resolve();
 			} else {
-				return this._load(config.entityRef, options).then(function (entity) {
+				return this._load(config.entityRef, options).then(function (entity) {
 					parameters[key] = entity;
 				});
 			}
@@ -143,7 +135,6 @@ function (
 			return PromiseUtil.resolve();
 		}
 	};
-
 
 	/**
 	 * Creates a new script engine.
@@ -169,7 +160,6 @@ function (
 
 		return PromiseUtil.resolve(script);
 	}
-
 
 	return ScriptComponentHandler;
 });
