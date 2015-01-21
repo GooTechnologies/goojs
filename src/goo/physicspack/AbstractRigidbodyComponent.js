@@ -114,8 +114,9 @@ function (
 	 */
 	AbstractRigidbodyComponent.prototype.traverseColliders = function (entity, callback) {
 		// Needed for getting the Rigidbody-local transform of each collider
-		// entity.transformComponent.updateTransform();
-		// entity.transformComponent.updateWorldTransform();
+		entity.transformComponent.updateTransform();
+		entity.transformComponent.updateWorldTransform();
+
 		var bodyTransform = entity.transformComponent.worldTransform;
 		invBodyTransform.copy(bodyTransform);
 		invBodyTransform.invert(invBodyTransform);
@@ -123,6 +124,9 @@ function (
 		entity.traverse(function (childEntity) {
 			var collider = childEntity.colliderComponent;
 			if (collider) {
+
+				childEntity.transformComponent.updateTransform();
+				childEntity.transformComponent.updateWorldTransform();
 
 				// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
 
