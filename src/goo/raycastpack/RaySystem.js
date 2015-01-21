@@ -50,6 +50,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		if(!this.containsEntity(entity))
 		{
 			var rayObject = new RayObject(this, entity, octreeDepth);
+			//push to the rayObjects array
 			this.rayObjects.push(rayObject);
 		}
 	};
@@ -146,7 +147,6 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				this.intersectedRayObjects.push(rayObject);
 			}
 		}
-		var numCallbacks = 0;
 
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
@@ -170,7 +170,6 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			this.intersectedNodes.length = 0;
 			//empty hitTriangleIndexes list
 			this.hitTriangleIndexes.length = 0;
-
 			//THIS IS OPEN FOR OPTIMIZATION, DO TRIANGLE LEVEL CHECKS INSIDE THE OCTREE RAYSTEP
 			//raycast against octree and fill the intersectedNodes list with hit nodes
 			rayObject.octree.rayStep(this.ray, this.inverseDir, this.rayLength, this.intersectedNodes, true);
@@ -191,8 +190,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 							{
 								this.bestResult.copyFrom(this.result);
 
-								//run the callback and feed it the hit result
-								numCallbacks++;
+								//run the callback with the hitResult as parameter
 								if (!hitCallback(this.bestResult))
 								{
 									this._castEnd(false);
@@ -208,9 +206,6 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				}
 			}
 		}
-
-		console.log(numCallbacks);
-
 		this._castEnd(this.bestResult.hit);
 
 		return this.bestResult;
