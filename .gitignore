@@ -4,6 +4,8 @@ node_modules/
 
 out/
 out-doc/
+goojs-jsdoc/
+goojs-jsdoc*
 
 # Created when running karma unittests
 coverage/
@@ -27,3 +29,5 @@ examples/index.html
 # generated screenshots
 # NB! reference screenshots need to be included
 test/e2etesting/screenshots-tmp/
+
+new_engine.sh

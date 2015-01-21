@@ -9,8 +9,10 @@ define([
 	'goo/renderer/Util',
 	'goo/util/ObjectUtil',
 	'goo/util/CanvasUtils',
-	'goo/util/StringUtil'
-], function (
+	'goo/util/StringUtil',
+	'goo/entities/SystemBus'
+],
+function (
 	ConfigHandler,
 	Texture,
 	DdsLoader,
@@ -21,7 +23,8 @@ define([
 	Util,
 	_,
 	CanvasUtils,
-	StringUtil
+	StringUtil,
+	SystemBus
 ) {
 	'use strict';
 
@@ -36,6 +39,24 @@ define([
 	 */
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
+		var that = this;
+		SystemBus.addListener('playStateChanged', function(playState) {
+			this._objects.forEach(function (texture) {
+				if (texture.image.play && texture.image.pause) {
+					var video = texture.image;
+					if (playState === 'play') {
+						video.play();
+					}
+					else if (playState === 'stop') {
+						video.pause();
+						video.currentTime = 0;
+					}
+					else if (playState === 'pause') {
+						video.pause();
+					}
+				}
+			});
+		}.bind(this));
 	}
 
 	TextureHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -192,8 +213,12 @@ define([
 						texture.updateCallback = function () {
 							return !video.paused;
 						};
-						if (config.autoPlay === undefined || config.autoPlay) {
+						if (config.autoPlay !== false && !options.editMode) {
 							video.play();
+						}
+						else {
+							video.pause();
+							video.currentTime = 0;
 						}
 						return texture;
 					});
