@@ -146,6 +146,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				this.intersectedRayObjects.push(rayObject);
 			}
 		}
+		var numCallbacks = 0;
 
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
@@ -181,7 +182,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				{
 					//get surfaceObject from the node data array
 					var surfaceObject = node.data[k];
-					if(this.hitTriangleIndexBefore(surfaceObject.triangleIndex))
+					if(!this.hitTriangleIndexBefore(surfaceObject.triangleIndex))
 					{
 						if (this.rayCastSurfaceObject(surfaceObject, doBackfaces))
 						{
@@ -191,6 +192,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 								this.bestResult.copyFrom(this.result);
 
 								//run the callback and feed it the hit result
+								numCallbacks++;
 								if (!hitCallback(this.bestResult))
 								{
 									this._castEnd(false);
@@ -206,6 +208,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				}
 			}
 		}
+
+		console.log(numCallbacks);
 
 		this._castEnd(this.bestResult.hit);
 
@@ -288,7 +292,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 				{
 					//get surfaceObject from the node data array
 					var surfaceObject = node.data[k];
-					if(this.hitTriangleIndexBefore(surfaceObject.triangleIndex))
+					if(!this.hitTriangleIndexBefore(surfaceObject.triangleIndex))
 					{
 						if(this.rayCastSurfaceObject(surfaceObject, doBackfaces))
 						{
