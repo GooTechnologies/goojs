@@ -1,10 +1,8 @@
-define(['goo/math/Quaternion', 'goo/math/Vector3'],
-/** @lends */
-function (Quaternion, Vector3) {
+define(['goo/math/Quaternion', 'goo/math/Vector3'], function (Quaternion, Vector3) {
 	'use strict';
 
 	/**
-	 * @class Describes a relative transform as a Quaternion-Vector-Vector tuple. We use QVV to make it simpler to do LERP blending.
+	 * Describes a relative transform as a Quaternion-Vector-Vector tuple. We use QVV to make it simpler to do LERP blending.
 	 * @param {TransformData} [source] source to copy.
 	 */
 	function TransformData (source) {
@@ -18,11 +16,12 @@ function (Quaternion, Vector3) {
 	 * @param {Transform}
 	 */
 	TransformData.prototype.applyTo = function (transform) {
-		transform.setIdentity();
+		// No need to set to identity since we overwrite them all
+		// transform.setIdentity();
 		// TODO: matrix vs quaternion?
 		transform.rotation.copyQuaternion(this._rotation);
-		transform.scale.setv(this._scale);
-		transform.translation.setv(this._translation);
+		transform.scale.setVector(this._scale);
+		transform.translation.setVector(this._translation);
 		transform.update();
 	};
 
@@ -41,13 +40,13 @@ function (Quaternion, Vector3) {
 	 * @param {TransformData} blendTo The TransformData to blend to
 	 * @param {number} blendWeight The blend weight
 	 * @param {TransformData} store The TransformData store.
-	 * @return {TransformData} The blended transform.
+	 * @returns {TransformData} The blended transform.
 	 */
 	TransformData.prototype.blend = function (blendTo, blendWeight, store) {
 		var tData = store ? store : new TransformData();
 
-		tData._translation.setv(this._translation).lerp(blendTo._translation, blendWeight);
-		tData._scale.setv(this._scale).lerp(blendTo._scale, blendWeight);
+		tData._translation.setVector(this._translation).lerp(blendTo._translation, blendWeight);
+		tData._scale.setVector(this._scale).lerp(blendTo._scale, blendWeight);
 		Quaternion.slerp(this._rotation, blendTo._rotation, blendWeight, tData._rotation);
 		return tData;
 	};

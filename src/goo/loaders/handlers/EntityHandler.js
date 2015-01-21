@@ -4,9 +4,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,
@@ -16,11 +14,11 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading entities into engine
+	 * Handler for loading entities into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function EntityHandler() {
@@ -48,7 +46,7 @@ function (
 	 * @private
 	 */
 	EntityHandler.prototype._remove = function (ref) {
-		var entity = this._objects[ref];
+		var entity = this._objects.get(ref);
 		var that = this;
 		if (entity) {
 			// Remove components
@@ -64,28 +62,26 @@ function (
 			return RSVP.all(promises)
 			.then(function () {
 				entity.removeFromWorld();
-				delete that._objects[ref];
+				that._objects.delete(ref);
 			});
 		}
 	};
 
 	function updateTags(entity, tags) {
-		entity._tags = {};
+		entity._tags.clear();
 		if (!tags) { return; }
 
-		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
 		for (var tag in tags) {
 			entity.setTag(tag);
 		}
 	}
 
-	function updateAttributes(entity, config) {
-		entity._attributes = {};
-		if (!config) { return; }
+	function updateAttributes(entity, attributes) {
+		entity._attributes.clear();
+		if (!attributes) { return; }
 
-		//! AT: not sure if just referencing the config is a good idea; will deep copy it instead
-		for (var attribute in config) {
-			entity.setAttribute(attribute, config[attribute]);
+		for (var attribute in attributes) {
+			entity.setAttribute(attribute, attributes[attribute]);
 		}
 	}
 
@@ -98,11 +94,10 @@ function (
 	 */
 	EntityHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (entity) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (entity) {
 			if (!entity) { return; }
 			entity.id = ref;
 			entity.name = config.name;
-			window.entities = window.entities || {};
 			entity.static = !!config.static;
 
 			updateTags(entity, config.tags);
@@ -144,7 +139,7 @@ function (
 	/**
 	 * Adds/updates/removes a component on an entity
 	 * @param {Entity} entity
-	 * @param {string} type
+	 * @param {string} type
 	 * @param {object} config
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with updated entity
@@ -163,8 +158,8 @@ function (
 	/**
 	 * Get the type for the component. Needed to match engine components against data model
 	 * component types.
-	 * @param {Component} component
-	 * @returns {string} 
+	 * @param {Component} component
+	 * @returns {string}
 	 * @private
 	 */
 	EntityHandler.prototype._getComponentType = function (component) {
@@ -177,7 +172,7 @@ function (
 
 	/**
 	 * Gets the handler for a component type or creates a new one if necessary
-	 * @param {string} type
+	 * @param {string} type
 	 * @returns {ComponentHandler}
 	 */
 	EntityHandler.prototype._getHandler = function (type) {

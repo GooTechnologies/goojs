@@ -1,8 +1,6 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action'
-],
-/** @lends */
-function (
+], function (
 	Action
 ) {
 	'use strict';
@@ -96,7 +94,7 @@ function (
 			var meshRendererComponent = entity.meshRendererComponent;
 			var material = meshRendererComponent.materials[0];
 			var texture = material.getTexture('DIFFUSE_MAP');
-			if (!texture) { return; }
+			if (!texture) { return; }
 			var initialOffset = texture.offset;
 			var time = entity._world.time * 1000;
 
@@ -104,7 +102,7 @@ function (
 			var fakeTo = { x: this.toX, y: this.toY };
 
 			this.tween.from(fakeFrom).to(fakeTo, this.time).easing(this.easing).onUpdate(function () {
-				texture.offset.setd(this.x, this.y);
+				texture.offset.setDirect(this.x, this.y);
 			}).onComplete(function () {
 				fsm.send(this.eventToEmit.channel);
 			}.bind(this)).start(time);

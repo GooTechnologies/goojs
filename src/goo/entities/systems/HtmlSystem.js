@@ -4,9 +4,7 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/math/MathUtils',
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	System,
 	Renderer,
 	Matrix4x4,
@@ -16,9 +14,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example}
 	 * @extends System
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example
 	 */
 	function HtmlSystem(renderer) {
 		System.call(this, 'HtmlSystem', ['TransformComponent', 'HtmlComponent']);
@@ -26,6 +23,7 @@ function (
 	}
 
 	HtmlSystem.prototype = Object.create(System.prototype);
+	HtmlSystem.prototype.constructor = HtmlSystem;
 
 	//
 	// Browsers implement z-index as signed 32bit int.
@@ -64,14 +62,14 @@ function (
 			}
 
 			// Hidden
-			if (component.hidden) {
+			if (component.hidden) {
 				component.domElement.style.display = 'none';
 				continue;
 			}
 
 			// Behind camera
-			tmpVector.setv(camera.translation)
-				.subv(entity.transformComponent.worldTransform.translation);
+			tmpVector.setVector(camera.translation)
+				.subVector(entity.transformComponent.worldTransform.translation);
 			if (camera._direction.dot(tmpVector) > 0) {
 				component.domElement.style.display = 'none';
 				continue;

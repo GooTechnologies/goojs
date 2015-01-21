@@ -13,7 +13,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/shapes/Quad'
 ],
-/** @lends */
+
 function(
 	MathUtils,
 	Transform,

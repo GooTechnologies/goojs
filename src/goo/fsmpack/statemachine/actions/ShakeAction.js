@@ -1,9 +1,7 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Vector3'
-],
-/** @lends */
-function(
+], function (
 	Action,
 	Vector3
 ) {
@@ -91,14 +89,14 @@ function(
 			if (iter > that.speed) {
 				iter = 0;
 
-				target.setd(
+				target.setDirect(
 					- oldVal.data[0] + (Math.random()-0.5) * this.level * 2,
 					- oldVal.data[1] + (Math.random()-0.5) * this.level * 2,
 					- oldVal.data[2] + (Math.random()-0.5) * this.level * 2
 				);
 			}
 
-			vel.setd(
+			vel.setDirect(
 				vel.data[0] * 0.98 + (target.data[0]) * 0.1,
 				vel.data[1] * 0.98 + (target.data[1]) * 0.1,
 				vel.data[2] * 0.98 + (target.data[2]) * 0.1

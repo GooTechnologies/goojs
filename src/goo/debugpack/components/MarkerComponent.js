@@ -1,18 +1,18 @@
 define([
 	'goo/entities/components/Component',
-	'goo/debugpack/BoundingVolumeMeshBuilder'],
-/** @lends */
-function(
+	'goo/debugpack/BoundingVolumeMeshBuilder'], function (
 	Component,
 	BoundingVolumeMeshBuilder) {
 	'use strict';
 
 	/**
-	 * @class Holds the necessary data for a marker
+	 * Holds the necessary data for a marker
 	 * @param {Entity} entity The entity this component is attached to
 	 * @extends Component
 	 */
 	function MarkerComponent(hostEntity) {
+		Component.apply(this, arguments);
+
 		this.type = 'MarkerComponent';
 
 		var hostModelBound = hostEntity.meshRendererComponent.worldBound;
@@ -21,6 +21,7 @@ function(
 	}
 
 	MarkerComponent.prototype = Object.create(Component.prototype);
+	MarkerComponent.prototype.constructor = MarkerComponent;
 
 	return MarkerComponent;
 });

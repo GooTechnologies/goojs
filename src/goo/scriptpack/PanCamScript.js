@@ -170,7 +170,7 @@ define([
 				var width = environment.viewportWidth / environment.devicePixelRatio;
 				var height = environment.viewportHeight / environment.devicePixelRatio;
 				mainCam.getScreenCoordinates(lookAtPoint, width, height, calcVector);
-				calcVector.sub_d(
+				calcVector.subDirect(
 					mouseState.dx,/// (environment.viewportWidth/devicePixelRatio),
 					mouseState.dy,/// (environment.viewportHeight/devicePixelRatio),
 					0
@@ -183,11 +183,11 @@ define([
 					calcVector.z,
 					calcVector
 				);
-				lookAtPoint.setv(calcVector);
+				lookAtPoint.setVector(calcVector);
 
 			} else {
-				calcVector.setv(fwdVector).scale(mouseState.dy);
-				calcVector2.setv(leftVector).scale(mouseState.dx);
+				calcVector.setVector(fwdVector).scale(mouseState.dy);
+				calcVector2.setVector(leftVector).scale(mouseState.dx);
 
 				//! schteppe: use world coordinates for both by default?
 				//if (parameters.screenMove){
@@ -200,7 +200,7 @@ define([
 					calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
 				}
 				//}
-				calcVector.addv(calcVector2);
+				calcVector.addVector(calcVector2);
 				transform.rotation.applyPost(calcVector);
 				//if (!parameters.screenMove){
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
@@ -210,7 +210,7 @@ define([
 				} else {
 					calcVector.scale(parameters.panSpeed);
 				}
-				entity.transformComponent.transform.translation.addv(calcVector);
+				entity.transformComponent.transform.translation.addVector(calcVector);
 				entity.transformComponent.setUpdated();
 				environment.dirty = false;
 			}

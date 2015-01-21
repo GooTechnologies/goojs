@@ -62,18 +62,21 @@ define([
 			});
 		});
 
-		it('loads bundle', function () {
+		it('loads bundle', function (done) {
 			// Create a bundlewrapper to preload and skip ajax
 			var config = Configs.entity();
 			var bundleRef = Configs.randomRef('bundle');
 
 			loader.update(bundleRef, Configs.get());
 			// Load bundle
-			loader.load(bundleRef).then(function (done) {
-				var keys = Object.keys(loader._ajax._cache);
+			loader.load(bundleRef).then(function (bundle) {
+				var keys = Object.keys(loader._ajax._cache); // this needs to change when _cache becomes a map
 
 				expect(keys).toContain(config.id);
 				expect(loader._ajax._cache[config.id].components).toBeDefined();
+				done();
+			}, function () {
+				expect('').toEqual('Should never get here');
 				done();
 			});
 		});
@@ -89,7 +92,7 @@ define([
 				expect(world.getSystem('TransformSystem')._activeEntities.length).toBeGreaterThan(0);
 
 				// Someloaders are populated
-				expect(Object.keys(loader._handlers.entity._objects).length).toBeGreaterThan(0);
+				expect(loader._handlers.entity._objects.size).toBeGreaterThan(0);
 
 				// Ajax has some cache
 				expect(Object.keys(loader._ajax._cache).length).toBeGreaterThan(0);
@@ -114,13 +117,43 @@ define([
 
 				// No objects in handlers
 				for (var key in loader._handlers) {
-					var objects = Object.keys(loader._handlers[key]._objects);
-					expect(objects.length).toBe(0);
+					expect(loader._handlers[key]._objects.size).toBe(0);
 				}
 
 				// No configs in ajax
 				var cacheCount = Object.keys(loader._ajax._cache);
 				expect(cacheCount.length).toBe(0);
+				done();
+			}, function () {
+				expect('').toEqual('Should never get here');
+				done();
+			});
+		});
+
+		it('preloads all binaries in json structure', function (done) {
+			var entities = [];
+			for (var i = 0; i < 4; i++) {
+				entities[i] = Configs.entity(['transform', 'meshData']);
+				if (i > 0) {
+					Configs.attachChild(entities[i - 1], entities[i]);
+				}
+			}
+
+			var bundleRef = Configs.randomRef('bundle');
+			loader.update(bundleRef, Configs.get());
+
+			var progress = jasmine.createSpy('progress');
+			loader.load(bundleRef).then(function () {
+				return loader.load(entities[0].id, {
+					preloadBinaries: true,
+					progressCallback: progress
+				});
+			}).then(function () {
+				var l = entities.length;
+				expect(progress).toHaveBeenCalledWith(l, l);
+				done();
+			}, function () {
+				expect('').toEqual('Should never get here');
 				done();
 			});
 		});

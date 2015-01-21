@@ -1,10 +1,11 @@
 define(
-/** @lends */
-function() {
+
+function () {
 	'use strict';
 
 	/**
-	 * @constructor
+	 * Holds the renderer's state
+	 * @hidden
 	 */
 	function RendererRecord() {
 		this.currentBuffer = {
@@ -32,14 +33,15 @@ function() {
 		this.enabledAttributes = [];
 		this.newlyEnabledAttributes = [];
 
-		this.depthRecord = {};
+		this.depthRecord = {}; // these can be initialized with their default values
 		this.cullRecord = {};
 		this.blendRecord = {};
 		this.offsetRecord = {};
 		this.lineRecord = {};
 		this.pointRecord = {};
 
-		this.shaderCache = {};
+		this.shaderCache = new Map();
+		this.attributeCache = [];
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function (target) {

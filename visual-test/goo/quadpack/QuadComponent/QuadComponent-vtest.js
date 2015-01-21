@@ -53,7 +53,7 @@ require([
 			var entity1 = world.createEntity().setComponent(quad1).addToWorld();
 			var entity2 = world.createEntity().setComponent(quad2).addToWorld();
 
-			var scale = new Vector3(5, 5, 5);
+			var scale = Vector3.ONE.clone().scale(1.8);
 			entity1.setScale(scale);
 			entity2.setScale(scale);
 			entity1.setTranslation([x, 0, -0.5]);

@@ -3,9 +3,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	RenderTarget,
 	FullscreenPass,
 	ShaderLib,
@@ -16,7 +14,7 @@ function (
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class Post processing handler
+	 * Post processing handler
 	 * @param {RenderTarget} renderTarget Data to wrap
 	 * @property {RenderTarget} renderTarget Data to wrap
 	 */
@@ -82,13 +80,11 @@ function (
 	};
 
 	Composer.prototype._checkPassResize = function (pass, size) {
-		if (!pass.viewportSize || pass.viewportSize.x !== size.x ||
+		return !pass.viewportSize ||
+			pass.viewportSize.x !== size.x ||
 			pass.viewportSize.y !== size.y ||
 			pass.viewportSize.width !== size.width ||
-			pass.viewportSize.height !== size.height) {
-			return true;
-		}
-		return false;
+			pass.viewportSize.height !== size.height;
 	};
 
 	Composer.prototype.addPass = function (pass, renderer) {

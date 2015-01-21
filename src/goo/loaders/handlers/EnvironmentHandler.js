@@ -34,10 +34,10 @@ define([
 	};
 
 	/**
-	 * @class Handling environments
-	 * @param {World} world
+	 * Handling environments
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function EnvironmentHandler() {
@@ -59,8 +59,11 @@ define([
 	};
 
 	EnvironmentHandler.prototype._remove = function(ref) {
-		var object = this._objects[ref];
-		delete this._objects[ref];
+		var object = this._objects.get(ref);
+		this._objects.delete(ref);
+		if (!object) {
+			return;
+		}
 
 		// Remove weather
 		for (var key in object.weatherState) {
@@ -92,7 +95,7 @@ define([
 	 */
 	EnvironmentHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(object) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(object) {
 			if (!object) { return; }
 			object.backgroundColor = config.backgroundColor.slice(0);
 			object.globalAmbient = config.globalAmbient.slice(0,3);

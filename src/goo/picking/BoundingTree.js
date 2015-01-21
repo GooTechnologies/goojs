@@ -1,11 +1,18 @@
-define(['goo/renderer/bounds/BoundingBox', 'goo/renderer/bounds/BoundingSphere', 'goo/math/Vector3'],
-/** @lends */
-function (BoundingBox, BoundingSphere, Vector3) {
+define([
+	'goo/renderer/bounds/BoundingBox',
+	'goo/renderer/bounds/BoundingSphere',
+	'goo/math/Vector3'
+], function (
+	BoundingBox,
+	BoundingSphere,
+	Vector3
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Bounding tree node
+	 * @param boundType
+	 */
 	function BoundingTree (boundType) {
 		this.leftTree = null;
 		this.rightTree = null;
@@ -182,13 +189,13 @@ function (BoundingBox, BoundingSphere, Vector3) {
 					result.distances.push(ray.origin.distance(vecStore));
 					result.points = result.points || [];
 					var vec = new Vector3();
-					vec.setv(vecStore);
+					vec.setVector(vecStore);
 					result.points.push(vec);
 
 					result.vertices = result.vertices || [];
 					var verticesCopy = [];
 					for (var copyIndex = vertices.length - 1; copyIndex >= 0; copyIndex--) {
-						verticesCopy[copyIndex] = new Vector3().setv(vertices[copyIndex]);
+						verticesCopy[copyIndex] = new Vector3().setVector(vertices[copyIndex]);
 					}
 					result.vertices.push(verticesCopy);
 				}

@@ -19,7 +19,7 @@ define([
 	'goo/shapes/Quad',
 	'goo/renderer/shaders/ShaderBuilder'
 ],
-/** @lends */
+
 function (
 	MeshDataComponent,
 	Material,

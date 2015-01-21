@@ -3,18 +3,16 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/shaders/ShaderBuilder'
-],
-	/** @lends */
-	function (
-		MeshData,
-		Shader,
-		ShaderFragment,
-		ShaderBuilder
-		) {
+], function (
+	MeshData,
+	Shader,
+	ShaderFragment,
+	ShaderBuilder
+) {
 	'use strict';
 
 	/**
-	 * @class Collection of useful shaders<br>
+	 * Collection of useful shaders<br>
 	 * Details of each can be printed like this for example: console.log(ShaderLib.texturedLit).<br>
 	 * There are more special purpose shaders in {@link ShaderLibExtra}
 	 */
@@ -23,7 +21,6 @@ define([
 	/**
 	 * The uber shader is the default Goo shader supporting the most common realistic render features.
 	 * It supports lights, animations, reflective materials, normal, diffuse, AO and light textures, transparency, fog and shadows.
-	 * @static
 	 */
 	ShaderLib.uber = {
 		processors: [
@@ -99,7 +96,7 @@ define([
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
-			'uniform mat4 normalMatrix;',
+			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 
 			'varying vec3 vWorldPos;',
@@ -122,7 +119,7 @@ define([
 			'void main(void) {',
 				'mat4 wMatrix = worldMatrix;',
 				'#ifdef NORMAL',
-					'mat4 nMatrix = normalMatrix;',
+					'mat3 nMatrix = normalMatrix;',
 				'#endif',
 				ShaderBuilder.animation.vertex,
 				'vec4 worldPos = wMatrix * vec4(vertexPosition, 1.0);',
@@ -132,10 +129,10 @@ define([
 				'viewPosition = cameraPosition - worldPos.xyz;',
 
 				'#ifdef NORMAL',
-				'	normal = normalize((nMatrix * vec4(vertexNormal, 0.0)).xyz);',
+				'	normal = normalize(nMatrix * vertexNormal);',
 				'#endif',
 				'#ifdef TANGENT',
-				'	tangent = normalize((nMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+				'	tangent = normalize(nMatrix * vertexTangent.xyz);',
 				'	binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 				'#endif',
 				'#ifdef COLOR',
@@ -193,7 +190,9 @@ define([
 				'#endif',
 			'#endif',
 
-			'uniform float opacity;',
+			'#ifdef OPACITY',
+				'uniform float opacity;',
+			'#endif',
 			'#ifdef DISCARD',
 				'uniform float discardThreshold;',
 			'#endif',
@@ -240,9 +239,15 @@ define([
 				'#endif',
 
 				'#if defined(TRANSPARENCY_MAP) && defined(TEXCOORD0)',
-					'final_color.a = texture2D(transparencyMap, texCoord0).a;',
+					'#ifdef TRANSPARENCY_BW',
+						'final_color.a = texture2D(transparencyMap, texCoord0).r;',
+					'#else',
+						'final_color.a = texture2D(transparencyMap, texCoord0).a;',
+					'#endif',
 				'#endif',
-				'final_color.a *= opacity;',
+				'#ifdef OPACITY',
+					'final_color.a *= opacity;',
+				'#endif',
 
 				'#ifdef DISCARD',
 					'if (final_color.a < discardThreshold) discard;',
@@ -346,11 +351,8 @@ define([
 		].join('\n');
 		}
 	};
-	
+
 	// only terrain depends on this
-	/**
-	 * @static
-	*/
 	ShaderLib.screenCopy = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -382,9 +384,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.copy = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -423,9 +422,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.copyPure = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -465,9 +461,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simple = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -494,9 +487,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simpleColored = {
 		attributes : {
 			vertexPosition : MeshData.POSITION
@@ -531,9 +521,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.simpleLit = {
 		processors: [
 			ShaderBuilder.light.processor
@@ -621,9 +608,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.textured = {
 		defines: {
 			TEXCOORD0: true,
@@ -670,9 +654,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.texturedLit = {
 		processors: [
 			ShaderBuilder.light.processor
@@ -745,9 +726,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.convolution = {
 		defines : {
 			KERNEL_SIZE_FLOAT : '25.0',
@@ -836,9 +814,6 @@ define([
 		}
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.showNormals = {
 		defines: {
 			NORMAL: true
@@ -882,9 +857,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.particles = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -928,11 +900,6 @@ define([
 		].join('\n')
 	};
 
-
-
-	/**
-	 * @static
-	*/
 	ShaderLib.normalmap = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -977,9 +944,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.point = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1016,9 +980,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.downsample = {
 		attributes : {
 			vertexPosition : MeshData.POSITION,
@@ -1055,9 +1016,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.lightDepth = {
 		processors: [
 			ShaderBuilder.animation.processor
@@ -1114,9 +1072,6 @@ define([
 		].join('\n')
 	};
 
-	/**
-	 * @static
-	*/
 	ShaderLib.pickingShader = {
 		defines: {
 			WEIGHTS: true,
@@ -1124,38 +1079,63 @@ define([
 		},
 		attributes : {
 			vertexPosition : MeshData.POSITION,
-	  vertexJointIDs: MeshData.JOINTIDS,
-	  vertexWeights: MeshData.WEIGHTS
+			vertexJointIDs: MeshData.JOINTIDS,
+			vertexWeights: MeshData.WEIGHTS,
+			vertexNormal : MeshData.NORMAL
 		},
 		uniforms : {
+			normalMatrix: Shader.NORMAL_MATRIX,
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraFar : Shader.FAR_PLANE,
+			thickness: 0.0,
 			id : function(shaderInfo) {
 				return shaderInfo.renderable._index != null ? shaderInfo.renderable._index + 1 : shaderInfo.renderable.id + 1;
 			}
 		},
 		processors: [
-			//ShaderBuilder.uber.processor,
-			ShaderBuilder.animation.processor
+			// ShaderBuilder.uber.processor,
+			ShaderBuilder.animation.processor,
+
+			function (shader) {
+				shader.setDefine('NORMAL', true);
+			}
 		],
 		vshader : [
 		'attribute vec3 vertexPosition;',
+
+		'#ifdef NORMAL',
+			'attribute vec3 vertexNormal;',
+		'#endif',
 
 		'uniform mat4 viewMatrix;',
 		'uniform mat4 projectionMatrix;',
 		'uniform mat4 worldMatrix;',
 		'uniform float cameraFar;',
+		'uniform float thickness;',
+		'uniform mat3 normalMatrix;',
 
 		ShaderBuilder.animation.prevertex,
 
 		'varying float depth;',
 
 		'void main() {',
+
+			'#ifdef NORMAL',
+				'mat3 nMatrix = normalMatrix;',
+			'#endif',
+
 			'mat4 wMatrix = worldMatrix;',
 			ShaderBuilder.animation.vertex,
-			'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
+
+			'#ifdef NORMAL',
+				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition + vertexNormal * thickness, 1.0 );',
+			'#else',
+				'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
+			'#endif',
+
+			// 'vec4 mvPosition = viewMatrix * wMatrix * vec4( vertexPosition, 1.0 );',
 			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'

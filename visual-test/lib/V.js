@@ -56,6 +56,7 @@ define([
 
 	// determine if we're running the visual test for people or for machines
 	V.deterministic = !!purl().param().deterministic;
+	V.minimal = !!purl().param().minimal;
 
 	/**
 	 * Converts either 3 parameters, an array, a {x, y, z} object or a Vector3 a Vector3
@@ -109,8 +110,7 @@ define([
 		}
 
 		var orbitScript = Scripts.create(OrbitCamControlScript, orbitCamOptions);
-		var entity = V.goo.world.createEntity(camera, [20, 0, 0], orbitScript, 'CameraEntity').addToWorld();
-		entity.setRotation(0, Math.PI/2, 0);
+		var entity = V.goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
 		return entity;
 	};
 
@@ -130,7 +130,7 @@ define([
 		color.push(1);
 
 		return color;
-	}
+	};
 
 	/**
 	 * Returns a material from the supplied colors or a random brightly colored material
@@ -290,7 +290,13 @@ define([
 			options.logo = false;
 			options.manuallyStartGameLoop = true;
 			options.preserveDrawingBuffer = true;
+			options.antialias = false;
 		}
+
+		if (V.minimal) {
+			options.logo = false;
+		}
+
 		_.extend(options, _options);
 
 		V.goo = new GooRunner(options);
@@ -342,6 +348,7 @@ define([
 				time += 100;
 				V.goo._updateFrame(time);
 				V.goo.stopGameLoop();
+				window.testLoaded = true;
 			});
 		});
 	};
@@ -442,7 +449,7 @@ define([
      * @param text
      */
 	V.describe = function (text) {
-		if (!V.deterministic) {
+		if (!V.deterministic && !V.minimal) {
 			createPanel(text);
 		}
 
@@ -455,7 +462,7 @@ define([
      * @param onClick
      */
     V.button = function (text, onClick) {
-        if (V.deterministic) { return; }
+        if (V.deterministic || V.minimal) { return; }
 
         var panel = document.getElementById('vt-panel');
         if (!panel) {

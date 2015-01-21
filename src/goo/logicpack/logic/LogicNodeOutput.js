@@ -5,12 +5,12 @@ define(
 		'goo/logic/LogicNodes',
 		'goo/logic/LogicInterface'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
-		 * @class Logic node to be used as layer output.
+		 * Logic node to be used as layer output.
 		 * @private
 		 */
 		function LogicNodeOutput() {

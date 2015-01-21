@@ -2,7 +2,7 @@ define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Vector3'
 ],
-/** @lends */
+
 	function(
 	Action,
 	Vector3
@@ -100,7 +100,7 @@ define([
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				scale.setd(this.x, this.y, this.z);
+				scale.setDirect(this.x, this.y, this.z);
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);
@@ -109,7 +109,7 @@ define([
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				scale.setd(this.x, this.y, this.z);
+				scale.setDirect(this.x, this.y, this.z);
 				transformComponent.setUpdated();
 			}).onComplete(function() {
 					fsm.send(this.eventToEmit.channel);

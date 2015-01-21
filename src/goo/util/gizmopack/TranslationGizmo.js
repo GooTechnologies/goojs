@@ -6,9 +6,7 @@ define([
 	'goo/shapes/Quad',
 	'goo/math/Transform',
 	'goo/renderer/Renderer'
-],
-/** @lends */
-function (
+], function (
 	Gizmo,
 	MeshData,
 	MeshBuilder,
@@ -20,8 +18,9 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * @extends Gizmo
+	 * @hidden
+	 */
 	function TranslationGizmo() {
 		Gizmo.call(this, 'TranslationGizmo');
 
@@ -32,7 +31,9 @@ function (
 		this._buildArrow(1);
 		this._buildArrow(2);
 	}
+
 	TranslationGizmo.prototype = Object.create(Gizmo.prototype);
+	TranslationGizmo.prototype.constructor = TranslationGizmo;
 
 	// Triggered when you have mousedown on a gizmo handle
 	TranslationGizmo.prototype.activate = function(props) {
@@ -92,7 +93,7 @@ function (
 		// Project mouse move to plane
 		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
 		this._plane.rayIntersect(this._newRay, worldPos, true);
-		moveVector.setv(worldPos).subv(oldWorldPos);
+		moveVector.setVector(worldPos).subVector(oldWorldPos);
 		// And add to translation
 		this.transform.translation.add(moveVector);
 	};
@@ -106,12 +107,12 @@ function (
 		// Project mousemove to plane
 		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
 		this._plane.rayIntersect(this._newRay, worldPos, true);
-		moveVector.setv(worldPos).subv(oldWorldPos);
+		moveVector.setVector(worldPos).subVector(oldWorldPos);
 		// Then project plane diff to line
 		var d = moveVector.dot(line);
-		moveVector.setv(line).muld(d,d,d);
+		moveVector.setVector(line).scale(d);
 
-		this.transform.translation.addv(moveVector);
+		this.transform.translation.addVector(moveVector);
 	};
 
 	TranslationGizmo.prototype._buildArrow = function(dim) {
@@ -119,15 +120,15 @@ function (
 		var quadTransform = new Transform();
 
 		var size = 1.0;
-		quadTransform.scale.setd(size, size, size);
+		quadTransform.scale.setDirect(size, size, size);
 		if (dim === 2) {
-			quadTransform.translation.setd(size, size, 0);
+			quadTransform.translation.setDirect(size, size, 0);
 		} else if(dim === 0) {
-			quadTransform.translation.setd(0, size, size);
+			quadTransform.translation.setDirect(0, size, size);
 			quadTransform.setRotationXYZ(0, Math.PI / 2, 0);
 			arrowTransform.setRotationXYZ(0, Math.PI / 2, 0);
 		} else if (dim === 1) {
-			quadTransform.translation.setd(size, 0, size);
+			quadTransform.translation.setDirect(size, 0, size);
 			quadTransform.setRotationXYZ(Math.PI / 2, 0, 0);
 			arrowTransform.setRotationXYZ(Math.PI * 3 / 2, 0, 0);
 		}
@@ -164,7 +165,7 @@ function (
 
 		// Arrow head
 		var transform = new Transform();
-		transform.translation.setd(0, 0, 7);
+		transform.translation.setDirect(0, 0, 7);
 		transform.update();
 		meshBuilder.addMeshData(mesh1Data, transform);
 

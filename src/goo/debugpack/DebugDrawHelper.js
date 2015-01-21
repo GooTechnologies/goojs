@@ -140,11 +140,11 @@ define([
 			if (mainCamera.projectionMode === Camera.Parallel) {
 				scale = (mainCamera._frustumTop - mainCamera._frustumBottom) / 20;
 			}
-			renderables[0].transform.scale.setd(scale,scale,scale);
+			renderables[0].transform.scale.setDirect(scale, scale, scale);
 			renderables[0].transform.update();
 
 			// keeping scale for directional light mesh since scale is meaningless for it
-			if (component.light && component.light instanceof DirectionalLight) {
+			if (component.light && component.light instanceof DirectionalLight) {
 				if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
 				if (renderables[1]) { renderables[1].transform.update(); }
 			}
@@ -166,11 +166,11 @@ define([
 		var light = component.light;
 		if (!(light instanceof DirectionalLight)) {
 			var range = light.range;
-			transform.scale.setd(range, range, range);
+			transform.scale.setDirect(range, range, range);
 			if (light instanceof SpotLight) {
 				var angle = light.angle * Math.PI / 180;
 				var tan = Math.tan(angle / 2);
-				transform.scale.muld(tan, tan, 1);
+				transform.scale.mulDirect(tan, tan, 1);
 			}
 		}
 		transform.update();
@@ -185,7 +185,7 @@ define([
 		// var z = camera.far;
 		// var y = z * Math.tan(camera.fov/2 * Math.PI/180);
 		// var x = y * camera.aspect;
-		// transform.scale.setd(x, y, z);
+		// transform.scale.setDirect(x, y, z);
 		// transform.update();
 	};
 

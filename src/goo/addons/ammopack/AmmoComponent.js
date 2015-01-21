@@ -11,9 +11,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function(
+], function (
 	EntityUtils,
 	Component,
 	Quaternion,
@@ -32,7 +30,7 @@ function(
 	/*global Ammo */
 
 	/**
-	 * @class Adds Ammo physics to a Goo entity.
+	 * Adds Ammo physics to a Goo entity.
 	 * Ammo is a powerful physics engine converted from the C language project Bullet.
 	 * Use Ammo.js if you need to support any 3D shape (trimesh).
 	 * Also see {@link AmmoSystem}.
@@ -44,12 +42,14 @@ function(
 	 * @param {boolean} [settings.useWorldBounds=false] use the model world bounds or use the real (must-be-convex) vertices (this setting is experimental)
 	 * @param {boolean} [settings.useWorldTransform=false] use the model world transform instead of local (this setting is experimental)
 	 * @param {boolean} [settings.showBounds=false] show the model world bounding box (this setting is experimental)
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Ammo/Ammo-vtest.html Working example
 	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Ammo/Ammo-vtest.html Working example}</caption>
 	 * var entity = world.createEntity(new Box(20, 10, 1));
 	 * entity.setComponent(new AmmoComponent({ mass:5 }));
 	 */
 	function AmmoComponent(settings) {
+		Component.apply(this, arguments);
+
 		this.settings = settings = settings || {};
 
 		_.defaults(settings,{
@@ -225,7 +225,7 @@ function(
 		}
 		this.body.getMotionState().getWorldTransform(this.ammoTransform);
 		var ammoQuat = this.ammoTransform.getRotation();
-		this.gooQuaternion.setd(ammoQuat.x(), ammoQuat.y(), ammoQuat.z(), ammoQuat.w());
+		this.gooQuaternion.setDirect(ammoQuat.x(), ammoQuat.y(), ammoQuat.z(), ammoQuat.w());
 		tc.transform.rotation.copyQuaternion(this.gooQuaternion);
 		var origin = this.ammoTransform.getOrigin();
 		tc.setTranslation(origin.x(), origin.y(), origin.z());

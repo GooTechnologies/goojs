@@ -42,6 +42,9 @@ define([
 					expect(view.length).toBe(length);
 				}
 				done();
+			}, function () {
+				expect('').toEqual('Should never reach this');
+				done();
 			});
 		});
 

@@ -3,8 +3,7 @@ require([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight',
-	'goo/debugpack/components/LightDebugComponent',
-	'goo/debugpack/systems/LightDebugSystem',
+	'goo/debugpack/systems/DebugRenderSystem',
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'lib/V'
@@ -13,8 +12,7 @@ require([
 	PointLight,
 	DirectionalLight,
 	SpotLight,
-	LightDebugComponent,
-	LightDebugSystem,
+	DebugRenderSystem,
 	Box,
 	Sphere,
 	V
@@ -28,9 +26,7 @@ require([
 		pointLight.range = 5;
 		pointLight.shadowSettings.shadowType = 'PCF';
 
-		goo.world.createEntity('pointLight', pointLight, [0, 0, 3])
-			.set(new LightDebugComponent())
-			.addToWorld();
+		goo.world.createEntity('pointLight', pointLight, [0, 0, 3]).addToWorld();
 
 
 		var pointlightGui = gui.addFolder('Point Light');
@@ -61,9 +57,7 @@ require([
 		directionalLight.shadowSettings.size = 10;
 		directionalLight.shadowSettings.shadowType = 'PCF';
 
-		goo.world.createEntity('directionalLight', directionalLight, [0, -5, 3])
-			.set(new LightDebugComponent())
-			.addToWorld();
+		goo.world.createEntity('directionalLight', directionalLight, [0, -5, 3]).addToWorld();
 
 
 		var directionallightGui = gui.addFolder('Directional Light');
@@ -92,9 +86,7 @@ require([
 		spotLight.range = 20;
 		spotLight.shadowSettings.shadowType = 'PCF';
 
-		var spotLightEntity = goo.world.createEntity('spotLight', spotLight, [0, 5, 5])
-			.set(new LightDebugComponent())
-			.addToWorld();
+		var spotLightEntity = goo.world.createEntity('spotLight', spotLight, [0, 5, 5]).addToWorld();
 
 
 		var spotLightGui = gui.addFolder('Spot Light' + ind++);
@@ -133,7 +125,10 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	world.setSystem(new LightDebugSystem());
+	var debugRenderSystem = new DebugRenderSystem();
+	debugRenderSystem.doRender.LightComponent = true;
+	goo.renderSystems.push(debugRenderSystem);
+	world.setSystem(debugRenderSystem);
 
 	// add some spheres to cast the light on
 	V.addShapes(5, new Sphere(32, 32, 0.5)).each(function (sphere) {
@@ -151,7 +146,7 @@ require([
 		.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
 
 	// camera
-	V.addOrbitCamera();
+	V.addOrbitCamera(new Vector3(25, Math.PI / 3, 0));
 
 	V.process();
 });

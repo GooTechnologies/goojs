@@ -6,9 +6,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil',
 	'goo/util/StringUtil'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	MeshDataComponent,
 	BoundingBox,
@@ -20,14 +18,14 @@ function (
 	'use strict';
 
 	/**
-	 * @class For handling loading of meshdatacomponents
-	 * @constructor
+	 * For handling loading of meshdatacomponents
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
-	 */	function MeshDataComponentHandler() {
+	 * @hidden
+	 */
+	function MeshDataComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'MeshDataComponent';
 	}
@@ -58,7 +56,7 @@ function (
 
 	/**
 	 * Removes the meshdata component
-	 * @param {string} ref
+	 * @param {string} ref
 	 */
 	MeshDataComponentHandler.prototype._remove = function (entity) {
 		//! AT: why is this check needed?
@@ -100,7 +98,7 @@ function (
 						bounding.xExtent = size[0] / 2;
 						bounding.yExtent = size[1] / 2;
 						bounding.zExtent = size[2] / 2;
-						bounding.center.seta(center);
+						bounding.center.setArray(center);
 						component.modelBound = bounding;
 						component.autoCompute = false;
 					}

@@ -1,21 +1,17 @@
 define(
 	[],
-	/** @lends */
+
 	function() {
 	'use strict';
 
 	/**
-	 * @class Base class for managers.
+	 * Base class for managers.
 	 */
 	function Manager() {
-
+		this.installedAPI = {};
 	}
 
 	Manager.prototype.applyAPI = function(worldBy) {
-		if (!this.installedAPI) {
-			this.installedAPI = {};
-		}
-
 		var api = this.api;
 		for (var key in api) {
 			if (typeof worldBy[key] === 'undefined') {

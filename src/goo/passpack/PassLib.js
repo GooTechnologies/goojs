@@ -6,9 +6,7 @@ define([
 	'goo/passpack/DoGPass',
 	'goo/passpack/MotionBlurPass',
 	'goo/renderer/Util'
-],
-/** @lends */
-function (
+], function (
 	ShaderLibExtra,
 	FullscreenPass,
 	BloomPass,
@@ -18,8 +16,6 @@ function (
 	Util
 ) {
 	'use strict';
-
-	/** @class */
 
 	function Bloom(id) {
 		BloomPass.call(this);
@@ -93,6 +89,7 @@ function (
 		this.id = id;
 	}
 
+	//! AT: we use both "DiffOfGaussians" and "DoG"
 	DiffOfGaussians.prototype = Object.create(DoGPass.prototype);
 	DiffOfGaussians.prototype.constructor = DiffOfGaussians;
 
@@ -289,7 +286,7 @@ function (
 		}
 	];
 
-	function Grain(id) {
+	function Grain(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLibExtra.film));
 		this.id = id;
 	}
@@ -343,7 +340,7 @@ function (
 		}
 	];
 
-	function Noise(id) {
+	function Noise(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLibExtra.noise));
 		this.id = id;
 	}
@@ -880,7 +877,7 @@ function (
 		if (options.blendmode !== undefined) {
 			var newBlendMode = Overlay.blendmodes.indexOf(options.blendmode);
 			if (newBlendMode !== shader.defines.OVERLAY_TYPE) {
-				shader.defines.OVERLAY_TYPE = newBlendMode;
+				shader.setDefine('OVERLAY_TYPE', newBlendMode);
 				shader.uniforms.amount = options.amount - 0.01;
 			}
 		}

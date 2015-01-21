@@ -1,21 +1,19 @@
 define([
 	'goo/loaders/handlers/ConfigHandler'
 
-],
-/** @lends */
-function(
+], function (
 	ConfigHandler
 ) {
 	'use strict';
 
 	/*jshint eqeqeq: false, -W041 */
 	/**
-	 * @class Handler for loading project into engine (actually loading mainScene)
+	 * Handler for loading project into engine (actually loading mainScene)
 	 * @private
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 */
 	function ProjectHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -40,7 +38,7 @@ function(
 	 * @param {object} options
 	 */
 	ProjectHandler.prototype._remove = function(ref, options) {
-		var project = this._objects[ref];
+		var project = this._objects.get(ref);
 		if (project) {
 			this.updateObject(project.mainScene.id, null, options);
 		}

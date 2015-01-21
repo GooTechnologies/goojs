@@ -1,14 +1,12 @@
 define([
 	'goo/renderer/Shader'
-],
-/** @lends */
-function (
+], function (
 	Shader
 ) {
 	'use strict';
 
 	/**
-	 * @class A Material defines the look of an object
+	 * A Material defines the look of an object
 	 * @param {string} [name='Default Material'] Material name
 	 * @param {{ vshader, fshader }} [shaderDefinition] Optional shader to associate with the material
 	 */
@@ -139,6 +137,9 @@ function (
 		 * @type {number}
 		 */
 		this.renderQueue = null;
+
+		this.fullOverride = false;
+		this.errorOnce = false;
 	}
 
 	/**
@@ -155,7 +156,7 @@ function (
 	 * Gets a texture in a specific slot
 	 *
 	 * @param {String} name Name of texture slot to retrieve texture from
-	 * @return {Texture} Texture if found, or undefined if not in slot
+	 * @returns {Texture} Texture if found, or undefined if not in slot
 	 */
 	Material.prototype.getTexture = function (name) {
 		return this._textureMaps[name];
@@ -173,7 +174,7 @@ function (
 	/**
 	 * Get all textures as an array
 	 *
-	 * @return {Texture[]} Array containing all set textures
+	 * @returns {Texture[]} Array containing all set textures
 	 */
 	Material.prototype.getTextures = function () {
 		var textures = [];
@@ -186,7 +187,7 @@ function (
 	/**
 	 * Get the map of [slot_name]: [Texture]
 	 *
-	 * @return {Object} Mapping of slot - textures
+	 * @returns {Object} Mapping of slot - textures
 	 */
 	Material.prototype.getTextureEntries = function () {
 		return this._textureMaps;
@@ -213,35 +214,26 @@ function (
 		this.renderQueue = queue;
 	};
 
-	Material.store = [];
-	Material.hash = [];
-
 	/**
 	 * Creates a new or finds an existing, cached Shader object
 	 *
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
 	 * @param {String} [name=DefaultShader]
-	 * @return {Shader}
+	 * @returns {Shader}
 	 */
 	Material.createShader = function (shaderDefinition, name) {
-		var index = Material.store.indexOf(shaderDefinition);
-		if (index !== -1) {
-			return Material.hash[index];
-		}
 		var shader = new Shader(name || null, shaderDefinition);
 		if (shader.name === null) {
 			shader.name = 'DefaultShader' + shader._id;
 		}
-		Material.store.push(shaderDefinition);
-		Material.hash.push(shader);
 		return shader;
 	};
 
-	/** Clears the shader cache.
+	/** 
+	 * Clears the shader cache.
+	 * @deprecated Deprecated since 0.12.0 and scheduled for removal in 0.14.0
 	 */
 	Material.clearShaderCache = function () {
-		Material.store.length = 0;
-		Material.hash.length = 0;
 	};
 
 	/**

@@ -66,11 +66,10 @@ define([
 				return config;
 			},
 			animation: function() {
-				var config = {
+				return {
 					layersRef: this.animation().id,
 					poseRef: this.skeleton().id
 				};
-				return config;
 			},
 			meshRenderer: function() {
 				var config = {
@@ -152,6 +151,11 @@ define([
 			quad: function () {
 				return {
 					materialRef: this.material().id
+				};
+			},
+			html: function () {
+				return {
+					innerHTML: 'some html'
 				};
 			}
 		},

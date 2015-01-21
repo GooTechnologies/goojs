@@ -1,10 +1,8 @@
-define(['goo/particles/ParticleUtils', 'goo/renderer/Renderer'],
-/** @lends */
-function (ParticleUtils, Renderer) {
+define(['goo/particles/ParticleUtils', 'goo/renderer/Renderer'], function (ParticleUtils, Renderer) {
 	'use strict';
 
 	/**
-	 * @class A Particle Emitter spawns particles - controlling spawn rate, lifetime, initial velocity vector and position of each particle.
+	 * A Particle Emitter spawns particles - controlling spawn rate, lifetime, initial velocity vector and position of each particle.
 	 * @param {Object} [settings] Particle emitter settings passed as an object
 	 * @param {number} [settings.totalParticlesToSpawn=-1] Specifies how many particles this emitter should spawn (-1 for an unlimited amount)
 	 * @param {number} [settings.maxLifetime=3.0] The maximum lifetime of a particle emitted by this emitter (in seconds)
@@ -27,13 +25,13 @@ function (ParticleUtils, Renderer) {
 
 		this.getEmissionPoint = settings.getEmissionPoint ? settings.getEmissionPoint : function (particle, particleEntity) {
 			var vec3 = particle.position;
-			vec3.setd(0, 0, 0);
+			vec3.setDirect(0, 0, 0);
 			return ParticleUtils.applyEntityTransformPoint(vec3, particleEntity);
 		};
 
 		this.getEmissionVelocity = settings.getEmissionVelocity ? settings.getEmissionVelocity : function (particle, particleEntity) {
 			var vec3 = particle.velocity;
-			vec3.setd(0, 1, 0);
+			vec3.setDirect(0, 1, 0);
 			return ParticleUtils.applyEntityTransformVector(vec3, particleEntity);
 		};
 
@@ -60,8 +58,8 @@ function (ParticleUtils, Renderer) {
 	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function (particle) {
 		var camera = Renderer.mainCamera;
 		if (camera) {
-			particle.bbX.setv(camera._left);
-			particle.bbY.setv(camera._up);
+			particle.bbX.setVector(camera._left);
+			particle.bbY.setVector(camera._up);
 		}
 	};
 

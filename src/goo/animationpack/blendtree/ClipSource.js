@@ -1,18 +1,16 @@
 define([
 	'goo/math/MathUtils',
 	'goo/animationpack/clip/AnimationClipInstance'
-],
-/** @lends */
-function (
+], function (
 	MathUtils,
 	AnimationClipInstance
 ) {
 	'use strict';
 
 	/**
-	 * @class A blend tree leaf node that samples and returns values from the channels of an AnimationClip.
+	 * A blend tree leaf node that samples and returns values from the channels of an AnimationClip.
 	 * @param {AnimationClip} clip the clip to use.
-	 * @param {string} [filter] 'Exclude' or 'Include'
+	 * @param {string} [filter] 'Exclude' or 'Include'
 	 * @param {string[]} [channelNames]
 	 */
 	function ClipSource(clip, filter, channelNames) {
@@ -45,7 +43,7 @@ function (
 
 	/**
 	 * Sets the current time and moves the {@link AnimationClipInstance} forward
-	 * @param {number} globalTime
+	 * @param {number} globalTime
 	 * @private
 	 */
 	ClipSource.prototype.setTime = function (globalTime) {
@@ -112,7 +110,7 @@ function (
 
 	/**
 	 * Sets start time of clipinstance. If set to current time, clip is reset
-	 * @param {number} globalTime
+	 * @param {number} globalTime
 	 * @private
 	 */
 	ClipSource.prototype.resetClips = function (globalTime) {
@@ -136,7 +134,7 @@ function (
 	};
 
 	/**
-	 * @returns {boolean} if clipsource is active
+	 * @returns {boolean} if clipsource is active
 	 * @private
 	 */
 	ClipSource.prototype.isActive = function () {
@@ -144,7 +142,7 @@ function (
 	};
 
 	/**
-	 * @return a source data mapping for the channels in this clip source
+	 * @returns a source data mapping for the channels in this clip source
 	 * @private
 	 */
 	ClipSource.prototype.getSourceData = function () {

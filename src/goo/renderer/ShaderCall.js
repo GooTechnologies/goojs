@@ -1,10 +1,10 @@
 define(
-/** @lends */
+
 function () {
 	'use strict';
 
 	/**
-	 * @class Makes sure shader calls are not done when already set
+	 * Makes sure shader calls are not done when already set
 	 */
 	function ShaderCall(context, uniform, type) {
 		this.context = context;
@@ -30,6 +30,15 @@ function () {
 				case 'intarray':
 				case 'samplerArray':
 					this.call = this.uniform1iv;
+					break;
+				case 'ivec2':
+					this.call = this.uniform2iv;
+					break;
+				case 'ivec3':
+					this.call = this.uniform3iv;
+					break;
+				case 'ivec4':
+					this.call = this.uniform4iv;
 					break;
 				case 'vec2':
 					this.call = this.uniform2fv;
@@ -98,7 +107,7 @@ function () {
 	ShaderCall.prototype.uniform2f = function (v0, v1) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 2 && curValue[0] === v0 && curValue[1] === v1) {
+			if (curValue[0] === v0 && curValue[1] === v1) {
 				return;
 			}
 		}
@@ -125,7 +134,7 @@ function () {
 	ShaderCall.prototype.uniform2i = function (v0, v1) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 2 && curValue[0] === v0 && curValue[1] === v1) {
+			if (curValue[0] === v0 && curValue[1] === v1) {
 				return;
 			}
 		}
@@ -147,7 +156,7 @@ function () {
 	ShaderCall.prototype.uniform3f = function (v0, v1, v2) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
 		} else {
@@ -178,7 +187,7 @@ function () {
 	ShaderCall.prototype.uniform3i = function (v0, v1, v2) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 3 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2) {
 				return;
 			}
 		}
@@ -200,7 +209,7 @@ function () {
 	ShaderCall.prototype.uniform4f = function (v0, v1, v2, v3) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
 				return;
 			}
 		}
@@ -227,7 +236,7 @@ function () {
 	ShaderCall.prototype.uniform4i = function (v0, v1, v2, v3) {
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			if (curValue.length === 4 && curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
+			if (curValue[0] === v0 && curValue[1] === v1 && curValue[2] === v2 && curValue[3] === v3) {
 				return;
 			}
 		}
@@ -246,26 +255,6 @@ function () {
 		this.location.value = values.slice();
 	};
 
-	function compareMatrices(e1, e2, size) {
-		if (size < 0) {
-			return false;
-		}
-		while(size--) {
-			if(e1[size] !== e2[size]) {
-				return false;
-			}
-		}
-		return true;
-		/*
-		for (var i = size - 1; i >= 0; i--) {
-			if (e1[i] !== e2[i]) {
-				return false;
-			}
-		}
-		return true;
-		*/
-	}
-
 	function compareArrays(a1, a2) {
 		var l = a1.length;
 		while(l--) {
@@ -274,32 +263,32 @@ function () {
 			}
 		}
 		return true;
-		/*
-		if (l !== a2.length) {
-			return false;
 		}
-
-		for (var i = 0; i < l; i++) {
-			if (a1[i] !== a2[i]) {
-				return false;
-			}
-		}
-
-		return true;
-		*/
-	}
 
 	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix2fv = function (matrix, transpose) {
 		transpose = transpose === true;
 		if (!matrix.data) {
-			this.context.uniformMatrix2fv(this.location, transpose, matrix);
+			var values = matrix;
+			var curValue = this.location.value;
+			if (curValue !== undefined) {
+				if (compareArrays(values, curValue)) {
+			return;
+		}
+			} else {
+				curValue = this.location.value = new Float64Array(values.length);
+			}
+			this.context.uniformMatrix2fv(this.location, transpose, values);
+			var l = values.length;
+			while(l--) {
+				curValue[l] = values[l];
+			}
 			return;
 		}
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 4);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {
@@ -316,13 +305,26 @@ function () {
 	ShaderCall.prototype.uniformMatrix3fv = function (matrix, transpose) {
 		transpose = transpose === true;
 		if (!matrix.data) {
-			this.context.uniformMatrix3fv(this.location, transpose, matrix);
+			var values = matrix;
+			var curValue = this.location.value;
+			if (curValue !== undefined) {
+				if (compareArrays(values, curValue)) {
+			return;
+		}
+			} else {
+				curValue = this.location.value = new Float64Array(values.length);
+			}
+			this.context.uniformMatrix3fv(this.location, transpose, values);
+			var l = values.length;
+			while(l--) {
+				curValue[l] = values[l];
+			}
 			return;
 		}
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 9);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {
@@ -332,12 +334,13 @@ function () {
 			this.location.value = matrix.clone();
 		}
 
-		this.context.uniformMatrix3fv(this.location, transpose, matrix.data);
+		for (var i = 0; i < matrix.data.length; i++) {
+			matrix.data32[i] = matrix.data[i];
+		}
+
+		this.context.uniformMatrix3fv(this.location, transpose, matrix.data32);
 	};
 
-
-
-	// NOTE: optimize check before calling.
 	ShaderCall.prototype.uniformMatrix4fv = function (matrix, transpose) {
 		transpose = transpose === true;
 		if (!matrix.data) {
@@ -355,14 +358,12 @@ function () {
 			while(l--) {
 				curValue[l] = values[l];
 			}
-
-			// this.context.uniformMatrix4fv(this.location, transpose, matrix);
 			return;
 		}
 
 		var curValue = this.location.value;
 		if (curValue !== undefined) {
-			var equals = compareMatrices(curValue.data, matrix.data, 16);
+			var equals = compareArrays(curValue.data, matrix.data);
 			if (equals) {
 				return;
 			} else {

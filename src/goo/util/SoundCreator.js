@@ -3,9 +3,7 @@ define([
 	'goo/loaders/handlers/SoundHandler',
 	'goo/util/Ajax',
 	'goo/util/StringUtil'
-],
-/** @lends */
-function (
+], function (
 	Util,
 	SoundHandler,
 	Ajax,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Provides a simple way to load sounds
+	 * Provides a simple way to load sounds
 	 */
 	function SoundCreator() {
 		var ajax = this.ajax = new Ajax();

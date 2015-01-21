@@ -3,31 +3,33 @@ define([
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection',
-	'goo/math/Matrix4x4'
-],
-/** @lends */
-function (
+	'goo/math/Matrix4x4',
+	'goo/math/Vector'
+], function (
 	Transform,
 	Vector3,
 	Component,
 	EntitySelection,
-	Matrix4x4
+	Matrix4x4,
+	Vector
 ) {
 	'use strict';
 
 	/**
-	 * @class Holds the transform of an entity. It also allows for a scene graph to be created,
+	 * Holds the transform of an entity. It also allows for a scene graph to be created,
 	 * in which transforms are inherited down the tree.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example
 	 * @extends Component
 	 */
 	function TransformComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'TransformComponent';
 
 		this.entity = null;
-		/** Parent TransformComponent in the "scene graph".
+		/**
+		 * Parent TransformComponent in the "scene graph".
 		 * @type {TransformComponent}
-		 * @default
 		 */
 		this.parent = null;
 		/**
@@ -42,8 +44,9 @@ function (
 		 */
 		this.transform = new Transform();
 
-		/** The entity's transform in world space.
-		 * Read only. Automatically updated.
+		/**
+		 * The entity's transform in world space.
+		 * @readonly
 		 * @type {Transform}
 		 */
 		this.worldTransform = new Transform();
@@ -57,67 +60,168 @@ function (
 	TransformComponent.prototype = Object.create(Component.prototype);
 	TransformComponent.prototype.constructor = TransformComponent;
 
+	//! AT: can this stay not on the prototype, but on the constructor?
+	// it would require Transform.prototype.constructor = TransformComponent; (for all components)
 	TransformComponent.prototype.api = {
+		// these @target-class comments can sit anywhere in the source (as far as modoc is concerned)
+		// I'm placing it here however since it's near the code it documents
+		/**
+		 * Sets the translation of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity setTranslation method
+		 * @param {Vector3|number[]} translation
+		 * @returns {Entity} Self to allow chaining
+		 */
 		setTranslation: function () {
 			TransformComponent.prototype.setTranslation.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Sets the rotation of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity setRotation method
+		 * @param {Vector3|number[]} angle
+		 * @returns {Entity} Self to allow chaining
+		 */
 		setRotation: function () {
 			TransformComponent.prototype.setRotation.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Sets the scale of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity setScale method
+		 * @param {Vector3|number[]} scale
+		 * @returns {Entity} Self to allow chaining
+		 */
 		setScale: function () {
 			TransformComponent.prototype.setScale.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Orients the entity so it faces the supplied look at point. Injected on entities with a transformComponent
+		 * @target-class Entity lookAt method
+		 * @param {Vector3|number[]} lookAtPoint
+		 * @returns {Entity} Self to allow chaining
+		 */
 		lookAt: function () {
 			TransformComponent.prototype.lookAt.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Translates the entity with the supplied amount multipled by the entity's orientation. Injected on entities with a transformComponent
+		 * @target-class Entity move method
+		 * @param {Vector3|number[]} translation
+		 * @returns {Entity} Self to allow chaining
+		 */
 		move: function () {
 			TransformComponent.prototype.move.apply(this.transformComponent, arguments);
 			return this;
 		},
 
+		/**
+		 * Returns the local translation of the entity. Injected on entities with a transformComponent
+		 * @target-class Entity getTranslation method
+		 * @returns {Vector3} Translation
+		 */
 		getTranslation: function () {
 			return TransformComponent.prototype.getTranslation.apply(this.transformComponent, arguments);
 		},
+
+		/**
+		 * Returns the local rotation of the entity. Injected on entities with a transformComponent
+		 * @target-class Entity getRotation method
+		 * @returns {Vector3} Rotation
+		 */
 		getRotation: function () {
 			return TransformComponent.prototype.getRotation.apply(this.transformComponent, arguments);
 		},
+
+		/**
+		 * Returns the local scale of the entity. Injected on entities with a transformComponent
+		 * @target-class Entity getScale method
+		 * @returns {Vector3} Scale
+		 */
 		getScale: function () {
 			return TransformComponent.prototype.getScale.apply(this.transformComponent, arguments);
 		},
 
+		/**
+		 * Translates the entity with the given amount. Injected on entities with a transformComponent
+		 * @target-class Entity addTranslation method
+		 * @param {Vector3|number[]} translation
+		 * @returns {Entity} Self to allow chaining
+		 */
 		addTranslation: function () {
 			TransformComponent.prototype.addTranslation.apply(this.transformComponent, arguments);
 			return this;
 		},
+
+		/**
+		 * Rotates the entity with the given amount. Injected on entities with a transformComponent
+		 * @target-class Entity addRotation method
+		 * @param {Vector3|number[]} rotation
+		 * @returns {Entity} Self to allow chaining
+		 */
 		addRotation: function () {
 			TransformComponent.prototype.addRotation.apply(this.transformComponent, arguments);
 			return this;
 		},
+
 		// no, there's no addScale
 
-
-		// attachChild: Entity | Selection, boolean -> this
-		attachChild: function (entity) {
-			this.transformComponent.attachChild(entity.transformComponent);
+		/**
+		 * Attaches the supplied entity to this entity as a child. Injected on entities with a transformComponent
+		 * @target-class Entity attachChild method
+		 * @param {Entity} childEntity
+		 * @param {boolean} keepTransform If enabled will preserve the world transform of the child entity
+		 * @returns {Entity} Self to allow chaining
+		 */
+		attachChild: function (childEntity, keepTransform) {
+			this.transformComponent.attachChild(childEntity.transformComponent, keepTransform);
 			return this;
 		},
-		// detachChild: Entity | Selection, boolean -> this
-		detachChild: function (entity) {
-			this.transformComponent.detachChild(entity.transformComponent);
+
+		/**
+		 * Detaches the supplied entity from this entity. Injected on entities with a transformComponent
+		 * @target-class Entity detachChild method
+		 * @param {Entity} childEntity
+		 * @param {boolean} keepTransform If enabled will preserve the world transform of the child entity
+		 * @returns {Entity} Self to allow chaining
+		 */
+		detachChild: function (childEntity, keepTransform) {
+			this.transformComponent.detachChild(childEntity.transformComponent, keepTransform);
 			return this;
 		},
 
+		/**
+		 * Returns an {@link EntitySelection} of the children of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity children method
+		 * @returns {EntitySelection}
+		 */
 		children: function () {
 			return new EntitySelection(this).children();
 		},
+
+		/**
+		 * Returns an {@link EntitySelection} of the parent of this entity. Injected on entities with a transformComponent
+		 * @target-class Entity parent method
+		 * @returns {EntitySelection}
+		 */
 		parent: function () {
 			return new EntitySelection(this).parent();
 		},
 
+		/**
+		 * Traverses the entity hierarchy downwards starting from this entity and applies a function to all entities traversed.
+		 * Traversal can be stopped if the function returns 'false'.
+		 * Injected on entities with a transformComponent
+		 * @target-class Entity traverse method
+		 * @param {(Entity, number) -> boolean} callback The function to be applied to traversed entities. Takes an entity and the current deph level and returns a boolean.
+		 * @param {number} [levelOffset=0]
+		 * @returns {Entity} Self to allow chaining
+		 */
 		traverse: function (callback, level) {
 			level = level !== undefined ? level : 0;
 
@@ -130,6 +234,15 @@ function (
 
 			return this;
 		},
+
+		/**
+		 * Traverses the entity hierarchy upwards starting from this entity and applies a function to all entities traversed.
+		 * Traversal can be stopped if the function returns 'false'.
+		 * Injected on entities with a transformComponent
+		 * @target-class Entity traverseUp method
+		 * @param {(Entity) -> boolean} callback The function to be applied to traversed entities. Takes an entity and returns a boolean.
+		 * @returns {Entity} Self to allow chaining
+		 */
 		traverseUp: function (callback) {
 			var transformComponent = this.transformComponent;
 			while (callback(transformComponent.entity) !== false && transformComponent.parent) {
@@ -139,6 +252,11 @@ function (
 			return this;
 		},
 
+		/**
+		 * Hides the entity and its children. Injected on entities with a transformComponent
+		 * @target-class Entity hide method
+		 * @returns {Entity} Self to allow chaining
+		 */
 		hide: function () {
 			this._hidden = true;
 
@@ -156,6 +274,11 @@ function (
 			return this;
 		},
 
+		/**
+		 * Clears the hidden flag on this entity. The entity may still not show if it has a hidden ancestor. Injected on entities with a transformComponent
+		 * @target-class Entity show method
+		 * @returns {Entity} Self to allow chaining
+		 */
 		// will not show the entity (and it's children) if any of its ancestors are hidden
 		show: function () {
 			this._hidden = false;
@@ -189,7 +312,11 @@ function (
 			return this;
 		},
 
-		// entity.show().isHidden() will return false if any ancestor of entity is hidden
+		/**
+		 * Returns whether the entity or any of its ancestors are hidden. Injected on entities with a transformComponent
+		 * @target-class Entity isVisiblyHidden method
+		 * @returns {boolean}
+		 */
 		isVisiblyHidden: function () {
 			var pointer = this;
 
@@ -207,11 +334,26 @@ function (
 			return false;
 		},
 
-		// entity.isHidden returns the hidden status of the entity and may not reflect what is visible
-		// an entity can have a hidden status of 'visible', but visually it may be hidden due to one of its ancestors being hidden
+		/**
+		 * Returns the 'hidden' status of this entity. The entity may still be hidden if one of its ancestors is hidden. Injected on entities with a transformComponent
+		 * @target-class Entity isHidden method
+		 * @returns {boolean}
+		 */
 		isHidden: function () {
 			return this._hidden;
 		}
+	};
+
+	TransformComponent.entitySelectionAPI = {
+		setTranslation: TransformComponent.prototype.api.setTranslation,
+		setRotation: TransformComponent.prototype.api.setRotation,
+		setScale: TransformComponent.prototype.api.setScale,
+		lookAt: TransformComponent.prototype.api.lookAt,
+		move: TransformComponent.prototype.api.move,
+		addTranslation: TransformComponent.prototype.api.addTranslation,
+		addRotation: TransformComponent.prototype.api.addRotation,
+		hide: TransformComponent.prototype.api.hide,
+		show: TransformComponent.prototype.api.show
 	};
 
 	var tmpVec = new Vector3();
@@ -228,7 +370,7 @@ function (
 	 * var boxTranslation2 = boxEntity.getTranslation();
 	 * console.log(boxTranslation1 === boxTranslation2); // true
 	 *
-	 * @return {Vector3} translation
+	 * @returns {Vector3} translation
 	 */
 	TransformComponent.prototype.getTranslation = function () {
 		return this.transform.translation;
@@ -244,10 +386,10 @@ function (
 	 * sphereEntity.setTranslation(new Vector3(1, 1, 0));
 	 *
 	 * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		this.transform.translation.set(arguments);
+		Vector.prototype.set.apply(this.transform.translation, arguments);
 		this._dirty = true;
 		return this;
 	};
@@ -263,7 +405,7 @@ function (
 	 * var scale2 = entity.getScale();
 	 * console.log(scale1 === scale2); // true
 	 *
-	 * @return {Vector3} scale
+	 * @returns {Vector3} scale
 	 */
 	TransformComponent.prototype.getScale = function () {
 		return this.transform.scale;
@@ -274,10 +416,10 @@ function (
 	 * <br /><i>Injected into entity when adding component.</i>
 	 *
 	 * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
-		this.transform.scale.set(arguments);
+		Vector.prototype.set.apply(this.transform.scale, arguments);
 		this._dirty = true;
 		return this;
 	};
@@ -291,7 +433,7 @@ function (
 	 * boxEntity.transformComponent.addTranslation(1, 2, 1);
 	 *
      * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
 		if (arguments.length === 3) {
@@ -313,7 +455,7 @@ function (
 	 * console.log(rot1 === rot2); // true
 	 *
 	 * @param {Vector3} [target] Target vector for storage.
-	 * @return {Vector3} rotation
+	 * @returns {Vector3} rotation
 	 */
 	TransformComponent.prototype.getRotation = function (target) {
 		target = target || new Vector3();
@@ -330,7 +472,7 @@ function (
 	 * console.log(boxEntity.getRotation().toString()); // [1.57, 0, 0]
 	 *
 	 * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addRotation = function () {
 		this.getRotation(tmpVec);
@@ -358,7 +500,7 @@ function (
 	 * console.log(boxEntity.getRotation().toString()); // [3.14, 0, 0]
 	 *
 	 * @param {Vector | number[] | number...} Component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setRotation = function () {
 		if (arguments.length === 1 && typeof (arguments[0]) === 'object') {
@@ -382,7 +524,7 @@ function (
 	 *
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.lookAt = function (position, up) {
 		//! AT: needs updating of transform before the actual lookAt to account for changes in translation
@@ -410,7 +552,7 @@ function (
 	 *
 	 * @function
 	 * @param {Vector | number[] | number...} component values.
-	 * @return {TransformComponent} Self for chaining.
+	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.move = (function(){
 		var moveLocalDirection = new Vector3();
@@ -520,14 +662,7 @@ function (
 			this.worldTransform.copy(this.transform);
 		}
 
-		// update the normal matrix
-		var scale = this.worldTransform.scale;
-		if (scale.x !== scale.y || scale.x !== scale.z) {
-			Matrix4x4.invert(this.worldTransform.matrix, this.worldTransform.normalMatrix);
-			Matrix4x4.transpose(this.worldTransform.normalMatrix, this.worldTransform.normalMatrix);
-		} else {
-			this.worldTransform.normalMatrix.copy(this.worldTransform.matrix);
-		}
+		this.worldTransform.updateNormalMatrix();
 
 		this._dirty = false;
 		this._updated = true;
@@ -542,14 +677,14 @@ function (
 
 		var matched = false;
 		if (Array.isArray(obj) && obj.length === 3) {
-			transformComponent.transform.translation.setd(obj[0], obj[1], obj[2]);
+			transformComponent.transform.translation.setDirect(obj[0], obj[1], obj[2]);
 			matched = true;
 		} else if (obj instanceof Vector3) {
-			transformComponent.transform.translation.setd(obj.data[0], obj.data[1], obj.data[2]);
+			transformComponent.transform.translation.setDirect(obj.data[0], obj.data[1], obj.data[2]);
 			matched = true;
 		} else if (typeof obj === 'object' &&
 			typeof obj.x !== 'undefined' && typeof obj.y !== 'undefined' && typeof obj.z !== 'undefined') {
-			transformComponent.transform.translation.setd(obj.x, obj.y, obj.z);
+			transformComponent.transform.translation.setDirect(obj.x, obj.y, obj.z);
 			matched = true;
 		} else if (obj instanceof Transform) {
 			transformComponent.transform = obj;

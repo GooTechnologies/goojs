@@ -3,9 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	BoundingVolume,
 	BoundingSphere,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
+	 * <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
 	 * particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. <br>
 	 *        <br>
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
@@ -46,8 +44,8 @@ function (
 		var max = this.max;
 		var vec = tmpVec3;
 
-		min.setd(verts[0], verts[1], verts[2]);
-		max.setd(verts[0], verts[1], verts[2]);
+		min.setDirect(verts[0], verts[1], verts[2]);
+		max.setDirect(verts[0], verts[1], verts[2]);
 		var x, y, z;
 		for (var i = 3; i < verts.length; i += 3) {
 			x = verts[i + 0];
@@ -61,12 +59,28 @@ function (
 			max.data[2] = z > max.data[2] ? z : max.data[2];
 		}
 
-		vec.setv(max).subv(min).mul(0.5);
+		vec.setVector(max).subVector(min).scale(0.5);
 		this.xExtent = vec.data[0];
 		this.yExtent = vec.data[1];
 		this.zExtent = vec.data[2];
 
-		this.center.setv(max).addv(min).mul(0.5);
+		this.center.setVector(max).addVector(min).scale(0.5);
+	};
+
+	/**
+	 * Method to test whether a point is inside the bounding box or not
+	 * @param {Vector3} point
+	 * @returns {boolean}
+	 */
+	BoundingBox.prototype.containsPoint = function (point) {
+		var center = this.center;
+		var x = point.x - center.x;
+		var y = point.y - center.y;
+		var z = point.z - center.z;
+
+		return x >= -this.xExtent && x <= this.xExtent &&
+			y >= -this.yExtent && y <= this.yExtent &&
+			z >= -this.zExtent && z <= this.zExtent;
 	};
 
 	var tmpArray = [];
@@ -90,7 +104,7 @@ function (
 		}
 
 		this.center.copy(min.add(max));
-		this.center.mul(0.5);
+		this.center.scale(0.5);
 
 		this.xExtent = max.x - this.center.x;
 		this.yExtent = max.y - this.center.y;
@@ -155,7 +169,7 @@ function (
 		var ctrY = (maxY + minY) * 0.5;
 		var ctrZ = (maxZ + minZ) * 0.5;
 
-		box.center.setd(ctrX, ctrY, ctrZ);
+		box.center.setDirect(ctrX, ctrY, ctrZ);
 		box.xExtent = maxX - ctrX;
 		box.yExtent = maxY - ctrY;
 		box.zExtent = maxZ - ctrZ;
@@ -168,14 +182,14 @@ function (
 		var yExtent = this.yExtent;
 		var zExtent = this.zExtent;
 		var centerData = this.center.data;
-		store[0].setd(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
-		store[1].setd(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
-		store[2].setd(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
-		store[3].setd(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
-		store[4].setd(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
-		store[5].setd(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
-		store[6].setd(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
-		store[7].setd(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
+		store[0].setDirect(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
+		store[1].setDirect(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
+		store[2].setDirect(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
+		store[3].setDirect(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
+		store[4].setDirect(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
+		store[5].setDirect(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
+		store[6].setDirect(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
+		store[7].setDirect(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
 		return store;
 	};
 
@@ -346,7 +360,7 @@ function (
 
 		// The mtd vector for that axis
 		// var sep = axis * (overlap / axisLengthSquared);
-		var sep = new Vector3().copy(axis).mul(overlap / axisLengthSquared);
+		var sep = new Vector3().copy(axis).scale(overlap / axisLengthSquared);
 
 		// The mtd vector length squared
 		var sepLengthSquared = Vector3.dot(sep, sep);
@@ -367,7 +381,7 @@ function (
 		}
 
 		// var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
-		var diff = tmpVec1.setv(ray.origin).subv(this.center);
+		var diff = tmpVec1.setVector(ray.origin).subVector(this.center);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -436,8 +450,8 @@ function (
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {
 				var distances = t;
-				var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin),
-					new Vector3(ray.direction).mul(distances[1]).add(ray.origin)];
+				var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin),
+					new Vector3(ray.direction).scale(distances[1]).add(ray.origin)];
 				return {
 					"distances": distances,
 					"points": points
@@ -445,7 +459,7 @@ function (
 			}
 
 			var distances = [t[0]];
-			var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin)];
+			var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -524,7 +538,7 @@ function (
 			calcVec2.z = center.z + zExtent;
 		}
 
-		store.center.set(calcVec2).addv(calcVec1).muld(0.5, 0.5, 0.5);
+		store.center.set(calcVec2).addVector(calcVec1).scale(0.5);
 
 		store.xExtent = calcVec2.x - store.center.x;
 		store.yExtent = calcVec2.y - store.center.y;
@@ -535,7 +549,7 @@ function (
 
 	BoundingBox.prototype.clone = function (store) {
 		if (store && store instanceof BoundingBox) {
-			store.center.setv(this.center);
+			store.center.setVector(this.center);
 			store.xExtent = this.xExtent;
 			store.yExtent = this.yExtent;
 			store.zExtent = this.zExtent;

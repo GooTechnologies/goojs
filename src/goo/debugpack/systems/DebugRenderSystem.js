@@ -6,9 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/Util',
 	'goo/debugpack/DebugDrawHelper'
-],
-/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
@@ -20,7 +18,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Renders entities/renderables using a configurable partitioner for culling
+	 * Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */
@@ -29,8 +27,8 @@ function (
 
 		this._renderablesTree = {};
 		this.renderList = [];
-		this.preRenderers = [];
-		this.composers = [];
+		this.preRenderers = []; // unused
+		this.composers = []; // unused
 		this.doRender = {
 			CameraComponent: false,
 			LightComponent: false,
@@ -66,20 +64,21 @@ function (
 	}
 
 	DebugRenderSystem.prototype = Object.create(System.prototype);
+	DebugRenderSystem.prototype.constructor = DebugRenderSystem;
 
 	DebugRenderSystem.prototype.inserted = function (/*entity*/) {
 	};
 
 	DebugRenderSystem.prototype.deleted = function (entity) {
-		delete this._renderablesTree[entity.id]
+		delete this._renderablesTree[entity.id];
 	};
 
 	DebugRenderSystem.prototype.process = function (entities, tpf) {
 		var count = this.renderList.length = 0;
 		var renderables;
-		for (var i = 0; i < entities.length; i++) {
+		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
+			for (var j = 0, max = this._interestComponents.length; j < max; j++) {
 				var componentName = this._interestComponents[j];
 				if (!entity._hidden && entity.hasComponent(componentName)) {
 					var component = entity.getComponent(componentName);
@@ -99,9 +98,9 @@ function (
 					}
 
 					renderables.forEach(function (renderable) {
-						renderable.transform.translation.setv(entity.transformComponent.worldTransform.translation);
+						renderable.transform.translation.setVector(entity.transformComponent.worldTransform.translation);
 						renderable.transform.rotation.copy(entity.transformComponent.worldTransform.rotation);
-						renderable.transform.scale.setd(1, 1, 1);
+						renderable.transform.scale.setDirect(1, 1, 1);
 						renderable.transform.update();
 					});
 					DebugDrawHelper.update(renderables, component, this.camera);
@@ -145,6 +144,33 @@ function (
 
 	DebugRenderSystem.prototype.renderToPick = function (renderer, skipUpdateBuffer) {
 		renderer.renderToPick(this.renderList, this.camera, false, skipUpdateBuffer);
+	};
+
+	DebugRenderSystem.prototype.invalidateHandles = function (renderer) {
+		var entityIds = Object.keys(this._renderablesTree);
+		entityIds.forEach(function (entityId) {
+			var components = this._renderablesTree[entityId];
+
+			var componentTypes = Object.keys(components);
+			componentTypes.forEach(function (componentType) {
+				var renderables = components[componentType];
+
+				renderables.forEach(function (renderable) {
+					renderable.materials.forEach(function (material) {
+						renderer.invalidateMaterial(material);
+					});
+
+					renderer.invalidateMeshData(renderable.meshData);
+				});
+			});
+		}.bind(this));
+
+		// there are 2 selection renderables, but one has a null meshData (it's beyond me why it's like that)
+		this.selectionRenderable[0].materials.forEach(function (material) {
+			renderer.invalidateMaterial(material);
+		});
+
+		renderer.invalidateMeshData(this.selectionRenderable[0].meshData);
 	};
 
 	return DebugRenderSystem;

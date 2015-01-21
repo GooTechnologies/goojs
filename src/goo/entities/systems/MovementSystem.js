@@ -1,10 +1,10 @@
 define(['goo/entities/systems/System'],
-	/** @lends */
+
 		function (System) {
 		'use strict';
 
 		/**
-		 * @class Processes all entities with movement components.
+		 * Processes all entities with movement components.
 		 * This system applies movement vectors for translation and rotation
 		 * to the transform of the entity which has it every frame.
 		 * @extends System
@@ -14,9 +14,10 @@ define(['goo/entities/systems/System'],
 		}
 
 		MovementSystem.prototype = Object.create(System.prototype);
+		MovementSystem.prototype.constructor = MovementSystem;
 
 		MovementSystem.prototype.addVelocityToTransform = function(vel, transform, tpf) {
-			transform.translation.add_d(vel.data[0]*tpf, vel.data[1]*tpf, vel.data[2]*tpf);
+			transform.translation.addDirect(vel.data[0]*tpf, vel.data[1]*tpf, vel.data[2]*tpf);
 		};
 
 		MovementSystem.prototype.addRotToTransform = function(rotVel, transform, tpf) {

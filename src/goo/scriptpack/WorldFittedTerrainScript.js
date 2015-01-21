@@ -2,7 +2,7 @@ define([
 	'goo/scriptpack/HeightMapBoundingScript',
     'goo/math/Vector3'
 	],
-    /** @lends */
+
 	function(HeightMapBoundingScript,
              Vector3) {
 		'use strict';
@@ -55,11 +55,9 @@ define([
 		}
 
 		/**
-		 * @class Creates and exposes a square heightmap terrain fitted within given world dimensions.
+		 * Creates and exposes a square heightmap terrain fitted within given world dimensions.
          * This does not do any visualizing of the heightMap. That needs to be done elsewhere.
-		 * @constructor
 		 */
-
 		function WorldFittedTerrainScript() {
 			this.heightMapData = [];
             this.yMargin = 1;
@@ -70,7 +68,6 @@ define([
 		 * @param {Array} [heightMatrix] file to load height data from
 		 * @param {Object} [dimensions] dimensions to fit the data within
 		 */
-
 		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
             var scriptContainer = registerHeightData(heightMatrix, dimensions, this.heightMapData);
 			this.heightMapData.push(scriptContainer);
@@ -103,7 +100,7 @@ define([
          * @param {Number} axMin
          * @param {Number} axMax
          * @param {Number} quadCount
-         * @return {Number}
+         * @returns {Number}
          */
 
 		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function(axPos, axMin, axMax, quadCount) {
@@ -117,7 +114,7 @@ define([
 		 * @param {Number} axMin
 		 * @param {Number} axMax
 		 * @param {Number} quadCount
-		 * @return {Number}
+		 * @returns {Number}
 		 */
 
 		WorldFittedTerrainScript.prototype.returnToWorldDimensions = function(axPos, axMin, axMax, quadCount) {
@@ -171,7 +168,7 @@ define([
             calcVec2.set((tri[2].x-tri[0].x), (tri[2].z-tri[0].z), (tri[2].y-tri[0].y));
             calcVec1.cross(calcVec2);
             if (calcVec1.data[1] < 0) {
-				calcVec1.muld(-1, -1, -1);
+				calcVec1.scale(-1);
 			}
 
 			calcVec1.normalize();

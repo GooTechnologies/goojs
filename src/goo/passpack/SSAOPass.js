@@ -10,9 +10,7 @@ define([
 	'goo/passpack/BlurPass',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	RenderTarget,
 	Util,
@@ -28,11 +26,13 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Screen Space Ambient Occlusion pass
+	 * @param renderList
+	 * @hidden
+	 */
 	function SSAOPass(renderList) {
 		this.depthPass = new RenderPass(renderList);
-		this.depthPass.clearColor.set(1,1,1,1);
+		this.depthPass.clearColor.setDirect(1, 1, 1, 1);
 		var packDepthMaterial = new Material(packDepth);
 		this.depthPass.overrideMaterial = packDepthMaterial;
 

@@ -1,14 +1,12 @@
 define([
 	'goo/animationpack/blendtree/BinaryLERPSource'
-],
-/** @lends */
-function (
+], function (
 	BinaryLERPSource
 ) {
 	'use strict';
 
 	/**
-	 * @class A layer blender that uses linear interpolation to merge the results of two layers.
+	 * A layer blender that uses linear interpolation to merge the results of two layers.
 	 */
 	function LayerLERPBlender() {
 		this._blendWeight = null;
@@ -17,7 +15,7 @@ function (
 	}
 
 	/**
-	 * @return a key-value map representing the blended data from both animation layers.
+	 * @returns a key-value map representing the blended data from both animation layers.
 	 */
 	LayerLERPBlender.prototype.getBlendedSourceData = function () {
 		// grab our data maps from the two layers...

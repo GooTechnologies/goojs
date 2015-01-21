@@ -1,16 +1,13 @@
 define([
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Vector3
 ) {
 	'use strict';
 
 	/**
-	 * @class A plain light source in the scene, to be handled by shaders<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
-	 * @constructor
+	 * A plain light source in the scene, to be handled by shaders<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
 	function Light(color) {
@@ -70,6 +67,7 @@ function (
 			darkness: 1.0,
 			shadowType: 'VSM'
 		};
+		//! AT: please extract this in its own class
 
 		this.changedProperties = false;
 		this.changedColor =  false;
@@ -89,6 +87,22 @@ function (
 			}
 		}
 		delete shadowSettings.shadowData;
+	};
+
+	// should be overridable by light type (some may have more/less allocated resources)
+	Light.prototype.invalidateHandles = function (renderer) {
+		var shadowSettings = this.shadowSettings;
+		if (shadowSettings.shadowData) {
+			if (shadowSettings.shadowData.shadowTarget) {
+				renderer.invalidateRenderTarget(shadowSettings.shadowData.shadowTarget);
+			}
+			if (shadowSettings.shadowData.shadowTargetDown) {
+				renderer.invalidateRenderTarget(shadowSettings.shadowData.shadowTargetDown);
+			}
+			if (shadowSettings.shadowData.shadowBlurred) {
+				renderer.invalidateRenderTarget(shadowSettings.shadowData.shadowBlurred);
+			}
+		}
 	};
 
 	return Light;

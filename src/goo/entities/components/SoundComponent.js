@@ -3,9 +3,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	AudioContext,
 	Vector3,
@@ -17,11 +15,13 @@ function (
 	//Or, isn't just one (the first) warning enough - it might ruing everything if flooding the console
 
 	/**
-	 * @class Component that adds sound to an entity.
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
+	 * Component that adds sound to an entity.
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
 	 * @extends {Component}
 	 */
 	function SoundComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'SoundComponent';
 
 		/**
@@ -44,6 +44,8 @@ function (
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
 	}
+
+	SoundComponent.type = 'SoundComponent';
 
 	SoundComponent.prototype = Object.create(Component.prototype);
 	SoundComponent.prototype.constructor = SoundComponent;
@@ -88,10 +90,10 @@ function (
 	/**
 	 * Connect output of component to audionodes
 	 * @param {object} [nodes]
-	 * @param {AudioNode} [nodes.dry]
+	 * @param {AudioNode} [nodes.dry]
 	 * @param {AudioNode} [nodes.wet]
 	 */
-	SoundComponent.prototype.connectTo = function (nodes) {
+	SoundComponent.prototype.connectTo = function (nodes) {
 		this._outDryNode.disconnect();
 		this._outWetNode.disconnect();
 		if (nodes && nodes.dry) {
@@ -109,7 +111,7 @@ function (
 	 * @param {number} config.reverb
 	 */
 	SoundComponent.prototype.updateConfig = function (config) {
-		if (config.volume !== undefined) {
+		if (config.volume !== undefined) {
 			this._outDryNode.gain.value = MathUtils.clamp(config.volume, 0, 1);
 		}
 		if (config.reverb !== undefined) {
@@ -121,9 +123,9 @@ function (
 	 * Updates position, velocity and orientation of component and thereby all connected sounds.
 	 * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
 	 * @param {object} settings See {@link SoundSystem}
-	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
+	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
 	 * @param {number} tpf
-	 * @private
+	 * @hidden
 	 */
 	SoundComponent.prototype.process = function (settings, mvMat, tpf) {
 		this._pannerNode.rolloffFactor = settings.rolloffFactor;
@@ -147,9 +149,9 @@ function (
 		}
 
 		mvMat.getTranslation(this._position);
-		this._velocity.setv(this._position).subv(this._oldPosition).div(tpf);
-		this._oldPosition.setv(this._position);
-		this._orientation.setd(0, 0, -1);
+		this._velocity.setVector(this._position).subVector(this._oldPosition).div(tpf);
+		this._oldPosition.setVector(this._position);
+		this._orientation.setDirect(0, 0, -1);
 		mvMat.applyPostVector(this._orientation);
 
 		var pd = this._position.data;

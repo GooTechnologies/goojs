@@ -2,9 +2,7 @@ define([
 	'goo/math/Transform',
 	'goo/animationpack/Joint',
 	'goo/math/Matrix4x4'
-],
-/** @lends */
-function (
+], function (
 	Transform,
 	Joint,
 	Matrix4x4
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.
+	 * Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.
 	 * @param {Skeleton} skeleton
 	 */
 	function SkeletonPose(skeleton) {
@@ -66,9 +64,10 @@ function (
 	 * Update the global and palette transforms of our posed joints based on the current local joint transforms.
 	 */
 	SkeletonPose.prototype.updateTransforms = function () {
-		for (var i = 0; i < this._skeleton._joints.length; i++) {
+		var joints = this._skeleton._joints;
+		for (var i = 0, l = joints.length; i < l; i++) {
 
-			var parentIndex = this._skeleton._joints[i]._parentIndex;
+			var parentIndex = joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We have a parent, so take us from local->parent->model space by multiplying by parent's local->model
 				Matrix4x4.combine(this._globalTransforms[parentIndex].matrix, this._localTransforms[i].matrix, this._globalTransforms[i].matrix);
@@ -83,7 +82,7 @@ function (
 			 * vertex from bind pose (model space) to current pose (model space).
 			 */
 			Matrix4x4
-				.combine(this._globalTransforms[i].matrix, this._skeleton._joints[i]._inverseBindPose.matrix, this._matrixPalette[i]);
+				.combine(this._globalTransforms[i].matrix, joints[i]._inverseBindPose.matrix, this._matrixPalette[i]);
 		}
 
 		this.firePoseUpdated();

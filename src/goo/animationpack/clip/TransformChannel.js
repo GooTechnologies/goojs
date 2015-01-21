@@ -2,9 +2,7 @@ define([
 	'goo/animationpack/clip/AbstractAnimationChannel',
 	'goo/animationpack/clip/TransformData',
 	'goo/math/Quaternion'
-],
-/** @lends */
-function (
+], function (
 	AbstractAnimationChannel,
 	TransformData,
 	Quaternion
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class An animation channel consisting of a series of transforms interpolated over time.
+	 * An animation channel consisting of a series of transforms interpolated over time.
 	 * @param channelName our name.
 	 * @param {Array} times our time offset values.
 	 * @param {Array} rotations the rotations to set on this channel at each time offset.
@@ -46,7 +44,7 @@ function (
 
 	/*
 	 * Applies the channels animation state to supplied data item
-	 * @param {number} sampleIndex
+	 * @param {number} sampleIndex
 	 * @param {number} fraction
 	 * @param {TransformData} value The data item to apply animation to
 	 */
@@ -100,7 +98,7 @@ function (
 
 		if (!transformData._rotation.equals(tmpQuat)) {
 			Quaternion.slerp(transformData._rotation, tmpQuat, fraction, tmpQuat2);
-			transformData._rotation.setv(tmpQuat2);
+			transformData._rotation.setVector(tmpQuat2);
 		}
 
 		transformData._translation.data[0] = (1 - fraction) * this._translations[index3A + 0] + fraction * this._translations[index3B + 0];
@@ -116,7 +114,7 @@ function (
 	 * Apply a specific index of this channel to a {@link TransformData} object.
 	 * @param {number} index the index to grab.
 	 * @param {TransformData} [store] the TransformData to store in. If null, a new one is created.
-	 * @return {TransformData} our resulting TransformData.
+	 * @returns {TransformData} our resulting TransformData.
 	 */
 	TransformChannel.prototype.getData = function (index, store) {
 		var rVal = store ? store : new TransformData();

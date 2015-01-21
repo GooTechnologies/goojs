@@ -6,9 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	FullscreenUtil,
 	RenderTarget,
@@ -20,8 +18,7 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	* Difference of Gaussian Filter pass.
+	* 	* Difference of Gaussian Filter pass.
 	* Usable for edge detection.
 	*
 	* A lower sigma will create thinner edgelines, tune to get the sweetspot.
@@ -186,6 +183,17 @@ function (
 		} else {
 			renderer.render(this.renderable, FullscreenUtil.camera, [], writeBuffer, this.clear);
 		}
+	};
+
+	DoGPass.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.convolutionMaterial1);
+		renderer.invalidateMaterial(this.convolutionMaterial2);
+		renderer.invalidateMaterial(this.differenceMaterial);
+		renderer.invalidateMeshData(this.renderable.meshData);
+
+		renderer.invalidateRenderTarget(this.renderTargetX);
+		renderer.invalidateRenderTarget(this.gaussian1);
+		renderer.invalidateRenderTarget(this.gaussian2);
 	};
 
 	return DoGPass;

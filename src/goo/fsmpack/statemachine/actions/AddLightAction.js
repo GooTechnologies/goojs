@@ -4,9 +4,7 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight'
-],
-/** @lends */
-function(
+], function (
 	Action,
 	LightComponent,
 	PointLight,
@@ -92,7 +90,7 @@ function(
 			light.range = +this.range;
 		}
 
-		light.color.setd(this.color[0], this.color[1], this.color[2]);
+		light.color.setDirect(this.color[0], this.color[1], this.color[2]);
 
 		entity.setComponent(new LightComponent(light));
 	};

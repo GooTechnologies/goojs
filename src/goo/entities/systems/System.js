@@ -1,12 +1,12 @@
 define(
-/** @lends */
+
 function () {
 	'use strict';
 
 	/**
 	 * Creates a new System
 	 *
-	 * @class Base class for all entity systems
+	 * Base class for all entity systems
 	 *        <ul>
 	 *        <li> interests = null -> listen to all entities
 	 *        <li> interests = [] -> don't listen to any entities
@@ -59,6 +59,19 @@ function () {
 		if (index !== -1) {
 			this._activeEntities.splice(index, 1);
 			if (this.deleted) {
+				this.deleted(entity);
+			}
+		}
+	};
+
+	/**
+	 * Called when the system is removed from the world.
+	 * By default it will call the deleted method on all entities it is keeping track of.
+	 */
+	System.prototype.cleanup = function () {
+		if (this.deleted) {
+			for (var i = 0; i < this._activeEntities.length; i++) {
+				var entity = this._activeEntities[i];
 				this.deleted(entity);
 			}
 		}

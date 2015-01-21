@@ -1,17 +1,15 @@
 define([
 	'goo/animationpack/clip/TransformChannel',
 	'goo/animationpack/clip/JointData'
-],
-/** @lends */
-function (
+], function (
 	TransformChannel,
 	JointData
 ) {
 	'use strict';
 
 	/**
-	 * @class Transform animation channel, specifically geared towards describing the motion of skeleton joints.
-	 * @param {string} jointName our joint name.
+	 * Transform animation channel, specifically geared towards describing the motion of skeleton joints.
+	 * @param {string} jointName our joint name.
 	 * @param {number} jointIndex our joint index
 	 * @param {number[]} times our time offset values.
 	 * @param {number[]} rotations the rotations to set on this channel at each time offset.
@@ -44,7 +42,7 @@ function (
 
 	/*
 	 * Applies the channels animation state to supplied data item
-	 * @param {number} sampleIndex
+	 * @param {number} sampleIndex
 	 * @param {number} progressPercent
 	 * @param {JointData} value The data item to apply animation to
 	 */
@@ -57,7 +55,7 @@ function (
 	 * Apply a specific index of this channel to a {@link TransformData} object.
 	 * @param {number} index the index to grab.
 	 * @param {JointData} [store] the TransformData to store in. If null, a new one is created.
-	 * @return {JointData} our resulting TransformData.
+	 * @returns {JointData} our resulting TransformData.
 	 */
 	JointChannel.prototype.getData = function (index, store) {
 		var rVal = store ? store : new JointData();

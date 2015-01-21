@@ -4,7 +4,7 @@ define([
 	'goo/math/Vector2',
 	'goo/renderer/scanline/OccludeeTriangleData'
 	],
-	/** @lends */
+
 		function (Matrix4x4, Vector4, Vector2, OccludeeTriangleData) {
 		'use strict';
 
@@ -68,8 +68,7 @@ define([
 		var combinedMatrix = new Matrix4x4();
 
 		/**
-		 *  @param {SoftwareRenderer} renderer
-		 *  @constructor
+		 * @param {SoftwareRenderer} renderer
 		 */
 		function BoundingBoxOcclusionChecker (renderer) {
 
@@ -409,7 +408,7 @@ define([
 		/**
 		 *	Creates a screen space axis aligned box from the min and max values.
 		 *	The depth buffer is checked for each pixel the box covers against the nearest depth of the Bounding Box.
-		 *	@return {Boolean} occluded or not occluded.
+		 *	@returns {Boolean} occluded or not occluded.
 		 *   @param {Float32Array} minmaxArray  [minX, maxX, minY, maxY, minDepth]
 		 */
 		BoundingBoxOcclusionChecker.prototype._isBoundingBoxScanlineOccluded = function (minmaxArray) {

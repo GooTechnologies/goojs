@@ -4,9 +4,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/util/ObjectUtil',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	TransformComponent,
 	MathUtils,
@@ -16,13 +14,12 @@ function (
 	'use strict';
 
 	/**
-	 * @class For handling loading of transform component
-	 * @constructor
+	 * For handling loading of transform component
+	 * @extends ComponentHandler
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
-	 * @private
-	 * @extends ComponentHandler
+	 * @hidden
 	 */
 	function TransformComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -64,9 +61,9 @@ function (
 	TransformComponentHandler.prototype._remove = function (entity) {
 		var component = entity.transformComponent;
 		// Reset
-		component.transform.translation.setd(0, 0, 0);
+		component.transform.translation.setDirect(0, 0, 0);
 		component.transform.setRotationXYZ(0, 0, 0);
-		component.transform.scale.setd(1, 1, 1);
+		component.transform.scale.setDirect(1, 1, 1);
 
 		// Detach all children
 		for (var i = 0; i < component.children.length; i++) {
@@ -87,7 +84,7 @@ function (
 		var that = this;
 
 		function attachChild(component, ref) {
-			return that.loadObject(ref, options).then(function (entity) {
+			return that.loadObject(ref, options).then(function (entity) {
 				if (entity && entity.transformComponent) {
 					component.attachChild(entity.transformComponent);
 					var entityInWorld = that.world.entityManager.containsEntity(entity) ||
@@ -108,13 +105,13 @@ function (
 		}
 
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
-			if (!component) {
+			if (!component) {
 				// Component was removed
 				return;
 			}
 
 			// Translation
-			component.transform.translation.seta(config.translation);
+			component.transform.translation.setArray(config.translation);
 			// Rotation
 			component.transform.setRotationXYZ(
 				MathUtils.DEG_TO_RAD * config.rotation[0],
@@ -122,7 +119,7 @@ function (
 				MathUtils.DEG_TO_RAD * config.rotation[2]
 			);
 			// Scale
-			component.transform.scale.seta(config.scale);
+			component.transform.scale.setArray(config.scale);
 
 			var promises = [];
 			if (config.children) {
@@ -130,7 +127,7 @@ function (
 				// TODO: Watch out for circular dependencies
 				// TODO: Use sort values
 				var keys = Object.keys(config.children);
-				for (var i = 0; i < keys.length; i++) {
+				for (var i = 0; i < keys.length; i++) {
 					var childRef = config.children[keys[i]].entityRef;
 					promises.push(attachChild(component, childRef));
 				}

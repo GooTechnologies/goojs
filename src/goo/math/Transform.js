@@ -1,18 +1,18 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4'
-],
-/** @lends */
-function (
+	'goo/math/Matrix4x4',
+	'goo/math/MathUtils'
+], function (
 	Vector3,
 	Matrix3x3,
-	Matrix4x4
+	Matrix4x4,
+	MathUtils
 ) {
 	'use strict';
 
 	/**
-	 * @class Transform models a transformation in 3d space as: Y = M*X+T, with M being a Matrix3 and T is a Vector3. Generally M will be a rotation
+	 * Transform models a transformation in 3d space as: Y = M*X+T, with M being a Matrix3 and T is a Vector3. Generally M will be a rotation
 	 *        only matrix in which case it is represented by the matrix and scale fields as R*S, where S is a positive scale vector. For non-uniform
 	 *        scales and reflections, use setMatrix, which will consider M as being a general 3x3 matrix and disregard anything set in scale.
 	 */
@@ -21,9 +21,9 @@ function (
 		 * @type {Matrix4x4}
 		 */
 		this.matrix = new Matrix4x4();
-		this.normalMatrix = new Matrix4x4();
+		this.normalMatrix = new Matrix3x3();
 
-		/** @type {Vector3} */
+		/** @type {Vector3} */
 		this.translation = new Vector3();
 		/** @type {Matrix3x3} */
 		this.rotation = new Matrix3x3();
@@ -43,35 +43,29 @@ function (
 	 * @returns {Transform} target
 	 */
 	Transform.combine = function (lhs, rhs, target) {
-		if (lhs.scale.data[0] !== lhs.scale.data[1] || lhs.scale.data[0] !== lhs.scale.data[2]) {
-			throw {
-				name: 'NonUniformScaleException',
-				message: 'Non-uniform scaling in left hand transform, cannot resolve combined transform'
-			};
-		}
 		target = target || new Transform();
 
 		// Translation
-		tmpVec.setv(rhs.translation);
+		tmpVec.setVector(rhs.translation);
 		// Rotate translation
 		lhs.rotation.applyPost(tmpVec);
 		// Scale translation
-		tmpVec.mulv(lhs.scale);
+		tmpVec.mulVector(lhs.scale);
 		// Translate translation
-		tmpVec.addv(lhs.translation);
+		tmpVec.addVector(lhs.translation);
 
 		// Scale
-		tmpVec2.setv(rhs.scale);
+		tmpVec2.setVector(rhs.scale);
 		// Scale scale
-		tmpVec2.mulv(lhs.scale);
+		tmpVec2.mulVector(lhs.scale);
 
 		// Rotation
 		// Rotate rotation
 		Matrix3x3.combine(lhs.rotation, rhs.rotation, tmpMat1);
 
 		target.rotation.copy(tmpMat1);
-		target.scale.setv(tmpVec2);
-		target.translation.setv(tmpVec);
+		target.scale.setVector(tmpVec2);
+		target.translation.setVector(tmpVec);
 
 		target.update();
 
@@ -107,12 +101,12 @@ function (
 		this.rotation.data.set(b.rotation.data);
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
 		Matrix3x3.combine(tmpMat1, this.rotation, this.rotation);
-		this.translation.setv(b.translation);
-		this.translation.mulv(a.scale);
-		tmpMat1.applyPost(this.translation).addv(a.translation);
+		this.translation.setVector(b.translation);
+		this.translation.mulVector(a.scale);
+		tmpMat1.applyPost(this.translation).addVector(a.translation);
 
-		tmpVec.setv(a.scale).mulv(b.scale);
-		this.scale.setv(tmpVec);
+		tmpVec.setVector(a.scale).mulVector(b.scale);
+		this.scale.setVector(tmpVec);
 	};
 
 	/**
@@ -121,9 +115,9 @@ function (
 	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
 
-		this.translation.setv(Vector3.ZERO);
+		this.translation.setVector(Vector3.ZERO);
 		this.rotation.setIdentity();
-		this.scale.setv(Vector3.ONE);
+		this.scale.setVector(Vector3.ONE);
 	};
 
 	/**
@@ -140,7 +134,7 @@ function (
 	 * entity.transformComponent.transform.applyForward(v1, localPos);
 	 */
 	Transform.prototype.applyForward = function (point, store) {
-		store.setv(point);
+		store.setVector(point);
 
 		// store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		// this.rotation.applyPost(store);
@@ -167,7 +161,7 @@ function (
 	Transform.prototype.applyForwardVector = function (vector, store) {
 		store.copy(vector);
 
-		store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
+		store.setDirect(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		this.rotation.applyPost(store);
 
 		return store;
@@ -201,23 +195,49 @@ function (
 	};
 
 	/**
+	 * Updates the normal matrix. This is done automatically by the engine.
+	 */
+	Transform.prototype.updateNormalMatrix = function () {
+		// Copy upper left of 4x4 to 3x3
+		var t = this.normalMatrix.data;
+		var s = this.matrix.data;
+		t[0] = s[0];
+		t[1] = s[1];
+		t[2] = s[2];
+		t[3] = s[4];
+		t[4] = s[5];
+		t[5] = s[6];
+		t[6] = s[8];
+		t[7] = s[9];
+		t[8] = s[10];
+
+		// invert + transpose if non-uniform scaling
+		// RH: Should we check against epsilon here?
+		var scale = this.scale.data;
+		if (scale[0] !== scale[1] || scale[0] !== scale[2]) {
+			Matrix3x3.invert(this.normalMatrix, tmpMat1);
+			Matrix3x3.transpose(tmpMat1, this.normalMatrix);
+		}
+	};
+
+	/**
 	 * Copy supplied transform into this transform
-	 * @param {Transform} transform
+	 * @param {Transform} transform
 	 */
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
 
-		this.translation.setv(transform.translation);
+		this.translation.setVector(transform.translation);
 		this.rotation.copy(transform.rotation);
-		this.scale.setv(transform.scale);
+		this.scale.setVector(transform.scale);
 	};
 
 	/**
 	 * Set this transform's rotation to rotation around X, Y and Z axis.
 	 * The rotation is applied in XYZ order.
 	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
+	 * @param {number} y
+	 * @param {number} z
 	 */
 	Transform.prototype.setRotationXYZ = function (x, y, z) {
 		this.rotation.fromAngles(x, y, z);
@@ -225,8 +245,6 @@ function (
 
 	/**
 	 * Sets the transform to look in a specific direction.
-	 * Please note: This function contains a known bug resulting in looking in the opposite direction
-	 * for non-camera and non-light entities.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
 	 */
@@ -234,11 +252,12 @@ function (
 		if (!up) {
 			up = Vector3.UNIT_Y;
 		}
-		// REVIEW: this is actually using the wrong direction, it should be reversed.
-		//   tmpVec.setv(position).subv(this.translation).normalize();
-		// However we might need the old behavior for lights and cameras.
-		tmpVec.setv(this.translation).subv(position).normalize();
-		this.rotation.lookAt(tmpVec, up);
+
+		tmpVec.setVector(position).subVector(this.translation);
+		if (tmpVec.lengthSquared() > MathUtils.EPSILON) { // should be epsilon^2 but it hopefully doesn't matter
+			tmpVec.normalize();
+			this.rotation.lookAt(tmpVec, up);
+		}
 	};
 
 	/**
@@ -272,8 +291,8 @@ function (
 		//newRotation.multiplyDiagonalPost(this.scale, newRotation).invert();
 		// }
 
-		result.scale.setv(Vector3.ONE).div(this.scale);
-		result.translation.copy(this.translation).invert().mulv(result.scale);
+		result.scale.setVector(Vector3.ONE).div(this.scale);
+		result.translation.copy(this.translation).invert().mulVector(result.scale);
 		result.rotation.applyPost(result.translation);
 
 		// result.update();
@@ -281,6 +300,7 @@ function (
 		return result;
 	};
 
+	//! AT: the second toString in the whole engine
 	Transform.prototype.toString = function () {
 		return '' + this.matrix;
 	};

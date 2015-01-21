@@ -5,9 +5,7 @@ define([
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	FullscreenUtil,
 	RenderTarget,
@@ -18,7 +16,6 @@ function (
 	'use strict';
 
 	/**
-	 * @class
 	 * <pre>
 	 * settings: {
 	 *     target : null,
@@ -85,6 +82,14 @@ function (
 		}
 		this.convolutionMaterial.shader.destroy();
 		this.copyMaterial.shader.destroy();
+	};
+
+	BlurPass.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.convolutionMaterial);
+		renderer.invalidateMaterial(this.copyMaterial);
+		renderer.invalidateRenderTarget(this.renderTargetX);
+		renderer.invalidateRenderTarget(this.renderTargetY);
+		renderer.invalidateMeshData(this.renderable.meshData);
 	};
 
 	BlurPass.prototype.updateSize = function (size, renderer) {

@@ -1,17 +1,13 @@
 define([
 	'goo/math/Vector2'
-],
-/** @lends */
-function(
+], function (
 	Vector2
 	) {
 
 	'use strict';
 
 	/**
-	 * @class
 	 * Used for storing derived data from gamepads
-	 * @constructor
 	 */
 	function GamepadData() {
 		this.leftStickDirection = new Vector2();
@@ -85,7 +81,7 @@ function(
 	 * @param {Number} y
 	 */
 	GamepadData.prototype.calculateStickDirection = function(dirVector, x, y) {
-		dirVector.setd(x, y);
+		dirVector.setDirect(x, y);
 		var length = dirVector.length();
 		if (length > 0.0000001) {
 			dirVector.data[0] /= length;

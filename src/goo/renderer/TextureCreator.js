@@ -6,9 +6,7 @@ define([
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	Texture,
 	Util,
 	TextureHandler,
@@ -22,7 +20,7 @@ function (
 	//! AT: shouldn't this stay in util?
 
 	/**
-	 * @class Takes away the pain of creating textures of various sorts.
+	 * Takes away the pain of creating textures of various sorts.
 	 * @param {Settings} settings Texturing settings
 	 */
 	function TextureCreator() {
@@ -54,17 +52,20 @@ function (
 	/**
 	 * Creates a texture and loads image into it
 	 * @example gridMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg'));
-	 * @param {string} imageURL
-	 * @param {object} settings passed to the {Texture} constructor
+	 * @param {string} imageUrl
+	 * @param {object} settings passed to the {Texture} constructor
+	 * @param {Function} callback
 	 * @returns {Texture}
 	 */
-	TextureCreator.prototype.loadTexture2D = function (imageURL, settings, callback) {
+	TextureCreator.prototype.loadTexture2D = function (imageUrl, settings, callback) {
 		var id = StringUtil.createUniqueId('texture');
 		settings = settings || {};
-		settings.imageRef = imageURL;
-		var texture = this.textureHandler._objects[id] = this.textureHandler._create();
+		settings.imageRef = imageUrl;
+
+		var texture = this.textureHandler._create();
+		this.textureHandler._objects.set(id, texture);
 		// texture.setImage(TextureHandler.WHITE, 1, 1);
-		this.textureHandler.update(id, settings).then(function() {
+		this.textureHandler.update(id, settings).then(function () {
 			if (callback) {
 				callback(texture);
 			}
@@ -82,13 +83,14 @@ function (
 		settings.wrapT = 'EdgeClamp';
 		settings.autoPlay = true;
 
-		var texture = this.textureHandler._objects[id] = this.textureHandler._create();
+		var texture = this.textureHandler._create();
+		this.textureHandler._objects.set(id, texture);
 
 		this.textureHandler.update(id, settings, {
 			texture: {
 				dontwait: true
 			}
-		}).then(null, function(err) {
+		}).then(null, function (err) {
 			errorCallback(err);
 		});
 

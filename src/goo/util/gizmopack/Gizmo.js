@@ -11,9 +11,7 @@ define([
 	'goo/math/Vector3',
 	'goo/renderer/Camera',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function(
+], function (
 	ShaderBuilder,
 	MeshData,
 	Shader,
@@ -30,8 +28,7 @@ function(
 	'use strict';
 
 	/**
-	* @class
-	*/
+	* 	*/
 	function Gizmo(name, gizmoRenderSystem) {
 		this.name = name || 'Default Gizmo';
 		this.gizmoRenderSystem = gizmoRenderSystem;
@@ -126,7 +123,7 @@ function(
 	};
 
 
-	Gizmo.prototype.updateTransforms = function() {
+	Gizmo.prototype.updateTransforms = function() {
 		if (Renderer.mainCamera) {
 			var camera = Renderer.mainCamera;
 			var scale;
@@ -137,7 +134,7 @@ function(
 			} else {
 				scale = (camera._frustumTop - camera._frustumBottom) / 30;
 			}
-			this.transform.scale.setd(scale, scale, scale);
+			this.transform.scale.setDirect(scale, scale, scale);
 		}
 
 		this.transform.update();
@@ -160,51 +157,51 @@ function(
 
 		if(this._activeHandle.type === 'Plane') {
 			// Calculate plane's normal in world space
-			normal.setv([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+			normal.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 			this.transform.matrix.applyPostVector(normal);
 			normal.normalize();
 
 			// Set plane distance from world origin by projecting world translation to plane normal
-			worldCenter.setv(Vector3.ZERO);
+			worldCenter.setVector(Vector3.ZERO);
 			this.transform.matrix.applyPostPoint(worldCenter);
 			this._plane.constant = worldCenter.dot(normal);
 		} else {
 			// Get gizmo handle points in world space
-			worldCenter.setv(Vector3.ZERO);
+			worldCenter.setVector(Vector3.ZERO);
 			this.transform.matrix.applyPostPoint(worldCenter);
-			worldX.setv(Vector3.UNIT_X);
+			worldX.setVector(Vector3.UNIT_X);
 			this.transform.matrix.applyPostPoint(worldX);
-			worldY.setv(Vector3.UNIT_Y);
+			worldY.setVector(Vector3.UNIT_Y);
 			this.transform.matrix.applyPostPoint(worldY);
-			worldZ.setv(Vector3.UNIT_Z);
+			worldZ.setVector(Vector3.UNIT_Z);
 			this.transform.matrix.applyPostPoint(worldZ);
 
 			// Gizmo handle points in screen space
 			Renderer.mainCamera.getScreenCoordinates(worldCenter, 1, 1, screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldX, 1, 1, screenX);
-			screenX.subv(screenCenter);
+			screenX.subVector(screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldY, 1, 1, screenY);
-			screenY.subv(screenCenter);
+			screenY.subVector(screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldZ, 1, 1, screenZ);
-			screenZ.subv(screenCenter);
+			screenZ.subVector(screenCenter);
 			// Set plane to active axis's adjacent plane with the biggest screen area
 			if(this._activeHandle.axis === 0) {
 				if(screenY.cross(screenX).length() > screenZ.cross(screenX).length()) {
-					normal.setv(worldZ).subv(worldCenter).normalize();
+					normal.setVector(worldZ).subVector(worldCenter).normalize();
 				} else {
-					normal.setv(worldY).subv(worldCenter).normalize();
+					normal.setVector(worldY).subVector(worldCenter).normalize();
 				}
 			} else if (this._activeHandle.axis === 1) {
 				if(screenZ.cross(screenY).length() > screenX.cross(screenY).length()) {
-					normal.setv(worldX).subv(worldCenter).normalize();
+					normal.setVector(worldX).subVector(worldCenter).normalize();
 				} else {
-					normal.setv(worldZ).subv(worldCenter).normalize();
+					normal.setVector(worldZ).subVector(worldCenter).normalize();
 				}
 			} else {
 				if(screenX.cross(screenZ).length() > screenY.cross(screenZ).length()) {
-					normal.setv(worldY).subv(worldCenter).normalize();
+					normal.setVector(worldY).subVector(worldCenter).normalize();
 				} else {
-					normal.setv(worldX).subv(worldCenter).normalize();
+					normal.setVector(worldX).subVector(worldCenter).normalize();
 				}
 			}
 			// Plane constant is world translation projected on normal
@@ -214,7 +211,7 @@ function(
 
 	Gizmo.prototype._setLine = function() {
 		// If translating or scaling along a line, set current line
-		this._line.setv([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+		this._line.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 		this.transform.matrix.applyPostVector(this._line);
 		this._line.normalize();
 	};

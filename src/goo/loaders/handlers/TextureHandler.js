@@ -10,9 +10,7 @@ define([
 	'goo/util/ObjectUtil',
 	'goo/util/CanvasUtils',
 	'goo/util/StringUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	Texture,
 	DdsLoader,
@@ -29,11 +27,11 @@ function (
 
 	/*jshint eqeqeq: false, -W041 */
 	/**
-	 * @class Handler for loading materials into engine
+	 * Handler for loading materials into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function TextureHandler() {
@@ -69,7 +67,7 @@ function (
 
 	/**
 	 * Preparing texture config by populating it with defaults.
-	 * @param {object} config
+	 * @param {object} config
 	 * @private
 	 */
 	TextureHandler.prototype._prepare = function (config) {
@@ -93,10 +91,11 @@ function (
 	 * @private
 	 */
 	TextureHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
-			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
+		var texture = this._objects.get(ref);
+		if (texture && this.world.gooRunner) {
+			texture.destroy(this.world.gooRunner.renderer.context);
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -118,8 +117,8 @@ function (
 	 */
 	TextureHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (texture) {
-			if (!texture) { return; }
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (texture) {
+			if (!texture) { return; }
 			var ret;
 
 			// Texture settings
@@ -135,8 +134,8 @@ function (
 
 			texture.anisotropy = Math.max(config.anisotropy, 1);
 
-			texture.offset.set(config.offset);
-			texture.repeat.set(config.repeat);
+			texture.offset.setArray(config.offset);
+			texture.repeat.setArray(config.repeat);
 			texture.lodBias = config.lodBias;
 
 			if (texture.flipY !== config.flipY) {
@@ -160,7 +159,7 @@ function (
 					// Special (dds, tga, crn)
 					texture.a = imageRef;
 					ret = that.loadObject(imageRef).then(function (data) {
-						if (data && data.preloaded) {
+						if (data && data.preloaded) {
 							_.extend(texture.image, data.image);
 							texture.format = data.format;
 							texture.setNeedsUpdate();
@@ -225,13 +224,6 @@ function (
 				return ret;
 			}
 		});
-	};
-
-	TextureHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
-			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
-		}
-		delete this._objects[ref];
 	};
 
 	return TextureHandler;

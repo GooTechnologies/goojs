@@ -4,9 +4,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Vector,
 	Vector3,
 	Matrix3x3,
@@ -15,35 +13,35 @@ function (
 	'use strict';
 
 	/**
-	 * @class Quaternions provide a convenient mathematical notation for
+	 * Quaternions provide a convenient mathematical notation for
 	 * representing orientations and rotations of objects in three dimensions.
 	 * Compared to Euler angles, Quaternions are simpler to compose and can help avoid the problem of gimbal lock.
 	 * Compared to rotation matrices, Quaternions are more numerically stable and the representation (4 numbers) is more compact.
 	 * Quaternions are non-commutative and provide a convenient way to interpolate between rotations (using the <i>slerp</i> function).
 	 * The four numbers in a quaternion are internally represented by a vector, and therefore inherits from it.
 	 * @extends Vector
-	 * @constructor
 	 * @param {Vector|number[]|...number} arguments Initial values for the components.
 	 */
 	function Quaternion () {
 		Vector.call(this, 4);
 
 		if (arguments.length !== 0) {
-			this.set(arguments);
+			Vector.prototype.set.apply(this, arguments);
 		} else {
-			this.setd(0, 0, 0, 1);
+			this.data[3] = 1;
 		}
 	}
 
 	Quaternion.prototype = Object.create(Vector.prototype);
+	Quaternion.prototype.constructor = Quaternion;
+
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise addition between two quaternions and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -63,8 +61,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise subtraction between two quaternions and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -84,8 +81,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a multiplication between two quaternions and stores the result in a separate quaternion.
+	 * Performs a multiplication between two quaternions and stores the result in a separate quaternion.
 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
@@ -104,13 +100,11 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
 	Quaternion.div = function (lhs, rhs, target) {
@@ -125,16 +119,11 @@ function (
 		target.data[2] = (clean &= rhs.data[2] < 0.0 || rhs.data[2] > 0.0) ? lhs.data[2] / rhs.data[2] : 0.0;
 		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
 
-		if (clean === false) {
-			console.warn("[Quaternion.div] Attempted to divide by zero!");
-		}
-
 		return target;
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
@@ -155,8 +144,8 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Quaternion vector for storage.
@@ -176,8 +165,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -197,15 +185,13 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @throws Outputs a warning in the console if attempting to divide by zero.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
-
 	Quaternion.scalarDiv = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
@@ -220,10 +206,6 @@ function (
 		target.data[2] = lhs.data[2] * rhs;
 		target.data[3] = lhs.data[3] * rhs;
 
-		if (clean === false) {
-			console.warn("[Quaternion.scalarDiv] Attempted to divide by zero!");
-		}
-
 		return target;
 	};
 
@@ -233,23 +215,23 @@ function (
 	 * @param {Quaternion} endQuat End quaternion.
 	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
 	 * @param {Quaternion} workQuat Work quaternion.
-	 * @return {Quaternion} workQuat The interpolated work quaternion.
+	 * @returns {Quaternion} workQuat The interpolated work quaternion.
 	 */
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
 		if (changeAmnt === 0.0) {
-			return workQuat.setv(startQuat);
+			return workQuat.setVector(startQuat);
 		} else if (changeAmnt === 1.0) {
-			return workQuat.setv(endQuat);
+			return workQuat.setVector(endQuat);
 		}
 
 		// Check for equality and skip operation.
 		if (startQuat.equals(endQuat)) {
-			return workQuat.setv(startQuat);
+			return workQuat.setVector(startQuat);
 		}
 
 		var result = startQuat.dot(endQuat);
-		workQuat.setv(endQuat);
+		workQuat.setVector(endQuat);
 
 		if (result < 0.0) {
 			// Negate the second quaternion and the result of the dot product
@@ -281,7 +263,7 @@ function (
 		var z = scale0 * startQuat.data[2] + scale1 * workQuat.data[2];
 		var w = scale0 * startQuat.data[3] + scale1 * workQuat.data[3];
 
-		workQuat.setd(x, y, z, w);
+		workQuat.setDirect(x, y, z, w);
 
 		// Return the interpolated quaternion
 		return workQuat;
@@ -319,7 +301,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise addition between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -328,7 +310,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -337,7 +319,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a multiplication between the current quaternion and another and stores the result locally.
+	 * Performs a multiplication between the current quaternion and another and stores the result locally.
 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -347,7 +329,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise division between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise division between the current quaternion and another and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -357,7 +339,8 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -366,7 +349,8 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
+	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -375,7 +359,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -384,7 +368,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -393,7 +377,7 @@ function (
 		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
-	 var slerp_work_quat;
+	var slerp_work_quat;
 	/**
 	 * Computes the spherical linear interpolation from the current quaternion towards endQuat.
 	 * @param {Quaternion} endQuat End quaternion.
@@ -411,7 +395,7 @@ function (
 	};
 
 	/**
-	 * @description Sets the value of this quaternion to the rotation described by the given matrix values.
+	 * Sets the value of this quaternion to the rotation described by the given matrix values.
 	 * @param {Matrix3x3} Rotation matrix.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -456,7 +440,7 @@ function (
 			w = (matrix.e10 - matrix.e01) * s;
 		}
 
-		return this.set(x, y, z, w);
+		return this.setDirect(x, y, z, w);
 	};
 
 	/**
@@ -502,7 +486,7 @@ function (
 	};
 
 	/**
-	 * @description Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
+	 * Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
 	 * @param {Vector3} from The source vector.
 	 * @param {Vector3} to The destination vector into which to rotate the source vector.
 	 * @returns {Quaternion} Self for chaining.
@@ -542,7 +526,7 @@ function (
 			}
 			return this.fromAngleAxis(theta, pivotVector);
 		} else {
-			return this.set(Quaternion.IDENTITY);
+			return this.setVector(Quaternion.IDENTITY);
 		}
 	};
 
@@ -556,7 +540,7 @@ function (
 		var yy = this.y * n;
 		var zz = this.z * n;
 		var ww = this.w * n;
-		return this.set(xx, yy, zz, ww);
+		return this.setDirect(xx, yy, zz, ww);
 	};
 
 	/**
@@ -581,7 +565,7 @@ function (
 	};
 
 	/**
-	 * @description Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
+	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
 	 *              an object, so use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation.
@@ -593,7 +577,7 @@ function (
 	};
 
 	/**
-	 * @description Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
+	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
 	 *              the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation (already normalized - unit length).
@@ -601,7 +585,7 @@ function (
 	 */
 	Quaternion.prototype.fromAngleNormalAxis = function (angle, axis) {
 		if (axis.equals(Vector3.ZERO)) {
-			return this.set(Quaternion.IDENTITY);
+			return this.setVector(Quaternion.IDENTITY);
 		}
 
 		var halfAngle = 0.5 * angle;
@@ -610,11 +594,11 @@ function (
 		var x = sin * axis.x;
 		var y = sin * axis.y;
 		var z = sin * axis.z;
-		return this.set(x, y, z, w);
+		return this.setDirect(x, y, z, w);
 	};
 
 	/**
-	 * @description Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in
+	 * Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in
 	 *              that vector as well.
 	 * @param {Vector3} axisStore The object to store the computed axis in. If null, no computations are done to determine axis.
 	 * @returns {number} The angle of rotation in radians.
@@ -653,8 +637,20 @@ function (
 			&& Math.abs(this.data[2] - o.data[2]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[3] - o.data[3]) < Quaternion.ALLOWED_DEVIANCE;
 	};
 
+
+	function addWarning(method, warning) {
+		var warned = false;
+		return function () {
+			if (!warned) {
+				warned = true;
+				console.warn(warning);
+			}
+			return method.apply(this, arguments);
+		};
+	}
+
 	// Performance methods
-	Quaternion.prototype.setd = function (x, y, z, w) {
+	Quaternion.prototype.setDirect = function (x, y, z, w) {
 		this.data[0] = x;
 		this.data[1] = y;
 		this.data[2] = z;
@@ -662,7 +658,11 @@ function (
 
 		return this;
 	};
-	Quaternion.prototype.seta = function (array) {
+
+	Quaternion.prototype.setd = addWarning(
+		Quaternion.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
+
+	Quaternion.prototype.setArray = function (array) {
 		this.data[0] = array[0];
 		this.data[1] = array[1];
 		this.data[2] = array[2];
@@ -670,7 +670,12 @@ function (
 
 		return this;
 	};
-	Quaternion.prototype.setv = function (quat) {
+
+	Quaternion.prototype.seta = addWarning(
+		Quaternion.prototype.setArray, '.seta is deprecated; please use .setArray instead');
+
+	// may sound unintuitive, setv instead of setq but it ties in with the other setv methods
+	Quaternion.prototype.setVector = function (quat) {
 		this.data[0] = quat.data[0];
 		this.data[1] = quat.data[1];
 		this.data[2] = quat.data[2];
@@ -678,6 +683,9 @@ function (
 
 		return this;
 	};
+
+	Quaternion.prototype.setv = addWarning(
+		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
 
 	return Quaternion;
 });

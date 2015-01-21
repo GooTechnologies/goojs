@@ -2,9 +2,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/entities/components/Component',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	BoundingBox,
 	Component,
 	MeshData
@@ -12,12 +10,14 @@ function (
 	'use strict';
 
 	/**
-	 * @class Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.<br>
-	 * {@linkplain http://code.gooengine.com/latest/examples/goo/entities/components/MeshDataComponent/MeshDataComponent-example.html Working example}
+	 * Holds the mesh data, like vertices, normals, indices etc. Also defines the local bounding volume.<br>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/components/MeshDataComponent/MeshDataComponent-example.html Working example
 	 * @param {MeshData} meshData Target mesh data for this component.
 	 * @extends Component
 	 */
 	function MeshDataComponent(meshData) {
+		Component.apply(this, arguments);
+
 		this.type = 'MeshDataComponent';
 
 		/**
@@ -52,7 +52,7 @@ function (
 	 * Set the bounding volume type (sphere, box etc).
 	 *
 	 * @param {BoundingVolume} modelBound Bounding to apply to this meshdata component.
-	 * @param {boolean} autoCompute If true, automatically compute bounding fit.
+	 * @param {boolean} autoCompute If true, automatically compute bounding fit.
 	 */
 	MeshDataComponent.prototype.setModelBound = function (modelBound, autoCompute) {
 		this.modelBound = modelBound;

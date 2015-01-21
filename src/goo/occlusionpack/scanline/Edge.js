@@ -1,11 +1,8 @@
 define([
-	],
-/** @lends */
-function () {
+	], function () {
 	'use strict';
 
 	/**
-	 *
 	 * @constructor
 	 */
 	function Edge() {

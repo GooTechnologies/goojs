@@ -1,8 +1,6 @@
 define([
 	'goo/entities/systems/System'
-],
-/** @lends */
-function (
+], function (
 	System
 ) {
 	'use strict';
@@ -10,16 +8,16 @@ function (
 	var p2 = window.p2;
 
 	/**
-	 * @class Handles integration with p2.js.
+	 * Handles integration with p2.js.
 	 * Depends on the global p2 object,
 	 * so load p2.js using a script tag before using this system.
 	 * See also {@link P2Component}
 	 * @extends System
-	 * @param {Object}                      [settings]
-	 * @param {number}                      settings.stepFrequency=60
-	 * @param {Array.<number>}              settings.gravity=[0,-9.82]
+	 * @param {Object} [settings]
+	 * @param {number} [settings.stepFrequency=60]
+	 * @param {Array.<number>} [settings.gravity=[0,-9.82]]
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example
 	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example}</caption>
 	 * var p2System = new P2System({
 	 *     stepFrequency: 60,
 	 *     gravity: [0,-10]
@@ -45,7 +43,7 @@ function (
 		var position = p2Component.body.position,
 			scale = p2Component.scale;
 
-		transformComponent.transform.translation.setd(position[0] * scale, position[1] * scale, 0);
+		transformComponent.transform.translation.setDirect(position[0] * scale, position[1] * scale, 0);
 		transformComponent.transform.rotation.fromAngles(p2Component.offsetAngleX, p2Component.offsetAngleY, p2Component.offsetAngleZ + p2Component.body.angle);
 		transformComponent.setUpdated();
 	}
@@ -54,6 +52,7 @@ function (
 		var p2Component = entity.p2Component;
 		var transformComponent = entity.transformComponent;
 
+		// what's up with this body?! it gets overridden by the following one!
 		var body = new p2.Body({
 			mass: p2Component.mass,
 			damping: p2Component.damping,

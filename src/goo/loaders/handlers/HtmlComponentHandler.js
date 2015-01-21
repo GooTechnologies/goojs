@@ -3,9 +3,7 @@ define([
 	'goo/entities/components/HtmlComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	HtmlComponent,
 	RSVP,
@@ -14,18 +12,16 @@ function (
 	'use strict';
 
 	/**
-	 * @class For handling loading of HTML components
-	 * @constructor
+	 * For handling loading of HTML components
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
+	 * @hidden
 	 */
 	function HtmlComponentHandler() {
 		ComponentHandler.apply(this, arguments);
 		this._type = 'HtmlComponent';
-		this._configs = {};
 	}
 
 	HtmlComponentHandler.prototype = Object.create(ComponentHandler.prototype);
@@ -50,6 +46,11 @@ function (
 		return new HtmlComponent();
 	};
 
+	var regex = /\W/g;
+	function getSafeEntityId(id) {
+		// fancy chars (like '.') are allowed in ids in HTML but are not allowed in CSS
+		return '__' + id.replace(regex, '-');
+	}
 
 	/**
 	 * Update engine cameracomponent object based on the config.
@@ -65,7 +66,7 @@ function (
 
 			// ids and classes can contain '.' or start with digits in html but not in css selectors
 			// could have prefixed it with a simple '-' but that's sort of reserved for '-moz', '-webkit' and the like
-			var safeEntityId = '__' + entity.id.replace('.', '-');
+			var safeEntityId = getSafeEntityId(entity.id);
 
 			var domElement = component.domElement;
 			if (!domElement) {
@@ -128,7 +129,7 @@ function (
 			domElement.prevInnerHtml = config.innerHtml;
 			domElement.prevStyle = config.style;
 
-			component.useTransformComponent = config.useTransformComponent == null ? true : config.useTransformComponent;
+			component.useTransformComponent = config.useTransformComponent !== false;
 
 			if (!innerHtmlChanged && !styleChanged) {
 				return PromiseUtil.resolve();

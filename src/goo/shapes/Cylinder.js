@@ -1,16 +1,15 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	MeshData,
 	Vector3
 ) {
 	'use strict';
 
 	/**
-	 * @class A 3D object representing a cylinder.
+	 * A 3D object representing a cylinder.
+	 * @extends MeshData
 	 * @param {number} [radialSamples=8] Number of slices
 	 * @param {number} [radiusTop=0.5] Radius of the cylinder at the top.
 	 * @param {number} [radiusBottom=radiusTop] Radius of the cylinder at the bottom. Defaults to radiusTop.
@@ -44,9 +43,10 @@ function (
 	}
 
 	Cylinder.prototype = Object.create(MeshData.prototype);
+	Cylinder.prototype.constructor = Cylinder;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Cylinder} Self for chaining.
 	 */
 	Cylinder.prototype.rebuild = function () {
@@ -86,7 +86,7 @@ function (
 				xBottom, yBottom, -halfHeight  // side bottom
 			);
 
-			normal.setd(cos, sin, tan);
+			normal.setDirect(cos, sin, tan);
 			normal.normalize();
 
 			norms.push(

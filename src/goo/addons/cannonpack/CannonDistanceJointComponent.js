@@ -1,9 +1,7 @@
 define([
 	'goo/entities/components/Component',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	_
 ) {
@@ -12,14 +10,16 @@ function (
 	/* global CANNON */
 
 	/**
-	 * @class Distance joint. Add to an entity with a {@link CannonRigidbodyComponent} and physically link it to another entity!<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
+	 * Distance joint. Add to an entity with a {@link CannonRigidbodyComponent} and physically link it to another entity!<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @extends Component
 	 * @param {object} [settings]
 	 * @param {number} [settings.distance=1]
 	 * @param {CannonRigidbodyComponent} settings.connectedBody
 	 */
 	function CannonDistanceJointComponent(settings) {
+		Component.apply(this, arguments);
+
 		settings = settings || {};
 		this.type = 'CannonDistanceJointComponent';
 

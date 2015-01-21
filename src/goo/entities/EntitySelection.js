@@ -1,12 +1,13 @@
-define(['goo/entities/Selection'],
-	/** @lends */
-	function (Selection) {
+define([
+	'goo/entities/Selection'
+], function (
+	Selection
+) {
 	'use strict';
 
 	/**
-	 * @class A specialised selection object for entities
+	 * A specialised selection object for entities
 	 * @extends Selection
-	 * @constructor
 	 */
 	function EntitySelection() {
 		Selection.apply(this, arguments);
@@ -17,11 +18,11 @@ define(['goo/entities/Selection'],
 
 	/**
 	 * Adds entities to this selection. Any resulting duplicates are removed.
-	 * @param entities {Entity | Entity[] | Entity... | EntitySelection} The entities to add
+	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities The entities to add
 	 * @returns {EntitySelection} Returns self to allow chaining
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */
-	EntitySelection.prototype.and = function (that) {
+	EntitySelection.prototype.and = function () {
 		if (this.top === null) { return this; }
 
 		var union;
@@ -62,11 +63,11 @@ define(['goo/entities/Selection'],
 
 	/**
 	 * Returns the common entities between this selection and the given parameter(s)
-	 * @param entities {Entity | Entity[] | Entity... | EntitySelection}
+	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities
 	 * @returns {EntitySelection} Returns self to allow chaining
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */
-	EntitySelection.prototype.intersects = function (that) {
+	EntitySelection.prototype.intersects = function () {
 		if (this.top === null) { return this; }
 
 		var intersection;
@@ -106,9 +107,9 @@ define(['goo/entities/Selection'],
 
 	/**
 	 * Removes entities from the current selection
-	 * @param entities {Entity | Entity[] | Entity... | EntitySelection} Entities to remove from the selection
+	 * @param {Entity | Entity[] | Entity... | EntitySelection} entities Entities to remove from the selection
 	 * @returns {EntitySelection} Returns self to allow chaining
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-setOps-example.html Working example
 	 */
 	EntitySelection.prototype.without = function () {
 		if (this.top === null) { return this; }
@@ -154,7 +155,7 @@ define(['goo/entities/Selection'],
 	/**
 	 * Returns the parents of all entities in this selection
 	 * @returns {EntitySelection} Returns self to allow chaining
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-parent-example.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-parent-example.html Working example
 	 */
 	EntitySelection.prototype.parent = function () {
 		if (this.top === null) { return this; }
@@ -182,7 +183,7 @@ define(['goo/entities/Selection'],
 	/**
 	 * Returns the children of all entities in this selection
 	 * @returns {EntitySelection} Returns self to allow chaining
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-children-example.html Working example}</caption>
+	 * @example http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-children-example.html Working example
 	 */
 	EntitySelection.prototype.children = function () {
 		// could use flatMap
@@ -200,6 +201,28 @@ define(['goo/entities/Selection'],
 		return this;
 	};
 
+	/**
+	 * Installs a method that acts upon entities on the prototype of EntitySelection
+	 * @hidden
+	 * @param method
+	 * @param name
+	 * @param dependentComponent
+	 */
+	EntitySelection.installMethod = function (method, name, dependentComponent) {
+		EntitySelection.prototype[name] = function () {
+			if (this.top === null) { return this; }
+
+			for (var i = 0; i < this.top.length; i++) {
+				var entity = this.top[i];
+
+				if (entity.hasComponent(dependentComponent)) {
+					method.apply(entity, arguments);
+				}
+			}
+
+			return this;
+		};
+	};
 
 	/**
 	 * Converts anything (nothing, an EntitySelection, an array or more arguments) to an array

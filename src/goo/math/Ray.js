@@ -1,10 +1,14 @@
-define(['goo/math/Vector3', 'goo/math/MathUtils'],
-/** @lends */
-function (Vector3, MathUtils) {
+define([
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
+], function (
+	Vector3,
+	MathUtils
+) {
 	'use strict';
 
 	/**
-	 * @class Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
+	 * Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
 	 */
 	function Ray(origin, direction) {
 		this.origin = origin || new Vector3();
@@ -17,13 +21,12 @@ function (Vector3, MathUtils) {
 	var tmpVec4 = new Vector3();
 
 	/**
-	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
-	 * true)
+	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar == true)
 	 *
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
 	 * @param locationStore Vector3 to store our intersection point in.
-	 * @return true if this ray intersects a polygon described by the given vertices.
+	 * @returns true if this ray intersects a polygon described by the given vertices.
 	 */
 	Ray.prototype.intersects = function (polygonVertices, doPlanar, locationStore) {
 		if (polygonVertices.length === 3) {
@@ -43,13 +46,13 @@ function (Vector3, MathUtils) {
 	 * @param pointC
 	 * @param [doPlanar]
 	 * @param [locationStore]
-	 * @return true if this ray intersects a triangle formed by the given three points.
+	 * @returns true if this ray intersects a triangle formed by the given three points.
 	 */
 	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
-		var diff = tmpVec1.set(this.origin).sub(pointA);
-		var edge1 = tmpVec2.set(pointB).sub(pointA);
-		var edge2 = tmpVec3.set(pointC).sub(pointA);
-		var norm = tmpVec4.set(edge1).cross(edge2);
+		var diff = tmpVec1.setVector(this.origin).subVector(pointA);
+		var edge1 = tmpVec2.setVector(pointB).subVector(pointA);
+		var edge2 = tmpVec3.setVector(pointC).subVector(pointA);
+		var norm = tmpVec4.setVector(edge1).cross(edge2);
 
 		var dirDotNorm = this.direction.dot(norm);
 		var sign;
@@ -80,7 +83,7 @@ function (Vector3, MathUtils) {
 						var inv = 1.0 / dirDotNorm;
 						var t = diffDotNorm * inv;
 						if (!doPlanar) {
-							locationStore.setv(this.origin).add_d(this.direction.x * t, this.direction.y * t, this.direction.z * t);
+							locationStore.setVector(this.origin).addDirect(this.direction.x * t, this.direction.y * t, this.direction.z * t);
 						} else {
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.
@@ -90,7 +93,7 @@ function (Vector3, MathUtils) {
 							var w1 = dirDotDiffxEdge2 * inv;
 							var w2 = dirDotEdge1xDiff * inv;
 							// float w0 = 1.0 - w1 - w2;
-							locationStore.setd(t, w1, w2);
+							locationStore.setDirect(t, w1, w2);
 						}
 						result = true;
 					}
@@ -102,7 +105,7 @@ function (Vector3, MathUtils) {
 
 	/**
 	 * @param worldVertices an array (size 3 or 4) of vectors describing a polygon
-	 * @return the distance from our origin to the primitive or Infinity if we do not intersect.
+	 * @returns the distance from our origin to the primitive or Infinity if we do not intersect.
 	 */
 	Ray.prototype.getDistanceToPrimitive = function (worldVertices) {
 		// Intersection test
@@ -116,7 +119,7 @@ function (Vector3, MathUtils) {
 	/**
 	 * @param plane
 	 * @param locationStore if not null, and this ray intersects the plane, the world location of the point of intersection is stored in this vector.
-	 * @return true if the ray collides with the given Plane
+	 * @returns true if the ray collides with the given Plane
 	 */
 	Ray.prototype.intersectsPlane = function (plane, locationStore) {
 		var normal = plane.normal;
@@ -134,7 +137,7 @@ function (Vector3, MathUtils) {
 		}
 
 		if (locationStore) {
-			locationStore.setv(this.direction).scale(ratio).addv(this.origin);
+			locationStore.setVector(this.direction).scale(ratio).addVector(this.origin);
 		}
 
 		return true;
@@ -142,29 +145,29 @@ function (Vector3, MathUtils) {
 
 	/**
 	 * @param {Vector3} point
-	 * @param {Vecotr3} [store] if not null, the closest point is stored in this param
-	 * @return the squared distance from this ray to the given point.
+	 * @param {Vector3} [store] if not null, the closest point is stored in this param
+	 * @returns the squared distance from this ray to the given point.
 	 */
 	Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = tmpVec1;
 
-		vectorA.setv(point).subv(this.origin);
+		vectorA.setVector(point).subVector(this.origin);
 		var t0 = this.direction.dot(vectorA);
 		if (t0 > 0) {
 			// d = |P - (O + t*D)|
-			vectorA.setv(this.direction).scale(t0);
-			vectorA.addv(this.origin);
+			vectorA.setVector(this.direction).scale(t0);
+			vectorA.addVector(this.origin);
 		} else {
 			// ray is closest to origin point
-			vectorA.setv(this.origin);
+			vectorA.setVector(this.origin);
 		}
 
 		// Save away the closest point if requested.
 		if (store) {
-			store.setv(vectorA);
+			store.setVector(vectorA);
 		}
 
-		vectorA.subv(point);
+		vectorA.subVector(point);
 		return vectorA.lengthSquared();
 	};
 

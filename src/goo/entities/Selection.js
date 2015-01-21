@@ -1,12 +1,8 @@
-define([],
-	/** @lends */
-	function () {
+define([], function () {
 	'use strict';
 
 	/**
 	 * Generic selection class
-	 * @class
-	 * @constructor
 	 */
 	function Selection() {
 		this.stack = [];
@@ -63,7 +59,7 @@ define([],
 
 	/**
 	 * Applies a function on each element until `false` is returned
-	 * @param fun The function to apply
+	 * @param {Function} fun The function to apply
 	 * @returns {Selection} Returns self to allow chaining
 	 */
 	Selection.prototype.each = function (fun) {
@@ -78,6 +74,12 @@ define([],
 
 		return this;
 	};
+
+	/**
+	 * Alias for `each`
+	 * @type {Function}
+	 */
+	Selection.prototype.forEach = Selection.prototype.each;
 
 	/**
 	 * Applies a filter on the elements of this selection

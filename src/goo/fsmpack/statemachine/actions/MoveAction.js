@@ -1,9 +1,7 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Vector3'
-],
-/** @lends */
-function(
+], function (
 	Action,
 	Vector3
 ) {
@@ -51,7 +49,7 @@ function(
 	MoveAction.prototype._setup = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transform = entity.transformComponent.transform;
-		this.forward = new Vector3().seta(this.translation);
+		this.forward = new Vector3().setArray(this.translation);
 		var orientation = transform.rotation;
 		orientation.applyPost(this.forward);
 	};
@@ -63,7 +61,7 @@ function(
 
 		if (this.oriented) {
 			if (this.relative) {
-				var forward = new Vector3().seta(this.translation);
+				var forward = new Vector3().setArray(this.translation);
 				var orientation = transform.rotation;
 				orientation.applyPost(forward);
 

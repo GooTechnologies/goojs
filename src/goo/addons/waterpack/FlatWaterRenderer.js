@@ -10,7 +10,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderFragment'
 ],
-/** @lends */
+
 function (
 	MeshData,
 	Shader,

@@ -7,9 +7,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function(
+], function (
 	ConfigHandler,
 	Material,
 	Util,
@@ -22,11 +20,11 @@ function(
 	'use strict';
 
 	/**
-	 * @class Handler for loading materials into engine
+	 * Handler for loading materials into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function MaterialHandler() {
@@ -41,7 +39,7 @@ function(
 
 	/**
 	 * Preparing material config by populating it with defaults.
-	 * @param {object} config
+	 * @param {object} config
 	 * @private
 	 */
 	MaterialHandler.prototype._prepare = function (config) {
@@ -96,13 +94,13 @@ function(
 	};
 
 	MaterialHandler.prototype._remove = function (ref) {
-		var material = this._objects[ref];
+		var material = this._objects.get(ref);
 		if (!material) {
 			return;
 		}
 		material.shader.destroy();
 		material.empty();
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -115,7 +113,7 @@ function(
 	MaterialHandler.prototype._update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(material) {
-			if (!material) { return; }
+			if (!material) { return; }
 			var promises = [];
 			// Material settings
 			_.extend(material.blendState, config.blendState);
@@ -145,6 +143,11 @@ function(
 				}
 			}
 
+			// TODO: This is a temporary hack until we fully moved shininess into the last entry of specular [r, g, b, spec_power]
+			if (material.uniforms.materialSpecular !== undefined && material.uniforms.materialSpecularPower !== undefined) {
+				material.uniforms.materialSpecular[3] = material.uniforms.materialSpecularPower;
+			}
+
 			// Shader
 			var shaderRef = config.shaderRef;
 			if (!shaderRef) {
@@ -156,7 +159,7 @@ function(
 			} else {
 				var p = that._load(shaderRef, options).then(function(shader) {
 					material.shader = shader;
-				}).then(null, function(err) {
+				}).then(null, function(err) {
 					throw new Error('Error loading shader: ' + err);
 				});
 				promises.push(p);
@@ -166,7 +169,7 @@ function(
 			function addTexture(type, ref, options) {
 				return that._load(ref, options).then(function(texture) {
 					material.setTexture(type, texture);
-				}).then(null, function(err) {
+				}).then(null, function(err) {
 					throw new Error('Error loading texture: ' + ref + ' - ' + err);
 				});
 			}

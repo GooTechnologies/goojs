@@ -2,9 +2,7 @@ define([
 	'goo/renderer/Renderer',
 	'goo/renderer/pass/Pass',
 	'goo/math/Vector4'
-],
-/** @lends */
-function (
+], function (
 	Renderer,
 	Pass,
 	Vector4
@@ -13,7 +11,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class A pass that renders provided renderlist to the rendertarget or screen
+	 * A pass that renders provided renderlist to the rendertarget or screen
 	 */
 	function RenderPass(renderList, filter) {
 		this.renderList = renderList;
@@ -28,6 +26,7 @@ function (
 		this.enabled = true;
 		this.clear = true;
 		this.needsSwap = false;
+		this.viewportSize = undefined;
 	}
 
 	RenderPass.prototype = Object.create(Pass.prototype);
@@ -43,7 +42,7 @@ function (
 
 		lights = lights || [];
 		if (clearColor && false) {
-			this.oldClearColor.setv(renderer.clearColor);
+			this.oldClearColor.setVector(renderer.clearColor);
 			renderer.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 		}
 

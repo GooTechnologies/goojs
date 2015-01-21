@@ -1,10 +1,8 @@
-define(['goo/entities/systems/System'],
-/** @lends */
-function (System) {
+define(['goo/entities/systems/System'], function (System) {
 	'use strict';
 
 	/**
-	 * @class Manages and reacts to particle components on entities.
+	 * Manages and reacts to particle components on entities.
 	 * @extends System
 	 */
 	function ParticlesSystem() {
@@ -13,6 +11,7 @@ function (System) {
 	}
 
 	ParticlesSystem.prototype = Object.create(System.prototype);
+	ParticlesSystem.prototype.constructor = ParticlesSystem;
 
 	ParticlesSystem.prototype.process = function (entities, tpf) {
 		if (tpf > 1) {

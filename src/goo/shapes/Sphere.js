@@ -2,9 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	MeshData,
 	Vector3,
 	MathUtils
@@ -12,7 +10,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class A 3D object with all points equi-distance from a center point.
+	 * A 3D object with all points equi-distance from a center point.
+	 * @extends MeshData
 	 * @param {Number} [zSamples=8] Number of segments.
 	 * @param {Number} [radialSamples=8] Number of slices.
 	 * @param {Number} [radius=0.5] Radius.
@@ -77,9 +76,10 @@ function (
 	}
 
 	Sphere.prototype = Object.create(MeshData.prototype);
+	Sphere.prototype.constructor = Sphere;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Sphere} Self for chaining.
 	 */
 	Sphere.prototype.rebuild = function () {

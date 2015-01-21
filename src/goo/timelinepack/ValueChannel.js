@@ -18,7 +18,7 @@ define([
 	}
 
 	ValueChannel.prototype = Object.create(AbstractTimelineChannel.prototype);
-	ValueChannel.prototype.constructor = AbstractTimelineChannel;
+	ValueChannel.prototype.constructor = ValueChannel;
 
 	/**
 	 * Schedules a tween

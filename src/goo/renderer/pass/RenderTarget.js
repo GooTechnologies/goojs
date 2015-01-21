@@ -1,12 +1,12 @@
 define(['goo/math/Vector2'],
-	/** @lends */
+
 	function (Vector2) {
 	'use strict';
 
 	/**
 	 * Creates a new RenderTarget object
 	 *
-	 * @class Post processing handler
+	 * Post processing handler
 	 * @param {Number} width Width of rendertarget
 	 * @param {Number} height Height of rendertarget
 	 * @param {Parameters} parameters Settings
@@ -43,6 +43,8 @@ define(['goo/math/Vector2'],
 
 		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
 		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
+
+		this.textureRecord = {};
 	}
 
 	RenderTarget.prototype.clone = function () {

@@ -10,7 +10,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class
+	 * Axis aligned camera control script
+	 * @returns {{setup: setup, update: update, cleanup: cleanup}}
 	 */
 	function AxisAlignedCamControlScript() {
 		function setup(params, env) {
@@ -33,12 +34,12 @@ define([
 			env.currentView = view;
 			switch(view){
 				case 'XY':
-					env.axis.setv(Vector3.UNIT_Z);
-					env.upAxis.setv(Vector3.UNIT_Y);
+					env.axis.setVector(Vector3.UNIT_Z);
+					env.upAxis.setVector(Vector3.UNIT_Y);
 					break;
 				case 'ZY':
-					env.axis.setv(Vector3.UNIT_X);
-					env.upAxis.setv(Vector3.UNIT_Y);
+					env.axis.setVector(Vector3.UNIT_X);
+					env.upAxis.setVector(Vector3.UNIT_Y);
 					break;
 			}
 			env.axisAlignedDirty = true;
@@ -53,7 +54,7 @@ define([
 			}
 			var entity = env.entity;
 			var transform = entity.transformComponent.transform;
-			transform.translation.setv(env.axis).scale(env.distance).addv(env.lookAtPoint);
+			transform.translation.setVector(env.axis).scale(env.distance).addVector(env.lookAtPoint);
 			// REVIEW: Collision with pancamscript? Make new panscript for the 2d camera, or bake the panning logic into the axisaligned camera script?
 			transform.lookAt(env.lookAtPoint, env.upAxis);
 			entity.transformComponent.setUpdated();
@@ -72,10 +73,6 @@ define([
 		};
 	}
 
-	/**
-	 * @static
-	 * @type {Object}
-	 */
 	AxisAlignedCamControlScript.externals = {
 		key: 'AxisAlignedCamControlScript',
 		name: 'Axis-aligned Camera Control',

@@ -4,9 +4,7 @@ define([
 	'goo/renderer/BufferUtils',
 	'goo/util/PromiseUtil',
 	'goo/util/ArrayUtil'
-],
-/* @lends */
-function (
+], function (
 	ConfigHandler,
 	MeshData,
 	BufferUtils,
@@ -19,10 +17,10 @@ function (
 
 	/*jshint eqeqeq: false, -W041, bitwise: false */
 	/**
-	 * @class Handler for meshdata. Will not update, only create once
+	 * Handler for meshdata. Will not update, only create once
 	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function MeshDataHandler() {
@@ -35,13 +33,14 @@ function (
 
 	/**
 	 * Removes the meshdata from the objects config
-	 * @param {string} ref
+	 * @param {string} ref
 	 */
 	MeshDataHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy && this.world.gooRunner) {
-			this._objects[ref].destroy(this.world.gooRunner.renderer.context);
+		var meshData = this._objects.get(ref);
+		if (meshData && this.world.gooRunner) {
+			meshData.destroy(this.world.gooRunner.renderer.context);
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -53,26 +52,26 @@ function (
 	 */
 	MeshDataHandler.prototype._update = function (ref, config, options) {
 		// Don't call ConfigHandler.prototype.update, since we don't want to do ._create in the normal way
-		if (!config) {
+		if (!config) {
 			this._remove(ref);
 			return PromiseUtil.resolve();
 		}
 
-		if (this._objects[ref]) {
-			return PromiseUtil.resolve(this._objects[ref]);
+		var meshData = this._objects.get(ref);
+		if (meshData) {
+			return PromiseUtil.resolve(meshData);
 		}
 
-		var that = this;
 		return this.loadObject(config.binaryRef, options).then(function (bindata) {
 			if (!bindata) {
 				throw new Error('Binary mesh data was empty');
 			}
-			var meshData = that._createMeshData(config, bindata);
-			that._fillMeshData(meshData, config, bindata);
+			var meshData = this._createMeshData(config, bindata);
+			this._fillMeshData(meshData, config, bindata);
 
-			that._objects[ref] = meshData;
+			this._objects.set(ref, meshData);
 			return meshData;
-		});
+		}.bind(this));
 	};
 
 	/**
@@ -108,7 +107,7 @@ function (
 		}
 
 		var attributeMap = {};
-		for (var key in config.attributes) {
+		for (var key in config.attributes) {
 			var map = config.attributes[key];
 			var type = map.value[2];
 			attributeMap[key] = MeshData.createAttribute(map.dimensions, typeMatch[type]);
@@ -122,7 +121,7 @@ function (
 	/**
 	 * Fills MeshData object from config
 	 * @param {MeshData} meshData
-	 * @param {object} config
+	 * @param {object} config
 	 * @param {ArrayBuffer} bindata
 	 * @returns {MeshData}
 	 * @private

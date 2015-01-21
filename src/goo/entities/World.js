@@ -6,9 +6,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection'
-],
-/** @lends */
-function (
+], function (
 	Entity,
 	EntityManager,
 	TransformComponent,
@@ -20,7 +18,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Main handler for an entity world. The World keeps track of managers and systems, 
+	 * Main handler for an entity world. The World keeps track of managers and systems,
 	 * and also provides methods to create, select and remove entities.
 	 * Note that process() has to be called manually if objects need to be added and retrieved within the same update loop.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
@@ -162,6 +160,7 @@ function (
 	World.prototype.registerComponent = function (componentConstructor) {
 		if (this._components.indexOf(componentConstructor) === -1) {
 			this._components.push(componentConstructor);
+			Component.applyEntitySelectionAPI(componentConstructor.entitySelectionAPI, componentConstructor.type);
 		}
 		return this;
 	};
@@ -239,6 +238,9 @@ function (
 		for (var i = 0; i < this._systems.length; i++) {
 			var system = this._systems[i];
 			if (system.type === type) {
+				if (system.cleanup) {
+					system.cleanup();
+				}
 				this._systems.splice(i, 1);
 			}
 		}

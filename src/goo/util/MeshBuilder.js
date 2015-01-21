@@ -4,7 +4,7 @@ define([
         // 'goo/math/Matrix3x3',
         'goo/entities/EntityUtils'
         ],
-	/** @lends */
+
 	function (
 		MeshData,
 		Vector3,
@@ -14,7 +14,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.
+	 * Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.
 	 * Combination is currently limited to 65536 vertices.
 	 * Keep in mind that combined MeshData can only use one diffuse color texture, so this is best suited for MeshData that can share the same texture.
 	 * @example
@@ -24,11 +24,11 @@ define([
 	 * var box1 = new Box(0.3, 1, 1.6);
 	 * var box2 = new Box(0.2, 0.15, 0.7);
 	 * 
-	 * transform.translation.setd(0, 0, 1.3);
+	 * transform.translation.setDirect(0, 0, 1.3);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box1, transform);
      * 
-	 * transform.translation.setd(0, 0, 0);
+	 * transform.translation.setDirect(0, 0, 0);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box2, transform);
      * 
@@ -117,7 +117,7 @@ define([
 			var vertexPos = this.vertexCounter * count;
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < viewLength; i += count) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 					matrix.applyPostPoint(vert);
 					array[vertexPos + i + 0] = vert.data[0];
 					array[vertexPos + i + 1] = vert.data[1];
@@ -125,7 +125,7 @@ define([
 				}
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < viewLength; i += count) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 					rotation.applyPost(vert);
 					array[vertexPos + i + 0] = vert.data[0];
 					array[vertexPos + i + 1] = vert.data[1];
@@ -133,7 +133,7 @@ define([
 				}
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < viewLength; i += count) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 					rotation.applyPost(vert);
 					array[vertexPos + i + 0] = vert.data[0];
 					array[vertexPos + i + 1] = vert.data[1];
@@ -215,7 +215,7 @@ define([
 
 	/**
 	 * build the unified MeshData from all the added MeshData so far and then reset in the internal state.
-	 * @return {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
+	 * @returns {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
 	 * In the future we might create multiple entries if we hit the 65536 vertices limit instead of throwing an error.
 	 */
 	MeshBuilder.prototype.build = function () {

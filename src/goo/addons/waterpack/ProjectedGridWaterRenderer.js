@@ -10,9 +10,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderFragment'
-],
-/** @lends */
-function (
+], function (
 	MeshData,
 	Shader,
 	Camera,
@@ -28,7 +26,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
+	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */
@@ -165,7 +163,7 @@ function (
 
 			if (this.skybox) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setv(camReflectPos);
+				target.translation.setVector(camReflectPos);
 				target.update();
 			}
 		}
@@ -188,7 +186,7 @@ function (
 		if (aboveWater && this.skybox) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setv(source);
+			target.translation.setVector(source);
 			target.update();
 		}
 	};
@@ -262,7 +260,7 @@ function (
 			'uniform mat4 viewMatrix;', //
 			'uniform mat4 projectionMatrix;',//
 			'uniform mat4 worldMatrix;',//
-			'uniform mat4 normalMatrix;',
+			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;', //
 			'uniform float time;',
 			'uniform vec3 sunDirection;',
@@ -318,8 +316,8 @@ function (
 
 			'	texCoord0 = worldPos.xz * 2.0;',//
 
-			'	vec3 n = normalize((normalMatrix * vec4(vertexNormal, 0.0)).xyz);',
-			'	vec3 t = normalize((normalMatrix * vec4(vertexTangent.xyz, 0.0)).xyz);',
+			'	vec3 n = normalize(normalMatrix * vertexNormal);',
+			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
 			'	vec3 b = cross(n, t) * vertexTangent.w;',
 			'	mat3 rotMat = mat3(t, b, n);',
 

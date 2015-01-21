@@ -6,9 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	Material,
 	MeshData,
@@ -20,11 +18,11 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading shaders into engine
+	 * Handler for loading shaders into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function ShaderHandler() {
@@ -41,10 +39,11 @@ function (
 	 * @private
 	 */
 	ShaderHandler.prototype._remove = function (ref) {
-		if (this._objects[ref] && this._objects[ref].destroy) {
-			this._objects[ref].destroy();
+		var shader = this._objects.get(ref);
+		if (shader && this.world.gooRunner) {
+			shader.destroy(this.world.gooRunner.renderer.context);
+			this._objects.delete(ref);
 		}
-		delete this._objects[ref];
 	};
 
 	/**
@@ -71,8 +70,6 @@ function (
 			this.loadObject(config.vshaderRef, options),
 			this.loadObject(config.fshaderRef, options)
 		];
-
-		var that = this;
 
 		return RSVP.all(promises).then(function (shaders) {
 			var vshader = shaders[0];
@@ -107,10 +104,10 @@ function (
 
 			var shader = Material.createShader(shaderDefinition, ref);
 
-			that._objects[ref] = shader;
+			this._objects.set(ref, shader);
 
 			return shader;
-		});
+		}.bind(this));
 	};
 
 	return ShaderHandler;

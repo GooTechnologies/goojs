@@ -23,9 +23,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/math/MathUtils',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	Camera,
 	Vector3,
@@ -231,7 +229,7 @@ function (
 				} else {
 					entity.meshRendererComponent.hidden = true;
 				}
-				entity.meshRendererComponent.worldBound.center.setd(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+				entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
 			}
 		}
 
@@ -298,7 +296,7 @@ function (
 
 		if (useMesh && this.entityMap[vegetationType]) {
 			var treeEntity = this.fetchTreeMesh(vegetationType);
-			treeEntity.transformComponent.transform.scale.mul(size);
+			treeEntity.transformComponent.transform.scale.scale(size);
 			treeEntity.transformComponent.transform.translation.set(pos);
 			treeEntity.transformComponent.transform.rotation.rotateY(this.randomFromSeed(Math.sin(pos[0]+this.randomSeed+pos[2]*100))*55);
 			treeEntity.addToWorld();
@@ -403,11 +401,11 @@ function (
 			ShaderBuilder.light.processor,
 			function (shader) {
 				if (ShaderBuilder.USE_FOG) {
-					shader.defines.FOG = true;
+					shader.setDefine('FOG', true);
 					shader.uniforms.fogSettings = ShaderBuilder.FOG_SETTINGS;
 					shader.uniforms.fogColor = ShaderBuilder.FOG_COLOR;
 				} else {
-					delete shader.defines.FOG;
+					shader.removeDefine('FOG');
 				}
 			}
 		],
