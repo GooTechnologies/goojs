@@ -128,6 +128,8 @@ require([
 
 	// Create a 'G' compound box body
 	function createCompound(x, y, z) {
+		console.log('Creating compound!')
+
 		// Create 'root' entity
 		var compoundEntity = world.createEntity(new Vector3(x, y, z));
 
@@ -141,17 +143,39 @@ require([
 			h4 = new Vector3(1, 1, 1),
 			h5 = new Vector3(4, 1, 1);
 
+		console.log('adding sub colliders!')
+
 		// Create 'sub entities' that, each holding a collider. Position is relative to the root entity.
-		var subEntity1 = world.createEntity(new Box(h1.x * 2, h1.y * 2, h1.z * 2), V.getColoredMaterial(), new Vector3(0, 2, 0).mul(2));
-		var subEntity2 = world.createEntity(new Box(h2.x * 2, h2.y * 2, h2.z * 2), V.getColoredMaterial(), new Vector3(-1.5, 0, 0).mul(2));
-		var subEntity3 = world.createEntity(new Box(h3.x * 2, h3.y * 2, h3.z * 2), V.getColoredMaterial(), new Vector3(1, 0, 0).mul(2));
-		var subEntity4 = world.createEntity(new Box(h4.x * 2, h4.y * 2, h4.z * 2), V.getColoredMaterial(), new Vector3(1.5, -1, 0).mul(2));
-		var subEntity5 = world.createEntity(new Box(h5.x * 2, h5.y * 2, h5.z * 2), V.getColoredMaterial(), new Vector3(0, -2, 0).mul(2));
-		subEntity1.set(new ColliderComponent({ collider: new BoxCollider({ halfExtents: h1 }) }));
-		subEntity2.set(new ColliderComponent({ collider: new BoxCollider({ halfExtents: h2 }) }));
-		subEntity3.set(new ColliderComponent({ collider: new BoxCollider({ halfExtents: h3 }) }));
-		subEntity4.set(new ColliderComponent({ collider: new BoxCollider({ halfExtents: h4 }) }));
-		subEntity5.set(new ColliderComponent({ collider: new BoxCollider({ halfExtents: h5 }) }));
+		var subEntity1 = world.createEntity(
+			new Box(h1.x * 2, h1.y * 2, h1.z * 2),
+			V.getColoredMaterial(),
+			new Vector3(0, 2, 0).mul(2),
+			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h1 }) })
+		);
+		var subEntity2 = world.createEntity(
+			new Box(h2.x * 2, h2.y * 2, h2.z * 2),
+			V.getColoredMaterial(),
+			new Vector3(-1.5, 0, 0).mul(2),
+			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h2 }) })
+		);
+		var subEntity3 = world.createEntity(
+			new Box(h3.x * 2, h3.y * 2, h3.z * 2),
+			V.getColoredMaterial(),
+			new Vector3(1, 0, 0).mul(2),
+			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h3 }) })
+		);
+		var subEntity4 = world.createEntity(
+			new Box(h4.x * 2, h4.y * 2, h4.z * 2),
+			V.getColoredMaterial(),
+			new Vector3(1.5, -1, 0).mul(2),
+			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h4 }) })
+		);
+		var subEntity5 = world.createEntity(
+			new Box(h5.x * 2, h5.y * 2, h5.z * 2),
+			V.getColoredMaterial(),
+			new Vector3(0, -2, 0).mul(2),
+			new ColliderComponent({ collider: new BoxCollider({ halfExtents: h5 }) })
+		);
 
 		// Attach the children to the root
 		compoundEntity
@@ -170,6 +194,8 @@ require([
 
 		// Add the root
 		compoundEntity.addToWorld();
+
+		console.log('Adding compound to world!')
 
 		return compoundEntity;
 	}
