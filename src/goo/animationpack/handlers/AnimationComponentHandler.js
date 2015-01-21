@@ -2,9 +2,7 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/animationpack/components/AnimationComponent',
 	'goo/util/rsvp'
-],
-/** @lends */
-function(
+], function (
 	ComponentHandler,
 	AnimationComponent,
 	RSVP
@@ -12,13 +10,12 @@ function(
 	'use strict';
 
 	/**
-	 * @class For handling loading of animation components
-	 * @constructor
+	 * For handling loading of animation components
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
+	 * @hidden
 	 */
 	function AnimationComponentHandler() {
 		ComponentHandler.apply(this, arguments);

@@ -1,8 +1,6 @@
 define([
 	'goo/entities/components/Component'
-],
-/** @lends */
-function (
+], function (
 	Component
 ) {
 	'use strict';
@@ -10,7 +8,7 @@ function (
 	/* global CANNON */
 
 	/**
-	 * @class Terrain collider. Attach to an entity with a {@link CannonRigidbodyComponent}.
+	 * Terrain collider. Attach to an entity with a {@link CannonRigidbodyComponent}.
 	 * @param {object} [settings]
 	 * @param {object} [settings.data]
 	 * @param {object} [settings.shapeOptions]

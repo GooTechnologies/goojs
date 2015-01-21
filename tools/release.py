@@ -38,7 +38,7 @@ for directory in (
 	'lib/soundmanager2',
 	'lib/crunch',
 	'lib/hammerv2',
-	('goojs-jsdoc', 'docs'),
+	('out-doc', 'docs'),
 	'visual-test',
 	'examples'
 ):

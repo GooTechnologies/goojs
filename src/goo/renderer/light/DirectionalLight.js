@@ -1,18 +1,15 @@
 define([
-		'goo/math/Vector3',
-		'goo/renderer/light/Light'
-		],
-/** @lends */
-function (
+	'goo/math/Vector3',
+	'goo/renderer/light/Light'
+], function (
 	Vector3,
 	Light
-	) {
+) {
 	'use strict';
 
 	/**
-	 * @class A directional light<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
-	 * @constructor
+	 * A directional light
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
@@ -32,8 +29,8 @@ function (
 
 	/**
 	 * Updates the light's translation and orientation
-	 * @private
-	 * @param {Transform} transform
+	 * @hidden
+	 * @param {Transform} transform
 	 */
 	DirectionalLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);

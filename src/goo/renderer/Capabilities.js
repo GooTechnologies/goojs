@@ -1,10 +1,10 @@
 define(
-	/** @lends */
+
 function () {
 	'use strict';
 
 	/**
-	 * @class Enabled and stores webgl extensions and capabilities
+	 * Enabled and stores webgl extensions and capabilities
 
 	 * Extensions
 	 * @property {object} CompressedTextureS3TC S3TC (DXT) compression, WEBGL_compressed_texture_s3tc
@@ -31,7 +31,7 @@ function () {
 	 * @property {number} maxVertexTextureUnits Maximum vertex shader texture units
 	 * @property {number} maxFragmentTextureUnits Maximum fragment shader texture units
 	 * @property {number} maxCombinedTextureUnits Maximum total texture units
-	 * @property {number} maxVertexAttributes Maximum vertex attributes
+	 * @property {number} maxVertexAttributes Maximum vertex attributes
 	 * @property {number} maxVertexUniformVectors Maximum vertex uniform vectors
 	 * @property {number} maxFragmentUniformVectors Maximum fragment uniform vectors
 	 * @property {number} maxVaryingVectors Maximum varying vectors
@@ -131,7 +131,7 @@ function () {
 
 	/**
 	 * Gets a string representation of the current capabilities
-	 * @return {string} string representation of capabilities
+	 * @returns {string} string representation of capabilities
 	 */
 	Capabilities.getCapabilitiesString = function () {
 		var caps = [];

@@ -5,12 +5,12 @@ define(
 		'goo/logic/LogicNodes',
 		'goo/logic/LogicInterface'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
-		 * @class Logic node connecting to the LightComponent of an entity.
+		 * Logic node connecting to the LightComponent of an entity.
 		 * @private
 		 */
 		function LogicNodeLightComponent() {

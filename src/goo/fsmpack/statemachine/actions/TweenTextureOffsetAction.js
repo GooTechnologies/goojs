@@ -1,8 +1,6 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action'
-],
-/** @lends */
-function (
+], function (
 	Action
 ) {
 	'use strict';
@@ -96,7 +94,7 @@ function (
 			var meshRendererComponent = entity.meshRendererComponent;
 			var material = meshRendererComponent.materials[0];
 			var texture = material.getTexture('DIFFUSE_MAP');
-			if (!texture) { return; }
+			if (!texture) { return; }
 			var initialOffset = texture.offset;
 			var time = entity._world.time * 1000;
 

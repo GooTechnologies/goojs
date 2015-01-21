@@ -1,15 +1,13 @@
 define([
 	'goo/entities/systems/System'
-],
-/** @lends */
-function(
+], function (
 	System
 ) {
 	'use strict';
 	/*global Ammo */
 
 	/**
-	 * @class Handles integration with Ammo.js.
+	 * Handles integration with Ammo.js.
 	 * Depends on the global Ammo object, 
 	 * so load ammo.small.js using a script tag before using this system.
 	 * Direct access to the ammoWorld is available like this: myAmmoSystem.ammoWorld

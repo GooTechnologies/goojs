@@ -10,7 +10,7 @@ define([
 	'goo/renderer/scanline/OccluderTriangleData',
 	'goo/renderer/scanline/EdgeMap'
 	],
-	/** @lends */
+
 
 	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
 				BoundingSphereOcclusionChecker, OccluderTriangleData, EdgeMap) {
@@ -38,7 +38,7 @@ define([
 	var edges = [new Edge(), new Edge(), new Edge()];
 
 	/**
-	*	@class A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
+	*	A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
 	*	@constructor
 	*	@param {{width:Number, height:Number, camera:Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
 	*/
@@ -531,7 +531,7 @@ define([
 	*	@param {Vector3} v1 Vertex #1
 	*	@param {Vector3} v2 Vertex #2
 	*	@param {Vector3} v3 Vertex #3
-	*	@return {Boolean} true or false
+	*	@returns {Boolean} true or false
 	*/
 	SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
 
@@ -1314,7 +1314,7 @@ define([
 
 	/**
 	 * Creates the EdgeData , used for rendering. False is returned if there is not anything to draw.
-	*	@return {Boolean} drawable
+	*	@returns {Boolean} drawable
 	*/
 
 	// TODO: The long edge's increment values are not necessary to write for each of the two sub-triangles. Separate this function
@@ -1554,7 +1554,7 @@ define([
 
 	/**
 	*	Returns the array of RGBA color data.
-	*	@return {Uint8Array} RGBA Color data.
+	*	@returns {Uint8Array} RGBA Color data.
 	*/
 	SoftwareRenderer.prototype.getColorData = function () {
 		return this._colorData;
@@ -1562,7 +1562,7 @@ define([
 
 	/**
 	*	Returns the array of depth data.
-	*	@return {Float32Array} Depth data.
+	*	@returns {Float32Array} Depth data.
 	*/
 	SoftwareRenderer.prototype.getDepthData = function () {
 

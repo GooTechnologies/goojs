@@ -4,9 +4,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/particles/ParticleLib',
 	'goo/util/ParticleSystemUtils'
-],
-/** @lends */
-function (
+], function (
 	Action,
 	Material,
 	ShaderLib,

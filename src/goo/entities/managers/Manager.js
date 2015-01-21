@@ -1,11 +1,11 @@
 define(
 	[],
-	/** @lends */
+
 	function() {
 	'use strict';
 
 	/**
-	 * @class Base class for managers.
+	 * Base class for managers.
 	 */
 	function Manager() {
 		this.installedAPI = {};

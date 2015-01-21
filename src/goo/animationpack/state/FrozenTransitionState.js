@@ -1,14 +1,12 @@
 define([
 	'goo/animationpack/state/AbstractTransitionState'
-],
-/** @lends */
-function (
+], function (
 	AbstractTransitionState
 ) {
 	'use strict';
 
 	/**
-	 * @class A two state transition that freezes the starting state at its current position and blends that over time with a target state. The target
+	 * A two state transition that freezes the starting state at its current position and blends that over time with a target state. The target
 	 *        state moves forward in time during the blend as normal.
 	 */
 	function FrozenTransitionState () {
@@ -44,7 +42,7 @@ function (
 
 	/**
 	 * Resets the clips to start at given time
-	 * @param {number} globalTime
+	 * @param {number} globalTime
 	 */
 	FrozenTransitionState.prototype.resetClips = function(globalTime) {
 		AbstractTransitionState.prototype.resetClips.call(this, globalTime);

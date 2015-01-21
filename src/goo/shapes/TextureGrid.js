@@ -1,12 +1,16 @@
-define(['goo/renderer/MeshData'],
-	/** @lends */
-	function (MeshData) {
-
+define([
+	'goo/renderer/MeshData'
+], function (
+	MeshData
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Meshdata for a grid; useful for displaying tiles
+	 * @extends MeshData
+	 * @param matrix
+	 * @param textureUnitsPerLine
+	 */
 	function TextureGrid(matrix, textureUnitsPerLine) {
 	    this.matrix = matrix;
 		this.textureUnitsPerLine = textureUnitsPerLine || 8;
@@ -30,7 +34,7 @@ define(['goo/renderer/MeshData'],
 	}
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {TextureGrid} Self for chaining.
 	 */
 	TextureGrid.prototype.rebuild = function () {
