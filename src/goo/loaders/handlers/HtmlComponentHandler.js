@@ -3,9 +3,7 @@ define([
 	'goo/entities/components/HtmlComponent',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	HtmlComponent,
 	RSVP,
@@ -14,13 +12,12 @@ function (
 	'use strict';
 
 	/**
-	 * @class For handling loading of HTML components
-	 * @constructor
+	 * For handling loading of HTML components
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
+	 * @hidden
 	 */
 	function HtmlComponentHandler() {
 		ComponentHandler.apply(this, arguments);

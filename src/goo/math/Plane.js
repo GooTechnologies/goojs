@@ -1,14 +1,12 @@
 define([
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Vector3
 ) {
 	'use strict';
 
 	/**
-	 * @class A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance
+	 * A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance
 	 *        from the origin to the plane. It is generally calculated by taking a point (X) on the plane and finding its dot-product with the plane's
 	 *        normal vector. In other words: d = N dot X
 	 * @param {Vector3} normal Normal of the plane.
@@ -26,7 +24,7 @@ function (
 
 	/**
 	 * @param {Vector3} point
-	 * @return {Number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
+	 * @returns {Number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
 	 *         otherwise it is positive. If the point is on the plane, it is zero.
 	 */
 	Plane.prototype.pseudoDistance = function (point) {
@@ -34,11 +32,11 @@ function (
 	};
 
 	/**
-	 * @description Sets this plane to the plane defined by the given three points.
+	 * Sets this plane to the plane defined by the given three points.
 	 * @param {Vector3} pointA
 	 * @param {Vector3} pointB
 	 * @param {Vector3} pointC
-	 * @return {Plane} Self for chaining.
+	 * @returns {Plane} Self for chaining.
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
 		this.normal.setVector(pointB).subVector(pointA);
@@ -48,10 +46,10 @@ function (
 	};
 
 	/**
-	 * @description Reflects an incoming vector across the normal of this Plane.
+	 * Reflects an incoming vector across the normal of this Plane.
 	 * @param {Vector3} unitVector the incoming vector. Must be a unit vector.
 	 * @param {Vector3} [store] Vector to store the result in. May be the same as the unitVector.
-	 * @return {Vector3} The reflected vector.
+	 * @returns {Vector3} The reflected vector.
 	 */
 	Plane.prototype.reflectVector = function (unitVector, store) {
 		var result = store;

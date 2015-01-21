@@ -1,14 +1,12 @@
 define([
 	'goo/math/Vector3'
-],
-/** @lends */
-function(
+], function (
 	Vector3
 ) {
 	'use strict';
 
 	/**
-	 * @class <code>BoundingVolume</code> Base class for boundings
+	 * <code>BoundingVolume</code> Base class for boundings
 	 */
 	function BoundingVolume(center) {
 		this.center = new Vector3();

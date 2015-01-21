@@ -1,14 +1,12 @@
 define([
 	'goo/renderer/Capabilities'
-],
-/** @lends */
-function(
+], function (
 	Capabilities
 ) {
 	'use strict';
 
 	/**
-	 * @class Utility for creating index buffers of appropriate type
+	 * Utility for creating index buffers of appropriate type
 	 */
 	function BufferUtils() {
 	}

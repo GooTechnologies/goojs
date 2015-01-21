@@ -2,13 +2,12 @@ define([
 	'goo/entities/components/Component'
 ], function (
 	Component
-	) {
+) {
 	'use strict';
 
 	/**
 	 * Timeline component
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example}</caption>
-	 * @constructor
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example
 	 */
 	function TimelineComponent() {
 		Component.apply(this, arguments);

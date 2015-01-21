@@ -2,9 +2,7 @@ define([
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/renderer/MeshData'
-	],
-/** @lends */
-function (
+	], function (
 	Vector2,
 	Vector3,
 	MeshData
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
+	 * The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
 	 * @param {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
 	 * @property {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
 	 */

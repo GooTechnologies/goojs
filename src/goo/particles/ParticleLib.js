@@ -1,12 +1,10 @@
-define([],
-	/** @lends */
-function (
+define([], function (
 ) {
 	'use strict';
 
 	/**
-	 * @class Library of particles<br>
-	 * @{@linkplain http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example}
+	 * Library of particles<br>
+	 * @@example-link http://code.gooengine.com/latest/visual-test/goo/misc/ParticleLib/ParticleLib-vtest.html Working example
 	 */
 	var ParticleLib = {};
 

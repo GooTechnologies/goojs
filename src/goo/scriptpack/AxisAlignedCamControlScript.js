@@ -10,7 +10,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class
+	 * Axis aligned camera control script
+	 * @returns {{setup: setup, update: update, cleanup: cleanup}}
 	 */
 	function AxisAlignedCamControlScript() {
 		function setup(params, env) {
@@ -72,10 +73,6 @@ define([
 		};
 	}
 
-	/**
-	 * @static
-	 * @type {Object}
-	 */
 	AxisAlignedCamControlScript.externals = {
 		key: 'AxisAlignedCamControlScript',
 		name: 'Axis-aligned Camera Control',

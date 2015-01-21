@@ -1,8 +1,6 @@
 define([
 	'goo/entities/systems/System'
-],
-/** @lends */
-function (System) {
+], function (System) {
 	'use strict';
 
 	// has to stay here because it's used by traverseFunc below
@@ -10,8 +8,8 @@ function (System) {
 	var numUpdates;
 
 	/**
-	 * @class Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example}
+	 * Processes all entities with transform components, making sure they are up to date and valid according to the "scenegraph"
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example
 	 * @extends System
 	 */
 	function TransformSystem() {

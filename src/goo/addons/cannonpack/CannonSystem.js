@@ -6,9 +6,7 @@ define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	System,
 	BoundingBox,
 	BoundingSphere,
@@ -22,14 +20,14 @@ function (
 	/* global CANNON, performance */
 
 	/**
-	 * @class Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
+	 * Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
 	 * @extends System
 	 * @param [Object] [settings]
 	 * @param {number} [settings.stepFrequency=60]
 	 * @param {Vector3} [settings.gravity] The gravity to use in the scene. Default is (0,-10,0)
 	 * @param {string} [settings.broadphase='naive'] One of: 'naive' (NaiveBroadphase), 'sap' (SAPBroadphase)
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}</caption>
 	 * var cannonSystem = new CannonSystem({
 	 *     stepFrequency: 60,
 	 *     gravity: new Vector3(0, -10, 0)

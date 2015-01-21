@@ -6,9 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	FullscreenUtil,
 	RenderTarget,
@@ -20,8 +18,7 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	* Difference of Gaussian Filter pass.
+	* 	* Difference of Gaussian Filter pass.
 	* Usable for edge detection.
 	*
 	* A lower sigma will create thinner edgelines, tune to get the sweetspot.

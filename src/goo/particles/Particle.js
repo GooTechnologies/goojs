@@ -4,9 +4,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	ParticleUtils,
 	Vector,
 	Vector3,
@@ -18,7 +16,7 @@ function (
 	var calcVec = new Vector3();
 
 	/**
-	 * @class Data object tracking a single particle in a particle component
+	 * Data object tracking a single particle in a particle component
 	 */
 	function Particle(particleComponent, index) {
 		this.alive = false;

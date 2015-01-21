@@ -6,17 +6,15 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight'
-	],
-	/* @lends */
-	function (
-		MeshData,
-		MeshBuilder,
-		Transform,
-		Sphere,
-		PointLight,
-		DirectionalLight,
-		SpotLight
-	) {
+], function (
+	MeshData,
+	MeshBuilder,
+	Transform,
+	Sphere,
+	PointLight,
+	DirectionalLight,
+	SpotLight
+) {
 	'use strict';
 
 	function LightDebug() {

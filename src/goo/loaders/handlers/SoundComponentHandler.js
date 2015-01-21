@@ -5,9 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function(
+], function (
 	ComponentHandler,
 	SoundComponent,
 	AudioContext,
@@ -18,13 +16,12 @@ function(
 	'use strict';
 
 	/**
-	 * @class For handling loading of sound components
-	 * @constructor
+	 * For handling loading of sound components
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
+	 * @hidden
 	 */
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -34,7 +31,6 @@ function(
 	SoundComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
 	ComponentHandler._registerClass('sound', SoundComponentHandler);
-
 
 	/**
 	 * Removes the souncomponent and stops all connected sounds
@@ -61,7 +57,6 @@ function(
 			reverb: 0.0
 		});
 	};
-
 
 	/**
 	 * Creates sound component
@@ -114,5 +109,6 @@ function(
 			});
 		});
 	};
+
 	return SoundComponentHandler;
 });

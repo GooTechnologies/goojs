@@ -3,7 +3,7 @@
  * For documentation, see http://underscorejs.org. Gotta love open source.
  */
 define([],
-	/** @lends */
+
 	function () {
 	'use strict';
 
