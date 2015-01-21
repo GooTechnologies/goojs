@@ -13,9 +13,7 @@ define([
 
 	'goo/scripts/ScriptUtils',
 	'goo/scripts/Scripts'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	RSVP,
 	OrbitCamControlScript,
@@ -36,8 +34,7 @@ function (
 	var DEPENDENCY_LOAD_TIMEOUT = 6000;
 
 	/**
-	* @class
-	* @private
+	* 	* @private
 	*/
 	function ScriptHandler() {
 		ConfigHandler.apply(this, arguments);
@@ -147,7 +144,7 @@ function (
 		parentElement.appendChild(newScriptElement);
 
 		var newScript = window._gooScriptFactories[config.id];
-		if (newScript) {
+		if (newScript) {
 			try {
 				newScript = newScript();
 				script.id = config.id;
@@ -215,7 +212,7 @@ function (
 		var that = this;
 
 		return ConfigHandler.prototype._update.call(this, ref, config, options)
-		.then(function (script) {
+		.then(function (script) {
 			if (!script) { return; }
 
 			var addDependencyPromises = [];
@@ -302,7 +299,7 @@ function (
 	 * @param {object} script config
 	 * @param {string} url location of the javascript lib
 	 * @param {string} scriptId the guid of the script
-	 * @return {RSVP.Promise} a promise that resolves when the dependency is loaded
+	 * @returns {RSVP.Promise} a promise that resolves when the dependency is loaded
 	 */
 	ScriptHandler.prototype._addDependency = function (script, url, scriptId) {
 		var that = this;
@@ -428,7 +425,7 @@ function (
 	 * @param {HTMLScriptElement} scriptElement
 	 *		The script element which is to be checked for references.
 	 *
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	function hasReferences(scriptElement) {
 		return scriptElement.scriptRefs && scriptElement.scriptRefs.length > 0;
@@ -444,7 +441,7 @@ function (
 	 * @param {string} scriptId
 	 *		The identifier of the custom script which is to be checked.
 	 *
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	function hasReferenceTo(scriptElement, scriptId) {
 		return scriptElement.scriptRefs && scriptElement.scriptRefs.indexOf(scriptId) > -1;
@@ -458,7 +455,7 @@ function (
 	 *		The identifier of the custom script whose dependencies are to be
 	 *		returned.
 	 *
-	 * @return {Array.<HTMLScriptElement>}
+	 * @returns {Array.<HTMLScriptElement>}
 	 */
 	function getReferringDependencies(scriptId) {
 		var dependencies = [];
@@ -500,7 +497,7 @@ function (
 					scriptElem.parentNode.removeChild(scriptElem);
 				}
 			}
-			if (that._currentScriptLoading) {
+			if (that._currentScriptLoading) {
 				var oldScriptElement = document.getElementById(ScriptHandler.DOM_ID_PREFIX + that._currentScriptLoading);
 				if (oldScriptElement) {
 					oldScriptElement.parentNode.removeChild(oldScriptElement);
@@ -573,7 +570,7 @@ function (
 		if (externals.parameters && !(externals.parameters instanceof Array)) {
 			errors.push('externals.parameters needs to be an array');
 		}
-		if (errors.length) {
+		if (errors.length) {
 			outScript.errors = errors;
 			return;
 		}
@@ -652,7 +649,7 @@ function (
 
 			outScript.externals.parameters.push(param);
 		}
-		if (errors.length) {
+		if (errors.length) {
 			outScript.errors = errors;
 		}
 	}
@@ -668,7 +665,7 @@ function (
 	 * @private
 	 */
 	function setError(script, error) {
-		if (error.file) {
+		if (error.file) {
 			var message = error.message;
 			if (error.line) {
 				message += ' - on line ' + error.line; //! AT: this isn't used
@@ -678,7 +675,7 @@ function (
 		} else {
 			script.errors = script.errors || [];
 			var message = error.message;
-			if (error.line) {
+			if (error.line) {
 				message += ' - on line ' + error.line; //! AT: this isn't used
 			}
 			script.errors.push(error);

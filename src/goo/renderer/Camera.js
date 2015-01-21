@@ -8,9 +8,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingVolume'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	Vector4,
 	Matrix4x4,
@@ -24,7 +22,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class This class represents a view into a 3D scene and how that view should map to a 2D rendering surface.
+	 * This class represents a view into a 3D scene and how that view should map to a 2D rendering surface.
 	 * @param {number} [fov=45] The full vertical angle of view, in degrees.
 	 * @param {number} [aspect=1] Aspect ratio of the 3D canvas used.
 	 * @param {number} [near=1] Near plane clip distance.

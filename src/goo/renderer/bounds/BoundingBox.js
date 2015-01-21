@@ -3,9 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	BoundingVolume,
 	BoundingSphere,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
+	 * <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
 	 * particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. <br>
 	 *        <br>
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or

@@ -1,10 +1,10 @@
 define(
-	/** @lends */
+
 	function () {
 	'use strict';
 
 	/**
-	 * @class Shows render statistics
+	 * Shows render statistics
 	 * @example
 	 * this.stats = new Stats();
 	 * document.body.appendChild(this.stats.domElement);

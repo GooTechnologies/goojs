@@ -3,9 +3,7 @@ define([
 	'goo/math/Vector3',
 	'goo/renderer/Camera',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	Vector3,
 	Camera,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Holds a camera.
+	 * Holds a camera.
 	 * @param {Camera} camera Camera to contain in this component.
 	 * @extends Component
 	 */

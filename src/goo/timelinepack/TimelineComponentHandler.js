@@ -7,9 +7,7 @@ define([
 	'goo/util/ArrayUtil',
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil'
-	],
-/** @lends */
-	function(
+], function (
 	ComponentHandler,
 	TimelineComponent,
 	ValueChannel,
@@ -18,13 +16,13 @@ define([
 	ArrayUtil,
 	SystemBus,
 	_
-	) {
+) {
 	'use strict';
 
 	var TWEEN = window.TWEEN;
+
 	/**
-	 * @class
-	 * @private
+	 * @hidden
 	 */
 	function TimelineComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -149,7 +147,7 @@ define([
 				channel = new EventChannel(channelId);
 			}
 			component.channels.push(channel);
-		} else if (channelConfig.entityId && channel.callbackUpdate && channel.callbackUpdate.rotation) {
+		} else if (channelConfig.entityId && channel.callbackUpdate && channel.callbackUpdate.rotation) {
 			var rotation = rotationMap[channelConfig.entityId] = channel.callbackUpdate.rotation;
 			rotation[0] = 0;
 			rotation[1] = 0;

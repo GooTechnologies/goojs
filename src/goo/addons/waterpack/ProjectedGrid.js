@@ -6,9 +6,7 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/renderer/Camera',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	MeshData,
 	Vector2,
 	Vector3,
@@ -20,7 +18,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Projected grid mesh
+	 * Projected grid mesh
 	 * @param {number} [densityX=20] Density in X of grid
 	 * @param {number} [densityY=20] Density in Y of grid
 	 */
@@ -287,7 +285,7 @@ function (
 	};
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {ProjectedGrid} Self for chaining.
 	 */
 	ProjectedGrid.prototype.rebuild = function () {

@@ -8,9 +8,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	SteadyState,
 	ClipSource,
@@ -24,10 +22,10 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading animation states into engine
-	 * @param {World} world
+	 * Handler for loading animation states into engine
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @extends ConfigHandler
 	 * @private
 	 */

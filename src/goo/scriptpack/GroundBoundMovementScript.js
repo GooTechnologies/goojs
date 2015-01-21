@@ -1,9 +1,8 @@
 define([
 	'goo/math/Vector3'
-],
-/** @lends */
-function(Vector3
-	) {
+], function (
+	Vector3
+) {
 	'use strict';
 
 	var calcVec = new Vector3();
@@ -20,15 +19,12 @@ function(Vector3
 	};
 
 	/**
-	 * @class A script for handling basic movement and jumping over a terrain.
+	 * A script for handling basic movement and jumping over a terrain.
 	 * The standard usage of this script will likely also need some input listener and camera handling.
-	 * @constructor
 	 */
-
 	function GroundBoundMovementScript(properties) {
-
 		properties = properties || {};
-		for(var key in _defaults) {
+		for (var key in _defaults) {
 			if(typeof(_defaults[key]) === 'boolean') {
 				this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];
 			}

@@ -1,16 +1,14 @@
 define([
 	'goo/entities/systems/System',
 	'goo/entities/World'
-],
-/** @lends */
-function (
+], function (
 	System,
 	World
 ) {
 	'use strict';
 
 	/**
-	 * @class Processes all entities with animation components, updating the animations
+	 * Processes all entities with animation components, updating the animations
 	 * @extends System
 	 */
 	function AnimationSystem() {

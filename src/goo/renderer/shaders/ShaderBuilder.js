@@ -6,9 +6,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/math/MathUtils',
 	'goo/util/TangentGenerator'
-],
-/** @lends */
-function(
+], function (
 	MeshData,
 	PointLight,
 	DirectionalLight,
@@ -20,7 +18,7 @@ function(
 	'use strict';
 
 	/**
-	 * @class Builds shaders
+	 * Builds shaders
 	 */
 	function ShaderBuilder() {
 	}
@@ -130,6 +128,7 @@ function(
 					attribute === 'SKIP_SPECULAR' ||
 					attribute === 'LIGHT' ||
 					attribute === 'COOKIE' ||
+					attribute === 'TRANSPARENCY_BW' ||
 					attribute === 'WRAP_AROUND') {
 					continue;
 				}
@@ -159,6 +158,12 @@ function(
 				shader.removeDefine('OPACITY');
 			}
 
+			// Alpha or "Black and white" transparency
+			if (material.uniforms.useBWTransparency === true) {
+				shader.setDefine('TRANSPARENCY_BW', true);
+			} else {
+				shader.removeDefine('TRANSPARENCY_BW');
+			}
 		},
 
 		fog: function(shader) {

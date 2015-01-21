@@ -6,9 +6,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection'
-],
-/** @lends */
-function (
+], function (
 	Entity,
 	EntityManager,
 	TransformComponent,
@@ -20,7 +18,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Main handler for an entity world. The World keeps track of managers and systems,
+	 * Main handler for an entity world. The World keeps track of managers and systems,
 	 * and also provides methods to create, select and remove entities.
 	 * Note that process() has to be called manually if objects need to be added and retrieved within the same update loop.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
@@ -147,7 +145,7 @@ function (
 	};
 
 	/**
-	 * Registers a component type. This is necessary to allow automatic creation of components
+	 * Registers a component type. This is necessary to allow automatic creation of components 
 	 * from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on).
 	 * When a {@link GooRunner} is created, it registers {@link TransformComponent}, {@link MeshDataComponent},
 	 * {@link MeshRendererComponent}, {@link CameraComponent}, {@link LightComponent} and {@link ScriptComponent} automatically.

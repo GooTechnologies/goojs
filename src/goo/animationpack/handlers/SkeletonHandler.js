@@ -5,9 +5,7 @@ define([
 	'goo/animationpack/SkeletonPose',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	Joint,
 	Skeleton,
@@ -18,11 +16,11 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading skeletons into engine
+	 * Handler for loading skeletons into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function SkeletonHandler() {

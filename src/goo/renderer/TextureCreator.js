@@ -6,9 +6,7 @@ define([
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	Texture,
 	Util,
 	TextureHandler,
@@ -22,7 +20,7 @@ function (
 	//! AT: shouldn't this stay in util?
 
 	/**
-	 * @class Takes away the pain of creating textures of various sorts.
+	 * Takes away the pain of creating textures of various sorts.
 	 * @param {Settings} settings Texturing settings
 	 */
 	function TextureCreator() {
@@ -54,8 +52,8 @@ function (
 	/**
 	 * Creates a texture and loads image into it
 	 * @example gridMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg'));
-	 * @param {string} imageUrl
-	 * @param {object} settings passed to the {Texture} constructor
+	 * @param {string} imageUrl
+	 * @param {object} settings passed to the {Texture} constructor
 	 * @param {Function} callback
 	 * @returns {Texture}
 	 */

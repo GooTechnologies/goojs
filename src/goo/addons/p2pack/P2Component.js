@@ -1,14 +1,12 @@
 define([
 	'goo/entities/components/Component'
-],
-/** @lends */
-function (
+], function (
 	Component
 ) {
 	'use strict';
 
 	/**
-	 * @class P2 physics component.
+	 * P2 physics component.
 	 * P2 supports convex and primitive shapes.
 	 * See also {@link P2System}
 	 * @extends Component
@@ -24,8 +22,8 @@ function (
 	 * @param {number}  [settings.offsetAngleX=0]   Angular offset from physics to rendering.
 	 * @param {number}  [settings.offsetAngleY=0]
 	 * @param {number}  [settings.offsetAngleZ=0]
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example
 	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/p2/p2-vtest.html Working example}</caption>
 	 * var entity = goo.world.createEntity(new Box());
 	 * var p2comp = new P2Component({
 	 *     shapes:[{

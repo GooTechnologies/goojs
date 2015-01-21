@@ -1,14 +1,14 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/math/MathUtils'],
-	/** @lends */
+
 		function (
 		MeshData,
 		MathUtils) {
 		'use strict';
 
 		/**
-		 * @class A grid-like surface shape
+		 * A grid-like surface shape
 		 * @param {array} heightMatrix The height data by x and z axis.
 		 * @param {number} xWidth x axis size in units
          * @param {number} yHeight y axis size in units
@@ -36,7 +36,7 @@ define([
 		TerrainSurface.prototype = Object.create(MeshData.prototype);
 
 		/**
-		 * @description Builds or rebuilds the mesh data
+		 * Builds or rebuilds the mesh data
 		 * @returns {Surface} Self for chaining
 		 */
 		TerrainSurface.prototype.rebuild = function () {

@@ -5,12 +5,12 @@ define(
 		'goo/logic/LogicNodes',
 		'goo/logic/LogicInterface'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
-		 * @class Logic node that provides an integer.
+		 * Logic node that provides an integer.
 		 * @private
 		 */
 		function LogicNodeInt() {

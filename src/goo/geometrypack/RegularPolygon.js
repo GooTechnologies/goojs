@@ -1,17 +1,15 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/geometrypack/PolyLine'
-	],
-	/** @lends */
-	function (
-		MeshData,
-		PolyLine
-	) {
+], function (
+	MeshData,
+	PolyLine
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Regular polygon mesh
+	 */
 	function RegularPolygon(nSegments, radius) {
 		this.nSegments = nSegments || 5;
 		this.radius = radius || 1;
