@@ -1,3 +1,10 @@
+v0.12.8 --- 2015-01-21
+----------------------
+
+###Additions
+ + the *uber shader* can switch between using the red channel for transparency or the alpha channel by setting the `useBWTransparency` uniform
+
+
 v0.12.7 --- 2014-12-16
 ----------------------
 
