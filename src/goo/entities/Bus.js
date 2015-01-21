@@ -1,8 +1,4 @@
-define([
-	'goo/util/ArrayUtil'
-], function (
-	ArrayUtil
-) {
+define(function () {
 	'use strict';
 
 	/**
@@ -79,7 +75,13 @@ define([
 
 	Bus.prototype._emitToAll = function (node, data) {
 		for (var i = 0; i < node.listeners.length; i++) {
-			node.listeners[i](data);
+			var listener = node.listeners[i];
+			if (listener) {
+				listener(data);
+			} else {
+				node.listeners.splice(i, 1);
+				i--;
+			}
 		}
 
 		node.children.forEach(function (child) {
@@ -121,6 +123,16 @@ define([
 		return this;
 	};
 
+	// why nullfiy and not just splice?
+	// because event listeners themselves need to be able to remove listeners
+	// maybe JS iterators will solve this issue better
+	function nullifyElement(array, element) {
+		var index = array.indexOf(element);
+		if (index !== -1) {
+			array[index] = null;
+		}
+	}
+
 	/**
 	 * Remove a listener from a channel but not from its children
 	 * @param channelName
@@ -128,7 +140,7 @@ define([
 	 */
 	Bus.prototype.removeListener = function (channelName, callbackToRemove) {
 		var node = this._getNode(channelName);
-		if (node) { ArrayUtil.remove(node.listeners, callbackToRemove); }
+		if (node) { nullifyElement(node.listeners, callbackToRemove); }
 		return this;
 	};
 
@@ -163,7 +175,7 @@ define([
 	};
 
 	Bus.prototype._removeListener = function (node, callbackToRemove) {
-		ArrayUtil.remove(node.listeners, callbackToRemove);
+		nullifyElement(node.listeners, callbackToRemove);
 
 		node.children.forEach(function (child) {
 			this._removeListener(child, callbackToRemove);
