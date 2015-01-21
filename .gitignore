@@ -27,3 +27,4 @@ examples/index.html
 # generated screenshots
 # NB! reference screenshots need to be included
 test/e2etesting/screenshots-tmp/
+/*.iml
