@@ -128,7 +128,6 @@ require([
 
 	// Create a 'G' compound box body
 	function createCompound(x, y, z) {
-		console.log('Creating compound!')
 
 		// Create 'root' entity
 		var compoundEntity = world.createEntity(new Vector3(x, y, z));
@@ -142,8 +141,6 @@ require([
 			h3 = new Vector3(2, 1, 1),
 			h4 = new Vector3(1, 1, 1),
 			h5 = new Vector3(4, 1, 1);
-
-		console.log('adding sub colliders!')
 
 		// Create 'sub entities' that, each holding a collider. Position is relative to the root entity.
 		var subEntity1 = world.createEntity(
@@ -194,8 +191,6 @@ require([
 
 		// Add the root
 		compoundEntity.addToWorld();
-
-		console.log('Adding compound to world!')
 
 		return compoundEntity;
 	}
@@ -254,6 +249,7 @@ require([
 		var rbComponent = new RigidbodyComponent({
 			mass: 0,
 			velocity: new Vector3(0, 0, 3),
+			angularVelocity: new Vector3(0, 0, 3),
 			isKinematic: true
 		});
 

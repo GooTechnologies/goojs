@@ -37,12 +37,12 @@ function (
 	/**
 	 * @class
 	 * @param {object} [settings]
-	 * @param {boolean} [settings.isKinematic=false]
 	 * @param {number} [settings.mass=1]
-	 * @param {Vector3} [settings.velocity]
-	 * @param {Vector3} [settings.angularVelocity]
 	 * @param {number} [settings.friction=0.3]
 	 * @param {number} [settings.restitution=0]
+	 * @param {boolean} [settings.isKinematic=false]
+	 * @param {Vector3} [settings.velocity]
+	 * @param {Vector3} [settings.angularVelocity]
 	 * @param {number} [settings.collisionGroup=1]
 	 * @param {number} [settings.collisionMask=1]
 	 * @param {number} [settings.linearDamping=0.01]

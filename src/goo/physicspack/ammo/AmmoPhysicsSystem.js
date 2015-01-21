@@ -97,6 +97,7 @@ function (
 		ammoEnd.setValue(end.x, end.y, end.z);
 		var rayCallback = new Ammo.ClosestRayResultCallback(ammoStart, ammoEnd);
 
+		// TODO: fix this
 		// if (typeof(mask) !== 'number') {
 		// 	result = mask;
 		// 	mask = null;
@@ -139,7 +140,7 @@ function (
 	/**
 	 * @private
 	 */
-	AmmoPhysicsSystem.prototype.step = function (tpf) {
+	AmmoPhysicsSystem.prototype.step = function (entities, tpf) {
 		var world = this.ammoWorld;
 
 		// Step the world forward in time
@@ -148,6 +149,12 @@ function (
 		world.stepSimulation(tpf, maxSubSteps, fixedTimeStep);
 
 		// TODO: Update kinematic bodies etc
+		for (var i = 0; i < entities.length; i++) {
+			var rb = entities[i].ammoRigidbodyComponent;
+			if (rb.isKinematic) {
+				rb.updateKinematic(tpf);
+			}
+		}
 
 		this.emitContactEvents();
 	};
@@ -219,10 +226,8 @@ function (
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
 			var rb = entity.ammoRigidbodyComponent;
-
 			if (rb._dirty) {
-				rb.initialize(entity, this);
-				rb._dirty = false;
+				rb.initialize();
 			}
 		}
 
@@ -241,7 +246,7 @@ function (
 			}
 		}
 
-		this.step(tpf);
+		this.step(entities, tpf);
 
 		// Update positions of entities from the physics data
 		for (var i = 0; i !== N; i++) {
@@ -270,6 +275,16 @@ function (
 		this.passive = false;
 	};
 
+	/**
+	 * @private
+	 * @param  {Entity} entity
+	 */
+	AmmoPhysicsSystem.prototype.inserted = function (entity) {
+		var rb = entity.ammoRigidbodyComponent;
+		if (rb._dirty) {
+			rb.initialize();
+		}
+	};
 
 	return AmmoPhysicsSystem;
 });

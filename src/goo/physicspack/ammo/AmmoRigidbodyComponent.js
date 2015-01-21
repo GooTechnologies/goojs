@@ -40,12 +40,26 @@ function (
 	var tmpQuat;
 
 	var tmpGooQuat = new Quaternion();
+	var tmpGooQuat2 = new Quaternion();
+	var tmpGooQuat3 = new Quaternion();
 	var tmpGooMat3 = new Matrix3x3();
+	var tmpGooVec = new Vector3();
+	var tmpGooVec2 = new Vector3();
+	var tmpGooVec3 = new Vector3();
 
 	/**
 	 * @class
 	 * @param {object} [settings]
-	 * @param {object} [settings.mass=1]
+	 * @param {number} [settings.mass=1]
+	 * @param {number} [settings.friction=0.3]
+	 * @param {number} [settings.restitution=0]
+	 * @param {boolean} [settings.isKinematic=false]
+	 * @param {Vector3} [settings.velocity]
+	 * @param {Vector3} [settings.angularVelocity]
+	 * @param {number} [settings.collisionGroup=1]
+	 * @param {number} [settings.collisionMask=1]
+	 * @param {number} [settings.linearDamping=0.01]
+	 * @param {number} [settings.angularDamping=0.05]
 	 * @extends AbstractRigidbodyComponent
 	 */
 	function AmmoRigidbodyComponent(settings) {
@@ -54,6 +68,12 @@ function (
 		AbstractRigidbodyComponent.apply(this, arguments);
 
 		this.type = 'AmmoRigidbodyComponent';
+
+		/**
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._dirty = true;
 
 		/**
 		 * The Ammo.btRigidbody instance. Will be created on .initialize()
@@ -65,6 +85,12 @@ function (
 		 * @type {number}
 		 */
 		this.mass = settings.mass !== undefined ? settings.mass : 1;
+
+		/**
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._isKinematic = !!settings.isKinematic;
 
 		/**
 		 * @private
@@ -119,14 +145,6 @@ function (
 		 * @type {number}
 		 */
 		this._restitution = settings.restitution !== undefined ? settings.restitution : 0;
-
-		/**
-		 * @type {Boolean}
-		 */
-		this.isKinematic = settings.isKinematic !== undefined ? settings.isKinematic : false;
-		if (this.isKinematic) {
-			this.mass = 0;
-		}
 
 		if (!tmpTransform) {
 			tmpTransform = new Ammo.btTransform();
@@ -254,10 +272,13 @@ function (
 		 */
 		restitution: {
 			get: function () {
-				return this.ammoBody.getRestitution();
+				return this._restitution;
 			},
 			set: function (value) {
-				this.ammoBody.setRestitution(value);
+				if (this.ammoBody) {
+					this.ammoBody.setRestitution(value);
+				}
+				this._restitution = value;
 			}
 		},
 
@@ -267,10 +288,13 @@ function (
 		 */
 		friction: {
 			get: function () {
-				return this.ammoBody.getFriction();
+				return this._friction;
 			},
 			set: function (value) {
-				this.ammoBody.setFriction(value);
+				if (this.ammoBody) {
+					this.ammoBody.setFriction(value);
+				}
+				this._friction = value;
 			}
 		},
 
@@ -333,23 +357,62 @@ function (
 				this._angularDamping = value;
 			}
 		},
+
+		/**
+		 * @memberOf RigidbodyComponent#
+		 * @type {number}
+		 */
+		isKinematic: {
+			get: function () {
+				return this._isKinematic;
+			},
+			set: function (value) {
+				this._isKinematic = value;
+				this._dirty = true;
+			}
+		}
 	});
 
 	/**
 	 * @private
-	 * @param  {Entity} entity
 	 */
-	AmmoRigidbodyComponent.prototype.updateKinematic = function (entity) {
+	AmmoRigidbodyComponent.prototype.updateKinematic = function (tpf) {
 		var body = this.ammoBody;
-        if (body.getMotionState()) {
-            var pos = entity.transformComponent.worldTransform.translation;
-            tmpGooQuat.fromRotationMatrix(entity.transformComponent.worldTransform.rotation);
-            tmpTransform.setIdentity();
-            tmpTransform.getOrigin().setValue(pos.x, pos.y, pos.z);
-            tmpQuat.setValue(tmpGooQuat.x, tmpGooQuat.y, tmpGooQuat.z, tmpGooQuat.w);
-            tmpTransform.setRotation(tmpQuat);
-            body.getMotionState().setWorldTransform(tmpTransform);
-        }
+		if (body && body.getMotionState()) {
+
+			var pos = tmpGooVec;
+			var velo = tmpGooVec2;
+			var angularVelo = tmpGooVec3;
+			var quat = tmpGooQuat;
+			var w = tmpGooQuat2;
+			var wq = tmpGooQuat3;
+
+			// Get current values
+			this.getPosition(pos);
+			this.getQuaternion(quat);
+
+			// Extrapolate position
+			velo.copy(this._velocity);
+			velo.mul(tpf);
+			pos.add(velo);
+
+			// Extrapolate orientation
+			angularVelo.copy(this._angularVelocity);
+            w.set(angularVelo.x, angularVelo.y, angularVelo.z, 0);
+            Quaternion.mul(w, quat, wq);
+            var half_tpf = 0.5 * tpf;
+            quat.x += half_tpf * wq.x;
+            quat.y += half_tpf * wq.y;
+            quat.z += half_tpf * wq.z;
+            quat.w += half_tpf * wq.w;
+
+            // Set on entity
+			tmpTransform.setIdentity();
+			tmpTransform.getOrigin().setValue(pos.x, pos.y, pos.z);
+			tmpQuat.setValue(quat.x, quat.y, quat.z, quat.w);
+			tmpTransform.setRotation(tmpQuat);
+			body.getMotionState().setWorldTransform(tmpTransform);
+		}
 	};
 
 	/**
@@ -406,6 +469,10 @@ function (
 		var localInertia = tmpVector;
 		localInertia.setValue(0, 0, 0);
 
+		if (this._isKinematic) {
+			this.mass = 0.0;
+		}
+
 		// rigidbody is dynamic if and only if mass is non zero, otherwise static
 		if (this.mass !== 0.0) {
 			shape.calculateLocalInertia(this.mass, localInertia);
@@ -418,7 +485,7 @@ function (
 		var ptr = body.a || body.ptr;
 		system._entities[ptr] = entity;
 
-		if (this.isKinematic) {
+		if (this._isKinematic) {
 			body.setCollisionFlags(body.getCollisionFlags() | AmmoRigidbodyComponent.AmmoFlags.CF_KINEMATIC_OBJECT);
 			body.setActivationState(AmmoRigidbodyComponent.AmmoFlags.DISABLE_DEACTIVATION);
 		}
@@ -434,16 +501,19 @@ function (
 			this._initialized = true;
 			this.setVelocity(this._velocity);
 			this.setAngularVelocity(this._angularVelocity);
-			this.linearDamping = this._linearDamping;
-			this.angularDamping = this._angularDamping;
-			this.friction = this._friction;
-			this.restitution = this._restitution;
 		}
+
+		// Set properties on the new body
+		this.linearDamping = this._linearDamping;
+		this.angularDamping = this._angularDamping;
+		this.friction = this._friction;
+		this.restitution = this._restitution;
 
 		this._ammoShape = shape;
 
 		// //Ammo.destroy(motionState);
 		// //Ammo.destroy(info);
+		this._dirty = false;
 		this.emitInitialized(entity);
 	};
 

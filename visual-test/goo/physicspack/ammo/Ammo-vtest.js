@@ -230,6 +230,7 @@ require([
 		var rbComponent = new AmmoRigidbodyComponent({
 			mass: 0,
 			velocity: new Vector3(0, 0, 3),
+			angularVelocity: new Vector3(0, 0, 3),
 			isKinematic: true
 		});
 

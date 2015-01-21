@@ -211,6 +211,10 @@ function (
 		this.passive = false;
 	};
 
+	/**
+	 * @private
+	 * @param  {Entity} entity
+	 */
 	PhysicsSystem.prototype.inserted = function (entity) {
 		var rb = entity.rigidbodyComponent;
 		if (rb._dirty) {
