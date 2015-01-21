@@ -27,7 +27,7 @@ require([
 	) {
 	'use strict';
 
-	V.describe('3 primitives and a long line, drawing a blue normal line for each hit point');
+	V.describe('2 primitives and a long line, drawing a circle at each hit with the color of the meshs texture');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -43,7 +43,6 @@ require([
 		var meshData = surfaceObject.rayObject.entity.meshDataComponent.meshData;
 		var indices = meshData.getIndexBuffer();
 		var texCoordBuffer = meshData.getAttributeBuffer(MeshData.TEXCOORD0);
-
 
 		var v0 = indices[surfaceObject.triangleIndex]*2;
 		var v1 = indices[surfaceObject.triangleIndex+1]*2;
@@ -90,11 +89,11 @@ require([
 
 
 	var canvasCtx;
-	var textureReadyCallback = function(texture){
+	var textureReadyCallback = function(texture) {
 		canvasCtx = setupCanvasMaterial(texture);
 	};
 
-	var checkerTexture = new TextureCreator().loadTexture2D('../../../resources/check.png', {}, textureReadyCallback);
+	var checkerTexture = new TextureCreator().loadTexture2D('../../../resources/check-alt.png', {}, textureReadyCallback);
 	var setCheckerTexture = function(material) {
 		material.setTexture('DIFFUSE_MAP', checkerTexture);
 	};
@@ -111,12 +110,14 @@ require([
 	var sphere1 = new Sphere(4, 4);
 	var sphereEntity1 = world.createEntity(sphere1, material1, [1.2, 0, 0]).addToWorld();
 	raySystem.addEntity(sphereEntity1, 4);
-	
+
 	var penSphereMaterial0 = new Material('Material3', ShaderLib.simpleColored);
+	penSphereMaterial0.uniforms.color = [1,1,1];
 	var penSphere0 = new Sphere(20, 20);
 	var penSphereEntity0 = world.createEntity(penSphere0, penSphereMaterial0, [ 0, 0, 0]).addToWorld();
 
-	var penSphereMaterial1 = new Material('Material4', ShaderLib.simpleColored);
+	var penSphereMaterial1 = new Material('Material4',ShaderLib.simpleColored);
+	penSphereMaterial1.uniforms.color = [1,1,1];
 	var penSphere1 = new Sphere(20, 20);
 	var penSphereEntity1 = world.createEntity(penSphere1, penSphereMaterial1, [ 0, 1, 0]).addToWorld();
 
@@ -129,9 +130,6 @@ require([
 	var tmpVec1 = new Vector3();
 	var tmpVec2 = new Vector3();
 
-	//REMOVE LATER
-	var lastMeshData;
-
 	var hitCallback = function(hitResult) {
 		if(!canvasCtx) return true;
 
@@ -139,44 +137,35 @@ require([
 		//set position of cursor to the world hit position of hitResult
 		var cursor = hitEntity.cursor;
 		hitResult.getWorldHitLocation(cursor.transformComponent.transform.translation);
-		cursor.show();
-		cursor.transformComponent.setUpdated();
-
-
-		if (lastMeshData === hitResult.surfaceObject.rayObject.entity.meshDataComponent.meshData) {
-
-			console.log("Current is also Last")
-		}
-
-		lastMeshData = hitResult.surfaceObject.rayObject.entity.meshDataComponent.meshData;
 
 		//get hit pixel color and set to material color
 		convertVertexWeightsToUV(hitResult.vertexWeights, hitResult.surfaceObject, uvStore);
+
 		var material = cursor.meshRendererComponent.materials[0];
-		if(material) {
 
+		uvStore.x *= canvasCtx.canvas.width;
+		uvStore.y *= canvasCtx.canvas.height;
 
-			uvStore.x *= canvasCtx.canvas.width;
-			uvStore.y *= canvasCtx.canvas.height;
+		var color = getPixelColorFromCanvasCtx(canvasCtx, uvStore.x, uvStore.y);
 
-			var color = getPixelColorFromCanvasCtx(canvasCtx, uvStore.x, uvStore.y);
+		material.uniforms.color[0] = (color[0] / 255);
+		material.uniforms.color[1] = (color[1] / 255);
+		material.uniforms.color[2] = (color[2] / 255);
 
-			material.shader.uniforms.color[0] = (color[0] / 255);
-			material.shader.uniforms.color[1] = (color[1] / 255);
-			material.shader.uniforms.color[2] = (color[2] / 255);
-		}
+		cursor.show();
+		cursor.transformComponent.setUpdated();
 
 		return true;
 	};
 	
-	var start = new Vector3(-10,-5,-1);
-	var end = new Vector3(10,5.2,1);
+	var start = new Vector3(-10,-0.4,-1);
+	var end = new Vector3(10,0.5,1);
 
 	var update = function(){
 		penSphereEntity0.hide();
 		penSphereEntity1.hide();
-		start.setDirect(Math.sin(world.time)*3-15, start.y, Math.sin(-world.time));
-		end.setDirect(Math.cos(world.time*1.2)*3+15, end.y, Math.sin(world.time));
+		start.setDirect(Math.sin(world.time)*5-15, start.y, Math.sin(-world.time));
+		end.setDirect(Math.cos(world.time*1.2)*5+15, end.y, Math.sin(world.time));
 	
 		var hit = raySystem.castCallback(start, end, false, hitCallback).hit;
 		if(hit) LRS.drawLine(start, end, LRS.GREEN);
@@ -187,7 +176,7 @@ require([
 
 	V.addLights();
 
-	V.addOrbitCamera(new Vector3(8, Math.PI / 2, 0));
+	V.addOrbitCamera(new Vector3(6, Math.PI / 1.3, 0.3));
 
 	V.process();
 });
