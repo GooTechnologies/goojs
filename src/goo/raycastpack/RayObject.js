@@ -31,9 +31,6 @@ MeshData
 		this.octree = new Octree(this, meshBounds.min, meshBounds.max, octreeDepth);
 
 		this.initialize();
-
-		//push itself to RaySystem
-		this.raySystem.rayObjects.push(this);
 	}
 
 	var tmpVec1 = new Vector3();
