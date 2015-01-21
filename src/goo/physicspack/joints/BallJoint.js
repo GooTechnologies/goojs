@@ -14,7 +14,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class
+	 * A physics ball joint. A ball joint (or "constraint") will try to keep a point in each of two connected bodies the same.
 	 * @param {object} [settings]
 	 * @param {Vector3} [settings.localPivot]
 	 * @extends PhysicsJoint

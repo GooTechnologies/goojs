@@ -10,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Physics box collider.
+	 * Physics box collider.
 	 * @param {object} [settings]
 	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
 	 * @extends Collider

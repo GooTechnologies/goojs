@@ -10,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class
+	 * Base class for physics systems.
 	 * @extends System
 	 */
 	function AbstractPhysicsSystem() {

@@ -21,7 +21,7 @@ function (
 	var tmpCannonResult;
 
 	/**
-	 * @class
+	 * A physics system using [Cannon.js]{@link http://github.com/schteppe/cannon.js}.
 	 * @extends AbstractPhysicsSystem
 	 * @param {object} [settings]
 	 * @param {Vector3} [settings.gravity]

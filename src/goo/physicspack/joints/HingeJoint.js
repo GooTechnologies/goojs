@@ -14,7 +14,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class
+	 * Physics hinge joint. To be added to a {@link RigidbodyComponent} or {@link AmmoRigidbodyComponent}.
 	 * @param {object} [settings]
 	 * @param {Vector3} [settings.localPivot]
 	 * @param {Vector3} [settings.localAxis]

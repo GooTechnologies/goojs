@@ -4,7 +4,7 @@ function () {
 	'use strict';
 
 	/**
-	 * @class
+	 * Base class for physics joints, for example hinge or balljoint.
 	 * @param {object} [settings]
 	 * @param {Entity} [settings.connectedEntity]
 	 * @param {boolean} [settings.collideConnected=false]

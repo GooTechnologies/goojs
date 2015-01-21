@@ -8,7 +8,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class
+	 * Result container for the {@link PhysicsSystem} and {@link AmmoPhysicsSystem}.
 	 * @param {Vector3} normal
 	 * @param {Vector3} point
 	 * @param {Entity} entity

@@ -16,8 +16,11 @@ function (
 	var tmpQuat = new Quaternion();
 
 	/**
-	 * @class Physics system using the Ammo.js physics engine.
+	 * Physics system using the Ammo.js physics engine. Will update all {@link AmmoRigidbodyComponent} components in the world.
 	 * @extends AbstractPhysicsSystem
+	 * @example
+	 * var ammoSystem = new AmmoPhysicsSystem({ stepFrequency: 60 });
+	 * world.setSystem(ammoSystem);
 	 */
 	function AmmoPhysicsSystem() {
 		var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();

@@ -4,7 +4,7 @@ function () {
 	'use strict';
 
 	/**
-	 * @class
+	 * Base class for Colliders.
 	 */
 	function Collider() {}
 	Collider.constructor = Collider;

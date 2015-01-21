@@ -1,12 +1,11 @@
 define([
 	'goo/entities/systems/System'
 ],
-/** @lends */
 function (System) {
 	'use strict';
 
 	/**
-	 * @class Processes all entities with collider components, making sure they are up to date.
+	 * Processes all entities with collider components, making sure they are up to date.
 	 * @extends System
 	 */
 	function ColliderSystem() {
@@ -17,6 +16,10 @@ function (System) {
 	ColliderSystem.prototype = Object.create(System.prototype);
 	ColliderSystem.prototype.constructor = ColliderSystem;
 
+	/**
+	 * @private
+	 * @param  {array} entities
+	 */
 	ColliderSystem.prototype.process = function (entities) {
 		var N = entities.length;
 

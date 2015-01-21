@@ -48,7 +48,7 @@ function (
 	var tmpGooVec3 = new Vector3();
 
 	/**
-	 * @class
+	 * Rigid body component, using Ammo.js. To be used with the {@link AmmoPhysicsSystem}.
 	 * @param {object} [settings]
 	 * @param {number} [settings.mass=1]
 	 * @param {number} [settings.friction=0.3]

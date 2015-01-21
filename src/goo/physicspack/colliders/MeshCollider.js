@@ -10,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Physics mesh collider.
+	 * Physics mesh collider.
 	 * @param {object} [settings]
 	 * @param {MeshData} [settings.meshData]
 	 * @param {Vector3} [settings.scale]

@@ -35,7 +35,7 @@ function (
 	var tmpCannonVec2;
 
 	/**
-	 * @class
+	 * Adds rigid body dynamics to your entity. To be used with the {@link PhysicsSystem}. If the entity or its children have {@link ColliderComponent}s, they will be added as collision shapes to the rigid body.
 	 * @param {object} [settings]
 	 * @param {number} [settings.mass=1]
 	 * @param {number} [settings.friction=0.3]

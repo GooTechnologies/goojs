@@ -18,7 +18,7 @@ function (
 	var tmpQuat = new Quaternion();
 
 	/**
-	 * @class
+	 * Base class for rigid bodies.
 	 * @extends Component
 	 * @param {object} [settings]
 	 */
