@@ -131,7 +131,6 @@ require([
 
 	//REMOVE LATER
 	var lastMeshData;
-	var countBla = 0;
 
 	var hitCallback = function(hitResult) {
 		if(!canvasCtx) return true;
@@ -148,8 +147,6 @@ require([
 
 			console.log("Current is also Last")
 		}
-		countBla++;
-		console.log(countBla);
 
 		lastMeshData = hitResult.surfaceObject.rayObject.entity.meshDataComponent.meshData;
 
@@ -176,13 +173,12 @@ require([
 	var end = new Vector3(10,5.2,1);
 
 	var update = function(){
-		countBla=0;
 		penSphereEntity0.hide();
 		penSphereEntity1.hide();
 		start.setDirect(Math.sin(world.time)*3-15, start.y, Math.sin(-world.time));
 		end.setDirect(Math.cos(world.time*1.2)*3+15, end.y, Math.sin(world.time));
 	
-		var hit = raySystem.castCallback(start, end, false,hitCallback).hit;
+		var hit = raySystem.castCallback(start, end, false, hitCallback).hit;
 		if(hit) LRS.drawLine(start, end, LRS.GREEN);
 		else LRS.drawLine(start, end, LRS.RED);
 	};
