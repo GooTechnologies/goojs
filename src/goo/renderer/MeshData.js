@@ -46,6 +46,9 @@ define([
 		this.weightsPerVertex = undefined;
 		this.boundingBox = undefined;
 		this.store = undefined;
+		this.wireframeData = undefined;
+		this.weightPerVertex = undefined; // yes, weights and weight!!!
+		this.flatMeshData = undefined;
 
 		this._attributeDataNeedsRefresh = false;
 		this._dirtyAttributeNames = new Set();
