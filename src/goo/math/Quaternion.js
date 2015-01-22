@@ -30,6 +30,10 @@ define([
 		} else {
 			this.data[3] = 1;
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Quaternion.prototype = Object.create(Vector.prototype);

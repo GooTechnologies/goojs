@@ -31,6 +31,10 @@ define([
 		 * @type {boolean}
 		 */
 		this.faceCamera = (typeof faceCamera === 'undefined') ? false : faceCamera;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	CSSTransformComponent.type = 'CSSTransformComponent';

@@ -21,6 +21,10 @@ define([
 	function BoundingSphere(center, radius) {
 		BoundingVolume.call(this, center);
 		this.radius = radius !== undefined ? radius : 1;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec = new Vector3();

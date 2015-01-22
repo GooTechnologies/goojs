@@ -47,9 +47,13 @@ define([
 		 */
 		this.target = new RenderTarget(height, height / aspect);
 
-		if(this.options.preciseRecursion) {
+		if (this.options.preciseRecursion) {
 			this.secondaryTarget = new RenderTarget(height, height / aspect);
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	PortalComponent.type = 'PortalComponent';

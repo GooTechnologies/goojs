@@ -51,6 +51,10 @@ define([
 		this._dirtyAttributeNames = new Set();
 
 		this.rebuildData(this.vertexCount, this.indexCount);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	MeshData.MESH = 0;

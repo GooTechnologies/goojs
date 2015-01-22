@@ -41,6 +41,10 @@ define([
 		 * @default
 		 */
 		this.currentPose = null; // SkeletonPose
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	MeshDataComponent.type = 'MeshDataComponent';

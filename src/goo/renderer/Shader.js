@@ -135,6 +135,10 @@ define([
 
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	// Shader.id = 0;

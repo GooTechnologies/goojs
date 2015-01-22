@@ -21,6 +21,10 @@ define([
 		} else {
 			Matrix.prototype.set.apply(this, arguments);
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Matrix2x2.prototype = Object.create(Matrix.prototype);

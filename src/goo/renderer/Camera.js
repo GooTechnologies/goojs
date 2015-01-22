@@ -104,6 +104,10 @@ define([
 
 		this.setFrustumPerspective(fov, aspect, near, far);
 		this.onFrameChange();
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var newDirection = new Vector3(); // tmp

@@ -30,6 +30,10 @@ function (
 		 * @type {boolean}
 		 */
 		this.useTransformComponent = true;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	HtmlComponent.type = 'HtmlComponent';

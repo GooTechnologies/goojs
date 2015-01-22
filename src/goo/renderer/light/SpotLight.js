@@ -47,6 +47,10 @@ define([
 
 		/** @type {number} */
 		this.exponent = 16.0;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	SpotLight.prototype = Object.create(Light.prototype);

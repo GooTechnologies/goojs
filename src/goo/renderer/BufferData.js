@@ -18,6 +18,10 @@ define(
 
 		this._dataUsage = 'StaticDraw';
 		this._dataNeedsRefresh = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**

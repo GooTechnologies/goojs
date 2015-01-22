@@ -15,6 +15,10 @@ define([
 	function Plane (normal, constant) {
 		this.normal = normal !== undefined ? new Vector3(normal) : new Vector3(Vector3.UNIT_Y);
 		this.constant = isNaN(constant) ? 0 : constant;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	// TODO: add Object.freeze? - Object.freeze is still too slow unfortunately
