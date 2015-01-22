@@ -1,49 +1,48 @@
 /*jshint bitwise: false */
-define([],
-/** @lends */
-function () {
+define([], function () {
 	'use strict';
 
 	/**
-	 * @class A collection of useful math-related functions, constants and helpers.
-	 * @constructor
-	 * @description Only used to define the class. Should never be instantiated.
+	 * A collection of useful math-related functions, constants and helpers.
+	 * Only used to define the class. Should never be instantiated.
 	 */
-	function MathUtils() {
-	}
+	function MathUtils() {}
 
 	/** @type {number}
-	* @example
-	* // converts 75 degrees to radians
-	* var rot = 75 * MathUtils.DEG_TO_RAD;
-	*/
+	 * @example
+	 * // converts 75 degrees to radians
+	 * var rot = 75 * MathUtils.DEG_TO_RAD;
+	 */
 	MathUtils.DEG_TO_RAD = Math.PI / 180.0;
+
 	/** @type {number}
-	* @example
-	* // converts Math.PI to 180 degrees
-	* var rot = Math.PI  MathUtils.RAD_TO_DEG;
-	*/
+	 * @example
+	 * // converts Math.PI to 180 degrees
+	 * var rot = Math.PI  MathUtils.RAD_TO_DEG;
+	 */
 	MathUtils.RAD_TO_DEG = 180.0 / Math.PI;
+
 	/** @type {number}
-	* @example
-	* // uses HALF_PI and converts it to degress
-	* var rot = MathUtils.HALF_PI * MathUtils.RAD_TO_DEG; // rot == 90
-	*/
+	 * @example
+	 * // uses HALF_PI and converts it to degress
+	 * var rot = MathUtils.HALF_PI * MathUtils.RAD_TO_DEG; // rot == 90
+	 */
 	MathUtils.HALF_PI = 0.5 * Math.PI;
+
 	/** @type {number}
-	* @example
-	* // uses TWO_PI and converts it to degrees
-	* var rot = MathUtils.TWO_PI * RAD_TO_DEG; // rot == 360
-	*/
+	 * @example
+	 * // uses TWO_PI and converts it to degrees
+	 * var rot = MathUtils.TWO_PI * RAD_TO_DEG; // rot == 360
+	 */
 	MathUtils.TWO_PI = 2.0 * Math.PI;
+
 	/** @type {number}
-	* @example
-	* // uses EPSILON to approximate floating point equality
-	* if(Math.abs(a - b) > MathUtils.EPSILON){
-	* 		// not equal
-	* }
-	}
-	*/
+	 * @example
+	 * // uses EPSILON to approximate floating point equality
+	 * if (Math.abs(a - b) > MathUtils.EPSILON) {
+	 * 		// not equal
+	 * }
+	 */
 	MathUtils.EPSILON = 0.00001; //! AT: unfortunately Matrix.invert is too unstable to use a smaller epsilon
 
 	//! AT: why do we have both these functions and the constant above?
@@ -51,7 +50,7 @@ function () {
 	/**
 	 * Converts an angle from degrees to radians.
 	 * @param {Float} degrees Angle in degrees.
-	 * @return {Float} Angle in radians.
+	 * @returns {Float} Angle in radians.
 	 * @example
 	 * // converts 70 degrees to a radian
 	 * var a = MathUtils.radFromDeg(70);
@@ -63,7 +62,7 @@ function () {
 	/**
 	 * Converts an angle from radians to degrees.
 	 * @param {Float} radians Angle in radians.
-	 * @return {Float} Angle in degrees.
+	 * @returns {Float} Angle in degrees.
 	 * @example
 	 * // converts Math.PI to 180 degrees
 	 * var a = MathUtils.degFromRad(Math.PI);
@@ -77,7 +76,7 @@ function () {
 	 * @param {number} factor Factor of interpolation.
 	 * @param {number} start Start value.
 	 * @param {number} end End value.
-	 * @return {number} Interpolated value.
+	 * @returns {number} Interpolated value.
 	 * @example
 	 * // earlier in code (outside of the update loop)
 	 * var x = 0;
@@ -98,7 +97,7 @@ function () {
 	 * @param {number} value Input value.
 	 * @param {number} min Lower bound of interval (inclusive).
 	 * @param {number} max Upper bound of interval (inclusive).
-	 * @return {number} Clamped value.
+	 * @returns {number} Clamped value.
 	 * @example
 	 * var a = -1;
 	 * a = Math.clamp(a, 0, 9); // a == 0
@@ -116,7 +115,7 @@ function () {
 	 * @param {number} value Input value.
 	 * @param {number} min Lower bound of interval (inclusive).
 	 * @param {number} max Upper bound of interval (inclusive).
-	 * @return {number} Clamped value.
+	 * @returns {number} Clamped value.
 	 * @example
 	 * var a = -1;
 	 * a = Math.radialClamp(a, 0, 9); // a == 0
@@ -139,8 +138,8 @@ function () {
 
 	/**
 	 * Calculates the positive modulo
-	 * @param {number} value
-	 * @param {number} size
+	 * @param {number} value
+	 * @param {number} size
 	 * @returns {number} Wrapped value
 	 */
 	MathUtils.moduloPositive = function (value, size) {
@@ -152,7 +151,7 @@ function () {
 	/**
 	 * Computes a value on the c1-continuous cubic s-curve "y = -2x^3 + 3x^2".
 	 * @param {number} x Input value in the range between zero and one.
-	 * @return {number} Value on curve.
+	 * @returns {number} Value on curve.
 	 */
 	MathUtils.scurve3 = function (x) {
 		return (-2.0 * x + 3.0) * x * x;
@@ -161,7 +160,7 @@ function () {
 	/**
 	 * Computes a value on the c2-continuous quintic s-curve "y = 6x^5 - 15x^4 + 10x^3".
 	 * @param {number} x Input value in the range between zero and one.
-	 * @return {number} Value on curve.
+	 * @returns {number} Value on curve.
 	 */
 	MathUtils.scurve5 = function (x) {
 		return ((6.0 * x - 15.0) * x + 10.0) * x * x * x;
@@ -216,7 +215,7 @@ function () {
 	 * @param {number} R.x
 	 * @param {number} R.y
 	 * @param {number} R.z
-	 * @return {number[]} The triangle's normal
+	 * @returns {number[]} The triangle's normal
 	 */
 	MathUtils.getTriangleNormal = function (p1x, p1y, p1z, p2x, p2y, p2z, p3x, p3y, p3z) {
 		var ux = p2x - p1x;

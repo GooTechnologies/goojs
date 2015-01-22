@@ -59,7 +59,7 @@ function report(url, problem) {
 	});
 }
 
-var DISS_THRESH = 0.02;
+var DISS_THRESH = 0.08;
 
 async.eachSeries(testFiles, function (testFile, done) {
 	var info2 = getTestInfo(testFile);

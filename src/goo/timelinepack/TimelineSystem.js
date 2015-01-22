@@ -2,12 +2,12 @@ define([
 	'goo/entities/systems/System'
 ], function (
 	System
-	) {
+) {
 	'use strict';
 
 	/**
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example}</caption>
-	 * @constructor
+	 * Manages entities with a TimelineComponent
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/timelinepack/TimelineComponent/TimelineComponent-vtest.html Working example
 	 */
 	function TimelineSystem() {
 		System.call(this, 'TimelineSystem', ['TimelineComponent']);

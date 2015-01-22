@@ -17,19 +17,19 @@ define([
 	var EPSILON = 1e-6;
 
 	/**
-	 * @param {object} args
+	 * @param {object} args
 	 * @param {boolean} args.whenUsed When current entity is the camera in use
 	 * @param {string} args.dragButton Can be 'Any', 'Left', 'Middle', 'Right', 'None'. None disables dragging
 	 * @param {number} args.orbitSpeed
-	 * @param {number} args.zoomSpeed
+	 * @param {number} args.zoomSpeed
 	 * @param {number} args.drag The inertia
-	 * @param {number} args.smoothness
+	 * @param {number} args.smoothness
 	 * @param {number} args.minZoomDistance
 	 * @param {number} args.maxZoomDistance
-	 * @param {number} args.minAscent in degrees
+	 * @param {number} args.minAscent in degrees
 	 * @param {number} args.maxAscent in degrees
 	 * @param {number} args.minAzimuth in degrees
-	 * @param {number} args.maxAzimuth in degress
+	 * @param {number} args.maxAzimuth in degress
 	 * @param {boolean} args.clampAzimuth If true, min and max azimuth are used.
 	 * @param {number} args.lookAtDistance distance to the lookatpoint
 	 * @param {number[3]} args.lookAtPoint the point in space to look
@@ -263,7 +263,7 @@ define([
 					applyWheel(event, args, ctx);
 				}
 			},
-			touchstart: function (event) {
+			touchstart: function (event) {
 				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
 					updateButtonState(ctx.dragButton, event.targetTouches.length === 1, args, ctx);
 				}
@@ -277,7 +277,7 @@ define([
 				updateButtonState(ctx.dragButton, false, args, ctx);
 				oldDistance = 0;
 			},
-			touchmove: function (event) {
+			touchmove: function (event) {
 				if (!args.whenUsed || ctx.entity === ctx.activeCameraEntity) {
 					var cx, cy, distance;
 					var touches = event.targetTouches;
@@ -350,7 +350,7 @@ define([
 
 		if (goingToLookAt.distanceSquared(lookAtPoint) < EPSILON) {
 			lookAtPoint.setVector(goingToLookAt);
-		} else {
+		} else {
 			lookAtPoint.lerp(goingToLookAt, delta);
 		}
 

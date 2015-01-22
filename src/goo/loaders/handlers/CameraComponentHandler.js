@@ -5,9 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	CameraComponent,
 	Camera,
@@ -18,13 +16,12 @@ function (
 	'use strict';
 
 	/**
-	 * @class For handling loading of camera components
-	 * @constructor
+	 * For handling loading of camera components
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
+	 * @hidden
 	 */
 	function CameraComponentHandler() {
 		ComponentHandler.apply(this, arguments);

@@ -8,9 +8,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	AnimationLayer,
 	LayerLERPBlender,
@@ -24,10 +22,10 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading animation layers
-	 * @param {World} world
+	 * Handler for loading animation layers
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @extends ConfigHandler
 	 * @private
 	 */
@@ -52,7 +50,7 @@ function (
 	/**
 	 * Sets current state on a layer if possible, otherwise clears  current state
 	 * @param {AnimationLayer} layer
-	 * @param {string} name
+	 * @param {string} name
 	 */
 	AnimationLayersHandler.prototype._setInitialState = function (layer, stateKey) {
 		if (stateKey) {

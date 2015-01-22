@@ -11,13 +11,13 @@ define([
 	) {
 	'use strict';
 
-	/*
-	 * @class For handling loading of state machine components
-	 * @constructor
+	/**
+	 * For handling loading of state machine components
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
+	 * @hidden
 	 */
 	function StateMachineComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -28,10 +28,10 @@ define([
 	StateMachineComponentHandler.prototype.constructor = StateMachineComponentHandler;
 	ComponentHandler._registerClass('stateMachine', StateMachineComponentHandler);
 
-	/*
+	/**
 	 * Create statemachine component
 	 * @returns {StateMachineComponent} the created component object
-	 * @private
+	 * @hidden
 	 */
 	StateMachineComponentHandler.prototype._create = function() {
 		return new StateMachineComponent();
@@ -46,7 +46,7 @@ define([
 	 */
 	 StateMachineComponentHandler.prototype.update = function(entity, config, options) {
 		var that = this;
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
 			if (!component) { return; }
 
 			var promises = [];
@@ -62,7 +62,7 @@ define([
 					}
 				}
 				// Removing old machines
-				for (var i = 0; i < component._machines.length; i++) {
+				for (var i = 0; i < component._machines.length; i++) {
 					if (machines.indexOf(component._machines[i]) === -1) {
 						component.removeMachine(component._machines[i]);
 					}

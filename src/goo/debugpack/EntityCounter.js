@@ -1,10 +1,10 @@
 define([],
-	/** @lends */
+
 	function () {
 	'use strict';
 
 	/**
-	 * @class The entity counter utility class creates a panel and updates it with data on the systems in the world and how many entities each contains
+	 * The entity counter utility class creates a panel and updates it with data on the systems in the world and how many entities each contains
 	 * @param {number} [skipFrames] Sets how many frames should it skip between refreshes
 	 */
 	function EntityCounter(skipFrames) {

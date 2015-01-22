@@ -5,12 +5,12 @@ define(
 		'goo/logic/LogicInterface',
 		'goo/logic/LogicNodes'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicInterface, LogicNodes) {
 		'use strict';
 
 		/**
-		 * @class Logic node implementing a time counter. Processed every frame and time is increased. Output
+		 * Logic node implementing a time counter. Processed every frame and time is increased. Output
 		 * can be read through the "Time" port
 		 * @private
 		 */

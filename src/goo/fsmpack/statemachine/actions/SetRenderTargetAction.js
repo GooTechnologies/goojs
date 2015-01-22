@@ -7,9 +7,7 @@ define([
 	'goo/renderer/Camera',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib'
-],
-/** @lends */
-function (
+], function (
 	Action,
 	PortalComponent,
 	PortalSystem,

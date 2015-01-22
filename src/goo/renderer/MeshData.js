@@ -5,9 +5,7 @@ define([
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/math/Vector4'
-],
-/** @lends */
-function (
+], function (
 	BufferData,
 	Util,
 	BufferUtils,
@@ -21,8 +19,7 @@ function (
 	var Uint8ClampedArray = window.Uint8ClampedArray;
 
 	/**
-	 * @class Stores all buffers for geometric data and similar attributes
-	 * @constructor
+	 * Stores all buffers for geometric data and similar attributes
 	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes
 	 * @param {number} vertexCount Number of vertices in buffer
 	 * @param {number} indexCount Number of indices in buffer

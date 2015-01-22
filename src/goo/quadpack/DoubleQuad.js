@@ -1,16 +1,16 @@
 define([
 	'goo/renderer/MeshData'
-], /** @lends */
+],
 function (
 	MeshData
 ) {
 	'use strict';
 
 	/**
-	 * @class A rectangular, two dimensional shape. The local height of the
+	 * A rectangular, two dimensional shape. The local height of the
 	 * DoubleQuad defines it's size about the y-axis, while the width defines
 	 * the x-axis. The z-axis will always be 0.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/quadpack/DoubleQuad/DoubleQuad-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/quadpack/DoubleQuad/DoubleQuad-vtest.html Working example
 	 *
 	 * @param {number} [width=1] Total width of quad.
 	 * @param {number} [height=1] Total height of quad.
@@ -64,7 +64,7 @@ function (
 	DoubleQuad.prototype.constructor = DoubleQuad;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {DoubleQuad} Self for chaining.
 	 */
 	DoubleQuad.prototype.rebuild = function () {

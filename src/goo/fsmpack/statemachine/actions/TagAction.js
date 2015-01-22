@@ -1,9 +1,7 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/fsmpack/proximity/ProximityComponent'
-],
-/** @lends */
-function(
+], function (
 	Action,
 	ProximityComponent
 ) {
