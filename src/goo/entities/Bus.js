@@ -79,11 +79,15 @@ define(function () {
 			if (listener) {
 				listener(data);
 			} else {
+				// some listeners may be set to null by the removeListener & co methods
+				// the array is compacted here and not in the removeListener methods
+				// because a listener itself can remove listeners
 				node.listeners.splice(i, 1);
 				i--;
 			}
 		}
 
+		// emit on the child channels as well
 		node.children.forEach(function (child) {
 			this._emitToAll(child, data);
 		}.bind(this));
@@ -123,9 +127,11 @@ define(function () {
 		return this;
 	};
 
-	// why nullfiy and not just splice?
-	// because event listeners themselves need to be able to remove listeners
-	// maybe JS iterators will solve this issue better
+	/**
+	 * Sets element to null if it's present in the provided array
+	 * @param {Array} array
+	 * @param {*} element
+	 */
 	function nullifyElement(array, element) {
 		var index = array.indexOf(element);
 		if (index !== -1) {
