@@ -72,6 +72,28 @@ define([
 		}
 	};
 
+	/**
+	 * Returns a clone of this mesh data component
+	 * @returns {MeshDataComponent}
+	 */
+	MeshDataComponent.prototype.clone = function (options) {
+		options = options || {};
+
+		var clone = new MeshDataComponent();
+
+		if (options.shareMeshData) {
+			clone.meshData = this.meshData;
+			clone.modelBound = this.modelBound;
+		} else {
+			clone.meshData = this.meshData.clone();
+			clone.modelBound = this.modelBound.clone();
+		}
+
+		clone.autoCompute = this.autoCompute;
+
+		return clone;
+	};
+
 	MeshDataComponent.applyOnEntity = function (obj, entity) {
 		if (obj instanceof MeshData) {
 			var meshDataComponent = new MeshDataComponent(obj);

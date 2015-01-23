@@ -4,14 +4,16 @@ define([
 	'goo/renderer/BufferUtils',
 	'goo/math/Vector2',
 	'goo/math/Vector3',
-	'goo/math/Vector4'
+	'goo/math/Vector4',
+	'goo/util/ObjectUtil'
 ], function (
 	BufferData,
 	Util,
 	BufferUtils,
 	Vector2,
 	Vector3,
-	Vector4
+	Vector4,
+	_
 ) {
 	'use strict';
 
@@ -90,7 +92,7 @@ define([
 					view.set(saved);
 				}
 			}
-			savedAttributes = {};
+			savedAttributes = {}; //! AT: unused
 			if (savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
@@ -769,6 +771,34 @@ define([
 		if (this.indexData) {
 			this.indexData.destroy(context);
 		}
+	};
+
+	/**
+	 * Returns a clone of this mesh data
+	 * @returns {MeshData}
+	 */
+	MeshData.prototype.clone = function () {
+		var attributeMapClone = _.deepClone(this.attributeMap);
+
+		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
+
+		clone.primitiveCounts = this.primitiveCounts.slice(0); // an array
+
+		clone.vertexData.copy(this.vertexData); // BufferData
+		clone.indexData.copy(this.indexData); // BufferData
+
+		clone.indexLengths = this.indexLengths.slice(0);
+		clone.indexModes = this.indexModes.slice(0);
+
+		clone.type = this.type;
+
+		if (this.paletteMap) {
+			clone.paletteMap = this.paletteMap.slice(0); // an array
+		}
+
+		clone.weightsPerVertex = this.weightsPerVertex; // a number
+
+		return clone;
 	};
 
 	/**

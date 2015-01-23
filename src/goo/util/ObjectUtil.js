@@ -133,5 +133,32 @@ define([],
 		return result;
 	};
 
+	_.shallowSelectiveClone = function (source, keys) {
+		var clone = {};
+
+		keys.forEach(function (key) {
+			clone[key] = source[key];
+		});
+
+		return clone;
+	};
+
+	// probably not the best way to copy maps and sets
+	_.cloneMap = function (source) {
+		var clone = new Map();
+		source.forEach(function (value, key) {
+			clone.set(key, value);
+		});
+		return clone;
+	};
+
+	_.cloneSet = function (source) {
+		var clone = new Set();
+		source.forEach(function (value) {
+			clone.add(value);
+		});
+		return clone;
+	};
+
 	return _;
 });

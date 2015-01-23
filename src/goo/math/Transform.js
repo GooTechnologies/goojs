@@ -294,5 +294,22 @@ define([
 		return '' + this.matrix;
 	};
 
+	/**
+	 * Returns a clone of this transform
+	 * @returns {Transform}
+	 */
+	Transform.prototype.clone = function () {
+		var clone = new Transform();
+
+		clone.matrix.copy(this.matrix);
+		clone.normalMatrix.copy(this.normalMatrix);
+
+		clone.translation.copy(this.translation);
+		clone.rotation.copy(this.rotation);
+		clone.scale.copy(this.scale);
+
+		return clone;
+	};
+
 	return Transform;
 });
