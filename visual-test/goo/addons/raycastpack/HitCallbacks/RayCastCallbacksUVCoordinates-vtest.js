@@ -8,8 +8,8 @@ require([
 	'goo/math/Vector2',
 	'goo/renderer/MeshData',
 	'goo/renderer/TextureCreator',
-	'goo/raycastpack/RaySystem',
-	'goo/linerenderpack/LineRenderSystem',
+	'goo/addons/raycastpack/RaySystem',
+	'goo/addons/linerenderpack/LineRenderSystem',
 	'lib/V'
 ], function (
 	Material,
@@ -93,7 +93,7 @@ require([
 		canvasCtx = setupCanvasMaterial(texture);
 	};
 
-	var checkerTexture = new TextureCreator().loadTexture2D('../../../resources/check-alt.png', {}, textureReadyCallback);
+	var checkerTexture = new TextureCreator().loadTexture2D('../../../../resources/check-alt.png', {}, textureReadyCallback);
 	var setCheckerTexture = function(material) {
 		material.setTexture('DIFFUSE_MAP', checkerTexture);
 	};

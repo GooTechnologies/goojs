@@ -7,8 +7,8 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/MeshData',
 	'goo/renderer/TextureCreator',
-	'goo/raycastpack/RaySystem',
-	'goo/linerenderpack/LineRenderSystem',
+	'goo/addons/raycastpack/RaySystem',
+	'goo/addons/linerenderpack/LineRenderSystem',
 	'lib/V'
 ], function (
 	Material,

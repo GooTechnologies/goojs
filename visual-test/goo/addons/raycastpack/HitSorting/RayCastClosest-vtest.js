@@ -7,8 +7,8 @@ require([
 	'goo/math/Vector3',
 	'goo/renderer/MeshData',
 	'goo/renderer/TextureCreator',
-	'goo/raycastpack/RaySystem',
-	'goo/linerenderpack/LineRenderSystem',
+	'goo/addons/raycastpack/RaySystem',
+	'goo/addons/linerenderpack/LineRenderSystem',
 	'lib/V'
 ], function (
 	Material,
@@ -32,19 +32,33 @@ require([
 	var raySystem = new RaySystem();
 	var LRS = new LineRenderSystem(world);
 
-	var drawTriangle = function(triangles){
-
-	};
-
-	var drawNormal = function(position, normal){
-
-	};
-	
 	world.setSystem(raySystem);
 	world.setSystem(LRS);
 
 	V.addOrbitCamera(new Vector3(8, Math.PI / 2, 0));
-	V.addLights();
+	//V.addLights();
+
+	var tmpVec1 = new Vector3();
+	var tmpVec2 = new Vector3();
+	var drawTriangle = function(triangle, regularMatrix) {
+		var lineStart = tmpVec1.setArray(triangle[0]);
+		var lineEnd = tmpVec2.setArray(triangle[1]);
+		regularMatrix.applyPostPoint(lineStart);
+		regularMatrix.applyPostPoint(lineEnd);
+		LRS.drawLine(lineStart, lineEnd, LRS.YELLOW);
+
+		lineEnd = tmpVec2.setArray(triangle[2]);
+		regularMatrix.applyPostPoint(lineEnd);
+		LRS.drawLine(lineStart, lineEnd, LRS.YELLOW);
+
+		lineStart = tmpVec1.setArray(triangle[1]);
+		regularMatrix.applyPostPoint(lineStart);
+		LRS.drawLine(lineStart, lineEnd, LRS.YELLOW);
+	};
+
+	var drawNormal = function(position, normal) {
+
+	};
 
 	var material1 = new Material('Material1', ShaderLib.uber);
 	material1.uniforms.materialAmbient = [0.0, 0.0, 1.0, 1.0];
@@ -56,9 +70,6 @@ require([
 		raySystem.addEntity(ent, 4);
 	}
 
-	var tmpVec1 = new Vector3();
-	var tmpVec2 = new Vector3();
-
 	var start = new Vector3(-10,-5,-1);
 	var end = new Vector3(10,5.2,1);
 	
@@ -68,14 +79,14 @@ require([
 		start.setDirect(-15, height, Math.sin(-world.time));
 		end.setDirect(15, height+0.3, Math.sin(world.time));
 	
-		var hitResult = raySystem.castClosest(start, end, false,hitCallback);
+		var hitResult = raySystem.castClosest(start, end, false);
 
-		drawTriangle(hitResult.surfaceObject.triangles);
+		drawTriangle(hitResult.surfaceObject.triangle, hitResult.surfaceObject.rayObject.regularMatrix);
 
 		var hitLocation = tmpVec1;
 		hitResult.getWorldHitLocation(hitLocation);
 		var hitNormal = tmpVec2;
-		hitResult.getNormal(hitNormal);
+		hitResult.surfaceObject.getNormal(hitNormal);
 
 		drawNormal(hitLocation, hitNormal);
 
