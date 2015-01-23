@@ -75,22 +75,25 @@ require([
 	
 	var update = function(){
 
-		var height = Math.sin(world.time)*3;
+		var height = Math.sin(world.time);
 		start.setDirect(-15, height, Math.sin(-world.time));
 		end.setDirect(15, height+0.3, Math.sin(world.time));
 	
 		var hitResult = raySystem.castClosest(start, end, false);
 
-		drawTriangle(hitResult.surfaceObject.triangle, hitResult.surfaceObject.rayObject.regularMatrix);
+		if(hitResult.hit)
+		{
+			LRS.drawLine(start, end, LRS.GREEN);
 
-		var hitLocation = tmpVec1;
-		hitResult.getWorldHitLocation(hitLocation);
-		var hitNormal = tmpVec2;
-		hitResult.surfaceObject.getNormal(hitNormal);
+			drawTriangle(hitResult.surfaceObject.triangle, hitResult.surfaceObject.rayObject.regularMatrix);
 
-		drawNormal(hitLocation, hitNormal);
+			var hitLocation = tmpVec1;
+			hitResult.getWorldHitLocation(hitLocation);
+			var hitNormal = tmpVec2;
+			hitResult.surfaceObject.getNormal(hitNormal);
 
-		if(hitResult.hit) LRS.drawLine(start, end, LRS.GREEN);
+			drawNormal(hitLocation, hitNormal);
+		}
 		else LRS.drawLine(start, end, LRS.RED);
 	};
 	
