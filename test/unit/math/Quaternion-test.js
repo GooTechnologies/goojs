@@ -152,6 +152,22 @@ define([
 			expect(q).toEqual(new Quaternion(-1,-1,-1,-1));
 		});
 
+		describe('conjugate', function () {
+			it('conjugates a quaternion', function () {
+				var original = new Quaternion(1, 2, 3, 4);
+				var conjugate = new Quaternion().copy(original).conjugate();
+				expect(conjugate).toBeCloseToVector(new Quaternion(-1, -2, -3, 4));
+			});
+		});
+
+		describe('invert', function () {
+			it('inverts a quaternion', function () {
+				var original = new Quaternion(1, 2, 3, 4).normalize();
+				var inverse = new Quaternion().copy(original).invert();
+				expect(inverse).toBeCloseToVector(new Quaternion(-1/30, -2/30, -3/30, 4/30).normalize());
+			});
+		});
+
 		it('can dot',function () {
 			var q = new Quaternion(1,1,1,1);
 			expect(q.dot(q)).toEqual(4);
