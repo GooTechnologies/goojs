@@ -25,7 +25,7 @@ require([
 	) {
 	'use strict';
 
-	var sphereCount = 2;
+	var sphereCount = 50;
 
 	V.describe(sphereCount+' smooth spheres and a long line, drawing a blue normal line for each hit point');
 
@@ -40,12 +40,12 @@ require([
 	V.addOrbitCamera(new Vector3(8, Math.PI / 2, 0));
 	V.addLights();
 
-	var sphereMesh = new Sphere(220, 220);
+	var sphereMesh = new Sphere(10, 10);
 	var material = new Material('Material', ShaderLib.uber);
 
 	var addSphere = function(nr, total) {
-		var ent = world.createEntity(sphereMesh, material, [(nr - total / 2) / (total*0.5), 0, 0]).addToWorld();
-		console.log("Add: ", nr)
+		var ent = world.createEntity(sphereMesh, material, [(nr - total / 2) / (total*0.15), 0, 0]).addToWorld();
+		console.log("Add: ", nr);
 		raySystem.addEntity(ent, 4);
 	};
 
@@ -81,8 +81,11 @@ require([
 		end.setDirect(Math.cos(world.time*1.2)*3+15, end.y, Math.sin(world.time));
 	
 		var hit = raySystem.castCallback(start, end, false,hitCallback).hit;
-		if(hit) LRS.drawLine(start, end, LRS.GREEN);
-		else LRS.drawLine(start, end, LRS.RED);
+		if(hit) {
+			LRS.drawLine(start, end, LRS.GREEN);
+		} else {
+			LRS.drawLine(start, end, LRS.RED);
+		}
 	};
 	
 	goo.callbacks.push(update);
