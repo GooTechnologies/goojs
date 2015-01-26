@@ -5,7 +5,7 @@ define([
 	'goo/addons/raycastpack/SurfaceObject',
 	'goo/renderer/MeshData'
 ],
-	/** @lends */
+
 function (
 Vector3,
 Matrix4x4,

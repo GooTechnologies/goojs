@@ -1,7 +1,7 @@
 define([
 	'goo/addons/raycastpack/OctreeNode'
 ],
-	/** @lends */
+
 function (OctreeNode) {
 	'use strict';
 		

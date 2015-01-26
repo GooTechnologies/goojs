@@ -1,15 +1,15 @@
 define([
 	'goo/math/Vector3'
 ],
-	/** @lends */
+
 function (Vector3) {
 	'use strict';
 
 	//move to ArrayUtil?
-	var RemoveArrayElement = function(array, element) {
+	var removeArrayElement = function(array, element) {
 		for (var i=0, j=0; i<array.length; i++)
 		{
-			if (array[i] != element)
+			if (array[i] !== element)
 			{
 				array[j++] = array[i];
 			}
@@ -28,12 +28,9 @@ function (Vector3) {
 		this.boundMax = new Vector3(boundMax);
 
 		//octree-nodes only have children if it isnt a leaf, and it only has data if its a leaf
-		if(!this.isLeaf)
-		{
+		if(!this.isLeaf) {
 			this.children = [];
-		}
-		else
-		{
+		} else {
 			this.data = [];
 		}
 
@@ -53,19 +50,18 @@ function (Vector3) {
 	OctreeNode.prototype.generateChildren = function() {
 
 		//we stop generating children recursively when we reach a leaf
-		if(this.isLeaf) return;
+		if(this.isLeaf) {
+			return;
+		}
 
 		var halfSize = this.tmpVec1;
 		halfSize.setVector(this.boundMax);
 		halfSize.subVector(this.boundMin);
 		halfSize.mul(0.5);
 
-		for(var z=0;z<2;z++)
-		{
-			for(var y=0;y<2;y++)
-			{
-				for(var x=0;x<2;x++)
-				{
+		for(var z=0;z<2;z++) {
+			for(var y=0;y<2;y++) {
+				for(var x=0;x<2;x++) {
 					var childBoundMin = this.tmpVec2;
 					childBoundMin.setVector(this.boundMin);
 					childBoundMin.addDirect(halfSize.x*x, halfSize.y*y, halfSize.z*z);
@@ -84,12 +80,24 @@ function (Vector3) {
 	};
 
 	OctreeNode.prototype.intersectsBoundingBox = function(boundMin, boundMax) {
-		if (this.boundMax.x < boundMin.x) return false;
-		if (this.boundMin.x > boundMax.x) return false;
-		if (this.boundMax.y < boundMin.y) return false;
-		if (this.boundMin.y > boundMax.y) return false;
-		if (this.boundMax.z < boundMin.z) return false;
-		if (this.boundMin.z > boundMax.z) return false;
+		if (this.boundMax.x < boundMin.x) {
+			return false;
+		}
+		if (this.boundMin.x > boundMax.x) {
+			return false;
+		}
+		if (this.boundMax.y < boundMin.y) {
+			return false;
+		}
+		if (this.boundMin.y > boundMax.y) {
+			return false;
+		}
+		if (this.boundMax.z < boundMin.z) {
+			return false;
+		}
+		if (this.boundMin.z > boundMax.z) {
+			return false;
+		}
 
 		//intersects
 		return true;
@@ -98,26 +106,21 @@ function (Vector3) {
 	//Recursively pushes object down the octree nodes and generates new node sections if necessary
 	OctreeNode.prototype.pushObject = function(object, boundMin, boundMax) {
 		//if object doesnt collide the node, return
-		if(!this.intersectsBoundingBox(boundMin, boundMax)) return;
+		if(this.intersectsBoundingBox(boundMin, boundMax)) {
+			if(!this.isLeaf) {
+				//if this node has no children, generate new ones
+				if(this.children.length===0) {
+					this.generateChildren();
+				}
 
-		if(!this.isLeaf)
-		{
-			//if this node has no children, generate new ones
-			if(this.children.length===0)
-			{
-				this.generateChildren();
+				//iterate all children and push object down until reaching a leaf
+				for(var i=0; i<this.children.length; i++) {
+					this.children[i].pushObject(object, boundMin, boundMax);
+				}
+			} else {
+				//Add data object
+				this.addData(object);
 			}
-
-			//iterate all children and push object down until reaching a leaf
-			for(var i=0; i<this.children.length; i++)
-			{
-				this.children[i].pushObject(object, boundMin, boundMax);
-			}
-		}
-		else
-		{
-			//Add data object
-			this.addData(object);
 		}
 	};
 
@@ -130,27 +133,27 @@ function (Vector3) {
 	OctreeNode.prototype.rayStep = function(ray, inverseDir, rayLength, nodesHit, onlyLeafs){
 
 		//if ray doesnt collide the node, return
-		if(this.depth !== 0 && !this.intersectsRay(ray, inverseDir, rayLength)) return false;
+		if(this.depth !== 0 && !this.intersectsRay(ray, inverseDir, rayLength)) {
+			return false;
+		}
 		this.hitsThisFrame++;
 
-		if(!this.isLeaf)
-		{
+		if(!this.isLeaf) {
 			this.numHits = 0;
 
 			//iterate all children and ray step down recursively until reaching a leaf
-			for(var i=0; i<this.children.length; i++)
-			{
-				if(this.children[i].rayStep(ray, inverseDir, rayLength, nodesHit, onlyLeafs))
-				{
+			for(var i=0; i<this.children.length; i++) {
+				if(this.children[i].rayStep(ray, inverseDir, rayLength, nodesHit, onlyLeafs)) {
 					this.numHits++;
 				}
 
-				if(this.numHits >= 4) return true;
+				if(this.numHits >= 4) {
+					return true;
+				}
 			}
 		}
 
-		if(!onlyLeafs || this.isLeaf)
-		{
+		if(!onlyLeafs || this.isLeaf) {
 			//Add to hit node array
 			nodesHit.push(this);
 			return true;
@@ -173,7 +176,7 @@ function (Vector3) {
 				var child = this.children[i];
 				if(child.optimize())
 				{
-					RemoveArrayElement(this.children, child);
+					removeArrayElement(this.children, child);
 				}
 			}
 

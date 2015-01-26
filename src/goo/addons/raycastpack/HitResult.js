@@ -1,7 +1,6 @@
 define([
         'goo/math/Vector3'
     ],
-    /** @lends */
 
 function (Vector3) {
     'use strict';
@@ -11,7 +10,7 @@ function (Vector3) {
         this.hit = false;
         this.localHitLocation = new Vector3();
         this.vertexWeights = [];
-        this.surfaceObject;
+        this.surfaceObject = null;
     }
 
     HitResult.prototype.copyFrom = function (hitResult) {

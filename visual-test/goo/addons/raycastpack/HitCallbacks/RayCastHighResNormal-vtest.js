@@ -27,7 +27,7 @@ require([
 
 	var sphereCount = 50;
 
-	V.describe(sphereCount+' smooth spheres and a long line, drawing a blue normal line for each hit point');
+	V.describe(sphereCount+' spheres and a long line, drawing a blue normal line for each hit point');
 
 	var goo = V.initGoo();
 	var world = goo.world;
