@@ -16,8 +16,7 @@ MeshData
 	'use strict';
 
 	//RAY OBJECT
-	function RayObject(raySystem, entity, octreeDepth){
-		this.raySystem = raySystem;
+	function RayObject(entity, octreeDepth){
 		this.entity = entity;
 
 		this.distanceToRay = -1;
@@ -66,6 +65,7 @@ MeshData
 	};
 
 	RayObject.prototype.loadTriangleData = function(){
+
 		var meshData = this.entity.meshDataComponent.meshData;
 
 		var vertices = meshData.getAttributeBuffer(MeshData.POSITION);

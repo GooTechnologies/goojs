@@ -49,7 +49,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 	RaySystem.prototype.addEntity = function(entity, octreeDepth) {
 		if(!this.containsEntity(entity))
 		{
-			var rayObject = new RayObject(this, entity, octreeDepth);
+			var rayObject = new RayObject(entity, octreeDepth);
 			//push to the rayObjects array
 			this.rayObjects.push(rayObject);
 		}
@@ -141,7 +141,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			var entity = rayObject.entity;
 			var worldBounds = entity.meshRendererComponent.worldBound;
 
-			rayObject.distanceToRay =  this.ray.intersectsAABox(worldBounds.min, worldBounds.max, this.inverseDir);
+			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max, this.inverseDir);
 			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.rayLength)
 			{
 				this.intersectedRayObjects.push(rayObject);
@@ -215,16 +215,16 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 	RaySystem.prototype.closestHitCompare = function() {
 		if(this.result.hit)
 		{
-			var traceDistance = this.oldRayOrigin.distanceSquared(this.result.localHitLocation);
-			if(traceDistance < this.bestDistance || this.bestDistance == -1)
+			var distanceToHit = this.ray.origin.distanceSquared(this.result.localHitLocation);
+			if(distanceToHit < this.bestDistance || this.bestDistance === -1)
 			{
-				this.bestDistance = traceDistance;
+				this.bestDistance = distanceToHit;
 				this.bestResult.copyFrom(this.result);
 			}
 		}
 	};
 	
-	RaySystem.prototype.sortIntersectedRayObjects = function(a, b) {
+	RaySystem.prototype.distanceSortRayObjects = function(a, b) {
 		return a.distanceToRay - b.distanceToRay;
 	};
 
@@ -244,14 +244,14 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			var entity = rayObject.entity;
 			var worldBounds = entity.meshRendererComponent.worldBound;
 
-			rayObject.distanceToRay =  this.ray.intersectsAABox(worldBounds.min, worldBounds.max, this.inverseDir);
+			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max, this.inverseDir);
 			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.rayLength)
 			{
 				this.intersectedRayObjects.push(rayObject);
 			}
 		}
 
-		this.intersectedRayObjects.sort(this.sortIntersectedRayObjects);
+		this.intersectedRayObjects.sort(this.distanceSortRayObjects);
 
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{

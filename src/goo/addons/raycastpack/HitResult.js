@@ -16,7 +16,7 @@ function (Vector3) {
 
     HitResult.prototype.copyFrom = function (hitResult) {
         this.hit = hitResult.hit;
-        this.localHitLocation = hitResult.localHitLocation;
+        this.localHitLocation.setVector(hitResult.localHitLocation);
         this.vertexWeights = hitResult.vertexWeights;
         this.surfaceObject = hitResult.surfaceObject;
     };
@@ -29,6 +29,14 @@ function (Vector3) {
         this.surfaceObject.rayObject.regularMatrix.applyPostPoint(locationStore);
         return locationStore;
     };
+
+    //not necessary I think, surfaceObject contains all of these functions, might want to make wrappers for them like this
+    /*
+    //returns a world space normal of the hit triangle
+    HitResult.prototype.getWorldHitLocation = function (normalStore) {
+        return this.surfaceObject.getNormal(normalStore);
+    };
+    */
 
     return HitResult;
 });
