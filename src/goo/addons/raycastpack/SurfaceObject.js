@@ -3,7 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/MathUtils'
 ],
-	/** @lends */
+
 function (Vector3, BoundingSphere, MathUtils) {
 		'use strict';
 

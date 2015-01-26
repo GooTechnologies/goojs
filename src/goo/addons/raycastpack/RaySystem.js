@@ -5,7 +5,7 @@ define([
 	'goo/addons/raycastpack/RayObject',
 	'goo/addons/raycastpack/HitResult'
 ],
-	/** @lends */
+
 function (System, Vector3, Ray, RayObject, HitResult) {
 	'use strict';
 

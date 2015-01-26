@@ -1,4 +1,6 @@
 define([
+	'test/addons/raycastpack/OctreeNode-test',
+	'test/addons/raycastpack/RayObject-test',
 	'test/animationpack/blendtree/BinaryLERPSource-test',
 	'test/animationpack/blendtree/ClipSource-test',
 	'test/animationpack/blendtree/FrozenClipSource-test',
