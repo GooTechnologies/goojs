@@ -42,7 +42,7 @@ function (
 		var that = this;
 		SystemBus.addListener('playStateChanged', function(playState) {
 			this._objects.forEach(function (texture) {
-				if (texture.image.play && texture.image.pause) {
+				if (texture.image && texture.image.play && texture.image.pause) {
 					var video = texture.image;
 					if (playState === 'play') {
 						video.play();
