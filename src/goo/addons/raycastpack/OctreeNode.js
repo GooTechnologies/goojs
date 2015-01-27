@@ -7,10 +7,8 @@ function (Vector3) {
 
 	//move to ArrayUtil?
 	var removeArrayElement = function(array, element) {
-		for (var i=0, j=0; i<array.length; i++)
-		{
-			if (array[i] !== element)
-			{
+		for (var i=0, j=0; i<array.length; i++) {
+			if (array[i] !== element) {
 				array[j++] = array[i];
 			}
 		}
@@ -59,18 +57,18 @@ function (Vector3) {
 		halfSize.subVector(this.boundMin);
 		halfSize.mul(0.5);
 
-		for(var z=0;z<2;z++) {
-			for(var y=0;y<2;y++) {
-				for(var x=0;x<2;x++) {
+		for (var z = 0; z < 2; z++) {
+			for (var y = 0; y < 2; y++) {
+				for (var x = 0; x < 2; x++) {
 					var childBoundMin = this.tmpVec2;
 					childBoundMin.setVector(this.boundMin);
-					childBoundMin.addDirect(halfSize.x*x, halfSize.y*y, halfSize.z*z);
+					childBoundMin.addDirect(halfSize.x * x, halfSize.y * y, halfSize.z * z);
 
 					var childBoundMax = this.tmpVec3;
 					childBoundMax.setVector(childBoundMin);
 					childBoundMax.addVector(halfSize);
 
-					var child = this.children[this.coordinateToIndex(x,y,z)] = new OctreeNode(this.octree, childBoundMin, childBoundMax, this.depth+1);
+					var child = this.children[this.coordinateToIndex(x, y, z)] = new OctreeNode(this.octree, childBoundMin, childBoundMax, this.depth + 1);
 
 					//Recursively create all the children in a node until reaching leaf level.
 					child.generateChildren();
@@ -161,29 +159,25 @@ function (Vector3) {
 	};
 
 	OctreeNode.prototype.addData = function(object) {
-		if(this.data.indexOf(object) === -1)
-		{
+		if(this.data.indexOf(object) === -1) {
 			this.data.push(object);
 		}
 	};
 
 	OctreeNode.prototype.optimize = function() {
-		if(!this.isLeaf)
-		{
+		if(!this.isLeaf) {
+
 			//optimize all children recursively
-			for(var i=this.children.length-1; i>=0; i--)
-			{
+			for(var i=this.children.length-1; i>=0; i--) {
 				var child = this.children[i];
-				if(child.optimize())
-				{
+				if(child.optimize()) {
 					removeArrayElement(this.children, child);
 				}
 			}
 
 			return (this.children.length === 0);
-		}
-		else
-		{
+		} else {
+
 			return (this.data.length === 0);
 		}
 	};
