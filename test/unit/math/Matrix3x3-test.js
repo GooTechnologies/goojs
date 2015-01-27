@@ -225,5 +225,36 @@ define([
 				expect(clone).toBeCloseToMatrix(new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99));
 			});
 		});
+
+		describe('NaN checks (only in dev)', function () {
+			it('throws an exception when trying to set a matrix component to NaN', function () {
+				var matrix1 = new Matrix3x3();
+				expect(function () { matrix1.e12 = NaN; })
+					.toThrow(new Error('Tried setting NaN to matrix component e12'));
+
+				var matrix2 = new Matrix3x3();
+				expect(function () { matrix2[4] = NaN; })
+					.toThrow(new Error('Tried setting NaN to matrix component 4'));
+			});
+
+			it('throws an exception when trying to corrupt a matrix by using methods', function () {
+				var matrix1 = new Matrix3x3();
+				expect(function () { matrix1.add(NaN); })
+					.toThrow(new Error('Matrix contains NaN at index 0'));
+
+				var matrix2 = new Matrix3x3();
+				expect(function () { matrix2.fromAngles(); })
+					.toThrow(new Error('Matrix contains NaN at index 0'));
+			});
+
+			it('throws an exception when a corrupt matrix would return NaN', function () {
+				var matrix = new Matrix3x3();
+				// manually corrupting this matrix
+				// this is the only non-traceable way
+				matrix.data[0] = NaN;
+				expect(function () { matrix.determinant(); })
+					.toThrow(new Error('Matrix method determinant returned NaN'));
+			});
+		});
 	});
 });

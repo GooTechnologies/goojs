@@ -68,6 +68,7 @@ define([
 
 	/**
 	 * Replaces the supplied method of object and wraps it in a integrity check
+	 * @hidden
 	 * @param {object} object The object to attach the post-check to
 	 * @param {string} methodName The name of the original method the check is attached to
 	 */
@@ -87,9 +88,10 @@ define([
 	};
 
 	/**
-	 * Adds more post-
+	 * Adds more validators at once
+	 * @hidden
 	 * @param object
-	 * @param methodNames
+	 * @param {string[]} methodNames
 	 */
 	Vector.addPostChecks = function (object, methodNames) {
 		methodNames.forEach(Vector.addPostCheck.bind(null, object));

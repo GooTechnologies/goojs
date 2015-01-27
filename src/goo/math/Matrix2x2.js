@@ -378,5 +378,13 @@ define([
 		);
 	};
 
+	// #ifdef DEBUG
+	Matrix.addPostChecks(Matrix2x2.prototype, [
+		'add', 'sub', 'mul', 'div', 'combine', 'transpose', 'invert',
+		'isOrthogonal', 'determinant',
+		'copy'
+	]);
+	// #endif
+
 	return Matrix2x2;
 });
