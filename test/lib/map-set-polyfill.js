@@ -18,16 +18,7 @@
 	//shortcuts
 	var defineProperty = Object.defineProperty, is = Object.is;
 
-
-	var supported = true;
-	try {
-		new Set([1, 2, 3]);
-		new Map([[]]);
-	} catch (e) {
-		supported = false;
-	}
-
-	if (!supported) {
+	if (typeof exports.Set === 'undefined') {
 		exports.Map = createCollection({
 			// WeakMap#delete(key:void*):boolean
 			'delete': sharedDelete,

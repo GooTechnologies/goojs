@@ -173,7 +173,10 @@ define([
 					expected.hasOwnProperty('value') &&
 					expected.hasOwnProperty('excluded')
 					) {
-					excluded = new Set(expected.excluded);
+					excluded = new Set();
+					expected.excluded.forEach(function (element) {
+						excluded.add(element);
+					});
 					value = expected.value;
 				} else {
 					excluded = new Set();
