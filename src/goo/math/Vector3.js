@@ -1013,5 +1013,17 @@ define([
 	 */
 	Vector3.prototype.copy = Vector3.prototype.setVector;
 
+	// #ifdef DEBUG
+	Vector.addPostChecks(Vector3.prototype, [
+		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',
+		'cross', 'lerp', 'reflect',
+		'setDirect', 'setArray', 'setVector',
+		'addDirect', 'addVector',
+		'subDirect', 'subVector',
+		'mulDirect', 'mulVector',
+		'scale', 'lengthSquared', 'length', 'normalize', 'distanceSquared', 'distance'
+	]);
+	// #endif
+
 	return Vector3;
 });

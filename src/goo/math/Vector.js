@@ -16,36 +16,85 @@ define([
 
 	/**
 	 * Binds aliases to the different vector components.
-	 * @private
-	 * @param {prototype} prototype The prototype to bind to.
-	 * @param {String[]} aliases Array of component aliases for each component index.
+	 * @hidden
+	 * @param {Object} prototype The prototype to bind to.
+	 * @param {string[][]} aliases Array of component aliases for each component index.
 	 */
 	Vector.setupAliases = function (prototype, aliases) {
-		for (var i = 0; i < aliases.length; i++) {
-			/*jshint loopfunc: true */
-			(function (index) {
-				for (var j = 0; j < aliases[index].length; j++) {
-					Object.defineProperty(prototype, aliases[index][j], {
-						get: function () {
-							return this.data[index];
-						},
-						set: function (value) {
-							this.data[index] = value;
-						}
-					});
-				}
-
-				Object.defineProperty(prototype, i, {
+		aliases.forEach(function (aliasesPerComponent, index) {
+			aliasesPerComponent.forEach(function (alias) {
+				Object.defineProperty(prototype, alias, {
 					get: function () {
 						return this.data[index];
 					},
 					set: function (value) {
 						this.data[index] = value;
+						// #ifdef DEBUG
+						if (isNaN(this.data[index])) {
+							throw new Error('Tried setting NaN to vector component ' + alias);
+						}
+						// #endif
 					}
 				});
-			})(i);
+			});
+
+			Object.defineProperty(prototype, index, {
+				get: function () {
+					return this.data[index];
+				},
+				set: function (value) {
+					this.data[index] = value;
+					// #ifdef DEBUG
+					if (isNaN(this.data[index])) {
+						throw new Error('Tried setting NaN to vector component ' + index);
+					}
+					// #endif
+				}
+			});
+		});
+	};
+
+	// #ifdef DEBUG
+	/**
+	 * Throws an error if any of the vector's components are NaN
+	 */
+	Vector.prototype.checkIntegrity = function () {
+		for (var i = 0; i < this.data.length; i++) {
+			if (isNaN(this.data[i])) {
+				throw new Error('Vector contains NaN at index ' + i);
+			}
 		}
 	};
+
+	/**
+	 * Replaces the supplied method of object and wraps it in a integrity check
+	 * @param {object} object The object to attach the post-check to
+	 * @param {string} methodName The name of the original method the check is attached to
+	 */
+	Vector.addPostCheck = function (object, methodName) {
+		var originalMethod = object[methodName];
+		object[methodName] = function () {
+			var ret = originalMethod.apply(this, arguments);
+			if (typeof ret === 'number') {
+				if (isNaN(ret)) {
+					throw new Error('Vector method ' + methodName + ' returned NaN');
+				}
+			}
+
+			this.checkIntegrity();
+			return ret;
+		};
+	};
+
+	/**
+	 * Adds more post-
+	 * @param object
+	 * @param methodNames
+	 */
+	Vector.addPostChecks = function (object, methodNames) {
+		methodNames.forEach(Vector.addPostCheck.bind(null, object));
+	};
+	// #endif
 
 	/**
 	 * Performs a component-wise addition and stores the result in a separate vector. Equivalent of 'return (target = lhs + rhs);'.
