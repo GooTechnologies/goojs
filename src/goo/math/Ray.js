@@ -8,18 +8,32 @@ define([
 	'use strict';
 
 	/**
-	 * Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
+	 * Constructs a new ray.
 	 */
-	function Ray(origin, direction) {
-		this.origin = origin || new Vector3();
-		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
-		this.length;
+	function Ray(origin, direction, length) {
+		this.origin = new Vector3(origin || Vector3.ZERO);
+
+		this.direction = new Vector3(direction || Vector3.UNIT_Z);
+		this.inverseDirection = new Vector3();
+		this.setDirection(this.direction);
+
+		this.length = length || Number.MAX_SAFE_INTEGER;
 	}
 
 	var tmpVec1 = new Vector3();
 	var tmpVec2 = new Vector3();
 	var tmpVec3 = new Vector3();
 	var tmpVec4 = new Vector3();
+
+
+	/**
+	 * @param direction Vector3
+	 * @returns nothing
+	 */
+	Ray.prototype.setDirection = function (direction) {
+		this.direction.setVector(direction);
+		this.inverseDirection.setDirect(MathUtils.safeInvert(direction.x),MathUtils.safeInvert(direction.y),MathUtils.safeInvert(direction.z));
+	};
 
 	/**
 	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar == true)
