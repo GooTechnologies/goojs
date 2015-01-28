@@ -42,6 +42,7 @@ define([
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
+	//! AT: what is this?! isn't EPSILON enough?
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
 
 	/**
@@ -400,7 +401,7 @@ define([
 
 	/**
 	 * Sets the value of this quaternion to the rotation described by the given matrix values.
-	 * @param {Matrix3x3} Rotation matrix.
+	 * @param {Matrix3x3} matrix Rotation matrix.
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.fromRotationMatrix = function (matrix) {
@@ -690,6 +691,15 @@ define([
 
 	Quaternion.prototype.setv = addWarning(
 		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
+
+	// #ifdef DEBUG
+	Vector.addPostChecks(Quaternion.prototype, [
+		'add', 'sub', 'mul',
+		'slerp', 'fromRotationMatrix', 'fromVectorToVector', 'normalize',
+		'magnitude', 'magnitudeSquared', 'fromAngleAxis', 'fromAngleNormalAxis',
+		'setDirect', 'setVector'
+	]);
+	// #endif
 
 	return Quaternion;
 });

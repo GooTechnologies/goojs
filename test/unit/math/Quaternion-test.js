@@ -268,5 +268,35 @@ define([
 			expect(q).toEqual(p);
 		});
 
+		describe('NaN checks (only in dev)', function () {
+			it('throws an exception when trying to set a quaternion component to NaN', function () {
+				var quaternion1 = new Quaternion();
+				expect(function () { quaternion1.z = NaN; })
+					.toThrow(new Error('Tried setting NaN to vector component z'));
+
+				var quaternion2 = new Quaternion();
+				expect(function () { quaternion2[1] = NaN; })
+					.toThrow(new Error('Tried setting NaN to vector component 1'));
+			});
+
+			it('throws an exception when trying to corrupt a vector by using methods', function () {
+				var quaternion1 = new Quaternion();
+				expect(function () { quaternion1.add({ data: [] }); })
+					.toThrow(new Error('Vector contains NaN at index 0'));
+
+				var quaternion2 = new Quaternion();
+				expect(function () { quaternion2.setDirect(); })
+					.toThrow(new Error('Vector contains NaN at index 0'));
+			});
+
+			it('throws an exception when a corrupt quaternion would return NaN', function () {
+				var quaternion = new Quaternion();
+				// manually corrupting this quaternion
+				// this is the only non-traceable way
+				quaternion.data[0] = NaN;
+				expect(function () { quaternion.magnitudeSquared(); })
+					.toThrow(new Error('Vector method magnitudeSquared returned NaN'));
+			});
+		});
 	});
 });
