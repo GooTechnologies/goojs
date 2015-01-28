@@ -64,6 +64,10 @@ define([
 		this.hidden = false;
 
 		this._renderDistance = 0;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	MeshRendererComponent.type = 'MeshRendererComponent';

@@ -142,6 +142,10 @@ define([
 
 		this.fullOverride = false;
 		this.errorOnce = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**

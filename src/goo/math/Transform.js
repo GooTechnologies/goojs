@@ -29,6 +29,10 @@ define([
 		this.rotation = new Matrix3x3();
 		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec = new Vector3();

@@ -58,6 +58,10 @@ define([
 		this.recreateParticles(particleCount);
 
 		this.enabled = true;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	ParticleComponent.type = 'ParticleComponent';

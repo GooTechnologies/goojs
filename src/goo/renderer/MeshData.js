@@ -48,11 +48,17 @@ define([
 		this.weightsPerVertex = undefined;
 		this.boundingBox = undefined;
 		this.store = undefined;
+		this.wireframeData = undefined;
+		this.flatMeshData = undefined;
 
 		this._attributeDataNeedsRefresh = false;
 		this._dirtyAttributeNames = new Set();
 
 		this.rebuildData(this.vertexCount, this.indexCount);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	MeshData.MESH = 0;
@@ -69,10 +75,12 @@ define([
 		var savedIndices = null;
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
-				var view = this.dataViews[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var view = this.dataViews[key];
 				if (view) {
-					savedAttributes[i] = view;
+					savedAttributes[key] = view;
 				}
 			}
 			if (this.indexData) {
@@ -85,14 +93,15 @@ define([
 		this.rebuildIndexData(indexCount);
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
-				var saved = savedAttributes[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var saved = savedAttributes[key];
 				if (saved) {
-					var view = this.dataViews[i];
-					view.set(saved);
+					this.dataViews[key].set(saved);
 				}
 			}
-			savedAttributes = {}; //! AT: unused
+
 			if (savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
@@ -111,8 +120,9 @@ define([
 		}
 		if (this.vertexCount > 0) {
 			var vertexByteSize = 0;
-			for (var i in this.attributeMap) {
-				var attribute = this.attributeMap[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var attribute = this.attributeMap[keys[i]];
 				vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
 			}
 			this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
@@ -755,7 +765,7 @@ define([
 		}
 
 		flatMeshData.paletteMap = this.paletteMap;
-		flatMeshData.weightPerVertex = this.weightsPerVertex;
+		flatMeshData.weightsPerVertex = this.weightsPerVertex;
 
 		return flatMeshData;
 	};

@@ -25,6 +25,10 @@ define([
 		this.xExtent = xExtent !== undefined ? xExtent : 1;
 		this.yExtent = yExtent !== undefined ? yExtent : 1;
 		this.zExtent = zExtent !== undefined ? zExtent : 1;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec1 = new Vector3();

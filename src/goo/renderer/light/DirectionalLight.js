@@ -22,6 +22,10 @@ define([
 		 * @type {Vector3}
 		 */
 		this.direction = new Vector3();
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	DirectionalLight.prototype = Object.create(Light.prototype);

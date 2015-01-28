@@ -112,6 +112,10 @@ define([
 		}
 
 		this.textureRecord = {};
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**

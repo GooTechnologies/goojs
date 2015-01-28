@@ -19,6 +19,10 @@ define([
 		 * @type {number}
 		 */
 		this.range = 1000;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	PointLight.prototype = Object.create(Light.prototype);

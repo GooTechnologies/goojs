@@ -196,6 +196,10 @@ define([
 		}.bind(this));
 
 		this._definesIndices = [];
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Renderer.prototype.setupDebugging = function (parameters) {

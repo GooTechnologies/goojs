@@ -47,6 +47,10 @@ define([
 		 * @default (0, 0, -1)
 		 */
 		this.dirVec = new Vector3(0, 0, -1);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	CameraComponent.type = 'CameraComponent';

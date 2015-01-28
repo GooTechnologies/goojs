@@ -43,6 +43,10 @@ define([
 			*/
 			this.scripts = [];
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	ScriptComponent.type = 'ScriptComponent';

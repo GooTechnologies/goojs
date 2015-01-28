@@ -30,6 +30,10 @@ define([
 		 * @default
 		 */
 		this.hidden = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	LightComponent.type = 'LightComponent';
