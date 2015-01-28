@@ -343,5 +343,13 @@ define([], function () {
 		return MathUtils.randomSeed / 233280;
 	};
 
+	/**
+	 * a safe version of 1/denumerator to handle division by 0
+	 * @returns {number} inverted value or MAX_SAFE_INTEGER instead of Infinity for 0
+	 */
+	MathUtils.safeInvert = function(denumerator) {
+		return (denumerator===0) ? Number.MAX_SAFE_INTEGER : 1/denumerator;
+	};
+
 	return MathUtils;
 });
