@@ -1,6 +1,11 @@
 // based on es6-collections by Andrea Giammarchi, @WebReflection
 // Object.is shim from the MDN
-(function (exports) {'use strict';
+
+// not a require module, but a simple self contained polyfill
+// separately minified and attached to the engine
+(function () {
+	'use strict';
+
 	if (!Object.is) {
 		Object.is = function(v1, v2) {
 			if (v1 === 0 && v2 === 0) {
@@ -18,8 +23,8 @@
 	//shortcuts
 	var defineProperty = Object.defineProperty, is = Object.is;
 
-	if (typeof exports.Set === 'undefined') {
-		exports.Map = createCollection({
+	if (!window.Set) {
+		window.Map = createCollection({
 			// WeakMap#delete(key:void*):boolean
 			'delete': sharedDelete,
 			//:was Map#get(key:void*[, d3fault:void*]):void*
@@ -39,7 +44,7 @@
 			clear: sharedClear
 		});
 
-		exports.Set = createCollection({
+		window.Set = createCollection({
 			// Set#has(value:void*):boolean
 			has: setHas,
 			// Set#add(value:void*):boolean
@@ -163,16 +168,15 @@
 	function sharedForEach(callback, context) {
 		var self = this;
 		var values = self._values.slice();
-		self._keys.slice().forEach(function(key, n){
+		self._keys.slice().forEach(function (key, n) {
 			callback.call(context, values[n], key, self);
 		});
 	}
 
 	function sharedSetIterate(callback, context) {
 		var self = this;
-		self._values.slice().forEach(function(value){
+		self._values.slice().forEach(function (value) {
 			callback.call(context, value, value, self);
 		});
 	}
-
-})(window);
+})();
