@@ -29,7 +29,7 @@ function (Vector3) {
         return locationStore;
     };
 
-    //not necessary I think, surfaceObject contains all of these functions, might want to make wrappers for them like this
+    //not necessary I think, since surfaceObject contains all of these functions but we might want to make wrappers for them like this
     /*
     //returns a world space normal of the hit triangle
     HitResult.prototype.getWorldHitLocation = function (normalStore) {
