@@ -148,5 +148,35 @@ define([
 			expect(a).toBe(0);
 		});
 
+		describe("safeInvert", function() {
+			it('safely inverts 0', function () {
+				var a = 0;
+				var b = MathUtils.safeInvert(a);
+				//makes sure b is not infinity or NaN
+				expect(Infinity/b).toBe(Infinity);
+			});
+
+			it('safely inverts EPSILON', function () {
+				var a = Number.EPSILON;
+				var b = MathUtils.safeInvert(a);
+				//makes sure b is not infinity or NaN
+				expect(Infinity/b).toBe(Infinity);
+			});
+
+			it('safely inverts Infinity', function () {
+				var a = Infinity;
+				var b = MathUtils.safeInvert(a);
+				//makes sure b is not infinity or NaN
+				expect(b).toBe(0);
+			});
+
+			it('safely inverts MAX_SAFE_INTEGER', function () {
+				var a = Number.MAX_SAFE_INTEGER;
+				var b = MathUtils.safeInvert(a);
+				//makes sure b is not infinity or NaN
+				expect(Infinity/b).toBe(Infinity);
+			});
+		});
+
 	});
 });

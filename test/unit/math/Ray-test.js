@@ -1,11 +1,13 @@
 define([
 	'goo/math/Ray',
 	'goo/math/Plane',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/math/MathUtils'
 ], function(
 	Ray,
 	Plane,
-	Vector3
+	Vector3,
+	MathUtils
 	) {
 	'use strict';
 
@@ -52,6 +54,35 @@ define([
 			var store = new Vector3(1,1,1);
 			ray.intersects(quad,false,store);
 			expect(store).toEqual(new Vector3(0,0,0));
+		});
+
+		describe('setDirection', function () {
+			it('checks direction vector', function () {
+				var ray = new Ray(new Vector3(0,0,-1), new Vector3(0,0,1));
+
+				var direction = new Vector3(0,-1,0);
+				ray.setDirection(direction);
+
+				expect(ray.direction.x).toEqual(direction.x);
+				expect(ray.direction.y).toEqual(direction.y);
+				expect(ray.direction.z).toEqual(direction.z);
+			});
+
+			it('computes inverse direction', function () {
+				var ray = new Ray(new Vector3(0,0,-1), new Vector3(0,0,1));
+
+				var direction = new Vector3(1,-1,10).normalize();
+				ray.setDirection(direction);
+
+
+				var computedInverseDirection = new Vector3().setDirect(MathUtils.safeInvert(direction.x),MathUtils.safeInvert(direction.y),MathUtils.safeInvert(direction.z));
+
+				var rayInverseDirection = ray.inverseDirection;
+
+				expect(rayInverseDirection.x).toEqual(computedInverseDirection.x);
+				expect(rayInverseDirection.y).toEqual(computedInverseDirection.y);
+				expect(rayInverseDirection.z).toEqual(computedInverseDirection.z);
+			});
 		});
 
 		describe('intersectsTriangle', function () {
