@@ -900,7 +900,7 @@ define([
 			if (defaults[type] !== undefined) {
 				map[type] = Util.clone(defaults[type]);
 			} else {
-				throw "No default attribute named: " + type;
+				throw new Error('No default attribute named: ' + type);
 			}
 		}
 		return map;
