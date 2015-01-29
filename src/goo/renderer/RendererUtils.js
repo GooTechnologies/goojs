@@ -7,7 +7,7 @@ define([
 	'use strict';
 
 	/**
-	 * Common utilities
+	 * Renderer-related utilities
 	 */
 	function RendererUtils() {}
 
@@ -93,12 +93,11 @@ define([
 
 	/**
 	 * Clones an object recursively
-	 * @hidden
+	 * @deprecated Deprecated as of 0.12.x and scheduled for removal in 0.14.0; Please use `ObjectUtil.deepClone` instead
 	 * @param {*} object Object to clone
 	 * @returns {*} Cloned object
 	 */
 	RendererUtils.clone = ObjectUtil.deepClone;
-
 
 	RendererUtils._blankImages = {};
 	RendererUtils.getBlankImage = function(texture, color, width, height, maxSize, index) {
