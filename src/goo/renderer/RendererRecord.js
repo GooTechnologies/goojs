@@ -42,6 +42,10 @@ function () {
 
 		this.shaderCache = new Map();
 		this.attributeCache = [];
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function (target) {

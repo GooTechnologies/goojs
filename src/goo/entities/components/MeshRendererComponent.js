@@ -64,6 +64,10 @@ define([
 		this.hidden = false;
 
 		this._renderDistance = 0;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	MeshRendererComponent.type = 'MeshRendererComponent';
@@ -117,6 +121,33 @@ define([
 	 */
 	MeshRendererComponent.prototype.updateBounds = function (bounding, transform) {
 		this.worldBound = bounding.transform(transform, this.worldBound);
+	};
+
+	/**
+	 * Returns a clone of this mesh renderer component
+	 * @param {object} [options={}] Options to be passed to clone methods encountered in the object graph
+	 * @returns {MeshRendererComponent}
+	 */
+	MeshRendererComponent.prototype.clone = function (options) {
+		options = options || {};
+
+		var clonedMaterials;
+
+		if (options.shareMaterials) {
+			clonedMaterials = this.materials;
+		} else {
+			clonedMaterials = this.materials.map(function (material) { return material.clone(options); });
+		}
+
+		var clone = new MeshRendererComponent(clonedMaterials);
+
+		clone.cullMode = this.cullMode;
+		clone.castShadows = this.castShadows;
+		clone.receiveShadows = this.receiveShadows;
+		clone.isPickable = this.isPickable;
+		clone.isReflectable = this.isReflectable;
+
+		return clone;
 	};
 
 	MeshRendererComponent.applyOnEntity = function (obj, entity) {

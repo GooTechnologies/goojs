@@ -37,6 +37,10 @@ define([
 		} else {
 			Matrix.prototype.set.apply(this, arguments);
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Matrix3x3._tempX = new Vector3();

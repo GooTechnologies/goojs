@@ -40,6 +40,10 @@ define([
 		this._endPromise = null;
 
 		this._paused = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**

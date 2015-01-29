@@ -10,6 +10,7 @@ define([
 	/**
 	 * Constructs a new ray.
 	 */
+
 	function Ray(origin, direction, length) {
 		this.origin = new Vector3(origin || Vector3.ZERO);
 
@@ -18,6 +19,10 @@ define([
 		this.setDirection(this.direction);
 
 		this.length = length || Number.MAX_SAFE_INTEGER;
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
+
 	}
 
 	var tmpVec1 = new Vector3();
@@ -198,7 +203,7 @@ define([
 		distance = tMin;
 
 		return distance;
-	}
+	};
 	
 	/**
 	 * @param {Vector3} point
@@ -219,7 +224,7 @@ define([
 			vectorA.setVector(this.origin);
 		}
 
-		// Save away the closest point if requested.
+		// Save away the closest point if requested
 		if (store) {
 			store.setVector(vectorA);
 		}
@@ -248,6 +253,17 @@ define([
 
 		this.length = oldLength;
 	};
-	
+
+	Ray.prototype.copy = function (source) {
+		this.origin.copy(source.origin);
+		this.direction.copy(source.direction);
+		this.inverseDirection.copy(source.inverseDirection);
+		this.length = source.length;
+	};
+
+	Ray.prototype.clone = function () {
+		return new Ray(this.origin.clone(), this.direction.clone());
+	};
+
 	return Ray;
 });

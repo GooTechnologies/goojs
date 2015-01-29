@@ -30,6 +30,10 @@ define([
 		} else {
 			this.data[3] = 1;
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Quaternion.prototype = Object.create(Vector.prototype);
@@ -279,6 +283,25 @@ define([
 		this.data[2] *= -1;
 		this.data[3] *= -1;
 		return this;
+	};
+
+	/**
+	 * Conjugates this quaternion
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	Quaternion.prototype.conjugate = function () {
+		this.data[0] *= -1;
+		this.data[1] *= -1;
+		this.data[2] *= -1;
+		return this;
+	};
+
+	/**
+	 * Inverts this quaternion
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	Quaternion.prototype.invert = function () {
+		return this.conjugate().normalize();
 	};
 
 	/**
@@ -686,6 +709,14 @@ define([
 
 	Quaternion.prototype.setv = addWarning(
 		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
+
+	/**
+	 * Clones the quaternion
+	 * @returns {Quaternion} Clone of self
+	 */
+	Quaternion.prototype.clone = function () {
+		return new Quaternion(this);
+	};
 
 	return Quaternion;
 });

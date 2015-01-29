@@ -20,5 +20,45 @@ define([
 				expect(spy).toHaveBeenCalledWith(obj['p2'], 'p2', obj);
 			});
 		});
+		
+		describe('cloneMap', function () {
+			it('clones an empty map', function () {
+				var originalMap = new Map();
+				var clonedMap = ObjectUtil.cloneMap(originalMap);
+
+				expect(clonedMap.size).toEqual(0);
+			});
+
+			it('clones a map with some elements', function () {
+				var originalMap = new Map();
+				originalMap.set(11, 'aa');
+				originalMap.set(22, 'bb');
+				var clonedMap = ObjectUtil.cloneMap(originalMap);
+
+				expect(clonedMap.size).toEqual(2);
+				expect(clonedMap.get(11)).toEqual('aa');
+				expect(clonedMap.get(22)).toEqual('bb');
+			});
+		});
+
+		describe('cloneSet', function () {
+			it('clones an empty set', function () {
+				var originalSet = new Set();
+				var clonedSet = ObjectUtil.cloneSet(originalSet);
+
+				expect(clonedSet.size).toEqual(0);
+			});
+
+			it('clones a set with some elements', function () {
+				var originalSet = new Set();
+				originalSet.add(11);
+				originalSet.add(22);
+				var clonedSet = ObjectUtil.cloneSet(originalSet);
+
+				expect(clonedSet.size).toEqual(2);
+				expect(clonedSet.has(11)).toBeTruthy();
+				expect(clonedSet.has(22)).toBeTruthy();
+			});
+		});
 	});
 });

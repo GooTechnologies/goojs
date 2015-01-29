@@ -3,13 +3,15 @@ define([
 	'goo/entities/Entity',
 	'goo/entities/components/CameraComponent',
 	'goo/renderer/Camera',
-	'goo/entities/SystemBus'
+	'goo/entities/SystemBus',
+	'test/CustomMatchers'
 ], function (
 	World,
 	Entity,
 	CameraComponent,
 	Camera,
-	SystemBus
+	SystemBus,
+	CustomMatchers
 	) {
 	'use strict';
 
@@ -19,6 +21,7 @@ define([
 		beforeEach(function () {
 			world = new World();
 			world.registerComponent(CameraComponent);
+			jasmine.addMatchers(CustomMatchers);
 		});
 
 		it('attaches .setAsMainCamera to the host entity', function () {
@@ -53,6 +56,25 @@ define([
 
 				entity.setComponent(cameraComponent);
 				expect(entity.setAsMainCamera()).toBe(entity);
+			});
+		});
+
+		describe('copy', function () {
+			it('can copy everything from another camera component', function () {
+				var original = new CameraComponent(new Camera(50, 2, 2, 2000));
+				var copy = new CameraComponent(new Camera(50, 2, 2, 2000));
+				copy.copy(original);
+
+				expect(copy).toBeCloned(original);
+			});
+		});
+
+		describe('clone', function () {
+			it('can clone a camera component', function () {
+				var original = new CameraComponent(new Camera(50, 2, 2, 2000));
+				var clone = original.clone();
+
+				expect(clone).toBeCloned(original);
 			});
 		});
 	});

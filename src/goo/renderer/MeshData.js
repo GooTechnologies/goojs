@@ -4,14 +4,16 @@ define([
 	'goo/renderer/BufferUtils',
 	'goo/math/Vector2',
 	'goo/math/Vector3',
-	'goo/math/Vector4'
+	'goo/math/Vector4',
+	'goo/util/ObjectUtil'
 ], function (
 	BufferData,
 	Util,
 	BufferUtils,
 	Vector2,
 	Vector3,
-	Vector4
+	Vector4,
+	_
 ) {
 	'use strict';
 
@@ -46,11 +48,17 @@ define([
 		this.weightsPerVertex = undefined;
 		this.boundingBox = undefined;
 		this.store = undefined;
+		this.wireframeData = undefined;
+		this.flatMeshData = undefined;
 
 		this._attributeDataNeedsRefresh = false;
 		this._dirtyAttributeNames = new Set();
 
 		this.rebuildData(this.vertexCount, this.indexCount);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	MeshData.MESH = 0;
@@ -67,10 +75,12 @@ define([
 		var savedIndices = null;
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
-				var view = this.dataViews[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var view = this.dataViews[key];
 				if (view) {
-					savedAttributes[i] = view;
+					savedAttributes[key] = view;
 				}
 			}
 			if (this.indexData) {
@@ -83,14 +93,15 @@ define([
 		this.rebuildIndexData(indexCount);
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
-				var saved = savedAttributes[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var saved = savedAttributes[key];
 				if (saved) {
-					var view = this.dataViews[i];
-					view.set(saved);
+					this.dataViews[key].set(saved);
 				}
 			}
-			savedAttributes = {};
+
 			if (savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
@@ -109,8 +120,9 @@ define([
 		}
 		if (this.vertexCount > 0) {
 			var vertexByteSize = 0;
-			for (var i in this.attributeMap) {
-				var attribute = this.attributeMap[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var attribute = this.attributeMap[keys[i]];
 				vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
 			}
 			this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
@@ -753,7 +765,7 @@ define([
 		}
 
 		flatMeshData.paletteMap = this.paletteMap;
-		flatMeshData.weightPerVertex = this.weightsPerVertex;
+		flatMeshData.weightsPerVertex = this.weightsPerVertex;
 
 		return flatMeshData;
 	};
@@ -769,6 +781,34 @@ define([
 		if (this.indexData) {
 			this.indexData.destroy(context);
 		}
+	};
+
+	/**
+	 * Returns a clone of this mesh data
+	 * @returns {MeshData}
+	 */
+	MeshData.prototype.clone = function () {
+		var attributeMapClone = _.deepClone(this.attributeMap);
+
+		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
+
+		clone.primitiveCounts = this.primitiveCounts.slice(0); // an array
+
+		clone.vertexData.copy(this.vertexData); // BufferData
+		clone.indexData.copy(this.indexData); // BufferData
+
+		clone.indexLengths = this.indexLengths.slice(0);
+		clone.indexModes = this.indexModes.slice(0);
+
+		clone.type = this.type;
+
+		if (this.paletteMap) {
+			clone.paletteMap = this.paletteMap.slice(0); // an array
+		}
+
+		clone.weightsPerVertex = this.weightsPerVertex; // a number
+
+		return clone;
 	};
 
 	/**

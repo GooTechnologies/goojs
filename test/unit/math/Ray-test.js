@@ -2,16 +2,23 @@ define([
 	'goo/math/Ray',
 	'goo/math/Plane',
 	'goo/math/Vector3',
-	'goo/math/MathUtils'
-], function(
+	'goo/math/MathUtils',
+	'test/CustomMatchers'
+], function (
 	Ray,
 	Plane,
 	Vector3,
-	MathUtils
-	) {
+	MathUtils,
+	CustomMatchers
+) {
+
 	'use strict';
 
 	describe('Ray', function () {
+		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
+		});
+
 		describe('constructor', function () {
 			it('creates a ray given no parameters', function () {
 				var ray = new Ray();
@@ -123,6 +130,25 @@ define([
 
 				expect(ray.distanceSquared(collinearPoint, closestPoint)).toBeCloseTo(Math.pow(0, 2));
 				expect(closestPoint.equals(new Vector3(4, 0, 20))).toBeTruthy();
+			});
+		});
+
+		describe('copy', function () {
+			it('can copy everything from another ray', function () {
+				var original = new Ray(new Vector3(1, 2, 3), new Vector3(4, 5, 6));
+				var copy = new Ray();
+				copy.copy(original);
+
+				expect(copy).toBeCloned(original);
+			});
+		});
+
+		describe('clone', function () {
+			it('can clone a ray', function () {
+				var original = new Ray(new Vector3(1, 2, 3), new Vector3(4, 5, 6));
+				var clone = original.clone();
+
+				expect(clone).toBeCloned(original);
 			});
 		});
 	});

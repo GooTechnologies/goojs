@@ -19,6 +19,10 @@ define([
 
 		this.text = text || '';
 		this.dirty = true;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	TextComponent.type = 'TextComponent';
