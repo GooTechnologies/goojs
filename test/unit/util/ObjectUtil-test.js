@@ -30,7 +30,9 @@ define([
 			});
 
 			it('clones a map with some elements', function () {
-				var originalMap = new Map([[11, 'aa'], [22, 'bb']]);
+				var originalMap = new Map();
+				originalMap.set(11, 'aa');
+				originalMap.set(22, 'bb');
 				var clonedMap = ObjectUtil.cloneMap(originalMap);
 
 				expect(clonedMap.size).toEqual(2);
@@ -42,14 +44,16 @@ define([
 		describe('cloneSet', function () {
 			it('clones an empty set', function () {
 				var originalSet = new Set();
-				var clonedSet = ObjectUtil.cloneMap(originalSet);
+				var clonedSet = ObjectUtil.cloneSet(originalSet);
 
 				expect(clonedSet.size).toEqual(0);
 			});
 
 			it('clones a set with some elements', function () {
-				var originalSet = new Set([11, 22]);
-				var clonedSet = ObjectUtil.cloneMap(originalSet);
+				var originalSet = new Set();
+				originalSet.add(11);
+				originalSet.add(22);
+				var clonedSet = ObjectUtil.cloneSet(originalSet);
 
 				expect(clonedSet.size).toEqual(2);
 				expect(clonedSet.has(11)).toBeTruthy();
