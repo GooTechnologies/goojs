@@ -11,13 +11,13 @@ define([
 	 * Constructs a new ray.
 	 */
 	function Ray(origin, direction, length) {
-		this.origin = new Vector3(origin || Vector3.ZERO);
 
-		this.direction = new Vector3(direction || Vector3.UNIT_Z);
+		this.origin = new Vector3();
+		this.direction = new Vector3();
 		this.inverseDirection = new Vector3();
-		this.setDirection(this.direction);
+		this.length = Number.MAX_SAFE_INTEGER;
 
-		this.length = length || Number.MAX_SAFE_INTEGER;
+		this.constructOriginDirection(origin || Vector3.ZERO, direction || Vector3.UNIT_Z, length || Number.MAX_SAFE_INTEGER);
 	}
 
 	var tmpVec1 = new Vector3();
@@ -28,11 +28,50 @@ define([
 
 	/**
 	 * @param direction Vector3
-	 * @returns nothing
+	 * @returns this
 	 */
 	Ray.prototype.setDirection = function (direction) {
 		this.direction.setVector(direction);
 		this.inverseDirection.setDirect(MathUtils.safeInvert(direction.x),MathUtils.safeInvert(direction.y),MathUtils.safeInvert(direction.z));
+		return this;
+	};
+
+
+	/**
+	 * constructs a ray given an origin, direction and length
+	 * @param {Vector3} origin
+	 * @param {Vector3} direction
+	 * @param {number} length
+	 * @returns this
+	 */
+	Ray.prototype.constructOriginDirection = function (origin, direction, length) {
+
+		this.origin.setVector(origin);
+
+		this.direction.setVector(direction);
+		this.setDirection(this.direction);
+
+		this.length = length;
+		return this;
+	}
+
+	/**
+	 * constructs a ray given a from and a to vector
+	 * @param from Vector3
+	 * @param to Vector3
+	 * @returns this
+	 */
+	Ray.prototype.constructFromTo = function (from, to) {
+
+		this.origin.setVector(from);
+
+		this.direction.setVector(to);
+		this.direction.subVector(from);
+
+		this.normalizeDirection();
+		this.setDirection(this.direction);
+
+		return this;
 	};
 
 	/**
@@ -228,25 +267,22 @@ define([
 		return vectorA.lengthSquared();
 	};
 
+	/**
+	 * normalizes a non unit direction and stores the direction length
+	 *
+	 * @returns direction
+	 */
 	Ray.prototype.normalizeDirection = function(){
-		var length = this.direction.length();
-		var oldLength = length;
+		//get length
+		this.length = this.direction.length();
 
-		if (length < 0.0000001)
-		{
-			this.direction.data[0] = 0;
-			this.direction.data[1] = 0;
-			this.direction.data[2] = 0;
-		}
-		else
-		{
-			length = 1.0 / length;
-			this.direction.data[0] *= length;
-			this.direction.data[1] *= length;
-			this.direction.data[2] *= length;
-		}
+		//calc invert length
+		var invertedLength = MathUtils.safeInvert(this.length);
 
-		this.length = oldLength;
+		//normalize direction
+		this.direction.mul(invertedLength);
+
+		return this.direction;
 	};
 	
 	return Ray;
