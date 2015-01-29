@@ -85,7 +85,7 @@ define([
 			var entities = this.entityManager.getEntities();
 
 			return new EntitySelection(entities.filter(function (entity) {
-				return !!entity[componentType];
+				return entity.hasComponent(componentType);
 			}));
 		}.bind(this);
 

@@ -102,12 +102,20 @@ define([
 		this.updateCallback = null;
 		this.readyCallback = null;
 
+		this._originalImage = null;
+		this._originalWidth = 0;
+		this._originalHeight = 0;
+
 		this.image = null;
 		if (image) {
 			this.setImage(image, width, height, settings);
 		}
 
 		this.textureRecord = {};
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**
@@ -123,6 +131,7 @@ define([
 	* @returns {Boolean} True if needed.
 	*/
 	Texture.prototype.checkNeedsUpdate = function () {
+		//! AT: what's the precedence here? || first and then && or the other way around?
 		return this.needsUpdate || this.updateCallback !== null && this.updateCallback();
 	};
 
@@ -142,7 +151,10 @@ define([
 	 * @param {Number} [height]
 	 */
 	Texture.prototype.setImage = function (image, width, height, settings) {
-		this.image = image;
+		//! AT: this is not a general pattern; it is applied here only because of the complexity of this function
+		this._originalImage = image;
+
+		this.image = image; //! AT: is this always overriden? if so then why set it?
 
 		var data = image instanceof Array ? image[0] : image;
 		if (data instanceof Uint8Array || data instanceof Uint8ClampedArray || data instanceof Uint16Array || data instanceof Float32Array) {
@@ -150,12 +162,13 @@ define([
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
 				this.image = {
-					data: image
+					data: image,
+					width: width,
+					height: height,
+					isData: true,
+					dataReady: true
 				};
-				this.image.width = width;
-				this.image.height = height;
-				this.image.isData = true;
-				this.image.dataReady = true;
+
 				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
 					this.type = 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
@@ -166,7 +179,7 @@ define([
 					this.format = settings.format || 'RGBA';
 				}
 			} else {
-				throw 'Data textures need width and height';
+				throw new Error('Data textures need width and height');
 			}
 		} else {
 			if (image instanceof Array) {
@@ -179,6 +192,11 @@ define([
 			}
 		}
 		this.setNeedsUpdate();
+
+		//! AT: this is not a general pattern; it is applied here only because of the complexity of this function
+		// these are delayed here in case width and height are modified in this function
+		this._originalWidth = width;
+		this._originalHeight = height;
 	};
 
 	/**
@@ -225,6 +243,35 @@ define([
 		}
 
 		return size;
+	};
+
+	/**
+	 * Returns a clone of this plane
+	 * @returns {Texture}
+	 */
+	Texture.prototype.clone = function () {
+		// reconstructing original settings object passed to the constructor
+		var settings = {
+			wrapS: this.wrapS,
+			wrapT: this.wrapT,
+			magFilter: this.magFilter,
+			minFilter: this.minFilter,
+			anisotropy: this.anisotropy,
+			format: this.format,
+			type: this.type,
+			offset: this.offset,
+			repeat: this.repeat,
+			generateMipmaps: this.generateMipmaps,
+			premultiplyAlpha: this.premultiplyAlpha,
+			unpackAlignment: this.unpackAlignment,
+			flipY: this.flipY
+		};
+
+		var clone = new Texture(this._originalImage, settings, this._originalWidth, this._originalHeight);
+		clone.variant = this.variant;
+		clone.lodBias = this.lodBias;
+		clone.hasBorder = this.hasBorder;
+		return clone;
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];

@@ -29,6 +29,10 @@ define([
 		this.rotation = new Matrix3x3();
 		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec = new Vector3();
@@ -292,6 +296,23 @@ define([
 	//! AT: the second toString in the whole engine
 	Transform.prototype.toString = function () {
 		return '' + this.matrix;
+	};
+
+	/**
+	 * Returns a clone of this transform
+	 * @returns {Transform}
+	 */
+	Transform.prototype.clone = function () {
+		var clone = new Transform();
+
+		clone.matrix.copy(this.matrix);
+		clone.normalMatrix.copy(this.normalMatrix);
+
+		clone.translation.copy(this.translation);
+		clone.rotation.copy(this.rotation);
+		clone.scale.copy(this.scale);
+
+		return clone;
 	};
 
 	return Transform;

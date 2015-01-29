@@ -16,6 +16,10 @@ define([
 		if (arguments.length !== 0) {
 			Vector.prototype.set.apply(this, arguments);
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Vector4.prototype = Object.create(Vector.prototype);

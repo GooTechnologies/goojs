@@ -22,6 +22,10 @@ define([
 		 * @type {Vector3}
 		 */
 		this.direction = new Vector3();
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	DirectionalLight.prototype = Object.create(Light.prototype);
@@ -36,6 +40,20 @@ define([
 		transform.matrix.getTranslation(this.translation);
 		this.direction.setDirect(0.0, 0.0, -1.0);
 		transform.matrix.applyPostVector(this.direction);
+	};
+
+	DirectionalLight.prototype.copy = function (source) {
+		Light.prototype.copy.call(this, source);
+
+		this.direction.copy(source.direction);
+
+		return this;
+	};
+
+	DirectionalLight.prototype.clone = function () {
+		var clone = new DirectionalLight(this.color.clone());
+		clone.copy(this);
+		return clone;
 	};
 
 	return DirectionalLight;

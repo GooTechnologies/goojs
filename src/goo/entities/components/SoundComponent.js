@@ -43,6 +43,10 @@ define([
 		this._orientation = new Vector3();
 		this._velocity = new Vector3();
 		this._attachedToCamera = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	SoundComponent.type = 'SoundComponent';

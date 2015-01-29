@@ -197,6 +197,33 @@ define([
 
 			});
 		});
-	});
 
+		describe('clone', function () {
+			it('clones a transform', function () {
+				var original = new Transform();
+
+				original.translation.setDirect(1, 2, 3);
+				original.rotation.e11 = 123; // no setDirect for matrices
+				original.scale.setDirect(4, 5, 6);
+
+				original.matrix.e11 = 456;
+				original.normalMatrix.e11 = 789;
+
+
+				var clone = original.clone();
+
+				expect(clone).not.toBe(original);
+
+				// making sure nothing is shared
+				expect(clone.matrix).not.toBe(original.matrix);
+				expect(clone.normalMatrix).not.toBe(original.normalMatrix);
+
+				expect(clone.translation).not.toBe(original.translation);
+				expect(clone.rotation).not.toBe(original.rotation);
+				expect(clone.scale).not.toBe(original.scale);
+
+				expect(clone).toEqual(original);
+			});
+		});
+	});
 });
