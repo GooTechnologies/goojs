@@ -1,16 +1,17 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/math/Vector3'
-],
-/** @lends */
-function (
+	'goo/math/Vector3',
+	'goo/util/ObjectUtil'
+], function (
 	MeshData,
-	Vector3
+	Vector3,
+	_
 ) {
 	'use strict';
 
 	/**
-	 * @class A 3D object representing a cylinder.
+	 * A 3D object representing a cylinder.
+	 * @extends MeshData
 	 * @param {number} [radialSamples=8] Number of slices
 	 * @param {number} [radiusTop=0.5] Radius of the cylinder at the top.
 	 * @param {number} [radiusBottom=radiusTop] Radius of the cylinder at the bottom. Defaults to radiusTop.
@@ -26,7 +27,7 @@ function (
 		}
 		this.radialSamples = radialSamples || 8;
 		this.radiusTop = typeof(radiusTop) === 'undefined' ? 0.5 : radiusTop;
-		this.radiusBottom = typeof(radiusBottom) === 'undefined' ? radiusTop : radiusBottom;
+		this.radiusBottom = typeof(radiusBottom) === 'undefined' ? this.radiusTop : radiusBottom;
 		this.height = typeof(height) === 'undefined' ? 1 : height;
 
 		/** @type {number}
@@ -47,7 +48,7 @@ function (
 	Cylinder.prototype.constructor = Cylinder;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Cylinder} Self for chaining.
 	 */
 	Cylinder.prototype.rebuild = function () {
@@ -159,6 +160,16 @@ function (
 		this.getIndexBuffer().set(indices);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this cylinder
+	 * @returns {Cylinder}
+	 */
+	Cylinder.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['radialSamples', 'radiusTop', 'radiusBottom', 'height']);
+
+		return new Cylinder(options);
 	};
 
 	return Cylinder;

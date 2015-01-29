@@ -2,7 +2,7 @@ define([
 	'goo/renderer/MeshData',
 	'goo/geometrypack/Surface'
 ],
-	/** @lends */
+
 	function (
 		MeshData,
 		Surface
@@ -10,7 +10,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class A polygonal line
+	 * A polygonal line
 	 * @param {number[]} [verts] The vertices data array
 	 * @param {boolean} [closed=false] True if its ends should be connected
 	 */
@@ -34,7 +34,7 @@ define([
 	PolyLine.prototype = Object.create(MeshData.prototype);
 
 	/**
-	 * @description Builds or rebuilds the mesh data
+	 * Builds or rebuilds the mesh data
 	 * @returns {PolyLine} Self for chaining
 	 */
 	PolyLine.prototype.rebuild = function () {
@@ -52,10 +52,10 @@ define([
 	};
 
 	/**
-	 * @description Builds a surface as a result of multiplying 2 polyLines
+	 * Builds a surface as a result of multiplying 2 polyLines
 	 * @param {PolyLine} [that] The second operand
 	 * @returns {Surface} The resulting surface
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example}</caption>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example
 	 */
 	PolyLine.prototype.mul = function (that) {
 		if(!(that instanceof PolyLine)) {
@@ -116,7 +116,7 @@ define([
 	}
 
 	/**
-	 * @description Extrudes and rotates a PolyLine along another PolyLine
+	 * Extrudes and rotates a PolyLine along another PolyLine
 	 * @param {PolyLine} [that] The second operand
 	 * @returns {Surface} The resulting surface
 	 */
@@ -143,10 +143,10 @@ define([
 	};
 
 	/**
-	 * @description Builds a surface as a result of rotating this polyLine around the Y axis
+	 * Builds a surface as a result of rotating this polyLine around the Y axis
 	 * @param {number} [nSegments=8] The number of segments for the resulting surface
 	 * @returns {Surface} The resulting surface
-	 * @example <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Lathe-vtest.html Working example}</caption>
+	 * @example <caption>@example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Lathe-vtest.html Working example</caption>
 	 */
 	PolyLine.prototype.lathe = function (nSegments) {
 		nSegments = nSegments || 8;
@@ -167,7 +167,7 @@ define([
 	};
 
 	/**
-	 * @description Returns a new polyLine as a result of concatenating the 2 polyLines
+	 * Returns a new polyLine as a result of concatenating the 2 polyLines
 	 * @param {PolyLine} [that] The other operand
 	 * @param {boolean} [closed] True if the resulting polyLine should be closed
 	 * @returns {PolyLine} The new polyLine
@@ -182,7 +182,7 @@ define([
 	};
 
 	/**
-	 * @description Creates a polyLine that approximates a given cubic Bezier curve
+	 * Creates a polyLine that approximates a given cubic Bezier curve
 	 * @param {number[]} [verts] The Bezier curve control vertices. This array must contain exactly 12 elements (4 control points with 3 coordinates each)
 	 * @param {number} [nSegments=16] The number of segments (higher values result in smoother curves)
 	 * @returns {PolyLine} The resulting polyLine
@@ -267,7 +267,7 @@ define([
 	};
 
 	/**
-	 * @description Creates a polyLine that approximates a given cubic spline
+	 * Creates a polyLine that approximates a given cubic spline
 	 * @param {number[]} [verts] The spline control vertices. This array must contain exactly 3 * number_of_control_points (+ 1 if the spline is open) elements
 	 * @param {number} [nSegments=16] The number of segments for each Bezier curve that forms the spline (higher values result in smoother curves)
 	 * @param {boolean} [closed=false] True if the spline should be closed or not

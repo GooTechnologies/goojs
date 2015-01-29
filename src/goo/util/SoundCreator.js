@@ -3,9 +3,7 @@ define([
 	'goo/loaders/handlers/SoundHandler',
 	'goo/util/Ajax',
 	'goo/util/StringUtil'
-],
-/** @lends */
-function (
+], function (
 	Util,
 	SoundHandler,
 	Ajax,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Provides a simple way to load sounds
+	 * Provides a simple way to load sounds
 	 */
 	function SoundCreator() {
 		var ajax = this.ajax = new Ajax();
@@ -47,7 +45,8 @@ function (
 		var fileExtension = StringUtil.getAfterLast(url, '.');
 		settings.audioRefs[fileExtension] = url;
 
-		var sound = this.soundHandler._objects[id] = this.soundHandler._create();
+		var sound = this.soundHandler._create();
+		this.soundHandler._objects.set(id, sound);
 		this.soundHandler.update(id, settings, {}).then(function() {
 			if (callback) {
 				callback(sound);

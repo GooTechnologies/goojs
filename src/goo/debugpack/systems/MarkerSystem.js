@@ -6,7 +6,7 @@ define([
 	'goo/renderer/Renderer',
 	'goo/math/Transform'
 ],
-	/** @lends */
+
 	function (
 		System,
 		Material,
@@ -18,7 +18,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a marker component
+	 * Processes all entities with a marker component
 	 * @extends System
 	 */
 	function MarkerSystem(goo) {

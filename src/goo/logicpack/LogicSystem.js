@@ -5,7 +5,7 @@ define([
 		'goo/logic/LogicLayer',
 		'goo/logic/LogicInterface'
 	],
-	/** @lends */
+
 	function(
 		System,
 		SystemBus,
@@ -17,7 +17,7 @@ define([
 
 		// REVIEW: this description seems inaccurate
 		/**
-		 * @class Updates cameras/cameracomponents with ther transform component transforms
+		 * Updates cameras/cameracomponents with ther transform component transforms
 		 * @private
 		 */
 		function LogicSystem() {

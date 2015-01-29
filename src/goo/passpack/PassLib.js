@@ -6,9 +6,7 @@ define([
 	'goo/passpack/DoGPass',
 	'goo/passpack/MotionBlurPass',
 	'goo/renderer/Util'
-],
-/** @lends */
-function (
+], function (
 	ShaderLibExtra,
 	FullscreenPass,
 	BloomPass,
@@ -18,8 +16,6 @@ function (
 	Util
 ) {
 	'use strict';
-
-	/** @class */
 
 	function Bloom(id) {
 		BloomPass.call(this);
@@ -290,7 +286,7 @@ function (
 		}
 	];
 
-	function Grain(id) {
+	function Grain(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLibExtra.film));
 		this.id = id;
 	}
@@ -344,7 +340,7 @@ function (
 		}
 	];
 
-	function Noise(id) {
+	function Noise(id) {
 		FullscreenPass.call(this, Util.clone(ShaderLibExtra.noise));
 		this.id = id;
 	}

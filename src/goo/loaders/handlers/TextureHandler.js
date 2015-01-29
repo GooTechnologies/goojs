@@ -9,9 +9,9 @@ define([
 	'goo/renderer/Util',
 	'goo/util/ObjectUtil',
 	'goo/util/CanvasUtils',
-	'goo/util/StringUtil'
+	'goo/util/StringUtil',
+	'goo/entities/SystemBus'
 ],
-/** @lends */
 function (
 	ConfigHandler,
 	Texture,
@@ -23,21 +23,40 @@ function (
 	Util,
 	_,
 	CanvasUtils,
-	StringUtil
+	StringUtil,
+	SystemBus
 ) {
 	'use strict';
 
 	/*jshint eqeqeq: false, -W041 */
 	/**
-	 * @class Handler for loading materials into engine
+	 * Handler for loading materials into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
+		var that = this;
+		SystemBus.addListener('playStateChanged', function(playState) {
+			this._objects.forEach(function (texture) {
+				if (texture.image && texture.image.play && texture.image.pause) {
+					var video = texture.image;
+					if (playState === 'play') {
+						video.play();
+					}
+					else if (playState === 'stop') {
+						video.pause();
+						video.currentTime = 0;
+					}
+					else if (playState === 'pause') {
+						video.pause();
+					}
+				}
+			});
+		}.bind(this));
 	}
 
 	TextureHandler.prototype = Object.create(ConfigHandler.prototype);
@@ -69,7 +88,7 @@ function (
 
 	/**
 	 * Preparing texture config by populating it with defaults.
-	 * @param {object} config
+	 * @param {object} config
 	 * @private
 	 */
 	TextureHandler.prototype._prepare = function (config) {
@@ -119,8 +138,8 @@ function (
 	 */
 	TextureHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (texture) {
-			if (!texture) { return; }
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (texture) {
+			if (!texture) { return; }
 			var ret;
 
 			// Texture settings
@@ -161,7 +180,7 @@ function (
 					// Special (dds, tga, crn)
 					texture.a = imageRef;
 					ret = that.loadObject(imageRef).then(function (data) {
-						if (data && data.preloaded) {
+						if (data && data.preloaded) {
 							_.extend(texture.image, data.image);
 							texture.format = data.format;
 							texture.setNeedsUpdate();
@@ -194,8 +213,12 @@ function (
 						texture.updateCallback = function () {
 							return !video.paused;
 						};
-						if (config.autoPlay === undefined || config.autoPlay) {
+						if (config.autoPlay !== false && !options.editMode) {
 							video.play();
+						}
+						else {
+							video.pause();
+							video.currentTime = 0;
 						}
 						return texture;
 					});

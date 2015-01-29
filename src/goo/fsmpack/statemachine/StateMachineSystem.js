@@ -1,15 +1,13 @@
 define([
 	'goo/entities/systems/System',
 	'goo/fsmpack/statemachine/actions/Actions'
-],
-/** @lends */
-function (
+], function (
 	System
 ) {
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a FSM component
+	 * Processes all entities with a FSM component
 	 * @private
 	 */
 	function StateMachineSystem(engine) {

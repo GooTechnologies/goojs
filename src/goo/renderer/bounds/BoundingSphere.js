@@ -3,9 +3,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	MathUtils,
 	BoundingVolume,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class <code>BoundingSphere</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This
+	 * <code>BoundingSphere</code> defines a sphere that defines a container for a group of vertices of a particular piece of geometry. This
 	 *        sphere defines a radius and a center. <br>
 	 *        <br>
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
@@ -23,6 +21,10 @@ function (
 	function BoundingSphere(center, radius) {
 		BoundingVolume.call(this, center);
 		this.radius = radius !== undefined ? radius : 1;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec = new Vector3();
@@ -326,13 +328,34 @@ function (
 		return store;
 	};
 
-	BoundingSphere.prototype.clone = function (store) {
-		if (store && store instanceof BoundingSphere) {
-			store.center.setVector(this.center);
-			store.radius = this.radius;
-			return store;
-		}
+	/**
+	 * Copies data from another bounding sphere
+	 * @param {BoundingSphere} source bounding sphere to copy from
+	 * @returns {BoundingSphere} Returns self to allow chaining
+	 */
+	BoundingSphere.prototype.copy = function (source) {
+		BoundingVolume.prototype.copy.call(this, source);
+		this.radius = source.radius;
+		return this;
+	};
 
+	// ---
+	var warned = false;
+
+	/**
+	 * Returns a clone of this bounding sphere
+	 * @returns {BoundingSphere}
+	 */
+	BoundingSphere.prototype.clone = function () {
+		if (arguments.length > 0 && !warned) {
+			warned = true;
+			console.warn(
+				'BoundingSphere::clone no longer takes an optional "store" parameter; ' +
+				'please use BoundingSphere::copy instead'
+			);
+		}
+		// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
+		// when/if that ever changes this needs adapted accordingly
 		return new BoundingSphere(this.center, this.radius);
 	};
 

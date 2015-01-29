@@ -18,9 +18,7 @@ define([
 	'goo/addons/terrainpack/TerrainSurface',
 	'goo/shapes/Quad',
 	'goo/renderer/shaders/ShaderBuilder'
-],
-/** @lends */
-function (
+], function (
 	MeshDataComponent,
 	Material,
 	Camera,

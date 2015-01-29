@@ -6,9 +6,7 @@ define([
 	'goo/renderer/RenderQueue',
 	'goo/renderer/Util',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	ShaderCall,
 	Matrix3x3,
 	Matrix4x4,
@@ -22,7 +20,7 @@ function (
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class Defines vertex and fragment shader and uniforms to shader callbacks
+	 * Defines vertex and fragment shader and uniforms to shader callbacks
 	 * @param {String} name Shader name (mostly for debug/tool use)
 	 * @param {ShaderDefinition} shaderDefinition Shader data
 	 *
@@ -137,6 +135,10 @@ function (
 
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	// Shader.id = 0;
@@ -414,12 +416,11 @@ function (
 
 	/**
 	 * Extract shader variable definitions from shader source code.
-	 * @static
 	 * @param {string} source The source code.
 	 * @param {object} target
 	 * @param {object} target.attributeMapping
-	 * @param {object} target.uniformMapping
-	 * @param {object[]} target.textureSlots
+	 * @param {object} target.uniformMapping
+	 * @param {object[]} target.textureSlots
 	 */
 	Shader.investigateShader = function (source, target) {
 		regExp.lastIndex = 0;

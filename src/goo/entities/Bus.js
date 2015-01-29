@@ -1,11 +1,9 @@
-define(['goo/util/ArrayUtil'],
-	/** @lends */
-	function (ArrayUtil) {
+define(function () {
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * A generic message bus. Offers ways to receive and subscribe to messages on a hierarchy of channels.
+	 */
 	function Bus() {
 		this.trie = { name: '', listeners: [], children: new Map() };
 	}
@@ -77,9 +75,19 @@ define(['goo/util/ArrayUtil'],
 
 	Bus.prototype._emitToAll = function (node, data) {
 		for (var i = 0; i < node.listeners.length; i++) {
-			node.listeners[i](data);
+			var listener = node.listeners[i];
+			if (listener) {
+				listener(data);
+			} else {
+				// some listeners may be set to null by the removeListener & co methods
+				// the array is compacted here and not in the removeListener methods
+				// because a listener itself can remove listeners
+				node.listeners.splice(i, 1);
+				i--;
+			}
 		}
 
+		// emit on the child channels as well
 		node.children.forEach(function (child) {
 			this._emitToAll(child, data);
 		}.bind(this));
@@ -120,13 +128,25 @@ define(['goo/util/ArrayUtil'],
 	};
 
 	/**
+	 * Sets element to null if it's present in the provided array
+	 * @param {Array} array
+	 * @param {*} element
+	 */
+	function nullifyElement(array, element) {
+		var index = array.indexOf(element);
+		if (index !== -1) {
+			array[index] = null;
+		}
+	}
+
+	/**
 	 * Remove a listener from a channel but not from its children
 	 * @param channelName
 	 * @param callbackToRemove
 	 */
 	Bus.prototype.removeListener = function (channelName, callbackToRemove) {
 		var node = this._getNode(channelName);
-		if (node) { ArrayUtil.remove(node.listeners, callbackToRemove); }
+		if (node) { nullifyElement(node.listeners, callbackToRemove); }
 		return this;
 	};
 
@@ -161,7 +181,7 @@ define(['goo/util/ArrayUtil'],
 	};
 
 	Bus.prototype._removeListener = function (node, callbackToRemove) {
-		ArrayUtil.remove(node.listeners, callbackToRemove);
+		nullifyElement(node.listeners, callbackToRemove);
 
 		node.children.forEach(function (child) {
 			this._removeListener(child, callbackToRemove);

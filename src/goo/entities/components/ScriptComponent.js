@@ -3,9 +3,7 @@ define([
 	'goo/entities/SystemBus',
 	'goo/scripts/Scripts',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	SystemBus,
 	Scripts,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Contains scripts to be executed each frame when set on an active entity.
+	 * Contains scripts to be executed each frame when set on an active entity.
 	 * @param {object[]|object} [scripts] A script-object or an array of script-objects to attach to the entity.
 	 * The script-object needs to define the function <code>run({@link Entity} entity, number tpf)</code>,
 	 * which runs on every frame update.
@@ -45,6 +43,10 @@ function (
 			*/
 			this.scripts = [];
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	ScriptComponent.type = 'ScriptComponent';
@@ -78,7 +80,7 @@ function (
 				if (script.setup && script.enabled) {
 					try {
 						script.setup(script.parameters, script.context, this._gooClasses);
-					} catch (e) {
+					} catch (e) {
 						this._handleError(script, e, 'setup');
 					}
 				}
@@ -124,11 +126,11 @@ function (
 	ScriptComponent.prototype.cleanup = function () {
 		for (var i = 0; i < this.scripts.length; i++) {
 			var script = this.scripts[i];
-			if (script.context) {
+			if (script.context) {
 				if (script.cleanup) {
 					try {
 						script.cleanup(script.parameters, script.context, this._gooClasses);
-					} catch (e) {
+					} catch (e) {
 						this._handleError(script, e, 'cleanup');
 					}
 				}

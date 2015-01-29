@@ -7,12 +7,12 @@ define(
 		'goo/math/Vector3',
 		'goo/math/Matrix3x3'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3x3) {
 		'use strict';
 
 		/**
-		 * @class Logic node that constructs a rotation matrix.
+		 * Logic node that constructs a rotation matrix.
 		 * @private
 		 */
 		function LogicNodeRotationMatrix() {

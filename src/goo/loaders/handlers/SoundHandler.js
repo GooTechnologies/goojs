@@ -5,9 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	AudioContext,
 	Sound,
@@ -17,14 +15,14 @@ function (
 ) {
 	'use strict';
 	/**
-	 * @class Handler for loading sounds into engine
+	 * Handler for loading sounds into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
-	function SoundHandler() {
+	function SoundHandler() {
 		ConfigHandler.apply(this, arguments);
 		this._audioCache = {};
 
@@ -35,7 +33,7 @@ function (
 				{
 					type: 'mp3',
 					enabled: !!audioTest.canPlayType('audio/mpeg;')
-				}, {
+				}, {
 					type: 'ogg',
 					enabled: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"')
 				}, {
@@ -67,7 +65,7 @@ function (
 
 	/**
 	 * Preparing sound config by populating it with defaults.
-	 * @param {object} config
+	 * @param {object} config
 	 * @private
 	 */
 	SoundHandler.prototype._prepare = function (config) {

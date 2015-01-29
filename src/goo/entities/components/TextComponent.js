@@ -2,17 +2,15 @@ define([
 	'goo/entities/components/Component',
 	'goo/shapes/TextureGrid',
 	'goo/entities/components/MeshDataComponent'
-],
-/** @lends */
-function (
+], function (
 	Component
 ) {
 	'use strict';
 
 	/**
-	 * @class
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
+	 * Provides ways for the entity to display text
 	 * @extends Component
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example
 	 */
 	function TextComponent(text) {
 		Component.apply(this, arguments);
@@ -21,6 +19,10 @@ function (
 
 		this.text = text || '';
 		this.dirty = true;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	TextComponent.type = 'TextComponent';

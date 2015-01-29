@@ -1,14 +1,14 @@
 define([
-	'goo/renderer/Shader'
-],
-/** @lends */
-function (
-	Shader
+	'goo/renderer/Shader',
+	'goo/util/ObjectUtil'
+], function (
+	Shader,
+	_
 ) {
 	'use strict';
 
 	/**
-	 * @class A Material defines the look of an object
+	 * A Material defines the look of an object
 	 * @param {string} [name='Default Material'] Material name
 	 * @param {{ vshader, fshader }} [shaderDefinition] Optional shader to associate with the material
 	 */
@@ -142,6 +142,10 @@ function (
 
 		this.fullOverride = false;
 		this.errorOnce = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**
@@ -158,7 +162,7 @@ function (
 	 * Gets a texture in a specific slot
 	 *
 	 * @param {String} name Name of texture slot to retrieve texture from
-	 * @return {Texture} Texture if found, or undefined if not in slot
+	 * @returns {Texture} Texture if found, or undefined if not in slot
 	 */
 	Material.prototype.getTexture = function (name) {
 		return this._textureMaps[name];
@@ -176,7 +180,7 @@ function (
 	/**
 	 * Get all textures as an array
 	 *
-	 * @return {Texture[]} Array containing all set textures
+	 * @returns {Texture[]} Array containing all set textures
 	 */
 	Material.prototype.getTextures = function () {
 		var textures = [];
@@ -189,7 +193,7 @@ function (
 	/**
 	 * Get the map of [slot_name]: [Texture]
 	 *
-	 * @return {Object} Mapping of slot - textures
+	 * @returns {Object} Mapping of slot - textures
 	 */
 	Material.prototype.getTextureEntries = function () {
 		return this._textureMaps;
@@ -217,13 +221,77 @@ function (
 	};
 
 	/**
+	 * Returns a clone of this material
+	 * @param {object} [options={}] Options to be passed to clone methods encountered in the object graph
+	 * @returns {Material}
+	 */
+	Material.prototype.clone = function (options) {
+		options = options || {};
+
+		var clone = new Material(this.name);
+
+		clone.id = this.id;
+		clone.name = this.name;
+		clone.shader = this.shader.clone();
+
+		if (options.shareUniforms) {
+			clone.uniforms = this.uniforms;
+		} else {
+			clone.uniforms = _.clone(this.uniforms);
+		}
+
+		if (options.shareTextures) {
+			var textureKeys = Object.keys(this._textureMaps);
+			for (var i = 0; i < textureKeys.length; i++) {
+				var textureKey = textureKeys[i];
+				clone._textureMaps[textureKey] = this._textureMaps[textureKey];
+			}
+		} else {
+			var textureKeys = Object.keys(this._textureMaps);
+			for (var i = 0; i < textureKeys.length; i++) {
+				var textureKey = textureKeys[i];
+				clone._textureMaps[textureKey] = this._textureMaps[textureKey].clone();
+			}
+		}
+
+		clone.cullState.enabled = this.cullState.enabled;
+		clone.cullState.cullFace = this.cullState.cullFace;
+		clone.cullState.frontFace = this.cullState.frontFace;
+
+		clone.blendState.blending = this.blendState.blending;
+		clone.blendState.blendEquation = this.blendState.blendEquation;
+		clone.blendState.blendSrc = this.blendState.blendSrc;
+		clone.blendState.blendDst = this.blendState.blendDst;
+
+		clone.depthState.enabled = this.depthState.enabled;
+		clone.depthState.write = this.depthState.write;
+
+		clone.offsetState.enabled = this.offsetState.enabled;
+		clone.offsetState.factor = this.offsetState.factor;
+		clone.offsetState.units = this.offsetState.units;
+
+		clone.dualTransparency = this.dualTransparency;
+
+		clone.wireframe = this.wireframe;
+		clone.flat = this.flat;
+
+		clone.renderQueue = this.renderQueue;
+
+		clone.fullOverride = this.fullOverride;
+		clone.errorOnce = this.errorOnce;
+
+		return clone;
+	};
+
+	/**
 	 * Creates a new or finds an existing, cached Shader object
 	 *
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
 	 * @param {String} [name=DefaultShader]
-	 * @return {Shader}
+	 * @returns {Shader}
 	 */
 	Material.createShader = function (shaderDefinition, name) {
+		//! AT: function has parameters in reverse order than the constructor
 		var shader = new Shader(name || null, shaderDefinition);
 		if (shader.name === null) {
 			shader.name = 'DefaultShader' + shader._id;

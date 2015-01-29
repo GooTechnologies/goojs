@@ -1,9 +1,7 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/entities/EntityUtils'
-],
-/** @lends */
-function(
+], function (
 	Action,
 	EntityUtils
 ) {

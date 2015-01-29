@@ -99,13 +99,9 @@ Code coverage can be run using istanbul (https://github.com/gotwarlost/istanbul)
 JS Doc
 ------
 
-The jsdoc requires you install JSDoc 3, https://github.com/jsdoc3/jsdoc
+`grunt jsdoc` - outputs to `out-doc`
 
-One way is to install jsdoc using the package.json file and running `npm install`. Generate the docs
-
-    tools/generate-jsdoc.sh
-
-The resulting documentation will be generated in the goojs-jsdoc directory and also packaged in a tar.gz file.
+GooJS uses a custom documentation compiler; see `tools/modoc/README.md`
 
 ## Releasing
 

@@ -1,13 +1,11 @@
 define([
-	'goo/entities/components/Component'],
-/** @lends */
-function(
+	'goo/entities/components/Component'
+], function (
 	Component
-	) {
+) {
 	'use strict';
 
 	/**
-	 * @class
 	 * @private
 	 */
 	function ProximityComponent(tag) {
