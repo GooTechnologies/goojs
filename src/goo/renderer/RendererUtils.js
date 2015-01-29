@@ -1,5 +1,9 @@
 /*jshint bitwise: false */
-define(function () {
+define([
+	'goo/util/ObjectUtil'
+], function (
+	ObjectUtil
+) {
 	'use strict';
 
 	/**
@@ -89,37 +93,11 @@ define(function () {
 
 	/**
 	 * Clones an object recursively
+	 * @hidden
 	 * @param {*} object Object to clone
 	 * @returns {*} Cloned object
 	 */
-	RendererUtils.clone = function (object) {
-		// handle primitive types, functions, null and undefined
-		if (object === null || typeof object !== 'object') {
-			return object;
-		}
-
-		// handle typed arrays
-		if (Object.prototype.toString.call(object.buffer) === '[object ArrayBuffer]') {
-			return new object.constructor(object);
-		}
-
-		// handle arrays
-		if (object instanceof Array) {
-			var copy = [];
-			for (var i = 0, len = object.length; i < len; ++i) {
-				copy[i] = RendererUtils.clone(object[i]);
-			}
-			return copy;
-		}
-
-		var copy = {};
-		var keys = Object.keys(object);
-		for (var i = 0; i < keys.length; i++) {
-			var key = keys[i];
-			copy[key] = RendererUtils.clone(object[key]);
-		}
-		return copy;
-	};
+	RendererUtils.clone = ObjectUtil.deepClone;
 
 
 	RendererUtils._blankImages = {};
