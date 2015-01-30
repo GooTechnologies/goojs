@@ -9,8 +9,9 @@ function (
 ) {
 	"use strict";
 
+	var calcVec = new Vector3();
+
 	function Particle(idx) {
-		this.calcVec = new Vector3();
 		this.index = idx;
 		this.position 	= new Vector3();
 		this.direction  = new Vector3();
@@ -185,9 +186,9 @@ function (
 		this.velocity.muld(this.acceleration, this.acceleration, this.acceleration);
 		this.velocity.add_d(0, this.gravity*deduct, 0);
 
-		this.calcVec.set(this.velocity);
-		this.calcVec.muld(deduct, deduct, deduct);
-		this.position.addv(this.calcVec);
+		calcVec.set(this.velocity);
+		calcVec.muld(deduct, deduct, deduct);
+		this.position.addv(calcVec);
 	};
 
 
