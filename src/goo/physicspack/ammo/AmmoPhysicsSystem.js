@@ -2,7 +2,6 @@ define([
 	'goo/physicspack/AbstractPhysicsSystem',
 	'goo/math/Quaternion'
 ],
-/** @lends */
 function (
 	AbstractPhysicsSystem,
 	Quaternion

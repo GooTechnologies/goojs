@@ -5,7 +5,6 @@ define([
 	'goo/math/Transform',
 	'goo/entities/SystemBus'
 ],
-/** @lends */
 function (
 	Component,
 	Vector3,
@@ -40,7 +39,7 @@ function (
 		this._dirty = true;
 	}
 	AbstractRigidbodyComponent.prototype = Object.create(Component.prototype);
-	AbstractRigidbodyComponent.constructor = AbstractRigidbodyComponent;
+	AbstractRigidbodyComponent.prototype.constructor = AbstractRigidbodyComponent;
 
 	/**
 	 * @param {Joint} joint

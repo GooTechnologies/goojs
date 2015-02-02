@@ -2,7 +2,6 @@ define([
 	'goo/entities/components/Component',
 	'goo/physicspack/colliders/Collider'
 ],
-/** @lends */
 function (
 	Component,
 	Collider
@@ -52,7 +51,7 @@ function (
 		Component.apply(this);
 	}
 	ColliderComponent.prototype = Object.create(Component.prototype);
-	ColliderComponent.constructor = ColliderComponent;
+	ColliderComponent.prototype.constructor = ColliderComponent;
 	ColliderComponent.type = "ColliderComponent";
 
 	/**

@@ -12,7 +12,6 @@ define([
 	'goo/physicspack/joints/BallJoint',
 	'goo/physicspack/joints/HingeJoint'
 ],
-/** @lends */
 function (
 	AbstractRigidbodyComponent,
 	Vector3,
@@ -152,11 +151,11 @@ function (
 		}
 	}
 	RigidbodyComponent.prototype = Object.create(AbstractRigidbodyComponent.prototype);
-	RigidbodyComponent.constructor = RigidbodyComponent;
+	RigidbodyComponent.prototype.constructor = RigidbodyComponent;
 	RigidbodyComponent.type = 'RigidbodyComponent';
 
 	/**
-	 * Cannon.js uses ConvexPolyhedron shapes for collision checking sometimes. Therefore it needs a number of segments to use.
+	 * Cannon.js uses ConvexPolyhedron shapes for collision checking sometimes (for example, for cylinders). Therefore it needs a number of segments to use.
 	 * @type {Number}
 	 */
 	RigidbodyComponent.numCylinderSegments = 10;

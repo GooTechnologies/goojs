@@ -1,7 +1,6 @@
 define([
 	'goo/physicspack/colliders/Collider'
 ],
-/** @lends */
 function (
 	Collider
 ) {
@@ -30,7 +29,7 @@ function (
 		Collider.call(this);
 	}
 	CylinderCollider.prototype = Object.create(Collider.prototype);
-	CylinderCollider.constructor = CylinderCollider;
+	CylinderCollider.prototype.constructor = CylinderCollider;
 
 	/**
 	 * @private

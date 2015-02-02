@@ -4,7 +4,6 @@ define([
 	'goo/physicspack/joints/PhysicsJoint',
 	'goo/math/Vector3'
 ],
-/** @lends */
 function (
 	Component,
 	_,
@@ -29,7 +28,7 @@ function (
 		this.localPivot = settings.localPivot ? settings.localPivot.clone() : new Vector3();
 	}
 	BallJoint.prototype = Object.create(PhysicsJoint.prototype);
-	BallJoint.constructor = BallJoint;
+	BallJoint.prototype.constructor = BallJoint;
 
 	return BallJoint;
 });

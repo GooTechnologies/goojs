@@ -4,7 +4,6 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Quaternion'
 ],
-/** @lends */
 function (
 	AbstractPhysicsSystem,
 	RaycastResult,
@@ -74,7 +73,7 @@ function (
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidbodyComponent']);
 	}
 	PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
-	PhysicsSystem.constructor = PhysicsSystem;
+	PhysicsSystem.prototype.constructor = PhysicsSystem;
 
 	/**
 	 * @private

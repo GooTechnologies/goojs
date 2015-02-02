@@ -1,5 +1,4 @@
 define([],
-/** @lends */
 function () {
 	'use strict';
 
@@ -7,7 +6,7 @@ function () {
 	 * Base class for Colliders.
 	 */
 	function Collider() {}
-	Collider.constructor = Collider;
+	Collider.prototype.constructor = Collider;
 
 	/**
 	 * @virtual

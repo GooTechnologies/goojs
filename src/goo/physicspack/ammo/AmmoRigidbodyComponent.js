@@ -12,7 +12,6 @@ define([
 	'goo/physicspack/joints/BallJoint',
 	'goo/physicspack/joints/HingeJoint'
 ],
-/** @lends */
 function (
 	AbstractRigidbodyComponent,
 	Vector3,
@@ -156,7 +155,7 @@ function (
 		}
 	}
 	AmmoRigidbodyComponent.prototype = Object.create(AbstractRigidbodyComponent.prototype);
-	AmmoRigidbodyComponent.constructor = AmmoRigidbodyComponent;
+	AmmoRigidbodyComponent.prototype.constructor = AmmoRigidbodyComponent;
 	AmmoRigidbodyComponent.type = 'AmmoRigidbodyComponent';
 
 	/**

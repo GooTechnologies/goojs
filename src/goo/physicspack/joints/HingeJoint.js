@@ -4,7 +4,6 @@ define([
 	'goo/physicspack/joints/PhysicsJoint',
 	'goo/math/Vector3'
 ],
-/** @lends */
 function (
 	Component,
 	_,
@@ -35,7 +34,7 @@ function (
 		this.localAxis = settings.localAxis ? settings.localAxis.clone() : new Vector3(0, 1, 0);
 	}
 	HingeJoint.prototype = Object.create(PhysicsJoint.prototype);
-	HingeJoint.constructor = HingeJoint;
+	HingeJoint.prototype.constructor = HingeJoint;
 
 	return HingeJoint;
 });

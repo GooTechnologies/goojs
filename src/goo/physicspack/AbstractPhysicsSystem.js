@@ -2,7 +2,6 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus'
 ],
-/** @lends */
 function (
 	System,
 	SystemBus
@@ -18,8 +17,8 @@ function (
 
 		this.priority = 2; // make sure it processes after transformsystem and collidersystem
 	}
-	AbstractPhysicsSystem.constructor = AbstractPhysicsSystem;
 	AbstractPhysicsSystem.prototype = Object.create(System.prototype);
+	AbstractPhysicsSystem.prototype.constructor = AbstractPhysicsSystem;
 
 	/**
 	 * @virtual
@@ -27,17 +26,7 @@ function (
 	 */
 	AbstractPhysicsSystem.prototype.setGravity = function (/*gravityVector*/) {};
 
-	AbstractPhysicsSystem.beginContactEvent = {
-		entityA: null,
-		entityB: null
-	};
-
-	AbstractPhysicsSystem.duringContactEvent = {
-		entityA: null,
-		entityB: null
-	};
-
-	AbstractPhysicsSystem.endContactEvent = {
+	var event = {
 		entityA: null,
 		entityB: null
 	};
@@ -48,12 +37,11 @@ function (
 	 * @param  {Entity} entityB
 	 */
 	AbstractPhysicsSystem.prototype.emitBeginContact = function (entityA, entityB) {
-		var evt = AbstractPhysicsSystem.beginContactEvent;
-		evt.entityA = entityA;
-		evt.entityB = entityB;
-		SystemBus.emit('goo.physics.beginContact', evt);
-		evt.entityA = null;
-		evt.entityB = null;
+		event.entityA = entityA;
+		event.entityB = entityB;
+		SystemBus.emit('goo.physics.beginContact', event);
+		event.entityA = null;
+		event.entityB = null;
 	};
 
 	/**
@@ -62,12 +50,11 @@ function (
 	 * @param  {Entity} entityB
 	 */
 	AbstractPhysicsSystem.prototype.emitDuringContact = function (entityA, entityB) {
-		var evt = AbstractPhysicsSystem.duringContactEvent;
-		evt.entityA = entityA;
-		evt.entityB = entityB;
-		SystemBus.emit('goo.physics.duringContact', evt);
-		evt.entityA = null;
-		evt.entityB = null;
+		event.entityA = entityA;
+		event.entityB = entityB;
+		SystemBus.emit('goo.physics.duringContact', event);
+		event.entityA = null;
+		event.entityB = null;
 	};
 
 	/**
@@ -76,12 +63,11 @@ function (
 	 * @param  {Entity} entityB
 	 */
 	AbstractPhysicsSystem.prototype.emitEndContact = function (entityA, entityB) {
-		var evt = AbstractPhysicsSystem.endContactEvent;
-		evt.entityA = entityA;
-		evt.entityB = entityB;
-		SystemBus.emit('goo.physics.endContact', evt);
-		evt.entityA = null;
-		evt.entityB = null;
+		event.entityA = entityA;
+		event.entityB = entityB;
+		SystemBus.emit('goo.physics.endContact', event);
+		event.entityA = null;
+		event.entityB = null;
 	};
 
 	return AbstractPhysicsSystem;

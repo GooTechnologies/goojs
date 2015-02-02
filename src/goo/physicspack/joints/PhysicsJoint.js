@@ -1,5 +1,4 @@
 define([],
-/** @lends */
 function () {
 	'use strict';
 
@@ -30,7 +29,7 @@ function () {
 		 */
 		this._dirty = true;
 	}
-	PhysicsJoint.constructor = PhysicsJoint;
+	PhysicsJoint.prototype.constructor = PhysicsJoint;
 
 	return PhysicsJoint;
 });

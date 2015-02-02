@@ -1,7 +1,6 @@
 define([
 	'goo/physicspack/colliders/Collider'
 ],
-/** @lends */
 function (
 	Collider
 ) {
@@ -24,7 +23,7 @@ function (
 		Collider.call(this);
 	}
 	SphereCollider.prototype = Object.create(Collider.prototype);
-	SphereCollider.constructor = SphereCollider;
+	SphereCollider.prototype.constructor = SphereCollider;
 
 	/**
 	 * @private

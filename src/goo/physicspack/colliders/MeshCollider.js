@@ -2,7 +2,6 @@ define([
 	'goo/physicspack/colliders/Collider',
 	'goo/math/Vector3'
 ],
-/** @lends */
 function (
 	Collider,
 	Vector3
@@ -32,7 +31,7 @@ function (
 		Collider.call(this);
 	}
 	MeshCollider.prototype = Object.create(Collider.prototype);
-	MeshCollider.constructor = MeshCollider;
+	MeshCollider.prototype.constructor = MeshCollider;
 
 	/**
 	 * @private
