@@ -25,6 +25,15 @@ describe('extractor', function () {
 			});
 		});
 
+		it('extracts a constructor\'s signature even if it\'s followed by an _', function () {
+			var result = extract('function A_() {}', 'A.js');
+			expect(result.constructor).toEqual({
+				name: 'A',
+				params: [],
+				rawComment: undefined
+			});
+		});
+
 		it('extracts a constructor\'s signature when it\'s not top-level', function () {
 			var result = extract('define([], function () { function A() {} return A; });', 'A.js');
 			expect(result.constructor).toEqual({

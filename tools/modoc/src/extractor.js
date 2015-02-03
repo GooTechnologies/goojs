@@ -15,11 +15,19 @@ var getFirstJSDoc = function (comments) {
 	}
 };
 
+var stripUnderscore = function (string) {
+	if (string.slice(-1) === '_') {
+		return string.slice(0, -1);
+	} else {
+		return string;
+	}
+};
+
 var extractTree = function (tree, fileName, options) {
 	var extractors = {
 		constructor: {
 			match: function (node, fileName) {
-				return node.type === 'FunctionDeclaration' && node.id.name === fileName;
+				return node.type === 'FunctionDeclaration' && stripUnderscore(node.id.name) === fileName;
 			},
 			extract: function (node) {
 				var params = node.params.map(function (param) {
@@ -33,7 +41,7 @@ var extractTree = function (tree, fileName, options) {
 				}
 
 				return {
-					name: node.id.name,
+					name: stripUnderscore(node.id.name),
 					params: params,
 					rawComment: comment
 				};
