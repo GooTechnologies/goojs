@@ -1,3 +1,17 @@
+v0.12.9 --- 2015-02-03
+----------------------
+
+###Additions
+ + `.clone` methods for *Ray*, *Plane*, *Transform*, *BoundingBox*, *BoundingSphere*, *PointLight*, *DirectionalLight*, *SpotLight*, *LightComponent*, *Camera*, *CameraComponent*, *BufferData*, *MeshData*, *MeshDataComponent*, *Texture*, *Material*, *MeshRendererComponent* and all Primitive shapes - *Box*, *Cone*, *Cylinder*, *Disk*, *Grid*, *Quad*, *SimpleBox*, *TextureGrid*, *Torus*
+ + `Quaternion.prototype.conjugate` and `Quaternion.prototype.invert`
+
+###Fixes
+ + `world.by.component()` is not case sensitive anymore
+ + an event listener on the *SystemBus* can safely remove other event listeners on the same channel
+ + `Quaternion.prototype.clone` returns an instance of *Quaternion*
+ + triangle winding of *SimpleBox*
+
+
 v0.12.8 --- 2015-01-21
 ----------------------
 
