@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+var childProcess = require('child_process');
 
 module.exports = function (grunt) {
 	var engineFilename = './out/goo.js';
@@ -45,18 +46,19 @@ module.exports = function (grunt) {
 		return [wrapperHead, wrapperTail];
 	}
 
+	// concatenate all modules in one big file, in the correct order
 	grunt.config('requirejs', {
 		build: {
 			// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 			options: {
 				baseUrl: 'src-preprocessed/',
-				optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
+				optimize: 'none',  // uglify, uglify2, closure, closure.keepLines
 				preserveLicenseComments: false,
 				useStrict: true,
 				wrap: false,
-				keepBuildDir: true,
+				keepBuildDir: false,
 				//generateSourceMaps: true,
-				dir: 'out/minified/',
+				dir: 'out/minified',
 				modules: [gooModule],
 				paths: {
 					'requireLib': '../lib/require'
@@ -74,9 +76,35 @@ module.exports = function (grunt) {
 		}
 	});
 
+	// minify the main goo.js file
+	grunt.registerTask('minify-main', function () {
+		var done = this.async();
+
+		var buildTxt = fs.readFileSync('out/minified/build.txt', 'utf8');
+		var moduleList = buildTxt.match(/\/[\w+]+\.js/g);
+
+		moduleList = moduleList.map(function (moduleName) {
+			return moduleName.slice(1, moduleName.length - 3) + '_';
+		});
+
+		var command = "node node_modules/uglify-js/bin/uglifyjs out/minified/goo.js -m -r '" +
+			moduleList.join(',') +
+			"' --screw-ie8 -c -o out/goo.js";
+
+		childProcess.exec(command, function (error, stdout, stderr) {
+			console.log('stdout: ' + stdout);
+			console.log('stderr: ' + stderr);
+			if (error !== null) {
+					console.log('exec error: ' + error);
+				}
+			done();
+		});
+	});
+
+	// wrap the engine with our own require and map/set polyfills
 	grunt.config('wrap', {
 		build: {
-			src: ['out/minified/goo.js'],
+			src: ['out/goo.js'],
 				dest: engineFilename,
 				options: {
 				wrapper: getWrapper

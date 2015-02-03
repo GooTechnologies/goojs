@@ -166,19 +166,20 @@ module.exports = function (grunt) {
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default',	 ['minify']);
-	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
-	grunt.registerTask('minify',	 [
+	grunt.registerTask('default', ['minify']);
+	grunt.registerTask('jsdoc', ['shell:jsdoc']);
+	grunt.registerTask('minify', [
 		'main-file',
 		'preprocess:prod',
 		'requirejs:build',
-		'uglify:build', 
+		'minify-main',
+		'uglify:build',
 		'wrap',
 		'build-pack'
 	]);
-	grunt.registerTask('unittest',	 ['karma:unit']);
-	grunt.registerTask('coverage',	 ['unittest']);
-	grunt.registerTask('e2e',		 ['shell:e2e']);
-	grunt.registerTask('test',		 ['unittest', 'e2e']);
+	grunt.registerTask('unittest', ['karma:unit']);
+	grunt.registerTask('coverage', ['unittest']);
+	grunt.registerTask('e2e', ['shell:e2e']);
+	grunt.registerTask('test', ['unittest', 'e2e']);
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 };

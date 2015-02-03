@@ -17,7 +17,7 @@ define([
 	 * @param {String} [name] Entity name.
 	 * @param {number} [id] Entity id.
 	 */
-	function Entity(world, name, id) {
+	function Entity_(world, name, id) {
 		this._world = world;
 		this._components = [];
 		this.id = id !== undefined ? id : StringUtil.createUniqueId('entity');
@@ -63,6 +63,8 @@ define([
 
 		Entity.entityCount++;
 	}
+
+	var Entity = Entity_;
 
 	//! AT: not sure if 'add' is a better name - need to search for something short and compatible with the other 'set' methods
 	/**
