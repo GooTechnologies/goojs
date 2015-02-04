@@ -16,9 +16,11 @@ define([
 		this.origin = new Vector3();
 		this.direction = new Vector3();
 		this.inverseDirection = new Vector3();
-		this.length = Number.MAX_SAFE_INTEGER;
+		this.length = 1024;
+		this.lengthSquared = this.length*this.length;
 
-		this.constructOriginDirection(origin || Vector3.ZERO, direction || Vector3.UNIT_Z, length || Number.MAX_SAFE_INTEGER);
+		//construct with given data, or arbitrary default data
+		this.constructOriginDirection(origin || Vector3.ZERO, direction || Vector3.UNIT_Z, length || Math.sqrt(Number.MAX_SAFE_INTEGER));
 
 		// #ifdef DEBUG
 		Object.seal(this);
@@ -42,6 +44,16 @@ define([
 		return this;
 	};
 
+	/**
+	 * @param length
+	 * @returns this
+	 */
+	Ray.prototype.setLength = function (length) {
+		this.length = length;
+		this.lengthSquared = this.length*this.length;
+		return this;
+	};
+
 
 	/**
 	 * constructs a ray given an origin, direction and length
@@ -57,9 +69,9 @@ define([
 		this.direction.setVector(direction);
 		this.setDirection(this.direction);
 
-		this.length = length;
+		this.setLength(length);
 		return this;
-	}
+	};
 
 	/**
 	 * constructs a ray given a from and a to vector
@@ -74,7 +86,7 @@ define([
 		this.direction.setVector(to);
 		this.direction.subVector(from);
 
-		this.normalizeDirection();
+		this.normalizeFromToDirection();
 		this.setDirection(this.direction);
 
 		return this;
@@ -206,20 +218,19 @@ define([
 	/**
 	 * @param boundMin
 	 * @param boundMax
-	 * @param locationStore if not null, and this ray intersects the plane, the world location of the point of intersection is stored in this vector.
-	 * @return false if behind ray origin or no intersection else distance to intersection point
+	 * @return false if ray does not intersect else it returns the distance to the intersection point
 	 */
-	Ray.prototype.intersectsAABox = function (boundMin, boundMax, inverseDir){
+	Ray.prototype.intersectsAABox = function (boundMin, boundMax){
 		//
 		//@source: http://gamedev.stackexchange.com/a/18459
 		//
 
-		var tXMin = (boundMin.x - this.origin.x)*inverseDir.x;
-		var tXMax = (boundMax.x - this.origin.x)*inverseDir.x;
-		var tYMin = (boundMin.y - this.origin.y)*inverseDir.y;
-		var tYMax = (boundMax.y - this.origin.y)*inverseDir.y;
-		var tZMin = (boundMin.z - this.origin.z)*inverseDir.z;
-		var tZMax = (boundMax.z - this.origin.z)*inverseDir.z;
+		var tXMin = (boundMin.x - this.origin.x)*this.inverseDirection.x;
+		var tXMax = (boundMax.x - this.origin.x)*this.inverseDirection.x;
+		var tYMin = (boundMin.y - this.origin.y)*this.inverseDirection.y;
+		var tYMax = (boundMax.y - this.origin.y)*this.inverseDirection.y;
+		var tZMin = (boundMin.z - this.origin.z)*this.inverseDirection.z;
+		var tZMax = (boundMax.z - this.origin.z)*this.inverseDirection.z;
 
 		var tMin = Math.max(Math.max(Math.min(tXMin, tXMax), Math.min(tYMin, tYMax)), Math.min(tZMin, tZMax));
 		var tMax = Math.min(Math.min(Math.max(tXMin, tXMax), Math.max(tYMin, tYMax)), Math.max(tZMin, tZMax));
@@ -274,19 +285,21 @@ define([
 	};
 
 	/**
-	 * normalizes a non unit direction and stores the direction length
+	 * normalizes a non unit direction (from-to vector) and stores the length
 	 *
 	 * @returns direction
 	 */
-	Ray.prototype.normalizeDirection = function(){
-		//get length
-		this.length = this.direction.length();
+	Ray.prototype.normalizeFromToDirection = function(){
+
+		//set length to the length of the direction
+		this.setLength(this.direction.length());
 
 		//calc invert length
 		var invertedLength = MathUtils.safeInvert(this.length);
 
 		//normalize direction
 		this.direction.mul(invertedLength);
+		this.setDirection(this.direction);
 
 		return this.direction;
 	};
