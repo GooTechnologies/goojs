@@ -136,7 +136,7 @@ require([
 		var hitEntity = hitResult.surfaceObject.rayObject.entity;
 		//set position of cursor to the world hit position of hitResult
 		var cursor = hitEntity.cursor;
-		hitResult.getWorldHitLocation(cursor.transformComponent.transform.translation);
+		cursor.transformComponent.transform.translation.setVector(hitResult.getWorldHitLocation());
 
 		//get hit pixel color and set to material color
 		convertVertexWeightsToUV(hitResult.vertexWeights, hitResult.surfaceObject, uvStore);

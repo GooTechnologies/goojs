@@ -64,11 +64,10 @@ require([
 		var normalEnd = tmpVec1;
 		hitResult.surfaceObject.getNormal(normalEnd);
 		
-		var location = tmpVec2;
-		hitResult.getWorldHitLocation(location);
-		normalEnd.addVector(location);
+		var hitLocation = hitResult.getWorldHitLocation();
+		normalEnd.addVector(hitLocation);
 		
-		LRS.drawLine(location, normalEnd, LRS.BLUE);
+		LRS.drawLine(hitLocation, normalEnd, LRS.BLUE);
 		
 		return true;
 	};

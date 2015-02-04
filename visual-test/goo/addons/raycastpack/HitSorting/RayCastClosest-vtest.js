@@ -122,8 +122,7 @@ require([
 	var hitCallback = function(hitResult){
 		drawTriangle(hitResult.surfaceObject.triangle, hitResult.surfaceObject.rayObject.regularMatrix);
 
-		var hitLocation = tmpVec1;
-		hitResult.getWorldHitLocation(hitLocation);
+		var hitLocation = hitResult.getWorldHitLocation();
 		var hitNormal = tmpVec2;
 		hitResult.surfaceObject.getNormal(hitNormal);
 

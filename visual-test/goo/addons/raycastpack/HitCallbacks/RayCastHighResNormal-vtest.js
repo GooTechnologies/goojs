@@ -62,12 +62,11 @@ require([
 	var hitCallback = function(hitResult) {
 		var normalEnd = tmpVec1;
 		hitResult.surfaceObject.getNormal(normalEnd);
+
+		var hitLocation = hitResult.getWorldHitLocation();
+		normalEnd.addVector(hitLocation);
 		
-		var location = tmpVec2;
-		hitResult.getWorldHitLocation(location);
-		normalEnd.addVector(location);
-		
-		LRS.drawLine(location, normalEnd, LRS.BLUE);
+		LRS.drawLine(hitLocation, normalEnd, LRS.BLUE);
 		
 		return true;
 	};
