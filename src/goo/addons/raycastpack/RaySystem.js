@@ -99,7 +99,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		this.oldRayDirection.setVector(this.ray.direction);
 		
 		//normalizes and puts length of vector into rayLength
-		this.ray.normalizeDirection();
+		this.ray.normalizeFromToDirection();
 		this.rayLength = this.ray.length;
 
 		//calculate the direction fraction
@@ -141,7 +141,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			var entity = rayObject.entity;
 			var worldBounds = entity.meshRendererComponent.worldBound;
 
-			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max, this.inverseDir);
+			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max);
 			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.rayLength)
 			{
 				this.intersectedRayObjects.push(rayObject);
@@ -159,7 +159,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			rayObject.inverseMatrix.applyPostPoint(this.ray.origin);
 			rayObject.inverseMatrix.applyPostVector(this.ray.direction);
 
-			this.ray.normalizeDirection();
+			this.ray.normalizeFromToDirection();
 			this.rayLength = this.ray.length;
 			this.rayLengthSquare = this.rayLength*this.rayLength;
 
@@ -215,7 +215,9 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 	RaySystem.prototype.closestHitCompare = function() {
 		if(this.result.hit)
 		{
-			var distanceToHit = this.ray.origin.distanceSquared(this.result.localHitLocation);
+			var worldHitLocation = this.result.getWorldHitLocation();
+
+			var distanceToHit = this.oldRayOrigin.distanceSquared(worldHitLocation);
 			if(distanceToHit < this.bestDistance || this.bestDistance === -1)
 			{
 				this.bestDistance = distanceToHit;
@@ -244,7 +246,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			var entity = rayObject.entity;
 			var worldBounds = entity.meshRendererComponent.worldBound;
 
-			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max, this.inverseDir);
+			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max);
 			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.rayLength)
 			{
 				this.intersectedRayObjects.push(rayObject);
@@ -264,7 +266,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			rayObject.inverseMatrix.applyPostPoint(this.ray.origin);
 			rayObject.inverseMatrix.applyPostVector(this.ray.direction);
 
-			this.ray.normalizeDirection();
+			this.ray.normalizeFromToDirection();
 			this.rayLength = this.ray.length;
 			this.rayLengthSquare = this.rayLength*this.rayLength;
 
@@ -339,7 +341,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			rayObject.inverseMatrix.applyPostPoint(this.ray.origin);
 			rayObject.inverseMatrix.applyPostVector(this.ray.direction);
 
-			this.ray.normalizeDirection();
+			this.ray.normalizeFromToDirection();
 			this.rayLength = this.ray.length;
 			this.rayLengthSquare = this.rayLength*this.rayLength;
 
