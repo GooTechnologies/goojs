@@ -19,11 +19,8 @@ function (
 	/**
 	 * Base class for rigid bodies.
 	 * @extends Component
-	 * @param {object} [settings]
 	 */
-	function AbstractRigidbodyComponent(settings) {
-		settings = settings || {};
-
+	function AbstractRigidbodyComponent() {
 		Component.call(this, arguments);
 
 		/**
@@ -34,7 +31,7 @@ function (
 
 		/**
 		 * Will be set to true if any the body needs to be reinitialized.
-		 * @type {Boolean}
+		 * @type {boolean}
 		 */
 		this._dirty = true;
 	}
@@ -53,9 +50,9 @@ function (
 	 */
 	AbstractRigidbodyComponent.prototype.removeJoint = function (joint) {
 		var joints = this.joints;
-		var idx = joints.indexOf(joint);
-		if (idx !== -1) {
-			joints.splice(idx, 1);
+		var index = joints.indexOf(joint);
+		if (index !== -1) {
+			joints.splice(index, 1);
 			this.destroyJoint(joint);
 		}
 	};
@@ -69,10 +66,10 @@ function (
 	 * @param  {Entity} entity
 	 */
 	AbstractRigidbodyComponent.prototype.emitInitialized = function (entity) {
-		var evt = AbstractRigidbodyComponent.initializedEvent;
-		evt.entity = entity;
-		SystemBus.emit('goo.physics.initialized', evt);
-		evt.entity = null; // Remove reference, don't need it any more
+		var event = AbstractRigidbodyComponent.initializedEvent;
+		event.entity = entity;
+		SystemBus.emit('goo.physics.initialized', event);
+		event.entity = null; // Remove reference, don't need it any more
 	};
 
 	/**
