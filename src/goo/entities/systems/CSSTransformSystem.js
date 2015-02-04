@@ -16,7 +16,7 @@ define([
 	/**
 	 * @extends System
 	 */
-	function CSSTransformSystem(renderer) {
+	function CSSTransformSystem_(renderer) {
 		System.call(this, 'CSSTransformSystem', ['TransformComponent', 'CSSTransformComponent']);
 
 		this.renderer = renderer;
@@ -27,6 +27,8 @@ define([
 		    this.containerDom2 = document.querySelector('#cam2');
         }
 	}
+
+	var CSSTransformSystem = CSSTransformSystem_;
 
 	var tmpMatrix = new Matrix4x4();
 	var tmpMatrix2 = new Matrix4x4();

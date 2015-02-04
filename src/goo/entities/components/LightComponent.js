@@ -1,21 +1,19 @@
 define([
 	'goo/entities/components/Component',
 	'goo/renderer/light/Light'
-],
-
-	function (
-		Component,
-		Light
-	) {
+], function (
+	Component,
+	Light
+) {
 	'use strict';
 
 	/**
-	 * Defines a light<br>
+	 * Defines a light
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @param {Light} light Light to contain in this component (directional, spot, point)
 	 * @extends Component
 	 */
-	function LightComponent(light) {
+	function LightComponent_(light) {
 		Component.apply(this, arguments);
 
 		this.type = 'LightComponent';
@@ -35,6 +33,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var LightComponent = LightComponent_;
 
 	LightComponent.type = 'LightComponent';
 

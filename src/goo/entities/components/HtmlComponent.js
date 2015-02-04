@@ -11,7 +11,7 @@ function (
 	 * @extends Component
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example
 	 */
-	function HtmlComponent(domElement) {
+	function HtmlComponent_(domElement) {
 		Component.apply(this, arguments);
 
 		this.type = 'HtmlComponent';
@@ -35,6 +35,8 @@ function (
 		Object.seal(this);
 		// #endif
 	}
+
+	var HtmlComponent = HtmlComponent_;
 
 	HtmlComponent.type = 'HtmlComponent';
 

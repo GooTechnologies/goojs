@@ -30,7 +30,7 @@ define([
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */
-	function GridRenderSystem() {
+	function GridRenderSystem_() {
 		System.call(this, 'GridRenderSystem', []);
 
 		this.renderList = [];
@@ -84,6 +84,8 @@ define([
 			that.lights = lights;
 		});
 	}
+
+	var GridRenderSystem = GridRenderSystem_;
 
 	GridRenderSystem.prototype = Object.create(System.prototype);
 	GridRenderSystem.prototype.constructor = GridRenderSystem;

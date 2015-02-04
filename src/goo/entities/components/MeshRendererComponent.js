@@ -1,20 +1,18 @@
 define([
 	'goo/entities/components/Component',
 	'goo/renderer/Material'
-],
-
-	function (
-		Component,
-		Material
-	) {
+], function (
+	Component,
+	Material
+) {
 	'use strict';
 
 	/**
-	 * Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.<br>
+	 * Defines the appearance of a mesh, through materials. Using several materials results in multi-pass rendering.
 	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/components/MeshRendererComponent/MeshRendererComponent-example.html Working example
 	 * @extends Component
 	 */
-	function MeshRendererComponent(materials) {
+	function MeshRendererComponent_(materials) {
 		Component.apply(this, arguments);
 
 		this.type = 'MeshRendererComponent';
@@ -69,6 +67,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var MeshRendererComponent = MeshRendererComponent_;
 
 	MeshRendererComponent.type = 'MeshRendererComponent';
 

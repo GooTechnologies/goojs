@@ -81,7 +81,7 @@ define([
 	 * @param {boolean} [parameters.useTryCatch=true]
 	 */
 
-	function GooRunner(parameters) {
+	function GooRunner_(parameters) {
 		parameters = parameters || {};
 
 		GameUtils.initAllShims();
@@ -211,6 +211,8 @@ define([
 
 		this._setupContextLost();
 	}
+
+	var GooRunner = GooRunner_;
 
 	GooRunner.prototype._setupContextLost = function () {
 		SystemBus.addListener('goo.contextLost', function () {

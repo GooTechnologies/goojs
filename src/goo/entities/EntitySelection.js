@@ -9,9 +9,11 @@ define([
 	 * A specialised selection object for entities
 	 * @extends Selection
 	 */
-	function EntitySelection() {
+	function EntitySelection_() {
 		Selection.apply(this, arguments);
 	}
+
+	var EntitySelection = EntitySelection_;
 
 	EntitySelection.prototype = Object.create(Selection.prototype);
 	EntitySelection.prototype.constructor = EntitySelection;

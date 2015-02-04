@@ -31,6 +31,7 @@ define([
 	 * @param overrideLights
 	 */
 	LightingSystem.prototype.setOverrideLights = function (overrideLights) {
+		//! AT: unused
 		this.overrideLights = overrideLights;
 		SystemBus.emit('goo.setLights', this.overrideLights);
 		this._needsUpdate = true;
@@ -40,6 +41,7 @@ define([
 	 * Disables overriding of lights tracked by the system
 	 */
 	LightingSystem.prototype.clearOverrideLights = function () {
+		//! AT: unused
 		this.overrideLights = undefined;
 		this._needsUpdate = true;
 	};

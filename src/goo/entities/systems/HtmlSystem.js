@@ -10,17 +10,19 @@ define([
 	Matrix4x4,
 	MathUtils,
 	Vector3
-	) {
+) {
 	'use strict';
 
 	/**
 	 * @extends System
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/HTMLComponent/HTMLComponent-vtest.html Working example
 	 */
-	function HtmlSystem(renderer) {
+	function HtmlSystem_(renderer) {
 		System.call(this, 'HtmlSystem', ['TransformComponent', 'HtmlComponent']);
 		this.renderer = renderer;
 	}
+
+	var HtmlSystem = HtmlSystem_;
 
 	HtmlSystem.prototype = Object.create(System.prototype);
 	HtmlSystem.prototype.constructor = HtmlSystem;

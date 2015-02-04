@@ -13,10 +13,12 @@ define([
 	 * Updates cameras/cameracomponents with their transform component transforms
 	 * @extends System
 	 */
-	function CameraSystem() {
+	function CameraSystem_() {
 		System.call(this, 'CameraSystem', ['TransformComponent', 'CameraComponent']);
 		this.mainCamera = null; //! AT: what's up with this? is it unused?
 	}
+
+	var CameraSystem = CameraSystem_;
 
 	CameraSystem.prototype = Object.create(System.prototype);
 	CameraSystem.prototype.constructor = CameraSystem;

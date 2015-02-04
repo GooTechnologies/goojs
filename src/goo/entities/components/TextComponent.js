@@ -12,7 +12,7 @@ define([
 	 * @extends Component
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example
 	 */
-	function TextComponent(text) {
+	function TextComponent_(text) {
 		Component.apply(this, arguments);
 
 		this.type = 'TextComponent';
@@ -24,6 +24,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var TextComponent = TextComponent_;
 
 	TextComponent.type = 'TextComponent';
 

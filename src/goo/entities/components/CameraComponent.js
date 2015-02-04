@@ -16,7 +16,7 @@ define([
 	 * @param {Camera} camera Camera to contain in this component.
 	 * @extends Component
 	 */
-	function CameraComponent (camera) {
+	function CameraComponent_(camera) {
 		Component.apply(this, arguments);
 
 		this.type = 'CameraComponent';
@@ -52,6 +52,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var CameraComponent = CameraComponent_;
 
 	CameraComponent.type = 'CameraComponent';
 

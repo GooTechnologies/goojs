@@ -19,7 +19,7 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
 	 * @extends {Component}
 	 */
-	function SoundComponent() {
+	function SoundComponent_() {
 		Component.apply(this, arguments);
 
 		this.type = 'SoundComponent';
@@ -48,6 +48,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var SoundComponent = SoundComponent_;
 
 	SoundComponent.type = 'SoundComponent';
 

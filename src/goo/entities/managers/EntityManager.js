@@ -1,19 +1,17 @@
 define([
 	'goo/entities/managers/Manager',
 	'goo/entities/EntitySelection'
-],
-
-	function (
-		Manager,
-		EntitySelection
-	) {
+], function (
+	Manager,
+	EntitySelection
+) {
 	'use strict';
 
 	/**
 	 * Main handler of all entities in the world.
 	 * @extends Manager
 	 */
-	function EntityManager() {
+	function EntityManager_() {
 		Manager.call(this);
 
 		this.type = 'EntityManager';
@@ -44,7 +42,10 @@ define([
 		};
 	}
 
+	var EntityManager = EntityManager_;
+
 	EntityManager.prototype = Object.create(Manager.prototype);
+	EntityManager.prototype.constructor = EntityManager;
 
 	EntityManager.prototype.added = function (entity) {
 		if (!this.containsEntity(entity)) {

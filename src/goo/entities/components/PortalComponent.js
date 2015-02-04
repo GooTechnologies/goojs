@@ -19,7 +19,7 @@ define([
 	 * @param {Material} [overrideMaterial=null] Optional override material to use when rendering to the host object
 	 * @extends Component
 	 */
-	function PortalComponent(camera, height, options, overrideMaterial) {
+	function PortalComponent_(camera, height, options, overrideMaterial) {
 		Component.apply(this, arguments);
 
 		height = height || 200;
@@ -55,6 +55,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var PortalComponent = PortalComponent_;
 
 	PortalComponent.type = 'PortalComponent';
 

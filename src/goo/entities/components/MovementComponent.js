@@ -15,7 +15,7 @@ define([
 		 * rotation.
 		 * @extends Component
 		 */
-		function MovementComponent() {
+		function MovementComponent_() {
 			Component.apply(this, arguments);
 
 			this.type = 'MovementComponent';
@@ -26,6 +26,8 @@ define([
 			Object.seal(this);
 			// #endif
 		}
+
+		var MovementComponent = MovementComponent_;
 
 		MovementComponent.type = 'MovementComponent';
 

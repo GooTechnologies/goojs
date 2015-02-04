@@ -21,7 +21,7 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TransformComponent/TransformComponent-vtest.html Working example
 	 * @extends Component
 	 */
-	function TransformComponent() {
+	function TransformComponent_() {
 		Component.apply(this, arguments);
 
 		this.type = 'TransformComponent';
@@ -58,6 +58,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var TransformComponent = TransformComponent_;
 
 	TransformComponent.type = 'TransformComponent';
 

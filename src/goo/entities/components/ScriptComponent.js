@@ -20,7 +20,7 @@ define([
 	 * The script object can also define the function <code>setup({@link Entity} entity)</code>, called upon script creation.
 	 * @extends Component
 	 */
-	function ScriptComponent(scripts) {
+	function ScriptComponent_(scripts) {
 		Component.apply(this, arguments);
 
 		this.type = 'ScriptComponent';
@@ -48,6 +48,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var ScriptComponent = ScriptComponent_;
 
 	ScriptComponent.type = 'ScriptComponent';
 

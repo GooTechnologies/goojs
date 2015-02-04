@@ -4,9 +4,11 @@ define(function () {
 	/**
 	 * A generic message bus. Offers ways to receive and subscribe to messages on a hierarchy of channels.
 	 */
-	function Bus() {
+	function Bus_() {
 		this.trie = { name: '', listeners: [], children: new Map() };
 	}
+
+	var Bus = Bus_;
 
 	/**
 	 * Sends messages to all listeners with provided callback function.

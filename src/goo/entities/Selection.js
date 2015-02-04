@@ -4,7 +4,7 @@ define([], function () {
 	/**
 	 * Generic selection class
 	 */
-	function Selection() {
+	function Selection_() {
 		this.stack = [];
 
 		//! AT: may rather use toArray
@@ -29,6 +29,8 @@ define([], function () {
 
 		this.top = this.stack.length === 0 ? null : this.stack[0];
 	}
+
+	var Selection = Selection_;
 
 	/**
 	 * Empty selection

@@ -95,8 +95,8 @@ module.exports = function (grunt) {
 			console.log('stdout: ' + stdout);
 			console.log('stderr: ' + stderr);
 			if (error !== null) {
-					console.log('exec error: ' + error);
-				}
+				console.log('exec error: ' + error);
+			}
 			done();
 		});
 	});

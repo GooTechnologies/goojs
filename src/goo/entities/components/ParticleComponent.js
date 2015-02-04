@@ -33,7 +33,7 @@ define([
 	 * @param {number} [settings.particleCount=100]
 	 * @extends Component
 	 */
-	function ParticleComponent (settings) {
+	function ParticleComponent_(settings) {
 		Component.apply(this, arguments);
 
 		this.type = 'ParticleComponent';
@@ -63,6 +63,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var ParticleComponent = ParticleComponent_;
 
 	ParticleComponent.type = 'ParticleComponent';
 
