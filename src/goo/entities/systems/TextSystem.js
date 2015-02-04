@@ -1,13 +1,12 @@
 define([
 	'goo/entities/systems/System',
 	'goo/shapes/TextureGrid',
-	'goo/entities/components/MeshDataComponent'],
-
-	function (
-		System,
-		TextureGrid,
-		MeshDataComponent
-	) {
+	'goo/entities/components/MeshDataComponent'
+], function (
+	System,
+	TextureGrid,
+	MeshDataComponent
+) {
 	'use strict';
 
 	/**
@@ -15,9 +14,11 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example
 	 * @extends System
 	 */
-	function TextSystem() {
+	function TextSystem_() {
 		System.call(this, 'TextSystem', ['TextComponent']);
 	}
+
+	var TextSystem = TextSystem_;
 
 	TextSystem.prototype = Object.create(System.prototype);
 	TextSystem.prototype.constructor = TextSystem;

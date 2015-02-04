@@ -1,11 +1,15 @@
-define(['goo/entities/systems/System'], function (System) {
+define([
+	'goo/entities/systems/System'
+], function (
+	System
+) {
 	'use strict';
 
 	/**
 	 * Helps gather pickable entities
 	 * @extends System
 	 */
-	function PickingSystem (settings) {
+	function PickingSystem_(settings) {
 		System.call(this, 'PickingSystem', ['MeshRendererComponent', 'TransformComponent']);
 		this.passive = true;
 		this.pickRay = null;
@@ -15,6 +19,8 @@ define(['goo/entities/systems/System'], function (System) {
 
 		this.setPickLogic(settings.pickLogic || null);
 	}
+
+	var PickingSystem = PickingSystem_;
 
 	PickingSystem.prototype = Object.create(System.prototype);
 	PickingSystem.prototype.constructor = PickingSystem;

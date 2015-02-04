@@ -20,7 +20,7 @@ define([
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */
-	function RenderSystem() {
+	function RenderSystem_() {
 		System.call(this, 'RenderSystem', ['MeshRendererComponent', 'MeshDataComponent']);
 
 		this.entities = [];
@@ -59,6 +59,8 @@ define([
 			skipUpdateBuffer: false
 		};
 	}
+
+	var RenderSystem = RenderSystem_;
 
 	RenderSystem.prototype = Object.create(System.prototype);
 	RenderSystem.prototype.constructor = RenderSystem;

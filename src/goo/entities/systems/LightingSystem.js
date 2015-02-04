@@ -14,13 +14,15 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @extends System
 	 */
-	function LightingSystem() {
+	function LightingSystem_() {
 		System.call(this, 'LightingSystem', ['LightComponent', 'TransformComponent']);
 
 		this._needsUpdate = true;
 
 		this.lights = [];
 	}
+
+	var LightingSystem = LightingSystem_;
 
 	LightingSystem.prototype = Object.create(System.prototype);
 	LightingSystem.prototype.constructor = LightingSystem;

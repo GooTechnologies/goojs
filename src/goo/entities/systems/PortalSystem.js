@@ -12,7 +12,7 @@ define([
 	 * @param {Renderer} renderer
 	 * @param {RenderSystem} renderSystem
 	 */
-	function PortalSystem(renderer, renderSystem) {
+	function PortalSystem_(renderer, renderSystem) {
 		System.call(this, 'PortalSystem', ['MeshRendererComponent', 'MeshDataComponent', 'PortalComponent']);
 
 		this.renderer = renderer;
@@ -20,6 +20,8 @@ define([
 
 		this.renderList = [];
 	}
+
+	var PortalSystem = PortalSystem_;
 
 	PortalSystem.prototype = Object.create(System.prototype);
 	PortalSystem.prototype.constructor = PortalSystem;

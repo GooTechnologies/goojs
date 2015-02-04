@@ -9,9 +9,11 @@ define(['goo/entities/systems/System'],
 		 * to the transform of the entity which has it every frame.
 		 * @extends System
 		 */
-		function MovementSystem() {
+		function MovementSystem_() {
 			System.call(this, 'MovementSystem', ['MovementComponent']);
 		}
+
+		var MovementSystem = MovementSystem_;
 
 		MovementSystem.prototype = Object.create(System.prototype);
 		MovementSystem.prototype.constructor = MovementSystem;
