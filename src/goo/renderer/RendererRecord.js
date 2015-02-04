@@ -19,18 +19,10 @@ function () {
 			}
 		};
 		this.currentFrameBuffer = null;
-		//! AT: all these are unused
-		this.clippingTestValid = false;
-		this.clippingTestEnabled = false;
-		this.clips = [];
-		this.enabledTextures = 0;
-		this.texturesValid = false;
-		this.currentTextureArraysUnit = 0;
 
 		this.textureRecord = [];
 
 		this.usedProgram = null;
-		this.boundAttributes = [];
 		this.enabledAttributes = [];
 		this.newlyEnabledAttributes = [];
 
@@ -39,7 +31,6 @@ function () {
 		this.blendRecord = {};
 		this.offsetRecord = {};
 		this.lineRecord = {};
-		this.pointRecord = {};
 
 		this.shaderCache = new Map();
 		this.attributeCache = [];
