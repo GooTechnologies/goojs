@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 
 		wrapperHead += fs.readFileSync('out/minified/MapSetPolyfill.js');
 
-		wrapperHead += '(function(window) {';
+		wrapperHead += '(function(window, define, require) {';
 
 		// Put all calls to define and require in the f function
 		wrapperHead +=
@@ -31,17 +31,17 @@ module.exports = function (grunt) {
 		wrapperTail +=
 			'}' +
 			'try{' +
-			'if(window.localStorage&&window.localStorage.gooPath){' +
-			// We're configured to not use the engine from goo.js.
-			// Don't call the f function so the modules won't be defined
-			// and require will load them separately instead.
-			'window.require.config({' +
-			'paths:{goo:localStorage.gooPath}' +
-			'})' +
-			'}else f()' +
+				'if(window.localStorage&&window.localStorage.gooPath){' +
+					// We're configured to not use the engine from goo.js.
+					// Don't call the f function so the modules won't be defined
+					// and require will load them separately instead.
+					'window.require.config({' +
+						'paths:{goo:localStorage.gooPath}' +
+					'})' +
+				'}else f()' +
 			'}catch(e){f()}';
 
-		wrapperTail += '})(window,undefined)';
+		wrapperTail += '})(window, goo.useOwnRequire || !window.define ? goo.define : define, goo.useOwnRequire || !window.require ? goo.require : require)';
 		return [wrapperHead, wrapperTail];
 	}
 
