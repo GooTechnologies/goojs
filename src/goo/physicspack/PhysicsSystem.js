@@ -2,13 +2,17 @@ define([
 	'goo/physicspack/AbstractPhysicsSystem',
 	'goo/physicspack/RaycastResult',
 	'goo/math/Vector3',
-	'goo/math/Quaternion'
+	'goo/math/Quaternion',
+	'goo/entities/EntityUtils',
+	'goo/math/Transform'
 ],
 function (
 	AbstractPhysicsSystem,
 	RaycastResult,
 	Vector3,
-	Quaternion
+	Quaternion,
+	EntityUtils,
+	Transform
 ) {
 	'use strict';
 
@@ -17,7 +21,9 @@ function (
 	var tmpVec1;
 	var tmpVec2;
 	var tmpQuat = new Quaternion();
+	var tmpVec = new Vector3();
 	var tmpCannonResult;
+	var tmpTransform = new Transform();
 
 	/**
 	 * A physics system using [Cannon.js]{@link http://github.com/schteppe/cannon.js}.
@@ -221,8 +227,6 @@ function (
 		}
 	};
 
-	// PhysicsSystem.prototype.deleted = function (entity) {};
-
 	/**
 	 * @private
 	 * @param  {array} entities
@@ -263,11 +267,34 @@ function (
 			var entity = entities[i];
 			var rb = entity.rigidbodyComponent;
 			var tc = entity.transformComponent;
-			rb.getPosition(tc.transform.translation);
+
+			// Get physics
+			rb.getPosition(tmpVec);
 			rb.getQuaternion(tmpQuat);
+
+			// Set local transform of the entity
+			tc.transform.translation.setVector(tmpVec);
 			tc.transform.rotation.copyQuaternion(tmpQuat);
+
+			// Update transform
 			tc.transform.update();
 			tc.setUpdated();
+
+			var parent = tc.parent;
+			if (parent) {
+
+				// The rigid body is a child, but we have its physics world transform
+				// and need to set the world transform of it.
+				parent.entity.transformComponent.worldTransform.invert(tmpTransform);
+				Transform.combine(tmpTransform, tc.transform, tmpTransform);
+
+				tc.transform.rotation.copy(tmpTransform.rotation);
+				tc.transform.translation.copy(tmpTransform.translation);
+
+				// Update transform
+				tc.transform.update();
+				tc.setUpdated();
+			}
 		}
 	};
 

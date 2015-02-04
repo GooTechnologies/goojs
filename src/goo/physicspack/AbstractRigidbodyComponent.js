@@ -100,8 +100,8 @@ function (
 	AbstractRigidbodyComponent.prototype.destroyJoint = function (/*joint*/) {};
 
 	var invBodyTransform = new Transform();
-	var gooTrans = new Transform();
-	var gooTrans2 = new Transform();
+	var trans = new Transform();
+	var trans2 = new Transform();
 
 	/**
 	 * Traverse the tree of colliders from a root entity and down.
@@ -117,7 +117,11 @@ function (
 		invBodyTransform.copy(bodyTransform);
 		invBodyTransform.invert(invBodyTransform);
 
-		entity.traverse(function (childEntity) {
+		// Traverse the entities depth first, but skip nodes below other rigidbody components
+		var queue = [entity];
+		while (queue.length) {
+			var childEntity = queue.pop();
+
 			var collider = childEntity.colliderComponent;
 			if (collider) {
 
@@ -125,18 +129,26 @@ function (
 				childEntity.transformComponent.updateWorldTransform();
 
 				// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
+				trans.copy(childEntity.transformComponent.worldTransform);
+				Transform.combine(invBodyTransform, trans, trans2);
 
-				gooTrans.copy(childEntity.transformComponent.worldTransform);
-				Transform.combine(invBodyTransform, gooTrans, gooTrans2);
-
-				var offset = gooTrans2.translation;
-				var rot = gooTrans2.rotation;
+				var offset = trans2.translation;
+				var rot = trans2.rotation;
 				tmpQuat.fromRotationMatrix(rot);
 
 				// Add the shape
 				callback(childEntity, collider.collider, offset, tmpQuat);
 			}
-		});
+
+			// Add children that don't have rigid body components.
+			var childTransformComponents = childEntity.transformComponent.children;
+			for (var i = 0; i < childTransformComponents.length; i++) {
+				var e = childTransformComponents[i].entity;
+				if (!e.rigidbodyComponent) {
+					queue.push(e);
+				}
+			}
+		}
 	};
 
 	/**

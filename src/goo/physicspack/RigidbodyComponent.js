@@ -166,7 +166,7 @@ function (
 	 * @param {Entity} entity
 	 */
 	RigidbodyComponent.prototype.setTransformFromEntity = function (entity) {
-		var t = entity.transformComponent.transform;
+		var t = entity.transformComponent.worldTransform;
 		var body = this.cannonBody;
 		body.position.copy(t.translation);
 		var q = tmpQuat;

@@ -9,13 +9,15 @@ function (
 	'use strict';
 
 	/**
-	 * Adds a physics collider to the entity. If the entity or any of its ancestors have a {RigidbodyComponent} or an {AmmoRigidbodyComponent}, the collider will be added to the physics world.
+	 * Adds a physics collider to the entity. If the entity or any of its ancestors have a {RigidbodyComponent} or an {AmmoRigidbodyComponent}, the collider is added to the physics world.
 	 * @param {object} [settings]
 	 * @param {Collider} [settings.collider]
 	 * @param {boolean} [settings.isTrigger=false]
 	 * @extends Component
 	 */
 	function ColliderComponent(settings) {
+		Component.apply(this);
+
 		this.type = 'ColliderComponent';
 		settings = settings || {};
 
@@ -43,12 +45,10 @@ function (
 		this.worldCollider = this.collider ? this.collider.clone() : null;
 
 		/**
-		 * If the collider is a Trigger, it will not interact with other objects, but it will emit contact events.
+		 * If the collider is a Trigger, it does not interact with other objects, but it does emit contact events.
 		 * @type {boolean}
 		 */
 		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
-
-		Component.apply(this);
 	}
 	ColliderComponent.prototype = Object.create(Component.prototype);
 	ColliderComponent.prototype.constructor = ColliderComponent;
@@ -69,10 +69,10 @@ function (
 		var doUpdate = false;
 		for (var i = 0; i !== len; i++) {
 			var entity = updateEntities[i];
-			var tc = entity.transformComponent;
-			if (tc._dirty || doUpdate) {
-				tc.updateTransform();
-				tc.updateWorldTransform();
+			var transformComponent = entity.transformComponent;
+			if (transformComponent._dirty || doUpdate) {
+				transformComponent.updateTransform();
+				transformComponent.updateWorldTransform();
 				doUpdate = true;
 			}
 		}
