@@ -27,7 +27,7 @@ define([
 	 * // Passing in an existing Matrix3x3
 	 * var m4 = new Matrix3x3(m1); // m4 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 */
-	function Matrix3x3() {
+	function Matrix3x3_() {
 		Matrix.call(this, 3, 3);
 
 		if (arguments.length === 0) {
@@ -42,6 +42,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Matrix3x3 = Matrix3x3_;
 
 	Matrix3x3._tempX = new Vector3();
 	Matrix3x3._tempY = new Vector3();

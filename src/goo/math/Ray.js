@@ -10,7 +10,7 @@ define([
 	/**
 	 * Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
 	 */
-	function Ray(origin, direction) {
+	function Ray_(origin, direction) {
 		this.origin = origin || new Vector3();
 		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
 
@@ -18,6 +18,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Ray = Ray_;
 
 	var tmpVec1 = new Vector3();
 	var tmpVec2 = new Vector3();

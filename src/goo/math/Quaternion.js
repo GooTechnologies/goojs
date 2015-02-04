@@ -22,7 +22,7 @@ define([
 	 * @extends Vector
 	 * @param {Vector|number[]|...number} arguments Initial values for the components.
 	 */
-	function Quaternion () {
+	function Quaternion_() {
 		Vector.call(this, 4);
 
 		if (arguments.length !== 0) {
@@ -35,6 +35,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Quaternion = Quaternion_;
 
 	Quaternion.prototype = Object.create(Vector.prototype);
 	Quaternion.prototype.constructor = Quaternion;

@@ -16,7 +16,7 @@ define([
 	 *        only matrix in which case it is represented by the matrix and scale fields as R*S, where S is a positive scale vector. For non-uniform
 	 *        scales and reflections, use setMatrix, which will consider M as being a general 3x3 matrix and disregard anything set in scale.
 	 */
-	function Transform() {
+	function Transform_() {
 		/** Read only, will be updated automatically by {@link Transform.update}
 		 * @type {Matrix4x4}
 		 */
@@ -34,6 +34,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Transform = Transform_;
 
 	var tmpVec = new Vector3();
 	var tmpVec2 = new Vector3();

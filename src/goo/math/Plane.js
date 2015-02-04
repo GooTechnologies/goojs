@@ -12,7 +12,7 @@ define([
 	 * @param {Vector3} normal Normal of the plane.
 	 * @param {Number} constant The plane offset along the normal.
 	 */
-	function Plane (normal, constant) {
+	function Plane_(normal, constant) {
 		this.normal = normal !== undefined ? new Vector3(normal) : new Vector3(Vector3.UNIT_Y);
 		this.constant = isNaN(constant) ? 0 : constant;
 
@@ -20,6 +20,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Plane = Plane_;
 
 	// TODO: add Object.freeze? - Object.freeze is still too slow unfortunately
 	Plane.XZ = new Plane(Vector3.UNIT_Y, 0);

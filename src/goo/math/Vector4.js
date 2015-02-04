@@ -10,7 +10,7 @@ define([
 	 * @extends Vector
 	 * @param {Vector4|number[]|...number} arguments Initial values for the components.
 	 */
-	function Vector4() {
+	function Vector4_() {
 		Vector.call(this, 4);
 
 		if (arguments.length !== 0) {
@@ -21,6 +21,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Vector4 = Vector4_;
 
 	Vector4.prototype = Object.create(Vector.prototype);
 	Vector4.prototype.constructor = Vector4;

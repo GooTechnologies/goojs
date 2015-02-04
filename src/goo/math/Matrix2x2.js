@@ -12,7 +12,7 @@ define([
 	 * @extends Matrix
 	 * @param {Matrix2x2|number[]|...number} arguments Initial values for the components.
 	 */
-	function Matrix2x2() {
+	function Matrix2x2_() {
 		Matrix.call(this, 2, 2);
 
 		if (arguments.length === 0) {
@@ -26,6 +26,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Matrix2x2 = Matrix2x2_;
 
 	Matrix2x2.prototype = Object.create(Matrix.prototype);
 	Matrix2x2.prototype.constructor = Matrix2x2;
