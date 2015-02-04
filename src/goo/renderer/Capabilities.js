@@ -1,6 +1,4 @@
-define(
-
-function () {
+define(function () {
 	'use strict';
 
 	/**
@@ -48,8 +46,9 @@ function () {
 	 * @property {number} version Version string
 	 * @property {number} shadingLanguageVersion Shadinglanguage version string
 	 */
-	function Capabilities() {
-	}
+	function Capabilities_() {}
+
+	var Capabilities = Capabilities_;
 
 	/**
 	 * Initialize capabilities from rendering context.

@@ -1,17 +1,19 @@
-define(['goo/math/Vector2'],
-
-	function (Vector2) {
+define([
+	'goo/math/Vector2'
+], function (
+	Vector2
+) {
 	'use strict';
 
 	/**
 	 * Creates a new RenderTarget object
 	 *
 	 * Post processing handler
-	 * @param {Number} width Width of rendertarget
-	 * @param {Number} height Height of rendertarget
-	 * @param {Parameters} parameters Settings
+	 * @param {number} width Width of rendertarget
+	 * @param {number} height Height of rendertarget
+	 * @param {Object} options Options
 	 */
-	function RenderTarget(width, height, options) {
+	function RenderTarget_(width, height, options) {
 		this.glTexture = null;
 		this._glRenderBuffer = null;
 		this._glFrameBuffer = null;
@@ -46,6 +48,8 @@ define(['goo/math/Vector2'],
 
 		this.textureRecord = {};
 	}
+
+	var RenderTarget = RenderTarget_;
 
 	RenderTarget.prototype.clone = function () {
 		var tmp = new RenderTarget(this.width, this.height);

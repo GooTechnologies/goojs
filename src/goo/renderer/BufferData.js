@@ -12,7 +12,7 @@ define([
 	 * @property {ArrayBuffer} data Data to wrap
 	 * @property {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
 	 */
-	function BufferData(data, target) {
+	function BufferData_(data, target) {
 		this.data = data;
 		this.target = target;
 
@@ -25,6 +25,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var BufferData = BufferData_;
 
 	/**
 	 * Set the usage type of this bufferdata.

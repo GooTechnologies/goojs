@@ -12,7 +12,7 @@ define([
 	 * @param {string} [name='Default Material'] Material name
 	 * @param {{ vshader, fshader }} [shaderDefinition] Optional shader to associate with the material
 	 */
-	function Material(name, shaderDefinition) {
+	function Material_(name, shaderDefinition) {
 		this.id = null;
 
 		/** Material name
@@ -147,6 +147,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Material = Material_;
 
 	/**
 	 * Sets a texture in a specific slot

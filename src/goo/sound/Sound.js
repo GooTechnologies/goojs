@@ -12,7 +12,7 @@ define([
 	/**
 	 * A representation of a sound in the engine
 	 */
-	function Sound() {
+	function Sound_() {
 		/** @type {string}
 		 */
 		this.id = null;
@@ -45,6 +45,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Sound = Sound_;
 
 	/**
 	 * Plays the sound if it's not playing

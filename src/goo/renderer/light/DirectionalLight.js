@@ -13,7 +13,7 @@ define([
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function DirectionalLight(color) {
+	function DirectionalLight_(color) {
 		Light.call(this, color);
 
 		/**
@@ -27,6 +27,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var DirectionalLight = DirectionalLight_;
 
 	DirectionalLight.prototype = Object.create(Light.prototype);
 	DirectionalLight.prototype.constructor = DirectionalLight;

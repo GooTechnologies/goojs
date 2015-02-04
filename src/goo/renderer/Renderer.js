@@ -58,7 +58,7 @@ define([
 	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {function(string)} [parameters.onError] Called with message when error occurs
 	 */
-	function Renderer(parameters) {
+	function Renderer_(parameters) {
 		parameters = parameters || {};
 
 		var _canvas = parameters.canvas;
@@ -201,6 +201,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Renderer = Renderer_;
 
 	Renderer.prototype.setupDebugging = function (parameters) {
 		// XXX: This is a temporary solution to easily enable webgl debugging during development...

@@ -19,6 +19,7 @@ function () {
 			}
 		};
 		this.currentFrameBuffer = null;
+		//! AT: all these are unused
 		this.clippingTestValid = false;
 		this.clippingTestEnabled = false;
 		this.clips = [];

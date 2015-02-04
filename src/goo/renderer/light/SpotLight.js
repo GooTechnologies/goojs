@@ -17,7 +17,7 @@ define([
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
-	function SpotLight(color) {
+	function SpotLight_(color) {
 		Light.call(this, color);
 
 		/**
@@ -52,6 +52,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var SpotLight = SpotLight_;
 
 	SpotLight.prototype = Object.create(Light.prototype);
 	SpotLight.prototype.constructor = SpotLight;

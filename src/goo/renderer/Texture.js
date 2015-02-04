@@ -65,7 +65,7 @@ define([
 	 * @param {number} width Width of the texture
 	 * @param {number} height Height of the texture
 	 */
-	function Texture(image, settings, width, height) {
+	function Texture_(image, settings, width, height) {
 		this.glTexture = null;
 
 		settings = settings || {};
@@ -117,6 +117,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Texture = Texture_;
 
 	/**
 	* Checks if the texture's data is ready.

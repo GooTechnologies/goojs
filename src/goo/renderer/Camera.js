@@ -28,8 +28,7 @@ define([
 	 * @param {number} [near=1] Near plane clip distance.
 	 * @param {number} [far=1000] Far plane clip distance.
 	 */
-
-	function Camera(fov, aspect, near, far) {
+	function Camera_(fov, aspect, near, far) {
 		fov = typeof fov !== 'undefined' ? fov : 45;
 		aspect = typeof aspect !== 'undefined' ? aspect : 1;
 		near = typeof near !== 'undefined' ? near : 1;
@@ -109,6 +108,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Camera = Camera_;
 
 	var newDirection = new Vector3(); // tmp
 

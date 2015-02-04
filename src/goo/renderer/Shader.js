@@ -36,7 +36,7 @@ define([
 	 * }
 	 * </code>
 	 */
-	function Shader(name, shaderDefinition) {
+	function Shader_(name, shaderDefinition) {
 		if (!shaderDefinition.vshader || !shaderDefinition.fshader) {
 			throw new Error('Missing shader sources for shader: ' + name);
 		}
@@ -140,6 +140,8 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	var Shader = Shader_;
 
 	// Shader.id = 0;
 	Shader.cache = new Map();
