@@ -40,6 +40,47 @@ define([
 				expect(ray.origin.equals(origin)).toBeTruthy();
 				expect(ray.direction.equals(direction)).toBeTruthy();
 			});
+
+
+			it('constructs a created ray using origin and direction', function () {
+				var ray = new Ray();
+
+				var origin = new Vector3(0,0,0);
+				var direction = new Vector3(100,125,51).normalize();
+				var length = 42;
+				var lengthSquare = length*length;
+
+				var computedInverseDirection = new Vector3().setDirect(MathUtils.safeInvert(direction.x), MathUtils.safeInvert(direction.y), MathUtils.safeInvert(direction.z));
+
+				ray.constructOriginDirection(origin, direction, length);
+
+				expect(ray.origin.equals(origin)).toBeTruthy();
+				expect(ray.direction.equals(direction)).toBeTruthy();
+				expect(ray.inverseDirection.equals(computedInverseDirection)).toBeTruthy();
+				expect(ray.length).toBe(length);
+				expect(ray.lengthSquared).toBe(lengthSquare);
+			});
+
+			it('constructs a created ray using from-to vectors', function () {
+				var ray = new Ray();
+
+				var from = new Vector3(0,0,0);
+				var to = new Vector3(100,125,51);
+
+				var computedDirection = new Vector3().setVector(to).subVector(from);
+				var computedLength = computedDirection.length();
+				var computedLengthSquare = computedLength*computedLength;
+				computedDirection.normalize();
+
+				var computedInverseDirection = new Vector3().setDirect(MathUtils.safeInvert(computedDirection.x), MathUtils.safeInvert(computedDirection.y), MathUtils.safeInvert(computedDirection.z));
+
+				ray.constructFromTo(from,to);
+				expect(ray.origin.equals(from)).toBeTruthy();
+				expect(ray.direction.equals(computedDirection)).toBeTruthy();
+				expect(ray.inverseDirection.equals(computedInverseDirection)).toBeTruthy();
+				expect(ray.length).toBe(computedLength);
+				expect(ray.lengthSquared).toBe(computedLengthSquare);
+			});
 		});
 
 		it('intersects triangle', function () {
@@ -89,6 +130,20 @@ define([
 				expect(rayInverseDirection.x).toEqual(computedInverseDirection.x);
 				expect(rayInverseDirection.y).toEqual(computedInverseDirection.y);
 				expect(rayInverseDirection.z).toEqual(computedInverseDirection.z);
+			});
+		});
+
+		describe('setLength', function () {
+			it('checks length and lengthSquared', function () {
+				var ray = new Ray();
+
+				var length = 42;
+				var lengthSquared = length*length;
+
+				ray.setLength(length);
+
+				expect(ray.length).toEqual(length);
+				expect(ray.lengthSquared).toEqual(lengthSquared);
 			});
 		});
 
