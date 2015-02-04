@@ -19,7 +19,7 @@ define([
 	 * @param {Number} [radius=0.5] Radius.
 	 * @param {Enum} [textureMode=Sphere.TextureModes.Polar] Texture wrapping mode.
 	 */
-	function Sphere(zSamples, radialSamples, radius, textureMode) {
+	function Sphere_(zSamples, radialSamples, radius, textureMode) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			zSamples = props.zSamples;
@@ -76,6 +76,8 @@ define([
 
 		this.rebuild();
 	}
+
+	var Sphere = Sphere_;
 
 	Sphere.prototype = Object.create(MeshData.prototype);
 	Sphere.prototype.constructor = Sphere;

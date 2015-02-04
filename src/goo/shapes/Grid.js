@@ -16,7 +16,7 @@ define([
 	 * @param {number} [height=1] Total height of the Grid.
 	 * @example var meshData = new Grid( 10, 10, 10, 10);
 	 */
-	function Grid(xSegments, ySegments, width, height) {
+	function Grid_(xSegments, ySegments, width, height) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			xSegments = props.xSegments;
@@ -36,6 +36,8 @@ define([
 		this.indexModes[0] = 'Lines';
 		this.rebuild();
 	}
+
+	var Grid = Grid_;
 
 	Grid.prototype = Object.create(MeshData.prototype);
 	Grid.prototype.constructor = Grid;

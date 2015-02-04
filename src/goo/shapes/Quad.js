@@ -16,7 +16,7 @@ define([
 	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
 	 * @param {number} [tileY=1] Number of texture repetitions in the texture's y direction.
 	 */
-	function Quad(width, height, tileX, tileY) {
+	function Quad_(width, height, tileX, tileY) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			width = props.width;
@@ -54,6 +54,8 @@ define([
 
 		this.rebuild();
 	}
+
+	var Quad = Quad_;
 
 	Quad.prototype = Object.create(MeshData.prototype);
 	Quad.prototype.constructor = Quad;

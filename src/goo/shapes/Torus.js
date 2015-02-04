@@ -19,7 +19,7 @@ define([
 	 * @param {number} [tubeRadius=1] Radius of tube.
 	 * @param {number} [centerRadius=2] Radius from center.
 	 */
-	function Torus(circleSamples, radialSamples, tubeRadius, centerRadius) {
+	function Torus_(circleSamples, radialSamples, tubeRadius, centerRadius) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			circleSamples = props.circleSamples;
@@ -45,6 +45,8 @@ define([
 
 		this.rebuild();
 	}
+
+	var Torus = Torus_;
 
 	Torus.prototype = Object.create(MeshData.prototype);
 	Torus.prototype.constructor = Torus;

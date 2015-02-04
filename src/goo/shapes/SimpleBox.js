@@ -12,7 +12,7 @@ define([
 	 * @param {number} [height=1] Total height of box.
 	 * @param {number} [length=1] Total length of box.
 	 */
-	function SimpleBox(width, height, length) {
+	function SimpleBox_(width, height, length) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			width = props.width;
@@ -29,6 +29,8 @@ define([
 
 		this.rebuild();
 	}
+
+	var SimpleBox = SimpleBox_;
 
 	SimpleBox.prototype = Object.create(MeshData.prototype);
 	SimpleBox.prototype.constructor = SimpleBox;

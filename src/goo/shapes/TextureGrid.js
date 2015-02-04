@@ -13,7 +13,7 @@ define([
 	 * @param matrix
 	 * @param textureUnitsPerLine
 	 */
-	function TextureGrid(matrix, textureUnitsPerLine) {
+	function TextureGrid_(matrix, textureUnitsPerLine) {
 	    this.matrix = matrix;
 		this.textureUnitsPerLine = textureUnitsPerLine || 8;
 
@@ -23,6 +23,8 @@ define([
 
 		this.rebuild();
 	}
+
+	var TextureGrid = TextureGrid_;
 
 	TextureGrid.prototype = Object.create(MeshData.prototype);
 	TextureGrid.prototype.constructor = TextureGrid;
