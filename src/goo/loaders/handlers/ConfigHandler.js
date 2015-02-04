@@ -1,27 +1,25 @@
 define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
-], /*@lends */ function (
+], function (
 	RSVP,
 	PromiseUtil
 ) {
 	'use strict';
 
 	/**
-	 * @class Base class for resource handlers, used to load all types of resources into the engine.
+	 * Base class for resource handlers, used to load all types of resources into the engine.
 	 * All the resource types in the bundle (noted by their extension) need to have a registered config
 	 * handler.
 	 * To handle a new type of component, create a class that inherits from this class, and override {update}.
 	 * In your class, call <code>@_register('yourResourceExtension')</code> to _register
 	 * the handler with the loader.
 	 *
-	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @returns {ComponentHandler}
-	 * @private
-	 *
+	 * @hidden
 	 */
 	function ConfigHandler(world, getConfig, updateObject, loadObject) {
 		this.world = world;
@@ -54,7 +52,7 @@ define([
 
 	/**
 	 * Preparing config by populating it with defaults. Should be overwritten in subclasses.
-	 * @param {object} config
+	 * @param {object} config
 	 * @private
 	 */
 	ConfigHandler.prototype._prepare = function (config) {};
@@ -71,7 +69,7 @@ define([
 
 	ConfigHandler.prototype.load = function (ref, options) {
 		var type = ref.substr(ref.lastIndexOf('.') + 1);
-		if (type !== this.constructor._type) {
+		if (type !== this.constructor._type) {
 			throw new Error('Trying to load type' + type + ' with handler for ' + this._type);
 		}
 

@@ -1,10 +1,11 @@
 define(
-/** @lends */
+
 function () {
 	'use strict';
 
 	/**
-	 * @constructor
+	 * Holds the renderer's state
+	 * @hidden
 	 */
 	function RendererRecord() {
 		this.currentBuffer = {
@@ -41,6 +42,10 @@ function () {
 
 		this.shaderCache = new Map();
 		this.attributeCache = [];
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	RendererRecord.prototype.invalidateBuffer = function (target) {

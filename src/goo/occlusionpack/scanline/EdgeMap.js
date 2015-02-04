@@ -1,7 +1,7 @@
 define([
     'goo/renderer/scanline/Edge'
 ],
-    /** @lends */
+
         function (Edge) {
         'use strict';
 

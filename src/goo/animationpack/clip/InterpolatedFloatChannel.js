@@ -1,16 +1,14 @@
 define([
 	'goo/animationpack/clip/AbstractAnimationChannel',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	AbstractAnimationChannel,
 	MathUtils
 ) {
 	'use strict';
 
 	/**
-	 * @class An animation source channel consisting of float value samples. These samples are interpolated between key frames. Potential uses for
+	 * An animation source channel consisting of float value samples. These samples are interpolated between key frames. Potential uses for
 	 *        this channel include extracting and using forward motion from walk animations, animating colors or texture coordinates, etc.
 	 * @param {string} channelName the name of this channel.
 	 * @param {number[]} times the time samples
@@ -34,7 +32,7 @@ function (
 
 	/*
 	 * Applies the channels animation state to supplied data item
-	 * @param {number} sampleIndex
+	 * @param {number} sampleIndex
 	 * @param {number} progressPercent
 	 * @param {number[]} value The data item to apply animation to
 	 */
@@ -46,7 +44,7 @@ function (
 	 * Apply a specific index of this channel to a {@link TransformData} object.
 	 * @param {number} index the index to grab.
 	 * @param {number[]} [store] the TransformData to store in. If null, a new one is created.
-	 * @return {number[]} our resulting TransformData.
+	 * @returns {number[]} our resulting TransformData.
 	 */
 	InterpolatedFloatChannel.prototype.getData = function(index, store) {
 		var rVal = store || [];

@@ -1,14 +1,12 @@
 define([
 	'goo/entities/World'
-],
-/** @lends */
-function (
+], function (
 	World
 ) {
 	'use strict';
 
 	/**
-	 * @class Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the
+	 * Maintains state information about an instance of a specific animation clip, such as time scaling applied, active flag, start time of the
 	 *        instance, etc.
 	 */
 	function AnimationClipInstance () {
@@ -24,7 +22,7 @@ function (
 	/**
 	 * Sets the timescale of the animation, speeding it up or slowing it down
 	 * @param {number} scale
-	 * @param {number} [globalTime=World.time]
+	 * @param {number} [globalTime=World.time]
 	 */
 	AnimationClipInstance.prototype.setTimeScale = function (scale, globalTime) {
 		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;

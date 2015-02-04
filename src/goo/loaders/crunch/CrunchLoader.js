@@ -26,9 +26,7 @@ define([
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/dds/DdsUtils',
 	'goo/renderer/Capabilities'
-],
-/** @lends */
-function(
+], function (
 	DdsLoader,
 	DdsUtils,
 	Capabilities
@@ -36,7 +34,6 @@ function(
 	'use strict';
 
 	/**
-	 * @class
 	 * @private
 	 */
 	function CrunchLoader() {
@@ -172,7 +169,7 @@ function(
 	 * @param {number} srcByteOffset
 	 * @param {number} width
 	 * @param {number} height
-	 * @return {Uint16Array} dst
+	 * @returns {Uint16Array} dst
 	 */
 	CrunchLoader.prototype.dxtToRgb565 = function(src, src16Offset, width, height) {
 		var c = new Uint16Array(4);

@@ -2,9 +2,7 @@ define([
 	'goo/math/Transform',
 	'goo/animationpack/Joint',
 	'goo/math/Matrix4x4'
-],
-/** @lends */
-function (
+], function (
 	Transform,
 	Joint,
 	Matrix4x4
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.
+	 * Joins a {@link Skeleton} with an array of {@link Joint} poses. This allows the skeleton to exist and be reused between multiple instances of poses.
 	 * @param {Skeleton} skeleton
 	 */
 	function SkeletonPose(skeleton) {

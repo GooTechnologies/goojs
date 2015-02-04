@@ -3,12 +3,12 @@ define([
 	'goo/math/Plane',
 	'goo/math/Vector3',
 	'test/CustomMatchers'
-], function(
+], function (
 	Ray,
 	Plane,
 	Vector3,
 	CustomMatchers
-	) {
+) {
 	'use strict';
 
 	describe('Ray', function () {
@@ -106,6 +106,25 @@ define([
 
 				expect(ray.distanceSquared(collinearPoint, closestPoint)).toBeCloseTo(Math.pow(0, 2));
 				expect(closestPoint.equals(new Vector3(4, 0, 20))).toBeTruthy();
+			});
+		});
+
+		describe('copy', function () {
+			it('can copy everything from another ray', function () {
+				var original = new Ray(new Vector3(1, 2, 3), new Vector3(4, 5, 6));
+				var copy = new Ray();
+				copy.copy(original);
+
+				expect(copy).toBeCloned(original);
+			});
+		});
+
+		describe('clone', function () {
+			it('can clone a ray', function () {
+				var original = new Ray(new Vector3(1, 2, 3), new Vector3(4, 5, 6));
+				var clone = original.clone();
+
+				expect(clone).toBeCloned(original);
 			});
 		});
 	});

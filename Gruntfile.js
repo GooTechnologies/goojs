@@ -8,6 +8,7 @@ module.exports = function (grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		// is this task ever called?
 		clean: {
 			build: {
 				src: [
@@ -22,9 +23,7 @@ module.exports = function (grunt) {
 				]
 			},
 			docs: [
-				'goojs-jsdoc/',
-				'goojs-jsdoc-json/',
-				'goojs-jsdoc_*.tar.gz'
+				'out-doc/'
 			]
 		},
 		'build-pack': {
@@ -97,6 +96,18 @@ module.exports = function (grunt) {
 				outBaseDir: 'out'
 			}
 		},
+		'preprocess': {
+			prod: {
+				defines: {
+					DEBUG: false
+				}
+			},
+			dev: {
+				defines: {
+					DEBUG: true
+				}
+			}
+		},
 		'generate-toc': {
 			'visual-test': {
 				path: 'visual-test',
@@ -121,10 +132,7 @@ module.exports = function (grunt) {
 		},
 		shell: {
 			jsdoc: {
-				command: path.resolve('tools', 'generate_jsdoc.sh')
-			},
-			jsdoc_json: {
-				command: path.resolve('tools', 'generate_jsdoc_json.sh')
+				command: 'node tools/modoc/src/modoc.js src/goo tools/modoc/src/templates tools/modoc/src/statics out-doc'
 			},
 			update_webdriver: {
 				options: {
@@ -134,6 +142,9 @@ module.exports = function (grunt) {
 			},
 			e2e: {
 				command: 'node test/e2etesting/manualSpec.js'
+			},
+			'modoc-test': {
+				command: 'node node_modules/jasmine-node/bin/jasmine-node tools/modoc/test/spec'
 			}
 		},
 		jshint: {
@@ -155,12 +166,19 @@ module.exports = function (grunt) {
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default',	['minify']);
-	grunt.registerTask('docs',		['shell:jsdoc']);
-	grunt.registerTask('jsdoc',		['shell:jsdoc']);
-	grunt.registerTask('minify',	['main-file', 'requirejs:build', 'wrap', 'build-pack']);
-	grunt.registerTask('unittest',	['karma:unit']);
-	grunt.registerTask('coverage',	['unittest']);
-	grunt.registerTask('e2e',		['shell:e2e']);
-	grunt.registerTask('test',		['unittest', 'e2e']);
+	grunt.registerTask('default',	 ['minify']);
+	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
+	grunt.registerTask('minify',	 [
+		'main-file',
+		'preprocess:prod',
+		'requirejs:build',
+		'uglify:build', 
+		'wrap',
+		'build-pack'
+	]);
+	grunt.registerTask('unittest',	 ['karma:unit']);
+	grunt.registerTask('coverage',	 ['unittest']);
+	grunt.registerTask('e2e',		 ['shell:e2e']);
+	grunt.registerTask('test',		 ['unittest', 'e2e']);
+	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 };

@@ -4,15 +4,13 @@ define([
 	'goo/math/Transform',
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder'
-	],
-	/* @lends */
-	function (
+], function (
 		MeshData,
 		MeshBuilder,
 		Transform,
 		Box,
 		Cylinder
-	) {
+) {
 	'use strict';
 
 	function CameraDebug() {
@@ -165,7 +163,6 @@ define([
 		var meshDatas = meshBuilder.build();
 		return meshDatas[0];
 	};
-
 
 	return CameraDebug;
 });

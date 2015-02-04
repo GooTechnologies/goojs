@@ -2,9 +2,7 @@ define([
 	'goo/shapes/Quad',
 	'goo/renderer/Camera',
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Quad,
 	Camera,
 	Vector3
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Utility class with a default setup parallel camera and fullscreen quad for fullscreen pass usage
+	 * Utility class with a default setup parallel camera and fullscreen quad for fullscreen pass usage
 	 */
 	function FullscreenUtil() {
 	}

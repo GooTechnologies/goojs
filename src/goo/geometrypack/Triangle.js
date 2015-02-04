@@ -1,16 +1,14 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/math/MathUtils'],
-	/** @lends */
-	function (
-		MeshData,
-		MathUtils
-	) {
+	'goo/math/MathUtils'
+], function (
+	MeshData,
+	MathUtils
+) {
 	'use strict';
 
 	/**
-	 * @class Triangle. Only creates an attributeMap with MeshData.POSITION and MeshData.NORMAL.
-	 * @constructor
+	 * Only creates an attributeMap with MeshData.POSITION and MeshData.NORMAL.
 	 * @param {number[]} verts array with 9 elements. These 9 elements must be 3 x,y,z positions.
 	 */
 	 function Triangle(verts) {
@@ -23,9 +21,10 @@ define([
 	}
 
 	Triangle.prototype = Object.create(MeshData.prototype);
+	Triangle.prototype.constructor = Triangle;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Triangle} Self for chaining.
 	 */
 	Triangle.prototype.rebuild = function () {

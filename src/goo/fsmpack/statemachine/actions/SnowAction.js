@@ -5,9 +5,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/particles/ParticleLib',
 	'goo/util/ParticleSystemUtils'
-],
-/** @lends */
-function(
+], function (
 	Action,
 	Material,
 	ShaderLib,

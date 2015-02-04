@@ -7,9 +7,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ComponentHandler,
 	LightComponent,
 	PointLight,
@@ -23,13 +21,12 @@ function (
 	'use strict';
 
 	/**
-	 * @class For handling loading of light components
-	 * @constructor
+	 * For handling loading of light components
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
+	 * @hidden
 	 */
 	function LightComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -113,8 +110,8 @@ function (
 			PointLight: PointLight
 		};
 
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
-			if (!component) { return; }
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
+			if (!component) { return; }
 			var light = component.light;
 			if(!light || Light[config.type] !== light.constructor) {
 				light = new Light[config.type]();

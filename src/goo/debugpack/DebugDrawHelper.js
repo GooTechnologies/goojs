@@ -144,7 +144,7 @@ define([
 			renderables[0].transform.update();
 
 			// keeping scale for directional light mesh since scale is meaningless for it
-			if (component.light && component.light instanceof DirectionalLight) {
+			if (component.light && component.light instanceof DirectionalLight) {
 				if (renderables[1]) { renderables[1].transform.scale.scale(scale); } // not enough scale!
 				if (renderables[1]) { renderables[1].transform.update(); }
 			}

@@ -1,20 +1,22 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/MathUtils'
-	],
-/** @lends */
-function (
+], function (
 	Vector3,
 	MathUtils
 ) {
 	'use strict';
 
 	/**
-	 * @class Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
+	 * Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
 	 */
 	function Ray(origin, direction) {
 		this.origin = origin ? origin.clone() : new Vector3();
 		this.direction = direction ? direction.clone() : Vector3.UNIT_Z.clone();
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec1 = new Vector3();
@@ -23,13 +25,12 @@ function (
 	var tmpVec4 = new Vector3();
 
 	/**
-	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar ==
-	 * true)
+	 * Check for intersection of this ray and and a quad or triangle, either just inside the shape or for the plane defined by the shape (doPlanar == true)
 	 *
 	 * @param polygonVertices 3 or 4 vector3s defining a triangle or quad
 	 * @param [doPlanar]
 	 * @param locationStore Vector3 to store our intersection point in.
-	 * @return true if this ray intersects a polygon described by the given vertices.
+	 * @returns true if this ray intersects a polygon described by the given vertices.
 	 */
 	Ray.prototype.intersects = function (polygonVertices, doPlanar, locationStore) {
 		if (polygonVertices.length === 3) {
@@ -49,7 +50,7 @@ function (
 	 * @param pointC
 	 * @param [doPlanar]
 	 * @param [locationStore]
-	 * @return true if this ray intersects a triangle formed by the given three points.
+	 * @returns true if this ray intersects a triangle formed by the given three points.
 	 */
 	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
 		var diff = tmpVec1.setVector(this.origin).subVector(pointA);
@@ -108,7 +109,7 @@ function (
 
 	/**
 	 * @param worldVertices an array (size 3 or 4) of vectors describing a polygon
-	 * @return the distance from our origin to the primitive or Infinity if we do not intersect.
+	 * @returns the distance from our origin to the primitive or Infinity if we do not intersect.
 	 */
 	Ray.prototype.getDistanceToPrimitive = function (worldVertices) {
 		// Intersection test
@@ -122,7 +123,7 @@ function (
 	/**
 	 * @param plane
 	 * @param locationStore if not null, and this ray intersects the plane, the world location of the point of intersection is stored in this vector.
-	 * @return true if the ray collides with the given Plane
+	 * @returns true if the ray collides with the given Plane
 	 */
 	Ray.prototype.intersectsPlane = function (plane, locationStore) {
 		var normal = plane.normal;
@@ -148,8 +149,8 @@ function (
 
 	/**
 	 * @param {Vector3} point
-	 * @param {Vecotr3} [store] if not null, the closest point is stored in this param
-	 * @return the squared distance from this ray to the given point.
+	 * @param {Vector3} [store] if not null, the closest point is stored in this param
+	 * @returns the squared distance from this ray to the given point.
 	 */
 	Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = tmpVec1;
@@ -165,13 +166,22 @@ function (
 			vectorA.setVector(this.origin);
 		}
 
-		// Save away the closest point if requested.
+		// Save away the closest point if requested
 		if (store) {
 			store.setVector(vectorA);
 		}
 
 		vectorA.subVector(point);
 		return vectorA.lengthSquared();
+	};
+
+	Ray.prototype.copy = function (source) {
+		this.origin.copy(source.origin);
+		this.direction.copy(source.direction);
+	};
+
+	Ray.prototype.clone = function () {
+		return new Ray(this.origin.clone(), this.direction.clone());
 	};
 
 	return Ray;

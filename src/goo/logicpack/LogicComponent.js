@@ -4,7 +4,7 @@ define([
 		'goo/logic/LogicNodes',
 		'goo/entities/components/Component'
 	],
-	/** @lends */
+
 	function(
 		LogicInterface,
 		LogicLayer,
@@ -14,7 +14,7 @@ define([
 		'use strict';
 
 		/**
-		 * @class A component that embeds a LogicLayer and processes it every frame.
+		 * A component that embeds a LogicLayer and processes it every frame.
 		 * @private
 		 */
 		function LogicComponent(entity) {

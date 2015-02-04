@@ -4,7 +4,7 @@ define([
 	'goo/math/Matrix3x3',
 	'goo/math/MathUtils'
 ],
-/** @lends */
+
 	function(
 	Action,
 	Quaternion,

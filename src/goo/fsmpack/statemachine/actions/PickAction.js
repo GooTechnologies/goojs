@@ -1,8 +1,6 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action'
-],
-/** @lends */
-function(
+], function (
 	Action
 ) {
 	'use strict';
@@ -12,11 +10,15 @@ function(
 
 		this.everyFrame = true;
 		this.updated = false;
+		var that = this;
 		this.eventListener = function(evt) {
-			if(evt.entity === this.ownerEntity) {
-				this.updated = true;
-			}
-		}.bind(this);
+			evt.entity.traverseUp(function(entity){
+				if(entity === that.ownerEntity) {
+					that.updated = true;
+					return false;
+				}
+			});
+		};
 	}
 
 	PickAction.prototype = Object.create(Action.prototype);

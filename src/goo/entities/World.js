@@ -6,9 +6,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection'
-],
-/** @lends */
-function (
+], function (
 	Entity,
 	EntityManager,
 	TransformComponent,
@@ -20,7 +18,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Main handler for an entity world. The World keeps track of managers and systems, 
+	 * Main handler for an entity world. The World keeps track of managers and systems,
 	 * and also provides methods to create, select and remove entities.
 	 * Note that process() has to be called manually if objects need to be added and retrieved within the same update loop.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
@@ -87,7 +85,7 @@ function (
 			var entities = this.entityManager.getEntities();
 
 			return new EntitySelection(entities.filter(function (entity) {
-				return !!entity[componentType];
+				return entity.hasComponent(componentType);
 			}));
 		}.bind(this);
 

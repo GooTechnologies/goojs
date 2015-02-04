@@ -1,9 +1,7 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/fsmpack/statemachine/FSMUtil'
-	],
-/** @lends */
-function(
+	], function (
 	Action,
 	FSMUtil
 	) {

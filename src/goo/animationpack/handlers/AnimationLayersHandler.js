@@ -8,9 +8,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	AnimationLayer,
 	LayerLERPBlender,
@@ -24,10 +22,10 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading animation layers
-	 * @param {World} world
+	 * Handler for loading animation layers
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @extends ConfigHandler
 	 * @private
 	 */
@@ -46,13 +44,15 @@ function (
 	 * @private
 	 */
 	AnimationLayersHandler.prototype._create = function (ref) {
-		return this._objects[ref] = [];
+		var layer = [];
+		this._objects.set(ref, layer);
+		return layer;
 	};
 
 	/**
 	 * Sets current state on a layer if possible, otherwise clears  current state
 	 * @param {AnimationLayer} layer
-	 * @param {string} name
+	 * @param {string} name
 	 */
 	AnimationLayersHandler.prototype._setInitialState = function (layer, stateKey) {
 		if (stateKey) {

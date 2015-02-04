@@ -6,9 +6,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function(
+], function (
 	ComponentHandler,
 	MeshRendererComponent,
 	Material,
@@ -20,13 +18,12 @@ function(
 	'use strict';
 
 	/**
-	 * @class For handling loading of meshrenderercomponents
-	 * @constructor
+	 * For handling loading of meshrenderercomponents
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
+	 * @hidden
 	 */
 	function MeshRendererComponentHandler() {
 		ComponentHandler.apply(this, arguments);
