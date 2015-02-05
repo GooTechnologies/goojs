@@ -84,6 +84,7 @@ define([
 
 		it('can set transform from entity', function (done) {
 			entity.setTranslation(1, 2, 3);
+			entity.transformComponent.updateWorldTransform();
 			rbc.setTransformFromEntity(entity);
 			var position = new Vector3();
 			rbc.getPosition(position);
@@ -284,12 +285,40 @@ define([
 
 		it('can clone', function (done) {
 			var a = rbc;
-			a.collisionMask = 4;
+
+			a.angularDamping = 0.5;
 			a.collisionGroup = 4;
+			a.collisionMask = 4;
+			a.friction = 0.5;
+			a.isKinematic = true;
+			a.linearDamping = 0.5;
+			a.mass = 2;
+			a.restitution = 0.5;
+			a.setAngularVelocity(new Vector3(4, 5, 6));
+			a.setVelocity(new Vector3(1, 2, 3));
+			a.sleepingThreshold = 0.5;
+			a.sleepTimeLimit = 3;
+
 			var b = rbc.clone();
 
-			expect(a.collisionMask).toEqual(b.collisionMask);
+			expect(a.angularDamping).toEqual(0.5);
 			expect(a.collisionGroup).toEqual(b.collisionGroup);
+			expect(a.collisionMask).toEqual(b.collisionMask);
+			expect(a.friction).toEqual(0.5);
+			expect(a.isKinematic).toEqual(true);
+			expect(a.linearDamping).toEqual(0.5);
+			expect(a.mass).toEqual(2);
+			expect(a.restitution).toEqual(0.5);
+			expect(a.sleepingThreshold).toEqual(0.5);
+			expect(a.sleepTimeLimit).toEqual(3);
+
+			var angularVelocity = new Vector3();
+			a.getAngularVelocity(angularVelocity);
+			expect(angularVelocity).toEqual(new Vector3(4, 5, 6));
+
+			var velocity = new Vector3();
+			a.getVelocity(velocity);
+			expect(velocity).toEqual(new Vector3(1, 2, 3));
 
 			done();
 		});

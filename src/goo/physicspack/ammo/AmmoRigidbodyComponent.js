@@ -266,7 +266,7 @@ function (
 	Object.defineProperties(AmmoRigidbodyComponent.prototype, {
 
 		/**
-		 * @memberOf AmmoRigidbodyComponent#
+		 * @target-class AmmoRigidbodyComponent restitution member
 		 * @type {number}
 		 */
 		restitution: {
@@ -282,7 +282,7 @@ function (
 		},
 
 		/**
-		 * @memberOf AmmoRigidbodyComponent#
+		 * @target-class AmmoRigidbodyComponent friction member
 		 * @type {number}
 		 */
 		friction: {
@@ -298,7 +298,7 @@ function (
 		},
 
 		/**
-		 * @memberOf AmmoRigidbodyComponent#
+		 * @target-class AmmoRigidbodyComponent collisionMask member
 		 * @type {number}
 		 */
 		collisionMask: {
@@ -312,7 +312,7 @@ function (
 		},
 
 		/**
-		 * @memberOf AmmoRigidbodyComponent#
+		 * @target-class AmmoRigidbodyComponent collisionGroup member
 		 * @type {number}
 		 */
 		collisionGroup: {
@@ -326,7 +326,7 @@ function (
 		},
 
 		/**
-		 * @memberOf AmmoRigidbodyComponent#
+		 * @target-class AmmoRigidbodyComponent linearDamping member
 		 * @type {number}
 		 */
 		linearDamping: {
@@ -342,7 +342,7 @@ function (
 		},
 
 		/**
-		 * @memberOf AmmoRigidbodyComponent#
+		 * @target-class AmmoRigidbodyComponent angularDamping member
 		 * @type {number}
 		 */
 		angularDamping: {
@@ -358,7 +358,7 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * @target-class AmmoRigidbodyComponent isKinematic member
 		 * @type {number}
 		 */
 		isKinematic: {

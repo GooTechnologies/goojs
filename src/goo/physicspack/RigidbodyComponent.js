@@ -72,11 +72,12 @@ function (
 		this._isKinematic = !!settings.isKinematic;
 
 		/**
+		 * @private
 		 * @type {number}
 		 */
-		this.mass = settings.mass !== undefined ? settings.mass : 1.0;
+		this._mass = settings.mass !== undefined ? settings.mass : 1.0;
 		if (this._isKinematic) {
-			this.mass = 0;
+			this._mass = 0;
 		}
 
 		/**
@@ -166,12 +167,11 @@ function (
 	 * @param {Entity} entity
 	 */
 	RigidbodyComponent.prototype.setTransformFromEntity = function (entity) {
-		var t = entity.transformComponent.worldTransform;
+		var transform = entity.transformComponent.worldTransform;
 		var body = this.cannonBody;
-		body.position.copy(t.translation);
-		var q = tmpQuat;
-		q.fromRotationMatrix(t.rotation);
-		body.quaternion.copy(q);
+		body.position.copy(transform.translation);
+		tmpQuat.fromRotationMatrix(transform.rotation);
+		body.quaternion.copy(tmpQuat);
 	};
 
 	/**
@@ -198,16 +198,35 @@ function (
 	 */
 	RigidbodyComponent.prototype.getVelocity = function (targetVector) {
 		var body = this.cannonBody;
-		var v = body ? body.velocity : this._velocity;
-		targetVector.setDirect(v.x, v.y, v.z);
+		var velocity = body ? body.velocity : this._velocity;
+		targetVector.setDirect(velocity.x, velocity.y, velocity.z);
 	};
 
 	/**
-	 * @param {Vector3} pos
+	 * @param {Vector3} angularVelocity
 	 */
-	RigidbodyComponent.prototype.setPosition = function (pos) {
+	RigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
 		if (this.cannonBody) {
-			this.cannonBody.position.copy(pos);
+			this.cannonBody.angularVelocity.copy(angularVelocity);
+		}
+		this._angularVelocity.setVector(angularVelocity);
+	};
+
+	/**
+	 * @param {Vector3} targetVector
+	 */
+	RigidbodyComponent.prototype.getAngularVelocity = function (targetVector) {
+		var body = this.cannonBody;
+		var angularVelocity = body ? body.angularVelocity : this._angularVelocity;
+		targetVector.setDirect(angularVelocity.x, angularVelocity.y, angularVelocity.z);
+	};
+
+	/**
+	 * @param {Vector3} position
+	 */
+	RigidbodyComponent.prototype.setPosition = function (position) {
+		if (this.cannonBody) {
+			this.cannonBody.position.copy(position);
 		}
 	};
 
@@ -215,16 +234,16 @@ function (
 	 * @param {Vector3} targetVector
 	 */
 	RigidbodyComponent.prototype.getPosition = function (targetVector) {
-		var p = this.cannonBody.position;
-		targetVector.setDirect(p.x, p.y, p.z);
+		var position = this.cannonBody.position;
+		targetVector.setDirect(position.x, position.y, position.z);
 	};
 
 	/**
-	 * @param {Quaternion} quat
+	 * @param {Quaternion} quaternion
 	 */
-	RigidbodyComponent.prototype.setQuaternion = function (quat) {
+	RigidbodyComponent.prototype.setQuaternion = function (quaternion) {
 		if (this.cannonBody) {
-			this.cannonBody.quaternion.copy(quat);
+			this.cannonBody.quaternion.copy(quaternion);
 		}
 	};
 
@@ -233,15 +252,21 @@ function (
 	 */
 	RigidbodyComponent.prototype.getQuaternion = function (targetQuat) {
 		if (this.cannonBody) {
-			var q = this.cannonBody.quaternion;
-			targetQuat.setDirect(q.x, q.y, q.z, q.w);
+			var cannonQuaternion = this.cannonBody.quaternion;
+			targetQuat.setDirect(
+				cannonQuaternion.x,
+				cannonQuaternion.y,
+				cannonQuaternion.z,
+				cannonQuaternion.w
+			);
 		}
 	};
 
 	Object.defineProperties(RigidbodyComponent.prototype, {
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * The "bounciness" of the body.
+		 * @target-class RigidbodyComponent restitution member
 		 * @type {number}
 		 */
 		restitution: {
@@ -257,7 +282,8 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * The friction of the body. Multiplication is used to combine two friction values.
+		 * @target-class RigidbodyComponent friction member
 		 * @type {number}
 		 */
 		friction: {
@@ -273,7 +299,7 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * @target-class RigidbodyComponent collisionMask member
 		 * @type {number}
 		 */
 		collisionMask: {
@@ -289,7 +315,7 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * @target-class RigidbodyComponent collisionGroup member
 		 * @type {number}
 		 */
 		collisionGroup: {
@@ -305,7 +331,7 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * @target-class RigidbodyComponent linearDamping member
 		 * @type {number}
 		 */
 		linearDamping: {
@@ -321,7 +347,7 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * @target-class RigidbodyComponent angularDamping member
 		 * @type {number}
 		 */
 		angularDamping: {
@@ -337,7 +363,7 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * @target-class RigidbodyComponent isKinematic member
 		 * @type {number}
 		 */
 		isKinematic: {
@@ -351,7 +377,7 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * @target-class RigidbodyComponent sleepingThreshold member
 		 * @type {number}
 		 */
 		sleepingThreshold: {
@@ -367,7 +393,24 @@ function (
 		},
 
 		/**
-		 * @memberOf RigidbodyComponent#
+		 * @target-class RigidbodyComponent mass member
+		 * @type {number}
+		 */
+		mass: {
+			get: function () {
+				return this._mass;
+			},
+			set: function (value) {
+				this._mass = value;
+				if (this.cannonBody) {
+					this.cannonBody.mass = value;
+					this.cannonBody.updateMassProperties();
+				}
+			}
+		},
+
+		/**
+		 * @target-class RigidbodyComponent sleepingTimeLimit member
 		 * @type {number}
 		 */
 		sleepingTimeLimit: {
@@ -452,7 +495,7 @@ function (
 		mat.restitution = this._restitution;
 
 		var body = this.cannonBody = new CANNON.Body({
-			mass: this.mass,
+			mass: this._mass,
 			material: mat,
 			linearDamping: this._linearDamping,
 			angularDamping: this._angularDamping,
@@ -469,9 +512,8 @@ function (
 			body.angularVelocity.copy(this._angularVelocity);
 		}
 
-		var that = this;
 		this.traverseColliders(this._entity, function (colliderEntity, collider, position, quaternion) {
-			that.addCollider(colliderEntity, position, quaternion);
+			this.addCollider(colliderEntity, position, quaternion);
 		});
 		if (this._isKinematic) {
 			body.type = CANNON.Body.KINEMATIC;
@@ -582,24 +624,23 @@ function (
 	 */
 	RigidbodyComponent.prototype.clone = function () {
 		return new RigidbodyComponent({
-			isKinematic: this.isKinematic,
-			mass: this.mass,
+			isKinematic: this._isKinematic,
+			mass: this._mass,
 			velocity: this._velocity,
 			angularVelocity: this._angularVelocity,
-			friction: this.friction,
-			restitution: this.restitution,
-			collisionGroup: this.collisionGroup,
-			collisionMask: this.collisionMask,
-			linearDamping: this.linearDamping,
-			angularDamping: this.angularDamping,
-			sleepingThreshold: this.sleepingThreshold,
-			sleepTimeLimit: this.sleepTimeLimit
+			friction: this._friction,
+			restitution: this._restitution,
+			collisionGroup: this._collisionGroup,
+			collisionMask: this._collisionMask,
+			linearDamping: this._linearDamping,
+			angularDamping: this._angularDamping,
+			sleepingThreshold: this._sleepingThreshold,
+			sleepTimeLimit: this._sleepTimeLimit
 		});
 	};
 
 	/**
 	 * @private
-	 * @virtual
 	 * @param entity
 	 */
 	RigidbodyComponent.prototype.attached = function (entity) {

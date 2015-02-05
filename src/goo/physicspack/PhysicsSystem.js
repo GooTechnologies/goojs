@@ -126,6 +126,7 @@ function (
 	 * @private
 	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
+
 		// Get overlapping entities
 		var contacts = this.cannonWorld.contacts,
 			num = contacts.length,
@@ -193,10 +194,10 @@ function (
 
 		if (tmpCannonResult.hasHit) {
 			result.entity = this._entities[tmpCannonResult.body.id];
-			var p = tmpCannonResult.hitPointWorld;
-			var n = tmpCannonResult.hitNormalWorld;
-			result.point.setDirect(p.x, p.y, p.z);
-			result.normal.setDirect(n.x, n.y, n.z);
+			var point = tmpCannonResult.hitPointWorld;
+			var normal = tmpCannonResult.hitNormalWorld;
+			result.point.setDirect(point.x, point.y, point.z);
+			result.normal.setDirect(normal.x, normal.y, normal.z);
 		}
 
 		return tmpCannonResult.hasHit;
@@ -221,9 +222,9 @@ function (
 	 * @param  {Entity} entity
 	 */
 	PhysicsSystem.prototype.inserted = function (entity) {
-		var rb = entity.rigidbodyComponent;
-		if (rb._dirty) {
-			rb.initialize();
+		var component = entity.rigidbodyComponent;
+		if (component._dirty) {
+			component.initialize();
 		}
 	};
 
@@ -238,10 +239,10 @@ function (
 		// Initialize bodies
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rb = entity.rigidbodyComponent;
+			var component = entity.rigidbodyComponent;
 
-			if (rb._dirty) {
-				rb.initialize();
+			if (component._dirty) {
+				component.initialize();
 			}
 		}
 
@@ -262,38 +263,62 @@ function (
 
 		this.step(tpf);
 
-		// Update positions of entities from the physics data
+		// Need a tree traversal, that takes the roots first
+		var queue = [];
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rb = entity.rigidbodyComponent;
-			var tc = entity.transformComponent;
+			var rigidbodyComponent = entity.rigidbodyComponent;
 
-			// Get physics
-			rb.getPosition(tmpVec);
-			rb.getQuaternion(tmpQuat);
+			// Set updated = false so we don't update the same twice
+			rigidbodyComponent._updated = false;
+
+			if (!entity.transformComponent.parent) {
+				// Add roots at the end of the array
+				queue.push(entity);
+			} else {
+				// Children first
+				queue.unshift(entity);
+			}
+		}
+
+		// Update positions of entities from the physics data
+		while (queue.length) {
+			var entity = queue.pop();
+			var rigidbodyComponent = entity.rigidbodyComponent;
+			var transformComponent = entity.transformComponent;
+			var transform = transformComponent.transform;
+
+			if (rigidbodyComponent._updated) {
+				continue;
+			}
+			rigidbodyComponent._updated = true;
+
+			// Get physics orientation
+			rigidbodyComponent.getPosition(tmpVec);
+			rigidbodyComponent.getQuaternion(tmpQuat);
 
 			// Set local transform of the entity
-			tc.transform.translation.setVector(tmpVec);
-			tc.transform.rotation.copyQuaternion(tmpQuat);
+			transform.translation.setVector(tmpVec);
+			transform.rotation.copyQuaternion(tmpQuat);
 
-			// Update transform
-			tc.transform.update();
-			tc.setUpdated();
+			// Update transform manually
+			transformComponent.updateTransform();
+			transformComponent.updateWorldTransform();
 
-			var parent = tc.parent;
+			var parent = transformComponent.parent;
 			if (parent) {
 
 				// The rigid body is a child, but we have its physics world transform
 				// and need to set the world transform of it.
 				parent.entity.transformComponent.worldTransform.invert(tmpTransform);
-				Transform.combine(tmpTransform, tc.transform, tmpTransform);
+				Transform.combine(tmpTransform, transform, tmpTransform);
 
-				tc.transform.rotation.copy(tmpTransform.rotation);
-				tc.transform.translation.copy(tmpTransform.translation);
+				transform.rotation.copy(tmpTransform.rotation);
+				transform.translation.copy(tmpTransform.translation);
 
 				// Update transform
-				tc.transform.update();
-				tc.setUpdated();
+				transformComponent.updateTransform();
+				transformComponent.updateWorldTransform();
 			}
 		}
 	};

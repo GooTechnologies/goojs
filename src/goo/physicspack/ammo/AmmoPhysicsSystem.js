@@ -152,9 +152,9 @@ function (
 
 		// TODO: Update kinematic bodies etc
 		for (var i = 0; i < entities.length; i++) {
-			var rb = entities[i].ammoRigidbodyComponent;
-			if (rb.isKinematic) {
-				rb.updateKinematic(tpf);
+			var component = entities[i].ammoRigidbodyComponent;
+			if (component.isKinematic) {
+				component.updateKinematic(tpf);
 			}
 		}
 
@@ -227,9 +227,9 @@ function (
 		// Initialize bodies
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rb = entity.ammoRigidbodyComponent;
-			if (rb._dirty) {
-				rb.initialize();
+			var component = entity.ammoRigidbodyComponent;
+			if (component._dirty) {
+				component.initialize();
 			}
 		}
 
@@ -253,13 +253,15 @@ function (
 		// Update positions of entities from the physics data
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rb = entity.ammoRigidbodyComponent;
-			var tc = entity.transformComponent;
-			rb.getPosition(tc.transform.translation);
-			rb.getQuaternion(tmpQuat);
-			tc.transform.rotation.copyQuaternion(tmpQuat);
-			tc.transform.update();
-			tc.setUpdated();
+			var rigidbodyComponent = entity.ammoRigidbodyComponent;
+			var transformComponent = entity.transformComponent;
+			var transform = transformComponent.transform;
+
+			rigidbodyComponent.getPosition(transform.translation);
+			rigidbodyComponent.getQuaternion(tmpQuat);
+			transform.rotation.copyQuaternion(tmpQuat);
+			transform.update();
+			transformComponent.setUpdated();
 		}
 	};
 

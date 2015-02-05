@@ -137,7 +137,7 @@ function (
 				tmpQuat.fromRotationMatrix(rot);
 
 				// Add the shape
-				callback(childEntity, collider.collider, offset, tmpQuat);
+				callback.call(this, childEntity, collider.collider, offset, tmpQuat);
 			}
 
 			// Add children that don't have rigid body components.
