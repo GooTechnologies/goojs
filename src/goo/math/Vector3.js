@@ -1004,7 +1004,7 @@ define([
 	 * @returns {Vector3} Clone of self.
 	 */
 	Vector3.prototype.clone = function () {
-		return new Vector3(this);
+		return new Vector3().copy(this);
 	};
 
 	/**

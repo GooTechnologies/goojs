@@ -260,14 +260,15 @@ define([
 			});
 		});
 
-		it('can be cloned', function (){
-			var a = new Vector2(1, 2);
-			var b = a.clone();
-			expect(a).toBeCloseToVector(b);
-			expect(a === b).toEqual(false);
-			expect(b).toEqual(jasmine.any(Vector2));
-		});
+		describe('clone', function () {
+			it('clones a vector', function () {
+				var original = new Vector2(11, 22);
+				var clone = original.clone();
 
+				expect(original).toBeCloseToVector(clone);
+				expect(original).not.toBe(clone);
+			});
+		});
 
 		describe('setd (deprecated)', function () {
 			it('can set a vector', function () {

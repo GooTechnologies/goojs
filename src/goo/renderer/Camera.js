@@ -83,6 +83,7 @@ define([
 		this.modelViewProjection = new Matrix4x4();
 		this.modelViewProjectionInverse = new Matrix4x4();
 
+		//! AT: unused?
 		this._planeState = 0;
 		this._clipPlane = new Vector4();
 		this._qCalc = new Vector4();
