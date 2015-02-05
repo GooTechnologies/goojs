@@ -39,7 +39,6 @@ function (
 	 */
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
-		var that = this;
 		SystemBus.addListener('playStateChanged', function(playState) {
 			this._objects.forEach(function (texture) {
 				if (texture.image && texture.image.play && texture.image.pause) {
@@ -178,7 +177,6 @@ function (
 				var Loader = TextureHandler.loaders[type];
 				if (Loader) {
 					// Special (dds, tga, crn)
-					texture.a = imageRef;
 					ret = that.loadObject(imageRef).then(function (data) {
 						if (data && data.preloaded) {
 							_.extend(texture.image, data.image);

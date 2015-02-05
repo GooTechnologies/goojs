@@ -59,6 +59,7 @@
 			"goo/renderer/light/Shadowmaps-vtest.html",
 			"goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html",
 			"goo/renderer/texture/NPOT/NPOT-vtest.html",
+			"goo/renderer/texture/CubeMaps/Cubemap-vtest.html",
 			"goo/scripts/ButtonScript/ButtonScript.html",
 			"goo/scripts/FPCamControlScript/FPCamControlScript-vtest.html",
 			"goo/scripts/GroundBoundMovementScript/GroundBoundMovementScript-vtest.html",
