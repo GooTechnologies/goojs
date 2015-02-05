@@ -78,6 +78,8 @@ function (
 		this._mass = settings.mass !== undefined ? settings.mass : 1.0;
 		if (this._isKinematic) {
 			this._mass = 0;
+		} else if (this._mass === 0) {
+			this._isKinematic = true;
 		}
 
 		/**
