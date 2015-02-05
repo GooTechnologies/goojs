@@ -230,7 +230,6 @@ define([
 
 			// Load the binary and increase progress tick on finished loading
 			function load(ref) {
-				console.log('Preloading binary: ' + ref);
 				return that._loadRef(ref, options).then(function () {
 					handled++;
 					if (options.progressCallback instanceof Function) {
