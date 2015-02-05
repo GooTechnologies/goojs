@@ -230,6 +230,7 @@ define([
 
 			// Load the binary and increase progress tick on finished loading
 			function load(ref) {
+				console.log('Preloading binary: ' + ref);
 				return that._loadRef(ref, options).then(function () {
 					handled++;
 					if (options.progressCallback instanceof Function) {
@@ -254,6 +255,9 @@ define([
 			// Looks through config for binaries
 			function traverseFn(config) {
 				var promises = [];
+				if (config.lazy === true) {
+					return PromiseUtil.resolve()
+				}
 				var refs = that._getRefsFromConfig(config);
 
 				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
@@ -325,13 +329,10 @@ define([
 					// Ref
 					refs.push(value);
 				}
-			} else if (value instanceof Object) {
+			} else if (value instanceof Object && key !== 'assets') {
 				// Go down a level
 				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
-					//! AT: this check is unnecessary
-					if (value.hasOwnProperty(keys[i])) {
-						traverse(keys[i], value[keys[i]]);
-					}
+					traverse(keys[i], value[keys[i]]);
 				}
 			}
 		}
