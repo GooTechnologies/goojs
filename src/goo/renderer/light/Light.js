@@ -21,7 +21,7 @@ define([
 		 * The color of the light
 		 * @type {Vector3}
 		 */
-		this.color = color || new Vector3(1, 1, 1);
+		this.color = color ? color.clone() : new Vector3(1, 1, 1);
 
 		/**
 		 * The intensity of the light (typically between 0 and 1)

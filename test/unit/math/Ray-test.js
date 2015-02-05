@@ -19,23 +19,31 @@ define([
 		describe('constructor', function () {
 			it('creates a ray given no parameters', function () {
 				var ray = new Ray();
-				expect(ray.origin.equals(new Vector3())).toBeTruthy();
-				expect(ray.direction.equals(Vector3.UNIT_Z)).toBeTruthy();
+
+				expect(ray.origin).toBeCloseToVector(Vector3.ZERO);
+				expect(ray.direction).toBeCloseToVector(Vector3.UNIT_Z);
 			});
 
 			it('creates a ray given only the origin', function () {
 				var origin = new Vector3(1, 2, 3);
 				var ray = new Ray(origin);
-				expect(ray.origin.equals(origin)).toBeTruthy();
-				expect(ray.direction.equals(Vector3.UNIT_Z)).toBeTruthy();
+
+				expect(ray.origin).toBeCloseToVector(origin);
+				expect(ray.origin).not.toBe(origin);
+
+				expect(ray.direction).toBeCloseToVector(Vector3.UNIT_Z);
 			});
 
 			it('creates a ray given the origin and direction', function () {
 				var origin = new Vector3(1, 2, 3);
 				var direction = new Vector3(123, 234, 345);
 				var ray = new Ray(origin, direction);
-				expect(ray.origin.equals(origin)).toBeTruthy();
-				expect(ray.direction.equals(direction)).toBeTruthy();
+
+				expect(ray.origin).toBeCloseToVector(origin);
+				expect(ray.origin).not.toBe(origin);
+
+				expect(ray.direction).toBeCloseToVector(direction);
+				expect(ray.direction).not.toBe(direction);
 			});
 		});
 
@@ -59,7 +67,7 @@ define([
 			ray.intersects(quad,false,store);
 			expect(store).toEqual(new Vector3(0,0,0));
 		});
-
+		
 		describe('intersectsTriangle', function () {
 
 		});
