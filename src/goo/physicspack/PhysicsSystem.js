@@ -304,6 +304,7 @@ function (
 			// Update transform manually
 			transformComponent.updateTransform();
 			transformComponent.updateWorldTransform();
+			transformComponent.setUpdated();
 
 			var parent = transformComponent.parent;
 			if (parent) {
