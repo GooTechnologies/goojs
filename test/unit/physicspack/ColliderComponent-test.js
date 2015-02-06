@@ -32,7 +32,7 @@ define([
 			world.setSystem(new TransformSystem());
 		});
 
-		it('can update its world collider', function (done) {
+		it('can update its world collider', function () {
 			var cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -46,8 +46,6 @@ define([
 			cc.updateWorldCollider();
 
 			expect(cc.worldCollider.radius).toBe(3);
-
-			done();
 		});
 	});
 });

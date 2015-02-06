@@ -35,7 +35,7 @@ define([
 			world.clearSystem('PhysicsSystem');
 		});
 
-		it('can raycast closest', function (done) {
+		it('can raycast closest', function () {
 			var start = new Vector3(0, 0, -10);
 			var end = new Vector3(0, 0, 10);
 			var rbcA = new RigidbodyComponent();
@@ -54,7 +54,7 @@ define([
 
 			var result = new RaycastResult();
 			system.raycastClosest(start, end, result);
-			expect(result.entity).toEqual(entityB);
+			expect(result.entity).toBe(entityB);
 
 			// Now swap so that entityA is closer
 			rbcA.setPosition(new Vector3(0, 0, -3));
@@ -63,12 +63,10 @@ define([
 
 			result = new RaycastResult();
 			system.raycastClosest(start, end, result);
-			expect(result.entity).toEqual(entityA);
-
-			done();
+			expect(result.entity).toBe(entityA);
 		});
 
-		it('emits contact events', function (done) {
+		it('emits contact events', function () {
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
@@ -85,18 +83,18 @@ define([
 
 			var listeners = {
 				'goo.physics.beginContact': function (evt) {
-					expect(evt.entityA.id).toEqual(entityA.id);
-					expect(evt.entityB.id).toEqual(entityB.id);
+					expect(evt.entityA).toBe(entityA);
+					expect(evt.entityB).toBe(entityB);
 					numBeginContact++;
 				},
 				'goo.physics.duringContact': function (evt) {
-					expect(evt.entityA.id).toEqual(entityA.id);
-					expect(evt.entityB.id).toEqual(entityB.id);
+					expect(evt.entityA).toBe(entityA);
+					expect(evt.entityB).toBe(entityB);
 					numDuringContact++;
 				},
 				'goo.physics.endContact': function (evt) {
-					expect(evt.entityA.id).toEqual(entityA.id);
-					expect(evt.entityB.id).toEqual(entityB.id);
+					expect(evt.entityA).toBe(entityA);
+					expect(evt.entityB).toBe(entityB);
 					numEndContact++;
 				}
 			};
@@ -137,11 +135,9 @@ define([
 			for (var key in listeners) {
 				SystemBus.removeListener(key, listeners[key]);
 			}
-
-			done();
 		});
 
-		it('filters collisions', function (done) {
+		it('filters collisions', function () {
 
 			var numBeginContact = 0;
 			var listeners = {
@@ -180,18 +176,13 @@ define([
 			for (var key in listeners) {
 				SystemBus.removeListener(key, listeners[key]);
 			}
-
-			window.SystemBus = SystemBus;
-
-			done();
 		});
 
-		it('can pause and play', function (done) {
+		it('can pause and play', function () {
 			system.pause();
 			expect(system.passive).toBeTruthy();
 			system.play();
 			expect(system.passive).toBeFalsy();
-			done();
 		});
 	});
 });

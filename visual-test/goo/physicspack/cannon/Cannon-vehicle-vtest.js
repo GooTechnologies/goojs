@@ -104,7 +104,8 @@ require([
 					var maxSteerVal = 0.5;
 					var maxForce = 500;
 					var brakeForce = 100;
-					document.onkeydown = document.onkeyup = function (event) {
+
+					document.onkeydown = document.onkeyup = function keyHandler(event) {
 						var up = (event.type === 'keyup');
 
 						if (!up && event.type !== 'keydown') {

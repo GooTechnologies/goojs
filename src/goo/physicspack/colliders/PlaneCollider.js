@@ -7,13 +7,10 @@ function (
 	'use strict';
 
 	/**
-	 * @class Plane collider, that faces in the Z direction.
-	 * @param {object} [settings]
+	 * Plane collider, that faces in the Z direction.
 	 * @extends Collider
 	 */
-	function PlaneCollider(settings) {
-		settings = settings || {};
-
+	function PlaneCollider() {
 		Collider.call(this);
 	}
 	PlaneCollider.prototype = Object.create(Collider.prototype);

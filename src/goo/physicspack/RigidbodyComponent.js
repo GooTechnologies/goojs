@@ -61,13 +61,13 @@ function (
 
 		/**
 		 * @private
-		 * @type {Boolean}
+		 * @type {boolean}
 		 */
 		this._dirty = true;
 
 		/**
 		 * @private
-		 * @type {Boolean}
+		 * @type {boolean}
 		 */
 		this._isKinematic = !!settings.isKinematic;
 

@@ -25,7 +25,7 @@ function () {
 
 		/**
 		 * @private
-		 * @type {Boolean}
+		 * @type {boolean}
 		 */
 		this._dirty = true;
 	}

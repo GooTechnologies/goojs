@@ -310,6 +310,18 @@ require([
 		}
 	}, false);
 
+	V.button('Enable force field', function () {
+		forcefieldEnabled = true;
+	});
+
+	V.button('Disable force field', function () {
+		forcefieldEnabled = false;
+	});
+
+	V.button('Explode', function () {
+		explode();
+	});
+
 	console.log('SPACE: force field\nE: Explode!\nP: Toggle pause\nANY OTHER KEY: add bodies');
 
 	var w = 1;

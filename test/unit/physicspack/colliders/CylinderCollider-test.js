@@ -11,17 +11,17 @@ define([
 
 	describe('CylinderCollider', function () {
 
-		it('can clone', function (done) {
+		it('can clone', function () {
 			var collider = new CylinderCollider({
 				radius: 123,
 				height: 456
 			});
 			var clone = collider.clone();
 			expect(collider).toEqual(clone);
-			done();
+
 		});
 
-		it('can transform', function (done) {
+		it('can transform', function () {
 			var collider = new CylinderCollider({
 				radius: 2,
 				height: 3
@@ -31,7 +31,7 @@ define([
 			collider.transform(transform, collider);
 			expect(collider.radius).toEqual(4);
 			expect(collider.height).toEqual(9);
-			done();
+
 		});
 	});
 });

@@ -11,16 +11,16 @@ define([
 
 	describe('SphereCollider', function () {
 
-		it('can clone', function (done) {
+		it('can clone', function () {
 			var collider = new SphereCollider({
 				radius: 2
 			});
 			var clone = collider.clone();
 			expect(collider).toEqual(clone);
-			done();
+
 		});
 
-		it('can transform', function (done) {
+		it('can transform', function () {
 			var collider = new SphereCollider({
 				radius: 2
 			});
@@ -28,7 +28,7 @@ define([
 			transform.scale.set(1, 2, 3);
 			collider.transform(transform, collider);
 			expect(collider.radius).toEqual(6);
-			done();
+
 		});
 	});
 });

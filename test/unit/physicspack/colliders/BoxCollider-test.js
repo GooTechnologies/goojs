@@ -11,16 +11,15 @@ define([
 
 	describe('BoxCollider', function () {
 
-		it('can clone', function (done) {
+		it('can clone', function () {
 			var collider = new BoxCollider({
 				halfExtents: new Vector3(1, 2, 3)
 			});
 			var clone = collider.clone();
 			expect(collider).toEqual(clone);
-			done();
 		});
 
-		it('can transform', function (done) {
+		it('can transform', function () {
 			var collider = new BoxCollider({
 				halfExtents: new Vector3(1, 2, 3)
 			});
@@ -28,7 +27,6 @@ define([
 			transform.scale.set(1, 2, 3);
 			collider.transform(transform, collider);
 			expect(collider.halfExtents).toEqual(new Vector3(1, 4, 9));
-			done();
 		});
 
 	});
