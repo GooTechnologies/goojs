@@ -65,10 +65,8 @@ define([
             var rayOrigin = new Vector3(0,-2,0);
             var rayDirection = new Vector3(0,1,0);
             var rayLength = 10;
-            //hard coded inverse direction
-            var inverseRayDirection = new Vector3(Number.MAX_SAFE_INTEGER,1,Number.MAX_SAFE_INTEGER);
 
-            var ray = new Ray(rayOrigin, rayDirection);
+            var ray = new Ray(rayOrigin, rayDirection, rayLength);
 
             var tmpBoundMin = new Vector3(-1, -1, -1);
             var tmpBoundMax = new Vector3(1, 1, 1);
@@ -93,7 +91,7 @@ define([
             var hitNodes = [];
 
             //ray step into the octree
-            octreeNode.rayStep(ray, inverseRayDirection, rayLength, hitNodes, true);
+            octreeNode.rayStep(ray, hitNodes, true);
 
             //find the hit data node
             var hitDataNode;
