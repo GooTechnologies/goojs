@@ -96,7 +96,7 @@ module.exports = function (grunt) {
 				outBaseDir: 'out'
 			},
 			physicspack: {
-				packPath: 'physicspack',
+				packPath: 'addons/physicspack',
 				outBaseDir: 'out'
 			}
 		},
