@@ -81,7 +81,7 @@ function (Vector3, BoundingSphere, MathUtils) {
 		this.localNormal.normalize();
 	};
 
-	SurfaceObject.prototype.intersectsBoundingSphere = function(ray){
+	SurfaceObject.prototype.boundingSphereIntersects = function(ray){
 		var diff = tmpVec1.setVector(ray.origin).subVector(this.boundingSphere.center);
 		var a = diff.dotVector(diff) - this.boundingRadiusSquare;
 		if (a <= 0) {
@@ -95,7 +95,7 @@ function (Vector3, BoundingSphere, MathUtils) {
 		return b * b >= a;
 	};
 
-	SurfaceObject.prototype.intersectsTriangle = function(ray, doBackface, locationStore, vertexWeights)
+	SurfaceObject.prototype.triangleIntersects = function(ray, doBackface, locationStore, vertexWeights)
 	{
 		var dirDotNorm = ray.direction.dotVector(this.edge1CrossEdge2);
 		var sign;

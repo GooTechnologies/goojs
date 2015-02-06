@@ -122,16 +122,16 @@ function (Vector3) {
 		}
 	};
 
-	OctreeNode.prototype.intersectsRay = function(ray, inverseDir, rayLength) {
-		var distance = ray.intersectsAABox(this.boundMin, this.boundMax, inverseDir);
-		return (distance && distance <= rayLength);
+	OctreeNode.prototype.intersectsRay = function(ray) {
+		var distance = ray.intersectsAABox(this.boundMin, this.boundMax);
+		return (distance && distance <= ray.length);
 	};
 
 	//hitcallback inside recursion? return bitflags instead of true, false
-	OctreeNode.prototype.rayStep = function(ray, inverseDir, rayLength, nodesHit, onlyLeafs){
+	OctreeNode.prototype.rayStep = function(ray, nodesHit, onlyLeafs){
 
 		//if ray doesnt collide the node, return
-		if(this.depth !== 0 && !this.intersectsRay(ray, inverseDir, rayLength)) {
+		if(this.depth !== 0 && !this.intersectsRay(ray)) {
 			return false;
 		}
 		this.hitsThisFrame++;
@@ -141,7 +141,7 @@ function (Vector3) {
 
 			//iterate all children and ray step down recursively until reaching a leaf
 			for(var i=0; i<this.children.length; i++) {
-				if(this.children[i].rayStep(ray, inverseDir, rayLength, nodesHit, onlyLeafs)) {
+				if(this.children[i].rayStep(ray, nodesHit, onlyLeafs)) {
 					this.numHits++;
 				}
 

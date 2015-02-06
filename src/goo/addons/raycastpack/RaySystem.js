@@ -23,13 +23,9 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		System.call(this, 'RaySystem', []);
 
 		this.rayObjects = [];
-		this.ray = new Ray();
-		this.inverseDir = new Vector3();
-		this.rayLength = 0;
-		this.rayLengthSquare = 0;
-
-		this.oldRayOrigin = new Vector3();
-		this.oldRayDirection = new Vector3();
+		this.worldRayFromTo = new Vector3();
+		this.worldRay = new Ray();
+		this.triangleRay = new Ray();
 
 		this.result = new HitResult();
 		this.bestResult = new HitResult();
@@ -66,44 +62,10 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		}
 		return false;
 	};
-
-	RaySystem.prototype.rayCastSurfaceObject = function(surfaceObject, doBackfaces) {
-		//bounding sphere of triangle check
-		if(!surfaceObject.intersectsBoundingSphere(this.ray)) return false;
-		this.result.hit = surfaceObject.intersectsTriangle(this.ray, doBackfaces, this.result.localHitLocation, this.result.vertexWeights);
-		if(this.result.hit)
-		{
-			//check if the hit is within the rays reach
-			if(this.ray.origin.distanceSquared(this.result.localHitLocation) > this.rayLengthSquare)
-			{
-				this.result.hit = false;
-				return false;
-			}
-
-			this.result.surfaceObject = surfaceObject;
-
-			return true;
-		}
-		return false;
-	};
 	
 	RaySystem.prototype._castBegin = function(lineStart, lineEnd) {
-		this.ray.origin.setVector(lineStart);
-
-		//get direction vector from start to end
-		this.ray.direction.setVector(lineEnd);
-		this.ray.direction.subVector(lineStart);
-		
-		//save old ray values
-		this.oldRayOrigin.setVector(this.ray.origin);
-		this.oldRayDirection.setVector(this.ray.direction);
-		
-		//normalizes and puts length of vector into rayLength
-		this.ray.normalizeFromToDirection();
-		this.rayLength = this.ray.length;
-
-		//calculate the direction fraction
-		fraction(this.ray.direction, this.inverseDir);
+		this.worldRayFromTo.setVector(lineEnd).subVector(lineStart);
+		this.worldRay.constructFromTo(lineStart, lineEnd);
 
 		//empty intersectedRayObjects array
 		this.intersectedRayObjects.length = 0;
@@ -117,6 +79,27 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 	
 	RaySystem.prototype._castEnd = function(hit) {
 	};
+
+	RaySystem.prototype.rayCastSurfaceObject = function(surfaceObject, doBackfaces) {
+		//bounding sphere of triangle check
+		if(!surfaceObject.boundingSphereIntersects(this.triangleRay)) return false;
+		this.result.hit = surfaceObject.triangleIntersects(this.triangleRay, doBackfaces, this.result.localHitLocation, this.result.vertexWeights);
+		if(this.result.hit)
+		{
+			//check if the hit is within the rays reach
+			if(this.triangleRay.origin.distanceSquared(this.result.localHitLocation) > this.triangleRay.lengthSquared)
+			{
+				this.result.hit = false;
+				return false;
+			}
+
+			this.result.surfaceObject = surfaceObject;
+
+			return true;
+		}
+		return false;
+	};
+
 
 	RaySystem.prototype.hitTriangleIndexBefore = function(triangleIndex){
 		if(this.hitTriangleIndexes.indexOf(triangleIndex) === -1) {
@@ -141,8 +124,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			var entity = rayObject.entity;
 			var worldBounds = entity.meshRendererComponent.worldBound;
 
-			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max);
-			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.rayLength)
+			rayObject.distanceToRay = this.worldRay.intersectsAABox(worldBounds.min, worldBounds.max);
+			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.worldRay.length)
 			{
 				this.intersectedRayObjects.push(rayObject);
 			}
@@ -150,21 +133,16 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
-			//reset ray
-			this.ray.origin.setVector(this.oldRayOrigin);
-			this.ray.direction.setVector(this.oldRayDirection);
-			
 			var rayObject = this.intersectedRayObjects[i];
 
-			rayObject.inverseMatrix.applyPostPoint(this.ray.origin);
-			rayObject.inverseMatrix.applyPostVector(this.ray.direction);
+			//reset ray
+			this.triangleRay.origin.setVector(this.worldRay.origin);
+			this.triangleRay.direction.setVector(this.worldRayFromTo);
 
-			this.ray.normalizeFromToDirection();
-			this.rayLength = this.ray.length;
-			this.rayLengthSquare = this.rayLength*this.rayLength;
-
-			//calculate the direction fraction
-			fraction(this.ray.direction, this.inverseDir);
+			rayObject.inverseMatrix.applyPostPoint(this.triangleRay.origin);
+			rayObject.inverseMatrix.applyPostVector(this.triangleRay.direction);
+			//normalize the from-to direction
+			this.triangleRay.normalizeFromToDirection();
 
 			//empty intersectedNodes list
 			this.intersectedNodes.length = 0;
@@ -172,7 +150,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			this.hitTriangleIndexes.length = 0;
 			//THIS IS OPEN FOR OPTIMIZATION, DO TRIANGLE LEVEL CHECKS INSIDE THE OCTREE RAYSTEP
 			//raycast against octree and fill the intersectedNodes list with hit nodes
-			rayObject.octree.rayStep(this.ray, this.inverseDir, this.rayLength, this.intersectedNodes, true);
+			rayObject.octree.rayStep(this.triangleRay, this.intersectedNodes, true);
 			for(var j=0; j<this.intersectedNodes.length; j++)
 			{
 				var node = this.intersectedNodes[j];
@@ -217,7 +195,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		{
 			var worldHitLocation = this.result.getWorldHitLocation();
 
-			var distanceToHit = this.oldRayOrigin.distanceSquared(worldHitLocation);
+			var distanceToHit = this.worldRay.origin.distanceSquared(worldHitLocation);
 			if(distanceToHit < this.bestDistance || this.bestDistance === -1)
 			{
 				this.bestDistance = distanceToHit;
@@ -246,8 +224,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			var entity = rayObject.entity;
 			var worldBounds = entity.meshRendererComponent.worldBound;
 
-			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max);
-			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.rayLength)
+			rayObject.distanceToRay = this.worldRay.intersectsAABox(worldBounds.min, worldBounds.max);
+			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.worldRay.length)
 			{
 				this.intersectedRayObjects.push(rayObject);
 			}
@@ -257,21 +235,16 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
-			//reset ray
-			this.ray.origin.setVector(this.oldRayOrigin);
-			this.ray.direction.setVector(this.oldRayDirection);
-			
 			var rayObject = this.intersectedRayObjects[i];
 
-			rayObject.inverseMatrix.applyPostPoint(this.ray.origin);
-			rayObject.inverseMatrix.applyPostVector(this.ray.direction);
+			//reset ray
+			this.triangleRay.origin.setVector(this.worldRay.origin);
+			this.triangleRay.direction.setVector(this.worldRayFromTo);
 
-			this.ray.normalizeFromToDirection();
-			this.rayLength = this.ray.length;
-			this.rayLengthSquare = this.rayLength*this.rayLength;
-
-			//calculate the direction fraction
-			fraction(this.ray.direction, this.inverseDir);
+			rayObject.inverseMatrix.applyPostPoint(this.triangleRay.origin);
+			rayObject.inverseMatrix.applyPostVector(this.triangleRay.direction);
+			//normalize the from-to direction
+			this.triangleRay.normalizeFromToDirection();
 
 			//empty intersectedNodes list
 			this.intersectedNodes.length = 0;
@@ -280,7 +253,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 			//THIS IS OPEN FOR OPTIMIZATION, DO TRIANGLE LEVEL CHECKS INSIDE THE OCTREE RAYSTEP
 			//raycast against octree and fill intersectedNodes list with hit nodes
-			rayObject.octree.rayStep(this.ray, this.inverseDir, this.rayLength, this.intersectedNodes, true);
+			rayObject.octree.rayStep(this.triangleRay, this.intersectedNodes, true);
 			for(var j=0; j<this.intersectedNodes.length; j++)
 			{
 				var node = this.intersectedNodes[j];
@@ -322,9 +295,9 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			var entity = rayObject.entity;
 			var worldBounds = entity.meshRendererComponent.worldBound;
 			
-			rayObject.distanceToRay = this.ray.intersectsAABox(worldBounds.min, worldBounds.max, this.inverseDir);
+			rayObject.distanceToRay = this.worldRay.intersectsAABox(worldBounds.min, worldBounds.max);
 			
-			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.rayLength)
+			if(rayObject.distanceToRay && rayObject.distanceToRay <= this.worldRay.length)
 			{
 				this.intersectedRayObjects.push(rayObject);
 			}
@@ -332,28 +305,23 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
-			//reset ray
-			this.ray.origin.setVector(this.oldRayOrigin);
-			this.ray.direction.setVector(this.oldRayDirection);
-			
 			var rayObject = this.intersectedRayObjects[i];
 
-			rayObject.inverseMatrix.applyPostPoint(this.ray.origin);
-			rayObject.inverseMatrix.applyPostVector(this.ray.direction);
+			//reset ray
+			this.triangleRay.origin.setVector(this.worldRay.origin);
+			this.triangleRay.direction.setVector(this.worldRayFromTo);
 
-			this.ray.normalizeFromToDirection();
-			this.rayLength = this.ray.length;
-			this.rayLengthSquare = this.rayLength*this.rayLength;
-
-			//calculate the direction fraction
-			fraction(this.ray.direction, this.inverseDir);
+			rayObject.inverseMatrix.applyPostPoint(this.triangleRay.origin);
+			rayObject.inverseMatrix.applyPostVector(this.triangleRay.direction);
+			//normalize the from-to direction
+			this.triangleRay.normalizeFromToDirection();
 
 			//empty intersectedNodes list
 			this.intersectedNodes.length = 0;
 
 			//THIS IS OPEN FOR OPTIMIZATION, DO TRIANGLE LEVEL CHECKS INSIDE THE OCTREE RAYSTEP
 			//raycast against octree and fill the intersectedNodes list with hit nodes
-			rayObject.octree.rayStep(this.ray, this.inverseDir, this.rayLength, this.intersectedNodes, true);
+			rayObject.octree.rayStep(this.triangleRay, this.intersectedNodes, true);
 			for(var j=0; j<this.intersectedNodes.length; j++)
 			{
 				var node = this.intersectedNodes[j];

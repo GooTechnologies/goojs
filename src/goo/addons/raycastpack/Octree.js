@@ -24,8 +24,8 @@ function (OctreeNode) {
 		this.parentNode.optimize();
 	};
 
-	Octree.prototype.rayStep = function(ray, inverseDir, rayLength, nodeContainer, onlyLeafs){
-		this.parentNode.rayStep(ray, inverseDir, rayLength, nodeContainer, onlyLeafs);
+	Octree.prototype.rayStep = function(ray, nodeContainer, onlyLeafs){
+		this.parentNode.rayStep(ray, nodeContainer, onlyLeafs);
 	};
 	
 	return Octree;
