@@ -536,13 +536,24 @@ function (
 		var bodyB = joint.connectedEntity.rigidbodyComponent.cannonBody;
 		var constraint;
 		if (joint instanceof BallJoint) {
+
+			// Scale the joint to the world scale
+			var worldScaledPivotA = joint.localPivot.clone();
+			worldScaledPivotA.mul(this._entity.transformComponent.worldTransform.scale);
+
 			var pivotInA = new CANNON.Vec3();
 			var pivotInB = new CANNON.Vec3();
-			pivotInA.copy(joint.localPivot);
+			pivotInA.copy(worldScaledPivotA);
 
-			// Get the local pivot in bodyB
-			bodyA.pointToWorldFrame(joint.localPivot, pivotInB);
-			bodyB.pointToLocalFrame(pivotInB, pivotInB);
+			if (joint.autoConfigureConnectedPivot) {
+				// Get the local pivot in bodyB
+				bodyA.pointToWorldFrame(pivotInA, pivotInB);
+				bodyB.pointToLocalFrame(pivotInB, pivotInB);
+			} else {
+				var worldScaledPivotB = joint.connectedLocalPivot.clone();
+				worldScaledPivotB.mul(joint.connectedEntity.transformComponent.worldTransform.scale);
+				pivotInB.copy(worldScaledPivotB);
+			}
 
 			constraint = new CANNON.PointToPointConstraint(bodyA, pivotInA, bodyB, pivotInB);
 

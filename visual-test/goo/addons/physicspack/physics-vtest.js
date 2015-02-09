@@ -195,22 +195,23 @@ require([
 		return compoundEntity;
 	}
 
-	function createChain(x, y, z, numLinks, linkDistance, radius) {
+	function createChain(x, y, z, numLinks, size) {
 		var lastEntity;
 		for (var i = 0; i < numLinks; i++) {
 			var rbComponent = new RigidbodyComponent({
 				mass: i ? 1 : 0,
 				velocity: new Vector3(0, 0, 3 * i)
 			});
-			var e = world.createEntity(new Sphere(10, 10, radius), V.getColoredMaterial(), [x, y - i * linkDistance, z])
+			var e = world.createEntity(new Sphere(), V.getColoredMaterial(), [x, y - i * size, z])
 				.set(rbComponent)
-				.set(new ColliderComponent({ collider: new SphereCollider({ radius: radius }) }))
+				.set(new ColliderComponent({ collider: new SphereCollider() }))
+				.setScale(size, size, size)
 				.addToWorld();
 
 			if (lastEntity) {
 				e.rigidbodyComponent.addJoint(new BallJoint({
 					connectedEntity: lastEntity,
-					localPivot: new Vector3(0, linkDistance / 2, 0)
+					localPivot: new Vector3(0, 1, 0)
 				}));
 			}
 
@@ -267,10 +268,8 @@ require([
 
 	createKinematic();
 	addPrimitives();
-	var radius = 0.9;
-	var dist = 2;
 	var N = 5;
-	createChain(0, 4, 10, N, dist, radius);
+	createChain(0, 4, 10, N, 2);
 	createGround();
 	createCompound(0, 5, 0);
 	createHinge(5, 5, 0);

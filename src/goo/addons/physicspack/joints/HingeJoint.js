@@ -17,6 +17,8 @@ function (
 	 * @param {object} [settings]
 	 * @param {Vector3} [settings.localPivot]
 	 * @param {Vector3} [settings.localAxis]
+	 * @param {Entity} [settings.connectedEntity]
+	 * @param {boolean} [settings.collideConnected=false]
 	 * @extends PhysicsJoint
 	 */
 	function HingeJoint(settings) {
@@ -24,9 +26,23 @@ function (
 		PhysicsJoint.call(this, settings);
 
 		/**
+		 * A point defined locally in the entity that the Hinge should rotate around.
 		 * @type {Vector3}
 		 */
-		this.localPivot = settings.localPivot ? settings.localPivot.clone() : new Vector3();
+		this.localPivot = settings.localPivot ? settings.localPivot.clone() : new Vector3(0, 0.5, 0);
+
+		/**
+		 * Automatically compute the connectedLocalPivot
+		 * @type {boolean}
+		 * @default true
+		 */
+		this.autoConfigureConnectedPivot = settings.autoConfigureConnectedPivot ? settings.autoConfigureConnectedPivot : true;
+
+		/**
+		 * The pivot point defined inside the connected entity.
+		 * @type {Vector3}
+		 */
+		this.connectedLocalPivot = settings.connectedLocalPivot ? settings.connectedLocalPivot.clone() : new Vector3();
 
 		/**
 		 * @type {Vector3}
