@@ -9,17 +9,8 @@ define([
 function (System, Vector3, Ray, RayObject, HitResult) {
 	'use strict';
 
-	function fraction(vector, store) {
-		//fix broken math
-		store.x = vector.x===0 ? Number.MAX_SAFE_INTEGER : 1/vector.x;
-		store.y = vector.y===0 ? Number.MAX_SAFE_INTEGER : 1/vector.y;
-		store.z = vector.z===0 ? Number.MAX_SAFE_INTEGER : 1/vector.z;
-		return store;
-	}
-
-
 	//RAY SYSTEM
-	function RaySystem(){
+	function RaySystem() {
 		System.call(this, 'RaySystem', []);
 
 		this.rayObjects = [];
@@ -74,15 +65,18 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		this.rayCastsPerFrame++;
 	};
 
-	RaySystem.prototype._castHit = function(result) {
+	RaySystem.prototype._castHit = function(/*result*/) {
 	};
 	
-	RaySystem.prototype._castEnd = function(hit) {
+	RaySystem.prototype._castEnd = function(/*hit*/) {
 	};
 
 	RaySystem.prototype.rayCastSurfaceObject = function(surfaceObject, doBackfaces) {
 		//bounding sphere of triangle check
-		if(!surfaceObject.boundingSphereIntersects(this.triangleRay)) return false;
+		if(!surfaceObject.boundingSphereIntersects(this.triangleRay))
+		{
+			return false;
+		}
 		this.result.hit = surfaceObject.triangleIntersects(this.triangleRay, doBackfaces, this.result.localHitLocation, this.result.vertexWeights);
 		if(this.result.hit)
 		{
@@ -101,7 +95,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 	};
 
 
-	RaySystem.prototype.hitTriangleIndexBefore = function(triangleIndex){
+	RaySystem.prototype.hitTriangleIndexBefore = function(triangleIndex) {
 		if(this.hitTriangleIndexes.indexOf(triangleIndex) === -1) {
 			this.hitTriangleIndexes.push(triangleIndex);
 			return false;
@@ -111,7 +105,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 	//raycast against all RayObject's unsorted and run hitCallback for each of the hits
 	//hitCallback contains one parameter "hitResult" and returns true to continue iterating hits
-	RaySystem.prototype.castCallback = function(lineStart, lineEnd, doBackfaces, hitCallback){
+	RaySystem.prototype.castCallback = function(lineStart, lineEnd, doBackfaces, hitCallback) {
 		
 		//call the cast start
 		this._castBegin(lineStart, lineEnd);
@@ -231,7 +225,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			}
 		}
 
-		this.intersectedRayObjects.sort(this.distanceSortRayObjects);
+		//no need for distance sorting since we still have to check each and every hit bounding rectangle
+		//this.intersectedRayObjects.sort(this.distanceSortRayObjects);
 
 		for(var i=0; i<this.intersectedRayObjects.length; i++)
 		{
@@ -283,8 +278,9 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 
 		return this.bestResult;
 	};
-	
-	RaySystem.prototype.castOcclude = function(lineStart, lineEnd, doBackfaces){
+
+
+	RaySystem.prototype.castOcclude = function(lineStart, lineEnd, doBackfaces) {
 		
 		//call the cast start
 		this._castBegin(lineStart, lineEnd);
@@ -347,6 +343,7 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		return false;
 	};
 
+
 	RaySystem.prototype.updateRayObjects = function() {
 		for(var i=0; i<this.rayObjects.length; i++)
 		{
@@ -354,7 +351,8 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 			rayObject.update();
 		}
 	};
-	
+
+
 	RaySystem.prototype.process = function() {
 		if(this.rayCastsPerFrame !== 0)
 		{

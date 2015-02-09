@@ -29,7 +29,7 @@ function (Vector3, BoundingSphere, MathUtils) {
 	var tmpVec3 = new Vector3();
 	var tmpVec4 = new Vector3();
 	
-	SurfaceObject.prototype.computeBoundingSphere = function(){
+	SurfaceObject.prototype.computeBoundingSphere = function() {
 		this.boundingRadiusSquare = 0;
 
 		//loop over all triangle points and define min and max values
@@ -66,7 +66,7 @@ function (Vector3, BoundingSphere, MathUtils) {
 		this.boundingSphere.radius = Math.sqrt(this.boundingRadiusSquare);
 	};
 	
-	SurfaceObject.prototype.updateCache = function(){
+	SurfaceObject.prototype.updateCache = function() {
 		this.computeBoundingSphere();
 		
 		//calculate edges 1 and 2 of the triangle
@@ -81,7 +81,7 @@ function (Vector3, BoundingSphere, MathUtils) {
 		this.localNormal.normalize();
 	};
 
-	SurfaceObject.prototype.boundingSphereIntersects = function(ray){
+	SurfaceObject.prototype.boundingSphereIntersects = function(ray) {
 		var diff = tmpVec1.setVector(ray.origin).subVector(this.boundingSphere.center);
 		var a = diff.dotVector(diff) - this.boundingRadiusSquare;
 		if (a <= 0) {
@@ -95,12 +95,13 @@ function (Vector3, BoundingSphere, MathUtils) {
 		return b * b >= a;
 	};
 
-	SurfaceObject.prototype.triangleIntersects = function(ray, doBackface, locationStore, vertexWeights)
-	{
+	SurfaceObject.prototype.triangleIntersects = function(ray, doBackface, locationStore, vertexWeights) {
 		var dirDotNorm = ray.direction.dotVector(this.edge1CrossEdge2);
 		var sign;
 		if (dirDotNorm > MathUtils.EPSILON) {
-			if(!doBackface) return false;
+			if(!doBackface) {
+				return false;
+			}
 
 			sign = 1.0;
 		} else if (dirDotNorm < -MathUtils.EPSILON) {
@@ -146,19 +147,19 @@ function (Vector3, BoundingSphere, MathUtils) {
 		}
 		return result;
 	};
-	
-	SurfaceObject.prototype.isFacingLocalRay = function(ray){
+
+	SurfaceObject.prototype.isFacingLocalRay = function(ray) {
 		return ray.direction.dotVector(this.localNormal) < 0;
 	};
 	
 	//return a non unit normal vector
-	SurfaceObject.prototype.getLocalNormal = function(store){
+	SurfaceObject.prototype.getLocalNormal = function(store) {
 		store.setVector(this.localNormal);
 		return store;
 	};
 
 	//return a unit world vector
-	SurfaceObject.prototype.getNormal = function(store){
+	SurfaceObject.prototype.getNormal = function(store) {
 		//get local normal
 		this.getLocalNormal(store);
 		//transform local normal to worldspace
@@ -167,7 +168,7 @@ function (Vector3, BoundingSphere, MathUtils) {
 		return store;
 	};
 
-	SurfaceObject.prototype.reflectVector = function(vector, store){
+	SurfaceObject.prototype.reflectVector = function(vector, store) {
 		this.getNormal(tmpVec1);
 		this.tmpVec1.mul(this.tmpVec1.dot(vector)*2.0);
 		store.setVector(vector);

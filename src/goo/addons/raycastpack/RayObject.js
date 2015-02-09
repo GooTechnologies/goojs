@@ -16,7 +16,7 @@ MeshData
 	'use strict';
 
 	//RAY OBJECT
-	function RayObject(entity, octreeDepth){
+	function RayObject(entity, octreeDepth) {
 		this.entity = entity;
 
 		this.distanceToRay = -1;
@@ -34,7 +34,7 @@ MeshData
 
 	var tmpVec1 = new Vector3();
 
-	RayObject.prototype.updateBoundingVolumeBounds = function(boundingVolume){
+	RayObject.prototype.updateBoundingVolumeBounds = function(boundingVolume) {
 		//Update volume bounds
 		var halfExtent = tmpVec1;
 		halfExtent.setDirect(boundingVolume.xExtent, boundingVolume.yExtent, boundingVolume.zExtent);
@@ -48,14 +48,14 @@ MeshData
 		return boundingVolume;
 	};
 
-	RayObject.prototype.update = function(){
+	RayObject.prototype.update = function() {
 		//update the world bounds
 		this.updateBoundingVolumeBounds(this.entity.meshRendererComponent.worldBound);
 		this.updateInverse();
 
 	};
 
-	RayObject.prototype.updateInverse = function(){
+	RayObject.prototype.updateInverse = function() {
 		Matrix4x4.invert(this.regularMatrix, this.inverseMatrix);
 	};
 
@@ -64,7 +64,7 @@ MeshData
 		return indices[triIndex + pointIndex]*3;
 	};
 
-	RayObject.prototype.loadTriangleData = function(){
+	RayObject.prototype.loadTriangleData = function() {
 
 		var meshData = this.entity.meshDataComponent.meshData;
 
@@ -97,7 +97,7 @@ MeshData
 		}
 	};
 
-	RayObject.prototype.initialize = function(){
+	RayObject.prototype.initialize = function() {
 		this.updateInverse();
 
 		//load triangle data and push to octree
