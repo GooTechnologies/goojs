@@ -1,24 +1,22 @@
 define([
 	'goo/util/PromiseUtil'
-], /** @lends */ function(
+],  function (
 	PromiseUtil
 ) {
 	'use strict';
 
 	/**
-	 * @class Base class for component handlers. All different types of components that an entity
+	 * Base class for component handlers. All different types of components that an entity
 	 * can have need to have a registered component handler. To handle a new type of component,
 	 * create a class that inherits from this class, and override {_prepare}, {_create}, {update} and {remove}
 	 * as needed ({update} must be overridden). In your class, call <code>@_register('yourComponentType')</code> to _register
 	 * the handler with the loader.
 	 *
-	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
 	 * @returns {ComponentHandler}
-	 * @private
-	 *
+	 * @hidden
 	 */
 	function ComponentHandler(world, getConfig, updateObject, loadObject) {
 		//! schteppe: this._type seem to be assumed to be set by the subclass. Why not pass it as a parameter to this constructor?
@@ -74,7 +72,7 @@ define([
 	 * @returns {RSVP.Promise} promise that resolves with the created component when loading is done.
 	 */
 	ComponentHandler.prototype.update = function(entity, config/*, options*/) {
-		if(!entity) {
+		if(!entity) {
 			return PromiseUtil.reject('Entity is missing');
 		}
 		if (!config) {

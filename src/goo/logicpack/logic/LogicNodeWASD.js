@@ -5,12 +5,12 @@ define(
 		'goo/logic/LogicNodes',
 		'goo/logic/LogicInterface'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
-		 * @class Logic node handling WASD input.
+		 * Logic node handling WASD input.
 		 * @private
 		 */
 		function LogicNodeWASD() {

@@ -1,6 +1,4 @@
-define(
-/* @lends */
-function () {
+define(function () {
 	'use strict';
 
 	// we presume there is support

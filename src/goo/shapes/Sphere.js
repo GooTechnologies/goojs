@@ -1,18 +1,19 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/math/Vector3',
-	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+	'goo/math/MathUtils',
+	'goo/util/ObjectUtil'
+], function (
 	MeshData,
 	Vector3,
-	MathUtils
+	MathUtils,
+	_
 ) {
 	'use strict';
 
 	/**
-	 * @class A 3D object with all points equi-distance from a center point.
+	 * A 3D object with all points equi-distance from a center point.
+	 * @extends MeshData
 	 * @param {Number} [zSamples=8] Number of segments.
 	 * @param {Number} [radialSamples=8] Number of slices.
 	 * @param {Number} [radius=0.5] Radius.
@@ -80,7 +81,7 @@ function (
 	Sphere.prototype.constructor = Sphere;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Sphere} Self for chaining.
 	 */
 	Sphere.prototype.rebuild = function () {
@@ -393,11 +394,22 @@ function (
 		return this;
 	};
 
+	//! AT: there's a method for doing this exact thing on typed arrays, copyWithin()
 	function copyInternal(buf, from, to) {
 		buf[to * 3 + 0] = buf[from * 3 + 0];
 		buf[to * 3 + 1] = buf[from * 3 + 1];
 		buf[to * 3 + 2] = buf[from * 3 + 2];
 	}
+
+	/**
+	 * Returns a clone of this sphere
+	 * @returns {Sphere}
+	 */
+	Sphere.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['zSamples', 'radialSamples', 'radius', 'textureMode']);
+
+		return new Sphere(options);
+	};
 
 	/** Possible texture wrapping modes: Linear, Projected, Polar, Chromeball
 	 * @type {Object}

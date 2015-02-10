@@ -11,9 +11,7 @@ define([
 	'goo/math/Vector3',
 	'goo/renderer/Camera',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function(
+], function (
 	ShaderBuilder,
 	MeshData,
 	Shader,
@@ -30,8 +28,7 @@ function(
 	'use strict';
 
 	/**
-	* @class
-	*/
+	* 	*/
 	function Gizmo(name, gizmoRenderSystem) {
 		this.name = name || 'Default Gizmo';
 		this.gizmoRenderSystem = gizmoRenderSystem;
@@ -126,7 +123,7 @@ function(
 	};
 
 
-	Gizmo.prototype.updateTransforms = function() {
+	Gizmo.prototype.updateTransforms = function() {
 		if (Renderer.mainCamera) {
 			var camera = Renderer.mainCamera;
 			var scale;

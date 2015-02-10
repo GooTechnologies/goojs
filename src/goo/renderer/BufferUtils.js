@@ -1,14 +1,12 @@
 define([
 	'goo/renderer/Capabilities'
-],
-/** @lends */
-function(
+], function (
 	Capabilities
 ) {
 	'use strict';
 
 	/**
-	 * @class Utility for creating index buffers of appropriate type
+	 * Utility for creating index buffers of appropriate type
 	 */
 	function BufferUtils() {
 	}
@@ -42,6 +40,15 @@ function(
 	}
 
 	storeBrowserType();
+
+	/**
+	 * Returns a clone of the supplied typed array
+	 * @param {TypedArray} source
+	 * @returns {TypedArray}
+	 */
+	BufferUtils.cloneTypedArray = function (source) {
+		return new source.constructor(source);
+	};
 
 	return BufferUtils;
 });

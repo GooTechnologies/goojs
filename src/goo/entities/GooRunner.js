@@ -26,9 +26,7 @@ define([
 
 	'goo/entities/SystemBus',
 	'goo/renderer/Material'
-],
-/** @lends */
-function (
+], function (
 	World,
 	Renderer,
 	TransformSystem,
@@ -60,7 +58,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class The main class that updates the world and calls the renderers.
+	 * The main class that updates the world and calls the renderers.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 *
 	 * @param {Object} [parameters] GooRunner settings passed in a JSON object
@@ -71,7 +69,7 @@ function (
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false] By default the drawing buffer will be cleared after it is presented to the HTML compositor. Enable this option to not clear the drawing buffer
 	 * @param {canvas}  [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {boolean} [parameters.showStats=false] If enabled a small stats widget showing stats will be displayed
-	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
+	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {boolean} [parameters.manuallyStartGameLoop=false] By default the 'game loop' will start automatically. Enable this option to manually start the game loop at any time
 	 * @param {boolean | string | { position, color }} [parameters.logo='topright'] Specifies whether the Goo logo is visible or not and where should and be placed and what color should it have.
 	 * If the parameter is not specified then the logo is placed in the top right corner.
@@ -142,7 +140,7 @@ function (
 		this.callbacks = [];
 
 		/** A list of callbacks to call once, in the following frame, before the world is processed.<br>
-		 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example}
+		 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example
 		 * @type {Array.<function(number)>}
 		 */
 		this.callbacksNextFrame = [];
@@ -206,7 +204,7 @@ function (
 			doPick: false,
 			pickingCallback: null,
 			pickingStore: {},
-			clearColorStore: []
+			clearColorStore: []
 		};
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
@@ -419,7 +417,7 @@ function (
 				this._picking.clearColorStore[3] = cc[3];
 				this.renderer.setClearColor(0, 0, 0, 1);
 
-				for (var i = 0; i < this.renderSystems.length; i++) {
+				for (var i = 0; i < this.renderSystems.length; i++) {
 					if (this.renderSystems[i].renderToPick && !this.renderSystems[i].passive) {
 						this.renderSystems[i].renderToPick(this.renderer, this._picking.skipUpdateBuffer);
 					}
@@ -586,7 +584,7 @@ function (
 
 	/**
 	 * Adds an event listener to the GooRunner.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @param  {function(event)} callback Callback function.
@@ -728,7 +726,7 @@ function (
 	 * 'touchstart', 'touchend' or 'touchmove'.
 	 * @private
 	 */
-	GooRunner.prototype._disableEvent = function (type) {
+	GooRunner.prototype._disableEvent = function (type) {
 		if (this._events[type]) {
 			this.renderer.domElement.removeEventListener(type, this._events[type]);
 		}
@@ -799,7 +797,7 @@ function (
 
 	/**
 	 * Pick, the synchronous method. Uses the same pickbuffer so it will affect asynch picking. Also goes only through the normal render system.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/misc/PickSync/PickSync-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickSync/PickSync-vtest.html Working example
 	 * @param {number} x screen coordinate
 	 * @param {number} y screen coordinate
 	 * @param {boolean} skipUpdateBuffer when true picking will be attempted against existing buffer

@@ -19,9 +19,7 @@ define([
 	'goo/entities/SystemBus',
 	'goo/renderer/TaskScheduler',
 	'goo/renderer/RenderInfo'
-],
-/** @lends */
-function (
+], function (
 	Capabilities,
 	RendererRecord,
 	Util,
@@ -48,16 +46,15 @@ function (
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class The renderer handles displaying of graphics data to a render context.
-	 *
-	 * @description Constructor. It accepts a JSON object containing the settings for the renderer.
+	 * The renderer handles displaying of graphics data to a render context.
+	 * It accepts an object containing the settings for the renderer.
 	 * @param {object} parameters Renderer settings.
 	 * @param {boolean} [parameters.alpha=false] Enables the possibility to render non-opaque pixels
-	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.
-	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.
-	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
-	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
-	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
+	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.
+	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.
+	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
+	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {function(string)} [parameters.onError] Called with message when error occurs
 	 */
@@ -199,6 +196,10 @@ function (
 		}.bind(this));
 
 		this._definesIndices = [];
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Renderer.prototype.setupDebugging = function (parameters) {
@@ -537,7 +538,7 @@ function (
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
+			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
@@ -636,7 +637,7 @@ function (
 	/**
 	 * Preloads textures that come with the materials on the supplied "renderables"
 	 * @param renderList
-	 * @return {RSVP.Promise}
+	 * @returns {RSVP.Promise}
 	 */
 	Renderer.prototype.preloadMaterials = function (renderList) {
 		var queue = [];
@@ -836,7 +837,7 @@ function (
 	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
 	 * @param {Camera} camera Main camera for rendering
 	 * @param {Light[]} lights Lights used in the rendering
-	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
+	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
 	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
@@ -1579,7 +1580,7 @@ function (
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
+			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);

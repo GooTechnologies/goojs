@@ -1,16 +1,13 @@
 define([
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Vector3
 ) {
 	'use strict';
 
 	/**
-	 * @class A plain light source in the scene, to be handled by shaders<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
-	 * @constructor
+	 * A plain light source in the scene, to be handled by shaders<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
 	function Light(color) {
@@ -24,7 +21,7 @@ function (
 		 * The color of the light
 		 * @type {Vector3}
 		 */
-		this.color = color || new Vector3(1, 1, 1);
+		this.color = color ? color.clone() : new Vector3(1, 1, 1);
 
 		/**
 		 * The intensity of the light (typically between 0 and 1)
@@ -66,7 +63,7 @@ function (
 			near: 1,
 			far: 1000,
 			resolution: [512, 512],
-			upVector: Vector3.UNIT_Y,
+			upVector: Vector3.UNIT_Y.clone(),
 			darkness: 1.0,
 			shadowType: 'VSM'
 		};
@@ -106,6 +103,33 @@ function (
 				renderer.invalidateRenderTarget(shadowSettings.shadowData.shadowBlurred);
 			}
 		}
+	};
+
+	Light.prototype.copy = function (source) {
+		this.translation.copy(source.translation);
+		this.color.copy(source.color);
+		this.intensity = source.intensity;
+		this.specularIntensity = source.specularIntensity;
+		this.shadowCaster = source.shadowCaster;
+
+		if (source.lightCookie) {
+			this.lightCookie = source.lightCookie.clone();
+		}
+
+		this.shadowSettings.size = source.shadowSettings.size;
+		this.shadowSettings.near = source.shadowSettings.near;
+		this.shadowSettings.far = source.shadowSettings.far;
+		this.shadowSettings.resolution[0] = source.shadowSettings.resolution[0];
+		this.shadowSettings.resolution[1] = source.shadowSettings.resolution[1];
+		this.shadowSettings.upVector.copy(source.shadowSettings.upVector);
+		this.shadowSettings.darkness = source.shadowSettings.darkness;
+		this.shadowSettings.shadowType = source.shadowSettings.shadowType;
+
+		// since these are brand new they should probably be whatever value they are set in the constructor
+		this.changedProperties = source.changedProperties; // false?
+		this.changedColor = source.changedColor; // false?
+
+		return this;
 	};
 
 	return Light;

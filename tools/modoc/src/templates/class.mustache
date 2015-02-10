@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Goo Engine Documentation</title>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="lib/styles/goo.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+{{! CONTENT }}
+<article>
+	{{! title and description }}
+	<section class="header">
+		<h1>
+		<span class="{{#constructor.comment.deprecated}}deprecated{{/constructor.comment.deprecated}}">
+			{{constructor.name}}
+		</span>
+
+			{{#constructor.comment.extends}}
+				<span class="extends">extends
+			<a href="{{constructor.comment.extends.base}}-doc.html">
+				{{constructor.comment.extends.base}}
+			</a>
+		</span>
+			{{/constructor.comment.extends}}
+		</h1>
+		<span class="path">goo/{{requirePath}}</span>
+		<div class="class-description roboto">
+			<div>{{{constructor.comment.description}}}</div>
+
+			{{#constructor.comment.exampleLink}}
+				<div>Example: <a class="example-link" href="{{link}}">{{text}}</a></div>
+			{{/constructor.comment.exampleLink}}
+
+			{{#constructor.comment.deprecated}}
+				<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
+			{{/constructor.comment.deprecated}}
+		</div>
+	</section>
+
+	{{! constructor }}
+	{{#constructor.comment}}
+		<section>
+			<span class="method-name">constructor</span>
+			 :: (
+			{{#constructor.params}}
+				<span class="parameter">{{.}}</span>
+			{{/constructor.params}}
+			)
+			{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
+
+			<div class="comment">
+				{{#param}}
+					<div class="parameter-doc">
+						<span class="parameter-name">{{name}}</span>
+						{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
+						{{#optional}}<span class="parameter-optional">optional</span>{{/optional}}
+						{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
+						<span class="parameter-description">{{{description}}}</span>
+					</div>
+				{{/param}}
+
+				{{#example}}
+					<pre><code class="javascript">{{.}}</code></pre>
+				{{/example}}
+			</div>
+		</section>
+	{{/constructor.comment}}
+
+	{{! members }}
+	{{#hasMembers}}
+		<section>
+			<h2>Members</h2>
+
+			{{#members}}
+				<div>
+					<a id="{{name}}" href="#{{name}}">
+						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
+					</a>
+					{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
+					{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
+					{{#comment.default_}}<span class="parameter-default">default = {{default_}}</span>{{/comment.default_}}
+					<span class="parameter-description">{{{comment.description}}}</span>
+				</div>
+
+				{{#comment.deprecated}}
+					<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
+				{{/comment.deprecated}}
+			{{/members}}
+
+			{{#constructor.comment.property}}
+				<div>
+					<a id="{{name}}" href="#{{name}}">
+						<span class="method-name">{{name}}</span>
+					</a>
+					{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
+					{{#optional}}<span class="parameter-optional">optional</span>{{/optional}}
+					{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
+					<span class="parameter-description">{{{description}}}</span>
+				</div>
+			{{/constructor.comment.property}}
+
+		</section>
+	{{/hasMembers}}
+
+
+	{{! static members }}
+	{{#hasStaticMembers}}
+		<section>
+			<h2>Static members</h2>
+
+			{{#staticMembers}}
+				<div>
+					<a id="{{name}}" href="#{{name}}">
+						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
+					</a>
+					{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
+					{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
+					{{#comment.default_}}<span class="parameter-default">default = {{default_}}</span>{{/comment.default_}}
+					<span class="parameter-description">{{{comment.description}}}</span>
+				</div>
+
+				{{#comment.deprecated}}
+					<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
+				{{/comment.deprecated}}
+			{{/staticMembers}}
+		</section>
+	{{/hasStaticMembers}}
+
+
+	{{! instance methods }}
+	{{#hasMethods}}
+		<section>
+			<h2>Instance methods</h2>
+
+			{{#methods}}
+				<div class="bottom-30">
+					<a id="{{name}}" href="#{{name}}">
+						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
+					</a> :: (
+					{{#params}}
+						<span class="parameter">{{.}}</span>
+					{{/params}}
+					)
+					{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
+
+					<div class="comment">
+						<span class="description">{{{comment.description}}}</span>
+
+						{{#comment.deprecated}}<span class="deprecated-description">{{{description}}}</span>{{/comment.deprecated}}
+						{{#comment.param}}
+							<div class="parameter-doc">
+								<span class="parameter-name">{{name}}</span>
+								{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
+								{{#optional}}<span class="parameter-optional">optional</span>{{/optional}}
+								{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
+								<span class="parameter-description">{{{description}}}</span>
+							</div>
+						{{/comment.param}}
+
+						{{#comment.exampleLink}}
+							<div class="roboto">Example: <a class="example-link" href="{{link}}">{{text}}</a></div>
+						{{/comment.exampleLink}}
+
+						{{#comment.example}}
+							<pre><code class="javascript">{{.}}</code></pre>
+						{{/comment.example}}
+					</div>
+				</div>
+			{{/methods}}
+
+		</section>
+	{{/hasMethods}}
+
+	{{! static methods }}
+	{{#hasStaticMethods}}
+		<section>
+			<h2>Static methods</h2>
+
+			{{#staticMethods}}
+				<div>
+					<a id="{{name}}" href="#{{name}}">
+						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
+					</a> :: (
+					{{#params}}
+						<span class="parameter">
+							{{.}}
+						</span>
+					{{/params}}
+					)
+					{{#comment.returns}} -> {{{type}}}{{/comment.returns}}
+
+					<div class="comment">
+						<span class="description">{{{comment.description}}}</span>
+						{{#comment.deprecated}}<span class="deprecated-description">{{{description}}}</span>{{/comment.deprecated}}
+						{{#comment.param}}
+							<div class="parameter-doc">
+								<span class="parameter-name">{{name}}</span>
+								{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
+								{{#optional}}<span class="parameter-optional">optional</span>{{/optional}}
+								{{#default_}}<span class="parameter-default">default = {{.}}</span>{{/default_}}
+								<span class="parameter-description">{{{description}}}</span>
+							</div>
+						{{/comment.param}}
+
+						{{#comment.exampleLink}}
+							<a class="example-link" href="{{link}}">{{text}}</a>
+						{{/comment.exampleLink}}
+
+						{{#comment.example}}
+							<pre><code class="javascript">{{.}}</code></pre>
+						{{/comment.example}}
+					</div>
+				</div>
+			{{/staticMethods}}
+
+		</section>
+	{{/hasStaticMethods}}
+</article>
+
+{{! FOOTER }}
+<script>window.parent.history.replaceState('Object', 'Title', 'index.html?c={{constructor.name}}');</script>
+<script src="lib/jquery-2.1.1.min.js"></script>
+<script src="class.js"></script>
+<script src="lib/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- generated with modoc - the gooengine documentation system -->
+
+</body>
+</html>

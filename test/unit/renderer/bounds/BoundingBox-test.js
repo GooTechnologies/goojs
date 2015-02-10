@@ -3,17 +3,23 @@ define([
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/Vector3',
 	'goo/shapes/Box',
-	'goo/renderer/MeshData'
+	'goo/renderer/MeshData',
+	'test/CustomMatchers'
 ], function (
 	BoundingBox,
 	BoundingSphere,
 	Vector3,
 	Box,
-	MeshData
+	MeshData,
+	CustomMatchers
 ) {
 	'use strict';
 
 	describe('BoundingBox', function () {
+		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
+		});
+
 		describe('containsPoint', function () {
 			it('returns false for an outside point', function () {
 				var boundingBox = new BoundingBox(new Vector3(10, 20, 30), 2, 2, 2);
@@ -178,6 +184,25 @@ define([
 				// the distance between bounding box and the bounding sphere should be 12 - sqrt(10*10*2) < 0
 
 				expect(boundingBox.intersects(boundingSphere)).toBeFalsy();
+			});
+		});
+
+		describe('copy', function () {
+			it('can copy everything from another bounding box', function () {
+				var original = new BoundingBox(new Vector3(1, 2, 3), 123, 234, 345);
+				var copy = new BoundingBox();
+				copy.copy(original);
+
+				expect(copy).toBeCloned(original);
+			});
+		});
+
+		describe('clone', function () {
+			it('clones a bounding box', function () {
+				var original = new BoundingBox(new Vector3(1, 2, 3), 123, 234, 345);
+				var clone = original.clone();
+
+				expect(clone).toBeCloned(original);
 			});
 		});
 	});

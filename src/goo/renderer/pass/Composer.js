@@ -3,9 +3,7 @@ define([
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	RenderTarget,
 	FullscreenPass,
 	ShaderLib,
@@ -16,7 +14,7 @@ function (
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class Post processing handler
+	 * Post processing handler
 	 * @param {RenderTarget} renderTarget Data to wrap
 	 * @property {RenderTarget} renderTarget Data to wrap
 	 */

@@ -1,12 +1,8 @@
-define([],
-	/** @lends */
-	function () {
+define([], function () {
 	'use strict';
 
 	/**
 	 * Generic selection class
-	 * @class
-	 * @constructor
 	 */
 	function Selection() {
 		this.stack = [];

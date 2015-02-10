@@ -6,9 +6,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/math/MathUtils',
 	'goo/util/TangentGenerator'
-],
-/** @lends */
-function(
+], function (
 	MeshData,
 	PointLight,
 	DirectionalLight,
@@ -20,7 +18,7 @@ function(
 	'use strict';
 
 	/**
-	 * @class Builds shaders
+	 * Builds shaders
 	 */
 	function ShaderBuilder() {
 	}
@@ -304,7 +302,7 @@ function(
 					uniform[ind + 2] = translationData[2];
 					uniform[ind + 3] = 0; // padding
 
-					uniform[ind + 4] = shadowData.lightCamera.cameraScale;
+					uniform[ind + 4] = shadowData.cameraScale;
 					uniform[ind + 5] = light.shadowSettings.darkness;
 					if (light.shadowSettings.shadowType === 'PCF') {
 						uniform[ind + 6] = light.shadowSettings.resolution[0];
@@ -328,7 +326,7 @@ function(
 					shader.removeDefine('COOKIE');
 				}
 
-				uniforms['shadowLightMatrices'+i] = shadowData.lightCamera.vpm;
+				uniforms['shadowLightMatrices'+i] = shadowData.vpm;
 			}
 
 			return shadowIndex;

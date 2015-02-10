@@ -1,16 +1,14 @@
 define([
 	'goo/entities/components/Component'
-],
-/** @lends */
-function (
+], function (
 	Component
 ) {
 	'use strict';
 
 	/**
-	 * @class Box2DComponent<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example}
+	 * Box2DComponent
 	 * @extends Component
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/components/Box2DComponent/Box2DComponent-vtest.html Working example
 	 */
 	function Box2DComponent(settings) {
 		Component.apply(this, arguments);

@@ -107,7 +107,7 @@ define([
 
 		if (config.sphereRef) {
 			return this._load(config.sphereRef, options).then(function(texture) {
-				if (!texture || !texture.image) {
+				if (!texture || !texture.image) {
 					SystemBus.emit('goo.error.skybox', {
 						type: 'Sphere',
 						message: 'The skysphere needs an image to display.'

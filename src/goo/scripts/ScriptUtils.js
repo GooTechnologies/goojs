@@ -60,7 +60,7 @@ define([
 	 * @param specs {Array.<{key, name, default, description}>}
 	 */
 	ScriptUtils.fillDefaultNames = function (specs) {
-		if (!(specs instanceof Array)) { return; }
+		if (!(specs instanceof Array)) { return; }
 
 		function getNameFromKey(key) {
 			if(typeof key !== 'string' || key.length === 0) { return ''; }

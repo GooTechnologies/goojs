@@ -5,9 +5,7 @@ define([
 	'goo/animationpack/SkeletonPose',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	Joint,
 	Skeleton,
@@ -18,11 +16,11 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handler for loading skeletons into engine
+	 * Handler for loading skeletons into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function SkeletonHandler() {
@@ -42,7 +40,7 @@ function (
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
 	SkeletonHandler.prototype._update = function(ref, config/*, options*/) {
-		if (!this._objects[ref]) {
+		if (!this._objects.has(ref)) {
 			if (!config) {
 				return PromiseUtil.resolve();
 			}
@@ -59,10 +57,10 @@ function (
 			var skeleton = new Skeleton(config.name, joints);
 			var pose = new SkeletonPose(skeleton);
 			pose.setToBindPose();
-			this._objects[ref] = pose;
+			this._objects.set(ref, pose);
 		}
 
-		return PromiseUtil.resolve(this._objects[ref]);
+		return PromiseUtil.resolve(this._objects.get(ref));
 	};
 
 	return SkeletonHandler;

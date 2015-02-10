@@ -10,9 +10,7 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/DirectionalLight',
 	'goo/renderer/light/SpotLight'
-],
-/** @lends */
-function (
+], function (
 	Capabilities,
 	Vector3,
 	FullscreenPass,
@@ -28,7 +26,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handles shadow techniques
+	 * Handles shadow techniques
 	 */
 	function ShadowHandler() {
 		this.depthMaterial = new Material(ShaderLib.lightDepth, 'depthMaterial');
@@ -171,15 +169,15 @@ function (
 				lightCamera.onFrameChange();
 
 				var matrix = lightCamera.getViewProjectionMatrix().data;
-				lightCamera.vpm = lightCamera.vpm || [];
+				var vpm = shadowSettings.shadowData.vpm = shadowSettings.shadowData.vpm || [];
 				for (var j = 0; j < 16; j++) {
-					lightCamera.vpm[j] = matrix[j];
+					vpm[j] = matrix[j];
 				}
 				
 				if (light.shadowCaster) {
 					this.depthMaterial.shader.setDefine('SHADOW_TYPE', shadowSettings.shadowType === 'VSM' ? 2 : 0);
 					this.depthMaterial.uniforms.cameraScale = 1.0 / (lightCamera.far - lightCamera.near);
-					lightCamera.cameraScale = this.depthMaterial.uniforms.cameraScale;
+					shadowSettings.shadowData.cameraScale = this.depthMaterial.uniforms.cameraScale;
 
 					this.oldClearColor.copy(renderer.clearColor);
 					renderer.setClearColor(this.shadowClearColor.r, this.shadowClearColor.g, this.shadowClearColor.b, this.shadowClearColor.a);

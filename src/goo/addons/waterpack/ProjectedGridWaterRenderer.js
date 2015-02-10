@@ -10,9 +10,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderFragment'
-],
-/** @lends */
-function (
+], function (
 	MeshData,
 	Shader,
 	Camera,
@@ -28,7 +26,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
+	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
 	 * @param {ArrayBuffer} data Data to wrap
 	 * @property {ArrayBuffer} data Data to wrap
 	 */

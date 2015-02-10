@@ -1,15 +1,21 @@
 define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'test/CustomMatchers'
 ], function (
 	BoundingBox,
 	BoundingSphere,
-	Vector3
+	Vector3,
+	CustomMatchers
 ) {
 	'use strict';
 
 	describe('BoundingSphere', function () {
+		beforeEach(function () {
+			jasmine.addMatchers(CustomMatchers);
+		});
+
 		describe('containsPoint', function () {
 			it('returns false for an outside point', function () {
 				var boundingSphere = new BoundingSphere(new Vector3(10, 20, 30), 2);
@@ -79,6 +85,25 @@ define([
 				var boundingSphere2 = new BoundingSphere(new Vector3(2 * 3, 3 * 3, 6 * 3), 7);
 
 				expect(boundingSphere1.intersects(boundingSphere2)).toBeFalsy();
+			});
+		});
+
+		describe('copy', function () {
+			it('can copy everything from another bounding sphere', function () {
+				var original = new BoundingSphere(new Vector3(1, 2, 3), 123);
+				var copy = new BoundingSphere();
+				copy.copy(original);
+
+				expect(copy).toBeCloned(original);
+			});
+		});
+
+		describe('clone', function () {
+			it('clones a bounding sphere', function () {
+				var original = new BoundingSphere(new Vector3(1, 2, 3), 123);
+				var clone = original.clone();
+
+				expect(clone).toBeCloned(original);
 			});
 		});
 	});

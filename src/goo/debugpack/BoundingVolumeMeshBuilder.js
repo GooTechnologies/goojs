@@ -4,9 +4,7 @@ define([
 	'goo/util/MeshBuilder',
 	'goo/renderer/MeshData',
 	'goo/math/Transform'
-],
-	/** @lends */
-function (
+], function (
 	BoundingBox,
 	BoundingSphere,
 	MeshBuilder,
@@ -16,10 +14,9 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	*/
-	function BoundingVolumeMeshBuilder() {
-	}
+	 * Provides methods for building bounding volume debug meshes
+	 */
+	function BoundingVolumeMeshBuilder() {}
 
 	function buildBox(dx, dy, dz) {
 		var verts = [

@@ -2,9 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/shapes/Box',
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	Box,
 	Vector3
@@ -14,8 +12,8 @@ function (
 	/* global CANNON */
 
 	/**
-	 * @class Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
+	 * Physics box collider for Cannon.js. To be attached to an entity with a {@link CannonRigidbodyComponent}. Also see the {@link CannonSystem}.<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @param {object} [settings]
 	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
 	 * @extends Component

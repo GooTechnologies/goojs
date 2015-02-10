@@ -16,11 +16,12 @@ module.exports = function (grunt) {
 
 		wrapperHead +=
 			'/* Goo Engine ' + engineVersion + '\n' +
-			' * Copyright 2014 Goo Technologies AB\n' +
+			' * Copyright 2015 Goo Technologies AB\n' +
 			' */\n';
 
-		var customRequire = fs.readFileSync('tools/customRequire.js');
-		wrapperHead += customRequire;
+		wrapperHead += fs.readFileSync('tools/customRequire.js');
+
+		wrapperHead += fs.readFileSync('out/minified/MapSetPolyfill.js');
 
 		wrapperHead += '(function(window) {';
 
@@ -48,7 +49,7 @@ module.exports = function (grunt) {
 		build: {
 			// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 			options: {
-				baseUrl: 'src/',
+				baseUrl: 'src-preprocessed/',
 				optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
 				preserveLicenseComments: false,
 				useStrict: true,
@@ -64,12 +65,21 @@ module.exports = function (grunt) {
 		}
 	});
 
+	// some files are not part of the engine per se but need to be minified and added to goo.js
+	grunt.config('uglify', {
+		build: {
+			files: {
+				'out/minified/MapSetPolyfill.js': ['tools/MapSetPolyfill.js']
+			}
+		}
+	});
+
 	grunt.config('wrap', {
 		build: {
 			src: ['out/minified/goo.js'],
 				dest: engineFilename,
 				options: {
-				wrapper: getWrapper()
+				wrapper: getWrapper
 			}
 		}
 	});

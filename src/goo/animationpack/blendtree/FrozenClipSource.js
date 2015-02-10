@@ -1,10 +1,10 @@
 define(
-/** @lends */
+
 function () {
 	'use strict';
 
 	/**
-	 * @class A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often
+	 * A blend tree node that does not update any clips or sources below it in the blend tree. This is useful for freezing an animation, often
 	 *        for purposes of transitioning between two unrelated animations.
 	 * @param {ClipSource|BinaryLERPSource|FrozenClipSource|ManagedTransformSource} source Our sub source.
 	 * @param {number} frozenTime The time we are frozen at.
@@ -15,7 +15,7 @@ function () {
 	}
 
 	/**
-	 * @return a source data mapping for the channels in this clip source
+	 * @returns a source data mapping for the channels in this clip source
 	 */
 	FrozenClipSource.prototype.getSourceData = function () {
 		return this._source.getSourceData();
