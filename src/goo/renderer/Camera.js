@@ -83,6 +83,7 @@ define([
 		this.modelViewProjection = new Matrix4x4();
 		this.modelViewProjectionInverse = new Matrix4x4();
 
+		//! AT: unused?
 		this._planeState = 0;
 		this._clipPlane = new Vector4();
 		this._qCalc = new Vector4();
@@ -277,7 +278,8 @@ define([
 
 		this.onFrustumChange();
 		this.onFrameChange();
-		// this.setFrustumPerspective();
+
+		return this;
 	};
 
 	/**
@@ -947,6 +949,12 @@ define([
 
 		this._updateMVPMatrix = true;
 		this._updateInverseMVPMatrix = true;
+	};
+
+	Camera.prototype.clone = function () {
+		var clone = new Camera(this.fov, this.aspect, this.near, this.far);
+		clone.copy(this);
+		return clone;
 	};
 
 	return Camera;

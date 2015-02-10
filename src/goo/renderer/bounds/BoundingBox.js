@@ -551,15 +551,36 @@ define([
 		return store;
 	};
 
-	BoundingBox.prototype.clone = function (store) {
-		if (store && store instanceof BoundingBox) {
-			store.center.setVector(this.center);
-			store.xExtent = this.xExtent;
-			store.yExtent = this.yExtent;
-			store.zExtent = this.zExtent;
-			return store;
-		}
+	/**
+	 * Copies data from another bounding box
+	 * @param {BoundingBox} source bounding box to copy from
+	 * @returns {BoundingBox} Returns self to allow chaining
+	 */
+	BoundingBox.prototype.copy = function (source) {
+		BoundingVolume.prototype.copy.call(this, source);
+		this.xExtent = source.xExtent;
+		this.yExtent = source.yExtent;
+		this.zExtent = source.zExtent;
+		return this;
+	};
 
+	// ---
+	var warned = false;
+
+	/**
+	 * Returns a clone of this bounding box
+	 * @returns {BoundingBox}
+	 */
+	BoundingBox.prototype.clone = function () {
+		if (arguments.length > 0 && !warned) {
+			warned = true;
+			console.warn(
+				'BoundingBox::clone no longer takes an optional "store" parameter; ' +
+				'please use BoundingBox::copy instead'
+			);
+		}
+		// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
+		// when/if that ever changes this needs adapted accordingly
 		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
 	};
 

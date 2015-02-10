@@ -37,5 +37,19 @@ define([
 		transform.matrix.getTranslation(this.translation);
 	};
 
+	PointLight.prototype.copy = function (source) {
+		Light.prototype.copy.call(this, source);
+
+		this.range = source.range;
+
+		return this;
+	};
+
+	PointLight.prototype.clone = function () {
+		var clone = new PointLight(this.color.clone());
+		clone.copy(this);
+		return clone;
+	};
+
 	return PointLight;
 });

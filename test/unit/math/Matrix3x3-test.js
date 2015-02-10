@@ -217,12 +217,12 @@ define([
 		});
 
 		describe('clone', function () {
-			it('can clone to another matrix', function () {
+			it('clones a matrix', function () {
 				var original = new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99);
 				var clone = original.clone();
 
-				expect(clone).not.toBe(original);
 				expect(clone).toBeCloseToMatrix(new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99));
+				expect(clone).not.toBe(original);
 			});
 		});
 

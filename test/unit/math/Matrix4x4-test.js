@@ -225,12 +225,12 @@ define([
 		});
 
 		describe('clone', function () {
-			it('can clone to another matrix', function () {
+			it('clones a matrix', function () {
 				var original = new Matrix4x4(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160);
 				var clone = original.clone();
 
-				expect(clone).not.toBe(original);
 				expect(clone).toBeCloseToMatrix(new Matrix4x4(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160));
+				expect(clone).not.toBe(original);
 			});
 		});
 	});

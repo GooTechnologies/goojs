@@ -328,13 +328,34 @@ define([
 		return store;
 	};
 
-	BoundingSphere.prototype.clone = function (store) {
-		if (store && store instanceof BoundingSphere) {
-			store.center.setVector(this.center);
-			store.radius = this.radius;
-			return store;
-		}
+	/**
+	 * Copies data from another bounding sphere
+	 * @param {BoundingSphere} source bounding sphere to copy from
+	 * @returns {BoundingSphere} Returns self to allow chaining
+	 */
+	BoundingSphere.prototype.copy = function (source) {
+		BoundingVolume.prototype.copy.call(this, source);
+		this.radius = source.radius;
+		return this;
+	};
 
+	// ---
+	var warned = false;
+
+	/**
+	 * Returns a clone of this bounding sphere
+	 * @returns {BoundingSphere}
+	 */
+	BoundingSphere.prototype.clone = function () {
+		if (arguments.length > 0 && !warned) {
+			warned = true;
+			console.warn(
+				'BoundingSphere::clone no longer takes an optional "store" parameter; ' +
+				'please use BoundingSphere::copy instead'
+			);
+		}
+		// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
+		// when/if that ever changes this needs adapted accordingly
 		return new BoundingSphere(this.center, this.radius);
 	};
 

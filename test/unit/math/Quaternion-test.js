@@ -17,7 +17,7 @@ define([
 		});
 		
 		describe('constructor', function () {
-			it('creates a zero vector when given no parameters', function () {
+			it('creates a zero quaternion when given no parameters', function () {
 				var quaternion = new Quaternion();
 				expect(quaternion.data[0]).toBeCloseTo(0);
 				expect(quaternion.data[1]).toBeCloseTo(0);
@@ -25,7 +25,7 @@ define([
 				expect(quaternion.data[3]).toBeCloseTo(1);
 			});
 
-			it('creates a vector when given 4 parameters', function () {
+			it('creates a quaternion when given 4 parameters', function () {
 				var quaternion = new Quaternion(11, 22, 33, 44);
 				var expected = new Quaternion();
 
@@ -36,7 +36,7 @@ define([
 				expect(quaternion).toBeCloseToVector(expected);
 			});
 
-			it('creates a vector when given an array', function () {
+			it('creates a quaternion when given an array', function () {
 				var quaternion = new Quaternion([11, 22, 33, 44]);
 				var expected = new Quaternion();
 
@@ -47,13 +47,13 @@ define([
 				expect(quaternion).toBeCloseToVector(expected);
 			});
 
-			it('creates a vector when given a vector', function () {
+			it('creates a quaternion when given a quaternion', function () {
 				var original = new Quaternion();
 				for (var i = 0; i < 4; i++) {
 					original.data[i] = (i + 1) * 11;
 				}
 
-				var vector = new Quaternion(original);
+				var quaternion = new Quaternion(original);
 
 				var expected = new Quaternion();
 
@@ -61,7 +61,7 @@ define([
 					expected.data[i] = (i + 1) * 11;
 				}
 
-				expect(vector).toBeCloseToVector(expected);
+				expect(quaternion).toBeCloseToVector(expected);
 			});
 		});
 
@@ -150,6 +150,22 @@ define([
 			var q = new Quaternion(1,1,1,1);
 			q.negate();
 			expect(q).toEqual(new Quaternion(-1,-1,-1,-1));
+		});
+
+		describe('conjugate', function () {
+			it('conjugates a quaternion', function () {
+				var original = new Quaternion(1, 2, 3, 4);
+				var conjugate = new Quaternion().copy(original).conjugate();
+				expect(conjugate).toBeCloseToVector(new Quaternion(-1, -2, -3, 4));
+			});
+		});
+
+		describe('invert', function () {
+			it('inverts a quaternion', function () {
+				var original = new Quaternion(1, 2, 3, 4).normalize();
+				var inverse = new Quaternion().copy(original).invert();
+				expect(inverse).toBeCloseToVector(new Quaternion(-1/30, -2/30, -3/30, 4/30).normalize());
+			});
 		});
 
 		it('can dot',function () {
@@ -266,6 +282,20 @@ define([
 			var p = new Quaternion(1,2,3,4);
 			q.setv(p);
 			expect(q).toEqual(p);
+		});
+
+		describe('clone', function () {
+			it('clones a quaternion', function () {
+				var original = new Quaternion(1, 2, 3, 4);
+				var clone = original.clone();
+
+				expect(clone).toEqual(jasmine.any(Quaternion));
+				expect(clone).not.toBe(original);
+				expect(clone.data[0]).toBeCloseTo(original.data[0]);
+				expect(clone.data[1]).toBeCloseTo(original.data[1]);
+				expect(clone.data[2]).toBeCloseTo(original.data[2]);
+				expect(clone.data[3]).toBeCloseTo(original.data[3]);
+			});
 		});
 
 		describe('NaN checks (only in dev)', function () {

@@ -538,7 +538,7 @@ define([
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
+			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
@@ -1580,7 +1580,7 @@ define([
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
+			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);

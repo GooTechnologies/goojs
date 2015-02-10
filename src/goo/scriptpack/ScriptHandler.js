@@ -69,7 +69,7 @@ define([
 	 * @param {string} ref the script guid
 	 */
 	ScriptHandler.prototype._remove = function (ref) {
-		var script = this._objects[ref];
+		var script = this._objects.get(ref);
 		if (script && script.cleanup && script.context) {
 			try {
 				script.cleanup(script.parameters, script.context, Scripts.getClasses());
@@ -77,7 +77,7 @@ define([
 				// Some cleanup error
 			}
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 		delete this._bodyCache[ref];
 	};
 
@@ -485,7 +485,7 @@ define([
 				var scriptElem = document.querySelector('script[src="' + evt.filename + '"]');
 				if (scriptElem) {
 					var scriptId = scriptElem.getAttribute('data-script-id');
-					var script = that._objects[scriptId];
+					var script = that._objects.get(scriptId);
 					if (script) {
 						var error = {
 							message: evt.message,
@@ -503,7 +503,7 @@ define([
 					oldScriptElement.parentNode.removeChild(oldScriptElement);
 				}
 				delete window._gooScriptFactories[that._currentScriptLoading];
-				var script = that._objects[that._currentScriptLoading];
+				var script = that._objects.get(that._currentScriptLoading);
 				var error = {
 					message: evt.message,
 					line: evt.lineno - 1

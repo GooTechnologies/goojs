@@ -1,8 +1,9 @@
 define([
-	'goo/renderer/MeshData'
-],
-function (
-	MeshData
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
+], function (
+	MeshData,
+	_
 ) {
 	'use strict';
 
@@ -74,6 +75,16 @@ function (
 		this.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this quad
+	 * @returns {Quad}
+	 */
+	Quad.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['xExtent', 'yExtent', 'tileX', 'tileY']);
+
+		return new Quad(options);
 	};
 
 	return Quad;

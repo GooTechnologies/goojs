@@ -1,6 +1,8 @@
-define(
-
-	function () {
+define([
+	'goo/renderer/BufferUtils'
+], function (
+	BufferUtils
+) {
 	'use strict';
 
 	/**
@@ -54,6 +56,38 @@ define(
 	BufferData.prototype.destroy = function (context) {
 		context.deleteBuffer(this.glBuffer);
 		this.glBuffer = null;
+	};
+
+	BufferData.prototype.copy = function (source) {
+		if (this.data instanceof ArrayBuffer) {
+			var sourceView = new Uint8Array(source.data);
+			var destinationView = new Uint8Array(this.data);
+			destinationView.set(sourceView);
+		} else { // TypedArray
+			this.data.set(source.data);
+		}
+		this.target = source.target;
+
+		this.glBuffer = null;
+
+		this._dataUsage = source._dataUsage;
+		this._dataNeedsRefresh = false; //?
+
+		return this;
+	};
+
+	BufferData.prototype.clone = function () {
+		var clonedData;
+		if (this.data instanceof ArrayBuffer) {
+			clonedData = this.data.slice(0);
+		} else { // TypedArray
+			clonedData = BufferUtils.cloneTypedArray(this.data);
+		}
+
+		var clone = new BufferData(clonedData, this.target);
+		clone._dataUsage = this._dataUsage;
+		clone._dataNeedsRefresh = false; //?
+		return clone;
 	};
 
 	return BufferData;

@@ -45,7 +45,25 @@ define([
 		this.light.update(transform);
 	};
 
-	LightComponent.applyOnEntity = function(obj, entity) {
+	LightComponent.prototype.copy = function (source) {
+		// has to be the same sort of light
+		this.light.copy(source);
+
+		// the status depends on the entity and its ancestors
+		this.hidden = source.hidden;
+
+		return this;
+	};
+
+	LightComponent.prototype.clone = function () {
+		var clone = new LightComponent(this.light.clone());
+
+		// this status needs updating
+		clone.hidden = this.hidden;
+		return clone;
+	};
+
+	LightComponent.applyOnEntity = function (obj, entity) {
 		if (obj instanceof Light) {
 			var lightComponent = new LightComponent(obj);
 			entity.setComponent(lightComponent);

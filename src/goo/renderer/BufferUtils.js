@@ -41,5 +41,14 @@ define([
 
 	storeBrowserType();
 
+	/**
+	 * Returns a clone of the supplied typed array
+	 * @param {TypedArray} source
+	 * @returns {TypedArray}
+	 */
+	BufferUtils.cloneTypedArray = function (source) {
+		return new source.constructor(source);
+	};
+
 	return BufferUtils;
 });

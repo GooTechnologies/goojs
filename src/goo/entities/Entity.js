@@ -165,8 +165,7 @@ define([
 	 */
 	Entity.prototype.hasComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);
-		var component = this[typeAttributeName];
-		return !!component && this._components.indexOf(component) > -1;
+		return !!this[typeAttributeName];
 	};
 
 	/**
@@ -177,9 +176,7 @@ define([
 	 */
 	Entity.prototype.getComponent = function (type) {
 		var typeAttributeName = getTypeAttributeName(type);
-		if (this.hasComponent(type)) {
-			return this[typeAttributeName];
-		}
+		return this[typeAttributeName];
 	};
 
 	/**
