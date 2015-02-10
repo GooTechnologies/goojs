@@ -107,7 +107,7 @@ function (
 
 	/**
 	 * Removes a texture
-	 * @param {ref}
+	 * @param {string} ref
 	 * @private
 	 */
 	TextureHandler.prototype._remove = function (ref) {
@@ -120,7 +120,6 @@ function (
 
 	/**
 	 * Creates an empty Texture.
-	 * @param {string} ref will be the entity's id
 	 * @returns {Texture}
 	 * @private
 	 */
@@ -136,7 +135,7 @@ function (
 			}
 			return texture;
 		});
-	}
+	};
 
 	TextureHandler.prototype._loadSpecialImage = function (texture, config, type, options) {
 		// Special (dds, tga, crn)
@@ -155,7 +154,7 @@ function (
 			loader.load(data, texture, config.flipY, 0, data.byteLength);
 			return texture;
 		});
-	}
+	};
 
 	TextureHandler.prototype._loadVideo = function (texture, config, options) {
 		// Video
@@ -163,7 +162,7 @@ function (
 			video.width = video.videoWidth;
 			video.height = video.videoHeight;
 			video.loop = config.loop !== undefined ? config.loop : true;
-			if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
+			if (!Util.isPowerOfTwo(video.width) || !Util.isPowerOfTwo(video.height)) {
 				texture.generateMipmaps = false;
 				texture.minFilter = 'BilinearNoMipMaps';
 			}
@@ -180,7 +179,7 @@ function (
 			}
 			return texture;
 		});
-	}
+	};
 
 	TextureHandler.prototype._loadImage = function (texture, config, options) {
 		var imageRef = config.imageRef;
@@ -196,7 +195,7 @@ function (
 			return this._loadVideo(texture, config, options);
 		}
 		return PromiseUtil.reject(new Error('Unknown image type: '+ type));
-	}
+	};
 
 	/**
 	 * Adds/updates/removes a texture
@@ -242,12 +241,11 @@ function (
 
 			if (config.imageRef) {
 				if (!config.lazy) {
-					ret = that._loadImage(texture, config, options)
-				}
-				else {
+					ret = that._loadImage(texture, config, options);
+				} else {
 					texture.loadImage = function () {
-						return that._loadImage(texture, config, options)
-					}
+						return that._loadImage(texture, config, options);
+					};
 					ret = texture;
 				}
 			} else if (config.svgData) {

@@ -255,7 +255,7 @@ define([
 			function traverseFn(config) {
 				var promises = [];
 				if (config.lazy === true) {
-					return PromiseUtil.resolve()
+					return PromiseUtil.resolve();
 				}
 				var refs = that._getRefsFromConfig(config);
 

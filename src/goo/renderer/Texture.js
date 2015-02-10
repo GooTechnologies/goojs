@@ -113,9 +113,7 @@ define([
 			this.setImage(image, width, height, settings);
 		}
 
-		this.loadImage  = function () {
-			return PromiseUtil.resolve(this);
-		}.bind(this);
+		this.loadImage = PromiseUtil.resolve.bind(null, this);
 
 		this.textureRecord = {};
 
