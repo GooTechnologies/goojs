@@ -33,7 +33,7 @@ define([
 			term1.setVector(p1).scale(it * t * 2);
 			term2.setVector(p2).scale(t2);
 
-			store.setVector(term0).addVector(term1).addVector(term2).addVector(term3);
+			store.setVector(term0).addVector(term1).addVector(term2);
 		};
 	})();
 
