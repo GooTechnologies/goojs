@@ -447,5 +447,17 @@ define([
 	 */
 	Vector2.prototype.copy = Vector2.prototype.setVector;
 
+	// #ifdef DEBUG
+	Vector.addPostChecks(Vector2.prototype, [
+		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',
+		'reflect',
+		'setDirect', 'setArray', 'setVector',
+		'addDirect', 'addVector',
+		'subDirect', 'subVector',
+		'mulDirect', 'mulVector',
+		'scale'
+	]);
+	// #endif
+
 	return Vector2;
 });

@@ -26,9 +26,9 @@ define([
 			height = props.height;
 		}
 		this.radialSamples = radialSamples || 8;
-		this.radiusTop = typeof(radiusTop) === 'undefined' ? 0.5 : radiusTop;
-		this.radiusBottom = typeof(radiusBottom) === 'undefined' ? this.radiusTop : radiusBottom;
-		this.height = typeof(height) === 'undefined' ? 1 : height;
+		this.radiusTop = typeof radiusTop  === 'undefined' ? 0.5 : radiusTop;
+		this.radiusBottom = typeof radiusBottom === 'undefined' ? this.radiusTop : radiusBottom;
+		this.height = typeof height === 'undefined' ? 1 : height;
 
 		/** @type {number}
 		 * @deprecated

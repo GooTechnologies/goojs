@@ -497,7 +497,17 @@ define([
 	 */
 	Vector4.prototype.copy = Vector4.prototype.setVector;
 
-	/* ====================================================================== */
+	// #ifdef DEBUG
+	Vector.addPostChecks(Vector4.prototype, [
+		'add', 'sub', 'mul', 'div', 'dot', 'dotVector',
+		'lerp',
+		'setDirect', 'setArray', 'setVector',
+		'addDirect', 'addVector',
+		'subDirect', 'subVector',
+		'mulDirect', 'mulVector',
+		'scale'
+	]);
+	// #endif
 
 	return Vector4;
 });
