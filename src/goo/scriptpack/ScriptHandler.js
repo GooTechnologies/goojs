@@ -257,7 +257,7 @@ define([
 					that._updateFromCustom(script, config, options);
 				}
 
-				// Let the world (e.g. Create) that there are new externals so
+				// Let the world (e.g. Create) know that there are new externals so
 				// that things (e.g. UI) can get updated.
 				if (config.body) {
 					SystemBus.emit('goo.scriptExternals', {
@@ -319,47 +319,12 @@ define([
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(scriptElem);
 
-		return this._dependencyPromises[url] = PromiseUtil.createPromise(function (resolve, reject) {
-			var handled = false;
-
-			scriptElem.onload = function () {
-				resolve();
-
-				if (timeoutHandler) { clearTimeout(timeoutHandler); }
-
-				delete that._dependencyPromises[url];
-			};
-
-			function fireError(message) {
-				var err = {
-					message: message,
-					file: url
-				};
-				setError(script, err);
-
-				// remove element if it was attached to the document
-				if (scriptElem.parentNode) {
-					scriptElem.parentNode.removeChild(scriptElem);
-				}
-				resolve();
-				delete that._dependencyPromises[url];
-			}
-
-			scriptElem.onerror = function (e) {
-				handled = true;
-				if (timeoutHandler) { clearTimeout(timeoutHandler); }
-				console.error(e);
-				fireError('Could not load dependency');
-			};
-
-			if (!handled) {
-				handled = true;
-				// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
-				var timeoutHandler = setTimeout(function () {
-					fireError('Loading dependency failed (time out).');
-				}, DEPENDENCY_LOAD_TIMEOUT);
-			}
+		var result = this._dependencyPromises[url] = loadExternalScript(scriptElem, url)
+		.then(function () {
+			delete that._dependencyPromises[url];
 		});
+
+		return result;
 	};
 
 
@@ -557,6 +522,51 @@ define([
 
 
 	/**
+	 * Load an external script
+	 * @private
+	 */
+	function loadExternalScript(scriptElem, url) {
+		return PromiseUtil.createPromise(function (resolve, reject) {
+			var timeoutHandler;
+			var handled = false;
+
+			scriptElem.onload = function () {
+				resolve();
+				if (timeoutHandler) { clearTimeout(timeoutHandler); }
+			};
+
+			function fireError(message) {
+				var err = {
+					message: message,
+					file: url
+				};
+				setError(script, err);
+
+				// remove element if it was attached to the document
+				if (scriptElem.parentNode) {
+					scriptElem.parentNode.removeChild(scriptElem);
+				}
+				resolve();
+			}
+
+			scriptElem.onerror = function (e) {
+				handled = true;
+				if (timeoutHandler) { clearTimeout(timeoutHandler); }
+				console.error(e);
+				fireError('Could not load dependency ' + url);
+			};
+
+			if (!handled) {
+				handled = true;
+				// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
+				timeoutHandler = setTimeout(function () {
+					fireError('Loading dependency ' + url + ' failed (time out).');
+				}, DEPENDENCY_LOAD_TIMEOUT);
+			}
+		});
+	}
+
+	/**
 	 * Validate external parameters
 	 * @private
 	 */
@@ -688,7 +698,6 @@ define([
 			script.parameters = {};
 			script.enabled = false;
 		}
-
 	}
 
 
