@@ -1,15 +1,11 @@
 define([
 	'goo/loaders/handlers/TextureHandler',
-	'goo/sound/AudioContext',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/StringUtil',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	TextureHandler,
-	AudioContext,
 	PromiseUtil,
 	_,
 	StringUtil,
@@ -18,8 +14,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Ajax helper class
-	 * @constructor
+	 * Ajax helper class
 	 * @param {string} rootPath
 	 * @param {object} options
 	 */
@@ -36,10 +31,10 @@ function (
 
 	/**
 	 * Prefill ajax cache with data
-	 * @param {object} bundle Pairs of key-configs
+	 * @param {object} bundle Pairs of key-configs
 	 * @param {boolean} [clear=false] If set to true will overwrite cache, otherwise extend it
 	 */
-	Ajax.prototype.prefill = function (bundle, clear) {
+	Ajax.prototype.prefill = function (bundle, clear) {
 		if (clear) {
 			this._cache = bundle;
 		} else {
@@ -55,12 +50,12 @@ function (
 		this._cache = {};
 	};
 
-	/*
+	/**
 	 * Uses GET to retrieve data at a remote location.
-	 *
+	 * @hidden
 	 * @param {object} options
 	 * @param {string} options.url
-	 * @return {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
+	 * @returns {Promise} Returns a promise that is resolved and rejected with the XMLHttpRequest.
 	 */
 	Ajax.prototype.get = function (options) {
 		options = options || {};
@@ -101,7 +96,7 @@ function (
 	 * Loads data at specified path which is returned in a Promise object.
 	 *
 	 * @param {string} path Path to whatever shall be loaded.
-	 * @param {boolean} [reload=false] If set to true, reloads even if url is cached
+	 * @param {boolean} [reload=false] If set to true, reloads even if url is cached
 	 *
 	 * @returns {RSVP.Promise} The promise is resolved with the data loaded. If a parser is specified
 	 * the data will be of the type resolved by the parser promise.
@@ -163,7 +158,7 @@ function (
 				that.prefill(bundle, reload);
 				return bundle;
 			}
-			if (typeInGroup(type, 'json')) {
+			if (typeInGroup(type, 'json')) {
 				return JSON.parse(request.response);
 			}
 			return request.response;

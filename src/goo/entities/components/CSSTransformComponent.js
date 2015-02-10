@@ -1,20 +1,20 @@
 define([
-	"goo/entities/components/Component"
-], /** @lends */ function (
+	'goo/entities/components/Component'
+],  function (
 	Component
 ) {
 	'use strict';
 
 	/**
-	 * @class Connects a domElement to an entity and applies the transformComponent of the entity to the domElement with CSS3 3D transforms.
-	 * @param {domElement} domelement
+	 * Connects a domElement to an entity and applies the transformComponent of the entity to the domElement with CSS3 3D transforms.
+	 * @param {domElement} domElement
 	 * @param {boolean} faceCamera
 	 * @extends Component
 	 */
 	function CSSTransformComponent(domElement, faceCamera) {
-		Component.call(this);
+		Component.apply(this, arguments);
 
-		this.type = "CSSTransformComponent";
+		this.type = 'CSSTransformComponent';
 
 		/**
 		 * DOM element.
@@ -31,9 +31,16 @@ define([
 		 * @type {boolean}
 		 */
 		this.faceCamera = (typeof faceCamera === 'undefined') ? false : faceCamera;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
+	CSSTransformComponent.type = 'CSSTransformComponent';
+
 	CSSTransformComponent.prototype = Object.create(Component.prototype);
+	CSSTransformComponent.prototype.constructor = CSSTransformComponent;
 
 	return CSSTransformComponent;
 });

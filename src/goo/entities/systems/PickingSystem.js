@@ -1,10 +1,8 @@
-define(['goo/entities/systems/System'],
-/** @lends */
-function (System) {
+define(['goo/entities/systems/System'], function (System) {
 	'use strict';
 
 	/**
-	 * @class Helps gather pickable entities
+	 * Helps gather pickable entities
 	 * @extends System
 	 */
 	function PickingSystem (settings) {
@@ -19,6 +17,7 @@ function (System) {
 	}
 
 	PickingSystem.prototype = Object.create(System.prototype);
+	PickingSystem.prototype.constructor = PickingSystem;
 
 	PickingSystem.prototype.setPickLogic = function (pickLogic) {
 		this.pickLogic = pickLogic;

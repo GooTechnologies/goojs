@@ -242,6 +242,16 @@ define([
 			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34));
 		});
 
+		describe('reflect', function () {
+			it('can reflect a vector', function () {
+				var plane = new Vector2(-1, 1).normalize(); // more like a vector
+				var original = new Vector2(1, 0);
+				var reflection = original.clone().reflect(plane);
+
+				expect(reflection).toBeCloseToVector(new Vector2(0, 1));
+			});
+		});
+
 		describe('copy', function () {
 			it('can copy values from a vector', function () {
 				var vector = new Vector2(11, 22);
@@ -250,14 +260,15 @@ define([
 			});
 		});
 
-		it('can be cloned', function (){
-			var a = new Vector2(1, 2);
-			var b = a.clone();
-			expect(a).toBeCloseToVector(b);
-			expect(a === b).toEqual(false);
-			expect(b).toEqual(jasmine.any(Vector2));
-		});
+		describe('clone', function () {
+			it('clones a vector', function () {
+				var original = new Vector2(11, 22);
+				var clone = original.clone();
 
+				expect(original).toBeCloseToVector(clone);
+				expect(original).not.toBe(clone);
+			});
+		});
 
 		describe('setd (deprecated)', function () {
 			it('can set a vector', function () {

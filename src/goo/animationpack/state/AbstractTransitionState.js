@@ -2,9 +2,7 @@ define([
 	'goo/animationpack/state/AbstractState',
 	'goo/animationpack/blendtree/BinaryLERPSource',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	AbstractState,
 	BinaryLERPSource,
 	MathUtils
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class An abstract transition state that blends between two other states.
+	 * An abstract transition state that blends between two other states.
 	 * @extends AbstractState
 	 * @private
 	 */
@@ -68,7 +66,7 @@ function (
 	};
 
 	/**
-	 * @return the current map of source channel data for this layer.
+	 * @returns the current map of source channel data for this layer.
 	 */
 	AbstractTransitionState.prototype.getCurrentSourceData = function () {
 		// grab our data maps from the two states

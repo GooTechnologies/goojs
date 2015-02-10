@@ -1,20 +1,18 @@
 define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
-	'goo/util/ObjectUtil',
 	'goo/scripts/Scripts'
 ],
-	/** @lends */
+
 	function (
 		System,
 		SystemBus,
-		_,
 		Scripts
 	) {
 	'use strict';
 
 	/**
-	 * @class Processes all entities with script components, running the scripts where applicable
+	 * Processes all entities with script components, running the scripts where applicable
 	 * @extends System
 	 */
 	function ScriptSystem(world) {

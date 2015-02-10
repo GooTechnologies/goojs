@@ -1,14 +1,12 @@
 define([
 	'goo/animationpack/state/AbstractTransitionState'
-],
-/** @lends */
-function (
+], function (
 	AbstractTransitionState
 ) {
 	'use strict';
 
 	/**
-	 * @class A transition that blends over a given time from one animation state to another, beginning the target clip from local time 0 at the start of the transition. This is best used with two clips that have similar motions.
+	 * A transition that blends over a given time from one animation state to another, beginning the target clip from local time 0 at the start of the transition. This is best used with two clips that have similar motions.
 	 * @extends AbstractTransitionState
 	 */
 	function FadeTransitionState() {
@@ -19,7 +17,7 @@ function (
 	FadeTransitionState.prototype.constructor = FadeTransitionState;
 
 	/**
-	 * @description Update this state using the current global time.
+	 * Update this state using the current global time.
 	 * @param globalTime the current global time.
 	 * @param layer the layer this state belongs to.
 	 */

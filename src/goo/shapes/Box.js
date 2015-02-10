@@ -1,15 +1,18 @@
 define([
-	'goo/renderer/MeshData'
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
 ],
-	/** @lends */
+
 	function (
-		MeshData
+		MeshData,
+		_
 	) {
 	'use strict';
 
 	/**
-	 * @class An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii)
+	 * An axis-aligned rectangular prism defined by a center point and x-, y- and z-extents (radii)
 	 * from that center (a box).
+	 * @extends MeshData
 	 * @param {Number} [width=1] Total width of box.
 	 * @param {Number} [height=1] Total height of box.
 	 * @param {Number} [length=1] Total length of box.
@@ -69,9 +72,10 @@ define([
 	}
 
 	Box.prototype = Object.create(MeshData.prototype);
+	Box.prototype.constructor = Box;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Box} Self for chaining.
 	 */
 	Box.prototype.rebuild = function () {
@@ -173,6 +177,21 @@ define([
 		]);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this box
+	 * @returns {Box}
+	 */
+	Box.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['tileX', 'tileY', 'textureMode']);
+
+		// converting xExtent to width so the constructor will convert it the other way around again
+		options.width = this.xExtent * 2;
+		options.height = this.yExtent * 2;
+		options.length = this.zExtent * 2;
+
+		return new Box(options);
 	};
 
 	/** Possible texture wrapping modes: Uniform, Unfolded

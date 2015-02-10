@@ -2,17 +2,15 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/Util',
+	'goo/util/ObjectUtil',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	FullscreenUtil,
 	RenderTarget,
-	Util,
+	ObjectUtil,
 	ShaderLib,
 	ShaderLibExtra,
 	Pass
@@ -20,8 +18,7 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	* Difference of Gaussian Filter pass.
+	* 	* Difference of Gaussian Filter pass.
 	* Usable for edge detection.
 	*
 	* A lower sigma will create thinner edgelines, tune to get the sweetspot.
@@ -51,10 +48,10 @@ function (
 			materials : []
 		};
 
-		this.convolutionShader1 = Util.clone(ShaderLib.convolution);
-		this.convolutionShader2 = Util.clone(ShaderLib.convolution);
+		this.convolutionShader1 = ObjectUtil.deepClone(ShaderLib.convolution);
+		this.convolutionShader2 = ObjectUtil.deepClone(ShaderLib.convolution);
 
-		this.differenceShader = Util.clone(ShaderLibExtra.differenceOfGaussians);
+		this.differenceShader = ObjectUtil.deepClone(ShaderLibExtra.differenceOfGaussians);
 		this.differenceShader.uniforms.threshold = threshold;
 		this.differenceMaterial = new Material(this.differenceShader);
 

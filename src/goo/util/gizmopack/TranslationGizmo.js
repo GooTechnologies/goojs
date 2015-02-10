@@ -6,9 +6,7 @@ define([
 	'goo/shapes/Quad',
 	'goo/math/Transform',
 	'goo/renderer/Renderer'
-],
-/** @lends */
-function (
+], function (
 	Gizmo,
 	MeshData,
 	MeshBuilder,
@@ -20,8 +18,9 @@ function (
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * @extends Gizmo
+	 * @hidden
+	 */
 	function TranslationGizmo() {
 		Gizmo.call(this, 'TranslationGizmo');
 
@@ -32,7 +31,9 @@ function (
 		this._buildArrow(1);
 		this._buildArrow(2);
 	}
+
 	TranslationGizmo.prototype = Object.create(Gizmo.prototype);
+	TranslationGizmo.prototype.constructor = TranslationGizmo;
 
 	// Triggered when you have mousedown on a gizmo handle
 	TranslationGizmo.prototype.activate = function(props) {

@@ -1,16 +1,14 @@
-define(['goo/entities/EntitySelection'],
-	/** @lends */
-function (EntitySelection) {
+define(['goo/entities/EntitySelection'], function (EntitySelection) {
 	'use strict';
 
 	/**
-	 * @class Base class/module for all components.
+	 * Base class/module for all components.
 	 * See [this engine overview article]{@link http://www.gootechnologies.com/learn/tutorials/engine/engine-overview/} for more info.
 	 */
 	function Component() {
-		/** If the component should be processed for containing entities.
+		/**
+		 * If the component should be processed for containing entities.
 		 * @type {boolean}
-		 * @default
 		 */
 		this.enabled = true;
 
@@ -23,10 +21,6 @@ function (EntitySelection) {
 	 * @private
 	 */
 	Component.prototype.applyAPI = function (entity) {
-		if (!this.installedAPI) {
-			this.installedAPI = new Set();
-		}
-
 		var api = this.api;
 		if (!api) {
 			return;

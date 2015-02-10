@@ -3,9 +3,7 @@ define([
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	BoundingVolume,
 	BoundingSphere,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
+	 * <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
 	 * particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. <br>
 	 *        <br>
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
@@ -27,6 +25,10 @@ function (
 		this.xExtent = xExtent !== undefined ? xExtent : 1;
 		this.yExtent = yExtent !== undefined ? yExtent : 1;
 		this.zExtent = zExtent !== undefined ? zExtent : 1;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec1 = new Vector3();
@@ -549,15 +551,36 @@ function (
 		return store;
 	};
 
-	BoundingBox.prototype.clone = function (store) {
-		if (store && store instanceof BoundingBox) {
-			store.center.setVector(this.center);
-			store.xExtent = this.xExtent;
-			store.yExtent = this.yExtent;
-			store.zExtent = this.zExtent;
-			return store;
-		}
+	/**
+	 * Copies data from another bounding box
+	 * @param {BoundingBox} source bounding box to copy from
+	 * @returns {BoundingBox} Returns self to allow chaining
+	 */
+	BoundingBox.prototype.copy = function (source) {
+		BoundingVolume.prototype.copy.call(this, source);
+		this.xExtent = source.xExtent;
+		this.yExtent = source.yExtent;
+		this.zExtent = source.zExtent;
+		return this;
+	};
 
+	// ---
+	var warned = false;
+
+	/**
+	 * Returns a clone of this bounding box
+	 * @returns {BoundingBox}
+	 */
+	BoundingBox.prototype.clone = function () {
+		if (arguments.length > 0 && !warned) {
+			warned = true;
+			console.warn(
+				'BoundingBox::clone no longer takes an optional "store" parameter; ' +
+				'please use BoundingBox::copy instead'
+			);
+		}
+		// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
+		// when/if that ever changes this needs adapted accordingly
 		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
 	};
 

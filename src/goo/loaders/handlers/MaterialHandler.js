@@ -7,9 +7,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function(
+], function (
 	ConfigHandler,
 	Material,
 	Util,
@@ -22,11 +20,11 @@ function(
 	'use strict';
 
 	/**
-	 * @class Handler for loading materials into engine
+	 * Handler for loading materials into engine
 	 * @extends ConfigHandler
-	 * @param {World} world
+	 * @param {World} world
 	 * @param {Function} getConfig
-	 * @param {Function} updateObject
+	 * @param {Function} updateObject
 	 * @private
 	 */
 	function MaterialHandler() {
@@ -41,7 +39,7 @@ function(
 
 	/**
 	 * Preparing material config by populating it with defaults.
-	 * @param {object} config
+	 * @param {object} config
 	 * @private
 	 */
 	MaterialHandler.prototype._prepare = function (config) {
@@ -115,7 +113,7 @@ function(
 	MaterialHandler.prototype._update = function(ref, config, options) {
 		var that = this;
 		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(material) {
-			if (!material) { return; }
+			if (!material) { return; }
 			var promises = [];
 			// Material settings
 			_.extend(material.blendState, config.blendState);
@@ -161,7 +159,7 @@ function(
 			} else {
 				var p = that._load(shaderRef, options).then(function(shader) {
 					material.shader = shader;
-				}).then(null, function(err) {
+				}).then(null, function(err) {
 					throw new Error('Error loading shader: ' + err);
 				});
 				promises.push(p);
@@ -171,7 +169,7 @@ function(
 			function addTexture(type, ref, options) {
 				return that._load(ref, options).then(function(texture) {
 					material.setTexture(type, texture);
-				}).then(null, function(err) {
+				}).then(null, function(err) {
 					throw new Error('Error loading texture: ' + ref + ' - ' + err);
 				});
 			}

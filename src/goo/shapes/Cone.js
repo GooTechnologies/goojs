@@ -1,11 +1,16 @@
-define(['goo/renderer/MeshData'],
-	/** @lends */
-	function (MeshData) {
+define([
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
+], function (
+	MeshData,
+	_
+) {
 	'use strict';
 
 	/**
-	 * @class A cone<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/shapes/Cone/Cone-vtest.html Working example}
+	 * Cone mesh data
+	 * @extends MeshData
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/shapes/Cone/Cone-vtest.html Working example
 	 * @param {number} [radialSamples=8] Number of slices
 	 * @param {number} [radius=1] Radius of the cone
 	 * @param {number} [height=2] The height of the cone
@@ -30,9 +35,10 @@ define(['goo/renderer/MeshData'],
 	}
 
 	Cone.prototype = Object.create(MeshData.prototype);
+	Cone.prototype.constructor = Cone;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Cone} Self for chaining.
 	 */
 	Cone.prototype.rebuild = function () {
@@ -95,6 +101,16 @@ define(['goo/renderer/MeshData'],
 		this.getIndexBuffer().set(indices);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this cone
+	 * @returns {Cone}
+	 */
+	Cone.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['radialSamples', 'radius', 'height']);
+
+		return new Cone(options);
 	};
 
 	return Cone;

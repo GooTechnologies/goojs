@@ -1,16 +1,13 @@
 define([
 	'goo/renderer/light/Light'
-	],
-/** @lends */
-	function (
+], function (
 	Light
-	) {
+) {
 	'use strict';
 
 	/**
-	 * @class A omni-directional source of light. So far it has the same effect as {@link Light}<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
-	 * @constructor
+	 * A omni-directional source of light. So far it has the same effect as {@link Light}<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
@@ -22,6 +19,10 @@ define([
 		 * @type {number}
 		 */
 		this.range = 1000;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	PointLight.prototype = Object.create(Light.prototype);
@@ -34,6 +35,20 @@ define([
 	 */
 	PointLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
+	};
+
+	PointLight.prototype.copy = function (source) {
+		Light.prototype.copy.call(this, source);
+
+		this.range = source.range;
+
+		return this;
+	};
+
+	PointLight.prototype.clone = function () {
+		var clone = new PointLight(this.color.clone());
+		clone.copy(this);
+		return clone;
 	};
 
 	return PointLight;

@@ -2,7 +2,7 @@ define([
 	'goo/entities/systems/System',
 	'goo/shapes/TextureGrid',
 	'goo/entities/components/MeshDataComponent'],
-	/** @lends */
+
 	function (
 		System,
 		TextureGrid,
@@ -11,8 +11,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class Processes all entities with a text component<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example}
+	 * Processes all entities with a text component<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/TextComponent/TextComponent-vtest.html Working example
 	 * @extends System
 	 */
 	function TextSystem() {
@@ -20,6 +20,7 @@ define([
 	}
 
 	TextSystem.prototype = Object.create(System.prototype);
+	TextSystem.prototype.constructor = TextSystem;
 
 	TextSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {

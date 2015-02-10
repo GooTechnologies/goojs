@@ -1,11 +1,18 @@
-define(['goo/renderer/bounds/BoundingBox', 'goo/renderer/bounds/BoundingSphere', 'goo/math/Vector3'],
-/** @lends */
-function (BoundingBox, BoundingSphere, Vector3) {
+define([
+	'goo/renderer/bounds/BoundingBox',
+	'goo/renderer/bounds/BoundingSphere',
+	'goo/math/Vector3'
+], function (
+	BoundingBox,
+	BoundingSphere,
+	Vector3
+) {
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * Bounding tree node
+	 * @param boundType
+	 */
 	function BoundingTree (boundType) {
 		this.leftTree = null;
 		this.rightTree = null;
@@ -125,9 +132,9 @@ function (BoundingBox, BoundingSphere, Vector3) {
 
 		// Ok, now since we technically have no primitives, we need our bounds to be the merging of our children bounds
 		// instead:
-		this.localBound = this.leftTree.localBound.clone(this.localBound);
+		this.localBound = this.leftTree.localBound.clone();
 		this.localBound.merge(this.rightTree.localBound);
-		this.worldBound = this.localBound.clone(this.worldBound);
+		this.worldBound = this.localBound.clone();
 	};
 
 	BoundingTree.prototype.createBounds = function () {

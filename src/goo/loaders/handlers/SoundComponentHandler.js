@@ -5,9 +5,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function(
+], function (
 	ComponentHandler,
 	SoundComponent,
 	AudioContext,
@@ -18,13 +16,12 @@ function(
 	'use strict';
 
 	/**
-	 * @class For handling loading of sound components
-	 * @constructor
+	 * For handling loading of sound components
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
 	 * @extends ComponentHandler
-	 * @private
+	 * @hidden
 	 */
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
@@ -34,7 +31,6 @@ function(
 	SoundComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
 	ComponentHandler._registerClass('sound', SoundComponentHandler);
-
 
 	/**
 	 * Removes the souncomponent and stops all connected sounds
@@ -62,7 +58,6 @@ function(
 		});
 	};
 
-
 	/**
 	 * Creates sound component
 	 * @returns {SoundComponent} Should be soundcomponent
@@ -80,7 +75,7 @@ function(
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
 	SoundComponentHandler.prototype.update = function(entity, config, options) {
-		if (!AudioContext) {
+		if (!AudioContext.isSupported()) {
 			return PromiseUtil.resolve(); //! AT: we're not really using reject
 		}
 
@@ -114,5 +109,6 @@ function(
 			});
 		});
 	};
+
 	return SoundComponentHandler;
 });

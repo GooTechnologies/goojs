@@ -1,14 +1,14 @@
 define([
-	'goo/math/Vector2'
-],
-/** @lends */
-function (
-	Vector2
+	'goo/math/Vector2',
+	'goo/util/PromiseUtil'
+], function (
+	Vector2,
+	PromiseUtil
 ) {
 	'use strict';
 
 	/**
-	 * @class <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
+	 * <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
 	 *        defined by the <code>Image</code> class. All attributes required for texture mapping are contained within this class. This includes
 	 *        mipmapping if desired, magnificationFilter options, apply options and correction options. Default values are as follows:
 	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S,T and R, apply - Modulate,
@@ -80,7 +80,7 @@ function (
 
 		/**
 		 * The anisotropic filtering level.<br>
-		 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html Working example}
+		 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/texture/AnisotropicFiltering/Anisotropic-vtest.html Working example
 		 * @type {number}
 		 */
 		this.anisotropy = settings.anisotropy !== undefined ? settings.anisotropy : 1;
@@ -104,17 +104,27 @@ function (
 		this.updateCallback = null;
 		this.readyCallback = null;
 
+		this._originalImage = null;
+		this._originalWidth = 0;
+		this._originalHeight = 0;
+
 		this.image = null;
 		if (image) {
 			this.setImage(image, width, height, settings);
 		}
 
+		this.loadImage = PromiseUtil.resolve.bind(null, this);
+
 		this.textureRecord = {};
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**
 	* Checks if the texture's data is ready.
-	* @return {Boolean} True if ready.
+	* @returns {Boolean} True if ready.
 	*/
 	Texture.prototype.checkDataReady = function () {
 		return this.image && (this.image.dataReady || this.image instanceof HTMLImageElement) || this.readyCallback !== null && this.readyCallback();
@@ -122,9 +132,10 @@ function (
 
 	/**
 	* Checks if the texture needs an update.
-	* @return {Boolean} True if needed.
+	* @returns {Boolean} True if needed.
 	*/
 	Texture.prototype.checkNeedsUpdate = function () {
+		//! AT: what's the precedence here? || first and then && or the other way around?
 		return this.needsUpdate || this.updateCallback !== null && this.updateCallback();
 	};
 
@@ -144,7 +155,10 @@ function (
 	 * @param {Number} [height]
 	 */
 	Texture.prototype.setImage = function (image, width, height, settings) {
-		this.image = image;
+		//! AT: this is not a general pattern; it is applied here only because of the complexity of this function
+		this._originalImage = image;
+
+		this.image = image; //! AT: is this always overriden? if so then why set it?
 
 		var data = image instanceof Array ? image[0] : image;
 		if (data instanceof Uint8Array || data instanceof Uint8ClampedArray || data instanceof Uint16Array || data instanceof Float32Array) {
@@ -152,12 +166,13 @@ function (
 			height = height || image.height;
 			if (width !== undefined && height !== undefined) {
 				this.image = {
-					data: image
+					data: image,
+					width: width,
+					height: height,
+					isData: true,
+					dataReady: true
 				};
-				this.image.width = width;
-				this.image.height = height;
-				this.image.isData = true;
-				this.image.dataReady = true;
+
 				if (data instanceof Uint8Array || data instanceof Uint8ClampedArray) {
 					this.type = 'UnsignedByte';
 				} else if (data instanceof Uint16Array) {
@@ -168,7 +183,7 @@ function (
 					this.format = settings.format || 'RGBA';
 				}
 			} else {
-				throw 'Data textures need width and height';
+				throw new Error('Data textures need width and height');
 			}
 		} else {
 			if (image instanceof Array) {
@@ -181,6 +196,11 @@ function (
 			}
 		}
 		this.setNeedsUpdate();
+
+		//! AT: this is not a general pattern; it is applied here only because of the complexity of this function
+		// these are delayed here in case width and height are modified in this function
+		this._originalWidth = width;
+		this._originalHeight = height;
 	};
 
 	/**
@@ -199,6 +219,7 @@ function (
 	Texture.prototype.getSizeInMemory = function () {
 		var size;
 
+		if (!this.image) { return 0; }
 		var width = this.image.width || this.image.length;
 		var height = this.image.height || 1;
 
@@ -226,6 +247,35 @@ function (
 		}
 
 		return size;
+	};
+
+	/**
+	 * Returns a clone of this plane
+	 * @returns {Texture}
+	 */
+	Texture.prototype.clone = function () {
+		// reconstructing original settings object passed to the constructor
+		var settings = {
+			wrapS: this.wrapS,
+			wrapT: this.wrapT,
+			magFilter: this.magFilter,
+			minFilter: this.minFilter,
+			anisotropy: this.anisotropy,
+			format: this.format,
+			type: this.type,
+			offset: this.offset,
+			repeat: this.repeat,
+			generateMipmaps: this.generateMipmaps,
+			premultiplyAlpha: this.premultiplyAlpha,
+			unpackAlignment: this.unpackAlignment,
+			flipY: this.flipY
+		};
+
+		var clone = new Texture(this._originalImage, settings, this._originalWidth, this._originalHeight);
+		clone.variant = this.variant;
+		clone.lodBias = this.lodBias;
+		clone.hasBorder = this.hasBorder;
+		return clone;
 	};
 
 	Texture.CUBE_FACES = ['PositiveX', 'NegativeX', 'PositiveY', 'NegativeY', 'PositiveZ', 'NegativeZ'];

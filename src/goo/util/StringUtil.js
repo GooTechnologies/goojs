@@ -1,11 +1,9 @@
 /*jshint bitwise: false */
-define([],
-/** @lends */
-function () {
+define([], function () {
 	'use strict';
 
 	/**
-	 * @class
+	 * Provides string manipulation methods
 	 */
 	function StringUtil() {}
 
@@ -130,6 +128,7 @@ function () {
 		return StringUtil.getIndexedName(desiredName, takenNames, separator);
 	};
 
+	//! AT: toASCII, in JS everything is caps (JSON, innerHTML, etc)
 	StringUtil.toAscii = function (input) {
 		return input.replace(/([^\x00-\x7F])/g, 'x');
 	};
@@ -172,7 +171,7 @@ function () {
 	 * @param  {string} text
 	 * The string whose HTML entities are to be encoded.
 	 *
-	 * @return {string}
+	 * @returns {string}
 	 * The specified string with all its HTML entities encoded.
 	 */
 	StringUtil.escapeHtmlEntities = function (text) {

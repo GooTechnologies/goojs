@@ -6,9 +6,7 @@ define([
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil',
 	'goo/math/Matrix4x4'
-],
-/** @lends */
-function(
+], function (
 	System,
 	AudioContext,
 	Vector3,
@@ -19,26 +17,26 @@ function(
 ) {
 	'use strict';
 	/**
-	 * @class System responsible for sound.
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example}
+	 * System responsible for sound.
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Sound/Sound-vtest.html Working example
 	 * @extends {System}
 	 */
 	function SoundSystem() {
-		if (!AudioContext) {
-			console.warn('Cannot create soundsystem, webaudio not supported');
+		if (!AudioContext.isSupported()) {
+			console.warn('Cannot create SoundSystem, WebAudio not supported');
 			return;
 		}
 		System.call(this, 'SoundSystem', ['SoundComponent', 'TransformComponent']);
 
 		this.entities = [];
-		this._outNode = AudioContext.createGain();
-		this._outNode.connect(AudioContext.destination);
-		this._wetNode = AudioContext.createGain();
+		this._outNode = AudioContext.getContext().createGain();
+		this._outNode.connect(AudioContext.getContext().destination);
+		this._wetNode = AudioContext.getContext().createGain();
 		this._wetNode.connect(this._outNode);
-		this._convolver = AudioContext.createConvolver();
+		this._convolver = AudioContext.getContext().createConvolver();
 		this._convolver.connect(this._wetNode);
 
-		this._listener = AudioContext.listener;
+		this._listener = AudioContext.getContext().listener;
 		this._listener.dopplerFactor = 0;
 
 		this._relativeTransform = new Matrix4x4();
@@ -86,10 +84,10 @@ function(
 	/**
 	 * Be sure to stop all playing sounds when a component is removed. Called by world.process()
 	 * Sometimes this has already been done by the loader
-	 * @param {Entity} entity
+	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundSystem.prototype.deleted = function(entity) {
+	SoundSystem.prototype.deleted = function(entity) {
 		if (entity.soundComponent) {
 			var sounds = entity.soundComponent.sounds;
 			for (var i = 0; i < sounds.length; i++) {
@@ -101,16 +99,16 @@ function(
 
 	/**
 	 * Update the environmental sound system properties
-	 * @param {object} [config]
-	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
+	 * @param {object} [config]
+	 * @param {number} [config.dopplerFactor] How much doppler effect the sound will get.
 	 * @param {number} [config.rolloffFactor] How fast the sound fades with distance.
 	 * @param {number} [config.maxDistance] After this distance, sound will keep its volume.
 	 * @param {number} [config.volume] Will be clamped between 0 and 1.
-	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
+	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
 	 */
 	SoundSystem.prototype.updateConfig = function(config) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
+		if (!AudioContext.isSupported()) {
+			console.warn('WebAudio not supported');
 			return;
 		}
 		_.extend(this._settings, config);
@@ -130,8 +128,8 @@ function(
 	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
 	 */
 	SoundSystem.prototype.setReverb = function(audioBuffer) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
+		if (!AudioContext.isSupported()) {
+			console.warn('WebAudio not supported');
 			return;
 		}
 		this._wetNode.disconnect();
@@ -151,7 +149,7 @@ function(
 		this._pausedSounds = {};
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
-			for (var j = 0; j < sounds.length; j++) {
+			for (var j = 0; j < sounds.length; j++) {
 				var sound = sounds[j];
 				if (sound.isPlaying()) {
 					sound.pause();
@@ -167,7 +165,7 @@ function(
 	SoundSystem.prototype.stop = function() {
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
-			for (var j = 0; j < sounds.length; j++) {
+			for (var j = 0; j < sounds.length; j++) {
 				var sound = sounds[j];
 				sound.stop();
 			}
@@ -182,7 +180,7 @@ function(
 		if (!this._pausedSounds) { return; }
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
-			for (var j = 0; j < sounds.length; j++) {
+			for (var j = 0; j < sounds.length; j++) {
 				var sound = sounds[j];
 				if (this._pausedSounds[sound.id]) {
 					sound.play();
@@ -193,7 +191,7 @@ function(
 	};
 
 	SoundSystem.prototype.process = function(entities, tpf) {
-		if (!AudioContext) {
+		if (!AudioContext.isSupported()) {
 			// This should never happen because system shouldn't process
 			return;
 		}

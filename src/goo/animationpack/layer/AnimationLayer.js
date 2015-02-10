@@ -6,9 +6,7 @@ define([
 	'goo/animationpack/layer/LayerLERPBlender',
 	'goo/entities/World', //! AT: this should not exist
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	FadeTransitionState,
 	SyncFadeTransitionState,
 	FrozenTransitionState,
@@ -20,7 +18,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Animation layers are essentially independent state machines, managed by a single AnimationManager. Each maintains a set of possible
+	 * Animation layers are essentially independent state machines, managed by a single AnimationManager. Each maintains a set of possible
 	 *        "steady states" - main states that the layer can be in. The layer can only be in one state at any given time. It may transition between
 	 *        states, provided that a path is defined for transition from the current state to the desired one. *
 	 * @param {String} name Name of layer
@@ -191,7 +189,7 @@ function (
 
 	/**
 	 * Get the current state
-	 * @return {AbstractState|null}
+	 * @returns {AbstractState|null}
 	 */
 	AnimationLayer.prototype.getCurrentState = function () {
 		return this._currentState;
@@ -212,7 +210,7 @@ function (
 	/**
 	 * Get the current state by id.
 	 * @param {string} id
-	 * @return {AbstractState|null}
+	 * @returns {AbstractState|null}
 	 */
 	AnimationLayer.prototype.getStateById = function (id) {
 		return this._steadyStates[id];
@@ -221,7 +219,7 @@ function (
 	/**
 	 * Get the current state by name.
 	 * @param {string} name
-	 * @return {AbstractState|null}
+	 * @returns {AbstractState|null}
 	 */
 	AnimationLayer.prototype.getStateByName = function (name) {
 		for (var id in this._steadyStates) {
@@ -253,7 +251,7 @@ function (
 	};
 
 	/**
-	 * @return a source data mapping for the channels involved in the current state/transition of this layer.
+	 * @returns a source data mapping for the channels involved in the current state/transition of this layer.
 	 */
 	AnimationLayer.prototype.getCurrentSourceData = function () {
 		if (this._layerBlender) {
@@ -298,7 +296,7 @@ function (
 	};
 
 	AnimationLayer.prototype.setTimeScale = function (timeScale) {
-		if (this._currentState) {
+		if (this._currentState) {
 			this._currentState.setTimeScale(timeScale);
 		}
 	};

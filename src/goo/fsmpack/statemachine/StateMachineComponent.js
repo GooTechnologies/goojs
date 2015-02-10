@@ -2,9 +2,7 @@ define([
 	'goo/entities/components/Component',
 	'goo/util/ArrayUtil',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	ArrayUtil,
 	SystemBus
@@ -12,10 +10,12 @@ function (
 	'use strict';
 
 	/**
-	 * @class StateMachineComponent
+	 * StateMachineComponent
 	 * @private
 	 */
 	function StateMachineComponent() {
+		Component.apply(this, arguments);
+
 		this.type = 'StateMachineComponent';
 
 		this._machines = [];

@@ -8,27 +8,23 @@ define([
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Util',
 	'goo/passpack/PassLib'
-],
-/** @lends */
-function (
+], function (
 	ConfigHandler,
 	ArrayUtil,
 	RSVP,
 	PromiseUtil,
-	_,
+	ObjectUtil,
 	Composer,
 	RenderPass,
 	FullscreenPass,
 	ShaderLib,
-	Util,
 	PassLib
 ) {
 	'use strict';
 
 	/**
-	 * @class Handler for loading posteffects into engine
+	 * Handler for loading posteffects into engine
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
@@ -40,7 +36,7 @@ function (
 		this._composer = new Composer();
 		var renderSystem = this.world.getSystem('RenderSystem');
 		this._renderPass = new RenderPass(renderSystem.renderList);
-		this._outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
+		this._outPass = new FullscreenPass(ObjectUtil.deepClone(ShaderLib.copy));
 		this._outPass.renderToScreen = true;
 	}
 
@@ -57,7 +53,7 @@ function (
 		var renderSystem = this.world.getSystem('RenderSystem');
 		ArrayUtil.remove(renderSystem.composers, this._composer);
 
-		delete this._objects[ref];
+		this._objects.delete(ref);
 
 		if (this.world) {
 			this._composer.destroy(this.world.gooRunner.renderer);
@@ -94,16 +90,16 @@ function (
 //			return RSVP.all(posteffects);
 			var oldEffects = posteffects.slice();
 			var promises = [];
-			_.forEach(config.posteffects, function (effectConfig) {
+			ObjectUtil.forEach(config.posteffects, function (effectConfig) {
 				promises.push(that._updateEffect(effectConfig, oldEffects, options));
 			}, null, 'sortValue');
-			return RSVP.all(promises).then(function (effects) {
+			return RSVP.all(promises).then(function (effects) {
 				for (var i = 0; i < effects.length; i++) {
 					posteffects[i] = effects[i];
 				}
 				posteffects.length = i;
 				/*
-				for (var i = 0; i < oldEffects.length; i++) {
+				for (var i = 0; i < oldEffects.length; i++) {
 					var effect = oldEffects[i];
 					if (posteffects.indexOf(effect) === -1) {
 						// Destroy posteffect rendertargets

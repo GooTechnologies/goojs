@@ -6,13 +6,11 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Util',
+	'goo/util/ObjectUtil',
 	'goo/math/Transform',
 	'goo/shapes/Grid',
 	'goo/shapes/Quad'
-],
-/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
@@ -20,7 +18,7 @@ function (
 	Material,
 	Shader,
 	ShaderLib,
-	Util,
+	ObjectUtil,
 	Transform,
 	Grid,
 	Quad
@@ -28,7 +26,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Renders entities/renderables using a configurable partitioner for culling
+	 * Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */
@@ -58,7 +56,7 @@ function (
 			transform: this.transform
 		};
 		// It ain't pretty, but it works
-		var surfaceShader = Util.clone(ShaderLib.simpleColored);
+		var surfaceShader = ObjectUtil.deepClone(ShaderLib.simpleColored);
 		var surfaceMaterial = new Material(surfaceShader, 'Surface Material');
 		surfaceMaterial.uniforms.color = [0.4, 0.4, 0.4];
 		surfaceMaterial.uniforms.opacity = 0.9;
@@ -88,12 +86,11 @@ function (
 	}
 
 	GridRenderSystem.prototype = Object.create(System.prototype);
+	GridRenderSystem.prototype.constructor = GridRenderSystem;
 
-	GridRenderSystem.prototype.inserted = function (/*entity*/) {
-	};
+	GridRenderSystem.prototype.inserted = function (/*entity*/) {};
 
-	GridRenderSystem.prototype.deleted = function (/*entity*/) {
-	};
+	GridRenderSystem.prototype.deleted = function (/*entity*/) {};
 
 	GridRenderSystem.prototype.process = function (/*entities, tpf*/) {
 		var count = this.renderList.length = 0;

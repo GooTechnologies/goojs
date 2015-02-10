@@ -1,19 +1,19 @@
 define([
-	'goo/renderer/MeshData'
-],
-/** @lends */
-function(
-	MeshData
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
+], function (
+	MeshData,
+	_
 ) {
 	'use strict';
 
 	/**
-	 * @class MeshData for a Grid.
+	 * MeshData for a Grid.
+	 * @extends MeshData
 	 * @param {number} [xSegments=10] Number of columns.
 	 * @param {number} [ySegments=10] Number of rows.
 	 * @param {number} [width=1] Total width of the Grid.
 	 * @param {number} [height=1] Total height of the Grid.
-	 * @extends MeshData
 	 * @example var meshData = new Grid( 10, 10, 10, 10);
 	 */
 	function Grid(xSegments, ySegments, width, height) {
@@ -38,6 +38,7 @@ function(
 	}
 
 	Grid.prototype = Object.create(MeshData.prototype);
+	Grid.prototype.constructor = Grid;
 
 	Grid.prototype.rebuild = function() {
 		var xExtent = this.width / 2;
@@ -86,6 +87,16 @@ function(
 		}
 		this.getAttributeBuffer(MeshData.POSITION).set(verts);
 		this.getIndexBuffer().set(indices);
+	};
+
+	/**
+	 * Returns a clone of this grid
+	 * @returns {Grid}
+	 */
+	Grid.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['xSegments', 'ySegments', 'width', 'height']);
+
+		return new Grid(options);
 	};
 
 

@@ -7,9 +7,7 @@ define([
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
 	'goo/util/ObjectUtil'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	Quaternion,
 	Vector3,
@@ -24,12 +22,12 @@ function (
 	/* global CANNON */
 
 	/**
-	 * @class Adds Cannon physics to an entity. Should be combined with one of the CannonCollider components, such as the {@link CannonSphereColliderComponent}. Also see {@link CannonSystem}.
+	 * Adds Cannon physics to an entity. Should be combined with one of the CannonCollider components, such as the {@link CannonSphereColliderComponent}. Also see {@link CannonSystem}.
 	 * @extends Component
-	 * @param {Object}  [settings]
-	 * @param {number}  [settings.mass=1]
+	 * @param {Object} [settings]
+	 * @param {number} [settings.mass=1]
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @example
-	 * <caption>{@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}</caption>
 	 * world.setSystem(new CannonSystem());
 	 * var entity = world.createEntity();
 	 * var rigidBodyComponent = new CannonRigidBodyComponent({
@@ -42,6 +40,8 @@ function (
 	 * entity.setComponent(boxColliderComponent);
 	 */
 	function CannonRigidbodyComponent(settings) {
+		Component.apply(this, arguments);
+
 		settings = settings || {};
 		this.type = 'CannonRigidbodyComponent';
 
@@ -118,7 +118,7 @@ function (
 
 	/**
 	 * Get the collider component from an entity, if one exist.
-	 * @return {mixed} Any of the collider types, or NULL if not found
+	 * @returns {mixed} Any of the collider types, or NULL if not found
 	 */
 	CannonRigidbodyComponent.getCollider = function (entity) {
 		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || entity.cannonTerrainColliderComponent || entity.cannonCylinderColliderComponent || null;

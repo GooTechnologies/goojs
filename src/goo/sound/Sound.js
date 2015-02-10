@@ -2,9 +2,7 @@ define([
 	'goo/sound/AudioContext',
 	'goo/math/MathUtils',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	AudioContext,
 	MathUtils,
 	RSVP
@@ -12,7 +10,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class A representation of a sound in the engine
+	 * A representation of a sound in the engine
 	 */
 	function Sound() {
 		/** @type {string}
@@ -32,7 +30,7 @@ function (
 		this._stream = null;
 		this._streamSource = null;
 		this._currentSource = null;
-		this._outNode = AudioContext.createGain();
+		this._outNode = AudioContext.getContext().createGain();
 		this.connectTo();
 
 		// Playback memory
@@ -42,6 +40,10 @@ function (
 		this._endPromise = null;
 
 		this._paused = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**
@@ -58,7 +60,7 @@ function (
 			return this._endPromise;
 		}
 
-		var currentSource = this._currentSource = AudioContext.createBufferSource();
+		var currentSource = this._currentSource = AudioContext.getContext().createBufferSource();
 
 		this._paused = false;
 		this._currentSource.onended = function () {
@@ -76,7 +78,7 @@ function (
 			this._currentSource.loopEnd = this._duration + this._offset;
 		}
 
-		this._playStart = AudioContext.currentTime - this._pausePos;
+		this._playStart = AudioContext.getContext().currentTime - this._pausePos;
 		var duration = this._duration - this._pausePos;
 
 		this._currentSource.start(0, this._pausePos + this._offset, duration);
@@ -94,7 +96,7 @@ function (
 		}
 		this._paused = true;
 
-		this._pausePos = (AudioContext.currentTime - this._playStart) % this._duration;
+		this._pausePos = (AudioContext.getContext().currentTime - this._playStart) % this._duration;
 		this._pausePos /= this._rate;
 		this._stop();
 	};
@@ -127,8 +129,8 @@ function (
 	};
 
 	Sound.prototype.fade = function (volume, time) {
-		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.currentTime);
-		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.currentTime + time);
+		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
+		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
 		var p = new RSVP.Promise();
 		setTimeout(function () {
 			p.resolve();
@@ -153,11 +155,11 @@ function (
 	 * Updates the sound according to config
 	 * @param {object} [config]
 	 * @param {boolean} [config.loop]
-	 * @param {number} [config.volume]
-	 * @param {number} [config.name] The sound name
-	 * @param {number} [config.start] Start offset in seconds.
+	 * @param {number} [config.volume]
+	 * @param {number} [config.name] The sound name
+	 * @param {number} [config.start] Start offset in seconds.
 	 * Will be clamped to be in actual soundclip duration
-	 * @param {number} [config.duration] Duration of the sound.
+	 * @param {number} [config.duration] Duration of the sound.
 	 * Will be clamped to be in actual soundclip duration
 	 * @param {number} [config.timeScale] Playback rate of the sound
 	 */
@@ -251,7 +253,7 @@ function (
 		}
 		this.stop();
 		this._stream = stream;
-		this._streamSource = AudioContext.createMediaStreamSource(stream);
+		this._streamSource = AudioContext.getContext().createMediaStreamSource(stream);
 		this._streamSource.connect(this._outNode);
 	};
 

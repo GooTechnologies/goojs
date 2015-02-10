@@ -4,7 +4,6 @@ define([
 	'goo/util/MeshBuilder',
 	'goo/math/Transform'
 ],
-/** @lends */
 function(
 	EntityUtils,
 	Entity,
@@ -14,7 +13,7 @@ function(
 	'use strict';
 
 	/**
-	 * @class Runs a mesh combine optimization on the whole scene, based on
+	 * Runs a mesh combine optimization on the whole scene, based on
 	 * material, vertex attributes etc
 	 * @param {World} world An instance of a goo.world object
 	 * @param {boolean} [removeOldData=true] Remove old data which is now unused after combining (prevents uncombine)
@@ -33,7 +32,7 @@ function(
 
 	/**
 	 * Combines everything below provided entity, or everything in the World if called without arguments
-	 * @param  {Entity} [entity] optional entity to combine
+	 * @param {Entity} [entity] optional entity to combine
 	 */
 	EntityCombiner.prototype.combine = function(entity) {
 		this.world.processEntityChanges();
@@ -50,7 +49,7 @@ function(
 
 	/**
 	 * Uncombines the group containing the provided entity, or uncombines everything if called without arguments
-	 * @param  {Entity} [targetEntity] Optional entity to unlock
+	 * @param {Entity} [targetEntity] Optional entity to unlock
 	 */
 	EntityCombiner.prototype.uncombine = function(targetEntity) {
 		var roots = [];
@@ -93,7 +92,7 @@ function(
 
 	/**
 	 * Combines an array of entities
-	 * @param  {Array} entities Entities to combine
+	 * @param {Array} entities Entities to combine
 	 */
 	EntityCombiner.prototype.combineList = function(entities) {
 		// Hack for backwards compatibility

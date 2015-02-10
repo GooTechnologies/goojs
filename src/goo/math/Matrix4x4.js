@@ -1,19 +1,15 @@
 define([
 	'goo/math/MathUtils',
 	'goo/math/Matrix'
-],
-/** @lends */
-function (
+], function (
 	MathUtils,
 	Matrix
 ) {
 	'use strict';
 
 	/**
-	 * @class Matrix with 4x4 components.
+	 * Matrix with 4x4 components.
 	 * @extends Matrix
-	 * @constructor
-	 * @description Creates a new matrix.
 	 * @param {Matrix4x4|number[]|...number} arguments Initial values for the components.
 	 */
 	function Matrix4x4() {
@@ -27,26 +23,26 @@ function (
 		} else {
 			Matrix.prototype.set.apply(this, arguments);
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Matrix4x4.prototype = Object.create(Matrix.prototype);
-	Matrix.setupAliases(Matrix4x4.prototype, [['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
+	Matrix4x4.prototype.constructor = Matrix4x4;
 
-	/* ====================================================================== */
+	Matrix.setupAliases(Matrix4x4.prototype, [['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
 
 	Matrix4x4.IDENTITY = new Matrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise addition.
+	 * Performs a component-wise addition.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix4x4.add = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
@@ -92,26 +88,21 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition.
+	 * Performs a component-wise addition.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.add = function (rhs) {
 		return Matrix4x4.add(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction.
+	 * Performs a component-wise subtraction.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix4x4.sub = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
@@ -157,26 +148,21 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction.
+	 * Performs a component-wise subtraction.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.sub = function (rhs) {
 		return Matrix4x4.sub(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication.
+	 * Performs a component-wise multiplication.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix4x4.mul = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
@@ -222,26 +208,21 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication.
+	 * Performs a component-wise multiplication.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.mul = function (rhs) {
 		return Matrix4x4.mul(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Performs a component-wise division.
+	 * Performs a component-wise division.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix4x4.div = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
@@ -290,11 +271,10 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise division.
+	 * Performs a component-wise division.
 	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.div = function (rhs) {
 		return Matrix4x4.div(this, rhs, this);
 	};
@@ -302,14 +282,12 @@ function (
 	/* ====================================================================== */
 
 	/**
-	 * @static
-	 * @description Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
+	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
 	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix4x4.combine = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Matrix4x4();
@@ -351,25 +329,20 @@ function (
 	};
 
 	/**
-	 * @description Combines two matrices (matrix multiplication) and stores the result locally.
+	 * Combines two matrices (matrix multiplication) and stores the result locally.
 	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.combine = function (rhs) {
 		return Matrix4x4.combine(this, rhs, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
+	 * Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} [target] Target matrix.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix4x4.transpose = function (source, target) {
 		if (!target) {
 			target = new Matrix4x4();
@@ -424,24 +397,19 @@ function (
 	};
 
 	/**
-	 * @description Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @return {Matrix4x4} Self for chaining.
+	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.transpose = function () {
 		return Matrix4x4.transpose(this, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Computes the analytical inverse and stores the result in a separate matrix.
+	 * Computes the analytical inverse and stores the result in a separate matrix.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @param {Matrix4x4} [target] Target matrix.
-	 * @return {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-
 	Matrix4x4.invert = function (source, target) {
 		if (!target) {
 			target = new Matrix4x4();
@@ -483,21 +451,17 @@ function (
 	};
 
 	/**
-	 * @description Computes the analytical inverse and stores the result locally.
-	 * @return {Matrix4x4} Self for chaining.
+	 * Computes the analytical inverse and stores the result locally.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.invert = function () {
 		return Matrix4x4.invert(this, this);
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Tests if the matrix is orthogonal.
-	 * @return {Boolean} True if orthogonal.
+	 * Tests if the matrix is orthogonal.
+	 * @returns {Boolean} True if orthogonal.
 	 */
-
 	Matrix4x4.prototype.isOrthogonal = function () {
 		var dot;
 
@@ -533,6 +497,7 @@ function (
 
 		dot = this.e02 * this.e03 + this.e12 * this.e13 + this.e22 * this.e23 + this.e32 * this.e33;
 
+		//! AT: why wrap in an if?!?!
 		if (Math.abs(dot) > MathUtils.EPSILON) {
 			return false;
 		}
@@ -540,13 +505,10 @@ function (
 		return true;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Tests if the matrix is normal.
-	 * @return {Boolean} True if normal.
+	 * Tests if the matrix is normal.
+	 * @returns {Boolean} True if normal.
 	 */
-
 	Matrix4x4.prototype.isNormal = function () {
 		var l;
 
@@ -570,6 +532,7 @@ function (
 
 		l = this.e03 * this.e03 + this.e13 * this.e13 + this.e23 * this.e23 + this.e33 * this.e33;
 
+		//! AT: why wrap in an if?!?!
 		if (Math.abs(l - 1.0) > MathUtils.EPSILON) {
 			return false;
 		}
@@ -577,24 +540,18 @@ function (
 		return true;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Tests if the matrix is orthonormal.
-	 * @return {Boolean} True if orthonormal.
+	 * Tests if the matrix is orthonormal.
+	 * @returns {Boolean} True if orthonormal.
 	 */
-
 	Matrix4x4.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Computes the determinant of the matrix.
-	 * @return {Float} Determinant of matrix.
+	 * Computes the determinant of the matrix.
+	 * @returns {Float} Determinant of matrix.
 	 */
-
 	Matrix4x4.prototype.determinant = function () {
 		var d = this.data;
 
@@ -629,13 +586,10 @@ function (
 			d[12] * val4;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Sets the matrix to identity.
-	 * @return {Matrix4x4} Self for chaining.
+	 * Sets the matrix to identity.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.setIdentity = function () {
 		var d = this.data;
 
@@ -659,14 +613,11 @@ function (
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Sets the rotational part of the matrix from a vector of angles. Order convention is x followed by y followed by z.
+	 * Sets the rotational part of the matrix from a vector of angles. Order convention is x followed by y followed by z.
 	 * @param {Vector3} angles Rotational angles in radians.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.setRotationFromVector = function (angles) {
 		var sx = Math.sin(angles.x);
 		var cx = Math.cos(angles.x);
@@ -688,14 +639,11 @@ function (
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Sets the rotational part of the matrix from a quaternion.
+	 * Sets the rotational part of the matrix from a quaternion.
 	 * @param {Vector4} quaternion Rotational quaternion.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.setRotationFromQuaternion = function (quaternion) {
 		var l = quaternion.lengthSquared();
 
@@ -728,14 +676,11 @@ function (
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Sets the translational part of the matrix.
+	 * Sets the translational part of the matrix.
 	 * @param {Vector3} translation Translation vector.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.setTranslation = function (translation) {
 		this.e03 = translation.x;
 		this.e13 = translation.y;
@@ -745,11 +690,10 @@ function (
 	};
 
 	/**
-	 * @description Gets the translational part of the matrix.
+	 * Gets the translational part of the matrix.
 	 * @param {Vector3} store Translation vector to store result in.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.getTranslation = function (store) {
 		store.x = this.data[12];
 		store.y = this.data[13];
@@ -759,7 +703,7 @@ function (
 	};
 
 	/**
-	 * @description Gets the rotational part of the matrix (the upper left 3x3 matrix).
+	 * Gets the rotational part of the matrix (the upper left 3x3 matrix).
 	 * @param {Matrix3x3} store Rotation matrix to store in.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
@@ -774,11 +718,10 @@ function (
 	};
 
 	/**
-	 * @description Gets the scaling part of the matrix.
+	 * Gets the scaling part of the matrix.
 	 * @param {Vector3} store Scaling vector to store result in.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.getScale = function (store) {
 		var sx = Math.sqrt(store.setDirect(this.data[0], this.data[4], this.data[8]).lengthSquared());
 		var sy = Math.sqrt(store.setDirect(this.data[1], this.data[5], this.data[9]).lengthSquared());
@@ -791,14 +734,11 @@ function (
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Sets the scale of the matrix.
+	 * Sets the scale of the matrix.
 	 * @param {Vector3} scale Scale vector.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
-
 	Matrix4x4.prototype.setScale = function (scale) {
 		this.e00 *= scale.x;
 		this.e10 *= scale.y;
@@ -813,10 +753,8 @@ function (
 		return this;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = (x*M)^T)
+	 * Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = (x*M)^T)
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
@@ -838,14 +776,11 @@ function (
 		return rhs;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = M*x)
+	 * Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = M*x)
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
-
 	Matrix4x4.prototype.applyPost = function (rhs) {
 		var x = rhs.data[0];
 		var y = rhs.data[1];
@@ -861,14 +796,11 @@ function (
 		return rhs;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Applies the matrix (rotation, scale, translation) to a three-dimensional vector.
+	 * Applies the matrix (rotation, scale, translation) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
-
 	Matrix4x4.prototype.applyPostPoint = function (rhs) {
 		var x = rhs.data[0];
 		var y = rhs.data[1];
@@ -882,10 +814,8 @@ function (
 		return rhs;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @description Applies the matrix (rotation, scale) to a three-dimensional vector.
+	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
@@ -903,9 +833,9 @@ function (
 	};
 
 	/**
-	 * @description Copies component values and stores them locally.
+	 * Copies component values and stores them locally.
 	 * @param {Matrix4x4} source Source matrix.
-	 * @return {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4x4} Self for chaining.
 	 */
 	Matrix4x4.prototype.copy = function (source) {
 		var t = this.data;
@@ -933,17 +863,19 @@ function (
 
 	/**
 	 * Returns a new matrix with the same values as the existing one.
-	 * @return {Matrix4x4} The new matrix.
+	 * @returns {Matrix4x4} The new matrix.
 	 */
 	Matrix4x4.prototype.clone = function () {
-		var d = this.data;
-		return new Matrix4x4(
-			d[0], d[1], d[2], d[3],
-			d[4], d[5], d[6], d[7],
-			d[8], d[9], d[10], d[11],
-			d[12], d[13], d[14], d[15]
-		);
+		return new Matrix4x4().copy(this);
 	};
+
+	// #ifdef DEBUG
+	Matrix.addPostChecks(Matrix4x4.prototype, [
+		'add', 'sub', 'mul', 'div', 'combine', 'transpose', 'invert',
+		'isOrthogonal', 'determinant', 'applyPre',
+		'copy'
+	]);
+	// #endif
 
 	return Matrix4x4;
 });

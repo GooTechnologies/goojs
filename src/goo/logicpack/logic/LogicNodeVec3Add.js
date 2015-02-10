@@ -6,12 +6,12 @@ define(
 		'goo/logic/LogicInterface',
 		'goo/math/Vector3'
 	],
-	/** @lends */
+
 	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
 		'use strict';
 
 		/**
-		 * @class Logic node that adds Vec3 inputs.
+		 * Logic node that adds Vec3 inputs.
 		 * @private
 		 */
 		function LogicNodeVec3Add() {

@@ -4,16 +4,16 @@ define([
 	'goo/renderer/BufferUtils',
 	'goo/math/Vector2',
 	'goo/math/Vector3',
-	'goo/math/Vector4'
-],
-/** @lends */
-function (
+	'goo/math/Vector4',
+	'goo/util/ObjectUtil'
+], function (
 	BufferData,
 	Util,
 	BufferUtils,
 	Vector2,
 	Vector3,
-	Vector4
+	Vector4,
+	ObjectUtil
 ) {
 	'use strict';
 
@@ -21,8 +21,7 @@ function (
 	var Uint8ClampedArray = window.Uint8ClampedArray;
 
 	/**
-	 * @class Stores all buffers for geometric data and similar attributes
-	 * @constructor
+	 * Stores all buffers for geometric data and similar attributes
 	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes
 	 * @param {number} vertexCount Number of vertices in buffer
 	 * @param {number} indexCount Number of indices in buffer
@@ -49,8 +48,17 @@ function (
 		this.weightsPerVertex = undefined;
 		this.boundingBox = undefined;
 		this.store = undefined;
+		this.wireframeData = undefined;
+		this.flatMeshData = undefined;
+
+		this._attributeDataNeedsRefresh = false;
+		this._dirtyAttributeNames = new Set();
 
 		this.rebuildData(this.vertexCount, this.indexCount);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	MeshData.MESH = 0;
@@ -67,10 +75,12 @@ function (
 		var savedIndices = null;
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
-				var view = this.dataViews[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var view = this.dataViews[key];
 				if (view) {
-					savedAttributes[i] = view;
+					savedAttributes[key] = view;
 				}
 			}
 			if (this.indexData) {
@@ -83,14 +93,15 @@ function (
 		this.rebuildIndexData(indexCount);
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
-				var saved = savedAttributes[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var saved = savedAttributes[key];
 				if (saved) {
-					var view = this.dataViews[i];
-					view.set(saved);
+					this.dataViews[key].set(saved);
 				}
 			}
-			savedAttributes = {};
+
 			if (savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
@@ -109,8 +120,9 @@ function (
 		}
 		if (this.vertexCount > 0) {
 			var vertexByteSize = 0;
-			for (var i in this.attributeMap) {
-				var attribute = this.attributeMap[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var attribute = this.attributeMap[keys[i]];
 				vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
 			}
 			this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
@@ -139,6 +151,11 @@ function (
 	 */
 	MeshData.prototype.setVertexDataUpdated = function () {
 		this.vertexData._dataNeedsRefresh = true;
+	};
+
+	MeshData.prototype.setAttributeDataUpdated = function (name) {
+		this._dirtyAttributeNames.add(name);
+		this._attributeDataNeedsRefresh = true;
 	};
 
 	MeshData.prototype.getSectionCount = function () {
@@ -315,7 +332,7 @@ function (
 			if (ArrayType) {
 				view = new ArrayType(data, attribute.offset, length);
 			} else {
-				throw "Unsupported DataType: " + attribute.type;
+				throw new Error("Unsupported DataType: " + attribute.type);
 			}
 
 			this.dataViews[key] = view;
@@ -328,7 +345,7 @@ function (
 	//! AT: unused
 	MeshData.prototype.makeInterleavedData = function () {
 		var stride = 0;
-		var offset = 0;
+		var offset = 0; // unused
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = stride;
@@ -457,6 +474,7 @@ function (
 	 * @returns {MeshData} Self to allow chaining
 	 */
 	MeshData.prototype.applyFunction = function (attributeName, fun) {
+		//! AT: fun should return a vector3, not an array
 		var vert;
 		var outVert;
 		var view = this.getAttributeBuffer(attributeName);
@@ -559,7 +577,7 @@ function (
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.buildWireframeData = function () {
-		var attributeMap = Util.clone(this.attributeMap);
+		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
 		var wireframeData = new MeshData(attributeMap, this.vertexCount, 0);
 		wireframeData.indexModes[0] = 'Lines';
 
@@ -657,7 +675,7 @@ function (
 			return this;
 		}
 
-		var attributeMap = Util.clone(this.attributeMap);
+		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
 		var attribs = {};
 		for (var key in attributeMap) {
 			attribs[key] = {
@@ -747,14 +765,14 @@ function (
 		}
 
 		flatMeshData.paletteMap = this.paletteMap;
-		flatMeshData.weightPerVertex = this.weightsPerVertex;
+		flatMeshData.weightsPerVertex = this.weightsPerVertex;
 
 		return flatMeshData;
 	};
 
 	/**
 	 * Destroys all attached vertex and index data.
-	 * @param  {WebGLContext} context
+	 * @param {WebGLContext} context
 	 */
 	MeshData.prototype.destroy = function (context) {
 		if (this.vertexData) {
@@ -763,6 +781,34 @@ function (
 		if (this.indexData) {
 			this.indexData.destroy(context);
 		}
+	};
+
+	/**
+	 * Returns a clone of this mesh data
+	 * @returns {MeshData}
+	 */
+	MeshData.prototype.clone = function () {
+		var attributeMapClone = ObjectUtil.deepClone(this.attributeMap);
+
+		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
+
+		clone.primitiveCounts = this.primitiveCounts.slice(0); // an array
+
+		clone.vertexData.copy(this.vertexData); // BufferData
+		clone.indexData.copy(this.indexData); // BufferData
+
+		clone.indexLengths = this.indexLengths.slice(0);
+		clone.indexModes = this.indexModes.slice(0);
+
+		clone.type = this.type;
+
+		if (this.paletteMap) {
+			clone.paletteMap = this.paletteMap.slice(0); // an array
+		}
+
+		clone.weightsPerVertex = this.weightsPerVertex; // a number
+
+		return clone;
 	};
 
 	/**
@@ -852,9 +898,9 @@ function (
 		for (var i = 0; i < types.length; i++) {
 			var type = types[i];
 			if (defaults[type] !== undefined) {
-				map[type] = Util.clone(defaults[type]);
+				map[type] = ObjectUtil.deepClone(defaults[type]);
 			} else {
-				throw "No default attribute named: " + type;
+				throw new Error('No default attribute named: ' + type);
 			}
 		}
 		return map;

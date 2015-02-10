@@ -14,9 +14,7 @@ define([
 	'goo/util/gizmopack/TranslationGizmo',
 	'goo/util/gizmopack/RotationGizmo',
 	'goo/util/gizmopack/ScaleGizmo'
-],
-/** @lends */
-function (
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
@@ -36,8 +34,8 @@ function (
 	'use strict';
 
 	/**
-	 * @class Renders transform gizmos<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/util/TransformGizmos/TransformGizmos-vtest.html Working example}
+	 * Renders transform gizmos<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/util/TransformGizmos/TransformGizmos-vtest.html Working example
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */
@@ -105,6 +103,7 @@ function (
 	}
 
 	GizmoRenderSystem.prototype = Object.create(System.prototype);
+	GizmoRenderSystem.prototype.constructor = GizmoRenderSystem;
 
 	GizmoRenderSystem.prototype.activate = function (id, x, y) {
 		this.active = true;
@@ -161,12 +160,12 @@ function (
 		}
 	};
 
-	GizmoRenderSystem.prototype.setActiveGizmo = function (id) {
+	GizmoRenderSystem.prototype.setActiveGizmo = function (id) {
 		if (this.active) {
 			this.nextGizmo = id;
 			return;
 		}
-		if (this.activeGizmo) {
+		if (this.activeGizmo) {
 			this.hideGizmo(this.activeGizmo);
 		}
 		this.activeGizmo = this.gizmos[id] || null;
@@ -184,7 +183,7 @@ function (
 		}
 	};
 
-	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
+	GizmoRenderSystem.prototype.setupCallbacks = function (callbacks) {
 		if (callbacks && callbacks.length === 3) {
 			this.gizmos[0].onChange = callbacks[0];
 			this.gizmos[1].onChange = callbacks[1];
@@ -213,7 +212,7 @@ function (
 		this.gizmos[1].onChange = function (change) {
 			if (this.entity) {
 				this.entity.transformComponent.transform.rotation.copy(change);
-				if (this.entity.transformComponent.parent) {
+				if (this.entity.transformComponent.parent) {
 					inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
 					inverseRotation.invert();
 				}
@@ -228,7 +227,7 @@ function (
 
 		// Set bound entities scale
 		this.gizmos[2].onChange = function (change) {
-			if (this.entity) {
+			if (this.entity) {
 				var scale = this.entity.transformComponent.transform.scale;
 				scale.setVector(change);
 				if (this.entity.transformComponent.parent) {

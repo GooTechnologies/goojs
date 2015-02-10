@@ -1,14 +1,12 @@
 define([
 	'goo/animationpack/clip/TransformData'
-],
-/** @lends */
-function (
+], function (
 	TransformData
 ) {
 	'use strict';
 
 	/**
-	 * @class Describes transform of a joint.
+	 * Describes transform of a joint.
 	 * @param {JointData} [source] source to copy
 	 */
 	function JointData (source) {
@@ -33,7 +31,7 @@ function (
 	 * @param {TransformData} blendTo The transform to blend to
 	 * @param {number} blendWeight The blend weight
 	 * @param {TransformData} store The transform store.
-	 * @return {TransformData} The blended transform.
+	 * @returns {TransformData} The blended transform.
 	 */
 	JointData.prototype.blend = function (blendTo, blendWeight, store) {
 		var rVal = store;

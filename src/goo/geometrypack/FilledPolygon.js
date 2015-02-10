@@ -1,7 +1,7 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/math/MathUtils'],
-	/** @lends */
+
 	function (
 		MeshData,
 		MathUtils
@@ -9,8 +9,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class A polygon shape
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/geometrypack/FilledPolygon/FilledPolygon-vtest.html Working example}
+	 * A polygon shape
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/FilledPolygon/FilledPolygon-vtest.html Working example
 	 * @param {Array} verts Array of vertices
 	 * @param {Array} indices Array of indices
 	 */
@@ -92,7 +92,7 @@ define([
 	}
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {FilledPolygon} Self for chaining.
 	 */
 	FilledPolygon.prototype.rebuild = function () {

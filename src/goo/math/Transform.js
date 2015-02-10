@@ -3,9 +3,7 @@ define([
 	'goo/math/Matrix3x3',
 	'goo/math/Matrix4x4',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	Matrix3x3,
 	Matrix4x4,
@@ -14,7 +12,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class Transform models a transformation in 3d space as: Y = M*X+T, with M being a Matrix3 and T is a Vector3. Generally M will be a rotation
+	 * Transform models a transformation in 3d space as: Y = M*X+T, with M being a Matrix3 and T is a Vector3. Generally M will be a rotation
 	 *        only matrix in which case it is represented by the matrix and scale fields as R*S, where S is a positive scale vector. For non-uniform
 	 *        scales and reflections, use setMatrix, which will consider M as being a general 3x3 matrix and disregard anything set in scale.
 	 */
@@ -25,12 +23,16 @@ function (
 		this.matrix = new Matrix4x4();
 		this.normalMatrix = new Matrix3x3();
 
-		/** @type {Vector3} */
+		/** @type {Vector3} */
 		this.translation = new Vector3();
 		/** @type {Matrix3x3} */
 		this.rotation = new Matrix3x3();
 		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec = new Vector3();
@@ -202,17 +204,18 @@ function (
 		t[7] = s[9];
 		t[8] = s[10];
 
-		var scale = this.scale;
 		// invert + transpose if non-uniform scaling
-		if (scale.x !== scale.y || scale.x !== scale.z) {
-			Matrix3x3.invert(this.normalMatrix);
-			Matrix3x3.transpose(this.normalMatrix, this.normalMatrix);
+		// RH: Should we check against epsilon here?
+		var scale = this.scale.data;
+		if (scale[0] !== scale[1] || scale[0] !== scale[2]) {
+			Matrix3x3.invert(this.normalMatrix, tmpMat1);
+			Matrix3x3.transpose(tmpMat1, this.normalMatrix);
 		}
 	};
 
 	/**
 	 * Copy supplied transform into this transform
-	 * @param {Transform} transform
+	 * @param {Transform} transform
 	 */
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
@@ -226,8 +229,8 @@ function (
 	 * Set this transform's rotation to rotation around X, Y and Z axis.
 	 * The rotation is applied in XYZ order.
 	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
+	 * @param {number} y
+	 * @param {number} z
 	 */
 	Transform.prototype.setRotationXYZ = function (x, y, z) {
 		this.rotation.fromAngles(x, y, z);
@@ -290,8 +293,26 @@ function (
 		return result;
 	};
 
+	//! AT: the second toString in the whole engine
 	Transform.prototype.toString = function () {
 		return '' + this.matrix;
+	};
+
+	/**
+	 * Returns a clone of this transform
+	 * @returns {Transform}
+	 */
+	Transform.prototype.clone = function () {
+		var clone = new Transform();
+
+		clone.matrix.copy(this.matrix);
+		clone.normalMatrix.copy(this.normalMatrix);
+
+		clone.translation.copy(this.translation);
+		clone.rotation.copy(this.rotation);
+		clone.scale.copy(this.scale);
+
+		return clone;
 	};
 
 	return Transform;

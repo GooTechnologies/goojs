@@ -3,9 +3,7 @@ define([
 	'goo/math/Vector3',
 	'goo/renderer/Camera',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	Vector3,
 	Camera,
@@ -14,35 +12,45 @@ function (
 	'use strict';
 
 	/**
-	 * @class Holds a camera.
+	 * Holds a camera.
 	 * @param {Camera} camera Camera to contain in this component.
 	 * @extends Component
 	 */
 	function CameraComponent (camera) {
+		Component.apply(this, arguments);
+
 		this.type = 'CameraComponent';
 
-		/** The camera contained by the component.
+		/**
+		 * The camera contained by the component.
 		 * @type {Camera}
 		 */
 		this.camera = camera;
 
-		/** Left vector.
+		/**
+		 * Left vector.
 		 * @type {Vector3}
 		 * @default (-1, 0, 0)
 		 */
 		this.leftVec = new Vector3(-1, 0, 0);
 
-		/** Up vector.
+		/**
+		 * Up vector.
 		 * @type {Vector3}
 		 * @default (0, 1, 0)
 		 */
 		this.upVec = new Vector3(0, 1, 0);
 
-		/** Direction vector.
+		/**
+		 * Direction vector.
 		 * @type {Vector3}
 		 * @default (0, 0, -1)
 		 */
 		this.dirVec = new Vector3(0, 0, -1);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	CameraComponent.type = 'CameraComponent';
@@ -103,6 +111,24 @@ function (
 		// RH: Don't update the frustum only the frame
 		// this.camera.update();
 		this.camera.onFrameChange();
+	};
+
+	CameraComponent.prototype.copy = function (source) {
+		this.camera.copy(source.camera);
+		this.leftVec.copy(source.leftVec);
+		this.upVec.copy(source.upVec);
+		this.dirVec.copy(source.dirVec);
+		return this;
+	};
+
+	CameraComponent.prototype.clone = function () {
+		var clone = new CameraComponent(this.camera.clone());
+
+		clone.leftVec.copy(this.leftVec);
+		clone.upVec.copy(this.upVec);
+		clone.dirVec.copy(this.dirVec);
+
+		return clone;
 	};
 
 	CameraComponent.applyOnEntity = function(obj, entity) {

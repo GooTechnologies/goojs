@@ -1,14 +1,16 @@
 define([
-	'goo/renderer/MeshData'
-], /** @lends */
-function (
-	MeshData
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
+], function (
+	MeshData,
+	_
 ) {
 	'use strict';
 
 	/**
-	 * @class A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
+	 * A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
 	 * while the width defines the x-axis. The z-axis will always be 0.
+	 * @extends MeshData
 	 * @param {number} [width=1] Total width of quad.
 	 * @param {number} [height=1] Total height of quad.
 	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
@@ -57,7 +59,7 @@ function (
 	Quad.prototype.constructor = Quad;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Quad} Self for chaining.
 	 */
 	Quad.prototype.rebuild = function () {
@@ -73,6 +75,16 @@ function (
 		this.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this quad
+	 * @returns {Quad}
+	 */
+	Quad.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['xExtent', 'yExtent', 'tileX', 'tileY']);
+
+		return new Quad(options);
 	};
 
 	return Quad;

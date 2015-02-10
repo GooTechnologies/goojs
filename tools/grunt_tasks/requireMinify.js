@@ -16,13 +16,14 @@ module.exports = function (grunt) {
 
 		wrapperHead +=
 			'/* Goo Engine ' + engineVersion + '\n' +
-			' * Copyright 2014 Goo Technologies AB\n' +
+			' * Copyright 2015 Goo Technologies AB\n' +
 			' */\n';
 
-		var customRequire = fs.readFileSync('tools/customRequire.js');
-		wrapperHead += customRequire;
+		wrapperHead += fs.readFileSync('tools/customRequire.js');
 
-		wrapperHead += '(function(window) {';
+		wrapperHead += fs.readFileSync('out/minified/MapSetPolyfill.js');
+
+		wrapperHead += '(function(window, define, require) {';
 
 		// Put all calls to define and require in the f function
 		wrapperHead +=
@@ -30,17 +31,17 @@ module.exports = function (grunt) {
 		wrapperTail +=
 			'}' +
 			'try{' +
-			'if(window.localStorage&&window.localStorage.gooPath){' +
-			// We're configured to not use the engine from goo.js.
-			// Don't call the f function so the modules won't be defined
-			// and require will load them separately instead.
-			'window.require.config({' +
-			'paths:{goo:localStorage.gooPath}' +
-			'})' +
-			'}else f()' +
+				'if(window.localStorage&&window.localStorage.gooPath){' +
+					// We're configured to not use the engine from goo.js.
+					// Don't call the f function so the modules won't be defined
+					// and require will load them separately instead.
+					'window.require.config({' +
+						'paths:{goo:localStorage.gooPath}' +
+					'})' +
+				'}else f()' +
 			'}catch(e){f()}';
 
-		wrapperTail += '})(window,undefined)';
+		wrapperTail += '})(window, goo.useOwnRequire || !window.define ? goo.define : define, goo.useOwnRequire || !window.require ? goo.require : require)';
 		return [wrapperHead, wrapperTail];
 	}
 
@@ -48,7 +49,7 @@ module.exports = function (grunt) {
 		build: {
 			// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 			options: {
-				baseUrl: 'src/',
+				baseUrl: 'src-preprocessed/',
 				optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
 				preserveLicenseComments: false,
 				useStrict: true,
@@ -64,12 +65,21 @@ module.exports = function (grunt) {
 		}
 	});
 
+	// some files are not part of the engine per se but need to be minified and added to goo.js
+	grunt.config('uglify', {
+		build: {
+			files: {
+				'out/minified/MapSetPolyfill.js': ['tools/MapSetPolyfill.js']
+			}
+		}
+	});
+
 	grunt.config('wrap', {
 		build: {
 			src: ['out/minified/goo.js'],
 				dest: engineFilename,
 				options: {
-				wrapper: getWrapper()
+				wrapper: getWrapper
 			}
 		}
 	});

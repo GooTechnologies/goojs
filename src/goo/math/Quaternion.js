@@ -4,9 +4,7 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Matrix3x3',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Vector,
 	Vector3,
 	Matrix3x3,
@@ -15,14 +13,13 @@ function (
 	'use strict';
 
 	/**
-	 * @class Quaternions provide a convenient mathematical notation for
+	 * Quaternions provide a convenient mathematical notation for
 	 * representing orientations and rotations of objects in three dimensions.
 	 * Compared to Euler angles, Quaternions are simpler to compose and can help avoid the problem of gimbal lock.
 	 * Compared to rotation matrices, Quaternions are more numerically stable and the representation (4 numbers) is more compact.
 	 * Quaternions are non-commutative and provide a convenient way to interpolate between rotations (using the <i>slerp</i> function).
 	 * The four numbers in a quaternion are internally represented by a vector, and therefore inherits from it.
 	 * @extends Vector
-	 * @constructor
 	 * @param {Vector|number[]|...number} arguments Initial values for the components.
 	 */
 	function Quaternion () {
@@ -33,17 +30,23 @@ function (
 		} else {
 			this.data[3] = 1;
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Quaternion.prototype = Object.create(Vector.prototype);
+	Quaternion.prototype.constructor = Quaternion;
+
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
+	//! AT: what is this?! isn't EPSILON enough?
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise addition between two quaternions and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -63,8 +66,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise subtraction between two quaternions and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -84,8 +86,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a multiplication between two quaternions and stores the result in a separate quaternion.
+	 * Performs a multiplication between two quaternions and stores the result in a separate quaternion.
 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
@@ -104,8 +105,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
+	 * Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
@@ -128,8 +128,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
@@ -150,8 +149,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
@@ -172,8 +170,7 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
@@ -193,15 +190,13 @@ function (
 	};
 
 	/**
-	 * @static
-	 * @description Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
+	 * Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} lhs Quaternion on the left-hand side.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @param {Quaternion} [target] Target quaternion for storage.
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
-
 	Quaternion.scalarDiv = function (lhs, rhs, target) {
 		if (!target) {
 			target = new Quaternion();
@@ -225,7 +220,7 @@ function (
 	 * @param {Quaternion} endQuat End quaternion.
 	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
 	 * @param {Quaternion} workQuat Work quaternion.
-	 * @return {Quaternion} workQuat The interpolated work quaternion.
+	 * @returns {Quaternion} workQuat The interpolated work quaternion.
 	 */
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
@@ -292,6 +287,25 @@ function (
 	};
 
 	/**
+	 * Conjugates this quaternion
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	Quaternion.prototype.conjugate = function () {
+		this.data[0] *= -1;
+		this.data[1] *= -1;
+		this.data[2] *= -1;
+		return this;
+	};
+
+	/**
+	 * Inverts this quaternion
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	Quaternion.prototype.invert = function () {
+		return this.conjugate().normalize();
+	};
+
+	/**
 	* Calculates the dot product between the current quaternion and another quaternion.
 	* @param rhs Quaternion on the right-hand side.
 	* @returns {number} The dot product.
@@ -311,7 +325,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise addition between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -320,7 +334,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -329,7 +343,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a multiplication between the current quaternion and another and stores the result locally.
+	 * Performs a multiplication between the current quaternion and another and stores the result locally.
 	 * The result is a <b>quaternion product</b>.
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -339,7 +353,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise division between the current quaternion and another and stores the result locally.
+	 * Performs a component-wise division between the current quaternion and another and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {Quaternion} rhs Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -349,7 +363,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -359,7 +373,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -369,7 +383,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
@@ -378,7 +392,7 @@ function (
 	};
 
 	/**
-	 * @description Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
+	 * Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
 	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
@@ -405,8 +419,8 @@ function (
 	};
 
 	/**
-	 * @description Sets the value of this quaternion to the rotation described by the given matrix values.
-	 * @param {Matrix3x3} Rotation matrix.
+	 * Sets the value of this quaternion to the rotation described by the given matrix values.
+	 * @param {Matrix3x3} matrix Rotation matrix.
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.fromRotationMatrix = function (matrix) {
@@ -496,7 +510,7 @@ function (
 	};
 
 	/**
-	 * @description Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
+	 * Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
 	 * @param {Vector3} from The source vector.
 	 * @param {Vector3} to The destination vector into which to rotate the source vector.
 	 * @returns {Quaternion} Self for chaining.
@@ -575,7 +589,7 @@ function (
 	};
 
 	/**
-	 * @description Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
+	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
 	 *              an object, so use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation.
@@ -587,7 +601,7 @@ function (
 	};
 
 	/**
-	 * @description Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
+	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
 	 *              the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation (already normalized - unit length).
@@ -608,7 +622,7 @@ function (
 	};
 
 	/**
-	 * @description Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in
+	 * Returns the rotation angle represented by this quaternion. If a non-null vector is provided, the axis of rotation is stored in
 	 *              that vector as well.
 	 * @param {Vector3} axisStore The object to store the computed axis in. If null, no computations are done to determine axis.
 	 * @returns {number} The angle of rotation in radians.
@@ -696,6 +710,23 @@ function (
 
 	Quaternion.prototype.setv = addWarning(
 		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
+
+	/**
+	 * Clones the quaternion
+	 * @returns {Quaternion} Clone of self
+	 */
+	Quaternion.prototype.clone = function () {
+		return new Quaternion(this);
+	};
+
+	// #ifdef DEBUG
+	Vector.addPostChecks(Quaternion.prototype, [
+		'add', 'sub', 'mul',
+		'slerp', 'fromRotationMatrix', 'fromVectorToVector', 'normalize',
+		'magnitude', 'magnitudeSquared', 'fromAngleAxis', 'fromAngleNormalAxis',
+		'setDirect', 'setVector'
+	]);
+	// #endif
 
 	return Quaternion;
 });

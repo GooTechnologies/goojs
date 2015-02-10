@@ -4,21 +4,19 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Util'
-],
-/** @lends */
-function (
+	'goo/util/ObjectUtil'
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
 	Material,
 	ShaderLib,
-	Util
+	ObjectUtil
 ) {
 	'use strict';
 
 	/**
-	 * @class Renders entities/renderables using a configurable partitioner for culling
+	 * Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
 	 * @extends System
 	 */
@@ -63,6 +61,7 @@ function (
 	}
 
 	RenderSystem.prototype = Object.create(System.prototype);
+	RenderSystem.prototype.constructor = RenderSystem;
 
 	RenderSystem.prototype.pick = function (x, y, callback, skipUpdateBuffer) {
 		this.picking.x = x;
@@ -137,22 +136,22 @@ function (
 		switch(key) {
 			case 'wireframe':
 			case 'color':
-				fshader = Util.clone(ShaderLib.simpleColored.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.simpleColored.fshader);
 				break;
 			case 'lit':
-				fshader = Util.clone(ShaderLib.simpleLit.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.simpleLit.fshader);
 				break;
 			case 'texture':
-				fshader = Util.clone(ShaderLib.textured.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.textured.fshader);
 				break;
 			case 'normals':
-				fshader = Util.clone(ShaderLib.showNormals.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.showNormals.fshader);
 				break;
 			case 'simple':
-				fshader = Util.clone(ShaderLib.simple.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.simple.fshader);
 				break;
 		}
-		var shaderDef = Util.clone(ShaderLib.uber);
+		var shaderDef = ObjectUtil.deepClone(ShaderLib.uber);
 		shaderDef.fshader = fshader;
 		if(key !== 'flat') {
 			this._debugMaterials[key] = new Material(shaderDef, key);

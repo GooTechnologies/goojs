@@ -2,17 +2,15 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/Util',
+	'goo/util/ObjectUtil',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	FullscreenUtil,
 	RenderTarget,
-	Util,
+	ObjectUtil,
 	ShaderLib,
 	ShaderLibExtra,
 	Pass
@@ -20,8 +18,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class
-	 * @{@linkplain http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example}
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example
 	 * <pre>
 	 * settings: {
 	 *     strength : 1.0,
@@ -58,7 +55,7 @@ function (
 		this.copyMaterial.uniforms.opacity = strength;
 		this.copyMaterial.blendState.blending = 'AdditiveBlending';
 
-		this.convolutionShader = Util.clone(ShaderLib.convolution);
+		this.convolutionShader = ObjectUtil.deepClone(ShaderLib.convolution);
 		this.convolutionShader.defines = {
 			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
 			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)

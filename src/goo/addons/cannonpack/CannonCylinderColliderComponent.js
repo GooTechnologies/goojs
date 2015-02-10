@@ -1,8 +1,6 @@
 define([
 	'goo/entities/components/Component'
-],
-/** @lends */
-function (
+], function (
 	Component
 ) {
 	'use strict';
@@ -10,8 +8,8 @@ function (
 	/* global CANNON */
 
 	/**
-	 * @class Sphere collider for the {@link CannonSystem}.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example}
+	 * Sphere collider for the {@link CannonSystem}.<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @param {object} [settings]
 	 * @param {number} [settings.radiusTop=0.5]
 	 * @param {number} [settings.radiusBottom=0.5]
@@ -19,6 +17,8 @@ function (
 	 * @param {number} [settings.numSegments=10]
 	 */
 	function CannonCylinderColliderComponent(settings) {
+		Component.apply(this, arguments);
+
 		settings = settings || {};
 		this.type = 'CannonCylinderColliderComponent';
 

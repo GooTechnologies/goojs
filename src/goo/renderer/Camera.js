@@ -8,9 +8,7 @@ define([
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingVolume'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	Vector4,
 	Matrix4x4,
@@ -24,7 +22,7 @@ function (
 	'use strict';
 
 	/**
-	 * @class This class represents a view into a 3D scene and how that view should map to a 2D rendering surface.
+	 * This class represents a view into a 3D scene and how that view should map to a 2D rendering surface.
 	 * @param {number} [fov=45] The full vertical angle of view, in degrees.
 	 * @param {number} [aspect=1] Aspect ratio of the 3D canvas used.
 	 * @param {number} [near=1] Near plane clip distance.
@@ -85,6 +83,7 @@ function (
 		this.modelViewProjection = new Matrix4x4();
 		this.modelViewProjectionInverse = new Matrix4x4();
 
+		//! AT: unused?
 		this._planeState = 0;
 		this._clipPlane = new Vector4();
 		this._qCalc = new Vector4();
@@ -106,6 +105,10 @@ function (
 
 		this.setFrustumPerspective(fov, aspect, near, far);
 		this.onFrameChange();
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var newDirection = new Vector3(); // tmp
@@ -275,7 +278,8 @@ function (
 
 		this.onFrustumChange();
 		this.onFrameChange();
-		// this.setFrustumPerspective();
+
+		return this;
 	};
 
 	/**
@@ -945,6 +949,12 @@ function (
 
 		this._updateMVPMatrix = true;
 		this._updateInverseMVPMatrix = true;
+	};
+
+	Camera.prototype.clone = function () {
+		var clone = new Camera(this.fov, this.aspect, this.near, this.far);
+		clone.copy(this);
+		return clone;
 	};
 
 	return Camera;

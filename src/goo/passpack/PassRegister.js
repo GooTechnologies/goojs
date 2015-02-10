@@ -6,7 +6,6 @@ define([
 	'goo/passpack/DepthPass',
 	'goo/passpack/DoGPass',
 	'goo/passpack/MotionBlurPass',
-	'goo/passpack/NesPass',
 	'goo/passpack/PassLib',
 	'goo/passpack/SSAOPass'
 ], function (Scripts) {
@@ -20,7 +19,6 @@ define([
 		'goo/passpack/DepthPass',
 		'goo/passpack/DoGPass',
 		'goo/passpack/MotionBlurPass',
-		'goo/passpack/NesPass',
 		'goo/passpack/PassLib',
 		'goo/passpack/SSAOPass'
 	];

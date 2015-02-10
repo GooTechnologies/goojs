@@ -1,24 +1,19 @@
 define([
-		'goo/math/Vector3',
-		'goo/renderer/light/Light'
-		],
-/** @lends */
-function (
+	'goo/math/Vector3',
+	'goo/renderer/light/Light'
+], function (
 	Vector3,
 	Light
-	) {
+) {
 	'use strict';
 
 	/**
-	 * @class
 	 * The SpotLight can be viewed as two cones with their apexes located at the light's location.
 	 * The properties angle sets the angle (in degrees) for which the outer cone
 	 * deviates from the light's direction. The exponent property sets the angle for the inner cone.
-	 *
 	 * The angle property is also known as the outer angle or falloff. The exponent property is also known as
-	 * the inner angle or hotspot.<br>
-	 * {@linkplain http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example}
-	 * @constructor
+	 * the inner angle or hotspot.
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
 	 * @extends Light
 	 * @param {Vector3} [color=(1, 1, 1)] The color of the light
 	 */
@@ -52,6 +47,10 @@ function (
 
 		/** @type {number} */
 		this.exponent = 16.0;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	SpotLight.prototype = Object.create(Light.prototype);
@@ -59,14 +58,32 @@ function (
 
 	/**
 	 * Updates the light's translation and orientation
-	 * @private
-	 * @param {Transform} transform
+	 * @hidden
+	 * @param {Transform} transform
 	 */
 	SpotLight.prototype.update = function (transform) {
 		transform.matrix.getTranslation(this.translation);
 
 		this.direction.setDirect(0.0, 0.0, -1.0);
 		transform.matrix.applyPostVector(this.direction);
+	};
+
+	SpotLight.prototype.copy = function (source) {
+		Light.prototype.copy.call(this, source);
+
+		source.direction.copy(this.direction);
+		this.range = source.range;
+		this.angle = source.angle;
+		this.penumbra = source.penumbra;
+		this.exponent = source.exponent;
+
+		return this;
+	};
+
+	SpotLight.prototype.clone = function () {
+		var clone = new SpotLight(this.color.clone());
+		clone.copy(this);
+		return clone;
 	};
 
 	return SpotLight;

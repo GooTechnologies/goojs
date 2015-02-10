@@ -7,9 +7,7 @@ define([
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
 	'goo/math/Ray'
-],
-/** @lends */
-function(
+], function (
 	Gizmo,
 	Sphere,
 	Torus,
@@ -22,8 +20,9 @@ function(
 	'use strict';
 
 	/**
-	* @class
-	*/
+	 * @extends Gizmo
+	 * @hidden
+	 */
 	function RotationGizmo() {
 		Gizmo.call(this, 'RotationGizmo');
 		this._ballMesh = new Sphere(32, 32, 1.1);
@@ -54,7 +53,9 @@ function(
 		this.oldAngleY = 0;
 		this.oldAngleZ = 0;
 	}
+
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
+	RotationGizmo.prototype.constructor = RotationGizmo;
 
 	RotationGizmo.prototype.activate = function(props) {
 		Gizmo.prototype.activate.call(this, props);

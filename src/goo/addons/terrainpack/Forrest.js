@@ -23,9 +23,7 @@ define([
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/math/MathUtils',
 	'goo/util/rsvp'
-],
-/** @lends */
-function (
+], function (
 	Material,
 	Camera,
 	Vector3,

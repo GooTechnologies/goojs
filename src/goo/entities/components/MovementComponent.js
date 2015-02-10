@@ -2,7 +2,7 @@ define([
 	'goo/math/Vector3',
 	'goo/entities/components/Component'
 ],
-	/** @lends */
+
 		function (
 		Vector3,
 		Component
@@ -10,24 +10,32 @@ define([
 		'use strict';
 
 		/**
-		 * @class Holds the movement parameters of an entity.
+		 * Holds the movement parameters of an entity.
 		 * Typically useful for anything which has a speed and/or
 		 * rotation.
 		 * @extends Component
 		 */
 		function MovementComponent() {
+			Component.apply(this, arguments);
+
 			this.type = 'MovementComponent';
 			this.velocity = new Vector3();
 			this.rotationVelocity = new Vector3();
+
+			// #ifdef DEBUG
+			Object.seal(this);
+			// #endif
 		}
 
+		MovementComponent.type = 'MovementComponent';
+
 		MovementComponent.prototype = Object.create(Component.prototype);
+		MovementComponent.prototype.constructor = MovementComponent;
 
 		/**
 		 * Adds velocity to movement. Typically useful for things such as gravity and slingshots.
 		 * @param {Vector3} vec3 velocity impulse vector.
 		 */
-
 		MovementComponent.prototype.addVelocity = function(vec3) {
 			this.velocity.add(vec3);
 		};

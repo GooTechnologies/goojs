@@ -4,7 +4,7 @@ define([
         'goo/renderer/Capabilities',
         'goo/entities/EntityUtils'
         ],
-	/** @lends */
+
 	function (
 		MeshData,
 		Vector3,
@@ -14,7 +14,7 @@ define([
 	'use strict';
 
 	/**
-	 * @class Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.
+	 * Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.
 	 * Combination is currently limited to 65536 vertices if you don't have the OES_element_index_uint extension.
 	 * Keep in mind that combined MeshData can only use one diffuse color texture, so this is best suited for MeshData that can share the same texture.
 	 * @example
@@ -216,7 +216,7 @@ define([
 
 	/**
 	 * build the unified MeshData from all the added MeshData so far and then reset in the internal state.
-	 * @return {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
+	 * @returns {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
 	 */
 	MeshBuilder.prototype.build = function () {
 		if (this.vertexCounter > 0) {

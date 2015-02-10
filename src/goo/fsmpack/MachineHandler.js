@@ -18,8 +18,8 @@ define([
 	'use strict';
 
 	/**
-	 * @class Handler for loading materials into engine
-	 * @private
+	 * Handler for loading materials into engine
+	 * @hidden
 	 * @extends ConfigHandler
 	 * @param {World} world
 	 * @param {Function} getConfig
@@ -34,7 +34,7 @@ define([
 
 	ConfigHandler._registerClass('machine', MachineHandler);
 	MachineHandler.prototype._remove = function(ref) {
-		var machine = this._objects[ref];
+		var machine = this._objects.get(ref);
 		if (machine) {
 			/**
 			 * Removes a machine
@@ -43,7 +43,7 @@ define([
 			 */
 			machine.removeFromParent();
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
@@ -144,7 +144,6 @@ define([
 	 * @private
 	 */
 	MachineHandler.prototype._updateState = function(machine, stateConfig, options) {
-		var that = this;
 		var state;
 		if (machine._states && machine._states[stateConfig.id]) {
 			state = machine._states[stateConfig.id];

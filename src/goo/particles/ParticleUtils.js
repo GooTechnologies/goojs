@@ -1,14 +1,12 @@
 define([
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Vector3
 ) {
 	'use strict';
 
 	/**
-	 * @class Various helper utils for particle systems.
+	 * Various helper utils for particle systems.
 	 */
 	function ParticleUtils() {
 	}
