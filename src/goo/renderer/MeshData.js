@@ -13,7 +13,7 @@ define([
 	Vector2,
 	Vector3,
 	Vector4,
-	_
+	ObjectUtil
 ) {
 	'use strict';
 
@@ -577,7 +577,7 @@ define([
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.buildWireframeData = function () {
-		var attributeMap = Util.clone(this.attributeMap);
+		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
 		var wireframeData = new MeshData(attributeMap, this.vertexCount, 0);
 		wireframeData.indexModes[0] = 'Lines';
 
@@ -675,7 +675,7 @@ define([
 			return this;
 		}
 
-		var attributeMap = Util.clone(this.attributeMap);
+		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
 		var attribs = {};
 		for (var key in attributeMap) {
 			attribs[key] = {
@@ -788,7 +788,7 @@ define([
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.clone = function () {
-		var attributeMapClone = _.deepClone(this.attributeMap);
+		var attributeMapClone = ObjectUtil.deepClone(this.attributeMap);
 
 		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
 
@@ -898,9 +898,9 @@ define([
 		for (var i = 0; i < types.length; i++) {
 			var type = types[i];
 			if (defaults[type] !== undefined) {
-				map[type] = Util.clone(defaults[type]);
+				map[type] = ObjectUtil.deepClone(defaults[type]);
 			} else {
-				throw "No default attribute named: " + type;
+				throw new Error('No default attribute named: ' + type);
 			}
 		}
 		return map;
