@@ -38,8 +38,8 @@ define([
 		it('can raycast closest', function () {
 			var start = new Vector3(0, 0, -10);
 			var end = new Vector3(0, 0, 10);
-			var rbcA = new RigidbodyComponent();
-			var rbcB = new RigidbodyComponent();
+			var rbcA = new RigidbodyComponent({ mass: 1 });
+			var rbcB = new RigidbodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -53,17 +53,69 @@ define([
 			world.process(); // Needed to initialize bodies
 
 			var result = new RaycastResult();
-			system.raycastClosest(start, end, result);
-			expect(result.entity).toBe(entityB);
+			system.raycastClosest(start, end, {}, result);
+			expect(result.entity.name).toBe(entityB.name);
 
 			// Now swap so that entityA is closer
-			rbcA.setPosition(new Vector3(0, 0, -3));
-			rbcB.setPosition(new Vector3(0, 0, 3));
-			world.process();
+			start.setDirect(0, 0, 10);
+			end.setDirect(0, 0, -10);
 
 			result = new RaycastResult();
-			system.raycastClosest(start, end, result);
-			expect(result.entity).toBe(entityA);
+			system.raycastClosest(start, end, {}, result);
+			expect(result.entity.name).toBe(entityA.name);
+		});
+
+		it('can raycast any', function () {
+			var start = new Vector3(0, 0, -10);
+			var end = new Vector3(0, 0, 10);
+			var rbcA = new RigidbodyComponent({ mass: 1 });
+			var rbcB = new RigidbodyComponent({ mass: 1 });
+			var ccA = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var ccB = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var entityA = world.createEntity(rbcA, ccA).addToWorld();
+			var entityB = world.createEntity(rbcB, ccB).addToWorld();
+			entityA.setTranslation(0, 0, 3);
+			entityB.setTranslation(0, 0, -3);
+			world.process(); // Needed to initialize bodies
+
+			var result = new RaycastResult();
+			system.raycastAny(start, end, {}, result);
+			expect(result.entity).toBeTruthy();
+		});
+
+		it('can raycast all', function () {
+			var start = new Vector3(0, 0, -10);
+			var end = new Vector3(0, 0, 10);
+			var rbcA = new RigidbodyComponent({ mass: 1 });
+			var rbcB = new RigidbodyComponent({ mass: 1 });
+			var ccA = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var ccB = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var entityA = world.createEntity(rbcA, ccA).addToWorld();
+			var entityB = world.createEntity(rbcB, ccB).addToWorld();
+			entityA.setTranslation(0, 0, 3);
+			entityB.setTranslation(0, 0, -3);
+			world.process(); // Needed to initialize bodies
+
+			var numHits = 0;
+			system.raycastAll(start, end, {}, function (/*result*/) {
+				numHits++;
+			});
+			expect(numHits).toBe(4);
+
+			numHits = 0;
+			system.raycastAll(start, end, {}, function (/*result*/) {
+				numHits++;
+				return false; // Abort traversal
+			});
+			expect(numHits).toBe(1);
 		});
 
 		it('emits contact events', function () {

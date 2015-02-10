@@ -176,31 +176,80 @@ function (
 		}
 	};
 
+	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult) {
+		if (tmpCannonResult.hasHit) {
+			gooResult.entity = this._entities[cannonResult.body.id];
+			var point = cannonResult.hitPointWorld;
+			var normal = cannonResult.hitNormalWorld;
+			gooResult.point.setDirect(point.x, point.y, point.z);
+			gooResult.normal.setDirect(normal.x, normal.y, normal.z);
+		}
+		return tmpCannonResult.hasHit;
+	};
+
 	/**
-	 * Make a ray cast into the world of colliders.
+	 * Make a ray cast into the world of colliders, stopping at the first hit.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} end
+	 * @param  {object} options
 	 * @param  {RaycastResult} [result]
 	 * @return {boolean} True if hit, else false
 	 */
-	PhysicsSystem.prototype.raycastClosest = function (start, end, result) {
+	PhysicsSystem.prototype.raycastAny = function (start, end, options, result) {
 		result = result || new RaycastResult();
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
 		cannonStart.copy(start);
 		cannonEnd.copy(end);
 
-		this.cannonWorld.rayTest(cannonStart, cannonEnd, tmpCannonResult);
+		this.cannonWorld.raycastAny(cannonStart, cannonEnd, {}, tmpCannonResult);
 
-		if (tmpCannonResult.hasHit) {
-			result.entity = this._entities[tmpCannonResult.body.id];
-			var point = tmpCannonResult.hitPointWorld;
-			var normal = tmpCannonResult.hitNormalWorld;
-			result.point.setDirect(point.x, point.y, point.z);
-			result.normal.setDirect(normal.x, normal.y, normal.z);
-		}
+		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
+	};
 
-		return tmpCannonResult.hasHit;
+	/**
+	 * Make a ray cast into the world of colliders.
+	 * @param  {Vector3} start
+	 * @param  {Vector3} end
+	 * @param  {object} options
+	 * @param  {RaycastResult} [result]
+	 * @return {boolean} True if hit, else false
+	 */
+	PhysicsSystem.prototype.raycastClosest = function (start, end, options, result) {
+		result = result || new RaycastResult();
+		var cannonStart = tmpVec1;
+		var cannonEnd = tmpVec2;
+		cannonStart.copy(start);
+		cannonEnd.copy(end);
+
+		this.cannonWorld.raycastClosest(cannonStart, cannonEnd, {}, tmpCannonResult);
+
+		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
+	};
+
+	var tmpResult = new RaycastResult();
+
+	/**
+	 * Make a ray cast into the world of colliders, evaluating the given callback once at every hit.
+	 * @param  {Vector3} start
+	 * @param  {Vector3} end
+	 * @param  {object} options
+	 * @param  {Function} callback
+	 * @return {boolean} True if hit, else false
+	 */
+	PhysicsSystem.prototype.raycastAll = function (start, end, options, callback) {
+		var cannonStart = tmpVec1;
+		var cannonEnd = tmpVec2;
+		cannonStart.copy(start);
+		cannonEnd.copy(end);
+
+		var that = this;
+		this.cannonWorld.raycastAll(cannonStart, cannonEnd, {}, function (cannonResult) {
+			that._copyCannonRaycastResultToGoo(cannonResult, tmpResult);
+			if (callback(tmpResult) === false) {
+				cannonResult.abort();
+			}
+		});
 	};
 
 	/**
