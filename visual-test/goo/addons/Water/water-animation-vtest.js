@@ -18,19 +18,13 @@ require([
 	'goo/timelinepack/TimelineSystem',
 	'goo/loaders/DynamicLoader',
 
-	'goo/animationpack/handlers/SkeletonHandler',
-	'goo/animationpack/handlers/AnimationComponentHandler',
-	'goo/animationpack/handlers/AnimationStateHandler',
-	'goo/animationpack/handlers/AnimationLayersHandler',
-	'goo/animationpack/handlers/AnimationClipHandler',
+	'goo/animationpack/handlers/AnimationHandlers',
 
-	'goo/fsmpack/StateMachineComponentHandler',
-	'goo/fsmpack/MachineHandler',
+	'goo/fsmpack/StateMachineHandlers',
 	'goo/timelinepack/TimelineComponentHandler',
 	'goo/passpack/PosteffectsHandler',
 	'goo/quadpack/QuadComponentHandler',
-	'goo/scriptpack/ScriptHandler',
-	'goo/scriptpack/ScriptComponentHandler',
+	'goo/scriptpack/ScriptHandlers',
 	'goo/scriptpack/ScriptRegister',
 	'goo/scripts/GooClassRegister'
 ], function (
