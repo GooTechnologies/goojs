@@ -176,6 +176,14 @@ function (
 		}
 	};
 
+	var tmpOptions = {};
+	PhysicsSystem.prototype._getCannonRaycastOptions = function (options) {
+		tmpOptions.collisionFilterMask = options.collisionMask !== undefined ? options.collisionMask : -1;
+		tmpOptions.collisionFilterGroup = options.collisionGroup !== undefined ? options.collisionGroup : -1;
+		tmpOptions.skipBackfaces = options.skipBackfaces !== undefined ? options.skipBackfaces : false;
+		return tmpOptions;
+	};
+
 	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult) {
 		if (tmpCannonResult.hasHit) {
 			gooResult.entity = this._entities[cannonResult.body.id];
@@ -202,7 +210,7 @@ function (
 		cannonStart.copy(start);
 		cannonEnd.copy(end);
 
-		this.cannonWorld.raycastAny(cannonStart, cannonEnd, {}, tmpCannonResult);
+		this.cannonWorld.raycastAny(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
 
 		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
 	};
@@ -222,7 +230,7 @@ function (
 		cannonStart.copy(start);
 		cannonEnd.copy(end);
 
-		this.cannonWorld.raycastClosest(cannonStart, cannonEnd, {}, tmpCannonResult);
+		this.cannonWorld.raycastClosest(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
 
 		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
 	};
@@ -244,7 +252,7 @@ function (
 		cannonEnd.copy(end);
 
 		var that = this;
-		this.cannonWorld.raycastAll(cannonStart, cannonEnd, {}, function (cannonResult) {
+		this.cannonWorld.raycastAll(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), function (cannonResult) {
 			that._copyCannonRaycastResultToGoo(cannonResult, tmpResult);
 			if (callback(tmpResult) === false) {
 				cannonResult.abort();

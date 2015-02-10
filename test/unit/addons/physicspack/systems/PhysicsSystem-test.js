@@ -118,6 +118,49 @@ define([
 			expect(numHits).toBe(1);
 		});
 
+		it('can use collision groups', function () {
+			var start = new Vector3(0, 0, -10);
+			var end = new Vector3(0, 0, 10);
+			var rbc = new RigidbodyComponent({ mass: 1 });
+			var cc = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var entity = world.createEntity(rbc, cc).addToWorld();
+			entity.setTranslation(0, 0, 3);
+			world.process(); // Needed to initialize bodies
+
+			var result = new RaycastResult();
+			system.raycastAny(start, end, { collisionGroup: -1 }, result);
+			expect(result.entity).toBeTruthy();
+
+			result = new RaycastResult();
+			system.raycastAny(start, end, { collisionGroup: 2 }, result);
+			expect(result.entity).toBeFalsy();
+		});
+
+		it('can filter away backfaces', function () {
+			var start = new Vector3(0, 0, -10);
+			var end = new Vector3(0, 0, 10);
+			var rbc = new RigidbodyComponent({ mass: 1 });
+			var cc = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			world.createEntity(rbc, cc).addToWorld();
+			world.process(); // Needed to initialize bodies
+
+			var numHits = 0;
+			system.raycastAll(start, end, { skipBackfaces: true }, function () {
+				numHits++;
+			});
+			expect(numHits).toBe(1);
+
+			numHits = 0;
+			system.raycastAll(start, end, { skipBackfaces: false }, function () {
+				numHits++;
+			});
+			expect(numHits).toBe(2);
+		});
+
 		it('emits contact events', function () {
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
