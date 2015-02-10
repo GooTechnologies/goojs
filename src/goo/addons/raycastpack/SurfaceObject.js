@@ -27,7 +27,6 @@ function (Vector3, BoundingSphere, MathUtils) {
 	var tmpVec1 = new Vector3();
 	var tmpVec2 = new Vector3();
 	var tmpVec3 = new Vector3();
-	var tmpVec4 = new Vector3();
 	
 	SurfaceObject.prototype.computeBoundingSphere = function() {
 		this.boundingRadiusSquare = 0;
@@ -61,7 +60,10 @@ function (Vector3, BoundingSphere, MathUtils) {
 
 			var distanceSquare = x*x + y*y + z*z;
 
-			if(distanceSquare >= this.boundingRadiusSquare) this.boundingRadiusSquare = distanceSquare;
+			if(distanceSquare >= this.boundingRadiusSquare)
+			{
+				this.boundingRadiusSquare = distanceSquare;
+			}
 		}
 		this.boundingSphere.radius = Math.sqrt(this.boundingRadiusSquare);
 	};
