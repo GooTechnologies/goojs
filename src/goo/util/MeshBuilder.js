@@ -114,6 +114,7 @@ define([
 			var array = attribute.array;
 			var count = map.count;
 			var vertexPos = this.vertexCounter * count;
+			array.length += viewLength;
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
@@ -146,6 +147,7 @@ define([
 			}
 		}
 		var indices = meshData.getIndexBuffer();
+		this.indexData.length += meshData.indexCount;
 		for (var i = 0, l = meshData.indexCount; i < l; i++) {
 			this.indexData[this.indexCounter + i] = indices[i] + this.vertexCounter;
 		}

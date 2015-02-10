@@ -2,107 +2,124 @@ define([
 	'goo/entities/EntityUtils',
 	'goo/entities/Entity',
 	'goo/util/MeshBuilder',
-	'goo/math/Transform',
-	'goo/math/Vector3',
-	'goo/renderer/bounds/BoundingBox',
-	'goo/renderer/bounds/BoundingSphere'
+	'goo/math/Transform'
 ],
 /** @lends */
 function(
 	EntityUtils,
 	Entity,
 	MeshBuilder,
-	Transform,
-	Vector3,
-	BoundingBox,
-	BoundingSphere
+	Transform
 ) {
 	'use strict';
 
 	/**
 	 * @class Runs a mesh combine optimization on the whole scene, based on
-	 * material, components etc
-	 * @param {World} gooWorld An instance of a goo.world object
-	 * @param {number} [gridCount=1] Number of grid segments to split the world in during combine
-	 * @param {boolean} [removeOldData=true] Remove old data which is now unused after combining
+	 * material, vertex attributes etc
+	 * @param {World} world An instance of a goo.world object
+	 * @param {boolean} [removeOldData=true] Remove old data which is now unused after combining (prevents uncombine)
 	 */
-	function EntityCombiner(gooWorld, gridCount, removeOldData) {
-		this.world = gooWorld;
-		this.gridCount = gridCount > 1 ? gridCount : 1;
-		this.gridSize = 1;
+	function EntityCombiner(world, removeOldData) {
+		this.world = world;
 		this.removeOldData = removeOldData !== undefined ? removeOldData : true;
 
-		// this.invertTransform = new Transform();
 		this.calcTransform = new Transform();
 
-		this.grid = new Map();
-		this.oldEntities = new Set();
-		this.newEntities = new Set();
+		this.rootMap = new Map();
+		this.entityToRoot = new Map();
+		this.unlockOldMap = new Map();
+		this.unlockNewMap = new Map();
 	}
 
 	/**
-	 * Runs the combiner
+	 * Combines everything below provided entity, or everything in the World if called without arguments
+	 * @param  {Entity} [entity] optional entity to combine
 	 */
-	EntityCombiner.prototype.combine = function() {
-		this.grid.clear();
-		this.oldEntities.clear();
-		this.newEntities.clear();
-
+	EntityCombiner.prototype.combine = function(entity) {
 		this.world.processEntityChanges();
 		this.world.getSystem('TransformSystem')._process();
-		this.world.getSystem('BoundingUpdateSystem')._process();
 
-		var topEntities = this.world.entityManager.getTopEntities();
-		if (this.gridCount > 1) {
-			this.gridSize = this._calculateBounds(topEntities) / this.gridCount;
+		this.uncombine();
+
+		if (entity) {
+			this.combineList([entity]);
+		} else {
+			this.combineList(this.world.entityManager.getTopEntities());
 		}
-		this._combineList(topEntities);
 	};
 
 	/**
-	 * Runs the uncombiner
+	 * Uncombines the group containing the provided entity, or uncombines everything if called without arguments
+	 * @param  {Entity} [targetEntity] Optional entity to unlock
 	 */
 	EntityCombiner.prototype.uncombine = function(targetEntity) {
-		this.newEntities.forEach(function(entity) {
-			entity.removeFromWorld();
-		});
-		this.oldEntities.forEach(function(entity) {
-			entity.skip = false;
-			entity._hidden = false;
-			entity.addTranslation(0, -10, 0);
-		});
+		var roots = [];
+		if (targetEntity) {
+			roots[0] = this.entityToRoot.get(targetEntity);
+			if (!roots[0]) {
+				return;
+			}
+			this.rootMap.delete(roots[0]);
+		} else {
+			this.rootMap.forEach(function(subListMap, root) {
+				roots.push(root);
+			});
+			this.rootMap.clear();
+		}
+
+		for (var j = 0; j < roots.length; j++) {
+			var root = roots[j];
+
+			var newEntities = this.unlockNewMap.get(root);
+			if (newEntities) {
+				for (var i = 0; i < newEntities.length; i++) {
+					newEntities[i].removeFromWorld();
+				}
+				this.unlockNewMap.delete(root);
+			}
+
+			var oldEntities = this.unlockOldMap.get(root);
+			if (oldEntities) {
+				for (var i = 0; i < oldEntities.length; i++) {
+					var entity = oldEntities[i];
+					entity.skip = false;
+					entity._hidden = false;
+					this.entityToRoot.delete(entity);
+				}
+				this.unlockOldMap.delete(root);
+			}
+		}
 	};
 
-	EntityCombiner.prototype._combineList = function(entities) {
-		var root = entities;
-		if (entities instanceof Entity === false) {
-			root = this.world.createEntity('root');
-			root.addToWorld();
-			for (var i = 0; i < entities.length; i++) {
-				root.attachChild(entities[i]);
-			}
+	/**
+	 * Combines an array of entities
+	 * @param  {Array} entities Entities to combine
+	 */
+	EntityCombiner.prototype.combineList = function(entities) {
+		// Hack for backwards compatibility
+		if (entities instanceof Entity) {
+			entities = [entities];
 		}
 
 		var baseSubs = new Map();
-		this._buildSubs(root, baseSubs);
+		var subs = [];
+		baseSubs.set({name: 'CombineRoot'}, subs);
+		for (var i = 0; i < entities.length; i++) {
+			this._buildSubs(entities[i], baseSubs, subs);
+		}
 
 		baseSubs.forEach(function(combineList, entity) {
 			this._combine(entity, combineList);
 		}, this);
 
 		var that = this;
-		this.grid.forEach(function(gridCell) {
-			gridCell.forEach(function(subListMap, root) {
-				subListMap.forEach(function(materialSet, material) {
-					materialSet.forEach(function(entityList) {
-						that._combineMeshes(root, material, entityList);
-					});
+		this.rootMap.forEach(function(subListMap, root) {
+			subListMap.forEach(function(materialSet, material) {
+				materialSet.forEach(function(entityList) {
+					that._combineMeshes(root, material, entityList);
 				});
 			});
 		});
-	};
-
-	EntityCombiner.prototype._traverseGridCell = function(entity, callback) {
 	};
 
 	EntityCombiner.prototype._buildSubs = function(entity, baseSubs, subs) {
@@ -133,34 +150,19 @@ function(
 			return;
 		}
 
-		var rootTransform = root.transformComponent.worldTransform;
 		root.invertTransform = root.invertTransform || new Transform();
-		rootTransform.invert(root.invertTransform);
+		if (root instanceof Entity) {
+			root.transformComponent.worldTransform.invert(root.invertTransform);
+		}
 
-		// var subListMap = new Map();
 		for (var i = 0; i < combineListLength; i++) {
 			var entity = combineList[i];
 
-			var gridKey = '';
-			if (this.gridSize > 1) {
-				var xBucket = entity.meshRendererComponent.worldBound.center.x / this.gridSize;
-				var zBucket = entity.meshRendererComponent.worldBound.center.z / this.gridSize;
-				gridKey = Math.round(xBucket) + '_' + Math.round(zBucket);
-			}
-
-			var gridCell = this.grid.get(gridKey);
-			if (!gridCell) {
-				gridCell = new Map();
-				this.grid.set(gridKey, gridCell);
-			}
-
-			var subListMap = gridCell.get(root);
+			var subListMap = this.rootMap.get(root);
 			if (!subListMap) {
 				subListMap = new Map();
-				gridCell.set(root, subListMap);
+				this.rootMap.set(root, subListMap);
 			}
-
-			// gridCell.add(subListMap);
 
 			var materialKey = entity.meshRendererComponent.materials[0];
 
@@ -180,7 +182,6 @@ function(
 			}
 
 			entityList.push(entity);
-			console.log(entity.name);
 		}
 	};
 
@@ -190,7 +191,7 @@ function(
 		}
 
 		var meshBuilder = new MeshBuilder();
-		for (var k = 0; k < entityList.length; k++) {
+		for (var k = 0, l = entityList.length; k < l; k++) {
 			var entity = entityList[k];
 
 			if (root !== entity) {
@@ -199,7 +200,6 @@ function(
 				this.calcTransform.setIdentity();
 			}
 
-			console.log(entity.name, entity.id);
 			meshBuilder.addMeshData(entity.meshDataComponent.meshData, this.calcTransform);
 
 			if (this.removeOldData) {
@@ -214,47 +214,31 @@ function(
 			} else {
 				entity.skip = true;
 				entity._hidden = true;
-				this.oldEntities.add(entity);
+				this.entityToRoot.set(entity, root);
+				var list = this.unlockOldMap.get(root);
+				if (!list) {
+					list = [];
+					this.unlockOldMap.set(root, list);
+				}
+				list.push(entity);
 			}
 		}
-		var meshDatas = meshBuilder.build();
 
+		var meshDatas = meshBuilder.build();
 		for (var i = 0; i < meshDatas.length; i++) {
 			var entity = this.world.createEntity(meshDatas[i], material).addToWorld();
-			root.attachChild(entity);
+			if (root instanceof Entity) {
+				root.attachChild(entity);
+			}
 			if (!this.removeOldData) {
-				this.newEntities.add(entity);
+				var list = this.unlockNewMap.get(root);
+				if (!list) {
+					list = [];
+					this.unlockNewMap.set(root, list);
+				}
+				list.push(entity);
 			}
 		}
-	};
-
-	EntityCombiner.prototype._calculateBounds = function(entities) {
-		var first = true;
-		var wb = new BoundingBox();
-		for (var i = 0; i < entities.length; i++) {
-			var rootEntity = entities[i];
-			rootEntity.traverse(function(entity) {
-				if (entity.meshRendererComponent && !entity.particleComponent) {
-					if (first) {
-						var bound = entity.meshRendererComponent.worldBound;
-						if (bound instanceof BoundingBox) {
-							bound.clone(wb);
-						} else if (bound instanceof BoundingSphere) {
-							wb.center.setVector(bound.center);
-							wb.xExtent = wb.yExtent = wb.zExtent = bound.radius;
-						} else {
-							wb.center.setVector(Vector3.ZERO);
-							wb.xExtent = wb.yExtent = wb.zExtent = 10;
-						}
-
-						first = false;
-					} else {
-						wb.merge(entity.meshRendererComponent.worldBound);
-					}
-				}
-			});
-		}
-		return Math.max(wb.xExtent, wb.zExtent) * 2.0;
 	};
 
 	return EntityCombiner;
