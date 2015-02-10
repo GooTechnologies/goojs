@@ -13,19 +13,13 @@ require([
 	'CanvasWrapper',
 	'WebGLSupport',
 
-	'goo/animationpack/handlers/SkeletonHandler',
-	'goo/animationpack/handlers/AnimationComponentHandler',
-	'goo/animationpack/handlers/AnimationStateHandler',
-	'goo/animationpack/handlers/AnimationLayersHandler',
-	'goo/animationpack/handlers/AnimationClipHandler',
+	'goo/animationpack/handlers/AnimationHandlers',
 
-	'goo/fsmpack/StateMachineComponentHandler',
-	'goo/fsmpack/MachineHandler',
+	'goo/fsmpack/StateMachineHandlers',
 	'goo/timelinepack/TimelineComponentHandler',
 	'goo/passpack/PosteffectsHandler',
 	'goo/quadpack/QuadComponentHandler',
-	'goo/scriptpack/ScriptHandler',
-	'goo/scriptpack/ScriptComponentHandler',
+	'goo/scriptpack/ScriptHandlers',
 	'goo/scriptpack/ScriptRegister',
 	'goo/scripts/GooClassRegister'
 ], function (
@@ -37,11 +31,7 @@ require([
 	DynamicLoader,
 	EntityCombiner,
 	Renderer,
-	V,
-	RSVP,
-
-	CanvasWrapper,
-	WebGLSupport
+	V
 ) {
 	'use strict';
 
@@ -123,16 +113,15 @@ require([
 			rootPath: 'res'
 		});
 
-		setInterval(function(){
-
+		setInterval(function () {
 			console.log('clearing!');
 
 			// clear everything and reload
-			loader.clear().then(function() {
+			loader.clear().then(function () {
 				gooRunner.world.process();
 				gooRunner.world.process();
 				return loader.load('root.bundle', { preloadBinaries: true });
-			}).then(function(result) {
+			}).then(function (result) {
 
 				gooRunner.world.process();
 				gooRunner.world.process();
@@ -152,10 +141,9 @@ require([
 					return null;
 				}
 
-				console.log('loading!')
+				console.log('loading!');
 				return loader.load(project.id);
 			});
-
 		}, 5000);
 
 		// The loader takes care of loading the data.
@@ -165,8 +153,7 @@ require([
 		});
 
 		return loader.load('root.bundle', {
-			preloadBinaries: true,
-			//progressCallback: progressCallback
+			preloadBinaries: true
 		}).then(function(result) {
 			var project = null;
 
