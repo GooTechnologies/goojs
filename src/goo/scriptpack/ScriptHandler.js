@@ -78,7 +78,7 @@ define([
 			}
 		}
 		this._objects.delete(ref);
-		this._bodyCache.delete(ref);
+		delete this._bodyCache[ref];
 	};
 
 

@@ -438,7 +438,7 @@ define([
 	 * @returns {Vector2} Clone of self.
 	 */
 	Vector2.prototype.clone = function () {
-		return new Vector2(this);
+		return new Vector2().copy(this);
 	};
 
 	/**
