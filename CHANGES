@@ -1,3 +1,23 @@
+v0.13.0 --- 2015-02-11
+----------------------
+
+###Additions
+ + the engine can be forced to use its own internal require, even if a global one is present; this can be done by running `window.goo = { useOwnRequire: true }` before *goo.js* executes
+ + a new visual test, [CubeMap](http://code.gooengine.com/0.13.0/visual-test/goo/renderer/texture/CubeMaps/Cubemap-vtest.html)
+
+###Fixes
+ * lights copy the color data they receive on creation
+ * *Ray* copies the data it receives on creation
+
+###Changes
+ * the AudioContext is created now only on demand, via the `.getContext()` function
+ * goo.js no longer installs `require` and `define` in the global scope if they are not present
+
+###Deprecated
+ - *goo/renderer/Util* has been renamed to *goo/renderer/RendererUtils*
+ - `RendererUtils.clone` (formerly `Util.clone`); please use `ObjectUtil.deepClone` instead
+
+
 v0.12.9 --- 2015-02-03
 ----------------------
 
