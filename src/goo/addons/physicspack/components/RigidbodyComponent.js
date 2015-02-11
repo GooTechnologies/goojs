@@ -7,7 +7,6 @@ define([
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
-	'goo/addons/physicspack/colliders/TerrainCollider',
 	'goo/addons/physicspack/colliders/MeshCollider',
 	'goo/addons/physicspack/joints/BallJoint',
 	'goo/addons/physicspack/joints/HingeJoint'
@@ -21,7 +20,6 @@ function (
 	SphereCollider,
 	CylinderCollider,
 	PlaneCollider,
-	TerrainCollider,
 	MeshCollider,
 	BallJoint,
 	HingeJoint

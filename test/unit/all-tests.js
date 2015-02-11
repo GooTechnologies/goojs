@@ -129,7 +129,6 @@ define([
 	'test/addons/physicspack/colliders/SphereCollider-test',
 	'test/addons/physicspack/colliders/BoxCollider-test',
 	'test/addons/physicspack/colliders/CylinderCollider-test',
-	'test/addons/physicspack/colliders/TerrainCollider-test',
 	'test/addons/physicspack/components/ColliderComponent-test',
 	'test/picking/BoundingTree-test',
 	'test/picking/PrimitivePickLogic-test',
