@@ -90,12 +90,37 @@ define(function () {
 		return groups;
 	}
 
-	function isClockwise(points) {
+	var ANGLE_THRESHOLD = 0.001;
+	function simplifyPath(polygon) {
+		var simplePolygon = [];
+
+		simplePolygon.push(polygon[0]);
+		for (var i = 1; i < polygon.length - 1; i++) {
+			var deltaX1 = polygon[i - 1].x - polygon[i].x;
+			var deltaY1 = polygon[i - 1].y - polygon[i].y;
+
+			var deltaX2 = polygon[i].x - polygon[i + 1].x;
+			var deltaY2 = polygon[i].y - polygon[i + 1].y;
+
+			// can do only one arctan per point
+			var angle1 = Math.atan2(deltaY1, deltaX1);
+			var angle2 = Math.atan2(deltaY2, deltaX2);
+
+			if (Math.abs(angle1 - angle2) > ANGLE_THRESHOLD) {
+				simplePolygon.push(polygon[i]);
+			}
+		}
+		simplePolygon.push(polygon[i]);
+
+		return simplePolygon;
+	}
+
+	function isClockwise(polygon) {
 		var sum = 0;
 
-		for (var i = 1; i < points.length; i++) {
-			var p1 = points[i - 1];
-			var p2 = points[i];
+		for (var i = 1; i < polygon.length; i++) {
+			var p1 = polygon[i - 1];
+			var p2 = polygon[i];
 
 			sum += (p2.x - p1.x) * (p2.y - p1.y);
 		}
@@ -192,17 +217,19 @@ define(function () {
 		return specialConcat(rotated1, rotated2);
 	}
 
-	function meshFromGlyph(glyph, fontSize) {
-		var stepLength = 20;
+	function meshFromGlyph(glyph, fontSize, options) {
+		options = options || {};
+		options.simplifyPaths = options.simplifyPaths !== false;
+		options.stepLength = options.stepLength || 4;
 
 		var path = glyph.getPath(0, 0, fontSize);
 		var stringifiedPath = path.commands.map(serializeCommand).reduce(function (prev, cur) {
 			return prev + cur;
 		}, '');
 
-		var points = getPathPoints(stringifiedPath, stepLength);
+		var points = getPathPoints(stringifiedPath, options.stepLength);
 
-		var pointGroups = groupPoints(points, stepLength);
+		var pointGroups = groupPoints(points, options.stepLength);
 
 		// ---
 		pointGroups.forEach(function (group, index) {
@@ -213,6 +240,10 @@ define(function () {
 			drawPath(group);
 		});
 		// ---
+
+		if (options.simplifyPaths) {
+			pointGroups = pointGroups.map(simplifyPath);
+		}
 
 		var surface = pointGroups[0];
 
