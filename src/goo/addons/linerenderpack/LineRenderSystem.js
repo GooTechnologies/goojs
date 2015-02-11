@@ -5,8 +5,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/math/Vector3'
 ],
-	/** @lends */
-		function (
+/** @lends */
+function (
 		System,
 		Material,
 		MeshData,
@@ -15,7 +15,7 @@ define([
 		'use strict';
 
     //LINE RENDERER
-    function Renderer(owner, colorStr)
+    function LineRenderer(owner, colorStr)
     {
 		this.owner = owner;
 	
@@ -36,10 +36,10 @@ define([
         this.meshData.vertexCount = 0;
     }
 
-    Renderer.prototype.MAX_NUM_LINES = 170000;
+    LineRenderer.prototype.MAX_NUM_LINES = 170000;
     
 	
-    Renderer.prototype.update = function()
+    LineRenderer.prototype.update = function()
     {
         if(this.numRenderingLines !== 0 || this.meshData.vertexCount !== 0)
         {
@@ -49,7 +49,7 @@ define([
         this.numRenderingLines = 0;
     };
 
-    Renderer.prototype.remove = function()
+    LineRenderer.prototype.remove = function()
     {
         this.entity.removeFromWorld();
 
@@ -61,9 +61,12 @@ define([
     };
 
 
-    Renderer.prototype.addLine = function(start, end) {
+    LineRenderer.prototype.addLine = function(start, end) {
 		//no need to continue if we already reached MAX_NUM_LINES
-		if(this.numRenderingLines >= this.MAX_NUM_LINES) return;
+		if(this.numRenderingLines >= this.MAX_NUM_LINES)
+        {
+            return;
+        }
 		
         for(var i=0; i<3; i++)
         {
@@ -88,6 +91,7 @@ define([
 	var tmpVec2 = new Vector3();
 	var tmpVec3 = new Vector3();
 
+    //setup basic colors
     LineRenderSystem.prototype.WHITE = "[1,1,1]";
     LineRenderSystem.prototype.RED = "[1,0,0]";
     LineRenderSystem.prototype.GREEN = "[0,1,0]";
@@ -103,8 +107,8 @@ define([
         var lineRenderer = this.renderers[colorStr];
         if (!lineRenderer)
         {
-            //add a new Renderer
-            lineRenderer = this.renderers[this.renderers.length] = new Renderer(this, colorStr);
+            //add a new LineRenderer
+            lineRenderer = this.renderers[this.renderers.length] = new LineRenderer(this, colorStr);
 
             //reference a string index to the actual object
             this.renderers[colorStr] = lineRenderer;
@@ -112,6 +116,7 @@ define([
         lineRenderer.addLine(start, end);
     };
 
+    //used for drawing AA-Boxes
     LineRenderSystem.prototype.drawAxisLine = function(startIn, diff, startIndex, endIndex, startMul, endMul, colorStr, matrix) {
         var start = tmpVec2.setVector(startIn);
         start.data[startIndex] += diff.data[startIndex]*startMul;
