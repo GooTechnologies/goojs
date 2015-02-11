@@ -164,8 +164,12 @@ function (
 
 	Particle.prototype.valueFromCurve = function(value, curve) {
 		for (var i = 0; i < curve.length; i++) {
-			if (!curve[i+1]) return 0;
-			if (curve[i+1][0] > value) return this.getInterpolatedInCurveAboveIndex(value, curve, i)
+			if (!curve[i+1]) {
+				return 0;
+			}
+			if (curve[i+1][0] > value) {
+				return this.getInterpolatedInCurveAboveIndex(value, curve, i);
+			}
 		}
 		return 0;
 	};

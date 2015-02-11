@@ -149,7 +149,8 @@ function (
 			this.availableParticles.push(p);
 		}
 
-		if (sim.particles.length != sim.recover.length) {
+		// This has not happened ever, may still be useful for refactoring
+		if (sim.particles.length !== sim.recover.length) {
 			console.error("count missmatch", sim);
 			return;
 		}
@@ -158,32 +159,32 @@ function (
 	};
 
 	ParticleSimulator.prototype.updateSimulation = function (tpf, sim) {
-		if (!sim.active) return;
+		if (sim.active) {
 
-		sim.updateSimParticles(tpf);
+			sim.updateSimParticles(tpf);
 
-		if (sim.particles.length == sim.recover.length) {
-			this.recoverSimulation(sim);
+			if (sim.particles.length === sim.recover.length) {
+				this.recoverSimulation(sim);
+			}
 		}
 	};
 
 
 
 	ParticleSimulator.prototype.update = function (tpf) {
-		if (!this.visible) {
-			return;
-		}
+		if (this.visible) {
 
-		for (i = 0; i < this.simulations.length; i++) {
-			this.updateSimulation(tpf, this.simulations[i]);
-		}
-
-		for (i = 0; i < this.renderers.length; i++) {
-			if (typeof(this.renderers[i].updateMeshdata) == 'function') {
-				this.renderers[i].updateMeshdata();
+			for (i = 0; i < this.simulations.length; i++) {
+				this.updateSimulation(tpf, this.simulations[i]);
 			}
-		}
 
+			for (i = 0; i < this.renderers.length; i++) {
+				if (typeof(this.renderers[i].updateMeshdata) === 'function') {
+					this.renderers[i].updateMeshdata();
+				}
+			}
+
+		}
 	};
 
 	return ParticleSimulator;

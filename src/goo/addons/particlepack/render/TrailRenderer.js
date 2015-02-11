@@ -47,10 +47,6 @@ define([
 			this.interpolatedPosition = new Vector3();
 		}
 
-		function randomBetween(min, max) {
-			return Math.random() * (max - min) + min;
-		}
-
 		TrailRenderer.prototype.init = function(goo, simConf, settings, spriteAtlas, texture) {
 			this.settings = settings;
 
@@ -161,7 +157,7 @@ define([
 
 			// Always update the front section
 			trail.position.setv(position);
-			if (tangent != null) {
+			if (tangent !== null) {
 				trail.tangent.setv(tangent);
 			}
 			trailData.invalid = true;
@@ -169,7 +165,7 @@ define([
 
 		TrailRenderer.prototype.updateTrail = function(trailData, particle, camPos, index) {
 
-			if (trailData.invalid || this.facingMode == 'Billboard') {
+			if (trailData.invalid || this.facingMode === 'Billboard') {
 				this.updateInterpolate(trailData, particle, camPos, index);
 				trailData.invalid = false;
 			}
@@ -218,8 +214,8 @@ define([
 		};
 
 		TrailRenderer.prototype.updateTrailDirection = function(i, trailSegmentData, trailSegmentDatas, trailVector, camPos, w) {
-			if (this.facingMode == 'Billboard') {
-				this.updateBillboard(i, trailSegmentData, trailSegmentDatas, trailVector, camPos, w)
+			if (this.facingMode === 'Billboard') {
+				this.updateBillboard(i, trailSegmentData, trailSegmentDatas, trailVector, camPos, w);
 			} else if (trailSegmentData.tangent !== null) {
 				trailDirection.setv(trailSegmentData.tangent).muld(w, w, w);
 			} else {

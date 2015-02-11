@@ -1,6 +1,8 @@
-"use strict";
+
 
 define(function() {
+
+	"use strict";
 
 	// Curve format:    [pointA, pointB]
 	// Point:           [progress, amplitude]
@@ -35,10 +37,10 @@ define(function() {
 			if (effectData[simParams[i].param]) {
 				value = effectData[simParams[i].param];
 			} else {
-				value = simParams[i].value
+				value = simParams[i].value;
 			}
 
-			if (simParams[i].type == "curve" && typeof(value) == 'string') {
+			if (simParams[i].type === "curve" && typeof(value) === 'string') {
                 data[simParams[i].param] = curves[value];
 			} else {
 				data[simParams[i].param] = value;
@@ -50,5 +52,5 @@ define(function() {
 		return data;
 	};
 
-	return SimulationParameters
+	return SimulationParameters;
 });

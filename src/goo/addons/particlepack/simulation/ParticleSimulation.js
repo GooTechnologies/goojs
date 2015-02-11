@@ -1,4 +1,3 @@
-"use strict";
 
 define([
 	'goo/math/Vector3',
@@ -10,6 +9,7 @@ define([
 	SimulationParameters,
     DefaultSimulationParams
 	) {
+	"use strict";
 
 	var ParticleSimulation = function() {
 		this.resetSimulation();
@@ -59,7 +59,7 @@ define([
 	ParticleSimulation.prototype.notifyDied = function(particle) {
 		particle.reset();
 		for (var i = 0; i < this.renderers.length; i++) {
-			this.renderers[i].died(particle)
+			this.renderers[i].died(particle);
 		}
 		if (this.onParticleDead) {
 			this.onParticleDead(particle);
@@ -112,7 +112,7 @@ define([
 
 
 		for (var i = 0; i < this.particles.length; i++) {
-			this.updateParticle(this.particles[i], tpf)
+			this.updateParticle(this.particles[i], tpf);
 		}
 
 	};
@@ -120,14 +120,14 @@ define([
 	ParticleSimulation.prototype.renderParticle = function(tpf, particle) {
 
 		for (var i = 0; i < this.renderers.length; i++) {
-			if (typeof(this.renderers[i].updateParticle) == 'function') {
-				this.renderers[i].updateParticle(tpf, particle)
+			if (typeof(this.renderers[i].updateParticle) === 'function') {
+				this.renderers[i].updateParticle(tpf, particle);
 			}
 
 		}
 
 	};
 
-	return ParticleSimulation
+	return ParticleSimulation;
 })
 ;
