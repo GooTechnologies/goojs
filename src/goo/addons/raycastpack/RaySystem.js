@@ -280,10 +280,11 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 	};
 
 
-	RaySystem.prototype.castOcclude = function(lineStart, lineEnd, doBackfaces) {
+	RaySystem.prototype.castAny = function(lineStart, lineEnd, doBackfaces) {
 		
 		//call the cast start
 		this._castBegin(lineStart, lineEnd);
+		this.bestResult.hit = false;
 
 		for(var i=0; i<this.rayObjects.length; i++)
 		{
@@ -330,9 +331,10 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 					//We hit a triangle return true
 					if(this.rayCastSurfaceObject(surfaceObject, doBackfaces))
 					{
+						this.bestResult.copyFrom(this.result);
 						this._castEnd(true);
 						//this._castHit(this.result);
-						return true;
+						return this.bestResult;
 					}
 				}
 			}
@@ -340,7 +342,11 @@ function (System, Vector3, Ray, RayObject, HitResult) {
 		
 		this._castEnd(false);
 		
-		return false;
+		return this.bestResult;
+	};
+
+	RaySystem.prototype.castOcclude = function(lineStart, lineEnd, doBackfaces) {
+		return this.castAny(lineStart, lineEnd, doBackfaces).hit;
 	};
 
 
