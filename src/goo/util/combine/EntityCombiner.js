@@ -81,8 +81,7 @@ function(
 			if (oldEntities) {
 				for (var i = 0; i < oldEntities.length; i++) {
 					var entity = oldEntities[i];
-					entity.skip = false;
-					entity._hidden = false;
+					entity.show();
 					this.entityToRoot.delete(entity);
 				}
 				this.unlockOldMap.delete(root);
@@ -122,7 +121,7 @@ function(
 	};
 
 	EntityCombiner.prototype._buildSubs = function(entity, baseSubs, subs) {
-		if (entity._hidden || entity.skip || entity.animationComponent || entity.particleComponent) {
+		if (entity._hidden || entity.animationComponent || entity.particleComponent) {
 			return;
 		}
 
@@ -211,8 +210,8 @@ function(
 					entity.removeFromWorld();
 				}
 			} else {
+				entity.hide();
 				entity.skip = true;
-				entity._hidden = true;
 				this.entityToRoot.set(entity, root);
 				var list = this.unlockOldMap.get(root);
 				if (!list) {

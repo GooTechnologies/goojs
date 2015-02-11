@@ -108,4 +108,10 @@ require([
 		}
 	}, false);
 
+	V.button('Combine', function () {
+		entityCombiner.combine();
+	});
+	V.button('Uncombine', function () {
+		entityCombiner.uncombine();
+	});
 });
