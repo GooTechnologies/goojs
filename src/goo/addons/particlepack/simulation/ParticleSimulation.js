@@ -26,9 +26,9 @@ define([
 		this.onParticleDead = null;
 	};
 
-	ParticleSimulation.prototype.initSimulation = function(posVec, normVec, defaultSettings, effectData) {
+	ParticleSimulation.prototype.initSimulation = function(posVec, normVec, effectData) {
 		this.resetSimulation();
-		this.params = new SimulationParameters(new Vector3(posVec), new Vector3(normVec), DefaultSimulationParams.particle_params, effectData);;
+		this.params = new SimulationParameters(new Vector3(posVec), new Vector3(normVec), DefaultSimulationParams.particle_params, effectData);
 		this.active = true;
 	};
 
@@ -54,10 +54,6 @@ define([
 
 	ParticleSimulation.prototype.registerParticleRenderer = function(renderer) {
 		this.renderers.push(renderer);
-	};
-
-	ParticleSimulation.prototype.attachSpawnBehaviour = function(nr, rendererName) {
-		this.behaviors[nr] = createSpawner(rendererName);
 	};
 
 	ParticleSimulation.prototype.notifyDied = function(particle) {

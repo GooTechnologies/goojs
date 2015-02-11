@@ -27,7 +27,6 @@ function (
 		this.settings = settings;
 		this.rendererConfigs = rendererConfigs;
 		this.rendererSettings = {};
-		this.meshPositions = [];
 		this.simulations = [];
 
 		this.totalPool = this.settings.poolCount;
@@ -41,8 +40,6 @@ function (
 		}
 
 		this.setup = settings.setup;
-
-		this.behaviors = [];
 
 		this.renderers = [];
 		settings.renderers = settings.renderers || [];
@@ -81,7 +78,7 @@ function (
 			return;
 		}
 
-		sim.initSimulation(position, normal, this.settings.simulation_params, effectData);
+		sim.initSimulation(position, normal, effectData);
 		this.includeSimulation(sim, callbacks);
 	};
 

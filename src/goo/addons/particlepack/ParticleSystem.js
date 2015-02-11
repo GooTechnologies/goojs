@@ -57,11 +57,9 @@ function (
 		for (var simulatorId in this.simulators) {
 			var simulator = this.simulators[simulatorId];
 			simulator.update(tpf);
-
 			infostr += simulatorId + ' = ' + simulator.aliveParticles + '<br>';
 		}
 
-		// document.getElementById('particlestats').innerHTML = infostr;
 	};
 
 	return ParticleSystem;

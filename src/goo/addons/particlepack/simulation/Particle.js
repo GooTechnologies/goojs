@@ -15,11 +15,11 @@ function (
 		this.index = idx;
 		this.position 	= new Vector3();
 		this.direction  = new Vector3();
+		this.upVector	= new Vector3();
 		this.velocity 	= new Vector3();
 		this.color 		= new Vector4();
 		this.color0 	= new Vector3();
 		this.color1 	= new Vector3();
-
 		this.id = Particle.ID++;
 		this.reset();
 	}
@@ -32,6 +32,9 @@ function (
 		this.color.set(1, 1, 1, 1);
 		this.color0.set(1, 1, 1);
 		this.color1.set(1, 1, 1);
+
+		this.upVector.set(0, 1, 0);
+
 		this.colorBlend = 0;
 		this.colorCurve = [[0, 1], [1, 0]];
 
