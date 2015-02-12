@@ -37,8 +37,8 @@ function (
     }
 
     LineRenderer.prototype.MAX_NUM_LINES = 170000;
-    
-	
+
+
     LineRenderer.prototype.update = function()
     {
         if(this.numRenderingLines !== 0 || this.meshData.vertexCount !== 0)
@@ -92,14 +92,14 @@ function (
 	var tmpVec3 = new Vector3();
 
     //setup basic colors
-    LineRenderSystem.prototype.WHITE = "[1,1,1]";
-    LineRenderSystem.prototype.RED = "[1,0,0]";
-    LineRenderSystem.prototype.GREEN = "[0,1,0]";
-    LineRenderSystem.prototype.BLUE = "[0,0,1]";
-    LineRenderSystem.prototype.AQUA = "[0,1,1]";
-    LineRenderSystem.prototype.MAGENTA = "[1,0,1]";
-    LineRenderSystem.prototype.YELLOW = "[1,1,0]";
-    LineRenderSystem.prototype.BLACK = "[0,0,0]";
+    LineRenderSystem.prototype.WHITE = '[1,1,1]';
+    LineRenderSystem.prototype.RED = '[1,0,0]';
+    LineRenderSystem.prototype.GREEN = '[0,1,0]';
+    LineRenderSystem.prototype.BLUE = '[0,0,1]';
+    LineRenderSystem.prototype.AQUA = '[0,1,1]';
+    LineRenderSystem.prototype.MAGENTA = '[1,0,1]';
+    LineRenderSystem.prototype.YELLOW = '[1,1,0]';
+    LineRenderSystem.prototype.BLACK = '[0,0,0]';
 
     //Draw a line in 3d space
     LineRenderSystem.prototype.drawLine = function(start, end, colorStr) {
