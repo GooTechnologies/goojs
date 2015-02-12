@@ -30,30 +30,30 @@ require([
 
 	var world = goo.world;
 
-	var particleSystem = new ParticleSystem({goo:goo})
+	var particleSystem = new ParticleSystem({goo:goo});
 	world.setSystem(particleSystem);
 
 	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
-	var customCallbacks = {}
+	var customCallbacks = {};
 
 	var spawn = function(simConfigs) {
 
 		for (var i = 0; i < simConfigs.simulators.length; i++) {
 			var simSettings = simConfigs.simulators[i];
-			particleSystem.spawnParticleSimulation(simSettings.id, posVec, dirVec, ExampleEffects.effects[0].effect_data, customCallbacks)
+			particleSystem.spawnParticleSimulation(simSettings.id, posVec, dirVec, ExampleEffects.effects[0].effect_data, customCallbacks);
 		}
 
 		setTimeout(function() {
-			spawn(simConfigs)
+			spawn(simConfigs);
 		}, 200);
 	};
 
 	var txCallback = function(texture) {
-		particleSystem.addConfiguredAtlasSystems(DefaultSimulators, DefaultRendererConfigs, DefaultSpriteAtlas.atlases[0], texture)
+		particleSystem.addConfiguredAtlasSystems(DefaultSimulators, DefaultRendererConfigs, DefaultSpriteAtlas.atlases[0], texture);
 
 		setTimeout(function() {
-			spawn(DefaultSimulators)
+			spawn(DefaultSimulators);
 		}, 200);
 	};
 

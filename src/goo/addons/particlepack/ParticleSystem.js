@@ -65,7 +65,7 @@ function (
 		}
 	};
 
-	ParticleSystem.prototype.process = function(entities) {
+	ParticleSystem.prototype.process = function() {
 
 		var infostr = '';
 		for (var simulatorId in this.simulators) {
