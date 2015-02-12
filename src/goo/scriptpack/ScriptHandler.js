@@ -319,7 +319,7 @@ define([
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(scriptElem);
 
-		var result = this._dependencyPromises[url] = loadExternalScript(scriptElem, url)
+		var result = this._dependencyPromises[url] = loadExternalScript(script, scriptElem, url)
 		.then(function () {
 			delete that._dependencyPromises[url];
 		});
@@ -525,7 +525,7 @@ define([
 	 * Load an external script
 	 * @private
 	 */
-	function loadExternalScript(scriptElem, url) {
+	function loadExternalScript(script, scriptElem, url) {
 		return PromiseUtil.createPromise(function (resolve, reject) {
 			var timeoutHandler;
 			var handled = false;
