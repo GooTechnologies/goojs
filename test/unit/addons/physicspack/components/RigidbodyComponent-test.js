@@ -328,5 +328,15 @@ define([
 			expect(rbc.cannonBody.sleepTimeLimit).toEqual(6);
 
 		});
+
+		it('updates dirty colliders', function () {
+			cc.collider.radius = 5;
+			cc._dirty = true;
+
+			world.process();
+
+			expect(rbc.cannonBody.shapes[0].radius).toEqual(5);
+
+		});
 	});
 });

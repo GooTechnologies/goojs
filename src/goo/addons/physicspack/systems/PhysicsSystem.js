@@ -293,13 +293,16 @@ function (
 	PhysicsSystem.prototype.process = function (entities, tpf) {
 		var N = entities.length;
 
-		// Initialize bodies
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var component = entity.rigidbodyComponent;
+			var rigidbodyComponent = entity.rigidbodyComponent;
 
-			if (component._dirty) {
-				component.initialize();
+			// Initialize bodies
+			if (rigidbodyComponent._dirty) {
+				rigidbodyComponent.initialize();
+			} else {
+				// Update the colliders if they changed
+				rigidbodyComponent._updateDirtyColliders();
 			}
 		}
 

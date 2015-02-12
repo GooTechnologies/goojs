@@ -150,6 +150,12 @@ function (
 			tmpCannonVec = new CANNON.Vec3();
 			tmpCannonVec2 = new CANNON.Vec3();
 		}
+
+		/**
+		 * All the attached colliders.
+		 * @type {Array}
+		 */
+		this._colliderEntities = [];
 	}
 	RigidbodyComponent.prototype = Object.create(AbstractRigidbodyComponent.prototype);
 	RigidbodyComponent.prototype.constructor = RigidbodyComponent;
@@ -556,6 +562,9 @@ function (
 			constraint = new CANNON.PointToPointConstraint(bodyA, pivotInA, bodyB, pivotInB);
 
 		} else if (joint instanceof HingeJoint) {
+
+			// TODO: Apply world scale!
+
 			var pivotInA = new CANNON.Vec3();
 			var pivotInB = new CANNON.Vec3();
 			var axisInA = new CANNON.Vec3();
@@ -592,6 +601,28 @@ function (
 		}
 	};
 
+	RigidbodyComponent.prototype._updateDirtyColliders = function () {
+		var colliderEntities = this._colliderEntities;
+		for (var i = 0; i < colliderEntities.length; i++) {
+			var entity = colliderEntities[i];
+			var colliderComponent = entity.colliderComponent;
+			if (colliderComponent._dirty) {
+				colliderComponent.updateWorldCollider();
+				var collider = colliderComponent.worldCollider;
+				var cannonShape = collider.cannonShape;
+				if (collider instanceof SphereCollider) {
+					cannonShape.radius = collider.radius;
+				} else if (collider instanceof MeshCollider) {
+					var scale = new CANNON.Vec3();
+					scale.copy(collider.scale);
+					cannonShape.setScale(scale);
+				}
+				cannonShape.updateBoundingSphereRadius();
+				colliderComponent._dirty = false;
+			}
+		}
+	};
+
 	/**
 	 * @private
 	 */
@@ -609,7 +640,7 @@ function (
 	RigidbodyComponent.prototype.addCollider = function (entity, position, quaternion) {
 		var body = this.cannonBody;
 		var cc = entity.colliderComponent;
-		cc.updateWorldCollider();
+		cc.updateWorldCollider(true);
 		var collider = cc.worldCollider;
 
 		collider.cannonShape = this.getCannonShape(collider);
@@ -628,6 +659,8 @@ function (
 			cannonQuat.copy(quaternion);
 		}
 		body.addShape(collider.cannonShape, cannonPos, cannonQuat);
+
+		this._colliderEntities.push(entity);
 	};
 
 	/**

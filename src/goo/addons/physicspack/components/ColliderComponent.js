@@ -28,10 +28,17 @@ function (
 		this.entity = null;
 
 		/**
+		 * Is true if the collider was updated during the last process call in the ColliderSystem.
 		 * @private
 		 * @type {boolean}
 		 */
 		this._updated = false;
+
+		/**
+		 * Set to true if you edited any properties of the .collider.
+		 * @type {boolean}
+		 */
+		this._dirty = true;
 
 		/**
 		 * @type {Collider}
@@ -57,28 +64,31 @@ function (
 	/**
 	 * Updates the .worldCollider
 	 */
-	ColliderComponent.prototype.updateWorldCollider = function () {
-
-		// Update the world transform of the entity
-		// Get the root and update on the walk down
-		var updateEntities = [];
-		this.entity.traverseUp(function (entity) {
-			updateEntities.unshift(entity);
-		});
-		var len = updateEntities.length;
+	ColliderComponent.prototype.updateWorldCollider = function (updateTransformBranch) {
 		var doUpdate = false;
-		for (var i = 0; i !== len; i++) {
-			var entity = updateEntities[i];
-			var transformComponent = entity.transformComponent;
-			if (transformComponent._dirty || doUpdate) {
-				transformComponent.updateTransform();
-				transformComponent.updateWorldTransform();
-				doUpdate = true;
+		if (updateTransformBranch) {
+			// Update the world transform of the entity
+			// Get the root and update on the walk down
+			var updateEntities = [];
+			this.entity.traverseUp(function (entity) {
+				updateEntities.unshift(entity);
+			});
+			var len = updateEntities.length;
+			for (var i = 0; i !== len; i++) {
+				var entity = updateEntities[i];
+				var transformComponent = entity.transformComponent;
+				if (transformComponent._dirty || doUpdate) {
+					transformComponent.updateTransform();
+					transformComponent.updateWorldTransform();
+					doUpdate = true;
+				}
 			}
 		}
 
-		this.collider.transform(this.entity.transformComponent.worldTransform, this.worldCollider);
-		this._updated = true;
+		if (doUpdate || this._dirty) {
+			this.collider.transform(this.entity.transformComponent.worldTransform, this.worldCollider);
+			this._updated = true;
+		}
 	};
 
 	/**

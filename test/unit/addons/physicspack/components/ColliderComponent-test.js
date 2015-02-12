@@ -1,6 +1,7 @@
 define([
 	'goo/entities/World',
 	'goo/addons/physicspack/systems/PhysicsSystem',
+	'goo/addons/physicspack/systems/ColliderSystem',
 	'goo/entities/systems/TransformSystem',
 	'goo/math/Vector3',
 	'goo/addons/physicspack/components/RigidbodyComponent',
@@ -10,6 +11,7 @@ define([
 ], function (
 	World,
 	PhysicsSystem,
+	ColliderSystem,
 	TransformSystem,
 	Vector3,
 	RigidbodyComponent,
@@ -30,6 +32,7 @@ define([
 			system.setGravity(new Vector3());
 			world.setSystem(system);
 			world.setSystem(new TransformSystem());
+			world.setSystem(new ColliderSystem());
 		});
 
 		it('can update its world collider', function () {
@@ -41,9 +44,7 @@ define([
 			entity.setTranslation(1, 2, 3);
 			entity.setScale(1, 2, 3);
 
-			world.process(); // Update the transformsystem
-
-			cc.updateWorldCollider();
+			cc.updateWorldCollider(true);
 
 			expect(cc.worldCollider.radius).toBe(3);
 		});

@@ -18,7 +18,7 @@ function (System) {
 
 	/**
 	 * @private
-	 * @param  {array} entities
+	 * @param {array} entities
 	 */
 	ColliderSystem.prototype.process = function (entities) {
 		var N = entities.length;
@@ -31,6 +31,7 @@ function (System) {
 			colliderComp._updated = false;
 			if (transformComp._updated) {
 				entity.colliderComponent.updateWorldCollider();
+				entity.colliderComponent._dirty = true;
 			}
 		}
 	};
