@@ -1,8 +1,8 @@
 define([
-	'particle_system/simulation/Particle',
-	'particle_system/simulation/ParticleSimulation',
-	'particle_system/render/ParticleRenderer',
-	'particle_system/render/TrailRenderer'
+	'goo/addons/particlepack/simulation/Particle',
+	'goo/addons/particlepack/simulation/ParticleSimulation',
+	'goo/addons/particlepack/render/ParticleRenderer',
+	'goo/addons/particlepack/render/TrailRenderer'
 ],
 
 function (

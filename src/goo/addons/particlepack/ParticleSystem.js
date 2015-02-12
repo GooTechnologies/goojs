@@ -1,19 +1,32 @@
 define([
-	'particle_system/simulation/ParticleSimulator'
+		'goo/entities/systems/System',
+		'goo/addons/particlepack/simulation/ParticleSimulator'
 ],
 
 function (
+	System,
 	ParticleSimulator
 ) {
 	"use strict";
 
-	function ParticleSystem(goo) {
-		this.goo = goo;
+	function ParticleSystem(settings) {
+
+		System.call(this, 'ParticleSystem', []);
+
+		settings = settings || {};
+
+		this.priority = 1; // make sure it processes after transformsystem
+
+		this.goo = settings.goo;
 		this.atlases = {};
 		this.simData = {};
 		this.simulators = {};
 		this.groups = {};
+
 	}
+
+	ParticleSystem.prototype = Object.create(System.prototype);
+	ParticleSystem.prototype.constructor = ParticleSystem;
 
 	ParticleSystem.prototype.addConfiguredAtlasSystems = function (simConfigs, rendererConfigs, atlasConfig, texture) {
 		for (var i = 0; i < simConfigs.simulators.length; i++) {
@@ -52,11 +65,12 @@ function (
 		}
 	};
 
-	ParticleSystem.prototype.update = function(tpf) {
+	ParticleSystem.prototype.process = function(entities) {
+
 		var infostr = '';
 		for (var simulatorId in this.simulators) {
 			var simulator = this.simulators[simulatorId];
-			simulator.update(tpf);
+			simulator.update(this.goo.world.tpf);
 			infostr += simulatorId + ' = ' + simulator.aliveParticles + '<br>';
 		}
 

@@ -64,6 +64,7 @@ for packName in (
 	'terrain',
 	'ammo',
 	'cannon',
+	'particle',
 	'water',
 	'animation',
 	'soundmanager2',

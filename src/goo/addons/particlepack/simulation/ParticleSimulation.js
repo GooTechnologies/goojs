@@ -1,8 +1,8 @@
 
 define([
 	'goo/math/Vector3',
-	'particle_system/simulation/SimulationParameters',
-	'particle_system/defaults/DefaultSimulationParams'
+	'goo/addons/particlepack/simulation/SimulationParameters',
+	'goo/addons/particlepack/simulation/DefaultSimulationParams'
 
 ], function(
 	Vector3,

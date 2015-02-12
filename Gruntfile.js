@@ -71,6 +71,10 @@ module.exports = function (grunt) {
 				packPath: 'addons/cannonpack',
 				outBaseDir: 'out'
 			},
+			particlepack: {
+				packPath: 'addons/particlepack',
+				outBaseDir: 'out'
+			},
 			waterpack: {
 				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
