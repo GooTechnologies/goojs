@@ -91,7 +91,7 @@ function (
      * @param {Vector3} min
      * @param {Vector3} max
      * @param {String} colorStr
-     * @param {Matrix4x4} transformMatrix
+     * @param {Matrix4x4} [transformMatrix]
      */
     LineRenderSystem.prototype.drawAABox = function(min, max, colorStr, transformMatrix) {
         for(var a=0; a<3; a++)

@@ -45,6 +45,7 @@ require([
 	var rotationMatrix = new Matrix4x4();
 
 	var coloredLinesStart = new Vector3(2,-1,0);
+	//will be set in update
 	var coloredLinesEnd = new Vector3();
 
 	var update = function() {
@@ -52,27 +53,27 @@ require([
 		//draw the non rotated box
 		LRS.drawAABox(nonRotatedBoxMin, nonRotatedBoxMax, LRS.GREEN);
 
-		//update and draw the rotated box
+		//slowly rotate the box then draw it
 		var rotationVector = new Vector3(0, Math.sin(world.time), Math.cos(world.time));
 		rotationMatrix.setRotationFromVector(rotationVector);
 
 		LRS.drawAABox(rotatedBoxMin, rotatedBoxMax, LRS.RED, rotationMatrix);
 
-		//draw a few colored lines!
+		//draw 3 colored lines!
 		for(var i=0;i<3;i++)
 		{
 			var color = LRS.BLUE;
-			if(i%3 === 1)
+			if(i === 1)
 			{
 				color = LRS.YELLOW;
 			}
-			else if(i%3 === 2)
+			else if(i === 2)
 			{
 				color = LRS.MAGENTA;
 			}
 
-			coloredLinesStart.setDirect(2+i,1,0);
-			coloredLinesEnd.setVector(coloredLinesStart).addDirect(0,-2,0);
+			coloredLinesStart.setDirect(2+i, 1, 0);
+			coloredLinesEnd.setVector(coloredLinesStart).addDirect(0, -2, 0);
 
 			LRS.drawLine(coloredLinesStart, coloredLinesEnd, color);
 		}
