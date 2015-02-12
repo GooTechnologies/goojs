@@ -11,6 +11,12 @@ define([
 	function BufferUtils() {
 	}
 
+	/**
+	 * Creates an index buffer of a type appropriate to store the supplied number of vertices
+	 * @param {number} indexCount Number of indices
+	 * @param {number} vertexCount Number of vertices
+	 * @returns {TypedArray} Index buffer
+	 */
 	BufferUtils.createIndexBuffer = function(indexCount, vertexCount) {
 		var indices;
 		if (vertexCount <= 256) { // 2^8

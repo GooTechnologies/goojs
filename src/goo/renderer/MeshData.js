@@ -797,7 +797,7 @@ define([
 		clone.vertexData.copy(this.vertexData); // BufferData
 		clone.indexData.copy(this.indexData); // BufferData
 
-		clone.indexLengths = this.indexLengths.slice(0);
+		clone.indexLengths = Array.isArray(this.indexLengths) ? this.indexLengths.slice(0) : this.indexLengths;
 		clone.indexModes = this.indexModes.slice(0);
 
 		clone.type = this.type;

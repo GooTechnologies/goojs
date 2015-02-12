@@ -160,9 +160,11 @@ define([
 				};
 				// TODO Test if this works across browsers
 				/**/
-				var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-				if (m) {
-					err.line = parseInt(m[1], 10) - 1;
+				if (e instanceof Error) {
+					var lineNumbers = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+					if (lineNumbers) {
+						err.line = parseInt(lineNumbers[1], 10) - 1;
+					}
 				}
 				/**/
 				setError(script, err);
@@ -319,7 +321,7 @@ define([
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(scriptElem);
 
-		var result = this._dependencyPromises[url] = loadExternalScript(scriptElem, url)
+		var result = this._dependencyPromises[url] = loadExternalScript(script, scriptElem, url)
 		.then(function () {
 			delete that._dependencyPromises[url];
 		});
@@ -525,7 +527,7 @@ define([
 	 * Load an external script
 	 * @private
 	 */
-	function loadExternalScript(scriptElem, url) {
+	function loadExternalScript(script, scriptElem, url) {
 		return PromiseUtil.createPromise(function (resolve, reject) {
 			var timeoutHandler;
 			var handled = false;
