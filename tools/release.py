@@ -65,6 +65,7 @@ for packName in (
 	'ammo',
 	'cannon',
 	'water',
+	'linerender',
 	'animation',
 	'soundmanager2',
 	'gamepad',
