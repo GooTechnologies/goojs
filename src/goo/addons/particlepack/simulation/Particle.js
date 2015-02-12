@@ -92,7 +92,7 @@ function (
 		this.trailWidth = simD.trailwidth;
 		this.loopcount = simD.loopcount;
 
-		this.color1.seta(simD.color1);
+		this.color1.setArray(simD.color1);
 
 		this.color0.data[0] = simD.color0[0] *(1-simD.colorRandom)+simD.colorRandom*Math.random();
 		this.color0.data[1] = simD.color0[1] *(1-simD.colorRandom)+simD.colorRandom*Math.random();
@@ -190,12 +190,12 @@ function (
 
 		this.applyParticleCurves(deduct);
 
-		this.velocity.muld(this.acceleration, this.acceleration, this.acceleration);
-		this.velocity.add_d(0, this.gravity*deduct, 0);
+		this.velocity.mulDirect(this.acceleration, this.acceleration, this.acceleration);
+		this.velocity.addDirect(0, this.gravity*deduct, 0);
 
 		calcVec.set(this.velocity);
-		calcVec.muld(deduct, deduct, deduct);
-		this.position.addv(calcVec);
+		calcVec.mulDirect(deduct, deduct, deduct);
+		this.position.addVector(calcVec);
 	};
 
 

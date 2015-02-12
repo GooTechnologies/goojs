@@ -137,7 +137,7 @@ define([
 			if (trailData.isReset) {
 				for (var i = 0; i < this.segmentCount; i++) {
 					var trailSegmentData = trailData.trailSegmentDatas[i];
-					trailSegmentData.position.setv(position);
+					trailSegmentData.position.setVector(position);
 				}
 
 				trailData.isReset = false;
@@ -156,9 +156,9 @@ define([
 			}
 
 			// Always update the front section
-			trail.position.setv(position);
+			trail.position.setVector(position);
 			if (tangent !== null) {
-				trail.tangent.setv(tangent);
+				trail.tangent.setVector(tangent);
 			}
 			trailData.invalid = true;
 		};
@@ -177,15 +177,15 @@ define([
 
 		TrailRenderer.prototype.updateBillboard = function(i, trailSegmentData, trailSegmentDatas, trailVector, camPos, w) {
 			if (i === 0) {
-				trailDirection.setv(trailSegmentDatas[i + 1].interpolatedPosition).subv(trailVector);
+				trailDirection.setVector(trailSegmentDatas[i + 1].interpolatedPosition).subVector(trailVector);
 			} else if (i === this.segmentCount - 1) {
-				trailDirection.setv(trailVector).subv(trailSegmentDatas[i - 1].interpolatedPosition);
+				trailDirection.setVector(trailVector).subVector(trailSegmentDatas[i - 1].interpolatedPosition);
 			} else {
-				trailDirection.setv(trailSegmentDatas[i + 1].interpolatedPosition)
-					.subv(trailSegmentDatas[i - 1].interpolatedPosition);
+				trailDirection.setVector(trailSegmentDatas[i + 1].interpolatedPosition)
+					.subVector(trailSegmentDatas[i - 1].interpolatedPosition);
 			}
 
-			trailCamVec.setv(trailVector).subv(camPos);
+			trailCamVec.setVector(trailVector).subVector(camPos);
 
 			// trailDirection.cross(trailCamVec);
 			var ldata = trailDirection.data;
@@ -217,7 +217,7 @@ define([
 			if (this.facingMode === 'Billboard') {
 				this.updateBillboard(i, trailSegmentData, trailSegmentDatas, trailVector, camPos, w);
 			} else if (trailSegmentData.tangent !== null) {
-				trailDirection.setv(trailSegmentData.tangent).muld(w, w, w);
+				trailDirection.setVector(trailSegmentData.tangent).mulDirect(w, w, w);
 			} else {
 				trailDirection.setd(w, 0, 0);
 			}
@@ -229,7 +229,7 @@ define([
 			var trailSegmentData = trailSegmentDatas[i];
 			var interpolationVector = trailSegmentData.interpolatedPosition;
 
-			interpolationVector.setv(trailSegmentData.position);
+			interpolationVector.setVector(trailSegmentData.position);
 
 			if (i > 0) {
 				interpolationVector.lerp(trailSegmentDatas[i - 1].position, trailData.throttle);
