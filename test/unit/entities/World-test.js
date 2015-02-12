@@ -384,8 +384,11 @@ define([
 
 			world.process();
 
-			var selection = world.by.component('programmerComponent');
-			expect(selection.toArray()).toEqual([entity1, entity3]);
+			var selection1 = world.by.component('programmerComponent');
+			expect(selection1.toArray()).toEqual([entity1, entity3]);
+
+			var selection2 = world.by.component('ProgrammerComponent');
+			expect(selection2.toArray()).toEqual([entity1, entity3]);
 		});
 
 		it('gets a list of entities that are tracked by the TransformSystem', function () {

@@ -45,7 +45,8 @@ define([
 		var fileExtension = StringUtil.getAfterLast(url, '.');
 		settings.audioRefs[fileExtension] = url;
 
-		var sound = this.soundHandler._objects[id] = this.soundHandler._create();
+		var sound = this.soundHandler._create();
+		this.soundHandler._objects.set(id, sound);
 		this.soundHandler.update(id, settings, {}).then(function() {
 			if (callback) {
 				callback(sound);

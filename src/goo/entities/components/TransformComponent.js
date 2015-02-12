@@ -53,6 +53,10 @@ define([
 
 		this._dirty = true;
 		this._updated = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	TransformComponent.type = 'TransformComponent';

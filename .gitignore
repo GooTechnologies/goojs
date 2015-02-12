@@ -4,8 +4,7 @@ node_modules/
 
 out/
 out-doc/
-goojs-jsdoc/
-goojs-jsdoc*
+src-preprocessed/
 
 # Created when running karma unittests
 coverage/

@@ -11,8 +11,12 @@ define([
 	 * Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
 	 */
 	function Ray(origin, direction) {
-		this.origin = origin || new Vector3();
-		this.direction = direction || new Vector3().copy(Vector3.UNIT_Z);
+		this.origin = origin ? origin.clone() : new Vector3();
+		this.direction = direction ? direction.clone() : Vector3.UNIT_Z.clone();
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	var tmpVec1 = new Vector3();
@@ -162,13 +166,22 @@ define([
 			vectorA.setVector(this.origin);
 		}
 
-		// Save away the closest point if requested.
+		// Save away the closest point if requested
 		if (store) {
 			store.setVector(vectorA);
 		}
 
 		vectorA.subVector(point);
 		return vectorA.lengthSquared();
+	};
+
+	Ray.prototype.copy = function (source) {
+		this.origin.copy(source.origin);
+		this.direction.copy(source.direction);
+	};
+
+	Ray.prototype.clone = function () {
+		return new Ray(this.origin.clone(), this.direction.clone());
 	};
 
 	return Ray;

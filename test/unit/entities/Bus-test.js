@@ -234,6 +234,36 @@ define([
 			it('returns itself', function () {
 				expect(bus.emit('main')).toBe(bus);
 			});
+
+			it('correctly emits to channels as they are removed (before the current position)', function () {
+				var spy1 = jasmine.createSpy('spy1');
+				var rem2 = function () { bus.removeListener('main', spy1); };
+				var spy3 = jasmine.createSpy('spy5');
+
+				bus.addListener('main', spy1);
+				bus.addListener('main', rem2);
+				bus.addListener('main', spy3);
+
+				bus.emit('main');
+
+				expect(spy1).toHaveBeenCalled(); // rem2 executes after
+				expect(spy3).toHaveBeenCalled();
+			});
+
+			it('correctly emits to channels as they are removed (after the current position)', function () {
+				var spy1 = jasmine.createSpy('spy1');
+				var rem2 = function () { bus.removeListener('main', spy3); };
+				var spy3 = jasmine.createSpy('spy3');
+
+				bus.addListener('main', spy1);
+				bus.addListener('main', rem2);
+				bus.addListener('main', spy3);
+
+				bus.emit('main');
+
+				expect(spy1).toHaveBeenCalled();
+				expect(spy3).not.toHaveBeenCalled(); // rem3 executed before
+			});
 		});
 
 		describe('getLastMessageOn', function () {

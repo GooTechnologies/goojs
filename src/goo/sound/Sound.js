@@ -30,7 +30,7 @@ define([
 		this._stream = null;
 		this._streamSource = null;
 		this._currentSource = null;
-		this._outNode = AudioContext.createGain();
+		this._outNode = AudioContext.getContext().createGain();
 		this.connectTo();
 
 		// Playback memory
@@ -40,6 +40,10 @@ define([
 		this._endPromise = null;
 
 		this._paused = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**
@@ -56,7 +60,7 @@ define([
 			return this._endPromise;
 		}
 
-		var currentSource = this._currentSource = AudioContext.createBufferSource();
+		var currentSource = this._currentSource = AudioContext.getContext().createBufferSource();
 
 		this._paused = false;
 		this._currentSource.onended = function () {
@@ -74,7 +78,7 @@ define([
 			this._currentSource.loopEnd = this._duration + this._offset;
 		}
 
-		this._playStart = AudioContext.currentTime - this._pausePos;
+		this._playStart = AudioContext.getContext().currentTime - this._pausePos;
 		var duration = this._duration - this._pausePos;
 
 		this._currentSource.start(0, this._pausePos + this._offset, duration);
@@ -92,7 +96,7 @@ define([
 		}
 		this._paused = true;
 
-		this._pausePos = (AudioContext.currentTime - this._playStart) % this._duration;
+		this._pausePos = (AudioContext.getContext().currentTime - this._playStart) % this._duration;
 		this._pausePos /= this._rate;
 		this._stop();
 	};
@@ -125,8 +129,8 @@ define([
 	};
 
 	Sound.prototype.fade = function (volume, time) {
-		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.currentTime);
-		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.currentTime + time);
+		this._outNode.gain.setValueAtTime(this._outNode.gain.value, AudioContext.getContext().currentTime);
+		this._outNode.gain.linearRampToValueAtTime(volume, AudioContext.getContext().currentTime + time);
 		var p = new RSVP.Promise();
 		setTimeout(function () {
 			p.resolve();
@@ -249,7 +253,7 @@ define([
 		}
 		this.stop();
 		this._stream = stream;
-		this._streamSource = AudioContext.createMediaStreamSource(stream);
+		this._streamSource = AudioContext.getContext().createMediaStreamSource(stream);
 		this._streamSource.connect(this._outNode);
 	};
 

@@ -37,6 +37,10 @@ define([
 		} else {
 			Matrix.prototype.set.apply(this, arguments);
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Matrix3x3._tempX = new Vector3();
@@ -563,10 +567,11 @@ define([
 		return rhs;
 	};
 
+	// unused
 	/**
 	 * Post-multiplies the matrix ("before") with a scaling vector.
 	 * @param {Vector3} vec Vector on the right-hand side.
-	 * @result {Matrix3x3} result Storage matrix.
+	 * @param {Matrix3x3} result Storage matrix.
 	 * @returns {Matrix3x3} Storage matrix.
 	 */
 	Matrix3x3.prototype.multiplyDiagonalPost = function (vec, result) {
@@ -897,13 +902,17 @@ define([
 	 * @returns {Matrix3x3} The new matrix.
 	 */
 	Matrix3x3.prototype.clone = function () {
-		var d = this.data;
-		return new Matrix3x3(
-			d[0], d[1], d[2],
-			d[3], d[4], d[5],
-			d[6], d[7], d[8]
-		);
+		return new Matrix3x3().copy(this);
 	};
+
+	// #ifdef DEBUG
+	Matrix.addPostChecks(Matrix3x3.prototype, [
+		'add', 'sub', 'mul', 'div', 'combine', 'transpose', 'invert',
+		'isOrthogonal', 'determinant', 'applyPost', 'applyPre',
+		'fromAngles', 'rotateX', 'rotateY', 'rotateZ', 'fromAngleNormalAxis', 'lookAt',
+		'copyQuaternion', 'copy'
+	]);
+	// #endif
 
 	return Matrix3x3;
 });

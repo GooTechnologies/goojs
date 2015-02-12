@@ -100,6 +100,18 @@ module.exports = function (grunt) {
 				outBaseDir: 'out'
 			}
 		},
+		'preprocess': {
+			prod: {
+				defines: {
+					DEBUG: false
+				}
+			},
+			dev: {
+				defines: {
+					DEBUG: true
+				}
+			}
+		},
 		'generate-toc': {
 			'visual-test': {
 				path: 'visual-test',
@@ -160,7 +172,14 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default',	 ['minify']);
 	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
-	grunt.registerTask('minify',	 ['main-file', 'requirejs:build', 'wrap', 'build-pack']);
+	grunt.registerTask('minify',	 [
+		'main-file',
+		'preprocess:prod',
+		'requirejs:build',
+		'uglify:build', 
+		'wrap',
+		'build-pack'
+	]);
 	grunt.registerTask('unittest',	 ['karma:unit']);
 	grunt.registerTask('coverage',	 ['unittest']);
 	grunt.registerTask('e2e',		 ['shell:e2e']);

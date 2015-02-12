@@ -34,7 +34,7 @@ define([
 
 	ConfigHandler._registerClass('machine', MachineHandler);
 	MachineHandler.prototype._remove = function(ref) {
-		var machine = this._objects[ref];
+		var machine = this._objects.get(ref);
 		if (machine) {
 			/**
 			 * Removes a machine
@@ -43,7 +43,7 @@ define([
 			 */
 			machine.removeFromParent();
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 	};
 
 	/**
