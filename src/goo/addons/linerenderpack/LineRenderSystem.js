@@ -1,88 +1,22 @@
 define([
 	'goo/entities/systems/System',
-	'goo/renderer/Material',
-	'goo/renderer/MeshData',
-	'goo/renderer/shaders/ShaderLib',
+	'goo/addons/linerenderpack/LineRenderer',
 	'goo/math/Vector3'
 ],
-/** @lends */
 function (
 		System,
-		Material,
-		MeshData,
-		ShaderLib,
+        LineRenderer,
 		Vector3) {
 		'use strict';
 
-    //LINE RENDERER
-    function LineRenderer(owner, colorStr)
-    {
-		this.owner = owner;
-	
-		//convert string to array
-        var colorArr = JSON.parse(colorStr);
-
-        this.material = new Material(ShaderLib.simpleColored);
-        this.material.uniforms.color = colorArr;
-        
-        this.meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), this.MAX_NUM_LINES*2, 0);
-        this.meshData.indexModes = ['Lines'];
-
-        this.vertices = this.meshData.getAttributeBuffer(MeshData.POSITION);
-
-        this.entity = this.owner.world.createEntity(this.meshData, this.material).addToWorld();
-
-        this.numRenderingLines = 0;
-        this.meshData.vertexCount = 0;
-    }
-
-    LineRenderer.prototype.MAX_NUM_LINES = 170000;
-
-
-    LineRenderer.prototype.update = function()
-    {
-        if(this.numRenderingLines !== 0 || this.meshData.vertexCount !== 0)
-        {
-            this.meshData.vertexCount = Math.min(this.numRenderingLines, this.MAX_NUM_LINES)*2;
-            this.meshData.setVertexDataUpdated();
-        }
-        this.numRenderingLines = 0;
-    };
-
-    LineRenderer.prototype.remove = function()
-    {
-        this.entity.removeFromWorld();
-
-        this.vertices = undefined;
-        //manually call MeshData.vertexData.destroy since MeshData.destroy is broken
-        this.meshData.vertexData.destroy(this.owner.world.gooRunner.renderer.context);
-        this.meshData = undefined;
-        this.material = undefined;
-    };
-
-
-    LineRenderer.prototype.addLine = function(start, end) {
-		//no need to continue if we already reached MAX_NUM_LINES
-		if(this.numRenderingLines >= this.MAX_NUM_LINES)
-        {
-            return;
-        }
-		
-        for(var i=0; i<3; i++)
-        {
-            this.vertices[this.numRenderingLines*6+i] = start.data[i];
-            this.vertices[this.numRenderingLines*6+3+i] = end.data[i];
-        }
-
-        this.numRenderingLines++;
-    };
-
-
-    //LINE RENDERING SYSTEM
+    /**
+     * updates all of its {LineRenderer}'s and exposes methods for drawing primitives
+     * @param {World} world the world this system exists in
+     */
     function LineRenderSystem(world){
         System.call(this, 'LineRenderSystem', []);
 
-        this.renderers = [];
+        this._renderers = [];
 		this.world = world;
     }
     LineRenderSystem.prototype = Object.create(System.prototype);
@@ -101,72 +35,97 @@ function (
     LineRenderSystem.prototype.YELLOW = '[1,1,0]';
     LineRenderSystem.prototype.BLACK = '[0,0,0]';
 
-    //Draw a line in 3d space
+    /**
+     * draws a line between two {@link Vector3}'s with the specified color
+     * @param {Vector3} start
+     * @param {Vector3} end
+     * @param {String} colorStr following the format of '[red,green,blue]' where red,green,blue ranges between 0-1
+     * @example
+     * var v1 = new Vector3(0,0,0);
+     * var v2 = new Vector3(13,3,7);
+     * var color = "[1,0,0]";
+     * LineRenderSystem.drawLine(v1, v2, color);
+     */
     LineRenderSystem.prototype.drawLine = function(start, end, colorStr) {
 
-        var lineRenderer = this.renderers[colorStr];
+        var lineRenderer = this._renderers[colorStr];
         if (!lineRenderer)
         {
-            //add a new LineRenderer
-            lineRenderer = this.renderers[this.renderers.length] = new LineRenderer(this, colorStr);
+            lineRenderer = this._renderers[this._renderers.length] = new LineRenderer(this, colorStr);
 
-            //reference a string index to the actual object
-            this.renderers[colorStr] = lineRenderer;
+            //reference a string color index to the actual object
+            this._renderers[colorStr] = lineRenderer;
         }
         lineRenderer.addLine(start, end);
     };
 
-    //used for drawing AA-Boxes
-    LineRenderSystem.prototype.drawAxisLine = function(startIn, diff, startIndex, endIndex, startMul, endMul, colorStr, matrix) {
+    /**
+     * used internally to draw a line for an axis aligned box segment
+     * @param {Vector3} startIn
+     * @param {Vector3} diff
+     * @param {int} startIndex
+     * @param {int} endIndex
+     * @param {float} startMul
+     * @param {float} endMul
+     * @param {String} colorStr
+     * @param {Matrix4x4} transformMatrix
+     */
+    LineRenderSystem.prototype._drawAxisLine = function(startIn, diff, startIndex, endIndex, startMul, endMul, colorStr, transformMatrix) {
         var start = tmpVec2.setVector(startIn);
         start.data[startIndex] += diff.data[startIndex]*startMul;
 
         var end = tmpVec3.setVector(start);
         end.data[endIndex] += diff.data[endIndex]*endMul;
 
-        if(matrix)
+        if(transformMatrix !== undefined)
         {
-            matrix.applyPostPoint(start);
-            matrix.applyPostPoint(end);
+            transformMatrix.applyPostPoint(start);
+            transformMatrix.applyPostPoint(end);
         }
 
         this.drawLine(start, end, colorStr);
     };
 
-    //Draw an axis-aligned box in 3d space
-    LineRenderSystem.prototype.drawAABox = function(min, max, colorStr, matrix) {
+    /**
+     * draws an axis aligned box between the min and max points, can be transformed to a specific space using the matrix
+     * @param {Vector3} min
+     * @param {Vector3} max
+     * @param {String} colorStr
+     * @param {Matrix4x4} transformMatrix
+     */
+    LineRenderSystem.prototype.drawAABox = function(min, max, colorStr, transformMatrix) {
         for(var a=0; a<3; a++)
         {
             var diff = tmpVec1.setVector(max).subVector(min);
             for(var b=0; b<3; b++)
             {
-                if(b != a) {
-                    this.drawAxisLine(min, diff, a, b, 1, 1, colorStr, matrix);
+                if(b !== a) {
+                    this._drawAxisLine(min, diff, a, b, 1, 1, colorStr, transformMatrix);
                 }
             }
 
-            this.drawAxisLine(max, diff, a, a, -1, 1, colorStr, matrix);
-            this.drawAxisLine(min, diff, a, a, 1, -1, colorStr, matrix);
+            this._drawAxisLine(max, diff, a, a, -1, 1, colorStr, transformMatrix);
+            this._drawAxisLine(min, diff, a, a, 1, -1, colorStr, transformMatrix);
         }
     };
 
     LineRenderSystem.prototype.process = function (){
-        for(var i=0; i<this.renderers.length; i++) {
-            this.renderers[i].update();
+        for(var i=0; i<this._renderers.length; i++) {
+            this._renderers[i].update();
         }
     };
 
     LineRenderSystem.prototype.remove = function (){
-        for(var i=0; i<this.renderers.length; i++)
+        for(var i=0; i<this._renderers.length; i++)
         {
-            if(this.renderers[i])
+            if(this._renderers[i])
             {
-                this.renderers[i].remove();
+                this._renderers[i].remove();
             }
         }
-        this.renderers.length = 0;
+        this._renderers.length = 0;
 
-        this.owner.world.gooRunner.renderer.clearShaderCache();
+        this.world.gooRunner.renderer.clearShaderCache();
     };
 	
 	return LineRenderSystem;
