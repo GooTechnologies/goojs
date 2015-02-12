@@ -32,27 +32,27 @@ define([
 		});*/
 		this.name = name !== undefined ? name : 'Entity_' + this._index;
 
-		// (move to meshrenderercomponent)
-		/** Set to true to skip all processing (rendering, script updating, et cetera) of the entity.
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.skip = false;
-
 		/** Holds the hidden status of the entity. The hidden status will not however propagate to components or child entities.
-		 * @deprecated The usage of this flag changed. Please use entity.hide/show() instead to change the hidden status of the entity and entity.isHidden/isVisiblyHidden() to query the status
 		 * @type {boolean}
 		 * @default false
-		 */
-		this.hidden = false;
-		//! AT: users are always confused about this - I'll have to hide it
-
-		/**
-		 * Has the same function as the `hidden` property, except it's now private.
-		 * @type {boolean}
 		 * @private
 		 */
+		
+		// investigate component .enabled vs .hidden
+
 		this._hidden = false;
+		this._hiddenLocally = false;
+		// show()
+		// hide()
+		// isHidden()
+		// isHiddenLocally()
+
+		this._active = false;
+		this._activeLocally = false;
+		// activate()
+		// deactivate()
+		// isActive()
+		// isActiveLocally()
 
 		/** Mark entity as static.
 		 * Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.
