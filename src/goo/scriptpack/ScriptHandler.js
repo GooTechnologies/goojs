@@ -160,9 +160,11 @@ define([
 				};
 				// TODO Test if this works across browsers
 				/**/
-				var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-				if (m) {
-					err.line = parseInt(m[1], 10) - 1;
+				if (e instanceof Error) {
+					var lineNumbers = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+					if (lineNumbers) {
+						err.line = parseInt(lineNumbers[1], 10) - 1;
+					}
 				}
 				/**/
 				setError(script, err);
