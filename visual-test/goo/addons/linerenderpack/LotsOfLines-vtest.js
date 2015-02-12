@@ -23,11 +23,12 @@ require([
 	) {
 	'use strict';
 
-	var numLines = 30000;
+	var numLines = 1000;
+	var halfNumLines = numLines*0.5;
 
 	V.describe('Rendering ' + numLines + ' number of lines in 3 different colors. Red, green and blue');
 
-	var goo = V.initGoo();
+	var goo = V.initGoo({showStats:true});
 	var world = goo.world;
 	var LRS = new LineRenderSystem(world);
 	
@@ -36,7 +37,7 @@ require([
 	V.addOrbitCamera(new Vector3(Math.PI*15, Math.PI / 2, 0.3));
 	V.addLights();
 
-	var lineStride = 0.01;
+	var lineStride = 0.1;
 	var lineLength = 10;
 	var waveSize = 3;
 	var waveSpeed = 3;
@@ -46,7 +47,7 @@ require([
 	
 	var update = function() {
 	
-		for(var i=0;i<numLines;i++) {
+		for(var i=-halfNumLines;i<halfNumLines;i++) {
 			var iFrac = i / (numLines * 0.1);
 			var stride = -lineStride * i;
 			var startOffset = Math.sin(world.time * waveSpeed + iFrac * Math.PI) * waveSize;
@@ -57,10 +58,10 @@ require([
 
 			var color = LRS.GREEN;
 
-			if (i % 3 === 1) {
+			if (Math.abs(i) % 3 === 1) {
 				color = LRS.RED;
 			}
-			else if (i % 3 === 2) {
+			else if (Math.abs(i) % 3 === 2) {
 				color = LRS.BLUE;
 			}
 
