@@ -49,6 +49,7 @@ define([
 		this.offsetAngleX =     settings.offsetAngleX   !== undefined ? settings.offsetAngleX    : 0;
 		this.offsetAngleY =     settings.offsetAngleY   !== undefined ? settings.offsetAngleY    : 0;
 		this.offsetAngleZ =     settings.offsetAngleZ   !== undefined ? settings.offsetAngleZ    : 0;
+		this.fixedRotation = 	settings.fixedRotation	!== undefined ? settings.fixedRotation	 : false;
 	}
 
 	P2Component.prototype = Object.create(Component.prototype);

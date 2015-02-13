@@ -42,8 +42,8 @@ define([
 	function updateTransform(transformComponent, p2Component) {
 		var position = p2Component.body.position,
 			scale = p2Component.scale;
-
-		transformComponent.transform.translation.setDirect(position[0] * scale, position[1] * scale, 0);
+		var oldZ = transformComponent.transform.translation.z;
+		transformComponent.transform.translation.setDirect(position[0] * scale, position[1] * scale, oldZ);
 		transformComponent.transform.rotation.fromAngles(p2Component.offsetAngleX, p2Component.offsetAngleY, p2Component.offsetAngleZ + p2Component.body.angle);
 		transformComponent.setUpdated();
 	}
@@ -56,15 +56,12 @@ define([
 		var body = new p2.Body({
 			mass: p2Component.mass,
 			damping: p2Component.damping,
-			angularDamping: p2Component.angularDamping
+			angularDamping: p2Component.angularDamping,
+			position: [transformComponent.transform.translation.x, transformComponent.transform.translation.y],
+			fixedRotation: p2Component.fixedRotation;
 		});
 
 		// Create shapes
-		var body = p2Component.body = new p2.Body({
-			mass: p2Component.mass,
-			position: [transformComponent.transform.translation.x, transformComponent.transform.translation.y]
-		});
-
 		for (var i = 0; i < p2Component.shapes.length; i++) {
 			var shape = p2Component.shapes[i],
 				p2shape;
