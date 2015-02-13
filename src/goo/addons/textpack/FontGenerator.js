@@ -115,112 +115,40 @@ define(function () {
 		return simplePolygon;
 	}
 
-	function isClockwise(polygon) {
-		var sum = 0;
-
-		for (var i = 1; i < polygon.length; i++) {
-			var p1 = polygon[i - 1];
-			var p2 = polygon[i];
-
-			sum += (p2.x - p1.x) * (p2.y - p1.y);
-		}
-
-		return sum >= 0;
-	}
-
-	/**
-	 * Finds the closest points of two polygons
-	 * @param polygon1
-	 * @param polygon2
-	 * @returns {{index1: number, index2: number}}
-	 */
-	function findClosestPoints(polygon1, polygon2) {
-		var minDist = Infinity;
-		var minIndex1 = -1;
-		var minIndex2 = -1;
-
-		for (var i = 0; i < polygon1.length; i++) {
-			for (var j = 0; j < polygon2.length; j++) {
-				var candidate = distance(polygon1[i], polygon2[j]);
-				if (candidate < minDist) {
-					minDist = candidate;
-					minIndex1 = i;
-					minIndex2 = j;
-				}
-			}
-		}
-
-		return { index1: minIndex1, index2: minIndex2 };
-	}
-
-	/**
-	 * Rotate an array a supplied amount of positions
-	 * @param array
-	 * @param positions
-	 * @returns {Array}
-	 */
-	function rotate(array, positions) {
-		var rotated = [];
-		for (var i = 0; i < array.length; i++) {
-			var newIndex = (i + positions) % array.length;
-			rotated.push(array[newIndex]);
-		}
-		return rotated;
-	}
-
-	var WIGGLE_EPSILON = 0.00001;
-	function wiggle(point, towards) {
-		var dx = point.x - towards.x;
-		var dy = point.y - towards.y;
+	// polygons -> { contour: polygon, holes: polygon[] }[]
+	function getHolesAndContour(polygons) {
+		// this will have to do for now
+		polygons.sort(function (a, b) { return b.length - a.length; });
 		return {
-			x: point.x + dx * WIGGLE_EPSILON,
-			y: point.y + dy * WIGGLE_EPSILON
+			contour: polygons[0],
+			holes: polygons.slice(1)
 		};
 	}
 
-	/**
-	 * Concatenate 2 polygons in one and duplicate the ends of the arrays
-	 * @param polygon1
-	 * @param polygon2
-	 * @returns {string}
-	 */
-	function specialConcat(polygon1, polygon2) {
-		var wiggled1 = wiggle(polygon1[0], polygon1[1]);
-		var wiggled2 = wiggle(polygon2[0], polygon2[1]);
-		return polygon1.concat(wiggled1).concat(polygon2).concat(wiggled2);
+	function printIndices(points) {
+		var str = points.map(function (point) { return point._index; }).join(', ');
+		console.log(str);
 	}
 
-	/**
-	 * Merge 2 polygons to get a new polygon
-	 * @param polygon1
-	 * @param polygon2
-	 * @returns {string}
-	 */
-	function mergePolygons(polygon1, polygon2) {
-		// this find closest approach is good only for neatly placed points (like we have)
-		// you can fabricate a set of points for which the minimal distance will not yield a cut-free joining-line
-		var closestPoints = findClosestPoints(polygon1, polygon2);
+	function convert(holesAndContour) {
+		var indexCounter = 0;
 
-		var rotated1 = rotate(polygon1, closestPoints.index1);
-		var rotated2 = rotate(polygon2, closestPoints.index2);
-
-		var clockwise1 = isClockwise(rotated1);
-		var clockwise2 = isClockwise(rotated2);
-
-		if (!(clockwise1 ^ clockwise2)) {
-			polygon2.reverse();
+		function convert(polygon) {
+			polygon.forEach(function (point) {
+				point._index = indexCounter;
+				indexCounter++;
+				console.log(indexCounter);
+			});
 		}
 
-		drawPath(rotated2); //
-		drawPath(rotated1); //
-
-		return specialConcat(rotated1, rotated2);
+		convert(holesAndContour.contour);
+		holesAndContour.holes.forEach(convert);
 	}
 
 	function meshFromGlyph(glyph, fontSize, options) {
 		options = options || {};
 		options.simplifyPaths = options.simplifyPaths !== false;
-		options.stepLength = options.stepLength || 4;
+		options.stepLength = options.stepLength || 20;
 
 		var path = glyph.getPath(0, 0, fontSize);
 		var stringifiedPath = path.commands.map(serializeCommand).reduce(function (prev, cur) {
@@ -245,17 +173,16 @@ define(function () {
 			pointGroups = pointGroups.map(simplifyPath);
 		}
 
-		var surface = pointGroups[0];
+		var holesAndContour = getHolesAndContour(pointGroups);
 
-		for (var i = 1; i < pointGroups.length; i++) {
-			con2d.translate(250, 0); //
-			surface = mergePolygons(surface, pointGroups[i]);
-		}
+		convert(holesAndContour);
 
-		return {
-			surface: surface,
-			contours: pointGroups
-		};
+		console.log('contour length', holesAndContour.contour.length);
+		holesAndContour.holes.forEach(function (group, index) {
+			console.log('hole', index, 'length', group.length);
+		});
+
+		return holesAndContour;
 	}
 
 	return {
