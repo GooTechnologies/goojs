@@ -43,7 +43,7 @@ define([
 		var position = p2Component.body.position,
 			scale = p2Component.scale;
 		var oldZ = transformComponent.transform.translation.z;
-		transformComponent.transform.translation.setDirect(position[0] * scale, position[1] * scale, oldZ);
+		transformComponent.transform.translation.setDirect(position[0] * scale, position[1] * scale, 0);
 		transformComponent.transform.rotation.fromAngles(p2Component.offsetAngleX, p2Component.offsetAngleY, p2Component.offsetAngleZ + p2Component.body.angle);
 		transformComponent.setUpdated();
 	}
