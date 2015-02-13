@@ -74,7 +74,7 @@ exec('node ./tools/cycleDetector.js', function (error, stdout, stderr) {
 
 				var delta = currentAverageLength - oldAverageLength;
 				var ratio = delta / oldAverageLength;
-				var percent = (ratio * 100).toFixed(2);
+				var percent = (ratio * 100).toFixed(3);
 
 				console.log(
 					'You have ' + (delta > 0 ? 'increased' : 'decreased') +
@@ -82,6 +82,8 @@ exec('node ./tools/cycleDetector.js', function (error, stdout, stderr) {
 				);
 
 				if (delta > 0) {
+					readdModifiedFiles(files, function () {});
+
 					fail(
 						'Consider refactoring your code before committing!\n' +
 						'If you still wish to commit your code, run git commit -n to skip this check.\n'
