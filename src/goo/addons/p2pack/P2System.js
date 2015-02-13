@@ -58,7 +58,7 @@ define([
 			damping: p2Component.damping,
 			angularDamping: p2Component.angularDamping,
 			position: [transformComponent.transform.translation.x, transformComponent.transform.translation.y],
-			fixedRotation: p2Component.fixedRotation;
+			fixedRotation: p2Component.fixedRotation
 		});
 
 		// Create shapes
