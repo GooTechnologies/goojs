@@ -3,54 +3,88 @@
 
 var exec = require('child_process').exec;
 var path = require('path');
+var getAverageLength = require('./function-length').getAverageLength;
 
 function fail(message) {
 	process.stdout.write(message);
 	process.exit(1);
 }
 
-exec('node ./tools/cycleDetector.js', null, function (error, stdout, stderr) {
+function sequence(thunks) {
+	var index = -1;
+
+	function continuation(value) {
+		if (index > thunks.length) { return; }
+		thunks[index](continuation);
+	}
+
+	continuation();
+}
+
+// pyramid of doom
+exec('node ./tools/cycleDetector.js', function (error, stdout, stderr) {
 	process.stdout.write(stdout + '\n');
 
 	if (error) {
 		fail('Fix the cycle before committing!\n');
 	} else {
-		exec('git diff --staged --name-status', function (error, stdout, stderr) {
-			if (error) {
-				process.stdout.write(stderr + '\nCould not get list of modified files: ' + error);
-				fail();
-			}
-			var expression = /^[MA]\s+([\w-\\\/]+\.js)$/gm;
-			var files = [];
-			var match;
+		//exec('git stash', function (error, stdout, stderr) {
+		//	var oldAverageLength = getAverageLength();
 
-			while (match = expression.exec(stdout)) {
-				files.push(match[1]);
-			}
-			if (files.length === 0) {
-				process.exit(0);
-			}
+			//exec('git stash pop', function (error, stdout, stderr) {
+			//	var currentAverageLength = getAverageLength();
 
-			var command = path.resolve('./node_modules/.bin/jshint');
-			var child1 = exec(command + ' --reporter=tools/jshint-reporter.js ' + files.join(' '));
+				//var delta = currentAverageLength - oldAverageLength;
+				//var ratio = delta / oldAverageLength;
+				//var percent = (ratio * 100).toFixed(2);
 
-			child1.stdout.on('data', function (data) {
-				process.stdout.write(data);
-			});
-			child1.stderr.on('data', function (data) {
-				process.stderr.write(data);
-			});
+				//console.log(
+				//	'You have ' + (delta > 0 ? 'increased' : 'decreased') +
+				//	' the average function length of the engine by ' + Math.abs(percent) + '%\n'
+				//);
 
-			child1.on('exit', function (code) {
-				if (code !== 0) {
-					fail(
-							'Style check failed (see the above output).\n' +
-							'If you still wish to commit your code, run git commit -n to skip this check.\n'
-					);
-				} else {
-					process.exit(0);
-				}
-			});
-		});
+				//if (delta > 0) {
+				//	fail('Consider refactoring your code before committing!\n');
+				//} else {
+					exec('git diff --staged --name-status', function (error, stdout, stderr) {
+						if (error) {
+							fail(stderr + '\nCould not get list of modified files: ' + error);
+						}
+
+						var expression = /^[MA]\s+([\w\\\/-]+\.js)$/gm;
+						var files = [];
+						var match;
+
+						while (match = expression.exec(stdout)) {
+							files.push(match[1]);
+						}
+						if (files.length === 0) {
+							process.exit(0);
+						}
+
+						var command = path.resolve('./node_modules/.bin/jshint');
+						var child1 = exec(command + ' --reporter=tools/jshint-reporter.js ' + files.join(' '));
+
+						child1.stdout.on('data', function (data) {
+							process.stdout.write(data);
+						});
+						child1.stderr.on('data', function (data) {
+							process.stderr.write(data);
+						});
+
+						child1.on('exit', function (code) {
+							if (code !== 0) {
+								fail(
+									'Style check failed (see the above output).\n' +
+									'If you still wish to commit your code, run git commit -n to skip this check.\n'
+								);
+							} else {
+								process.exit(0);
+							}
+						});
+					});
+				//}
+			//});
+		//});
 	}
 });
