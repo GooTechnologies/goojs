@@ -52,7 +52,6 @@ define([
 		var p2Component = entity.p2Component;
 		var transformComponent = entity.transformComponent;
 
-		// what's up with this body?! it gets overridden by the following one!
 		var body = new p2.Body({
 			mass: p2Component.mass,
 			damping: p2Component.damping,
