@@ -137,13 +137,6 @@ var extractTree = function (tree, fileName, options) {
 					return comments && getFirstJSDoc(comments);
 				}
 				return false;
-
-				//return node.type === 'AssignmentExpression' && node.operator === '=' &&
-				//	node.left.type === 'MemberExpression' &&
-				//	node.left.object.type === 'ThisExpression' &&
-				//	parent.leadingComments &&
-				//	getFirstJSDoc(parent.leadingComments) &&
-				//	options.nameFilter(node.left.property.name);
 			},
 			extract: function (node, parent) {
 				var comment = getFirstJSDoc(parent.leadingComments || node.left.leadingComments);
