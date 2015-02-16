@@ -37,7 +37,9 @@ define([
 
 		it('can raycast closest', function () {
 			var start = new Vector3(0, 0, -10);
-			var end = new Vector3(0, 0, 10);
+			var direction = new Vector3(0, 0, 1);
+			var distance = 10;
+
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
@@ -53,21 +55,23 @@ define([
 			world.process(); // Needed to initialize bodies
 
 			var result = new RaycastResult();
-			system.raycastClosest(start, end, {}, result);
+			system.raycastClosest(start, direction, distance, {}, result);
 			expect(result.entity.name).toBe(entityB.name);
 
 			// Now swap so that entityA is closer
 			start.setDirect(0, 0, 10);
-			end.setDirect(0, 0, -10);
+			direction.setDirect(0, 0, -10);
 
 			result = new RaycastResult();
-			system.raycastClosest(start, end, {}, result);
+			system.raycastClosest(start, direction, distance, {}, result);
 			expect(result.entity.name).toBe(entityA.name);
 		});
 
 		it('can raycast any', function () {
 			var start = new Vector3(0, 0, -10);
-			var end = new Vector3(0, 0, 10);
+			var direction = new Vector3(0, 0, 1);
+			var distance = 10;
+
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
@@ -83,13 +87,15 @@ define([
 			world.process(); // Needed to initialize bodies
 
 			var result = new RaycastResult();
-			system.raycastAny(start, end, {}, result);
+			system.raycastAny(start, direction, distance, {}, result);
 			expect(result.entity).toBeTruthy();
 		});
 
 		it('can raycast all', function () {
 			var start = new Vector3(0, 0, -10);
-			var end = new Vector3(0, 0, 10);
+			var direction = new Vector3(0, 0, 1);
+			var distance = 10;
+
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
@@ -105,13 +111,13 @@ define([
 			world.process(); // Needed to initialize bodies
 
 			var numHits = 0;
-			system.raycastAll(start, end, {}, function (/*result*/) {
+			system.raycastAll(start, direction, distance, {}, function (/*result*/) {
 				numHits++;
 			});
 			expect(numHits).toBe(4);
 
 			numHits = 0;
-			system.raycastAll(start, end, {}, function (/*result*/) {
+			system.raycastAll(start, direction, distance, {}, function (/*result*/) {
 				numHits++;
 				return false; // Abort traversal
 			});
@@ -120,7 +126,9 @@ define([
 
 		it('can use collision groups', function () {
 			var start = new Vector3(0, 0, -10);
-			var end = new Vector3(0, 0, 10);
+			var direction = new Vector3(0, 0, 1);
+			var distance = 10;
+
 			var rbc = new RigidbodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
@@ -130,17 +138,19 @@ define([
 			world.process(); // Needed to initialize bodies
 
 			var result = new RaycastResult();
-			system.raycastAny(start, end, { collisionGroup: -1 }, result);
+			system.raycastAny(start, direction, distance, { collisionGroup: -1 }, result);
 			expect(result.entity).toBeTruthy();
 
 			result = new RaycastResult();
-			system.raycastAny(start, end, { collisionGroup: 2 }, result);
+			system.raycastAny(start, direction, distance, { collisionGroup: 2 }, result);
 			expect(result.entity).toBeFalsy();
 		});
 
 		it('can filter away backfaces', function () {
 			var start = new Vector3(0, 0, -10);
-			var end = new Vector3(0, 0, 10);
+			var direction = new Vector3(0, 0, 1);
+			var distance = 10;
+
 			var rbc = new RigidbodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
@@ -149,13 +159,13 @@ define([
 			world.process(); // Needed to initialize bodies
 
 			var numHits = 0;
-			system.raycastAll(start, end, { skipBackfaces: true }, function () {
+			system.raycastAll(start, direction, distance, { skipBackfaces: true }, function () {
 				numHits++;
 			});
 			expect(numHits).toBe(1);
 
 			numHits = 0;
-			system.raycastAll(start, end, { skipBackfaces: false }, function () {
+			system.raycastAll(start, direction, distance, { skipBackfaces: false }, function () {
 				numHits++;
 			});
 			expect(numHits).toBe(2);

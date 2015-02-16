@@ -195,20 +195,27 @@ function (
 		return tmpCannonResult.hasHit;
 	};
 
+	PhysicsSystem.prototype._getCannonStartEnd = function (start, direction, distance, cannonStart, cannonEnd) {
+		cannonStart.copy(start);
+		cannonEnd.copy(direction);
+		cannonEnd.scale(distance, cannonEnd);
+	};
+
 	/**
 	 * Make a ray cast into the world of colliders, stopping at the first hit.
 	 * @param  {Vector3} start
-	 * @param  {Vector3} end
+	 * @param  {Vector3} direction
+	 * @param  {number} distance
 	 * @param  {object} options
 	 * @param  {RaycastResult} [result]
 	 * @return {boolean} True if hit, else false
 	 */
-	PhysicsSystem.prototype.raycastAny = function (start, end, options, result) {
+	PhysicsSystem.prototype.raycastAny = function (start, direction, distance, options, result) {
 		result = result || new RaycastResult();
+
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
-		cannonStart.copy(start);
-		cannonEnd.copy(end);
+		this._getCannonStartEnd(start, direction, distance, cannonStart, cannonEnd);
 
 		this.cannonWorld.raycastAny(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
 
@@ -218,17 +225,18 @@ function (
 	/**
 	 * Make a ray cast into the world of colliders.
 	 * @param  {Vector3} start
-	 * @param  {Vector3} end
+	 * @param  {Vector3} direction
+	 * @param  {number} distance
 	 * @param  {object} options
 	 * @param  {RaycastResult} [result]
 	 * @return {boolean} True if hit, else false
 	 */
-	PhysicsSystem.prototype.raycastClosest = function (start, end, options, result) {
+	PhysicsSystem.prototype.raycastClosest = function (start, direction, distance, options, result) {
 		result = result || new RaycastResult();
+
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
-		cannonStart.copy(start);
-		cannonEnd.copy(end);
+		this._getCannonStartEnd(start, direction, distance, cannonStart, cannonEnd);
 
 		this.cannonWorld.raycastClosest(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
 
@@ -240,16 +248,16 @@ function (
 	/**
 	 * Make a ray cast into the world of colliders, evaluating the given callback once at every hit.
 	 * @param  {Vector3} start
-	 * @param  {Vector3} end
+	 * @param  {Vector3} direction
+	 * @param  {number} distance
 	 * @param  {object} options
 	 * @param  {Function} callback
 	 * @return {boolean} True if hit, else false
 	 */
-	PhysicsSystem.prototype.raycastAll = function (start, end, options, callback) {
+	PhysicsSystem.prototype.raycastAll = function (start, direction, distance, options, callback) {
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
-		cannonStart.copy(start);
-		cannonEnd.copy(end);
+		this._getCannonStartEnd(start, direction, distance, cannonStart, cannonEnd);
 
 		var that = this;
 		this.cannonWorld.raycastAll(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), function (cannonResult) {
