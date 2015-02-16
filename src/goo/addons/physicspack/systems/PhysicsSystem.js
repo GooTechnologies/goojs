@@ -195,14 +195,16 @@ function (
 		return tmpCannonResult.hasHit;
 	};
 
+	// Get the start & end of the ray, store in cannon vectors
 	PhysicsSystem.prototype._getCannonStartEnd = function (start, direction, distance, cannonStart, cannonEnd) {
 		cannonStart.copy(start);
 		cannonEnd.copy(direction);
 		cannonEnd.scale(distance, cannonEnd);
+		cannonEnd.vadd(start, cannonEnd);
 	};
 
 	/**
-	 * Make a ray cast into the world of colliders, stopping at the first hit.
+	 * Make a ray cast into the world of colliders, stopping at the first hit that the ray intersects (could be any physics object). Note that there's no order in the traversal, and you will never have control over what will be returned.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
@@ -223,7 +225,7 @@ function (
 	};
 
 	/**
-	 * Make a ray cast into the world of colliders.
+	 * Make a ray cast into the world of colliders, and only return the closest hit.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
