@@ -114,7 +114,11 @@ define([
 	 * @param {World} world
 	 * @param {Entity} entity The entity to clone
 	 * @param {Object} [settings]
-	 * @param {function(Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
+	 * @param {boolean} [settings.shareMeshData=false] Cloning entities clones their mesh data by default
+	 * @param {boolean} [settings.shareMaterials=false] Cloning entities clones their materials by default
+	 * @param {boolean} [settings.shareUniforms=false] Cloning entities clones their materials' uniforms by default
+	 * @param {boolean} [settings.shareTextures=false] Cloning entities clones their materials' textures by default
+	 * @param {function (Entity)} [settings.callback] Callback to be run on every new entity. Takes entity as argument. Runs bottom to top in the cloned hierarchy.
 	 * @returns {Entity} The cloned entity.
 	 */
 	EntityUtils.clone = function (world, entity, settings) {
@@ -126,9 +130,9 @@ define([
 		// ...he wouldn't expect s to have changed.
 		// REVIEW: `settings.shareData || true` will evaluate to true if shareData is false,
 		// which means that the setting will always be true.
-		settings.shareData = settings.shareData || true;
-		settings.shareMaterial = settings.shareMaterial || true;  // REVIEW: these are not used nor documented but would be great if they were
-		settings.cloneHierarchy = settings.cloneHierarchy || true;
+		//settings.shareData = settings.shareData || true;
+		//settings.shareMaterial = settings.shareMaterial || true;  // REVIEW: these are not used nor documented but would be great if they were
+		//settings.cloneHierarchy = settings.cloneHierarchy || true;
 
 		//! AT: why is everything here overridden anyways?
 		// Why is this function just defaulting some parameters and then calling cloneEntity to do the rest?
