@@ -196,7 +196,7 @@ function (
 	};
 
 	/**
-	 * Make a ray cast into the world of colliders, stopping at the first hit.
+	 * Make a ray cast into the world of colliders.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} end
 	 * @param  {object} options
@@ -215,8 +215,8 @@ function (
 		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
 	};
 
-	/**
-	 * Make a ray cast into the world of colliders.
+	 /**
+	 * Make a ray cast into the world of colliders, stopping at the first hit.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} end
 	 * @param  {object} options
