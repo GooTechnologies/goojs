@@ -44,20 +44,30 @@ require([
 			particleSystem.spawnParticleSimulation(simSettings.id, posVec, dirVec, ExampleEffects.effects[0].effect_data, customCallbacks);
 		}
 
-		setTimeout(function() {
-			spawn(simConfigs);
-		}, 200);
 	};
+
+
+	var tick = function(tpf) {
+
+		if (Math.random() < 0.05) {
+			spawn(DefaultSimulators)
+		}
+
+	}
 
 	var txCallback = function(texture) {
 		particleSystem.addConfiguredAtlasSystems(DefaultSimulators, DefaultRendererConfigs, DefaultSpriteAtlas.atlases[0], texture);
 
-		setTimeout(function() {
-			spawn(DefaultSimulators);
-		}, 200);
+		goo.callbacksPreProcess.push(tick);
+
 	};
 
 	new TextureCreator().loadTexture2D('../../../../resources/particle_atlas.png', {}, txCallback);
 
+
+
+
 	V.process();
+
+
 });
