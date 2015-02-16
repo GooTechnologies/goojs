@@ -38,7 +38,7 @@ define([
 		it('can raycast closest', function () {
 			var start = new Vector3(0, 0, -10);
 			var direction = new Vector3(0, 0, 1);
-			var distance = 10;
+			var distance = 20;
 
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
@@ -70,7 +70,7 @@ define([
 		it('can raycast any', function () {
 			var start = new Vector3(0, 0, -10);
 			var direction = new Vector3(0, 0, 1);
-			var distance = 10;
+			var distance = 20;
 
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
@@ -94,7 +94,7 @@ define([
 		it('can raycast all', function () {
 			var start = new Vector3(0, 0, -10);
 			var direction = new Vector3(0, 0, 1);
-			var distance = 10;
+			var distance = 20;
 
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
@@ -127,7 +127,7 @@ define([
 		it('can use collision groups', function () {
 			var start = new Vector3(0, 0, -10);
 			var direction = new Vector3(0, 0, 1);
-			var distance = 10;
+			var distance = 20;
 
 			var rbc = new RigidbodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
@@ -149,7 +149,7 @@ define([
 		it('can filter away backfaces', function () {
 			var start = new Vector3(0, 0, -10);
 			var direction = new Vector3(0, 0, 1);
-			var distance = 10;
+			var distance = 20;
 
 			var rbc = new RigidbodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
