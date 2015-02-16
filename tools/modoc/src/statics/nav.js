@@ -7,9 +7,18 @@
 			item = $(item);
 
 			if (regex.test(item.text())) {
-				item.show();
+				item.removeClass('hidden');
 			} else {
-				item.hide();
+				item.addClass('hidden');
+			}
+		});
+
+		categories.each(function (index, category) {
+			category = $(category);
+			category.show();
+			var visibleChildren = category.children('ul').children(':not(.hidden)');
+			if (visibleChildren.length === 0) {
+				category.hide();
 			}
 		});
 	}
@@ -54,6 +63,7 @@
 
 	var iframe = $('iframe.class-panel');
 	var items = $('.item');
+	var categories = $('.category');
 	var searchInput = $('#search');
 	var shortcutsSection = $('.shortcuts');
 

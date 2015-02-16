@@ -33,12 +33,14 @@
 	<div class="index-container">
 		<ul>
 			{{#index}}
-				<div class="top-dir" id="{{name}}">{{name}}</div>
-				<ul>
-					{{#classes}}
-						<li class="item"><a phony="{{{link}}}">{{name}}</a></li>
-					{{/classes}}
-				</ul>
+				<li class="category">
+					<div class="top-dir" id="{{name}}">{{name}}</div>
+					<ul>
+						{{#classes}}
+							<li class="item"><a phony="{{{link}}}">{{name}}</a></li>
+						{{/classes}}
+					</ul>
+				</li>
 			{{/index}}
 		</ul>
 	</div>
