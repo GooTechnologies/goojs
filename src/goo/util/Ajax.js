@@ -1,13 +1,11 @@
 define([
 	'goo/loaders/handlers/TextureHandler',
-	'goo/sound/AudioContext',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil',
 	'goo/util/StringUtil',
 	'goo/util/rsvp'
 ], function (
 	TextureHandler,
-	AudioContext,
 	PromiseUtil,
 	_,
 	StringUtil,

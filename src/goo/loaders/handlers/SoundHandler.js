@@ -94,7 +94,7 @@ define([
 	 * @returns {RSVP.Promise} Resolves with the updated sound or null if removed
 	 */
 	SoundHandler.prototype._update = function (ref, config, options) {
-		if (!AudioContext) {
+		if (!AudioContext.isSupported()) {
 			return PromiseUtil.resolve();
 		}
 		var that = this;
@@ -113,7 +113,7 @@ define([
 						/*jshint -W083 */
 						return that.loadObject(ref).then(function (buffer) {
 							return PromiseUtil.createPromise(function (resolve, reject) {
-								AudioContext.decodeAudioData(buffer, function (audioBuffer) {
+								AudioContext.getContext().decodeAudioData(buffer, function (audioBuffer) {
 									resolve(audioBuffer);
 								}, function (/*err*/) {
 									console.error('Could not decode audio ' + ref);

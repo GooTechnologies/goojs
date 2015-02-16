@@ -2,7 +2,7 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/FullscreenUtil',
 	'goo/renderer/pass/RenderTarget',
-	'goo/renderer/Util',
+	'goo/util/ObjectUtil',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/passpack/ShaderLibExtra',
 	'goo/renderer/pass/Pass'
@@ -10,7 +10,7 @@ define([
 	Material,
 	FullscreenUtil,
 	RenderTarget,
-	Util,
+	ObjectUtil,
 	ShaderLib,
 	ShaderLibExtra,
 	Pass
@@ -48,10 +48,10 @@ define([
 			materials : []
 		};
 
-		this.convolutionShader1 = Util.clone(ShaderLib.convolution);
-		this.convolutionShader2 = Util.clone(ShaderLib.convolution);
+		this.convolutionShader1 = ObjectUtil.deepClone(ShaderLib.convolution);
+		this.convolutionShader2 = ObjectUtil.deepClone(ShaderLib.convolution);
 
-		this.differenceShader = Util.clone(ShaderLibExtra.differenceOfGaussians);
+		this.differenceShader = ObjectUtil.deepClone(ShaderLibExtra.differenceOfGaussians);
 		this.differenceShader.uniforms.threshold = threshold;
 		this.differenceMaterial = new Material(this.differenceShader);
 

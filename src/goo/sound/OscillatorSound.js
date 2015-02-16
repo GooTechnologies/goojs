@@ -16,7 +16,7 @@ define([
 		this._type = 'sine';
 
 		// Nodes
-		this._outNode = AudioContext.createGain();
+		this._outNode = AudioContext.getContext().createGain();
 
 		this.connectTo();
 	}
@@ -27,7 +27,7 @@ define([
 	};
 
 	OscillatorSound.prototype.play = function() {
-		this._oscNode = AudioContext.createOscillator();
+		this._oscNode = AudioContext.getContext().createOscillator();
 		this._oscNode.connect(this._outNode);
 		this._oscNode.frequency.value = this._frequency;
 		this._oscNode.type = this._type;
@@ -59,8 +59,8 @@ define([
 	 * @param {AudioNode[]|AudioNode} nodes
 	 */
 	OscillatorSound.prototype.connectTo = function(nodes) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
+		if (!AudioContext.isSupported()) {
+			console.warn('WebAudio not supported');
 			return;
 		}
 		this._outNode.disconnect();

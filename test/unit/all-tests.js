@@ -157,7 +157,7 @@ define([
 	'test/renderer/SimplePartitioner-test',
 	'test/renderer/Texture-test',
 	'test/renderer/TextureCreator-test',
-	'test/renderer/Util-test',
+	'test/renderer/RendererUtils-test',
 	'test/scripts/GroundBoundMovementScript-test',
 	'test/scripts/HeightMapBoundingScript-test',
 	'test/scripts/WorldFittedTerrainScript-test',

@@ -866,14 +866,16 @@ define([
 	 * @returns {Matrix4x4} The new matrix.
 	 */
 	Matrix4x4.prototype.clone = function () {
-		var d = this.data;
-		return new Matrix4x4(
-			d[0], d[1], d[2], d[3],
-			d[4], d[5], d[6], d[7],
-			d[8], d[9], d[10], d[11],
-			d[12], d[13], d[14], d[15]
-		);
+		return new Matrix4x4().copy(this);
 	};
+
+	// #ifdef DEBUG
+	Matrix.addPostChecks(Matrix4x4.prototype, [
+		'add', 'sub', 'mul', 'div', 'combine', 'transpose', 'invert',
+		'isOrthogonal', 'determinant', 'applyPre',
+		'copy'
+	]);
+	// #endif
 
 	return Matrix4x4;
 });

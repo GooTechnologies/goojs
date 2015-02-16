@@ -169,13 +169,13 @@ define([
 		});
 
 		describe('clone', function () {
-		    it('can clone to another matrix', function () {
+		    it('clones a matrix', function () {
     			var original = new Matrix2x2(11, 22, 33, 44);
     			var clone = original.clone();
     
-    			expect(clone).not.toBe(original);
-    			expect(clone).toBeCloseToMatrix(new Matrix2x2(11, 22, 33, 44));
-    		});
+    			expect(clone).toBeCloseToMatrix(original);
+				expect(clone).not.toBe(original);
+			});
 		});
 	});
 });

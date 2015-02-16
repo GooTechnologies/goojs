@@ -155,9 +155,11 @@ define([
 		};
 		// TODO Test if this works across browsers
 		/**/
-		var m = error.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-		if (m) {
-			err.errors[0].line = parseInt(m[1], 10) - 1;
+		if (error instanceof Error) {
+			var lineNumbers = error.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+			if (lineNumbers) {
+				err.line = parseInt(lineNumbers[1], 10) - 1;
+			}
 		}
 		/**/
 		console.error(err.errors[0].message, err);

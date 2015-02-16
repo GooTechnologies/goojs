@@ -22,21 +22,21 @@ define([
 	 * @extends {System}
 	 */
 	function SoundSystem() {
-		if (!AudioContext) {
-			console.warn('Cannot create soundsystem, webaudio not supported');
+		if (!AudioContext.isSupported()) {
+			console.warn('Cannot create SoundSystem, WebAudio not supported');
 			return;
 		}
 		System.call(this, 'SoundSystem', ['SoundComponent', 'TransformComponent']);
 
 		this.entities = [];
-		this._outNode = AudioContext.createGain();
-		this._outNode.connect(AudioContext.destination);
-		this._wetNode = AudioContext.createGain();
+		this._outNode = AudioContext.getContext().createGain();
+		this._outNode.connect(AudioContext.getContext().destination);
+		this._wetNode = AudioContext.getContext().createGain();
 		this._wetNode.connect(this._outNode);
-		this._convolver = AudioContext.createConvolver();
+		this._convolver = AudioContext.getContext().createConvolver();
 		this._convolver.connect(this._wetNode);
 
-		this._listener = AudioContext.listener;
+		this._listener = AudioContext.getContext().listener;
 		this._listener.dopplerFactor = 0;
 
 		this._relativeTransform = new Matrix4x4();
@@ -107,8 +107,8 @@ define([
 	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
 	 */
 	SoundSystem.prototype.updateConfig = function(config) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
+		if (!AudioContext.isSupported()) {
+			console.warn('WebAudio not supported');
 			return;
 		}
 		_.extend(this._settings, config);
@@ -128,8 +128,8 @@ define([
 	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
 	 */
 	SoundSystem.prototype.setReverb = function(audioBuffer) {
-		if (!AudioContext) {
-			console.warn('Webaudio not supported');
+		if (!AudioContext.isSupported()) {
+			console.warn('WebAudio not supported');
 			return;
 		}
 		this._wetNode.disconnect();
@@ -191,7 +191,7 @@ define([
 	};
 
 	SoundSystem.prototype.process = function(entities, tpf) {
-		if (!AudioContext) {
+		if (!AudioContext.isSupported()) {
 			// This should never happen because system shouldn't process
 			return;
 		}

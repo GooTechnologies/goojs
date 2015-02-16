@@ -253,7 +253,7 @@ define([
 		this.world.setSystem(new BoundingUpdateSystem());
 		this.world.setSystem(new LightingSystem());
 
-		if (AudioContext) {
+		if (AudioContext.isSupported()) {
 			this.world.setSystem(new SoundSystem());
 		}
 

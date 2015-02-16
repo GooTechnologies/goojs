@@ -13,7 +13,7 @@ define([
 		});
 
 		describe('clone', function () {
-			var exclusionList = ['image', '_originalImage', 'needsUpdate'];
+			var exclusionList = ['image', '_originalImage', 'needsUpdate', 'loadImage'];
 
 			it('can clone a texture holding no image', function () {
 				var original = new Texture();

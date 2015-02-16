@@ -23,7 +23,8 @@ var filterList = [
 	'RayIntersectsPlane',
 	'WorldPickCoords',
 	'MeshBuilder',
-	'Skybox'
+	'Skybox',
+	'Cubemap'
 ];
 
 exports.filterList = filterList;
