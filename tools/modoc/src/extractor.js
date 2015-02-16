@@ -1,3 +1,4 @@
+// jshint node:true
 'use strict';
 
 var esprima = require('../lib/esprima');
@@ -121,15 +122,31 @@ var extractTree = function (tree, fileName, options) {
 		},
 		member: {
 			match: function (node, parent, fileName) {
-				return node.type === 'AssignmentExpression' && node.operator === '=' &&
+				if (node.type === 'AssignmentExpression' && node.operator === '=' &&
 					node.left.type === 'MemberExpression' &&
 					node.left.object.type === 'ThisExpression' &&
-					parent.leadingComments &&
-					getFirstJSDoc(parent.leadingComments) &&
-					options.nameFilter(node.left.property.name);
+					options.nameFilter(node.left.property.name)
+				) {
+					var comments;
+					if (parent.leadingComments) {
+						comments = parent.leadingComments;
+					} else if (node.left.leadingComments) {
+						comments = node.left.leadingComments;
+					}
+
+					return comments && getFirstJSDoc(comments);
+				}
+				return false;
+
+				//return node.type === 'AssignmentExpression' && node.operator === '=' &&
+				//	node.left.type === 'MemberExpression' &&
+				//	node.left.object.type === 'ThisExpression' &&
+				//	parent.leadingComments &&
+				//	getFirstJSDoc(parent.leadingComments) &&
+				//	options.nameFilter(node.left.property.name);
 			},
 			extract: function (node, parent) {
-				var comment = getFirstJSDoc(parent.leadingComments);
+				var comment = getFirstJSDoc(parent.leadingComments || node.left.leadingComments);
 
 				return {
 					name: node.left.property.name,
