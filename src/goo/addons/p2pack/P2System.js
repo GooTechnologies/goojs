@@ -42,8 +42,9 @@ define([
 	function updateTransform(transformComponent, p2Component) {
 		var position = p2Component.body.position,
 			scale = p2Component.scale;
-		var oldZ = transformComponent.transform.translation.z;
-		transformComponent.transform.translation.setDirect(position[0] * scale, position[1] * scale, 0);
+		var entityTranslation = transformComponent.transform.translation;
+		entityTranslation.x = position[0] * scale;
+		entityTranslation.y = position[1] * scale;
 		transformComponent.transform.rotation.fromAngles(p2Component.offsetAngleX, p2Component.offsetAngleY, p2Component.offsetAngleZ + p2Component.body.angle);
 		transformComponent.setUpdated();
 	}
