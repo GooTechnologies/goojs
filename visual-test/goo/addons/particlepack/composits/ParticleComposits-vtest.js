@@ -37,23 +37,31 @@ require([
 
 	var customCallbacks = {};
 
-	var spawn = function(simConfigs) {
+	var spawn = function(simConfigs, tpf) {
 
-		for (var i = 0; i < simConfigs.simulators.length; i++) {
-			var simSettings = simConfigs.simulators[i];
-			particleSystem.spawnParticleSimulation(simSettings.id, posVec, dirVec, ExampleEffects.effects[0].effect_data, customCallbacks);
+		for (var i = 0; i < effects.length; i++) {
+			posVec.setDirect(i*2, 0, -i*5);
+			if (effects[i].spawnProbability * tpf > 0.016 * Math.random()) {
+				particleSystem.spawnParticleSimulation(effects[i].renderer, posVec, dirVec, effects[i].effect_data, customCallbacks);
+			}
 		}
 
+	};
+
+	var effects = [];
+
+	for (var i = 0; i < ExampleEffects.effects.length; i++) {
+		effects.push(ExampleEffects.effects[i]);
 	};
 
 
 	var tick = function(tpf) {
 
-		if (Math.random() < 0.05) {
-			spawn(DefaultSimulators)
-		}
+	//	if (Math.random() < tpf) {
+			spawn(DefaultSimulators, tpf);
+	//	}
 
-	}
+	};
 
 	var txCallback = function(texture) {
 		particleSystem.addConfiguredAtlasSystems(DefaultSimulators, DefaultRendererConfigs, DefaultSpriteAtlas.atlases[0], texture);
