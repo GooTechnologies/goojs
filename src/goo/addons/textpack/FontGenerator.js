@@ -1,4 +1,8 @@
-define(function () {
+define([
+	'goo/math/Vector2'
+], function (
+	Vector2
+) {
 	'use strict';
 
 	// ---
@@ -115,14 +119,68 @@ define(function () {
 		return simplePolygon;
 	}
 
-	// polygons -> { contour: polygon, holes: polygon[] }[]
-	function getHolesAndContour(polygons) {
-		// this will have to do for now
-		polygons.sort(function (a, b) { return b.length - a.length; });
+	function getBoundingVolume(polygon) {
+		var min = new Vector2(polygon[0].x, polygon[0].y);
+		var max = min.clone();
+
+		for (var i = 1; i < polygon.length; i++) {
+			var point = polygon[i];
+
+			if (point.x < min.x) {
+				min.x = point.x;
+			} else if (point.x > max.x) {
+				max.x = point.x;
+			}
+
+			if (point.y < min.y) {
+				min.y = point.y;
+			} else if (point.y > max.y) {
+				max.y = point.y;
+			}
+		}
+
 		return {
-			contour: polygons[0],
-			holes: polygons.slice(1)
+			min: min,
+			max: max
 		};
+	}
+
+	function containsBox(a, b) {
+		return a.min.x < b.min.x && a.max.x > b.max.x &&
+			a.min.y < b.min.y && a.max.y > b.max.y;
+	}
+
+	function getHierarchy(polygons) {
+		var candidates = polygons.map(function (polygon) {
+			return {
+				polygon: polygon,
+				boundingVolume: getBoundingVolume(polygon),
+				children: []
+			};
+		});
+
+		for (var i = 0; i < candidates.length; i++) {
+			var candidateParent = candidates[i];
+			for (var j = 0; j < candidates.length; j++) {
+				var candidateChild = candidates[j];
+
+				if (containsBox(candidateParent.boundingVolume, candidateChild.boundingVolume)) {
+					candidateParent.children.push(candidateChild);
+					candidateChild.parent = candidateParent;
+				}
+			}
+		}
+
+		var contours = candidates.filter(function (candidate) {
+			return !candidate.parent;
+		}).map(function (candidate) {
+			return {
+				polygon: candidate.polygon,
+				holes: candidate.children
+			};
+		});
+
+		return contours;
 	}
 
 	function printIndices(points) {
@@ -130,19 +188,49 @@ define(function () {
 		console.log(str);
 	}
 
-	function convert(holesAndContour) {
-		var indexCounter = 0;
+	function addIndices(points) {
+		points.forEach(function (point, index) {
+			point._index = index;
+		});
+	}
 
-		function convert(polygon) {
-			polygon.forEach(function (point) {
-				point._index = indexCounter;
-				indexCounter++;
-				console.log(indexCounter);
-			});
-		}
+	function getIndices(triangles) {
+		var indices = [];
+		triangles.forEach(function (triangle) {
+			indices.push(
+				triangle.getPoint(0)._index,
+				triangle.getPoint(1)._index,
+				triangle.getPoint(2)._index
+			);
+		});
+		return indices;
+	}
 
-		convert(holesAndContour.contour);
-		holesAndContour.holes.forEach(convert);
+	function getVerts(points) {
+		// use an inverse map from indices to _indices
+		points.sort(function (a, b) { return a._index - b._index; });
+
+		var verts = [];
+		points.forEach(function (point) {
+			verts.push(point.x, point.y, 0);
+		});
+		return verts;
+	}
+
+	function triangulate(points, contour, holes) {
+		var swctx = new poly2tri.SweepContext(contour.slice(0));
+		holes.forEach(function (hole) { swctx.addHole(hole.polygon.slice(0)); });
+
+		swctx.triangulate();
+		var triangles = swctx.getTriangles();
+
+		var surfaceIndices = getIndices(triangles);
+		var surfaceVerts = getVerts(points);
+
+		return {
+			surfaceIndices: surfaceIndices,
+			surfaceVerts: surfaceVerts
+		};
 	}
 
 	function meshFromGlyph(glyph, fontSize, options) {
@@ -156,33 +244,27 @@ define(function () {
 		}, '');
 
 		var points = getPathPoints(stringifiedPath, options.stepLength);
+		addIndices(points); // should do this after polygon splitting and simplification
 
-		var pointGroups = groupPoints(points, options.stepLength);
-
-		// ---
-		pointGroups.forEach(function (group, index) {
-			con2d.fillStyle = 'rgb(' + (index * 30) + ', ' + (index * 80) + ', ' + (255 - index * 80) + ')';
-			group.forEach(function (point) {
-				drawPoint(point.x, point.y);
-			});
-			drawPath(group);
-		});
-		// ---
+		var polygons = groupPoints(points, options.stepLength);
 
 		if (options.simplifyPaths) {
-			pointGroups = pointGroups.map(simplifyPath);
+			polygons = polygons.map(simplifyPath);
 		}
 
-		var holesAndContour = getHolesAndContour(pointGroups);
+		var hierarchy = getHierarchy(polygons);
 
-		convert(holesAndContour);
-
-		console.log('contour length', holesAndContour.contour.length);
-		holesAndContour.holes.forEach(function (group, index) {
-			console.log('hole', index, 'length', group.length);
+		var surfaceIndices = [], surfaceVerts = [];
+		hierarchy.forEach(function (contour) {
+			var result = triangulate(points, contour.polygon, contour.holes);
+			surfaceVerts = result.surfaceVerts;
+			Array.prototype.push.apply(surfaceIndices, result.surfaceIndices);
 		});
 
-		return holesAndContour;
+		return {
+			surfaceIndices: surfaceIndices,
+			surfaceVerts: surfaceVerts
+		};
 	}
 
 	return {
