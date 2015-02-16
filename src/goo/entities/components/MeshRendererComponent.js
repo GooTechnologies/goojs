@@ -61,7 +61,8 @@ define([
 		 * @type {boolean}
 		 * @default
 		 */
-		this.hidden = false;
+		// this.hidden = false;
+		this._isVisual = true;
 
 		this._renderDistance = 0;
 

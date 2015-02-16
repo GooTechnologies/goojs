@@ -26,40 +26,7 @@ define([
 		this._tags = new Set();
 		this._attributes = new Map();
 
-		/*Object.defineProperty(this, 'id', {
-			value : Entity.entityCount++,
-			writable : false
-		});*/
 		this.name = name !== undefined ? name : 'Entity_' + this._index;
-
-		/** Holds the hidden status of the entity. The hidden status will not however propagate to components or child entities.
-		 * @type {boolean}
-		 * @default false
-		 * @private
-		 */
-		
-		// investigate component .enabled vs .hidden
-
-		this._hidden = false;
-		this._hiddenLocally = false;
-		// show()
-		// hide()
-		// isHidden()
-		// isHiddenLocally()
-
-		this._active = false;
-		this._activeLocally = false;
-		// activate()
-		// deactivate()
-		// isActive()
-		// isActiveLocally()
-
-		/** Mark entity as static.
-		 * Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.static = false;
 
 		Entity.entityCount++;
 	}
@@ -212,6 +179,21 @@ define([
 		}
 
 		return this;
+	};
+
+	Entity.prototype.setComponentEnabled = function (type, state) {
+		var typeAttributeName = getTypeAttributeName(type);
+		var component = this[typeAttributeName];
+
+		if (!!component && this._components.indexOf(component) > -1) {
+			if (component.enabled !== state) {
+				component.enabled = state;
+				if (this._world && this._world.entityManager.containsEntity(this)) {
+					this._world.changedEntity(this, component);
+					// this._world.changedEntity(this, component, 'removedComponent');
+				}
+			}
+		}
 	};
 
 	/**

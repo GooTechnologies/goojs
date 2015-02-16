@@ -38,6 +38,30 @@ define([
 		 */
 		this.children = [];
 
+
+
+		this._hidden = false;
+		this._hiddenInHierarchy = false;
+		// show()
+		// hide()
+		// isHidden()
+		// isHiddenInHierarchy()
+
+		this._active = false;
+		this._activeInHierarchy = false;
+		// activate()
+		// deactivate()
+		// isActive()
+		// isActiveInHierarchy()
+
+		/** 
+		 * Mark entity as static.
+		 * Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.
+		 * @type {boolean}
+		 * @default false
+		 */
+		this._static = false;
+
 		/**
 		 * The entity's transform in local space.
 		 * @type {Transform}
@@ -345,6 +369,10 @@ define([
 		 */
 		isHidden: function () {
 			return this._hidden;
+		},
+
+		isHiddenInHierarchy: function () {
+			return this._hidden || this._hiddenInHierarchy;
 		}
 	};
 

@@ -12,6 +12,8 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 		 */
 		this.enabled = true;
 
+		this._isVisual = false;
+
 		this.installedAPI = new Set();
 	}
 

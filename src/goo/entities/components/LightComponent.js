@@ -29,7 +29,8 @@ define([
 		 * @type {boolean}
 		 * @default
 		 */
-		this.hidden = false;
+		// this.hidden = false;
+		this._isVisual = true;
 
 		// #ifdef DEBUG
 		Object.seal(this);

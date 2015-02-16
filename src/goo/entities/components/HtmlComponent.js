@@ -24,7 +24,8 @@ function (
 		/**
 		 * @type {boolean}
 		 */
-		this.hidden = false;
+		// this.hidden = false;
+		this._isVisual = true;
 
 		/**
 		 * @type {boolean}
