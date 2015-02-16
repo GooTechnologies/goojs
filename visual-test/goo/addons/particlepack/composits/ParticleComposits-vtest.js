@@ -52,7 +52,7 @@ require([
 
 	for (var i = 0; i < ExampleEffects.effects.length; i++) {
 		effects.push(ExampleEffects.effects[i]);
-	};
+	}
 
 
 	var tick = function(tpf) {
