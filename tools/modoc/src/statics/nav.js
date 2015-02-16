@@ -18,6 +18,11 @@
 		searchInput.keyup(function () {
 			var searchText = $(this).val();
 			filterClasses(searchText);
+			if (searchText.length > 0) {
+				shortcutsSection.hide();
+			} else {
+				shortcutsSection.show();
+			}
 		});
 	}
 
@@ -50,6 +55,7 @@
 	var iframe = $('iframe.class-panel');
 	var items = $('.item');
 	var searchInput = $('#search');
+	var shortcutsSection = $('.shortcuts');
 
 	var parameters = purl().param();
 	if (parameters.c) {
