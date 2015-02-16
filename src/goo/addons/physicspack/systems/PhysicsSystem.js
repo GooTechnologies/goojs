@@ -189,6 +189,8 @@ function (
 			gooResult.entity = this._entities[cannonResult.body.id];
 			var point = cannonResult.hitPointWorld;
 			var normal = cannonResult.hitNormalWorld;
+			gooResult.hit = tmpCannonResult.hasHit;
+			gooResult.distance = tmpCannonResult.distance;
 			gooResult.point.setDirect(point.x, point.y, point.z);
 			gooResult.normal.setDirect(normal.x, normal.y, normal.z);
 		}
