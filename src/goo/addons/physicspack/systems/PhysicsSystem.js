@@ -178,14 +178,14 @@ function (
 
 	var tmpOptions = {};
 	PhysicsSystem.prototype._getCannonRaycastOptions = function (options) {
-		tmpOptions.collisionFilterMask = options.collisionMask !== undefined ? options.collisionMask : -1;
-		tmpOptions.collisionFilterGroup = options.collisionGroup !== undefined ? options.collisionGroup : -1;
-		tmpOptions.skipBackfaces = options.skipBackfaces !== undefined ? options.skipBackfaces : false;
+		tmpOptions.collisionFilterMask = options && options.collisionMask !== undefined ? options.collisionMask : -1;
+		tmpOptions.collisionFilterGroup = options && options.collisionGroup !== undefined ? options.collisionGroup : -1;
+		tmpOptions.skipBackfaces = options && options.skipBackfaces !== undefined ? options.skipBackfaces : true;
 		return tmpOptions;
 	};
 
 	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult) {
-		if (tmpCannonResult.hasHit) {
+		if (cannonResult.hasHit) {
 			gooResult.entity = this._entities[cannonResult.body.id];
 			var point = cannonResult.hitPointWorld;
 			var normal = cannonResult.hitNormalWorld;
@@ -194,7 +194,7 @@ function (
 			gooResult.point.setDirect(point.x, point.y, point.z);
 			gooResult.normal.setDirect(normal.x, normal.y, normal.z);
 		}
-		return tmpCannonResult.hasHit;
+		return cannonResult.hasHit;
 	};
 
 	/**
@@ -237,6 +237,53 @@ function (
 		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
 	};
 
+	/**
+	 * Cast a ray into the world of colliders using an origin, direction(normalized) and distance.
+	 * @param  {Vector3} origin
+	 * @param  {Vector3} direction
+	 * @param  {number} distance
+	 * @param  {object} options
+	 * @param  {RaycastResult} [result]
+	 * @return {boolean} True if hit, else false
+	 */
+	PhysicsSystem.prototype.raycastDirectionAny = function(origin, direction, distance, options, result){
+		result = result || new RaycastResult();
+		var cannonStart = tmpVec1;
+		var cannonEnd = tmpVec2;
+		cannonStart.copy(origin);
+		cannonEnd.copy(direction);
+		cannonEnd.scale(distance, cannonEnd);
+		cannonEnd.vadd(origin, cannonEnd);
+
+		this.cannonWorld.raycastAny(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
+
+		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
+	};
+
+	/**
+	 * Cast a ray into the world of colliders using an origin direction(normalized) and distance, stopping at the first hit.
+	 * @param  {Vector3} origin
+	 * @param  {Vector3} direction
+	 * @param  {number} distance
+	 * @param  {object} options
+	 * @param  {RaycastResult} [result]
+	 * @return {boolean} True if hit, else false
+	 */
+	PhysicsSystem.prototype.raycastDirectionClosest = function(origin, direction, distance, options, result){
+		result = result || new RaycastResult();
+		var cannonStart = tmpVec1;
+		var cannonEnd = tmpVec2;
+		cannonStart.copy(origin);
+		cannonEnd.copy(direction);
+		cannonEnd.scale(distance, cannonEnd);
+		cannonEnd.vadd(origin, cannonEnd);
+
+		this.cannonWorld.raycastClosest(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), tmpCannonResult);
+
+		return this._copyCannonRaycastResultToGoo(tmpCannonResult, result);
+	};
+
+
 	var tmpResult = new RaycastResult();
 
 	/**
@@ -254,7 +301,33 @@ function (
 		cannonEnd.copy(end);
 
 		var that = this;
-		this.cannonWorld.raycastAll(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), function (cannonResult) {
+		this.cannonWorld.raycastAll(cannonStart, cannonEnd, that._getCannonRaycastOptions(options), function (cannonResult) {
+			that._copyCannonRaycastResultToGoo(cannonResult, tmpResult);
+			if (callback(tmpResult) === false) {
+				cannonResult.abort();
+			}
+		});
+	};
+
+	/**
+	 * Cast a ray into the world of colliders using an origin, direction(normalized) and distance, evaluating the given callback once at every hit.
+	 * @param  {Vector3} origin
+	 * @param  {Vector3} direction
+	 * @param  {number} distance
+	 * @param  {object} options
+	 * @param  {Function} callback
+	 * @return {boolean} True if hit, else false
+	 */
+	PhysicsSystem.prototype.raycastDirectionAll = function(origin, direction, distance, options, callback){
+		var cannonStart = tmpVec1;
+		var cannonEnd = tmpVec2;
+		cannonStart.copy(origin);
+		cannonEnd.copy(direction);
+		cannonEnd.scale(distance, cannonEnd);
+		cannonEnd.vadd(origin, cannonEnd);
+
+		var that = this;
+		this.cannonWorld.raycastAll(cannonStart, cannonEnd, that._getCannonRaycastOptions(options), function (cannonResult) {
 			that._copyCannonRaycastResultToGoo(cannonResult, tmpResult);
 			if (callback(tmpResult) === false) {
 				cannonResult.abort();
