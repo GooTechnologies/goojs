@@ -607,10 +607,11 @@ define([
 			// for (var j = 0; j < textureList.length; j++) {
 			// gotta simulate lexical scoping
 			textureList.forEach(function (texture) {
+				if (!texture) { return; }
 				queue.push(function () {
-					if (texture === null ||
-						texture instanceof RenderTarget === false && (texture.image === undefined ||
-						texture.checkDataReady() === false)) {
+					if (texture instanceof RenderTarget === false &&
+						(texture.image === undefined || texture.checkDataReady() === false)
+					) {
 
 						if (texture.variant === '2D') {
 							texture = TextureCreator.DEFAULT_TEXTURE_2D;
