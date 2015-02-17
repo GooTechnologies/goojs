@@ -73,20 +73,28 @@ require([
 			frontEntity.set([letterEntityCounter * 22, 0, 0]);
 			frontEntity.setScale(0.1, -0.1, 0.1);
 
-			// extrusion
-			//function extrude(contour) {
-			//	var contourVerts = getVerts(contour);
-			//	contourVerts.push(contourVerts[0], contourVerts[1], contourVerts[2]);
-			//	var contourPolyLine = new PolyLine(contourVerts, true);
-			//	var thirdSpace = new PolyLine([0, 0, -100, 0, 0, 0]);
-			//	var extrusionMesh = contourPolyLine.mul(thirdSpace);
-			//	var extrusionEntity = world.createEntity(extrusionMesh, material).addToWorld();
-			//	extrusionEntity.set([letterEntityCounter * 22, 0, 0]);
-			//	extrusionEntity.setScale(0.1, 0.1, 0.1);
-			//}
 
-			//result.holes.forEach(extrude);
-			//extrude(result.contour);
+			function getVerts(points) {
+				var verts = [];
+				points.forEach(function (point) {
+					verts.push(point.x, point.y, 0);
+				});
+				return verts;
+			}
+
+			// extrusions
+			function extrude(polygon) {
+				var contourVerts = getVerts(polygon);
+				contourVerts.push(contourVerts[0], contourVerts[1], contourVerts[2]);
+				var contourPolyLine = new PolyLine(contourVerts, true);
+				var thirdSpace = new PolyLine([0, 0, -100, 0, 0, 0]);
+				var extrusionMesh = contourPolyLine.mul(thirdSpace);
+				var extrusionEntity = world.createEntity(extrusionMesh, material).addToWorld();
+				extrusionEntity.set([letterEntityCounter * 22, 0, 0]);
+				extrusionEntity.setScale(0.1, -0.1, 0.1);
+			}
+
+			result.extrusions.forEach(extrude);
 
 			// back
 			//var backMesh = new FilledPolygon(surfaceVerts);

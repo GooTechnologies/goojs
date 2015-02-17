@@ -236,7 +236,7 @@ define([
 	function meshFromGlyph(glyph, fontSize, options) {
 		options = options || {};
 		options.simplifyPaths = options.simplifyPaths !== false;
-		options.stepLength = options.stepLength || 20;
+		options.stepLength = options.stepLength || 10;
 
 		var path = glyph.getPath(0, 0, fontSize);
 		var stringifiedPath = path.commands.map(serializeCommand).reduce(function (prev, cur) {
@@ -263,7 +263,8 @@ define([
 
 		return {
 			surfaceIndices: surfaceIndices,
-			surfaceVerts: surfaceVerts
+			surfaceVerts: surfaceVerts,
+			extrusions: polygons
 		};
 	}
 
