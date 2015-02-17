@@ -1,6 +1,36 @@
 define({
 	"effects":[
 		{
+			"id":"shrapnel",
+			"renderer": "OccludingParticle",
+			"spawnProbability":0.55,
+			"effect_data":{
+				"color0":[0.9, 0.8, 0.5],
+				"color1":[0.9,0.7, 0.1],
+				"colorRandom":0.4,
+				"colorCurve":[[0, 1], [0.05, 0.6], [0.3, 1],[0.45, 0.4], [0.6, 1], [0.75, 0.3], [0.9,1 ], [1,0]],
+				"count":8,
+				"opacity":[0.3, 1],
+				"alpha":[[0,1], [0.3, 1],[1,0]],
+				"size":[0.55, 1.55],
+				"growthFactor":[0, 2],
+				"growth":[[0, 1], [1, 1]],
+				"stretch":1,
+				"strength":5,
+				"spread":1,
+				"acceleration":0.9997,
+				"gravity":-9,
+				"rotation":[0,7],
+				"spin":"oneToZero",
+				"spinspeed":[-5, 5],
+				"lifespan":[0.2, 0.5],
+				"sprite":"spark_seq",
+				"loopcount":13,
+				"trailsprite":"tail",
+				"trailwidth":0.3
+			}
+		},
+		{
 			"id":"tracer",
 			"renderer": "FastAdditiveTrail",
 			"spawnProbability":0.25,
@@ -139,6 +169,44 @@ define({
 				"spin":"oneToZero",
 				"spinspeed":[-0.4, 0.4],
 				"lifespan":[0.1, 2.3],
+				"sprite":"smokey",
+				"loopcount":15,
+				"trailsprite":"tail",
+				"trailwidth":0.3
+			}
+		},
+		{
+			"id":"blood",
+			"renderer": "OccludingParticle",
+			"spawnProbability":0.2,
+			"effect_data":{
+				"color0": [
+					0.556517857089543675,
+					0.04225718970066575,
+					0.04675143472245335
+				],
+				"color1": [
+					0.13392857093934194,
+					0.03392857093934194,
+					0.03392857093934194
+				],
+				"colorCurve": "oneToZero",
+				"colorRandom": 0.05,
+				"count": 13,
+				"opacity":[0.2, 1],
+				"alpha": "zeroToOne",
+				"size":[0.0, 0.0],
+				"growthFactor": [0.1,5.5],
+				"growth": "posToNeg",
+				"stretch": 0.5,
+				"strength": 3,
+				"spread": 0.15,
+				"acceleration": 0.97,
+				"gravity": -9,
+				"rotation": [0,7],
+				"spin":"oneToZero",
+				"spinspeed":[-0.4, 0.4],
+				"lifespan":[0.1, 1.6],
 				"sprite":"smokey",
 				"loopcount":15,
 				"trailsprite":"tail",

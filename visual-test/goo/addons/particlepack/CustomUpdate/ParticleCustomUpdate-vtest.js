@@ -21,13 +21,7 @@ require([
 	) {
 	'use strict';
 
-	var effectNames = "";
-
-	for (var i = 0; i < ExampleEffects.effects.length; i++) {
-		effectNames += " "+ExampleEffects.effects[i].id;
-	}
-
-	V.describe('Runs effects:'+ effectNames);
+	V.describe('A comet like effect with a ball and tail');
 
 	var posVec = new Vector3();
 	var dirVec = new Vector3(0, 1, 0);
@@ -45,37 +39,35 @@ require([
 
 	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
-	var customCallbacks = {};
-
-	var spawn = function(simConfigs, tpf) {
-
-		for (var i = 0; i < effects.length; i++) {
-			posVec.setDirect(i*2, 0, -i*5);
-			dirVec.setDirect(0, 1, 0);
-			if (emitterData[effects[i].id]) {
-				if (emitterData[effects[i].id].angle) {
-					dirVec.setVector(emitterData[effects[i].id].angle);
-				}
-			}
-
-			if (effects[i].spawnProbability * tpf > 0.016 * Math.random()) {
-				particleSystem.spawnParticleSimulation(effects[i].renderer, posVec, dirVec, effects[i].effect_data, customCallbacks);
-			}
-		}
+	var particleUpdate = function(particle) {
+		particle.position.setVector(posVec);
+		particle.progress = Math.random();
+		particle.lifeSpan = particle.lifeSpanTotal * Math.random();
 
 	};
 
-	var effects = [];
+	var customCallbacks = {
+		particleUpdate:particleUpdate
+	};
+
+	var spawn = function(effectId) {
+		var effect = effects[effectId];
+		particleSystem.spawnParticleSimulation(effect.renderer, posVec, dirVec, effect.effect_data, customCallbacks);
+	};
+
+	var effects = {};
 
 	for (var i = 0; i < ExampleEffects.effects.length; i++) {
-		effects.push(ExampleEffects.effects[i]);
+		effects[ExampleEffects.effects[i].id] = ExampleEffects.effects[i];
 	}
 
 
+	var time = 0;
 	var tick = function(tpf) {
-
+		time += tpf;
+		posVec.setDirect(Math.sin(time) *3, Math.sin(time*2)*2, Math.cos(time) * 3);
 	//	if (Math.random() < tpf) {
-			spawn(DefaultSimulators, tpf);
+		//	spawn(DefaultSimulators, tpf);
 	//	}
 
 	};
@@ -84,7 +76,7 @@ require([
 		particleSystem.addConfiguredAtlasSystems(DefaultSimulators, DefaultRendererConfigs, DefaultSpriteAtlas.atlases[0], texture);
 
 		goo.callbacksPreProcess.push(tick);
-
+		spawn('firework_blue');
 	};
 
 	new TextureCreator().loadTexture2D('../../../../resources/particle_atlas.png', {}, txCallback);
