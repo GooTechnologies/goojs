@@ -58,6 +58,7 @@ function (
 		this.cannonBody = null;
 
 		/**
+		 * If true, the Cannon.js body will be re-initialized in the next process().
 		 * @private
 		 * @type {boolean}
 		 */

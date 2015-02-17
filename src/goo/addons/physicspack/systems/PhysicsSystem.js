@@ -271,17 +271,29 @@ function (
 	};
 
 	/**
-	 * Stops updating the entities
+	 * Stops updating the entities. They will continue again from the pause positions when calling .play().
 	 */
 	PhysicsSystem.prototype.pause = function () {
 		this.passive = true;
 	};
 
 	/**
-	 * Resumes updating the entities
+	 * Resumes updating the entities.
 	 */
 	PhysicsSystem.prototype.play = function () {
 		this.passive = false;
+	};
+
+	/**
+	 * Stops simulating and sets the positions to the initial ones.
+	 */
+	PhysicsSystem.prototype.stop = function () {
+		this.pause();
+
+		// Trash everything
+		for (var i = 0; i < this._activeEntities.length; i++) {
+			this._activeEntities[i].rigidbodyComponent._dirty = true;
+		}
 	};
 
 	/**

@@ -289,5 +289,27 @@ define([
 			system.play();
 			expect(system.passive).toBeFalsy();
 		});
+
+		it('can stop and play', function () {
+
+			var rbcA = new RigidbodyComponent({ mass: 1 });
+			var ccA = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			world.createEntity(rbcA, ccA).addToWorld();
+
+			world.process();
+			expect(rbcA._dirty).toBeFalsy();
+
+			system.stop();
+			expect(rbcA._dirty).toBeTruthy();
+
+			world.process();
+			expect(rbcA._dirty).toBeTruthy();
+
+			system.play();
+			world.process();
+			expect(rbcA._dirty).toBeFalsy();
+		});
 	});
 });
