@@ -1,3 +1,11 @@
+v0.13.1 --- 2015-02-12
+----------------------
+
+###Fixes
+ + handling of non-Error exceptions thrown by scripts handled by the ScriptHandler
+ + cloning mesh data with uninitialised indexLengths
+
+
 v0.13.0 --- 2015-02-11
 ----------------------
 
@@ -6,8 +14,8 @@ v0.13.0 --- 2015-02-11
  + a new visual test, [CubeMap](http://code.gooengine.com/0.13.0/visual-test/goo/renderer/texture/CubeMaps/Cubemap-vtest.html)
 
 ###Fixes
- * lights copy the color data they receive on creation
  * *Ray* copies the data it receives on creation
+ * lights copy the color data they receive on creation
 
 ###Changes
  * the AudioContext is created now only on demand, via the `.getContext()` function
