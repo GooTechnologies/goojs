@@ -159,7 +159,6 @@ define([
 			expect(rbc.cannonBody).toBeFalsy();
 			world.process();
 			expect(rbc.cannonBody).toBeTruthy();
-
 		});
 
 		it('can add and remove a BallJoint', function () {
@@ -174,8 +173,6 @@ define([
 			rbc.removeJoint(joint);
 			world.process();
 			expect(joint.cannonJoint).toBeFalsy();
-
-
 		});
 
 		it('cleans up if its detached', function () {
@@ -192,8 +189,23 @@ define([
 
 			expect(joint.cannonJoint).toBeFalsy();
 			expect(rbc.cannonBody).toBeFalsy();
+		});
 
+		it('cleans up if its removed from its world', function () {
+			var joint = new BallJoint({
+				connectedEntity: entity
+			});
 
+			rbc.addJoint(joint);
+
+			world.process();
+
+			entity.removeFromWorld();
+
+			world.process();
+
+			expect(joint.cannonJoint).toBeFalsy();
+			expect(rbc.cannonBody).toBeFalsy();
 		});
 
 		it('can add and remove a HingeJoint', function () {
@@ -208,8 +220,6 @@ define([
 			rbc.removeJoint(joint);
 			world.process();
 			expect(joint.cannonJoint).toBeFalsy();
-
-
 		});
 
 		it('emits initialized', function () {
@@ -251,8 +261,6 @@ define([
 			SystemBus.removeListener('goo.physics.initialized', listener);
 			expect(numEvents).toBe(1);
 			expect(rbc.cannonBody).toBeTruthy();
-
-
 		});
 
 		it('is initialized properly on world.processEntityChanges', function () {
@@ -277,8 +285,6 @@ define([
 			expect(rbc.cannonBody.shapes.length).toBe(1);
 
 			SystemBus.removeListener('goo.physics.initialized', listener);
-
-
 		});
 
 		it('can clone', function () {
@@ -317,8 +323,6 @@ define([
 			var velocity = new Vector3();
 			a.getVelocity(velocity);
 			expect(velocity).toEqual(new Vector3(1, 2, 3));
-
-
 		});
 
 		it('can set sleeping parameters', function () {
@@ -336,7 +340,6 @@ define([
 			world.process();
 
 			expect(rbc.cannonBody.shapes[0].radius).toEqual(5);
-
 		});
 	});
 });

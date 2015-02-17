@@ -474,6 +474,7 @@ function (
 	};
 
 	/**
+	 * Removes the body from the physics world.
 	 * @private
 	 */
 	RigidbodyComponent.prototype.destroy = function () {

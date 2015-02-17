@@ -310,6 +310,20 @@ function (
 
 	/**
 	 * @private
+	 * @param  {Entity} entity
+	 */
+	PhysicsSystem.prototype.deleted = function (entity) {
+		if (entity.rigidbodyComponent) {
+			for (var i = 0; i < entity.rigidbodyComponent.joints.length; i++) {
+				entity.rigidbodyComponent.destroyJoint(entity.rigidbodyComponent.joints[i]);
+			}
+			entity.rigidbodyComponent.joints.length = 0;
+			entity.rigidbodyComponent.destroy();
+		}
+	};
+
+	/**
+	 * @private
 	 * @param  {array} entities
 	 * @param  {number} tpf
 	 */
