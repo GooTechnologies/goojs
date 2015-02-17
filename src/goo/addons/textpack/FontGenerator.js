@@ -151,10 +151,16 @@ define([
 	}
 
 	function getHierarchy(polygons) {
+		// most characters have 1 polygon
+		// a, b, d, e, i... have 2 polygons
+		// 8, B have 3 polygons
+		// % has 5 polygons
+		// capital `theta` in the greek alphabet has 3 polygons, all nested
 		var candidates = polygons.map(function (polygon) {
 			return {
 				polygon: polygon,
 				boundingVolume: getBoundingVolume(polygon),
+				parent: null,
 				children: []
 			};
 		});
@@ -173,14 +179,20 @@ define([
 
 		var contours = candidates.filter(function (candidate) {
 			return !candidate.parent;
-		}).map(function (candidate) {
+		});
+
+		contours.forEach(function (contour) {
+			contour.children.forEach(function (child) {
+				Array.prototype.push.apply(contours, child.children);
+			});
+		});
+
+		return contours.map(function (candidate) {
 			return {
 				polygon: candidate.polygon,
 				holes: candidate.children
 			};
 		});
-
-		return contours;
 	}
 
 	function printIndices(points) {

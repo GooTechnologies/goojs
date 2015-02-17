@@ -84,7 +84,7 @@ require([
 
 	}
 
-	opentype.load('Calligraffiti.ttf', function (err, font) {
+	opentype.load('Roboto-Black.ttf', function (err, font) {
 		if (err) { throw err; }
 
 		var fontSize = 72;
