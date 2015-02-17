@@ -28,6 +28,10 @@ require([
 
 	var goo = V.initGoo();
 
+	var emitterData = {
+		tracer:{angle:new Vector3(1, 1, 0)}
+	}
+
 	var world = goo.world;
 
 	var particleSystem = new ParticleSystem({goo:goo});
@@ -41,6 +45,13 @@ require([
 
 		for (var i = 0; i < effects.length; i++) {
 			posVec.setDirect(i*2, 0, -i*5);
+			dirVec.setDirect(0, 1, 0);
+			if (emitterData[effects[i].id]) {
+				if (emitterData[effects[i].id].angle) {
+					dirVec.setVector(emitterData[effects[i].id].angle);
+				}
+			}
+
 			if (effects[i].spawnProbability * tpf > 0.016 * Math.random()) {
 				particleSystem.spawnParticleSimulation(effects[i].renderer, posVec, dirVec, effects[i].effect_data, customCallbacks);
 			}

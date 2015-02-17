@@ -43,8 +43,9 @@ define([
 			material.uniforms.alphakill = simConf.alphakill.value;
 			material.blendState.blending = simConf.blending.value;
 
-			material.depthState.write = false;
-			material.renderQueue = 3010;
+			material.depthState.write = simConf.depthWrite || false;
+			material.renderQueue = simConf.renderQueue || 3010;
+			console.log(material.renderQueue)
 			var entity = this.entity = goo.world.createEntity(meshData);
 			entity.set(new MeshRendererComponent(material));
 			entity.name = 'ParticleRenderer';

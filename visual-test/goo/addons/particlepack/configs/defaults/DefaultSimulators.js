@@ -15,7 +15,7 @@ define({
 				"texts": ["AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "NoBlending", "CustomBlending"]
 			},
 			"alphakill": {
-				"value": 0,
+				"value": 0.01,
 				"type": "number",
 				"min": 0.0,
 				"max": 1.0
@@ -29,6 +29,7 @@ define({
 				"ParticleRenderer"
 			],
 			"poolCount": 1000,
+			"renderQueue": 3020,
 			"blending": {
 				"value": "AdditiveBlending",
 				"type": "option",
@@ -36,7 +37,7 @@ define({
 				"texts": ["AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "NoBlending", "CustomBlending"]
 			},
 			"alphakill": {
-				"value": 0,
+				"value": 0.01,
 				"type": "number",
 				"min": 0.0,
 				"max": 1.0
@@ -50,6 +51,7 @@ define({
 				"ParticleRenderer"
 			],
 			"poolCount": 2000,
+			"renderQueue": 3000,
 			"blending": {
 				"value": "CustomBlending",
 				"type": "option",
@@ -57,7 +59,30 @@ define({
 				"texts": ["AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "NoBlending", "CustomBlending"]
 			},
 			"alphakill": {
-				"value": 0,
+				"value": 0.01,
+				"type": "number",
+				"min": 0.0,
+				"max": 1.0
+
+			}
+		},
+		{
+			"id": "OccludingParticle",
+			"atlas":"defaultSpriteAtlas",
+			"renderers": [
+				"ParticleRenderer"
+			],
+			"poolCount": 2000,
+			"renderQueue": 1000,
+			"depthWrite":true,
+			"blending": {
+				"value": "NoBlending",
+				"type": "option",
+				"values": ["AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "NoBlending", "CustomBlending"],
+				"texts": ["AdditiveBlending", "SubtractiveBlending", "MultiplyBlending", "NoBlending", "CustomBlending"]
+			},
+			"alphakill": {
+				"value": 0.15,
 				"type": "number",
 				"min": 0.0,
 				"max": 1.0
