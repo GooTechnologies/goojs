@@ -200,9 +200,13 @@ define([
 		console.log(str);
 	}
 
-	function addIndices(points) {
-		points.forEach(function (point, index) {
-			point._index = index;
+	function addIndices(polygons) {
+		var counter = 0;
+		polygons.forEach(function (points) {
+			points.forEach(function (point) {
+				point._index = counter;
+				counter++;
+			});
 		});
 	}
 
@@ -229,22 +233,25 @@ define([
 		return verts;
 	}
 
-	function triangulate(points, contour, holes) {
+	function triangulate(contour, holes) {
 		var swctx = new poly2tri.SweepContext(contour.slice(0));
 		holes.forEach(function (hole) { swctx.addHole(hole.polygon.slice(0)); });
 
 		swctx.triangulate();
 		var triangles = swctx.getTriangles();
 
-		var surfaceIndices = getIndices(triangles);
-		var surfaceVerts = getVerts(points);
-
-		return {
-			surfaceIndices: surfaceIndices,
-			surfaceVerts: surfaceVerts
-		};
+		return getIndices(triangles);
 	}
 
+	/**
+	 *
+	 * @param glyph
+	 * @param {number} fontSize
+	 * @param {Object} options
+	 * @param {boolean} options.simplifyPaths
+	 * @param {number} options.stepLength
+	 * @returns {{surfaceIndices: Array, surfaceVerts: Array, extrusions: Array}}
+	 */
 	function meshFromGlyph(glyph, fontSize, options) {
 		options = options || {};
 		options.simplifyPaths = options.simplifyPaths !== false;
@@ -256,7 +263,6 @@ define([
 		}, '');
 
 		var points = getPathPoints(stringifiedPath, options.stepLength);
-		addIndices(points); // should do this after polygon splitting and simplification
 
 		var polygons = groupPoints(points, options.stepLength);
 
@@ -264,13 +270,22 @@ define([
 			polygons = polygons.map(simplifyPath);
 		}
 
+		addIndices(polygons);
+
 		var hierarchy = getHierarchy(polygons);
 
-		var surfaceIndices = [], surfaceVerts = [];
+		// gather the vertices of all polygons
+		var surfaceVerts = [];
+		polygons.forEach(function (polygon) {
+			var verts = getVerts(polygon);
+			Array.prototype.push.apply(surfaceVerts, verts);
+		});
+
+		// separate contours need separate triangulations
+		var surfaceIndices = [];
 		hierarchy.forEach(function (contour) {
-			var result = triangulate(points, contour.polygon, contour.holes);
-			surfaceVerts = result.surfaceVerts;
-			Array.prototype.push.apply(surfaceIndices, result.surfaceIndices);
+			var indices = triangulate(contour.polygon, contour.holes);
+			Array.prototype.push.apply(surfaceIndices, indices);
 		});
 
 		return {

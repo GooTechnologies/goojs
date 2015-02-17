@@ -95,7 +95,7 @@ require([
 				if (glyph.path.commands.length > 0) {
 					var data = FontGenerator.meshFromGlyph(glyph, fontSize, { stepLength: 1 });
 
-					addCharEntity(data, 4, x);
+					addCharEntity(data, 8, x);
 				}
 			});
 		};
