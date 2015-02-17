@@ -544,12 +544,12 @@ function (
 		if (joint instanceof BallJoint) {
 
 			// Scale the joint to the world scale
-			var worldScaledPivotA = joint.localPivot.clone();
-			worldScaledPivotA.mul(this._entity.transformComponent.worldTransform.scale);
+			var scaledPivotA = joint.localPivot.clone();
+			scaledPivotA.mul(this._entity.transformComponent.transform.scale);
 
 			var pivotInA = new CANNON.Vec3();
 			var pivotInB = new CANNON.Vec3();
-			pivotInA.copy(worldScaledPivotA);
+			pivotInA.copy(scaledPivotA);
 
 			if (joint.autoConfigureConnectedPivot) {
 				// Get the local pivot in bodyB
@@ -557,7 +557,7 @@ function (
 				bodyB.pointToLocalFrame(pivotInB, pivotInB);
 			} else {
 				var worldScaledPivotB = joint.connectedLocalPivot.clone();
-				worldScaledPivotB.mul(joint.connectedEntity.transformComponent.worldTransform.scale);
+				worldScaledPivotB.mul(joint.connectedEntity.transformComponent.transform.scale);
 				pivotInB.copy(worldScaledPivotB);
 			}
 
@@ -565,22 +565,31 @@ function (
 
 		} else if (joint instanceof HingeJoint) {
 
-			// TODO: Apply world scale!
-
 			var pivotInA = new CANNON.Vec3();
 			var pivotInB = new CANNON.Vec3();
 			var axisInA = new CANNON.Vec3();
 			var axisInB = new CANNON.Vec3();
 
-			pivotInA.copy(joint.localPivot);
+			// Scale the joint to the world scale
+			var scaledPivotA = joint.localPivot.clone();
+			scaledPivotA.mul(this._entity.transformComponent.transform.scale);
+
+			// Copy it to cannon vectors
+			pivotInA.copy(scaledPivotA);
 			axisInA.copy(joint.localAxis);
 
-			pivotInB.copy(joint.localPivot);
-			axisInB.copy(joint.localAxis);
+			if (joint.autoConfigureConnectedPivot) {
+				// Get the local pivot in bodyB
+				bodyA.pointToWorldFrame(pivotInA, pivotInB);
+				bodyB.pointToLocalFrame(pivotInB, pivotInB);
+			} else {
+				var worldScaledPivotB = joint.connectedLocalPivot.clone();
+				worldScaledPivotB.mul(joint.connectedEntity.transformComponent.transform.scale);
+				pivotInB.copy(worldScaledPivotB);
+			}
 
-			// Get the local pivot in bodyB
-			bodyA.pointToWorldFrame(joint.localPivot, pivotInB);
-			bodyB.pointToLocalFrame(pivotInB, pivotInB);
+			// The axis remains unscaled
+			axisInB.copy(joint.localAxis);
 
 			// Get the local axis in bodyB
 			bodyA.vectorToWorldFrame(joint.localAxis, axisInB);

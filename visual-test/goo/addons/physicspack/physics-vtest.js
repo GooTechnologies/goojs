@@ -221,7 +221,7 @@ require([
 
 	function createHinge(x, y, z) {
 		var lastEntity;
-		var r = 1;
+		var scale = 2;
 		var a = 0.9;
 		var b = 0.1;
 		for (var i = 0; i < 5; i++) {
@@ -229,15 +229,15 @@ require([
 				mass: i ? 1 : 0,
 				velocity: new Vector3(0, 0, 3 * i)
 			});
-			var e = world.createEntity(new Box(2 * r * a, 2 * r * a, 2 * r * b), V.getColoredMaterial(), [x, y - i * r * 2, z])
+			var e = world.createEntity(new Box(a, a, b), V.getColoredMaterial(), [x, y - i * scale, z])
 				.set(rbComponent)
-				.set(new ColliderComponent({ collider: new BoxCollider({ halfExtents: new Vector3(r * a, r * a, r * b) }) }))
-				.addToWorld();
+				.set(new ColliderComponent({ collider: new BoxCollider({ halfExtents: new Vector3(a * 0.5, a * 0.5, b * 0.5) }) }))
+				.addToWorld().setScale(scale, scale, scale);
 
 			if (lastEntity) {
 				e.rigidbodyComponent.addJoint(new HingeJoint({
 					connectedEntity: lastEntity,
-					localPivot: new Vector3(0, r, 0),
+					localPivot: new Vector3(0, 0.5, 0),
 					localAxis: new Vector3(1, 0, 0)
 				}));
 			}
