@@ -27,11 +27,7 @@ require([
 	var dirVec = new Vector3(0, 1, 0);
 
 	var goo = V.initGoo();
-
-	var emitterData = {
-		tracer:{angle:new Vector3(1, 1, 0)}
-	};
-
+	
 	var world = goo.world;
 
 	var particleSystem = new ParticleSystem({goo:goo});
