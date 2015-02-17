@@ -43,8 +43,8 @@ function (
      * @example
      * var v1 = new Vector3(0,0,0);
      * var v2 = new Vector3(13,3,7);
-     * var color = "[1,0,0]";
-     * LineRenderSystem.drawLine(v1, v2, color);
+     * var redColor = "[1,0,0]";
+     * LineRenderSystem.drawLine(v1, v2, redColor);
      */
     LineRenderSystem.prototype.drawLine = function(start, end, colorStr) {
 
@@ -107,6 +107,29 @@ function (
             this._drawAxisLine(max, diff, a, a, -1, 1, colorStr, transformMatrix);
             this._drawAxisLine(min, diff, a, a, 1, -1, colorStr, transformMatrix);
         }
+    };
+
+    /**
+     * draws a cross at a position with the given color and size
+     * @param {Vector3} position
+     * @param {String} colorStr
+     * @param {float} [size]
+     */
+    LineRenderSystem.prototype.drawCross = function(position, colorStr, size) {
+
+        size = size || 0.05;
+
+        var start = tmpVec1.setVector(position).addDirect(-size,0.0,-size);
+        var end = tmpVec2.setVector(position).addDirect(size,0.0,size);
+        this.drawLine(start, end, colorStr);
+
+        start = tmpVec1.setVector(position).addDirect(size,0.0,-size);
+        end = tmpVec2.setVector(position).addDirect(-size,0.0,size);
+        this.drawLine(start, end, colorStr);
+
+        start = tmpVec1.setVector(position).addDirect(0,-size,0.0);
+        end = tmpVec2.setVector(position).addDirect(0.0,size,0.0);
+        this.drawLine(start, end, colorStr);
     };
 
     LineRenderSystem.prototype.process = function (){
