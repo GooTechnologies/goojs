@@ -242,6 +242,27 @@ define([
 			}
 		});
 
+		it('emits substep events', function () {
+			var substeps = 0;
+
+			var listeners = {
+				'goo.physics.substep': function () {
+					substeps++;
+				}
+			};
+			for (var key in listeners) {
+				SystemBus.addListener(key, listeners[key]);
+			}
+
+			world.process();
+
+			expect(substeps).toEqual(1);
+
+			for (var key in listeners) {
+				SystemBus.removeListener(key, listeners[key]);
+			}
+		});
+
 		it('filters collisions', function () {
 
 			var numBeginContact = 0;

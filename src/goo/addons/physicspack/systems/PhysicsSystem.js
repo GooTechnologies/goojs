@@ -46,6 +46,7 @@ function (
 		var that = this;
 		this.cannonWorld.addEventListener('postStep', function () {
 			that.emitContactEvents();
+			that.emitSubStepEvent();
 		});
 
 		this._entities = {};

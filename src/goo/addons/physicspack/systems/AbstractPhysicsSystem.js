@@ -33,6 +33,13 @@ function (
 
 	/**
 	 * @private
+	 */
+	AbstractPhysicsSystem.prototype.emitSubStepEvent = function () {
+		SystemBus.emit('goo.physics.substep');
+	};
+
+	/**
+	 * @private
 	 * @param  {Entity} entityA
 	 * @param  {Entity} entityB
 	 */
