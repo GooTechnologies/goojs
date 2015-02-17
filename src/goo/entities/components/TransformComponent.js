@@ -41,11 +41,9 @@ define([
 
 
 		this._hidden = false;
-		this._hiddenInHierarchy = false;
 		// show()
 		// hide()
 		// isHidden()
-		// isHiddenInHierarchy()
 
 		this._active = false;
 		this._activeInHierarchy = false;
@@ -283,21 +281,33 @@ define([
 		/**
 		 * Hides the entity and its children. Injected on entities with a transformComponent
 		 * @target-class Entity hide method
+		 * @param {boolean} [applyLocally=false] Should hiding be applied only to this node or 
+		 * whole hierarchy
 		 * @returns {Entity} Self to allow chaining
 		 */
-		hide: function () {
-			this._hidden = true;
+		hide: function (applyLocally) {
+			this.transformComponent._hidden = true;
 
-			// hide everything underneath this
-			this.traverse(function (entity) {
-				// will have to refactor this loop in some function; it's used in other places too
-				for (var i = 0; i < entity._components.length; i++) {
-					var component = entity._components[i];
+			if (!applyLocally) {
+				for (var i = 0; i < this._components.length; i++) {
+					var component = this._components[i];
 					if (typeof component.hidden === 'boolean') {
 						component.hidden = true;
 					}
 				}
-			});
+			} else {
+				// hide everything underneath this
+				this.traverse(function (entity) {
+					entity.transformComponent._hidden = true;
+					// will have to refactor this loop in some function; it's used in other places too
+					for (var i = 0; i < entity._components.length; i++) {
+						var component = entity._components[i];
+						if (typeof component.hidden === 'boolean') {
+							component.hidden = true;
+						}
+					}
+				});
+			}
 
 			return this;
 		},
@@ -307,25 +317,24 @@ define([
 		 * @target-class Entity show method
 		 * @returns {Entity} Self to allow chaining
 		 */
-		// will not show the entity (and it's children) if any of its ancestors are hidden
 		show: function () {
 			this._hidden = false;
 
 			// first search if it has hidden parents to determine if itself should be visible
-			var pointer = this;
-			while (pointer.transformComponent.parent) {
-				pointer = pointer.transformComponent.parent.entity;
-				if (pointer._hidden) {
-					// extra check and set might be needed
-					for (var i = 0; i < this._components.length; i++) {
-						var component = this._components[i];
-						if (typeof component.hidden === 'boolean') {
-							component.hidden = true;
-						}
-					}
-					return this;
-				}
-			}
+			// var pointer = this;
+			// while (pointer.transformComponent.parent) {
+			// 	pointer = pointer.transformComponent.parent.entity;
+			// 	if (pointer._hidden) {
+			// 		// extra check and set might be needed
+			// 		for (var i = 0; i < this._components.length; i++) {
+			// 			var component = this._components[i];
+			// 			if (typeof component.hidden === 'boolean') {
+			// 				component.hidden = true;
+			// 			}
+			// 		}
+			// 		return this;
+			// 	}
+			// }
 
 			this.traverse(function (entity) {
 				if (entity._hidden) { return false; }
