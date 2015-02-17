@@ -125,7 +125,8 @@ define([
 
 	/**
 	 * Returns a clone of this mesh renderer component
-	 * @param {object} [options={}] Options to be passed to clone methods encountered in the object graph
+	 * @param {Object} [options]
+	 * @param {boolean} [options.shareMaterials=false] Cloning this component clones the materials by default
 	 * @returns {MeshRendererComponent}
 	 */
 	MeshRendererComponent.prototype.clone = function (options) {

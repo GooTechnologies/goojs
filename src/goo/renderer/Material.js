@@ -222,7 +222,9 @@ define([
 
 	/**
 	 * Returns a clone of this material
-	 * @param {object} [options={}] Options to be passed to clone methods encountered in the object graph
+	 * @param {Object} [options]
+	 * @param {boolean} [options.shareUniforms=false] Cloning this material clones the uniforms by default
+	 * @param {boolean} [options.shareTextures=false] Cloning this material clones the textures by default
 	 * @returns {Material}
 	 */
 	Material.prototype.clone = function (options) {
