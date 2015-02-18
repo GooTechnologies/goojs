@@ -56,15 +56,17 @@ define([
 
 			var result = new RaycastResult();
 			system.raycastClosest(start, direction, distance, {}, result);
+			expect(result.normal).toEqual(new Vector3(0, 0, -1));
 			expect(result.entity.name).toBe(entityB.name);
 
 			// Now swap so that entityA is closer
 			start.setDirect(0, 0, 10);
-			direction.setDirect(0, 0, -10);
+			direction.setDirect(0, 0, -1);
 
 			result = new RaycastResult();
 			system.raycastClosest(start, direction, distance, {}, result);
 			expect(result.entity.name).toBe(entityA.name);
+			expect(result.normal).toEqual(new Vector3(0, 0, 1));
 		});
 
 		it('can raycast any', function () {
@@ -89,6 +91,7 @@ define([
 			var result = new RaycastResult();
 			system.raycastAny(start, direction, distance, {}, result);
 			expect(result.entity).toBeTruthy();
+			expect(result.normal).toEqual(new Vector3(0, 0, -1));
 		});
 
 		it('can raycast all', function () {
@@ -159,7 +162,8 @@ define([
 			world.process(); // Needed to initialize bodies
 
 			var numHits = 0;
-			system.raycastAll(start, direction, distance, { skipBackfaces: true }, function () {
+			system.raycastAll(start, direction, distance, { skipBackfaces: true }, function (result) {
+				expect(result.normal).toEqual(new Vector3(0, 0, -1));
 				numHits++;
 			});
 			expect(numHits).toBe(1);
