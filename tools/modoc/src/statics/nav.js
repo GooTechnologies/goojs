@@ -27,11 +27,6 @@
 		searchInput.keyup(function () {
 			var searchText = $(this).val();
 			filterClasses(searchText);
-			if (searchText.length > 0) {
-				shortcutsSection.hide();
-			} else {
-				shortcutsSection.show();
-			}
 		});
 	}
 
@@ -65,7 +60,6 @@
 	var items = $('.item');
 	var categories = $('.category');
 	var searchInput = $('#search');
-	var shortcutsSection = $('.shortcuts');
 
 	var parameters = purl().param();
 	if (parameters.c) {
