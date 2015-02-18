@@ -217,6 +217,16 @@ define([
 		});
 	}
 
+	function invertWinding(array) {
+		var inverted = new Array(array.length);
+		for (var i = 0; i < array.length; i += 3) {
+			inverted[i + 0] = array[i + 0];
+			inverted[i + 1] = array[i + 2];
+			inverted[i + 2] = array[i + 1];
+		}
+		return inverted;
+	}
+
 	/**
 	 * Adds indices to the vertices of a polygon
 	 * @param polygons
@@ -354,16 +364,16 @@ define([
 			function frontFace() {
 				var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
 				var transform = new Transform();
-				transform.translation.setDirect(x, y, options.extrusion / 2);
+				transform.translation.setDirect(x, y, -options.extrusion / 2);
 				transform.scale.setDirect(1, -1, 1);
 				transform.update();
 				meshBuilder.addMeshData(meshData, transform);
 			}
 
 			function backFace() {
-				var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
+				var meshData = new FilledPolygon(data.surfaceVerts, invertWinding(data.surfaceIndices));
 				var transform = new Transform();
-				transform.translation.setDirect(x, y, -options.extrusion / 2);
+				transform.translation.setDirect(x, y, options.extrusion / 2);
 				transform.scale.setDirect(1, -1, 1);
 				transform.update();
 				meshBuilder.addMeshData(meshData, transform);
@@ -382,7 +392,7 @@ define([
 
 				var transform = new Transform();
 				transform.translation.setDirect(x, 0, 0);
-				transform.scale.setDirect(1, -1, 1);
+				transform.scale.setDirect(1, -1, -1);
 				transform.update();
 
 				meshBuilder.addMeshData(meshData, transform);

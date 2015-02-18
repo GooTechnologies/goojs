@@ -17,6 +17,10 @@ require([
 	V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
 	V.addLights();
 
+	// cycling through colors
+	V.rng.nextFloat();
+	V.rng.nextFloat();
+
 	opentype.load('Roboto-Black.ttf', function (err, font) {
 		if (err) { throw err; }
 
@@ -25,7 +29,6 @@ require([
 			world.by.tag('text').forEach(function (entity) { entity.removeFromWorld(); });
 
 			var material = V.getColoredMaterial();
-			material.cullState.enabled = false;
 
 			var meshDatas = TextMeshGenerator.meshesForText(text, font);
 			meshDatas.forEach(function (meshData) {
