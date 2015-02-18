@@ -44,7 +44,7 @@ require([
 	var groundLevel = 20;
 
 	var cannonSystem = new CannonSystem({
-		gravity: new Vector3(1, -10, 0),
+		gravity: new Vector3(1, -10, 0)
 	});
 	world.setSystem(cannonSystem);
 
@@ -131,50 +131,11 @@ require([
 	}
 	*/
 
-	//addPrimitives();
-	createGround();
-	addPrimitivePhysics(1, 1, [0, groundLevel + 3, 0], [Math.PI / 2, 0, 0], [3, 3, 6]);
-	// createStaticCylinder(0, 0, 0, 0);
-	// createStaticCylinder(0, 0, 2 * r, 1);
-	// createStaticCylinder(0, 0, - 2 * r, 2);
-
-	document.addEventListener('keydown', function (evt) {
-		switch (evt.keyCode) {
-		default:
-			addPrimitives();
-			break;
-		}
-	}, false);
-
-	V.addLights();
-	V.addOrbitCamera(new Vector3(60, 0, Math.PI / 3));
-	V.process();
-
-
 	function updateTransformSystem(){
 		// Let the transformSystem do its job to update before we add stuff
 		goo.world.processEntityChanges();
 		var ts = goo.world.getSystem('TransformSystem');
 		ts.process(ts._activeEntities);
-	}
-
-	function addPrimitivePhysics(radius, height, position, rotation, scale) {
-		var mat = V.getColoredMaterial();
-		var entity = world.createEntity(position).addToWorld();
-		var r = radius;
-		var localOffset = [0, 3, 0]; // Just for testing
-		var meshEntity = world.createEntity("Cylinder", new Cylinder(10, r, r, height), mat, localOffset).addToWorld();
-		entity.attachChild(meshEntity);
-		meshEntity.setScale(scale[0], scale[1], scale[2]);
-		meshEntity.setRotation(rotation);
-		entity.transformComponent.setUpdated();
-		meshEntity.transformComponent.setUpdated();
-		meshEntity.setTag('collider');
-		entity.setTag('static');
-
-		updateTransformSystem();
-
-		addCollidersFromPrimitives(entity);
 	}
 
 	function addCollidersFromPrimitives(entity) {
@@ -234,4 +195,44 @@ require([
 			}
 		});
 	}
+
+	function addPrimitivePhysics(radius, height, position, rotation, scale) {
+		var mat = V.getColoredMaterial();
+		var entity = world.createEntity(position).addToWorld();
+		var r = radius;
+		var localOffset = [0, 3, 0]; // Just for testing
+		var meshEntity = world.createEntity("Cylinder", new Cylinder(10, r, r, height), mat, localOffset).addToWorld();
+		entity.attachChild(meshEntity);
+		meshEntity.setScale(scale[0], scale[1], scale[2]);
+		meshEntity.setRotation(rotation);
+		entity.transformComponent.setUpdated();
+		meshEntity.transformComponent.setUpdated();
+		meshEntity.setTag('collider');
+		entity.setTag('static');
+
+		updateTransformSystem();
+
+		addCollidersFromPrimitives(entity);
+	}
+
+	document.addEventListener('keydown', function (evt) {
+		switch (evt.keyCode) {
+		default:
+			addPrimitives();
+			break;
+		}
+	}, false);
+
+	V.addLights();
+	V.addOrbitCamera(new Vector3(60, 0, Math.PI / 3));
+	V.process();
+
+
+	//addPrimitives();
+	createGround();
+	addPrimitivePhysics(1, 1, [0, groundLevel + 3, 0], [Math.PI / 2, 0, 0], [3, 3, 6]);
+	// createStaticCylinder(0, 0, 0, 0);
+	// createStaticCylinder(0, 0, 2 * r, 1);
+	// createStaticCylinder(0, 0, - 2 * r, 2);
+
 });
