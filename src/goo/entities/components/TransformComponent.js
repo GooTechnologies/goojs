@@ -317,8 +317,8 @@ define([
 		 * @target-class Entity show method
 		 * @returns {Entity} Self to allow chaining
 		 */
-		show: function () {
-			this._hidden = false;
+		show: function (applyLocally) {
+			this.transformComponent._hidden = false;
 
 			// first search if it has hidden parents to determine if itself should be visible
 			// var pointer = this;
@@ -336,15 +336,26 @@ define([
 			// 	}
 			// }
 
-			this.traverse(function (entity) {
-				if (entity._hidden) { return false; }
-				for (var i = 0; i < entity._components.length; i++) {
-					var component = entity._components[i];
+			if (!applyLocally) {
+				for (var i = 0; i < this._components.length; i++) {
+					var component = this._components[i];
 					if (typeof component.hidden === 'boolean') {
-						component.hidden = entity._hidden;
+						component.hidden = false;
 					}
 				}
-			});
+			} else {
+				// hide everything underneath this
+				this.traverse(function (entity) {
+					entity.transformComponent._hidden = false;
+					// will have to refactor this loop in some function; it's used in other places too
+					for (var i = 0; i < entity._components.length; i++) {
+						var component = entity._components[i];
+						if (typeof component.hidden === 'boolean') {
+							component.hidden = false;
+						}
+					}
+				});
+			}
 
 			return this;
 		},
@@ -380,8 +391,32 @@ define([
 			return this._hidden;
 		},
 
-		isHiddenInHierarchy: function () {
-			return this._hidden || this._hiddenInHierarchy;
+		activate: function () {
+			this._active = true;
+
+			this.traverse(function (entity) {
+				entity.transformComponent._activeInHierarchy = entity.transformComponent._active;
+			});
+
+			return this;
+		},
+
+		deactivate: function () {
+			this._active = false;
+
+			this.traverse(function (entity) {
+				entity.transformComponent._activeInHierarchy = false;
+			});
+
+			return this;
+		},
+
+		isActive: function () {
+			return this._active;
+		},
+
+		isActiveInHierarchy: function () {
+			return this._active && this._activeInHierarchy;
 		}
 	};
 
