@@ -16,6 +16,22 @@ function (
 		System.apply(this, arguments);
 
 		this.priority = -1; // make sure it processes after transformsystem and collidersystem
+
+		/**
+		 * Entitites that holds ColliderComponents, but aren't instantiated since they have no RigidbodyComponent
+		 */
+		this._activeColliderEntities = [];
+
+		this._colliderInsertedListener = function (entity) {
+			this._activeColliderEntities.push(entity);
+		}.bind(this);
+
+		this._colliderDeletedListener = function (entity) {
+			this._activeColliderEntities.push(entity);
+		}.bind(this);
+
+		SystemBus.addListener('goo.collider.inserted', this._colliderInsertedListener);
+		SystemBus.addListener('goo.collider.deleted', this._colliderDeletedListener);
 	}
 	AbstractPhysicsSystem.prototype = Object.create(System.prototype);
 	AbstractPhysicsSystem.prototype.constructor = AbstractPhysicsSystem;

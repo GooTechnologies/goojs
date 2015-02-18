@@ -485,6 +485,12 @@ function (
 			this.cannonBody = null;
 			this._dirty = true;
 		}
+
+		// Remove references to colliders
+		for (var i = 0; i < this._colliderEntities.length; i++) {
+			this._colliderEntities[i].bodyEntity = null;
+		}
+		this._colliderEntities.length = 0;
 	};
 
 	/**
@@ -497,8 +503,8 @@ function (
 
 		this.destroy();
 
+		// Create a material
 		var mat = new CANNON.Material();
-
 		mat.friction = this._friction;
 		mat.restitution = this._restitution;
 
@@ -655,6 +661,7 @@ function (
 		var collider = cc.worldCollider;
 
 		collider.cannonShape = this.getCannonShape(collider);
+		collider.bodyEntity = this;
 
 		if (cc.isTrigger) {
 			collider.cannonShape.collisionResponse = false;

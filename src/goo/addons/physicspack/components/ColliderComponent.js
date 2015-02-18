@@ -56,6 +56,12 @@ function (
 		 * @type {boolean}
 		 */
 		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
+
+		/**
+		 * The entity with a rigid body component that instantiated the collider, or null if it wasn't instantiated yet.
+		 * @type {Entity}
+		 */
+		this.bodyEntity = null;
 	}
 	ColliderComponent.prototype = Object.create(Component.prototype);
 	ColliderComponent.prototype.constructor = ColliderComponent;

@@ -324,6 +324,21 @@ function (
 
 	/**
 	 * @private
+	 * @param  {Entity} entity
+	 */
+	PhysicsSystem.prototype._addLonelyCollider = function (entity) {
+		var body = new CANNON.Body({ mass: 0, collisionResponse: false });
+		entity.colliderComponent.cannonBody = body;
+
+		// if (entity.colliderComponent.isTrigger) {
+		// 	// Turn off collision response etc
+		// } else {
+
+		// }
+	};
+
+	/**
+	 * @private
 	 * @param  {array} entities
 	 * @param  {number} tpf
 	 */
@@ -355,6 +370,14 @@ function (
 				}
 				entity.rigidbodyComponent.initializeJoint(joint, entity, this);
 				joint._dirty = false;
+			}
+		}
+
+		// Initialize all colliders without rigid body
+		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
+			var colliderEntity = this._activeColliderEntities[i];
+			if (colliderEntity.colliderComponent.bodyEntity === null) {
+				this._addLonelyCollider(colliderEntity);
 			}
 		}
 

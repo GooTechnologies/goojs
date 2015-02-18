@@ -1,7 +1,10 @@
 define([
-	'goo/entities/systems/System'
-],
-function (System) {
+	'goo/entities/systems/System',
+	'goo/entities/SystemBus'
+], function (
+	System,
+	SystemBus
+) {
 	'use strict';
 
 	/**
@@ -34,6 +37,22 @@ function (System) {
 				entity.colliderComponent._dirty = true;
 			}
 		}
+	};
+
+	/**
+	 * @private
+	 * @param  {Entity} entity
+	 */
+	ColliderSystem.prototype.inserted = function (entity) {
+		SystemBus.emit('goo.collider.inserted', { entity: entity });
+	};
+
+	/**
+	 * @private
+	 * @param  {Entity} entity
+	 */
+	ColliderSystem.prototype.deleted = function (entity) {
+		SystemBus.emit('goo.collider.deleted', { entity: entity });
 	};
 
 	return ColliderSystem;
