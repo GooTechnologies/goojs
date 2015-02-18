@@ -78,6 +78,8 @@ define([
 
 	/**
 	 * Returns a clone of this mesh data component
+	 * @param {Object} [options]
+	 * @param {boolean} [options.shareMeshData=false] Cloning this component clones the mesh data by default
 	 * @returns {MeshDataComponent}
 	 */
 	MeshDataComponent.prototype.clone = function (options) {
