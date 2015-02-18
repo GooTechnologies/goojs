@@ -186,14 +186,14 @@ function (
 	};
 
 	PhysicsSystem.prototype._copyCannonRaycastResultToGoo = function (cannonResult, gooResult) {
-		if (tmpCannonResult.hasHit) {
+		if (cannonResult.hasHit) {
 			gooResult.entity = this._entities[cannonResult.body.id];
 			var point = cannonResult.hitPointWorld;
 			var normal = cannonResult.hitNormalWorld;
 			gooResult.point.setDirect(point.x, point.y, point.z);
 			gooResult.normal.setDirect(normal.x, normal.y, normal.z);
 		}
-		return tmpCannonResult.hasHit;
+		return cannonResult.hasHit;
 	};
 
 	// Get the start & end of the ray, store in cannon vectors
@@ -279,12 +279,18 @@ function (
 		this._getCannonStartEnd(start, direction, distance, cannonStart, cannonEnd);
 
 		var that = this;
+		var hitAny = false;
 		this.cannonWorld.raycastAll(cannonStart, cannonEnd, this._getCannonRaycastOptions(options), function (cannonResult) {
-			that._copyCannonRaycastResultToGoo(cannonResult, tmpResult);
+			var hit = that._copyCannonRaycastResultToGoo(cannonResult, tmpResult);
+			if (hit) {
+				hitAny = true;
+			}
 			if (callback(tmpResult) === false) {
 				cannonResult.abort();
 			}
 		});
+
+		return hitAny;
 	};
 
 	/**

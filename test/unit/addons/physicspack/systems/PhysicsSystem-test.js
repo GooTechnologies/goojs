@@ -182,16 +182,16 @@ define([
 			var options = {};
 			var result = new RaycastResult();
 
-			system.raycastAll(start, direction, distance, options, function () {});
-			system.raycastAll(start, direction, distance, function () {});
+			expect(system.raycastAll(start, direction, distance, options, function () {})).toBe(false);
+			expect(system.raycastAll(start, direction, distance, function () {})).toBe(false);
 
-			system.raycastAny(start, direction, distance, options, result);
-			system.raycastAny(start, direction, distance, result);
-			system.raycastAny(start, direction, distance);
+			expect(system.raycastAny(start, direction, distance, options, result)).toBe(false);
+			expect(system.raycastAny(start, direction, distance, result)).toBe(false);
+			expect(system.raycastAny(start, direction, distance)).toBe(false);
 
-			system.raycastClosest(start, direction, distance, options, result);
-			system.raycastClosest(start, direction, distance, result);
-			system.raycastClosest(start, direction, distance);
+			expect(system.raycastClosest(start, direction, distance, options, result)).toBe(false);
+			expect(system.raycastClosest(start, direction, distance, result)).toBe(false);
+			expect(system.raycastClosest(start, direction, distance)).toBe(false);
 		});
 
 		it('emits contact events', function () {
