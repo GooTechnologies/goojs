@@ -1,39 +1,23 @@
 define([
-	'goo/math/Vector2'
+	'goo/math/Vector2',
+	'goo/math/Transform',
+	'goo/util/MeshBuilder',
+	'goo/geometrypack/FilledPolygon',
+	'goo/geometrypack/PolyLine'
 ], function (
-	Vector2
+	Vector2,
+	Transform,
+	MeshBuilder,
+	FilledPolygon,
+	PolyLine
 ) {
 	'use strict';
-
-	// ---
-	var con2d;
-
-	function drawPoint(x, y) {
-		con2d.fillRect(x - 1, y - 1, 3, 3);
-	}
-
-	function drawPath(points) {
-		con2d.beginPath();
-		con2d.moveTo(points[0].x, points[0].y);
-
-		con2d.fillStyle = 'black';
-		con2d.fillText(0, points[0].x, points[0].y);
-		for (var i = 1; i < points.length; i++) {
-			con2d.lineTo(points[i].x, points[i].y);
-			con2d.fillText(i, points[i].x, points[i].y);
-		}
-
-		con2d.fillStyle = 'rgba(0, 0, 255, 0.3)';
-		con2d.strokeStyle = 'red';
-		con2d.stroke();
-		con2d.fill();
-	}
-	// ---
 
 	function serializeCommand(command) {
 		// horrible code follows
 		var str = command.type;
 
+		// a check for xs should be enough?
 		if (command.x2 !== undefined) { str += ' ' + command.x2; }
 		if (command.y2 !== undefined) { str += ' ' + command.y2; }
 
@@ -195,11 +179,6 @@ define([
 		});
 	}
 
-	function printIndices(points) {
-		var str = points.map(function (point) { return point._index; }).join(', ');
-		console.log(str);
-	}
-
 	function addIndices(polygons) {
 		var counter = 0;
 		polygons.forEach(function (points) {
@@ -244,20 +223,20 @@ define([
 	}
 
 	/**
-	 *
+	 * Constructs the vertex data, index data and extrusions for a glyph
 	 * @param glyph
 	 * @param {number} fontSize
 	 * @param {Object} options
-	 * @param {boolean} options.simplifyPaths
-	 * @param {number} options.stepLength
+	 * @param {boolean} [options.simplifyPaths=true]
+	 * @param {number} [options.stepLength=10]
+	 * @param {number} [options.fontSize=48]
 	 * @returns {{surfaceIndices: Array, surfaceVerts: Array, extrusions: Array}}
 	 */
-	function meshFromGlyph(glyph, fontSize, options) {
+	function dataForGlyph(glyph, options) {
 		options = options || {};
 		options.simplifyPaths = options.simplifyPaths !== false;
-		options.stepLength = options.stepLength || 10;
 
-		var path = glyph.getPath(0, 0, fontSize);
+		var path = glyph.getPath(0, 0, options.fontSize);
 		var stringifiedPath = path.commands.map(serializeCommand).reduce(function (prev, cur) {
 			return prev + cur;
 		}, '');
@@ -295,8 +274,66 @@ define([
 		};
 	}
 
+	function meshesForText(text, font, options) {
+		options = options || {};
+		options.extrusion = options.extrusion !== undefined ? options.extrusion : 4;
+		options.merge = options.merge !== false;
+		options.stepLength = options.stepLength || 1;
+		options.fontSize = options.fontSize || 48;
+
+		var meshBuilder = new MeshBuilder();
+
+		function meshForGlyph(data, x, y, options) {
+			function frontFace() {
+				var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
+				var transform = new Transform();
+				transform.translation.setDirect(x, y, options.extrusion / 2);
+				transform.scale.setDirect(1, -1, 1);
+				transform.update();
+				meshBuilder.addMeshData(meshData, transform);
+			}
+
+			function backFace() {
+				var meshData = new FilledPolygon(data.surfaceVerts, data.surfaceIndices);
+				var transform = new Transform();
+				transform.translation.setDirect(x, y, -options.extrusion / 2);
+				transform.scale.setDirect(1, -1, 1);
+				transform.update();
+				meshBuilder.addMeshData(meshData, transform);
+			}
+
+			frontFace();
+			backFace();
+
+			data.extrusions.forEach(function (polygon) {
+				var contourVerts = getVerts(polygon);
+				contourVerts.push(contourVerts[0], contourVerts[1], contourVerts[2]);
+
+				var contourPolyLine = new PolyLine(contourVerts, true);
+				var extrusionPolyLine = new PolyLine([0, 0, -options.extrusion / 2, 0, 0, options.extrusion / 2]);
+				var meshData = contourPolyLine.mul(extrusionPolyLine);
+
+				var transform = new Transform();
+				transform.translation.setDirect(x, 0, 0);
+				transform.scale.setDirect(1, -1, 1);
+				transform.update();
+
+				meshBuilder.addMeshData(meshData, transform);
+			});
+		}
+
+		font.forEachGlyph(text, 0, 0, options.fontSize, {}, function (glyph, x, y, fontSize, _options) {
+			if (glyph.path.commands.length > 0) {
+				var data = dataForGlyph(glyph, options);
+
+				meshForGlyph(data, x, y, options);
+			}
+		});
+
+		return meshBuilder.build();
+	}
+
 	return {
-		meshFromGlyph: meshFromGlyph,
-		setCon2d: function (_con2d) { con2d = _con2d; }
+		meshesForText: meshesForText
 	};
 });
