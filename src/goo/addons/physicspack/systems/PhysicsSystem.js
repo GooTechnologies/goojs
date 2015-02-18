@@ -209,11 +209,16 @@ function (
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
-	 * @param  {object} options
+	 * @param  {object} [options]
 	 * @param  {RaycastResult} [result]
 	 * @return {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastAny = function (start, direction, distance, options, result) {
+		if (options instanceof RaycastResult) {
+			result = options;
+			options = {};
+		}
+		options = options || {};
 		result = result || new RaycastResult();
 
 		var cannonStart = tmpVec1;
@@ -230,11 +235,16 @@ function (
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
-	 * @param  {object} options
+	 * @param  {object} [options]
 	 * @param  {RaycastResult} [result]
 	 * @return {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastClosest = function (start, direction, distance, options, result) {
+		if (options instanceof RaycastResult) {
+			result = options;
+			options = {};
+		}
+		options = options || {};
 		result = result || new RaycastResult();
 
 		var cannonStart = tmpVec1;
@@ -253,11 +263,17 @@ function (
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
-	 * @param  {object} options
+	 * @param  {object} [options]
 	 * @param  {Function} callback
 	 * @return {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastAll = function (start, direction, distance, options, callback) {
+		if (typeof(options) === 'function') {
+			callback = options;
+			options = {};
+		}
+		callback = callback || function () {};
+
 		var cannonStart = tmpVec1;
 		var cannonEnd = tmpVec2;
 		this._getCannonStartEnd(start, direction, distance, cannonStart, cannonEnd);

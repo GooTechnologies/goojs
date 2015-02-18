@@ -175,6 +175,25 @@ define([
 			expect(numHits).toBe(2);
 		});
 
+		it('can raycast with optional parameters', function () {
+			var start = new Vector3(0, 0, -10);
+			var direction = new Vector3(0, 0, 1);
+			var distance = 20;
+			var options = {};
+			var result = new RaycastResult();
+
+			system.raycastAll(start, direction, distance, options, function () {});
+			system.raycastAll(start, direction, distance, function () {});
+
+			system.raycastAny(start, direction, distance, options, result);
+			system.raycastAny(start, direction, distance, result);
+			system.raycastAny(start, direction, distance);
+
+			system.raycastClosest(start, direction, distance, options, result);
+			system.raycastClosest(start, direction, distance, result);
+			system.raycastClosest(start, direction, distance);
+		});
+
 		it('emits contact events', function () {
 			var rbcA = new RigidbodyComponent({ mass: 1 });
 			var rbcB = new RigidbodyComponent({ mass: 1 });
