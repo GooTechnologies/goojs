@@ -13,8 +13,12 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * Serializes an svg path command
+	 * @param {object} command
+	 * @returns {string}
+	 */
 	function serializeCommand(command) {
-		// horrible code follows
 		var str = command.type;
 
 		// a check for xs should be enough?
@@ -30,9 +34,15 @@ define([
 		return str;
 	}
 
-	function getPathPoints(stringifiedPath, stepLength) {
+	/**
+	 * Computes a cloud of points from an svg path
+	 * @param {string} serializedPath
+	 * @param {number} stepLength Lower values result in more detail
+	 * @returns {{ x: number, y: number }[]} Aa array of point-like objects
+	 */
+	function getPathPoints(serializedPath, stepLength) {
 		var svgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-		svgPath.setAttribute('d', stringifiedPath);
+		svgPath.setAttribute('d', serializedPath);
 
 		var pathLength = svgPath.getTotalLength();
 
@@ -45,15 +55,21 @@ define([
 		return points;
 	}
 
+	/**
+	 * Computes the distance between 2 points
+	 * @param {{ x: number, y: number }} point1
+	 * @param {{ x: number, y: number }} point2
+	 * @returns {number}
+	 */
 	function distance(point1, point2) {
 		return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2));
 	}
 
 	/**
-	 * Group points by the distance between them
+	 * Isolates separate polygons by the distance between points
 	 * @param {{ x: number, y: number}[]} points
 	 * @param {number} stepLength
-	 * @returns {Array}
+	 * @returns {{ x: number, y: number}[][]}
 	 */
 	function groupPoints(points, stepLength) {
 		var groups = [];
@@ -79,6 +95,12 @@ define([
 	}
 
 	var ANGLE_THRESHOLD = 0.001;
+
+	/**
+	 * Simplifies a polygon by collapsing collinear adjacent points
+	 * @param {{ x: number, y: number}[]} polygon
+	 * @returns {{ x: number, y: number}[]}
+	 */
 	function simplifyPath(polygon) {
 		var simplePolygon = [];
 
@@ -103,6 +125,11 @@ define([
 		return simplePolygon;
 	}
 
+	/**
+	 * Computes the 2D bounding box of a poygon
+	 * @param {{ x: number, y: number}[]} polygon
+	 * @returns {{ min: Vector2, max: Vector2 }}
+	 */
 	function getBoundingVolume(polygon) {
 		var min = new Vector2(polygon[0].x, polygon[0].y);
 		var max = min.clone();
@@ -129,11 +156,22 @@ define([
 		};
 	}
 
+	/**
+	 * Checks whether a bounding box is contained within another bounding box
+	 * @param a
+	 * @param b
+	 * @returns {boolean}
+	 */
 	function containsBox(a, b) {
 		return a.min.x < b.min.x && a.max.x > b.max.x &&
 			a.min.y < b.min.y && a.max.y > b.max.y;
 	}
 
+	/**
+	 * Groups polygons in contours with holes
+	 * @param {{ x: number, y: number}[]} polygons
+	 * @returns {{ polygon, holes }}
+	 */
 	function getHierarchy(polygons) {
 		// most characters have 1 polygon
 		// a, b, d, e, i... have 2 polygons
@@ -179,6 +217,10 @@ define([
 		});
 	}
 
+	/**
+	 * Adds indices to the vertices of a polygon
+	 * @param polygons
+	 */
 	function addIndices(polygons) {
 		var counter = 0;
 		polygons.forEach(function (points) {
@@ -189,6 +231,11 @@ define([
 		});
 	}
 
+	/**
+	 * Extracts the indices of a triangulation computed by the triangulation library
+	 * @param triangles
+	 * @returns {Array}
+	 */
 	function getIndices(triangles) {
 		var indices = [];
 		triangles.forEach(function (triangle) {
@@ -201,6 +248,11 @@ define([
 		return indices;
 	}
 
+	/**
+	 * Flattens an array of points defined as objects { x, y } into an array
+	 * @param {{ x: number, y: number, }[]} points
+	 * @returns {number[]}
+	 */
 	function getVerts(points) {
 		// use an inverse map from indices to _indices
 		points.sort(function (a, b) { return a._index - b._index; });
@@ -212,6 +264,12 @@ define([
 		return verts;
 	}
 
+	/**
+	 * Forwards a contour polygon with optional holes to the triangulation library and processes the results
+	 * @param contour
+	 * @param holes
+	 * @returns {*}
+	 */
 	function triangulate(contour, holes) {
 		var swctx = new poly2tri.SweepContext(contour.slice(0));
 		holes.forEach(function (hole) { swctx.addHole(hole.polygon.slice(0)); });
@@ -225,11 +283,10 @@ define([
 	/**
 	 * Constructs the vertex data, index data and extrusions for a glyph
 	 * @param glyph
-	 * @param {number} fontSize
 	 * @param {Object} options
-	 * @param {boolean} [options.simplifyPaths=true]
-	 * @param {number} [options.stepLength=10]
+	 * @param {boolean} [options.simplifyPaths=true] Disable to get evenly spaced tessellations on the edges
 	 * @param {number} [options.fontSize=48]
+	 * @param {number} [options.stepLength=1] Lower values result in a more detailed mesh
 	 * @returns {{surfaceIndices: Array, surfaceVerts: Array, extrusions: Array}}
 	 */
 	function dataForGlyph(glyph, options) {
@@ -237,11 +294,11 @@ define([
 		options.simplifyPaths = options.simplifyPaths !== false;
 
 		var path = glyph.getPath(0, 0, options.fontSize);
-		var stringifiedPath = path.commands.map(serializeCommand).reduce(function (prev, cur) {
+		var serializedPath = path.commands.map(serializeCommand).reduce(function (prev, cur) {
 			return prev + cur;
 		}, '');
 
-		var points = getPathPoints(stringifiedPath, options.stepLength);
+		var points = getPathPoints(serializedPath, options.stepLength);
 
 		var polygons = groupPoints(points, options.stepLength);
 
@@ -274,6 +331,16 @@ define([
 		};
 	}
 
+	/**
+	 * Builds meshes from a font
+	 * @param {string} text
+	 * @param font
+	 * @param {object} [options]
+	 * @param {number} [options.extrusion=4] Extrusion amount
+	 * @param {number} [options.fontSize=48]
+	 * @param {number} [options.stepLength=1] Lower values result in a more detailed mesh
+	 * @returns {MeshData[]}
+	 */
 	function meshesForText(text, font, options) {
 		options = options || {};
 		options.extrusion = options.extrusion !== undefined ? options.extrusion : 4;
