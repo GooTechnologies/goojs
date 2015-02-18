@@ -354,7 +354,6 @@ define([
 	function meshesForText(text, font, options) {
 		options = options || {};
 		options.extrusion = options.extrusion !== undefined ? options.extrusion : 4;
-		options.merge = options.merge !== false;
 		options.stepLength = options.stepLength || 1;
 		options.fontSize = options.fontSize || 48;
 
