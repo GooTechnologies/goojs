@@ -22,12 +22,12 @@ function (
 		 */
 		this._activeColliderEntities = [];
 
-		this._colliderInsertedListener = function (entity) {
-			this._activeColliderEntities.push(entity);
+		this._colliderInsertedListener = function (event) {
+			this._activeColliderEntities.push(event.entity);
 		}.bind(this);
 
-		this._colliderDeletedListener = function (entity) {
-			this._activeColliderEntities.push(entity);
+		this._colliderDeletedListener = function (event) {
+			this._activeColliderEntities.push(event.entity);
 		}.bind(this);
 
 		SystemBus.addListener('goo.collider.inserted', this._colliderInsertedListener);
