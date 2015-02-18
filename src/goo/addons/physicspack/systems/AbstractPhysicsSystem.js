@@ -24,10 +24,16 @@ function (
 
 		this._colliderInsertedListener = function (event) {
 			this._activeColliderEntities.push(event.entity);
+			this._colliderInserted(event.entity);
 		}.bind(this);
 
 		this._colliderDeletedListener = function (event) {
-			this._activeColliderEntities.push(event.entity);
+			var entities = this._activeColliderEntities;
+			var index = entities.indexOf(event.entity);
+			if (index !== -1) {
+				this._activeColliderEntities.splice(index, 1);
+			}
+			this._colliderDeleted(event.entity);
 		}.bind(this);
 
 		SystemBus.addListener('goo.collider.inserted', this._colliderInsertedListener);
@@ -88,6 +94,9 @@ function (
 		event.entityA = null;
 		event.entityB = null;
 	};
+
+	AbstractPhysicsSystem.prototype._colliderInserted = function (/*entity*/) {};
+	AbstractPhysicsSystem.prototype._colliderDeleted = function (/*entity*/) {};
 
 	return AbstractPhysicsSystem;
 });

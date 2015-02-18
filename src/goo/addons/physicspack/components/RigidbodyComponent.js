@@ -35,13 +35,9 @@ function (
 	 * Adds rigid body dynamics to your entity. To be used with the {@link PhysicsSystem}. If the entity or its children have {@link ColliderComponent}s, they will be added as collision shapes to the rigid body.
 	 * @param {object} [settings]
 	 * @param {number} [settings.mass=1]
-	 * @param {number} [settings.friction=0.3]
-	 * @param {number} [settings.restitution=0]
 	 * @param {boolean} [settings.isKinematic=false]
 	 * @param {Vector3} [settings.velocity]
 	 * @param {Vector3} [settings.angularVelocity]
-	 * @param {number} [settings.collisionGroup=1]
-	 * @param {number} [settings.collisionMask=1]
 	 * @param {number} [settings.linearDamping=0.01]
 	 * @param {number} [settings.angularDamping=0.05]
 	 * @extends AbstractRigidbodyComponent
@@ -98,30 +94,6 @@ function (
 		 * @type {Vector3}
 		 */
 		this._angularVelocity = settings.angularVelocity ? settings.angularVelocity.clone() : new Vector3();
-
-		/**
-		 * @private
-		 * @type {number}
-		 */
-		this._friction = settings.friction !== undefined ? settings.friction : 0.3;
-
-		/**
-		 * @private
-		 * @type {number}
-		 */
-		this._restitution = settings.restitution !== undefined ? settings.restitution : 0;
-
-		/**
-		 * @private
-		 * @type {number}
-		 */
-		this._collisionGroup = settings.collisionGroup !== undefined ? settings.collisionGroup : 1;
-
-		/**
-		 * @private
-		 * @type {number}
-		 */
-		this._collisionMask = settings.collisionMask !== undefined ? settings.collisionMask : 1;
 
 		/**
 		 * @private
@@ -272,72 +244,6 @@ function (
 	Object.defineProperties(RigidbodyComponent.prototype, {
 
 		/**
-		 * The "bounciness" of the body.
-		 * @target-class RigidbodyComponent restitution member
-		 * @type {number}
-		 */
-		restitution: {
-			get: function () {
-				return this._restitution;
-			},
-			set: function (value) {
-				if (this.cannonBody) {
-					this.cannonBody.material.restitution = value;
-				}
-				this._restitution = value;
-			}
-		},
-
-		/**
-		 * The friction of the body. Multiplication is used to combine two friction values.
-		 * @target-class RigidbodyComponent friction member
-		 * @type {number}
-		 */
-		friction: {
-			get: function () {
-				return this._friction;
-			},
-			set: function (value) {
-				if (this.cannonBody) {
-					this.cannonBody.material.friction = value;
-				}
-				this._friction = value;
-			}
-		},
-
-		/**
-		 * @target-class RigidbodyComponent collisionMask member
-		 * @type {number}
-		 */
-		collisionMask: {
-			get: function () {
-				return this._collisionMask;
-			},
-			set: function (value) {
-				if (this.cannonBody) {
-					this.cannonBody.collisionFilterMask = value;
-				}
-				this._collisionMask = value;
-			}
-		},
-
-		/**
-		 * @target-class RigidbodyComponent collisionGroup member
-		 * @type {number}
-		 */
-		collisionGroup: {
-			get: function () {
-				return this._collisionGroup;
-			},
-			set: function (value) {
-				if (this.cannonBody) {
-					this.cannonBody.collisionFilterGroup = value;
-				}
-				this._collisionGroup = value;
-			}
-		},
-
-		/**
 		 * @target-class RigidbodyComponent linearDamping member
 		 * @type {number}
 		 */
@@ -436,7 +342,7 @@ function (
 	/**
 	 * @private
 	 */
-	RigidbodyComponent.prototype.getCannonShape = function (collider) {
+	RigidbodyComponent.getCannonShape = function (collider) {
 		var shape;
 		if (collider instanceof BoxCollider) {
 			var halfExtents = new CANNON.Vec3();
@@ -503,20 +409,12 @@ function (
 
 		this.destroy();
 
-		// Create a material
-		var mat = new CANNON.Material();
-		mat.friction = this._friction;
-		mat.restitution = this._restitution;
-
 		var body = this.cannonBody = new CANNON.Body({
 			mass: this._mass,
-			material: mat,
 			linearDamping: this._linearDamping,
 			angularDamping: this._angularDamping,
 			sleepSpeedLimit: this._sleepingThreshold,
-			sleepTimeLimit: this._sleepingTimeLimit,
-			collisionFilterGroup: this._collisionGroup,
-			collisionFilterMask: this._collisionMask
+			sleepTimeLimit: this._sleepingTimeLimit
 		});
 		this._system.cannonWorld.addBody(body);
 		this._system._entities[body.id] = this._entity;
@@ -660,12 +558,17 @@ function (
 		cc.updateWorldCollider(true);
 		var collider = cc.worldCollider;
 
-		collider.cannonShape = this.getCannonShape(collider);
+		var cannonShape = collider.cannonShape = RigidbodyComponent.getCannonShape(collider);
+
+		// Create a material for the shape
+		var mat = new CANNON.Material();
+		mat.friction = cc.material ? cc.material.friction : -1;
+		mat.restitution = cc.material ? cc.material.restitution : -1;
+		cannonShape.material = mat;
+
 		collider.bodyEntity = this;
 
-		if (cc.isTrigger) {
-			collider.cannonShape.collisionResponse = false;
-		}
+		cannonShape.collisionResponse = !cc.isTrigger;
 
 		// Add the shape
 		var cannonPos = new CANNON.Vec3();
@@ -676,7 +579,7 @@ function (
 		if (position) {
 			cannonQuat.copy(quaternion);
 		}
-		body.addShape(collider.cannonShape, cannonPos, cannonQuat);
+		body.addShape(cannonShape, cannonPos, cannonQuat);
 
 		this._colliderEntities.push(entity);
 	};
@@ -690,14 +593,10 @@ function (
 			mass: this._mass,
 			velocity: this._velocity,
 			angularVelocity: this._angularVelocity,
-			friction: this._friction,
-			restitution: this._restitution,
-			collisionGroup: this._collisionGroup,
-			collisionMask: this._collisionMask,
 			linearDamping: this._linearDamping,
 			angularDamping: this._angularDamping,
 			sleepingThreshold: this._sleepingThreshold,
-			sleepTimeLimit: this._sleepTimeLimit
+			sleepingTimeLimit: this._sleepingTimeLimit
 		});
 	};
 

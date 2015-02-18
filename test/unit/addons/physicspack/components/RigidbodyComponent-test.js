@@ -1,6 +1,7 @@
 define([
 	'goo/entities/World',
 	'goo/addons/physicspack/systems/PhysicsSystem',
+	'goo/addons/physicspack/PhysicsMaterial',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'goo/addons/physicspack/components/RigidbodyComponent',
@@ -13,6 +14,7 @@ define([
 ], function (
 	World,
 	PhysicsSystem,
+	PhysicsMaterial,
 	Vector3,
 	Quaternion,
 	RigidbodyComponent,
@@ -46,40 +48,14 @@ define([
 			world.process();
 		});
 
-		it('can set collision group', function () {
-			rbc.collisionGroup = 2;
-			expect(rbc.cannonBody.collisionFilterGroup).toEqual(2);
-
-		});
-
-		it('can set collision mask', function () {
-			rbc.collisionMask = 2;
-			expect(rbc.cannonBody.collisionFilterMask).toEqual(2);
-
-		});
-
-		it('can set friction', function () {
-			rbc.friction = 123;
-			expect(rbc.cannonBody.material.friction).toEqual(123);
-
-		});
-
-		it('can set restitution', function () {
-			rbc.restitution = 123;
-			expect(rbc.cannonBody.material.restitution).toEqual(123);
-
-		});
-
 		it('can set linearDamping', function () {
 			rbc.linearDamping = 123;
 			expect(rbc.cannonBody.linearDamping).toEqual(123);
-
 		});
 
 		it('can set angularDamping', function () {
 			rbc.angularDamping = 123;
 			expect(rbc.cannonBody.angularDamping).toEqual(123);
-
 		});
 
 		it('can set transform from entity', function () {
@@ -89,19 +65,16 @@ define([
 			var position = new Vector3();
 			rbc.getPosition(position);
 			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
-
 		});
 
 		it('can apply force', function () {
 			rbc.applyForce(new Vector3(1, 2, 3));
 			expect(rbc.cannonBody.force).toEqual(new CANNON.Vec3(1, 2, 3));
-
 		});
 
 		it('can set velocity', function () {
 			rbc.setVelocity(new Vector3(1, 2, 3));
 			expect(rbc.cannonBody.velocity).toEqual(new CANNON.Vec3(1, 2, 3));
-
 		});
 
 		it('can get velocity', function () {
@@ -109,25 +82,21 @@ define([
 			var velocity = new Vector3();
 			rbc.getVelocity(velocity);
 			expect(velocity).toEqual(new Vector3(1, 2, 3));
-
 		});
 
 		it('can set position', function () {
 			rbc.setPosition(new Vector3(1, 2, 3));
 			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
-
 		});
 
 		it('can set position', function () {
 			rbc.setPosition(new Vector3(1, 2, 3));
 			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
-
 		});
 
 		it('can set quaternion', function () {
 			rbc.setQuaternion(new Quaternion(1, 2, 3, 4));
 			expect(rbc.cannonBody.quaternion).toEqual(new CANNON.Quaternion(1, 2, 3, 4));
-
 		});
 
 		it('can get quaternion', function () {
@@ -135,23 +104,20 @@ define([
 			var quat = new Quaternion();
 			rbc.getQuaternion(quat);
 			expect(quat).toEqual(new Quaternion(1, 2, 3, 4));
-
 		});
 
 		it('can set kinematic', function () {
 			rbc.isKinematic = true;
 			world.process();
 			expect(rbc.cannonBody.type).toEqual(CANNON.Body.KINEMATIC);
-
 		});
 
 		it('can get cannon shape from box collider', function () {
 			var c = new BoxCollider({
 				halfExtents: new Vector3(1, 2, 3)
 			});
-			var cannonShape = rbc.getCannonShape(c);
+			var cannonShape = RigidbodyComponent.getCannonShape(c);
 			expect(cannonShape).toEqual(new CANNON.Box(new CANNON.Vec3(1, 2, 3)));
-
 		});
 
 		it('can destroy itself and rebuild', function () {
@@ -291,37 +257,30 @@ define([
 			var a = rbc;
 
 			a.angularDamping = 0.5;
-			a.collisionGroup = 4;
-			a.collisionMask = 4;
-			a.friction = 0.5;
-			a.isKinematic = true;
+			a.isKinematic = false;
 			a.linearDamping = 0.5;
 			a.mass = 2;
 			a.restitution = 0.5;
 			a.setAngularVelocity(new Vector3(4, 5, 6));
 			a.setVelocity(new Vector3(1, 2, 3));
 			a.sleepingThreshold = 0.5;
-			a.sleepTimeLimit = 3;
+			a.sleepingTimeLimit = 3;
 
 			var b = rbc.clone();
 
-			expect(a.angularDamping).toEqual(0.5);
-			expect(a.collisionGroup).toEqual(b.collisionGroup);
-			expect(a.collisionMask).toEqual(b.collisionMask);
-			expect(a.friction).toEqual(0.5);
-			expect(a.isKinematic).toEqual(true);
-			expect(a.linearDamping).toEqual(0.5);
-			expect(a.mass).toEqual(2);
-			expect(a.restitution).toEqual(0.5);
-			expect(a.sleepingThreshold).toEqual(0.5);
-			expect(a.sleepTimeLimit).toEqual(3);
+			expect(b.angularDamping).toEqual(0.5);
+			expect(b.isKinematic).toEqual(false);
+			expect(b.linearDamping).toEqual(0.5);
+			expect(b.mass).toEqual(2);
+			expect(b.sleepingThreshold).toEqual(0.5);
+			expect(b.sleepingTimeLimit).toEqual(3);
 
 			var angularVelocity = new Vector3();
-			a.getAngularVelocity(angularVelocity);
+			b.getAngularVelocity(angularVelocity);
 			expect(angularVelocity).toEqual(new Vector3(4, 5, 6));
 
 			var velocity = new Vector3();
-			a.getVelocity(velocity);
+			b.getVelocity(velocity);
 			expect(velocity).toEqual(new Vector3(1, 2, 3));
 		});
 
@@ -330,7 +289,6 @@ define([
 			rbc.sleepingTimeLimit = 6;
 			expect(rbc.cannonBody.sleepSpeedLimit).toEqual(4);
 			expect(rbc.cannonBody.sleepTimeLimit).toEqual(6);
-
 		});
 
 		it('updates dirty colliders', function () {
@@ -340,6 +298,31 @@ define([
 			world.process();
 
 			expect(rbc.cannonBody.shapes[0].radius).toEqual(5);
+		});
+
+		it('can set materials per collider', function () {
+			var rbc = new RigidbodyComponent({ mass: 1 });
+			var cc = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 }),
+				material: new PhysicsMaterial({ friction: 0.7, restitution: 0.8 })
+			});
+			var entity = world.createEntity(rbc, cc).addToWorld();
+
+			var cc2 = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 }),
+				material: new PhysicsMaterial({ friction: 0.9, restitution: 1.0 })
+			});
+			var subEntity = world.createEntity(cc2).addToWorld();
+
+			entity.attachChild(subEntity);
+
+			world.process();
+
+			expect(entity.rigidbodyComponent.cannonBody.shapes[0].material.friction).toBe(0.7);
+			expect(entity.rigidbodyComponent.cannonBody.shapes[1].material.friction).toBe(0.9);
+
+			entity.removeFromWorld();
+			subEntity.removeFromWorld();
 		});
 	});
 });
