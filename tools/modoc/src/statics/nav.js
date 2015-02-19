@@ -11,7 +11,7 @@
 
 	function itemClickListener() {
 		iframe.contentWindow.postMessage(this.innerText, '*');
-		setActiveClass(this);
+		setActiveClass(this.parentNode);
 	}
 
 	var scoringCriteria = [
@@ -71,8 +71,10 @@
 		});
 
 		results.forEach(function (entry) {
-			var listItem = $('<li><a class="item">' + entry.name + '</a></li>');
-			listItem.click(itemClickListener);
+			var listItem = $('<li class="item"></li>');
+			var anchor = $('<a>' + entry.name + '</a>');
+			listItem.append(anchor);
+			anchor.click(itemClickListener);
 			resultsContainer.append(listItem);
 		});
 	}
