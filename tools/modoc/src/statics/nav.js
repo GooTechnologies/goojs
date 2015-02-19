@@ -14,6 +14,10 @@
 		setActiveClass(this.parentNode);
 	}
 
+	function compareStrings(a, b) {
+		return a < b ? -1 : a > b ? 1 : 0;
+	}
+
 	var scoringCriteria = [
 		// 'exact match'
 		function (pattern, text) {
@@ -67,7 +71,11 @@
 		});
 
 		results.sort(function (a, b) {
-			return b.score - a.score;
+			if (b.score === a.score) {
+				return compareStrings(a.name.toLowerCase(), b.name.toLowerCase());
+			} else {
+				return b.score - a.score;
+			}
 		});
 
 		results.forEach(function (entry) {
