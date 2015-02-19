@@ -30,11 +30,17 @@
 					<div class="top-dir" id="{{name}}">{{name}}</div>
 					<ul>
 						{{#classes}}
-							<li class="item"><a phony="{{{name}}}">{{name}}</a></li>
+							<li class="item"><a>{{name}}</a></li>
 						{{/classes}}
 					</ul>
 				</li>
 			{{/index}}
+		</ul>
+	</div>
+
+	<div class="results-container">
+		<ul style="display: none">
+			{{! empty list, waiting to be popualted by search results }}
 		</ul>
 	</div>
 </nav>
