@@ -96,6 +96,7 @@ define([
 		}
 
 		if (this.camera) {
+			// console.log(this.entities.length);
 			renderer.updateShadows(this.partitioner, this.entities, this.lights);
 
 			for (var i = 0; i < this.preRenderers.length; i++) {

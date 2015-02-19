@@ -69,9 +69,9 @@ define([
 	};
 
 	BoundingUpdateSystem.prototype.deleted = function (entity) {
-		if (entity.meshRendererComponent) {
-			entity.meshRendererComponent.worldBound = new BoundingBox();
-		}
+		// if (entity.meshRendererComponent) {
+		// 	entity.meshRendererComponent.worldBound = new BoundingBox();
+		// }
 	};
 
 	return BoundingUpdateSystem;

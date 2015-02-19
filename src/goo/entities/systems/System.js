@@ -22,6 +22,7 @@ function () {
 		this.type = type;
 		this.interests = interests;
 
+		this._entitiesByIndex = new Set();
 		this._activeEntities = [];
 		this.passive = false;
 
@@ -55,8 +56,9 @@ function () {
 	 * @param entity
 	 */
 	System.prototype.removed = function (entity) {
-		var index = this._activeEntities.indexOf(entity);
-		if (index !== -1) {
+		if (this._entitiesByIndex.has(entity)) {
+			this._entitiesByIndex.delete(entity);
+			var index = this._activeEntities.indexOf(entity);
 			this._activeEntities.splice(index, 1);
 			if (this.deleted) {
 				this.deleted(entity);
@@ -96,20 +98,23 @@ function () {
 			for (var i = 0; i < this.interests.length; i++) {
 				var interest = getTypeAttributeName(this.interests[i]);
 
-				if (!entity[interest]) {
+				if (!entity[interest] || !entity[interest].enabled) {
 					isInterested = false;
 					break;
 				}
 			}
 		}
 
-		var index = this._activeEntities.indexOf(entity);
-		if (isInterested && index === -1) {
+		var hasEntity = this._entitiesByIndex.has(entity);
+		if (isInterested && !hasEntity) {
+			this._entitiesByIndex.add(entity);
 			this._activeEntities.push(entity);
 			if (this.inserted) {
 				this.inserted(entity);
 			}
-		} else if (!isInterested && index !== -1) {
+		} else if (!isInterested && hasEntity) {
+			this._entitiesByIndex.delete(entity);
+			var index = this._activeEntities.indexOf(entity);
 			this._activeEntities.splice(index, 1);
 			if (this.deleted) {
 				this.deleted(entity);

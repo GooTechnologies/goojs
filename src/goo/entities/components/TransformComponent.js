@@ -39,18 +39,10 @@ define([
 		this.children = [];
 
 
-
 		this._hidden = false;
-		// show()
-		// hide()
-		// isHidden()
 
-		this._active = false;
-		this._activeInHierarchy = false;
-		// activate()
-		// deactivate()
-		// isActive()
-		// isActiveInHierarchy()
+		this._active = true;
+		this._activeInHierarchy = true;
 
 		/** 
 		 * Mark entity as static.
@@ -252,7 +244,7 @@ define([
 			level = level !== undefined ? level : 0;
 
 			if (callback(this, level) !== false) {
-				for (var i = 0; i < this.transformComponent.children.length; i++) {
+				for (var i = 0, l = this.transformComponent.children.length; i < l; i++) {
 					var childEntity = this.transformComponent.children[i].entity;
 					childEntity.traverse(callback, level + 1);
 				}
@@ -288,13 +280,15 @@ define([
 		hide: function (applyLocally) {
 			this.transformComponent._hidden = true;
 
-			if (!applyLocally) {
+			if (applyLocally) {
 				for (var i = 0; i < this._components.length; i++) {
 					var component = this._components[i];
-					if (typeof component.hidden === 'boolean') {
-						component.hidden = true;
+					if (component._isVisual) {
+						component.enabled = false;
 					}
 				}
+
+				this._world.changedEntity(this);
 			} else {
 				// hide everything underneath this
 				this.traverse(function (entity) {
@@ -302,10 +296,12 @@ define([
 					// will have to refactor this loop in some function; it's used in other places too
 					for (var i = 0; i < entity._components.length; i++) {
 						var component = entity._components[i];
-						if (typeof component.hidden === 'boolean') {
-							component.hidden = true;
+						if (component._isVisual) {
+							component.enabled = false;
 						}
 					}
+
+					entity._world.changedEntity(entity);
 				});
 			}
 
@@ -320,29 +316,15 @@ define([
 		show: function (applyLocally) {
 			this.transformComponent._hidden = false;
 
-			// first search if it has hidden parents to determine if itself should be visible
-			// var pointer = this;
-			// while (pointer.transformComponent.parent) {
-			// 	pointer = pointer.transformComponent.parent.entity;
-			// 	if (pointer._hidden) {
-			// 		// extra check and set might be needed
-			// 		for (var i = 0; i < this._components.length; i++) {
-			// 			var component = this._components[i];
-			// 			if (typeof component.hidden === 'boolean') {
-			// 				component.hidden = true;
-			// 			}
-			// 		}
-			// 		return this;
-			// 	}
-			// }
-
-			if (!applyLocally) {
+			if (applyLocally) {
 				for (var i = 0; i < this._components.length; i++) {
 					var component = this._components[i];
-					if (typeof component.hidden === 'boolean') {
-						component.hidden = false;
+					if (component._isVisual) {
+						component.enabled = true;
 					}
 				}
+
+				this._world.changedEntity(this);
 			} else {
 				// hide everything underneath this
 				this.traverse(function (entity) {
@@ -350,10 +332,12 @@ define([
 					// will have to refactor this loop in some function; it's used in other places too
 					for (var i = 0; i < entity._components.length; i++) {
 						var component = entity._components[i];
-						if (typeof component.hidden === 'boolean') {
-							component.hidden = false;
+						if (component._isVisual) {
+							component.enabled = true;
 						}
 					}
+
+					entity._world.changedEntity(entity);
 				});
 			}
 
@@ -366,14 +350,14 @@ define([
 		 * @returns {boolean}
 		 */
 		isVisiblyHidden: function () {
-			var pointer = this;
+			var pointer = this.transformComponent;
 
 			if (pointer._hidden) {
 				return true;
 			}
 
-			while (pointer.transformComponent.parent) {
-				pointer = pointer.transformComponent.parent.entity;
+			while (pointer.parent) {
+				pointer = pointer.parent;
 				if (pointer._hidden) {
 					return true;
 				}
@@ -388,24 +372,30 @@ define([
 		 * @returns {boolean}
 		 */
 		isHidden: function () {
-			return this._hidden;
+			return this.transformComponent._hidden;
 		},
 
 		activate: function () {
-			this._active = true;
+			this.transformComponent._active = true;
 
-			this.traverse(function (entity) {
+			this.traverse(function(entity) {
 				entity.transformComponent._activeInHierarchy = entity.transformComponent._active;
+				if (entity.transformComponent._activeInHierarchy && entity._world._addedEntities.indexOf(entity) === -1) {
+					entity._world._addedEntities.push(entity);
+				}
 			});
 
 			return this;
 		},
 
 		deactivate: function () {
-			this._active = false;
+			this.transformComponent._active = false;
 
 			this.traverse(function (entity) {
 				entity.transformComponent._activeInHierarchy = false;
+				if (entity._world._removedEntities.indexOf(entity) === -1) {
+					entity._world._removedEntities.push(entity);
+				}
 			});
 
 			return this;

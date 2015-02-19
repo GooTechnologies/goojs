@@ -22,7 +22,7 @@ define(['goo/renderer/Camera'],
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 
-			if (entity.skip || entity.meshRendererComponent.hidden) {
+			if (entity.meshRendererComponent.enabled === false || entity.skip) {
 				continue;
 			}
 
