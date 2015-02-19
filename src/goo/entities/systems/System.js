@@ -123,14 +123,18 @@ function () {
 	};
 
 	System.prototype._process = function (tpf) {
-		if (this.process) { // are there systems without a this.process?
-			this.process(this._activeEntities, tpf);
-		}
+		this.process(this._activeEntities, tpf);
 	};
 
 	System.prototype.clear = function () {
 		this._activeEntities = [];
 	};
+
+///////////////////
+	System.prototype.process = function () {
+		// Impl
+	};
+
 
 	return System;
 });

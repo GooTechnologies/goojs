@@ -78,7 +78,7 @@ require([
 			return;
 		}
 
-		console.profile('flip');
+		// console.profile('flip');
 		console.time('flip');
 		switch (e.which) {
 			case 49: // 1
@@ -110,7 +110,7 @@ require([
 		}
 		goo.world.processEntityChanges();
 		console.timeEnd('flip');
-			console.profileEnd('flip');
+		// console.profileEnd('flip');
 
 		for (var i = 0; i < goo.world._systems.length; i++) {
 			var system = goo.world._systems[i];
