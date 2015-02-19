@@ -35,35 +35,51 @@
 			item = $(item);
 
 			item.find('a').click(function () {
-				iframe.attr('src', this.getAttribute('phony'));
+				iframe.contentWindow.postMessage(this.getAttribute('phony'), '*');
 			});
 		});
 	}
 
 	function setupActiveClass() {
 		var activeClass;
+		var anchorsByName = {};
 
-		items.each(function (index, item) {
+		function setActive(element) {
+			if (activeClass !== element) {
+				if (activeClass) { activeClass.classList.remove('active'); }
+				element.classList.add('active');
+				activeClass = element;
+			}
+		}
+
+		window.addEventListener('message', function (event) {
+			var element = anchorsByName[event.data];
+
+			element.scrollIntoView();
+			setActive(element.parentNode);
+		});
+
+		items.find('a').each(function (index, item) {
 			item = $(item);
 
-			item.find('a').click(function () {
-				if (activeClass !== this.parentNode) {
-					if (activeClass) { activeClass.classList.remove('active'); }
-					this.parentNode.classList.add('active');
-					activeClass = this.parentNode;
-				}
+			item.click(function () {
+				setActive(this.parentNode);
 			});
+
+			anchorsByName[item.attr('phony')] = item[0];
 		});
 	}
 
-	var iframe = $('iframe.class-panel');
+	var iframe = $('iframe.class-panel')[0];
 	var items = $('.item');
 	var categories = $('.category');
 	var searchInput = $('#search');
 
-	var parameters = purl().param();
+	var parameters = window.purl().param();
 	if (parameters.c) {
-		iframe.attr('src', parameters.c + '-doc.html');
+		iframe.addEventListener('load', function () {
+			iframe.contentWindow.postMessage(parameters.c, '*');
+		});
 	}
 
 	setupActiveClass();

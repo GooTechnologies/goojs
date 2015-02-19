@@ -10,17 +10,18 @@
 <body>
 
 {{! CONTENT }}
+{{#classes}}
 <article>
 	{{! title and description }}
 	<section class="header">
 		<h1>
-		<span class="{{#constructor.comment.deprecated}}deprecated{{/constructor.comment.deprecated}}">
+		<span id="{{constructor.name}}" class="{{#constructor.comment.deprecated}}deprecated{{/constructor.comment.deprecated}}">
 			{{constructor.name}}
 		</span>
 
 			{{#constructor.comment.extends}}
 				<span class="extends">extends
-			<a href="{{constructor.comment.extends.base}}-doc.html">
+			<a href="#{{constructor.comment.extends.base}}">
 				{{constructor.comment.extends.base}}
 			</a>
 		</span>
@@ -219,9 +220,10 @@
 		</section>
 	{{/hasStaticMethods}}
 </article>
+{{/classes}}
 
 {{! FOOTER }}
-<script>window.parent.history.replaceState('Object', 'Title', 'index.html?c={{constructor.name}}');</script>
+<!--<script>window.parent.history.replaceState('Object', 'Title', 'index.html?c={{constructor.name}}');</script>-->
 <script src="lib/jquery-2.1.1.min.js"></script>
 <script src="class.js"></script>
 <script src="lib/highlight.pack.js"></script>

@@ -1,3 +1,4 @@
+// jshint node:true
 'use strict';
 
 var dogma = require('./dogma');
@@ -14,7 +15,7 @@ var compileTypesRegex = function (types) {
 };
 
 var linkTypes = function (string) {
-	return string.replace(typesRegex, '<a href="$1-doc.html" class-name="$1">$1</a>');
+	return string.replace(typesRegex, '<a href="#$1" class-name="$1">$1</a>');
 };
 
 var urlRegex1 = /\[(.+?)]\{@link (.+?)}/g;
@@ -22,7 +23,7 @@ var urlRegex2;
 var linkUrls = function (string) {
 	var tmp = string;
 	tmp = tmp.replace(urlRegex1, '<a href="$2">$1</a>');
-	tmp = tmp.replace(urlRegex2, '<a href="$1-doc.html" class-name="$1">$1</a>');
+	tmp = tmp.replace(urlRegex2, '<a href="#$1" class-name="$1">$1</a>');
 	return tmp;
 };
 // ---
