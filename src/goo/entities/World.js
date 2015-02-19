@@ -377,61 +377,38 @@ define([
 		}
 	};
 
-	/**
-	 * Let the world and its systems know that an entity has been changed/updated.
-	 *
-	 * @param entity
-	 * @param component
-	 * @param eventType
-	 */
-	World.prototype.changedEntity = function (entity, component, eventType) {
-		var event = {
-			entity: entity
-		};
-		if (component !== undefined) {
-			event.component = component;
-		}
-		if (eventType !== undefined) {
-			event.eventType = eventType;
-		}
-		this._changedEntities.push(event);
+	World.prototype.addedComponent = function (entity, component) {
+		this._addedComponents.push(event);
+	};
+	World.prototype.removedComponent = function (entity, component) {
+		this._removedComponents.push(event);
 	};
 
 	/**
 	 * Processes newly added entities, changed entities and removed entities
 	 */
 	World.prototype.processEntityChanges = function () {
-		this._check(this._addedEntities, function (observer, entity) {
-			if (observer.added) {
-				observer.added(entity);
+		this._check(this._addedEntities, function (system, entity) {
+			if (system.added) {
+				system.added(entity);
 			}
 
 			// not in use by any system
-			if (observer.addedComponent) {
+			if (system.addedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
-					observer.addedComponent(entity, entity._components[i]);
+					system.addedComponent(entity, entity._components[i]);
 				}
 			}
 		});
-		this._check(this._changedEntities, function (observer, event) {
-			if (observer.changed) {
-				observer.changed(event.entity);
-			}
-			if (event.eventType !== undefined) {
-				if (observer[event.eventType]) {
-					observer[event.eventType](event.entity, event.component);
-				}
-			}
-		});
-		this._check(this._removedEntities, function (observer, entity) {
-			if (observer.removed) {
-				observer.removed(entity);
+		this._check(this._removedEntities, function (system, entity) {
+			if (system.removed) {
+				system.removed(entity);
 			}
 
 			// not in use by any system
-			if (observer.removedComponent) {
+			if (system.removedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
-					observer.removedComponent(entity, entity._components[i]);
+					system.removedComponent(entity, entity._components[i]);
 				}
 			}
 		});
@@ -454,9 +431,10 @@ define([
 
 	World.prototype._check = function (entities, callback) {
 		// each entity needs to be "checked" against each system
-		for (var i = 0; i < entities.length; i++) {
+		var systemCount = this._systems.length;
+		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
-			for (var systemIndex = 0; systemIndex < this._systems.length; systemIndex++) {
+			for (var systemIndex = 0; systemIndex < systemCount; systemIndex++) {
 				var system = this._systems[systemIndex];
 				callback(system, entity);
 			}

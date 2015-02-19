@@ -20,7 +20,9 @@ function () {
 	 */
 	function System(type, interests) {
 		this.type = type;
-		this.interests = interests;
+		this.interests = interests.map(function (val) {
+			return getTypeAttributeName(val);
+		});
 
 		this._entitiesByIndex = new Set();
 		this._activeEntities = [];
@@ -96,7 +98,7 @@ function () {
 		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;
 			for (var i = 0; i < this.interests.length; i++) {
-				var interest = getTypeAttributeName(this.interests[i]);
+				var interest = this.interests[i];
 
 				if (!entity[interest] || !entity[interest].enabled) {
 					isInterested = false;
@@ -111,6 +113,14 @@ function () {
 			this._activeEntities.push(entity);
 			if (this.inserted) {
 				this.inserted(entity);
+			}
+			if (this.addedComponent) {
+
+				system.addedComponent(entity, entity._components[i]);
+
+				for (var i = 0; i < entity._components.length; i++) {
+					system.addedComponent(entity, entity._components[i]);
+				}
 			}
 		} else if (!isInterested && hasEntity) {
 			this._entitiesByIndex.delete(entity);
@@ -130,9 +140,12 @@ function () {
 		this._activeEntities = [];
 	};
 
-///////////////////
+	/**
+	 * [process description]
+	 * @return {[type]} [description]
+	 */
 	System.prototype.process = function () {
-		// Impl
+		// Abstract
 	};
 
 

@@ -100,13 +100,6 @@ require([
 			case 54: // 6
 				targetEntity.activate();
 				break;
-
-			default:
-				console.log(
-					'1 - add a random circle\n' +
-					'2 - add a random box\n' +
-					'3 - add a polygon'
-				);
 		}
 		goo.world.processEntityChanges();
 		console.timeEnd('flip');
@@ -119,7 +112,16 @@ require([
 		console.log('-------------------');
 	});
 
-	V.button('Add Circle', function() {});
-	V.button('Add Box', function() {});
-	V.button('Add Polygon', function() {});
+	V.button('Hide', function() {
+		targetEntity.hide();
+	});
+	V.button('Show', function() {
+		targetEntity.show();
+	});
+	V.button('Deactivate', function() {
+		targetEntity.deactivate();
+	});
+	V.button('Activate', function() {
+		targetEntity.activate();
+	});
 });

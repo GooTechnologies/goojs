@@ -117,8 +117,12 @@ define([
 
 		component.applyAPI(this);
 
+		// RH: hack, solve with events?
+		component._world = this._world;
+
 		if (this._world && this._world.entityManager.containsEntity(this)) {
-			this._world.changedEntity(this, component, 'addedComponent');
+			this._world.addedComponent(this, component);
+			// this._world.changedEntity(this, component, 'addedComponent');
 		}
 
 		return this;
@@ -174,26 +178,12 @@ define([
 
 			// notifying the world of the change
 			if (this._world && this._world.entityManager.containsEntity(this)) {
-				this._world.changedEntity(this, component, 'removedComponent');
+				this._world.removedComponent(this, component);
+				// this._world.changedEntity(this, component, 'removedComponent');
 			}
 		}
 
 		return this;
-	};
-
-	Entity.prototype.setComponentEnabled = function (type, state) {
-		var typeAttributeName = getTypeAttributeName(type);
-		var component = this[typeAttributeName];
-
-		if (!!component && this._components.indexOf(component) > -1) {
-			if (component.enabled !== state) {
-				component.enabled = state;
-				if (this._world && this._world.entityManager.containsEntity(this)) {
-					this._world.changedEntity(this, component);
-					// this._world.changedEntity(this, component, 'removedComponent');
-				}
-			}
-		}
 	};
 
 	/**

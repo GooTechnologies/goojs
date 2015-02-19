@@ -288,7 +288,7 @@ define([
 					}
 				}
 
-				this._world.changedEntity(this);
+				// this._world.changedEntity(this);
 			} else {
 				// hide everything underneath this
 				this.traverse(function (entity) {
@@ -301,7 +301,7 @@ define([
 						}
 					}
 
-					entity._world.changedEntity(entity);
+					// entity._world.changedEntity(entity);
 				});
 			}
 
@@ -324,7 +324,7 @@ define([
 					}
 				}
 
-				this._world.changedEntity(this);
+				// this._world.changedEntity(this);
 			} else {
 				// hide everything underneath this
 				this.traverse(function (entity) {
@@ -337,7 +337,7 @@ define([
 						}
 					}
 
-					entity._world.changedEntity(entity);
+					// entity._world.changedEntity(entity);
 				});
 			}
 

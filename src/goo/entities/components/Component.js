@@ -10,9 +10,23 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 		 * If the component should be processed for containing entities.
 		 * @type {boolean}
 		 */
-		this.enabled = true;
+		var enabled = true;
 
 		this._isVisual = false;
+
+		this._world = null;
+
+		Object.defineProperty(this, 'enabled', {
+			get: function () {
+				return enabled;
+			},
+			set: function (value) {
+				if (enabled !== value) {
+					enabled = value;
+					// fire event to update world.changedEntity
+				}
+			}
+		});
 
 		this.installedAPI = new Set();
 	}
