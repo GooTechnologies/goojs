@@ -125,8 +125,12 @@
 				element = anchorsByName[event.data];
 			}
 
-			element.scrollIntoView();
-			setActiveClass(element.parentNode);
+			if (element) {
+				element.scrollIntoView();
+				setActiveClass(element.parentNode);
+			} else {
+				if (activeClass) { activeClass.classList.remove('active'); }
+			}
 		});
 
 		items.find('a').each(function (index, item) {
