@@ -36,8 +36,13 @@ function (
 			this._colliderDeleted(event.entity);
 		}.bind(this);
 
+		this._colliderDeletedComponentListener = function (event) {
+			this._colliderDeletedComponent(event.entity, event.component);
+		}.bind(this);
+
 		SystemBus.addListener('goo.collider.inserted', this._colliderInsertedListener);
 		SystemBus.addListener('goo.collider.deleted', this._colliderDeletedListener);
+		SystemBus.addListener('goo.collider.deletedComponent', this._colliderDeletedComponentListener);
 	}
 	AbstractPhysicsSystem.prototype = Object.create(System.prototype);
 	AbstractPhysicsSystem.prototype.constructor = AbstractPhysicsSystem;

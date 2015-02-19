@@ -370,6 +370,16 @@ function (
 
 	PhysicsSystem.prototype._colliderDeleted = function (entity) {
 		var colliderComponent = entity.colliderComponent;
+		if (colliderComponent) {
+			var body = colliderComponent.cannonBody;
+			if (body) {
+				this.cannonWorld.removeBody(body);
+				colliderComponent.cannonBody = null;
+			}
+		}
+	};
+
+	PhysicsSystem.prototype._colliderDeletedComponent = function (entity, colliderComponent) {
 		var body = colliderComponent.cannonBody;
 		if (body) {
 			this.cannonWorld.removeBody(body);
@@ -416,7 +426,7 @@ function (
 		// Initialize all colliders without rigid body
 		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
 			var colliderEntity = this._activeColliderEntities[i];
-			if (colliderEntity.colliderComponent.bodyEntity === null && colliderEntity.colliderComponent.cannonBody === null) {
+			if (colliderEntity.colliderComponent.bodyEntity === null && !colliderEntity.colliderComponent.cannonBody) {
 				this._addLonelyCollider(colliderEntity);
 			}
 		}
