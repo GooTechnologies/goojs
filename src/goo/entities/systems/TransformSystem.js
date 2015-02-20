@@ -15,6 +15,7 @@ define([
 	function TransformSystem() {
 		System.call(this, 'TransformSystem', ['TransformComponent']);
 		this.numUpdates = 0;
+		this.list = [];
 	}
 
 	TransformSystem.prototype = Object.create(System.prototype);
@@ -23,17 +24,24 @@ define([
 	TransformSystem.prototype.process = function (entities) {
 		numUpdates = 0;
 		var i, transformComponent;
+		// var index = 0;
 		for (i = 0; i < entities.length; i++) {
 			transformComponent = entities[i].transformComponent;
 			transformComponent._updated = false;
 			if (transformComponent._dirty) {
 				transformComponent.updateTransform();
 			}
+			// if (transformComponent.parent === null) {
+			// 	this.list[index++] = entities[i];
+			// }
 		}
+		// this.list.length = index;
 
 		// Traverse from root nodes and down, depth first
 		for (i = 0; i < entities.length; i++) {
 			var entity = entities[i];
+		// for (i = 0; i < this.list.length; i++) {
+			// var entity = this.list[i];
 			transformComponent = entity.transformComponent;
 			if (transformComponent.parent === null) {
 				entity.traverse(traverseFunc);

@@ -287,8 +287,6 @@ define([
 						component.enabled = false;
 					}
 				}
-
-				// this._world.changedEntity(this);
 			} else {
 				// hide everything underneath this
 				this.traverse(function (entity) {
@@ -300,8 +298,6 @@ define([
 							component.enabled = false;
 						}
 					}
-
-					// entity._world.changedEntity(entity);
 				});
 			}
 
@@ -323,8 +319,6 @@ define([
 						component.enabled = true;
 					}
 				}
-
-				// this._world.changedEntity(this);
 			} else {
 				// hide everything underneath this
 				this.traverse(function (entity) {
@@ -336,8 +330,6 @@ define([
 							component.enabled = true;
 						}
 					}
-
-					// entity._world.changedEntity(entity);
 				});
 			}
 
