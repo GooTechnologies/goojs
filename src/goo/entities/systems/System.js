@@ -41,7 +41,7 @@ function () {
 	 */
 	System.prototype.added = function (entity) {
 		//! AT: added shouldn't call _check as it doesn't need to do as much as _check
-		this._check(entity);
+		return this._check(entity);
 	};
 
 	/**
@@ -50,7 +50,7 @@ function () {
 	 */
 	System.prototype.changed = function (entity) {
 		//! AT: can directly say: System.prototype.changed = _check;
-		this._check(entity);
+		return this._check(entity);
 	};
 
 	/**
@@ -65,7 +65,9 @@ function () {
 			if (this.deleted) {
 				this.deleted(entity);
 			}
+			return true;
 		}
+		return false;
 	};
 
 	/**
@@ -92,7 +94,7 @@ function () {
 	 */
 	System.prototype._check = function (entity) {
 		if (this.interests && this.interests.length === 0) {
-			return;
+			return false;
 		}
 		var isInterested = this.interests === null;
 		if (!isInterested && this.interests.length <= entity._components.length) {
@@ -114,14 +116,7 @@ function () {
 			if (this.inserted) {
 				this.inserted(entity);
 			}
-			if (this.addedComponent) {
-
-				system.addedComponent(entity, entity._components[i]);
-
-				for (var i = 0; i < entity._components.length; i++) {
-					system.addedComponent(entity, entity._components[i]);
-				}
-			}
+			return true;
 		} else if (!isInterested && hasEntity) {
 			this._entitiesByIndex.delete(entity);
 			var index = this._activeEntities.indexOf(entity);
@@ -129,7 +124,10 @@ function () {
 			if (this.deleted) {
 				this.deleted(entity);
 			}
+			return true;
 		}
+		
+		return false;
 	};
 
 	System.prototype._process = function (tpf) {

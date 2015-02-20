@@ -118,7 +118,7 @@ define([
 		component.applyAPI(this);
 
 		// RH: hack, solve with events?
-		component._world = this._world;
+		component._ownerEntity = this;
 
 		if (this._world && this._world.entityManager.containsEntity(this)) {
 			this._world.addedComponent(this, component);

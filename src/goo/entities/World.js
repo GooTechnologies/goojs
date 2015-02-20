@@ -35,8 +35,9 @@ define([
 		this._systems = [];
 
 		this._addedEntities = [];
-		this._changedEntities = [];
 		this._removedEntities = [];
+		this._addedComponents = new Map();
+		this._removedComponents = new Map();
 
 		this.by = {};
 		this._installDefaultSelectors();
@@ -378,10 +379,21 @@ define([
 	};
 
 	World.prototype.addedComponent = function (entity, component) {
-		this._addedComponents.push(event);
+		var componentList = this._addedComponents.get(entity);
+		if (!componentList) {
+			componentList = [];
+			this._addedComponents.set(entity, componentList);
+		}
+		componentList.push(component);
 	};
+
 	World.prototype.removedComponent = function (entity, component) {
-		this._removedComponents.push(event);
+		var componentList = this._removedComponents.get(entity);
+		if (!componentList) {
+			componentList = [];
+			this._removedComponents.set(entity, componentList);
+		}
+		componentList.push(component);
 	};
 
 	/**
@@ -389,29 +401,52 @@ define([
 	 */
 	World.prototype.processEntityChanges = function () {
 		this._check(this._addedEntities, function (system, entity) {
-			if (system.added) {
-				system.added(entity);
-			}
-
-			// not in use by any system
-			if (system.addedComponent) {
+			var wasUpdated = system.added(entity);
+			if (wasUpdated && system.addedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
 					system.addedComponent(entity, entity._components[i]);
 				}
 			}
 		});
 		this._check(this._removedEntities, function (system, entity) {
-			if (system.removed) {
-				system.removed(entity);
-			}
-
-			// not in use by any system
-			if (system.removedComponent) {
+			var wasUpdated = system.removed(entity);
+			if (wasUpdated && system.removedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
 					system.removedComponent(entity, entity._components[i]);
 				}
 			}
 		});
+
+		var systemCount = this._systems.length;
+		if (this._addedComponents.size > 0) {
+			this._addedComponents.forEach(function (componentList, entity) {
+				for (var j = 0; j < componentList.length; j++) {
+					for (var systemIndex = 0; systemIndex < systemCount; systemIndex++) {
+						var system = this._systems[systemIndex];
+						if (system.addedComponent) {
+							system.addedComponent(entity, componentList[j]);
+						}
+						system.changed(entity);
+					}
+				}
+			}, this);
+			this._addedComponents.clear();
+		}
+
+		if (this._removedComponents.size > 0) {
+			this._removedComponents.forEach(function (componentList, entity) {
+				for (var j = 0; j < componentList.length; j++) {
+					for (var systemIndex = 0; systemIndex < systemCount; systemIndex++) {
+						var system = this._systems[systemIndex];
+						if (system.removedComponent) {
+							system.removedComponent(entity, componentList[j]);
+						}
+						system.changed(entity);
+					}
+				}
+			}, this);
+			this._removedComponents.clear();
+		}
 	};
 
 	/**
@@ -466,8 +501,9 @@ define([
 		this.entityManager.clear();
 
 		this._addedEntities = [];
-		this._changedEntities = [];
 		this._removedEntities = [];
+		this._addedComponents.clear();
+		this._removedComponents.clear();
 
 		// severe the connection to gooRunner
 		this.gooRunner = null;

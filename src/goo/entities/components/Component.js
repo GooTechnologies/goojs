@@ -14,7 +14,7 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 
 		this._isVisual = false;
 
-		this._world = null;
+		this._ownerEntity = null;
 
 		Object.defineProperty(this, 'enabled', {
 			get: function () {
@@ -24,6 +24,11 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 				if (enabled !== value) {
 					enabled = value;
 					// fire event to update world.changedEntity
+					if (enabled && this._ownerEntity) {
+						this._ownerEntity._world.addedComponent(this._ownerEntity, this);
+					} else {
+						this._ownerEntity._world.removedComponent(this._ownerEntity, this);
+					}
 				}
 			}
 		});
