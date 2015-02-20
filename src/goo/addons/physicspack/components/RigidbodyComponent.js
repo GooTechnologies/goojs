@@ -426,6 +426,7 @@ function (
 
 		this.traverseColliders(this._entity, function (colliderEntity, collider, position, quaternion) {
 			this.addCollider(colliderEntity, position, quaternion);
+			colliderEntity.colliderComponent.bodyEntity = this._entity;
 		});
 		if (this._isKinematic) {
 			body.type = CANNON.Body.KINEMATIC;
@@ -565,8 +566,6 @@ function (
 		mat.friction = cc.material ? cc.material.friction : -1;
 		mat.restitution = cc.material ? cc.material.restitution : -1;
 		cannonShape.material = mat;
-
-		collider.bodyEntity = this;
 
 		cannonShape.collisionResponse = !cc.isTrigger;
 
