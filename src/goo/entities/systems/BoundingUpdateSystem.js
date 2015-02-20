@@ -21,7 +21,9 @@ define([
 	BoundingUpdateSystem.prototype.constructor = BoundingUpdateSystem;
 
 	BoundingUpdateSystem.prototype.process = function (entities) {
-		for (var i = 0; i < entities.length; i++) {
+		var entityCount = entities.length;
+		
+		for (var i = 0; i < entityCount; i++) {
 			var entity = entities[i];
 			var meshDataComponent = entity.meshDataComponent;
 			var transformComponent = entity.transformComponent;
@@ -36,7 +38,7 @@ define([
 			}
 		}
 		if (this._computeWorldBound && this._computeWorldBound instanceof Function) {
-			if (entities.length === 0) {
+			if (entityCount === 0) {
 				this._computeWorldBound = null;
 				return;
 			}
@@ -44,14 +46,14 @@ define([
 			//this._worldBound = new BoundingSphere(new Vector3(0, 0, 0), 0); // optional for including the center of the scene into the world bound
 
 			// generally we don't want particle systems to end up in our world bound computing since they have huge world bounds and can mess up stuff
-			for (var i = 0; i < entities.length; i++) {
+			for (var i = 0; i < entityCount; i++) {
 				if (!entities[i].particleComponent) {
 					this._worldBound = entities[i].meshRendererComponent.worldBound.clone();
 					break;
 				}
 			}
 
-			for (; i < entities.length; i++) {
+			for (; i < entityCount; i++) {
 				if (!entities[i].particleComponent) {
 					var mrc = entities[i].meshRendererComponent;
 					this._worldBound = this._worldBound.merge(mrc.worldBound);
@@ -66,12 +68,6 @@ define([
 	// function named get actually does a set
 	BoundingUpdateSystem.prototype.getWorldBound = function (callback) {
 		this._computeWorldBound = callback;
-	};
-
-	BoundingUpdateSystem.prototype.deleted = function (entity) {
-		// if (entity.meshRendererComponent) {
-		// 	entity.meshRendererComponent.worldBound = new BoundingBox();
-		// }
 	};
 
 	return BoundingUpdateSystem;

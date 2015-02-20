@@ -10,26 +10,20 @@ define([
 	 */
 	function TransformSystem() {
 		System.call(this, 'TransformSystem', ['TransformComponent']);
-		this.numUpdates = 0;
-		this.list = [];
 
-		this.traverseFunc2 = function (entity) {
+		this.numUpdates = 0;
+
+		this._list = [];
+
+		this.traverseFunc = function (entity) {
 			entity.transformComponent.updateWorldTransform();
 			this.numUpdates++;
 		}.bind(this);
-		this.traverseFunc = function (entity) {
+
+		this.traverseFuncWithCheck = function (entity) {
 			if (entity.transformComponent._dirty) {
-				// entity.transformComponent.updateWorldTransform();
-				// this.numUpdates++;
-
-				entity.traverse(this.traverseFunc2);
+				entity.traverse(this.traverseFunc);
 				return false;
-
-				// Set children to dirty
-				// var children = entity.transformComponent.children;
-				// for (var j = 0; j < children.length; j++) {
-					// children[j]._dirty = true;
-				// }
 			}
 		}.bind(this);
 	}
@@ -40,30 +34,22 @@ define([
 	TransformSystem.prototype.process = function (entities) {
 		this.numUpdates = 0;
 
-		var i, transformComponent;
+		var i, l, transformComponent;
 		var index = 0;
-		for (i = 0; i < entities.length; i++) {
+		for (i = 0, l = entities.length; i < l; i++) {
 			transformComponent = entities[i].transformComponent;
 			transformComponent._updated = false;
 			if (transformComponent._dirty) {
 				transformComponent.updateTransform();
-				// this.list[index++] = entities[i];
 			}
 			if (transformComponent.parent === null) {
-				this.list[index++] = entities[i];
+				this._list[index++] = entities[i];
 			}
 		}
-		this.list.length = index;
 
 		// Traverse from root nodes and down, depth first
-		// for (i = 0; i < entities.length; i++) {
-			// var entity = entities[i];
-		for (i = 0; i < this.list.length; i++) {
-			var entity = this.list[i];
-			// transformComponent = entity.transformComponent;
-			// if (transformComponent.parent === null) {
-				entity.traverse(this.traverseFunc);
-			// }
+		for (i = 0; i < index; i++) {
+			this._list[i].traverse(this.traverseFuncWithCheck);
 		}
 	};
 

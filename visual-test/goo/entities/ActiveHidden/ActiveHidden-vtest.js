@@ -64,7 +64,7 @@ require([
 		oldY = evt.y;
 	};
 	var onUp = function(evt) {
-		if (Math.abs(evt.x - oldX) < 5 && Math.abs(evt.y - oldY) < 5) {
+		if (Math.abs(evt.x - oldX) < 5 && Math.abs(evt.y - oldY) < 5 && evt.entity) {
 			console.log(evt);
 			targetEntity = evt.entity;
 		}
