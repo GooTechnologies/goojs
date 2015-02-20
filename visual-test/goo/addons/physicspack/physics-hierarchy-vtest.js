@@ -53,7 +53,7 @@ require([
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
-	world.setSystem(new PhysicsDebugRenderSystem());
+	goo.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	function createBox() {
 		var rigidBodyComponent = new RigidbodyComponent();

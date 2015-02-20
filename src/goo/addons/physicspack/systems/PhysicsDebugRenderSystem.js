@@ -2,7 +2,9 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/shapes/Sphere',
+	'goo/shapes/Box',
 	'goo/addons/physicspack/colliders/SphereCollider',
+	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/math/Quaternion',
 	'goo/math/Vector3',
 	'goo/math/Transform',
@@ -13,7 +15,9 @@ function (
 	System,
 	SystemBus,
 	Sphere,
+	Box,
 	SphereCollider,
+	BoxCollider,
 	Quaternion,
 	Vector3,
 	Transform,
@@ -46,7 +50,10 @@ function (
 		});
 
 		this.sphereMeshData = new Sphere(20, 20, 1);
-		this.material = new Material(ShaderLib.simpleLit);
+		this.boxMeshData = new Box(1, 1, 1);
+		this.material = new Material(ShaderLib.uber);
+		this.material.blendState.blending = 'AdditiveBlending';
+		this.material.wireframe = true;
 	}
 	PhysicsDebugRenderSystem.prototype = Object.create(System.prototype);
 	PhysicsDebugRenderSystem.prototype.constructor = PhysicsDebugRenderSystem;
@@ -71,6 +78,9 @@ function (
 
 				// These should really sit in the RigidbodyComponent
 				var cannonBody = bodyEntity.rigidbodyComponent.cannonBody;
+				if (!cannonBody || !entity.colliderComponent.cannonShape) {
+					continue;
+				}
 				var cannonShapeIndex = cannonBody.shapes.indexOf(entity.colliderComponent.cannonShape);
 				var cannonLocalShapePosition = cannonBody.shapeOffsets[cannonShapeIndex];
 				var cannonLocalShapeQuaternion = cannonBody.shapeOrientations[cannonShapeIndex];
@@ -78,6 +88,7 @@ function (
 				var cannonWorldShapeQuaternion = new CANNON.Quaternion();
 				cannonBody.quaternion.mult(cannonLocalShapeQuaternion, cannonWorldShapeQuaternion);
 				cannonBody.quaternion.vmult(cannonLocalShapePosition, cannonWorldShapePosition);
+				cannonWorldShapePosition.vadd(cannonBody.position, cannonWorldShapePosition);
 
 				// Convert translation
 				var translation = transform.translation;
@@ -91,14 +102,19 @@ function (
 				tmpQuaternion.z = cannonWorldShapeQuaternion.z;
 				tmpQuaternion.w = cannonWorldShapeQuaternion.w;
 				transform.rotation.copyQuaternion(tmpQuaternion);
-				transform.update();
 
-				var collider = entity.colliderComponent.collider;
-
+				var collider = entity.colliderComponent.worldCollider;
 				var meshData;
 				if (collider instanceof SphereCollider) {
 					meshData = this.sphereMeshData;
+					var scale = collider.radius;
+					transform.scale.set(scale, scale, scale);
+				} else if (collider instanceof BoxCollider) {
+					meshData = this.boxMeshData;
+					transform.scale.copy(collider.halfExtents).mul(2);
 				}
+
+				transform.update();
 
 				var renderable = {
 					meshData: meshData,
