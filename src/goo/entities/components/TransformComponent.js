@@ -371,6 +371,9 @@ define([
 			this.transformComponent._active = true;
 
 			this.traverse(function(entity) {
+				if (!entity.transformComponent._active) {
+					return false;
+				}
 				entity.transformComponent._activeInHierarchy = entity.transformComponent._active;
 				if (entity.transformComponent._activeInHierarchy && entity._world._addedEntities.indexOf(entity) === -1) {
 					entity._world._addedEntities.push(entity);
@@ -394,11 +397,11 @@ define([
 		},
 
 		isActive: function () {
-			return this._active;
+			return this.transformComponent._active;
 		},
 
 		isActiveInHierarchy: function () {
-			return this._active && this._activeInHierarchy;
+			return this.transformComponent._active && this.transformComponent._activeInHierarchy;
 		}
 	};
 
