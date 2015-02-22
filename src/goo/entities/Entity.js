@@ -28,6 +28,48 @@ define([
 
 		this.name = name !== undefined ? name : 'Entity_' + this._index;
 
+		this._active = true;
+		this._activeInHierarchy = true;
+		Object.defineProperty(this, 'activeInHierarchy', {
+			get: function () {
+				return this._active && this._activeInHierarchy;
+			},
+			set: function () {
+				// no effect
+			}
+		});
+		Object.defineProperty(this, 'active', {
+			get: function () {
+				return this._active;
+			},
+			set: function (value) {
+				if (this._active !== value) {
+					this._active = value;
+					if (!this.traverse) {
+						return;
+					}
+					if (this._active) {
+						this.traverse(function(entity) {
+							if (!entity._active) {
+								return false;
+							}
+							entity._activeInHierarchy = entity._active;
+							if (entity._activeInHierarchy && entity._world._addedEntities.indexOf(entity) === -1) {
+								entity._world._addedEntities.push(entity);
+							}
+						});
+					} else {
+						this.traverse(function (entity) {
+							entity._activeInHierarchy = false;
+							if (entity._world._removedEntities.indexOf(entity) === -1) {
+								entity._world._removedEntities.push(entity);
+							}
+						});
+					}
+				}
+			}
+		});
+
 		Entity.entityCount++;
 	}
 

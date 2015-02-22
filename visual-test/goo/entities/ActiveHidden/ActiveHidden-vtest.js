@@ -95,10 +95,17 @@ require([
 				break;
 
 			case 53: // 5
-				targetEntity.deactivate();
+				targetEntity.active = false;
 				break;
 			case 54: // 6
-				targetEntity.activate();
+				targetEntity.active = true;
+				break;
+
+			case 55: // 7
+				targetEntity.meshRendererComponent.enabled = false;
+				break;
+			case 56: // 8
+				targetEntity.meshRendererComponent.enabled = true;
 				break;
 		}
 		goo.world.processEntityChanges();
@@ -112,16 +119,7 @@ require([
 		console.log('-------------------');
 	});
 
-	V.button('Hide', function() {
-		targetEntity.hide();
-	});
-	V.button('Show', function() {
-		targetEntity.show();
-	});
-	V.button('Deactivate', function() {
-		targetEntity.deactivate();
-	});
-	V.button('Activate', function() {
-		targetEntity.activate();
-	});
+	// V.button('Hide', function() {
+		// targetEntity.hide();
+	// });
 });

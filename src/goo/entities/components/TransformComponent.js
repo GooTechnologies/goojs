@@ -38,11 +38,7 @@ define([
 		 */
 		this.children = [];
 
-
 		this._hidden = false;
-
-		this._active = true;
-		this._activeInHierarchy = true;
 
 		/** 
 		 * Mark entity as static.
@@ -365,43 +361,6 @@ define([
 		 */
 		isHidden: function () {
 			return this.transformComponent._hidden;
-		},
-
-		activate: function () {
-			this.transformComponent._active = true;
-
-			this.traverse(function(entity) {
-				if (!entity.transformComponent._active) {
-					return false;
-				}
-				entity.transformComponent._activeInHierarchy = entity.transformComponent._active;
-				if (entity.transformComponent._activeInHierarchy && entity._world._addedEntities.indexOf(entity) === -1) {
-					entity._world._addedEntities.push(entity);
-				}
-			});
-
-			return this;
-		},
-
-		deactivate: function () {
-			this.transformComponent._active = false;
-
-			this.traverse(function (entity) {
-				entity.transformComponent._activeInHierarchy = false;
-				if (entity._world._removedEntities.indexOf(entity) === -1) {
-					entity._world._removedEntities.push(entity);
-				}
-			});
-
-			return this;
-		},
-
-		isActive: function () {
-			return this.transformComponent._active;
-		},
-
-		isActiveInHierarchy: function () {
-			return this.transformComponent._active && this.transformComponent._activeInHierarchy;
 		}
 	};
 

@@ -110,7 +110,7 @@ function () {
 		}
 
 		var hasEntity = this._entitiesByIndex.has(entity);
-		if (isInterested && !hasEntity && entity.isActiveInHierarchy()) {
+		if (isInterested && !hasEntity && entity.activeInHierarchy) {
 			this._entitiesByIndex.add(entity);
 			this._activeEntities.push(entity);
 			if (this.inserted) {
