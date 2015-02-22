@@ -35,8 +35,9 @@ define([
 		this._systems = [];
 
 		this._addedEntities = [];
-		this._changedEntities = [];
 		this._removedEntities = [];
+		this._addedComponents = new Map();
+		this._removedComponents = new Map();
 
 		this.by = {};
 		this._installDefaultSelectors();
@@ -377,64 +378,75 @@ define([
 		}
 	};
 
-	/**
-	 * Let the world and its systems know that an entity has been changed/updated.
-	 *
-	 * @param entity
-	 * @param component
-	 * @param eventType
-	 */
-	World.prototype.changedEntity = function (entity, component, eventType) {
-		var event = {
-			entity: entity
-		};
-		if (component !== undefined) {
-			event.component = component;
+	World.prototype.addedComponent = function (entity, component) {
+		var componentList = this._addedComponents.get(entity);
+		if (!componentList) {
+			componentList = [];
+			this._addedComponents.set(entity, componentList);
 		}
-		if (eventType !== undefined) {
-			event.eventType = eventType;
+		componentList.push(component);
+	};
+
+	World.prototype.removedComponent = function (entity, component) {
+		var componentList = this._removedComponents.get(entity);
+		if (!componentList) {
+			componentList = [];
+			this._removedComponents.set(entity, componentList);
 		}
-		this._changedEntities.push(event);
+		componentList.push(component);
 	};
 
 	/**
 	 * Processes newly added entities, changed entities and removed entities
 	 */
 	World.prototype.processEntityChanges = function () {
-		this._check(this._addedEntities, function (observer, entity) {
-			if (observer.added) {
-				observer.added(entity);
-			}
-
-			// not in use by any system
-			if (observer.addedComponent) {
+		this._check(this._addedEntities, function (system, entity) {
+			var wasUpdated = system.added(entity);
+			if (wasUpdated && system.addedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
-					observer.addedComponent(entity, entity._components[i]);
+					system.addedComponent(entity, entity._components[i]);
 				}
 			}
 		});
-		this._check(this._changedEntities, function (observer, event) {
-			if (observer.changed) {
-				observer.changed(event.entity);
-			}
-			if (event.eventType !== undefined) {
-				if (observer[event.eventType]) {
-					observer[event.eventType](event.entity, event.component);
-				}
-			}
-		});
-		this._check(this._removedEntities, function (observer, entity) {
-			if (observer.removed) {
-				observer.removed(entity);
-			}
-
-			// not in use by any system
-			if (observer.removedComponent) {
+		this._check(this._removedEntities, function (system, entity) {
+			var wasUpdated = system.removed(entity);
+			if (wasUpdated && system.removedComponent) {
 				for (var i = 0; i < entity._components.length; i++) {
-					observer.removedComponent(entity, entity._components[i]);
+					system.removedComponent(entity, entity._components[i]);
 				}
 			}
 		});
+
+		var systemCount = this._systems.length;
+		if (this._addedComponents.size > 0) {
+			this._addedComponents.forEach(function (componentList, entity) {
+				for (var j = 0; j < componentList.length; j++) {
+					for (var systemIndex = 0; systemIndex < systemCount; systemIndex++) {
+						var system = this._systems[systemIndex];
+						if (system.addedComponent) {
+							system.addedComponent(entity, componentList[j]);
+						}
+						system.changed(entity);
+					}
+				}
+			}, this);
+			this._addedComponents.clear();
+		}
+
+		if (this._removedComponents.size > 0) {
+			this._removedComponents.forEach(function (componentList, entity) {
+				for (var j = 0; j < componentList.length; j++) {
+					for (var systemIndex = 0; systemIndex < systemCount; systemIndex++) {
+						var system = this._systems[systemIndex];
+						if (system.removedComponent) {
+							system.removedComponent(entity, componentList[j]);
+						}
+						system.changed(entity);
+					}
+				}
+			}, this);
+			this._removedComponents.clear();
+		}
 	};
 
 	/**
@@ -454,9 +466,10 @@ define([
 
 	World.prototype._check = function (entities, callback) {
 		// each entity needs to be "checked" against each system
-		for (var i = 0; i < entities.length; i++) {
+		var systemCount = this._systems.length;
+		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
-			for (var systemIndex = 0; systemIndex < this._systems.length; systemIndex++) {
+			for (var systemIndex = 0; systemIndex < systemCount; systemIndex++) {
 				var system = this._systems[systemIndex];
 				callback(system, entity);
 			}
@@ -488,8 +501,9 @@ define([
 		this.entityManager.clear();
 
 		this._addedEntities = [];
-		this._changedEntities = [];
 		this._removedEntities = [];
+		this._addedComponents.clear();
+		this._removedComponents.clear();
 
 		// severe the connection to gooRunner
 		this.gooRunner = null;

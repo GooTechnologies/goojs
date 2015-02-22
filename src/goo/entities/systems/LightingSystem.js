@@ -63,7 +63,7 @@ define([
 					lightComponent.updateLight(transformComponent.worldTransform);
 				}
 
-				if (!lightComponent.hidden) {
+				if (lightComponent.enabled) {
 					var light = lightComponent.light;
 					light.shadowCaster = light.shadowCaster && Capabilities.TextureFloat; // Needs float texture for shadows (for now)
 					this.lights.push(light);

@@ -19,10 +19,10 @@ define(['goo/renderer/Camera'],
 
 	SimplePartitioner.prototype.process = function (camera, entities, renderList) {
 		var index = 0;
-		for (var i = 0; i < entities.length; i++) {
+		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
 
-			if (entity.skip || entity.meshRendererComponent.hidden) {
+			if (entity.meshRendererComponent.enabled === false || entity.skip) {
 				continue;
 			}
 

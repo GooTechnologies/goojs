@@ -20,8 +20,11 @@ function () {
 	 */
 	function System(type, interests) {
 		this.type = type;
-		this.interests = interests;
+		this.interests = interests.map(function (val) {
+			return getTypeAttributeName(val);
+		});
 
+		this._entitiesByIndex = new Set();
 		this._activeEntities = [];
 		this.passive = false;
 
@@ -38,7 +41,7 @@ function () {
 	 */
 	System.prototype.added = function (entity) {
 		//! AT: added shouldn't call _check as it doesn't need to do as much as _check
-		this._check(entity);
+		return this._check(entity);
 	};
 
 	/**
@@ -47,7 +50,7 @@ function () {
 	 */
 	System.prototype.changed = function (entity) {
 		//! AT: can directly say: System.prototype.changed = _check;
-		this._check(entity);
+		return this._check(entity);
 	};
 
 	/**
@@ -55,13 +58,16 @@ function () {
 	 * @param entity
 	 */
 	System.prototype.removed = function (entity) {
-		var index = this._activeEntities.indexOf(entity);
-		if (index !== -1) {
+		if (this._entitiesByIndex.has(entity)) {
+			this._entitiesByIndex.delete(entity);
+			var index = this._activeEntities.indexOf(entity);
 			this._activeEntities.splice(index, 1);
 			if (this.deleted) {
 				this.deleted(entity);
 			}
+			return true;
 		}
+		return false;
 	};
 
 	/**
@@ -88,44 +94,58 @@ function () {
 	 */
 	System.prototype._check = function (entity) {
 		if (this.interests && this.interests.length === 0) {
-			return;
+			return false;
 		}
 		var isInterested = this.interests === null;
 		if (!isInterested && this.interests.length <= entity._components.length) {
 			isInterested = true;
 			for (var i = 0; i < this.interests.length; i++) {
-				var interest = getTypeAttributeName(this.interests[i]);
+				var interest = this.interests[i];
 
-				if (!entity[interest]) {
+				if (!entity[interest] || !entity[interest].enabled) {
 					isInterested = false;
 					break;
 				}
 			}
 		}
 
-		var index = this._activeEntities.indexOf(entity);
-		if (isInterested && index === -1) {
+		var hasEntity = this._entitiesByIndex.has(entity);
+		if (isInterested && !hasEntity && entity.activeInHierarchy) {
+			this._entitiesByIndex.add(entity);
 			this._activeEntities.push(entity);
 			if (this.inserted) {
 				this.inserted(entity);
 			}
-		} else if (!isInterested && index !== -1) {
+			return true;
+		} else if (!isInterested && hasEntity) {
+			this._entitiesByIndex.delete(entity);
+			var index = this._activeEntities.indexOf(entity);
 			this._activeEntities.splice(index, 1);
 			if (this.deleted) {
 				this.deleted(entity);
 			}
+			return true;
 		}
+		
+		return false;
 	};
 
 	System.prototype._process = function (tpf) {
-		if (this.process) { // are there systems without a this.process?
-			this.process(this._activeEntities, tpf);
-		}
+		this.process(this._activeEntities, tpf);
 	};
 
 	System.prototype.clear = function () {
 		this._activeEntities = [];
 	};
+
+	/**
+	 * [process description]
+	 * @return {[type]} [description]
+	 */
+	System.prototype.process = function () {
+		// Abstract
+	};
+
 
 	return System;
 });

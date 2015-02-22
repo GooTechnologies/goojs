@@ -25,11 +25,7 @@ define([
          */
 		this.light = light;
 
-		/**
-		 * @type {boolean}
-		 * @default
-		 */
-		this.hidden = false;
+		this._isVisual = true;
 
 		// #ifdef DEBUG
 		Object.seal(this);
@@ -50,7 +46,7 @@ define([
 		this.light.copy(source);
 
 		// the status depends on the entity and its ancestors
-		this.hidden = source.hidden;
+		this.enabled = source.enabled;
 
 		return this;
 	};
@@ -59,7 +55,8 @@ define([
 		var clone = new LightComponent(this.light.clone());
 
 		// this status needs updating
-		clone.hidden = this.hidden;
+		clone.enabled = this.enabled;
+		
 		return clone;
 	};
 

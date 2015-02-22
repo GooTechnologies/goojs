@@ -21,6 +21,7 @@ define(['goo/entities/systems/System'], function (System) {
 
 	PickingSystem.prototype.setPickLogic = function (pickLogic) {
 		this.pickLogic = pickLogic;
+		// RH: this is stupid
 		if (pickLogic) {
 			if (this.interests.indexOf('MeshDataComponent') === -1) {
 				this.interests.push('MeshDataComponent');

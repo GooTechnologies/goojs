@@ -10,7 +10,30 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 		 * If the component should be processed for containing entities.
 		 * @type {boolean}
 		 */
-		this.enabled = true;
+		var enabled = true;
+
+		this._isVisual = false;
+
+		this._ownerEntity = null;
+
+		Object.defineProperty(this, 'enabled', {
+			get: function () {
+				return enabled;
+			},
+			set: function (value) {
+				if (enabled !== value) {
+					enabled = value;
+					// fire event to update world.changedEntity
+					if (this._ownerEntity) {
+						if (enabled) {
+							this._ownerEntity._world.addedComponent(this._ownerEntity, this);
+						} else {
+							this._ownerEntity._world.removedComponent(this._ownerEntity, this);
+						}
+					}
+				}
+			}
+		});
 
 		this.installedAPI = new Set();
 	}

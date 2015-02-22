@@ -26,40 +26,49 @@ define([
 		this._tags = new Set();
 		this._attributes = new Map();
 
-		/*Object.defineProperty(this, 'id', {
-			value : Entity.entityCount++,
-			writable : false
-		});*/
 		this.name = name !== undefined ? name : 'Entity_' + this._index;
 
-		// (move to meshrenderercomponent)
-		/** Set to true to skip all processing (rendering, script updating, et cetera) of the entity.
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.skip = false;
-
-		/** Holds the hidden status of the entity. The hidden status will not however propagate to components or child entities.
-		 * @deprecated The usage of this flag changed. Please use entity.hide/show() instead to change the hidden status of the entity and entity.isHidden/isVisiblyHidden() to query the status
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.hidden = false;
-		//! AT: users are always confused about this - I'll have to hide it
-
-		/**
-		 * Has the same function as the `hidden` property, except it's now private.
-		 * @type {boolean}
-		 * @private
-		 */
-		this._hidden = false;
-
-		/** Mark entity as static.
-		 * Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.
-		 * @type {boolean}
-		 * @default false
-		 */
-		this.static = false;
+		this._active = true;
+		this._activeInHierarchy = true;
+		Object.defineProperty(this, 'activeInHierarchy', {
+			get: function () {
+				return this._active && this._activeInHierarchy;
+			},
+			set: function () {
+				// no effect
+			}
+		});
+		Object.defineProperty(this, 'active', {
+			get: function () {
+				return this._active;
+			},
+			set: function (value) {
+				if (this._active !== value) {
+					this._active = value;
+					if (!this.traverse) {
+						return;
+					}
+					if (this._active) {
+						this.traverse(function(entity) {
+							if (!entity._active) {
+								return false;
+							}
+							entity._activeInHierarchy = entity._active;
+							if (entity._activeInHierarchy && entity._world._addedEntities.indexOf(entity) === -1) {
+								entity._world._addedEntities.push(entity);
+							}
+						});
+					} else {
+						this.traverse(function (entity) {
+							entity._activeInHierarchy = false;
+							if (entity._world._removedEntities.indexOf(entity) === -1) {
+								entity._world._removedEntities.push(entity);
+							}
+						});
+					}
+				}
+			}
+		});
 
 		Entity.entityCount++;
 	}
@@ -150,8 +159,12 @@ define([
 
 		component.applyAPI(this);
 
+		// RH: hack, solve with events?
+		component._ownerEntity = this;
+
 		if (this._world && this._world.entityManager.containsEntity(this)) {
-			this._world.changedEntity(this, component, 'addedComponent');
+			this._world.addedComponent(this, component);
+			// this._world.changedEntity(this, component, 'addedComponent');
 		}
 
 		return this;
@@ -207,7 +220,8 @@ define([
 
 			// notifying the world of the change
 			if (this._world && this._world.entityManager.containsEntity(this)) {
-				this._world.changedEntity(this, component, 'removedComponent');
+				this._world.removedComponent(this, component);
+				// this._world.changedEntity(this, component, 'removedComponent');
 			}
 		}
 

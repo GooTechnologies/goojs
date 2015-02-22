@@ -56,13 +56,13 @@ define([
 
 			// Always show if not using transform (if not hidden)
 			if (!component.useTransformComponent) {
-				component.domElement.style.display = component.hidden ? 'none' : '';
+				component.domElement.style.display = component.enabled ? '' : 'none';
 				setStyle(component.domElement, 'transform', '');
 				continue;
 			}
 
 			// Hidden
-			if (component.hidden) {
+			if (!component.enabled) {
 				component.domElement.style.display = 'none';
 				continue;
 			}
@@ -79,9 +79,8 @@ define([
 			camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, screenWidth, screenHeight, tmpVector);
 			// Behind near plane
 			if (tmpVector.z < 0) {
-				if (component.hidden !== true) {
+				if (component.enabled) {
 					component.domElement.style.display = 'none';
-					//component.hidden = true;
 				}
 				continue;
 			}
