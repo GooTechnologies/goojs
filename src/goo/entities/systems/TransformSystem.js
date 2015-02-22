@@ -16,11 +16,17 @@ define([
 		this._list = [];
 
 		this.traverseFunc = function (entity) {
+			if (!entity.activeInHierarchy) {
+				return false;
+			}
 			entity.transformComponent.updateWorldTransform();
 			this.numUpdates++;
 		}.bind(this);
 
 		this.traverseFuncWithCheck = function (entity) {
+			if (!entity.activeInHierarchy) {
+				return false;
+			}
 			if (entity.transformComponent._dirty) {
 				entity.traverse(this.traverseFunc);
 				return false;

@@ -81,7 +81,7 @@ function(
 			if (oldEntities) {
 				for (var i = 0; i < oldEntities.length; i++) {
 					var entity = oldEntities[i];
-					entity.show();
+					entity.active = true;
 					this.entityToRoot.delete(entity);
 				}
 				this.unlockOldMap.delete(root);
@@ -210,8 +210,7 @@ function(
 					entity.removeFromWorld();
 				}
 			} else {
-				entity.hide();
-				entity.skip = true;
+				entity.active = false;
 				this.entityToRoot.set(entity, root);
 				var list = this.unlockOldMap.get(root);
 				if (!list) {

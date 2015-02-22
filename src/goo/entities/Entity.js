@@ -28,6 +28,14 @@ define([
 
 		this.name = name !== undefined ? name : 'Entity_' + this._index;
 
+		/** 
+		 * Mark entity as static.
+		 * Non static entities become roots in the tree of combined ones so one can have statics under a moving node that combines but you can still move the parent node.
+		 * @type {boolean}
+		 * @default false
+		 */
+		this.static = false;
+
 		this._active = true;
 		this._activeInHierarchy = true;
 		Object.defineProperty(this, 'activeInHierarchy', {
