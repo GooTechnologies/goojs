@@ -121,7 +121,7 @@ function(
 	};
 
 	EntityCombiner.prototype._buildSubs = function(entity, baseSubs, subs) {
-		if (entity._hidden || entity.animationComponent || entity.particleComponent) {
+		if (entity.isHidden() || !entity.activeInHierarchy || entity.animationComponent || entity.particleComponent) {
 			return;
 		}
 
