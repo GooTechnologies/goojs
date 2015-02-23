@@ -9,12 +9,13 @@ define([
 ) {
 	'use strict';
 
-	function TextComponent(font, options) {
+	function TextComponent() {
 		Component.apply(this, arguments);
 
 		this.type = 'TextComponent';
 
-		this.font = font;
+		this.font = null;
+		this.options = {};
 
 		this._entity = null;
 	}
@@ -32,11 +33,15 @@ define([
 		this.entity = null;
 	};
 
-	TextComponent.prototype.setText = function (text) {
+	TextComponent.prototype.setFont = function (font) {
+		this.font = font;
+	};
+
+	TextComponent.prototype.setText = function (text, options) {
 		this.entity.clearComponent('MeshDataComponent');
 
 		// only short texts that can fit in one mesh for now
-		var meshData = TextMeshGenerator.meshesForText(text, this.font)[0];
+		var meshData = TextMeshGenerator.meshesForText(text, this.font, options)[0];
 
 		var meshDataComponent = new MeshDataComponent(meshData);
 		this.entity.setComponent(meshDataComponent);
