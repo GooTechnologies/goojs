@@ -1,6 +1,6 @@
 require([
 	'goo/math/Vector3',
-	'goo/geometrypack/TextMeshGenerator',
+	'goo/geometrypack/text/TextMeshGenerator',
 	'lib/V'
 ], function (
 	Vector3,
@@ -31,6 +31,7 @@ require([
 			var material = V.getColoredMaterial();
 
 			var meshDatas = TextMeshGenerator.meshesForText(text, font);
+
 			meshDatas.forEach(function (meshData) {
 				world.createEntity(meshData, material, [-70, -16, 0])
 					.setTag('text')
