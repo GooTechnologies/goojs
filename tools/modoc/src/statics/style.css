@@ -10,6 +10,7 @@ body {
 	font-size: 15px;
 	color: #b5b5b5;
 	background-color: #1d1d1d;
+	overflow-x: hidden;
 }
 
 ::-webkit-scrollbar { width: 10px; }
@@ -130,16 +131,67 @@ ICOMOON
 }
 
 /******************************************************************************
+HEADER
+******************************************************************************/
+
+header {
+	position: fixed;
+	right: 0;
+	left: 0;
+	height: 50px;
+	padding: 0 20px;
+	background: #262626;
+	z-index: 10;
+}
+
+header ul li {
+	display: inline;
+	float: left;
+	margin-right: 15px;
+	line-height: 50px;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.logo {
+	display: block;
+	width: 48px;
+	height: 28px;
+	margin-top: 13px;
+	margin-right: 20px;
+	background-image: url(images/logo.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	float: left;
+}
+
+.launcher {
+	float: right;
+	margin-top: -4px;
+	padding: 10px 15px;
+	color: white;
+	background: #38b3f6;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.launcher:hover {
+	color: white;
+	background: #81cff9;
+}
+
+/******************************************************************************
 SIDEBAR
 ******************************************************************************/
 
 nav {
 	position: fixed;
+	top: 50px;
+	bottom: 0;
 	width: 250px;
-	height: 100%;
 	padding: 50px;
-	padding-bottom: 60px;
-	background: #262626;
+	background-color: #1d1d1d;
 	overflow-y: auto;
 	z-index: 1;
 	cursor: default;
@@ -210,17 +262,23 @@ a.link:hover, a.link:active { color: #81cff9; }
 	margin-bottom: 50px;
 }
 
-.hidden {
-    display: none;
-}
+.hidden { display: none; }
 
 /******************************************************************************
 MAIN
 ******************************************************************************/
 
-iframe {
+.main-view {
 	position: absolute;
+	top: 50px;
+	bottom: 0;
 	left: 350px;
+	width: 100%;
+	padding: 0;
+	margin-bottom: 4px;
+}
+
+iframe {
 	width: 80%;
 	width: calc(100% - 350px);
 	height: 100%;
@@ -229,10 +287,12 @@ iframe {
 
 article {
 	max-width: 850px;
-	padding: 50px;
+	padding: 0 50px 50px 50px;
 	font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace;
 	line-height: 1.4em;
 }
+
+article:first-child { padding-top: 50px;}
 
 section { margin-bottom: 50px; }
 
@@ -241,7 +301,7 @@ div { margin-bottom: 15px; }
 ul {
 	margin: 0;
 	padding: 0;
-	padding-top: 10px;
+	padding-bottom: 10px;
 	list-style-type: none;
 }
 
