@@ -989,6 +989,10 @@ define([
 			orMaterial = this._overrideMaterials[materialIndex];
 		}
 
+		if (!material.shader) {
+			material.shader = Material.createShader(ShaderLib.uber);
+		}
+
 		material = this.configureRenderInfo(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire);
 		var meshData = renderInfo.meshData;
 

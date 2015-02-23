@@ -133,6 +133,7 @@ define([
 
 		this.errorOnce = false;
 
+		this.definesAdded = false;
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 
@@ -402,6 +403,7 @@ define([
 		this.uniformCallMapping = {};
 		this.currentCallbacks = {};
 		this.attributeKeys = null;
+		this.definesAdded = false;
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
 		this.defineKeyDirty = true;
@@ -640,12 +642,12 @@ define([
 	};
 
 	Shader.prototype.addDefines = function (defines) {
-		if (!defines) {
+		if (!defines || this.definesAdded) {
 			return;
 		}
 
 		var defineStr = this.generateDefines(defines);
-
+		this.definesAdded = true;
 		this.vertexSource = defineStr + '\n' + this.vertexSource;
 		this.fragmentSource = defineStr + '\n' + this.fragmentSource;
 	};
