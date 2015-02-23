@@ -167,6 +167,13 @@ define([
 			a.min.y < b.min.y && a.max.y > b.max.y;
 	}
 
+	function mergeBoxes(a, b) {
+		return {
+			min: new Vector2(Math.min(a.min.x, b.min.x), Math.min(a.min.y, b.min.y)),
+			max: new Vector2(Math.max(a.max.x, b.max.x), Math.max(a.max.y, b.max.y))
+		};
+	}
+
 	/**
 	 * Groups polygons in contours with holes
 	 * @param {{ x: number, y: number}[]} polygons
@@ -186,6 +193,12 @@ define([
 				children: []
 			};
 		});
+
+		var totalBounds = candidates[0].boundingVolume;
+		for (var i = 1; i < candidates.length; i++) {
+			var contour = candidates[i];
+			totalBounds = mergeBoxes(totalBounds, contour.boundingVolume);
+		}
 
 		for (var i = 0; i < candidates.length; i++) {
 			var candidateParent = candidates[i];
@@ -209,12 +222,15 @@ define([
 			});
 		});
 
-		return contours.map(function (candidate) {
-			return {
-				polygon: candidate.polygon,
-				holes: candidate.children
-			};
-		});
+		return {
+			topLevel: contours.map(function (candidate) {
+				return {
+					polygon: candidate.polygon,
+					holes: candidate.children
+				};
+			}),
+			boundingVolume: totalBounds
+		};
 	}
 
 	function invertWinding(array) {
@@ -329,7 +345,7 @@ define([
 
 		// separate contours need separate triangulations
 		var surfaceIndices = [];
-		hierarchy.forEach(function (contour) {
+		hierarchy.topLevel.forEach(function (contour) {
 			var indices = triangulate(contour.polygon, contour.holes);
 			Array.prototype.push.apply(surfaceIndices, indices);
 		});
@@ -337,7 +353,8 @@ define([
 		return {
 			surfaceIndices: surfaceIndices,
 			surfaceVerts: surfaceVerts,
-			extrusions: polygons
+			extrusions: polygons,
+			boundingVolume: hierarchy.boundingVolume
 		};
 	}
 
@@ -356,6 +373,19 @@ define([
 		options.extrusion = options.extrusion !== undefined ? options.extrusion : 4;
 		options.stepLength = options.stepLength || 1;
 		options.fontSize = options.fontSize || 48;
+
+
+		var dataSets = [];
+		font.forEachGlyph(text, 0, 0, options.fontSize, {}, function (glyph, x, y, fontSize, _options) {
+			if (glyph.path.commands.length > 0) {
+				dataSets.push({
+					data: dataForGlyph(glyph, options),
+					x: x,
+					y: y
+				});
+			}
+		});
+
 
 		var meshBuilder = new MeshBuilder();
 
@@ -391,7 +421,7 @@ define([
 					var meshData = contourPolyLine.mul(extrusionPolyLine);
 
 					var transform = new Transform();
-					transform.translation.setDirect(x, 0, 0);
+					transform.translation.setDirect(x, y, 0);
 					transform.scale.setDirect(1, -1, -1);
 					transform.update();
 
@@ -400,12 +430,20 @@ define([
 			}
 		}
 
-		font.forEachGlyph(text, 0, 0, options.fontSize, {}, function (glyph, x, y, fontSize, _options) {
-			if (glyph.path.commands.length > 0) {
-				var data = dataForGlyph(glyph, options);
 
-				meshForGlyph(data, x, y, options);
-			}
+		// get the total bounds; it's enough to merge the first and last chars
+		var firstDataSet = dataSets[0];
+		var minX = firstDataSet.data.boundingVolume.min.x;
+
+		var lastDataSet = dataSets[dataSets.length - 1];
+		var maxX = lastDataSet.data.boundingVolume.max.x + lastDataSet.x;
+
+		// compute the offset needed for centering
+		var offsetX = (minX + maxX) / 2;
+
+		// add the mesh
+		dataSets.forEach(function (dataSet) {
+			meshForGlyph(dataSet.data, dataSet.x - offsetX, 0, options);
 		});
 
 		return meshBuilder.build();

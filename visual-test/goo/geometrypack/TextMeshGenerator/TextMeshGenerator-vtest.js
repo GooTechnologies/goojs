@@ -24,8 +24,7 @@ require([
 	opentype.load('Roboto-Black.ttf', function (err, font) {
 		if (err) { throw err; }
 
-		function print(text, x, y, extrusion) {
-
+		function print(text, y, extrusion) {
 			var material = V.getColoredMaterial();
 
 			var meshDatas = TextMeshGenerator.meshesForText(text, font, {
@@ -33,14 +32,14 @@ require([
 			});
 
 			meshDatas.forEach(function (meshData) {
-				world.createEntity(meshData, material, [x, y, 0])
+				world.createEntity(meshData, material, [0, y, 0])
 					.setTag('text')
 					.addToWorld();
 			});
 		}
 
-		print('yummy', -76, 8, 0);
-		print('cookie', -70, -32, 4);
+		print('yummy', 8, 0);
+		print('cookie', -32, 4);
 	});
 
 	V.process();

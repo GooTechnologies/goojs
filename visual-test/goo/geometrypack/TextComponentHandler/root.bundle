@@ -404,11 +404,11 @@
 			"castShadows"   : true
 		},
         "text"    : {
-          "fontURL"       : "Calligraffiti.ttf",
-          "text"          : "qwerty",
-          "extrusion"     : 0,
-          "fontSize"      : 1,
-          "stepLength"    : 0.04
+            "fontURL"       : "Calligraffiti.ttf",
+            "text"          : "qwerty",
+            "extrusion"     : 0,
+            "fontSize"      : 1,
+            "stepLength"    : 0.04
         }
 	},
 	"hidden"          : false,
