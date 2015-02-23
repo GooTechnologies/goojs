@@ -19,6 +19,7 @@ define([
 	'goo/addons/physicspack/systems/ColliderSystem',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/RaycastResult',
+	'goo/addons/physicspack/PhysicsMaterial',
 	'goo/addons/physicspack/components/RigidbodyComponent'
 
 ], function (Scripts) {
@@ -44,6 +45,7 @@ define([
 		'goo/addons/physicspack/systems/ColliderSystem',
 		'goo/addons/physicspack/systems/PhysicsSystem',
 		'goo/addons/physicspack/RaycastResult',
+		'goo/addons/physicspack/PhysicsMaterial',
 		'goo/addons/physicspack/components/RigidbodyComponent'
 	];
 

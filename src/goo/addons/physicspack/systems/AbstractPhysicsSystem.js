@@ -24,14 +24,25 @@ function (
 
 		this._colliderInsertedListener = function (event) {
 			this._activeColliderEntities.push(event.entity);
+			this._colliderInserted(event.entity);
 		}.bind(this);
 
 		this._colliderDeletedListener = function (event) {
-			this._activeColliderEntities.push(event.entity);
+			var entities = this._activeColliderEntities;
+			var index = entities.indexOf(event.entity);
+			if (index !== -1) {
+				this._activeColliderEntities.splice(index, 1);
+			}
+			this._colliderDeleted(event.entity);
+		}.bind(this);
+
+		this._colliderDeletedComponentListener = function (event) {
+			this._colliderDeletedComponent(event.entity, event.component);
 		}.bind(this);
 
 		SystemBus.addListener('goo.collider.inserted', this._colliderInsertedListener);
 		SystemBus.addListener('goo.collider.deleted', this._colliderDeletedListener);
+		SystemBus.addListener('goo.collider.deletedComponent', this._colliderDeletedComponentListener);
 	}
 	AbstractPhysicsSystem.prototype = Object.create(System.prototype);
 	AbstractPhysicsSystem.prototype.constructor = AbstractPhysicsSystem;
@@ -88,6 +99,9 @@ function (
 		event.entityA = null;
 		event.entityB = null;
 	};
+
+	AbstractPhysicsSystem.prototype._colliderInserted = function (/*entity*/) {};
+	AbstractPhysicsSystem.prototype._colliderDeleted = function (/*entity*/) {};
 
 	return AbstractPhysicsSystem;
 });

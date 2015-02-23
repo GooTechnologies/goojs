@@ -47,7 +47,7 @@ function (
 		/**
 		 * @type {Vector3}
 		 */
-		this.localAxis = settings.localAxis ? settings.localAxis.clone() : new Vector3(0, 1, 0);
+		this.localAxis = settings.localAxis ? settings.localAxis.clone() : new Vector3(1, 0, 0);
 	}
 	HingeJoint.prototype = Object.create(PhysicsJoint.prototype);
 	HingeJoint.prototype.constructor = HingeJoint;

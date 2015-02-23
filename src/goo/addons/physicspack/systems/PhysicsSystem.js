@@ -1,6 +1,7 @@
 define([
 	'goo/addons/physicspack/systems/AbstractPhysicsSystem',
 	'goo/addons/physicspack/RaycastResult',
+	'goo/addons/physicspack/components/RigidbodyComponent',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'goo/entities/EntityUtils',
@@ -9,6 +10,7 @@ define([
 function (
 	AbstractPhysicsSystem,
 	RaycastResult,
+	RigidbodyComponent,
 	Vector3,
 	Quaternion,
 	EntityUtils,
@@ -63,14 +65,14 @@ function (
 		 * @type {number}
 		 * @default 60
 		 */
-		this.stepFrequency = settings.stepFrequency || 60;
+		this.stepFrequency = settings.stepFrequency !== undefined ? settings.stepFrequency : 60;
 
 		/**
 		 * The maximum number of timesteps to use for making the physics clock catch up with the wall clock. If set to zero, a variable timestep will be used (not recommended).
 		 * @type {number}
 		 * @default 10
 		 */
-		this.maxSubSteps = settings.maxSubSteps || 10;
+		this.maxSubSteps = settings.maxSubSteps !== undefined ? settings.maxSubSteps : 10;
 
 		this._inContactCurrentStepA = [];
 		this._inContactCurrentStepB = [];
@@ -349,14 +351,40 @@ function (
 	 * @param  {Entity} entity
 	 */
 	PhysicsSystem.prototype._addLonelyCollider = function (entity) {
-		var body = new CANNON.Body({ mass: 0, collisionResponse: false });
+		var material = null;
+		if (entity.colliderComponent.material) {
+			material = new CANNON.Material();
+			material.friction = entity.colliderComponent.material.friction;
+			material.restitution = entity.colliderComponent.material.restitution;
+		}
+		var shape = RigidbodyComponent.getCannonShape(entity.colliderComponent.collider);
+		shape.material = material;
+		var body = new CANNON.Body({
+			mass: 0,
+			collisionResponse: entity.colliderComponent.isTrigger,
+			shape: shape
+		});
+		this.cannonWorld.addBody(body);
 		entity.colliderComponent.cannonBody = body;
+	};
 
-		// if (entity.colliderComponent.isTrigger) {
-		// 	// Turn off collision response etc
-		// } else {
+	PhysicsSystem.prototype._colliderDeleted = function (entity) {
+		var colliderComponent = entity.colliderComponent;
+		if (colliderComponent) {
+			var body = colliderComponent.cannonBody;
+			if (body) {
+				this.cannonWorld.removeBody(body);
+				colliderComponent.cannonBody = null;
+			}
+		}
+	};
 
-		// }
+	PhysicsSystem.prototype._colliderDeletedComponent = function (entity, colliderComponent) {
+		var body = colliderComponent.cannonBody;
+		if (body) {
+			this.cannonWorld.removeBody(body);
+			colliderComponent.cannonBody = null;
+		}
 	};
 
 	/**
@@ -398,7 +426,7 @@ function (
 		// Initialize all colliders without rigid body
 		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
 			var colliderEntity = this._activeColliderEntities[i];
-			if (colliderEntity.colliderComponent.bodyEntity === null) {
+			if (colliderEntity.colliderComponent.bodyEntity === null && !colliderEntity.colliderComponent.cannonBody) {
 				this._addLonelyCollider(colliderEntity);
 			}
 		}

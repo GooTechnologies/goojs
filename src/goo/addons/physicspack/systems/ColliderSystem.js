@@ -44,7 +44,9 @@ define([
 	 * @param  {Entity} entity
 	 */
 	ColliderSystem.prototype.inserted = function (entity) {
-		SystemBus.emit('goo.collider.inserted', { entity: entity });
+		SystemBus.emit('goo.collider.inserted', {
+			entity: entity
+		});
 	};
 
 	/**
@@ -52,7 +54,21 @@ define([
 	 * @param  {Entity} entity
 	 */
 	ColliderSystem.prototype.deleted = function (entity) {
-		SystemBus.emit('goo.collider.deleted', { entity: entity });
+		SystemBus.emit('goo.collider.deleted', {
+			entity: entity
+		});
+	};
+
+	/**
+	 * @private
+	 * @param  {Entity} entity
+	 * @param  {Component} component
+	 */
+	ColliderSystem.prototype.removedComponent = function (entity, component) {
+		SystemBus.emit('goo.collider.deletedComponent', {
+			entity: entity,
+			component: component
+		});
 	};
 
 	return ColliderSystem;
