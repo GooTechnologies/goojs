@@ -73,7 +73,8 @@ define([
 					component.setText(config.text, {
 						extrusion: config.extrusion,
 						fontSize: config.fontSize,
-						stepLength: config.stepLength
+						stepLength: config.stepLength,
+						simplifyPaths: config.simplifyPaths
 					});
 
 					resolve(component);

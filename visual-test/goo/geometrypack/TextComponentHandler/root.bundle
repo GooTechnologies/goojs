@@ -243,7 +243,9 @@
 		"text"    : {
 			"fontURL"       : "Roboto-Black.ttf",
 			"text"          : "dsa",
-            "extrusion"     : 1
+            "extrusion"     : 1,
+            "fontSize"      : 1,
+            "stepLength"    : 0.04
 		}
 	},
 	"hidden"          : false,
@@ -404,7 +406,9 @@
         "text"    : {
           "fontURL"       : "Calligraffiti.ttf",
           "text"          : "qwerty",
-          "extrusion"     : 0.1
+          "extrusion"     : 0,
+          "fontSize"      : 1,
+          "stepLength"    : 0.04
         }
 	},
 	"hidden"          : false,
