@@ -32,6 +32,7 @@ define([
 
             //create an empty entity used solely for running the simpleColored shader
             this._entity = this.lineRenderSystemOwner.world.createEntity(this._meshData, this._material).addToWorld();
+            this._entity.meshRendererComponent.cullMode = 'Never';
 
             this._numRenderingLines = 0;
             this._meshData.vertexCount = 0;
