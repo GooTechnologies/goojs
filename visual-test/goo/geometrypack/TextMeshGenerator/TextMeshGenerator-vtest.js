@@ -14,7 +14,7 @@ require([
 	var goo = V.initGoo();
 	var world = goo.world;
 
-	V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
+	V.addOrbitCamera(new Vector3(110, Math.PI / 2, 0));
 	V.addLights();
 
 	// cycling through colors
@@ -24,22 +24,23 @@ require([
 	opentype.load('Roboto-Black.ttf', function (err, font) {
 		if (err) { throw err; }
 
-		window.letter = function (text) {
-			// remove previous text
-			world.by.tag('text').forEach(function (entity) { entity.removeFromWorld(); });
+		function print(text, x, y, extrusion) {
 
 			var material = V.getColoredMaterial();
 
-			var meshDatas = TextMeshGenerator.meshesForText(text, font);
+			var meshDatas = TextMeshGenerator.meshesForText(text, font, {
+				extrusion: extrusion
+			});
 
 			meshDatas.forEach(function (meshData) {
-				world.createEntity(meshData, material, [-70, -16, 0])
+				world.createEntity(meshData, material, [x, y, 0])
 					.setTag('text')
 					.addToWorld();
 			});
-		};
+		}
 
-		letter('cookie');
+		print('yummy', -76, 8, 0);
+		print('cookie', -70, -32, 4);
 	});
 
 	V.process();

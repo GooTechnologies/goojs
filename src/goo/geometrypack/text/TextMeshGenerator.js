@@ -354,8 +354,8 @@ define([
 	function meshesForText(text, font, options) {
 		options = options || {};
 		options.extrusion = options.extrusion !== undefined ? options.extrusion : 4;
-		options.stepLength = options.stepLength || 0.02;
-		options.fontSize = options.fontSize || 1;
+		options.stepLength = options.stepLength || 1;
+		options.fontSize = options.fontSize || 48;
 
 		var meshBuilder = new MeshBuilder();
 
@@ -381,21 +381,23 @@ define([
 			frontFace();
 			backFace();
 
-			data.extrusions.forEach(function (polygon) {
-				var contourVerts = getVerts(polygon);
-				contourVerts.push(contourVerts[0], contourVerts[1], contourVerts[2]);
+			if (options.extrusion) {
+				data.extrusions.forEach(function (polygon) {
+					var contourVerts = getVerts(polygon);
+					contourVerts.push(contourVerts[0], contourVerts[1], contourVerts[2]);
 
-				var contourPolyLine = new PolyLine(contourVerts, true);
-				var extrusionPolyLine = new PolyLine([0, 0, -options.extrusion / 2, 0, 0, options.extrusion / 2]);
-				var meshData = contourPolyLine.mul(extrusionPolyLine);
+					var contourPolyLine = new PolyLine(contourVerts, true);
+					var extrusionPolyLine = new PolyLine([0, 0, -options.extrusion / 2, 0, 0, options.extrusion / 2]);
+					var meshData = contourPolyLine.mul(extrusionPolyLine);
 
-				var transform = new Transform();
-				transform.translation.setDirect(x, 0, 0);
-				transform.scale.setDirect(1, -1, -1);
-				transform.update();
+					var transform = new Transform();
+					transform.translation.setDirect(x, 0, 0);
+					transform.scale.setDirect(1, -1, -1);
+					transform.update();
 
-				meshBuilder.addMeshData(meshData, transform);
-			});
+					meshBuilder.addMeshData(meshData, transform);
+				});
+			}
 		}
 
 		font.forEachGlyph(text, 0, 0, options.fontSize, {}, function (glyph, x, y, fontSize, _options) {
