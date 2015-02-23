@@ -10,7 +10,7 @@ function (
 
 	/**
 	 * Physics mesh collider.
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {MeshData} [settings.meshData]
 	 * @param {Vector3} [settings.scale]
 	 * @extends Collider
@@ -43,7 +43,7 @@ function (
 	};
 
 	/**
-	 * @return {MeshCollider}
+	 * @returns {MeshCollider}
 	 */
 	MeshCollider.prototype.clone = function () {
 		return new MeshCollider({

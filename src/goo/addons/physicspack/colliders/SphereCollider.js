@@ -7,7 +7,7 @@ function (
 	'use strict';
 
 	/**
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.radius=0.5]
 	 * @extends Collider
 	 */
@@ -39,7 +39,7 @@ function (
 	};
 
 	/**
-	 * @return {SphereCollider}
+	 * @returns {SphereCollider}
 	 */
 	SphereCollider.prototype.clone = function () {
 		return new SphereCollider({
