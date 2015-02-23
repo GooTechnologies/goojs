@@ -30,7 +30,7 @@ define([
 	/* global CANNON */
 
 	describe('RigidbodyComponent', function () {
-		var world, system, rbc, cc, entity;
+		var world, system, rigidbodyComponent, colliderComponent, entity;
 
 		beforeEach(function () {
 			world = new World();
@@ -40,76 +40,76 @@ define([
 			system.setGravity(new Vector3());
 			world.setSystem(system);
 
-			rbc = new RigidbodyComponent({ mass: 1 });
-			cc = new ColliderComponent({
+			rigidbodyComponent = new RigidbodyComponent({ mass: 1 });
+			colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			entity = world.createEntity(rbc, cc).addToWorld();
+			entity = world.createEntity(rigidbodyComponent, colliderComponent).addToWorld();
 			world.process();
 		});
 
 		it('can set linearDamping', function () {
-			rbc.linearDamping = 123;
-			expect(rbc.cannonBody.linearDamping).toEqual(123);
+			rigidbodyComponent.linearDamping = 123;
+			expect(rigidbodyComponent.cannonBody.linearDamping).toEqual(123);
 		});
 
 		it('can set angularDamping', function () {
-			rbc.angularDamping = 123;
-			expect(rbc.cannonBody.angularDamping).toEqual(123);
+			rigidbodyComponent.angularDamping = 123;
+			expect(rigidbodyComponent.cannonBody.angularDamping).toEqual(123);
 		});
 
 		it('can set transform from entity', function () {
 			entity.setTranslation(1, 2, 3);
 			entity.transformComponent.updateWorldTransform();
-			rbc.setTransformFromEntity(entity);
+			rigidbodyComponent.setTransformFromEntity(entity);
 			var position = new Vector3();
-			rbc.getPosition(position);
-			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
+			rigidbodyComponent.getPosition(position);
+			expect(rigidbodyComponent.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
 		});
 
 		it('can apply force', function () {
-			rbc.applyForce(new Vector3(1, 2, 3));
-			expect(rbc.cannonBody.force).toEqual(new CANNON.Vec3(1, 2, 3));
+			rigidbodyComponent.applyForce(new Vector3(1, 2, 3));
+			expect(rigidbodyComponent.cannonBody.force).toEqual(new CANNON.Vec3(1, 2, 3));
 		});
 
 		it('can set velocity', function () {
-			rbc.setVelocity(new Vector3(1, 2, 3));
-			expect(rbc.cannonBody.velocity).toEqual(new CANNON.Vec3(1, 2, 3));
+			rigidbodyComponent.setVelocity(new Vector3(1, 2, 3));
+			expect(rigidbodyComponent.cannonBody.velocity).toEqual(new CANNON.Vec3(1, 2, 3));
 		});
 
 		it('can get velocity', function () {
-			rbc.cannonBody.velocity.set(1, 2, 3);
+			rigidbodyComponent.cannonBody.velocity.set(1, 2, 3);
 			var velocity = new Vector3();
-			rbc.getVelocity(velocity);
+			rigidbodyComponent.getVelocity(velocity);
 			expect(velocity).toEqual(new Vector3(1, 2, 3));
 		});
 
 		it('can set position', function () {
-			rbc.setPosition(new Vector3(1, 2, 3));
-			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
+			rigidbodyComponent.setPosition(new Vector3(1, 2, 3));
+			expect(rigidbodyComponent.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
 		});
 
 		it('can set position', function () {
-			rbc.setPosition(new Vector3(1, 2, 3));
-			expect(rbc.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
+			rigidbodyComponent.setPosition(new Vector3(1, 2, 3));
+			expect(rigidbodyComponent.cannonBody.position).toEqual(new CANNON.Vec3(1, 2, 3));
 		});
 
 		it('can set quaternion', function () {
-			rbc.setQuaternion(new Quaternion(1, 2, 3, 4));
-			expect(rbc.cannonBody.quaternion).toEqual(new CANNON.Quaternion(1, 2, 3, 4));
+			rigidbodyComponent.setQuaternion(new Quaternion(1, 2, 3, 4));
+			expect(rigidbodyComponent.cannonBody.quaternion).toEqual(new CANNON.Quaternion(1, 2, 3, 4));
 		});
 
 		it('can get quaternion', function () {
-			rbc.cannonBody.quaternion.set(1, 2, 3, 4);
+			rigidbodyComponent.cannonBody.quaternion.set(1, 2, 3, 4);
 			var quat = new Quaternion();
-			rbc.getQuaternion(quat);
+			rigidbodyComponent.getQuaternion(quat);
 			expect(quat).toEqual(new Quaternion(1, 2, 3, 4));
 		});
 
 		it('can set kinematic', function () {
-			rbc.isKinematic = true;
+			rigidbodyComponent.isKinematic = true;
 			world.process();
-			expect(rbc.cannonBody.type).toEqual(CANNON.Body.KINEMATIC);
+			expect(rigidbodyComponent.cannonBody.type).toEqual(CANNON.Body.KINEMATIC);
 		});
 
 		it('can get cannon shape from box collider', function () {
@@ -121,10 +121,10 @@ define([
 		});
 
 		it('can destroy itself and rebuild', function () {
-			rbc.destroy();
-			expect(rbc.cannonBody).toBeFalsy();
+			rigidbodyComponent.destroy();
+			expect(rigidbodyComponent.cannonBody).toBeFalsy();
 			world.process();
-			expect(rbc.cannonBody).toBeTruthy();
+			expect(rigidbodyComponent.cannonBody).toBeTruthy();
 		});
 
 		it('can add and remove a BallJoint', function () {
@@ -132,11 +132,11 @@ define([
 				connectedEntity: entity // Self, just for testing!
 			});
 
-			rbc.addJoint(joint);
+			rigidbodyComponent.addJoint(joint);
 			world.process();
 			expect(joint.cannonJoint).toBeTruthy();
 
-			rbc.removeJoint(joint);
+			rigidbodyComponent.removeJoint(joint);
 			world.process();
 			expect(joint.cannonJoint).toBeFalsy();
 		});
@@ -146,7 +146,7 @@ define([
 				connectedEntity: entity
 			});
 
-			rbc.addJoint(joint);
+			rigidbodyComponent.addJoint(joint);
 			world.process();
 
 			entity.clearComponent('RigidbodyComponent');
@@ -154,7 +154,7 @@ define([
 			world.process();
 
 			expect(joint.cannonJoint).toBeFalsy();
-			expect(rbc.cannonBody).toBeFalsy();
+			expect(rigidbodyComponent.cannonBody).toBeFalsy();
 		});
 
 		it('cleans up if its removed from its world', function () {
@@ -162,7 +162,7 @@ define([
 				connectedEntity: entity
 			});
 
-			rbc.addJoint(joint);
+			rigidbodyComponent.addJoint(joint);
 
 			world.process();
 
@@ -171,7 +171,7 @@ define([
 			world.process();
 
 			expect(joint.cannonJoint).toBeFalsy();
-			expect(rbc.cannonBody).toBeFalsy();
+			expect(rigidbodyComponent.cannonBody).toBeFalsy();
 		});
 
 		it('can add and remove a HingeJoint', function () {
@@ -179,22 +179,22 @@ define([
 				connectedEntity: entity
 			});
 
-			rbc.addJoint(joint);
+			rigidbodyComponent.addJoint(joint);
 			world.process();
 			expect(joint.cannonJoint).toBeTruthy();
 
-			rbc.removeJoint(joint);
+			rigidbodyComponent.removeJoint(joint);
 			world.process();
 			expect(joint.cannonJoint).toBeFalsy();
 		});
 
 		it('emits initialized', function () {
 
-			rbc = new RigidbodyComponent({ mass: 1 });
-			cc = new ColliderComponent({
+			rigidbodyComponent = new RigidbodyComponent({ mass: 1 });
+			colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			entity = world.createEntity(rbc, cc).addToWorld();
+			entity = world.createEntity(rigidbodyComponent, colliderComponent).addToWorld();
 
 			var numEvents = 0;
 			var listener = function (evt) {
@@ -211,32 +211,32 @@ define([
 		});
 
 		it('can be initialized manually', function () {
-			rbc = new RigidbodyComponent({ mass: 1 });
-			cc = new ColliderComponent({
+			rigidbodyComponent = new RigidbodyComponent({ mass: 1 });
+			colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			entity = world.createEntity(rbc, cc).addToWorld();
+			entity = world.createEntity(rigidbodyComponent, colliderComponent).addToWorld();
 
 			var numEvents = 0;
 			var listener = function () {
 				numEvents++;
 			};
 			SystemBus.addListener('goo.physics.initialized', listener);
-			rbc.initialize();
+			rigidbodyComponent.initialize();
 
 			SystemBus.removeListener('goo.physics.initialized', listener);
 			expect(numEvents).toBe(1);
-			expect(rbc.cannonBody).toBeTruthy();
+			expect(rigidbodyComponent.cannonBody).toBeTruthy();
 		});
 
 		it('is initialized properly on world.processEntityChanges', function () {
-			rbc = new RigidbodyComponent({ mass: 1 });
-			cc = new ColliderComponent({
+			rigidbodyComponent = new RigidbodyComponent({ mass: 1 });
+			colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
 			entity = world.createEntity()
-				.set(rbc)
-				.set(cc)
+				.set(rigidbodyComponent)
+				.set(colliderComponent)
 				.addToWorld();
 
 			var numEvents = 0;
@@ -247,72 +247,70 @@ define([
 			world.processEntityChanges();
 
 			expect(numEvents).toBe(1);
-			expect(rbc.cannonBody).toBeTruthy();
-			expect(rbc.cannonBody.shapes.length).toBe(1);
+			expect(rigidbodyComponent.cannonBody).toBeTruthy();
+			expect(rigidbodyComponent.cannonBody.shapes.length).toBe(1);
 
 			SystemBus.removeListener('goo.physics.initialized', listener);
 		});
 
 		it('can clone', function () {
-			var a = rbc;
+			rigidbodyComponent.angularDamping = 0.5;
+			rigidbodyComponent.isKinematic = false;
+			rigidbodyComponent.linearDamping = 0.5;
+			rigidbodyComponent.mass = 2;
+			rigidbodyComponent.restitution = 0.5;
+			rigidbodyComponent.setAngularVelocity(new Vector3(4, 5, 6));
+			rigidbodyComponent.setVelocity(new Vector3(1, 2, 3));
+			rigidbodyComponent.sleepingThreshold = 0.5;
+			rigidbodyComponent.sleepingTimeLimit = 3;
 
-			a.angularDamping = 0.5;
-			a.isKinematic = false;
-			a.linearDamping = 0.5;
-			a.mass = 2;
-			a.restitution = 0.5;
-			a.setAngularVelocity(new Vector3(4, 5, 6));
-			a.setVelocity(new Vector3(1, 2, 3));
-			a.sleepingThreshold = 0.5;
-			a.sleepingTimeLimit = 3;
+			var rigidbodyComponent2 = rigidbodyComponent.clone();
 
-			var b = rbc.clone();
-
-			expect(b.angularDamping).toEqual(0.5);
-			expect(b.isKinematic).toEqual(false);
-			expect(b.linearDamping).toEqual(0.5);
-			expect(b.mass).toEqual(2);
-			expect(b.sleepingThreshold).toEqual(0.5);
-			expect(b.sleepingTimeLimit).toEqual(3);
+			expect(rigidbodyComponent2.angularDamping).toEqual(0.5);
+			expect(rigidbodyComponent2.isKinematic).toEqual(false);
+			expect(rigidbodyComponent2.linearDamping).toEqual(0.5);
+			expect(rigidbodyComponent2.mass).toEqual(2);
+			expect(rigidbodyComponent2.sleepingThreshold).toEqual(0.5);
+			expect(rigidbodyComponent2.sleepingTimeLimit).toEqual(3);
 
 			var angularVelocity = new Vector3();
-			b.getAngularVelocity(angularVelocity);
+			rigidbodyComponent2.getAngularVelocity(angularVelocity);
 			expect(angularVelocity).toEqual(new Vector3(4, 5, 6));
 
 			var velocity = new Vector3();
-			b.getVelocity(velocity);
+			rigidbodyComponent2.getVelocity(velocity);
 			expect(velocity).toEqual(new Vector3(1, 2, 3));
 		});
 
 		it('can set sleeping parameters', function () {
-			rbc.sleepingThreshold = 4;
-			rbc.sleepingTimeLimit = 6;
-			expect(rbc.cannonBody.sleepSpeedLimit).toEqual(4);
-			expect(rbc.cannonBody.sleepTimeLimit).toEqual(6);
+			rigidbodyComponent.sleepingThreshold = 4;
+			rigidbodyComponent.sleepingTimeLimit = 6;
+			expect(rigidbodyComponent.cannonBody.sleepSpeedLimit).toEqual(4);
+			expect(rigidbodyComponent.cannonBody.sleepTimeLimit).toEqual(6);
 		});
 
 		it('updates dirty colliders', function () {
-			cc.collider.radius = 5;
-			cc._dirty = true;
+			colliderComponent.collider.radius = 5;
+			colliderComponent._dirty = true;
 
 			world.process();
 
-			expect(rbc.cannonBody.shapes[0].radius).toEqual(5);
+			expect(rigidbodyComponent.cannonBody.shapes[0].radius).toEqual(5);
 		});
 
 		it('can set materials per collider', function () {
-			var rbc = new RigidbodyComponent({ mass: 1 });
-			var cc = new ColliderComponent({
+			var rigidbodyComponent = new RigidbodyComponent({ mass: 1 });
+			var colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 }),
 				material: new PhysicsMaterial({ friction: 0.7, restitution: 0.8 })
 			});
-			var entity = world.createEntity(rbc, cc).addToWorld();
+			var entity = world.createEntity(rigidbodyComponent, colliderComponent).addToWorld();
 
-			var cc2 = new ColliderComponent({
+			var colliderComponent2 = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 }),
 				material: new PhysicsMaterial({ friction: 0.9, restitution: 1.0 })
 			});
-			var subEntity = world.createEntity(cc2).addToWorld();
+			var subEntity = world.createEntity(colliderComponent2).addToWorld();
 
 			entity.attachChild(subEntity);
 

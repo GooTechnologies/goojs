@@ -1,12 +1,8 @@
 define([
-	'goo/entities/components/Component',
-	'goo/util/ObjectUtil',
 	'goo/addons/physicspack/joints/PhysicsJoint',
 	'goo/math/Vector3'
 ],
 function (
-	Component,
-	_,
 	PhysicsJoint,
 	Vector3
 ) {
@@ -14,7 +10,7 @@ function (
 
 	/**
 	 * A physics ball joint. A ball joint (or "constraint") will try to keep a point in each of two connected bodies the same.
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {Vector3} [settings.localPivot]
 	 * @param {Entity} [settings.connectedEntity]
 	 * @param {boolean} [settings.collideConnected=false]

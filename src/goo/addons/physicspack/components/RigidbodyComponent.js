@@ -33,7 +33,7 @@ function (
 
 	/**
 	 * Adds rigid body dynamics to your entity. To be used with the {@link PhysicsSystem}. If the entity or its children have {@link ColliderComponent}s, they will be added as collision shapes to the rigid body.
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.mass=1]
 	 * @param {boolean} [settings.isKinematic=false]
 	 * @param {Vector3} [settings.velocity]
@@ -450,7 +450,7 @@ function (
 
 			// Scale the joint to the world scale
 			var scaledPivotA = joint.localPivot.clone();
-			scaledPivotA.mul(this._entity.transformComponent.transform.scale);
+			scaledPivotA.mulVector(this._entity.transformComponent.transform.scale);
 
 			var pivotInA = new CANNON.Vec3();
 			var pivotInB = new CANNON.Vec3();
@@ -462,7 +462,7 @@ function (
 				bodyB.pointToLocalFrame(pivotInB, pivotInB);
 			} else {
 				var worldScaledPivotB = joint.connectedLocalPivot.clone();
-				worldScaledPivotB.mul(joint.connectedEntity.transformComponent.transform.scale);
+				worldScaledPivotB.mulVector(joint.connectedEntity.transformComponent.transform.scale);
 				pivotInB.copy(worldScaledPivotB);
 			}
 
@@ -477,7 +477,7 @@ function (
 
 			// Scale the joint to the world scale
 			var scaledPivotA = joint.localPivot.clone();
-			scaledPivotA.mul(this._entity.transformComponent.transform.scale);
+			scaledPivotA.mulVector(this._entity.transformComponent.transform.scale);
 
 			// Copy it to cannon vectors
 			pivotInA.copy(scaledPivotA);
@@ -489,7 +489,7 @@ function (
 				bodyB.pointToLocalFrame(pivotInB, pivotInB);
 			} else {
 				var worldScaledPivotB = joint.connectedLocalPivot.clone();
-				worldScaledPivotB.mul(joint.connectedEntity.transformComponent.transform.scale);
+				worldScaledPivotB.mulVector(joint.connectedEntity.transformComponent.transform.scale);
 				pivotInB.copy(worldScaledPivotB);
 			}
 
@@ -584,7 +584,7 @@ function (
 	};
 
 	/**
-	 * @return RigidbodyComponent
+	 * @returns RigidbodyComponent
 	 */
 	RigidbodyComponent.prototype.clone = function () {
 		return new RigidbodyComponent({

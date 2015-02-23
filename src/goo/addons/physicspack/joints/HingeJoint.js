@@ -1,12 +1,8 @@
 define([
-	'goo/entities/components/Component',
-	'goo/util/ObjectUtil',
 	'goo/addons/physicspack/joints/PhysicsJoint',
 	'goo/math/Vector3'
 ],
 function (
-	Component,
-	_,
 	PhysicsJoint,
 	Vector3
 ) {
@@ -14,7 +10,7 @@ function (
 
 	/**
 	 * Physics hinge joint. To be added to a {@link RigidbodyComponent} or {@link AmmoRigidbodyComponent}.
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {Vector3} [settings.localPivot]
 	 * @param {Vector3} [settings.localAxis]
 	 * @param {Entity} [settings.connectedEntity]

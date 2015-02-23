@@ -6,11 +6,10 @@ function () {
 	 * Base class for Colliders.
 	 */
 	function Collider() {}
-	Collider.prototype.constructor = Collider;
 
 	/**
 	 * @virtual
-	 * @return {Collider}
+	 * @returns {Collider}
 	 */
 	Collider.prototype.clone = function () {
 		return new Collider();
