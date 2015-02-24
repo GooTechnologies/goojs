@@ -1,4 +1,5 @@
 define([
+	'goo/entities/EntitySelection',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/shapes/Sphere',
@@ -17,6 +18,7 @@ define([
 	'goo/renderer/shaders/ShaderLib'
 ],
 function (
+	EntitySelection,
 	System,
 	SystemBus,
 	Sphere,
@@ -53,15 +55,27 @@ function (
 		this.renderablePool = [];
 		this.camera = null;
 
-		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			that.camera = newCam.camera;
-		});
+			this.camera = newCam.camera;
+		}.bind(this));
+
+		/**
+		 * If set to true, all entities with any physics in them will be debug rendered, and the selection will be disregarded.
+		 * @type {Boolean}
+		 */
+		this.renderAll = true;
+
+		/**
+		 * The selected entities to be rendered.
+		 * @type {EntitySelection}
+		 */
+		this.selection = new EntitySelection();
 
 		this.sphereMeshData = new Sphere(8, 8, 1);
 		this.boxMeshData = new Box(1, 1, 1);
 		this.cylinderMeshData = new Cylinder(10, 1, 1, 1);
 		this.planeMeshData = this.createPlaneMeshData();
+
 		this.material = new Material(ShaderLib.simpleColored);
 		this.material.uniforms.color = [0, 1, 0];
 		this.material.wireframe = true;
@@ -95,7 +109,6 @@ function (
 	};
 
 	var tmpQuaternion = new Quaternion();
-	var tmpPosition = new Vector3();
 
 	/**
 	 * @private
@@ -111,12 +124,13 @@ function (
 			if (entity.colliderComponent && entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidbodyComponent) {
 				var bodyEntity = entity.colliderComponent.bodyEntity;
 
-				// Get the transform of the collider in the physics world
-				bodyEntity.rigidbodyComponent.getQuaternion(tmpQuaternion);
-				bodyEntity.rigidbodyComponent.getPosition(tmpPosition);
-
 				var cannonBody = bodyEntity.rigidbodyComponent.cannonBody;
 				if (!cannonBody || !entity.colliderComponent.cannonShape) {
+					continue;
+				}
+
+				if (!this.renderAll && !this.selection.contains(entity)) {
+					// Render selection is enabled, but this entity is not a part of it
 					continue;
 				}
 
