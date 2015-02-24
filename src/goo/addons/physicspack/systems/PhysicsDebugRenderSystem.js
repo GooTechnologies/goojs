@@ -9,6 +9,7 @@ define([
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
+	'goo/addons/physicspack/colliders/MeshCollider',
 	'goo/math/Quaternion',
 	'goo/math/Vector3',
 	'goo/math/Transform',
@@ -26,6 +27,7 @@ function (
 	BoxCollider,
 	CylinderCollider,
 	PlaneCollider,
+	MeshCollider,
 	Quaternion,
 	Vector3,
 	Transform,
@@ -37,12 +39,13 @@ function (
 	/* global CANNON */
 
 	/**
+	 * Renders all ColliderComponents in the scene.
 	 * @extends System
 	 */
 	function PhysicsDebugRenderSystem() {
 		System.call(this, 'PhysicsDebugRenderSystem', ['TransformComponent']);
 
-		this.priority = -1; // make sure it processes after transformsystem and collidersystem
+		this.priority = -1;
 
 		this.renderList = [];
 		this.renderablePool = [];
@@ -69,6 +72,10 @@ function (
 	PhysicsDebugRenderSystem.prototype = Object.create(System.prototype);
 	PhysicsDebugRenderSystem.prototype.constructor = PhysicsDebugRenderSystem;
 
+	/**
+	 * @private
+	 * @return {MeshData}
+	 */
 	PhysicsDebugRenderSystem.prototype.createPlaneMeshData = function () {
 		var matrix = [];
 		for (var i = 0; i < 10; i++) {
@@ -93,12 +100,17 @@ function (
 	var tmpQuaternion = new Quaternion();
 	var tmpPosition = new Vector3();
 
+	// Cannot allocate these until CANNON is loaded for sure.
 	var cannonWorldShapePosition;
 	var cannonWorldShapeQuaternion;
 
+	/**
+	 * @private
+	 * @param  {array} entities
+	 */
 	PhysicsDebugRenderSystem.prototype.process = function (entities) {
 		// Release all previous renderables
-		for (var i = 0; i < this.renderList.length; i++) {
+		for (var i = 0, N = this.renderList.length; i !== N; i++) {
 			this.releaseRenderable(this.renderList[i]);
 		}
 		this.renderList.length = 0;
@@ -161,6 +173,9 @@ function (
 				} else if (collider instanceof PlaneCollider) {
 					meshData = this.planeMeshData;
 					transform.scale.set(1, 1, 1);
+				} else if (collider instanceof MeshCollider) {
+					meshData = collider.meshData;
+					transform.scale.set(1, 1, 1);
 				}
 
 				transform.update();
@@ -200,19 +215,6 @@ function (
 		}
 
 	};
-
-	/**
-	 * @private
-	 */
-	//PhysicsDebugRenderSystem.prototype.inserted = function (entity) {
-		// TODO: check if MeshCollider, and create it in that case
-	//};
-
-	/**
-	 * @private
-	 */
-	//PhysicsDebugRenderSystem.prototype.deleted = function (entity) {
-	//};
 
 	return PhysicsDebugRenderSystem;
 });
