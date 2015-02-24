@@ -154,14 +154,20 @@
 	var resultsContainer = $('.results-container').children('ul');
 	var searchText = '';
 
+	var anchorsByName = setupActiveClass();
+
 	var parameters = window.purl().param();
 	if (parameters.c) {
 		iframe.addEventListener('load', function () {
 			iframe.contentWindow.postMessage(parameters.c, '*');
 		});
-	}
 
-	var anchorsByName = setupActiveClass();
+		var element = anchorsByName[parameters.c];
+		if (element) {
+			element.scrollIntoView();
+			setActiveClass(element.parentNode);
+		}
+	}
 
 	setupSearch();
 	setupIframe();
