@@ -41,7 +41,7 @@ require([
 			 V) {
 	'use strict';
 
-	V.describe("3 primitive MeshCollider's and a ray, drawing a blue normal line from each hit point");
+	V.describe("3 primitive rotating MeshCollider's casted with a ray. Drawing a blue line representing the normal, from each hit point");
 
 	var goo = V.initGoo();
 	var world = goo.world;
