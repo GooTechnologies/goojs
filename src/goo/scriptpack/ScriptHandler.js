@@ -228,6 +228,15 @@ define([
 				// reference to the current script from the remaining ones.
 				var scriptsElementsToRemove = getReferringDependencies(config.id);
 
+				// Remove requirejs before loading external scripts.
+				// This is too avoid the scripts trying to use requirejs and then failing
+				// because we're not using it any more.
+				//
+				// They are never added back because we can't really be sure when
+				// external scripts load until after they have been parsed,
+				// and then it's too late.
+				window.define = window.require = null;
+
 				_.forEach(config.dependencies, function (dependencyConfig) {
 					var url = dependencyConfig.url;
 
