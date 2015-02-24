@@ -41,6 +41,8 @@ function (
 	/**
 	 * Renders all ColliderComponents in the scene.
 	 * @extends System
+	 * @example
+	 * world.setSystem(new PhysicsDebugRenderSystem());
 	 */
 	function PhysicsDebugRenderSystem() {
 		System.call(this, 'PhysicsDebugRenderSystem', ['TransformComponent']);
