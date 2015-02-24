@@ -50,15 +50,10 @@ function (
 		this.renderList = [];
 		this.renderablePool = [];
 		this.camera = null;
-		this.lights = [];
 
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
 			that.camera = newCam.camera;
-		});
-
-		SystemBus.addListener('goo.setLights', function (lights) {
-			that.lights = lights;
 		});
 
 		this.sphereMeshData = new Sphere(8, 8, 1);
@@ -100,19 +95,12 @@ function (
 	var tmpQuaternion = new Quaternion();
 	var tmpPosition = new Vector3();
 
-	// Cannot allocate these until CANNON is loaded for sure.
-	var cannonWorldShapePosition;
-	var cannonWorldShapeQuaternion;
-
 	/**
 	 * @private
 	 * @param  {array} entities
 	 */
 	PhysicsDebugRenderSystem.prototype.process = function (entities) {
 		this.clear();
-
-		cannonWorldShapePosition = cannonWorldShapePosition || new CANNON.Vec3();
-		cannonWorldShapeQuaternion = cannonWorldShapeQuaternion || new CANNON.Quaternion();
 
 		for (var i = 0, N = entities.length; i !== N; i++) {
 			var entity = entities[i];
@@ -125,61 +113,95 @@ function (
 				bodyEntity.rigidbodyComponent.getQuaternion(tmpQuaternion);
 				bodyEntity.rigidbodyComponent.getPosition(tmpPosition);
 
-				// These should really sit in the RigidbodyComponent
 				var cannonBody = bodyEntity.rigidbodyComponent.cannonBody;
 				if (!cannonBody || !entity.colliderComponent.cannonShape) {
 					continue;
 				}
 
 				var renderable = this.getRenderable();
-				var transform = renderable.transform;
-
-				var cannonShapeIndex = cannonBody.shapes.indexOf(entity.colliderComponent.cannonShape);
-				var cannonLocalShapePosition = cannonBody.shapeOffsets[cannonShapeIndex];
-				var cannonLocalShapeQuaternion = cannonBody.shapeOrientations[cannonShapeIndex];
-				cannonBody.quaternion.mult(cannonLocalShapeQuaternion, cannonWorldShapeQuaternion);
-				cannonBody.quaternion.vmult(cannonLocalShapePosition, cannonWorldShapePosition);
-				cannonWorldShapePosition.vadd(cannonBody.position, cannonWorldShapePosition);
-
-				// Convert translation
-				var translation = transform.translation;
-				translation.x = cannonWorldShapePosition.x;
-				translation.y = cannonWorldShapePosition.y;
-				translation.z = cannonWorldShapePosition.z;
-
-				// Convert quaternion
-				tmpQuaternion.x = cannonWorldShapeQuaternion.x;
-				tmpQuaternion.y = cannonWorldShapeQuaternion.y;
-				tmpQuaternion.z = cannonWorldShapeQuaternion.z;
-				tmpQuaternion.w = cannonWorldShapeQuaternion.w;
-				transform.rotation.copyQuaternion(tmpQuaternion);
-
 				var collider = entity.colliderComponent.worldCollider;
-				var meshData;
-				if (collider instanceof SphereCollider) {
-					meshData = this.sphereMeshData;
-					var scale = collider.radius;
-					transform.scale.set(scale, scale, scale);
-				} else if (collider instanceof BoxCollider) {
-					meshData = this.boxMeshData;
-					transform.scale.copy(collider.halfExtents).mul(2);
-				} else if (collider instanceof CylinderCollider) {
-					meshData = this.cylinderMeshData;
-					transform.scale.set(collider.radius, collider.radius, collider.height);
-				} else if (collider instanceof PlaneCollider) {
-					meshData = this.planeMeshData;
-					transform.scale.set(1, 1, 1);
-				} else if (collider instanceof MeshCollider) {
-					meshData = collider.meshData;
-					transform.scale.setVector(collider.scale);
-				}
+				var meshData = this.getMeshData(collider);
 
-				transform.update();
+				this.getWorldTransform(bodyEntity, entity, collider, renderable.transform);
+				renderable.transform.update();
 				renderable.meshData = meshData;
 
 				this.renderList.push(renderable);
 			}
 		}
+	};
+
+	// Cannot allocate these until CANNON is loaded for sure.
+	var cannonWorldShapePosition;
+	var cannonWorldShapeQuaternion;
+
+	/**
+	 * Get the world transform of the debug rendering mesh data from a collider.
+	 * @private
+	 * @param  {Entity} bodyEntity
+	 * @param  {Entity} colliderEntity
+	 * @param  {Collider} collider
+	 * @param  {Transform} targetTransform
+	 */
+	PhysicsDebugRenderSystem.prototype.getWorldTransform = function (bodyEntity, colliderEntity, collider, targetTransform) {
+		var cannonBody = bodyEntity.rigidbodyComponent.cannonBody;
+		cannonWorldShapePosition = cannonWorldShapePosition || new CANNON.Vec3();
+		cannonWorldShapeQuaternion = cannonWorldShapeQuaternion || new CANNON.Quaternion();
+
+		var cannonShapeIndex = cannonBody.shapes.indexOf(colliderEntity.colliderComponent.cannonShape);
+		var cannonLocalShapePosition = cannonBody.shapeOffsets[cannonShapeIndex];
+		var cannonLocalShapeQuaternion = cannonBody.shapeOrientations[cannonShapeIndex];
+		cannonBody.quaternion.mult(cannonLocalShapeQuaternion, cannonWorldShapeQuaternion);
+		cannonBody.quaternion.vmult(cannonLocalShapePosition, cannonWorldShapePosition);
+		cannonWorldShapePosition.vadd(cannonBody.position, cannonWorldShapePosition);
+
+		// Convert translation
+		var translation = targetTransform.translation;
+		translation.x = cannonWorldShapePosition.x;
+		translation.y = cannonWorldShapePosition.y;
+		translation.z = cannonWorldShapePosition.z;
+
+		// Convert quaternion
+		tmpQuaternion.x = cannonWorldShapeQuaternion.x;
+		tmpQuaternion.y = cannonWorldShapeQuaternion.y;
+		tmpQuaternion.z = cannonWorldShapeQuaternion.z;
+		tmpQuaternion.w = cannonWorldShapeQuaternion.w;
+		targetTransform.rotation.copyQuaternion(tmpQuaternion);
+
+		if (collider instanceof SphereCollider) {
+			var scale = collider.radius;
+			targetTransform.scale.set(scale, scale, scale);
+		} else if (collider instanceof BoxCollider) {
+			targetTransform.scale.copy(collider.halfExtents).mul(2);
+		} else if (collider instanceof CylinderCollider) {
+			targetTransform.scale.set(collider.radius, collider.radius, collider.height);
+		} else if (collider instanceof PlaneCollider) {
+			targetTransform.scale.set(1, 1, 1);
+		} else if (collider instanceof MeshCollider) {
+			targetTransform.scale.setVector(collider.scale);
+		}
+	};
+
+	/**
+	 * Get mesh data to use for debug rendering.
+	 * @private
+	 * @param  {Collider} collider
+	 * @return {MeshData}
+	 */
+	PhysicsDebugRenderSystem.prototype.getMeshData = function (collider) {
+		var meshData;
+		if (collider instanceof SphereCollider) {
+			meshData = this.sphereMeshData;
+		} else if (collider instanceof BoxCollider) {
+			meshData = this.boxMeshData;
+		} else if (collider instanceof CylinderCollider) {
+			meshData = this.cylinderMeshData;
+		} else if (collider instanceof PlaneCollider) {
+			meshData = this.planeMeshData;
+		} else if (collider instanceof MeshCollider) {
+			meshData = collider.meshData;
+		}
+		return meshData;
 	};
 
 	/**
@@ -204,21 +226,31 @@ function (
 		this.renderablePool.push(renderable);
 	};
 
+	/**
+	 * @private
+	 * @param  {Renderer} renderer
+	 */
 	PhysicsDebugRenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
 		if (this.camera) {
-			renderer.render(this.renderList, this.camera, this.lights, null, false);
+			renderer.render(this.renderList, this.camera, null, null, false);
 		}
 	};
 
+	/**
+	 * Release all previous renderables in the renderList
+	 * @private
+	 */
 	PhysicsDebugRenderSystem.prototype.clear = function () {
-		// Release all previous renderables
 		for (var i = 0, N = this.renderList.length; i !== N; i++) {
 			this.releaseRenderable(this.renderList[i]);
 		}
 		this.renderList.length = 0;
 	};
 
+	/**
+	 * @private
+	 */
 	PhysicsDebugRenderSystem.prototype.cleanup = function () {
 		this.clear();
 	};
