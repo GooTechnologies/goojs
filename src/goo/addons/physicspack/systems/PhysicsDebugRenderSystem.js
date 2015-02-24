@@ -109,11 +109,7 @@ function (
 	 * @param  {array} entities
 	 */
 	PhysicsDebugRenderSystem.prototype.process = function (entities) {
-		// Release all previous renderables
-		for (var i = 0, N = this.renderList.length; i !== N; i++) {
-			this.releaseRenderable(this.renderList[i]);
-		}
-		this.renderList.length = 0;
+		this.clear();
 
 		cannonWorldShapePosition = cannonWorldShapePosition || new CANNON.Vec3();
 		cannonWorldShapeQuaternion = cannonWorldShapeQuaternion || new CANNON.Quaternion();
@@ -175,7 +171,7 @@ function (
 					transform.scale.set(1, 1, 1);
 				} else if (collider instanceof MeshCollider) {
 					meshData = collider.meshData;
-					transform.scale.set(1, 1, 1);
+					transform.scale.setVector(collider.scale);
 				}
 
 				transform.update();
@@ -213,7 +209,18 @@ function (
 		if (this.camera) {
 			renderer.render(this.renderList, this.camera, this.lights, null, false);
 		}
+	};
 
+	PhysicsDebugRenderSystem.prototype.clear = function () {
+		// Release all previous renderables
+		for (var i = 0, N = this.renderList.length; i !== N; i++) {
+			this.releaseRenderable(this.renderList[i]);
+		}
+		this.renderList.length = 0;
+	};
+
+	PhysicsDebugRenderSystem.prototype.cleanup = function () {
+		this.clear();
 	};
 
 	return PhysicsDebugRenderSystem;
