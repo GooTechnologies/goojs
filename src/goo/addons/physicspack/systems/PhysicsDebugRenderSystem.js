@@ -45,6 +45,7 @@ function (
 		this.priority = -1; // make sure it processes after transformsystem and collidersystem
 
 		this.renderList = [];
+		this.renderablePool = [];
 		this.camera = null;
 		this.lights = [];
 
@@ -109,7 +110,6 @@ function (
 				var bodyEntity = entity.colliderComponent.bodyEntity;
 
 				// Get the transform of the collider in the physics world
-				var transform = new Transform();
 				bodyEntity.rigidbodyComponent.getQuaternion(tmpQuaternion);
 				bodyEntity.rigidbodyComponent.getPosition(tmpPosition);
 
@@ -118,6 +118,10 @@ function (
 				if (!cannonBody || !entity.colliderComponent.cannonShape) {
 					continue;
 				}
+
+				var renderable = this.getRenderable();
+				var transform = renderable.transform;
+
 				var cannonShapeIndex = cannonBody.shapes.indexOf(entity.colliderComponent.cannonShape);
 				var cannonLocalShapePosition = cannonBody.shapeOffsets[cannonShapeIndex];
 				var cannonLocalShapeQuaternion = cannonBody.shapeOrientations[cannonShapeIndex];
@@ -156,26 +160,26 @@ function (
 				}
 
 				transform.update();
-
-				var renderable = {
-					meshData: meshData,
-					transform: transform,
-					materials: [this.material]
-				};
+				renderable.meshData = meshData;
 
 				this.renderList.push(renderable);
 			}
 		}
 	};
 
-	// PhysicsDebugRenderSystem.prototype.getRenderable = function () {
-	// 	var renderable = this.renderablePool.length ? this.renderablePool.pop() : {
-	// 		meshData: null,
-	// 		transform: new Transform(),
-	// 		materials: [this.material]
-	// 	};
-	// 	return renderable;
-	// };
+	PhysicsDebugRenderSystem.prototype.getRenderable = function () {
+		var renderable = this.renderablePool.length ? this.renderablePool.pop() : {
+			meshData: null,
+			transform: new Transform(),
+			materials: [this.material]
+		};
+		return renderable;
+	};
+
+	PhysicsDebugRenderSystem.prototype.releaseRenderable = function (renderable) {
+		renderable.meshData = null;
+		this.renderablePool.push(renderable);
+	};
 
 	PhysicsDebugRenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
