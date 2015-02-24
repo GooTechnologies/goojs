@@ -3,8 +3,12 @@ define([
 	'goo/entities/SystemBus',
 	'goo/shapes/Sphere',
 	'goo/shapes/Box',
+	'goo/shapes/Cylinder',
+	'goo/shapes/TextureGrid',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/BoxCollider',
+	'goo/addons/physicspack/colliders/CylinderCollider',
+	'goo/addons/physicspack/colliders/PlaneCollider',
 	'goo/math/Quaternion',
 	'goo/math/Vector3',
 	'goo/math/Transform',
@@ -16,8 +20,12 @@ function (
 	SystemBus,
 	Sphere,
 	Box,
+	Cylinder,
+	TextureGrid,
 	SphereCollider,
 	BoxCollider,
+	CylinderCollider,
+	PlaneCollider,
 	Quaternion,
 	Vector3,
 	Transform,
@@ -49,20 +57,49 @@ function (
 			that.lights = lights;
 		});
 
-		this.sphereMeshData = new Sphere(20, 20, 1);
+		this.sphereMeshData = new Sphere(8, 8, 1);
 		this.boxMeshData = new Box(1, 1, 1);
-		this.material = new Material(ShaderLib.uber);
-		this.material.blendState.blending = 'AdditiveBlending';
+		this.cylinderMeshData = new Cylinder(10, 1, 1, 1);
+		this.planeMeshData = this.createPlaneMeshData();
+		this.material = new Material(ShaderLib.simpleColored);
+		this.material.uniforms.color = [0, 1, 0];
 		this.material.wireframe = true;
 	}
 	PhysicsDebugRenderSystem.prototype = Object.create(System.prototype);
 	PhysicsDebugRenderSystem.prototype.constructor = PhysicsDebugRenderSystem;
 
+	PhysicsDebugRenderSystem.prototype.createPlaneMeshData = function () {
+		var matrix = [];
+		for (var i = 0; i < 10; i++) {
+			var row = [];
+			for (var j = 0; j < 10; j++) {
+				row.push(0);
+			}
+			matrix.push(row);
+		}
+		var meshData = new TextureGrid(matrix, 1);
+
+		// Move all verts so it's centered
+		var verts = meshData.getAttributeBuffer('POSITION');
+		for (var i = 0; i < verts.length / 3; i++) {
+			verts[i * 3] -= 5;
+			verts[i * 3 + 1] += 5;
+		}
+
+		return meshData;
+	};
+
 	var tmpQuaternion = new Quaternion();
 	var tmpPosition = new Vector3();
 
+	var cannonWorldShapePosition;
+	var cannonWorldShapeQuaternion;
+
 	PhysicsDebugRenderSystem.prototype.process = function (entities) {
 		this.renderList.length = 0;
+
+		cannonWorldShapePosition = cannonWorldShapePosition || new CANNON.Vec3();
+		cannonWorldShapeQuaternion = cannonWorldShapeQuaternion || new CANNON.Quaternion();
 
 		for (var i = 0, N = entities.length; i !== N; i++) {
 			var entity = entities[i];
@@ -84,8 +121,6 @@ function (
 				var cannonShapeIndex = cannonBody.shapes.indexOf(entity.colliderComponent.cannonShape);
 				var cannonLocalShapePosition = cannonBody.shapeOffsets[cannonShapeIndex];
 				var cannonLocalShapeQuaternion = cannonBody.shapeOrientations[cannonShapeIndex];
-				var cannonWorldShapePosition = new CANNON.Vec3();
-				var cannonWorldShapeQuaternion = new CANNON.Quaternion();
 				cannonBody.quaternion.mult(cannonLocalShapeQuaternion, cannonWorldShapeQuaternion);
 				cannonBody.quaternion.vmult(cannonLocalShapePosition, cannonWorldShapePosition);
 				cannonWorldShapePosition.vadd(cannonBody.position, cannonWorldShapePosition);
@@ -112,6 +147,12 @@ function (
 				} else if (collider instanceof BoxCollider) {
 					meshData = this.boxMeshData;
 					transform.scale.copy(collider.halfExtents).mul(2);
+				} else if (collider instanceof CylinderCollider) {
+					meshData = this.cylinderMeshData;
+					transform.scale.set(collider.radius, collider.radius, collider.height);
+				} else if (collider instanceof PlaneCollider) {
+					meshData = this.planeMeshData;
+					transform.scale.set(1, 1, 1);
 				}
 
 				transform.update();
@@ -126,6 +167,15 @@ function (
 			}
 		}
 	};
+
+	// PhysicsDebugRenderSystem.prototype.getRenderable = function () {
+	// 	var renderable = this.renderablePool.length ? this.renderablePool.pop() : {
+	// 		meshData: null,
+	// 		transform: new Transform(),
+	// 		materials: [this.material]
+	// 	};
+	// 	return renderable;
+	// };
 
 	PhysicsDebugRenderSystem.prototype.render = function (renderer) {
 		renderer.checkResize(this.camera);
