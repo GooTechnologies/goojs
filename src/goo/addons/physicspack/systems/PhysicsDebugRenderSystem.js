@@ -97,6 +97,10 @@ function (
 	var cannonWorldShapeQuaternion;
 
 	PhysicsDebugRenderSystem.prototype.process = function (entities) {
+		// Release all previous renderables
+		for (var i = 0; i < this.renderList.length; i++) {
+			this.releaseRenderable(this.renderList[i]);
+		}
 		this.renderList.length = 0;
 
 		cannonWorldShapePosition = cannonWorldShapePosition || new CANNON.Vec3();
@@ -167,6 +171,10 @@ function (
 		}
 	};
 
+	/**
+	 * @private
+	 * @return {Object}
+	 */
 	PhysicsDebugRenderSystem.prototype.getRenderable = function () {
 		var renderable = this.renderablePool.length ? this.renderablePool.pop() : {
 			meshData: null,
@@ -176,6 +184,10 @@ function (
 		return renderable;
 	};
 
+	/**
+	 * @private
+	 * @param {Object} renderable
+	 */
 	PhysicsDebugRenderSystem.prototype.releaseRenderable = function (renderable) {
 		renderable.meshData = null;
 		this.renderablePool.push(renderable);
@@ -186,6 +198,7 @@ function (
 		if (this.camera) {
 			renderer.render(this.renderList, this.camera, this.lights, null, false);
 		}
+
 	};
 
 	/**
