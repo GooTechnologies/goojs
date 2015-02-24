@@ -183,7 +183,7 @@ function (
 	PhysicsSystem.prototype._getCannonRaycastOptions = function (options) {
 		tmpOptions.collisionFilterMask = options.collisionMask !== undefined ? options.collisionMask : -1;
 		tmpOptions.collisionFilterGroup = options.collisionGroup !== undefined ? options.collisionGroup : -1;
-		tmpOptions.skipBackfaces = options.skipBackfaces !== undefined ? options.skipBackfaces : false;
+		tmpOptions.skipBackfaces = options.skipBackfaces !== undefined ? options.skipBackfaces : true;
 		return tmpOptions;
 	};
 
