@@ -1,6 +1,7 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/light/DirectionalLight',
 	'goo/shapes/Box',
 	'goo/shapes/Torus',
 	'goo/shapes/Sphere',
@@ -21,6 +22,7 @@ require([
 	'lib/V'
 ], function (Material,
 			 ShaderLib,
+			 DirectionalLight,
 			 Box,
 			 Torus,
 			 Sphere,
@@ -53,7 +55,17 @@ require([
 	world.setSystem(new ColliderSystem());
 
 	V.addOrbitCamera(new Vector3(8, Math.PI / 1.3, 0.5));
-	V.addLights();
+
+	var addDirectionalLight = function (directionArr) {
+		var directionalLight = new DirectionalLight();
+		directionalLight.intensity = 0.5;
+		directionalLight.specularIntensity = 1;
+		var directionalLightEntity = world.createEntity(directionalLight, directionArr).addToWorld();
+		directionalLightEntity.transformComponent.transform.lookAt(new Vector3(0, 0, 0), Vector3.UNIT_Y);
+	};
+
+	addDirectionalLight([1, 1, -1]);
+	addDirectionalLight([-1, -1, -1]);
 
 	var material;
 	var rigidBodyComponent;
@@ -62,7 +74,7 @@ require([
 
 	//create a sphere primitive
 	material = new Material('Material1', ShaderLib.uber);
-	material.uniforms.materialAmbient = [0.5, 0, 0, 1];
+	material.uniforms.materialAmbient = [0.5, 0.5, 0, 1];
 	var sphere0 = new Sphere(4, 8, 0.5);
 	rigidBodyComponent = new RigidbodyComponent({mass: 0});
 	rigidBodys.push(rigidBodyComponent);
@@ -82,7 +94,7 @@ require([
 
 	//create a torus primitive
 	material = new Material('Material3', ShaderLib.uber);
-	material.uniforms.materialAmbient = [0, 0, 0.5, 1];
+	material.uniforms.materialAmbient = [0, 0.5, 0.5, 1];
 	var torus0 = new Torus(20, 20, 0.2, 0.5);
 	rigidBodyComponent = new RigidbodyComponent({mass: 0});
 	rigidBodys.push(rigidBodyComponent);
