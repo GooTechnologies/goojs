@@ -9,7 +9,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('TextComponent');
+	V.describe('The text mesh comes from a text component attached on an entity; the text is "zxc" and it should change to "asd" after one second');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -17,16 +17,21 @@ require([
 	opentype.load('Roboto-Black.ttf', function (err, font) {
 		if (err) { throw err; }
 
-		var textComponent = new TextComponent(font);
+		var textComponent = new TextComponent();
+		textComponent.setFont(font);
 
 		var material = V.getColoredMaterial();
 
-		world.createEntity(textComponent, material).addToWorld();
+		world.createEntity(textComponent, material, [0, -10, 0]).addToWorld();
 
 		textComponent.setText('zxc');
+
+		setTimeout(function () {
+			textComponent.setText('asd');
+		}, 1000);
 	});
 
-	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
+	V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
 	V.addLights();
 
 	V.process();
