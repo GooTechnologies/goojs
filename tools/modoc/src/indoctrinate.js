@@ -22,7 +22,7 @@ var urlRegex1 = /\[(.+?)]\{@link (.+?)}/g;
 var urlRegex2;
 var linkUrls = function (string) {
 	var tmp = string;
-	tmp = tmp.replace(urlRegex1, '<a href="$2">$1</a>');
+	tmp = tmp.replace(urlRegex1, '<a href="$2" target="_blank">$1</a>');
 	tmp = tmp.replace(urlRegex2, '<a href="#$1" class-name="$1">$1</a>');
 	return tmp;
 };
