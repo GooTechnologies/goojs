@@ -5,10 +5,14 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * Describes a cubic spline
+	 * @param {Vector[]} controlPoints
+	 */
 	function Spline(controlPoints) {
 		// array of any sort of Vector
-		this.controlPoints = controlPoints; // clone?
-		this.nSegments = (this.controlPoints.length - 1) / 3;
+		this.controlPoints = controlPoints;
+		this._nSegments = (this.controlPoints.length - 1) / 3;
 	}
 
 	(function () {
@@ -69,9 +73,9 @@ define([
 	})();
 
 	/**
-	 *
-	 * @param {number} t
-	 * @param {Vector} store
+	 * Stores the coordinates of the point on the spline at a given t
+	 * @param {number} t Takes values between 0 and 1
+	 * @param {Vector} store A vector to store the result in
 	 */
 	Spline.prototype.getPoint = function (t, store) {
 		if (t >= 1) {
@@ -79,7 +83,7 @@ define([
 			return;
 		}
 
-		var point = this.nSegments * t;
+		var point = this._nSegments * t;
 		var index = Math.floor(point);
 		var fraction = point - index;
 
@@ -89,10 +93,6 @@ define([
 		var p3 = this.controlPoints[index * 3 + 3];
 
 		Spline.cubicInterpolation(p0, p1, p2, p3, fraction, store);
-	};
-
-	Spline.getEquidistantPoint = function (t, increment) {
-		// compute distance in smaller increments until the increment parameter is satisfied
 	};
 
 	return Spline;
