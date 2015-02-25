@@ -30,6 +30,7 @@ define([
 	};
 
 	TextComponent.prototype.detached = function (entity) {
+		this.entity.clearComponent('MeshDataComponent');
 		this.entity = null;
 	};
 
