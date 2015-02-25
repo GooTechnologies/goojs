@@ -111,6 +111,7 @@ define([
 	'test/math/Plane-test',
 	'test/math/Quaternion-test',
 	'test/math/Ray-test',
+	'test/math/Spline-test',
 	'test/math/Transform-test',
 	'test/math/Vector-test',
 	'test/math/Vector2-test',
