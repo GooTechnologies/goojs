@@ -15,7 +15,8 @@ define([
 	'goo/math/Vector3',
 	'goo/math/Transform',
 	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib'
+	'goo/renderer/shaders/ShaderLib',
+	'goo/addons/physicspack/util/RenderablePool'
 ],
 function (
 	EntitySelection,
@@ -34,7 +35,8 @@ function (
 	Vector3,
 	Transform,
 	Material,
-	ShaderLib
+	ShaderLib,
+	RenderablePool
 ) {
 	'use strict';
 
@@ -52,7 +54,6 @@ function (
 		this.priority = -1;
 
 		this.renderList = [];
-		this.renderablePool = [];
 		this.camera = null;
 
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
@@ -79,13 +80,14 @@ function (
 		this.material = new Material(ShaderLib.simpleColored);
 		this.material.uniforms.color = [0, 1, 0];
 		this.material.wireframe = true;
+		this.renderablePool = new RenderablePool();
 	}
 	PhysicsDebugRenderSystem.prototype = Object.create(System.prototype);
 	PhysicsDebugRenderSystem.prototype.constructor = PhysicsDebugRenderSystem;
 
 	/**
 	 * @private
-	 * @return {MeshData}
+	 * @returns {MeshData}
 	 */
 	PhysicsDebugRenderSystem.prototype.createPlaneMeshData = function () {
 		var matrix = [];
@@ -120,7 +122,12 @@ function (
 		for (var i = 0, N = entities.length; i !== N; i++) {
 			var entity = entities[i];
 
-			// Colliders in rigid bodies
+			if (!this.renderAll && !this.selection.contains(entity)) {
+				// Render selection is enabled, but this entity is not a part of it
+				continue;
+			}
+
+			// Colliders
 			if (entity.colliderComponent && entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidbodyComponent) {
 				var bodyEntity = entity.colliderComponent.bodyEntity;
 
@@ -129,21 +136,17 @@ function (
 					continue;
 				}
 
-				if (!this.renderAll && !this.selection.contains(entity)) {
-					// Render selection is enabled, but this entity is not a part of it
-					continue;
-				}
-
-				var renderable = this.getRenderable();
 				var collider = entity.colliderComponent.worldCollider;
 				var meshData = this.getMeshData(collider);
+				var renderable = this.renderablePool.get(meshData, this.material);
 
 				this.getWorldTransform(bodyEntity, entity, collider, renderable.transform);
 				renderable.transform.update();
-				renderable.meshData = meshData;
 
 				this.renderList.push(renderable);
 			}
+
+			// TODO: Joints
 		}
 	};
 
@@ -202,7 +205,7 @@ function (
 	 * Get mesh data to use for debug rendering.
 	 * @private
 	 * @param  {Collider} collider
-	 * @return {MeshData}
+	 * @returns {MeshData}
 	 */
 	PhysicsDebugRenderSystem.prototype.getMeshData = function (collider) {
 		var meshData;
@@ -222,28 +225,6 @@ function (
 
 	/**
 	 * @private
-	 * @return {Object}
-	 */
-	PhysicsDebugRenderSystem.prototype.getRenderable = function () {
-		var renderable = this.renderablePool.length ? this.renderablePool.pop() : {
-			meshData: null,
-			transform: new Transform(),
-			materials: [this.material]
-		};
-		return renderable;
-	};
-
-	/**
-	 * @private
-	 * @param {Object} renderable
-	 */
-	PhysicsDebugRenderSystem.prototype.releaseRenderable = function (renderable) {
-		renderable.meshData = null;
-		this.renderablePool.push(renderable);
-	};
-
-	/**
-	 * @private
 	 * @param  {Renderer} renderer
 	 */
 	PhysicsDebugRenderSystem.prototype.render = function (renderer) {
@@ -259,7 +240,7 @@ function (
 	 */
 	PhysicsDebugRenderSystem.prototype.clear = function () {
 		for (var i = 0, N = this.renderList.length; i !== N; i++) {
-			this.releaseRenderable(this.renderList[i]);
+			this.renderablePool.release(this.renderList[i]);
 		}
 		this.renderList.length = 0;
 	};
