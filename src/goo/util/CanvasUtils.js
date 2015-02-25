@@ -124,8 +124,7 @@ define([
 	CanvasUtils.renderSvgToCanvas = function (svgSource, options, callback) {
 		var DOMURL = window.URL || window.webkitURL || window;
 
-		var svg = new Blob([svgSource], {type: 'image/svg+xml;charset=utf-8'});
-		var url = 'data:image/svg+xml;base64,' + btoa(svgSource)
+		var url = 'data:image/svg+xml;base64,' + btoa(svgSource);
 
 		CanvasUtils.loadCanvasFromPath(url, options, callback);
 	};
