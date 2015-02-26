@@ -10,13 +10,16 @@ function (
 		'use strict';
 
     /**
-     * Updates all of its {LineRenderer}'s and exposes methods for drawing primitive line shapes
+     * Updates all of it's LineRenderers and exposes methods for drawing primitive line shapes.
      * @param {World} world the world this system exists in
      */
     function LineRenderSystem(world){
         System.call(this, 'LineRenderSystem', []);
 
-        this._renderers = [];
+        //an associative array for the LineRenderers
+        this._lineRenderers = {};
+        this._lineRendererKeys = [];
+
 		this.world = world;
     }
     LineRenderSystem.prototype = Object.create(System.prototype);
@@ -37,9 +40,9 @@ function (
 
 
 	/**
-	 * Packs a {Vector3} color to a {number}.
+	 * Packs a {@link Vector3} color to a number.
 	 * @param {Vector3} color
-	 * @returns {number} the packed color.
+	 * @returns {number} The packed color.
 	 * @example
 	 * var packedColorRed = lineRenderSystem.packColor(lineRenderSystem.RED);
 	 * console.log(packedColorRed); // would output
@@ -67,105 +70,103 @@ function (
 
         var packedColor = this.packColor(color);
 
-        var lineRenderer = this._renderers[packedColor];
+        var lineRenderer = this._lineRenderers[packedColor];
         if (!lineRenderer)
         {
-            lineRenderer = this._renderers[this._renderers.length] = new LineRenderer(this, color);
-
-            //reference a string color index to the actual object
-            this._renderers[packedColor] = lineRenderer;
+            lineRenderer = this._lineRenderers[packedColor] = new LineRenderer(this, color);
+            this._lineRendererKeys = Object.keys(this._lineRenderers);
         }
-        lineRenderer.addLine(start, end);
+        lineRenderer._addLine(start, end);
     };
 
     /**
-     * Used internally to draw a line for an axis aligned box segment
-     * @param {Vector3} startIn
-     * @param {Vector3} diff
-     * @param {int} startIndex
-     * @param {int} endIndex
-     * @param {float} startMul
-     * @param {float} endMul
-     * @param {String} colorStr
+     * Used internally to draw a line for an axis aligned box segment.
+     * @param {Vector3} start
+     * @param {Vector3} startEndDelta
+     * @param {number} startDataIndex
+     * @param {number} endDataIndex
+     * @param {number} startPolarity
+     * @param {number} endPolarity
+     * @param {Vector3} color
      * @param {Matrix4x4} transformMatrix
      */
-    LineRenderSystem.prototype._drawAxisLine = function(startIn, diff, startIndex, endIndex, startMul, endMul, colorStr, transformMatrix) {
-        var start = tmpVec2.setVector(startIn);
-        start.data[startIndex] += diff.data[startIndex]*startMul;
+    LineRenderSystem.prototype._drawAxisLine = function(start, startEndDelta, startDataIndex, endDataIndex, startPolarity, endPolarity, color, transformMatrix) {
+        var lineStart = tmpVec2.setVector(start);
+        lineStart.data[startDataIndex] += startEndDelta.data[startDataIndex]*startPolarity;
 
-        var end = tmpVec3.setVector(start);
-        end.data[endIndex] += diff.data[endIndex]*endMul;
+        var lineEnd = tmpVec3.setVector(lineStart);
+        lineEnd.data[endDataIndex] += startEndDelta.data[endDataIndex]*endPolarity;
 
         if(transformMatrix !== undefined)
         {
-            transformMatrix.applyPostPoint(start);
-            transformMatrix.applyPostPoint(end);
+            transformMatrix.applyPostPoint(lineStart);
+            transformMatrix.applyPostPoint(lineEnd);
         }
 
-        this.drawLine(start, end, colorStr);
+        this.drawLine(lineStart, lineEnd, color);
     };
 
     /**
-     * Draws an axis aligned box between the min and max points, can be transformed to a specific space using the matrix
+     * Draws an axis aligned box between the min and max points, can be transformed to a specific space using the matrix.
      * @param {Vector3} min
      * @param {Vector3} max
-     * @param {String} colorStr
+     * @param {Vector3} color
      * @param {Matrix4x4} [transformMatrix]
      */
-    LineRenderSystem.prototype.drawAABox = function(min, max, colorStr, transformMatrix) {
+    LineRenderSystem.prototype.drawAABox = function(min, max, color, transformMatrix) {
         for(var a=0; a<3; a++)
         {
             var diff = tmpVec1.setVector(max).subVector(min);
             for(var b=0; b<3; b++)
             {
                 if(b !== a) {
-                    this._drawAxisLine(min, diff, a, b, 1, 1, colorStr, transformMatrix);
+                    this._drawAxisLine(min, diff, a, b, 1, 1, color, transformMatrix);
                 }
             }
 
-            this._drawAxisLine(max, diff, a, a, -1, 1, colorStr, transformMatrix);
-            this._drawAxisLine(min, diff, a, a, 1, -1, colorStr, transformMatrix);
+            this._drawAxisLine(max, diff, a, a, -1, 1, color, transformMatrix);
+            this._drawAxisLine(min, diff, a, a, 1, -1, color, transformMatrix);
         }
     };
 
     /**
-     * Draws a cross at a position with the given color and size
+     * Draws a cross at a position with the given color and size.
      * @param {Vector3} position
-     * @param {String} colorStr
-     * @param {float} [size=0.05]
+     * @param {Vector3} color
+     * @param {number} [size=0.05]
      */
-    LineRenderSystem.prototype.drawCross = function(position, colorStr, size) {
+    LineRenderSystem.prototype.drawCross = function(position, color, size) {
 
         size = size || 0.05;
 
         var start = tmpVec1.setVector(position).addDirect(-size,0.0,-size);
         var end = tmpVec2.setVector(position).addDirect(size,0.0,size);
-        this.drawLine(start, end, colorStr);
+        this.drawLine(start, end, color);
 
         start = tmpVec1.setVector(position).addDirect(size,0.0,-size);
         end = tmpVec2.setVector(position).addDirect(-size,0.0,size);
-        this.drawLine(start, end, colorStr);
+        this.drawLine(start, end, color);
 
         start = tmpVec1.setVector(position).addDirect(0,-size,0.0);
         end = tmpVec2.setVector(position).addDirect(0.0,size,0.0);
-        this.drawLine(start, end, colorStr);
+        this.drawLine(start, end, color);
     };
 
     LineRenderSystem.prototype.process = function (){
-        for(var i=0; i<this._renderers.length; i++) {
-            this._renderers[i].update();
+        for(var i=0; i<this._lineRendererKeys.length; i++)
+        {
+            var renderer = this._lineRenderers[this._lineRendererKeys[i]];
+            renderer.update();
         }
     };
 
     LineRenderSystem.prototype.remove = function (){
-        for(var i=0; i<this._renderers.length; i++)
+        for(var i=0; i<this._lineRendererKeys.length; i++)
         {
-            if(this._renderers[i])
-            {
-                this._renderers[i].remove();
-            }
+            var renderer = this._lineRenderers[this._lineRendererKeys[i]];
+            renderer.remove();
         }
-        this._renderers.length = 0;
+        delete this._lineRenderers;
 
         this.world.gooRunner.renderer.clearShaderCache();
     };
