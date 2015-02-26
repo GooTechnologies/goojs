@@ -3,7 +3,7 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Sphere',
 	'goo/math/Vector3',
-	'goo/math/Spline',
+	'goo/math/spline/Spline',
 	'goo/geometrypack/PolyLine',
 	'lib/V'
 ], function (
@@ -17,7 +17,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('...');
+	V.describe('Splines');
 
 	function getSplineMesh(controlPoints, nSteps) {
 		var spline = new Spline(controlPoints);
