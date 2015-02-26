@@ -10,18 +10,16 @@ define([
 		'use strict';
 
 		/**
-		 * used internally to render a batch of lines all with the same color
+		 * Used internally to render a batch of lines all with the same color
 		 * @param {LineRenderSystem} lineRenderSystemOwner
-		 * @param {string} colorStr
+		 * @param {Vector3} color
 		 */
-		function LineRenderer(lineRenderSystemOwner, colorStr) {
+		function LineRenderer(lineRenderSystemOwner, color) {
 			this.lineRenderSystemOwner = lineRenderSystemOwner;
 
-			//convert string to array
-			var colorArr = JSON.parse(colorStr);
 
 			this._material = new Material(ShaderLib.simpleColored);
-			this._material.uniforms.color = colorArr;
+			this._material.uniforms.color = [color.x, color.y, color.z];
 
 			this._meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), this.MAX_NUM_LINES * 2, 0);
 			this._meshData.indexModes = ['Lines'];
@@ -53,8 +51,12 @@ define([
 			this._meshData.destroy(this.lineRenderSystemOwner.world.gooRunner.renderer.context);
 		};
 
-
-		LineRenderer.prototype.addLine = function (start, end) {
+		/**
+		 * Used internally to add a line to the LineRenderer to be rendered next frame.
+		 * @param {Vector3} start
+		 * @param {Vector3} end
+		 */
+		LineRenderer.prototype._addLine = function (start, end) {
 			//no need to continue if we already reached MAX_NUM_LINES
 			if (this._numRenderingLines >= this.MAX_NUM_LINES) {
 				return;
