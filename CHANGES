@@ -1,3 +1,10 @@
+v0.13.2 --- 2015-02-17
+----------------------
+
+###Fixes
+ * rare bug when trying to pre-load materials without textures in certain conditions
+
+
 v0.13.1 --- 2015-02-12
 ----------------------
 
