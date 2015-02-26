@@ -157,6 +157,17 @@ define([
 				return {
 					innerHTML: 'some html'
 				};
+			},
+			collider: function () {
+				return {
+					shape: 'sphere',
+					isTrigger: false
+				};
+			},
+			rigidbody: function () {
+				return {
+					mass: 1
+				};
 			}
 		},
 		attachChild: function(parent, child) {

@@ -5,7 +5,6 @@ define([
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil',
-	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/math/Vector3'
 ], function (
 	ComponentHandler,
@@ -14,13 +13,12 @@ define([
 	ShapeCreatorMemoized,
 	RSVP,
 	_,
-	SphereCollider,
 	Vector3
 ) {
 	'use strict';
 
 	/**
-	 * For handling loading of collider components
+	 * For handling loading of rigidbody components
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -45,7 +43,7 @@ define([
 	};
 
 	/**
-	 * Create collider component.
+	 * Create a rigidbody component.
 	 * @returns {RigidbodyComponent} the created component object
 	 * @private
 	 */
