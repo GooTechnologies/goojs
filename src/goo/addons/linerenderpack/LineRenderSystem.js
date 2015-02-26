@@ -10,7 +10,7 @@ function (
 		'use strict';
 
     /**
-     * updates all of its {LineRenderer}'s and exposes methods for drawing primitives
+     * Updates all of its {LineRenderer}'s and exposes methods for drawing primitive line shapes
      * @param {World} world the world this system exists in
      */
     function LineRenderSystem(world){
@@ -25,42 +25,61 @@ function (
 	var tmpVec2 = new Vector3();
 	var tmpVec3 = new Vector3();
 
-    //setup basic colors
-    LineRenderSystem.prototype.WHITE = '[1,1,1]';
-    LineRenderSystem.prototype.RED = '[1,0,0]';
-    LineRenderSystem.prototype.GREEN = '[0,1,0]';
-    LineRenderSystem.prototype.BLUE = '[0,0,1]';
-    LineRenderSystem.prototype.AQUA = '[0,1,1]';
-    LineRenderSystem.prototype.MAGENTA = '[1,0,1]';
-    LineRenderSystem.prototype.YELLOW = '[1,1,0]';
-    LineRenderSystem.prototype.BLACK = '[0,0,0]';
+    //setup a preset of colors
+    LineRenderSystem.prototype.WHITE = new Vector3(1,1,1);
+    LineRenderSystem.prototype.RED = new Vector3(1,0,0);
+    LineRenderSystem.prototype.GREEN = new Vector3(0,1,0);
+    LineRenderSystem.prototype.BLUE = new Vector3(0,0,1);
+    LineRenderSystem.prototype.AQUA = new Vector3(0,0.5,0.5);
+    LineRenderSystem.prototype.MAGENTA = new Vector3(1,0,1);
+    LineRenderSystem.prototype.YELLOW = new Vector3(1,1,0);
+    LineRenderSystem.prototype.BLACK = new Vector3(0,0,0);
+
+
+	/**
+	 * Packs a {Vector3} color to a {number}.
+	 * @param {Vector3} color
+	 * @returns {number} the packed color.
+	 * @example
+	 * var packedColorRed = lineRenderSystem.packColor(lineRenderSystem.RED);
+	 * console.log(packedColorRed); // would output
+	 */
+	LineRenderSystem.prototype.packColor = function(color) {
+        var r = Math.floor(color.x*255);
+        var g = Math.floor(color.y*255);
+        var b = Math.floor(color.z*255);
+
+      return r*255+g*255*255+b;
+    };
 
     /**
-     * draws a line between two {@link Vector3}'s with the specified color
+     * Draws a line between two {@link Vector3}'s with the specified color.
      * @param {Vector3} start
      * @param {Vector3} end
-     * @param {String} colorStr following the format of '[red,green,blue]' where red,green,blue ranges between 0-1
+     * @param {Vector3} color a color with its components between 0-1
      * @example
-     * var v1 = new Vector3(0,0,0);
-     * var v2 = new Vector3(13,3,7);
-     * var redColor = "[1,0,0]";
-     * LineRenderSystem.drawLine(v1, v2, redColor);
+     * var vector1 = new Vector3(0,0,0);
+     * var vector2 = new Vector3(13,3,7);
+     * var redColor = lineRenderSystem.RED;
+     * lineRenderSystem.drawLine(v1, v2, redColor);
      */
-    LineRenderSystem.prototype.drawLine = function(start, end, colorStr) {
+    LineRenderSystem.prototype.drawLine = function(start, end, color) {
 
-        var lineRenderer = this._renderers[colorStr];
+        var packedColor = this.packColor(color);
+
+        var lineRenderer = this._renderers[packedColor];
         if (!lineRenderer)
         {
-            lineRenderer = this._renderers[this._renderers.length] = new LineRenderer(this, colorStr);
+            lineRenderer = this._renderers[this._renderers.length] = new LineRenderer(this, color);
 
             //reference a string color index to the actual object
-            this._renderers[colorStr] = lineRenderer;
+            this._renderers[packedColor] = lineRenderer;
         }
         lineRenderer.addLine(start, end);
     };
 
     /**
-     * used internally to draw a line for an axis aligned box segment
+     * Used internally to draw a line for an axis aligned box segment
      * @param {Vector3} startIn
      * @param {Vector3} diff
      * @param {int} startIndex
@@ -87,7 +106,7 @@ function (
     };
 
     /**
-     * draws an axis aligned box between the min and max points, can be transformed to a specific space using the matrix
+     * Draws an axis aligned box between the min and max points, can be transformed to a specific space using the matrix
      * @param {Vector3} min
      * @param {Vector3} max
      * @param {String} colorStr
@@ -110,10 +129,10 @@ function (
     };
 
     /**
-     * draws a cross at a position with the given color and size
+     * Draws a cross at a position with the given color and size
      * @param {Vector3} position
      * @param {String} colorStr
-     * @param {float} [size]
+     * @param {float} [size=0.05]
      */
     LineRenderSystem.prototype.drawCross = function(position, colorStr, size) {
 
@@ -150,6 +169,6 @@ function (
 
         this.world.gooRunner.renderer.clearShaderCache();
     };
-	
+
 	return LineRenderSystem;
 });
