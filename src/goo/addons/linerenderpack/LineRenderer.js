@@ -55,10 +55,7 @@ define([
         {
             this._entity.removeFromWorld();
 
-            this._vertices = undefined;
             this._meshData.destroy(this.lineRenderSystemOwner.world.gooRunner.renderer.context);
-            this._meshData = undefined;
-            this._material = undefined;
         };
 
 
