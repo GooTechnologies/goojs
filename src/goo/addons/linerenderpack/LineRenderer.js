@@ -10,7 +10,7 @@ define([
 		'use strict';
 
 		/**
-		 * Used internally to render a batch of lines all with the same color
+		 * Used internally to render a batch of lines all with the same color.
 		 * @param {LineRenderSystem} lineRenderSystemOwner
 		 * @param {Vector3} color
 		 */
