@@ -51,7 +51,7 @@ function (
 	function PhysicsDebugRenderSystem() {
 		System.call(this, 'PhysicsDebugRenderSystem', ['TransformComponent']);
 
-		this.priority = -1;
+		this.priority = 3;
 
 		this.renderList = [];
 		this.camera = null;
