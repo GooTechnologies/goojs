@@ -94,6 +94,10 @@ module.exports = function (grunt) {
 			gizmopack: {
 				packPath: 'util/gizmopack',
 				outBaseDir: 'out'
+			},
+			physicspack: {
+				packPath: 'addons/physicspack',
+				outBaseDir: 'out'
 			}
 		},
 		'preprocess': {

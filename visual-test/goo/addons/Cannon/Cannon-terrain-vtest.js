@@ -62,11 +62,9 @@ require([
 
 	var cannonSystem = new CannonSystem({
 		gravity: new Vector3(0, -10, 0),
-		maxSubSteps: 3,
+		maxSubSteps: 3
 	});
 	goo.world.setSystem(cannonSystem);
-
-	init();
 
 	function createSphere(x, y, z) {
 		var material = V.getColoredMaterial();
@@ -168,6 +166,7 @@ require([
 	// 	entity.meshDataComponent.meshData = meshData;
 	// }
 
+
 	function addCar(chassisEntity, wheelEntities) {
 
 		// Need to do a process to make the CannonSystem add rigid bodies to the entities
@@ -252,4 +251,6 @@ require([
 		V.addLights();
 		V.addOrbitCamera([50, 0, 0]);
 	}
+
+	init();
 });

@@ -18,6 +18,7 @@ module.exports = function(config) {
 		{ pattern: 'test/unit/all-tests.js', included: false },
 		'test/unit/karma-main.js',
 		'visual-test/lib/Tween.js',
+		'lib/cannon/cannon.min.js',
 		{ pattern: 'src/**/*.js', included: false },
 		{ pattern: 'lib/**/*.js', included: false },
 		{ pattern: 'test/unit/**/*.js', included: false }
