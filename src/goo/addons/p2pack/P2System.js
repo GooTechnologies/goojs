@@ -97,10 +97,11 @@ define([
 		}
 	};
 
-	P2System.prototype.process = function (entities /*, tpf */) {
-		this.world.step(1 / this.stepFrequency);
+	P2System.prototype.process = function (entities , tpf) {
+		this.world.step(1 / this.stepFrequency, tpf);
 
-		for (var i = 0; i < entities.length; i++) {
+		var l = entities.length;
+		for (var i = 0; i < l; i++) {
 			var entity = entities[i];
 			var p2Component = entity.p2Component;
 			updateTransform(entity.transformComponent, p2Component);
