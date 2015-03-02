@@ -28,7 +28,8 @@ var filterList = [
 	'Skybox',
 	'Cubemap',
 
-	'physicspack'
+	'physicspack',
+	'Cannon-cylinder'
 ];
 
 exports.filterList = filterList;
