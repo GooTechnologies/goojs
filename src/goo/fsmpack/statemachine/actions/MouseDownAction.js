@@ -10,8 +10,15 @@ define([
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(event) {
+		this.button = null;
+
+		this.mouseEventListener = function (event) {
 			this.button = event.button;
+			this.updated = true;
+		}.bind(this);
+
+		this.touchEventListener = function (event) {
+			this.button = 'touch';
 			this.updated = true;
 		}.bind(this);
 	}
@@ -46,7 +53,7 @@ define([
 
 	MouseDownAction.prototype._setup = function() {
 		document.addEventListener('mousedown', this.mouseEventListener);
-		document.addEventListener('touchbegin', this.touchEventListener);
+		document.addEventListener('touchstart', this.touchEventListener);
 	};
 
 	MouseDownAction.prototype._run = function(fsm) {
@@ -66,7 +73,7 @@ define([
 
 	MouseDownAction.prototype.exit = function() {
 		document.removeEventListener('mousedown', this.mouseEventListener);
-		document.removeEventListener('touchbegin', this.touchEventListener);
+		document.removeEventListener('touchstart', this.touchEventListener);
 	};
 
 	return MouseDownAction;
