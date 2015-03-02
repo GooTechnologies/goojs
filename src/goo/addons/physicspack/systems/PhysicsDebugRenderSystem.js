@@ -5,7 +5,7 @@ define([
 	'goo/shapes/Sphere',
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder',
-	'goo/shapes/TextureGrid',
+	'goo/addons/physicspack/shapes/PhysicsPlaneDebugShape',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
@@ -25,7 +25,7 @@ function (
 	Sphere,
 	Box,
 	Cylinder,
-	TextureGrid,
+	PhysicsPlaneDebugShape,
 	SphereCollider,
 	BoxCollider,
 	CylinderCollider,
@@ -75,7 +75,7 @@ function (
 		this.sphereMeshData = new Sphere(8, 8, 1);
 		this.boxMeshData = new Box(1, 1, 1);
 		this.cylinderMeshData = new Cylinder(10, 1, 1, 1);
-		this.planeMeshData = this.createPlaneMeshData();
+		this.planeMeshData = new PhysicsPlaneDebugShape();
 
 		this.material = new Material(ShaderLib.simpleColored);
 		this.material.uniforms.color = [0, 1, 0];
@@ -84,31 +84,6 @@ function (
 	}
 	PhysicsDebugRenderSystem.prototype = Object.create(System.prototype);
 	PhysicsDebugRenderSystem.prototype.constructor = PhysicsDebugRenderSystem;
-
-	/**
-	 * @private
-	 * @returns {MeshData}
-	 */
-	PhysicsDebugRenderSystem.prototype.createPlaneMeshData = function () {
-		var matrix = [];
-		for (var i = 0; i < 10; i++) {
-			var row = [];
-			for (var j = 0; j < 10; j++) {
-				row.push(0);
-			}
-			matrix.push(row);
-		}
-		var meshData = new TextureGrid(matrix, 1);
-
-		// Move all verts so it's centered
-		var verts = meshData.getAttributeBuffer('POSITION');
-		for (var i = 0; i < verts.length / 3; i++) {
-			verts[i * 3] -= 5;
-			verts[i * 3 + 1] += 5;
-		}
-
-		return meshData;
-	};
 
 	var tmpQuaternion = new Quaternion();
 

@@ -31,15 +31,6 @@ function (
 	};
 
 	/**
-	 * Put an object back into the pool.
-	 * @param {Object} renderable
-	 */
-	RenderablePool.prototype.release = function (renderable) {
-		renderable.meshData = null;
-		Pool.prototype.release.call(this, renderable);
-	};
-
-	/**
 	 * @param {MeshData} meshData
 	 * @param {Material} material
 	 * @returns {Object}

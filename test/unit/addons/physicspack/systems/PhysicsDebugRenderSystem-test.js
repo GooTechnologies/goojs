@@ -11,10 +11,7 @@ define([
 	'goo/addons/physicspack/colliders/MeshCollider',
 
 	'goo/renderer/MeshData',
-	'goo/shapes/Sphere',
-	'goo/shapes/Box',
-	'goo/shapes/Cylinder',
-	'goo/shapes/TextureGrid'
+	'goo/shapes/Sphere'
 ], function (
 	World,
 	PhysicsDebugRenderSystem,
@@ -28,10 +25,7 @@ define([
 	MeshCollider,
 
 	MeshData,
-	Sphere,
-	Box,
-	Cylinder,
-	TextureGrid
+	Sphere
 ) {
 	'use strict';
 
@@ -71,10 +65,10 @@ define([
 			var planeCollider = new PlaneCollider();
 			var meshCollider = new MeshCollider({ meshData: new Sphere() });
 
-			expect(system.getMeshData(boxCollider)).toEqual(jasmine.any(Box));
-			expect(system.getMeshData(sphereCollider)).toEqual(jasmine.any(Sphere));
-			expect(system.getMeshData(cylinderCollider)).toEqual(jasmine.any(Cylinder));
-			expect(system.getMeshData(planeCollider)).toEqual(jasmine.any(TextureGrid));
+			expect(system.getMeshData(boxCollider)).toEqual(jasmine.any(MeshData));
+			expect(system.getMeshData(sphereCollider)).toEqual(jasmine.any(MeshData));
+			expect(system.getMeshData(cylinderCollider)).toEqual(jasmine.any(MeshData));
+			expect(system.getMeshData(planeCollider)).toEqual(jasmine.any(MeshData));
 			expect(system.getMeshData(meshCollider)).toEqual(jasmine.any(MeshData));
 		});
 	});

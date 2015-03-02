@@ -21,7 +21,9 @@ define([
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/RaycastResult',
 	'goo/addons/physicspack/PhysicsMaterial',
-	'goo/addons/physicspack/components/RigidbodyComponent'
+	'goo/addons/physicspack/components/RigidbodyComponent',
+
+	'goo/addons/physicspack/shapes/PhysicsPlaneDebugShape'
 
 ], function (Scripts) {
 	'use strict';
@@ -48,7 +50,9 @@ define([
 		'goo/addons/physicspack/systems/PhysicsSystem',
 		'goo/addons/physicspack/RaycastResult',
 		'goo/addons/physicspack/PhysicsMaterial',
-		'goo/addons/physicspack/components/RigidbodyComponent'
+		'goo/addons/physicspack/components/RigidbodyComponent',
+
+		'goo/addons/physicspack/shapes/PhysicsPlaneDebugShape'
 	];
 
 	for (var i = 1; i < defines.length; i++) {
