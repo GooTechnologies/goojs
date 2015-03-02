@@ -1,0 +1,40 @@
+define(['goo/entities/components/Component'], function (Component) {
+    'use strict';
+    __touch(634);
+    function P2Component(settings) {
+        this.type = 'P2Component';
+        __touch(639);
+        this.settings = settings || {};
+        __touch(640);
+        this.mass = settings.mass !== undefined ? settings.mass : 0;
+        __touch(641);
+        this.linearDamping = settings.linearDamping !== undefined ? settings.linearDamping : 0;
+        __touch(642);
+        this.angularDamping = settings.angularDamping !== undefined ? settings.angularDamping : 0;
+        __touch(643);
+        this.shapes = settings.shapes !== undefined ? settings.shapes : [];
+        __touch(644);
+        this.scale = settings.scale !== undefined ? settings.scale : 1;
+        __touch(645);
+        this.offsetX = settings.offsetX !== undefined ? settings.offsetX : 0;
+        __touch(646);
+        this.offsetY = settings.offsetY !== undefined ? settings.offsetY : 0;
+        __touch(647);
+        this.offsetZ = settings.offsetZ !== undefined ? settings.offsetZ : 0;
+        __touch(648);
+        this.offsetAngleX = settings.offsetAngleX !== undefined ? settings.offsetAngleX : 0;
+        __touch(649);
+        this.offsetAngleY = settings.offsetAngleY !== undefined ? settings.offsetAngleY : 0;
+        __touch(650);
+        this.offsetAngleZ = settings.offsetAngleZ !== undefined ? settings.offsetAngleZ : 0;
+        __touch(651);
+    }
+    __touch(635);
+    P2Component.prototype = Object.create(Component.prototype);
+    __touch(636);
+    P2Component.prototype.constructor = P2Component;
+    __touch(637);
+    return P2Component;
+    __touch(638);
+});
+__touch(633);
