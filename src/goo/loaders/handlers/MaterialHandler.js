@@ -98,7 +98,7 @@ define([
 		if (!material) {
 			return;
 		}
-		material.shader.destroy();
+		// material.shader.destroy(); // don't destroy the shader; it may be used by some other material
 		material.empty();
 		this._objects.delete(ref);
 	};
