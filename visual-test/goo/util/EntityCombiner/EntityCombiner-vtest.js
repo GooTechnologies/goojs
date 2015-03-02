@@ -34,19 +34,19 @@ require([
 
 	function createSphereGrid(pos, numBoxes, size, separation) {
 		var parentEntity = world.createEntity(pos, 'Top'+pos).addToWorld();
-		var sphere = new Sphere(16, 16, size);
+		var sphere = new Sphere(10, 10, size);
 		for (var i = 0; i < numBoxes; i++) {
 			for (var j = 0; j < numBoxes; j++) {
 				for (var k = 0; k < numBoxes; k++) {
 					var position = [size * (i - numBoxes / 2) * separation, size * (j - numBoxes / 2) * separation, size * (k - numBoxes / 2) * separation];
 					var material = Math.random() < 0.5 ? material1 : material2;
 					var entity = world.createEntity(position, 'Child'+pos, sphere, material).addToWorld();
-					(function (rand, j) {
-						entity.set(function (entity) {
-							entity.transformComponent.transform.translation.y = size * (j - numBoxes / 2) * separation + Math.sin(goo.world.time * 5 + rand) * 5;
-							entity.transformComponent.setUpdated();
-						});
-					})(V.rng.nextFloat() * Math.PI*2, j);
+					// (function (rand, j) {
+					// 	entity.set(function (entity) {
+					// 		entity.transformComponent.transform.translation.y = size * (j - numBoxes / 2) * separation + Math.sin(goo.world.time * 5 + rand) * 5;
+					// 		entity.transformComponent.setUpdated();
+					// 	});
+					// })(V.rng.nextFloat() * Math.PI*2, j);
 					entity.static = true;
 					parentEntity.attachChild(entity);
 					children.push(entity);
@@ -75,6 +75,8 @@ require([
 
 	entityCombiner = new EntityCombiner(world, false);
 	document.addEventListener('keydown', function (evt) {
+		// console.profile('flip');
+		console.time('flip');
 		switch (evt.keyCode) {
 			case 49: // 1
 				entityCombiner.combine();
@@ -106,6 +108,8 @@ require([
 			default:
 				break;
 		}
+		console.timeEnd('flip');
+		// console.profileEnd('flip');
 	}, false);
 
 	V.button('Combine', function () {

@@ -26,7 +26,7 @@ require([
 
 	var material = new Material(ShaderLib.uber);
 
-	var count = 10;
+	var count = 5;
 	var size = 0.7;
 	var box = new Box(size, size, size);
 	var sphere = new Sphere(10, 10, count/2);
@@ -119,7 +119,16 @@ require([
 		console.log('-------------------');
 	});
 
-	// V.button('Hide', function() {
-		// targetEntity.hide();
-	// });
+	V.button('Hide', function() {
+		targetEntity.hide();
+	});
+	V.button('Hide', function() {
+		targetEntity.hide();
+	});
+	V.button('Hide', function() {
+		targetEntity.hide();
+	});
+	V.button('Hide', function() {
+		targetEntity.hide();
+	});
 });

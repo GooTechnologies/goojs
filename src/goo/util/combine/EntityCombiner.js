@@ -35,10 +35,10 @@ function(
 	 * @param {Entity} [entity] optional entity to combine
 	 */
 	EntityCombiner.prototype.combine = function(entity) {
+		this.uncombine();
+
 		this.world.processEntityChanges();
 		this.world.getSystem('TransformSystem')._process();
-
-		this.uncombine();
 
 		if (entity) {
 			this.combineList([entity]);
@@ -131,8 +131,7 @@ function(
 			baseSubs.set(entity, subs);
 		}
 
-		if (entity.meshDataComponent && entity.meshRendererComponent &&
-			entity.meshRendererComponent.worldBound) {
+		if (entity.meshDataComponent && entity.meshRendererComponent) {
 			subs.push(entity);
 		}
 
@@ -223,7 +222,7 @@ function(
 
 		var meshDatas = meshBuilder.build();
 		for (var i = 0; i < meshDatas.length; i++) {
-			var entity = this.world.createEntity(meshDatas[i], material).addToWorld();
+			var entity = this.world.createEntity(meshDatas[i], material, 'Combined'+i).addToWorld();
 			if (root instanceof Entity) {
 				root.attachChild(entity);
 			}

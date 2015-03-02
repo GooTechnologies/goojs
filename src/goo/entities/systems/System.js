@@ -20,9 +20,9 @@ function () {
 	 */
 	function System(type, interests) {
 		this.type = type;
-		this.interests = interests.map(function (val) {
+		this.interests = interests ? interests.map(function (val) {
 			return getTypeAttributeName(val);
-		});
+		}) : null;
 
 		this._entitiesByIndex = new Set();
 		this._activeEntities = [];

@@ -38,6 +38,8 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 		this.installedAPI = new Set();
 	}
 
+	// EventBus.attach(Component);
+
 	/**
 	 * Injects public methods of this component into the host entity.
 	 * @param entity
