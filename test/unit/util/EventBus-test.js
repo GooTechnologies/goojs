@@ -6,65 +6,92 @@ define([
 	"use strict";
 
 	function Test() {
-		this.name = 'Test';
 	}
-	Test.prototype.send = function (data) {
-		this.fire('send', data);
-	};
 	EventBus.attach(Test.prototype);
 
 	describe("EventBus", function() {
 		var test;
+		var listener = function (/*data, source, name*/) { };
+		var listener2 = function (/*data, source, name*/) { };
 
 		beforeEach(function () {
 			test = new Test();
 		});
 
-		it('fire events', function () {
-			var callback1 = function (source, data) {
-				console.log('callback1 got data', source.name, data);
+		it('Can get EventBus methods attached', function () {
+			expect(test.fire).toBeDefined();
+			expect(test.on).toBeDefined();
+			expect(test.off).toBeDefined();
+			expect(test.has).toBeDefined();
+		});
+
+		it('Can add/remove listeners', function () {
+			expect(test.has('send')).toEqual(false);
+			test.on('send', listener);
+			expect(test.has('send')).toEqual(true);
+			expect(test.has('asdf')).toEqual(false);
+
+			test.on('send', listener2);
+			test.on('fish', listener);
+			expect(test._listenerMap.get('send').size).toEqual(2);
+			expect(test._listenerMap.get('fish').size).toEqual(1);
+
+			test.off('send', listener);
+			expect(test._listenerMap.get('send').size).toEqual(1);
+			expect(test.has('send')).toEqual(true);
+
+			test.off('send', listener2);
+			expect(test.has('send')).toEqual(false);
+		});
+
+		it('Can listen to events', function () {
+			var obj = { listener: listener };
+			spyOn(obj, 'listener');
+
+			test.on('send', obj.listener);
+
+ 			expect(obj.listener).not.toHaveBeenCalled();
+
+			test.fire('send');
+ 			expect(obj.listener).toHaveBeenCalledWith(undefined, test, 'send');
+
+			test.fire('send', 1);
+ 			expect(obj.listener).toHaveBeenCalledWith(1, test, 'send');
+
+ 			var data = { test: 'test' };
+			test.fire('send', data);
+ 			expect(obj.listener).toHaveBeenCalledWith(data, test, 'send');
+		});
+
+		it('Listener can remove itself when called', function () {
+			var counter = 0;
+
+			var listenerStart = function () {
+				counter++;
 			};
-			var callback2 = function (source, data) {
-				console.log('callback2 got data', source.name, data);
+			var listenerRemove = function (data, source, name) {
+				counter++;
+				source.off(name, listenerRemove);
 			};
-			var callback3 = function (source, data) {
-				console.log('callback3 got data', source.name, data);
-				source.off('send', this);
+			var listenerEnd = function () {
+				counter++;
 			};
 
-			test.send(1);
-			console.log('has send', test.has('send'));
-			console.log('has asdf', test.has('asdf'));
+			test.on('send', listenerStart);
+			test.on('send', listenerRemove);
+			test.on('send', listenerEnd);
 
-			test.on('send', callback1);
-			test.send(2);
-			console.log('has send', test.has('send'));
-			console.log('has asdf', test.has('asdf'));
+			test.fire('send');
 
-			test.on('send', callback2);
-			test.on('fish', callback1);
-			test.send(3);
-			console.log('has send', test.has('send'));
-			console.log('has asdf', test.has('asdf'));
+ 			expect(counter).toEqual(3);
+			expect(test._listenerMap.get('send').size).toEqual(2);
 
-			test.off('send', callback1);
-			test.send(4);
-			console.log('has send', test.has('send'));
-			console.log('has asdf', test.has('asdf'));
+			counter = 0;
 
-			test.off('send', callback2);
-			test.send(5);
-			console.log('has send', test.has('send'));
-			console.log('has asdf', test.has('asdf'));
+			test.fire('send');
 
-			test.on('send', callback1);
-			test.on('send', callback3);
-			test.on('send', callback2);
-			test.send(6);
-
-			test.send(7);
-
-			// expect(parts.fragment).toEqual('fragment');
+ 			expect(counter).toEqual(2);
+			expect(test._listenerMap.get('send').size).toEqual(2);
 		});
 	});
 });

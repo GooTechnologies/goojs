@@ -1,4 +1,10 @@
-define(['goo/entities/EntitySelection'], function (EntitySelection) {
+define([
+	'goo/entities/EntitySelection',
+	'goo/util/EventBus'
+], function (
+	EntitySelection,
+	EventBus
+) {
 	'use strict';
 
 	/**
@@ -38,7 +44,7 @@ define(['goo/entities/EntitySelection'], function (EntitySelection) {
 		this.installedAPI = new Set();
 	}
 
-	// EventBus.attach(Component);
+	EventBus.attach(Component.prototype);
 
 	/**
 	 * Injects public methods of this component into the host entity.

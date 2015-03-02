@@ -3,6 +3,7 @@ define(function () {
 
 	/**
 	 * A generic event bus. Offers ways to receive and subscribe to messages.
+	 * EventBus.attach(XXX.prototype);
 	 */
 	function EventBus() {
 	}
@@ -42,10 +43,9 @@ define(function () {
 
 		var listeners = this._listenerMap.get(name);
 		if (listeners) {
-			var that = this;
 			listeners.forEach(function (listener) {
-				listener(that, data);
-			});
+				listener(data, this, name);
+			}, this);
 		}
 
 		return this;
