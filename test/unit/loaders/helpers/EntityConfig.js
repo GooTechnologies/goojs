@@ -160,8 +160,13 @@ define([
 			},
 			collider: function () {
 				return {
-					shape: 'sphere',
-					isTrigger: false
+					shape: 'sphere', // box, cylinder, plane, sphere
+					isTrigger: false,
+					friction: 0.3,
+					restitution: 0.0,
+					halfExtents: [1, 1, 1], // box
+					radius: 0.5, // sphere, cylinder
+					height: 1 // cylinder
 				};
 			},
 			rigidbody: function () {
