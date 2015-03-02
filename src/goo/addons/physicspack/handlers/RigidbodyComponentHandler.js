@@ -39,6 +39,12 @@ define([
 	 */
 	RigidbodyComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
+			mass: 1,
+			isKinematic: false,
+			velocity: [0, 0, 0],
+			angularVelocity: [0, 0, 0],
+			linearDrag: 0,
+			angularDrag: 0
 		});
 	};
 
@@ -70,12 +76,15 @@ define([
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
+			component.mass = config.mass;
+			component.isKinematic = config.isKinematic;
+			component.setVelocity(new Vector3(config.velocity));
+			component.setAngularVelocity(new Vector3(config.angularVelocity));
+			component.linearDamping = config.linearDrag;
+			component.angularDamping = config.angularDrag;
+
 			component._dirty = true;
 			component._initialized = false;
-			component.isKinematic = config.isKinematic;
-			component.mass = config.mass;
-			component.setVelocity(new Vector3(options.velocity));
-			component.setAngularVelocity(new Vector3(options.angularVelocity));
 
 			return component;
 		});

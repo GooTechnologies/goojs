@@ -5,7 +5,11 @@ define([
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil',
-	'goo/addons/physicspack/colliders/SphereCollider'
+	'goo/addons/physicspack/colliders/SphereCollider',
+	'goo/addons/physicspack/colliders/BoxCollider',
+	'goo/addons/physicspack/colliders/PlaneCollider',
+	'goo/addons/physicspack/colliders/CylinderCollider',
+	'goo/addons/physicspack/PhysicsMaterial'
 ], function (
 	ComponentHandler,
 	ColliderComponent,
@@ -13,7 +17,11 @@ define([
 	ShapeCreatorMemoized,
 	RSVP,
 	_,
-	SphereCollider
+	SphereCollider,
+	BoxCollider,
+	PlaneCollider,
+	CylinderCollider,
+	PhysicsMaterial
 ) {
 	'use strict';
 
@@ -39,6 +47,15 @@ define([
 	 */
 	ColliderComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
+			shape: 'sphere',
+			shapeOptions: {
+				halfExtents: [1, 1, 1],
+				radius: 0.5,
+				height: 1
+			},
+			isTrigger: false,
+			friction: 0.3,
+			restitution: 0.0
 		});
 	};
 
@@ -48,7 +65,7 @@ define([
 	 * @private
 	 */
 	ColliderComponentHandler.prototype._create = function () {
-		return new ColliderComponent();
+		return new ColliderComponent({ material: new PhysicsMaterial() });
 	};
 
 	/**
@@ -70,14 +87,30 @@ define([
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
-			if (config.collider) {
-				// TODO: support all collider types
-				component.collider = new SphereCollider({ radius: config.radius });
-				component._dirty = true;
-				return component;
-			} else {
-				console.warn('ColliderComponent config does not contain a collider spec!');
+			switch (config.shape) {
+			default:
+			case 'sphere':
+				component.collider = new SphereCollider(config.shapeOptions);
+				component.worldCollider = new SphereCollider();
+				break;
+			case 'box':
+				component.collider = new BoxCollider(config.shapeOptions);
+				component.worldCollider = new BoxCollider();
+				break;
+			case 'plane':
+				component.collider = new PlaneCollider();
+				component.worldCollider = new PlaneCollider();
+				break;
+			case 'cylinder':
+				component.collider = new CylinderCollider(config.shapeOptions);
+				component.worldCollider = new CylinderCollider();
+				break;
 			}
+			component.material.friction = config.friction;
+			component.material.restitution = config.restitution;
+			component.isTrigger = config.isTrigger;
+			component._dirty = true;
+			return component;
 		});
 	};
 

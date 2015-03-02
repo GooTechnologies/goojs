@@ -158,20 +158,27 @@ define([
 					innerHTML: 'some html'
 				};
 			},
-			collider: function () {
-				return {
-					shape: 'sphere', // box, cylinder, plane, sphere
+			collider: function (type) {
+				return _.defaults({}, {
+					shape: type || 'sphere', // box, cylinder, plane, sphere
 					isTrigger: false,
 					friction: 0.3,
 					restitution: 0.0,
-					halfExtents: [1, 1, 1], // box
-					radius: 0.5, // sphere, cylinder
-					height: 1 // cylinder
-				};
+					shapeOptions: {
+						halfExtents: [1, 1, 1], // box
+						radius: 0.5, // sphere, cylinder
+						height: 1 // cylinder
+					}
+				});
 			},
 			rigidbody: function () {
 				return {
-					mass: 1
+					mass: 1,
+					isKinematic: false,
+					velocity: [0, 0, 0],
+					angularVelocity: [0, 0, 0],
+					linearDrag: 0,
+					angularDrag: 0
 				};
 			}
 		},

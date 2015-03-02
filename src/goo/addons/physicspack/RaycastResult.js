@@ -19,12 +19,12 @@ function (
 		/**
 		 * @type {Vector3}
 		 */
-		this.point = settings.point ? settings.point.clone() : new Vector3();
+		this.point = settings.point ? new Vector3(settings.point) : new Vector3();
 
 		/**
 		 * @type {Vector3}
 		 */
-		this.normal = settings.normal ? settings.normal.clone() : new Vector3();
+		this.normal = settings.normal ? new Vector3(settings.normal) : new Vector3();
 
 		/**
 		 * @type {Entity}
