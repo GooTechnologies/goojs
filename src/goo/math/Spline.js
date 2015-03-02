@@ -95,7 +95,10 @@ define([
 	 * @param {Vector} store A vector to store the result in
 	 */
 	Spline.prototype.getPoint = function (t, store) {
-		if (t >= 1) {
+		if (t <= 0) {
+			store.setVector(this.controlPoints[0]);
+			return;
+		} else if (t >= 1) {
 			store.setVector(this.controlPoints[this.controlPoints.length - 1]);
 			return;
 		}
