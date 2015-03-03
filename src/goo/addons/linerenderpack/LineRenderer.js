@@ -11,11 +11,11 @@ define([
 
 		/**
 		 * Used internally to render a batch of lines all with the same color.
-		 * @param {LineRenderSystem} lineRenderSystemOwner
+		 * @param {World} world The world in which lines are rendered in.
 		 * @param {Vector3} color
 		 */
-		function LineRenderer(lineRenderSystemOwner, color) {
-			this.lineRenderSystemOwner = lineRenderSystemOwner;
+		function LineRenderer(world, color) {
+			this.world = world;
 
 
 			this._material = new Material(ShaderLib.simpleColored);
@@ -27,7 +27,7 @@ define([
 			this._vertices = this._meshData.getAttributeBuffer(MeshData.POSITION);
 
 			//create an empty entity used solely for running the simpleColored shader
-			this._entity = this.lineRenderSystemOwner.world.createEntity(this._meshData, this._material).addToWorld();
+			this._entity = this.world.createEntity(this._meshData, this._material).addToWorld();
 			this._entity.meshRendererComponent.cullMode = 'Never';
 
 			this._numRenderingLines = 0;
@@ -45,10 +45,17 @@ define([
 			this._numRenderingLines = 0;
 		};
 
+		/**
+		 * Used internally to render the current batch of lines.
+		 * @param {Renderer} renderer
+		 */
+		LineRenderer.prototype.render = function (/*renderer*/) {
+		};
+
 		LineRenderer.prototype.remove = function () {
 			this._entity.removeFromWorld();
 
-			this._meshData.destroy(this.lineRenderSystemOwner.world.gooRunner.renderer.context);
+			this._meshData.destroy(this.world.gooRunner.renderer.context);
 		};
 
 		/**

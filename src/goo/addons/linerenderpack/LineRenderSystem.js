@@ -23,6 +23,7 @@ define([
 		}
 
 		LineRenderSystem.prototype = Object.create(System.prototype);
+		LineRenderSystem.prototype.constructor = LineRenderSystem;
 
 		var tmpVec1 = new Vector3();
 		var tmpVec2 = new Vector3();
@@ -41,11 +42,12 @@ define([
 
 		/**
 		 * Packs a {@link Vector3} color to a number.
+		 * Assumes that the color components are between 0-1.
 		 * @param {Vector3} color
 		 * @returns {number} The packed color.
 		 * @example
 		 * var packedColorRed = lineRenderSystem.packColor(lineRenderSystem.RED);
-		 * console.log(packedColorRed); // would output
+		 * console.log(packedColorRed); // would output: 65025
 		 */
 		LineRenderSystem.prototype.packColor = function (color) {
 			var r = Math.floor(color.x * 255);
@@ -72,14 +74,14 @@ define([
 
 			var lineRenderer = this._lineRenderers[packedColor];
 			if (!lineRenderer) {
-				lineRenderer = this._lineRenderers[packedColor] = new LineRenderer(this, color);
+				lineRenderer = this._lineRenderers[packedColor] = new LineRenderer(this.world, color);
 				this._lineRendererKeys = Object.keys(this._lineRenderers);
 			}
 			lineRenderer._addLine(start, end);
 		};
 
 		/**
-		 * Used internally to draw a line for an axis aligned box segment.
+		 * Used internally to calculate the line segments in an axis aligned box, and render them.
 		 * @param {Vector3} start
 		 * @param {Vector3} startEndDelta
 		 * @param {number} startDataIndex
@@ -112,8 +114,10 @@ define([
 		 * @param {Matrix4x4} [transformMatrix]
 		 */
 		LineRenderSystem.prototype.drawAABox = function (min, max, color, transformMatrix) {
+			var diff = tmpVec1.setVector(max).subVector(min);
+
 			for (var a = 0; a < 3; a++) {
-				var diff = tmpVec1.setVector(max).subVector(min);
+
 				for (var b = 0; b < 3; b++) {
 					if (b !== a) {
 						this._drawAxisLine(min, diff, a, b, 1, 1, color, transformMatrix);
@@ -152,6 +156,13 @@ define([
 			for (var i = 0; i < this._lineRendererKeys.length; i++) {
 				var renderer = this._lineRenderers[this._lineRendererKeys[i]];
 				renderer.update();
+			}
+		};
+
+		LineRenderSystem.prototype.render = function (renderer) {
+			for (var i = 0; i < this._lineRendererKeys.length; i++) {
+				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
+				lineRenderer.render(renderer);
 			}
 		};
 
