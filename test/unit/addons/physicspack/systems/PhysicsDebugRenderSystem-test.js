@@ -45,16 +45,16 @@ define([
 		});
 
 		it('can clear', function () {
-			system.renderList.push(system.renderablePool.create());
+			system.renderList.push(system.renderablePool._create());
 			system.clear();
-			expect(system.renderablePool.objects.length).toBe(1);
+			expect(system.renderablePool._objects.length).toBe(1);
 			expect(system.renderList.length).toBe(0);
 		});
 
 		it('can cleanup', function () {
-			system.renderList.push(system.renderablePool.create());
+			system.renderList.push(system.renderablePool._create());
 			system.cleanup();
-			expect(system.renderablePool.objects.length).toBe(1);
+			expect(system.renderablePool._objects.length).toBe(1);
 			expect(system.renderList.length).toBe(0);
 		});
 

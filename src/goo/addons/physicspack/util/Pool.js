@@ -6,31 +6,68 @@ function (
 
 	/**
 	 * Abstract pool class for object pooling.
+	 * @param {Object} [settings]
+	 * @param {Function} [settings.init]
+	 * @param {Function} [settings.create]
+	 * @param {Function} [settings.destroy]
+	 * @example
+	 * var vectorPool = new Pool({
+	 *     create: function () {
+	 *         return new Vector3();
+	 *     },
+	 *     init: function(x, y, z){
+	 *         this.set(x, y, z);
+	 *     },
+	 *     destroy: function (vector) {
+	 *         vector.set(0, 0, 0);
+	 *     }
+	 * });
+	 * var vector = vectorPool.get(1, 2, 3);
+	 * vectorPool.release(vector);
 	 */
-	function Pool() {
+	function Pool(settings) {
+		settings = settings || {};
+
 		/**
 		 * @private
 		 * @type {Array}
 		 */
-		this.objects = [];
+		this._objects = [];
+
+		/**
+		 * @private
+		 * @type {Function}
+		 */
+		this._init = settings.init || function () {};
+
+		/**
+		 * @private
+		 * @type {Function}
+		 */
+		this._create = settings.create || function () {};
+
+		/**
+		 * @private
+		 * @type {Function}
+		 */
+		this._destroy = settings.destroy || function () {};
 	}
 
 	/**
 	 * Fill the pool so it has exactly "size" objects. If the current number of objects is larger than the requested size, the excess objects will be destroyed.
 	 * @param {number} size
-	 * @param {array} args An argument list that should be used when executing each .create()
 	 */
-	Pool.prototype.resize = function (size, args) {
-		var objects = this.objects;
+	Pool.prototype.resize = function (size) {
+		var objects = this._objects;
 
 		// Destroy excess objects
 		while (objects.length > size) {
-			this.destroy(objects.pop());
+			this._destroy(objects.pop());
 		}
 
 		// Allocate new objects
 		while (objects.length < size) {
-			objects.push(this.create.apply(this, args));
+			objects.push(this._create());
 		}
 
 		return this;
@@ -41,8 +78,10 @@ function (
 	 * @returns {Object}
 	 */
 	Pool.prototype.get = function () {
-		var objects = this.objects;
-		return objects.length ? objects.pop() : this.create.apply(this, arguments);
+		var objects = this._objects;
+		var object = objects.length ? objects.pop() : this._create();
+		this._init.apply(object, arguments);
+		return object;
 	};
 
 	/**
@@ -50,23 +89,10 @@ function (
 	 * @param {Object} object
 	 */
 	Pool.prototype.release = function (object) {
-		this.destroy(object);
-		this.objects.push(object);
+		this._destroy(object);
+		this._objects.push(object);
 		return this;
 	};
-
-	/**
-	 * Construct a new object. Should be implemented by subclasses.
-	 * @virtual
-	 * @target-class Pool create method
-	 * @returns {Object}
-	 */
-
-	/**
-	 * Clean the object so it can be put back into the pool. Should be implemented by subclasses.
-	 * @virtual
-	 * @target-class Pool destroy method
-	 */
 
 	return Pool;
 });

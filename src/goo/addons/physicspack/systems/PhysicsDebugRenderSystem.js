@@ -16,7 +16,7 @@ define([
 	'goo/math/Transform',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/addons/physicspack/util/RenderablePool'
+	'goo/addons/physicspack/util/Pool'
 ],
 function (
 	EntitySelection,
@@ -36,7 +36,7 @@ function (
 	Transform,
 	Material,
 	ShaderLib,
-	RenderablePool
+	Pool
 ) {
 	'use strict';
 
@@ -80,7 +80,23 @@ function (
 		this.material = new Material(ShaderLib.simpleColored);
 		this.material.uniforms.color = [0, 1, 0];
 		this.material.wireframe = true;
-		this.renderablePool = new RenderablePool();
+		this.renderablePool = new Pool({
+			create: function () {
+				return {
+					meshData: null,
+					transform: new Transform(),
+					materials: []
+				};
+			},
+			init: function (meshData, material) {
+				this.meshData = meshData;
+				this.materials[0] = material;
+			},
+			destroy: function (renderable) {
+				renderable.meshData = null;
+				renderable.materials.length = 0;
+			}
+		});
 	}
 	PhysicsDebugRenderSystem.prototype = Object.create(System.prototype);
 	PhysicsDebugRenderSystem.prototype.constructor = PhysicsDebugRenderSystem;
