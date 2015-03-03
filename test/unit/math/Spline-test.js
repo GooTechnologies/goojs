@@ -1,5 +1,5 @@
 define([
-	'goo/math/Spline',
+	'goo/math/splines/Spline',
 	'goo/math/Vector2',
 	'test/CustomMatchers'
 ], function (

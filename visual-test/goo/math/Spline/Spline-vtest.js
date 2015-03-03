@@ -4,7 +4,7 @@ require([
 	'goo/shapes/Sphere',
 	'goo/shapes/Box',
 	'goo/math/Vector3',
-	'goo/math/Spline',
+	'goo/math/splines/Spline',
 	'goo/geometrypack/PolyLine',
 	'lib/V'
 ], function (

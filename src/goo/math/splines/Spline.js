@@ -12,7 +12,7 @@ define([
 	function Spline(controlPoints) {
 		// array of any sort of Vector
 		this.controlPoints = controlPoints;
-		this._nSegments = (this.controlPoints.length - 1) / 3;
+		this.segments = (this.controlPoints.length - 1) / 3;
 	}
 
 	(function () {
@@ -103,7 +103,7 @@ define([
 			return;
 		}
 
-		var point = this._nSegments * t;
+		var point = this.segments * t;
 		var index = Math.floor(point);
 		var fraction = point - index;
 
