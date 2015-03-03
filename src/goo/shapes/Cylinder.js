@@ -1,9 +1,11 @@
 define([
 	'goo/renderer/MeshData',
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/util/ObjectUtil'
 ], function (
 	MeshData,
-	Vector3
+	Vector3,
+	_
 ) {
 	'use strict';
 
@@ -24,9 +26,9 @@ define([
 			height = props.height;
 		}
 		this.radialSamples = radialSamples || 8;
-		this.radiusTop = typeof(radiusTop) === 'undefined' ? 0.5 : radiusTop;
-		this.radiusBottom = typeof(radiusBottom) === 'undefined' ? radiusTop : radiusBottom;
-		this.height = typeof(height) === 'undefined' ? 1 : height;
+		this.radiusTop = typeof radiusTop  === 'undefined' ? 0.5 : radiusTop;
+		this.radiusBottom = typeof radiusBottom === 'undefined' ? this.radiusTop : radiusBottom;
+		this.height = typeof height === 'undefined' ? 1 : height;
 
 		/** @type {number}
 		 * @deprecated
@@ -158,6 +160,16 @@ define([
 		this.getIndexBuffer().set(indices);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this cylinder
+	 * @returns {Cylinder}
+	 */
+	Cylinder.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['radialSamples', 'radiusTop', 'radiusBottom', 'height']);
+
+		return new Cylinder(options);
 	};
 
 	return Cylinder;

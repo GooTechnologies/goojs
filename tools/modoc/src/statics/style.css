@@ -210,6 +210,10 @@ a.link:hover, a.link:active {color: #81cff9;}
 	margin-bottom: 50px;
 }
 
+.hidden {
+    display: none;
+}
+
 /******************************************************************************
 MAIN
 ******************************************************************************/
@@ -224,7 +228,7 @@ iframe {
 }
 
 article {
-	max-width: 840px;
+	max-width: 850px;
 	padding: 50px;
 	font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace;
 	line-height: 1.4em;

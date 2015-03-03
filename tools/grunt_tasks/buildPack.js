@@ -143,9 +143,9 @@ module.exports = function (grunt) {
 
 	function getHeadWrapping(packName, version) {
 		return '/* Goo Engine ' + packName + ' ' + version + '\n' +
-			' * Copyright 2014 Goo Technologies AB\n' +
+			' * Copyright 2015 Goo Technologies AB\n' +
 			' */\n' +
-			'(function(window){function f(){"use strict";\n';
+			'(function(window, define, require){function f(){"use strict";\n';
 	}
 
 	function getTailWrapping(packName) {
@@ -157,7 +157,7 @@ module.exports = function (grunt) {
 					'});',
 				'}else f()',
 			'}catch(e){f()}',
-			'})(window)'
+			'})(window, goo.useOwnRequire || !window.define ? goo.define : define, goo.useOwnRequire || !window.require ? goo.require : require)'
 		].join('\n');
 	}
 

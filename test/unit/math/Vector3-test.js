@@ -301,14 +301,15 @@ define([
 			});
 		});
 
-		it('can be cloned', function () {
-			var a = new Vector3(1, 2, 3);
-			var b = a.clone();
-			expect(a).toBeCloseToVector(b);
-			expect(a === b).toEqual(false);
-			expect(b).toEqual(jasmine.any(Vector3));
-		});
+		describe('clone', function () {
+			it('clones a vector', function () {
+				var original = new Vector3(11, 22, 33);
+				var clone = original.clone();
 
+				expect(original).toBeCloseToVector(clone);
+				expect(original).not.toBe(clone);
+			});
+		});
 
 		describe('setd (deprecated)', function () {
 			it('can set a vector', function () {
@@ -488,6 +489,41 @@ define([
 				var vector = new Vector3(11, 22, 33);
 				vector.subVector(new Vector3(55, 66, 77));
 				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
+			});
+		});
+
+		describe('NaN checks (only in dev)', function () {
+			it('throws an exception when trying to set a vector component to NaN', function () {
+				var vector1 = new Vector3();
+				expect(function () { vector1.z = NaN; })
+					.toThrow(new Error('Tried setting NaN to vector component z'));
+
+				var vector2 = new Vector3();
+				expect(function () { vector2[1] = NaN; })
+					.toThrow(new Error('Tried setting NaN to vector component 1'));
+			});
+
+			it('throws an exception when trying to corrupt a vector by using methods', function () {
+				var vector1 = new Vector3();
+				expect(function () { vector1.add(NaN); })
+					.toThrow(new Error('Vector contains NaN at index 0'));
+
+				var vector2 = new Vector3();
+				expect(function () { vector2.addDirect(); })
+					.toThrow(new Error('Vector contains NaN at index 0'));
+
+				var vector3 = new Vector3();
+				expect(function () { vector3.scale(); })
+					.toThrow(new Error('Vector contains NaN at index 0'));
+			});
+			
+			it('throws an exception when a corrupt vector would return NaN', function () {
+				var vector = new Vector3();
+				// manually corrupting this vector
+				// this is the only non-traceable way
+				vector.data[0] = NaN;
+				expect(function () { vector.lengthSquared(); })
+					.toThrow(new Error('Vector method lengthSquared returned NaN'));
 			});
 		});
 	});

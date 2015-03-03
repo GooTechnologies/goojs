@@ -69,7 +69,7 @@ define([
 	 * @param {string} ref the script guid
 	 */
 	ScriptHandler.prototype._remove = function (ref) {
-		var script = this._objects[ref];
+		var script = this._objects.get(ref);
 		if (script && script.cleanup && script.context) {
 			try {
 				script.cleanup(script.parameters, script.context, Scripts.getClasses());
@@ -77,7 +77,7 @@ define([
 				// Some cleanup error
 			}
 		}
-		delete this._objects[ref];
+		this._objects.delete(ref);
 		delete this._bodyCache[ref];
 	};
 
@@ -160,9 +160,11 @@ define([
 				};
 				// TODO Test if this works across browsers
 				/**/
-				var m = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
-				if (m) {
-					err.line = parseInt(m[1], 10) - 1;
+				if (e instanceof Error) {
+					var lineNumbers = e.stack.split('\n')[1].match(/(\d+):\d+\)$/);
+					if (lineNumbers) {
+						err.line = parseInt(lineNumbers[1], 10) - 1;
+					}
 				}
 				/**/
 				setError(script, err);
@@ -257,7 +259,7 @@ define([
 					that._updateFromCustom(script, config, options);
 				}
 
-				// Let the world (e.g. Create) that there are new externals so
+				// Let the world (e.g. Create) know that there are new externals so
 				// that things (e.g. UI) can get updated.
 				if (config.body) {
 					SystemBus.emit('goo.scriptExternals', {
@@ -319,47 +321,12 @@ define([
 		var parentElement = this.world.gooRunner.renderer.domElement.parentElement || document.body;
 		parentElement.appendChild(scriptElem);
 
-		return this._dependencyPromises[url] = PromiseUtil.createPromise(function (resolve, reject) {
-			var handled = false;
-
-			scriptElem.onload = function () {
-				resolve();
-
-				if (timeoutHandler) { clearTimeout(timeoutHandler); }
-
-				delete that._dependencyPromises[url];
-			};
-
-			function fireError(message) {
-				var err = {
-					message: message,
-					file: url
-				};
-				setError(script, err);
-
-				// remove element if it was attached to the document
-				if (scriptElem.parentNode) {
-					scriptElem.parentNode.removeChild(scriptElem);
-				}
-				resolve();
-				delete that._dependencyPromises[url];
-			}
-
-			scriptElem.onerror = function (e) {
-				handled = true;
-				if (timeoutHandler) { clearTimeout(timeoutHandler); }
-				console.error(e);
-				fireError('Could not load dependency');
-			};
-
-			if (!handled) {
-				handled = true;
-				// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
-				var timeoutHandler = setTimeout(function () {
-					fireError('Loading dependency failed (time out).');
-				}, DEPENDENCY_LOAD_TIMEOUT);
-			}
+		var result = this._dependencyPromises[url] = loadExternalScript(script, scriptElem, url)
+		.then(function () {
+			delete that._dependencyPromises[url];
 		});
+
+		return result;
 	};
 
 
@@ -485,7 +452,7 @@ define([
 				var scriptElem = document.querySelector('script[src="' + evt.filename + '"]');
 				if (scriptElem) {
 					var scriptId = scriptElem.getAttribute('data-script-id');
-					var script = that._objects[scriptId];
+					var script = that._objects.get(scriptId);
 					if (script) {
 						var error = {
 							message: evt.message,
@@ -503,7 +470,7 @@ define([
 					oldScriptElement.parentNode.removeChild(oldScriptElement);
 				}
 				delete window._gooScriptFactories[that._currentScriptLoading];
-				var script = that._objects[that._currentScriptLoading];
+				var script = that._objects.get(that._currentScriptLoading);
 				var error = {
 					message: evt.message,
 					line: evt.lineno - 1
@@ -555,6 +522,51 @@ define([
 		Array.prototype.push.apply(typesControls[type], ['dropdown', 'select']);
 	}
 
+
+	/**
+	 * Load an external script
+	 * @private
+	 */
+	function loadExternalScript(script, scriptElem, url) {
+		return PromiseUtil.createPromise(function (resolve, reject) {
+			var timeoutHandler;
+			var handled = false;
+
+			scriptElem.onload = function () {
+				resolve();
+				if (timeoutHandler) { clearTimeout(timeoutHandler); }
+			};
+
+			function fireError(message) {
+				var err = {
+					message: message,
+					file: url
+				};
+				setError(script, err);
+
+				// remove element if it was attached to the document
+				if (scriptElem.parentNode) {
+					scriptElem.parentNode.removeChild(scriptElem);
+				}
+				resolve();
+			}
+
+			scriptElem.onerror = function (e) {
+				handled = true;
+				if (timeoutHandler) { clearTimeout(timeoutHandler); }
+				console.error(e);
+				fireError('Could not load dependency ' + url);
+			};
+
+			if (!handled) {
+				handled = true;
+				// Some errors (notably https/http security ones) don't fire onerror, so we have to wait
+				timeoutHandler = setTimeout(function () {
+					fireError('Loading dependency ' + url + ' failed (time out).');
+				}, DEPENDENCY_LOAD_TIMEOUT);
+			}
+		});
+	}
 
 	/**
 	 * Validate external parameters
@@ -688,7 +700,6 @@ define([
 			script.parameters = {};
 			script.enabled = false;
 		}
-
 	}
 
 

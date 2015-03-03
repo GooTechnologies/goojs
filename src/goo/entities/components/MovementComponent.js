@@ -21,6 +21,10 @@ define([
 			this.type = 'MovementComponent';
 			this.velocity = new Vector3();
 			this.rotationVelocity = new Vector3();
+
+			// #ifdef DEBUG
+			Object.seal(this);
+			// #endif
 		}
 
 		MovementComponent.type = 'MovementComponent';

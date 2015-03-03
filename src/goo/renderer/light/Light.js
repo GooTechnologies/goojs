@@ -21,7 +21,7 @@ define([
 		 * The color of the light
 		 * @type {Vector3}
 		 */
-		this.color = color || new Vector3(1, 1, 1);
+		this.color = color ? color.clone() : new Vector3(1, 1, 1);
 
 		/**
 		 * The intensity of the light (typically between 0 and 1)
@@ -63,7 +63,7 @@ define([
 			near: 1,
 			far: 1000,
 			resolution: [512, 512],
-			upVector: Vector3.UNIT_Y,
+			upVector: Vector3.UNIT_Y.clone(),
 			darkness: 1.0,
 			shadowType: 'VSM'
 		};
@@ -103,6 +103,33 @@ define([
 				renderer.invalidateRenderTarget(shadowSettings.shadowData.shadowBlurred);
 			}
 		}
+	};
+
+	Light.prototype.copy = function (source) {
+		this.translation.copy(source.translation);
+		this.color.copy(source.color);
+		this.intensity = source.intensity;
+		this.specularIntensity = source.specularIntensity;
+		this.shadowCaster = source.shadowCaster;
+
+		if (source.lightCookie) {
+			this.lightCookie = source.lightCookie.clone();
+		}
+
+		this.shadowSettings.size = source.shadowSettings.size;
+		this.shadowSettings.near = source.shadowSettings.near;
+		this.shadowSettings.far = source.shadowSettings.far;
+		this.shadowSettings.resolution[0] = source.shadowSettings.resolution[0];
+		this.shadowSettings.resolution[1] = source.shadowSettings.resolution[1];
+		this.shadowSettings.upVector.copy(source.shadowSettings.upVector);
+		this.shadowSettings.darkness = source.shadowSettings.darkness;
+		this.shadowSettings.shadowType = source.shadowSettings.shadowType;
+
+		// since these are brand new they should probably be whatever value they are set in the constructor
+		this.changedProperties = source.changedProperties; // false?
+		this.changedColor = source.changedColor; // false?
+
+		return this;
 	};
 
 	return Light;

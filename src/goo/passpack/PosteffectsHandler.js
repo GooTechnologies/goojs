@@ -8,19 +8,17 @@ define([
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Util',
 	'goo/passpack/PassLib'
 ], function (
 	ConfigHandler,
 	ArrayUtil,
 	RSVP,
 	PromiseUtil,
-	_,
+	ObjectUtil,
 	Composer,
 	RenderPass,
 	FullscreenPass,
 	ShaderLib,
-	Util,
 	PassLib
 ) {
 	'use strict';
@@ -38,7 +36,7 @@ define([
 		this._composer = new Composer();
 		var renderSystem = this.world.getSystem('RenderSystem');
 		this._renderPass = new RenderPass(renderSystem.renderList);
-		this._outPass = new FullscreenPass(Util.clone(ShaderLib.copy));
+		this._outPass = new FullscreenPass(ObjectUtil.deepClone(ShaderLib.copy));
 		this._outPass.renderToScreen = true;
 	}
 
@@ -55,7 +53,7 @@ define([
 		var renderSystem = this.world.getSystem('RenderSystem');
 		ArrayUtil.remove(renderSystem.composers, this._composer);
 
-		delete this._objects[ref];
+		this._objects.delete(ref);
 
 		if (this.world) {
 			this._composer.destroy(this.world.gooRunner.renderer);
@@ -92,7 +90,7 @@ define([
 //			return RSVP.all(posteffects);
 			var oldEffects = posteffects.slice();
 			var promises = [];
-			_.forEach(config.posteffects, function (effectConfig) {
+			ObjectUtil.forEach(config.posteffects, function (effectConfig) {
 				promises.push(that._updateEffect(effectConfig, oldEffects, options));
 			}, null, 'sortValue');
 			return RSVP.all(promises).then(function (effects) {

@@ -47,6 +47,10 @@ define([
 		 * @default (0, 0, -1)
 		 */
 		this.dirVec = new Vector3(0, 0, -1);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	CameraComponent.type = 'CameraComponent';
@@ -107,6 +111,24 @@ define([
 		// RH: Don't update the frustum only the frame
 		// this.camera.update();
 		this.camera.onFrameChange();
+	};
+
+	CameraComponent.prototype.copy = function (source) {
+		this.camera.copy(source.camera);
+		this.leftVec.copy(source.leftVec);
+		this.upVec.copy(source.upVec);
+		this.dirVec.copy(source.dirVec);
+		return this;
+	};
+
+	CameraComponent.prototype.clone = function () {
+		var clone = new CameraComponent(this.camera.clone());
+
+		clone.leftVec.copy(this.leftVec);
+		clone.upVec.copy(this.upVec);
+		clone.dirVec.copy(this.dirVec);
+
+		return clone;
 	};
 
 	CameraComponent.applyOnEntity = function(obj, entity) {

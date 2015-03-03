@@ -28,6 +28,10 @@ define([
 		if (arguments.length !== 0) {
 			Vector.prototype.set.apply(this, arguments);
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Vector3.prototype = Object.create(Vector.prototype);
@@ -1000,7 +1004,7 @@ define([
 	 * @returns {Vector3} Clone of self.
 	 */
 	Vector3.prototype.clone = function () {
-		return new Vector3(this);
+		return new Vector3().copy(this);
 	};
 
 	/**
@@ -1008,6 +1012,18 @@ define([
 	 * @param {Vector3} Source vector
 	 */
 	Vector3.prototype.copy = Vector3.prototype.setVector;
+
+	// #ifdef DEBUG
+	Vector.addPostChecks(Vector3.prototype, [
+		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',
+		'cross', 'lerp', 'reflect',
+		'setDirect', 'setArray', 'setVector',
+		'addDirect', 'addVector',
+		'subDirect', 'subVector',
+		'mulDirect', 'mulVector',
+		'scale', 'lengthSquared', 'length', 'normalize', 'distanceSquared', 'distance'
+	]);
+	// #endif
 
 	return Vector3;
 });

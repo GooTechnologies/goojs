@@ -196,6 +196,10 @@ define([
 		}.bind(this));
 
 		this._definesIndices = [];
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Renderer.prototype.setupDebugging = function (parameters) {
@@ -534,7 +538,7 @@ define([
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
+			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
@@ -603,10 +607,11 @@ define([
 			// for (var j = 0; j < textureList.length; j++) {
 			// gotta simulate lexical scoping
 			textureList.forEach(function (texture) {
+				if (!texture) { return; }
 				queue.push(function () {
-					if (texture === null ||
-						texture instanceof RenderTarget === false && (texture.image === undefined ||
-						texture.checkDataReady() === false)) {
+					if (texture instanceof RenderTarget === false &&
+						(texture.image === undefined || texture.checkDataReady() === false)
+					) {
 
 						if (texture.variant === '2D') {
 							texture = TextureCreator.DEFAULT_TEXTURE_2D;
@@ -1576,7 +1581,7 @@ define([
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
+			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
 					if (image.data[i] && !image.data[i].buffer ) {
 						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);

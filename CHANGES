@@ -1,3 +1,59 @@
+v0.13.2 --- 2015-02-17
+----------------------
+
+###Fixes
+ * rare bug when trying to pre-load materials without textures in certain conditions
+
+
+v0.13.1 --- 2015-02-12
+----------------------
+
+###Fixes
+ + handling of non-Error exceptions thrown by scripts handled by the ScriptHandler
+ + cloning mesh data with uninitialised indexLengths
+
+
+v0.13.0 --- 2015-02-11
+----------------------
+
+###Additions
+ + the engine can be forced to use its own internal require, even if a global one is present; this can be done by running `window.goo = { useOwnRequire: true }` before *goo.js* executes
+ + a new visual test, [CubeMap](http://code.gooengine.com/0.13.0/visual-test/goo/renderer/texture/CubeMaps/Cubemap-vtest.html)
+
+###Fixes
+ * *Ray* copies the data it receives on creation
+ * lights copy the color data they receive on creation
+
+###Changes
+ * the AudioContext is created now only on demand, via the `.getContext()` function
+ * goo.js no longer installs `require` and `define` in the global scope if they are not present
+
+###Deprecated
+ - *goo/renderer/Util* has been renamed to *goo/renderer/RendererUtils*
+ - `RendererUtils.clone` (formerly `Util.clone`); please use `ObjectUtil.deepClone` instead
+
+
+v0.12.9 --- 2015-02-03
+----------------------
+
+###Additions
+ + `.clone` methods for *Ray*, *Plane*, *Transform*, *BoundingBox*, *BoundingSphere*, *PointLight*, *DirectionalLight*, *SpotLight*, *LightComponent*, *Camera*, *CameraComponent*, *BufferData*, *MeshData*, *MeshDataComponent*, *Texture*, *Material*, *MeshRendererComponent* and all Primitive shapes - *Box*, *Cone*, *Cylinder*, *Disk*, *Grid*, *Quad*, *SimpleBox*, *TextureGrid*, *Torus*
+ + `Quaternion.prototype.conjugate` and `Quaternion.prototype.invert`
+
+###Fixes
+ + `world.by.component()` is not case sensitive anymore
+ + an event listener on the *SystemBus* can safely remove other event listeners on the same channel
+ + `Quaternion.prototype.clone` returns an instance of *Quaternion*
+ + triangle winding of *SimpleBox*
+
+
+v0.12.8 --- 2015-01-21
+----------------------
+
+###Additions
+ + the *uber shader* can switch between using the red channel for transparency or the alpha channel by setting the `useBWTransparency` uniform
+
+
 v0.12.7 --- 2014-12-16
 ----------------------
 

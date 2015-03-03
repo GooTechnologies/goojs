@@ -4,7 +4,7 @@ define([
 	'goo/math/Matrix4x4',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
-	'goo/renderer/Util',
+	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus'
 ], function (
 	ShaderCall,
@@ -12,7 +12,7 @@ define([
 	Matrix4x4,
 	World,
 	RenderQueue,
-	Util,
+	ObjectUtil,
 	SystemBus
 ) {
 	'use strict';
@@ -135,13 +135,17 @@ define([
 
 		this.vertexSource = typeof this.origVertexSource === 'function' ? this.origVertexSource() : this.origVertexSource;
 		this.fragmentSource = typeof this.origFragmentSource === 'function' ? this.origFragmentSource() : this.origFragmentSource;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	// Shader.id = 0;
 	Shader.cache = new Map();
 
 	Shader.prototype.clone = function () {
-		return new Shader(this.name, Util.clone({
+		return new Shader(this.name, ObjectUtil.deepClone({
 			precision: this.precision,
 			processors: this.processors,
 			builder: this.builder,

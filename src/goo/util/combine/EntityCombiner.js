@@ -31,6 +31,7 @@ define([
 		this.gridSize = 1;
 		this.removeOldData = removeOldData !== undefined ? removeOldData : true;
 		this.keepEntities = keepEntities !== undefined ? keepEntities : false;
+		this.createdEntities = [];
 	}
 
 	/**
@@ -50,6 +51,7 @@ define([
 
 	EntityCombiner.prototype._combineList = function(entities) {
 		var root = entities;
+		this.createdEntities = [];
 		if (entities instanceof Entity === false) {
 			root = this.world.createEntity('root');
 			root.addToWorld();
@@ -172,6 +174,7 @@ define([
 					var entity = this.world.createEntity(meshDatas[key], material);
 					entity.addToWorld();
 					root.attachChild(entity);
+					this.createdEntities.push(entity);
 				}
 			}
 		}
@@ -187,7 +190,7 @@ define([
 					if (first) {
 						var bound = entity.meshRendererComponent.worldBound;
 						if (bound instanceof BoundingBox) {
-							bound.clone(wb);
+							wb.copy(bound);
 						} else if (bound instanceof BoundingSphere) {
 							wb.center.setVector(bound.center);
 							wb.xExtent = wb.yExtent = wb.zExtent = bound.radius;
@@ -204,6 +207,19 @@ define([
 			});
 		}
 		return Math.max(wb.xExtent, wb.zExtent) * 2.0;
+	};
+
+	EntityCombiner.prototype.cleanup = function(entities) {
+		for (var i = 0; i < this.createdEntities.length; i++) {
+			var entity = this.createdEntities[i];
+
+			entity.removeFromWorld();
+
+			entity.parent().each(function (parent) {
+				parent.detachChild(entity);
+			});
+
+		}
 	};
 
 	function Map() {

@@ -30,6 +30,10 @@ define([
 		} else {
 			this.data[3] = 1;
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Quaternion.prototype = Object.create(Vector.prototype);
@@ -38,6 +42,7 @@ define([
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
+	//! AT: what is this?! isn't EPSILON enough?
 	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
 
 	/**
@@ -282,6 +287,25 @@ define([
 	};
 
 	/**
+	 * Conjugates this quaternion
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	Quaternion.prototype.conjugate = function () {
+		this.data[0] *= -1;
+		this.data[1] *= -1;
+		this.data[2] *= -1;
+		return this;
+	};
+
+	/**
+	 * Inverts this quaternion
+	 * @returns {Quaternion} Self for chaining.
+	 */
+	Quaternion.prototype.invert = function () {
+		return this.conjugate().normalize();
+	};
+
+	/**
 	* Calculates the dot product between the current quaternion and another quaternion.
 	* @param rhs Quaternion on the right-hand side.
 	* @returns {number} The dot product.
@@ -396,7 +420,7 @@ define([
 
 	/**
 	 * Sets the value of this quaternion to the rotation described by the given matrix values.
-	 * @param {Matrix3x3} Rotation matrix.
+	 * @param {Matrix3x3} matrix Rotation matrix.
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.fromRotationMatrix = function (matrix) {
@@ -686,6 +710,23 @@ define([
 
 	Quaternion.prototype.setv = addWarning(
 		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
+
+	/**
+	 * Clones the quaternion
+	 * @returns {Quaternion} Clone of self
+	 */
+	Quaternion.prototype.clone = function () {
+		return new Quaternion(this);
+	};
+
+	// #ifdef DEBUG
+	Vector.addPostChecks(Quaternion.prototype, [
+		'add', 'sub', 'mul',
+		'slerp', 'fromRotationMatrix', 'fromVectorToVector', 'normalize',
+		'magnitude', 'magnitudeSquared', 'fromAngleAxis', 'fromAngleNormalAxis',
+		'setDirect', 'setVector'
+	]);
+	// #endif
 
 	return Quaternion;
 });

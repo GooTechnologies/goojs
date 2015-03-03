@@ -16,6 +16,10 @@ define([
 		if (arguments.length !== 0) {
 			Vector.prototype.set.apply(this, arguments);
 		}
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	Vector2.prototype = Object.create(Vector.prototype);
@@ -434,7 +438,7 @@ define([
 	 * @returns {Vector2} Clone of self.
 	 */
 	Vector2.prototype.clone = function () {
-		return new Vector2(this);
+		return new Vector2().copy(this);
 	};
 
 	/**
@@ -442,6 +446,18 @@ define([
 	 * @param {Vector2} Source vector
 	 */
 	Vector2.prototype.copy = Vector2.prototype.setVector;
+
+	// #ifdef DEBUG
+	Vector.addPostChecks(Vector2.prototype, [
+		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',
+		'reflect',
+		'setDirect', 'setArray', 'setVector',
+		'addDirect', 'addVector',
+		'subDirect', 'subVector',
+		'mulDirect', 'mulVector',
+		'scale'
+	]);
+	// #endif
 
 	return Vector2;
 });
