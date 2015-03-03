@@ -1,10 +1,8 @@
 define([
 	'goo/fsmpack/statemachine/actions/Action'
-],
-
-	function(
+], function (
 	Action
-	) {
+) {
 	'use strict';
 
 	function MouseMoveAction(/*id, settings*/) {
@@ -12,8 +10,16 @@ define([
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(/*event*/) {
+		this.mouseOrTouch = null;
+
+		this.mouseEventListener = function (/*event*/) {
 			this.updated = true;
+			this.mouseOrTouch = 'mouse';
+		}.bind(this);
+
+		this.touchEventListener = function (/*event*/) {
+			this.updated = true;
+			this.mouseOrTouch = 'touch';
 		}.bind(this);
 	}
 
@@ -30,22 +36,32 @@ define([
 			key: 'mousemove',
 			name: 'Mouse move',
 			description: 'State to transition to on mouse movement'
+		}, {
+			key: 'touchmove',
+			name: 'Touch move',
+			description: 'State to transition to on touch movement'
 		}]
 	};
 
 	MouseMoveAction.prototype._setup = function () {
-		document.addEventListener('mousemove', this.eventListener);
+		document.addEventListener('mousemove', this.mouseEventListener);
+		document.addEventListener('touchmove', this.touchEventListener);
 	};
 
 	MouseMoveAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
-			fsm.send(this.transitions.mousemove);
+			if (this.mouseOrTouch === 'mouse') {
+				fsm.send(this.transitions.mousemove);
+			} else {
+				fsm.send(this.transitions.touchmove);
+			}
 		}
 	};
 
 	MouseMoveAction.prototype.exit = function () {
-		document.removeEventListener('mousemove', this.eventListener);
+		document.removeEventListener('mousemove', this.mouseEventListener);
+		document.removeEventListener('touchmove', this.touchEventListener);
 	};
 
 	return MouseMoveAction;
