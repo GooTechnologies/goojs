@@ -87,6 +87,16 @@ function transform(defineExpression) {
 	return assigment;
 }
 
+function getRequireExports(modulePaths) {
+	var ret = '(function (define) {\n';
+	modulePaths.forEach(function (modulePath) {
+		var moduleName = extractModuleName(modulePath);
+		ret += 'define("' + modulePath + '", [], function () { return goo.' + moduleName + '; });\n';
+	});
+	ret += '})(goo.useOwnRequire || !window.define ? goo.define : define);\n';
+	return ret;
+}
+
 
 var inFileName = process.argv[2] || 'out/fish.js';
 var outFileName = inFileName.substr(0, inFileName.length - 3) + '.dereq.js';
@@ -125,5 +135,10 @@ var uglifyOptions = {
 
 var outMinifiedSource = uglify.minify(outSource, uglifyOptions);
 
-fs.writeFileSync(outFileName, outMinifiedSource.code);
+var modulePaths = moduleDefinitions.map(function (moduleDefinition) {
+	return moduleDefinition.arguments[0].value;
+});
+var requireExports = getRequireExports(modulePaths);
+
+fs.writeFileSync(outFileName, outMinifiedSource.code + '\n' + requireExports);
 console.log('Done; see ' + outFileName);

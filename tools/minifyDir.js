@@ -151,7 +151,7 @@ function wrap(fileName, head, tail, callback) {
 
 function getHeadWrapping(packName, version) {
 	return '/* Goo Engine ' + packName + ' ' + version + '\n' +
-		' * Copyright 2014 Goo Technologies AB\n' +
+		' * Copyright 2015 Goo Technologies AB\n' +
 		' */';
 }
 

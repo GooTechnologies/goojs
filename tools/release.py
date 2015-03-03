@@ -72,7 +72,7 @@ for packName in (
 	'gizmo',
 	'physics'
 ):
-    shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
+    shutil.copy('out/' + packName + 'pack.dereq.js', release_dir + '/lib/' + packName + 'pack.js')
 
 shutil.copy('lib/require.js', release_dir + '/lib/require.js')
 shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')
