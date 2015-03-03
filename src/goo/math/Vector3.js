@@ -1013,6 +1013,13 @@ define([
 	 */
 	Vector3.prototype.copy = Vector3.prototype.setVector;
 
+	Vector3.prototype.copyTo = function (destination) {
+		destination.data[0] = this.data[0];
+		destination.data[1] = this.data[1];
+		destination.data[2] = this.data[2];
+		return this;
+	};
+
 	// #ifdef DEBUG
 	Vector.addPostChecks(Vector3.prototype, [
 		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',

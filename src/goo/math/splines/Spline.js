@@ -41,9 +41,14 @@ define([
 			var it = 1 - t;
 			var it2 = it * it;
 
-			term0.setVector(p0).scale(it2);
-			term1.setVector(p1).scale(it * t * 2);
-			term2.setVector(p2).scale(t2);
+			p0.copyTo(term0);
+			term0.scale(it2);
+
+			p1.copyTo(term1);
+			term1.scale(it * t * 2);
+
+			p2.copyTo(term2);
+			term2.scale(t2);
 
 			store.setVector(term0).addVector(term1).addVector(term2);
 		};
@@ -80,10 +85,17 @@ define([
 			var it2 = it * it;
 			var it3 = it2 * it;
 
-			term0.setVector(p0).scale(it3);
-			term1.setVector(p1).scale(it2 * t * 3);
-			term2.setVector(p2).scale(it * t2 * 3);
-			term3.setVector(p3).scale(t3);
+			p0.copyTo(term0);
+			term0.scale(it3);
+
+			p1.copyTo(term1);
+			term1.scale(it2 * t * 3);
+
+			p2.copyTo(term2);
+			term2.scale(it * t2 * 3);
+
+			p3.copyTo(term3);
+			term3.scale(t3);
 
 			store.setVector(term0).addVector(term1).addVector(term2).addVector(term3);
 		};
