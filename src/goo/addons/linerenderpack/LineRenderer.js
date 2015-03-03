@@ -2,11 +2,12 @@ define([
 		'goo/renderer/Material',
 		'goo/renderer/MeshData',
 		'goo/renderer/shaders/ShaderLib',
-		'goo/math/Vector3'
+		'goo/math/Transform'
 	],
 	function (Material,
 			  MeshData,
-			  ShaderLib) {
+			  ShaderLib,
+			  Transform) {
 		'use strict';
 
 		/**
@@ -26,9 +27,13 @@ define([
 
 			this._vertices = this._meshData.getAttributeBuffer(MeshData.POSITION);
 
-			//create an empty entity used solely for running the simpleColored shader
-			this._entity = this.world.createEntity(this._meshData, this._material).addToWorld();
-			this._entity.meshRendererComponent.cullMode = 'Never';
+			this._renderObject = {
+				meshData: this._meshData,
+				transform: new Transform(),
+				materials: [this._material]
+			};
+
+			this._rendering = false;
 
 			this._numRenderingLines = 0;
 			this._meshData.vertexCount = 0;
@@ -46,15 +51,21 @@ define([
 		};
 
 		/**
-		 * Used internally to render the current batch of lines.
-		 * @param {Renderer} renderer
+		 * Used internally to push or remove itself from the renderList.
+		 * @param {Object[]} renderList An array of all the renderObjects to send to the Renderer.
 		 */
-		LineRenderer.prototype.render = function (/*renderer*/) {
+		LineRenderer.prototype._manageRenderList = function (renderList) {
+			if (!this._rendering && this._numRenderingLines !== 0) {
+				renderList.push(this._renderObject);
+				this._rendering = true;
+			}
+			else if (this._rendering && this._numRenderingLines === 0) {
+				renderList.splice(renderList.indexOf(this._renderObject), 1);
+				this._rendering = false;
+			}
 		};
 
 		LineRenderer.prototype.remove = function () {
-			this._entity.removeFromWorld();
-
 			this._meshData.destroy(this.world.gooRunner.renderer.context);
 		};
 
