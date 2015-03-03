@@ -64,7 +64,9 @@ require([
 
 		//draw 3 colored lines!
 		for (var i = 0; i < 3; i++) {
+			
 			var color = lineRenderSystem.BLUE;
+
 			if (i === 1) {
 				color = lineRenderSystem.YELLOW;
 			}
