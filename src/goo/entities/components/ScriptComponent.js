@@ -108,7 +108,9 @@ define([
 			if (script && script.run && (script.enabled === undefined || script.enabled)) {
 				try {
 					script.run(entity, entity._world.tpf, script.context, script.parameters);
-				} catch (e) {}
+				} catch (e) {
+					this._handleError(script, e, 'run');
+				}
 			} else if (script.update && (script.enabled === undefined || script.enabled)) {
 				try {
 					script.update(script.parameters, script.context, this._gooClasses);

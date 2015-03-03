@@ -35,7 +35,10 @@ require([
 			light.color.data[0] = Math.cos(world.time + offset) * 0.5 + 0.5;
 			light.color.data[1] = Math.cos(world.time + offset + Math.PI * 2 / 3) * 0.5 + 0.5;
 			light.color.data[2] = Math.cos(world.time + offset + Math.PI * 2 / 3 * 2) * 0.5 + 0.5;
-			light.range = (Math.cos(world.time) * 0.5 + 0.5) * 6 + 2;
+
+			if (light.range !== undefined) {
+				light.range = (Math.cos(world.time) * 0.5 + 0.5) * 6 + 2;
+			}
 
 			light.changedProperties = true;
 			light.changedColor = true;

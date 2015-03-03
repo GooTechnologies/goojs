@@ -1,3 +1,5 @@
+// jshint node:true
+
 var filterList = [
 	'example',
 	'carousel',
@@ -24,7 +26,10 @@ var filterList = [
 	'WorldPickCoords',
 	'MeshBuilder',
 	'Skybox',
-	'Cubemap'
+	'Cubemap',
+
+	'physicspack',
+	'Cannon-cylinder'
 ];
 
 exports.filterList = filterList;
