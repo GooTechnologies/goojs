@@ -1,16 +1,18 @@
 define([
 		'goo/entities/systems/System',
+		'goo/entities/SystemBus',
 		'goo/addons/linerenderpack/LineRenderer',
 		'goo/math/Vector3'
 	],
 	function (System,
+			  SystemBus,
 			  LineRenderer,
 			  Vector3) {
 		'use strict';
 
 		/**
 		 * Updates all of it's LineRenderers and exposes methods for drawing primitive line shapes.
-		 * @param {World} world the world this system exists in
+		 * @param {World} world the world this system exists in.
 		 */
 		function LineRenderSystem(world) {
 			System.call(this, 'LineRenderSystem', []);
@@ -20,6 +22,18 @@ define([
 			this._lineRendererKeys = [];
 
 			this.world = world;
+			this.camera = null;
+
+			/**
+			 *A managed array of all the LineRenderers render objects.
+			 * @type {Object[]}
+			 * */
+			this.renderList = [];
+
+			//add the camera
+			SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+				this.camera = newCam.camera;
+			}.bind(this));
 		}
 
 		LineRenderSystem.prototype = Object.create(System.prototype);
@@ -61,7 +75,7 @@ define([
 		 * Draws a line between two {@link Vector3}'s with the specified color.
 		 * @param {Vector3} start
 		 * @param {Vector3} end
-		 * @param {Vector3} color a color with its components between 0-1
+		 * @param {Vector3} color a color with its components between 0-1.
 		 * @example
 		 * var vector1 = new Vector3(0,0,0);
 		 * var vector2 = new Vector3(13,3,7);
@@ -153,16 +167,23 @@ define([
 		};
 
 		LineRenderSystem.prototype.process = function () {
-			for (var i = 0; i < this._lineRendererKeys.length; i++) {
-				var renderer = this._lineRenderers[this._lineRendererKeys[i]];
-				renderer.update();
-			}
 		};
 
 		LineRenderSystem.prototype.render = function (renderer) {
 			for (var i = 0; i < this._lineRendererKeys.length; i++) {
 				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
-				lineRenderer.render(renderer);
+				lineRenderer._manageRenderList(this.renderList);
+			}
+
+			for (var i = 0; i < this._lineRendererKeys.length; i++) {
+				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
+				lineRenderer.update();
+			}
+
+			renderer.checkResize(this.camera);
+
+			if (this.camera) {
+				renderer.render(this.renderList, this.camera, null, null, false);
 			}
 		};
 
