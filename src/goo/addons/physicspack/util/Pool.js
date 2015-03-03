@@ -20,7 +20,7 @@ function (
 	 * @param {number} size
 	 * @param {array} args An argument list that should be used when executing each .create()
 	 */
-	Pool.prototype.fill = function (size, args) {
+	Pool.prototype.resize = function (size, args) {
 		var objects = this.objects;
 
 		// Destroy excess objects
@@ -32,6 +32,8 @@ function (
 		while (objects.length < size) {
 			objects.push(this.create.apply(this, args));
 		}
+
+		return this;
 	};
 
 	/**
@@ -50,6 +52,7 @@ function (
 	Pool.prototype.release = function (object) {
 		this.destroy(object);
 		this.objects.push(object);
+		return this;
 	};
 
 	/**

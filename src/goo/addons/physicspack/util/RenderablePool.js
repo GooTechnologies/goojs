@@ -49,6 +49,7 @@ function (
 	RenderablePool.prototype.destroy = function (renderable) {
 		renderable.meshData = null;
 		renderable.materials.length = 0;
+		return this;
 	};
 
 	return RenderablePool;

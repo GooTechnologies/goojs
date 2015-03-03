@@ -12,10 +12,10 @@ define([
 
 	describe('RenderablePool', function () {
 
-		it('can fill', function () {
+		it('can resize', function () {
 			var pool = new RenderablePool();
 
-			pool.fill(10, [meshData, material]);
+			pool.resize(10, [meshData, material]);
 
 			expect(pool.objects.length).toEqual(10);
 		});
