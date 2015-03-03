@@ -60,7 +60,7 @@ define([
 		 */
 		this.shadowSettings = {
 			size: 100,
-			near: 1,
+			near: 0.9,
 			far: 1000,
 			resolution: [512, 512],
 			upVector: Vector3.UNIT_Y.clone(),

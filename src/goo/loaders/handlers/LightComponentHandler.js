@@ -70,7 +70,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 			config.shadowSettings = config.shadowSettings || {};
 			_.defaults(config.shadowSettings, {
 				shadowType: 'Basic',
-				near: 1,
+				near: 0.9,
 				far: 1000,
 				resolution: [512, 512],
 				darkness: 0.5

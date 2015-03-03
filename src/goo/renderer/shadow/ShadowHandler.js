@@ -109,7 +109,7 @@ define([
 				if (!shadowSettings.shadowData) {
 					shadowSettings.shadowData = {};
 					shadowSettings.shadowRecord = {};
-					shadowSettings.shadowData.lightCamera = new Camera(55, 1, 1, 1000);
+					shadowSettings.shadowData.lightCamera = new Camera(55, 1, 0.9, 1000);
 				}
 
 				var record = shadowSettings.shadowRecord;
