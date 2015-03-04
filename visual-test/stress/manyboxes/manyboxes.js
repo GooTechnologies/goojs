@@ -1,41 +1,89 @@
-require([
-	'lib/V',
-	'goo/renderer/Material',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/shapes/Box',
-	'goo/math/Vector3'
-], function (
-	V,
-	Material,
-	ShaderLib,
-	Box,
-	Vector3
-) {
+require([], function() {
 	'use strict';
 
-	var goo = V.initGoo();
-	var world = goo.world;
-	V.addOrbitCamera(new Vector3(40, Math.PI / 3, Math.PI / 5));
-	V.addLights();
+	var arraySize = 5000;
+	var offset = 500;
+	var removalCount = arraySize - offset;
+	var runs = 10;
 
-	var material1 = new Material(ShaderLib.uber);
+	function shuffle(o) {
+		for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+		return o;
+	}
 
-	var material2 = new Material(ShaderLib.uber);
-	material2.uniforms.opacity = 0.25;
-	material2.renderQueue = 2000;
-	material2.blendState.blending = 'CustomBlending';
+	var origArray = [];
+	for (var i = 0; i < arraySize; i++) {
+		origArray[i] = i;
+	}
+	shuffle(origArray);
 
-	var numBoxes = 20;
-	var size = 0.7;
-	var box = new Box(size, size, size);
-	for (var i = 0; i < numBoxes; i++) {
-		for (var j = 0; j < numBoxes; j++) {
-			for (var k = 0; k < numBoxes; k++) {
-				var position = [size * (i - numBoxes / 2) * 1.1, size * (j - numBoxes / 2) * 1.1, size * (k - numBoxes / 2) * 1.1];
-				var material = Math.random() < 0.75 ? material1 : material2;
-				var entity = world.createEntity(position, box, material);
-				entity.addToWorld();
+	var compareArray = origArray.slice();
+	for (var i = offset; i < removalCount; i++) {
+		compareArray.splice(compareArray.indexOf(i), 1);
+	}
+
+	function test(name, f) {
+		var a = performance.memory.usedJSHeapSize;
+		console.time(name);
+		for (var k = 0; k < runs; k++) {
+			var newArray = origArray.slice();
+			for (var j = offset; j < removalCount; j++) {
+				f(newArray, newArray.indexOf(j));
 			}
 		}
+		console.timeEnd(name);
+		console.log('Mem: ' + (performance.memory.usedJSHeapSize - a) + ' bytes');
+
+		if (newArray.sort().join(',') !== compareArray.sort().join(',')) {
+			console.warn(name + ' - not matching!');
+		}
+	}
+
+	for (var i = 0; i < 20; i++) {
+		console.log('---------------');
+
+		test('splice', function(array, index) {
+			array.splice(index, 1);
+		});
+
+		test('flip_pop1', function(array, index) {
+			if (index < array.length - 1) {
+				array[index] = array.pop();
+			} else {
+				array.pop();
+			}
+		});
+
+		test('flip_pop2', function(array, index) {
+			var el = array.pop();
+			if (index < array.length) {
+				array[index] = el;
+			}
+		});
+
+		test('flip_length', function(array, index) {
+			array[index] = array[array.length - 1];
+			array.length--;
+		});
+
+		test('flip_length_pop', function(array, index) {
+			array[index] = array[array.length - 1];
+			array.pop();
+		});
+
+		test('flip_shift1', function(array, index) {
+			var el = array.shift();
+			if (index > 0) {
+				array[index - 1] = el;
+			}
+		});
+
+		test('flip_shift2', function(array, index) {
+			if (index > 0) {
+				array[index - 1] = array.shift();
+			} else {
+				array.shift();
+			}
+		});
 	}
 });
