@@ -23,7 +23,7 @@ require([
 			 V) {
 	'use strict';
 
-	V.describe('Render pulsating lines of all the different available colors.' +
+	V.describe('Render pulsating lines of all the different available preset colors.' +
 	'<br>' +
 	'Colors are, from left to right: white, red, green, blue, aqua, magenta, yellow and black.' +
 	'<br>' +
