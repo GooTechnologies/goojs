@@ -21,10 +21,10 @@
 
 			{{#constructor.comment.extends}}
 				<span class="extends">extends
-			<a href="#{{constructor.comment.extends.base}}">
-				{{constructor.comment.extends.base}}
-			</a>
-		</span>
+					<a href="#{{constructor.comment.extends.base}}">
+						{{constructor.comment.extends.base}}
+					</a>
+				</span>
 			{{/constructor.comment.extends}}
 		</h1>
 		<span class="path">goo/{{requirePath}}</span>
@@ -148,6 +148,10 @@
 					{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
 
 					<div class="comment">
+						{{#comment.virtual}}
+							<span class="icon-warning-purple virtual roboto"> virtual</span>
+						{{/comment.virtual}}
+
 						<span class="description">{{{comment.description}}}</span>
 
 						{{#comment.deprecated}}<span class="deprecated-description">{{{description}}}</span>{{/comment.deprecated}}

@@ -119,6 +119,10 @@ var compileComment = function (rawComment) {
 		comment.readonly = !!parsed['@readonly'];
 	}
 
+	if (parsed['@virtual']) {
+		comment.virtual = !!parsed['@virtual'];
+	}
+
 	if (parsed['@deprecated']) {
 		comment.deprecated = parsed['@deprecated'];
 	}
