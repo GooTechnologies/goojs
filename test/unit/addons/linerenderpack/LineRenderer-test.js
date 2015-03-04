@@ -2,11 +2,9 @@ define([
 	'goo/entities/World',
 	'goo/math/Vector3',
 	'goo/addons/linerenderpack/LineRenderer'
-], function (
-	World,
-	Vector3,
-	LineRenderer
-) {
+], function (World,
+			 Vector3,
+			 LineRenderer) {
 	'use strict';
 
 	describe('LineRenderer', function () {

@@ -3,12 +3,10 @@ define([
 	'goo/math/Vector3',
 	'goo/addons/linerenderpack/LineRenderer',
 	'goo/addons/linerenderpack/LineRenderSystem'
-], function (
-	World,
-	Vector3,
-	LineRenderer,
-	LineRenderSystem
-) {
+], function (World,
+			 Vector3,
+			 LineRenderer,
+			 LineRenderSystem) {
 	'use strict';
 
 	describe('LineRenderSystem', function () {
