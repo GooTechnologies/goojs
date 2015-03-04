@@ -1,3 +1,4 @@
+
 define([
 	'goo/entities/World',
 	'goo/renderer/Renderer',
@@ -310,6 +311,9 @@ define([
 	var tpfSmoothingArray = [];
 	var tpfIndex = 0;
 
+	var renderTimer = 0;
+	var renderFrameRate = 1/30;
+
 	GooRunner.prototype._updateFrame = function (time) {
 		if (this.start < 0) {
 			this.start = time;
@@ -340,8 +344,23 @@ define([
 		World.tpf = this.world.tpf;
 		this.start = time;
 
-		// execute callbacks
-		//! AT: doing this to be able to schedule new callbacks from the existing callbacks
+		this._update();
+
+		renderTimer += tpf;
+		if (renderTimer > renderFrameRate) {
+			this._render();
+			renderTimer %= renderFrameRate;
+		}
+
+		this._postUpdate();
+
+		// schedule next frame
+		if (this.animationId) {
+			this.animationId = window.requestAnimationFrame(this._run.bind(this));
+		}
+	};
+
+	GooRunner.prototype._update = function () {
 		if (this.callbacksNextFrame.length > 0) {
 			var callbacksNextFrame = this.callbacksNextFrame;
 			this.callbacksNextFrame = [];
@@ -362,7 +381,9 @@ define([
 		}
 
 		this.renderer.info.reset();
-
+	};
+	
+	GooRunner.prototype._render = function () {
 		if (this.doRender) {
 			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
@@ -400,7 +421,9 @@ define([
 				this.renderer.setClearColor.apply(this.renderer, this._picking.clearColorStore);
 			}
 		}
+	};
 
+	GooRunner.prototype._postUpdate = function () {
 		// run the post render callbacks
 		for (var i = 0; i < this.callbacks.length; i++) {
 			var callback = this.callbacks[i];
@@ -424,11 +447,6 @@ define([
 				this._callSafe(callback, image);
 			}
 			this._takeSnapshots = [];
-		}
-
-		// schedule next frame
-		if (this.animationId) {
-			this.animationId = window.requestAnimationFrame(this._run.bind(this));
 		}
 	};
 
