@@ -96,12 +96,6 @@ define([
 		 */
 		this.renderer = new Renderer(parameters);
 
-		/** Set to true to run user-defined callbacks within try/catch statements. Errors will be printed to console.
-		 * @type {boolean}
-		 * @default true
-		 */
-		this.useTryCatch = parameters.useTryCatch !== undefined ? parameters.useTryCatch : true;
-
 		this._setBaseSystems();
 		this._registerBaseComponents();
 
@@ -280,29 +274,20 @@ define([
 	 * @private
 	 * @param time
 	 */
-	//! TODO: private until documented
-	GooRunner.prototype.run = function (time) {
-		//! AT: move the conditional out; assign either variants to the run method
-		if (this.useTryCatch) {
-			this._callSafe(this._updateFrame, time);// this._updateFrameSafe(time);
-		} else {
-			this._updateFrame(time);
-		}
+	GooRunner.prototype._run = function (time) {
+		this._callSafe(this._updateFrame, time);
 	};
 
 	/**
      * Calls a function and catches any error
 	 * @private
+	 * @param func
 	 */
 	GooRunner.prototype._callSafe = function (func) {
 		try {
 			func.apply(this, Array.prototype.slice.call(arguments, 1));
-		} catch (error) {
-			if (error instanceof Error) {
-				console.error(error.stack);
-			} else {
-				console.log(error);
-			}
+		} catch (e) {
+			console.error(e instanceof Error ? e.stack : e);
 		}
 	};
 
@@ -334,7 +319,7 @@ define([
 
 		if (tpf < 0 || tpf > 1.0) { // skip a loop - original start time probably bad.
 			this.start = time;
-			this.animationId = window.requestAnimationFrame(this.run.bind(this));
+			this.animationId = window.requestAnimationFrame(this._run.bind(this));
 			return;
 		}
 
@@ -360,29 +345,15 @@ define([
 		if (this.callbacksNextFrame.length > 0) {
 			var callbacksNextFrame = this.callbacksNextFrame;
 			this.callbacksNextFrame = [];
-			if (this.useTryCatch) {
-				for (var i = 0; i < callbacksNextFrame.length; i++) {
-					var callback = callbacksNextFrame[i];
-					this._callSafe(callback, this.world.tpf);
-				}
-			} else {
-				for (var i = 0; i < callbacksNextFrame.length; i++) {
-					var callback = callbacksNextFrame[i];
-					callback(this.world.tpf);
-				}
+			for (var i = 0; i < callbacksNextFrame.length; i++) {
+				var callback = callbacksNextFrame[i];
+				this._callSafe(callback, this.world.tpf);
 			}
 		}
 
-		if (this.useTryCatch) {
-			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
-				var callback = this.callbacksPreProcess[i];
-				this._callSafe(callback, this.world.tpf);
-			}
-		} else {
-			for (var i = 0; i < this.callbacksPreProcess.length; i++) {
-				var callback = this.callbacksPreProcess[i];
-				callback(this.world.tpf);
-			}
+		for (var i = 0; i < this.callbacksPreProcess.length; i++) {
+			var callback = this.callbacksPreProcess[i];
+			this._callSafe(callback, this.world.tpf);
 		}
 
 		// process the world
@@ -423,11 +394,7 @@ define([
 					}
 				}
 				this.renderer.pick(this._picking.x, this._picking.y, this._picking.pickingStore, Renderer.mainCamera);
-				if (this.useTryCatch) {
-					this._callSafe(this._picking.pickingCallback, this._picking.pickingStore.id, this._picking.pickingStore.depth);
-				} else {
-					this._picking.pickingCallback(this._picking.pickingStore.id, this._picking.pickingStore.depth);
-				}
+				this._callSafe(this._picking.pickingCallback, this._picking.pickingStore.id, this._picking.pickingStore.depth);
 				this._picking.doPick = false;
 
 				this.renderer.setClearColor.apply(this.renderer, this._picking.clearColorStore);
@@ -435,16 +402,9 @@ define([
 		}
 
 		// run the post render callbacks
-		if (this.useTryCatch) {
-			for (var i = 0; i < this.callbacks.length; i++) {
-				var callback = this.callbacks[i];
-				this._callSafe(callback, this.world.tpf);
-			}
-		} else {
-			for (var i = 0; i < this.callbacks.length; i++) {
-				var callback = this.callbacks[i];
-				callback(this.world.tpf);
-			}
+		for (var i = 0; i < this.callbacks.length; i++) {
+			var callback = this.callbacks[i];
+			this._callSafe(callback, this.world.tpf);
 		}
 
 		// update the stats if there are any
@@ -459,23 +419,16 @@ define([
 		// resolve any snapshot requests
 		if (this._takeSnapshots.length) {
 			var image = this.renderer.domElement.toDataURL();
-			if (this.useTryCatch) {
-				for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
-					var callback = this._takeSnapshots[i];
-					this._callSafe(callback, image);
-				}
-			} else {
-				for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
-					var callback = this._takeSnapshots[i];
-					callback(image);
-				}
+			for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
+				var callback = this._takeSnapshots[i];
+				this._callSafe(callback, image);
 			}
 			this._takeSnapshots = [];
 		}
 
 		// schedule next frame
 		if (this.animationId) {
-			this.animationId = window.requestAnimationFrame(this.run.bind(this));
+			this.animationId = window.requestAnimationFrame(this._run.bind(this));
 		}
 	};
 
@@ -740,7 +693,7 @@ define([
 	GooRunner.prototype._startGameLoop = function () {
 		if (!this.animationId) {
 			this.start = -1;
-			this.animationId = window.requestAnimationFrame(this.run.bind(this));
+			this.animationId = window.requestAnimationFrame(this._run.bind(this));
 		}
 	};
 
