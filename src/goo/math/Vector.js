@@ -11,7 +11,7 @@ define([
 	 * @param {number} size Number of vector components.
 	 */
 	function Vector(size) {
-		this.data = new Float32Array(size);
+		this.data = new Float64Array(size);
 	}
 
 	/**
