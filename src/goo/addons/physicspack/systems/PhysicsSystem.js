@@ -30,7 +30,7 @@ function (
 	/**
 	 * A physics system using [Cannon.js]{@link http://github.com/schteppe/cannon.js}.
 	 * @extends AbstractPhysicsSystem
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {Vector3} [settings.gravity]
 	 * @param {number} [settings.stepFrequency=60]
 	 * @param {number} [settings.maxSubSteps=10]
@@ -211,9 +211,9 @@ function (
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
-	 * @param  {object} [options]
+	 * @param  {Object} [options]
 	 * @param  {RaycastResult} [result]
-	 * @return {boolean} True if hit, else false
+	 * @returns {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastAny = function (start, direction, distance, options, result) {
 		if (options instanceof RaycastResult) {
@@ -237,9 +237,9 @@ function (
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
-	 * @param  {object} [options]
+	 * @param  {Object} [options]
 	 * @param  {RaycastResult} [result]
-	 * @return {boolean} True if hit, else false
+	 * @returns {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastClosest = function (start, direction, distance, options, result) {
 		if (options instanceof RaycastResult) {
@@ -265,9 +265,9 @@ function (
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
-	 * @param  {object} [options]
+	 * @param  {Object} [options]
 	 * @param  {Function} callback
-	 * @return {boolean} True if hit, else false
+	 * @returns {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastAll = function (start, direction, distance, options, callback) {
 		if (typeof(options) === 'function') {
@@ -390,9 +390,8 @@ function (
 	/**
 	 * @private
 	 * @param  {array} entities
-	 * @param  {number} tpf
 	 */
-	PhysicsSystem.prototype.process = function (entities, tpf) {
+	PhysicsSystem.prototype.initialize = function (entities) {
 		var N = entities.length;
 
 		for (var i = 0; i !== N; i++) {
@@ -430,8 +429,28 @@ function (
 				this._addLonelyCollider(colliderEntity);
 			}
 		}
+	};
+
+	/**
+	 * @private
+	 * @param  {array} entities
+	 * @param  {number} tpf
+	 */
+	PhysicsSystem.prototype.process = function (entities, tpf) {
+
+		this.initialize(entities);
 
 		this.step(tpf);
+
+		this.syncTransforms(entities);
+	};
+
+	/**
+	 * @private
+	 * @param  {array} entities
+	 */
+	PhysicsSystem.prototype.syncTransforms = function (entities) {
+		var N = entities.length;
 
 		// Need a tree traversal, that takes the roots first
 		var queue = [];

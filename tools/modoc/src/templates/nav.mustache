@@ -6,9 +6,22 @@
 	<link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="lib/styles/goo.css">
 	<link rel="stylesheet" href="style.css">
-
 </head>
 <body>
+
+{{! HEADER }}
+
+<header>
+	<a class="logo" href="http://www.goocreate.com"></a>
+	<ul>
+		<li><a href="http://www.goocreate.com/features/">Features</a></li>
+		<li><a href="http://www.goocreate.com/learn/">Learn</a></li>
+		<li><a href="https://answers.goocreate.com/">Q&A</a></li>
+		<li><a href="http://www.goocreate.com/pricing/">Pricing</a></li>
+		<li><a href="http://www.goocreate.com/blog/">Blog</a></li>
+	</ul>
+	<a class="launcher" href="https://app.goocreate.com/">Launch Create</a>
+</header>
 
 {{! SIDEBAR }}
 <nav>
@@ -19,17 +32,11 @@
 		<a class="link" href="changelog.html">Read the Changelog</a><br>
 		<a class="link" href="deprecated.html">Deprecation List</a>
 	</section>
+
 	<section>
 		<input id="search" type="text" placeholder="Start typing to search...">
 	</section>
-	<section class="shortcuts">
-		<div class="top-dir">Shortcuts</div>
-		<ul>
-			{{#index}}
-				<li><a href="#{{name}}">{{name}}</a></li>
-			{{/index}}
-		</ul>
-	</section>
+
 	<div class="index-container">
 		<ul>
 			{{#index}}
@@ -37,17 +44,25 @@
 					<div class="top-dir" id="{{name}}">{{name}}</div>
 					<ul>
 						{{#classes}}
-							<li class="item"><a phony="{{{link}}}">{{name}}</a></li>
+							<li class="item"><a>{{name}}</a></li>
 						{{/classes}}
 					</ul>
 				</li>
 			{{/index}}
 		</ul>
 	</div>
+
+	<div class="results-container">
+		<ul style="display: none">
+			{{! empty list, waiting to be popualted by search results }}
+		</ul>
+	</div>
 </nav>
 
 {{! CONTENT }}
-<iframe class="class-panel" src="Entity-doc.html"></iframe>
+<div class="main-view">
+	<iframe class="class-panel" src="everything.html"></iframe>
+</div>
 
 
 {{! FOOTER }}

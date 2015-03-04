@@ -8,7 +8,7 @@ function (
 
 	/**
 	 * Cylinder collider, that extends along the Z axis.
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {number} [settings.radius=0.5]
 	 * @param {number} [settings.height=1]
 	 * @extends Collider
@@ -43,7 +43,7 @@ function (
 	};
 
 	/**
-	 * @return {CylinderCollider}
+	 * @returns {CylinderCollider}
 	 */
 	CylinderCollider.prototype.clone = function () {
 		return new CylinderCollider({

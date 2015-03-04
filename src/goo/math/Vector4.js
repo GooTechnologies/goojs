@@ -497,6 +497,14 @@ define([
 	 */
 	Vector4.prototype.copy = Vector4.prototype.setVector;
 
+	Vector4.prototype.copyTo = function (destination) {
+		destination.data[0] = this.data[0];
+		destination.data[1] = this.data[1];
+		destination.data[2] = this.data[2];
+		destination.data[3] = this.data[3];
+		return this;
+	};
+
 	// #ifdef DEBUG
 	Vector.addPostChecks(Vector4.prototype, [
 		'add', 'sub', 'mul', 'div', 'dot', 'dotVector',

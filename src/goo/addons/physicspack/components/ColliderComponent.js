@@ -10,7 +10,7 @@ function (
 
 	/**
 	 * Adds a physics collider to the entity. If the entity or any of its ancestors have a {RigidbodyComponent} or an {AmmoRigidbodyComponent}, the collider is added to the physics world.
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {Collider} [settings.collider]
 	 * @param {boolean} [settings.isTrigger=false]
 	 * @extends Component
@@ -123,9 +123,9 @@ function (
 
 	/**
 	 * @private
-	 * @param  {object} obj
+	 * @param  {Object} obj
 	 * @param  {Entity} entity
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	ColliderComponent.applyOnEntity = function (obj, entity) {
 		if (obj instanceof Collider) {

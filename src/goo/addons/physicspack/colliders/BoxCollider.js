@@ -10,7 +10,7 @@ function (
 
 	/**
 	 * Physics box collider.
-	 * @param {object} [settings]
+	 * @param {Object} [settings]
 	 * @param {Vector3} [settings.halfExtents] The half-extents of the box collider.
 	 * @extends Collider
 	 */
@@ -38,7 +38,7 @@ function (
 
 	/**
 	 * Clone the collider
-	 * @return {BoxCollider}
+	 * @returns {BoxCollider}
 	 */
 	BoxCollider.prototype.clone = function () {
 		return new BoxCollider({

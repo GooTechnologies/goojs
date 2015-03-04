@@ -8,9 +8,10 @@ function (
 
 	/**
 	 * Result container for the {@link PhysicsSystem} and {@link AmmoPhysicsSystem}.
-	 * @param {Vector3} normal
-	 * @param {Vector3} point
-	 * @param {Entity} entity
+	 * @param {Object} [settings]
+	 * @param {Vector3} [settings.normal]
+	 * @param {Vector3} [settings.point]
+	 * @param {Entity} [settings.entity]
 	 */
 	function RaycastResult(settings) {
 		settings = settings || {};
