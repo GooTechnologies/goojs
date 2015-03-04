@@ -41,12 +41,20 @@ define([
 
 		LineRenderer.prototype.MAX_NUM_LINES = 170000;
 
-
-		LineRenderer.prototype.update = function () {
+		/**
+		 * Used internally to update the vertexData in meshData
+		 */
+		LineRenderer.prototype._updateVertexData = function () {
 			if (this._numRenderingLines !== 0 || this._meshData.vertexCount !== 0) {
 				this._meshData.vertexCount = Math.min(this._numRenderingLines, this.MAX_NUM_LINES) * 2;
 				this._meshData.setVertexDataUpdated();
 			}
+		};
+
+		/**
+		 * Used internally to clear the rendering line counter
+		 */
+		LineRenderer.prototype._clear = function () {
 			this._numRenderingLines = 0;
 		};
 
@@ -65,7 +73,10 @@ define([
 			}
 		};
 
-		LineRenderer.prototype.remove = function () {
+		/**
+		 * Used internally to remove itself.
+		 */
+		LineRenderer.prototype._remove = function () {
 			this._meshData.destroy(this.world.gooRunner.renderer.context);
 		};
 
