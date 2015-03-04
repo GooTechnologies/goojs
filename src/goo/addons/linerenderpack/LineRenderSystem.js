@@ -30,10 +30,12 @@ define([
 			 * */
 			this.renderList = [];
 
+
+			var that = this;
 			//add the camera
 			SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-				this.camera = newCam.camera;
-			}.bind(this));
+				that.camera = newCam.camera;
+			});
 		}
 
 		LineRenderSystem.prototype = Object.create(System.prototype);
@@ -166,18 +168,12 @@ define([
 			this.drawLine(start, end, color);
 		};
 
-		LineRenderSystem.prototype.process = function () {
-		};
-
 		LineRenderSystem.prototype.render = function (renderer) {
 			for (var i = 0; i < this._lineRendererKeys.length; i++) {
 				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
+				lineRenderer._updateVertexData();
 				lineRenderer._manageRenderList(this.renderList);
-			}
-
-			for (var i = 0; i < this._lineRendererKeys.length; i++) {
-				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
-				lineRenderer.update();
+				lineRenderer._clear();
 			}
 
 			renderer.checkResize(this.camera);
@@ -187,10 +183,10 @@ define([
 			}
 		};
 
-		LineRenderSystem.prototype.remove = function () {
+		LineRenderSystem.prototype.clear = function () {
 			for (var i = 0; i < this._lineRendererKeys.length; i++) {
-				var renderer = this._lineRenderers[this._lineRendererKeys[i]];
-				renderer.remove();
+				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
+				lineRenderer._remove();
 			}
 			delete this._lineRenderers;
 
