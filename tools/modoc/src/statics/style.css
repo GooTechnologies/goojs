@@ -48,13 +48,13 @@ input:focus::-webkit-input-placeholder { color: transparent; }
 input:focus:-ms-input-placeholder { color: transparent; }
 
 a {
-	color: #b5b5b5;
+	color: #38b3f6;
 	text-decoration: none;
 	transition: all 0.4s;
 	-webkit-transition: all 0.5s;
 }
 
-a:hover, a:active { color: #38b3f6; }
+a:hover, a:active { color: #81cff9; }
 
 /******************************************************************************
 TYPOGRAPHY
@@ -158,6 +158,10 @@ header ul li {
 	font-weight: 500;
 }
 
+header a { color: #b5b5b5; }
+
+header a:hover, header a:active { color: #38b3f6; }
+
 .logo {
 	display: block;
 	width: 48px;
@@ -206,7 +210,12 @@ nav section { margin-bottom: 30px; }
 
 nav li { line-height: 0.9em; }
 
-nav a { cursor: pointer; }
+nav a {
+	cursor: pointer;
+	color: #b5b5b5;
+}
+
+nav a:hover, nav a:active { color: #38b3f6; }
 
 a.link {
 	display: block;
@@ -218,22 +227,12 @@ a.link:hover, a.link:active { color: #81cff9; }
 
 .index-container { padding-bottom: 90px; }
 
-.active {
-	margin: 8px -50px;
-	padding: 10px;
-	padding-left: 50px;
-	background: #303030;
-	border-right: 3px solid #38b3f6;
+.active a {
+	cursor: pointer;
+	color: #38b3f6;
 }
 
-.active:first-child { margin-top: 0; }
-
-.active:last-child { margin-bottom: 0; }
-
-.active a { color: #38b3f6; }
-
 .top-dir {
-	color: #38b3f6;
 	padding: 5px 5px 5px 0;
 	margin-top: 30px;
 	margin-bottom: 5px;
@@ -355,6 +354,8 @@ li {
 	border-radius: 3px;
 }
 
+.comment {margin-top: 15px;}
+
 /******************************************************************************
 CODE EXAMPLES
 ******************************************************************************/
@@ -398,10 +399,6 @@ SYNTAX & COLORS
 	font-weight: 100;
 }
 
-.extends a { color: #555555; }
-
-.extends a:hover { color: #38b3f6; }
-
 .method, .static { margin-bottom: 60px; }
 
 .method-name { color: #f76162; }
@@ -418,4 +415,4 @@ SYNTAX & COLORS
 
 .parameter-optional { color: #8a8eea; }
 
-.parameter-default { color: #38b3f6; }
+.parameter-default { color: #cc76a4; }
