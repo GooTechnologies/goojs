@@ -199,6 +199,11 @@ define([
 			this._frustumNear = this.near;
 			this._frustumFar = this.far;
 
+			// handle invalid frustum-far
+			if (this._frustumFar - this._frustumNear < MathUtils.EPSILON) {
+				this._frustumFar = this._frustumNear + MathUtils.EPSILON;
+			}
+
 			this.onFrustumChange();
 		}
 	};
@@ -243,6 +248,11 @@ define([
 		this._frustumRight = this.right * this.aspect;
 		this._frustumTop = this.top;
 		this._frustumBottom = this.bottom;
+
+		// handle invalid frustum-far
+		if (this._frustumFar - this._frustumNear < MathUtils.EPSILON) {
+			this._frustumFar = this._frustumNear + MathUtils.EPSILON;
+		}
 
 		this.onFrustumChange();
 	};
