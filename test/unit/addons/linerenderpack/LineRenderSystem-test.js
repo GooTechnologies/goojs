@@ -23,5 +23,23 @@ define([
 			expect(lineRenderSystem).toBeDefined();
 		});
 
+		it('can drawLine', function () {
+			lineRenderSystem = new LineRenderSystem(world);
+
+			//draw a red line between 0,0,0 and 1,1,1
+			lineRenderSystem.drawLine(Vector3.ZERO, Vector3.ONE, Vector3.UNIT_X);
+
+			expect(lineRenderSystem._lineRendererKeys.length).toBe(1);
+		});
+
+		it('can drawCross', function () {
+			lineRenderSystem = new LineRenderSystem(world);
+
+			//draw a red cross at 0,0,0
+			lineRenderSystem.drawCross(Vector3.ZERO, Vector3.UNIT_X);
+
+			expect(lineRenderSystem._lineRendererKeys.length).toBe(1);
+		});
+
 	});
 });
