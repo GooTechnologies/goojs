@@ -77,7 +77,7 @@ define([
 		 * Draws a line between two {@link Vector3}'s with the specified color.
 		 * @param {Vector3} start
 		 * @param {Vector3} end
-		 * @param {Vector3} color a color with its components between 0-1.
+		 * @param {Vector3} color A vector with its components between 0-1.
 		 * @example
 		 * var vector1 = new Vector3(0,0,0);
 		 * var vector2 = new Vector3(13,3,7);
@@ -104,7 +104,7 @@ define([
 		 * @param {number} endDataIndex
 		 * @param {number} startPolarity
 		 * @param {number} endPolarity
-		 * @param {Vector3} color
+		 * @param {Vector3} color A vector with its components between 0-1.
 		 * @param {Matrix4x4} transformMatrix
 		 */
 		LineRenderSystem.prototype._drawAxisLine = function (start, startEndDelta, startDataIndex, endDataIndex, startPolarity, endPolarity, color, transformMatrix) {
@@ -126,7 +126,7 @@ define([
 		 * Draws an axis aligned box between the min and max points, can be transformed to a specific space using the matrix.
 		 * @param {Vector3} min
 		 * @param {Vector3} max
-		 * @param {Vector3} color
+		 * @param {Vector3} color A vector with its components between 0-1.
 		 * @param {Matrix4x4} [transformMatrix]
 		 */
 		LineRenderSystem.prototype.drawAABox = function (min, max, color, transformMatrix) {
@@ -148,7 +148,7 @@ define([
 		/**
 		 * Draws a cross at a position with the given color and size.
 		 * @param {Vector3} position
-		 * @param {Vector3} color
+		 * @param {Vector3} color A vector with its components between 0-1.
 		 * @param {number} [size=0.05]
 		 */
 		LineRenderSystem.prototype.drawCross = function (position, color, size) {
