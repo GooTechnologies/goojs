@@ -1,10 +1,12 @@
 require([], function() {
 	'use strict';
 
+	var performance = window.performance;
+
 	var arraySize = 5000;
 	var offset = 500;
 	var removalCount = arraySize - offset;
-	var runs = 10;
+	var runs = 20;
 
 	function shuffle(o) {
 		for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
@@ -16,6 +18,7 @@ require([], function() {
 		origArray[i] = i;
 	}
 	shuffle(origArray);
+	// origArray = origArray.reverse();
 
 	var compareArray = origArray.slice();
 	for (var i = offset; i < removalCount; i++) {
@@ -23,23 +26,39 @@ require([], function() {
 	}
 
 	function test(name, f) {
-		var a = performance.memory.usedJSHeapSize;
-		console.time(name);
+		// warmup
 		for (var k = 0; k < runs; k++) {
 			var newArray = origArray.slice();
 			for (var j = offset; j < removalCount; j++) {
 				f(newArray, newArray.indexOf(j));
 			}
 		}
-		console.timeEnd(name);
-		console.log('Mem: ' + (performance.memory.usedJSHeapSize - a) + ' bytes');
 
-		if (newArray.sort().join(',') !== compareArray.sort().join(',')) {
-			console.warn(name + ' - not matching!');
+		// run
+		var mem = 0;
+		var time = 0;
+		var j;
+		for (var k = 0; k < runs; k++) {			
+			var newArray = origArray.slice();
+			var a = performance.memory.usedJSHeapSize;
+			var t = performance.now();
+			for (j = offset; j < removalCount; j++) {
+				f(newArray, newArray.indexOf(j));
+			}
+			time += performance.now() - t;
+			mem += performance.memory.usedJSHeapSize - a;
 		}
+		time /= runs;
+		mem /= runs;
+
+		console.log('Time: ' + time + ', Mem: ' + mem + ' bytes [' + name + ']');
+
+		// if (newArray.sort().join(',') !== compareArray.sort().join(',')) {
+		// 	console.warn(name + ' - not matching!');
+		// }
 	}
 
-	for (var i = 0; i < 20; i++) {
+	for (var i = 0; i < 5; i++) {
 		console.log('---------------');
 
 		test('splice', function(array, index) {
