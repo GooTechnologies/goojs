@@ -87,7 +87,7 @@ define([
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
-			shape = config.shape;
+			var shape = config.shape;
 			if (shape.length) {
 				shape = shape.toLowerCase();
 			}
