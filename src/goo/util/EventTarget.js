@@ -25,7 +25,7 @@ define(function() {
 
 			var listenersCopy = listeners.slice();
 			for (var i = 0, l = listenersCopy.length; i < l; i++) {
-				listenersCopy[i].call(this, event);
+				listenersCopy[i](event);
 			}
 		}
 
