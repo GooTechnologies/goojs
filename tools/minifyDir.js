@@ -1,8 +1,10 @@
+// jshint node:true
+
 /**
  * Minifies and require-ifies a subdir of src/goo - will exclude any external dependencies (anything outside of this dir) from the resulting 'pack'.
  * Usage
  *
- * node tools/minifyDir.js sourceDirectory [outDirectory='out']
+ * node tools/minifyDir.js sourceDirectory [outFileName='out/directoryName.js']
  * sourceDirectory must be under 'src/goo'
  * Ex: if you want to minify only the contents of 'src/goo/math' then sourceDirectory is 'math'
  */
@@ -12,7 +14,7 @@
 var requirejs = require('requirejs');
 var madge = require('madge'); //! AT: this library returns false negatives
 var fs = require('fs');
-var colors = require('colors');
+require('colors');
 
 /**
  * Converts all backslashes to slashes
@@ -117,10 +119,10 @@ function buildPack(moduleList, packPath, packName) {
  * @param {string} packPath
  * @param {string} packName
  * @param {string} ignoreList
- * @param {string} outBaseDir
+ * @param {string} outFileName
  * @returns {{baseUrl: string, out: string, name: string, paths: {}}}
  */
-function getOptimizerConfig(packPath, packName, ignoreList, outBaseDir) {
+function getOptimizerConfig(packPath, packName, ignoreList, outFileName) {
 	var paths = {};
 
 	ignoreList.forEach(function (ignoreItem) {
@@ -130,7 +132,7 @@ function getOptimizerConfig(packPath, packName, ignoreList, outBaseDir) {
 	var config = {
 		baseUrl: 'src/',
 		name: 'goo/' + packPath + '/' + packName,
-		out: outBaseDir + '/' + packName + '.js',
+		out: outFileName,
 		paths: paths
 	};
 
@@ -159,12 +161,15 @@ function getTailWrapping(packName) {
 	return '';
 }
 
-
+if (process.argv.length < 3) {
+	console.error('Invalid parameters; consult the top-level jsdoc');
+	return;
+}
 
 var packPath = process.argv[2];
 var packName = extractFilename(packPath);
 var version = '';
-var outBaseDir = process.argv[3] || 'out';
+var outFileName = process.argv[3] || 'out/' + packName + '.js';
 
 // get all dependencies
 console.log('get all dependencies'.grey);
@@ -189,7 +194,7 @@ fs.writeFile('src/goo/' + packPath + '/' + packName + '.js', packStr, function (
 
 	// get the config for the optimizer
 	console.log('get the config for the optimizer'.grey);
-	var optimizerConfig = getOptimizerConfig(packPath, packName, modulesAndDependencies.ignoreList, outBaseDir);
+	var optimizerConfig = getOptimizerConfig(packPath, packName, modulesAndDependencies.ignoreList, outFileName);
 
 	// optimize!
 	console.log('optimize!');
@@ -207,7 +212,9 @@ fs.writeFile('src/goo/' + packPath + '/' + packName + '.js', packStr, function (
 		console.log('Ignore List'.grey);
 		console.log(modulesAndDependencies.ignoreList);
 
-		wrap(outBaseDir + '/' + packName + '.js', getHeadWrapping(packName, version), getTailWrapping(packName), done);
+		wrap(outFileName, getHeadWrapping(packName, version), getTailWrapping(packName), function () {
+			console.log(('Done minifying directory ' + packPath).green);
+		});
 	}, function (err) {
 		// optimization err callback
 		// :(

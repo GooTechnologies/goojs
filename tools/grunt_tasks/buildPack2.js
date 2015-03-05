@@ -21,7 +21,9 @@ module.exports = function (grunt) {
 		var done = this.async();
 
 		exec('node tools/minifyDir.js ' + packPath, function () {
-			exec('node tools/derequire.js ' + outBaseDir + '/' + packName + '.js', function () {
+			exec('node tools/derequire.js ' +
+				outBaseDir + '/' + packName + '.js ' +
+				outBaseDir + '/' + packName + '.js', function () {
 				done();
 			});
 		});

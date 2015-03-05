@@ -101,19 +101,20 @@ function getRequireExports(modulePaths) {
 
 function wrap(moduleCode, requireExports) {
 	return [
-		'(function() {',
-		'\tfunction f() {',
+		'(function() { "use strict"; function f() {',
 		moduleCode,
 		requireExports,
-		'\t}',
-		'\t(goo.useOwnRequire || !window.require ? goo.require : require)(["goo"], f);',
-		'})();'
+		'} (goo.useOwnRequire || !window.define ? goo.require : require)(["goo"], f); })();'
 	].join('\n');
 }
 
+if (process.argv.length < 3) {
+	console.error('Invalid parameters; consult the top-level jsdoc');
+	return;
+}
 
 var inFileName = process.argv[2] || 'out/fish.js';
-var outFileName = inFileName.substr(0, inFileName.length - 3) + '.dereq.js';
+var outFileName = process.argv[3] || (inFileName.substr(0, inFileName.length - 3) + '.dereq.js');
 
 var source = fs.readFileSync(inFileName, 'utf8');
 
