@@ -18,7 +18,7 @@ define([
 	'use strict';
 
 	/**
-	 * For handling loading of rigidbody components
+	 * For handling loading of rigid body components
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
@@ -29,7 +29,7 @@ define([
 
 	RigidbodyComponentHandler.prototype = Object.create(ComponentHandler.prototype);
 	RigidbodyComponentHandler.prototype.constructor = RigidbodyComponentHandler;
-	ComponentHandler._registerClass('rigidbody', RigidbodyComponentHandler);
+	ComponentHandler._registerClass('rigidBody', RigidbodyComponentHandler);
 
 	/**
 	 * Prepare component. Set defaults on config here.
@@ -49,7 +49,7 @@ define([
 	};
 
 	/**
-	 * Create a rigidbody component.
+	 * Create a rigid body component.
 	 * @returns {RigidbodyComponent} the created component object
 	 * @private
 	 */
@@ -58,7 +58,7 @@ define([
 	};
 
 	/**
-	 * Removes the rigidbody component
+	 * Removes the rigid body component
 	 * @param {string} ref
 	 */
 	RigidbodyComponentHandler.prototype._remove = function (entity) {
@@ -66,7 +66,7 @@ define([
 	};
 
 	/**
-	 * Update engine rigidbody component object based on the config.
+	 * Update engine rigid body component object based on the config.
 	 * @param {Entity} entity The entity on which this component should be added.
 	 * @param {object} config
 	 * @param {object} options

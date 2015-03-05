@@ -317,7 +317,7 @@ function (
 
 		// Trash everything
 		for (var i = 0; i < this._activeEntities.length; i++) {
-			this._activeEntities[i].rigidbodyComponent._dirty = true;
+			this._activeEntities[i].rigidBodyComponent._dirty = true;
 		}
 	};
 
@@ -326,7 +326,7 @@ function (
 	 * @param  {Entity} entity
 	 */
 	PhysicsSystem.prototype.inserted = function (entity) {
-		var component = entity.rigidbodyComponent;
+		var component = entity.rigidBodyComponent;
 		if (component._dirty) {
 			component.initialize();
 		}
@@ -337,12 +337,12 @@ function (
 	 * @param  {Entity} entity
 	 */
 	PhysicsSystem.prototype.deleted = function (entity) {
-		if (entity.rigidbodyComponent) {
-			for (var i = 0; i < entity.rigidbodyComponent.joints.length; i++) {
-				entity.rigidbodyComponent.destroyJoint(entity.rigidbodyComponent.joints[i]);
+		if (entity.rigidBodyComponent) {
+			for (var i = 0; i < entity.rigidBodyComponent.joints.length; i++) {
+				entity.rigidBodyComponent.destroyJoint(entity.rigidBodyComponent.joints[i]);
 			}
-			entity.rigidbodyComponent.joints.length = 0;
-			entity.rigidbodyComponent.destroy();
+			entity.rigidBodyComponent.joints.length = 0;
+			entity.rigidBodyComponent.destroy();
 		}
 	};
 
@@ -396,14 +396,14 @@ function (
 
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rigidbodyComponent = entity.rigidbodyComponent;
+			var rigidBodyComponent = entity.rigidBodyComponent;
 
 			// Initialize bodies
-			if (rigidbodyComponent._dirty) {
-				rigidbodyComponent.initialize();
+			if (rigidBodyComponent._dirty) {
+				rigidBodyComponent.initialize();
 			} else {
 				// Update the colliders if they changed
-				rigidbodyComponent._updateDirtyColliders();
+				rigidBodyComponent._updateDirtyColliders();
 			}
 		}
 
@@ -411,13 +411,13 @@ function (
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
 
-			var joints = entity.rigidbodyComponent.joints;
+			var joints = entity.rigidBodyComponent.joints;
 			for (var j = 0; j < joints.length; j++) {
 				var joint = joints[j];
 				if (!joint._dirty) {
 					continue;
 				}
-				entity.rigidbodyComponent.initializeJoint(joint, entity, this);
+				entity.rigidBodyComponent.initializeJoint(joint, entity, this);
 				joint._dirty = false;
 			}
 		}
@@ -456,10 +456,10 @@ function (
 		var queue = [];
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
-			var rigidbodyComponent = entity.rigidbodyComponent;
+			var rigidBodyComponent = entity.rigidBodyComponent;
 
 			// Set updated = false so we don't update the same twice
-			rigidbodyComponent._updated = false;
+			rigidBodyComponent._updated = false;
 
 			if (!entity.transformComponent.parent) {
 				// Add roots at the end of the array
@@ -473,18 +473,18 @@ function (
 		// Update positions of entities from the physics data
 		while (queue.length) {
 			var entity = queue.pop();
-			var rigidbodyComponent = entity.rigidbodyComponent;
+			var rigidBodyComponent = entity.rigidBodyComponent;
 			var transformComponent = entity.transformComponent;
 			var transform = transformComponent.transform;
 
-			if (rigidbodyComponent._updated) {
+			if (rigidBodyComponent._updated) {
 				continue;
 			}
-			rigidbodyComponent._updated = true;
+			rigidBodyComponent._updated = true;
 
 			// Get physics orientation
-			rigidbodyComponent.getPosition(tmpVec);
-			rigidbodyComponent.getQuaternion(tmpQuat);
+			rigidBodyComponent.getPosition(tmpVec);
+			rigidBodyComponent.getQuaternion(tmpQuat);
 
 			// Set local transform of the entity
 			transform.translation.setVector(tmpVec);

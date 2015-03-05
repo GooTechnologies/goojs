@@ -117,7 +117,7 @@ function (
 		invBodyTransform.copy(bodyTransform);
 		invBodyTransform.invert(invBodyTransform);
 
-		// Traverse the entities depth first, but skip nodes below other rigidbody components
+		// Traverse the entities depth first, but skip nodes below other rigid body components
 		var queue = [entity];
 		while (queue.length) {
 			var childEntity = queue.pop();
@@ -144,7 +144,7 @@ function (
 			var childTransformComponents = childEntity.transformComponent.children;
 			for (var i = 0; i < childTransformComponents.length; i++) {
 				var e = childTransformComponents[i].entity;
-				if (!e.rigidbodyComponent) {
+				if (!e.rigidBodyComponent) {
 					queue.push(e);
 				}
 			}

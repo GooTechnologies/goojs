@@ -444,7 +444,7 @@ function (
 	 */
 	RigidbodyComponent.prototype.initializeJoint = function (joint) {
 		var bodyA = this.cannonBody;
-		var bodyB = joint.connectedEntity.rigidbodyComponent.cannonBody;
+		var bodyB = joint.connectedEntity.rigidBodyComponent.cannonBody;
 		var constraint;
 		if (joint instanceof BallJoint) {
 

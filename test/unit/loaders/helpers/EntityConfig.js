@@ -171,7 +171,7 @@ define([
 					}
 				});
 			},
-			rigidbody: function () {
+			rigidBody: function () {
 				return {
 					mass: 1,
 					isKinematic: false,

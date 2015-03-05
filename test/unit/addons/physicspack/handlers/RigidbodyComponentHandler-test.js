@@ -27,26 +27,26 @@ define([
 			});
 		});
 
-		it('loads an entity with rigidbody component', function (done) {
-			var config = Configs.entity(['rigidbody']);
+		it('loads an entity with rigidBody component', function (done) {
+			var config = Configs.entity(['rigidBody']);
 
-			config.components.rigidbody.mass = 3;
-			config.components.rigidbody.velocity = [1, 2, 3];
-			config.components.rigidbody.angularVelocity = [4, 5, 6];
+			config.components.rigidBody.mass = 3;
+			config.components.rigidBody.velocity = [1, 2, 3];
+			config.components.rigidBody.angularVelocity = [4, 5, 6];
 
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {
-				expect(entity.rigidbodyComponent).toEqual(jasmine.any(RigidbodyComponent));
+				expect(entity.rigidBodyComponent).toEqual(jasmine.any(RigidbodyComponent));
 
 				var velocity = new Vector3();
-				entity.rigidbodyComponent.getVelocity(velocity);
+				entity.rigidBodyComponent.getVelocity(velocity);
 				expect(velocity).toEqual(new Vector3(1, 2, 3));
 
 				var angularVelocity = new Vector3();
-				entity.rigidbodyComponent.getAngularVelocity(angularVelocity);
+				entity.rigidBodyComponent.getAngularVelocity(angularVelocity);
 				expect(angularVelocity).toEqual(new Vector3(4, 5, 6));
 
-				expect(entity.rigidbodyComponent.mass).toBe(3);
+				expect(entity.rigidBodyComponent.mass).toBe(3);
 
 				done();
 			});
