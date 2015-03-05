@@ -57,20 +57,20 @@ define([
 
 
 		/**
-		 * Packs a {@link Vector3} color to a number.
+		 * Encodes a {@link Vector3} color to a number.
 		 * Assumes that the color components are between 0-1.
 		 * @param {Vector3} color
-		 * @returns {number} The packed color.
+		 * @returns {number} The encoded color.
 		 * @example
-		 * var packedColorRed = lineRenderSystem.packColor(lineRenderSystem.RED);
-		 * console.log(packedColorRed); // would output: 65025
+		 * var encodedColorRed = lineRenderSystem.encodeColor(lineRenderSystem.RED);
+		 * console.log(encodedColorRed); // would output: 16777216
 		 */
-		LineRenderSystem.prototype.packColor = function (color) {
-			var r = Math.floor(color.x * 255);
-			var g = Math.floor(color.y * 255);
-			var b = Math.floor(color.z * 255);
+		LineRenderSystem.prototype.encodeColor = function (color) {
+			var r = Math.floor(color.r * 255);
+			var g = Math.floor(color.g * 255);
+			var b = Math.floor(color.b * 255);
 
-			return r * 255 + g * 255 * 255 + b;
+			return r * 65536 + g * 256 + b;
 		};
 
 		/**
@@ -86,11 +86,11 @@ define([
 		 */
 		LineRenderSystem.prototype.drawLine = function (start, end, color) {
 
-			var packedColor = this.packColor(color);
+			var encodedColor = this.encodeColor(color);
 
-			var lineRenderer = this._lineRenderers[packedColor];
+			var lineRenderer = this._lineRenderers[encodedColor];
 			if (!lineRenderer) {
-				lineRenderer = this._lineRenderers[packedColor] = new LineRenderer(this.world, color);
+				lineRenderer = this._lineRenderers[encodedColor] = new LineRenderer(this.world, color);
 				this._lineRendererKeys = Object.keys(this._lineRenderers);
 			}
 			lineRenderer._addLine(start, end);
