@@ -90,23 +90,26 @@ define([
 						renderables = tree[componentName];
 					} else {
 						renderables = DebugDrawHelper.getRenderablesFor(component, options);
-						renderables.forEach(function (renderable) {
+						for (var k = 0; k < renderables.length; k++) {
+							var renderable = renderables[k];
 							renderable.id = entity.id;
 							renderable._index = entity._index;
-						});
+						}
 						tree[componentName] = renderables;
 					}
 
-					renderables.forEach(function (renderable) {
+					for (var k = 0; k < renderables.length; k++) {
+						var renderable = renderables[k];
 						renderable.transform.translation.setVector(entity.transformComponent.worldTransform.translation);
 						renderable.transform.rotation.copy(entity.transformComponent.worldTransform.rotation);
 						renderable.transform.scale.setDirect(1, 1, 1);
 						renderable.transform.update();
-					});
+					}
 					DebugDrawHelper.update(renderables, component, this.camera);
-					renderables.forEach(function (renderable) {
+					for (var k = 0; k < renderables.length; k++) {
+						var renderable = renderables[k];
 						this.renderList[count++] = renderable;
-					}.bind(this));
+					}
 				}
 			}
 			// Skeleton debug
@@ -117,13 +120,17 @@ define([
 					renderables = tree.skeleton;
 				} else {
 					renderables = DebugDrawHelper.getRenderablesFor(pose);
-					renderables.forEach(function (renderable) { renderable.id = entity.id; });
+					for (var k = 0; k < renderables.length; k++) {
+						var renderable = renderables[k];
+						renderable.id = entity.id;
+					}
 					tree.skeleton = renderables;
 				}
-				renderables.forEach(function (renderable) {
+				for (var k = 0; k < renderables.length; k++) {
+					var renderable = renderables[k];
 					renderable.transform.copy(entity.transformComponent.worldTransform);
 					this.renderList[count++] = renderable;
-				}.bind(this));
+				}
 			}
 		}
 
