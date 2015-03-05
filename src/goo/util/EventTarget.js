@@ -15,7 +15,7 @@ define(function() {
 
 	/**
 	 * Sends an event to all listeners
-	 * @param {object} event Event passed to the listeners
+	 * @param {Object} event Event passed to the listeners
 	 * @returns {EventTarget} Self for chaining.
 	 */
 	EventTarget.prototype.fire = function (event) {
@@ -86,7 +86,7 @@ define(function() {
 	/**
 	 * Get all listeners for a certain type
 	 * @param {string} type Type of event to get listeners for
-	 * @returns {} All listeners of specified type attached to this target
+	 * @returns {Array} All listeners of specified type attached to this target
 	 */
 	EventTarget.prototype.get = function (type) {
 		return this._listenerMap.get(type);
