@@ -56,7 +56,7 @@ define([
 
 		it('loads an entity with with a BoxCollider', function (done) {
 			var config = Configs.entity();
-			config.components.collider = Configs.component.collider('box');
+			config.components.collider = Configs.component.collider('Box');
 			config.components.collider.shapeOptions.halfExtents = [1, 2, 3];
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {
@@ -69,7 +69,7 @@ define([
 
 		it('loads an entity with with a PlaneCollider', function (done) {
 			var config = Configs.entity();
-			config.components.collider = Configs.component.collider('plane');
+			config.components.collider = Configs.component.collider('Plane');
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {
 				expect(entity.colliderComponent).toEqual(jasmine.any(ColliderComponent));
@@ -80,7 +80,7 @@ define([
 
 		it('loads an entity with with a CylinderCollider', function (done) {
 			var config = Configs.entity();
-			config.components.collider = Configs.component.collider('cylinder');
+			config.components.collider = Configs.component.collider('Cylinder');
 			config.components.collider.shapeOptions.height = 2;
 			config.components.collider.shapeOptions.radius = 3;
 			loader.preload(Configs.get());
@@ -96,8 +96,8 @@ define([
 		it('manages to update between collider types', function (done) {
 			var component;
 			var config = Configs.entity();
-			var sphereConfig = Configs.component.collider('sphere');
-			var boxConfig = Configs.component.collider('box');
+			var sphereConfig = Configs.component.collider('Sphere');
+			var boxConfig = Configs.component.collider('Box');
 			config.components.collider = sphereConfig;
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {

@@ -160,14 +160,14 @@ define([
 			},
 			collider: function (type) {
 				return _.defaults({}, {
-					shape: type || 'box', // box, cylinder, plane, sphere
+					shape: type || 'Box', // Box, Cylinder, Plane, Sphere
 					isTrigger: false,
 					friction: 0.3,
 					restitution: 0.0,
 					shapeOptions: {
-						halfExtents: [1, 1, 1], // box
-						radius: 0.5, // sphere, cylinder
-						height: 1 // cylinder
+						halfExtents: [1, 1, 1], // Box
+						radius: 0.5, // Sphere, Cylinder
+						height: 1 // Cylinder
 					}
 				});
 			},

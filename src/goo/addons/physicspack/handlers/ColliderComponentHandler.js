@@ -87,26 +87,21 @@ define([
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
-			var shape = config.shape;
-			if (shape.length) {
-				shape = shape.toLowerCase();
-			}
-
-			switch (shape) {
+			switch (config.shape) {
 			default:
-			case 'box':
+			case 'Box':
 				component.collider = new BoxCollider(config.shapeOptions);
 				component.worldCollider = new BoxCollider();
 				break;
-			case 'sphere':
+			case 'Sphere':
 				component.collider = new SphereCollider(config.shapeOptions);
 				component.worldCollider = new SphereCollider();
 				break;
-			case 'plane':
+			case 'Plane':
 				component.collider = new PlaneCollider();
 				component.worldCollider = new PlaneCollider();
 				break;
-			case 'cylinder':
+			case 'Cylinder':
 				component.collider = new CylinderCollider(config.shapeOptions);
 				component.worldCollider = new CylinderCollider();
 				break;
