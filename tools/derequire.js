@@ -1,3 +1,5 @@
+// jshint node:true
+
 /**
  * Derequire-ifies a require generated minified module.
  * Replaces all define calls of the form
@@ -93,8 +95,20 @@ function getRequireExports(modulePaths) {
 		var moduleName = extractModuleName(modulePath);
 		ret += 'define("' + modulePath + '", [], function () { return goo.' + moduleName + '; });\n';
 	});
-	ret += '})(goo.useOwnRequire || !window.define ? goo.define : define);\n';
+	ret += '})(goo.useOwnRequire || !window.define ? goo.define : define);';
 	return ret;
+}
+
+function wrap(moduleCode, requireExports) {
+	return [
+		'(function() {',
+		'\tfunction f() {',
+		moduleCode,
+		requireExports,
+		'\t}',
+		'\t(goo.useOwnRequire || !window.require ? goo.require : require)(["goo"], f);',
+		'})();'
+	].join('\n');
 }
 
 
@@ -140,5 +154,5 @@ var modulePaths = moduleDefinitions.map(function (moduleDefinition) {
 });
 var requireExports = getRequireExports(modulePaths);
 
-fs.writeFileSync(outFileName, outMinifiedSource.code + '\n' + requireExports);
+fs.writeFileSync(outFileName, wrap(outMinifiedSource.code, requireExports));
 console.log('Done; see ' + outFileName);
