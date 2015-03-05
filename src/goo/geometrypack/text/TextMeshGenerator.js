@@ -362,7 +362,7 @@ define([
 	 * Builds meshes from a font
 	 * @param {string} text
 	 * @param font
-	 * @param {object} [options]
+	 * @param {Object} [options]
 	 * @param {number} [options.extrusion=4] Extrusion amount
 	 * @param {number} [options.fontSize=48]
 	 * @param {number} [options.stepLength=1] Lower values result in a more detailed mesh

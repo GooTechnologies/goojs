@@ -9,13 +9,16 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * Stores a font and handles the text mesh on an entity
+	 * Depends on opentype.js
+	 */
 	function TextComponent() {
 		Component.apply(this, arguments);
 
 		this.type = 'TextComponent';
 
-		this.font = null;
-		this.options = {};
+		this._font = null;
 
 		this._entity = null;
 	}
@@ -26,26 +29,43 @@ define([
 	TextComponent.type = 'TextComponent';
 
 	TextComponent.prototype.attached = function (entity) {
-		this.entity = entity;
+		this._entity = entity;
 	};
 
-	TextComponent.prototype.detached = function (entity) {
-		this.entity.clearComponent('MeshDataComponent');
-		this.entity = null;
+	TextComponent.prototype.detached = function (/*entity*/) {
+		this._entity.clearComponent('MeshDataComponent');
+		this._entity = null;
 	};
 
+	/**
+	 * Set the font of this component
+	 * @param font The font loaded through opentype.js
+	 * @returns {TextComponent} Returns self
+	 */
 	TextComponent.prototype.setFont = function (font) {
-		this.font = font;
+		this._font = font;
+		return this;
 	};
 
+	/**
+	 * Set the text to generate the mesh for; recomputes the mesh
+	 * @param {string} text
+	 * @param {Object} [options]
+	 * @param {number} [options.extrusion=4] Extrusion amount
+	 * @param {number} [options.fontSize=48]
+	 * @param {number} [options.stepLength=1] Lower values result in a more detailed mesh
+	 * @returns {TextComponent} Returns self
+	 */
 	TextComponent.prototype.setText = function (text, options) {
-		this.entity.clearComponent('MeshDataComponent');
+		this._entity.clearComponent('MeshDataComponent');
 
 		// only short texts that can fit in one mesh for now
-		var meshData = TextMeshGenerator.meshesForText(text, this.font, options)[0];
+		var meshData = TextMeshGenerator.meshesForText(text, this._font, options)[0];
 
 		var meshDataComponent = new MeshDataComponent(meshData);
-		this.entity.setComponent(meshDataComponent);
+		this._entity.setComponent(meshDataComponent);
+
+		return this;
 	};
 
 	return TextComponent;

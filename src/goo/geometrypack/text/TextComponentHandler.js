@@ -28,7 +28,7 @@ define([
 	ComponentHandler._registerClass('text', TextComponentHandler);
 
 	/**
-	 * Create a quadcomponent object.
+	 * Create a TextComponent object.
 	 * @returns {TextComponent} the created component object
 	 * @private
 	 */
@@ -62,19 +62,27 @@ define([
 			// load font
 
 			return PromiseUtil.createPromise(function (resolve, reject) {
-				opentype.load(config.fontURL, function (err, font) {
+				opentype.load(config.font.fontRef, function (err, font) {
 					if (err) {
-						console.error();
+						console.error(err);
 						resolve(component);
 						return;
 					}
 
+					var FONT_SIZE = 1;
+
+					// smoothness is between 0 and 1
+					// with 0 looking rough and choppy and 1 looking as smooth as possible
+					var computeStepLength = function (fontSize, smoothness) {
+						return ((1 - smoothness) * 0.08 + 0.01) * fontSize;
+					};
+
 					component.setFont(font);
 					component.setText(config.text, {
 						extrusion: config.extrusion,
-						fontSize: config.fontSize,
-						stepLength: config.stepLength,
-						simplifyPaths: config.simplifyPaths
+						fontSize: FONT_SIZE,
+						stepLength: computeStepLength(FONT_SIZE, config.smoothness),
+						simplifyPaths: true
 					});
 
 					resolve(component);
