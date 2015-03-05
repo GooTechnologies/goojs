@@ -77,7 +77,7 @@ define(function() {
 	/**
 	 * Test if there are any listeners bound to a certain event type
 	 * @param {string} type Type of event to test for
-	 * @return {boolean} If there are any listeners of specified type on this target
+	 * @returns {boolean} If there are any listeners of specified type on this target
 	 */
 	EventTarget.prototype.has = function (type) {
 		return this._listenerMap.has(type);
@@ -86,7 +86,7 @@ define(function() {
 	/**
 	 * Get all listeners for a certain type
 	 * @param {string} type Type of event to get listeners for
-	 * @return {} All listeners of specified type attached to this target
+	 * @returns {} All listeners of specified type attached to this target
 	 */
 	EventTarget.prototype.get = function (type) {
 		return this._listenerMap.get(type);
