@@ -46,6 +46,8 @@ require([
 	var invisibleTimer = 0;
 	var invisibleTime = 0.5;
 
+	var presetColors = [lineRenderSystem.WHITE, lineRenderSystem.RED, lineRenderSystem.GREEN, lineRenderSystem.BLUE, lineRenderSystem.AQUA, lineRenderSystem.MAGENTA, lineRenderSystem.YELLOW, lineRenderSystem.BLACK];
+
 	var update = function () {
 
 		invisibleTimer += world.tpf;
@@ -61,29 +63,7 @@ require([
 				continue;
 			}
 
-			var color = lineRenderSystem.WHITE;
-
-			if (i === 1) {
-				color = lineRenderSystem.RED;
-			}
-			else if (i === 2) {
-				color = lineRenderSystem.GREEN;
-			}
-			else if (i === 3) {
-				color = lineRenderSystem.BLUE;
-			}
-			else if (i === 4) {
-				color = lineRenderSystem.AQUA;
-			}
-			else if (i === 5) {
-				color = lineRenderSystem.MAGENTA;
-			}
-			else if (i === 6) {
-				color = lineRenderSystem.YELLOW;
-			}
-			else if (i === 7) {
-				color = lineRenderSystem.BLACK;
-			}
+			var color = presetColors[i];
 
 			coloredLinesStart.setDirect(-3.5 * lineSpacing + i * lineSpacing, -0.5, 0);
 			coloredLinesEnd.setVector(coloredLinesStart).addDirect(0, 1, 0);
