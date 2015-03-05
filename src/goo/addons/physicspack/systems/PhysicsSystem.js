@@ -1,7 +1,7 @@
 define([
 	'goo/addons/physicspack/systems/AbstractPhysicsSystem',
 	'goo/addons/physicspack/RaycastResult',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'goo/entities/EntityUtils',
@@ -10,7 +10,7 @@ define([
 function (
 	AbstractPhysicsSystem,
 	RaycastResult,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	Vector3,
 	Quaternion,
 	EntityUtils,
@@ -79,7 +79,7 @@ function (
 		this._inContactLastStepA = [];
 		this._inContactLastStepB = [];
 
-		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidbodyComponent']);
+		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 	}
 	PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
 	PhysicsSystem.prototype.constructor = PhysicsSystem;
@@ -357,7 +357,7 @@ function (
 			material.friction = entity.colliderComponent.material.friction;
 			material.restitution = entity.colliderComponent.material.restitution;
 		}
-		var shape = RigidbodyComponent.getCannonShape(entity.colliderComponent.collider);
+		var shape = RigidBodyComponent.getCannonShape(entity.colliderComponent.collider);
 		shape.material = material;
 		var body = new CANNON.Body({
 			mass: 0,

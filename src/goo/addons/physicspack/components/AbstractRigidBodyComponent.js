@@ -20,7 +20,7 @@ function (
 	 * Base class for rigid bodies.
 	 * @extends Component
 	 */
-	function AbstractRigidbodyComponent() {
+	function AbstractRigidBodyComponent() {
 		Component.call(this, arguments);
 
 		/**
@@ -35,20 +35,20 @@ function (
 		 */
 		this._dirty = true;
 	}
-	AbstractRigidbodyComponent.prototype = Object.create(Component.prototype);
-	AbstractRigidbodyComponent.prototype.constructor = AbstractRigidbodyComponent;
+	AbstractRigidBodyComponent.prototype = Object.create(Component.prototype);
+	AbstractRigidBodyComponent.prototype.constructor = AbstractRigidBodyComponent;
 
 	/**
 	 * @param {Joint} joint
 	 */
-	AbstractRigidbodyComponent.prototype.addJoint = function (joint) {
+	AbstractRigidBodyComponent.prototype.addJoint = function (joint) {
 		this.joints.push(joint);
 	};
 
 	/**
 	 * @param {Joint} joint
 	 */
-	AbstractRigidbodyComponent.prototype.removeJoint = function (joint) {
+	AbstractRigidBodyComponent.prototype.removeJoint = function (joint) {
 		var joints = this.joints;
 		var index = joints.indexOf(joint);
 		if (index !== -1) {
@@ -57,7 +57,7 @@ function (
 		}
 	};
 
-	AbstractRigidbodyComponent.initializedEvent = {
+	AbstractRigidBodyComponent.initializedEvent = {
 		entity: null
 	};
 
@@ -65,8 +65,8 @@ function (
 	 * Should be called by subclasses when initializing the physics engine body.
 	 * @param  {Entity} entity
 	 */
-	AbstractRigidbodyComponent.prototype.emitInitialized = function (entity) {
-		var event = AbstractRigidbodyComponent.initializedEvent;
+	AbstractRigidBodyComponent.prototype.emitInitialized = function (entity) {
+		var event = AbstractRigidBodyComponent.initializedEvent;
 		event.entity = entity;
 		SystemBus.emit('goo.physics.initialized', event);
 		event.entity = null; // Remove reference, don't need it any more
@@ -76,12 +76,12 @@ function (
 	 * Creates the physics engine rigid body and adds it to the simulation
 	 * @virtual
 	 */
-	AbstractRigidbodyComponent.prototype.initialize = function () {};
+	AbstractRigidBodyComponent.prototype.initialize = function () {};
 
 	/**
 	 * @virtual
 	 */
-	AbstractRigidbodyComponent.prototype.destroy = function () {};
+	AbstractRigidBodyComponent.prototype.destroy = function () {};
 
 	/**
 	 * Creates a joint in the physics engine.
@@ -90,14 +90,14 @@ function (
 	 * @param {Entity} entity
 	 * @param {System} system
 	 */
-	AbstractRigidbodyComponent.prototype.initializeJoint = function (/*joint, entity, system*/) {};
+	AbstractRigidBodyComponent.prototype.initializeJoint = function (/*joint, entity, system*/) {};
 
 	/**
 	 * Removes a joint from the physics engine.
 	 * @virtual
 	 * @param {Joint} joint
 	 */
-	AbstractRigidbodyComponent.prototype.destroyJoint = function (/*joint*/) {};
+	AbstractRigidBodyComponent.prototype.destroyJoint = function (/*joint*/) {};
 
 	var invBodyTransform = new Transform();
 	var trans = new Transform();
@@ -108,8 +108,8 @@ function (
 	 * @param  {Entity}   entity
 	 * @param  {Function} callback Will be called with colliderEntity, collider, localPosition and localQuaternion as arguments
 	 */
-	AbstractRigidbodyComponent.prototype.traverseColliders = function (entity, callback) {
-		// Needed for getting the Rigidbody-local transform of each collider
+	AbstractRigidBodyComponent.prototype.traverseColliders = function (entity, callback) {
+		// Needed for getting the RigidBody-local transform of each collider
 		entity.transformComponent.updateTransform();
 		entity.transformComponent.updateWorldTransform();
 
@@ -156,13 +156,13 @@ function (
 	 * @virtual
 	 * @param entity
 	 */
-	AbstractRigidbodyComponent.prototype.attached = function (/*entity*/) {};
+	AbstractRigidBodyComponent.prototype.attached = function (/*entity*/) {};
 
 	/**
 	 * @private
 	 * @param entity
 	 */
-	AbstractRigidbodyComponent.prototype.detached = function (/*entity*/) {
+	AbstractRigidBodyComponent.prototype.detached = function (/*entity*/) {
 
 		// Destroy joints
 		var joints = this.joints;
@@ -179,5 +179,5 @@ function (
 		this._system = null;
 	};
 
-	return AbstractRigidbodyComponent;
+	return AbstractRigidBodyComponent;
 });

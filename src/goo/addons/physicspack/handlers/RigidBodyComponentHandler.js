@@ -1,6 +1,6 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/util/ShapeCreatorMemoized',
 	'goo/util/rsvp',
@@ -8,7 +8,7 @@ define([
 	'goo/math/Vector3'
 ], function (
 	ComponentHandler,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	BoundingBox,
 	ShapeCreatorMemoized,
 	RSVP,
@@ -22,14 +22,14 @@ define([
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
-	function RigidbodyComponentHandler() {
+	function RigidBodyComponentHandler() {
 		ComponentHandler.apply(this, arguments);
-		this._type = 'RigidbodyComponent';
+		this._type = 'RigidBodyComponent';
 	}
 
-	RigidbodyComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	RigidbodyComponentHandler.prototype.constructor = RigidbodyComponentHandler;
-	ComponentHandler._registerClass('rigidBody', RigidbodyComponentHandler);
+	RigidBodyComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	RigidBodyComponentHandler.prototype.constructor = RigidBodyComponentHandler;
+	ComponentHandler._registerClass('rigidBody', RigidBodyComponentHandler);
 
 	/**
 	 * Prepare component. Set defaults on config here.
@@ -37,7 +37,7 @@ define([
 	 * @returns {object}
 	 * @private
 	 */
-	RigidbodyComponentHandler.prototype._prepare = function (config) {
+	RigidBodyComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
 			mass: 1,
 			isKinematic: false,
@@ -50,19 +50,19 @@ define([
 
 	/**
 	 * Create a rigid body component.
-	 * @returns {RigidbodyComponent} the created component object
+	 * @returns {RigidBodyComponent} the created component object
 	 * @private
 	 */
-	RigidbodyComponentHandler.prototype._create = function () {
-		return new RigidbodyComponent();
+	RigidBodyComponentHandler.prototype._create = function () {
+		return new RigidBodyComponent();
 	};
 
 	/**
 	 * Removes the rigid body component
 	 * @param {string} ref
 	 */
-	RigidbodyComponentHandler.prototype._remove = function (entity) {
-		entity.clearComponent('RigidbodyComponent');
+	RigidBodyComponentHandler.prototype._remove = function (entity) {
+		entity.clearComponent('RigidBodyComponent');
 	};
 
 	/**
@@ -72,7 +72,7 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	RigidbodyComponentHandler.prototype.update = function (entity, config, options) {
+	RigidBodyComponentHandler.prototype.update = function (entity, config, options) {
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
@@ -90,5 +90,5 @@ define([
 		});
 	};
 
-	return RigidbodyComponentHandler;
+	return RigidBodyComponentHandler;
 });

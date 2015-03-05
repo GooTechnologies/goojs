@@ -1,5 +1,5 @@
 define([
-	'goo/addons/physicspack/components/AbstractRigidbodyComponent',
+	'goo/addons/physicspack/components/AbstractRigidBodyComponent',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
 	'goo/math/Transform',
@@ -12,7 +12,7 @@ define([
 	'goo/addons/physicspack/joints/HingeJoint'
 ],
 function (
-	AbstractRigidbodyComponent,
+	AbstractRigidBodyComponent,
 	Vector3,
 	Quaternion,
 	Transform,
@@ -40,13 +40,13 @@ function (
 	 * @param {Vector3} [settings.angularVelocity]
 	 * @param {number} [settings.linearDamping=0.01]
 	 * @param {number} [settings.angularDamping=0.05]
-	 * @extends AbstractRigidbodyComponent
+	 * @extends AbstractRigidBodyComponent
 	 */
-	function RigidbodyComponent(settings) {
+	function RigidBodyComponent(settings) {
 		settings = settings || {};
-		AbstractRigidbodyComponent.apply(this, arguments);
+		AbstractRigidBodyComponent.apply(this, arguments);
 
-		this.type = 'RigidbodyComponent';
+		this.type = 'RigidBodyComponent';
 
 		/**
 		 * @type {CANNON.Body}
@@ -130,22 +130,22 @@ function (
 		 */
 		this._colliderEntities = [];
 	}
-	RigidbodyComponent.prototype = Object.create(AbstractRigidbodyComponent.prototype);
-	RigidbodyComponent.prototype.constructor = RigidbodyComponent;
-	RigidbodyComponent.type = 'RigidbodyComponent';
+	RigidBodyComponent.prototype = Object.create(AbstractRigidBodyComponent.prototype);
+	RigidBodyComponent.prototype.constructor = RigidBodyComponent;
+	RigidBodyComponent.type = 'RigidBodyComponent';
 
 	/**
 	 * Cannon.js uses ConvexPolyhedron shapes for collision checking sometimes (for example, for cylinders). Therefore it needs a number of segments to use.
 	 * @type {Number}
 	 */
-	RigidbodyComponent.numCylinderSegments = 10;
+	RigidBodyComponent.numCylinderSegments = 10;
 
 	/**
 	 * Get the world transform from the entity and set on the body
 	 * @private
 	 * @param {Entity} entity
 	 */
-	RigidbodyComponent.prototype.setTransformFromEntity = function (entity) {
+	RigidBodyComponent.prototype.setTransformFromEntity = function (entity) {
 		var transform = entity.transformComponent.worldTransform;
 		var body = this.cannonBody;
 		body.position.copy(transform.translation);
@@ -156,7 +156,7 @@ function (
 	/**
 	 * @param {Vector3} force
 	 */
-	RigidbodyComponent.prototype.applyForce = function (force) {
+	RigidBodyComponent.prototype.applyForce = function (force) {
 		tmpCannonVec.copy(force);
 		tmpCannonVec2.set(0, 0, 0);
 		this.cannonBody.applyForce(tmpCannonVec, tmpCannonVec2);
@@ -165,7 +165,7 @@ function (
 	/**
 	 * @param {Vector3} velocity
 	 */
-	RigidbodyComponent.prototype.setVelocity = function (velocity) {
+	RigidBodyComponent.prototype.setVelocity = function (velocity) {
 		if (this.cannonBody) {
 			this.cannonBody.velocity.copy(velocity);
 		}
@@ -175,7 +175,7 @@ function (
 	/**
 	 * @param {Vector3} targetVector
 	 */
-	RigidbodyComponent.prototype.getVelocity = function (targetVector) {
+	RigidBodyComponent.prototype.getVelocity = function (targetVector) {
 		var body = this.cannonBody;
 		var velocity = body ? body.velocity : this._velocity;
 		targetVector.setDirect(velocity.x, velocity.y, velocity.z);
@@ -184,7 +184,7 @@ function (
 	/**
 	 * @param {Vector3} angularVelocity
 	 */
-	RigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
+	RigidBodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
 		if (this.cannonBody) {
 			this.cannonBody.angularVelocity.copy(angularVelocity);
 		}
@@ -194,7 +194,7 @@ function (
 	/**
 	 * @param {Vector3} targetVector
 	 */
-	RigidbodyComponent.prototype.getAngularVelocity = function (targetVector) {
+	RigidBodyComponent.prototype.getAngularVelocity = function (targetVector) {
 		var body = this.cannonBody;
 		var angularVelocity = body ? body.angularVelocity : this._angularVelocity;
 		targetVector.setDirect(angularVelocity.x, angularVelocity.y, angularVelocity.z);
@@ -203,7 +203,7 @@ function (
 	/**
 	 * @param {Vector3} position
 	 */
-	RigidbodyComponent.prototype.setPosition = function (position) {
+	RigidBodyComponent.prototype.setPosition = function (position) {
 		if (this.cannonBody) {
 			this.cannonBody.position.copy(position);
 		}
@@ -212,7 +212,7 @@ function (
 	/**
 	 * @param {Vector3} targetVector
 	 */
-	RigidbodyComponent.prototype.getPosition = function (targetVector) {
+	RigidBodyComponent.prototype.getPosition = function (targetVector) {
 		var position = this.cannonBody.position;
 		targetVector.setDirect(position.x, position.y, position.z);
 	};
@@ -220,7 +220,7 @@ function (
 	/**
 	 * @param {Quaternion} quaternion
 	 */
-	RigidbodyComponent.prototype.setQuaternion = function (quaternion) {
+	RigidBodyComponent.prototype.setQuaternion = function (quaternion) {
 		if (this.cannonBody) {
 			this.cannonBody.quaternion.copy(quaternion);
 		}
@@ -229,7 +229,7 @@ function (
 	/**
 	 * @param {Quaternion} targetQuat
 	 */
-	RigidbodyComponent.prototype.getQuaternion = function (targetQuat) {
+	RigidBodyComponent.prototype.getQuaternion = function (targetQuat) {
 		if (this.cannonBody) {
 			var cannonQuaternion = this.cannonBody.quaternion;
 			targetQuat.setDirect(
@@ -241,10 +241,10 @@ function (
 		}
 	};
 
-	Object.defineProperties(RigidbodyComponent.prototype, {
+	Object.defineProperties(RigidBodyComponent.prototype, {
 
 		/**
-		 * @target-class RigidbodyComponent linearDamping member
+		 * @target-class RigidBodyComponent linearDamping member
 		 * @type {number}
 		 */
 		linearDamping: {
@@ -260,7 +260,7 @@ function (
 		},
 
 		/**
-		 * @target-class RigidbodyComponent angularDamping member
+		 * @target-class RigidBodyComponent angularDamping member
 		 * @type {number}
 		 */
 		angularDamping: {
@@ -276,7 +276,7 @@ function (
 		},
 
 		/**
-		 * @target-class RigidbodyComponent isKinematic member
+		 * @target-class RigidBodyComponent isKinematic member
 		 * @type {number}
 		 */
 		isKinematic: {
@@ -290,7 +290,7 @@ function (
 		},
 
 		/**
-		 * @target-class RigidbodyComponent sleepingThreshold member
+		 * @target-class RigidBodyComponent sleepingThreshold member
 		 * @type {number}
 		 */
 		sleepingThreshold: {
@@ -306,7 +306,7 @@ function (
 		},
 
 		/**
-		 * @target-class RigidbodyComponent mass member
+		 * @target-class RigidBodyComponent mass member
 		 * @type {number}
 		 */
 		mass: {
@@ -323,7 +323,7 @@ function (
 		},
 
 		/**
-		 * @target-class RigidbodyComponent sleepingTimeLimit member
+		 * @target-class RigidBodyComponent sleepingTimeLimit member
 		 * @type {number}
 		 */
 		sleepingTimeLimit: {
@@ -342,7 +342,7 @@ function (
 	/**
 	 * @private
 	 */
-	RigidbodyComponent.getCannonShape = function (collider) {
+	RigidBodyComponent.getCannonShape = function (collider) {
 		var shape;
 		if (collider instanceof BoxCollider) {
 			var halfExtents = new CANNON.Vec3();
@@ -357,7 +357,7 @@ function (
 				collider.radius,
 				collider.radius,
 				collider.height,
-				RigidbodyComponent.numCylinderSegments
+				RigidBodyComponent.numCylinderSegments
 			);
 			var quat = new CANNON.Quaternion();
 			quat.setFromAxisAngle(new Vector3(0, 0, 1), -Math.PI / 2);
@@ -383,7 +383,7 @@ function (
 	 * Removes the body from the physics world.
 	 * @private
 	 */
-	RigidbodyComponent.prototype.destroy = function () {
+	RigidBodyComponent.prototype.destroy = function () {
 		var body = this.cannonBody;
 		if (body) {
 			body.world.removeBody(body);
@@ -402,7 +402,7 @@ function (
 	/**
 	 * @private
 	 */
-	RigidbodyComponent.prototype.initialize = function () {
+	RigidBodyComponent.prototype.initialize = function () {
 		if (!this._dirty) {
 			return;
 		}
@@ -442,7 +442,7 @@ function (
 	/**
 	 * @private
 	 */
-	RigidbodyComponent.prototype.initializeJoint = function (joint) {
+	RigidBodyComponent.prototype.initializeJoint = function (joint) {
 		var bodyA = this.cannonBody;
 		var bodyB = joint.connectedEntity.rigidBodyComponent.cannonBody;
 		var constraint;
@@ -517,7 +517,7 @@ function (
 		}
 	};
 
-	RigidbodyComponent.prototype._updateDirtyColliders = function () {
+	RigidBodyComponent.prototype._updateDirtyColliders = function () {
 		var colliderEntities = this._colliderEntities;
 		for (var i = 0; i < colliderEntities.length; i++) {
 			var entity = colliderEntities[i];
@@ -542,7 +542,7 @@ function (
 	/**
 	 * @private
 	 */
-	RigidbodyComponent.prototype.destroyJoint = function (joint) {
+	RigidBodyComponent.prototype.destroyJoint = function (joint) {
 		var body = this.cannonBody;
 		if (body && joint.cannonJoint) {
 			body.world.removeConstraint(joint.cannonJoint);
@@ -553,13 +553,13 @@ function (
 	/**
 	 * @private
 	 */
-	RigidbodyComponent.prototype.addCollider = function (entity, position, quaternion) {
+	RigidBodyComponent.prototype.addCollider = function (entity, position, quaternion) {
 		var body = this.cannonBody;
 		var cc = entity.colliderComponent;
 		cc.updateWorldCollider(true);
 		var collider = cc.worldCollider;
 
-		var cannonShape = collider.cannonShape = RigidbodyComponent.getCannonShape(collider);
+		var cannonShape = collider.cannonShape = RigidBodyComponent.getCannonShape(collider);
 
 		// Create a material for the shape
 		var mat = new CANNON.Material();
@@ -584,10 +584,10 @@ function (
 	};
 
 	/**
-	 * @returns RigidbodyComponent
+	 * @returns RigidBodyComponent
 	 */
-	RigidbodyComponent.prototype.clone = function () {
-		return new RigidbodyComponent({
+	RigidBodyComponent.prototype.clone = function () {
+		return new RigidBodyComponent({
 			isKinematic: this._isKinematic,
 			mass: this._mass,
 			velocity: this._velocity,
@@ -603,12 +603,12 @@ function (
 	 * @private
 	 * @param entity
 	 */
-	RigidbodyComponent.prototype.attached = function (entity) {
+	RigidBodyComponent.prototype.attached = function (entity) {
 		this._entity = entity;
 		this._system = entity._world.getSystem('PhysicsSystem');
 	};
 
-	RigidbodyComponent.prototype.api = {};
+	RigidBodyComponent.prototype.api = {};
 
-	return RigidbodyComponent;
+	return RigidBodyComponent;
 });

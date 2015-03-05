@@ -4,7 +4,7 @@ define([
 	'goo/addons/physicspack/PhysicsMaterial',
 	'goo/math/Vector3',
 	'goo/math/Quaternion',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/BoxCollider',
@@ -17,7 +17,7 @@ define([
 	PhysicsMaterial,
 	Vector3,
 	Quaternion,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	ColliderComponent,
 	SphereCollider,
 	BoxCollider,
@@ -29,7 +29,7 @@ define([
 
 	/* global CANNON */
 
-	describe('RigidbodyComponent', function () {
+	describe('RigidBodyComponent', function () {
 		var world, system, rigidBodyComponent, colliderComponent, entity;
 
 		beforeEach(function () {
@@ -40,7 +40,7 @@ define([
 			system.setGravity(new Vector3());
 			world.setSystem(system);
 
-			rigidBodyComponent = new RigidbodyComponent({ mass: 1 });
+			rigidBodyComponent = new RigidBodyComponent({ mass: 1 });
 			colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -116,7 +116,7 @@ define([
 			var c = new BoxCollider({
 				halfExtents: new Vector3(1, 2, 3)
 			});
-			var cannonShape = RigidbodyComponent.getCannonShape(c);
+			var cannonShape = RigidBodyComponent.getCannonShape(c);
 			expect(cannonShape).toEqual(new CANNON.Box(new CANNON.Vec3(1, 2, 3)));
 		});
 
@@ -149,7 +149,7 @@ define([
 			rigidBodyComponent.addJoint(joint);
 			world.process();
 
-			entity.clearComponent('RigidbodyComponent');
+			entity.clearComponent('RigidBodyComponent');
 
 			world.process();
 
@@ -190,7 +190,7 @@ define([
 
 		it('emits initialized', function () {
 
-			rigidBodyComponent = new RigidbodyComponent({ mass: 1 });
+			rigidBodyComponent = new RigidBodyComponent({ mass: 1 });
 			colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -211,7 +211,7 @@ define([
 		});
 
 		it('can be initialized manually', function () {
-			rigidBodyComponent = new RigidbodyComponent({ mass: 1 });
+			rigidBodyComponent = new RigidBodyComponent({ mass: 1 });
 			colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -230,7 +230,7 @@ define([
 		});
 
 		it('is initialized properly on world.processEntityChanges', function () {
-			rigidBodyComponent = new RigidbodyComponent({ mass: 1 });
+			rigidBodyComponent = new RigidBodyComponent({ mass: 1 });
 			colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -299,7 +299,7 @@ define([
 		});
 
 		it('can set materials per collider', function () {
-			var rigidBodyComponent = new RigidbodyComponent({ mass: 1 });
+			var rigidBodyComponent = new RigidBodyComponent({ mass: 1 });
 			var colliderComponent = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 }),
 				material: new PhysicsMaterial({ friction: 0.7, restitution: 0.8 })

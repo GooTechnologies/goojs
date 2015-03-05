@@ -159,7 +159,7 @@ define([
 				var bodies = [];
 				var physicsEntities = env.world.by.system("CannonSystem").toArray();
 				for(var i=0; i<physicsEntities.length; i++){
-					var b = physicsEntities[i].cannonRigidbodyComponent.body;
+					var b = physicsEntities[i].cannonRigidBodyComponent.body;
 					if(b && b.shape instanceof CANNON.Box && b.motionstate === CANNON.Body.DYNAMIC){ // Cannon only supports convex with ray intersection
 						bodies.push(b);
 					}

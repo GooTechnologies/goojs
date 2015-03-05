@@ -10,12 +10,12 @@ define([
 	/* global CANNON */
 
 	/**
-	 * Distance joint. Add to an entity with a {@link CannonRigidbodyComponent} and physically link it to another entity!<br>
+	 * Distance joint. Add to an entity with a {@link CannonRigidBodyComponent} and physically link it to another entity!<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @extends Component
 	 * @param {object} [settings]
 	 * @param {number} [settings.distance=1]
-	 * @param {CannonRigidbodyComponent} settings.connectedBody
+	 * @param {CannonRigidBodyComponent} settings.connectedBody
 	 */
 	function CannonDistanceJointComponent(settings) {
 		Component.apply(this, arguments);
@@ -37,7 +37,7 @@ define([
 	CannonDistanceJointComponent.constructor = CannonDistanceJointComponent;
 
 	CannonDistanceJointComponent.prototype.createConstraint = function (entity) {
-		var bodyA = entity.cannonRigidbodyComponent.body;
+		var bodyA = entity.cannonRigidBodyComponent.body;
 		var bodyB = this.connectedBody.body;
 		this.cannonConstraint = new CANNON.DistanceConstraint(bodyA, bodyB, this.distance);
 		return this.cannonConstraint;

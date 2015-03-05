@@ -15,7 +15,7 @@ require([
 	'goo/math/Quaternion',
 	'goo/entities/components/TransformComponent',
 	'goo/addons/cannonpack/CannonSystem',
-	'goo/addons/cannonpack/CannonRigidbodyComponent',
+	'goo/addons/cannonpack/CannonRigidBodyComponent',
 	'goo/addons/cannonpack/CannonSphereColliderComponent',
 	'goo/addons/cannonpack/CannonBoxColliderComponent',
 	'goo/addons/cannonpack/CannonTerrainColliderComponent',
@@ -40,7 +40,7 @@ require([
 	Quaternion,
 	TransformComponent,
 	CannonSystem,
-	CannonRigidbodyComponent,
+	CannonRigidBodyComponent,
 	CannonSphereColliderComponent,
 	CannonBoxColliderComponent,
 	CannonTerrainColliderComponent,
@@ -71,7 +71,7 @@ require([
 		var radius = 1.5;
 		var meshData = new Sphere(8, 8, radius);
 		var boxEntity = goo.world.createEntity(meshData, material, [x, y, z]).addToWorld();
-		boxEntity.setComponent(new CannonRigidbodyComponent({
+		boxEntity.setComponent(new CannonRigidBodyComponent({
 			mass: 1
 		}));
 		boxEntity.setComponent(new CannonSphereColliderComponent({ radius: radius }));
@@ -83,7 +83,7 @@ require([
 		var halfExtents = new Vector3(5, 0.5, 2);
 		var meshData = new Box(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2);
 		var boxEntity = goo.world.createEntity(meshData, material, [x, y, z]).addToWorld();
-		boxEntity.setComponent(new CannonRigidbodyComponent({
+		boxEntity.setComponent(new CannonRigidBodyComponent({
 			mass: 1
 		}));
 		boxEntity.setComponent(new CannonBoxColliderComponent({ halfExtents: halfExtents }));
@@ -127,7 +127,7 @@ require([
 		var material = V.getColoredMaterial();
 
 		entity = goo.world.createEntity([0, -2, 0]).addToWorld();
-		entity.setComponent(new CannonRigidbodyComponent({
+		entity.setComponent(new CannonRigidBodyComponent({
 			mass: 0 // static
 		}));
 
@@ -161,7 +161,7 @@ require([
 	// 	var matrix = getMatrix();
 	// 	var collider = colliderEntity.colliderComponent.collider;
 	// 	collider.setFromHeightMap(matrix);
-	// 	entity.ammoWorkerRigidbodyComponent.updateCollider(colliderEntity);
+	// 	entity.ammoWorkerRigidBodyComponent.updateCollider(colliderEntity);
 	// 	var meshData = Surface.createFromHeightMap(matrix);
 	// 	entity.meshDataComponent.meshData = meshData;
 	// }
@@ -185,7 +185,7 @@ require([
         world.addContactMaterial(wheelGroundContactMaterial);
 
         var centerOfMassAdjust = new CANNON.Vec3(0, 0, 0);
-        var chassisBody = chassisEntity.cannonRigidbodyComponent.body;
+        var chassisBody = chassisEntity.cannonRigidBodyComponent.body;
 
         // Create the vehicle
         var vehicle = new CANNON.RigidVehicle({
@@ -197,7 +197,7 @@ require([
         var down = new CANNON.Vec3(0, -1, 0);
 
         /*
-        var wheelBody = wheelEntities[0].cannonRigidbodyComponent.body;
+        var wheelBody = wheelEntities[0].cannonRigidBodyComponent.body;
         vehicle.addWheel({
             body: wheelBody,
             position: new CANNON.Vec3(5, 0, axisWidth / 2).vadd(centerOfMassAdjust),
@@ -205,7 +205,7 @@ require([
             direction: down
         });
 
-        var wheelBody = wheelEntities[1].cannonRigidbodyComponent.body;
+        var wheelBody = wheelEntities[1].cannonRigidBodyComponent.body;
         vehicle.addWheel({
             body: wheelBody,
             position: new CANNON.Vec3(5, 0, -axisWidth / 2).vadd(centerOfMassAdjust),
@@ -213,7 +213,7 @@ require([
             direction: down
         });
 
-        var wheelBody = wheelEntities[2].cannonRigidbodyComponent.body;
+        var wheelBody = wheelEntities[2].cannonRigidBodyComponent.body;
         vehicle.addWheel({
             body: wheelBody,
             position: new CANNON.Vec3(-5, 0, axisWidth / 2).vadd(centerOfMassAdjust),
@@ -221,7 +221,7 @@ require([
             direction: down
         });
 
-        var wheelBody = wheelEntities[3].cannonRigidbodyComponent.body;
+        var wheelBody = wheelEntities[3].cannonRigidBodyComponent.body;
         vehicle.addWheel({
             body: wheelBody,
             position: new CANNON.Vec3(-5, 0, -axisWidth / 2).vadd(centerOfMassAdjust),

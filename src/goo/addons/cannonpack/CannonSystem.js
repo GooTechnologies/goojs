@@ -20,7 +20,7 @@ define([
 	/* global CANNON, performance */
 
 	/**
-	 * Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidbodyComponent}.
+	 * Cannon.js physics system. Depends on the global CANNON object, so load cannon.js using a script tag before using this system. See also {@link CannonRigidBodyComponent}.
 	 * @extends System
 	 * @param [Object] [settings]
 	 * @param {number} [settings.stepFrequency=60]
@@ -35,7 +35,7 @@ define([
 	 * goo.world.setSystem(cannonSystem);
 	 */
 	function CannonSystem(settings) {
-		System.call(this, 'CannonSystem', ['CannonRigidbodyComponent', 'TransformComponent']);
+		System.call(this, 'CannonSystem', ['CannonRigidBodyComponent', 'TransformComponent']);
 
 		settings = settings || {};
 
@@ -66,8 +66,8 @@ define([
 			// this.deleted(entity);
 			// this.inserted(entity);
 
-			if (entity.cannonRigidbodyComponent.added) {
-				var body = entity.cannonRigidbodyComponent.body;
+			if (entity.cannonRigidBodyComponent.added) {
+				var body = entity.cannonRigidBodyComponent.body;
 				var p = entity.transformComponent.worldTransform.translation;
 				var q = new Quaternion();
 				q.fromRotationMatrix(entity.transformComponent.worldTransform.rotation);
@@ -81,12 +81,12 @@ define([
 
 
 	CannonSystem.prototype.inserted = function (entity) {
-		var rbComponent = entity.cannonRigidbodyComponent;
+		var rbComponent = entity.cannonRigidBodyComponent;
 		rbComponent.body = null;
 	};
 
 	CannonSystem.prototype.deleted = function (entity) {
-		var rbComponent = entity.cannonRigidbodyComponent;
+		var rbComponent = entity.cannonRigidBodyComponent;
 
 		if (rbComponent && rbComponent.body) {
 			// TODO: remove joints?
@@ -102,7 +102,7 @@ define([
 		// Add unadded entities
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			var rbComponent = entity.cannonRigidbodyComponent;
+			var rbComponent = entity.cannonRigidBodyComponent;
 			if (rbComponent && rbComponent.added) {
 				continue;
 			}
@@ -115,7 +115,7 @@ define([
 			rbComponent.body = body;
 			rbComponent.addShapesToBody(entity);
 			if (!body.shapes.length) {
-				entity.clearComponent('CannonRigidbodyComponent');
+				entity.clearComponent('CannonRigidBodyComponent');
 				continue;
 			}
 
@@ -158,7 +158,7 @@ define([
 		// Update positions of entities from the physics data
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
-			var cannonComponent = entity.cannonRigidbodyComponent;
+			var cannonComponent = entity.cannonRigidBodyComponent;
 			if (!cannonComponent) {
 				continue;
 			}

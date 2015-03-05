@@ -14,13 +14,13 @@ define([
 	'goo/addons/physicspack/joints/PhysicsJoint',
 
 	'goo/addons/physicspack/systems/AbstractPhysicsSystem',
-	'goo/addons/physicspack/components/AbstractRigidbodyComponent',
+	'goo/addons/physicspack/components/AbstractRigidBodyComponent',
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/systems/ColliderSystem',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/RaycastResult',
 	'goo/addons/physicspack/PhysicsMaterial',
-	'goo/addons/physicspack/components/RigidbodyComponent'
+	'goo/addons/physicspack/components/RigidBodyComponent'
 
 ], function (Scripts) {
 	'use strict';
@@ -40,13 +40,13 @@ define([
 		'goo/addons/physicspack/joints/PhysicsJoint',
 
 		'goo/addons/physicspack/systems/AbstractPhysicsSystem',
-		'goo/addons/physicspack/components/AbstractRigidbodyComponent',
+		'goo/addons/physicspack/components/AbstractRigidBodyComponent',
 		'goo/addons/physicspack/components/ColliderComponent',
 		'goo/addons/physicspack/systems/ColliderSystem',
 		'goo/addons/physicspack/systems/PhysicsSystem',
 		'goo/addons/physicspack/RaycastResult',
 		'goo/addons/physicspack/PhysicsMaterial',
-		'goo/addons/physicspack/components/RigidbodyComponent'
+		'goo/addons/physicspack/components/RigidBodyComponent'
 	];
 
 	for (var i = 1; i < defines.length; i++) {

@@ -1,21 +1,21 @@
 define([
 	'goo/entities/World',
-	'goo/addons/physicspack/components/RigidbodyComponent',
-	'goo/addons/physicspack/handlers/RigidbodyComponentHandler',
+	'goo/addons/physicspack/components/RigidBodyComponent',
+	'goo/addons/physicspack/handlers/RigidBodyComponentHandler',
 	'goo/loaders/DynamicLoader',
 	'test/loaders/Configs',
 	'goo/math/Vector3'
 ], function (
 	World,
-	RigidbodyComponent,
-	RigidbodyComponentHandler,
+	RigidBodyComponent,
+	RigidBodyComponentHandler,
 	DynamicLoader,
 	Configs,
 	Vector3
 ) {
 	'use strict';
 
-	describe('RigidbodyComponentHandler', function () {
+	describe('RigidBodyComponentHandler', function () {
 		var loader;
 
 		beforeEach(function () {
@@ -36,7 +36,7 @@ define([
 
 			loader.preload(Configs.get());
 			loader.load(config.id).then(function (entity) {
-				expect(entity.rigidBodyComponent).toEqual(jasmine.any(RigidbodyComponent));
+				expect(entity.rigidBodyComponent).toEqual(jasmine.any(RigidBodyComponent));
 
 				var velocity = new Vector3();
 				entity.rigidBodyComponent.getVelocity(velocity);

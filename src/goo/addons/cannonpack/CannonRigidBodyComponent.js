@@ -39,11 +39,11 @@ define([
 	 * });
 	 * entity.setComponent(boxColliderComponent);
 	 */
-	function CannonRigidbodyComponent(settings) {
+	function CannonRigidBodyComponent(settings) {
 		Component.apply(this, arguments);
 
 		settings = settings || {};
-		this.type = 'CannonRigidbodyComponent';
+		this.type = 'CannonRigidBodyComponent';
 
 		_.defaults(settings, {
 			mass : 1,
@@ -59,22 +59,22 @@ define([
 		this.centerOfMassOffset = new Vector3();
 	}
 
-	CannonRigidbodyComponent.prototype = Object.create(Component.prototype);
-	CannonRigidbodyComponent.constructor = CannonRigidbodyComponent;
+	CannonRigidBodyComponent.prototype = Object.create(Component.prototype);
+	CannonRigidBodyComponent.constructor = CannonRigidBodyComponent;
 
-	CannonRigidbodyComponent.prototype.api = {
+	CannonRigidBodyComponent.prototype.api = {
 		setForce: function (force) {
-			CannonRigidbodyComponent.prototype.setForce.call(this.cannonRigidbodyComponent, force);
+			CannonRigidBodyComponent.prototype.setForce.call(this.cannonRigidBodyComponent, force);
 		},
 		setVelocity: function (velocity) {
-			CannonRigidbodyComponent.prototype.setVelocity.call(this.cannonRigidbodyComponent, velocity);
+			CannonRigidBodyComponent.prototype.setVelocity.call(this.cannonRigidBodyComponent, velocity);
 		},
 		// schteppe: needs to be separate from the transformcomponent setTranslation, since the transformcomponent data will get overridden by physics
 		setPosition: function (pos) {
-			CannonRigidbodyComponent.prototype.setPosition.call(this.cannonRigidbodyComponent, pos);
+			CannonRigidBodyComponent.prototype.setPosition.call(this.cannonRigidBodyComponent, pos);
 		},
 		setAngularVelocity: function (angularVelocity) {
-			CannonRigidbodyComponent.prototype.setAngularVelocity.call(this.cannonRigidbodyComponent, angularVelocity);
+			CannonRigidBodyComponent.prototype.setAngularVelocity.call(this.cannonRigidBodyComponent, angularVelocity);
 		}
 	};
 
@@ -84,7 +84,7 @@ define([
 	 * Set the force on the body
 	 * @param {Vector3} force
 	 */
-	CannonRigidbodyComponent.prototype.setForce = function (force) {
+	CannonRigidBodyComponent.prototype.setForce = function (force) {
 		this.body.force.set(force.x, force.y, force.z);
 	};
 
@@ -92,7 +92,7 @@ define([
 	 * Set the velocity on the body
 	 * @param {Vector3} velocity
 	 */
-	CannonRigidbodyComponent.prototype.setVelocity = function (velocity) {
+	CannonRigidBodyComponent.prototype.setVelocity = function (velocity) {
 		this.body.velocity.set(velocity.x, velocity.y, velocity.z);
 	};
 
@@ -100,7 +100,7 @@ define([
 	 * Set the body position.
 	 * @param {Vector3} position
 	 */
-	CannonRigidbodyComponent.prototype.setPosition = function (pos) {
+	CannonRigidBodyComponent.prototype.setPosition = function (pos) {
 		if (this.body) {
 			this.body.position.set(pos.x, pos.y, pos.z);
 		} else {
@@ -112,7 +112,7 @@ define([
 	 * Set the body angular velocity position.
 	 * @param {Vector3} angularVelocity
 	 */
-	CannonRigidbodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
+	CannonRigidBodyComponent.prototype.setAngularVelocity = function (angularVelocity) {
 		this.body.angularVelocity.set(angularVelocity.x, angularVelocity.y, angularVelocity.z);
 	};
 
@@ -120,17 +120,17 @@ define([
 	 * Get the collider component from an entity, if one exist.
 	 * @returns {mixed} Any of the collider types, or NULL if not found
 	 */
-	CannonRigidbodyComponent.getCollider = function (entity) {
+	CannonRigidBodyComponent.getCollider = function (entity) {
 		return entity.cannonBoxColliderComponent || entity.cannonPlaneColliderComponent || entity.cannonSphereColliderComponent || entity.cannonTerrainColliderComponent || entity.cannonCylinderColliderComponent || null;
 	};
 
-	CannonRigidbodyComponent.prototype.addShapesToBody = function (entity) {
-		var body = entity.cannonRigidbodyComponent.body;
+	CannonRigidBodyComponent.prototype.addShapesToBody = function (entity) {
+		var body = entity.cannonRigidBodyComponent.body;
 
-		var collider = CannonRigidbodyComponent.getCollider(entity);
+		var collider = CannonRigidBodyComponent.getCollider(entity);
 		if (!collider) {
 
-			// Needed for getting the Rigidbody-local transform of each collider
+			// Needed for getting the RigidBody-local transform of each collider
 			// entity.transformComponent.updateTransform();
 			// entity.transformComponent.updateWorldTransform();
 			var bodyTransform = entity.transformComponent.worldTransform;
@@ -142,7 +142,7 @@ define([
 			var cmOffset = this.centerOfMassOffset;
 
 			entity.traverse(function (childEntity) {
-				var collider = CannonRigidbodyComponent.getCollider(childEntity);
+				var collider = CannonRigidBodyComponent.getCollider(childEntity);
 				if (collider) {
 
 					// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
@@ -189,5 +189,5 @@ define([
 		}
 	};
 
-	return CannonRigidbodyComponent;
+	return CannonRigidBodyComponent;
 });

@@ -193,7 +193,7 @@ v0.11.4 --- 2014-10-14
 ----------------------
 
 ###Additions
- + .centerOfMassOffset method to CannonRigidbodyComponent
+ + .centerOfMassOffset method to CannonRigidBodyComponent
  + trigger option for CannonBoxCollider
  + .unbindTexture method to Renderer
  + TextureHandler can now take a *generateMipmaps* option
@@ -217,7 +217,7 @@ v0.11.3 --- 2014-09-10
 
 ###Changes
  * updated Cannon.js to bleeding edge dev version
- * CannonRigidbodyComponent.prototype.createShape changed name to addShapesToBody
+ * CannonRigidBodyComponent.prototype.createShape changed name to addShapesToBody
 
 ###Fixes
  * transform gizmos do not vary size with FOV
@@ -409,7 +409,7 @@ v0.9.6 --- 2014-04-15
 ---------------------
 
 ###Fixes
- * Renamed file "CannonRigidBodyComponent.js" to "CannonRigidbodyComponent.js"
+ * Renamed file "CannonRigidBodyComponent.js" to "CannonRigidBodyComponent.js"
  * Grabbing the global window.Ammo object after it is loaded
  * Stop forcing aspect ratio when loading camera
 
