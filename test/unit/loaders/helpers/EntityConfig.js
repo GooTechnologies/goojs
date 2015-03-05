@@ -160,7 +160,7 @@ define([
 			},
 			collider: function (type) {
 				return _.defaults({}, {
-					shape: type || 'sphere', // box, cylinder, plane, sphere
+					shape: type || 'box', // box, cylinder, plane, sphere
 					isTrigger: false,
 					friction: 0.3,
 					restitution: 0.0,

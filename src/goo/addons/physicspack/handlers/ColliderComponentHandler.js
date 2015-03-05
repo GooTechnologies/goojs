@@ -47,7 +47,7 @@ define([
 	 */
 	ColliderComponentHandler.prototype._prepare = function (config) {
 		return _.defaults(config, {
-			shape: 'sphere',
+			shape: 'Box',
 			shapeOptions: {
 				halfExtents: [1, 1, 1],
 				radius: 0.5,
@@ -87,15 +87,20 @@ define([
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
-			switch (config.shape) {
+			shape = config.shape;
+			if (shape.length) {
+				shape = shape.toLowerCase();
+			}
+
+			switch (shape) {
 			default:
-			case 'sphere':
-				component.collider = new SphereCollider(config.shapeOptions);
-				component.worldCollider = new SphereCollider();
-				break;
 			case 'box':
 				component.collider = new BoxCollider(config.shapeOptions);
 				component.worldCollider = new BoxCollider();
+				break;
+			case 'sphere':
+				component.collider = new SphereCollider(config.shapeOptions);
+				component.worldCollider = new SphereCollider();
 				break;
 			case 'plane':
 				component.collider = new PlaneCollider();
@@ -106,6 +111,7 @@ define([
 				component.worldCollider = new CylinderCollider();
 				break;
 			}
+
 			component.material.friction = config.friction;
 			component.material.restitution = config.restitution;
 			component.isTrigger = config.isTrigger;
