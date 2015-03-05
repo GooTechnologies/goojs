@@ -2,12 +2,12 @@ define(function() {
 	'use strict';
 
 	/**
-	 * EventTarget is an interface implemented by objects that can receive events and may have listeners for them.
+	 * EventTarget is implemented by objects that can receive events and may have listeners for them.
 	 * @example
-	 * function Test() {
+	 * function MyObject() {
 	 * 		EventTarget.apply(this, arguments);
 	 * }
-	 * Test.prototype = Object.create(EventTarget.prototype);
+	 * MyObject.prototype = Object.create(EventTarget.prototype);
 	 */
 	function EventTarget() {
 		this._listenerMap = new Map();
@@ -15,7 +15,7 @@ define(function() {
 
 	/**
 	 * Sends an event to all listeners
-	 * @param {Event} event Event passed to the listeners
+	 * @param {object} event Event passed to the listeners
 	 * @returns {EventTarget} Self for chaining.
 	 */
 	EventTarget.prototype.fire = function (event) {
