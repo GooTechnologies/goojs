@@ -10,6 +10,7 @@ body {
 	font-size: 15px;
 	color: #b5b5b5;
 	background-color: #1d1d1d;
+	overflow-x: hidden;
 }
 
 ::-webkit-scrollbar { width: 10px; }
@@ -47,13 +48,13 @@ input:focus::-webkit-input-placeholder { color: transparent; }
 input:focus:-ms-input-placeholder { color: transparent; }
 
 a {
-	color: #b5b5b5;
+	color: #38b3f6;
 	text-decoration: none;
 	transition: all 0.4s;
 	-webkit-transition: all 0.5s;
 }
 
-a:hover, a:active { color: #38b3f6; }
+a:hover, a:active { color: #81cff9; }
 
 /******************************************************************************
 TYPOGRAPHY
@@ -122,6 +123,11 @@ ICOMOON
 	color: #c8c651;
 }
 
+.icon-warning-purple:before {
+    content: "\e600";
+    color: #cc76a4;
+}
+
 .icon-arrow-up:before {
 	content: "\e601";
 	position: fixed;
@@ -130,26 +136,86 @@ ICOMOON
 }
 
 /******************************************************************************
+HEADER
+******************************************************************************/
+
+header {
+	position: fixed;
+	right: 0;
+	left: 0;
+	height: 50px;
+	padding: 0 20px;
+	background: #262626;
+	z-index: 10;
+}
+
+header ul li {
+	display: inline;
+	float: left;
+	margin-right: 15px;
+	line-height: 50px;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+header a { color: #b5b5b5; }
+
+header a:hover, header a:active { color: #38b3f6; }
+
+.logo {
+	display: block;
+	width: 48px;
+	height: 28px;
+	margin-top: 13px;
+	margin-right: 20px;
+	background-image: url(images/logo.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	float: left;
+}
+
+.launcher {
+	float: right;
+	margin-top: -4px;
+	padding: 10px 15px;
+	color: white;
+	background: #38b3f6;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.launcher:hover {
+	color: white;
+	background: #81cff9;
+}
+
+/******************************************************************************
 SIDEBAR
 ******************************************************************************/
 
 nav {
 	position: fixed;
+	top: 50px;
+	bottom: 0;
 	width: 250px;
-	height: 100%;
 	padding: 50px;
-	padding-bottom: 60px;
-	background: #262626;
+	background-color: #202020;
 	overflow-y: auto;
 	z-index: 1;
 	cursor: default;
 }
 
-nav section {margin-bottom: 30px;}
+nav section { margin-bottom: 30px; }
 
-nav li {line-height: 0.9em;}
+nav li { line-height: 0.9em; }
 
-nav a {cursor: pointer;}
+nav a {
+	cursor: pointer;
+	color: #b5b5b5;
+}
+
+nav a:hover, nav a:active { color: #38b3f6; }
 
 a.link {
 	display: block;
@@ -157,26 +223,16 @@ a.link {
 	color: #38b3f6;
 }
 
-a.link:hover, a.link:active {color: #81cff9;}
+a.link:hover, a.link:active { color: #81cff9; }
 
-.index-container {padding-bottom: 90px;}
+.index-container { padding-bottom: 90px; }
 
-.active {
-	margin: 8px -50px;
-	padding: 10px;
-	padding-left: 50px;
-	background: #303030;
-	border-right: 3px solid #38b3f6;
-}
-
-.active:first-child {margin-top: 0;}
-
-.active:last-child {margin-bottom: 0;}
-
-.active a {color: #38b3f6;
-}
-.top-dir {
+.active a {
+	cursor: pointer;
 	color: #38b3f6;
+}
+
+.top-dir {
 	padding: 5px 5px 5px 0;
 	margin-top: 30px;
 	margin-bottom: 5px;
@@ -184,7 +240,7 @@ a.link:hover, a.link:active {color: #81cff9;}
 	text-transform: uppercase;
 }
 
-.top-dir:first-child {margin-top: 0;}
+.top-dir:first-child { margin-top: 0; }
 
 .to-top {
 	display: block;
@@ -210,17 +266,23 @@ a.link:hover, a.link:active {color: #81cff9;}
 	margin-bottom: 50px;
 }
 
-.hidden {
-    display: none;
-}
+.hidden { display: none; }
 
 /******************************************************************************
 MAIN
 ******************************************************************************/
 
-iframe {
+.main-view {
 	position: absolute;
+	top: 50px;
+	bottom: 0;
 	left: 350px;
+	width: 100%;
+	padding: 0;
+	margin-bottom: 4px;
+}
+
+iframe {
 	width: 80%;
 	width: calc(100% - 350px);
 	height: 100%;
@@ -229,19 +291,21 @@ iframe {
 
 article {
 	max-width: 850px;
-	padding: 50px;
+	padding: 0 50px 50px 50px;
 	font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace;
 	line-height: 1.4em;
 }
 
-section {margin-bottom: 50px;}
+article:first-child { padding-top: 50px;}
 
-div {margin-bottom: 15px;}
+section { margin-bottom: 50px; }
+
+div { margin-bottom: 15px; }
 
 ul {
 	margin: 0;
 	padding: 0;
-	padding-top: 10px;
+	padding-bottom: 10px;
 	list-style-type: none;
 }
 
@@ -250,14 +314,14 @@ li {
 	line-height: 1.4em;
 }
 
-.header {margin-bottom: 50px;}
+.header { margin-bottom: 50px; }
 
 .class-description {
 	margin-top: 15px;
 	color: #777777;
 }
 
-.bottom-30 {margin-bottom: 30px;}
+.bottom-30 { margin-bottom: 30px; }
 
 .path {
 	display: block;
@@ -277,7 +341,7 @@ li {
 
 .parameter-doc { margin-left: 20px; }
 
-.parameter-doc:last-child {margin-bottom: 50px;}
+.parameter-doc:last-child { margin-bottom: 50px; }
 
 .deprecated-description {
 	display: block;
@@ -289,6 +353,8 @@ li {
 	background: #262626;
 	border-radius: 3px;
 }
+
+.comment {margin-top: 15px;}
 
 /******************************************************************************
 CODE EXAMPLES
@@ -324,31 +390,29 @@ SYNTAX & COLORS
 	color: #91cf4b;
 }
 
-.readonly {color: #91cf4b;}
+.readonly { color: #91cf4b; }
+
+.virtual { color: #cc76a4; }
 
 .extends {
 	color: #555555;
 	font-weight: 100;
 }
 
-.extends a {color: #555555;}
+.method, .static { margin-bottom: 60px; }
 
-.extends a:hover {color: #38b3f6;}
+.method-name { color: #f76162; }
 
-.method, .static {margin-bottom: 60px;}
+.static-name { color: #ffbe55; }
 
-.method-name {color: #f76162;}
+.parameter { color: #91cf4b; }
 
-.static-name {color: #ffbe55;}
+.parameter-name { color: #91cf4b; }
 
-.parameter {color: #91cf4b;}
+.parameter-type { color: #ffbe55; }
 
-.parameter-name {color: #91cf4b;}
+.parameter-type a { color: #ffbe55 !important; }
 
-.parameter-type {color: #ffbe55;}
+.parameter-optional { color: #8a8eea; }
 
-.parameter-type a {color: #ffbe55 !important;}
-
-.parameter-optional {color: #8a8eea;}
-
-.parameter-default {color: #38b3f6;}
+.parameter-default { color: #cc76a4; }
