@@ -119,10 +119,10 @@ function (
 			}
 
 			// Colliders
-			if (entity.colliderComponent && entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidbodyComponent) {
+			if (entity.colliderComponent && entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidBodyComponent) {
 				var bodyEntity = entity.colliderComponent.bodyEntity;
 
-				var cannonBody = bodyEntity.rigidbodyComponent.cannonBody;
+				var cannonBody = bodyEntity.rigidBodyComponent.cannonBody;
 				if (!cannonBody || !entity.colliderComponent.cannonShape) {
 					continue;
 				}
@@ -154,7 +154,7 @@ function (
 	 * @param  {Transform} targetTransform
 	 */
 	PhysicsDebugRenderSystem.prototype.getWorldTransform = function (bodyEntity, colliderEntity, collider, targetTransform) {
-		var cannonBody = bodyEntity.rigidbodyComponent.cannonBody;
+		var cannonBody = bodyEntity.rigidBodyComponent.cannonBody;
 		cannonWorldShapePosition = cannonWorldShapePosition || new CANNON.Vec3();
 		cannonWorldShapeQuaternion = cannonWorldShapeQuaternion || new CANNON.Quaternion();
 

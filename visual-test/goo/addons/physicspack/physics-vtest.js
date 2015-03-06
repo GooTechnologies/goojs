@@ -228,7 +228,7 @@ require([
 
 	function createMesh(x, y, z) {
 		var position = new Vector3(x, y, z);
-		var rigidBodyComponent = new RigidbodyComponent({ mass : 5, velocity: new Vector3(0, 0, 1) });
+		var rigidBodyComponent = new RigidBodyComponent({ mass : 5, velocity: new Vector3(0, 0, 1) });
 		var meshData = new Torus(16, 16);
 		var colliderComponent = new ColliderComponent({ collider: new MeshCollider({ meshData: meshData }) });
 		return world.createEntity(position, rigidBodyComponent, colliderComponent, meshData, V.getColoredMaterial()).addToWorld();

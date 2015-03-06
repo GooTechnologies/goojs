@@ -15,7 +15,7 @@ define([
 
 	'goo/addons/physicspack/systems/AbstractPhysicsSystem',
 	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
-	'goo/addons/physicspack/components/AbstractRigidbodyComponent',
+	'goo/addons/physicspack/components/AbstractRigidBodyComponent',
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/systems/ColliderSystem',
 	'goo/addons/physicspack/systems/PhysicsSystem',
