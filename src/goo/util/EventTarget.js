@@ -11,11 +11,13 @@ define(function() {
 	 */
 	function EventTarget() {
 		this._listenerMap = new Map();
+		this._listenersCopy = [];
 	}
 
 	/**
 	 * Sends an event to all listeners
 	 * @param {Object} event Event passed to the listeners
+	 * @param {string} event.type The name of the event
 	 * @returns {EventTarget} Self for chaining.
 	 */
 	EventTarget.prototype.fire = function (event) {
@@ -23,8 +25,14 @@ define(function() {
 		if (listeners) {
 			event.target = this;
 
-			var listenersCopy = listeners.slice();
-			for (var i = 0, l = listenersCopy.length; i < l; i++) {
+			var l = listeners.length;
+
+			var listenersCopy = this._listenersCopy;
+			for (var i = 0; i < l; i++) {
+				listenersCopy[i] = listeners[i];
+			}
+
+			for (var i = 0; i < l; i++) {
 				listenersCopy[i](event);
 			}
 		}
@@ -81,15 +89,6 @@ define(function() {
 	 */
 	EventTarget.prototype.has = function (type) {
 		return this._listenerMap.has(type);
-	};
-
-	/**
-	 * Get all listeners for a certain type
-	 * @param {string} type Type of event to get listeners for
-	 * @returns {Array} All listeners of specified type attached to this target
-	 */
-	EventTarget.prototype.get = function (type) {
-		return this._listenerMap.get(type);
 	};
 
 	return EventTarget;
