@@ -555,19 +555,19 @@ function (
 	 */
 	RigidBodyComponent.prototype.addCollider = function (entity, position, quaternion) {
 		var body = this.cannonBody;
-		var cc = entity.colliderComponent;
-		cc.updateWorldCollider(true);
-		var collider = cc.worldCollider;
+		var colliderComponent = entity.colliderComponent;
+		colliderComponent.updateWorldCollider(true);
+		var collider = colliderComponent.worldCollider;
 
 		var cannonShape = collider.cannonShape = RigidBodyComponent.getCannonShape(collider);
 
 		// Create a material for the shape
 		var mat = new CANNON.Material();
-		mat.friction = cc.material ? cc.material.friction : -1;
-		mat.restitution = cc.material ? cc.material.restitution : -1;
+		mat.friction = colliderComponent.material ? colliderComponent.material.friction : -1;
+		mat.restitution = colliderComponent.material ? colliderComponent.material.restitution : -1;
 		cannonShape.material = mat;
 
-		cannonShape.collisionResponse = !cc.isTrigger;
+		cannonShape.collisionResponse = !colliderComponent.isTrigger;
 
 		// Add the shape
 		var cannonPos = new CANNON.Vec3();

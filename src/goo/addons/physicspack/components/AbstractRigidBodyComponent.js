@@ -39,14 +39,14 @@ function (
 	AbstractRigidBodyComponent.prototype.constructor = AbstractRigidBodyComponent;
 
 	/**
-	 * @param {Joint} joint
+	 * @param {PhysicsJoint}  joint
 	 */
 	AbstractRigidBodyComponent.prototype.addJoint = function (joint) {
 		this.joints.push(joint);
 	};
 
 	/**
-	 * @param {Joint} joint
+	 * @param {PhysicsJoint}  joint
 	 */
 	AbstractRigidBodyComponent.prototype.removeJoint = function (joint) {
 		var joints = this.joints;
@@ -86,7 +86,7 @@ function (
 	/**
 	 * Creates a joint in the physics engine.
 	 * @virtual
-	 * @param {Joint} joint
+	 * @param {PhysicsJoint}  joint
 	 * @param {Entity} entity
 	 * @param {System} system
 	 */
@@ -95,11 +95,11 @@ function (
 	/**
 	 * Removes a joint from the physics engine.
 	 * @virtual
-	 * @param {Joint} joint
+	 * @param {PhysicsJoint}  joint
 	 */
 	AbstractRigidBodyComponent.prototype.destroyJoint = function (/*joint*/) {};
 
-	var invBodyTransform = new Transform();
+	var inverseBodyTransform = new Transform();
 	var trans = new Transform();
 	var trans2 = new Transform();
 
@@ -114,8 +114,8 @@ function (
 		entity.transformComponent.updateWorldTransform();
 
 		var bodyTransform = entity.transformComponent.worldTransform;
-		invBodyTransform.copy(bodyTransform);
-		invBodyTransform.invert(invBodyTransform);
+		inverseBodyTransform.copy(bodyTransform);
+		inverseBodyTransform.invert(inverseBodyTransform);
 
 		// Traverse the entities depth first, but skip nodes below other rigid body components
 		var queue = [entity];
@@ -130,7 +130,7 @@ function (
 
 				// Look at the world transform and then get the transform relative to the root entity. This is needed for compounds with more than one level of recursion
 				trans.copy(childEntity.transformComponent.worldTransform);
-				Transform.combine(invBodyTransform, trans, trans2);
+				Transform.combine(inverseBodyTransform, trans, trans2);
 
 				var offset = trans2.translation;
 				var rot = trans2.rotation;
