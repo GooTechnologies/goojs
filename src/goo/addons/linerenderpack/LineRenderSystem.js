@@ -31,11 +31,10 @@ define([
 			this.renderList = [];
 
 
-			var that = this;
 			//add the camera
 			SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-				that.camera = newCam.camera;
-			});
+				this.camera = newCam.camera;
+			}.bind(this));
 		}
 
 		LineRenderSystem.prototype = Object.create(System.prototype);
