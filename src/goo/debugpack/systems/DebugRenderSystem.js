@@ -107,8 +107,7 @@ define([
 					}
 					DebugDrawHelper.update(renderables, component, this.camera);
 					for (var k = 0; k < renderables.length; k++) {
-						var renderable = renderables[k];
-						this.renderList[count++] = renderable;
+						this.renderList[count++] = renderables[k];
 					}
 				}
 			}
@@ -121,8 +120,7 @@ define([
 				} else {
 					renderables = DebugDrawHelper.getRenderablesFor(pose);
 					for (var k = 0; k < renderables.length; k++) {
-						var renderable = renderables[k];
-						renderable.id = entity.id;
+						renderables[k].id = entity.id;
 					}
 					tree.skeleton = renderables;
 				}
