@@ -103,7 +103,7 @@ define([
 		this.doProcess = true;
 		this.doRender = true;
 
-		this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 10;
+		this.tpfSmoothingCount = parameters.tpfSmoothingCount !== undefined ? parameters.tpfSmoothingCount : 1;
 
 		if (parameters.showStats) {
 			this.stats = new Stats();
@@ -112,6 +112,7 @@ define([
 			this.stats.domElement.style.top = '10px';
 			document.body.appendChild(this.stats.domElement);
 		}
+
 		if (parameters.logo === undefined || parameters.logo) {
 			var logoDiv = this._buildLogo(parameters.logo);
 			if (logoDiv) {
@@ -139,6 +140,8 @@ define([
 		 * @type {Array.<function(number)>}
 		 */
 		this.callbacksNextFrame = [];
+
+		this.loopController = new DefaultLoopController();
 
 		this._takeSnapshots = [];
 
@@ -311,9 +314,6 @@ define([
 	var tpfSmoothingArray = [];
 	var tpfIndex = 0;
 
-	var renderTimer = 0;
-	var renderFrameRate = 1/30;
-
 	GooRunner.prototype._updateFrame = function (time) {
 		if (this.start < 0) {
 			this.start = time;
@@ -339,25 +339,13 @@ define([
 		avg /= tpfSmoothingArray.length;
 		this.world.tpf = avg;
 
-		this.world.time += this.world.tpf;
-		World.time = this.world.time;
-		World.tpf = this.world.tpf;
+		// this.world.time += this.world.tpf;
+		// World.time = this.world.time;
+		// World.tpf = this.world.tpf;
 		this.start = time;
 
-		this.renderer.info.reset();
-
-		// execute callbacks
-		// game loop start
-		this._preUpdate();
-
-		renderTimer += tpf;
-		if (renderTimer > renderFrameRate) {
-			this._render();
-			renderTimer %= renderFrameRate;
-		}
-
-		this._postUpdate();
-		// game loop end
+		//Call main loop handler
+		this.loopController.run(this, tpf);
 
 		// update the stats if there are any
 		if (this.stats) {
@@ -384,6 +372,46 @@ define([
 		}
 	};
 
+	function DefaultLoopController () {
+		this.updateFrameRate = 1/60;
+		this.renderFrameRate = 1/10;
+
+		this.updateTimer = 0;
+		this.renderTimer = 0;
+	}
+
+	DefaultLoopController.prototype.run = function (gooRunner, tpf) {
+		gooRunner.world.time += tpf;
+		World.time = gooRunner.world.time;
+		gooRunner._preUpdate();
+		// gooRunner._render();
+		// gooRunner._postUpdate();
+
+
+
+		// gooRunner.world.tpf = this.updateFrameRate;
+
+		// this.updateTimer += tpf;
+		// while (this.updateTimer >= this.updateFrameRate) {
+		// 	gooRunner._preUpdate();
+
+		// 	gooRunner.world.time += this.updateFrameRate;
+		// 	World.time = gooRunner.world.time;
+
+		// 	this.updateTimer -= this.updateFrameRate;
+		// }
+		// var alpha = this.updateTimer / this.updateFrameRate;
+
+		this.renderTimer += tpf;
+		if (this.renderTimer >= this.renderFrameRate) {
+			gooRunner._render();
+			this.renderTimer %= this.renderFrameRate;
+		}
+		// gooRunner._render(alpha);
+
+		gooRunner._postUpdate();
+	};
+
 	GooRunner.prototype._preUpdate = function () {
 		if (this.callbacksNextFrame.length > 0) {
 			var callbacksNextFrame = this.callbacksNextFrame;
@@ -406,6 +434,7 @@ define([
 	};
 	
 	GooRunner.prototype._render = function () {
+		this.renderer.info.reset();
 		if (this.doRender) {
 			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
