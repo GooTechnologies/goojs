@@ -1,3 +1,4 @@
+
 define([
 	'goo/entities/World',
 	'goo/renderer/Renderer',
@@ -310,6 +311,9 @@ define([
 	var tpfSmoothingArray = [];
 	var tpfIndex = 0;
 
+	var renderTimer = 0;
+	var renderFrameRate = 1/30;
+
 	GooRunner.prototype._updateFrame = function (time) {
 		if (this.start < 0) {
 			this.start = time;
@@ -343,6 +347,44 @@ define([
 		this.renderer.info.reset();
 
 		// execute callbacks
+		// game loop start
+		this._preUpdate();
+
+		renderTimer += tpf;
+		if (renderTimer > renderFrameRate) {
+			this._render();
+			renderTimer %= renderFrameRate;
+		}
+
+		this._postUpdate();
+		// game loop end
+
+		// update the stats if there are any
+		if (this.stats) {
+			this.stats.update(
+				this.renderer.info.toString() + '<br>' +
+				'Transform updates: ' + this.world.getSystem('TransformSystem').numUpdates +
+				'<br>Cached shaders: ' + Object.keys(this.renderer.rendererRecord.shaderCache).length
+			);
+		}
+
+		// resolve any snapshot requests
+		if (this._takeSnapshots.length) {
+			var image = this.renderer.domElement.toDataURL();
+			for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
+				var callback = this._takeSnapshots[i];
+				this._callSafe(callback, image);
+			}
+			this._takeSnapshots = [];
+		}
+
+		// schedule next frame
+		if (this.animationId) {
+			this.animationId = window.requestAnimationFrame(this._run.bind(this));
+		}
+	};
+
+	GooRunner.prototype._preUpdate = function () {
 		if (this.callbacksNextFrame.length > 0) {
 			var callbacksNextFrame = this.callbacksNextFrame;
 			this.callbacksNextFrame = [];
@@ -361,8 +403,9 @@ define([
 		if (this.doProcess) {
 			this.world.process();
 		}
-
-
+	};
+	
+	GooRunner.prototype._render = function () {
 		if (this.doRender) {
 			this.renderer.checkResize(Renderer.mainCamera);
 			this.renderer.setRenderTarget();
@@ -400,34 +443,12 @@ define([
 				this.renderer.setClearColor.apply(this.renderer, this._picking.clearColorStore);
 			}
 		}
+	};
 
+	GooRunner.prototype._postUpdate = function () {
 		// run the post render callbacks
 		for (var i = 0; i < this.callbacks.length; i++) {
 			this._callSafe(this.callbacks[i], this.world.tpf);
-		}
-
-		// update the stats if there are any
-		if (this.stats) {
-			this.stats.update(
-				this.renderer.info.toString() + '<br>' +
-				'Transform updates: ' + this.world.getSystem('TransformSystem').numUpdates +
-				'<br>Cached shaders: ' + Object.keys(this.renderer.rendererRecord.shaderCache).length
-			);
-		}
-
-		// resolve any snapshot requests
-		if (this._takeSnapshots.length) {
-			var image = this.renderer.domElement.toDataURL();
-			for (var i = this._takeSnapshots.length - 1; i >= 0; i--) {
-				var callback = this._takeSnapshots[i];
-				this._callSafe(callback, image);
-			}
-			this._takeSnapshots = [];
-		}
-
-		// schedule next frame
-		if (this.animationId) {
-			this.animationId = window.requestAnimationFrame(this._run.bind(this));
 		}
 	};
 
