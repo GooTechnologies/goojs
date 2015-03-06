@@ -199,6 +199,10 @@ define([
 	 * @returns {World} Returns self to allow chaining.
 	 */
 	World.prototype.setSystem = function (system) {
+		if (this._systems.indexOf(system) !== -1) {
+			return this;
+		}
+
 		var priority = system.priority;
 
 		for (var i = 0; i < this._systems.length; i++) {
