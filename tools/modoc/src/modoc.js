@@ -1,3 +1,4 @@
+// jshint node:true
 'use strict';
 
 /**
@@ -53,8 +54,6 @@ var getFiles = function (sourcePath, ignore) {
 		});
 	});
 };
-
-var HTML_SUFFIX = '-doc.html';
 
 var args = processArguments();
 
@@ -196,16 +195,13 @@ function buildClasses(classes) {
 	var classTemplate = fs.readFileSync(
 		args.templatesPath + util.PATH_SEPARATOR + 'class.mustache', { encoding: 'utf8' });
 
-	Object.keys(classes).forEach(function (className) {
-		var class_ = classes[className];
-
-		// this filtering should take place elsewhere
-		if (class_.constructor) {
-			var result = mustache.render(classTemplate, class_);
-
-			fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + className + HTML_SUFFIX, result);
-		}
+	var classesArray = Object.keys(classes).map(function (className) {
+		return classes[className];
 	});
+
+	var result = mustache.render(classTemplate, { classes: classesArray });
+
+	fs.writeFileSync(args.outPath + util.PATH_SEPARATOR + 'everything.html', result);
 }
 
 function buildIndex(index) {
