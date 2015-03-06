@@ -188,6 +188,7 @@ define([
 	'test/util/CanvasUtils-test',
 	'test/util/StringUtil-test',
 	'test/util/PromiseUtil-test',
+	'test/util/EventTarget-test',
 	'test/util/ObjectUtil-test',
 	'test/renderer/Shader-test',
 	'test/renderer/MeshData-test',
