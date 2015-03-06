@@ -128,7 +128,7 @@ define([
 	'test/addons/linerenderpack/LineRenderSystem-test',
 	'test/addons/physicspack/systems/PhysicsSystem-test',
 	'test/addons/physicspack/systems/PhysicsDebugRenderSystem-test',
-	'test/addons/physicspack/components/RigidbodyComponent-test',
+	'test/addons/physicspack/components/RigidBodyComponent-test',
 	'test/addons/physicspack/colliders/MeshCollider-test',
 	'test/addons/physicspack/colliders/SphereCollider-test',
 	'test/addons/physicspack/colliders/BoxCollider-test',

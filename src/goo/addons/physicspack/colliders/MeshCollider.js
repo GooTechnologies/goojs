@@ -26,7 +26,7 @@ function (
 		/**
 		 * @type {Vector3}
 		 */
-		this.scale = settings.scale !== undefined ? settings.scale.clone() : new Vector3(1, 1, 1);
+		this.scale = settings.scale !== undefined ? new Vector3(settings.scale) : new Vector3(1, 1, 1);
 
 		Collider.call(this);
 	}

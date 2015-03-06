@@ -5,7 +5,7 @@ define([
 	'goo/addons/physicspack/systems/ColliderSystem',
 	'goo/entities/systems/TransformSystem',
 	'goo/math/Vector3',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/RaycastResult',
 	'goo/addons/physicspack/colliders/SphereCollider'
@@ -16,7 +16,7 @@ define([
 	ColliderSystem,
 	TransformSystem,
 	Vector3,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	ColliderComponent,
 	RaycastResult,
 	SphereCollider

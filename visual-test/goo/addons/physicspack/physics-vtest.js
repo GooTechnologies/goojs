@@ -12,7 +12,7 @@ require([
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/SphereCollider',
@@ -36,7 +36,7 @@ require([
 	ColliderComponent,
 	PhysicsSystem,
 	ColliderSystem,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	BoxCollider,
 	CylinderCollider,
 	SphereCollider,
@@ -49,7 +49,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('The entities in the scene hold a rigidbody component which updates their transform.');
+	V.describe('The entities in the scene hold a rigidBody component which updates their transform.');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -67,7 +67,7 @@ require([
 				V.rng.nextFloat() * 16 - 8
 			];
 
-			var rigidBodyComponent = new RigidbodyComponent();
+			var rigidBodyComponent = new RigidBodyComponent();
 			var entity;
 			var colliderComponent;
 			var mat = V.getColoredMaterial();
@@ -114,7 +114,7 @@ require([
 		var entity = world.createEntity(new Quad(1000, 1000, 100, 100), V.getColoredMaterial(0.7, 0.7, 0.7))
 			.set([0, -10, 0])
 			.setRotation(-Math.PI / 2, 0, 0);
-		var rigidBodyComponent = new RigidbodyComponent({ isKinematic: true });
+		var rigidBodyComponent = new RigidBodyComponent({ isKinematic: true });
 		var planeColliderComponent = new ColliderComponent({ collider: new PlaneCollider() });
 		entity.set(rigidBodyComponent)
 			.set(planeColliderComponent)
@@ -123,7 +123,7 @@ require([
 
 	function createStaticBox(x, y, z, w, d, h) {
 		return world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
-			.set(new RigidbodyComponent({ isKinematic: true }))
+			.set(new RigidBodyComponent({ isKinematic: true }))
 			.set(
 				new ColliderComponent({
 					collider: new BoxCollider({
@@ -140,7 +140,7 @@ require([
 		var compoundEntity = world.createEntity(new Vector3(x, y, z));
 
 		// Add a rigid body component to it
-		compoundEntity.set(new RigidbodyComponent({ mass : 5 }));
+		compoundEntity.set(new RigidBodyComponent({ mass : 5 }));
 
 		// Define half extents for all boxes
 		var h1 = new Vector3(4, 1, 1),
@@ -205,7 +205,7 @@ require([
 	function createChain(x, y, z, numLinks, size) {
 		var lastEntity;
 		for (var i = 0; i < numLinks; i++) {
-			var rbComponent = new RigidbodyComponent({
+			var rbComponent = new RigidBodyComponent({
 				mass: i ? 1 : 0,
 				velocity: new Vector3(0, 0, 3 * i)
 			});
@@ -216,7 +216,7 @@ require([
 				.addToWorld();
 
 			if (lastEntity) {
-				e.rigidbodyComponent.addJoint(new BallJoint({
+				e.rigidBodyComponent.addJoint(new BallJoint({
 					connectedEntity: lastEntity,
 					localPivot: new Vector3(0, 1, 0)
 				}));
@@ -240,7 +240,7 @@ require([
 		var a = 0.9;
 		var b = 0.1;
 		for (var i = 0; i < 5; i++) {
-			var rbComponent = new RigidbodyComponent({
+			var rbComponent = new RigidBodyComponent({
 				mass: i ? 1 : 0,
 				velocity: new Vector3(0, 0, 3 * i)
 			});
@@ -250,7 +250,7 @@ require([
 				.addToWorld().setScale(scale, scale, scale);
 
 			if (lastEntity) {
-				e.rigidbodyComponent.addJoint(new HingeJoint({
+				e.rigidBodyComponent.addJoint(new HingeJoint({
 					connectedEntity: lastEntity,
 					localPivot: new Vector3(0, 0.5, 0),
 					localAxis: new Vector3(1, 0, 0)
@@ -262,7 +262,7 @@ require([
 	}
 
 	function createKinematic() {
-		var rbComponent = new RigidbodyComponent({
+		var rbComponent = new RigidBodyComponent({
 			mass: 0,
 			velocity: new Vector3(0, 0, 3),
 			angularVelocity: new Vector3(0, 0, 3),
@@ -358,7 +358,7 @@ require([
 				force.mul(700);
 
 				// Apply it to the entity
-				entity.rigidbodyComponent.applyForce(force);
+				entity.rigidBodyComponent.applyForce(force);
 			});
 		}
 	});
@@ -374,7 +374,7 @@ require([
 			force.mul(5000);
 
 			// Apply it to the entity
-			entity.rigidbodyComponent.applyForce(force);
+			entity.rigidBodyComponent.applyForce(force);
 		});
 	}
 

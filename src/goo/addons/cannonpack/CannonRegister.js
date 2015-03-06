@@ -4,7 +4,7 @@ define([
 	'goo/addons/cannonpack/CannonDistanceJointComponent',
 	'goo/addons/cannonpack/CannonPlaneColliderComponent',
 	'goo/addons/cannonpack/CannonTerrainColliderComponent',
-	'goo/addons/cannonpack/CannonRigidbodyComponent',
+	'goo/addons/cannonpack/CannonRigidBodyComponent',
 	'goo/addons/cannonpack/CannonSphereColliderComponent',
 	'goo/addons/cannonpack/CannonCylinderColliderComponent',
 	'goo/addons/cannonpack/CannonSystem'
@@ -17,7 +17,7 @@ define([
 		'goo/addons/cannonpack/CannonDistanceJointComponent',
 		'goo/addons/cannonpack/CannonPlaneColliderComponent',
 		'goo/addons/cannonpack/CannonTerrainColliderComponent',
-		'goo/addons/cannonpack/CannonRigidbodyComponent',
+		'goo/addons/cannonpack/CannonRigidBodyComponent',
 		'goo/addons/cannonpack/CannonSphereColliderComponent',
 		'goo/addons/cannonpack/CannonCylinderColliderComponent',
 		'goo/addons/cannonpack/CannonSystem'

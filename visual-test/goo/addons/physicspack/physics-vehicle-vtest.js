@@ -5,7 +5,7 @@ require([
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/SphereCollider',
@@ -19,7 +19,7 @@ require([
 	ColliderComponent,
 	PhysicsSystem,
 	ColliderSystem,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	BoxCollider,
 	CylinderCollider,
 	SphereCollider,
@@ -45,7 +45,7 @@ require([
 		var entity = world.createEntity(new Quad(1000, 1000, 100, 100), V.getColoredMaterial(0.7, 0.7, 0.7))
 			.set([0, -1, 0])
 			.setRotation(-Math.PI / 2, 0, 0);
-		var rigidBodyComponent = new RigidbodyComponent({ isKinematic: true });
+		var rigidBodyComponent = new RigidBodyComponent({ isKinematic: true });
 		var planeColliderComponent = new ColliderComponent({ collider: new PlaneCollider() });
 		entity.set(rigidBodyComponent)
 			.set(planeColliderComponent)
@@ -53,14 +53,14 @@ require([
 	}
 
 	function createVehicle(x, y, z) {
-		var rbComponent = new RigidbodyComponent({
+		var rbComponent = new RigidBodyComponent({
 			mass: 150
 		});
 		var s = 5;
 
 		var script = {
 			update: function (args, ctx) {
-				var body = ctx.entity.rigidbodyComponent.cannonBody;
+				var body = ctx.entity.rigidBodyComponent.cannonBody;
 
 				if (body && !ctx.vehicle) {
 					var options = {

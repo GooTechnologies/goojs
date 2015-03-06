@@ -5,7 +5,7 @@ require([
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
 	'lib/V'
@@ -16,14 +16,14 @@ require([
 	ColliderComponent,
 	PhysicsSystem,
 	ColliderSystem,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	SphereCollider,
 	PhysicsDebugRenderSystem,
 	V
 ) {
 	'use strict';
 
-	V.describe('The entities in the scene hold a rigidbody component which updates their transform.');
+	V.describe('The entities in the scene hold a rigidBody component which updates their transform.');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -33,7 +33,7 @@ require([
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
 	world.registerComponent(ColliderComponent);
-	world.registerComponent(RigidbodyComponent);
+	world.registerComponent(RigidBodyComponent);
 	goo.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	var material = V.getColoredMaterial();
@@ -42,7 +42,7 @@ require([
 
 	// Adding the components, style 1
 	var collider = new SphereCollider({ radius: radius });
-	var body = new RigidbodyComponent({ mass: 1, isKinematic: true, velocity: new Vector3(0, 0, 10) });
+	var body = new RigidBodyComponent({ mass: 1, isKinematic: true, velocity: new Vector3(0, 0, 10) });
 	world.createEntity(sphereMesh, material, collider, body).addToWorld();
 
 	// Adding the components, style 2
@@ -51,7 +51,7 @@ require([
 			collider: new SphereCollider({ radius: radius }),
 			isTrigger: true
 		}))
-		.set(new RigidbodyComponent({
+		.set(new RigidBodyComponent({
 			mass: 1
 		}))
 		.addToWorld();

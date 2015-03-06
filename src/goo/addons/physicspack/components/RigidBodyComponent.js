@@ -87,13 +87,13 @@ function (
 		 * @private
 		 * @type {Vector3}
 		 */
-		this._velocity = settings.velocity ? settings.velocity.clone() : new Vector3();
+		this._velocity = settings.velocity ? new Vector3(settings.velocity) : new Vector3();
 
 		/**
 		 * @private
 		 * @type {Vector3}
 		 */
-		this._angularVelocity = settings.angularVelocity ? settings.angularVelocity.clone() : new Vector3();
+		this._angularVelocity = settings.angularVelocity ? new Vector3(settings.angularVelocity) : new Vector3();
 
 		/**
 		 * @private
@@ -525,7 +525,7 @@ function (
 			if (colliderComponent._dirty) {
 				colliderComponent.updateWorldCollider();
 				var collider = colliderComponent.worldCollider;
-				var cannonShape = colliderComponent.cannonShape;
+				var cannonShape = collider.cannonShape;
 				if (collider instanceof SphereCollider) {
 					cannonShape.radius = collider.radius;
 				} else if (collider instanceof MeshCollider) {
@@ -555,19 +555,19 @@ function (
 	 */
 	RigidBodyComponent.prototype.addCollider = function (entity, position, quaternion) {
 		var body = this.cannonBody;
-		var cc = entity.colliderComponent;
-		cc.updateWorldCollider(true);
-		var collider = cc.worldCollider;
+		var colliderComponent = entity.colliderComponent;
+		colliderComponent.updateWorldCollider(true);
+		var collider = colliderComponent.worldCollider;
 
-		var cannonShape = cc.cannonShape = RigidBodyComponent.getCannonShape(collider);
+		var cannonShape = collider.cannonShape = RigidBodyComponent.getCannonShape(collider);
 
 		// Create a material for the shape
 		var mat = new CANNON.Material();
-		mat.friction = cc.material ? cc.material.friction : -1;
-		mat.restitution = cc.material ? cc.material.restitution : -1;
+		mat.friction = colliderComponent.material ? colliderComponent.material.friction : -1;
+		mat.restitution = colliderComponent.material ? colliderComponent.material.restitution : -1;
 		cannonShape.material = mat;
 
-		cannonShape.collisionResponse = !cc.isTrigger;
+		cannonShape.collisionResponse = !colliderComponent.isTrigger;
 
 		// Add the shape
 		var cannonPos = new CANNON.Vec3();
