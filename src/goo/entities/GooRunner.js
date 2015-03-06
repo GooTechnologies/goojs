@@ -340,8 +340,9 @@ define([
 		World.tpf = this.world.tpf;
 		this.start = time;
 
+		this.renderer.info.reset();
+
 		// execute callbacks
-		//! AT: doing this to be able to schedule new callbacks from the existing callbacks
 		if (this.callbacksNextFrame.length > 0) {
 			var callbacksNextFrame = this.callbacksNextFrame;
 			this.callbacksNextFrame = [];
@@ -361,7 +362,6 @@ define([
 			this.world.process();
 		}
 
-		this.renderer.info.reset();
 
 		if (this.doRender) {
 			this.renderer.checkResize(Renderer.mainCamera);
@@ -403,8 +403,7 @@ define([
 
 		// run the post render callbacks
 		for (var i = 0; i < this.callbacks.length; i++) {
-			var callback = this.callbacks[i];
-			this._callSafe(callback, this.world.tpf);
+			this._callSafe(this.callbacks[i], this.world.tpf);
 		}
 
 		// update the stats if there are any
