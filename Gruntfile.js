@@ -75,6 +75,10 @@ module.exports = function (grunt) {
 				packPath: 'addons/waterpack',
 				outBaseDir: 'out'
 			},
+			linerenderpack: {
+				packPath: 'addons/linerenderpack',
+				outBaseDir: 'out'
+			},
 			animationpack: {
 				packPath: 'animationpack',
 				outBaseDir: 'out'

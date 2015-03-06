@@ -40,6 +40,7 @@ require([
 			description: 'Locks the entity on a plane parallel to the ground',
 			parameters: [{
 				key: 'y',
+				name: 'Y',
 				'default': 0,
 				min: 0,
 				max: 10,
@@ -51,11 +52,11 @@ require([
 		var entity;
 
 		function setup(parameters, env) {
-			ScriptUtils.fillDefaultValues(parameters, external.parameters);
+			ScriptUtils.fillDefaultValues(parameters, externals.parameters);
 			entity = env.entity;
 		}
 
-		function update(parameters, env) {
+		function update(parameters) {
 			entity.transformComponent.transform.translation.y = parameters.y;
 		}
 

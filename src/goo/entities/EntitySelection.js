@@ -183,7 +183,7 @@ define([
 	/**
 	 * Returns the children of all entities in this selection
 	 * @returns {EntitySelection} Returns self to allow chaining
-	 * @example http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-children-example.html Working example
+	 * @example-link http://code.gooengine.com/latest/examples/goo/entities/EntitySelection/EntitySelection-children-example.html Working example
 	 */
 	EntitySelection.prototype.children = function () {
 		// could use flatMap

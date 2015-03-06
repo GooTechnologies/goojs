@@ -1,11 +1,13 @@
 define([
 	'goo/renderer/Util',
 	'goo/loaders/handlers/SoundHandler',
+	'goo/sound/AudioContext',
 	'goo/util/Ajax',
 	'goo/util/StringUtil'
 ], function (
 	Util,
 	SoundHandler,
+	AudioContext,
 	Ajax,
 	StringUtil
 ) {
@@ -38,6 +40,10 @@ define([
 	};
 
 	SoundCreator.prototype.loadSound = function (url, settings, callback) {
+		if (!AudioContext.isSupported()) {
+			return null;
+		}
+
 		var id = StringUtil.createUniqueId('sound');
 		settings = settings || {};
 		settings.audioRefs = {};
