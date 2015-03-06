@@ -146,7 +146,7 @@ define([
 	 * Builds a surface as a result of rotating this polyLine around the Y axis
 	 * @param {number} [nSegments=8] The number of segments for the resulting surface
 	 * @returns {Surface} The resulting surface
-	 * @example <caption>@example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Lathe-vtest.html Working example</caption>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Lathe-vtest.html Working example
 	 */
 	PolyLine.prototype.lathe = function (nSegments) {
 		nSegments = nSegments || 8;
