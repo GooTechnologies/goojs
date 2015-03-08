@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CSSTransformComponent tests</title>
+    <script src="../../../../../lib/require.js"></script>
+    <script src="../../../../../lib/goo.js"></script>
+    <script src="../../../../lib/vtest.js"></script>
+    <script src="CSSTransformComponent-vtest.js"></script>
+    <style>
+    #goo {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
+    }
+	body,html {
+		height: 100%;
+		margin: 0px;
+		overflow: hidden;
+	}
+
+	html {
+		font-size: 16px;
+	}
+    .viewport {
+		pointer-events: none;
+
+/*	    -webkit-user-select: none;
+	    -khtml-user-select: none;
+	    -moz-user-select: none;
+	    -ms-user-select: none;
+	    user-select: none;
+*/
+        position: relative;
+        float: left;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        background: none;
+        z-index: 5;
+    }
+    .camera {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-style: preserve-3d;
+        transform-origin: 50% 50% 50%;
+        /*backface-visibility: hidden;*/
+    }
+    .assembly {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-style: preserve-3d;
+        transform-origin: 50% 50% 50%;
+        backface-visibility: hidden;
+    }
+    .object {
+        border: 1px solid red;
+        background-color: green;
+        transition: background-color 500ms ease 500ms, box-shadow 500ms ease 0ms;
+        cursor: pointer;
+        overflow: hidden;
+        padding: 0.0;
+    }
+    .object:hover {
+        transition: background-color 500ms ease 0ms, box-shadow 500ms ease 500ms;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="view" class="viewport">
+        <div id="cam1" class="camera">
+            <div id="cam2" class="assembly"></div>
+        </div>
+    </div>
+</body>
+</html>

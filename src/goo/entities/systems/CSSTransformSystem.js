@@ -1,14 +1,16 @@
 define([
-	'goo/entities/systems/System', 
-	'goo/renderer/Renderer', 
-	'goo/math/Matrix4x4', 
-	'goo/math/MathUtils', 
+	'goo/entities/systems/System',
+	'goo/entities/SystemBus',
+	'goo/renderer/Renderer',
+	'goo/math/Matrix4x4',
+	'goo/math/MathUtils',
 	'goo/math/Vector3'
 ],  function (
-	System, 
-	Renderer, 
-	Matrix4x4, 
-	MathUtils, 
+	System,
+	SystemBus,
+	Renderer,
+	Matrix4x4,
+	MathUtils,
 	Vector3
 ) {
 	'use strict';
@@ -19,7 +21,12 @@ define([
 	function CSSTransformSystem(renderer) {
 		System.call(this, 'CSSTransformSystem', ['TransformComponent', 'CSSTransformComponent']);
 
+		this.camera = null;
 		this.renderer = renderer;
+
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			this.camera = newCam.camera;
+		}.bind(this));
 
         if (document.querySelector) {
 		    this.viewDom = document.querySelector('#view');
@@ -35,11 +42,7 @@ define([
 	CSSTransformSystem.prototype = Object.create(System.prototype);
 	CSSTransformSystem.prototype.constructor = CSSTransformSystem;
 
-	var epsilon = function (value) {
-		return Math.abs(value) < 0.000001 ? 0 : value;
-	};
-
-	var prefixes = ['', '-webkit-', '-moz-', '-ms-', '-o-'];
+	var prefixes = ['', '-webkit-'];
 	var setStyle = function (element, property, style) {
 		for (var j = 0; j < prefixes.length; j++) {
 			element.style[prefixes[j] + property] = style;
@@ -49,58 +52,57 @@ define([
 	var getCSSMatrix = function (matrix) {
 		var elements = matrix.data;
 
-
-		return 'matrix3d(' + epsilon(elements[0]) + ',' + epsilon(-elements[1]) + ',' + epsilon(elements[2]) + ',' + epsilon(elements[3]) + ','
-			+ epsilon(elements[4]) + ',' + epsilon(-elements[5]) + ',' + epsilon(elements[6]) + ',' + epsilon(elements[7]) + ','
-			+ epsilon(elements[8]) + ',' + epsilon(-elements[9]) + ',' + epsilon(elements[10]) + ',' + epsilon(elements[11]) + ','
-			+ epsilon(elements[12]) + ',' + epsilon(-elements[13]) + ',' + epsilon(elements[14]) + ',' + epsilon(elements[15]) + ')';
+		return 'matrix3d('
+			+ elements[0] + ',' + (-elements[1]) + ',' + elements[2] + ',' + elements[3] + ','
+			+ elements[4] + ',' + (-elements[5]) + ',' + elements[6] + ',' + elements[7] + ','
+			+ elements[8] + ',' + (-elements[9]) + ',' + elements[10] + ',' + elements[11] + ','
+			+ elements[12] + ',' + (-elements[13]) + ',' + elements[14] + ',' + elements[15] + ')';
 	};
 
 	CSSTransformSystem.prototype.process = function (entities) {
-		if (entities.length === 0) {
+		if (!this.camera) {
 			return;
 		}
 
-		var camera = Renderer.mainCamera;
-
-		if (!camera) {
-			return;
-		}
-
-		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * camera.fov * 0.5) * this.renderer.domElement.offsetHeight;
+		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * this.camera.fov * 0.5) * this.renderer.domElement.offsetHeight;
 		setStyle(this.viewDom, 'perspective', fov + 'px');
 
-		tmpMatrix.copy(camera.getViewInverseMatrix());
-		tmpMatrix2.copy(tmpMatrix);
-		tmpMatrix.invert();
+		var viewInverseMatrix = this.camera.getViewInverseMatrix();
+		var style;
 
-		tmpMatrix.setTranslation(new Vector3(0, 0, fov));
-		var style = getCSSMatrix(tmpMatrix);
+		tmpMatrix.copy(viewInverseMatrix);
+		tmpMatrix.invert();
+		tmpMatrix.setTranslation(tmpVector.setDirect(0, 0, fov));
+		style = getCSSMatrix(tmpMatrix);
 		setStyle(this.containerDom, 'transform', style);
 
-		tmpMatrix2.e03 = -tmpMatrix2.e03;
-		// tmpMatrix2.e13 = -tmpMatrix2.e13;
-		tmpMatrix2.e23 = -tmpMatrix2.e23;
-		tmpMatrix2.setRotationFromVector(new Vector3(0, 0, 0));
+		tmpMatrix2.e03 = -viewInverseMatrix.e03;
+		tmpMatrix2.e13 = viewInverseMatrix.e13;
+		tmpMatrix2.e23 = -viewInverseMatrix.e23;
 		style = getCSSMatrix(tmpMatrix2);
 		setStyle(this.containerDom2, 'transform', style);
 
-		for (var i = 0; i < entities.length; i++) {
+		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
 			var component = entity.getComponent('CSSTransformComponent');
+
+			if (!entity.transformComponent._wasUpdated && !component.faceCamera) {
+				continue;
+			}
+
 			var domElement = component.domElement;
 			var scale = component.scale;
-			scale = [scale, -scale, scale].join(',');
+			var scaleStr = scale + ',' + (-scale) + ',' + scale;
 
 			if (component.faceCamera) {
 				entity.transformComponent.worldTransform.matrix.getTranslation(tmpVector);
-				tmpMatrix.copy(camera.getViewInverseMatrix());
+				tmpMatrix.copy(viewInverseMatrix);
 				tmpMatrix.setTranslation(tmpVector);
 			} else {
 				tmpMatrix.copy(entity.transformComponent.worldTransform.matrix);
 			}
 
-			style = 'translate3d(-50%,-50%,0) ' + getCSSMatrix(tmpMatrix) + 'scale3d(' + scale + ')';
+			style = 'translate3d(-50%,-50%,0) ' + getCSSMatrix(tmpMatrix) + ' scale3d(' + scaleStr + ')';
 			setStyle(domElement, 'transform', style);
 
 			if (domElement.parentNode !== this.containerDom2) {
