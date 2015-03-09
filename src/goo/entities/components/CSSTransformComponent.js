@@ -29,6 +29,8 @@ define([
 		 */
 		this.scale = settings.scale || 1;
 
+		// this.useTransformComponent = settings.useTransformComponent !== undefined ? settings.useTransformComponent : true;
+
 		this.backfaceVisibility = settings.backfaceVisibility || 'hidden'; //'visible'
 
 		/**

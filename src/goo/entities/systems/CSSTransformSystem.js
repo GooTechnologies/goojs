@@ -100,7 +100,7 @@ define([
 	};
 
 	CSSTransformSystem.prototype.inserted = function (entity) {
-		var component = entity.getComponent('CSSTransformComponent');
+		var component = entity.cSSTransformComponent;
 		var domElement = component.domElement;
 		domElement.style.position = 'absolute';
 		domElement.style.WebkitBackfaceVisibility = component.backfaceVisibility;
@@ -111,7 +111,7 @@ define([
 	};
 
 	CSSTransformSystem.prototype.deleted = function (entity) {
-		var domElement = entity.getComponent('CSSTransformComponent').domElement;
+		var domElement = entity.cSSTransformComponent.domElement;
 		if (domElement.parentNode !== null) {
 			domElement.parentNode.removeChild(domElement);
 		}
@@ -132,7 +132,7 @@ define([
 		this.setStyle(this.viewDom, 'perspective', fov + 'px');
 
 		var viewMatrix = camera.getViewMatrix();
-		style = 'translate3d(0,0,' + fov + 'px)' + 
+		style = 'translate3d(0,0,' + fov + 'px) ' + 
 				getCameraCSSMatrix(viewMatrix) +
 				' translate3d(' + (width/2) + 'px,' + (height/2) + 'px, 0)';
 		this.setStyle(this.containerDom, 'transform', style);
@@ -140,45 +140,20 @@ define([
 		var viewInverseMatrix = camera.getViewInverseMatrix();
 		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
-			var component = entity.getComponent('CSSTransformComponent');
-
-			if (!entity.transformComponent._wasUpdated && !component.faceCamera) {
-				continue;
-			}
+			var component = entity.cSSTransformComponent;
+			var domElement = component.domElement;
 
 			// Always show if not using transform (if not hidden)
-			if (!component.useTransformComponent) {
-				component.domElement.style.display = component.hidden ? 'none' : '';
-				setStyle(component.domElement, 'transform', '');
+			// if (!component.useTransformComponent) {
+			// 	domElement.style.display = component.hidden ? 'none' : '';
+			// 	this.setStyle(domElement, 'transform', '');
+			// 	continue;
+			// }
+
+			if (!entity.transformComponent._wasUpdated && !component.faceCamera && this.styleCache.has(domElement)) {
 				continue;
 			}
 
-			// Hidden
-			if (component.hidden) {
-				component.domElement.style.display = 'none';
-				continue;
-			}
-
-			// Behind camera
-			tmpVector.setVector(camera.translation).subVector(entity.transformComponent.worldTransform.translation);
-			if (camera._direction.dot(tmpVector) > 0) {
-				component.domElement.style.display = 'none';
-				continue;
-			}
-
-			// Behind near plane
-			camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, width, height, tmpVector);
-			if (tmpVector.z < 0) {
-				if (component.hidden !== true) {
-					component.domElement.style.display = 'none';
-					//component.hidden = true;
-				}
-				continue;
-			}
-
-			component.domElement.style.display = '';
-
-			var domElement = component.domElement;
 			var scale = component.scale;
 
 			if (component.faceCamera) {
@@ -197,6 +172,14 @@ define([
 			style += ' scale3d('+scale+','+scale+','+scale+')';
 
 			this.setStyle(domElement, 'transform', style);
+		}
+	};
+
+	System.prototype.cleanup = function () {
+		System.prototype.cleanup.apply(this, arguments);
+
+		if (this.viewDom.parentNode !== null) {
+			this.viewDom.parentNode.removeChild(this.viewDom);
 		}
 	};
 
