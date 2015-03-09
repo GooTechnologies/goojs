@@ -199,6 +199,11 @@ define([
 			this._frustumNear = this.near;
 			this._frustumFar = this.far;
 
+			// handle invalid frustum-far
+			if (this._frustumFar - this._frustumNear < MathUtils.EPSILON) {
+				this._frustumFar = this._frustumNear + MathUtils.EPSILON;
+			}
+
 			this.onFrustumChange();
 		}
 	};
@@ -243,6 +248,11 @@ define([
 		this._frustumRight = this.right * this.aspect;
 		this._frustumTop = this.top;
 		this._frustumBottom = this.bottom;
+
+		// handle invalid frustum-far
+		if (this._frustumFar - this._frustumNear < MathUtils.EPSILON) {
+			this._frustumFar = this._frustumNear + MathUtils.EPSILON;
+		}
 
 		this.onFrustumChange();
 	};
@@ -641,7 +651,9 @@ define([
 
 		position.setDirect(x, y, zDepth * 2 - 1, 1);
 		this.modelViewProjectionInverse.applyPost(position);
-		position.scale(1.0 / position.w);
+		if (position.w !== 0.0) {
+			position.scale(1.0 / position.w);
+		}
 		store.x = position.x;
 		store.y = position.y;
 		store.z = position.z;
@@ -712,7 +724,9 @@ define([
 		var position = new Vector4();
 		position.setDirect(worldPosition.x, worldPosition.y, worldPosition.z, 1);
 		this.modelViewProjection.applyPost(position);
-		position.mul(1.0 / position.w);
+		if (position.w !== 0.0) {
+			position.scale(1.0 / position.w);
+		}
 		store.x = position.x;
 		store.y = position.y;
 		store.z = position.z;
@@ -940,7 +954,7 @@ define([
 			(1.0 + projection[10]) / projection[14]
 		);
 
-		transformedClipPlane.mul(2.0 / Vector4.dot(transformedClipPlane, this._qCalc));
+		transformedClipPlane.scale(2.0 / Vector4.dot(transformedClipPlane, this._qCalc));
 
 		projection[2] = transformedClipPlane.x;
 		projection[6] = transformedClipPlane.y;

@@ -1,82 +1,103 @@
 define([
-        'goo/renderer/Material',
-        'goo/renderer/MeshData',
-        'goo/renderer/shaders/ShaderLib',
-        'goo/math/Vector3'
-    ],
-    function (
-        Material,
-        MeshData,
-        ShaderLib) {
-        'use strict';
+		'goo/renderer/Material',
+		'goo/renderer/MeshData',
+		'goo/renderer/shaders/ShaderLib',
+		'goo/math/Transform'
+	],
+	function (Material,
+			  MeshData,
+			  ShaderLib,
+			  Transform) {
+		'use strict';
 
-        /**
-         * used internally to render a batch of lines all with the same color
-         * @param {LineRenderSystem} lineRenderSystemOwner
-         * @param {string} colorStr
-         */
-        function LineRenderer(lineRenderSystemOwner, colorStr)
-        {
-            this.lineRenderSystemOwner = lineRenderSystemOwner;
-
-            //convert string to array
-            var colorArr = JSON.parse(colorStr);
-
-            this._material = new Material(ShaderLib.simpleColored);
-            this._material.uniforms.color = colorArr;
-
-            this._meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), this.MAX_NUM_LINES*2, 0);
-            this._meshData.indexModes = ['Lines'];
-
-            this._vertices = this._meshData.getAttributeBuffer(MeshData.POSITION);
-
-            //create an empty entity used solely for running the simpleColored shader
-            this._entity = this.lineRenderSystemOwner.world.createEntity(this._meshData, this._material).addToWorld();
-            this._entity.meshRendererComponent.cullMode = 'Never';
-
-            this._numRenderingLines = 0;
-            this._meshData.vertexCount = 0;
-        }
-
-        LineRenderer.prototype.MAX_NUM_LINES = 170000;
+		/**
+		 * Used internally to render a batch of lines all with the same color.
+		 * @param {World} world The world in which lines are rendered in.
+		 * @param {Vector3} color
+		 */
+		function LineRenderer(world, color) {
+			this.world = world;
 
 
-        LineRenderer.prototype.update = function()
-        {
-            if(this._numRenderingLines !== 0 || this._meshData.vertexCount !== 0)
-            {
-                this._meshData.vertexCount = Math.min(this._numRenderingLines, this.MAX_NUM_LINES)*2;
-                this._meshData.setVertexDataUpdated();
-            }
-            this._numRenderingLines = 0;
-        };
+			this._material = new Material(ShaderLib.simpleColored);
+			this._material.uniforms.color = [color.x, color.y, color.z];
 
-        LineRenderer.prototype.remove = function()
-        {
-            this._entity.removeFromWorld();
+			this._meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), this.MAX_NUM_LINES * 2, 0);
+			this._meshData.indexModes = ['Lines'];
 
-            this._vertices = undefined;
-            this._meshData.destroy(this.lineRenderSystemOwner.world.gooRunner.renderer.context);
-            this._meshData = undefined;
-            this._material = undefined;
-        };
+			this._vertices = this._meshData.getAttributeBuffer(MeshData.POSITION);
 
+			this._renderObject = {
+				meshData: this._meshData,
+				transform: new Transform(),
+				materials: [this._material]
+			};
 
-        LineRenderer.prototype.addLine = function(start, end) {
-            //no need to continue if we already reached MAX_NUM_LINES
-            if(this._numRenderingLines >= this.MAX_NUM_LINES)
-            {
-                return;
-            }
+			this._rendering = false;
 
-            for(var i=0; i<3; i++)
-            {
-                this._vertices[this._numRenderingLines*6+i] = start.data[i];
-                this._vertices[this._numRenderingLines*6+3+i] = end.data[i];
-            }
+			this._numRenderingLines = 0;
+			this._meshData.vertexCount = 0;
+		}
 
-            this._numRenderingLines++;
-        };
+		LineRenderer.prototype.MAX_NUM_LINES = 170000;
 
-        return LineRenderer;
-    });
+		/**
+		 * Used internally to update the vertexData in meshData
+		 */
+		LineRenderer.prototype._updateVertexData = function () {
+			if (this._numRenderingLines !== 0 || this._meshData.vertexCount !== 0) {
+				this._meshData.vertexCount = Math.min(this._numRenderingLines, this.MAX_NUM_LINES) * 2;
+				this._meshData.setVertexDataUpdated();
+			}
+		};
+
+		/**
+		 * Used internally to clear the rendering line counter
+		 */
+		LineRenderer.prototype._clear = function () {
+			this._numRenderingLines = 0;
+		};
+
+		/**
+		 * Used internally to push or remove itself from the renderList.
+		 * @param {Object[]} renderList An array of all the renderObjects to send to the Renderer.
+		 */
+		LineRenderer.prototype._manageRenderList = function (renderList) {
+			if (!this._rendering && this._numRenderingLines !== 0) {
+				renderList.push(this._renderObject);
+				this._rendering = true;
+			}
+			else if (this._rendering && this._numRenderingLines === 0) {
+				renderList.splice(renderList.indexOf(this._renderObject), 1);
+				this._rendering = false;
+			}
+		};
+
+		/**
+		 * Used internally to remove itself.
+		 */
+		LineRenderer.prototype._remove = function () {
+			this._meshData.destroy(this.world.gooRunner.renderer.context);
+		};
+
+		/**
+		 * Used internally to add a line to the LineRenderer to be rendered next frame.
+		 * @param {Vector3} start
+		 * @param {Vector3} end
+		 */
+		LineRenderer.prototype._addLine = function (start, end) {
+			//no need to continue if we already reached MAX_NUM_LINES
+			if (this._numRenderingLines >= this.MAX_NUM_LINES) {
+				return;
+			}
+
+			for (var i = 0; i < 3; i++) {
+				this._vertices[this._numRenderingLines * 6 + i] = start.data[i];
+				this._vertices[this._numRenderingLines * 6 + 3 + i] = end.data[i];
+			}
+
+			this._numRenderingLines++;
+		};
+
+		return LineRenderer;
+	});

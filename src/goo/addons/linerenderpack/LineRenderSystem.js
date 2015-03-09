@@ -1,155 +1,197 @@
 define([
-	'goo/entities/systems/System',
-	'goo/addons/linerenderpack/LineRenderer',
-	'goo/math/Vector3'
-],
-function (
-		System,
-        LineRenderer,
-		Vector3) {
+		'goo/entities/systems/System',
+		'goo/entities/SystemBus',
+		'goo/addons/linerenderpack/LineRenderer',
+		'goo/math/Vector3'
+	],
+	function (System,
+			  SystemBus,
+			  LineRenderer,
+			  Vector3) {
 		'use strict';
 
-    /**
-     * updates all of its {LineRenderer}'s and exposes methods for drawing primitives
-     * @param {World} world the world this system exists in
-     */
-    function LineRenderSystem(world){
-        System.call(this, 'LineRenderSystem', []);
+		/**
+		 * Updates all of it's LineRenderers and exposes methods for drawing primitive line shapes.
+		 * @param {World} world the world this system exists in.
+		 */
+		function LineRenderSystem(world) {
+			System.call(this, 'LineRenderSystem', []);
 
-        this._renderers = [];
-		this.world = world;
-    }
-    LineRenderSystem.prototype = Object.create(System.prototype);
+			//an associative array for the LineRenderers
+			this._lineRenderers = {};
+			this._lineRendererKeys = [];
 
-	var tmpVec1 = new Vector3();
-	var tmpVec2 = new Vector3();
-	var tmpVec3 = new Vector3();
+			this.world = world;
+			this.camera = null;
 
-    //setup basic colors
-    LineRenderSystem.prototype.WHITE = '[1,1,1]';
-    LineRenderSystem.prototype.RED = '[1,0,0]';
-    LineRenderSystem.prototype.GREEN = '[0,1,0]';
-    LineRenderSystem.prototype.BLUE = '[0,0,1]';
-    LineRenderSystem.prototype.AQUA = '[0,1,1]';
-    LineRenderSystem.prototype.MAGENTA = '[1,0,1]';
-    LineRenderSystem.prototype.YELLOW = '[1,1,0]';
-    LineRenderSystem.prototype.BLACK = '[0,0,0]';
+			/**
+			 *A managed array of all the LineRenderers render objects.
+			 * @type {Object[]}
+			 * */
+			this.renderList = [];
 
-    /**
-     * draws a line between two {@link Vector3}'s with the specified color
-     * @param {Vector3} start
-     * @param {Vector3} end
-     * @param {String} colorStr following the format of '[red,green,blue]' where red,green,blue ranges between 0-1
-     * @example
-     * var v1 = new Vector3(0,0,0);
-     * var v2 = new Vector3(13,3,7);
-     * var redColor = "[1,0,0]";
-     * LineRenderSystem.drawLine(v1, v2, redColor);
-     */
-    LineRenderSystem.prototype.drawLine = function(start, end, colorStr) {
 
-        var lineRenderer = this._renderers[colorStr];
-        if (!lineRenderer)
-        {
-            lineRenderer = this._renderers[this._renderers.length] = new LineRenderer(this, colorStr);
+			var that = this;
+			//add the camera
+			SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+				that.camera = newCam.camera;
+			});
+		}
 
-            //reference a string color index to the actual object
-            this._renderers[colorStr] = lineRenderer;
-        }
-        lineRenderer.addLine(start, end);
-    };
+		LineRenderSystem.prototype = Object.create(System.prototype);
+		LineRenderSystem.prototype.constructor = LineRenderSystem;
 
-    /**
-     * used internally to draw a line for an axis aligned box segment
-     * @param {Vector3} startIn
-     * @param {Vector3} diff
-     * @param {int} startIndex
-     * @param {int} endIndex
-     * @param {float} startMul
-     * @param {float} endMul
-     * @param {String} colorStr
-     * @param {Matrix4x4} transformMatrix
-     */
-    LineRenderSystem.prototype._drawAxisLine = function(startIn, diff, startIndex, endIndex, startMul, endMul, colorStr, transformMatrix) {
-        var start = tmpVec2.setVector(startIn);
-        start.data[startIndex] += diff.data[startIndex]*startMul;
+		var tmpVec1 = new Vector3();
+		var tmpVec2 = new Vector3();
+		var tmpVec3 = new Vector3();
 
-        var end = tmpVec3.setVector(start);
-        end.data[endIndex] += diff.data[endIndex]*endMul;
+		//setup a preset of colors
+		LineRenderSystem.prototype.WHITE = new Vector3(1, 1, 1);
+		LineRenderSystem.prototype.RED = new Vector3(1, 0, 0);
+		LineRenderSystem.prototype.GREEN = new Vector3(0, 1, 0);
+		LineRenderSystem.prototype.BLUE = new Vector3(0, 0, 1);
+		LineRenderSystem.prototype.AQUA = new Vector3(0, 0.5, 0.5);
+		LineRenderSystem.prototype.MAGENTA = new Vector3(1, 0, 1);
+		LineRenderSystem.prototype.YELLOW = new Vector3(1, 1, 0);
+		LineRenderSystem.prototype.BLACK = new Vector3(0, 0, 0);
 
-        if(transformMatrix !== undefined)
-        {
-            transformMatrix.applyPostPoint(start);
-            transformMatrix.applyPostPoint(end);
-        }
 
-        this.drawLine(start, end, colorStr);
-    };
+		/**
+		 * Encodes a {@link Vector3} color to a number.
+		 * Assumes that the color components are between 0-1.
+		 * @param {Vector3} color
+		 * @returns {number} The encoded color.
+		 * @example
+		 * var encodedColorRed = lineRenderSystem.encodeColor(lineRenderSystem.RED);
+		 * console.log(encodedColorRed); // would output: 16777216
+		 */
+		LineRenderSystem.prototype.encodeColor = function (color) {
+			var r = Math.floor(color.r * 255);
+			var g = Math.floor(color.g * 255);
+			var b = Math.floor(color.b * 255);
 
-    /**
-     * draws an axis aligned box between the min and max points, can be transformed to a specific space using the matrix
-     * @param {Vector3} min
-     * @param {Vector3} max
-     * @param {String} colorStr
-     * @param {Matrix4x4} [transformMatrix]
-     */
-    LineRenderSystem.prototype.drawAABox = function(min, max, colorStr, transformMatrix) {
-        for(var a=0; a<3; a++)
-        {
-            var diff = tmpVec1.setVector(max).subVector(min);
-            for(var b=0; b<3; b++)
-            {
-                if(b !== a) {
-                    this._drawAxisLine(min, diff, a, b, 1, 1, colorStr, transformMatrix);
-                }
-            }
+			return r * 65536 + g * 256 + b;
+		};
 
-            this._drawAxisLine(max, diff, a, a, -1, 1, colorStr, transformMatrix);
-            this._drawAxisLine(min, diff, a, a, 1, -1, colorStr, transformMatrix);
-        }
-    };
+		/**
+		 * Draws a line between two {@link Vector3}'s with the specified color.
+		 * @param {Vector3} start
+		 * @param {Vector3} end
+		 * @param {Vector3} color A vector with its components between 0-1.
+		 * @example
+		 * var vector1 = new Vector3(0,0,0);
+		 * var vector2 = new Vector3(13,3,7);
+		 * var redColor = lineRenderSystem.RED;
+		 * lineRenderSystem.drawLine(v1, v2, redColor);
+		 */
+		LineRenderSystem.prototype.drawLine = function (start, end, color) {
 
-    /**
-     * draws a cross at a position with the given color and size
-     * @param {Vector3} position
-     * @param {String} colorStr
-     * @param {float} [size]
-     */
-    LineRenderSystem.prototype.drawCross = function(position, colorStr, size) {
+			var encodedColor = this.encodeColor(color);
 
-        size = size || 0.05;
+			var lineRenderer = this._lineRenderers[encodedColor];
+			if (!lineRenderer) {
+				lineRenderer = this._lineRenderers[encodedColor] = new LineRenderer(this.world, color);
+				this._lineRendererKeys = Object.keys(this._lineRenderers);
+			}
+			lineRenderer._addLine(start, end);
+		};
 
-        var start = tmpVec1.setVector(position).addDirect(-size,0.0,-size);
-        var end = tmpVec2.setVector(position).addDirect(size,0.0,size);
-        this.drawLine(start, end, colorStr);
+		/**
+		 * Used internally to calculate the line segments in an axis aligned box, and render them.
+		 * @param {Vector3} start
+		 * @param {Vector3} startEndDelta
+		 * @param {number} startDataIndex
+		 * @param {number} endDataIndex
+		 * @param {number} startPolarity
+		 * @param {number} endPolarity
+		 * @param {Vector3} color A vector with its components between 0-1.
+		 * @param {Matrix4x4} transformMatrix
+		 */
+		LineRenderSystem.prototype._drawAxisLine = function (start, startEndDelta, startDataIndex, endDataIndex, startPolarity, endPolarity, color, transformMatrix) {
+			var lineStart = tmpVec2.setVector(start);
+			lineStart.data[startDataIndex] += startEndDelta.data[startDataIndex] * startPolarity;
 
-        start = tmpVec1.setVector(position).addDirect(size,0.0,-size);
-        end = tmpVec2.setVector(position).addDirect(-size,0.0,size);
-        this.drawLine(start, end, colorStr);
+			var lineEnd = tmpVec3.setVector(lineStart);
+			lineEnd.data[endDataIndex] += startEndDelta.data[endDataIndex] * endPolarity;
 
-        start = tmpVec1.setVector(position).addDirect(0,-size,0.0);
-        end = tmpVec2.setVector(position).addDirect(0.0,size,0.0);
-        this.drawLine(start, end, colorStr);
-    };
+			if (transformMatrix !== undefined) {
+				transformMatrix.applyPostPoint(lineStart);
+				transformMatrix.applyPostPoint(lineEnd);
+			}
 
-    LineRenderSystem.prototype.process = function (){
-        for(var i=0; i<this._renderers.length; i++) {
-            this._renderers[i].update();
-        }
-    };
+			this.drawLine(lineStart, lineEnd, color);
+		};
 
-    LineRenderSystem.prototype.remove = function (){
-        for(var i=0; i<this._renderers.length; i++)
-        {
-            if(this._renderers[i])
-            {
-                this._renderers[i].remove();
-            }
-        }
-        this._renderers.length = 0;
+		/**
+		 * Draws an axis aligned box between the min and max points, can be transformed to a specific space using the matrix.
+		 * @param {Vector3} min
+		 * @param {Vector3} max
+		 * @param {Vector3} color A vector with its components between 0-1.
+		 * @param {Matrix4x4} [transformMatrix]
+		 */
+		LineRenderSystem.prototype.drawAABox = function (min, max, color, transformMatrix) {
+			var diff = tmpVec1.setVector(max).subVector(min);
 
-        this.world.gooRunner.renderer.clearShaderCache();
-    };
-	
-	return LineRenderSystem;
-});
+			for (var a = 0; a < 3; a++) {
+
+				for (var b = 0; b < 3; b++) {
+					if (b !== a) {
+						this._drawAxisLine(min, diff, a, b, 1, 1, color, transformMatrix);
+					}
+				}
+
+				this._drawAxisLine(max, diff, a, a, -1, 1, color, transformMatrix);
+				this._drawAxisLine(min, diff, a, a, 1, -1, color, transformMatrix);
+			}
+		};
+
+		/**
+		 * Draws a cross at a position with the given color and size.
+		 * @param {Vector3} position
+		 * @param {Vector3} color A vector with its components between 0-1.
+		 * @param {number} [size=0.05]
+		 */
+		LineRenderSystem.prototype.drawCross = function (position, color, size) {
+
+			size = size || 0.05;
+
+			var start = tmpVec1.setVector(position).addDirect(-size, 0.0, -size);
+			var end = tmpVec2.setVector(position).addDirect(size, 0.0, size);
+			this.drawLine(start, end, color);
+
+			start = tmpVec1.setVector(position).addDirect(size, 0.0, -size);
+			end = tmpVec2.setVector(position).addDirect(-size, 0.0, size);
+			this.drawLine(start, end, color);
+
+			start = tmpVec1.setVector(position).addDirect(0, -size, 0.0);
+			end = tmpVec2.setVector(position).addDirect(0.0, size, 0.0);
+			this.drawLine(start, end, color);
+		};
+
+		LineRenderSystem.prototype.render = function (renderer) {
+			for (var i = 0; i < this._lineRendererKeys.length; i++) {
+				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
+				lineRenderer._updateVertexData();
+				lineRenderer._manageRenderList(this.renderList);
+				lineRenderer._clear();
+			}
+
+			renderer.checkResize(this.camera);
+
+			if (this.camera) {
+				renderer.render(this.renderList, this.camera, null, null, false);
+			}
+		};
+
+		LineRenderSystem.prototype.clear = function () {
+			for (var i = 0; i < this._lineRendererKeys.length; i++) {
+				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
+				lineRenderer._remove();
+			}
+			delete this._lineRenderers;
+
+			this.world.gooRunner.renderer.clearShaderCache();
+		};
+
+		return LineRenderSystem;
+	});

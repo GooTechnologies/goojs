@@ -278,11 +278,12 @@ define([
 	 */
 	V.initGoo = function (_options) {
 		var options = {
-			showStats: true && false,
+			showStats: true,
 			logo: {
 				position: 'bottomright',
 				color: '#FFF'
-			}
+			},
+			debugKeys: true
 		};
 
 		if (V.deterministic) {
@@ -294,6 +295,7 @@ define([
 		}
 
 		if (V.minimal) {
+			options.showStats = false;
 			options.logo = false;
 		}
 

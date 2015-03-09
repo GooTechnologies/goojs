@@ -94,6 +94,40 @@ define([
 			expect(corners[7]).toEqual(new Vector3(100,100,-100));
 		});
 
+		describe('setFrustumPerspective', function () {
+			it('safely deals with far planes that are too near', function () {
+				var near = 1;
+				var far = 1;
+				camera.setFrustumPerspective(45, 1, near, far);
+				expect(camera._frustumFar - camera._frustumNear).toBeGreaterThan(0);
+			});
+
+			it('remembers the given bad values for the near and far planes', function () {
+				var near = 1;
+				var far = -1;
+				camera.setFrustumPerspective(45, 1, near, far);
+				expect(camera.near).toBeCloseTo(1);
+				expect(camera.far).toBeCloseTo(-1);
+			});
+		});
+
+		describe('setFrustum', function () {
+			it('safely deals with far planes that are too near', function () {
+				var near = 1;
+				var far = 1;
+				camera.setFrustum(near, far);
+				expect(camera._frustumFar - camera._frustumNear).toBeGreaterThan(0);
+			});
+
+			it('remembers the given bad values for the near and far planes', function () {
+				var near = 1;
+				var far = -1;
+				camera.setFrustum(near, far);
+				expect(camera.near).toBeCloseTo(1);
+				expect(camera.far).toBeCloseTo(-1);
+			});
+		});
+
 		describe('copy', function () {
 			it('can copy everything from another camera', function () {
 				var original = new Camera(50, 2, 2, 2000);
