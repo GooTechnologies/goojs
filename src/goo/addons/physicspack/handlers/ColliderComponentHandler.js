@@ -112,6 +112,12 @@ define([
 			component.isTrigger = config.isTrigger;
 			component._dirty = true;
 
+			entity.traverseUp(function (entity) {
+				if (entity.rigidBodyComponent) {
+					entity.rigidBodyComponent.initialize();
+				}
+			});
+
 			return component;
 		});
 	};

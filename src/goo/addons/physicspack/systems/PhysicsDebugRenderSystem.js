@@ -122,10 +122,6 @@ function (
 			if (entity.colliderComponent && entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidBodyComponent) {
 				var bodyEntity = entity.colliderComponent.bodyEntity;
 
-				if (!entity.colliderComponent) {
-					continue;
-				}
-
 				var collider = entity.colliderComponent.worldCollider;
 				var meshData = this.getMeshData(collider);
 				var renderable = this.renderablePool.get(meshData, this.material);
