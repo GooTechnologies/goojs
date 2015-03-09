@@ -18,16 +18,13 @@ define([
 	/**
 	 * Holds the animation data.
 	 * @extends Component
+	 * @param {SkeletonPose} pose pose
 	 */
 	function AnimationComponent(pose) {
 		Component.apply(this, arguments);
 
-		/**
-		 * @type {string}
-		 * @readonly
-		 * @default
-		 */
 		this.type = 'AnimationComponent';
+
 		/**
 		 * @type {AnimationLayer[]}
 		 */

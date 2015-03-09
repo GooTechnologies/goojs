@@ -27,8 +27,8 @@ define([
 
 	/**
 	 * Handles pre-rendering of water planes. Attach this to the rendersystem pre-renderers.
-	 * @param {ArrayBuffer} data Data to wrap
-	 * @property {ArrayBuffer} data Data to wrap
+	 * @param {Object} [settings] Water settings passed in a JSON object
+	 * @param {boolean} [settings.divider=1] Resolution divider for reflection/refraction
 	 */
 	function ProjectedGridWaterRenderer(settings) {
 		this.waterCamera = new Camera(45, 1, 0.1, 2000);

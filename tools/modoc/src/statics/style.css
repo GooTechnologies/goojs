@@ -123,9 +123,9 @@ ICOMOON
 	color: #c8c651;
 }
 
-.icon-warning-purple:before {
-    content: "\e600";
-    color: #cc76a4;
+.icon-warning-gray:before {
+	content: "\e600";
+	color: #b5b5b5;
 }
 
 .icon-arrow-up:before {
@@ -300,7 +300,7 @@ article:first-child { padding-top: 50px;}
 
 section { margin-bottom: 50px; }
 
-div { margin-bottom: 15px; }
+div { margin-bottom: 10px; }
 
 ul {
 	margin: 0;
@@ -339,6 +339,18 @@ li {
 	font-family: 'Roboto', sans-serif;
 }
 
+.parameter-description ul {
+	padding: 0px;
+	padding-left: 40px;
+	padding-bottom: 0px;
+	list-style-type: disc;
+}
+
+.parameter-description ul li {
+	margin-bottom: 0px;
+}
+
+
 .parameter-doc { margin-left: 20px; }
 
 .parameter-doc:last-child { margin-bottom: 50px; }
@@ -366,7 +378,7 @@ pre {
 }
 
 .hljs {
-	padding: 20px;
+	padding: 10px 15px 10px 15px;
 	line-height: 1.6em;
 	word-break: break-word;
 	color: #b5b5b5;
@@ -391,8 +403,6 @@ SYNTAX & COLORS
 }
 
 .readonly { color: #91cf4b; }
-
-.virtual { color: #cc76a4; }
 
 .extends {
 	color: #555555;

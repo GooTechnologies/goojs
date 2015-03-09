@@ -35,6 +35,10 @@
 				<div>Example: <a class="example-link" href="{{link}}">{{text}}</a></div>
 			{{/constructor.comment.exampleLink}}
 
+			{{#constructor.comment.example}}
+				<pre><code class="javascript">{{.}}</code></pre>
+			{{/constructor.comment.example}}
+
 			{{#constructor.comment.deprecated}}
 				<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>
 			{{/constructor.comment.deprecated}}
@@ -62,10 +66,6 @@
 						<span class="parameter-description">{{{description}}}</span>
 					</div>
 				{{/param}}
-
-				{{#example}}
-					<pre><code class="javascript">{{.}}</code></pre>
-				{{/example}}
 			</div>
 		</section>
 	{{/constructor.comment}}
@@ -138,6 +138,9 @@
 
 			{{#methods}}
 				<div class="bottom-30">
+					{{#comment.virtual}}
+						<span class="icon-warning-gray virtual roboto"> virtual</span>
+					{{/comment.virtual}}
 					<a id="{{name}}" href="#{{name}}">
 						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
 					</a> :: (
@@ -148,13 +151,9 @@
 					{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
 
 					<div class="comment">
-						{{#comment.virtual}}
-							<span class="icon-warning-purple virtual roboto"> virtual</span>
-						{{/comment.virtual}}
-
 						<span class="description">{{{comment.description}}}</span>
 
-						{{#comment.deprecated}}<span class="deprecated-description">{{{description}}}</span>{{/comment.deprecated}}
+						{{#comment.deprecated}}<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>{{/comment.deprecated}}
 						{{#comment.param}}
 							<div class="parameter-doc">
 								<span class="parameter-name">{{name}}</span>
@@ -199,7 +198,7 @@
 
 					<div class="comment">
 						<span class="description">{{{comment.description}}}</span>
-						{{#comment.deprecated}}<span class="deprecated-description">{{{description}}}</span>{{/comment.deprecated}}
+						{{#comment.deprecated}}<div class="deprecated-description"><span class="icon-warning"></span>{{{description}}}</div>{{/comment.deprecated}}
 						{{#comment.param}}
 							<div class="parameter-doc">
 								<span class="parameter-name">{{name}}</span>

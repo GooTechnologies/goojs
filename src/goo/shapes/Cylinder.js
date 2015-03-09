@@ -30,11 +30,6 @@ define([
 		this.radiusBottom = typeof radiusBottom === 'undefined' ? this.radiusTop : radiusBottom;
 		this.height = typeof height === 'undefined' ? 1 : height;
 
-		/** @type {number}
-		 * @deprecated
-		 */
-		this.radius = this.radiusTop;
-
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 		MeshData.call(this, attributeMap, this.radialSamples * 4 + 2 + 2, (this.radialSamples * 3) * 4);
 
