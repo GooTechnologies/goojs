@@ -34,9 +34,11 @@ require([
 	var material = new Material(ShaderLib.uber);
 
 	var numBoxes = 5;
-	var size = 2.5;
 	var spread = 8.0;
-	var box = new Box(size*4, size, size*0.2);
+	// var size = 2.5;
+	// var box = new Box(size*4, size, size*0.2);
+	var size = 1;
+	var box = new Box(size, size, size);
 	var transform = new Transform();
 	transform.translation.z = -box.zExtent;
 	transform.update();
@@ -47,10 +49,17 @@ require([
 				var domElement = document.createElement('div');
 				domElement.className = 'object';
 
-				var htmlComponent = new CSSTransformComponent(domElement);
-				htmlComponent.scale = 0.1;
-				htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
+				var width = (0.5+V.rng.nextFloat()*3);
+				var height = (0.5+V.rng.nextFloat()*3);
+				var htmlComponent = new CSSTransformComponent(domElement, {
+					width: width,
+					height: height
+					// backfaceVisibility: 'visible'
+				});
 
+				// Make some elements use the faceCamera setting
+				htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
+				// htmlComponent.faceCamera = true;
 				if (htmlComponent.faceCamera) {
 					domElement.innerHTML = '<div>Goo_FaceCam</div>';
 				} else {
@@ -63,7 +72,14 @@ require([
 					size * (k - numBoxes / 2) * spread
 				];
 				var entity = world.createEntity(position, box, material, htmlComponent);
+				entity.setScale(width, height, 0.5+V.rng.nextFloat()*2);
+				// entity.setScale(width, height, 1);
 				entity.addToWorld();
+
+				// var script = function (entity) {
+					// entity.setScale(Math.sin(world.time)+1, 1, 1);
+				// };
+				// entity.set(script);
 
 				if (V.rng.nextFloat() > 0.7) {
 					var r1 = V.rng.nextFloat();

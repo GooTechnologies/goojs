@@ -27,7 +27,10 @@ define([
 		 * @type {number}
 		 * @default 1
 		 */
-		this.scale = settings.scale || 1;
+		this.scale = settings.scale || 0.01;
+
+		this.width = settings.width || 1;
+		this.height = settings.height || 1;
 
 		// this.useTransformComponent = settings.useTransformComponent !== undefined ? settings.useTransformComponent : true;
 
