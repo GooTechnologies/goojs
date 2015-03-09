@@ -40,8 +40,6 @@ function (
 ) {
 	'use strict';
 
-	/* global CANNON */
-
 	/**
 	 * Renders all ColliderComponents in the scene.
 	 * @extends System
@@ -101,8 +99,6 @@ function (
 	PhysicsDebugRenderSystem.prototype = Object.create(System.prototype);
 	PhysicsDebugRenderSystem.prototype.constructor = PhysicsDebugRenderSystem;
 
-	var tmpQuaternion = new Quaternion();
-
 	/**
 	 * @private
 	 * @param  {array} entities
@@ -122,8 +118,7 @@ function (
 			if (entity.colliderComponent && entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidBodyComponent) {
 				var bodyEntity = entity.colliderComponent.bodyEntity;
 
-				var cannonBody = bodyEntity.rigidBodyComponent.cannonBody;
-				if (!cannonBody || !entity.colliderComponent.cannonShape) {
+				if (!entity.colliderComponent) {
 					continue;
 				}
 
@@ -141,10 +136,6 @@ function (
 		}
 	};
 
-	// Cannot allocate these until CANNON is loaded for sure.
-	var cannonWorldShapePosition;
-	var cannonWorldShapeQuaternion;
-
 	/**
 	 * Get the world transform of the debug rendering mesh data from a collider.
 	 * @private
@@ -154,29 +145,7 @@ function (
 	 * @param  {Transform} targetTransform
 	 */
 	PhysicsDebugRenderSystem.prototype.getWorldTransform = function (bodyEntity, colliderEntity, collider, targetTransform) {
-		var cannonBody = bodyEntity.rigidBodyComponent.cannonBody;
-		cannonWorldShapePosition = cannonWorldShapePosition || new CANNON.Vec3();
-		cannonWorldShapeQuaternion = cannonWorldShapeQuaternion || new CANNON.Quaternion();
-
-		var cannonShapeIndex = cannonBody.shapes.indexOf(colliderEntity.colliderComponent.cannonShape);
-		var cannonLocalShapePosition = cannonBody.shapeOffsets[cannonShapeIndex];
-		var cannonLocalShapeQuaternion = cannonBody.shapeOrientations[cannonShapeIndex];
-		cannonBody.quaternion.mult(cannonLocalShapeQuaternion, cannonWorldShapeQuaternion);
-		cannonBody.quaternion.vmult(cannonLocalShapePosition, cannonWorldShapePosition);
-		cannonWorldShapePosition.vadd(cannonBody.position, cannonWorldShapePosition);
-
-		// Convert translation
-		var translation = targetTransform.translation;
-		translation.x = cannonWorldShapePosition.x;
-		translation.y = cannonWorldShapePosition.y;
-		translation.z = cannonWorldShapePosition.z;
-
-		// Convert quaternion
-		tmpQuaternion.x = cannonWorldShapeQuaternion.x;
-		tmpQuaternion.y = cannonWorldShapeQuaternion.y;
-		tmpQuaternion.z = cannonWorldShapeQuaternion.z;
-		tmpQuaternion.w = cannonWorldShapeQuaternion.w;
-		targetTransform.rotation.copyQuaternion(tmpQuaternion);
+		targetTransform.copy(colliderEntity.transformComponent.worldTransform);
 
 		if (collider instanceof SphereCollider) {
 			var scale = collider.radius;
