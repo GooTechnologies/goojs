@@ -8,10 +8,10 @@ define([
 	/**
 	 * Connects a domElement to an entity and applies the transformComponent of the entity to the domElement with CSS3 3D transforms.
 	 * @param {domElement} domElement
-	 * @param {boolean} faceCamera
+	 * @param {Object} settings
 	 * @extends Component
 	 */
-	function CSSTransformComponent(domElement, faceCamera) {
+	function CSSTransformComponent(domElement, settings) {
 		Component.apply(this, arguments);
 
 		this.type = 'CSSTransformComponent';
@@ -21,16 +21,20 @@ define([
 		 */
 		this.domElement = domElement;
 
+		settings = settings || {};
+
 		/** 
 		 * @type {number}
 		 * @default 1
 		 */
-		this.scale = 1;
+		this.scale = settings.scale || 1;
+
+		this.backfaceVisibility = settings.backfaceVisibility || 'hidden'; //'visible'
 
 		/**
 		 * @type {boolean}
 		 */
-		this.faceCamera = faceCamera === undefined ? false : faceCamera;
+		this.faceCamera = settings.faceCamera === undefined ? false : settings.faceCamera;
 
 		// #ifdef DEBUG
 		Object.seal(this);

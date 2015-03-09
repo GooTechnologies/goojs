@@ -28,28 +28,47 @@ define([
 			this.camera = newCam.camera;
 		}.bind(this));
 
-        if (document.querySelector) {
-		    this.viewDom = document.querySelector('#view');
-		    this.containerDom = document.querySelector('#cam1');
-		    this.containerDom2 = document.querySelector('#cam2');
-        }
+		var domElement = this.viewDom = document.createElement('div');
+		document.body.appendChild(domElement);
+		domElement.style.position = 'absolute';
+		domElement.style.overflow = 'hidden';
+		domElement.style.pointerEvents = 'none';
+		domElement.style.WebkitTransformStyle = 'preserve-3d';
+		domElement.style.transformStyle = 'preserve-3d';
+		domElement.style.width = '100%';
+		domElement.style.height = '100%';
+		domElement.style.top = '0px';
+		domElement.style.bottom = '0px';
+		domElement.style.left = '0px';
+		domElement.style.right = '0px';
+
+		var cameraElement = this.containerDom = document.createElement('div');
+		cameraElement.style.WebkitTransformStyle = 'preserve-3d';
+		cameraElement.style.transformStyle = 'preserve-3d';
+		cameraElement.style.width = '100%';
+		cameraElement.style.height = '100%';
+
+		domElement.appendChild( cameraElement );
+
+		// SystemBus.addListener('goo.viewportResize', function(data) {
+		// 	this.viewDom.style.width = data.width + 'px';
+		// 	this.viewDom.style.height = data.height + 'px';
+		// 	this.containerDom.style.width = data.width + 'px';
+		// 	this.containerDom.style.height = data.height + 'px';
+		// }.bind(this));
+
+		this.prefixes = ['', '-webkit-'];
+		this.styleCache = new Map();
 	}
 
 	var tmpMatrix = new Matrix4x4();
-	var tmpMatrix2 = new Matrix4x4();
+	// var tmpMatrix2 = new Matrix4x4();
 	var tmpVector = new Vector3();
 
 	CSSTransformSystem.prototype = Object.create(System.prototype);
 	CSSTransformSystem.prototype.constructor = CSSTransformSystem;
 
-	var prefixes = ['', '-webkit-'];
-	var setStyle = function (element, property, style) {
-		for (var j = 0; j < prefixes.length; j++) {
-			element.style[prefixes[j] + property] = style;
-		}
-	};
-
-	var getCSSMatrix = function (matrix) {
+	var getCameraCSSMatrix = function (matrix) {
 		var elements = matrix.data;
 
 		return 'matrix3d('
@@ -59,29 +78,66 @@ define([
 			+ elements[12] + ',' + (-elements[13]) + ',' + elements[14] + ',' + elements[15] + ')';
 	};
 
+	var getEntityCSSMatrix = function (matrix) {
+		var elements = matrix.data;
+
+		return 'translate3d(-50%,-50%,0) matrix3d('
+			+ elements[0] + ',' + elements[1] + ',' + elements[2] + ',' + elements[3] + ','
+			+ (-elements[4]) + ',' + (-elements[5]) + ',' + (-elements[6]) + ',' + (-elements[7]) + ','
+			+ elements[8] + ',' + elements[9] + ',' + elements[10] + ',' + elements[11] + ','
+			+ elements[12] + ',' + elements[13] + ',' + elements[14] + ',' + elements[15] + ')';
+	};
+
+	CSSTransformSystem.prototype.setStyle = function (element, property, style) {
+		var cachedStyle = this.styleCache.get(element);
+
+		if (style !== cachedStyle) {
+			for (var j = 0; j < this.prefixes.length; j++) {
+				element.style[this.prefixes[j] + property] = style;
+			}
+			this.styleCache.set(element, style);
+		}
+	};
+
+	CSSTransformSystem.prototype.inserted = function (entity) {
+		var component = entity.getComponent('CSSTransformComponent');
+		var domElement = component.domElement;
+		domElement.style.position = 'absolute';
+		domElement.style.WebkitBackfaceVisibility = component.backfaceVisibility;
+		domElement.style.backfaceVisibility = component.backfaceVisibility;
+		if (domElement.parentNode !== this.containerDom) {
+			this.containerDom.appendChild(domElement);
+		}
+	};
+
+	CSSTransformSystem.prototype.deleted = function (entity) {
+		var domElement = entity.getComponent('CSSTransformComponent').domElement;
+		if (domElement.parentNode !== null) {
+			domElement.parentNode.removeChild(domElement);
+		}
+	};
+
 	CSSTransformSystem.prototype.process = function (entities) {
-		if (!this.camera) {
+		var camera = this.camera;
+		if (!camera) {
 			return;
 		}
 
-		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * this.camera.fov * 0.5) * this.renderer.domElement.offsetHeight;
-		setStyle(this.viewDom, 'perspective', fov + 'px');
-
-		var viewInverseMatrix = this.camera.getViewInverseMatrix();
 		var style;
 
-		tmpMatrix.copy(viewInverseMatrix);
-		tmpMatrix.invert();
-		tmpMatrix.setTranslation(tmpVector.setDirect(0, 0, fov));
-		style = getCSSMatrix(tmpMatrix);
-		setStyle(this.containerDom, 'transform', style);
+		var width = this.renderer.viewportWidth;
+		var height = this.renderer.viewportHeight;
+		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * camera.fov * 0.5) * height;
 
-		tmpMatrix2.e03 = -viewInverseMatrix.e03;
-		tmpMatrix2.e13 = viewInverseMatrix.e13;
-		tmpMatrix2.e23 = -viewInverseMatrix.e23;
-		style = getCSSMatrix(tmpMatrix2);
-		setStyle(this.containerDom2, 'transform', style);
+		this.setStyle(this.viewDom, 'perspective', fov + 'px');
 
+		var viewMatrix = camera.getViewMatrix();
+		style = 'translate3d(0,0,' + fov + 'px)' + 
+				getCameraCSSMatrix(viewMatrix) +
+				' translate3d(' + (width/2) + 'px,' + (height/2) + 'px, 0)';
+		this.setStyle(this.containerDom, 'transform', style);
+
+		var viewInverseMatrix = camera.getViewInverseMatrix();
 		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
 			var component = entity.getComponent('CSSTransformComponent');
@@ -90,24 +146,57 @@ define([
 				continue;
 			}
 
+			// Always show if not using transform (if not hidden)
+			if (!component.useTransformComponent) {
+				component.domElement.style.display = component.hidden ? 'none' : '';
+				setStyle(component.domElement, 'transform', '');
+				continue;
+			}
+
+			// Hidden
+			if (component.hidden) {
+				component.domElement.style.display = 'none';
+				continue;
+			}
+
+			// Behind camera
+			tmpVector.setVector(camera.translation).subVector(entity.transformComponent.worldTransform.translation);
+			if (camera._direction.dot(tmpVector) > 0) {
+				component.domElement.style.display = 'none';
+				continue;
+			}
+
+			// Behind near plane
+			camera.getScreenCoordinates(entity.transformComponent.worldTransform.translation, width, height, tmpVector);
+			if (tmpVector.z < 0) {
+				if (component.hidden !== true) {
+					component.domElement.style.display = 'none';
+					//component.hidden = true;
+				}
+				continue;
+			}
+
+			component.domElement.style.display = '';
+
 			var domElement = component.domElement;
 			var scale = component.scale;
-			var scaleStr = scale + ',' + (-scale) + ',' + scale;
 
 			if (component.faceCamera) {
-				entity.transformComponent.worldTransform.matrix.getTranslation(tmpVector);
 				tmpMatrix.copy(viewInverseMatrix);
+
+				entity.transformComponent.worldTransform.matrix.getTranslation(tmpVector);
 				tmpMatrix.setTranslation(tmpVector);
+
+				entity.transformComponent.worldTransform.matrix.getScale(tmpVector);
+				tmpMatrix.setScale(tmpVector);
+
+				style = getEntityCSSMatrix(tmpMatrix, scale);
 			} else {
-				tmpMatrix.copy(entity.transformComponent.worldTransform.matrix);
+				style = getEntityCSSMatrix(entity.transformComponent.worldTransform.matrix);
 			}
+			style += ' scale3d('+scale+','+scale+','+scale+')';
 
-			style = 'translate3d(-50%,-50%,0) ' + getCSSMatrix(tmpMatrix) + ' scale3d(' + scaleStr + ')';
-			setStyle(domElement, 'transform', style);
-
-			if (domElement.parentNode !== this.containerDom2) {
-				this.containerDom2.appendChild(domElement);
-			}
+			this.setStyle(domElement, 'transform', style);
 		}
 	};
 

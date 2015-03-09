@@ -6,6 +6,7 @@ require([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Box',
 	'goo/math/Vector3',
+	'goo/math/Transform',
 	'lib/V'
 ], function (
 	Camera,
@@ -15,6 +16,7 @@ require([
 	ShaderLib,
 	Box,
 	Vector3,
+	Transform,
 	V
 	) {
 	'use strict';
@@ -32,14 +34,18 @@ require([
 	var material = new Material(ShaderLib.uber);
 
 	var numBoxes = 5;
-	var size = 2;
+	var size = 2.5;
 	var spread = 8.0;
 	var box = new Box(size*4, size, size*0.2);
+	var transform = new Transform();
+	transform.translation.z = -box.zExtent;
+	transform.update();
+	box.applyTransform('POSITION', transform);
 	for (var i = 0; i < numBoxes; i++) {
 		for (var j = 0; j < numBoxes; j++) {
 			for (var k = 0; k < numBoxes; k++) {
 				var domElement = document.createElement('div');
-				domElement.className = 'object assembly';
+				domElement.className = 'object';
 
 				var htmlComponent = new CSSTransformComponent(domElement);
 				htmlComponent.scale = 0.1;
@@ -51,7 +57,11 @@ require([
 					domElement.innerHTML = '<div>Goo_'+i+'_'+j+'_'+k+'</div>';
 				}
 
-				var position = [size * (i - numBoxes / 2) * spread, size * (j - numBoxes / 2) * spread, size * (k - numBoxes / 2) * spread];
+				var position = [
+					size * (i - numBoxes / 2) * spread,
+					size * (j - numBoxes / 2) * spread,
+					size * (k - numBoxes / 2) * spread
+				];
 				var entity = world.createEntity(position, box, material, htmlComponent);
 				entity.addToWorld();
 
