@@ -106,6 +106,10 @@ function (
 	PhysicsDebugRenderSystem.prototype.process = function (entities) {
 		this.clear();
 
+		if (this.passive) {
+			return;
+		}
+
 		for (var i = 0, N = entities.length; i !== N; i++) {
 			var entity = entities[i];
 

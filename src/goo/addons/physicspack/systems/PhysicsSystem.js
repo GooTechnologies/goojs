@@ -437,11 +437,8 @@ function (
 	 * @param  {number} tpf
 	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
-
 		this.initialize(entities);
-
 		this.step(tpf);
-
 		this.syncTransforms(entities);
 	};
 

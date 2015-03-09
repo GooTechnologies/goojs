@@ -111,6 +111,7 @@ define([
 			component.material.restitution = config.restitution;
 			component.isTrigger = config.isTrigger;
 			component._dirty = true;
+
 			return component;
 		});
 	};
