@@ -138,6 +138,9 @@
 
 			{{#methods}}
 				<div class="bottom-30">
+					{{#comment.virtual}}
+						<span class="icon-warning-gray virtual roboto"> virtual</span>
+					{{/comment.virtual}}
 					<a id="{{name}}" href="#{{name}}">
 						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
 					</a> :: (
@@ -146,9 +149,6 @@
 					{{/params}}
 					)
 					{{#comment.returns}} -> <span class="parameter-type">{{{type}}}</span>{{/comment.returns}}
-					{{#comment.virtual}}
-						<span class="icon-warning-purple virtual roboto"> virtual</span>
-					{{/comment.virtual}}
 
 					<div class="comment">
 						<span class="description">{{{comment.description}}}</span>

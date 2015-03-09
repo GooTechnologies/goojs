@@ -123,9 +123,9 @@ ICOMOON
 	color: #c8c651;
 }
 
-.icon-warning-purple:before {
-    content: "\e600";
-    color: #cc76a4;
+.icon-warning-gray:before {
+	content: "\e600";
+	color: #b5b5b5;
 }
 
 .icon-arrow-up:before {
@@ -403,8 +403,6 @@ SYNTAX & COLORS
 }
 
 .readonly { color: #91cf4b; }
-
-.virtual { color: #cc76a4; }
 
 .extends {
 	color: #555555;
