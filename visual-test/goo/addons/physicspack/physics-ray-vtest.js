@@ -1,6 +1,7 @@
 require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/RenderQueue',
 	'goo/renderer/light/DirectionalLight',
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder',
@@ -22,6 +23,7 @@ require([
 	'lib/V'
 ], function (Material,
 			 ShaderLib,
+			 RenderQueue,
 			 DirectionalLight,
 			 Box,
 			 Cylinder,
@@ -75,13 +77,20 @@ require([
 
 	var meshColliderMaterial = new Material('MeshColliderMaterial', ShaderLib.uber);
 	meshColliderMaterial.uniforms.materialAmbient = [0.5, 0.5, 0, 1];
+	meshColliderMaterial.uniforms.opacity = 0.5;
+	meshColliderMaterial.blendState.blending = 'CustomBlending';
+	meshColliderMaterial.renderQueue = RenderQueue.TRANSPARENT;
+	meshColliderMaterial.depthState.write = false;
 
 	var primitiveColliderMaterial = new Material('PrimitiveColliderMaterial', ShaderLib.uber);
 	primitiveColliderMaterial.uniforms.materialAmbient = [0.0, 0.5, 0.5, 1];
+	primitiveColliderMaterial.uniforms.opacity = 0.5;
+	primitiveColliderMaterial.blendState.blending = 'CustomBlending';
+	primitiveColliderMaterial.renderQueue = RenderQueue.TRANSPARENT;
+	primitiveColliderMaterial.depthState.write = false;
 
 	var numBodiesPerRow = 4;
-	var numBodies = numBodiesPerRow*numBodiesPerRow;
-	var halfNumBodies = numBodies * 0.5;
+	var numBodies = numBodiesPerRow * numBodiesPerRow;
 
 	for (var i = 0; i < numBodies; i++) {
 
@@ -91,7 +100,7 @@ require([
 		var material = meshColliderMaterial;
 
 
-		if (i > halfNumBodies) {
+		if (i % 2) {
 			isPrimitiveCollider = true;
 		}
 
@@ -134,23 +143,25 @@ require([
 		rigidBodyComponent = new RigidbodyComponent({mass: 0});
 		rigidBodys.push(rigidBodyComponent);
 		colliderComponent = new ColliderComponent({collider: shapeCollider});
-		world.createEntity(shape, material, [i%numBodiesPerRow, 0, Math.floor(i/numBodiesPerRow)], rigidBodyComponent, colliderComponent).addToWorld();
+		world.createEntity(shape, material, [i % numBodiesPerRow, 0, Math.floor(i / numBodiesPerRow)], rigidBodyComponent, colliderComponent).addToWorld();
 	}
 
 
 	var rayStart = new Vector3(-4, 0, 0);
-	var rayDirection = new Vector3(1, 0, 0);
-	var rayLength = 10;
+	var rayDirection = new Vector3(0.85, 0, 0).normalize();
+	var rayLength = 8;
 
 	var rayEnd = new Vector3();
 
 	var normalEndPosition = new Vector3();
+	var drawNormal = function (position, normal) {
+		normalEndPosition.setVector(normal).mul(0.5).addVector(position);
+
+		lineRenderSystem.drawLine(position, normalEndPosition, lineRenderSystem.BLUE);
+	};
 
 	var callback = function (result) {
-		var normalStartPosition = result.point;
-		normalEndPosition.setVector(result.normal).mul(0.5).addVector(normalStartPosition);
-
-		lineRenderSystem.drawLine(normalStartPosition, normalEndPosition, lineRenderSystem.BLUE);
+		drawNormal(result.point, result.normal);
 	};
 
 	var tmpQuaternion = new Quaternion();
@@ -159,36 +170,44 @@ require([
 		for (var i = 0; i < rigidBodys.length; i++) {
 			var rigidBody = rigidBodys[i];
 
-			//set the rotation axis unique for the rigidbodies
-			rotationAxis.setDirect((i % 4 === 0), (i % 4 === 1), (i % 4 === 2));
+			//set the rotation axis for the quaternion
+			rotationAxis.setDirect((i % 4 === 0) + (i % 2 === 0), 0.9, (i % 4 === 2) + (i % 2 === 1)).normalize();
 
 			//rotate the rigidbody around the rotationAxis
 			rigidBody.setQuaternion(tmpQuaternion.fromAngleNormalAxis(Math.sin(world.time * 0.7), rotationAxis));
 		}
 	};
 
+	var rayCastResult = new RaycastResult();
+
 	var update = function () {
 
 		rotateRigidBodys();
 
-		rayStart.setDirect(-3, 0, Math.sin(world.time) * 0.3);
-		rayDirection.setDirect(0.85, 0, 0).normalize();
+		for (var i = 0; i < 4; i++) {
+			rayStart.setDirect(-2, Math.cos(world.time) * 0.2, i + Math.sin(world.time) * 0.2);
+			rayEnd.setVector(rayDirection).mul(rayLength).addVector(rayStart);
 
-		//var result = new RaycastResult();
-		var hit = physicsSystem.raycastAll(rayStart, rayDirection, rayLength, {skipBackfaces: true}, callback);
-
-		//callback(result);
-
-
-		rayEnd.setVector(rayDirection).mul(rayLength).addVector(rayStart);
-		if (hit) {
 			lineRenderSystem.drawLine(rayStart, rayEnd, lineRenderSystem.GREEN);
-		}
-		else {
-			lineRenderSystem.drawLine(rayStart, rayEnd, lineRenderSystem.RED);
-		}
+			lineRenderSystem.drawCross(rayStart, lineRenderSystem.YELLOW);
 
-		lineRenderSystem.drawCross(rayStart, lineRenderSystem.YELLOW);
+			switch (i) {
+				case 0:
+					physicsSystem.raycastAll(rayStart, rayDirection, rayLength, {skipBackfaces: true}, callback);
+					break;
+				case 1:
+					physicsSystem.raycastAny(rayStart, rayDirection, rayLength, {skipBackfaces: true}, rayCastResult);
+					drawNormal(rayCastResult.point, rayCastResult.normal);
+					break;
+				case 2:
+					physicsSystem.raycastClosest(rayStart, rayDirection, rayLength, {skipBackfaces: true}, rayCastResult);
+					drawNormal(rayCastResult.point, rayCastResult.normal);
+					break;
+				case 3:
+					physicsSystem.raycastAll(rayStart, rayDirection, rayLength, {skipBackfaces: false}, callback);
+					break;
+			}
+		}
 	};
 
 	goo.callbacks.push(update);
