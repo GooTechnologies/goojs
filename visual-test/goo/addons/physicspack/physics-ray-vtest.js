@@ -49,7 +49,7 @@ require([
 		'<b>Red Line</b>: raycastAll<br>' +
 		'<b>Green Line</b>: raycastAny<br>' +
 		'<b>White Line</b>: raycastClosest<br>' +
-		'<b>Green Line</b>: raycastAll with backfaces<br>' +
+		'<b>Magenta Line</b>: raycastAll - with backfaces<br>' +
 		'<b>Yellow Shapes</b>: mesh colliders<br>' +
 		'<b>Blue Shapes</b>: primitive colliders<br>');
 
