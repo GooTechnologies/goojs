@@ -7,6 +7,10 @@
  * with
  * `goo.Module = (function (solvedDependencies...) { return Module })(namespacedDependencies...);`
  *
+ * Example usage:
+ *
+ * node tools/derequire.js out/mypack.js [out/mypack.dereq.js]
+ *
  * Note: use this on minified modules obtained with the minifyDir script
  */
 
@@ -113,8 +117,8 @@ if (process.argv.length < 3) {
 	return;
 }
 
-var inFileName = process.argv[2] || 'out/fish.js';
-var outFileName = process.argv[3] || (inFileName.substr(0, inFileName.length - 3) + '.dereq.js');
+var inFileName = process.argv[2];
+var outFileName = process.argv[3] || (inFileName.slice(0, -3) + '.dereq.js');
 
 var source = fs.readFileSync(inFileName, 'utf8');
 

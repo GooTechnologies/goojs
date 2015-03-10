@@ -1,4 +1,4 @@
-/* global module */
+// jshint node:true
 
 var path = require('path');
 
@@ -27,62 +27,6 @@ module.exports = function (grunt) {
 			]
 		},
 		'build-pack': {
-			fsmpack: {
-				packPath: 'fsmpack'
-			},
-			geometrypack: {
-				packPath: 'geometrypack'
-			},
-			quadpack: {
-				packPath: 'quadpack'
-			},
-			timelinepack: {
-				packPath: 'timelinepack'
-			},
-			debugpack: {
-				packPath: 'debugpack'
-			},
-			scriptpack: {
-				packPath: 'scriptpack'
-			},
-			p2pack: {
-				packPath: 'addons/p2pack'
-			},
-			box2dpack: {
-				packPath: 'addons/box2dpack'
-			},
-			terrainpack: {
-				packPath: 'addons/terrainpack'
-			},
-			ammopack: {
-				packPath: 'addons/ammopack'
-			},
-			cannonpack: {
-				packPath: 'addons/cannonpack'
-			},
-			waterpack: {
-				packPath: 'addons/waterpack'
-			},
-			animationpack: {
-				packPath: 'animationpack'
-			},
-			soundmanager2pack: {
-				packPath: 'addons/soundmanager2pack'
-			},
-			gamepadpack: {
-				packPath: 'addons/gamepadpack'
-			},
-			passpack: {
-				packPath: 'passpack'
-			},
-			gizmopack: {
-				packPath: 'util/gizmopack'
-			},
-			physicspack: {
-				packPath: 'addons/physicspack'
-			}
-		},
-		'build-pack-2': {
 			fsmpack: {
 				packPath: 'fsmpack'
 			},
@@ -216,7 +160,7 @@ module.exports = function (grunt) {
 		'requirejs:build',
 		'uglify:build', 
 		'wrap',
-		'build-pack-2'
+		'build-pack'
 	]);
 	grunt.registerTask('unittest',	 ['karma:unit']);
 	grunt.registerTask('coverage',	 ['unittest']);
