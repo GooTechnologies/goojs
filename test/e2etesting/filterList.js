@@ -32,6 +32,7 @@ var filterList = [
 	'Cannon-cylinder',
 	'Spline',
 	'TextComponent',
+	'TextMeshGenerator',
 	'linerenderpack'
 ];
 
