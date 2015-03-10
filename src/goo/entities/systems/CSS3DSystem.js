@@ -30,6 +30,7 @@ define([
 
 		var domElement = this.viewDom = document.createElement('div');
 		document.body.appendChild(domElement);
+		domElement.style.zIndex = '-1';
 		domElement.style.position = 'absolute';
 		domElement.style.overflow = 'hidden';
 		domElement.style.pointerEvents = 'none';

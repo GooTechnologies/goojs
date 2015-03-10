@@ -111,7 +111,7 @@ require([
 	var goo = V.initGoo({
 		alpha: true
 	});
-	goo.renderer.domElement.style.zIndex = '10';
+	// goo.renderer.domElement.style.zIndex = '10';
 	var world = goo.world;
 
 	V.addLights();
