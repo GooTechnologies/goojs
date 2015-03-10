@@ -45,7 +45,11 @@ require([
 			 V) {
 	'use strict';
 
-	V.describe("Contains a color coded ray-casting visual-test for each vital feature in the ray API of the physicspack.");
+	V.describe(
+		'<b>Red Line</b>: raycastAll<br>' +
+		'<b>Green Line</b>: raycastAny<br>' +
+		'<b>White Line</b>: raycastClosest<br>' +
+		'<b>Green Line</b>: raycastAll with backfaces<br>');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -57,7 +61,7 @@ require([
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
 
-	V.addOrbitCamera(new Vector3(8, Math.PI / 1.3, 0.5));
+	V.addOrbitCamera(new Vector3(9, Math.PI / 1.15, 0.5), new Vector3(2, 0, 2));
 
 	var addDirectionalLight = function (directionArr) {
 		var directionalLight = new DirectionalLight();
@@ -188,25 +192,32 @@ require([
 			rayStart.setDirect(-2, Math.cos(world.time) * 0.2, i + Math.sin(world.time) * 0.2);
 			rayEnd.setVector(rayDirection).mul(rayLength).addVector(rayStart);
 
-			lineRenderSystem.drawLine(rayStart, rayEnd, lineRenderSystem.GREEN);
 			lineRenderSystem.drawCross(rayStart, lineRenderSystem.YELLOW);
+
+			var color = null;
 
 			switch (i) {
 				case 0:
+					color = lineRenderSystem.RED;
 					physicsSystem.raycastAll(rayStart, rayDirection, rayLength, {skipBackfaces: true}, callback);
 					break;
 				case 1:
+					color = lineRenderSystem.GREEN;
 					physicsSystem.raycastAny(rayStart, rayDirection, rayLength, {skipBackfaces: true}, rayCastResult);
 					drawNormal(rayCastResult.point, rayCastResult.normal);
 					break;
 				case 2:
+					color = lineRenderSystem.WHITE;
 					physicsSystem.raycastClosest(rayStart, rayDirection, rayLength, {skipBackfaces: true}, rayCastResult);
 					drawNormal(rayCastResult.point, rayCastResult.normal);
 					break;
 				case 3:
+					color = lineRenderSystem.MAGENTA;
 					physicsSystem.raycastAll(rayStart, rayDirection, rayLength, {skipBackfaces: false}, callback);
 					break;
 			}
+
+			lineRenderSystem.drawLine(rayStart, rayEnd, color);
 		}
 	};
 
