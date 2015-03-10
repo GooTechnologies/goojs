@@ -19,6 +19,7 @@
 			"goo/debugpack/DebugRenderSystemLights/DebugRenderSystemLights-vtest.html",
 			"goo/debugpack/Debugger/Debugger-vtest.html",
 			"goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html",
+			"goo/entities/components/CSS3DComponent/CSS3DComponent-vtest.html",
 			"goo/entities/components/HTMLComponent/HTMLComponent-vtest.html",
 			"goo/entities/components/PortalComponent/PortalComponent-vtest.html",
 			"goo/entities/components/TextComponent/TextComponent-vtest.html",
