@@ -1,9 +1,23 @@
+v0.13.4 --- 2015-03-11
+----------------------
+
+###Additions
+ + experimental new [EventTarget](http://code.gooengine.com/0.13.4/docs/index.html?c=EventTarget)
+
+###Fixes
+ * `World.prototype.setSystem` does not allow for the same system to be added twice to the world
+ * the *SoundSystem* creates an *AudioContext* only if needed
+
+###Deprecated
+ - *cannonpack* has been deprecated in favour of the new *physicspack*
+
+
 v0.13.3 --- 2015-03-04
 ----------------------
 
-####Additions
- + [Spline](http://code.gooengine.com/0.13.3/visual-test/goo/math/Spline/Spline-vtest.html) to represent cubic splines
- + [SplineWalker](http://code.gooengine.com/0.13.3/visual-test/goo/math/SplineWalker/SplineWalker-vtest.html) to interpolate across a spline
+###Additions
+ + [Spline](http://code.gooengine.com/0.13.4/visual-test/goo/math/Spline/Spline-vtest.html) to represent cubic splines
+ + [SplineWalker](http://code.gooengine.com/0.13.4/visual-test/goo/math/SplineWalker/SplineWalker-vtest.html) to interpolate across a spline
 
 ###Fixes
  * various physics-related fixes
@@ -204,7 +218,7 @@ v0.11.4 --- 2014-10-14
 ----------------------
 
 ###Additions
- + .centerOfMassOffset method to CannonRigidBodyComponent
+ + .centerOfMassOffset method to CannonRigidbodyComponent
  + trigger option for CannonBoxCollider
  + .unbindTexture method to Renderer
  + TextureHandler can now take a *generateMipmaps* option
@@ -228,7 +242,7 @@ v0.11.3 --- 2014-09-10
 
 ###Changes
  * updated Cannon.js to bleeding edge dev version
- * CannonRigidBodyComponent.prototype.createShape changed name to addShapesToBody
+ * CannonRigidbodyComponent.prototype.createShape changed name to addShapesToBody
 
 ###Fixes
  * transform gizmos do not vary size with FOV
@@ -420,7 +434,7 @@ v0.9.6 --- 2014-04-15
 ---------------------
 
 ###Fixes
- * Renamed file "CannonRigidBodyComponent.js" to "CannonRigidBodyComponent.js"
+ * Renamed file "CannonRigidBodyComponent.js" to "CannonRigidbodyComponent.js"
  * Grabbing the global window.Ammo object after it is loaded
  * Stop forcing aspect ratio when loading camera
 

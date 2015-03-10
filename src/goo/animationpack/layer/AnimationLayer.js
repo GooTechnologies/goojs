@@ -22,9 +22,10 @@ define([
 	 *        "steady states" - main states that the layer can be in. The layer can only be in one state at any given time. It may transition between
 	 *        states, provided that a path is defined for transition from the current state to the desired one. *
 	 * @param {String} name Name of layer
+	 * @param {String} id Id of layer
 	 */
-	function AnimationLayer(name, key) {
-		this.id = key;
+	function AnimationLayer(name, id) {
+		this.id = id;
 		this._name = name;
 
 		this._steadyStates = {};

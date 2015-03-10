@@ -1,3 +1,5 @@
+// jshint node:true
+
 'use strict';
 
 var util = require('./util');
@@ -18,7 +20,7 @@ var partition = function (doc) {
 
 	var currentTag = 'description';
 
-	var lines = doc.split('\n');
+	var lines = doc.split(/\r?\n/);
 
 	var partial = [];
 	lines.forEach(function (line) {

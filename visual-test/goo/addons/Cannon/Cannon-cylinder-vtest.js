@@ -9,7 +9,7 @@ require([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
 	'goo/addons/cannonpack/CannonSystem',
-	'goo/addons/cannonpack/CannonRigidBodyComponent',
+	'goo/addons/cannonpack/CannonRigidbodyComponent',
 	'goo/addons/cannonpack/CannonBoxColliderComponent',
 	'goo/addons/cannonpack/CannonCylinderColliderComponent',
 	'goo/addons/cannonpack/CannonSphereColliderComponent',
@@ -27,7 +27,7 @@ require([
 	OrbitCamControlScript,
 	Vector3,
 	CannonSystem,
-	CannonRigidBodyComponent,
+	CannonRigidbodyComponent,
 	CannonBoxColliderComponent,
 	CannonCylinderColliderComponent,
 	CannonSphereColliderComponent,
@@ -56,7 +56,7 @@ require([
 				V.rng.nextFloat() * 16 - 8
 			];
 
-			var rigidBodyComponent = new CannonRigidBodyComponent();
+			var rigidBodyComponent = new CannonRigidbodyComponent();
 			var entity;
 			var colliderComponent;
 			var mat = V.getColoredMaterial();
@@ -73,7 +73,7 @@ require([
 	function createGround() {
 		var groundEntity = world.createEntity(new Quad(1000, 1000, 100, 100), [0, groundLevel, 0], V.getColoredMaterial(0.7, 0.7, 0.7))
 			.setRotation(-Math.PI / 2, 0, 0);
-		var rigidBodyComponent = new CannonRigidBodyComponent({
+		var rigidBodyComponent = new CannonRigidbodyComponent({
 			mass : 0
 		});
 		var planeColliderComponent = new CannonPlaneColliderComponent();
@@ -97,7 +97,7 @@ require([
 	 var mat = V.getColoredMaterial();
 	 var meshEntity = world.createEntity(new Cylinder(10, r, r, r * 2), mat).addToWorld();
 
-	 var entity = world.createEntity([x, y, z]).set(new CannonRigidBodyComponent({ mass: 0 })).addToWorld();
+	 var entity = world.createEntity([x, y, z]).set(new CannonRigidbodyComponent({ mass: 0 })).addToWorld();
 	 entity.attachChild(meshEntity);
 
 	 switch (level) {
@@ -145,7 +145,7 @@ require([
 			mass = 0;
 		}
 
-		entity.setComponent(new CannonRigidBodyComponent({
+		entity.setComponent(new CannonRigidbodyComponent({
 			mass: mass
 		}));
 

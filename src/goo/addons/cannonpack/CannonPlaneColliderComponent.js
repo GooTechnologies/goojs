@@ -8,7 +8,7 @@ define([
 	/* global CANNON */
 
 	/**
-	 * Plane collider. Attach to an entity with a {@link CannonRigidBodyComponent}.<br>
+	 * Plane collider. Attach to an entity with a {@link CannonRigidbodyComponent}.<br>
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Cannon/Cannon-vtest.html Working example
 	 * @param {object} [settings]
 	 */

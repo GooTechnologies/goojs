@@ -9,7 +9,7 @@ require([
 	'goo/scripts/OrbitCamControlScript',
 	'goo/math/Vector3',
 	'goo/addons/cannonpack/CannonSystem',
-	'goo/addons/cannonpack/CannonRigidBodyComponent',
+	'goo/addons/cannonpack/CannonRigidbodyComponent',
 	'goo/addons/cannonpack/CannonBoxColliderComponent',
 	'goo/addons/cannonpack/CannonCylinderColliderComponent',
 	'goo/addons/cannonpack/CannonSphereColliderComponent',
@@ -27,7 +27,7 @@ require([
 	OrbitCamControlScript,
 	Vector3,
 	CannonSystem,
-	CannonRigidBodyComponent,
+	CannonRigidbodyComponent,
 	CannonBoxColliderComponent,
 	CannonCylinderColliderComponent,
 	CannonSphereColliderComponent,
@@ -56,7 +56,7 @@ require([
 				V.rng.nextFloat() * 16 - 8
 			];
 
-			var rigidBodyComponent = new CannonRigidBodyComponent();
+			var rigidBodyComponent = new CannonRigidbodyComponent();
 			var entity;
 			var colliderComponent;
 			var mat = V.getColoredMaterial();
@@ -103,7 +103,7 @@ require([
 		var groundEntity = world.createEntity(new Quad(1000, 1000, 100, 100), V.getColoredMaterial(0.7, 0.7, 0.7))
 			.set([0, -10, 0])
 			.setRotation(-Math.PI / 2, 0, 0);
-		var rigidBodyComponent = new CannonRigidBodyComponent({
+		var rigidBodyComponent = new CannonRigidbodyComponent({
 			mass : 0
 		});
 		var planeColliderComponent = new CannonPlaneColliderComponent();
@@ -114,7 +114,7 @@ require([
 
 	function createStaticBox(x, y, z, w, d, h) {
 		return world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
-			.set(new CannonRigidBodyComponent({ mass: 0 }))
+			.set(new CannonRigidbodyComponent({ mass: 0 }))
 			.set(new CannonBoxColliderComponent({
 				halfExtents: new Vector3(w / 2, d / 2, h / 2)
 			}))
@@ -127,7 +127,7 @@ require([
 		var compoundEntity = world.createEntity(new Vector3(x, y, z));
 
 		// Add a rigid body component to it
-		compoundEntity.set(new CannonRigidBodyComponent({ mass : 5 }));
+		compoundEntity.set(new CannonRigidbodyComponent({ mass : 5 }));
 
 		// Define half extents for all boxes
 		var h1 = new Vector3(4, 1, 1),
@@ -178,7 +178,7 @@ require([
 
 		var lastBody;
 		for (var i = 0; i < numLinks; i++) {
-			var body = new CannonRigidBodyComponent({
+			var body = new CannonRigidbodyComponent({
 				mass: i ? 1 : 0,
 				velocity: new Vector3(0, 0, i * 3)
 			});
