@@ -56,7 +56,7 @@ require([
 				V.rng.nextFloat() * 16 - 8
 			];
 
-			var rigidbodyComponent = new CannonRigidbodyComponent();
+			var rigidBodyComponent = new CannonRigidbodyComponent();
 			var entity;
 			var colliderComponent;
 			var mat = V.getColoredMaterial();
@@ -64,7 +64,7 @@ require([
 			var radius = (1 + V.rng.nextFloat()) * 0.5;
 			entity = world.createEntity(new Sphere(10, 10, radius), mat, position);
 			colliderComponent = new CannonSphereColliderComponent({ radius: radius });
-			entity.set(rigidbodyComponent).set(colliderComponent);
+			entity.set(rigidBodyComponent).set(colliderComponent);
 
 			entity.addToWorld();
 		}
@@ -73,11 +73,11 @@ require([
 	function createGround() {
 		var groundEntity = world.createEntity(new Quad(1000, 1000, 100, 100), [0, groundLevel, 0], V.getColoredMaterial(0.7, 0.7, 0.7))
 			.setRotation(-Math.PI / 2, 0, 0);
-		var rigidbodyComponent = new CannonRigidbodyComponent({
+		var rigidBodyComponent = new CannonRigidbodyComponent({
 			mass : 0
 		});
 		var planeColliderComponent = new CannonPlaneColliderComponent();
-		groundEntity.set(rigidbodyComponent)
+		groundEntity.set(rigidBodyComponent)
 			.set(planeColliderComponent)
 			.addToWorld();
 	}

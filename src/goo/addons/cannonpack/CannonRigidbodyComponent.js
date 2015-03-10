@@ -33,7 +33,7 @@ define([
 	 * var rigidBodyComponent = new CannonRigidbodyComponent({
 	 *   mass : 1
 	 * });
-	 * entity.setComponent(rigidBodyComponent);
+	 * entity.setComponent(rigidbodyComponent);
 	 * var boxColliderComponent = new CannonBoxColliderComponent({
 	 *   halfExtents : new Vector3(1, 1, 1)
 	 * });
@@ -130,7 +130,7 @@ define([
 		var collider = CannonRigidbodyComponent.getCollider(entity);
 		if (!collider) {
 
-			// Needed for getting the RigidBody-local transform of each collider
+			// Needed for getting the Rigidbody-local transform of each collider
 			// entity.transformComponent.updateTransform();
 			// entity.transformComponent.updateWorldTransform();
 			var bodyTransform = entity.transformComponent.worldTransform;

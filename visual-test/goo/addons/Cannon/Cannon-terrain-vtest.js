@@ -185,11 +185,11 @@ require([
         world.addContactMaterial(wheelGroundContactMaterial);
 
         var centerOfMassAdjust = new CANNON.Vec3(0, 0, 0);
-        var chassisbody = chassisEntity.cannonRigidbodyComponent.body;
+        var chassisBody = chassisEntity.cannonRigidbodyComponent.body;
 
         // Create the vehicle
         var vehicle = new CANNON.RigidVehicle({
-            chassisbody: chassisbody,
+            chassisBody: chassisBody,
             coordinateSystem: new CANNON.Vec3(0, 2, 1) // forward, left, up
         });
 
@@ -197,33 +197,33 @@ require([
         var down = new CANNON.Vec3(0, -1, 0);
 
         /*
-        var wheelbody = wheelEntities[0].cannonRigidbodyComponent.body;
+        var wheelBody = wheelEntities[0].cannonRigidbodyComponent.body;
         vehicle.addWheel({
-            body: wheelbody,
+            body: wheelBody,
             position: new CANNON.Vec3(5, 0, axisWidth / 2).vadd(centerOfMassAdjust),
             axis: new CANNON.Vec3(0, 0, 1),
             direction: down
         });
 
-        var wheelbody = wheelEntities[1].cannonRigidbodyComponent.body;
+        var wheelBody = wheelEntities[1].cannonRigidbodyComponent.body;
         vehicle.addWheel({
-            body: wheelbody,
+            body: wheelBody,
             position: new CANNON.Vec3(5, 0, -axisWidth / 2).vadd(centerOfMassAdjust),
             axis: new CANNON.Vec3(0, 0, -1),
             direction: down
         });
 
-        var wheelbody = wheelEntities[2].cannonRigidbodyComponent.body;
+        var wheelBody = wheelEntities[2].cannonRigidbodyComponent.body;
         vehicle.addWheel({
-            body: wheelbody,
+            body: wheelBody,
             position: new CANNON.Vec3(-5, 0, axisWidth / 2).vadd(centerOfMassAdjust),
             axis: new CANNON.Vec3(0, 0, 1),
             direction: down
         });
 
-        var wheelbody = wheelEntities[3].cannonRigidbodyComponent.body;
+        var wheelBody = wheelEntities[3].cannonRigidbodyComponent.body;
         vehicle.addWheel({
-            body: wheelbody,
+            body: wheelBody,
             position: new CANNON.Vec3(-5, 0, -axisWidth / 2).vadd(centerOfMassAdjust),
             axis: new CANNON.Vec3(0, 0, -1),
             direction: down
