@@ -32,7 +32,7 @@ define([
 		document.body.appendChild(domElement);
 		domElement.style.position = 'absolute';
 		domElement.style.overflow = 'hidden';
-		// domElement.style.pointerEvents = 'none';
+		domElement.style.pointerEvents = 'none';
 		domElement.style.WebkitTransformStyle = 'preserve-3d';
 		domElement.style.transformStyle = 'preserve-3d';
 		domElement.style.width = '100%';
@@ -103,6 +103,8 @@ define([
 		var component = entity.cSS3DComponent;
 		var domElement = component.domElement;
 		domElement.style.position = 'absolute';
+		domElement.style.margin = '0px';
+		domElement.style.padding = '0px';
 		domElement.style.WebkitBackfaceVisibility = component.backfaceVisibility;
 		domElement.style.backfaceVisibility = component.backfaceVisibility;
 		component.setSize(component.width, component.height);

@@ -104,7 +104,9 @@ require([
 		goo.setRenderSystem(gizmoRenderSystem);
 	}
 
-	var goo = V.initGoo();
+	var goo = V.initGoo({
+		
+	});
 	var world = goo.world;
 
 	V.addLights();
@@ -114,7 +116,7 @@ require([
 
 	var material = new Material(ShaderLib.uber);
 
-	var numBoxes = 4;
+	var numBoxes = 5;
 	var spread = 10.0;
 	// var size = 2.5;
 	// var box = new Box(size*4, size, size*0.2);
@@ -163,16 +165,16 @@ require([
 				// };
 				// entity.set(script);
 
-				// if (V.rng.nextFloat() > 0.7) {
-				// 	var r1 = V.rng.nextFloat();
-				// 	var r2 = V.rng.nextFloat();
-				// 	(function(r1, r2) {
-				// 		var script = function (entity) {
-				// 			entity.setRotation(world.time * r1, world.time * r2, 0);
-				// 		};
-				// 		entity.set(script);
-				// 	})(r1, r2);
-				// }
+				if (V.rng.nextFloat() > 0.7) {
+					var r1 = V.rng.nextFloat();
+					var r2 = V.rng.nextFloat();
+					(function(r1, r2) {
+						var script = function (entity) {
+							entity.setRotation(world.time * r1, world.time * r2, 0);
+						};
+						entity.set(script);
+					})(r1, r2);
+				}
 			}
 		}
 	}

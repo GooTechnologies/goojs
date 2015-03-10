@@ -19,7 +19,13 @@ define([
 		/**
 		 * DOM element.
 		 */
-		this.domElement = domElement;
+		this.domElement = document.createElement('div');
+		this.domElement.appendChild(domElement);
+		domElement.style.position = 'absolute';
+		domElement.style.top = '0px';
+		domElement.style.bottom = '0px';
+		domElement.style.left = '0px';
+		domElement.style.right = '0px';
 
 		settings = settings || {};
 
@@ -56,7 +62,8 @@ define([
 	CSS3DComponent.prototype.setSize = function (width, height) {
 		this.width = width || this.width;
 		this.height = height || this.height;
-		this.domElement.style.width = (this.width / this.scale) + 'px'; // magic number
+		console.log(parseFloat(getComputedStyle(this.domElement, null).padding));
+		this.domElement.style.width = (this.width / this.scale) + 'px';
 		this.domElement.style.height = (this.height / this.scale)+ 'px';
 		this.updated = true;
 	};
