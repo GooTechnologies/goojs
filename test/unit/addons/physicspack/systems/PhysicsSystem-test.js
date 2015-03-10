@@ -2,7 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/math/Vector3',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/RaycastResult',
 	'goo/addons/physicspack/colliders/SphereCollider',
@@ -11,7 +11,7 @@ define([
 	World,
 	PhysicsSystem,
 	Vector3,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	ColliderComponent,
 	RaycastResult,
 	SphereCollider,
@@ -40,8 +40,8 @@ define([
 			var direction = new Vector3(0, 0, 1);
 			var distance = 20;
 
-			var rbcA = new RigidbodyComponent({ mass: 1 });
-			var rbcB = new RigidbodyComponent({ mass: 1 });
+			var rbcA = new RigidBodyComponent({ mass: 1 });
+			var rbcB = new RigidBodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -74,8 +74,8 @@ define([
 			var direction = new Vector3(0, 0, 1);
 			var distance = 20;
 
-			var rbcA = new RigidbodyComponent({ mass: 1 });
-			var rbcB = new RigidbodyComponent({ mass: 1 });
+			var rbcA = new RigidBodyComponent({ mass: 1 });
+			var rbcB = new RigidBodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -99,8 +99,8 @@ define([
 			var direction = new Vector3(0, 0, 1);
 			var distance = 20;
 
-			var rbcA = new RigidbodyComponent({ mass: 1 });
-			var rbcB = new RigidbodyComponent({ mass: 1 });
+			var rbcA = new RigidBodyComponent({ mass: 1 });
+			var rbcB = new RigidBodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -132,7 +132,7 @@ define([
 			var direction = new Vector3(0, 0, 1);
 			var distance = 20;
 
-			var rbc = new RigidbodyComponent({ mass: 1 });
+			var rbc = new RigidBodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -154,7 +154,7 @@ define([
 			var direction = new Vector3(0, 0, 1);
 			var distance = 20;
 
-			var rbc = new RigidbodyComponent({ mass: 1 });
+			var rbc = new RigidBodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -195,8 +195,8 @@ define([
 		});
 
 		it('emits contact events', function () {
-			var rbcA = new RigidbodyComponent({ mass: 1 });
-			var rbcB = new RigidbodyComponent({ mass: 1 });
+			var rbcA = new RigidBodyComponent({ mass: 1 });
+			var rbcB = new RigidBodyComponent({ mass: 1 });
 			var cc = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -298,8 +298,8 @@ define([
 				SystemBus.addListener(key, listeners[key]);
 			}
 
-			var rbcA = new RigidbodyComponent({ mass: 1 });
-			var rbcB = new RigidbodyComponent({ mass: 1 });
+			var rbcA = new RigidBodyComponent({ mass: 1 });
+			var rbcB = new RigidBodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
@@ -336,7 +336,7 @@ define([
 
 		it('can stop and play', function () {
 
-			var rbcA = new RigidbodyComponent({ mass: 1 });
+			var rbcA = new RigidBodyComponent({ mass: 1 });
 			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});

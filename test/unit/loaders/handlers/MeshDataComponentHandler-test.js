@@ -14,10 +14,10 @@ define([
 	Configs
 ) {
 	'use strict';
-	
+
 	describe('MeshDataComponentHandler', function () {
 		var loader;
-		
+
 		beforeEach(function () {
 			var world = new World();
 			loader = new DynamicLoader({
@@ -25,7 +25,7 @@ define([
 				rootPath: './'
 			});
 		});
-		
+
 		it('loads an entity with a meshDataComponent', function (done) {
 			var config = Configs.entity(['meshData']);
 			loader.preload(Configs.get());
@@ -36,7 +36,7 @@ define([
 				done();
 			});
 		});
-		
+
 		it('loads a meshDatacomponent with a shape', function (done) {
 			var config = Configs.entity();
 			config.components.meshData = Configs.component.meshData('Sphere');
