@@ -49,7 +49,9 @@ require([
 		'<b>Red Line</b>: raycastAll<br>' +
 		'<b>Green Line</b>: raycastAny<br>' +
 		'<b>White Line</b>: raycastClosest<br>' +
-		'<b>Green Line</b>: raycastAll with backfaces<br>');
+		'<b>Green Line</b>: raycastAll with backfaces<br>' +
+		'<b>Yellow Shapes</b>: mesh colliders<br>' +
+		'<b>Blue Shapes</b>: primitive colliders<br>');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -61,7 +63,7 @@ require([
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
 
-	V.addOrbitCamera(new Vector3(9, Math.PI / 1.15, 0.5), new Vector3(2, 0, 2));
+	V.addOrbitCamera(new Vector3(9, Math.PI / 1.15, 0.5), new Vector3(1.5, 0, 1.5));
 
 	var addDirectionalLight = function (directionArr) {
 		var directionalLight = new DirectionalLight();
