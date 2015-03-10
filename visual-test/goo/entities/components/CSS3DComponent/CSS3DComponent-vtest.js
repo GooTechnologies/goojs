@@ -5,9 +5,11 @@ require([
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Box',
+	'goo/shapes/Quad',
 	'goo/math/Vector3',
 	'goo/math/Transform',
 	'goo/util/gizmopack/GizmoRenderSystem',
+	'goo/util/Skybox',
 	'lib/V'
 ], function (
 	Camera,
@@ -16,9 +18,11 @@ require([
 	Material,
 	ShaderLib,
 	Box,
+	Quad,
 	Vector3,
 	Transform,
 	GizmoRenderSystem,
+	Skybox,
 	V
 	) {
 	'use strict';
@@ -105,8 +109,9 @@ require([
 	}
 
 	var goo = V.initGoo({
-		
+		alpha: true
 	});
+	goo.renderer.domElement.style.zIndex = '10';
 	var world = goo.world;
 
 	V.addLights();
@@ -115,22 +120,25 @@ require([
 	world.setSystem(new CSS3DSystem(goo.renderer));
 
 	var material = new Material(ShaderLib.uber);
+	material.renderQueue = 2;
+	material.uniforms.opacity = 0;
+	material.uniforms.materialAmbient = [0, 0, 0, 0];
+	material.uniforms.materialDiffuse = [0, 0, 0, 0];
+	goo.renderer.setClearColor(0,0,0,0);
+
+	var material2 = new Material(ShaderLib.uber);
+	var box2 = new Box(3, 3, 3);
+	var entity = world.createEntity([0,0,0], box2, material2).addToWorld();
 
 	var numBoxes = 5;
 	var spread = 10.0;
-	// var size = 2.5;
-	// var box = new Box(size*4, size, size*0.2);
 	var size = 1;
-	var box = new Box(size, size, 0);
-	var transform = new Transform();
-	transform.translation.z = -box.zExtent;
-	transform.update();
-	box.applyTransform('POSITION', transform);
+	// var box = new Box(size, size, 0);
+	var box = new Quad(size, size);
 	for (var i = 0; i < numBoxes; i++) {
 		for (var j = 0; j < numBoxes; j++) {
 			for (var k = 0; k < numBoxes; k++) {
 				var domElement = document.createElement('div');
-
 				if (V.rng.nextFloat() > 0.5) {
 					domElement.style.backgroundImage = 'url(https://dl.dropboxusercontent.com/u/640317/screenshot.jpg)';
 				} else {
@@ -147,17 +155,15 @@ require([
 				});
 
 				// Make some elements face the camera
-				htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
+				// htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
 
 				var position = [
 					size * (i - numBoxes / 2) * spread,
 					size * (j - numBoxes / 2) * spread,
 					size * (k - numBoxes / 2) * spread
 				];
-				var entity = world.createEntity(position, material, htmlComponent);
 				var entity = world.createEntity(position, box, material, htmlComponent);
-				entity.setScale(width, height, 0.5+V.rng.nextFloat()*2);
-				// entity.setScale(width, height, 1);
+				entity.setScale(width, height, 1);
 				entity.addToWorld();
 
 				// var script = function (entity) {
@@ -186,6 +192,22 @@ require([
 	setupMouse();
 
 	setupKeys();
+
+	var environmentPath = '../../../addons/Water/resources/skybox/';
+	var images = [
+		environmentPath + '1.jpg',
+		environmentPath + '3.jpg',
+		environmentPath + '6.jpg',
+		environmentPath + '5.jpg',
+		environmentPath + '4.jpg',
+		environmentPath + '2.jpg'
+	];
+	var skybox = new Skybox(Skybox.BOX, images, null, 0);
+	goo.world.createEntity(
+		skybox.transform,
+		skybox.materials[0],
+		skybox.meshData
+	).addToWorld();
 
 	V.process();
 });

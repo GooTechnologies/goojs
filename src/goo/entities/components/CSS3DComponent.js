@@ -62,7 +62,6 @@ define([
 	CSS3DComponent.prototype.setSize = function (width, height) {
 		this.width = width || this.width;
 		this.height = height || this.height;
-		console.log(parseFloat(getComputedStyle(this.domElement, null).padding));
 		this.domElement.style.width = (this.width / this.scale) + 'px';
 		this.domElement.style.height = (this.height / this.scale)+ 'px';
 		this.updated = true;
