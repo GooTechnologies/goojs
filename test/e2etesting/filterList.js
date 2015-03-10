@@ -30,7 +30,10 @@ var filterList = [
 
 	'physicspack', // tests that just need screenshots; silenting them until that is resolved
 	'Cannon-cylinder',
-	'Spline'
+	'Spline',
+	'TextComponent',
+	'TextMeshGenerator',
+	'linerenderpack'
 ];
 
 exports.filterList = filterList;

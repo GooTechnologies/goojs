@@ -1,4 +1,4 @@
-/* global module */
+// jshint node:true
 
 var path = require('path');
 
@@ -28,80 +28,62 @@ module.exports = function (grunt) {
 		},
 		'build-pack': {
 			fsmpack: {
-				packPath: 'fsmpack',
-				outBaseDir: 'out'
+				packPath: 'fsmpack'
 			},
 			geometrypack: {
-				packPath: 'geometrypack',
-				outBaseDir: 'out'
+				packPath: 'geometrypack'
 			},
 			quadpack: {
-				packPath: 'quadpack',
-				outBaseDir: 'out'
+				packPath: 'quadpack'
 			},
 			timelinepack: {
-				packPath: 'timelinepack',
-				outBaseDir: 'out'
+				packPath: 'timelinepack'
 			},
 			debugpack: {
-				packPath: 'debugpack',
-				outBaseDir: 'out'
+				packPath: 'debugpack'
 			},
 			scriptpack: {
-				packPath: 'scriptpack',
-				outBaseDir: 'out'
+				packPath: 'scriptpack'
 			},
 			p2pack: {
-				packPath: 'addons/p2pack',
-				outBaseDir: 'out'
+				packPath: 'addons/p2pack'
 			},
 			box2dpack: {
-				packPath: 'addons/box2dpack',
-				outBaseDir: 'out'
+				packPath: 'addons/box2dpack'
 			},
 			terrainpack: {
-				packPath: 'addons/terrainpack',
-				outBaseDir: 'out'
+				packPath: 'addons/terrainpack'
 			},
 			ammopack: {
-				packPath: 'addons/ammopack',
-				outBaseDir: 'out'
+				packPath: 'addons/ammopack'
 			},
 			cannonpack: {
-				packPath: 'addons/cannonpack',
-				outBaseDir: 'out'
+				packPath: 'addons/cannonpack'
 			},
 			waterpack: {
-				packPath: 'addons/waterpack',
-				outBaseDir: 'out'
+				packPath: 'addons/waterpack'
 			},
 			linerenderpack: {
 				packPath: 'addons/linerenderpack',
 				outBaseDir: 'out'
 			},
 			animationpack: {
-				packPath: 'animationpack',
-				outBaseDir: 'out'
+				packPath: 'animationpack'
 			},
 			soundmanager2pack: {
-				packPath: 'addons/soundmanager2pack',
-				outBaseDir: 'out'
+				packPath: 'addons/soundmanager2pack'
 			},
 			gamepadpack: {
-				packPath: 'addons/gamepadpack',
-				outBaseDir: 'out'
+				packPath: 'addons/gamepadpack'
 			},
 			passpack: {
-				packPath: 'passpack',
-				outBaseDir: 'out'
+				packPath: 'passpack'
 			},
 			gizmopack: {
-				packPath: 'util/gizmopack',
-				outBaseDir: 'out'
+				packPath: 'util/gizmopack'
 			},
 			physicspack: {
-				packPath: 'addons/physicspack',
-				outBaseDir: 'out'
+				packPath: 'addons/physicspack'
 			}
 		},
 		'preprocess': {

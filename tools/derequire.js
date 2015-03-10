@@ -1,9 +1,15 @@
+// jshint node:true
+
 /**
  * Derequire-ifies a require generated minified module.
  * Replaces all define calls of the form
  * `define('moduleName', [dependencies...], function (solvedDependencies...) { return Module; }`
  * with
  * `goo.Module = (function (solvedDependencies...) { return Module })(namespacedDependencies...);`
+ *
+ * Example usage:
+ *
+ * node tools/derequire.js out/mypack.js [out/mypack.dereq.js]
  *
  * Note: use this on minified modules obtained with the minifyDir script
  */
@@ -87,9 +93,32 @@ function transform(defineExpression) {
 	return assigment;
 }
 
+function getRequireExports(modulePaths) {
+	var ret = '(function (define) {\n';
+	modulePaths.forEach(function (modulePath) {
+		var moduleName = extractModuleName(modulePath);
+		ret += 'define("' + modulePath + '", [], function () { return goo.' + moduleName + '; });\n';
+	});
+	ret += '})(goo.useOwnRequire || !window.define ? goo.define : define);';
+	return ret;
+}
 
-var inFileName = process.argv[2] || 'out/fish.js';
-var outFileName = inFileName.substr(0, inFileName.length - 3) + '.dereq.js';
+function wrap(moduleCode, requireExports) {
+	return [
+		'(function() { "use strict"; function f() {',
+		moduleCode,
+		requireExports,
+		'} (goo.useOwnRequire || !window.define ? goo.require : require)(["goo"], f); })();'
+	].join('\n');
+}
+
+if (process.argv.length < 3) {
+	console.error('Invalid parameters; consult the top-level jsdoc');
+	return;
+}
+
+var inFileName = process.argv[2];
+var outFileName = process.argv[3] || (inFileName.slice(0, -3) + '.dereq.js');
 
 var source = fs.readFileSync(inFileName, 'utf8');
 
@@ -125,5 +154,10 @@ var uglifyOptions = {
 
 var outMinifiedSource = uglify.minify(outSource, uglifyOptions);
 
-fs.writeFileSync(outFileName, outMinifiedSource.code);
+var modulePaths = moduleDefinitions.map(function (moduleDefinition) {
+	return moduleDefinition.arguments[0].value;
+});
+var requireExports = getRequireExports(modulePaths);
+
+fs.writeFileSync(outFileName, wrap(outMinifiedSource.code, requireExports));
 console.log('Done; see ' + outFileName);

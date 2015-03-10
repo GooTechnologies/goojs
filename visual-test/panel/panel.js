@@ -7,7 +7,7 @@
 
 	var vtList = adaptUrls(window.vtUrls.all.slice(0));
 
-	var offset = purl().param().offset || 0;
+	var offset = +purl().param().offset || 0;
 
 	var containers;
 
@@ -46,9 +46,9 @@
 		return containers;
 	}
 
-	function setSources(containers, list, start) {
+	function setSources(containers, list, offset) {
 		for (var i = 0; i < MAX_IFRAMES; i++) {
-			var safeIndex = (i + start) % list.length;
+			var safeIndex = (i + offset) % list.length;
 
 			// update iframe source
 			containers[i].iframe.src = list[safeIndex];
@@ -61,6 +61,8 @@
 			var fullUrl = list[safeIndex].slice(0, list[safeIndex].length - '?minimal=t'.length);
 			containers[i].title.href = fullUrl;
 		}
+
+		window.history.replaceState('Object', 'Title', 'index.html?offset=' + offset);
 	}
 
 	function setupGui() {
@@ -82,7 +84,7 @@
 	function setup() {
 		setupGui();
 		containers = createIframes();
-		setSources(containers, vtList, 0);
+		setSources(containers, vtList, offset);
 	}
 
 	setup();
