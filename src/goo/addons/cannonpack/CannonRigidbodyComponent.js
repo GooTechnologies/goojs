@@ -30,10 +30,10 @@ define([
 	 * @example
 	 * world.setSystem(new CannonSystem());
 	 * var entity = world.createEntity();
-	 * var rigidBodyComponent = new CannonRigidbodyComponent({
+	 * var rigidBodyComponent = new CannonRigidBodyComponent({
 	 *   mass : 1
 	 * });
-	 * entity.setComponent(rigidbodyComponent);
+	 * entity.setComponent(rigidBodyComponent);
 	 * var boxColliderComponent = new CannonBoxColliderComponent({
 	 *   halfExtents : new Vector3(1, 1, 1)
 	 * });
