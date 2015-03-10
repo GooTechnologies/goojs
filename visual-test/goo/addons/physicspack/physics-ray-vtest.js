@@ -159,11 +159,46 @@ require([
 
 	var rayEnd = new Vector3();
 
+	var tmpVec1 = new Vector3();
+	var tmpVec2 = new Vector3();
+	var tmpVec3 = new Vector3();
+	var tmpVec4 = new Vector3();
+
 	var normalEndPosition = new Vector3();
+
 	var drawNormal = function (position, normal) {
 		normalEndPosition.setVector(normal).mul(0.5).addVector(position);
 
 		lineRenderSystem.drawLine(position, normalEndPosition, lineRenderSystem.BLUE);
+	};
+
+	var drawLineArrow = function (lineStart, lineEnd, frac, color, width) {
+		var lineDir = tmpVec1.setVector(lineEnd).subVector(lineStart);
+		var lineLen = lineDir.length();
+		lineDir.normalize();
+
+		var arrowStartPosition = tmpVec2.setVector(lineDir).mul(lineLen * frac).addVector(lineStart);
+		var arrowEndPosition = tmpVec3.setVector(lineDir).mul(-width).addVector(arrowStartPosition);
+
+		var arrowUpDir = tmpVec4.setVector(Vector3.UNIT_Y).mul(width);
+		arrowUpDir.addVector(arrowEndPosition);
+
+		lineRenderSystem.drawLine(arrowStartPosition, arrowUpDir, color);
+
+		var arrowDownDir = arrowUpDir.subVector(arrowEndPosition);
+		arrowUpDir.mul(-1);
+		arrowUpDir.addVector(arrowEndPosition);
+
+		lineRenderSystem.drawLine(arrowStartPosition, arrowDownDir, color);
+	};
+
+	var drawArrowedLine = function (start, end, time, color) {
+		var fracAdd = (time * 0.1) % 0.1;
+		for (var i = 0; i < 10; i++) {
+			var frac = i * 0.1 + fracAdd;
+			drawLineArrow(start, end, frac, color, 0.05);
+		}
+		lineRenderSystem.drawLine(start, end, color);
 	};
 
 	var callback = function (result) {
@@ -194,8 +229,6 @@ require([
 			rayStart.setDirect(-2, Math.cos(world.time) * 0.2, i + Math.sin(world.time) * 0.2);
 			rayEnd.setVector(rayDirection).mul(rayLength).addVector(rayStart);
 
-			lineRenderSystem.drawCross(rayStart, lineRenderSystem.YELLOW);
-
 			var color = null;
 
 			switch (i) {
@@ -219,7 +252,7 @@ require([
 					break;
 			}
 
-			lineRenderSystem.drawLine(rayStart, rayEnd, color);
+			drawArrowedLine(rayStart, rayEnd, world.time, color);
 		}
 	};
 
