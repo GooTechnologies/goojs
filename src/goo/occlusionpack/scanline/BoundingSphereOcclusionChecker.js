@@ -56,9 +56,9 @@ define([
 			var boundingSphere = entity.meshDataComponent.modelBound;
 
 			// Set the tempVec to origin.
-			tempVec.data[0] = 0;
-			tempVec.data[1] = 0;
-			tempVec.data[2] = 0;
+			tempVec.x = 0;
+			tempVec.y = 0;
+			tempVec.z = 0;
 			tempVec.data[3] = 1.0;
 
 			combinedMatrix.applyPost(tempVec);
@@ -75,9 +75,9 @@ define([
 			 Bounds.w == radius.
 			 float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
 			 */
-			var origin_x = tempVec.data[0];
-			var origin_y = tempVec.data[1];
-			var origin_z = tempVec.data[2];
+			var origin_x = tempVec.x;
+			var origin_y = tempVec.y;
+			var origin_z = tempVec.z;
 			var cameraToSphereDistance = Math.sqrt(origin_x * origin_x + origin_y * origin_y + origin_z * origin_z);
 
 			// https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Math/asin
@@ -140,20 +140,20 @@ define([
 				var i2 = i++;
 				var i3 = i++;
 				var i4 = i++;
-				tempVec.data[0] = positionArray[i1];
-				tempVec.data[1] = positionArray[i2];
-				tempVec.data[2] = positionArray[i3];
+				tempVec.x = positionArray[i1];
+				tempVec.y = positionArray[i2];
+				tempVec.z = positionArray[i3];
 				tempVec.data[3] = 1.0;
 
 				cameraProjectionMatrix.applyPost(tempVec);
 
 				var div = 1.0 / tempVec.data[3];
 
-				tempVec.data[0] *= div;
-				tempVec.data[1] *= div;
+				tempVec.x *= div;
+				tempVec.y *= div;
 
-				positionArray[i1] = (tempVec.data[0] + 1.0) * (this._halfClipX);
-				positionArray[i2] = (tempVec.data[1] + 1.0) * (this._halfClipY);
+				positionArray[i1] = (tempVec.x + 1.0) * (this._halfClipX);
+				positionArray[i2] = (tempVec.y + 1.0) * (this._halfClipY);
 				positionArray[i4] = div;
 			}
 
@@ -491,7 +491,7 @@ define([
 		 *	@returns {Boolean} true/false
 		 */
 		BoundingSphereOcclusionChecker.prototype._isCoordinateInsideScreen = function (coordinate) {
-			return coordinate.data[0] >= 0 && coordinate.data[0] <= this._clipX && coordinate.data[1] <= this._clipY && coordinate.data[1] >= 0;
+			return coordinate.x >= 0 && coordinate.x <= this._clipX && coordinate.y <= this._clipY && coordinate.y >= 0;
 		};
 
 		return BoundingSphereOcclusionChecker;

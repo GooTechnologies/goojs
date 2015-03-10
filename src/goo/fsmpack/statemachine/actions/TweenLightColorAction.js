@@ -88,9 +88,9 @@ define([
 			var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				color.data[0] += this.x - old.x;
-				color.data[1] += this.y - old.y;
-				color.data[2] += this.z - old.z;
+				color.x += this.x - old.x;
+				color.y += this.y - old.y;
+				color.z += this.z - old.z;
 
 				old.x = this.x;
 				old.y = this.y;

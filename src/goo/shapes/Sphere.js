@@ -137,8 +137,8 @@ define([
 			var iSave = i;
 			for (var iR = 0; iR < this.radialSamples; iR++) {
 				var fRadialFraction = iR * fInvRS; // in [0,1)
-				var kRadial = tempVc.set(afCos[iR], afSin[iR], 0);
-				Vector3.mul(kRadial, fSliceRadius, tempVa);
+				var kRadial = tempVc.setDirect(afCos[iR], afSin[iR], 0);
+				tempVa.copy(kRadial).scale(fSliceRadius);
 
 				vbuf[i * 3 + 0] = kSliceCenter.x + tempVa.x;
 				vbuf[i * 3 + 1] = kSliceCenter.y + tempVa.y;

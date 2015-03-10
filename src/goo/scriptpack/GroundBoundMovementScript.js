@@ -192,10 +192,10 @@ define([
 	 */
 
 	GroundBoundMovementScript.prototype.applyGroundNormalInfluence = function() {
-		var groundModX = Math.abs(Math.cos(this.groundNormal.data[0]));
-		var groundModZ = Math.abs(Math.cos(this.groundNormal.data[2]));
-		this.targetVelocity.data[0] *= groundModX;
-		this.targetVelocity.data[2] *= groundModZ;
+		var groundModX = Math.abs(Math.cos(this.groundNormal.x));
+		var groundModZ = Math.abs(Math.cos(this.groundNormal.z));
+		this.targetVelocity.x *= groundModX;
+		this.targetVelocity.z *= groundModZ;
 	};
 
 
@@ -224,7 +224,7 @@ define([
 		entity.transformComponent.transform.rotation.applyPost(calcVec);
 		calcVec.sub(current);
 		calcVec.lerp(target, this.accLerp);
-		calcVec.data[1] = target.data[1]; // Ground is not soft...
+		calcVec.y = target.y; // Ground is not soft...
 		return calcVec;
 	};
 
@@ -282,7 +282,7 @@ define([
 	 */
 	GroundBoundMovementScript.prototype.checkGroundContact = function(entity, transform) {
 		this.groundHeight = this.getTerrainHeight(transform.translation);
-		if (transform.translation.data[1] <= this.groundHeight) {
+		if (transform.translation.y <= this.groundHeight) {
 			this.groundContact = 1;
 			this.updateGroundNormal(transform);
 		} else {
@@ -297,10 +297,10 @@ define([
 	 * @param {Transform} transform
 	 */
 	GroundBoundMovementScript.prototype.applyGroundContact = function(entity, transform) {
-		if (this.groundHeight >= transform.translation.data[1]) {
-			transform.translation.data[1] = this.groundHeight;
-			if (entity.movementComponent.velocity.data[1] < 0) {
-				entity.movementComponent.velocity.data[1] = 0;
+		if (this.groundHeight >= transform.translation.y) {
+			transform.translation.y = this.groundHeight;
+			if (entity.movementComponent.velocity.y < 0) {
+				entity.movementComponent.velocity.y = 0;
 			}
 		}
 	};

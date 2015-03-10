@@ -110,9 +110,9 @@ define([
 			var that = this;
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-				translation.data[0] += this.x - old.x;
-				translation.data[1] += this.y - old.y;
-				translation.data[2] += this.z - old.z;
+				translation.x += this.x - old.x;
+				translation.y += this.y - old.y;
+				translation.z += this.z - old.z;
 
 				old.x = this.x;
 				old.y = this.y;

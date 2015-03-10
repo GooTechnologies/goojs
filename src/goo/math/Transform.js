@@ -166,24 +166,24 @@ define([
 	Transform.prototype.update = function () {
 		var target = this.matrix.data;
 		var rotation = this.rotation.data;
-		var scale = this.scale.data;
-		var translation = this.translation.data;
+		var scale = this.scale;
+		var translation = this.translation;
 
-		target[0] = scale[0] * rotation[0];
-		target[1] = scale[0] * rotation[1];
-		target[2] = scale[0] * rotation[2];
+		target[0] = scale.x * rotation[0];
+		target[1] = scale.x * rotation[1];
+		target[2] = scale.x * rotation[2];
 		target[3] = 0.0;
-		target[4] = scale[1] * rotation[3];
-		target[5] = scale[1] * rotation[4];
-		target[6] = scale[1] * rotation[5];
+		target[4] = scale.y * rotation[3];
+		target[5] = scale.y * rotation[4];
+		target[6] = scale.y * rotation[5];
 		target[7] = 0.0;
-		target[8] = scale[2] * rotation[6];
-		target[9] = scale[2] * rotation[7];
-		target[10] = scale[2] * rotation[8];
+		target[8] = scale.z * rotation[6];
+		target[9] = scale.z * rotation[7];
+		target[10] = scale.z * rotation[8];
 		target[11] = 0.0;
-		target[12] = translation[0];
-		target[13] = translation[1];
-		target[14] = translation[2];
+		target[12] = translation.x;
+		target[13] = translation.y;
+		target[14] = translation.z;
 		target[15] = 1.0;
 	};
 
@@ -206,8 +206,8 @@ define([
 
 		// invert + transpose if non-uniform scaling
 		// RH: Should we check against epsilon here?
-		var scale = this.scale.data;
-		if (scale[0] !== scale[1] || scale[0] !== scale[2]) {
+		var scale = this.scale;
+		if (scale.x !== scale.y || scale.x !== scale.z) {
 			Matrix3x3.invert(this.normalMatrix, tmpMat1);
 			Matrix3x3.transpose(tmpMat1, this.normalMatrix);
 		}

@@ -56,44 +56,44 @@ define([
 		var index4A = sampleIndex * 4, index3A = sampleIndex * 3;
 		var index4B = (sampleIndex + 1) * 4, index3B = (sampleIndex + 1) * 3;
 		if (fraction === 0.0) {
-			transformData._rotation.data[0] = this._rotations[index4A + 0];
-			transformData._rotation.data[1] = this._rotations[index4A + 1];
-			transformData._rotation.data[2] = this._rotations[index4A + 2];
+			transformData._rotation.x = this._rotations[index4A + 0];
+			transformData._rotation.y = this._rotations[index4A + 1];
+			transformData._rotation.z = this._rotations[index4A + 2];
 			transformData._rotation.data[3] = this._rotations[index4A + 3];
 
-			transformData._translation.data[0] = this._translations[index3A + 0];
-			transformData._translation.data[1] = this._translations[index3A + 1];
-			transformData._translation.data[2] = this._translations[index3A + 2];
+			transformData._translation.x = this._translations[index3A + 0];
+			transformData._translation.y = this._translations[index3A + 1];
+			transformData._translation.z = this._translations[index3A + 2];
 
-			transformData._scale.data[0] = this._scales[index3A + 0];
-			transformData._scale.data[1] = this._scales[index3A + 1];
-			transformData._scale.data[2] = this._scales[index3A + 2];
+			transformData._scale.x = this._scales[index3A + 0];
+			transformData._scale.y = this._scales[index3A + 1];
+			transformData._scale.z = this._scales[index3A + 2];
 			return;
 		} else if (fraction === 1.0) {
-			transformData._rotation.data[0] = this._rotations[index4B + 0];
-			transformData._rotation.data[1] = this._rotations[index4B + 1];
-			transformData._rotation.data[2] = this._rotations[index4B + 2];
+			transformData._rotation.x = this._rotations[index4B + 0];
+			transformData._rotation.y = this._rotations[index4B + 1];
+			transformData._rotation.z = this._rotations[index4B + 2];
 			transformData._rotation.data[3] = this._rotations[index4B + 3];
 
-			transformData._translation.data[0] = this._translations[index3B + 0];
-			transformData._translation.data[1] = this._translations[index3B + 1];
-			transformData._translation.data[2] = this._translations[index3B + 2];
+			transformData._translation.x = this._translations[index3B + 0];
+			transformData._translation.y = this._translations[index3B + 1];
+			transformData._translation.z = this._translations[index3B + 2];
 
-			transformData._scale.data[0] = this._scales[index3B + 0];
-			transformData._scale.data[1] = this._scales[index3B + 1];
-			transformData._scale.data[2] = this._scales[index3B + 2];
+			transformData._scale.x = this._scales[index3B + 0];
+			transformData._scale.y = this._scales[index3B + 1];
+			transformData._scale.z = this._scales[index3B + 2];
 			return;
 		}
 
 		// Apply (s)lerp and set in transform
-		transformData._rotation.data[0] = this._rotations[index4A + 0];
-		transformData._rotation.data[1] = this._rotations[index4A + 1];
-		transformData._rotation.data[2] = this._rotations[index4A + 2];
+		transformData._rotation.x = this._rotations[index4A + 0];
+		transformData._rotation.y = this._rotations[index4A + 1];
+		transformData._rotation.z = this._rotations[index4A + 2];
 		transformData._rotation.data[3] = this._rotations[index4A + 3];
 
-		tmpQuat.data[0] = this._rotations[index4B + 0];
-		tmpQuat.data[1] = this._rotations[index4B + 1];
-		tmpQuat.data[2] = this._rotations[index4B + 2];
+		tmpQuat.x = this._rotations[index4B + 0];
+		tmpQuat.y = this._rotations[index4B + 1];
+		tmpQuat.z = this._rotations[index4B + 2];
 		tmpQuat.data[3] = this._rotations[index4B + 3];
 
 		if (!transformData._rotation.equals(tmpQuat)) {
@@ -101,13 +101,13 @@ define([
 			transformData._rotation.setVector(tmpQuat2);
 		}
 
-		transformData._translation.data[0] = (1 - fraction) * this._translations[index3A + 0] + fraction * this._translations[index3B + 0];
-		transformData._translation.data[1] = (1 - fraction) * this._translations[index3A + 1] + fraction * this._translations[index3B + 1];
-		transformData._translation.data[2] = (1 - fraction) * this._translations[index3A + 2] + fraction * this._translations[index3B + 2];
+		transformData._translation.x = (1 - fraction) * this._translations[index3A + 0] + fraction * this._translations[index3B + 0];
+		transformData._translation.y = (1 - fraction) * this._translations[index3A + 1] + fraction * this._translations[index3B + 1];
+		transformData._translation.z = (1 - fraction) * this._translations[index3A + 2] + fraction * this._translations[index3B + 2];
 
-		transformData._scale.data[0] = (1 - fraction) * this._scales[index3A + 0] + fraction * this._scales[index3B + 0];
-		transformData._scale.data[1] = (1 - fraction) * this._scales[index3A + 1] + fraction * this._scales[index3B + 1];
-		transformData._scale.data[2] = (1 - fraction) * this._scales[index3A + 2] + fraction * this._scales[index3B + 2];
+		transformData._scale.x = (1 - fraction) * this._scales[index3A + 0] + fraction * this._scales[index3B + 0];
+		transformData._scale.y = (1 - fraction) * this._scales[index3A + 1] + fraction * this._scales[index3B + 1];
+		transformData._scale.z = (1 - fraction) * this._scales[index3A + 2] + fraction * this._scales[index3B + 2];
 	};
 
 	/**

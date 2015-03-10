@@ -1,7 +1,7 @@
 define([
-	'goo/math/Vector'
+	'goo/math/MathUtils'
 ], function (
-	Vector
+	MathUtils
 ) {
 	'use strict';
 
@@ -23,10 +23,31 @@ define([
 	 * var v4 = new Vector3(); // v4 == (0, 0, 0)
 	 */
 	function Vector3() {
-		Vector.call(this, 3);
+		//Vector.call(this, 3);
+
+		this._x = 0;
+		this._y = 0;
+		this._z = 0;
+
+		['x', 'y', 'z'].forEach(function (property) {
+			Object.defineProperty(this, property, {
+				get: function () { return this['_' + property]; },
+				set: function (value) {
+					if (isNaN(value)) {
+						throw 'NaN';
+					}
+					this['_' + property] = value;
+					return value;
+				}
+			});
+		}, this);
 
 		if (arguments.length !== 0) {
-			Vector.prototype.set.apply(this, arguments);
+			Vector3.prototype.set.apply(this, arguments);
+		} else {
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
 		}
 
 		// #ifdef DEBUG
@@ -34,10 +55,28 @@ define([
 		// #endif
 	}
 
-	Vector3.prototype = Object.create(Vector.prototype);
-	Vector3.prototype.constructor = Vector3;
+	Vector3.prototype.set = function () {
+		if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Array) {
+				this.x = arguments[0][0];
+				this.y = arguments[0][1];
+				this.z = arguments[0][2];
+			} else {
+				this.copy(arguments[0]);
+			}
+		} else {
+			this.x = arguments[0];
+			this.y = arguments[1];
+			this.z = arguments[2];
+		}
 
-	Vector.setupAliases(Vector3.prototype,[['x', 'u', 'r'], ['y', 'v', 'g'], ['z', 'w', 'b']]);
+		return this;
+	};
+
+	//Vector3.prototype = Object.create(Vector.prototype);
+	//Vector3.prototype.constructor = Vector3;
+
+	//Vector.setupAliases(Vector3.prototype,[['u', 'r'], ['v', 'g'], ['w', 'b']]);
 
 	/* ====================================================================== */
 
@@ -167,9 +206,9 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] + rdata[0];
-		target.data[1] = ldata[1] + rdata[1];
-		target.data[2] = ldata[2] + rdata[2];
+		target.x = ldata[0] + rdata[0];
+		target.y = ldata[1] + rdata[1];
+		target.z = ldata[2] + rdata[2];
 
 		return target;
 	};
@@ -198,9 +237,9 @@ define([
 				target = new Vector3();
 			}
 
-			target.data[0] = lhs.data[0] + rhs.data[0];
-			target.data[1] = lhs.data[1] + rhs.data[1];
-			target.data[2] = lhs.data[2] + rhs.data[2];
+			target.x = lhs.x + rhs.x;
+			target.y = lhs.y + rhs.y;
+			target.z = lhs.z + rhs.z;
 
 			return target;
 		},
@@ -272,9 +311,9 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] - rdata[0];
-		target.data[1] = ldata[1] - rdata[1];
-		target.data[2] = ldata[2] - rdata[2];
+		target.x = ldata[0] - rdata[0];
+		target.y = ldata[1] - rdata[1];
+		target.z = ldata[2] - rdata[2];
 
 		return target;
 	};
@@ -303,9 +342,9 @@ define([
 				target = new Vector3();
 			}
 
-			target.data[0] = lhs.data[0] - rhs.data[0];
-			target.data[1] = lhs.data[1] - rhs.data[1];
-			target.data[2] = lhs.data[2] - rhs.data[2];
+			target.x = lhs.x - rhs.x;
+			target.y = lhs.y - rhs.y;
+			target.z = lhs.z - rhs.z;
 
 			return target;
 		},
@@ -341,9 +380,9 @@ define([
 	 * @returns {Vector3} Self for chaining
 	 */
 	Vector3.prototype.invert = function () {
-		this.data[0] = 0.0 - this.data[0];
-		this.data[1] = 0.0 - this.data[1];
-		this.data[2] = 0.0 - this.data[2];
+		this.x = 0.0 - this.x;
+		this.y = 0.0 - this.y;
+		this.z = 0.0 - this.z;
 		return this;
 	};
 
@@ -381,22 +420,22 @@ define([
 		if (typeof lhs === 'number') {
 			var rdata = rhs.data || rhs;
 
-			target.data[0] = lhs * rdata[0];
-			target.data[1] = lhs * rdata[1];
-			target.data[2] = lhs * rdata[2];
+			target.x = lhs * rdata[0];
+			target.y = lhs * rdata[1];
+			target.z = lhs * rdata[2];
 		} else if (typeof rhs === 'number') {
 			var ldata = lhs.data || lhs;
 
-			target.data[0] = ldata[0] * rhs;
-			target.data[1] = ldata[1] * rhs;
-			target.data[2] = ldata[2] * rhs;
+			target.x = ldata[0] * rhs;
+			target.y = ldata[1] * rhs;
+			target.z = ldata[2] * rhs;
 		} else {
 			var ldata = lhs.data || lhs;
 			var rdata = rhs.data || rhs;
 
-			target.data[0] = ldata[0] * rdata[0];
-			target.data[1] = ldata[1] * rdata[1];
-			target.data[2] = ldata[2] * rdata[2];
+			target.x = ldata[0] * rdata[0];
+			target.y = ldata[1] * rdata[1];
+			target.z = ldata[2] * rdata[2];
 		}
 
 		return target;
@@ -459,23 +498,23 @@ define([
 		if (typeof lhs === 'number') {
 			var rdata = rhs.data || rhs;
 
-			target.data[0] = lhs / rdata[0];
-			target.data[1] = lhs / rdata[1];
-			target.data[2] = lhs / rdata[2];
+			target.x = lhs / rdata[0];
+			target.y = lhs / rdata[1];
+			target.z = lhs / rdata[2];
 		} else if (typeof rhs === 'number') {
 			var irhs = 1 / rhs;
 			var ldata = lhs.data || lhs;
 
-			target.data[0] = ldata[0] * irhs;
-			target.data[1] = ldata[1] * irhs;
-			target.data[2] = ldata[2] * irhs;
+			target.x = ldata[0] * irhs;
+			target.y = ldata[1] * irhs;
+			target.z = ldata[2] * irhs;
 		} else {
 			var ldata = lhs.data || lhs;
 			var rdata = rhs.data || rhs;
 
-			target.data[0] = ldata[0] / rdata[0];
-			target.data[1] = ldata[1] / rdata[1];
-			target.data[2] = ldata[2] / rdata[2];
+			target.x = ldata[0] / rdata[0];
+			target.y = ldata[1] / rdata[1];
+			target.z = ldata[2] / rdata[2];
 		}
 
 		return target;
@@ -586,12 +625,18 @@ define([
 	 * @returns {number}
 	 */
 	Vector3.prototype.dotVector = function (rhs) {
-		var ldata = this.data;
-		var rdata = rhs.data;
+		//var ldata = this.data;
+		//var rdata = rhs.data;
 
-		return ldata[0] * rdata[0] +
-			ldata[1] * rdata[1] +
-			ldata[2] * rdata[2];
+		return this.x * rhs.x +
+			this.y * rhs.y +
+			this.z * rhs.z;
+	};
+
+	Vector3.prototype.equals = function (that) {
+		return (Math.abs(this.x - that.x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - that.y) <= MathUtils.EPSILON) &&
+			(Math.abs(this.z - that.z) <= MathUtils.EPSILON);
 	};
 
 	/* ====================================================================== */
@@ -617,16 +662,16 @@ define([
 			target = new Vector3();
 		}
 
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
+		//var ldata = lhs.data || lhs;
+		//var rdata = rhs.data || rhs;
 
-		var x = rdata[2] * ldata[1] - rdata[1] * ldata[2];
-		var y = rdata[0] * ldata[2] - rdata[2] * ldata[0];
-		var z = rdata[1] * ldata[0] - rdata[0] * ldata[1];
+		var x = rhs.z * lhs.y - rhs.y * rhs.z;
+		var y = rhs.x * rhs.z - rhs.z * lhs.x;
+		var z = rhs.y * lhs.x - rhs.x * lhs.y;
 
-		target.data[0] = x;
-		target.data[1] = y;
-		target.data[2] = z;
+		target.x = x;
+		target.y = y;
+		target.z = z;
 
 		return target;
 	};
@@ -667,9 +712,9 @@ define([
 	 * }
 	 */
 	Vector3.prototype.lerp = function (end, factor) {
-		this.data[0] = (1.0 - factor) * this.data[0] + factor * end.data[0];
-		this.data[1] = (1.0 - factor) * this.data[1] + factor * end.data[1];
-		this.data[2] = (1.0 - factor) * this.data[2] + factor * end.data[2];
+		this.x = (1.0 - factor) * this.x + factor * end.x;
+		this.y = (1.0 - factor) * this.y + factor * end.y;
+		this.z = (1.0 - factor) * this.z + factor * end.z;
 
 		return this;
 	};
@@ -681,7 +726,7 @@ define([
 	 */
 	Vector3.prototype.reflect = function (normal) {
 		tmpVec.copy(normal);
-		tmpVec.scale(2 * this.dot(normal));
+		tmpVec.scale(2 * this.dotVector(normal));
 		this.subVector(tmpVec);
 		return this;
 	};
@@ -711,9 +756,9 @@ define([
 	 * v1.setDirect(2, 4, 6); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.setDirect = function (x, y, z) {
-		this.data[0] = x;
-		this.data[1] = y;
-		this.data[2] = z;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 
 		return this;
 	};
@@ -730,9 +775,9 @@ define([
 	 * v1.setArray([2, 4, 6]); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.setArray = function (array) {
-		this.data[0] = array[0];
-		this.data[1] = array[1];
-		this.data[2] = array[2];
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
 
 		return this;
 	};
@@ -750,9 +795,9 @@ define([
 	 * v1.setVector(v2); // v1 == (1, 2, 3)
 	 */
 	Vector3.prototype.setVector = function (vector) {
-		this.data[0] = vector.data[0];
-		this.data[1] = vector.data[1];
-		this.data[2] = vector.data[2];
+		this.x = vector.x;
+		this.y = vector.y;
+		this.z = vector.z;
 
 		return this;
 	};
@@ -771,9 +816,9 @@ define([
 	 * v1.addDirect(2, 4, 6); // v1 == (3, 6, 9)
 	 */
 	Vector3.prototype.addDirect = function (x, y, z) {
-		this.data[0] += x;
-		this.data[1] += y;
-		this.data[2] += z;
+		this.x += x;
+		this.y += y;
+		this.z += z;
 
 		return this;
 	};
@@ -791,9 +836,9 @@ define([
 	 * v1.addVector(v2); // v1 == (5, 7, 9)
 	 */
 	Vector3.prototype.addVector = function (vector) {
-		this.data[0] += vector.data[0];
-		this.data[1] += vector.data[1];
-		this.data[2] += vector.data[2];
+		this.x += vector.x;
+		this.y += vector.y;
+		this.z += vector.z;
 
 		return this;
 	};
@@ -812,9 +857,9 @@ define([
 	 * v1.mulDirect(2, 4, 6); // v1 == (2, 8, 18)
 	 */
 	Vector3.prototype.mulDirect = function (x, y, z) {
-		this.data[0] *= x;
-		this.data[1] *= y;
-		this.data[2] *= z;
+		this.x *= x;
+		this.y *= y;
+		this.z *= z;
 
 		return this;
 	};
@@ -832,9 +877,9 @@ define([
 	 * v1.mulVector(v2); // v1 == (2, 4, 6)
 	 */
 	Vector3.prototype.mulVector = function (vec3) {
-		this.data[0] *= vec3.data[0];
-		this.data[1] *= vec3.data[1];
-		this.data[2] *= vec3.data[2];
+		this.x *= vec3.x;
+		this.y *= vec3.y;
+		this.z *= vec3.z;
 
 		return this;
 	};
@@ -853,9 +898,9 @@ define([
 	 * v1.subDirect(1, 2, 3); // v1 == (-1, -2, -3)
 	 */
 	Vector3.prototype.subDirect = function (x, y, z) {
-		this.data[0] -= x;
-		this.data[1] -= y;
-		this.data[2] -= z;
+		this.x -= x;
+		this.y -= y;
+		this.z -= z;
 
 		return this;
 	};
@@ -873,9 +918,9 @@ define([
 	 * v1.subVector(v2); // v1 == (-2, -4, -6)
 	 */
 	Vector3.prototype.subVector = function (vector) {
-		this.data[0] -= vector.data[0];
-		this.data[1] -= vector.data[1];
-		this.data[2] -= vector.data[2];
+		this.x -= vector.x;
+		this.y -= vector.y;
+		this.z -= vector.z;
 
 		return this;
 	};
@@ -890,9 +935,9 @@ define([
 	 * @returns {Vector3} Self for chaining
 	 */
 	Vector3.prototype.scale = function (factor) {
-		this.data[0] *= factor;
-		this.data[1] *= factor;
-		this.data[2] *= factor;
+		this.x *= factor;
+		this.y *= factor;
+		this.z *= factor;
 		return this;
 	};
 
@@ -906,7 +951,7 @@ define([
 	 * var n1 = v1.lengthSquared(); // n1 == 81
 	 */
 	Vector3.prototype.lengthSquared = function () {
-		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2];
+		return this.x * this.x + this.y * this.y + this.z * this.z;
 	};
 
 	/**
@@ -920,15 +965,15 @@ define([
 	Vector3.prototype.normalize = function () {
 		var l = this.length();
 
-		if (l < 0.0000001) {
-			this.data[0] = 0;
-			this.data[1] = 0;
-			this.data[2] = 0;
+		if (l < 0.0000001) { //AT: why is not MathUtil.EPSILON(^2) good?
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
 		} else {
 			l = 1.0 / l;
-			this.data[0] *= l;
-			this.data[1] *= l;
-			this.data[2] *= l;
+			this.x *= l;
+			this.y *= l;
+			this.z *= l;
 		}
 
 		return this;
@@ -947,9 +992,9 @@ define([
 	 * var n1 = Vector3.distanceSquared(v1, v2); // n1 == 81
 	 */
 	Vector3.distanceSquared = function (lhs, rhs) {
-		var x = lhs.data[0] - rhs.data[0],
-			y = lhs.data[1] - rhs.data[1],
-			z = lhs.data[2] - rhs.data[2];
+		var x = lhs.x - rhs.x,
+			y = lhs.y - rhs.y,
+			z = lhs.z - rhs.z;
 		return x * x + y * y + z * z;
 	};
 
@@ -1014,14 +1059,14 @@ define([
 	Vector3.prototype.copy = Vector3.prototype.setVector;
 
 	Vector3.prototype.copyTo = function (destination) {
-		destination.data[0] = this.data[0];
-		destination.data[1] = this.data[1];
-		destination.data[2] = this.data[2];
+		destination.x = this.x;
+		destination.y = this.y;
+		destination.z = this.z;
 		return this;
 	};
 
 	// #ifdef DEBUG
-	Vector.addPostChecks(Vector3.prototype, [
+	/*Vector.addPostChecks(Vector3.prototype, [
 		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',
 		'cross', 'lerp', 'reflect',
 		'setDirect', 'setArray', 'setVector',
@@ -1029,7 +1074,7 @@ define([
 		'subDirect', 'subVector',
 		'mulDirect', 'mulVector',
 		'scale', 'lengthSquared', 'length', 'normalize', 'distanceSquared', 'distance'
-	]);
+	]);*/
 	// #endif
 
 	return Vector3;

@@ -78,9 +78,9 @@ define([
 			if (this.relative) {
 				if (this.everyFrame) {
 					var tpf = fsm.getTpf() * 10;
-					translation.data[0] += this.translation[0] * tpf;
-					translation.data[1] += this.translation[1] * tpf;
-					translation.data[2] += this.translation[2] * tpf;
+					translation.x += this.translation[0] * tpf;
+					translation.y += this.translation[1] * tpf;
+					translation.z += this.translation[2] * tpf;
 				} else {
 					translation.add(this.translation);
 				}

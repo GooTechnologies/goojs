@@ -1,7 +1,7 @@
 define([
-	'goo/math/Vector'
+	'goo/math/MathUtils'
 ], function (
-	Vector
+	MathUtils
 ) {
 	'use strict';
 
@@ -11,10 +11,28 @@ define([
 	 * @param {Vector4|number[]|...number} arguments Initial values for the components.
 	 */
 	function Vector4() {
-		Vector.call(this, 4);
+		//Vector.call(this, 4);
+
+		['x', 'y', 'z', 'w'].forEach(function (property) {
+			Object.defineProperty(this, property, {
+				get: function () { return this['_' + property]; },
+				set: function (value) {
+					if (isNaN(value)) {
+						throw 'NaN';
+					}
+					this['_' + property] = value;
+					return value;
+				}
+			});
+		}, this);
 
 		if (arguments.length !== 0) {
-			Vector.prototype.set.apply(this, arguments);
+			Vector4.prototype.set.apply(this, arguments);
+		} else {
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
+			this.w = 0;
 		}
 
 		// #ifdef DEBUG
@@ -22,10 +40,30 @@ define([
 		// #endif
 	}
 
-	Vector4.prototype = Object.create(Vector.prototype);
-	Vector4.prototype.constructor = Vector4;
+	Vector4.prototype.set = function () {
+		if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Array) {
+				this.x = arguments[0][0];
+				this.y = arguments[0][1];
+				this.z = arguments[0][2];
+				this.w = arguments[0][3];
+			} else {
+				this.copy(arguments[0]);
+			}
+		} else {
+			this.x = arguments[0];
+			this.y = arguments[1];
+			this.z = arguments[2];
+			this.w = arguments[3];
+		}
 
-	Vector.setupAliases(Vector4.prototype,[['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
+		return this;
+	};
+
+	//Vector4.prototype = Object.create(Vector.prototype);
+	//Vector4.prototype.constructor = Vector4;
+
+	//Vector.setupAliases(Vector4.prototype,[['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
 
 	Vector4.ZERO = new Vector4(0, 0, 0, 0);
 	Vector4.ONE = new Vector4(1, 1, 1, 1);
@@ -44,6 +82,7 @@ define([
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 	Vector4.add = function (lhs, rhs, target) {
+		throw '';
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -59,9 +98,9 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] + rdata[0];
-		target.data[1] = ldata[1] + rdata[1];
-		target.data[2] = ldata[2] + rdata[2];
+		target.x = ldata[0] + rdata[0];
+		target.y = ldata[1] + rdata[1];
+		target.z = ldata[2] + rdata[2];
 		target.data[3] = ldata[3] + rdata[3];
 
 		return target;
@@ -87,6 +126,7 @@ define([
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 	Vector4.sub = function (lhs, rhs, target) {
+		throw '';
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -102,9 +142,9 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] - rdata[0];
-		target.data[1] = ldata[1] - rdata[1];
-		target.data[2] = ldata[2] - rdata[2];
+		target.x = ldata[0] - rdata[0];
+		target.y = ldata[1] - rdata[1];
+		target.z = ldata[2] - rdata[2];
 		target.data[3] = ldata[3] - rdata[3];
 
 		return target;
@@ -131,6 +171,7 @@ define([
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 	Vector4.mul = function (lhs, rhs, target) {
+		throw '';
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -146,9 +187,9 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] * rdata[0];
-		target.data[1] = ldata[1] * rdata[1];
-		target.data[2] = ldata[2] * rdata[2];
+		target.x = ldata[0] * rdata[0];
+		target.y = ldata[1] * rdata[1];
+		target.z = ldata[2] * rdata[2];
 		target.data[3] = ldata[3] * rdata[3];
 
 		return target;
@@ -174,6 +215,7 @@ define([
 	 * @returns {Vector4} A new vector if the target vector is omitted, else the target vector.
 	 */
 	Vector4.div = function (lhs, rhs, target) {
+		throw '';
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -189,9 +231,9 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] / rdata[0];
-		target.data[1] = ldata[1] / rdata[1];
-		target.data[2] = ldata[2] / rdata[2];
+		target.x = ldata[0] / rdata[0];
+		target.y = ldata[1] / rdata[1];
+		target.z = ldata[2] / rdata[2];
 		target.data[3] = ldata[3] / rdata[3];
 
 		return target;
@@ -220,6 +262,7 @@ define([
 	 */
 
 	Vector4.dot = function (lhs, rhs) {
+		throw '';
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs, lhs];
 		}
@@ -253,13 +296,20 @@ define([
 	 * @returns {number}
 	 */
 	Vector4.prototype.dotVector = function (rhs) {
-		var ldata = this.data;
-		var rdata = rhs.data;
+		//var ldata = this.data;
+		//var rdata = rhs.data;
 
-		return ldata[0] * rdata[0] +
-			ldata[1] * rdata[1] +
-			ldata[2] * rdata[2] +
-			ldata[3] * rdata[3];
+		return this.x * rhs.x +
+			this.y * rhs.y +
+			this.z * rhs.z +
+			this.w * rhs.w;
+	};
+
+	Vector4.prototype.equals = function (that) {
+		return (Math.abs(this.x - that.x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - that.y) <= MathUtils.EPSILON) &&
+			(Math.abs(this.z - that.z) <= MathUtils.EPSILON) &&
+			(Math.abs(this.w - that.w) <= MathUtils.EPSILON);
 	};
 
 	/* ====================================================================== */
@@ -305,10 +355,10 @@ define([
 	 * v1.setDirect(2, 4, 6, 8); // v1 == (2, 4, 6, 8)
 	 */
 	Vector4.prototype.setDirect = function (x, y, z, w) {
-		this.data[0] = x;
-		this.data[1] = y;
-		this.data[2] = z;
-		this.data[3] = w;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
 
 		return this;
 	};
@@ -325,10 +375,10 @@ define([
 	 * v1.setArray([2, 4, 6, 8]); // v1 == (2, 4, 6, 8)
 	 */
 	Vector4.prototype.setArray = function (array) {
-		this.data[0] = array[0];
-		this.data[1] = array[1];
-		this.data[2] = array[2];
-		this.data[3] = array[3];
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
+		this.w = array[3];
 
 		return this;
 	};
@@ -345,10 +395,41 @@ define([
 	 * v1.setVector(new Vector4(2, 4, 6, 8)); // v1 == (2, 4, 6, 8)
 	 */
 	Vector4.prototype.setVector = function (vector) {
-		this.data[0] = vector.data[0];
-		this.data[1] = vector.data[1];
-		this.data[2] = vector.data[2];
-		this.data[3] = vector.data[3];
+		this.x = vector.x;
+		this.y = vector.y;
+		this.z = vector.z;
+		this.w = vector.w;
+
+		return this;
+	};
+
+	Vector4.prototype.lengthSquared = function () {
+		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
+	};
+
+	/**
+	 * Calculates length squared of vector
+	 * @returns {number} length squared
+	 */
+	Vector4.prototype.length = function () {
+		return Math.sqrt(this.lengthSquared());
+	};
+
+	Vector4.prototype.normalize = function () {
+		var l = this.length();
+
+		if (l < 0.0000001) { //AT: why is not MathUtil.EPSILON(^2) good?
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
+			this.w = 0;
+		} else {
+			l = 1.0 / l;
+			this.x *= l;
+			this.y *= l;
+			this.z *= l;
+			this.w *= l;
+		}
 
 		return this;
 	};
@@ -368,10 +449,10 @@ define([
 	 * v1.addDirect(2, 4, 6, 8); // v1 == (3, 6, 9, 12)
 	 */
 	Vector4.prototype.addDirect = function (x, y, z, w) {
-		this.data[0] += x;
-		this.data[1] += y;
-		this.data[2] += z;
-		this.data[3] += w;
+		this.x += x;
+		this.y += y;
+		this.z += z;
+		this.w += w;
 
 		return this;
 	};
@@ -385,10 +466,10 @@ define([
 	 * v1.addVector(new Vector4(2, 4)); // v1 == (3, 6)
 	 */
 	Vector4.prototype.addVector = function (vector) {
-		this.data[0] += vector.data[0];
-		this.data[1] += vector.data[1];
-		this.data[2] += vector.data[2];
-		this.data[3] += vector.data[3];
+		this.x += vector.x;
+		this.y += vector.y;
+		this.z += vector.z;
+		this.w += vector.w;
 
 		return this;
 	};
@@ -406,10 +487,10 @@ define([
 	 * v1.mulDirect(2, 4, 6, 8); // v1 == (2, 8, 18, 32)
 	 */
 	Vector4.prototype.mulDirect = function (x, y, z, w) {
-		this.data[0] *= x;
-		this.data[1] *= y;
-		this.data[2] *= z;
-		this.data[3] *= w;
+		this.x *= x;
+		this.y *= y;
+		this.z *= z;
+		this.w *= w;
 
 		return this;
 	};
@@ -423,10 +504,10 @@ define([
 	 * v1.mulVector(new Vector4(2, 4, 6, 8)); // v1 == (2, 8, 18, 32)
 	 */
 	Vector4.prototype.mulVector = function (vector) {
-		this.data[0] *= vector.data[0];
-		this.data[1] *= vector.data[1];
-		this.data[2] *= vector.data[2];
-		this.data[3] *= vector.data[3];
+		this.x *= vector.x;
+		this.y *= vector.y;
+		this.z *= vector.z;
+		this.w *= vector.w;
 
 		return this;
 	};
@@ -444,10 +525,10 @@ define([
 	 * v1.subDirect(2, 4, 6, 8); // v1 == (-1, -2, -3, -4)
 	 */
 	Vector4.prototype.subDirect = function (x, y, z, w) {
-		this.data[0] -= x;
-		this.data[1] -= y;
-		this.data[2] -= z;
-		this.data[3] -= w;
+		this.x -= x;
+		this.y -= y;
+		this.z -= z;
+		this.w -= w;
 
 		return this;
 	};
@@ -461,10 +542,10 @@ define([
 	 * v1.addVector(new Vector2(2, 4, 6, 8)); // v1 == (-1, -2, -3, -4)
 	 */
 	Vector4.prototype.subVector = function (vector) {
-		this.data[0] -= vector.data[0];
-		this.data[1] -= vector.data[1];
-		this.data[2] -= vector.data[2];
-		this.data[3] -= vector.data[3];
+		this.x -= vector.x;
+		this.y -= vector.y;
+		this.z -= vector.z;
+		this.w -= vector.w;
 
 		return this;
 	};
@@ -476,10 +557,10 @@ define([
 	 * @returns {Vector4} Self for chaining
 	 */
 	Vector4.prototype.scale = function (factor) {
-		this.data[0] *= factor;
-		this.data[1] *= factor;
-		this.data[2] *= factor;
-		this.data[3] *= factor;
+		this.x *= factor;
+		this.y *= factor;
+		this.z *= factor;
+		this.w *= factor;
 		return this;
 	};
 
@@ -498,15 +579,15 @@ define([
 	Vector4.prototype.copy = Vector4.prototype.setVector;
 
 	Vector4.prototype.copyTo = function (destination) {
-		destination.data[0] = this.data[0];
-		destination.data[1] = this.data[1];
-		destination.data[2] = this.data[2];
-		destination.data[3] = this.data[3];
+		destination.x = this.x;
+		destination.y = this.y;
+		destination.z = this.z;
+		destination.w = this.w;
 		return this;
 	};
 
 	// #ifdef DEBUG
-	Vector.addPostChecks(Vector4.prototype, [
+	/*Vector.addPostChecks(Vector4.prototype, [
 		'add', 'sub', 'mul', 'div', 'dot', 'dotVector',
 		'lerp',
 		'setDirect', 'setArray', 'setVector',
@@ -514,7 +595,7 @@ define([
 		'subDirect', 'subVector',
 		'mulDirect', 'mulVector',
 		'scale'
-	]);
+	]);*/
 	// #endif
 
 	return Vector4;

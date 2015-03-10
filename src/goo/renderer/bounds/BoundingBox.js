@@ -55,18 +55,18 @@ define([
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
-			min.data[0] = x < min.data[0] ? x : min.data[0];
-			min.data[1] = y < min.data[1] ? y : min.data[1];
-			min.data[2] = z < min.data[2] ? z : min.data[2];
-			max.data[0] = x > max.data[0] ? x : max.data[0];
-			max.data[1] = y > max.data[1] ? y : max.data[1];
-			max.data[2] = z > max.data[2] ? z : max.data[2];
+			min.x = x < min.x ? x : min.x;
+			min.y = y < min.y ? y : min.y;
+			min.z = z < min.z ? z : min.z;
+			max.x = x > max.x ? x : max.x;
+			max.y = y > max.y ? y : max.y;
+			max.z = z > max.z ? z : max.z;
 		}
 
 		vec.setVector(max).subVector(min).scale(0.5);
-		this.xExtent = vec.data[0];
-		this.yExtent = vec.data[1];
-		this.zExtent = vec.data[2];
+		this.xExtent = vec.x;
+		this.yExtent = vec.y;
+		this.zExtent = vec.z;
 
 		this.center.setVector(max).addVector(min).scale(0.5);
 	};
@@ -151,16 +151,16 @@ define([
 			transform.matrix.applyPostPoint(corners[i]);
 		}
 		// Now compute based on these transformed points
-		var minX = corners[0].data[0];
-		var minY = corners[0].data[1];
-		var minZ = corners[0].data[2];
+		var minX = corners[0].x;
+		var minY = corners[0].y;
+		var minZ = corners[0].z;
 		var maxX = minX;
 		var maxY = minY;
 		var maxZ = minZ;
 		for (var i = 1; i < 8; i++) {
-			var curX = corners[i].data[0];
-			var curY = corners[i].data[1];
-			var curZ = corners[i].data[2];
+			var curX = corners[i].x;
+			var curY = corners[i].y;
+			var curZ = corners[i].z;
 			minX = Math.min(minX, curX);
 			minY = Math.min(minY, curY);
 			minZ = Math.min(minZ, curZ);
@@ -185,24 +185,30 @@ define([
 		var xExtent = this.xExtent;
 		var yExtent = this.yExtent;
 		var zExtent = this.zExtent;
-		var centerData = this.center.data;
-		store[0].setDirect(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
-		store[1].setDirect(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
-		store[2].setDirect(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
-		store[3].setDirect(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
-		store[4].setDirect(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
-		store[5].setDirect(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
-		store[6].setDirect(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
-		store[7].setDirect(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
+		var centerData = this.center;
+		store[0].setDirect(centerData.x + xExtent, centerData.y + yExtent, centerData.z + zExtent);
+		store[1].setDirect(centerData.x + xExtent, centerData.y + yExtent, centerData.z - zExtent);
+		store[2].setDirect(centerData.x + xExtent, centerData.y - yExtent, centerData.z + zExtent);
+		store[3].setDirect(centerData.x + xExtent, centerData.y - yExtent, centerData.z - zExtent);
+		store[4].setDirect(centerData.x - xExtent, centerData.y + yExtent, centerData.z + zExtent);
+		store[5].setDirect(centerData.x - xExtent, centerData.y + yExtent, centerData.z - zExtent);
+		store[6].setDirect(centerData.x - xExtent, centerData.y - yExtent, centerData.z + zExtent);
+		store[7].setDirect(centerData.x - xExtent, centerData.y - yExtent, centerData.z - zExtent);
 		return store;
 	};
 
 	BoundingBox.prototype.whichSide = function (plane) {
-		var planeData = plane.normal.data;
-		var pointData = this.center.data;
+		var planeData = plane.normal;
+		var pointData = this.center;
 
-		var radius = Math.abs(this.xExtent * planeData[0]) + Math.abs(this.yExtent * planeData[1]) + Math.abs(this.zExtent * planeData[2]);
-		var distance = planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
+		var radius = Math.abs(this.xExtent * planeData.x) +
+			Math.abs(this.yExtent * planeData.y) +
+			Math.abs(this.zExtent * planeData.z);
+
+		var distance = planeData.x * pointData[0] +
+			planeData.y * pointData[1] +
+			planeData.z * pointData[2] -
+			plane.constant;
 
 		if (distance < -radius) {
 			return BoundingVolume.Inside;
@@ -214,10 +220,10 @@ define([
 	};
 
 	BoundingBox.prototype._pseudoDistance = function (plane, point) {
-		var planeData = plane.normal.data;
-		var pointData = point.data;
+		var planeData = plane.normal;
+		var pointData = point;
 
-		return planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
+		return planeData.x * pointData.x + planeData.y * pointData.y + planeData.z * pointData.z - plane.constant;
 	};
 
 	BoundingBox.prototype._maxAxis = function (scale) {
@@ -342,7 +348,7 @@ define([
 		// * Find if the two boxes intersect along a single axis
 		// * Compute the intersection interval for that axis
 		// * Keep the smallest intersection/penetration value
-		var axisLengthSquared = Vector3.dot(axis, axis);
+		var axisLengthSquared = Vector3.dotVector(axis, axis);
 
 		// If the axis is degenerate then ignore
 		if (axisLengthSquared < 0.000001) {
@@ -405,12 +411,12 @@ define([
 		}
 
 		var notEntirelyClipped = //
-			BoundingBox.clip(direction.data[0], -diff.data[0] - x, t) && //
-				BoundingBox.clip(-direction.data[0], diff.data[0] - x, t) && //
-				BoundingBox.clip(direction.data[1], -diff.data[1] - y, t) && //
-				BoundingBox.clip(-direction.data[1], diff.data[1] - y, t) && //
-				BoundingBox.clip(direction.data[2], -diff.data[2] - z, t) && //
-				BoundingBox.clip(-direction.data[2], diff.data[2] - z, t);
+			BoundingBox.clip(direction.x, -diff.x - x, t) && //
+				BoundingBox.clip(-direction.x, diff.x - x, t) && //
+				BoundingBox.clip(direction.y, -diff.y - y, t) && //
+				BoundingBox.clip(-direction.y, diff.y - y, t) && //
+				BoundingBox.clip(direction.z, -diff.z - z, t) && //
+				BoundingBox.clip(-direction.z, diff.z - z, t);
 
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			return true;
@@ -444,12 +450,12 @@ define([
 		}
 
 		var notEntirelyClipped = //
-			BoundingBox.clip(direction.data[0], -diff.data[0] - x, t) && //
-				BoundingBox.clip(-direction.data[0], diff.data[0] - x, t) && //
-				BoundingBox.clip(direction.data[1], -diff.data[1] - y, t) && //
-				BoundingBox.clip(-direction.data[1], diff.data[1] - y, t) && //
-				BoundingBox.clip(direction.data[2], -diff.data[2] - z, t) && //
-				BoundingBox.clip(-direction.data[2], diff.data[2] - z, t);
+			BoundingBox.clip(direction.x, -diff.x - x, t) && //
+				BoundingBox.clip(-direction.x, diff.x - x, t) && //
+				BoundingBox.clip(direction.y, -diff.y - y, t) && //
+				BoundingBox.clip(-direction.y, diff.y - y, t) && //
+				BoundingBox.clip(direction.z, -diff.z - z, t) && //
+				BoundingBox.clip(-direction.z, diff.z - z, t);
 
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {

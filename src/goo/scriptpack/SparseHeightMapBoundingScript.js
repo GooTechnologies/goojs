@@ -32,9 +32,9 @@ define([], function () {
 
 	SparseHeightMapBoundingScript.prototype.run = function(entity) {
 		var translation = entity.transformComponent.transform.translation;
-		var closest = this.getClosest(translation.data[0], translation.data[2]);
-		var diff = translation.data[1] - closest;
-		translation.data[1] -= diff * 0.1;
+		var closest = this.getClosest(translation.x, translation.z);
+		var diff = translation.y - closest;
+		translation.y -= diff * 0.1;
 	};
 
 	return SparseHeightMapBoundingScript;

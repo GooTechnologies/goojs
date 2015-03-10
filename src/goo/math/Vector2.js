@@ -1,7 +1,7 @@
 define([
-	'goo/math/Vector'
+	'goo/math/MathUtils'
 ], function (
-	Vector
+	MathUtils
 ) {
 	'use strict';
 
@@ -11,10 +11,26 @@ define([
 	 * @param {Vector2|number[]|...number} arguments Initial values for the components.
 	 */
 	function Vector2() {
-		Vector.call(this, 2);
+		//Vector.call(this, 2);
+
+		['x', 'y'].forEach(function (property) {
+			Object.defineProperty(this, property, {
+				get: function () { return this['_' + property]; },
+				set: function (value) {
+					if (isNaN(value)) {
+						throw 'NaN';
+					}
+					this['_' + property] = value;
+					return value;
+				}
+			});
+		}, this);
 
 		if (arguments.length !== 0) {
-			Vector.prototype.set.apply(this, arguments);
+			Vector2.prototype.set.apply(this, arguments);
+		} else {
+			this.x = 0;
+			this.y = 0;
 		}
 
 		// #ifdef DEBUG
@@ -22,10 +38,26 @@ define([
 		// #endif
 	}
 
-	Vector2.prototype = Object.create(Vector.prototype);
-	Vector2.prototype.constructor = Vector2;
+	Vector2.prototype.set = function () {
+		if (arguments.length === 1 && typeof arguments[0] === 'object') {
+			if (arguments[0] instanceof Array) {
+				this.x = arguments[0][0];
+				this.y = arguments[0][1];
+			} else {
+				this.copy(arguments[0]);
+			}
+		} else {
+			this.x = arguments[0];
+			this.y = arguments[1];
+		}
 
-	Vector.setupAliases(Vector2.prototype, [['x', 'u', 's'], ['y', 'v', 't']]);
+		return this;
+	};
+
+	//Vector2.prototype = Object.create(Vector.prototype);
+	//Vector2.prototype.constructor = Vector2;
+	//
+	//Vector.setupAliases(Vector2.prototype, [['x', 'u', 's'], ['y', 'v', 't']]);
 
 	Vector2.ZERO = new Vector2(0, 0);
 	Vector2.ONE = new Vector2(1, 1);
@@ -60,8 +92,8 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] + rdata[0];
-		target.data[1] = ldata[1] + rdata[1];
+		target.x = ldata[0] + rdata[0];
+		target.y = ldata[1] + rdata[1];
 
 		return target;
 	};
@@ -102,8 +134,8 @@ define([
 		var rdata = rhs.data || rhs;
 
 
-		target.data[0] = ldata[0] - rdata[0];
-		target.data[1] = ldata[1] - rdata[1];
+		target.x = ldata[0] - rdata[0];
+		target.y = ldata[1] - rdata[1];
 
 		return target;
 	};
@@ -144,8 +176,8 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] * rdata[0];
-		target.data[1] = ldata[1] * rdata[1];
+		target.x = ldata[0] * rdata[0];
+		target.y = ldata[1] * rdata[1];
 
 		return target;
 	};
@@ -185,8 +217,8 @@ define([
 		var ldata = lhs.data || lhs;
 		var rdata = rhs.data || rhs;
 
-		target.data[0] = ldata[0] / rdata[0];
-		target.data[1] = ldata[1] / rdata[1];
+		target.x = ldata[0] / rdata[0];
+		target.y = ldata[1] / rdata[1];
 
 		return target;
 	};
@@ -210,6 +242,7 @@ define([
 	 * @returns {number} Dot product.
 	 */
 	Vector2.dot = function (lhs, rhs) {
+		throw '';
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs];
 		}
@@ -241,11 +274,16 @@ define([
 	 * @returns {number}
 	 */
 	Vector2.prototype.dotVector = function (rhs) {
-		var ldata = this.data;
-		var rdata = rhs.data;
+		//var ldata = this.data;
+		//var rdata = rhs.data;
 
-		return ldata[0] * rdata[0] +
-			ldata[1] * rdata[1];
+		return this.x * rhs.x +
+			this.y * rhs.y;
+	};
+
+	Vector2.prototype.equals = function (that) {
+		return (Math.abs(this.x - that.x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - that.y) <= MathUtils.EPSILON);
 	};
 
 	/**
@@ -255,8 +293,35 @@ define([
 	 */
 	Vector2.prototype.reflect = function (normal) {
 		tmpVec.copy(normal);
-		tmpVec.scale(2 * this.dot(normal));
+		tmpVec.scale(2 * this.dotVector(normal));
 		this.subVector(tmpVec);
+		return this;
+	};
+
+	Vector2.prototype.lengthSquared = function () {
+		return this.x * this.x + this.y * this.y;
+	};
+
+	/**
+	 * Calculates length squared of vector
+	 * @returns {number} length squared
+	 */
+	Vector2.prototype.length = function () {
+		return Math.sqrt(this.lengthSquared());
+	};
+
+	Vector2.prototype.normalize = function () {
+		var l = this.length();
+
+		if (l < 0.0000001) { //AT: why is not MathUtil.EPSILON(^2) good?
+			this.x = 0;
+			this.y = 0;
+		} else {
+			l = 1.0 / l;
+			this.x *= l;
+			this.y *= l;
+		}
+
 		return this;
 	};
 
@@ -281,8 +346,8 @@ define([
 	 * v1.setDirect(2, 4); // v1 == (2, 4)
 	 */
 	Vector2.prototype.setDirect = function (x, y) {
-		this.data[0] = x;
-		this.data[1] = y;
+		this.x = x;
+		this.y = y;
 
 		return this;
 	};
@@ -299,8 +364,8 @@ define([
 	 * v1.setArray([2, 4]); // v1 == (2, 4)
 	 */
 	Vector2.prototype.setArray = function (array) {
-		this.data[0] = array[0];
-		this.data[1] = array[1];
+		this.x = array[0];
+		this.y = array[1];
 
 		return this;
 	};
@@ -317,8 +382,8 @@ define([
 	 * v1.setVector(new Vector2(2, 4)); // v1 == (2, 4)
 	 */
 	Vector2.prototype.setVector = function (vector) {
-		this.data[0] = vector.data[0];
-		this.data[1] = vector.data[1];
+		this.x = vector.x;
+		this.y = vector.y;
 
 		return this;
 	};
@@ -336,8 +401,8 @@ define([
 	 * v1.addd(2, 4); // v1 == (3, 6)
 	 */
 	Vector2.prototype.addDirect = function (x, y) {
-		this.data[0] += x;
-		this.data[1] += y;
+		this.x += x;
+		this.y += y;
 
 		return this;
 	};
@@ -351,8 +416,8 @@ define([
 	 * v1.addVector(new Vector2(2, 4)); // v1 == (3, 6)
 	 */
 	Vector2.prototype.addVector = function (vector) {
-		this.data[0] += vector.data[0];
-		this.data[1] += vector.data[1];
+		this.x += vector.x;
+		this.y += vector.y;
 
 		return this;
 	};
@@ -368,8 +433,8 @@ define([
 	 * v1.mulDirect(2, 4); // v1 == (2, 8)
 	 */
 	Vector2.prototype.mulDirect = function (x, y) {
-		this.data[0] *= x;
-		this.data[1] *= y;
+		this.x *= x;
+		this.y *= y;
 
 		return this;
 	};
@@ -383,8 +448,8 @@ define([
 	 * v1.mulVector(new Vector2(2, 4)); // v1 == (2, 8)
 	 */
 	Vector2.prototype.mulVector = function (vector) {
-		this.data[0] *= vector.data[0];
-		this.data[1] *= vector.data[1];
+		this.x *= vector.x;
+		this.y *= vector.y;
 
 		return this;
 	};
@@ -400,8 +465,8 @@ define([
 	 * v1.subd(2, 4); // v1 == (-1, -2)
 	 */
 	Vector2.prototype.subDirect = function (x, y) {
-		this.data[0] -= x;
-		this.data[1] -= y;
+		this.x -= x;
+		this.y -= y;
 
 		return this;
 	};
@@ -415,8 +480,8 @@ define([
 	 * v1.addVector(new Vector2(2, 4)); // v1 == (-1, -2)
 	 */
 	Vector2.prototype.subVector = function (vector) {
-		this.data[0] -= vector.data[0];
-		this.data[1] -= vector.data[1];
+		this.x -= vector.x;
+		this.y -= vector.y;
 
 		return this;
 	};
@@ -428,8 +493,8 @@ define([
 	 * @returns {Vector2} Self for chaining
 	 */
 	Vector2.prototype.scale = function (factor) {
-		this.data[0] *= factor;
-		this.data[1] *= factor;
+		this.x *= factor;
+		this.y *= factor;
 		return this;
 	};
 
@@ -448,13 +513,15 @@ define([
 	Vector2.prototype.copy = Vector2.prototype.setVector;
 
 	Vector2.prototype.copyTo = function (destination) {
-		destination.data[0] = this.data[0];
-		destination.data[1] = this.data[1];
+		destination.x = this.x;
+		destination.y = this.y;
 		return this;
 	};
 
+
+
 	// #ifdef DEBUG
-	Vector.addPostChecks(Vector2.prototype, [
+	/*Vector.addPostChecks(Vector2.prototype, [
 		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',
 		'reflect',
 		'setDirect', 'setArray', 'setVector',
@@ -462,7 +529,7 @@ define([
 		'subDirect', 'subVector',
 		'mulDirect', 'mulVector',
 		'scale'
-	]);
+	]);*/
 	// #endif
 
 	return Vector2;

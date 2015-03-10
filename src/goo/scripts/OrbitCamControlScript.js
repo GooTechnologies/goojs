@@ -76,9 +76,9 @@ define([
 			);
 		} else if (args.spherical) {
 			var spherical = ctx.spherical = new Vector3(
-				args.spherical[0],
-				args.spherical[1] * MathUtils.DEG_TO_RAD,
-				args.spherical[2] * MathUtils.DEG_TO_RAD
+				args.spherical.x,
+				args.spherical.y * MathUtils.DEG_TO_RAD,
+				args.spherical.z * MathUtils.DEG_TO_RAD
 			);
 		} else {
 			var spherical = ctx.spherical = new Vector3(15, 0, 0); // Just something so the script won't crash
@@ -116,7 +116,7 @@ define([
 				mouseState.lastX = NaN;
 				mouseState.lastY = NaN;
 				ctx.velocity.setDirect(0, 0);
-				ctx.spherical.data[1] = MathUtils.moduloPositive(ctx.spherical.data[1], MathUtils.TWO_PI);
+				ctx.spherical.y = MathUtils.moduloPositive(ctx.spherical.y, MathUtils.TWO_PI);
 				ctx.targetSpherical.setVector(ctx.spherical);
 			} else {
 				applyReleaseDrift(args, ctx);
@@ -156,19 +156,19 @@ define([
 	}
 
 	function move(azimuthAccel, thetaAccel, args, ctx) {
-		var td = ctx.targetSpherical.data;
+		var td = ctx.targetSpherical;
 
 		// update our master spherical coords, using x and y movement
 		if (args.clampAzimuth) {
 			var minAzimuth = args.minAzimuth * MathUtils.DEG_TO_RAD;
 			var maxAzimuth = args.maxAzimuth * MathUtils.DEG_TO_RAD;
-			td[1] = MathUtils.radialClamp(td[1] - azimuthAccel, minAzimuth, maxAzimuth);
+			td.y = MathUtils.radialClamp(td.y - azimuthAccel, minAzimuth, maxAzimuth);
 		} else {
-			td[1] = td[1] - azimuthAccel;
+			td.y = td.y - azimuthAccel;
 		}
 		var minAscent = args.minAscent * MathUtils.DEG_TO_RAD;
 		var maxAscent = args.maxAscent * MathUtils.DEG_TO_RAD;
-		td[2] = MathUtils.clamp(td[2] + thetaAccel, minAscent, maxAscent);
+		td.z = MathUtils.clamp(td.z + thetaAccel, minAscent, maxAscent);
 
 		ctx.dirty = true;
 	}
@@ -185,11 +185,11 @@ define([
 
 	function applyWheel(e, args, ctx) {
 		var delta =  Math.max(-1, Math.min(1, -e.wheelDelta || e.detail));
-		delta *= ZOOM_DISTANCE_FACTOR * ctx.targetSpherical.data[0];
+		delta *= ZOOM_DISTANCE_FACTOR * ctx.targetSpherical.x;
 
-		var td = ctx.targetSpherical.data;
-		td[0] = MathUtils.clamp(
-			td[0] + args.zoomSpeed * delta,
+		var td = ctx.targetSpherical;
+		td.x = MathUtils.clamp(
+			td.x + args.zoomSpeed * delta,
 			args.minZoomDistance,
 			args.maxZoomDistance
 		);
@@ -360,30 +360,30 @@ define([
 
 
 		//var delta = MathUtils.clamp(args.interpolationSpeed * ctx.world.tpf, 0.0, 1.0);
-		var sd = spherical.data;
-		var tsd = targetSpherical.data;
+		var sd = spherical;
+		var tsd = targetSpherical;
 
 		// Move azimuth to target
-		sd[1] = MathUtils.lerp(delta, sd[1], tsd[1]);
+		sd.y = MathUtils.lerp(delta, sd.y, tsd.y);
 		// Move ascent to target
-		sd[2] = MathUtils.lerp(delta, sd[2], tsd[2]);
+		sd.z = MathUtils.lerp(delta, sd.z, tsd.z);
 
 		// Move distance to target
-		var deltaX = sd[0];
-		sd[0] = MathUtils.lerp(delta, sd[0], tsd[0]);
-		deltaX /= sd[0];
+		var deltaX = sd.x;
+		sd.x = MathUtils.lerp(delta, sd.x, tsd.x);
+		deltaX /= sd.x;
 		updateFrustumSize(deltaX, ctx);
 
 
-		MathUtils.sphericalToCartesian(sd[0], sd[1], sd[2], cartesian);
+		MathUtils.sphericalToCartesian(sd.x, sd.y, sd.z, cartesian);
 
-		transform.translation.set(cartesian.add(lookAtPoint));
+		transform.translation.set(cartesian.addVector(lookAtPoint));
 		if (!transform.translation.equals(lookAtPoint)) {
 			transform.lookAt(lookAtPoint, ctx.worldUpVector);
 		}
 
 		if (spherical.distanceSquared(targetSpherical) < EPSILON && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
-			sd[1] = MathUtils.moduloPositive(sd[1], MathUtils.TWO_PI);
+			sd.y = MathUtils.moduloPositive(sd.y, MathUtils.TWO_PI);
 			targetSpherical.setVector(spherical);
 			ctx.dirty = false;
 		}

@@ -143,7 +143,7 @@ define([
 			if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
 				return 0;
 			} else {
-				return context.getImageData(x, y, 1, 1).data[0] / 255;
+				return context.getImageData(x, y, 1, 1).x / 255;
 			}
 		};
 

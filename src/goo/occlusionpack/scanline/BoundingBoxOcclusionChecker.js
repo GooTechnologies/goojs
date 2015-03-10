@@ -148,9 +148,9 @@ define([
 				var p2 = p++;
 				var p3 = p++;
 				var p4 = p++;
-				v1.data[0] = positionArray[p1];
-				v1.data[1] = positionArray[p2];
-				v1.data[2] = positionArray[p3];
+				v1.x = positionArray[p1];
+				v1.y = positionArray[p2];
+				v1.z = positionArray[p3];
 				v1.data[3] = positionArray[p4];
 
 				combinedMatrix.applyPost(v1);
@@ -163,13 +163,13 @@ define([
 				}
 
 				var div = 1.0 / wComponent;
-				v1.data[0] *= div;
-				v1.data[1] *= div;
+				v1.x *= div;
+				v1.y *= div;
 
 				// Screen space transform x and y coordinates, and write the transformed position data into the positionArray.
-				positionArray[p1] = (v1.data[0] + 1.0) * this._halfClipX;
-				positionArray[p2] = (v1.data[1] + 1.0) * this._halfClipY;
-				// positionArray[p3] = v.data[2];
+				positionArray[p1] = (v1.x + 1.0) * this._halfClipX;
+				positionArray[p2] = (v1.y + 1.0) * this._halfClipY;
+				// positionArray[p3] = v.z;
 				// Invert w component here, this to be able to interpolate the depth over the triangles.
 				positionArray[p4] = div;
 			}
@@ -222,8 +222,8 @@ define([
 			var vPos;
 			for (var i = 0; i < 8; i++) {
 				vPos = i * 4;
-				v1.data[0] = positions[vPos];
-				v1.data[1] = positions[vPos + 1];
+				v1.x = positions[vPos];
+				v1.y = positions[vPos + 1];
 				v1.data[3] = positions[vPos + 3];
 				var code = this._calculateOutCode(v1);
 				outCodes[i] = code;
@@ -234,12 +234,12 @@ define([
 					minDepth = Math.max(minDepth, v1.data[3]);
 
 					// Minimum and maximum X
-					var xValue = v1.data[0];
+					var xValue = v1.x;
 					minX = Math.min(minX, xValue);
 					maxX = Math.max(maxX, xValue);
 
 					// Minimum and maximum Y
-					var yValue = v1.data[1];
+					var yValue = v1.y;
 					minY = Math.min(minY, yValue);
 					maxY = Math.max(maxY, yValue);
 				}
@@ -251,16 +251,16 @@ define([
 			for (var edgeIndex = 0; edgeIndex < 24; edgeIndex++) {
 				vertIndex = edgeIndices[edgeIndex];
 				vPos = vertIndex * 4;
-				v1.data[0] = positions[vPos];
-				v1.data[1] = positions[vPos + 1];
+				v1.x = positions[vPos];
+				v1.y = positions[vPos + 1];
 				v1.data[3] = positions[vPos + 3];
 				outcode1 = outCodes[vertIndex];
 
 				edgeIndex++;
 				vertIndex = edgeIndices[edgeIndex];
 				vPos = vertIndex * 4;
-				v2.data[0] = positions[vPos];
-				v2.data[1] = positions[vPos + 1];
+				v2.x = positions[vPos];
+				v2.y = positions[vPos + 1];
 				v2.data[3] = positions[vPos + 3];
 				outcode2 = outCodes[vertIndex];
 
@@ -299,9 +299,9 @@ define([
 					// Checking for match in bitorder, starting with ABOVE == 1000, then BELOW == 0100,
 					// 0010 and 0001.
 					if (outsideCode & ABOVE) {
-						ratio = ((this._clipY - v1.data[1]) / (v2.data[1] - v1.data[1]));
-						v3.data[0] = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
-						v3.data[1] = this._clipY;
+						ratio = ((this._clipY - v1.y) / (v2.y - v1.y));
+						v3.x = v1.x + (v2.x - v1.x) * ratio;
+						v3.y = this._clipY;
 
 						// Only check for minmax x and y if the new coordinate is inside.
 						// [minX, maxX, minY, maxY, minDepth];
@@ -309,47 +309,47 @@ define([
 						if (nextCode === INSIDE) {
 							maxY = this._clipY;
 							// Minmax X
-							var xValue = v3.data[0];
+							var xValue = v3.x;
 							minX = Math.min(minX, xValue);
 							maxX = Math.max(maxX, xValue);
 						}
 					} else if (outsideCode & BELOW) {
-						ratio = (-v1.data[1] / (v2.data[1] - v1.data[1]));
-						v3.data[0] = v1.data[0] + (v2.data[0] - v1.data[0]) * ratio;
-						v3.data[1] = 0;
+						ratio = (-v1.y / (v2.y - v1.y));
+						v3.x = v1.x + (v2.x - v1.x) * ratio;
+						v3.y = 0;
 
 						// Only check for minmax x and y if the new coordinate is inside.
 						nextCode = this._calculateOutCode(v3);
 						if (nextCode === INSIDE) {
 							minY = 0;
 							// Minmax X
-							var xValue = v3.data[0];
+							var xValue = v3.x;
 							minX = Math.min(minX, xValue);
 							maxX = Math.max(maxX, xValue);
 						}
 					} else if (outsideCode & RIGHT) {
-						ratio = ((this._clipX - v1.data[0]) / (v2.data[0] - v1.data[0]));
-						v3.data[1] = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
-						v3.data[0] = this._clipX;
+						ratio = ((this._clipX - v1.x) / (v2.x - v1.x));
+						v3.y = v1.y + (v2.y - v1.y) * ratio;
+						v3.x = this._clipX;
 
 						nextCode = this._calculateOutCode(v3);
 						if (nextCode === INSIDE) {
 							maxX = this._clipX;
 							// Minimum and maximum Y
-							var yValue = v3.data[1];
+							var yValue = v3.y;
 							minY = Math.min(minY, yValue);
 							maxY = Math.max(maxY, yValue);
 						}
 					} else if (outsideCode & LEFT) {
-						ratio = (-v1.data[0] / (v2.data[0] - v1.data[0]));
-						v3.data[1] = v1.data[1] + (v2.data[1] - v1.data[1]) * ratio;
-						v3.data[0] = 0;
+						ratio = (-v1.x / (v2.x - v1.x));
+						v3.y = v1.y + (v2.y - v1.y) * ratio;
+						v3.x = 0;
 
 						nextCode = this._calculateOutCode(v3);
 						if (nextCode === INSIDE) {
 							minX = 0;
 							// Minimum and maximum Y
-							var yValue = v3.data[1];
+							var yValue = v3.y;
 							minY = Math.min(minY, yValue);
 							maxY = Math.max(maxY, yValue);
 						}
@@ -390,15 +390,15 @@ define([
 			// Regard the coordinate as being inside the clip window initially.
 			var outcode = INSIDE;
 			/*jshint bitwise: false */
-			if (coordinate.data[0] < 0) {
+			if (coordinate.x < 0) {
 				outcode |= LEFT;
-			} else if (coordinate.data[0] > this._clipX) {
+			} else if (coordinate.x > this._clipX) {
 				outcode |= RIGHT;
 			}
 
-			if (coordinate.data[1] < 0) {
+			if (coordinate.y < 0) {
 				outcode |= BELOW;
-			} else if (coordinate.data[1] > this._clipY) {
+			} else if (coordinate.y > this._clipY) {
 				outcode |= ABOVE;
 			}
 			/* jshint bitwise: true */
@@ -462,9 +462,9 @@ define([
 				p2 = p + 1;
 				p3 = p + 2;
 				p4 = p + 3;
-				v1.data[0] = positionArray[p];
-				v1.data[1] = positionArray[p2];
-				v1.data[2] = positionArray[p3];
+				v1.x = positionArray[p];
+				v1.y = positionArray[p2];
+				v1.z = positionArray[p3];
 				// w-component will always be 1.0 here.
 				v1.data[3] = 1.0;
 
@@ -477,14 +477,14 @@ define([
 				}
 
 				div = 1.0 / wComponent;
-				v1.data[0] *= div;
-				v1.data[1] *= div;
+				v1.x *= div;
+				v1.y *= div;
 
 				// Copy the projected position data to the triangleData object.
-				triangleData.positions[p] =  v1.data[0];
-				triangleData.positions[p2] =  v1.data[1];
+				triangleData.positions[p] =  v1.x;
+				triangleData.positions[p2] =  v1.y;
 				// z-component not used.
-				//triangleData.positions[p3] =  v1.data[2];
+				//triangleData.positions[p3] =  v1.z;
 				// store (1/w)
 				triangleData.positions[p4] = div;
 
@@ -501,14 +501,14 @@ define([
 				indices = [triangleIndices[i], triangleIndices[++i], triangleIndices[++i]];
 
 				vPos = indices[0] * 4;
-				v1.data[0] = triangleData.positions[vPos];
-				v1.data[1] = triangleData.positions[vPos + 1];
+				v1.x = triangleData.positions[vPos];
+				v1.y = triangleData.positions[vPos + 1];
 				vPos = indices[1] * 4;
-				v2.data[0] = triangleData.positions[vPos];
-				v2.data[1] = triangleData.positions[vPos + 1];
+				v2.x = triangleData.positions[vPos];
+				v2.y = triangleData.positions[vPos + 1];
 				vPos = indices[2] * 4;
-				v3.data[0] = triangleData.positions[vPos];
-				v3.data[1] = triangleData.positions[vPos + 1];
+				v3.x = triangleData.positions[vPos];
+				v3.y = triangleData.positions[vPos + 1];
 
 				if (!this.renderer._isBackFacingProjected(v1, v2, v3)) {
 					triangleData.addIndices(indices);

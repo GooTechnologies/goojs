@@ -84,8 +84,8 @@ define([
 		dirVector.setDirect(x, y);
 		var length = dirVector.length();
 		if (length > 0.0000001) {
-			dirVector.data[0] /= length;
-			dirVector.data[1] /= length;
+			dirVector.x /= length;
+			dirVector.y /= length;
 		}
 	};
 

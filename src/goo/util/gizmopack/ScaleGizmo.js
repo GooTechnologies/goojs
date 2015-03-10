@@ -109,13 +109,13 @@ define([
 
 		switch(this._activeHandle.axis) {
 			case 0:
-				this._transformScale.data[0] *= scale;
+				this._transformScale.x *= scale;
 				break;
 			case 1:
-				this._transformScale.data[1] *= scale;
+				this._transformScale.y *= scale;
 				break;
 			case 2:
-				this._transformScale.data[2] *= scale;
+				this._transformScale.z *= scale;
 				break;
 		}
 	};

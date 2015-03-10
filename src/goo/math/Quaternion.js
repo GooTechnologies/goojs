@@ -57,9 +57,9 @@ define([
 			target = new Quaternion();
 		}
 
-		target.data[0] = lhs.data[0] + rhs.data[0];
-		target.data[1] = lhs.data[1] + rhs.data[1];
-		target.data[2] = lhs.data[2] + rhs.data[2];
+		target.x = lhs.x + rhs.x;
+		target.y = lhs.y + rhs.y;
+		target.z = lhs.z + rhs.z;
 		target.data[3] = lhs.data[3] + rhs.data[3];
 
 		return target;
@@ -77,9 +77,9 @@ define([
 			target = new Quaternion();
 		}
 
-		target.data[0] = lhs.data[0] - rhs.data[0];
-		target.data[1] = lhs.data[1] - rhs.data[1];
-		target.data[2] = lhs.data[2] - rhs.data[2];
+		target.x = lhs.x - rhs.x;
+		target.y = lhs.y - rhs.y;
+		target.z = lhs.z - rhs.z;
 		target.data[3] = lhs.data[3] - rhs.data[3];
 
 		return target;
@@ -94,12 +94,12 @@ define([
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
 	Quaternion.mul = function(a, b, out) {
-		var ax = a.data[0], ay = a.data[1], az = a.data[2], aw = a.data[3],
-			bx = b.data[0], by = b.data[1], bz = b.data[2], bw = b.data[3];
+		var ax = a.x, ay = a.y, az = a.z, aw = a.data[3],
+			bx = b.x, by = b.y, bz = b.z, bw = b.data[3];
 
-		out.data[0] = ax * bw + aw * bx + ay * bz - az * by;
-		out.data[1] = ay * bw + aw * by + az * bx - ax * bz;
-		out.data[2] = az * bw + aw * bz + ax * by - ay * bx;
+		out.x = ax * bw + aw * bx + ay * bz - az * by;
+		out.y = ay * bw + aw * by + az * bx - ax * bz;
+		out.z = az * bw + aw * bz + ax * by - ay * bx;
 		out.data[3] = aw * bw - ax * bx - ay * by - az * bz;
 		return out;
 	};
@@ -119,9 +119,9 @@ define([
 
 		var clean = true;
 
-		target.data[0] = (clean &= rhs.data[0] < 0.0 || rhs.data[0] > 0.0) ? lhs.data[0] / rhs.data[0] : 0.0;
-		target.data[1] = (clean &= rhs.data[1] < 0.0 || rhs.data[1] > 0.0) ? lhs.data[1] / rhs.data[1] : 0.0;
-		target.data[2] = (clean &= rhs.data[2] < 0.0 || rhs.data[2] > 0.0) ? lhs.data[2] / rhs.data[2] : 0.0;
+		target.x = (clean &= rhs.x < 0.0 || rhs.x > 0.0) ? lhs.x / rhs.x : 0.0;
+		target.y = (clean &= rhs.y < 0.0 || rhs.y > 0.0) ? lhs.y / rhs.y : 0.0;
+		target.z = (clean &= rhs.z < 0.0 || rhs.z > 0.0) ? lhs.z / rhs.z : 0.0;
 		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
 
 		return target;
@@ -140,9 +140,9 @@ define([
 			target = new Quaternion();
 		}
 
-		target.data[0] = lhs.data[0] + rhs;
-		target.data[1] = lhs.data[1] + rhs;
-		target.data[2] = lhs.data[2] + rhs;
+		target.x = lhs.x + rhs;
+		target.y = lhs.y + rhs;
+		target.z = lhs.z + rhs;
 		target.data[3] = lhs.data[3] + rhs;
 
 		return target;
@@ -161,9 +161,9 @@ define([
 			target = new Quaternion();
 		}
 
-		target.data[0] = lhs.data[0] - rhs;
-		target.data[1] = lhs.data[1] - rhs;
-		target.data[2] = lhs.data[2] - rhs;
+		target.x = lhs.x - rhs;
+		target.y = lhs.y - rhs;
+		target.z = lhs.z - rhs;
 		target.data[3] = lhs.data[3] - rhs;
 
 		return target;
@@ -181,9 +181,9 @@ define([
 			target = new Quaternion();
 		}
 
-		target.data[0] = lhs.data[0] * rhs;
-		target.data[1] = lhs.data[1] * rhs;
-		target.data[2] = lhs.data[2] * rhs;
+		target.x = lhs.x * rhs;
+		target.y = lhs.y * rhs;
+		target.z = lhs.z * rhs;
 		target.data[3] = lhs.data[3] * rhs;
 
 		return target;
@@ -206,9 +206,9 @@ define([
 
 		rhs = (clean &= rhs < 0.0 || rhs > 0.0) ? 1.0 / rhs : 0.0;
 
-		target.data[0] = lhs.data[0] * rhs;
-		target.data[1] = lhs.data[1] * rhs;
-		target.data[2] = lhs.data[2] * rhs;
+		target.x = lhs.x * rhs;
+		target.y = lhs.y * rhs;
+		target.z = lhs.z * rhs;
 		target.data[3] = lhs.data[3] * rhs;
 
 		return target;
@@ -263,9 +263,9 @@ define([
 
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special form of linear interpolation for quaternions.
-		var x = scale0 * startQuat.data[0] + scale1 * workQuat.data[0];
-		var y = scale0 * startQuat.data[1] + scale1 * workQuat.data[1];
-		var z = scale0 * startQuat.data[2] + scale1 * workQuat.data[2];
+		var x = scale0 * startQuat.x + scale1 * workQuat.x;
+		var y = scale0 * startQuat.y + scale1 * workQuat.y;
+		var z = scale0 * startQuat.z + scale1 * workQuat.z;
 		var w = scale0 * startQuat.data[3] + scale1 * workQuat.data[3];
 
 		workQuat.setDirect(x, y, z, w);
@@ -279,9 +279,9 @@ define([
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.negate = function () {
-		this.data[0] *= -1;
-		this.data[1] *= -1;
-		this.data[2] *= -1;
+		this.x *= -1;
+		this.y *= -1;
+		this.z *= -1;
 		this.data[3] *= -1;
 		return this;
 	};
@@ -291,9 +291,9 @@ define([
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.conjugate = function () {
-		this.data[0] *= -1;
-		this.data[1] *= -1;
-		this.data[2] *= -1;
+		this.x *= -1;
+		this.y *= -1;
+		this.z *= -1;
 		return this;
 	};
 
@@ -572,7 +572,7 @@ define([
 	 * @returns {number} The magnitude of the quaternion.
 	 */
 	Quaternion.prototype.magnitude = function () {
-		var magnitudeSQ = this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2] + this.data[3] * this.data[3];
+		var magnitudeSQ = this.x * this.x + this.y * this.y + this.z * this.z + this.data[3] * this.data[3];
 		if (magnitudeSQ === 1.0) {
 			return 1.0;
 		}
@@ -585,7 +585,7 @@ define([
 	 * @returns {number} The squared magnitude of the quaternion.
 	 */
 	Quaternion.prototype.magnitudeSquared = function () {
-		return this.data[0] * this.data[0] + this.data[1] * this.data[1] + this.data[2] * this.data[2] + this.data[3] * this.data[3];
+		return this.x * this.x + this.y * this.y + this.z * this.z + this.data[3] * this.data[3];
 	};
 
 	/**
@@ -657,8 +657,8 @@ define([
 		if (!(o instanceof Quaternion)) {
 			return false;
 		}
-		return Math.abs(this.data[0] - o.data[0]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[1] - o.data[1]) < Quaternion.ALLOWED_DEVIANCE
-			&& Math.abs(this.data[2] - o.data[2]) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[3] - o.data[3]) < Quaternion.ALLOWED_DEVIANCE;
+		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE
+			&& Math.abs(this.z - o.z) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[3] - o.data[3]) < Quaternion.ALLOWED_DEVIANCE;
 	};
 
 
@@ -675,9 +675,9 @@ define([
 
 	// Performance methods
 	Quaternion.prototype.setDirect = function (x, y, z, w) {
-		this.data[0] = x;
-		this.data[1] = y;
-		this.data[2] = z;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 		this.data[3] = w;
 
 		return this;
@@ -687,9 +687,9 @@ define([
 		Quaternion.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
 
 	Quaternion.prototype.setArray = function (array) {
-		this.data[0] = array[0];
-		this.data[1] = array[1];
-		this.data[2] = array[2];
+		this.x = array[0];
+		this.y = array[1];
+		this.z = array[2];
 		this.data[3] = array[3];
 
 		return this;
@@ -700,9 +700,9 @@ define([
 
 	// may sound unintuitive, setv instead of setq but it ties in with the other setv methods
 	Quaternion.prototype.setVector = function (quat) {
-		this.data[0] = quat.data[0];
-		this.data[1] = quat.data[1];
-		this.data[2] = quat.data[2];
+		this.x = quat.x;
+		this.y = quat.y;
+		this.z = quat.z;
 		this.data[3] = quat.data[3];
 
 		return this;

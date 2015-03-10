@@ -44,12 +44,12 @@ define([
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
-			min.data[0] = x < min.data[0] ? x : min.data[0];
-			min.data[1] = y < min.data[1] ? y : min.data[1];
-			min.data[2] = z < min.data[2] ? z : min.data[2];
-			max.data[0] = x > max.data[0] ? x : max.data[0];
-			max.data[1] = y > max.data[1] ? y : max.data[1];
-			max.data[2] = z > max.data[2] ? z : max.data[2];
+			min.x = x < min.x ? x : min.x;
+			min.y = y < min.y ? y : min.y;
+			min.z = z < min.z ? z : min.z;
+			max.x = x > max.x ? x : max.x;
+			max.y = y > max.y ? y : max.y;
+			max.z = z > max.z ? z : max.z;
 		}
 		var newCenter = max.addVector(min).div(2.0);
 		var size = 0, test;
@@ -134,9 +134,9 @@ define([
 	};
 
 	BoundingSphere.prototype.whichSide = function (plane) {
-		var planeData = plane.normal.data;
-		var pointData = this.center.data;
-		var distance = planeData[0] * pointData[0] + planeData[1] * pointData[1] + planeData[2] * pointData[2] - plane.constant;
+		var planeData = plane.normal;
+		var pointData = this.center;
+		var distance = planeData.x * pointData.x + planeData.y * pointData.y + planeData.z * pointData.z - plane.constant;
 
 		if (distance < -this.radius) {
 			return BoundingVolume.Inside;

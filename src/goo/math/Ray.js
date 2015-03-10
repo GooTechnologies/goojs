@@ -58,7 +58,7 @@ define([
 		var edge2 = tmpVec3.setVector(pointC).subVector(pointA);
 		var norm = tmpVec4.setVector(edge1).cross(edge2);
 
-		var dirDotNorm = this.direction.dot(norm);
+		var dirDotNorm = this.direction.dotVector(norm);
 		var sign;
 		if (dirDotNorm > MathUtils.EPSILON) {
 			sign = 1.0;

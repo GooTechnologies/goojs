@@ -18,11 +18,14 @@ define([
 	// in this case NaN is equal to NaN
 	// you need matchers that check if a result is explicitly NaN
 	var arrayEq = function (array1, array2) {
-		if (array1.length !== array2.length) {
-			return false;
-		}
+		//if (array1.length !== array2.length) {
+		//	return false;
+		//}
 
-		for (var i = 0; i < array1.length; i++) {
+		var keys = Object.keys(array1);
+		for (var ki = 0; ki < keys.length; ki++) {
+			var i = keys[ki];
+
 			if (!(isNaN(array1[i]) && isNaN(array2[i]))) {
 				if (!(Math.abs(array1[i] - array2[i]) <= MathUtils.EPSILON)) {
 					return false;
@@ -37,23 +40,22 @@ define([
 		return {
 			compare: function (actual, expected) {
 				var result = {};
-				result.pass = actual instanceof Vector && arrayEq(actual.data, expected.data);
+				result.pass = arrayEq(actual, expected);
 
 				if (result.pass) {
 					result.message = 'Expected vectors to be different';
 				} else {
-					if (!(actual instanceof Vector)) {
-						result.message = 'Expected an instance of Vector';
-					} else if (actual.data.length !== expected.data.length) {
-						result.message = 'Expected a vector of size ' + expected.data.length +
-							' but got a vector of size ' + actual.data.length;
-					} else {
-						var expectedSerialized = serializeArrayBuffer(expected.data);
-						var actualSerialized = serializeArrayBuffer(actual.data);
+					//if (!(actual instanceof Vector)) {
+					//	result.message = 'Expected an instance of Vector';
+					//} else if (actual.data.length !== expected.data.length) {
+					//	result.message = 'Expected a vector of size ' + expected.data.length +
+					//		' but got a vector of size ' + actual.data.length;
+					//} else {
+						//var expectedSerialized = serializeArrayBuffer(expected.data);
+						//var actualSerialized = serializeArrayBuffer(actual.data);
 
-						result.message = 'Expected vectors to be close; expected ' + expectedSerialized +
-							' but got ' + actualSerialized;
-					}
+						result.message = 'Expected vectors to be close;';
+					//}
 				}
 
 				return result;

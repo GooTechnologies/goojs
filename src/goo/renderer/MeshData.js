@@ -736,17 +736,17 @@ define([
 							v2.cross(v3).normalize();
 
 							if (attribs[MeshData.NORMAL]) {
-								attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.z;
 
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.z;
 
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.z;
 							}
 						}
 					}

@@ -69,17 +69,17 @@ define([], function () {
 		for (var i = 0; i < this.collidables.length; i++) {
 			var collidable = this.collidables[i];
 
-			if(collidable.bottom <= translation.data[1] && collidable.top >= translation.data[1]) {
-				if(window.PolyK.ContainsPoint(collidable.poly, translation.data[0], translation.data[2])) {
+			if(collidable.bottom <= translation.y && collidable.top >= translation.y) {
+				if(window.PolyK.ContainsPoint(collidable.poly, translation.x, translation.z)) {
 
 					var pointOutside = window.PolyK.ClosestEdge(
 						collidable.poly,
-						translation.data[0],
-						translation.data[2]
+						translation.x,
+						translation.z
 					);
 
-					translation.data[0] = pointOutside.point.x;
-					translation.data[2] = pointOutside.point.y;
+					translation.x = pointOutside.point.x;
+					translation.z = pointOutside.point.y;
 					transformComponent.setUpdated();
 					return;
 				}

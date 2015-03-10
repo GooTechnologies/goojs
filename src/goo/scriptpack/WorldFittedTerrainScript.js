@@ -167,7 +167,7 @@ define([
             calcVec1.set((tri[1].x-tri[0].x), (tri[1].z-tri[0].z), (tri[1].y-tri[0].y));
             calcVec2.set((tri[2].x-tri[0].x), (tri[2].z-tri[0].z), (tri[2].y-tri[0].y));
             calcVec1.cross(calcVec2);
-            if (calcVec1.data[1] < 0) {
+            if (calcVec1.y < 0) {
 				calcVec1.scale(-1);
 			}
 

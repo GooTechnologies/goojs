@@ -762,16 +762,17 @@ define([
 	// REVIEW rherlitz: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector)
 	// and the matrix is applied after the vector.
 	Matrix4x4.prototype.applyPre = function (rhs) {
-		var x = rhs.data[0];
-		var y = rhs.data[1];
-		var z = rhs.data[2];
-		var w = rhs.data[3];
+		//var x = rhs.x;
+		//var y = rhs.y;
+		//var z = rhs.z;
+		//var w = rhs.data[3];
 
 		var s = this.data;
-		rhs.data[0] = s[0] * x + s[1] * y + s[2] * z + s[3] * w;
-		rhs.data[1] = s[4] * x + s[5] * y + s[6] * z + s[7] * w;
-		rhs.data[2] = s[8] * x + s[9] * y + s[10] * z + s[11] * w;
-		rhs.data[3] = s[12] * x + s[13] * y + s[14] * z + s[15] * w;
+
+		rhs.x = s[ 0] * rhs.x + s[ 1] * rhs.y + s[ 2] * rhs.z + s[ 3] * rhs.w;
+		rhs.y = s[ 4] * rhs.x + s[ 5] * rhs.y + s[ 6] * rhs.z + s[ 7] * rhs.w;
+		rhs.z = s[ 8] * rhs.x + s[ 9] * rhs.y + s[10] * rhs.z + s[11] * rhs.w;
+		rhs.w = s[12] * rhs.x + s[13] * rhs.y + s[14] * rhs.z + s[15] * rhs.w;
 
 		return rhs;
 	};
@@ -782,16 +783,16 @@ define([
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
 	Matrix4x4.prototype.applyPost = function (rhs) {
-		var x = rhs.data[0];
-		var y = rhs.data[1];
-		var z = rhs.data[2];
-		var w = rhs.data[3];
+		//var x = rhs.x;
+		//var y = rhs.y;
+		//var z = rhs.z;
+		//var w = rhs.data[3];
 
 		var s = this.data;
-		rhs.data[0] = s[0] * x + s[4] * y + s[8] * z + s[12] * w;
-		rhs.data[1] = s[1] * x + s[5] * y + s[9] * z + s[13] * w;
-		rhs.data[2] = s[2] * x + s[6] * y + s[10] * z + s[14] * w;
-		rhs.data[3] = s[3] * x + s[7] * y + s[11] * z + s[15] * w;
+		rhs.x = s[0] * rhs.x + s[4] * rhs.y + s[ 8] * rhs.z + s[12] * rhs.w;
+		rhs.y = s[1] * rhs.x + s[5] * rhs.y + s[ 9] * rhs.z + s[13] * rhs.w;
+		rhs.z = s[2] * rhs.x + s[6] * rhs.y + s[10] * rhs.z + s[14] * rhs.w;
+		rhs.w = s[3] * rhs.x + s[7] * rhs.y + s[11] * rhs.z + s[15] * rhs.w;
 
 		return rhs;
 	};
@@ -802,14 +803,14 @@ define([
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 	Matrix4x4.prototype.applyPostPoint = function (rhs) {
-		var x = rhs.data[0];
-		var y = rhs.data[1];
-		var z = rhs.data[2];
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
 		var d = this.data;
-		rhs.data[0] = d[0] * x + d[4] * y + d[8] * z + d[12];
-		rhs.data[1] = d[1] * x + d[5] * y + d[9] * z + d[13];
-		rhs.data[2] = d[2] * x + d[6] * y + d[10] * z + d[14];
+		rhs.x = d[0] * x + d[4] * y + d[8] * z + d[12];
+		rhs.y = d[1] * x + d[5] * y + d[9] * z + d[13];
+		rhs.z = d[2] * x + d[6] * y + d[10] * z + d[14];
 
 		return rhs;
 	};

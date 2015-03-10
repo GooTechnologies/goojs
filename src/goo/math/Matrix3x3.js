@@ -533,16 +533,16 @@ define([
 	 * 
 	 */
 	Matrix3x3.prototype.applyPost = function (rhs) {
-		var target = rhs.data;
+		//var target = rhs.data;
 		var source = this.data;
 
-		var x = target[0];
-		var y = target[1];
-		var z = target[2];
+		//var x = target[0];
+		//var y = target[1];
+		//var z = target[2];
 
-		target[0] = source[0] * x + source[3] * y + source[6] * z;
-		target[1] = source[1] * x + source[4] * y + source[7] * z;
-		target[2] = source[2] * x + source[5] * y + source[8] * z;
+		rhs.x = source[0] * rhs.x + source[3] * rhs.y + source[6] * rhs.z;
+		rhs.y = source[1] * rhs.x + source[4] * rhs.y + source[7] * rhs.z;
+		rhs.z = source[2] * rhs.x + source[5] * rhs.y + source[8] * rhs.z;
 
 		return rhs;
 	};
@@ -553,16 +553,16 @@ define([
 	 * @returns {Vector3} Transformed left-hand side vector.
 	 */
 	Matrix3x3.prototype.applyPre = function (rhs) {
-		var target = rhs.data;
+		//var target = rhs.data;
 		var source = this.data;
 
-		var x = target[0];
-		var y = target[1];
-		var z = target[2];
+		//var x = target[0];
+		//var y = target[1];
+		//var z = target[2];
 
-		target[0] = source[0] * x + source[1] * y + source[2] * z;
-		target[1] = source[3] * x + source[4] * y + source[5] * z;
-		target[2] = source[6] * x + source[7] * y + source[8] * z;
+		rhs.x = source[0] * rhs.x + source[1] * rhs.y + source[2] * rhs.z;
+		rhs.y = source[3] * rhs.x + source[4] * rhs.y + source[5] * rhs.z;
+		rhs.z = source[6] * rhs.x + source[7] * rhs.y + source[8] * rhs.z;
 
 		return rhs;
 	};
@@ -575,9 +575,9 @@ define([
 	 * @returns {Matrix3x3} Storage matrix.
 	 */
 	Matrix3x3.prototype.multiplyDiagonalPost = function (vec, result) {
-		var x = vec.data[0];
-		var y = vec.data[1];
-		var z = vec.data[2];
+		var x = vec.x;
+		var y = vec.y;
+		var z = vec.z;
 
 		var d = this.data;
 		var r = result.data;
@@ -843,25 +843,25 @@ define([
 		x.setVector(up).cross(z).normalize();
 
 		if (x.equals(Vector3.ZERO)) {
-			if (z.data[0] !== 0.0) {
-				x.setDirect(z.data[1], -z.data[0], 0);
+			if (z.x !== 0.0) {
+				x.setDirect(z.y, -z.x, 0);
 			} else {
-				x.setDirect(0, z.data[2], -z.data[1]);
+				x.setDirect(0, z.z, -z.y);
 			}
 		}
 
 		y.setVector(z).cross(x);
 
 		var d = this.data;
-		d[0] = x.data[0];
-		d[1] = x.data[1];
-		d[2] = x.data[2];
-		d[3] = y.data[0];
-		d[4] = y.data[1];
-		d[5] = y.data[2];
-		d[6] = z.data[0];
-		d[7] = z.data[1];
-		d[8] = z.data[2];
+		d[0] = x.x;
+		d[1] = x.y;
+		d[2] = x.z;
+		d[3] = y.x;
+		d[4] = y.y;
+		d[5] = y.z;
+		d[6] = z.x;
+		d[7] = z.y;
+		d[8] = z.z;
 
 		return this;
 	};

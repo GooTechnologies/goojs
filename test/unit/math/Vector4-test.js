@@ -19,45 +19,48 @@ define([
 
 			it('creates a vector when given 4 parameters', function () {
 				var vector = new Vector4(11, 22, 33, 44);
-				var expected = new Vector4();
 
-				for (var i = 0; i < 4; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
+				var expected = new Vector4();
+				expected.x = 11;
+				expected.y = 22;
+				expected.z = 33;
+				expected.w = 44;
 
 				expect(vector).toBeCloseToVector(expected);
 			});
 
 			it('creates a vector when given an array', function () {
 				var vector = new Vector4([11, 22, 33, 44]);
-				var expected = new Vector4();
 
-				for (var i = 0; i < 4; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
+				var expected = new Vector4();
+				expected.x = 11;
+				expected.y = 22;
+				expected.z = 33;
+				expected.w = 44;
 
 				expect(vector).toBeCloseToVector(expected);
 			});
 
 			it('creates a vector when given a vector', function () {
 				var original = new Vector4();
-				for (var i = 0; i < 4; i++) {
-					original.data[i] = (i + 1) * 11;
-				}
+				original.x = 11;
+				original.y = 22;
+				original.z = 33;
+				original.w = 44;
 
 				var vector = new Vector4(original);
 
 				var expected = new Vector4();
-
-				for (var i = 0; i < 4; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
+				expected.x = 11;
+				expected.y = 22;
+				expected.z = 33;
+				expected.w = 44;
 
 				expect(vector).toBeCloseToVector(expected);
 			});
 		});
 
-		it('can be accessed through indices', function () {
+		xit('can be accessed through indices', function () {
 			var a = new Vector4(1, 2, 3, 4);
 
 			expect(a[0]).toEqual(1);
@@ -66,7 +69,7 @@ define([
 			expect(a[3]).toEqual(4);
 		});
 
-		it('can be modified through indices', function () {
+		xit('can be modified through indices', function () {
 			var a = new Vector4();
 
 			a[0] = 1;
@@ -77,7 +80,7 @@ define([
 			expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
 		});
 
-		it('can be accessed through aliases', function () {
+		xit('can be accessed through aliases', function () {
 			var a = new Vector4(1, 2, 3, 4);
 
 			expect(a.x).toEqual(1);
@@ -90,7 +93,7 @@ define([
 			expect(a.a).toEqual(4);
 		});
 
-		it('can be modified through aliases', function () {
+		xit('can be modified through aliases', function () {
 			var a = new Vector4();
 
 			a.x = 1;
@@ -108,7 +111,7 @@ define([
 			expect(a).toBeCloseToVector(new Vector4(2, 3, 4, 5));
 		});
 
-		describe('add', function () {
+		xdescribe('add', function () {
 			it('can perform addition', function () {
 				var a = new Vector4(1, 2, 3, 4);
 				var b = new Vector4(1, 2, 3, 4);
@@ -130,7 +133,7 @@ define([
 			});
 		});
 
-		describe('sub', function () {
+		xdescribe('sub', function () {
 			it('can perform subtraction', function () {
 				var a = new Vector4(1, 2, 3, 4);
 				var b = new Vector4(1, 2, 3, 4);
@@ -152,7 +155,7 @@ define([
 			});
 		});
 
-		describe('mul', function () {
+		xdescribe('mul', function () {
 			it('can perform multiplication', function () {
 				var a = new Vector4(1, 2, 3, 4);
 				var b = new Vector4(1, 2, 3, 4);
@@ -182,7 +185,7 @@ define([
 			});
 		});
 
-		describe('div', function () {
+		xdescribe('div', function () {
 			it('can perform division', function () {
 				var a = new Vector4(1, 2, 3, 4);
 				var b = new Vector4(1, 2, 3, 4);

@@ -257,15 +257,15 @@ define([
 		z.setVector(y).cross(x);
 
 		var d = matrix.data;
-		d[0] = x.data[0];
-		d[1] = x.data[1];
-		d[2] = x.data[2];
-		d[3] = y.data[0];
-		d[4] = y.data[1];
-		d[5] = y.data[2];
-		d[6] = z.data[0];
-		d[7] = z.data[1];
-		d[8] = z.data[2];
+		d[0] = x.x;
+		d[1] = x.y;
+		d[2] = x.z;
+		d[3] = y.x;
+		d[4] = y.y;
+		d[5] = y.z;
+		d[6] = z.x;
+		d[7] = z.y;
+		d[8] = z.z;
 
 		return this;
 	};

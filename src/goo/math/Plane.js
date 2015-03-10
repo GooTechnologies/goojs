@@ -32,7 +32,7 @@ define([
 	 *         otherwise it is positive. If the point is on the plane, it is zero.
 	 */
 	Plane.prototype.pseudoDistance = function (point) {
-		return this.normal.dot(point) - this.constant;
+		return this.normal.dotVector(point) - this.constant;
 	};
 
 	/**
@@ -44,8 +44,8 @@ define([
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
 		this.normal.setVector(pointB).subVector(pointA);
-		this.normal.cross([pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z]).normalize();
-		this.constant = this.normal.dot(pointA);
+		this.normal.cross(new Vector3(pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z)).normalize();
+		this.constant = this.normal.dotVector(pointA);
 		return this;
 	};
 
@@ -61,8 +61,8 @@ define([
 			result = new Vector3();
 		}
 
-		var dotProd = this.normal.dot(unitVector) * 2;
-		result.set(unitVector).sub([this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd]);
+		var dotProd = this.normal.dotVector(unitVector) * 2;
+		result.set(unitVector).subVector(new Vector3(this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd));
 		return result;
 	};
 

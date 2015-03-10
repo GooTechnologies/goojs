@@ -72,7 +72,7 @@ define([
 			var cosTheta = Math.cos(theta);
 			var sinTheta = Math.sin(theta);
 			radialAxis.set(cosTheta, sinTheta, 0);
-			Vector3.mul(radialAxis, this.centerRadius, torusMiddle);
+			torusMiddle.copy(radialAxis).scale(this.centerRadius);
 
 			// compute slice vertices with duplication at end point
 			var iSave = i;
@@ -83,7 +83,7 @@ define([
 				var cosPhi = Math.cos(phi);
 				var sinPhi = Math.sin(phi);
 
-				tempNormal.copy(radialAxis).mul(cosPhi);
+				tempNormal.copy(radialAxis).scale(cosPhi);
 				tempNormal.z = tempNormal.z + sinPhi;
 				tempNormal.normalize();
 
@@ -97,7 +97,7 @@ define([
 					norms[i * 3 + 2] = -tempNormal.z;
 				}
 
-				tempNormal.mul(this.tubeRadius).add(torusMiddle);
+				tempNormal.scale(this.tubeRadius).addVector(torusMiddle);
 
 				vbuf[i * 3 + 0] = tempNormal.x;
 				vbuf[i * 3 + 1] = tempNormal.y;

@@ -95,9 +95,9 @@ define([
 		var tmpVec3 = new Vector3();
 
 		this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
-			tmpVec3.data[0] = this.x;
-			tmpVec3.data[1] = this.y;
-			tmpVec3.data[2] = this.z;
+			tmpVec3.x = this.x;
+			tmpVec3.y = this.y;
+			tmpVec3.z = this.z;
 			transform.lookAt(tmpVec3, Vector3.UNIT_Y);
 			transformComponent.setUpdated();
 		}).onComplete(function() {

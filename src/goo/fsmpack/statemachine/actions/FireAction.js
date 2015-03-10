@@ -66,7 +66,7 @@ define([
 		}
 
 		var entityScale = entity.transformComponent.worldTransform.scale;
-		var scale = (entityScale.data[0] + entityScale.data[1] + entityScale.data[2]) / 3;
+		var scale = (entityScale.x + entityScale.y + entityScale.z) / 3;
 		this.fireEntity = ParticleSystemUtils.createParticleSystemEntity(
 			gooRunner.world,
 			ParticleLib.getFire({

@@ -500,7 +500,7 @@ define([
 			}
 		}
 
-		var dirDotLocation = this._direction.dot(this.translation);
+		var dirDotLocation = this._direction.dotVector(this.translation);
 
 		// far plane
 		plane = this._worldPlane[Camera.FAR_PLANE];
@@ -571,9 +571,9 @@ define([
 		d[6] = -this._direction.y;
 		d[10] = -this._direction.z;
 
-		d[12] = this._left.dot(this.translation);
-		d[13] = -this._up.dot(this.translation);
-		d[14] = this._direction.dot(this.translation);
+		d[12] = this._left.dotVector(this.translation);
+		d[13] = -this._up.dotVector(this.translation);
+		d[14] = this._direction.dotVector(this.translation);
 	};
 
 	/**
@@ -954,7 +954,7 @@ define([
 			(1.0 + projection[10]) / projection[14]
 		);
 
-		transformedClipPlane.scale(2.0 / Vector4.dot(transformedClipPlane, this._qCalc));
+		transformedClipPlane.scale(2.0 / Vector4.dotVector(transformedClipPlane, this._qCalc));
 
 		projection[2] = transformedClipPlane.x;
 		projection[6] = transformedClipPlane.y;
