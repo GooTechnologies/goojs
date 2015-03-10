@@ -103,10 +103,9 @@ define([
 		var component = entity.cSSTransformComponent;
 		var domElement = component.domElement;
 		domElement.style.position = 'absolute';
-		domElement.style.width = component.width*97 + 'px'; //magic number
-		domElement.style.height = component.height*97 + 'px';
 		domElement.style.WebkitBackfaceVisibility = component.backfaceVisibility;
 		domElement.style.backfaceVisibility = component.backfaceVisibility;
+		component.setSize(component.width, component.height);
 		if (domElement.parentNode !== this.containerDom) {
 			this.containerDom.appendChild(domElement);
 		}
@@ -152,9 +151,11 @@ define([
 			// 	continue;
 			// }
 
-			if (!entity.transformComponent._wasUpdated && !component.faceCamera && this.styleCache.has(domElement)) {
+			// if (!component.updated && !entity.transformComponent._wasUpdated && !component.faceCamera && this.styleCache.has(domElement)) {
+			if (!component.updated && !entity.transformComponent._wasUpdated && !component.faceCamera) {
 				continue;
 			}
+			component.updated = false;
 
 			var scale = component.scale;
 			var worldTransform = entity.transformComponent.worldTransform;
@@ -165,10 +166,12 @@ define([
 				worldTransform.matrix.getTranslation(tmpVector);
 				tmpMatrix.setTranslation(tmpVector);
 
-				worldTransform.matrix.getScale(tmpVector);
+				entity.transformComponent.transform.matrix.getScale(tmpVector);
 				tmpVector.x *= (scale/component.width);
 				tmpVector.y *= (scale/component.height);
 				style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+tmpVector.x+','+tmpVector.y+','+1+')';
+				// style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+(scale/component.width)+','+
+				// 	(scale/component.height)+','+1+')';
 			} else {
 				style = getEntityCSSMatrix(worldTransform.matrix) + ' scale3d('+(scale/component.width)+','+
 					(scale/component.height)+','+1+')';

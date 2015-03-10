@@ -41,6 +41,8 @@ define([
 		 */
 		this.faceCamera = settings.faceCamera === undefined ? false : settings.faceCamera;
 
+		this.updated = true;
+
 		// #ifdef DEBUG
 		Object.seal(this);
 		// #endif
@@ -50,6 +52,14 @@ define([
 
 	CSSTransformComponent.prototype = Object.create(Component.prototype);
 	CSSTransformComponent.prototype.constructor = CSSTransformComponent;
+
+	CSSTransformComponent.prototype.setSize = function (width, height) {
+		this.width = width || this.width;
+		this.height = height || this.height;
+		this.domElement.style.width = (this.width / this.scale) + 'px'; // magic number
+		this.domElement.style.height = (this.height / this.scale)+ 'px';
+		this.updated = true;
+	};
 
 	return CSSTransformComponent;
 });
