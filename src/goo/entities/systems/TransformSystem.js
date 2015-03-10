@@ -26,6 +26,7 @@ define([
 		for (i = 0; i < entities.length; i++) {
 			transformComponent = entities[i].transformComponent;
 			transformComponent._updated = false;
+			transformComponent._updatedThisFrame = transformComponent._dirty;
 			if (transformComponent._dirty) {
 				transformComponent.updateTransform();
 			}

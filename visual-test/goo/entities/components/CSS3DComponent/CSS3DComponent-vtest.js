@@ -108,7 +108,7 @@ require([
 	var world = goo.world;
 
 	V.addLights();
-	V.addOrbitCamera(new Vector3(100, Math.PI/1.5, Math.PI/8), new Vector3(), 'Right');
+	V.addOrbitCamera(new Vector3(10, Math.PI/1.5, Math.PI/8), new Vector3(), 'Right');
 
 	world.setSystem(new CSS3DSystem(goo.renderer));
 
@@ -128,10 +128,13 @@ require([
 		for (var j = 0; j < numBoxes; j++) {
 			for (var k = 0; k < numBoxes; k++) {
 				var domElement = document.createElement('div');
-				domElement.style.backgroundImage = 'url(https://dl.dropboxusercontent.com/u/640317/screenshot.jpg)';
 
-				// var domElement = document.createElement('div');
-				// domElement.className = 'object';
+				if (V.rng.nextFloat() > 0.5) {
+					domElement.style.backgroundImage = 'url(https://dl.dropboxusercontent.com/u/640317/screenshot.jpg)';
+				} else {
+					domElement.className = 'object';
+					domElement.innerText = 'Gooooo';
+				}
 
 				var width = (0.5+V.rng.nextFloat()*3);
 				var height = (0.5+V.rng.nextFloat()*3);
@@ -141,14 +144,8 @@ require([
 					// backfaceVisibility: 'visible'
 				});
 
-				// Make some elements use the faceCamera setting
+				// Make some elements face the camera
 				htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
-				// htmlComponent.faceCamera = false;
-				// if (htmlComponent.faceCamera) {
-					// domElement.innerHTML = '<div>Goo_FaceCam</div>';
-				// } else {
-					// domElement.innerHTML = '<div>Goo_'+i+'_'+j+'_'+k+'</div>';
-				// }
 
 				var position = [
 					size * (i - numBoxes / 2) * spread,
@@ -166,16 +163,16 @@ require([
 				// };
 				// entity.set(script);
 
-				if (V.rng.nextFloat() > 0.7) {
-					var r1 = V.rng.nextFloat();
-					var r2 = V.rng.nextFloat();
-					(function(r1, r2) {
-						var script = function (entity) {
-							entity.setRotation(world.time * r1, world.time * r2, 0);
-						};
-						entity.set(script);
-					})(r1, r2);
-				}
+				// if (V.rng.nextFloat() > 0.7) {
+				// 	var r1 = V.rng.nextFloat();
+				// 	var r2 = V.rng.nextFloat();
+				// 	(function(r1, r2) {
+				// 		var script = function (entity) {
+				// 			entity.setRotation(world.time * r1, world.time * r2, 0);
+				// 		};
+				// 		entity.set(script);
+				// 	})(r1, r2);
+				// }
 			}
 		}
 	}

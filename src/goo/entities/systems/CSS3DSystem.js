@@ -32,7 +32,7 @@ define([
 		document.body.appendChild(domElement);
 		domElement.style.position = 'absolute';
 		domElement.style.overflow = 'hidden';
-		domElement.style.pointerEvents = 'none';
+		// domElement.style.pointerEvents = 'none';
 		domElement.style.WebkitTransformStyle = 'preserve-3d';
 		domElement.style.transformStyle = 'preserve-3d';
 		domElement.style.width = '100%';
@@ -151,8 +151,7 @@ define([
 			// 	continue;
 			// }
 
-			// if (!component.updated && !entity.transformComponent._wasUpdated && !component.faceCamera && this.styleCache.has(domElement)) {
-			if (!component.updated && !entity.transformComponent._wasUpdated && !component.faceCamera) {
+			if (!component.updated && !entity.transformComponent._updatedThisFrame && !component.faceCamera) {
 				continue;
 			}
 			component.updated = false;
