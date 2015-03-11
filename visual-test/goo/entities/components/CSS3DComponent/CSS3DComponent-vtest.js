@@ -32,17 +32,14 @@ require([
 	var gizmoRenderSystem;
 
 	function key1() {
-		console.log('translation');
 		gizmoRenderSystem.setActiveGizmo(0);
 	}
 
 	function key2() {
-		console.log('rotation');
 		gizmoRenderSystem.setActiveGizmo(1);
 	}
 
 	function key3() {
-		console.log('scale');
 		gizmoRenderSystem.setActiveGizmo(2);
 	}
 
@@ -59,12 +56,10 @@ require([
 					key3();
 					break;
 				case 52: // 4
-					var component = gizmoRenderSystem.entity.cSS3DComponent;
-					component.setSize(component.width - 0.01, component.height - 0.01);
+					goo.renderer.domElement.style.pointerEvents = 'none';
 					break;
 				case 53: // 5
-					var component = gizmoRenderSystem.entity.cSS3DComponent;
-					component.setSize(component.width + 0.01, component.height + 0.01);
+					goo.renderer.domElement.style.pointerEvents = 'inherit';
 					break;
 				default:
 					console.log('1: translate gizmo\n2: rotate gizmo\n3: scale gizmo');
@@ -79,11 +74,9 @@ require([
 
 			if (e.id < 16000) {
 				if (e.id >= 0) {
-					console.log('selected', e);
 					var entitySelected = goo.world.entityManager.getEntityByIndex(e.id);
 					gizmoRenderSystem.show(entitySelected);
 				} else {
-					console.log('deselected');
 					gizmoRenderSystem.show(); // actually hides
 				}
 			} else if (e.id < 16100) {
@@ -120,6 +113,9 @@ require([
 	var css3dSystem = new CSS3DSystem(goo.renderer);
 	world.setSystem(css3dSystem);
 
+	// console.log(window.WindowHelper);
+	// window.WindowHelper.install(css3dSystem.rootDom, goo.renderer.domElement);
+
 	var material = new Material(ShaderLib.uber);
 	material.renderQueue = 2;
 	material.uniforms.opacity = 0;
@@ -127,11 +123,14 @@ require([
 	material.uniforms.materialDiffuse = [0, 0, 0, 0];
 	// material.cullState.enabled = false;
 
+	var material3 = new Material(ShaderLib.uber);
+	material3.cullState.cullFace = 'Front';
+
 	var material2 = new Material(ShaderLib.uber);
 	var box2 = new Box(50, 50, 50);
 	var entity = world.createEntity([0,0,0], box2, material2).addToWorld();
 
-	var numBoxes = 4;
+	var numBoxes = 2;
 	var spread = 50.0;
 	for (var i = 0; i < numBoxes; i++) {
 		for (var j = 0; j < numBoxes; j++) {
@@ -154,7 +153,8 @@ require([
 					width = 768;
 					height = 640;
 					domElement = document.createElement('iframe');
-					domElement.src = 'https://get.webgl.org/';
+					// domElement.src = 'https://get.webgl.org/';
+					domElement.src = 'https://gootechnologies.com';
 					domElement.style.border	= 'none';
 					domElement.style.width = '100%';
 					domElement.style.height = '100%';
@@ -179,21 +179,20 @@ require([
 				entity.setScale(0.1, 0.1, 1);
 				entity.addToWorld();
 
-				// var script = function (entity) {
-					// entity.setScale(Math.sin(world.time)+1, 1, 1);
-				// };
-				// entity.set(script);
+				var entity3 = world.createEntity(quad, material3).addToWorld();
+				entity3.meshRendererComponent.isPickable = false;
+				entity.attachChild(entity3);
 
-				if (V.rng.nextFloat() > 0.7) {
-					var r1 = V.rng.nextFloat();
-					var r2 = V.rng.nextFloat();
-					(function(r1, r2) {
-						var script = function (entity) {
-							entity.setRotation(world.time * r1, world.time * r2, 0);
-						};
-						entity.set(script);
-					})(r1, r2);
-				}
+				// if (V.rng.nextFloat() > 0.7) {
+				// 	var r1 = V.rng.nextFloat();
+				// 	var r2 = V.rng.nextFloat();
+				// 	(function(r1, r2) {
+				// 		var script = function (entity) {
+				// 			entity.setRotation(world.time * r1, world.time * r2, 0);
+				// 		};
+				// 		entity.set(script);
+				// 	})(r1, r2);
+				// }
 			}
 		}
 	}
