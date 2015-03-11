@@ -28,34 +28,34 @@ define([
 			this.camera = newCam.camera;
 		}.bind(this));
 
-		var domElement = this.viewDom = document.createElement('div');
-		document.body.appendChild(domElement);
-		domElement.style.zIndex = '-1';
-		domElement.style.position = 'absolute';
-		domElement.style.overflow = 'hidden';
-		domElement.style.pointerEvents = 'none';
-		domElement.style.WebkitTransformStyle = 'preserve-3d';
-		domElement.style.transformStyle = 'preserve-3d';
-		domElement.style.width = '100%';
-		domElement.style.height = '100%';
-		domElement.style.top = '0px';
-		domElement.style.bottom = '0px';
-		domElement.style.left = '0px';
-		domElement.style.right = '0px';
+		var rootDom = this.rootDom = document.createElement('div');
+		document.body.appendChild(rootDom);
+		rootDom.style.zIndex = '-1';
+		rootDom.style.position = 'absolute';
+		rootDom.style.overflow = 'hidden';
+		// rootDom.style.pointerEvents = 'none';
+		rootDom.style.WebkitTransformStyle = 'preserve-3d';
+		rootDom.style.transformStyle = 'preserve-3d';
+		rootDom.style.width = '100%';
+		rootDom.style.height = '100%';
+		rootDom.style.top = '0px';
+		rootDom.style.bottom = '0px';
+		rootDom.style.left = '0px';
+		rootDom.style.right = '0px';
 
-		var cameraElement = this.containerDom = document.createElement('div');
-		cameraElement.style.WebkitTransformStyle = 'preserve-3d';
-		cameraElement.style.transformStyle = 'preserve-3d';
-		cameraElement.style.width = '100%';
-		cameraElement.style.height = '100%';
+		var cameraDom = this.cameraDom = document.createElement('div');
+		cameraDom.style.WebkitTransformStyle = 'preserve-3d';
+		cameraDom.style.transformStyle = 'preserve-3d';
+		cameraDom.style.width = '100%';
+		cameraDom.style.height = '100%';
 
-		domElement.appendChild( cameraElement );
+		rootDom.appendChild( cameraDom );
 
 		// SystemBus.addListener('goo.viewportResize', function(data) {
-		// 	this.viewDom.style.width = data.width + 'px';
-		// 	this.viewDom.style.height = data.height + 'px';
-		// 	this.containerDom.style.width = data.width + 'px';
-		// 	this.containerDom.style.height = data.height + 'px';
+		// 	this.rootDom.style.width = data.width + 'px';
+		// 	this.rootDom.style.height = data.height + 'px';
+		// 	this.cameraDom.style.width = data.width + 'px';
+		// 	this.cameraDom.style.height = data.height + 'px';
 		// }.bind(this));
 
 		this.prefixes = ['', '-webkit-'];
@@ -63,7 +63,6 @@ define([
 	}
 
 	var tmpMatrix = new Matrix4x4();
-	// var tmpMatrix2 = new Matrix4x4();
 	var tmpVector = new Vector3();
 
 	CSS3DSystem.prototype = Object.create(System.prototype);
@@ -103,14 +102,8 @@ define([
 	CSS3DSystem.prototype.inserted = function (entity) {
 		var component = entity.cSS3DComponent;
 		var domElement = component.domElement;
-		domElement.style.position = 'absolute';
-		domElement.style.margin = '0px';
-		domElement.style.padding = '0px';
-		domElement.style.WebkitBackfaceVisibility = component.backfaceVisibility;
-		domElement.style.backfaceVisibility = component.backfaceVisibility;
-		component.setSize(component.width, component.height);
-		if (domElement.parentNode !== this.containerDom) {
-			this.containerDom.appendChild(domElement);
+		if (domElement.parentNode !== this.cameraDom) {
+			this.cameraDom.appendChild(domElement);
 		}
 	};
 
@@ -133,13 +126,13 @@ define([
 		var height = this.renderer.viewportHeight;
 		var fov = 0.5 / Math.tan(MathUtils.DEG_TO_RAD * camera.fov * 0.5) * height;
 
-		this.setStyle(this.viewDom, 'perspective', fov + 'px');
+		this.setStyle(this.rootDom, 'perspective', fov + 'px');
 
 		var viewMatrix = camera.getViewMatrix();
 		style = 'translate3d(0,0,' + fov + 'px) ' + 
 				getCameraCSSMatrix(viewMatrix) +
 				' translate3d(' + (width/2) + 'px,' + (height/2) + 'px, 0)';
-		this.setStyle(this.containerDom, 'transform', style);
+		this.setStyle(this.cameraDom, 'transform', style);
 
 		var viewInverseMatrix = camera.getViewInverseMatrix();
 		for (var i = 0, l = entities.length; i < l; i++) {
@@ -159,7 +152,7 @@ define([
 			}
 			component.updated = false;
 
-			var scale = component.scale;
+			// var scale = component.scale;
 			var worldTransform = entity.transformComponent.worldTransform;
 
 			if (component.faceCamera) {
@@ -172,11 +165,17 @@ define([
 				tmpVector.x *= (scale/component.width);
 				tmpVector.y *= (scale/component.height);
 				style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+tmpVector.x+','+tmpVector.y+','+1+')';
-				// style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+(scale/component.width)+','+
-				// 	(scale/component.height)+','+1+')';
 			} else {
-				style = getEntityCSSMatrix(worldTransform.matrix) + ' scale3d('+(scale/component.width)+','+
-					(scale/component.height)+','+1+')';
+				// style = getEntityCSSMatrix(worldTransform.matrix) + ' scale3d('+(scale/component.width)+','+
+				// 	(scale/component.height)+','+1+')';
+				style = getEntityCSSMatrix(worldTransform.matrix);
+
+				// tmpMatrix.copy(worldTransform.matrix);
+				// tmpMatrix.e00 *= 1000;
+				// tmpMatrix.e11 *= 1000;
+				// tmpMatrix.e22 *= 1000;
+				// style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+(scale*0.001/component.width)+','+
+				// 	(scale*0.001/component.height)+','+1+')';
 			}
 
 			this.setStyle(domElement, 'transform', style);
@@ -186,8 +185,8 @@ define([
 	System.prototype.cleanup = function () {
 		System.prototype.cleanup.apply(this, arguments);
 
-		if (this.viewDom.parentNode !== null) {
-			this.viewDom.parentNode.removeChild(this.viewDom);
+		if (this.rootDom.parentNode !== null) {
+			this.rootDom.parentNode.removeChild(this.rootDom);
 		}
 	};
 

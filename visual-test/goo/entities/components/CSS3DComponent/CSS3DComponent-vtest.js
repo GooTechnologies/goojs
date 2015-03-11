@@ -79,7 +79,7 @@ require([
 
 			if (e.id < 16000) {
 				if (e.id >= 0) {
-					console.log('selected', e.id);
+					console.log('selected', e);
 					var entitySelected = goo.world.entityManager.getEntityByIndex(e.id);
 					gizmoRenderSystem.show(entitySelected);
 				} else {
@@ -111,43 +111,52 @@ require([
 	var goo = V.initGoo({
 		alpha: true
 	});
-	// goo.renderer.domElement.style.zIndex = '10';
 	var world = goo.world;
 
 	V.addLights();
-	V.addOrbitCamera(new Vector3(10, Math.PI/1.5, Math.PI/8), new Vector3(), 'Right');
+	V.addOrbitCamera(new Vector3(50, Math.PI/1.5, Math.PI/8), new Vector3(), 'Right');
 
-	world.setSystem(new CSS3DSystem(goo.renderer));
+	var css3dSystem = new CSS3DSystem(goo.renderer);
+	world.setSystem(css3dSystem);
 
 	var material = new Material(ShaderLib.uber);
 	material.renderQueue = 2;
 	material.uniforms.opacity = 0;
 	material.uniforms.materialAmbient = [0, 0, 0, 0];
 	material.uniforms.materialDiffuse = [0, 0, 0, 0];
-	goo.renderer.setClearColor(0,0,0,0);
 
 	var material2 = new Material(ShaderLib.uber);
 	var box2 = new Box(3, 3, 3);
 	var entity = world.createEntity([0,0,0], box2, material2).addToWorld();
 
-	var numBoxes = 5;
+	var numBoxes = 2;
 	var spread = 10.0;
 	var size = 1;
-	// var box = new Box(size, size, 0);
-	var box = new Quad(size, size);
 	for (var i = 0; i < numBoxes; i++) {
 		for (var j = 0; j < numBoxes; j++) {
 			for (var k = 0; k < numBoxes; k++) {
-				var domElement = document.createElement('div');
-				if (V.rng.nextFloat() > 0.5) {
+				var domElement;
+				if (V.rng.nextFloat() > 0.66) {
+					domElement = document.createElement('div');
 					domElement.style.backgroundImage = 'url(https://dl.dropboxusercontent.com/u/640317/screenshot.jpg)';
-				} else {
+				} else if (V.rng.nextFloat() > 0.33) {
+					domElement = document.createElement('div');
 					domElement.className = 'object';
 					domElement.innerText = 'Gooooo';
+				} else {
+					domElement = document.createElement('iframe');
+					domElement.src = 'https://get.webgl.org/';
+					domElement.style.border	= 'none';
+					domElement.style.width = '100%';
+					domElement.style.height = '100%';
 				}
 
-				var width = (0.5+V.rng.nextFloat()*3);
-				var height = (0.5+V.rng.nextFloat()*3);
+				// var width = (0.5+V.rng.nextFloat()*3);
+				// var height = (0.5+V.rng.nextFloat()*3);
+				// var width = 768;
+				// var height = 640;
+				var width = 768/2;
+				var height = 640/2;
 				var htmlComponent = new CSS3DComponent(domElement, {
 					width: width,
 					height: height
@@ -162,8 +171,9 @@ require([
 					size * (j - numBoxes / 2) * spread,
 					size * (k - numBoxes / 2) * spread
 				];
-				var entity = world.createEntity(position, box, material, htmlComponent);
-				entity.setScale(width, height, 1);
+				var quad = new Quad(width, height);
+				var entity = world.createEntity(position, quad, material, htmlComponent);
+				entity.setScale(5/width, 5/height, 1);
 				entity.addToWorld();
 
 				// var script = function (entity) {
@@ -171,16 +181,16 @@ require([
 				// };
 				// entity.set(script);
 
-				if (V.rng.nextFloat() > 0.7) {
-					var r1 = V.rng.nextFloat();
-					var r2 = V.rng.nextFloat();
-					(function(r1, r2) {
-						var script = function (entity) {
-							entity.setRotation(world.time * r1, world.time * r2, 0);
-						};
-						entity.set(script);
-					})(r1, r2);
-				}
+				// if (V.rng.nextFloat() > 0.7) {
+				// 	var r1 = V.rng.nextFloat();
+				// 	var r2 = V.rng.nextFloat();
+				// 	(function(r1, r2) {
+				// 		var script = function (entity) {
+				// 			entity.setRotation(world.time * r1, world.time * r2, 0);
+				// 		};
+				// 		entity.set(script);
+				// 	})(r1, r2);
+				// }
 			}
 		}
 	}
@@ -193,21 +203,21 @@ require([
 
 	setupKeys();
 
-	var environmentPath = '../../../addons/Water/resources/skybox/';
-	var images = [
-		environmentPath + '1.jpg',
-		environmentPath + '3.jpg',
-		environmentPath + '6.jpg',
-		environmentPath + '5.jpg',
-		environmentPath + '4.jpg',
-		environmentPath + '2.jpg'
-	];
-	var skybox = new Skybox(Skybox.BOX, images, null, 0);
-	goo.world.createEntity(
-		skybox.transform,
-		skybox.materials[0],
-		skybox.meshData
-	).addToWorld();
+	// var environmentPath = '../../../addons/Water/resources/skybox/';
+	// var images = [
+	// 	environmentPath + '1.jpg',
+	// 	environmentPath + '3.jpg',
+	// 	environmentPath + '6.jpg',
+	// 	environmentPath + '5.jpg',
+	// 	environmentPath + '4.jpg',
+	// 	environmentPath + '2.jpg'
+	// ];
+	// var skybox = new Skybox(Skybox.BOX, images, null, 0);
+	// goo.world.createEntity(
+	// 	skybox.transform,
+	// 	skybox.materials[0],
+	// 	skybox.meshData
+	// ).addToWorld();
 
 	V.process();
 });
