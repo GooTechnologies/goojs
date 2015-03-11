@@ -31,6 +31,7 @@ function (
 
 		this.totalPool = this.settings.poolCount;
 
+		// SH: Are these the pool? Rename to pool?
 		this.particles = [];
 
 		this.availableParticles = [];
@@ -57,7 +58,7 @@ function (
 	}
 
 
-	ParticleSimulator.prototype.getAvailableSimulation = function() {
+	ParticleSimulator.prototype.getAvailableSimulation = function () {
 
 		for (var i = 0; i < this.simulations.length; i++) {
 			if (!this.simulations[i].active) {
@@ -69,11 +70,11 @@ function (
 		return sim;
 	};
 
-	ParticleSimulator.prototype.addEffectSimulation = function(position, normal, effectData, callbacks) {
+	ParticleSimulator.prototype.addEffectSimulation = function (position, normal, effectData, callbacks) {
 
 		var sim = this.getAvailableSimulation();
 
-		if (this.availableParticles.length -1 <= 0) {
+		if (this.availableParticles.length - 1 <= 0) {
 			console.error("Pool exhausted:", this.settings.id);
 			return;
 		}
@@ -83,7 +84,7 @@ function (
 	};
 
 
-	ParticleSimulator.prototype.initRenderer = function(rendererName, spriteAtlas, texture) {
+	ParticleSimulator.prototype.initRenderer = function (rendererName, spriteAtlas, texture) {
 		var rendererConf = this.rendererSettings[rendererName];
 		var renderer = createRenderer(rendererConf.script);
 		renderer.topSettings = this.settings;
@@ -115,7 +116,7 @@ function (
 
 
 
-	ParticleSimulator.prototype.includeSimulation = function(sim, callbacks) {
+	ParticleSimulator.prototype.includeSimulation = function (sim, callbacks) {
 
         if (callbacks) {
             sim.registerEffectCallbacks(callbacks);
@@ -126,7 +127,7 @@ function (
 		}
 
 		var simD = sim.params.data;
-		var count = Math.ceil(simD.count * (this.availableParticles.length-1) / this.totalPool);
+		var count = Math.ceil(simD.count * (this.availableParticles.length - 1) / this.totalPool);
 	//	count = Math.min(count, this.availableParticles.length-1);
 	//	console.log("counts: ", count, this.availableParticles.length, this.totalPool);
 
@@ -136,14 +137,14 @@ function (
 				console.log("");
 				return;
 			}
-			var ratio = 1 - (simD.count-i) / simD.count;
+			var ratio = 1 - (simD.count - i) / simD.count;
 			sim.includeParticle(particle, ratio);
 		}
 	};
 
 	var i;
 
-	ParticleSimulator.prototype.recoverSimulation = function(sim) {
+	ParticleSimulator.prototype.recoverSimulation = function (sim) {
 		for (var i = 0; i < sim.particles.length; i++) {
 			var p = sim.particles[i];
 			this.availableParticles.push(p);
