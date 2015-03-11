@@ -3,15 +3,15 @@ define([
 	'goo/entities/SystemBus',
 	'goo/renderer/Renderer',
 	'goo/math/Matrix4x4',
-	'goo/math/MathUtils',
-	'goo/math/Vector3'
+	'goo/math/MathUtils'
+	// 'goo/math/Vector3'
 ],  function (
 	System,
 	SystemBus,
 	Renderer,
 	Matrix4x4,
-	MathUtils,
-	Vector3
+	MathUtils
+	// Vector3
 ) {
 	'use strict';
 
@@ -62,8 +62,8 @@ define([
 		this.styleCache = new Map();
 	}
 
-	var tmpMatrix = new Matrix4x4();
-	var tmpVector = new Vector3();
+	// var tmpMatrix = new Matrix4x4();
+	// var tmpVector = new Vector3();
 
 	CSS3DSystem.prototype = Object.create(System.prototype);
 	CSS3DSystem.prototype.constructor = CSS3DSystem;
@@ -134,7 +134,7 @@ define([
 				' translate3d(' + (width/2) + 'px,' + (height/2) + 'px, 0)';
 		this.setStyle(this.cameraDom, 'transform', style);
 
-		var viewInverseMatrix = camera.getViewInverseMatrix();
+		// var viewInverseMatrix = camera.getViewInverseMatrix();
 		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
 			var component = entity.cSS3DComponent;
@@ -155,17 +155,17 @@ define([
 			// var scale = component.scale;
 			var worldTransform = entity.transformComponent.worldTransform;
 
-			if (component.faceCamera) {
-				tmpMatrix.copy(viewInverseMatrix);
+			// if (component.faceCamera) {
+			// 	tmpMatrix.copy(viewInverseMatrix);
 
-				worldTransform.matrix.getTranslation(tmpVector);
-				tmpMatrix.setTranslation(tmpVector);
+			// 	worldTransform.matrix.getTranslation(tmpVector);
+			// 	tmpMatrix.setTranslation(tmpVector);
 
-				entity.transformComponent.transform.matrix.getScale(tmpVector);
-				tmpVector.x *= (scale/component.width);
-				tmpVector.y *= (scale/component.height);
-				style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+tmpVector.x+','+tmpVector.y+','+1+')';
-			} else {
+			// 	entity.transformComponent.transform.matrix.getScale(tmpVector);
+			// 	tmpVector.x *= (scale/component.width);
+			// 	tmpVector.y *= (scale/component.height);
+			// 	style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+tmpVector.x+','+tmpVector.y+','+1+')';
+			// } else {
 				// style = getEntityCSSMatrix(worldTransform.matrix) + ' scale3d('+(scale/component.width)+','+
 				// 	(scale/component.height)+','+1+')';
 				style = getEntityCSSMatrix(worldTransform.matrix);
@@ -176,7 +176,7 @@ define([
 				// tmpMatrix.e22 *= 1000;
 				// style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+(scale*0.001/component.width)+','+
 				// 	(scale*0.001/component.height)+','+1+')';
-			}
+			// }
 
 			this.setStyle(domElement, 'transform', style);
 		}

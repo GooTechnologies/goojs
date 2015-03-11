@@ -124,6 +124,7 @@ require([
 	material.uniforms.opacity = 0;
 	material.uniforms.materialAmbient = [0, 0, 0, 0];
 	material.uniforms.materialDiffuse = [0, 0, 0, 0];
+	material.cullState.enabled = false;
 
 	var material2 = new Material(ShaderLib.uber);
 	var box2 = new Box(3, 3, 3);
