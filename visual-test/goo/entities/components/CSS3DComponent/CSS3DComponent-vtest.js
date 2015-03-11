@@ -127,11 +127,11 @@ require([
 	material3.cullState.cullFace = 'Front';
 
 	var material2 = new Material(ShaderLib.uber);
-	var box2 = new Box(50, 50, 50);
+	var box2 = new Box(50, 20, 50);
 	var entity = world.createEntity([0,0,0], box2, material2).addToWorld();
 
 	var numBoxes = 2;
-	var spread = 50.0;
+	var spread = 70.0;
 	for (var i = 0; i < numBoxes; i++) {
 		for (var j = 0; j < numBoxes; j++) {
 			for (var k = 0; k < numBoxes; k++) {
@@ -170,9 +170,9 @@ require([
 				// htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
 
 				var position = [
-					(i - (numBoxes / 2)) * spread,
-					(j - (numBoxes / 2)) * spread,
-					(k - (numBoxes / 2)) * spread
+					(i - (numBoxes / 4)) * spread,
+					(j - (numBoxes / 4)) * spread,
+					(k - (numBoxes / 4)) * spread
 				];
 				var quad = new Quad(width, height);
 				var entity = world.createEntity(position, quad, material, htmlComponent);
@@ -205,21 +205,21 @@ require([
 
 	setupKeys();
 
-	// var environmentPath = '../../../addons/Water/resources/skybox/';
-	// var images = [
-	// 	environmentPath + '1.jpg',
-	// 	environmentPath + '3.jpg',
-	// 	environmentPath + '6.jpg',
-	// 	environmentPath + '5.jpg',
-	// 	environmentPath + '4.jpg',
-	// 	environmentPath + '2.jpg'
-	// ];
-	// var skybox = new Skybox(Skybox.BOX, images, null, 0);
-	// goo.world.createEntity(
-	// 	skybox.transform,
-	// 	skybox.materials[0],
-	// 	skybox.meshData
-	// ).addToWorld();
+	var environmentPath = '../../../addons/Water/resources/skybox/';
+	var images = [
+		environmentPath + '1.jpg',
+		environmentPath + '3.jpg',
+		environmentPath + '6.jpg',
+		environmentPath + '5.jpg',
+		environmentPath + '4.jpg',
+		environmentPath + '2.jpg'
+	];
+	var skybox = new Skybox(Skybox.BOX, images, null, 0);
+	goo.world.createEntity(
+		skybox.transform,
+		skybox.materials[0],
+		skybox.meshData
+	).addToWorld();
 
 	V.process();
 });
