@@ -211,8 +211,8 @@ define([
 			var a = new Vector4(1, 2, 3, 4);
 			var b = new Vector4(2, 3, 4, 5);
 
-			expect(a.dot(b)).toEqual(40);
-			expect(Vector4.dot(a, b)).toEqual(40);
+			expect(a.dotVector(b)).toEqual(40);
+			// expect(Vector4.dot(a, b)).toEqual(40);
 		});
 
 		describe('dotVector', function () {

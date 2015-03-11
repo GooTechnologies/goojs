@@ -173,7 +173,7 @@ define([
 				transform2.translation.set(11, 22, 33);
 
 				var result = Transform.combine(transform1, transform2);
-				expect(result.translation.equals(new Vector3(1, 2, 3).add(new Vector3(11, 22, 33)))).toBeTruthy();
+				expect(result.translation.equals(new Vector3(1, 2, 3).addVector(new Vector3(11, 22, 33)))).toBeTruthy();
 
 				expect(result.matrix[12]).toBeCloseTo(1 + 11);
 				expect(result.matrix[13]).toBeCloseTo(2 + 22);

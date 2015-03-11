@@ -41,11 +41,11 @@ define([
 		});
 		it('can get the world position', function () {
 			var vec = camera.getWorldPosition(25, 25, 100, 100, 10);
-			expect(vec[2]).toBeCloseTo(-10); // minus because Camera looks at negative z
+			expect(vec.z).toBeCloseTo(-10); // minus because Camera looks at negative z
 		});
 		it('can get the world coordinates', function () {
 			var vec = camera.getWorldCoordinates(25, 25, 100, 100, 0.9091);
-			expect(vec[2]).toBeCloseTo(-10); // minus because Camera looks at negative z
+			expect(vec.z).toBeCloseTo(-10); // minus because Camera looks at negative z
 		});
 		it('can lookAt', function () {
 			camera.lookAt(new Vector3(-1, 0, 0), Vector3.UNIT_Y);
@@ -84,14 +84,14 @@ define([
 		});
 		it('can calculate corners of frustum', function () {
 			var corners = camera.calculateFrustumCorners();
-			expect(corners[0]).toEqual(new Vector3(1,-1,-1));
-			expect(corners[1]).toEqual(new Vector3(-1,-1,-1));
-			expect(corners[2]).toEqual(new Vector3(-1,1,-1));
-			expect(corners[3]).toEqual(new Vector3(1,1,-1));
-			expect(corners[4]).toEqual(new Vector3(100,-100,-100));
-			expect(corners[5]).toEqual(new Vector3(-100,-100,-100));
-			expect(corners[6]).toEqual(new Vector3(-100,100,-100));
-			expect(corners[7]).toEqual(new Vector3(100,100,-100));
+			expect(corners[0]).toBeCloseToVector(new Vector3(1,-1,-1));
+			expect(corners[1]).toBeCloseToVector(new Vector3(-1,-1,-1));
+			expect(corners[2]).toBeCloseToVector(new Vector3(-1,1,-1));
+			expect(corners[3]).toBeCloseToVector(new Vector3(1,1,-1));
+			expect(corners[4]).toBeCloseToVector(new Vector3(100,-100,-100));
+			expect(corners[5]).toBeCloseToVector(new Vector3(-100,-100,-100));
+			expect(corners[6]).toBeCloseToVector(new Vector3(-100,100,-100));
+			expect(corners[7]).toBeCloseToVector(new Vector3(100,100,-100));
 		});
 
 		describe('setFrustumPerspective', function () {

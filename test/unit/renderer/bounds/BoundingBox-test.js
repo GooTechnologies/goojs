@@ -58,42 +58,30 @@ define([
 
 				var boxMeshData = new Box();
 				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
-				expect(boundingBox1.center.data[0]).toBeCloseTo(0);
-				expect(boundingBox1.center.data[1]).toBeCloseTo(0);
-				expect(boundingBox1.center.data[2]).toBeCloseTo(0);
+				expect(boundingBox1.center).toBeCloseToVector(new Vector3(0, 0, 0));
 			});
 
 			it('computes the center of the bounding box from verts (of custom triangle)', function () {
 				var boundingBox1 = new BoundingBox();
 				var triangleMeshData = buildCustomTriangle([0, -5, 10, 2, 5, 20, 0, 1, 11]);
 				boundingBox1.computeFromPoints(triangleMeshData.dataViews.POSITION);
-				expect(boundingBox1.center.data[0]).toBeCloseTo(1);
-				expect(boundingBox1.center.data[1]).toBeCloseTo(0);
-				expect(boundingBox1.center.data[2]).toBeCloseTo(15);
+				expect(boundingBox1.center).toBeCloseToVector(new Vector3(1, 0, 15));
 			});
 
 			it('computes max & min of the bounding box from verts (of default box)', function () {
 				var boundingBox1 = new BoundingBox();
 				var boxMeshData = new Box();
 				boundingBox1.computeFromPoints(boxMeshData.dataViews.POSITION);
-				expect(boundingBox1.min.data[0]).toBeCloseTo(-0.5);
-				expect(boundingBox1.min.data[1]).toBeCloseTo(-0.5);
-				expect(boundingBox1.min.data[2]).toBeCloseTo(-0.5);
-				expect(boundingBox1.max.data[0]).toBeCloseTo(0.5);
-				expect(boundingBox1.max.data[1]).toBeCloseTo(0.5);
-				expect(boundingBox1.max.data[2]).toBeCloseTo(0.5);
+				expect(boundingBox1.min).toBeCloseToVector(new Vector3(-0.5, -0.5, -0.5));
+				expect(boundingBox1.max).toBeCloseToVector(new Vector3(0.5, 0.5, 0.5));
 			});
 
 			it('computes max & min of the bounding box from verts (of custom triangle)', function () {
 				var boundingBox1 = new BoundingBox();
 				var triangleMeshData = buildCustomTriangle([0, -5, 10, 2, 5, 20, 0, 1, 11]);
 				boundingBox1.computeFromPoints(triangleMeshData.dataViews.POSITION);
-				expect(boundingBox1.min.data[0]).toBeCloseTo(0);
-				expect(boundingBox1.min.data[1]).toBeCloseTo(-5);
-				expect(boundingBox1.min.data[2]).toBeCloseTo(10);
-				expect(boundingBox1.max.data[0]).toBeCloseTo(2);
-				expect(boundingBox1.max.data[1]).toBeCloseTo(5);
-				expect(boundingBox1.max.data[2]).toBeCloseTo(20);
+				expect(boundingBox1.min).toBeCloseToVector(new Vector3(0, -5, 10));
+				expect(boundingBox1.max).toBeCloseToVector(new Vector3(2, 5, 20));
 			});
 
 			it('computes x/y/zExtent of the bounding box from verts (of default box)', function () {
@@ -121,9 +109,7 @@ define([
 				var boundingBox2 = new BoundingBox(new Vector3(0, 0, 0), 2, 3, 4);
 
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
-				expect(mergedBoundingBox.center.data[0]).toBeCloseTo(0);
-				expect(mergedBoundingBox.center.data[1]).toBeCloseTo(0);
-				expect(mergedBoundingBox.center.data[2]).toBeCloseTo(0);
+				expect(mergedBoundingBox.center).toBeCloseToVector(new Vector3(0, 0, 0));
 				expect(mergedBoundingBox.xExtent).toBeCloseTo(2);
 				expect(mergedBoundingBox.yExtent).toBeCloseTo(3);
 				expect(mergedBoundingBox.zExtent).toBeCloseTo(4);
@@ -134,9 +120,7 @@ define([
 				var boundingBox2 = new BoundingBox(new Vector3(10, 10, 10), 10, 10, 10);
 
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
-				expect(mergedBoundingBox.center.data[0]).toBeCloseTo((-15 + 20) / 2);
-				expect(mergedBoundingBox.center.data[1]).toBeCloseTo((-15 + 20) / 2);
-				expect(mergedBoundingBox.center.data[2]).toBeCloseTo((-15 + 20) / 2);
+				expect(mergedBoundingBox.center).toBeCloseToVector(new Vector3((-15 + 20) / 2, (-15 + 20) / 2, (-15 + 20) / 2));
 				expect(mergedBoundingBox.xExtent).toBeCloseTo(35 / 2);
 				expect(mergedBoundingBox.yExtent).toBeCloseTo(35 / 2);
 				expect(mergedBoundingBox.zExtent).toBeCloseTo(35 / 2);
@@ -147,9 +131,8 @@ define([
 				var boundingBox2 = new BoundingBox(new Vector3(20, 20, 20), 10, 10, 10);
 
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
-				expect(mergedBoundingBox.center.data[0]).toBeCloseTo((-15 + 30) / 2);
-				expect(mergedBoundingBox.center.data[1]).toBeCloseTo((-15 + 30) / 2);
-				expect(mergedBoundingBox.center.data[2]).toBeCloseTo((-15 + 30) / 2);
+				expect(mergedBoundingBox.center).toBeCloseToVector(new Vector3((-15 + 20) / 2, (-15 + 20) / 2, (-15 + 20) / 2));
+				expect(
 				expect(mergedBoundingBox.xExtent).toBeCloseTo(45 / 2);
 				expect(mergedBoundingBox.yExtent).toBeCloseTo(45 / 2);
 				expect(mergedBoundingBox.zExtent).toBeCloseTo(45 / 2);

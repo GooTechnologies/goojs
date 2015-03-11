@@ -43,6 +43,14 @@ define([
 			});
 		}, this);
 */
+
+		/*[0, 1, 2].forEach(function (property) {
+			Object.defineProperty(this, property, {
+				get: function () { throw ''; },
+				set: function () { throw ''; }
+			});
+		}, this);*/
+
 		if (arguments.length !== 0) {
 			Vector3.prototype.set.apply(this, arguments);
 		} else {
@@ -192,6 +200,7 @@ define([
 	 * Vector3.add(5, v1, v1); // v1 == (6, 7, 8)
 	 */
 	Vector3.add = function (lhs, rhs, target) {
+		throw '';
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -297,6 +306,7 @@ define([
 	 * Vector3.sub(v1, 5, v1); // v1 == (-4, -3, -2)
 	 */
 	Vector3.sub = function (lhs, rhs, target) {
+		throw '';
 		if (typeof lhs === 'number') {
 			lhs = [lhs, lhs, lhs];
 		}
@@ -414,6 +424,7 @@ define([
 	 * Vector3.mul(v1, 5, v1); // v1 == (5, 10, 15)
 	 */
 	Vector3.mul = function (lhs, rhs, target) {
+		throw '';
 		if (!target) {
 			target = new Vector3();
 		}
@@ -492,6 +503,7 @@ define([
 	 * Vector3.div(v1, 5, v1); // v1 == (1, 2, 3)
 	 */
 	Vector3.div = function (lhs, rhs, target) {
+		throw '';
 		if (!target) {
 			target = new Vector3();
 		}
@@ -666,8 +678,8 @@ define([
 		//var ldata = lhs.data || lhs;
 		//var rdata = rhs.data || rhs;
 
-		var x = rhs.z * lhs.y - rhs.y * rhs.z;
-		var y = rhs.x * rhs.z - rhs.z * lhs.x;
+		var x = rhs.z * lhs.y - rhs.y * lhs.z;
+		var y = rhs.x * lhs.z - rhs.z * lhs.x;
 		var z = rhs.y * lhs.x - rhs.x * lhs.y;
 
 		target.x = x;
@@ -887,6 +899,14 @@ define([
 
 	Vector3.prototype.mulv = addWarning(
 		Vector3.prototype.mulVector, '.mulv is deprecated; please use .mulVector instead');
+
+	Vector3.prototype.divVector = function (vec3) {
+		this.x /= vec3.x;
+		this.y /= vec3.y;
+		this.z /= vec3.z;
+
+		return this;
+	};
 
 	/**
 	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3

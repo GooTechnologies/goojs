@@ -393,7 +393,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		Vector.prototype.set.apply(this.transform.translation, arguments);
+		Vector3.prototype.set.apply(this.transform.translation, arguments);
 		this._dirty = true;
 		return this;
 	};
@@ -440,11 +440,12 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
-		if (arguments.length === 3) {
-			this.transform.translation.add(arguments);
-		} else {
-			this.transform.translation.add(arguments[0]);
-		}
+		Vector3.prototype.addVector.apply(this.transform.translation, arguments);
+		//if (arguments.length === 3) {
+		//	this.transform.translation.add(arguments);
+		//} else {
+		//	this.transform.translation.add(arguments[0]);
+		//}
 		this._dirty = true;
 		return this;
 	};

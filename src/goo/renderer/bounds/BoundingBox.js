@@ -373,7 +373,7 @@ define([
 		var sep = new Vector3().copy(axis).scale(overlap / axisLengthSquared);
 
 		// The mtd vector length squared
-		var sepLengthSquared = Vector3.dot(sep, sep);
+		var sepLengthSquared = sep.dotVector(sep);
 
 		// If that vector is smaller than our computed Minimum Translation Distance use that vector as our current MTV distance
 		if (sepLengthSquared < mtvInfo.mtvDistance) {

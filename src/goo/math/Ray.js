@@ -70,13 +70,13 @@ define([
 			return false;
 		}
 
-		var dirDotDiffxEdge2 = sign * this.direction.dot(Vector3.cross(diff, edge2, edge2));
+		var dirDotDiffxEdge2 = sign * this.direction.dotVector(Vector3.cross(diff, edge2, edge2));
 		var result = false;
 		if (dirDotDiffxEdge2 >= 0.0) {
-			var dirDotEdge1xDiff = sign * this.direction.dot(edge1.cross(diff));
+			var dirDotEdge1xDiff = sign * this.direction.dotVector(edge1.cross(diff));
 			if (dirDotEdge1xDiff >= 0.0) {
 				if (dirDotDiffxEdge2 + dirDotEdge1xDiff <= dirDotNorm) {
-					var diffDotNorm = -sign * diff.dot(norm);
+					var diffDotNorm = -sign * diff.dotVector(norm);
 					if (diffDotNorm >= 0.0) {
 						// ray intersects triangle
 						// if storage vector is null, just return true,
@@ -127,13 +127,13 @@ define([
 	 */
 	Ray.prototype.intersectsPlane = function (plane, locationStore) {
 		var normal = plane.normal;
-		var denominator = normal.dot(this.direction);
+		var denominator = normal.dotVector(this.direction);
 
 		if (Math.abs(denominator) < 0.00001) {
 			return false; // coplanar
 		}
 
-		var numerator = -normal.dot(this.origin) + plane.constant;
+		var numerator = -normal.dotVector(this.origin) + plane.constant;
 		var ratio = numerator / denominator;
 
 		if (ratio < 0.00001) {
@@ -156,7 +156,7 @@ define([
 		var vectorA = tmpVec1;
 
 		vectorA.setVector(point).subVector(this.origin);
-		var t0 = this.direction.dot(vectorA);
+		var t0 = this.direction.dotVector(vectorA);
 		if (t0 > 0) {
 			// d = |P - (O + t*D)|
 			vectorA.setVector(this.direction).scale(t0);

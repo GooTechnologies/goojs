@@ -284,7 +284,7 @@ define([
 		//newRotation.multiplyDiagonalPost(this.scale, newRotation).invert();
 		// }
 
-		result.scale.setVector(Vector3.ONE).div(this.scale);
+		result.scale.setVector(Vector3.ONE).divVector(this.scale);
 		result.translation.copy(this.translation).invert().mulVector(result.scale);
 		result.rotation.applyPost(result.translation);
 

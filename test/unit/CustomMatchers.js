@@ -15,6 +15,15 @@ define([
 		return '[' + Array.prototype.join.call(array, ', ') + ']';
 	};
 
+	var serializeVector = function (vector) {
+		var ret = '(' + vector.x + ' ' + vector.y;
+
+		if (ret.z !== undefined) { ret += ' ' + vector.z; }
+		if (ret.w !== undefined) { ret += ' ' + vector.w; }
+
+		return ret + ')';
+	};
+
 	// in this case NaN is equal to NaN
 	// you need matchers that check if a result is explicitly NaN
 	var arrayEq = function (array1, array2) {
@@ -54,7 +63,8 @@ define([
 						//var expectedSerialized = serializeArrayBuffer(expected.data);
 						//var actualSerialized = serializeArrayBuffer(actual.data);
 
-						result.message = 'Expected vectors to be close;';
+					result.message = 'Expected vectors to be close; expected ' +
+						serializeVector(expected) + ' but got ' + serializeVector(actual);
 					//}
 				}
 

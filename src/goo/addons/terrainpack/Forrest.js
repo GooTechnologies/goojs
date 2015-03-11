@@ -251,7 +251,7 @@ define([
 		if (norm === null) {
 			norm = Vector3.UNIT_Y;
 		}
-		var slope = norm.dot(Vector3.UNIT_Y);
+		var slope = norm.dotVector(Vector3.UNIT_Y);
 		return this.terrainQuery.getForrestType(pos[0], pos[2], slope, MathUtils.fastRandom());
 	};
 

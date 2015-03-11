@@ -200,7 +200,7 @@ define([
 				if (norm === null) {
 					norm = Vector3.UNIT_Y;
 				}
-				var slope = norm.dot(Vector3.UNIT_Y);
+				var slope = norm.dotVector(Vector3.UNIT_Y);
 
 				var vegetationType = this.terrainQuery.getVegetationType(xx, zz, slope);
 				if (!vegetationType) {

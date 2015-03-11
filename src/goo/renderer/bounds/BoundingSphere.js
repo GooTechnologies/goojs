@@ -205,7 +205,7 @@ define([
 	BoundingSphere.prototype.intersectsSphere = function (bs) {
 		var diff = tmpVec.setVector(this.center).subVector(bs.center);
 		var rsum = this.radius + bs.radius;
-		return diff.dot(diff) <= rsum * rsum;
+		return diff.dotVector(diff) <= rsum * rsum;
 		//return this.center.distanceSquared(bs.center) <= rsum * rsum;
 	};
 
@@ -215,14 +215,14 @@ define([
 		}
 
 		var diff = new Vector3().copy(ray.origin).sub(this.center);
-		var a = diff.dot(diff) - this.radius * this.radius;
+		var a = diff.dotVector(diff) - this.radius * this.radius;
 		if (a <= 0.0) {
 			// in sphere
 			return true;
 		}
 
 		// outside sphere
-		var b = ray.direction.dot(diff);
+		var b = ray.direction.dotVector(diff);
 		if (b >= 0.0) {
 			return false;
 		}
@@ -230,23 +230,23 @@ define([
 	};
 
 	BoundingSphere.prototype.intersectsRayWhere = function (ray) {
-		var diff = new Vector3().copy(ray.origin).sub(this.center);
-		var a = diff.dot(diff) - this.radius * this.radius;
+		var diff = new Vector3().copy(ray.origin).subVector(this.center);
+		var a = diff.dotVector(diff) - this.radius * this.radius;
 		var a1, discr, root;
 		if (a <= 0.0) {
 			// inside sphere
-			a1 = ray.direction.dot(diff);
+			a1 = ray.direction.dotVector(diff);
 			discr = a1 * a1 - a;
 			root = Math.sqrt(discr);
 			var distances = [root - a1];
-			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
+			var points = [new Vector3().copy(ray.direction).scale(distances[0]).addVector(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
 			};
 		}
 
-		a1 = ray.direction.dot(diff);
+		a1 = ray.direction.dotVector(diff);
 		if (a1 >= 0.0) {
 			// No intersection
 			return null;
@@ -258,8 +258,8 @@ define([
 		} else if (discr >= 0.00001) {
 			root = Math.sqrt(discr);
 			var distances = [-a1 - root, -a1 + root];
-			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin),
-				new Vector3().copy(ray.direction).scale(distances[1]).add(ray.origin)];
+			var points = [new Vector3().copy(ray.direction).scale(distances[0]).addVector(ray.origin),
+				new Vector3().copy(ray.direction).scale(distances[1]).addVector(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -267,7 +267,7 @@ define([
 		}
 
 		var distances = [-a1];
-		var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
+		var points = [new Vector3().copy(ray.direction).scale(distances[0]).addVector(ray.origin)];
 		return {
 			"distances": distances,
 			"points": points
