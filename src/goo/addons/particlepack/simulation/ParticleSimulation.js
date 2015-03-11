@@ -3,12 +3,11 @@ define([
 	'goo/math/Vector3',
 	'goo/addons/particlepack/simulation/SimulationParameters',
 	'goo/addons/particlepack/simulation/DefaultSimulationParams'
-
 ], function (
 	Vector3,
 	SimulationParameters,
 	DefaultSimulationParams
-	) {
+) {
 	"use strict";
 
 	var ParticleSimulation = function () {
@@ -32,7 +31,6 @@ define([
 		this.active = true;
 	};
 
-
 	ParticleSimulation.prototype.registerEffectCallbacks = function (callbacks) {
 		if (callbacks.onUpdate) {
 			this.onUpdate = callbacks.onUpdate;
@@ -49,7 +47,6 @@ define([
 		if (callbacks.onParticleDead) {
 			this.onParticleDead = callbacks.onParticleDead;
 		}
-
 	};
 
 	ParticleSimulation.prototype.registerParticleRenderer = function (renderer) {
@@ -77,7 +74,6 @@ define([
 	};
 
 	ParticleSimulation.prototype.updateParticle = function (particle, tpf) {
-
 		if (particle.dead) {
 			return;
 		}
@@ -85,7 +81,7 @@ define([
 		// Particles need to have a fixed geometry the first frame of their life or things go bonkerz when framerate varies.
 		var deduct = tpf;
 		if (!particle.frameCount) {
-			deduct = 0.016;
+			deduct = 0.016; // REVIEW: This hard coded number appears in a few places
 		}
 
 		particle.lifeSpan -= deduct;
@@ -105,27 +101,21 @@ define([
 	};
 
 	ParticleSimulation.prototype.updateSimParticles = function (tpf) {
-
 		if (this.onUpdate) {
 			this.onUpdate(this);
 		}
 
-
 		for (var i = 0; i < this.particles.length; i++) {
 			this.updateParticle(this.particles[i], tpf);
 		}
-
 	};
 
 	ParticleSimulation.prototype.renderParticle = function (tpf, particle) {
-
 		for (var i = 0; i < this.renderers.length; i++) {
 			if (typeof(this.renderers[i].updateParticle) === 'function') {
 				this.renderers[i].updateParticle(tpf, particle);
 			}
-
 		}
-
 	};
 
 	return ParticleSimulation;

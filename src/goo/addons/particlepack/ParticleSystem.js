@@ -8,6 +8,7 @@ define([
 	"use strict";
 
 	// REVIEW: make methods with no return value chainable
+	// REVIEW: Put systems in an own folder, like the other packs do
 
 	function ParticleSystem(settings) {
 

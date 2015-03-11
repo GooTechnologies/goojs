@@ -93,7 +93,7 @@ function (
 		}
 	};
 
-	ParticleSimulator.prototype.remove = function () {
+	ParticleSimulator.prototype.remove = function () { // REVIEW: Not clear what this does... removeFromWorld?
 		for (var i = 0; i < this.renderers.length; i++) {
 			if (this.renderers[i].remove) {
 				this.renderers[i].remove();
@@ -136,7 +136,7 @@ function (
 		}
 	};
 
-	var i;
+	var i; // REVIEW: Should be in each function.
 
 	ParticleSimulator.prototype.recoverSimulation = function (sim) {
 		for (var i = 0; i < sim.particles.length; i++) {

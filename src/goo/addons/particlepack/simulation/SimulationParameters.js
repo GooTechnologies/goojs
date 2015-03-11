@@ -47,7 +47,6 @@ define(function () {
 			}
 		}
 
-
 		data.effectCount = data.count;
 		return data;
 	};
