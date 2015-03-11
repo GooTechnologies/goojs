@@ -114,7 +114,8 @@ require([
 	var world = goo.world;
 
 	V.addLights();
-	V.addOrbitCamera(new Vector3(50, Math.PI/1.5, Math.PI/8), new Vector3(), 'Right');
+	var camEntity = V.addOrbitCamera(new Vector3(150, Math.PI/1.5, Math.PI/8), new Vector3(), 'Right');
+	camEntity.cameraComponent.camera.setFrustumPerspective(null, null, 1, 10000);
 
 	var css3dSystem = new CSS3DSystem(goo.renderer);
 	world.setSystem(css3dSystem);
@@ -124,27 +125,34 @@ require([
 	material.uniforms.opacity = 0;
 	material.uniforms.materialAmbient = [0, 0, 0, 0];
 	material.uniforms.materialDiffuse = [0, 0, 0, 0];
-	material.cullState.enabled = false;
+	// material.cullState.enabled = false;
 
 	var material2 = new Material(ShaderLib.uber);
-	var box2 = new Box(3, 3, 3);
+	var box2 = new Box(50, 50, 50);
 	var entity = world.createEntity([0,0,0], box2, material2).addToWorld();
 
-	var numBoxes = 2;
-	var spread = 10.0;
-	var size = 1;
+	var numBoxes = 4;
+	var spread = 50.0;
 	for (var i = 0; i < numBoxes; i++) {
 		for (var j = 0; j < numBoxes; j++) {
 			for (var k = 0; k < numBoxes; k++) {
 				var domElement;
-				if (V.rng.nextFloat() > 0.66) {
+				var width = (0.5+V.rng.nextFloat()*3)*100;
+				var height = (0.5+V.rng.nextFloat()*3)*100;
+				var rand = V.rng.nextFloat();
+				if (rand > 0.6) {
 					domElement = document.createElement('div');
 					domElement.style.backgroundImage = 'url(https://dl.dropboxusercontent.com/u/640317/screenshot.jpg)';
-				} else if (V.rng.nextFloat() > 0.33) {
+				} else if (rand > 0.1) {
 					domElement = document.createElement('div');
 					domElement.className = 'object';
 					domElement.innerText = 'Gooooo';
+					domElement.style.border	= '1px solid black';
+					domElement.style.backgroundColor = 'blue';
+					domElement.style.padding = '20px';
 				} else {
+					width = 768;
+					height = 640;
 					domElement = document.createElement('iframe');
 					domElement.src = 'https://get.webgl.org/';
 					domElement.style.border	= 'none';
@@ -152,12 +160,6 @@ require([
 					domElement.style.height = '100%';
 				}
 
-				// var width = (0.5+V.rng.nextFloat()*3);
-				// var height = (0.5+V.rng.nextFloat()*3);
-				// var width = 768;
-				// var height = 640;
-				var width = 768/2;
-				var height = 640/2;
 				var htmlComponent = new CSS3DComponent(domElement, {
 					width: width,
 					height: height
@@ -168,13 +170,13 @@ require([
 				// htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
 
 				var position = [
-					size * (i - numBoxes / 2) * spread,
-					size * (j - numBoxes / 2) * spread,
-					size * (k - numBoxes / 2) * spread
+					(i - (numBoxes / 2)) * spread,
+					(j - (numBoxes / 2)) * spread,
+					(k - (numBoxes / 2)) * spread
 				];
 				var quad = new Quad(width, height);
 				var entity = world.createEntity(position, quad, material, htmlComponent);
-				entity.setScale(5/width, 5/height, 1);
+				entity.setScale(0.1, 0.1, 1);
 				entity.addToWorld();
 
 				// var script = function (entity) {
@@ -182,16 +184,16 @@ require([
 				// };
 				// entity.set(script);
 
-				// if (V.rng.nextFloat() > 0.7) {
-				// 	var r1 = V.rng.nextFloat();
-				// 	var r2 = V.rng.nextFloat();
-				// 	(function(r1, r2) {
-				// 		var script = function (entity) {
-				// 			entity.setRotation(world.time * r1, world.time * r2, 0);
-				// 		};
-				// 		entity.set(script);
-				// 	})(r1, r2);
-				// }
+				if (V.rng.nextFloat() > 0.7) {
+					var r1 = V.rng.nextFloat();
+					var r2 = V.rng.nextFloat();
+					(function(r1, r2) {
+						var script = function (entity) {
+							entity.setRotation(world.time * r1, world.time * r2, 0);
+						};
+						entity.set(script);
+					})(r1, r2);
+				}
 			}
 		}
 	}

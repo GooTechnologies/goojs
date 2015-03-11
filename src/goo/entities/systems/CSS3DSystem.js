@@ -169,13 +169,6 @@ define([
 				// style = getEntityCSSMatrix(worldTransform.matrix) + ' scale3d('+(scale/component.width)+','+
 				// 	(scale/component.height)+','+1+')';
 				style = getEntityCSSMatrix(worldTransform.matrix);
-
-				// tmpMatrix.copy(worldTransform.matrix);
-				// tmpMatrix.e00 *= 1000;
-				// tmpMatrix.e11 *= 1000;
-				// tmpMatrix.e22 *= 1000;
-				// style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+(scale*0.001/component.width)+','+
-				// 	(scale*0.001/component.height)+','+1+')';
 			// }
 
 			this.setStyle(domElement, 'transform', style);
