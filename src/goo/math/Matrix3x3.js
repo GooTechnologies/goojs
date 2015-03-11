@@ -530,21 +530,9 @@ define([
 	 * @example
 	 * var forward = new Vector3(0, 0, -1);
 	 * entity.applyPost(forward); // now 'forward' is in local space
-	 * 
 	 */
 	Matrix3x3.prototype.applyPost = function (rhs) {
-		//var target = rhs.data;
-		var source = this.data;
-
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-
-		rhs.x = source[0] * x + source[3] * y + source[6] * z;
-		rhs.y = source[1] * x + source[4] * y + source[7] * z;
-		rhs.z = source[2] * x + source[5] * y + source[8] * z;
-
-		return rhs;
+		throw '';
 	};
 
 	/**
@@ -553,18 +541,7 @@ define([
 	 * @returns {Vector3} Transformed left-hand side vector.
 	 */
 	Matrix3x3.prototype.applyPre = function (rhs) {
-		//var target = rhs.data;
-		var source = this.data;
-
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-
-		rhs.x = source[0] * x + source[1] * y + source[2] * z;
-		rhs.y = source[3] * x + source[4] * y + source[5] * z;
-		rhs.z = source[6] * x + source[7] * y + source[8] * z;
-
-		return rhs;
+		throw '';
 	};
 
 	// unused

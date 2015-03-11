@@ -1,7 +1,9 @@
 define([
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'goo/math/Vector'
 ], function (
-	MathUtils
+	MathUtils,
+	Vector
 ) {
 	'use strict';
 
@@ -15,11 +17,11 @@ define([
 	 * var v2 = new Vector3(); // == (0, 0, 0)
 	 */
 	function Vector3(x, y, z) {
-/*
+		// #ifdef DEBUG
 		this._x = 0;
 		this._y = 0;
 		this._z = 0;
-
+/*
 		['x', 'y', 'z'].forEach(function (property) {
 			Object.defineProperty(this, property, {
 				get: function () { return this['_' + property]; },
@@ -56,7 +58,9 @@ define([
 		// #endif
 	}
 
-	//Vector.setupAliases(Vector3.prototype,[['u', 'r'], ['v', 'g'], ['w', 'b']]);
+	// #ifdef DEBUG
+	Vector.setupAliases(Vector3.prototype,[['x', 'u', 'r'], ['y', 'v', 'g'], ['z', 'w', 'b']]);
+	// #endif
 
 	/**
 	 * Zero-vector (0, 0, 0)
@@ -402,35 +406,51 @@ define([
 		return Math.sqrt(this.lengthSquared());
 	};
 
+	/**
+	 * Normalizes the current vector
+	 * @returns {Vector3} Self to allow chaining
+	 */
 	Vector3.prototype.normalize = function () {
 		var length = this.length();
 
-		if (length < 0.0000001) { //AT: why is not MathUtil.EPSILON(^2) good?
+		if (length < MathUtils.EPSILON) {
 			this.x = 0;
 			this.y = 0;
 			this.z = 0;
 		} else {
-			length = 1.0 / length;
-			this.x *= length;
-			this.y *= length;
-			this.z *= length;
+			this.x /= length;
+			this.y /= length;
+			this.z /= length;
 		}
 
 		return this;
 	};
 
 	/**
-	 * Computes the distance squared between the current Vector3 and another Vector3.
-	 *              Note: When comparing the relative distances between two points it is usually sufficient
-	 *              to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector3} v Vector3.
-	 * @returns {number} distance squared.
+	 * Normalizes the current vector; this method does not perform special checks for whenthe vector has length 0
+	 * @returns {Vector3} Self to allow chaining
+	 */
+	Vector3.prototype.unsafeNormalize = function () {
+		var length = this.length();
+
+		this.x /= length;
+		this.y /= length;
+		this.z /= length;
+
+		return this;
+	};
+
+	/**
+	 * Computes the squared distance between the current Vector3 and another Vector3.
+	 * Note: When comparing the relative distances between two points it is usually sufficient
+	 * to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @param {Vector3} that Vector3
+	 * @returns {number} distance squared
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
 	 * var n1 = v1.distanceSquared(v2); // 81
 	 */
-
 	Vector3.prototype.distanceSquared = function (that) {
 		var deltaX = this.x - that.x;
 		var deltaY = this.y - that.y;
@@ -441,10 +461,10 @@ define([
 
 	/**
 	 * Computes the distance between the current Vector3 and another Vector3.
-	 *              Note: When comparing the relative distances between two points it is usually sufficient
-	 *              to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector3} v Vector3.
-	 * @returns {number} distance.
+	 * Note: When comparing the relative distances between two points it is usually sufficient
+	 * to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @param {Vector3} that Vector3
+	 * @returns {number} distance
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
@@ -452,6 +472,34 @@ define([
 	 */
 	Vector3.prototype.distance = function (that) {
 		return Math.sqrt(this.distanceSquared(that));
+	};
+
+	Vector3.prototype.applyPre = function (matrix) {
+		var source = matrix.data;
+
+		var x = this.x;
+		var y = this.y;
+		var z = this.z;
+
+		this.x = source[0] * x + source[1] * y + source[2] * z;
+		this.y = source[3] * x + source[4] * y + source[5] * z;
+		this.z = source[6] * x + source[7] * y + source[8] * z;
+
+		return this;
+	};
+
+	Vector3.prototype.applyPost = function (matrix) {
+		var source = matrix.data;
+
+		var x = this.x;
+		var y = this.y;
+		var z = this.z;
+
+		this.x = source[0] * x + source[3] * y + source[6] * z;
+		this.y = source[1] * x + source[4] * y + source[7] * z;
+		this.z = source[2] * x + source[5] * y + source[8] * z;
+
+		return this;
 	};
 
 	/**
@@ -468,6 +516,7 @@ define([
 	 */
 	Vector3.prototype.copy = Vector3.prototype.set;
 
+	// can't just use destination.copy(source) when destination has more components than source
 	Vector3.prototype.copyTo = function (destination) {
 		destination.x = this.x;
 		destination.y = this.y;
@@ -477,15 +526,11 @@ define([
 	};
 
 	// #ifdef DEBUG
-	/*Vector.addPostChecks(Vector3.prototype, [
-		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',
-		'cross', 'lerp', 'reflect',
-		'setDirect', 'setArray', 'setVector',
-		'addDirect', 'addVector',
-		'subDirect', 'subVector',
-		'mulDirect', 'mulVector',
-		'scale', 'lengthSquared', 'length', 'normalize', 'distanceSquared', 'distance'
-	]);*/
+	Vector.addReturnChecks(Vector3.prototype, [
+		'dot', 'dotDirect',
+		'length', 'lengthSquared',
+		'distance', 'distanceSquared'
+	]);
 	// #endif
 
 	return Vector3;
