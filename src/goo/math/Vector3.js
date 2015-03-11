@@ -6,25 +6,15 @@ define([
 	'use strict';
 
 	/**
-	 * Vector with 3 components. Used to store 3D translation and directions. It also contains common 3D Vector operations. Creates a new Vector3 by passing in either a current Vector3, number Array, or a set of three numbers.
-	 * @extends Vector
-	 * @param {Vector3|number[]|...number} arguments Initial values for the components.
+	 * Vector with 3 components.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
 	 * @example
-	 * // Passing in three numbers
-	 * var v1 = new Vector3(1, 2, 3);
-	 *
-	 * // Passing in an existing Vector3
-	 * var v2 = new Vector3(v1); // v2 == (1, 2, 3)
-	 *
-	 * // Passing in a number Array
-	 * var v3 = new Vector3([4, 5, 6]);
-	 *
-	 * // Passing in no arguments
-	 * var v4 = new Vector3(); // v4 == (0, 0, 0)
+	 * var v1 = new Vector3(1, 2, 3); // == (1, 2, 3)
+	 * var v2 = new Vector3(); // == (0, 0, 0)
 	 */
-	function Vector3() {
-		//Vector.call(this, 3);
-
+	function Vector3(x, y, z) {
 /*
 		this._x = 0;
 		this._y = 0;
@@ -51,12 +41,14 @@ define([
 			});
 		}, this);*/
 
-		if (arguments.length !== 0) {
-			Vector3.prototype.set.apply(this, arguments);
-		} else {
+		if (arguments.length === 0) {
 			this.x = 0;
 			this.y = 0;
 			this.z = 0;
+		} else {
+			this.x = x;
+			this.y = y;
+			this.z = z;
 		}
 
 		// #ifdef DEBUG
@@ -64,586 +56,218 @@ define([
 		// #endif
 	}
 
-	Vector3.prototype.set = function () {
-		if (arguments.length === 1 && typeof arguments[0] === 'object') {
-			if (arguments[0] instanceof Array) {
-				this.x = arguments[0][0];
-				this.y = arguments[0][1];
-				this.z = arguments[0][2];
-			} else {
-				this.copy(arguments[0]);
-			}
-		} else {
-			this.x = arguments[0];
-			this.y = arguments[1];
-			this.z = arguments[2];
-		}
-
-		return this;
-	};
-
-	//Vector3.prototype = Object.create(Vector.prototype);
-	//Vector3.prototype.constructor = Vector3;
-
 	//Vector.setupAliases(Vector3.prototype,[['u', 'r'], ['v', 'g'], ['w', 'b']]);
 
-	/* ====================================================================== */
-
 	/**
-	* Vector3 representing Zero Axis: (0, 0, 0)
-	* @type {Vector3}
-	* @example
-	* var oldValue = new Vector3(5, 2, 1);
-	* oldValue.setVector(Vector3.ZERO); // oldValue == (0, 0, 0)
-	*/
+	 * Zero-vector (0, 0, 0)
+	 * @type {Vector3}
+	 */
 	Vector3.ZERO = new Vector3(0, 0, 0);
 
 	/**
-	* Vector3 representing All Axis: (1, 1, 1)
-	* @type {Vector3}
-	* @example
-	* var v1 = Vector3.ONE.clone(); // v1 == (1, 1, 1)
-	*/
+	 * One-vector (1, 1, 1)
+	 * @type {Vector3}
+	 */
 	Vector3.ONE = new Vector3(1, 1, 1);
 
 	/**
-	* Vector3 representing X Axis(right): (1, 0, 0)
-	* @type {Vector3}
-	* @example
-	* // speed we want to strafe left or right
-	* var speed = 5;
-	* // direction to strafe
-	* var strafeSpeed = 0;
-	* // if key 'a' is pressed
-	* if(KeyInput.getKey('a')){
-	*	strafeSpeed -= speed;
-	* }
-	* // if key 'd' is pressed
-	* if(KeyInput.getKey('d')){
-	*	strafeSpeed += speed;
-	* }
-	*
-	* // set strafeVector using Vector3.UNIT_X
-	* // strafeVector.x is either 0, speed, or -speed, depending on the keys pressed
-	* var strafeVector = Vector3.mul(Vector3.UNIT_X, strafeSpeed);
-	*/
+	 * Unit-X (1, 0, 0)
+	 * @type {Vector3}
+	 */
 	Vector3.UNIT_X = new Vector3(1, 0, 0);
 
 	/**
-	* Vector3 representing Y Axis(up): (0, 1, 0)
-	* @type {Vector3}
-	* @example
-	* // height we want to jump
-	* var jumpHeight = 2.0;
-	* // gravity pulling us down
-	* var gravity = -9.8;
-	* // the calculated vertical jump impulse
-	* var jumpVelocity = Math.sqrt(2*jumpHeight*gravity);
-	*
-	* // set jumpVector using Vector3.UNIT_Y
-	* var jumpVector = Vector3.mul(Vector3.UNIT_Y, jumpVelocity); // jumpVector == (0, jumpVelocity, 0)
-	*/
+	 * Unit-Y (0, 1, 0)
+	 * @type {Vector3}
+	 */
 	Vector3.UNIT_Y = new Vector3(0, 1, 0);
 
 	/**
-	* Vector3 representing Z Axis(forward): (0, 0, 1)
-	* @type {Vector3}
-	* @example
-	* // speed we want to move forward
-	* var fwd_speed = 5;
-	* // speed we want to move back
-	* var bck_speed = -3.5;
-	* // speed to move
-	* var moveSpeed = 0.0;
-	* // if key 'w' is pressed
-	* if(KeyInput.getKey('w')){
-	*	moveSpeed = fwd_speed;
-	* }
-	* // if key 's' is pressed
-	* if(KeyInput.getKey('s')){
-	*	moveSpeed = bck_speed;
-	* }
-	*
-	* // set moveVector, using Vector3.UNIT_Z
-	* // moveVector.z is either 0, fwd_speed, or bck_speed, depending on the keys pressed
-	* var moveVector = Vector3.mul(Vector3.UNIT_Z, moveSpeed);
-	*/
+	 * Unit-Z (0, 0, 1)
+	 * @type {Vector3}
+	 */
 	Vector3.UNIT_Z = new Vector3(0, 0, 1);
 
-	// general purpose vector for holding intermediate data that has no better than 'tmpVec'
-	var tmpVec = new Vector3();
-
-	/* ====================================================================== */
-
 	/**
-	 * Adds 'lhs' and 'rhs' and stores the result in 'target'. If target is not supplied, a new Vector3 object is created and returned. Equivalent of 'return (target = lhs + rhs);'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3} [target] Vector3 to store the result. If one is not supplied, a new Vector3 object is created.
-	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * Adds a vector to the current vector
+	 * @param that {Vector3}
+	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * // Adds two Vector3 with no target, returns a new Vector3 object as the result
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
-	 * var r1 = Vector3.add(v1, v2); // r1 == (5, 7, 9)
-	 *
-	 * // Adds a number Array and a Vector3 with a target Vector3 to store the result
-	 * var a1 = [1, 2, 3];
-	 * var v1 = new Vector3(4, 5, 6);
-	 * var r1 = new Vector3(); // r1 == (0, 0, 0)
-	 * Vector3.add(a1, v1, r1); // r1 == (5, 7, 9)
-	 *
-	 * // Adds a number to a Vector3, using that same Vector3 as the target to store the result
-	 * var v1 = new Vector3(1, 2, 3);
-	 * Vector3.add(5, v1, v1); // v1 == (6, 7, 8)
-	 */
-	Vector3.add = function (lhs, rhs, target) {
-		throw '';
-		if (typeof lhs === 'number') {
-			lhs = [lhs, lhs, lhs];
-		}
-
-		if (typeof rhs === 'number') {
-			rhs = [rhs, rhs, rhs];
-		}
-
-		if (!target) {
-			target = new Vector3();
-		}
-
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-
-		target.x = ldata[0] + rdata[0];
-		target.y = ldata[1] + rdata[1];
-		target.z = ldata[2] + rdata[2];
-
-		return target;
-	};
-
-	/**
-	 * Optimized for Vector3 objects. Adds 'lhs' and 'rhs' and stores the result in 'target'. If target is not supplied, a new Vector3 object is created and returned.
-	 * @deprecated Deprecated as of v0.12.x and scheduled for removal in 0.14.0
-	 * @param {Vector3} lhs Vector3 on the left-hand side.
-	 * @param {Vector3} rhs Vector3 on the right-hand side.
-	 * @param {Vector3} target Vector3 to store the result. If one is not supplied, a new Vector3 object is created.
-	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
-	 * @example
-	 * // Adds two Vector3 objects and returns a new Vector3 object as the result
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
-	 * var v3 = Vector3.addv(v1, v2); // v3 == (5, 7, 9)
-	 *
-	 * // Adds two Vector3 objects, and stores the result in the target Vector3
-	 * var v1 = new Vector3(2, 4, 6);
-	 * var v2 = new Vector3(4, 6, 8);
-	 * Vector3.addv(v1, v2, v1); // v1 == (6, 10, 14)
-	 */
-	Vector3.addv = addWarning(
-		function (lhs, rhs, target) {
-			if (!target) {
-				target = new Vector3();
-			}
-
-			target.x = lhs.x + rhs.x;
-			target.y = lhs.y + rhs.y;
-			target.z = lhs.z + rhs.z;
-
-			return target;
-		},
-		'The static method .addv is deprecated; please use the instance method .addVector instead'
-	);
-
-	/**
-	 * Adds 'rhs' to the current Vector3. Equivalent to 'return (this += rhs);'.
-	 * @param {Vector3|number[]|number} rhs Vector3, Array of numbers, or single number. For a single number, the value is repeated for
-	 *            every component.
-	 * @returns {Vector3} Self for chaining.
-	 * @example
-	 * // Passing in an existing Vector3
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
 	 * v2.add(v1); // v2 == (5, 7, 9)
-	 *
-	 * // Passing in a number Array
-	 * var v3 = new Vector3(); // v3 == (0, 0, 0)
-	 * v3.add([1,2,3]); // (1, 2, 3)
-	 *
-	 * // Passing in a number
-	 * var v4 = new Vector3(); // v4 == (0, 0, 0)
-	 * v4.add(5); // v4 == (5, 5, 5)
 	 */
-	Vector3.prototype.add = function (rhs) {
-		return Vector3.add(this, rhs, this);
-	};
+	Vector3.prototype.add = function (that) {
+		this.x += that.x;
+		this.y += that.y;
+		this.z += that.z;
 
-	/* ====================================================================== */
-
-	/**
-	 * Subtracts 'rhs' from 'lhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of 'return (target = lhs - rhs);'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or single number on the left-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or single number on the right-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3} [target] Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
-	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
-	 * @example
-	 * // Subtracts Vector3 'v2' from Vector3 'v1', returns a new Vector3 object as the result
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
-	 * var r1 = Vector3.sub(v1, v2); // r1 == (-3, -3, -3)
-	 *
-	 * // Subtracts a Vector3 'v1' from a number Array 'a1' with a target Vector3 to store the result
-	 * var a1 = [4, 5, 6];
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var r1 = new Vector3(); // r1 == (0, 0, 0)
-	 * Vector3.sub(a1, v1, r1); // r1 == (3, 3, 3)
-	 *
-	 * // Subtracts a number from a Vector3, using that same Vector3 as the target to store the result
-	 * var v1 = new Vector3(1, 2, 3);
-	 * Vector3.sub(v1, 5, v1); // v1 == (-4, -3, -2)
-	 */
-	Vector3.sub = function (lhs, rhs, target) {
-		throw '';
-		if (typeof lhs === 'number') {
-			lhs = [lhs, lhs, lhs];
-		}
-
-		if (typeof rhs === 'number') {
-			rhs = [rhs, rhs, rhs];
-		}
-
-		if (!target) {
-			target = new Vector3();
-		}
-
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-
-		target.x = ldata[0] - rdata[0];
-		target.y = ldata[1] - rdata[1];
-		target.z = ldata[2] - rdata[2];
-
-		return target;
-	};
-
-	/**
-	 * Optimized for Vector3 objects.  Subtracts 'rhs' from 'lhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.
-	 * @deprecated Deprecated as of v0.12.x and scheduled for removal in 0.14.0
-	 * @param {Vector3} lhs Vector3 on the left-hand side.
-	 * @param {Vector3} rhs Vector3 on the right-hand side.
-	 * @param {Vector3} target Vector3 to store the result.  If one is not supplied, a new Vector3 object is created.
-	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
-	 * @example
-	 * // Subtracts two Vector3: v2 from v1, and returns a new Vector3 object as the result
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
-	 * var v3 = Vector3.subv(v1, v2); // v3 == (-3, -3, -3)
-	 *
-	 * // Subtracts two Vector3: v2 from v1, and stores the result in the target Vector3: v1
-	 * var v1 = new Vector3(2, 4, 6);
-	 * var v2 = new Vector3(4, 6, 8);
-	 * Vector3.subv(v1, v2, v1); // v1 == (-2, -2, -2)
-	 */
-	Vector3.subv = addWarning(
-		function (lhs, rhs, target) {
-			if (!target) {
-				target = new Vector3();
-			}
-
-			target.x = lhs.x - rhs.x;
-			target.y = lhs.y - rhs.y;
-			target.z = lhs.z - rhs.z;
-
-			return target;
-		},
-		'The static method .subv is deprecated; please use the instance method .subVector instead'
-	);
-
-	/**
-	 * Subtracts 'rhs' from the current Vector3. Equivalent of 'return (this -= rhs);'.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single number, the value is repeated for
-	 *            every component.
-	 * @returns {Vector3} Self for chaining.
-	 * @example
-	 * // Passing in an existing Vector3
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
-	 * v2.sub(v1); // v2 == (3, 3, 3)
-	 *
-	 * // Passing in a number Array
-	 * var v3 = new Vector3(); // v3 == (0, 0, 0)
-	 * v3.sub([1,2,3]); // v3 == (-1, -2, -3)
-	 *
-	 * // Passing in a number
-	 * var v4 = new Vector3(); // v4 == (0, 0, 0)
-	 * v4.sub(5); // v4 == (-5, -5, -5)
-	 */
-	Vector3.prototype.sub = function (rhs) {
-		return Vector3.sub(this, rhs, this);
-	};
-
-	/* ====================================================================== */
-	/**
-	 * Performs component-wise negation of the vector
-	 * @returns {Vector3} Self for chaining
-	 */
-	Vector3.prototype.invert = function () {
-		this.x = 0.0 - this.x;
-		this.y = 0.0 - this.y;
-		this.z = 0.0 - this.z;
 		return this;
 	};
 
-	/* ====================================================================== */
+	/**
+	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {Vector3} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector3(1, 2, 3);
+	 * v1.addDirect(2, 4, 6); // v1 == (3, 6, 9)
+	 */
+	Vector3.prototype.addDirect = function (x, y, z) {
+		this.x += x;
+		this.y += y;
+		this.z += z;
+
+		return this;
+	};
 
 	/**
-	 * Multiplies 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned. Equivalent of 'return (target = lhs * rhs);'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
+	 * Adds a vector from the current vector
+	 * @param that {Vector3}
+	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * // Multiplies two Vector3 with no target, returns a new Vector3 object as the result
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
-	 * var r1 = Vector3.mul(v1, v2); // r1 == (4, 10, 18)
-	 *
-	 * // Multiplies a number Array and a Vector3 with a target Vector3 to store the result
-	 * var a1 = [1, 2, 3];
 	 * var v1 = new Vector3(4, 5, 6);
-	 * var r1 = new Vector3(); // r1 == (0, 0, 0)
-	 * Vector3.mul(a1, v1, r1); // r1 == (4, 10, 18)
-	 *
-	 * // Multiplies a Vector3 by a number, using that same Vector3 as the target to store the result
-	 * var v1 = new Vector3(1, 2, 3);
-	 * Vector3.mul(v1, 5, v1); // v1 == (5, 10, 15)
+	 * var v2 = new Vector3(1, 2, 3);
+	 * v2.sub(v1); // v2 == (3, 3, 3)
 	 */
-	Vector3.mul = function (lhs, rhs, target) {
-		throw '';
-		if (!target) {
-			target = new Vector3();
-		}
+	Vector3.prototype.sub = function (that) {
+		this.x -= that.x;
+		this.y -= that.y;
+		this.z -= that.z;
 
-		if (typeof lhs === 'number') {
-			var rdata = rhs.data || rhs;
-
-			target.x = lhs * rdata[0];
-			target.y = lhs * rdata[1];
-			target.z = lhs * rdata[2];
-		} else if (typeof rhs === 'number') {
-			var ldata = lhs.data || lhs;
-
-			target.x = ldata[0] * rhs;
-			target.y = ldata[1] * rhs;
-			target.z = ldata[2] * rhs;
-		} else {
-			var ldata = lhs.data || lhs;
-			var rdata = rhs.data || rhs;
-
-			target.x = ldata[0] * rdata[0];
-			target.y = ldata[1] * rdata[1];
-			target.z = ldata[2] * rdata[2];
-		}
-
-		return target;
+		return this;
 	};
 
 	/**
-	 * Multiplies the current Vector3 by 'rhs'.  Equivalent of 'return (this *= rhs);'.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numberss, the value is repeated for
-	 *            every component.
-	 * @returns {Vector3} Self for chaining.
+	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * // Passing in an existing Vector3
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * v1.subDirect(1, 2, 3); // v1 == (-1, -2, -3)
+	 */
+	Vector3.prototype.subDirect = function (x, y, z) {
+		this.x -= x;
+		this.y -= y;
+		this.z -= z;
+
+		return this;
+	};
+
+	/**
+	 * Performs component-wise negation of the vector
+	 * @returns {Vector3} Self to allow chaining
+	 */
+	Vector3.prototype.invert = function () {
+		this.x = -this.x;
+		this.y = -this.y;
+		this.z = -this.z;
+
+		return this;
+	};
+
+	/**
+	 * Multiplies the current vector by another vector
+	 * @param that {Vector3}
+	 * @returns {Vector3} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector3(4, 5, 6);
+	 * var v2 = new Vector3(1, 2, 3);
 	 * v2.mul(v1); // v2 == (4, 10, 18)
-	 *
-	 * // Passing in a number Array
-	 * var v3 = new Vector3(2, 4, 6);
-	 * v3.mul([1,2,3]); // v3 == (2, 8, 18)
-	 *
-	 * // Passing in a number
-	 * var v4 = new Vector3(1, 2, 3);
-	 * v4.mul(5); // v4 == (5, 10, 15)
 	 */
-	Vector3.prototype.mul = function (rhs) {
-		return Vector3.mul(this, rhs, this);
-	};
+	Vector3.prototype.mul = function (that) {
+		this.x *= that.x;
+		this.y *= that.y;
+		this.z *= that.z;
 
-	/* ====================================================================== */
-
-	/**
-	 * Divides 'lhs' by 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of 'return (target = lhs / rhs);'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the right-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
-	 * @example
-	 * // Divides two Vector3: v1 by v2, returns a new Vector3 object as the result
-	 * var v1 = new Vector3(2, 4, 8);
-	 * var v2 = new Vector3(1, 2, 4);
-	 * var r1 = Vector3.div(v1, v2); // r1 == (2, 2, 2)
-	 *
-	 * // Divides a number Array by a Vector3 with a target Vector3 to store the result
-	 * var a1 = [5, 10, 15];
-	 * var v1 = new Vector3(5, 2, 3);
-	 * var r1 = new Vector3(); // r1 == (0, 0, 0)
-	 * Vector3.div(a1, v1, r1); // r1 == (1, 5, 5)
-	 *
-	 * // Divides a Vector3 by a number, using that same Vector3 as the target to store the result
-	 * var v1 = new Vector3(5, 10, 15);
-	 * Vector3.div(v1, 5, v1); // v1 == (1, 2, 3)
-	 */
-	Vector3.div = function (lhs, rhs, target) {
-		throw '';
-		if (!target) {
-			target = new Vector3();
-		}
-
-		if (typeof lhs === 'number') {
-			var rdata = rhs.data || rhs;
-
-			target.x = lhs / rdata[0];
-			target.y = lhs / rdata[1];
-			target.z = lhs / rdata[2];
-		} else if (typeof rhs === 'number') {
-			var irhs = 1 / rhs;
-			var ldata = lhs.data || lhs;
-
-			target.x = ldata[0] * irhs;
-			target.y = ldata[1] * irhs;
-			target.z = ldata[2] * irhs;
-		} else {
-			var ldata = lhs.data || lhs;
-			var rdata = rhs.data || rhs;
-
-			target.x = ldata[0] / rdata[0];
-			target.y = ldata[1] / rdata[1];
-			target.z = ldata[2] / rdata[2];
-		}
-
-		return target;
+		return this;
 	};
 
 	/**
-	 * Divides the current Vector3 by 'rhs'.  Equivalent of 'return (this /= rhs);'.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or single number on the right-hand side. For a single number, the value is repeated for
-	 *            every component.
-	 * @returns {Vector3} Self for chaining.
+	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * // Passing in an existing Vector3
-	 * var v1 = new Vector3(4, 2, 3);
-	 * var v2 = new Vector3(4, 4, 12);
-	 * v2.div(v1); // v2 == (1, 2, 4)
-	 *
-	 * // Passing in a number Array
-	 * var v3 = new Vector3(4, 8, 12);
-	 * v3.div([2, 8, 4]); // v3 == (2, 1, 3)
-	 *
-	 * // Passing in a number
-	 * var v4 = new Vector3(15, 25, 5);
-	 * v4.div(5); // v4 == (3, 5, 1)
+	 * var v = new Vector3(1, 2, 3);
+	 * v.mulDirect(2, 4, 6); // v == (2, 8, 18)
 	 */
-	Vector3.prototype.div = function (rhs) {
-		return Vector3.div(this, rhs, this);
-	};
+	Vector3.prototype.mulDirect = function (x, y, z) {
+		this.x *= x;
+		this.y *= y;
+		this.z *= z;
 
-	/* ====================================================================== */
-
-	/**
-	 * Computes the dot product between 'lhs' and 'rhs'.  Equivalent of 'return lhs•rhs;'.
-	 * @param {Vector3|number[]|number} lhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @returns {number} Dot product number.
-	 * @example
-	 * // Passing in two Vector3
-	 * var v1 = new Vector3(0, 1.0, 0);
-	 * var v2 = new Vector3(0, -0.5, 0);
-	 * var r1 = Vector3.dot(v1, v2); // r1 == -0.5
-	 *
-	 * // Passing in a Vector3 and a number Array
-	 * var v1 = new Vector3(0, 1.0, 0);
-	 * var r1 = Vector3.dot(v1, [0, 0.5, 0]); // r1 == 0.5
-	 *
-	 * // Passing in a Vector3 and a number
-	 * var v1 = new Vector3(0, 1.0, 0);
-	 * var r1 = Vector3.dot(v1, 1.0); // r1 == 1.0
-	 */
-	Vector3.dot = function (lhs, rhs) {
-		if (typeof lhs === 'number') {
-			lhs = [lhs, lhs, lhs];
-		}
-
-		if (typeof rhs === 'number') {
-			rhs = [rhs, rhs, rhs];
-		}
-
-		var ldata = lhs.data || lhs;
-		var rdata = rhs.data || rhs;
-
-		return ldata[0] * rdata[0] +
-			ldata[1] * rdata[1] +
-			ldata[2] * rdata[2];
+		return this;
 	};
 
 	/**
-	 * Computes the dot product between the current Vector3 and 'rhs'. Equivalent of 'return this•rhs;'.
-	 * @param {Vector3|number[]|number} rhs Vector3, array of numbers or a single number on the left-hand side. For single numbers, the value is repeated for
-	 *            every component.
-	 * @returns {number} Dot product.
-	 * @example
-	 * // Passing in an existing Vector3
-	 * var v1 = new Vector3(0, 1.0, 0);
-	 * var v2 = new Vector3(0, -0.5, 0);
-	 * var r1 = v1.dot(v2); // r1 == -0.5
-	 *
-	 * // Passing in a number Array
-	 * var v3 = new Vector3(0, 1.0, 0);
-	 * var r1 = v3.dot([0, 0.5, 0]); // r1 == 0.5
-	 *
-	 * // Passing in a number
-	 * var v4 = new Vector3(0, 1.0, 0);
-	 * var r1 = v4.dot(1.0); // r1 == 1.0
+	 * Scales the vector by a factor
+	 * @param {number} factor
+	 * @returns {Vector3} Self to allow chaining
 	 */
-	Vector3.prototype.dot = function (rhs) {
-		return Vector3.dot(this, rhs);
+	Vector3.prototype.scale = function (factor) {
+		this.x *= factor;
+		this.y *= factor;
+		this.z *= factor;
+		return this;
 	};
 
-	//! AT: undocumented, used in only one place in the engine
-	Vector3.dotv = addWarning(
-		function (lhs, rhs) {
-			var ldata = lhs.data;
-			var rdata = rhs.data;
+	/**
+	 * Divides the current Vector3 by another vector
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {Vector3} Self to allow chaining
+	 * @example
+	 * var v = new Vector3(1, 2, 3);
+	 * v.mulDirect(2, 4, 6); // v == (2, 8, 18)
+	 */
+	Vector3.prototype.div = function (that) {
+		this.x /= that.x;
+		this.y /= that.y;
+		this.z /= that.z;
 
-			return ldata[0] * rdata[0] +
-				ldata[1] * rdata[1] +
-				ldata[2] * rdata[2];
-		},
-		'The static method .dotv is deprecated; please use the instance method .dotVector instead'
-	);
+		return this;
+	};
+
+	/**
+	 * Divides the current Vector3 by numbers 'x', 'y', 'z' as inputs
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {Vector3} Self to allow chaining
+	 * @example
+	 * var v1 = new Vector3(4, 9, 16);
+	 * v1.divDirect(2, 3, 4); // v1 == (2, 3, 4)
+	 */
+	Vector3.prototype.divDirect = function (x, y, z) {
+		this.x /= x;
+		this.y /= y;
+		this.z /= z;
+
+		return this;
+	};
 
 	/**
 	 * Computes the dot product between the current vector and 'rhs'.
-	 * @param {Vector3} rhs
+	 * @param {Vector3} that
 	 * @returns {number}
 	 */
-	Vector3.prototype.dotVector = function (rhs) {
-		//var ldata = this.data;
-		//var rdata = rhs.data;
+	Vector3.prototype.dot = function (that) {
+		return this.x * that.x +
+			this.y * that.y +
+			this.z * that.z;
+	};
 
-		return this.x * rhs.x +
-			this.y * rhs.y +
-			this.z * rhs.z;
+	Vector3.prototype.dotDirect = function (x, y, z) {
+		return this.x * x +
+			this.y * y +
+			this.z * z;
 	};
 
 	Vector3.prototype.equals = function (that) {
@@ -652,47 +276,16 @@ define([
 			(Math.abs(this.z - that.z) <= MathUtils.EPSILON);
 	};
 
-	/* ====================================================================== */
-
-	/**
-	 * Computes the cross product between 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Vector3 object is created and returned.  Equivalent of 'return (target = lhs x rhs);'.
-	 * @param {Vector3|number[]} lhs Vector3 or array of numbers on the left-hand side.
-	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
-	 * @param {Vector3} [target] Target Vector3 for storage.  If one is not supplied, a new Vector3 object is created.
-	 * @returns {Vector3} The target Vector3 passed in, or a new Vector3 object.
-	 * @example
-	 * // Passing in two Vector3, returns a new Vector3 object as the result
-	 * var v1 = new Vector3(0, 1, 0);
-	 * var v2 = new Vector3(1, 0, 0);
-	 * var cross = Vector3.cross(v1, v2); // cross == (0, 0, -1)
-	 *
-	 * // Passing in a Vector3 and a number Array, using the same Vector3 to store the results
-	 * var v3 = new Vector3(0, 0, -1);
-	 * Vector3.cross(v3, [0, -1, 0], v3); // v3 == (-1, 0, 0)
-	 */
-	Vector3.cross = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Vector3();
-		}
-
-		//var ldata = lhs.data || lhs;
-		//var rdata = rhs.data || rhs;
-
-		var x = rhs.z * lhs.y - rhs.y * lhs.z;
-		var y = rhs.x * lhs.z - rhs.z * lhs.x;
-		var z = rhs.y * lhs.x - rhs.x * lhs.y;
-
-		target.x = x;
-		target.y = y;
-		target.z = z;
-
-		return target;
+	Vector3.prototype.equalsDirect = function (x, y, z) {
+		return (Math.abs(this.x - x) <= MathUtils.EPSILON) &&
+			(Math.abs(this.y - y) <= MathUtils.EPSILON) &&
+			(Math.abs(this.z - z) <= MathUtils.EPSILON);
 	};
 
 	/**
 	 * Computes the cross product between the current Vector3 and 'rhs'.  The current Vector3 becomes the result.  Equivalent of 'return (this = this x rhs);'.
-	 * @param {Vector3|number[]} rhs Vector3 or array of numbers on the right-hand side.
-	 * @returns {Vector3} Self for chaining.
+	 * @param {Vector3|number[]} that Vector3 or array of numbers on the right-hand side.
+	 * @returns {Vector3} Self to allow chaining.
 	 * @example
 	 * // Passing in a Vector3
 	 * var v1 = new Vector3(0, 1, 0);
@@ -703,17 +296,23 @@ define([
 	 * var v3 = new Vector3(1, 0, 0);
 	 * v3.cross([0, 1, 0]); // v3 == (0, 0, 1)
 	 */
-	Vector3.prototype.cross = function (rhs) {
-		return Vector3.cross(this, rhs, this);
-	};
+	Vector3.prototype.cross = function (that) {
+		var x = this.x;
+		var y = this.y;
+		var z = this.z;
 
-	/* ====================================================================== */
+		this.x = that.z * y - that.y * z;
+		this.y = that.x * z - that.z * x;
+		this.z = that.y * x - that.x * y;
+
+		return this;
+	};
 
 	/**
 	 * Linearly interpolates between the current Vector3 and an 'end' Vector3.  The current Vector3 is modified.
 	 * @param {Vector3} end End Vector3.
 	 * @param {number} factor Interpolation factor between 0.0 and 1.0.
-	 * @returns {Vector3} Self for chaining.
+	 * @returns {Vector3} Self to allow chaining.
 	 * @example
 	 * var goal = new Vector3(5, 0, 0);
 	 *
@@ -732,41 +331,47 @@ define([
 		return this;
 	};
 
+	(function () {
+		var tmpVec = new Vector3();
+
+		/**
+		 * Reflects a vector relative to the plane obtained from the normal parameter.
+		 * @param {Vector3} normal Defines the plane that reflects the vector. Assumed to be of unit length.
+		 * @returns {Vector3} Self to allow chaining
+		 */
+		Vector3.prototype.reflect = function (normal) {
+			tmpVec.copy(normal);
+			tmpVec.scale(2 * this.dotVector(normal));
+			this.subVector(tmpVec);
+			return this;
+		};
+	})();
+
 	/**
-	 * Reflects a vector relative to the plane obtained from the normal parameter.
- 	 * @param {Vector3} normal Defines the plane that reflects the vector. Assumed to be of unit length.
+	 * Sets the vector's values from another vector's values
+	 * @param {Vector3} that
 	 * @returns {Vector3} Self to allow chaining
+	 * @example
+	 * var v = new Vector3(); // v == (0, 0, 0)
+	 * v.set(new Vector3(2, 4, 6)); // v == (2, 4, 6)
 	 */
-	Vector3.prototype.reflect = function (normal) {
-		tmpVec.copy(normal);
-		tmpVec.scale(2 * this.dotVector(normal));
-		this.subVector(tmpVec);
+	Vector3.prototype.set = function (that) {
+		this.x = that.x;
+		this.y = that.y;
+		this.z = that.z;
+
 		return this;
 	};
 
-	/* ====================================================================== */
-
-	function addWarning(method, warning) {
-		var warned = false;
-		return function () {
-			if (!warned) {
-				warned = true;
-				console.warn(warning);
-			}
-			return method.apply(this, arguments);
-		};
-	}
-
-	// Performance methods
 	/**
 	 * Sets the vector's values from 3 numeric arguments
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
-	 * @returns {Vector3} this for chaining
+	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.setDirect(2, 4, 6); // v1 == (2, 4, 6)
+	 * var v = new Vector3(); // v == (0, 0, 0)
+	 * v.setDirect(2, 4, 6); // v == (2, 4, 6)
 	 */
 	Vector3.prototype.setDirect = function (x, y, z) {
 		this.x = x;
@@ -776,200 +381,14 @@ define([
 		return this;
 	};
 
-	Vector3.prototype.setd = addWarning(
-		Vector3.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
-
-	/**
-	 * Sets Vector3 values with an Array of numbers as input. The current Vector3 is modified.
-	 * @param {number[]} array
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.setArray([2, 4, 6]); // v1 == (2, 4, 6)
-	 */
-	Vector3.prototype.setArray = function (array) {
-		this.x = array[0];
-		this.y = array[1];
-		this.z = array[2];
-
-		return this;
-	};
-
-	Vector3.prototype.seta = addWarning(
-		Vector3.prototype.setArray, '.seta is deprecated; please use .setArray instead');
-
-	/**
-	 * Sets Vector3 values with another {@link Vector3} as input.  The current Vector3 is modified.
-	 * @param {Vector3} vector
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(1, 2, 3);
-	 * v1.setVector(v2); // v1 == (1, 2, 3)
-	 */
-	Vector3.prototype.setVector = function (vector) {
-		this.x = vector.x;
-		this.y = vector.y;
-		this.z = vector.z;
-
-		return this;
-	};
-
-	Vector3.prototype.setv = addWarning(
-		Vector3.prototype.setVector, '.setv is deprecated; please use .setVector instead');
-
-	/**
-	 * Adds numbers 'x', 'y', 'z' to the current Vector3 values
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(1, 2, 3);
-	 * v1.addDirect(2, 4, 6); // v1 == (3, 6, 9)
-	 */
-	Vector3.prototype.addDirect = function (x, y, z) {
-		this.x += x;
-		this.y += y;
-		this.z += z;
-
-		return this;
-	};
-
-	Vector3.prototype.add_d = addWarning(
-		Vector3.prototype.addDirect, '.add_d is deprecated; please use .addDirect instead');
-
-	/**
-	 * Adds another {@link Vector3} to the current Vector3
-	 * @param {Vector3} vector
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(4, 5, 6);
-	 * v1.addVector(v2); // v1 == (5, 7, 9)
-	 */
-	Vector3.prototype.addVector = function (vector) {
-		this.x += vector.x;
-		this.y += vector.y;
-		this.z += vector.z;
-
-		return this;
-	};
-
-	Vector3.prototype.addv = addWarning(
-		Vector3.prototype.addVector, '.addv is deprecated; please use .addVector instead');
-
-	/**
-	 * Multiplies the current Vector3 by numbers 'x', 'y', 'z' as inputs
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(1, 2, 3);
-	 * v1.mulDirect(2, 4, 6); // v1 == (2, 8, 18)
-	 */
-	Vector3.prototype.mulDirect = function (x, y, z) {
-		this.x *= x;
-		this.y *= y;
-		this.z *= z;
-
-		return this;
-	};
-
-	Vector3.prototype.muld = addWarning(
-		Vector3.prototype.mulDirect, '.muld is deprecated; please use .mulDirect instead');
-
-	/**
-	 * Multiplies the current Vector3 by another {@link Vector3}
-	 * @param {Vector3} vec3
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(1, 2, 3);
-	 * var v2 = new Vector3(2, 2, 2);
-	 * v1.mulVector(v2); // v1 == (2, 4, 6)
-	 */
-	Vector3.prototype.mulVector = function (vec3) {
-		this.x *= vec3.x;
-		this.y *= vec3.y;
-		this.z *= vec3.z;
-
-		return this;
-	};
-
-	Vector3.prototype.mulv = addWarning(
-		Vector3.prototype.mulVector, '.mulv is deprecated; please use .mulVector instead');
-
-	Vector3.prototype.divVector = function (vec3) {
-		this.x /= vec3.x;
-		this.y /= vec3.y;
-		this.z /= vec3.z;
-
-		return this;
-	};
-
-	/**
-	 * Subtracts numbers 'x', 'y', 'z' from the current Vector3
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.subDirect(1, 2, 3); // v1 == (-1, -2, -3)
-	 */
-	Vector3.prototype.subDirect = function (x, y, z) {
-		this.x -= x;
-		this.y -= y;
-		this.z -= z;
-
-		return this;
-	};
-
-	Vector3.prototype.sub_d = addWarning(
-		Vector3.prototype.subDirect, '.sub_d is deprecated; please use .subDirect instead');
-
-	/**
-	 * Subtracts another {@link Vector3} from the current Vector3
-	 * @param {Vector3} vector
-	 * @returns {Vector3} this for chaining
-	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(2, 4, 6);
-	 * v1.subVector(v2); // v1 == (-2, -4, -6)
-	 */
-	Vector3.prototype.subVector = function (vector) {
-		this.x -= vector.x;
-		this.y -= vector.y;
-		this.z -= vector.z;
-
-		return this;
-	};
-
-	Vector3.prototype.subv = addWarning(
-		Vector3.prototype.subVector, '.subv is deprecated; please use .subVector instead');
-
-
-	/**
-	 * Scales the vector by a factor
-	 * @param {number} factor
-	 * @returns {Vector3} Self for chaining
-	 */
-	Vector3.prototype.scale = function (factor) {
-		this.x *= factor;
-		this.y *= factor;
-		this.z *= factor;
-		return this;
-	};
-
 	/**
 	 * Calculates the length(magnitude) squared of the current Vector3.
 	 *              Note: When comparing the relative distances between two points it is usually sufficient
 	 *              to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @returns {number} length squared
 	 * @example
-	 * var v1 = new Vector3(0, 9, 0);
-	 * var n1 = v1.lengthSquared(); // n1 == 81
+	 * var v = new Vector3(0, 9, 0);
+	 * var n1 = v.lengthSquared(); // n1 == 81
 	 */
 	Vector3.prototype.lengthSquared = function () {
 		return this.x * this.x + this.y * this.y + this.z * this.z;
@@ -984,55 +403,20 @@ define([
 	};
 
 	Vector3.prototype.normalize = function () {
-		var l = this.length();
+		var length = this.length();
 
-		if (l < 0.0000001) { //AT: why is not MathUtil.EPSILON(^2) good?
+		if (length < 0.0000001) { //AT: why is not MathUtil.EPSILON(^2) good?
 			this.x = 0;
 			this.y = 0;
 			this.z = 0;
 		} else {
-			l = 1.0 / l;
-			this.x *= l;
-			this.y *= l;
-			this.z *= l;
+			length = 1.0 / length;
+			this.x *= length;
+			this.y *= length;
+			this.z *= length;
 		}
 
 		return this;
-	};
-
-	/**
-	 * Computes the distance squared between two Vector3.
-	 *              Note: When comparing the relative distances between two points it is usually sufficient
-	 *              to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector3} lhs Vector3.
-	 * @param {Vector3} rhs Vector3.
-	 * @returns {number} distance squared.
-	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(0, 9, 0);
-	 * var n1 = Vector3.distanceSquared(v1, v2); // n1 == 81
-	 */
-	Vector3.distanceSquared = function (lhs, rhs) {
-		var x = lhs.x - rhs.x,
-			y = lhs.y - rhs.y,
-			z = lhs.z - rhs.z;
-		return x * x + y * y + z * z;
-	};
-
-	/**
-	 * Computes the distance between two Vector3.
-	 *              Note: When comparing the relative distances between two points it is usually sufficient
-	 *              to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @param {Vector3} lhs Vector3.
-	 * @param {Vector3} rhs Vector3.
-	 * @returns {number} distance.
-	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector3(0, 9, 0);
-	 * var n1 = Vector3.distance(v1, v2); // n1 == 9
-	 */
-	Vector3.distance = function (lhs, rhs) {
-		return Math.sqrt(Vector3.distanceSquared(lhs, rhs));
 	};
 
 	/**
@@ -1046,8 +430,13 @@ define([
 	 * var v2 = new Vector3(0, 9, 0);
 	 * var n1 = v1.distanceSquared(v2); // 81
 	 */
-	Vector3.prototype.distanceSquared = function (v) {
-		return Vector3.distanceSquared(this, v);
+
+	Vector3.prototype.distanceSquared = function (that) {
+		var deltaX = this.x - that.x;
+		var deltaY = this.y - that.y;
+		var deltaZ = this.z - that.z;
+
+		return deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
 	};
 
 	/**
@@ -1061,8 +450,8 @@ define([
 	 * var v2 = new Vector3(0, 9, 0);
 	 * var n1 = v1.distance(v2); // n1 == 9
 	 */
-	Vector3.prototype.distance = function (v) {
-		return Vector3.distance(this, v);
+	Vector3.prototype.distance = function (that) {
+		return Math.sqrt(this.distanceSquared(that));
 	};
 
 	/**
@@ -1070,19 +459,20 @@ define([
 	 * @returns {Vector3} Clone of self.
 	 */
 	Vector3.prototype.clone = function () {
-		return new Vector3().copy(this);
+		return new Vector3(this.x, this.y, this.z);
 	};
 
 	/**
 	 * Copies the values of another vector to this vector; an alias for .setVector
 	 * @param {Vector3} Source vector
 	 */
-	Vector3.prototype.copy = Vector3.prototype.setVector;
+	Vector3.prototype.copy = Vector3.prototype.set;
 
 	Vector3.prototype.copyTo = function (destination) {
 		destination.x = this.x;
 		destination.y = this.y;
 		destination.z = this.z;
+
 		return this;
 	};
 
