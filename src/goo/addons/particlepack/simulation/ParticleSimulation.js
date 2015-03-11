@@ -20,6 +20,8 @@ define([
 		this.recover = [];
 		this.active = false;
 		this.onUpdate = null;
+
+		// REVIEW: we already have a class for handling event callbacks: EventTarget (see util/EventTarget.js)
 		this.particleUpdate = null;
 		this.onParticleAdded = null;
 		this.onParticleDead = null;

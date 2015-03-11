@@ -27,26 +27,27 @@ require([
 	var dirVec = new Vector3(0, 1, 0);
 
 	var goo = V.initGoo();
-	
+
 	var world = goo.world;
 
-	var particleSystem = new ParticleSystem({goo:goo});
+	var particleSystem = new ParticleSystem({
+		goo: goo
+	});
 	world.setSystem(particleSystem);
 
 	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
 
-	var particleUpdate = function(particle) {
+	var particleUpdate = function (particle) {
 		particle.position.setVector(posVec);
 		particle.progress = Math.random();
 		particle.lifeSpan = particle.lifeSpanTotal * Math.random();
-
 	};
 
 	var customCallbacks = {
-		particleUpdate:particleUpdate
+		particleUpdate: particleUpdate
 	};
 
-	var spawn = function(effectId) {
+	var spawn = function (effectId) {
 		var effect = effects[effectId];
 		particleSystem.spawnParticleSimulation(effect.renderer, posVec, dirVec, effect.effect_data, customCallbacks);
 	};
@@ -57,18 +58,17 @@ require([
 		effects[ExampleEffects.effects[i].id] = ExampleEffects.effects[i];
 	}
 
-
 	var time = 0;
-	var tick = function(tpf) {
+	var tick = function (tpf) {
 		time += tpf;
-		posVec.setDirect(Math.sin(time) *3, Math.sin(time*2)*2, Math.cos(time) * 3);
+		posVec.setDirect(Math.sin(time) * 3, Math.sin(time * 2) * 2, Math.cos(time) * 3);
 	//	if (Math.random() < tpf) {
 		//	spawn(DefaultSimulators, tpf);
 	//	}
 
 	};
 
-	var txCallback = function(texture) {
+	var txCallback = function (texture) {
 		particleSystem.addConfiguredAtlasSystems(DefaultSimulators, DefaultRendererConfigs, DefaultSpriteAtlas.atlases[0], texture);
 
 		goo.callbacksPreProcess.push(tick);
@@ -77,10 +77,5 @@ require([
 
 	new TextureCreator().loadTexture2D('../../../../resources/particle_atlas.png', {}, txCallback);
 
-
-
-
 	V.process();
-
-
 });
