@@ -1,13 +1,13 @@
 define([
-		'goo/entities/systems/System',
-		'goo/addons/particlepack/simulation/ParticleSimulator'
-],
-
-function (
+	'goo/entities/systems/System',
+	'goo/addons/particlepack/simulation/ParticleSimulator'
+], function (
 	System,
 	ParticleSimulator
 ) {
 	"use strict";
+
+	// REVIEW: make methods with no return value chainable
 
 	function ParticleSystem(settings) {
 
@@ -17,11 +17,12 @@ function (
 
 		this.priority = 1; // make sure it processes after transformsystem
 
+		// REVIEW: should it not take the world as an argument instead? Then the particle system can do whatever it wants to rule the world!
 		this.goo = settings.goo;
-		this.atlases = {};
-		this.simData = {};
+		this.atlases = {}; // REVIEW: unused
+		this.simData = {}; // REVIEW: unused
 		this.simulators = {};
-		this.groups = {};
+		this.groups = {}; // REVIEW: unused
 
 	}
 
@@ -36,36 +37,36 @@ function (
 		}
 	};
 
-	ParticleSystem.prototype.spawnParticleSimulation = function(id, position, normal, effectData, callbacks) {
+	ParticleSystem.prototype.spawnParticleSimulation = function (id, position, normal, effectData, callbacks) {
 		this.simulators[id].addEffectSimulation(position, normal, effectData, callbacks);
 	};
 
-	ParticleSystem.prototype.get = function (id) {
+	ParticleSystem.prototype.get = function (id) { // REVIEW: get what?
 		return this.simulators[id];
 	};
 
-	ParticleSystem.prototype.remove = function (id) {
+	ParticleSystem.prototype.remove = function (id) { // REVIEW: remove what?
 		if (this.simulators[id]) {
 			this.simulators[id].remove();
 			delete this.simulators[id];
 		}
 	};
 
-	ParticleSystem.prototype.wakeParticle = function(id) {
+	ParticleSystem.prototype.wakeParticle = function (id) {
 		var simulator = this.simulators[id];
 		if (simulator) {
 			return simulator.wakeParticle();
 		}
 	};
 
-	ParticleSystem.prototype.setVisible = function(id, visible) {
+	ParticleSystem.prototype.setVisible = function (id, visible) {
 		var simulator = this.simulators[id];
 		if (simulator) {
 			return simulator.setVisible(visible);
 		}
 	};
 
-	ParticleSystem.prototype.process = function() {
+	ParticleSystem.prototype.process = function () {
 
 		var infostr = '';
 		for (var simulatorId in this.simulators) {

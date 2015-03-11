@@ -13,7 +13,7 @@ function (
 ) {
 	"use strict";
 
-
+	// REVIEW: Only used once, why keep this in a separate function? Maybe make a register of renderers instead?
 	function createRenderer(name) {
 		if (name === 'ParticleRenderer') {
 			return new ParticleRenderer();
@@ -57,7 +57,6 @@ function (
 
 	}
 
-
 	ParticleSimulator.prototype.getAvailableSimulation = function () {
 
 		for (var i = 0; i < this.simulations.length; i++) {
@@ -83,7 +82,6 @@ function (
 		this.includeSimulation(sim, callbacks);
 	};
 
-
 	ParticleSimulator.prototype.initRenderer = function (rendererName, spriteAtlas, texture) {
 		var rendererConf = this.rendererSettings[rendererName];
 		var renderer = createRenderer(rendererConf.script);
@@ -94,7 +92,6 @@ function (
 			renderer.init(this.goo, this.settings, rendererConf.settings, spriteAtlas, texture);
 		}
 	};
-
 
 	ParticleSimulator.prototype.remove = function () {
 		for (var i = 0; i < this.renderers.length; i++) {
@@ -112,9 +109,6 @@ function (
 		}
 		this.visible = visible;
 	};
-
-
-
 
 	ParticleSimulator.prototype.includeSimulation = function (sim, callbacks) {
 
@@ -152,7 +146,7 @@ function (
 
 		// This has not happened ever, may still be useful for refactoring
 		if (sim.particles.length !== sim.recover.length) {
-			console.error("count missmatch", sim);
+			console.error("count mismatch", sim);
 			return;
 		}
 
@@ -169,8 +163,6 @@ function (
 			}
 		}
 	};
-
-
 
 	ParticleSimulator.prototype.update = function (tpf) {
 		if (this.visible) {

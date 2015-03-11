@@ -4,43 +4,43 @@ define([
 	'goo/addons/particlepack/simulation/SimulationParameters',
 	'goo/addons/particlepack/simulation/DefaultSimulationParams'
 
-], function(
+], function (
 	Vector3,
 	SimulationParameters,
-    DefaultSimulationParams
+	DefaultSimulationParams
 	) {
 	"use strict";
 
-	var ParticleSimulation = function() {
+	var ParticleSimulation = function () {
 		this.resetSimulation();
 	};
 
-	ParticleSimulation.prototype.resetSimulation = function() {
+	ParticleSimulation.prototype.resetSimulation = function () {
 		this.renderers = [];
 		this.particles = [];
 		this.recover = [];
 		this.active = false;
-        this.onUpdate = null;
-        this.particleUpdate = null;
+		this.onUpdate = null;
+		this.particleUpdate = null;
 		this.onParticleAdded = null;
 		this.onParticleDead = null;
 	};
 
-	ParticleSimulation.prototype.initSimulation = function(posVec, normVec, effectData) {
+	ParticleSimulation.prototype.initSimulation = function (posVec, normVec, effectData) {
 		this.resetSimulation();
 		this.params = new SimulationParameters(new Vector3(posVec), new Vector3(normVec), DefaultSimulationParams.particle_params, effectData);
 		this.active = true;
 	};
 
 
-    ParticleSimulation.prototype.registerEffectCallbacks = function(callbacks) {
-        if (callbacks.onUpdate) {
-            this.onUpdate = callbacks.onUpdate;
-        }
+	ParticleSimulation.prototype.registerEffectCallbacks = function (callbacks) {
+		if (callbacks.onUpdate) {
+			this.onUpdate = callbacks.onUpdate;
+		}
 
-        if (callbacks.particleUpdate) {
-            this.particleUpdate = callbacks.particleUpdate;
-        }
+		if (callbacks.particleUpdate) {
+			this.particleUpdate = callbacks.particleUpdate;
+		}
 
 		if (callbacks.onParticleAdded) {
 			this.onParticleAdded = callbacks.onParticleAdded;
@@ -50,13 +50,13 @@ define([
 			this.onParticleDead = callbacks.onParticleDead;
 		}
 
-    };
+	};
 
-	ParticleSimulation.prototype.registerParticleRenderer = function(renderer) {
+	ParticleSimulation.prototype.registerParticleRenderer = function (renderer) {
 		this.renderers.push(renderer);
 	};
 
-	ParticleSimulation.prototype.notifyDied = function(particle) {
+	ParticleSimulation.prototype.notifyDied = function (particle) {
 		particle.reset();
 		for (var i = 0; i < this.renderers.length; i++) {
 			this.renderers[i].died(particle);
@@ -68,7 +68,7 @@ define([
 		this.recover.push(particle);
 	};
 
-	ParticleSimulation.prototype.includeParticle = function(particle, ratio) {
+	ParticleSimulation.prototype.includeParticle = function (particle, ratio) {
 		particle.joinSimulation(this.params, ratio);
 		this.particles.push(particle);
 		if (this.onParticleAdded) {
@@ -76,7 +76,7 @@ define([
 		}
 	};
 
-	ParticleSimulation.prototype.updateParticle = function(particle, tpf) {
+	ParticleSimulation.prototype.updateParticle = function (particle, tpf) {
 
 		if (particle.dead) {
 			return;
@@ -104,11 +104,11 @@ define([
 		this.renderParticle(tpf, particle);
 	};
 
-	ParticleSimulation.prototype.updateSimParticles = function(tpf) {
+	ParticleSimulation.prototype.updateSimParticles = function (tpf) {
 
-        if (this.onUpdate) {
-            this.onUpdate(this);
-        }
+		if (this.onUpdate) {
+			this.onUpdate(this);
+		}
 
 
 		for (var i = 0; i < this.particles.length; i++) {
@@ -117,7 +117,7 @@ define([
 
 	};
 
-	ParticleSimulation.prototype.renderParticle = function(tpf, particle) {
+	ParticleSimulation.prototype.renderParticle = function (tpf, particle) {
 
 		for (var i = 0; i < this.renderers.length; i++) {
 			if (typeof(this.renderers[i].updateParticle) === 'function') {
