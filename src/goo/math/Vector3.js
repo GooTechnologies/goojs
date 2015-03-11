@@ -25,6 +25,7 @@ define([
 	function Vector3() {
 		//Vector.call(this, 3);
 
+/*
 		this._x = 0;
 		this._y = 0;
 		this._z = 0;
@@ -41,7 +42,7 @@ define([
 				}
 			});
 		}, this);
-
+*/
 		if (arguments.length !== 0) {
 			Vector3.prototype.set.apply(this, arguments);
 		} else {

@@ -13,6 +13,12 @@ define([
 	function Vector4() {
 		//Vector.call(this, 4);
 
+		/*
+		this._x = 0;
+		this._y = 0;
+		this._z = 0;
+		this._w = 0;
+
 		['x', 'y', 'z', 'w'].forEach(function (property) {
 			Object.defineProperty(this, property, {
 				get: function () { return this['_' + property]; },
@@ -25,6 +31,7 @@ define([
 				}
 			});
 		}, this);
+		*/
 
 		if (arguments.length !== 0) {
 			Vector4.prototype.set.apply(this, arguments);

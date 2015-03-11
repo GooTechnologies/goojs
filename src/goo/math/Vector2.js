@@ -12,6 +12,9 @@ define([
 	 */
 	function Vector2() {
 		//Vector.call(this, 2);
+/*
+		this._x = 0;
+		this._y = 0;
 
 		['x', 'y'].forEach(function (property) {
 			Object.defineProperty(this, property, {
@@ -25,7 +28,7 @@ define([
 				}
 			});
 		}, this);
-
+*/
 		if (arguments.length !== 0) {
 			Vector2.prototype.set.apply(this, arguments);
 		} else {

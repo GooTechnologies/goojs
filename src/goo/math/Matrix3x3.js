@@ -536,13 +536,13 @@ define([
 		//var target = rhs.data;
 		var source = this.data;
 
-		//var x = target[0];
-		//var y = target[1];
-		//var z = target[2];
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
-		rhs.x = source[0] * rhs.x + source[3] * rhs.y + source[6] * rhs.z;
-		rhs.y = source[1] * rhs.x + source[4] * rhs.y + source[7] * rhs.z;
-		rhs.z = source[2] * rhs.x + source[5] * rhs.y + source[8] * rhs.z;
+		rhs.x = source[0] * x + source[3] * y + source[6] * z;
+		rhs.y = source[1] * x + source[4] * y + source[7] * z;
+		rhs.z = source[2] * x + source[5] * y + source[8] * z;
 
 		return rhs;
 	};
@@ -556,13 +556,13 @@ define([
 		//var target = rhs.data;
 		var source = this.data;
 
-		//var x = target[0];
-		//var y = target[1];
-		//var z = target[2];
+		var x = rhs.x;
+		var y = rhs.y;
+		var z = rhs.z;
 
-		rhs.x = source[0] * rhs.x + source[1] * rhs.y + source[2] * rhs.z;
-		rhs.y = source[3] * rhs.x + source[4] * rhs.y + source[5] * rhs.z;
-		rhs.z = source[6] * rhs.x + source[7] * rhs.y + source[8] * rhs.z;
+		rhs.x = source[0] * x + source[1] * y + source[2] * z;
+		rhs.y = source[3] * x + source[4] * y + source[5] * z;
+		rhs.z = source[6] * x + source[7] * y + source[8] * z;
 
 		return rhs;
 	};
@@ -768,19 +768,18 @@ define([
 		}
 
 		var d = this.data;
-		var rd = result.data;
 		if (d[3] > 1 - MathUtils.EPSILON) { // singularity at north pole
-			rd[1] = Math.atan2(d[2], d[8]);
-			rd[2] = Math.PI / 2;
-			rd[0] = 0;
+			result.y = Math.atan2(d[2], d[8]);
+			result.z = Math.PI / 2;
+			result.x = 0;
 		} else if (d[3] < -1 + MathUtils.EPSILON) { // singularity at south pole
-			rd[1] = Math.atan2(d[2], d[8]);
-			rd[2] = -Math.PI / 2;
-			rd[0] = 0;
+			result.y = Math.atan2(d[2], d[8]);
+			result.z = -Math.PI / 2;
+			result.x = 0;
 		} else {
-			rd[1] = Math.atan2(-d[2], d[0]);
-			rd[0] = Math.atan2(-d[7], d[4]);
-			rd[2] = Math.asin(d[1]);
+			result.y = Math.atan2(-d[2], d[0]);
+			result.x = Math.atan2(-d[7], d[4]);
+			result.z = Math.asin(d[1]);
 		}
 
 		return result;
