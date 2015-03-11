@@ -45,6 +45,8 @@ define([
 		return this.simulators[id];
 	};
 
+	// REVIEW: move these methods to Simulator instead? We can already get a Simulator by id.
+
 	ParticleSystem.prototype.remove = function (id) { // REVIEW: remove what?
 		if (this.simulators[id]) {
 			this.simulators[id].remove();
@@ -69,10 +71,10 @@ define([
 	ParticleSystem.prototype.process = function () {
 
 		var infostr = '';
-		for (var simulatorId in this.simulators) {
+		for (var simulatorId in this.simulators) { // REVIEW: unoptimized  for-in loop!
 			var simulator = this.simulators[simulatorId];
 			simulator.update(this.goo.world.tpf);
-			infostr += simulatorId + ' = ' + simulator.aliveParticles + '<br>';
+			infostr += simulatorId + ' = ' + simulator.aliveParticles + '<br>'; // REVIEW: concatenating strings generates garbage. Does this have to be done in our loop?
 		}
 
 	};

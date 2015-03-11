@@ -13,13 +13,13 @@ function (
 
 	function Particle(idx) {
 		this.index = idx;
-		this.position 	= new Vector3();
-		this.direction  = new Vector3();
-		this.upVector	= new Vector3();
-		this.velocity 	= new Vector3();
-		this.color 		= new Vector4();
-		this.color0 	= new Vector3();
-		this.color1 	= new Vector3();
+		this.position = new Vector3();
+		this.direction = new Vector3();
+		this.upVector = new Vector3();
+		this.velocity = new Vector3();
+		this.color = new Vector4();
+		this.color0 = new Vector3();
+		this.color1 = new Vector3();
 		this.id = Particle.ID++;
 		this.reset();
 	}

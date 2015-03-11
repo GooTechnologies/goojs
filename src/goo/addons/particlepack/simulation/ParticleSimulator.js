@@ -31,7 +31,7 @@ function (
 
 		this.totalPool = this.settings.poolCount;
 
-		// SH: Are these the pool? Rename to pool?
+		// REVIEW: Are these the pool? Rename to pool?
 		this.particles = [];
 
 		this.availableParticles = [];

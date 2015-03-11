@@ -1,35 +1,35 @@
-
 define([
 	'particle_system/ParticleSystem'
-],
-	function (
-		ParticleSystem
-		) {
-		"use strict";
+], function (
+	ParticleSystem
+) {
+	"use strict";
 
-		var ParticlesAPI = function(gooRunner) {
-			this.particleSystem = new ParticleSystem(gooRunner);
-		};
+	// REVIEW: this API is neat for Create scripts, but there's no need for it in the engine. Make the called methods simpler and add more docs instead.
 
-		ParticlesAPI.prototype.setEnabled = function(enabled) {
-			this.enabled = enabled;
-		};
+	var ParticlesAPI = function (gooRunner) {
+		this.particleSystem = new ParticleSystem(gooRunner);
+	};
 
-		ParticlesAPI.prototype.requestFrameUpdate = function(tpf) {
-			this.particleSystem.update(tpf);
-		};
+	ParticlesAPI.prototype.setEnabled = function (enabled) {
+		this.enabled = enabled;
+	};
 
-		ParticlesAPI.prototype.spawnParticles = function(id, position, normal, effectData, callbacks) {
-			this.particleSystem.spawnParticleSimulation(id, position, normal, effectData, callbacks);
-		};
+	ParticlesAPI.prototype.requestFrameUpdate = function (tpf) {
+		this.particleSystem.update(tpf);
+	};
 
-		ParticlesAPI.prototype.createParticleSystems = function(systemConfigs, rendererConfigs, atlasConfig, texture) {
-			this.particleSystem.addConfiguredAtlasSystems(systemConfigs, rendererConfigs, atlasConfig, texture);
-		};
+	ParticlesAPI.prototype.spawnParticles = function (id, position, normal, effectData, callbacks) {
+		this.particleSystem.spawnParticleSimulation(id, position, normal, effectData, callbacks);
+	};
 
-		ParticlesAPI.prototype.removeParticleSystem = function(id) {
-			this.particleSystem.remove(id);
-		};
+	ParticlesAPI.prototype.createParticleSystems = function (systemConfigs, rendererConfigs, atlasConfig, texture) {
+		this.particleSystem.addConfiguredAtlasSystems(systemConfigs, rendererConfigs, atlasConfig, texture);
+	};
 
-		return ParticlesAPI;
-	});
+	ParticlesAPI.prototype.removeParticleSystem = function (id) {
+		this.particleSystem.remove(id);
+	};
+
+	return ParticlesAPI;
+});
