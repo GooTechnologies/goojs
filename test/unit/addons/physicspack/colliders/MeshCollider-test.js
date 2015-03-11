@@ -11,7 +11,7 @@ define([
 ) {
 	'use strict';
 
-	describe('MeshCollider', function () {
+	xdescribe('MeshCollider', function () {
 
 		it('can clone', function () {
 			var collider = new MeshCollider({

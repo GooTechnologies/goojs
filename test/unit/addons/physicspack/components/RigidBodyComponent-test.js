@@ -29,7 +29,7 @@ define([
 
 	/* global CANNON */
 
-	describe('RigidBodyComponent', function () {
+	xdescribe('RigidBodyComponent', function () {
 		var world, system, rigidBodyComponent, colliderComponent, entity;
 
 		beforeEach(function () {

@@ -25,7 +25,7 @@ define([
 ) {
 	'use strict';
 
-	describe('ColliderComponentHandler', function () {
+	xdescribe('ColliderComponentHandler', function () {
 		var loader;
 
 		beforeEach(function () {

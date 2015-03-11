@@ -1,12 +1,12 @@
 /*jshint bitwise: false*/
 define([
-	'goo/math/Vector',
 	'goo/math/Vector3',
+	'goo/math/Vector4',
 	'goo/math/Matrix3x3',
 	'goo/math/MathUtils'
 ], function (
-	Vector,
 	Vector3,
+	Vector4,
 	Matrix3x3,
 	MathUtils
 ) {
@@ -23,12 +23,15 @@ define([
 	 * @param {Vector|number[]|...number} arguments Initial values for the components.
 	 */
 	function Quaternion () {
-		Vector.call(this, 4);
+		//Vector.call(this, 4);
 
 		if (arguments.length !== 0) {
-			Vector.prototype.set.apply(this, arguments);
+			Quaternion.prototype.set.apply(this, arguments);
 		} else {
-			this.data[3] = 1;
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
+			this.w = 1;
 		}
 
 		// #ifdef DEBUG
@@ -36,10 +39,15 @@ define([
 		// #endif
 	}
 
-	Quaternion.prototype = Object.create(Vector.prototype);
-	Quaternion.prototype.constructor = Quaternion;
+	//Quaternion.prototype = Object.create(Vector.prototype);
+	//Quaternion.prototype.constructor = Quaternion;
 
-	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
+	//Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
+
+	Quaternion.prototype.set = Vector4.prototype.set;
+	Quaternion.prototype.equals = Vector4.prototype.equals;
+	Quaternion.prototype.copy = Vector4.prototype.copy;
+	Quaternion.prototype.dot = Vector4.prototype.dotVector;
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
 	//! AT: what is this?! isn't EPSILON enough?
@@ -60,7 +68,7 @@ define([
 		target.x = lhs.x + rhs.x;
 		target.y = lhs.y + rhs.y;
 		target.z = lhs.z + rhs.z;
-		target.data[3] = lhs.data[3] + rhs.data[3];
+		target.w = lhs.w + rhs.w;
 
 		return target;
 	};
@@ -80,7 +88,7 @@ define([
 		target.x = lhs.x - rhs.x;
 		target.y = lhs.y - rhs.y;
 		target.z = lhs.z - rhs.z;
-		target.data[3] = lhs.data[3] - rhs.data[3];
+		target.w = lhs.w - rhs.w;
 
 		return target;
 	};
@@ -94,13 +102,13 @@ define([
 	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
 	 */
 	Quaternion.mul = function(a, b, out) {
-		var ax = a.x, ay = a.y, az = a.z, aw = a.data[3],
-			bx = b.x, by = b.y, bz = b.z, bw = b.data[3];
+		var ax = a.x, ay = a.y, az = a.z, aw = a.w,
+			bx = b.x, by = b.y, bz = b.z, bw = b.w;
 
 		out.x = ax * bw + aw * bx + ay * bz - az * by;
 		out.y = ay * bw + aw * by + az * bx - ax * bz;
 		out.z = az * bw + aw * bz + ax * by - ay * bx;
-		out.data[3] = aw * bw - ax * bx - ay * by - az * bz;
+		out.w = aw * bw - ax * bx - ay * by - az * bz;
 		return out;
 	};
 
@@ -122,7 +130,7 @@ define([
 		target.x = (clean &= rhs.x < 0.0 || rhs.x > 0.0) ? lhs.x / rhs.x : 0.0;
 		target.y = (clean &= rhs.y < 0.0 || rhs.y > 0.0) ? lhs.y / rhs.y : 0.0;
 		target.z = (clean &= rhs.z < 0.0 || rhs.z > 0.0) ? lhs.z / rhs.z : 0.0;
-		target.data[3] = (clean &= rhs.data[3] < 0.0 || rhs.data[3] > 0.0) ? lhs.data[3] / rhs.data[3] : 0.0;
+		target.w = (clean &= rhs.w < 0.0 || rhs.w > 0.0) ? lhs.w / rhs.w : 0.0;
 
 		return target;
 	};
@@ -143,7 +151,7 @@ define([
 		target.x = lhs.x + rhs;
 		target.y = lhs.y + rhs;
 		target.z = lhs.z + rhs;
-		target.data[3] = lhs.data[3] + rhs;
+		target.w = lhs.w + rhs;
 
 		return target;
 	};
@@ -164,7 +172,7 @@ define([
 		target.x = lhs.x - rhs;
 		target.y = lhs.y - rhs;
 		target.z = lhs.z - rhs;
-		target.data[3] = lhs.data[3] - rhs;
+		target.w = lhs.w - rhs;
 
 		return target;
 	};
@@ -184,7 +192,7 @@ define([
 		target.x = lhs.x * rhs;
 		target.y = lhs.y * rhs;
 		target.z = lhs.z * rhs;
-		target.data[3] = lhs.data[3] * rhs;
+		target.w = lhs.w * rhs;
 
 		return target;
 	};
@@ -209,7 +217,7 @@ define([
 		target.x = lhs.x * rhs;
 		target.y = lhs.y * rhs;
 		target.z = lhs.z * rhs;
-		target.data[3] = lhs.data[3] * rhs;
+		target.w = lhs.w * rhs;
 
 		return target;
 	};
@@ -266,7 +274,7 @@ define([
 		var x = scale0 * startQuat.x + scale1 * workQuat.x;
 		var y = scale0 * startQuat.y + scale1 * workQuat.y;
 		var z = scale0 * startQuat.z + scale1 * workQuat.z;
-		var w = scale0 * startQuat.data[3] + scale1 * workQuat.data[3];
+		var w = scale0 * startQuat.w + scale1 * workQuat.w;
 
 		workQuat.setDirect(x, y, z, w);
 
@@ -282,7 +290,7 @@ define([
 		this.x *= -1;
 		this.y *= -1;
 		this.z *= -1;
-		this.data[3] *= -1;
+		this.w *= -1;
 		return this;
 	};
 
@@ -310,19 +318,19 @@ define([
 	* @param rhs Quaternion on the right-hand side.
 	* @returns {number} The dot product.
 	*/
-	Quaternion.prototype.dot = function (rhs) {
-		var ldata = this.data;
-		var rdata = rhs.data || rhs;
-
-		var sum = 0.0;
-
-		sum += ldata[0] * rdata[0];
-		sum += ldata[1] * rdata[1];
-		sum += ldata[2] * rdata[2];
-		sum += ldata[3] * rdata[3];
-
-		return sum;
-	};
+	//Quaternion.prototype.dot = function (rhs) {
+	//	//var ldata = this.data;
+	//	//var rdata = rhs.data || rhs;
+	//
+	//	var sum = 0.0;
+	//
+	//	sum += this.x * rhs.x;
+	//	sum += this.x * rhs.y;
+	//	sum += this.x * rhs.z;
+	//	sum += lw * rw;
+	//
+	//	return sum;
+	//};
 
 	/**
 	 * Performs a component-wise addition between the current quaternion and another and stores the result locally.
@@ -481,19 +489,18 @@ define([
 		var norm = this.magnitudeSquared();
 		var s = norm > 0.0 ? 2.0 / norm : 0.0;
 
-		var d = this.data;
-		var xs = d[0] * s;
-		var ys = d[1] * s;
-		var zs = d[2] * s;
-		var xx = d[0] * xs;
-		var xy = d[0] * ys;
-		var xz = d[0] * zs;
-		var xw = d[3] * xs;
-		var yy = d[1] * ys;
-		var yz = d[1] * zs;
-		var yw = d[3] * ys;
-		var zz = d[2] * zs;
-		var zw = d[3] * zs;
+		var xs = this.x * s;
+		var ys = this.y * s;
+		var zs = this.z * s;
+		var xx = this.x * xs;
+		var xy = this.x * ys;
+		var xz = this.x * zs;
+		var xw = this.w * xs;
+		var yy = this.y * ys;
+		var yz = this.y * zs;
+		var yw = this.w * ys;
+		var zz = this.z * zs;
+		var zw = this.w * zs;
 
 		var t = result.data;
 		t[0] = 1.0 - (yy + zz);
@@ -572,7 +579,7 @@ define([
 	 * @returns {number} The magnitude of the quaternion.
 	 */
 	Quaternion.prototype.magnitude = function () {
-		var magnitudeSQ = this.x * this.x + this.y * this.y + this.z * this.z + this.data[3] * this.data[3];
+		var magnitudeSQ = this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
 		if (magnitudeSQ === 1.0) {
 			return 1.0;
 		}
@@ -585,7 +592,7 @@ define([
 	 * @returns {number} The squared magnitude of the quaternion.
 	 */
 	Quaternion.prototype.magnitudeSquared = function () {
-		return this.x * this.x + this.y * this.y + this.z * this.z + this.data[3] * this.data[3];
+		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
 	};
 
 	/**
@@ -658,7 +665,7 @@ define([
 			return false;
 		}
 		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE
-			&& Math.abs(this.z - o.z) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.data[3] - o.data[3]) < Quaternion.ALLOWED_DEVIANCE;
+			&& Math.abs(this.z - o.z) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.w - o.w) < Quaternion.ALLOWED_DEVIANCE;
 	};
 
 
@@ -678,7 +685,7 @@ define([
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.data[3] = w;
+		this.w = w;
 
 		return this;
 	};
@@ -690,7 +697,7 @@ define([
 		this.x = array[0];
 		this.y = array[1];
 		this.z = array[2];
-		this.data[3] = array[3];
+		this.w = array[3];
 
 		return this;
 	};
@@ -703,7 +710,7 @@ define([
 		this.x = quat.x;
 		this.y = quat.y;
 		this.z = quat.z;
-		this.data[3] = quat.data[3];
+		this.w = quat.w;
 
 		return this;
 	};
@@ -720,12 +727,12 @@ define([
 	};
 
 	// #ifdef DEBUG
-	Vector.addPostChecks(Quaternion.prototype, [
-		'add', 'sub', 'mul',
-		'slerp', 'fromRotationMatrix', 'fromVectorToVector', 'normalize',
-		'magnitude', 'magnitudeSquared', 'fromAngleAxis', 'fromAngleNormalAxis',
-		'setDirect', 'setVector'
-	]);
+	//Vector.addPostChecks(Quaternion.prototype, [
+	//	'add', 'sub', 'mul',
+	//	'slerp', 'fromRotationMatrix', 'fromVectorToVector', 'normalize',
+	//	'magnitude', 'magnitudeSquared', 'fromAngleAxis', 'fromAngleNormalAxis',
+	//	'setDirect', 'setVector'
+	//]);
 	// #endif
 
 	return Quaternion;

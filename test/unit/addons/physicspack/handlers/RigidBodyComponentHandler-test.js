@@ -15,7 +15,7 @@ define([
 ) {
 	'use strict';
 
-	describe('RigidBodyComponentHandler', function () {
+	xdescribe('RigidBodyComponentHandler', function () {
 		var loader;
 
 		beforeEach(function () {

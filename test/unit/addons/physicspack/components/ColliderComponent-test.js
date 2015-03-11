@@ -25,7 +25,7 @@ define([
 
 	/* global CANNON */
 
-	describe('ColliderComponent', function () {
+	xdescribe('ColliderComponent', function () {
 		var world, system;
 
 		beforeEach(function () {

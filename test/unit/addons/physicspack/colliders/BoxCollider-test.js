@@ -9,7 +9,7 @@ define([
 ) {
 	'use strict';
 
-	describe('BoxCollider', function () {
+	xdescribe('BoxCollider', function () {
 
 		it('can clone', function () {
 			var collider = new BoxCollider({

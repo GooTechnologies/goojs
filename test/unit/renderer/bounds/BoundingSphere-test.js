@@ -39,9 +39,7 @@ define([
 				var boundingSphere2 = new BoundingSphere(new Vector3(3, 2, 1), 2);
 
 				var mergedBoundingSphere = boundingSphere1.merge(boundingSphere2);
-				expect(mergedBoundingSphere.center.data[0]).toBeCloseTo(3);
-				expect(mergedBoundingSphere.center.data[1]).toBeCloseTo(2);
-				expect(mergedBoundingSphere.center.data[2]).toBeCloseTo(1);
+				expect(mergedBoundingSphere.center).toBeCloseToVector(new Vector3(3, 2, 1));
 				expect(mergedBoundingSphere.radius).toBeCloseTo(5);
 			});
 
@@ -50,10 +48,8 @@ define([
 				var boundingSphere2 = new BoundingSphere(new Vector3( 10, 0, 0), 8);
 
 				var mergedBoundingSphere = boundingSphere1.merge(boundingSphere2);
-				expect(mergedBoundingSphere.center.data[0]).toBeCloseTo((-20-4 + 10+8) / 2);
-				expect(mergedBoundingSphere.center.data[1]).toBeCloseTo(0);
-				expect(mergedBoundingSphere.center.data[2]).toBeCloseTo(0);
-				expect(mergedBoundingSphere.radius).toBeCloseTo((10+8 - (-20-4)) / 2);
+				expect(mergedBoundingSphere.center).toBeCloseToVector(new Vector3((-20 - 4 + 10 + 8) / 2, 0, 0));
+				expect(mergedBoundingSphere.radius).toBeCloseTo((10 + 8 - (-20 - 4)) / 2);
 			});
 		});
 

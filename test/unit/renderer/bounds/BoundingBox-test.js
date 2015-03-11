@@ -131,8 +131,7 @@ define([
 				var boundingBox2 = new BoundingBox(new Vector3(20, 20, 20), 10, 10, 10);
 
 				var mergedBoundingBox = boundingBox1.merge(boundingBox2);
-				expect(mergedBoundingBox.center).toBeCloseToVector(new Vector3((-15 + 20) / 2, (-15 + 20) / 2, (-15 + 20) / 2));
-				expect(
+				expect(mergedBoundingBox.center).toBeCloseToVector(new Vector3((-15 + 30) / 2, (-15 + 30) / 2, (-15 + 30) / 2));
 				expect(mergedBoundingBox.xExtent).toBeCloseTo(45 / 2);
 				expect(mergedBoundingBox.yExtent).toBeCloseTo(45 / 2);
 				expect(mergedBoundingBox.zExtent).toBeCloseTo(45 / 2);

@@ -19,7 +19,7 @@ define([
 ) {
 	'use strict';
 
-	describe('PhysicsSystem', function () {
+	xdescribe('PhysicsSystem', function () {
 		var world, system;
 
 		beforeEach(function () {

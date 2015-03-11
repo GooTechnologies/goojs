@@ -647,7 +647,7 @@ define([
 	Matrix4x4.prototype.setRotationFromQuaternion = function (quaternion) {
 		var l = quaternion.lengthSquared();
 
-		l = (l > 0.0) ? 2.0 / l : 0.0;
+		l = (l > 0.0) ? 2.0 / l : 0.0; //! AT: epsilon?
 
 		var a = quaternion.x * l;
 		var b = quaternion.y * l;
@@ -723,6 +723,7 @@ define([
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
 	Matrix4x4.prototype.getScale = function (store) {
+		//! AT: length?
 		var sx = Math.sqrt(store.setDirect(this.data[0], this.data[4], this.data[8]).lengthSquared());
 		var sy = Math.sqrt(store.setDirect(this.data[1], this.data[5], this.data[9]).lengthSquared());
 		var sz = Math.sqrt(store.setDirect(this.data[2], this.data[6], this.data[10]).lengthSquared());

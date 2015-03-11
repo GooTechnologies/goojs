@@ -91,10 +91,14 @@ define([
 				return;
 			}
 
-			for (var i = 0; i < 3; i++) {
-				this._vertices[this._numRenderingLines * 6 + i] = start.data[i];
-				this._vertices[this._numRenderingLines * 6 + 3 + i] = end.data[i];
-			}
+			this._vertices[this._numRenderingLines * 6 + 0] = start.x;
+			this._vertices[this._numRenderingLines * 6 + 3 + 0] = end.x;
+
+			this._vertices[this._numRenderingLines * 6 + 1] = start.y;
+			this._vertices[this._numRenderingLines * 6 + 3 + 1] = end.y;
+
+			this._vertices[this._numRenderingLines * 6 + 2] = start.z;
+			this._vertices[this._numRenderingLines * 6 + 3 + 2] = end.z;
 
 			this._numRenderingLines++;
 		};

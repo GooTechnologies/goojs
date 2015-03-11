@@ -9,7 +9,7 @@ define([
 ) {
 	'use strict';
 
-	describe('PlaneCollider', function () {
+	xdescribe('PlaneCollider', function () {
 
 		it('can clone', function () {
 			var collider = new PlaneCollider();
