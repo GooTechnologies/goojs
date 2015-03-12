@@ -106,7 +106,10 @@ define([
 		if (!entity || !entity.htmlComponent) {
 			return;
 		}
-		entity.htmlComponent.domElement.style.display = 'none';
+
+		var component = entity.htmlComponent;
+		component.domElement.parentNode.removeChild(component.domElement);
+		component.domElement = null
 	};
 
 	return HtmlSystem;
