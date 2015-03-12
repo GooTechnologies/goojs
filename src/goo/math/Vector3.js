@@ -198,6 +198,7 @@ define([
 		this.x *= factor;
 		this.y *= factor;
 		this.z *= factor;
+
 		return this;
 	};
 
@@ -315,7 +316,7 @@ define([
 	 * var v2 = new Vector3(0, 0, -1);
 	 * v1.cross(v2); // v1 == (-1, 0, 0)
 	 */
-	Vector3.prototype.cross = function (x, y, z) {
+	Vector3.prototype.crossDirect = function (x, y, z) {
 		var thisX = this.x;
 		var thisY = this.y;
 		var thisZ = this.z;
