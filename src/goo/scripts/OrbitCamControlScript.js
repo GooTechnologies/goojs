@@ -90,7 +90,7 @@ define([
 			var rotation = ctx.entity.transformComponent.transform.rotation;
 			ctx.lookAtPoint = new Vector3(0, 0, -args.lookAtDistance);
 			rotation.applyPost(ctx.lookAtPoint);
-			ctx.lookAtPoint.addVector(ctx.entity.getTranslation());
+			ctx.lookAtPoint.add(ctx.entity.getTranslation());
 		} else if (args.lookAtPoint) {
 			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
 		} else {
@@ -117,7 +117,7 @@ define([
 				mouseState.lastY = NaN;
 				ctx.velocity.setDirect(0, 0);
 				ctx.spherical.y = MathUtils.moduloPositive(ctx.spherical.y, MathUtils.TWO_PI);
-				ctx.targetSpherical.setVector(ctx.spherical);
+				ctx.targetSpherical.set(ctx.spherical);
 			} else {
 				applyReleaseDrift(args, ctx);
 			}
@@ -349,7 +349,7 @@ define([
 		var delta = MathUtils.lerp(ctx.smoothness, 1, ctx.world.tpf);
 
 		if (goingToLookAt.distanceSquared(lookAtPoint) < EPSILON) {
-			lookAtPoint.setVector(goingToLookAt);
+			lookAtPoint.set(goingToLookAt);
 		} else {
 			lookAtPoint.lerp(goingToLookAt, delta);
 		}
@@ -377,14 +377,14 @@ define([
 
 		MathUtils.sphericalToCartesian(sd.x, sd.y, sd.z, cartesian);
 
-		transform.translation.set(cartesian.addVector(lookAtPoint));
+		transform.translation.set(cartesian.add(lookAtPoint));
 		if (!transform.translation.equals(lookAtPoint)) {
 			transform.lookAt(lookAtPoint, ctx.worldUpVector);
 		}
 
 		if (spherical.distanceSquared(targetSpherical) < EPSILON && ctx.lookAtPoint.equals(ctx.goingToLookAt)) {
 			sd.y = MathUtils.moduloPositive(sd.y, MathUtils.TWO_PI);
-			targetSpherical.setVector(spherical);
+			targetSpherical.set(spherical);
 			ctx.dirty = false;
 		}
 

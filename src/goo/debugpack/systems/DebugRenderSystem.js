@@ -98,7 +98,7 @@ define([
 					}
 
 					renderables.forEach(function (renderable) {
-						renderable.transform.translation.setVector(entity.transformComponent.worldTransform.translation);
+						renderable.transform.translation.set(entity.transformComponent.worldTransform.translation);
 						renderable.transform.rotation.copy(entity.transformComponent.worldTransform.rotation);
 						renderable.transform.scale.setDirect(1, 1, 1);
 						renderable.transform.update();

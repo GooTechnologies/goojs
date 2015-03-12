@@ -153,8 +153,8 @@ define([
 		}
 
 		mvMat.getTranslation(this._position);
-		this._velocity.setVector(this._position).subVector(this._oldPosition).scale(1 / tpf);
-		this._oldPosition.setVector(this._position);
+		this._velocity.set(this._position).sub(this._oldPosition).scale(1 / tpf);
+		this._oldPosition.set(this._position);
 		this._orientation.setDirect(0, 0, -1);
 		mvMat.applyPostVector(this._orientation);
 

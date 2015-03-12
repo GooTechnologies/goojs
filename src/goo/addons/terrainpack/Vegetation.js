@@ -200,7 +200,7 @@ define([
 				if (norm === null) {
 					norm = Vector3.UNIT_Y;
 				}
-				var slope = norm.dotVector(Vector3.UNIT_Y);
+				var slope = norm.dot(Vector3.UNIT_Y);
 
 				var vegetationType = this.terrainQuery.getVegetationType(xx, zz, slope);
 				if (!vegetationType) {
@@ -252,9 +252,9 @@ define([
 	Vegetation.prototype.lookAt = function (matrix, direction, up) {
 		var x = _tempX, y = _tempY, z = _tempZ;
 
-		y.setVector(up).normalize();
-		x.setVector(up).cross(direction).normalize();
-		z.setVector(y).cross(x);
+		y.set(up).normalize();
+		x.set(up).cross(direction).normalize();
+		z.set(y).cross(x);
 
 		var d = matrix.data;
 		d[0] = x.x;

@@ -1,10 +1,12 @@
 /*jshint bitwise: false*/
 define([
+	'goo/math/Vector',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
 	'goo/math/Matrix3x3',
 	'goo/math/MathUtils'
 ], function (
+	Vector,
 	Vector3,
 	Vector4,
 	Matrix3x3,
@@ -22,16 +24,24 @@ define([
 	 * @extends Vector
 	 * @param {Vector|number[]|...number} arguments Initial values for the components.
 	 */
-	function Quaternion () {
-		//Vector.call(this, 4);
+	function Quaternion(x, y, z, w) {
+		// #ifdef DEBUG
+		this._x = 0;
+		this._y = 0;
+		this._z = 0;
+		this._w = 1;
+		// #endif
 
-		if (arguments.length !== 0) {
-			Quaternion.prototype.set.apply(this, arguments);
-		} else {
+		if (arguments.length === 0) {
 			this.x = 0;
 			this.y = 0;
 			this.z = 0;
 			this.w = 1;
+		} else {
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.w = w;
 		}
 
 		// #ifdef DEBUG
@@ -42,12 +52,16 @@ define([
 	//Quaternion.prototype = Object.create(Vector.prototype);
 	//Quaternion.prototype.constructor = Quaternion;
 
-	//Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
+	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.prototype.set = Vector4.prototype.set;
 	Quaternion.prototype.equals = Vector4.prototype.equals;
 	Quaternion.prototype.copy = Vector4.prototype.copy;
-	Quaternion.prototype.dot = Vector4.prototype.dotVector;
+	Quaternion.prototype.dot = Vector4.prototype.dot;
+	Quaternion.prototype.length = Vector4.prototype.length;
+	Quaternion.prototype.lengthSquared = Vector4.prototype.lengthSquared;
+	Quaternion.prototype.set = Vector4.prototype.set;
+	Quaternion.prototype.setDirect = Vector4.prototype.setDirect;
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
 	//! AT: what is this?! isn't EPSILON enough?
@@ -233,18 +247,18 @@ define([
 	Quaternion.slerp = function (startQuat, endQuat, changeAmnt, workQuat) {
 		// check for weighting at either extreme
 		if (changeAmnt === 0.0) {
-			return workQuat.setVector(startQuat);
+			return workQuat.set(startQuat);
 		} else if (changeAmnt === 1.0) {
-			return workQuat.setVector(endQuat);
+			return workQuat.set(endQuat);
 		}
 
 		// Check for equality and skip operation.
 		if (startQuat.equals(endQuat)) {
-			return workQuat.setVector(startQuat);
+			return workQuat.set(startQuat);
 		}
 
 		var result = startQuat.dot(endQuat);
-		workQuat.setVector(endQuat);
+		workQuat.set(endQuat);
 
 		if (result < 0.0) {
 			// Negate the second quaternion and the result of the dot product
@@ -371,42 +385,12 @@ define([
 	};
 
 	/**
-	 * Performs a component-wise addition between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarAdd = function (rhs) {
-		return Quaternion.scalarAdd(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise subtraction between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarSub = function (rhs) {
-		return Quaternion.scalarSub(this, rhs, this);
-	};
-
-	/**
 	 * Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
 	 * @param {number} rhs Scalar on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.scalarMul = function (rhs) {
 		return Quaternion.scalarMul(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise division between the current quaternion and a scalar and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarDiv = function (rhs) {
-		return Quaternion.scalarDiv(this, rhs, this);
 	};
 
 	var slerp_work_quat;
@@ -482,9 +466,9 @@ define([
 	 */
 	Quaternion.prototype.toRotationMatrix = function (store) {
 		var result = store;
-		if (!result) {
-			result = new Matrix3x3();
-		}
+		//if (!result) {
+		//	result = new Matrix3x3();
+		//}
 
 		var norm = this.magnitudeSquared();
 		var s = norm > 0.0 ? 2.0 / norm : 0.0;
@@ -557,7 +541,7 @@ define([
 			}
 			return this.fromAngleAxis(theta, pivotVector);
 		} else {
-			return this.setVector(Quaternion.IDENTITY);
+			return this.set(Quaternion.IDENTITY);
 		}
 	};
 
@@ -603,7 +587,7 @@ define([
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.fromAngleAxis = function (angle, axis) {
-		var temp = new Vector3(axis).normalize();
+		var temp = axis.clone().normalize();
 		return this.fromAngleNormalAxis(angle, temp);
 	};
 
@@ -616,7 +600,7 @@ define([
 	 */
 	Quaternion.prototype.fromAngleNormalAxis = function (angle, axis) {
 		if (axis.equals(Vector3.ZERO)) {
-			return this.setVector(Quaternion.IDENTITY);
+			return this.set(Quaternion.IDENTITY);
 		}
 
 		var halfAngle = 0.5 * angle;
@@ -657,18 +641,6 @@ define([
 		return angle;
 	};
 
-	Quaternion.prototype.equals = function (o) {
-		if (this === o) {
-			return true;
-		}
-		if (!(o instanceof Quaternion)) {
-			return false;
-		}
-		return Math.abs(this.x - o.x) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.y - o.y) < Quaternion.ALLOWED_DEVIANCE
-			&& Math.abs(this.z - o.z) < Quaternion.ALLOWED_DEVIANCE && Math.abs(this.w - o.w) < Quaternion.ALLOWED_DEVIANCE;
-	};
-
-
 	function addWarning(method, warning) {
 		var warned = false;
 		return function () {
@@ -680,50 +652,12 @@ define([
 		};
 	}
 
-	// Performance methods
-	Quaternion.prototype.setDirect = function (x, y, z, w) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.w = w;
-
-		return this;
-	};
-
-	Quaternion.prototype.setd = addWarning(
-		Quaternion.prototype.setDirect, '.setd is deprecated; please use .setDirect instead');
-
-	Quaternion.prototype.setArray = function (array) {
-		this.x = array[0];
-		this.y = array[1];
-		this.z = array[2];
-		this.w = array[3];
-
-		return this;
-	};
-
-	Quaternion.prototype.seta = addWarning(
-		Quaternion.prototype.setArray, '.seta is deprecated; please use .setArray instead');
-
-	// may sound unintuitive, setv instead of setq but it ties in with the other setv methods
-	Quaternion.prototype.setVector = function (quat) {
-		this.x = quat.x;
-		this.y = quat.y;
-		this.z = quat.z;
-		this.w = quat.w;
-
-		return this;
-	};
-
-	Quaternion.prototype.setv = addWarning(
-		Quaternion.prototype.setVector, '.setv is deprecated; please use .setVector instead');
-
 	/**
 	 * Clones the quaternion
 	 * @returns {Quaternion} Clone of self
 	 */
 	Quaternion.prototype.clone = function () {
-		return new Quaternion(this);
+		return new Quaternion(this.x, this.y, this.z, this.w);
 	};
 
 	// #ifdef DEBUG

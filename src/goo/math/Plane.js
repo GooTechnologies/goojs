@@ -32,7 +32,7 @@ define([
 	 *         otherwise it is positive. If the point is on the plane, it is zero.
 	 */
 	Plane.prototype.pseudoDistance = function (point) {
-		return this.normal.dotVector(point) - this.constant;
+		return this.normal.dot(point) - this.constant;
 	};
 
 	/**
@@ -43,9 +43,9 @@ define([
 	 * @returns {Plane} Self for chaining.
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
-		this.normal.setVector(pointB).subVector(pointA);
+		this.normal.set(pointB).sub(pointA);
 		this.normal.cross(new Vector3(pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z)).normalize();
-		this.constant = this.normal.dotVector(pointA);
+		this.constant = this.normal.dot(pointA);
 		return this;
 	};
 
@@ -61,8 +61,8 @@ define([
 			result = new Vector3();
 		}
 
-		var dotProd = this.normal.dotVector(unitVector) * 2;
-		result.set(unitVector).subVector(new Vector3(this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd));
+		var dotProd = this.normal.dot(unitVector) * 2;
+		result.set(unitVector).sub(new Vector3(this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd));
 		return result;
 	};
 
@@ -81,7 +81,7 @@ define([
 		precision = typeof(precision)==='undefined' ? 1e-7 : precision;
 		store = store || new Vector3();
 
-		var lDotN = ray.direction.dotVector(this.normal);
+		var lDotN = ray.direction.dot(this.normal);
 		if (Math.abs(lDotN) < precision) {
 			//! AT: this is the only function where we have this suppressWarnings mechanism
 			if (!suppressWarnings) {
@@ -90,14 +90,14 @@ define([
 			return null;
 		}
 
-		var pMinusL0DotN = p0.setVector(this.normal)
+		var pMinusL0DotN = p0.set(this.normal)
 			.scale(this.constant)
-			.subVector(ray.origin)
-			.dotVector(this.normal);
+			.sub(ray.origin)
+			.dot(this.normal);
 
-		return store.setVector(ray.direction)
+		return store.set(ray.direction)
 			.scale(pMinusL0DotN / lDotN)
-			.addVector(ray.origin);
+			.add(ray.origin);
 	};
 
 	/**

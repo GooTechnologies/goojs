@@ -96,7 +96,7 @@ define([
 		var time = entity._world.time * 1000;
 
 		if (this.relative) {
-			var to = Vector3.fromArray(this.to).addVector(initialScale);
+			var to = Vector3.fromArray(this.to).add(initialScale);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {

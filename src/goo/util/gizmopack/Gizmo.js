@@ -157,51 +157,51 @@ define([
 
 		if(this._activeHandle.type === 'Plane') {
 			// Calculate plane's normal in world space
-			normal.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+			normal.set([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 			this.transform.matrix.applyPostVector(normal);
 			normal.normalize();
 
 			// Set plane distance from world origin by projecting world translation to plane normal
-			worldCenter.setVector(Vector3.ZERO);
+			worldCenter.set(Vector3.ZERO);
 			this.transform.matrix.applyPostPoint(worldCenter);
 			this._plane.constant = worldCenter.dot(normal);
 		} else {
 			// Get gizmo handle points in world space
-			worldCenter.setVector(Vector3.ZERO);
+			worldCenter.set(Vector3.ZERO);
 			this.transform.matrix.applyPostPoint(worldCenter);
-			worldX.setVector(Vector3.UNIT_X);
+			worldX.set(Vector3.UNIT_X);
 			this.transform.matrix.applyPostPoint(worldX);
-			worldY.setVector(Vector3.UNIT_Y);
+			worldY.set(Vector3.UNIT_Y);
 			this.transform.matrix.applyPostPoint(worldY);
-			worldZ.setVector(Vector3.UNIT_Z);
+			worldZ.set(Vector3.UNIT_Z);
 			this.transform.matrix.applyPostPoint(worldZ);
 
 			// Gizmo handle points in screen space
 			Renderer.mainCamera.getScreenCoordinates(worldCenter, 1, 1, screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldX, 1, 1, screenX);
-			screenX.subVector(screenCenter);
+			screenX.sub(screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldY, 1, 1, screenY);
-			screenY.subVector(screenCenter);
+			screenY.sub(screenCenter);
 			Renderer.mainCamera.getScreenCoordinates(worldZ, 1, 1, screenZ);
-			screenZ.subVector(screenCenter);
+			screenZ.sub(screenCenter);
 			// Set plane to active axis's adjacent plane with the biggest screen area
 			if(this._activeHandle.axis === 0) {
 				if(screenY.cross(screenX).length() > screenZ.cross(screenX).length()) {
-					normal.setVector(worldZ).subVector(worldCenter).normalize();
+					normal.set(worldZ).sub(worldCenter).normalize();
 				} else {
-					normal.setVector(worldY).subVector(worldCenter).normalize();
+					normal.set(worldY).sub(worldCenter).normalize();
 				}
 			} else if (this._activeHandle.axis === 1) {
 				if(screenZ.cross(screenY).length() > screenX.cross(screenY).length()) {
-					normal.setVector(worldX).subVector(worldCenter).normalize();
+					normal.set(worldX).sub(worldCenter).normalize();
 				} else {
-					normal.setVector(worldZ).subVector(worldCenter).normalize();
+					normal.set(worldZ).sub(worldCenter).normalize();
 				}
 			} else {
 				if(screenX.cross(screenZ).length() > screenY.cross(screenZ).length()) {
-					normal.setVector(worldY).subVector(worldCenter).normalize();
+					normal.set(worldY).sub(worldCenter).normalize();
 				} else {
-					normal.setVector(worldX).subVector(worldCenter).normalize();
+					normal.set(worldX).sub(worldCenter).normalize();
 				}
 			}
 			// Plane constant is world translation projected on normal
@@ -211,7 +211,7 @@ define([
 
 	Gizmo.prototype._setLine = function() {
 		// If translating or scaling along a line, set current line
-		this._line.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+		this._line.set([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 		this.transform.matrix.applyPostVector(this._line);
 		this._line.normalize();
 	};

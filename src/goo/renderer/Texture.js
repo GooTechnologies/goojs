@@ -89,8 +89,13 @@ define([
 		this.type = settings.type || 'UnsignedByte';
 		this.variant = '2D'; // CUBE
 
-		this.offset = new Vector2(settings.offset || [0, 0]);
-		this.repeat = new Vector2(settings.repeat || [1, 1]);
+		this.offset = settings.offset ?
+			(settings.offset instanceof Array ? Vector2.fromArray(settings.offset) : settings.offset.clone()) :
+			new Vector2(0, 0);
+		this.repeat = settings.repeat ?
+			(settings.repeat instanceof Array ? Vector2.fromArray(settings.repeat) : settings.repeat.clone()) :
+			new Vector2(1, 1);
+
 		this.lodBias = 0.0;
 
 		this.generateMipmaps = settings.generateMipmaps !== undefined ? settings.generateMipmaps : true;

@@ -54,7 +54,7 @@ define([
 		var indices = [];
 
 		var ak = Math.PI * 2 / nSegments;
-		for(var i = 0, k = 0; i < nSegments; i++, k += ak) {
+		for (var i = 0, k = 0; i < nSegments; i++, k += ak) {
 			verts.push(Math.cos(k) * radius, Math.sin(k) * radius, 0);
 			indices.push(i, i + 1);
 		}
@@ -103,7 +103,7 @@ define([
 		var indices = [];
 
 		var ak = Math.PI * 2 / nSegments;
-		for(var i = 0, k = 0; i < nSegments; i++, k += ak) {
+		for (var i = 0, k = 0; i < nSegments; i++, k += ak) {
 			verts.push(Math.cos(k), Math.sin(k), 1);
 			indices.push(0, i + 1);
 		}
@@ -129,17 +129,17 @@ define([
 		var dxParallel = length / 2;
 		var dyParallel = dxParallel;
 
-		for(var i = 1; i <= nParallel; i++) {
+		for (var i = 1; i <= nParallel; i++) {
 			var circle = buildCircle(dyParallel * i, nSegments);
 			var transform = new Transform();
-			transform.translation.set(0, 0, dxParallel * i);
+			transform.translation.setDirect(0, 0, dxParallel * i);
 			transform.update();
 			meshBuilder.addMeshData(circle, transform);
 		}
 
 		var umbrella = buildUmbrella(4);
 		var transform = new Transform();
-		transform.scale.set(dyParallel * nParallel, dyParallel * nParallel, dxParallel * nParallel);
+		transform.scale.setDirect(dyParallel * nParallel, dyParallel * nParallel, dxParallel * nParallel);
 		transform.update();
 		meshBuilder.addMeshData(umbrella, transform);
 
@@ -154,7 +154,7 @@ define([
 		var indices = [];
 
 		var ak = Math.PI * 2 / nSegments;
-		for(var i = 0, k = 0; i < nSegments; i++, k += ak) {
+		for (var i = 0, k = 0; i < nSegments; i++, k += ak) {
 			verts.push(Math.cos(k), Math.sin(k), 0);
 			verts.push(Math.cos(k), Math.sin(k), 1);
 			indices.push(i * 2, i * 2 + 1);
@@ -179,17 +179,17 @@ define([
 		var dxParallel = 10 / nParallel;
 		var radius = 1;
 
-		for(var i = 0; i < nParallel; i++) {
+		for (var i = 0; i < nParallel; i++) {
 			var circle = buildCircle(radius, nSegments);
 			var transform = new Transform();
-			transform.translation.set(0, 0, -dxParallel * i);
+			transform.translation.setDirect(0, 0, -dxParallel * i);
 			transform.update();
 			meshBuilder.addMeshData(circle, transform);
 		}
 
 		var tube = buildTube(4);
 		var transform = new Transform();
-		transform.scale.set(radius, radius, -dxParallel * nParallel);
+		transform.scale.setDirect(radius, radius, -dxParallel * nParallel);
 		transform.update();
 		meshBuilder.addMeshData(tube, transform);
 

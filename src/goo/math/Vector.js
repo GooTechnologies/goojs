@@ -34,10 +34,12 @@ define(function () {
 
 			Object.defineProperty(prototype, index, {
 				get: function () {
+					throw ''; // not allowed anymore
 					return this[componentName];
 				},
 				set: function (value) {
-					this[index] = value;
+					throw ''; // not allowed anymore
+					this[componentName] = value;
 
 					// #ifdef DEBUG
 					if (isNaN(this[componentName])) {

@@ -98,7 +98,7 @@ define([
 
 		if (!transformData._rotation.equals(tmpQuat)) {
 			Quaternion.slerp(transformData._rotation, tmpQuat, fraction, tmpQuat2);
-			transformData._rotation.setVector(tmpQuat2);
+			transformData._rotation.set(tmpQuat2);
 		}
 
 		transformData._translation.x = (1 - fraction) * this._translations[index3A + 0] + fraction * this._translations[index3B + 0];

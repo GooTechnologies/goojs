@@ -33,7 +33,7 @@ define([
 	ManagedTransformSource.prototype.setTranslation = function (channelName, translation) {
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
-			channel._translation.setVector(translation);
+			channel._translation.set(translation);
 		}
 	};
 
@@ -47,7 +47,7 @@ define([
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
 			store = store || new Vector3();
-			store.setVector(channel._translation);
+			store.set(channel._translation);
 		}
 		return store;
 	};
@@ -60,7 +60,7 @@ define([
 	ManagedTransformSource.prototype.setScale = function (channelName, scale) {
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
-			channel._scale.setVector(scale);
+			channel._scale.set(scale);
 		}
 	};
 
@@ -74,7 +74,7 @@ define([
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
 			store = store || new Vector3();
-			store.setVector(channel._scale);
+			store.set(channel._scale);
 		}
 		return store;
 	};
@@ -100,7 +100,7 @@ define([
 		var channel = this._data[channelName];
 		if (channel instanceof TransformData) {
 			store = store || new Quaternion();
-			store.setVector(channel._rotation);
+			store.set(channel._rotation);
 		}
 		return store;
 	};

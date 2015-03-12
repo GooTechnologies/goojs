@@ -218,7 +218,7 @@ define([
 		this.x *= factor;
 		this.y *= factor;
 		this.z *= factor;
-		this.z *= factor;
+		this.w *= factor;
 
 		return this;
 	};

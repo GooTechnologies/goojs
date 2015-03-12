@@ -37,7 +37,7 @@ define([
 		 * @param {Vector3} vec3 velocity impulse vector.
 		 */
 		MovementComponent.prototype.addVelocity = function(vec3) {
-			this.velocity.addVector(vec3);
+			this.velocity.add(vec3);
 		};
 
 		/**
@@ -64,7 +64,7 @@ define([
 		 */
 
 		MovementComponent.prototype.addRotationVelocity = function(vec3) {
-			this.rotationVelocity.addVector(vec3);
+			this.rotationVelocity.add(vec3);
 		};
 		/**
 		 * Sets rotational velocity of the movement.

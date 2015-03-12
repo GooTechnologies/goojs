@@ -63,12 +63,12 @@ define([
 			max.z = z > max.z ? z : max.z;
 		}
 
-		vec.setVector(max).subVector(min).scale(0.5);
+		vec.set(max).sub(min).scale(0.5);
 		this.xExtent = vec.x;
 		this.yExtent = vec.y;
 		this.zExtent = vec.z;
 
-		this.center.setVector(max).addVector(min).scale(0.5);
+		this.center.set(max).add(min).scale(0.5);
 	};
 
 	/**
@@ -107,7 +107,7 @@ define([
 			}
 		}
 
-		this.center.copy(min.addVector(max));
+		this.center.copy(min.add(max));
 		this.center.scale(0.5);
 
 		this.xExtent = max.x - this.center.x;
@@ -205,9 +205,9 @@ define([
 			Math.abs(this.yExtent * planeData.y) +
 			Math.abs(this.zExtent * planeData.z);
 
-		var distance = planeData.x * pointData[0] +
-			planeData.y * pointData[1] +
-			planeData.z * pointData[2] -
+		var distance = planeData.x * pointData.x +
+			planeData.y * pointData.y +
+			planeData.z * pointData.z -
 			plane.constant;
 
 		if (distance < -radius) {
@@ -348,7 +348,7 @@ define([
 		// * Find if the two boxes intersect along a single axis
 		// * Compute the intersection interval for that axis
 		// * Keep the smallest intersection/penetration value
-		var axisLengthSquared = Vector3.dotVector(axis, axis);
+		var axisLengthSquared = Vector3.dot(axis, axis);
 
 		// If the axis is degenerate then ignore
 		if (axisLengthSquared < 0.000001) {
@@ -373,7 +373,7 @@ define([
 		var sep = new Vector3().copy(axis).scale(overlap / axisLengthSquared);
 
 		// The mtd vector length squared
-		var sepLengthSquared = sep.dotVector(sep);
+		var sepLengthSquared = sep.dot(sep);
 
 		// If that vector is smaller than our computed Minimum Translation Distance use that vector as our current MTV distance
 		if (sepLengthSquared < mtvInfo.mtvDistance) {
@@ -391,7 +391,7 @@ define([
 		}
 
 		// var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
-		var diff = tmpVec1.setVector(ray.origin).subVector(this.center);
+		var diff = tmpVec1.set(ray.origin).sub(this.center);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -430,7 +430,7 @@ define([
 			return null;
 		}
 
-		var diff = tmpVec1.copy(ray.origin).subVector(this.center);
+		var diff = tmpVec1.copy(ray.origin).sub(this.center);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -460,8 +460,8 @@ define([
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {
 				var distances = t;
-				var points = [new Vector3(ray.direction).scale(distances[0]).addVector(ray.origin),
-					new Vector3(ray.direction).scale(distances[1]).addVector(ray.origin)];
+				var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin),
+					new Vector3(ray.direction).scale(distances[1]).add(ray.origin)];
 				return {
 					"distances": distances,
 					"points": points
@@ -469,7 +469,7 @@ define([
 			}
 
 			var distances = [t[0]];
-			var points = [new Vector3(ray.direction).scale(distances[0]).addVector(ray.origin)];
+			var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -548,7 +548,7 @@ define([
 			calcVec2.z = center.z + zExtent;
 		}
 
-		store.center.set(calcVec2).addVector(calcVec1).scale(0.5);
+		store.center.set(calcVec2).add(calcVec1).scale(0.5);
 
 		store.xExtent = calcVec2.x - store.center.x;
 		store.yExtent = calcVec2.y - store.center.y;

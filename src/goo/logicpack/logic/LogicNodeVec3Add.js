@@ -28,7 +28,7 @@ define(
 			var vec2 = LogicLayer.readPort(instDesc, LogicNodeVec3Add.inportY);
 
 			var vec = new Vector3();
-			vec.copy(vec1).addVector(vec2);
+			vec.copy(vec1).add(vec2);
 
 			LogicLayer.writeValue(this.logicInstance, LogicNodeVec3Add.outportSum, vec);
 		};

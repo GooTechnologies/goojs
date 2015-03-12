@@ -50,7 +50,7 @@ define([
 
 	ScaleGizmo.prototype.copyTransform = function(transform) {
 		Gizmo.prototype.copyTransform.call(this, transform);
-		this._transformScale.setVector(transform.scale);
+		this._transformScale.set(transform.scale);
 	};
 
 	ScaleGizmo.prototype.process = function() {
@@ -100,11 +100,11 @@ define([
 		// Project mousemove to plane
 		this._plane.rayIntersect(this._oldRay, oldWorldPos);
 		this._plane.rayIntersect(this._newRay, worldPos);
-		result.setVector(worldPos).subVector(oldWorldPos);
-		result.divVector(this.transform.scale).scale(0.07);
+		result.set(worldPos).sub(oldWorldPos);
+		result.div(this.transform.scale).scale(0.07);
 		// Then project plane diff to line
 		var d = result.dot(line);
-		result.setVector(line).scale(d);
+		result.set(line).scale(d);
 		var scale = Math.pow(1 + d, this._scale);
 
 		switch(this._activeHandle.axis) {

@@ -34,12 +34,12 @@ define([
 			env.currentView = view;
 			switch(view){
 				case 'XY':
-					env.axis.setVector(Vector3.UNIT_Z);
-					env.upAxis.setVector(Vector3.UNIT_Y);
+					env.axis.set(Vector3.UNIT_Z);
+					env.upAxis.set(Vector3.UNIT_Y);
 					break;
 				case 'ZY':
-					env.axis.setVector(Vector3.UNIT_X);
-					env.upAxis.setVector(Vector3.UNIT_Y);
+					env.axis.set(Vector3.UNIT_X);
+					env.upAxis.set(Vector3.UNIT_Y);
 					break;
 			}
 			env.axisAlignedDirty = true;
@@ -54,7 +54,7 @@ define([
 			}
 			var entity = env.entity;
 			var transform = entity.transformComponent.transform;
-			transform.translation.setVector(env.axis).scale(env.distance).addVector(env.lookAtPoint);
+			transform.translation.set(env.axis).scale(env.distance).add(env.lookAtPoint);
 			// REVIEW: Collision with pancamscript? Make new panscript for the 2d camera, or bake the panning logic into the axisaligned camera script?
 			transform.lookAt(env.lookAtPoint, env.upAxis);
 			entity.transformComponent.setUpdated();

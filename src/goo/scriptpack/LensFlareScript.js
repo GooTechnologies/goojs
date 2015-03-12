@@ -249,14 +249,14 @@ define([
 		this.camRot = cameraEntity.transformComponent.transform.rotation;
 		this.centerVector.set(cameraEntity.cameraComponent.camera.translation);
 		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
-		this.displacementVector.subVector(this.centerVector);
+		this.displacementVector.sub(this.centerVector);
 		this.distance = this.displacementVector.length();
 		this.distanceVector.set(0, 0, -this.distance);
 		this.camRot.applyPost(this.distanceVector);
-		this.centerVector.addVector(this.distanceVector);
+		this.centerVector.add(this.distanceVector);
 		this.positionVector.set(this.centerVector);
 		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
-		this.displacementVector.subVector(this.positionVector);
+		this.displacementVector.sub(this.positionVector);
 		this.offset = this.displacementVector.length();
 		var positionVectorLength = this.positionVector.length();
 		if (positionVectorLength) {
@@ -269,7 +269,7 @@ define([
 
 	function FlareQuad(lightColor, tx, displace, size, intensity, systemScale, edgeDampen, edgeScaling, textures, world) {
 		this.sizeVector = new Vector3(size, size, size);
-		this.sizeVector.mulVector(systemScale);
+		this.sizeVector.mul(systemScale);
 		this.positionVector = new Vector3();
 		this.flareVector = new Vector3();
 		this.intensity = intensity;
@@ -308,8 +308,8 @@ define([
 	FlareQuad.prototype.updatePosition = function (flareGeometry) {
 		this.flareVector.set(flareGeometry.displacementVector);
 		this.positionVector.set(flareGeometry.positionVector);
-		this.flareVector.mulVector(this.displace);
-		this.positionVector.addVector(this.flareVector);
+		this.flareVector.mul(this.displace);
+		this.positionVector.add(this.flareVector);
 
 		this.material.uniforms.materialEmissive = [
 			this.color[0] * flareGeometry.centerRatio * this.edgeDampen,
@@ -322,7 +322,7 @@ define([
 
 		var quadTransform = this.quad.transformComponent.transform;
 		quadTransform.scale.set(this.sizeVector);
-		quadTransform.scale.mulVector(scaleFactor);
+		quadTransform.scale.mul(scaleFactor);
 		quadTransform.rotation.set(flareGeometry.camRot);
 		quadTransform.translation.set(this.positionVector);
 		this.quad.transformComponent.updateTransform();

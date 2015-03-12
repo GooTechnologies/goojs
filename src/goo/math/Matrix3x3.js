@@ -532,7 +532,8 @@ define([
 	 * entity.applyPost(forward); // now 'forward' is in local space
 	 */
 	Matrix3x3.prototype.applyPost = function (rhs) {
-		throw '';
+		// throw '';
+		return rhs.applyPost(this);
 	};
 
 	/**
@@ -541,7 +542,8 @@ define([
 	 * @returns {Vector3} Transformed left-hand side vector.
 	 */
 	Matrix3x3.prototype.applyPre = function (rhs) {
-		throw '';
+		// throw '';
+		return rhs.applyPre(this);
 	};
 
 	// unused
@@ -814,9 +816,9 @@ define([
 	Matrix3x3.prototype.lookAt = function (direction, up) {
 		var x = Matrix3x3._tempX, y = Matrix3x3._tempY, z = Matrix3x3._tempZ;
 
-		z.setVector(direction).normalize().scale(-1);
+		z.set(direction).normalize().scale(-1);
 
-		x.setVector(up).cross(z).normalize();
+		x.set(up).cross(z).normalize();
 
 		if (x.equals(Vector3.ZERO)) {
 			if (z.x !== 0.0) {
@@ -826,7 +828,7 @@ define([
 			}
 		}
 
-		y.setVector(z).cross(x);
+		y.set(z).cross(x);
 
 		var d = this.data;
 		d[0] = x.x;

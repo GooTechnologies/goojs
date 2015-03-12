@@ -487,7 +487,7 @@ function (
 			rigidBodyComponent.getQuaternion(tmpQuat);
 
 			// Set local transform of the entity
-			transform.translation.setVector(tmpVec);
+			transform.translation.set(tmpVec);
 			transform.rotation.copyQuaternion(tmpQuat);
 
 			// Update transform manually

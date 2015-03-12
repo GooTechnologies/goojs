@@ -108,6 +108,7 @@ define([
 			}
 
 			var view = meshData.getAttributeBuffer(key);
+			if (isNaN(view[0])) { debugger; }
 			var viewLength = view.length;
 			var array = attribute.array;
 			var count = map.count;
@@ -135,7 +136,7 @@ define([
 					array[vertexPos + i + 0] = vert.x;
 					array[vertexPos + i + 1] = vert.y;
 					array[vertexPos + i + 2] = vert.z;
-					array[vertexPos + i + 3] = view[i + 3];
+					array[vertexPos + i + 3] = view.w;
 				}
 			} else {
 				for (var i = 0; i < viewLength; i++) {

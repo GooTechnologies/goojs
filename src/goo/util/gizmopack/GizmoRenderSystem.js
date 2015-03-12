@@ -198,7 +198,7 @@ define([
 		this.gizmos[0].onChange = function (change) {
 			if (this.entity) {
 				var translation = this.entity.transformComponent.transform.translation;
-				translation.setVector(change);
+				translation.set(change);
 				if (this.entity.transformComponent.parent) {
 					inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
 					inverseTransformation.invert();
@@ -229,9 +229,9 @@ define([
 		this.gizmos[2].onChange = function (change) {
 			if (this.entity) {
 				var scale = this.entity.transformComponent.transform.scale;
-				scale.setVector(change);
+				scale.set(change);
 				if (this.entity.transformComponent.parent) {
-					scale.divVector(this.entity.transformComponent.parent.worldTransform.scale);
+					scale.div(this.entity.transformComponent.parent.worldTransform.scale);
 				}
 				this.entity.transformComponent.setUpdated();
 			}

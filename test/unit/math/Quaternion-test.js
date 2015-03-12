@@ -33,36 +33,6 @@ define([
 
 				expect(quaternion).toBeCloseToVector(expected);
 			});
-
-			it('creates a quaternion when given an array', function () {
-				var quaternion = new Quaternion([11, 22, 33, 44]);
-
-				var expected = new Quaternion();
-				expected.x = 11;
-				expected.y = 22;
-				expected.z = 33;
-				expected.w = 44;
-
-				expect(quaternion).toBeCloseToVector(expected);
-			});
-
-			it('creates a quaternion when given a quaternion', function () {
-				var original = new Quaternion();
-				original.x = 11;
-				original.y = 22;
-				original.z = 33;
-				original.w = 44;
-
-				var quaternion = new Quaternion(original);
-
-				var expected = new Quaternion();
-				expected.x = 11;
-				expected.y = 22;
-				expected.z = 33;
-				expected.w = 44;
-
-				expect(quaternion).toBeCloseToVector(expected);
-			});
 		});
 
 		it('can add two quaternions', function () {
@@ -87,30 +57,7 @@ define([
 			var result = new Quaternion();
 			Quaternion.mul(p, q, result);
 
-			//! schteppe: TODO: How to check result?
 			expect(result).toEqual(new Quaternion());
-		});
-
-		it('can divide component-wise', function () {
-			var p = new Quaternion(2, 2, 2, 2);
-			var q = new Quaternion(2, 2, 2, 2);
-			var result = new Quaternion();
-			Quaternion.div(p, q, result);
-			expect(result).toEqual(new Quaternion(1, 1, 1, 1));
-		});
-
-		it('can add a scalar to a quaternion', function () {
-			var p = new Quaternion(1, 1, 1, 1);
-			var result = new Quaternion();
-			Quaternion.scalarAdd(p, 1, result);
-			expect(result).toEqual(new Quaternion(2, 2, 2, 2));
-		});
-
-		it('can subtract a scalar from a quaternion', function () {
-			var p = new Quaternion(1, 1, 1, 1);
-			var result = new Quaternion();
-			Quaternion.scalarSub(p, 1, result);
-			expect(result).toEqual(new Quaternion(0, 0, 0, 0));
 		});
 
 		it('can multiply a scalar with a quaternion', function () {
@@ -118,13 +65,6 @@ define([
 			var result = new Quaternion();
 			Quaternion.scalarMul(p, 2, result);
 			expect(result).toEqual(new Quaternion(2, 2, 2, 2));
-		});
-
-		it('can divide a quaternion with a scalar', function () {
-			var p = new Quaternion(2, 2, 2, 2);
-			var result = new Quaternion();
-			Quaternion.scalarDiv(p, 2, result);
-			expect(result).toEqual(new Quaternion(1, 1, 1, 1));
 		});
 
 		it('can slerp', function () {
@@ -177,16 +117,14 @@ define([
 			var q = new Quaternion();
 			var m = new Matrix3x3();
 			q.fromRotationMatrix(m);
-			//! schteppe: TODO: How to check ok?
+			expect(q).toBeCloseToVector(new Quaternion());
 		});
 
 		it('can convert to rotation matrix', function () {
 			var q = new Quaternion();
 			var m = new Matrix3x3();
 			q.toRotationMatrix(m);
-			expect(q.toRotationMatrix() instanceof Matrix3x3).toBeTruthy();
-
-			//! schteppe: TODO: How to check ok?
+			expect(m).toBeCloseToMatrix(Matrix3x3.IDENTITY);
 		});
 
 		it('can be set from vector to vector', function () {
@@ -255,33 +193,11 @@ define([
 			expect(axisResult).toEqual(axis);
 		});
 
-		it('can check for equality', function () {
-			var q = new Quaternion();
-			expect(q.equals(q)).toBeTruthy();
-		});
-
-		it('can check for equality with foreign object', function () {
-			var q = new Quaternion();
-			expect(q.equals(1)).toBeFalsy();
-		});
-
-		it('can set all components', function () {
-			var q = new Quaternion();
-			q.setd(1, 2, 3, 4);
-			expect(q).toEqual(new Quaternion(1, 2, 3, 4));
-		});
-
-		it('can set all components via array', function () {
-			var q = new Quaternion();
-			q.seta([1, 2, 3, 4]);
-			expect(q).toEqual(new Quaternion(1, 2, 3, 4));
-		});
-
 		it('can set all components via other quaternion', function () {
 			var q = new Quaternion();
 			var p = new Quaternion(1, 2, 3, 4);
-			q.setv(p);
-			expect(q).toEqual(p);
+			q.set(p);
+			expect(q).toBeCloseToVector(p);
 		});
 
 		describe('clone', function () {
@@ -301,9 +217,9 @@ define([
 				expect(function () { quaternion1.z = NaN; })
 					.toThrow(new Error('Tried setting NaN to vector component z'));
 
-				var quaternion2 = new Quaternion();
-				expect(function () { quaternion2[1] = NaN; })
-					.toThrow(new Error('Tried setting NaN to vector component 1'));
+				//var quaternion2 = new Quaternion();
+				//expect(function () { quaternion2[1] = NaN; })
+				//	.toThrow(new Error('Tried setting NaN to vector component 1'));
 			});
 
 			it('throws an exception when trying to corrupt a vector by using methods', function () {
@@ -320,7 +236,7 @@ define([
 				var quaternion = new Quaternion();
 				// manually corrupting this quaternion
 				// this is the only non-traceable way
-				quaternion.data[0] = NaN;
+				quaternion._x = NaN;
 				expect(function () { quaternion.magnitudeSquared(); })
 					.toThrow(new Error('Vector method magnitudeSquared returned NaN'));
 			});

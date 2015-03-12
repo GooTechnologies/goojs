@@ -1237,7 +1237,7 @@ define([
 		}
 
 		if (!skipUpdateBuffer) {
-			this.hardwarePicking.clearColorStore.setVector(this.clearColor);
+			this.hardwarePicking.clearColorStore.set(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
 				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 

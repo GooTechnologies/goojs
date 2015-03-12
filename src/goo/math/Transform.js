@@ -50,26 +50,26 @@ define([
 		target = target || new Transform();
 
 		// Translation
-		tmpVec.setVector(rhs.translation);
+		tmpVec.set(rhs.translation);
 		// Rotate translation
 		lhs.rotation.applyPost(tmpVec);
 		// Scale translation
-		tmpVec.mulVector(lhs.scale);
+		tmpVec.mul(lhs.scale);
 		// Translate translation
-		tmpVec.addVector(lhs.translation);
+		tmpVec.add(lhs.translation);
 
 		// Scale
-		tmpVec2.setVector(rhs.scale);
+		tmpVec2.set(rhs.scale);
 		// Scale scale
-		tmpVec2.mulVector(lhs.scale);
+		tmpVec2.mul(lhs.scale);
 
 		// Rotation
 		// Rotate rotation
 		Matrix3x3.combine(lhs.rotation, rhs.rotation, tmpMat1);
 
 		target.rotation.copy(tmpMat1);
-		target.scale.setVector(tmpVec2);
-		target.translation.setVector(tmpVec);
+		target.scale.set(tmpVec2);
+		target.translation.set(tmpVec);
 
 		target.update();
 
@@ -94,12 +94,12 @@ define([
 		this.rotation.data.set(b.rotation.data);
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
 		Matrix3x3.combine(tmpMat1, this.rotation, this.rotation);
-		this.translation.setVector(b.translation);
-		this.translation.mulVector(a.scale);
-		tmpMat1.applyPost(this.translation).addVector(a.translation);
+		this.translation.set(b.translation);
+		this.translation.mul(a.scale);
+		tmpMat1.applyPost(this.translation).add(a.translation);
 
-		tmpVec.setVector(a.scale).mulVector(b.scale);
-		this.scale.setVector(tmpVec);
+		tmpVec.set(a.scale).mul(b.scale);
+		this.scale.set(tmpVec);
 	};
 
 	/**
@@ -108,9 +108,9 @@ define([
 	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
 
-		this.translation.setVector(Vector3.ZERO);
+		this.translation.set(Vector3.ZERO);
 		this.rotation.setIdentity();
-		this.scale.setVector(Vector3.ONE);
+		this.scale.set(Vector3.ONE);
 	};
 
 	/**
@@ -127,7 +127,7 @@ define([
 	 * entity.transformComponent.transform.applyForward(v1, localPos);
 	 */
 	Transform.prototype.applyForward = function (point, store) {
-		store.setVector(point);
+		store.set(point);
 
 		// store.set(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
 		// this.rotation.applyPost(store);
@@ -220,9 +220,9 @@ define([
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
 
-		this.translation.setVector(transform.translation);
+		this.translation.set(transform.translation);
 		this.rotation.copy(transform.rotation);
-		this.scale.setVector(transform.scale);
+		this.scale.set(transform.scale);
 	};
 
 	/**
@@ -246,7 +246,7 @@ define([
 			up = Vector3.UNIT_Y;
 		}
 
-		tmpVec.setVector(position).subVector(this.translation);
+		tmpVec.set(position).sub(this.translation);
 		if (tmpVec.lengthSquared() > MathUtils.EPSILON) { // should be epsilon^2 but it hopefully doesn't matter
 			tmpVec.normalize();
 			this.rotation.lookAt(tmpVec, up);
@@ -284,8 +284,8 @@ define([
 		//newRotation.multiplyDiagonalPost(this.scale, newRotation).invert();
 		// }
 
-		result.scale.setVector(Vector3.ONE).divVector(this.scale);
-		result.translation.copy(this.translation).invert().mulVector(result.scale);
+		result.scale.set(Vector3.ONE).div(this.scale);
+		result.translation.copy(this.translation).invert().mul(result.scale);
 		result.rotation.applyPost(result.translation);
 
 		// result.update();

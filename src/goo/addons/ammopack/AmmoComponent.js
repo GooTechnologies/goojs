@@ -162,7 +162,7 @@ define([
 		if (this.useWorldBounds) {
 			entity._world.process();
 			this.shape = this.getAmmoShapefromGooShapeWorldBounds(entity, gooTransform);
-			this.difference = this.center.clone().subVector(gooTransform.translation).invert();
+			this.difference = this.center.clone().sub(gooTransform.translation).invert();
 		} else {
 			this.shape = this.getAmmoShapefromGooShape(entity, gooTransform);
 		}

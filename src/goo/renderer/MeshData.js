@@ -495,8 +495,8 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
 			}
 			break;
 		case 3:
@@ -506,9 +506,9 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
-				view[i + 2] = outVert[2];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+				view[i + 2] = outVert.z;
 			}
 			break;
 		case 4:
@@ -518,10 +518,10 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
-				view[i + 2] = outVert[2];
-				view[i + 3] = outVert[3];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+				view[i + 2] = outVert.z;
+				view[i + 3] = outVert.w;
 			}
 			break;
 		}
@@ -731,8 +731,8 @@ define([
 								attribs[key].values[(indexCount + 2) * 3 + 1],
 								attribs[key].values[(indexCount + 2) * 3 + 2]
 							);
-							v2.subVector(v1);
-							v3.subVector(v1);
+							v2.sub(v1);
+							v3.sub(v1);
 							v2.cross(v3).normalize();
 
 							if (attribs[MeshData.NORMAL]) {

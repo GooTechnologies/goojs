@@ -132,7 +132,7 @@ define([
 			orient.applyPost(calcVector);
 
 			// add to our transform
-			transform.translation.addVector(calcVector);
+			transform.translation.add(calcVector);
 
 			// set our component updated.
 			transformComponent.setUpdated();

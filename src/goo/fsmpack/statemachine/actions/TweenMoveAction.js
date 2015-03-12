@@ -96,7 +96,7 @@ define([
 		var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
 
 		if (this.relative) {
-			var to = Vector3.fromArray(this.to).addVector(initialTranslation);
+			var to = Vector3.fromArray(this.to).add(initialTranslation);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
 			// it's a string until property controls are fixed

@@ -20,8 +20,8 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function (Quaternion, Vector
 		// transform.setIdentity();
 		// TODO: matrix vs quaternion?
 		transform.rotation.copyQuaternion(this._rotation);
-		transform.scale.setVector(this._scale);
-		transform.translation.setVector(this._translation);
+		transform.scale.set(this._scale);
+		transform.translation.set(this._translation);
 		transform.update();
 	};
 
@@ -45,8 +45,8 @@ define(['goo/math/Quaternion', 'goo/math/Vector3'], function (Quaternion, Vector
 	TransformData.prototype.blend = function (blendTo, blendWeight, store) {
 		var tData = store ? store : new TransformData();
 
-		tData._translation.setVector(this._translation).lerp(blendTo._translation, blendWeight);
-		tData._scale.setVector(this._scale).lerp(blendTo._scale, blendWeight);
+		tData._translation.set(this._translation).lerp(blendTo._translation, blendWeight);
+		tData._scale.set(this._scale).lerp(blendTo._scale, blendWeight);
 		Quaternion.slerp(this._rotation, blendTo._rotation, blendWeight, tData._rotation);
 		return tData;
 	};

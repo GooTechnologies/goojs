@@ -169,7 +169,7 @@ function (
 		if (this.cannonBody) {
 			this.cannonBody.velocity.copy(velocity);
 		}
-		this._velocity.setVector(velocity);
+		this._velocity.set(velocity);
 	};
 
 	/**
@@ -188,7 +188,7 @@ function (
 		if (this.cannonBody) {
 			this.cannonBody.angularVelocity.copy(angularVelocity);
 		}
-		this._angularVelocity.setVector(angularVelocity);
+		this._angularVelocity.set(angularVelocity);
 	};
 
 	/**
@@ -450,7 +450,7 @@ function (
 
 			// Scale the joint to the world scale
 			var scaledPivotA = joint.localPivot.clone();
-			scaledPivotA.mulVector(this._entity.transformComponent.transform.scale);
+			scaledPivotA.mul(this._entity.transformComponent.transform.scale);
 
 			var pivotInA = new CANNON.Vec3();
 			var pivotInB = new CANNON.Vec3();
@@ -462,7 +462,7 @@ function (
 				bodyB.pointToLocalFrame(pivotInB, pivotInB);
 			} else {
 				var worldScaledPivotB = joint.connectedLocalPivot.clone();
-				worldScaledPivotB.mulVector(joint.connectedEntity.transformComponent.transform.scale);
+				worldScaledPivotB.mul(joint.connectedEntity.transformComponent.transform.scale);
 				pivotInB.copy(worldScaledPivotB);
 			}
 
@@ -477,7 +477,7 @@ function (
 
 			// Scale the joint to the world scale
 			var scaledPivotA = joint.localPivot.clone();
-			scaledPivotA.mulVector(this._entity.transformComponent.transform.scale);
+			scaledPivotA.mul(this._entity.transformComponent.transform.scale);
 
 			// Copy it to cannon vectors
 			pivotInA.copy(scaledPivotA);
@@ -489,7 +489,7 @@ function (
 				bodyB.pointToLocalFrame(pivotInB, pivotInB);
 			} else {
 				var worldScaledPivotB = joint.connectedLocalPivot.clone();
-				worldScaledPivotB.mulVector(joint.connectedEntity.transformComponent.transform.scale);
+				worldScaledPivotB.mul(joint.connectedEntity.transformComponent.transform.scale);
 				pivotInB.copy(worldScaledPivotB);
 			}
 

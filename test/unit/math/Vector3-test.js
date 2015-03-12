@@ -30,7 +30,7 @@ define([
 		});
 
 		describe('getters/setters', function () {
-			it('can be accessed through indices', function () {
+			xit('can be accessed through indices', function () {
 				var vector = new Vector3(11, 22, 33);
 
 				expect(vector[0]).toBeCloseTo(11);
@@ -38,7 +38,7 @@ define([
 				expect(vector[2]).toBeCloseTo(33);
 			});
 
-			it('can be modified through indices', function () {
+			xit('can be modified through indices', function () {
 				var vector = new Vector3();
 
 				vector[0] = 11;
@@ -124,7 +124,7 @@ define([
 		describe('sub', function () {
 			it('can subtract from a vector', function () {
 				var vector = new Vector3(11, 22, 33);
-				vector.subVector(new Vector3(55, 66, 77));
+				vector.sub(new Vector3(55, 66, 77));
 				expect(vector).toBeCloseToVector(new Vector3(11 - 55, 22 - 66, 33 - 77));
 			});
 		});
@@ -150,7 +150,7 @@ define([
 		describe('mul', function () {
 			it('can multiply with a vector', function () {
 				var vector = new Vector3(11, 22, 33);
-				vector.mulVector(new Vector3(55, 66, 77));
+				vector.mul(new Vector3(55, 66, 77));
 				expect(vector).toBeCloseToVector(new Vector3(11 * 55, 22 * 66, 33 * 77));
 			});
 		});
@@ -177,7 +177,7 @@ define([
 				var a = new Vector3(1, 2, 0);
 				var b = new Vector3(1, 2, 0);
 
-				expect(a.dotVector(b)).toEqual(5);
+				expect(a.dot(b)).toEqual(5);
 			});
 		});
 
@@ -212,29 +212,34 @@ define([
 			expect(dist).toEqual(8);
 		});
 
-		it('can be normalized', function () {
-			var a = new Vector3();
+		describe('normalize', function () {
+			it('can be normalized', function () {
+				var v1 = new Vector3(0, 0, 0);
+				v1.normalize();
+				expect(v1).toBeCloseToVector(new Vector3(0, 0, 0));
 
-			a.set(0, 0, 0).normalize();
-			expect(a.x).toBeCloseTo(0);
-			expect(a.y).toBeCloseTo(0);
-			expect(a.z).toBeCloseTo(0);
+				var v2 = new Vector3(1, 1, 1);
+				v2.normalize();
+				expect(v2).toBeCloseToVector(new Vector3(
+					1 / Math.sqrt(3),
+					1 / Math.sqrt(3),
+					1 / Math.sqrt(3)
+				));
 
-			a.set(1, 1, 1).normalize();
-			expect(a.x).toBeCloseTo(1/Math.sqrt(3));
-			expect(a.y).toBeCloseTo(1/Math.sqrt(3));
-			expect(a.z).toBeCloseTo(1/Math.sqrt(3));
-
-			a.set(12, 34, 56).normalize();
-			expect(a.x).toBeCloseTo(12/Math.sqrt(12*12+34*34+56*56));
-			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34+56*56));
-			expect(a.z).toBeCloseTo(56/Math.sqrt(12*12+34*34+56*56));
+				var v3 = new Vector3(12, 34, 56);
+				v3.normalize();
+				expect(v3).toBeCloseToVector(new Vector3(
+					12 / Math.sqrt(12 * 12 + 34 * 34 + 56 * 56),
+					34 / Math.sqrt(12 * 12 + 34 * 34 + 56 * 56),
+					56 / Math.sqrt(12 * 12 + 34 * 34 + 56 * 56)
+				));
+			});
 		});
 
 		describe('copy', function () {
 			it('can copy values from a vector', function () {
 				var vector = new Vector3(11, 22, 33);
-				vector.setVector(new Vector3(55, 66, 77));
+				vector.set(new Vector3(55, 66, 77));
 				expect(vector).toBeCloseToVector(new Vector3(55, 66, 77));
 			});
 		});
@@ -255,30 +260,30 @@ define([
 				expect(function () { vector1.z = NaN; })
 					.toThrow(new Error('Tried setting NaN to vector component z'));
 
-				var vector2 = new Vector3();
-				expect(function () { vector2[1] = NaN; })
-					.toThrow(new Error('Tried setting NaN to vector component 1'));
+				//var vector2 = new Vector3();
+				//expect(function () { vector2[1] = NaN; })
+				//	.toThrow(new Error('Tried setting NaN to vector component 1'));
 			});
 
 			it('throws an exception when trying to corrupt a vector by using methods', function () {
 				var vector1 = new Vector3();
 				expect(function () { vector1.add(NaN); })
-					.toThrow(new Error('Vector contains NaN at index 0'));
+					.toThrow(new Error('Tried setting NaN to vector component x'));
 
 				var vector2 = new Vector3();
 				expect(function () { vector2.addDirect(); })
-					.toThrow(new Error('Vector contains NaN at index 0'));
+					.toThrow(new Error('Tried setting NaN to vector component x'));
 
 				var vector3 = new Vector3();
 				expect(function () { vector3.scale(); })
-					.toThrow(new Error('Vector contains NaN at index 0'));
+					.toThrow(new Error('Tried setting NaN to vector component x'));
 			});
 			
 			it('throws an exception when a corrupt vector would return NaN', function () {
 				var vector = new Vector3();
 				// manually corrupting this vector
 				// this is the only non-traceable way
-				vector.data[0] = NaN;
+				vector._x = NaN;
 				expect(function () { vector.lengthSquared(); })
 					.toThrow(new Error('Vector method lengthSquared returned NaN'));
 			});

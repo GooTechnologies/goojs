@@ -26,31 +26,6 @@ define([
 
 				expect(vector).toBeCloseToVector(expected);
 			});
-
-			it('creates a vector when given an array', function () {
-				var vector = new Vector2([11, 22]);
-				var expected = new Vector2();
-
-				expected.x = 11;
-				expected.y = 22;
-
-				expect(vector).toBeCloseToVector(expected);
-			});
-
-			it('creates a vector when given a vector', function () {
-				var original = new Vector2();
-				original.x = 11;
-				original.y = 22;
-
-				var vector = new Vector2(original);
-
-				var expected = new Vector2();
-
-				expected.x = 11;
-				expected.y = 22;
-
-				expect(vector).toBeCloseToVector(expected);
-			});
 		});
 
 		xit('can be accessed through indices', function () {
@@ -69,18 +44,16 @@ define([
 			expect(a).toBeCloseToVector(new Vector2(1, 2));
 		});
 
-		xit('can be accessed through aliases', function () {
+		it('can be accessed through aliases', function () {
 			var a = new Vector2(1, 2);
 
 			expect(a.x).toEqual(1);
 			expect(a.y).toEqual(2);
 			expect(a.u).toEqual(1);
 			expect(a.v).toEqual(2);
-			expect(a.s).toEqual(1);
-			expect(a.t).toEqual(2);
 		});
 
-		xit('can be modified through aliases', function () {
+		it('can be modified through aliases', function () {
 			var a = new Vector2();
 
 			a.x = 1;
@@ -99,72 +72,6 @@ define([
 			expect(a).toBeCloseToVector(new Vector2(3, 4));
 		});
 
-		xdescribe('add', function () {
-			it('can perform addition', function () {
-				var a = new Vector2(1, 2);
-				var b = new Vector2(1, 2);
-
-				a.add(a);
-
-				expect(a).toBeCloseToVector(new Vector2(2, 4));
-				expect(Vector2.add(b, b)).toBeCloseToVector(new Vector2(2, 4));
-
-				expect(Vector2.add(b, 1)).toBeCloseToVector(new Vector2(2, 3));
-				expect(Vector2.add(1, b)).toBeCloseToVector(new Vector2(2, 3));
-
-				expect(Vector2.add(b, [1, 2])).toBeCloseToVector(new Vector2(2, 4));
-				expect(Vector2.add([1, 2], b)).toBeCloseToVector(new Vector2(2, 4));
-			});
-
-			it('performs partial addition when adding vectors of different size', function () {
-				expect(Vector2.add([1, 2], [7])).toBeCloseToVector(new Vector2(1 + 7, NaN));
-			});
-		});		
-
-		xdescribe('sub', function () {
-			it('can perform subtraction', function () {
-				var a = new Vector2(1, 2);
-				var b = new Vector2(1, 2);
-
-				a.sub(a);
-
-				expect(a).toBeCloseToVector(new Vector2(0, 0));
-				expect(Vector2.sub(b, b)).toBeCloseToVector(new Vector2(0, 0));
-
-				expect(Vector2.sub(b, 1)).toBeCloseToVector(new Vector2(0, 1));
-				expect(Vector2.sub(1, b)).toBeCloseToVector(new Vector2(0, -1));
-
-				expect(Vector2.sub(b, [1, 2])).toBeCloseToVector(new Vector2(0, 0));
-				expect(Vector2.sub([1, 2], b)).toBeCloseToVector(new Vector2(0, 0));
-			});
-
-			it('performs partial subtraction when applied to vectors of different size', function () {
-				expect(Vector2.sub([1, 2], [7])).toBeCloseToVector(new Vector2(-6, NaN));
-			});
-		});
-
-		xdescribe('mul', function () {
-			it('can perform multiplication', function () {
-				var a = new Vector2(1, 2);
-				var b = new Vector2(1, 2);
-
-				a.mul(a);
-
-				expect(a).toBeCloseToVector(new Vector2(1, 4));
-				expect(Vector2.mul(b, b)).toBeCloseToVector(new Vector2(1, 4));
-
-				expect(Vector2.mul(b, 1)).toBeCloseToVector(new Vector2(1, 2));
-				expect(Vector2.mul(1, b)).toBeCloseToVector(new Vector2(1, 2));
-
-				expect(Vector2.mul(b, [1, 2])).toBeCloseToVector(new Vector2(1, 4));
-				expect(Vector2.mul([1, 2], b)).toBeCloseToVector(new Vector2(1, 4));
-			});
-
-			it('performs partial multiplication when applied to vectors of different size', function () {
-				expect(Vector2.mul([1, 2], [7])).toBeCloseToVector(new Vector2(7, NaN));
-			});
-		});
-
 		describe('scale', function () {
 			it('scales a vector', function () {
 				var vector = new Vector2(1, 2);
@@ -173,69 +80,35 @@ define([
 			});
 		});
 
-		xdescribe('div', function () {
-			it('can perform division', function () {
-				var a = new Vector2(1, 2);
-				var b = new Vector2(1, 2);
-
-				a.div(a);
-
-				expect(a).toBeCloseToVector(new Vector2(1, 1));
-				expect(Vector2.div(b, b)).toBeCloseToVector(new Vector2(1, 1));
-
-				expect(Vector2.div(b, 1)).toBeCloseToVector(new Vector2(1, 2));
-				expect(Vector2.div(1, b)).toBeCloseToVector(new Vector2(1, 1/2));
-
-				expect(Vector2.div(b, [1, 2])).toBeCloseToVector(new Vector2(1, 1));
-				expect(Vector2.div([1, 2], b)).toBeCloseToVector(new Vector2(1, 1));
-			});
-
-			it('performs partial division when applied to vectors of different size', function () {
-				expect(Vector2.div([1, 2], [7])).toBeCloseToVector(new Vector2(1 / 7, NaN));
-			});
-		});
-
-		xdescribe('dot', function () {
+		describe('dot', function () {
 			it('can calculate dot products', function () {
 				var a = new Vector2(1, 2);
 				var b = new Vector2(1, 2);
 
 				expect(a.dot(b)).toEqual(5);
-				//expect(Vector2.dot(a, b)).toEqual(5);
-			});
-
-			xit('returns garbage if supplied with garbage', function () {
-				expect(Vector2.dot([1, 2], [5])).toEqual(NaN);
 			});
 		});
 
-		describe('dotVector', function () {
-			it('can calculate dot products', function () {
-				var a = new Vector2(1, 2);
-				var b = new Vector2(1, 2);
+		describe('normalize', function () {
+			it('can be normalized', function () {
+				var a = new Vector2();
+				// rewrite with toBeCloseToVector
+				a.setDirect(0, 0).normalize();
+				expect(a.x).toBeCloseTo(0);
+				expect(a.y).toBeCloseTo(0);
 
-				expect(a.dotVector(b)).toEqual(5);
+				a.setDirect(1, 1).normalize();
+				expect(a.x).toBeCloseTo(1 / Math.sqrt(2));
+				expect(a.y).toBeCloseTo(1 / Math.sqrt(2));
+
+				a.setDirect(-2, -3).normalize();
+				expect(a.x).toBeCloseTo(-2 / Math.sqrt(2 * 2 + 3 * 3));
+				expect(a.y).toBeCloseTo(-3 / Math.sqrt(2 * 2 + 3 * 3));
+
+				a.setDirect(12, 34).normalize();
+				expect(a.x).toBeCloseTo(12 / Math.sqrt(12 * 12 + 34 * 34));
+				expect(a.y).toBeCloseTo(34 / Math.sqrt(12 * 12 + 34 * 34));
 			});
-		});
-
-		it('can be normalized', function () {
-			var a = new Vector2();
-
-			a.set(0, 0).normalize();
-			expect(a.x).toBeCloseTo(0);
-			expect(a.y).toBeCloseTo(0);
-
-			a.set(1, 1).normalize();
-			expect(a.x).toBeCloseTo(1/Math.sqrt(2));
-			expect(a.y).toBeCloseTo(1/Math.sqrt(2));
-
-			a.set(-2, -3).normalize();
-			expect(a.x).toBeCloseTo(-2/Math.sqrt(2*2+3*3));
-			expect(a.y).toBeCloseTo(-3/Math.sqrt(2*2+3*3));
-
-			a.set(12, 34).normalize();
-			expect(a.x).toBeCloseTo(12/Math.sqrt(12*12+34*34));
-			expect(a.y).toBeCloseTo(34/Math.sqrt(12*12+34*34));
 		});
 
 		describe('reflect', function () {
@@ -251,7 +124,7 @@ define([
 		describe('copy', function () {
 			it('can copy values from a vector', function () {
 				var vector = new Vector2(11, 22);
-				vector.setVector(new Vector2(55, 66));
+				vector.set(new Vector2(55, 66));
 				expect(vector).toBeCloseToVector(new Vector2(55, 66));
 			});
 		});
@@ -266,31 +139,6 @@ define([
 			});
 		});
 
-		describe('setd (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector2(11, 22);
-				vector.setd(55, 66);
-				expect(vector).toBeCloseToVector(new Vector2(55, 66));
-			});
-		});
-
-		describe('seta (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector2(11, 22);
-				vector.seta([55, 66]);
-				expect(vector).toBeCloseToVector(new Vector2(55, 66));
-			});
-		});
-
-		describe('setv (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector2(11, 22);
-				vector.setv(new Vector2(55, 66));
-				expect(vector).toBeCloseToVector(new Vector2(55, 66));
-			});
-		});
-
-
 		describe('setDirect', function () {
 			it('can set a vector', function () {
 				var vector = new Vector2(11, 22);
@@ -299,18 +147,10 @@ define([
 			});
 		});
 
-		describe('setArray', function () {
+		describe('set', function () {
 			it('can set a vector', function () {
 				var vector = new Vector2(11, 22);
-				vector.setArray([55, 66]);
-				expect(vector).toBeCloseToVector(new Vector2(55, 66));
-			});
-		});
-
-		describe('setVector', function () {
-			it('can set a vector', function () {
-				var vector = new Vector2(11, 22);
-				vector.setVector(new Vector2(55, 66));
+				vector.set(new Vector2(55, 66));
 				expect(vector).toBeCloseToVector(new Vector2(55, 66));
 			});
 		});
@@ -324,28 +164,11 @@ define([
 			});
 		});
 
-		describe('addVector', function () {
+		describe('add', function () {
 			it('can add to a vector', function () {
 				var vector = new Vector2(11, 22);
-				vector.addVector(new Vector2(55, 66));
+				vector.add(new Vector2(55, 66));
 				expect(vector).toBeCloseToVector(new Vector2(66, 88));
-			});
-		});
-
-
-		describe('mulDirect', function () {
-			it('can multiply with 2 numbers', function () {
-				var vector = new Vector2(11, 22);
-				vector.mulDirect(55, 66);
-				expect(vector).toBeCloseToVector(new Vector2(11 * 55, 22 * 66));
-			});
-		});
-
-		describe('mulVector', function () {
-			it('can multiply with a vector', function () {
-				var vector = new Vector2(11, 22);
-				vector.mulVector(new Vector2(55, 66));
-				expect(vector).toBeCloseToVector(new Vector2(11 * 55, 22 * 66));
 			});
 		});
 
@@ -358,11 +181,45 @@ define([
 			});
 		});
 
-		describe('subVector', function () {
+		describe('sub', function () {
 			it('can subtract from a vector', function () {
 				var vector = new Vector2(11, 22);
-				vector.subVector(new Vector2(55, 66));
+				vector.sub(new Vector2(55, 66));
 				expect(vector).toBeCloseToVector(new Vector2(11 - 55, 22 - 66));
+			});
+		});
+
+
+		describe('mulDirect', function () {
+			it('can multiply with 2 numbers', function () {
+				var vector = new Vector2(11, 22);
+				vector.mulDirect(55, 66);
+				expect(vector).toBeCloseToVector(new Vector2(11 * 55, 22 * 66));
+			});
+		});
+
+		describe('mul', function () {
+			it('can multiply with a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.mul(new Vector2(55, 66));
+				expect(vector).toBeCloseToVector(new Vector2(11 * 55, 22 * 66));
+			});
+		});
+
+
+		describe('divDirect', function () {
+			it('can multiply with 2 numbers', function () {
+				var vector = new Vector2(11, 22);
+				vector.divDirect(55, 66);
+				expect(vector).toBeCloseToVector(new Vector2(11 / 55, 22 / 66));
+			});
+		});
+
+		describe('div', function () {
+			it('can multiply with a vector', function () {
+				var vector = new Vector2(11, 22);
+				vector.div(new Vector2(55, 66));
+				expect(vector).toBeCloseToVector(new Vector2(11 / 55, 22 / 66));
 			});
 		});
 	});

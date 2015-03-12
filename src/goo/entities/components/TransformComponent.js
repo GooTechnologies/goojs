@@ -362,6 +362,16 @@ define([
 
 	var tmpVec = new Vector3();
 
+	function toVector3() {
+		if (arguments.length === 3) {
+			return Vector3.fromArray(arguments);
+		} else if (arguments[0] instanceof Array) {
+			return Vector3.fromArray(arguments[0]);
+		} else {
+			return arguments[0];
+		}
+	}
+
 	/**
 	 * Gets the value of transformComponent.transform.translation.
 	 * To change the translation, the returned object can be modified
@@ -393,7 +403,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		Vector3.prototype.set.apply(this.transform.translation, arguments);
+		this.transform.translation.set(toVector3.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
@@ -423,7 +433,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
-		Vector.prototype.set.apply(this.transform.scale, arguments);
+		this.transform.scale.set(toVector3.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
@@ -440,12 +450,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
-		Vector3.prototype.addVector.apply(this.transform.translation, arguments);
-		//if (arguments.length === 3) {
-		//	this.transform.translation.add(arguments);
-		//} else {
-		//	this.transform.translation.add(arguments[0]);
-		//}
+		this.transform.translation.add(toVector3.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};

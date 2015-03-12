@@ -53,12 +53,12 @@ define([
 	 * @returns true if this ray intersects a triangle formed by the given three points.
 	 */
 	Ray.prototype.intersectsTriangle = function (pointA, pointB, pointC, doPlanar, locationStore) {
-		var diff = tmpVec1.setVector(this.origin).subVector(pointA);
-		var edge1 = tmpVec2.setVector(pointB).subVector(pointA);
-		var edge2 = tmpVec3.setVector(pointC).subVector(pointA);
-		var norm = tmpVec4.setVector(edge1).cross(edge2);
+		var diff = tmpVec1.set(this.origin).sub(pointA);
+		var edge1 = tmpVec2.set(pointB).sub(pointA);
+		var edge2 = tmpVec3.set(pointC).sub(pointA);
+		var norm = tmpVec4.set(edge1).cross(edge2);
 
-		var dirDotNorm = this.direction.dotVector(norm);
+		var dirDotNorm = this.direction.dot(norm);
 		var sign;
 		if (dirDotNorm > MathUtils.EPSILON) {
 			sign = 1.0;
@@ -70,13 +70,13 @@ define([
 			return false;
 		}
 
-		var dirDotDiffxEdge2 = sign * this.direction.dotVector(Vector3.cross(diff, edge2, edge2));
+		var dirDotDiffxEdge2 = sign * this.direction.dot(edge2.copy(diff).cross(edge2));
 		var result = false;
 		if (dirDotDiffxEdge2 >= 0.0) {
-			var dirDotEdge1xDiff = sign * this.direction.dotVector(edge1.cross(diff));
+			var dirDotEdge1xDiff = sign * this.direction.dot(edge1.cross(diff));
 			if (dirDotEdge1xDiff >= 0.0) {
 				if (dirDotDiffxEdge2 + dirDotEdge1xDiff <= dirDotNorm) {
-					var diffDotNorm = -sign * diff.dotVector(norm);
+					var diffDotNorm = -sign * diff.dot(norm);
 					if (diffDotNorm >= 0.0) {
 						// ray intersects triangle
 						// if storage vector is null, just return true,
@@ -87,7 +87,7 @@ define([
 						var inv = 1.0 / dirDotNorm;
 						var t = diffDotNorm * inv;
 						if (!doPlanar) {
-							locationStore.setVector(this.origin).addDirect(this.direction.x * t, this.direction.y * t, this.direction.z * t);
+							locationStore.set(this.origin).addDirect(this.direction.x * t, this.direction.y * t, this.direction.z * t);
 						} else {
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.
@@ -127,13 +127,13 @@ define([
 	 */
 	Ray.prototype.intersectsPlane = function (plane, locationStore) {
 		var normal = plane.normal;
-		var denominator = normal.dotVector(this.direction);
+		var denominator = normal.dot(this.direction);
 
 		if (Math.abs(denominator) < 0.00001) {
 			return false; // coplanar
 		}
 
-		var numerator = -normal.dotVector(this.origin) + plane.constant;
+		var numerator = -normal.dot(this.origin) + plane.constant;
 		var ratio = numerator / denominator;
 
 		if (ratio < 0.00001) {
@@ -141,7 +141,7 @@ define([
 		}
 
 		if (locationStore) {
-			locationStore.setVector(this.direction).scale(ratio).addVector(this.origin);
+			locationStore.set(this.direction).scale(ratio).add(this.origin);
 		}
 
 		return true;
@@ -155,23 +155,23 @@ define([
 	Ray.prototype.distanceSquared = function (point, store) {
 		var vectorA = tmpVec1;
 
-		vectorA.setVector(point).subVector(this.origin);
-		var t0 = this.direction.dotVector(vectorA);
+		vectorA.set(point).sub(this.origin);
+		var t0 = this.direction.dot(vectorA);
 		if (t0 > 0) {
 			// d = |P - (O + t*D)|
-			vectorA.setVector(this.direction).scale(t0);
-			vectorA.addVector(this.origin);
+			vectorA.set(this.direction).scale(t0);
+			vectorA.add(this.origin);
 		} else {
 			// ray is closest to origin point
-			vectorA.setVector(this.origin);
+			vectorA.set(this.origin);
 		}
 
 		// Save away the closest point if requested
 		if (store) {
-			store.setVector(vectorA);
+			store.set(vectorA);
 		}
 
-		vectorA.subVector(point);
+		vectorA.sub(point);
 		return vectorA.lengthSquared();
 	};
 

@@ -102,10 +102,10 @@ define([
 			var time = entity._world.time * 1000;
 
 			var to = Vector3.fromArray(this.lookAt)
-				.subVector(initialTranslation)
+				.sub(initialTranslation)
 				.normalize()
 				.scale(this.forward)
-				.addVector(initialTranslation);
+				.add(initialTranslation);
 
 			var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z, d: this.initialDistance };
 			var fakeTo = { x: to.x, y: to.y, z: to.z, d: +this.initialDistance - +this.forward };

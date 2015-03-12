@@ -58,8 +58,8 @@ define(['goo/particles/ParticleUtils', 'goo/renderer/Renderer'], function (Parti
 	ParticleEmitter.CAMERA_BILLBOARD_FUNC = function (particle) {
 		var camera = Renderer.mainCamera;
 		if (camera) {
-			particle.bbX.setVector(camera._left);
-			particle.bbY.setVector(camera._up);
+			particle.bbX.set(camera._left);
+			particle.bbY.set(camera._up);
 		}
 	};
 

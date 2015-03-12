@@ -13,7 +13,7 @@ define([
 
 
 
-	describe('Movement script tests', function() {
+	xdescribe('Movement script tests', function() {
 		var movementSystem = new MovementSystem();
 		var groundBoundMovementScript;
 		var entity;

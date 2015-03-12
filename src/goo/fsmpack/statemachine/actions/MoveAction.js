@@ -67,9 +67,9 @@ define([
 
 				if (this.everyFrame) {
 					forward.scale(fsm.getTpf() * 10);
-					translation.addVector(forward);
+					translation.add(forward);
 				} else {
-					translation.addVector(forward);
+					translation.add(forward);
 				}
 			} else {
 				translation.set(this.forward);

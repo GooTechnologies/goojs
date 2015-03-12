@@ -82,7 +82,7 @@ define([
 			colorBuffer.set(this.color.data, this.index * 16 + 4);
 			colorBuffer.set(this.color.data, this.index * 16 + 8);
 			colorBuffer.set(this.color.data, this.index * 16 + 12);
-			this.lastColor.setVector(this.color);
+			this.lastColor.set(this.color);
 		}
 
 		// determine our particle plane
@@ -96,7 +96,7 @@ define([
 			var cA = Math.cos(this.spin) * this.size;
 			var sA = Math.sin(this.spin) * this.size;
 			var upX = this.bbY.x, upY = this.bbY.y, upZ = this.bbY.z;
-			this.bbY.setVector(this.bbX);
+			this.bbY.set(this.bbX);
 			this.bbX.mulDirect(cA, cA, cA).addDirect(upX * sA, upY * sA, upZ * sA);
 			this.bbY.mulDirect(-sA, -sA, -sA).addDirect(upX * cA, upY * cA, upZ * cA);
 		}
@@ -105,19 +105,19 @@ define([
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
 
 		// bottom right point
-		calcVec.setVector(this.position).subVector(this.bbX).subVector(this.bbY);
+		calcVec.set(this.position).sub(this.bbX).sub(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 0);
 
 		// top right point
-		calcVec.setVector(this.position).subVector(this.bbX).addVector(this.bbY);
+		calcVec.set(this.position).sub(this.bbX).add(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 3);
 
 		// top left point
-		calcVec.setVector(this.position).addVector(this.bbX).addVector(this.bbY);
+		calcVec.set(this.position).add(this.bbX).add(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 6);
 
 		// bottom left corner
-		calcVec.setVector(this.position).addVector(this.bbX).subVector(this.bbY);
+		calcVec.set(this.position).add(this.bbX).sub(this.bbY);
 		vertexBuffer.set(calcVec.data, this.index * 12 + 9);
 
 		if (this.lastUVIndex !== this.uvIndex) {

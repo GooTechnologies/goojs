@@ -263,10 +263,10 @@ define([
 	 * @param {Camera} source
 	 */
 	Camera.prototype.copy = function (source) {
-		this.translation.setVector(source.translation);
-		this._left.setVector(source._left);
-		this._up.setVector(source._up);
-		this._direction.setVector(source._direction);
+		this.translation.set(source.translation);
+		this._left.set(source._left);
+		this._up.set(source._up);
+		this._direction.set(source._direction);
 
 		this.fov = source.fov;
 		this.aspect = source.aspect;
@@ -301,10 +301,10 @@ define([
 	 * @param {Vector3} direction
 	 */
 	Camera.prototype.setFrame = function (location, left, up, direction) {
-		this._left.setVector(left);
-		this._up.setVector(up);
-		this._direction.setVector(direction);
-		this.translation.setVector(location);
+		this._left.set(left);
+		this._up.set(up);
+		this._direction.set(direction);
+		this.translation.set(location);
 
 		this.onFrameChange();
 	};
@@ -318,20 +318,20 @@ define([
 	 * @param {Vector3} worldUpVector A vector indicating the up direction of the world. (often Vector3.UNIT_Y or Vector3.UNIT_Z).
 	 */
 	Camera.prototype.lookAt = function (pos, worldUpVector) {
-		newDirection.setVector(pos).subVector(this.translation).normalize();
+		newDirection.set(pos).sub(this.translation).normalize();
 
 		// check to see if we haven't really updated camera -- no need to call
 		// sets.
 		if (newDirection.equals(this._direction)) {
 			return;
 		}
-		this._direction.setVector(newDirection);
+		this._direction.set(newDirection);
 
-		this._up.setVector(worldUpVector).normalize();
+		this._up.set(worldUpVector).normalize();
 		if (this._up.equals(Vector3.ZERO)) {
-			this._up.setVector(Vector3.UNIT_Y);
+			this._up.set(Vector3.UNIT_Y);
 		}
-		this._left.setVector(this._up).cross(this._direction).normalize();
+		this._left.set(this._up).cross(this._direction).normalize();
 		if (this._left.equals(Vector3.ZERO)) {
 			if (this._direction.x !== 0.0) {
 				this._left.setDirect(this._direction.y, -this._direction.x, 0);
@@ -339,7 +339,7 @@ define([
 				this._left.setDirect(0, this._direction.z, -this._direction.y);
 			}
 		}
-		this._up.setVector(this._direction).cross(this._left).normalize();
+		this._up.set(this._direction).cross(this._left).normalize();
 
 		this.onFrameChange();
 	};
@@ -459,28 +459,28 @@ define([
 		plane.normal.x = this._left.x * this._coeffLeft[0] + this._direction.x * this._coeffLeft[1];
 		plane.normal.y = this._left.y * this._coeffLeft[0] + this._direction.y * this._coeffLeft[1];
 		plane.normal.z = this._left.z * this._coeffLeft[0] + this._direction.z * this._coeffLeft[1];
-		plane.constant = this.translation.dotVector(plane.normal);
+		plane.constant = this.translation.dot(plane.normal);
 
 		// right plane
 		plane = this._worldPlane[Camera.RIGHT_PLANE];
 		plane.normal.x = this._left.x * this._coeffRight[0] + this._direction.x * this._coeffRight[1];
 		plane.normal.y = this._left.y * this._coeffRight[0] + this._direction.y * this._coeffRight[1];
 		plane.normal.z = this._left.z * this._coeffRight[0] + this._direction.z * this._coeffRight[1];
-		plane.constant = this.translation.dotVector(plane.normal);
+		plane.constant = this.translation.dot(plane.normal);
 
 		// bottom plane
 		plane = this._worldPlane[Camera.BOTTOM_PLANE];
 		plane.normal.x = this._up.x * this._coeffBottom[0] + this._direction.x * this._coeffBottom[1];
 		plane.normal.y = this._up.y * this._coeffBottom[0] + this._direction.y * this._coeffBottom[1];
 		plane.normal.z = this._up.z * this._coeffBottom[0] + this._direction.z * this._coeffBottom[1];
-		plane.constant = this.translation.dotVector(plane.normal);
+		plane.constant = this.translation.dot(plane.normal);
 
 		// top plane
 		plane = this._worldPlane[Camera.TOP_PLANE];
 		plane.normal.x = this._up.x * this._coeffTop[0] + this._direction.x * this._coeffTop[1];
 		plane.normal.y = this._up.y * this._coeffTop[0] + this._direction.y * this._coeffTop[1];
 		plane.normal.z = this._up.z * this._coeffTop[0] + this._direction.z * this._coeffTop[1];
-		plane.constant = this.translation.dotVector(plane.normal);
+		plane.constant = this.translation.dot(plane.normal);
 
 		if (this.projectionMode === Camera.Parallel) {
 			if (this._frustumRight > this._frustumLeft) {
@@ -500,7 +500,7 @@ define([
 			}
 		}
 
-		var dirDotLocation = this._direction.dotVector(this.translation);
+		var dirDotLocation = this._direction.dot(this.translation);
 
 		// far plane
 		plane = this._worldPlane[Camera.FAR_PLANE];
@@ -571,9 +571,9 @@ define([
 		d[6] = -this._direction.y;
 		d[10] = -this._direction.z;
 
-		d[12] = this._left.dotVector(this.translation);
-		d[13] = -this._up.dotVector(this.translation);
-		d[14] = this._direction.dotVector(this.translation);
+		d[12] = this._left.dot(this.translation);
+		d[13] = -this._up.dot(this.translation);
+		d[14] = this._direction.dot(this.translation);
 	};
 
 	/**
@@ -591,7 +591,7 @@ define([
 			store = new Ray();
 		}
 		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0, store.origin);
-		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).subVector(store.origin).normalize();
+		this.getWorldCoordinates(screenX, screenY, screenWidth, screenHeight, 0.3, store.direction).sub(store.origin).normalize();
 		return store;
 	};
 
@@ -906,27 +906,27 @@ define([
 
 		var direction = this.calcLeft;
 
-		direction.setVector(this._direction).scale(fNear);
-		vNearPlaneCenter.setVector(this.translation).addVector(direction);
-		direction.setVector(this._direction).scale(fFar);
-		vFarPlaneCenter.setVector(this.translation).addVector(direction);
+		direction.set(this._direction).scale(fNear);
+		vNearPlaneCenter.set(this.translation).add(direction);
+		direction.set(this._direction).scale(fFar);
+		vFarPlaneCenter.set(this.translation).add(direction);
 
 		var left = this.calcLeft;
 		var up = this.calcUp;
 
-		left.setVector(this._left).scale(fNearPlaneWidth);
-		up.setVector(this._up).scale(fNearPlaneHeight);
-		this._corners[0].setVector(vNearPlaneCenter).subVector(left).subVector(up);
-		this._corners[1].setVector(vNearPlaneCenter).addVector(left).subVector(up);
-		this._corners[2].setVector(vNearPlaneCenter).addVector(left).addVector(up);
-		this._corners[3].setVector(vNearPlaneCenter).subVector(left).addVector(up);
+		left.set(this._left).scale(fNearPlaneWidth);
+		up.set(this._up).scale(fNearPlaneHeight);
+		this._corners[0].set(vNearPlaneCenter).sub(left).sub(up);
+		this._corners[1].set(vNearPlaneCenter).add(left).sub(up);
+		this._corners[2].set(vNearPlaneCenter).add(left).add(up);
+		this._corners[3].set(vNearPlaneCenter).sub(left).add(up);
 
-		left.setVector(this._left).scale(fFarPlaneWidth);
-		up.setVector(this._up).scale(fFarPlaneHeight);
-		this._corners[4].setVector(vFarPlaneCenter).subVector(left).subVector(up);
-		this._corners[5].setVector(vFarPlaneCenter).addVector(left).subVector(up);
-		this._corners[6].setVector(vFarPlaneCenter).addVector(left).addVector(up);
-		this._corners[7].setVector(vFarPlaneCenter).subVector(left).addVector(up);
+		left.set(this._left).scale(fFarPlaneWidth);
+		up.set(this._up).scale(fFarPlaneHeight);
+		this._corners[4].set(vFarPlaneCenter).sub(left).sub(up);
+		this._corners[5].set(vFarPlaneCenter).add(left).sub(up);
+		this._corners[6].set(vFarPlaneCenter).add(left).add(up);
+		this._corners[7].set(vFarPlaneCenter).sub(left).add(up);
 
 		return this._corners;
 	};
@@ -936,7 +936,7 @@ define([
 	 * @param {Vector4} clipPlane Clipping plane. (nx, ny, nz, constant)
 	 */
 	Camera.prototype.setToObliqueMatrix = function (clipPlane) {
-		var transformedClipPlane = this._clipPlane.setVector(clipPlane);
+		var transformedClipPlane = this._clipPlane.set(clipPlane);
 
 		// bring the clip-plane into camera space which is needed for the calculation
 		transformedClipPlane.w = 0;
@@ -954,7 +954,7 @@ define([
 			(1.0 + projection[10]) / projection[14]
 		);
 
-		transformedClipPlane.scale(2.0 / Vector4.dotVector(transformedClipPlane, this._qCalc));
+		transformedClipPlane.scale(2.0 / Vector4.dot(transformedClipPlane, this._qCalc));
 
 		projection[2] = transformedClipPlane.x;
 		projection[6] = transformedClipPlane.y;

@@ -126,7 +126,7 @@ define([
 			var fZ = this.radius * fZFraction;
 
 			// compute center of slice
-			var kSliceCenter = tempVb.set(0, 0, 0);
+			var kSliceCenter = tempVb.setDirect(0, 0, 0);
 			kSliceCenter.z += fZ;
 
 			// compute radius of slice
@@ -144,7 +144,7 @@ define([
 				vbuf[i * 3 + 1] = kSliceCenter.y + tempVa.y;
 				vbuf[i * 3 + 2] = kSliceCenter.z + tempVa.z;
 
-				kNormal = tempVa.set(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
+				kNormal = tempVa.setDirect(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
 				kNormal.normalize();
 				if (!this.viewInside) {
 					norms[i * 3 + 0] = kNormal.x;

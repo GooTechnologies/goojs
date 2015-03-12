@@ -219,8 +219,8 @@ define([
 
 			// Set plane distance from world origin by projecting world translation to plane normal
 			var worldCenter = new Vector3(x,y,z);
-			plane.constant = worldCenter.dotVector(normal);
-			plane.normal.setVector(normal);
+			plane.constant = worldCenter.dot(normal);
+			plane.normal.set(normal);
 
 		}
 

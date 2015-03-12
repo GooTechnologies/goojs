@@ -81,9 +81,9 @@ define([
 		var delta;
 
 		if (this.camera) {
-			delta = translation.clone().subVector(Renderer.mainCamera.translation);
+			delta = translation.clone().sub(Renderer.mainCamera.translation);
 		} else {
-			delta = translation.clone().subVector(new Vector3(this.position));
+			delta = translation.clone().sub(new Vector3(this.position));
 		}
 
 		var distance;

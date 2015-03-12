@@ -68,11 +68,11 @@ define([
 
 		if(this._activeHandle.axis < 3) {
 			// Get rotation axis
-			axis.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+			axis.set([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
 			this.transform.rotation.applyPost(axis);
 
 			// Get rotation center
-			worldCenter.setVector(Vector3.ZERO);
+			worldCenter.set(Vector3.ZERO);
 			this.transform.matrix.applyPostPoint(worldCenter);
 
 			// Get picked point in world space (sort of)
@@ -82,14 +82,14 @@ define([
 				1,1,
 				ray
 			);
-			pickedPoint.setVector(ray.origin).subVector(worldCenter);
+			pickedPoint.set(ray.origin).sub(worldCenter);
 			var d = pickedPoint.length() * 0.9;
-			pickedPoint.setVector(ray.direction).scale(d).addVector(ray.origin);
+			pickedPoint.set(ray.direction).scale(d).add(ray.origin);
 
 			// Get vector from center to picked point, cross it with rotation axis and get drag direction
-			rotationDirection.setVector(pickedPoint).subVector(worldCenter);
+			rotationDirection.set(pickedPoint).sub(worldCenter);
 			Vector3.cross(axis, rotationDirection, rotationDirection);
-			rotationDirection.addVector(pickedPoint);
+			rotationDirection.add(pickedPoint);
 			Renderer.mainCamera.getScreenCoordinates(
 				rotationDirection,
 				1,1,

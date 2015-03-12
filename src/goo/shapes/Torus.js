@@ -71,7 +71,7 @@ define([
 			var theta = MathUtils.TWO_PI * circleFraction;
 			var cosTheta = Math.cos(theta);
 			var sinTheta = Math.sin(theta);
-			radialAxis.set(cosTheta, sinTheta, 0);
+			radialAxis.setDirect(cosTheta, sinTheta, 0);
 			torusMiddle.copy(radialAxis).scale(this.centerRadius);
 
 			// compute slice vertices with duplication at end point
@@ -97,7 +97,7 @@ define([
 					norms[i * 3 + 2] = -tempNormal.z;
 				}
 
-				tempNormal.scale(this.tubeRadius).addVector(torusMiddle);
+				tempNormal.scale(this.tubeRadius).add(torusMiddle);
 
 				vbuf[i * 3 + 0] = tempNormal.x;
 				vbuf[i * 3 + 1] = tempNormal.y;
