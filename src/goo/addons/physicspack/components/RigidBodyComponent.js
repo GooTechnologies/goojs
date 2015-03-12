@@ -525,7 +525,7 @@ function (
 			if (colliderComponent._dirty) {
 				colliderComponent.updateWorldCollider();
 				var collider = colliderComponent.worldCollider;
-				var cannonShape = collider.cannonShape;
+				var cannonShape = colliderComponent.cannonShape;
 				if (collider instanceof SphereCollider) {
 					cannonShape.radius = collider.radius;
 				} else if (collider instanceof MeshCollider) {
@@ -559,7 +559,7 @@ function (
 		colliderComponent.updateWorldCollider(true);
 		var collider = colliderComponent.worldCollider;
 
-		var cannonShape = collider.cannonShape = RigidBodyComponent.getCannonShape(collider);
+		var cannonShape = colliderComponent.cannonShape = RigidBodyComponent.getCannonShape(collider);
 
 		// Create a material for the shape
 		var mat = new CANNON.Material();

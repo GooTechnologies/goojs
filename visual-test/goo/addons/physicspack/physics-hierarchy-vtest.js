@@ -18,6 +18,7 @@ require([
 	'goo/addons/physicspack/colliders/PlaneCollider',
 	'goo/addons/physicspack/joints/BallJoint',
 	'goo/addons/physicspack/joints/HingeJoint',
+	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
 	'lib/V'
 ], function (
 	Material,
@@ -39,6 +40,7 @@ require([
 	PlaneCollider,
 	BallJoint,
 	HingeJoint,
+	PhysicsDebugRenderSystem,
 	V
 ) {
 	'use strict';
@@ -51,6 +53,7 @@ require([
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
+	goo.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	function createBox() {
 		var rigidBodyComponent = new RigidBodyComponent();
