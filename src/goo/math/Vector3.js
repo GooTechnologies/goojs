@@ -8,40 +8,20 @@ define([
 	'use strict';
 
 	/**
-	 * Vector with 3 components.
+	 * Vector with 3 components
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @example
-	 * var v1 = new Vector3(1, 2, 3); // == (1, 2, 3)
-	 * var v2 = new Vector3(); // == (0, 0, 0)
+	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
+	 * var v2 = new Vector3(1, 2, 3); // v2 == (1, 2, 3)
 	 */
 	function Vector3(x, y, z) {
 		// #ifdef DEBUG
 		this._x = 0;
 		this._y = 0;
 		this._z = 0;
-/*
-		['x', 'y', 'z'].forEach(function (property) {
-			Object.defineProperty(this, property, {
-				get: function () { return this['_' + property]; },
-				set: function (value) {
-					if (isNaN(value)) {
-						throw 'NaN';
-					}
-					this['_' + property] = value;
-					return value;
-				}
-			});
-		}, this);
-*/
-
-		/*[0, 1, 2].forEach(function (property) {
-			Object.defineProperty(this, property, {
-				get: function () { throw ''; },
-				set: function () { throw ''; }
-			});
-		}, this);*/
+		// #endif
 
 		if (arguments.length === 0) {
 			this.x = 0;
@@ -99,7 +79,7 @@ define([
 	 * @example
 	 * var v1 = new Vector3(1, 2, 3);
 	 * var v2 = new Vector3(4, 5, 6);
-	 * v2.add(v1); // v2 == (5, 7, 9)
+	 * v1.add(v2); // v1 == (5, 7, 9)
 	 */
 	Vector3.prototype.add = function (that) {
 		this.x += that.x;
@@ -116,8 +96,8 @@ define([
 	 * @param {number} z
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(1, 2, 3);
-	 * v1.addDirect(2, 4, 6); // v1 == (3, 6, 9)
+	 * var v = new Vector3(1, 2, 3);
+	 * v.addDirect(2, 4, 6); // v == (3, 6, 9)
 	 */
 	Vector3.prototype.addDirect = function (x, y, z) {
 		this.x += x;
@@ -134,7 +114,7 @@ define([
 	 * @example
 	 * var v1 = new Vector3(4, 5, 6);
 	 * var v2 = new Vector3(1, 2, 3);
-	 * v2.sub(v1); // v2 == (3, 3, 3)
+	 * v1.sub(v2); // v1 == (3, 3, 3)
 	 */
 	Vector3.prototype.sub = function (that) {
 		this.x -= that.x;
@@ -151,8 +131,8 @@ define([
 	 * @param {number} z
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
-	 * v1.subDirect(1, 2, 3); // v1 == (-1, -2, -3)
+	 * var v = new Vector3(); // v == (0, 0, 0)
+	 * v.subDirect(1, 2, 3); // v == (-1, -2, -3)
 	 */
 	Vector3.prototype.subDirect = function (x, y, z) {
 		this.x -= x;
@@ -181,7 +161,7 @@ define([
 	 * @example
 	 * var v1 = new Vector3(4, 5, 6);
 	 * var v2 = new Vector3(1, 2, 3);
-	 * v2.mul(v1); // v2 == (4, 10, 18)
+	 * v1.mul(v2); // v1 == (4, 10, 18)
 	 */
 	Vector3.prototype.mul = function (that) {
 		this.x *= that.x;
@@ -223,9 +203,7 @@ define([
 
 	/**
 	 * Divides the current Vector3 by another vector
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} z
+	 * @param {Vector3} that
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
 	 * var v = new Vector3(1, 2, 3);
@@ -246,8 +224,8 @@ define([
 	 * @param {number} z
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector3(4, 9, 16);
-	 * v1.divDirect(2, 3, 4); // v1 == (2, 3, 4)
+	 * var v = new Vector3(4, 9, 16);
+	 * v.divDirect(2, 3, 4); // v == (2, 3, 4)
 	 */
 	Vector3.prototype.divDirect = function (x, y, z) {
 		this.x /= x;
@@ -258,7 +236,7 @@ define([
 	};
 
 	/**
-	 * Computes the dot product between the current vector and 'rhs'.
+	 * Computes the dot product between the current vector and another vector
 	 * @param {Vector3} that
 	 * @returns {number}
 	 */
@@ -268,18 +246,37 @@ define([
 			this.z * that.z;
 	};
 
+	/**
+	 * Computes the dot product between the current vector and another vector given as 3 values
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {number}
+	 */
 	Vector3.prototype.dotDirect = function (x, y, z) {
 		return this.x * x +
 			this.y * y +
 			this.z * z;
 	};
 
+	/**
+	 * Returns whether this vector is aproximately equal to a given vector
+	 * @param that
+	 * @returns {boolean}
+	 */
 	Vector3.prototype.equals = function (that) {
 		return (Math.abs(this.x - that.x) <= MathUtils.EPSILON) &&
 			(Math.abs(this.y - that.y) <= MathUtils.EPSILON) &&
 			(Math.abs(this.z - that.z) <= MathUtils.EPSILON);
 	};
 
+	/**
+	 * Returns whether this vector is approximately equal to a given vector given as 3 values
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {boolean}
+	 */
 	Vector3.prototype.equalsDirect = function (x, y, z) {
 		return (Math.abs(this.x - x) <= MathUtils.EPSILON) &&
 			(Math.abs(this.y - y) <= MathUtils.EPSILON) &&
@@ -287,18 +284,13 @@ define([
 	};
 
 	/**
-	 * Computes the cross product between the current Vector3 and 'rhs'.  The current Vector3 becomes the result.  Equivalent of 'return (this = this x rhs);'.
-	 * @param {Vector3|number[]} that Vector3 or array of numbers on the right-hand side.
-	 * @returns {Vector3} Self to allow chaining.
+	 * Computes the cross product between the current Vector3 and another vector
+	 * @param {Vector3} that
+	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * // Passing in a Vector3
 	 * var v1 = new Vector3(0, 1, 0);
 	 * var v2 = new Vector3(0, 0, -1);
 	 * v1.cross(v2); // v1 == (-1, 0, 0)
-	 *
-	 * // Passing in an array
-	 * var v3 = new Vector3(1, 0, 0);
-	 * v3.cross([0, 1, 0]); // v3 == (0, 0, 1)
 	 */
 	Vector3.prototype.cross = function (that) {
 		var x = this.x;
@@ -313,24 +305,42 @@ define([
 	};
 
 	/**
-	 * Linearly interpolates between the current Vector3 and an 'end' Vector3.  The current Vector3 is modified.
-	 * @param {Vector3} end End Vector3.
-	 * @param {number} factor Interpolation factor between 0.0 and 1.0.
-	 * @returns {Vector3} Self to allow chaining.
+	 * Computes the cross product between the current Vector3 and another vector given as 3 values
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var goal = new Vector3(5, 0, 0);
-	 *
-	 * // In an entities  {@link ScriptComponent}
-	 * function run(entity, tpf){
-	 *     // entity.transformComponent.transform.translation is a Vector3 object
-	 *     entity.transformComponent.transform.translation.lerp(v2, tpf);
-	 *     entity.transformComponent.setUpdated();
-	 * }
+	 * var v1 = new Vector3(0, 1, 0);
+	 * var v2 = new Vector3(0, 0, -1);
+	 * v1.cross(v2); // v1 == (-1, 0, 0)
+	 */
+	Vector3.prototype.cross = function (x, y, z) {
+		var thisX = this.x;
+		var thisY = this.y;
+		var thisZ = this.z;
+
+		this.x = z * thisY - y * thisZ;
+		this.y = x * thisZ - z * thisX;
+		this.z = y * thisX - x * thisY;
+
+		return this;
+	};
+
+	/**
+	 * Linearly interpolates between the current Vector3 and an 'end' Vector3
+	 * @param {Vector3} end End Vector3
+	 * @param {number} factor Interpolation factor between 0.0 and 1.0
+	 * @returns {Vector3} Self to allow chaining
+	 * @example
+	 * var from = new Vector3(1, 2, 3);
+	 * var to = new Vector3(3, 4, 5);
+	 * var midway = from.clone().lerp(to, 0.5); // midway == (2, 3, 4)
 	 */
 	Vector3.prototype.lerp = function (end, factor) {
-		this.x = (1.0 - factor) * this.x + factor * end.x;
-		this.y = (1.0 - factor) * this.y + factor * end.y;
-		this.z = (1.0 - factor) * this.z + factor * end.z;
+		this.x += (end.x - this.x) * factor;
+		this.y += (end.y - this.y) * factor;
+		this.z += (end.z - this.z) * factor;
 
 		return this;
 	};
@@ -386,13 +396,13 @@ define([
 	};
 
 	/**
-	 * Calculates the length(magnitude) squared of the current Vector3.
-	 *              Note: When comparing the relative distances between two points it is usually sufficient
-	 *              to compare the squared distances, thus avoiding an expensive square root operation.
-	 * @returns {number} length squared
+	 * Calculates the squared length/magnitude of the current Vector3.
+	 * Note: When comparing the relative distances between two points it is usually sufficient
+	 * to compare the squared distances, thus avoiding an expensive square root operation.
+	 * @returns {number} squared length
 	 * @example
 	 * var v = new Vector3(0, 9, 0);
-	 * var n1 = v.lengthSquared(); // n1 == 81
+	 * v.lengthSquared(); // 81
 	 */
 	Vector3.prototype.lengthSquared = function () {
 		return this.x * this.x + this.y * this.y + this.z * this.z;
@@ -427,7 +437,7 @@ define([
 	};
 
 	/**
-	 * Normalizes the current vector; this method does not perform special checks for whenthe vector has length 0
+	 * Normalizes the current vector; this method does not perform special checks for zero length vectors
 	 * @returns {Vector3} Self to allow chaining
 	 */
 	Vector3.prototype.unsafeNormalize = function () {
@@ -449,7 +459,7 @@ define([
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
-	 * var n1 = v1.distanceSquared(v2); // 81
+	 * v1.distanceSquared(v2); // 81
 	 */
 	Vector3.prototype.distanceSquared = function (that) {
 		var deltaX = this.x - that.x;
@@ -468,12 +478,17 @@ define([
 	 * @example
 	 * var v1 = new Vector3(); // v1 == (0, 0, 0)
 	 * var v2 = new Vector3(0, 9, 0);
-	 * var n1 = v1.distance(v2); // n1 == 9
+	 * v1.distance(v2); // 9
 	 */
 	Vector3.prototype.distance = function (that) {
 		return Math.sqrt(this.distanceSquared(that));
 	};
 
+	/**
+	 * Multiplies this vector with a Matrix3
+	 * @param {Matrix3} matrix
+	 * @returns {Vector3} Self to allow chaining
+	 */
 	Vector3.prototype.applyPre = function (matrix) {
 		var source = matrix.data;
 
@@ -488,6 +503,11 @@ define([
 		return this;
 	};
 
+	/**
+	 * Multiplies a Matrix3 with this vector
+	 * @param {Matrix3} matrix
+	 * @returns {Vector3} Self to allow chaining
+	 */
 	Vector3.prototype.applyPost = function (matrix) {
 		var source = matrix.data;
 
@@ -503,8 +523,8 @@ define([
 	};
 
 	/**
-	 * Clones the vector.
-	 * @returns {Vector3} Clone of self.
+	 * Clones the vector
+	 * @returns {Vector3} Clone of self
 	 */
 	Vector3.prototype.clone = function () {
 		return new Vector3(this.x, this.y, this.z);
@@ -513,10 +533,12 @@ define([
 	/**
 	 * Copies the values of another vector to this vector; an alias for .setVector
 	 * @param {Vector3} Source vector
+	 * @returns {Vector3} Self to allow chaining
 	 */
 	Vector3.prototype.copy = Vector3.prototype.set;
 
 	// can't just use destination.copy(source) when destination has more components than source
+	// it would get infested with undefined and NaNs
 	Vector3.prototype.copyTo = function (destination) {
 		destination.x = this.x;
 		destination.y = this.y;
