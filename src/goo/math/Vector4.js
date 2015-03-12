@@ -8,14 +8,14 @@ define([
 	'use strict';
 
 	/**
-	 * Vector with 3 components
+	 * Vector with 4 components
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {number} w
 	 * @example
-	 * var v1 = new Vector4(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector4(1, 2, 3); // v2 == (1, 2, 3)
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * var v2 = new Vector4(1, 2, 3, 4); // v2 == (1, 2, 3, 4)
 	 */
 	function Vector4(x, y, z, w) {
 		// #ifdef DEBUG
@@ -87,9 +87,9 @@ define([
 	 * @param that {Vector4}
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector4(1, 2, 3);
-	 * var v2 = new Vector4(4, 5, 6);
-	 * v1.add(v2); // v1 == (5, 7, 9)
+	 * var v1 = new Vector4(1, 2, 3, 4);
+	 * var v2 = new Vector4(4, 5, 6, 7);
+	 * v1.add(v2); // v1 == (5, 7, 9, 11)
 	 */
 	Vector4.prototype.add = function (that) {
 		this.x += that.x;
@@ -101,15 +101,15 @@ define([
 	};
 
 	/**
-	 * Adds numbers 'x', 'y', 'z' to the current Vector4 values
+	 * Adds numbers 'x', 'y', 'z', 'w' to the current Vector4 values
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {number} w
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v = new Vector4(1, 2, 3);
-	 * v.addDirect(2, 4, 6); // v == (3, 6, 9)
+	 * var v = new Vector4(1, 2, 3, 4);
+	 * v.addDirect(2, 4, 6, 8); // v == (3, 6, 9, 12)
 	 */
 	Vector4.prototype.addDirect = function (x, y, z, w) {
 		this.x += x;
@@ -125,9 +125,9 @@ define([
 	 * @param that {Vector4}
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector4(4, 5, 6);
-	 * var v2 = new Vector4(1, 2, 3);
-	 * v1.sub(v2); // v1 == (3, 3, 3)
+	 * var v1 = new Vector4(4, 5, 6, 7);
+	 * var v2 = new Vector4(1, 2, 3, 4);
+	 * v1.sub(v2); // v1 == (3, 3, 3, 3)
 	 */
 	Vector4.prototype.sub = function (that) {
 		this.x -= that.x;
@@ -139,15 +139,15 @@ define([
 	};
 
 	/**
-	 * Subtracts numbers 'x', 'y', 'z' from the current Vector4
+	 * Subtracts numbers 'x', 'y', 'z', 'w' from the current Vector4
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {number} w
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v = new Vector4(); // v == (0, 0, 0)
-	 * v.subDirect(1, 2, 3); // v == (-1, -2, -3)
+	 * var v = new Vector4(); // v == (0, 0, 0, 0)
+	 * v.subDirect(1, 2, 3); // v == (-1, -2, -3, -4)
 	 */
 	Vector4.prototype.subDirect = function (x, y, z, w) {
 		this.x -= x;
@@ -176,9 +176,9 @@ define([
 	 * @param that {Vector4}
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v1 = new Vector4(4, 5, 6);
-	 * var v2 = new Vector4(1, 2, 3);
-	 * v1.mul(v2); // v1 == (4, 10, 18)
+	 * var v1 = new Vector4(4, 5, 6, 7);
+	 * var v2 = new Vector4(1, 2, 3, 4);
+	 * v1.mul(v2); // v1 == (4, 10, 18, 28)
 	 */
 	Vector4.prototype.mul = function (that) {
 		this.x *= that.x;
@@ -190,15 +190,15 @@ define([
 	};
 
 	/**
-	 * Multiplies the current Vector4 by numbers 'x', 'y', 'z' as inputs
+	 * Multiplies the current Vector4 by numbers 'x', 'y', 'z', 'w' as inputs
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {number} w
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v = new Vector4(1, 2, 3);
-	 * v.mulDirect(2, 4, 6); // v == (2, 8, 18)
+	 * var v = new Vector4(1, 2, 3, 4);
+	 * v.mulDirect(2, 4, 6, 8); // v == (2, 8, 18, 32)
 	 */
 	Vector4.prototype.mulDirect = function (x, y, z, w) {
 		this.x *= x;
@@ -228,8 +228,8 @@ define([
 	 * @param {Vector4} that
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v = new Vector4(1, 2, 3);
-	 * v.mulDirect(2, 4, 6); // v == (2, 8, 18)
+	 * var v = new Vector4(2, 4, 6, 8);
+	 * v.divDirect(1, 2, 3, 4); // v == (2, 2, 2, 2)
 	 */
 	Vector4.prototype.div = function (that) {
 		this.x /= that.x;
@@ -241,15 +241,15 @@ define([
 	};
 
 	/**
-	 * Divides the current Vector4 by numbers 'x', 'y', 'z' as inputs
+	 * Divides the current Vector4 by numbers 'x', 'y', 'z', 'w' as inputs
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
 	 * @param {number} w
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v = new Vector4(4, 9, 16);
-	 * v.divDirect(2, 3, 4); // v == (2, 3, 4)
+	 * var v = new Vector4(4, 9, 16, 25);
+	 * v.divDirect(2, 3, 4, 5); // v == (2, 3, 4, 5)
 	 */
 	Vector4.prototype.divDirect = function (x, y, z, w) {
 		this.x /= x;
@@ -320,9 +320,9 @@ define([
 	 * @param {number} factor Interpolation factor between 0.0 and 1.0
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var from = new Vector4(1, 2, 3);
-	 * var to = new Vector4(3, 4, 5);
-	 * var midway = from.clone().lerp(to, 0.5); // midway == (2, 3, 4)
+	 * var from = new Vector4(1, 2, 3, 4);
+	 * var to = new Vector4(3, 4, 5, 6);
+	 * var midway = from.clone().lerp(to, 0.5); // midway == (2, 3, 4, 5)
 	 */
 	Vector4.prototype.lerp = function (end, factor) {
 		this.x += (end.x - this.x) * factor;
@@ -343,8 +343,8 @@ define([
 		 */
 		Vector4.prototype.reflect = function (normal) {
 			tmpVec.copy(normal);
-			tmpVec.scale(2 * this.dotVector(normal));
-			this.subVector(tmpVec);
+			tmpVec.scale(2 * this.dot(normal));
+			this.sub(tmpVec);
 			return this;
 		};
 	})();
@@ -354,8 +354,8 @@ define([
 	 * @param {Vector4} that
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v = new Vector4(); // v == (0, 0, 0)
-	 * v.set(new Vector4(2, 4, 6)); // v == (2, 4, 6)
+	 * var v = new Vector4(); // v == (0, 0, 0, 0)
+	 * v.set(new Vector4(2, 4, 6, 8)); // v == (2, 4, 6, 8)
 	 */
 	Vector4.prototype.set = function (that) {
 		this.x = that.x;
@@ -374,8 +374,8 @@ define([
 	 * @param {number} w
 	 * @returns {Vector4} Self to allow chaining
 	 * @example
-	 * var v = new Vector4(); // v == (0, 0, 0)
-	 * v.setDirect(2, 4, 6); // v == (2, 4, 6)
+	 * var v = new Vector4(); // v == (0, 0, 0, 0)
+	 * v.setDirect(2, 4, 6, 8); // v == (2, 4, 6, 8)
 	 */
 	Vector4.prototype.setDirect = function (x, y, z, w) {
 		this.x = x;
@@ -392,7 +392,7 @@ define([
 	 * to compare the squared distances, thus avoiding an expensive square root operation.
 	 * @returns {number} squared length
 	 * @example
-	 * var v = new Vector4(0, 9, 0);
+	 * var v = new Vector4(0, 9, 0, 0);
 	 * v.lengthSquared(); // 81
 	 */
 	Vector4.prototype.lengthSquared = function () {
@@ -451,8 +451,8 @@ define([
 	 * @param {Vector4} that Vector4
 	 * @returns {number} distance squared
 	 * @example
-	 * var v1 = new Vector4(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector4(0, 9, 0);
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * var v2 = new Vector4(0, 9, 0, 0);
 	 * v1.distanceSquared(v2); // 81
 	 */
 	Vector4.prototype.distanceSquared = function (that) {
@@ -471,8 +471,8 @@ define([
 	 * @param {Vector4} that Vector4
 	 * @returns {number} distance
 	 * @example
-	 * var v1 = new Vector4(); // v1 == (0, 0, 0)
-	 * var v2 = new Vector4(0, 9, 0);
+	 * var v1 = new Vector4(); // v1 == (0, 0, 0, 0)
+	 * var v2 = new Vector4(0, 9, 0, 0);
 	 * v1.distance(v2); // 9
 	 */
 	Vector4.prototype.distance = function (that) {
@@ -548,7 +548,7 @@ define([
 	};
 
 	Vector4.fromArray = function (array) {
-		return new Vector4(array[0], array[1], array[2]);
+		return new Vector4(array[0], array[1], array[2], array[3]);
 	};
 
 	// #ifdef DEBUG

@@ -207,8 +207,8 @@ define([
 	 * @param {Vector3} that
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v = new Vector3(1, 2, 3);
-	 * v.mulDirect(2, 4, 6); // v == (2, 8, 18)
+	 * var v = new Vector3(2, 4, 6);
+	 * v.div(1, 2, 3); // v == (2, 2, 2)
 	 */
 	Vector3.prototype.div = function (that) {
 		this.x /= that.x;
@@ -225,8 +225,8 @@ define([
 	 * @param {number} z
 	 * @returns {Vector3} Self to allow chaining
 	 * @example
-	 * var v = new Vector3(4, 9, 16);
-	 * v.divDirect(2, 3, 4); // v == (2, 3, 4)
+	 * var v = new Vector3(2, 4, 6);
+	 * v.divDirect(1, 2, 3); // v == (2, 2, 2)
 	 */
 	Vector3.prototype.divDirect = function (x, y, z) {
 		this.x /= x;
@@ -356,8 +356,8 @@ define([
 		 */
 		Vector3.prototype.reflect = function (normal) {
 			tmpVec.copy(normal);
-			tmpVec.scale(2 * this.dotVector(normal));
-			this.subVector(tmpVec);
+			tmpVec.scale(2 * this.dot(normal));
+			this.sub(tmpVec);
 			return this;
 		};
 	})();
