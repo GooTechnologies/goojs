@@ -440,11 +440,12 @@ define([
 			&& this._clearColor[3] === a) {
 				return;
 			}
+		//! AT: why is the clear color an array?!
 		this._clearColor[0] = r;
 		this._clearColor[1] = g;
 		this._clearColor[2] = b;
 		this._clearColor[3] = a;
-		this.clearColor.setArray(this._clearColor);
+		this.clearColor.setDirect(this._clearColor[0], this._clearColor[1], this._clearColor[2], this._clearColor[3]);
 		this.context.clearColor(r, g, b, a);
 	};
 

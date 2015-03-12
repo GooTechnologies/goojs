@@ -48,11 +48,11 @@ define([
 			loader.load(config.id).then(function (entity) {
 				var t = entity.transformComponent.transform;
 				var ct = config.components.transform;
-				expect(t.translation).toBeCloseToVector(new Vector3(ct.translation));
-				expect(t.scale).toBeCloseToVector(new Vector3(ct.scale));
+				expect(t.translation).toBeCloseToVector(Vector3.fromArray(ct.translation));
+				expect(t.scale).toBeCloseToVector(Vector3.fromArray(ct.scale));
 				var rotation = t.rotation.toAngles();
-				rotation.mul(180 / Math.PI);
-				expect(rotation).toBeCloseToVector(new Vector3(ct.rotation));
+				rotation.scale(180 / Math.PI);
+				expect(rotation).toBeCloseToVector(Vector3.fromArray(ct.rotation));
 				done();
 			});
 		});
@@ -75,11 +75,11 @@ define([
 
 				var t = entity.transformComponent.transform;
 				var ct = newConfig.components.transform;
-				expect(t.translation).toBeCloseToVector(new Vector3(ct.translation));
-				expect(t.scale).toBeCloseToVector(new Vector3(ct.scale));
+				expect(t.translation).toBeCloseToVector(Vector3.fromArray(ct.translation));
+				expect(t.scale).toBeCloseToVector(Vector3.fromArray(ct.scale));
 				var rotation = t.rotation.toAngles();
-				rotation.mul(180 / Math.PI);
-				expect(rotation).toBeCloseToVector(new Vector3(ct.rotation));
+				rotation.scale(180 / Math.PI);
+				expect(rotation).toBeCloseToVector(Vector3.fromArray(ct.rotation));
 				done();
 			});
 		});

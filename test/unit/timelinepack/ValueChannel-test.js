@@ -3,13 +3,15 @@ define([
 	'goo/entities/Entity',
 	'goo/entities/components/TransformComponent',
 	'goo/math/Matrix3x3',
-	'goo/math/MathUtils'
+	'goo/math/MathUtils',
+	'test/CustomMatchers'
 ], function (
 	ValueChannel,
 	Entity,
 	TransformComponent,
 	Matrix3x3,
-	MathUtils
+	MathUtils,
+	CustomMatchers
 	) {
 	'use strict';
 
@@ -17,6 +19,7 @@ define([
 		var channel;
 		beforeEach(function () {
 			channel = new ValueChannel();
+			jasmine.addMatchers(CustomMatchers);
 		});
 
 		describe('addKeyframe', function () {
@@ -133,28 +136,29 @@ define([
 		beforeEach(function () {
 			entity = new Entity();
 			entity.setComponent(new TransformComponent());
+			jasmine.addMatchers(CustomMatchers);
 		});
 
 		describe('getSimpleTransformTweener', function () {
 			it('gets a translation tweener that alters the translation of the resolved entity', function () {
-				var tweener = ValueChannel.getSimpleTransformTweener('translation', 1, '', resolver);
+				var tweener = ValueChannel.getSimpleTransformTweener('translation', 'y', '', resolver);
 				tweener(0, 123);
-				expect(entity.transformComponent.transform.translation.data[1]).toEqual(123);
+				expect(entity.transformComponent.transform.translation.y).toEqual(123);
 			});
 
 			it('gets a scale tweener that alters the scale of the resolved entity', function () {
-				var tweener = ValueChannel.getSimpleTransformTweener('scale', 2, '', resolver);
+				var tweener = ValueChannel.getSimpleTransformTweener('scale', 'z', '', resolver);
 				tweener(0, 123);
-				expect(entity.transformComponent.transform.scale.data[2]).toEqual(123);
+				expect(entity.transformComponent.transform.scale.z).toEqual(123);
 			});
 		});
 
 		describe('getRotationTweener', function () {
-			it('gets a rotation tweenerthat alters the rotation of the resolved entity', function () {
-				var tweener = ValueChannel.getRotationTweener(0, '', resolver, [0, 0, 0]);
+			it('gets a rotation tweener that alters the rotation of the resolved entity', function () {
+				var tweener = ValueChannel.getRotationTweener('x', '', resolver, [0, 0, 0]);
 				tweener(0, 123 * MathUtils.RAD_TO_DEG);
 				var expectedRotation = new Matrix3x3().fromAngles(123, 0, 0);
-				expect(entity.transformComponent.transform.rotation.equals(expectedRotation)).toBeTruthy();
+				expect(entity.transformComponent.transform.rotation).toBeCloseToMatrix(expectedRotation);
 			});
 		});
 	});

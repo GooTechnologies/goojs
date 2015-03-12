@@ -59,7 +59,7 @@ define([
 			transformData._rotation.x = this._rotations[index4A + 0];
 			transformData._rotation.y = this._rotations[index4A + 1];
 			transformData._rotation.z = this._rotations[index4A + 2];
-			transformData._rotation.data[3] = this._rotations[index4A + 3];
+			transformData._rotation.w = this._rotations[index4A + 3];
 
 			transformData._translation.x = this._translations[index3A + 0];
 			transformData._translation.y = this._translations[index3A + 1];
@@ -73,7 +73,7 @@ define([
 			transformData._rotation.x = this._rotations[index4B + 0];
 			transformData._rotation.y = this._rotations[index4B + 1];
 			transformData._rotation.z = this._rotations[index4B + 2];
-			transformData._rotation.data[3] = this._rotations[index4B + 3];
+			transformData._rotation.w = this._rotations[index4B + 3];
 
 			transformData._translation.x = this._translations[index3B + 0];
 			transformData._translation.y = this._translations[index3B + 1];
@@ -89,12 +89,12 @@ define([
 		transformData._rotation.x = this._rotations[index4A + 0];
 		transformData._rotation.y = this._rotations[index4A + 1];
 		transformData._rotation.z = this._rotations[index4A + 2];
-		transformData._rotation.data[3] = this._rotations[index4A + 3];
+		transformData._rotation.w = this._rotations[index4A + 3];
 
 		tmpQuat.x = this._rotations[index4B + 0];
 		tmpQuat.y = this._rotations[index4B + 1];
 		tmpQuat.z = this._rotations[index4B + 2];
-		tmpQuat.data[3] = this._rotations[index4B + 3];
+		tmpQuat.w = this._rotations[index4B + 3];
 
 		if (!transformData._rotation.equals(tmpQuat)) {
 			Quaternion.slerp(transformData._rotation, tmpQuat, fraction, tmpQuat2);

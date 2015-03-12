@@ -54,22 +54,15 @@ define([
 		});
 
 		it('can be modified through aliases', function () {
-			var a = new Vector2();
+			var v1 = new Vector2();
+			v1.x = 1;
+			v1.y = 2;
+			expect(v1).toBeCloseToVector(new Vector2(1, 2));
 
-			a.x = 1;
-			a.y = 2;
-
-			expect(a).toBeCloseToVector(new Vector2(1, 2));
-
-			a.u = 2;
-			a.v = 3;
-
-			expect(a).toBeCloseToVector(new Vector2(2, 3));
-
-			a.s = 3;
-			a.t = 4;
-
-			expect(a).toBeCloseToVector(new Vector2(3, 4));
+			var v2 = new Vector2();
+			v2.u = 2;
+			v2.v = 3;
+			expect(v2).toBeCloseToVector(new Vector2(2, 3));
 		});
 
 		describe('scale', function () {
