@@ -122,6 +122,29 @@ function (
 	};
 
 	/**
+	 * Marks the component as dirty.
+	 */
+	ColliderComponent.prototype.setToDirty = function () {
+		this._dirty = true;
+	};
+
+	/**
+	 * Marks the component as dirty.
+	 */
+	ColliderComponent.prototype.setToClean = function () {
+		this._dirty = false;
+	};
+
+	/**
+	 * Gets whether the component needs to be updated.
+	 *
+	 * @return {boolean}
+	 */
+	ColliderComponent.prototype.isDirty = function () {
+		return this._dirty;
+	};
+
+	/**
 	 * @private
 	 * @param  {Object} obj
 	 * @param  {Entity} entity

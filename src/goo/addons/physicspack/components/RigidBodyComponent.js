@@ -517,12 +517,12 @@ function (
 		}
 	};
 
-	RigidBodyComponent.prototype._updateDirtyColliders = function () {
+	RigidBodyComponent.prototype.updateDirtyColliders = function () {
 		var colliderEntities = this._colliderEntities;
 		for (var i = 0; i < colliderEntities.length; i++) {
 			var entity = colliderEntities[i];
 			var colliderComponent = entity.colliderComponent;
-			if (colliderComponent._dirty) {
+			if (colliderComponent.isDirty()) {
 				colliderComponent.updateWorldCollider();
 				var collider = colliderComponent.worldCollider;
 				var cannonShape = colliderComponent.cannonShape;
@@ -534,7 +534,7 @@ function (
 					cannonShape.setScale(scale);
 				}
 				cannonShape.updateBoundingSphereRadius();
-				colliderComponent._dirty = false;
+				colliderComponent.setToClean();
 			}
 		}
 	};
@@ -606,6 +606,29 @@ function (
 	RigidBodyComponent.prototype.attached = function (entity) {
 		this._entity = entity;
 		this._system = entity._world.getSystem('PhysicsSystem');
+	};
+
+	/**
+	 * Marks the component as dirty.
+	 */
+	RigidBodyComponent.prototype.setToDirty = function () {
+		this._dirty = true;
+	};
+
+	/**
+	 * Marks the component as dirty.
+	 */
+	RigidBodyComponent.prototype.setToClean = function () {
+		this._dirty = false;
+	};
+
+	/**
+	 * Gets whether the component needs to be updated.
+	 *
+	 * @return {boolean}
+	 */
+	RigidBodyComponent.prototype.isDirty = function () {
+		return this._dirty;
 	};
 
 	RigidBodyComponent.prototype.api = {};
