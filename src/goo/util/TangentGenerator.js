@@ -107,13 +107,13 @@ define([
 			var sdir = new Vector3((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
 			var tdir = new Vector3((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
 
-			tan1[i1].add(sdir);
-			tan1[i2].add(sdir);
-			tan1[i3].add(sdir);
+			tan1[i1].addVector(sdir);
+			tan1[i2].addVector(sdir);
+			tan1[i3].addVector(sdir);
 
-			tan2[i1].add(tdir);
-			tan2[i2].add(tdir);
-			tan2[i3].add(tdir);
+			tan2[i1].addVector(tdir);
+			tan2[i2].addVector(tdir);
+			tan2[i3].addVector(tdir);
 		}
 
 		meshData.attributeMap[MeshData.TANGENT] = MeshData.createAttribute(4, 'Float');
@@ -127,14 +127,14 @@ define([
 			var t = tan1[a];
 
 			// Gram-Schmidt orthogonalize
-			var dot = n.dot(t);
-			calc1.copy(t).sub(calc2.copy(n).mul(dot)).normalize();
+			var dot = n.dotVector(t);
+			calc1.copy(t).subVector(calc2.copy(n).mulVector(dot)).normalize();
 			tangentBuffer[a * 4 + 0] = calc1.x;
 			tangentBuffer[a * 4 + 1] = calc1.y;
 			tangentBuffer[a * 4 + 2] = calc1.z;
 
 			// Calculate handedness
-			dot = calc1.copy(n).cross(t).dot(tan2[a]);
+			dot = calc1.copy(n).cross(t).dotVector(tan2[a]);
 			var w = dot < 0.0 ? -1.0 : 1.0;
 			tangentBuffer[a * 4 + 3] = w;
 		}

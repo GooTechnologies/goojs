@@ -95,7 +95,7 @@ define([
 		this._plane.rayIntersect(this._newRay, worldPos, true);
 		moveVector.setVector(worldPos).subVector(oldWorldPos);
 		// And add to translation
-		this.transform.translation.add(moveVector);
+		this.transform.translation.addVector(moveVector);
 	};
 
 	TranslationGizmo.prototype._moveOnLine = function() {

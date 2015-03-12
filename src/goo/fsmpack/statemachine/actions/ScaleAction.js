@@ -55,7 +55,7 @@ define([
 					transform.scale.y *= this.scale[1] * tpf;
 					transform.scale.z *= this.scale[2] * tpf;
 				} else {
-					transform.scale.mul(this.scale);
+					transform.scale.mulVector(this.scale[0], this.scale[1], this.scale[2]);
 				}
 			} else {
 				if (this.everyFrame) {
@@ -64,7 +64,7 @@ define([
 					transform.scale.y += this.scale[1] * tpf;
 					transform.scale.z += this.scale[2] * tpf;
 				} else {
-					transform.scale.add(this.scale);
+					transform.scale.addVector(this.scale[0], this.scale[1], this.scale[2]);
 				}
 			}
 		} else {

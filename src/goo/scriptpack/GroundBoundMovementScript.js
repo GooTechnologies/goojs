@@ -222,7 +222,7 @@ define([
 	GroundBoundMovementScript.prototype.computeAcceleration = function(entity, current, target) {
 		calcVec.set(target);
 		entity.transformComponent.transform.rotation.applyPost(calcVec);
-		calcVec.sub(current);
+		calcVec.subVector(current);
 		calcVec.lerp(target, this.accLerp);
 		calcVec.y = target.y; // Ground is not soft...
 		return calcVec;
@@ -238,7 +238,7 @@ define([
 	 */
 	GroundBoundMovementScript.prototype.computeTorque = function(current, target) {
 		calcVec.set(target);
-		calcVec.sub(current);
+		calcVec.subVector(current);
 		calcVec.lerp(target, this.rotLerp);
 		return calcVec;
 	};

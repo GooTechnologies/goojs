@@ -87,7 +87,7 @@ define([
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
-		var initialTranslation = new Vector3().copy(translation);
+		var initialTranslation = translation.clone();
 		var time = entity._world.time * 1000;
 
 		var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z };
@@ -96,7 +96,7 @@ define([
 		var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
 
 		if (this.relative) {
-			var to = Vector3.add(initialTranslation, this.to);
+			var to = Vector3.fromArray(this.to).addVector(initialTranslation);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
 			// it's a string until property controls are fixed

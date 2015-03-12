@@ -94,8 +94,8 @@ define([
 			return;
 		}
 
-		var min = tmpVec1.set(Infinity, Infinity, Infinity);
-		var max = tmpVec2.set(-Infinity, -Infinity, -Infinity);
+		var min = tmpVec1.setDirect(Infinity, Infinity, Infinity);
+		var max = tmpVec2.setDirect(-Infinity, -Infinity, -Infinity);
 
 		var store = tmpArray;
 		store.length = 0;
@@ -107,7 +107,7 @@ define([
 			}
 		}
 
-		this.center.copy(min.add(max));
+		this.center.copy(min.addVector(max));
 		this.center.scale(0.5);
 
 		this.xExtent = max.x - this.center.x;
@@ -430,7 +430,7 @@ define([
 			return null;
 		}
 
-		var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
+		var diff = tmpVec1.copy(ray.origin).subVector(this.center);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -460,8 +460,8 @@ define([
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {
 				var distances = t;
-				var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin),
-					new Vector3(ray.direction).scale(distances[1]).add(ray.origin)];
+				var points = [new Vector3(ray.direction).scale(distances[0]).addVector(ray.origin),
+					new Vector3(ray.direction).scale(distances[1]).addVector(ray.origin)];
 				return {
 					"distances": distances,
 					"points": points
@@ -469,7 +469,7 @@ define([
 			}
 
 			var distances = [t[0]];
-			var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin)];
+			var points = [new Vector3(ray.direction).scale(distances[0]).addVector(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points

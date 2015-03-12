@@ -102,11 +102,11 @@ define([
 				vel.z * 0.98 + (target.z) * 0.1
 			);
 
-			translation.add(vel).sub(oldVal);
+			translation.addVector(vel).subVector(oldVal);
 			oldVal.copy(vel);
 			transformComponent.setUpdated();
 		}).onComplete(function() {
-			translation.sub(oldVal);
+			translation.subVector(oldVal);
 			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start(time);

@@ -77,6 +77,7 @@ define([
 	 * @returns {Vector3|null} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
 	 */
 	Plane.prototype.rayIntersect = function (ray, store, suppressWarnings, precision) {
+		//! AT: the only function with a suppressWarnings
 		precision = typeof(precision)==='undefined' ? 1e-7 : precision;
 		store = store || new Vector3();
 
@@ -88,12 +89,15 @@ define([
 			}
 			return null;
 		}
-		var c = this.constant;
-		var pMinusL0DotN = p0.setVector(this.normal).scale(c).subVector(ray.origin).dotVector(this.normal);
 
-		var d = pMinusL0DotN / lDotN;
+		var pMinusL0DotN = p0.setVector(this.normal)
+			.scale(this.constant)
+			.subVector(ray.origin)
+			.dotVector(this.normal);
 
-		return store.setVector(ray.direction).scale(d).addVector(ray.origin);
+		return store.setVector(ray.direction)
+			.scale(pMinusL0DotN / lDotN)
+			.addVector(ray.origin);
 	};
 
 	/**

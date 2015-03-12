@@ -123,7 +123,7 @@ define([
 			var moveMult = environment.world.tpf * moveState.speed;
 
 			// scale by speed
-			calcVector.mul(moveMult);
+			calcVector.scale(moveMult);
 
 			// grab orientation of player
 			var orient = transform.rotation;
@@ -132,7 +132,7 @@ define([
 			orient.applyPost(calcVector);
 
 			// add to our transform
-			transform.translation.add(calcVector);
+			transform.translation.addVector(calcVector);
 
 			// set our component updated.
 			transformComponent.setUpdated();

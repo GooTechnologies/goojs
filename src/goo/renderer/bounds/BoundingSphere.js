@@ -51,7 +51,7 @@ define([
 			max.y = y > max.y ? y : max.y;
 			max.z = z > max.z ? z : max.z;
 		}
-		var newCenter = max.addVector(min).div(2.0);
+		var newCenter = max.addVector(min).scale(1 / 2.0);
 		var size = 0, test;
 		for (var i = 0; i < verts.length; i += 3) {
 			vec.setDirect(verts[i], verts[i + 1], verts[i + 2]);
@@ -102,7 +102,7 @@ define([
 		this.center.set(points[0]);
 
 		for (var i = 1; i < points.length; i++) {
-			this.center.add(points[i]);
+			this.center.addVector(points[i]);
 		}
 
 		var quantity = 1.0 / points.length;
@@ -110,7 +110,7 @@ define([
 
 		var maxRadiusSqr = 0.0;
 		for (var i = 0; i < points.length; i++) {
-			var diff = Vector3.sub(points[i], this.center, tmpVec);
+			var diff = tmpVec.copy(points[i]).subVector(this.center);
 			var radiusSqr = diff.lengthSquared();
 			if (radiusSqr > maxRadiusSqr) {
 				maxRadiusSqr = radiusSqr;
@@ -214,7 +214,7 @@ define([
 			return false;
 		}
 
-		var diff = new Vector3().copy(ray.origin).sub(this.center);
+		var diff = ray.origin.clone().subVector(this.center);
 		var a = diff.dotVector(diff) - this.radius * this.radius;
 		if (a <= 0.0) {
 			// in sphere

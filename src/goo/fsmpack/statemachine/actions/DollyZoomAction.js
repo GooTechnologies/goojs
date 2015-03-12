@@ -101,7 +101,11 @@ define([
 			var camera = entity.cameraComponent.camera;
 			var time = entity._world.time * 1000;
 
-			var to = new Vector3(this.lookAt).sub(initialTranslation).normalize().scale(this.forward).add(initialTranslation);
+			var to = Vector3.fromArray(this.lookAt)
+				.subVector(initialTranslation)
+				.normalize()
+				.scale(this.forward)
+				.addVector(initialTranslation);
 
 			var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z, d: this.initialDistance };
 			var fakeTo = { x: to.x, y: to.y, z: to.z, d: +this.initialDistance - +this.forward };

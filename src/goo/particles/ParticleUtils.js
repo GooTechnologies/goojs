@@ -23,7 +23,7 @@ define([
 			ParticleUtils.applyEntityTransformVector(store, particleEntity);
 		}
 
-		store.mul(scale);
+		store.scale(scale);
 		return store;
 	};
 

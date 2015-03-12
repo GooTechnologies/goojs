@@ -77,10 +77,10 @@ define([
 
 		var projData = this.projData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 4, 6);
 		projData.getAttributeBuffer(MeshData.POSITION).set([
-			0,0,0,
-			1,0,0,
-			1,1,0,
-			0,1,0
+			0, 0, 0,
+			1, 0, 0,
+			1, 1, 0,
+			0, 1, 0
 		]);
 		projData.getIndexBuffer().set([1, 3, 0, 2, 3, 1]);
 		var materialProj = new Material(projShaderDef, 'mat');
@@ -137,27 +137,27 @@ define([
 			var camLocation = this.camLocation;
 			var camReflectPos = this.camReflectPos;
 
-			camLocation.set(camera.translation);
+			camLocation.setVector(camera.translation);
 			var planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectPos.set(camLocation.sub(calcVect));
+			calcVect.setVector(waterPlane.normal).scale(planeDistance * 2.0);
+			camReflectPos.setVector(camLocation.subVector(calcVect));
 
-			camLocation.set(camera.translation).add(camera._direction);
+			camLocation.setVector(camera.translation).addVector(camera._direction);
 			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectDir.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
+			calcVect.setVector(waterPlane.normal).scale(planeDistance * 2.0);
+			camReflectDir.setVector(camLocation.subVector(calcVect)).subVector(camReflectPos).normalize();
 
-			camLocation.set(camera.translation).add(camera._up);
+			camLocation.setVector(camera.translation).addVector(camera._up);
 			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
-			camReflectUp.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
+			calcVect.setVector(waterPlane.normal).scale(planeDistance * 2.0);
+			camReflectUp.setVector(camLocation.subVector(calcVect)).subVector(camReflectPos).normalize();
 
-			camReflectLeft.set(camReflectUp).cross(camReflectDir).normalize();
+			camReflectLeft.setVector(camReflectUp).cross(camReflectDir).normalize();
 
-			this.waterCamera.translation.set(camReflectPos);
-			this.waterCamera._direction.set(camReflectDir);
-			this.waterCamera._up.set(camReflectUp);
-			this.waterCamera._left.set(camReflectLeft);
+			this.waterCamera.translation.setVector(camReflectPos);
+			this.waterCamera._direction.setVector(camReflectDir);
+			this.waterCamera._up.setVector(camReflectUp);
+			this.waterCamera._left.setVector(camReflectLeft);
 			this.waterCamera.normalize();
 			this.waterCamera.update();
 

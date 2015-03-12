@@ -525,6 +525,10 @@ define([
 		return this;
 	};
 
+	Vector3.fromArray = function (array) {
+		return new Vector3(array[0], array[1], array[2]);
+	};
+
 	// #ifdef DEBUG
 	Vector.addReturnChecks(Vector3.prototype, [
 		'dot', 'dotDirect',

@@ -122,7 +122,7 @@ define([
 		// check if any of the frustums corner vertices lie between the upper and lower bound planes
 		for (var i = 0; i < 8; i++) {
 			if (corners[i].y < upperBound && corners[i].y > -upperBound) {
-				this.intersections[nrPoints++].set(corners[i]);
+				this.intersections[nrPoints++].setVector(corners[i]);
 			}
 		}
 
@@ -193,7 +193,7 @@ define([
 			spaceTransformation.setDirect(intersections[i].x, 0.0, this.intersections[i].z, 1.0);
 			modelViewProjectionMatrix.applyPost(spaceTransformation);
 			intersections[i].setDirect(spaceTransformation.x, spaceTransformation.y, 0);
-			intersections[i].div(spaceTransformation.w);
+			intersections[i].divVector(spaceTransformation.w);
 		}
 
 		// find min/max in projector space
@@ -246,7 +246,7 @@ define([
 
 	ProjectedGrid.prototype.getWorldIntersection = function (planeHeight, screenPosition, modelViewProjectionInverseMatrix, store) {
 		this.calculateIntersection(planeHeight, screenPosition, modelViewProjectionInverseMatrix);
-		store.setDirect(this.origin.x, this.origin.y, this.origin.z).div(this.origin.w);
+		store.setDirect(this.origin.x, this.origin.y, this.origin.z).scale(1 / this.origin.w);
 	};
 
 	ProjectedGrid.prototype.getWorldIntersectionSimple = function (planeHeight, source, destination, store, tmpStorage) {
@@ -268,7 +268,7 @@ define([
 		modelViewProjectionInverseMatrix.applyPost(this.origin);
 		modelViewProjectionInverseMatrix.applyPost(this.direction);
 
-		this.direction.sub(this.origin);
+		this.direction.subVector(this.origin);
 
 		// final double t = (planeHeight * this.origin.getW() - this.origin.y)
 		// / (direction.y - planeHeight * direction.getW());
@@ -278,10 +278,10 @@ define([
 			this.direction.scale(t);
 		} else {
 			this.direction.normalize();
-			this.direction.mul(this.mainCamera._frustumFar);
+			this.direction.mulVector(this.mainCamera._frustumFar);
 		}
 
-		this.origin.add(this.direction);
+		this.origin.addVector(this.direction);
 	};
 
 	/**

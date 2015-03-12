@@ -101,7 +101,7 @@ define([
 		this._plane.rayIntersect(this._oldRay, oldWorldPos);
 		this._plane.rayIntersect(this._newRay, worldPos);
 		result.setVector(worldPos).subVector(oldWorldPos);
-		result.div(this.transform.scale).scale(0.07);
+		result.divVector(this.transform.scale).scale(0.07);
 		// Then project plane diff to line
 		var d = result.dot(line);
 		result.setVector(line).scale(d);

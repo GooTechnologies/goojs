@@ -231,7 +231,7 @@ define([
 				var scale = this.entity.transformComponent.transform.scale;
 				scale.setVector(change);
 				if (this.entity.transformComponent.parent) {
-					scale.div(this.entity.transformComponent.parent.worldTransform.scale);
+					scale.divVector(this.entity.transformComponent.parent.worldTransform.scale);
 				}
 				this.entity.transformComponent.setUpdated();
 			}
