@@ -57,7 +57,7 @@ define([
 		this.rebuildData(this.vertexCount, this.indexCount);
 
 		// #ifdef DEBUG
-		Object.seal(this);
+		// Object.seal(this);
 		// #endif
 	}
 

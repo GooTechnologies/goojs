@@ -2,6 +2,9 @@ define([
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
 	'goo/renderer/Renderer',
+	'goo/renderer/Material',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/shapes/Quad',
 	'goo/math/Matrix4x4',
 	'goo/math/MathUtils'
 	// 'goo/math/Vector3'
@@ -9,6 +12,9 @@ define([
 	System,
 	SystemBus,
 	Renderer,
+	Material,
+	ShaderLib,
+	Quad,
 	Matrix4x4,
 	MathUtils
 	// Vector3
@@ -58,6 +64,16 @@ define([
 		// 	this.cameraDom.style.height = data.height + 'px';
 		// }.bind(this));
 
+		this.materialTransparent = new Material(ShaderLib.uber);
+		this.materialTransparent.renderQueue = 10;
+		this.materialTransparent.uniforms.opacity = 0.0;
+		this.materialTransparent.uniforms.materialAmbient = [0, 0, 0, 0];
+		this.materialTransparent.uniforms.materialDiffuse = [0, 0, 0, 0];
+
+		this.materialOpaque = new Material(ShaderLib.uber);
+		this.materialOpaque.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
+		this.materialOpaque.cullState.cullFace = 'Front';
+
 		this.prefixes = ['', '-webkit-'];
 		this.styleCache = new Map();
 	}
@@ -105,12 +121,31 @@ define([
 		if (domElement.parentNode !== this.cameraDom) {
 			this.cameraDom.appendChild(domElement);
 		}
+
+		component.entity = entity;
+
+		// insert quads etc
+		if (!entity.meshRendererComponent || !entity.meshDataComponent) {
+			var quad = new Quad(component.width, component.height);
+			entity.set(quad);
+			entity.set(this.materialTransparent);
+			// entity.setScale(0.1, 0.1, 1);
+
+			var entityBack = entity._world.createEntity(quad, this.materialOpaque).addToWorld();
+			entityBack.meshRendererComponent.isPickable = false;
+			entity.attachChild(entityBack);
+		}
 	};
 
 	CSS3DSystem.prototype.deleted = function (entity) {
 		var domElement = entity.cSS3DComponent.domElement;
 		if (domElement.parentNode !== null) {
 			domElement.parentNode.removeChild(domElement);
+		}
+
+		if (entity.meshRendererComponent || entity.meshDataComponent) {
+			entity.clearComponent('meshDataComponent');
+			entity.clearComponent('meshRendererComponent');
 		}
 	};
 
@@ -139,6 +174,10 @@ define([
 			var entity = entities[i];
 			var component = entity.cSS3DComponent;
 			var domElement = component.domElement;
+
+			if (domElement.parentNode !== this.cameraDom) {
+				this.cameraDom.appendChild(domElement);
+			}
 
 			// Always show if not using transform (if not hidden)
 			// if (!component.useTransformComponent) {

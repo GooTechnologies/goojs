@@ -1,11 +1,13 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/entities/components/HtmlComponent',
+	'goo/entities/components/CSS3DComponent',
+	'goo/shapes/Quad',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil'
 ], function (
 	ComponentHandler,
-	HtmlComponent,
+	CSS3DComponent,
+	Quad,
 	RSVP,
 	PromiseUtil
 ) {
@@ -19,14 +21,14 @@ define([
 	 * @extends ComponentHandler
 	 * @hidden
 	 */
-	function HtmlComponentHandler() {
+	function CSS3DComponentHandler() {
 		ComponentHandler.apply(this, arguments);
-		this._type = 'HtmlComponent';
+		this._type = 'CSS3DComponent';
 	}
 
-	HtmlComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ComponentHandler._registerClass('fish', HtmlComponentHandler);
-	HtmlComponentHandler.prototype.constructor = HtmlComponentHandler;
+	CSS3DComponentHandler.prototype = Object.create(ComponentHandler.prototype);
+	ComponentHandler._registerClass('html', CSS3DComponentHandler);
+	CSS3DComponentHandler.prototype.constructor = CSS3DComponentHandler;
 
 	/**
 	 * Prepare component. Set defaults on config here.
@@ -34,7 +36,7 @@ define([
 	 * @returns {object}
 	 * @private
 	 */
-	HtmlComponentHandler.prototype._prepare = function (/*config*/) {};
+	CSS3DComponentHandler.prototype._prepare = function (/*config*/) {};
 
 	/**
 	 * Create camera component object.
@@ -42,8 +44,8 @@ define([
 	 * @returns {CameraComponent} the created component object
 	 * @private
 	 */
-	HtmlComponentHandler.prototype._create = function () {
-		return new HtmlComponent();
+	CSS3DComponentHandler.prototype._create = function () {
+		return new CSS3DComponent();
 	};
 
 	var regex = /\W/g;
@@ -59,7 +61,7 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	HtmlComponentHandler.prototype.update = function (entity, config, options) {
+	CSS3DComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
@@ -113,15 +115,16 @@ define([
 					gooRunner.triggerEvent('click', evt);
 				});
 				component.domElement = domElement;
-				domElement.style.position = 'absolute';
-				domElement.style.top = 0;
-				domElement.style.left = 0;
-				domElement.style.zIndex = 1;
-				domElement.style.display = 'none';
+				// domElement.style.position = 'absolute';
+				// domElement.style.top = 0;
+				// domElement.style.left = 0;
+				// domElement.style.zIndex = 1;
+				// domElement.style.display = 'none';
 
-				var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
+				component.initDom(domElement);
+				// var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
 
-				parentEl.appendChild(domElement);
+				// parentEl.appendChild(domElement);
 			}
 
 			var innerHtmlChanged = config.innerHtml !== domElement.prevInnerHtml;
@@ -130,6 +133,20 @@ define([
 			domElement.prevStyle = config.style;
 
 			component.useTransformComponent = config.useTransformComponent !== false;
+
+			// create new meshdata if needed?
+			if (!entity.meshRendererComponent || !entity.meshDataComponent) {
+				var quad = new Quad(component.width, component.height);
+				entity.set(quad);
+				entity.set(this.materialTransparent);
+
+				var parent = entity.parent();
+				if (parent) {
+					entity.removeFromWorld();
+					entity._world.processEntityChanges();
+					entity.addToWorld();
+				}
+			}
 
 			if (!innerHtmlChanged && !styleChanged) {
 				return PromiseUtil.resolve();
@@ -171,13 +188,18 @@ define([
 		});
 	};
 
-	HtmlComponentHandler.prototype._remove = function (entity) {
-		var component = entity.htmlComponent;
+	CSS3DComponentHandler.prototype._remove = function (entity) {
+		var component = entity.cSS3DComponent;
 		ComponentHandler.prototype._remove.call(this, entity);
 		if (component.domElement) {
 			component.domElement.parentNode.removeChild(component.domElement);
 		}
+
+		if (entity.meshRendererComponent || entity.meshDataComponent) {
+			entity.clearComponent('meshDataComponent');
+			entity.clearComponent('meshRendererComponent');
+		}
 	};
 
-	return HtmlComponentHandler;
+	return CSS3DComponentHandler;
 });

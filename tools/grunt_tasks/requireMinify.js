@@ -50,7 +50,7 @@ module.exports = function (grunt) {
 			// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 			options: {
 				baseUrl: 'src-preprocessed/',
-				optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
+				optimize: 'none',  // uglify, uglify2, closure, closure.keepLines
 				preserveLicenseComments: false,
 				useStrict: true,
 				wrap: false,

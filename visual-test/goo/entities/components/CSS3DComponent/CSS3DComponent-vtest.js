@@ -8,9 +8,11 @@ require([
 	'goo/shapes/Quad',
 	'goo/math/Vector3',
 	'goo/math/Transform',
+	'goo/math/MathUtils',
 	'goo/util/gizmopack/GizmoRenderSystem',
 	'goo/util/Skybox',
 	'lib/V',
+	'goo/scripts/Scripts',
 	'goo/renderer/Renderer',
 
 	'goo/animationpack/systems/AnimationSystem',
@@ -18,6 +20,8 @@ require([
 	'goo/entities/systems/HtmlSystem',
 	'goo/timelinepack/TimelineSystem',
 	'goo/loaders/DynamicLoader',
+
+	'goo/scriptpack/OrbitNPanControlScript',
 
 	'goo/animationpack/handlers/AnimationHandlers',
 
@@ -38,21 +42,25 @@ require([
 	Quad,
 	Vector3,
 	Transform,
+	MathUtils,
 	GizmoRenderSystem,
 	Skybox,
 	V,
+	Scripts,
 	Renderer,
 	AnimationSystem,
 	StateMachineSystem,
 	HtmlSystem,
 	TimelineSystem,
-	DynamicLoader
+	DynamicLoader,
+	OrbitNPanControlScript
 ) {
 	'use strict';
 
 	V.describe('Testing the matching of CSS3D transformed DOM elements to our entities');
 
 	var gizmoRenderSystem;
+	var entitySelected;
 
 	function key1() {
 		gizmoRenderSystem.setActiveGizmo(0);
@@ -84,6 +92,21 @@ require([
 				case 53: // 5
 					goo.renderer.domElement.style.pointerEvents = 'inherit';
 					break;
+				case 54: // 6
+					if (entitySelected) {
+						var w = entitySelected.cSS3DComponent.width;
+						var h = entitySelected.cSS3DComponent.height;
+						entitySelected.cSS3DComponent.setSize(w/2, h/2);
+					}
+					break;
+				case 55: // 7
+					if (entitySelected) {
+						var w = entitySelected.cSS3DComponent.width;
+						var h = entitySelected.cSS3DComponent.height;
+						entitySelected.cSS3DComponent.setSize(w*2, h*2);
+					}
+					break;
+
 				default:
 					console.log('1: translate gizmo\n2: rotate gizmo\n3: scale gizmo');
 			}
@@ -101,7 +124,7 @@ require([
 
 			if (e.id < 16000) {
 				if (e.id >= 0) {
-					var entitySelected = goo.world.entityManager.getEntityByIndex(e.id);
+					entitySelected = goo.world.entityManager.getEntityByIndex(e.id);
 					gizmoRenderSystem.show(entitySelected);
 				} else {
 					gizmoRenderSystem.show(); // actually hides
@@ -126,6 +149,48 @@ require([
 		gizmoRenderSystem = new GizmoRenderSystem();
 		gizmoRenderSystem.setActiveGizmo(0);
 		goo.setRenderSystem(gizmoRenderSystem);
+	}
+
+	function addOrbitCamera(spherical, lookAt, dragButton) {
+		spherical = new Vector3(spherical);
+		lookAt = new Vector3(lookAt);
+
+		// Convert to degrees since the script uses degrees
+		spherical.y = MathUtils.degFromRad(spherical.y);
+		spherical.z = MathUtils.degFromRad(spherical.z);
+
+		var camera = new Camera();
+
+		var orbitCamOptions = {
+			domElement: goo.renderer.domElement,
+			releaseVelocity: true,
+			interpolationSpeed: 7,
+			dragButton: dragButton || 'Any',
+			lookAtDistance: null,
+			spherical: spherical,
+			whenUsed : true,
+			orbitSpeed : 0.005,
+			zoomSpeed : 1,
+			inertia: 0.9,
+			smoothness: 0.4,
+			drag : 0,
+			minZoomDistance : 0.001,
+			maxZoomDistance : 1000,
+			minAscent : -89,
+			maxAscent : 89,
+			clampAzimuth : false,
+			minAzimuth : 90,
+			maxAzimuth : 270,
+			lookAtPoint: lookAt,
+
+			// Pan
+			panButton: 'Middle',
+			panSpeed : 0.005
+		};
+
+		var orbitScript = Scripts.create(OrbitNPanControlScript, orbitCamOptions);
+		var entity = V.goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
+		return entity;
 	}
 
 	function loadProject(gooRunner) {
@@ -204,26 +269,19 @@ require([
 		setupKeys();
 
 		V.addLights();
-		var camEntity = V.addOrbitCamera(new Vector3(150, Math.PI / 1.5, Math.PI / 8), new Vector3(), 'Right');
+		// var camEntity = V.addOrbitCamera(new Vector3(150, Math.PI / 1.5, Math.PI / 8), new Vector3(), 'Right');
+		// var camEntity = V.addOrbitCamera(new Vector3(50, Math.PI / 2, 0), new Vector3(), 'Right');
+		var camEntity = addOrbitCamera(new Vector3(100, Math.PI / 2, 0), new Vector3(), 'Right');
 		camEntity.cameraComponent.camera.setFrustumPerspective(null, null, 1, 10000);
 		camEntity.setAsMainCamera();
 
 		// console.log(window.WindowHelper);
 		// window.WindowHelper.install(css3dSystem.rootDom, goo.renderer.domElement);
 
-		var material = new Material(ShaderLib.uber);
-		material.renderQueue = 2;
-		material.uniforms.opacity = 0;
-		material.uniforms.materialAmbient = [0, 0, 0, 0];
-		material.uniforms.materialDiffuse = [0, 0, 0, 0];
-		// material.cullState.enabled = false;
-
-		var material3 = new Material(ShaderLib.uber);
-		material3.cullState.cullFace = 'Front';
-
 		var material2 = new Material(ShaderLib.uber);
-		var box2 = new Box(50, 20, 50);
-		var entity = world.createEntity([0, 0, 0], box2, material2).addToWorld();
+		material2.uniforms.materialDiffuse = [0.3, 0.3, 0.3, 1];
+		var box2 = new Box(100, 20, 100);
+		var entity = world.createEntity([0, -10, 0], box2, material2).addToWorld();
 
 		var numBoxes = 2;
 		var spread = 70.0;
@@ -241,8 +299,9 @@ require([
 						domElement = document.createElement('div');
 						domElement.className = 'object';
 						domElement.innerText = 'Gooooo';
-						domElement.style.border = '1px solid black';
+						domElement.style.border = '2px solid white';
 						domElement.style.backgroundColor = 'blue';
+						domElement.style.color = 'white';
 						domElement.style.padding = '20px';
 					} else {
 						width = 768;
@@ -266,16 +325,11 @@ require([
 					// htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
 
 					var position = [
-						(i - (numBoxes / 4)) * spread, (j - (numBoxes / 4)) * spread, (k - (numBoxes / 4)) * spread
+						(i - (numBoxes / 4)) * spread, (j - (numBoxes / 4)) * spread + 120, (k - (numBoxes / 4)) * spread
 					];
-					var quad = new Quad(width, height);
-					var entity = world.createEntity(position, quad, material, htmlComponent);
+					var entity = world.createEntity(position, htmlComponent);
 					entity.setScale(0.1, 0.1, 1);
 					entity.addToWorld();
-
-					var entity3 = world.createEntity(quad, material3).addToWorld();
-					entity3.meshRendererComponent.isPickable = false;
-					entity.attachChild(entity3);
 
 					// if (V.rng.nextFloat() > 0.7) {
 					// 	var r1 = V.rng.nextFloat();
@@ -301,11 +355,12 @@ require([
 			environmentPath + '2.jpg'
 		];
 		var skybox = new Skybox(Skybox.BOX, images, null, 0);
-		goo.world.createEntity(
+		var skyEnt = goo.world.createEntity(
 			skybox.transform,
 			skybox.materials[0],
 			skybox.meshData
 		).addToWorld();
+		skyEnt.meshRendererComponent.cullMode = 'Never';
 
 		return renderer.precompileShaders(renderSystem._activeEntities, renderSystem.lights);
 	}).then(function() {
