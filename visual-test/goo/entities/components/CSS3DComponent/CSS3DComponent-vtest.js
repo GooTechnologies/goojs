@@ -195,6 +195,14 @@ require([
 
 		goo.renderSystems[0].composers.length = 0;
 
+		// add the gizmo render system
+		setupGizmos();
+
+		// allow using the mouse to select what entity to transform
+		setupMouse();
+
+		setupKeys();
+
 		V.addLights();
 		var camEntity = V.addOrbitCamera(new Vector3(150, Math.PI / 1.5, Math.PI / 8), new Vector3(), 'Right');
 		camEntity.cameraComponent.camera.setFrustumPerspective(null, null, 1, 10000);
@@ -282,13 +290,6 @@ require([
 			}
 		}
 
-		// add the gizmo render system
-
-		// allow using the mouse to select what entity to transform
-		setupMouse();
-
-		setupKeys();
-
 		var environmentPath = '../../../addons/Water/resources/skybox/';
 		var images = [
 			environmentPath + '1.jpg',
@@ -309,8 +310,6 @@ require([
 	}).then(function() {
 		return renderer.preloadMaterials(renderSystem._activeEntities);
 	}).then(function() {
-		setupGizmos();
-
 		// Start the rendering loop!
 		V.process();
 	}).then(null, function(e) {
