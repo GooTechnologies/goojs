@@ -77,9 +77,8 @@
 
 			{{#members}}
 				<div>
-					<a id="{{name}}" href="#{{name}}">
-						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
-					</a>
+					<a class="method-name" id="{{name}}" href="#{{name}}">
+						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span></a>
 					{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
 					{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
 					{{#comment.default_}}<span class="parameter-default">default = {{default_}}</span>{{/comment.default_}}
@@ -93,8 +92,8 @@
 
 			{{#constructor.comment.property}}
 				<div>
-					<a id="{{name}}" href="#{{name}}">
-						<span class="method-name">{{name}}</span>
+					<a class="method-name" id="{{name}}" href="#{{name}}">
+						<span>{{name}}</span>
 					</a>
 					{{#type}} :: <span class="parameter-type">{{{.}}}</span>{{/type}}
 					{{#optional}}<span class="parameter-optional">optional</span>{{/optional}}
@@ -114,9 +113,8 @@
 
 			{{#staticMembers}}
 				<div>
-					<a id="{{name}}" href="#{{name}}">
-						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
-					</a>
+					<a class="method-name" id="{{name}}" href="#{{name}}">
+						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span></a>
 					{{#comment.type}} :: <span class="parameter-type">{{{type}}}</span>{{/comment.type}}
 					{{#comment.readonly}}<span class="readonly">readonly</span>{{/comment.readonly}}
 					{{#comment.default_}}<span class="parameter-default">default = {{default_}}</span>{{/comment.default_}}
@@ -141,9 +139,8 @@
 					{{#comment.virtual}}
 						<span class="icon-warning-gray virtual roboto"> virtual</span>
 					{{/comment.virtual}}
-					<a id="{{name}}" href="#{{name}}">
-						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
-					</a> :: (
+					<a class="method-name" id="{{name}}" href="#{{name}}">
+						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span></a> :: (
 					{{#params}}
 						<span class="parameter">{{.}}</span>
 					{{/params}}
@@ -185,9 +182,8 @@
 
 			{{#staticMethods}}
 				<div>
-					<a id="{{name}}" href="#{{name}}">
-						<span class="method-name {{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span>
-					</a> :: (
+					<a class="method-name" id="{{name}}" href="#{{name}}">
+						<span class="{{#comment.deprecated}}deprecated{{/comment.deprecated}}">{{name}}</span></a> :: (
 					{{#params}}
 						<span class="parameter">
 							{{.}}

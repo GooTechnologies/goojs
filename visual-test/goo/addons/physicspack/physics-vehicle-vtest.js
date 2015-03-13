@@ -10,6 +10,7 @@ require([
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
+	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
 	'lib/V'
 ], function (
 	Box,
@@ -23,6 +24,7 @@ require([
 	CylinderCollider,
 	SphereCollider,
 	PlaneCollider,
+	PhysicsDebugRenderSystem,
 	V
 ) {
 	'use strict';
@@ -37,6 +39,7 @@ require([
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
+	goo.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	function createGround() {
 		var entity = world.createEntity(new Quad(1000, 1000, 100, 100), V.getColoredMaterial(0.7, 0.7, 0.7))

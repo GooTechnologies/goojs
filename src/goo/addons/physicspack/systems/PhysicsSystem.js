@@ -317,7 +317,7 @@ function (
 
 		// Trash everything
 		for (var i = 0; i < this._activeEntities.length; i++) {
-			this._activeEntities[i].rigidBodyComponent._dirty = true;
+			this._activeEntities[i].rigidBodyComponent.setToDirty();
 		}
 	};
 
@@ -326,10 +326,7 @@ function (
 	 * @param  {Entity} entity
 	 */
 	PhysicsSystem.prototype.inserted = function (entity) {
-		var component = entity.rigidBodyComponent;
-		if (component._dirty) {
-			component.initialize();
-		}
+		entity.rigidBodyComponent.initialize();
 	};
 
 	/**
@@ -399,11 +396,11 @@ function (
 			var rigidBodyComponent = entity.rigidBodyComponent;
 
 			// Initialize bodies
-			if (rigidBodyComponent._dirty) {
+			if (rigidBodyComponent.isDirty()) {
 				rigidBodyComponent.initialize();
 			} else {
 				// Update the colliders if they changed
-				rigidBodyComponent._updateDirtyColliders();
+				rigidBodyComponent.updateDirtyColliders();
 			}
 		}
 
@@ -437,11 +434,8 @@ function (
 	 * @param  {number} tpf
 	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
-
 		this.initialize(entities);
-
 		this.step(tpf);
-
 		this.syncTransforms(entities);
 	};
 
