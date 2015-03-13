@@ -11,7 +11,7 @@ define([
 	 * @param {Object} settings
 	 * @extends Component
 	 */
-	function CSS3DComponent(domElement, settings) {
+	function CSS3DComponent(settings) {
 		Component.apply(this, arguments);
 
 		this.type = 'CSS3DComponent';
@@ -41,6 +41,8 @@ define([
 		/**
 		 * DOM element.
 		 */
+		var domElement = settings.domElement;
+
 		this.domElement = document.createElement('div');
 		this.domElement.appendChild(domElement);
 		this.domElement.style.position = 'absolute';

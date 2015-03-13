@@ -255,10 +255,11 @@ require([
 						domElement.style.height = '100%';
 					}
 
-					var htmlComponent = new CSS3DComponent(domElement, {
+					var htmlComponent = new CSS3DComponent({
+						domElement: domElement,
 						width: width,
 						height: height
-							// backfaceVisibility: 'visible'
+						// backfaceVisibility: 'visible'
 					});
 
 					// Make some elements face the camera
