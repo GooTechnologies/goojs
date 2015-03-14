@@ -21,7 +21,7 @@ define(function () {
 					// even if window.AudioContext is available something might go wrong
 					context = new AudioContext();
 				} catch (e) {
-					console.warn('WebAudio not supported');
+					console.warn(e.message);
 					supported = false;
 				}
 			}

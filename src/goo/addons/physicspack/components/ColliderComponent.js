@@ -9,7 +9,7 @@ function (
 	'use strict';
 
 	/**
-	 * Adds a physics collider to the entity. If the entity or any of its ancestors have a {RigidbodyComponent} or an {AmmoRigidbodyComponent}, the collider is added to the physics world.
+	 * Adds a physics collider to the entity. If the entity or any of its ancestors have a {RigidBodyComponent}, the collider is added to the physics world.
 	 * @param {Object} [settings]
 	 * @param {Collider} [settings.collider]
 	 * @param {boolean} [settings.isTrigger=false]
@@ -119,6 +119,29 @@ function (
 	 */
 	ColliderComponent.prototype.detached = function (/*entity*/) {
 		this.entity = null;
+	};
+
+	/**
+	 * Marks the component as dirty.
+	 */
+	ColliderComponent.prototype.setToDirty = function () {
+		this._dirty = true;
+	};
+
+	/**
+	 * Marks the component as dirty.
+	 */
+	ColliderComponent.prototype.setToClean = function () {
+		this._dirty = false;
+	};
+
+	/**
+	 * Gets whether the component needs to be updated.
+	 *
+	 * @return {boolean}
+	 */
+	ColliderComponent.prototype.isDirty = function () {
+		return this._dirty;
 	};
 
 	/**

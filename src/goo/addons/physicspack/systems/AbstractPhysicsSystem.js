@@ -18,7 +18,7 @@ function (
 		this.priority = -1; // make sure it processes after transformsystem and collidersystem
 
 		/**
-		 * Entitites that holds ColliderComponents, but aren't instantiated since they have no RigidbodyComponent
+		 * Entitites that holds ColliderComponents, but aren't instantiated since they have no RigidBodyComponent
 		 */
 		this._activeColliderEntities = [];
 

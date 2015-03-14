@@ -1,10 +1,12 @@
+// jshint node:true
+
 'use strict';
 
 var util = require('./util');
 
 var SUPPORTED_TAGS = [
 	'description', '@param', '@returns', '@example', '@example-link', '@readonly', '@type',
-	'@default', '@deprecated', '@property', '@extends', '@hidden', '@private',
+	'@default', '@deprecated', '@property', '@extends', '@hidden', '@private', '@virtual',
 	'@target-class', '@group', '@require-path'
 ];
 
@@ -18,7 +20,7 @@ var partition = function (doc) {
 
 	var currentTag = 'description';
 
-	var lines = doc.split('\n');
+	var lines = doc.split(/\r?\n/);
 
 	var partial = [];
 	lines.forEach(function (line) {

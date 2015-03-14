@@ -447,6 +447,12 @@ define([
 	 */
 	Vector2.prototype.copy = Vector2.prototype.setVector;
 
+	Vector2.prototype.copyTo = function (destination) {
+		destination.data[0] = this.data[0];
+		destination.data[1] = this.data[1];
+		return this;
+	};
+
 	// #ifdef DEBUG
 	Vector.addPostChecks(Vector2.prototype, [
 		'add', 'sub', 'mul', 'div', 'invert', 'dot', 'dotVector',

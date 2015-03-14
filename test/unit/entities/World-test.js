@@ -48,6 +48,15 @@ define([
 			world = new World();
 		});
 
+		it('cannot add the same system twice', function () {
+			var systemA = { type: 'A', priority: 0 };
+
+			world.setSystem(systemA);
+			world.setSystem(systemA);
+
+			expect(world._systems).toEqual([systemA]);
+		});
+
 		it('adds a system with default priority to the world', function () {
 			var systemA = { type: 'A', priority: 0 };
 			var systemB = { type: 'B', priority: 0 };

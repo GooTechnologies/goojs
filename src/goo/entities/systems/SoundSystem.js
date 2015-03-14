@@ -29,36 +29,16 @@ define([
 		System.call(this, 'SoundSystem', ['SoundComponent', 'TransformComponent']);
 
 		this.entities = [];
-		this._outNode = AudioContext.getContext().createGain();
-		this._outNode.connect(AudioContext.getContext().destination);
-		this._wetNode = AudioContext.getContext().createGain();
-		this._wetNode.connect(this._outNode);
-		this._convolver = AudioContext.getContext().createConvolver();
-		this._convolver.connect(this._wetNode);
-
-		this._listener = AudioContext.getContext().listener;
-		this._listener.dopplerFactor = 0;
-
 		this._relativeTransform = new Matrix4x4();
-
 		this._camera = null;
 
 		this._settings = {
 			rolloffFactor: 0.4,
 			maxDistance: 100
 		};
-		this._wetNode.gain.value = 0.2;
-
 		this._pausedSounds = {};
 
-		// Everything is relative to the camera
-		this._listener.setPosition(0, 0, 0);
-		this._listener.setVelocity(0, 0, 0);
-		this._listener.setOrientation(
-			0,  0, -1, // Orientation
-			0,  1,  0  // Up
-		);
-
+		this.initialized = false;
 
 		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (camConfig) {
@@ -69,12 +49,39 @@ define([
 	SoundSystem.prototype = Object.create(System.prototype);
 	SoundSystem.prototype.constructor = SoundSystem;
 
+	SoundSystem.prototype._initializeAudioNodes = function () {
+		this._outNode = AudioContext.getContext().createGain();
+		this._outNode.connect(AudioContext.getContext().destination);
+
+		this._wetNode = AudioContext.getContext().createGain();
+		this._wetNode.connect(this._outNode);
+		this._wetNode.gain.value = 0.2;
+
+		this._convolver = AudioContext.getContext().createConvolver();
+		this._convolver.connect(this._wetNode);
+
+		this._listener = AudioContext.getContext().listener;
+		this._listener.dopplerFactor = 0;
+
+		// Everything is relative to the camera
+		this._listener.setPosition(0, 0, 0);
+		this._listener.setVelocity(0, 0, 0);
+		this._listener.setOrientation(
+			0,  0, -1, // Orientation
+			0,  1,  0  // Up
+		);
+
+		this.initialized = true;
+	};
+
 	/**
 	 * Connect sound components output nodes to sound system buses. Called by world.process()
 	 * @param {Entity} entity
 	 * @private
 	 */
 	SoundSystem.prototype.inserted = function(entity) {
+		if (!this.initialized) { this._initializeAudioNodes(); }
+
 		entity.soundComponent.connectTo({
 			dry: this._outNode,
 			wet: this._convolver
@@ -112,6 +119,9 @@ define([
 			return;
 		}
 		_.extend(this._settings, config);
+
+		if (!this.initialized) { this._initializeAudioNodes(); }
+
 		if (config.dopplerFactor !== undefined) {
 			this._listener.dopplerFactor = config.dopplerFactor * 0.05;
 		}
@@ -132,6 +142,8 @@ define([
 			console.warn('WebAudio not supported');
 			return;
 		}
+		if (!this.initialized) { this._initializeAudioNodes(); }
+
 		this._wetNode.disconnect();
 		if(!audioBuffer && this._wetNode) {
 			this._convolver.buffer = null;
@@ -195,6 +207,11 @@ define([
 			// This should never happen because system shouldn't process
 			return;
 		}
+		if (entities.length === 0) {
+			return;
+		}
+		if (!this.initialized) { this._initializeAudioNodes(); }
+
 		this.entities = entities;
 		var relativeTransform = this._relativeTransform;
 
