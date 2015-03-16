@@ -53,186 +53,15 @@ define([
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
 	Quaternion.prototype.set = Vector4.prototype.set;
-	Quaternion.prototype.equals = Vector4.prototype.equals;
-	Quaternion.prototype.copy = Vector4.prototype.copy;
+	Quaternion.prototype.setDirect = Vector4.prototype.setDirect;
 	Quaternion.prototype.dot = Vector4.prototype.dot;
 	Quaternion.prototype.length = Vector4.prototype.length;
 	Quaternion.prototype.lengthSquared = Vector4.prototype.lengthSquared;
-	Quaternion.prototype.set = Vector4.prototype.set;
-	Quaternion.prototype.setDirect = Vector4.prototype.setDirect;
+	Quaternion.prototype.normalize = Vector4.prototype.normalize;
+	Quaternion.prototype.equals = Vector4.prototype.equals;
+	Quaternion.prototype.copy = Vector4.prototype.copy;
 
 	Quaternion.IDENTITY = new Quaternion(0, 0, 0, 1);
-	//! AT: what is this?! isn't EPSILON enough?
-	Quaternion.ALLOWED_DEVIANCE = 0.00000001;
-
-	/**
-	 * Performs a component-wise addition between two quaternions and stores the result in a separate quaternion.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.add = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.x = lhs.x + rhs.x;
-		target.y = lhs.y + rhs.y;
-		target.z = lhs.z + rhs.z;
-		target.w = lhs.w + rhs.w;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise subtraction between two quaternions and stores the result in a separate quaternion.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.sub = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.x = lhs.x - rhs.x;
-		target.y = lhs.y - rhs.y;
-		target.z = lhs.z - rhs.z;
-		target.w = lhs.w - rhs.w;
-
-		return target;
-	};
-
-	/**
-	 * Performs a multiplication between two quaternions and stores the result in a separate quaternion.
-	 * The result is a <b>quaternion product</b>.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.mul = function(a, b, out) {
-		var ax = a.x, ay = a.y, az = a.z, aw = a.w,
-			bx = b.x, by = b.y, bz = b.z, bw = b.w;
-
-		out.x = ax * bw + aw * bx + ay * bz - az * by;
-		out.y = ay * bw + aw * by + az * bx - ax * bz;
-		out.z = az * bw + aw * bz + ax * by - ay * bx;
-		out.w = aw * bw - ax * bx - ay * by - az * bz;
-		return out;
-	};
-
-	/**
-	 * Performs a component-wise division between two quaternions and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.div = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		var clean = true;
-
-		target.x = (clean &= rhs.x < 0.0 || rhs.x > 0.0) ? lhs.x / rhs.x : 0.0;
-		target.y = (clean &= rhs.y < 0.0 || rhs.y > 0.0) ? lhs.y / rhs.y : 0.0;
-		target.z = (clean &= rhs.z < 0.0 || rhs.z > 0.0) ? lhs.z / rhs.z : 0.0;
-		target.w = (clean &= rhs.w < 0.0 || rhs.w > 0.0) ? lhs.w / rhs.w : 0.0;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise addition between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.scalarAdd = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.x = lhs.x + rhs;
-		target.y = lhs.y + rhs;
-		target.z = lhs.z + rhs;
-		target.w = lhs.w + rhs;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise subtraction between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Quaternion vector for storage.
-	 * @returns {Quaternion} A new quaternion if the target vector cannot be used for storage, else the target vector.
-	 */
-	Quaternion.scalarSub = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.x = lhs.x - rhs;
-		target.y = lhs.y - rhs;
-		target.z = lhs.z - rhs;
-		target.w = lhs.w - rhs;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise multiplication between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.scalarMul = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		target.x = lhs.x * rhs;
-		target.y = lhs.y * rhs;
-		target.z = lhs.z * rhs;
-		target.w = lhs.w * rhs;
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise division between a quaternion and a scalar and stores the result in a separate quaternion.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} lhs Quaternion on the left-hand side.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @param {Quaternion} [target] Target quaternion for storage.
-	 * @returns {Quaternion} A new quaternion if the target quaternion cannot be used for storage, else the target quaternion.
-	 */
-	Quaternion.scalarDiv = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Quaternion();
-		}
-
-		var clean = true;
-
-		rhs = (clean &= rhs < 0.0 || rhs > 0.0) ? 1.0 / rhs : 0.0;
-
-		target.x = lhs.x * rhs;
-		target.y = lhs.y * rhs;
-		target.z = lhs.z * rhs;
-		target.w = lhs.w * rhs;
-
-		return target;
-	};
 
 	/**
 	 * Computes the spherical linear interpolation between startQuat and endQuat.
@@ -303,6 +132,7 @@ define([
 		this.y *= -1;
 		this.z *= -1;
 		this.w *= -1;
+
 		return this;
 	};
 
@@ -314,6 +144,7 @@ define([
 		this.x *= -1;
 		this.y *= -1;
 		this.z *= -1;
+
 		return this;
 	};
 
@@ -326,87 +157,39 @@ define([
 	};
 
 	/**
-	* Calculates the dot product between the current quaternion and another quaternion.
-	* @param rhs Quaternion on the right-hand side.
-	* @returns {number} The dot product.
-	*/
-	//Quaternion.prototype.dot = function (rhs) {
-	//	//var ldata = this.data;
-	//	//var rdata = rhs.data || rhs;
-	//
-	//	var sum = 0.0;
-	//
-	//	sum += this.x * rhs.x;
-	//	sum += this.x * rhs.y;
-	//	sum += this.x * rhs.z;
-	//	sum += lw * rw;
-	//
-	//	return sum;
-	//};
-
-	/**
-	 * Performs a component-wise addition between the current quaternion and another and stores the result locally.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.add = function (rhs) {
-		return Quaternion.add(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise subtraction between the current quaternion and another and stores the result locally.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.sub = function (rhs) {
-		return Quaternion.sub(this, rhs, this);
-	};
-
-	/**
 	 * Performs a multiplication between the current quaternion and another and stores the result locally.
 	 * The result is a <b>quaternion product</b>.
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
+	 * @param {Quaternion} that Quaternion on the right-hand side.
 	 * @returns {Quaternion} Self for chaining.
 	 */
-	Quaternion.prototype.mul = function (rhs) {
-		return Quaternion.mul(this, rhs, this);
-	};
+	Quaternion.prototype.mul = function (that) {
+		var ax = this.x, ay = this.y, az = this.z, aw = this.w;
+		var bx = that.x, by = that.y, bz = that.z, bw = that.w;
 
-	/**
-	 * Performs a component-wise division between the current quaternion and another and stores the result locally.
-	 * @deprecated Deprecated since 0.11.x and scheduled for removal in 0.13.0
-	 * @param {Quaternion} rhs Quaternion on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.div = function (rhs) {
-		return Quaternion.div(this, rhs, this);
-	};
+		this.x = ax * bw + aw * bx + ay * bz - az * by;
+		this.y = ay * bw + aw * by + az * bx - ax * bz;
+		this.z = az * bw + aw * bz + ax * by - ay * bx;
+		this.w = aw * bw - ax * bx - ay * by - az * bz;
 
-	/**
-	 * Performs a component-wise multiplication between the current quaternion and a scalar and stores the result locally.
-	 * @param {number} rhs Scalar on the right-hand side.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.scalarMul = function (rhs) {
-		return Quaternion.scalarMul(this, rhs, this);
-	};
-
-	var slerp_work_quat;
-	/**
-	 * Computes the spherical linear interpolation from the current quaternion towards endQuat.
-	 * @param {Quaternion} endQuat End quaternion.
-	 * @param {number} changeAmnt Interpolation factor between 0.0 and 1.0.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.slerp = function (endQuat, changeAmnt) {
-		if(!slerp_work_quat) {
-			slerp_work_quat = new Quaternion();
-		}
-		slerp_work_quat.copy(endQuat);
-		Quaternion.slerp(this, endQuat, changeAmnt, slerp_work_quat);
-		this.copy(slerp_work_quat);
 		return this;
 	};
+
+	(function () {
+		var slerpWorkQuat = new Quaternion();
+
+		/**
+		 * Computes the spherical linear interpolation from the current quaternion towards endQuat.
+		 * @param {Quaternion} endQuat End quaternion.
+		 * @param {number} changeAmount Interpolation factor between 0.0 and 1.0.
+		 * @returns {Quaternion} Self for chaining.
+		 */
+		Quaternion.prototype.slerp = function (endQuat, changeAmount) {
+			slerpWorkQuat.copy(endQuat);
+			Quaternion.slerp(this, endQuat, changeAmount, slerpWorkQuat);
+			this.copy(slerpWorkQuat);
+			return this;
+		};
+	})();
 
 	/**
 	 * Sets the value of this quaternion to the rotation described by the given matrix values.
@@ -464,11 +247,8 @@ define([
 	 */
 	Quaternion.prototype.toRotationMatrix = function (store) {
 		var result = store;
-		//if (!result) {
-		//	result = new Matrix3x3();
-		//}
 
-		var norm = this.magnitudeSquared();
+		var norm = this.lengthSquared();
 		var s = norm > 0.0 ? 2.0 / norm : 0.0;
 
 		var xs = this.x * s;
@@ -548,42 +328,9 @@ define([
 	})();
 
 	/**
-	 * Normalize the current quaternion.
-	 * @returns {Quaternion} Self, modified to be unit length, for chaining.
-	 */
-	Quaternion.prototype.normalize = function () {
-		var n = 1.0 / this.magnitude();
-		var xx = this.x * n;
-		var yy = this.y * n;
-		var zz = this.z * n;
-		var ww = this.w * n;
-		return this.setDirect(xx, yy, zz, ww);
-	};
-
-	/**
-	 * Calculate the magnitude of the current quaternion.
-	 * @returns {number} The magnitude of the quaternion.
-	 */
-	Quaternion.prototype.magnitude = function () {
-		var magnitudeSQ = this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
-		if (magnitudeSQ === 1.0) {
-			return 1.0;
-		}
-
-		return Math.sqrt(magnitudeSQ);
-	};
-
-	/**
-	 * Calculate the squared magnitude of the current quaternion.
-	 * @returns {number} The squared magnitude of the quaternion.
-	 */
-	Quaternion.prototype.magnitudeSquared = function () {
-		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
-	};
-
-	/**
-	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation. Note that this method creates
-	 *              an object, so use fromAngleNormalAxis if your axis is already normalized. If axis == 0,0,0 the quaternion is set to identity.
+	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation.
+	 * Note that this method creates an object, so use fromAngleNormalAxis if your axis is already normalized.
+	 * If axis == (0, 0, 0) the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation.
 	 * @returns {Quaternion} Self for chaining.
@@ -594,8 +341,8 @@ define([
 	};
 
 	/**
-	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation. If axis == 0,0,0
-	 *              the quaternion is set to identity.
+	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation.
+	 * If axis == (0, 0, 0) the quaternion is set to identity.
 	 * @param {number} angle The angle to rotate (in radians).
 	 * @param {Vector3} axis The axis of rotation (already normalized - unit length).
 	 * @returns {Quaternion} Self for chaining.
@@ -623,7 +370,7 @@ define([
 	Quaternion.prototype.toAngleAxis = function (axisStore) {
 		var sqrLength = this.x * this.x + this.y * this.y + this.z * this.z;
 		var angle;
-		if (Math.abs(sqrLength) <= Quaternion.ALLOWED_DEVIANCE) { // length is ~0
+		if (Math.abs(sqrLength) <= MathUtils.EPSILON) { // length is ~0
 			angle = 0.0;
 			if (axisStore !== null) {
 				axisStore.x = 1.0;
@@ -655,7 +402,6 @@ define([
 	Vector.addReturnChecks(Quaternion.prototype, [
 		'dot', 'dotDirect',
 		'length', 'lengthSquared',
-		'magnitude', 'magnitudeSquared',
 		'distance', 'distanceSquared'
 	]);
 	// #endif

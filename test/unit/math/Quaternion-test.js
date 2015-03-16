@@ -35,36 +35,14 @@ define([
 			});
 		});
 
-		it('can add two quaternions', function () {
-			var p = new Quaternion(1, 1, 1, 1);
-			var q = new Quaternion(2, 2, 2, 2);
-			var result = new Quaternion();
-			Quaternion.add(p, q, result);
-			expect(result).toEqual(new Quaternion(3, 3, 3, 3));
-		});
+		describe('mul', function () {
+			it('can multiply two quaternions', function () {
+				var p = new Quaternion(1, 0, 0, 0);
+				var q = new Quaternion(0, 1, 0, 0);
+				p.mul(q);
 
-		it('can subtract two quaternions', function () {
-			var p = new Quaternion(1, 1, 1, 1);
-			var q = new Quaternion(2, 2, 2, 2);
-			var result = new Quaternion();
-			Quaternion.sub(p, q, result);
-			expect(result).toEqual(new Quaternion(-1, -1, -1, -1));
-		});
-
-		it('can multiply two quaternions', function () {
-			var p = new Quaternion();
-			var q = new Quaternion();
-			var result = new Quaternion();
-			Quaternion.mul(p, q, result);
-
-			expect(result).toEqual(new Quaternion());
-		});
-
-		it('can multiply a scalar with a quaternion', function () {
-			var p = new Quaternion(1, 1, 1, 1);
-			var result = new Quaternion();
-			Quaternion.scalarMul(p, 2, result);
-			expect(result).toEqual(new Quaternion(2, 2, 2, 2));
+				expect(p).toBeCloseToVector(new Quaternion(0, 0, 1, 0));
+			});
 		});
 
 		it('can slerp', function () {
@@ -86,10 +64,12 @@ define([
 			expect(result).toEqual(new Quaternion());
 		});
 
-		it('can negate', function () {
-			var q = new Quaternion(1, 1, 1, 1);
-			q.negate();
-			expect(q).toEqual(new Quaternion(-1, -1, -1, -1));
+		describe('negate', function () {
+			it('can negate', function () {
+				var q = new Quaternion(1, 1, 1, 1);
+				q.negate();
+				expect(q).toEqual(new Quaternion(-1, -1, -1, -1));
+			});
 		});
 
 		describe('conjugate', function () {
@@ -138,17 +118,17 @@ define([
 		it('can be normalized', function () {
 			var q = new Quaternion(0, 0, 0, 2);
 			q.normalize();
-			expect(q.magnitude()).toEqual(1);
+			expect(q.length()).toEqual(1);
 		});
 
-		it('can get magnitude', function () {
+		it('can get length', function () {
 			var q = new Quaternion(0, 0, 0, 2);
-			expect(q.magnitude()).toEqual(2);
+			expect(q.length()).toEqual(2);
 		});
 
-		it('can get squared magnitude', function () {
+		it('can get squared length', function () {
 			var q = new Quaternion(0, 0, 0, 2);
-			expect(q.magnitudeSquared()).toEqual(4);
+			expect(q.lengthSquared()).toEqual(4);
 		});
 
 		it('can be set from axis angle', function () {
@@ -224,7 +204,7 @@ define([
 
 			it('throws an exception when trying to corrupt a vector by using methods', function () {
 				var quaternion1 = new Quaternion();
-				expect(function () { quaternion1.add({}); })
+				expect(function () { quaternion1.mul({}); })
 					.toThrow(new Error('Tried setting NaN to vector component x'));
 
 				var quaternion2 = new Quaternion();
@@ -237,8 +217,8 @@ define([
 				// manually corrupting this quaternion
 				// this is the only non-traceable way
 				quaternion._x = NaN;
-				expect(function () { quaternion.magnitudeSquared(); })
-					.toThrow(new Error('Vector method magnitudeSquared returned NaN'));
+				expect(function () { quaternion.lengthSquared(); })
+					.toThrow(new Error('Vector method lengthSquared returned NaN'));
 			});
 		});
 	});
