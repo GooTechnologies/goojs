@@ -26,7 +26,6 @@ define([
 			this._meshData.indexModes = ['Lines'];
 
 			this._vertices = this._meshData.getAttributeBuffer(MeshData.POSITION);
-			this._vertices.setDataUsage('DynamicDraw');
 
 			this._renderObject = {
 				meshData: this._meshData,
@@ -38,6 +37,8 @@ define([
 
 			this._numRenderingLines = 0;
 			this._meshData.vertexCount = 0;
+
+			this._meshData.vertexData.setDataUsage('DynamicDraw');
 		}
 
 		LineRenderer.prototype.MAX_NUM_LINES = 170000;
