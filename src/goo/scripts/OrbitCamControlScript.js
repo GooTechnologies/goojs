@@ -45,7 +45,7 @@ define([
 		ctx.sample = 0;
 		ctx.velocity = new Vector2(0, 0);
 		ctx.cartesian = new Vector3();
-		ctx.worldUpVector = new Vector3(Vector3.UNIT_Y);
+		ctx.worldUpVector = Vector3.UNIT_Y.clone();
 		ctx.maxSampleTimeMS = 200;
 
 		ctx.mouseState = {
@@ -83,7 +83,7 @@ define([
 		} else {
 			var spherical = ctx.spherical = new Vector3(15, 0, 0); // Just something so the script won't crash
 		}
-		ctx.targetSpherical = new Vector3(spherical);
+		ctx.targetSpherical = spherical.clone();
 
 		if (args.lookAtDistance) {
 			// Setting look at point at a distance forward
@@ -92,11 +92,11 @@ define([
 			rotation.applyPost(ctx.lookAtPoint);
 			ctx.lookAtPoint.add(ctx.entity.getTranslation());
 		} else if (args.lookAtPoint) {
-			ctx.lookAtPoint = new Vector3(args.lookAtPoint);
+			ctx.lookAtPoint = args.lookAtPoint instanceof Array ? Vector3.fromArray(args.lookAtPoint) : args.lookAtPoint.clone();
 		} else {
 			ctx.lookAtPoint = new Vector3();
 		}
-		ctx.goingToLookAt = new Vector3(ctx.lookAtPoint);
+		ctx.goingToLookAt = ctx.lookAtPoint.clone();
 
 		// Parallel camera size
 		updateFrustumSize(1, ctx);

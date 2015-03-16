@@ -31,7 +31,7 @@ require([
 
 		var pointlightGui = gui.addFolder('Point Light');
 		var data = {
-			color: [pointLight.color.data[0] * 255, pointLight.color.data[1] * 255, pointLight.color.data[2] * 255]
+			color: [pointLight.color.x * 255, pointLight.color.y * 255, pointLight.color.z * 255]
 		};
 		var controller = pointlightGui.addColor(data, 'color');
 		controller.onChange(function() {
@@ -62,7 +62,7 @@ require([
 
 		var directionallightGui = gui.addFolder('Directional Light');
 		var data = {
-			color: [directionalLight.color.data[0] * 255, directionalLight.color.data[1] * 255, directionalLight.color.data[2] * 255]
+			color: [directionalLight.color.x * 255, directionalLight.color.y * 255, directionalLight.color.z * 255]
 		};
 		var controller = directionallightGui.addColor(data, 'color');
 		controller.onChange(function() {
@@ -91,7 +91,7 @@ require([
 
 		var spotLightGui = gui.addFolder('Spot Light' + ind++);
 		var data = {
-			color: [spotLight.color.data[0] * 255, spotLight.color.data[1] * 255, spotLight.color.data[2] * 255]
+			color: [spotLight.color.x * 255, spotLight.color.y * 255, spotLight.color.z * 255]
 		};
 		var controller = spotLightGui.addColor(data, 'color');
 		controller.onChange(function() {

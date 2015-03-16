@@ -74,7 +74,7 @@ require([
 			}
 
 			coloredLinesStart.setDirect(4 + i, 1, 0);
-			coloredLinesEnd.setVector(coloredLinesStart).addDirect(0, -2, 0);
+			coloredLinesEnd.set(coloredLinesStart).addDirect(0, -2, 0);
 
 			lineRenderSystem.drawLine(coloredLinesStart, coloredLinesEnd, color);
 		}

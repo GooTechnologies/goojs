@@ -66,7 +66,7 @@ require([
 			var color = presetColors[i];
 
 			coloredLinesStart.setDirect(-3.5 * lineSpacing + i * lineSpacing, -0.5, 0);
-			coloredLinesEnd.setVector(coloredLinesStart).addDirect(0, 1, 0);
+			coloredLinesEnd.set(coloredLinesStart).addDirect(0, 1, 0);
 
 			lineRenderSystem.drawLine(coloredLinesStart, coloredLinesEnd, color);
 		}
