@@ -76,27 +76,37 @@ require([
 	addDirectionalLight([1, 1, -1]);
 	addDirectionalLight([-1, -1, -1]);
 
+
 	var rigidBodyComponent;
-	var rigidBodys = [];
+	var rigidBodies = [];
 	var colliderComponent;
 
+	var createMaterial = function (materialName, color) {
+		var material = new Material(materialName, ShaderLib.uber);
+		material.uniforms.materialAmbient = [color[0], color[1], color[2], color[3]];
+		material.uniforms.opacity = 0.6;
+		material.blendState.blending = 'CustomBlending';
+		material.renderQueue = RenderQueue.TRANSPARENT;
+		material.depthState.write = false;
 
-	var meshColliderMaterial = new Material('MeshColliderMaterial', ShaderLib.uber);
-	meshColliderMaterial.uniforms.materialAmbient = [0.5, 0.5, 0, 1];
-	meshColliderMaterial.uniforms.opacity = 0.5;
-	meshColliderMaterial.blendState.blending = 'CustomBlending';
-	meshColliderMaterial.renderQueue = RenderQueue.TRANSPARENT;
-	meshColliderMaterial.depthState.write = false;
+		return material;
+	};
 
-	var primitiveColliderMaterial = new Material('PrimitiveColliderMaterial', ShaderLib.uber);
-	primitiveColliderMaterial.uniforms.materialAmbient = [0.0, 0.5, 0.5, 1];
-	primitiveColliderMaterial.uniforms.opacity = 0.5;
-	primitiveColliderMaterial.blendState.blending = 'CustomBlending';
-	primitiveColliderMaterial.renderQueue = RenderQueue.TRANSPARENT;
-	primitiveColliderMaterial.depthState.write = false;
+	var meshColliderMaterial = createMaterial('MeshColliderMaterial', [0.5, 0.5, 0, 1]);
+	var primitiveColliderMaterial = createMaterial('PrimitiveColliderMaterial', [0.0, 0.5, 0.5, 1]);
 
 	var numBodiesPerRow = 4;
 	var numBodies = numBodiesPerRow * numBodiesPerRow;
+
+	var PrimitiveColliderEntity = function(){
+		//TODO: WRITE PRIMITIVE COLLIDER ENTITY AND ADD MESH COLLIDER MATERIAL TO THE CLASS
+	};
+
+	PrimitiveColliderEntity.SPHERE = 0;
+	PrimitiveColliderEntity.BOX = 1;
+	PrimitiveColliderEntity.CYLINDER = 2;
+
+	PrimitiveColliderEntity.MESH_COLLIDER_MATERIAL = createMaterial('MeshColliderMaterial', [0.5, 0.5, 0, 1]);
 
 	for (var i = 0; i < numBodies; i++) {
 
@@ -147,69 +157,67 @@ require([
 		}
 
 		rigidBodyComponent = new RigidbodyComponent({mass: 0});
-		rigidBodys.push(rigidBodyComponent);
+		rigidBodies.push(rigidBodyComponent);
 		colliderComponent = new ColliderComponent({collider: shapeCollider});
 		world.createEntity(shape, material, [i % numBodiesPerRow, 0, Math.floor(i / numBodiesPerRow)], rigidBodyComponent, colliderComponent).addToWorld();
 	}
 
 
 	var rayStart = new Vector3(-4, 0, 0);
-	var rayDirection = new Vector3(0.85, 0, 0).normalize();
+	var rayDirection = new Vector3(1, 0, 0);
 	var rayLength = 8;
 
-	var rayEnd = new Vector3();
-
-	var tmpVec1 = new Vector3();
-	var tmpVec2 = new Vector3();
-	var tmpVec3 = new Vector3();
-	var tmpVec4 = new Vector3();
-
 	var normalEndPosition = new Vector3();
-
 	var drawNormal = function (position, normal) {
-		normalEndPosition.setVector(normal).mul(0.5).addVector(position);
+		normalEndPosition.setVector(normal).scale(0.5).addVector(position);
 
 		lineRenderSystem.drawLine(position, normalEndPosition, lineRenderSystem.BLUE);
 	};
 
-	var drawLineArrow = function (lineStart, lineEnd, frac, color, width) {
-		var lineDir = tmpVec1.setVector(lineEnd).subVector(lineStart);
-		var lineLen = lineDir.length();
-		lineDir.normalize();
 
-		var arrowStartPosition = tmpVec2.setVector(lineDir).mul(lineLen * frac).addVector(lineStart);
-		var arrowEndPosition = tmpVec3.setVector(lineDir).mul(-width).addVector(arrowStartPosition);
+	var arrowStartPosition = new Vector3();
+	var arrowEndPosition = new Vector3();
+	var arrowDirection = new Vector3();
 
-		var arrowUpDir = tmpVec4.setVector(Vector3.UNIT_Y).mul(width);
-		arrowUpDir.addVector(arrowEndPosition);
+	var drawLineArrow = function (origin, direction, length, fraction, color, width) {
 
-		lineRenderSystem.drawLine(arrowStartPosition, arrowUpDir, color);
+		arrowStartPosition.setVector(direction).scale(length * fraction).addVector(origin);
+		arrowEndPosition.setVector(direction).scale(-width).addVector(arrowStartPosition);
 
-		var arrowDownDir = arrowUpDir.subVector(arrowEndPosition);
-		arrowUpDir.mul(-1);
-		arrowUpDir.addVector(arrowEndPosition);
+		var arrowUpDirection = arrowDirection.setVector(Vector3.UNIT_Y).scale(width);
+		arrowUpDirection.addVector(arrowEndPosition);
 
-		lineRenderSystem.drawLine(arrowStartPosition, arrowDownDir, color);
+		lineRenderSystem.drawLine(arrowStartPosition, arrowUpDirection, color);
+
+		var arrowDownDirection = arrowDirection.subVector(arrowEndPosition);
+		arrowDownDirection.scale(-1);
+		arrowDownDirection.addVector(arrowEndPosition);
+
+		lineRenderSystem.drawLine(arrowStartPosition, arrowDownDirection, color);
 	};
 
-	var drawArrowedLine = function (start, end, time, color) {
-		var fracAdd = (time * 0.1) % 0.1;
-		for (var i = 0; i < 10; i++) {
-			var frac = i * 0.1 + fracAdd;
-			drawLineArrow(start, end, frac, color, 0.05);
+	var lineEndVector = new Vector3();
+	var drawArrowedLine = function (origin, direction, length, time, color) {
+
+		var lengthRound = Math.round(length);
+
+		var lengthFraction = 1 / lengthRound;
+
+		var arrowOffset = (time * lengthFraction) % lengthFraction;
+		for (var i = 0; i < lengthRound; i++) {
+			var frac = i * lengthFraction + arrowOffset;
+			drawLineArrow(origin, direction, length, frac, color, 0.05);
 		}
-		lineRenderSystem.drawLine(start, end, color);
-	};
 
-	var callback = function (result) {
-		drawNormal(result.point, result.normal);
+		lineEndVector.setVector(direction).scale(length).addVector(origin);
+		lineRenderSystem.drawLine(origin, lineEndVector, color);
 	};
 
 	var tmpQuaternion = new Quaternion();
 	var rotationAxis = new Vector3();
-	var rotateRigidBodys = function () {
-		for (var i = 0; i < rigidBodys.length; i++) {
-			var rigidBody = rigidBodys[i];
+	var rotateRigidBodies = function () {
+		for (var i = 0; i < rigidBodies.length; i++) {
+			var rigidBody = rigidBodies[i];
 
 			//set the rotation axis for the quaternion
 			rotationAxis.setDirect((i % 4 === 0) + (i % 2 === 0), 0.9, (i % 4 === 2) + (i % 2 === 1)).normalize();
@@ -219,44 +227,69 @@ require([
 		}
 	};
 
-	var rayCastResult = new RaycastResult();
+	var RayCaster = function (origin, direction, length, color, type, settings) {
+		this.origin = new Vector3(origin);
+		this.direction = new Vector3(direction);
+		this.length = length;
+		this.color = color;
+		this.type = type;
+		this.settings = settings;
+	};
+
+	RayCaster.endVector = new Vector3();
+
+	RayCaster.ALL = 0;
+	RayCaster.ANY = 1;
+	RayCaster.CLOSEST = 2;
+
+	RayCaster.rayCastResult = new RaycastResult();
+	RayCaster.rayCastCallback = function (result) {
+		drawNormal(result.point, result.normal);
+	};
+
+	RayCaster.prototype.cast = function () {
+
+		switch (this.type) {
+			case RayCaster.ALL:
+				physicsSystem.raycastAll(this.origin, this.direction, this.length, this.settings, RayCaster.rayCastCallback);
+				break;
+			case RayCaster.ANY:
+				var result = RayCaster.rayCastResult;
+				physicsSystem.raycastAny(this.origin, this.direction, this.length, this.settings, result);
+				drawNormal(result.point, result.normal);
+				break;
+			case RayCaster.CLOSEST:
+				var result = RayCaster.rayCastResult;
+				physicsSystem.raycastClosest(this.origin, this.direction, this.length, this.settings, result);
+				drawNormal(result.point, result.normal);
+				break;
+		}
+
+		drawArrowedLine(this.origin, this.direction, this.length, world.time, this.color);
+	};
+
+
+	var rayCasters = [];
+
+	rayCasters[0] = new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.RED, RayCaster.ALL, {skipBackfaces: true});
+	rayCasters[1] = new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.GREEN, RayCaster.ANY, {skipBackfaces: true});
+	rayCasters[2] = new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.WHITE, RayCaster.CLOSEST, {skipBackfaces: true});
+	rayCasters[3] = new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.MAGENTA, RayCaster.ALL, {skipBackfaces: false});
 
 	var update = function () {
 
-		rotateRigidBodys();
+		rotateRigidBodies();
 
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < rayCasters.length; i++) {
 			rayStart.setDirect(-2, Math.cos(world.time) * 0.2, i + Math.sin(world.time) * 0.2);
-			rayEnd.setVector(rayDirection).mul(rayLength).addVector(rayStart);
 
-			var color = null;
-
-			switch (i) {
-				case 0:
-					color = lineRenderSystem.RED;
-					physicsSystem.raycastAll(rayStart, rayDirection, rayLength, {skipBackfaces: true}, callback);
-					break;
-				case 1:
-					color = lineRenderSystem.GREEN;
-					physicsSystem.raycastAny(rayStart, rayDirection, rayLength, {skipBackfaces: true}, rayCastResult);
-					drawNormal(rayCastResult.point, rayCastResult.normal);
-					break;
-				case 2:
-					color = lineRenderSystem.WHITE;
-					physicsSystem.raycastClosest(rayStart, rayDirection, rayLength, {skipBackfaces: true}, rayCastResult);
-					drawNormal(rayCastResult.point, rayCastResult.normal);
-					break;
-				case 3:
-					color = lineRenderSystem.MAGENTA;
-					physicsSystem.raycastAll(rayStart, rayDirection, rayLength, {skipBackfaces: false}, callback);
-					break;
-			}
-
-			drawArrowedLine(rayStart, rayEnd, world.time, color);
+			rayCasters[i].origin.setVector(rayStart);
+			rayCasters[i].cast();
 		}
 	};
 
 	goo.callbacks.push(update);
 
 	V.process();
+
 });
