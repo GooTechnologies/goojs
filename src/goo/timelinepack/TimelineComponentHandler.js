@@ -46,9 +46,9 @@ define([
 		'scaleX': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'x'),
 		'scaleY': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'y'),
 		'scaleZ': ValueChannel.getSimpleTransformTweener.bind(null, 'scale', 'z'),
-		'rotationX': ValueChannel.getRotationTweener.bind(null, 'x'),
-		'rotationY': ValueChannel.getRotationTweener.bind(null, 'y'),
-		'rotationZ': ValueChannel.getRotationTweener.bind(null, 'z')
+		'rotationX': ValueChannel.getRotationTweener.bind(null, 0),
+		'rotationY': ValueChannel.getRotationTweener.bind(null, 1),
+		'rotationZ': ValueChannel.getRotationTweener.bind(null, 2)
 	};
 
 	//! AT: requires TWEEN

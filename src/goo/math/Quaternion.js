@@ -20,9 +20,10 @@ define([
 	 * Compared to Euler angles, Quaternions are simpler to compose and can help avoid the problem of gimbal lock.
 	 * Compared to rotation matrices, Quaternions are more numerically stable and the representation (4 numbers) is more compact.
 	 * Quaternions are non-commutative and provide a convenient way to interpolate between rotations (using the <i>slerp</i> function).
-	 * The four numbers in a quaternion are internally represented by a vector, and therefore inherits from it.
-	 * @extends Vector
-	 * @param {Vector|number[]|...number} arguments Initial values for the components.
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} w
 	 */
 	function Quaternion(x, y, z, w) {
 		// #ifdef DEBUG
@@ -48,9 +49,6 @@ define([
 		Object.seal(this);
 		// #endif
 	}
-
-	//Quaternion.prototype = Object.create(Vector.prototype);
-	//Quaternion.prototype.constructor = Quaternion;
 
 	Vector.setupAliases(Quaternion.prototype, [['x'], ['y'], ['z'], ['w']]);
 
@@ -641,17 +639,6 @@ define([
 		return angle;
 	};
 
-	function addWarning(method, warning) {
-		var warned = false;
-		return function () {
-			if (!warned) {
-				warned = true;
-				console.warn(warning);
-			}
-			return method.apply(this, arguments);
-		};
-	}
-
 	/**
 	 * Clones the quaternion
 	 * @returns {Quaternion} Clone of self
@@ -661,12 +648,12 @@ define([
 	};
 
 	// #ifdef DEBUG
-	//Vector.addPostChecks(Quaternion.prototype, [
-	//	'add', 'sub', 'mul',
-	//	'slerp', 'fromRotationMatrix', 'fromVectorToVector', 'normalize',
-	//	'magnitude', 'magnitudeSquared', 'fromAngleAxis', 'fromAngleNormalAxis',
-	//	'setDirect', 'setVector'
-	//]);
+	Vector.addReturnChecks(Quaternion.prototype, [
+		'dot', 'dotDirect',
+		'length', 'lengthSquared',
+		'magnitude', 'magnitudeSquared',
+		'distance', 'distanceSquared'
+	]);
 	// #endif
 
 	return Quaternion;

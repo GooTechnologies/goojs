@@ -224,12 +224,12 @@ define([
 
 			it('throws an exception when trying to corrupt a vector by using methods', function () {
 				var quaternion1 = new Quaternion();
-				expect(function () { quaternion1.add({ data: [] }); })
-					.toThrow(new Error('Vector contains NaN at index 0'));
+				expect(function () { quaternion1.add({}); })
+					.toThrow(new Error('Tried setting NaN to vector component x'));
 
 				var quaternion2 = new Quaternion();
 				expect(function () { quaternion2.setDirect(); })
-					.toThrow(new Error('Vector contains NaN at index 0'));
+					.toThrow(new Error('Tried setting NaN to vector component x'));
 			});
 
 			it('throws an exception when a corrupt quaternion would return NaN', function () {
