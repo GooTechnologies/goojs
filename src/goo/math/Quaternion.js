@@ -498,50 +498,54 @@ define([
 		return result;
 	};
 
-	/**
-	 * Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
-	 * @param {Vector3} from The source vector.
-	 * @param {Vector3} to The destination vector into which to rotate the source vector.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.fromVectorToVector = function (from, to) {
-		var a = from;
-		var b = to;
-		var factor = a.length() * b.length();
-		if (Math.abs(factor) > MathUtils.EPSILON) {
-			// Vectors have length > 0
-			var pivotVector = new Vector3();
-			var dot = a.dot(b) / factor;
-			var theta = Math.acos(Math.max(-1.0, Math.min(dot, 1.0)));
-			Vector3.cross(a, b, pivotVector);
-			if (dot < 0.0 && pivotVector.length() < MathUtils.EPSILON) {
-				// Vectors parallel and opposite direction, therefore a rotation of 180 degrees about any vector
-				// perpendicular to this vector will rotate vector a onto vector b.
+	(function () {
+		var pivotVector = new Vector3();
 
-				// The following guarantees the dot-product will be 0.0.
-				var dominantIndex;
-				if (Math.abs(a.x) > Math.abs(a.y)) {
-					if (Math.abs(a.x) > Math.abs(a.z)) {
-						dominantIndex = 0;
+		/**
+		 * Sets this quaternion to the one that will rotate vector "from" into vector "to". Vectors do not have to be the same length.
+		 * @param {Vector3} from The source vector.
+		 * @param {Vector3} to The destination vector into which to rotate the source vector.
+		 * @returns {Quaternion} Self for chaining.
+		 */
+		Quaternion.prototype.fromVectorToVector = function (from, to) {
+			var a = from; //! AT: why this aliasing?
+			var b = to;
+
+			var factor = a.length() * b.length();
+			if (Math.abs(factor) > MathUtils.EPSILON) {
+				// Vectors have length > 0
+				var dot = a.dot(b) / factor;
+				var theta = Math.acos(Math.max(-1.0, Math.min(dot, 1.0)));
+				pivotVector.copy(a).cross(b);
+				if (dot < 0.0 && pivotVector.length() < MathUtils.EPSILON) {
+					// Vectors parallel and opposite direction, therefore a rotation of 180 degrees about any vector
+					// perpendicular to this vector will rotate vector a onto vector b.
+
+					// The following guarantees the dot-product will be 0.0.
+					var dominantIndex;
+					if (Math.abs(a.x) > Math.abs(a.y)) {
+						if (Math.abs(a.x) > Math.abs(a.z)) {
+							dominantIndex = 0;
+						} else {
+							dominantIndex = 2;
+						}
 					} else {
-						dominantIndex = 2;
+						if (Math.abs(a.y) > Math.abs(a.z)) {
+							dominantIndex = 1;
+						} else {
+							dominantIndex = 2;
+						}
 					}
-				} else {
-					if (Math.abs(a.y) > Math.abs(a.z)) {
-						dominantIndex = 1;
-					} else {
-						dominantIndex = 2;
-					}
+					pivotVector.setValue(dominantIndex, -a[((dominantIndex + 1) % 3)]);
+					pivotVector.setValue((dominantIndex + 1) % 3, a[dominantIndex]);
+					pivotVector.setValue((dominantIndex + 2) % 3, 0.0);
 				}
-				pivotVector.setValue(dominantIndex, -a[((dominantIndex + 1) % 3)]);
-				pivotVector.setValue((dominantIndex + 1) % 3, a[dominantIndex]);
-				pivotVector.setValue((dominantIndex + 2) % 3, 0.0);
+				return this.fromAngleAxis(theta, pivotVector);
+			} else {
+				return this.set(Quaternion.IDENTITY);
 			}
-			return this.fromAngleAxis(theta, pivotVector);
-		} else {
-			return this.set(Quaternion.IDENTITY);
-		}
-	};
+		};
+	})();
 
 	/**
 	 * Normalize the current quaternion.
