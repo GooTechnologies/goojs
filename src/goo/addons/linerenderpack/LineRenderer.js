@@ -26,6 +26,7 @@ define([
 			this._meshData.indexModes = ['Lines'];
 
 			this._vertices = this._meshData.getAttributeBuffer(MeshData.POSITION);
+			this._vertices.setDataUsage('DynamicDraw');
 
 			this._renderObject = {
 				meshData: this._meshData,
