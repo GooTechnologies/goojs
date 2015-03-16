@@ -38,6 +38,7 @@ define([
 		}
 	};
 
+	// REVIEW: Why not just let the user pass a SimulationParameters object?
 	ParticleSystem.prototype.spawnParticleSimulation = function (id, position, normal, effectData, callbacks) {
 		this.simulators[id].addEffectSimulation(position, normal, effectData, callbacks);
 	};

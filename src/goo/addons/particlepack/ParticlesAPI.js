@@ -5,7 +5,7 @@ define([
 ) {
 	"use strict";
 
-	// REVIEW: this API is neat for Create scripts, but there's no need for it in the engine. Make the called methods simpler and add more docs instead.
+	// REVIEW: this API is neat for Create scripts, but there's no need for it in the engine. It's not even used for visual tests. Make the called methods easier to use and add more docs instead.
 
 	var ParticlesAPI = function (gooRunner) {
 		this.particleSystem = new ParticleSystem(gooRunner);
