@@ -11,13 +11,14 @@ require([
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
 	'goo/addons/physicspack/joints/BallJoint',
 	'goo/addons/physicspack/joints/HingeJoint',
+	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
 	'lib/V'
 ], function (
 	Material,
@@ -32,18 +33,19 @@ require([
 	ColliderComponent,
 	PhysicsSystem,
 	ColliderSystem,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	BoxCollider,
 	CylinderCollider,
 	SphereCollider,
 	PlaneCollider,
 	BallJoint,
 	HingeJoint,
+	PhysicsDebugRenderSystem,
 	V
 ) {
 	'use strict';
 
-	V.describe('If you build a hierarchy of entities with RigidbodyComponents, funky stuff happens.');
+	V.describe('If you build a hierarchy of entities with RigidBodyComponents, funky stuff happens.');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -51,9 +53,10 @@ require([
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
+	goo.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	function createBox() {
-		var rigidBodyComponent = new RigidbodyComponent();
+		var rigidBodyComponent = new RigidBodyComponent();
 		var mat = V.getColoredMaterial();
 		var entity = world.createEntity(new Box(2, 2, 2), mat, [0.5, 5, 0]);
 		var colliderComponent = new ColliderComponent({
@@ -65,7 +68,7 @@ require([
 		return entity;
 	}
 
-	var rbComponent = new RigidbodyComponent({
+	var rbComponent = new RigidBodyComponent({
 		mass: 0,
 		angularVelocity: new Vector3(0, 0.5, 0),
 		isKinematic: true

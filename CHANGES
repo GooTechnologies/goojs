@@ -1,9 +1,23 @@
+v0.13.4 --- 2015-03-11
+----------------------
+
+###Additions
+ + experimental new [EventTarget](http://code.gooengine.com/0.13.4/docs/index.html?c=EventTarget)
+
+###Fixes
+ * `World.prototype.setSystem` does not allow for the same system to be added twice to the world
+ * the *SoundSystem* creates an *AudioContext* only if needed
+
+###Deprecated
+ - *cannonpack* has been deprecated in favour of the new *physicspack*
+
+
 v0.13.3 --- 2015-03-04
 ----------------------
 
-####Additions
- + [Spline](http://code.gooengine.com/0.13.3/visual-test/goo/math/Spline/Spline-vtest.html) to represent cubic splines
- + [SplineWalker](http://code.gooengine.com/0.13.3/visual-test/goo/math/SplineWalker/SplineWalker-vtest.html) to interpolate across a spline
+###Additions
+ + [Spline](http://code.gooengine.com/0.13.4/visual-test/goo/math/Spline/Spline-vtest.html) to represent cubic splines
+ + [SplineWalker](http://code.gooengine.com/0.13.4/visual-test/goo/math/SplineWalker/SplineWalker-vtest.html) to interpolate across a spline
 
 ###Fixes
  * various physics-related fixes

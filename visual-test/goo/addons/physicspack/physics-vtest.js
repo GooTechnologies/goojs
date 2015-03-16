@@ -4,6 +4,7 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder',
 	'goo/shapes/Quad',
+	'goo/shapes/Torus',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/scripts/OrbitCamControlScript',
@@ -11,13 +12,15 @@ require([
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
+	'goo/addons/physicspack/colliders/MeshCollider',
 	'goo/addons/physicspack/joints/BallJoint',
 	'goo/addons/physicspack/joints/HingeJoint',
+	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
 	'lib/V'
 ], function (
 	Material,
@@ -25,6 +28,7 @@ require([
 	Box,
 	Cylinder,
 	Quad,
+	Torus,
 	TextureCreator,
 	ShaderLib,
 	OrbitCamControlScript,
@@ -32,18 +36,20 @@ require([
 	ColliderComponent,
 	PhysicsSystem,
 	ColliderSystem,
-	RigidbodyComponent,
+	RigidBodyComponent,
 	BoxCollider,
 	CylinderCollider,
 	SphereCollider,
 	PlaneCollider,
+	MeshCollider,
 	BallJoint,
 	HingeJoint,
+	PhysicsDebugRenderSystem,
 	V
 ) {
 	'use strict';
 
-	V.describe('The entities in the scene hold a rigidbody component which updates their transform.');
+	V.describe('The entities in the scene hold a rigidBody component which updates their transform.');
 
 	var goo = V.initGoo();
 	var world = goo.world;
@@ -51,6 +57,7 @@ require([
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
+	goo.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {
@@ -60,7 +67,7 @@ require([
 				V.rng.nextFloat() * 16 - 8
 			];
 
-			var rigidBodyComponent = new RigidbodyComponent();
+			var rigidBodyComponent = new RigidBodyComponent();
 			var entity;
 			var colliderComponent;
 			var mat = V.getColoredMaterial();
@@ -107,7 +114,7 @@ require([
 		var entity = world.createEntity(new Quad(1000, 1000, 100, 100), V.getColoredMaterial(0.7, 0.7, 0.7))
 			.set([0, -10, 0])
 			.setRotation(-Math.PI / 2, 0, 0);
-		var rigidBodyComponent = new RigidbodyComponent({ isKinematic: true });
+		var rigidBodyComponent = new RigidBodyComponent({ isKinematic: true });
 		var planeColliderComponent = new ColliderComponent({ collider: new PlaneCollider() });
 		entity.set(rigidBodyComponent)
 			.set(planeColliderComponent)
@@ -116,7 +123,7 @@ require([
 
 	function createStaticBox(x, y, z, w, d, h) {
 		return world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
-			.set(new RigidbodyComponent({ isKinematic: true }))
+			.set(new RigidBodyComponent({ isKinematic: true }))
 			.set(
 				new ColliderComponent({
 					collider: new BoxCollider({
@@ -133,7 +140,7 @@ require([
 		var compoundEntity = world.createEntity(new Vector3(x, y, z));
 
 		// Add a rigid body component to it
-		compoundEntity.set(new RigidbodyComponent({ mass : 5 }));
+		compoundEntity.set(new RigidBodyComponent({ mass : 5 }));
 
 		// Define half extents for all boxes
 		var h1 = new Vector3(4, 1, 1),
@@ -198,7 +205,7 @@ require([
 	function createChain(x, y, z, numLinks, size) {
 		var lastEntity;
 		for (var i = 0; i < numLinks; i++) {
-			var rbComponent = new RigidbodyComponent({
+			var rbComponent = new RigidBodyComponent({
 				mass: i ? 1 : 0,
 				velocity: new Vector3(0, 0, 3 * i)
 			});
@@ -209,7 +216,7 @@ require([
 				.addToWorld();
 
 			if (lastEntity) {
-				e.rigidbodyComponent.addJoint(new BallJoint({
+				e.rigidBodyComponent.addJoint(new BallJoint({
 					connectedEntity: lastEntity,
 					localPivot: new Vector3(0, 1, 0)
 				}));
@@ -219,13 +226,21 @@ require([
 		}
 	}
 
+	function createMesh(x, y, z) {
+		var position = new Vector3(x, y, z);
+		var rigidBodyComponent = new RigidBodyComponent({ mass : 5, velocity: new Vector3(0, 0, 1) });
+		var meshData = new Torus(16, 16);
+		var colliderComponent = new ColliderComponent({ collider: new MeshCollider({ meshData: meshData }) });
+		return world.createEntity(position, rigidBodyComponent, colliderComponent, meshData, V.getColoredMaterial()).addToWorld();
+	}
+
 	function createHinge(x, y, z) {
 		var lastEntity;
 		var scale = 2;
 		var a = 0.9;
 		var b = 0.1;
 		for (var i = 0; i < 5; i++) {
-			var rbComponent = new RigidbodyComponent({
+			var rbComponent = new RigidBodyComponent({
 				mass: i ? 1 : 0,
 				velocity: new Vector3(0, 0, 3 * i)
 			});
@@ -235,7 +250,7 @@ require([
 				.addToWorld().setScale(scale, scale, scale);
 
 			if (lastEntity) {
-				e.rigidbodyComponent.addJoint(new HingeJoint({
+				e.rigidBodyComponent.addJoint(new HingeJoint({
 					connectedEntity: lastEntity,
 					localPivot: new Vector3(0, 0.5, 0),
 					localAxis: new Vector3(1, 0, 0)
@@ -247,7 +262,7 @@ require([
 	}
 
 	function createKinematic() {
-		var rbComponent = new RigidbodyComponent({
+		var rbComponent = new RigidBodyComponent({
 			mass: 0,
 			velocity: new Vector3(0, 0, 3),
 			angularVelocity: new Vector3(0, 0, 3),
@@ -273,6 +288,7 @@ require([
 	createGround();
 	createCompound(0, 5, 0);
 	createHinge(5, 5, 0);
+	createMesh(0, 20, 20);
 
 	var forcefieldEnabled = false;
 	var paused = false;
@@ -342,7 +358,7 @@ require([
 				force.mul(700);
 
 				// Apply it to the entity
-				entity.rigidbodyComponent.applyForce(force);
+				entity.rigidBodyComponent.applyForce(force);
 			});
 		}
 	});
@@ -358,7 +374,7 @@ require([
 			force.mul(5000);
 
 			// Apply it to the entity
-			entity.rigidbodyComponent.applyForce(force);
+			entity.rigidBodyComponent.applyForce(force);
 		});
 	}
 

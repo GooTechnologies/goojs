@@ -583,15 +583,16 @@ define([
 
 		var origI = this.getIndexBuffer();
 
+		var that = this;
 		var getIndex;
 		if (origI) {
 			getIndex = function(primitiveIndex, point, section) {
-				return origI[this.getVertexIndex(primitiveIndex, point, section)];
-			}.bind(this);
+				return origI[that.getVertexIndex(primitiveIndex, point, section)];
+			};
 		} else {
 			getIndex = function(primitiveIndex, point, section) {
-				return this.getVertexIndex(primitiveIndex, point, section);
-			}.bind(this);
+				return that.getVertexIndex(primitiveIndex, point, section);
+			};
 		}
 
 		var targetI = [];

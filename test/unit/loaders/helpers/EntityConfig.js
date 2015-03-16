@@ -157,6 +157,29 @@ define([
 				return {
 					innerHTML: 'some html'
 				};
+			},
+			collider: function (type) {
+				return _.defaults({}, {
+					shape: type || 'Box', // Box, Cylinder, Plane, Sphere
+					isTrigger: false,
+					friction: 0.3,
+					restitution: 0.0,
+					shapeOptions: {
+						halfExtents: [1, 1, 1], // Box
+						radius: 0.5, // Sphere, Cylinder
+						height: 1 // Cylinder
+					}
+				});
+			},
+			rigidBody: function () {
+				return {
+					mass: 1,
+					isKinematic: false,
+					velocity: [0, 0, 0],
+					angularVelocity: [0, 0, 0],
+					linearDrag: 0,
+					angularDrag: 0
+				};
 			}
 		},
 		attachChild: function(parent, child) {
