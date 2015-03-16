@@ -1,3 +1,4 @@
+// jshint node:true
 'use strict';
 
 var fs = require('fs');
@@ -46,11 +47,31 @@ module.exports = function (grunt) {
 	}
 
 	grunt.config('requirejs', {
-		build: {
+		'build': {
 			// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 			options: {
 				baseUrl: 'src-preprocessed/',
 				optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
+				preserveLicenseComments: false,
+				useStrict: true,
+				wrap: false,
+				keepBuildDir: true,
+				//generateSourceMaps: true,
+				dir: 'out/minified/',
+				modules: [gooModule],
+				paths: {
+					'requireLib': '../lib/require'
+				}
+			}
+		},
+		'no-mangle': {
+			options: {
+				baseUrl: 'src-preprocessed/',
+				optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
+				//mangle: false,
+				uglify2: {
+					mangle: false
+				},
 				preserveLicenseComments: false,
 				useStrict: true,
 				wrap: false,

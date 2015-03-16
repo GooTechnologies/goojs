@@ -166,6 +166,14 @@ module.exports = function (grunt) {
 		'wrap',
 		'build-pack'
 	]);
+	grunt.registerTask('minify-no-mangle', [
+		'main-file',
+		'preprocess:prod',
+		'requirejs:no-mangle',
+		'uglify:build',
+		'wrap',
+		'build-pack'
+	]);
 	grunt.registerTask('unittest',	 ['karma:unit']);
 	grunt.registerTask('coverage',	 ['unittest']);
 	grunt.registerTask('e2e',		 ['shell:e2e']);
