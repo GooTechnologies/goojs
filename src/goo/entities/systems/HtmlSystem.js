@@ -102,5 +102,15 @@ define([
 		}
 	};
 
+	HtmlSystem.prototype.deleted = function(entity) {
+		if (!entity || !entity.htmlComponent) {
+			return;
+		}
+
+		var component = entity.htmlComponent;
+		component.domElement.parentNode.removeChild(component.domElement);
+		component.domElement = null
+	};
+
 	return HtmlSystem;
 });
