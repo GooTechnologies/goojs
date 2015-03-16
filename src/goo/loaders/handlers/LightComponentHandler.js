@@ -1,11 +1,11 @@
-define(['goo/loaders/handlers/ComponentHandler',
+define([
+	'goo/loaders/handlers/ComponentHandler',
 	'goo/entities/components/LightComponent',
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/SpotLight',
 	'goo/renderer/light/DirectionalLight',
-	'goo/math/Vector',
+	'goo/math/Vector3',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
 ], function (
 	ComponentHandler,
@@ -13,10 +13,9 @@ define(['goo/loaders/handlers/ComponentHandler',
 	PointLight,
 	SpotLight,
 	DirectionalLight,
-	Vector,
+	Vector3,
 	RSVP,
-	pu,
-	_
+	ObjectUtil
 ) {
 	'use strict';
 
@@ -55,7 +54,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 	 * @private
 	 */
 	LightComponentHandler.prototype._prepare = function (config) {
-		_.defaults(config, {
+		ObjectUtil.defaults(config, {
 			direction: [0, 0, 0],
 			color: [1, 1, 1],
 			shadowCaster: false,
@@ -68,7 +67,7 @@ define(['goo/loaders/handlers/ComponentHandler',
 
 		if (config.shadowCaster && supportsShadows()) {
 			config.shadowSettings = config.shadowSettings || {};
-			_.defaults(config.shadowSettings, {
+			ObjectUtil.defaults(config.shadowSettings, {
 				shadowType: 'Basic',
 				near: 1,
 				far: 1000,
@@ -124,16 +123,16 @@ define(['goo/loaders/handlers/ComponentHandler',
 					if (key === 'shadowSettings') {
 						for (var key in value) {
 							var shadowVal = value[key];
-							if (light.shadowSettings[key] instanceof Vector) {
-								light.shadowSettings[key].set(shadowVal);
+							if (light.shadowSettings[key] instanceof Vector3) {
+								light.shadowSettings[key].setDirect(shadowVal[0], shadowVal[1], shadowVal[2]);
 							} else {
-								light.shadowSettings[key] = _.clone(shadowVal);
+								light.shadowSettings[key] = ObjectUtil.clone(shadowVal);
 							}
 						}
-					}	else if (light[key] instanceof Vector) {
-						light[key].set(value);
+					} else if (light[key] instanceof Vector3) {
+						light[key].set(value[0], value[1], value[2]);
 					} else {
-						light[key] = _.clone(value);
+						light[key] = ObjectUtil.clone(value);
 					}
 				}
 			}

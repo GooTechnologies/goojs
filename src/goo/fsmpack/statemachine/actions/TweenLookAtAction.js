@@ -82,7 +82,7 @@ define([
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
 
-		var distance = Vector3.distance(new Vector3(this.to), transform.translation);
+		var distance = Vector3.fromArray(this.to).distance(transform.translation);
 		var time = entity._world.time * 1000;
 
 		var initialLookAt = new Vector3(0, 0, 1);

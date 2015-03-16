@@ -954,7 +954,7 @@ define([
 			(1.0 + projection[10]) / projection[14]
 		);
 
-		transformedClipPlane.scale(2.0 / Vector4.dot(transformedClipPlane, this._qCalc));
+		transformedClipPlane.scale(2.0 / transformedClipPlane.dot(this._qCalc));
 
 		projection[2] = transformedClipPlane.x;
 		projection[6] = transformedClipPlane.y;

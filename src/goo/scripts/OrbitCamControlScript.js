@@ -71,8 +71,8 @@ define([
 			var angles = ctx.entity.getRotation();
 			spherical = ctx.spherical = new Vector3(
 				args.lookAtDistance,
-				-angles[1] + Math.PI / 2,
-				-angles[0]
+				-angles.y + Math.PI / 2,
+				-angles.x
 			);
 		} else if (args.spherical) {
 			var spherical = ctx.spherical = new Vector3(

@@ -38,8 +38,8 @@ define([
 				panButton = -1;
 			}
 			lookAtPoint = environment.goingToLookAt;
-			fwdVector = new Vector3(Vector3.UNIT_Y);
-			leftVector = new Vector3(Vector3.UNIT_X).invert();
+			fwdVector = Vector3.UNIT_Y.clone();
+			leftVector = Vector3.UNIT_X.clone().invert();
 			moveVector = new Vector3();
 			calcVector = new Vector3();
 			calcVector2 = new Vector3();

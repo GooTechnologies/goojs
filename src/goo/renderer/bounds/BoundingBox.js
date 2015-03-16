@@ -348,7 +348,7 @@ define([
 		// * Find if the two boxes intersect along a single axis
 		// * Compute the intersection interval for that axis
 		// * Keep the smallest intersection/penetration value
-		var axisLengthSquared = Vector3.dot(axis, axis);
+		var axisLengthSquared = axis.dot(axis);
 
 		// If the axis is degenerate then ignore
 		if (axisLengthSquared < 0.000001) {

@@ -43,8 +43,11 @@ define([
 	}
 
 	// #ifdef DEBUG
-	Vector.setupAliases(Vector4.prototype,[['x', 'r'], ['y', 'g'], ['z', 'b'], ['w', 'a']]);
+	Vector.setupAliases(Vector4.prototype,[['x'], ['y'], ['z'], ['w']]);
+	Vector.setupIndices(Vector4.prototype, 4);
 	// #endif
+
+	Vector.setupAliases(Vector4.prototype,[['r'], ['g'], ['b'], ['a']]);
 
 	/**
 	 * Zero-vector (0, 0, 0)

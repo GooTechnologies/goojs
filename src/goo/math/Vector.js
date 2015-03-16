@@ -31,27 +31,23 @@ define(function () {
 					}
 				});
 			});
-
-			Object.defineProperty(prototype, index, {
-				get: function () {
-					throw ''; // not allowed anymore
-					return this[componentName];
-				},
-				set: function (value) {
-					throw ''; // not allowed anymore
-					this[componentName] = value;
-
-					// #ifdef DEBUG
-					if (isNaN(this[componentName])) {
-						throw new Error('Tried setting NaN to vector component ' + index);
-					}
-					// #endif
-				}
-			});
 		});
 	};
 
 	// #ifdef DEBUG
+	Vector.setupIndices = function (prototype, count) {
+		var raise = function () {
+			throw new Error('Vector component access through indices is not supported anymore');
+		};
+
+		for (var i = 0; i < count; i++) {
+			Object.defineProperty(prototype, i, {
+				get: raise,
+				set: raise
+			});
+		}
+	};
+
 	/**
 	 * Replaces the supplied method of object and wraps it in a integrity check
 	 * @hidden

@@ -204,7 +204,7 @@ define([
 			doPick: false,
 			pickingCallback: null,
 			pickingStore: {},
-			clearColorStore: []
+			clearColorStore: [] //! AT: why is this an array and not a vector4?
 		};
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
@@ -410,11 +410,11 @@ define([
 			}
 			// handle pick requests
 			if (this._picking.doPick && Renderer.mainCamera) {
-				var cc = this.renderer.clearColor.data;
-				this._picking.clearColorStore[0] = cc[0];
-				this._picking.clearColorStore[1] = cc[1];
-				this._picking.clearColorStore[2] = cc[2];
-				this._picking.clearColorStore[3] = cc[3];
+				var clearColor = this.renderer.clearColor;
+				this._picking.clearColorStore[0] = clearColor.r;
+				this._picking.clearColorStore[1] = clearColor.g;
+				this._picking.clearColorStore[2] = clearColor.b;
+				this._picking.clearColorStore[3] = clearColor.a;
 				this.renderer.setClearColor(0, 0, 0, 1);
 
 				for (var i = 0; i < this.renderSystems.length; i++) {
