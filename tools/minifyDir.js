@@ -12,10 +12,13 @@
 
 'use strict';
 
+var fs = require('fs');
+
 var requirejs = require('requirejs');
 var madge = require('madge'); //! AT: this library returns false negatives
-var fs = require('fs');
+var _ = require('underscore');
 require('colors');
+
 
 /**
  * Converts all backslashes to slashes
@@ -121,23 +124,24 @@ function buildPack(moduleList, packPath, packName) {
  * @param {string} packName
  * @param {string} ignoreList
  * @param {string} outFileName
+ * @param {Object} uglifyOptions Options to pass to uglify
  * @returns {{baseUrl: string, out: string, name: string, paths: {}}}
  */
-function getOptimizerConfig(packPath, packName, ignoreList, outFileName) {
+function getOptimizerConfig(packPath, packName, ignoreList, outFileName, uglifyOptions) {
 	var paths = {};
 
 	ignoreList.forEach(function (ignoreItem) {
 		paths[ignoreItem] = 'empty:';
 	});
 
-	var config = {
+	return {
+		optimize: 'uglify2',
 		baseUrl: 'src/',
 		name: 'goo/' + packPath + '/' + packName,
 		out: outFileName,
-		paths: paths
+		paths: paths,
+		uglify2: uglifyOptions
 	};
-
-	return config;
 }
 
 function wrap(fileName, head, tail, callback) {
@@ -162,64 +166,86 @@ function getTailWrapping(packName) {
 	return '';
 }
 
-if (process.argv.length < 3) {
-	console.error('Invalid parameters; consult the top-level jsdoc');
-	return;
+function run(packPath, outFileName, options, callback) {
+	var packName = extractFilename(packPath);
+	outFileName = outFileName || 'out/' + packName + '.js';
+	var version = '';
+
+	_.defaults(options, {
+		mangle: true
+	});
+
+	// get all dependencies
+	console.log('get all dependencies'.grey);
+	var tree = madge('src/goo/' + packPath + '/', { format: 'amd' }).tree;
+
+	// get modules and dependencies
+	console.log('get modules and engine dependencies'.grey);
+	var modulesAndDependencies = getModulesAndDependencies(tree, packPath);
+
+	// get the source for the pack
+	console.log('get the source for the pack'.grey);
+	var packStr = buildPack(modulesAndDependencies.moduleList, packPath, packName);
+
+	// add the pack
+	console.log('add the pack');
+	fs.writeFile('src/goo/' + packPath + '/' + packName + '.js', packStr, function (err) {
+		if (err) {
+			console.error('Error while writing the pack'.red);
+			console.error(err);
+			callback(1); return;
+		}
+
+		// get the config for the optimizer
+		console.log('get the config for the optimizer'.grey);
+		var optimizerConfig = getOptimizerConfig(
+			packPath,
+			packName,
+			modulesAndDependencies.ignoreList,
+			outFileName,
+			options
+		);
+
+		// optimize!
+		console.log('optimize!');
+		console.log(optimizerConfig);
+		requirejs.optimize(optimizerConfig, function (buildResponse) {
+			// buildResponse is just a text output of the modules included.
+
+			console.log('Done optimizing'.green);
+
+			console.log('Pack Name: '.grey, packPath);
+
+			console.log('Module List'.grey);
+			console.log(modulesAndDependencies.moduleList);
+
+			console.log('-----'.grey);
+			console.log('Ignore List'.grey);
+			console.log(modulesAndDependencies.ignoreList);
+
+			wrap(outFileName, getHeadWrapping(packName, version), getTailWrapping(packName), function () {
+				console.log(('Done minifying directory ' + packPath).green);
+				callback(0);
+			});
+		}, function (err) {
+			// optimization err callback
+			console.error(err);
+			callback(1);
+		});
+	});
 }
 
-var packPath = process.argv[2];
-var packName = extractFilename(packPath);
-var version = '';
-var outFileName = process.argv[3] || 'out/' + packName + '.js';
-
-// get all dependencies
-console.log('get all dependencies'.grey);
-var tree = madge('src/goo/' + packPath + '/', { format: 'amd' }).tree;
-
-// get modules and dependencies
-console.log('get modules and engine dependencies'.grey);
-var modulesAndDependencies = getModulesAndDependencies(tree, packPath);
-
-// get the source for the pack
-console.log('get the source for the pack'.grey);
-var packStr = buildPack(modulesAndDependencies.moduleList, packPath, packName);
-
-// add the pack
-console.log('add the pack');
-fs.writeFile('src/goo/' + packPath + '/' + packName + '.js', packStr, function (err) {
-	if (err) {
-		console.error('Error while writing the pack'.red);
-		console.error(err);
-		process.exit(1);
+if (module.parent) {
+	exports.run = run;
+} else {
+	if (process.argv.length < 3) {
+		console.error('Invalid parameters; consult the top-level jsdoc');
+		return;
 	}
 
-	// get the config for the optimizer
-	console.log('get the config for the optimizer'.grey);
-	var optimizerConfig = getOptimizerConfig(packPath, packName, modulesAndDependencies.ignoreList, outFileName);
+	var packPath = process.argv[2];
+	var packName = extractFilename(packPath);
+	var outFileName = process.argv[3] || 'out/' + packName + '.js';
 
-	// optimize!
-	console.log('optimize!');
-	requirejs.optimize(optimizerConfig, function (buildResponse) {
-		// buildResponse is just a text output of the modules included.
-
-		console.log('Done optimizing'.green);
-
-		console.log('Pack Name: '.grey, packPath);
-
-		console.log('Module List'.grey);
-		console.log(modulesAndDependencies.moduleList);
-
-		console.log('-----'.grey);
-		console.log('Ignore List'.grey);
-		console.log(modulesAndDependencies.ignoreList);
-
-		wrap(outFileName, getHeadWrapping(packName, version), getTailWrapping(packName), function () {
-			console.log(('Done minifying directory ' + packPath).green);
-		});
-	}, function (err) {
-		// optimization err callback
-		// :(
-		console.error(err);
-		process.exit(1);
-	});
-});
+	run(packPath, outFileName, process.exit.bind(process));
+}
