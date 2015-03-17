@@ -8,6 +8,7 @@ define([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/loaders/DynamicLoader',
+	'goo/loaders/handlers/EnvironmentHandler',
 	'goo/entities/components/TransformComponent',
 	'goo/entities/components/MeshDataComponent',
 	'goo/entities/components/MeshRendererComponent',
@@ -23,6 +24,7 @@ define([
 	Box,
 	Sphere,
 	DynamicLoader,
+	EnvironmentHandler,
 	TransformComponent,
 	MeshDataComponent,
 	MeshRendererComponent,
@@ -54,6 +56,8 @@ define([
 			var renderSystem = world.getSystem('RenderSystem');
 			spyOn(renderSystem, 'added');
 
+			EnvironmentHandler.currentSkyboxRef = config.id;
+
 			loader.load(config.id).then(function (skyboxes) {
 				var skybox = skyboxes[0];
 				expect(skybox).toEqual(jasmine.any(Entity));
@@ -82,6 +86,9 @@ define([
 		it('loads a skysphere', function (done) {
 			var config = Configs.skybox('sphere');
 			loader.preload(Configs.get());
+
+			EnvironmentHandler.currentSkyboxRef = config.id;
+
 			loader.load(config.id).then(function (skyboxes) {
 				var skybox = skyboxes[0];
 				expect(skybox).toEqual(jasmine.any(Entity));
