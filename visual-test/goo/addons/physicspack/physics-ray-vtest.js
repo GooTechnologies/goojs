@@ -209,12 +209,12 @@ require([
 
 
 	/**
-	 *
+	 * Casts a physics-system ray of a specific type and renders it.
 	 * @param {Vector3} origin
 	 * @param {Vector3} direction
 	 * @param {number} length
 	 * @param {Vector3} color The color used with the LineRenderSystem to draw a line.
-	 * @param {number} castType
+	 * @param {number} castType The type of ray to cast; ALL, ANY or CLOSEST.
 	 * @param {object} settings
 	 * @constructor
 	 */
