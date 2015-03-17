@@ -78,6 +78,7 @@ function (
 	 */
 	ColliderComponent.prototype.updateWorldCollider = function (updateTransformBranch) {
 		var doUpdate = false;
+
 		if (updateTransformBranch) {
 			// Update the world transform of the entity
 			// Get the root and update on the walk down
