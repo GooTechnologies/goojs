@@ -154,12 +154,12 @@ function (
 	};
 
 	/**
-	 * @param {Vector3} force
+	 * Apply a force to the center of mass of the body.
+	 * @param {Vector3} force The force vector, oriented in world space.
 	 */
 	RigidBodyComponent.prototype.applyForce = function (force) {
 		tmpCannonVec.copy(force);
-		tmpCannonVec2.set(0, 0, 0);
-		this.cannonBody.applyForce(tmpCannonVec, tmpCannonVec2);
+		this.cannonBody.force.vadd(tmpCannonVec, this.cannonBody.force);
 	};
 
 	/**
@@ -340,6 +340,9 @@ function (
 	});
 
 	/**
+	 * Create a CANNON.Shape given a Collider. A BoxCollider will yield a CANNON.Box and so on.
+	 * @param {Collider} collider
+	 * @return {CANNON.Shape}
 	 * @private
 	 */
 	RigidBodyComponent.getCannonShape = function (collider) {
@@ -400,7 +403,7 @@ function (
 	};
 
 	/**
-	 * @private
+	 * Initialize the Cannon.js body available in the .cannonBody property. This is useful if you want to work with the CANNON.Body instance directly after creating the component.
 	 */
 	RigidBodyComponent.prototype.initialize = function () {
 		if (!this._dirty) {
@@ -517,6 +520,9 @@ function (
 		}
 	};
 
+	/**
+	 * @private
+	 */
 	RigidBodyComponent.prototype.updateDirtyColliders = function () {
 		var colliderEntities = this._colliderEntities;
 		for (var i = 0; i < colliderEntities.length; i++) {
@@ -584,6 +590,7 @@ function (
 	};
 
 	/**
+	 * Creates a new instance indentical to this component.
 	 * @returns RigidBodyComponent
 	 */
 	RigidBodyComponent.prototype.clone = function () {
@@ -609,14 +616,14 @@ function (
 	};
 
 	/**
-	 * Marks the component as dirty.
+	 * Marks the component as dirty. If you do, the .cannonBody instance will be re-initialized in the next process loop.
 	 */
 	RigidBodyComponent.prototype.setToDirty = function () {
 		this._dirty = true;
 	};
 
 	/**
-	 * Marks the component as dirty.
+	 * Marks the component as non-dirty.
 	 */
 	RigidBodyComponent.prototype.setToClean = function () {
 		this._dirty = false;
