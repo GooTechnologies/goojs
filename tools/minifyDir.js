@@ -136,7 +136,7 @@ function getOptimizerConfig(packPath, packName, ignoreList, outFileName, uglifyO
 
 	return {
 		optimize: 'uglify2',
-		baseUrl: 'src/',
+		baseUrl: 'src-preprocessed/',
 		name: 'goo/' + packPath + '/' + packName,
 		out: outFileName,
 		paths: paths,
