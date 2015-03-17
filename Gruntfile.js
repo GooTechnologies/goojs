@@ -161,6 +161,10 @@ module.exports = function (grunt) {
 		return 'minify-pack:' + packName + '-no-mangle';
 	});
 
+	var buildPackDevArray = Object.keys(packs).map(function (packName) {
+		return 'minify-pack:' + packName + '-dev';
+	});
+
 	grunt.registerTask('minify', [
 		'preprocess:build',
 		'minify-main:build',
@@ -174,6 +178,13 @@ module.exports = function (grunt) {
 		'uglify:build',
 		'wrap'
 	].concat(buildPackNoMangleArray));
+
+	grunt.registerTask('minify-dev', [
+		'preprocess:build',
+		'minify-main:dev',
+		'uglify:build',
+		'wrap'
+	].concat(buildPackDevArray));
 
 	grunt.registerTask('default', ['minify']);
 };
