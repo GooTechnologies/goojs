@@ -63,7 +63,7 @@ require([
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
 
-	V.addOrbitCamera(new Vector3(9, Math.PI / 1.15, 0.5), new Vector3(1.5, 0, 1.5));
+	V.addOrbitCamera(new Vector3(9, Math.PI / 1.2, 0.7), new Vector3(1.5, 0, 1.5));
 
 	var addDirectionalLight = function (directionArr) {
 		var directionalLight = new DirectionalLight();
@@ -76,11 +76,6 @@ require([
 	addDirectionalLight([1, 1, -1]);
 	addDirectionalLight([-1, -1, -1]);
 
-
-	var rigidBodyComponent;
-	var rigidBodies = [];
-	var colliderComponent;
-
 	var createMaterial = function (materialName, color) {
 		var material = new Material(materialName, ShaderLib.uber);
 		material.uniforms.materialAmbient = [color[0], color[1], color[2], color[3]];
@@ -92,80 +87,70 @@ require([
 		return material;
 	};
 
-	var meshColliderMaterial = createMaterial('MeshColliderMaterial', [0.5, 0.5, 0, 1]);
-	var primitiveColliderMaterial = createMaterial('PrimitiveColliderMaterial', [0.0, 0.5, 0.5, 1]);
+	/**
+	 * An entity for ray-casting against.
+	 * @param {World} world The world in which lines are rendered in.
+	 * @param {Vector3} position
+	 * @param {number} shapeType The shape-type, for instance: ColliderEntity.SPHERE, ColliderEntity.BOX or ColliderEntity.CYLINDER.
+	 * @param {boolean} isPrimitive Determines if this ColliderEntity is a primitive-collider or a mesh-collider.
+	 * @constructor
+	 */
+	var ColliderEntity = function (world, position, shapeType, isPrimitive) {
 
-	var numBodiesPerRow = 4;
-	var numBodies = numBodiesPerRow * numBodiesPerRow;
+		this.world = world;
+		this.shapeType = shapeType;
+		this.isPrimitive = isPrimitive;
 
-	var PrimitiveColliderEntity = function(){
-		//TODO: WRITE PRIMITIVE COLLIDER ENTITY AND ADD MESH COLLIDER MATERIAL TO THE CLASS
+		this.shape = null;
+		this.shapeCollider = null;
+		this.material = null;
+		this.rigidBodyComponent = null;
+		this.colliderComponent = null;
+		this.entity = null;
+
+		this.initialize(position);
 	};
 
-	PrimitiveColliderEntity.SPHERE = 0;
-	PrimitiveColliderEntity.BOX = 1;
-	PrimitiveColliderEntity.CYLINDER = 2;
+	ColliderEntity.SPHERE = 0;
+	ColliderEntity.BOX = 1;
+	ColliderEntity.CYLINDER = 2;
 
-	PrimitiveColliderEntity.MESH_COLLIDER_MATERIAL = createMaterial('MeshColliderMaterial', [0.5, 0.5, 0, 1]);
+	ColliderEntity.MESH_COLLIDER_MATERIAL = createMaterial('MeshColliderMaterial', [0.5, 0.5, 0, 1]);
+	ColliderEntity.PRIMITIVE_COLLIDER_MATERIAL = createMaterial('PrimitiveColliderMaterial', [0.0, 0.5, 0.5, 1]);
 
-	for (var i = 0; i < numBodies; i++) {
-
-		var isPrimitiveCollider = false;
-
-		//default material is MeshColliderMaterial
-		var material = meshColliderMaterial;
-
-
-		if (i % 2) {
-			isPrimitiveCollider = true;
-		}
-
-		if (isPrimitiveCollider) {
-			material = primitiveColliderMaterial;
-		}
-
-		var shape = null;
-		var shapeCollider = null;
-
-		//switch-case for all the different type of primitive shapes
-		switch (i % 3) {
-			case 0: //sphere
-				shape = new Sphere(8, 8, 0.5);
-
-				if (isPrimitiveCollider) {
-					shapeCollider = new SphereCollider({radius: shape.radius});
-				}
+	/**
+	 * Populates the ColliderEntity's properties.
+	 * @param {Vector3} position
+	 */
+	ColliderEntity.prototype.initialize = function (position) {
+		switch (this.shapeType) {
+			case ColliderEntity.SPHERE:
+				this.shape = new Sphere(8, 8, 0.5);
+				this.shapeCollider = new SphereCollider({radius: this.shape.radius});
 				break;
-			case 1: //box
-				shape = new Box(0.5, 0.5);
-
-				if (isPrimitiveCollider) {
-					shapeCollider = new BoxCollider({halfExtents: new Vector3(shape.xExtent, shape.yExtent, shape.zExtent)});
-				}
+			case ColliderEntity.BOX:
+				this.shape = new Box(0.5, 0.5);
+				this.shapeCollider = new BoxCollider({halfExtents: new Vector3(this.shape.xExtent, this.shape.yExtent, this.shape.zExtent)});
 				break;
-			case 2: //cylinder
-				shape = new Cylinder(8, 0.25, 0.25, 0.5);
-
-				if (isPrimitiveCollider) {
-					shapeCollider = new CylinderCollider({radius: shape.radiusTop, height: shape.height});
-				}
+			case ColliderEntity.CYLINDER:
+				this.shape = new Cylinder(8, 0.25, 0.25, 0.5);
+				this.shapeCollider = new CylinderCollider({radius: this.shape.radiusTop, height: this.shape.height});
 				break;
 		}
 
-		if (!isPrimitiveCollider) {
-			shapeCollider = new MeshCollider({meshData: shape});
+		if (this.isPrimitive) {
+			this.material = ColliderEntity.PRIMITIVE_COLLIDER_MATERIAL;
+		}
+		else {
+			this.material = ColliderEntity.MESH_COLLIDER_MATERIAL;
+			this.shapeCollider = new MeshCollider({meshData: this.shape});
 		}
 
-		rigidBodyComponent = new RigidbodyComponent({mass: 0});
-		rigidBodies.push(rigidBodyComponent);
-		colliderComponent = new ColliderComponent({collider: shapeCollider});
-		world.createEntity(shape, material, [i % numBodiesPerRow, 0, Math.floor(i / numBodiesPerRow)], rigidBodyComponent, colliderComponent).addToWorld();
-	}
+		this.rigidBodyComponent = new RigidbodyComponent({mass: 0});
+		this.colliderComponent = new ColliderComponent({collider: this.shapeCollider});
 
-
-	var rayStart = new Vector3(-4, 0, 0);
-	var rayDirection = new Vector3(1, 0, 0);
-	var rayLength = 8;
+		this.entity = this.world.createEntity(this.shape, this.material, position, this.rigidBodyComponent, this.colliderComponent).addToWorld();
+	};
 
 	var normalEndPosition = new Vector3();
 	var drawNormal = function (position, normal) {
@@ -174,11 +159,9 @@ require([
 		lineRenderSystem.drawLine(position, normalEndPosition, lineRenderSystem.BLUE);
 	};
 
-
 	var arrowStartPosition = new Vector3();
 	var arrowEndPosition = new Vector3();
 	var arrowDirection = new Vector3();
-
 	var drawLineArrow = function (origin, direction, length, fraction, color, width) {
 
 		arrowStartPosition.setVector(direction).scale(length * fraction).addVector(origin);
@@ -213,26 +196,34 @@ require([
 		lineRenderSystem.drawLine(origin, lineEndVector, color);
 	};
 
+
 	var tmpQuaternion = new Quaternion();
 	var rotationAxis = new Vector3();
-	var rotateRigidBodies = function () {
-		for (var i = 0; i < rigidBodies.length; i++) {
-			var rigidBody = rigidBodies[i];
+	var getQuaternionRotationFromIndex = function (index) {
+		//set the rotation axis for the quaternion
+		rotationAxis.setDirect((index % 4 === 0) + (index % 2 === 0), 0.9, (index % 4 === 2) + (index % 2 === 1)).normalize();
 
-			//set the rotation axis for the quaternion
-			rotationAxis.setDirect((i % 4 === 0) + (i % 2 === 0), 0.9, (i % 4 === 2) + (i % 2 === 1)).normalize();
-
-			//rotate the rigidbody around the rotationAxis
-			rigidBody.setQuaternion(tmpQuaternion.fromAngleNormalAxis(Math.sin(world.time * 0.7), rotationAxis));
-		}
+		//rotate the rigidbody around the rotationAxis
+		return tmpQuaternion.fromAngleNormalAxis(0.5, rotationAxis);
 	};
 
-	var RayCaster = function (origin, direction, length, color, type, settings) {
+
+	/**
+	 *
+	 * @param {Vector3} origin
+	 * @param {Vector3} direction
+	 * @param {number} length
+	 * @param {Vector3} color The color used with the LineRenderSystem to draw a line.
+	 * @param {number} castType
+	 * @param {object} settings
+	 * @constructor
+	 */
+	var RayCaster = function (origin, direction, length, color, castType, settings) {
 		this.origin = new Vector3(origin);
 		this.direction = new Vector3(direction);
 		this.length = length;
 		this.color = color;
-		this.type = type;
+		this.castType = castType;
 		this.settings = settings;
 	};
 
@@ -249,7 +240,7 @@ require([
 
 	RayCaster.prototype.cast = function () {
 
-		switch (this.type) {
+		switch (this.castType) {
 			case RayCaster.ALL:
 				physicsSystem.raycastAll(this.origin, this.direction, this.length, this.settings, RayCaster.rayCastCallback);
 				break;
@@ -269,17 +260,50 @@ require([
 	};
 
 
+	var colliderEntitys = [];
+
+	var rayStart = new Vector3(-4, 0, 0);
 	var rayCasters = [];
 
-	rayCasters[0] = new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.RED, RayCaster.ALL, {skipBackfaces: true});
-	rayCasters[1] = new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.GREEN, RayCaster.ANY, {skipBackfaces: true});
-	rayCasters[2] = new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.WHITE, RayCaster.CLOSEST, {skipBackfaces: true});
-	rayCasters[3] = new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.MAGENTA, RayCaster.ALL, {skipBackfaces: false});
+	var createScene = function () {
+
+		var colliderEntitysPerRow = 4;
+		var colliderEntitysPerColumn = 4;
+
+		var colliderEntityPosition = new Vector3();
+
+		for (var x = 0; x < colliderEntitysPerRow; x++) {
+			for (var z = 0; z < colliderEntitysPerColumn; z++) {
+
+				var currentIndex = x * colliderEntitysPerRow + z;
+
+				//Boolean comparison to make a grid pattern.
+				var isPrimitive = (z % 2) === (x % 2);
+
+				var shapeType = (z + (x % 3)) % 3;
+
+				colliderEntityPosition.setDirect(x, 0, z);
+
+				var colliderEntity = new ColliderEntity(world, colliderEntityPosition, shapeType, isPrimitive);
+				colliderEntity.rigidBodyComponent.initialize();
+				colliderEntity.rigidBodyComponent.setQuaternion(getQuaternionRotationFromIndex(currentIndex));
+
+				colliderEntitys.push(colliderEntity);
+			}
+		}
+
+		var rayDirection = new Vector3(1, 0, 0);
+		var rayLength = 8;
+
+		rayCasters.push(new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.RED, RayCaster.ALL, {skipBackfaces: true}));
+		rayCasters.push(new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.GREEN, RayCaster.ANY, {skipBackfaces: true}));
+		rayCasters.push(new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.WHITE, RayCaster.CLOSEST, {skipBackfaces: true}));
+		rayCasters.push(new RayCaster(rayStart, rayDirection, rayLength, lineRenderSystem.MAGENTA, RayCaster.ALL, {skipBackfaces: false}));
+	};
+
+	createScene();
 
 	var update = function () {
-
-		rotateRigidBodies();
-
 		for (var i = 0; i < rayCasters.length; i++) {
 			rayStart.setDirect(-2, Math.cos(world.time) * 0.2, i + Math.sin(world.time) * 0.2);
 
