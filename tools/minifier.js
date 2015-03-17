@@ -55,15 +55,15 @@ function getProgram(body) {
 }
 
 function minify(source, options) {
-	if (!options.minify) {
+	if (!options.minifyLevel) {
 		return source;
-	} else if (options.minify === 'light') {
+	} else if (options.minifyLevel === 'light') {
 		return uglify.minify(source, {
 			fromString: true,
 			mangle: false,
 			compress: false
 		}).code;
-	} else if (options.minify === 'full') {
+	} else if (options.minifyLevel === 'full') {
 		return uglify.minify(source, {
 			fromString: true
 		}).code;
@@ -90,25 +90,29 @@ function wrapMain(source, modules) {
 	return 'window.goo = {};\n' + wrapPack(source, modules);
 }
 
-var ROOT_PATH = 'src/';
+var ROOT_PATH = 'src-preprocessed/';
 
 /**
  * @param {string} [packPath] Only specify if minifying a pack
  * @param {string} [outFile]
  * @param {Object} [options]
- * @param {string} [options.minify=null] Can be null (no minification), 'light' (compacting only) and 'full'
+ * @param {string} [options.minifyLevel=null] Can be null (no minification), 'light' (compacting only) and 'full'
+ * @param {function} [callback]
  */
-function run(packPath, outFile, options) {
+function run(packPath, outFile, options, callback) {
 	// optional parameters
 	if (!outFile) {
 		if (!packPath) {
 			outFile = 'out/goo.js';
 		} else {
+			console.log(packPath);
 			outFile = 'out/' + afterLastSlash(packPath) + '.js';
 		}
 	}
 
 	options = options || {};
+
+	callback = callback || function () {};
 
 	// build dependency tree
 	Dependency.getTree(ROOT_PATH, function (dependencies) {
@@ -162,9 +166,11 @@ function run(packPath, outFile, options) {
 
 		// and finally write the result
 		fs.writeFileSync(outFile, minifiedSource);
+
+		callback();
 	});
 }
 
-//run('goo/geometrypack', 'out/geometrypack.js', { minify: 'full' });
+//run('goo/geometrypack', 'out/geometrypack.js', { minifyLevel: 'full' });
 
 exports.run = run;

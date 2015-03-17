@@ -8,31 +8,47 @@ module.exports = function (grunt) {
 	'use strict';
 
 	var packs = {
-		fsmpack: 'fsmpack',
-		geometrypack: 'geometrypack',
-		quadpack: 'quadpack',
-		timelinepack: 'timelinepack',
-		debugpack: 'debugpack',
-		scriptpack: 'scriptpack',
-		p2pack: 'addons/p2pack',
-		box2dpack: 'addons/box2dpack',
-		terrainpack: 'addons/terrainpack',
-		ammopack: 'addons/ammopack',
-		cannonpack: 'addons/cannonpack',
-		waterpack: 'addons/waterpack',
-		linerenderpack: 'addons/linerenderpack',
-		animationpack: 'animationpack',
-		soundmanager2pack: 'addons/soundmanager2pack',
-		gamepadpack: 'addons/gamepadpack',
-		passpack: 'passpack',
-		gizmopack: 'util/gizmopack',
-		physicspack: 'addons/physicspack'
+		fsmpack: 'goo/fsmpack',
+		geometrypack: 'goo/geometrypack',
+		quadpack: 'goo/quadpack',
+		timelinepack: 'goo/timelinepack',
+		debugpack: 'goo/debugpack',
+		scriptpack: 'goo/scriptpack',
+		p2pack: 'goo/addons/p2pack',
+		box2dpack: 'goo/addons/box2dpack',
+		terrainpack: 'goo/addons/terrainpack',
+		ammopack: 'goo/addons/ammopack',
+		cannonpack: 'goo/addons/cannonpack',
+		waterpack: 'goo/addons/waterpack',
+		linerenderpack: 'goo/addons/linerenderpack',
+		animationpack: 'goo/animationpack',
+		soundmanager2pack: 'goo/addons/soundmanager2pack',
+		gamepadpack: 'goo/addons/gamepadpack',
+		passpack: 'goo/passpack',
+		gizmopack: 'goo/util/gizmopack',
+		physicspack: 'goo/addons/physicspack'
 	};
 
 	function getPacksConfig(packs) {
 		return Object.keys(packs).reduce(function (config, packName) {
-			config[packName] = { packPath: packs[packName] };
-			config[packName + '-no-mangle'] = { packPath: packs[packName], mangle: false };
+			config[packName] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: 'full'
+			};
+
+			config[packName + '-no-mangle'] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: 'light'
+			};
+
+			config[packName + '-dev'] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: null
+			};
+
 			return config;
 		}, {});
 	}
@@ -59,9 +75,9 @@ module.exports = function (grunt) {
 				'out-doc/'
 			]
 		},
-		'build-pack': packConfigs,
+		'minify-pack': packConfigs,
 		'preprocess': {
-			prod: {
+			build: {
 				defines: {
 					DEBUG: false
 				}
@@ -138,25 +154,23 @@ module.exports = function (grunt) {
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 
 	var buildPackArray = Object.keys(packs).map(function (packName) {
-		return 'build-pack:' + packName;
+		return 'minify-pack:' + packName;
 	});
 
 	var buildPackNoMangleArray = Object.keys(packs).map(function (packName) {
-		return 'build-pack:' + packName + '-no-mangle';
+		return 'minify-pack:' + packName + '-no-mangle';
 	});
 
 	grunt.registerTask('minify', [
-		'main-file',
-		'preprocess:prod',
-		'requirejs:build',
+		'preprocess:build',
+		'minify-main:build',
 		'uglify:build',
 		'wrap'
 	].concat(buildPackArray));
 
 	grunt.registerTask('minify-no-mangle', [
-		'main-file',
-		'preprocess:prod',
-		'requirejs:no-mangle',
+		'preprocess:build',
+		'minify-main:no-mangle',
 		'uglify:build',
 		'wrap'
 	].concat(buildPackNoMangleArray));
