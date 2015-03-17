@@ -112,16 +112,16 @@ define([
 					};
 					gooRunner.triggerEvent('click', evt);
 				});
-				component.domElement = domElement;
-				domElement.style.position = 'absolute';
-				domElement.style.top = 0;
-				domElement.style.left = 0;
-				domElement.style.zIndex = 1;
-				domElement.style.display = 'none';
+				// component.domElement = domElement;
+				component.initDom(domElement);
 
-				var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
-
-				parentEl.appendChild(domElement);
+				// domElement.style.position = 'absolute';
+				// domElement.style.top = 0;
+				// domElement.style.left = 0;
+				// domElement.style.zIndex = 1;
+				// domElement.style.display = 'none';
+				// var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
+				// parentEl.appendChild(domElement);
 			}
 
 			var innerHtmlChanged = config.innerHtml !== domElement.prevInnerHtml;
@@ -130,6 +130,20 @@ define([
 			domElement.prevStyle = config.style;
 
 			component.useTransformComponent = config.useTransformComponent !== false;
+
+			// create new meshdata if needed?
+			// if (!entity.meshRendererComponent || !entity.meshDataComponent) {
+			// 	var quad = new Quad(component.width, component.height);
+			// 	entity.set(quad);
+			// 	entity.set(this.materialTransparent);
+
+			// 	var parent = entity.parent();
+			// 	if (parent) {
+			// 		entity.removeFromWorld();
+			// 		entity._world.processEntityChanges();
+			// 		entity.addToWorld();
+			// 	}
+			// }
 
 			if (!innerHtmlChanged && !styleChanged) {
 				return PromiseUtil.resolve();
@@ -176,6 +190,11 @@ define([
 		ComponentHandler.prototype._remove.call(this, entity);
 		if (component.domElement) {
 			component.domElement.parentNode.removeChild(component.domElement);
+		}
+
+		if (entity.meshRendererComponent || entity.meshDataComponent) {
+			entity.clearComponent('meshDataComponent');
+			entity.clearComponent('meshRendererComponent');
 		}
 	};
 
