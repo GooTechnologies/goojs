@@ -71,7 +71,7 @@ function minify(source, options) {
 }
 
 function afterLastSlash(string) {
-	return string.match(/\/(\w+)$/)[1];
+	return string.match(/\/([\w+]+)$/)[1];
 }
 
 function wrapPack(source, modules) {
@@ -136,13 +136,15 @@ function run(packPath, outFile, options, callback) {
 			graph = filterObj(graph, function (obj, key) {
 				return key.indexOf('pack') === -1 && key !== 'goo';
 			});
+
+			//console.log(Object.keys(graph).length);
 		}
 
 		// sort in a way to allow dependencies to be satisfied
 		var sortedModules = topoSort.sort(graph);
 
 		//console.log('==================');
-		//console.log(sortedModules);
+		//console.log(sortedModules.length);
 		//console.log('==================');
 
 		var processedModules = sortedModules.map(function (modulePath) {
