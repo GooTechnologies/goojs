@@ -363,6 +363,7 @@ function (
 		});
 		this.cannonWorld.addBody(body);
 		entity.colliderComponent.cannonBody = body;
+		entity.colliderComponent.setToDirty();
 	};
 
 	PhysicsSystem.prototype._colliderDeleted = function (entity) {
@@ -435,8 +436,26 @@ function (
 	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
 		this.initialize(entities);
+		this.updateLonelyColliders();
 		this.step(tpf);
 		this.syncTransforms(entities);
+	};
+
+	PhysicsSystem.prototype.updateLonelyColliders = function () {
+		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
+			var entity = this._activeColliderEntities[i];
+
+			// Set transform from entity
+			if (entity.colliderComponent._dirty) {
+				var transform = entity.transformComponent.worldTransform;
+				var body = entity.colliderComponent.cannonBody;
+				if (body) {
+					body.position.copy(transform.translation);
+					tmpQuat.fromRotationMatrix(transform.rotation);
+					body.quaternion.copy(tmpQuat);
+				}
+			}
+		}
 	};
 
 	/**
