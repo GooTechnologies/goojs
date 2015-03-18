@@ -79,7 +79,8 @@ function wrapPack(source, modules) {
 
 	ret += 'if (typeof require === "function") {\n';
 	ret += modules.map(function (module) {
-		return 'define("' + module + '", [], function () { return goo.' + afterLastSlash(module) + '; });';
+		return 'define("' + module + '", [], function () { return goo.' +
+			derequire.safenIdentifier(afterLastSlash(module)) + '; });';
 	}).join('\n') + '\n';
 	ret += '}\n';
 
@@ -105,7 +106,6 @@ function run(packPath, outFile, options, callback) {
 		if (!packPath) {
 			outFile = 'out/goo.js';
 		} else {
-			console.log(packPath);
 			outFile = 'out/' + afterLastSlash(packPath) + '.js';
 		}
 	}
@@ -129,23 +129,15 @@ function run(packPath, outFile, options, callback) {
 					return dependency.indexOf(packPath) !== -1;
 				});
 			});
-
-			//console.log(graph);
 		} else {
 			// filter the packs out
 			graph = filterObj(graph, function (obj, key) {
 				return key.indexOf('pack') === -1 && key !== 'goo';
 			});
-
-			//console.log(Object.keys(graph).length);
 		}
 
 		// sort in a way to allow dependencies to be satisfied
 		var sortedModules = topoSort.sort(graph);
-
-		//console.log('==================');
-		//console.log(sortedModules.length);
-		//console.log('==================');
 
 		var processedModules = sortedModules.map(function (modulePath) {
 			var source = fs.readFileSync(ROOT_PATH + modulePath + '.js', 'utf8');
@@ -172,7 +164,5 @@ function run(packPath, outFile, options, callback) {
 		callback();
 	});
 }
-
-//run('goo/geometrypack', 'out/geometrypack.js', { minifyLevel: 'full' });
 
 exports.run = run;

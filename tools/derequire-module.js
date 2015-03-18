@@ -82,3 +82,5 @@ function transform(moduleName, defineExpression) {
 
 
 exports.transform = transform;
+exports.isSafeIdentifier = isSafeIdentifier;
+exports.safenIdentifier = safenIdentifier;
