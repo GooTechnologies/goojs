@@ -527,6 +527,44 @@ define([
 	};
 
 	/**
+	 * Applies a Matrix4 (rotation, scale, translation) to this vector
+	 * @param {Matrix4} matrix
+	 * @returns {Vector3} Self to allow chaining
+	 */
+	Vector3.prototype.applyPostPoint = function (matrix) {
+		var source = matrix.data;
+
+		var x = this.x;
+		var y = this.y;
+		var z = this.z;
+
+		this.x = source[0] * x + source[4] * y + source[ 8] * z + source[12];
+		this.y = source[1] * x + source[5] * y + source[ 9] * z + source[13];
+		this.z = source[2] * x + source[6] * y + source[10] * z + source[14];
+
+		return this;
+	};
+
+	/**
+	 * Applies a Matrix4 (rotation, scale) to this vector
+	 * @param {Matrix4} matrix
+	 * @returns {Vector3} Self to allow chaining
+	 */
+	Vector3.prototype.applyPostVector = function (matrix) {
+		var source = matrix.data;
+
+		var x = this.x;
+		var y = this.y;
+		var z = this.z;
+
+		this.x = source[0] * x + source[4] * y + source[8] * z;
+		this.y = source[1] * x + source[5] * y + source[9] * z;
+		this.z = source[2] * x + source[6] * y + source[10] * z;
+
+		return this;
+	};
+
+	/**
 	 * Clones the vector
 	 * @returns {Vector3} Clone of self
 	 */

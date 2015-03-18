@@ -234,6 +234,22 @@ define([
 		return Matrix3x3.mul(this, rhs, this);
 	};
 
+	Matrix3x3.prototype.scale = function (scalar) {
+		var data = this.data;
+
+		data[0] *= scalar;
+		data[1] *= scalar;
+		data[2] *= scalar;
+		data[3] *= scalar;
+		data[4] *= scalar;
+		data[5] *= scalar;
+		data[6] *= scalar;
+		data[7] *= scalar;
+		data[8] *= scalar;
+
+		return this;
+	};
+
 	/**
 	 * Performs a component-wise division.
 	 * @param {Matrix3x3} lhs Matrix on the left-hand side.

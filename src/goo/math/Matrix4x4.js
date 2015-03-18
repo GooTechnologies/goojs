@@ -216,6 +216,29 @@ define([
 		return Matrix4x4.mul(this, rhs, this);
 	};
 
+	Matrix4x4.prototype.scale = function (scalar) {
+		var data = this.data;
+
+		data[0] *= scalar;
+		data[1] *= scalar;
+		data[2] *= scalar;
+		data[3] *= scalar;
+		data[4] *= scalar;
+		data[5] *= scalar;
+		data[6] *= scalar;
+		data[7] *= scalar;
+		data[8] *= scalar;
+		data[9] *= scalar;
+		data[10] *= scalar;
+		data[11] *= scalar;
+		data[12] *= scalar;
+		data[13] *= scalar;
+		data[14] *= scalar;
+		data[15] *= scalar;
+
+		return this;
+	};
+
 	/**
 	 * Performs a component-wise division.
 	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
@@ -763,19 +786,8 @@ define([
 	// REVIEW rherlitz: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector)
 	// and the matrix is applied after the vector.
 	Matrix4x4.prototype.applyPre = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-		var w = rhs.w;
-
-		var s = this.data;
-
-		rhs.x = s[ 0] * x + s[ 1] * y + s[ 2] * z + s[ 3] * w;
-		rhs.y = s[ 4] * x + s[ 5] * y + s[ 6] * z + s[ 7] * w;
-		rhs.z = s[ 8] * x + s[ 9] * y + s[10] * z + s[11] * w;
-		rhs.w = s[12] * x + s[13] * y + s[14] * z + s[15] * w;
-
-		return rhs;
+		// throw '';
+		return rhs.applyPre(this);
 	};
 
 	/**
@@ -784,18 +796,8 @@ define([
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
 	Matrix4x4.prototype.applyPost = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-		var w = rhs.w;
-
-		var s = this.data;
-		rhs.x = s[0] * x + s[4] * y + s[ 8] * z + s[12] * w;
-		rhs.y = s[1] * x + s[5] * y + s[ 9] * z + s[13] * w;
-		rhs.z = s[2] * x + s[6] * y + s[10] * z + s[14] * w;
-		rhs.w = s[3] * x + s[7] * y + s[11] * z + s[15] * w;
-
-		return rhs;
+		// throw '';
+		return rhs.applyPost(this);
 	};
 
 	/**
@@ -804,16 +806,8 @@ define([
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 	Matrix4x4.prototype.applyPostPoint = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-
-		var d = this.data;
-		rhs.x = d[0] * x + d[4] * y + d[ 8] * z + d[12];
-		rhs.y = d[1] * x + d[5] * y + d[ 9] * z + d[13];
-		rhs.z = d[2] * x + d[6] * y + d[10] * z + d[14];
-
-		return rhs;
+		// throw '';
+		return rhs.applyPostPoint(this);
 	};
 
 	/**
@@ -822,16 +816,8 @@ define([
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 	Matrix4x4.prototype.applyPostVector = function (rhs) {
-		var x = rhs.x;
-		var y = rhs.y;
-		var z = rhs.z;
-
-		var d = this.data;
-		rhs.x = d[0] * x + d[4] * y + d[8] * z;
-		rhs.y = d[1] * x + d[5] * y + d[9] * z;
-		rhs.z = d[2] * x + d[6] * y + d[10] * z;
-
-		return rhs;
+		// throw '';
+		return rhs.applyPostVector(this);
 	};
 
 	/**
