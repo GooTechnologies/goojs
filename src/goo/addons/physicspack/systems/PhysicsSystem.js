@@ -68,7 +68,7 @@ function (
 		this.stepFrequency = settings.stepFrequency !== undefined ? settings.stepFrequency : 60;
 
 		/**
-		 * The maximum number of timesteps to use for making the physics clock catch up with the wall clock. If set to zero, a variable timestep will be used (not recommended).
+		 * The maximum number of timesteps to use for making the physics clock catch up with the wall clock. If set to zero, a variable timestep is used (not recommended).
 		 * @type {number}
 		 * @default 10
 		 */
@@ -207,7 +207,7 @@ function (
 	};
 
 	/**
-	 * Make a ray cast into the world of colliders, stopping at the first hit that the ray intersects (could be any physics object). Note that there's no order in the traversal, and you will never have control over what will be returned.
+	 * Make a ray cast into the world of colliders, stopping at the first hit that the ray intersects. Note that there's no given order in the traversal, and there's no control over what will be returned.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
@@ -296,21 +296,21 @@ function (
 	};
 
 	/**
-	 * Stops updating the entities. They will continue again from the pause positions when calling .play().
+	 * Stops simulation and updating of the entitiy transforms.
 	 */
 	PhysicsSystem.prototype.pause = function () {
 		this.passive = true;
 	};
 
 	/**
-	 * Resumes updating the entities.
+	 * Resumes simulation and starts updating the entities after stop() or pause().
 	 */
 	PhysicsSystem.prototype.play = function () {
 		this.passive = false;
 	};
 
 	/**
-	 * Stops simulating and sets the positions to the initial ones.
+	 * Stops simulation.
 	 */
 	PhysicsSystem.prototype.stop = function () {
 		this.pause();
@@ -441,6 +441,9 @@ function (
 		this.syncTransforms(entities);
 	};
 
+	/**
+	 * Checks for dirty ColliderComponents without a RigidBodyComponent and updates them.
+	 */
 	PhysicsSystem.prototype.updateLonelyColliders = function () {
 		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
 			var entity = this._activeColliderEntities[i];
