@@ -1,0 +1,55 @@
+[{
+  "type": "add",
+  "id": "1",
+  "externalInputs": [{
+    "name": "x",
+    "external": "uniform_a"
+  }, {
+    "name": "y",
+    "external": "uniform_b"
+  }],
+  "outputsTo": [{
+    "output": "sum",
+    "to": "3",
+    "input": "x"
+  }]
+}, {
+  "type": "mul",
+  "id": "2",
+  "externalInputs": [{
+    "name": "x",
+    "external": "uniform_c"
+  }, {
+    "name": "y",
+    "external": "uniform_d"
+  }],
+  "outputsTo": [{
+    "output": "product",
+    "to": "3",
+    "input": "y"
+  }]
+}, {
+  "type": "divrem",
+  "id": "3",
+  "outputsTo": [{
+    "output": "div",
+    "to": "4",
+    "input": "x"
+  }, {
+    "output": "rem",
+    "to": "4",
+    "input": "y"
+  }]
+}, {
+  "type": "add",
+  "id": "4",
+  "outputsTo": [{
+    "output": "sum",
+    "to": "5",
+    "input": "value"
+  }]
+}, {
+  "type": "final",
+  "id": "5",
+  "outputsTo": []
+}]

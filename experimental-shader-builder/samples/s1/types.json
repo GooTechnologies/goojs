@@ -1,0 +1,54 @@
+{
+  "add": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "sum",
+      "type": "float"
+    }],
+    "body": "sum = x + y;"
+  },
+  "divrem": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "div",
+      "type": "float"
+    }, {
+      "name": "rem",
+      "type": "float"
+    }],
+    "body": "div = Math.floor(x / y);\n\trem = x % y;"
+  },
+  "mul": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "product",
+      "type": "float"
+    }],
+    "body": "product = x * y;"
+  },
+  "final": {
+    "inputs": [{
+      "name": "value",
+      "type": "float"
+    }],
+    "body": "console.log(value);"
+  }
+}
