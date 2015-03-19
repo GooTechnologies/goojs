@@ -73,6 +73,17 @@ function (
 	ColliderComponent.prototype.constructor = ColliderComponent;
 	ColliderComponent.type = "ColliderComponent";
 
+	ColliderComponent.prototype.getBodyEntity = function () {
+		var bodyEntity;
+		this.entity.traverseUp(function (parent) {
+			if (parent.rigidBodyComponent) {
+				bodyEntity = parent;
+				return false;
+			}
+		});
+		return bodyEntity;
+	};
+
 	/**
 	 * Updates the .worldCollider
 	 */

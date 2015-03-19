@@ -519,26 +519,42 @@ function (
 		}
 	};
 
+	RigidBodyComponent.copyScaleFromColliderToCannonShape = function (cannonShape, collider) {
+		if (collider instanceof SphereCollider) {
+			cannonShape.radius = collider.radius;
+		} else if (collider instanceof BoxCollider) {
+			cannonShape.halfExtents.copy(collider.halfExtents);
+		} else if (collider instanceof MeshCollider) {
+			var scale = new CANNON.Vec3();
+			scale.copy(collider.scale);
+			cannonShape.setScale(scale);
+		}
+		cannonShape.updateBoundingSphereRadius();
+	};
+
 	/**
 	 * @hidden
 	 */
 	RigidBodyComponent.prototype.updateDirtyColliders = function () {
 		var colliderEntities = this._colliderEntities;
-		for (var i = 0; i < colliderEntities.length; i++) {
+		for (var i = colliderEntities.length - 1; i >= 0; i--) {
 			var entity = colliderEntities[i];
+
+			// Check so it is still attached to this entity
+			var parent = entity.colliderComponent.getBodyEntity();
+			if (parent !== this._entity) {
+				colliderEntities.splice(i, 1);
+				entity.colliderComponent.setToDirty();
+				return;
+			}
+
 			var colliderComponent = entity.colliderComponent;
 			if (colliderComponent.isDirty()) {
 				colliderComponent.updateWorldCollider();
-				var collider = colliderComponent.worldCollider;
-				var cannonShape = colliderComponent.cannonShape;
-				if (collider instanceof SphereCollider) {
-					cannonShape.radius = collider.radius;
-				} else if (collider instanceof MeshCollider) {
-					var scale = new CANNON.Vec3();
-					scale.copy(collider.scale);
-					cannonShape.setScale(scale);
-				}
-				cannonShape.updateBoundingSphereRadius();
+				RigidBodyComponent.copyScaleFromColliderToCannonShape(
+					colliderComponent.cannonShape,
+					colliderComponent.worldCollider
+				);
 				colliderComponent.setToClean();
 			}
 		}
