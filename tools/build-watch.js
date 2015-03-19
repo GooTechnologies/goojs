@@ -7,6 +7,16 @@ var watch = require('node-watch');
 var minifier = require('./minifier');
 
 
+var lastTime;
+function getTime() {
+	var now = Date.now();
+	var delta = now - lastTime;
+	lastTime = now;
+	return (delta / 1000).toFixed(2);
+}
+
+
+
 function isPack(file) {
 	return file.indexOf('pack') !== -1;
 }
@@ -20,14 +30,16 @@ function getPackPath(file) {
 }
 
 function buildEngine() {
+	getTime();
 	console.log('Minifying the engine...');
 	exec('grunt minify-engine-dev', null, function (error, stdout, stderr) {
 		if (error) { throw error; }
-		console.log('Done');
+		console.log('Done; completed in ' + getTime() + 's');
 	});
 }
 
 function buildPack(packName, packPath) {
+	getTime();
 	console.log('Minifying pack ' + packName + '...');
 	minifier.run(
 		'src',
@@ -35,7 +47,7 @@ function buildPack(packName, packPath) {
 		'out/' + packName + '.js',
 		{ minifyLevel: null },
 		function () {
-			console.log('Done');
+			console.log('Done; completed in ' + getTime() + 's');
 		}
 	);
 }
