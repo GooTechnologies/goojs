@@ -2,6 +2,7 @@ define([
 	'goo/fsmpack/statemachine/actions/Action',
 	'goo/math/Quaternion',
 	'goo/math/Matrix3x3',
+	'goo/math/Vector3',
 	'goo/math/MathUtils'
 ],
 
@@ -9,8 +10,9 @@ define([
 	Action,
 	Quaternion,
 	Matrix3x3,
+	Vector3,
 	MathUtils
-	) {
+) {
 	'use strict';
 
 	function TweenRotationAction(/*id, settings*/) {
@@ -93,21 +95,35 @@ define([
 	TweenRotationAction.prototype._run = function(fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
-		var rotation = transformComponent.transform.rotation;
+		//var rotation = transformComponent.transform.rotation;
 
-		var initialRotation = new Quaternion().fromRotationMatrix(rotation);
-		var finalRotation = new Quaternion().fromRotationMatrix(new Matrix3x3().fromAngles(this.to[0] * MathUtils.DEG_TO_RAD, this.to[1] * MathUtils.DEG_TO_RAD, this.to[2] * MathUtils.DEG_TO_RAD));
-		var workQuaternion = new Quaternion();
+		//var initialRotation = new Quaternion().fromRotationMatrix(rotation);
+		//var finalRotation = new Quaternion().fromRotationMatrix(new Matrix3x3().fromAngles(this.to[0] * MathUtils.DEG_TO_RAD, this.to[1] * MathUtils.DEG_TO_RAD, this.to[2] * MathUtils.DEG_TO_RAD));
+
+		var initialRotation = transformComponent.transform.rotationAngles.clone();
+		var finalRotation = new Vector3(this.to);
+
+		var workVector = new Vector3();
+		//var workQuaternion = new Quaternion();
 		var time = entity._world.time * 1000;
 
-		if (this.relative) {
-			Quaternion.mul(initialRotation, finalRotation, finalRotation);
-		}
+		//if (this.relative) {
+		//	Quaternion.mul(initialRotation, finalRotation, finalRotation);
+		//}
 
 		this.tween.from({ t: 0 }).to({ t: 1 }, +this.time).easing(this.easing).onUpdate(function() {
-			Quaternion.slerp(initialRotation, finalRotation, this.t, workQuaternion);
-			rotation.copyQuaternion(workQuaternion);
+			workVector.setVector(initialRotation);
+			workVector.lerp(finalRotation, this.t);
+			transformComponent.transform.setRotationXYZ(
+				MathUtils.DEG_TO_RAD * workVector[0],
+				MathUtils.DEG_TO_RAD * workVector[1],
+				MathUtils.DEG_TO_RAD * workVector[2]
+			);
 			transformComponent.setUpdated();
+
+			//Quaternion.slerp(initialRotation, finalRotation, this.t, workQuaternion);
+			//rotation.copyQuaternion(workQuaternion);
+			//transformComponent.setUpdated();
 		}).onComplete(function() {
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start(time);

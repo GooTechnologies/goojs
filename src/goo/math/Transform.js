@@ -28,6 +28,8 @@ define([
 		/** @type {Matrix3x3} */
 		this.rotation = new Matrix3x3();
 		/** @type {Vector3} */
+		this.rotationAngles = new Vector3();
+		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
 
 		// #ifdef DEBUG
@@ -110,6 +112,7 @@ define([
 
 		this.translation.setVector(Vector3.ZERO);
 		this.rotation.setIdentity();
+		this.rotationAngles.setVector(Vector3.ZERO);
 		this.scale.setVector(Vector3.ONE);
 	};
 
@@ -222,6 +225,7 @@ define([
 
 		this.translation.setVector(transform.translation);
 		this.rotation.copy(transform.rotation);
+		this.rotationAngles.copy(transform.rotationAngles);
 		this.scale.setVector(transform.scale);
 	};
 
@@ -233,6 +237,7 @@ define([
 	 * @param {number} z
 	 */
 	Transform.prototype.setRotationXYZ = function (x, y, z) {
+		this.rotationAngles.setDirect(x, y, z);
 		this.rotation.fromAngles(x, y, z);
 	};
 
@@ -310,6 +315,7 @@ define([
 
 		clone.translation.copy(this.translation);
 		clone.rotation.copy(this.rotation);
+		clone.rotationAngles.copy(this.rotationAngles);
 		clone.scale.copy(this.scale);
 
 		return clone;
