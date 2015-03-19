@@ -1,5 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
+	'goo/loaders/handlers/EnvironmentHandler',
 	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/Skybox',
@@ -8,6 +9,7 @@ define([
 	'goo/entities/SystemBus'
 ], function(
 	ConfigHandler,
+	EnvironmentHandler,
 	Texture,
 	ShaderBuilder,
 	Skybox,
@@ -86,10 +88,10 @@ define([
 
 			var promises = [];
 			if (config.box) {
-				promises.push(that._updateBox(config.box, options, skybox));
+				promises.push(that._updateBox(ref, config.box, options, skybox));
 			}
 			if (config.sphere) {
-				promises.push(that._updateSphere(config.sphere, options, skybox));
+				promises.push(that._updateSphere(ref, config.sphere, options, skybox));
 			}
 
 			return RSVP.all(promises).then(function (skyboxes) {
@@ -102,7 +104,7 @@ define([
 		});
 	};
 
-	SkyboxHandler.prototype._updateSphere = function(config, options, skybox) {
+	SkyboxHandler.prototype._updateSphere = function(ref, config, options, skybox) {
 		var that = this;
 
 		if (config.sphereRef) {
@@ -119,7 +121,7 @@ define([
 				skybox.textures = [texture];
 				skyTex.setImage(texture.image);
 
-				if (config.enabled) {
+				if (ref === EnvironmentHandler.currentSkyboxRef && config.enabled) {
 					that._show(that._skysphere);
 				} else {
 					that._hide(that._skysphere);
@@ -150,7 +152,7 @@ define([
 	}
 
 
-	SkyboxHandler.prototype._updateBox = function(config, options, skybox) {
+	SkyboxHandler.prototype._updateBox = function(ref, config, options, skybox) {
 		var that = this;
 
 		var promises = sides.map(function(side) {
@@ -192,7 +194,7 @@ define([
 			skyTex.image.dataReady = true;
 			skyTex.setNeedsUpdate();
 
-			if (config.enabled) {
+			if (ref === EnvironmentHandler.currentSkyboxRef && config.enabled) {
 				that._show(that._skybox);
 			} else {
 				that._hide(that._skybox);
