@@ -8,6 +8,7 @@ module.exports = function (grunt) {
 		var done = this.async();
 
 		minifier.run(
+			this.data.rootPath,
 			this.data.packPath,
 			'out/' + this.data.packName + '.js',
 			{ minifyLevel: this.data.minifyLevel },

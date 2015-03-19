@@ -91,17 +91,18 @@ function wrapMain(source, modules) {
 	return 'window.goo = {};\n' + wrapPack(source, modules);
 }
 
-var ROOT_PATH = 'src-preprocessed/';
-
 /**
+ * @param {string} [rootPath='src-preprocessed'] The root path where the sources are
  * @param {string} [packPath] Only specify if minifying a pack
  * @param {string} [outFile]
  * @param {Object} [options]
  * @param {string} [options.minifyLevel=null] Can be null (no minification), 'light' (compacting only) and 'full'
  * @param {function} [callback]
  */
-function run(packPath, outFile, options, callback) {
+function run(rootPath, packPath, outFile, options, callback) {
 	// optional parameters
+	rootPath = rootPath || 'src-preprocessed';
+
 	if (!outFile) {
 		if (!packPath) {
 			outFile = 'out/goo.js';
@@ -115,7 +116,7 @@ function run(packPath, outFile, options, callback) {
 	callback = callback || function () {};
 
 	// build dependency tree
-	Dependency.getTree(ROOT_PATH, function (dependencies) {
+	Dependency.getTree(rootPath + '/', function (dependencies) {
 		var graph = graphise(dependencies);
 
 		if (packPath) {
@@ -140,7 +141,7 @@ function run(packPath, outFile, options, callback) {
 		var sortedModules = topoSort.sort(graph);
 
 		var processedModules = sortedModules.map(function (modulePath) {
-			var source = fs.readFileSync(ROOT_PATH + modulePath + '.js', 'utf8');
+			var source = fs.readFileSync(rootPath + '/' + modulePath + '.js', 'utf8');
 
 			var tree = esprima.parse(source);
 			var strippedModule = derequire.transform(modulePath, tree.body[0].expression);

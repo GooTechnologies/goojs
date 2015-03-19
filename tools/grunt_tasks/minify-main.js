@@ -13,7 +13,13 @@ module.exports = function (grunt) {
 	grunt.registerMultiTask('minify-main', function () {
 		var done = this.async();
 
-		minifier.run(null, 'out/goo.js', { minifyLevel: this.data.minifyLevel }, done);
+		minifier.run(
+			this.data.rootPath,
+			null,
+			'out/goo.js',
+			{ minifyLevel: this.data.minifyLevel },
+			done
+		);
 	});
 
 	// Returns the code to add at the start and end of the minified file
@@ -38,7 +44,8 @@ module.exports = function (grunt) {
 			minifyLevel: 'light'
 		},
 		'dev': {
-			minifyLevel: null
+			minifyLevel: null,
+			rootPath: 'src'
 		}
 	});
 

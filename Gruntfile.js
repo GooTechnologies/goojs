@@ -46,7 +46,8 @@ module.exports = function (grunt) {
 			config[packName + '-dev'] = {
 				packPath: packs[packName],
 				packName: packName,
-				minifyLevel: null
+				minifyLevel: null,
+				rootPath: 'src'
 			};
 
 			return config;
@@ -185,6 +186,13 @@ module.exports = function (grunt) {
 		'uglify:build',
 		'wrap'
 	].concat(buildPackDevArray));
+
+	// skip the preprocess and minify only the engine
+	grunt.registerTask('minify-engine-dev', [
+		'minify-main:dev',
+		'uglify:build',
+		'wrap'
+	]);
 
 	grunt.registerTask('default', ['minify']);
 };
