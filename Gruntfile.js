@@ -165,6 +165,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-keepalive');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
@@ -175,6 +176,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('test',		 ['unittest', 'e2e']);
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 
+	grunt.registerTask('fast-watch', ['manual-watch', 'keepalive']);
 
 	var buildPackArray = Object.keys(packs).map(function (packName) {
 		return 'minify-pack:' + packName;
