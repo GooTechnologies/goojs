@@ -1,3 +1,4 @@
+// jshint node:true
 'use strict';
 
 var exec = require('child_process').exec;
@@ -39,12 +40,16 @@ function buildPack(packName, packPath) {
 	);
 }
 
-watch('src', function (file) {
-	if (isPack(file)) {
-		var packName = getPackName(file);
-		var packPath = getPackPath(file);
-		buildPack(packName, packPath);
-	} else {
-		buildEngine();
-	}
-});
+function run() {
+	watch('src', function (file) {
+		if (isPack(file)) {
+			var packName = getPackName(file);
+			var packPath = getPackPath(file);
+			buildPack(packName, packPath);
+		} else {
+			buildEngine();
+		}
+	});
+}
+
+exports.run = run;

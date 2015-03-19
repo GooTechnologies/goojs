@@ -56,6 +56,25 @@ module.exports = function (grunt) {
 
 	var packConfigs = getPacksConfig(packs);
 
+	// ---
+	function getWatchConfig() {
+		return Object.keys(packs).reduce(function (config, packName) {
+			config[packName] = {
+				files: ['src/' + packs[packName] + '/**/*.js'],
+				tasks: ['minify-pack:' + packName + '-dev']
+			};
+			return config;
+		}, {
+			engine: {
+				files: ['src/**/*.js', '!src/**/*pack/**/*.js'],
+				tasks: ['minify-main:dev', 'uglify:build', 'wrap']
+			}
+		});
+	}
+
+	var watchConfigs = getWatchConfig(packs);
+
+	// ---
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		// is this task ever called?
@@ -134,7 +153,8 @@ module.exports = function (grunt) {
 				jshintrc: '.jshintrc',
 				force: true // Do not fail the task
 			}
-		}
+		},
+		watch: watchConfigs
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -144,6 +164,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-karma');
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
@@ -153,6 +174,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('e2e',		 ['shell:e2e']);
 	grunt.registerTask('test',		 ['unittest', 'e2e']);
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
+
 
 	var buildPackArray = Object.keys(packs).map(function (packName) {
 		return 'minify-pack:' + packName;
