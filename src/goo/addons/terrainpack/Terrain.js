@@ -1514,7 +1514,6 @@ define([
 			'uniform mat4 worldMatrix;',
 
 			"varying vec2 vUv;",
-			ShaderFragment.methods.unpackDepth16,
 			"void main() {",
 				"vUv = vertexUV0;",
 				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
@@ -1526,6 +1525,7 @@ define([
 			"uniform sampler2D heightMap;",
 			// "uniform sampler2D normalMap;",
 
+			ShaderFragment.methods.unpackDepth16,
 			"varying vec2 vUv;",
 
 			"void main() {",
