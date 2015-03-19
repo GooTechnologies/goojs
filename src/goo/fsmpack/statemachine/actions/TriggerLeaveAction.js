@@ -27,13 +27,13 @@ define([
 	TriggerLeaveAction.external = {
 		name: 'TriggerLeave',
 		type: 'collision',
-		description: 'Checks for physics trigger collisions.',
+		description: 'Transitions when a collider is leaving the trigger volume.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'leave',
 			name: 'On leave',
-			description: 'State to transition to leave occurs'
+			description: 'State to transition to when leave occurs'
 		}]
 	};
 
@@ -41,6 +41,10 @@ define([
 		this.entity = fsm.getOwnerEntity();
 		this.leaved = false;
 		SystemBus.addListener('goo.physics.endContact', this.listener);
+	};
+
+	TriggerLeaveAction.prototype._cleanup = function () {
+		this.entity = null;
 	};
 
 	TriggerLeaveAction.prototype.exit = function (/*fsm*/) {

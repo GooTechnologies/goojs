@@ -27,13 +27,13 @@ define([
 	TriggerEnterAction.external = {
 		name: 'TriggerEnter',
 		type: 'collision',
-		description: 'Checks for physics trigger collisions.',
+		description: 'Transitions when a trigger volume is entered.',
 		canTransition: true,
 		parameters: [],
 		transitions: [{
 			key: 'enter',
 			name: 'On enter',
-			description: 'State to transition to enter occurs'
+			description: 'State to transition to when enter occurs'
 		}]
 	};
 
@@ -41,6 +41,10 @@ define([
 		this.entity = fsm.getOwnerEntity();
 		this.entered = false;
 		SystemBus.addListener('goo.physics.beginContact', this.listener);
+	};
+
+	TriggerEnterAction.prototype._cleanup = function () {
+		this.entity = null;
 	};
 
 	TriggerEnterAction.prototype.exit = function (/*fsm*/) {
