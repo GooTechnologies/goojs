@@ -55,7 +55,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('Testing the matching of CSS3D transformed DOM elements to our entities');
+	// V.describe('Testing the matching of CSS3D transformed DOM elements to our entities');
 
 	var gizmoRenderSystem;
 	var entitySelected;
@@ -92,16 +92,16 @@ require([
 					break;
 				case 54: // 6
 					if (entitySelected) {
-						var w = entitySelected.HtmlComponent.width;
-						var h = entitySelected.HtmlComponent.height;
-						entitySelected.HtmlComponent.setSize(w/2, h/2);
+						var w = entitySelected.htmlComponent.width;
+						var h = entitySelected.htmlComponent.height;
+						entitySelected.htmlComponent.setSize(w/2, h/2);
 					}
 					break;
 				case 55: // 7
 					if (entitySelected) {
-						var w = entitySelected.HtmlComponent.width;
-						var h = entitySelected.HtmlComponent.height;
-						entitySelected.HtmlComponent.setSize(w*2, h*2);
+						var w = entitySelected.htmlComponent.width;
+						var h = entitySelected.htmlComponent.height;
+						entitySelected.htmlComponent.setSize(w*2, h*2);
 					}
 					break;
 
@@ -223,7 +223,8 @@ require([
 	}
 
 	var goo = V.initGoo({
-		alpha: true
+		alpha: true,
+		showStats: false
 	});
 	var world = goo.world;
 	goo.world.add(new AnimationSystem());
@@ -267,9 +268,7 @@ require([
 		setupKeys();
 
 		V.addLights();
-		// var camEntity = V.addOrbitCamera(new Vector3(150, Math.PI / 1.5, Math.PI / 8), new Vector3(), 'Right');
-		// var camEntity = V.addOrbitCamera(new Vector3(50, Math.PI / 2, 0), new Vector3(), 'Right');
-		var camEntity = addOrbitCamera(new Vector3(100, Math.PI / 2, 0), new Vector3(), 'Right');
+		var camEntity = addOrbitCamera(new Vector3(150, Math.PI / 1.5, Math.PI / 6), new Vector3(), 'Right');
 		camEntity.cameraComponent.camera.setFrustumPerspective(null, null, 1, 10000);
 		camEntity.setAsMainCamera();
 
@@ -279,68 +278,30 @@ require([
 		var material2 = new Material(ShaderLib.uber);
 		material2.uniforms.materialDiffuse = [0.3, 0.3, 0.3, 1];
 		var box2 = new Box(100, 20, 100);
-		var entity = world.createEntity([0, -10, 0], box2, material2).addToWorld();
+		world.createEntity([0, -10, 0], box2, material2).addToWorld();
 
-		var numBoxes = 2;
-		var spread = 70.0;
-		for (var i = 0; i < numBoxes; i++) {
-			for (var j = 0; j < numBoxes; j++) {
-				for (var k = 0; k < numBoxes; k++) {
-					var domElement;
-					var width = (0.5 + V.rng.nextFloat() * 3) * 100;
-					var height = (0.5 + V.rng.nextFloat() * 3) * 100;
-					var rand = V.rng.nextFloat();
-					if (rand > 0.6) {
-						domElement = document.createElement('div');
-						domElement.style.backgroundImage = 'url(https://dl.dropboxusercontent.com/u/640317/screenshot.jpg)';
-					} else if (rand > 0.1) {
-						domElement = document.createElement('div');
-						domElement.className = 'object';
-						domElement.innerText = 'Gooooo';
-						domElement.style.border = '2px solid white';
-						domElement.style.backgroundColor = 'blue';
-						domElement.style.color = 'white';
-						domElement.style.padding = '20px';
-					} else {
-						width = 768;
-						height = 640;
-						domElement = document.createElement('iframe');
-						// domElement.src = 'https://get.webgl.org/';
-						domElement.src = 'https://gootechnologies.com';
-						domElement.style.border = 'none';
-						domElement.style.width = '100%';
-						domElement.style.height = '100%';
-					}
+		function createIFrame(width, height, position, rotation, src) {
+			width = 768;
+			height = 640;
+			var domElement = document.createElement('iframe');
+			domElement.src = src;
+			domElement.style.border = 'none';
+			domElement.style.width = '100%';
+			domElement.style.height = '100%';
 
-					var htmlComponent = new HtmlComponent(domElement, {
-						width: width,
-						height: height
-						// backfaceVisibility: 'visible'
-					});
-
-					// Make some elements face the camera
-					// htmlComponent.faceCamera = V.rng.nextFloat() > 0.95;
-
-					var position = [
-						(i - (numBoxes / 4)) * spread, (j - (numBoxes / 4)) * spread + 120, (k - (numBoxes / 4)) * spread
-					];
-					var entity = world.createEntity(position, htmlComponent);
-					entity.setScale(0.1, 0.1, 1);
-					entity.addToWorld();
-
-					// if (V.rng.nextFloat() > 0.7) {
-					// 	var r1 = V.rng.nextFloat();
-					// 	var r2 = V.rng.nextFloat();
-					// 	(function(r1, r2) {
-					// 		var script = function (entity) {
-					// 			entity.setRotation(world.time * r1, world.time * r2, 0);
-					// 		};
-					// 		entity.set(script);
-					// 	})(r1, r2);
-					// }
-				}
-			}
+			var htmlComponent = new HtmlComponent(domElement, {
+				width: width,
+				height: height
+			});
+			var entity = world.createEntity(position, htmlComponent);
+			entity.setScale(0.1, 0.1, 1);
+			entity.setRotation(rotation);
+			entity.addToWorld();
 		}
+
+		createIFrame(500, 281, [-40, 20, -20], [0, Math.PI / 4, 0], 'https://player.vimeo.com/video/77588448?title=0&byline=0&portrait=0');
+		createIFrame(768, 640, [40, 20, -20], [0, -Math.PI / 4, 0], 'https://gootechnologies.com');
+		createIFrame(1024, 768, [0, 20, -80], [0, 0, 0], 'https://duckduckgo.com/');
 
 		var environmentPath = '../../../addons/Water/resources/skybox/';
 		var images = [

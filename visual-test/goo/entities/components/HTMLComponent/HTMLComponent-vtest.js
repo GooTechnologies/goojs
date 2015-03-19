@@ -34,8 +34,8 @@ require([
 		// htmlElement.style.position = 'absolute';
 		// htmlElement.style['-webkit-user-select'] = 'none';
 		// htmlElement.style['user-select'] = 'none';
-		htmlElement.style.top = '100px';
-		htmlElement.style.left = '100px';
+		// htmlElement.style.top = '100px';
+		// htmlElement.style.left = '100px';
 		htmlElement.innerHTML = 'A round box!';
 		// document.body.appendChild(htmlElement);
 

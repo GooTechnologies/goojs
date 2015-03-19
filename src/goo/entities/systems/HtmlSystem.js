@@ -6,8 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Quad',
 	'goo/math/Matrix4x4',
-	'goo/math/MathUtils',
-	'goo/math/Vector3'
+	'goo/math/MathUtils'
 ], function (
 	System,
 	SystemBus,
@@ -16,9 +15,8 @@ define([
 	ShaderLib,
 	Quad,
 	Matrix4x4,
-	MathUtils,
-	Vector3
-	) {
+	MathUtils
+) {
 	'use strict';
 
 	/**
@@ -115,7 +113,7 @@ define([
 
 	HtmlSystem.prototype.inserted = function (entity) {
 		var component = entity.htmlComponent;
-		var domElement = component.domElement;
+		// var domElement = component.domElement;
 		// if (domElement.parentNode !== this.cameraDom) {
 		// 	this.cameraDom.appendChild(domElement);
 		// }
@@ -181,7 +179,9 @@ define([
 				}
 
 				domElement.style.display = component.hidden ? 'none' : '';
-				this.setStyle(domElement, 'transform', '');
+				var translation = entity.getTranslation();
+				var style = 'translate(' + translation.x*100 + 'px,' + translation.y*100 + 'px)';
+				this.setStyle(domElement, 'transform', style);
 				continue;
 			} else {
 				if (domElement.parentNode !== this.cameraDom) {
