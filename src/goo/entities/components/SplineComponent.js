@@ -14,9 +14,11 @@ define([
 	function SplineComponent(text) {
 		Component.apply(this, arguments);
 
-		this.spline = new Spline([]);
 		this.type = 'SplineComponent';
 		this.dirty = true;
+
+		this.spline = new Spline([]);
+		this.meshData = null;
 
 		// #ifdef DEBUG
 		Object.seal(this);

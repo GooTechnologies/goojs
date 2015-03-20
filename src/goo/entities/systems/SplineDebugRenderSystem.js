@@ -2,6 +2,7 @@ define([
 	'goo/entities/EntitySelection',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus',
+	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/math/Quaternion',
 	'goo/math/Vector3',
@@ -14,6 +15,7 @@ function (
 	EntitySelection,
 	System,
 	SystemBus,
+	Box,
 	Sphere,
 	Quaternion,
 	Vector3,
@@ -23,6 +25,8 @@ function (
 	Pool
 ) {
 	'use strict';
+
+	var SCALE = 0.1;
 
 	/**
 	 * Renders all the SplineComponents in the scene.
@@ -58,13 +62,17 @@ function (
 		 */
 		this.selection = new EntitySelection();
 
-		this.sphereMeshData = new Sphere(8, 8, 1);
+		this.sphereMeshData = new Sphere(16, 16, 0.5);
+		this.boxMeshData = new Box(1, 1, 1);
 
 		this.splineMaterial = new Material(ShaderLib.simpleColored);
 		this.splineMaterial.uniforms.color = [0, 0, 1];
 
+		this.centerControlPointMaterial = new Material(ShaderLib.simpleColored);
+		this.centerControlPointMaterial.uniforms.color = [0, 1, 1];
+
 		this.controlPointMaterial = new Material(ShaderLib.simpleColored);
-		this.controlPointMaterial.uniforms.color = [0, 1, 1];
+		this.controlPointMaterial.uniforms.color = [1, 1, 0];
 
 		this.renderablePool = new Pool({
 			create: function () {
@@ -100,7 +108,6 @@ function (
 
 		for (var i = 0; i < entities.length; ++i) {
 			var entity = entities[i];
-			var renderable = null;
 
 			// Render selection is enabled, but this entity is not a part of it.
 			if (!this.renderAll && !this.selection.contains(entity)) {
@@ -108,19 +115,42 @@ function (
 			}
 
 			// Render the spline control points.
-			if (entity.splineControlComponent) {
-				renderable = this.renderablePool.get(this.sphereMeshData, this.controlPointMaterial);
+			var splineControlComponent = entity.splineControlComponent;
+			if (splineControlComponent) {
+				// Before
+				if (splineControlComponent.beforePoint) {
+					var beforeRenderable = this.renderablePool.get(this.boxMeshData, this.controlPointMaterial);
+					beforeRenderable.transform.setIdentity();
+					beforeRenderable.transform.translation.setVector(splineControlComponent.beforePoint);
+					beforeRenderable.transform.scale.setDirect(SCALE, SCALE, SCALE);
+					beforeRenderable.transform.update();
+					this.renderList.push(beforeRenderable);
+				}
+
+				// Center
+				var centerRenderable = this.renderablePool.get(this.sphereMeshData, this.centerControlPointMaterial);
+				centerRenderable.transform.setIdentity();
+				centerRenderable.transform.translation.setVector(splineControlComponent.centerPoint);
+				centerRenderable.transform.scale.setDirect(SCALE, SCALE, SCALE);
+				centerRenderable.transform.update();
+				this.renderList.push(centerRenderable);
+
+				// After
+				if (splineControlComponent.afterPoint) {
+					var afterRenderable = this.renderablePool.get(this.boxMeshData, this.controlPointMaterial);
+					afterRenderable.transform.setIdentity();
+					afterRenderable.transform.translation.setVector(splineControlComponent.afterPoint);
+					afterRenderable.transform.scale.setDirect(SCALE, SCALE, SCALE);
+					afterRenderable.transform.update();
+					this.renderList.push(afterRenderable);
+				}
 			}
 
 			// Render the spline.
 			if (entity.splineComponent) {
-				renderable = this.renderablePool.get(entity.splineComponent.meshData, this.splineMaterial);
-			}
-
-			// Render the renderable if we go one from a spline control point or
-			// from a spline.
-			if (renderable) {
+				var renderable = this.renderablePool.get(entity.splineComponent.meshData, this.splineMaterial);
 				renderable.transform.copy(entity.transformComponent.worldTransform);
+				renderable.transform.scale.setDirect(1, 1, 1);
 				renderable.transform.update();
 				this.renderList.push(renderable);
 			}

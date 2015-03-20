@@ -1,9 +1,13 @@
 define([
+	'goo/math/Vector3',
+	'goo/math/splines/Spline',
 	'goo/entities/systems/System',
-	'goo/math/splines/Spline'
+	'goo/geometrypack/PolyLine'
 ], function (
+	Vector3,
+	Spline,
 	System,
-	Spline
+	PolyLine
 ) {
 	'use strict';
 
@@ -25,19 +29,62 @@ define([
 			var splineComponent = entity.splineComponent;
 			//if (!splineComponent.dirty) { return; }
 
-			var controlPoints = [];
+			var controlEntities = [];
+			var that = this;
 			entity.traverse(function (child) {
-				if (!child.splineControlComponent) { return; }
-
-				controlPoints.push(child.transformComponent.getTranslation().clone());
+				if (child.splineControlComponent) {
+					controlEntities.push(child);
+				}
 			});
 
-			spline = new Spline(controlPoints)
+			var spline = new Spline(this.getControlPoints(controlEntities));
 			splineComponent.spline = spline;
-			splineComponent.meshData = this.getSplineMesh(spline);
+			splineComponent.meshData = this.getSplineMesh(spline, 40);
 
 			splineComponent.dirty = false;
 		}
+	};
+
+	SplineSystem.prototype.getControlPoints = function (controlEntities) {
+		// Sort the entities by the index of their spline control components.
+		controlEntities.sort(function (a, b) {
+			return a.splineControlComponent.index - b.splineControlComponent.index;
+		});
+
+		var points = [];
+		var lastIndex = controlEntities.length -1;
+		for (var i = 0; i <= lastIndex; ++i) {
+			var entity = controlEntities[i];
+
+			var isFirst = i === 0;
+			var isLast = i === lastIndex;
+
+			// Update the control points for the spline control entity.
+			this.updateControlPoints(entity, isFirst, isLast);
+
+			var component = entity.splineControlComponent;
+			if (!isFirst) { points.push(component.beforePoint); }
+			points.push(component.centerPoint);
+			if (!isLast) { points.push(component.afterPoint); }
+		}
+
+		return points;
+	};
+
+	SplineSystem.prototype.updateControlPoints = function (entity, isFirst, isLast) {
+		var component = entity.splineControlComponent;
+		var worldTransform = entity.transformComponent.worldTransform
+
+		component.centerPoint = worldTransform.translation.clone();
+
+		var beforePoint = new Vector3(1, 0, 0);
+		worldTransform.applyForward(beforePoint, beforePoint);
+
+		var afterPoint = new Vector3(-1, 0, 0);
+		worldTransform.applyForward(afterPoint, afterPoint);
+
+		component.beforePoint = isFirst ? null : beforePoint;
+		component.afterPoint = isLast ? null : afterPoint;
 	};
 
 	SplineSystem.prototype.getSplineMesh = function (spline, numSteps) {

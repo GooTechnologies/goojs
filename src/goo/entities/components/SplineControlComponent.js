@@ -16,6 +16,10 @@ define([
 
 		this.type = 'SplineControlComponent';
 		this.dirty = true;
+		this.index = 0;
+		this.beforePoint = null;
+		this.centerPoint = null;
+		this.afterPoint = null;
 
 		// #ifdef DEBUG
 		Object.seal(this);
