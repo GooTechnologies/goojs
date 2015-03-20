@@ -109,6 +109,12 @@ See [https://bitbucket.org/gootech/goonguide/wiki/release-engine.md]()
 
 ## Building
 
-- Minified and mangled: `grunt`
-- Minified: `grunt minify-no-mangle`
-- Concatenated: `grunt minify-dev`
+To build a regular goo minified version, run
+
+	grunt
+
+This will build the engine and all registered packs. The output is in the *out* folder. To build individual packs run
+
+    node tools/buildPack.js packName
+
+Where `packname` is any "pack folder" from `src/` (*fsmpack*, *geometrypack*, ...)

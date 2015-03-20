@@ -56,10 +56,7 @@
     "mustache": "~1.0.0",
     "marked": "~0.3.2",
     "estraverse": "~1.9.1",
-    "jasmine-node": "~2.0.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-keepalive": "0.0.1",
-    "node-watch": "~0.3.4"
+    "jasmine-node": "~2.0.0"
   },
   "engines": {
     "node": ">=0.8.2"
