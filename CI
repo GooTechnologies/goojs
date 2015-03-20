@@ -3,5 +3,6 @@
 # Continuous integration script
 #
 #rm -rf node_modules
+
 npm install
-./tools/release.py $VERSION
+./tools/release.py $VERSION $MINIFY_LEVEL
