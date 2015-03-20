@@ -1,14 +1,6 @@
 (function () {
 	'use strict';
 
-	function find(array, predicate) {
-		for (var i = 0; i < array.length; i++) {
-			if (predicate(array[i])) {
-				return array[i];
-			}
-		}
-	}
-
 	function sort(graph) {
 		var unvisited = new Set(graph.keys());
 		var visited = new Set();
@@ -55,7 +47,15 @@
 			return 'inp_' + nodeId + '_' + varName;
 		}
 
-		return nodes.map(function (node) {
+		var stringifiedExternals = nodes.filter(function (node) {
+			return node.externalInputs;
+		}).map(function (node) {
+			return node.externalInputs.map(function (externalInput) {
+				return externalInput.type + ' ' + externalInput.externalName + ';';
+			}).join('\n');
+		}).join('\n');
+
+		var stringifiedNodes = nodes.map(function (node) {
 			var nodeDefinition = nodeTypes[node.type];
 
 			var isExternalInput = function (inputName) {
@@ -70,7 +70,7 @@
 			var copyIn = nodeDefinition.inputs.filter(function (input) {
 				return isExternalInput(input.name);
 			}).map(function (input) {
-				return 'var ' + getInputVar(node.id, input.name) + '; // ' + input.type;
+				return input.type + ' ' + getInputVar(node.id, input.name) + ';';
 			}).join('\n');
 
 
@@ -78,11 +78,12 @@
 			var outputDeclarations;
 			if (nodeDefinition.outputs) {
 				outputDeclarations = nodeDefinition.outputs.map(function (output) {
-					return '\tvar ' + output.name + '; // ' + output.type;
+					return '\t' + output.type + ' ' + output.name + ';';
 				}).join('\n');
 			} else {
-				outputDeclarations = ''
+				outputDeclarations = '';
 			}
+
 
 			// copy the outputs of this node to the inputs of the next node
 			var copyOut = node.outputsTo.map(function (outputTo) {
@@ -111,19 +112,21 @@
 					// this regex will fail for comments, strings
 					return partial.replace(
 						new RegExp('\\b' + input.name + '\\b', 'g'),
-						input.external
+						input.externalName
 					);
 				}, processedBody);
 			}
 
 			return '// node ' + node.id + ', ' + node.type + '\n' +
 				copyIn + '\n' +
-				'(function () {\n' +
+				'{\n' +
 				outputDeclarations + '\n' +
 				'\t' + processedBody + '\n'
 				+ copyOut +
-				'\n})();\n';
+				'\n}\n';
 		}).join('\n');
+
+		return stringifiedExternals + '\n\n' + stringifiedNodes;
 	}
 
 	function buildShader(types, structure) {

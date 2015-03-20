@@ -23,7 +23,7 @@
 
 		outputEditor = ace.edit('output-editor');
 		outputEditor.setTheme('ace/theme/monokai');
-		outputEditor.getSession().setMode('ace/mode/javascript');
+		outputEditor.getSession().setMode('ace/mode/glsl');
 		outputEditor.getSession().setUseWrapMode(true);
 		outputEditor.setReadOnly(true);
 		outputEditor.setFontSize(fontSize);

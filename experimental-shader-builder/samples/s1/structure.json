@@ -3,10 +3,12 @@
   "id": "1",
   "externalInputs": [{
     "name": "x",
-    "external": "uniform_a"
+    "externalName": "uniform_a",
+    "type": "float"
   }, {
     "name": "y",
-    "external": "uniform_b"
+    "externalName": "uniform_b",
+    "type": "float"
   }],
   "outputsTo": [{
     "output": "sum",
@@ -18,10 +20,12 @@
   "id": "2",
   "externalInputs": [{
     "name": "x",
-    "external": "uniform_c"
+    "externalName": "uniform_c",
+    "type": "float"
   }, {
     "name": "y",
-    "external": "uniform_d"
+    "externalName": "uniform_d",
+    "type": "float"
   }],
   "outputsTo": [{
     "output": "product",

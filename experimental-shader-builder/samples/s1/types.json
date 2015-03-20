@@ -49,6 +49,6 @@
       "name": "value",
       "type": "float"
     }],
-    "body": "console.log(value);"
+    "body": "gl_FragColor = vec4(value, value, value, 1);"
   }
 }
