@@ -24,7 +24,9 @@ define([
 	'goo/loaders/handlers/SoundHandler',
 	'goo/loaders/handlers/EnvironmentHandler',
 	'goo/loaders/handlers/SkyboxHandler',
-	'goo/loaders/handlers/HtmlComponentHandler'
+	'goo/loaders/handlers/HtmlComponentHandler',
+	'goo/loaders/hanlders/SplineComponentHandler',
+	'goo/loaders/handlers/SplineControlComponentHandler'
 ], function (
 	ConfigHandler,
 	ComponentHandler,
