@@ -62,8 +62,8 @@ function (
 		 */
 		this.selection = new EntitySelection();
 
-		this.sphereMeshData = new Sphere(16, 16, 0.5);
-		this.boxMeshData = new Box(1, 1, 1);
+		this.centerMeshData = new Sphere(16, 16, 0.8);
+		this.controlMeshData = new Sphere(16, 16, 0.3);
 
 		this.splineMaterial = new Material(ShaderLib.simpleColored);
 		this.splineMaterial.uniforms.color = [0, 0, 1];
@@ -73,6 +73,8 @@ function (
 
 		this.controlPointMaterial = new Material(ShaderLib.simpleColored);
 		this.controlPointMaterial.uniforms.color = [1, 1, 0];
+
+		this.localTransform = new Transform();
 
 		this.renderablePool = new Pool({
 			create: function () {
@@ -117,44 +119,51 @@ function (
 			// Render the spline control points.
 			var splineControlComponent = entity.splineControlComponent;
 			if (splineControlComponent) {
+				var from = splineControlComponent.beforePoint || splineControlComponent.centerPoint;
+				var to = splineControlComponent.afterPoint;
+
+				var mesh = new PolyLine([from.x, from.y, from.z, to.x, to.y, to.z]);
+				this.renderablePool.get(mesh, this.controlPointMaterial)
+				renderable.transform.translation.setVector(point);
+				renderable.transform.scale.setDirect(SCALE, SCALE, SCALE);
+				renderable.transform.update();
+				this.renderList.push(renderable);
+
 				// Before
 				if (splineControlComponent.beforePoint) {
-					var beforeRenderable = this.renderablePool.get(this.boxMeshData, this.controlPointMaterial);
-					beforeRenderable.transform.setIdentity();
-					beforeRenderable.transform.translation.setVector(splineControlComponent.beforePoint);
-					beforeRenderable.transform.scale.setDirect(SCALE, SCALE, SCALE);
-					beforeRenderable.transform.update();
-					this.renderList.push(beforeRenderable);
+					var beforeRenderable = this.renderablePool.get(this.controlMeshData, this.controlPointMaterial);
+					this.addRenderable(entity, beforeRenderable, splineControlComponent.beforePoint);
 				}
 
 				// Center
-				var centerRenderable = this.renderablePool.get(this.sphereMeshData, this.centerControlPointMaterial);
-				centerRenderable.transform.setIdentity();
-				centerRenderable.transform.translation.setVector(splineControlComponent.centerPoint);
-				centerRenderable.transform.scale.setDirect(SCALE, SCALE, SCALE);
-				centerRenderable.transform.update();
-				this.renderList.push(centerRenderable);
+				var centerRenderable = this.renderablePool.get(this.centerMeshData, this.centerControlPointMaterial);
+				this.addRenderable(entity, centerRenderable, splineControlComponent.centerPoint);
 
 				// After
 				if (splineControlComponent.afterPoint) {
-					var afterRenderable = this.renderablePool.get(this.boxMeshData, this.controlPointMaterial);
-					afterRenderable.transform.setIdentity();
-					afterRenderable.transform.translation.setVector(splineControlComponent.afterPoint);
-					afterRenderable.transform.scale.setDirect(SCALE, SCALE, SCALE);
-					afterRenderable.transform.update();
-					this.renderList.push(afterRenderable);
+					var afterRenderable = this.renderablePool.get(this.controlMeshData, this.controlPointMaterial);
+					this.addRenderable(entity, afterRenderable, splineControlComponent.afterPoint);
 				}
 			}
 
 			// Render the spline.
-			if (entity.splineComponent) {
-				var renderable = this.renderablePool.get(entity.splineComponent.meshData, this.splineMaterial);
-				renderable.transform.copy(entity.transformComponent.worldTransform);
+			var splineComponent = entity.splineComponent;
+			if (splineComponent && splineComponent.meshData) {
+				var renderable = this.renderablePool.get(splineComponent.meshData, this.splineMaterial);
+				renderable.transform.setIdentity();
+				//renderable.transform.copy(entity.transformComponent.worldTransform);
 				renderable.transform.scale.setDirect(1, 1, 1);
 				renderable.transform.update();
 				this.renderList.push(renderable);
 			}
 		}
+	};
+
+	SplineDebugRenderSystem.prototype.addRenderable = function (entity, renderable, point) {
+		renderable.transform.translation.setVector(point);
+		renderable.transform.scale.setDirect(SCALE, SCALE, SCALE);
+		renderable.transform.update();
+		this.renderList.push(renderable);
 	};
 
 	/**

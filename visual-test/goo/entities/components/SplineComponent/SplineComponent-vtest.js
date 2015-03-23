@@ -28,9 +28,9 @@ require([
 
 	var splineControlPoints = [
 		{
-			pos: new Vector3(0, -1, 0),
+			pos: new Vector3(0, 1, 0),
 			rotation: new Vector3(0, 0, 0),
-			scale: new Vector3(1, 1, 1)
+			scale: new Vector3(2, 1, 1)
 		},
 		{
 			pos: new Vector3(0, 0, 0),
@@ -38,9 +38,9 @@ require([
 			scale: new Vector3(1, 1, 1)
 		},
 		{
-			pos: new Vector3(0, 1, 0),
+			pos: new Vector3(0, -1, 0),
 			rotation: new Vector3(0, 0, 0),
-			scale: new Vector3(2, 1, 1)
+			scale: new Vector3(1, 1, 1)
 		}
 	];
 
@@ -57,6 +57,10 @@ require([
 
 		splineEntity.attachChild(splineControlEntity);
 	}
+
+
+	splineEntity.setTranslation(2, 1, 0);
+
 
 	V.addOrbitCamera(new Vector3(7, Math.PI / 2, 0));
 	V.addLights();

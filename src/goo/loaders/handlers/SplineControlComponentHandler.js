@@ -67,6 +67,8 @@ define([
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
+
+			component.index = config.index || 0;
 		});
 	};
 

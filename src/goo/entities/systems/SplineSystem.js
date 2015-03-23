@@ -37,9 +37,15 @@ define([
 				}
 			});
 
-			var spline = new Spline(this.getControlPoints(controlEntities));
-			splineComponent.spline = spline;
-			splineComponent.meshData = this.getSplineMesh(spline, 40);
+			var controlPoints = this.getControlPoints(controlEntities);
+			if (controlPoints.length > 2) {
+				var spline = new Spline(controlPoints);
+				splineComponent.spline = spline;
+				splineComponent.meshData = this.getSplineMesh(spline, 10 * controlPoints.length);
+			} else {
+				splineComponent.spline = null;
+				splineComponent.meshData = null;
+			}
 
 			splineComponent.dirty = false;
 		}
@@ -73,15 +79,16 @@ define([
 
 	SplineSystem.prototype.updateControlPoints = function (entity, isFirst, isLast) {
 		var component = entity.splineControlComponent;
-		var worldTransform = entity.transformComponent.worldTransform
+		var transform = entity.transformComponent.worldTransform;
+		transform.update();
 
-		component.centerPoint = worldTransform.translation.clone();
+		component.centerPoint = transform.translation.clone();
 
 		var beforePoint = new Vector3(1, 0, 0);
-		worldTransform.applyForward(beforePoint, beforePoint);
+		transform.applyForward(beforePoint, beforePoint);
 
 		var afterPoint = new Vector3(-1, 0, 0);
-		worldTransform.applyForward(afterPoint, afterPoint);
+		transform.applyForward(afterPoint, afterPoint);
 
 		component.beforePoint = isFirst ? null : beforePoint;
 		component.afterPoint = isLast ? null : afterPoint;
