@@ -61,10 +61,10 @@ define([
 		 * @param {Vector3} color
 		 * @returns {number} The encoded color.
 		 * @example
-		 * var encodedColorRed = lineRenderSystem.encodeColor(lineRenderSystem.RED);
+		 * var encodedColorRed = encodeColor(lineRenderSystem.RED);
 		 * console.log(encodedColorRed); // would output: 16777216
 		 */
-		LineRenderSystem.prototype.encodeColor = function (color) {
+		var encodeColor = function (color) {
 			var r = Math.floor(color.r * 255);
 			var g = Math.floor(color.g * 255);
 			var b = Math.floor(color.b * 255);
@@ -85,7 +85,7 @@ define([
 		 */
 		LineRenderSystem.prototype.drawLine = function (start, end, color) {
 
-			var encodedColor = this.encodeColor(color);
+			var encodedColor = encodeColor(color);
 
 			var lineRenderer = this._lineRenderers[encodedColor];
 			if (!lineRenderer) {
