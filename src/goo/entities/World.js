@@ -52,6 +52,14 @@ define([
 		 */
 		this.time = 0.0;
 
+		/** Accumulated fixed time steps the world has been running. Calculated at the start of each fixed process.
+		 * @type {number}
+		 */
+		this.fixedTpfTime = 0;
+
+		this.fixedTpf = 1 / 60;
+		this.maxSubSteps = 10;
+
 		/** Time since last frame in seconds.
 		 * @type {number}
 		 */
@@ -145,7 +153,7 @@ define([
 	};
 
 	/**
-	 * Registers a component type. This is necessary to allow automatic creation of components 
+	 * Registers a component type. This is necessary to allow automatic creation of components
 	 * from 'basic' data types (CameraComponents from Cameras, MeshRendererComponents from materials and so on).
 	 * When a {@link GooRunner} is created, it registers {@link TransformComponent}, {@link MeshDataComponent},
 	 * {@link MeshRendererComponent}, {@link CameraComponent}, {@link LightComponent} and {@link ScriptComponent} automatically.
@@ -439,6 +447,16 @@ define([
 				}
 			}
 		});
+	};
+
+	World.prototype.fixedProcess = function () {
+		this.processEntityChanges();
+		for (var i = 0; i < this._systems.length; i++) {
+			var system = this._systems[i];
+			if (!system.passive) {
+				system._fixedProcess(this.fixedTpf);
+			}
+		}
 	};
 
 	/**

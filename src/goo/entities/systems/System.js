@@ -123,6 +123,12 @@ function () {
 		}
 	};
 
+	System.prototype._fixedProcess = function (fixedTpf) {
+		if (this.fixedProcess) {
+			this.fixedProcess(this._activeEntities, fixedTpf);
+		}
+	};
+
 	System.prototype.clear = function () {
 		this._activeEntities = [];
 	};
