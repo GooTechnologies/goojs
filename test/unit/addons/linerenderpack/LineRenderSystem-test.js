@@ -25,35 +25,35 @@ define([
 		describe('encodeColor', function () {
 			it('can encode white', function () {
 
-				var encodedColor = lineRenderSystem.encodeColor(lineRenderSystem.WHITE);
+				var encodedColor = LineRenderSystem.encodeColor(lineRenderSystem.WHITE);
 
 				expect(encodedColor).toBe(16777215);
 			});
 
 			it('can encode red', function () {
 
-				var encodedColor = lineRenderSystem.encodeColor(lineRenderSystem.RED);
+				var encodedColor = LineRenderSystem.encodeColor(lineRenderSystem.RED);
 
 				expect(encodedColor).toBe(16711680);
 			});
 
 			it('can encode green', function () {
 
-				var encodedColor = lineRenderSystem.encodeColor(lineRenderSystem.GREEN);
+				var encodedColor = LineRenderSystem.encodeColor(lineRenderSystem.GREEN);
 
 				expect(encodedColor).toBe(65280);
 			});
 
 			it('can encode blue', function () {
 
-				var encodedColor = lineRenderSystem.encodeColor(lineRenderSystem.BLUE);
+				var encodedColor = LineRenderSystem.encodeColor(lineRenderSystem.BLUE);
 
 				expect(encodedColor).toBe(255);
 			});
 
 			it('can encode black', function () {
 
-				var encodedColor = lineRenderSystem.encodeColor(lineRenderSystem.BLACK);
+				var encodedColor = LineRenderSystem.encodeColor(lineRenderSystem.BLACK);
 
 				expect(encodedColor).toBe(0);
 			});
