@@ -340,6 +340,9 @@ define([
 		adjustWidth = adjustWidth * devicePixelRatio / this.downScale;
 		adjustHeight = adjustHeight * devicePixelRatio / this.downScale;
 
+		adjustWidth = Math.max(adjustWidth, 1);
+		adjustHeight = Math.max(adjustHeight, 1);
+
 		var fullWidth = adjustWidth;
 		var fullHeight = adjustHeight;
 

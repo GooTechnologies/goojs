@@ -112,16 +112,8 @@ define([
 					};
 					gooRunner.triggerEvent('click', evt);
 				});
-				// component.domElement = domElement;
-				component.initDom(domElement);
 
-				// domElement.style.position = 'absolute';
-				// domElement.style.top = 0;
-				// domElement.style.left = 0;
-				// domElement.style.zIndex = 1;
-				// domElement.style.display = 'none';
-				// var parentEl = entity._world.gooRunner.renderer.domElement.parentElement || document.body;
-				// parentEl.appendChild(domElement);
+				component.initDom(domElement);
 			}
 
 			var innerHtmlChanged = config.innerHtml !== domElement.prevInnerHtml;

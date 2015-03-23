@@ -6,6 +6,7 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/shapes/Quad',
 	'goo/math/Matrix4x4',
+	'goo/math/Vector3',
 	'goo/math/MathUtils'
 ], function (
 	System,
@@ -15,6 +16,7 @@ define([
 	ShaderLib,
 	Quad,
 	Matrix4x4,
+	Vector3,
 	MathUtils
 ) {
 	'use strict';
@@ -80,6 +82,9 @@ define([
 	HtmlSystem.prototype = Object.create(System.prototype);
 	HtmlSystem.prototype.constructor = HtmlSystem;
 
+	// var tmpMatrix = new Matrix4x4();
+	// var tmpVector = new Vector3();
+
 	var getCameraCSSMatrix = function (matrix) {
 		var elements = matrix.data;
 
@@ -121,11 +126,10 @@ define([
 		component.entity = entity;
 
 		// insert quads etc
-		if (component.useTransformComponent && !entity.meshRendererComponent || !entity.meshDataComponent) {
+		if (component.useTransformComponent && !entity.meshRendererComponent && !entity.meshDataComponent) {
 			var quad = new Quad(component.width, component.height);
 			entity.set(quad);
 			entity.set(this.materialTransparent);
-			// entity.setScale(0.1, 0.1, 1);
 
 			var entityBack = entity._world.createEntity(quad, this.materialOpaque).addToWorld();
 			entityBack.meshRendererComponent.isPickable = false;
@@ -192,9 +196,11 @@ define([
 			// Do we really have to set this every time?
 			if (component.hidden) {
 				component.domElement.style.display = 'none';
+				component.entity.hide();
 				continue;
 			} else {
 				component.domElement.style.display = '';
+				component.entity.show();
 			}
 
 			if (!component.updated && !entity.transformComponent._updatedThisFrame && !component.faceCamera) {
@@ -212,14 +218,13 @@ define([
 			// 	tmpMatrix.setTranslation(tmpVector);
 
 			// 	entity.transformComponent.transform.matrix.getScale(tmpVector);
-			// 	tmpVector.x *= (scale/component.width);
-			// 	tmpVector.y *= (scale/component.height);
+			// 	tmpVector.x *= (1/component.width);
+			// 	tmpVector.y *= (1/component.height);
 			// 	style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+tmpVector.x+','+tmpVector.y+','+1+')';
 			// } else {
-				// style = getEntityCSSMatrix(worldTransform.matrix) + ' scale3d('+(scale/component.width)+','+
-				// 	(scale/component.height)+','+1+')';
-				style = getEntityCSSMatrix(worldTransform.matrix);
+			// 	style = getEntityCSSMatrix(worldTransform.matrix);
 			// }
+			style = getEntityCSSMatrix(worldTransform.matrix);
 
 			this.setStyle(domElement, 'transform', style);
 		}

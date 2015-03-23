@@ -30,21 +30,20 @@ require([
 
 	// and html elements for every sphere
 	spheres.each(function (entity) {
-		var htmlElement = document.createElement('p');
-		// htmlElement.style.position = 'absolute';
-		// htmlElement.style['-webkit-user-select'] = 'none';
-		// htmlElement.style['user-select'] = 'none';
-		// htmlElement.style.top = '100px';
-		// htmlElement.style.left = '100px';
-		htmlElement.innerHTML = 'A round box!';
-		// document.body.appendChild(htmlElement);
+		var htmlElement = document.createElement('div');
+		htmlElement.style['-webkit-user-select'] = 'none';
+		htmlElement.style['user-select'] = 'none';
+		htmlElement.style['background-color'] = 'white';
+		htmlElement.innerHTML = 'A box!';
 
 		var htmlComponent = new HtmlComponent(htmlElement, {
-			useTransformComponent: false
+			useTransformComponent: V.rng.nextFloat() > 0.5
 		});
-		entity.set(htmlComponent);
+		var htmlEntity = world.createEntity('html', htmlComponent).addToWorld();
+		htmlEntity.setScale(0.01, 0.01, 1);
+		entity.attachChild(htmlEntity);
 
-		if (Math.random() > 0.5) {
+		if (V.rng.nextFloat() > 0.5) {
 			entity.hide();
 		}
 	});

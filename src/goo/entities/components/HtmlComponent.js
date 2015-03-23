@@ -29,7 +29,9 @@ function (
 		this.width = settings.width || 100;
 		this.height = settings.height || 100;
 		this.backfaceVisibility = settings.backfaceVisibility || 'hidden'; //'visible'
+		// faceCamera should not be here, it should be an entity transform setting
 		this.faceCamera = settings.faceCamera !== undefined ? settings.faceCamera : false;
+
 		this.updated = true;
 		this.entity = null;
 
@@ -77,13 +79,16 @@ function (
 		this.height = height || this.height;
 		this.domElement.style.width = this.width + 'px';
 		this.domElement.style.height = this.height + 'px';
-		if (this.entity && this.entity.meshDataComponent) {
-			this.entity.meshDataComponent.meshData.xExtent = width * 0.5;
-			this.entity.meshDataComponent.meshData.yExtent = height * 0.5;
-			this.entity.meshDataComponent.meshData.rebuild();
-			this.entity.meshDataComponent.meshData.setVertexDataUpdated();
-			this.entity.transformComponent.transform.scale.scale(xdiff, ydiff, 1);
-			this.entity.transformComponent.setUpdated();
+
+		// fix quad size
+		var entity = this.entity;
+		if (entity && entity.meshDataComponent /*&& entity.meshDataComponent.meshData instanceof Quad*/) {
+			entity.meshDataComponent.meshData.xExtent = width * 0.5;
+			entity.meshDataComponent.meshData.yExtent = height * 0.5;
+			entity.meshDataComponent.meshData.rebuild();
+			entity.meshDataComponent.meshData.setVertexDataUpdated();
+			entity.transformComponent.transform.scale.scale(xdiff, ydiff, 1);
+			entity.transformComponent.setUpdated();
 		}
 		this.updated = true;
 	};
