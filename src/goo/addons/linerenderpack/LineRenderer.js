@@ -77,7 +77,7 @@ define([
 			].join('\n')
 		};
 
-		LineRenderer.MAX_NUM_LINES = 65536;
+		LineRenderer.MAX_NUM_LINES = 32768;
 
 		/**
 		 * Used internally to update the vertexData in meshData
