@@ -4,31 +4,32 @@ define([
 	'goo/renderer/BufferUtils',
 	'goo/math/Vector2',
 	'goo/math/Vector3',
-	'goo/math/Vector4'
-],
-/** @lends */
-function (
+	'goo/math/Vector4',
+	'goo/util/ObjectUtil'
+], function (
 	BufferData,
 	Util,
 	BufferUtils,
 	Vector2,
 	Vector3,
-	Vector4
+	Vector4,
+	ObjectUtil
 ) {
-	"use strict";
+	'use strict';
 
+	//! AT: why this?
 	var Uint8ClampedArray = window.Uint8ClampedArray;
 
 	/**
-	 * @class Stores all buffers for geometric data and similar attributes
-	 * @param {AttributeMap} attributeMap Describes which buffers to use and their format/sizes
-	 * @param {Number} vertexCount Number of vertices in buffer
-	 * @param {Number} indexCount Number of indices in buffer
+	 * Stores all buffers for geometric data and similar attributes
+	 * @param {Object} attributeMap Describes which buffers to use and their format/sizes
+	 * @param {number} vertexCount Number of vertices in buffer
+	 * @param {number} indexCount Number of indices in buffer
 	 */
 	function MeshData(attributeMap, vertexCount, indexCount) {
 		this.attributeMap = attributeMap;
 
-		this.vertexCount = vertexCount !== undefined ? vertexCount : 0;
+		this.vertexCount = this._vertexCountStore = vertexCount !== undefined ? vertexCount : 0;
 		this.indexCount = indexCount !== undefined ? indexCount : 0;
 		this.primitiveCounts = [0];
 
@@ -42,21 +43,44 @@ function (
 
 		this.type = MeshData.MESH;
 
+		//!RH: added to not mutate object
+		this.paletteMap = undefined;
+		this.weightsPerVertex = undefined;
+		this.boundingBox = undefined;
+		this.store = undefined;
+		this.wireframeData = undefined;
+		this.flatMeshData = undefined;
+
+		this._attributeDataNeedsRefresh = false;
+		this._dirtyAttributeNames = new Set();
+
 		this.rebuildData(this.vertexCount, this.indexCount);
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	MeshData.MESH = 0;
 	MeshData.SKINMESH = 1;
 
+	/**
+	 * Rebuilds the mesh vertex and index data
+	 * @param {number} vertexCount
+	 * @param {number} indexCount
+	 * @param {boolean} saveOldData
+	 */
 	MeshData.prototype.rebuildData = function (vertexCount, indexCount, saveOldData) {
 		var savedAttributes = {};
 		var savedIndices = null;
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
-				var view = this.dataViews[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var view = this.dataViews[key];
 				if (view) {
-					savedAttributes[i] = view;
+					savedAttributes[key] = view;
 				}
 			}
 			if (this.indexData) {
@@ -69,20 +93,26 @@ function (
 		this.rebuildIndexData(indexCount);
 
 		if (saveOldData) {
-			for (var i in this.attributeMap) {
-				var saved = savedAttributes[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var saved = savedAttributes[key];
 				if (saved) {
-					var view = this.dataViews[i];
-					view.set(saved);
+					this.dataViews[key].set(saved);
 				}
 			}
-			savedAttributes = {};
+
 			if (savedIndices) {
 				this.indexData.data.set(savedIndices);
 			}
 		}
 	};
 
+	/**
+	 * Rebuilds the vertex data of a mesh
+	 * @private
+	 * @param {number} vertexCount
+	 */
 	MeshData.prototype.rebuildVertexData = function (vertexCount) {
 		if (!isNaN(vertexCount)) {
 			this.vertexCount = vertexCount;
@@ -90,8 +120,9 @@ function (
 		}
 		if (this.vertexCount > 0) {
 			var vertexByteSize = 0;
-			for (var i in this.attributeMap) {
-				var attribute = this.attributeMap[i];
+			var keys = Object.keys(this.attributeMap);
+			for (var i = 0; i < keys.length; i++) {
+				var attribute = this.attributeMap[keys[i]];
 				vertexByteSize += Util.getByteSize(attribute.type) * attribute.count;
 			}
 			this.vertexData = new BufferData(new ArrayBuffer(vertexByteSize * this.vertexCount), 'ArrayBuffer');
@@ -100,6 +131,11 @@ function (
 		}
 	};
 
+	/**
+	 * Rebuilds the index data
+	 * @private
+	 * @param {number} indexCount
+	 */
 	MeshData.prototype.rebuildIndexData = function (indexCount) {
 		if (indexCount !== undefined) {
 			this.indexCount = indexCount;
@@ -110,8 +146,16 @@ function (
 		}
 	};
 
+	/**
+	 * Requests a refresh on the vertex data
+	 */
 	MeshData.prototype.setVertexDataUpdated = function () {
 		this.vertexData._dataNeedsRefresh = true;
+	};
+
+	MeshData.prototype.setAttributeDataUpdated = function (name) {
+		this._dirtyAttributeNames.add(name);
+		this._attributeDataNeedsRefresh = true;
 	};
 
 	MeshData.prototype.getSectionCount = function () {
@@ -133,10 +177,8 @@ function (
 
 		var mode = this.indexModes[section];
 		var rSize = MeshData.getVertexCount(mode);
-		var result = store;
-		if (!result || result.length < rSize) {
-			result = [];
-		}
+		var result = store || [];
+		result.length = rSize;
 
 		var verts = this.getAttributeBuffer(MeshData.POSITION);
 		for (var i = 0; i < rSize; i++) {
@@ -170,41 +212,42 @@ function (
 
 		// Ok, now pull primitive index based on indexmode.
 		switch (this.indexModes[section]) {
-			case "Triangles":
-				index += primitiveIndex * 3 + point;
-				break;
-			case "TriangleStrip":
-				// XXX: Do we need to flip point 0 and 1 on odd primitiveIndex values?
-				// if (point < 2 && primitiveIndex % 2 == 1) {
-				// index += primitiveIndex + (point == 0 ? 1 : 0);
-				// } else {
+		case "Triangles":
+			index += primitiveIndex * 3 + point;
+			break;
+		case "TriangleStrip":
+			// XXX: Do we need to flip point 0 and 1 on odd primitiveIndex values?
+			// if (point < 2 && primitiveIndex % 2 == 1) {
+			// index += primitiveIndex + (point == 0 ? 1 : 0);
+			// } else {
+			index += primitiveIndex + point;
+			// }
+			break;
+		case "TriangleFan":
+			if (point === 0) {
+				index += 0;
+			} else {
 				index += primitiveIndex + point;
-				// }
-				break;
-			case "TriangleFan":
-				if (point === 0) {
-					index += 0;
-				} else {
-					index += primitiveIndex + point;
-				}
-				break;
-			case "Points":
-				index += primitiveIndex;
-				break;
-			case "Lines":
-				index += primitiveIndex * 2 + point;
-				break;
-			case "LineStrip":
-			case "LineLoop":
-				index += primitiveIndex + point;
-				break;
-			default:
-				MeshData.logger.warning("unimplemented index mode: " + this.indexModes[section]);
-				return -1;
+			}
+			break;
+		case "Points":
+			index += primitiveIndex;
+			break;
+		case "Lines":
+			index += primitiveIndex * 2 + point;
+			break;
+		case "LineStrip":
+		case "LineLoop":
+			index += primitiveIndex + point;
+			break;
+		default:
+			MeshData.logger.warning("unimplemented index mode: " + this.indexModes[section]);
+			return -1;
 		}
 		return index;
 	};
 
+	//! AT: unused
 	MeshData.prototype.getTotalPrimitiveCount = function () {
 		var count = 0;
 		for (var i = 0, max = this.primitiveCounts.length; i < max; i++) {
@@ -228,19 +271,19 @@ function (
 
 	MeshData.getPrimitiveCount = function (indexMode, size) {
 		switch (indexMode) {
-			case "Triangles":
-				return size / 3;
-			case "TriangleFan":
-			case "TriangleStrip":
-				return size - 2;
-			case "Lines":
-				return size / 2;
-			case "LineStrip":
-				return size - 1;
-			case "LineLoop":
-				return size;
-			case "Points":
-				return size;
+		case "Triangles":
+			return size / 3;
+		case "TriangleFan":
+		case "TriangleStrip":
+			return size - 2;
+		case "Lines":
+			return size / 2;
+		case "LineStrip":
+			return size - 1;
+		case "LineLoop":
+			return size;
+		case "Points":
+			return size;
 		}
 
 		throw new Error("unimplemented index mode: " + indexMode);
@@ -248,16 +291,16 @@ function (
 
 	MeshData.getVertexCount = function (indexMode) {
 		switch (indexMode) {
-			case "Triangles":
-			case "TriangleFan":
-			case "TriangleStrip":
-				return 3;
-			case "Lines":
-			case "LineStrip":
-			case "LineLoop":
-				return 2;
-			case "Points":
-				return 1;
+		case "Triangles":
+		case "TriangleFan":
+		case "TriangleStrip":
+			return 3;
+		case "Lines":
+		case "LineStrip":
+		case "LineLoop":
+			return 2;
+		case "Points":
+			return 1;
 		}
 
 		throw new Error("unimplemented index mode: " + indexMode);
@@ -289,16 +332,20 @@ function (
 			if (ArrayType) {
 				view = new ArrayType(data, attribute.offset, length);
 			} else {
-				throw "Unsupported DataType: " + attribute.type;
+				throw new Error("Unsupported DataType: " + attribute.type);
 			}
 
 			this.dataViews[key] = view;
+
+			attribute.hashKey = attribute.count + '_' + attribute.type + '_' + 
+				attribute.stride + '_' + attribute.offset + '_' + attribute.normalized;
 		}
 	};
 
+	//! AT: unused
 	MeshData.prototype.makeInterleavedData = function () {
 		var stride = 0;
-		var offset = 0;
+		var offset = 0; // unused
 		for (var key in this.attributeMap) {
 			var attribute = this.attributeMap[key];
 			attribute.offset = stride;
@@ -332,22 +379,22 @@ function (
 
 	MeshData.prototype.getDataMethod = function (type) {
 		switch (type) {
-			case 'Byte':
-				return 'setInt8';
-			case 'UnsignedByte':
-				return 'setUInt8';
-			case 'Short':
-				return 'setInt16';
-			case 'UnsignedShort':
-				return 'setUInt16';
-			case 'Int':
-				return 'setInt32';
-			case 'HalfFloat':
-				return 'setInt16';
-			case 'Float':
-				return 'setFloat32';
-			// case 'Double':
-				// return 'setFloat64';
+		case 'Byte':
+			return 'setInt8';
+		case 'UnsignedByte':
+			return 'setUInt8';
+		case 'Short':
+			return 'setInt16';
+		case 'UnsignedShort':
+			return 'setUInt16';
+		case 'Int':
+			return 'setInt32';
+		case 'HalfFloat':
+			return 'setInt16';
+		case 'Float':
+			return 'setFloat32';
+		// case 'Double':
+			// return 'setFloat64';
 		}
 	};
 
@@ -355,6 +402,7 @@ function (
 		return this.dataViews[attributeName];
 	};
 
+	//! schteppe: are simple getters like this really needed? Why not just use the property?
 	MeshData.prototype.getIndexData = function () {
 		return this.indexData;
 	};
@@ -374,8 +422,9 @@ function (
 		return this.indexModes;
 	};
 
+	//! AT: unused and undocumented; remove?
 	MeshData.prototype.resetVertexCount = function () {
-		this.vertexCount = this.vertexCountStore;
+		this.vertexCount = this._vertexCountStore;
 	};
 
 	/**
@@ -384,14 +433,14 @@ function (
 	 * @param {Transform} transform
 	 * @returns {MeshData} Self to allow chaining
 	 */
-	MeshData.prototype.applyTransform = function(attributeName, transform) {
+	MeshData.prototype.applyTransform = function (attributeName, transform) {
 		var vert = new Vector3();
 		var view = this.getAttributeBuffer(attributeName);
 		var viewLength = view.length;
 
 		if (attributeName === MeshData.POSITION) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.matrix.applyPostPoint(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -399,7 +448,7 @@ function (
 			}
 		} else if (attributeName === MeshData.NORMAL) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.rotation.applyPost(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -407,7 +456,7 @@ function (
 			}
 		} else if (attributeName === MeshData.TANGENT) {
 			for (var i = 0; i < viewLength; i += 3) {
-				vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 				transform.rotation.applyPost(vert);
 				view[i + 0] = vert[0];
 				view[i + 1] = vert[1];
@@ -424,7 +473,8 @@ function (
 	 * @param {Function} fun
 	 * @returns {MeshData} Self to allow chaining
 	 */
-	MeshData.prototype.applyFunction = function(attributeName, fun) {
+	MeshData.prototype.applyFunction = function (attributeName, fun) {
+		//! AT: fun should return a vector3, not an array
 		var vert;
 		var outVert;
 		var view = this.getAttributeBuffer(attributeName);
@@ -433,47 +483,47 @@ function (
 		var count = this.attributeMap[attributeName].count;
 
 		switch (count) {
-			case 1:
-				for (var i = 0; i < viewLength; i++) {
-					view[i] = fun(view[i]);
-				}
-				break;
-			case 2:
-				vert = new Vector2();
-				for (var i = 0; i < viewLength; i += 2) {
-					vert.setd(view[i + 0], view[i + 1]);
+		case 1:
+			for (var i = 0; i < viewLength; i++) {
+				view[i] = fun(view[i]);
+			}
+			break;
+		case 2:
+			vert = new Vector2();
+			for (var i = 0; i < viewLength; i += 2) {
+				vert.setDirect(view[i + 0], view[i + 1]);
 
-					outVert = fun(vert);
+				outVert = fun(vert);
 
-					view[i + 0] = outVert[0];
-					view[i + 1] = outVert[1];
-				}
-				break;
-			case 3:
-				vert = new Vector3();
-				for (var i = 0; i < viewLength; i += 3) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
+				view[i + 0] = outVert[0];
+				view[i + 1] = outVert[1];
+			}
+			break;
+		case 3:
+			vert = new Vector3();
+			for (var i = 0; i < viewLength; i += 3) {
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
 
-					outVert = fun(vert);
+				outVert = fun(vert);
 
-					view[i + 0] = outVert[0];
-					view[i + 1] = outVert[1];
-					view[i + 2] = outVert[2];
-				}
-				break;
-			case 4:
-				vert = new Vector4();
-				for (var i = 0; i < viewLength; i += 4) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
+				view[i + 0] = outVert[0];
+				view[i + 1] = outVert[1];
+				view[i + 2] = outVert[2];
+			}
+			break;
+		case 4:
+			vert = new Vector4();
+			for (var i = 0; i < viewLength; i += 4) {
+				vert.setDirect(view[i + 0], view[i + 1], view[i + 2], view[i + 3]);
 
-					outVert = fun(vert);
+				outVert = fun(vert);
 
-					view[i + 0] = outVert[0];
-					view[i + 1] = outVert[1];
-					view[i + 2] = outVert[2];
-					view[i + 3] = outVert[3];
-				}
-				break;
+				view[i + 0] = outVert[0];
+				view[i + 1] = outVert[1];
+				view[i + 2] = outVert[2];
+				view[i + 3] = outVert[3];
+			}
+			break;
 		}
 
 		return this;
@@ -485,10 +535,10 @@ function (
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.getNormalsMeshData = function (size) {
-		if(this.getAttributeBuffer('POSITION') === undefined) {
+		if (this.getAttributeBuffer('POSITION') === undefined) {
 			return;
 		}
-		if(this.getAttributeBuffer('NORMAL') === undefined) {
+		if (this.getAttributeBuffer('NORMAL') === undefined) {
 			return;
 		}
 
@@ -523,15 +573,28 @@ function (
 	};
 
 	/**
-	 * Builds wireframe meshdata from mesh
+	 * Builds the wireframe MeshData from an existing mesh
 	 * @returns {MeshData}
 	 */
 	MeshData.prototype.buildWireframeData = function () {
-		var attributeMap = Util.clone(this.attributeMap);
+		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
 		var wireframeData = new MeshData(attributeMap, this.vertexCount, 0);
 		wireframeData.indexModes[0] = 'Lines';
 
 		var origI = this.getIndexBuffer();
+
+		var that = this;
+		var getIndex;
+		if (origI) {
+			getIndex = function(primitiveIndex, point, section) {
+				return origI[that.getVertexIndex(primitiveIndex, point, section)];
+			};
+		} else {
+			getIndex = function(primitiveIndex, point, section) {
+				return that.getVertexIndex(primitiveIndex, point, section);
+			};
+		}
+
 		var targetI = [];
 		var indexCount = 0;
 		this.updatePrimitiveCounts();
@@ -541,43 +604,43 @@ function (
 			var primitiveCount = this.getPrimitiveCount(section);
 			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 				switch (indexMode) {
-					case "Triangles":
-					case "TriangleFan":
-					case "TriangleStrip":
-						var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
-						var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
-						var i3 = origI[this.getVertexIndex(primitiveIndex, 2, section)];
+				case "Triangles":
+				case "TriangleFan":
+				case "TriangleStrip":
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
+					var i3 = getIndex(primitiveIndex, 2, section);
 
-						targetI[indexCount + 0] = i1;
-						targetI[indexCount + 1] = i2;
-						targetI[indexCount + 2] = i2;
-						targetI[indexCount + 3] = i3;
-						targetI[indexCount + 4] = i3;
-						targetI[indexCount + 5] = i1;
-						indexCount += 6;
+					targetI[indexCount + 0] = i1;
+					targetI[indexCount + 1] = i2;
+					targetI[indexCount + 2] = i2;
+					targetI[indexCount + 3] = i3;
+					targetI[indexCount + 4] = i3;
+					targetI[indexCount + 5] = i1;
+					indexCount += 6;
 					break;
-					case "Lines":
-					case "LineStrip":
-						var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
-						var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
+				case "Lines":
+				case "LineStrip":
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
 
-						targetI[indexCount + 0] = i1;
-						targetI[indexCount + 1] = i2;
-						indexCount += 2;
+					targetI[indexCount + 0] = i1;
+					targetI[indexCount + 1] = i2;
+					indexCount += 2;
 					break;
-					case "LineLoop":
-						var i1 = origI[this.getVertexIndex(primitiveIndex, 0, section)];
-						var i2 = origI[this.getVertexIndex(primitiveIndex, 1, section)];
-						if (primitiveIndex === primitiveCount - 1) {
-							i2 = origI[this.getVertexIndex(0, 0, section)];
-						}
+				case "LineLoop":
+					var i1 = getIndex(primitiveIndex, 0, section);
+					var i2 = getIndex(primitiveIndex, 1, section);
+					if (primitiveIndex === primitiveCount - 1) {
+						i2 = getIndex(0, 0, section);
+					}
 
-						targetI[indexCount + 0] = i1;
-						targetI[indexCount + 1] = i2;
-						indexCount += 2;
+					targetI[indexCount + 0] = i1;
+					targetI[indexCount + 1] = i2;
+					indexCount += 2;
 					break;
-					case "Points":
-						// Not supported in wireframe
+				case "Points":
+					// Not supported in wireframe
 					break;
 				}
 			}
@@ -606,18 +669,14 @@ function (
 	 * Builds flat meshdata from mesh
 	 * @returns {MeshData}
 	 */
-	MeshData.prototype.buildFlatMeshData = function() {
-		var idcs = [], oldIdcs = this.getIndexBuffer();
+	MeshData.prototype.buildFlatMeshData = function () {
+		var oldIdcs = this.getIndexBuffer();
 		if (oldIdcs === null) {
 			console.debug('No indices, probably a point mesh');
 			return this;
 		}
-		if (oldIdcs.length > 65535) {
-			console.warn('Mesh too big, cannot build flat mesh data');
-			return this;
-		}
 
-		var attributeMap = Util.clone(this.attributeMap);
+		var attributeMap = ObjectUtil.deepClone(this.attributeMap);
 		var attribs = {};
 		for (var key in attributeMap) {
 			attribs[key] = {
@@ -633,136 +692,172 @@ function (
 			var flip = false;
 			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 				switch (indexMode) {
-					/*jshint -W086 */
-					case "TriangleStrip":
-						flip = (primitiveIndex % 2 === 1) ? true : false;
-					case "Triangles":
-					case "TriangleFan":
+				/*jshint -W086 */
+				case "TriangleStrip":
+					flip = (primitiveIndex % 2 === 1) ? true : false;
+				case "Triangles":
+				case "TriangleFan":
 
-						var i1 = oldIdcs[this.getVertexIndex(primitiveIndex, 0, section)];
-						var i2 = oldIdcs[this.getVertexIndex(primitiveIndex, 1, section)];
-						var i3 = oldIdcs[this.getVertexIndex(primitiveIndex, 2, section)];
-						if(flip) {
-							var f = i3;
-							i3 = i2;
-							i2 = f;
+					var i1 = oldIdcs[this.getVertexIndex(primitiveIndex, 0, section)];
+					var i2 = oldIdcs[this.getVertexIndex(primitiveIndex, 1, section)];
+					var i3 = oldIdcs[this.getVertexIndex(primitiveIndex, 2, section)];
+					if (flip) {
+						var f = i3;
+						i3 = i2;
+						i2 = f;
+					}
+					for (var key in attribs) {
+						if (key === MeshData.NORMAL) {
+							continue;
 						}
-						for (var key in attribs) {
-							if(key === MeshData.NORMAL) {
-								continue;
-							}
-							var count = attributeMap[key].count;
-							for (var i = 0; i < count; i++) {
-								attribs[key].values[indexCount*count+i] = attribs[key].oldBuffer[i1*count+i];
-								attribs[key].values[(indexCount+1)*count+i] = attribs[key].oldBuffer[i2*count+i];
-								attribs[key].values[(indexCount+2)*count+i] = attribs[key].oldBuffer[i3*count+i];
-							}
-							if(key === MeshData.POSITION) {
-								v1.setd(
-									attribs[key].values[indexCount*3],
-									attribs[key].values[indexCount*3+1],
-									attribs[key].values[indexCount*3+2]
-								);
-								v2.setd(
-									attribs[key].values[(indexCount+1)*3],
-									attribs[key].values[(indexCount+1)*3+1],
-									attribs[key].values[(indexCount+1)*3+2]
-								);
-								v3.setd(
-									attribs[key].values[(indexCount+2)*3],
-									attribs[key].values[(indexCount+2)*3+1],
-									attribs[key].values[(indexCount+2)*3+2]
-								);
-								v2.subv(v1);
-								v3.subv(v1);
-								v2.cross(v3).normalize();
+						var count = attributeMap[key].count;
+						for (var i = 0; i < count; i++) {
+							attribs[key].values[indexCount * count + i] = attribs[key].oldBuffer[i1 * count + i];
+							attribs[key].values[(indexCount + 1) * count + i] = attribs[key].oldBuffer[i2 * count + i];
+							attribs[key].values[(indexCount + 2) * count + i] = attribs[key].oldBuffer[i3 * count + i];
+						}
+						if (key === MeshData.POSITION) {
+							v1.setDirect(
+								attribs[key].values[indexCount * 3],
+								attribs[key].values[indexCount * 3 + 1],
+								attribs[key].values[indexCount * 3 + 2]
+							);
+							v2.setDirect(
+								attribs[key].values[(indexCount + 1) * 3],
+								attribs[key].values[(indexCount + 1) * 3 + 1],
+								attribs[key].values[(indexCount + 1) * 3 + 2]
+							);
+							v3.setDirect(
+								attribs[key].values[(indexCount + 2) * 3],
+								attribs[key].values[(indexCount + 2) * 3 + 1],
+								attribs[key].values[(indexCount + 2) * 3 + 2]
+							);
+							v2.subVector(v1);
+							v3.subVector(v1);
+							v2.cross(v3).normalize();
 
-								if (attribs[MeshData.NORMAL]) {
-									attribs[MeshData.NORMAL].values[(indexCount)*3] = v2.data[0];
-									attribs[MeshData.NORMAL].values[(indexCount)*3+1] = v2.data[1];
-									attribs[MeshData.NORMAL].values[(indexCount)*3+2] = v2.data[2];
+							if (attribs[MeshData.NORMAL]) {
+								attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.data[0];
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.data[1];
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.data[2];
 
-									attribs[MeshData.NORMAL].values[(indexCount+1)*3] = v2.data[0];
-									attribs[MeshData.NORMAL].values[(indexCount+1)*3+1] = v2.data[1];
-									attribs[MeshData.NORMAL].values[(indexCount+1)*3+2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.data[0];
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.data[1];
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.data[2];
 
-									attribs[MeshData.NORMAL].values[(indexCount+2)*3] = v2.data[0];
-									attribs[MeshData.NORMAL].values[(indexCount+2)*3+1] = v2.data[1];
-									attribs[MeshData.NORMAL].values[(indexCount+2)*3+2] = v2.data[2];
-								}
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.data[0];
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.data[1];
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.data[2];
 							}
 						}
-						idcs.push(idcs.length);
-						idcs.push(idcs.length);
-						idcs.push(idcs.length);
-						indexCount += 3;
+					}
+					indexCount += 3;
 				}
 			}
 		}
-		if (idcs.length === 0) {
+		if (indexCount === 0) {
 			console.warn('Could not build flat data');
 			return this;
 		}
-		var flatMeshData = new MeshData(attributeMap, idcs.length, idcs.length);
+		var flatMeshData = new MeshData(attributeMap, indexCount);
 
 		for (var key in attribs) {
 			flatMeshData.getAttributeBuffer(key).set(attribs[key].values);
 		}
-		flatMeshData.getIndexBuffer().set(idcs);
 
 		flatMeshData.paletteMap = this.paletteMap;
-		flatMeshData.weightPerVertex = this.weightsPerVertex;
+		flatMeshData.weightsPerVertex = this.weightsPerVertex;
 
 		return flatMeshData;
 	};
 
+	/**
+	 * Destroys all attached vertex and index data.
+	 * @param {WebGLContext} context
+	 */
+	MeshData.prototype.destroy = function (context) {
+		if (this.vertexData) {
+			this.vertexData.destroy(context);
+		}
+		if (this.indexData) {
+			this.indexData.destroy(context);
+		}
+	};
 
-	/** 
+	/**
+	 * Returns a clone of this mesh data
+	 * @returns {MeshData}
+	 */
+	MeshData.prototype.clone = function () {
+		var attributeMapClone = ObjectUtil.deepClone(this.attributeMap);
+
+		var clone = new MeshData(attributeMapClone, this.vertexCount, this.indexCount);
+
+		clone.primitiveCounts = this.primitiveCounts.slice(0); // an array
+
+		clone.vertexData.copy(this.vertexData); // BufferData
+		clone.indexData.copy(this.indexData); // BufferData
+
+		clone.indexLengths = Array.isArray(this.indexLengths) ? this.indexLengths.slice(0) : this.indexLengths;
+		clone.indexModes = this.indexModes.slice(0);
+
+		clone.type = this.type;
+
+		if (this.paletteMap) {
+			clone.paletteMap = this.paletteMap.slice(0); // an array
+		}
+
+		clone.weightsPerVertex = this.weightsPerVertex; // a number
+
+		return clone;
+	};
+
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.POSITION = 'POSITION';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.NORMAL = 'NORMAL';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.COLOR = 'COLOR';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.TANGENT = 'TANGENT';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.TEXCOORD0 = 'TEXCOORD0';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.TEXCOORD1 = 'TEXCOORD1';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.TEXCOORD2 = 'TEXCOORD2';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.TEXCOORD3 = 'TEXCOORD3';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
 	MeshData.WEIGHTS = 'WEIGHTS';
-	/** 
+	/**
 	 * @type {string}
 	 * @readonly
 	 */
@@ -804,9 +899,9 @@ function (
 		for (var i = 0; i < types.length; i++) {
 			var type = types[i];
 			if (defaults[type] !== undefined) {
-				map[type] = Util.clone(defaults[type]);
+				map[type] = ObjectUtil.deepClone(defaults[type]);
 			} else {
-				throw "No default attribute named: " + type;
+				throw new Error('No default attribute named: ' + type);
 			}
 		}
 		return map;

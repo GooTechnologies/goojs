@@ -1,18 +1,40 @@
 define([
         'goo/renderer/MeshData',
         'goo/math/Vector3',
+        // 'goo/math/Matrix3x3',
         'goo/entities/EntityUtils'
         ],
-	/* @lends */
+
 	function (
 		MeshData,
 		Vector3,
+		// Matrix3x3,
 		EntityUtils
 	) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class Combines mesh datas
+	 * Combines the MeshData of passed-in entities into one new MeshData. This can be useful to reduce draw calls.
+	 * Combination is currently limited to 65536 vertices.
+	 * Keep in mind that combined MeshData can only use one diffuse color texture, so this is best suited for MeshData that can share the same texture.
+	 * @example
+	 * var meshBuilder = new MeshBuilder();
+	 * var transform = new Transform();
+	 * 
+	 * var box1 = new Box(0.3, 1, 1.6);
+	 * var box2 = new Box(0.2, 0.15, 0.7);
+	 * 
+	 * transform.translation.setDirect(0, 0, 1.3);
+	 * transform.update();
+	 * meshBuilder.addMeshData(box1, transform);
+     * 
+	 * transform.translation.setDirect(0, 0, 0);
+	 * transform.update();
+	 * meshBuilder.addMeshData(box2, transform);
+     * 
+	 * var meshData = meshBuilder.build()[0];
+	 * goo.world.createEntity( meshData, new Material(ShaderLib.simpleLit)).addToWorld();
+
 	 */
 	function MeshBuilder() {
 		this.meshDatas = [];
@@ -26,25 +48,35 @@ define([
 		this.indexModes = [];
 	}
 
+	/**
+	 * add the MeshData of an entity to this MeshBuilder
+	 * @param {Entity} entity
+	 */
 	MeshBuilder.prototype.addEntity = function (entity) {
-		EntityUtils.traverse(entity, function () {
+		entity.traverse(function (entity) {
 			if (entity.transformComponent._dirty) {
 				entity.transformComponent.updateTransform();
 			}
 		});
-		EntityUtils.traverse(entity, function () {
+		entity.traverse(function (entity) {
 			if (entity.transformComponent._dirty) {
 				EntityUtils.updateWorldTransform(entity.transformComponent);
 			}
 		});
-		EntityUtils.traverse(entity, function () {
+		var that = this;
+		entity.traverse(function (entity) {
 			if (entity.meshDataComponent) {
-				this.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
+				that.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
 			}
 		});
 	};
 
+	// var normalMatrix = new Matrix3x3();
 	var vert = new Vector3();
+	/**
+	 * add MeshData to this MeshBuilder
+	 * @param {MeshData} meshData
+	 */
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
 		if (meshData.vertexCount >= 65536) {
 			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
@@ -52,8 +84,15 @@ define([
 			this._generateMesh();
 		}
 
+		var matrix = transform.matrix;
+		var rotation = transform.rotation;
+		// Matrix3x3.invert(transform.rotation, normalMatrix);
+		// Matrix3x3.transpose(normalMatrix, normalMatrix);
+
 		var attributeMap = meshData.attributeMap;
-		for (var key in attributeMap) {
+		var keys = Object.keys(attributeMap);
+		for (var ii = 0, l = keys.length; ii < l; ii++) {
+			var key = keys[ii];
 			var map = attributeMap[key];
 			var attribute = this.vertexData[key];
 			if (!attribute) {
@@ -72,33 +111,36 @@ define([
 			var view = meshData.getAttributeBuffer(key);
 			var viewLength = view.length;
 			var array = attribute.array;
+			var count = map.count;
+			var vertexPos = this.vertexCounter * count;
 			if (key === MeshData.POSITION) {
-				for (var i = 0; i < viewLength; i += 3) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.matrix.applyPostPoint(vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
+				for (var i = 0; i < viewLength; i += count) {
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
+					matrix.applyPostPoint(vert);
+					array[vertexPos + i + 0] = vert.data[0];
+					array[vertexPos + i + 1] = vert.data[1];
+					array[vertexPos + i + 2] = vert.data[2];
 				}
 			} else if (key === MeshData.NORMAL) {
-				for (var i = 0; i < viewLength; i += 3) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.rotation.applyPost(vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
+				for (var i = 0; i < viewLength; i += count) {
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
+					rotation.applyPost(vert);
+					array[vertexPos + i + 0] = vert.data[0];
+					array[vertexPos + i + 1] = vert.data[1];
+					array[vertexPos + i + 2] = vert.data[2];
 				}
 			} else if (key === MeshData.TANGENT) {
-				for (var i = 0; i < viewLength; i += 3) {
-					vert.setd(view[i + 0], view[i + 1], view[i + 2]);
-					transform.rotation.applyPost(vert);
-					array[this.vertexCounter * map.count + i + 0] = vert[0];
-					array[this.vertexCounter * map.count + i + 1] = vert[1];
-					array[this.vertexCounter * map.count + i + 2] = vert[2];
+				for (var i = 0; i < viewLength; i += count) {
+					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
+					rotation.applyPost(vert);
+					array[vertexPos + i + 0] = vert.data[0];
+					array[vertexPos + i + 1] = vert.data[1];
+					array[vertexPos + i + 2] = vert.data[2];
+					array[vertexPos + i + 3] = view[i + 3];
 				}
 			} else {
 				for (var i = 0; i < viewLength; i++) {
-					array[this.vertexCounter * map.count + i] = view[i];
+					array[vertexPos + i] = view[i];
 				}
 			}
 		}
@@ -111,8 +153,7 @@ define([
 
 		if(meshData.indexLengths) {
 			this.indexLengths = this.indexLengths.concat(meshData.indexLengths);
-		}
-		else {
+		} else {
 			this.indexLengths = this.indexLengths.concat(meshData.getIndexBuffer().length);
 		}
 
@@ -136,6 +177,30 @@ define([
 		meshData.indexLengths = this.indexLengths;
 		meshData.indexModes = this.indexModes;
 
+		// Diet down the index arrays
+		var indexMode = meshData.indexModes[0];
+		var indexCount = 0;
+		var indexModes = [];
+		var indexLengths = [];
+		for (var i = 0; i < meshData.indexModes.length; i++) {
+			var mode = meshData.indexModes[i];
+			if (indexMode !== mode) {
+				indexModes.push(indexMode);
+				indexLengths.push(indexCount);
+				indexMode = mode;
+				indexCount = 0;
+			}
+			indexCount += meshData.indexLengths[i];
+			if (i === meshData.indexModes.length - 1) {
+				indexModes.push(mode);
+				indexLengths.push(indexCount);
+				indexMode = mode;
+				indexCount = 0;
+			}
+		}
+		meshData.indexLengths = indexLengths;
+		meshData.indexModes = indexModes;
+
 		this.meshDatas.push(meshData);
 
 		this.vertexData = {};
@@ -146,12 +211,32 @@ define([
 		this.indexModes = [];
 	};
 
+	/**
+	 * build the unified MeshData from all the added MeshData so far and then reset in the internal state.
+	 * @returns {MeshData[]} array of meshData, but currently there will only be one entry so you can always use [0].
+	 * In the future we might create multiple entries if we hit the 65536 vertices limit instead of throwing an error.
+	 */
 	MeshBuilder.prototype.build = function () {
 		if (this.vertexCounter > 0) {
 			this._generateMesh();
 		}
 
 		return this.meshDatas;
+	};
+
+	/**
+	 * reset in the internal state.
+	 */
+	MeshBuilder.prototype.reset = function () {
+		this.meshDatas = [];
+
+		this.vertexData = {};
+		this.indexData = [];
+		this.vertexCounter = 0;
+		this.indexCounter = 0;
+
+		this.indexLengths = [];
+		this.indexModes = [];
 	};
 
 	return MeshBuilder;

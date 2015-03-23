@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Goo Engine Documentation</title>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="lib/styles/goo.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+{{! HEADER }}
+
+<header>
+	<a class="logo" href="http://www.goocreate.com"></a>
+	<ul>
+		<li><a href="http://www.goocreate.com/features/">Features</a></li>
+		<li><a href="http://www.goocreate.com/learn/">Learn</a></li>
+		<li><a href="https://answers.goocreate.com/">Q&A</a></li>
+		<li><a href="http://www.goocreate.com/pricing/">Pricing</a></li>
+		<li><a href="http://www.goocreate.com/blog/">Blog</a></li>
+	</ul>
+	<a class="launcher" href="https://app.goocreate.com/">Launch Create</a>
+</header>
+
+{{! SIDEBAR }}
+<nav>
+	<div id="top"></div>
+	<a href="#top" class="icon-arrow-up to-top"></a>
+	<section>
+		<h1>Goo Docs</h1>
+		<a class="link" href="changelog.html">Read the Changelog</a><br>
+		<a class="link" href="deprecated.html">Deprecation List</a>
+	</section>
+
+	<section>
+		<input id="search" type="text" placeholder="Start typing to search...">
+	</section>
+
+	<div class="index-container">
+		<ul>
+			{{#index}}
+				<li class="category">
+					<div class="top-dir" id="{{name}}">{{name}}</div>
+					<ul>
+						{{#classes}}
+							<li class="item"><a>{{name}}</a></li>
+						{{/classes}}
+					</ul>
+				</li>
+			{{/index}}
+		</ul>
+	</div>
+
+	<div class="results-container">
+		<ul style="display: none">
+			{{! empty list, waiting to be popualted by search results }}
+		</ul>
+	</div>
+</nav>
+
+{{! CONTENT }}
+<div class="main-view">
+	<iframe class="class-panel" src="everything.html"></iframe>
+</div>
+
+
+{{! FOOTER }}
+<script src="lib/jquery-2.1.1.min.js"></script>
+<script src="lib/purl.js"></script>
+<script src="nav.js"></script>
+<script src="lib/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>
+</html>

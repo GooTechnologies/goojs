@@ -1,22 +1,24 @@
 define([
 	'goo/math/Vector3'
-],
-/** @lends */
-function (
+], function (
 	Vector3
 ) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance
+	 * A representation of a mathematical plane using a normal vector and a plane constant (d) whose absolute value represents the distance
 	 *        from the origin to the plane. It is generally calculated by taking a point (X) on the plane and finding its dot-product with the plane's
-	 *        normal vector. iow: d = N dot X
-	 * @param {Vector3} normal normal of the plane
-	 * @property {Number} constant the plane offset along the normal
+	 *        normal vector. In other words: d = N dot X
+	 * @param {Vector3} normal Normal of the plane.
+	 * @param {Number} constant The plane offset along the normal.
 	 */
-	function Plane (normal, constant) {
-		this.normal = normal !== undefined ? new Vector3(normal) : new Vector3(Vector3.UNIT_Y);
+	function Plane(normal, constant) {
+		this.normal = normal ? normal.clone() : Vector3.UNIT_Y.clone();
 		this.constant = isNaN(constant) ? 0 : constant;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	// TODO: add Object.freeze? - Object.freeze is still too slow unfortunately
@@ -25,8 +27,8 @@ function (
 	Plane.YZ = new Plane(Vector3.UNIT_X, 0);
 
 	/**
-	 * @param point
-	 * @return the distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
+	 * @param {Vector3} point
+	 * @returns {Number} The distance from this plane to a provided point. If the point is on the negative side of the plane the distance returned is negative,
 	 *         otherwise it is positive. If the point is on the plane, it is zero.
 	 */
 	Plane.prototype.pseudoDistance = function (point) {
@@ -34,28 +36,28 @@ function (
 	};
 
 	/**
-	 * @description Sets this plane to the plane defined by the given three points.
-	 * @param pointA
-	 * @param pointB
-	 * @param pointC
-	 * @return this plane for chaining
+	 * Sets this plane to the plane defined by the given three points.
+	 * @param {Vector3} pointA
+	 * @param {Vector3} pointB
+	 * @param {Vector3} pointC
+	 * @returns {Plane} Self for chaining.
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
-		this.normal.set(pointB).sub(pointA);
+		this.normal.setVector(pointB).subVector(pointA);
 		this.normal.cross([pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z]).normalize();
 		this.constant = this.normal.dot(pointA);
 		return this;
 	};
 
 	/**
-	 * @description Reflects an incoming vector across the normal of this Plane.
-	 * @param unitVector the incoming vector. Must be a unit vector.
-	 * @param store optional Vector to store the result in. May be the same as the unitVector.
-	 * @return the reflected vector.
+	 * Reflects an incoming vector across the normal of this Plane.
+	 * @param {Vector3} unitVector the incoming vector. Must be a unit vector.
+	 * @param {Vector3} [store] Vector to store the result in. May be the same as the unitVector.
+	 * @returns {Vector3} The reflected vector.
 	 */
 	Plane.prototype.reflectVector = function (unitVector, store) {
 		var result = store;
-		if (result === null) {
+		if (typeof(result) === 'undefined') {
 			result = new Vector3();
 		}
 
@@ -67,25 +69,50 @@ function (
 	var p0 = new Vector3();
 
 	/**
-	 * Get the intersection of a ray with a plane
+	 * Get the intersection of a ray with a plane.
 	 * @param {Ray} ray
 	 * @param {Vector3} [store]
-	 * @returns {Vector3} store or new Vector3
+	 * @param {bool} [suppressWarnings=false]
+	 * @param {bool} [precision=1e-8]
+	 * @returns {Vector3|null} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
 	 */
-	Plane.prototype.rayIntersect = function (ray, store) {
+	Plane.prototype.rayIntersect = function (ray, store, suppressWarnings, precision) {
+		precision = typeof(precision)==='undefined' ? 1e-7 : precision;
 		store = store || new Vector3();
 
-		var lDotN = ray.direction.dot(this.normal);
-		if(Math.abs(lDotN) < 1e-8) {
-			console.warn('Ray parallell with plane');
+		var lDotN = ray.direction.dotVector(this.normal);
+		if (Math.abs(lDotN) < precision) {
+			//! AT: this is the only function where we have this suppressWarnings mechanism
+			if (!suppressWarnings) {
+				console.warn('Ray parallell with plane');
+			}
 			return null;
 		}
 		var c = this.constant;
-		var pMinusL0DotN = p0.set(this.normal).muld(c,c,c).subv(ray.origin).dot(this.normal);
+		var pMinusL0DotN = p0.setVector(this.normal).scale(c).subVector(ray.origin).dotVector(this.normal);
 
 		var d = pMinusL0DotN / lDotN;
 
-		return store.setv(ray.direction).muld(d,d,d).addv(ray.origin);
+		return store.setVector(ray.direction).scale(d).addVector(ray.origin);
+	};
+
+	/**
+	 * Copies data from another plane
+	 * @param source {Plane} Source plane to copy from
+	 * @returns {Plane} Returns self to allow chaining
+	 */
+	Plane.prototype.copy = function (source) {
+		this.normal.copy(source.normal);
+		this.constant = source.constant;
+		return this;
+	};
+
+	/**
+	 * Returns a clone of this plane
+	 * @returns {Plane}
+	 */
+	Plane.prototype.clone = function () {
+		return new Plane(this.normal.clone(), this.constant);
 	};
 
 	return Plane;

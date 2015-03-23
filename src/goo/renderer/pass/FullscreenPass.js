@@ -1,17 +1,22 @@
 define([
 	'goo/renderer/Material',
 	'goo/renderer/pass/FullscreenUtil',
-	'goo/renderer/shaders/ShaderLib'
-],
-function (
+	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/pass/Pass'
+], function (
 	Material,
 	FullscreenUtil,
-	ShaderLib
+	ShaderLib,
+	Pass
 ) {
-	"use strict";
+	'use strict';
 
+	/**
+	 * Fullscreen pass
+	 * @param shader
+	 */
 	function FullscreenPass(shader) {
-		this.material = Material.createMaterial(shader || ShaderLib.simple);
+		this.material = new Material(shader || ShaderLib.simple);
 		this.useReadBuffer = true;
 
 		this.renderToScreen = false;
@@ -24,7 +29,11 @@ function (
 		this.enabled = true;
 		this.clear = false;
 		this.needsSwap = true;
+		this.viewportSize = undefined;
 	}
+
+	FullscreenPass.prototype = Object.create(Pass.prototype);
+	FullscreenPass.prototype.constructor = FullscreenPass;
 
 	FullscreenPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
 		if (this.useReadBuffer) {
@@ -36,6 +45,15 @@ function (
 		} else {
 			renderer.render(this.renderable, FullscreenUtil.camera, [], writeBuffer, this.clear);
 		}
+	};
+
+	FullscreenPass.prototype.destroy = function (/* renderer */) {
+		this.material.shader.destroy();
+	};
+
+	FullscreenPass.prototype.invalidateHandles = function (renderer) {
+		renderer.invalidateMaterial(this.renderable.materials[0]);
+		renderer.invalidateMeshData(this.renderable.meshData);
 	};
 
 	return FullscreenPass;

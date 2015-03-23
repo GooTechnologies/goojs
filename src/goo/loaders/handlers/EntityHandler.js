@@ -3,126 +3,191 @@ define([
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
-	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
-	'goo/entities/EntityUtils'
-], function(
+	'goo/util/PromiseUtil'
+], function (
 	ConfigHandler,
 	ComponentHandler,
 	RSVP,
 	StringUtil,
-	pu,
-	_,
-	EntityUtils
+	PromiseUtil
 ) {
-	"use strict";
+	'use strict';
 
+	/**
+	 * Handler for loading entities into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 * @private
+	 */
 	function EntityHandler() {
 		ConfigHandler.apply(this, arguments);
+		this._componentHandlers = {};
 	}
 
 	EntityHandler.prototype = Object.create(ConfigHandler.prototype);
+	EntityHandler.prototype.constructor = EntityHandler;
 	ConfigHandler._registerClass('entity', EntityHandler);
 
-	EntityHandler.prototype._prepare = function(/*config*/) {};
-
-	EntityHandler.prototype._create = function(ref) {
-		var object = this.world.createEntity(ref);
-		object.ref = ref;
-		return object;
+	/**
+	 * Creates an empty entity
+	 * @param {string} ref will be the entity's id
+	 * @returns {Entity}
+	 * @private
+	 */
+	EntityHandler.prototype._create = function () {
+		return this.world.createEntity();
 	};
 
-	EntityHandler.prototype._getHandler = function(componentName) {
-		if (!this._componentHandlers) {
-			this._componentHandlers = {};
+	/**
+	 * Removes an entity
+	 * @param {ref}
+	 * @private
+	 */
+	EntityHandler.prototype._remove = function (ref) {
+		var entity = this._objects.get(ref);
+		var that = this;
+		if (entity) {
+			// Remove components
+			var promises = [];
+			var components = entity._components.slice(0);
+			for (var i = 0; i < components.length; i++) {
+				var type = this._getComponentType(components[i]);
+				var p = this._updateComponent(entity, type, null);
+				if (p instanceof RSVP.Promise) {
+					promises.push(p);
+				}
+			}
+			return RSVP.all(promises)
+			.then(function () {
+				entity.removeFromWorld();
+				that._objects.delete(ref);
+			});
 		}
-		if (!this._componentHandlers[componentName]) {
-			var handlerClass = ComponentHandler.getHandler(componentName);
-			if (handlerClass) {
-				/*jshint -W055*/
-				this._componentHandlers[componentName] = new handlerClass(
+	};
+
+	function updateTags(entity, tags) {
+		entity._tags.clear();
+		if (!tags) { return; }
+
+		for (var tag in tags) {
+			entity.setTag(tag);
+		}
+	}
+
+	function updateAttributes(entity, attributes) {
+		entity._attributes.clear();
+		if (!attributes) { return; }
+
+		for (var attribute in attributes) {
+			entity.setAttribute(attribute, attributes[attribute]);
+		}
+	}
+
+	/**
+	 * Adds/updates/removes an entity
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
+	 */
+	EntityHandler.prototype._update = function (ref, config, options) {
+		var that = this;
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (entity) {
+			if (!entity) { return; }
+			entity.id = ref;
+			entity.name = config.name;
+			entity.static = !!config.static;
+
+			updateTags(entity, config.tags);
+			updateAttributes(entity, config.attributes);
+
+			var promises = [];
+
+			// Adding/updating components
+			for (var type in config.components) {
+				if (config.components[type]) {
+					var p = that._updateComponent(entity, type, config.components[type], options);
+					if (p) { promises.push(p); }
+					else {
+						console.error("Error handling component " + type);
+					}
+				}
+			}
+
+			// Removing components
+			var components = entity._components;
+			for (var i = 0; i < components.length; i++) {
+				var type = that._getComponentType(components[i]);
+				if (!config.components[type]) {
+					that._updateComponent(entity, type, null, options);
+				}
+			}
+			// When all is done, hide or show and return
+			return PromiseUtil.optimisticAll(promises).then(function (/*components*/) {
+				if (config.hidden) {
+					entity.hide();
+				} else {
+					entity.show();
+				}
+				return entity;
+			});
+		});
+	};
+
+	/**
+	 * Adds/updates/removes a component on an entity
+	 * @param {Entity} entity
+	 * @param {string} type
+	 * @param {object} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with updated entity
+	 * @private
+	 */
+	EntityHandler.prototype._updateComponent = function (entity, type, config, options) {
+		var handler = this._getHandler(type);
+		if (!handler) { return null; }
+
+		var p = handler.update(entity, config, options);
+		if (!p || !p.then) { return null; }
+
+		return p;
+	};
+
+	/**
+	 * Get the type for the component. Needed to match engine components against data model
+	 * component types.
+	 * @param {Component} component
+	 * @returns {string}
+	 * @private
+	 */
+	EntityHandler.prototype._getComponentType = function (component) {
+		var type = component.type;
+		type = type.slice(0, type.lastIndexOf('Component'));
+		type = StringUtil.uncapitalize(type);
+		if (type === 'howler') { type = 'sound'; } // HowlerComponent should be renamed
+		return type;
+	};
+
+	/**
+	 * Gets the handler for a component type or creates a new one if necessary
+	 * @param {string} type
+	 * @returns {ComponentHandler}
+	 */
+	EntityHandler.prototype._getHandler = function (type) {
+		if (!this._componentHandlers[type]) {
+			var Handler = ComponentHandler.getHandler(type);
+			if (Handler) {
+				this._componentHandlers[type] = new Handler(
 					this.world,
 					this.getConfig,
 					this.updateObject,
-					this.options
+					this.loadObject
 				);
 			}
 		}
-		return this._componentHandlers[componentName];
-	};
-
-	EntityHandler.prototype.update = function(ref, config, options) {
-		function equalityFilter(entity) {
-			return entity.ref === ref;
-		}
-
-		var object = this.world.entityManager.getEntityByName(ref);
-		if(!object) {
-			var filtered = this.world._addedEntities.filter(equalityFilter);
-			if(filtered) {
-				object = filtered[0];
-			}
-		}
-		if(!object) {
-			object = this._create(ref);
-		}
-
-		var promises = [];
-		// Adding components to the object
-		for (var componentName in config.components) {
-			var componentConfig = config.components[componentName];
-			var handler = this._getHandler(componentName);
-			if (handler) {
-				var promise = handler.update(object, componentConfig, options);
-				if (!promise || !promise.then) {
-					console.error("Handler for " + componentName + " did not return promise");
-				} else {
-					promises.push(promise);
-				}
-			} else {
-				console.warn("No componentHandler for " + componentName);
-			}
-		}
-		// Remove components
-		object._components.forEach(function(component) {
-			var type = component.type;
-			type = type.slice(0, type.lastIndexOf('Component'));
-			type = StringUtil.uncapitalize(type);
-			if (!config.components[type]) {
-				handler = this._getHandler(type);
-				if(handler) {
-					var promise = handler.remove(object, options);
-					if (!promise || !promise.then) {
-						console.error("Handler for " + componentName + " did not return promise");
-					} else {
-						promises.push(promise);
-					}
-				} else {
-					console.warn("No componentHandler for " + componentName);
-				}
-			}
-		}.bind(this));
-
-		if (promises.length) {
-			return RSVP.all(promises).then(function(/*components*/) {
-				if (!!config.hidden) {
-					EntityUtils.hide(object);
-				} else {
-					EntityUtils.show(object);
-				}
-				return object;
-			});
-		} else {
-			console.error("No promises in " + ref + " ", config);
-			return pu.createDummyPromise(object);
-		}
-	};
-
-	EntityHandler.prototype.remove = function(ref) {
-		var entity = this.world.entityManager.getEntityByName(ref);
-		if (typeof entity === 'object') {
-			this.world.removeEntity(entity);
-		}
+		return this._componentHandlers[type];
 	};
 
 	return EntityHandler;

@@ -7,9 +7,7 @@ define([
 	'goo/util/ParticleSystemUtils',
 	'goo/renderer/Renderer',
 	'goo/math/Vector3'
-],
-	/** @lends */
-function (
+], function (
 	SystemBus,
 	Material,
 	ShaderLib,
@@ -18,15 +16,19 @@ function (
 	ParticleSystemUtils,
 	Renderer,
 	Vector3
-	) {
+) {
 	'use strict';
 
+	/**
+	 * Snow
+	 * @param {GooRunner} gooRunner
+	 */
 	function Snow(gooRunner) {
 		this.velocity = 10;
 		this.height = 25;
 
 		// put this in some subroutine
-		this.material = Material.createMaterial(ShaderLib.particles);
+		this.material = new Material(ShaderLib.particles);
 		var texture = ParticleSystemUtils.createFlareTexture(64); //Snowflake
 		texture.generateMipmaps = true;
 		this.material.setTexture('DIFFUSE_MAP', texture);
@@ -40,7 +42,7 @@ function (
 
 		// and this too
 		this.particleCloudEntity = ParticleSystemUtils.createParticleSystemEntity(
-			gooRunner,
+			gooRunner.world,
 			ParticleLib.getSnow({
 				getEmissionPoint: function(vec3) {
 					// either camera or some predefined area

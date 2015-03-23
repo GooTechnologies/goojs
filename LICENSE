@@ -1,0 +1,187 @@
+GOO ENGINE
+
+SOFTWARE LICENSE AGREEMENT
+
+The terms and conditions of this Software License Agreement (this “License
+Agreement”) govern your use of the accompanying Goo Engine software (the
+“Engine”) and constitute a binding legal contract between you and Goo
+Technologies AB (“Goo”).  Your download, installation or use of the Engine
+constitutes acceptance of this License Agreement.  If you do not agree to any
+part of this License Agreement, then you may not use the Engine and must
+delete all copies of the Engine in your possession or control.
+
+If you are accepting the terms of this Agreement on behalf of a legal entity,
+you represent and warrant that you have the authority to bind that legal
+entity to the terms of this License Agreement, and, in such event, “you” and
+“your” will refer to that legal entity.  If you do not have such authority,
+you must not accept this License Agreement, in which case you may not download
+or use the Engine.
+
+1. Subject to all terms and conditions of this License Agreement, Goo hereby
+grants you a limited. nonexclusive, nontransferable license (without right to
+sublicense) to: (i) install and use the object code version of the Engine
+internally for the sole purpose of developing either (x) a web-based
+electronic game or other software application that is made available by you or
+on your behalf on a hosted basis and is accessible and usable entirely within
+third-party web browser software or (y) an electronic game or other software
+application consisting of a packaged HTML5 executable that is distributed via
+Internet download by you or on your behalf (either of the foregoing, an
+“Application”); and (ii) incorporate the Engine, solely in object code form,
+within your Application as part of your deployment of your Application. The
+foregoing license grant does not authorize use of the Engine in connection
+with any Application that is used for the development of other software
+applications of any kind or that would otherwise be competitive with Goo
+Create, and you agree not to make any such use of the Engine.
+
+2. Subject to all terms and conditions of this License Agreement, Goo hereby
+grants you, a limited, nonexclusive, nontransferable license to internally use
+any documentation provided by Goo regarding the Engine (“Documentation”) as
+reasonably necessary for your authorized use of the Engine.  You may make a
+reasonable number of copies of the Documentation in connection with exercising
+the foregoing license.  Without limiting any other terms and conditions of
+this License Agreement, you may not transfer or provide the Documentation to
+any third party.
+
+3. You have no rights or licenses with respect to the Engine or Documentation
+except as expressly provided in this License Agreement.  Without limiting the
+generality of the foregoing, you may not, except to the extent expressly
+provided for in Sections 1 and 2 above: (a) copy, distribute, rent, lease,
+lend, sublicense or transfer the Engine or Documentation or use the Engine or
+Documentation on a service bureau basis; (b) decompile, reverse engineer, or
+disassemble the Engine or otherwise attempt to discover the source code of the
+Engine, except solely to the extent such acts are authorized under applicable
+law notwithstanding this prohibition; (c) create derivative works based on the
+Engine or Documentation; (d) modify, remove, or obscure any copyright,
+trademark, patent or other notices or legends that may appear on the Engine or
+Documentation or during the use and operation thereof; (e) cause the Engine to
+become subject to the terms of any open source license agreement.  You are not
+required to provide any ideas, feedback or suggestions regarding the Engine
+(collectively, “Feedback”) to Goo.  To the extent you do provide any Feedback
+to Goo, you agree to assign and hereby do assign all right, title and interest
+in and to such Feedback to Goo and acknowledge that Goo may freely use,
+reproduce, modify, distribute, make, have made, sell, offer for sale, import
+and otherwise exploit in any manner such Feedback without payment of any
+royalties or other consideration to you.
+
+4. For the avoidance of doubt, you may not directly or indirectly utilize the
+Engine as an embedded component of any device or system.  The Engine is
+licensed solely for use in the development and deployment of Applications as
+set forth in Section 1.  If you wish to request a license for any other
+purpose, please contact Goo at legal@gootechnologies.com.
+
+5. You may only make your Application available under terms and conditions
+that: (i) do not conflict with any provision of this License Agreement or
+Goo’s rights in and to the Engine; (ii) are not materially less protective of
+the Engine and Goo’s rights therein and thereto than the provisions of this
+License Agreement; (iii) do not make any representations, warranties or
+covenants regarding the Engine or on behalf of Goo; (iv) state that the
+Application incorporates the Engine and that Goo owns all copyright and other
+intellectual property rights in and to the Engine; (v) disclaim warranties on
+behalf of Goo and limit Goo’s liability to at least the same extent as Section
+9 and 10 below; and (vi) are presented to and accepted by the Application end
+user in a manner sufficient to create a binding legal agreement under
+applicable law.
+
+6. The Engine and Documentation are licensed, not sold.  The Engine and
+Documentation provided hereunder are the property of Goo or its third-party
+licensors.  Goo shall retain all right, title and ownership interest and all
+worldwide patent, copyright, trade secret, trademark and other intellectual
+property rights and other proprietary rights in and to the Engine and
+Documentation and any copies, derivative works, upgrades, updates,
+improvements and modifications thereof, in, regardless of the form or media in
+which, or on which, the original and any other copies, derivative works,
+upgrades, updates, improvements or modifications may exist.
+
+7. If you breach any provision of this License Agreement, this License
+Agreement (including all of your rights and licenses with respect to the
+Engine and Documentation) shall immediately terminate without further notice
+from or action by Goo.  Upon termination or expiration of this License
+Agreement, you agree to cease all use of the Engine and Documentation
+(including by removing it from your Applications) and to delete all copies
+thereof in your possession or control.  The provisions of Sections 3, 4, 5, 6,
+9 through 18 and this Section 7 shall survive any termination or expiration of
+this Agreement according to their terms.
+
+8. You agree that Goo may state in the public domain that you are a user of
+the Engine, and may include references to and screenshots of your Applications
+in Goo’s marketing and publicity materials.
+
+9. THE ENGINE AND DOCUMENTATION ARE FURNISHED “AS IS”.  GOO MAKES NO
+WARRANTIES, WHETHER EXPRESS OR IMPLIED WITH RESPECT TO THE ENGINE AND THE
+DOCUMENTATION, INCLUDING WITH RESPECT TO THEIR QUALITY, PERFORMANCE,
+MERCHANTABILITY, NON-INFRINGEMENT, OR FITNESS FOR A PARTICULAR PURPOSE.  THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE ENGINE AND DOCUMENTATION
+IS WITH YOU.  GOO HAS NO OBLIGATION TO PROVIDE ANY SUPPORT OR ASSISTANCE
+RELATING TO YOUR USE OF THE ENGINE.
+
+10. IN NO EVENT SHALL GOO BE LIABLE FOR ANY CONSEQUENTIAL, INDIRECT, SPECIAL,
+OR INCIDENTAL DAMAGES ARISING OUT OF OR RELATING TO THIS LICENSE AGREEMENT OR
+YOUR USE OF THE ENGINE, EVEN IF GOO HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH POTENTIAL LOSS OR DAMAGE AND REGARDLESS OF THE THEORY OF LIABILITY.  IN
+NO EVENT SHALL GOO’S AGGREGATE LIABILITY TO YOU IN RELATION TO THIS LICENSE
+AGREEMENT EXCEED ONE HUNDRED U.S. DOLLARS.  THE PARTIES STIPULATE THAT THE
+FOREGOING EXCLUSIONS AND LIMITATIONS ON DAMAGES ARE REASONABLE UNDER THE
+CIRCUMSTANCES AND THAT WITHOUT SUCH EXCLUSIONS AND LIMITATIONS GOO WOULD NOT
+MAKE AVAILABLE THE ENGINE WITHOUT CHARGE.  THE FOREGOING LIMITATIONS OF
+LIABILITY AND EXCLUSIONS OF CERTAIN DAMAGES SHALL APPLY REGARDLESS OF THE
+EXISTENCE OF MULTIPLE CLAIMS OR THE THEORY OF LIABILITY, AND REGARDLESS OF THE
+SUCCESS OR EFFECTIVENESS OF OTHER REMEDIES.
+
+11. You agree to indemnify and hold Goo and its affiliated companies, and each
+of their directors, officers, employees, contractors, suppliers and partners,
+harmless from any claims, losses, damages, liabilities, costs and expenses,
+including attorney’s fees, arising out of or relating to your use or misuse of
+the Engine (including without limitation your publication of any Application),
+breach of this Agreement or violation of the rights of any other person or
+entity, except solely to the extent any of the foregoing arise out of the
+willful misconduct or gross negligence of Goo.  Goo reserves the right, at its
+own expense, to assume the exclusive defense and control of any matter for
+which you are required to indemnify the Goo and you agree to cooperate with
+Goo’s defense of these claims.
+
+12. To the extent that you are an agency or instrumentality of the U.S.
+government, the parties agree that the Engine and Documentation are commercial
+computer software and commercial computer software documentation,
+respectively, and that your rights therein are as specified in this License,
+per FAR 12.212 and DEARS 227.7202-3, as applicable, or in the case of NASA,
+subject to NFS 1852.227-86.
+
+13. You may not assign your rights under this License Agreement without the
+express prior consent of Goo.  If you are a legal entity, any merger involving
+you, acquisition of all or substantially all of your assets or change of
+control shall be deemed an assignment of this Agreement for which prior
+written consent is required.  Goo may freely assign this Agreement.
+
+14. The Engine may be subject to export laws and regulations.  You agree to
+comply with any United States and international export laws and regulations
+that may apply.
+
+15. If you are located within the United States of America, this License
+Agreement shall be governed by and construed in accordance with the laws of
+the state of California, without giving effect to any principles of conflicts
+of law.  You agree that any action arising out of or relating to this License
+Agreement shall be filed only in the state or federal courts in and for Santa
+Clara County, California and you hereby consent and submit to the personal
+jurisdiction of such courts for the purposes of litigating any such action.
+
+16. If you are located outside of the United States of America, this License
+Agreement shall be governed by and construed in accordance with the laws of
+Sweden, without giving effect to any principles of conflicts of law, and the
+parties hereby consent to the sole and exclusive jurisdiction of the courts of
+Sweden, with the district court of Stockholm (Stockholms Tingsrätt) as first
+venue, to resolve any disputes arising out of or relating to this License
+Agreement.
+
+17. Notwithstanding anything to the contrary, Goo may apply to any court of
+competent jurisdiction for injunctive or other equitable relief.
+
+18. This License Agreement and the User Agreement for Goo Create is the
+complete and final agreement of the parties with respect to the Engine and
+Documentation.  If any part of this License Agreement is found to be void,
+unenforceable or invalid, that part will be deemed stricken and will not
+affect the validity of the other provisions.  Failure by Goo to enforce any
+provision of this License Agreement will not be deemed a waiver of future
+enforcement of that or any other provision.  This License Agreement may be
+modified only by an amendment signed by authorized representatives of both
+parties or by your electronic acceptance of an amendment or replacement
+agreement presented to you by Goo.

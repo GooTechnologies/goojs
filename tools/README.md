@@ -1,16 +1,17 @@
 Build Tools
 ===========
 
-Headless tests on Jenkins
--------------------------
-To run the headless tests on Jenkins, run the following script:
+Cycle detector
+--------------
 
-    ./tools/jenkins-tests.sh
+###Usage
+    
+    node cycleDetector.js [--cycles] [--dependencies <modulepath>] [--dependants <modulepath>]
+    
+####Options
+    
+`--cycles` Checks for cycles in the require graph
 
-lcov_cobertura.py
-------------------
-Coverts code coverage report files in lcov format to Cobertura's XML. (http://eriwen.github.com/lcov-to-cobertura-xml/)
+`--dependencies <modulepath>` Returns a list of dependencies for the provided module
 
-Usage:
-
-    python lcov_cobertura.py lcov.info -o cobertura.xml
+`--dependants <modulepath>` Returns a list of modules that directly require the provided module

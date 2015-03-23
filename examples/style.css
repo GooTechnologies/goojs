@@ -1,0 +1,42 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:300);
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #212326;
+	font-family: 'Roboto', sans-serif;
+	font-size: 18px;
+	color: white;
+}
+
+a {
+	color: #38b3f6;
+	text-decoration: none;
+}
+
+a:hover {
+	color: white;
+}
+
+ul {
+	padding: 0;
+	padding-left: 30px;
+	line-height: 1.6em;
+	list-style-type: lower-greek;
+}
+
+h1 {
+	margin: 0 0 30px 0;
+	font-size: 60px;
+	font-weight: 300;
+}
+
+.container {
+	width: 90%;
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 60px;
+}

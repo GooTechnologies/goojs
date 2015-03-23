@@ -1,79 +1,54 @@
-define(['goo/math/Vector3'],
-/** @lends */
-function(Vector3) {
-	"use strict";
+define(['goo/math/Vector3'], function (Vector3) {
+	'use strict';
 
 	/**
-	 * @class The RenderQueue handles sorting of entities. Entities are ordered by their renderQueue value into buckets.
+	 * The RenderQueue handles sorting of entities. Entities are ordered by their renderQueue value into buckets.
 	 * Entities within the opaque buckets are sorted front to back and entities within the transparent buckets are sorted
 	 * back to front.
 	 */
 	function RenderQueue() {
-		var that = this;
-		var tmpVec = new Vector3();
-		this.opaqueSorter = function(a, b) {
-			//TODO: Add texture checks on material
-
-			var m1 = a.meshRendererComponent.materials[0];
-			var m2 = b.meshRendererComponent.materials[0];
-
-			if (m1 === null || m2 === null) {
-				return 0;
-			}
-			if(m1 === m2) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
-				if (bound1 === null || bound2 === null) {
-					return 0;
-				}
-
-				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
-				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
-
-				return dist1 - dist2;
-			}
-
-			var shader1 = m1.shader;
-			var shader2 = m2.shader;
+		this.opaqueSorter = function (a, b) {
+			var shader1 = a.meshRendererComponent.materials[0].shader;
+			var shader2 = b.meshRendererComponent.materials[0].shader;
 			if (shader1 === null || shader2 === null) {
 				return 0;
 			}
-			if (shader1._id === shader2._id) {
-				var bound1 = a.meshRendererComponent.worldBound;
-				var bound2 = b.meshRendererComponent.worldBound;
-				if (bound1 === null || bound2 === null) {
-					return 0;
-				}
-
-				var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
-				var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
-
-				return dist1 - dist2;
+			if (shader1.defineKey === shader2.defineKey) {
+				return a.meshRendererComponent._renderDistance - b.meshRendererComponent._renderDistance;
 			}
-			return shader1._id - shader2._id;
+
+			if (shader2.defineKey < shader1.defineKey) {
+				return -1;
+			} else if (shader2.defineKey > shader1.defineKey) {
+				return 1;
+			} else {
+				return 0;
+			}
 		};
-		this.transparentSorter = function(a, b) {
-			var bound1 = a.meshRendererComponent.worldBound;
-			var bound2 = b.meshRendererComponent.worldBound;
-			var dist1 = tmpVec.setv(that.camera.translation).subv(bound1.center).lengthSquared();
-			var dist2 = tmpVec.setv(that.camera.translation).subv(bound2.center).lengthSquared();
-			return dist2 - dist1;
+
+		this.transparentSorter = function (a, b) {
+			return b.meshRendererComponent._renderDistance - a.meshRendererComponent._renderDistance;
 		};
-		this.bucketSorter = function(a, b) {
+
+		this.bucketSorter = function (a, b) {
 			return a - b;
 		};
 	}
+
+	var bucketSortList = [];
+
+	var tmpVec = new Vector3();
 
 	/**
 	 * @param {Entity[]} renderList
 	 * @param {Camera} camera
 	 */
-	RenderQueue.prototype.sort = function(renderList, camera) {
+	RenderQueue.prototype.sort = function (renderList, camera) {
+		// TODO: Reuse objects more
 		var index = 0;
-		this.camera = camera;
 		var buckets = {};
-		var bucketSortList = [];
-		for (var i = 0; i < renderList.length; i++) {
+		bucketSortList.length = 0;
+		for (var i = 0, l = renderList.length; i < l; i++) {
 			var renderable = renderList[i];
 			var meshRendererComponent = renderable.meshRendererComponent;
 
@@ -83,6 +58,16 @@ function(Vector3) {
 				continue;
 			}
 			var renderQueue = meshRendererComponent.materials[0].getRenderQueue();
+
+			var distance = 0;
+			var bound = meshRendererComponent.worldBound;
+			if (bound !== null) {
+				distance = tmpVec.setVector(camera.translation).subVector(bound.center).lengthSquared();
+			} else if (renderable.transformComponent) {
+				distance = tmpVec.setVector(camera.translation).subVector(renderable.transformComponent.worldTransform.translation).lengthSquared();
+			}
+			meshRendererComponent._renderDistance = distance;
+
 			var bucket = buckets[renderQueue];
 			if (!bucket) {
 				bucket = [];
@@ -95,15 +80,17 @@ function(Vector3) {
 		if (bucketSortList.length > 1) {
 			bucketSortList.sort(this.bucketSorter);
 		}
-		for (var bucketIndex = 0; bucketIndex < bucketSortList.length; bucketIndex++) {
+		for (var bucketIndex = 0, l = bucketSortList.length; bucketIndex < l; bucketIndex++) {
 			var key = bucketSortList[bucketIndex];
 			var bucket = buckets[key];
-			if (key < RenderQueue.TRANSPARENT) {
-				bucket.sort(this.opaqueSorter);
-			} else {
-				bucket.sort(this.transparentSorter);
+			if (key >= 0) {
+				if (key < RenderQueue.TRANSPARENT) {
+					bucket.sort(this.opaqueSorter);
+				} else {
+					bucket.sort(this.transparentSorter);
+				}
 			}
-			for ( var i = 0; i < bucket.length; i++) {
+			for (var i = 0, bl = bucket.length; i < bl; i++) {
 				renderList[index] = bucket[i];
 				index++;
 			}

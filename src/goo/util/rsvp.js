@@ -1,7 +1,7 @@
 define(
   ["exports"],
   function(__exports__) {
-    "use strict";
+    'use strict';
     var config = {};
 
     var browserGlobal = (typeof window !== 'undefined') ? window : {};

@@ -1,5 +1,6 @@
 /*jshint bitwise: false*/
 define([
+	'goo/renderer/Capabilities',
 	'goo/renderer/RendererRecord',
 	'goo/renderer/Util',
 	'goo/renderer/TextureCreator',
@@ -14,10 +15,12 @@ define([
 	'goo/renderer/RenderQueue',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shadow/ShadowHandler',
-	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+	'goo/renderer/RenderStats',
+	'goo/entities/SystemBus',
+	'goo/renderer/TaskScheduler',
+	'goo/renderer/RenderInfo'
+], function (
+	Capabilities,
 	RendererRecord,
 	Util,
 	TextureCreator,
@@ -32,22 +35,26 @@ function (
 	RenderQueue,
 	ShaderLib,
 	ShadowHandler,
-	SystemBus
+	RenderStats,
+	SystemBus,
+	TaskScheduler,
+	RenderInfo
 ) {
-	"use strict";
+	'use strict';
 
+	var STUB_METHOD = function () {};
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class The renderer handles displaying of graphics data to a render context.
-	 *
-	 * @description Constructor. It accepts a JSON object containing the settings for the renderer.
+	 * The renderer handles displaying of graphics data to a render context.
+	 * It accepts an object containing the settings for the renderer.
 	 * @param {object} parameters Renderer settings.
 	 * @param {boolean} [parameters.alpha=false] Enables the possibility to render non-opaque pixels
-	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.
-	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.
-	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
-	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {boolean} [parameters.premultipliedAlpha=true] Whether the colors are premultiplied with the alpha channel.
+	 * @param {boolean} [parameters.antialias=true] Enables antialiasing.
+	 * @param {boolean} [parameters.stencil=false] Enables the stencil buffer.
+	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
+	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
 	 * @param {function(string)} [parameters.onError] Called with message when error occurs
 	 */
@@ -60,6 +67,7 @@ function (
 			_canvas.width = 500;
 			_canvas.height = 500;
 		}
+		_canvas.screencanvas = true; // CocoonJS support
 		this.domElement = _canvas;
 
 		this._alpha = parameters.alpha !== undefined ? parameters.alpha : false;
@@ -67,9 +75,10 @@ function (
 		this._antialias = parameters.antialias !== undefined ? parameters.antialias : true;
 		this._stencil = parameters.stencil !== undefined ? parameters.stencil : false;
 		this._preserveDrawingBuffer = parameters.preserveDrawingBuffer !== undefined ? parameters.preserveDrawingBuffer : false;
+		this._useDevicePixelRatio = parameters.useDevicePixelRatio !== undefined ? parameters.useDevicePixelRatio : false;
 		this._onError = parameters.onError;
 
-		var settings = {
+		this._contextSettings = {
 			alpha: this._alpha,
 			premultipliedAlpha: this._premultipliedAlpha,
 			antialias: this._antialias,
@@ -79,114 +88,18 @@ function (
 
 		/** @type {WebGLRenderingContext} */
 		this.context = null;
-		if (!!window.WebGLRenderingContext) {
-			var contextNames = ["experimental-webgl", "webgl", "moz-webgl", "webkit-3d"];
-			for (var i = 0; i < contextNames.length; i++) {
-				try {
-					this.context = _canvas.getContext(contextNames[i], settings);
-					if (this.context && typeof(this.context.getParameter) === "function") {
-						// WebGL is supported & enabled
-						break;
-					}
-				} catch (e){}
-			}
-			if (!this.context) {
-				// WebGL is supported but disabled
-				throw {
-					name: 'GooWebGLError',
-					message: 'WebGL is supported but disabled',
-					supported: true,
-					enabled: false
-				};
-			}
-		}
-		else {
-			// WebGL is not supported
-			throw {
-				name: 'GooWebGLError',
-				message: 'WebGL is not supported',
-				supported: false,
-				enabled: false
-			};
-		}
+		this.establishContext();
+
+		this._setupContextLost();
 
 		if (parameters.debug) {
-			// XXX: This is a temporary solution to easily enable webgl debugging during development...
-			var request = new XMLHttpRequest();
-			request.open('GET', '/js/goo/lib/webgl-debug.js', false);
-			request.onreadystatechange = function () {
-				if (request.readyState === 4) {
-					if (request.status >= 200 && request.status <= 299) {
-						// Yes, eval is intended, sorry checkstyle
-						// jshint evil:true
-						window['eval'].call(window, request.responseText);
-					}
-				}
-			};
-			request.send(null);
-
-			if (typeof (window.WebGLDebugUtils) === 'undefined') {
-				console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
-			} else {
-				console.log('Running in webgl debug mode.');
-				if (parameters.validate) {
-					console.log('Running with "undefined arguments" validation.');
-					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this), validateNoneOfTheArgsAreUndefined);
-				} else {
-					this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this));
-				}
-			}
+			this.setupDebugging(parameters);
 		}
 
 		/** @type {RendererRecord} */
 		this.rendererRecord = new RendererRecord();
 
-		/** @type {boolean} */
-		this.glExtensionCompressedTextureS3TC = DdsLoader.SUPPORTS_DDS = DdsUtils.isSupported(this.context);
-		/** @type {boolean} */
-		this.glExtensionTextureFloat = this.context.getExtension('OES_texture_float');
-		/** @type {boolean} */
-		this.glExtensionTextureFloatLinear = this.context.getExtension('OES_texture_float_linear');
-		/** @type {boolean} */
-		this.glExtensionTextureHalfFloat = this.context.getExtension('OES_texture_half_float');
-		/** @type {boolean} */
-		this.glExtensionStandardDerivatives = this.context.getExtension('OES_standard_derivatives');
-		/** @type {boolean} */
-		this.glExtensionTextureFilterAnisotropic = this.context.getExtension('EXT_texture_filter_anisotropic')
-			|| this.context.getExtension('MOZ_EXT_texture_filter_anisotropic')
-			|| this.context.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
-		/** @type {boolean} */
-		this.glExtensionDepthTexture = this.context.getExtension('WEBGL_depth_texture')
-			|| this.context.getExtension('WEBKIT_WEBGL_depth_texture')
-			|| this.context.getExtension('MOZ_WEBGL_depth_texture');
-		/** @type {boolean} */
-		this.glExtensionElementIndexUInt = this.context.getExtension('OES_element_index_uint');
-
-		if (!this.glExtensionTextureFloat) {
-			console.log('Float textures not supported.');
-		}
-		if (!this.glExtensionTextureFloatLinear) {
-			console.log('Float textures with linear filtering not supported.');
-		}
-//		if (!this.glExtensionTextureHalfFloat) {
-//			console.log('Half Float textures not supported.');
-//		}
-		if (!this.glExtensionStandardDerivatives) {
-			console.log('Standard derivatives not supported.');
-		}
-		if (!this.glExtensionTextureFilterAnisotropic) {
-			console.log('Anisotropic texture filtering not supported.');
-		}
-		if (!this.glExtensionCompressedTextureS3TC) {
-			console.log('S3TC compressed textures not supported.');
-		}
-		if (!this.glExtensionDepthTexture) {
-			console.log('Depth textures not supported.');
-		}
-		if (!this.glExtensionElementIndexUInt) {
-			console.log('32 bit indices not supported.');
-		}
-
+		//! AT: is this still necessary?
 		if (this.context.getShaderPrecisionFormat === undefined) {
 			this.context.getShaderPrecisionFormat = function () {
 				return {
@@ -197,87 +110,17 @@ function (
 			};
 		}
 
-		// Check capabilities (move out to separate module)
-		/** @type {object}
-		 * @property {number} maxTexureSize Maximum 2D texture size
-		 * @property {number} maxCubemapSize Maximum cubemap size
-		 * @property {number} maxRenderbufferSize Maximum renderbuffer size
-		 * @property {number[]} maxViewPortDims Maximum viewport size [x, y]
-		 * @property {number} maxVertexTextureUnits Maximum vertex shader texture units
-		 * @property {number} maxFragmentTextureUnits Maximum fragment shader texture units
-		 * @property {number} maxCombinedTextureUnits Maximum total texture units
-		 * @property {number} maxVertexAttributes Maximum vertex attributes
-		 * @property {number} maxVertexUniformVectors Maximum vertex uniform vectors
-		 * @property {number} maxFragmentUniformVectors Maximum fragment uniform vectors
-		 * @property {number} maxVaryingVectors Maximum varying vectors
-		 * @property {number} aliasedPointSizeRange Point size min/max [min, max]
-		 * @property {number} aliasedLineWidthRange Line width min/max [min, max]
-		 * @property {number} samples Antialiasing sample size
-		 * @property {number} sampleBuffers Sample buffer count
-		 * @property {number} depthBits Depth bits
-		 * @property {number} stencilBits Stencil bits
-		 * @property {number} subpixelBits Sub-pixel bits
-		 * @property {number} supportedExtensionsList Supported extension as an array
-		 * @property {number} renderer Renderer name
-		 * @property {number} vendor Vendor name
-		 * @property {number} version Version string
-		 * @property {number} shadingLanguageVersion Shadinglanguage version string
-		 */
-		this.capabilities = {
-			maxTexureSize: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE),
-			maxCubemapSize: this.context.getParameter(WebGLRenderingContext.MAX_CUBE_MAP_TEXTURE_SIZE),
-			maxRenderbufferSize: this.context.getParameter(WebGLRenderingContext.MAX_RENDERBUFFER_SIZE),
-			maxViewPortDims: this.context.getParameter(WebGLRenderingContext.MAX_VIEWPORT_DIMS), // [x, y]
-			maxAnisotropy: this.glExtensionTextureFilterAnisotropic ? this.context.getParameter(this.glExtensionTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0,
-
-			maxVertexTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
-			maxFragmentTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_TEXTURE_IMAGE_UNITS),
-			maxCombinedTextureUnits: this.context.getParameter(WebGLRenderingContext.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
-
-			maxVertexAttributes: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_ATTRIBS),
-			maxVertexUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_VERTEX_UNIFORM_VECTORS),
-			maxFragmentUniformVectors: this.context.getParameter(WebGLRenderingContext.MAX_FRAGMENT_UNIFORM_VECTORS),
-			maxVaryingVectors: this.context.getParameter(WebGLRenderingContext.MAX_VARYING_VECTORS),
-
-			aliasedPointSizeRange: this.context.getParameter(WebGLRenderingContext.ALIASED_POINT_SIZE_RANGE), // [min, max]
-			aliasedLineWidthRange: this.context.getParameter(WebGLRenderingContext.ALIASED_LINE_WIDTH_RANGE), // [min, max]
-
-			samples: this.context.getParameter(WebGLRenderingContext.SAMPLES),
-			sampleBuffers: this.context.getParameter(WebGLRenderingContext.SAMPLE_BUFFERS),
-
-			depthBits: this.context.getParameter(WebGLRenderingContext.DEPTH_BITS),
-			stencilBits: this.context.getParameter(WebGLRenderingContext.STENCIL_BITS),
-			subpixelBits: this.context.getParameter(WebGLRenderingContext.SUBPIXEL_BITS),
-			supportedExtensionsList: this.context.getSupportedExtensions(),
-
-			renderer: this.context.getParameter(WebGLRenderingContext.RENDERER),
-			vendor: this.context.getParameter(WebGLRenderingContext.VENDOR),
-			version: this.context.getParameter(WebGLRenderingContext.VERSION),
-			shadingLanguageVersion: this.context.getParameter(WebGLRenderingContext.SHADING_LANGUAGE_VERSION),
-
-			vertexShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_FLOAT),
-			vertexShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_FLOAT),
-			vertexShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_FLOAT),
-			fragmentShaderHighpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_FLOAT),
-			fragmentShaderMediumpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_FLOAT),
-			fragmentShaderLowpFloat: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_FLOAT),
-
-			vertexShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.HIGH_INT),
-			vertexShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.MEDIUM_INT),
-			vertexShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.VERTEX_SHADER, this.context.LOW_INT),
-			fragmentShaderHighpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.HIGH_INT),
-			fragmentShaderMediumpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.MEDIUM_INT),
-			fragmentShaderLowpInt: this.context.getShaderPrecisionFormat(this.context.FRAGMENT_SHADER, this.context.LOW_INT)
-		};
+		this.maxTextureSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, Capabilities.maxTexureSize) : Capabilities.maxTexureSize;
+		this.maxCubemapSize = !isNaN(parameters.maxTextureSize) ? Math.min(parameters.maxTextureSize, Capabilities.maxCubemapSize) : Capabilities.maxCubemapSize;
 
 		/** Can be one of: <ul><li>lowp</li><li>mediump</li><li>highp</li></ul>
 		 * If the shader doesn't specify a precision, a string declaring this precision will be added.
 		 * @type {string}
 		 */
 		this.shaderPrecision = parameters.shaderPrecision || 'highp';
-		if (this.shaderPrecision === 'highp' && this.capabilities.vertexShaderHighpFloat.precision > 0 && this.capabilities.fragmentShaderHighpFloat.precision > 0) {
+		if (this.shaderPrecision === 'highp' && Capabilities.vertexShaderHighpFloat.precision > 0 && Capabilities.fragmentShaderHighpFloat.precision > 0) {
 			this.shaderPrecision = 'highp';
-		} else if (this.shaderPrecision !== 'lowp' && this.capabilities.vertexShaderMediumpFloat.precision > 0 && this.capabilities.fragmentShaderMediumpFloat.precision > 0) {
+		} else if (this.shaderPrecision !== 'lowp' && Capabilities.vertexShaderMediumpFloat.precision > 0 && Capabilities.fragmentShaderMediumpFloat.precision > 0) {
 			this.shaderPrecision = 'mediump';
 		} else {
 			this.shaderPrecision = 'lowp';
@@ -287,17 +130,11 @@ function (
 		this.downScale = parameters.downScale || 1;
 
 		// Default setup
-
 		this.clearColor = new Vector4();
 		// You need 64 bits for number equality
 		this._clearColor = new Float64Array(4);
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
-		this.context.clearDepth(1);
-		this.context.clearStencil(0);
-		this.context.stencilMask(0);
 
-		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
-		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
 
 		/** @type {number} */
 		this.viewportX = 0;
@@ -311,6 +148,11 @@ function (
 		this.currentWidth = 0;
 		/** @type {number} */
 		this.currentHeight = 0;
+		/**
+		 * @type {number}
+		 * @readonly
+		 */
+		this.devicePixelRatio = 1;
 
 		//this.overrideMaterial = null;
 		this._overrideMaterials = [];
@@ -318,25 +160,139 @@ function (
 
 		this.renderQueue = new RenderQueue();
 
-		this.info = {
-			calls: 0,
-			vertices: 0,
-			indices: 0,
-			reset: function () {
-				this.calls = 0;
-				this.vertices = 0;
-				this.indices = 0;
-			},
-			toString: function () {
-				return 'Calls: ' + this.calls + ' Vertices: ' + this.vertices + ' Indices: ' + this.indices;
-			}
-		};
+		this.info = new RenderStats();
 
 		this.shadowHandler = new ShadowHandler();
 
 		// Hardware picking
 		this.hardwarePicking = null;
+
+		SystemBus.addListener('goo.setClearColor', function(color) {
+			this.setClearColor.apply(this, color);
+		}.bind(this));
+
+		// ---
+		//! AT: ugly fix for the resizing style-less canvas to 1 px for desktop
+		// apparently this is the only way to find out the user zoom level
+
+		if (document.createElementNS) {
+			this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			this.svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+			this.svg.setAttribute('version', '1.1');
+			this.svg.style.position = 'absolute';
+			this.svg.style.display = 'none';
+			document.body.appendChild(this.svg);
+		} else {
+			//! AT: placeholder to avoid another conditional below in checkResize
+			this.svg = { currentScale: 1 };
+		}
+
+		// Dan: Since GooRunner.clear() wipes all listeners from SystemBus,
+		//      this needs to be re-added here again for each new GooRunner/Renderer
+		//      cycle.
+		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
+			Renderer.mainCamera = newCam.camera;
+			this.checkResize(Renderer.mainCamera);
+		}.bind(this));
+
+		this._definesIndices = [];
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
+
+	Renderer.prototype.setupDebugging = function (parameters) {
+		// XXX: This is a temporary solution to easily enable webgl debugging during development...
+		var request = new XMLHttpRequest();
+		request.open('GET', '/js/goo/lib/webgl-debug.js', false);
+		request.onreadystatechange = function () {
+			if (request.readyState === 4) {
+				if (request.status >= 200 && request.status <= 299) {
+					// Yes, eval is intended, sorry checkstyle
+					// jshint evil:true
+					window['eval'].call(window, request.responseText);
+				}
+			}
+		};
+		request.send(null);
+
+		if (typeof (window.WebGLDebugUtils) === 'undefined') {
+			console.warn('You need to include webgl-debug.js in your script definition to run in debug mode.');
+		} else {
+			console.log('Running in webgl debug mode.');
+			if (parameters.validate) {
+				console.log('Running with "undefined arguments" validation.');
+				this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this), validateNoneOfTheArgsAreUndefined);
+			} else {
+				this.context = window.WebGLDebugUtils.makeDebugContext(this.context, this.onDebugError.bind(this));
+			}
+		}
+	};
+
+	Renderer.prototype.establishContext = function () {
+		if (!!window.WebGLRenderingContext) {
+			//! AT: this list may require cleanup
+			var contextNames = ["experimental-webgl", "webgl", "moz-webgl", "webkit-3d"];
+			for (var i = 0; i < contextNames.length; i++) {
+				try {
+					this.context = this.domElement.getContext(contextNames[i], this._contextSettings);
+					if (this.context && typeof(this.context.getParameter) === "function") {
+						// WebGL is supported & enabled
+						break;
+					}
+				} catch (e) {}
+			}
+			if (!this.context) {
+				// WebGL is supported but disabled
+				throw {
+					name: 'GooWebGLError',
+					message: 'WebGL is supported but disabled',
+					supported: true,
+					enabled: false
+				};
+			}
+		} else {
+			// WebGL is not supported
+			throw {
+				name: 'GooWebGLError',
+				message: 'WebGL is not supported',
+				supported: false,
+				enabled: false
+			};
+		}
+
+		this.context.clearDepth(1);
+		this.context.clearStencil(0);
+		this.context.stencilMask(0);
+
+		this.context.enable(WebGLRenderingContext.DEPTH_TEST);
+		this.context.depthFunc(WebGLRenderingContext.LEQUAL);
+
+		Capabilities.init(this.context);
+	};
+
+	/**
+	 * Sets up handlers for context lost/restore
+	 * @private
+	 */
+	Renderer.prototype._setupContextLost = function () {
+		this.domElement.addEventListener('webglcontextlost', function (event) {
+			event.preventDefault();
+			SystemBus.emit('goo.contextLost');
+		}, false);
+
+		this.domElement.addEventListener('webglcontextrestored', function () {
+			this._restoreContext();
+			SystemBus.emit('goo.contextRestored');
+		}.bind(this), false);
+	};
+
+	/**
+	 * Restores thw webgl context
+	 * @private
+	 */
+	Renderer.prototype._restoreContext = STUB_METHOD; // will be overriden
 
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
 		for (var ii = 0; ii < args.length; ++ii) {
@@ -363,9 +319,6 @@ function (
 	};
 
 	Renderer.mainCamera = null;
-	SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-		Renderer.mainCamera = newCam.camera;
-	});
 
 	/**
 	 * Checks if this.domElement.offsetWidth or Height / this.downScale is unequal to this.domElement.width or height
@@ -374,7 +327,7 @@ function (
 	 * @param {Camera} [camera] optional camera argument
 	 */
 	Renderer.prototype.checkResize = function (camera) {
-		var devicePixelRatio = window.devicePixelRatio || 1;
+		var devicePixelRatio = this.devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
 		var adjustWidth, adjustHeight;
 		if (document.querySelector) {
@@ -440,10 +393,10 @@ function (
 		if (w !== this.viewportX || h !== this.viewportY ||
 			width !== this.viewportWidth || height !== this.viewportHeight) {
 			this.setViewport(w, h, width, height);
-		}
 
-		if (this.hardwarePicking !== null) {
-			this.hardwarePicking.pickingTarget = null;
+			if (this.hardwarePicking !== null) {
+				this.hardwarePicking.pickingTarget = null;
+			}
 		}
 	};
 
@@ -464,6 +417,13 @@ function (
 		this.viewportHeight = height !== undefined ? height : this.domElement.height;
 
 		this.context.viewport(this.viewportX, this.viewportY, this.viewportWidth, this.viewportHeight);
+
+		SystemBus.emit('goo.viewportResize', {
+			x: this.viewportX,
+			y: this.viewportY,
+			width: this.viewportWidth,
+			height: this.viewportHeight
+		}, true);
 	};
 
 	/**
@@ -484,7 +444,7 @@ function (
 		this._clearColor[1] = g;
 		this._clearColor[2] = b;
 		this._clearColor[3] = a;
-		this.clearColor.seta(this._clearColor);
+		this.clearColor.setArray(this._clearColor);
 		this.context.clearColor(r, g, b, a);
 	};
 
@@ -506,6 +466,10 @@ function (
 		}
 	};
 
+	Renderer.prototype.updateAttributeData = function (attributeData, offset) {
+		this.context.bufferSubData(WebGLRenderingContext.ARRAY_BUFFER, offset, attributeData);
+	};
+
 	Renderer.prototype.setShadowType = function (type) {
 		this.shadowHandler.shadowType = type;
 	};
@@ -515,11 +479,366 @@ function (
 	};
 
 	/**
+	 * Preloads a texture
+	 * @param context
+	 * @param texture
+	 */
+	Renderer.prototype.preloadTexture = function (context, texture) {
+		//! schteppe: Is there any case where we want to preload a texture to another context than this.context?
+
+		// REVIEW: Veeeeery similar to loadTexture. Merge?
+		//! AT: the code will diverge; it was initially copy-pasted and adapted to suit the need, but it will have to be iterated on; adding more ifs for different code paths is not gonna make the code nicer
+
+		// this.bindTexture(context, texture, unit, record);
+		// context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit); // do I need this?
+
+		//! schteppe: What if the .glTexture is not allocated yet?
+		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
+
+		// set alignment to support images with width % 4 !== 0, as
+		// images are not aligned
+		context.pixelStorei(WebGLRenderingContext.UNPACK_ALIGNMENT, texture.unpackAlignment);
+
+		// Using premultiplied alpha
+		context.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultiplyAlpha);
+
+		// set if we want to flip on Y
+		context.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, texture.flipY);
+
+		// TODO: Check for the restrictions of using npot textures
+		// see: http://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Non-Power_of_Two_Texture_Support
+		// TODO: Add "usesMipmaps" to check if minfilter has mipmap mode
+
+		var image = texture.image;
+		if (texture.variant === '2D') {
+			if (!image) {
+				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+			} else {
+				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
+					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
+					image = texture.image;
+				}
+
+				if (image.isData === true) {
+					if (image.isCompressed) {
+						this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
+					} else {
+						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), image.width,
+							image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+								.getGLPixelDataType(texture.type), image.data);
+					}
+				} else {
+					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
+						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image);
+				}
+
+				if (texture.generateMipmaps && !image.isCompressed) {
+					context.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+				}
+			}
+		} else if (texture.variant === 'CUBE') {
+			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
+				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
+					if (image.data[i] && !image.data[i].buffer ) {
+						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
+					} else {
+						// REVIEW: Hard coded background color that should be determined by Create?
+						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
+					}
+				}
+				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
+				image = texture.image;
+			}
+
+			for (var faceIndex = 0; faceIndex < Texture.CUBE_FACES.length; faceIndex++) {
+				var face = Texture.CUBE_FACES[faceIndex];
+
+				if (!image) {
+					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+						this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+				} else {
+					if (image.isData === true) {
+						if (image.isCompressed) {
+							this.loadCompressedTexture(context, this.getGLCubeMapFace(face), texture, image.data[faceIndex]);
+						} else {
+							context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), image.width,
+								image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
+									.getGLPixelDataType(texture.type), image.data[faceIndex]);
+						}
+					} else {
+						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this
+							.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image.data[faceIndex]);
+					}
+				}
+			}
+
+			if (image && texture.generateMipmaps && !image.isCompressed) {
+				context.generateMipmap(WebGLRenderingContext.TEXTURE_CUBE_MAP);
+			}
+		}
+	};
+
+	/**
+	 * Preloads the textures of a material
+	 * @private
+	 * @param material
+	 * @param queue
+	 */
+	Renderer.prototype.preloadTextures = function (material, queue) {
+		var context = this.context;
+		var textureKeys = Object.keys(material._textureMaps);
+
+		// for (var i = 0; i < textureKeys.length; i++) {
+		// gotta simulate lexical scoping
+		textureKeys.forEach(function (textureKey) {
+			var texture = material.getTexture(textureKey);
+
+			if (texture === undefined) {
+				return ;
+			}
+
+			var textureList = texture;
+			if (texture instanceof Array === false) {
+				textureList = [texture];
+			}
+
+			// for (var j = 0; j < textureList.length; j++) {
+			// gotta simulate lexical scoping
+			textureList.forEach(function (texture) {
+				if (!texture) { return; }
+				queue.push(function () {
+					if (texture instanceof RenderTarget === false &&
+						(texture.image === undefined || texture.checkDataReady() === false)
+					) {
+
+						if (texture.variant === '2D') {
+							texture = TextureCreator.DEFAULT_TEXTURE_2D;
+						} else if (texture.variant === 'CUBE') {
+							texture = TextureCreator.DEFAULT_TEXTURE_CUBE;
+						}
+					}
+
+					if (texture.glTexture === null) {
+						texture.glTexture = context.createTexture();
+						this.preloadTexture(context, texture);
+						texture.needsUpdate = false;
+					} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
+						this.preloadTexture(context, texture);
+						texture.needsUpdate = false;
+					}
+				}.bind(this));
+			}.bind(this));
+		}.bind(this));
+	};
+
+	var preloadMaterialsRenderInfo = new RenderInfo();
+
+	/**
+	 * Preloads textures that come with the materials on the supplied "renderables"
+	 * @param renderList
+	 * @returns {RSVP.Promise}
+	 */
+	Renderer.prototype.preloadMaterials = function (renderList) {
+		var queue = [];
+		var renderInfo = preloadMaterialsRenderInfo;
+		renderInfo.reset();
+
+		if (Array.isArray(renderList)) {
+			for (var i = 0; i < renderList.length; i++) {
+				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
+
+				// this function does so much more than I need it to do
+				// I only need the material of the renderable
+				renderInfo.fill(renderable);
+
+				for (var j = 0; j < renderInfo.materials.length; j++) {
+					this.preloadTextures(renderInfo.materials[j], queue);
+				}
+			}
+		} else {
+			renderInfo.fill(renderList);
+			for (var j = 0; j < renderInfo.materials.length; j++) {
+				this.preloadTextures(renderInfo.materials[j], queue);
+			}
+		}
+
+		return TaskScheduler.each(queue);
+	};
+
+	/**
+	 * Preprocesses a shader and compiles it
+	 * @private
+	 * @param material
+	 * @param renderInfo
+	 */
+	Renderer.prototype.precompileShader = function (material, renderInfo, queue) {
+		var shader = material.shader;
+
+		shader.updateProcessors(renderInfo);
+		this.findOrCacheMaterialShader(material, renderInfo);
+		shader = material.shader;
+		shader.precompile(this);
+	};
+
+	/**
+	 * Remove all shaders from cache.
+	 */
+	Renderer.prototype.clearShaderCache = function () {
+		this.rendererRecord.shaderCache.clear();
+	};
+
+	/**
+	 * Precompiles shaders of the supplied "renderables"
+	 * @param renderList
+	 * @param lights
+	 */
+	Renderer.prototype.precompileShaders = function (renderList, lights) {
+		var renderInfo = new RenderInfo();
+
+		if (lights) {
+			renderInfo.lights = lights;
+		}
+
+		var queue = [];
+
+		if (Array.isArray(renderList)) {
+			for (var i = 0; i < renderList.length; i++) {
+				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
+				renderInfo.fill(renderable);
+
+				for (var j = 0; j < renderInfo.materials.length; j++) {
+					renderInfo.material = renderInfo.materials[j];
+					this.precompileShader(renderInfo.materials[j], renderInfo, queue);
+				}
+			}
+		} else {
+			renderInfo.fill(renderList);
+			for (var j = 0; j < renderInfo.materials.length; j++) {
+				renderInfo.material = renderInfo.materials[j];
+				this.precompileShader(renderInfo.materials[j], renderInfo, queue);
+			}
+		}
+
+		return TaskScheduler.each(queue);
+	};
+
+	Renderer.prototype.preloadBuffers = function (renderList) {
+		var renderInfo = new RenderInfo();
+
+		if (Array.isArray(renderList)) {
+			for (var i = 0; i < renderList.length; i++) {
+				var renderable = renderList[i];
+				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
+					continue;
+				}
+				renderInfo.fill(renderable);
+				for (var j = 0; j < renderInfo.materials.length; j++) {
+					renderInfo.material = renderInfo.materials[j];
+					this.preloadBuffer(renderable, renderInfo.materials[j], renderInfo);
+				}
+			}
+		} else {
+			renderInfo.fill(renderList);
+			for (var j = 0; j < renderInfo.materials.length; j++) {
+				renderInfo.material = renderInfo.materials[j];
+				this.preloadBuffer(renderList, renderInfo.materials[j], renderInfo);
+			}
+		}
+	};
+
+	/**
+	 * Creates buffers of the supplied "renderables"
+	 * @param renderList
+	 * @param material
+	 * @param renderInfo
+	 */
+	Renderer.prototype.preloadBuffer = function (renderable, material, renderInfo) {
+		var meshData = renderInfo.meshData;
+		if (meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
+			&& meshData.indexData.data.byteLength === 0) {
+			return;
+		}
+		this.bindData(meshData.vertexData);
+		if (meshData.getIndexBuffer() !== null) {
+			this.bindData(meshData.getIndexData());
+		}
+
+		var materials = renderInfo.materials;
+		var flatOrWire = null;
+		var originalData = meshData;
+
+		var count = 0;
+		if (this._overrideMaterials.length === 0) {
+			count = materials.length;
+		} else {
+			count = this._overrideMaterials.length;
+		}
+
+		for (var i = 0; i < count; i++) {
+			var material = null, orMaterial = null;
+
+			if (i < materials.length) {
+				material = materials[i];
+			}
+			if (i < this._overrideMaterials.length) {
+				orMaterial = this._overrideMaterials[i];
+			}
+
+			if (material && orMaterial) {
+				this._override(orMaterial, material, this._mergedMaterial);
+				material = this._mergedMaterial;
+			} else if (orMaterial) {
+				material = orMaterial;
+			}
+
+			if (!material.shader) {
+				if (!material.errorOnce) {
+					console.warn('No shader set on material: ' + material.name);
+					material.errorOnce = true;
+				}
+				continue;
+			} else {
+				material.errorOnce = false;
+			}
+
+			if (material.wireframe && flatOrWire !== 'wire') {
+				if (!meshData.wireframeData) {
+					meshData.wireframeData = meshData.buildWireframeData();
+				}
+				meshData = meshData.wireframeData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = 'wire';
+			} else if (material.flat && flatOrWire !== 'flat') {
+				if (!meshData.flatMeshData) {
+					meshData.flatMeshData = meshData.buildFlatMeshData();
+				}
+				meshData = meshData.flatMeshData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = 'flat';
+			} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
+				meshData = originalData;
+				this.bindData(meshData.vertexData);
+				flatOrWire = null;
+			}
+		}
+	};
+
+	var renderRenderInfo = new RenderInfo();
+
+	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
 	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
 	 * @param {Camera} camera Main camera for rendering
 	 * @param {Light[]} lights Lights used in the rendering
-	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
+	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
 	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
 	 */
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
@@ -542,13 +861,17 @@ function (
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
-		var renderInfo = {
-			camera: camera,
-			mainCamera: Renderer.mainCamera,
-			lights: lights,
-			shadowHandler: this.shadowHandler,
-			renderer: this
-		};
+		this.rendererRecord.shaderCache.forEach(function (shader) {
+			shader.startFrame();
+		});
+
+		var renderInfo = renderRenderInfo;
+		renderInfo.reset();
+		renderInfo.camera = camera;
+		renderInfo.mainCamera = Renderer.mainCamera;
+		renderInfo.lights = lights;
+		renderInfo.shadowHandler = this.shadowHandler;
+		renderInfo.renderer = this;
 
 		if (Array.isArray(renderList)) {
 			this.renderQueue.sort(renderList, camera);
@@ -558,11 +881,11 @@ function (
 				if (renderable.isSkybox && this._overrideMaterials.length > 0) {
 					continue;
 				}
-				this.fillRenderInfo(renderable, renderInfo);
+				renderInfo.fill(renderable);
 				this.renderMesh(renderInfo);
 			}
 		} else {
-			this.fillRenderInfo(renderList, renderInfo);
+			renderInfo.fill(renderList);
 			this.renderMesh(renderInfo);
 		}
 
@@ -570,25 +893,6 @@ function (
 		if (renderTarget && renderTarget.generateMipmaps && Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height)) {
 			this.updateRenderTargetMipmap(renderTarget);
 		}
-	};
-
-	Renderer.prototype.fillRenderInfo = function (renderable, renderInfo) {
-		if (renderable instanceof Entity) {
-			renderInfo.meshData = renderable.meshDataComponent.meshData;
-			renderInfo.materials = renderable.meshRendererComponent.materials;
-			renderInfo.transform = renderable.particleComponent ? Transform.IDENTITY : renderable.transformComponent.worldTransform;
-			if(renderable.meshDataComponent.currentPose) {
-				renderInfo.currentPose = renderable.meshDataComponent.currentPose;
-			} else {
-				delete renderInfo.currentPose;
-			}
-		} else {
-			renderInfo.meshData = renderable.meshData;
-			renderInfo.materials = renderable.materials;
-			renderInfo.transform = renderable.transform;
-		}
-
-		renderInfo.renderable = renderable;
 	};
 
 	/*
@@ -631,11 +935,21 @@ function (
 
 	Renderer.prototype.renderMesh = function (renderInfo) {
 		var meshData = renderInfo.meshData;
-		if (meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
+		if (!meshData || meshData.vertexData === null || meshData.vertexData !== null && meshData.vertexData.data.byteLength === 0 || meshData.indexData !== null
 			&& meshData.indexData.data.byteLength === 0) {
 			return;
 		}
+
 		this.bindData(meshData.vertexData);
+
+		if (meshData._attributeDataNeedsRefresh) {
+			meshData._dirtyAttributeNames.forEach(function (name) {
+				this.updateAttributeData(meshData.dataViews[name], meshData.attributeMap[name].offset);
+			}.bind(this));
+
+			meshData._attributeDataNeedsRefresh = false;
+			meshData._dirtyAttributeNames.clear();
+		}
 
 		var materials = renderInfo.materials;
 
@@ -646,118 +960,58 @@ function (
 		var flatOrWire = null;
 		var originalData = meshData;
 
+		// number of materials to render - own materials or overriding materials
 		var count = 0;
-		if(this._overrideMaterials.length === 0) {
+		if (this._overrideMaterials.length === 0) {
 			count = materials.length;
 		} else {
 			count = this._overrideMaterials.length;
 		}
 
 		for (var i = 0; i < count; i++) {
-			var material = null, orMaterial = null;
-			if (i < materials.length) {
-				material = materials[i];
-			}
-			if(i < this._overrideMaterials.length) {
-				orMaterial = this._overrideMaterials[i];
-			}
-			if (material && orMaterial) {
-				this._override(orMaterial, material, this._mergedMaterial);
-				material = this._mergedMaterial;
-			} else if (orMaterial) {
-				material = orMaterial;
-			}
-			if (!material.shader) {
-				if (!material.errorOnce) {
-					console.warn('No shader set on material: ' + material.name);
-					material.errorOnce = true;
-				}
-				continue;
-			} else {
-				material.errorOnce = false;
-			}
-
-			if (material.wireframe && flatOrWire !== 'wire') {
-				if (!meshData.wireframeData) {
-					meshData.wireframeData = meshData.buildWireframeData();
-				}
-				meshData = meshData.wireframeData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = 'wire';
-			} else if (material.flat && flatOrWire !== 'flat') {
-				if (!meshData.flatMeshData) {
-					meshData.flatMeshData = meshData.buildFlatMeshData();
-				}
-				meshData = meshData.flatMeshData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = 'flat';
-			} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
-				meshData = originalData;
-				this.bindData(meshData.vertexData);
-				flatOrWire = null;
-			}
-
-			renderInfo.material = material;
-			renderInfo.meshData = meshData;
-
-			// Check for caching of shader that use defines
-			var shader = material.shader;
-			if (shader.processors || shader.defines) {
-				// Call processors
-				if (shader.processors) {
-					for (var j = 0; j < shader.processors.length; j++) {
-						shader.processors[j](shader, renderInfo);
-					}
-				}
-
-				// check defines. if no hit in cache -> add to cache. if hit in cache,
-				// replace with cache version and copy over uniforms.
-				var defineArray = Object.keys(shader.defines);
-				var len = defineArray.length;
-				var shaderKeyArray = [];
-				for (var j = 0; j < len; j++) {
-					var key = defineArray[j];
-					shaderKeyArray.push(key + '_' + shader.defines[key]);
-				}
-				shaderKeyArray.sort();
-				var defineKey = shaderKeyArray.join('_') + '_' + shader.name;
-
-				var shaderCache = this.rendererRecord.shaderCache = this.rendererRecord.shaderCache || {};
-				if (!shaderCache[defineKey]) {
-					if (shader.builder) {
-						shader.builder(shader, renderInfo);
-					}
-					shader = material.shader = shader.clone();
-					shaderCache[defineKey] = shader;
-				} else {
-					shader = shaderCache[defineKey];
-					if (shader !== material.shader) {
-						for (var key in material.shader.uniforms) {
-							shader.uniforms[key] = material.shader.uniforms[key];
-						}
-						material.shader = shader;
-					}
-				}
-			}
-
-			shader.apply(renderInfo, this);
-
-			this.updateDepthTest(material);
-			this.updateCulling(material);
-			this.updateBlending(material);
-			this.updateOffset(material);
-			this.updateTextures(material);
-			this.updateLineAndPointSettings(material);
-
-			this._checkDualTransparency(material, meshData);
-
-			this.updateCulling(material);
-			this._drawBuffers(meshData);
-
-			this.info.calls++;
-			this.info.vertices += meshData.vertexCount;
-			this.info.indices += meshData.indexCount;
+			this.renderMeshMaterial(i, materials, flatOrWire, originalData, renderInfo);
 		}
+	};
+
+	Renderer.prototype.callShaderProcessors = function(material, renderInfo) {
+		// Check for caching of shader that use defines
+		material.shader.updateProcessors(renderInfo);
+		this.findOrCacheMaterialShader(material, renderInfo);
+	};
+
+	Renderer.prototype.renderMeshMaterial = function (materialIndex, materials, flatOrWire, originalData, renderInfo) {
+		var material = null, orMaterial = null;
+
+		if (materialIndex < materials.length) {
+			material = materials[materialIndex];
+		}
+		if (materialIndex < this._overrideMaterials.length) {
+			orMaterial = this._overrideMaterials[materialIndex];
+		}
+
+		material = this.configureRenderInfo(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire);
+		var meshData = renderInfo.meshData;
+
+		this.callShaderProcessors(material, renderInfo);
+
+		material.shader.apply(renderInfo, this);
+
+		this.updateDepthTest(material);
+		this.updateCulling(material);
+		this.updateBlending(material);
+		this.updateOffset(material);
+		this.updateTextures(material);
+
+		this.updateLineAndPointSettings(material);
+
+		this._checkDualTransparency(material, meshData);
+
+		this.updateCulling(material);
+		this._drawBuffers(meshData);
+
+		this.info.calls++;
+		this.info.vertices += meshData.vertexCount;
+		this.info.indices += meshData.indexCount;
 	};
 
 	Renderer.prototype._drawBuffers = function (meshData) {
@@ -777,6 +1031,89 @@ function (
 		}
 	};
 
+	Renderer.prototype.configureRenderInfo = function(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire) {
+
+		var meshData = renderInfo.meshData;
+		if (materialIndex < this._overrideMaterials.length) {
+			orMaterial = this._overrideMaterials[materialIndex];
+		}
+
+		if (material && orMaterial && orMaterial.fullOverride !== true) {
+			this._override(orMaterial, material, this._mergedMaterial);
+			material = this._mergedMaterial;
+		} else if (orMaterial) {
+			material = orMaterial;
+		}
+
+		if (!material.shader) {
+			if (!material.errorOnce) {
+				console.warn('No shader set on material: ' + material.name);
+				material.errorOnce = true;
+			}
+			return;
+		} else {
+			material.errorOnce = false;
+		}
+
+		if (material.wireframe && flatOrWire !== 'wire') {
+			if (!meshData.wireframeData) {
+				meshData.wireframeData = meshData.buildWireframeData();
+			}
+			meshData = meshData.wireframeData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = 'wire';
+		} else if (material.flat && flatOrWire !== 'flat') {
+			if (!meshData.flatMeshData) {
+				meshData.flatMeshData = meshData.buildFlatMeshData();
+			}
+			meshData = meshData.flatMeshData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = 'flat';
+		} else if (!material.wireframe && !material.flat && flatOrWire !== null) {
+			meshData = originalData;
+			this.bindData(meshData.vertexData);
+			flatOrWire = null;
+		}
+
+
+		renderInfo.material = material;
+		renderInfo.meshData = meshData;
+		return material;
+	};
+
+	Renderer.prototype.findOrCacheMaterialShader = function (material, renderInfo) {
+		// check defines. if no hit in cache -> add to cache. if hit in cache,
+		// replace with cache version and copy over uniforms.
+		var shader = material.shader;
+		var defineKey = shader.getDefineKey(this._definesIndices);
+		shader.endFrame();
+
+		var shaderCache = this.rendererRecord.shaderCache;
+		var cachedShader = shaderCache.get(defineKey);
+
+		if (cachedShader) {
+			if (cachedShader !== material.shader) {
+				var uniforms = material.shader.uniforms;
+				var keys = Object.keys(uniforms);
+				for (var i = 0, l = keys.length; i < l; i++) {
+					var key = keys[i];
+					var origUniform = cachedShader.uniforms[key] = uniforms[key];
+					if (origUniform instanceof Array) {
+						cachedShader.uniforms[key] = origUniform.slice(0);
+					}
+				}
+			}
+			material.shader = cachedShader;
+		} else {
+			if (shader.builder) {
+				shader.builder(shader, renderInfo);
+			}
+			shader = shader.clone();
+			shaderCache.set(defineKey, shader);
+			material.shader = shader;
+		}
+	};
+
 	Renderer.prototype._checkDualTransparency = function (material, meshData) {
 		if (material.dualTransparency) {
 			var savedCullFace = material.cullState.cullFace;
@@ -791,16 +1128,40 @@ function (
 	};
 
 	/**
-	 * Read pixels to a typed array (ArrayBufferView)
+	 * Read pixels from current framebuffer to a typed array (ArrayBufferView)
 	 *
-	 * @param x x offset of rectangle to read from
-	 * @param y y offset of rectangle to read from
-	 * @param width width of rectangle to read from
-	 * @param height height of rectangle to read from
-	 * @param store ArrayBufferView to store data in (Uint8Array)
+	 * @param {number} x x offset of rectangle to read from
+	 * @param {number} y y offset of rectangle to read from
+	 * @param {number} width width of rectangle to read from
+	 * @param {number} height height of rectangle to read from
+	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array)
 	 */
 	Renderer.prototype.readPixels = function (x, y, width, height, store) {
+		store = store || new Uint8Array(width * height * 4);
 		this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
+		return store;
+	};
+
+	/**
+	 * Read pixels from a texture to a typed array (ArrayBufferView)
+	 *
+	 * @param {Texture} texture texture to read pixels from
+	 * @param {number} x x offset of rectangle to read from
+	 * @param {number} y y offset of rectangle to read from
+	 * @param {number} width width of rectangle to read from
+	 * @param {number} height height of rectangle to read from
+	 * @param {ArrayBufferView} store ArrayBufferView to store data in (Uint8Array)
+	 */
+	Renderer.prototype.readTexturePixels = function (texture, x, y, width, height, store) {
+		store = store || new Uint8Array(width * height * 4);
+		var glFrameBuffer = this.context.createFramebuffer();
+		this.context.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, glFrameBuffer);
+		this.context.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0,
+			WebGLRenderingContext.TEXTURE_2D, texture.glTexture, 0);
+		if (this.context.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
+			this.context.readPixels(x, y, width, height, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, store);
+		}
+		return store;
 	};
 
 	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
@@ -842,7 +1203,7 @@ function (
 	};
 
 	// Hardware picking
-	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial) {
+	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial, skipOverride) {
 		if(this.viewportWidth * this.viewportHeight === 0) {
 			return;
 		}
@@ -855,6 +1216,7 @@ function (
 				blendSrc: 'SrcAlphaFactor',
 				blendDst: 'OneMinusSrcAlphaFactor'
 			};
+			pickingMaterial.wireframe = false;
 
 			this.hardwarePicking = {
 				pickingTarget: new RenderTarget(this.viewportWidth / pickingResolutionDivider, this.viewportHeight / pickingResolutionDivider, {
@@ -875,9 +1237,10 @@ function (
 		}
 
 		if (!skipUpdateBuffer) {
-			this.hardwarePicking.clearColorStore.setv(this.clearColor);
+			this.hardwarePicking.clearColorStore.setVector(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
-				var devicePixelRatio = window.devicePixelRatio || 1;
+				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
+
 				var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 				var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
 				this.context.enable(WebGLRenderingContext.SCISSOR_TEST);
@@ -891,7 +1254,12 @@ function (
 					pickList.push(entity);
 				}
 			}
-			this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, customPickingMaterial || this.hardwarePicking.pickingMaterial);
+
+			if (skipOverride) {
+				this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear);
+			} else {
+				this.render(pickList, camera, [], this.hardwarePicking.pickingTarget, clear, customPickingMaterial || this.hardwarePicking.pickingMaterial);
+			}
 
 			if (doScissor) {
 				this.context.disable(WebGLRenderingContext.SCISSOR_TEST);
@@ -907,7 +1275,8 @@ function (
 			pickingStore.depth = 0;
 			return;
 		}
-		var devicePixelRatio = window.devicePixelRatio || 1;
+		var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
+
 		var pickingResolutionDivider = 4;
 		var x = Math.floor((clientX * devicePixelRatio - this.viewportX) / pickingResolutionDivider);
 		var y = Math.floor((this.viewportHeight - (clientY * devicePixelRatio - this.viewportY)) / pickingResolutionDivider);
@@ -1007,6 +1376,7 @@ function (
 
 			for (var j = 0; j < textureList.length; j++) {
 				texture = textureList[j];
+
 				var texIndex = textureSlot.index instanceof Array ? textureSlot.index[j] : textureSlot.index;
 
 				if (texture === null ||
@@ -1027,6 +1397,7 @@ function (
 				if (texture.glTexture === null) {
 					texture.glTexture = context.createTexture();
 					this.updateTexture(context, texture, texIndex, unitrecord);
+					texture.needsUpdate = false;
 				} else if (texture instanceof RenderTarget === false && texture.checkNeedsUpdate()) {
 					this.updateTexture(context, texture, texIndex, unitrecord);
 					texture.needsUpdate = false;
@@ -1045,10 +1416,6 @@ function (
 		var context = this.context;
 
 		var texrecord = texture.textureRecord;
-		if (texrecord === undefined) {
-			texrecord = {};
-			texture.textureRecord = texrecord;
-		}
 
 		var glType = this.getGLType(texture.variant);
 		if (texrecord.magFilter !== texture.magFilter) {
@@ -1074,10 +1441,10 @@ function (
 			texrecord.wrapT = wrapT;
 		}
 
-		if (this.glExtensionTextureFilterAnisotropic && texture.type !== 'Float') {
+		if (Capabilities.TextureFilterAnisotropic && texture.type !== 'Float') {
 			var anisotropy = texture.anisotropy;
 			if (texrecord.anisotropy !== anisotropy) {
-				context.texParameterf(glType, this.glExtensionTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisotropy, this.capabilities.maxAnisotropy));
+				context.texParameterf(glType, Capabilities.TextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(anisotropy, Capabilities.maxAnisotropy));
 				texrecord.anisotropy = anisotropy;
 			}
 		}
@@ -1091,6 +1458,12 @@ function (
 		}
 	};
 
+	Renderer.prototype.unbindTexture = function (context, texture, unit, record) {
+		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
+		context.bindTexture(this.getGLType(texture.variant), null);
+		record.boundTexture = undefined;
+	};
+
 	Renderer.prototype.getGLType = function (type) {
 		switch (type) {
 			case '2D':
@@ -1098,14 +1471,14 @@ function (
 			case 'CUBE':
 				return WebGLRenderingContext.TEXTURE_CUBE_MAP;
 		}
-		throw "invalid texture type: " + type;
+		throw 'invalid texture type: ' + type;
 	};
 
 	Renderer.prototype.loadCompressedTexture = function (context, target, texture, imageData) {
 		var mipSizes = texture.image.mipmapSizes;
 		var dataOffset = 0, dataLength = 0;
 		var width = texture.image.width, height = texture.image.height;
-		var ddsExt = DdsUtils.getDdsExtension(context);
+		var ddsExt = Capabilities.CompressedTextureS3TC;
 		var internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
 		if (texture.format === 'PrecompressedDXT1') {
 			internalFormat = ddsExt.COMPRESSED_RGB_S3TC_DXT1_EXT;
@@ -1131,6 +1504,7 @@ function (
 			if (imageData instanceof Array) {
 				for (var i = 0; i < imageData.length; i++) {
 					context.compressedTexImage2D(target, i, internalFormat, width, height, 0, imageData[i]);
+					//! SH: REVIEW: this operation is being done many times, not very DRY; also Math.floor is practically as fast as ~~, does the same thing, and is more readable. http://jsperf.com/jsfvsbitnot/15
 					width = ~~(width / 2) > 1 ? ~~(width / 2) : 1;
 					height = ~~(height / 2) > 1 ? ~~(height / 2) : 1;
 				}
@@ -1184,8 +1558,8 @@ function (
 				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
 					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
 			} else {
-				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.capabilities.maxTexureSize || image.height > this.capabilities.maxTexureSize)) {
-					this.checkRescale(texture, image, image.width, image.height, this.capabilities.maxTexureSize);
+				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
+					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
 					image = texture.image;
 				}
 
@@ -1207,12 +1581,16 @@ function (
 				}
 			}
 		} else if (texture.variant === 'CUBE') {
-			if (image && (texture.generateMipmaps || image.width > this.capabilities.maxCubemapSize || image.height > this.capabilities.maxCubemapSize)) {
+			if (image && !image.isData && (texture.generateMipmaps || image.width > this.maxCubemapSize || image.height > this.maxCubemapSize)) {
 				for (var i = 0; i < Texture.CUBE_FACES.length; i++) {
-					this.checkRescale(texture, image.data[i], image.width, image.height, this.capabilities.maxCubemapSize, i);
+					if (image.data[i] && !image.data[i].buffer ) {
+						Util.scaleImage(texture, image.data[i], image.width, image.height, this.maxCubemapSize, i);
+					} else {
+						Util.getBlankImage(texture, [0.3, 0.3, 0.3, 0], image.width, image.height, this.maxCubemapSize, i);
+					}
 				}
-				texture.image.width = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
-				texture.image.height = Math.min(this.capabilities.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
+				texture.image.width = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.width));
+				texture.image.height = Math.min(this.maxCubemapSize, Util.nearestPowerOfTwo(texture.image.height));
 				image = texture.image;
 			}
 
@@ -1245,29 +1623,7 @@ function (
 	};
 
 	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize, index) {
-		var newWidth = Util.nearestPowerOfTwo(width);
-		var newHeight = Util.nearestPowerOfTwo(height);
-		newWidth = Math.min(newWidth, maxSize);
-		newHeight = Math.min(newHeight, maxSize);
-		if (width !== newWidth || height !== newHeight) {
-			var canvas = document.createElement('canvas'); // !!!!!
-			canvas.width = newWidth;
-			canvas.height = newHeight;
-			if (image.getAttribute) {
-				canvas.setAttribute('data-ref', image.getAttribute('data-ref'));
-			}
-			var ctx = canvas.getContext('2d');
-			ctx.drawImage(image, 0, 0, width, height, 0, 0, newWidth, newHeight);
-			document.body.appendChild(canvas);
-			canvas.dataReady = true;
-			canvas.src = image.src;
-			if (index === undefined) {
-				texture.image = canvas;
-			} else {
-				texture.image.data[index] = canvas;
-			}
-			canvas.parentNode.removeChild(canvas);
-		}
+		Util.scaleImage(texture, image, width, height, maxSize, index);
 	};
 
 	Renderer.prototype.getGLWrap = function (wrap) {
@@ -1480,8 +1836,8 @@ function (
 			} else if (blending === 'SubtractiveBlending') {
 				// TODO: Find blendFuncSeparate() combination
 				context.enable(WebGLRenderingContext.BLEND);
-				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
-				context.blendFunc(WebGLRenderingContext.ZERO, WebGLRenderingContext.ONE_MINUS_SRC_COLOR);
+				context.blendEquation(WebGLRenderingContext.FUNC_REVERSE_SUBTRACT);
+				context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE);
 			} else if (blending === 'MultiplyBlending') {
 				// TODO: Find blendFuncSeparate() combination
 				context.enable(WebGLRenderingContext.BLEND);
@@ -1491,8 +1847,30 @@ function (
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquation(WebGLRenderingContext.FUNC_ADD);
 				context.blendFunc(WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA);
+			} else if (blending === 'TransparencyBlending') {
+				context.enable(WebGLRenderingContext.BLEND);
+				context.blendEquationSeparate(
+					WebGLRenderingContext.FUNC_ADD,
+					WebGLRenderingContext.FUNC_ADD
+				);
+				context.blendFuncSeparate(
+					WebGLRenderingContext.SRC_ALPHA,
+					WebGLRenderingContext.ONE_MINUS_SRC_ALPHA,
+					WebGLRenderingContext.ONE,
+					WebGLRenderingContext.ONE_MINUS_SRC_ALPHA
+				);
 			} else if (blending === 'CustomBlending') {
 				context.enable(WebGLRenderingContext.BLEND);
+			} else if (blending === 'SeparateBlending') {
+				context.enable(WebGLRenderingContext.BLEND);
+				context.blendEquationSeparate(
+						this.getGLBlendParam(material.blendState.blendEquationColor),
+						this.getGLBlendParam(material.blendState.blendEquationAlpha));
+				context.blendFuncSeparate(
+					this.getGLBlendParam(material.blendState.blendSrcColor),
+					this.getGLBlendParam(material.blendState.blendDstColor),
+					this.getGLBlendParam(material.blendState.blendSrcAlpha),
+					this.getGLBlendParam(material.blendState.blendDstAlpha));
 			} else {
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquationSeparate(WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD);
@@ -1558,13 +1936,18 @@ function (
 			this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
 			targetBuffer.buffer = buffer;
 			targetBuffer.valid = true;
+			if (target === 'ArrayBuffer') {
+				this.rendererRecord.attributeCache.length = 0;
+			}
 		}
 	};
 
-	// Was: function (attribIndex, attribute, record)
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
-		// this.context.enableVertexAttribArray(attribIndex);
-		this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
+		var hashKey = this.rendererRecord.attributeCache[attribIndex];
+		if (hashKey !== attribute.hashKey) {
+			this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
+			this.rendererRecord.attributeCache[attribIndex] = attribute.hashKey;
+		}
 	};
 
 	Renderer.prototype.getGLDataType = function (type) {
@@ -1648,7 +2031,9 @@ function (
 			record.write = true;
 		}
 
-		this.context.clear(bits);
+		if (bits) {
+			this.context.clear(bits);
+		}
 	};
 
 	Renderer.prototype.flush = function () {
@@ -1762,68 +2147,20 @@ function (
 		this.context.bindTexture(WebGLRenderingContext.TEXTURE_2D, null);
 	};
 
-	Renderer.prototype.getCapabilitiesString = function () {
-		var caps = [];
-		for (var name in this.capabilities) {
-			var cap = this.capabilities[name];
-			var str = '';
-			if (cap instanceof ArrayBufferView) {
-				str += '[';
-				for (var i = 0; i < cap.length; i++) {
-					str += cap[i];
-					if (i < cap.length - 1) {
-						str += ',';
-					}
-				}
-				str += ']';
-			} else {
-				str = cap;
-			}
-			caps.push(name + ': ' + str);
-		}
-		return caps.join('\n');
+	Renderer.prototype._deallocateMeshData = function (meshData) {
+		meshData.destroy(this.context);
 	};
 
-	//TODO!!!
-	// Was: function (meshData)
-	Renderer.prototype._deallocateMeshData = function () {
-//		if ( geometry.__webglVertexBuffer !== undefined ) _gl.deleteBuffer( geometry.__webglVertexBuffer );
+	Renderer.prototype._deallocateTexture = function (texture) {
+		texture.destroy(this.context);
 	};
 
-	// Was: function (texture)
-	Renderer.prototype._deallocateTexture = function () {
-//		if ( texture.image && texture.image.__webglTextureCube ) {
-//			// cube texture
-//			_gl.deleteTexture( texture.image.__webglTextureCube );
-//		} else {
-//			// 2D texture
-//			if ( ! texture.__webglInit ) return;
-//
-//			texture.__webglInit = false;
-//			_gl.deleteTexture( texture.__webglTexture );
-//		}
+	Renderer.prototype._deallocateRenderTarget = function (renderTarget) {
+		renderTarget.destroy(this.context);
 	};
 
-	// Was: function (renderTarget)
-	Renderer.prototype._deallocateRenderTarget = function () {
-//		if ( !renderTarget || ! renderTarget.__webglTexture ) return;
-//
-//		_gl.deleteTexture( renderTarget.__webglTexture );
-//
-//		if ( renderTarget instanceof THREE.WebGLRenderTargetCube ) {
-//			for ( var i = 0; i < 6; i ++ ) {
-//				_gl.deleteFramebuffer( renderTarget.__webglFramebuffer[ i ] );
-//				_gl.deleteRenderbuffer( renderTarget.__webglRenderbuffer[ i ] );
-//			}
-//		} else {
-//			_gl.deleteFramebuffer( renderTarget.__webglFramebuffer );
-//			_gl.deleteRenderbuffer( renderTarget.__webglRenderbuffer );
-//		}
-	};
-
-	// Was: function (shader)
-	Renderer.prototype._deallocateShader = function () {
-//		_gl.deleteProgram( program );
+	Renderer.prototype._deallocateShader = function (shader) {
+		shader.destroy();
 	};
 
 	return Renderer;

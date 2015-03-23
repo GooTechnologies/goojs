@@ -29,7 +29,10 @@
         "beforeEach": true,
         "afterEach": true,
         "waitsFor": true,
-        "spyOn": true
+        "spyOn": true,
+
+		"Map": true,
+		"Set": true
     },
 
     // The Good Parts.
@@ -45,7 +48,7 @@
     "forin"         : false,  // Tolerate `for in` loops without `hasOwnPrototype`.
     "immed"         : true,   // Require immediate invocations to be wrapped in parens e.g. `( function(){}() );`
     "latedef"       : true,   // Prohipit variable use before definition.
-    "loopfunc"      : false,  // Allow functions to be defined within loops.
+    "loopfunc"      : true,   // Allow functions to be defined within loops.
     "noarg"         : true,   // Prohibit use of `arguments.caller` and `arguments.callee`.
     "regexp"        : false,  // Prohibit `.` and `[^...]` in regular expressions.
     "regexdash"     : false,  // Tolerate unescaped last dash i.e. `[-...]`.
@@ -64,12 +67,14 @@
     "plusplus"      : false,  // Prohibit use of `++` & `--`.
     "sub"           : false,  // Tolerate all forms of subscript notation besides dot notation e.g. `dict['key']` instead of `dict.key`.
     "trailing"      : true,   // Prohibit trailing whitespaces.
+    "unused"        : true,   // Warns when you define and never use your variables.
+    //"quotmark"      : "single", // Enforces the consistency of quotation marks
 
     // "white" and "indent" give lots of warnings.
     // We may want to enable them again once we clean up the more pressing issues.
     // The "white" and "indent" settings also don't work together in JSHint before 1.0
     // See https://github.com/jshint/jshint/issues/451
-    //"white"         : true,   // Check against strict whitespace and indentation rules.
+    "white"         : true,   // Check against strict whitespace and indentation rules.
     //"indent"        : 4,      // Specify indentation spacing
     "smarttabs"     : true    // Suppress warnings about mixed tabs and spaces
 }

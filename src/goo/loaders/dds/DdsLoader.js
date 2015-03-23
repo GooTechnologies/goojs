@@ -1,8 +1,12 @@
 /*jshint bitwise: false */
-define(['goo/loaders/dds/DdsUtils'],
-	/** @lends */
-	function (DdsUtils) {
-	"use strict";
+define([
+	'goo/loaders/dds/DdsUtils',
+	'goo/renderer/Capabilities'
+], function (
+	DdsUtils,
+	Capabilities
+) {
+	'use strict';
 
 	function DdsPixelFormat() {
 		this.dwSize = 0;
@@ -178,7 +182,8 @@ define(['goo/loaders/dds/DdsUtils'],
 	};
 
 	/**
-	 * @class Loads dds format images into a format usable by Goo.
+	 * Loads dds format images into a format usable by Goo.
+	 * @private
 	 */
 	function DdsLoader() {
 	}
@@ -497,13 +502,12 @@ define(['goo/loaders/dds/DdsUtils'],
 
 		image.bpp = info.bpp;
 		image.dataReady = true;
+		image.isData = true;
 		tex.needsUpdate = true;
 	};
 
-	DdsLoader.SUPPORTS_DDS = false;
-
 	DdsLoader.prototype.isSupported = function () {
-		return DdsLoader.SUPPORTS_DDS;
+		return !!Capabilities.CompressedTextureS3TC;
 	};
 
 	DdsLoader.prototype.toString = function () {

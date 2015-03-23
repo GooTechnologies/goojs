@@ -1,56 +1,144 @@
-define( /** @lends */ function() {
-	"use strict";
+define([
+	'goo/util/rsvp',
+	'goo/util/PromiseUtil'
+], function (
+	RSVP,
+	PromiseUtil
+) {
+	'use strict';
 
 	/**
-	 * @class Base class for resource handlers, used to load all types of resources into the engine.
+	 * Base class for resource handlers, used to load all types of resources into the engine.
 	 * All the resource types in the bundle (noted by their extension) need to have a registered config
 	 * handler.
 	 * To handle a new type of component, create a class that inherits from this class, and override {update}.
 	 * In your class, call <code>@_register('yourResourceExtension')</code> to _register
 	 * the handler with the loader.
 	 *
-	 * @constructor
 	 * @param {World} world The goo world
 	 * @param {function} getConfig The config loader function. See {DynamicLoader._loadRef}.
 	 * @param {function} updateObject The handler function. See {DynamicLoader.update}.
-	 * @param {object} options
 	 * @returns {ComponentHandler}
-	 *
+	 * @hidden
 	 */
-	function ConfigHandler(world, getConfig, updateObject, options) {
+	function ConfigHandler(world, getConfig, updateObject, loadObject) {
 		this.world = world;
 		this.getConfig = getConfig;
 		this.updateObject = updateObject;
-		this.options = options;
+		this.loadObject = loadObject;
+		this._objects = new Map();
+		this._loading = new Map();
 	}
 
-	/*jshint -W099*/
 	/**
-	 * Update engine object based on the config. Should be overridden in subclasses.
-	 * This method is called by #{DynamicLoader} to load new resources into the engine.
-	 *
-	 * @example
-	 * class MyResourceHandler
-	 *		@_register('myResource')
-	 * ...
-	 * 	update: (entity, config)->
-	 * 		component = super(entity, config)
-	 *
-	 * @param {string} ref The ref of this config
-	 * @param {object} config
-	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
+	 * Method for creating empty engine object for ref. Should be overwritten in subclasses.
+	 * @returns {object} the newly created Entity, Material or other engine object
+	 * @private
 	 */
-	ConfigHandler.prototype.update = function(/*ref, config*/) {};
-
+	ConfigHandler.prototype._create = function () {
+		return {};
+	};
 
 	/**
 	 * Remove the engine object denoted by the given ref. Should be overridden in subclasses.
 	 * This method is called by #{DynamicLoader} to remove resources from the engine.
 	 * Synchronous, returns nothing.
-	 * 
-	 * @param {string} ref The ref of this config
+	 * @param {string} ref
+	 * @private
 	 */
-	ConfigHandler.prototype.remove = function(/*ref, config*/) {};
+	ConfigHandler.prototype._remove = function (ref) {
+		this._objects.delete(ref);
+	};
+
+	/**
+	 * Preparing config by populating it with defaults. Should be overwritten in subclasses.
+	 * @param {object} config
+	 * @private
+	 */
+	ConfigHandler.prototype._prepare = function (config) {};
+
+	/**
+	 * Loads object for given ref
+	 * @param {string} ref
+	 * @param {object} options
+	 * @private
+	 */
+	ConfigHandler.prototype._load = function (ref, options) {
+		return this.loadObject(ref, options);
+	};
+
+	ConfigHandler.prototype.load = function (ref, options) {
+		var type = ref.substr(ref.lastIndexOf('.') + 1);
+		if (type !== this.constructor._type) {
+			throw new Error('Trying to load type' + type + ' with handler for ' + this._type);
+		}
+
+		if (this._loading.has(ref)) {
+			return this._loading.get(ref);
+		} else if (this._objects.has(ref) && !options.reload) {
+			return PromiseUtil.resolve(this._objects.get(ref));
+		} else {
+			var promise = this.getConfig(ref, options).then(function (config) {
+				return this.update(ref, config, options);
+			}.bind(this))
+			.then(function (object) {
+				this._loading.delete(ref);
+				return object;
+			}.bind(this))
+			.then(null, function (err) {
+				this._loading.delete(ref);
+				throw err;
+			}.bind(this));
+
+			this._loading.set(ref, promise);
+
+			return promise;
+		}
+	};
+
+	ConfigHandler.prototype.clear = function () {
+		var promises = [];
+		this._objects.forEach(function (value, ref) {
+			promises.push(this.update(ref, null, {}));
+		}.bind(this));
+
+		this._objects.clear();
+		this._loading.clear();
+
+		return RSVP.all(promises);
+	};
+
+	/**
+	 * Update engine object based on the config. Should be overridden in subclasses.
+	 * This method is called by #{DynamicLoader} to load new resources into the engine.
+	 *
+	 * @param {string} ref The ref of this config
+	 * @param {object} config
+	 * @returns {RSVP.Promise} promise that resolves with the created object when loading is done.
+	 */
+	ConfigHandler.prototype.update = function (ref, config, options) {
+		var promise = this._update(ref, config, options).then(function (object) {
+			this._loading.delete(ref);
+			return object;
+		}.bind(this));
+
+		this._loading.set(ref, promise);
+
+		return promise;
+	};
+
+
+	ConfigHandler.prototype._update = function (ref, config, options) {
+		if (!config) {
+			this._remove(ref, options);
+			return PromiseUtil.resolve();
+		}
+		if (!this._objects.has(ref)) {
+			this._objects.set(ref, this._create());
+		}
+		this._prepare(config);
+		return PromiseUtil.resolve(this._objects.get(ref));
+	};
 
 	ConfigHandler.handlerClasses = {};
 
@@ -59,7 +147,7 @@ define( /** @lends */ function() {
 	 * @param {string} type
 	 * @returns {Class} A subclass of {ConfigHandler}, or null if no registered handler for the given type was found.
 	 */
-	ConfigHandler.getHandler = function(type) {
+	ConfigHandler.getHandler = function (type) {
 		return ConfigHandler.handlerClasses[type];
 	};
 
@@ -68,7 +156,7 @@ define( /** @lends */ function() {
 	 * @param {string} type
 	 * @param {Class} klass the class to register for this component type
 	 */
-	ConfigHandler._registerClass = function(type, klass) {
+	ConfigHandler._registerClass = function (type, klass) {
 		klass._type = type;
 		return ConfigHandler.handlerClasses[type] = klass;
 	};

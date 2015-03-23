@@ -1,8 +1,18 @@
-define(['goo/renderer/bounds/BoundingBox', 'goo/renderer/bounds/BoundingSphere', 'goo/math/Vector3'],
-/** @lends */
-function (BoundingBox, BoundingSphere, Vector3) {
-	"use strict";
+define([
+	'goo/renderer/bounds/BoundingBox',
+	'goo/renderer/bounds/BoundingSphere',
+	'goo/math/Vector3'
+], function (
+	BoundingBox,
+	BoundingSphere,
+	Vector3
+) {
+	'use strict';
 
+	/**
+	 * Bounding tree node
+	 * @param boundType
+	 */
 	function BoundingTree (boundType) {
 		this.leftTree = null;
 		this.rightTree = null;
@@ -122,9 +132,9 @@ function (BoundingBox, BoundingSphere, Vector3) {
 
 		// Ok, now since we technically have no primitives, we need our bounds to be the merging of our children bounds
 		// instead:
-		this.localBound = this.leftTree.localBound.clone(this.localBound);
+		this.localBound = this.leftTree.localBound.clone();
 		this.localBound.merge(this.rightTree.localBound);
-		this.worldBound = this.localBound.clone(this.worldBound);
+		this.worldBound = this.localBound.clone();
 	};
 
 	BoundingTree.prototype.createBounds = function () {
@@ -168,25 +178,26 @@ function (BoundingBox, BoundingSphere, Vector3) {
 			var data = entity.meshDataComponent.meshData;
 
 			var vertices = null;
-			for ( var i = this.start; i < this.end; i++) {
+			var vecStore = new Vector3();
+			for (var i = this.start; i < this.end; i++) {
 				vertices = data.getPrimitiveVertices(this.primitiveIndices[i], this.section, vertices);
-				for ( var t = 0; t < vertices.length; t++) {
+				for (var t = 0; t < vertices.length; t++) {
 					worldTransform.matrix.applyPostPoint(vertices[t]);
 				}
-				var vecStore = new Vector3();
 				if (ray.intersects(vertices, false, vecStore)) {
 					result.distances = result.distances || [];
 					result.distances.push(ray.origin.distance(vecStore));
 					result.points = result.points || [];
-					result.points.push(vecStore);
-					result.vertices = result.vertices || [];
-					result.vertices.push(vertices);
+					var vec = new Vector3();
+					vec.setVector(vecStore);
+					result.points.push(vec);
 
-					// result.hits = result.hits || [];
-					// result.hits.push({
-					// 	distance: ray.origin.distance(vecStore),
-					// 	point: vecStore
-					// });
+					result.vertices = result.vertices || [];
+					var verticesCopy = [];
+					for (var copyIndex = vertices.length - 1; copyIndex >= 0; copyIndex--) {
+						verticesCopy[copyIndex] = new Vector3().setVector(vertices[copyIndex]);
+					}
+					result.vertices.push(verticesCopy);
 				}
 			}
 		}

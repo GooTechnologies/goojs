@@ -1,6 +1,5 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
-	'goo/renderer/TextureCreator',
 	'goo/renderer/Texture',
 	'goo/loaders/dds/DdsLoader',
 	'goo/loaders/crunch/CrunchLoader',
@@ -8,35 +7,60 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/renderer/Util',
-	'goo/util/ObjectUtil'
-], function(
+	'goo/util/ObjectUtil',
+	'goo/util/CanvasUtils',
+	'goo/util/StringUtil',
+	'goo/entities/SystemBus'
+],
+function (
 	ConfigHandler,
-	TextureCreator,
 	Texture,
 	DdsLoader,
 	CrunchLoader,
 	TgaLoader,
 	RSVP,
-	pu,
-	ru,
-	_
+	PromiseUtil,
+	Util,
+	_,
+	CanvasUtils,
+	StringUtil,
+	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	/*jshint eqeqeq: false, -W041 */
-	/*
-	 Options:
-	 {bool} dontWaitForTextures if true, return promise that resolves once the texture object is created, don't wait
-	 for the image to load. Defaults to false.
+	/**
+	 * Handler for loading materials into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 * @private
 	 */
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._objects = {};
+		SystemBus.addListener('playStateChanged', function(playState) {
+			this._objects.forEach(function (texture) {
+				if (texture.image && texture.image.play && texture.image.pause) {
+					var video = texture.image;
+					if (playState === 'play') {
+						video.play();
+					}
+					else if (playState === 'stop') {
+						video.pause();
+						video.currentTime = 0;
+					}
+					else if (playState === 'pause') {
+						video.pause();
+					}
+				}
+			});
+		}.bind(this));
 	}
 
 	TextureHandler.prototype = Object.create(ConfigHandler.prototype);
-	ConfigHandler._registerClass('texture', TextureHandler);
 	TextureHandler.prototype.constructor = TextureHandler;
+	ConfigHandler._registerClass('texture', TextureHandler);
 
 	TextureHandler.minFilters = [
 		'NearestNeighborNoMipMaps',
@@ -57,111 +81,197 @@ define([
 		tga: TgaLoader
 	};
 
-	TextureHandler.prototype._prepare = function(config) {
+	// Dummy textures to use while loading image
+	TextureHandler.WHITE = new Uint8Array([255, 255, 255, 255]);
+	TextureHandler.BLACK = new Uint8Array([0, 0, 0, 255]);
+
+	/**
+	 * Preparing texture config by populating it with defaults.
+	 * @param {object} config
+	 * @private
+	 */
+	TextureHandler.prototype._prepare = function (config) {
 		_.defaults(config, {
-			wrapU: 'Repeat',
-			wrapV: 'Repeat',
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
 			magFilter: 'Bilinear',
 			minFilter: 'Trilinear',
 			anisotropy: 1,
 			offset: [0, 0],
 			repeat: [1, 1],
-			flipY: true
+			flipY: true,
+			lodBias: 0.0,
+			loop: true
 		});
 	};
 
-	TextureHandler.prototype._create = function(ref) {
-		var texture = this._objects[ref] = new Texture(ru.clone(TextureCreator.DEFAULT_TEXTURE_2D.image));
-		texture.image.dataReady = false;
-
-		return texture;
+	/**
+	 * Removes a texture
+	 * @param {string} ref
+	 * @private
+	 */
+	TextureHandler.prototype._remove = function (ref) {
+		var texture = this._objects.get(ref);
+		if (texture && this.world.gooRunner) {
+			texture.destroy(this.world.gooRunner.renderer.context);
+		}
+		this._objects.delete(ref);
 	};
 
-	TextureHandler.prototype.update = function(ref, config, options) {
-		//var imgRef, loadedPromise, tc, texture, textureLoader, type, _ref,
+	/**
+	 * Creates an empty Texture.
+	 * @returns {Texture}
+	 * @private
+	 */
+	TextureHandler.prototype._create = function () {
+		return new Texture();
+	};
 
-		var imgRef = config.url;
-		var type = imgRef ? imgRef.split('.').pop().toLowerCase() : void 0;
-		var reload = (options && options.texture && options.texture.reload !== undefined);
 
-		var texture, loadedPromise;
-		if (type === 'mp4') {
-			loadedPromise = new RSVP.Promise();
-			var tc = new TextureCreator();
-			texture = tc.loadTextureVideo(config.url, true);
+	TextureHandler.prototype._loadWebSupportedImage = function (texture, config, options) {
+		return this.loadObject(config.imageRef, options).then(function (image) {
+			if (texture.image !== image) {
+				texture.setImage(image);
+			}
+			return texture;
+		});
+	};
 
-			return pu.createDummyPromise(texture);
-		} else {
-			texture = this._objects[ref] || this._create(ref);
-			this._prepare(config);
+	TextureHandler.prototype._loadSpecialImage = function (texture, config, type, options) {
+		// Special (dds, tga, crn)
+		var Loader = TextureHandler.loaders[type];
+		var imageRef = config.imageRef;
+		texture.a = imageRef;
+		return this.loadObject(imageRef)
+		.then(function (data) {
+			if (data && data.preloaded) {
+				_.extend(texture.image, data.image);
+				texture.format = data.format;
+				texture.setNeedsUpdate();
+				return texture;
+			}
+			var loader = new Loader();
+			loader.load(data, texture, config.flipY, 0, data.byteLength);
+			return texture;
+		});
+	};
 
-			texture.wrapS = config.wrapU;
-			texture.wrapT = config.wrapV;
+	TextureHandler.prototype._loadVideo = function (texture, config, options) {
+		// Video
+		return this.loadObject(config.imageRef, options).then(function (video) {
+			video.width = video.videoWidth;
+			video.height = video.videoHeight;
+			video.loop = config.loop !== undefined ? config.loop : true;
+			if (!Util.isPowerOfTwo(video.width) || !Util.isPowerOfTwo(video.height)) {
+				texture.generateMipmaps = false;
+				texture.minFilter = 'BilinearNoMipMaps';
+			}
+			texture.setImage(video);
+			texture.updateCallback = function () {
+				return !video.paused;
+			};
+			if (config.autoPlay !== false && !options.editMode) {
+				video.play();
+			}
+			else {
+				video.pause();
+				video.currentTime = 0;
+			}
+			return texture;
+		});
+	};
+
+	TextureHandler.prototype._loadImage = function (texture, config, options) {
+		var imageRef = config.imageRef;
+		var path = StringUtil.parseURL(imageRef).path;
+		var type = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
+		if (TextureHandler.loaders[type]) {
+			return this._loadSpecialImage(texture, config, type, options);
+		}
+		if (['jpg', 'jpeg', 'png', 'gif'].indexOf(type) !== -1) {
+			return this._loadWebSupportedImage(texture, config, options);
+		}
+		if (['mp4', 'ogv', 'webm'].indexOf(type) !== -1) {
+			return this._loadVideo(texture, config, options);
+		}
+		return PromiseUtil.reject(new Error('Unknown image type: '+ type));
+	};
+
+	/**
+	 * Adds/updates/removes a texture
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated texture or null if removed
+	 */
+	TextureHandler.prototype._update = function (ref, config, options) {
+		var that = this;
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (texture) {
+			if (!texture) { return; }
+			var ret;
+
+			// Texture settings
+			texture.wrapS = config.wrapS;
+			texture.wrapT = config.wrapT;
+
 			if (TextureHandler.magFilters.indexOf(config.magFilter) !== -1) {
 				texture.magFilter = config.magFilter;
 			}
 			if (TextureHandler.minFilters.indexOf(config.minFilter) !== -1) {
 				texture.minFilter = config.minFilter;
 			}
+
 			texture.anisotropy = Math.max(config.anisotropy, 1);
 
-			texture.offset.set(config.offset);
-			texture.repeat.set(config.repeat);
+			texture.offset.setArray(config.offset);
+			texture.repeat.setArray(config.repeat);
+			texture.lodBias = config.lodBias;
 
-			texture.flipY = config.flipY;
-
-			texture.setNeedsUpdate();
-			if (!config.url) {
-				console.log("Texture " + ref + " has no url");
-				texture.setImage();
-				return pu.createDummyPromise(texture);
-			} else if (reload || config.url !== texture.a && (!texture.image || !texture.image.src || config.url !== texture.image.src.slice(-config.url.length))) {
-				if (type in TextureHandler.loaders) {
-					var textureLoader = new TextureHandler.loaders[type]();
-					texture.a = imgRef;
-					loadedPromise = this.getConfig(imgRef).then(function(data) {
-						if (data && data.preloaded) {
-							_.extend(texture.image, data.image);
-							texture.format = data.format;
-							texture.needsUpdate = true;
-						}
-						else if (textureLoader.load) {
-							textureLoader.load(data, texture, config.flipY, 0, data.byteLength);
-						}
-						else {
-							throw new Error("Loader for type " + type + " has no load() function");
-						}
-						return texture;
-					}).then(null, function(e) {
-						console.error("Error loading texture: ", e);
-					});
-				} else if (type === 'jpg' || type === 'jpeg' || type === 'png' || type === 'gif') {
-					loadedPromise = this.getConfig(imgRef, false).then(function(data) {
-						texture.setImage(data);
-						return texture;
-					}).then(null, function(e) {
-						console.error("Error loading texture: ", e);
-					});
-				}
-				else {
-					throw new Error("Unknown texture type " + type);
-				}
-			} else {
-				return pu.createDummyPromise(texture);
+			if (texture.flipY !== config.flipY) {
+				texture.flipY = config.flipY;
+				texture.setNeedsUpdate();
 			}
 
-		}
-		if (this.options && this.options.dontWaitForTextures) {
-			// We don't wait for images to load
-			return pu.createDummyPromise(texture);
-		} else {
-			return loadedPromise;
-		}
-	};
+			if (texture.generateMipmaps !== config.generateMipmaps) {
+				texture.generateMipmaps = config.generateMipmaps !== false;
+				texture.setNeedsUpdate();
+			}
 
-	TextureHandler.prototype.remove = function(ref) {
-		console.log("Deleting texture " + ref);
-		return delete this._objects[ref];
+			texture.updateCallback = null;
+
+			if (config.imageRef) {
+				if (!config.lazy) {
+					ret = that._loadImage(texture, config, options);
+				} else {
+					texture.loadImage = function () {
+						return that._loadImage(texture, config, options);
+					};
+					ret = texture;
+				}
+			} else if (config.svgData) {
+				// Load SVG data
+				ret = PromiseUtil.createPromise(function (resolve, reject) {
+					CanvasUtils.renderSvgToCanvas(config.svgData, {}, function (canvas) {
+						if (canvas) {
+							texture.setImage(canvas);
+							resolve(texture);
+						} else {
+							reject('could not render svg to canvas');
+						}
+					});
+				});
+			} else {
+				// Blank
+				// console.warn('Texture ' + ref + ' has no imageRef');
+				// texture.setImage(TextureHandler.WHITE, 1, 1);
+				ret = texture;
+			}
+			if (options && options.texture && options.texture.dontwait) {
+				return texture;
+			} else {
+				return ret;
+			}
+		});
 	};
 
 	return TextureHandler;

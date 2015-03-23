@@ -1,14 +1,14 @@
 define([
 	'goo/entities/systems/System'
-],
-/** @lends */
-function (
+], function (
 	System
 ) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class Processes all entities with a portal component, a mesh renderer component and a mesh data component
+	 * Processes all entities with a portal component, a mesh renderer component and a mesh data component
+	 * @extends System
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/components/PortalComponent/PortalComponent-vtest.html Working example
 	 * @param {Renderer} renderer
 	 * @param {RenderSystem} renderSystem
 	 */
@@ -22,6 +22,7 @@ function (
 	}
 
 	PortalSystem.prototype = Object.create(System.prototype);
+	PortalSystem.prototype.constructor = PortalSystem;
 
 	PortalSystem.prototype.process = function (entities) {
 		for (var i = 0; i < entities.length; i++) {

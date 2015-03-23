@@ -4,22 +4,21 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Material',
 	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/Util'
-],
-/** @lends */
-function (
+	'goo/util/ObjectUtil'
+], function (
 	System,
 	SystemBus,
 	SimplePartitioner,
 	Material,
 	ShaderLib,
-	Util
+	ObjectUtil
 ) {
 	'use strict';
 
 	/**
-	 * @class Renders entities/renderables using a configurable partitioner for culling
+	 * Renders entities/renderables using a configurable partitioner for culling
 	 * @property {Boolean} doRender Only render if set to true
+	 * @extends System
 	 */
 	function RenderSystem() {
 		System.call(this, 'RenderSystem', ['MeshRendererComponent', 'MeshDataComponent']);
@@ -35,20 +34,19 @@ function (
 
 		this._debugMaterials = {};
 		this.overrideMaterials = [];
+		this.partitioningCamera = null;
 
 		this.camera = null;
 		this.lights = [];
 		this.currentTpf = 0.0;
 
-		// stop using this pattern!
-		var that = this;
 		SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-			that.camera = newCam.camera;
-		});
+			this.camera = newCam.camera;
+		}.bind(this));
 
 		SystemBus.addListener('goo.setLights', function (lights) {
-			that.lights = lights;
-		});
+			this.lights = lights;
+		}.bind(this));
 
 		this.picking = {
 			doPick: false,
@@ -60,10 +58,10 @@ function (
 			},
 			skipUpdateBuffer: false
 		};
-		//this.setDebugMaterial('wireframe');
 	}
 
 	RenderSystem.prototype = Object.create(System.prototype);
+	RenderSystem.prototype.constructor = RenderSystem;
 
 	RenderSystem.prototype.pick = function (x, y, callback, skipUpdateBuffer) {
 		this.picking.x = x;
@@ -105,7 +103,11 @@ function (
 				preRenderer.process(renderer, this.entities, this.partitioner, this.camera, this.lights);
 			}
 
-			this.partitioner.process(this.camera, this.entities, this.renderList);
+			if (this.partitioningCamera) {
+				this.partitioner.process(this.partitioningCamera, this.entities, this.renderList);
+			} else {
+				this.partitioner.process(this.camera, this.entities, this.renderList);
+			}
 
 			if (this.composers.length > 0 && this._composersActive) {
 				for (var i = 0; i < this.composers.length; i++) {
@@ -113,20 +115,20 @@ function (
 					composer.render(renderer, this.currentTpf, this.camera, this.lights, null, true, this.overrideMaterials);
 				}
 			} else {
-				renderer.render(this.renderList, this.camera, this.lights, null, { color: false, depth: true, stencil: true }, this.overrideMaterials);
+				renderer.render(this.renderList, this.camera, this.lights, null, true, this.overrideMaterials);
 			}
 		}
 	};
 
-	RenderSystem.prototype.renderToPick = function(renderer, skipUpdateBuffer) {
+	RenderSystem.prototype.renderToPick = function (renderer, skipUpdateBuffer) {
 		renderer.renderToPick(this.renderList, this.camera, true, skipUpdateBuffer);
 	};
 
-	RenderSystem.prototype.enableComposers = function(activate) {
+	RenderSystem.prototype.enableComposers = function (activate) {
 		this._composersActive = !!activate;
 	};
 
-	RenderSystem.prototype._createDebugMaterial = function(key) {
+	RenderSystem.prototype._createDebugMaterial = function (key) {
 		if (key === '') {
 			return;
 		}
@@ -134,25 +136,25 @@ function (
 		switch(key) {
 			case 'wireframe':
 			case 'color':
-				fshader = Util.clone(ShaderLib.simpleColored.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.simpleColored.fshader);
 				break;
 			case 'lit':
-				fshader = Util.clone(ShaderLib.simpleLit.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.simpleLit.fshader);
 				break;
 			case 'texture':
-				fshader = Util.clone(ShaderLib.textured.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.textured.fshader);
 				break;
 			case 'normals':
-				fshader = Util.clone(ShaderLib.showNormals.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.showNormals.fshader);
 				break;
 			case 'simple':
-				fshader = Util.clone(ShaderLib.simple.fshader);
+				fshader = ObjectUtil.deepClone(ShaderLib.simple.fshader);
 				break;
 		}
-		var shaderDef = Util.clone(ShaderLib.uber);
+		var shaderDef = ObjectUtil.deepClone(ShaderLib.uber);
 		shaderDef.fshader = fshader;
 		if(key !== 'flat') {
-			this._debugMaterials[key] = Material.createMaterial(shaderDef, key);
+			this._debugMaterials[key] = new Material(shaderDef, key);
 			if (key === 'wireframe') {
 				this._debugMaterials[key].wireframe = true;
 			}
@@ -192,6 +194,25 @@ function (
 				this.overrideMaterials.push(this._debugMaterials[key]);
 			}
 		}
+	};
+
+	RenderSystem.prototype.invalidateHandles = function (renderer) {
+		for (var i = 0; i < this.entities.length; i++) {
+			var entity = this.entities[i];
+
+			var materials = entity.meshRendererComponent.materials;
+			for (var j = 0; j < materials.length; j++) {
+				renderer.invalidateMaterial(materials[j]);
+			}
+			renderer.invalidateMeshData(entity.meshDataComponent.meshData);
+		}
+
+		for (var i = 0; i < this.composers.length; i++) {
+			var composer = this.composers[i];
+			renderer.invalidateComposer(composer);
+		}
+
+		renderer.rendererRecord = null; // might hold on to stuff
 	};
 
 	return RenderSystem;

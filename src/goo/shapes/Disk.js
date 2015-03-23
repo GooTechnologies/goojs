@@ -1,10 +1,16 @@
-define(['goo/renderer/MeshData'],
-	/** @lends */
-	function (MeshData) {
-	"use strict";
+define([
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
+], function (
+	MeshData,
+	_
+) {
+	'use strict';
 
 	/**
-	 * @class A disk shape
+	 * A disk shape
+	 * @extends MeshData
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/shapes/Disk/Disk-vtest.html Working example
 	 * @param {number} [nSegments=8] Number of slices
 	 * @param {number} [radius=1] Radius of the disk
 	 * @param {number} [pointiness=0] The center of the disk can be offset in both directions from its outer edge by setting a positive or negative pointiness.
@@ -16,6 +22,7 @@ define(['goo/renderer/MeshData'],
 			radius = props.radius;
 			pointiness = props.pointiness;
 		}
+		//! AT: in cylinder and cone this is called radialSamples
 		this.nSegments = nSegments || 8;
 		this.radius = radius || 1;
 		this.pointiness = pointiness || 0;
@@ -29,9 +36,10 @@ define(['goo/renderer/MeshData'],
 	}
 
 	Disk.prototype = Object.create(MeshData.prototype);
+	Disk.prototype.constructor = Disk;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Disk} Self for chaining.
 	 */
 	Disk.prototype.rebuild = function () {
@@ -71,6 +79,16 @@ define(['goo/renderer/MeshData'],
 		this.getIndexBuffer().set(indices);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this disk
+	 * @returns {Disk}
+	 */
+	Disk.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['nSegments', 'radius', 'pointiness']);
+
+		return new Disk(options);
 	};
 
 	return Disk;

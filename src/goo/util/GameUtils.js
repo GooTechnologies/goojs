@@ -1,14 +1,13 @@
 define(
-/** @lends */
+
 function () {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class Shims for standard gaming features
-	 * @description Only used to define the class. Should never be instantiated.
+	 * Shims for standard gaming features
+	 * Only used to define the class. Should never be instantiated.
 	 */
-	function GameUtils () {
-	}
+	function GameUtils () {}
 
 	/** Supported features. All true by default.
 	 * @type {Object}
@@ -18,6 +17,24 @@ function () {
 	GameUtils.supported = {
 		fullscreen: true,
 		pointerLock: true
+	};
+
+	/**
+	 * Attempts to request fullscreen.
+	 */
+	GameUtils.requestFullScreen = function () {
+		if (!document.fullscreenElement && document.documentElement.requestFullScreen) {
+			document.documentElement.requestFullScreen();
+		}
+	};
+
+	/**
+	 * Attempts to exit fullscreen.
+	 */
+	GameUtils.exitFullScreen = function () {
+		if (document.fullscreenElement && document.cancelFullScreen) {
+			document.cancelFullScreen();
+		}
 	};
 
 	/**
@@ -68,11 +85,13 @@ function () {
 		}
 	};
 
+	var visibilityChangeListeners = [];
+
 	/**
 	 * Add a visibilitychange listener.
 	 * @param {Function} callback function called with a boolean (true=hidden, false=visible)
 	 */
-	GameUtils.addVisibilityChangeListener = function(callback) {
+	GameUtils.addVisibilityChangeListener = function (callback) {
 		if (typeof(callback) !== 'function') {
 			return;
 		}
@@ -93,14 +112,26 @@ function () {
 
 		if (typeof document.addEventListener !== 'undefined' &&
 			typeof hidden !== 'undefined') {
-			document.addEventListener(visibilityChange, function() {
+			var eventListener = function () {
 				if (document[hidden]) {
 					callback(true);
 				} else {
 					callback(false);
 				}
+			};
+			visibilityChangeListeners.push({
+				eventName: visibilityChange,
+				eventListener: eventListener
 			});
+			document.addEventListener(visibilityChange, eventListener);
 		}
+	};
+
+	GameUtils.clearVisibilityChangeListeners = function () {
+		visibilityChangeListeners.forEach(function (listener) {
+			document.removeEventListener(listener.eventName, listener.eventListener);
+		});
+		visibilityChangeListeners = [];
 	};
 
 	/**
@@ -109,7 +140,6 @@ function () {
 	 */
 	GameUtils.initAllShims = function (global) {
 		GameUtils.initWebGLShims();
-		GameUtils.initAnimationShims();
 		GameUtils.initFullscreenShims(global);
 		GameUtils.initPointerLockShims(global);
 	};
@@ -119,36 +149,6 @@ function () {
 	 */
 	GameUtils.initWebGLShims = function () {
 		window.Uint8ClampedArray = window.Uint8ClampedArray || window.Uint8Array;
-	};
-
-	/**
-	 * Attempts to initialize the animation shim, ie. defines requestAnimationFrame and cancelAnimationFrame
-	 */
-	GameUtils.initAnimationShims = function () {
-		var lastTime = 0;
-		var vendors = ['ms', 'moz', 'webkit', 'o'];
-
-		for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-			window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-			window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
-		}
-
-		if (window.requestAnimationFrame === undefined) {
-			window.requestAnimationFrame = function (callback) {
-				var currTime = Date.now(), timeToCall = Math.max(0, 16 - (currTime - lastTime));
-				var id = window.setTimeout(function () {
-					callback(currTime + timeToCall);
-				}, timeToCall);
-				lastTime = currTime + timeToCall;
-				return id;
-			};
-		}
-
-		if (window.cancelAnimationFrame === undefined) {
-			window.cancelAnimationFrame = function (id) {
-				clearTimeout(id);
-			};
-		}
 	};
 
 	/**

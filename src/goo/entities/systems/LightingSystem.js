@@ -1,79 +1,30 @@
 define([
+	'goo/renderer/Capabilities',
 	'goo/entities/systems/System',
 	'goo/entities/SystemBus'
-],
-/** @lends */
-function (
+], function (
+	Capabilities,
 	System,
 	SystemBus
 ) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class Processes all entities with a light component making sure that lights are placed according to its transforms
+	 * Processes all entities with a light component making sure that lights are placed according to its transforms<br>
+	 * @example-link http://code.gooengine.com/latest/visual-test/goo/renderer/light/Lights-vtest.html Working example
+	 * @extends System
 	 */
 	function LightingSystem() {
 		System.call(this, 'LightingSystem', ['LightComponent', 'TransformComponent']);
 
 		this.overrideLights = null;
 		this._needsUpdate = true;
+
+		this.lights = [];
 	}
 
 	LightingSystem.prototype = Object.create(System.prototype);
-
-	// does this really need exist? can't inserted and deleted be used instead?
-	/*
-	LightingSystem.prototype.addedComponent = function (entity, component) {
-		if (component.type !== 'LightComponent') {
-			return;
-		}
-
-		if (this.lights.indexOf(component.light) === -1) {
-			entity.transformComponent.setUpdated();
-			this.lights.push(component.light);
-			if (!this.overrideLights) {
-				SystemBus.emit('goo.setLights', this.lights);
-			}
-		}
-	};
-
-	LightingSystem.prototype.removedComponent = function (entity, component) {
-		if (component.type !== 'LightComponent') {
-			return;
-		}
-
-		var index = this.lights.indexOf(component.light);
-		if (index !== -1) {
-			this.lights.splice(index, 1);
-			if (!this.overrideLights) {
-				SystemBus.emit('goo.setLights', this.lights);
-			}
-		}
-	};
-	//*/
-
-	//
-	/*
-	LightingSystem.prototype.inserted = function() {
-		if (this.lights.indexOf(component.light) === -1) {
-			entity.transformComponent.setUpdated();
-			this.lights.push(component.light);
-			if (!this.overrideLights) {
-				SystemBus.emit('goo.setLights', this.lights);
-			}
-		}
-	};
-
-	LightingSystem.prototype.deleted = function() {
-		var index = this.lights.indexOf(component.light);
-		if (index !== -1) {
-			this.lights.splice(index, 1);
-			if(!this.overrideLights) {
-				SystemBus.emit('goo.setLights', this.lights);
-			}
-		}
-	};
-	*/
+	LightingSystem.prototype.constructor = LightingSystem;
 
 	/**
 	 * Replaces the lights tracked by the system with custom ones.
@@ -90,22 +41,18 @@ function (
 	 */
 	LightingSystem.prototype.clearOverrideLights = function () {
 		this.overrideLights = undefined;
-		//SystemBus.emit('goo.setLights', this.lights);
 		this._needsUpdate = true;
 	};
 
-	/* REVIEW: Fair enough, since simplepartitioner does it every frame
-	 * The systembus thing might be a bit slow though
-	 * How about uncomment setLights in clearOverride, then loop in a more performant way
-	 * like in partitioner. Reuse this.lights.
-	 var index = 0;
-	 this.lights[index++] = light;
-	 ...
-	 this.lights.length = index;
-	 */
+	LightingSystem.prototype.inserted = function (entity) {
+		entity.lightComponent.updateLight(entity.transformComponent.worldTransform);
+	};
+
 	LightingSystem.prototype.process = function (entities) {
+		// do we use this anymore?
+		// we used to have this feature for the early days of create
 		if (!this.overrideLights) {
-			var lights = [];
+			this.lights.length = 0;
 
 			for (var i = 0; i < entities.length; i++) {
 				var entity = entities[i];
@@ -117,13 +64,21 @@ function (
 				}
 
 				if (!lightComponent.hidden) {
-					lights.push(lightComponent.light);
+					var light = lightComponent.light;
+					light.shadowCaster = light.shadowCaster && Capabilities.TextureFloat; // Needs float texture for shadows (for now)
+					this.lights.push(light);
 				}
 			}
 			this._needsUpdate = false;
 
-			SystemBus.emit('goo.setLights', lights);
+			SystemBus.emit('goo.setLights', this.lights);
 		}
+	};
+
+	LightingSystem.prototype.invalidateHandles = function (renderer) {
+		this._activeEntities.forEach(function (entity) {
+			entity.lightComponent.light.invalidateHandles(renderer);
+		});
 	};
 
 	return LightingSystem;

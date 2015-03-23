@@ -1,36 +1,35 @@
 define([
-        'goo/math/Vector2',
-        'goo/math/Vector3',
-        'goo/renderer/MeshData'
-        ],
-	/** @lends */
-	function (
-		Vector2,
-		Vector3,
-		MeshData
-	) {
-	"use strict";
+	'goo/math/Vector2',
+	'goo/math/Vector3',
+	'goo/renderer/MeshData'
+	], function (
+	Vector2,
+	Vector3,
+	MeshData
+) {
+	'use strict';
 
 	/**
-	 * @class The purpose of this class is to hold additional information regarding a typedarray buffer, like vbo 'usage' flags
-	 * @param {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
-	 * @property {String} target Type of data ('ArrayBuffer'/'ElementArrayBuffer')
+	 * The TangentGenerator can generate and add a buffer with tangent information to a MeshData
 	 */
 	function TangentGenerator() {
 	}
 
+	/**
+	 * Generates and adds a buffer with tangent information to a MeshData object
+	 * @param {MeshData} meshData MeshData object to use for generating tangent coords
+	 * @param {number} [uvUnit=0] Texture coord index to use as base for tangent generation
+	 */
 	TangentGenerator.addTangentBuffer = function (meshData, uvUnit) {
 		uvUnit = uvUnit || 0;
 
 		var vertexBuffer = meshData.getAttributeBuffer(MeshData.POSITION);
 		if (!vertexBuffer) {
-			// console.warn("Vertex buffer is null!");
 			return;
 		}
 
 		var normalBuffer = meshData.getAttributeBuffer(MeshData.NORMAL);
 		if (!normalBuffer) {
-			// console.warn("Normal buffer is null!");
 			return;
 		}
 
@@ -39,13 +38,11 @@ define([
 			textureBuffer = meshData.getAttributeBuffer(MeshData.TEXCOORD0);
 		}
 		if (!textureBuffer) {
-			// console.warn("Texture buffer is null!");
 			return;
 		}
 
 		var indexBuffer = meshData.getIndexBuffer();
 		if (!indexBuffer) {
-			// console.warn("Index buffer is null!");
 			return;
 		}
 

@@ -1,12 +1,12 @@
 define(['goo/math/Vector2'],
-	/** @lends */
+
 	function (Vector2) {
-	"use strict";
+	'use strict';
 
 	/**
 	 * Creates a new RenderTarget object
 	 *
-	 * @class Post processing handler
+	 * Post processing handler
 	 * @param {Number} width Width of rendertarget
 	 * @param {Number} height Height of rendertarget
 	 * @param {Parameters} parameters Settings
@@ -43,6 +43,8 @@ define(['goo/math/Vector2'],
 
 		this.depthBuffer = options.depthBuffer !== undefined ? options.depthBuffer : true;
 		this.stencilBuffer = options.stencilBuffer !== undefined ? options.stencilBuffer : true;
+
+		this.textureRecord = {};
 	}
 
 	RenderTarget.prototype.clone = function () {
@@ -72,6 +74,39 @@ define(['goo/math/Vector2'],
 		tmp.stencilBuffer = this.stencilBuffer;
 
 		return tmp;
+	};
+
+	/**
+	 * Returns the number of bytes this render target occupies in memory
+	 * @returns {number}
+	 */
+	RenderTarget.prototype.getSizeInMemory = function () {
+		var size = this.width * this.height * 4;
+		
+		if (this.generateMipmaps) {
+			size = Math.ceil(size * 4 / 3);
+		}
+
+		return size;
+	};
+
+	/**
+	 * Deallocates all allocated resources from the WebGL context.
+	 * @param  {WebGLContext} context
+	 */
+	RenderTarget.prototype.destroy = function (context) {
+		if (this.glTexture) {
+			context.deleteTexture(this.glTexture);
+			this.glTexture = null;
+		}
+		if (this._glRenderBuffer) {
+			context.deleteRenderbuffer(this._glRenderBuffer);
+			this._glRenderBuffer = null;
+		}
+		if (this._glFrameBuffer) {
+			context.deleteFramebuffer(this._glFrameBuffer);
+			this._glFrameBuffer = null;
+		}
 	};
 
 	return RenderTarget;

@@ -1,5 +1,5 @@
 define([
-	'goo/shapes/ShapeCreator',
+	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/renderer/MeshData',
 	'goo/renderer/Material',
@@ -7,8 +7,8 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/math/Transform'
 
-], /** @lends */ function (
-	ShapeCreator,
+],  function (
+	Box,
 	Sphere,
 	MeshData,
 	Material,
@@ -18,10 +18,17 @@ define([
 ) {
 	'use strict';
 
+	/**
+	 * Skybox
+	 * @param type
+	 * @param images
+	 * @param textureMode
+	 * @param yRotation
+	 */
 	function Skybox(type, images, textureMode, yRotation) {
 		var texture;
 		if (type === Skybox.SPHERE) {
-			this.meshData = ShapeCreator.createSphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
+			this.meshData = new Sphere(48, 48, 1, textureMode || Sphere.TextureModes.Projected);
 			if (images instanceof Array) {
 				images = images[0];
 			}
@@ -29,14 +36,14 @@ define([
 				texture = new TextureCreator().loadTexture2D(images);
 			}
 		} else if (type === Skybox.BOX) {
-			this.meshData = ShapeCreator.createBox(1, 1, 1);
+			this.meshData = new Box(1, 1, 1);
 			if (images.length) {
 				texture = new TextureCreator().loadTextureCube(images, {flipY: false});
 			}
 		} else {
 			throw new Error('Unknown geometry type');
 		}
-		var material = Material.createMaterial(shaders[type], 'Skybox material');
+		var material = new Material(shaders[type], 'Skybox material');
 
 		material.setTexture(Shader.DIFFUSE_MAP, texture);
 
@@ -99,7 +106,9 @@ define([
 			'void main(void)',//
 			'{',//
 			'	vec4 cube = textureCube(diffuseMap, eyeVec);',//
+			' if (cube.a < 0.05) discard;',
 			'	gl_FragColor = cube;',//
+
 			 //' gl_FragColor = vec4(1.0,0.0,0.0,1.0);',//
 			'}'//
 		].join('\n')
@@ -147,7 +156,9 @@ define([
 
 			'void main(void)',
 			'{',
-			'	gl_FragColor = texture2D(diffuseMap, texCoord0);',
+			' vec4 sphere = texture2D(diffuseMap, texCoord0);',
+			' if (sphere.a < 0.05) discard;',
+			'	gl_FragColor = sphere;',
 			'}'//
 		].join('\n')
 	};

@@ -1,0 +1,421 @@
+{"dc11b5c3ba18423e8d29105f633435d7.scene"     : {
+	"initialCameraRef": "af561382f49d4805a2c3321ae7cd69a1.entity",
+	"name"            : "Scene",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:38:48.701Z",
+	"deleted"         : false,
+	"_readOnly"       : false,
+	"modified"        : "2014-04-01T15:37:13.392594+00:00",
+	"dataModelVersion": 2,
+	"entities"        : {
+		"af561382f49d4805a2c3321ae7cd69a1.entity": {
+			"entityRef": "af561382f49d4805a2c3321ae7cd69a1.entity",
+			"sortValue": 0
+		},
+		"741ec7cb229942818b19a9a27aefb5f6.entity": {
+			"entityRef": "741ec7cb229942818b19a9a27aefb5f6.entity",
+			"sortValue": 2
+		},
+		"420728334d96424e999a6738a6bfd7c5.entity": {
+			"entityRef": "420728334d96424e999a6738a6bfd7c5.entity",
+			"sortValue": 1
+		}
+	},
+	"id"              : "dc11b5c3ba18423e8d29105f633435d7.scene"
+}, "8811ac1982a84075a1c4d5309fdcf763.material": {
+	"cullState"       : {
+		"frontFace": "CCW",
+		"enabled"  : true,
+		"cullFace" : "Back"
+	},
+	"uniforms"        : {
+		"opacity"              : {
+			"enabled": true,
+			"value"  : 1
+		},
+		"refractivity"         : {
+			"enabled": true,
+			"value"  : 0
+		},
+		"materialAmbient"      : {
+			"enabled": true,
+			"value"  : [0.1, 0.1, 0.1, 1]
+		},
+		"materialSpecular"     : {
+			"enabled": true,
+			"value"  : [0.6, 0.6, 0.6, 1]
+		},
+		"fresnel"              : {
+			"enabled": true,
+			"value"  : 0
+		},
+		"vertexColorAmount"    : {
+			"enabled": true,
+			"value"  : 1
+		},
+		"materialSpecularPower": {
+			"enabled": true,
+			"value"  : 64
+		},
+		"materialDiffuse"      : {
+			"enabled": true,
+			"value"  : [0.8, 0.8, 0.8, 1]
+		},
+		"reflectivity"         : {
+			"enabled": true,
+			"value"  : 0
+		},
+		"materialEmissive"     : {
+			"enabled": true,
+			"value"  : [0, 0, 0, 1]
+		},
+		"discardThreshold"     : {
+			"enabled": true,
+			"value"  : 0.1
+		},
+		"normalMultiplier"     : {
+			"enabled": true,
+			"value"  : 1
+		},
+		"etaRatio"             : {
+			"enabled": true,
+			"value"  : 0
+		}
+	},
+	"name"            : "Empty Material",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:41:41.887550+00:00",
+	"deleted"         : false,
+	"id"              : "8811ac1982a84075a1c4d5309fdcf763.material",
+	"_readOnly"       : false,
+	"dataModelVersion": 2,
+	"blendState"      : {
+		"blendDst"     : "OneMinusSrcAlphaFactor",
+		"blendSrc"     : "SrcAlphaFactor",
+		"blendEquation": "AddEquation",
+		"blending"     : "NoBlending"
+	},
+	"modified"        : "2014-04-01T15:41:41.887587+00:00",
+	"dualTransparency": false,
+	"depthState"      : {
+		"write"  : true,
+		"enabled": true
+	},
+	"shaderRef"       : "GOO_ENGINE_SHADERS/uber",
+	"texturesMapping" : {},
+	"renderQueue"     : -1
+}, "af561382f49d4805a2c3321ae7cd69a1.entity"  : {
+	"name"            : "Default Camera",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:38:34.851Z",
+	"deleted"         : false,
+	"_readOnly"       : false,
+	"modified"        : "2014-04-01T15:41:43.367767+00:00",
+	"dataModelVersion": 2,
+	"static"          : false,
+	"components"      : {
+		"camera"   : {
+			"fov"            : 45,
+			"lockedRatio"    : false,
+			"far"            : 1000,
+			"followEditorCam": true,
+			"projectionMode" : "Perspective",
+			"near"           : 1,
+			"aspect"         : 1
+		},
+		"transform": {
+			"translation": [1.9425232410430908, 2.4878907203674316, -5.100433349609375],
+			"scale"      : [1, 1, 1],
+			"rotation"   : [-24.505373194739256, -200.84956293605944, 0]
+		}
+	},
+	"hidden"          : false,
+	"id"              : "af561382f49d4805a2c3321ae7cd69a1.entity"
+}, "fc52862c57434421b50e9acaeaf68638.entity"  : {
+	"name"            : "Directional 0",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:36:59.675809+00:00",
+	"deleted"         : false,
+	"_readOnly"       : false,
+	"modified"        : "2014-04-01T15:36:59.675833+00:00",
+	"dataModelVersion": 2,
+	"static"          : false,
+	"components"      : {
+		"light"    : {
+			"direction"        : [0, 0, 0],
+			"shadowCaster"     : true,
+			"color"            : [1, 1, 1, 1],
+			"intensity"        : 0.8,
+			"range"            : 60,
+			"specularIntensity": 1,
+			"penumbra"         : 5,
+			"angle"            : 30,
+			"type"             : "DirectionalLight",
+			"shadowSettings"   : {
+				"fov"       : 55,
+				"darkness"  : 1,
+				"far"       : 60,
+				"near"      : 1,
+				"resolution": [256, 256],
+				"shadowType": "VSM",
+				"size"      : 100
+			}
+		},
+		"transform": {
+			"translation": [16, 20.5, 23.3],
+			"scale"      : [1, 1, 1],
+			"rotation"   : [-38, 21, -18]
+		}
+	},
+	"hidden"          : false,
+	"id"              : "fc52862c57434421b50e9acaeaf68638.entity"
+}, "420728334d96424e999a6738a6bfd7c5.entity"  : {
+	"name"            : "Default Lights",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:36:59.773706+00:00",
+	"deleted"         : false,
+	"_readOnly"       : false,
+	"modified"        : "2014-04-01T15:36:59.773727+00:00",
+	"dataModelVersion": 2,
+	"static"          : false,
+	"components"      : {
+		"transform": {
+			"translation": [0, 0, 0],
+			"scale"      : [1, 1, 1],
+			"rotation"   : [0, 0, 0],
+			"children"   : {
+				"fc52862c57434421b50e9acaeaf68638.entity": {
+					"entityRef": "fc52862c57434421b50e9acaeaf68638.entity",
+					"sortValue": 0
+				},
+				"36f7bd47a9c74447b13bbbfbd9986032.entity": {
+					"entityRef": "36f7bd47a9c74447b13bbbfbd9986032.entity",
+					"sortValue": 1
+				}
+			}
+		}
+	},
+	"hidden"          : false,
+	"id"              : "420728334d96424e999a6738a6bfd7c5.entity"
+}, "a208ec1eae10441db2325cf7fab352ce.project" : {
+	"mainSceneRef"    : "dc11b5c3ba18423e8d29105f633435d7.scene",
+	"name"            : "Default Goo Project",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:36:59.938299+00:00",
+	"deleted"         : false,
+	"_readOnly"       : false,
+	"dataModelVersion": 2,
+	"scenes"          : {
+		"dc11b5c3ba18423e8d29105f633435d7.scene": {
+			"sortValue": 0,
+			"sceneRef" : "dc11b5c3ba18423e8d29105f633435d7.scene"
+		}
+	},
+	"modified"        : "2014-04-01T15:36:59.938323+00:00",
+	"id"              : "a208ec1eae10441db2325cf7fab352ce.project"
+}, "e0285494b86346d0b1ecaee48c36b2e9.entity"  : {
+	"name"            : "Sphere",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:38:48.697Z",
+	"deleted"         : false,
+	"_readOnly"       : false,
+	"modified"        : "2014-04-01T15:41:46.586920+00:00",
+	"dataModelVersion": 2,
+	"static"          : false,
+	"components"      : {
+		"transform"   : {
+			"translation": [1.8114269971847534, 0, 0],
+			"scale"      : [1, 1, 1],
+			"rotation"   : [0, 0, 0]
+		},
+		"meshRenderer": {
+			"reflectable"   : true,
+			"materials"     : {
+				"8811ac1982a84075a1c4d5309fdcf763.material": {
+					"materialRef": "8811ac1982a84075a1c4d5309fdcf763.material",
+					"sortValue"  : 0
+				}
+			},
+			"receiveShadows": true,
+			"cullMode"      : "Never",
+			"castShadows"   : true
+		},
+		"meshData"    : {
+			"shape"       : "Sphere",
+			"shapeOptions": {
+				"radialSamples": 16,
+				"textureMode"  : "Projected",
+				"zSamples"     : 16
+			}
+		},
+		"html" : {
+        	"innerHtml": "Sphere",
+        	"style": "__entity { background-color: red }"
+        }
+	},
+	"hidden"          : false,
+	"id"              : "e0285494b86346d0b1ecaee48c36b2e9.entity"
+}, "36f7bd47a9c74447b13bbbfbd9986032.entity"  : {
+	"name"            : "Directional 1",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:36:59.992592+00:00",
+	"deleted"         : false,
+	"_readOnly"       : false,
+	"modified"        : "2014-04-01T15:36:59.992616+00:00",
+	"dataModelVersion": 2,
+	"static"          : false,
+	"components"      : {
+		"light"    : {
+			"direction"        : [0, 0, 0],
+			"shadowCaster"     : true,
+			"color"            : [1, 1, 1, 1],
+			"intensity"        : 0.4,
+			"range"            : 60,
+			"specularIntensity": 1,
+			"penumbra"         : 5,
+			"angle"            : 30,
+			"type"             : "DirectionalLight",
+			"shadowSettings"   : {
+				"fov"       : 55,
+				"darkness"  : 1,
+				"far"       : 60,
+				"near"      : 1,
+				"resolution": [256, 256],
+				"shadowType": "VSM",
+				"size"      : 100
+			}
+		},
+		"transform": {
+			"translation": [15, 11.6, -12.2],
+			"scale"      : [1, 1, 1],
+			"rotation"   : [-31, 129, 0]
+		}
+	},
+	"hidden"          : false,
+	"id"              : "36f7bd47a9c74447b13bbbfbd9986032.entity"
+}, "453d62ac0f9c4aadae1281d86f60e936.material": {
+	"cullState"       : {
+		"frontFace": "CCW",
+		"enabled"  : true,
+		"cullFace" : "Back"
+	},
+	"uniforms"        : {
+		"opacity"              : {
+			"enabled": true,
+			"value"  : 1
+		},
+		"refractivity"         : {
+			"enabled": true,
+			"value"  : 0
+		},
+		"materialAmbient"      : {
+			"enabled": true,
+			"value"  : [0.1, 0.1, 0.1, 1]
+		},
+		"materialSpecular"     : {
+			"enabled": true,
+			"value"  : [0.6, 0.6, 0.6, 1]
+		},
+		"fresnel"              : {
+			"enabled": true,
+			"value"  : 0
+		},
+		"vertexColorAmount"    : {
+			"enabled": true,
+			"value"  : 1
+		},
+		"materialSpecularPower": {
+			"enabled": true,
+			"value"  : 64
+		},
+		"materialDiffuse"      : {
+			"enabled": true,
+			"value"  : [0.8, 0.8, 0.8, 1]
+		},
+		"reflectivity"         : {
+			"enabled": true,
+			"value"  : 0
+		},
+		"materialEmissive"     : {
+			"enabled": true,
+			"value"  : [0, 0, 0, 1]
+		},
+		"discardThreshold"     : {
+			"enabled": true,
+			"value"  : 0.1
+		},
+		"normalMultiplier"     : {
+			"enabled": true,
+			"value"  : 1
+		},
+		"etaRatio"             : {
+			"enabled": true,
+			"value"  : 0
+		}
+	},
+	"name"            : "Empty Material",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:37:02.961642+00:00",
+	"deleted"         : false,
+	"id"              : "453d62ac0f9c4aadae1281d86f60e936.material",
+	"_readOnly"       : false,
+	"dataModelVersion": 2,
+	"blendState"      : {
+		"blendDst"     : "OneMinusSrcAlphaFactor",
+		"blendSrc"     : "SrcAlphaFactor",
+		"blendEquation": "AddEquation",
+		"blending"     : "NoBlending"
+	},
+	"modified"        : "2014-04-01T15:37:02.961663+00:00",
+	"dualTransparency": false,
+	"depthState"      : {
+		"write"  : true,
+		"enabled": true
+	},
+	"shaderRef"       : "GOO_ENGINE_SHADERS/uber",
+	"texturesMapping" : {},
+	"renderQueue"     : -1
+}, "741ec7cb229942818b19a9a27aefb5f6.entity"  : {
+	"name"            : "Box",
+	"license"         : "CC0",
+	"created"         : "2014-04-01T15:38:48.697Z",
+	"deleted"         : false,
+	"_readOnly"       : false,
+	"modified"        : "2014-04-01T15:37:13.496593+00:00",
+	"dataModelVersion": 2,
+	"static"          : false,
+	"components"      : {
+		"transform"   : {
+			"translation": [0, 0, 0],
+			"scale"      : [1, 1, 1],
+			"rotation"   : [0, 0, 0],
+			"children"   : {
+				"e0285494b86346d0b1ecaee48c36b2e9.entity": {
+					"entityRef": "e0285494b86346d0b1ecaee48c36b2e9.entity",
+					"sortValue": 0
+				}
+			}
+		},
+		"meshRenderer": {
+			"reflectable"   : true,
+			"materials"     : {
+				"453d62ac0f9c4aadae1281d86f60e936.material": {
+					"materialRef": "453d62ac0f9c4aadae1281d86f60e936.material",
+					"sortValue"  : 0
+				}
+			},
+			"receiveShadows": true,
+			"cullMode"      : "Never",
+			"castShadows"   : true
+		},
+		"meshData"    : {
+			"shape": "Box"
+		},
+		"html" : {
+			"innerHtml": "Box",
+			"style": "__entity { color: red }"
+		}
+	},
+	"hidden"          : false,
+	"id"              : "741ec7cb229942818b19a9a27aefb5f6.entity"
+}}

@@ -3,31 +3,46 @@ define([
 	'goo/renderer/Material',
 	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
+	'goo/renderer/RenderQueue',
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/util/ObjectUtil'
-], function(
+], function (
 	ConfigHandler,
 	Material,
 	Util,
 	ShaderLib,
+	RenderQueue,
 	RSVP,
 	PromiseUtil,
 	_
 ) {
-	"use strict";
+	'use strict';
 
+	/**
+	 * Handler for loading materials into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 * @private
+	 */
 	function MaterialHandler() {
 		ConfigHandler.apply(this, arguments);
-		this._objects = {};
 	}
 
 	MaterialHandler.prototype = Object.create(ConfigHandler.prototype);
+	MaterialHandler.prototype.constructor = MaterialHandler;
 	ConfigHandler._registerClass('material', MaterialHandler);
 
 	MaterialHandler.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
 
-	MaterialHandler.prototype._prepare = function(config) {
+	/**
+	 * Preparing material config by populating it with defaults.
+	 * @param {object} config
+	 * @private
+	 */
+	MaterialHandler.prototype._prepare = function (config) {
 		if (!config.blendState) {
 			config.blendState = {};
 		}
@@ -37,6 +52,7 @@ define([
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		});
+
 		if (!config.cullState) {
 			config.cullState = {};
 		}
@@ -45,6 +61,7 @@ define([
 			cullFace: 'Back',
 			frontFace: 'CCW'
 		});
+
 		if (!config.depthState) {
 			config.depthState = {};
 		}
@@ -52,135 +69,129 @@ define([
 			enabled: true,
 			write: true
 		});
-		/*jshint eqeqeq: false, -W041*/
-		if (config.renderQueue == null) {
+
+		if (config.renderQueue === null || config.renderQueue === undefined) {
 			config.renderQueue = -1;
 		}
-	};
-
-	MaterialHandler.prototype._create = function(ref) {
-		if (!this._objects) {
-			this._objects = {};
+		if (config.dualTransparency === null || config.dualTransparency === undefined) {
+			config.dualTransparency = false;
 		}
-		return this._objects[ref] = new Material(ref);
+		if (config.wireframe === null || config.wireframe === undefined) {
+			config.wireframe = false;
+		}
+		if (config.flat === null || config.flat === undefined) {
+			config.flat = false;
+		}
 	};
 
-	MaterialHandler.prototype.update = function(ref, config) {
+	/**
+	 * Creates a (somewhat) empty material.
+	 * @returns {Material}
+	 * @private
+	 */
+	MaterialHandler.prototype._create = function () {
+		return new Material();
+	};
+
+	MaterialHandler.prototype._remove = function (ref) {
+		var material = this._objects.get(ref);
+		if (!material) {
+			return;
+		}
+		// material.shader.destroy(); // don't destroy the shader; it may be used by some other material
+		material.empty();
+		this._objects.delete(ref);
+	};
+
+	/**
+	 * Adds/updates/removes a a material
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated material or null if removed
+	 */
+	MaterialHandler.prototype._update = function(ref, config, options) {
 		var that = this;
-		var object = this._objects[ref] || this._create(ref);
-		this._prepare(config);
-
-		return this._getShaderObject(config.shaderRef, config.wireframe).then(function(shader) {
-			if (!shader) {
-				console.warn('Unknown shader', config.shaderRef, '- not updating material', ref);
-				return;
-			}
-			if (config.wireframe) {
-				object.wireframe = config.wireframe;
-			}
-
-			object.blendState = Util.clone(config.blendState);
-			object.cullState = Util.clone(config.cullState);
-			object.depthState = Util.clone(config.depthState);
-			object.dualTransparency = config.dualTransparency || false;
-			if (config.renderQueue === -1) {
-				object.renderQueue = null;
-			} else {
-				object.renderQueue = config.renderQueue;
-			}
-			object.shader = shader;
-			object.uniforms = {};
-			for (var name in config.uniforms) {
-				if (typeof config.uniforms[name].enabled === 'undefined') {
-					object.uniforms[name] = _.clone(config.uniforms[name]);
-				} else {
-					if (config.uniforms[name].enabled) {
-						object.uniforms[name] = _.clone(config.uniforms[name].value);
-					} else {
-						delete object.uniforms[name];
-					}
-				}
-
-			}
-
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(material) {
+			if (!material) { return; }
 			var promises = [];
+			// Material settings
+			_.extend(material.blendState, config.blendState);
+			_.extend(material.cullState, config.cullState);
+			_.extend(material.depthState, config.depthState);
 
-			var updateTexture = function(textureType, textureRef) {
-				return promises.push(that.getConfig(textureRef).then(function(textureConfig) {
-					return that.updateObject(textureRef, textureConfig, that.options).then(function(texture) {
-						return {
-							type: textureType,
-							ref: textureRef,
-							texture: texture
-						};
-					});
-				}));
-			};
-			for (var textureType in config.texturesMapping) {
-				var textureRef = config.texturesMapping[textureType];
-				if (typeof textureRef === 'string') {
-					updateTexture(textureType, textureRef);
+			material.id = config.id;
+			material.name = config.name;
+			material.wireframe = config.wireframe;
+			material.flat = config.flat;
+			material.dualTransparency = config.dualTransparency;
+			if (config.renderQueue === -1) {
+				if (config.blendState.blending !== 'NoBlending') {
+					material.renderQueue = RenderQueue.TRANSPARENT;
 				} else {
-					if (textureRef && textureRef.enabled) {
-						updateTexture(textureType, textureRef.textureRef);
-					} else {
-						object.removeTexture(textureType);
-					}
+					material.renderQueue = null;
 				}
-				for (var type in object._textureMaps) {
-					if (!config.texturesMapping[type]) {
-						object.removeTexture(type);
-					}
-				}
-			}
-			if (promises.length) {
-				return RSVP.all(promises).then(function(textures) {
-					for (var i = 0; i < textures.length;  i++) {
-						var texture = textures[i];
-						if (texture.texture) {
-							object.setTexture(texture.type, texture.texture);
-						}
-					}
-					return object;
-				}).then(null, function(err) {
-					return console.error("Error loading textures: " + err);
-				});
 			} else {
-				return object;
+				material.renderQueue = config.renderQueue;
 			}
+			material.uniforms = {};
+			for (var name in config.uniforms) {
+				if (config.uniforms[name].enabled === undefined) {
+					material.uniforms[name] = _.clone(config.uniforms[name]);
+				} else if (config.uniforms[name].enabled) {
+					material.uniforms[name] = _.clone(config.uniforms[name].value);
+				}
+			}
+
+			// TODO: This is a temporary hack until we fully moved shininess into the last entry of specular [r, g, b, spec_power]
+			if (material.uniforms.materialSpecular !== undefined && material.uniforms.materialSpecularPower !== undefined) {
+				material.uniforms.materialSpecular[3] = material.uniforms.materialSpecularPower;
+			}
+
+			// Shader
+			var shaderRef = config.shaderRef;
+			if (!shaderRef) {
+				material.shader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader');
+			}
+			else if (shaderRef.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) === 0) {
+				var shaderName = shaderRef.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
+				material.shader = Material.createShader(ShaderLib[shaderName]);
+			} else {
+				var p = that._load(shaderRef, options).then(function(shader) {
+					material.shader = shader;
+				}).then(null, function(err) {
+					throw new Error('Error loading shader: ' + err);
+				});
+				promises.push(p);
+			}
+
+			// Textures
+			function addTexture(type, ref, options) {
+				return that._load(ref, options).then(function(texture) {
+					material.setTexture(type, texture);
+				}).then(null, function(err) {
+					throw new Error('Error loading texture: ' + ref + ' - ' + err);
+				});
+			}
+			var textureRef;
+			for (var type in config.texturesMapping) {
+				textureRef = config.texturesMapping[type];
+				if(!textureRef || !textureRef.textureRef || textureRef.enabled === false) {
+					material.removeTexture(type);
+				} else {
+					promises.push(addTexture(type, textureRef.textureRef, options));
+				}
+			}
+			for (var type in material._textureMaps) {
+				if (!config.texturesMapping[type]) {
+					material.removeTexture(type);
+				}
+			}
+			return RSVP.all(promises).then(function() {
+				return material;
+			});
 		});
 	};
 
-	MaterialHandler.prototype.remove = function(ref) {
-		return delete this._objects[ref];
-	};
-
-	MaterialHandler.prototype._getShaderObject = function(ref, wireframe) {
-		var that = this;
-		if (wireframe) {
-			var promise = new RSVP.Promise();
-			var shader = Material.createShader(ShaderLib.simple);
-			promise.resolve(shader);
-			return promise;
-		} else if (ref) {
-			if (ref.indexOf(MaterialHandler.ENGINE_SHADER_PREFIX) === 0) {
-				// The shader is set to load from the engine's shader library.
-				// The shader reference is in the form <ENGINE_SHADER_PREFIX>shaderName,
-				// slicing the reference to get the shaderName.
-				var shaderName = ref.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
-				var shader = Material.createShader(ShaderLib[shaderName]);
-				return PromiseUtil.createDummyPromise(shader);
-			} else {
-				return this.getConfig(ref).then(function(config) {
-					return that.updateObject(ref, config, that.options);
-				});
-			}
-		} else {
-			var defaultShader = Material.createShader(ShaderLib.texturedLit, 'DefaultShader');
-			return PromiseUtil.createDummyPromise(defaultShader);
-		}
-	};
-
 	return MaterialHandler;
-
 });

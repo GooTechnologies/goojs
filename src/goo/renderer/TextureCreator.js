@@ -1,190 +1,107 @@
 define([
-	'goo/loaders/Loader',
 	'goo/renderer/Texture',
-	'goo/loaders/dds/DdsLoader',
-	'goo/loaders/crunch/CrunchLoader',
-	'goo/loaders/tga/TgaLoader',
 	'goo/renderer/Util',
-	'goo/util/Latch'
-],
-/** @lends */
-function (
-	Loader,
+	'goo/loaders/handlers/TextureHandler',
+	'goo/util/Ajax',
+	'goo/util/StringUtil',
+	'goo/util/PromiseUtil',
+	'goo/util/rsvp'
+], function (
 	Texture,
-	DdsLoader,
-	CrunchLoader,
-	TgaLoader,
 	Util,
-	Latch
+	TextureHandler,
+	Ajax,
+	StringUtil,
+	PromiseUtil,
+	RSVP
 ) {
-	"use strict";
+	'use strict';
+
+	//! AT: shouldn't this stay in util?
 
 	/**
-	 * @class Takes away the pain of creating textures of various sorts.
+	 * Takes away the pain of creating textures of various sorts.
 	 * @param {Settings} settings Texturing settings
 	 */
-	function TextureCreator(settings) {
-		settings = settings || {};
-
-		this.verticalFlip = settings.verticalFlip !== undefined ? settings.verticalFlip : true;
-		this._loader = settings.loader !== undefined ? settings.loader : new Loader();
-
-		this.textureLoaders = {
-			'.dds': new DdsLoader(),
-			'.crn': new CrunchLoader(),
-			'.tga': new TgaLoader()
-		};
+	function TextureCreator() {
+		var ajax = this.ajax = new Ajax();
+		this.textureHandler = new TextureHandler(
+			{},
+			function (ref, options) {
+				return ajax.load(ref, options ? options.noCache : false);
+			},
+			function () {},
+			function (ref, options) {
+				return ajax.load(ref, options ? options.noCache : false);
+			}
+		);
 	}
 
-	TextureCreator.cache = {};
+	//! AT: unused?
 	TextureCreator.UNSUPPORTED_FALLBACK = '.png';
+	TextureCreator.clearCache = function () {};
 
-	function endsWith(str, suffix) {
-		return str.indexOf(suffix, str.length - suffix.length) !== -1;
-	}
-
-	TextureCreator.clearCache = function () {
-		TextureCreator.cache = {};
+	/**
+	 * Releases any references to cached objects
+	 */
+	TextureCreator.prototype.clear = function () {
+		this.ajax.clear();
+		this.textureHandler.clear();
 	};
 
 	/**
 	 * Creates a texture and loads image into it
 	 * @example gridMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTexture2D('scenes/resources/googrid1.jpg'));
-	 * @param {string} imageURL
-	 * @param {object} settings passed to the {Texture} constructor
+	 * @param {string} imageUrl
+	 * @param {object} settings passed to the {Texture} constructor
+	 * @param {Function} callback
 	 * @returns {Texture}
 	 */
-	TextureCreator.prototype.loadTexture2D = function (imageURL, settings, callback) {
-		if (TextureCreator.cache[imageURL] !== undefined) {
-			if(callback) {
-				callback();
+	TextureCreator.prototype.loadTexture2D = function (imageUrl, settings, callback) {
+		var id = StringUtil.createUniqueId('texture');
+		settings = settings || {};
+		settings.imageRef = imageUrl;
+
+		var texture = this.textureHandler._create();
+		this.textureHandler._objects.set(id, texture);
+		// texture.setImage(TextureHandler.WHITE, 1, 1);
+		this.textureHandler.update(id, settings).then(function () {
+			if (callback) {
+				callback(texture);
 			}
-			return TextureCreator.cache[imageURL];
-		}
-
-		var simpleResourceUtilCallback = {
-			onSuccess: function (/* ArrayBuffer */response) {
-				loader.load(response, rVal, creator.verticalFlip, 0, response.byteLength);
-				TextureCreator._finishedLoading();
-				if (callback) { callback(); }
-			}.bind(this),
-			onError: function (t) {
-				console.warn("Error loading texture: " + imageURL + " | " + t);
-			}.bind(this)
-		};
-
-		var creator = this;
-		for (var extension in this.textureLoaders) {
-			if (endsWith(imageURL.toLowerCase(), extension)) {
-				var loader = this.textureLoaders[extension];
-
-				if (!loader || !loader.isSupported()) {
-					imageURL = imageURL.substring(0, imageURL.length - extension.length);
-					imageURL += TextureCreator.UNSUPPORTED_FALLBACK;
-					settings = settings || {};
-					settings.flipY = false;
-					break;
-				}
-
-				// make a dummy texture to fill on load = similar to normal
-				// path, but using arraybuffer instead
-				var rVal = new Texture(Util.clone(TextureCreator.DEFAULT_TEXTURE_2D.image), settings);
-				rVal.image.dataReady = false;
-				rVal.a = imageURL;
-
-				TextureCreator.cache[imageURL] = rVal;
-
-				// from URL
-				this._loader.load(imageURL, null, Loader.ARRAY_BUFFER).then(simpleResourceUtilCallback.onSuccess, simpleResourceUtilCallback.onError);
-
-				// return standin while we wait for texture to load.
-				return rVal;
-			}
-		}
-
-		if (TextureCreator.cache[imageURL] !== undefined) {
-			if(callback) {
-				callback();
-			}
-			return TextureCreator.cache[imageURL];
-		}
-
-		// Create a texture
-		var texture = new Texture(null, settings);
-		TextureCreator.cache[imageURL] = texture;
-
-		// Load the actual image
-		this._loader.loadImage(imageURL).then(function (data) {
-			texture.setImage(data);
-			TextureCreator._finishedLoading(data);
-			if(callback) {
-				callback();
-			}
-		}).then(null, function(err) {
-			console.error(err);
 		});
-
-//		console.info("Loaded image: " + imageURL);
 
 		return texture;
 	};
 
-	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, videoSettings, errorCallback) {
-		if (TextureCreator.cache[videoURL] !== undefined) {
-			return TextureCreator.cache[videoURL];
-		}
+	TextureCreator.prototype.loadTextureVideo = function (videoURL, loop, settings, errorCallback) {
+		var id = StringUtil.createUniqueId('texture');
+		settings = settings || {};
+		settings.imageRef = videoURL;
+		settings.loop = loop;
+		settings.wrapS = 'EdgeClamp';
+		settings.wrapT = 'EdgeClamp';
+		settings.autoPlay = true;
 
-		var video = document.createElement('video');
-		for (var attribute in videoSettings) {
-			video[attribute] = videoSettings[attribute];
-		}
-		video.loop = (typeof (loop) === 'boolean') ? loop : true;
+		var texture = this.textureHandler._create();
+		this.textureHandler._objects.set(id, texture);
 
-		video.addEventListener('error', function (error) {
-			console.warn('Couldn\'t load video URL [' + videoURL + ']', error);
-			if (errorCallback) {
-				errorCallback(error);
+		this.textureHandler.update(id, settings, {
+			texture: {
+				dontwait: true
 			}
-		}, false);
-
-		var texture = new Texture(video, {
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp'
+		}).then(null, function (err) {
+			errorCallback(err);
 		});
-
-		texture.readyCallback = function () {
-			if (video.readyState >= 3) {
-				console.log('Video ready: ' + video.videoWidth + ', ' + video.videoHeight);
-				video.width = video.videoWidth;
-				video.height = video.videoHeight;
-
-				// set minification filter based on pow2
-				if (Util.isPowerOfTwo(video.width) === false || Util.isPowerOfTwo(video.height) === false) {
-					texture.generateMipmaps = false;
-					texture.minFilter = 'BilinearNoMipMaps';
-				}
-
-				video.play();
-
-				video.dataReady = true;
-				return true;
-			}
-			return false;
-		};
-
-		texture.updateCallback = function () {
-			return !video.paused;
-		};
-
-		video.crossOrigin = 'anonymous';
-
-		video.src = videoURL;
-
-		TextureCreator.cache[videoURL] = texture;
 
 		return texture;
 	};
 
+	/**
+	 * Creates a video texture streamed from the webcam
+	 * @example yourMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTextureWebCam());
+	 * @returns {Texture}
+	 */
 	TextureCreator.prototype.loadTextureWebCam = function () {
 		var video = document.createElement('video');
 		video.autoplay = true;
@@ -237,53 +154,50 @@ function (
 	/**
 	 *
 	 * @param {Array} imageDataArray Array containing images, image elements or image urls. [left, right, bottom, top, back, front]
+	 * @param {Object} settings
+	 * @param {Function} callback Called when loading has finished
 	 * @returns {Texture} cubemap
 	 */
-	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings) {
+	TextureCreator.prototype.loadTextureCube = function (imageDataArray, settings, callback) {
 		var texture = new Texture(null, settings);
 		texture.variant = 'CUBE';
-		var images = [];
 
-		var latch = new Latch(6, {
-			done: function () {
-				var w = images[0].width;
-				var h = images[0].height;
-				for (var i = 0; i < 6; i++) {
-					var img = images[i];
-					if (w !== img.width || h !== img.height) {
-						texture.generateMipmaps = false;
-						texture.minFilter = 'BilinearNoMipMaps';
-						console.error('Images not all the same size!');
-					}
+		var promises = imageDataArray.map(function (queryImage) {
+			return PromiseUtil.createPromise(function (resolve, reject) {
+				if (typeof queryImage === 'string') {
+					this.ajax._loadImage(queryImage).then(resolve);
+				} else {
+					resolve(queryImage);
 				}
+			}.bind(this));
+		}.bind(this));
 
-				texture.setImage(images);
-				texture.image.dataReady = true;
-				texture.image.width = w;
-				texture.image.height = h;
+		RSVP.all(promises).then(function (images) {
+			var width = images[0].width;
+			var height = images[0].height;
+			for (var i = 0; i < 6; i++) {
+				var image = images[i];
+				if (width !== image.width || height !== image.height) {
+					texture.generateMipmaps = false;
+					texture.minFilter = 'BilinearNoMipMaps';
+					console.error('Images not all the same size!');
+				}
+			}
+
+			texture.setImage(images);
+			texture.image.dataReady = true;
+			texture.image.width = width;
+			texture.image.height = height;
+
+			if (callback) {
+				callback();
 			}
 		});
-
-		var that = this;
-		for (var i = 0; i < imageDataArray.length; i++) {
-			/*jshint loopfunc: true */
-			(function (index) {
-				var queryImage = imageDataArray[index];
-				if (typeof queryImage === 'string') {
-					that._loader.loadImage(queryImage).then(function (image) {
-						images[index] = image;
-						latch.countDown();
-					});
-				} else {
-					images[index] = queryImage;
-					latch.countDown();
-				}
-			})(i);
-		}
 
 		return texture;
 	};
 
+	//! AT: unused
 	TextureCreator._globalCallback = null;
 	TextureCreator._finishedLoading = function (image) {
 		if (TextureCreator._globalCallback) {

@@ -2,445 +2,205 @@ define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/loaders/handlers/ComponentHandler',
 	'goo/util/Ajax',
-	'goo/renderer/TextureCreator',
 	'goo/util/rsvp',
 	'goo/util/StringUtil',
 	'goo/util/PromiseUtil',
-	'goo/util/ObjectUtil',
+	'goo/util/ArrayUtil',
+	'goo/util/ShapeCreatorMemoized',
+
 	'goo/loaders/handlers/CameraComponentHandler',
 	'goo/loaders/handlers/EntityHandler',
 	'goo/loaders/handlers/LightComponentHandler',
-	'goo/loaders/handlers/LogicComponentHandler',
 	'goo/loaders/handlers/MaterialHandler',
 	'goo/loaders/handlers/MeshDataComponentHandler',
 	'goo/loaders/handlers/MeshDataHandler',
 	'goo/loaders/handlers/MeshRendererComponentHandler',
 	'goo/loaders/handlers/SceneHandler',
 	'goo/loaders/handlers/ShaderHandler',
-	'goo/loaders/handlers/SkeletonHandler',
 	'goo/loaders/handlers/TextureHandler',
 	'goo/loaders/handlers/TransformComponentHandler',
-	'goo/loaders/handlers/AnimationComponentHandler',
-	'goo/loaders/handlers/AnimationStateHandler',
-	'goo/loaders/handlers/AnimationLayersHandler',
-	'goo/loaders/handlers/AnimationClipHandler',
 	'goo/loaders/handlers/ProjectHandler',
-	'goo/loaders/handlers/ScriptComponentHandler',
-	'goo/loaders/handlers/ScriptHandler',
-	'goo/loaders/handlers/FSMComponentHandler',
-	'goo/loaders/handlers/MachineHandler',
 	'goo/loaders/handlers/SoundComponentHandler',
 	'goo/loaders/handlers/SoundHandler',
-	'goo/loaders/handlers/PosteffectHandler'
-],
-/** @lends */
-function(
+	'goo/loaders/handlers/EnvironmentHandler',
+	'goo/loaders/handlers/SkyboxHandler',
+	'goo/loaders/handlers/HtmlComponentHandler'
+], function (
 	ConfigHandler,
 	ComponentHandler,
 	Ajax,
-	TextureCreator,
 	RSVP,
 	StringUtil,
 	PromiseUtil,
-	_
+	ArrayUtil,
+	ShapeCreatorMemoized
 ) {
 	/*jshint eqeqeq: false, -W041, -W099 */
 	'use strict';
-	var _json_types = [
-		'shader',
-		'script',
-		'entity',
-		'material',
-		'scene',
-		'mesh',
-		'texture',
-		'skeleton',
-		'animation',
-		'clip',
-		'bundle',
-		'project',
-		'machine',
-		'posteffect',
-		'animstate',
-		'sound'];
-
-	//var _text_types = ['vert', 'frag']; // unused
-	var _texture_types = _.keys(ConfigHandler.getHandler('texture').loaders);
-	var _image_types = ['jpg', 'jpeg', 'png', 'gif'];
-	var _binary_types = ['dat', 'bin'];
-	var _audio_types = ['mp3', 'wav'];
-	// REVIEW: concat takes multiple arrays as input
-	// _asset_types = _texture_types.concat(_imageTypes, _binary_types, _audio_types);
-	var _asset_types = _texture_types.concat(_image_types)
-									.concat(_binary_types)
-									.concat(_audio_types);
-
-	var _ENGINE_SHADER_PREFIX = ConfigHandler.getHandler('material').ENGINE_SHADER_PREFIX;
 
 	/**
-	 * @class Class to load scenes into the world, or to update the scene/world based on the data model.
-	 *
-	 * @constructor
-	 * @param {object} parameters
-	 * @param {World} [parameters.world] The target World object.
-	 * @param {string} [parameters.rootPath] The root path where to get resources.
-	 * @param {boolean} [parameters.ajax] If true, load resources from the server if not found in the cache. Defaults to true.
-	 *
+	 * Class to load objects into the engine, or to update objects based on the data model.
+	 * @param {object} options
+	 * @param {World} options.world The target World object.
+	 * @param {string} options.rootPath The root path from where to get resources.
+	 * @param {Ajax} [options.ajax=new Ajax(options.rootPath)]
+	 * Can be used to overwrite how the loader fetches refs. Good for testing.
 	 */
 	function DynamicLoader(options) {
-		this.options = options;
-		this._objects = {};
-		_.defaults(this.options, {
-			ajax: true
-		});
-		if(this.options.world) {
-			this._world = this.options.world;
+		if (options.world) {
+			this._world = options.world;
 		} else {
-			throw new Error("World argument cannot be null");
+			throw new Error('World argument cannot be null');
 		}
-		if (this.options.rootPath) {
-			this.setRootPath(this.options.rootPath);
+
+		if (options.ajax) {
+			this._ajax = options.ajax;
+		} else if (options.rootPath) {
+			this._ajax = new Ajax(options.rootPath);
 		} else {
-			throw new Error("parameters.rootPath must be defined");
+			throw new Error('ajax or rootPath must be defined');
 		}
-		this._configs = {};
-		if (this.options.ajax) {
-			this._ajax = new Ajax();
-		}
+
+		// Will hold the engine objects
+		this._objects = new Map();
+		// Will hold instances of handler classes by type
+		this._handlers = {};
 	}
 
 	/**
-	 * Load configs into the loader cache without loading anything into the engine. Subsequent calls to load and update will draw
-	 * configs from the prefilled cache.
+	 * Load configs into the loader cache without loading anything into the engine.
+	 * Subsequent calls to load and update will draw configs from the prefilled cache.
 	 *
-	 * @param {object} configs Configs object. Keys should be refs, and values are the config objects. If {configs} is null,
-	 * 	the loader will search for the appropriate config in the loader's internal cache.
-	 * @param {boolean} clear If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
+	 * @param {object} configs Configs object. Keys should be refs, and values are the config objects. If a config is null,
+	 * the loader will search for the appropriate config in the loader's internal cache.
+	 * @param {boolean} [clear=false] If true, possible previous cache will be cleared. Otherwise the existing cache is extended.
 	 *
-	 */
-	DynamicLoader.prototype.preloadCache = function(configs, clear) {
-		if (clear == null) {
-			clear = false;
-		}
-		if (clear) {
-			return this._configs = configs;
-		} else {
-			return _.extend(this._configs, configs);
-		}
+	 **/
+	DynamicLoader.prototype.preload = function (bundle, clear) {
+		this._ajax.prefill(bundle, clear);
 	};
 
 	/**
-	 * Load an object with the specified ref from an associative array. Keys should be refs, and values
-	 * are the config objects.
-	 * The loader cache will be filled with all the resources in the supplied configs, so loading resources
-	 * should not involve ajax calls.
-	 *
-	 * @param {string} ref Ref of object to load
-	 * @param {object} configs Configs object. Keys should be refs, and values are the config objects. If {configs} is null,
-	 * 	the loader will search for the appropriate config in the loader's internal cache.
-	 * @param {object} options See {DynamicLoader.update}
-	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
-	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
-	 *
+	 * Clears the cache of all the handlers. Also clears the engine.
+	 * @returns {RSVP.Promise} Promise resolves when handlers are cleared.
 	 */
-	DynamicLoader.prototype.loadFromConfig = function(ref, configs, options) {
-		if (options == null) {
-			options = {};
+	DynamicLoader.prototype.clear = function () {
+		var promises = [];
+		for (var type in this._handlers) {
+			promises.push(this._handlers[type].clear());
 		}
-		_.defaults(options, this.options);
-		if (configs != null) {
-			if (options.noCache) {
-				this._configs = configs;
-			} else {
-				_.extend(this._configs, configs);
-			}
+		if (this._ajax.clear instanceof Function) {
+			this._ajax.clear();
 		}
-		if (this._configs[ref]) {
-			throw new Error("" + ref + " not found in the supplied configs Available keys: \n" + (_.keys(this._configs).join('\n')));
-		}
-		return this.load(ref, options);
-	};
-
-	/**
-	 * Load an object with the specified ref from a .bundle file. The object can be of any
-	 * type, what loading does is determined by the file extension of the ref and the
-	 * registered {ConfigHandler}.
-	 * The loader cache will be filled with all the resources in the bundle, so loading other
-	 * resources from the bundle won't require new AJAX calls.
-	 *
-	 * @param {string} ref Ref of object to load
-	 * @param {string} bundleName name of the bundle (including extension)
-	 * @param {object} options See {DynamicLoader.update}
-	 // REVIEW: You can load things after starting the engine, loading
-	 // binaries before loading bundle configs is more accurate
-	 * @param {boolean} [options.preloadBinaries] Load binaries before starting engine
-	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
-	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
-	 *
-	 */
-	DynamicLoader.prototype.loadFromBundle = function(ref, bundleName, options) {
-		var that = this;
-		if (options == null) {
-			options = {};
-		}
-		_.defaults(options, this.options);
-
-		var bundlePromise = that._loadRef(bundleName).then(function(data) {
-			if (options.noCache) {
-				that._configs = data;
-			} else {
-				_.extend(that._configs, data);
-			}
-
-			if (that._configs[ref] == null) {
-				throw new Error(ref + ' not found in bundle ' + bundleName + '. Available keys: \n' + (_.keys(that._configs).join('\n')));
-			}
-
-			if (options.preloadBinaries === true) {
-				return that._preloadBinariesFromRef(ref, options).then(function() {
-					options.preloadBinaries = false;
-					return that.load(ref, options);
-				});
-			} else {
-				return that.load(ref, options);
-			}
-		});
-
-		return bundlePromise;
-	};
-
-	/**
-	 * Load an object with the specified path into the world. The object can be of any
-	 * type, what loading does is determined by the file extension of the ref and the
-	 * registered {ConfigHandler}
-	 *
-	 * @param {string} ref Ref of object to load
-	 * @param {object} options See {DynamicLoader.update}
-	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
-	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
-	 *
-	 */
-	DynamicLoader.prototype.load = function(ref, options) {
-		var that = this;
-		if (options == null) {
-			options = {};
-		} else if (options.preloadBinaries === true) {
-			return this._preloadBinariesFromRef(ref, options).then(function() {
-				return that.update(ref, null, options);
-			});
-		}
-		return this.update(ref, null, options);
-	};
-
-	/**
-	 * Recursively traverses all entities and loads the binary files referenced.
-	 * A promise which resolves when all binary files are loaded is returned.
-	 * @param {Array.<string>} references Array of references to entities in the scene.
-	 * @param {object} options See {DynamicLoader.update}
-	 * @param {object} bundle Associative array containing all configs , already loaded
-	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
-	 * @private
-	 */
-	DynamicLoader.prototype._loadBinariesFromRefs = function(references, options) {
-		var that = this;
-		var binaryRefs = [];
-		var handled = 0;
-
-		var loadBinaryRef = function(ref) {
-			 return that._loadRef(ref).then(function() {
-				handled++;
-				if (typeof(options.progressCallback) === 'function') {
-					options.progressCallback(handled, binaryRefs.length);
-				}
-			});
-		};
-
-		var traverseRecursive = function(ref) {
-			var refPromises = [];
-			var traverseRef = function(ref) {
-				var refPromise = that._loadRef(ref).then(function(config) {
-					var refs = that._getRefsFromConfig(config);
-					for (var i = 0, _len = refs.length; i < _len; i++) {
-						var ref = refs[i];
-						if (DynamicLoader.isAssetRef(ref)) {
-							// There can be duplicate references of binary files ( textures )
-							// Only add unique references.
-							if (binaryRefs.indexOf(ref) === -1) {
-								binaryRefs.push(ref);
-							}
-						} else if (DynamicLoader.isJSONRef(ref)) {
-							traverseRef(ref);
-						}
+		if (this._world && this._world.gooRunner) {
+			ShapeCreatorMemoized.clearCache(this._world.gooRunner.renderer.context);
+			for (var i = 0; i < this._world.gooRunner.renderSystems.length; i++) {
+				var lights = this._world.gooRunner.renderSystems[i].lights;
+				if (lights) {
+					for (var j = 0; j < lights.length; j++) {
+						lights[j].destroy(this._world.gooRunner.renderer);
 					}
-				});
-				refPromises.push(refPromise);
-			};
-			traverseRef(ref);
-			return RSVP.all(refPromises);
-		};
-
-		// Traverse to find all binary references, storing them in the binaryRefs array.
-		var traversalPromises = [];
-		for (var i = 0, _len = references.length; i < _len; i++) {
-			traversalPromises.push(traverseRecursive(references[i]));
-		}
-
-		return RSVP.all(traversalPromises).then(function() {
-			var promises = [];
-			for (var i = 0, _len = binaryRefs.length; i < _len; i++) {
-				promises.push(loadBinaryRef(binaryRefs[i]));
+				}
 			}
-			return RSVP.all(promises);
-		});
+
+			this._world.gooRunner.renderer.clearShaderCache();
+		}
+		return RSVP.all(promises);
 	};
 
 	/**
-	 * Performs pre-loading of all binary files recursively found from the given reference.
-	 * @param {string} ref Reference to load from.
-	 * @param {object} options See {DynamicLoader.update}
-	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
-	 * @private
+	 * Load an object with the specified path into the engine. The object can be of any
+	 * type, what loading does is determined by the ref type and the
+	 * registered {@link ConfigHandler}.
+	 *
+	 * @param {string} ref Ref of object to load.
+	 * @param {object} options
+	 * @param {function(handled, total)} [options.progressCallback] Function called while loading the world.
+	 * Arguments handled and total are both integer numbers and represent the loaded elements so far as well as the total elements.
+	 * @param {boolean} [options.preloadBinaries=false] Load the binary data as soon as the reference is loaded.
+	 * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.
+	 * @returns {RSVP.Promise} The promise is resolved when the object is loaded into the world. The parameter is an object
+	 * mapping all loaded refs to their configuration, like so: <code>{sceneRef: sceneConfig, entity1Ref: entityConfig...}</code>.
 	 */
-	DynamicLoader.prototype._preloadBinariesFromRef = function(ref, options) {
-		_.defaults(options, this.options);
-		var that = this;
-
-		return that._loadRef(ref).then(function(config) {
-			var references;
-			if (ref === 'project.project') {
-				references = config.entityRefs;
-				if (references.length === 0) {
-					console.warn('No entity refs in project:', config);
-					return PromiseUtil.createDummyPromise(null);
-				}
-			} else {
-				references = that._getRefsFromConfig(config);
-			}
-			return that._loadBinariesFromRefs(references, options);
-		});
+	DynamicLoader.prototype.load = function (ref, options) {
+		options = options || {};
+		var load = this._loadObject.bind(this, ref, options);
+		if (options.preloadBinaries === true) {
+			return this._loadBinariesFromRefs(ref, options).then(load);
+		} else {
+			return load();
+		}
 	};
-
 
 	/**
 	 * Update an object in the world with an updated config. The object can be of any
-	 * type, updating behavior is determined by the registered {ConfigHandler}
+	 * type, updating behavior is determined by the registered {ConfigHandler}.
 	 *
-	 * @param {string} ref Ref of object to update
-	 * @param {object} [config] New configuration (formatted according to data model). If omitted, works the same as {DynamicLoader.load}.
+	 * @param {string} ref Ref of object to update.
+	 * @param {object} [config] New configuration (formatted according to data model).
+	 * If omitted, works the same as {DynamicLoader.load}.
 	 * @param {object} options
-	 * @param {function(object)} [options.beforeAdd] Function called before updating the world with the loaded objects. Takes
-	 * 	each object as argument and if it returns true, it is added to the world.
-	 * @param {boolean} [options.noCache] Ignore cache, i.e. always load files fresh from the server. Defaults to false.
-	 * @param {boolean} [options.recursive] Recursively load resources referenced from the given config. Defaults to true.
+	 * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.
 	 * @returns {RSVP.Promise} The promise is resolved when the object is updated, with the config data as argument.
-	 *
 	 */
-	DynamicLoader.prototype.update = function(ref, config, options) {
+	DynamicLoader.prototype.update = function (ref, config, options) {
 		var that = this;
-		if (options == null) {
-			options = {};
-		}
+		options = options || {};
 
-		_.defaults(options, this.options, {
-			recursive: true
+		return this._ajax.update(ref, config).then(function (config) {
+			return that._updateObject(ref, config, options);
+		})
+		.then(null, function (err) {
+			console.error("Error updating " + ref + " " + err);
+			throw err;
 		});
-		if (config) {
-			this._configs[ref] = config;
+	};
+
+	/*
+	 **** Loader functions ****
+	 */
+
+	/**
+	 * Loads the object specified by the ref. If an object is already loaded,
+	 * it will return that object without updating it.
+	 * @param {string} ref
+	 * @param {object} options
+	 * @returns {object} Depending on what type of ref was loaded.
+	 * @private
+	 */
+	DynamicLoader.prototype._loadObject = function (ref, options) {
+		var type = DynamicLoader.getTypeForRef(ref);
+		var handler = this._getHandler(type);
+		if (handler) {
+			return handler.load(ref, options);
+		} else {
+			return this._loadRef(ref, options);
 		}
-		delete this._objects[ref];
-		//var handler = ConfigHandler.getHandler(that._getTypeForRef(ref));
+	};
 
-		return this._loadRef(ref).then(function(config) {
-			var handled = 0;
-			var promises = [];
-			if (options.recursive && ConfigHandler.getHandler(DynamicLoader.getTypeForRef(ref))) {
-				var childRefs = that._getRefsFromConfig(config);
-
-				var handleChildRef = function(childRef) {
-					return promises.push(that._loadRef(childRef).then(function(childConfig) {
-						handled++;
-						if(options.progressCallback && options.progressCallback.call) {
-							options.progressCallback.call(null, handled, promises.length);
-						}
-						return that._handle(childRef, childConfig, options);
-					}));
-				};
-				for (var i = 0; i < childRefs.length; i++) {
-					handleChildRef(childRefs[i]);
-				}
-			}
-
-			// Concat the last promise (returns new array) rather than pushing it to the promises array
-			// to prevent off-by-one error in progress callback.
-			return RSVP.all(promises.concat(that._handle(ref, config, options)));
-		}).then(function() {
-			return that._configs;
-		}).then(null, function(err) {
-			return console.error("Error updating " + ref + " " + err);
-		});
+	DynamicLoader.prototype.remove = function (ref) {
+		this._objects.delete(ref);
+		return this.update(ref, null);
 	};
 
 	/**
-	 * Remove an object in the world. The object can be of any
-	 * type, updating behavior is determined by the registered {ConfigHandler}
-	 *
-	 * @param {string} ref Ref of object to update
-	 * @returns {RSVP.Promise} The promise is resolved when the object is removed, with no argument
-	 *
+	 * Updates object identified by ref according to config
+	 * @param {string} ref
+	 * @param {object} config
+	 * @param {object} options
+	 * @returns {object} Depending on what's being updated
+	 * @private
 	 */
-	DynamicLoader.prototype.remove = function(ref) {
-		delete this._objects[ref];
-		return this._handle(ref, null);
-	};
-
-	// Load/update an object with the given reference into the engine
-	DynamicLoader.prototype._handle = function(ref, config, options) {
-		var that = this;
-
-		var handler, handlerClass, type;
-		if (options == null) {
-			options = {};
-		}
-		if (this._objects[ref]) {
-			if(this._objects[ref].then) {
-				// The object is already being handled in this update cycle, avoid duplicate handling
-				// Object cache is reset when a new update call is initiated by the user
-				return this._objects[ref];
-			} else if (!options.noCache) {
-				return PromiseUtil.createDummyPromise(this._objects[ref]);
-			}
+	DynamicLoader.prototype._updateObject = function (ref, config, options) {
+		var type = DynamicLoader.getTypeForRef(ref);
+		var handler = this._getHandler(type);
+		if (handler) {
+			return handler.update(ref, config, options);
+		} else if (DynamicLoader._isRefTypeInGroup(ref, 'binary') || type !== 'bundle') {
+			return PromiseUtil.resolve(config);
 		} else {
-			type = DynamicLoader.getTypeForRef(ref);
-			handlerClass = ConfigHandler.getHandler(type);
-
-			if (handlerClass) {
-				if (this._handlers == null) {
-					this._handlers = {};
-				}
-				handler = this._handlers[type];
-				if (handler) {
-					_.extend(handler, {
-						world: this._world,
-						getConfig: this._loadRef.bind(this),
-						updateObject: this._handle.bind(this),
-						options: _.clone(options)
-					});
-				} else {
-					/*jshint -W055 */
-					handler = this._handlers[type] = new handlerClass(this._world, this._loadRef.bind(this), this._handle.bind(this), options);
-				}
-				if (config != null) {
-					return this._objects[ref] = handler.update(ref, config, options).then(function(object) {
-						return that._objects[ref] = object;
-					});
-				} else {
-					handler.remove(ref);
-					return PromiseUtil.createDummyPromise(null);
-				}
-			} else {
-				console.warn("No handler for type " + type);
-				return PromiseUtil.createDummyPromise(null);
-			}
+			console.warn('No handler for type ' + type);
+			return PromiseUtil.resolve(config);
 		}
 	};
 
@@ -450,161 +210,156 @@ function(
 	 * @param {string} ref Ref of the config to load
 	 * @param {boolean} [noCache] If true, ignore cached config and fetch everything from the server
 	 * @returns {RSVP.Promise} Promise that resolves with the loaded config
-	 *
+	 * @private
 	 */
-	DynamicLoader.prototype._loadRef = function(ref, noCache) {
-
-		var promise, url,
-			that = this;
-		// Do not create a request to load the reference if it is a shader
-		// to be loaded from the engine's shader library.
-		if (ref.indexOf(_ENGINE_SHADER_PREFIX) === 0) {
-			promise = PromiseUtil.createDummyPromise(null);
-			this._configs[ref] = promise;
-		}
-
-		if (noCache == null) {
-			noCache = false;
-		}
-
-		if (this._configs[ref]) {
-			if(this._configs[ref].then) {
-				// There's a pending request for this config; return the promise
-				return this._configs[ref];
-			}
-			if (!noCache) {
-				return PromiseUtil.createDummyPromise(this._configs[ref]);
-			}
-		}
-
-		if (!this._ajax) {
-			// There is no config loaded for this ref, and we don't have the means to load it
-			return PromiseUtil.createDummyPromise(null);
-		}
-
-		// Load ref with ajax
-		url = this._rootPath + window.escape(ref);
-
-		if (DynamicLoader.isImageRef(ref)) {
-			promise = this._ajax.loadImage(url);
-		} else if (DynamicLoader.isBinaryRef(ref)) {
-			promise = this._ajax.load(url, Ajax.ARRAY_BUFFER);
-		} else if (DynamicLoader.isAudioRef(ref)) {
-			promise = PromiseUtil.createDummyPromise(url);
-		} else {
-			promise = this._ajax.load(url);
-		}
-
-		promise = promise.then(function(data) {
-			if (DynamicLoader.isJSONRef(ref)) {
-				return that._configs[ref] = JSON.parse(data);
-			} else {
-				return that._configs[ref] = data;
-			}
-		}).then(null, function(e) {
-			delete that._configs[ref];
-			return e;
-		});
-
-		this._configs[ref] = promise;
-		return promise;
+	DynamicLoader.prototype._loadRef = function (ref, options) {
+		return this._ajax.load(ref, (options == null) ? false : options.noCache);
 	};
 
-	// Find all the references in a config, and return in a flat list
-	DynamicLoader.prototype._getRefsFromConfig = function(config) {
-		var _refs = [];
-		var traverse = function(key, value) {
-			var _key;
-			/* REVIEW: what about lowercase refs and urls?
-			 * https://docs.google.com/a/gooengine.com/spreadsheet/ccc?key=0AkxI1qc8lXvrdHBlaGRhV1RhS2R1SU8tT2pJNVJFUGc#gid=17
-			 * concat also works for single values
-			 * if (/(url|ref)s?$/.test(key.toLowerCase()) {
-			 *  _ref = _refs.concat(value);
-			 * } else ...
-			 */
+	/**
+	 * Recursively traverses all configs and preloads the binary files referenced.
+	 * @param {object} references one-level object of references, like in datamodel
+	 * @param {object} options See {DynamicLoader.load}
+	 * @returns {RSVP.Promise} Promise resolving when the binary files are loaded.
+	 * @private
+	 */
+	DynamicLoader.prototype._loadBinariesFromRefs = function (references, options) {
+		var that = this;
+		function loadBinaryRefs(refs) {
+			var handled = 0;
 
-			if (StringUtil.endsWith(key, 'Refs') || StringUtil.endsWith(key, 'Urls')) {
-				_refs = _refs.concat(value);
-			} else if (StringUtil.endsWith(key, 'Ref') || key === 'url') {
-				if (value != null) // Bug caused some meshRefs to be null
-					_refs.push(value);
-			} else if (value instanceof Object) {
-				for (_key in value) {
-					if (!value.hasOwnProperty(_key)) {
-						continue;
+			// Load the binary and increase progress tick on finished loading
+			function load(ref) {
+				return that._loadRef(ref, options).then(function () {
+					handled++;
+					if (options.progressCallback instanceof Function) {
+						options.progressCallback(handled, refs.length);
 					}
-					traverse(_key, value[_key]);
+				});
+			}
+
+			// When all binary refs are loaded, we're done
+			return RSVP.all(refs.map(function (ref) { return load(ref); }));
+		}
+
+		function traverse(refs) {
+			var binaryRefs = new Set();
+			var jsonRefs = new Set();
+
+			// Loads config for traversal
+			function loadFn(ref) {
+				return that._loadRef(ref, options).then(traverseFn);
+			}
+
+			// Looks through config for binaries
+			function traverseFn(config) {
+				var promises = [];
+				if (config.lazy === true) {
+					return PromiseUtil.resolve();
+				}
+				var refs = that._getRefsFromConfig(config);
+
+				for (var i = 0, keys = Object.keys(refs), len = refs.length; i < len; i++) {
+					var ref = refs[keys[i]];
+					if (DynamicLoader._isRefTypeInGroup(ref, 'asset') && !binaryRefs.has(ref)) {
+						// If it's a binary ref, store it in the list
+						binaryRefs.add(ref);
+					} else if (DynamicLoader._isRefTypeInGroup(ref, 'json') && !jsonRefs.has(ref)) {
+						// If it's a json-config, look deeper
+						jsonRefs.add(ref);
+						promises.push(loadFn(ref));
+					}
+				}
+				return RSVP.all(promises);
+			}
+
+			// Resolved when everything is loaded and traversed
+			return traverseFn({ collectionRefs: refs }).then(function () {
+				return ArrayUtil.fromValues(binaryRefs);
+			});
+		}
+
+		return traverse(references).then(loadBinaryRefs);
+	};
+
+	/**
+	 * Gets cached handler for type or creates a new one.
+	 * @param {string} type Type.
+	 * @returns {ConfigHandler} Config handler.
+	 * @private
+	 */
+	DynamicLoader.prototype._getHandler = function (type) {
+		var handler = this._handlers[type];
+		if (handler) { return handler; }
+		var Handler = ConfigHandler.getHandler(type);
+		if (Handler) {
+			return this._handlers[type] = new Handler(
+				this._world,
+				this._loadRef.bind(this),
+				this._updateObject.bind(this),
+				this._loadObject.bind(this)
+			);
+		}
+		return null;
+	};
+
+	/**
+	 * Find all the references in a config, and return in a flat list.
+	 *
+	 * @param {object} config Config.
+	 * @returns {string[]} refs References.
+	 * @private
+	 */
+
+	var refRegex = new RegExp('\\S+refs?$', 'i');
+
+	DynamicLoader.prototype._getRefsFromConfig = function (config) {
+		var refs = [];
+		function traverse(key, value) {
+			if (refRegex.test(key) && key !== 'thumbnailRef') {
+				// Refs
+				if (value instanceof Object) {
+					for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
+						if (value[keys[i]]) {
+							refs.push(value[keys[i]]);
+						}
+					}
+				} else if (value) {
+					// Ref
+					refs.push(value);
+				}
+			} else if (value instanceof Object && key !== 'assets') {
+				// Go down a level
+				for (var i = 0, keys = Object.keys(value), len = keys.length; i < len; i++) {
+					traverse(keys[i], value[keys[i]]);
 				}
 			}
-		};
-		traverse("", config);
-		return _refs;
-	};
-
-
-
-	DynamicLoader.getTypeForRef = function(ref) {
-		return ref.split('.').pop().toLowerCase();
-	};
-
-
-	DynamicLoader.isJSONRef = function(ref) {
-		var type = DynamicLoader.getTypeForRef(ref);
-		return _.indexOf(_json_types, type) >= 0;
-	};
-
-	DynamicLoader.isAssetRef = function(ref) {
-		var type = DynamicLoader.getTypeForRef(ref);
-		return _.indexOf(_asset_types, type) >= 0;
-	};
-
-	/**
-	 * Images that the browser can handle (jpg, png, gif)
-	 */
-	DynamicLoader.isImageRef = function(ref) {
-		var type = DynamicLoader.getTypeForRef(ref);
-		return _.indexOf(_image_types, type) >= 0;
-	};
-
-	/**
-	 * .bin files and non-image textures (dds, tga, crn...)
-	 */
-	DynamicLoader.isBinaryRef = function(ref) {
-		var type = DynamicLoader.getTypeForRef(ref);
-		return _.indexOf(_texture_types, type) >= 0 || _.indexOf(_binary_types, type) >= 0;
-	};
-
-	/**
-	 * Lazy loaded media (sound)
-	 */
-	DynamicLoader.isAudioRef = function(ref) {
-		var type = DynamicLoader.getTypeForRef(ref);
-		return _.indexOf(_audio_types, type) >= 0;
-	};
-
-	/**
-	 * Get the engine object for a given ref from the loader cache.
-	 * The {DynamicLoader} cache is still quite rudimentary, and should be updated.
-	 *
-	 * @param {string} ref Ref of object
-	 * @returns {object} The engine object, e.g. {Entity} with the given ref, if it's still
-	 * available in the loader cache. Otherwise undefined.
-	 *
-	 */
-	DynamicLoader.prototype.getCachedObjectForRef = function(ref) {
-		return this._objects?this._objects[ref]:undefined;
-	};
-
-	/**
-	 * Set the root path for this loader.
-	 *
-	 * @param path
-	 */
-	DynamicLoader.prototype.setRootPath = function(path) {
-		this._rootPath = path;
-		if (path.length > 1 && path.charAt(path.length - 1) !== '/') {
-			this._rootPath += '/';
 		}
+		traverse('', config);
+		return refs;
+	};
+
+	/**
+	 * Gets the type of a reference.
+	 *
+	 * @param {string} ref Reference.
+	 * @returns {string} Type of reference.
+	 */
+	DynamicLoader.getTypeForRef = function (ref) {
+		return ref.substr(ref.lastIndexOf('.') + 1).toLowerCase();
+	};
+
+	/**
+	 * Checks if ref has a type included in the group
+	 * Different groups are found in the top of the file
+	 * @private
+	 * @param {string} ref
+	 * @param {string} group
+	 * @returns {boolean}
+	 */
+	DynamicLoader._isRefTypeInGroup = function (ref, group) {
+		var type = DynamicLoader.getTypeForRef(ref);
+		return type && Ajax.types[group] && Ajax.types[group][type];
 	};
 
 	return DynamicLoader;

@@ -1,26 +1,44 @@
 define([
-	'goo/renderer/Shader'
-],
-/** @lends */
-function(
-	Shader
+	'goo/renderer/Shader',
+	'goo/util/ObjectUtil'
+], function (
+	Shader,
+	_
 ) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class A Material defines the look of an object
-	 * @param {String} name Material name
+	 * A Material defines the look of an object
+	 * @param {string} [name='Default Material'] Material name
+	 * @param {{ vshader, fshader }} [shaderDefinition] Optional shader to associate with the material
 	 */
-	function Material(name) {
-		/**
-		 * @type {String}
-		 */
-		this.name = name;
+	function Material(name, shaderDefinition) {
+		this.id = null;
 
-		/** Shader to use when rendering
+		/** Material name
+		 * @type {string}
+		 */
+		this.name = 'Default Material';
+
+		/** [Shader]{@link Shader} to use when rendering
 		 * @type {Shader}
 		 */
 		this.shader = null;
+
+		//! AT: horrendous type checking follows
+		// function has 2 signatures because the deprecated .createMaterial had parameters in inverse order
+		if (typeof arguments[0] === 'string') {
+			this.name = arguments[0];
+		} else if (arguments[0] && arguments[0].vshader && arguments[0].fshader) {
+			this.shader = Material.createShader(arguments[0]);
+		}
+
+		if (arguments[1] && arguments[1].vshader && arguments[1].fshader) {
+			this.shader = Material.createShader(arguments[1]);
+		} else if (typeof arguments[1] === 'string') {
+			this.name = arguments[1];
+		}
+
 		/** Possible overrides for shader uniforms
 		 * @type {Object}
 		 * @default
@@ -29,33 +47,39 @@ function(
 
 		// Texture storage
 		this._textureMaps = {};
-
-		/** @type {object}
-		 * @property {Array<Number>} ambient The ambient color, [r,g,b,a]
-		 * @property {Array<Number>} diffuse The diffuse color, [r,g,b,a]
-		 * @property {Array<Number>} emissive The emissive color, [r,g,b,a]
-		 * @property {Array<Number>} specular The specular color, [r,g,b,a]
-		 * @property {Number} shininess The shininess exponent.
+		/* REVIEW
+		 * There was an idea to specify and jsdoc uniforms.materialDiffuse etc instead,
+		 * since those are the ones we use now
+		 */
+		/* Specification of colors for this Material
+		 * @type {Object}
+		 * @property {number[]} ambient The ambient color, [r, g, b, a]
+		 * @property {number[]} diffuse The diffuse color, [r, g, b, a]
+		 * @property {number[]} emissive The emissive color, [r, g, b, a]
+		 * @property {number[]} specular The specular color, [r, g, b, a]
+		 * @property {number} shininess The shininess exponent.
 		 * */
-		this.materialState = {
+		/*this.materialState = {
 			ambient: Shader.DEFAULT_AMBIENT,
 			diffuse: Shader.DEFAULT_DIFFUSE,
 			emissive: Shader.DEFAULT_EMISSIVE,
 			specular: Shader.DEFAULT_SPECULAR,
 			shininess: Shader.DEFAULT_SHININESS
 		};
-		/** Specification of culling for this Material.
+
+		/** Specification of culling for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled
-		 * @property {String} cullFace possible values: 'Front', 'Back', 'FrontAndBack', default 'Back'
-		 * @property {String} frontFace possible values: 'CW' (clockwise) and 'CCW' (counterclockwise - default)
+		 * @property {string} cullFace possible values: 'Front', 'Back', 'FrontAndBack', default 'Back'
+		 * @property {string} frontFace possible values: 'CW' (clockwise) and 'CCW' (counterclockwise - default)
 		 */
 		this.cullState = {
 			enabled: true,
 			cullFace: 'Back', // Front, Back, FrontAndBack
 			frontFace: 'CCW' // CW, CCW
 		};
-		/**
+
+		/** Specification of blending for this Material
 		 * @type {Object}
 		 * @property {String} blending possible values: <strong>'NoBlending'</strong>, 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		 * @property {String} blendEquation possible values: <strong>'AddEquation'</strong>, 'SubtractEquation', 'ReverseSubtractEquation'
@@ -68,7 +92,8 @@ function(
 			blendSrc: 'SrcAlphaFactor',
 			blendDst: 'OneMinusSrcAlphaFactor'
 		};
-		/**
+
+		/** Specification of depth handling for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled default: true
 		 * @property {boolean} write default: true
@@ -77,7 +102,8 @@ function(
 			enabled: true,
 			write: true
 		};
-		/**
+
+		/** Specification of the polygon offset for this Material
 		 * @type {Object}
 		 * @property {boolean} enabled
 		 * @property {number} factor default: 1
@@ -113,6 +139,13 @@ function(
 		 * @type {number}
 		 */
 		this.renderQueue = null;
+
+		this.fullOverride = false;
+		this.errorOnce = false;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
 	/**
@@ -129,7 +162,7 @@ function(
 	 * Gets a texture in a specific slot
 	 *
 	 * @param {String} name Name of texture slot to retrieve texture from
-	 * @return {Texture} Texture if found, or undefined if not in slot
+	 * @returns {Texture} Texture if found, or undefined if not in slot
 	 */
 	Material.prototype.getTexture = function (name) {
 		return this._textureMaps[name];
@@ -147,7 +180,7 @@ function(
 	/**
 	 * Get all textures as an array
 	 *
-	 * @return {Texture[]} Array containing all set textures
+	 * @returns {Texture[]} Array containing all set textures
 	 */
 	Material.prototype.getTextures = function () {
 		var textures = [];
@@ -160,13 +193,14 @@ function(
 	/**
 	 * Get the map of [slot_name]: [Texture]
 	 *
-	 * @return {Object} Mapping of slot - textures
+	 * @returns {Object} Mapping of slot - textures
 	 */
 	Material.prototype.getTextureEntries = function () {
 		return this._textureMaps;
 	};
 
 	/**
+	 * Returns the render queue of this material
 	 * @returns {number}
 	 */
 	Material.prototype.getRenderQueue = function () {
@@ -179,62 +213,112 @@ function(
 	};
 
 	/**
+	 * Sets the render queue of this material
 	 * @param {number} queue See {@link RenderQueue} for options
 	 */
 	Material.prototype.setRenderQueue = function (queue) {
 		this.renderQueue = queue;
 	};
 
-	Material.store = [];
-	Material.hash = [];
+	/**
+	 * Returns a clone of this material
+	 * @param {Object} [options]
+	 * @param {boolean} [options.shareUniforms=false] Cloning this material clones the uniforms by default
+	 * @param {boolean} [options.shareTextures=false] Cloning this material clones the textures by default
+	 * @returns {Material}
+	 */
+	Material.prototype.clone = function (options) {
+		options = options || {};
+
+		var clone = new Material(this.name);
+
+		clone.id = this.id;
+		clone.name = this.name;
+		clone.shader = this.shader.clone();
+
+		if (options.shareUniforms) {
+			clone.uniforms = this.uniforms;
+		} else {
+			clone.uniforms = _.clone(this.uniforms);
+		}
+
+		if (options.shareTextures) {
+			var textureKeys = Object.keys(this._textureMaps);
+			for (var i = 0; i < textureKeys.length; i++) {
+				var textureKey = textureKeys[i];
+				clone._textureMaps[textureKey] = this._textureMaps[textureKey];
+			}
+		} else {
+			var textureKeys = Object.keys(this._textureMaps);
+			for (var i = 0; i < textureKeys.length; i++) {
+				var textureKey = textureKeys[i];
+				clone._textureMaps[textureKey] = this._textureMaps[textureKey].clone();
+			}
+		}
+
+		clone.cullState.enabled = this.cullState.enabled;
+		clone.cullState.cullFace = this.cullState.cullFace;
+		clone.cullState.frontFace = this.cullState.frontFace;
+
+		clone.blendState.blending = this.blendState.blending;
+		clone.blendState.blendEquation = this.blendState.blendEquation;
+		clone.blendState.blendSrc = this.blendState.blendSrc;
+		clone.blendState.blendDst = this.blendState.blendDst;
+
+		clone.depthState.enabled = this.depthState.enabled;
+		clone.depthState.write = this.depthState.write;
+
+		clone.offsetState.enabled = this.offsetState.enabled;
+		clone.offsetState.factor = this.offsetState.factor;
+		clone.offsetState.units = this.offsetState.units;
+
+		clone.dualTransparency = this.dualTransparency;
+
+		clone.wireframe = this.wireframe;
+		clone.flat = this.flat;
+
+		clone.renderQueue = this.renderQueue;
+
+		clone.fullOverride = this.fullOverride;
+		clone.errorOnce = this.errorOnce;
+
+		return clone;
+	};
 
 	/**
 	 * Creates a new or finds an existing, cached Shader object
 	 *
 	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
 	 * @param {String} [name=DefaultShader]
-	 * @return {Shader}
+	 * @returns {Shader}
 	 */
 	Material.createShader = function (shaderDefinition, name) {
-		var index = Material.store.indexOf(shaderDefinition);
-		if (index !== -1) {
-			return Material.hash[index];
-		}
+		//! AT: function has parameters in reverse order than the constructor
 		var shader = new Shader(name || null, shaderDefinition);
 		if (shader.name === null) {
 			shader.name = 'DefaultShader' + shader._id;
 		}
-		Material.store.push(shaderDefinition);
-		Material.hash.push(shader);
 		return shader;
 	};
 
-	/** Clears the shader cache.
+	/** 
+	 * Clears the shader cache.
+	 * @deprecated Deprecated since 0.12.0 and scheduled for removal in 0.14.0
 	 */
 	Material.clearShaderCache = function () {
-		Material.store.length = 0;
-		Material.hash.length = 0;
 	};
 
 	/**
-	 * Creates a new Material object and sets the shader by calling createShader with the shaderDefinition
-	 *
-	 * @param {ShaderDefinition} shaderDefinition see {@link Shader}
-	 * @param {String} [name=DefaultMaterial]
-	 * @return {Material}
+	 * Creates an 'empty' material
+	 * @private
+	 * @param shaderDefinition see {@link Shader}
+	 * @param name [name='Empty Material'] The name of the newly created material
+	 * @returns {Material}
 	 */
-	Material.createMaterial = function (shaderDefinition, name) {
-		var material = new Material(name || 'DefaultMaterial');
-
-		material.shader = Material.createShader(shaderDefinition);
-
-		return material;
-	};
-
-	Material.createEmptyMaterial = function(shaderDefinition, name) {
+	Material.createEmptyMaterial = function (shaderDefinition, name) {
 		var material = new Material(name || 'Empty Material');
 		material.empty();
-		if(shaderDefinition) {
+		if (shaderDefinition) {
 			material.shader = Material.createShader(shaderDefinition);
 		} else {
 			material.shader = undefined;
@@ -242,7 +326,12 @@ function(
 		return material;
 	};
 
-	Material.prototype.empty = function() {
+	//! AT: how about a immutable material named EMPTY and a clone method for materials instead of this mutable madness?
+	/**
+	 * Removed the material's properties
+	 * @private
+	 */
+	Material.prototype.empty = function () {
 		this.cullState = {};
 		this.blendState = {};
 		this.depthState = {};

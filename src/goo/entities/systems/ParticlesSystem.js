@@ -1,24 +1,24 @@
-define(['goo/entities/systems/System'],
-/** @lends */
-function (System) {
-	"use strict";
+define(['goo/entities/systems/System'], function (System) {
+	'use strict';
 
 	/**
-	 * @class manages and reacts to particle components on entities.
+	 * Manages and reacts to particle components on entities.
+	 * @extends System
 	 */
-	function ParticlesSystem () {
+	function ParticlesSystem() {
 		System.call(this, 'ParticlesSystem', ['TransformComponent', 'MeshRendererComponent', 'MeshDataComponent', 'ParticleComponent']);
 		this.passive = false;
 	}
 
 	ParticlesSystem.prototype = Object.create(System.prototype);
+	ParticlesSystem.prototype.constructor = ParticlesSystem;
 
 	ParticlesSystem.prototype.process = function (entities, tpf) {
 		if (tpf > 1) {
 			return; // ignore, probably was out of focus
 		}
 		// go through each particle component and update
-		for ( var i = 0, max = entities.length; i < max; i++) {
+		for (var i = 0, max = entities.length; i < max; i++) {
 			var entity = entities[i];
 			var particleComponent = entity.particleComponent;
 
@@ -45,7 +45,7 @@ function (System) {
 
 					// go through any influences and prepare them - we can use this to enable / disable the emitter
 					if (emitter.influences.length) {
-						for ( var j = 0, max = emitter.influences.length; j < max; j++) {
+						for (var j = 0, max = emitter.influences.length; j < max; j++) {
 							emitter.influences[j].prepare(particleEntity, emitter);
 						}
 					}

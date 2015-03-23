@@ -1,31 +1,22 @@
 /*jshint bitwise: false */
-define(
-	/** @lends */
-	function () {
-	"use strict";
+define([
+	'goo/renderer/Capabilities'
+], function (
+	Capabilities
+) {
+	'use strict';
 
 	function DdsUtils() {
 	}
 
-	DdsUtils.getDdsExtension = function (context) {
-		var vendorPrefixes = ["", "WEBKIT_", "MOZ_"];
-		for (var i = 0; i < vendorPrefixes.length; i++) {
-			var ext = context.getExtension(vendorPrefixes[i] + "WEBGL_compressed_texture_s3tc");
-			if (typeof ext !== 'undefined' && ext !== null) {
-				return ext;
-			}
-		}
-		return null;
-	};
-
-	DdsUtils.isSupported = function (context) {
-		return DdsUtils.getDdsExtension(context) !== null;
+	DdsUtils.isSupported = function () {
+		return !!Capabilities.CompressedTextureS3TC;
 	};
 
 	/**
-	 * @description Get the necessary bit shifts needed to align mask with 0.
+	 * Get the necessary bit shifts needed to align mask with 0.
 	 * @param mask the bit mask to test
-	 * @return number of bits to shift to the right to align mask with 0.
+	 * @returns number of bits to shift to the right to align mask with 0.
 	 */
 	DdsUtils.shiftCount = function (mask) {
 		if (mask === 0) {
@@ -45,19 +36,19 @@ define(
 	};
 
 	/**
-	 * @description Check a value against a bit mask to see if it is set.
+	 * Check a value against a bit mask to see if it is set.
 	 * @param value the value to check
 	 * @param bitMask our mask
-	 * @return true if the mask passes
+	 * @returns true if the mask passes
 	 */
 	DdsUtils.isSet = function (value, bitMask) {
 		return (value & bitMask) === bitMask;
 	};
 
 	/**
-	 * @description Get the string as a dword int value.
+	 * Get the string as a dword int value.
 	 * @param string our string... should only be 1-4 chars long. Expected to be 1 byte chars.
-	 * @return the int value
+	 * @returns the int value
 	 */
 	DdsUtils.getIntFromString = function (string) {
 		var bytes = [];
@@ -68,9 +59,9 @@ define(
 	};
 
 	/**
-	 * @description Get the byte array as a dword int value.
+	 * Get the byte array as a dword int value.
 	 * @param bytes our array... should only be 1-4 bytes long.
-	 * @return the int value
+	 * @returns the int value
 	 */
 	DdsUtils.getIntFromBytes = function (bytes) {
 		var rVal = 0;
@@ -113,12 +104,12 @@ define(
 	};
 
 	/**
-	 * @description Flip a dxt mipmap/image. Inspired by similar code in opentk and the nvidia sdk.
+	 * Flip a dxt mipmap/image. Inspired by similar code in opentk and the nvidia sdk.
 	 * @param rawData our unflipped image as raw bytes
 	 * @param width our image's width
 	 * @param height our image's height
 	 * @param format our image's format
-	 * @return the flipped image as raw bytes.
+	 * @returns the flipped image as raw bytes.
 	 */
 	DdsUtils.flipDXT = function (rawData, width, height, format) {
 		var returnData = new Uint8Array(rawData.length);

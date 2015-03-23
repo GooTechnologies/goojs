@@ -1,61 +1,112 @@
 define([
 	'goo/loaders/handlers/ComponentHandler',
-	'goo/addons/howler/components/HowlerComponent',
+	'goo/entities/components/SoundComponent',
+	'goo/sound/AudioContext',
 	'goo/util/rsvp',
-	'goo/util/PromiseUtil'
-], function(
+	'goo/util/PromiseUtil',
+	'goo/util/ObjectUtil'
+], function (
 	ComponentHandler,
-	HowlerComponent,
+	SoundComponent,
+	AudioContext,
 	RSVP,
-	PromiseUtil
+	PromiseUtil,
+	_
 ) {
-	"use strict";
+	'use strict';
 
+	/**
+	 * For handling loading of sound components
+	 * @param {World} world The goo world
+	 * @param {function} getConfig The config loader function. See {@see DynamicLoader._loadRef}.
+	 * @param {function} updateObject The handler function. See {@see DynamicLoader.update}.
+	 * @extends ComponentHandler
+	 * @hidden
+	 */
 	function SoundComponentHandler() {
 		ComponentHandler.apply(this, arguments);
+		this._type = 'SoundComponent';
 	}
 
 	SoundComponentHandler.prototype = Object.create(ComponentHandler.prototype);
-	ComponentHandler._registerClass('sound', SoundComponentHandler);
-	SoundComponentHandler._type = 'howler';
 	SoundComponentHandler.prototype.constructor = SoundComponentHandler;
+	ComponentHandler._registerClass('sound', SoundComponentHandler);
 
-	SoundComponentHandler.prototype._create = function(entity) {
-		var component = new HowlerComponent();
-		entity.setComponent(component);
-		return component;
+	/**
+	 * Removes the souncomponent and stops all connected sounds
+	 * @param {Entity} entity
+	 * @private
+	 */
+	SoundComponentHandler.prototype._remove = function(entity) {
+		var component = entity.soundComponent;
+		if (component && component.sounds) {
+			var sounds = component.sounds;
+			for (var i = 0; i < sounds.length; i++) {
+				sounds[i].stop();
+			}
+		}
 	};
 
-	SoundComponentHandler.prototype.update = function(entity, config) {
-		if (!window.Howl) {
-			throw new Error('Howler is missing');
-		}
-		var component = ComponentHandler.prototype.update.call(this, entity, config);
-		for (var i = 0; i < component.sounds.length; i++) {
-			component.sounds[i].stop();
-		}
-		component.sounds = [];
+	/**
+	 * Prepares the config
+	 * @param {object} config
+	 */
+	SoundComponentHandler.prototype._prepare = function(config) {
+		_.defaults(config, {
+			volume: 1.0,
+			reverb: 0.0
+		});
+	};
 
-		var soundRefs = config.soundRefs;
-		if (soundRefs) {
-			var promises = [];
+	/**
+	 * Creates sound component
+	 * @returns {SoundComponent} Should be soundcomponent
+	 * @private
+	 */
+	SoundComponentHandler.prototype._create = function() {
+		return new SoundComponent();
+	};
 
-			for (var i = 0; i < soundRefs.length; i++) {
-				promises.push(this._getSound(soundRefs[i]));
+	/**
+	 * Update engine sound component object based on the config.
+	 * @param {Entity} entity The entity on which this component should be added.
+	 * @param {object} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
+	 */
+	SoundComponentHandler.prototype.update = function(entity, config, options) {
+		if (!AudioContext.isSupported()) {
+			return PromiseUtil.resolve(); //! AT: we're not really using reject
+		}
+
+		var that = this;
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+			if (!component) { return; }
+			component.updateConfig(config);
+
+			// Remove old sounds
+			for (var i = 0; i < component.sounds.length; i++) {
+				var sound = component.sounds[i];
+				if (!config.sounds[sound.id]) {
+					component.removeSound(sound);
+				}
 			}
+
+			var promises = [];
+			// Load all sounds
+			_.forEach(config.sounds, function(soundCfg) {
+				promises.push(that._load(soundCfg.soundRef, options));
+			}, null, 'sortValue');
+
 			return RSVP.all(promises).then(function(sounds) {
-				component.sounds = sounds;
+				// Add new sounds
+				for (var i = 0; i < sounds.length; i++) {
+					if (component.sounds.indexOf(sounds[i]) === -1) {
+						component.addSound(sounds[i]);
+					}
+				}
 				return component;
 			});
-		} else {
-			return PromiseUtil.createDummyPromise(component);
-		}
-	};
-
-	SoundComponentHandler.prototype._getSound = function(ref) {
-		var that = this;
-		return this.getConfig(ref).then(function(config) {
-			return that.updateObject(ref, config, that.options);
 		});
 	};
 

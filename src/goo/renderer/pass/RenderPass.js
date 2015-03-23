@@ -1,12 +1,17 @@
-define(['goo/renderer/Renderer',
-	'goo/math/Vector4'],
-	/** @lends */
-	function (Renderer,
-	Vector4) {
-	"use strict";
+define([
+	'goo/renderer/Renderer',
+	'goo/renderer/pass/Pass',
+	'goo/math/Vector4'
+], function (
+	Renderer,
+	Pass,
+	Vector4
+) {
+
+	'use strict';
 
 	/**
-	 * @class A pass that renders provided renderlist to the rendertarget or screen
+	 * A pass that renders provided renderlist to the rendertarget or screen
 	 */
 	function RenderPass(renderList, filter) {
 		this.renderList = renderList;
@@ -21,14 +26,23 @@ define(['goo/renderer/Renderer',
 		this.enabled = true;
 		this.clear = true;
 		this.needsSwap = false;
+		this.viewportSize = undefined;
 	}
+
+	RenderPass.prototype = Object.create(Pass.prototype);
+	RenderPass.prototype.constructor = RenderPass;
 
 	// RenderPasses may have a fourth additional parameter called delta
 	RenderPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights, clearColor) {
 		camera = camera || Renderer.mainCamera;
+
+		if (!camera) {
+			return;
+		}
+
 		lights = lights || [];
-		if (clearColor) {
-			this.oldClearColor.setv(renderer.clearColor);
+		if (clearColor && false) {
+			this.oldClearColor.setVector(renderer.clearColor);
 			renderer.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 		}
 
@@ -44,7 +58,7 @@ define(['goo/renderer/Renderer',
 			renderer.render(renderList, camera, lights, readBuffer, this.clear, this.overrideMaterial);
 		}
 
-		if (this.clearColor) {
+		if (this.clearColor && false) {
 			var oc = this.oldClearColor.data;
 			renderer.setClearColor(oc[0], oc[1], oc[2], oc[3]);
 		}

@@ -1,121 +1,148 @@
-var glob = require('glob');
-var _ = require('underscore')
-var fs = require('fs')
+// jshint node:true
 
-module.exports = function(grunt) {
-	var engineVersion = grunt.option('goo-version') || 'UNOFFICIAL';
-	var bundleRequire = grunt.option('bundle-require');
+var path = require('path');
 
-	var gooModule = {
-		name: 'goo'
-	};
-	var engineFilename = './out/goo.js'
-	if(bundleRequire) {
-		console.log('Bundling require');
-		gooModule.include = ['requireLib'];
-		engineFilename = './out/goo-require.js'
-	}
 
-	// Returns the code to add at the start and end of the minified file
-	function getWrapper() {
-		var wrapperHead = '';
-		var wrapperTail = '';
+module.exports = function (grunt) {
+	'use strict';
 
-		wrapperHead +=
-			'/* Goo Engine ' + engineVersion + '\n' +
-			' * Copyright 2013 Goo Technologies AB\n' +
-			' */\n' +
-			'(function(window) {';
-
-		if (bundleRequire) {
-			wrapperTail += 'window.requirejs=requirejs;';
-			wrapperTail += 'window.require=require;';
-			wrapperTail += 'window.define=define;';
-		}
-		else {
-			// Put all calls to define and require in the f function
-			wrapperHead +=
-				'function f(){';
-			wrapperTail +=
-				'}' +
-				'if(window.localStorage&&window.localStorage.gooPath){' +
-					// We're configured to not use the engine from goo.js.
-					// Don't call the f function so the modules won't be defined
-					// and require will load them separately instead.
-					'window.require.config({' +
-						'paths:{goo:localStorage.gooPath}' +
-					'})' +
-				'}else f()'
-		}
-		wrapperTail += '})(window,undefined)';
-		return [wrapperHead, wrapperTail];
-	}
-
-	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		requirejs: {
-			build: {
-				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
-				options: {
-					baseUrl: 'src/',
-					optimize: 'uglify2',  // uglify, uglify2, closure, closure.keepLines
-					preserveLicenseComments: false,
-					useStrict: true,
-					wrap: false,
-					keepBuildDir: true,
-					//generateSourceMaps: true,
-					dir: 'out/minified/',
-					modules: [gooModule],
-					paths: {
-						'requireLib': '../lib/require'
-					},
-
-					// I tried using a wrap block like this, but it has no effect
-					// wrap: { ... }
-					/*
-					uglify2: {
-						output: {
-							beautify: true
-						},
-						compress: {
-							sequences: false,
-							global_defs: {
-								DEBUG: false
-							}
-						},
-						warnings: true,
-						mangle: false
-					}*/
-				}
-			}
-		},
-		wrap: {
-			build: {
-				src: ['out/minified/goo.js'],
-				dest: engineFilename,
-				options: {
-					wrapper: getWrapper()
-				}
-			}
-		},
+		// is this task ever called?
 		clean: {
 			build: {
 				src: [
 					'out/',
-					'src/goo.js',
+					'src/goo.js'
 				]
 			},
 			toc: {
 				src: [
-					'visual-test/index.html'
+					'visual-test/index.html',
+					'examples/index.html'
 				]
 			},
 			docs: [
-				'goojs-jsdoc/',
-				'goojs-jsdoc-json/',
-				'goojs-jsdoc_*.tar.gz',
+				'out-doc/'
 			]
+		},
+		'build-pack': {
+			fsmpack: {
+				packPath: 'fsmpack'
+			},
+			geometrypack: {
+				packPath: 'geometrypack'
+			},
+			quadpack: {
+				packPath: 'quadpack'
+			},
+			timelinepack: {
+				packPath: 'timelinepack'
+			},
+			debugpack: {
+				packPath: 'debugpack'
+			},
+			scriptpack: {
+				packPath: 'scriptpack'
+			},
+			p2pack: {
+				packPath: 'addons/p2pack'
+			},
+			box2dpack: {
+				packPath: 'addons/box2dpack'
+			},
+			terrainpack: {
+				packPath: 'addons/terrainpack'
+			},
+			ammopack: {
+				packPath: 'addons/ammopack'
+			},
+			cannonpack: {
+				packPath: 'addons/cannonpack'
+			},
+			waterpack: {
+				packPath: 'addons/waterpack'
+			},
+			linerenderpack: {
+				packPath: 'addons/linerenderpack',
+				outBaseDir: 'out'
+			},
+			animationpack: {
+				packPath: 'animationpack'
+			},
+			soundmanager2pack: {
+				packPath: 'addons/soundmanager2pack'
+			},
+			gamepadpack: {
+				packPath: 'addons/gamepadpack'
+			},
+			passpack: {
+				packPath: 'passpack'
+			},
+			gizmopack: {
+				packPath: 'util/gizmopack'
+			},
+			physicspack: {
+				packPath: 'addons/physicspack'
+			}
+		},
+		'preprocess': {
+			prod: {
+				defines: {
+					DEBUG: false
+				}
+			},
+			dev: {
+				defines: {
+					DEBUG: true
+				}
+			}
+		},
+		'generate-toc': {
+			'visual-test': {
+				path: 'visual-test',
+				title: 'Visual tests'
+			},
+			'examples': {
+				path: 'examples',
+				title: 'Examples'
+			}
+		},
+		'build-custom': {
+			myBundle: {
+				outFile: 'bundle.js'
+			}
+		},
+		karma: {
+			unit: {
+				configFile: 'test/unit/karma.conf.js',
+				singleRun: true,
+				browsers: ['Chrome'] // Phantom just doesn't have support for the goodies we've come to know and love
+			}
+		},
+		shell: {
+			jsdoc: {
+				command: 'node tools/modoc/src/modoc.js src/goo tools/modoc/src/templates tools/modoc/src/statics out-doc'
+			},
+			update_webdriver: {
+				options: {
+					stdout: true
+				},
+				command: path.resolve('node_modules/webdriver-manager/bin/webdriver-manager') + ' update --standalone --chrome'
+			},
+			e2e: {
+				command: 'node test/e2etesting/manualSpec.js'
+			},
+			'modoc-test': {
+				command: 'node node_modules/jasmine-node/bin/jasmine-node tools/modoc/test/spec'
+			}
+		},
+		jshint: {
+			all: ['src'],
+			options: {
+				jshintrc: '.jshintrc',
+				force: true // Do not fail the task
+			}
 		}
 	});
 
@@ -123,20 +150,25 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-wrap');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-karma');
+	grunt.loadNpmTasks('grunt-shell');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 
-	grunt.registerTask('default', ['minify']);
-	grunt.registerTask('minify', ['main-file', 'requirejs:build', 'wrap']);
+	grunt.loadTasks('tools/grunt_tasks');
 
-	// Creates src/goo.js that depends on all engine modules
-	grunt.registerTask('main-file', function() {
-		var sourceFiles = glob.sync('**/*.js', {cwd: 'src/goo/'})
-		var allModules = _.map(sourceFiles, function(f) {
-			return 'goo/' + f.replace(/\.js/, '');
-		});
-
-		fs.writeFileSync('src/goo.js', 'define([\n' +
-			_.map(allModules, function(m) { return "\t'" + m + "'"; }).join(',\n') +
-		'\n], function() {});\n')
-	});
-
+	grunt.registerTask('default',	 ['minify']);
+	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
+	grunt.registerTask('minify',	 [
+		'main-file',
+		'preprocess:prod',
+		'requirejs:build',
+		'uglify:build', 
+		'wrap',
+		'build-pack'
+	]);
+	grunt.registerTask('unittest',	 ['karma:unit']);
+	grunt.registerTask('coverage',	 ['unittest']);
+	grunt.registerTask('e2e',		 ['shell:e2e']);
+	grunt.registerTask('test',		 ['unittest', 'e2e']);
+	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 };

@@ -1,11 +1,16 @@
-define(['goo/renderer/MeshData'],
-	/** @lends */
-	function (MeshData) {
-	"use strict";
+define([
+	'goo/renderer/MeshData',
+	'goo/util/ObjectUtil'
+], function (
+	MeshData,
+	_
+) {
+	'use strict';
 
 	/**
-	 * @class A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
+	 * A rectangular, two dimensional shape. The local height of the Quad defines it's size about the y-axis,
 	 * while the width defines the x-axis. The z-axis will always be 0.
+	 * @extends MeshData
 	 * @param {number} [width=1] Total width of quad.
 	 * @param {number} [height=1] Total height of quad.
 	 * @param {number} [tileX=1] Number of texture repetitions in the texture's x direction.
@@ -19,21 +24,25 @@ define(['goo/renderer/MeshData'],
 			tileX = props.tileX;
 			tileY = props.tileY;
 		}
-		/** Extent along the local x axis.
+
+		/** Half-extent along the local x axis.
 		 * @type {number}
 		 * @default 0.5
 		 */
 		this.xExtent = width !== undefined ? width * 0.5 : 0.5;
-		/** Extent along the local y axis.
+
+		/** Half-extent along the local y axis.
 		 * @type {number}
 		 * @default 0.5
 		 */
 		this.yExtent = height !== undefined ? height * 0.5 : 0.5;
+
 		/** Number of texture repetitions in the texture's x direction.
 		 * @type {number}
 		 * @default 1
 		 */
 		this.tileX = tileX || 1;
+
 		/** Number of texture repetitions in the texture's y direction.
 		 * @type {number}
 		 * @default 1
@@ -47,9 +56,10 @@ define(['goo/renderer/MeshData'],
 	}
 
 	Quad.prototype = Object.create(MeshData.prototype);
+	Quad.prototype.constructor = Quad;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Quad} Self for chaining.
 	 */
 	Quad.prototype.rebuild = function () {
@@ -65,6 +75,16 @@ define(['goo/renderer/MeshData'],
 		this.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this quad
+	 * @returns {Quad}
+	 */
+	Quad.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['xExtent', 'yExtent', 'tileX', 'tileY']);
+
+		return new Quad(options);
 	};
 
 	return Quad;

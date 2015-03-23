@@ -1,10 +1,10 @@
 define(
-	/** @lends */
+
 	function () {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class Shows render statistics
+	 * Shows render statistics
 	 * @example
 	 * this.stats = new Stats();
 	 * document.body.appendChild(this.stats.domElement);
@@ -124,7 +124,7 @@ define(
 				prevTimeMs = time;
 
 				if (info) {
-					infoText.innerHTML = 'Calls: ' + info.calls + '<br>Vertices: ' + info.vertices + '<br>Indices: ' + info.indices;
+					infoText.innerHTML = info;
 				}
 			}
 

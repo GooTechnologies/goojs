@@ -1,25 +1,34 @@
 define([
-	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
-	MeshData
+	'goo/renderer/MeshData',
+	'goo/math/Vector3',
+	'goo/util/ObjectUtil'
+], function (
+	MeshData,
+	Vector3,
+	_
 ) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class A 3D object representing a cylinder.
+	 * A 3D object representing a cylinder.
+	 * @extends MeshData
 	 * @param {number} [radialSamples=8] Number of slices
-	 * @param {number} [radius=0.5] Radius
+	 * @param {number} [radiusTop=0.5] Radius of the cylinder at the top.
+	 * @param {number} [radiusBottom=radiusTop] Radius of the cylinder at the bottom. Defaults to radiusTop.
+	 * @param {number} [height=1] Height
 	 */
-	function Cylinder(radialSamples, radius) {
+	function Cylinder(radialSamples, radiusTop, radiusBottom, height) {
 		if (arguments.length === 1 && arguments[0] instanceof Object) {
 			var props = arguments[0];
 			radialSamples = props.radialSamples;
-			radius = props.radius;
+			radiusTop = props.radiusTop;
+			radiusBottom = props.radiusBottom;
+			height = props.height;
 		}
 		this.radialSamples = radialSamples || 8;
-		this.radius = radius || 1;
+		this.radiusTop = typeof radiusTop  === 'undefined' ? 0.5 : radiusTop;
+		this.radiusBottom = typeof radiusBottom === 'undefined' ? this.radiusTop : radiusBottom;
+		this.height = typeof height === 'undefined' ? 1 : height;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 		MeshData.call(this, attributeMap, this.radialSamples * 4 + 2 + 2, (this.radialSamples * 3) * 4);
@@ -31,9 +40,10 @@ function (
 	}
 
 	Cylinder.prototype = Object.create(MeshData.prototype);
+	Cylinder.prototype.constructor = Cylinder;
 
 	/**
-	 * @description Builds or rebuilds the mesh data.
+	 * Builds or rebuilds the mesh data.
 	 * @returns {Cylinder} Self for chaining.
 	 */
 	Cylinder.prototype.rebuild = function () {
@@ -41,29 +51,48 @@ function (
 		var norms = [];
 		var tex = [];
 		var indices = [];
+		var height = this.height;
+		var halfHeight = height / 2;
+		var radiusTop = this.radiusTop;
+		var radiusBottom = this.radiusBottom;
+		var radialSamples = this.radialSamples;
 
-		var ak = Math.PI * 2 / this.radialSamples;
-		var at = 1 / this.radialSamples;
+		var ak = Math.PI * 2 / radialSamples;
+		var at = 1 / radialSamples;
 
-		var lastIndex = this.radialSamples * 4 + 2 + 2 - 1;
-		for (var i = 0, k = 0, t = 0; i < this.radialSamples; i++, k += ak, t += at) {
+		var lastIndex = radialSamples * 4 + 2 + 2 - 1;
+		var normal = new Vector3();
+
+		var tan = 0;
+		if (height) {
+			tan = Math.tan((radiusBottom - radiusTop) / height);
+		}
+
+		for (var i = 0, k = 0, t = 0; i < radialSamples; i++, k += ak, t += at) {
 			var cos = Math.cos(k);
 			var sin = Math.sin(k);
-			var x = cos * this.radius;
-			var y = sin * this.radius;
+			var xTop = cos * radiusTop;
+			var yTop = sin * radiusTop;
+			var xBottom = cos * radiusBottom;
+			var yBottom = sin * radiusBottom;
 
 			verts.push(
-				x, y, 0.5, // disk 1
-				x, y, -0.5, // disk 2
-				x, y, 0.5,  // side 1
-				x, y, -0.5  // side 2
+				xTop, yTop, halfHeight, // disk top
+				xBottom, yBottom, -halfHeight, // disk bottom
+				xTop, yTop, halfHeight,  // side top
+				xBottom, yBottom, -halfHeight  // side bottom
 			);
+
+			normal.setDirect(cos, sin, tan);
+			normal.normalize();
 
 			norms.push(
 				0, 0, 1,
 				0, 0, -1,
-				cos, sin, 0,
-				cos, sin, 0
+				normal.x, normal.y, normal.z,
+				normal.x, normal.y, normal.z
+				//cos, sin, 0,
+				//cos, sin, 0
 			);
 
 			tex.push(
@@ -75,8 +104,8 @@ function (
 		}
 
 		verts.push(
-			this.radius, 0.0, 0.5,
-			this.radius, 0.0, -0.5
+			radiusTop, 0.0, halfHeight,
+			radiusBottom, 0.0, -halfHeight
 		);
 
 		norms.push(
@@ -89,7 +118,7 @@ function (
 			1.0, 1.0
 		);
 
-		for (var i = 0; i < this.radialSamples - 1; i++) {
+		for (var i = 0; i < radialSamples - 1; i++) {
 			indices.push(
 				lastIndex, i * 4 + 0, i * 4 + 4,
 				i * 4 + 1, lastIndex - 1, i * 4 + 5,
@@ -106,8 +135,8 @@ function (
 		);
 
 		verts.push(
-			0, 0, -0.5,
-			0, 0, 0.5
+			0, 0, -halfHeight,
+			0, 0, halfHeight
 		);
 
 		norms.push(
@@ -126,6 +155,16 @@ function (
 		this.getIndexBuffer().set(indices);
 
 		return this;
+	};
+
+	/**
+	 * Returns a clone of this cylinder
+	 * @returns {Cylinder}
+	 */
+	Cylinder.prototype.clone = function () {
+		var options = _.shallowSelectiveClone(this, ['radialSamples', 'radiusTop', 'radiusBottom', 'height']);
+
+		return new Cylinder(options);
 	};
 
 	return Cylinder;

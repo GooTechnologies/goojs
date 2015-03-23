@@ -1,10 +1,14 @@
-define(['goo/picking/BoundingTree'],
-/** @lends */
-function (BoundingTree) {
-	"use strict";
+define([
+	'goo/picking/BoundingTree'
+], function (
+	BoundingTree
+) {
+	'use strict';
 
-	function PrimitivePickLogic () {
-	}
+	/**
+	 * Primitive pick logic
+	 */
+	function PrimitivePickLogic () {}
 
 	PrimitivePickLogic.prototype.getPickResult = function (pickRay, entity) {
 		// look in pick tree for intersection
@@ -25,7 +29,9 @@ function (BoundingTree) {
 
 	PrimitivePickLogic.prototype.removed = function (entity) {
 		// clear bounding tree
-		entity.meshDataComponent.meshData.__boundingTree = null;
+		if( entity.meshDataComponent && entity.meshDataComponent.meshData) {
+			entity.meshDataComponent.meshData.__boundingTree = null;
+		}
 	};
 
 	PrimitivePickLogic.prototype.isConstructed = function (entity) {

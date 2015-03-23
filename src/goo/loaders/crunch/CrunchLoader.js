@@ -24,15 +24,18 @@
 /*jshint bitwise: false */
 define([
 	'goo/loaders/dds/DdsLoader',
-	'goo/loaders/dds/DdsUtils'
-],
-/** @lends */
-function(
+	'goo/loaders/dds/DdsUtils',
+	'goo/renderer/Capabilities'
+], function (
 	DdsLoader,
-	DdsUtils
+	DdsUtils,
+	Capabilities
 ) {
-	"use strict";
+	'use strict';
 
+	/**
+	 * @private
+	 */
 	function CrunchLoader() {
 	}
 
@@ -138,6 +141,7 @@ function(
 
 		image.bpp = bpp;
 		image.dataReady = true;
+		image.isData = true;
 		texture.needsUpdate = true;
 
 		CrunchModule._free(src);
@@ -165,7 +169,7 @@ function(
 	 * @param {number} srcByteOffset
 	 * @param {number} width
 	 * @param {number} height
-	 * @return {Uint16Array} dst
+	 * @returns {Uint16Array} dst
 	 */
 	CrunchLoader.prototype.dxtToRgb565 = function(src, src16Offset, width, height) {
 		var c = new Uint16Array(4);
@@ -228,7 +232,7 @@ function(
 	};
 
 	CrunchLoader.prototype.isSupported = function () {
-		return DdsLoader.SUPPORTS_DDS;
+		return !!Capabilities.CompressedTextureS3TC;
 	};
 
 	CrunchLoader.prototype.toString = function () {

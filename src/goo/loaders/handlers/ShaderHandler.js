@@ -5,52 +5,91 @@ define([
 	'goo/renderer/Shader',
 	'goo/renderer/shaders/ShaderBuilder',
 	'goo/util/rsvp',
-	'goo/util/ObjectUtil'
-], function(
+	'goo/util/PromiseUtil'
+], function (
 	ConfigHandler,
 	Material,
 	MeshData,
 	Shader,
 	ShaderBuilder,
 	RSVP,
-	_
+	PromiseUtil
 ) {
-	"use strict";
+	'use strict';
 
+	/**
+	 * Handler for loading shaders into engine
+	 * @extends ConfigHandler
+	 * @param {World} world
+	 * @param {Function} getConfig
+	 * @param {Function} updateObject
+	 * @private
+	 */
 	function ShaderHandler() {
 		ConfigHandler.apply(this, arguments);
 	}
 
 	ShaderHandler.prototype = Object.create(ConfigHandler.prototype);
+	ShaderHandler.prototype.constructor = ShaderHandler;
 	ConfigHandler._registerClass('shader', ShaderHandler);
 
-	ShaderHandler.prototype._create = function(/*ref*/) {};
+	/**
+	 * Removes a shader
+	 * @param {ref}
+	 * @private
+	 */
+	ShaderHandler.prototype._remove = function (ref) {
+		var shader = this._objects.get(ref);
+		if (shader && this.world.gooRunner) {
+			shader.destroy(this.world.gooRunner.renderer.context);
+			this._objects.delete(ref);
+		}
+	};
 
-	ShaderHandler.prototype.update = function(ref, config) {
-		var shaderDefinition;
+	/**
+	 * Adds/updates/removes a shader
+	 * Currently it is not possible to update a shader, so we create a new one every time
+	 * @param {string} ref
+	 * @param {object|null} config
+	 * @param {object} options
+	 * @returns {RSVP.Promise} Resolves with the updated shader or null if removed
+	 */
+	ShaderHandler.prototype._update = function (ref, config, options) {
+		if (!config) {
+			this._remove(ref);
+			return PromiseUtil.resolve();
+		}
+		if (!config.vshaderRef) {
+			return PromiseUtil.reject('Shader error, missing vertex shader ref');
+		}
+		if (!config.fshaderRef) {
+			return PromiseUtil.reject('Shader error, missing fragment shader ref');
+		}
 
-		// console.log("Updating shader " + ref);
-		// Currently not possible to update a shader, so update = create
+		var promises = [
+			this.loadObject(config.vshaderRef, options),
+			this.loadObject(config.fshaderRef, options)
+		];
 
-		if (config != null && config.attributes != null && config.uniforms != null) {
-			shaderDefinition = {
-				attributes: config.attributes,
-				uniforms: config.uniforms
-			};
-			for (var key in shaderDefinition.uniforms) {
-				var uniform = shaderDefinition.uniforms[key];
-				if (typeof uniform === 'string') {
-					var funcRegexp = /^function\s?\(([^\)]*)\)\s*\{(.*)\}$/;
-					var test = uniform.match(funcRegexp);
-					if ((test != null ? test.length : void 0) === 3) {
-						var args = test[1].replace(' ', '').split(',');
-						var body = test[2];
+		return RSVP.all(promises).then(function (shaders) {
+			var vshader = shaders[0];
+			var fshader = shaders[1];
 
-						/* jshint -W054 */
-						shaderDefinition.uniforms[key] = new Function(args, body);
-					}
-				}
+			if (!vshader) {
+				return PromiseUtil.reject('Vertex shader' + config.vshaderRef + 'in shader' + ref + 'not found');
 			}
+			if (!fshader) {
+				return PromiseUtil.reject('Fragment shader' + config.fshaderRef + 'in shader' + ref + 'not found');
+			}
+
+			var shaderDefinition = {
+				defines: config.defines || {},
+				attributes: config.attributes || {},
+				uniforms: config.uniforms || {},
+				vshader: vshader,
+				fshader: fshader
+			};
+
 			if (config.processors) {
 				shaderDefinition.processors = [];
 				for (var i = 0; i < config.processors.length; i++) {
@@ -58,60 +97,17 @@ define([
 					if (ShaderBuilder[processor]) {
 						shaderDefinition.processors.push(ShaderBuilder[processor].processor);
 					} else {
-						throw new Error("Unknown processor: " + processor);
+						console.error('Unknown processor ' + processor);
 					}
 				}
 			}
-			if (config.defines) {
-				shaderDefinition.defines = config.defines;
-			}
-		} else {
-			shaderDefinition = this._getDefaultShaderDefinition();
-		}
-		var promises = [this.getConfig(config.vshaderRef), this.getConfig(config.fshaderRef)];
-		return RSVP.all(promises).then(function(shaders) {
-			var fshader, vshader;
-			vshader = shaders[0], fshader = shaders[1];
-			if (!vshader) {
-				console.warn('Vertex shader', config.vshaderRef, 'in shader', ref, 'not found');
-				return;
-			}
-			if (!fshader) {
-				console.warn('Fragment shader', config.fshaderRef, 'in shader', ref, 'not found');
-				return;
-			}
-			_.extend(shaderDefinition, {
-				attributes: config.attributes || {},
-				uniforms: config.uniforms || {},
-				vshader: vshader,
-				fshader: fshader
-			});
-			return Material.createShader(shaderDefinition, ref);
-		});
-	};
 
-	ShaderHandler.prototype.remove = function(/*ref*/) {};
+			var shader = Material.createShader(shaderDefinition, ref);
 
-	ShaderHandler.prototype._getDefaultShaderDefinition = function() {
-		return {
-			attributes: {
-				vertexPosition: MeshData.POSITION,
-				vertexNormal: MeshData.NORMAL,
-				vertexUV0: MeshData.TEXCOORD0
-			},
-			uniforms: {
-				viewMatrix: Shader.VIEW_MATRIX,
-				projectionMatrix: Shader.PROJECTION_MATRIX,
-				worldMatrix: Shader.WORLD_MATRIX,
-				cameraPosition: Shader.CAMERA,
-				lightPosition: Shader.LIGHT0,
-				diffuseMap: Shader.DIFFUSE_MAP,
-				materialAmbient: Shader.AMBIENT,
-				materialDiffuse: Shader.DIFFUSE,
-				materialSpecular: Shader.SPECULAR,
-				materialSpecularPower: Shader.SPECULAR_POWER
-			}
-		};
+			this._objects.set(ref, shader);
+
+			return shader;
+		}.bind(this));
 	};
 
 	return ShaderHandler;

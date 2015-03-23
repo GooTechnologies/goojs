@@ -3,18 +3,16 @@ define([
 	'goo/particles/Particle',
 	'goo/particles/ParticleEmitter',
 	'goo/renderer/MeshData'
-],
-/** @lends */
-function (
+], function (
 	Component,
 	Particle,
 	ParticleEmitter,
 	MeshData
 ) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class Creates and modifies @link{MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
+	 * Creates and modifies {@link MeshData} to simulate particle effects.<br /><br />ParticleComponents may have one or
 	 * more emitters. Each emitter spawns particles, controlling spawn rate, lifetime, initial velocity vector and
 	 * position of each particle. Each Particle System also contains a timeline describing changes each particle should
 	 * perform over its lifetime, including:
@@ -33,8 +31,11 @@ function (
 	 * @param {number} [settings.uRange=1]
 	 * @param {number} [settings.vRange=1]
 	 * @param {number} [settings.particleCount=100]
+	 * @extends Component
 	 */
 	function ParticleComponent (settings) {
+		Component.apply(this, arguments);
+
 		this.type = 'ParticleComponent';
 
 		Component.call(this);
@@ -57,13 +58,21 @@ function (
 		this.recreateParticles(particleCount);
 
 		this.enabled = true;
+
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
 	}
 
+	ParticleComponent.type = 'ParticleComponent';
+
 	ParticleComponent.prototype = Object.create(Component.prototype);
+	ParticleComponent.prototype.constructor = ParticleComponent;
 
 	ParticleComponent.prototype.generateMeshData = function () {
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.COLOR, MeshData.TEXCOORD0]);
 		this.meshData = new MeshData(attributeMap, this.particleCount * 4, this.particleCount * 6);
+		this.meshData.vertexData.setDataUsage('DynamicDraw');
 
 		// setup texture coords
 		var uvBuffer = this.meshData.getAttributeBuffer(MeshData.TEXCOORD0);

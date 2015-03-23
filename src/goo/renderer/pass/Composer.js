@@ -1,36 +1,77 @@
-define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
-	'goo/renderer/shaders/ShaderLib'],
-	/** @lends */
-	function (RenderTarget, FullscreenPass,
-	ShaderLib) {
-	"use strict";
+define([
+	'goo/renderer/pass/RenderTarget',
+	'goo/renderer/pass/FullscreenPass',
+	'goo/renderer/shaders/ShaderLib',
+	'goo/entities/SystemBus'
+], function (
+	RenderTarget,
+	FullscreenPass,
+	ShaderLib,
+	SystemBus
+) {
+	'use strict';
 
 	var WebGLRenderingContext = window.WebGLRenderingContext;
 
 	/**
-	 * @class Post processing handler
+	 * Post processing handler
 	 * @param {RenderTarget} renderTarget Data to wrap
 	 * @property {RenderTarget} renderTarget Data to wrap
 	 */
 	function Composer(renderTarget) {
-		this.renderTarget1 = renderTarget;
+		this._passedWriteBuffer = !!renderTarget;
+		this.writeBuffer = renderTarget;
 
-		if (this.renderTarget1 === undefined) {
+		if (this.writeBuffer === undefined) {
 			var width = window.innerWidth || 1;
 			var height = window.innerHeight || 1;
 
-			this.renderTarget1 = new RenderTarget(width, height);
+			this.writeBuffer = new RenderTarget(width, height);
 		}
 
-		this.renderTarget2 = this.renderTarget1.clone();
-
-		this.writeBuffer = this.renderTarget1;
-		this.readBuffer = this.renderTarget2;
+		this.readBuffer = this.writeBuffer.clone();
 
 		this.passes = [];
-		this._clearColor = [0,0,0,1];
+		this._clearColor = [0, 0, 0, 1];
 		this.copyPass = new FullscreenPass(ShaderLib.copy);
+
+		this.size = null;
+		this.dirty = false;
+
+		this._viewportResizeHandler = function (size) {
+			this.dirty = true;
+			this.size = size;
+		}.bind(this);
+
+		SystemBus.addListener('goo.viewportResize', this._viewportResizeHandler, true);
 	}
+
+	/**
+	 * Deallocate all allocated WebGL buffers, listeners, and passes.
+	 * @param  {Renderer} renderer
+	 */
+	Composer.prototype.destroy = function (renderer) {
+		this.deallocateBuffers(renderer);
+		for (var i = 0; i < this.passes.length; i++) {
+			var pass = this.passes[i];
+			pass.destroy(renderer);
+		}
+		SystemBus.removeListener('goo.viewportResize', this._viewportResizeHandler);
+	};
+
+	/**
+	 * Deallocate the read and write buffers.
+	 * @param {Renderer} renderer
+	 */
+	Composer.prototype.deallocateBuffers = function (renderer) {
+		if (this.writeBuffer && !this._passedWriteBuffer) {
+			this.writeBuffer.destroy(renderer.context);
+		}
+		if (this.readBuffer) {
+			this.readBuffer.destroy(renderer.context);
+		}
+		this.copyPass.destroy(renderer);
+	};
 
 	Composer.prototype.swapBuffers = function () {
 		var tmp = this.readBuffer;
@@ -38,20 +79,56 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 		this.writeBuffer = tmp;
 	};
 
-	Composer.prototype.addPass = function (pass) {
-		this.passes.push(pass);
+	Composer.prototype._checkPassResize = function (pass, size) {
+		return !pass.viewportSize ||
+			pass.viewportSize.x !== size.x ||
+			pass.viewportSize.y !== size.y ||
+			pass.viewportSize.width !== size.width ||
+			pass.viewportSize.height !== size.height;
 	};
 
-	Composer.prototype.setClearColor = function(color) {
+	Composer.prototype.addPass = function (pass, renderer) {
+		this.passes.push(pass);
+		if (pass.updateSize && this.size && this._checkPassResize(pass, this.size)) {
+			pass.updateSize(this.size, renderer);
+			pass.viewportSize = this.size;
+		}
+	};
+
+	Composer.prototype.setClearColor = function (color) {
 		this._clearColor[0] = color[0];
 		this._clearColor[1] = color[1];
 		this._clearColor[2] = color[2];
 		this._clearColor[3] = color[3];
 	};
 
+	Composer.prototype.updateSize = function (renderer) {
+		var size = this.size;
+		if (!size) {
+			return;
+		}
+		var width = size.width;
+		var height = size.height;
+
+		this.deallocateBuffers(renderer);
+
+		this.writeBuffer = new RenderTarget(width, height);
+		this.readBuffer = this.writeBuffer.clone();
+
+		for (var i = 0, il = this.passes.length; i < il; i++) {
+			var pass = this.passes[i];
+			if (pass.updateSize && this._checkPassResize(pass, size)) {
+				pass.updateSize(size, renderer);
+				pass.viewportSize = size;
+			}
+		}
+	};
+
 	Composer.prototype.render = function (renderer, delta, camera, lights) {
-		this.writeBuffer = this.renderTarget1;
-		this.readBuffer = this.renderTarget2;
+		if (this.dirty) {
+			this.updateSize(renderer);
+			this.dirty = false;
+		}
 
 		var maskActive = false;
 		var pass, i, il = this.passes.length;
@@ -73,13 +150,6 @@ define(['goo/renderer/pass/RenderTarget', 'goo/renderer/pass/FullscreenPass',
 				}
 				this.swapBuffers();
 			}
-
-			// TODO
-			// if (pass instanceof MaskPass) {
-			// maskActive = true;
-			// } else if (pass instanceof ClearMaskPass) {
-			// maskActive = false;
-			// }
 		}
 	};
 

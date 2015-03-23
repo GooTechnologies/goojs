@@ -1,23 +1,17 @@
-define(["goo/math/MathUtils"],
-	/** @lends */
-	function (MathUtils) {
-	"use strict";
-
-	/* ====================================================================== */
+define([
+	'goo/math/MathUtils'
+], function (
+	MathUtils
+) {
+	'use strict';
 
 	/**
-	 * @class A base class for procedural noise functions.
-	 * @constructor
-	 * @description Only used to define the class. Should never be instantiated.
+	 * A base class for procedural noise functions.
+	 * Only used to define the class. Should never be instantiated.
 	 */
+	function Noise() {}
 
-	function Noise() {
-	}
-
-	/* ====================================================================== */
-
-	Noise.shifter =
-	[
+	Noise.shifter = [
 		0x25, 0x5B, 0x0C, 0x80, 0xD8, 0x60, 0x33, 0x99, 0x27, 0xE7, 0xDF, 0xB4, 0xA0, 0x9D, 0x87, 0xB3,
 		0x4A, 0x32, 0xCD, 0x97, 0x04, 0xD5, 0xC4, 0x3A, 0xD4, 0x78, 0x35, 0x2D, 0x0A, 0xC3, 0x89, 0x9F,
 		0x67, 0x90, 0x6D, 0xAA, 0xCA, 0x30, 0x79, 0x0D, 0xF5, 0x44, 0xE8, 0x1C, 0xD2, 0xAE, 0xC5, 0x50,
@@ -36,16 +30,12 @@ define(["goo/math/MathUtils"],
 		0xF6, 0x8E, 0xFB, 0xCC, 0xCB, 0x20, 0x92, 0x5A, 0x13, 0x09, 0xB2, 0x9E, 0xB5, 0x5E, 0x2B, 0x05
 	];
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @private
-	 * @description Splits a real-valued number into a record for use in smooth interpolation.
+	 * Splits a real-valued number into a record for use in smooth interpolation.
+	 * @hidden
 	 * @param {Float} x Input value.
-	 * @return {object} Object containing "i0", "i1", "f0" and "f1" members. (Integer,Integer,Float,Float)
+	 * @returns {object} Object containing "i0", "i1", "f0" and "f1" members. (Integer,Integer,Float,Float)
 	 */
-
 	Noise.split = function (x) {
 		var i = Math.floor(x);
 		var f = MathUtils.scurve5(x - i);
@@ -53,20 +43,16 @@ define(["goo/math/MathUtils"],
 		return { "i0" : i + 0, "i1" : i + 1, "f0" : 1.0 - f, "f1" : 0.0 + f };
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Evaluates a one-dimensional fractal noise function at a specific position.
+	 * Evaluates a one-dimensional fractal noise function at a specific position.
 	 * @param {Float} x Evaluation position x.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
 	 * @param {Integer} octaves Number of octaves.
 	 * @param {Float} persistance Amplitude persistance between octaves.
 	 * @param {Float} lacunarity Frequency scale between octaves.
 	 * @param {Noise} type Name of noise class extending from Noise.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
-
 	Noise.fractal1d = function (x, scale, octaves, persistance, lacunarity, type) {
 		var result = 0.0;
 		var amplitude = 1.0;
@@ -82,11 +68,8 @@ define(["goo/math/MathUtils"],
 		return result / normalizer;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Evaluates a two-dimensional fractal noise function at a specific position.
+	 * Evaluates a two-dimensional fractal noise function at a specific position.
 	 * @param {Float} x Evaluation position x.
 	 * @param {Float} y Evaluation position y.
 	 * @param {Float} scale Base scale. Greater scale values will pull the sources (hills and valleys) further apart.
@@ -94,9 +77,8 @@ define(["goo/math/MathUtils"],
 	 * @param {Float} persistance Amplitude persistance between octaves.
 	 * @param {Float} lacunarity Frequency scale between octaves.
 	 * @param {Noise} type Name of noise class extending from Noise.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
-
 	Noise.fractal2d = function (x, y, scale, octaves, persistance, lacunarity, type) {
 		var result = 0.0;
 		var amplitude = 1.0;
@@ -113,11 +95,8 @@ define(["goo/math/MathUtils"],
 		return result / normalizer;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Evaluates a three-dimensional fractal noise function at a specific position.
+	 * Evaluates a three-dimensional fractal noise function at a specific position.
 	 * @param {Float} x Evaluation position x.
 	 * @param {Float} y Evaluation position y.
 	 * @param {Float} z Evaluation position z.
@@ -126,9 +105,8 @@ define(["goo/math/MathUtils"],
 	 * @param {Float} persistance Amplitude persistance between octaves.
 	 * @param {Float} lacunarity Frequency scale between octaves.
 	 * @param {Noise} type Name of noise class extending from Noise.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
-
 	Noise.fractal3d = function (x, y, z, scale, octaves, persistance, lacunarity, type) {
 		var result = 0.0;
 		var amplitude = 1.0;
@@ -146,11 +124,8 @@ define(["goo/math/MathUtils"],
 		return result / normalizer;
 	};
 
-	/* ====================================================================== */
-
 	/**
-	 * @static
-	 * @description Evaluates a four-dimensional fractal noise function at a specific position.
+	 * Evaluates a four-dimensional fractal noise function at a specific position.
 	 * @param {Float} x Evaluation position x.
 	 * @param {Float} y Evaluation position y.
 	 * @param {Float} z Evaluation position z.
@@ -160,9 +135,8 @@ define(["goo/math/MathUtils"],
 	 * @param {Float} persistance Amplitude persistance between octaves.
 	 * @param {Float} lacunarity Frequency scale between octaves.
 	 * @param {Noise} type Name of noise class extending from Noise.
-	 * @return {Float} Noise value.
+	 * @returns {Float} Noise value.
 	 */
-
 	Noise.fractal4d = function (x, y, z, w, scale, octaves, persistance, lacunarity, type) {
 		var result = 0.0;
 		var amplitude = 1.0;
@@ -180,8 +154,6 @@ define(["goo/math/MathUtils"],
 
 		return result / normalizer;
 	};
-
-	/* ====================================================================== */
 
 	return Noise;
 });

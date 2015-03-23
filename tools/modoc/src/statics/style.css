@@ -1,0 +1,433 @@
+/******************************************************************************
+OVERIDES & GLOBALS
+******************************************************************************/
+
+body {
+	height: 100%;
+	margin: 0;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	font-size: 15px;
+	color: #b5b5b5;
+	background-color: #1d1d1d;
+	overflow-x: hidden;
+}
+
+::-webkit-scrollbar {width: 10px;}
+::-webkit-scrollbar-track {background: #292929;}
+::-webkit-scrollbar-thumb {background-color: #555555;}
+nav::-webkit-scrollbar-track {background: #343434;}
+
+button {
+	border-radius: 3px;
+	border-style: none;
+	background-color: hsl(200, 50%, 20%);
+	font-size: x-small;
+	padding: 4px 16px;
+}
+
+input {
+	width: 90%;
+	padding: 10px;
+	background-color: transparent;
+	color: #b5b5b5;
+	border: 1px solid #555555;
+	border-radius: 3px;
+}
+
+input:hover, input:focus, input:active {
+	color: #b5b5b5;
+	border-color: #38b3f6;
+	outline: none;
+}
+
+::-webkit-input-placeholder {color: #555555;}
+:-ms-input-placeholder { color: #555555; }
+
+input:focus::-webkit-input-placeholder {color: transparent;}
+input:focus:-ms-input-placeholder {color: transparent;}
+
+a {
+	color: #b5b5b5;
+	text-decoration: none;
+	transition: all 0.4s;
+	-webkit-transition: all 0.5s;
+}
+
+a:hover, a:active {color: #38b3f6;}
+
+h1 a {
+	color: #38b3f6;
+	text-decoration: none !important;
+}
+
+h1 a:hover, h1 a:active {color: #81cff9;}
+
+/******************************************************************************
+TYPOGRAPHY
+******************************************************************************/
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+
+h1 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 30px;
+	font-weight: 400;
+	font-family: 'Roboto', sans-serif;
+}
+
+h2 {
+	margin-top: 0;
+	margin-bottom: 15px;
+	font-size: 20px;
+	font-weight: 400;
+	font-family: 'Roboto', sans-serif;
+}
+
+.mono {font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace, sans-serif;}
+
+.roboto {font-family: 'Roboto', sans-serif;}
+
+/******************************************************************************
+ICOMOON
+******************************************************************************/
+
+@font-face {
+	font-family: 'icomoon';
+	src:url('fonts/icomoon.eot?7hclkz');
+	src:url('fonts/icomoon.eot?#iefix7hclkz') format('embedded-opentype'),
+		url('fonts/icomoon.woff?7hclkz') format('woff'),
+		url('fonts/icomoon.ttf?7hclkz') format('truetype'),
+		url('fonts/icomoon.svg?7hclkz#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"]:before, [class*=" icon-"]:before {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-warning:before {
+	content: "\e600";
+	padding-right: 5px;
+	color: #f76162;
+}
+
+.icon-warning-yellow:before {
+	content: "\e600";
+	color: #c8c651;
+}
+
+.icon-warning-gray:before {
+	content: "\e600";
+	color: #b5b5b5;
+}
+
+.icon-arrow-up:before {
+	content: "\e601";
+	position: fixed;
+	padding: 8px;
+	font-size: 35px;
+}
+
+/******************************************************************************
+HEADER
+******************************************************************************/
+
+header {
+	position: fixed;
+	right: 0;
+	left: 0;
+	height: 50px;
+	padding: 0 20px;
+	background: #262626;
+	z-index: 10;
+}
+
+header ul li {
+	display: inline;
+	float: left;
+	margin-right: 15px;
+	line-height: 50px;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+header a {color: #b5b5b5;}
+
+header a:hover, header a:active {color: #38b3f6;}
+
+.logo {
+	display: block;
+	width: 48px;
+	height: 28px;
+	margin-top: 13px;
+	margin-right: 20px;
+	background-image: url(images/logo.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	float: left;
+}
+
+.launcher {
+	float: right;
+	margin-top: -4px;
+	padding: 10px 15px;
+	color: white;
+	background: #38b3f6;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.launcher:hover {
+	color: white;
+	background: #81cff9;
+}
+
+/******************************************************************************
+SIDEBAR
+******************************************************************************/
+
+nav {
+	position: fixed;
+	top: 50px;
+	bottom: 0;
+	width: 250px;
+	padding: 50px;
+	background-color: #202020;
+	overflow-y: auto;
+	z-index: 1;
+	cursor: default;
+}
+
+nav section {margin-bottom: 30px;}
+
+nav li {line-height: 0.9em;}
+
+nav a {
+	cursor: pointer;
+	color: #b5b5b5;
+}
+
+nav a:hover, nav a:active {color: #38b3f6;}
+
+a.link {
+	display: block;
+	line-height: 0.3em;
+	color: #38b3f6;
+}
+
+a.link:hover, a.link:active {color: #81cff9;}
+
+.index-container {padding-bottom: 90px;}
+
+.active a {
+	cursor: pointer;
+	color: #38b3f6;
+}
+
+.top-dir {
+	padding: 5px 5px 5px 0;
+	margin-top: 30px;
+	margin-bottom: 5px;
+	font-weight: 400;
+	text-transform: uppercase;
+}
+
+.top-dir:first-child {margin-top: 0;}
+
+.to-top {
+	display: block;
+	position: fixed;
+	bottom: 0;
+	left: 240px;
+	height: 50px;
+	width: 50px;
+	border-radius: 3px 3px 0 0;
+	color: #272727;
+	background: #555555;
+}
+
+.to-top:hover {
+	color: #272727;
+	background: #b5b5b5;
+}
+
+#top {
+	display: block;
+	visibility: hidden;
+	margin-top: -60px;
+	margin-bottom: 50px;
+}
+
+.hidden {display: none;}
+
+/******************************************************************************
+MAIN
+******************************************************************************/
+
+.main-view {
+	position: absolute;
+	top: 50px;
+	bottom: 0;
+	left: 350px;
+	width: 100%;
+	padding: 0;
+	margin-bottom: 4px;
+}
+
+iframe {
+	width: 80%;
+	width: calc(100% - 350px);
+	height: 100%;
+	border: none;
+}
+
+article {
+	max-width: 850px;
+	padding: 0 50px 50px 50px;
+	font-family: "Consolas", "Inconsolata", "Ubuntu Mono", monospace;
+	line-height: 1.4em;
+}
+
+article:first-child {padding-top: 50px;}
+
+article a {text-decoration: underline;}
+
+section {margin-bottom: 50px;}
+
+div {margin-bottom: 10px;}
+
+ul {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 10px;
+	list-style-type: none;
+}
+
+li {
+	margin-bottom: 10px;
+	line-height: 1.4em;
+}
+
+.header {margin-bottom: 50px;}
+
+.class-description {
+	margin-top: 15px;
+	color: #777777;
+}
+
+.bottom-30 {margin-bottom: 30px;}
+
+.path {
+	display: block;
+	margin-top: -5px;
+}
+
+.description {
+	display: block;
+	margin: 4px 0 16px 0;
+	font-family: 'Roboto', sans-serif;
+}
+
+.parameter-description {
+	color: #777777;
+	font-family: 'Roboto', sans-serif;
+}
+
+.parameter-description ul {
+	padding: 0px;
+	padding-left: 40px;
+	padding-bottom: 0px;
+	list-style-type: disc;
+}
+
+.parameter-description ul li {margin-bottom: 0px;}
+
+
+.parameter-doc {margin-left: 20px;}
+
+.parameter-doc:last-child {margin-bottom: 50px;}
+
+.deprecated-description {
+	display: block;
+	padding: 20px;
+	margin: 10px 0 20px 0;
+	font-family: 'Roboto', sans-serif;
+	line-height: 1.6em;
+	color: #777777;
+	background: #262626;
+	border-radius: 3px;
+}
+
+.comment {margin-top: 15px;}
+
+/******************************************************************************
+CODE EXAMPLES
+******************************************************************************/
+
+pre {
+	margin: 0;
+	margin-bottom: 30px;
+}
+
+.hljs {
+	padding: 10px 15px 10px 15px;
+	line-height: 1.6em;
+	word-break: break-word;
+	color: #b5b5b5;
+	background: #262626;
+	border-radius: 3px;
+}
+
+/******************************************************************************
+SYNTAX & COLORS
+******************************************************************************/
+
+.goo-rainbow {
+	color: #38b3f6;
+	color: #6c9eed;
+	color: #8a8eea;
+	color: #cc76a4;
+	color: #f76162;
+	color: #fb905c;
+	color: #ffbe55;
+	color: #c8c651;
+	color: #91cf4b;
+}
+
+.readonly {color: #91cf4b;}
+
+.extends {
+	color: #555555;
+	font-weight: 100;
+}
+
+.method, .static {margin-bottom: 60px;}
+
+.method-name, .method-name a {color: #f76162 !important;}
+
+.static-name {color: #ffbe55;}
+
+.parameter {color: #91cf4b;}
+
+.parameter-name {color: #91cf4b;}
+
+.parameter-type, .parameter-type a {color: #ffbe55 !important;}
+
+.parameter-optional {color: #8a8eea;}
+
+.parameter-default {color: #cc76a4;}

@@ -3,18 +3,16 @@ define([
 	'goo/renderer/bounds/BoundingVolume',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/math/MathUtils'
-],
-/** @lends */
-function (
+], function (
 	Vector3,
 	BoundingVolume,
 	BoundingSphere,
 	MathUtils
 ) {
-	"use strict";
+	'use strict';
 
 	/**
-	 * @class <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
+	 * <code>BoundingBox</code> defines an axis-aligned cube that defines a container for a group of vertices of a
 	 * particular piece of geometry. This box defines a center and extents from that center along the x, y and z axis. <br>
 	 *        <br>
 	 *        A typical usage is to allow the class define the center and radius by calling either <code>containAABB</code> or
@@ -28,14 +26,18 @@ function (
 		this.yExtent = yExtent !== undefined ? yExtent : 1;
 		this.zExtent = zExtent !== undefined ? zExtent : 1;
 
-		this._compVect1 = new Vector3();
-		this._compVect2 = new Vector3();
-		this.vec = new Vector3();
+		// #ifdef DEBUG
+		Object.seal(this);
+		// #endif
+	}
 
-		this.corners = [];
-		for (var i = 0; i < 8; i++) {
-			this.corners.push(new Vector3());
-		}
+	var tmpVec1 = new Vector3();
+	var tmpVec2 = new Vector3();
+	var tmpVec3 = new Vector3();
+
+	var tmpCorners = [];
+	for (var i = 0; i < 8; i++) {
+		tmpCorners.push(new Vector3());
 	}
 
 	BoundingBox.prototype = Object.create(BoundingVolume.prototype);
@@ -44,40 +46,59 @@ function (
 	BoundingBox.prototype.computeFromPoints = function (verts) {
 		var min = this.min;
 		var max = this.max;
-		var vec = this.vec;
+		var vec = tmpVec3;
 
-		min.setd(Infinity, Infinity, Infinity);
-		max.setd(-Infinity, -Infinity, -Infinity);
+		min.setDirect(verts[0], verts[1], verts[2]);
+		max.setDirect(verts[0], verts[1], verts[2]);
 		var x, y, z;
-		for (var i = 0; i < verts.length; i += 3) {
+		for (var i = 3; i < verts.length; i += 3) {
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
-			min.x = x < min.x ? x : min.x;
-			min.y = y < min.y ? y : min.y;
-			min.z = z < min.z ? z : min.z;
-			max.x = x > max.x ? x : max.x;
-			max.y = y > max.y ? y : max.y;
-			max.z = z > max.z ? z : max.z;
+			min.data[0] = x < min.data[0] ? x : min.data[0];
+			min.data[1] = y < min.data[1] ? y : min.data[1];
+			min.data[2] = z < min.data[2] ? z : min.data[2];
+			max.data[0] = x > max.data[0] ? x : max.data[0];
+			max.data[1] = y > max.data[1] ? y : max.data[1];
+			max.data[2] = z > max.data[2] ? z : max.data[2];
 		}
 
-		vec.setv(max).subv(min).div(2.0);
-		this.xExtent = vec.x;
-		this.yExtent = vec.y;
-		this.zExtent = vec.z;
+		vec.setVector(max).subVector(min).scale(0.5);
+		this.xExtent = vec.data[0];
+		this.yExtent = vec.data[1];
+		this.zExtent = vec.data[2];
 
-		this.center.setv(max).addv(min).div(2.0);
+		this.center.setVector(max).addVector(min).scale(0.5);
 	};
+
+	/**
+	 * Method to test whether a point is inside the bounding box or not
+	 * @param {Vector3} point
+	 * @returns {boolean}
+	 */
+	BoundingBox.prototype.containsPoint = function (point) {
+		var center = this.center;
+		var x = point.x - center.x;
+		var y = point.y - center.y;
+		var z = point.z - center.z;
+
+		return x >= -this.xExtent && x <= this.xExtent &&
+			y >= -this.yExtent && y <= this.yExtent &&
+			z >= -this.zExtent && z <= this.zExtent;
+	};
+
+	var tmpArray = [];
 
 	BoundingBox.prototype.computeFromPrimitives = function (data, section, indices, start, end) {
 		if (end - start <= 0) {
 			return;
 		}
 
-		var min = this._compVect1.set(Infinity, Infinity, Infinity);
-		var max = this._compVect2.set(-Infinity, -Infinity, -Infinity);
+		var min = tmpVec1.set(Infinity, Infinity, Infinity);
+		var max = tmpVec2.set(-Infinity, -Infinity, -Infinity);
 
-		var store = [];
+		var store = tmpArray;
+		store.length = 0;
 
 		for (var i = start; i < end; i++) {
 			store = data.getPrimitiveVertices(indices[i], section, store);
@@ -87,7 +108,7 @@ function (
 		}
 
 		this.center.copy(min.add(max));
-		this.center.mul(0.5);
+		this.center.scale(0.5);
 
 		this.xExtent = max.x - this.center.x;
 		this.yExtent = max.y - this.center.y;
@@ -122,11 +143,11 @@ function (
 			box = new BoundingBox();
 		}
 
-		var corners = this.corners;
+		var corners = tmpCorners;
 		this.getCorners(corners);
 
 		// Transform all of these points by the transform
-		for (var i = 0; i < corners.length; i++) {
+		for (var i = 0; i < 8; i++) {
 			transform.matrix.applyPostPoint(corners[i]);
 		}
 		// Now compute based on these transformed points
@@ -136,7 +157,7 @@ function (
 		var maxX = minX;
 		var maxY = minY;
 		var maxZ = minZ;
-		for (var i = 1; i < corners.length; i++) {
+		for (var i = 1; i < 8; i++) {
 			var curX = corners[i].data[0];
 			var curY = corners[i].data[1];
 			var curZ = corners[i].data[2];
@@ -152,7 +173,7 @@ function (
 		var ctrY = (maxY + minY) * 0.5;
 		var ctrZ = (maxZ + minZ) * 0.5;
 
-		box.center.setd(ctrX, ctrY, ctrZ);
+		box.center.setDirect(ctrX, ctrY, ctrZ);
 		box.xExtent = maxX - ctrX;
 		box.yExtent = maxY - ctrY;
 		box.zExtent = maxZ - ctrZ;
@@ -161,20 +182,18 @@ function (
 	};
 
 	BoundingBox.prototype.getCorners = function (store) {
-		if (!store || store.length !== 8) {
-			store = [];
-			for (var i = 0; i < store.length; i++) {
-				store.push(new Vector3());
-			}
-		}
-		store[0].setd(this.center.data[0] + this.xExtent, this.center.data[1] + this.yExtent, this.center.data[2] + this.zExtent);
-		store[1].setd(this.center.data[0] + this.xExtent, this.center.data[1] + this.yExtent, this.center.data[2] - this.zExtent);
-		store[2].setd(this.center.data[0] + this.xExtent, this.center.data[1] - this.yExtent, this.center.data[2] + this.zExtent);
-		store[3].setd(this.center.data[0] + this.xExtent, this.center.data[1] - this.yExtent, this.center.data[2] - this.zExtent);
-		store[4].setd(this.center.data[0] - this.xExtent, this.center.data[1] + this.yExtent, this.center.data[2] + this.zExtent);
-		store[5].setd(this.center.data[0] - this.xExtent, this.center.data[1] + this.yExtent, this.center.data[2] - this.zExtent);
-		store[6].setd(this.center.data[0] - this.xExtent, this.center.data[1] - this.yExtent, this.center.data[2] + this.zExtent);
-		store[7].setd(this.center.data[0] - this.xExtent, this.center.data[1] - this.yExtent, this.center.data[2] - this.zExtent);
+		var xExtent = this.xExtent;
+		var yExtent = this.yExtent;
+		var zExtent = this.zExtent;
+		var centerData = this.center.data;
+		store[0].setDirect(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
+		store[1].setDirect(centerData[0] + xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
+		store[2].setDirect(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
+		store[3].setDirect(centerData[0] + xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
+		store[4].setDirect(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] + zExtent);
+		store[5].setDirect(centerData[0] - xExtent, centerData[1] + yExtent, centerData[2] - zExtent);
+		store[6].setDirect(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] + zExtent);
+		store[7].setDirect(centerData[0] - xExtent, centerData[1] - yExtent, centerData[2] - zExtent);
 		return store;
 	};
 
@@ -345,7 +364,7 @@ function (
 
 		// The mtd vector for that axis
 		// var sep = axis * (overlap / axisLengthSquared);
-		var sep = new Vector3().copy(axis).mul(overlap / axisLengthSquared);
+		var sep = new Vector3().copy(axis).scale(overlap / axisLengthSquared);
 
 		// The mtd vector length squared
 		var sepLengthSquared = Vector3.dot(sep, sep);
@@ -365,8 +384,8 @@ function (
 			return false;
 		}
 
-		// var diff = Vector3.sub(ray.origin, this.center, this._compVect1);
-		var diff = this._compVect1.setv(ray.origin).subv(this.center);
+		// var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
+		var diff = tmpVec1.setVector(ray.origin).subVector(this.center);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -405,7 +424,7 @@ function (
 			return null;
 		}
 
-		var diff = Vector3.sub(ray.origin, this.center, this._compVect1);
+		var diff = Vector3.sub(ray.origin, this.center, tmpVec1);
 		var direction = ray.direction;
 
 		var t = [0.0, Infinity];
@@ -425,18 +444,18 @@ function (
 		}
 
 		var notEntirelyClipped = //
-			BoundingBox.clip(direction.x, -diff.x - x, t) && //
-				BoundingBox.clip(-direction.x, diff.x - x, t) && //
-				BoundingBox.clip(direction.y, -diff.y - y, t) && //
-				BoundingBox.clip(-direction.y, diff.y - y, t) && //
-				BoundingBox.clip(direction.z, -diff.z - z, t) && //
-				BoundingBox.clip(-direction.z, diff.z - z, t);
+			BoundingBox.clip(direction.data[0], -diff.data[0] - x, t) && //
+				BoundingBox.clip(-direction.data[0], diff.data[0] - x, t) && //
+				BoundingBox.clip(direction.data[1], -diff.data[1] - y, t) && //
+				BoundingBox.clip(-direction.data[1], diff.data[1] - y, t) && //
+				BoundingBox.clip(direction.data[2], -diff.data[2] - z, t) && //
+				BoundingBox.clip(-direction.data[2], diff.data[2] - z, t);
 
 		if (notEntirelyClipped && (t[0] !== 0.0 || t[1] !== Infinity)) {
 			if (t[1] > t[0]) {
 				var distances = t;
-				var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin),
-					new Vector3(ray.direction).mul(distances[1]).add(ray.origin)];
+				var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin),
+					new Vector3(ray.direction).scale(distances[1]).add(ray.origin)];
 				return {
 					"distances": distances,
 					"points": points
@@ -444,7 +463,7 @@ function (
 			}
 
 			var distances = [t[0]];
-			var points = [new Vector3(ray.direction).mul(distances[0]).add(ray.origin)];
+			var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
 				"distances": distances,
 				"points": points
@@ -494,8 +513,8 @@ function (
 			store = new BoundingBox();
 		}
 
-		var calcVec1 = this._compVect1;
-		var calcVec2 = this._compVect2;
+		var calcVec1 = tmpVec1;
+		var calcVec2 = tmpVec2;
 
 		calcVec1.x = this.center.x - this.xExtent;
 		if (calcVec1.x > center.x - xExtent) {
@@ -523,7 +542,7 @@ function (
 			calcVec2.z = center.z + zExtent;
 		}
 
-		store.center.set(calcVec2).addv(calcVec1).muld(0.5, 0.5, 0.5);
+		store.center.set(calcVec2).addVector(calcVec1).scale(0.5);
 
 		store.xExtent = calcVec2.x - store.center.x;
 		store.yExtent = calcVec2.y - store.center.y;
@@ -532,15 +551,36 @@ function (
 		return store;
 	};
 
-	BoundingBox.prototype.clone = function (store) {
-		if (store && store instanceof BoundingBox) {
-			store.center.setv(this.center);
-			store.xExtent = this.xExtent;
-			store.yExtent = this.yExtent;
-			store.zExtent = this.zExtent;
-			return store;
-		}
+	/**
+	 * Copies data from another bounding box
+	 * @param {BoundingBox} source bounding box to copy from
+	 * @returns {BoundingBox} Returns self to allow chaining
+	 */
+	BoundingBox.prototype.copy = function (source) {
+		BoundingVolume.prototype.copy.call(this, source);
+		this.xExtent = source.xExtent;
+		this.yExtent = source.yExtent;
+		this.zExtent = source.zExtent;
+		return this;
+	};
 
+	// ---
+	var warned = false;
+
+	/**
+	 * Returns a clone of this bounding box
+	 * @returns {BoundingBox}
+	 */
+	BoundingBox.prototype.clone = function () {
+		if (arguments.length > 0 && !warned) {
+			warned = true;
+			console.warn(
+				'BoundingBox::clone no longer takes an optional "store" parameter; ' +
+				'please use BoundingBox::copy instead'
+			);
+		}
+		// center appears to be shared but it really isn't since the BoundingVolume constructor clones it
+		// when/if that ever changes this needs adapted accordingly
 		return new BoundingBox(this.center, this.xExtent, this.yExtent, this.zExtent);
 	};
 
