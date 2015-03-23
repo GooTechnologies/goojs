@@ -12,7 +12,7 @@ define([
 
 		/**
 		 * Used internally to render a batch of lines all with the same color.
-		 * @param {World} world The world in which lines are rendered in.
+		 * @param {World} world The world lines are rendered in.
 		 * @param {Vector3} color
 		 */
 		function LineRenderer(world, color) {
@@ -41,7 +41,7 @@ define([
 			this._meshData.vertexData.setDataUsage('DynamicDraw');
 		}
 
-		LineRenderer.prototype.MAX_NUM_LINES = 170000;
+		LineRenderer.prototype.MAX_NUM_LINES = 20000;
 
 		/**
 		 * Used internally to update the vertexData in meshData
