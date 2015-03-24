@@ -65,15 +65,15 @@ define([
 		// 	this.cameraDom.style.height = data.height + 'px';
 		// }.bind(this));
 
-		this.materialTransparent = new Material(ShaderLib.uber);
-		this.materialTransparent.renderQueue = 10000;
-		this.materialTransparent.uniforms.opacity = 0.0;
-		this.materialTransparent.uniforms.materialAmbient = [0, 0, 0, 0];
-		this.materialTransparent.uniforms.materialDiffuse = [0, 0, 0, 0];
+		// this.materialTransparent = new Material(ShaderLib.uber);
+		// this.materialTransparent.renderQueue = 10000;
+		// this.materialTransparent.uniforms.opacity = 0.0;
+		// this.materialTransparent.uniforms.materialAmbient = [0, 0, 0, 0];
+		// this.materialTransparent.uniforms.materialDiffuse = [0, 0, 0, 0];
 
-		this.materialOpaque = new Material(ShaderLib.uber);
-		this.materialOpaque.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
-		this.materialOpaque.cullState.cullFace = 'Front';
+		// this.materialOpaque = new Material(ShaderLib.uber);
+		// this.materialOpaque.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
+		// this.materialOpaque.cullState.cullFace = 'Front';
 
 		var frontMaterial = new Material(ShaderLib.simple);
 		frontMaterial.blendState.blending = 'CustomBlending';
@@ -134,10 +134,10 @@ define([
 		// 	this.cameraDom.appendChild(domElement);
 		// }
 
-		component.entity = entity;
+		// component.entity = entity;
 
 		// insert quads etc
-		if (false && component.useTransformComponent && !entity.meshRendererComponent && !entity.meshDataComponent) {
+		// if (false && component.useTransformComponent && !entity.meshRendererComponent && !entity.meshDataComponent) {
 			// var quad = new Quad(component.width, component.height);
 			// entity.set(quad);
 			// entity.set(this.materialTransparent);
@@ -145,7 +145,7 @@ define([
 			// var entityBack = entity._world.createEntity(quad, this.materialOpaque).addToWorld();
 			// entityBack.meshRendererComponent.isPickable = false;
 			// entity.attachChild(entityBack);
-		}
+		// }
 	};
 
 	HtmlSystem.prototype.deleted = function (entity) {

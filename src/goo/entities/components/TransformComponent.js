@@ -53,7 +53,6 @@ define([
 
 		this._dirty = true;
 		this._updated = false;
-		this._updatedThisFrame = false;
 
 		// #ifdef DEBUG
 		Object.seal(this);
