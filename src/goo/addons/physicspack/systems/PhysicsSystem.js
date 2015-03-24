@@ -32,8 +32,6 @@ function (
 	 * @extends AbstractPhysicsSystem
 	 * @param {Object} [settings]
 	 * @param {Vector3} [settings.gravity]
-	 * @param {number} [settings.stepFrequency=60]
-	 * @param {number} [settings.maxSubSteps=10]
 	 */
 	function PhysicsSystem(settings) {
 		settings = settings || {};
@@ -60,19 +58,6 @@ function (
 		}
 
 		this.setGravity(settings.gravity || new Vector3(0, -10, 0));
-
-		/**
-		 * @type {number}
-		 * @default 60
-		 */
-		this.stepFrequency = settings.stepFrequency !== undefined ? settings.stepFrequency : 60;
-
-		/**
-		 * The maximum number of timesteps to use for making the physics clock catch up with the wall clock. If set to zero, a variable timestep is used (not recommended).
-		 * @type {number}
-		 * @default 10
-		 */
-		this.maxSubSteps = settings.maxSubSteps !== undefined ? settings.maxSubSteps : 10;
 
 		this._inContactCurrentStepA = [];
 		this._inContactCurrentStepB = [];
@@ -114,15 +99,7 @@ function (
 		var world = this.cannonWorld;
 
 		// Step the world forward in time
-		var fixedTimeStep = 1 / this.stepFrequency;
-		var maxSubSteps = this.maxSubSteps;
-		if (maxSubSteps) {
-			// Fixed time step
-			world.step(fixedTimeStep, deltaTime, maxSubSteps);
-		} else {
-			// Variable time step
-			world.step(deltaTime);
-		}
+		world.step(deltaTime);
 	};
 
 	/**
@@ -473,15 +450,20 @@ function (
 		}
 	};
 
+	PhysicsSystem.prototype.fixedProcess = function (entities, fixedTpf) {
+		this.initialize(entities);
+		this.updateLonelyColliders();
+		this.step(fixedTpf);
+	};
+
 	/**
 	 * @private
 	 * @param  {array} entities
 	 * @param  {number} tpf
 	 */
-	PhysicsSystem.prototype.process = function (entities, tpf) {
+	PhysicsSystem.prototype.process = function (entities) {
 		this.initialize(entities);
 		this.updateLonelyColliders();
-		this.step(tpf);
 		this.syncTransforms(entities);
 	};
 

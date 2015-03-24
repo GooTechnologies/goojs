@@ -52,7 +52,7 @@ define([
 			var entityB = world.createEntity(rbcB, ccB).addToWorld();
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
-			world.process(); // Needed to initialize bodies
+			world.fixedProcess(); // Needed to initialize bodies
 
 			var result = new RaycastResult();
 			system.raycastClosest(start, direction, distance, {}, result);
@@ -86,7 +86,7 @@ define([
 			var entityB = world.createEntity(rbcB, ccB).addToWorld();
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
-			world.process(); // Needed to initialize bodies
+			world.fixedProcess(); // Needed to initialize bodies
 
 			var result = new RaycastResult();
 			system.raycastAny(start, direction, distance, {}, result);
@@ -111,7 +111,7 @@ define([
 			var entityB = world.createEntity(rbcB, ccB).addToWorld();
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
-			world.process(); // Needed to initialize bodies
+			world.fixedProcess(); // Needed to initialize bodies
 
 			var numHits = 0;
 			system.raycastAll(start, direction, distance, {}, function (/*result*/) {
@@ -138,7 +138,7 @@ define([
 			});
 			var entity = world.createEntity(rbc, cc).addToWorld();
 			entity.setTranslation(0, 0, 3);
-			world.process(); // Needed to initialize bodies
+			world.fixedProcess(); // Needed to initialize bodies
 
 			var result = new RaycastResult();
 			system.raycastAny(start, direction, distance, { collisionGroup: -1 }, result);
@@ -159,7 +159,7 @@ define([
 				collider: new SphereCollider({ radius: 1 })
 			});
 			world.createEntity(rbc, cc).addToWorld();
-			world.process(); // Needed to initialize bodies
+			world.fixedProcess(); // Needed to initialize bodies
 
 			var numHits = 0;
 			system.raycastAll(start, direction, distance, { skipBackfaces: true }, function (result) {
@@ -230,7 +230,7 @@ define([
 				SystemBus.addListener(key, listeners[key]);
 			}
 
-			world.process(); // Needed to initialize bodies
+			world.fixedProcess(); // Needed to initialize bodies
 
 			expect(numBeginContact).toEqual(0);
 			expect(numDuringContact).toEqual(0);
@@ -239,13 +239,13 @@ define([
 			rbcA.setPosition(new Vector3(0, 0, 0.1));
 			rbcB.setPosition(new Vector3(0, 0, -0.1));
 
-			world.process();
+			world.fixedProcess();
 
 			expect(numBeginContact).toEqual(1);
 			expect(numDuringContact).toEqual(0);
 			expect(numEndContact).toEqual(0);
 
-			world.process();
+			world.fixedProcess();
 
 			expect(numBeginContact).toEqual(1);
 			expect(numDuringContact).toEqual(1);
@@ -254,7 +254,7 @@ define([
 			rbcA.setPosition(new Vector3(0, 0, 3));
 			rbcB.setPosition(new Vector3(0, 0, -3));
 
-			world.process();
+			world.fixedProcess();
 
 			expect(numBeginContact).toEqual(1);
 			expect(numDuringContact).toEqual(1);
@@ -277,7 +277,7 @@ define([
 				SystemBus.addListener(key, listeners[key]);
 			}
 
-			world.process();
+			world.fixedProcess();
 
 			expect(substeps).toEqual(1);
 
@@ -311,14 +311,14 @@ define([
 			entityA.setTranslation(0, 0, 0.1);
 			entityB.setTranslation(0, 0, -0.1);
 
-			world.process(); // Needed to initialize bodies
+			world.fixedProcess(); // Needed to initialize bodies
 
 			expect(numBeginContact).toEqual(1);
 
 			rbcA.collisionMask = 0; // none
 			rbcB.collisionMask = 0;
 
-			world.process(); // Needed to initialize bodies
+			world.fixedProcess(); // Needed to initialize bodies
 
 			expect(numBeginContact).toEqual(1);
 
@@ -342,17 +342,17 @@ define([
 			});
 			world.createEntity(rbcA, ccA).addToWorld();
 
-			world.process();
+			world.fixedProcess();
 			expect(rbcA._dirty).toBeFalsy();
 
 			system.stop();
 			expect(rbcA._dirty).toBeTruthy();
 
-			world.process();
+			world.fixedProcess();
 			expect(rbcA._dirty).toBeTruthy();
 
 			system.play();
-			world.process();
+			world.fixedProcess();
 			expect(rbcA._dirty).toBeFalsy();
 		});
 	});

@@ -19,12 +19,6 @@ define([
 		this.entered = true;
 		this.paused = false;
 
-		/**
-		 * Current time, in seconds.
-		 * @type {Number}
-		 */
-		this.time = 0;
-
 		this.evalProxy = {
 			// Add things that are useful from user scripts
 			test: function () {
@@ -38,7 +32,7 @@ define([
 
 	StateMachineSystem.prototype = Object.create(System.prototype);
 
-	StateMachineSystem.prototype.process = function (entities, tpf) {
+	StateMachineSystem.prototype._callMeMaybe = function (entities) {
 		var component;
 
 		if (this.resetRequest) {
@@ -48,13 +42,10 @@ define([
 				component.kill();
 				component.cleanup();
 			}
-			this.time = 0;
 			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
 			this.passive = true;
 			return;
 		}
-
-		this.time += tpf;
 
 		if (this.entered) {
 			this.entered = false;
@@ -64,12 +55,23 @@ define([
 				component.doEnter();
 			}
 		}
+	};
 
+	StateMachineSystem.prototype.fixedProcess = function (entities /*, tpf */) {
+		this._callMeMaybe(entities);
+		this._updateComponents(entities, true);
+	};
+
+	StateMachineSystem.prototype.process = function (entities /*, tpf */) {
+		this._callMeMaybe(entities);
 		if (window.TWEEN) { window.TWEEN.update(this.engine.world.time * 1000); } // this should not stay here
+		this._updateComponents(entities, false);
+	};
 
+	StateMachineSystem.prototype._updateComponents = function (entities, fixedUpdate) {
 		for (var i = 0; i < entities.length; i++) {
-			component = entities[i].stateMachineComponent;
-			component.update(tpf);
+			var component = entities[i].stateMachineComponent;
+			component.update(fixedUpdate);
 		}
 	};
 
