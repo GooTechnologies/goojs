@@ -60,7 +60,7 @@ define([
 		var surfaceMaterial = new Material(surfaceShader, 'Surface Material');
 		surfaceMaterial.uniforms.color = [0.4, 0.4, 0.4];
 		surfaceMaterial.uniforms.opacity = 0.9;
-		surfaceMaterial.blendState.blending = 'CustomBlending';
+		surfaceMaterial.blendState.blending = 'TransparencyBlending';
 		surfaceMaterial.cullState.enabled = false;
 		surfaceMaterial.depthState.write = true;
 		surfaceMaterial.depthState.enabled = true;

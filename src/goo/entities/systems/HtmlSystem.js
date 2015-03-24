@@ -66,7 +66,7 @@ define([
 		// }.bind(this));
 
 		this.materialTransparent = new Material(ShaderLib.uber);
-		this.materialTransparent.renderQueue = 10;
+		this.materialTransparent.renderQueue = 10000;
 		this.materialTransparent.uniforms.opacity = 0.0;
 		this.materialTransparent.uniforms.materialAmbient = [0, 0, 0, 0];
 		this.materialTransparent.uniforms.materialDiffuse = [0, 0, 0, 0];
@@ -74,6 +74,16 @@ define([
 		this.materialOpaque = new Material(ShaderLib.uber);
 		this.materialOpaque.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
 		this.materialOpaque.cullState.cullFace = 'Front';
+
+		var frontMaterial = new Material(ShaderLib.simple);
+		frontMaterial.blendState.blending = 'CustomBlending';
+		frontMaterial.blendState.blendSrc = 'ZeroFactor';
+		frontMaterial.blendState.blendDst = 'ZeroFactor';
+
+		var backMaterial = new Material(ShaderLib.uber);
+		backMaterial.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
+		backMaterial.cullState.cullFace = 'Front';
+		this.materials = [frontMaterial, backMaterial];
 
 		this.prefixes = ['', '-webkit-'];
 		this.styleCache = new Map();
@@ -118,6 +128,7 @@ define([
 
 	HtmlSystem.prototype.inserted = function (entity) {
 		var component = entity.htmlComponent;
+		component.meshRendererComponent.materials = this.materials;
 		// var domElement = component.domElement;
 		// if (domElement.parentNode !== this.cameraDom) {
 		// 	this.cameraDom.appendChild(domElement);
@@ -126,27 +137,27 @@ define([
 		component.entity = entity;
 
 		// insert quads etc
-		if (component.useTransformComponent && !entity.meshRendererComponent && !entity.meshDataComponent) {
-			var quad = new Quad(component.width, component.height);
-			entity.set(quad);
-			entity.set(this.materialTransparent);
+		if (false && component.useTransformComponent && !entity.meshRendererComponent && !entity.meshDataComponent) {
+			// var quad = new Quad(component.width, component.height);
+			// entity.set(quad);
+			// entity.set(this.materialTransparent);
 
-			var entityBack = entity._world.createEntity(quad, this.materialOpaque).addToWorld();
-			entityBack.meshRendererComponent.isPickable = false;
-			entity.attachChild(entityBack);
+			// var entityBack = entity._world.createEntity(quad, this.materialOpaque).addToWorld();
+			// entityBack.meshRendererComponent.isPickable = false;
+			// entity.attachChild(entityBack);
 		}
 	};
 
 	HtmlSystem.prototype.deleted = function (entity) {
-		var domElement = entity.htmlComponent.domElement;
-		if (domElement.parentNode !== null) {
-			domElement.parentNode.removeChild(domElement);
-		}
+		// var domElement = entity.htmlComponent.domElement;
+		// if (domElement.parentNode !== null) {
+		// 	domElement.parentNode.removeChild(domElement);
+		// }
 
-		if (entity.meshRendererComponent || entity.meshDataComponent) {
-			entity.clearComponent('meshDataComponent');
-			entity.clearComponent('meshRendererComponent');
-		}
+		// if (entity.meshRendererComponent || entity.meshDataComponent) {
+		// 	entity.clearComponent('meshDataComponent');
+		// 	entity.clearComponent('meshRendererComponent');
+		// }
 	};
 
 	HtmlSystem.prototype.process = function (entities) {
@@ -196,14 +207,14 @@ define([
 			// Do we really have to set this every time?
 			if (component.hidden) {
 				component.domElement.style.display = 'none';
-				component.entity.hide();
+				//component.entity.hide();
 				continue;
 			} else {
 				component.domElement.style.display = '';
-				component.entity.show();
+				//component.entity.show();
 			}
 
-			if (!component.updated && !entity.transformComponent._updatedThisFrame && !component.faceCamera) {
+			if (!component.updated && !entity.transformComponent._updated) {
 				continue;
 			}
 			component.updated = false;
@@ -224,7 +235,7 @@ define([
 			// } else {
 			// 	style = getEntityCSSMatrix(worldTransform.matrix);
 			// }
-			style = getEntityCSSMatrix(worldTransform.matrix);
+			style = getEntityCSSMatrix(worldTransform.matrix) + ' scale(' + 1/component.width +', ' + 1/component.height + ')';
 
 			this.setStyle(domElement, 'transform', style);
 		}

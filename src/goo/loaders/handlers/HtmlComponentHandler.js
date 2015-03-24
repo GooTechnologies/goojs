@@ -122,7 +122,12 @@ define([
 			domElement.prevStyle = config.style;
 
 			component.useTransformComponent = config.useTransformComponent !== false;
-
+			if (entity.meshRendererComponent !== component.meshRendererComponent) {
+				entity.setComponent(component.meshRendererComponent);
+			}
+			if (entity.meshDataComponent !== component.meshDataComponent) {
+				entity.setComponent(component.meshDataComponent);
+			}
 			// create new meshdata if needed?
 			// if (!entity.meshRendererComponent || !entity.meshDataComponent) {
 			// 	var quad = new Quad(component.width, component.height);
@@ -188,6 +193,7 @@ define([
 			entity.clearComponent('meshDataComponent');
 			entity.clearComponent('meshRendererComponent');
 		}
+		component.destroy(this.world.gooRunner.renderer.context);
 	};
 
 	return HtmlComponentHandler;
