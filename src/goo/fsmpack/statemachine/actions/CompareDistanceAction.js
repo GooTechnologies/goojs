@@ -83,7 +83,7 @@ define([
 		if (this.camera) {
 			delta = translation.clone().sub(Renderer.mainCamera.translation);
 		} else {
-			delta = translation.clone().sub(new Vector3(this.position));
+			delta = translation.clone().subDirect(this.position[0], this.position[1], this.position[2]);
 		}
 
 		var distance;

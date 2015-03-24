@@ -322,7 +322,7 @@ define([
 
 		var quadTransform = this.quad.transformComponent.transform;
 		quadTransform.scale.set(this.sizeVector);
-		quadTransform.scale.mul(scaleFactor);
+		quadTransform.scale.scale(scaleFactor);
 		quadTransform.rotation.set(flareGeometry.camRot);
 		quadTransform.translation.set(this.positionVector);
 		this.quad.transformComponent.updateTransform();

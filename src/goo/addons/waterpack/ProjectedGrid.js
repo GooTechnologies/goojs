@@ -278,7 +278,7 @@ define([
 			this.direction.scale(t);
 		} else {
 			this.direction.normalize();
-			this.direction.mul(this.mainCamera._frustumFar);
+			this.direction.scale(this.mainCamera._frustumFar);
 		}
 
 		this.origin.add(this.direction);
