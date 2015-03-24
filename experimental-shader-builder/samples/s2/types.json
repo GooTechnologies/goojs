@@ -1,0 +1,62 @@
+{
+  "const": {
+    "inputs": [],
+    "outputs": [{
+      "name": "value",
+      "type": "float"
+    }],
+    "body": "value = 0.8;"
+  },
+  "add": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "sum",
+      "type": "float"
+    }],
+    "body": "sum = x + y;"
+  },
+  "sin01": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "s",
+      "type": "float"
+    }],
+    "body": "s = sin(x) * 0.5 + 0.5;"
+  },
+  "mul": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }],
+    "outputs": [{
+      "name": "product",
+      "type": "float"
+    }],
+    "body": "product = x * y;"
+  },
+  "out": {
+    "inputs": [{
+      "name": "r",
+      "type": "float"
+    }, {
+      "name": "g",
+      "type": "float"
+    }, {
+      "name": "b",
+      "type": "float"
+    }],
+    "body": "gl_FragColor = vec4(r, g, b, 1.0);"
+  }
+}

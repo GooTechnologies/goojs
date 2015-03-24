@@ -1,5 +1,24 @@
-(function () {
+require([
+	'goo/renderer/Material',
+	'goo/renderer/MeshData',
+	'goo/shapes/Box',
+	'goo/math/Vector3',
+	'lib/V'
+], function (
+	Material,
+	MeshData,
+	Box,
+	Vector3,
+	V
+) {
 	'use strict';
+
+	V.describe('...');
+
+	var goo = V.initGoo();
+	var world = goo.world;
+
+
 
 	var typesEditor;
 	var structureEditor;
@@ -36,6 +55,8 @@
 		var result = shaderBits.buildShader(types, structure);
 		
 		outputEditor.setValue(result);
+
+		replaceBox(result);
 	}
 
 	function getSample(name) {
@@ -56,5 +77,41 @@
 
 	setupEditors();
 
-	getSample('s1');
-})();
+	getSample('s2');
+
+
+	var box;
+	function replaceBox(shaderSource) {
+		if (!box) { return; }
+		box.removeFromWorld();
+
+		var material = Material.createMaterial({
+			attributes: {
+				vertexPosition: MeshData.POSITION
+			},
+			uniforms: {
+				viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+				worldMatrix: Shader.WORLD_MATRIX,
+				time: Shader.TIME
+			},
+			vshader: [
+				'attribute vec3 vertexPosition;',
+
+				'uniform mat4 viewProjectionMatrix;',
+				'uniform mat4 worldMatrix;',
+
+				'void main(void) {',
+				'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
+				'}'
+			].join('\n'),
+			fshader: shaderSource
+		}, 'MyCoolMaterial');
+
+		world.createEntity(new Box(), material).addToWorld();
+	}
+
+
+	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
+
+	V.process();
+});

@@ -51,30 +51,34 @@
 			return node.externalInputs;
 		}).map(function (node) {
 			return node.externalInputs.map(function (externalInput) {
-				return externalInput.type + ' ' + externalInput.externalName + ';';
+				return 'uniform ' + externalInput.type + ' ' + externalInput.externalName + ';';
+			}).join('\n');
+		}).join('\n');
+
+		function isExternalInput(node, inputName) {
+			if (!node.externalInputs) { return true; }
+
+			return !node.externalInputs.some(function (externalInput) {
+				return externalInput.externalName !== inputName;
+			});
+		}
+
+		// declare the inputs of all nodes
+		var copyIn = nodes.map(function (node) {
+			var nodeDefinition = nodeTypes[node.type];
+
+			return nodeDefinition.inputs.filter(function (input) {
+				return isExternalInput(input.name);
+			}).map(function (input) {
+				return input.type + ' ' + getInputVar(node.id, input.name) + ';';
 			}).join('\n');
 		}).join('\n');
 
 		var stringifiedNodes = nodes.map(function (node) {
 			var nodeDefinition = nodeTypes[node.type];
 
-			var isExternalInput = function (inputName) {
-				if (!node.externalInputs) { return true; }
 
-				return !node.externalInputs.some(function (externalInput) {
-					return externalInput.name !== inputName;
-				});
-			};
-
-			// declare the inputs of the node
-			var copyIn = nodeDefinition.inputs.filter(function (input) {
-				return isExternalInput(input.name);
-			}).map(function (input) {
-				return input.type + ' ' + getInputVar(node.id, input.name) + ';';
-			}).join('\n');
-
-
-			// declare outputs
+			// declare outputs of the node
 			var outputDeclarations;
 			if (nodeDefinition.outputs) {
 				outputDeclarations = nodeDefinition.outputs.map(function (output) {
@@ -94,7 +98,7 @@
 
 			// process inputs (from other shader's outputs)
 			var processedBody = nodeDefinition.inputs.filter(function (input) {
-				return isExternalInput(input.name);
+				return isExternalInput(node, input.name);
 			}).reduce(function (partial, input) {
 				// should do a tokenization of the shader coder instead
 				// this regex will fail for comments, strings
@@ -108,7 +112,7 @@
 			// process external inputs (direct uniforms)
 			if (node.externalInputs) {
 				processedBody = node.externalInputs.reduce(function (partial, input) {
-					// should do a tokenization of the shader coder instead
+					// should do a tokenization of the shader code instead
 					// this regex will fail for comments, strings
 					return partial.replace(
 						new RegExp('\\b' + input.name + '\\b', 'g'),
@@ -118,7 +122,6 @@
 			}
 
 			return '// node ' + node.id + ', ' + node.type + '\n' +
-				copyIn + '\n' +
 				'{\n' +
 				outputDeclarations + '\n' +
 				'\t' + processedBody + '\n'
@@ -126,7 +129,10 @@
 				'\n}\n';
 		}).join('\n');
 
-		return stringifiedExternals + '\n\n' + stringifiedNodes;
+		return stringifiedExternals + '\n\nvoid main(void) {\n' +
+			copyIn + '\n' +
+			stringifiedNodes + '\n' +
+			'}';
 	}
 
 	function buildShader(types, structure) {

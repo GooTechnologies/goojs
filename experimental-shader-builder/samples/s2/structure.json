@@ -1,0 +1,42 @@
+[{
+  "type": "sin01",
+  "id": "node_1",
+  "externalInputs": [{
+    "name": "x",
+    "externalName": "time",
+    "type": "float"
+  }],
+  "outputsTo": [{
+    "output": "s",
+    "to": "node_4",
+    "input": "x"
+  }, {
+    "output": "s",
+    "to": "node_2",
+    "input": "g"
+  }, {
+    "output": "s",
+    "to": "node_2",
+    "input": "b"
+  }]
+}, {
+  "type": "const",
+  "id": "node_3",
+  "outputsTo": [{
+    "output": "value",
+    "to": "node_4",
+    "input": "y"
+  }]
+}, {
+  "type": "add",
+  "id": "node_4",
+  "outputsTo": [{
+    "output": "sum",
+    "to": "node_2",
+    "input": "r"
+  }]
+}, {
+  "type": "out",
+  "id": "node_2",
+  "outputsTo": []
+}]
