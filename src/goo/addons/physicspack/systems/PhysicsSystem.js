@@ -350,7 +350,7 @@ function (
 		shape.material = material;
 		var body = new CANNON.Body({
 			mass: 0,
-			collisionResponse: entity.colliderComponent.isTrigger,
+			collisionResponse: !entity.colliderComponent.isTrigger,
 			shape: shape
 		});
 		this.cannonWorld.addBody(body);
@@ -487,6 +487,7 @@ function (
 					// Update scale of stuff
 					var cannonShape = body.shapes[0];
 					if (cannonShape) {
+						cannonShape.collisionResponse = !colliderComponent.isTrigger;
 						colliderComponent.updateWorldCollider();
 						RigidBodyComponent.copyScaleFromColliderToCannonShape(
 							cannonShape,

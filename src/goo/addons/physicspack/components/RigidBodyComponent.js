@@ -555,6 +555,9 @@ function (
 					colliderComponent.cannonShape,
 					colliderComponent.worldCollider
 				);
+
+				colliderComponent.cannonShape.collisionResponse = !colliderComponent.isTrigger;
+
 				colliderComponent.setToClean();
 			}
 		}
