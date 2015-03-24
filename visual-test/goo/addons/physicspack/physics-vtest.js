@@ -4,6 +4,7 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder',
 	'goo/shapes/Quad',
+	'goo/shapes/Torus',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/scripts/OrbitCamControlScript',
@@ -16,8 +17,10 @@ require([
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/SphereCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
+	'goo/addons/physicspack/colliders/MeshCollider',
 	'goo/addons/physicspack/joints/BallJoint',
 	'goo/addons/physicspack/joints/HingeJoint',
+	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
 	'lib/V'
 ], function (
 	Material,
@@ -25,6 +28,7 @@ require([
 	Box,
 	Cylinder,
 	Quad,
+	Torus,
 	TextureCreator,
 	ShaderLib,
 	OrbitCamControlScript,
@@ -37,8 +41,10 @@ require([
 	CylinderCollider,
 	SphereCollider,
 	PlaneCollider,
+	MeshCollider,
 	BallJoint,
 	HingeJoint,
+	PhysicsDebugRenderSystem,
 	V
 ) {
 	'use strict';
@@ -51,6 +57,7 @@ require([
 	var physicsSystem = new PhysicsSystem();
 	world.setSystem(physicsSystem);
 	world.setSystem(new ColliderSystem());
+	goo.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	function addPrimitives() {
 		for (var i = 0; i < 20; i++) {
@@ -219,6 +226,14 @@ require([
 		}
 	}
 
+	function createMesh(x, y, z) {
+		var position = new Vector3(x, y, z);
+		var rigidBodyComponent = new RigidBodyComponent({ mass : 5, velocity: new Vector3(0, 0, 1) });
+		var meshData = new Torus(16, 16);
+		var colliderComponent = new ColliderComponent({ collider: new MeshCollider({ meshData: meshData }) });
+		return world.createEntity(position, rigidBodyComponent, colliderComponent, meshData, V.getColoredMaterial()).addToWorld();
+	}
+
 	function createHinge(x, y, z) {
 		var lastEntity;
 		var scale = 2;
@@ -273,6 +288,7 @@ require([
 	createGround();
 	createCompound(0, 5, 0);
 	createHinge(5, 5, 0);
+	createMesh(0, 20, 20);
 
 	var forcefieldEnabled = false;
 	var paused = false;

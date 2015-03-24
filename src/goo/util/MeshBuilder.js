@@ -63,9 +63,10 @@ define([
 				EntityUtils.updateWorldTransform(entity.transformComponent);
 			}
 		});
+		var that = this;
 		entity.traverse(function (entity) {
 			if (entity.meshDataComponent) {
-				this.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
+				that.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
 			}
 		});
 	};
@@ -108,7 +109,7 @@ define([
 			}
 
 			var view = meshData.getAttributeBuffer(key);
-			if (isNaN(view[0])) { debugger; }
+			
 			var viewLength = view.length;
 			var array = attribute.array;
 			var count = map.count;

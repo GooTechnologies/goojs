@@ -10,7 +10,7 @@ define([
 	Matrix4x4,
 	MathUtils,
 	Vector3
-	) {
+) {
 	'use strict';
 
 	/**
@@ -34,7 +34,7 @@ define([
 	var tmpVector = new Vector3();
 
 	// Copied from CSSTransformComponent
-	var prefixes = ["", "-webkit-", "-moz-", "-ms-", "-o-"];
+	var prefixes = ['', '-webkit-', '-moz-', '-ms-', '-o-'];
 	var setStyle = function (element, property, style) {
 		for (var j = 0; j < prefixes.length; j++) {
 			element.style[prefixes[j] + property] = style;
@@ -100,6 +100,16 @@ define([
 
 			component.domElement.style.zIndex = MAX_Z_INDEX - Math.round(tmpVector.z * MAX_Z_INDEX);
 		}
+	};
+
+	HtmlSystem.prototype.deleted = function(entity) {
+		if (!entity || !entity.htmlComponent) {
+			return;
+		}
+
+		var component = entity.htmlComponent;
+		component.domElement.parentNode.removeChild(component.domElement);
+		component.domElement = null;
 	};
 
 	return HtmlSystem;

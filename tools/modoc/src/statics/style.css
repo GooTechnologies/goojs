@@ -418,7 +418,7 @@ SYNTAX & COLORS
 
 .method, .static {margin-bottom: 60px;}
 
-.method-name {color: #f76162;}
+.method-name, .method-name a {color: #f76162 !important;}
 
 .static-name {color: #ffbe55;}
 
@@ -426,9 +426,7 @@ SYNTAX & COLORS
 
 .parameter-name {color: #91cf4b;}
 
-.parameter-type {color: #ffbe55;}
-
-.parameter-type a {color: #ffbe55 !important;}
+.parameter-type, .parameter-type a {color: #ffbe55 !important;}
 
 .parameter-optional {color: #8a8eea;}
 

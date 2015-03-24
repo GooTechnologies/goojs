@@ -68,8 +68,10 @@ define([
 		});
 
 		it('can apply force', function () {
+			rigidBodyComponent.cannonBody.position.set(1, 2, 3);
 			rigidBodyComponent.applyForce(new Vector3(1, 2, 3));
 			expect(rigidBodyComponent.cannonBody.force).toEqual(new CANNON.Vec3(1, 2, 3));
+			expect(rigidBodyComponent.cannonBody.torque).toEqual(new CANNON.Vec3(0, 0, 0));
 		});
 
 		it('can set velocity', function () {

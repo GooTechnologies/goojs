@@ -698,8 +698,10 @@ define([
 				x = e.changedTouches[0].pageX - e.changedTouches[0].target.getBoundingClientRect().left;
 				y = e.changedTouches[0].pageY - e.changedTouches[0].target.getBoundingClientRect().top;
 			} else {
-				x = (e.offsetX !== undefined) ? e.offsetX : e.clientX;
-				y = (e.offsetY !== undefined) ? e.offsetY : e.clientY;
+				var target = e.target || e.srcElement;
+				var rect = target.getBoundingClientRect();
+				x = e.clientX - rect.left;
+				y = e.clientY - rect.top;
 			}
 			this._eventTriggered[type] = e;
 			this.pick(x, y, function (index, depth) {

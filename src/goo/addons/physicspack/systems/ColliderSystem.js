@@ -34,7 +34,7 @@ define([
 			colliderComp._updated = false;
 			if (transformComp._updated) {
 				entity.colliderComponent.updateWorldCollider();
-				entity.colliderComponent._dirty = true;
+				entity.colliderComponent.setToDirty();
 			}
 		}
 	};

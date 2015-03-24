@@ -7,6 +7,7 @@ require([
 	'goo/addons/physicspack/systems/ColliderSystem',
 	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/colliders/SphereCollider',
+	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
 	'lib/V'
 ], function (
 	SystemBus,
@@ -17,6 +18,7 @@ require([
 	ColliderSystem,
 	RigidBodyComponent,
 	SphereCollider,
+	PhysicsDebugRenderSystem,
 	V
 ) {
 	'use strict';
@@ -32,6 +34,7 @@ require([
 	world.setSystem(new ColliderSystem());
 	world.registerComponent(ColliderComponent);
 	world.registerComponent(RigidBodyComponent);
+	goo.setRenderSystem(new PhysicsDebugRenderSystem());
 
 	var material = V.getColoredMaterial();
 	var radius = 5;
