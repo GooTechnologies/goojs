@@ -13,12 +13,11 @@ define([
 		this.entered = false;
 		this.everyFrame = true;
 
-		var that = this;
 		this.listener = function (beginContactEvent) {
-			if (beginContactEvent.entityA === that.entity || beginContactEvent.entityB === that.entity) {
-				that.entered = true;
+			if (beginContactEvent.entityA === this.entity || beginContactEvent.entityB === this.entity) {
+				this.entered = true;
 			}
-		};
+		}.bind(this);
 	}
 
 	TriggerEnterAction.prototype = Object.create(Action.prototype);

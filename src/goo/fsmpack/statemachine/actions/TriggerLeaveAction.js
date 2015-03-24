@@ -13,12 +13,11 @@ define([
 		this.leaved = false;
 		this.everyFrame = true;
 
-		var that = this;
 		this.listener = function (endContactEvent) {
-			if (endContactEvent.entityA === that.entity || endContactEvent.entityB === that.entity) {
-				that.leaved = true;
+			if (endContactEvent.entityA === this.entity || endContactEvent.entityB === this.entity) {
+				this.leaved = true;
 			}
-		};
+		}.bind(this);
 	}
 
 	TriggerLeaveAction.prototype = Object.create(Action.prototype);
