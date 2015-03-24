@@ -63,12 +63,10 @@ define([
 				EntityUtils.updateWorldTransform(entity.transformComponent);
 			}
 		});
-
-		var _this = this;
-
+		var that = this;
 		entity.traverse(function (entity) {
 			if (entity.meshDataComponent) {
-				_this.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
+				that.addMeshData(entity.meshDataComponent.meshData, entity.transformComponent.worldTransform);
 			}
 		});
 	};
