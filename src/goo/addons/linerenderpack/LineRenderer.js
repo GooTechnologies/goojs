@@ -80,19 +80,19 @@ define([
 		LineRenderer.MAX_NUM_LINES = 32768;
 
 		/**
-		 * Used internally to update the vertexData in meshData
+		 * Used internally to update the vertexData in meshData.
 		 */
 		LineRenderer.prototype._updateVertexData = function () {
 			if (this._numRenderingLines !== 0 || this._meshData.vertexCount !== 0) {
 				this._meshData.vertexCount = Math.min(this._numRenderingLines, LineRenderer.MAX_NUM_LINES) * 2;
-				
+
 				this._meshData.setAttributeDataUpdated('POSITION');
 				this._meshData.setAttributeDataUpdated('RGB_COLOR');
 			}
 		};
 
 		/**
-		 * Used internally to clear the rendering line counter
+		 * Used internally to clear the rendering line counter.
 		 */
 		LineRenderer.prototype._clear = function () {
 			this._numRenderingLines = 0;
