@@ -85,7 +85,9 @@ define([
 		LineRenderer.prototype._updateVertexData = function () {
 			if (this._numRenderingLines !== 0 || this._meshData.vertexCount !== 0) {
 				this._meshData.vertexCount = Math.min(this._numRenderingLines, LineRenderer.MAX_NUM_LINES) * 2;
-				this._meshData.setVertexDataUpdated();
+				
+				this._meshData.setAttributeDataUpdated('POSITION');
+				this._meshData.setAttributeDataUpdated('RGB_COLOR');
 			}
 		};
 
