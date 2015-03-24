@@ -32,8 +32,8 @@ function (
 		this.hidden = false;
 
 		this.useTransformComponent = settings.useTransformComponent !== undefined ? settings.useTransformComponent : true;
-		this.width = settings.width || 1000;
-		this.height = settings.height || 400;
+		this.width = settings.width || 100;
+		this.height = settings.height || 100;
 		this.backfaceVisibility = settings.backfaceVisibility || 'hidden'; //'visible'
 		// faceCamera should not be here, it should be an entity transform setting
 		this.faceCamera = settings.faceCamera !== undefined ? settings.faceCamera : false;
@@ -46,9 +46,6 @@ function (
 		this.meshDataComponent = new MeshDataComponent(this.meshData);
 		this.meshRendererComponent = new MeshRendererComponent();
 		// this.meshRendererComponent.isPickable = false;
-
-
-		var front
 
 		// #ifdef DEBUG
 		Object.seal(this);
@@ -101,24 +98,24 @@ function (
 	};
 
 	HtmlComponent.prototype.setSize = function (width, height) {
-		var xdiff = this.width / width;
-		var ydiff = this.height / height;
+		// var xdiff = this.width / width;
+		// var ydiff = this.height / height;
 		this.width = width || this.width;
 		this.height = height || this.height;
 		this.domElement.style.width = this.width + 'px';
 		this.domElement.style.height = this.height + 'px';
 
 		// fix quad size
-		var entity = this.entity;
-		if (entity && entity.meshDataComponent /*&& entity.meshDataComponent.meshData instanceof Quad*/) {
-			entity.meshDataComponent.meshData.xExtent = width * 0.5;
-			entity.meshDataComponent.meshData.yExtent = height * 0.5;
-			entity.meshDataComponent.meshData.rebuild();
-			entity.meshDataComponent.meshData.setVertexDataUpdated();
-			entity.transformComponent.transform.scale.scale(xdiff, ydiff, 1);
-			entity.transformComponent.setUpdated();
-		}
-		this.updated = true;
+		// var entity = this.entity;
+		// if (entity && entity.meshDataComponent /*&& entity.meshDataComponent.meshData instanceof Quad*/) {
+		// 	entity.meshDataComponent.meshData.xExtent = width * 0.5;
+		// 	entity.meshDataComponent.meshData.yExtent = height * 0.5;
+		// 	entity.meshDataComponent.meshData.rebuild();
+		// 	entity.meshDataComponent.meshData.setVertexDataUpdated();
+		// 	entity.transformComponent.transform.scale.scale(xdiff, ydiff, 1);
+		// 	entity.transformComponent.setUpdated();
+		// }
+		//this.updated = true;
 	};
 
 	HtmlComponent.prototype.destroy = function (context) {

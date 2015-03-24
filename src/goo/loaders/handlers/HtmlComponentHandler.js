@@ -115,6 +115,7 @@ define([
 
 				component.initDom(domElement);
 			}
+			component.setSize(config.width, config.height);
 
 			var innerHtmlChanged = config.innerHtml !== domElement.prevInnerHtml;
 			var styleChanged = config.style !== domElement.prevStyle;
