@@ -1,15 +1,16 @@
 define([
 	'goo/entities/components/MovementComponent',
 	'goo/math/Vector3'
-], function(
+], function (
 	MovementComponent,
 	Vector3
-	) {
+) {
 	'use strict';
 
-	xdescribe('MovementComponent', function () {
+	describe('MovementComponent', function () {
 		describe('Test velocity deltas', function() {
 			var spatialMovementComponent;
+
 			beforeEach(function () {
 				spatialMovementComponent = new MovementComponent();
 			});
@@ -24,12 +25,12 @@ define([
 				var velocity = new Vector3(0, 1, 0);
 				spatialMovementComponent.addVelocity(velocity);
 				spatialMovementComponent.addVelocity(velocity);
-				expect(spatialMovementComponent.getVelocity()).toEqual(velocity.mul(2));
-				velocity.set(1, 0, 0);
+				expect(spatialMovementComponent.getVelocity()).toEqual(velocity.scale(2));
+				velocity.setDirect(1, 0, 0);
 				spatialMovementComponent.addVelocity(velocity);
 				spatialMovementComponent.addVelocity(velocity);
 				expect(spatialMovementComponent.getVelocity()).toEqual(new Vector3(2, 2, 0));
-				velocity.set(-1, 0, 1);
+				velocity.setDirect(-1, 0, 1);
 				spatialMovementComponent.addVelocity(velocity);
 				spatialMovementComponent.addVelocity(velocity);
 				expect(spatialMovementComponent.getVelocity()).toEqual(new Vector3(0, 2, 2));
@@ -55,12 +56,12 @@ define([
 				var velocity = new Vector3(0, 1, 0);
 				spatialMovementComponent.addRotationVelocity(velocity);
 				spatialMovementComponent.addRotationVelocity(velocity);
-				expect(spatialMovementComponent.getRotationVelocity()).toEqual(velocity.mul(2));
-				velocity.set(1, 0, 0);
+				expect(spatialMovementComponent.getRotationVelocity()).toEqual(velocity.scale(2));
+				velocity.setDirect(1, 0, 0);
 				spatialMovementComponent.addRotationVelocity(velocity);
 				spatialMovementComponent.addRotationVelocity(velocity);
 				expect(spatialMovementComponent.getRotationVelocity()).toEqual(new Vector3(2, 2, 0));
-				velocity.set(-1, 0, 1);
+				velocity.setDirect(-1, 0, 1);
 				spatialMovementComponent.addRotationVelocity(velocity);
 				spatialMovementComponent.addRotationVelocity(velocity);
 				expect(spatialMovementComponent.getRotationVelocity()).toEqual(new Vector3(0, 2, 2));

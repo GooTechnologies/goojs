@@ -30,11 +30,11 @@ function (
 	 * @param {Collider} targetCollider
 	 */
 	SphereCollider.prototype.transform = function (transform, targetCollider) {
-		var s = transform.scale.data;
+		var scale = transform.scale;
 		targetCollider.radius = this.radius * Math.max(
-			Math.abs(s[0]),
-			Math.abs(s[1]),
-			Math.abs(s[2])
+			Math.abs(scale.x),
+			Math.abs(scale.y),
+			Math.abs(scale.z)
 		);
 	};
 

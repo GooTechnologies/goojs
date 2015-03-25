@@ -9,8 +9,7 @@ define([
 ) {
 	'use strict';
 
-	xdescribe('CylinderCollider', function () {
-
+	describe('CylinderCollider', function () {
 		it('can clone', function () {
 			var collider = new CylinderCollider({
 				radius: 123,
@@ -18,7 +17,6 @@ define([
 			});
 			var clone = collider.clone();
 			expect(collider).toEqual(clone);
-
 		});
 
 		it('can transform', function () {
@@ -27,11 +25,10 @@ define([
 				height: 3
 			});
 			var transform = new Transform();
-			transform.scale.set(1, 2, 3);
+			transform.scale.setDirect(1, 2, 3);
 			collider.transform(transform, collider);
 			expect(collider.radius).toEqual(4);
 			expect(collider.height).toEqual(9);
-
 		});
 	});
 });

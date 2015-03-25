@@ -87,13 +87,13 @@ function (
 		 * @private
 		 * @type {Vector3}
 		 */
-		this._velocity = settings.velocity ? new Vector3(settings.velocity) : new Vector3();
+		this._velocity = settings.velocity ? settings.velocity.clone() : new Vector3();
 
 		/**
 		 * @private
 		 * @type {Vector3}
 		 */
-		this._angularVelocity = settings.angularVelocity ? new Vector3(settings.angularVelocity) : new Vector3();
+		this._angularVelocity = settings.angularVelocity ? settings.angularVelocity.clone() : new Vector3();
 
 		/**
 		 * @private
