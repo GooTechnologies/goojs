@@ -10,38 +10,54 @@ var escodegen = require('escodegen');
 var uglify = require('uglify-js');
 
 
-
+/**
+ * Strips the .js (or any 2 letter) extension at the end of files
+ * @param string
+ * @returns {string}
+ */
 function stripJS(string) {
 	return string.slice(0, -3);
 }
 
+/**
+ * Transforms a dependency tree into a graph usable by the topological sort function.
+ * In this case it just strips the ".js" extension from the nodes since the extensions do not appear in the adjacency lists.
+ * @param { string -> string[] } dependencies
+ * @returns { string -> string[] }
+ */
 function graphise(dependencies) {
-	var graph = {};
-	Object.keys(dependencies).forEach(function (key) {
+	return Object.keys(dependencies).reduce(function (graph, key) {
 		graph[stripJS(key)] = dependencies[key];
-	});
-
-	return graph;
+		return graph;
+	}, {});
 }
 
+/**
+ * Shallow copies an object while filtering its properties; not equivalent to lodash/underscore's _.filter since they return arrays
+ * @param obj
+ * @param predicate
+ * @returns {object}
+ */
 function filterObj(obj, predicate) {
-	var filtered = {};
-	Object.keys(obj).forEach(function (key) {
+	return Object.keys(obj).reduce(function (filtered, key) {
 		if (predicate(obj[key], key)) {
 			filtered[key] = obj[key];
 		}
-	});
-
-	return filtered;
+		return filtered;
+	}, {});
 }
 
+/**
+ * Applies a function to every property of an object and returns another object containing the results; not equivalent to lodash/underscore's _.map since they return arrays
+ * @param obj
+ * @param fun
+ * @returns {object}
+ */
 function mapObj(obj, fun) {
-	var newObj = {};
-	Object.keys(obj).forEach(function (key) {
+	return Object.keys(obj).reduce(function (newObj, key) {
 		newObj[key] = fun(obj[key], key);
-	});
-
-	return newObj;
+		return newObj;
+	}, {});
 }
 
 function getProgram(body) {
@@ -91,17 +107,18 @@ function wrapMain(source, modules) {
 	return 'window.goo = {};\n' + wrapPack(source, modules);
 }
 
-var ROOT_PATH = 'src-preprocessed/';
-
 /**
+ * @param {string} [rootPath='src-preprocessed'] The root path where the sources are
  * @param {string} [packPath] Only specify if minifying a pack
  * @param {string} [outFile]
  * @param {Object} [options]
  * @param {string} [options.minifyLevel=null] Can be null (no minification), 'light' (compacting only) and 'full'
  * @param {function} [callback]
  */
-function run(packPath, outFile, options, callback) {
+function run(rootPath, packPath, outFile, options, callback) {
 	// optional parameters
+	rootPath = rootPath || 'src-preprocessed';
+
 	if (!outFile) {
 		if (!packPath) {
 			outFile = 'out/goo.js';
@@ -115,7 +132,7 @@ function run(packPath, outFile, options, callback) {
 	callback = callback || function () {};
 
 	// build dependency tree
-	Dependency.getTree(ROOT_PATH, function (dependencies) {
+	Dependency.getTree(rootPath + '/', function (dependencies) {
 		var graph = graphise(dependencies);
 
 		if (packPath) {
@@ -140,7 +157,7 @@ function run(packPath, outFile, options, callback) {
 		var sortedModules = topoSort.sort(graph);
 
 		var processedModules = sortedModules.map(function (modulePath) {
-			var source = fs.readFileSync(ROOT_PATH + modulePath + '.js', 'utf8');
+			var source = fs.readFileSync(rootPath + '/' + modulePath + '.js', 'utf8');
 
 			var tree = esprima.parse(source);
 			var strippedModule = derequire.transform(modulePath, tree.body[0].expression);

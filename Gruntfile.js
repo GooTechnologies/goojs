@@ -1,7 +1,8 @@
 // jshint node:true
+'use strict';
 
 var path = require('path');
-
+var _ = require('underscore');
 
 
 module.exports = function (grunt) {
@@ -46,15 +47,31 @@ module.exports = function (grunt) {
 			config[packName + '-dev'] = {
 				packPath: packs[packName],
 				packName: packName,
-				minifyLevel: null
+				minifyLevel: null,
+				rootPath: 'src'
 			};
 
 			return config;
 		}, {});
 	}
 
-	var packConfigs = getPacksConfig(packs);
+	// ---
+	function getWatchConfig() {
+		return Object.keys(packs).reduce(function (config, packName) {
+			config[packName] = {
+				files: ['src/' + packs[packName] + '/**/*.js'],
+				tasks: ['minify-pack:' + packName + '-dev']
+			};
+			return config;
+		}, {
+			engine: {
+				files: ['src/**/*.js', '!src/**/*pack/**/*.js'],
+				tasks: ['minify-main:dev', 'uglify:build', 'wrap']
+			}
+		});
+	}
 
+	// ---
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		// is this task ever called?
@@ -75,7 +92,7 @@ module.exports = function (grunt) {
 				'out-doc/'
 			]
 		},
-		'minify-pack': packConfigs,
+		'minify-pack': getPacksConfig(packs),
 		'preprocess': {
 			build: {
 				defines: {
@@ -133,7 +150,8 @@ module.exports = function (grunt) {
 				jshintrc: '.jshintrc',
 				force: true // Do not fail the task
 			}
-		}
+		},
+		watch: getWatchConfig(packs)
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -143,6 +161,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-karma');
 	grunt.loadNpmTasks('grunt-shell');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-keepalive');
 
 	grunt.loadTasks('tools/grunt_tasks');
 
@@ -153,15 +173,17 @@ module.exports = function (grunt) {
 	grunt.registerTask('test',		 ['unittest', 'e2e']);
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
 
-	var buildPackArray = Object.keys(packs).map(function (packName) {
+	grunt.registerTask('fast-watch', ['manual-watch', 'keepalive']);
+
+	var buildPackTasks = _.map(packs, function (packPath, packName) {
 		return 'minify-pack:' + packName;
 	});
 
-	var buildPackNoMangleArray = Object.keys(packs).map(function (packName) {
+	var buildPackNoMangleTasks = _.map(packs, function (packPath, packName) {
 		return 'minify-pack:' + packName + '-no-mangle';
 	});
 
-	var buildPackDevArray = Object.keys(packs).map(function (packName) {
+	var buildPackDevTasks = _.map(packs, function (packPath, packName) {
 		return 'minify-pack:' + packName + '-dev';
 	});
 
@@ -170,21 +192,28 @@ module.exports = function (grunt) {
 		'minify-main:build',
 		'uglify:build',
 		'wrap'
-	].concat(buildPackArray));
+	].concat(buildPackTasks));
 
 	grunt.registerTask('minify-no-mangle', [
 		'preprocess:build',
 		'minify-main:no-mangle',
 		'uglify:build',
 		'wrap'
-	].concat(buildPackNoMangleArray));
+	].concat(buildPackNoMangleTasks));
 
 	grunt.registerTask('minify-dev', [
 		'preprocess:build',
 		'minify-main:dev',
 		'uglify:build',
 		'wrap'
-	].concat(buildPackDevArray));
+	].concat(buildPackDevTasks));
+
+	// skip the preprocess and minify only the engine
+	grunt.registerTask('minify-engine-dev', [
+		'minify-main:dev',
+		'uglify:build',
+		'wrap'
+	]);
 
 	grunt.registerTask('default', ['minify']);
 };
