@@ -19,10 +19,11 @@ define([
 
 			this._lineRenderers = [];
 
+			this.world = world;
+
 			//adds a new LineRenderer to the list
 			this._lineRenderers.push(new LineRenderer(this.world));
 
-			this.world = world;
 			this.camera = null;
 
 			/**
