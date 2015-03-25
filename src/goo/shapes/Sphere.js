@@ -220,7 +220,7 @@ define([
 				vbuf[i * 3 + 1] = sliceR * afSin[iR];
 				vbuf[i * 3 + 2] = z;
 
-				var kNormal = tempVa.set(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
+				var kNormal = tempVa.setDirect(vbuf[i * 3 + 0], vbuf[i * 3 + 1], vbuf[i * 3 + 2]);
 				kNormal.normalize();
 				if (!this.viewInside) {
 					norms[i * 3 + 0] = kNormal.x;

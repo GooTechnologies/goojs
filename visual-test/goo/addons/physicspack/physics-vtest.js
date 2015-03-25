@@ -351,11 +351,11 @@ require([
 			// Add some force to all bodies
 			world.by.system(physicsSystem.type).each(function (entity) {
 				// Force is directed to the origin
-				force.copy(entity.getTranslation(force)).mul(-1);
+				force.copy(entity.getTranslation(force)).scale(-1);
 
 				// Set a proper length of it
 				force.normalize();
-				force.mul(700);
+				force.scale(700);
 
 				// Apply it to the entity
 				entity.rigidBodyComponent.applyForce(force);
@@ -371,7 +371,7 @@ require([
 
 			// Set a proper length of it
 			force.normalize();
-			force.mul(5000);
+			force.scale(5000);
 
 			// Apply it to the entity
 			entity.rigidBodyComponent.applyForce(force);

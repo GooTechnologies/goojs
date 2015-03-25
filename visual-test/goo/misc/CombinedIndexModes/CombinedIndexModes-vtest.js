@@ -48,7 +48,7 @@ require([
 		z = z || 0;
 		var material = new Material(ShaderLib.simple);
 		var entity = goo.world.createEntity(meshData, material);
-		entity.transformComponent.transform.translation.set(x, y, z);
+		entity.transformComponent.transform.translation.setDirect(x, y, z);
 		entity.addToWorld();
 		console.log('Added', entity);
 		return entity;

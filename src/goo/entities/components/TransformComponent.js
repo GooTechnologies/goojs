@@ -542,10 +542,10 @@ define([
 			this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
 		} else {
 			if (Array.isArray(position)) {
-				position = new Vector3(position);
+				position = Vector3.fromArray(position);
 			}
 			if (Array.isArray(up)) {
-				up = new Vector3(up);
+				up = Vector3.fromArray(up);
 			}
 			this.transform.lookAt(position, up);
 		}

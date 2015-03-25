@@ -66,7 +66,7 @@ define([
 	 */
 	V.toVector3 = function (obj, def) {
 		if (Array.isArray(obj)) {
-			return new Vector3(obj);
+			return Vector3.fromArray(obj);
 		} else if (obj instanceof Vector3) {
 			return obj;
 		} else if (obj && (typeof obj.x === 'number') && (typeof obj.y === 'number') && (typeof obj.z === 'number')) {

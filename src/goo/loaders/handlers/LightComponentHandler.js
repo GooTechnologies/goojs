@@ -130,7 +130,7 @@ define([
 							}
 						}
 					} else if (light[key] instanceof Vector3) {
-						light[key].set(value[0], value[1], value[2]);
+						light[key].setDirect(value[0], value[1], value[2]);
 					} else {
 						light[key] = ObjectUtil.clone(value);
 					}
