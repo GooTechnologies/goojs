@@ -10,38 +10,54 @@ var escodegen = require('escodegen');
 var uglify = require('uglify-js');
 
 
-
+/**
+ * Strips the .js (or any 2 letter) extension at the end of files
+ * @param string
+ * @returns {string}
+ */
 function stripJS(string) {
 	return string.slice(0, -3);
 }
 
+/**
+ * Transforms a dependency tree into a graph usable by the topological sort function.
+ * In this case it just strips the ".js" extension from the nodes since the extensions do not appear in the adjacency lists.
+ * @param { string -> string[] } dependencies
+ * @returns { string -> string[] }
+ */
 function graphise(dependencies) {
-	var graph = {};
-	Object.keys(dependencies).forEach(function (key) {
+	return Object.keys(dependencies).reduce(function (graph, key) {
 		graph[stripJS(key)] = dependencies[key];
-	});
-
-	return graph;
+		return graph;
+	}, {});
 }
 
+/**
+ * Shallow copies an object while filtering its properties; not equivalent to lodash/underscore's _.filter since they return arrays
+ * @param obj
+ * @param predicate
+ * @returns {object}
+ */
 function filterObj(obj, predicate) {
-	var filtered = {};
-	Object.keys(obj).forEach(function (key) {
+	return Object.keys(obj).reduce(function (filtered, key) {
 		if (predicate(obj[key], key)) {
 			filtered[key] = obj[key];
 		}
-	});
-
-	return filtered;
+		return filtered;
+	}, {});
 }
 
+/**
+ * Applies a function to every property of an object and returns another object containing the results; not equivalent to lodash/underscore's _.map since they return arrays
+ * @param obj
+ * @param fun
+ * @returns {object}
+ */
 function mapObj(obj, fun) {
-	var newObj = {};
-	Object.keys(obj).forEach(function (key) {
+	return Object.keys(obj).reduce(function (newObj, key) {
 		newObj[key] = fun(obj[key], key);
-	});
-
-	return newObj;
+		return newObj;
+	}, {});
 }
 
 function getProgram(body) {

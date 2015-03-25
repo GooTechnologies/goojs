@@ -1,7 +1,8 @@
 // jshint node:true
+'use strict';
 
 var path = require('path');
-
+var _ = require('underscore');
 
 
 module.exports = function (grunt) {
@@ -54,8 +55,6 @@ module.exports = function (grunt) {
 		}, {});
 	}
 
-	var packConfigs = getPacksConfig(packs);
-
 	// ---
 	function getWatchConfig() {
 		return Object.keys(packs).reduce(function (config, packName) {
@@ -71,8 +70,6 @@ module.exports = function (grunt) {
 			}
 		});
 	}
-
-	var watchConfigs = getWatchConfig(packs);
 
 	// ---
 	grunt.initConfig({
@@ -95,7 +92,7 @@ module.exports = function (grunt) {
 				'out-doc/'
 			]
 		},
-		'minify-pack': packConfigs,
+		'minify-pack': getPacksConfig(packs),
 		'preprocess': {
 			build: {
 				defines: {
@@ -154,7 +151,7 @@ module.exports = function (grunt) {
 				force: true // Do not fail the task
 			}
 		},
-		watch: watchConfigs
+		watch: getWatchConfig(packs)
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -178,15 +175,15 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('fast-watch', ['manual-watch', 'keepalive']);
 
-	var buildPackArray = Object.keys(packs).map(function (packName) {
+	var buildPackTasks = _.map(packs, function (packPath, packName) {
 		return 'minify-pack:' + packName;
 	});
 
-	var buildPackNoMangleArray = Object.keys(packs).map(function (packName) {
+	var buildPackNoMangleTasks = _.map(packs, function (packPath, packName) {
 		return 'minify-pack:' + packName + '-no-mangle';
 	});
 
-	var buildPackDevArray = Object.keys(packs).map(function (packName) {
+	var buildPackDevTasks = _.map(packs, function (packPath, packName) {
 		return 'minify-pack:' + packName + '-dev';
 	});
 
@@ -195,21 +192,21 @@ module.exports = function (grunt) {
 		'minify-main:build',
 		'uglify:build',
 		'wrap'
-	].concat(buildPackArray));
+	].concat(buildPackTasks));
 
 	grunt.registerTask('minify-no-mangle', [
 		'preprocess:build',
 		'minify-main:no-mangle',
 		'uglify:build',
 		'wrap'
-	].concat(buildPackNoMangleArray));
+	].concat(buildPackNoMangleTasks));
 
 	grunt.registerTask('minify-dev', [
 		'preprocess:build',
 		'minify-main:dev',
 		'uglify:build',
 		'wrap'
-	].concat(buildPackDevArray));
+	].concat(buildPackDevTasks));
 
 	// skip the preprocess and minify only the engine
 	grunt.registerTask('minify-engine-dev', [
