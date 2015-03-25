@@ -463,7 +463,8 @@ function (
 				continue;
 			}
 
-			if (!colliderEntity.colliderComponent.getBodyEntity() && !colliderEntity.colliderComponent.cannonBody) {
+			if (!colliderEntity.colliderComponent.getBodyEntity() && (!colliderEntity.colliderComponent.cannonBody || colliderEntity.colliderComponent.isDirty())) {
+				this._removeLonelyCollider(colliderEntity);
 				this._addLonelyCollider(colliderEntity);
 			}
 
