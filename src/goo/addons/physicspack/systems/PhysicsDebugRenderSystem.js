@@ -59,7 +59,7 @@ function (
 		}.bind(this));
 
 		/**
-		 * If set to true, all entities with any physics in them will be debug rendered, and the selection will be disregarded.
+		 * If set to true, all entities with a ColliderComponent attached is rendered, and the selection is disregarded.
 		 * @type {Boolean}
 		 */
 		this.renderAll = true;
@@ -119,14 +119,13 @@ function (
 			}
 
 			// Colliders
-			if (entity.colliderComponent && entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidBodyComponent) {
-				var bodyEntity = entity.colliderComponent.bodyEntity;
+			if (entity.colliderComponent) {
 
 				var collider = entity.colliderComponent.worldCollider;
 				var meshData = this.getMeshData(collider);
 				var renderable = this.renderablePool.get(meshData, this.material);
 
-				this.getWorldTransform(bodyEntity, entity, collider, renderable.transform);
+				this.getWorldTransform(entity, collider, renderable.transform);
 				renderable.transform.update();
 
 				this.renderList.push(renderable);
@@ -139,12 +138,11 @@ function (
 	/**
 	 * Get the world transform of the debug rendering mesh data from a collider.
 	 * @private
-	 * @param  {Entity} bodyEntity
 	 * @param  {Entity} colliderEntity
 	 * @param  {Collider} collider
 	 * @param  {Transform} targetTransform
 	 */
-	PhysicsDebugRenderSystem.prototype.getWorldTransform = function (bodyEntity, colliderEntity, collider, targetTransform) {
+	PhysicsDebugRenderSystem.prototype.getWorldTransform = function (colliderEntity, collider, targetTransform) {
 		targetTransform.copy(colliderEntity.transformComponent.worldTransform);
 
 		if (collider instanceof SphereCollider) {

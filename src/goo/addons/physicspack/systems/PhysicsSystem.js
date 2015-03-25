@@ -68,7 +68,7 @@ function (
 		this.stepFrequency = settings.stepFrequency !== undefined ? settings.stepFrequency : 60;
 
 		/**
-		 * The maximum number of timesteps to use for making the physics clock catch up with the wall clock. If set to zero, a variable timestep will be used (not recommended).
+		 * The maximum number of timesteps to use for making the physics clock catch up with the wall clock. If set to zero, a variable timestep is used (not recommended).
 		 * @type {number}
 		 * @default 10
 		 */
@@ -207,7 +207,7 @@ function (
 	};
 
 	/**
-	 * Make a ray cast into the world of colliders, stopping at the first hit that the ray intersects (could be any physics object). Note that there's no order in the traversal, and you will never have control over what will be returned.
+	 * Make a ray cast into the world of colliders, stopping at the first hit that the ray intersects. Note that there's no given order in the traversal, and there's no control over what will be returned.
 	 * @param  {Vector3} start
 	 * @param  {Vector3} direction
 	 * @param  {number} distance
@@ -296,28 +296,42 @@ function (
 	};
 
 	/**
-	 * Stops updating the entities. They will continue again from the pause positions when calling .play().
+	 * Stops simulation and updating of the entitiy transforms.
 	 */
 	PhysicsSystem.prototype.pause = function () {
 		this.passive = true;
 	};
 
 	/**
-	 * Resumes updating the entities.
+	 * Resumes simulation and starts updating the entities after stop() or pause().
 	 */
 	PhysicsSystem.prototype.play = function () {
 		this.passive = false;
+
+		this.setAllBodiesDirty();
+		this.setAllCollidersDirty();
 	};
 
 	/**
-	 * Stops simulating and sets the positions to the initial ones.
+	 * Stops simulation.
 	 */
 	PhysicsSystem.prototype.stop = function () {
 		this.pause();
 
 		// Trash everything
+		this.setAllBodiesDirty();
+		this.setAllCollidersDirty();
+	};
+
+	PhysicsSystem.prototype.setAllBodiesDirty = function () {
 		for (var i = 0; i < this._activeEntities.length; i++) {
 			this._activeEntities[i].rigidBodyComponent.setToDirty();
+		}
+	};
+
+	PhysicsSystem.prototype.setAllCollidersDirty = function () {
+		for (var i = 0; i < this._activeColliderEntities.length; i++) {
+			this._activeColliderEntities[i].colliderComponent.setToDirty();
 		}
 	};
 
@@ -354,15 +368,39 @@ function (
 			material.friction = entity.colliderComponent.material.friction;
 			material.restitution = entity.colliderComponent.material.restitution;
 		}
-		var shape = RigidBodyComponent.getCannonShape(entity.colliderComponent.collider);
+		entity.colliderComponent.updateWorldCollider();
+		var shape = RigidBodyComponent.getCannonShape(entity.colliderComponent.worldCollider);
 		shape.material = material;
 		var body = new CANNON.Body({
 			mass: 0,
-			collisionResponse: entity.colliderComponent.isTrigger,
+			collisionResponse: !entity.colliderComponent.isTrigger,
 			shape: shape
 		});
 		this.cannonWorld.addBody(body);
 		entity.colliderComponent.cannonBody = body;
+		if (entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidBodyComponent) {
+			entity.colliderComponent.bodyEntity.rigidBodyComponent.setToDirty();
+		}
+		entity.colliderComponent.bodyEntity = null;
+		entity.colliderComponent.setToDirty();
+	};
+
+	/**
+	 * @private
+	 * @param  {Entity} entity
+	 */
+	PhysicsSystem.prototype._removeLonelyCollider = function (entity) {
+		if (entity.colliderComponent.cannonBody) {
+			this.cannonWorld.removeBody(entity.colliderComponent.cannonBody);
+			entity.colliderComponent.cannonBody = null;
+		}
+
+		var bodyEntity = entity.colliderComponent.getBodyEntity();
+		if (bodyEntity) {
+			bodyEntity.rigidBodyComponent.setToDirty();
+		}
+
+		entity.colliderComponent.setToDirty();
 	};
 
 	PhysicsSystem.prototype._colliderDeleted = function (entity) {
@@ -398,10 +436,8 @@ function (
 			// Initialize bodies
 			if (rigidBodyComponent.isDirty()) {
 				rigidBodyComponent.initialize();
-			} else {
-				// Update the colliders if they changed
-				rigidBodyComponent.updateDirtyColliders();
 			}
+			rigidBodyComponent.updateDirtyColliders();
 		}
 
 		// Initialize joints - must be done *after* all bodies were initialized
@@ -419,11 +455,20 @@ function (
 			}
 		}
 
-		// Initialize all colliders without rigid body
+		// Initialize all lonely colliders without rigid body
 		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
 			var colliderEntity = this._activeColliderEntities[i];
-			if (colliderEntity.colliderComponent.bodyEntity === null && !colliderEntity.colliderComponent.cannonBody) {
+
+			if (!colliderEntity.colliderComponent) { // Needed?
+				continue;
+			}
+
+			if (!colliderEntity.colliderComponent.getBodyEntity() && !colliderEntity.colliderComponent.cannonBody) {
 				this._addLonelyCollider(colliderEntity);
+			}
+
+			if (colliderEntity.colliderComponent.getBodyEntity() && colliderEntity.colliderComponent.cannonBody) {
+				this._removeLonelyCollider(colliderEntity);
 			}
 		}
 	};
@@ -435,8 +480,41 @@ function (
 	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
 		this.initialize(entities);
+		this.updateLonelyColliders();
 		this.step(tpf);
 		this.syncTransforms(entities);
+	};
+
+	/**
+	 * Checks for dirty ColliderComponents without a RigidBodyComponent and updates them.
+	 */
+	PhysicsSystem.prototype.updateLonelyColliders = function () {
+		for (var i = this._activeColliderEntities.length - 1; i >= 0; i--) {
+			var entity = this._activeColliderEntities[i];
+
+			// Set transform from entity
+			var colliderComponent = entity.colliderComponent;
+			if (colliderComponent && (colliderComponent._dirty || entity.transformComponent._updated)) {
+				var transform = entity.transformComponent.worldTransform;
+				var body = colliderComponent.cannonBody;
+				if (body) {
+					body.position.copy(transform.translation);
+					tmpQuat.fromRotationMatrix(transform.rotation);
+					body.quaternion.copy(tmpQuat);
+
+					// Update scale of stuff
+					var cannonShape = body.shapes[0];
+					if (cannonShape) {
+						cannonShape.collisionResponse = !colliderComponent.isTrigger;
+						colliderComponent.updateWorldCollider();
+						RigidBodyComponent.copyScaleFromColliderToCannonShape(
+							cannonShape,
+							colliderComponent.worldCollider
+						);
+					}
+				}
+			}
+		}
 	};
 
 	/**

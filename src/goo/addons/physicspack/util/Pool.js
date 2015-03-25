@@ -54,7 +54,7 @@ function (
 	}
 
 	/**
-	 * Fill the pool so it has exactly "size" objects. If the current number of objects is larger than the requested size, the excess objects will be destroyed.
+	 * Fill the pool so it has exactly "size" objects. If the current number of objects is larger than the requested size, the excess objects are destroyed.
 	 * @param {number} size
 	 */
 	Pool.prototype.resize = function (size) {
