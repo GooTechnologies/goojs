@@ -77,7 +77,7 @@ define([
 			].join('\n')
 		};
 
-		LineRenderer.MAX_NUM_LINES = 32768;
+		LineRenderer.MAX_NUM_LINES = 131072;
 
 		/**
 		 * Used internally to update the vertexData in meshData.
@@ -129,6 +129,7 @@ define([
 		LineRenderer.prototype._addLine = function (start, end, color) {
 			//We can not continue if there is no more space in the buffers.
 			if (this._numRenderingLines >= LineRenderer.MAX_NUM_LINES) {
+				console.warn("LineRenderer exhausted, MAX_NUM_LINES exceeded.");
 				return;
 			}
 
