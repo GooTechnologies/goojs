@@ -3,8 +3,57 @@
 var path = require('path');
 
 
+
 module.exports = function (grunt) {
 	'use strict';
+
+	var packs = {
+		fsmpack: 'goo/fsmpack',
+		geometrypack: 'goo/geometrypack',
+		quadpack: 'goo/quadpack',
+		timelinepack: 'goo/timelinepack',
+		debugpack: 'goo/debugpack',
+		scriptpack: 'goo/scriptpack',
+		p2pack: 'goo/addons/p2pack',
+		box2dpack: 'goo/addons/box2dpack',
+		terrainpack: 'goo/addons/terrainpack',
+		ammopack: 'goo/addons/ammopack',
+		cannonpack: 'goo/addons/cannonpack',
+		waterpack: 'goo/addons/waterpack',
+		linerenderpack: 'goo/addons/linerenderpack',
+		animationpack: 'goo/animationpack',
+		soundmanager2pack: 'goo/addons/soundmanager2pack',
+		gamepadpack: 'goo/addons/gamepadpack',
+		passpack: 'goo/passpack',
+		gizmopack: 'goo/util/gizmopack',
+		physicspack: 'goo/addons/physicspack'
+	};
+
+	function getPacksConfig(packs) {
+		return Object.keys(packs).reduce(function (config, packName) {
+			config[packName] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: 'full'
+			};
+
+			config[packName + '-no-mangle'] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: 'light'
+			};
+
+			config[packName + '-dev'] = {
+				packPath: packs[packName],
+				packName: packName,
+				minifyLevel: null
+			};
+
+			return config;
+		}, {});
+	}
+
+	var packConfigs = getPacksConfig(packs);
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -26,68 +75,9 @@ module.exports = function (grunt) {
 				'out-doc/'
 			]
 		},
-		'build-pack': {
-			fsmpack: {
-				packPath: 'fsmpack'
-			},
-			geometrypack: {
-				packPath: 'geometrypack'
-			},
-			quadpack: {
-				packPath: 'quadpack'
-			},
-			timelinepack: {
-				packPath: 'timelinepack'
-			},
-			debugpack: {
-				packPath: 'debugpack'
-			},
-			scriptpack: {
-				packPath: 'scriptpack'
-			},
-			p2pack: {
-				packPath: 'addons/p2pack'
-			},
-			box2dpack: {
-				packPath: 'addons/box2dpack'
-			},
-			terrainpack: {
-				packPath: 'addons/terrainpack'
-			},
-			ammopack: {
-				packPath: 'addons/ammopack'
-			},
-			cannonpack: {
-				packPath: 'addons/cannonpack'
-			},
-			waterpack: {
-				packPath: 'addons/waterpack'
-			},
-			linerenderpack: {
-				packPath: 'addons/linerenderpack',
-				outBaseDir: 'out'
-			},
-			animationpack: {
-				packPath: 'animationpack'
-			},
-			soundmanager2pack: {
-				packPath: 'addons/soundmanager2pack'
-			},
-			gamepadpack: {
-				packPath: 'addons/gamepadpack'
-			},
-			passpack: {
-				packPath: 'passpack'
-			},
-			gizmopack: {
-				packPath: 'util/gizmopack'
-			},
-			physicspack: {
-				packPath: 'addons/physicspack'
-			}
-		},
+		'minify-pack': packConfigs,
 		'preprocess': {
-			prod: {
+			build: {
 				defines: {
 					DEBUG: false
 				}
@@ -156,19 +146,45 @@ module.exports = function (grunt) {
 
 	grunt.loadTasks('tools/grunt_tasks');
 
-	grunt.registerTask('default',	 ['minify']);
 	grunt.registerTask('jsdoc',		 ['shell:jsdoc']);
-	grunt.registerTask('minify',	 [
-		'main-file',
-		'preprocess:prod',
-		'requirejs:build',
-		'uglify:build', 
-		'wrap',
-		'build-pack'
-	]);
 	grunt.registerTask('unittest',	 ['karma:unit']);
 	grunt.registerTask('coverage',	 ['unittest']);
 	grunt.registerTask('e2e',		 ['shell:e2e']);
 	grunt.registerTask('test',		 ['unittest', 'e2e']);
 	grunt.registerTask('modoc-test', ['shell:modoc-test']);
+
+	var buildPackArray = Object.keys(packs).map(function (packName) {
+		return 'minify-pack:' + packName;
+	});
+
+	var buildPackNoMangleArray = Object.keys(packs).map(function (packName) {
+		return 'minify-pack:' + packName + '-no-mangle';
+	});
+
+	var buildPackDevArray = Object.keys(packs).map(function (packName) {
+		return 'minify-pack:' + packName + '-dev';
+	});
+
+	grunt.registerTask('minify', [
+		'preprocess:build',
+		'minify-main:build',
+		'uglify:build',
+		'wrap'
+	].concat(buildPackArray));
+
+	grunt.registerTask('minify-no-mangle', [
+		'preprocess:build',
+		'minify-main:no-mangle',
+		'uglify:build',
+		'wrap'
+	].concat(buildPackNoMangleArray));
+
+	grunt.registerTask('minify-dev', [
+		'preprocess:build',
+		'minify-main:dev',
+		'uglify:build',
+		'wrap'
+	].concat(buildPackDevArray));
+
+	grunt.registerTask('default', ['minify']);
 };
