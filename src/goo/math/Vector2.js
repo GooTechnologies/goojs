@@ -66,6 +66,34 @@ define([
 	Vector2.UNIT_Y = new Vector2(0, 1);
 
 	/**
+	 * Returns the vector component associated with the given index.
+	 * Vector components are numbered from 0 to 2 in this order: x, y.
+	 * @param {number} index
+	 * @returns {number}
+	 */
+	Vector2.prototype.getComponent = function (index) {
+		switch (index) {
+			case 0: return this.x;
+			case 1: return this.y;
+		}
+	};
+
+	/**
+	 * Sets the vector component associated with the given index to a given value.
+	 * Vector components are numbered from 0 to 2 in this order: x, y.
+	 * @param {number} index
+	 * @param {number} value
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.setComponent = function (index, value) {
+		switch (index) {
+			case 0: this.x = value; break;
+			case 1: this.y = value; break;
+		}
+		return this;
+	};
+
+	/**
 	 * Adds a vector to the current vector
 	 * @param that {Vector2}
 	 * @returns {Vector2} Self to allow chaining

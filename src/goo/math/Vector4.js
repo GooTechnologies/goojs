@@ -86,6 +86,38 @@ define([
 	Vector4.UNIT_Z = new Vector4(0, 0, 0, 1);
 
 	/**
+	 * Returns the vector component associated with the given index.
+	 * Vector components are numbered from 0 to 3 in this order: x, y, z, w.
+	 * @param {number} index
+	 * @returns {number}
+	 */
+	Vector4.prototype.getComponent = function (index) {
+		switch (index) {
+			case 0: return this.x;
+			case 1: return this.y;
+			case 2: return this.z;
+			case 3: return this.w;
+		}
+	};
+
+	/**
+	 * Sets the vector component associated with the given index to a given value.
+	 * Vector components are numbered from 0 to 3 in this order: x, y, z, w.
+	 * @param {number} index
+	 * @param {number} value
+	 * @returns {Vector4} Self to allow chaining
+	 */
+	Vector4.prototype.setComponent = function (index, value) {
+		switch (index) {
+			case 0: this.x = value; break;
+			case 1: this.y = value; break;
+			case 2: this.z = value; break;
+			case 3: this.w = value; break;
+		}
+		return this;
+	};
+
+	/**
 	 * Adds a vector to the current vector
 	 * @param that {Vector4}
 	 * @returns {Vector4} Self to allow chaining

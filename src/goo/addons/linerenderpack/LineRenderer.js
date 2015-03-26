@@ -2,30 +2,30 @@ define([
 		'goo/renderer/Material',
 		'goo/renderer/MeshData',
 		'goo/renderer/shaders/ShaderLib',
+		'goo/renderer/Shader',
 		'goo/math/Transform'
 	],
 	function (Material,
 			  MeshData,
 			  ShaderLib,
+			  Shader,
 			  Transform) {
 		'use strict';
 
 		/**
 		 * Used internally to render a batch of lines all with the same color.
-		 * @param {World} world The world in which lines are rendered in.
-		 * @param {Vector3} color
+		 * @param {World} world The world lines are rendered in.
 		 */
-		function LineRenderer(world, color) {
+		function LineRenderer(world) {
 			this.world = world;
 
+			this._material = new Material(LineRenderer.COLORED_LINE_SHADER);
 
-			this._material = new Material(ShaderLib.simpleColored);
-			this._material.uniforms.color = [color.x, color.y, color.z];
-
-			this._meshData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), this.MAX_NUM_LINES * 2, 0);
+			this._meshData = new MeshData(LineRenderer.ATTRIBUTE_MAP, LineRenderer.MAX_NUM_LINES * 2);
 			this._meshData.indexModes = ['Lines'];
 
-			this._vertices = this._meshData.getAttributeBuffer(MeshData.POSITION);
+			this._positions = this._meshData.getAttributeBuffer('POSITION');
+			this._colors = this._meshData.getAttributeBuffer('RGB_COLOR');
 
 			this._renderObject = {
 				meshData: this._meshData,
@@ -37,22 +37,62 @@ define([
 
 			this._numRenderingLines = 0;
 			this._meshData.vertexCount = 0;
+
+			this._meshData.vertexData.setDataUsage('DynamicDraw');
 		}
 
-		LineRenderer.prototype.MAX_NUM_LINES = 170000;
+		LineRenderer.ATTRIBUTE_MAP = {
+			POSITION: MeshData.createAttribute(3, 'Float'),
+			RGB_COLOR: MeshData.createAttribute(3, 'Float')
+		};
+
+		LineRenderer.COLORED_LINE_SHADER = {
+			attributes: {
+				vertexPosition: 'POSITION',
+				vertexColor: 'RGB_COLOR'
+			},
+			uniforms: {
+				viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX
+			},
+			vshader: [
+				'attribute vec3 vertexPosition;',
+				'attribute vec3 vertexColor;',
+
+				'uniform mat4 viewProjectionMatrix;',
+
+				'varying vec3 color;',
+
+				'void main(void) {',
+				'gl_Position = viewProjectionMatrix * vec4(vertexPosition, 1.0);',
+				'color = vertexColor;',
+				'}'
+			].join('\n'),
+			fshader: [
+				'varying vec3 color;',
+
+				'void main(void)',
+				'{',
+				'gl_FragColor = vec4(color, 1.0);',
+				'}'
+			].join('\n')
+		};
+
+		LineRenderer.MAX_NUM_LINES = 65536;
 
 		/**
-		 * Used internally to update the vertexData in meshData
+		 * Used internally to update the vertexData in meshData.
 		 */
 		LineRenderer.prototype._updateVertexData = function () {
 			if (this._numRenderingLines !== 0 || this._meshData.vertexCount !== 0) {
-				this._meshData.vertexCount = Math.min(this._numRenderingLines, this.MAX_NUM_LINES) * 2;
-				this._meshData.setVertexDataUpdated();
+				this._meshData.vertexCount = Math.min(this._numRenderingLines, LineRenderer.MAX_NUM_LINES) * 2;
+
+				this._meshData.setAttributeDataUpdated('POSITION');
+				this._meshData.setAttributeDataUpdated('RGB_COLOR');
 			}
 		};
 
 		/**
-		 * Used internally to clear the rendering line counter
+		 * Used internally to clear the rendering line counter.
 		 */
 		LineRenderer.prototype._clear = function () {
 			this._numRenderingLines = 0;
@@ -84,21 +124,27 @@ define([
 		 * Used internally to add a line to the LineRenderer to be rendered next frame.
 		 * @param {Vector3} start
 		 * @param {Vector3} end
+		 * @param {Vector3} color
 		 */
-		LineRenderer.prototype._addLine = function (start, end) {
-			//no need to continue if we already reached MAX_NUM_LINES
-			if (this._numRenderingLines >= this.MAX_NUM_LINES) {
+		LineRenderer.prototype._addLine = function (start, end, color) {
+			//We can not continue if there is no more space in the buffers.
+			if (this._numRenderingLines >= LineRenderer.MAX_NUM_LINES) {
+				console.warn("MAX_NUM_LINES has been exceeded in the LineRenderer.");
 				return;
 			}
 
-			this._vertices[this._numRenderingLines * 6 + 0] = start.x;
-			this._vertices[this._numRenderingLines * 6 + 3 + 0] = end.x;
+			var vertexIndex = this._numRenderingLines * 6;
 
-			this._vertices[this._numRenderingLines * 6 + 1] = start.y;
-			this._vertices[this._numRenderingLines * 6 + 3 + 1] = end.y;
+			for (var i = 0; i < 3; i++) {
+				var firstVertexDataIndex = vertexIndex + i;
+				var secondVertexDataIndex = vertexIndex + 3 + i;
 
-			this._vertices[this._numRenderingLines * 6 + 2] = start.z;
-			this._vertices[this._numRenderingLines * 6 + 3 + 2] = end.z;
+				this._positions[firstVertexDataIndex] = start.getComponent(i);
+				this._positions[secondVertexDataIndex] = end.getComponent(i);
+
+				this._colors[firstVertexDataIndex] = color.getComponent(i);
+				this._colors[secondVertexDataIndex] = color.getComponent(i);
+			}
 
 			this._numRenderingLines++;
 		};

@@ -1,6 +1,4 @@
-define(
-  ["exports"],
-  function(__exports__) {
+define(function() {
     'use strict';
     var config = {};
 
@@ -284,9 +282,11 @@ define(
       config[name] = value;
     }
 
-    __exports__.Promise = Promise;
-    __exports__.Event = Event;
-    __exports__.EventTarget = EventTarget;
-    __exports__.all = all;
-    __exports__.configure = configure;
+	return {
+	  Promise: Promise,
+	  Event: Event,
+	  EventTarget: EventTarget,
+	  all: all,
+	  configure: configure
+	};
   });

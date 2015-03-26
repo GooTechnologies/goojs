@@ -76,6 +76,36 @@ define([
 	Vector3.UNIT_Z = new Vector3(0, 0, 1);
 
 	/**
+	 * Returns the vector component associated with the given index.
+	 * Vector components are numbered from 0 to 2 in this order: x, y, z.
+	 * @param {number} index
+	 * @returns {number}
+	 */
+	Vector3.prototype.getComponent = function (index) {
+		switch (index) {
+			case 0: return this.x;
+			case 1: return this.y;
+			case 2: return this.z;
+		}
+	};
+
+	/**
+	 * Sets the vector component associated with the given index to a given value.
+	 * Vector components are numbered from 0 to 2 in this order: x, y, z.
+	 * @param {number} index
+	 * @param {number} value
+	 * @returns {Vector3} Self to allow chaining
+	 */
+	Vector3.prototype.setComponent = function (index, value) {
+		switch (index) {
+			case 0: this.x = value; break;
+			case 1: this.y = value; break;
+			case 2: this.z = value; break;
+		}
+		return this;
+	};
+
+	/**
 	 * Adds a vector to the current vector
 	 * @param that {Vector3}
 	 * @returns {Vector3} Self to allow chaining

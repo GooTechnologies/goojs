@@ -17,11 +17,13 @@ define([
 		function LineRenderSystem(world) {
 			System.call(this, 'LineRenderSystem', []);
 
-			//an associative array for the LineRenderers
-			this._lineRenderers = {};
-			this._lineRendererKeys = [];
+			this._lineRenderers = [];
 
 			this.world = world;
+
+			//adds a new LineRenderer to the list
+			this._lineRenderers.push(new LineRenderer(this.world));
+
 			this.camera = null;
 
 			/**
@@ -31,11 +33,10 @@ define([
 			this.renderList = [];
 
 
-			var that = this;
 			//add the camera
 			SystemBus.addListener('goo.setCurrentCamera', function (newCam) {
-				that.camera = newCam.camera;
-			});
+				this.camera = newCam.camera;
+			}.bind(this));
 		}
 
 		LineRenderSystem.prototype = Object.create(System.prototype);
@@ -50,28 +51,10 @@ define([
 		LineRenderSystem.prototype.RED = new Vector3(1, 0, 0);
 		LineRenderSystem.prototype.GREEN = new Vector3(0, 1, 0);
 		LineRenderSystem.prototype.BLUE = new Vector3(0, 0, 1);
-		LineRenderSystem.prototype.AQUA = new Vector3(0, 0.5, 0.5);
+		LineRenderSystem.prototype.AQUA = new Vector3(0, 1, 1);
 		LineRenderSystem.prototype.MAGENTA = new Vector3(1, 0, 1);
 		LineRenderSystem.prototype.YELLOW = new Vector3(1, 1, 0);
 		LineRenderSystem.prototype.BLACK = new Vector3(0, 0, 0);
-
-
-		/**
-		 * Encodes a {@link Vector3} color to a number.
-		 * Assumes that the color components are between 0-1.
-		 * @param {Vector3} color
-		 * @returns {number} The encoded color.
-		 * @example
-		 * var encodedColorRed = lineRenderSystem.encodeColor(lineRenderSystem.RED);
-		 * console.log(encodedColorRed); // would output: 16777216
-		 */
-		LineRenderSystem.prototype.encodeColor = function (color) {
-			var r = Math.floor(color.r * 255);
-			var g = Math.floor(color.g * 255);
-			var b = Math.floor(color.b * 255);
-
-			return r * 65536 + g * 256 + b;
-		};
 
 		/**
 		 * Draws a line between two {@link Vector3}'s with the specified color.
@@ -85,15 +68,9 @@ define([
 		 * lineRenderSystem.drawLine(v1, v2, redColor);
 		 */
 		LineRenderSystem.prototype.drawLine = function (start, end, color) {
+			var lineRenderer = this._lineRenderers[0];
 
-			var encodedColor = this.encodeColor(color);
-
-			var lineRenderer = this._lineRenderers[encodedColor];
-			if (!lineRenderer) {
-				lineRenderer = this._lineRenderers[encodedColor] = new LineRenderer(this.world, color);
-				this._lineRendererKeys = Object.keys(this._lineRenderers);
-			}
-			lineRenderer._addLine(start, end);
+			lineRenderer._addLine(start, end, color);
 		};
 
 		/**
@@ -169,8 +146,8 @@ define([
 		};
 
 		LineRenderSystem.prototype.render = function (renderer) {
-			for (var i = 0; i < this._lineRendererKeys.length; i++) {
-				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
+			for (var i = 0; i < this._lineRenderers.length; i++) {
+				var lineRenderer = this._lineRenderers[i];
 				lineRenderer._updateVertexData();
 				lineRenderer._manageRenderList(this.renderList);
 				lineRenderer._clear();
@@ -184,8 +161,8 @@ define([
 		};
 
 		LineRenderSystem.prototype.clear = function () {
-			for (var i = 0; i < this._lineRendererKeys.length; i++) {
-				var lineRenderer = this._lineRenderers[this._lineRendererKeys[i]];
+			for (var i = 0; i < this._lineRenderers.length; i++) {
+				var lineRenderer = this._lineRenderers[i];
 				lineRenderer._remove();
 			}
 			delete this._lineRenderers;
