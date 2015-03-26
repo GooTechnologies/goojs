@@ -30,7 +30,7 @@ function (
 		this.joints = [];
 
 		/**
-		 * Will be set to true if any the body needs to be reinitialized.
+		 * If true, the physics engine rigid body will be re-initialized in the next process loop.
 		 * @type {boolean}
 		 */
 		this._dirty = true;
@@ -106,7 +106,7 @@ function (
 	/**
 	 * Traverse the tree of colliders from a root entity and down.
 	 * @param  {Entity}   entity
-	 * @param  {Function} callback Will be called with colliderEntity, collider, localPosition and localQuaternion as arguments
+	 * @param  {Function} callback A callback to be called for each collider below or on the same entity. The arguments to the callback are: colliderEntity, collider, localPosition and localQuaternion.
 	 */
 	AbstractRigidBodyComponent.prototype.traverseColliders = function (entity, callback) {
 		// Needed for getting the RigidBody-local transform of each collider

@@ -73,11 +73,23 @@ function (
 	ColliderComponent.prototype.constructor = ColliderComponent;
 	ColliderComponent.type = "ColliderComponent";
 
+	ColliderComponent.prototype.getBodyEntity = function () {
+		var bodyEntity;
+		this.entity.traverseUp(function (parent) {
+			if (parent.rigidBodyComponent) {
+				bodyEntity = parent;
+				return false;
+			}
+		});
+		return bodyEntity;
+	};
+
 	/**
 	 * Updates the .worldCollider
 	 */
 	ColliderComponent.prototype.updateWorldCollider = function (updateTransformBranch) {
 		var doUpdate = false;
+
 		if (updateTransformBranch) {
 			// Update the world transform of the entity
 			// Get the root and update on the walk down
@@ -119,6 +131,29 @@ function (
 	 */
 	ColliderComponent.prototype.detached = function (/*entity*/) {
 		this.entity = null;
+	};
+
+	/**
+	 * Marks the component as dirty.
+	 */
+	ColliderComponent.prototype.setToDirty = function () {
+		this._dirty = true;
+	};
+
+	/**
+	 * Marks the component as dirty.
+	 */
+	ColliderComponent.prototype.setToClean = function () {
+		this._dirty = false;
+	};
+
+	/**
+	 * Gets whether the component needs to be updated.
+	 *
+	 * @return {boolean}
+	 */
+	ColliderComponent.prototype.isDirty = function () {
+		return this._dirty;
 	};
 
 	/**
