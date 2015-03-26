@@ -52,6 +52,7 @@ function (
 		});
 
 		this._entities = {};
+		this._shapeIdToColliderEntityMap = {};
 
 		if (!tmpVec1) {
 			tmpVec1 = new CANNON.Vec3();
@@ -74,10 +75,10 @@ function (
 		 */
 		this.maxSubSteps = settings.maxSubSteps !== undefined ? settings.maxSubSteps : 10;
 
-		this._inContactCurrentStepA = [];
-		this._inContactCurrentStepB = [];
-		this._inContactLastStepA = [];
-		this._inContactLastStepB = [];
+		this._colliderEntitiesInContactCurrentStepA = [];
+		this._colliderEntitiesInContactCurrentStepB = [];
+		this._colliderEntitiesInContactLastStepA = [];
+		this._colliderEntitiesInContactLastStepB = [];
 
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 	}
@@ -88,15 +89,15 @@ function (
 	 * @private
 	 */
 	PhysicsSystem.prototype._swapContactLists = function () {
-		var tmp = this._inContactCurrentStepA;
-		this._inContactCurrentStepA = this._inContactLastStepA;
-		this._inContactLastStepA = tmp;
-		this._inContactCurrentStepA.length = 0;
+		var tmp = this._colliderEntitiesInContactCurrentStepA;
+		this._colliderEntitiesInContactCurrentStepA = this._colliderEntitiesInContactLastStepA;
+		this._colliderEntitiesInContactLastStepA = tmp;
+		this._colliderEntitiesInContactCurrentStepA.length = 0;
 
-		tmp = this._inContactCurrentStepB;
-		this._inContactCurrentStepB = this._inContactLastStepB;
-		this._inContactLastStepB = tmp;
-		this._inContactCurrentStepB.length = 0;
+		tmp = this._colliderEntitiesInContactCurrentStepB;
+		this._colliderEntitiesInContactCurrentStepB = this._colliderEntitiesInContactLastStepB;
+		this._colliderEntitiesInContactLastStepB = tmp;
+		this._colliderEntitiesInContactCurrentStepB.length = 0;
 	};
 
 	/**
@@ -133,42 +134,50 @@ function (
 		// Get overlapping entities
 		var contacts = this.cannonWorld.contacts,
 			num = contacts.length,
-			entities = this._entities;
+			entities = this._shapeIdToColliderEntityMap;
 
 		this._swapContactLists();
 
 		for (var i = 0; i !== num; i++) {
 			var contact = contacts[i];
 
-			var bodyA = contact.bi;
-			var bodyB = contact.bj;
-			var entityA = entities[bodyA.id];
-			var entityB = entities[bodyB.id];
+			var shapeA = contact.si;
+			var shapeB = contact.sj;
+			var entityA = entities[shapeA.id];
+			var entityB = entities[shapeB.id];
 
-			if (bodyA.id > bodyB.id) {
+			if (shapeA.id > shapeB.id) {
 				var tmp = entityA;
 				entityA = entityB;
 				entityB = tmp;
 			}
 
-			if (this._inContactLastStepA.indexOf(entityA) === -1) {
+			var found = false;
+			for (var j = 0; j !== this._colliderEntitiesInContactCurrentStepA.length; j++) {
+				if (entityA === this._colliderEntitiesInContactCurrentStepA[i] && entityB === this._colliderEntitiesInContactCurrentStepB[i]) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
 				this.emitBeginContact(entityA, entityB);
 			} else {
 				this.emitDuringContact(entityA, entityB);
 			}
 
-			this._inContactCurrentStepA.push(entityA);
-			this._inContactCurrentStepB.push(entityB);
+			this._colliderEntitiesInContactCurrentStepA.push(entityA);
+			this._colliderEntitiesInContactCurrentStepB.push(entityB);
 		}
 
 		// Emit end contact events
-		for (var i = 0; i !== this._inContactLastStepA.length; i++) {
-			var entityA = this._inContactLastStepA[i];
-			var entityB = this._inContactLastStepB[i];
+		for (var i = 0; i !== this._colliderEntitiesInContactLastStepA.length; i++) {
+			var entityA = this._colliderEntitiesInContactLastStepA[i];
+			var entityB = this._colliderEntitiesInContactLastStepB[i];
 
 			var found = false;
-			for (var j = 0; j !== this._inContactCurrentStepA.length; j++) {
-				if (entityA === this._inContactCurrentStepA[i] && entityB === this._inContactCurrentStepB[i]) {
+			for (var j = 0; j !== this._colliderEntitiesInContactCurrentStepA.length; j++) {
+				if (entityA === this._colliderEntitiesInContactCurrentStepA[i] && entityB === this._colliderEntitiesInContactCurrentStepB[i]) {
 					found = true;
 					break;
 				}

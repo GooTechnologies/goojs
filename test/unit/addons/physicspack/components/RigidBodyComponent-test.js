@@ -119,7 +119,9 @@ define([
 				halfExtents: new Vector3(1, 2, 3)
 			});
 			var cannonShape = RigidBodyComponent.getCannonShape(c);
-			expect(cannonShape).toEqual(new CANNON.Box(new CANNON.Vec3(1, 2, 3)));
+			var newBox = new CANNON.Box(new CANNON.Vec3(1, 2, 3));
+			newBox.id = newBox.convexPolyhedronRepresentation.id = cannonShape.id = cannonShape.convexPolyhedronRepresentation.id = 0; // Shapes now have unique ID's: These are the only things that should differ
+			expect(cannonShape).toEqual(newBox);
 		});
 
 		it('can destroy itself and rebuild', function () {
