@@ -114,7 +114,7 @@ define([
 			world.process(); // Needed to initialize bodies
 
 			var numHits = 0;
-			system.raycastAll(start, direction, distance, {}, function (/*result*/) {
+			system.raycastAll(start, direction, distance, { skipBackfaces: false }, function (/*result*/) {
 				numHits++;
 			});
 			expect(numHits).toBe(4);
