@@ -773,7 +773,8 @@ define([
 	Camera.prototype.checkInverseModelView = function () {
 		if (this._updateInverseMVMatrix) {
 			this.checkModelView();
-			Matrix4x4.invert(this.modelView, this.modelViewInverse);
+			this.modelViewInverse.copy(this.modelView).invert();
+			//Matrix4x4.invert(this.modelView, this.modelViewInverse);
 			this._updateInverseMVMatrix = false;
 		}
 	};
@@ -784,7 +785,8 @@ define([
 	Camera.prototype.checkInverseModelViewProjection = function () {
 		if (this._updateInverseMVPMatrix) {
 			this.checkModelViewProjection();
-			Matrix4x4.invert(this.modelViewProjection, this.modelViewProjectionInverse);
+			this.modelViewProjectionInverse.copy(this.modelViewProjection).invert();
+			//Matrix4x4.invert(this.modelViewProjection, this.modelViewProjectionInverse);
 			this._updateInverseMVPMatrix = false;
 		}
 	};

@@ -64,12 +64,33 @@ define([
 		//! AT: every one of these it 'statements' should be part of a describe statement for the method under test
 		it('can combine multiple matrices into a single matrix', function () {
 			var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-			var b = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+			var b = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9).scale(10);
 
-			a.combine(a);
+			a.combine(b);
 
-			expect(a).toBeCloseToMatrix(new Matrix3x3(30, 36, 42, 66, 81, 96, 102, 126, 150));
-			expect(Matrix3x3.combine(b, b)).toBeCloseToMatrix(new Matrix3x3(30, 36, 42, 66, 81, 96, 102, 126, 150));
+			expect(a).toBeCloseToMatrix(new Matrix3x3(10, 12, 14, 22, 27, 32, 34, 42, 50).scale(30));
+		});
+
+		describe('mulPre', function () {
+			it('multiplies this matrix with another matrix', function () {
+				var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+				var b = new Matrix3x3(2, 3, 5, 7, 11, 13, 17, 19, 23);
+
+				a.mulPre(b);
+
+				expect(a).toBeCloseToMatrix(new Matrix3x3(67, 82, 100, 145, 181, 223, 223, 280, 346));
+			});
+		});
+
+		describe('mulPost', function () {
+			it('multiplies another matrix with this matrix', function () {
+				var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+				var b = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9).scale(10);
+
+				b.mulPre(a);
+
+				expect(a).toBeCloseToMatrix(new Matrix3x3(10, 12, 14, 22, 27, 32, 34, 42, 50).scale(30));
+			});
 		});
 
 		it('can be transposed', function () {

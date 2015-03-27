@@ -209,8 +209,9 @@ define([
 		var scale = this.scale;
 		if (scale.x !== scale.y || scale.x !== scale.z) {
 			//! AT: tmpMat is not needed here
-			Matrix3x3.invert(this.normalMatrix, tmpMat1);
-			Matrix3x3.transpose(tmpMat1, this.normalMatrix);
+			this.normalMatrix.invert().transpose();
+			//Matrix3x3.invert(this.normalMatrix, tmpMat1);
+			//Matrix3x3.transpose(tmpMat1, this.normalMatrix);
 		}
 	};
 
