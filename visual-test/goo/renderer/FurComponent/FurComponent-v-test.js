@@ -1,79 +1,32 @@
-require.config({
-	paths: {
-		"goo": "../../../src/goo"
-	}
-});
-
 require([
-	'goo/loaders/DynamicLoader',
-	'goo/entities/GooRunner',
-	'goo/renderer/Camera',
-	'goo/entities/components/CameraComponent',
-	'goo/entities/components/ScriptComponent',
-	'goo/scripts/FlyControlScript',
-	'goo/scripts/OrbitNPanControlScript',
-	'goo/renderer/pass/Composer',
-	'goo/renderer/pass/RenderPass',
-	'goo/renderer/pass/FurPass',
-	'goo/shapes/ShapeCreator',
-	'goo/entities/EntityUtils',
-	'goo/renderer/Material',
-	'goo/renderer/TextureCreator',
-	'goo/renderer/shaders/ShaderLib',
-	'goo/renderer/light/DirectionalLight',
-	'goo/entities/components/LightComponent',
+	'lib/V',
+
 	'goo/math/Vector3'
 ],
 function(
-	DynamicLoader,
-	GooRunner,
-	Camera,
-	CameraComponent,
-	ScriptComponent,
-	FlyControlScript,
-	OrbitNPanControlScript,
-	Composer,
-	RenderPass,
-	FurPass,
-	ShapeCreator,
-	EntityUtils,
-	Material,
-	TextureCreator,
-	ShaderLib,
-	DirectionalLight,
-	LightComponent,
+	V,
+
 	Vector3
 	) {
 	"use strict";
-
-	var resourcePath = "../../resources";
 
 	var gui;
 
 	var goo;
 
 	function init() {
-		goo = new GooRunner({
-			showStats: true,
-			logo: "bottomleft"
-		});
-		goo.renderer.domElement.id = 'goo';
-		document.body.appendChild(goo.renderer.domElement);
+		V.describe('Its getting hairy!');
+
+		goo = V.initGoo();
 
 		gui = new window.dat.GUI();
 
-		var light = new DirectionalLight();
-		var lightEntity = goo.world.createEntity('light');
-		lightEntity.setComponent(new LightComponent(light));
-		lightEntity.transformComponent.transform.translation.set(0, 1, 1);
-		lightEntity.transformComponent.transform.lookAt(Vector3.ZERO, Vector3.UNIT_Y);
-		lightEntity.addToWorld();
+		// createFurRenderingRoutine();
 
-		setupCamera();
+		V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
+		V.addLights();
 
-		addAssets();
-
-		createFurRenderingRoutine();
+		V.process();
 	}
 
 	function addAssets() {
