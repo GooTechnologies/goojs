@@ -524,8 +524,14 @@ function (
 			cannonShape.radius = collider.radius;
 		} else if (collider instanceof BoxCollider) {
 			cannonShape.halfExtents.copy(collider.halfExtents);
+			cannonShape.updateConvexPolyhedronRepresentation();
+			cannonShape.updateBoundingSphereRadius();
 		} else if (collider instanceof MeshCollider) {
-			var scale = new CANNON.Vec3();
+			var scale;
+			if (!tmpCannonVec) {
+				tmpCannonVec = new CANNON.Vec3();
+				scale = tmpCannonVec;
+			}
 			scale.copy(collider.scale);
 			cannonShape.setScale(scale);
 		}
@@ -555,6 +561,9 @@ function (
 					colliderComponent.cannonShape,
 					colliderComponent.worldCollider
 				);
+
+				colliderComponent.cannonShape.collisionResponse = !colliderComponent.isTrigger;
+
 				colliderComponent.setToClean();
 			}
 		}

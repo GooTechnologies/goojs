@@ -183,7 +183,7 @@ function (
 	PhysicsSystem.prototype._getCannonRaycastOptions = function (options) {
 		tmpOptions.collisionFilterMask = options.collisionMask !== undefined ? options.collisionMask : -1;
 		tmpOptions.collisionFilterGroup = options.collisionGroup !== undefined ? options.collisionGroup : -1;
-		tmpOptions.skipBackfaces = options.skipBackfaces !== undefined ? options.skipBackfaces : false;
+		tmpOptions.skipBackfaces = options.skipBackfaces !== undefined ? options.skipBackfaces : true;
 		return tmpOptions;
 	};
 
@@ -308,8 +308,9 @@ function (
 	PhysicsSystem.prototype.play = function () {
 		this.passive = false;
 
-		this.setAllBodiesDirty();
-		this.setAllCollidersDirty();
+		// this.setAllBodiesDirty();
+		// this.setAllCollidersDirty();
+		this.updateLonelyColliders(true);
 	};
 
 	/**
@@ -373,7 +374,7 @@ function (
 		shape.material = material;
 		var body = new CANNON.Body({
 			mass: 0,
-			collisionResponse: entity.colliderComponent.isTrigger,
+			collisionResponse: !entity.colliderComponent.isTrigger,
 			shape: shape
 		});
 		this.cannonWorld.addBody(body);
@@ -463,7 +464,8 @@ function (
 				continue;
 			}
 
-			if (!colliderEntity.colliderComponent.getBodyEntity() && !colliderEntity.colliderComponent.cannonBody) {
+			if (!colliderEntity.colliderComponent.getBodyEntity() && (!colliderEntity.colliderComponent.cannonBody || colliderEntity.colliderComponent.isDirty())) {
+				this._removeLonelyCollider(colliderEntity);
 				this._addLonelyCollider(colliderEntity);
 			}
 
@@ -488,13 +490,13 @@ function (
 	/**
 	 * Checks for dirty ColliderComponents without a RigidBodyComponent and updates them.
 	 */
-	PhysicsSystem.prototype.updateLonelyColliders = function () {
+	PhysicsSystem.prototype.updateLonelyColliders = function (forceUpdate) {
 		for (var i = this._activeColliderEntities.length - 1; i >= 0; i--) {
 			var entity = this._activeColliderEntities[i];
 
 			// Set transform from entity
 			var colliderComponent = entity.colliderComponent;
-			if (colliderComponent && (colliderComponent._dirty || entity.transformComponent._updated)) {
+			if (colliderComponent && (forceUpdate || colliderComponent._dirty || entity.transformComponent._updated)) {
 				var transform = entity.transformComponent.worldTransform;
 				var body = colliderComponent.cannonBody;
 				if (body) {
@@ -505,6 +507,7 @@ function (
 					// Update scale of stuff
 					var cannonShape = body.shapes[0];
 					if (cannonShape) {
+						cannonShape.collisionResponse = !colliderComponent.isTrigger;
 						colliderComponent.updateWorldCollider();
 						RigidBodyComponent.copyScaleFromColliderToCannonShape(
 							cannonShape,

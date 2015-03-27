@@ -67,7 +67,10 @@ define([
 	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
 	'goo/fsmpack/statemachine/actions/HTMLAction',
 	'goo/fsmpack/statemachine/actions/CopyJointTransformAction',
-	'goo/fsmpack/statemachine/actions/TweenOpacityAction'
+	'goo/fsmpack/statemachine/actions/TweenOpacityAction',
+
+	'goo/fsmpack/statemachine/actions/TriggerEnterAction',
+	'goo/fsmpack/statemachine/actions/TriggerLeaveAction'
 ], function (
 
 ) {
