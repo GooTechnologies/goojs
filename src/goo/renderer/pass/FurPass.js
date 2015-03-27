@@ -46,11 +46,14 @@ function (
 		// TODO: The blending method is maybe not correct... lets see.
 		// 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		//this.furMaterial.blendState.blending = "AdditiveBlending";
+		
 		// this.furMaterial.depthState.write = false;
 		this.furMaterial.cullState.enabled = false;
 
 		this.furUniforms = this.furMaterial.shader.uniforms;
 	}
+
+	FurPass.OPACITY_MAP = 'OPACITY_MAP'
 
 	FurPass.prototype.regenerateLayers = function(layerCount) {
 		this.opacityTextures = this.generateOpacityTextures(layerCount);		
@@ -135,7 +138,7 @@ function (
 			for (var layerIndex = 0; layerIndex < layers; layerIndex++) {
 				// update opacity texture and uniforms per layer here.
 				this.furUniforms.normalizedLength = (layerIndex + 1) / layers;
-				this.furMaterial.setTexture('SPECULAR_MAP', this.opacityTextures[layerIndex]);
+				this.furMaterial.setTexture(FurPass.OPACITY_MAP, this.opacityTextures[layerIndex]);
 				renderer.render(this.renderList[i], camera, lights, null, this.clear, this.furMaterial);
 			}
 		}
@@ -157,15 +160,20 @@ function (
 			normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			normalizedLength : 0.0,
-			hairLength : 1,
+			hairLength : 2,
 			colorTexture: Shader.DIFFUSE_MAP,
-			opacityTexture: Shader.SPECULAR_MAP,
+			opacityTexture: FurPass.OPACITY_MAP,
 			time: Shader.TIME,
-			curlFrequency: 1.0,
-			curlRadius: 0.009,
-			furRepeat: 1.0,
+			curlFrequency: 0.0,
+			curlRadius: 0.2,
+			furRepeat: 5,
 			gravity: 9.81,
-			sinusAmount: 1.0
+			sinusAmount: 1,
+			shadow: 1.2,
+			// TODO: Read through stuff to find out why I set this magic number.
+			lightCutoff: -0.3,
+			// Color settings
+			specularPower: 120,
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -187,6 +195,7 @@ function (
 			'uniform float sinusAmount;',
 
 			'varying vec2 texCoord0;',
+			'varying vec2 furTexCoord;',
 			'varying vec3 T;',
 			'varying vec3 viewPosition;',
 
@@ -195,6 +204,7 @@ function (
 			// Pos will hold the final position
 			'	vec3 pos;',
 			'	texCoord0 = vertexUV0;',
+			'	furTexCoord = vertexUV0 * furRepeat;',
 			'	vec3 normal = normalize(normalMatrix * vertexNormal);',
 			'	vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 			'	vec3 p_0 = p_root + (normal * hairLength);',
@@ -218,6 +228,7 @@ function (
 	//Hooke's law F = -kx <-> x = -F/k
 	vec3 p = (gravity + wind)/k + p_0;
 	*/
+			// TODO: Refactor to use external displacement vec3 instead
 
 			'	float mass =  0.00001;',
 			
@@ -227,7 +238,7 @@ function (
 			'	vec3 gravityForce = vec3(0,-1,0) * gravity * mass;',
 
 			'	float k = length(gravityForce)/(L_0 * 0.5);',
-			'	vec3 p = ((gravityForce + sinusNoise)) + p_0;',
+			'	vec3 p = ((gravityForce + sinusNoise)/k) + p_0;',
 
 			// CONSTRAINTS
 			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
@@ -282,17 +293,22 @@ function (
 			'uniform float normalizedLength;',
 			'uniform float furRepeat;',
 			'uniform float gravity;',
+			'uniform float shadow;',
+			'uniform float lightCutoff;',
+			'uniform float specularPower;',
+
 
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
 
+			'varying vec2 furTexCoord;',
 			'varying vec2 texCoord0;',
 			'varying vec3 T;',
 			'varying vec3 viewPosition;',
 
 			'void main(void)',
 			'{',
-			'	vec4 opacity = texture2D(opacityTexture, texCoord0 * furRepeat);',
+			'	vec4 opacity = texture2D(opacityTexture, furTexCoord);',
 			'	if (opacity.a <= 0.0) discard;',
 			/*
 			Kajiya and Kay , 1989 , Illumination model
@@ -301,7 +317,6 @@ function (
 			http://vilsen.se/Evaluation_of_Hair_Modeling_Simulation_and_Rendering_Algorithms_for_a_VFX_Hair_Modeling_System.pdf
 			http://publications.dice.se/attachments/RealTimeHairSimAndVis.pdf
 			*/
-			'	float Kshadow = 1.2;',
 			//'	vec4 texCol = texture2D(colorTexture, texCoord0);',
 			'	vec4 texCol = vec4(0.5, 0, 0, 1.0);',
 			'	vec3 tangent = normalize(T);',
@@ -311,21 +326,20 @@ function (
 			"vec3 materialDiffuse = vec3(0.9,0,0);",
 			"vec3 materialSpecular = vec3(0.9,0,0);",
 			"vec3 materialAmbient = vec3(0.1,0,0);",
-			"float materialSpecularPower = 120.0;",
 
-			"vec4 lDirection = vec4(0, 1, 1, 0.0);",
+			"vec4 lDirection = vec4(0, 1, 0, 0.0);",
 			"vec3 dirVector = normalize(lDirection.xyz);",
 			// diffuse
 			'float TdotL = dot(tangent, dirVector);',
-			// TODO: Read through stuff to find out why I set this magic number.
-			'if (TdotL > -0.3) {',
+
+			'if (TdotL > lightCutoff) {',
 				'float TdotE = dot(tangent, normalize(viewPosition));',
 				'float sinTL = sin(acos(TdotL));',
 				'float sinTE = sin(acos(TdotE));',
 				'float diffuse = max(materialDiffuse.r * sinTL, 0.0);',
-				'float specular = max(materialSpecular.r * pow(TdotL * TdotE + sinTL * sinTE, materialSpecularPower), 0.0);',
+				'float specular = max(materialSpecular.r * pow(TdotL * TdotE + sinTL * sinTE, specularPower), 0.0);',
 				// "Simple shadow effect"
-				'float shadowFactor = (Kshadow - 1.0 + normalizedLength)/Kshadow;',
+				'float shadowFactor = (shadow - 1.0 + normalizedLength)/shadow;',
 				'color = shadowFactor * ( color * (diffuse + specular + materialAmbient.r));',
 			'}',
 			'else {',
