@@ -58,5 +58,39 @@
       "type": "float"
     }],
     "body": "gl_FragColor = vec4(r, g, b, 1.0);"
+  },
+  "vec3": {
+    "inputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }],
+    "outputs": [{
+        "name": "vec",
+        "type": "vec3"
+    }],
+    "body": "vec = vec3(x, y, z);"
+  },
+  "vec3-comp": {
+    "inputs": [{
+      "name": "vec",
+      "type": "vec3"
+    }],
+    "outputs": [{
+      "name": "x",
+      "type": "float"
+    }, {
+      "name": "y",
+      "type": "float"
+    }, {
+      "name": "z",
+      "type": "float"
+    }],
+    "body": "x = vec.x; y = vec.y; z = vec.z;"
   }
 }
