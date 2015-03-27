@@ -41,32 +41,17 @@ function(
 
 		TangentGenerator.addTangentBuffer(meshData);
 
-		goo.world.createEntity(
+		var entity = goo.world.createEntity(
 						meshData,
 						material
 					).addToWorld();
+		var s = 40;
+		entity.setScale(s, s, s);
 
 		V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
-		V.addLights();
+		//V.addLights();
 
 		V.process();
-	}
-
-	function addAssets() {
-		createPrimitive(4);
-	}
-
-	function createPrimitive(size) {
-		var meshData = ShapeCreator.createSphere(40, 40, size);
-		//var meshData = ShapeCreator.createBox(size, size, size);
-		var entity = EntityUtils.createTypicalEntity(goo.world, meshData);
-		var material = Material.createMaterial(ShaderLib.texturedLit, 'BoxMaterial');
-		TextureCreator.clearCache();
-		var texture = new TextureCreator().loadTexture2D(resourcePath + '/check.png');
-		material.setTexture('DIFFUSE_MAP', texture);
-		entity.meshRendererComponent.materials.push(material);
-		entity.addToWorld();
-		return entity;
 	}
 
 	function createFurRenderingRoutine() {
@@ -82,7 +67,7 @@ function(
 		furPass.clear = false;
 
 		var furFolder = gui.addFolder("Fur settings");
-		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 20);
+		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 10);
 		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 10);
 		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 20);
 		furFolder.add(furPass.furUniforms, 'curlRadius', -0.02, 0.02);

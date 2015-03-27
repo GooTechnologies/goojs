@@ -102,7 +102,9 @@ function (
 		}
 
 		var textureSettings = {
-			format: "Alpha"
+			format: "Alpha",
+			//generateMipmaps: false,
+			premultiplyAlpha: false
 		};
 
 		var channels = 1;
@@ -194,7 +196,7 @@ function (
 			normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			normalizedLength : 0.0,
-			hairLength : 0.05,
+			hairLength : 1,
 			colorTexture: Shader.DIFFUSE_MAP,
 			opacityTexture: Shader.SPECULAR_MAP,
 			time: Shader.TIME,
@@ -222,9 +224,6 @@ function (
 			'uniform float furRepeat;',
 			'uniform float gravity;',
 			'uniform float sinusAmount;',
-
-			'uniform sampler2D colorTexture;',
-			'uniform sampler2D opacityTexture;',
 
 			'varying vec2 texCoord0;',
 			'varying vec3 T;',
@@ -266,7 +265,7 @@ function (
 			'	vec3 gravityForce = vec3(0,-gY,0);',
 
 			'	float k = length(gY)/(L_0 * 0.5);',
-			'	vec3 p = gravityForce/k + p_0;',
+			'	vec3 p = p_0;',
 
 			// CONSTRAINTS
 			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
@@ -341,7 +340,8 @@ function (
 			http://publications.dice.se/attachments/RealTimeHairSimAndVis.pdf
 			*/
 			'	float Kshadow = 1.2;',
-			'	vec4 texCol = texture2D(colorTexture, texCoord0);',
+			//'	vec4 texCol = texture2D(colorTexture, texCoord0);',
+			'	vec4 texCol = vec4(0.5, 0, 0, 1.0);',
 			'	vec3 tangent = normalize(T);',
 			'	vec3 color = texCol.rgb;',
 			// stuff from ShaderBuilder.light.fragment
@@ -367,8 +367,8 @@ function (
 				'color = shadowFactor * ( color * (diffuse + specular + materialAmbient.r));',
 			'}',
 			'else {',
-				//'color *= materialAmbient.r;',
-				'color = vec3(1, gravity, 1);',
+				'color *= materialAmbient.r;',
+				//'color = vec3(1, gravity, 1);',
 			'}',
 			'	gl_FragColor = vec4(color, 1.0);',
 			'}'//
