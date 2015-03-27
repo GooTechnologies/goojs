@@ -60,6 +60,11 @@ function(
 		V.process();
 	}
 
+
+	var furSettings = {
+		layerCount: 20
+	};
+
 	function createFurRenderingRoutine() {
 
 		var renderList = goo.world.getSystem('RenderSystem').renderList;
@@ -69,10 +74,10 @@ function(
 		regularPass.renderToScreen = true;
 
 		// TODO: Add filter , to only render entities with FurComponents in the FurPass.
-		var furPass = new FurPass(renderList, 20);
+		var furPass = new FurPass(renderList, furSettings.layerCount);
 		furPass.clear = false;
 
-		var furFolder = gui.addFolder("Fur settings");
+		var furFolder = gui.addFolder("Fur Uniforms");
 		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 10);
 		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 10);
 		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 100);
@@ -80,6 +85,11 @@ function(
 		furFolder.add(furPass.furUniforms, 'gravity', 0, 20.0);
 		furFolder.add(furPass.furUniforms, 'sinusAmount', 0, 20.0);
 		furFolder.open();
+
+		var controller = gui.add(furSettings, 'layerCount', 1, 100).step(1);
+		controller.onFinishChange(function(value) {
+			furPass.regenerateLayers(value);
+		});
 
 		composer.addPass(regularPass);
 		composer.addPass(furPass);

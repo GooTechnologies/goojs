@@ -38,8 +38,7 @@ function (
 		this.needsSwap = false;
 
 		// TODO : This stuff shall be fetched from the FurComponent, when it is implemented.
-		this.layerCount = layerCount;
-		this.opacityTextures = this.generateOpacityTextures(this.layerCount);
+		this.opacityTextures = this.generateOpacityTextures(layerCount);
 
 		this.furMaterial = Material.createEmptyMaterial(furShader, "FurMaterial");
 		// TODO: How to best do the binding of texture?
@@ -51,6 +50,10 @@ function (
 		this.furMaterial.cullState.enabled = false;
 
 		this.furUniforms = this.furMaterial.shader.uniforms;
+	}
+
+	FurPass.prototype.regenerateLayers = function(layerCount) {
+		this.opacityTextures = this.generateOpacityTextures(layerCount);		
 	}
 
 	/**
@@ -127,10 +130,11 @@ function (
 
 	// RenderPasses may have a fourth additional parameter called delta
 	FurPass.prototype.render = function (renderer, writeBuffer, readBuffer, delta, maskActive, camera, lights) {
+		var layers = this.opacityTextures.length;
 		for (var i = 0; i < this.renderList.length; i++) {
-			for (var layerIndex = 0; layerIndex < this.layerCount; layerIndex++) {
+			for (var layerIndex = 0; layerIndex < layers; layerIndex++) {
 				// update opacity texture and uniforms per layer here.
-				this.furUniforms.normalizedLength = (layerIndex + 1) / this.layerCount;
+				this.furUniforms.normalizedLength = (layerIndex + 1) / layers;
 				this.furMaterial.setTexture('SPECULAR_MAP', this.opacityTextures[layerIndex]);
 				renderer.render(this.renderList[i], camera, lights, null, this.clear, this.furMaterial);
 			}
