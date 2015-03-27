@@ -1,12 +1,24 @@
 require([
 	'lib/V',
 
-	'goo/math/Vector3'
+	'goo/math/Vector3',
+	'goo/renderer/pass/Composer',
+	'goo/renderer/pass/RenderPass',
+	'goo/renderer/pass/FurPass',
+
+	'goo/shapes/Sphere',
+	'goo/util/TangentGenerator'
 ],
 function(
 	V,
 
-	Vector3
+	Vector3,
+	Composer,
+	RenderPass,
+	FurPass,
+
+	Sphere,
+	TangentGenerator
 	) {
 	"use strict";
 
@@ -21,7 +33,18 @@ function(
 
 		gui = new window.dat.GUI();
 
-		// createFurRenderingRoutine();
+		createFurRenderingRoutine();
+
+		var material = V.getColoredMaterial();
+
+		var meshData = new Sphere(32, 32);
+
+		TangentGenerator.addTangentBuffer(meshData);
+
+		goo.world.createEntity(
+						meshData,
+						material
+					).addToWorld();
 
 		V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
 		V.addLights();
@@ -46,35 +69,6 @@ function(
 		return entity;
 	}
 
-	function setupCamera() {
-		// Add camera
-		var camera = new Camera(90, 1, 0.1, 1000);
-
-		var cameraEntity = goo.world.createEntity('CameraEntity');
-
-		cameraEntity.setComponent(new CameraComponent(camera));
-		var cameraScript = new ScriptComponent();
-		cameraScript.scripts.push(new OrbitNPanControlScript());
-		cameraEntity.setComponent(cameraScript);
-		cameraEntity.addToWorld();
-	}
-
-	function loadModels() {
-		var loader = new DynamicLoader({
-			world: goo.world,
-			rootPath: "../../resources/models/LowPolyFighter/"
-		});
-
-		loader.load("project.project").then(function(configs) {
-			console.log(configs);
-
-			// NOTE: The dynamic loader sets up some other rendering routine after finishing the load.
-			// Setting up the rendering routine afterwards to override it.
-			createFurRenderingRoutine();
-		});
-
-	}
-
 	function createFurRenderingRoutine() {
 
 		var renderList = goo.world.getSystem('RenderSystem').renderList;
@@ -89,7 +83,7 @@ function(
 
 		var furFolder = gui.addFolder("Fur settings");
 		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 20);
-		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 3);
+		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 10);
 		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 20);
 		furFolder.add(furPass.furUniforms, 'curlRadius', -0.02, 0.02);
 		furFolder.add(furPass.furUniforms, 'gravity', 0, 20.0);

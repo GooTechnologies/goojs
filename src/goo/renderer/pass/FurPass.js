@@ -34,19 +34,16 @@ function (
 		this.needsSwap = false;
 
 		// TODO : This stuff shall be fetched from the FurComponent, when it is implemented.
-		this.layerCount = 50;
+		this.layerCount = 10;
 		this.opacityTextures = this.generateOpacityTextures(this.layerCount);
 
-		this.furMaterial = Material.createMaterial(furShader, "FurMaterial");
+		this.furMaterial = Material.createEmptyMaterial(furShader, "FurMaterial");
 		// TODO: How to best do the binding of texture?
 		//this.furMaterial.setTexture('SPECULAR_MAP', this.opacityTextures[0]);
 		// TODO: The blending method is maybe not correct... lets see.
 		// 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		//this.furMaterial.blendState.blending = "AdditiveBlending";
 		this.furMaterial.depthState.write = false;
-
-		this.furMaterial.materialState.ambient = [0.2, 0.2, 0.2, 1.0];
-		this.furMaterial.materialState.shininess = 120;
 
 		this.furUniforms = this.furMaterial.shader.uniforms;
 	}
@@ -194,6 +191,7 @@ function (
 		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
+			normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			normalizedLength : 0.0,
 			hairLength : 0.05,
@@ -214,6 +212,7 @@ function (
 
 			'uniform mat4 viewProjectionMatrix;',
 			'uniform mat4 worldMatrix;',
+			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;',
 			'uniform float normalizedLength;',
 			'uniform float hairLength;',
@@ -236,19 +235,39 @@ function (
 			// Pos will hold the final position
 			'	vec3 pos;',
 			'	texCoord0 = vertexUV0;',
-			'	vec3 normal = normalize((worldMatrix * vec4(vertexNormal, 0.0)).xyz);',
+			'	vec3 normal = normalize(normalMatrix * vertexNormal);',
 			'	vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 			'	vec3 p_0 = p_root + (normal * hairLength);',
 			'	float L_0 = length(p_0 - p_root);',
 			// Gravity
+
+			/*
+	vec3 gravity = vec3(0,-1,0) * 9.81*mass;
+	vec3 test = 14* sin(time*2.0) * mass * vec3(1,0,0);
+
+	//k in Newtonmeters
+	float k = length(gravity)/(L_0*0.5);
+
+	lightDir = vec3(p_0 - gl_LightSource[0].position);
+	float windDistance = length(lightDir);
+	lightDir = normalize(lightDir);
+
+	vec3 wind = (10 + windStrength)*mass*lightDir;
+
+
+	//Hooke's law F = -kx <-> x = -F/k
+	vec3 p = (gravity + wind)/k + p_0;
+	*/
+
 			'	float mass =  0.00001;',
 			'	float gY = gravity * mass;',
 			'	vec3 sinusNoise = 20.0 * sin(time*4.0) * mass * vec3(1,0,0);',
 			'	sinusNoise *= sinusAmount;',
 			'	vec3 gravityForce = vec3(0,-gY,0);',
 
-			'	float k = gY/(L_0*0.5);',
-			'	vec3 p = (gravityForce + sinusNoise)/k + p_0;',
+			'	float k = length(gY)/(L_0 * 0.5);',
+			'	vec3 p = gravityForce/k + p_0;',
+
 			// CONSTRAINTS
 			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
 			// c1: |p-p_root| <= L_0
@@ -285,25 +304,8 @@ function (
 
 			// Curliness Control
 			// Displace the pos in a circle in the surface plane to create curls!
-			// TODO: Use meshdata tangents, pregenerated
-			'vec3 tangent;',
-			'vec3 binormal;',
-
-			'vec3 x1 = cross(vertexNormal, vec3(0.0, 0.0, 1.0));',
-			'vec3 x2 = cross(vertexNormal, vec3(0.0, 1.0, 0.0));',
-			'if(length(x1) > length(x2)) {',
-			'	tangent = x1;',
-			'}',
-			'else {',
-			'	tangent = x2;',
-			'}',
-
-			'	tangent = normalize(tangent);',
-			'	binormal = cross(vertexNormal, tangent);',
-			'	binormal = normalize(binormal);',
-
-			'	tangent = normalize((worldMatrix * vec4(tangent,0.0)).xyz);',
-			'	binormal = normalize((worldMatrix * vec4(binormal,0.0)).xyz);',
+			'	vec3 tangent = normalize(normalMatrix * vertexTangent.xyz);',
+			'	vec3 binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 
 			'	float wh = curlFrequency * normalizedLength;',
 			'	pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
@@ -314,10 +316,11 @@ function (
 		].join("\n"),
 		fshader: [
 
-			ShaderBuilder.light.prefragment,
+			//ShaderBuilder.light.prefragment,
 
 			'uniform float normalizedLength;',
 			'uniform float furRepeat;',
+			'uniform float gravity;',
 
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
@@ -364,7 +367,8 @@ function (
 				'color = shadowFactor * ( color * (diffuse + specular + materialAmbient.r));',
 			'}',
 			'else {',
-				'color *= materialAmbient.r;',
+				//'color *= materialAmbient.r;',
+				'color = vec3(1, gravity, 1);',
 			'}',
 			'	gl_FragColor = vec4(color, 1.0);',
 			'}'//
