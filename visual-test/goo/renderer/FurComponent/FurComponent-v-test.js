@@ -7,6 +7,7 @@ require([
 	'goo/renderer/pass/FurPass',
 
 	'goo/shapes/Sphere',
+	'goo/shapes/Quad',
 	'goo/util/TangentGenerator'
 ],
 function(
@@ -18,6 +19,7 @@ function(
 	FurPass,
 
 	Sphere,
+	Quad,
 	TangentGenerator
 	) {
 	"use strict";
@@ -37,16 +39,20 @@ function(
 
 		var material = V.getColoredMaterial();
 
-		var meshData = new Sphere(32, 32);
+		//var meshData = new Sphere(32, 32);
+		var meshData = new Quad();
+
 
 		TangentGenerator.addTangentBuffer(meshData);
 
 		var entity = goo.world.createEntity(
 						meshData,
 						material
-					).addToWorld();
+					);
 		var s = 40;
 		entity.setScale(s, s, s);
+		entity.setRotation(0, 0, Math.PI/2);
+		entity.addToWorld();
 
 		V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
 		//V.addLights();
@@ -63,22 +69,20 @@ function(
 		regularPass.renderToScreen = true;
 
 		// TODO: Add filter , to only render entities with FurComponents in the FurPass.
-		var furPass = new FurPass(renderList);
+		var furPass = new FurPass(renderList, 20);
 		furPass.clear = false;
 
 		var furFolder = gui.addFolder("Fur settings");
 		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 10);
 		furFolder.add(furPass.furUniforms, 'hairLength', 0.05, 10);
-		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 20);
-		furFolder.add(furPass.furUniforms, 'curlRadius', -0.02, 0.02);
+		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 100);
+		furFolder.add(furPass.furUniforms, 'curlRadius', -1, 1);
 		furFolder.add(furPass.furUniforms, 'gravity', 0, 20.0);
 		furFolder.add(furPass.furUniforms, 'sinusAmount', 0, 20.0);
 		furFolder.open();
 
 		composer.addPass(regularPass);
 		composer.addPass(furPass);
-
-		console.log(goo.world.getSystem('RenderSystem').composers);
 
 		goo.world.getSystem('RenderSystem').composers.push(composer);
 	}

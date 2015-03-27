@@ -4,7 +4,9 @@ define([
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/renderer/Texture',
-	'goo/renderer/shaders/ShaderBuilder'
+	'goo/renderer/shaders/ShaderBuilder',
+	'goo/noise/Noise',
+	'goo/noise/ValueNoise',
 ],
 /** @lends */
 function (
@@ -13,7 +15,10 @@ function (
 	MeshData,
 	Shader,
 	Texture,
-	ShaderBuilder) {
+	ShaderBuilder,
+	Noise,
+	ValueNoise
+	) {
 	"use strict";
 
 	/**
@@ -21,9 +26,8 @@ function (
 	 * @class A pass that renders provided renderlist to the rendertarget or screen
 	 * Original paper : http://web.media.mit.edu/~bandy/fur/ by Paulo Silva, Yosuke Bando, Bing-Yu Chen and Tomoyuki Nishita
 	 */
-	function FurPass(renderList, filter) {
+	function FurPass(renderList, layerCount) {
 		this.renderList = renderList;
-		this.filter = filter;
 
 		this.renderToScreen = true;
 
@@ -34,7 +38,7 @@ function (
 		this.needsSwap = false;
 
 		// TODO : This stuff shall be fetched from the FurComponent, when it is implemented.
-		this.layerCount = 10;
+		this.layerCount = layerCount;
 		this.opacityTextures = this.generateOpacityTextures(this.layerCount);
 
 		this.furMaterial = Material.createEmptyMaterial(furShader, "FurMaterial");
@@ -43,54 +47,11 @@ function (
 		// TODO: The blending method is maybe not correct... lets see.
 		// 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
 		//this.furMaterial.blendState.blending = "AdditiveBlending";
-		this.furMaterial.depthState.write = false;
+		// this.furMaterial.depthState.write = false;
+		this.furMaterial.cullState.enabled = false;
 
 		this.furUniforms = this.furMaterial.shader.uniforms;
 	}
-
-	// Convolve a data array with the symmetrical kernel made of the weighs.
-	// TODO: Make the convolusion outside edges act as repeatable texture.
-	FurPass.prototype.convolute = function(data, width, height, weights) {
-		var side = Math.round(Math.sqrt(weights.length));
-		var halfSide = Math.floor(side/2);
-		var src = data;
-		var sw = width;
-		var sh = height;
-		// pad output by the convolution matrix
-		var w = sw;
-		var h = sh;
-		var dst = new Uint8Array(data.length);
-		// go through the destination image pixels
-		for (var y=0; y<h; y++) {
-			for (var x=0; x<w; x++) {
-			var sy = y;
-			var sx = x;
-			var dstOff = (y*w+x)*4;
-			// calculate the weighed sum of the source image pixels that
-			// fall under the convolution matrix
-			var r=0, g=0, b=0, a=0;
-			for (var cy=0; cy<side; cy++) {
-				for (var cx=0; cx<side; cx++) {
-					var scy = sy + cy - halfSide;
-					var scx = sx + cx - halfSide;
-					if (scy >= 0 && scy < sh && scx >= 0 && scx < sw) {
-						var srcOff = (scy*sw+scx)*4;
-						var wt = weights[cy*side+cx];
-						r += src[srcOff] * wt;
-						g += src[srcOff+1] * wt;
-						b += src[srcOff+2] * wt;
-						a += src[srcOff+3] * wt;
-					}
-				}
-			}
-			dst[dstOff] = r;
-			dst[dstOff+1] = g;
-			dst[dstOff+2] = b;
-			dst[dstOff+3] = a;
-			}
-		}
-		return dst;
-	};
 
 	/**
 	* Returns an array of generated opacity textures.
@@ -103,8 +64,9 @@ function (
 
 		var textureSettings = {
 			format: "Alpha",
-			//generateMipmaps: false,
-			premultiplyAlpha: false
+			generateMipmaps: false,
+			minFilter: 'NearestNeighborNoMipMaps',
+			magFilter: 'NearestNeighbor',
 		};
 
 		var channels = 1;
@@ -113,33 +75,28 @@ function (
 		// Create an array to hold the image data representaiton.
 		var noiseData = new Uint8Array(dataLength);
 
-		// Add noise.
-		for (var i = 0; i < dataLength; i++) {
-			noiseData[i] = Math.round(Math.random() * 255);
+		var i = 0;
+		var scale = 1;
+		var octaves = 2;
+		var persistance = 0.5;
+		var lacunarity = 2;
+		for (var x=0; x < width; x++) {
+			for (var y=0; y < height; y++) {
+				var n = Noise.fractal2d(x, y, scale, octaves, persistance, lacunarity, ValueNoise)
+				noiseData[i] = Math.round(n * 255);
+				i++;
+			}
 		}
 
-		// Gaussian blur convolve the canvas to a suitable level, should be pretty spikey
-
-
-		var blurKernel = [0.09474, 0.1183, 0.09474,
-							0.1183, 0.1477, 0.1183,
-						0.09474,0.1183, 0.09474];
-
-		var blurKernel = [
-			0.25/10, 0.25/10, 0.25/10,
-			0.25/10, 8/10, 0.25/10,
-			0.25/10, 0.25/10, 0.25/10];
-
-		var blurredData = this.convolute(noiseData, width, height, blurKernel);
-
-		// Now treshold the blurred image with an increasing threhhold, experiment to get good results.
-		// Save the output as binary data if possible. Texture seeems to only be able to use uint8,
+		// Treshold the noise 
+		// TODO : Save the output as binary data if possible. Texture seeems to only be able to use uint8
 		var textures = new Array(numberOfLayers);
 		var threshold = 0.7;
 		var maxThreshold = 0.99;
 		var thresholdIncrement = (maxThreshold - threshold) / numberOfLayers;
 		for (var layerIndex = 0; layerIndex < numberOfLayers; layerIndex++) {
-			var layerData = this.thresholdData(blurredData, Math.round(threshold * 255));
+			var currentThresh = Math.round(threshold * 255);
+			var layerData = this.thresholdData(noiseData, currentThresh);
 			threshold += thresholdIncrement;
 			textures[layerIndex] = new Texture(layerData, textureSettings, width, height);
 		}
@@ -259,13 +216,14 @@ function (
 	*/
 
 			'	float mass =  0.00001;',
-			'	float gY = gravity * mass;',
+			
 			'	vec3 sinusNoise = 20.0 * sin(time*4.0) * mass * vec3(1,0,0);',
 			'	sinusNoise *= sinusAmount;',
-			'	vec3 gravityForce = vec3(0,-gY,0);',
 
-			'	float k = length(gY)/(L_0 * 0.5);',
-			'	vec3 p = p_0;',
+			'	vec3 gravityForce = vec3(0,-1,0) * gravity * mass;',
+
+			'	float k = length(gravityForce)/(L_0 * 0.5);',
+			'	vec3 p = ((gravityForce + sinusNoise)) + p_0;',
 
 			// CONSTRAINTS
 			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
@@ -331,7 +289,7 @@ function (
 			'void main(void)',
 			'{',
 			'	vec4 opacity = texture2D(opacityTexture, texCoord0 * furRepeat);',
-			'	if (opacity.a == 0.0) discard;',
+			'	if (opacity.a <= 0.0) discard;',
 			/*
 			Kajiya and Kay , 1989 , Illumination model
 
@@ -368,9 +326,9 @@ function (
 			'}',
 			'else {',
 				'color *= materialAmbient.r;',
-				//'color = vec3(1, gravity, 1);',
 			'}',
 			'	gl_FragColor = vec4(color, 1.0);',
+			
 			'}'//
 		].join("\n")
 	};
