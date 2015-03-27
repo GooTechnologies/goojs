@@ -549,12 +549,23 @@ function (
 			}
 
 			var colliderComponent = entity.colliderComponent;
+
+			if (!colliderComponent.lastScale) {
+				colliderComponent.lastScale = new Vector3();
+			}
+
 			if (colliderComponent.isDirty()) {
 				colliderComponent.updateWorldCollider();
-				RigidBodyComponent.copyScaleFromColliderToCannonShape(
-					colliderComponent.cannonShape,
-					colliderComponent.worldCollider
-				);
+
+				if (colliderComponent.lastScale.distance(entity.transformComponent.transform.scale) !== 0) {
+					RigidBodyComponent.copyScaleFromColliderToCannonShape(
+						colliderComponent.cannonShape,
+						colliderComponent.worldCollider
+					);
+					colliderComponent.lastScale.setVector(entity.transformComponent.transform.scale)
+				}
+
+
 				colliderComponent.setToClean();
 			}
 		}
