@@ -52,7 +52,7 @@ define([
 				vertexColor: 'RGB_COLOR'
 			},
 			uniforms: {
-				viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX
+				viewProjectionMatrix: Shader.VIEW_PROJECTION_INVERSE_MATRIX
 			},
 			vshader: [
 				'attribute vec3 vertexPosition;',
