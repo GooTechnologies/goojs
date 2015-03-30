@@ -20,8 +20,8 @@ var marked = require('marked');
 var _ = require('underscore');
 
 var extractor = require('./extractor');
-var indoctrinate = require('./indoctrinate');
-var indexBuilder = require('./indexBuilder');
+var jsdocProcessor = require('./jsdoc-processor');
+var indexBuilder = require('./index-builder');
 var util = require('./util');
 
 
@@ -103,7 +103,7 @@ function compileDoc(files) {
 		Array.prototype.push.apply(extraComments, class_.extraComments);
 
 		if (class_.constructor) {
-			indoctrinate.all(class_, files);
+			jsdocProcessor.all(class_, files);
 
 			filterPrivates(class_);
 
@@ -115,7 +115,7 @@ function compileDoc(files) {
 
 	// --- should stay elsewhere
 	var constructorFromComment = function (comment) {
-		indoctrinate.link(comment);
+		jsdocProcessor.link(comment);
 		return {
 			name: comment.targetClass.itemName,
 			params: _.pluck(comment.param, 'name'),
@@ -124,7 +124,7 @@ function compileDoc(files) {
 	};
 
 	var memberFromComment = function (comment) {
-		indoctrinate.link(comment);
+		jsdocProcessor.link(comment);
 		return {
 			name: comment.targetClass.itemName,
 			comment: comment
@@ -138,7 +138,7 @@ function compileDoc(files) {
 
 	// copy over the extra info from other classes
 	// adding extras mentioned in @target-class
-	extraComments.map(indoctrinate.compileComment)
+	extraComments.map(jsdocProcessor.compileComment)
 	.forEach(function (extraComment) {
 		var targetClassName = extraComment.targetClass.className;
 		var targetClass = classes[targetClassName];
