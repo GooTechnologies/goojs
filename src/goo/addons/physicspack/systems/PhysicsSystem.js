@@ -75,10 +75,49 @@ function (
 		 */
 		this.maxSubSteps = settings.maxSubSteps !== undefined ? settings.maxSubSteps : 10;
 
-		this._colliderEntitiesInContactCurrentStepA = [];
-		this._colliderEntitiesInContactCurrentStepB = [];
-		this._colliderEntitiesInContactLastStepA = [];
-		this._colliderEntitiesInContactLastStepB = [];
+		/**
+		 * Maps a shape pair hash to CANNON.ContactEquation
+		 * @private
+		 * @type {Set}
+		 */
+		this._currentContacts = new Set();
+
+		/**
+		 *  hashes from last step.
+		 * @private
+		 * @type {Set}
+		 */
+		this._lastContacts = new Set();
+
+		// Function to be used with Array.prototype.sort(), will sort the contacts by hash.
+		this._sortContacts = function (contactA, contactB) {
+			return this._getShapePairHash(contactA.si, contactA.sj) - this._getShapePairHash(contactB.si, contactB.sj);
+		}.bind(this);
+
+		// Set iterator callback for lastContacts: emits endContact events
+		this._emitEndContactEvents = function (hash) {
+			var idA = this._getShapeId(hash, 0);
+			var idB = this._getShapeId(hash, 1);
+
+			var entityA = this._shapeIdToColliderEntityMap[idA];
+			var entityB = this._shapeIdToColliderEntityMap[idB];
+
+			var found = this._currentContacts.has(hash);
+			if (!found) {
+				this.emitEndContact(entityA, entityB);
+			}
+		}.bind(this);
+
+		// Set iterator callback for currentContacts: Moves all hashes from currentContacts to lastContacts
+		this._moveHashes = function (hash) {
+			this._lastContacts.add(hash);
+			this._currentContacts.delete(hash);
+		}.bind(this);
+
+		// Set iterator callback for lastContacts: just empties the Set
+		this._emptyLastContacts = function (hash) {
+			this._lastContacts.delete(hash);
+		}.bind(this);
 
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 	}
@@ -89,15 +128,8 @@ function (
 	 * @private
 	 */
 	PhysicsSystem.prototype._swapContactLists = function () {
-		var tmp = this._colliderEntitiesInContactCurrentStepA;
-		this._colliderEntitiesInContactCurrentStepA = this._colliderEntitiesInContactLastStepA;
-		this._colliderEntitiesInContactLastStepA = tmp;
-		this._colliderEntitiesInContactCurrentStepA.length = 0;
-
-		tmp = this._colliderEntitiesInContactCurrentStepB;
-		this._colliderEntitiesInContactCurrentStepB = this._colliderEntitiesInContactLastStepB;
-		this._colliderEntitiesInContactLastStepB = tmp;
-		this._colliderEntitiesInContactCurrentStepB.length = 0;
+		this._lastContacts.forEach(this._emptyLastContacts);
+		this._currentContacts.forEach(this._moveHashes);
 	};
 
 	/**
@@ -126,66 +158,102 @@ function (
 		}
 	};
 
+	var maxShapeId = 1e4; // Just to be safe. If larger, the integer ops become unstable
+
+	/**
+	 * Returns an integer hash given two shapes.
+	 * @private
+	 * @param  {CANNON.Shape} shapeA
+	 * @param  {CANNON.Shape} shapeB
+	 * @return {number}
+	 */
+	PhysicsSystem.prototype._getShapePairHash = function (shapeA, shapeB) {
+		var idA = shapeA.id;
+		var idB = shapeB.id;
+
+		if (idA > idB) {
+			var tmp = idA;
+			idA = idB;
+			idB = tmp;
+		}
+
+		var hash = idA * maxShapeId + idB;
+
+		return hash;
+	};
+
+	/**
+	 * Returns one of the shape id's given a hash. Returns the first ID if index is zero, the second if index is 1.
+	 * @private
+	 * @param  {number} hash
+	 * @param  {number} index 0 or 1
+	 * @return {number}
+	 */
+	PhysicsSystem.prototype._getShapeId = function (hash, index) {
+		var id;
+		if (index === 0) {
+			id = Math.floor(hash / maxShapeId);
+		} else {
+			id = hash % maxShapeId;
+		}
+		return id;
+	};
+
+	/**
+	 * Fill a Map with contacts.
+	 * @private
+	 * @param  {Array} contacts
+	 * @param  {Map} targetMap
+	 */
+	PhysicsSystem.prototype._fillContactsMap = function (contacts, targetMap) {
+		for (var i = 0; i !== contacts.length; i++) {
+			var contact = contacts[i];
+			var hash = this._getShapePairHash(contact.si, contact.sj);
+			targetMap.add(hash);
+		}
+	};
+
 	/**
 	 * @private
 	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
 
 		// Get overlapping entities
-		var contacts = this.cannonWorld.contacts,
-			num = contacts.length,
-			entities = this._shapeIdToColliderEntityMap;
+		var contacts = this.cannonWorld.contacts.sort(this._sortContacts), // TODO: How to sort without creating a new array?
+			currentContacts = this._currentContacts,
+			lastContacts = this._lastContacts;
 
-		this._swapContactLists();
+		// Make the shape pairs unique
+		this._fillContactsMap(contacts, currentContacts);
 
-		for (var i = 0; i !== num; i++) {
+		// loop over the non-unique, but sorted array.
+		var lastHash;
+		for (var i = 0; i < contacts.length; i++) {
 			var contact = contacts[i];
-
 			var shapeA = contact.si;
 			var shapeB = contact.sj;
-			var entityA = entities[shapeA.id];
-			var entityB = entities[shapeB.id];
+			var entityA = this._shapeIdToColliderEntityMap[shapeA.id];
+			var entityB = this._shapeIdToColliderEntityMap[shapeB.id];
 
-			if (shapeA.id > shapeB.id) {
-				var tmp = entityA;
-				entityA = entityB;
-				entityB = tmp;
-			}
+			var hash = this._getShapePairHash(contact.si, contact.sj);
+			if (hash !== lastHash) {
+				var wasInContact = this._lastContacts.has(hash);
 
-			var found = false;
-			for (var j = 0; j !== this._colliderEntitiesInContactCurrentStepA.length; j++) {
-				if (entityA === this._colliderEntitiesInContactCurrentStepA[i] && entityB === this._colliderEntitiesInContactCurrentStepB[i]) {
-					found = true;
-					break;
+				if (!wasInContact) {
+					this.emitBeginContact(entityA, entityB);
+				} else {
+					this.emitDuringContact(entityA, entityB);
 				}
 			}
 
-			if (!found) {
-				this.emitBeginContact(entityA, entityB);
-			} else {
-				this.emitDuringContact(entityA, entityB);
-			}
-
-			this._colliderEntitiesInContactCurrentStepA.push(entityA);
-			this._colliderEntitiesInContactCurrentStepB.push(entityB);
+			lastHash = hash;
 		}
 
 		// Emit end contact events
-		for (var i = 0; i !== this._colliderEntitiesInContactLastStepA.length; i++) {
-			var entityA = this._colliderEntitiesInContactLastStepA[i];
-			var entityB = this._colliderEntitiesInContactLastStepB[i];
+		lastContacts.forEach(this._emitEndContactEvents);
 
-			var found = false;
-			for (var j = 0; j !== this._colliderEntitiesInContactCurrentStepA.length; j++) {
-				if (entityA === this._colliderEntitiesInContactCurrentStepA[i] && entityB === this._colliderEntitiesInContactCurrentStepB[i]) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				this.emitEndContact(entityA, entityB);
-			}
-		}
+		// Swap the lists, drop references to the current Cannon.js contacts
+		this._swapContactLists();
 	};
 
 	var tmpOptions = {};
