@@ -76,14 +76,14 @@ function (
 		this.maxSubSteps = settings.maxSubSteps !== undefined ? settings.maxSubSteps : 10;
 
 		/**
-		 * Maps a shape pair hash to CANNON.ContactEquation
+		 * The current shape pair hashes.
 		 * @private
 		 * @type {Set}
 		 */
 		this._currentContacts = new Set();
 
 		/**
-		 *  hashes from last step.
+		 * Shape pair hashes from last step.
 		 * @private
 		 * @type {Set}
 		 */
@@ -91,13 +91,13 @@ function (
 
 		// Function to be used with Array.prototype.sort(), will sort the contacts by hash.
 		this._sortContacts = function (contactA, contactB) {
-			return this._getShapePairHash(contactA.si, contactA.sj) - this._getShapePairHash(contactB.si, contactB.sj);
+			return PhysicsSystem._getShapePairHash(contactA.si, contactA.sj) - PhysicsSystem._getShapePairHash(contactB.si, contactB.sj);
 		}.bind(this);
 
 		// Set iterator callback for lastContacts: emits endContact events
 		this._emitEndContactEvents = function (hash) {
-			var idA = this._getShapeId(hash, 0);
-			var idB = this._getShapeId(hash, 1);
+			var idA = PhysicsSystem._getShapeIdA(hash);
+			var idB = PhysicsSystem._getShapeIdB(hash);
 
 			var entityA = this._shapeIdToColliderEntityMap.get(idA);
 			var entityB = this._shapeIdToColliderEntityMap.get(idB);
@@ -158,8 +158,6 @@ function (
 		}
 	};
 
-	var maxShapeId = 1e4; // Just to be safe. If larger, the integer ops become unstable
-
 	/**
 	 * Returns an integer hash given two shapes.
 	 * @private
@@ -167,7 +165,7 @@ function (
 	 * @param  {CANNON.Shape} shapeB
 	 * @return {number}
 	 */
-	PhysicsSystem.prototype._getShapePairHash = function (shapeA, shapeB) {
+	PhysicsSystem._getShapePairHash = function (shapeA, shapeB) {
 		var idA = shapeA.id;
 		var idB = shapeB.id;
 
@@ -177,26 +175,29 @@ function (
 			idB = tmp;
 		}
 
-		var hash = idA * maxShapeId + idB;
+		var hash = (idA << 16) | idB;
 
 		return hash;
 	};
 
 	/**
-	 * Returns one of the shape id's given a hash. Returns the first ID if index is zero, the second if index is 1.
+	 * Returns the first of the shape id's given a hash.
 	 * @private
 	 * @param  {number} hash
-	 * @param  {number} index 0 or 1
 	 * @return {number}
 	 */
-	PhysicsSystem.prototype._getShapeId = function (hash, index) {
-		var id;
-		if (index === 0) {
-			id = Math.floor(hash / maxShapeId);
-		} else {
-			id = hash % maxShapeId;
-		}
-		return id;
+	PhysicsSystem._getShapeIdA = function (hash) {
+		return (hash & 0xFFFF0000) >> 16;
+	};
+
+	/**
+	 * Returns the second shape id given a hash.
+	 * @private
+	 * @param  {number} hash
+	 * @return {number}
+	 */
+	PhysicsSystem._getShapeIdB = function (hash) {
+		return hash & 0x0000FFFF;
 	};
 
 	/**
@@ -208,7 +209,7 @@ function (
 	PhysicsSystem.prototype._fillContactsMap = function (contacts, targetMap) {
 		for (var i = 0; i !== contacts.length; i++) {
 			var contact = contacts[i];
-			var hash = this._getShapePairHash(contact.si, contact.sj);
+			var hash = PhysicsSystem._getShapePairHash(contact.si, contact.sj);
 			targetMap.add(hash);
 		}
 	};
@@ -235,14 +236,14 @@ function (
 			var entityA = this._shapeIdToColliderEntityMap.get(shapeA.id);
 			var entityB = this._shapeIdToColliderEntityMap.get(shapeB.id);
 
-			var hash = this._getShapePairHash(contact.si, contact.sj);
+			var hash = PhysicsSystem._getShapePairHash(contact.si, contact.sj);
 			if (hash !== lastHash) {
 				var wasInContact = this._lastContacts.has(hash);
 
-				if (!wasInContact) {
-					this.emitBeginContact(entityA, entityB);
-				} else {
+				if (wasInContact) {
 					this.emitDuringContact(entityA, entityB);
+				} else {
+					this.emitBeginContact(entityA, entityB);
 				}
 			}
 
