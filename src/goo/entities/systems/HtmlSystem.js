@@ -65,16 +65,11 @@ define([
 		// 	this.cameraDom.style.height = data.height + 'px';
 		// }.bind(this));
 
-		// this.materialTransparent = new Material(ShaderLib.uber);
-		// this.materialTransparent.renderQueue = 10000;
-		// this.materialTransparent.uniforms.opacity = 0.0;
-		// this.materialTransparent.uniforms.materialAmbient = [0, 0, 0, 0];
-		// this.materialTransparent.uniforms.materialDiffuse = [0, 0, 0, 0];
-
-		// this.materialOpaque = new Material(ShaderLib.uber);
-		// this.materialOpaque.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
-		// this.materialOpaque.cullState.cullFace = 'Front';
-
+		// var frontMaterial = new Material(ShaderLib.uber);
+		// frontMaterial.renderQueue = 10000;
+		// frontMaterial.uniforms.opacity = 0.0;
+		// frontMaterial.uniforms.materialAmbient = [0, 0, 0, 0];
+		// frontMaterial.uniforms.materialDiffuse = [0, 0, 0, 0];
 		var frontMaterial = new Material(ShaderLib.simple);
 		frontMaterial.blendState.blending = 'CustomBlending';
 		frontMaterial.blendState.blendSrc = 'ZeroFactor';
@@ -83,6 +78,7 @@ define([
 		var backMaterial = new Material(ShaderLib.uber);
 		backMaterial.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
 		backMaterial.cullState.cullFace = 'Front';
+
 		this.materials = [frontMaterial, backMaterial];
 
 		this.prefixes = ['', '-webkit-'];
@@ -91,9 +87,6 @@ define([
 
 	HtmlSystem.prototype = Object.create(System.prototype);
 	HtmlSystem.prototype.constructor = HtmlSystem;
-
-	// var tmpMatrix = new Matrix4x4();
-	// var tmpVector = new Vector3();
 
 	var getCameraCSSMatrix = function (matrix) {
 		var elements = matrix.data;
@@ -129,35 +122,6 @@ define([
 	HtmlSystem.prototype.inserted = function (entity) {
 		var component = entity.htmlComponent;
 		component.meshRendererComponent.materials = this.materials;
-		// var domElement = component.domElement;
-		// if (domElement.parentNode !== this.cameraDom) {
-		// 	this.cameraDom.appendChild(domElement);
-		// }
-
-		// component.entity = entity;
-
-		// insert quads etc
-		// if (false && component.useTransformComponent && !entity.meshRendererComponent && !entity.meshDataComponent) {
-			// var quad = new Quad(component.width, component.height);
-			// entity.set(quad);
-			// entity.set(this.materialTransparent);
-
-			// var entityBack = entity._world.createEntity(quad, this.materialOpaque).addToWorld();
-			// entityBack.meshRendererComponent.isPickable = false;
-			// entity.attachChild(entityBack);
-		// }
-	};
-
-	HtmlSystem.prototype.deleted = function (entity) {
-		// var domElement = entity.htmlComponent.domElement;
-		// if (domElement.parentNode !== null) {
-		// 	domElement.parentNode.removeChild(domElement);
-		// }
-
-		// if (entity.meshRendererComponent || entity.meshDataComponent) {
-		// 	entity.clearComponent('meshDataComponent');
-		// 	entity.clearComponent('meshRendererComponent');
-		// }
 	};
 
 	HtmlSystem.prototype.process = function (entities) {
@@ -180,7 +144,6 @@ define([
 				' translate3d(' + (width/2) + 'px,' + (height/2) + 'px, 0)';
 		this.setStyle(this.cameraDom, 'transform', style);
 
-		// var viewInverseMatrix = camera.getViewInverseMatrix();
 		for (var i = 0, l = entities.length; i < l; i++) {
 			var entity = entities[i];
 			var component = entity.htmlComponent;
@@ -207,11 +170,9 @@ define([
 			// Do we really have to set this every time?
 			if (component.hidden) {
 				component.domElement.style.display = 'none';
-				//component.entity.hide();
 				continue;
 			} else {
 				component.domElement.style.display = '';
-				//component.entity.show();
 			}
 
 			if (!component.updated && !entity.transformComponent._updated) {
@@ -219,24 +180,8 @@ define([
 			}
 			component.updated = false;
 
-			// var scale = component.scale;
 			var worldTransform = entity.transformComponent.worldTransform;
-
-			// if (component.faceCamera) {
-			// 	tmpMatrix.copy(viewInverseMatrix);
-
-			// 	worldTransform.matrix.getTranslation(tmpVector);
-			// 	tmpMatrix.setTranslation(tmpVector);
-
-			// 	entity.transformComponent.transform.matrix.getScale(tmpVector);
-			// 	tmpVector.x *= (1/component.width);
-			// 	tmpVector.y *= (1/component.height);
-			// 	style = getEntityCSSMatrix(tmpMatrix) + ' scale3d('+tmpVector.x+','+tmpVector.y+','+1+')';
-			// } else {
-			// 	style = getEntityCSSMatrix(worldTransform.matrix);
-			// }
 			style = getEntityCSSMatrix(worldTransform.matrix) + ' scale(' + 1/component.width +', ' + 1/component.height + ')';
-
 			this.setStyle(domElement, 'transform', style);
 		}
 	};
