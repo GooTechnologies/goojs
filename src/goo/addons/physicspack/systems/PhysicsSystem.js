@@ -52,7 +52,7 @@ function (
 		});
 
 		this._entities = {};
-		this._shapeIdToColliderEntityMap = {};
+		this._shapeIdToColliderEntityMap = new Map();
 
 		if (!tmpVec1) {
 			tmpVec1 = new CANNON.Vec3();
@@ -99,8 +99,8 @@ function (
 			var idA = this._getShapeId(hash, 0);
 			var idB = this._getShapeId(hash, 1);
 
-			var entityA = this._shapeIdToColliderEntityMap[idA];
-			var entityB = this._shapeIdToColliderEntityMap[idB];
+			var entityA = this._shapeIdToColliderEntityMap.get(idA);
+			var entityB = this._shapeIdToColliderEntityMap.get(idB);
 
 			var found = this._currentContacts.has(hash);
 			if (!found) {
@@ -232,8 +232,8 @@ function (
 			var contact = contacts[i];
 			var shapeA = contact.si;
 			var shapeB = contact.sj;
-			var entityA = this._shapeIdToColliderEntityMap[shapeA.id];
-			var entityB = this._shapeIdToColliderEntityMap[shapeB.id];
+			var entityA = this._shapeIdToColliderEntityMap.get(shapeA.id);
+			var entityB = this._shapeIdToColliderEntityMap.get(shapeB.id);
 
 			var hash = this._getShapePairHash(contact.si, contact.sj);
 			if (hash !== lastHash) {
