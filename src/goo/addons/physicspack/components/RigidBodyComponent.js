@@ -390,6 +390,9 @@ function (
 		if (body) {
 			body.world.removeBody(body);
 			delete this._system._entities[body.id];
+			body.shapes.forEach(function (shape) {
+				this._system._shapeIdToColliderEntityMap.delete(shape.id);
+			}.bind(this));
 			this.cannonBody = null;
 			this._dirty = true;
 		}
@@ -590,6 +593,8 @@ function (
 		var collider = colliderComponent.worldCollider;
 
 		var cannonShape = colliderComponent.cannonShape = RigidBodyComponent.getCannonShape(collider);
+
+		this._system._shapeIdToColliderEntityMap.set(cannonShape.id, entity);
 
 		// Create a material for the shape
 		var mat = new CANNON.Material();
