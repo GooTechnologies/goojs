@@ -1,5 +1,4 @@
 // jshint node:true
-
 'use strict';
 
 var util = require('./util');
@@ -270,6 +269,31 @@ var extractTagRequirePath = function (requirePath) {
 	};
 };
 
+var tagExtractors = (function () {
+	var mapping = {
+		'description': function (tag) { return tag[0]; },
+		'@param': function (tag) { return tag.map(extractTagParam); },
+		'@returns': function (tag) { return extractTagReturn(tag[0]); },
+		'@example': function (tag) { return tag[0]; },
+		'@example-link': function (tag) { return extractTagExampleLink(tag[0]); },
+		'@type': function (tag) { return extractTagType(tag[0]); },
+		'@default': function (tag) { return extractTagDefault(tag[0]); },
+		'@deprecated': function (tag) { return extractTagDeprecated(tag[0]); },
+		'@property': function (tag) { return tag.map(extractTagProperty); },
+		'@extends': function (tag) { return extractTagExtends(tag[0]); },
+		'@target-class': function (tag) { return extractTagTargetClass(tag[0]); },
+		'@group': function (tag) { return extractTagGroup(tag[0]); },
+		'@require-path': function (tag) { return extractTagRequirePath(tag[0]); }
+	};
+
+	return Object.keys(mapping).map(function (tagName) {
+		return {
+			name: tagName,
+			extractor: mapping[tagName]
+		};
+	});
+})();
+
 var extract = function (doc) {
 	var stripped = stripStars(doc);
 
@@ -277,56 +301,11 @@ var extract = function (doc) {
 
 	warnOnRogueTags(Object.keys(tags));
 
-	tags['description'] = tags['description'][0];
-
-	if (tags['@param']) {
-		tags['@param'] = tags['@param'].map(extractTagParam);
-	}
-
-	if (tags['@returns']) {
-		tags['@returns'] = extractTagReturn(tags['@returns'][0]);
-	}
-
-	if (tags['@example']) {
-		tags['@example'] = tags['@example'][0];
-	}
-
-	if (tags['@example-link']) {
-		tags['@example-link'] = extractTagExampleLink(tags['@example-link'][0]);
-	}
-
-	if (tags['@type']) {
-		tags['@type'] = extractTagType(tags['@type'][0]);
-	}
-
-	if (tags['@default']) {
-		tags['@default'] = extractTagDefault(tags['@default'][0]);
-	}
-
-	if (tags['@deprecated']) {
-		tags['@deprecated'] = extractTagDeprecated(tags['@deprecated'][0]);
-	}
-
-	if (tags['@property']) {
-		tags['@property'] = tags['@property'].map(extractTagProperty);
-	}
-
-	if (tags['@extends']) {
-		tags['@extends'] = extractTagExtends(tags['@extends'][0]);
-	}
-
-	// --- only when @target-class is present ---
-	if (tags['@target-class']) {
-		tags['@target-class'] = extractTagTargetClass(tags['@target-class'][0]);
-	}
-
-	if (tags['@group']) {
-		tags['@group'] = extractTagGroup(tags['@group'][0]);
-	}
-
-	if (tags['@require-path']) {
-		tags['@require-path'] = extractTagRequirePath(tags['@require-path'][0]);
-	}
+	tagExtractors.forEach(function (tagExtractor) {
+		if (tags[tagExtractor.name]) {
+			tags[tagExtractor.name] = tagExtractor.extractor(tags[tagExtractor.name]);
+		}
+	});
 
 	return tags;
 };

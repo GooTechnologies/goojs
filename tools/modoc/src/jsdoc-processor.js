@@ -1,7 +1,7 @@
 // jshint node:true
 'use strict';
 
-var dogma = require('./dogma');
+var jsdocParser = require('./jsdoc-parser');
 var util = require('./util');
 
 // regex compilation for `[]()` links, `@link` and types (big mess)
@@ -69,9 +69,39 @@ var hasParamData = function (params) {
 	});
 };
 
+var tagAndIdentifier = function (tag) {
+	return {
+		tag: tag,
+		identifier: util.tagToIdentifier(tag)
+	};
+};
+
+var copyTags = [
+	'@returns',
+	'@example',
+	'@example-link',
+
+	'@property',
+	'@default',
+	'@type',
+	'@deprecated',
+	'@extends',
+
+	'@target-class',
+	'@group',
+	'@require-path'
+].map(tagAndIdentifier);
+
+var booleanTags = [
+	'@virtual',
+	'@readonly',
+	'@hidden',
+	'@private'
+].map(tagAndIdentifier);
+
 var compileComment = function (rawComment) {
 	// parse the raw comment
-	var parsed = dogma.extract(rawComment);
+	var parsed = jsdocParser.extract(rawComment);
 
 	var comment = {};
 	comment.description = parsed.description;
@@ -85,68 +115,17 @@ var compileComment = function (rawComment) {
 		}
 	}
 
-	if (parsed['@returns']) {
-		comment.returns = parsed['@returns'];
-	}
+	copyTags.forEach(function (copyTag) {
+		if (parsed[copyTag.tag]) {
+			comment[copyTag.identifier] = parsed[copyTag.tag];
+		}
+	});
 
-	if (parsed['@example']) {
-		comment.example = parsed['@example'];
-	}
-
-	if (parsed['@example-link']) {
-		comment.exampleLink = parsed['@example-link'];
-	}
-
-	// properties declared inside the constructor may have the @type tag
-	if (parsed['@type']) {
-		comment.type = parsed['@type'];
-	}
-
-	// properties declared inside the constructor may have the @default tag
-	if (parsed['@default']) {
-		comment.default_ = parsed['@default'];
-	}
-
-	if (parsed['@private']) {
-		comment.private = !!parsed['@private'];
-	}
-
-	if (parsed['@hidden']) {
-		comment.hidden = !!parsed['@hidden'];
-	}
-
-	if (parsed['@readonly']) {
-		comment.readonly = !!parsed['@readonly'];
-	}
-
-	if (parsed['@virtual']) {
-		comment.virtual = !!parsed['@virtual'];
-	}
-
-	if (parsed['@deprecated']) {
-		comment.deprecated = parsed['@deprecated'];
-	}
-
-	if (parsed['@property']) {
-		comment.property = parsed['@property'];
-	}
-
-	if (parsed['@extends']) {
-		comment.extends = parsed['@extends'];
-	}
-
-	// --- only when @target-class is present ---
-	if (parsed['@target-class']) {
-		comment.targetClass = parsed['@target-class'];
-	}
-
-	if (parsed['@group']) {
-		comment.group = parsed['@group'];
-	}
-
-	if (parsed['@require-path']) {
-		comment.requirePath = parsed['@require-path'];
-	}
+	booleanTags.forEach(function (copyTag) {
+		if (parsed[copyTag.tag]) {
+			comment[copyTag.identifier] = !!parsed[copyTag.tag];
+		}
+	});
 
 	return comment;
 };

@@ -11,7 +11,7 @@ define([
 		this.updated = false;
 		this.keysPressed = {};
 
-		this.eventListener = function(event) {
+		this.eventListener = function (event) {
 			var keyname = ArrowsAction._keys[event.which];
 			if (keyname !== undefined) {
 				this.updated = true;
@@ -22,7 +22,7 @@ define([
 
 	ArrowsAction.prototype = Object.create(Action.prototype);
 
-	ArrowsAction.prototype.configure = function(settings) {
+	ArrowsAction.prototype.configure = function (settings) {
 		this.everyFrame = true;
 		this.targets = settings.transitions;
 	};
@@ -34,7 +34,7 @@ define([
 		39: 'right'
 	};
 
-	ArrowsAction.external = (function() {
+	ArrowsAction.external = (function () {
 		var transitions = [];
 		for (var keycode in ArrowsAction._keys) {
 			var keyname = ArrowsAction._keys[keycode];
@@ -56,14 +56,13 @@ define([
 		};
 	})();
 
-	ArrowsAction.prototype._setup = function() {
+	ArrowsAction.prototype._setup = function () {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	ArrowsAction.prototype._run = function(fsm) {
+	ArrowsAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
-			//var keyKeys = _.keys(ArrowAction._keys); // unused
 
 			for (var keyname in this.keysPressed) {
 				var target = this.targets[keyname];
@@ -71,11 +70,11 @@ define([
 					fsm.send(target);
 				}
 			}
-			this.keysPressed = [];
+			this.keysPressed = {};
 		}
 	};
 
-	ArrowsAction.prototype.exit = function() {
+	ArrowsAction.prototype.exit = function () {
 		document.removeEventListener('keydown', this.eventListener);
 	};
 
