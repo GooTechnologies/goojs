@@ -718,7 +718,9 @@ define([
 		};
 		defaultCallbacks[Shader.VIEW_PROJECTION_INVERSE_MATRIX] = function (uniformCall, shaderInfo) {
 
-			uniformCall.uniformMatrix4fv(shaderInfo.camera.getViewProjectionInverseMatrix());
+			tmpMatrix.copy(shaderInfo.camera.getViewMatrix());
+			tmpMatrix2.copy(shaderInfo.camera.getProjectionMatrix()).combine(tmpMatrix);
+			uniformCall.uniformMatrix4fv(tmpMatrix2);
 
 		};
 

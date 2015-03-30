@@ -14,7 +14,7 @@ require([
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/RaycastResult',
 	'goo/addons/physicspack/systems/ColliderSystem',
-	'goo/addons/physicspack/components/RigidbodyComponent',
+	'goo/addons/physicspack/components/RigidBodyComponent',
 	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
 	'goo/addons/physicspack/colliders/SphereCollider',
@@ -36,7 +36,7 @@ require([
 			 PhysicsSystem,
 			 RaycastResult,
 			 ColliderSystem,
-			 RigidbodyComponent,
+			 RigidBodyComponent,
 			 BoxCollider,
 			 CylinderCollider,
 			 SphereCollider,
@@ -146,7 +146,7 @@ require([
 			this.shapeCollider = new MeshCollider({meshData: this.shape});
 		}
 
-		this.rigidBodyComponent = new RigidbodyComponent({mass: 0});
+		this.rigidBodyComponent = new RigidBodyComponent({mass: 0});
 		this.colliderComponent = new ColliderComponent({collider: this.shapeCollider});
 
 		this.entity = this.world.createEntity(this.shape, this.material, position, this.rigidBodyComponent, this.colliderComponent).addToWorld();
