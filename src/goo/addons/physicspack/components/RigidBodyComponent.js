@@ -533,8 +533,8 @@ function (
 			var scale;
 			if (!tmpCannonVec) {
 				tmpCannonVec = new CANNON.Vec3();
-				scale = tmpCannonVec;
 			}
+			scale = tmpCannonVec;
 			scale.copy(collider.scale);
 			cannonShape.setScale(scale);
 		}
