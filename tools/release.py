@@ -6,24 +6,38 @@ import shutil
 import subprocess
 
 
-if len(sys.argv) != 2:
-    print 'Usage: release.py version-number'
+if len(sys.argv) < 2 or len(sys.argv) > 3:
+    print '''Usage: release.py version-number [minify-level=full]
+where minify-level can be one of: full, dev, no-mangle
+'''
     sys.exit(1)
 
 version = sys.argv[1]
-name = 'goo-' + version
+release_name = 'goo-' + version
 
-print 'Creating release', name
+if len(sys.argv) == 2:
+	minify_level = 'full'
+else:
+	minify_level = sys.argv[2]
+
+print 'Creating release', release_name
 if os.path.isdir('out'):
     shutil.rmtree('out')
+os.mkdir('out')
+
+grunt_task_for_minify_level = {
+	'full': 'minify',
+	'no-mangle': 'minify-no-mangle',
+	'dev': 'minify-dev'
+}
 
 grunt_command = 'node_modules/grunt-cli/bin/grunt'
-subprocess.check_call([grunt_command, 'minify', '--goo-version=' + version])
+subprocess.check_call([grunt_command, grunt_task_for_minify_level[minify_level], '--goo-version=' + version])
 
 subprocess.check_call([grunt_command, 'jsdoc'])
 subprocess.check_call([grunt_command, 'generate-toc'])
 
-release_dir = os.getenv('RELEASE_DIR', 'out/release/' + name)
+release_dir = os.getenv('RELEASE_DIR', 'out/release/' + release_name)
 if os.path.isdir(release_dir):
 	print 'Release directory already exists:', release_dir
 else:

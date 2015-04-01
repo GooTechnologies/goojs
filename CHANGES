@@ -1,3 +1,23 @@
+v0.13.6 --- 2015-03-31
+----------------------
+
+###Fixes
+ + another batch of physics-related fixes
+
+###Removed
+ - the `goo.useOwnRequire` flag as well as `goo.define` and `goo.require`
+
+
+v0.13.5 --- 2015-03-25
+----------------------
+
+###Additions
+ + debug render system for collider components
+
+###Fixes
+ * various physics-related fixes
+
+
 v0.13.4 --- 2015-03-11
 ----------------------
 

@@ -59,7 +59,7 @@ function (
 		}.bind(this));
 
 		/**
-		 * If set to true, all entities with any physics in them will be debug rendered, and the selection will be disregarded.
+		 * If set to true, all entities with a ColliderComponent attached is rendered, and the selection is disregarded.
 		 * @type {Boolean}
 		 */
 		this.renderAll = true;

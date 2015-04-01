@@ -32,7 +32,7 @@ function (
 	var tmpCannonVec2;
 
 	/**
-	 * Adds rigid body dynamics to your entity. To be used with the {@link PhysicsSystem}. If the entity or its children have {@link ColliderComponent}s, they will be added as collision shapes to the rigid body.
+	 * Adds rigid body dynamics the entity. To be used with the {@link PhysicsSystem}. If the entity or its children have {@link ColliderComponent}s, they are added as collision shapes to the rigid body.
 	 * @param {Object} [settings]
 	 * @param {number} [settings.mass=1]
 	 * @param {boolean} [settings.isKinematic=false]
@@ -54,7 +54,7 @@ function (
 		this.cannonBody = null;
 
 		/**
-		 * If true, the Cannon.js body will be re-initialized in the next process().
+		 * If true, the Cannon.js body is re-initialized in the next process().
 		 * @private
 		 * @type {boolean}
 		 */
@@ -154,12 +154,12 @@ function (
 	};
 
 	/**
-	 * @param {Vector3} force
+	 * Apply a force to the center of mass of the body.
+	 * @param {Vector3} force The force vector, oriented in world space.
 	 */
 	RigidBodyComponent.prototype.applyForce = function (force) {
 		tmpCannonVec.copy(force);
-		tmpCannonVec2.set(0, 0, 0);
-		this.cannonBody.applyForce(tmpCannonVec, tmpCannonVec2);
+		this.cannonBody.force.vadd(tmpCannonVec, this.cannonBody.force);
 	};
 
 	/**
@@ -340,7 +340,10 @@ function (
 	});
 
 	/**
-	 * @private
+	 * Create a CANNON.Shape given a Collider. A BoxCollider yields a CANNON.Box and so on.
+	 * @param {Collider} collider
+	 * @return {CANNON.Shape}
+	 * @hidden
 	 */
 	RigidBodyComponent.getCannonShape = function (collider) {
 		var shape;
@@ -380,14 +383,16 @@ function (
 	};
 
 	/**
-	 * Removes the body from the physics world.
-	 * @private
+	 * Removes the body from the physics engine, and set the component to dirty.
 	 */
 	RigidBodyComponent.prototype.destroy = function () {
 		var body = this.cannonBody;
 		if (body) {
 			body.world.removeBody(body);
 			delete this._system._entities[body.id];
+			body.shapes.forEach(function (shape) {
+				this._system._shapeIdToColliderEntityMap.delete(shape.id);
+			}.bind(this));
 			this.cannonBody = null;
 			this._dirty = true;
 		}
@@ -400,7 +405,7 @@ function (
 	};
 
 	/**
-	 * @private
+	 * Initialize the Cannon.js body available in the .cannonBody property. This is useful if the intention is to work with the CANNON.Body instance directly after the component is created.
 	 */
 	RigidBodyComponent.prototype.initialize = function () {
 		if (!this._dirty) {
@@ -440,7 +445,7 @@ function (
 	};
 
 	/**
-	 * @private
+	 * @hidden
 	 */
 	RigidBodyComponent.prototype.initializeJoint = function (joint) {
 		var bodyA = this.cannonBody;
@@ -517,30 +522,58 @@ function (
 		}
 	};
 
+	RigidBodyComponent.copyScaleFromColliderToCannonShape = function (cannonShape, collider) {
+		if (collider instanceof SphereCollider) {
+			cannonShape.radius = collider.radius;
+		} else if (collider instanceof BoxCollider) {
+			cannonShape.halfExtents.copy(collider.halfExtents);
+			cannonShape.updateConvexPolyhedronRepresentation();
+			cannonShape.updateBoundingSphereRadius();
+		} else if (collider instanceof MeshCollider) {
+			var scale;
+			if (!tmpCannonVec) {
+				tmpCannonVec = new CANNON.Vec3();
+			}
+			scale = tmpCannonVec;
+			scale.copy(collider.scale);
+			cannonShape.setScale(scale);
+		}
+		cannonShape.updateBoundingSphereRadius();
+	};
+
+	/**
+	 * @hidden
+	 */
 	RigidBodyComponent.prototype.updateDirtyColliders = function () {
 		var colliderEntities = this._colliderEntities;
-		for (var i = 0; i < colliderEntities.length; i++) {
+		for (var i = colliderEntities.length - 1; i >= 0; i--) {
 			var entity = colliderEntities[i];
+
+			// Check so it is still attached to this entity
+			var parent = entity.colliderComponent.getBodyEntity();
+			if (parent !== this._entity) {
+				colliderEntities.splice(i, 1);
+				entity.colliderComponent.setToDirty();
+				return;
+			}
+
 			var colliderComponent = entity.colliderComponent;
 			if (colliderComponent.isDirty()) {
 				colliderComponent.updateWorldCollider();
-				var collider = colliderComponent.worldCollider;
-				var cannonShape = colliderComponent.cannonShape;
-				if (collider instanceof SphereCollider) {
-					cannonShape.radius = collider.radius;
-				} else if (collider instanceof MeshCollider) {
-					var scale = new CANNON.Vec3();
-					scale.copy(collider.scale);
-					cannonShape.setScale(scale);
-				}
-				cannonShape.updateBoundingSphereRadius();
+				RigidBodyComponent.copyScaleFromColliderToCannonShape(
+					colliderComponent.cannonShape,
+					colliderComponent.worldCollider
+				);
+
+				colliderComponent.cannonShape.collisionResponse = !colliderComponent.isTrigger;
+
 				colliderComponent.setToClean();
 			}
 		}
 	};
 
 	/**
-	 * @private
+	 * @hidden
 	 */
 	RigidBodyComponent.prototype.destroyJoint = function (joint) {
 		var body = this.cannonBody;
@@ -560,6 +593,8 @@ function (
 		var collider = colliderComponent.worldCollider;
 
 		var cannonShape = colliderComponent.cannonShape = RigidBodyComponent.getCannonShape(collider);
+
+		this._system._shapeIdToColliderEntityMap.set(cannonShape.id, entity);
 
 		// Create a material for the shape
 		var mat = new CANNON.Material();
@@ -584,6 +619,7 @@ function (
 	};
 
 	/**
+	 * Creates a new instance indentical to this component.
 	 * @returns RigidBodyComponent
 	 */
 	RigidBodyComponent.prototype.clone = function () {
@@ -609,14 +645,14 @@ function (
 	};
 
 	/**
-	 * Marks the component as dirty.
+	 * Marks the component as dirty. If it is dirty, the .cannonBody instance is re-initialized in the next process loop.
 	 */
 	RigidBodyComponent.prototype.setToDirty = function () {
 		this._dirty = true;
 	};
 
 	/**
-	 * Marks the component as dirty.
+	 * Marks the component as non-dirty.
 	 */
 	RigidBodyComponent.prototype.setToClean = function () {
 		this._dirty = false;
