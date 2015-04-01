@@ -31,7 +31,7 @@ function (
 	 * @param {Object} [settings]
 	 * @param {Collider} [settings.collider]
 	 * @param {boolean} [settings.isTrigger=false]
-	 * @extends Component
+	 * @extends AbstractColliderComponent
 	 */
 	function ColliderComponent(settings) {
 		AbstractColliderComponent.apply(this, arguments);

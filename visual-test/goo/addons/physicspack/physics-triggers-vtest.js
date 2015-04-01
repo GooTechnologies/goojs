@@ -44,9 +44,10 @@ require([
 	var collider = new BoxCollider({ halfExtents: new Vector3(radius / 2, radius / 2, radius / 2) });
 	var body = new RigidBodyComponent({ mass: 1, isKinematic: true, velocity: new Vector3(0, 0, 10) });
 	world.createEntity(sphereMesh, material, collider, body).addToWorld();
+	body.initialize();
 
 	// Adding the components, style 2
-	world.createEntity(sphereMesh, material)
+	var entity = world.createEntity(sphereMesh, material)
 		.set(new ColliderComponent({
 			collider: new BoxCollider({ halfExtents: new Vector3(radius / 2, radius / 2, radius / 2) }),
 			isTrigger: true
@@ -55,6 +56,8 @@ require([
 			mass: 1
 		}))
 		.addToWorld();
+
+	entity.rigidBodyComponent.initialize();
 
 	SystemBus.addListener('goo.physics.beginContact', function (evt) {
 		material.uniforms.materialDiffuse = [1, 0, 0, 1];
