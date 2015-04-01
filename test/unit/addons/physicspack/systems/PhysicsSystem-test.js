@@ -205,11 +205,14 @@ define([
 		it('emits contact events', function () {
 			var rbcA = new RigidBodyComponent({ mass: 1 });
 			var rbcB = new RigidBodyComponent({ mass: 1 });
-			var cc = new ColliderComponent({
+			var ccA = new ColliderComponent({
 				collider: new SphereCollider({ radius: 1 })
 			});
-			var entityA = world.createEntity(rbcA, cc).addToWorld();
-			var entityB = world.createEntity(rbcB, cc).addToWorld();
+			var ccB = new ColliderComponent({
+				collider: new SphereCollider({ radius: 1 })
+			});
+			var entityA = world.createEntity(rbcA, ccA).addToWorld();
+			var entityB = world.createEntity(rbcB, ccB).addToWorld();
 			entityA.setTranslation(0, 0, 3);
 			entityB.setTranslation(0, 0, -3);
 
@@ -240,6 +243,7 @@ define([
 
 			rbcA.initialize(); // Needed to initialize bodies
 			rbcB.initialize();
+
 			world.process();
 
 			expect(numBeginContact).toEqual(0);
@@ -249,20 +253,12 @@ define([
 			rbcA.setPosition(new Vector3(0, 0, 0.1));
 			rbcB.setPosition(new Vector3(0, 0, -0.1));
 
-			rbcA.destroy();
-			rbcA.initialize();
-			rbcB.destroy();
-			rbcB.initialize();
 			world.process();
 
 			expect(numBeginContact).toEqual(1);
 			expect(numDuringContact).toEqual(0);
 			expect(numEndContact).toEqual(0);
 
-			rbcA.destroy();
-			rbcA.initialize();
-			rbcB.destroy();
-			rbcB.initialize();
 			world.process();
 
 			expect(numBeginContact).toEqual(1);
@@ -272,10 +268,6 @@ define([
 			rbcA.setPosition(new Vector3(0, 0, 3));
 			rbcB.setPosition(new Vector3(0, 0, -3));
 
-			rbcA.destroy();
-			rbcA.initialize();
-			rbcB.destroy();
-			rbcB.initialize();
 			world.process();
 
 			expect(numBeginContact).toEqual(1);

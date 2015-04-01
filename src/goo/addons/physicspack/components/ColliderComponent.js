@@ -5,6 +5,7 @@ define([
 	'goo/addons/physicspack/colliders/MeshCollider',
 	'goo/addons/physicspack/colliders/PlaneCollider',
 	'goo/addons/physicspack/colliders/CylinderCollider',
+	'goo/addons/physicspack/colliders/Collider',
 	'goo/math/Vector3',
 	'goo/math/Quaternion'
 ],
@@ -15,6 +16,7 @@ function (
 	MeshCollider,
 	PlaneCollider,
 	CylinderCollider,
+	Collider,
 	Vector3,
 	Quaternion
 ) {
@@ -35,6 +37,18 @@ function (
 		AbstractColliderComponent.apply(this, arguments);
 		this.type = 'ColliderComponent';
 		settings = settings || {};
+
+		/**
+		 * The Cannon.js Body instance, if the ColliderComponent was initialized without a RigidBodyComponent.
+		 * @type {CANNON.Body}
+		 */
+		this.cannonBody = null;
+
+		/**
+		 * The Cannon.js Shape instance
+		 * @type {CANNON.Body}
+		 */
+		this.cannonShape = null;
 	}
 	ColliderComponent.prototype = Object.create(AbstractColliderComponent.prototype);
 	ColliderComponent.prototype.constructor = ColliderComponent;
@@ -48,7 +62,7 @@ function (
 			material.restitution = this.material.restitution;
 		}
 		this.updateWorldCollider();
-		var cannonShape = ColliderComponent.getCannonShape(this.worldCollider);
+		var cannonShape = this.cannonShape = ColliderComponent.getCannonShape(this.worldCollider);
 		cannonShape.material = material;
 		var body = new CANNON.Body({
 			mass: 0,
@@ -58,8 +72,11 @@ function (
 		this.system.cannonWorld.addBody(body);
 		this.cannonBody = body;
 
-		// Set transform from entity
+		// Register it
 		var entity = this.entity;
+		this.system._shapeIdToColliderEntityMap.set(cannonShape.id, entity);
+
+		// Set transform from entity
 		var transform = entity.transformComponent.worldTransform;
 		body.position.copy(transform.translation);
 		tmpQuat.fromRotationMatrix(transform.rotation);
@@ -81,8 +98,13 @@ function (
 	};
 
 	ColliderComponent.prototype.destroy = function () {
-		this.system.cannonWorld.removeBody(this.cannonBody);
+		var body = this.cannonBody;
+		body.shapes.forEach(function (shape) {
+			this.system._shapeIdToColliderEntityMap.delete(shape.id);
+		}.bind(this));
+		this.system.cannonWorld.removeBody(body);
 		this.cannonBody = null;
+		this.cannonShape = null;
 	};
 
 	ColliderComponent.numCylinderSegments = 10;
@@ -128,6 +150,21 @@ function (
 			console.warn('Unhandled collider: ', collider);
 		}
 		return shape;
+	};
+
+	/**
+	 * @private
+	 * @param  {Object} obj
+	 * @param  {Entity} entity
+	 * @returns {boolean}
+	 */
+	ColliderComponent.applyOnEntity = function (obj, entity) {
+		if (obj instanceof Collider) {
+			entity.setComponent(new ColliderComponent({
+				collider: obj
+			}));
+			return true;
+		}
 	};
 
 	return ColliderComponent;

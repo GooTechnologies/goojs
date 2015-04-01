@@ -221,6 +221,8 @@ function (
 	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
 
+		// TODO: Move this logic to CANNON.js intead?
+
 		// Get overlapping entities
 		var contacts = this.cannonWorld.contacts.sort(this._sortContacts), // TODO: How to sort without creating a new array?
 			currentContacts = this._currentContacts,
@@ -454,6 +456,18 @@ function (
 	PhysicsSystem.prototype.destroy = function (entities) {
 		entities = entities || this._activeEntities;
 		var N = entities.length;
+
+		this._shapeIdToColliderEntityMap.forEach(function (key) {
+			this._shapeIdToColliderEntityMap.delete(key);
+		}.bind(this));
+
+		// Empty the contact event lists
+		this._lastContacts.forEach(function (key) {
+			this._lastContacts.delete(key);
+		}.bind(this));
+		this._currentContacts.forEach(function (key) {
+			this._currentContacts.delete(key);
+		}.bind(this));
 
 		// Destroy joints
 		for (var i = 0; i !== N; i++) {

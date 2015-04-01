@@ -13,7 +13,6 @@ define([
 	 */
 	function ColliderSystem() {
 		System.call(this, 'ColliderSystem', ['ColliderComponent', 'TransformComponent']);
-
 		this.priority = 1; // Should be processed after TransformSystem
 	}
 	ColliderSystem.prototype = Object.create(System.prototype);
