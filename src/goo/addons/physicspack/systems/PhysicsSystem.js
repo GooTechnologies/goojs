@@ -419,17 +419,6 @@ function (
 			rigidBodyComponent.initialize();
 		}
 
-		// Initialize joints - must be done *after* all bodies were initialized
-		for (var i = 0; i !== N; i++) {
-			var entity = entities[i];
-
-			var joints = entity.rigidBodyComponent.joints;
-			for (var j = 0; j < joints.length; j++) {
-				var joint = joints[j];
-				entity.rigidBodyComponent.initializeJoint(joint, entity, this);
-			}
-		}
-
 		// Initialize all lonely colliders without rigid body
 		var colliderEntities = this._activeColliderEntities;
 		for (var i = 0; i !== colliderEntities.length; i++) {
@@ -444,6 +433,17 @@ function (
 			}
 		}
 
+		// Initialize joints - must be done *after* all bodies were initialized
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+
+			var joints = entity.rigidBodyComponent.joints;
+			for (var j = 0; j < joints.length; j++) {
+				var joint = joints[j];
+				entity.rigidBodyComponent.initializeJoint(joint, entity, this);
+			}
+		}
+
 		this.initialized = true;
 	};
 
@@ -455,6 +455,17 @@ function (
 		entities = entities || this._activeEntities;
 		var N = entities.length;
 
+		// Destroy joints
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+
+			var joints = entity.rigidBodyComponent.joints;
+			for (var j = 0; j < joints.length; j++) {
+				var joint = joints[j];
+				entity.rigidBodyComponent.destroyJoint(joint, entity, this);
+			}
+		}
+
 		// Destroy all lonely colliders without rigid body
 		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
 			var colliderEntity = this._activeColliderEntities[i];
@@ -465,17 +476,6 @@ function (
 
 			if (colliderEntity.colliderComponent.cannonBody) {
 				colliderEntity.colliderComponent.destroy();
-			}
-		}
-
-		// Destroy joints
-		for (var i = 0; i !== N; i++) {
-			var entity = entities[i];
-
-			var joints = entity.rigidBodyComponent.joints;
-			for (var j = 0; j < joints.length; j++) {
-				var joint = joints[j];
-				entity.rigidBodyComponent.destroyJoint(joint, entity, this);
 			}
 		}
 

@@ -81,6 +81,7 @@ function (
 	};
 
 	ColliderComponent.prototype.destroy = function () {
+		this.system.cannonWorld.removeBody(this.cannonBody);
 		this.cannonBody = null;
 	};
 

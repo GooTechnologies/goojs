@@ -102,6 +102,7 @@ function (
 
 	AbstractPhysicsSystem.prototype._colliderInserted = function (/*entity*/) {};
 	AbstractPhysicsSystem.prototype._colliderDeleted = function (/*entity*/) {};
+	AbstractPhysicsSystem.prototype._colliderDeletedComponent = function (/*entity*/) {};
 
 	return AbstractPhysicsSystem;
 });

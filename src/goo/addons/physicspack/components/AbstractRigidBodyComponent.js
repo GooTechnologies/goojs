@@ -47,7 +47,6 @@ function (
 		var index = joints.indexOf(joint);
 		if (index !== -1) {
 			joints.splice(index, 1);
-			this.destroyJoint(joint);
 		}
 	};
 
@@ -157,18 +156,6 @@ function (
 	 * @param entity
 	 */
 	AbstractRigidBodyComponent.prototype.detached = function (/*entity*/) {
-
-		// Destroy joints
-		var joints = this.joints;
-		var len = joints.length;
-		for (var i = 0; i !== len; i++) {
-			this.destroyJoint(joints[i]);
-		}
-		joints.length = 0;
-
-		// Destroy the body
-		this.destroy();
-
 		this._entity = null;
 		this._system = null;
 	};
