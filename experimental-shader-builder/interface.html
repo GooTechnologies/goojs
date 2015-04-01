@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,100' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="interface.css">
+
+	<script src="../out/goo.js"></script>
+
+	<script src="lib/angular.js"></script>
+
+	<script src="lib/ace/ace.js"></script>
+	<script src="lib/ace/theme-monokai.js"></script>
+	<script src="lib/ace/mode-javascript.js"></script>
+	<script src="lib/ace/worker-javascript.js"></script>
+	<script src="lib/ace/mode-glsl.js"></script>
+
+	<script src="sub-v.js"></script>
+	<script src="shader-builder.js"></script>
+	<script src="shader-input-processor.js"></script>
+	<script src="interface.js"></script>
+
+	<style>
+		#goo {
+			width: 512px;
+			height: 512px;
+		}
+	</style>
+</head>
+<body ng-app="app" ng-controller="ShaderController as shaderController">
+
+<div class="pretty">
+	<section class="types">
+		<h2>Node types</h2>
+		<ul>
+			<li ng-repeat="(typeName, definition) in shaderController.nodeTypes"
+				ng-click="shaderController.activateTypeName(typeName)"
+				ng-class="{ selected: typeName === shaderController.activeTypeName }"
+				>
+				<div>
+					<span class="node-type">{{typeName}}</span> :: (<!--
+					--><div class="inline" ng-repeat="input in definition.inputs"><!--
+						--><span class="plug-type">{{input.type}}</span>
+						<span class="plug-name">{{input.name}}</span><!--
+						--><span ng-show="!$last">, </span><!--
+					--></div><!--
+					-->) -> (<!--
+					--><div class="inline" ng-repeat="outputs in definition.outputs"><!--
+						--><span class="plug-type">{{outputs.type}}</span>
+						<span class="plug-name">{{outputs.name}}</span><!--
+						--><span ng-show="!$last">, </span><!--
+					--></div><!--
+					-->)
+				</div>
+				<div class="code">
+					{{definition.body}}
+				</div>
+			</li>
+		</ul>
+	</section>
+
+	<section class="structure">
+		<h2>Node structure</h2>
+		<ul>
+			<li ng-repeat="node in shaderController.structure">
+				<span class="node-name">{{node.id}}</span> ::
+				<span class="node-type">{{node.type}}</span>
+				<button class="warn" ng-click="shaderController.removeNode($index)">X</button>
+
+				<ul>
+					<li class="connection" ng-repeat="output in node.outputsTo">
+						[<span class="plug-name">{{output.output}}</span>]--->[<span class="plug-name">{{output.input}}</span>]
+						<span ng-class="{
+							'node-name': true,
+							warn: !shaderController.nodeNames[output.to]
+						}">{{output.to}}</span>
+						<button class="warn"
+								ng-click="shaderController.removeNodeOutput($parent.$index, $index)">
+							X
+						</button>
+					</li>
+				</ul>
+
+				<select class="short-select"
+					ng-options="output for output in shaderController.ioByType[node.type].outputs"
+					ng-model="shaderController.newOutput[node.id].output">
+				</select>
+				--->
+				<select class="long-select"
+					ng-options="node.id for node in shaderController.structure"
+					ng-model="shaderController.newOutput[node.id].to">
+				</select>
+
+				<select class="short-select"
+					ng-options="input for input in shaderController.ioByType[shaderController.newOutput[node.id].to.type].inputs"
+					ng-model="shaderController.newOutput[node.id].input">
+				</select>
+
+				<button class="neutral" ng-click="shaderController.addNodeOutput($index, node.id)">Add Output</button>
+			</li>
+		</ul>
+
+		<select ng-options="item for item in shaderController.nodeTypeNames"
+				ng-model="shaderController.newNodeType">
+		</select>
+		<button class="neutral" ng-click="shaderController.addNode()">Add Node</button>
+	</section>
+</div>
+
+<div class="pretty">
+	<h2>Shader bit</h2>
+	<div id="shader-editor"></div>
+</div>
+
+<div id="canvas-container" class="pretty">
+
+</div>
+
+</body>
+</html>

@@ -57,6 +57,7 @@
       "name": "b",
       "type": "float"
     }],
+    "outputs": [],
     "body": "gl_FragColor = vec4(r, g, b, 1.0);"
   },
   "vec3": {
@@ -71,8 +72,8 @@
       "type": "float"
     }],
     "outputs": [{
-        "name": "vec",
-        "type": "vec3"
+      "name": "vec",
+      "type": "vec3"
     }],
     "body": "vec = vec3(x, y, z);"
   },

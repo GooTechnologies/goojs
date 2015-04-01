@@ -1,23 +1,14 @@
-require([
-	'goo/renderer/Material',
-	'goo/renderer/MeshData',
-	'goo/shapes/Box',
-	'goo/math/Vector3',
-	'lib/V'
-], function (
-	Material,
-	MeshData,
-	Box,
-	Vector3,
-	V
-) {
+(function () {
 	'use strict';
 
-	V.describe('...');
+	var Material = goo.Material;
+	var Shader = goo.Shader;
+	var MeshData = goo.MeshData;
+	var Box = goo.Box;
+	var Vector3 = goo.Vector3;
 
-	var goo = V.initGoo();
-	var world = goo.world;
-
+	var gooRunner = v.initGoo();
+	var world = gooRunner.world;
 
 
 	var typesEditor;
@@ -82,17 +73,16 @@ require([
 
 	var box;
 	function replaceBox(shaderSource) {
-		if (!box) { return; }
-		box.removeFromWorld();
+		if (box) { box.removeFromWorld(); }
 
-		var material = Material.createMaterial({
+		var material = new Material({
 			attributes: {
 				vertexPosition: MeshData.POSITION
 			},
 			uniforms: {
 				viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
 				worldMatrix: Shader.WORLD_MATRIX,
-				time: Shader.TIME
+				time : function() { return world.time; }
 			},
 			vshader: [
 				'attribute vec3 vertexPosition;',
@@ -105,13 +95,12 @@ require([
 				'}'
 			].join('\n'),
 			fshader: shaderSource
-		}, 'MyCoolMaterial');
+			//'void main(void) { gl_FragColor = vec4(1.0); }'
+		});
 
-		world.createEntity(new Box(), material).addToWorld();
+		box = world.createEntity(new Box(), material).addToWorld();
 	}
 
 
-	V.addOrbitCamera(new Vector3(20, Math.PI / 2, 0));
-
-	V.process();
-});
+	v.addOrbitCamera(new Vector3(5, Math.PI / 2, 0));
+})();

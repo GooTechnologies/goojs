@@ -3,15 +3,11 @@
 <head lang="en">
 	<meta charset="UTF-8">
 	<title></title>
+
 	<style>
 		#goo {
-			position: absolute;
-			top: 0;
-			left: 0;
-			bottom: 0;
-			right: 0;
-			width: 100%;
-			height: 100%;
+			width: 512px;
+			height: 512px;
 		}
 
 		body {
@@ -32,8 +28,6 @@
 	<div id="structure-editor"></div>
 	<div id="output-editor"></div>
 
-	<canvas id="goo"></canvas>
-
 	<script src="lib/ace/ace.js"></script>
 	<script src="lib/ace/theme-monokai.js"></script>
 	<script src="lib/ace/mode-javascript.js"></script>
@@ -41,6 +35,9 @@
 	<script src="lib/ace/mode-glsl.js"></script>
 
 	<script src="lib/jquery-2.1.3.min.js"></script>
+
+	<script src="../out/goo.js"></script>
+	<script src="sub-v.js"></script>
 
 	<script src="shader-builder.js"></script>
 	<script src="demo.js"></script>
