@@ -28,12 +28,6 @@ function (
 		 * @type {Array}
 		 */
 		this.joints = [];
-
-		/**
-		 * If true, the physics engine rigid body will be re-initialized in the next process loop.
-		 * @type {boolean}
-		 */
-		this._dirty = true;
 	}
 	AbstractRigidBodyComponent.prototype = Object.create(Component.prototype);
 	AbstractRigidBodyComponent.prototype.constructor = AbstractRigidBodyComponent;
