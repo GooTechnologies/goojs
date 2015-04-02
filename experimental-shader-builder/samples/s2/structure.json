@@ -4,7 +4,8 @@
   "externalInputs": [{
     "name": "x",
     "externalName": "time",
-    "type": "float"
+    "inputType": "uniform",
+    "dataType": "float"
   }],
   "outputsTo": [{
     "output": "s",

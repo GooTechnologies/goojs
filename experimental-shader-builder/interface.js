@@ -11,6 +11,9 @@
 			$http,
 			$q
 		) {
+			this.INPUT_TYPES = ['uniform', 'varying', 'attribute'];
+			this.DATA_TYPES = ['float', 'vec2', 'vec3', 'vec4', 'mat2', 'mat3', 'mat4'];
+
 			// bad name is bad
 			this._replaceBox = function () {
 				var result = shaderBits.buildShader(this.nodeTypes, this.structure);
@@ -128,6 +131,24 @@
 			this.removeNode = function (index) {
 				this.structure.splice(index, 1);
 				this.updateNodeNames();
+			};
+
+			// --- external input management ---
+			this.newExternalInput = {};
+
+			this.addNodeExternalInput = function (nodeIndex, nodeId) {
+				this.structure[nodeIndex].externalInputs.push({
+					name: this.newExternalInput[nodeId].name,
+					externalName: this.newExternalInput[nodeId].externalName,
+					inputType: this.newExternalInput[nodeId].inputType,
+					dataType: this.newExternalInput[nodeId].dataType
+				});
+				this._replaceBox();
+			};
+
+			this.removeNodeExternalInput = function (nodeIndex, inputIndex) {
+				this.structure[nodeIndex].externalInputs.splice(inputIndex, 1);
+				this._replaceBox();
 			};
 
 			// --- output management ---

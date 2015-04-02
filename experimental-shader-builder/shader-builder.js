@@ -51,7 +51,7 @@
 			return node.externalInputs;
 		}).map(function (node) {
 			return node.externalInputs.map(function (externalInput) {
-				return 'uniform ' + externalInput.type + ' ' + externalInput.externalName + ';';
+				return externalInput.inputType + ' ' + externalInput.dataType + ' ' + externalInput.externalName + ';';
 			}).join('\n');
 		}).join('\n');
 

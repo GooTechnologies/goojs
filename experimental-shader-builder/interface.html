@@ -73,6 +73,17 @@
 				<span class="node-type">{{node.type}}</span>
 				<button class="warn" ng-click="shaderController.removeNode($index)">X</button>
 
+				<ul ng-show="node.externalInputs.length > 0">
+					<li class="connection" ng-repeat="externalInput in node.externalInputs">
+						<span class="plug-type">{{externalInput.inputType}}</span> <span class="plug-name">{{externalInput.externalName}}</span> ~~~>[<span class="plug-name">{{externalInput.name}}</span>]
+						<button class="warn"
+								ng-click="shaderController.removeNodeExternalInput($parent.$index, $index)"
+							>
+							X
+						</button>
+					</li>
+				</ul>
+
 				<ul>
 					<li class="connection" ng-repeat="output in node.outputsTo">
 						[<span class="plug-name">{{output.output}}</span>]--->[<span class="plug-name">{{output.input}}</span>]
@@ -81,11 +92,34 @@
 							warn: !shaderController.nodeNames[output.to]
 						}">{{output.to}}</span>
 						<button class="warn"
-								ng-click="shaderController.removeNodeOutput($parent.$index, $index)">
+							ng-click="shaderController.removeNodeOutput($parent.$index, $index)"
+						>
 							X
 						</button>
 					</li>
 				</ul>
+
+
+				<div ng-show="shaderController.ioByType[node.type].inputs.length > 0">
+					<select class="long-select"
+						ng-options="inputType for inputType in shaderController.INPUT_TYPES"
+						ng-model="shaderController.newExternalInput[node.id].inputType">
+					</select>
+					<select class="short-select"
+							ng-options="dataType for dataType in shaderController.DATA_TYPES"
+							ng-model="shaderController.newExternalInput[node.id].dataType">
+					</select>
+					<input ng-model="shaderController.newExternalInput[node.id].externalName">
+					<select class="short-select"
+							ng-options="input for input in shaderController.ioByType[node.type].inputs"
+							ng-model="shaderController.newExternalInput[node.id].name">
+					</select>
+					<button class="neutral"
+							ng-click="shaderController.addNodeExternalInput($index, node.id)"
+					>
+						Add External Input
+					</button>
+				</div>
 
 				<div ng-show="shaderController.ioByType[node.type].outputs.length > 0">
 					<select class="short-select"
@@ -104,7 +138,8 @@
 					</select>
 
 					<button class="neutral"
-							ng-click="shaderController.addNodeOutput($index, node.id)">
+						ng-click="shaderController.addNodeOutput($index, node.id)"
+					>
 						Add Output
 					</button>
 				</div>
