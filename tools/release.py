@@ -16,6 +16,7 @@ TMP_OUT = 'out'
 
 GRUNT_BIN = 'node_modules/grunt-cli/bin/grunt'
 
+ENGINE_RELEASE_BASE_FOLDER = 'engine-builds'
 
 def build_engine(version, grunt_build_task, tmp_relase_dir):
 
@@ -40,8 +41,8 @@ def copy_to_release_dir(release_dir, engine_folders):
 	if os.path.isdir(release_dir):
 		print 'Release directory already exists:', release_dir
 	else:
-		print 'Creating directory for release:', release_dir
 		os.makedirs(release_dir)
+		print 'Created directory for release:', release_dir
 
 	release_lib_folder = os.path.join(release_dir, 'lib')
 	os.makedirs(release_lib_folder)
@@ -62,7 +63,7 @@ def copy_to_release_dir(release_dir, engine_folders):
 			source, destination = directory
 		dest_path = os.path.join(release_dir, destination)
 		shutil.copytree(source, dest_path)
-		print 'Copying "%s" into "%s"' % (source, dest_path)
+		print 'Copied "%s" into "%s"' % (source, dest_path)
 
 	shutil.copy('lib/require.js', release_lib_folder)
 	shutil.copy('lib/ammo.small.js', release_lib_folder)
@@ -71,34 +72,14 @@ def copy_to_release_dir(release_dir, engine_folders):
 	shutil.copy('LICENSE', release_dir)
 	shutil.copy('CHANGES', release_dir)
 
-	"""
-	shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
-
-	# pack files must also be copied
-	for packName in (
-		'fsm',
-		'geometry',
-		'quad',
-		'script',
-		'timeline',
-		'debug',
-		'p2',
-		'box2d',
-		'terrain',
-		'ammo',
-		'cannon',
-		'water',
-		'linerender',
-		'animation',
-		'soundmanager2',
-		'gamepad',
-		'pass',
-		'gizmo',
-		'physics'
-	):
-		shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
-
-	"""
+	engine_releases_folder = os.path.abspath(os.path.join(release_dir, ENGINE_RELEASE_BASE_FOLDER))
+	os.makedirs(engine_releases_folder)
+	print 'Created folder : "%s"' % engine_releases_folder
+	for engine_build_folder in engine_folders:
+		release_name = os.path.basename(engine_build_folder)
+		release_dest = os.path.join(engine_releases_folder, release_name)
+		shutil.copytree(engine_build_folder, release_dest)
+		print 'Copied %s -> %s' % (engine_build_folder, release_dest)
 
 
 def setup_tmp_build_dirs(sub_releases):
@@ -128,8 +109,11 @@ if __name__ == '__main__':
 		and the relevant build output will then be copied over to the
 		specified release_dir.
 
+		the release_dir will now have a special folder containing the
+		engine builds: {engine_release_folder}
+
 		The engine's documentation and visual tests are built as well.
-	""".format(out_dir=TMP_OUT)
+	""".format(out_dir=TMP_OUT, engine_release_folder=ENGINE_RELEASE_BASE_FOLDER)
 
 	parser = ArgumentParser(description=script_description)
 
@@ -152,12 +136,10 @@ if __name__ == '__main__':
 	for i in range(len(builds_to_run)):
 		build_engine(args.version, builds_to_run[i], rel_dirs[i])
 
-	"""
 	# Build documentation
 	subprocess.check_call([GRUNT_BIN, 'jsdoc'])
 	# Build visual tests
 	subprocess.check_call([GRUNT_BIN, 'generate-toc'])
-	"""
 
 	# Copy the build result into the release directory
 	copy_to_release_dir(args.release_dir, rel_dirs)
