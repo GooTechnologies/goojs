@@ -9,6 +9,11 @@ body {
     vertical-align: text-top;
 }
 
+#canvas-container {
+    display: inline-block;
+    vertical-align: text-top;
+}
+
 h2 {
     font-weight: 100;
     color: #f9f9f9;

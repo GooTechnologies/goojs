@@ -11,30 +11,61 @@
 			$http,
 			$q
 		) {
-			// --- fetch the samples ---
-			var p1 = $http.get('samples/s2/types.json')
-				.success(function (data) {
-					this.nodeTypes = data;
-					this.updateNodeTypeNames();
-					this.updateIOByType();
-
-					this.activateTypeName(Object.keys(this.nodeTypes)[0]);
-				}.bind(this));
-
-			var p2 = $http.get('samples/s2/structure.json')
-				.success(function (data) {
-					this.structure = data;
-					this.updateNodeNames();
-				}.bind(this));
-
 			// bad name is bad
 			this._replaceBox = function () {
 				var result = shaderBits.buildShader(this.nodeTypes, this.structure);
 				replaceBox(result);
 			}.bind(this);
 
-			$q.all([p1, p2]).then(this._replaceBox);
+			// firebase
+			var firebaseRef = new Firebase('https://blinding-heat-7806.firebaseio.com/');
+			var shaderBitRef = firebaseRef.child('shader-bit');
 
+			shaderBitRef.on('value', function (snapshot) {
+				var data = snapshot.val();
+
+				this.nodeTypes = dataNormalizer.normalizeNodeTypes(data.nodeTypes);
+				this.structure = dataNormalizer.normalizeStructure(data.structure);
+
+				this.updateNodeTypeNames();
+				this.updateIOByType();
+
+				this.activateTypeName(Object.keys(this.nodeTypes)[0]);
+
+				this.updateNodeNames();
+				this._replaceBox();
+			}.bind(this));
+
+			this.save = function () {
+				var data = {
+					nodeTypes: angular.copy(this.nodeTypes),
+					structure: angular.copy(this.structure)
+				};
+
+				shaderBitRef.set(data, function () {
+					console.log('save ok');
+				});
+			};
+
+			this.reset = function () {
+				// --- fetch the samples ---
+				var p1 = $http.get('samples/s2/types.json')
+					.success(function (data) {
+						this.nodeTypes = data;
+						this.updateNodeTypeNames();
+						this.updateIOByType();
+
+						this.activateTypeName(Object.keys(this.nodeTypes)[0]);
+					}.bind(this));
+
+				var p2 = $http.get('samples/s2/structure.json')
+					.success(function (data) {
+						this.structure = data;
+						this.updateNodeNames();
+					}.bind(this));
+
+				$q.all([p1, p2]).then(this._replaceBox);
+			};
 
 			// node types and instances ---
 			this.newNodeTypeName = '';

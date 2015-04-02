@@ -11,6 +11,8 @@
 
 	<script src="lib/angular.js"></script>
 
+	<script src="https://cdn.firebase.com/js/client/1.1.2/firebase.js"></script>
+
 	<script src="lib/ace/ace.js"></script>
 	<script src="lib/ace/theme-monokai.js"></script>
 	<script src="lib/ace/mode-javascript.js"></script>
@@ -18,6 +20,7 @@
 	<script src="lib/ace/mode-glsl.js"></script>
 
 	<script src="sub-v.js"></script>
+	<script src="data-normalizer.js"></script>
 	<script src="shader-builder.js"></script>
 	<script src="shader-input-processor.js"></script>
 	<script src="interface.js"></script>
@@ -115,8 +118,12 @@
 	<div id="shader-editor"></div>
 </div>
 
-<div id="canvas-container" class="pretty">
-
+<div id="canvas-container">
+	<h2>Result</h2>
+	<div>
+		<button class="ok" ng-click="shaderController.save()">Save</button>
+		<button class="warn" ng-click="shaderController.reset()">Reset</button>
+	</div>
 </div>
 
 </body>
