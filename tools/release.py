@@ -18,6 +18,7 @@ GRUNT_BIN = 'node_modules/grunt-cli/bin/grunt'
 
 ENGINE_RELEASE_BASE_FOLDER = 'engine-builds'
 
+
 def build_engine(version, grunt_build_task, tmp_relase_dir):
 
 	print 'Building engine with grunt task: "%s" with version: "%s"' % \
@@ -109,13 +110,14 @@ if __name__ == '__main__':
 		and the relevant build output will then be copied over to the
 		specified release_dir.
 
-		the release_dir will now have a special folder containing the
+		The release_dir will now have a special folder containing the
 		engine builds: {engine_release_folder}
 
 		The engine's documentation and visual tests are built as well.
 	""".format(out_dir=TMP_OUT, engine_release_folder=ENGINE_RELEASE_BASE_FOLDER)
 
-	parser = ArgumentParser(description=script_description)
+	parser = ArgumentParser(description=script_description,
+							epilog='Run from goojs root')
 
 	parser.add_argument('release_dir',
 						help='Root directory to copy the built engine into')
