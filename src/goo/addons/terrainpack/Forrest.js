@@ -116,6 +116,7 @@ define([
 		material.setTexture('NORMAL_MAP', forrestAtlasNormals);
 		material.uniforms.discardThreshold = 0.6;
 		// material.blendState.blending = 'CustomBlending';
+		// material.uniforms.materialAmbient = [0, 0, 0, 0];
 		material.uniforms.materialAmbient = [0, 0, 0, 0];
 		material.uniforms.materialDiffuse = [1, 1, 1, 1];
 		material.uniforms.materialSpecular = [0, 0, 0, 0];
@@ -314,14 +315,14 @@ define([
 		var patchDensity = this.patchDensity;
 		var patchSpacing = this.patchSpacing;
 
-		if (gridEntity) {
-			// remove any previous old trees.
-			gridEntity.traverse(function (entity, level) {
-				if (level > 0) {
-					entity.removeFromWorld();
-				}
-			});
-		}
+		// if (gridEntity) {
+		// 	// remove any previous old trees.
+		// 	gridEntity.traverse(function (entity, level) {
+		// 		if (level > 0) {
+		// 			entity.removeFromWorld();
+		// 		}
+		// 	});
+		// }
 
 		MathUtils.randomSeed = patchX * 10000 + patchZ;
 		for (var x = 0; x < patchDensity; x++) {
@@ -338,7 +339,7 @@ define([
 		}
 
 		var meshDatas = meshBuilder.build();
-		// if (levelOfDetail === 2) {
+		// if (gridEntity && levelOfDetail === 2) {
 		// 	new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
 		// }
 
@@ -478,7 +479,7 @@ define([
 		'void main(void)',
 		'{',
 		'	vec4 final_color = texture2D(diffuseMap, texCoord0);',
-			'if (final_color.a < discardThreshold) discard;',
+			// 'if (final_color.a < discardThreshold) discard;',
 			// 'final_color = vec4(1.0);',
 
 			'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
@@ -489,10 +490,10 @@ define([
 			// 'final_color = vec4(N, 1.0);',
 			ShaderBuilder.light.fragment,
 
-			'#ifdef FOG',
-			'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
-			'final_color.rgb = mix(final_color.rgb, fogColor, d);',
-			'#endif',
+			// '#ifdef FOG',
+			// 'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+			// 'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+			// '#endif',
 
 		'	gl_FragColor = final_color;',
 		'}'//

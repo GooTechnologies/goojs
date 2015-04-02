@@ -478,6 +478,8 @@ require([
 	ShaderBuilder.FOG_SETTINGS = [levelData.fog.start, levelData.fog.end];
 	ShaderBuilder.FOG_COLOR = levelData.fog.color;
 
+	// ShaderBuilder.GLOBAL_AMBIENT = [0.5, 0.5, 0.5];
+
 	terrainHandler.initLevel(terrainData, terrainEditSettings, forrestLODMap).then(function() {
 
 		// curLightmap = lightMapData;
