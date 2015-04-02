@@ -119,6 +119,8 @@ function (
 			this._lastContacts.delete(hash);
 		}.bind(this);
 
+		this.initialized = false;
+
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 	}
 	PhysicsSystem.prototype = Object.create(AbstractPhysicsSystem.prototype);
@@ -218,6 +220,8 @@ function (
 	 * @private
 	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
+
+		// TODO: Move this logic to CANNON.js intead?
 
 		// Get overlapping entities
 		var contacts = this.cannonWorld.contacts.sort(this._sortContacts), // TODO: How to sort without creating a new array?
@@ -386,9 +390,8 @@ function (
 	PhysicsSystem.prototype.play = function () {
 		this.passive = false;
 
-		// this.setAllBodiesDirty();
-		// this.setAllCollidersDirty();
-		this.updateLonelyColliders(true);
+		// Initialize all of the physics world
+		this.initialize();
 	};
 
 	/**
@@ -397,108 +400,8 @@ function (
 	PhysicsSystem.prototype.stop = function () {
 		this.pause();
 
-		// Trash everything
-		this.setAllBodiesDirty();
-		this.setAllCollidersDirty();
-	};
-
-	PhysicsSystem.prototype.setAllBodiesDirty = function () {
-		for (var i = 0; i < this._activeEntities.length; i++) {
-			this._activeEntities[i].rigidBodyComponent.setToDirty();
-		}
-	};
-
-	PhysicsSystem.prototype.setAllCollidersDirty = function () {
-		for (var i = 0; i < this._activeColliderEntities.length; i++) {
-			this._activeColliderEntities[i].colliderComponent.setToDirty();
-		}
-	};
-
-	/**
-	 * @private
-	 * @param  {Entity} entity
-	 */
-	PhysicsSystem.prototype.inserted = function (entity) {
-		entity.rigidBodyComponent.initialize();
-	};
-
-	/**
-	 * @private
-	 * @param  {Entity} entity
-	 */
-	PhysicsSystem.prototype.deleted = function (entity) {
-		if (entity.rigidBodyComponent) {
-			for (var i = 0; i < entity.rigidBodyComponent.joints.length; i++) {
-				entity.rigidBodyComponent.destroyJoint(entity.rigidBodyComponent.joints[i]);
-			}
-			entity.rigidBodyComponent.joints.length = 0;
-			entity.rigidBodyComponent.destroy();
-		}
-	};
-
-	/**
-	 * @private
-	 * @param  {Entity} entity
-	 */
-	PhysicsSystem.prototype._addLonelyCollider = function (entity) {
-		var material = null;
-		if (entity.colliderComponent.material) {
-			material = new CANNON.Material();
-			material.friction = entity.colliderComponent.material.friction;
-			material.restitution = entity.colliderComponent.material.restitution;
-		}
-		entity.colliderComponent.updateWorldCollider();
-		var shape = RigidBodyComponent.getCannonShape(entity.colliderComponent.worldCollider);
-		shape.material = material;
-		var body = new CANNON.Body({
-			mass: 0,
-			collisionResponse: !entity.colliderComponent.isTrigger,
-			shape: shape
-		});
-		this.cannonWorld.addBody(body);
-		entity.colliderComponent.cannonBody = body;
-		if (entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidBodyComponent) {
-			entity.colliderComponent.bodyEntity.rigidBodyComponent.setToDirty();
-		}
-		entity.colliderComponent.bodyEntity = null;
-		entity.colliderComponent.setToDirty();
-	};
-
-	/**
-	 * @private
-	 * @param  {Entity} entity
-	 */
-	PhysicsSystem.prototype._removeLonelyCollider = function (entity) {
-		if (entity.colliderComponent.cannonBody) {
-			this.cannonWorld.removeBody(entity.colliderComponent.cannonBody);
-			entity.colliderComponent.cannonBody = null;
-		}
-
-		var bodyEntity = entity.colliderComponent.getBodyEntity();
-		if (bodyEntity) {
-			bodyEntity.rigidBodyComponent.setToDirty();
-		}
-
-		entity.colliderComponent.setToDirty();
-	};
-
-	PhysicsSystem.prototype._colliderDeleted = function (entity) {
-		var colliderComponent = entity.colliderComponent;
-		if (colliderComponent) {
-			var body = colliderComponent.cannonBody;
-			if (body) {
-				this.cannonWorld.removeBody(body);
-				colliderComponent.cannonBody = null;
-			}
-		}
-	};
-
-	PhysicsSystem.prototype._colliderDeletedComponent = function (entity, colliderComponent) {
-		var body = colliderComponent.cannonBody;
-		if (body) {
-			this.cannonWorld.removeBody(body);
-			colliderComponent.cannonBody = null;
-		}
+		// Trash the physics world
+		this.destroy();
 	};
 
 	/**
@@ -506,17 +409,30 @@ function (
 	 * @param  {array} entities
 	 */
 	PhysicsSystem.prototype.initialize = function (entities) {
+		entities = entities || this._activeEntities;
+
 		var N = entities.length;
 
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
 			var rigidBodyComponent = entity.rigidBodyComponent;
 
-			// Initialize bodies
-			if (rigidBodyComponent.isDirty()) {
-				rigidBodyComponent.initialize();
+			// Initialize body
+			rigidBodyComponent.initialize();
+		}
+
+		// Initialize all lonely colliders without rigid body
+		var colliderEntities = this._activeColliderEntities;
+		for (var i = 0; i !== colliderEntities.length; i++) {
+			var colliderEntity = colliderEntities[i];
+
+			if (!colliderEntity.colliderComponent) { // Needed?
+				continue;
 			}
-			rigidBodyComponent.updateDirtyColliders();
+
+			if (!colliderEntity.colliderComponent.getBodyEntity() && !colliderEntity.colliderComponent.cannonBody) {
+				colliderEntity.colliderComponent.initialize();
+			}
 		}
 
 		// Initialize joints - must be done *after* all bodies were initialized
@@ -526,15 +442,45 @@ function (
 			var joints = entity.rigidBodyComponent.joints;
 			for (var j = 0; j < joints.length; j++) {
 				var joint = joints[j];
-				if (!joint._dirty) {
-					continue;
-				}
 				entity.rigidBodyComponent.initializeJoint(joint, entity, this);
-				joint._dirty = false;
 			}
 		}
 
-		// Initialize all lonely colliders without rigid body
+		this.initialized = true;
+	};
+
+	/**
+	 * @private
+	 * @param  {array} entities
+	 */
+	PhysicsSystem.prototype.destroy = function (entities) {
+		entities = entities || this._activeEntities;
+		var N = entities.length;
+
+		this._shapeIdToColliderEntityMap.forEach(function (key) {
+			this._shapeIdToColliderEntityMap.delete(key);
+		}.bind(this));
+
+		// Empty the contact event lists
+		this._lastContacts.forEach(function (key) {
+			this._lastContacts.delete(key);
+		}.bind(this));
+		this._currentContacts.forEach(function (key) {
+			this._currentContacts.delete(key);
+		}.bind(this));
+
+		// Destroy joints
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+
+			var joints = entity.rigidBodyComponent.joints;
+			for (var j = 0; j < joints.length; j++) {
+				var joint = joints[j];
+				entity.rigidBodyComponent.destroyJoint(joint, entity, this);
+			}
+		}
+
+		// Destroy all lonely colliders without rigid body
 		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
 			var colliderEntity = this._activeColliderEntities[i];
 
@@ -542,15 +488,20 @@ function (
 				continue;
 			}
 
-			if (!colliderEntity.colliderComponent.getBodyEntity() && (!colliderEntity.colliderComponent.cannonBody || colliderEntity.colliderComponent.isDirty())) {
-				this._removeLonelyCollider(colliderEntity);
-				this._addLonelyCollider(colliderEntity);
-			}
-
-			if (colliderEntity.colliderComponent.getBodyEntity() && colliderEntity.colliderComponent.cannonBody) {
-				this._removeLonelyCollider(colliderEntity);
+			if (colliderEntity.colliderComponent.cannonBody) {
+				colliderEntity.colliderComponent.destroy();
 			}
 		}
+
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+			var rigidBodyComponent = entity.rigidBodyComponent;
+
+			// Destroy body
+			rigidBodyComponent.destroy();
+		}
+
+		this.initialized = false;
 	};
 
 	/**
@@ -559,42 +510,11 @@ function (
 	 * @param  {number} tpf
 	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
-		this.initialize(entities);
-		this.updateLonelyColliders();
+		if (!this.initialized) {
+			this.initialize();
+		}
 		this.step(tpf);
 		this.syncTransforms(entities);
-	};
-
-	/**
-	 * Checks for dirty ColliderComponents without a RigidBodyComponent and updates them.
-	 */
-	PhysicsSystem.prototype.updateLonelyColliders = function (forceUpdate) {
-		for (var i = this._activeColliderEntities.length - 1; i >= 0; i--) {
-			var entity = this._activeColliderEntities[i];
-
-			// Set transform from entity
-			var colliderComponent = entity.colliderComponent;
-			if (colliderComponent && (forceUpdate || colliderComponent._dirty || entity.transformComponent._updated)) {
-				var transform = entity.transformComponent.worldTransform;
-				var body = colliderComponent.cannonBody;
-				if (body) {
-					body.position.copy(transform.translation);
-					tmpQuat.fromRotationMatrix(transform.rotation);
-					body.quaternion.copy(tmpQuat);
-
-					// Update scale of stuff
-					var cannonShape = body.shapes[0];
-					if (cannonShape) {
-						cannonShape.collisionResponse = !colliderComponent.isTrigger;
-						colliderComponent.updateWorldCollider();
-						RigidBodyComponent.copyScaleFromColliderToCannonShape(
-							cannonShape,
-							colliderComponent.worldCollider
-						);
-					}
-				}
-			}
-		}
 	};
 
 	/**
