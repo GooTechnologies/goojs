@@ -35,6 +35,27 @@
 
 			$q.all([p1, p2]).then(this._replaceBox);
 
+
+			// node types and instances ---
+			this.newNodeTypeName = '';
+
+			this.addNodeType = function () {
+				this.nodeTypes[this.newNodeTypeName] = {
+					inputs: [],
+					outputs: [],
+					body: ''
+				};
+				this.updateNodeTypeNames();
+			};
+
+			this.removeNodeType = function (typeName) {
+				delete this.nodeTypes[typeName];
+				this.updateNodeTypeNames();
+				if (typeName === this.activeTypeName) {
+					this.activateTypeName(Object.keys(this.nodeTypes)[0]);
+				}
+			};
+
 			this.generateNewNodeName = function () {
 				var maxId = this.structure.map(function (node) {
 					return parseInt(node.id.match(/_(\d+)/)[1], 10);

@@ -38,27 +38,28 @@
 			<li ng-repeat="(typeName, definition) in shaderController.nodeTypes"
 				ng-click="shaderController.activateTypeName(typeName)"
 				ng-class="{ selected: typeName === shaderController.activeTypeName }"
-				>
-				<div>
-					<span class="node-type">{{typeName}}</span> :: (<!--
-					--><div class="inline" ng-repeat="input in definition.inputs"><!--
-						--><span class="plug-type">{{input.type}}</span>
-						<span class="plug-name">{{input.name}}</span><!--
-						--><span ng-show="!$last">, </span><!--
-					--></div><!--
-					-->) -> (<!--
-					--><div class="inline" ng-repeat="outputs in definition.outputs"><!--
-						--><span class="plug-type">{{outputs.type}}</span>
-						<span class="plug-name">{{outputs.name}}</span><!--
-						--><span ng-show="!$last">, </span><!--
-					--></div><!--
-					-->)
-				</div>
-				<div class="code">
-					{{definition.body}}
-				</div>
+			>
+				<span class="node-type">{{typeName}}</span> :: (<!--
+				--><div class="inline" ng-repeat="input in definition.inputs"><!--
+					--><span class="plug-type">{{input.type}}</span>
+					<span class="plug-name">{{input.name}}</span><!--
+					--><span ng-show="!$last">, </span><!--
+				--></div><!--
+				-->) -> (<!--
+				--><div class="inline" ng-repeat="outputs in definition.outputs"><!--
+					--><span class="plug-type">{{outputs.type}}</span>
+					<span class="plug-name">{{outputs.name}}</span><!--
+					--><span ng-show="!$last">, </span><!--
+				--></div><!--
+				-->)
+				<button class="warn"
+						ng-click="shaderController.removeNodeType(typeName)">
+					X
+				</button>
 			</li>
 		</ul>
+		<input type="text" ng-model="shaderController.newNodeTypeName">
+		<button class="neutral" ng-click="shaderController.addNodeType()">Add Node Type</button>
 	</section>
 
 	<section class="structure">

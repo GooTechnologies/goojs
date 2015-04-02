@@ -49,7 +49,7 @@
 
 		var lineCounter = 0;
 
-		while (isDeclarationy(lines[lineCounter]) && lineCounter < lines.length) {
+		while (isDeclarationy(lines[lineCounter]) && lineCounter < lines.length - 1) {
 			lineCounter++;
 		}
 

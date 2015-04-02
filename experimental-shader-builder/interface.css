@@ -18,7 +18,6 @@ h2 {
 
 ul {
     list-style-type: none;
-    /*padding-left: 16px;*/
     margin-bottom: 16px;
 }
 
@@ -91,6 +90,19 @@ select, option {
 }
 
 select:hover {
+    background-color: #52534f;
+}
+
+input {
+    width: 96px;
+    background-color: #393a36;
+    border: none;
+    outline: none;
+    padding: 2px;
+    color: white;
+}
+
+input:hover {
     background-color: #52534f;
 }
 
