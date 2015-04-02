@@ -14,6 +14,7 @@
 			// bad name is bad
 			this._replaceBox = function () {
 				var result = shaderBits.buildShader(this.nodeTypes, this.structure);
+				window._result = result;
 				replaceBox(result);
 			}.bind(this);
 
@@ -182,6 +183,7 @@
 			function onInput() {
 				var shaderBit = this.shaderEditor.getValue();
 				this.nodeTypes[this.activeTypeName] = shaderInputProcessor.unpack(shaderBit);
+				this.updateIOByType();
 				$scope.$apply();
 				this._replaceBox();
 			}
