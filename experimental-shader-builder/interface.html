@@ -87,22 +87,27 @@
 					</li>
 				</ul>
 
-				<select class="short-select"
-					ng-options="output for output in shaderController.ioByType[node.type].outputs"
-					ng-model="shaderController.newOutput[node.id].output">
-				</select>
-				--->
-				<select class="long-select"
-					ng-options="node.id for node in shaderController.structure"
-					ng-model="shaderController.newOutput[node.id].to">
-				</select>
+				<div ng-show="shaderController.ioByType[node.type].outputs.length > 0">
+					<select class="short-select"
+						ng-options="output for output in shaderController.ioByType[node.type].outputs"
+						ng-model="shaderController.newOutput[node.id].output">
+					</select>
+					--->
+					<select class="long-select"
+						ng-options="node.id for node in shaderController.structure"
+						ng-model="shaderController.newOutput[node.id].to">
+					</select>
 
-				<select class="short-select"
-					ng-options="input for input in shaderController.ioByType[shaderController.newOutput[node.id].to.type].inputs"
-					ng-model="shaderController.newOutput[node.id].input">
-				</select>
+					<select class="short-select"
+						ng-options="input for input in shaderController.ioByType[shaderController.newOutput[node.id].to.type].inputs"
+						ng-model="shaderController.newOutput[node.id].input">
+					</select>
 
-				<button class="neutral" ng-click="shaderController.addNodeOutput($index, node.id)">Add Output</button>
+					<button class="neutral"
+							ng-click="shaderController.addNodeOutput($index, node.id)">
+						Add Output
+					</button>
+				</div>
 			</li>
 		</ul>
 
