@@ -1,0 +1,158 @@
+[{
+	"id": "testrange",
+	"name": "Awesome Testing range",
+       "legendMapCoords": {
+        "x" : 20,
+        "y": 85
+       },
+	"ammo": {
+		"amount": 10
+	},
+	"playerStart": {
+		"translation" : [25,0,25],
+		"rotation": [1,0,0,0,1,0,0,0,1]
+	},
+	"mapObjects": [{
+		"id": "thr1",
+		"type": "thrower1",
+		"scriptData": {
+			"throws": [{
+				"time": 0.0,
+				"type": "pigeon"
+			}, {
+				"time": 0.5,
+				"type": "pigeon"
+			}, {
+				"time": 1.0,
+				"type": "pigeon"
+			}],
+			"repeatTime": 2.0
+		},
+		"transform" : {
+			"translation" : [26, 10, 23],
+			"rotation" : [1,0,0,0,1,0,0,0,1]
+		}
+	}, {
+		"id": "thr2",
+		"type": "thrower1",
+		"scriptData": {
+			"throws": [{
+				"time": 1.25,
+				"type": "pigeon"
+			}, {
+				"time": 1.50,
+				"type": "pigeon"
+			}, {
+				"time": 1.75,
+				"type": "pigeon"
+			}],
+			"repeatTime": 2.0
+		},
+		"transform": {
+			"translation" : [30, 10, 30],
+			"rotation": [1,0,0,0,1,0,0,01]
+		}
+	}, {
+		"id": "melon1",
+		"type": "statictarget",
+		"scriptData": {
+			"target": "watermelon"
+		},
+		"transform": {
+			"translation" : [20, 10, 20],
+			"rotation": [1,0,0,0,1,0,0,01]
+		}
+	}, {
+		"id": "teddy1",
+		"type": "parachutedrop",
+		"scriptData": {
+			"target": "teddybear"
+		},
+		"transform": {
+			"translation" : [15, 10, 15],
+			"rotation": [1,0,0,0,1,0,0,01]
+		}
+	}],
+	"time": 340,
+	"win": {
+		"bronze": {
+			"score": 10
+		},
+		"silver": {
+			"score": 20
+		},
+		"gold": {
+			"score": 30,
+			"bonus": "3inarow"
+		}
+	},
+	"ammo": {
+		"type": "xx",
+		"amount": 20
+	},
+	"time": 240,
+	"wind": {
+		"vector": [-4, 0, 4],
+	},
+	"weapons": [
+		"12Pump"
+	],
+	"sounds": [
+		"ambience1",
+		"birdsong"
+	],
+	"platforms": [
+		"platform1"
+	],
+	"targets": [
+		"pigeon",
+		"can"
+	]
+}, {
+	"id": "testrange_alt",
+	"name": "Alternate testing range",
+       "legendMapCoords": {
+        "x" : 37,
+        "y": 85
+       },
+	"ammo": {
+		"amount": 10
+	},
+	"startPoint": "PlayerStart",
+	"mapObjects": [],
+	"time": 340,
+	"win": {
+		"bronze": {
+			"score": 10
+		},
+		"silver": {
+			"score": 20
+		},
+		"gold": {
+			"score": 30,
+			"bonus": "3inarow"
+		}
+	},
+	"ammo": {
+		"type": "xx",
+		"amount": 20
+	},
+	"time": 240,
+	"wind": {
+		"vector": [100, 0, 0]
+	},
+	"weapons": [
+		"12Pump"
+	],
+	"sounds": [
+		"ambience1",
+		"birdsong"
+	],
+	"platforms": [
+		"platform1"
+	],
+	"targets": [
+		"pigeon",
+		"can"
+	]
+}]

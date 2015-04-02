@@ -1,0 +1,22 @@
+[
+	{
+		"keybinding_id":"boost_key_1",
+		"name": "1",
+		"keys": ["1"]
+	},
+	{
+		"keybinding_id":"boost_key_2",
+		"name": "2",
+		"keys": ["2"]
+	},
+	{
+		"keybinding_id":"boost_key_3",
+		"name": "3",
+		"keys": ["3"]
+	},
+	{
+		"keybinding_id":"boost_key_4",
+		"name": "4",
+		"keys": ["4"]
+	}
+]

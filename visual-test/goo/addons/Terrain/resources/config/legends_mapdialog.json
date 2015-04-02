@@ -1,0 +1,221 @@
+[
+    {
+        "levelId": "level_02",
+        "enabled": true,
+        "event": "onMapShow",
+        "avatar": "assets/legends/legend_specific_icons/l1_guide.jpg",
+        "heading": "What? Who? Oh, hello there!",
+        "pages":[{
+                "text": [
+                    "Another one got past the tutorial? Already? Well, time to do the old schtick again…",
+                    "Ahem! OK, then: You think you are ready to take on the Legends? Is that a yes? I’ll start you up with a single trap.",
+                    "Off you go then!"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_03",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l1_guide.jpg",
+        "heading": "Hey now!",
+        "pages":[{
+                "text": [
+                    "This is going pretty good.",
+                    "Your journey has just begun though. So keep it up! These Legends don’t write themselves.",
+                    "Well, they sort of do but that is a whole other thing. As you were!"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_05",
+        "enabled": true,
+        "event": "onLevelStartShow",
+        "avatar": "assets/legends/legend_specific_icons/l1_guide.jpg",
+        "heading": "Woah!",
+        "pages":[{
+                "text": [
+                    "Well, this is going great!",
+                    "You're blazing through this Legend like its nobody’s business!",
+                    "Here, I'll give you some money! Use it to buy a couple of narrow chokes. To use them on the range, press the '1' key and blast away!"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_08",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l1_guide.jpg",
+        "heading": "Great!",
+        "pages":[{
+                "text": [
+                    "Good job!",
+                    "You’ve almost finished this Legend! I must admit I was a little sceptical at first but you have proven me wrong.",
+                    "Respect."
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_10",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l1_guide.jpg",
+        "heading": "Hello again.",
+        "pages":[{
+                "text": [
+                    "Good job!",
+                    "So you made it through. Well done, that was just the first Legend, there are plenty more waiting for you.",
+                    "So why don’t you scurry along and take on the next Legend? I’ll be seeing you!"
+                ]
+            }
+        ]
+    },
+	{
+        "levelId": "level_11",
+        "enabled": true,
+        "event": "onMapShow",
+        "avatar": "assets/legends/legend_specific_icons/l2_guide.jpg",
+        "heading": "Welcome to the second Legend!",
+        "pages":[{
+                "text": [
+                    "What exactly is a Legend, you ask? Well, that is one of the great mysteries in life!",
+                    "Like “Why does it rain?” or “Who built the Eiffel Tower?” - we just don’t know these things and that’s what makes life so exciting!",
+                    "Now: Onto the second Legend and the legendary two target double trap!"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_14",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l2_guide.jpg",
+        "heading": "I'm impressed!",
+        "pages":[{
+                "text": [
+                    "That was not too difficult for you at all! You’re making great progress!",
+                    "I almost feel a bit proud over you. But don’t let it go to your head! You still have lot’s of work to do.",
+                    "So what are you waiting for?"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_16",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l2_guide.jpg",
+        "heading": "Well done!",
+        "pages":[{
+                "text": [
+                    "It seems to me you’re a natural at this. Keep on keepin’ on!"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_19",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l2_guide.jpg",
+        "heading": "Great job!",
+        "pages":[{
+                "text": [
+                    "Well, well, well...you got your sights set on the third Legend I see.",
+                    "And you’re not too far away!",
+                    "Venture forth!"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_20",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l2_guide.jpg",
+        "heading": "Well done!",
+        "pages":[{
+                "text": [
+                    "Double the targets and traps makes no difference for you.",
+                    "Two Legends down and plenty more to go!"
+                ]
+            }
+        ]
+    },
+	{
+        "levelId": "level_21",
+        "enabled": true,
+        "event": "onMapShow",
+        "avatar": "assets/legends/legend_specific_icons/l3_guide.jpg",
+        "heading": "Holy Moly!",
+        "pages":[{
+                "text": [
+                    "This is the third Legend and oh boy is it a great one!",
+                    "It’s so good I’ll add two exclamation marks to this sentence!!",
+                    "We are talking about proper skeet shooting now. Hurry on with it!"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_24",
+        "enabled": false,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l3_guide.jpg",
+        "heading": "Kaboom!",
+        "pages":[{
+                "text": [
+                    "Close shave! No? Well I thought things got a bit hairy.",
+                    "But let’s cut to the chase: More difficulties ahead but you so no time for dilly dallying."
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_26",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l3_guide.jpg",
+        "heading": "Righ on!",
+        "pages":[{
+                "text": [
+                    "Things are looking pretty good!",
+					"Skeet shooting is right up your alley! Keep this up and we’ll all be home by supper."
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_29",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l3_guide.jpg",
+        "heading": "So far so good.",
+        "pages":[{
+                "text": [
+                    "These skeet ranges ain't got nothin on you. However, things are about to get rough so you’ll need to focus more than ever before.",
+                    "You can do this!",
+                    "Go!"
+                ]
+            }
+        ]
+    },
+    {
+        "levelId": "level_30",
+        "enabled": true,
+        "event": "onLevelEndShow",
+        "avatar": "assets/legends/legend_specific_icons/l3_guide.jpg",
+        "heading": "Skeet schmeet!",
+        "pages":[{
+                "text": [
+                    "No problems for you, eh?",
+                    "I promise you to let things get a little more hectic in the next Legend."
+                ]
+            }
+        ]
+    }
+]

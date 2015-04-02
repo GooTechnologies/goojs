@@ -1,0 +1,303 @@
+[{
+	"model_id":"thrower",
+	"bundleName":"thrower_stationary"
+}, {
+	"model_id":"platform",
+	"bundleName":"platform_stationary"
+}, {
+	"model_id":"fence_large",
+	"bundleName":"fence_large"
+}, {
+	"model_id":"thrower_roof",
+	"bundleName":"thrower_roof"
+}, {
+	"model_id":"marker_thick",
+	"bundleName":"marker_thick"
+}, {
+	"model_id":"marker_thin",
+	"bundleName":"marker_thin"
+}, {
+	"model_id":"clay_small_whole",
+	"bundleName":"clay_small_whole"
+}, {
+	"model_id":"clay_small_threequarter",
+	"bundleName":"clay_small_threequarter"
+}, {
+	"model_id":"clay_small_half",
+	"bundleName":"clay_small_half"
+}, {
+	"model_id":"clay_regular_whole",
+	"bundleName":"clay_regular_whole"
+}, {
+	"model_id":"clay_regular_treequarter",
+	"bundleName":"clay_regular_threequarter"
+}, {
+	"model_id":"clay_regular_half",
+	"bundleName":"clay_regular_half"
+}, {
+	"model_id":"clay_large_whole",
+	"bundleName":"clay_large_whole"
+}, {
+	"model_id":"clay_large_treequarter",
+	"bundleName":"clay_large_threequarter"
+}, {
+	"model_id":"clay_large_half",
+	"bundleName":"clay_large_half"
+}, {
+	"model_id":"clay_batteu_whole",
+	"bundleName":"clay_batteu_whole"
+}, {
+	"model_id":"clay_batteu_threequarter",
+	"bundleName":"clay_batteu_threequarter"
+}, {
+	"model_id":"clay_batteu_half",
+	"bundleName":"clay_batteu_half"
+}, {
+	"model_id":"clay_rabbit_whole",
+	"bundleName":"clay_rabbit_whole"
+}, {
+	"model_id":"clay_rabbit_threequarter",
+	"bundleName":"clay_rabbit_threequarter"
+}, {
+	"model_id":"clay_rabbit_half",
+	"bundleName":"clay_rabbit_half"
+}, {
+	"model_id":"clay_chip_mini",
+	"bundleName":"clay_chip_mini"
+}, {
+	"model_id":"clay_chip_small",
+	"bundleName":"clay_chip_small"
+}, {
+	"model_id":"clay_chip_medium",
+	"bundleName":"clay_chip_medium"
+}, {
+	"model_id":"clay_chip_large",
+	"bundleName":"clay_chip_large"
+}, {
+	"model_id":"teddy_whole",
+	"bundleName":"teddy_whole"
+}, {
+	"model_id":"teddy_threequarter",
+	"bundleName":"teddy_threequarter"
+}, {
+	"model_id":"teddy_half",
+	"bundleName":"teddy_half"
+}, {
+	"model_id":"teddy_head",
+	"bundleName":"teddy_head"
+}, {
+	"model_id":"teddy_torso",
+	"bundleName":"teddy_torso"
+}, {
+	"model_id":"teddy_arm",
+	"bundleName":"teddy_arm"
+}, {
+	"model_id":"teddy_leg",
+	"bundleName":"teddy_leg"
+}, {
+	"model_id":"parachute",
+	"bundleName":"parachute"
+}, {
+	"model_id":"implosion_device_whole",
+	"bundleName":"implosion_device_whole"
+}, {
+	"model_id":"implosion_device_body",
+	"bundleName":"implosion_device_body"
+}, {
+	"model_id":"implosion_device_lamp",
+	"bundleName":"implosion_device_lamp"
+}, {
+	"model_id":"molotov_cocktail",
+	"bundleName":"molotov_cocktail"
+}, {
+	"model_id":"bottle",
+	"bundleName":"bottle"
+}, {
+	"model_id":"Shotgun",
+	"bundleName":"sxs_shotgun",
+	"scale": [-1, 1, -1]
+}, {
+	"model_id":"mallard_male",
+	"bundleName":"mallard_male",
+	"scale": [-1, 1, -1]
+}, {
+	"model_id":"shotgun_pump",
+	"bundleName":"pump_action_shotgun",
+	"scale": [-1, 1, -1]
+}, {
+	"model_id":"shotgun_semi",
+	"bundleName":"shotgun_semiauto",
+	"scale": [-0.01, 0.01, -0.01]
+}, {
+	"model_id":"shotgun_ou",
+	"bundleName":"shotgun_ou",
+	"scale": [-0.01, 0.01, -0.01]
+}, {
+	"model_id":"character_male_only_arms",
+	"bundleName":"legends_character_male_only_arms",
+	"scale": [-0.01, 0.01, -0.01]
+}, {
+	"model_id":"voice_trigger",
+	"bundleName":"voice_trigger"
+},
+
+
+{
+	"model_id":"tree_aspen_m",
+	"bundleName":"Veg_T01_aspenM"
+}, {
+	"model_id":"tree_aspen_s",
+	"bundleName":"Veg_T02_aspenS"
+}, {
+	"model_id":"tree_aspen_l",
+	"bundleName":"Veg_T03_aspenL"
+}, {
+	"model_id":"tree_aspen_xs",
+	"bundleName":"Veg_T08_AspenXS"
+}, {
+	"model_id":"tree_spruce_xs",
+	"bundleName":"Veg_T15_spruceXS"
+}, {
+	"model_id":"tree_spruce_s",
+	"bundleName":"Veg_T14_spruceS"
+}, {
+	"model_id":"tree_spruce_l",
+	"bundleName":"Veg_T11_SpruceL_LOD2"
+}, {
+	"model_id":"bush_aspen_s",
+	"bundleName":"Veg_T07_AspenXXS_LOD2"
+}, {
+	"model_id":"bush_aspen_l",
+	"bundleName":"Veg_T12_AspenS_LOD2"
+}, {
+	"model_id":"bush_aspen_cluster",
+	"bundleName":"bush_aspen_cluster"
+}, {
+	"model_id":"rock_s_01",
+	"bundleName":"rock_small_01"
+}, {
+	"model_id":"rock_s_02",
+	"bundleName":"rock_small_02"
+}, {
+	"model_id":"rock_m_01",
+	"bundleName":"rock_medium_01"
+}, {
+	"model_id":"rock_m_02",
+	"bundleName":"rock_medium_02"
+}, {
+	"model_id":"rock_l_01",
+	"bundleName":"rock_large_01"
+},
+
+
+{
+	"model_id":"l1_tree_beech_xs",
+	"bundleName":"l1_tree_beech_xsmall_02_LOD2"
+},{
+	"model_id":"l1_tree_beech_s",
+	"bundleName":"l1_tree_beech_small_01_LOD2"
+},{
+	"model_id":"l1_tree_beech_m",
+	"bundleName":"l1_tree_beech_medium_01_LOD2"
+},{
+	"model_id":"l1_tree_beech_l",
+	"bundleName":"l1_tree_beech_large_01_LOD2"
+},{
+	"model_id":"l1_bush_beech_l",
+	"bundleName":"l1_bush_beech_large_01_LOD1"
+}, {
+	"model_id":"l1_tree_spruce_xs",
+	"bundleName":"l1_Veg_T15_SpruceXS"
+}, {
+	"model_id":"l1_tree_spruce_s",
+	"bundleName":"l1_Veg_T14_SpruceS"
+}, {
+	"model_id":"l1_tree_spruce_l",
+	"bundleName":"l1_Veg_T11_SpruceL_LOD2"
+}, {
+	"model_id":"l1_rock_s_01",
+	"bundleName":"l1_rock_small_01"
+}, {
+	"model_id":"l1_rock_s_02",
+	"bundleName":"l1_rock_small_02"
+}, {
+	"model_id":"l1_rock_m_01",
+	"bundleName":"l1_rock_medium_01"
+}, {
+	"model_id":"l1_rock_m_02",
+	"bundleName":"l1_rock_medium_02"
+}, {
+	"model_id":"l1_rock_l_01",
+	"bundleName":"l1_rock_large_01"
+},
+
+
+{
+	"model_id":"l3_tree_aspen_xs",
+	"bundleName":"l3_tree_aspen_04_LOD2"
+},{
+	"model_id":"l3_tree_aspen_s",
+	"bundleName":"l3_tree_aspen_02_LOD2"
+},{
+	"model_id":"l3_tree_aspen_m",
+	"bundleName":"l3_tree_aspen_01_LOD2"
+},{
+	"model_id":"l3_tree_aspen_l",
+	"bundleName":"l3_tree_aspen_03_LOD2"
+}, {
+	"model_id":"l3_thicket_aspen_s",
+	"bundleName":"l3_thicket_aspen_02_LOD2"
+}, {
+	"model_id":"l3_thicket_aspen_m",
+	"bundleName":"l3_thicket_aspen_01_LOD2"
+}, {
+	"model_id":"l3_tree_spruce_s",
+	"bundleName":"l3_spruce_03_LOD3"
+}, {
+	"model_id":"l3_tree_spruce_m",
+	"bundleName":"l3_spruce_02_LOD2"
+}, {
+	"model_id":"l3_tree_spruce_l_dense",
+	"bundleName":"l3_spruce_01_LOD3"
+}, {
+	"model_id":"l3_tree_spruce_l_skinny",
+	"bundleName":"l3_spruce_04_LOD2"
+}, {
+	"model_id":"l3_rock_s_01",
+	"bundleName":"l3_rock_small_01"
+}, {
+	"model_id":"l3_rock_s_02",
+	"bundleName":"l3_rock_small_02"
+}, {
+	"model_id":"l3_rock_m_01",
+	"bundleName":"l3_rock_medium_01"
+}, {
+	"model_id":"l3_rock_m_02",
+	"bundleName":"l3_rock_medium_02"
+}, {
+	"model_id":"l3_rock_l_01",
+	"bundleName":"l3_rock_large_01"
+},
+
+
+{
+	"model_id":"fence_small",
+	"bundleName":"fence_small"
+}, {
+	"model_id":"fence_medium",
+	"bundleName":"fence_medium"
+}, {
+	"model_id":"thrower_roof_open",
+	"bundleName":"thrower_roof_open"
+}, {
+	"model_id":"thrower_roof_open_end",
+	"bundleName":"thrower_roof_open_end"
+}, {
+	"model_id":"thrower_concrete_platform",
+	"bundleName":"thrower_concrete_platform"
+}, {
+	"model_id":"skeet_tower",
+	"bundleName":"skeet_tower"
+}
+
+]

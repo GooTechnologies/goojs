@@ -1,0 +1,467 @@
+{
+    "mapObjects": [
+        {
+            "id": "thrower1-1",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 20,
+                "throws": [
+                    {
+                        "timeMin": 0.2,
+                        "timeMax": 0.4,
+                        "type": "pigeon.orange.large",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 22,
+                        "velocityMax": 22,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 0.5
+            },
+            "transform": {
+                "translation": [
+                    128,
+                    5.900000095367432,
+                    64.5999984741211
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    -1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0
+                ]
+            }
+        },
+        {
+            "id": "marker_thin-1",
+            "type": "marker_thin",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    128,
+                    6.724159240722656,
+                    110.5999984741211
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "thrower_roof-1",
+            "type": "thrower_roof",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    128,
+                    5.099999904632568,
+                    63.75
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    -1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-1",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    128,
+                    6,
+                    73.69999694824219
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "platform-1",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": true,
+                "repeatTime": 9.6,
+                "activateTimes": [
+                    {
+                        "min": 9.6,
+                        "max": 9.6
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    134,
+                    6.699999809265137,
+                    51
+                ],
+                "rotation": [
+                    -0.919397234916687,
+                    0,
+                    -0.3933294713497162,
+                    0,
+                    1,
+                    0,
+                    0.3933294713497162,
+                    0,
+                    -0.919397234916687
+                ],
+                "scale": [
+                    0.009999999776482582,
+                    0.009999999776482582,
+                    0.009999999776482582
+                ]
+            }
+        },
+        {
+            "id": "platform-3",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 9.6,
+                "activateTimes": [
+                    {
+                        "min": 3.2,
+                        "max": 3.2
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    128,
+                    6.699999809265137,
+                    50
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ],
+                "scale": [
+                    0.009999999776482582,
+                    0.009999999776482582,
+                    0.009999999776482582
+                ]
+            }
+        },
+        {
+            "id": "platform-5",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 9.6,
+                "activateTimes": [
+                    {
+                        "min": 6.4,
+                        "max": 6.4
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    122,
+                    6.699999809265137,
+                    51
+                ],
+                "rotation": [
+                    -0.9413885474205017,
+                    0,
+                    0.33732596039772034,
+                    0,
+                    1,
+                    0,
+                    -0.33732596039772034,
+                    0,
+                    -0.9413885474205017
+                ],
+                "scale": [
+                    0.009999999776482582,
+                    0.009999999776482582,
+                    0.009999999776482582
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-1",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    133.27127075195312,
+                    6.511497497558594,
+                    51.94728469848633
+                ],
+                "rotation": [
+                    0.42260000109672546,
+                    0,
+                    -0.9063000082969666,
+                    0,
+                    1,
+                    0,
+                    0.9063000082969666,
+                    0,
+                    0.42260000109672546
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-3",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    127.73310089111328,
+                    6.511497497558594,
+                    51.207733154296875
+                ],
+                "rotation": [
+                    -0.011980347335338593,
+                    0,
+                    -0.9999279379844666,
+                    0,
+                    1,
+                    0,
+                    0.9999279379844666,
+                    0,
+                    -0.011980347335338593
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-5",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    122.08834838867188,
+                    6.511497497558594,
+                    52.168052673339844
+                ],
+                "rotation": [
+                    -0.34200000762939453,
+                    0,
+                    -0.9397000074386597,
+                    0,
+                    1,
+                    0,
+                    0.9397000074386597,
+                    0,
+                    -0.34200000762939453
+                ]
+            }
+        },
+        {
+            "id": "playerStartDummy-1",
+            "type": "playerStartDummy",
+            "scriptData": {
+                "transitionTime": 5
+            },
+            "transform": {
+                "translation": [
+                    128,
+                    9,
+                    37
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ]
+            }
+        }
+    ],
+    "wind": {
+        "vector": [
+            -5,
+            0,
+            0
+        ]
+    },
+    "fog": {
+        "enabled": true,
+        "start": 0,
+        "end": 316,
+        "color": [
+            0.4392156862745098,
+            0.4392156862745098,
+            0.4117647058823529
+        ]
+    },
+    "splines": [],
+    "gravity": 9.82,
+    "skybox": "legend_01",
+    "globalAmbient": [
+        0.5294117647058824,
+        0.5294117647058824,
+        0.5294117647058824
+    ],
+    "light": {
+        "color": [
+            1,
+            1,
+            1
+        ],
+        "intensity": 1,
+        "direction": [
+            -0.837979435788398,
+            1.3460805416107178,
+            0
+        ]
+    },
+    "timeline": [
+        {
+            "id": "Config",
+            "actions": [
+                {
+                    "type": "systemBus",
+                    "id": "configureHud",
+                    "data": {
+                        "hud_ammo_counter": true,
+                        "hud_level_score": true,
+                        "hud_multiplier": true,
+                        "hud_hit_score": true,
+                        "boosts": false
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "timelineControl",
+                    "data": {
+                        "paused": true
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "gameControl",
+                    "data": {
+                        "firingAllowed": false
+                    }
+                }
+            ],
+            "waitFor": [
+                {
+                    "type": "waitForPlatform"
+                }
+            ]
+        },
+        {
+            "id": "Tutorial Message",
+            "actions": [
+                {
+                    "type": "alert",
+                    "message": "tr:level_02_alert_wind"
+                },
+                {
+                    "type": "pauseEvent"
+                }
+            ],
+            "waitFor": [
+                {
+                    "type": "waitForPauseEvent"
+                }
+            ]
+        },
+        {
+            "id": "Play",
+            "actions": [
+                {
+                    "type": "systemBus",
+                    "id": "gameControl",
+                    "data": {
+                        "firingAllowed": true
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "timelineControl",
+                    "data": {
+                        "paused": false
+                    }
+                },
+                {
+                    "type": "alert",
+                    "message": ""
+                }
+            ],
+            "waitFor": []
+        }
+    ],
+    "lightmapSettings": {
+        "ambient": 0.6,
+        "occludableAmbientRatio": 0.3,
+        "sunStrength": 0.8,
+        "sunRayRatio": 0.3,
+        "sunRaySpread": 0.05
+    },
+    "vegetationSettings": {
+        "patchSize": 30,
+        "patchDensity": 40
+    }
+}

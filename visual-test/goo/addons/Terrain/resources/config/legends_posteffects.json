@@ -1,0 +1,17 @@
+[
+	{
+		"posteffect_id":"contrast",
+		"passSettings":{
+			"contrast":0.15,
+			"brightness":0
+		}
+	}, {
+		"posteffect_id":"bloom",
+		"passSettings":{
+			"opacity":0.08,
+			"size":1,
+			"brightness":0.3,
+			"contrast":0
+		}
+	}
+]

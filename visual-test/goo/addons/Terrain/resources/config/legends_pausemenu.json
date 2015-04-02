@@ -1,0 +1,36 @@
+[
+    {
+        "pausemenu_id": "pausemenu_background",
+        "css": "pausmenu_background",
+        "parentId": "menuContainer"
+    },
+    {
+        "pausemenu_id": "volume_text",
+        "css": "volume_text",
+        "parentId": "pausemenu_background",
+        "text": "Volume:"
+    },
+    {
+        "pausemenu_id": "volume_slider",
+        "css": "volume_slider",
+        "parentId": "pausemenu_background",
+        "element": "input",
+        "type": "range",
+        "change_event": "volume_changed"
+    },
+    {
+        "pausemenu_id": "volume_mute",
+        "css": "volume_mute",
+        "parentId": "pausemenu_background",
+        "text": "Mute:"
+    },
+    {
+        "pausemenu_id": "volume_mute_cb",
+        "css": "volume_mute_cb",
+        "parentId": "pausemenu_background",
+        "element": "input",
+        "type": "checkbox",
+        "change_event": "volume_muted"
+    }
+]
+

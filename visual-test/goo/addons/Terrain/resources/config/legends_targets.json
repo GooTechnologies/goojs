@@ -1,0 +1,230 @@
+[{
+	"target_id": "pigeon",
+	"type": "projectile",
+	"model": "clay_regular_whole",
+	"effects":{
+		"throw":["throwPidgeon"],
+		"targethit":["targethit"],
+		"fromsplit":["throwPidgeon"],
+		"groundhit":["groundhit_clay"]
+	},
+	"trailEffect" : {
+		"effectName":"pigeon_trail",
+		"intensity": 1.0
+	},
+
+	"radius": 0.1, // $dan: this could maybe be automated //RL standard radius = 0.055 m
+	"size": "medium", // unused: in the model
+	"score": 5,
+	"colorStreakBonus": 100,
+	"sizeStreakBonus": 200,
+	"lift": 0,
+	"rotation":[
+		{
+			"axis":[{"min":0,"max":0.1}, {"min":0.2,"max":0.5}, {"min":0.2,"max":0.5}],
+			"speed":{"min":-0.03,"max":0.03}
+		},
+		{
+			"axis":[{"min":0,"max":0}, {"min":0.4,"max":0.6}, {"min":0,"max":0}],
+			"speed":{"min":1,"max":1}
+		}
+	],
+	"hitbehavior": {
+		"type": "shatter" // use
+	},
+	"airDrag": [0.1, 100, 0.01],
+	"mass": 0.1, //RL standard weight = 0.1 kg
+	"splits": [{
+		"damage": 1.0,
+		"hitCountScoreSubtractPercent": 40, //Score = Base Score - (((hitTimeScoreSubtractPercent/100) * Base Score)*(time/maxHitTime))
+		"pieces": ["clay_chip_threequarter"]
+	},
+	{
+		"damage": 3.0,
+		"hitCountScoreSubtractPercent": 20,
+		"pieces": ["clay_chip_mini", "clay_chip_small"]
+	},
+	{
+		"damage": 5.0,
+		"hitCountScoreSubtractPercent": 0,
+		"advancesMultipliers": true,
+		"pieces": ["clay_chip_mini", "clay_chip_small", "clay_chip_small", "clay_chip_medium"]
+	}],
+	"maxHitTime": 3.0,
+	"hitTimeScoreSubtractPercent": 40, //Score = Base Score - (((hitTimeScoreSubtractPercent/100) * Base Score)*(time/maxHitTime))
+	"particleColor": [1,1,1,1],
+	"variations": "pigeon-size-and-color"
+}, {
+	"target_id": "mallard_male",
+	"type": "projectile",
+	"model": "mallard_male",
+	"radius": 0.3,
+	"score": 100,
+	"effects":{
+		"targethit":["mallard_hit"]
+	},
+
+	"hitbehavior": {
+		"type": "shatter" // use
+	},
+	"airDrag": [0.1],
+	"mass": 0.1, //RL standard weight = 0.1 kg
+	"splits": [{
+		"damage": 1.0,
+		"hitCountScoreSubtractPercent": 40, //Score = Base Score - (((hitTimeScoreSubtractPercent/100) * Base Score)*(time/maxHitTime))
+		"pieces": ["mallard_male_crashing"]
+	},
+	{
+		"damage": 3.0,
+		"hitCountScoreSubtractPercent": 20,
+		"pieces": ["mallard_male_crashing"]
+	},
+	{
+		"damage": 5.0,
+		"hitCountScoreSubtractPercent": 0,
+		"advancesMultipliers": true,
+		"pieces": ["mallard_male_crashing"]
+	}],
+	"maxHitTime": 1000.0,
+	"hitTimeScoreSubtractPercent": 40, //Score = Base Score - (((hitTimeScoreSubtractPercent/100) * Base Score)*(time/maxHitTime))
+	"particleColor": [1,1,1,1]
+}, {
+	"target_id": "mallard_male_crashing",
+	"type": "debris",
+	"model": "mallard_male",
+	"airDrag": [10.0],
+	"mass": 0.1, //RL standard weight = 0.1 kg
+	"maxHitTime": 1000.0,
+	"particleColor": [1,1,1,1],
+	"ignoreHits": true,
+	"startAnimations": ["a_mlrd_dead_reaction_03", "a_mlrd_dead_reaction_02", "a_mlrd_dead_reaction_01"]
+}, {
+	"target_id": "clay_chip_mini",
+	"type": "debris",
+	"mass": 0.01,
+	"score": 0,
+	"airDrag": [20.0],
+	"model": "clay_chip_mini",
+	"effects":{
+		"targethit":["targethit"],
+		"fromsplit":["throwPidgeon"]
+	},
+	"variations": "pigeon-size-and-color"
+}, {
+	"target_id": "clay_chip_small",
+	"type": "debris",
+	"mass": 1.0,
+	"model": "clay_chip_small",
+	"effects":{
+		"targethit":["targethit"],
+		"fromsplit":["throwPidgeon"]
+	},
+	"variations": "pigeon-size-and-color"
+}, {
+	"target_id": "clay_chip_medium",
+	"type": "debris",
+	"mass": 1.0,
+	"model": "clay_chip_medium",
+	"effects":{
+		"targethit":["targethit"],
+		"fromsplit":["throwPidgeon"]
+	},
+	"variations": "pigeon-size-and-color"
+}, {
+	"target_id": "clay_chip_large",
+	"type": "debris",
+	"mass": 1.0,
+	"model": "clay_chip_large",
+	"effects":{
+		"targethit":["targethit"],
+		"fromsplit":["throwPidgeon"]
+	},
+	"variations": "pigeon-size-and-color"
+}, {
+	"target_id": "clay_chip_threequarter",
+	"type": "debris",
+	"mass": 1.0,
+	"model": "clay_chip_large",
+	"effects":{
+		"targethit":["targethit"],
+		"fromsplit":["throwPidgeon"]
+	},
+	"variations": "pigeon-size-and-color"
+}, {
+	"target_id": "negative_target_01",
+	"type": "target",
+	"mass": 1,
+	"score": -10,
+	"radius": 0.25,
+	"model": "teddy_whole",
+	"effects":{
+		"targethit":["targethit"],
+		"fromsplit":["throwPidgeon"]
+	},
+	"hitbehavior": {
+		"type": "shatter" // use
+	},
+	"splits": [{
+		"damage": 1.0,
+		"pieces": ["pigeon_chip1", "pigeon_chip1", "pigeon_chip1", "pigeon_chip1"]
+	}],
+	"randomDistWeights": {
+		"default": 1.0
+	}
+}, {
+	"target_id": "implosion_device",
+	"type": "target",
+	"mass": 1,
+	"score": 10,
+	"radius": 0.25,
+	"model": "implosion_device_whole",
+	"effects":{
+		"targethit":["implosion"],
+		"fromsplit":["throwPidgeon"]
+	},
+	"hitbehavior": {
+		"type": "implode",
+		"radius": 10.0,
+		"dampening": 0.10,
+		"force": 100
+	},
+	"rotation":[
+		{
+			"axis":[{"min":0,"max":0.5}, {"min":0,"max":0}, {"min":0,"max":0}],
+			"speed":{"min":0.1,"max":0.2}
+		},
+		{
+			"axis":[{"min":0,"max":0}, {"min":0.2,"max":0.5}, {"min":0,"max":0}],
+			"speed":{"min":0.1,"max":0.2}
+		},
+		{
+			"axis":[{"min":0,"max":0}, {"min":0,"max":0}, {"min":0.2,"max":0.4}],
+			"speed":{"min":0.1,"max":0.2}
+		}
+	],
+	"randomDistWeights": {
+		"default": 1.0
+	}
+}, {
+	"target_id": "explosive_device_01",
+	"type": "target",
+	"mass": 1,
+	"score": 10,
+	"radius": 0.25,
+	"model": "molotov_cocktail",
+	"effects":{
+		"targethit":["explosion"],
+		"fromsplit":["throwPidgeon"]
+	},
+	"trailEffect" : {
+		"effectName":"smoke_trail",
+		"intensity": 0.5
+	},
+	"hitbehavior": {
+		"type": "explosive",
+		"radius": 10.0
+	},
+	"randomDistWeights": {
+		"default": 1.0
+	}
+}]

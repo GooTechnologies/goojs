@@ -1,0 +1,599 @@
+{
+    "mapObjects": [
+        {
+            "id": "thrower1-1",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 20,
+                "throws": [
+                    {
+                        "timeMin": 0.1,
+                        "timeMax": 1.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 25,
+                        "horizAngleMin": -20,
+                        "horizAngleMax": 20,
+                        "velocityMin": 19,
+                        "velocityMax": 19,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 0,
+                        "timeMax": 0,
+                        "type": "NULL",
+                        "probability": 1,
+                        "vertAngleMin": 0,
+                        "vertAngleMax": 0,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 0,
+                        "velocityMax": 0,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 1.6
+            },
+            "transform": {
+                "translation": [
+                    105.30963134765625,
+                    10.419939994812012,
+                    78.43963623046875
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "thrower1-2",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 20,
+                "throws": [
+                    {
+                        "timeMin": 0.1,
+                        "timeMax": 1.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 25,
+                        "horizAngleMin": -20,
+                        "horizAngleMax": 20,
+                        "velocityMin": 19,
+                        "velocityMax": 19,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 1.6
+            },
+            "transform": {
+                "translation": [
+                    105.2204818725586,
+                    7.336864948272705,
+                    69.29010772705078
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thin-1",
+            "type": "marker_thin",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    128,
+                    12.642415046691895,
+                    110.5999984741211
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-1",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    128,
+                    7.11785888671875,
+                    73.69999694824219
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "skeet_tower-1",
+            "type": "skeet_tower",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    105.07955169677734,
+                    5.383715629577637,
+                    78.49490356445312
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "skeet_tower-2",
+            "type": "skeet_tower",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    104.95867156982422,
+                    2.3597240447998047,
+                    69.36311340332031
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "platform-1",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": true,
+                "repeatTime": 25.6,
+                "activateTimes": [
+                    {
+                        "min": 25.6,
+                        "max": 25.6
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    135.88401794433594,
+                    6.169830799102783,
+                    50
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ]
+            }
+        },
+        {
+            "id": "platform-2",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 25.6,
+                "activateTimes": [
+                    {
+                        "min": 6.35,
+                        "max": 6.35
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    131.01052856445312,
+                    6.007901668548584,
+                    50
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ]
+            }
+        },
+        {
+            "id": "platform-3",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 25.6,
+                "activateTimes": [
+                    {
+                        "min": 12.75,
+                        "max": 12.75
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    125.18582153320312,
+                    5.909864902496338,
+                    50
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ]
+            }
+        },
+        {
+            "id": "platform-4",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 25.6,
+                "activateTimes": [
+                    {
+                        "min": 19.15,
+                        "max": 19.15
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    121.60076904296875,
+                    5.863258361816406,
+                    50
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-1",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    135.76905822753906,
+                    6.142023086547852,
+                    51.11145782470703
+                ],
+                "rotation": [
+                    -0.011980347335338593,
+                    0,
+                    -0.9999279379844666,
+                    0,
+                    1,
+                    0,
+                    0.9999279379844666,
+                    0,
+                    -0.011980347335338593
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-2",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    126.24951934814453,
+                    5.872184753417969,
+                    51.225502014160156
+                ],
+                "rotation": [
+                    -0.011980347335338593,
+                    0,
+                    -0.9999279379844666,
+                    0,
+                    1,
+                    0,
+                    0.9999279379844666,
+                    0,
+                    -0.011980347335338593
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-3",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    131.0417022705078,
+                    6.012162685394287,
+                    51.168094635009766
+                ],
+                "rotation": [
+                    -0.011980347335338593,
+                    0,
+                    -0.9999279379844666,
+                    0,
+                    1,
+                    0,
+                    0.9999279379844666,
+                    0,
+                    -0.011980347335338593
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-4",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    121.42796325683594,
+                    5.812591552734375,
+                    51.283260345458984
+                ],
+                "rotation": [
+                    -0.011980347335338593,
+                    0,
+                    -0.9999279379844666,
+                    0,
+                    1,
+                    0,
+                    0.9999279379844666,
+                    0,
+                    -0.011980347335338593
+                ]
+            }
+        },
+        {
+            "id": "playerStartDummy-1",
+            "type": "playerStartDummy",
+            "scriptData": {
+                "transitionTime": 5
+            },
+            "transform": {
+                "translation": [
+                    104.89409637451172,
+                    7.968325138092041,
+                    60.34246826171875
+                ],
+                "rotation": [
+                    0.14451418817043304,
+                    0,
+                    -0.9895026087760925,
+                    0,
+                    1,
+                    0,
+                    0.9895026087760925,
+                    0,
+                    0.14451418817043304
+                ],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ]
+            }
+        }
+    ],
+    "wind": {
+        "vector": [
+            0,
+            0,
+            0
+        ]
+    },
+    "fog": {
+        "enabled": true,
+        "start": 0,
+        "end": 237,
+        "color": [
+            0.40784313725490196,
+            0.5019607843137255,
+            0.6745098039215687
+        ]
+    },
+    "splines": [],
+    "gravity": 9.82,
+    "skybox": "legend_03",
+    "globalAmbient": [
+        0.4607843137254902,
+        0.4381968473663975,
+        0.4381968473663975
+    ],
+    "light": {
+        "color": [
+            1,
+            1,
+            1
+        ],
+        "intensity": 1,
+        "direction": [
+            -0.9796721277050624,
+            1.3460805416107178,
+            0
+        ]
+    },
+    "timeline": [
+        {
+            "id": "Config",
+            "actions": [
+                {
+                    "type": "systemBus",
+                    "id": "configureHud",
+                    "data": {
+                        "hud_ammo_counter": true,
+                        "hud_level_score": true,
+                        "hud_multiplier": true,
+                        "hud_hit_score": true,
+                        "boosts": false
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "timelineControl",
+                    "data": {
+                        "paused": true
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "gameControl",
+                    "data": {
+                        "firingAllowed": false
+                    }
+                }
+            ],
+            "waitFor": [
+                {
+                    "type": "waitForPlatform"
+                }
+            ]
+        },
+        {
+            "id": "Tutorial Message",
+            "actions": [
+                {
+                    "type": "alert",
+                    "message": "tr:level_25_alert_double_skeet"
+                },
+                {
+                    "type": "pauseEvent"
+                }
+            ],
+            "waitFor": [
+                {
+                    "type": "waitForPauseEvent"
+                }
+            ]
+        },
+        {
+            "id": "Play",
+            "actions": [
+                {
+                    "type": "systemBus",
+                    "id": "gameControl",
+                    "data": {
+                        "firingAllowed": true
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "timelineControl",
+                    "data": {
+                        "paused": false
+                    }
+                },
+                {
+                    "type": "alert",
+                    "message": ""
+                }
+            ],
+            "waitFor": []
+        }
+    ],
+    "lightmapSettings": {
+        "ambient": 0.6,
+        "occludableAmbientRatio": 0.3,
+        "sunStrength": 0.8,
+        "sunRayRatio": 0.3,
+        "sunRaySpread": 0.05
+    },
+    "vegetationSettings": {
+        "patchSize": 15,
+        "patchDensity": 19
+    }
+}

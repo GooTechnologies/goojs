@@ -1,0 +1,39 @@
+[
+	{
+		"environment_id": "default",
+		"skyboxes": {
+			"default": [
+				"skyboxes/legend_default/skybox/right.jpg",
+				"skyboxes/legend_default/skybox/left.jpg",
+				"skyboxes/legend_default/skybox/bottom.jpg",
+				"skyboxes/legend_default/skybox/top.jpg",
+				"skyboxes/legend_default/skybox/front.jpg",
+				"skyboxes/legend_default/skybox/back.jpg"
+			],
+			"legend_01": [
+				"images/legend_01/skybox/right.jpg",
+				"images/legend_01/skybox/left.jpg",
+				"images/legend_01/skybox/bottom.jpg",
+				"images/legend_01/skybox/top.jpg",
+				"images/legend_01/skybox/front.jpg",
+				"images/legend_01/skybox/back.jpg"
+			],
+			"legend_02": [
+				"images/legend_02/skybox/right.jpg",
+				"images/legend_02/skybox/left.jpg",
+				"images/legend_02/skybox/bottom.jpg",
+				"images/legend_02/skybox/top.jpg",
+				"images/legend_02/skybox/front.jpg",
+				"images/legend_02/skybox/back.jpg"
+			],
+			"legend_03": [
+				"images/legend_03/skybox/right.jpg",
+				"images/legend_03/skybox/left.jpg",
+				"images/legend_03/skybox/bottom.jpg",
+				"images/legend_03/skybox/top.jpg",
+				"images/legend_03/skybox/front.jpg",
+				"images/legend_03/skybox/back.jpg"
+			]
+		}
+	}
+]

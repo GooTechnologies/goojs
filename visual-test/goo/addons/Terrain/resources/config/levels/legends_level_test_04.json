@@ -1,0 +1,419 @@
+{
+    "mapObjects": [
+        {
+            "id": "platform1",
+            "type": "platform",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    27.796077728271484,
+                    -1.3133482933044434,
+                    20.888050079345703
+                ],
+                "rotation": [
+                    -0.718205451965332,
+                    0,
+                    0.6958315372467041,
+                    0,
+                    1,
+                    0,
+                    -0.6958315372467041,
+                    0,
+                    -0.718205451965332
+                ]
+            }
+        },
+        {
+            "id": "thr1",
+            "type": "thrower1",
+            "scriptData": {
+                "throws": [
+                    {
+                        "timeMin": 0,
+                        "timeMax": 0.5,
+                        "type": "pigeon.purple.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 10.5,
+                        "timeMax": 11.5,
+                        "type": "pigeon.yellow.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 15.5,
+                        "timeMax": 16.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 17.5,
+                        "timeMax": 18.5,
+                        "type": "pigeon.red.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    }
+                ],
+                "repeatTime": 25
+            },
+            "transform": {
+                "translation": [
+                    61.345401763916016,
+                    1.2862416505813599,
+                    9.431102752685547
+                ],
+                "rotation": [
+                    0.6954342126846313,
+                    -0.027141910046339035,
+                    -0.718072772026062,
+                    0,
+                    1,
+                    0,
+                    0.7179492712020874,
+                    -0.01580020971596241,
+                    0.6959116458892822
+                ]
+            }
+        },
+        {
+            "id": "thr2",
+            "type": "thrower1",
+            "scriptData": {
+                "throws": [
+                    {
+                        "timeMin": 1.5,
+                        "timeMax": 2.5,
+                        "type": "pigeon.yellow.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 9.5,
+                        "timeMax": 10.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 13.5,
+                        "timeMax": 14.5,
+                        "type": "pigeon.red.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 18.5,
+                        "timeMax": 19.5,
+                        "type": "pigeon.purple.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    }
+                ],
+                "repeatTime": 25
+            },
+            "transform": {
+                "translation": [
+                    10.867923736572266,
+                    5.953192234039307,
+                    52.53617858886719
+                ],
+                "rotation": [
+                    -0.7859572768211365,
+                    0.08034372329711914,
+                    0.6130397319793701,
+                    0,
+                    1,
+                    0,
+                    -0.6107864379882812,
+                    0.053035277873277664,
+                    -0.7900184988975525
+                ]
+            }
+        },
+        {
+            "id": "thr3",
+            "type": "thrower1",
+            "scriptData": {
+                "throws": [
+                    {
+                        "timeMin": 3.5,
+                        "timeMax": 4.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 8.5,
+                        "timeMax": 9.5,
+                        "type": "pigeon.red.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 13.5,
+                        "timeMax": 14.5,
+                        "type": "pigeon.purple.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 19.5,
+                        "timeMax": 20.5,
+                        "type": "pigeon.yellow.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    }
+                ],
+                "repeatTime": 25
+            },
+            "transform": {
+                "translation": [
+                    16.102497100830078,
+                    1.2753270864486694,
+                    48.12483215332031
+                ],
+                "rotation": [
+                    -0.7817972302436829,
+                    -0.03661137446761131,
+                    0.6224581003189087,
+                    0,
+                    1,
+                    0,
+                    -0.6230208277702332,
+                    0.005383210722357035,
+                    -0.7821877598762512
+                ]
+            }
+        },
+        {
+            "id": "thr4",
+            "type": "thrower1",
+            "scriptData": {
+                "throws": [
+                    {
+                        "timeMin": 5.5,
+                        "timeMax": 6.5,
+                        "type": "pigeon.red.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 7.5,
+                        "timeMax": 8.5,
+                        "type": "pigeon.purple.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 15.5,
+                        "timeMax": 16.5,
+                        "type": "pigeon.yellow.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 21.5,
+                        "timeMax": 22.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": -35,
+                        "vertAngleMax": -25,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 30,
+                        "velocityMax": 35,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    }
+                ],
+                "repeatTime": 25
+            },
+            "transform": {
+                "translation": [
+                    65.149658203125,
+                    4.640174388885498,
+                    6.309834957122803
+                ],
+                "rotation": [
+                    0.7182780504226685,
+                    0.006071786396205425,
+                    -0.6957297921180725,
+                    0,
+                    1,
+                    0,
+                    0.6919958591461182,
+                    -0.11007092893123627,
+                    0.7134619951248169
+                ]
+            }
+        }
+    ],
+    "playerStart": {
+        "translation": [
+            25,
+            0,
+            25
+        ],
+        "rotation": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+        ]
+    },
+    "wind": {
+        "vector": [
+            -4,
+            0,
+            4
+        ]
+    },
+    "sounds": [
+        "ambience1",
+        "birdsong"
+    ],
+    "fog": {
+        "enabled": true,
+        "start": 0,
+        "end": 300,
+        "color": [
+            0.18,
+            0.3,
+            0.25
+        ]
+    },
+    "splines": [],
+    "gravity": 9.81,
+    "skybox": "legend_02",
+    "globalAmbient": [
+        0.3,
+        0.3,
+        0.3
+    ],
+    "light": {
+        "color": [
+            1,
+            1,
+            1
+        ],
+        "intensity": 1,
+        "direction": [
+            -0.8379794359207153,
+            2.054544032791634,
+            0
+        ]
+    }
+}

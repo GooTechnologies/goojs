@@ -1,0 +1,68 @@
+[
+    {
+        "fb_object_id":"energy",
+        "object_id":"242439899297575",
+        "give_message": "Here, have some energy!",
+        "ask_message": "Can I have some energy?",
+        "expression": "some energy",
+		"name": "energy_name",
+		"description": "energy_short_desc",
+		"icon": "resources/currencies/energy.png"
+	},
+    {
+        "fb_object_id":"key",
+        "type": "key",
+        "object_id":"663768460402530",
+        "give_message": "Here, have a key!",
+        "ask_message": "Can I have a key?",
+        "expression": "a key",
+		"name": "key_name",
+		"description": "key_short_desc",
+		"icon": "resources/key.png"
+	},
+    {
+        "fb_object_id":"legend_01_key",
+        "type": "key",
+        "object_id":"629757023795877",
+        "give_message": "Here, have a key!",
+        "ask_message": "Can I have a key?",
+        "expression": "a key",
+		"name": "Key",
+		"description": "key_short_desc",
+		"icon": "resources/key.png"
+	},
+    {
+        "fb_object_id":"legend_02_key",
+        "type": "key",
+        "object_id":"358891554306825",
+        "give_message": "Here, have a key!",
+        "ask_message": "Can I have a key?",
+        "expression": "a key",
+		"name": "Key",
+		"description": "key_short_desc",
+		"icon": "resources/key.png"
+	},
+    {
+        "fb_object_id":"legend_01_gifted_key",
+        "type": "key",
+        "object_id":"1400914553556540",
+        "give_message": "Here, have a key!",
+        "ask_message": "Can I have a key?",
+        "expression": "a key",
+        "name": "Key",
+        "description": "key_short_desc",
+        "icon": "resources/key.png"
+    },
+    {
+        "fb_object_id":"legend_02_gifted_key",
+        "type": "key",
+        "object_id":"1597697877137729",
+        "give_message": "Here, have a key!",
+        "ask_message": "Can I have a key?",
+        "expression": "a key",
+        "name": "Key",
+        "description": "key_short_desc",
+        "icon": "resources/key.png"
+    }
+
+]

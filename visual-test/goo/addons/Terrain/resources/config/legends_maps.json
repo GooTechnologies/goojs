@@ -1,0 +1,38 @@
+[
+    {
+        "map_id": "legend01_map01",
+        "heightMap": "maps/legend01_map01_height.raw",
+        "splatMap": "maps/legend01_map01_splat.raw",
+        "terrainConfig": "legend01"
+    },
+    {
+        "map_id": "legend01_map02",
+        "heightMap": "maps/legend02_map01_height.raw",
+        "splatMap": "maps/legend02_map01_splat.raw",
+        "terrainConfig": "legend02"
+    },
+    {
+        "map_id": "legend01_map03",
+        "heightMap": "maps/legend03_map01_height.raw",
+        "splatMap": "maps/legend03_map01_splat.raw",
+        "terrainConfig": "legend03"
+    },
+    {
+        "map_id": "test_map01",
+        "heightMap": "maps/test01_height.raw",
+        "splatMap": "maps/test01_splat.raw",
+        "terrainConfig": "default"
+    },
+    {
+        "map_id": "test_map02",
+        "heightMap": "maps/test02_height.raw",
+        "splatMap": "maps/test02_splat.raw",
+        "terrainConfig": "default"
+    },
+    {
+        "map_id": "test_map03",
+        "heightMap": "maps/test03_height.raw",
+        "splatMap": "maps/test03_splat.raw",
+        "terrainConfig": "default"
+    }
+]

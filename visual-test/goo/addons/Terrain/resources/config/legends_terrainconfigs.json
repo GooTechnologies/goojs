@@ -1,0 +1,476 @@
+[
+	{
+		"terrainconfig_id": "groundDefault",
+		"data": {
+			"ground1": {
+			    "texture": "images/legend_02/ground/grass_01.dds",
+                "material": "ground_dirt_hit",
+			    "vegetation": {
+				"grass_short_yellow_1": 0.39,
+				"grass_short_green_1": 0.2,
+				"grass_tall_3": 0.2,
+				"grass_tall_4": 0.2,
+				"thicket_1": 0.01
+			    },
+			    "forrest": {
+				"rock_s_01": 0.4,
+				"rock_s_02": 0.3,
+				"rock_m_01": 0.05,
+				"rock_m_02": 0.05
+			    }
+			},
+			"ground2": {
+			    "texture": "images/legend_02/ground/grass_02.dds",
+                "material": "ground_grass_hit",
+			    "vegetation": {
+				"grass_short_green_1": 0.3,
+				"grass_short_green_2": 0.3,
+				"grass_tall_1": 0.2,
+				"grass_tall_2": 0.1,
+				"nettles_1": 0.1
+			    },
+			    "forrest": {
+				"tree_aspen_xs": 0.2,
+				"tree_aspen_s": 0.05,
+				"tree_spruce_xs": 0.2,
+				"bush_aspen_l": 0.1,
+				"bush_aspen_s": 0.05,
+				"rock_s_01": 0.05,
+				"rock_s_02": 0.05,
+				"rock_m_01": 0.1,
+				"rock_m_02": 0.1,
+				"rock_l_01": 0.1
+			    }
+			},
+			"ground3": {
+			    "texture": "images/legend_02/ground/gravel_clay_debris_01.dds",
+                "material": "ground_dirt_hit",
+			    "vegetation": {
+				"grass_short_yellow_1": 0.3
+			    },
+			    "forrest": {
+				"rock_s_01": 0.2,
+				"rock_s_02": 0.2,
+				"rock_m_01": 0.05
+			    }
+			},
+			"ground4": {
+			    "texture": "images/legend_02/ground/gravel_01.dds",
+                "material": "ground_gravel_hit"
+			},
+			"ground5": {
+			    "texture": "images/legend_02/ground/grass_03.dds",
+                "material": "ground_grass_hit",
+			    "vegetation": {
+				"nettles_1": 0.1,
+				"thicket_1": 0.02,
+				"grass_tall_2": 0.2,
+				"grass_short_yellow_1": 0.2,
+				"grass_tall_3": 0.1,
+				"grass_tall_4": 0.1
+			    },
+			    "forrest": {
+				"tree_aspen_xs": 0.2,
+				"tree_aspen_s": 0.1,
+				"tree_aspen_m": 0.05,
+				"tree_aspen_l": 0.05,
+				"tree_spruce_xs": 0.1,
+				"tree_spruce_s": 0.2,
+				"bush_aspen_l": 0.1,
+				"bush_aspen_s": 0.1,
+				"rock_s_01": 0.01,
+				"rock_s_02": 0.01,
+				"rock_m_01": 0.01,
+				"rock_m_02": 0.02,
+				"rock_l_01": 0.05
+			    }
+			},
+			"stone": {
+			    "texture": "images/legend_02/ground/stone_01.dds",
+			    "material": "ground_stone_hit"
+			}
+		}
+	}
+	,
+	{
+		"terrainconfig_id": "vegetationDefault",
+		"data": {
+			"vegetationAtlas": "images/legend_02/vegetation/grass.dds",
+			"vegetationTypes": {
+			    "grass_short_green_1": {"w": 1, "h": 0.5, "tx": 0, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "grass_short_green_2": {"w": 1, "h": 0.5, "tx": 0.25, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "grass_short_green_3": {"w": 1, "h": 0.5, "tx": 0, "ty": 0.5, "tw": 0.25, "th": 0.25},
+			    "grass_short_green_4": {"w": 1, "h": 0.5, "tx": 0.25, "ty": 0.5, "tw": 0.25, "th": 0.25},
+			    "grass_short_yellow_1": {"w": 1, "h": 0.5, "tx": 0.5, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "grass_tall_1": {"w": 1, "h": 1, "tx": 0, "ty": 0, "tw": 0.25, "th": 0.5},
+			    "grass_tall_2": {"w": 1, "h": 1, "tx": 0.25, "ty": 0, "tw": 0.25, "th": 0.5},
+			    "grass_tall_3": {"w": 1, "h": 1, "tx": 0.5, "ty": 0, "tw": 0.25, "th": 0.5},
+			    "grass_tall_4": {"w": 1, "h": 1, "tx": 0.75, "ty": 0, "tw": 0.25, "th": 0.5},
+			    "nettles_1": {"w": 1.1, "h": 0.7, "tx": 0.5, "ty": 0.5, "tw": 0.25, "th": 0.25},
+			    "thicket_1": {"w": 1.1, "h": 1.1, "tx": 0.75, "ty": 0.5, "tw": 0.25, "th": 0.5}
+			}
+		}
+	}
+	,
+	{
+		"terrainconfig_id": "forestDefault",
+		"data": {
+			"forrestAtlas": "images/legend_02/vegetation/impostors_diffuse.dds",
+			"forrestAtlasNormals": "images/legend_02/vegetation/impostors_normal.dds",
+			"vegetationAlphaThreshold": 0.2,
+			"forrestAlphaThreshold": 0.4,
+			"forrestTypes": {
+			    "tree_aspen_xs": {"w": 7, "h": 7, "tx": 0.25, "ty": 0.25, "tw": 0.25, "th": 0.25},
+			    "tree_aspen_s": {"w": 14, "h": 22, "tx": 0.5, "ty": 0.5, "tw": 0.25, "th": 0.375},			    
+			    "tree_aspen_m": {"w": 13, "h": 26, "tx": 0.25, "ty": 0.5, "tw": 0.25, "th": 0.5},
+			    "tree_aspen_l": {"w": 13, "h": 26, "tx": 0, "ty": 0.5, "tw": 0.25, "th": 0.5},			    
+			    "tree_spruce_xs": {"w": 4, "h": 8, "tx": 0.875, "ty": 0.75, "tw": 0.125, "th": 0.25},
+			    "tree_spruce_s": {"w": 9, "h": 18, "tx": 0.5, "ty": 0, "tw": 0.25, "th": 0.5},			    
+			    "bush_aspen_l": {"w": 13, "h": 13, "tx": 0, "ty": 0.25, "tw": 0.25, "th": 0.25},
+			    "bush_aspen_s": {"w": 13, "h": 6, "tx": 0.5, "ty": 0.875, "tw": 0.25, "th": 0.125},
+			    "rock_s_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden": true},
+			    "rock_s_02": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden": true},
+			    "rock_m_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden": true},
+			    "rock_m_02": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden": true},
+			    "rock_l_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden": true}
+			}
+		}
+	}
+	,
+	{
+		"terrainconfig_id": "l1_ground",
+		"data": {
+			"ground1": {
+			    "texture": "images/legend_01/ground/grass_01.dds",
+                "material": "ground_dirt_hit",
+			    "vegetation": {
+					"l1_sorrel_1": 0.03,
+					"l1_grass_short_brown_1": 0.2,
+					"l1_grass_short_green_1": 0.2,
+					"l1_grass_short_green_2": 0.4
+			    },
+			    "forrest": {
+			 		"l1_rock_s_01": 0.3,
+					"l1_rock_s_02": 0.2,
+					"l1_rock_m_01": 0.05,
+					"l1_rock_m_02": 0.05
+			    }
+			},
+			"ground2": {
+			    "texture": "images/legend_01/ground/grass_02.dds",
+                "material": "ground_grass_hit",
+			    "vegetation": {
+					"l1_sprigs_1": 0.05,
+					"l1_grass_short_green_1": 0.2,
+					"l1_grass_short_green_3": 0.2,
+					"l1_nettles_1": 0.05,
+					"l1_grass_tall_3": 0.1,
+					"l1_sorrel_1": 0.03
+			    },
+			    "forrest": {
+					"l1_tree_beech_xs": 0.1,
+					"l1_tree_beech_s": 0.1,
+					"l1_tree_spruce_xs": 0.1,
+					"l1_bush_beech_l": 0.4,
+					"l1_rock_s_01": 0.01,
+					"l1_rock_s_02": 0.01,
+					"l1_rock_m_01": 0.01,
+					"l1_rock_m_02": 0.02
+			    }
+			},
+			"ground3": {
+			    "texture": "images/legend_01/ground/gravel_clay_debris_01.dds",
+                "material": "ground_dirt_hit",
+			    "vegetation": {
+					"l1_grass_short_brown_1": 0.1,
+					"l1_grass_tall_1": 0.04,
+					"l1_grass_tall_2": 0.04,
+					"l1_grass_tall_3": 0.2
+			    },
+			    "forrest": {
+			    	"l1_rock_s_01": 0.2,
+					"l1_rock_s_02": 0.2,
+					"l1_rock_m_01": 0.02
+			    }
+			},
+			"ground4": {
+			    "texture": "images/legend_01/ground/gravel_01.dds",
+                "material": "ground_gravel_hit",
+                "vegetation": {
+                	"l1_grass_short_green_2": 0.3
+                }
+			},
+			"ground5": {
+			    "texture": "images/legend_01/ground/grass_03.dds",
+                "material": "ground_grass_hit",
+			    "vegetation": {
+					"l1_sprigs_1": 0.05,
+					"l1_sprigs_2": 0.05,
+					"l1_grass_short_green_3": 0.2,
+					"l1_nettles_1": 0.05,
+					"l1_grass_tall_1": 0.1,
+					"l1_grass_tall_2": 0.1,
+					"l1_grass_tall_3": 0.1
+			    },
+			    "forrest": {
+					"l1_tree_beech_xs": 0.2,
+					"l1_tree_beech_s": 0.1,
+					"l1_tree_beech_m": 0.2,
+					"l1_tree_beech_l": 0.05,
+					"l1_bush_beech_l": 0.1,
+					"l1_tree_spruce_l": 0.2,
+					"l1_tree_spruce_s": 0.2,
+					"l1_tree_spruce_xs": 0.1,
+					"l1_rock_s_01": 0.01,
+					"l1_rock_s_02": 0.01,
+					"l1_rock_m_01": 0.01,
+					"l1_rock_m_02": 0.02,
+					"l1_rock_l_01": 0.05
+			    }
+			},
+			"stone": {
+			    "texture": "images/legend_01/ground/stone_01.dds",
+			    "material": "ground_stone_hit"
+			}
+		}
+	}
+	,
+	{
+		"terrainconfig_id": "l1_grass",
+		"data": {
+			"vegetationAtlas": "images/legend_01/vegetation/grass.dds",
+			"vegetationTypes": {
+
+			    "l1_grass_short_green_1": {"w": 1, "h": 0.5, "tx": 0, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "l1_grass_short_green_2": {"w": 1, "h": 0.5, "tx": 0.25, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "l1_grass_short_brown_1": {"w": 1, "h": 0.5, "tx": 0.5, "ty": 0.75, "tw": 0.25, "th": 0.25},
+
+			    "l1_sorrel_1": {"w": 1.1, "h": 1.1, "tx": 0.75, "ty": 0.5, "tw": 0.25, "th": 0.5},
+
+			    "l1_grass_short_green_3": {"w": 1, "h": 0.5, "tx": 0.25, "ty": 0.5, "tw": 0.25, "th": 0.25},
+			    "l1_grass_short_green_4": {"w": 1, "h": 0.5, "tx": 0.25, "ty": 0.5, "tw": 0.25, "th": 0.25},
+			    "l1_nettles_1": {"w": 1.1, "h": 0.7, "tx": 0.5, "ty": 0.5, "tw": 0.25, "th": 0.25},
+
+				"l1_grass_tall_1": {"w": 1, "h": 0.5, "tx": 0, "ty": 0, "tw": 0.25, "th": 0.25},
+			    "l1_grass_tall_2": {"w": 1, "h": 0.5, "tx": 0.25, "ty": 0, "tw": 0.25, "th": 0.25},
+
+			    "l1_sprigs_1": {"w": 1.5, "h": 0.75, "tx": 0.5, "ty": 0, "tw": 0.25, "th": 0.25},
+			    "l1_sprigs_2": {"w": 1.5, "h": 0.75, "tx": 0.5, "ty": 0.25, "tw": 0.25, "th": 0.25},
+
+			    "l1_grass_tall_3": {"w": 1, "h": 1, "tx": 0.75, "ty": 0, "tw": 0.25, "th": 0.5}
+
+			}
+		}
+	}
+	,
+	{
+		"terrainconfig_id": "l1_forest",
+		"data": {
+			"forrestAtlas": "images/legend_01/vegetation/impostors_diffuse.dds",
+			"forrestAtlasNormals": "images/legend_01/vegetation/impostors_normal.dds",
+			"vegetationAlphaThreshold": 0.2,
+			"forrestAlphaThreshold": 0.4,
+			"forrestTypes": {
+			    "l1_tree_beech_xs": {"w": 8, "h": 8, "tx": 0.625, "ty": 0.75, "tw": 0.25, "th": 0.25},			    
+			    "l1_tree_beech_s": {"w": 8, "h": 16, "tx": 0.375, "ty": 0.5, "tw": 0.25, "th": 0.5},			    
+			    "l1_tree_beech_m": {"w": 12, "h": 16, "tx": 0, "ty": 0.5, "tw": 0.375, "th": 0.5},			   
+			    "l1_tree_beech_l": {"w": 15, "h": 17, "tx": 0, "ty": 0, "tw": 0.5, "th": 0.5},
+			    "l1_bush_beech_l": {"w": 4, "h": 8, "tx": 0.625, "ty": 0.5, "tw": 0.125, "th": 0.25},
+			    "l1_tree_spruce_xs": {"w": 4, "h": 8, "tx": 0.875, "ty": 0.75, "tw": 0.125, "th": 0.25},			    
+			    "l1_tree_spruce_s": {"w": 8, "h": 16, "tx": 0.5, "ty": 0, "tw": 0.25, "th": 0.5},			    
+			    "l1_tree_spruce_l": {"w": 4.5, "h": 18, "tx": 0.75, "ty": 0, "tw": 0.25, "th": 0.75},
+			    "l1_rock_s_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true},
+			    "l1_rock_s_02": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true},
+			    "l1_rock_m_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true},
+			    "l1_rock_m_02": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true},
+			    "l1_rock_l_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true}
+			}
+		}
+	}
+	,
+	{
+		"terrainconfig_id": "l3_ground",
+		"data": {
+			"ground1": {
+			    "texture": "images/legend_03/ground/grass_01.dds",
+                "material": "ground_dirt_hit",
+			    "vegetation": {
+					"l3_grass_1": 0.2,
+					"l3_grass_2": 0.1,
+					"l3_grass_3": 0.2,
+					"l3_grass_4": 0.1,
+					"l3_grass_tall_4": 0.05,
+					"l3_grass_tall_3": 0.05,
+					"l3_nettles": 0.05
+				 },
+			    "forrest": {
+			 		"l3_rock_s_01": 0.2,
+					"l3_rock_s_02": 0.2,
+					"l3_rock_m_01": 0.2,
+					"l3_thicket_aspen_s": 0.1
+			    }
+			},
+			"ground2": {
+			    "texture": "images/legend_03/ground/grass_02.dds",
+                "material": "ground_grass_hit",
+			    "vegetation": {
+					"l3_sprigs_1": 0.2,
+			    	"l3_sprigs_2": 0.3,
+			    	"l3_heather": 0.2,
+					"l3_grass_tall_1": 0.05,
+					"l3_grass_tall_2": 0.05,
+					"l3_grass_tall_3": 0.05,
+					"l3_grass_tall_4": 0.05,
+					"l3_nettles": 0.05
+			    },
+			    "forrest": {
+			    	"l3_thicket_aspen_s": 0.2,
+			    	"l3_thicket_aspen_m": 0.2,
+			    	"l3_tree_aspen_xs": 0.1,
+					"l3_tree_aspen_s": 0.1,
+					"l3_tree_spruce_xs": 0.3,
+					"l3_tree_spruce_s": 0.1
+
+			    }
+			},
+			"ground3": {
+			    "texture": "images/legend_03/ground/gravel_clay_debris_01.dds",
+                "material": "ground_dirt_hit",
+			    "vegetation": {
+					"l3_grass_2": 0.3,
+					"l3_grass_tall_4": 0.1,
+					"l3_grass_tall_3": 0.05
+			    },
+			    "forrest": {
+
+			    }
+			},
+			"ground4": {
+			    "texture": "images/legend_03/ground/gravel_01.dds",
+                "material": "ground_gravel_hit",
+                "vegetation": {
+
+                }
+			},
+			"ground5": {
+			    "texture": "images/legend_03/ground/grass_03.dds",
+                "material": "ground_grass_hit",
+			    "vegetation": {
+			    	"l3_sprigs_1": 0.2,
+			    	"l3_sprigs_2": 0.3,
+			    	"l3_heather": 0.2,
+					"l3_grass_tall_1": 0.05,
+					"l3_grass_tall_2": 0.05,
+					"l3_grass_tall_3": 0.05,
+					"l3_grass_tall_4": 0.05,
+					"l3_nettles": 0.05
+			    },
+			    "forrest": {
+					"l3_tree_aspen_xs": 0.05,
+					"l3_tree_aspen_s": 0.1,
+					"l3_tree_aspen_m": 0.1,
+					"l3_tree_aspen_l": 0.05,
+
+					"l3_tree_spruce_m": 0.1,
+					"l3_tree_spruce_s": 0.1,
+					"l3_tree_spruce_l_dense": 0.2,
+					"l3_tree_spruce_l_skinny": 0.1,
+
+					"l3_rock_s_01": 0.2,
+					"l3_rock_s_02": 0.2,
+					"l3_rock_m_01": 0.2
+			    }
+			},
+			"stone": {
+			    "texture": "images/legend_03/ground/stone_01.dds",
+			    "material": "ground_stone_hit"
+			}
+		}
+	}
+	,
+	{
+		"terrainconfig_id": "l3_grass",
+		"data": {
+			"vegetationAtlas": "images/legend_03/vegetation/grass.dds",
+			"vegetationTypes": {
+				"l3_sprigs_1": {"w": 1, "h": 0.5, "tx": 0, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "l3_sprigs_2": {"w": 1, "h": 0.5, "tx": 0.25, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "l3_heather": {"w": 1, "h": 0.5, "tx": 0.5, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "l3_nettles": {"w": 1.1, "h": 0.7, "tx": 0.75, "ty": 0.75, "tw": 0.25, "th": 0.25},
+
+			    "l3_grass_1": {"w": 1, "h": 0.5, "tx": 0, "ty": 0.5, "tw": 0.25, "th": 0.25},
+			    "l3_grass_2": {"w": 1, "h": 0.5, "tx": 0.25, "ty": 0.5, "tw": 0.25, "th": 0.25},
+			    "l3_grass_3": {"w": 1, "h": 0.5, "tx": 0.5, "ty": 0.5, "tw": 0.25, "th": 0.25},
+			    "l3_grass_4": {"w": 1, "h": 0.5, "tx": 0.75, "ty": 0.5, "tw": 0.25, "th": 0.25},
+
+				"l3_grass_tall_1": {"w": 1, "h": 1, "tx": 0, "ty": 0, "tw": 0.25, "th": 0.5},
+			    "l3_grass_tall_2": {"w": 1.1, "h": 1.1, "tx": 0.25, "ty": 0, "tw": 0.25, "th": 0.5},
+			    "l3_grass_tall_3": {"w": 1, "h": 1, "tx": 0.5, "ty": 0, "tw": 0.25, "th": 0.5},
+			    "l3_grass_tall_4": {"w": 1, "h": 1, "tx": 0.75, "ty": 0, "tw": 0.25, "th": 0.5}
+			}
+		}
+	}
+	,
+	{
+		"terrainconfig_id": "l3_forest",
+		"data": {
+			"forrestAtlas": "images/legend_03/vegetation/impostors_diffuse.dds",
+			"forrestAtlasNormals": "images/legend_03/vegetation/impostors_normal.dds",
+			"vegetationAlphaThreshold": 0.2,
+			"forrestAlphaThreshold": 0.6,
+			"forrestTypes": {
+			    "l3_tree_aspen_xs": {"w": 7, "h": 14, "tx": 0.25, "ty": 0, "tw": 0.125, "th": 0.25},
+			    "l3_tree_aspen_s": {"w": 12, "h": 24, "tx": 0.25, "ty": 0.5, "tw": 0.25, "th": 0.5},
+			    "l3_tree_aspen_m": {"w": 12, "h": 24, "tx": 0, "ty": 0.5, "tw": 0.25, "th": 0.5},
+			    "l3_tree_aspen_l": {"w": 12, "h": 24, "tx": 0, "ty": 0.5, "tw": 0.25, "th": 0.5},
+
+			    "l3_thicket_aspen_s": {"w": 8, "h": 8, "tx": 0.5, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "l3_thicket_aspen_m": {"w": 4, "h": 8, "tx": 0.5, "ty": 0.5, "tw": 0.125, "th": 0.25},
+
+			    "l3_tree_spruce_s": 		{"w": 5, "h": 5, "tx": 0.75, "ty": 0.75, "tw": 0.25, "th": 0.25},
+			    "l3_tree_spruce_m": 		{"w": 5, "h": 10, "tx": 0.375, "ty": 0, "tw": 0.25, "th": 0.5},
+			    "l3_tree_spruce_l_dense":   {"w": 7, "h": 22, "tx": 0.75, "ty": 0, "tw": 0.25, "th": 0.75},
+			    "l3_tree_spruce_l_skinny":  {"w": 4, "h": 22, "tx": 0.675, "ty": 0, "tw": 0.125, "th": 0.75},
+
+			    "l3_rock_s_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true},
+			    "l3_rock_s_02": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true},
+			    "l3_rock_m_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true},
+			    "l3_rock_m_02": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true},
+			    "l3_rock_l_01": {"w": 0.01, "h": 0.01, "tx": 0, "ty": 0, "tw": 0.01, "th": 0.01, "forbidden":true}
+			}
+		}
+	}
+	,
+
+
+
+	{
+		"terrainconfig_id": "default",
+		"combine": [
+			"forestDefault",
+			"vegetationDefault",
+			"groundDefault"
+		]
+	}, {
+		"terrainconfig_id": "legend01",
+		"combine": [
+			"l1_ground",
+			"l1_forest",
+			"l1_grass"
+		]
+	}, {
+		"terrainconfig_id": "legend02",
+		"combine": [
+			"forestDefault",
+			"vegetationDefault",
+			"groundDefault"
+		]
+	},{
+		"terrainconfig_id": "legend03",
+		"combine": [
+			"l3_ground",
+			"l3_forest",
+			"l3_grass"
+		]
+	}
+]

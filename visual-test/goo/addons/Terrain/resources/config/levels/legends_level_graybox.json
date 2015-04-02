@@ -1,0 +1,708 @@
+{
+    "mapObjects": [
+        {
+            "id": "playerStartDummy-1",
+            "type": "playerStartDummy",
+            "scriptData": {
+                "transitionTime": 0
+            },
+            "transform": {
+                "translation": [
+                    177.8554229736328,
+                    -1.4088139533996582,
+                    40.16546630859375
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "platform-1",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": true,
+                "pauseOnTeleport": false,
+                "activateTimes": [],
+                "repeatTime": 9999
+            },
+            "transform": {
+                "translation": [
+                    177.46002197265625,
+                    -2.6849591732025146,
+                    42.92314910888672
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ],
+                "scale": [
+                    0.009999999776482582,
+                    0.009999999776482582,
+                    0.009999999776482582
+                ]
+            }
+        },
+        {
+            "id": "thrower_roof-1",
+            "type": "thrower_roof",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    177.939697265625,
+                    -6.099293231964111,
+                    49.712188720703125
+                ],
+                "rotation": [
+                    0.06399661302566528,
+                    0,
+                    -0.9979503154754639,
+                    0,
+                    1,
+                    0,
+                    0.9979503154754639,
+                    0,
+                    0.06399661302566528
+                ]
+            }
+        },
+        {
+            "id": "thrower1-1",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 28,
+                "throws": [
+                    {
+                        "timeMin": 0.2,
+                        "timeMax": 0.4,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 30,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 25,
+                        "velocityMin": 22,
+                        "velocityMax": 25,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 0.5
+            },
+            "transform": {
+                "translation": [
+                    177.6819610595703,
+                    -5.705068111419678,
+                    50.27492141723633
+                ],
+                "rotation": [
+                    0.00940027181059122,
+                    0,
+                    -0.9999555945396423,
+                    0,
+                    1,
+                    0,
+                    0.9999555945396423,
+                    0,
+                    0.00940027181059122
+                ]
+            }
+        },
+        {
+            "id": "fence_large-1",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    162.45021057128906,
+                    -6.478200912475586,
+                    49.57248306274414
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_large-2",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    162.45021057128906,
+                    -6.478200912475586,
+                    68.25447082519531
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_large-3",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    162.45021057128906,
+                    -6.478200912475586,
+                    87.01329803466797
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_large-4",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    162.45021057128906,
+                    -6.478200912475586,
+                    105.7843246459961
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_large-5",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    190.6906280517578,
+                    -6.478200912475586,
+                    49.57248306274414
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_large-6",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    190.6906280517578,
+                    -6.478200912475586,
+                    68.28256225585938
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_large-7",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    190.6906280517578,
+                    -6.478200912475586,
+                    86.97805786132812
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_large-8",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    190.6906280517578,
+                    -6.478200912475586,
+                    105.67668151855469
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_large-9",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    180.90084838867188,
+                    -6.478200912475586,
+                    116.27845001220703
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    -1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0
+                ]
+            }
+        },
+        {
+            "id": "fence_large-10",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    162.21395874023438,
+                    -6.478200912475586,
+                    116.27845001220703
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    -1,
+                    0,
+                    1,
+                    0,
+                    1,
+                    0,
+                    0
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-1",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    177.75230407714844,
+                    -4.904183864593506,
+                    64.05699157714844
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-2",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    167.41867065429688,
+                    -4.904183864593506,
+                    64.05699157714844
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-3",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    186.2483367919922,
+                    -4.904183864593506,
+                    64.05699157714844
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-4",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    186.2483367919922,
+                    -4.904183864593506,
+                    77.97863006591797
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-5",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    167.41867065429688,
+                    -4.904183864593506,
+                    78.06893157958984
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-6",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    177.75230407714844,
+                    -4.904183864593506,
+                    78.05811309814453
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-7",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    177.75230407714844,
+                    -4.904183864593506,
+                    90.529296875
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-8",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    167.41867065429688,
+                    -4.904183864593506,
+                    90.4364242553711
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-9",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    186.2483367919922,
+                    -4.904183864593506,
+                    90.53469848632812
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        }
+    ],
+    "wind": {
+        "vector": [
+            0,
+            0,
+            0
+        ]
+    },
+    "fog": {
+        "enabled": true,
+        "start": 0,
+        "end": 315.7152924594785,
+        "color": [
+            0.43964990840626905,
+            0.4411764705882353,
+            0.41522491349480967
+        ]
+    },
+    "splines": [],
+    "gravity": 9.82,
+    "skybox": "default",
+    "globalAmbient": [
+        0.4607843137254902,
+        0.4607843137254902,
+        0.42012687427912343
+    ],
+    "light": {
+        "color": [
+            1,
+            1,
+            1
+        ],
+        "intensity": 1,
+        "direction": [
+            -0.6608635783195496,
+            1.9128513408749692,
+            0
+        ]
+    },
+    "timeline": [
+        {
+            "id": "Config",
+            "actions": [
+                {
+                    "type": "systemBus",
+                    "id": "configureHud",
+                    "data": {
+                        "hud_ammo_counter": true,
+                        "hud_level_score": true,
+                        "hud_multiplier": false,
+                        "hud_hit_score": false,
+                        "boosts": false
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "timelineControl",
+                    "data": {
+                        "paused": true
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "gameControl",
+                    "data": {
+                        "firingAllowed": false
+                    }
+                }
+            ],
+            "waitFor": [
+                {
+                    "type": "waitForPlatform"
+                }
+            ]
+        },
+        {
+            "id": "Tutorial Message",
+            "actions": [
+                {
+                    "type": "alert",
+                    "message": "tr:level_01_alert_trophy_levels"
+                },
+                {
+                    "type": "pauseEvent"
+                }
+            ],
+            "waitFor": [
+                {
+                    "type": "waitForPauseEvent"
+                }
+            ]
+        },
+        {
+            "id": "Play",
+            "actions": [
+                {
+                    "type": "systemBus",
+                    "id": "gameControl",
+                    "data": {
+                        "firingAllowed": true
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "timelineControl",
+                    "data": {
+                        "paused": false
+                    }
+                },
+                {
+                    "type": "alert",
+                    "message": ""
+                }
+            ],
+            "waitFor": []
+        }
+    ],
+    "lightmapSettings": {
+        "ambient": 0.6,
+        "occludableAmbientRatio": 0.3,
+        "sunStrength": 0.8,
+        "sunRayRatio": 0.3,
+        "sunRaySpread": 0.05
+    },
+    "vegetationSettings": {
+        "patchSize": 30,
+        "patchDensity": 0
+    }
+}

@@ -1,0 +1,757 @@
+{
+    "mapObjects": [
+        {
+            "id": "thrower1-2",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 20,
+                "throws": [
+                    {
+                        "timeMin": 0,
+                        "timeMax": 0,
+                        "type": "NULL",
+                        "probability": 1,
+                        "vertAngleMin": 0,
+                        "vertAngleMax": 0,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 0,
+                        "velocityMax": 0,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 0.101,
+                        "timeMax": 1.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    },
+                    {
+                        "timeMin": 1.6,
+                        "timeMax": 1.6,
+                        "type": "NULL",
+                        "probability": 1,
+                        "vertAngleMin": 0,
+                        "vertAngleMax": 0,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 0,
+                        "velocityMax": 0,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 1.7,
+                        "timeMax": 2.1,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 2.1
+            },
+            "transform": {
+                "translation": [
+                    183.20762634277344,
+                    26.373319625854492,
+                    59.68147277832031
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thin-1",
+            "type": "marker_thin",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    128,
+                    12.851221084594727,
+                    110.5999984741211
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-1",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    128,
+                    7.158764839172363,
+                    75.0793228149414
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "skeet_tower-2",
+            "type": "skeet_tower",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    183.34158325195312,
+                    21.39630889892578,
+                    59.72492980957031
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-2",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    127.90817260742188,
+                    9.875648498535156,
+                    51.208553314208984
+                ],
+                "rotation": [
+                    -0.011980347335338593,
+                    0,
+                    -0.9999279379844666,
+                    0,
+                    1,
+                    0,
+                    0.9999279379844666,
+                    0,
+                    -0.011980347335338593
+                ]
+            }
+        },
+        {
+            "id": "playerStartDummy-1",
+            "type": "playerStartDummy",
+            "scriptData": {
+                "transitionTime": 3
+            },
+            "transform": {
+                "translation": [
+                    128.31004333496094,
+                    11.181640625,
+                    43.11497497558594
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "platform-1",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": true,
+                "pauseOnTeleport": true,
+                "activateTimes": [
+                    {
+                        "min": 5,
+                        "max": 5
+                    }
+                ],
+                "repeatTime": 0
+            },
+            "transform": {
+                "translation": [
+                    127.8548355102539,
+                    9.839021682739258,
+                    49.968101501464844
+                ],
+                "rotation": [
+                    -1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    -1
+                ],
+                "scale": [
+                    0.009999999776482582,
+                    0.009999999776482582,
+                    0.009999999776482582
+                ]
+            }
+        },
+        {
+            "id": "thrower1-1",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 20,
+                "throws": [
+                    {
+                        "timeMin": 0.101,
+                        "timeMax": 1.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    },
+                    {
+                        "timeMin": 1.7,
+                        "timeMax": 2.1,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 2.1
+            },
+            "transform": {
+                "translation": [
+                    181.4759521484375,
+                    26.43539047241211,
+                    65.39016723632812
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "fence_medium-1",
+            "type": "fence_medium",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    128.53907775878906,
+                    6.138947010040283,
+                    53.463077545166016
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "skeet_tower-1",
+            "type": "skeet_tower",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    181.4665069580078,
+                    21.39630889892578,
+                    65.4552230834961
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "skeet_tower-3",
+            "type": "skeet_tower",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    183.34158325195312,
+                    21.39630889892578,
+                    71.34870147705078
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "thrower1-3",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 20,
+                "throws": [
+                    {
+                        "timeMin": 0.101,
+                        "timeMax": 1.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    },
+                    {
+                        "timeMin": 1.7,
+                        "timeMax": 2.1,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 2.1
+            },
+            "transform": {
+                "translation": [
+                    183.09259033203125,
+                    26.43539047241211,
+                    71.27435302734375
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "skeet_tower-4",
+            "type": "skeet_tower",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    149.56378173828125,
+                    8.13807487487793,
+                    42.07648468017578
+                ],
+                "rotation": [
+                    0.42260000109672546,
+                    0,
+                    -0.9063000082969666,
+                    0,
+                    1,
+                    0,
+                    0.9063000082969666,
+                    0,
+                    0.42260000109672546
+                ]
+            }
+        },
+        {
+            "id": "skeet_tower-5",
+            "type": "skeet_tower",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    109.16658782958984,
+                    8.12026596069336,
+                    41.33837127685547
+                ],
+                "rotation": [
+                    -0.42260000109672546,
+                    0,
+                    -0.9063000082969666,
+                    0,
+                    1,
+                    0,
+                    0.9063000082969666,
+                    0,
+                    -0.42260000109672546
+                ]
+            }
+        },
+        {
+            "id": "thrower1-4",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 20,
+                "throws": [
+                    {
+                        "timeMin": 0.1,
+                        "timeMax": 1.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    },
+                    {
+                        "timeMin": 1.701,
+                        "timeMax": 2.1,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 2.1
+            },
+            "transform": {
+                "translation": [
+                    149.43072509765625,
+                    13.398307800292969,
+                    42.27036666870117
+                ],
+                "rotation": [
+                    0.42260000109672546,
+                    0,
+                    -0.9063000082969666,
+                    0,
+                    1,
+                    0,
+                    0.9063000082969666,
+                    0,
+                    0.42260000109672546
+                ]
+            }
+        },
+        {
+            "id": "thrower1-5",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -1,
+                    0,
+                    0
+                ],
+                "throwVelocity": 20,
+                "throws": [
+                    {
+                        "timeMin": 0.1,
+                        "timeMax": 1.5,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    },
+                    {
+                        "timeMin": 1.701,
+                        "timeMax": 2.1,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 25,
+                        "vertAngleMax": 35,
+                        "horizAngleMin": -25,
+                        "horizAngleMax": 5,
+                        "velocityMin": 20,
+                        "velocityMax": 22,
+                        "manualLaunch": false,
+                        "sharedRandom": true
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 2.1
+            },
+            "transform": {
+                "translation": [
+                    109.19902038574219,
+                    13.398307800292969,
+                    41.550987243652344
+                ],
+                "rotation": [
+                    -0.42260000109672546,
+                    0,
+                    -0.9063000082969666,
+                    0,
+                    1,
+                    0,
+                    0.9063000082969666,
+                    0,
+                    -0.42260000109672546
+                ]
+            }
+        }
+    ],
+    "wind": {
+        "vector": [
+            0,
+            0,
+            0
+        ]
+    },
+    "fog": {
+        "enabled": false,
+        "start": 1000,
+        "end": 1000,
+        "color": [
+            1,
+            1,
+            1
+        ]
+    },
+    "splines": [],
+    "gravity": 9.82,
+    "skybox": "legend_03",
+    "globalAmbient": [
+        0.4607843137254902,
+        0.4381968473663975,
+        0.4381968473663975
+    ],
+    "light": {
+        "color": [
+            1,
+            1,
+            1
+        ],
+        "intensity": 1,
+        "direction": [
+            -0.9796721277050624,
+            1.3460805416107178,
+            0
+        ]
+    },
+    "timeline": [
+        {
+            "id": "Config",
+            "actions": [
+                {
+                    "type": "systemBus",
+                    "id": "configureHud",
+                    "data": {
+                        "hud_ammo_counter": true,
+                        "hud_level_score": true,
+                        "hud_multiplier": true,
+                        "hud_hit_score": true,
+                        "boosts": false
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "timelineControl",
+                    "data": {
+                        "paused": true
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "gameControl",
+                    "data": {
+                        "firingAllowed": false
+                    }
+                }
+            ],
+            "waitFor": [
+                {
+                    "type": "waitForPlatform"
+                }
+            ]
+        },
+        {
+            "id": "Play",
+            "actions": [
+                {
+                    "type": "systemBus",
+                    "id": "gameControl",
+                    "data": {
+                        "firingAllowed": true
+                    }
+                },
+                {
+                    "type": "systemBus",
+                    "id": "timelineControl",
+                    "data": {
+                        "paused": false
+                    }
+                },
+                {
+                    "type": "alert",
+                    "message": ""
+                }
+            ],
+            "waitFor": []
+        }
+    ],
+    "lightmapSettings": {
+        "ambient": 0.6,
+        "occludableAmbientRatio": 0.3,
+        "sunStrength": 0.8,
+        "sunRayRatio": 0.3,
+        "sunRaySpread": 0.05
+    },
+    "vegetationSettings": {
+        "patchSize": 15,
+        "patchDensity": 19
+    }
+}

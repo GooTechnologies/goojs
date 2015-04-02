@@ -1,0 +1,2627 @@
+{
+	"ae07570174654ebfb3874803f76ec90f.entity": {
+		"name": "beams1",
+		"license": "CC0",
+		"created": "2014-04-09T09:20:45.941Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T09:23:56.896029+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				]
+			},
+			"meshRenderer": {
+				"reflectable": true,
+				"materials": {
+					"56497dc4c31545699cd13c19600dea31.material": {
+						"materialRef": "56497dc4c31545699cd13c19600dea31.material",
+						"sortValue": 0
+					}
+				},
+				"receiveShadows": true,
+				"cullMode": "Dynamic",
+				"castShadows": true
+			},
+			"meshData": {
+				"meshRef": "08d2e767e21f497da9a31c52643913de.mesh"
+			}
+		},
+		"hidden": false,
+		"id": "ae07570174654ebfb3874803f76ec90f.entity"
+	},
+	"d326ef57d1a64013844fdd2994d03579.entity": {
+		"name": "concrete",
+		"license": "CC0",
+		"created": "2014-04-09T09:23:15.417Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T09:26:22.902879+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				]
+			},
+			"meshRenderer": {
+				"reflectable": true,
+				"materials": {
+					"10bf2136768040a88e33fc9356caeb4f.material": {
+						"materialRef": "10bf2136768040a88e33fc9356caeb4f.material",
+						"sortValue": 0
+					}
+				},
+				"receiveShadows": true,
+				"cullMode": "Dynamic",
+				"castShadows": true
+			},
+			"meshData": {
+				"meshRef": "4ca3a6af8810456b91f30b14ad24166a.mesh"
+			}
+		},
+		"hidden": false,
+		"id": "d326ef57d1a64013844fdd2994d03579.entity"
+	},
+	"c8758f642e874ee28b6d20bd8458654b.entity": {
+		"name": "frame",
+		"license": "CC0",
+		"created": "2014-04-09T09:23:22.710Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T09:21:49.997123+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				]
+			},
+			"meshRenderer": {
+				"reflectable": true,
+				"materials": {
+					"ac3403b6288f499a90db08ce411a19bb.material": {
+						"materialRef": "ac3403b6288f499a90db08ce411a19bb.material",
+						"sortValue": 0
+					}
+				},
+				"receiveShadows": true,
+				"cullMode": "Dynamic",
+				"castShadows": true
+			},
+			"meshData": {
+				"meshRef": "a5c9ebddca2e4f13828345bd4746150a.mesh"
+			}
+		},
+		"hidden": false,
+		"id": "c8758f642e874ee28b6d20bd8458654b.entity"
+	},
+	"a5c9ebddca2e4f13828345bd4746150a.mesh": {
+		"name": "",
+		"license": "CC0",
+		"created": "2014-04-07T14:37:14.156816+00:00",
+		"boundingVolume": {
+			"max": [
+				43.668083190918,
+				696.98767089844,
+				1036.9683837891
+			],
+			"type": "BoundingBox",
+			"min": [
+				-3.7255907058716,
+				-153.89624023438,
+				-879.294921875
+			]
+		},
+		"_readOnly": false,
+		"modified": "2014-04-09T07:52:19.790829+00:00",
+		"dataModelVersion": 2,
+		"deleted": false,
+		"vertexCount": 472,
+		"indexModes": [
+			"Triangles"
+		],
+		"indices": [
+			15012,
+			768,
+			"uint16"
+		],
+		"attributes": {
+			"POSITION": {
+				"dimensions": 3,
+				"value": [
+					16548,
+					1416,
+					"float32"
+				]
+			},
+			"TEXCOORD1": {
+				"dimensions": 2,
+				"value": [
+					22212,
+					944,
+					"float32"
+				]
+			},
+			"TEXCOORD0": {
+				"dimensions": 2,
+				"value": [
+					25988,
+					944,
+					"float32"
+				]
+			},
+			"TANGENT": {
+				"dimensions": 4,
+				"value": [
+					29764,
+					1888,
+					"float32"
+				]
+			},
+			"NORMAL": {
+				"dimensions": 3,
+				"value": [
+					37316,
+					1416,
+					"float32"
+				]
+			}
+		},
+		"indexLengths": [
+			768
+		],
+		"type": "Mesh",
+		"id": "a5c9ebddca2e4f13828345bd4746150a.mesh",
+		"binaryRef": "4e25d7d6d4840cf917ce7e2962895d203af4494d.bin"
+	},
+	"2e92930fe35647dfae4bfee900a3c0e1.entity": {
+		"name": "Directional 1",
+		"license": "CC0",
+		"created": "2014-04-08T10:37:13.394Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-08T10:35:35.509703+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"light": {
+				"direction": [
+					0,
+					0,
+					0
+				],
+				"shadowCaster": true,
+				"color": [
+					1,
+					1,
+					1,
+					1
+				],
+				"intensity": 0.4,
+				"range": 60,
+				"specularIntensity": 1,
+				"penumbra": 5,
+				"angle": 30,
+				"type": "DirectionalLight",
+				"shadowSettings": {
+					"fov": 55,
+					"darkness": 1,
+					"far": 60,
+					"near": 1,
+					"resolution": [
+						256,
+						256
+					],
+					"shadowType": "VSM",
+					"size": 100
+				}
+			},
+			"transform": {
+				"translation": [
+					15,
+					11.6,
+					-12.2
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					-31,
+					129,
+					0
+				]
+			}
+		},
+		"hidden": false,
+		"id": "2e92930fe35647dfae4bfee900a3c0e1.entity"
+	},
+	"a5431f34f400485cbb33e47929a8de60.mesh": {
+		"name": "",
+		"license": "CC0",
+		"created": "2014-04-07T14:37:14.678108+00:00",
+		"boundingVolume": {
+			"max": [
+				16.728834152222,
+				633.10308837891,
+				999.82873535156
+			],
+			"type": "BoundingBox",
+			"min": [
+				11.356585502625,
+				129.40399169922,
+				-835.12585449219
+			]
+		},
+		"_readOnly": false,
+		"modified": "2014-04-09T07:52:19.870059+00:00",
+		"dataModelVersion": 2,
+		"deleted": false,
+		"vertexCount": 200,
+		"indexModes": [
+			"Triangles"
+		],
+		"indices": [
+			53276,
+			300,
+			"uint8"
+		],
+		"attributes": {
+			"POSITION": {
+				"dimensions": 3,
+				"value": [
+					53576,
+					600,
+					"float32"
+				]
+			},
+			"TEXCOORD1": {
+				"dimensions": 2,
+				"value": [
+					55976,
+					400,
+					"float32"
+				]
+			},
+			"TEXCOORD0": {
+				"dimensions": 2,
+				"value": [
+					57576,
+					400,
+					"float32"
+				]
+			},
+			"TANGENT": {
+				"dimensions": 4,
+				"value": [
+					59176,
+					800,
+					"float32"
+				]
+			},
+			"NORMAL": {
+				"dimensions": 3,
+				"value": [
+					62376,
+					600,
+					"float32"
+				]
+			}
+		},
+		"indexLengths": [
+			300
+		],
+		"type": "Mesh",
+		"id": "a5431f34f400485cbb33e47929a8de60.mesh",
+		"binaryRef": "4e25d7d6d4840cf917ce7e2962895d203af4494d.bin"
+	},
+	"f204ac1cbc484d92ae1f8fa391e38046.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "thrower_roof_AOC.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T08:53:14.373509+00:00",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T08:53:14.373531+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "f682e5f53d157348fe4bfe8b659647fb7a56b747.dds",
+		"lodBias": 0,
+		"anisotropy": 1,
+		"offset": [
+			0,
+			0
+		],
+		"id": "f204ac1cbc484d92ae1f8fa391e38046.texture",
+		"wrapT": "Repeat"
+	},
+	"56497dc4c31545699cd13c19600dea31.material": {
+		"texturesMapping": {
+			"AO_MAP": {
+				"enabled": true,
+				"textureRef": "39217fbbba5d4ca79c1e6511b31e199c.texture"
+			},
+			"DIFFUSE_MAP": {
+				"enabled": true,
+				"textureRef": "b27dff113573428cb05e752ad2839cff.texture"
+			}
+		},
+		"flat": false,
+		"cullState": {
+			"frontFace": "CCW",
+			"enabled": true,
+			"cullFace": "Back"
+		},
+		"uniforms": {
+			"opacity": {
+				"enabled": false,
+				"value": 1
+			},
+			"refractivity": {
+				"enabled": false,
+				"value": 0
+			},
+			"materialAmbient": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"materialSpecular": {
+				"enabled": true,
+				"value": [
+					0.2375,
+					0.2375,
+					0.2375,
+					1
+				]
+			},
+			"fresnel": {
+				"enabled": true,
+				"value": 0
+			},
+			"vertexColorAmount": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialSpecularPower": {
+				"enabled": true,
+				"value": 108.9
+			},
+			"materialDiffuse": {
+				"enabled": true,
+				"value": [
+					1,
+					1,
+					1,
+					1
+				]
+			},
+			"reflectivity": {
+				"enabled": true,
+				"value": 0
+			},
+			"materialEmissive": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"discardThreshold": {
+				"enabled": true,
+				"value": 0.1
+			},
+			"normalMultiplier": {
+				"enabled": true,
+				"value": 1
+			},
+			"etaRatio": {
+				"enabled": true,
+				"value": -0.5
+			}
+		},
+		"name": "beams",
+		"license": "CC0",
+		"created": "2014-04-09T09:20:45.956Z",
+		"deleted": false,
+		"wireframe": false,
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"blendState": {
+			"blendDst": "OneMinusSrcAlphaFactor",
+			"blendSrc": "SrcAlphaFactor",
+			"blendEquation": "AddEquation",
+			"blending": "NoBlending"
+		},
+		"modified": "2014-04-09T09:23:57.234651+00:00",
+		"dualTransparency": false,
+		"depthState": {
+			"write": true,
+			"enabled": true
+		},
+		"shaderRef": "GOO_ENGINE_SHADERS\/uber",
+		"id": "56497dc4c31545699cd13c19600dea31.material",
+		"renderQueue": -1
+	},
+	"53e724b9347841eca1c5f62b3d4fb2d4.mesh": {
+		"name": "",
+		"license": "CC0",
+		"created": "2014-04-14T08:09:09.143803+00:00",
+		"boundingVolume": {
+			"max": [
+				16.869440078735,
+				158.60734558105,
+				16.831848144531
+			],
+			"type": "BoundingBox",
+			"min": [
+				-16.794258117676,
+				-57.994026184082,
+				-16.831848144531
+			]
+		},
+		"_readOnly": false,
+		"modified": "2014-04-14T08:09:09.143816+00:00",
+		"dataModelVersion": 2,
+		"deleted": false,
+		"vertexCount": 38,
+		"indexModes": [
+			"Triangles"
+		],
+		"indices": [
+			0,
+			120,
+			"uint8"
+		],
+		"attributes": {
+			"POSITION": {
+				"dimensions": 3,
+				"value": [
+					120,
+					114,
+					"float32"
+				]
+			},
+			"TEXCOORD0": {
+				"dimensions": 2,
+				"value": [
+					576,
+					76,
+					"float32"
+				]
+			},
+			"TANGENT": {
+				"dimensions": 4,
+				"value": [
+					880,
+					152,
+					"float32"
+				]
+			},
+			"NORMAL": {
+				"dimensions": 3,
+				"value": [
+					1488,
+					114,
+					"float32"
+				]
+			}
+		},
+		"indexLengths": [
+			120
+		],
+		"type": "Mesh",
+		"id": "53e724b9347841eca1c5f62b3d4fb2d4.mesh",
+		"binaryRef": "ca05ca5849e78ad66677e647053d2d777db49732.bin"
+	},
+	"53155c18cccb41c4a6052b9634763705.entity": {
+		"name": "thrower_roof",
+		"license": "CC0",
+		"created": "2014-04-09T09:03:50.463Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T09:06:59.388993+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					0.01,
+					0.01,
+					0.01
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				],
+				"children": {
+					"d326ef57d1a64013844fdd2994d03579.entity": {
+						"entityRef": "d326ef57d1a64013844fdd2994d03579.entity",
+						"sortValue": 2
+					},
+					"fb3771b10ef54a858b207d7e754d0ae2.entity": {
+						"entityRef": "fb3771b10ef54a858b207d7e754d0ae2.entity",
+						"sortValue": 3
+					},
+					"ae07570174654ebfb3874803f76ec90f.entity": {
+						"entityRef": "ae07570174654ebfb3874803f76ec90f.entity",
+						"sortValue": 4
+					},
+					"58c56034e54848dca0f16bc25d7567bc.entity": {
+						"entityRef": "58c56034e54848dca0f16bc25d7567bc.entity",
+						"sortValue": 1
+					}
+				}
+			}
+		},
+		"hidden": false,
+		"id": "53155c18cccb41c4a6052b9634763705.entity"
+	},
+	"c3611b9945e8436180eb0d127ca0e37e.material": {
+		"texturesMapping": {
+			"AO_MAP": {
+				"enabled": true,
+				"textureRef": "73ca4f652d86469b9c54de6f1fdc4f2e.texture"
+			},
+			"DIFFUSE_MAP": {
+				"enabled": true,
+				"textureRef": "02d1088ab65943c78087e98759ecac3c.texture"
+			}
+		},
+		"flat": false,
+		"cullState": {
+			"frontFace": "CCW",
+			"enabled": true,
+			"cullFace": "Back"
+		},
+		"uniforms": {
+			"opacity": {
+				"enabled": false,
+				"value": 1
+			},
+			"refractivity": {
+				"enabled": false,
+				"value": 0
+			},
+			"materialAmbient": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"materialSpecular": {
+				"enabled": true,
+				"value": [
+					0.2125,
+					0.2125,
+					0.2125,
+					1
+				]
+			},
+			"fresnel": {
+				"enabled": true,
+				"value": 0
+			},
+			"vertexColorAmount": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialSpecularPower": {
+				"enabled": true,
+				"value": 108.9
+			},
+			"materialDiffuse": {
+				"enabled": true,
+				"value": [
+					1,
+					1,
+					1,
+					1
+				]
+			},
+			"reflectivity": {
+				"enabled": true,
+				"value": 0
+			},
+			"materialEmissive": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"discardThreshold": {
+				"enabled": true,
+				"value": 0.1
+			},
+			"normalMultiplier": {
+				"enabled": true,
+				"value": 1
+			},
+			"etaRatio": {
+				"enabled": true,
+				"value": -0.5
+			}
+		},
+		"name": "planks",
+		"license": "CC0",
+		"created": "2014-04-09T09:20:47.306Z",
+		"deleted": false,
+		"wireframe": false,
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"blendState": {
+			"blendDst": "OneMinusSrcAlphaFactor",
+			"blendSrc": "SrcAlphaFactor",
+			"blendEquation": "AddEquation",
+			"blending": "NoBlending"
+		},
+		"modified": "2014-04-09T09:19:14.083516+00:00",
+		"dualTransparency": false,
+		"depthState": {
+			"write": true,
+			"enabled": true
+		},
+		"shaderRef": "GOO_ENGINE_SHADERS\/uber",
+		"id": "c3611b9945e8436180eb0d127ca0e37e.material",
+		"renderQueue": -1
+	},
+	"32e165f2de824ed3a888ce4bfc799dcc.project": {
+		"mainSceneRef": "182d83fa68aa4de091f7e0d1bf4c6a21.scene",
+		"name": "Props",
+		"license": "CC0",
+		"created": "2014-04-09T08:53:00.266Z",
+		"deleted": false,
+		"_readOnly": false,
+		"scenes": {
+			"182d83fa68aa4de091f7e0d1bf4c6a21.scene": {
+				"sortValue": 0,
+				"sceneRef": "182d83fa68aa4de091f7e0d1bf4c6a21.scene"
+			}
+		},
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T08:53:14.322353+00:00",
+		"id": "32e165f2de824ed3a888ce4bfc799dcc.project",
+		"assets": {
+			"f204ac1cbc484d92ae1f8fa391e38046.texture": {
+				"sortValue": 0,
+				"assetRef": "f204ac1cbc484d92ae1f8fa391e38046.texture"
+			}
+		}
+	},
+	"ee2395a55cfe4c69ade911e9ddf1242c.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "roof_tiles_DIF",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:20:38.395Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:23:47.568262+00:00",
+		"matchFileName": "roof_tiles_DIF.dds",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "4e0ee55dc3a89ec36cce5bd248bd92942b6d1a06.dds",
+		"lodBias": 0,
+		"offset": [
+			0,
+			0
+		],
+		"wrapT": "Repeat",
+		"id": "ee2395a55cfe4c69ade911e9ddf1242c.texture",
+		"anisotropy": 2
+	},
+	"8301917be0274db094919c67b803c238.mesh": {
+		"name": "",
+		"license": "CC0",
+		"created": "2014-04-09T09:01:16.181353+00:00",
+		"boundingVolume": {
+			"max": [
+				132.27133178711,
+				253.13545227051,
+				158.51440429688
+			],
+			"type": "BoundingBox",
+			"min": [
+				-133.83857727051,
+				182.28231811523,
+				-167.13195800781
+			]
+		},
+		"_readOnly": false,
+		"modified": "2014-04-09T09:01:16.181378+00:00",
+		"dataModelVersion": 2,
+		"deleted": false,
+		"vertexCount": 20,
+		"indexModes": [
+			"Triangles"
+		],
+		"indices": [
+			35788,
+			30,
+			"uint8"
+		],
+		"attributes": {
+			"POSITION": {
+				"dimensions": 3,
+				"value": [
+					35820,
+					60,
+					"float32"
+				]
+			},
+			"TEXCOORD1": {
+				"dimensions": 2,
+				"value": [
+					36060,
+					40,
+					"float32"
+				]
+			},
+			"TEXCOORD0": {
+				"dimensions": 2,
+				"value": [
+					36220,
+					40,
+					"float32"
+				]
+			},
+			"TANGENT": {
+				"dimensions": 4,
+				"value": [
+					36380,
+					80,
+					"float32"
+				]
+			},
+			"NORMAL": {
+				"dimensions": 3,
+				"value": [
+					36700,
+					60,
+					"float32"
+				]
+			}
+		},
+		"indexLengths": [
+			30
+		],
+		"type": "Mesh",
+		"id": "8301917be0274db094919c67b803c238.mesh",
+		"binaryRef": "af8b52a8791424a3a5bb6c648e02139c6a800117.bin"
+	},
+	"8d19f10e0a2f4ab8913c638d53644532.entity": {
+		"name": "fence_large",
+		"license": "CC0",
+		"created": "2014-04-09T09:21:55.046Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T09:25:02.599307+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					0.01,
+					0.01,
+					0.01
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				],
+				"children": {
+					"0d666d382fb24fc4a4c72ac91493ec37.entity": {
+						"entityRef": "0d666d382fb24fc4a4c72ac91493ec37.entity",
+						"sortValue": 1
+					},
+					"c8758f642e874ee28b6d20bd8458654b.entity": {
+						"entityRef": "c8758f642e874ee28b6d20bd8458654b.entity",
+						"sortValue": 2
+					}
+				}
+			}
+		},
+		"hidden": false,
+		"id": "8d19f10e0a2f4ab8913c638d53644532.entity"
+	},
+	"7be5a7f6d5424a7397a17e041b4e0c4f.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "wood_planks_wall_DIF.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:22:30.321Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:21:02.870402+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "53eb83882a0568e867f45bb93e792227c5e2e97c.dds",
+		"lodBias": 0,
+		"anisotropy": 2,
+		"offset": [
+			0,
+			0
+		],
+		"id": "7be5a7f6d5424a7397a17e041b4e0c4f.texture",
+		"wrapT": "Repeat"
+	},
+	"b30b6e1653394dd58f5ba84bc2ed244e.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "large_fence_AOC.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:22:44.026Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:25:51.812177+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "484150e94a0220896014fe2b1c8f26cd81191cbc.dds",
+		"lodBias": 0,
+		"anisotropy": 1,
+		"offset": [
+			0,
+			0
+		],
+		"id": "b30b6e1653394dd58f5ba84bc2ed244e.texture",
+		"wrapT": "Repeat"
+	},
+	"4ca3a6af8810456b91f30b14ad24166a.mesh": {
+		"name": "",
+		"license": "CC0",
+		"created": "2014-04-09T09:01:16.548513+00:00",
+		"boundingVolume": {
+			"max": [
+				105.77386474609,
+				38.846633911133,
+				144.48725891113
+			],
+			"type": "BoundingBox",
+			"min": [
+				-105.36542510986,
+				-108.51872253418,
+				-152.99467468262
+			]
+		},
+		"_readOnly": false,
+		"modified": "2014-04-09T09:01:16.548538+00:00",
+		"dataModelVersion": 2,
+		"deleted": false,
+		"vertexCount": 64,
+		"indexModes": [
+			"Triangles"
+		],
+		"indices": [
+			54192,
+			234,
+			"uint8"
+		],
+		"attributes": {
+			"POSITION": {
+				"dimensions": 3,
+				"value": [
+					54428,
+					192,
+					"float32"
+				]
+			},
+			"TEXCOORD1": {
+				"dimensions": 2,
+				"value": [
+					55196,
+					128,
+					"float32"
+				]
+			},
+			"TEXCOORD0": {
+				"dimensions": 2,
+				"value": [
+					55708,
+					128,
+					"float32"
+				]
+			},
+			"TANGENT": {
+				"dimensions": 4,
+				"value": [
+					56220,
+					256,
+					"float32"
+				]
+			},
+			"NORMAL": {
+				"dimensions": 3,
+				"value": [
+					57244,
+					192,
+					"float32"
+				]
+			}
+		},
+		"indexLengths": [
+			234
+		],
+		"type": "Mesh",
+		"id": "4ca3a6af8810456b91f30b14ad24166a.mesh",
+		"binaryRef": "af8b52a8791424a3a5bb6c648e02139c6a800117.bin"
+	},
+	"b27dff113573428cb05e752ad2839cff.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "wood_beam_DIF.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:20:45.969Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:23:57.121623+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "5949c2e6da97638e17ae483fab9d806661793e6b.dds",
+		"lodBias": 0,
+		"anisotropy": 2,
+		"offset": [
+			0,
+			0
+		],
+		"id": "b27dff113573428cb05e752ad2839cff.texture",
+		"wrapT": "Repeat"
+	},
+	"a4e2393e1c2146d8a20d3b49a2fcdcab.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "range_markers_DIF.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-14T08:14:57.080Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-14T08:18:18.164338+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "4e9b02bd3a464c8cd77ddd2055cca1c00876a597.dds",
+		"lodBias": 0,
+		"anisotropy": 4,
+		"offset": [
+			0,
+			0
+		],
+		"id": "a4e2393e1c2146d8a20d3b49a2fcdcab.texture",
+		"wrapT": "Repeat"
+	},
+	"6ce4a955cede46e6bf30aa3a9fc894ab.mesh": {
+		"name": "",
+		"license": "CC0",
+		"created": "2014-04-14T08:09:09.358835+00:00",
+		"boundingVolume": {
+			"max": [
+				6.1834020614624,
+				152.65194702148,
+				5.3833289146423
+			],
+			"type": "BoundingBox",
+			"min": [
+				-6.1599426269531,
+				-17.953559875488,
+				-5.306321144104
+			]
+		},
+		"_readOnly": false,
+		"modified": "2014-04-14T08:09:09.358882+00:00",
+		"dataModelVersion": 2,
+		"deleted": false,
+		"vertexCount": 27,
+		"indexModes": [
+			"Triangles"
+		],
+		"indices": [
+			1944,
+			90,
+			"uint8"
+		],
+		"attributes": {
+			"POSITION": {
+				"dimensions": 3,
+				"value": [
+					2036,
+					81,
+					"float32"
+				]
+			},
+			"TEXCOORD0": {
+				"dimensions": 2,
+				"value": [
+					2360,
+					54,
+					"float32"
+				]
+			},
+			"TANGENT": {
+				"dimensions": 4,
+				"value": [
+					2576,
+					108,
+					"float32"
+				]
+			},
+			"NORMAL": {
+				"dimensions": 3,
+				"value": [
+					3008,
+					81,
+					"float32"
+				]
+			}
+		},
+		"indexLengths": [
+			90
+		],
+		"type": "Mesh",
+		"id": "6ce4a955cede46e6bf30aa3a9fc894ab.mesh",
+		"binaryRef": "ca05ca5849e78ad66677e647053d2d777db49732.bin"
+	},
+	"86b11ca07e9b41cda591573ffa5897bd.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "thrower_roof_AOC.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:18:09.790890+00:00",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:18:09.790911+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "f682e5f53d157348fe4bfe8b659647fb7a56b747.dds",
+		"lodBias": 0,
+		"anisotropy": 1,
+		"offset": [
+			0,
+			0
+		],
+		"id": "86b11ca07e9b41cda591573ffa5897bd.texture",
+		"wrapT": "Repeat"
+	},
+	"f5f9832ad590490aa3a3728194f19023.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "thrower_roof_AOC.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:18:30.858436+00:00",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:18:30.858463+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "f682e5f53d157348fe4bfe8b659647fb7a56b747.dds",
+		"lodBias": 0,
+		"anisotropy": 1,
+		"offset": [
+			0,
+			0
+		],
+		"id": "f5f9832ad590490aa3a3728194f19023.texture",
+		"wrapT": "Repeat"
+	},
+	"58c56034e54848dca0f16bc25d7567bc.entity": {
+		"name": "walls",
+		"license": "CC0",
+		"created": "2014-04-09T09:20:47.285Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T09:23:57.176889+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				]
+			},
+			"meshRenderer": {
+				"reflectable": true,
+				"materials": {
+					"c3611b9945e8436180eb0d127ca0e37e.material": {
+						"materialRef": "c3611b9945e8436180eb0d127ca0e37e.material",
+						"sortValue": 0
+					}
+				},
+				"receiveShadows": true,
+				"cullMode": "Dynamic",
+				"castShadows": true
+			},
+			"meshData": {
+				"meshRef": "2063db9ff95844c2b3c236ee923f265e.mesh"
+			}
+		},
+		"hidden": false,
+		"id": "58c56034e54848dca0f16bc25d7567bc.entity"
+	},
+	"fb50585e523f48eb9200e02c9ef7365f.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "concrete_DIF",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:20:45.487Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:23:57.011228+00:00",
+		"matchFileName": "concrete_DIF.dds",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "07e57dc4826e5af0913eae0f33b52e78d8347f22.dds",
+		"lodBias": 0,
+		"offset": [
+			0,
+			0
+		],
+		"wrapT": "Repeat",
+		"id": "fb50585e523f48eb9200e02c9ef7365f.texture",
+		"anisotropy": 2
+	},
+	"00bf7c6d16b6437c929961f2cd0a075c.material": {
+		"texturesMapping": {
+			"AO_MAP": {
+				"enabled": true,
+				"textureRef": "6cc469680fb843d6a5840ccf1f3ef935.texture"
+			},
+			"DIFFUSE_MAP": {
+				"enabled": true,
+				"textureRef": "7be5a7f6d5424a7397a17e041b4e0c4f.texture"
+			}
+		},
+		"flat": false,
+		"cullState": {
+			"frontFace": "CCW",
+			"enabled": true,
+			"cullFace": "Back"
+		},
+		"uniforms": {
+			"opacity": {
+				"enabled": false,
+				"value": 1
+			},
+			"refractivity": {
+				"enabled": false,
+				"value": 0
+			},
+			"materialAmbient": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"materialSpecular": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"fresnel": {
+				"enabled": true,
+				"value": 0
+			},
+			"vertexColorAmount": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialSpecularPower": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialDiffuse": {
+				"enabled": true,
+				"value": [
+					1,
+					1,
+					1,
+					1
+				]
+			},
+			"reflectivity": {
+				"enabled": true,
+				"value": 0
+			},
+			"materialEmissive": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"discardThreshold": {
+				"enabled": true,
+				"value": 0.1
+			},
+			"normalMultiplier": {
+				"enabled": true,
+				"value": 1
+			},
+			"etaRatio": {
+				"enabled": true,
+				"value": 0
+			}
+		},
+		"name": "planks",
+		"license": "CC0",
+		"created": "2014-04-09T09:22:30.315Z",
+		"deleted": false,
+		"wireframe": false,
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"blendState": {
+			"blendDst": "OneMinusSrcAlphaFactor",
+			"blendSrc": "SrcAlphaFactor",
+			"blendEquation": "AddEquation",
+			"blending": "NoBlending"
+		},
+		"modified": "2014-04-09T09:20:57.484715+00:00",
+		"dualTransparency": false,
+		"depthState": {
+			"write": true,
+			"enabled": true
+		},
+		"shaderRef": "GOO_ENGINE_SHADERS\/uber",
+		"id": "00bf7c6d16b6437c929961f2cd0a075c.material",
+		"renderQueue": -1
+	},
+	"1e355c0351764198a20f5c365789f01f.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "wood_beam_DIF.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:22:44.026Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:21:08.692713+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "5949c2e6da97638e17ae483fab9d806661793e6b.dds",
+		"lodBias": 0,
+		"anisotropy": 2,
+		"offset": [
+			0,
+			0
+		],
+		"id": "1e355c0351764198a20f5c365789f01f.texture",
+		"wrapT": "Repeat"
+	},
+	"08d2e767e21f497da9a31c52643913de.mesh": {
+		"name": "",
+		"license": "CC0",
+		"created": "2014-04-09T09:01:15.744519+00:00",
+		"boundingVolume": {
+			"max": [
+				135.72244262695,
+				256.33712768555,
+				160.75189208984
+			],
+			"type": "BoundingBox",
+			"min": [
+				-134.51449584961,
+				38.47925567627,
+				-169.61212158203
+			]
+		},
+		"_readOnly": false,
+		"modified": "2014-04-09T09:01:15.744546+00:00",
+		"dataModelVersion": 2,
+		"deleted": false,
+		"vertexCount": 136,
+		"indexModes": [
+			"Triangles"
+		],
+		"indices": [
+			0,
+			204,
+			"uint8"
+		],
+		"attributes": {
+			"POSITION": {
+				"dimensions": 3,
+				"value": [
+					204,
+					408,
+					"float32"
+				]
+			},
+			"TEXCOORD1": {
+				"dimensions": 2,
+				"value": [
+					1836,
+					272,
+					"float32"
+				]
+			},
+			"TEXCOORD0": {
+				"dimensions": 2,
+				"value": [
+					2924,
+					272,
+					"float32"
+				]
+			},
+			"TANGENT": {
+				"dimensions": 4,
+				"value": [
+					4012,
+					544,
+					"float32"
+				]
+			},
+			"NORMAL": {
+				"dimensions": 3,
+				"value": [
+					6188,
+					408,
+					"float32"
+				]
+			}
+		},
+		"indexLengths": [
+			204
+		],
+		"type": "Mesh",
+		"id": "08d2e767e21f497da9a31c52643913de.mesh",
+		"binaryRef": "af8b52a8791424a3a5bb6c648e02139c6a800117.bin"
+	},
+	"2358a781181d403a9eb758a14b470c2c.entity": {
+		"name": "marker_thin",
+		"license": "CC0",
+		"created": "2014-04-14T08:09:20.907Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-14T08:07:39.242237+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				]
+			},
+			"meshRenderer": {
+				"reflectable": true,
+				"materials": {
+					"d8c14e90611e4ad08f5c2e998f98cd0d.material": {
+						"materialRef": "d8c14e90611e4ad08f5c2e998f98cd0d.material",
+						"sortValue": 0
+					}
+				},
+				"receiveShadows": true,
+				"cullMode": "Dynamic",
+				"castShadows": true
+			},
+			"meshData": {
+				"meshRef": "6ce4a955cede46e6bf30aa3a9fc894ab.mesh"
+			}
+		},
+		"hidden": false,
+		"id": "2358a781181d403a9eb758a14b470c2c.entity"
+	},
+	"39217fbbba5d4ca79c1e6511b31e199c.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "thrower_roof_AOC.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:17:56.878899+00:00",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:17:56.878925+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "f682e5f53d157348fe4bfe8b659647fb7a56b747.dds",
+		"lodBias": 0,
+		"anisotropy": 1,
+		"offset": [
+			0,
+			0
+		],
+		"id": "39217fbbba5d4ca79c1e6511b31e199c.texture",
+		"wrapT": "Repeat"
+	},
+	"6cc469680fb843d6a5840ccf1f3ef935.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "large_fence_AOC.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:22:36.361Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:20:58.501372+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "484150e94a0220896014fe2b1c8f26cd81191cbc.dds",
+		"lodBias": 0,
+		"anisotropy": 1,
+		"offset": [
+			0,
+			0
+		],
+		"id": "6cc469680fb843d6a5840ccf1f3ef935.texture",
+		"wrapT": "Repeat"
+	},
+	"d1c85ac827ae464b9782dc00d2a345a5.entity": {
+		"name": "marker_thick",
+		"license": "CC0",
+		"created": "2014-04-14T08:09:09.203242+00:00",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-14T08:09:09.203263+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"rotation": [
+					0,
+					-0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"translation": [
+					0,
+					0,
+					0
+				]
+			},
+			"meshRenderer": {
+				"reflectable": true,
+				"materials": {
+					"d8c14e90611e4ad08f5c2e998f98cd0d.material": {
+						"materialRef": "d8c14e90611e4ad08f5c2e998f98cd0d.material",
+						"sortValue": 0
+					}
+				},
+				"receiveShadows": true,
+				"cullMode": "Dynamic",
+				"castShadows": true
+			},
+			"meshData": {
+				"meshRef": "53e724b9347841eca1c5f62b3d4fb2d4.mesh"
+			}
+		},
+		"hidden": false,
+		"id": "d1c85ac827ae464b9782dc00d2a345a5.entity"
+	},
+	"c71e8ee81022400694fb4a82e52987aa.entity": {
+		"name": "Default Lights",
+		"license": "CC0",
+		"created": "2014-04-09T07:49:18.638Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T07:47:45.275069+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				],
+				"children": {
+					"2e92930fe35647dfae4bfee900a3c0e1.entity": {
+						"entityRef": "2e92930fe35647dfae4bfee900a3c0e1.entity",
+						"sortValue": 1
+					},
+					"2b61df1820ff4741a29d26350314a50c.entity": {
+						"entityRef": "2b61df1820ff4741a29d26350314a50c.entity",
+						"sortValue": 0
+					}
+				}
+			}
+		},
+		"hidden": false,
+		"id": "c71e8ee81022400694fb4a82e52987aa.entity"
+	},
+	"2b61df1820ff4741a29d26350314a50c.entity": {
+		"name": "Directional 0",
+		"license": "CC0",
+		"created": "2014-04-08T10:37:15.662Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-08T10:35:37.581199+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"light": {
+				"direction": [
+					0,
+					0,
+					0
+				],
+				"shadowCaster": true,
+				"color": [
+					1,
+					1,
+					1,
+					1
+				],
+				"intensity": 0.8,
+				"range": 60,
+				"specularIntensity": 1,
+				"penumbra": 5,
+				"angle": 30,
+				"type": "DirectionalLight",
+				"shadowSettings": {
+					"fov": 30,
+					"darkness": 1,
+					"far": 60,
+					"near": 1,
+					"resolution": [
+						256,
+						256
+					],
+					"shadowType": "VSM",
+					"size": 100
+				}
+			},
+			"transform": {
+				"translation": [
+					16,
+					20.5,
+					23.3
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					-38,
+					21,
+					-18
+				]
+			}
+		},
+		"hidden": false,
+		"id": "2b61df1820ff4741a29d26350314a50c.entity"
+	},
+	"e9c09bc4e58c4383a1435db3da03acb5.environment": {
+		"sound": {
+			"volume": 1,
+			"dopplerFactor": 0,
+			"reverb": 0,
+			"rolloffFactor": 0.4,
+			"maxDistance": 100
+		},
+		"backgroundColor": [
+			0.3,
+			0.3,
+			0.3,
+			0
+		],
+		"license": "CC0",
+		"created": "2014-04-08T10:26:46.181Z",
+		"deleted": false,
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-08T10:30:07.469117+00:00",
+		"fog": {
+			"color": [
+				1,
+				1,
+				1
+			],
+			"far": 996,
+			"near": 0,
+			"enabled": false
+		},
+		"globalAmbient": [
+			0,
+			0,
+			0,
+			0
+		],
+		"id": "e9c09bc4e58c4383a1435db3da03acb5.environment",
+		"name": "Default Environment"
+	},
+	"23f2bcf29ed742d68862f3abc8a673b1.entity": {
+		"name": "clay_pigeon_range_markers",
+		"license": "CC0",
+		"created": "2014-04-14T08:09:03.759Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-14T08:12:23.207175+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					0.01,
+					0.01,
+					0.01
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				],
+				"children": {
+					"d1c85ac827ae464b9782dc00d2a345a5.entity": {
+						"entityRef": "d1c85ac827ae464b9782dc00d2a345a5.entity",
+						"sortValue": 1
+					},
+					"2358a781181d403a9eb758a14b470c2c.entity": {
+						"entityRef": "2358a781181d403a9eb758a14b470c2c.entity",
+						"sortValue": 2
+					}
+				}
+			}
+		},
+		"hidden": false,
+		"id": "23f2bcf29ed742d68862f3abc8a673b1.entity"
+	},
+	"051ab38aa9ef4bfbb823bbdf997a962c.script": {
+		"name": "OrbitNPan",
+		"license": "CC0",
+		"created": "2014-04-14T08:11:51.445Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-14T08:10:10.015250+00:00",
+		"dataModelVersion": 2,
+		"className": "OrbitNPanControlScript",
+		"options": {
+			"spherical": [
+				9.3950977325439,
+				138.04172946584,
+				18.716002401399
+			],
+			"maxAscent": 89.95,
+			"zoomSpeed": 1,
+			"lookAtPoint": [
+				0.0003759041428566,
+				0.5030665397644,
+				0
+			],
+			"clampAzimuth": false,
+			"maxAzimuth": 270,
+			"whenUsed": true,
+			"enabled": true,
+			"minAzimuth": 90,
+			"minAscent": -89,
+			"maxZoomDistance": 1000,
+			"drag": 0.9,
+			"dragButton": "Left",
+			"panSpeed": 0.005,
+			"panButton": "Right",
+			"orbitSpeed": 0.005,
+			"minZoomDistance": 1,
+			"smoothness": 0.4
+		},
+		"id": "051ab38aa9ef4bfbb823bbdf997a962c.script"
+	},
+	"0d666d382fb24fc4a4c72ac91493ec37.entity": {
+		"name": "wall",
+		"license": "CC0",
+		"created": "2014-04-09T09:22:30.308Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T09:20:53.767464+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				]
+			},
+			"meshRenderer": {
+				"reflectable": true,
+				"materials": {
+					"00bf7c6d16b6437c929961f2cd0a075c.material": {
+						"materialRef": "00bf7c6d16b6437c929961f2cd0a075c.material",
+						"sortValue": 0
+					}
+				},
+				"receiveShadows": true,
+				"cullMode": "Dynamic",
+				"castShadows": true
+			},
+			"meshData": {
+				"meshRef": "a5431f34f400485cbb33e47929a8de60.mesh"
+			}
+		},
+		"hidden": false,
+		"id": "0d666d382fb24fc4a4c72ac91493ec37.entity"
+	},
+	"d8c14e90611e4ad08f5c2e998f98cd0d.material": {
+		"texturesMapping": {
+			"DIFFUSE_MAP": {
+				"enabled": true,
+				"textureRef": "a4e2393e1c2146d8a20d3b49a2fcdcab.texture"
+			}
+		},
+		"flat": false,
+		"cullState": {
+			"frontFace": "CCW",
+			"enabled": true,
+			"cullFace": "Back"
+		},
+		"uniforms": {
+			"opacity": {
+				"enabled": false,
+				"value": 1
+			},
+			"refractivity": {
+				"enabled": false,
+				"value": 0
+			},
+			"materialAmbient": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"materialSpecular": {
+				"enabled": true,
+				"value": [
+					0.2875,
+					0.276934375,
+					0.26234375,
+					1
+				]
+			},
+			"fresnel": {
+				"enabled": true,
+				"value": 0
+			},
+			"vertexColorAmount": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialSpecularPower": {
+				"enabled": true,
+				"value": 234.6
+			},
+			"materialDiffuse": {
+				"enabled": true,
+				"value": [
+					1,
+					1,
+					1,
+					1
+				]
+			},
+			"reflectivity": {
+				"enabled": true,
+				"value": 0
+			},
+			"materialEmissive": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"discardThreshold": {
+				"enabled": true,
+				"value": 0.1
+			},
+			"normalMultiplier": {
+				"enabled": true,
+				"value": 1
+			},
+			"etaRatio": {
+				"enabled": true,
+				"value": -0.5
+			}
+		},
+		"name": "marker",
+		"license": "CC0",
+		"created": "2014-04-14T08:11:24.168Z",
+		"deleted": false,
+		"wireframe": false,
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"blendState": {
+			"blendDst": "OneMinusSrcAlphaFactor",
+			"blendSrc": "SrcAlphaFactor",
+			"blendEquation": "AddEquation",
+			"blending": "NoBlending"
+		},
+		"modified": "2014-04-14T08:13:15.068279+00:00",
+		"dualTransparency": false,
+		"depthState": {
+			"write": true,
+			"enabled": true
+		},
+		"shaderRef": "GOO_ENGINE_SHADERS\/uber",
+		"id": "d8c14e90611e4ad08f5c2e998f98cd0d.material",
+		"renderQueue": -1
+	},
+	"2063db9ff95844c2b3c236ee923f265e.mesh": {
+		"name": "",
+		"license": "CC0",
+		"created": "2014-04-09T09:01:16.338507+00:00",
+		"boundingVolume": {
+			"max": [
+				131.71778869629,
+				250.28834533691,
+				158.51440429688
+			],
+			"type": "BoundingBox",
+			"min": [
+				-133.83857727051,
+				32.664310455322,
+				-167.13195800781
+			]
+		},
+		"_readOnly": false,
+		"modified": "2014-04-09T09:01:16.338530+00:00",
+		"dataModelVersion": 2,
+		"deleted": false,
+		"vertexCount": 100,
+		"indexModes": [
+			"Triangles"
+		],
+		"indices": [
+			36940,
+			150,
+			"uint8"
+		],
+		"attributes": {
+			"POSITION": {
+				"dimensions": 3,
+				"value": [
+					37092,
+					300,
+					"float32"
+				]
+			},
+			"TEXCOORD1": {
+				"dimensions": 2,
+				"value": [
+					38292,
+					200,
+					"float32"
+				]
+			},
+			"TEXCOORD0": {
+				"dimensions": 2,
+				"value": [
+					39092,
+					200,
+					"float32"
+				]
+			},
+			"TANGENT": {
+				"dimensions": 4,
+				"value": [
+					39892,
+					400,
+					"float32"
+				]
+			},
+			"NORMAL": {
+				"dimensions": 3,
+				"value": [
+					41492,
+					300,
+					"float32"
+				]
+			}
+		},
+		"indexLengths": [
+			150
+		],
+		"type": "Mesh",
+		"id": "2063db9ff95844c2b3c236ee923f265e.mesh",
+		"binaryRef": "af8b52a8791424a3a5bb6c648e02139c6a800117.bin"
+	},
+	"73ca4f652d86469b9c54de6f1fdc4f2e.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "thrower_roof_AOC.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:19:21.043Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:17:46.214479+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "f682e5f53d157348fe4bfe8b659647fb7a56b747.dds",
+		"lodBias": 0,
+		"anisotropy": 1,
+		"offset": [
+			0,
+			0
+		],
+		"id": "73ca4f652d86469b9c54de6f1fdc4f2e.texture",
+		"wrapT": "Repeat"
+	},
+	"fb3771b10ef54a858b207d7e754d0ae2.entity": {
+		"name": "roof",
+		"license": "CC0",
+		"created": "2014-04-09T09:20:38.371Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-09T09:23:47.621594+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"transform": {
+				"translation": [
+					0,
+					0,
+					0
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					0,
+					0,
+					0
+				]
+			},
+			"meshRenderer": {
+				"reflectable": true,
+				"materials": {
+					"a338823d761c428c9caa37823106afa3.material": {
+						"materialRef": "a338823d761c428c9caa37823106afa3.material",
+						"sortValue": 0
+					}
+				},
+				"receiveShadows": true,
+				"cullMode": "Dynamic",
+				"castShadows": true
+			},
+			"meshData": {
+				"meshRef": "8301917be0274db094919c67b803c238.mesh"
+			}
+		},
+		"hidden": false,
+		"id": "fb3771b10ef54a858b207d7e754d0ae2.entity"
+	},
+	"ac3403b6288f499a90db08ce411a19bb.material": {
+		"texturesMapping": {
+			"AO_MAP": {
+				"enabled": true,
+				"textureRef": "b30b6e1653394dd58f5ba84bc2ed244e.texture"
+			},
+			"DIFFUSE_MAP": {
+				"enabled": true,
+				"textureRef": "1e355c0351764198a20f5c365789f01f.texture"
+			}
+		},
+		"flat": false,
+		"cullState": {
+			"frontFace": "CCW",
+			"enabled": true,
+			"cullFace": "Back"
+		},
+		"uniforms": {
+			"opacity": {
+				"enabled": false,
+				"value": 1
+			},
+			"refractivity": {
+				"enabled": false,
+				"value": 0
+			},
+			"materialAmbient": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"materialSpecular": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"fresnel": {
+				"enabled": true,
+				"value": 0
+			},
+			"vertexColorAmount": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialSpecularPower": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialDiffuse": {
+				"enabled": true,
+				"value": [
+					1,
+					1,
+					1,
+					1
+				]
+			},
+			"reflectivity": {
+				"enabled": true,
+				"value": 0
+			},
+			"materialEmissive": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"discardThreshold": {
+				"enabled": true,
+				"value": 0.1
+			},
+			"normalMultiplier": {
+				"enabled": true,
+				"value": 1
+			},
+			"etaRatio": {
+				"enabled": true,
+				"value": 0
+			}
+		},
+		"name": "beams",
+		"license": "CC0",
+		"created": "2014-04-09T09:23:22.725Z",
+		"deleted": false,
+		"wireframe": false,
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"blendState": {
+			"blendDst": "OneMinusSrcAlphaFactor",
+			"blendSrc": "SrcAlphaFactor",
+			"blendEquation": "AddEquation",
+			"blending": "NoBlending"
+		},
+		"modified": "2014-04-09T09:21:50.118859+00:00",
+		"dualTransparency": false,
+		"depthState": {
+			"write": true,
+			"enabled": true
+		},
+		"shaderRef": "GOO_ENGINE_SHADERS\/uber",
+		"id": "ac3403b6288f499a90db08ce411a19bb.material",
+		"renderQueue": -1
+	},
+	"182d83fa68aa4de091f7e0d1bf4c6a21.scene": {
+		"initialCameraRef": "219c7486aeff4c4aaabfdd162b73e1c6.entity",
+		"name": "Scene",
+		"license": "CC0",
+		"created": "2014-04-14T08:08:50.342Z",
+		"deleted": false,
+		"environmentRef": "e9c09bc4e58c4383a1435db3da03acb5.environment",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-14T08:13:25.268233+00:00",
+		"entities": {
+			"219c7486aeff4c4aaabfdd162b73e1c6.entity": {
+				"entityRef": "219c7486aeff4c4aaabfdd162b73e1c6.entity",
+				"sortValue": 0
+			},
+			"8d19f10e0a2f4ab8913c638d53644532.entity": {
+				"entityRef": "8d19f10e0a2f4ab8913c638d53644532.entity",
+				"sortValue": 13
+			},
+			"53155c18cccb41c4a6052b9634763705.entity": {
+				"entityRef": "53155c18cccb41c4a6052b9634763705.entity",
+				"sortValue": 15
+			},
+			"c71e8ee81022400694fb4a82e52987aa.entity": {
+				"entityRef": "c71e8ee81022400694fb4a82e52987aa.entity",
+				"sortValue": 1
+			},
+			"23f2bcf29ed742d68862f3abc8a673b1.entity": {
+				"entityRef": "23f2bcf29ed742d68862f3abc8a673b1.entity",
+				"sortValue": 16
+			}
+		},
+		"id": "182d83fa68aa4de091f7e0d1bf4c6a21.scene"
+	},
+	"a338823d761c428c9caa37823106afa3.material": {
+		"texturesMapping": {
+			"AO_MAP": {
+				"enabled": true,
+				"textureRef": "f5f9832ad590490aa3a3728194f19023.texture"
+			},
+			"DIFFUSE_MAP": {
+				"enabled": true,
+				"textureRef": "ee2395a55cfe4c69ade911e9ddf1242c.texture"
+			}
+		},
+		"flat": false,
+		"cullState": {
+			"frontFace": "CCW",
+			"enabled": true,
+			"cullFace": "Back"
+		},
+		"uniforms": {
+			"opacity": {
+				"enabled": false,
+				"value": 1
+			},
+			"refractivity": {
+				"enabled": false,
+				"value": 0
+			},
+			"materialAmbient": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"materialSpecular": {
+				"enabled": true,
+				"value": [
+					0.1875,
+					0.1875,
+					0.1875,
+					1
+				]
+			},
+			"fresnel": {
+				"enabled": true,
+				"value": 0
+			},
+			"vertexColorAmount": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialSpecularPower": {
+				"enabled": true,
+				"value": 108.9
+			},
+			"materialDiffuse": {
+				"enabled": true,
+				"value": [
+					1,
+					1,
+					1,
+					1
+				]
+			},
+			"reflectivity": {
+				"enabled": true,
+				"value": 0
+			},
+			"materialEmissive": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"discardThreshold": {
+				"enabled": true,
+				"value": 0.1
+			},
+			"normalMultiplier": {
+				"enabled": true,
+				"value": 1
+			},
+			"etaRatio": {
+				"enabled": true,
+				"value": -0.5
+			}
+		},
+		"name": "lambert6",
+		"license": "CC0",
+		"created": "2014-04-09T09:20:38.382Z",
+		"deleted": false,
+		"wireframe": false,
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"blendState": {
+			"blendDst": "OneMinusSrcAlphaFactor",
+			"blendSrc": "SrcAlphaFactor",
+			"blendEquation": "AddEquation",
+			"blending": "NoBlending"
+		},
+		"modified": "2014-04-09T09:23:50.419369+00:00",
+		"dualTransparency": false,
+		"depthState": {
+			"write": true,
+			"enabled": true
+		},
+		"shaderRef": "GOO_ENGINE_SHADERS\/uber",
+		"id": "a338823d761c428c9caa37823106afa3.material",
+		"renderQueue": -1
+	},
+	"219c7486aeff4c4aaabfdd162b73e1c6.entity": {
+		"name": "Default Camera",
+		"license": "CC0",
+		"created": "2014-04-14T08:08:50.342Z",
+		"deleted": false,
+		"_readOnly": false,
+		"modified": "2014-04-14T08:10:09.943860+00:00",
+		"dataModelVersion": 2,
+		"static": false,
+		"components": {
+			"camera": {
+				"fov": 45,
+				"lockedRatio": false,
+				"far": 1000,
+				"followEditorCam": true,
+				"projectionMode": "Perspective",
+				"near": 1,
+				"aspect": 1
+			},
+			"transform": {
+				"translation": [
+					-6.616678237915,
+					3.517742395401,
+					5.9493012428284
+				],
+				"scale": [
+					1,
+					1,
+					1
+				],
+				"rotation": [
+					-18.716002401399,
+					-48.041729465839,
+					0
+				]
+			},
+			"script": {
+				"scripts": {
+					"051ab38aa9ef4bfbb823bbdf997a962c.script": {
+						"scriptRef": "051ab38aa9ef4bfbb823bbdf997a962c.script",
+						"sortValue": 0
+					}
+				}
+			}
+		},
+		"hidden": false,
+		"id": "219c7486aeff4c4aaabfdd162b73e1c6.entity"
+	},
+	"02d1088ab65943c78087e98759ecac3c.texture": {
+		"wrapS": "Repeat",
+		"minFilter": "Trilinear",
+		"name": "wood_planks_wall_DIF.dds",
+		"license": "CC0",
+		"flipY": true,
+		"deleted": false,
+		"magFilter": "Bilinear",
+		"created": "2014-04-09T09:20:47.319Z",
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"modified": "2014-04-09T09:23:57.064278+00:00",
+		"repeat": [
+			1,
+			1
+		],
+		"imageRef": "53eb83882a0568e867f45bb93e792227c5e2e97c.dds",
+		"lodBias": 0,
+		"anisotropy": 2,
+		"offset": [
+			0,
+			0
+		],
+		"id": "02d1088ab65943c78087e98759ecac3c.texture",
+		"wrapT": "Repeat"
+	},
+	"10bf2136768040a88e33fc9356caeb4f.material": {
+		"texturesMapping": {
+			"AO_MAP": {
+				"enabled": true,
+				"textureRef": "86b11ca07e9b41cda591573ffa5897bd.texture"
+			},
+			"DIFFUSE_MAP": {
+				"enabled": true,
+				"textureRef": "fb50585e523f48eb9200e02c9ef7365f.texture"
+			}
+		},
+		"flat": false,
+		"cullState": {
+			"frontFace": "CCW",
+			"enabled": true,
+			"cullFace": "Back"
+		},
+		"uniforms": {
+			"opacity": {
+				"enabled": false,
+				"value": 1
+			},
+			"refractivity": {
+				"enabled": false,
+				"value": 0
+			},
+			"materialAmbient": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"materialSpecular": {
+				"enabled": true,
+				"value": [
+					0.17916666666667,
+					0.17916666666667,
+					0.17916666666667,
+					1
+				]
+			},
+			"fresnel": {
+				"enabled": true,
+				"value": 0
+			},
+			"vertexColorAmount": {
+				"enabled": true,
+				"value": 1
+			},
+			"materialSpecularPower": {
+				"enabled": true,
+				"value": 108.9
+			},
+			"materialDiffuse": {
+				"enabled": true,
+				"value": [
+					1,
+					1,
+					1,
+					1
+				]
+			},
+			"reflectivity": {
+				"enabled": true,
+				"value": 0
+			},
+			"materialEmissive": {
+				"enabled": true,
+				"value": [
+					0,
+					0,
+					0,
+					1
+				]
+			},
+			"discardThreshold": {
+				"enabled": true,
+				"value": 0.1
+			},
+			"normalMultiplier": {
+				"enabled": true,
+				"value": 1
+			},
+			"etaRatio": {
+				"enabled": true,
+				"value": -0.5
+			}
+		},
+		"name": "concrete1",
+		"license": "CC0",
+		"created": "2014-04-09T09:23:22.669Z",
+		"deleted": false,
+		"wireframe": false,
+		"_readOnly": false,
+		"dataModelVersion": 2,
+		"blendState": {
+			"blendDst": "OneMinusSrcAlphaFactor",
+			"blendSrc": "SrcAlphaFactor",
+			"blendEquation": "AddEquation",
+			"blending": "NoBlending"
+		},
+		"modified": "2014-04-09T09:21:50.098568+00:00",
+		"dualTransparency": false,
+		"depthState": {
+			"write": true,
+			"enabled": true
+		},
+		"shaderRef": "GOO_ENGINE_SHADERS\/uber",
+		"id": "10bf2136768040a88e33fc9356caeb4f.material",
+		"renderQueue": -1
+	}
+}

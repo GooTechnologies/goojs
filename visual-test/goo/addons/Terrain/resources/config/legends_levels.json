@@ -1,0 +1,2871 @@
+[
+    {
+        "level_id": "level_tutorial_01",
+        "name": "tr:levels_name_level_tutorial_01",
+        "description": "tr:levels_description_level_tutorial_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 37,
+            "y": 92
+        },
+        "win": {
+            "bronze": {
+                "score": 3
+            }
+        },
+        "scoreMultipliers": {
+            "any": false,
+            "color": false,
+            "size": false
+        },
+        "cascades": [],
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": -1
+        },
+        "levelBoosts": [],
+        "lightMap": "lightmaps/level_tutorial_01.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        }
+    },
+    {
+        "level_id": "level_01",
+        "name": "tr:levels_name_level_01",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 37,
+            "y": 87
+        },
+        "win": {
+            "bronze": {
+                "score": 10
+            },
+            "silver": {
+                "score": 20
+            },
+            "gold": {
+                "score": 30
+            }
+        },
+        "scoreMultipliers": {
+            "any": false,
+            "color": false,
+            "size": false
+        },
+        "cascades": [],
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 4
+        },
+        "levelBoosts": [],
+        "lightMap": "lightmaps/level_01.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        }
+    },
+    {
+        "level_id": "level_02",
+        "name": "tr:levels_name_level_02",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 26.5,
+            "y": 65
+        },
+        "win": {
+            "bronze": {
+                "score": 15
+            },
+            "silver": {
+                "score": 30
+            },
+            "gold": {
+                "score": 50
+            }
+        },
+        "scoreMultipliers": {
+            "any": false,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 6
+        },
+        "levelBoosts": [],
+        "lightMap": "lightmaps/level_02.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_03",
+        "name": "tr:levels_name_level_03",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 19.5,
+            "y": 45
+        },
+        "win": {
+            "bronze": {
+                "score": 100
+            },
+            "silver": {
+                "score": 170
+            },
+            "gold": {
+                "score": 210
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 10
+        },
+        "levelBoosts": [],
+        "lightMap": "lightmaps/level_03.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_04",
+        "name": "tr:levels_name_level_04",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 32,
+            "y": 32
+        },
+        "win": {
+            "bronze": {
+                "score": 50
+            },
+            "silver": {
+                "score": 70
+            },
+            "gold": {
+                "score": 100
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 5
+        },
+        "levelBoosts": [],
+        "lightMap": "lightmaps/level_04.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_05",
+        "name": "tr:levels_name_level_05",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 45,
+            "y": 43
+        },
+        "win": {
+            "bronze": {
+                "score": 50
+            },
+            "silver": {
+                "score": 100
+            },
+            "gold": {
+                "score": 120
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 6
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_05.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_06",
+        "name": "tr:levels_name_level_06",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 46,
+            "y": 66
+        },
+        "win": {
+            "bronze": {
+                "score": 40
+            },
+            "silver": {
+                "score": 100
+            },
+            "gold": {
+                "score": 120
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 8
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_06.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_07",
+        "name": "tr:levels_name_level_07",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 68,
+            "y": 82.5
+        },
+        "win": {
+            "bronze": {
+                "score": 50
+            },
+            "silver": {
+                "score": 100
+            },
+            "gold": {
+                "score": 120
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 8
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_07.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_08",
+        "name": "tr:levels_name_level_08",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 78,
+            "y": 54
+        },
+        "win": {
+            "bronze": {
+                "score": 40
+            },
+            "silver": {
+                "score": 100
+            },
+            "gold": {
+                "score": 120
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 9
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_08.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_09",
+        "name": "tr:levels_name_level_09",
+        "description": "tr:levels_description_level_single_trap_manual_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 65.5,
+            "y": 42
+        },
+        "win": {
+            "bronze": {
+                "score": 100
+            },
+            "silver": {
+                "score": 150
+            },
+            "gold": {
+                "score": 200
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 12
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_09.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_10",
+        "name": "tr:levels_name_level_10",
+        "description": "tr:levels_description_level_single_trap_auto_01",
+        "map": "legend01_map01",
+        "legendMapCoords": {
+            "x": 54,
+            "y": 27
+        },
+        "win": {
+            "bronze": {
+                "score": 100
+            },
+            "silver": {
+                "score": 200
+            },
+            "gold": {
+                "score": 400
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 16
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_10.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_11",
+        "name": "tr:levels_name_level_11",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 53,
+            "y": 78
+        },
+        "win": {
+            "bronze": {
+                "score": 50
+            },
+            "silver": {
+                "score": 100
+            },
+            "gold": {
+                "score": 150
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 10
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_11.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_12",
+        "name": "tr:levels_name_level_12",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 64,
+            "y": 60
+        },
+        "win": {
+            "bronze": {
+                "score": 60
+            },
+            "silver": {
+                "score": 120
+            },
+            "gold": {
+                "score": 180
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 12
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_12.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_13",
+        "name": "tr:levels_name_level_13",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 59.5,
+            "y": 44
+        },
+        "win": {
+            "bronze": {
+                "score": 40
+            },
+            "silver": {
+                "score": 100
+            },
+            "gold": {
+                "score": 140
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 12
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_13.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_14",
+        "name": "tr:levels_name_level_14",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 46.5,
+            "y": 57
+        },
+        "win": {
+            "bronze": {
+                "score": 50
+            },
+            "silver": {
+                "score": 100
+            },
+            "gold": {
+                "score": 150
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 10
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_14.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_15",
+        "name": "tr:levels_name_level_15",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 32,
+            "y": 52
+        },
+        "win": {
+            "bronze": {
+                "score": 30
+            },
+            "silver": {
+                "score": 70
+            },
+            "gold": {
+                "score": 100
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 10
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_15.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_16",
+        "name": "tr:levels_name_level_16",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 22,
+            "y": 40
+        },
+        "win": {
+            "bronze": {
+                "score": 75
+            },
+            "silver": {
+                "score": 150
+            },
+            "gold": {
+                "score": 200
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 20
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_16.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_17",
+        "name": "tr:levels_name_level_17",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 21.5,
+            "y": 25
+        },
+        "win": {
+            "bronze": {
+                "score": 40
+            },
+            "silver": {
+                "score": 80
+            },
+            "gold": {
+                "score": 140
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 18
+        },
+        "levelBoosts": [
+            "narrowChoke"
+        ],
+        "lightMap": "lightmaps/level_17.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_18",
+        "name": "tr:levels_name_level_18",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 33,
+            "y": 26
+        },
+        "win": {
+            "bronze": {
+                "score": 70
+            },
+            "silver": {
+                "score": 140
+            },
+            "gold": {
+                "score": 180
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 18
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion"
+        ],
+        "lightMap": "lightmaps/level_18.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_19",
+        "name": "tr:levels_name_level_19",
+        "description": "tr:levels_description_level_double_trap_manual_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 43,
+            "y": 34
+        },
+        "win": {
+            "bronze": {
+                "score": 40
+            },
+            "silver": {
+                "score": 75
+            },
+            "gold": {
+                "score": 100
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 16
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion"
+        ],
+        "lightMap": "lightmaps/level_19.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_20",
+        "name": "tr:levels_name_level_20",
+        "description": "tr:levels_description_level_double_trap_auto_01",
+        "map": "legend01_map02",
+        "legendMapCoords": {
+            "x": 53,
+            "y": 26
+        },
+        "win": {
+            "bronze": {
+                "score": 75
+            },
+            "silver": {
+                "score": 150
+            },
+            "gold": {
+                "score": 180
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 20
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion"
+        ],
+        "lightMap": "lightmaps/level_20.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_21",
+        "name": "tr:levels_name_level_21",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 75.5,
+            "y": 86
+        },
+        "win": {
+            "bronze": {
+                "score": 15
+            },
+            "silver": {
+                "score": 25
+            },
+            "gold": {
+                "score": 35
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 20
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion"
+        ],
+        "lightMap": "lightmaps/level_21.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_22",
+        "name": "tr:levels_name_level_22",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 66,
+            "y": 76
+        },
+        "win": {
+            "bronze": {
+                "score": 45
+            },
+            "silver": {
+                "score": 90
+            },
+            "gold": {
+                "score": 140
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 18
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion"
+        ],
+        "lightMap": "lightmaps/level_22.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_23",
+        "name": "tr:levels_name_level_23",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 54,
+            "y": 81
+        },
+        "win": {
+            "bronze": {
+                "score": 50
+            },
+            "silver": {
+                "score": 70
+            },
+            "gold": {
+                "score": 90
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 20
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion",
+            "wideChoke"
+        ],
+        "lightMap": "lightmaps/level_23.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_24",
+        "name": "tr:levels_name_level_24",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 41,
+            "y": 80
+        },
+        "win": {
+            "bronze": {
+                "score": 75
+            },
+            "silver": {
+                "score": 110
+            },
+            "gold": {
+                "score": 170
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 30
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion",
+            "wideChoke"
+        ],
+        "lightMap": "lightmaps/level_24.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_25",
+        "name": "tr:levels_name_level_25",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 28,
+            "y": 74
+        },
+        "win": {
+            "bronze": {
+                "score": 80
+            },
+            "silver": {
+                "score": 120
+            },
+            "gold": {
+                "score": 160
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 32
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion",
+            "wideChoke"
+        ],
+        "lightMap": "lightmaps/level_25.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": [],
+        "mapObjects": [
+            {
+                "id": "thrower1-1",
+                "type": "thrower1",
+                "scriptData": {
+                    "throwOrigin": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "throwDirection": [
+                        -2,
+                        2,
+                        0
+                    ],
+                    "throwVelocity": 20,
+                    "throws": [
+                        {
+                            "timeMin": 0.1,
+                            "timeMax": 1.5,
+                            "type": "pigeon.orange.medium",
+                            "probability": 1,
+                            "vertAngleMin": -20,
+                            "vertAngleMax": -20,
+                            "horizAngleMin": -20,
+                            "horizAngleMax": 20,
+                            "velocityMin": 19,
+                            "velocityMax": 19,
+                            "manualLaunch": false,
+                            "sharedRandom": false
+                        },
+                        {
+                            "timeMin": 0,
+                            "timeMax": 0,
+                            "type": "NULL",
+                            "probability": 1,
+                            "vertAngleMin": 0,
+                            "vertAngleMax": 0,
+                            "horizAngleMin": 0,
+                            "horizAngleMax": 0,
+                            "velocityMin": 0,
+                            "velocityMax": 0,
+                            "manualLaunch": true,
+                            "sharedRandom": false
+                        }
+                    ],
+                    "splines": false,
+                    "projectiles": true,
+                    "repeatTime": 1.6
+                },
+                "transform": {
+                    "translation": [
+                        105.30963134765625,
+                        10.419939994812012,
+                        78.43963623046875
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "thrower1-2",
+                "type": "thrower1",
+                "scriptData": {
+                    "throwOrigin": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "throwDirection": [
+                        -2,
+                        2,
+                        0
+                    ],
+                    "throwVelocity": 20,
+                    "throws": [
+                        {
+                            "timeMin": 0.1,
+                            "timeMax": 1.5,
+                            "type": "pigeon.orange.medium",
+                            "probability": 1,
+                            "vertAngleMin": -20,
+                            "vertAngleMax": -20,
+                            "horizAngleMin": -20,
+                            "horizAngleMax": 20,
+                            "velocityMin": 19,
+                            "velocityMax": 19,
+                            "manualLaunch": false,
+                            "sharedRandom": false
+                        }
+                    ],
+                    "splines": false,
+                    "projectiles": true,
+                    "repeatTime": 1.6
+                },
+                "transform": {
+                    "translation": [
+                        105.2204818725586,
+                        7.336864948272705,
+                        69.29010772705078
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "marker_thin-1",
+                "type": "marker_thin",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        128,
+                        12.642415046691895,
+                        110.5999984741211
+                    ],
+                    "rotation": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "marker_thick-1",
+                "type": "marker_thick",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        128,
+                        7.11785888671875,
+                        73.69999694824219
+                    ],
+                    "rotation": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "skeet_tower-1",
+                "type": "skeet_tower",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        105.07955169677734,
+                        5.383715629577637,
+                        78.49490356445312
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "skeet_tower-2",
+                "type": "skeet_tower",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        104.95867156982422,
+                        2.3597240447998047,
+                        69.36311340332031
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "platform-1",
+                "type": "platform",
+                "scriptData": {
+                    "playerStart": true,
+                    "repeatTime": 25.6,
+                    "activateTimes": [
+                        {
+                            "min": 25.6,
+                            "max": 25.6
+                        }
+                    ],
+                    "pauseOnTeleport": true
+                },
+                "transform": {
+                    "translation": [
+                        135.88401794433594,
+                        6.169830799102783,
+                        50
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        -1
+                    ],
+                    "scale": [
+                        0.009999999776482582,
+                        0.009999999776482582,
+                        0.009999999776482582
+                    ]
+                }
+            },
+            {
+                "id": "platform-2",
+                "type": "platform",
+                "scriptData": {
+                    "playerStart": false,
+                    "repeatTime": 25.6,
+                    "activateTimes": [
+                        {
+                            "min": 6.35,
+                            "max": 6.35
+                        }
+                    ],
+                    "pauseOnTeleport": true
+                },
+                "transform": {
+                    "translation": [
+                        131.01052856445312,
+                        6.007901668548584,
+                        50
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        -1
+                    ],
+                    "scale": [
+                        0.009999999776482582,
+                        0.009999999776482582,
+                        0.009999999776482582
+                    ]
+                }
+            },
+            {
+                "id": "platform-3",
+                "type": "platform",
+                "scriptData": {
+                    "playerStart": false,
+                    "repeatTime": 25.6,
+                    "activateTimes": [
+                        {
+                            "min": 12.75,
+                            "max": 12.75
+                        }
+                    ],
+                    "pauseOnTeleport": true
+                },
+                "transform": {
+                    "translation": [
+                        125.18582153320312,
+                        5.909864902496338,
+                        50
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        -1
+                    ],
+                    "scale": [
+                        0.009999999776482582,
+                        0.009999999776482582,
+                        0.009999999776482582
+                    ]
+                }
+            },
+            {
+                "id": "platform-4",
+                "type": "platform",
+                "scriptData": {
+                    "playerStart": false,
+                    "repeatTime": 25.6,
+                    "activateTimes": [
+                        {
+                            "min": 19.15,
+                            "max": 19.15
+                        }
+                    ],
+                    "pauseOnTeleport": true
+                },
+                "transform": {
+                    "translation": [
+                        121.60076904296875,
+                        5.863258361816406,
+                        50
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        -1
+                    ],
+                    "scale": [
+                        0.009999999776482582,
+                        0.009999999776482582,
+                        0.009999999776482582
+                    ]
+                }
+            },
+            {
+                "id": "voice_trigger-1",
+                "type": "voice_trigger",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        135.76905822753906,
+                        6.142023086547852,
+                        51.11145782470703
+                    ],
+                    "rotation": [
+                        -0.011980347335338593,
+                        0,
+                        -0.9999279379844666,
+                        0,
+                        1,
+                        0,
+                        0.9999279379844666,
+                        0,
+                        -0.011980347335338593
+                    ]
+                }
+            },
+            {
+                "id": "voice_trigger-2",
+                "type": "voice_trigger",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        126.24951934814453,
+                        5.872184753417969,
+                        51.225502014160156
+                    ],
+                    "rotation": [
+                        -0.011980347335338593,
+                        0,
+                        -0.9999279379844666,
+                        0,
+                        1,
+                        0,
+                        0.9999279379844666,
+                        0,
+                        -0.011980347335338593
+                    ]
+                }
+            },
+            {
+                "id": "voice_trigger-3",
+                "type": "voice_trigger",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        131.0417022705078,
+                        6.012162685394287,
+                        51.168094635009766
+                    ],
+                    "rotation": [
+                        -0.011980347335338593,
+                        0,
+                        -0.9999279379844666,
+                        0,
+                        1,
+                        0,
+                        0.9999279379844666,
+                        0,
+                        -0.011980347335338593
+                    ]
+                }
+            },
+            {
+                "id": "voice_trigger-4",
+                "type": "voice_trigger",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        121.42796325683594,
+                        5.812591552734375,
+                        51.283260345458984
+                    ],
+                    "rotation": [
+                        -0.011980347335338593,
+                        0,
+                        -0.9999279379844666,
+                        0,
+                        1,
+                        0,
+                        0.9999279379844666,
+                        0,
+                        -0.011980347335338593
+                    ]
+                }
+            },
+            {
+                "id": "playerStartDummy-1",
+                "type": "playerStartDummy",
+                "scriptData": {
+                    "transitionTime": 5
+                },
+                "transform": {
+                    "translation": [
+                        104.89409637451172,
+                        7.968325138092041,
+                        60.34246826171875
+                    ],
+                    "rotation": [
+                        0.14451418817043304,
+                        0,
+                        -0.9895026087760925,
+                        0,
+                        1,
+                        0,
+                        0.9895026087760925,
+                        0,
+                        0.14451418817043304
+                    ],
+                    "scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            }
+        ],
+        "wind": {
+            "vector": [
+                0,
+                0,
+                0
+            ]
+        },
+        "fog": {
+            "enabled": false,
+            "start": 1000,
+            "end": 1000,
+            "color": [
+                1,
+                1,
+                1
+            ]
+        },
+        "splines": [],
+        "gravity": 9.82,
+        "skybox": "legend_03",
+        "globalAmbient": [
+            0.4607843137254902,
+            0.4381968473663975,
+            0.4381968473663975
+        ],
+        "light": {
+            "color": [
+                1,
+                1,
+                1
+            ],
+            "intensity": 1,
+            "direction": [
+                -0.9796721277050624,
+                1.3460805416107178,
+                0
+            ]
+        },
+        "timeline": [],
+        "lightmapSettings": {
+            "ambient": 0.6,
+            "occludableAmbientRatio": 0.3,
+            "sunStrength": 0.8,
+            "sunRayRatio": 0.3,
+            "sunRaySpread": 0.05
+        },
+        "vegetationSettings": {
+            "patchSize": 15,
+            "patchDensity": 19
+        }
+    },
+    {
+        "level_id": "level_26",
+        "name": "tr:levels_name_level_26",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 25.5,
+            "y": 55
+        },
+        "win": {
+            "bronze": {
+                "score": 60
+            },
+            "silver": {
+                "score": 120
+            },
+            "gold": {
+                "score": 160
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 18
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion",
+            "wideChoke"
+        ],
+        "lightMap": "lightmaps/level_26.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_27",
+        "name": "tr:levels_name_level_27",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 42,
+            "y": 58
+        },
+        "win": {
+            "bronze": {
+                "score": 60
+            },
+            "silver": {
+                "score": 120
+            },
+            "gold": {
+                "score": 160
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Pump"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 20
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion",
+            "wideChoke"
+        ],
+        "lightMap": "lightmaps/level_27.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_28",
+        "name": "tr:levels_name_level_28",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 58.5,
+            "y": 59.5
+        },
+        "win": {
+            "bronze": {
+                "score": 100
+            },
+            "silver": {
+                "score": 140
+            },
+            "gold": {
+                "score": 120
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Semi"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 40
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion",
+            "wideChoke"
+        ],
+        "lightMap": "lightmaps/level_28.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    },
+    {
+        "level_id": "level_29",
+        "name": "tr:levels_name_level_29",
+        "description": "tr:levels_description_level_skeet_trap_manual_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 73,
+            "y": 53
+        },
+        "win": {
+            "bronze": {
+                "score": 125
+            },
+            "silver": {
+                "score": 215
+            },
+            "gold": {
+                "score": 305
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Semi"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 45
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion",
+            "wideChoke"
+        ],
+        "lightMap": "lightmaps/level_29.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": [],
+        "vegetationSettings": {
+            "patchSize": 15,
+            "patchDensity": 19
+        },
+        "mapObjects": [
+            {
+                "id": "thrower1-1",
+                "type": "thrower1",
+                "scriptData": {
+                    "throwOrigin": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "throwDirection": [
+                        -2,
+                        2,
+                        0
+                    ],
+                    "throwVelocity": 20,
+                    "throws": [
+                        {
+                            "timeMin": 0.1,
+                            "timeMax": 1.6,
+                            "type": "pigeon.orange.medium",
+                            "probability": 1,
+                            "vertAngleMin": -20,
+                            "vertAngleMax": -20,
+                            "horizAngleMin": 0,
+                            "horizAngleMax": 30,
+                            "velocityMin": 19,
+                            "velocityMax": 19,
+                            "manualLaunch": false,
+                            "sharedRandom": false
+                        },
+                        {
+                            "timeMin": 0,
+                            "timeMax": 0,
+                            "type": "NULL",
+                            "probability": 1,
+                            "vertAngleMin": 0,
+                            "vertAngleMax": 0,
+                            "horizAngleMin": 0,
+                            "horizAngleMax": 0,
+                            "velocityMin": 0,
+                            "velocityMax": 0,
+                            "manualLaunch": true,
+                            "sharedRandom": false
+                        }
+                    ],
+                    "splines": false,
+                    "projectiles": true,
+                    "repeatTime": 3.2
+                },
+                "transform": {
+                    "translation": [
+                        103.86615753173828,
+                        10.507933616638184,
+                        80.7930679321289
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "thrower1-2",
+                "type": "thrower1",
+                "scriptData": {
+                    "throwOrigin": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "throwDirection": [
+                        -2,
+                        2,
+                        0
+                    ],
+                    "throwVelocity": 20,
+                    "throws": [
+                        {
+                            "timeMin": 0.1,
+                            "timeMax": 1.6,
+                            "type": "pigeon.orange.medium",
+                            "probability": 1,
+                            "vertAngleMin": -20,
+                            "vertAngleMax": -20,
+                            "horizAngleMin": -30,
+                            "horizAngleMax": 0,
+                            "velocityMin": 19,
+                            "velocityMax": 19,
+                            "manualLaunch": false,
+                            "sharedRandom": false
+                        }
+                    ],
+                    "splines": false,
+                    "projectiles": true,
+                    "repeatTime": 3.2
+                },
+                "transform": {
+                    "translation": [
+                        147.01380920410156,
+                        7.336864948272705,
+                        65.3736572265625
+                    ],
+                    "rotation": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "thrower1-3",
+                "type": "thrower1",
+                "scriptData": {
+                    "throwOrigin": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "throwDirection": [
+                        -2,
+                        2,
+                        0
+                    ],
+                    "throwVelocity": 20,
+                    "throws": [
+                        {
+                            "timeMin": 1.7,
+                            "timeMax": 3.2,
+                            "type": "pigeon.orange.medium",
+                            "probability": 1,
+                            "vertAngleMin": -20,
+                            "vertAngleMax": -20,
+                            "horizAngleMin": 0,
+                            "horizAngleMax": 30,
+                            "velocityMin": 19,
+                            "velocityMax": 19,
+                            "manualLaunch": false,
+                            "sharedRandom": false
+                        },
+                        {
+                            "timeMin": 1.65,
+                            "timeMax": 1.65,
+                            "type": "NULL",
+                            "probability": 1,
+                            "vertAngleMin": 0,
+                            "vertAngleMax": 0,
+                            "horizAngleMin": 0,
+                            "horizAngleMax": 0,
+                            "velocityMin": 0,
+                            "velocityMax": 0,
+                            "manualLaunch": true,
+                            "sharedRandom": false
+                        }
+                    ],
+                    "splines": false,
+                    "projectiles": true,
+                    "repeatTime": 3.2
+                },
+                "transform": {
+                    "translation": [
+                        103.87805938720703,
+                        7.215457916259766,
+                        70.41211700439453
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "thrower1-4",
+                "type": "thrower1",
+                "scriptData": {
+                    "throwOrigin": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "throwDirection": [
+                        -2,
+                        2,
+                        0
+                    ],
+                    "throwVelocity": 20,
+                    "throws": [
+                        {
+                            "timeMin": 1.7,
+                            "timeMax": 3.2,
+                            "type": "pigeon.orange.medium",
+                            "probability": 1,
+                            "vertAngleMin": -20,
+                            "vertAngleMax": -20,
+                            "horizAngleMin": -30,
+                            "horizAngleMax": 0,
+                            "velocityMin": 19,
+                            "velocityMax": 19,
+                            "manualLaunch": false,
+                            "sharedRandom": false
+                        }
+                    ],
+                    "splines": false,
+                    "projectiles": true,
+                    "repeatTime": 3.2
+                },
+                "transform": {
+                    "translation": [
+                        146.3892059326172,
+                        10.38427734375,
+                        75.28667449951172
+                    ],
+                    "rotation": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "marker_thin-1",
+                "type": "marker_thin",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        128,
+                        12.862592697143555,
+                        110.5999984741211
+                    ],
+                    "rotation": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "marker_thick-1",
+                "type": "marker_thick",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        128,
+                        6.927521228790283,
+                        73.69999694824219
+                    ],
+                    "rotation": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "skeet_tower-1",
+                "type": "skeet_tower",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        103.65583038330078,
+                        5.383715629577637,
+                        80.91217041015625
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "skeet_tower-2",
+                "type": "skeet_tower",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        103.91242980957031,
+                        2.3597240447998047,
+                        70.47828674316406
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "skeet_tower-3",
+                "type": "skeet_tower",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        147.18873596191406,
+                        2.3597240447998047,
+                        65.50837707519531
+                    ],
+                    "rotation": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "skeet_tower-4",
+                "type": "skeet_tower",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        146.68923950195312,
+                        5.383715629577637,
+                        75.3005142211914
+                    ],
+                    "rotation": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            },
+            {
+                "id": "platform-1",
+                "type": "platform",
+                "scriptData": {
+                    "playerStart": true,
+                    "repeatTime": 24,
+                    "activateTimes": [
+                        {
+                            "min": 24,
+                            "max": 24
+                        }
+                    ],
+                    "pauseOnTeleport": true
+                },
+                "transform": {
+                    "translation": [
+                        136.62413024902344,
+                        6.158036708831787,
+                        50
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        -1
+                    ]
+                }
+            },
+            {
+                "id": "platform-2",
+                "type": "platform",
+                "scriptData": {
+                    "playerStart": false,
+                    "repeatTime": 24,
+                    "activateTimes": [
+                        {
+                            "min": 7.995,
+                            "max": 7.995
+                        }
+                    ],
+                    "pauseOnTeleport": true
+                },
+                "transform": {
+                    "translation": [
+                        127.61229705810547,
+                        5.9478230476379395,
+                        50
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        -1
+                    ]
+                }
+            },
+            {
+                "id": "platform-3",
+                "type": "platform",
+                "scriptData": {
+                    "playerStart": false,
+                    "repeatTime": 24,
+                    "activateTimes": [
+                        {
+                            "min": 15.995,
+                            "max": 15.995
+                        }
+                    ],
+                    "pauseOnTeleport": true
+                },
+                "transform": {
+                    "translation": [
+                        118.38279724121094,
+                        5.982729911804199,
+                        50
+                    ],
+                    "rotation": [
+                        -1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        -1
+                    ]
+                }
+            },
+            {
+                "id": "voice_trigger-1",
+                "type": "voice_trigger",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        136.74456787109375,
+                        6.120680809020996,
+                        51.09977340698242
+                    ],
+                    "rotation": [
+                        -0.011980347335338593,
+                        0,
+                        -0.9999279379844666,
+                        0,
+                        1,
+                        0,
+                        0.9999279379844666,
+                        0,
+                        -0.011980347335338593
+                    ]
+                }
+            },
+            {
+                "id": "voice_trigger-3",
+                "type": "voice_trigger",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        118.0301742553711,
+                        5.8606438636779785,
+                        51.323978424072266
+                    ],
+                    "rotation": [
+                        -0.011980347335338593,
+                        0,
+                        -0.9999279379844666,
+                        0,
+                        1,
+                        0,
+                        0.9999279379844666,
+                        0,
+                        -0.011980347335338593
+                    ]
+                }
+            },
+            {
+                "id": "voice_trigger-2",
+                "type": "voice_trigger",
+                "scriptData": {},
+                "transform": {
+                    "translation": [
+                        127.54322052001953,
+                        5.939565181732178,
+                        51.209999084472656
+                    ],
+                    "rotation": [
+                        -0.011980347335338593,
+                        0,
+                        -0.9999279379844666,
+                        0,
+                        1,
+                        0,
+                        0.9999279379844666,
+                        0,
+                        -0.011980347335338593
+                    ]
+                }
+            },
+            {
+                "id": "playerStartDummy-1",
+                "type": "playerStartDummy",
+                "scriptData": {
+                    "transitionTime": 6
+                },
+                "transform": {
+                    "translation": [
+                        122.94647216796875,
+                        9.215431213378906,
+                        16.366453170776367
+                    ],
+                    "rotation": [
+                        -0.9954522252082825,
+                        0,
+                        0.09525647014379501,
+                        0,
+                        1,
+                        0,
+                        -0.09525647014379501,
+                        0,
+                        -0.9954522252082825
+                    ],
+                    "scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            }
+        ],
+        "wind": {
+            "vector": [
+                0,
+                0,
+                0
+            ]
+        },
+        "fog": {
+            "enabled": false,
+            "start": 1000,
+            "end": 1000,
+            "color": [
+                1,
+                1,
+                1
+            ]
+        },
+        "splines": [],
+        "gravity": 9.82,
+        "skybox": "legend_03",
+        "globalAmbient": [
+            0.4607843137254902,
+            0.4381968473663975,
+            0.4381968473663975
+        ],
+        "light": {
+            "color": [
+                1,
+                1,
+                1
+            ],
+            "intensity": 1,
+            "direction": [
+                -0.9796721277050624,
+                1.3460805416107178,
+                0
+            ]
+        },
+        "timeline": [],
+        "lightmapSettings": {
+            "ambient": 0.6,
+            "occludableAmbientRatio": 0.3,
+            "sunStrength": 0.8,
+            "sunRayRatio": 0.3,
+            "sunRaySpread": 0.05
+        }
+    },
+    {
+        "level_id": "level_30",
+        "name": "tr:levels_name_level_30",
+        "description": "tr:levels_description_level_skeet_trap_auto_01",
+        "map": "legend01_map03",
+        "legendMapCoords": {
+            "x": 66.5,
+            "y": 20.5
+        },
+        "win": {
+            "bronze": {
+                "score": 100
+            },
+            "silver": {
+                "score": 150
+            },
+            "gold": {
+                "score": 200
+            }
+        },
+        "scoreMultipliers": {
+            "any": true,
+            "color": false,
+            "size": false
+        },
+        "weapons": [
+            "12SideBySide",
+            "12Semi"
+        ],
+        "ammo": {
+            "type": "xx",
+            "amount": 30
+        },
+        "levelBoosts": [
+            "narrowChoke",
+            "slowMotion",
+            "wideChoke"
+        ],
+        "lightMap": "lightmaps/level_30.raw",
+        "shadows": {
+            "enabled": false,
+            "resolution": [
+                1024,
+                1024
+            ],
+            "size": 24,
+            "position": [
+                43,
+                20,
+                43
+            ],
+            "near": 3,
+            "far": 150,
+            "shadowType": "PCF"
+        },
+        "cascades": []
+    }
+]

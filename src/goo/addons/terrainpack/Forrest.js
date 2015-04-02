@@ -338,9 +338,9 @@ define([
 		}
 
 		var meshDatas = meshBuilder.build();
-		if (levelOfDetail === 2) {
-			new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
-		}
+		// if (levelOfDetail === 2) {
+		// 	new EntityCombiner(this.world, 1, true, true)._combineList(gridEntity);
+		// }
 
 		return meshDatas[0]; // Don't create patches bigger than 65k
 	};

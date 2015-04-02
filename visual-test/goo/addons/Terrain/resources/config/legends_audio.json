@@ -1,0 +1,54 @@
+[
+	{
+		"audio_id":"background",
+		"url": "sound/environment/l2/legends_summer_calm_v2.mp3",
+		"loop": true,
+		"volume": 0.8
+	},
+	{
+		"audio_id":"fire1",
+		"url": "sound/West_SFX_Weapon_GB_SHO_Winchester_Fire_3P.wav",
+		"volume":0.5
+	},
+	{
+		"audio_id":"reload_sxs",
+		"url": "sound/weapons/sxs/legends_side_by_side_reload.mp3",
+		"volume":0.3
+	},
+	{
+		"audio_id":"hit1",
+		"url": "",
+		"volume":0.4
+	},
+	{
+		"audio_id":"hit2",
+		"url": "",
+		"volume":0.1
+	},
+	{
+		"audio_id":"throw1",
+		"url": "sound/thrower/legends_trap_machine.mp3",
+		"volume":0.4,
+        "spatial":true
+	}, 
+	{
+		"audio_id":"boost_activate",
+		"url": "sound/interface/boost_activate.mp3",
+		"volume":0.4
+	},
+	{
+		"audio_id":"boost_deactivate",
+		"url": "sound/interface/boost_deactivate.mp3",
+		"volume":0.4
+	},
+	{
+		"audio_id":"multiplier_activate",
+		"url": "sound/interface/multiplier_activate.mp3",
+		"volume":0.4
+	},
+	{
+		"audio_id":"trophy_level_up",
+		"url": "sound/interface/trophy_level_up.mp3",
+		"volume":0.4
+	}
+]

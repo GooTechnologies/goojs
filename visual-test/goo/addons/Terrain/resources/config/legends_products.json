@@ -1,0 +1,133 @@
+[{
+    "product_id": "slowMotion",
+    "name": "tr:slowMotion",
+    "description": "tr:slowMotion_short_desc",
+    "items": [{
+        "item": "slowMotion",
+        "qty": 1
+    }],
+    "price": 10
+}, {
+    "product_id": "quickReload",
+    "name": "tr:quickReload",
+    "description": "tr:quickReload_short_desc",
+    "items": [{
+        "item": "quickReload",
+        "qty": 1
+    }],
+    "price": 10
+}, {
+    "product_id": "freeAmmo",
+    "name": "tr:freeAmmo",
+    "description": "tr:freeAmmo_short_desc",
+    "items": [{
+        "item": "freeAmmo",
+        "qty": 1
+    }],
+    "price": 10
+}, {
+    "product_id": "reflexBoost",
+    "name": "tr:reflexBoost",
+    "description": "tr:reflexBoost_short_desc",
+    "items": [{
+        "item": "reflexBoost",
+        "qty": 1
+    }],
+    "price": 10
+}, {
+    "product_id":"narrowChoke",
+    "name": "tr:narrowChoke",
+    "description": "tr:narrowChoke",
+    "items": [{
+        "item": "narrowChoke",
+        "qty": 1
+    }],
+    "price": 10
+}, {
+    "product_id":"wideChoke",
+    "name": "tr:wideChoke",
+    "description": "tr:wideChoke",
+    "items": [{
+        "item": "wideChoke",
+        "qty": 1
+    }],
+    "price": 10
+}, {
+    "product_id": "energy",
+    "name": "tr:energy",
+    "description": "tr:energy_short_desc",
+    "items": [{
+        "item": "energy",
+        "qty": 1
+    }],
+    "price": 10
+}, {
+    "product_id": "ammo",
+    "name": "tr:ammo",
+    "description": "tr:ammo_short_desc",
+    "items": [],
+    "price": 10
+}, {
+    "product_id": "boosterPack",
+    "name": "tr:boosterPack",
+    "description": "tr:boosterPack_short_desc",
+    "items": [{
+        "item": "slowMotion",
+        "qty": 1
+    },{
+        "item": "quickReload",
+        "qty": 1
+    },{
+        "item": "freeAmmo",
+        "qty": 1
+    },{
+        "item": "reflexBoost",
+        "qty": 1
+    }],
+    "price": 20
+}, {
+    "product_id": "legend_01_key",
+    "name": "tr:key",
+    "description": "tr:key_short_desc",
+    "items": [{
+        "item": "legend_01_key",
+        "qty": 1
+    }],
+    "price": 400
+}, {
+    "product_id": "legend_02_key",
+    "name": "tr:key",
+    "description": "tr:key_short_desc",
+    "items": [{
+        "item": "legend_02_key",
+        "qty": 1
+    }],
+    "price": 400
+}, {
+    "product_id": "legend_01_gifted_key",
+    "name": "tr:key",
+    "description": "tr:key_short_desc",
+    "items": [{
+        "item": "legend_01_gifted_key",
+        "qty": 1
+    }],
+    "price": 0
+}, {
+    "product_id": "legend_02_gifted_key",
+    "name": "tr:key",
+    "description": "tr:key_short_desc",
+    "items": [{
+        "item": "legend_02_gifted_key",
+        "qty": 1
+    }],
+    "price": 0
+},{
+    "product_id": "12Pump",
+    "name": "tr:12Pump",
+    "description": "tr:12Pump_short_desc",
+    "items": [{
+        "item": "12Pump",
+        "qty": 1
+    }],
+    "price": 430
+}]

@@ -1,0 +1,46 @@
+[{
+	"cascade_id": "default-setup",
+	"stages" : [
+		{
+			"name" : "cascade-stage1",
+			"message": "3 Hit! Trap terminator!",
+			"hitsToActivate" : 3,
+			"targetsToSpawn" : 3,
+			"spawnDistribution" : "default",
+			"spawnScoreMultiplier": 2,
+			"spawnEffect" : "cascade_stars",
+			"trailEffect" : {
+				"effectName":"cascade_stars",
+				"intensity": 0.4
+			}
+		}
+		,
+		{
+			"name" : "cascade-stage2",
+			"message": "5 Hit! Trap terminator!",
+			"hitsToActivate" : 2,
+			"targetsToSpawn" : 5,
+			"spawnDistribution" : "default",
+			"spawnScoreMultiplier": 4,
+			"spawnEffect" : "cascade_stars",
+			"trailEffect" : {
+				"effectName":"cascade_stars",
+				"intensity": 0.4
+			}
+		}
+		,
+		{
+			"name" : "cascade-stage3",
+			"message": "8 Hit! Trap terminator!",
+			"hitsToActivate" : 3,
+			"targetsToSpawn" : 8,
+			"spawnDistribution" : "default",
+			"spawnScoreMultiplier": 8,
+			"spawnEffect" : "cascade_stars",
+			"trailEffect" : {
+				"effectName":"cascade_stars",
+				"intensity": 0.4
+			}
+		}
+	]
+}]

@@ -1,0 +1,14 @@
+[
+    {
+        "currency_id":"energy",
+		"name": "energy_name",
+		"description": "energy_short_desc",
+		"icon": "resources/currencies/energy.png"
+	},
+    {
+        "currency_id":"coins",
+		"name": "coin_name",
+		"description": "coin_short_desc",
+		"icon": "resources/currencies/coin.png"
+	}
+]

@@ -1,0 +1,20 @@
+[
+    {
+        "coinpack_id":"10Coins",
+        "item":"coins",
+        "amount": 10,
+		"title": "10 Legend Coins",
+		"description": "10 Legend Coins",
+		"image": "/resources/coinpack.png",
+        "prices": [{"currency":"USD", "amount":1.0}]
+	},
+    {
+        "coinpack_id":"100coins",
+        "item":"coins",
+        "amount": 100,
+		"title": "100 Legend Coins",
+		"description": "100 Legend Coins",
+		"image": "/resources/coinpack.png",
+        "prices": [{"currency":"USD", "amount":5.0}]
+	}
+]

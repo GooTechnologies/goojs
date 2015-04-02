@@ -1,0 +1,86 @@
+[
+	{
+        "legends_id": "legend_01",
+		"name": "Intro",
+		"universalCharacter": "instructor1",
+		"backstory": "legend1_backstory",
+        "gateCoords": "52,7",
+		"locks": {
+			"socialRequest": 3,
+			"socialBeat": "legend + level",
+			"pay": 20,
+			"grind": "coin",
+			"items": [
+				"12Pump"
+			]
+		},
+		"levels": [
+			"level_tutorial_01",
+            "level_01",
+			"level_02",
+			"level_03",
+			"level_04",
+			"level_05",
+			"level_06",
+			"level_07",
+			"level_08",
+			"level_09",
+			"level_10"
+		]
+	},
+	{
+        "legends_id": "legend_02",
+		"name": "Intro",
+		"universalCharacter": "instructor2",
+		"backstory": "legend2_backstory",
+        "gateCoords": "54,7",
+		"locks": {
+			"socialRequest": 3,
+			"socialBeat": "legend + level",
+			"pay": 20,
+			"grind": "coin",
+			"items": [
+				"12Pump"
+			]
+		},
+		"levels": [
+			"level_11",
+			"level_12",
+			"level_13",
+			"level_14",
+			"level_15",
+			"level_16",
+			"level_17",
+			"level_18",
+			"level_19",
+			"level_20"
+		]
+	},
+	{
+        "legends_id": "legend_03",
+		"name": "Intro",
+		"universalCharacter": "instructor2",
+		"backstory": "legend3_backstory",
+		"locks": {
+			"socialRequest": 3,
+			"socialBeat": "legend + level",
+			"pay": 20,
+			"grind": "coin",
+			"items": [
+				"12Pump"
+			]
+		},
+		"levels": [
+			"level_21",
+			"level_22",
+			"level_23",
+			"level_24",
+			"level_25",
+			"level_26",
+			"level_27",
+			"level_28",
+			"level_29",
+			"level_30"
+		]
+	}
+]

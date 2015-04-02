@@ -1,0 +1,328 @@
+{
+    "mapObjects": [
+        {
+            "id": "platform-1",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": true,
+                "repeatTime": 30,
+                "activateTimes": [
+                    {
+                        "min": 29.999999,
+                        "max": 29.999999
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    128.4176788330078,
+                    24.189498901367188,
+                    54.160011291503906
+                ],
+                "rotation": [
+                    0.17000405490398407,
+                    0,
+                    -0.9854426383972168,
+                    0,
+                    1,
+                    0,
+                    0.9854426383972168,
+                    0,
+                    0.17000405490398407
+                ]
+            }
+        },
+        {
+            "id": "platform-2",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 30,
+                "activateTimes": [
+                    {
+                        "min": 4.999999,
+                        "max": 4.999999
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    112.91712188720703,
+                    19.044893264770508,
+                    104.4093246459961
+                ],
+                "rotation": [
+                    0.9075208306312561,
+                    -0.0722123235464096,
+                    -0.4137502908706665,
+                    0.07932022213935852,
+                    0.996849000453949,
+                    0,
+                    0.41244634985923767,
+                    -0.03281877189874649,
+                    0.9103898406028748
+                ]
+            }
+        },
+        {
+            "id": "platform-3",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 30,
+                "activateTimes": [
+                    {
+                        "min": 9.999999,
+                        "max": 9.999999
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    85.3831558227539,
+                    10.55905532836914,
+                    143.659423828125
+                ],
+                "rotation": [
+                    0.9839140176773071,
+                    0,
+                    -0.17864352464675903,
+                    0,
+                    1,
+                    0,
+                    0.17864352464675903,
+                    0,
+                    0.9839140176773071
+                ]
+            }
+        },
+        {
+            "id": "platform-4",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 30,
+                "activateTimes": [
+                    {
+                        "min": 15.999999,
+                        "max": 15.999999
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    36.62948989868164,
+                    15.648529052734375,
+                    125.52326965332031
+                ],
+                "rotation": [
+                    0.914271354675293,
+                    0,
+                    0.4051021635532379,
+                    0,
+                    1,
+                    0,
+                    -0.4051021635532379,
+                    0,
+                    0.914271354675293
+                ]
+            }
+        },
+        {
+            "id": "platform-5",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 30,
+                "activateTimes": [
+                    {
+                        "min": 19.999999,
+                        "max": 19.999999
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    12.044189453125,
+                    7.710243225097656,
+                    50
+                ],
+                "rotation": [
+                    -0.23354630172252655,
+                    0,
+                    0.9723449349403381,
+                    0,
+                    1,
+                    0,
+                    -0.9723449349403381,
+                    0,
+                    -0.23354630172252655
+                ]
+            }
+        },
+        {
+            "id": "platform-6",
+            "type": "platform",
+            "scriptData": {
+                "playerStart": false,
+                "repeatTime": 30,
+                "activateTimes": [
+                    {
+                        "min": 24.999999,
+                        "max": 24.999999
+                    }
+                ],
+                "pauseOnTeleport": true
+            },
+            "transform": {
+                "translation": [
+                    52.983821868896484,
+                    10.013069152832031,
+                    1.7080692052841187
+                ],
+                "rotation": [
+                    -0.9850282669067383,
+                    0,
+                    -0.17238689959049225,
+                    0,
+                    1,
+                    0,
+                    0.17238689959049225,
+                    0,
+                    -0.9850282669067383
+                ]
+            }
+        },
+        {
+            "id": "thrower1-1",
+            "type": "thrower1",
+            "scriptData": {
+                "throwOrigin": [
+                    0,
+                    1,
+                    0
+                ],
+                "throwDirection": [
+                    -2,
+                    2,
+                    0
+                ],
+                "throwVelocity": 50,
+                "throws": [
+                    {
+                        "timeMin": 4,
+                        "timeMax": 5,
+                        "type": "pigeon.purple.large",
+                        "probability": 1,
+                        "vertAngleMin": -25,
+                        "vertAngleMax": 25,
+                        "horizAngleMin": 90,
+                        "horizAngleMax": 90,
+                        "velocityMin": 50,
+                        "velocityMax": 50,
+                        "manualLaunch": false,
+                        "sharedRandom": false
+                    }
+                ],
+                "splines": false,
+                "projectiles": true,
+                "repeatTime": 5
+            },
+            "transform": {
+                "translation": [
+                    54.201316833496094,
+                    -2.0954651832580566,
+                    48.944923400878906
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    -0.03199809789657593,
+                    0.9994878768920898,
+                    0,
+                    -0.9994878768920898,
+                    -0.03199809789657593
+                ]
+            }
+        }
+    ],
+    "playerStart": {
+        "translation": [
+            25,
+            0,
+            25
+        ],
+        "rotation": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+        ]
+    },
+    "wind": {
+        "vector": [
+            0,
+            0,
+            0
+        ]
+    },
+    "sounds": [
+        "ambience1",
+        "birdsong"
+    ],
+    "fog": {
+        "enabled": false,
+        "start": 0,
+        "end": 300,
+        "color": [
+            1,
+            1,
+            1
+        ]
+    },
+    "splines": [],
+    "gravity": 9.81,
+    "skybox": "legend_02",
+    "globalAmbient": [
+        0.3,
+        0.3,
+        0.3
+    ],
+    "light": {
+        "color": [
+            1,
+            1,
+            1
+        ],
+        "intensity": 2,
+        "direction": [
+            -0.9442489547258961,
+            2,
+            0
+        ]
+    },
+    "timeline": [],
+    "lightmapSettings": {
+        "ambient": 0.6,
+        "occludableAmbientRatio": 0.3,
+        "sunStrength": 0.8,
+        "sunRayRatio": 0.3,
+        "sunRaySpread": 0.05
+    },
+    "vegetationSettings": {
+        "patchSize": 15,
+        "patchDensity": 19
+    }
+}

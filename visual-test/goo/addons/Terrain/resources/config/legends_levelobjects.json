@@ -1,0 +1,144 @@
+[
+{
+	"level_obj_id": "thrower1",
+	"model": "thrower",
+    "collision":"mesh",
+	"script": "thrower",
+	"scriptData": {
+		"throwOrigin": [0, 1, 0],
+		"throwDirection": [-1, 0, 0],
+		"throwVelocity": 20, //US trap = 17.78 m/s, Olympic = 27.78
+		"throws": [],
+		"splines": false,
+		"projectiles": true,
+ 		"repeatTime": 0
+	},
+	"materials": {
+        "default": "metalhit"
+    }
+},
+{
+	"level_obj_id": "throwerSpline",
+	"script": "thrower",
+	"scriptData": {
+		"throwOrigin": [0, 0, 0],
+		"throwDirection": [0, 0, 1],
+		"throwVelocity": 1,
+		"throws": [],
+		"splines": true,
+		"projectiles": false,
+		"repeatTime": 0
+	}
+},
+ {
+	"level_obj_id": "statictarget",
+	"script": "target",
+	"scriptData": {
+		"target": "pigeon",
+		"spawnTime": 0
+	}
+}, {
+	"level_obj_id": "parachutedrop",
+	"script": "target",
+	"scriptData": {
+		"spawnType": "parachutedrop",
+		"target": "teddybear",
+		"spawnTime": 0,
+		"parachuteModel": "parachute_01"
+	}
+}, {
+    "level_obj_id": "platform",
+	"script": "platform",
+    "model": "platform",
+    "collision":"mesh",
+    "materials": {
+        "default": "concretehit",
+        "platform_carpet": ""
+    },
+    "scriptData": {
+		"playerStart":true,
+		"pauseOnTeleport":false,
+		"activateTimes": [],
+		"repeatTime": 0
+	}
+}, {
+    "level_obj_id": "playerStartDummy",
+    "script": "dummy",
+    "scriptData": {
+	"transitionTime": 0
+    }
+}, {
+    "level_obj_id": "fence_small",
+    "model": "fence_small",
+    "collision":"mesh",
+    "materials": {
+        "default": "woodhit"
+    }
+}, {
+    "level_obj_id": "fence_medium",
+    "model": "fence_medium",
+    "collision":"mesh",
+    "materials": {
+        "default": "woodhit"
+    }
+}, {
+    "level_obj_id": "fence_large",
+    "model": "fence_large",
+    "collision":"mesh",
+    "materials": {
+        "default": "woodhit"
+    }
+}, {
+    "level_obj_id": "thrower_roof_open",
+    "model": "thrower_roof_open",
+    "collision":"mesh",
+    "materials": {
+        "default": "woodhit"
+    }
+},{
+    "level_obj_id": "thrower_roof_open_end",
+    "model": "thrower_roof_open_end",
+    "collision":"mesh",
+    "materials": {
+        "default": "woodhit"
+    }
+}, {
+    "level_obj_id": "thrower_roof",
+    "model": "thrower_roof",
+    "collision":"mesh",
+    "materials": {
+        "default": "woodhit"
+    }
+}, {
+    "level_obj_id": "thrower_concrete_platform",
+    "model": "thrower_concrete_platform",
+    "collision":"mesh",
+    "materials": {
+        "default": "concretehit"
+    }
+}, {
+    "level_obj_id": "skeet_tower",
+    "model": "skeet_tower",
+    "collision":"mesh",
+    "materials": {
+        "default": "woodhit"
+    }
+},{
+    "level_obj_id": "marker_thick",
+    "model": "marker_thick",
+    "collision":"mesh"
+}, {
+    "level_obj_id": "marker_thin",
+    "model": "marker_thin",
+    "collision":"mesh"
+}, {
+    "level_obj_id": "voice_trigger",
+    "model": "voice_trigger",
+    "collision":"mesh",
+     "materials": {
+        "default": "metalhit"
+    }
+}, {
+    "level_obj_id": "bush_aspen_cluster",
+    "model": "bush_aspen_cluster"
+}]

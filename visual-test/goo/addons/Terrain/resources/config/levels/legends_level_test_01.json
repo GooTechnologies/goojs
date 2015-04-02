@@ -1,0 +1,400 @@
+{
+    "mapObjects": [
+        {
+            "id": "thr1",
+            "type": "thrower1",
+            "scriptData": {
+                "throws": [
+                    {
+                        "timeMin": 0,
+                        "timeMax": 1,
+                        "type": "pigeon.orange.medium",
+                        "probability": 1,
+                        "vertAngleMin": 0,
+                        "vertAngleMax": 0,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 20,
+                        "velocityMax": 20,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 1,
+                        "timeMax": 2,
+                        "type": "pigeon.yellow.medium",
+                        "probability": 1,
+                        "vertAngleMin": 0,
+                        "vertAngleMax": 0,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 20,
+                        "velocityMax": 20,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 2,
+                        "timeMax": 3,
+                        "type": "pigeon.purple.medium",
+                        "probability": 1,
+                        "vertAngleMin": 0,
+                        "vertAngleMax": 0,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 20,
+                        "velocityMax": 20,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    },
+                    {
+                        "timeMin": 3,
+                        "timeMax": 4,
+                        "type": "pigeon.red.medium",
+                        "probability": 1,
+                        "vertAngleMin": 0,
+                        "vertAngleMax": 0,
+                        "horizAngleMin": 0,
+                        "horizAngleMax": 0,
+                        "velocityMin": 20,
+                        "velocityMax": 20,
+                        "manualLaunch": true,
+                        "sharedRandom": false
+                    }
+                ],
+                "repeatTime": 4
+            },
+            "transform": {
+                "translation": [
+                    33.869293212890625,
+                    -2.9281275272369385,
+                    27.78652000427246
+                ],
+                "rotation": [
+                    -0.7094998359680176,
+                    0,
+                    -0.7047058939933777,
+                    0,
+                    1,
+                    0,
+                    0.7047058939933777,
+                    0,
+                    -0.7094998359680176
+                ]
+            }
+        },
+        {
+            "id": "platform1",
+            "type": "platform",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    28.215667724609375,
+                    -1.3402832746505737,
+                    21.55251693725586
+                ],
+                "rotation": [
+                    -0.6955966949462891,
+                    0.001452093943953514,
+                    0.7184311747550964,
+                    0.01641027443110943,
+                    0.9997695684432983,
+                    0.013868022710084915,
+                    -0.7182446122169495,
+                    0.02143607661128044,
+                    -0.6954588890075684
+                ]
+            }
+        },
+        {
+            "id": "fence_large-1",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    49.83842086791992,
+                    -3.047055721282959,
+                    20.680675506591797
+                ],
+                "rotation": [
+                    0.6359257698059082,
+                    0,
+                    -0.7717505693435669,
+                    0,
+                    1,
+                    0,
+                    0.7717505693435669,
+                    0,
+                    0.6359257698059082
+                ]
+            }
+        },
+        {
+            "id": "thrower_roof-1",
+            "type": "thrower_roof",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    33.83395767211914,
+                    -3.3086111545562744,
+                    27.29487419128418
+                ],
+                "rotation": [
+                    -0.6965049505233765,
+                    0,
+                    -0.7175518870353699,
+                    0,
+                    1,
+                    0,
+                    0.7175518870353699,
+                    0,
+                    -0.6965049505233765
+                ]
+            }
+        },
+        {
+            "id": "fence_large-2",
+            "type": "fence_large",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    28.003278732299805,
+                    -3.0993263721466064,
+                    44.12130355834961
+                ],
+                "rotation": [
+                    -0.7021243572235107,
+                    0,
+                    0.7120555639266968,
+                    0,
+                    1,
+                    0,
+                    -0.7120555639266968,
+                    0,
+                    -0.7021243572235107
+                ]
+            }
+        },
+        {
+            "id": "marker_thick-1",
+            "type": "marker_thick",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    45.007259368896484,
+                    -3.080110549926758,
+                    38.895469665527344
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thin-1",
+            "type": "marker_thin",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    64.50608825683594,
+                    -0.14408087730407715,
+                    59.48479080200195
+                ],
+                "rotation": [
+                    1,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thin-2",
+            "type": "marker_thin",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    46.20975875854492,
+                    -0.008435106836259365,
+                    70.7666015625
+                ],
+                "rotation": [
+                    0.9994528889656067,
+                    0.033075448125600815,
+                    0,
+                    -0.033075448125600815,
+                    0.9994528889656067,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "marker_thin-3",
+            "type": "marker_thin",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    75.44986724853516,
+                    -0.43889617919921875,
+                    37.24422073364258
+                ],
+                "rotation": [
+                    0.9991001486778259,
+                    -0.042127322405576706,
+                    0.004950889386236668,
+                    0.042347028851509094,
+                    0.997340977191925,
+                    -0.059303462505340576,
+                    -0.0024394290521740913,
+                    0.05945972725749016,
+                    0.9982273578643799
+                ]
+            }
+        },
+        {
+            "id": "voice_trigger-1",
+            "type": "voice_trigger",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    28.333375930786133,
+                    -1.5200115442276,
+                    22.55921745300293
+                ],
+                "rotation": [
+                    -0.7381860017776489,
+                    0,
+                    -0.674596905708313,
+                    0,
+                    1,
+                    0,
+                    0.674596905708313,
+                    0,
+                    -0.7381860017776489
+                ]
+            }
+        },
+        {
+            "id": "bush_aspen_cluster-1",
+            "type": "bush_aspen_cluster",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    55.712982177734375,
+                    -0.3142561912536621,
+                    67.8067855834961
+                ],
+                "rotation": [
+                    -0.9129557609558105,
+                    0,
+                    0.4080592095851898,
+                    0,
+                    1,
+                    0,
+                    -0.4080592095851898,
+                    0,
+                    -0.9129557609558105
+                ]
+            }
+        },
+        {
+            "id": "bush_aspen_cluster-2",
+            "type": "bush_aspen_cluster",
+            "scriptData": {},
+            "transform": {
+                "translation": [
+                    73.58506774902344,
+                    -0.22444581985473633,
+                    51.48173904418945
+                ],
+                "rotation": [
+                    -0.4572463929653168,
+                    0,
+                    0.8893392086029053,
+                    0,
+                    1,
+                    0,
+                    -0.8893392086029053,
+                    0,
+                    -0.4572463929653168
+                ]
+            }
+        }
+    ],
+    "playerStart": {
+        "translation": [
+            25,
+            0,
+            25
+        ],
+        "rotation": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+        ]
+    },
+    "wind": {
+        "vector": [
+            -4,
+            0,
+            4
+        ]
+    },
+    "sounds": [
+        "ambience1",
+        "birdsong"
+    ],
+    "fog": {
+        "enabled": true,
+        "start": 0,
+        "end": 281.88865398167724,
+        "color": [
+            0.2552864282968089,
+            0.3137254901960784,
+            0.26216161204966415
+        ]
+    },
+    "splines": [],
+    "gravity": 9.81,
+    "skybox": "legend_02",
+    "globalAmbient": [
+        0.5813148788927336,
+        0.6026867494402606,
+        0.6176470588235294
+    ],
+    "light": {
+        "color": [
+            0.892156862745098,
+            0.8767216229052174,
+            0.8046905036524413
+        ],
+        "intensity": 1,
+        "direction": [
+            -0.9796721277050624,
+            2.054543972015381,
+            0
+        ]
+    }
+}

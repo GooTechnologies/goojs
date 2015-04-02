@@ -1,0 +1,109 @@
+[
+	{
+		"booster_id":"slowMotion",
+		"name": "tr:slowMotion",
+		"CSSClass":"slowMotion_icon",
+		"icon":"icon_questionmark.png",
+		"effects":{
+			"start":["triggerDefaultBoost"],
+			"end":["endDefaultBoost"]
+		},
+		"modifiers":{
+			"multiply":{
+				"timeFactor": 0.3
+			}
+		},
+		"duration": 5
+	},
+	{
+		"booster_id":"narrowChoke",
+		"name": "tr:narrowChoke",
+		"CSSClass":"narrowChoke_icon",
+		"icon":"icon_narrow_choke.png",
+		"effects":{
+			"start":["triggerDefaultBoost"],
+			"end":["endDefaultBoost"]
+		},
+		"modifiers":{
+			"multiply":{
+				"spreadangle": 0.5
+			},
+			"add":{
+
+			}
+		},
+		"charges":1
+	},
+	{
+		"booster_id":"wideChoke",
+		"name": "tr:wideChoke",
+		"CSSClass":"wideChoke_icon",
+		"icon":"icon_wide_choke.png",
+		"effects":{
+			"start":["triggerDefaultBoost"],
+			"end":["endDefaultBoost"]
+		},
+		"modifiers":{
+			"multiply":{
+				"spreadangle": 10
+			},
+			"add":{
+
+			}
+		},
+		"duration": 8,
+		"charges":4
+	},
+    {
+        "booster_id":"quickReload",
+		"name": "tr:quickReload",
+		"CSSClass":"quickReload_icon",
+		"icon":"icon_quick_reload.png",
+		"effects":{
+			"start":["triggerDefaultBoost"],
+			"end":["endDefaultBoost"]
+		},
+		"modifiers":{
+			"multiply":{
+				"reloadTime": 0.3,
+				"cycleTime": 0.3
+			},
+			"add":{
+
+			}
+		},
+		"duration": 5
+	},
+	{
+		"booster_id":"freeAmmo",
+		"name": "tr:freeAmmo",
+		"CSSClass":"freeAmmo_icon",
+		"icon":"icon_unlimited_ammo.png",
+		"effects":{
+			"start":["triggerDefaultBoost"],
+			"end":["endDefaultBoost"]
+		},
+		"modifiers":{
+			"flag":{
+				"freeAmmo": true
+			}
+		},
+		"duration": 5
+	},
+    {
+        "booster_id":"reflexBoost",
+		"name": "tr:reflexBoost",
+		"CSSClass":"reflexBoost_icon",
+		"icon":"icon_questionmark.png",
+		"effects":{
+			"start":["triggerDefaultBoost"],
+			"end":["endDefaultBoost"]
+		},
+		"modifiers":{
+			"multiply":{
+				"aimLag": 0.5
+			}
+		},
+		"duration": 5
+	}
+]

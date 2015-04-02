@@ -1,0 +1,11 @@
+[{
+	"editor_id": "terrain",
+	"brushes": [
+		"images/effects/flare.png",
+		"images/effects/particle_chalk_smoke.dds",
+		"images/effects/particle_clay_chard_medium.dds",
+		"images/effects/particle_dirt.dds",
+		"images/effects/particle_rifle_smoke.dds",
+		"images/effects/particle_stuffing_large.dds"
+	]
+}]

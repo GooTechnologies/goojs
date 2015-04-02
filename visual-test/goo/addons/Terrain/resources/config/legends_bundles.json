@@ -1,0 +1,98 @@
+[{
+	"bundle_id":"bundle0",
+	"loadOrder": 0,
+	"path":"resources/bundles/legacy/old-model-scene",
+	"bundle":"root.bundle"
+},
+	{
+		"bundle_id":"stationary_thrower_and_platform",
+		"loadOrder": 1,
+		"path":"resources/bundles/props/stationary_thrower_and_platform",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"weapon-shotgun_sxs",
+		"loadOrder": 10,
+		"path":"resources/bundles/weapons/shotgun_sxs",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"weapon-shotgun_pump",
+		"loadOrder": 11,
+		"path":"resources/bundles/weapons/shotgun_pump",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"weapon-shotgun_semi",
+		"loadOrder": 12,
+		"path":"resources/bundles/weapons/shotgun_semi",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"weapon-shotgun_ou",
+		"loadOrder": 13,
+		"path":"resources/bundles/weapons/shotgun_ou",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"character1",
+		"loadOrder": 30,
+		"path":"resources/bundles/characters/male_only_arms",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"clay_pigeons",
+		"loadOrder": 40,
+		"path":"resources/bundles/targets/clay_pigeons",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"misc_targets",
+		"loadOrder": 50,
+		"path":"resources/bundles/targets/misc_targets",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"mallard",
+		"loadOrder": 60,
+		"path":"resources/bundles/animals/mallard",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"large_fence_and_thrower_roof",
+		"loadOrder": 70,
+		"path":"resources/bundles/props/large_fence_and_thrower_roof",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"vegetation_legend_01",
+		"loadOrder": 80,
+		"path":"resources/bundles/vegetation/legend_01",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"vegetation_legend_02",
+		"loadOrder": 90,
+		"path":"resources/bundles/vegetation/legend_02",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"vegetation_legend_03",
+		"loadOrder": 100,
+		"path":"resources/bundles/vegetation/legend_03",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"male_only_arms",
+		"loadOrder": 120,
+		"path":"resources/bundles/characters/male_only_arms",
+		"bundle":"root.bundle"
+	},
+	{
+		"bundle_id":"fences_roof_and_skeet_tower",
+		"loadOrder": 130,
+		"path":"resources/bundles/props/fences_roof_and_skeet_tower",
+		"bundle":"root.bundle"
+	}
+	]
+

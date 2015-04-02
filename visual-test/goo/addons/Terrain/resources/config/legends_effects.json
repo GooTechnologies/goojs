@@ -1,0 +1,177 @@
+[
+    {
+        "effect_id": "levelobjecthit",
+        "particles": [
+            "ground_dirt",
+            "ground_gravel",
+            "ground_smoke_high",
+            "ground_smoke_low"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "ground_gravel_hit",
+        "particles": [
+            "ground_gravel",
+            "ground_smoke_high",
+            "ground_smoke_low"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "ground_grass_hit",
+        "particles": [
+            "ground_grass",
+            "ground_smoke_low"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "ground_dirt_hit",
+        "particles": [
+            "ground_dirt",
+            "ground_smoke_high",
+            "ground_smoke_low"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "ground_stone_hit",
+        "particles": [
+            "metal_sparks",
+            "ground_smoke_low"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "targethit",
+        "particles": [
+            "clay_chards_large",
+            "clay_chards_medium",
+            "clay_chards_small",
+            "chalk_smoke"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "other",
+        "particles": [
+            "ground_smoke_high"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "concretehit",
+        "particles": [
+            "concrete_smoke",
+            "concrete_fragments"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "woodhit",
+        "particles": [
+            "wood_splinters"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "metalhit",
+        "particles": [
+            "metal_sparks"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "throwPidgeon",
+        "particles": [
+            "rifle_smoke_default_cloud"
+        ],
+        "sounds": [
+            "throw1"
+        ]
+    },
+    {
+        "effect_id": "shotgun_fire_default",
+        "particles": [
+            "rifle_smoke_default_cloud",
+            "rifle_smoke_default_core"
+        ],
+        "sounds": [
+            "fire1"
+        ]
+    },
+    {
+        "effect_id": "shotgun_reload_default",
+        "particles": [],
+        "sounds": [
+            "reload_sxs"
+        ]
+    },
+    {
+        "effect_id": "cascade_stars",
+        "particles": [
+            "cascade_stars"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "implosion",
+        "particles": [
+            "implosion_forcefield",
+            "implosion_forcefield_photons"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "triggerDefaultBoost",
+        "sounds": [
+            "boost_activate"
+        ]
+    },
+    {
+        "effect_id": "endDefaultBoost",
+        "sounds": [
+            "boost_activate"
+        ]
+    },
+    {
+        "effect_id": "explosion",
+        "particles": [
+            "explosion_smoke",
+            "explosion_fire",
+            "explosion_glass_chards"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "smoke_trail",
+        "particles": [
+            "smoke_trail"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "mallard_hit",
+        "particles": [
+            "mallard_hit"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "groundhit_clay",
+        "particles": [
+            "ground_hit_clay_chards_small",
+            "ground_hit_clay_chards_medium"
+        ],
+        "sounds": []
+    },
+    {
+        "effect_id": "pigeon_trail",
+        "particles": [
+            "pigeon_trail"
+        ],
+        "sounds": []
+    }
+
+]

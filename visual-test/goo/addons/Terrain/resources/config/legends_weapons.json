@@ -1,0 +1,389 @@
+[{
+	"weapon_id": "12SideBySide",
+	"name": "tr:weapons_name_12sidebyside",
+	"icon": "icon_sxs.png",
+	"description": "tr:weapons_description_12sidebyside",
+	"model": "Shotgun",
+	"charModel": "character_male_only_arms",
+	"pellets": 80,
+	"mass": 0.0005,
+	"ammoPerRound": 2,
+	"reloadTime": 2.4,
+	"cycleTime": 0.5,
+	"aimLag": 0.1,
+	"recoilAmplitudeMin": 0.01,
+	"recoilAmplitudeMax": 0.02,
+	"recoilHorizSpread": 0.75,
+	"recoilReaimTime": 0.1,
+	"recoilReaimDelay": 1.0,
+	"aimWobbleSpeed": 2.5,
+	"aimWobbleAmplitudeHoriz": 0.01,
+	"aimWobbleAmplitudeVert": 0.005,
+	"spreadangle": 2,
+	"exitVelocityMin": 300,
+	"exitVelocityMax": 350,
+	"recoilAmplitude": 0.05,
+	"recoilDampening": 0.8,
+	"enablePelletParticles": false,
+	"airDrag": 3.5,
+	"debug": false,
+	"effects": {
+		"shoot": "shotgun_fire_default",
+		"reload": "shotgun_reload_default"
+	},
+	"reloadMechanic": {
+		"toReloadTime":{
+			"aim":1.03,
+			"idle":1.04
+		},
+		"fromReloadTime":{
+			"aim":0.47,
+			"idle":0.47
+		},
+		"batchSize":2,
+		"batchTime":1.8
+	},
+	"aimMechanics":{
+		"fov":60,
+		"transitionTime":1
+	},
+	"animations": {
+		"idle": {
+			"character": "char_sxs_wp_idle",
+			"weapon": "wpn_sxs_wp_idle"
+		},
+		"aim": {
+			"character": "char_sxs_ap_idle",
+			"weapon": "wpn_sxs_ap_idle"
+		},
+		"fire": {
+			"weapon": "wpn_sxs_ap_shoot",
+			"character": "char_sxs_ap_shoot"
+		},
+		"idle_to_aim": {
+			"character": "char_sxs_wp_to_ap",
+			"weapon": "wpn_sxs_wp_to_ap"
+		},
+		"aim_to_idle": {
+			"character": "char_sxs_ap_to_wp",
+			"weapon": "wpn_sxs_ap_to_wp"
+		},
+
+		"aim_to_reload": {
+			"character": "char_sxs_ap_start_reload",
+			"weapon": "wpn_sxs_ap_start_reload"
+		},
+		"idle_to_reload": {
+			"character": "char_sxs_wp_start_reload",
+			"weapon": "wpn_sxs_wp_start_reload"
+		},
+		"reload_to_aim": {
+			"character": "char_sxs_ap_end_reload_to_ap",
+			"weapon": "wpn_sxs_ap_end_reload_to_ap"
+		},
+		"reload_to_idle": {
+			"character": "char_sxs_ap_end_reload_to_wp",
+			"weapon": "wpn_sxs_ap_end_reload_to_wp"
+		},
+		"add_bullet":{
+			"character": "char_sxs_reload",
+			"weapon": "wpn_sxs_reload"
+		}
+	},
+	"aliveTime": 1.5,
+	"hitTimeout": 1.0,
+	"placementOffset": [0.002, -1.705, 0.1],
+	"muzzleDirection": [0, 0, 1],
+	"muzzleExit": [0, 1.7, 1.1]
+
+
+}, {
+	"weapon_id": "12Pump",
+	"name": "tr:weapons_name_12pump",
+	"icon": "icon_pa.png",
+	"description": "tr:weapons_description_12pump",
+	"model": "shotgun_pump",
+	"charModel": "character_male_only_arms",
+	"pellets": 80,
+	"mass": 0.0005,
+	"ammoPerRound": 6,
+	"reloadTime": 1.8,
+	"cycleTime": 0.8,
+	"aimLag": 0.08,
+	"recoilAmplitudeMin": 0.01,
+	"recoilAmplitudeMax": 0.02,
+	"recoilHorizSpread": 0.75,
+	"recoilReaimTime": 0.1,
+	"recoilReaimDelay": 1.0,
+	"aimWobbleSpeed": 2.5,
+	"aimWobbleAmplitudeHoriz": 0.01,
+	"aimWobbleAmplitudeVert": 0.005,
+	"spreadangle": 1.5,
+	"exitVelocityMin": 300,
+	"exitVelocityMax": 350,
+	"recoilAmplitude": 0.05,
+	"recoilDampening": 0.8,
+	"enablePelletParticles": false,
+	"airDrag": 3.5,
+	"debug": false,
+	"effects": {
+		"shoot": "shotgun_fire_default",
+		"reload": "shotgun_reload_default"
+	},
+	"reloadMechanic": {
+		"toReloadTime":{
+			"aim":0.87,
+			"idle":0.87
+		},
+		"fromReloadTime":{
+			"aim":0.2,
+			"idle":0.2
+		},
+		"batchSize":1,
+		"batchTime":0.67
+	},
+	"aimMechanics":{
+		"fov":60,
+		"transitionTime":1
+	},
+	"animations": {
+		"idle": {
+			"character": "char_pa_wp_idle",
+			"weapon": "wpn_pa_wp_idle"
+		},
+		"aim": {
+			"character": "char_pa_ap_idle",
+			"weapon": "wpn_pa_ap_idle"
+		},
+		"fire": {
+			"character": "char_pa_ap_shoot",
+			"weapon": "wpn_pa_ap_shoot"
+		},
+		"idle_to_aim": {
+			"character": "char_pa_wp_to_ap",
+			"weapon": "wpn_pa_wp_to_ap"
+		},
+		"aim_to_idle": {
+			"character": "char_pa_ap_to_wp",
+			"weapon": "wpn_pa_ap_to_wp"
+		},
+		"aim_to_reload": {
+			"character": "char_pa_ap_start_reload",
+			"weapon": "wpn_pa_ap_start_reload"
+		},
+		"idle_to_reload": {
+			"character": "char_pa_wp_start_reload",
+			"weapon": "wpn_pa_wp_start_reload"
+		},
+		"reload_to_aim": {
+			"character": "char_pa_ap_end_reload_to_ap",
+			"weapon": "wpn_pa_ap_end_reload_to_ap"
+		},
+		"reload_to_idle": {
+			"character": "char_pa_ap_end_reload_to_wp",
+			"weapon": "wpn_pa_ap_end_reload_to_wp"
+		},
+		"add_bullet":{
+			"character": "char_pa_reload",
+			"weapon": "wpn_pa_reload"
+		}
+	},
+	"aliveTime": 1.5,
+	"hitTimeout": 1.0,
+	"placementOffset": [0, -1.705, 0.1],
+	"muzzleDirection": [0, 0, 1],
+	"muzzleExit": [0, 1.7, 1.1]
+}, {
+	"weapon_id": "12Semi",
+	"name": "tr:weapons_name_12semi",
+	"icon": "icon_sa.png",
+	"description": "tr:weapons_description_12semi",
+	"model": "shotgun_semi",
+	"charModel": "character_male_only_arms",
+	"pellets": 80,
+	"mass": 0.0005,
+	"ammoPerRound": 6,
+	"reloadTime": 1.8,
+	"cycleTime": 0.8,
+	"aimLag": 0.08,
+	"recoilAmplitudeMin": 0.01,
+	"recoilAmplitudeMax": 0.02,
+	"recoilHorizSpread": 0.75,
+	"recoilReaimTime": 0.1,
+	"recoilReaimDelay": 1.0,
+	"aimWobbleSpeed": 2.5,
+	"aimWobbleAmplitudeHoriz": 0.01,
+	"aimWobbleAmplitudeVert": 0.005,
+	"spreadangle": 1.5,
+	"exitVelocityMin": 300,
+	"exitVelocityMax": 350,
+	"recoilAmplitude": 0.05,
+	"recoilDampening": 0.8,
+	"enablePelletParticles": false,
+	"airDrag": 3.5,
+	"debug": false,
+	"effects": {
+		"shoot": "shotgun_fire_default",
+		"reload": "shotgun_reload_default"
+	},
+	"reloadMechanic": {
+		"toReloadTime":{
+			"aim":0.87,
+			"idle":0.87
+		},
+		"fromReloadTime":{
+			"aim":0.2,
+			"idle":0.2
+		},
+		"batchSize":1,
+		"batchTime":0.67
+	},
+	"aimMechanics":{
+		"fov":60,
+		"transitionTime":1
+	},
+	"animations": {
+		"idle": {
+			"character": "char_sa_wp_idle",
+			"weapon": "wpn_sa_wp_idle"
+		},
+		"aim": {
+			"character": "char_sa_ap_idle",
+			"weapon": "wpn_sa_ap_idle"
+		},
+		"fire": {
+			"character": "char_sa_ap_shoot",
+			"weapon": "wpn_sa_ap_shoot"
+		},
+		"idle_to_aim": {
+			"character": "char_sa_wp_to_ap",
+			"weapon": "wpn_sa_wp_to_ap"
+		},
+		"aim_to_idle": {
+			"character": "char_sa_ap_to_wp",
+			"weapon": "wpn_sa_ap_to_wp"
+		},
+		"aim_to_reload": {
+			"character": "char_sa_ap_start_reload",
+			"weapon": "wpn_sa_ap_start_reload"
+		},
+		"idle_to_reload": {
+			"character": "char_sa_wp_start_reload",
+			"weapon": "wpn_sa_wp_start_reload"
+		},
+		"reload_to_aim": {
+			"character": "char_sa_ap_end_reload_to_ap",
+			"weapon": "wpn_sa_ap_end_reload_to_ap"
+		},
+		"reload_to_idle": {
+			"character": "char_sa_ap_end_reload_to_wp",
+			"weapon": "wpn_sa_ap_end_reload_to_wp"
+		},
+		"add_bullet":{
+			"character": "char_sa_reload",
+			"weapon": "wpn_sa_reload"
+		}
+	},
+	"aliveTime": 1.5,
+	"hitTimeout": 1.0,
+	"placementOffset": [0, -1.705, 0.1],
+	"muzzleDirection": [0, 0, 1],
+	"muzzleExit": [0, 170, 110]
+}, {
+	"weapon_id": "12Ou",
+	"name": "tr:weapons_name_12ou",
+	"icon": "icon_ou.png",
+	"description": "tr:weapons_description_12ou",
+	"model": "shotgun_ou",
+	"charModel": "character_male_only_arms",
+	"pellets": 80,
+	"mass": 0.0005,
+	"ammoPerRound": 6,
+	"reloadTime": 1.8,
+	"cycleTime": 0.8,
+	"aimLag": 0.08,
+	"recoilAmplitudeMin": 0.01,
+	"recoilAmplitudeMax": 0.02,
+	"recoilHorizSpread": 0.75,
+	"recoilReaimTime": 0.1,
+	"recoilReaimDelay": 1.0,
+	"aimWobbleSpeed": 2.5,
+	"aimWobbleAmplitudeHoriz": 0.01,
+	"aimWobbleAmplitudeVert": 0.005,
+	"spreadangle": 1.5,
+	"exitVelocityMin": 300,
+	"exitVelocityMax": 350,
+	"recoilAmplitude": 0.05,
+	"recoilDampening": 0.8,
+	"enablePelletParticles": false,
+	"airDrag": 3.5,
+	"debug": false,
+	"effects": {
+		"shoot": "shotgun_fire_default",
+		"reload": "shotgun_reload_default"
+	},
+	"reloadMechanic": {
+		"toReloadTime":{
+			"aim":1.03,
+			"idle":1.03
+		},
+		"fromReloadTime":{
+			"aim":0.47,
+			"idle":0.47
+		},
+		"batchSize":1,
+		"batchTime":0.57
+	},
+	"aimMechanics":{
+		"fov":60,
+		"transitionTime":1
+	},
+	"animations": {
+		"idle": {
+			"character": "char_ou_wp_idle",
+			"weapon": "wpn_ou_wp_idle"
+		},
+		"aim": {
+			"character": "char_ou_ap_idle",
+			"weapon": "wpn_ou_ap_idle"
+		},
+		"fire": {
+			"character": "char_ou_ap_shoot",
+			"weapon": "wpn_ou_ap_shoot"
+		},
+		"idle_to_aim": {
+			"character": "char_ou_wp_to_ap",
+			"weapon": "wpn_ou_wp_to_ap"
+		},
+		"aim_to_idle": {
+			"character": "char_ou_ap_to_wp",
+			"weapon": "wpn_ou_ap_to_wp"
+		},
+		"aim_to_reload": {
+			"character": "char_ou_ap_start_reload",
+			"weapon": "wpn_ou_ap_start_reload"
+		},
+		"idle_to_reload": {
+			"character": "char_ou_wp_start_reload",
+			"weapon": "wpn_ou_wp_start_reload"
+		},
+		"reload_to_aim": {
+			"character": "char_ou_ap_end_reload_to_ap",
+			"weapon": "wpn_ou_ap_end_reload_to_ap"
+		},
+		"reload_to_idle": {
+			"character": "char_ou_ap_end_reload_to_wp",
+			"weapon": "wpn_ou_ap_end_reload_to_wp"
+		},
+		"add_bullet":{
+			"character": "char_ou_reload",
+			"weapon": "wpn_ou_reload"
+		}
+	},
+	"aliveTime": 1.5,
+	"hitTimeout": 1.0,
+	"placementOffset": [0, -1.705, 0.1],
+	"muzzleDirection": [0, 0, 1],
+	"muzzleExit": [0, 170, 110]
+}
+]

@@ -1,0 +1,66 @@
+[{
+	"variation_id": "pigeon-size-and-color",
+	"variations": [
+		{
+			"purple": {
+				"materialEmissive": [0.4, 0, 0.4, 0],
+				"materialDiffuse": [1, 0, 1, 1],
+				"particleColor": [1,0,1,1],
+				"color" : "purple"
+			},
+			"yellow": {
+				"materialEmissive": [0.4,0.4,0,0],
+				"materialDiffuse": [1, 1, 0, 1],
+				"particleColor": [1,1,0,1],
+				"color" : "yellow"
+			},
+			"orange": {
+				"materialEmissive": [0.4,0.1,0,0],
+				"materialDiffuse": [1, 0.25, 0, 1],
+				"particleColor": [1,0.25,0,1],
+				"color" : "orange"
+			},
+			"red": {
+				"materialEmissive": [0.4, 0, 0, 0],
+				"materialDiffuse": [1, 0, 0, 1],
+				"particleColor": [1,0,0,1],
+				"color" : "red"
+			}
+		}, 
+		{
+			"large": {
+				"size": "large",
+				"score": 5,
+				"meshScale": [2, 2, 2],
+				"mass": 0.2,
+				"airDrag": [2, 12, 2],
+				"lift": 8,
+				"randomDistWeights": {
+					"default": 1.0
+				}
+			},
+			"medium": {
+				"size": "medium",
+				"score": 10,
+				"meshScale": [1.5, 1.5, 1.5],
+				"mass": 0.15,
+				"airDrag": [1.5, 9.0, 1.5],
+				"lift": 6,
+				"randomDistWeights": {
+					"default": 1.0
+				}
+ 			},
+			"small": {
+				"size": "small",
+				"score": 15,
+				"meshScale": [1.0, 1.0, 1.0],
+				"mass": 0.1,
+				"airDrag": [1.0, 6.0, 1.0],
+				"lift": 4,
+				"randomDistWeights": {
+					"default": 1.0
+				}
+			}
+		}
+	]
+}]

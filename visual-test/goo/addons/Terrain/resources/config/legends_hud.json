@@ -1,0 +1,250 @@
+[
+	{
+		"element_id":"hud_ammo_counter",
+		"containerCSSClass": "hud_ammo_counter_container",
+		"parentId":"main",
+		"systems": {
+			"numbers":{
+				"CSSClass":"hud_ammo_state",
+				"children": [
+					{
+						"CSSClass":"hud_ammo_icon hud_ammo_type_default"
+					},
+					{
+						"CSSClass":"hud_score_label",
+						"text":"0",
+						"updateEvents":[{
+							"id":"ammoUpdate",
+							"key":"ammoLoaded",
+							"valueType":"string"
+						}]
+					},
+					{
+						"CSSClass":"hud_score_value",
+						"text":"/"
+					},
+					{
+						"CSSClass":"hud_score_value",
+						"text":"0",
+						"updateEvents":[{
+							"id":"ammoUpdate",
+							"key":"loadableAmmo",
+							"valueType":"string"
+						}]
+					}
+				]
+			}
+
+		}
+	},
+	{
+		"element_id":"hud_level_score",
+		"containerCSSClass": "hud_level_score_container",
+		"parentId":"main",
+		"systems": {
+			"progress":{
+				"CSSClass":"hud_progress_container",
+				"children": [
+					{
+						"CSSClass":"hud_progress_bar",
+						"updateEvents":[{
+							"id":"scoringEvent",
+							"key":"progress",
+							"valueType":"progress"
+						}]
+					},
+					{
+						"CSSClass":"hud_score_box arrow_box",
+						"updateEvents":[{
+							"id":"scoringEvent",
+							"key":"score",
+							"valueType":"scoreincrease"
+						},
+						{
+							"id":"scoringEvent",
+							"key":"progress",
+							"valueType":"position"
+						}]
+					},
+					{
+						"CSSClass":"hud_condition condition_bronze",
+						"updateEvents":[
+							{
+								"id":"registerWin_bronze",
+								"key":"position",
+								"valueType":"position"
+							},  {
+								"id":"winCondition_bronze",
+								"key":"id",
+								"valueType":"addClass"
+							}
+						]
+					},
+					{
+						"CSSClass":"hud_condition condition_silver",
+						"updateEvents":[{
+							"id":"registerWin_silver",
+							"key":"position",
+							"valueType":"position"
+						},  {
+							"id":"winCondition_silver",
+							"key":"id",
+							"valueType":"addClass"
+						}]
+					},
+					{
+						"CSSClass":"hud_condition condition_gold",
+						"updateEvents":[{
+							"id":"registerWin_gold",
+							"key":"position",
+							"valueType":"position"
+						},  {
+							"id":"winCondition_gold",
+							"key":"id",
+							"valueType":"addClass"
+						}]
+					}
+				]
+			}
+		}
+	},
+	{
+		"element_id":"hud_multiplier",
+		"containerCSSClass": "hud_multiplier_container",
+		"parentId":"main",
+		"systems": {
+			"multiplierTotal":{
+				"CSSClass":"hud_multiplier",
+				"children": [
+					{
+						"CSSClass":"hud_multiplier_value",
+						"text":"1",
+						"updateEvents":[{
+							"id":"scoringEvent",
+							"key":"multiplier",
+							"valueType":"string"
+						}]
+					},
+					{
+						"CSSClass":"hud_multiplier_label",
+						"text":"Total"
+					},
+					{
+						"CSSClass":"hud_multiplier_icon_total"
+					}
+				]
+			},
+			"multiplierAny":{
+				"CSSClass":"hud_multiplier",
+				"children": [
+					{
+						"CSSClass":"hud_multiplier_value",
+						"text":"1",
+						"updateEvents":[{
+							"id":"scoringEvent",
+							"key":"streakMultipliers",
+							"valueType":"map",
+							"mapIndex":"any"
+						}]
+					},
+					{
+						"CSSClass":"hud_multiplier_label",
+						"text":"Any"
+					},
+					{
+						"CSSClass":"hud_multiplier_icon_any"
+					}
+				]
+			},
+			"multiplierColor":{
+				"CSSClass":"hud_multiplier",
+				"children": [
+					{
+						"CSSClass":"hud_multiplier_value",
+						"text":"1",
+						"updateEvents":[{
+							"id":"scoringEvent",
+							"key":"streakMultipliers",
+							"valueType":"map",
+							"mapIndex":"color"
+						}]
+					},
+					{
+						"CSSClass":"hud_multiplier_label",
+						"text":"Color"
+					},
+					{
+						"CSSClass":"hud_multiplier_icon_color"
+					}
+				]
+			},
+			"multiplierSize":{
+				"CSSClass":"hud_multiplier",
+				"children": [
+					{
+						"CSSClass":"hud_multiplier_value",
+						"text":"1",
+						"updateEvents":[{
+							"id":"scoringEvent",
+							"key":"streakMultipliers",
+							"valueType":"map",
+							"mapIndex":"size"
+						}]
+					},
+					{
+						"CSSClass":"hud_multiplier_label",
+						"text":"Size"
+					},
+					{
+						"CSSClass":"hud_multiplier_icon_value"
+					}
+				]
+			}
+		}
+	},
+	{
+		"element_id":"hud_hit_score",
+		"containerCSSClass": "hud_hit_score_container",
+		"parentId":"main",
+		"systems": {
+			"hitScore":{
+				"CSSClass":"hud_hit_score_content",
+				"children": [
+					{
+						"CSSClass":"hud_hit_score_label"
+					},
+					{
+						"CSSClass":"hud_hit_score_value",
+						"updateEvents":[{
+							"id":"scoringEvent",
+							"key":"hitScore",
+							"valueType":"string"
+						}]
+					}
+				]
+			}
+		}
+	},
+	{
+		"element_id":"hud_reload_gauge",
+		"containerCSSClass": "hud_reload_gauge_container",
+		"parentId":"main",
+		"systems": {
+			"progress":{
+				"CSSClass":"hud_reload_progress_container",
+				"children": [
+					{
+						"CSSClass":"hud_progress_bar",
+						"updateEvents":[{
+							"id":"reloadProgress",
+							"key":"progress",
+							"valueType":"progress"
+						}]
+					}
+				]
+			}
+		}
+	}
+]
+
+
