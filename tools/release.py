@@ -43,7 +43,9 @@ def copy_to_release_dir(release_dir, engine_folders):
 		print 'Creating directory for release:', release_dir
 		os.makedirs(release_dir)
 
-	os.makedirs(release_dir + '/lib')
+	release_lib_folder = os.path.join(release_dir, 'lib')
+	os.makedirs(release_lib_folder)
+
 	for directory in (
 		'lib/p2',
 		'lib/box2d',
@@ -53,15 +55,23 @@ def copy_to_release_dir(release_dir, engine_folders):
 		'lib/hammerv2',
 		('out-doc', 'docs'),
 		'visual-test',
-		'examples'
-	):
+		'examples'):
 		if isinstance(directory, basestring):
 			source = destination = directory
 		else:
 			source, destination = directory
-		shutil.copytree(source, release_dir + '/' + destination)
+		dest_path = os.path.join(release_dir, destination)
+		shutil.copytree(source, dest_path)
+		print 'Copying "%s" into "%s"' % (source, dest_path)
 
+	shutil.copy('lib/require.js', release_lib_folder)
+	shutil.copy('lib/ammo.small.js', release_lib_folder)
+	shutil.copy('lib/polyk.js', release_lib_folder)
+	shutil.copy('COPYING', release_dir)
+	shutil.copy('LICENSE', release_dir)
+	shutil.copy('CHANGES', release_dir)
 
+	"""
 	shutil.copy('out/goo.js', release_dir + '/lib/goo.js')
 
 	# pack files must also be copied
@@ -88,12 +98,7 @@ def copy_to_release_dir(release_dir, engine_folders):
 	):
 		shutil.copy('out/' + packName + 'pack.js', release_dir + '/lib/' + packName + 'pack.js')
 
-	shutil.copy('lib/require.js', release_dir + '/lib/require.js')
-	shutil.copy('lib/ammo.small.js', release_dir + '/lib/ammo.small.js')
-	shutil.copy('lib/polyk.js', release_dir + '/lib/polyk.js')
-	shutil.copy('COPYING', release_dir + '/COPYING')
-	shutil.copy('LICENSE', release_dir + '/LICENSE')
-	shutil.copy('CHANGES', release_dir + '/CHANGES')
+	"""
 
 
 def setup_tmp_build_dirs(sub_releases):
@@ -152,9 +157,8 @@ if __name__ == '__main__':
 	subprocess.check_call([GRUNT_BIN, 'jsdoc'])
 	# Build visual tests
 	subprocess.check_call([GRUNT_BIN, 'generate-toc'])
-
+	"""
 
 	# Copy the build result into the release directory
 	copy_to_release_dir(args.release_dir, rel_dirs)
-	"""
 
