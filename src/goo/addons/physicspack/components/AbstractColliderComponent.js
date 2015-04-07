@@ -40,6 +40,7 @@ function (
 		/**
 		 * If the collider is a Trigger, it does not interact with other objects, but it does emit contact events.
 		 * @type {boolean}
+		 * @default false
 		 */
 		this.isTrigger = settings.isTrigger !== undefined ? settings.isTrigger : false;
 

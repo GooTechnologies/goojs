@@ -110,7 +110,7 @@ function (
 			return;
 		}
 
-		for (var i = 0, N = entities.length; i !== N; i++) {
+		for (var i = 0; i !== entities.length; i++) {
 			var entity = entities[i];
 
 			if (!this.renderAll && !this.selection.contains(entity)) {
@@ -197,7 +197,7 @@ function (
 	 * @private
 	 */
 	PhysicsDebugRenderSystem.prototype.clear = function () {
-		for (var i = 0, N = this.renderList.length; i !== N; i++) {
+		for (var i = 0; i !== this.renderList.length; i++) {
 			this.renderablePool.release(this.renderList[i]);
 		}
 		this.renderList.length = 0;

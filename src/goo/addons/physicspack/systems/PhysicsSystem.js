@@ -411,9 +411,7 @@ function (
 	PhysicsSystem.prototype.initialize = function (entities) {
 		entities = entities || this._activeEntities;
 
-		var N = entities.length;
-
-		for (var i = 0; i !== N; i++) {
+		for (var i = 0; i !== entities.length; i++) {
 			var entity = entities[i];
 			var rigidBodyComponent = entity.rigidBodyComponent;
 
@@ -436,7 +434,7 @@ function (
 		}
 
 		// Initialize joints - must be done *after* all bodies were initialized
-		for (var i = 0; i !== N; i++) {
+		for (var i = 0; i !== entities.length; i++) {
 			var entity = entities[i];
 
 			var joints = entity.rigidBodyComponent.joints;
@@ -455,7 +453,6 @@ function (
 	 */
 	PhysicsSystem.prototype.destroy = function (entities) {
 		entities = entities || this._activeEntities;
-		var N = entities.length;
 
 		this._shapeIdToColliderEntityMap.forEach(function (key) {
 			this._shapeIdToColliderEntityMap.delete(key);
@@ -470,7 +467,7 @@ function (
 		}.bind(this));
 
 		// Destroy joints
-		for (var i = 0; i !== N; i++) {
+		for (var i = 0; i !== entities.length; i++) {
 			var entity = entities[i];
 
 			var joints = entity.rigidBodyComponent.joints;
@@ -493,7 +490,7 @@ function (
 			}
 		}
 
-		for (var i = 0; i !== N; i++) {
+		for (var i = 0; i !== entities.length; i++) {
 			var entity = entities[i];
 			var rigidBodyComponent = entity.rigidBodyComponent;
 
@@ -517,16 +514,16 @@ function (
 		this.syncTransforms(entities);
 	};
 
+	var queue = [];
+
 	/**
 	 * @private
 	 * @param  {array} entities
 	 */
 	PhysicsSystem.prototype.syncTransforms = function (entities) {
-		var N = entities.length;
 
 		// Need a tree traversal, that takes the roots first
-		var queue = [];
-		for (var i = 0; i !== N; i++) {
+		for (var i = 0; i !== entities.length; i++) {
 			var entity = entities[i];
 			var rigidBodyComponent = entity.rigidBodyComponent;
 
@@ -584,6 +581,8 @@ function (
 
 			transformComponent.setUpdated();
 		}
+
+		queue.length = 0;
 	};
 
 	return PhysicsSystem;
