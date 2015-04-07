@@ -450,7 +450,7 @@ define([
 	};
 
 	/**
-	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians).
+	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians, Euler order YZX).
 	 * Returns a new Vector3 that cannot be used for modifying the rotation.
 	 * <br /><i>Injected into entity when adding component.</i>.
 	 * @example
@@ -467,7 +467,7 @@ define([
 	};
 
 	/**
-	 * Adds to this transform's rotation using Euler angles (in radians).
+	 * Adds to this transform's rotation using Euler angles (in radians, Euler order YZX).
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
 	 * boxEntity.setRotation(Math.PI/4.0, 0, 0);
@@ -496,7 +496,7 @@ define([
 	};
 
 	/**
-	 * Sets this transform's rotation around X, Y and Z axis (Euler angles, in radians).
+	 * Sets this transform's rotation around X, Y and Z axis (in radians, Euler order YZX).
 	 * The rotation is applied in X, Y, Z order.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example

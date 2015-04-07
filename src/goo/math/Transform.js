@@ -226,8 +226,7 @@ define([
 	};
 
 	/**
-	 * Set this transform's rotation to rotation around X, Y and Z axis.
-	 * The rotation is applied in XYZ order.
+	 * Set this transform's rotation to rotation around X, Y and Z axis. Euler order is YZX.
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
