@@ -833,6 +833,10 @@ define([
 
 	var renderRenderInfo = new RenderInfo();
 
+	var startEachShaderFrame = function (shader) {
+		shader.startFrame();
+	};
+
 	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
 	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
@@ -861,9 +865,7 @@ define([
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
-		this.rendererRecord.shaderCache.forEach(function (shader) {
-			shader.startFrame();
-		});
+		this.rendererRecord.shaderCache.forEach(startEachShaderFrame);
 
 		var renderInfo = renderRenderInfo;
 		renderInfo.reset();
@@ -945,7 +947,7 @@ define([
 		if (meshData._attributeDataNeedsRefresh) {
 			meshData._dirtyAttributeNames.forEach(function (name) {
 				this.updateAttributeData(meshData.dataViews[name], meshData.attributeMap[name].offset);
-			}.bind(this));
+			}, this);
 
 			meshData._attributeDataNeedsRefresh = false;
 			meshData._dirtyAttributeNames.clear();
