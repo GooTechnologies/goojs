@@ -27,7 +27,11 @@ define([
 	 * // Passing in an existing Matrix3x3
 	 * var m4 = new Matrix3x3(m1); // m4 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
 	 */
-	function Matrix3x3() {
+	function Matrix3x3(
+		e00, e10, e20,
+		e01, e11, e21,
+		e02, e12, e22
+	) {
 		Matrix.call(this, 3, 3);
 
 		if (arguments.length === 0) {
@@ -35,7 +39,17 @@ define([
 			this.data[4] = 1;
 			this.data[8] = 1;
 		} else {
-			Matrix.prototype.set.apply(this, arguments);
+			this.data[0] = e00;
+			this.data[1] = e10;
+			this.data[2] = e20;
+
+			this.data[3] = e01;
+			this.data[4] = e11;
+			this.data[5] = e21;
+
+			this.data[6] = e02;
+			this.data[7] = e12;
+			this.data[8] = e22;
 		}
 
 		// #ifdef DEBUG
@@ -702,25 +716,32 @@ define([
 
 	/**
 	 * Copies component values and stores them locally.
-	 * @param {Matrix3x3} source Source matrix.
+	 * @param {Matrix3x3} that Source matrix.
 	 * @returns {Matrix3x3} Self for chaining.
 	 */
-	Matrix3x3.prototype.copy = function (source) {
-		var t = this.data;
-		var s = source.data;
+	Matrix3x3.prototype.copy = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
 
-		t[0] = s[0];
-		t[1] = s[1];
-		t[2] = s[2];
-		t[3] = s[3];
-		t[4] = s[4];
-		t[5] = s[5];
-		t[6] = s[6];
-		t[7] = s[7];
-		t[8] = s[8];
+		thisData[0] = thatData[0];
+		thisData[1] = thatData[1];
+		thisData[2] = thatData[2];
+		thisData[3] = thatData[3];
+		thisData[4] = thatData[4];
+		thisData[5] = thatData[5];
+		thisData[6] = thatData[6];
+		thisData[7] = thatData[7];
+		thisData[8] = thatData[8];
 
 		return this;
 	};
+
+	/**
+	 * Sets the matrix's values from another matrix's values; an alias for .copy
+	 * @param {Matrix3x3} that Source matrix
+	 * @returns {Matrix3x3} Self to allow chaining
+	 */
+	Matrix3x3.prototype.set = Matrix3x3.prototype.copy;
 
 	/**
 	 * Returns a new matrix with the same values as the existing one.
@@ -732,7 +753,7 @@ define([
 
 	// #ifdef DEBUG
 	Matrix.addPostChecks(Matrix3x3.prototype, [
-		'add', 'sub', 'mul', 'div', 'combine', 'transpose', 'invert',
+		'add', 'sub', 'scale', 'transpose', 'invert',
 		'isOrthogonal', 'determinant', 'applyPost', 'applyPre',
 		'fromAngles', 'rotateX', 'rotateY', 'rotateZ', 'fromAngleNormalAxis', 'lookAt',
 		'copyQuaternion', 'copy'

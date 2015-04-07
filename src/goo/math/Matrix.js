@@ -1,8 +1,4 @@
-define([
-	'goo/math/MathUtils'
-], function (
-	MathUtils
-) {
+define(function () {
 	'use strict';
 
 	/**
@@ -103,29 +99,6 @@ define([
 		methodNames.forEach(Matrix.addPostCheck.bind(null, object));
 	};
 	// #endif
-
-	/**
-	 * Sets the components of the matrix.
-	 * @param {Matrix|number[]|...number} arguments Component values.
-	 * @returns {Matrix} Self for chaining.
-	 */
-	Matrix.prototype.set = function () {
-		if (arguments.length === 1 && typeof arguments[0] === 'object') {
-			if (arguments[0] instanceof Matrix) {
-				this.copy(arguments[0]);
-			} else {
-				for (var i = 0; i < arguments[0].length; i++) {
-					this.data[i] = arguments[0][i];
-				}
-			}
-		} else {
-			for (var i = 0; i < arguments.length; i++) {
-				this.data[i] = arguments[i];
-			}
-		}
-
-		return this;
-	};
 
 	return Matrix;
 });

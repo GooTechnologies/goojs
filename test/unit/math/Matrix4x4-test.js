@@ -33,34 +33,6 @@ define([
 
 				expect(matrix).toBeCloseToMatrix(expected);
 			});
-
-			it('creates a matrix when given an array', function () {
-				var matrix = new Matrix4x4([11, 22, 33, 44, 55, 66, 77, 88, 99, 110, 121, 132, 143, 154, 165, 176]);
-				var expected = new Matrix4x4();
-
-				for (var i = 0; i < 16; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
-
-				expect(matrix).toBeCloseToMatrix(expected);
-			});
-
-			it('creates a matrix when given a matrix', function () {
-				var original = new Matrix4x4();
-				for (var i = 0; i < 16; i++) {
-					original.data[i] = (i + 1) * 11;
-				}
-
-				var matrix = new Matrix4x4(original);
-
-				var expected = new Matrix4x4();
-
-				for (var i = 0; i < 16; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
-
-				expect(matrix).toBeCloseToMatrix(expected);
-			});
 		});
 
 		// bad idea to use the same data in both matrices
@@ -250,10 +222,10 @@ define([
 		});
 
 		describe('equals', function () {
-			it('can be tested for approximate equaltiy', function () {
-				var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-				var b = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-				var c = new Matrix4x4(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+			it('can be tested for approximate equality', function () {
+				var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+				var b = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+				var c = new Matrix4x4(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
 				expect(a.equals(b)).toBe(true);
 				expect(a.equals(c)).toBe(false);
@@ -261,8 +233,8 @@ define([
 
 			it('preserves behaviour of comparing with NaN', function () {
 				// 1 === NaN // false in JS, so (1, 2) === (1, NaN) should return the same
-				var m1 = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-				var m2 = new Matrix4x4(1, 2, 3, NaN, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+				var m1 = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+				var m2 = new Matrix4x4(1, 2, 3, NaN, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
 				expect(m1.equals(m2)).toBe(false);
 			});

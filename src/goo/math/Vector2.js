@@ -35,11 +35,11 @@ define([
 	}
 
 	// #ifdef DEBUG
-	Vector.setupAliases(Vector2.prototype,[['x'], ['y']]);
+	Vector.setupAliases(Vector2.prototype, [['x'], ['y']]);
 	Vector.setupIndices(Vector2.prototype, 2);
 	// #endif
 
-	Vector.setupAliases(Vector2.prototype,[['u'], ['v']]);
+	Vector.setupAliases(Vector2.prototype, [['u'], ['v']]);
 
 	/**
 	 * Zero-vector (0, 0)

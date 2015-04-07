@@ -10,16 +10,23 @@ define([
 	/**
 	 * Matrix with 2x2 components.
 	 * @extends Matrix
-	 * @param {Matrix2x2|number[]|...number} arguments Initial values for the components.
+	 * @param {Matrix2x2|number...} arguments Initial values for the matrix components.
 	 */
-	function Matrix2x2() {
+	function Matrix2x2(
+		e00, e10,
+		e01, e11
+	) {
 		Matrix.call(this, 2, 2);
 
 		if (arguments.length === 0) {
 			this.data[0] = 1;
 			this.data[3] = 1;
 		} else {
-			Matrix.prototype.set.apply(this, arguments);
+			this.data[0] = e00;
+			this.data[1] = e10;
+
+			this.data[2] = e01;
+			this.data[3] = e11;
 		}
 
 		// #ifdef DEBUG
@@ -269,25 +276,32 @@ define([
 	};
 
 	/**
-	 * Copies component values and stores them locally.
-	 * @param {Matrix2x2} source Source matrix.
-	 * @returns {Matrix2x2} Self for chaining.
+	 * Copies component values from another matrix to this matrix
+	 * @param {Matrix2x2} that Source matrix
+	 * @returns {Matrix2x2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.copy = function (source) {
-		var t = this.data;
-		var s = source.data;
+	Matrix2x2.prototype.copy = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
 
-		t[0] = s[0];
-		t[1] = s[1];
-		t[2] = s[2];
-		t[3] = s[3];
+		thisData[0] = thatData[0];
+		thisData[1] = thatData[1];
+		thisData[2] = thatData[2];
+		thisData[3] = thatData[3];
 
 		return this;
 	};
 
 	/**
-	 * Returns a new matrix with the same values as the existing one.
-	 * @returns {Matrix2x2} The new matrix.
+	 * Sets the matrix's values from another matrix's values; an alias for .copy
+	 * @param {Matrix2x2} that Source matrix
+	 * @returns {Matrix2x2} Self to allow chaining
+	 */
+	Matrix2x2.prototype.set = Matrix2x2.prototype.copy;
+
+	/**
+	 * Returns a new matrix with the same values as the existing one
+	 * @returns {Matrix2x2} The new matrix
 	 */
 	Matrix2x2.prototype.clone = function () {
 		return new Matrix2x2().copy(this);
@@ -295,7 +309,7 @@ define([
 
 	// #ifdef DEBUG
 	Matrix.addPostChecks(Matrix2x2.prototype, [
-		'add', 'sub', 'mul', 'div', 'combine', 'transpose', 'invert',
+		'add', 'sub', 'scale', 'transpose', 'invert',
 		'isOrthogonal', 'determinant',
 		'copy'
 	]);

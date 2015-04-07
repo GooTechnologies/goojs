@@ -27,34 +27,6 @@ define([
 
 				expect(matrix).toBeCloseToMatrix(expected);
 			});
-
-			it('creates a matrix when given an array', function () {
-				var matrix = new Matrix2x2([11, 22, 33, 44]);
-				var expected = new Matrix2x2();
-
-				for (var i = 0; i < 4; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
-
-				expect(matrix).toBeCloseToMatrix(expected);
-			});
-
-			it('creates a matrix when given a matrix', function () {
-				var original = new Matrix2x2();
-				for (var i = 0; i < 4; i++) {
-					original.data[i] = (i + 1) * 11;
-				}
-
-				var matrix = new Matrix2x2(original);
-
-				var expected = new Matrix2x2();
-
-				for (var i = 0; i < 4; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
-
-				expect(matrix).toBeCloseToMatrix(expected);
-			});
 		});
 
 		describe('mulPre', function () {

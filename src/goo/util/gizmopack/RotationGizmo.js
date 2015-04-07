@@ -155,17 +155,13 @@ define([
 			this._rotation.rotateX(dy * this._rotationScale);
 		}
 
-		var camMat = Renderer.mainCamera.getViewMatrix().data;
+		var camMat = Renderer.mainCamera.getViewMatrix();
 		var camRotation = this._m1, screenRotation = this._m2;
 
-		camRotation.set(
-			camMat[0], camMat[1], camMat[2],
-			camMat[4], camMat[5], camMat[6],
-			camMat[8], camMat[9], camMat[10]
-		);
+		camRotation.set(camMat);
 		screenRotation.set(camRotation).invert();
-		screenRotation.combine(this._rotation);
-		screenRotation.combine(camRotation);
+		screenRotation.mul2(this._rotation, screenRotation);
+		screenRotation.mul2(screenRotation, camRotation);
 
 		this.transform.rotation.mulPre(screenRotation);
 	};

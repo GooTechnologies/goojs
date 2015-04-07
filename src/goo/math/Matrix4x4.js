@@ -12,7 +12,12 @@ define([
 	 * @extends Matrix
 	 * @param {Matrix4x4|number[]|...number} arguments Initial values for the components.
 	 */
-	function Matrix4x4() {
+	function Matrix4x4(
+		e00, e10, e20, e30,
+		e01, e11, e21, e31,
+		e02, e12, e22, e32,
+		e03, e13, e23, e33
+	) {
 		Matrix.call(this, 4, 4);
 
 		if (arguments.length === 0) {
@@ -21,7 +26,25 @@ define([
 			this.data[10] = 1;
 			this.data[15] = 1;
 		} else {
-			Matrix.prototype.set.apply(this, arguments);
+			this.data[0] = e00;
+			this.data[1] = e10;
+			this.data[2] = e20;
+			this.data[3] = e30;
+
+			this.data[4] = e01;
+			this.data[5] = e11;
+			this.data[6] = e21;
+			this.data[7] = e31;
+
+			this.data[8] = e02;
+			this.data[9] = e12;
+			this.data[10] = e22;
+			this.data[11] = e32;
+
+			this.data[12] = e03;
+			this.data[13] = e13;
+			this.data[14] = e23;
+			this.data[15] = e33;
 		}
 
 		// #ifdef DEBUG
@@ -596,7 +619,6 @@ define([
 	// REVIEW rherlitz: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector)
 	// and the matrix is applied after the vector.
 	Matrix4x4.prototype.applyPre = function (rhs) {
-		// throw '';
 		return rhs.applyPre(this);
 	};
 
@@ -606,7 +628,6 @@ define([
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
 	Matrix4x4.prototype.applyPost = function (rhs) {
-		// throw '';
 		return rhs.applyPost(this);
 	};
 
@@ -616,7 +637,6 @@ define([
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 	Matrix4x4.prototype.applyPostPoint = function (rhs) {
-		// throw '';
 		return rhs.applyPostPoint(this);
 	};
 
@@ -626,7 +646,6 @@ define([
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
 	Matrix4x4.prototype.applyPostVector = function (rhs) {
-		// throw '';
 		return rhs.applyPostVector(this);
 	};
 
@@ -659,32 +678,39 @@ define([
 
 	/**
 	 * Copies component values and stores them locally.
-	 * @param {Matrix4x4} source Source matrix.
+	 * @param {Matrix4x4} that Source matrix.
 	 * @returns {Matrix4x4} Self for chaining.
 	 */
-	Matrix4x4.prototype.copy = function (source) {
-		var t = this.data;
-		var s = source.data;
+	Matrix4x4.prototype.copy = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
 
-		t[0] = s[0];
-		t[1] = s[1];
-		t[2] = s[2];
-		t[3] = s[3];
-		t[4] = s[4];
-		t[5] = s[5];
-		t[6] = s[6];
-		t[7] = s[7];
-		t[8] = s[8];
-		t[9] = s[9];
-		t[10] = s[10];
-		t[11] = s[11];
-		t[12] = s[12];
-		t[13] = s[13];
-		t[14] = s[14];
-		t[15] = s[15];
+		thisData[0] = thatData[0];
+		thisData[1] = thatData[1];
+		thisData[2] = thatData[2];
+		thisData[3] = thatData[3];
+		thisData[4] = thatData[4];
+		thisData[5] = thatData[5];
+		thisData[6] = thatData[6];
+		thisData[7] = thatData[7];
+		thisData[8] = thatData[8];
+		thisData[9] = thatData[9];
+		thisData[10] = thatData[10];
+		thisData[11] = thatData[11];
+		thisData[12] = thatData[12];
+		thisData[13] = thatData[13];
+		thisData[14] = thatData[14];
+		thisData[15] = thatData[15];
 
 		return this;
 	};
+
+	/**
+	 * Sets the matrix's values from another matrix's values; an alias for .copy
+	 * @param {Matrix4x4} that Source matrix
+	 * @returns {Matrix4x4} Self to allow chaining
+	 */
+	Matrix4x4.prototype.set = Matrix4x4.prototype.copy;
 
 	/**
 	 * Returns a new matrix with the same values as the existing one.
@@ -696,7 +722,7 @@ define([
 
 	// #ifdef DEBUG
 	Matrix.addPostChecks(Matrix4x4.prototype, [
-		'add', 'sub', 'mul', 'div', 'combine', 'transpose', 'invert',
+		'add', 'sub', 'scale', 'transpose', 'invert',
 		'isOrthogonal', 'determinant', 'applyPre',
 		'copy'
 	]);

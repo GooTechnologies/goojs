@@ -31,34 +31,6 @@ define([
 
 				expect(matrix).toBeCloseToMatrix(expected);
 			});
-
-			it('creates a matrix when given an array', function () {
-				var matrix = new Matrix3x3([11, 22, 33, 44, 55, 66, 77, 88, 99]);
-				var expected = new Matrix3x3();
-
-				for (var i = 0; i < 9; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
-
-				expect(matrix).toBeCloseToMatrix(expected);
-			});
-
-			it('creates a matrix when given a matrix', function () {
-				var original = new Matrix3x3();
-				for (var i = 0; i < 9; i++) {
-					original.data[i] = (i + 1) * 11;
-				}
-
-				var matrix = new Matrix3x3(original);
-
-				var expected = new Matrix3x3();
-
-				for (var i = 0; i < 9; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
-
-				expect(matrix).toBeCloseToMatrix(expected);
-			});
 		});
 
 		describe('mulPre', function () {
