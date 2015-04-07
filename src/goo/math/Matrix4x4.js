@@ -631,6 +631,33 @@ define([
 	};
 
 	/**
+	 * Compares two matrices for approximate equality
+	 * @param {Matrix4x4} that The matrix to compare against
+	 * @returns {boolean}
+	 */
+	Matrix4x4.prototype.equals = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
+
+		return (Math.abs(thisData[0] - thatData[0]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[1] - thatData[1]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[2] - thatData[2]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[3] - thatData[3]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[4] - thatData[4]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[5] - thatData[5]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[6] - thatData[6]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[7] - thatData[7]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[8] - thatData[8]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[9] - thatData[9]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[10] - thatData[10]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[11] - thatData[11]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[12] - thatData[12]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[13] - thatData[13]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[14] - thatData[14]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[15] - thatData[15]) <= MathUtils.EPSILON);
+	};
+
+	/**
 	 * Copies component values and stores them locally.
 	 * @param {Matrix4x4} source Source matrix.
 	 * @returns {Matrix4x4} Self for chaining.

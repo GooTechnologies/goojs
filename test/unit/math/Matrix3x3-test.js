@@ -216,6 +216,25 @@ define([
 			});
 		});
 
+		describe('equals', function () {
+			it('can be tested for approximate equaltiy', function () {
+				var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+				var b = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+				var c = new Matrix3x3(0, 1, 2, 3, 4, 5, 6, 7, 8);
+
+				expect(a.equals(b)).toBe(true);
+				expect(a.equals(c)).toBe(false);
+			});
+
+			it('preserves behaviour of comparing with NaN', function () {
+				// 1 === NaN // false in JS, so (1, 2) === (1, NaN) should return the same
+				var m1 = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+				var m2 = new Matrix3x3(1, 2, 3, NaN, 5, 6, 7, 8, 9);
+
+				expect(m1.equals(m2)).toBe(false);
+			});
+		});
+
 		describe('copy', function () {
 			it('can copy from another matrix', function () {
 				var original = new Matrix3x3(11, 22, 33, 44, 55, 66, 77, 88, 99);

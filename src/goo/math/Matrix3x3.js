@@ -681,6 +681,26 @@ define([
 	};
 
 	/**
+	 * Compares two matrices for approximate equality
+	 * @param {Matrix3x3} that The matrix to compare against
+	 * @returns {boolean}
+	 */
+	Matrix3x3.prototype.equals = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
+
+		return (Math.abs(thisData[0] - thatData[0]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[1] - thatData[1]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[2] - thatData[2]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[3] - thatData[3]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[4] - thatData[4]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[5] - thatData[5]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[6] - thatData[6]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[7] - thatData[7]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[8] - thatData[8]) <= MathUtils.EPSILON);
+	};
+
+	/**
 	 * Copies component values and stores them locally.
 	 * @param {Matrix3x3} source Source matrix.
 	 * @returns {Matrix3x3} Self for chaining.

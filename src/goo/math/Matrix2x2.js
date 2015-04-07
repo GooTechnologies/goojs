@@ -191,7 +191,7 @@ define([
 
 	/**
 	 * Tests if the matrix is orthogonal.
-	 * @returns {Boolean} True if orthogonal.
+	 * @returns {boolean} True if orthogonal.
 	 */
 	Matrix2x2.prototype.isOrthogonal = function () {
 		var dot;
@@ -253,6 +253,20 @@ define([
 		return this;
 	};
 
+	/**
+	 * Compares two matrices for approximate equality
+	 * @param {Matrix2x2} that The matrix to compare against
+	 * @returns {boolean}
+	 */
+	Matrix2x2.prototype.equals = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
+
+		return (Math.abs(thisData[0] - thatData[0]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[1] - thatData[1]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[2] - thatData[2]) <= MathUtils.EPSILON) &&
+			(Math.abs(thisData[3] - thatData[3]) <= MathUtils.EPSILON);
+	};
 
 	/**
 	 * Copies component values and stores them locally.

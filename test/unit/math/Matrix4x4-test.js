@@ -175,74 +175,97 @@ define([
 			expect(a.applyPostVector(new Vector3(1, 2, 3))).toBeCloseToVector(new Vector3(38, 44, 50));
 		});
 
-		it('can add two matrices component-wise', function () {
-			var a = new Matrix4x4(
-				1, 2, 3, 4,
-				5, 6, 7, 8,
-				9, 10, 11, 12,
-				13, 14, 15, 16
-			);
+		describe('add', function () {
+			it('can add two matrices component-wise', function () {
+				var a = new Matrix4x4(
+					1, 2, 3, 4,
+					5, 6, 7, 8,
+					9, 10, 11, 12,
+					13, 14, 15, 16
+				);
 
-			var b = new Matrix4x4(
-				2, 3, 5, 7,
-				11, 13, 17, 19,
-				23, 29, 31, 37,
-				41, 43, 47, 53
-			);
+				var b = new Matrix4x4(
+					2, 3, 5, 7,
+					11, 13, 17, 19,
+					23, 29, 31, 37,
+					41, 43, 47, 53
+				);
 
-			expect(a.add(b)).toBeCloseToMatrix(new Matrix4x4(
-				1 + 2,
-				2 + 3,
-				3 + 5,
-				4 + 7,
-				5 + 11,
-				6 + 13,
-				7 + 17,
-				8 + 19,
-				9 + 23,
-				10 + 29,
-				11 + 31,
-				12 + 37,
-				13 + 41,
-				14 + 43,
-				15 + 47,
-				16 + 53
-			));
+				expect(a.add(b)).toBeCloseToMatrix(new Matrix4x4(
+					1 + 2,
+					2 + 3,
+					3 + 5,
+					4 + 7,
+					5 + 11,
+					6 + 13,
+					7 + 17,
+					8 + 19,
+					9 + 23,
+					10 + 29,
+					11 + 31,
+					12 + 37,
+					13 + 41,
+					14 + 43,
+					15 + 47,
+					16 + 53
+				));
+			});
 		});
 
-		it('can subtract two matrices component-wise', function () {
-			var a = new Matrix4x4(
-				1, 2, 3, 4,
-				5, 6, 7, 8,
-				9, 10, 11, 12,
-				13, 14, 15, 16
-			);
+		describe('sub', function () {
+			it('can subtract two matrices component-wise', function () {
+				var a = new Matrix4x4(
+					1, 2, 3, 4,
+					5, 6, 7, 8,
+					9, 10, 11, 12,
+					13, 14, 15, 16
+				);
 
-			var b = new Matrix4x4(
-				2, 3, 5, 7,
-				11, 13, 17, 19,
-				23, 29, 31, 37,
-				41, 43, 47, 53
-			);
+				var b = new Matrix4x4(
+					2, 3, 5, 7,
+					11, 13, 17, 19,
+					23, 29, 31, 37,
+					41, 43, 47, 53
+				);
 
-			expect(b.sub(a)).toBeCloseToMatrix(new Matrix4x4(
-				2 - 1,
-				3 - 2,
-				5 - 3,
-				7 - 4,
-				11 - 5,
-				13 - 6,
-				17 - 7,
-				19 - 8,
-				23 - 9,
-				29 - 10,
-				31 - 11,
-				37 - 12,
-				41 - 13,
-				43 - 14,
-				47 - 15,
-				53 - 16
-			));
+				expect(b.sub(a)).toBeCloseToMatrix(new Matrix4x4(
+					2 - 1,
+					3 - 2,
+					5 - 3,
+					7 - 4,
+					11 - 5,
+					13 - 6,
+					17 - 7,
+					19 - 8,
+					23 - 9,
+					29 - 10,
+					31 - 11,
+					37 - 12,
+					41 - 13,
+					43 - 14,
+					47 - 15,
+					53 - 16
+				));
+			});
+		});
+
+		describe('equals', function () {
+			it('can be tested for approximate equaltiy', function () {
+				var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+				var b = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+				var c = new Matrix4x4(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+
+				expect(a.equals(b)).toBe(true);
+				expect(a.equals(c)).toBe(false);
+			});
+
+			it('preserves behaviour of comparing with NaN', function () {
+				// 1 === NaN // false in JS, so (1, 2) === (1, NaN) should return the same
+				var m1 = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+				var m2 = new Matrix4x4(1, 2, 3, NaN, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
+				expect(m1.equals(m2)).toBe(false);
+			});
 		});
 
 		describe('copy', function () {
