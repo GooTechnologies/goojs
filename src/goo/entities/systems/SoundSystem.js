@@ -228,7 +228,7 @@ define([
 
 			if(this._camera && !component._attachedToCamera){
 				// Give the transform relative to the camera
-				Matrix4x4.combine(viewMat, e.transformComponent.worldTransform.matrix, relativeTransform);
+				relativeTransform.mul2(viewMat, e.transformComponent.worldTransform.matrix);
 				component.process(this._settings, relativeTransform, tpf);
 			} else {
 				// Component is attached to camera.

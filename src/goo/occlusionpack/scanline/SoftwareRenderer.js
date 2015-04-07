@@ -159,7 +159,7 @@ define([
 
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
-		Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix, cameraViewProjectionMatrix);
+		cameraViewProjectionMatrix.mul2(cameraProjectionMatrix, cameraViewMatrix);
 		var cameraNearZInWorld = -this.camera.near;
 		var visibleEntities = [];
 
@@ -198,7 +198,7 @@ define([
 		var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-		Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
+		combinedMatrix.mul2(cameraViewMatrix, entitityWorldTransformMatrix);
 
 		// Reset the global vectors' w-components to 1
 		v1.data[3] = 1.0;

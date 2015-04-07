@@ -51,7 +51,7 @@ define([
 		BoundingSphereOcclusionChecker.prototype.occlusionCull = function (entity, cameraViewMatrix, cameraProjectionMatrix, cameraNearZInWorld) {
 
 			var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-			Matrix4x4.combine(cameraViewMatrix, entityWorldTransformMatrix, combinedMatrix);
+			combinedMatrix.mul2(cameraViewMatrix, entityWorldTransformMatrix);
 
 			var boundingSphere = entity.meshDataComponent.modelBound;
 

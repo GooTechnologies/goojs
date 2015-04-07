@@ -56,183 +56,63 @@ define([
 	Matrix3x3.IDENTITY = new Matrix3x3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
 	/**
-	 * Adds 'lhs' and 'rhs' and stores the result in 'target'.  If target is not supplied, a new Matrix3x3 object is created and returned.
-	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
-	 * @param {Matrix3x3} [target] Matrix3x3 to store the result.  If one is not supplied, a new Matrix3x3 object is created.
-	 * @returns {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
-	 * @example
-	 * // Adds two Matrix3x3 with no target, returns a new Matrix3x3 object as the result
-	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
-	 * var m2 = new Matrix3x3(0, 1, 0, 1, 0, 0, 1, 0, 0);
-	 * var r1 = Matrix3x3.add(m1, m2); // r1 == (1, 1, 0, 1, 1, 0, 1, 0, 1)
-	 * 
-	 * // Adds a number to a Matrix3x3, using the original Matrix3x3 to store the result
-	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
-	 * m1.add(1); // m1 == (2, 1, 1, 1, 2, 1, 1, 1, 2)
+	 * Performs a component-wise addition.
+	 * @param {Matrix3x3} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix3x3} Self to allow chaining
 	 */
-	Matrix3x3.add = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
+	Matrix3x3.prototype.add = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
 
-		var td = target.data, ld = lhs.data;
-		if (rhs instanceof Matrix3x3) {
-			var rd = rhs.data;
-			td[0] = ld[0] + rd[0];
-			td[1] = ld[1] + rd[1];
-			td[2] = ld[2] + rd[2];
-			td[3] = ld[3] + rd[3];
-			td[4] = ld[4] + rd[4];
-			td[5] = ld[5] + rd[5];
-			td[6] = ld[6] + rd[6];
-			td[7] = ld[7] + rd[7];
-			td[8] = ld[8] + rd[8];
-		} else {
-			td[0] = ld[0] + rhs;
-			td[1] = ld[1] + rhs;
-			td[2] = ld[2] + rhs;
-			td[3] = ld[3] + rhs;
-			td[4] = ld[4] + rhs;
-			td[5] = ld[5] + rhs;
-			td[6] = ld[6] + rhs;
-			td[7] = ld[7] + rhs;
-			td[8] = ld[8] + rhs;
-		}
+		thisData[0] += thatData[0];
+		thisData[1] += thatData[1];
+		thisData[2] += thatData[2];
+		thisData[3] += thatData[3];
+		thisData[4] += thatData[4];
+		thisData[5] += thatData[5];
+		thisData[6] += thatData[6];
+		thisData[7] += thatData[7];
+		thisData[8] += thatData[8];
 
-		return target;
+		return this;
 	};
 
 	/**
-	 * Adds 'rhs' to the current Matrix3x3.
-	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 * @example
-	 * // Adds a Matrix3x3 to the current Matrix3x3
-	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
-	 * var m2 = new Matrix3x3(0, 1, 1, 1, 0, 1, 1, 1, 0);
-	 * m1.add(m2); // m1 == (1, 1, 1, 1, 1, 1, 1, 1, 1)
-	 * // Adds a number to the current Matrix3x3
-	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
-	 * m1.add(1); // m1 == (2, 1, 1, 1, 2, 1, 1, 1, 2)
+	 * Performs a component-wise subtraction.
+	 * @param {Matrix3x3} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix3x3} Self to allow chaining
 	 */
-	Matrix3x3.prototype.add = function (rhs) {
-		return Matrix3x3.add(this, rhs, this);
+	Matrix3x3.prototype.sub = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
+
+		thisData[0] -= thatData[0];
+		thisData[1] -= thatData[1];
+		thisData[2] -= thatData[2];
+		thisData[3] -= thatData[3];
+		thisData[4] -= thatData[4];
+		thisData[5] -= thatData[5];
+		thisData[6] -= thatData[6];
+		thisData[7] -= thatData[7];
+		thisData[8] -= thatData[8];
+
+		return this;
 	};
 
-	/**
-	 * Subtracts 'rhs' from 'lhs', and stores the reseult in 'target'.  If target is not supplied, a new Matrix3x3 object is created and returned.
-	 * @param {Matrix3x3} lhs Matrix3x3 on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
-	 * @param {Matrix3x3} [target] Matrix3x3 to store the result.  If one is not supplied, a new Matrix3x3 object is created.
-	 * @returns {Matrix3x3} The target Matrix3x3 passed in, or a new Matrix3x3 object.
-	 * @example
-	 * // Subtracts 'right' from 'left' with no target, returns a new Matrix3x3 object as the result
-	 * var left = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
-	 * var right = new Matrix3x3(0, 1, 0, 1, 0, 0, 1, 0, 0);
-	 * var result = Matrix3x3.sub(left, right); // result == (1, -1, 0, -1, 1, 0, -1, 0, 1)
-	 * 
-	 * // Subtracts a number from a Matrix3x3, using the original Matrix3x3 to store the result
-	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
-	 * m1.sub(1); // m1 == (0, -1, -1, -1, 0, -1, -1, -1, 0)
-	 */
-	Matrix3x3.sub = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
+	Matrix3x3.prototype.scale = function (scalar) {
+		var data = this.data;
 
-		var td = target.data, ld = lhs.data;
-		if (rhs instanceof Matrix3x3) {
-			var rd = rhs.data;
-			td[0] = ld[0] - rd[0];
-			td[1] = ld[1] - rd[1];
-			td[2] = ld[2] - rd[2];
-			td[3] = ld[3] - rd[3];
-			td[4] = ld[4] - rd[4];
-			td[5] = ld[5] - rd[5];
-			td[6] = ld[6] - rd[6];
-			td[7] = ld[7] - rd[7];
-			td[8] = ld[8] - rd[8];
-		} else {
-			td[0] = ld[0] - rhs;
-			td[1] = ld[1] - rhs;
-			td[2] = ld[2] - rhs;
-			td[3] = ld[3] - rhs;
-			td[4] = ld[4] - rhs;
-			td[5] = ld[5] - rhs;
-			td[6] = ld[6] - rhs;
-			td[7] = ld[7] - rhs;
-			td[8] = ld[8] - rhs;
-		}
+		data[0] *= scalar;
+		data[1] *= scalar;
+		data[2] *= scalar;
+		data[3] *= scalar;
+		data[4] *= scalar;
+		data[5] *= scalar;
+		data[6] *= scalar;
+		data[7] *= scalar;
+		data[8] *= scalar;
 
-		return target;
-	};
-
-	/**
-	 * Subtracts 'rhs' from the current Matrix3x3.
-	 * @param {Matrix3x3|number} rhs Matrix3x3 or number on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 * @example
-	 * // Subtracts a Matrix3x3 from the current Matrix3x3
-	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
-	 * var m2 = new Matrix3x3(0, 1, 1, 1, 0, 1, 1, 1, 0);
-	 * m1.sub(m2); // m1 == (1, -1, -1, -1, 1, -1, -1, -1, 0)
-	 *
-	 * // Subtracts a number from the current Matrix3x3
-	 * var m1 = new Matrix3x3(); // m1 == (1, 0, 0, 0, 1, 0, 0, 0, 1)
-	 * m1.sub(1); // m1 == (0, -1, -1, -1, 0, -1, -1, -1, 0)
-	 */
-	Matrix3x3.prototype.sub = function (rhs) {
-		return Matrix3x3.sub(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise multiplication.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix3x3} [target] Target matrix for storage.
-	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix3x3.mul = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
-
-		var td = target.data, ld = lhs.data;
-		if (rhs instanceof Matrix3x3) {
-			var rd = rhs.data;
-			td[0] = ld[0] * rd[0];
-			td[1] = ld[1] * rd[1];
-			td[2] = ld[2] * rd[2];
-			td[3] = ld[3] * rd[3];
-			td[4] = ld[4] * rd[4];
-			td[5] = ld[5] * rd[5];
-			td[6] = ld[6] * rd[6];
-			td[7] = ld[7] * rd[7];
-			td[8] = ld[8] * rd[8];
-		} else {
-			td[0] = ld[0] * rhs;
-			td[1] = ld[1] * rhs;
-			td[2] = ld[2] * rhs;
-			td[3] = ld[3] * rhs;
-			td[4] = ld[4] * rhs;
-			td[5] = ld[5] * rhs;
-			td[6] = ld[6] * rhs;
-			td[7] = ld[7] * rhs;
-			td[8] = ld[8] * rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise multiplication.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-	Matrix3x3.prototype.mul = function (rhs) {
-		throw new Error('');
-		return Matrix3x3.mul(this, rhs, this);
+		return this;
 	};
 
 	Matrix3x3.prototype.mulPre = function (that) {
@@ -259,16 +139,15 @@ define([
 		rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
 		rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
 
-		return target;
+		return this;
 	};
 
-	Matrix3x3.prototype.mulPost = function (that) {
-		var s1d = this.data;
+	Matrix3x3.prototype.mul2 = function (lhs, rhs) {
+		var s1d = lhs.data;
 		var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
 			m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
 			m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
-
-		var s2d = that.data;
+		var s2d = rhs.data;
 		var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
 			n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
 			n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
@@ -286,168 +165,29 @@ define([
 		rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
 		rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
 
-		return target;
-	};
-
-	Matrix3x3.prototype.scale = function (scalar) {
-		var data = this.data;
-
-		data[0] *= scalar;
-		data[1] *= scalar;
-		data[2] *= scalar;
-		data[3] *= scalar;
-		data[4] *= scalar;
-		data[5] *= scalar;
-		data[6] *= scalar;
-		data[7] *= scalar;
-		data[8] *= scalar;
-
 		return this;
 	};
 
 	/**
-	 * Performs a component-wise division.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix3x3} [target] Target matrix for storage.
-	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix3x3.div = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
-
-		var td = target.data, ld = lhs.data;
-		if (rhs instanceof Matrix3x3) {
-			var rd = rhs.data;
-			td[0] = ld[0] / rd[0];
-			td[1] = ld[1] / rd[1];
-			td[2] = ld[2] / rd[2];
-			td[3] = ld[3] / rd[3];
-			td[4] = ld[4] / rd[4];
-			td[5] = ld[5] / rd[5];
-			td[6] = ld[6] / rd[6];
-			td[7] = ld[7] / rd[7];
-			td[8] = ld[8] / rd[8];
-		} else {
-			td[0] = ld[0] / rhs;
-			td[1] = ld[1] / rhs;
-			td[2] = ld[2] / rhs;
-			td[3] = ld[3] / rhs;
-			td[4] = ld[4] / rhs;
-			td[5] = ld[5] / rhs;
-			td[6] = ld[6] / rhs;
-			td[7] = ld[7] / rhs;
-			td[8] = ld[8] / rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise division.
-	 * @param {Matrix3x3|number} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-	Matrix3x3.prototype.div = function (rhs) {
-		return Matrix3x3.div(this, rhs, this);
-	};
-
-	/**
-	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
-	 * @param {Matrix3x3} lhs Matrix on the left-hand side.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @param {Matrix3x3} [target] Target matrix for storage.
-	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix3x3.combine = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
-
-		var s1d = lhs.data;
-		var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
-			m10 = s1d[1], m11 = s1d[4], m12 = s1d[7],
-			m20 = s1d[2], m21 = s1d[5], m22 = s1d[8];
-		var s2d = rhs.data;
-		var n00 = s2d[0], n01 = s2d[3], n02 = s2d[6],
-			n10 = s2d[1], n11 = s2d[4], n12 = s2d[7],
-			n20 = s2d[2], n21 = s2d[5], n22 = s2d[8];
-
-		var rd = target.data;
-		rd[0] = m00 * n00 + m01 * n10 + m02 * n20;
-		rd[3] = m00 * n01 + m01 * n11 + m02 * n21;
-		rd[6] = m00 * n02 + m01 * n12 + m02 * n22;
-
-		rd[1] = m10 * n00 + m11 * n10 + m12 * n20;
-		rd[4] = m10 * n01 + m11 * n11 + m12 * n21;
-		rd[7] = m10 * n02 + m11 * n12 + m12 * n22;
-
-		rd[2] = m20 * n00 + m21 * n10 + m22 * n20;
-		rd[5] = m20 * n01 + m21 * n11 + m22 * n21;
-		rd[8] = m20 * n02 + m21 * n12 + m22 * n22;
-
-		return target;
-	};
-
-	/**
-	 * Combines two matrices (matrix multiplication) and stores the result locally.
-	 * @param {Matrix3x3} rhs Matrix on the right-hand side.
-	 * @returns {Matrix3x3} Self for chaining.
-	 */
-	Matrix3x3.prototype.combine = function (rhs) {
-		return Matrix3x3.combine(this, rhs, this);
-	};
-
-	/**
 	 * Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
-	 * @param {Matrix3x3} source Source matrix.
-	 * @param {Matrix3x3} [target] Target matrix.
 	 * @returns {Matrix3x3} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix3x3.transpose = function (source, target) {
-		if (!target) {
-			target = new Matrix3x3();
-		}
-
-		var s = source.data;
-		var t = target.data;
-
-		if (target === source) {
-			var e01 = s[3];
-			var e02 = s[6];
-			var e12 = s[7];
-
-			t[3] = s[1];
-			t[6] = s[2];
-			t[7] = s[5];
-
-			t[1] = e01;
-			t[2] = e02;
-			t[5] = e12;
-
-			return target;
-		}
-
-		t[0] = s[0];
-		t[1] = s[3];
-		t[2] = s[6];
-		t[3] = s[1];
-		t[4] = s[4];
-		t[5] = s[7];
-		t[6] = s[2];
-		t[7] = s[5];
-		t[8] = s[8];
-
-		return target;
-	};
-
-	/**
-	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @returns {Matrix3x3} Self for chaining.
 	 */
 	Matrix3x3.prototype.transpose = function () {
-		return Matrix3x3.transpose(this, this);
+		var data = this.data;
+
+		var e01 = data[3];
+		var e02 = data[6];
+		var e12 = data[7];
+
+		data[3] = data[1];
+		data[6] = data[2];
+		data[7] = data[5];
+
+		data[1] = e01;
+		data[2] = e02;
+		data[5] = e12;
+
+		return this;
 	};
 
 	/**

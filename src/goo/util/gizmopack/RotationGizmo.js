@@ -57,6 +57,8 @@ define([
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
 	RotationGizmo.prototype.constructor = RotationGizmo;
 
+	var tmpVec = new Vector3();
+
 	RotationGizmo.prototype.activate = function(props) {
 		Gizmo.prototype.activate.call(this, props);
 
@@ -88,11 +90,12 @@ define([
 
 			// Get vector from center to picked point, cross it with rotation axis and get drag direction
 			rotationDirection.set(pickedPoint).sub(worldCenter);
-			Vector3.cross(axis, rotationDirection, rotationDirection);
+			tmpVec.set(rotationDirection);
+			rotationDirection.set(axis).cross(tmpVec);
 			rotationDirection.add(pickedPoint);
 			Renderer.mainCamera.getScreenCoordinates(
 				rotationDirection,
-				1,1,
+				1, 1,
 				this._direction
 			);
 			this._direction.subDirect(props.x, props.y, 0);
@@ -164,11 +167,7 @@ define([
 		screenRotation.combine(this._rotation);
 		screenRotation.combine(camRotation);
 
-		Matrix3x3.combine(
-			screenRotation,
-			this.transform.rotation,
-			this.transform.rotation
-		);
+		this.transform.rotation.mulPre(screenRotation);
 	};
 
 	// --- functions for snapping to certain angles go here
@@ -238,11 +237,8 @@ define([
 					break;
 			}
 		}
-		Matrix3x3.combine(
-			this.transform.rotation,
-			this._rotation,
-			this.transform.rotation
-		);
+
+		this.transform.rotation.mul2(this.transform.rotation, this._rotation);
 	};
 
 	RotationGizmo.prototype._buildBall = function() {

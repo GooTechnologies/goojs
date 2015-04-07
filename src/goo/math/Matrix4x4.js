@@ -38,182 +38,60 @@ define([
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @param {Matrix4x4} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix4x4} Self to allow chaining.
 	 */
-	Matrix4x4.add = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix4x4();
-		}
+	Matrix4x4.prototype.add = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
 
-		if (rhs instanceof Matrix4x4) {
-			target.e00 = lhs.e00 + rhs.e00;
-			target.e10 = lhs.e10 + rhs.e10;
-			target.e20 = lhs.e20 + rhs.e20;
-			target.e30 = lhs.e30 + rhs.e30;
-			target.e01 = lhs.e01 + rhs.e01;
-			target.e11 = lhs.e11 + rhs.e11;
-			target.e21 = lhs.e21 + rhs.e21;
-			target.e31 = lhs.e31 + rhs.e31;
-			target.e02 = lhs.e02 + rhs.e02;
-			target.e12 = lhs.e12 + rhs.e12;
-			target.e22 = lhs.e22 + rhs.e22;
-			target.e32 = lhs.e32 + rhs.e32;
-			target.e03 = lhs.e03 + rhs.e03;
-			target.e13 = lhs.e13 + rhs.e13;
-			target.e23 = lhs.e23 + rhs.e23;
-			target.e33 = lhs.e33 + rhs.e33;
-		} else {
-			target.e00 = lhs.e00 + rhs;
-			target.e10 = lhs.e10 + rhs;
-			target.e20 = lhs.e20 + rhs;
-			target.e30 = lhs.e30 + rhs;
-			target.e01 = lhs.e01 + rhs;
-			target.e11 = lhs.e11 + rhs;
-			target.e21 = lhs.e21 + rhs;
-			target.e31 = lhs.e31 + rhs;
-			target.e02 = lhs.e02 + rhs;
-			target.e12 = lhs.e12 + rhs;
-			target.e22 = lhs.e22 + rhs;
-			target.e32 = lhs.e32 + rhs;
-			target.e03 = lhs.e03 + rhs;
-			target.e13 = lhs.e13 + rhs;
-			target.e23 = lhs.e23 + rhs;
-			target.e33 = lhs.e33 + rhs;
-		}
+		thisData[0] += thatData[0];
+		thisData[1] += thatData[1];
+		thisData[2] += thatData[2];
+		thisData[3] += thatData[3];
+		thisData[4] += thatData[4];
+		thisData[5] += thatData[5];
+		thisData[6] += thatData[6];
+		thisData[7] += thatData[7];
+		thisData[8] += thatData[8];
+		thisData[9] += thatData[9];
+		thisData[10] += thatData[10];
+		thisData[11] += thatData[11];
+		thisData[12] += thatData[12];
+		thisData[13] += thatData[13];
+		thisData[14] += thatData[14];
+		thisData[15] += thatData[15];
 
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise addition.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix4x4} Self for chaining.
-	 */
-	Matrix4x4.prototype.add = function (rhs) {
-		return Matrix4x4.add(this, rhs, this);
+		return this;
 	};
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @param {Matrix4x4} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix4x4} Self to allow chaining
 	 */
-	Matrix4x4.sub = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix4x4();
-		}
+	Matrix4x4.prototype.sub = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
 
-		if (rhs instanceof Matrix4x4) {
-			target.e00 = lhs.e00 - rhs.e00;
-			target.e10 = lhs.e10 - rhs.e10;
-			target.e20 = lhs.e20 - rhs.e20;
-			target.e30 = lhs.e30 - rhs.e30;
-			target.e01 = lhs.e01 - rhs.e01;
-			target.e11 = lhs.e11 - rhs.e11;
-			target.e21 = lhs.e21 - rhs.e21;
-			target.e31 = lhs.e31 - rhs.e31;
-			target.e02 = lhs.e02 - rhs.e02;
-			target.e12 = lhs.e12 - rhs.e12;
-			target.e22 = lhs.e22 - rhs.e22;
-			target.e32 = lhs.e32 - rhs.e32;
-			target.e03 = lhs.e03 - rhs.e03;
-			target.e13 = lhs.e13 - rhs.e13;
-			target.e23 = lhs.e23 - rhs.e23;
-			target.e33 = lhs.e33 - rhs.e33;
-		} else {
-			target.e00 = lhs.e00 - rhs;
-			target.e10 = lhs.e10 - rhs;
-			target.e20 = lhs.e20 - rhs;
-			target.e30 = lhs.e30 - rhs;
-			target.e01 = lhs.e01 - rhs;
-			target.e11 = lhs.e11 - rhs;
-			target.e21 = lhs.e21 - rhs;
-			target.e31 = lhs.e31 - rhs;
-			target.e02 = lhs.e02 - rhs;
-			target.e12 = lhs.e12 - rhs;
-			target.e22 = lhs.e22 - rhs;
-			target.e32 = lhs.e32 - rhs;
-			target.e03 = lhs.e03 - rhs;
-			target.e13 = lhs.e13 - rhs;
-			target.e23 = lhs.e23 - rhs;
-			target.e33 = lhs.e33 - rhs;
-		}
+		thisData[0] -= thatData[0];
+		thisData[1] -= thatData[1];
+		thisData[2] -= thatData[2];
+		thisData[3] -= thatData[3];
+		thisData[4] -= thatData[4];
+		thisData[5] -= thatData[5];
+		thisData[6] -= thatData[6];
+		thisData[7] -= thatData[7];
+		thisData[8] -= thatData[8];
+		thisData[9] -= thatData[9];
+		thisData[10] -= thatData[10];
+		thisData[11] -= thatData[11];
+		thisData[12] -= thatData[12];
+		thisData[13] -= thatData[13];
+		thisData[14] -= thatData[14];
+		thisData[15] -= thatData[15];
 
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise subtraction.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix4x4} Self for chaining.
-	 */
-	Matrix4x4.prototype.sub = function (rhs) {
-		return Matrix4x4.sub(this, rhs, this);
-	};
-
-	/**
-	 * Performs a component-wise multiplication.
-	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix4x4.mul = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix4x4();
-		}
-
-		if (rhs instanceof Matrix4x4) {
-			target.e00 = lhs.e00 * rhs.e00;
-			target.e10 = lhs.e10 * rhs.e10;
-			target.e20 = lhs.e20 * rhs.e20;
-			target.e30 = lhs.e30 * rhs.e30;
-			target.e01 = lhs.e01 * rhs.e01;
-			target.e11 = lhs.e11 * rhs.e11;
-			target.e21 = lhs.e21 * rhs.e21;
-			target.e31 = lhs.e31 * rhs.e31;
-			target.e02 = lhs.e02 * rhs.e02;
-			target.e12 = lhs.e12 * rhs.e12;
-			target.e22 = lhs.e22 * rhs.e22;
-			target.e32 = lhs.e32 * rhs.e32;
-			target.e03 = lhs.e03 * rhs.e03;
-			target.e13 = lhs.e13 * rhs.e13;
-			target.e23 = lhs.e23 * rhs.e23;
-			target.e33 = lhs.e33 * rhs.e33;
-		} else {
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e20 = lhs.e20 * rhs;
-			target.e30 = lhs.e30 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-			target.e21 = lhs.e21 * rhs;
-			target.e31 = lhs.e31 * rhs;
-			target.e02 = lhs.e02 * rhs;
-			target.e12 = lhs.e12 * rhs;
-			target.e22 = lhs.e22 * rhs;
-			target.e32 = lhs.e32 * rhs;
-			target.e03 = lhs.e03 * rhs;
-			target.e13 = lhs.e13 * rhs;
-			target.e23 = lhs.e23 * rhs;
-			target.e33 = lhs.e33 * rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise multiplication.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix4x4} Self for chaining.
-	 */
-	Matrix4x4.prototype.mul = function (rhs) {
-		return Matrix4x4.mul(this, rhs, this);
+		return this;
 	};
 
 	Matrix4x4.prototype.scale = function (scalar) {
@@ -239,95 +117,19 @@ define([
 		return this;
 	};
 
-	/**
-	 * Performs a component-wise division.
-	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix4x4.div = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix4x4();
-		}
-
-		if (rhs instanceof Matrix4x4) {
-			target.e00 = lhs.e00 / rhs.e00;
-			target.e10 = lhs.e10 / rhs.e10;
-			target.e20 = lhs.e20 / rhs.e20;
-			target.e30 = lhs.e30 / rhs.e30;
-			target.e01 = lhs.e01 / rhs.e01;
-			target.e11 = lhs.e11 / rhs.e11;
-			target.e21 = lhs.e21 / rhs.e21;
-			target.e31 = lhs.e31 / rhs.e31;
-			target.e02 = lhs.e02 / rhs.e02;
-			target.e12 = lhs.e12 / rhs.e12;
-			target.e22 = lhs.e22 / rhs.e22;
-			target.e32 = lhs.e32 / rhs.e32;
-			target.e03 = lhs.e03 / rhs.e03;
-			target.e13 = lhs.e13 / rhs.e13;
-			target.e23 = lhs.e23 / rhs.e23;
-			target.e33 = lhs.e33 / rhs.e33;
-		} else {
-			rhs = 1.0 / rhs;
-
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e20 = lhs.e20 * rhs;
-			target.e30 = lhs.e30 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-			target.e21 = lhs.e21 * rhs;
-			target.e31 = lhs.e31 * rhs;
-			target.e02 = lhs.e02 * rhs;
-			target.e12 = lhs.e12 * rhs;
-			target.e22 = lhs.e22 * rhs;
-			target.e32 = lhs.e32 * rhs;
-			target.e03 = lhs.e03 * rhs;
-			target.e13 = lhs.e13 * rhs;
-			target.e23 = lhs.e23 * rhs;
-			target.e33 = lhs.e33 * rhs;
-
-		}
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise division.
-	 * @param {Matrix4x4|Float} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix4x4} Self for chaining.
-	 */
-	Matrix4x4.prototype.div = function (rhs) {
-		return Matrix4x4.div(this, rhs, this);
-	};
-
-	/* ====================================================================== */
-
-	/**
-	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
-	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
-	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix4x4.combine = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix4x4();
-		}
-
-		var s1d = lhs.data;
+	Matrix4x4.prototype.mulPre = function (that) {
+		var s1d = this.data;
 		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
 			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
 			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14],
 			m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
-		var s2d = rhs.data;
+		var s2d = that.data;
 		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12],
 			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13],
 			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14],
 			n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
 
-		var rd = target.data;
+		var rd = this.data;
 		rd[0] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
 		rd[4] = m00 * n01 + m01 * n11 + m02 * n21 + m03 * n31;
 		rd[8] = m00 * n02 + m01 * n12 + m02 * n22 + m03 * n32;
@@ -348,83 +150,81 @@ define([
 		rd[11] = m30 * n02 + m31 * n12 + m32 * n22 + m33 * n32;
 		rd[15] = m30 * n03 + m31 * n13 + m32 * n23 + m33 * n33;
 
-		return target;
+		return this;
 	};
 
 	/**
-	 * Combines two matrices (matrix multiplication) and stores the result locally.
+	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
+	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
 	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
-	 * @returns {Matrix4x4} Self for chaining.
-	 */
-	Matrix4x4.prototype.combine = function (rhs) {
-		return Matrix4x4.combine(this, rhs, this);
-	};
-
-	/**
-	 * Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
-	 * @param {Matrix4x4} source Source matrix.
-	 * @param {Matrix4x4} [target] Target matrix.
+	 * @param {Matrix4x4} [target] Target matrix for storage.
 	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-	Matrix4x4.transpose = function (source, target) {
-		if (!target) {
-			target = new Matrix4x4();
-		}
+	Matrix4x4.prototype.mul2 = function (lhs, rhs) {
+		var s1d = lhs.data;
+		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
+			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
+			m20 = s1d[2], m21 = s1d[6], m22 = s1d[10], m23 = s1d[14],
+			m30 = s1d[3], m31 = s1d[7], m32 = s1d[11], m33 = s1d[15];
+		var s2d = rhs.data;
+		var n00 = s2d[0], n01 = s2d[4], n02 = s2d[8], n03 = s2d[12],
+			n10 = s2d[1], n11 = s2d[5], n12 = s2d[9], n13 = s2d[13],
+			n20 = s2d[2], n21 = s2d[6], n22 = s2d[10], n23 = s2d[14],
+			n30 = s2d[3], n31 = s2d[7], n32 = s2d[11], n33 = s2d[15];
 
-		var s = source.data;
-		var t = target.data;
+		var rd = this.data;
+		rd[0] = m00 * n00 + m01 * n10 + m02 * n20 + m03 * n30;
+		rd[4] = m00 * n01 + m01 * n11 + m02 * n21 + m03 * n31;
+		rd[8] = m00 * n02 + m01 * n12 + m02 * n22 + m03 * n32;
+		rd[12] = m00 * n03 + m01 * n13 + m02 * n23 + m03 * n33;
 
-		if (target === source) {
-			var e01 = s[4];
-			var e02 = s[8];
-			var e03 = s[12];
-			var e12 = s[9];
-			var e13 = s[13];
-			var e23 = s[14];
+		rd[1] = m10 * n00 + m11 * n10 + m12 * n20 + m13 * n30;
+		rd[5] = m10 * n01 + m11 * n11 + m12 * n21 + m13 * n31;
+		rd[9] = m10 * n02 + m11 * n12 + m12 * n22 + m13 * n32;
+		rd[13] = m10 * n03 + m11 * n13 + m12 * n23 + m13 * n33;
 
-			t[4] = s[1];
-			t[8] = s[2];
-			t[12] = s[3];
-			t[9] = s[6];
-			t[13] = s[7];
-			t[14] = s[11];
+		rd[2] = m20 * n00 + m21 * n10 + m22 * n20 + m23 * n30;
+		rd[6] = m20 * n01 + m21 * n11 + m22 * n21 + m23 * n31;
+		rd[10] = m20 * n02 + m21 * n12 + m22 * n22 + m23 * n32;
+		rd[14] = m20 * n03 + m21 * n13 + m22 * n23 + m23 * n33;
 
-			t[1] = e01;
-			t[2] = e02;
-			t[3] = e03;
-			t[6] = e12;
-			t[7] = e13;
-			t[11] = e23;
+		rd[3] = m30 * n00 + m31 * n10 + m32 * n20 + m33 * n30;
+		rd[7] = m30 * n01 + m31 * n11 + m32 * n21 + m33 * n31;
+		rd[11] = m30 * n02 + m31 * n12 + m32 * n22 + m33 * n32;
+		rd[15] = m30 * n03 + m31 * n13 + m32 * n23 + m33 * n33;
 
-			return target;
-		}
-
-		t[0] = s[0];
-		t[1] = s[4];
-		t[2] = s[8];
-		t[3] = s[12];
-		t[4] = s[1];
-		t[5] = s[5];
-		t[6] = s[9];
-		t[7] = s[13];
-		t[8] = s[2];
-		t[9] = s[6];
-		t[10] = s[10];
-		t[11] = s[14];
-		t[12] = s[3];
-		t[13] = s[7];
-		t[14] = s[11];
-		t[15] = s[15];
-
-		return target;
+		return this;
 	};
 
 	/**
-	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * Transposes a matrix (exchanges rows and columns)
+	 * @returns {Matrix4x4} Self to allow chaining
 	 */
 	Matrix4x4.prototype.transpose = function () {
-		return Matrix4x4.transpose(this, this);
+		var data = this.data;
+
+		var e01 = data[4];
+		var e02 = data[8];
+		var e03 = data[12];
+		var e12 = data[9];
+		var e13 = data[13];
+		var e23 = data[14];
+
+		data[4] = data[1];
+		data[8] = data[2];
+		data[12] = data[3];
+		data[9] = data[6];
+		data[13] = data[7];
+		data[14] = data[11];
+
+		data[1] = e01;
+		data[2] = e02;
+		data[3] = e03;
+		data[6] = e12;
+		data[7] = e13;
+		data[11] = e23;
+
+		return this;
 	};
 
 	/**
@@ -609,6 +409,7 @@ define([
 			d[12] * val4;
 	};
 
+	//! AT: matrix.set(Matrix3x3.IDENTITY);
 	/**
 	 * Sets the matrix to identity.
 	 * @returns {Matrix4x4} Self for chaining.

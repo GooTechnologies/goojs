@@ -76,12 +76,28 @@ define([
 		ParticleUtils.applyTimeline(this, this.emitter && this.emitter.timeline ? this.emitter.timeline : this.parent.timeline);
 
 		// apply current color to mesh
-		if (!Vector.equals(this.lastColor, this.color)) {
+		if (!this.lastColor.equals(this.color)) {
 			var colorBuffer = this.parent.meshData.getAttributeBuffer(MeshData.COLOR);
-			colorBuffer.set(this.color.data, this.index * 16 + 0);
-			colorBuffer.set(this.color.data, this.index * 16 + 4);
-			colorBuffer.set(this.color.data, this.index * 16 + 8);
-			colorBuffer.set(this.color.data, this.index * 16 + 12);
+			colorBuffer[0] = this.color.r;
+			colorBuffer[1] = this.color.g;
+			colorBuffer[2] = this.color.b;
+			colorBuffer[3] = this.color.a;
+
+			colorBuffer[4] = this.color.r;
+			colorBuffer[5] = this.color.g;
+			colorBuffer[6] = this.color.b;
+			colorBuffer[7] = this.color.a;
+
+			colorBuffer[8] = this.color.r;
+			colorBuffer[9] = this.color.g;
+			colorBuffer[10] = this.color.b;
+			colorBuffer[11] = this.color.a;
+
+			colorBuffer[12] = this.color.r;
+			colorBuffer[13] = this.color.g;
+			colorBuffer[14] = this.color.b;
+			colorBuffer[15] = this.color.a;
+
 			this.lastColor.set(this.color);
 		}
 
@@ -106,19 +122,27 @@ define([
 
 		// bottom right point
 		calcVec.set(this.position).sub(this.bbX).sub(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 0);
+		vertexBuffer[this.index * 12 + 0 + 0] = calcVec.x;
+		vertexBuffer[this.index * 12 + 0 + 1] = calcVec.y;
+		vertexBuffer[this.index * 12 + 0 + 2] = calcVec.z;
 
 		// top right point
 		calcVec.set(this.position).sub(this.bbX).add(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 3);
+		vertexBuffer[this.index * 12 + 3 + 0] = calcVec.x;
+		vertexBuffer[this.index * 12 + 3 + 1] = calcVec.y;
+		vertexBuffer[this.index * 12 + 3 + 2] = calcVec.z;
 
 		// top left point
 		calcVec.set(this.position).add(this.bbX).add(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 6);
+		vertexBuffer[this.index * 12 + 6 + 0] = calcVec.x;
+		vertexBuffer[this.index * 12 + 6 + 1] = calcVec.y;
+		vertexBuffer[this.index * 12 + 6 + 2] = calcVec.z;
 
 		// bottom left corner
 		calcVec.set(this.position).add(this.bbX).sub(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 9);
+		vertexBuffer[this.index * 12 + 9 + 0] = calcVec.x;
+		vertexBuffer[this.index * 12 + 9 + 1] = calcVec.y;
+		vertexBuffer[this.index * 12 + 9 + 2] = calcVec.z;
 
 		if (this.lastUVIndex !== this.uvIndex) {
 			var uvBuffer = this.parent.meshData.getAttributeBuffer(MeshData.TEXCOORD0);

@@ -54,10 +54,8 @@ define([
 			var parentIndex = this._skeleton._joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We remove the parent's transform simply by multiplying by its inverse bind pose.
-				//! AT: rewrite to .mulPost
-				Matrix4x4.combine(
+				this._localTransforms[i].matrix.mul2(
 					this._skeleton._joints[parentIndex]._inverseBindPose.matrix,
-					this._localTransforms[i].matrix,
 					this._localTransforms[i].matrix
 				);
 			}
@@ -75,10 +73,9 @@ define([
 			var parentIndex = joints[i]._parentIndex;
 			if (parentIndex !== Joint.NO_PARENT) {
 				// We have a parent, so take us from local->parent->model space by multiplying by parent's local->model
-				Matrix4x4.combine(
+				this._globalTransforms[i].matrix.mul2(
 					this._globalTransforms[parentIndex].matrix,
-					this._localTransforms[i].matrix,
-					this._globalTransforms[i].matrix
+					this._localTransforms[i].matrix
 				);
 			} else {
 				// No parent so just set global to the local transform
@@ -90,8 +87,10 @@ define([
 			 * joint's inverse bind pose (joint->model space, inverted). This gives us a transform that can take a
 			 * vertex from bind pose (model space) to current pose (model space).
 			 */
-			Matrix4x4
-				.combine(this._globalTransforms[i].matrix, joints[i]._inverseBindPose.matrix, this._matrixPalette[i]);
+			this._matrixPalette[i].mul2(
+				this._globalTransforms[i].matrix,
+				joints[i]._inverseBindPose.matrix
+			);
 		}
 
 		this.firePoseUpdated();

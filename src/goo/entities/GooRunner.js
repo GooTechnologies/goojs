@@ -806,16 +806,11 @@ define([
 	 */
 	GooRunner.prototype.pickSync = function (x, y, skipUpdateBuffer) {
 		// save the clear color
-		var currentClearColor = this.renderer.clearColor.data;
+		var currentClearColor = this.renderer.clearColor;
 
 		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
 
-		var savedClearColor = [
-			currentClearColor[0],
-			currentClearColor[1],
-			currentClearColor[2],
-			currentClearColor[3]
-		];
+		var savedClearColor = currentClearColor.clone();
 
 		// change the clear color
 		this.renderer.setClearColor(0, 0, 0, 1);
@@ -824,7 +819,7 @@ define([
 		this.renderSystem.renderToPick(this.renderer, false);
 
 		// restore the clear color
-		this.renderer.setClearColor.apply(this.renderer, savedClearColor);
+		this.renderer.setClearColor(savedClearColor.r, savedClearColor.g, savedClearColor.b, savedClearColor.a);
 
 		// get the picking data from the buffer
 		var pickingStore = {};

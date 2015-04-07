@@ -62,36 +62,32 @@ define([
 				expect(matrix).toBeCloseToMatrix(expected);
 			});
 		});
-		
-		it('can combine multiple matrices into a single matrix', function () {
+
+		// bad idea to use the same data in both matrices
+		xit('can combine multiple matrices into a single matrix', function () {
 			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 			var b = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
 			a.combine(a);
 
 			expect(a).toBeCloseToMatrix(new Matrix4x4(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
-			expect(Matrix4x4.combine(b, b)).toBeCloseToMatrix(new Matrix4x4(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
 		});
 
 		it('can be transposed', function () {
-			var a = new Matrix4x4(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1);
-			var b = new Matrix4x4(0, -1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1);
+			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
 			a.transpose();
 
-			expect(a).toBeCloseToMatrix(new Matrix4x4(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1));
-			expect(Matrix4x4.transpose(b)).toBeCloseToMatrix(new Matrix4x4(0, 1, 0, 0, -1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1));
+			expect(a).toBeCloseToMatrix(new Matrix4x4(1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15, 4, 8, 12, 16));
 		});
 
 		it('can be inverted', function () {
 			var a = new Matrix4x4(-1, 2, 0, 1, 1, 0, 2, -1, 0, 0, 1, -1, 1, -2, 1, 0);
-			var b = new Matrix4x4(-1, 2, 0, 1, 1, 0, 2, -1, 0, 0, 1, -1, 1, -2, 1, 0);
 			var c = new Matrix4x4(0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
 			a.invert();
 
 			expect(a).toBeCloseToMatrix(new Matrix4x4(-0.5, 1, -1.5, -0.5, 0, 0.5, -0.5, -0.5, 0.5, 0, 0.5, 0.5, 0.5, 0, -0.5, 0.5));
-			expect(Matrix4x4.invert(b)).toBeCloseToMatrix(new Matrix4x4(-0.5, 1, -1.5, -0.5, 0, 0.5, -0.5, -0.5, 0.5, 0, 0.5, 0.5, 0.5, 0, -0.5, 0.5));
 			expect(c.invert()).toBeCloseToMatrix(c);
 		});
 
@@ -136,13 +132,13 @@ define([
 		});
 
 		it('can be set from a vector of angles', function () {
-			var a = 1.0/Math.sqrt(2.0);
+			var a = 1.0 / Math.sqrt(2.0);
 
 			expect(new Matrix4x4().setRotationFromVector(new Vector3(0, Math.PI/4, 0))).toBeCloseToMatrix(new Matrix4x4(a, 0, -a, 0, 0, 1, 0, 0, a, 0, a, 0, 0, 0, 0, 1));
 		});
 
 		it('can be set from a quaternion', function () {
-			var a = 1.0/Math.sqrt(2.0);
+			var a = 1.0 / Math.sqrt(2.0);
 
 			expect(new Matrix4x4().setRotationFromQuaternion(new Quaternion(0.0, Math.sin(Math.PI/8), 0.0, Math.cos(Math.PI/8)))).toBeCloseToMatrix(new Matrix4x4(a, 0, -a, 0, 0, 1, 0, 0, a, 0, a, 0, 0, 0, 0, 1));
 		});
@@ -180,39 +176,73 @@ define([
 		});
 
 		it('can add two matrices component-wise', function () {
-			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+			var a = new Matrix4x4(
+				1, 2, 3, 4,
+				5, 6, 7, 8,
+				9, 10, 11, 12,
+				13, 14, 15, 16
+			);
 
-			expect(Matrix4x4.add(a, a)).toBeCloseToMatrix(Matrix4x4.mul(a, 2));
-		});
+			var b = new Matrix4x4(
+				2, 3, 5, 7,
+				11, 13, 17, 19,
+				23, 29, 31, 37,
+				41, 43, 47, 53
+			);
 
-		it('can add a scalar to all components of a matrix', function () {
-			var a = new Matrix4x4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-
-			expect(Matrix4x4.add(a, 1)).toBeCloseToMatrix(Matrix4x4.mul(a, 2));
+			expect(a.add(b)).toBeCloseToMatrix(new Matrix4x4(
+				1 + 2,
+				2 + 3,
+				3 + 5,
+				4 + 7,
+				5 + 11,
+				6 + 13,
+				7 + 17,
+				8 + 19,
+				9 + 23,
+				10 + 29,
+				11 + 31,
+				12 + 37,
+				13 + 41,
+				14 + 43,
+				15 + 47,
+				16 + 53
+			));
 		});
 
 		it('can subtract two matrices component-wise', function () {
-			var a = new Matrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+			var a = new Matrix4x4(
+				1, 2, 3, 4,
+				5, 6, 7, 8,
+				9, 10, 11, 12,
+				13, 14, 15, 16
+			);
 
-			expect(Matrix4x4.sub(a, a)).toBeCloseToMatrix(Matrix4x4.mul(a, 0));
-		});
+			var b = new Matrix4x4(
+				2, 3, 5, 7,
+				11, 13, 17, 19,
+				23, 29, 31, 37,
+				41, 43, 47, 53
+			);
 
-		it('can subtract a scalar to all components of a matrix', function () {
-			var a = new Matrix4x4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-
-			expect(Matrix4x4.sub(a, 1)).toBeCloseToMatrix(Matrix4x4.mul(a, 0));
-		});
-
-		it('can multiply two matrices component-wise', function () {
-			var a = new Matrix4x4(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-			expect(Matrix4x4.mul(a, a)).toBeCloseToMatrix(Matrix4x4.mul(a, 2));
-		});
-
-		it('can divide two matrices component-wise', function () {
-			var a = new Matrix4x4(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-			expect(Matrix4x4.div(a, a)).toBeCloseToMatrix(Matrix4x4.div(a, 2));
+			expect(b.sub(a)).toBeCloseToMatrix(new Matrix4x4(
+				2 - 1,
+				3 - 2,
+				5 - 3,
+				7 - 4,
+				11 - 5,
+				13 - 6,
+				17 - 7,
+				19 - 8,
+				23 - 9,
+				29 - 10,
+				31 - 11,
+				37 - 12,
+				41 - 13,
+				43 - 14,
+				47 - 15,
+				53 - 16
+			));
 		});
 
 		describe('copy', function () {

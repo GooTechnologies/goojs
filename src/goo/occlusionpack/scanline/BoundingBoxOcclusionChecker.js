@@ -138,7 +138,7 @@ define([
 			this._copyEntityVerticesToPositionArray(entity);
 
 			var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-			Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix, combinedMatrix);
+			combinedMatrix.mul2(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 			// TODO: Combine the transforms to pixel space.
 			// Projection transform + homogeneous divide. 32 values, due to 8 vertices.
 			var p = 0;
@@ -451,7 +451,7 @@ define([
 
 			// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
 			var entityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
-			Matrix4x4.combine(cameraViewProjectionMatrix, entityWorldTransformMatrix, combinedMatrix);
+			combinedMatrix.mul2(cameraViewProjectionMatrix, entityWorldTransformMatrix);
 
 			var maxPos = positionArray.length;
 			// Projection transform + homogeneous divide for every vertex.

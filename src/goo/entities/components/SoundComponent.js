@@ -158,12 +158,9 @@ define([
 		this._orientation.setDirect(0, 0, -1);
 		mvMat.applyPostVector(this._orientation);
 
-		var pd = this._position.data;
-		this._pannerNode.setPosition(pd[0], pd[1], pd[2]);
-		var vd = this._velocity.data;
-		this._pannerNode.setVelocity(vd[0], vd[1], vd[2]);
-		var od = this._orientation.data;
-		this._pannerNode.setOrientation(od[0], od[1], od[2]);
+		this._pannerNode.setPosition(this._position.x, this._position.y, this._position.z);
+		this._pannerNode.setVelocity(this._velocity.x, this._velocity.y, this._velocity.z);
+		this._pannerNode.setOrientation(this._orientation.x, this._orientation.y, this._orientation.z);
 	};
 
 	return SoundComponent;

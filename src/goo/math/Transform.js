@@ -65,7 +65,7 @@ define([
 
 		// Rotation
 		// Rotate rotation
-		Matrix3x3.combine(lhs.rotation, rhs.rotation, tmpMat1);
+		tmpMat1.mul2(lhs.rotation, rhs.rotation);
 
 		target.rotation.copy(tmpMat1);
 		target.scale.set(tmpVec2);
@@ -87,13 +87,13 @@ define([
 
 	// TODO: sort this crap out!
 	Transform.prototype.multiply = function (a, b) {
-		Matrix4x4.combine(a.matrix, b.matrix, this.matrix);
+		this.matrix.mul2(a.matrix, b.matrix);
 
 		tmpMat1.data.set(a.rotation.data);
 		//tmpMat1.multiplyDiagonalPost(a.scale, tmpMat1);
 		this.rotation.data.set(b.rotation.data);
 		//this.rotation.multiplyDiagonalPost(b.scale, this.rotation);
-		Matrix3x3.combine(tmpMat1, this.rotation, this.rotation);
+		this.rotation.mul2(tmpMat1, this.rotation);
 		this.translation.set(b.translation);
 		this.translation.mul(a.scale);
 		tmpMat1.applyPost(this.translation).add(a.translation);

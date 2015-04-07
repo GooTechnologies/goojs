@@ -225,7 +225,7 @@ define([
 		rangeMatrix.e13 = minY;
 
 		var modelViewProjectionInverseMatrix = projectorCamera.getViewProjectionInverseMatrix();
-		Matrix4x4.combine(modelViewProjectionInverseMatrix, rangeMatrix, rangeMatrix);
+		rangeMatrix.mul2(modelViewProjectionInverseMatrix, rangeMatrix);
 
 		source.setDirect(0.5, 0.5);
 		this.getWorldIntersectionHomogenous(0.0, source, rangeMatrix, this.intersectBottomLeft);

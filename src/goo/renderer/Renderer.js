@@ -129,10 +129,11 @@ define([
 
 		this.downScale = parameters.downScale || 1;
 
+		//! AT: why are there 2 clear colors?
 		// Default setup
 		this.clearColor = new Vector4();
 		// You need 64 bits for number equality
-		this._clearColor = new Float64Array(4);
+		this._clearColor = new Vector4();
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 
 
@@ -434,18 +435,20 @@ define([
 	 * @param {number} a Alpha
 	 */
 	Renderer.prototype.setClearColor = function (r, g, b, a) {
-		if (this._clearColor[0] === r
-			&& this._clearColor[1] === g
-			&& this._clearColor[2] === b
-			&& this._clearColor[3] === a) {
-				return;
-			}
-		//! AT: why is the clear color an array?!
-		this._clearColor[0] = r;
-		this._clearColor[1] = g;
-		this._clearColor[2] = b;
-		this._clearColor[3] = a;
-		this.clearColor.setDirect(this._clearColor[0], this._clearColor[1], this._clearColor[2], this._clearColor[3]);
+		//! AT: is exact equality important here?
+		if (this._clearColor.r === r &&
+			this._clearColor.g === g &&
+			this._clearColor.b === b &&
+			this._clearColor.a === a
+		) {
+			return;
+		}
+
+		this._clearColor.r = r;
+		this._clearColor.g = g;
+		this._clearColor.b = b;
+		this._clearColor.a = a;
+		this.clearColor.copy(this._clearColor);
 		this.context.clearColor(r, g, b, a);
 	};
 

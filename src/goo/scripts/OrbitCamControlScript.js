@@ -74,6 +74,12 @@ define([
 				-angles.y + Math.PI / 2,
 				-angles.x
 			);
+		} else if (args.spherical instanceof Array) {
+			var spherical = ctx.spherical = new Vector3(
+				args.spherical[0],
+				args.spherical[1] * MathUtils.DEG_TO_RAD,
+				args.spherical[2] * MathUtils.DEG_TO_RAD
+			);
 		} else if (args.spherical) {
 			var spherical = ctx.spherical = new Vector3(
 				args.spherical.x,

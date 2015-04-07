@@ -112,7 +112,7 @@ define([
 			if (parameters.whenUsed && environment.entity !== environment.activeCameraEntity) { return; }
 
 			// direction of movement in local coords
-			calcVector.set(
+			calcVector.setDirect(
 				fwdVector.x * moveVector.z + leftVector.x * moveVector.x,
 				fwdVector.y * moveVector.z + leftVector.y * moveVector.x,
 				fwdVector.z * moveVector.z + leftVector.z * moveVector.x

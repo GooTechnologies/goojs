@@ -762,7 +762,7 @@ define([
 			this.checkModelView();
 			this.checkProjection();
 			// because these are transposed, we need to flip order
-			this.modelViewProjection.copy(this.getProjectionMatrix()).combine(this.getViewMatrix());
+			this.modelViewProjection.copy(this.getProjectionMatrix()).mulPre(this.getViewMatrix());
 			this._updateMVPMatrix = false;
 		}
 	};

@@ -109,7 +109,7 @@ define([
 			t2.update();
 			var t3 = Transform.combine(t, t2);
 			t3.update();
-			t.matrix.combine(t2.matrix);
+			t.matrix.mulPre(t2.matrix);
 			expect(t3.matrix).toBeCloseToMatrix(t.matrix);
 		});
 

@@ -140,7 +140,10 @@ define([
 		this.transform.update();
 		for (var i = this.renderables.length - 1; i >= 0; i--) {
 			this.renderables[i].transform.update();
-			Matrix4x4.combine(this.transform.matrix, this.renderables[i].transform.matrix, this.renderables[i].transform.matrix);
+			this.renderables[i].transform.matrix.mul2(
+				this.transform.matrix,
+				this.renderables[i].transform.matrix
+			);
 		}
 	};
 

@@ -269,7 +269,7 @@ define([
 
 	function FlareQuad(lightColor, tx, displace, size, intensity, systemScale, edgeDampen, edgeScaling, textures, world) {
 		this.sizeVector = new Vector3(size, size, size);
-		this.sizeVector.mul(systemScale);
+		this.sizeVector.scale(systemScale);
 		this.positionVector = new Vector3();
 		this.flareVector = new Vector3();
 		this.intensity = intensity;
@@ -308,7 +308,7 @@ define([
 	FlareQuad.prototype.updatePosition = function (flareGeometry) {
 		this.flareVector.set(flareGeometry.displacementVector);
 		this.positionVector.set(flareGeometry.positionVector);
-		this.flareVector.mul(this.displace);
+		this.flareVector.scale(this.displace);
 		this.positionVector.add(this.flareVector);
 
 		this.material.uniforms.materialEmissive = [

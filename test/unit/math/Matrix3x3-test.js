@@ -61,16 +61,6 @@ define([
 			});
 		});
 
-		//! AT: every one of these it 'statements' should be part of a describe statement for the method under test
-		it('can combine multiple matrices into a single matrix', function () {
-			var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-			var b = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9).scale(10);
-
-			a.combine(b);
-
-			expect(a).toBeCloseToMatrix(new Matrix3x3(10, 12, 14, 22, 27, 32, 34, 42, 50).scale(30));
-		});
-
 		describe('mulPre', function () {
 			it('multiplies this matrix with another matrix', function () {
 				var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -82,25 +72,24 @@ define([
 			});
 		});
 
-		describe('mulPost', function () {
+		describe('mul2', function () {
 			it('multiplies another matrix with this matrix', function () {
 				var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-				var b = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9).scale(10);
+				var b = new Matrix3x3(2, 3, 5, 7, 11, 13, 17, 19, 23);
+				var result = new Matrix3x3();
 
-				b.mulPre(a);
+				result.mul2(a, b);
 
-				expect(a).toBeCloseToMatrix(new Matrix3x3(10, 12, 14, 22, 27, 32, 34, 42, 50).scale(30));
+				expect(result).toBeCloseToMatrix(new Matrix3x3(49, 59, 69, 142, 173, 204, 254, 313, 372));
 			});
 		});
 
 		it('can be transposed', function () {
 			var a = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-			var b = new Matrix3x3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
 			a.transpose();
 
 			expect(a).toBeCloseToMatrix(new Matrix3x3(1, 4, 7, 2, 5, 8, 3, 6, 9));
-			expect(Matrix3x3.transpose(b)).toBeCloseToMatrix(new Matrix3x3(1, 4, 7, 2, 5, 8, 3, 6, 9));
 		});
 
 		it('can be inverted', function () {
@@ -113,7 +102,6 @@ define([
 			expect(a).toBeCloseToMatrix(new Matrix3x3(4, -1, 2, 2, 0, 1, 1, 0, 0));
 			expect(Matrix3x3.invert(b)).toBeCloseToMatrix(new Matrix3x3(4, -1, 2, 2, 0, 1, 1, 0, 0));
 			expect(c.invert()).toBeCloseToMatrix(c);
-			//expect(function () { c.invert(); }).toThrow();
 		});
 
 		it('can determine orthogonality', function () {
@@ -260,7 +248,7 @@ define([
 
 			it('throws an exception when trying to corrupt a matrix by using methods', function () {
 				var matrix1 = new Matrix3x3();
-				expect(function () { matrix1.add(NaN); })
+				expect(function () { matrix1.add(new Matrix3x3(NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN)); })
 					.toThrow(new Error('Matrix contains NaN at index 0'));
 
 				var matrix2 = new Matrix3x3();

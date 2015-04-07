@@ -20,7 +20,7 @@ require([
 	PortalSystem,
 	PortalComponent,
 	V
-	) {
+) {
 	'use strict';
 
     V.describe([
@@ -44,7 +44,7 @@ require([
 		var quadMeshData = new Quad(dim, dim);
 		var quadMaterial = new Material(ShaderLib.textured);
 		var quadEntity = world.createEntity(quadMeshData, quadMaterial);
-		quadEntity.transformComponent.transform.translation.set(x, y, z);
+		quadEntity.transformComponent.transform.translation.setDirect(x, y, z);
 		var portalComponent = new PortalComponent(camera, 500, options, overrideMaterial);
 		quadEntity.setComponent(portalComponent);
 		quadEntity.addToWorld();
@@ -59,7 +59,7 @@ require([
 		var radius = 10;
 		cameraEntity.setComponent(new ScriptComponent({
 			run: function (entity) {
-				entity.transformComponent.transform.translation.set(
+				entity.transformComponent.transform.translation.setDirect(
 					Math.cos(world.time + rotationOffset) * radius,
 					0,
 					Math.sin(world.time + rotationOffset) * radius

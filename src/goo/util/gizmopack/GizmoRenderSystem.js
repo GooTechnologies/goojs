@@ -216,12 +216,8 @@ define([
 					inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
 					inverseRotation.invert();
 				}
-				// mulPost
-				Matrix3x3.combine(
-					inverseRotation,
-					this.entity.transformComponent.transform.rotation,
-					this.entity.transformComponent.transform.rotation
-				);
+
+				this.entity.transformComponent.transform.rotation.mulPre(inverseRotation);
 				this.entity.transformComponent.setUpdated();
 			}
 		}.bind(this);
