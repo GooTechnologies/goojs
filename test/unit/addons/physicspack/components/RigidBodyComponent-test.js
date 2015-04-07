@@ -45,6 +45,7 @@ define([
 				collider: new SphereCollider({ radius: 1 })
 			});
 			entity = world.createEntity(rigidBodyComponent, colliderComponent).addToWorld();
+			rigidBodyComponent.initialize();
 			world.process();
 		});
 
@@ -114,20 +115,10 @@ define([
 			expect(rigidBodyComponent.cannonBody.type).toEqual(CANNON.Body.KINEMATIC);
 		});
 
-		it('can get cannon shape from box collider', function () {
-			var c = new BoxCollider({
-				halfExtents: new Vector3(1, 2, 3)
-			});
-			var cannonShape = RigidBodyComponent.getCannonShape(c);
-			var newBox = new CANNON.Box(new CANNON.Vec3(1, 2, 3));
-			newBox.id = newBox.convexPolyhedronRepresentation.id = cannonShape.id = cannonShape.convexPolyhedronRepresentation.id = 0; // Shapes now have unique ID's: These are the only things that should differ
-			expect(cannonShape).toEqual(newBox);
-		});
-
 		it('can destroy itself and rebuild', function () {
 			rigidBodyComponent.destroy();
 			expect(rigidBodyComponent.cannonBody).toBeFalsy();
-			world.process();
+			rigidBodyComponent.initialize();
 			expect(rigidBodyComponent.cannonBody).toBeTruthy();
 		});
 
@@ -137,58 +128,12 @@ define([
 			});
 
 			rigidBodyComponent.addJoint(joint);
-			world.process();
+			rigidBodyComponent.initializeJoint(joint);
 			expect(joint.cannonJoint).toBeTruthy();
 
 			rigidBodyComponent.removeJoint(joint);
-			world.process();
-			expect(joint.cannonJoint).toBeFalsy();
-		});
+			rigidBodyComponent.destroyJoint(joint);
 
-		it('cleans up if its detached', function () {
-			var joint = new BallJoint({
-				connectedEntity: entity
-			});
-
-			rigidBodyComponent.addJoint(joint);
-			world.process();
-
-			entity.clearComponent('RigidBodyComponent');
-
-			world.process();
-
-			expect(joint.cannonJoint).toBeFalsy();
-			expect(rigidBodyComponent.cannonBody).toBeFalsy();
-		});
-
-		it('cleans up if its removed from its world', function () {
-			var joint = new BallJoint({
-				connectedEntity: entity
-			});
-
-			rigidBodyComponent.addJoint(joint);
-
-			world.process();
-
-			entity.removeFromWorld();
-
-			world.process();
-
-			expect(joint.cannonJoint).toBeFalsy();
-			expect(rigidBodyComponent.cannonBody).toBeFalsy();
-		});
-
-		it('can add and remove a HingeJoint', function () {
-			var joint = new HingeJoint({
-				connectedEntity: entity
-			});
-
-			rigidBodyComponent.addJoint(joint);
-			world.process();
-			expect(joint.cannonJoint).toBeTruthy();
-
-			rigidBodyComponent.removeJoint(joint);
-			world.process();
 			expect(joint.cannonJoint).toBeFalsy();
 		});
 
@@ -207,54 +152,12 @@ define([
 			};
 			SystemBus.addListener('goo.physics.initialized', listener);
 
-			world.process();
-
-			SystemBus.removeListener('goo.physics.initialized', listener);
-
-			expect(numEvents).toBe(1);
-		});
-
-		it('can be initialized manually', function () {
-			rigidBodyComponent = new RigidBodyComponent({ mass: 1 });
-			colliderComponent = new ColliderComponent({
-				collider: new SphereCollider({ radius: 1 })
-			});
-			entity = world.createEntity(rigidBodyComponent, colliderComponent).addToWorld();
-
-			var numEvents = 0;
-			var listener = function () {
-				numEvents++;
-			};
-			SystemBus.addListener('goo.physics.initialized', listener);
 			rigidBodyComponent.initialize();
 
 			SystemBus.removeListener('goo.physics.initialized', listener);
-			expect(numEvents).toBe(1);
-			expect(rigidBodyComponent.cannonBody).toBeTruthy();
-		});
-
-		it('is initialized properly on world.processEntityChanges', function () {
-			rigidBodyComponent = new RigidBodyComponent({ mass: 1 });
-			colliderComponent = new ColliderComponent({
-				collider: new SphereCollider({ radius: 1 })
-			});
-			entity = world.createEntity()
-				.set(rigidBodyComponent)
-				.set(colliderComponent)
-				.addToWorld();
-
-			var numEvents = 0;
-			var listener = function () {
-				numEvents++;
-			};
-			SystemBus.addListener('goo.physics.initialized', listener);
-			world.processEntityChanges();
 
 			expect(numEvents).toBe(1);
 			expect(rigidBodyComponent.cannonBody).toBeTruthy();
-			expect(rigidBodyComponent.cannonBody.shapes.length).toBe(1);
-
-			SystemBus.removeListener('goo.physics.initialized', listener);
 		});
 
 		it('can clone', function () {
@@ -293,15 +196,6 @@ define([
 			expect(rigidBodyComponent.cannonBody.sleepTimeLimit).toEqual(6);
 		});
 
-		it('updates dirty colliders', function () {
-			colliderComponent.collider.radius = 5;
-			colliderComponent._dirty = true;
-
-			world.process();
-
-			expect(rigidBodyComponent.cannonBody.shapes[0].radius).toEqual(5);
-		});
-
 		it('can set materials per collider', function () {
 			var rigidBodyComponent = new RigidBodyComponent({ mass: 1 });
 			var colliderComponent = new ColliderComponent({
@@ -318,7 +212,7 @@ define([
 
 			entity.attachChild(subEntity);
 
-			world.process();
+			rigidBodyComponent.initialize();
 
 			expect(entity.rigidBodyComponent.cannonBody.shapes[0].material.friction).toBe(0.7);
 			expect(entity.rigidBodyComponent.cannonBody.shapes[1].material.friction).toBe(0.9);

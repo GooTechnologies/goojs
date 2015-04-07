@@ -83,9 +83,6 @@ define([
 			component.linearDamping = config.linearDrag;
 			component.angularDamping = config.angularDrag;
 
-			component._dirty = true;
-			component._initialized = false;
-
 			return component;
 		});
 	};
