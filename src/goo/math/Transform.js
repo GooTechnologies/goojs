@@ -208,10 +208,7 @@ define([
 		// RH: Should we check against epsilon here?
 		var scale = this.scale;
 		if (scale.x !== scale.y || scale.x !== scale.z) {
-			//! AT: tmpMat is not needed here
 			this.normalMatrix.invert().transpose();
-			//Matrix3x3.invert(this.normalMatrix, tmpMat1);
-			//Matrix3x3.transpose(tmpMat1, this.normalMatrix);
 		}
 	};
 

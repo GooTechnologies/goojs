@@ -37,212 +37,117 @@ define([
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix2x2} [target] Target matrix for storage.
-	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @param {Matrix2x2} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix2x2} Self to allow chaining
 	 */
-	Matrix2x2.add = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix2x2();
-		}
+	Matrix2x2.prototype.add = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
 
-		if (rhs instanceof Matrix2x2) {
-			target.e00 = lhs.e00 + rhs.e00;
-			target.e10 = lhs.e10 + rhs.e10;
-			target.e01 = lhs.e01 + rhs.e01;
-			target.e11 = lhs.e11 + rhs.e11;
-		} else {
-			target.e00 = lhs.e00 + rhs;
-			target.e10 = lhs.e10 + rhs;
-			target.e01 = lhs.e01 + rhs;
-			target.e11 = lhs.e11 + rhs;
-		}
+		thisData[0] += thatData[0];
+		thisData[1] += thatData[1];
+		thisData[2] += thatData[2];
+		thisData[3] += thatData[3];
 
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise addition.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix2x2} Self for chaining.
-	 */
-	Matrix2x2.prototype.add = function (rhs) {
-		return Matrix2x2.add(this, rhs, this);
+		return this;
 	};
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix2x2} [target] Target matrix for storage.
-	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @param {Matrix2x2} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix2x2} Self to allow chaining
 	 */
-	Matrix2x2.sub = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix2x2();
-		}
+	Matrix2x2.prototype.sub = function (that) {
+		var thisData = this.data;
+		var thatData = that.data;
 
-		if (rhs instanceof Matrix2x2) {
-			target.e00 = lhs.e00 - rhs.e00;
-			target.e10 = lhs.e10 - rhs.e10;
-			target.e01 = lhs.e01 - rhs.e01;
-			target.e11 = lhs.e11 - rhs.e11;
-		} else {
-			target.e00 = lhs.e00 - rhs;
-			target.e10 = lhs.e10 - rhs;
-			target.e01 = lhs.e01 - rhs;
-			target.e11 = lhs.e11 - rhs;
-		}
+		thisData[0] -= thatData[0];
+		thisData[1] -= thatData[1];
+		thisData[2] -= thatData[2];
+		thisData[3] -= thatData[3];
 
-		return target;
+		return this;
 	};
 
 	/**
-	 * Performs a component-wise subtraction.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix2x2} Self for chaining.
+	 * Multiplies this matrix with a scalar
+	 * @param {number} scalar
+	 * @returns {Matrix2x2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.sub = function (rhs) {
-		return Matrix2x2.sub(this, rhs, this);
+	Matrix2x2.prototype.scale = function (scalar) {
+		var data = this.data;
+
+		data[0] *= scalar;
+		data[1] *= scalar;
+		data[2] *= scalar;
+		data[3] *= scalar;
+
+		return this;
 	};
 
 	/**
-	 * Performs a component-wise multiplication.
-	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix2x2} [target] Target matrix for storage.
-	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
+	 * Multiplies this matrix with another matrix
+	 * @param {Matrix2x2} that Matrix on the left-hand side
+	 * @returns {Matrix2x2} Self to allow chaining
 	 */
-	Matrix2x2.mul = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix2x2();
-		}
+	Matrix2x2.prototype.mulPre = function (that) {
+		var s1d = that.data;
+		var m00 = s1d[0], m01 = s1d[2],
+			m10 = s1d[1], m11 = s1d[3];
 
-		if (rhs instanceof Matrix2x2) {
-			target.e00 = lhs.e00 * rhs.e00;
-			target.e10 = lhs.e10 * rhs.e10;
-			target.e01 = lhs.e01 * rhs.e01;
-			target.e11 = lhs.e11 * rhs.e11;
-		} else {
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-		}
+		var s2d = this.data;
+		var n00 = s2d[0], n01 = s2d[2],
+			n10 = s2d[1], n11 = s2d[3];
 
-		return target;
+		var rd = this.data;
+
+		rd[0] = m00 * n00 + m01 * n10;
+		rd[2] = m00 * n10 + m01 * n11;
+
+		rd[1] = m10 * n00 + m11 * n10;
+		rd[3] = m10 * n01 + m11 * n11;
+
+		return this;
 	};
 
 	/**
-	 * Performs a component-wise multiplication.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix2x2} Self for chaining.
+	 * Multiplies two matrices and stores the result in this matrix
+	 * @param {Matrix2x2} lhs Matrix on the left-hand side
+	 * @param {Matrix2x2} rhs Matrix on the right-hand side
+	 * @returns {Matrix2x2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.mul = function (rhs) {
-		return Matrix2x2.mul(this, rhs, this);
+	Matrix2x2.prototype.mul2 = function (lhs, rhs) {
+		var s1d = lhs.data;
+		var m00 = s1d[0], m01 = s1d[2],
+			m10 = s1d[1], m11 = s1d[3];
+
+		var s2d = rhs.data;
+		var n00 = s2d[0], n01 = s2d[2],
+			n10 = s2d[1], n11 = s2d[3];
+
+		var rd = this.data;
+
+		rd[0] = m00 * n00 + m01 * n10;
+		rd[2] = m00 * n10 + m01 * n11;
+
+		rd[1] = m10 * n00 + m11 * n10;
+		rd[3] = m10 * n01 + m11 * n11;
+
+		return this;
 	};
 
 	/**
-	 * Performs a component-wise division.
-	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
-	 * @param {Matrix2x2} [target] Target matrix for storage.
-	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix2x2.div = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix2x2();
-		}
-
-		if (rhs instanceof Matrix2x2) {
-			target.e00 = lhs.e00 / rhs.e00;
-			target.e10 = lhs.e10 / rhs.e10;
-			target.e01 = lhs.e01 / rhs.e01;
-			target.e11 = lhs.e11 / rhs.e11;
-		} else {
-			rhs = 1.0 / rhs;
-
-			target.e00 = lhs.e00 * rhs;
-			target.e10 = lhs.e10 * rhs;
-			target.e01 = lhs.e01 * rhs;
-			target.e11 = lhs.e11 * rhs;
-		}
-
-		return target;
-	};
-
-	/**
-	 * Performs a component-wise division.
-	 * @param {Matrix2x2|number} rhs Matrix or scalar on the right-hand side.
-	 * @returns {Matrix2x2} Self for chaining.
-	 */
-	Matrix2x2.prototype.div = function (rhs) {
-		return Matrix2x2.div(this, rhs, this);
-	};
-
-	/**
-	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
-	 * @param {Matrix2x2} lhs Matrix on the left-hand side.
-	 * @param {Matrix2x2} rhs Matrix on the right-hand side.
-	 * @param {Matrix2x2} [target] Target matrix for storage.
-	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix2x2.combine = function (lhs, rhs, target) {
-		if (!target) {
-			target = new Matrix2x2();
-		}
-
-		if (target === lhs || target === rhs) {
-			return Matrix.copy(Matrix2x2.combine(lhs, rhs), target);
-		}
-
-		target.e00 = lhs.e00 * rhs.e00 + lhs.e01 * rhs.e10;
-		target.e10 = lhs.e10 * rhs.e00 + lhs.e11 * rhs.e10;
-		target.e01 = lhs.e00 * rhs.e01 + lhs.e01 * rhs.e11;
-		target.e11 = lhs.e10 * rhs.e01 + lhs.e11 * rhs.e11;
-
-		return target;
-	};
-
-	/**
-	 * Combines two matrices (matrix multiplication) and stores the result locally.
-	 * @param {Matrix2x2} rhs Matrix on the right-hand side.
-	 * @returns {Matrix2x2} Self for chaining.
-	 */
-	Matrix2x2.prototype.combine = function (rhs) {
-		return Matrix2x2.combine(this, rhs, this);
-	};
-
-	/**
-	 * Transposes a matrix (exchanges rows and columns) and stores the result in a separate matrix.
-	 * @param {Matrix2x2} source Source matrix.
-	 * @param {Matrix2x2} [target] Target matrix.
-	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
-	 */
-	Matrix2x2.transpose = function (source, target) {
-		if (!target) {
-			target = new Matrix2x2();
-		}
-
-		if (target === source) {
-			return Matrix.copy(Matrix2x2.transpose(source), target);
-		}
-
-		target.e00 = source.e00;
-		target.e10 = source.e01;
-		target.e01 = source.e10;
-		target.e11 = source.e11;
-
-		return target;
-	};
-
-	/**
-	 * Transposes the matrix (exchanges rows and columns) and stores the result locally.
-	 * @returns {Matrix2x2} Self for chaining.
+	 * Transposes a matrix (exchanges rows and columns).
+	 * @returns {Matrix2x2} Self to allow chaining
 	 */
 	Matrix2x2.prototype.transpose = function () {
-		return Matrix2x2.transpose(this, this);
+		var data = this.data;
+
+		var e10 = data[1];
+		data[1] = data[2];
+		data[2] = e10;
+
+		return this;
 	};
 
 	/**
@@ -257,7 +162,7 @@ define([
 		}
 
 		if (target === source) {
-			return Matrix.copy(Matrix2x2.invert(source), target);
+			return target.copy(Matrix2x2.invert(source));
 		}
 
 		var det = source.determinant();

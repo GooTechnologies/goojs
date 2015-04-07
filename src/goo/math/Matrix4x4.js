@@ -94,6 +94,11 @@ define([
 		return this;
 	};
 
+	/**
+	 * Multiplies this matrix with a scalar
+	 * @param {number} scalar
+	 * @returns {Matrix4x4} Self to allow chaining
+	 */
 	Matrix4x4.prototype.scale = function (scalar) {
 		var data = this.data;
 
@@ -117,6 +122,11 @@ define([
 		return this;
 	};
 
+	/**
+	 * Multiplies this matrix with another matrix
+	 * @param {Matrix4x4} that Matrix on the left-hand side
+	 * @returns {Matrix4x4} Self to allow chaining
+	 */
 	Matrix4x4.prototype.mulPre = function (that) {
 		var s1d = this.data;
 		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
@@ -154,11 +164,10 @@ define([
 	};
 
 	/**
-	 * Combines two matrices (matrix multiplication) and stores the result in a separate matrix.
-	 * @param {Matrix4x4} lhs Matrix on the left-hand side.
-	 * @param {Matrix4x4} rhs Matrix on the right-hand side.
-	 * @param {Matrix4x4} [target] Target matrix for storage.
-	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * Multiplies two matrices and stores the result in this matrix
+	 * @param {Matrix4x4} lhs Matrix on the left-hand side
+	 * @param {Matrix4x4} rhs Matrix on the right-hand side
+	 * @returns {Matrix4x4} Self to allow chaining
 	 */
 	Matrix4x4.prototype.mul2 = function (lhs, rhs) {
 		var s1d = lhs.data;
@@ -239,7 +248,7 @@ define([
 		}
 
 		if (target === source) {
-			return Matrix.copy(Matrix4x4.invert(source), target);
+			return target.copy(Matrix4x4.invert(source));
 		}
 
 		var det = source.determinant();

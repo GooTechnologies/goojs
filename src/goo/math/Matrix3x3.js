@@ -99,6 +99,11 @@ define([
 		return this;
 	};
 
+	/**
+	 * Multiplies this matrix with a scalar
+	 * @param {number} scalar
+	 * @returns {Matrix3x3} Self to allow chaining
+	 */
 	Matrix3x3.prototype.scale = function (scalar) {
 		var data = this.data;
 
@@ -115,6 +120,11 @@ define([
 		return this;
 	};
 
+	/**
+	 * Multiplies this matrix with another matrix
+	 * @param {Matrix3x3} that Matrix on the left-hand side
+	 * @returns {Matrix3x3} Self to allow chaining
+	 */
 	Matrix3x3.prototype.mulPre = function (that) {
 		var s1d = that.data;
 		var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
@@ -142,6 +152,12 @@ define([
 		return this;
 	};
 
+	/**
+	 * Multiplies two matrices and stores the result in this matrix
+	 * @param {Matrix3x3} lhs Matrix on the left-hand side
+	 * @param {Matrix3x3} rhs Matrix on the right-hand side
+	 * @returns {Matrix3x3} Self to allow chaining
+	 */
 	Matrix3x3.prototype.mul2 = function (lhs, rhs) {
 		var s1d = lhs.data;
 		var m00 = s1d[0], m01 = s1d[3], m02 = s1d[6],
@@ -202,7 +218,7 @@ define([
 		}
 
 		if (target === source) {
-			return Matrix.copy(Matrix3x3.invert(source), target);
+			return target.copy(Matrix3x3.invert(source));
 		}
 
 		var det = source.determinant();
@@ -308,8 +324,8 @@ define([
 	Matrix3x3.prototype.determinant = function () {
 		var d = this.data;
 		return d[0] * (d[4] * d[8] - d[7] * d[5]) -
-					d[3] * (d[1] * d[8] - d[7] * d[2]) +
-					d[6] * (d[1] * d[5] - d[4] * d[2]);
+			d[3] * (d[1] * d[8] - d[7] * d[2]) +
+			d[6] * (d[1] * d[5] - d[4] * d[2]);
 	};
 
 	/**
