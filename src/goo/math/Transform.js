@@ -1,12 +1,12 @@
 define([
 	'goo/math/Vector3',
-	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix3',
+	'goo/math/Matrix4',
 	'goo/math/MathUtils'
 ], function (
 	Vector3,
-	Matrix3x3,
-	Matrix4x4,
+	Matrix3,
+	Matrix4,
 	MathUtils
 ) {
 	'use strict';
@@ -18,15 +18,15 @@ define([
 	 */
 	function Transform() {
 		/** Read only, will be updated automatically by {@link Transform.update}
-		 * @type {Matrix4x4}
+		 * @type {Matrix4}
 		 */
-		this.matrix = new Matrix4x4();
-		this.normalMatrix = new Matrix3x3();
+		this.matrix = new Matrix4();
+		this.normalMatrix = new Matrix3();
 
 		/** @type {Vector3} */
 		this.translation = new Vector3();
-		/** @type {Matrix3x3} */
-		this.rotation = new Matrix3x3();
+		/** @type {Matrix3} */
+		this.rotation = new Matrix3();
 		/** @type {Vector3} */
 		this.scale = new Vector3(1, 1, 1);
 
@@ -37,7 +37,7 @@ define([
 
 	var tmpVec = new Vector3();
 	var tmpVec2 = new Vector3();
-	var tmpMat1 = new Matrix3x3();
+	var tmpMat1 = new Matrix3();
 
 	/**
 	 * Combines two transforms into one. This will only work if scaling in the left hand transform is uniform

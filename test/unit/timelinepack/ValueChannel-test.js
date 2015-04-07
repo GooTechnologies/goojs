@@ -2,14 +2,14 @@ define([
 	'goo/timelinepack/ValueChannel',
 	'goo/entities/Entity',
 	'goo/entities/components/TransformComponent',
-	'goo/math/Matrix3x3',
+	'goo/math/Matrix3',
 	'goo/math/MathUtils',
 	'test/CustomMatchers'
 ], function (
 	ValueChannel,
 	Entity,
 	TransformComponent,
-	Matrix3x3,
+	Matrix3,
 	MathUtils,
 	CustomMatchers
 	) {
@@ -157,7 +157,7 @@ define([
 			it('gets a rotation tweener that alters the rotation of the resolved entity', function () {
 				var tweener = ValueChannel.getRotationTweener(0, '', resolver, [0, 0, 0]);
 				tweener(0, 123 * MathUtils.RAD_TO_DEG);
-				var expectedRotation = new Matrix3x3().fromAngles(123, 0, 0);
+				var expectedRotation = new Matrix3().fromAngles(123, 0, 0);
 				expect(entity.transformComponent.transform.rotation).toBeCloseToMatrix(expectedRotation);
 			});
 		});

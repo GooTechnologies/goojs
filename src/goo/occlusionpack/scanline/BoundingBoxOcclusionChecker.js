@@ -1,11 +1,11 @@
 define([
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/math/Vector4',
 	'goo/math/Vector2',
 	'goo/renderer/scanline/OccludeeTriangleData'
 	],
 
-		function (Matrix4x4, Vector4, Vector2, OccludeeTriangleData) {
+		function (Matrix4, Vector4, Vector2, OccludeeTriangleData) {
 		'use strict';
 
 		// Cohen-Sutherland area constants.
@@ -65,7 +65,7 @@ define([
 		var v3 = new Vector4(0, 0, 0, 1);
 		var indices = new Uint8Array(3);
 
-		var combinedMatrix = new Matrix4x4();
+		var combinedMatrix = new Matrix4();
 
 		/**
 		 * @param {SoftwareRenderer} renderer

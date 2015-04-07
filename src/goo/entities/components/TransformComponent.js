@@ -3,14 +3,14 @@ define([
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
 	'goo/entities/EntitySelection',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/math/Vector'
 ], function (
 	Transform,
 	Vector3,
 	Component,
 	EntitySelection,
-	Matrix4x4,
+	Matrix4,
 	Vector
 ) {
 	'use strict';

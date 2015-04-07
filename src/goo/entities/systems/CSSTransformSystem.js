@@ -1,13 +1,13 @@
 define([
 	'goo/entities/systems/System', 
 	'goo/renderer/Renderer', 
-	'goo/math/Matrix4x4', 
+	'goo/math/Matrix4',
 	'goo/math/MathUtils', 
 	'goo/math/Vector3'
 ],  function (
 	System, 
 	Renderer, 
-	Matrix4x4, 
+	Matrix4,
 	MathUtils, 
 	Vector3
 ) {
@@ -28,8 +28,8 @@ define([
         }
 	}
 
-	var tmpMatrix = new Matrix4x4();
-	var tmpMatrix2 = new Matrix4x4();
+	var tmpMatrix = new Matrix4();
+	var tmpMatrix2 = new Matrix4();
 	var tmpVector = new Vector3();
 
 	CSSTransformSystem.prototype = Object.create(System.prototype);

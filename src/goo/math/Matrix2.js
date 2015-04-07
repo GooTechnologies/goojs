@@ -10,9 +10,9 @@ define([
 	/**
 	 * Matrix with 2x2 components.
 	 * @extends Matrix
-	 * @param {Matrix2x2|number...} arguments Initial values for the matrix components.
+	 * @param {Matrix2|number...} arguments Initial values for the matrix components.
 	 */
-	function Matrix2x2(
+	function Matrix2(
 		e00, e10,
 		e01, e11
 	) {
@@ -34,20 +34,20 @@ define([
 		// #endif
 	}
 
-	Matrix2x2.prototype = Object.create(Matrix.prototype);
-	Matrix2x2.prototype.constructor = Matrix2x2;
+	Matrix2.prototype = Object.create(Matrix.prototype);
+	Matrix2.prototype.constructor = Matrix2;
 
-	Matrix.setupAliases(Matrix2x2.prototype,[['e00'], ['e10'], ['e01'], ['e11']]);
+	Matrix.setupAliases(Matrix2.prototype,[['e00'], ['e10'], ['e01'], ['e11']]);
 
-	/* @type {Matrix2x2} */
-	Matrix2x2.IDENTITY = new Matrix2x2(1, 0, 0, 1);
+	/* @type {Matrix2} */
+	Matrix2.IDENTITY = new Matrix2(1, 0, 0, 1);
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix2x2} that Matrix or scalar on the right-hand side.
-	 * @returns {Matrix2x2} Self to allow chaining
+	 * @param {Matrix2} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.add = function (that) {
+	Matrix2.prototype.add = function (that) {
 		var thisData = this.data;
 		var thatData = that.data;
 
@@ -61,10 +61,10 @@ define([
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix2x2} that Matrix or scalar on the right-hand side.
-	 * @returns {Matrix2x2} Self to allow chaining
+	 * @param {Matrix2} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.sub = function (that) {
+	Matrix2.prototype.sub = function (that) {
 		var thisData = this.data;
 		var thatData = that.data;
 
@@ -79,9 +79,9 @@ define([
 	/**
 	 * Multiplies this matrix with a scalar
 	 * @param {number} scalar
-	 * @returns {Matrix2x2} Self to allow chaining
+	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.scale = function (scalar) {
+	Matrix2.prototype.scale = function (scalar) {
 		var data = this.data;
 
 		data[0] *= scalar;
@@ -94,10 +94,10 @@ define([
 
 	/**
 	 * Multiplies this matrix with another matrix
-	 * @param {Matrix2x2} that Matrix on the left-hand side
-	 * @returns {Matrix2x2} Self to allow chaining
+	 * @param {Matrix2} that Matrix on the left-hand side
+	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.mulPre = function (that) {
+	Matrix2.prototype.mulPre = function (that) {
 		var s1d = that.data;
 		var m00 = s1d[0], m01 = s1d[2],
 			m10 = s1d[1], m11 = s1d[3];
@@ -119,11 +119,11 @@ define([
 
 	/**
 	 * Multiplies two matrices and stores the result in this matrix
-	 * @param {Matrix2x2} lhs Matrix on the left-hand side
-	 * @param {Matrix2x2} rhs Matrix on the right-hand side
-	 * @returns {Matrix2x2} Self to allow chaining
+	 * @param {Matrix2} lhs Matrix on the left-hand side
+	 * @param {Matrix2} rhs Matrix on the right-hand side
+	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.mul2 = function (lhs, rhs) {
+	Matrix2.prototype.mul2 = function (lhs, rhs) {
 		var s1d = lhs.data;
 		var m00 = s1d[0], m01 = s1d[2],
 			m10 = s1d[1], m11 = s1d[3];
@@ -145,9 +145,9 @@ define([
 
 	/**
 	 * Transposes a matrix (exchanges rows and columns).
-	 * @returns {Matrix2x2} Self to allow chaining
+	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.transpose = function () {
+	Matrix2.prototype.transpose = function () {
 		var data = this.data;
 
 		var e10 = data[1];
@@ -159,17 +159,17 @@ define([
 
 	/**
 	 * Computes the analytical inverse and stores the result in a separate matrix.
-	 * @param {Matrix2x2} source Source matrix.
-	 * @param {Matrix2x2} [target] Target matrix.
-	 * @returns {Matrix2x2} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @param {Matrix2} source Source matrix.
+	 * @param {Matrix2} [target] Target matrix.
+	 * @returns {Matrix2} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-	Matrix2x2.invert = function (source, target) {
+	Matrix2.invert = function (source, target) {
 		if (!target) {
-			target = new Matrix2x2();
+			target = new Matrix2();
 		}
 
 		if (target === source) {
-			return target.copy(Matrix2x2.invert(source));
+			return target.copy(Matrix2.invert(source));
 		}
 
 		var det = source.determinant();
@@ -190,17 +190,17 @@ define([
 
 	/**
 	 * Computes the analytical inverse and stores the result locally.
-	 * @returns {Matrix2x2} Self for chaining.
+	 * @returns {Matrix2} Self for chaining.
 	 */
-	Matrix2x2.prototype.invert = function () {
-		return Matrix2x2.invert(this, this);
+	Matrix2.prototype.invert = function () {
+		return Matrix2.invert(this, this);
 	};
 
 	/**
 	 * Tests if the matrix is orthogonal.
 	 * @returns {boolean} True if orthogonal.
 	 */
-	Matrix2x2.prototype.isOrthogonal = function () {
+	Matrix2.prototype.isOrthogonal = function () {
 		var dot;
 
 		dot = this.e00 * this.e01 + this.e10 * this.e11;
@@ -216,7 +216,7 @@ define([
 	 * Tests if the matrix is normal.
 	 * @returns {boolean} True if normal.
 	 */
-	Matrix2x2.prototype.isNormal = function () {
+	Matrix2.prototype.isNormal = function () {
 		var l;
 
 		l = this.e00 * this.e00 + this.e10 * this.e10;
@@ -239,7 +239,7 @@ define([
 	 * Tests if the matrix is orthonormal.
 	 * @returns {boolean} True if orthonormal.
 	 */
-	Matrix2x2.prototype.isOrthonormal = function () {
+	Matrix2.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
@@ -247,25 +247,25 @@ define([
 	 * Computes the determinant of the matrix.
 	 * @returns {number} Determinant of matrix.
 	 */
-	Matrix2x2.prototype.determinant = function () {
+	Matrix2.prototype.determinant = function () {
 		return this.e00 * this.e11 - this.e01 * this.e10;
 	};
 
 	/**
 	 * Sets the matrix to identity.
-	 * @returns {Matrix2x2} Self for chaining.
+	 * @returns {Matrix2} Self for chaining.
 	 */
-	Matrix2x2.prototype.setIdentity = function () {
-		this.set(Matrix2x2.IDENTITY);
+	Matrix2.prototype.setIdentity = function () {
+		this.set(Matrix2.IDENTITY);
 		return this;
 	};
 
 	/**
 	 * Compares two matrices for approximate equality
-	 * @param {Matrix2x2} that The matrix to compare against
+	 * @param {Matrix2} that The matrix to compare against
 	 * @returns {boolean}
 	 */
-	Matrix2x2.prototype.equals = function (that) {
+	Matrix2.prototype.equals = function (that) {
 		var thisData = this.data;
 		var thatData = that.data;
 
@@ -277,10 +277,10 @@ define([
 
 	/**
 	 * Copies component values from another matrix to this matrix
-	 * @param {Matrix2x2} that Source matrix
-	 * @returns {Matrix2x2} Self to allow chaining
+	 * @param {Matrix2} that Source matrix
+	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.copy = function (that) {
+	Matrix2.prototype.copy = function (that) {
 		var thisData = this.data;
 		var thatData = that.data;
 
@@ -294,26 +294,26 @@ define([
 
 	/**
 	 * Sets the matrix's values from another matrix's values; an alias for .copy
-	 * @param {Matrix2x2} that Source matrix
-	 * @returns {Matrix2x2} Self to allow chaining
+	 * @param {Matrix2} that Source matrix
+	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2x2.prototype.set = Matrix2x2.prototype.copy;
+	Matrix2.prototype.set = Matrix2.prototype.copy;
 
 	/**
 	 * Returns a new matrix with the same values as the existing one
-	 * @returns {Matrix2x2} The new matrix
+	 * @returns {Matrix2} The new matrix
 	 */
-	Matrix2x2.prototype.clone = function () {
-		return new Matrix2x2().copy(this);
+	Matrix2.prototype.clone = function () {
+		return new Matrix2().copy(this);
 	};
 
 	// #ifdef DEBUG
-	Matrix.addPostChecks(Matrix2x2.prototype, [
+	Matrix.addPostChecks(Matrix2.prototype, [
 		'add', 'sub', 'scale', 'transpose', 'invert',
 		'isOrthogonal', 'determinant',
 		'copy'
 	]);
 	// #endif
 
-	return Matrix2x2;
+	return Matrix2;
 });

@@ -3,7 +3,7 @@ define([
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/renderer/Camera',
 	'goo/math/MathUtils'
 ], function (
@@ -11,7 +11,7 @@ define([
 	Vector2,
 	Vector3,
 	Vector4,
-	Matrix4x4,
+	Matrix4,
 	Camera,
 	MathUtils
 ) {
@@ -35,7 +35,7 @@ define([
 		this.origin = new Vector4();
 		this.direction = new Vector4();
 		this.source = new Vector2();
-		this.rangeMatrix = new Matrix4x4();
+		this.rangeMatrix = new Matrix4();
 
 		this.intersectBottomLeft = new Vector4();
 		this.intersectTopLeft = new Vector4();

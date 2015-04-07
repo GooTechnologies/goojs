@@ -3,7 +3,7 @@ define([
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
 	'goo/math/Vector3',
-	'goo/math/Matrix3x3',
+	'goo/math/Matrix3',
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
 	'goo/math/Ray'
@@ -12,7 +12,7 @@ define([
 	Sphere,
 	Torus,
 	Vector3,
-	Matrix3x3,
+	Matrix3,
 	Transform,
 	Renderer,
 	Ray
@@ -33,14 +33,14 @@ define([
 		this._buildTorus(1);
 		this._buildTorus(2);
 
-		this._rotation = new Matrix3x3();
+		this._rotation = new Matrix3();
 		this._rotationScale = 4;
 		this._axis = new Vector3();
 		this._direction = new Vector3();
 
 		this._ray = new Ray();
-		this._m1 = new Matrix3x3();
-		this._m2 = new Matrix3x3();
+		this._m1 = new Matrix3();
+		this._m2 = new Matrix3();
 
 		//TODO: create a function that does this sort of thing
 		this.snap = false;

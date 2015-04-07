@@ -1,6 +1,6 @@
 define([
 	'goo/math/Vector4',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/renderer/scanline/Edge',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingBox',
@@ -12,7 +12,7 @@ define([
 	],
 
 
-	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
+	function (Vector4, Matrix4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
 				BoundingSphereOcclusionChecker, OccluderTriangleData, EdgeMap) {
 	'use strict';
 
@@ -30,8 +30,8 @@ define([
 	var clippedIndices = new Uint8Array(3);
 
 	// Store matrix4x4 to be re-used
-	var cameraViewProjectionMatrix = new Matrix4x4();
-	var combinedMatrix = new Matrix4x4();
+	var cameraViewProjectionMatrix = new Matrix4();
+	var combinedMatrix = new Matrix4();
 
 	// EdgeData used during rendering.
 	var edgeData = new EdgeData();

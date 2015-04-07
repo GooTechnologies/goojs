@@ -3,13 +3,13 @@ define([
 	'goo/math/Vector',
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/math/Matrix3x3',
+	'goo/math/Matrix3',
 	'goo/math/MathUtils'
 ], function (
 	Vector,
 	Vector3,
 	Vector4,
-	Matrix3x3,
+	Matrix3,
 	MathUtils
 ) {
 	'use strict';
@@ -193,7 +193,7 @@ define([
 
 	/**
 	 * Sets the value of this quaternion to the rotation described by the given matrix values.
-	 * @param {Matrix3x3} matrix Rotation matrix.
+	 * @param {Matrix3} matrix Rotation matrix.
 	 * @returns {Quaternion} Self for chaining.
 	 */
 	Quaternion.prototype.fromRotationMatrix = function (matrix) {
@@ -242,8 +242,8 @@ define([
 
 	/**
 	 * Return a rotation matrix representing the current quaternion.
-	 * @param {Matrix3x3} [store] The matrix to store our result in. If null, a new matrix is created.
-	 * @returns {Matrix3x3} The normalized rotation matrix representation of this quaternion.
+	 * @param {Matrix3} [store] The matrix to store our result in. If null, a new matrix is created.
+	 * @returns {Matrix3} The normalized rotation matrix representation of this quaternion.
 	 */
 	Quaternion.prototype.toRotationMatrix = function (store) {
 		var result = store;

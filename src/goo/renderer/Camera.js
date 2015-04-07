@@ -1,7 +1,7 @@
 define([
 	'goo/math/Vector3',
 	'goo/math/Vector4',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/math/Plane',
 	'goo/math/MathUtils',
 	'goo/math/Ray',
@@ -11,7 +11,7 @@ define([
 ], function (
 	Vector3,
 	Vector4,
-	Matrix4x4,
+	Matrix4,
 	Plane,
 	MathUtils,
 	Ray,
@@ -77,11 +77,11 @@ define([
 		this._updateInverseMVPMatrix = true;
 
 		// NB: These matrices are column-major.
-		this.modelView = new Matrix4x4();
-		this.modelViewInverse = new Matrix4x4();
-		this.projection = new Matrix4x4();
-		this.modelViewProjection = new Matrix4x4();
-		this.modelViewProjectionInverse = new Matrix4x4();
+		this.modelView = new Matrix4();
+		this.modelViewInverse = new Matrix4();
+		this.projection = new Matrix4();
+		this.modelViewProjection = new Matrix4();
+		this.modelViewProjectionInverse = new Matrix4();
 
 		//! AT: unused?
 		this._planeState = 0;
@@ -774,7 +774,7 @@ define([
 		if (this._updateInverseMVMatrix) {
 			this.checkModelView();
 			this.modelViewInverse.copy(this.modelView).invert();
-			//Matrix4x4.invert(this.modelView, this.modelViewInverse);
+			//Matrix4.invert(this.modelView, this.modelViewInverse);
 			this._updateInverseMVMatrix = false;
 		}
 	};
@@ -786,13 +786,13 @@ define([
 		if (this._updateInverseMVPMatrix) {
 			this.checkModelViewProjection();
 			this.modelViewProjectionInverse.copy(this.modelViewProjection).invert();
-			//Matrix4x4.invert(this.modelViewProjection, this.modelViewProjectionInverse);
+			//Matrix4.invert(this.modelViewProjection, this.modelViewProjectionInverse);
 			this._updateInverseMVPMatrix = false;
 		}
 	};
 
 	/**
-	 * @returns {Matrix4x4} The modelView matrix.
+	 * @returns {Matrix4} The modelView matrix.
 	 */
 	Camera.prototype.getViewMatrix = function () {
 		this.checkModelView();
@@ -800,7 +800,7 @@ define([
 	};
 
 	/**
-	 * @returns {Matrix4x4} The projection matrix.
+	 * @returns {Matrix4} The projection matrix.
 	 */
 	Camera.prototype.getProjectionMatrix = function () {
 		this.checkProjection();
@@ -808,7 +808,7 @@ define([
 	};
 
 	/**
-	 * @returns {Matrix4x4} The modelViewProjection matrix.
+	 * @returns {Matrix4} The modelViewProjection matrix.
 	 */
 	Camera.prototype.getViewProjectionMatrix = function () {
 		this.checkModelViewProjection();
@@ -816,7 +816,7 @@ define([
 	};
 
 	/**
-	 * @returns {Matrix4x4} The modelViewInverse matrix.
+	 * @returns {Matrix4} The modelViewInverse matrix.
 	 */
 	Camera.prototype.getViewInverseMatrix = function () {
 		this.checkInverseModelView();
@@ -824,7 +824,7 @@ define([
 	};
 
 	/**
-	 * @returns {Matrix4x4} The modelViewProjectionInverse matrix.
+	 * @returns {Matrix4} The modelViewProjectionInverse matrix.
 	 */
 	Camera.prototype.getViewProjectionInverseMatrix = function () {
 		this.checkInverseModelViewProjection();

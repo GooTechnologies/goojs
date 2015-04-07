@@ -10,9 +10,9 @@ define([
 	/**
 	 * Matrix with 4x4 components.
 	 * @extends Matrix
-	 * @param {Matrix4x4|number[]|...number} arguments Initial values for the components.
+	 * @param {Matrix4|number[]|...number} arguments Initial values for the components.
 	 */
-	function Matrix4x4(
+	function Matrix4(
 		e00, e10, e20, e30,
 		e01, e11, e21, e31,
 		e02, e12, e22, e32,
@@ -52,19 +52,19 @@ define([
 		// #endif
 	}
 
-	Matrix4x4.prototype = Object.create(Matrix.prototype);
-	Matrix4x4.prototype.constructor = Matrix4x4;
+	Matrix4.prototype = Object.create(Matrix.prototype);
+	Matrix4.prototype.constructor = Matrix4;
 
-	Matrix.setupAliases(Matrix4x4.prototype, [['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
+	Matrix.setupAliases(Matrix4.prototype, [['e00'], ['e10'], ['e20'], ['e30'], ['e01'], ['e11'], ['e21'], ['e31'], ['e02'], ['e12'], ['e22'], ['e32'], ['e03'], ['e13'], ['e23'], ['e33']]);
 
-	Matrix4x4.IDENTITY = new Matrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+	Matrix4.IDENTITY = new Matrix4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
 	/**
 	 * Performs a component-wise addition.
-	 * @param {Matrix4x4} that Matrix or scalar on the right-hand side.
-	 * @returns {Matrix4x4} Self to allow chaining.
+	 * @param {Matrix4} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix4} Self to allow chaining.
 	 */
-	Matrix4x4.prototype.add = function (that) {
+	Matrix4.prototype.add = function (that) {
 		var thisData = this.data;
 		var thatData = that.data;
 
@@ -90,10 +90,10 @@ define([
 
 	/**
 	 * Performs a component-wise subtraction.
-	 * @param {Matrix4x4} that Matrix or scalar on the right-hand side.
-	 * @returns {Matrix4x4} Self to allow chaining
+	 * @param {Matrix4} that Matrix or scalar on the right-hand side.
+	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4x4.prototype.sub = function (that) {
+	Matrix4.prototype.sub = function (that) {
 		var thisData = this.data;
 		var thatData = that.data;
 
@@ -120,9 +120,9 @@ define([
 	/**
 	 * Multiplies this matrix with a scalar
 	 * @param {number} scalar
-	 * @returns {Matrix4x4} Self to allow chaining
+	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4x4.prototype.scale = function (scalar) {
+	Matrix4.prototype.scale = function (scalar) {
 		var data = this.data;
 
 		data[0] *= scalar;
@@ -147,10 +147,10 @@ define([
 
 	/**
 	 * Multiplies this matrix with another matrix
-	 * @param {Matrix4x4} that Matrix on the left-hand side
-	 * @returns {Matrix4x4} Self to allow chaining
+	 * @param {Matrix4} that Matrix on the left-hand side
+	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4x4.prototype.mulPre = function (that) {
+	Matrix4.prototype.mulPre = function (that) {
 		var s1d = this.data;
 		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
 			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
@@ -188,11 +188,11 @@ define([
 
 	/**
 	 * Multiplies two matrices and stores the result in this matrix
-	 * @param {Matrix4x4} lhs Matrix on the left-hand side
-	 * @param {Matrix4x4} rhs Matrix on the right-hand side
-	 * @returns {Matrix4x4} Self to allow chaining
+	 * @param {Matrix4} lhs Matrix on the left-hand side
+	 * @param {Matrix4} rhs Matrix on the right-hand side
+	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4x4.prototype.mul2 = function (lhs, rhs) {
+	Matrix4.prototype.mul2 = function (lhs, rhs) {
 		var s1d = lhs.data;
 		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
 			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],
@@ -230,9 +230,9 @@ define([
 
 	/**
 	 * Transposes a matrix (exchanges rows and columns)
-	 * @returns {Matrix4x4} Self to allow chaining
+	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4x4.prototype.transpose = function () {
+	Matrix4.prototype.transpose = function () {
 		var data = this.data;
 
 		var e01 = data[4];
@@ -261,17 +261,17 @@ define([
 
 	/**
 	 * Computes the analytical inverse and stores the result in a separate matrix.
-	 * @param {Matrix4x4} source Source matrix.
-	 * @param {Matrix4x4} [target] Target matrix.
-	 * @returns {Matrix4x4} A new matrix if the target matrix is omitted, else the target matrix.
+	 * @param {Matrix4} source Source matrix.
+	 * @param {Matrix4} [target] Target matrix.
+	 * @returns {Matrix4} A new matrix if the target matrix is omitted, else the target matrix.
 	 */
-	Matrix4x4.invert = function (source, target) {
+	Matrix4.invert = function (source, target) {
 		if (!target) {
-			target = new Matrix4x4();
+			target = new Matrix4();
 		}
 
 		if (target === source) {
-			return target.copy(Matrix4x4.invert(source));
+			return target.copy(Matrix4.invert(source));
 		}
 
 		var det = source.determinant();
@@ -307,17 +307,17 @@ define([
 
 	/**
 	 * Computes the analytical inverse and stores the result locally.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.invert = function () {
-		return Matrix4x4.invert(this, this);
+	Matrix4.prototype.invert = function () {
+		return Matrix4.invert(this, this);
 	};
 
 	/**
 	 * Tests if the matrix is orthogonal.
 	 * @returns {Boolean} True if orthogonal.
 	 */
-	Matrix4x4.prototype.isOrthogonal = function () {
+	Matrix4.prototype.isOrthogonal = function () {
 		var dot;
 
 		dot = this.e00 * this.e01 + this.e10 * this.e11 + this.e20 * this.e21 + this.e30 * this.e31;
@@ -364,7 +364,7 @@ define([
 	 * Tests if the matrix is normal.
 	 * @returns {Boolean} True if normal.
 	 */
-	Matrix4x4.prototype.isNormal = function () {
+	Matrix4.prototype.isNormal = function () {
 		var l;
 
 		l = this.e00 * this.e00 + this.e10 * this.e10 + this.e20 * this.e20 + this.e30 * this.e30;
@@ -399,7 +399,7 @@ define([
 	 * Tests if the matrix is orthonormal.
 	 * @returns {Boolean} True if orthonormal.
 	 */
-	Matrix4x4.prototype.isOrthonormal = function () {
+	Matrix4.prototype.isOrthonormal = function () {
 		return this.isOrthogonal() && this.isNormal();
 	};
 
@@ -407,7 +407,7 @@ define([
 	 * Computes the determinant of the matrix.
 	 * @returns {Float} Determinant of matrix.
 	 */
-	Matrix4x4.prototype.determinant = function () {
+	Matrix4.prototype.determinant = function () {
 		var d = this.data;
 
 		var val1 = d[5] * d[10] * d[15] +
@@ -441,12 +441,12 @@ define([
 			d[12] * val4;
 	};
 
-	//! AT: matrix.set(Matrix3x3.IDENTITY);
+	//! AT: matrix.set(Matrix3.IDENTITY);
 	/**
 	 * Sets the matrix to identity.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.setIdentity = function () {
+	Matrix4.prototype.setIdentity = function () {
 		var d = this.data;
 
 		d[0] = 1;
@@ -472,9 +472,9 @@ define([
 	/**
 	 * Sets the rotational part of the matrix from a vector of angles. Order convention is x followed by y followed by z.
 	 * @param {Vector3} angles Rotational angles in radians.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.setRotationFromVector = function (angles) {
+	Matrix4.prototype.setRotationFromVector = function (angles) {
 		var sx = Math.sin(angles.x);
 		var cx = Math.cos(angles.x);
 		var sy = Math.sin(angles.y);
@@ -498,9 +498,9 @@ define([
 	/**
 	 * Sets the rotational part of the matrix from a quaternion.
 	 * @param {Vector4} quaternion Rotational quaternion.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.setRotationFromQuaternion = function (quaternion) {
+	Matrix4.prototype.setRotationFromQuaternion = function (quaternion) {
 		var l = quaternion.lengthSquared();
 
 		l = (l > 0.0) ? 2.0 / l : 0.0; //! AT: epsilon?
@@ -535,9 +535,9 @@ define([
 	/**
 	 * Sets the translational part of the matrix.
 	 * @param {Vector3} translation Translation vector.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.setTranslation = function (translation) {
+	Matrix4.prototype.setTranslation = function (translation) {
 		this.e03 = translation.x;
 		this.e13 = translation.y;
 		this.e23 = translation.z;
@@ -548,9 +548,9 @@ define([
 	/**
 	 * Gets the translational part of the matrix.
 	 * @param {Vector3} store Translation vector to store result in.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.getTranslation = function (store) {
+	Matrix4.prototype.getTranslation = function (store) {
 		store.x = this.data[12];
 		store.y = this.data[13];
 		store.z = this.data[14];
@@ -560,10 +560,10 @@ define([
 
 	/**
 	 * Gets the rotational part of the matrix (the upper left 3x3 matrix).
-	 * @param {Matrix3x3} store Rotation matrix to store in.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @param {Matrix3} store Rotation matrix to store in.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.getRotation = function (store) {
+	Matrix4.prototype.getRotation = function (store) {
 		var d = this.data;
 		store.set(
 			d[0], d[1], d[2],
@@ -576,9 +576,9 @@ define([
 	/**
 	 * Gets the scaling part of the matrix.
 	 * @param {Vector3} store Scaling vector to store result in.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.getScale = function (store) {
+	Matrix4.prototype.getScale = function (store) {
 		//! AT: length?
 		var sx = Math.sqrt(store.setDirect(this.data[0], this.data[4], this.data[8]).lengthSquared());
 		var sy = Math.sqrt(store.setDirect(this.data[1], this.data[5], this.data[9]).lengthSquared());
@@ -594,9 +594,9 @@ define([
 	/**
 	 * Sets the scale of the matrix.
 	 * @param {Vector3} scale Scale vector.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.setScale = function (scale) {
+	Matrix4.prototype.setScale = function (scale) {
 		this.e00 *= scale.x;
 		this.e10 *= scale.y;
 		this.e20 *= scale.z;
@@ -618,7 +618,7 @@ define([
 
 	// REVIEW rherlitz: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector)
 	// and the matrix is applied after the vector.
-	Matrix4x4.prototype.applyPre = function (rhs) {
+	Matrix4.prototype.applyPre = function (rhs) {
 		return rhs.applyPre(this);
 	};
 
@@ -627,7 +627,7 @@ define([
 	 * @param {Vector4} rhs Vector on the right-hand side.
 	 * @returns {Vector4} Transformed right-hand side vector.
 	 */
-	Matrix4x4.prototype.applyPost = function (rhs) {
+	Matrix4.prototype.applyPost = function (rhs) {
 		return rhs.applyPost(this);
 	};
 
@@ -636,7 +636,7 @@ define([
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
-	Matrix4x4.prototype.applyPostPoint = function (rhs) {
+	Matrix4.prototype.applyPostPoint = function (rhs) {
 		return rhs.applyPostPoint(this);
 	};
 
@@ -645,16 +645,16 @@ define([
 	 * @param {Vector3} rhs Vector on the right-hand side.
 	 * @returns {Vector3} Transformed right-hand side vector.
 	 */
-	Matrix4x4.prototype.applyPostVector = function (rhs) {
+	Matrix4.prototype.applyPostVector = function (rhs) {
 		return rhs.applyPostVector(this);
 	};
 
 	/**
 	 * Compares two matrices for approximate equality
-	 * @param {Matrix4x4} that The matrix to compare against
+	 * @param {Matrix4} that The matrix to compare against
 	 * @returns {boolean}
 	 */
-	Matrix4x4.prototype.equals = function (that) {
+	Matrix4.prototype.equals = function (that) {
 		var thisData = this.data;
 		var thatData = that.data;
 
@@ -678,10 +678,10 @@ define([
 
 	/**
 	 * Copies component values and stores them locally.
-	 * @param {Matrix4x4} that Source matrix.
-	 * @returns {Matrix4x4} Self for chaining.
+	 * @param {Matrix4} that Source matrix.
+	 * @returns {Matrix4} Self for chaining.
 	 */
-	Matrix4x4.prototype.copy = function (that) {
+	Matrix4.prototype.copy = function (that) {
 		var thisData = this.data;
 		var thatData = that.data;
 
@@ -707,26 +707,26 @@ define([
 
 	/**
 	 * Sets the matrix's values from another matrix's values; an alias for .copy
-	 * @param {Matrix4x4} that Source matrix
-	 * @returns {Matrix4x4} Self to allow chaining
+	 * @param {Matrix4} that Source matrix
+	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4x4.prototype.set = Matrix4x4.prototype.copy;
+	Matrix4.prototype.set = Matrix4.prototype.copy;
 
 	/**
 	 * Returns a new matrix with the same values as the existing one.
-	 * @returns {Matrix4x4} The new matrix.
+	 * @returns {Matrix4} The new matrix.
 	 */
-	Matrix4x4.prototype.clone = function () {
-		return new Matrix4x4().copy(this);
+	Matrix4.prototype.clone = function () {
+		return new Matrix4().copy(this);
 	};
 
 	// #ifdef DEBUG
-	Matrix.addPostChecks(Matrix4x4.prototype, [
+	Matrix.addPostChecks(Matrix4.prototype, [
 		'add', 'sub', 'scale', 'transpose', 'invert',
 		'isOrthogonal', 'determinant', 'applyPre',
 		'copy'
 	]);
 	// #endif
 
-	return Matrix4x4;
+	return Matrix4;
 });

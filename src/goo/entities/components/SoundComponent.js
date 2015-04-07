@@ -127,7 +127,7 @@ define([
 	 * Updates position, velocity and orientation of component and thereby all connected sounds.
 	 * Since all sounds in the engine are relative to the current camera, the model view matrix needs to be passed to this method.
 	 * @param {object} settings See {@link SoundSystem}
-	 * @param {Matrix4x4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
+	 * @param {Matrix4} mvMat The model view matrix from the current camera, or falsy if the component is attached to the camera.
 	 * @param {number} tpf
 	 * @hidden
 	 */

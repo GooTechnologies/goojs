@@ -1,11 +1,11 @@
 define([
 	'goo/math/Quaternion',
-	'goo/math/Matrix3x3',
+	'goo/math/Matrix3',
 	'goo/math/Vector3',
 	'test/CustomMatchers'
 ], function (
 	Quaternion,
-	Matrix3x3,
+	Matrix3,
 	Vector3,
 	CustomMatchers
 ) {
@@ -95,16 +95,16 @@ define([
 
 		it('can be set from rotation matrix', function () {
 			var q = new Quaternion();
-			var m = new Matrix3x3();
+			var m = new Matrix3();
 			q.fromRotationMatrix(m);
 			expect(q).toBeCloseToVector(new Quaternion());
 		});
 
 		it('can convert to rotation matrix', function () {
 			var q = new Quaternion();
-			var m = new Matrix3x3();
+			var m = new Matrix3();
 			q.toRotationMatrix(m);
-			expect(m).toBeCloseToMatrix(Matrix3x3.IDENTITY);
+			expect(m).toBeCloseToMatrix(Matrix3.IDENTITY);
 		});
 
 		it('can be set from vector to vector', function () {

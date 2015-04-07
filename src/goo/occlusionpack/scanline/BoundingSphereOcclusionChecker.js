@@ -1,13 +1,13 @@
 define([
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/math/Vector4'
 ],
 
-		function (Matrix4x4, Vector4) {
+		function (Matrix4, Vector4) {
 		'use strict';
 
 		var tempVec = new Vector4(0, 0, 0, 1);
-		var combinedMatrix = new Matrix4x4();
+		var combinedMatrix = new Matrix4();
 
 		/*
 			Need to transform five homogeneous positions for a bounding sphere.

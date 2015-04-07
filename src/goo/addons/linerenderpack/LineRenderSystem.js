@@ -82,7 +82,7 @@ define([
 		 * @param {number} startPolarity
 		 * @param {number} endPolarity
 		 * @param {Vector3} color A vector with its components between 0-1.
-		 * @param {Matrix4x4} transformMatrix
+		 * @param {Matrix4} transformMatrix
 		 */
 		LineRenderSystem.prototype._drawAxisLine = function (start, startEndDelta, startDataIndex, endDataIndex, startPolarity, endPolarity, color, transformMatrix) {
 			var lineStart = tmpVec2.set(start);
@@ -104,7 +104,7 @@ define([
 		 * @param {Vector3} min
 		 * @param {Vector3} max
 		 * @param {Vector3} color A vector with its components between 0-1.
-		 * @param {Matrix4x4} [transformMatrix]
+		 * @param {Matrix4} [transformMatrix]
 		 */
 		LineRenderSystem.prototype.drawAABox = function (min, max, color, transformMatrix) {
 			var diff = tmpVec1.set(max).sub(min);

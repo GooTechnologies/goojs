@@ -1,14 +1,14 @@
 define([
         'goo/renderer/MeshData',
         'goo/math/Vector3',
-        // 'goo/math/Matrix3x3',
+        // 'goo/math/Matrix3',
         'goo/entities/EntityUtils'
         ],
 
 	function (
 		MeshData,
 		Vector3,
-		// Matrix3x3,
+		// Matrix3,
 		EntityUtils
 	) {
 	'use strict';
@@ -71,7 +71,7 @@ define([
 		});
 	};
 
-	// var normalMatrix = new Matrix3x3();
+	// var normalMatrix = new Matrix3();
 	var vert = new Vector3();
 	/**
 	 * add MeshData to this MeshBuilder
@@ -86,8 +86,8 @@ define([
 
 		var matrix = transform.matrix;
 		var rotation = transform.rotation;
-		// Matrix3x3.invert(transform.rotation, normalMatrix);
-		// Matrix3x3.transpose(normalMatrix, normalMatrix);
+		// Matrix3.invert(transform.rotation, normalMatrix);
+		// Matrix3.transpose(normalMatrix, normalMatrix);
 
 		var attributeMap = meshData.attributeMap;
 		var keys = Object.keys(attributeMap);

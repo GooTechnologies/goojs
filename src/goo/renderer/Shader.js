@@ -1,15 +1,15 @@
 define([
 	'goo/renderer/ShaderCall',
-	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix3',
+	'goo/math/Matrix4',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus'
 ], function (
 	ShaderCall,
-	Matrix3x3,
-	Matrix4x4,
+	Matrix3,
+	Matrix4,
 	World,
 	RenderQueue,
 	ObjectUtil,
@@ -676,12 +676,12 @@ define([
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4.IDENTITY;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix3x3.IDENTITY;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix3.IDENTITY;
 			uniformCall.uniformMatrix3fv(matrix);
 		};
 

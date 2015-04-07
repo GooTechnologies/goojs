@@ -6,8 +6,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/Util',
-	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix3',
+	'goo/math/Matrix4',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/util/gizmopack/Gizmo',
@@ -22,8 +22,8 @@ define([
 	ShaderLib,
 	ShaderFragment,
 	Util,
-	Matrix3x3,
-	Matrix4x4,
+	Matrix3,
+	Matrix4,
 	MeshData,
 	Shader,
 	Gizmo,
@@ -191,8 +191,8 @@ define([
 			return;
 		}
 
-		var inverseRotation = new Matrix3x3();
-		var inverseTransformation = new Matrix4x4();
+		var inverseRotation = new Matrix3();
+		var inverseTransformation = new Matrix4();
 
 		// Set bound entities translation
 		this.gizmos[0].onChange = function (change) {

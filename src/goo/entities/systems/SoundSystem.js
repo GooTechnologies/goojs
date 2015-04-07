@@ -5,7 +5,7 @@ define([
 	'goo/math/MathUtils',
 	'goo/entities/SystemBus',
 	'goo/util/ObjectUtil',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4'
 ], function (
 	System,
 	AudioContext,
@@ -13,7 +13,7 @@ define([
 	MathUtils,
 	SystemBus,
 	_,
-	Matrix4x4
+	Matrix4
 ) {
 	'use strict';
 	/**
@@ -29,7 +29,7 @@ define([
 		System.call(this, 'SoundSystem', ['SoundComponent', 'TransformComponent']);
 
 		this.entities = [];
-		this._relativeTransform = new Matrix4x4();
+		this._relativeTransform = new Matrix4();
 		this._camera = null;
 
 		this._settings = {

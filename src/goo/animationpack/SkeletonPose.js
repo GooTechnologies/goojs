@@ -1,11 +1,11 @@
 define([
 	'goo/math/Transform',
 	'goo/animationpack/Joint',
-	'goo/math/Matrix4x4'
+	'goo/math/Matrix4'
 ], function (
 	Transform,
 	Joint,
-	Matrix4x4
+	Matrix4
 ) {
 	'use strict';
 
@@ -35,7 +35,7 @@ define([
 
 		// init palette
 		for (var i = 0; i < jointCount; i++) {
-			this._matrixPalette[i] = new Matrix4x4();
+			this._matrixPalette[i] = new Matrix4();
 		}
 
 		// start off in bind pose.
