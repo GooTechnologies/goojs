@@ -94,7 +94,10 @@ define([
 		this.extractFloatPass = new FullscreenPass(extractShader);
 		// this.detailmapPass = new FullscreenPass(detailShader);
 
-		this.normalMap = new RenderTarget(size, size);
+		this.normalMap = new RenderTarget(size, size, {
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
+		});
 		// this.detailMap = new RenderTarget(size, size);
 
 		this.textures = [];
@@ -103,16 +106,16 @@ define([
 			this.textures[i] = new RenderTarget(size, size, {
 				magFilter: 'NearestNeighbor',
 				minFilter: 'NearestNeighborNoMipMaps',
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
 				generateMipmaps: false,
 				type: 'Float'
 			});
 			this.texturesBounce[i] = new RenderTarget(size, size, {
 				magFilter: 'NearestNeighbor',
 				minFilter: 'NearestNeighborNoMipMaps',
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
 				generateMipmaps: false,
 				type: 'Float'
 			});
@@ -128,13 +131,13 @@ define([
 		console.log('grid size: ', this.gridSize);
 
 		this.splat = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
 				generateMipmaps: false
 		});
 		this.splatCopy = new RenderTarget(this.size * this.splatMult, this.size * this.splatMult, {
-				wrapS: 'EdgeClamp',
-				wrapT: 'EdgeClamp',
+				wrapS: 'Repeat',
+				wrapT: 'Repeat',
 				generateMipmaps: false
 		});
 		mat2.setTexture('SPLAT_MAP', this.splatCopy);
@@ -203,8 +206,8 @@ define([
 		this.floatTexture = terrainTextures.heightMap instanceof Texture ? terrainTextures.heightMap : new Texture(terrainTextures.heightMap, {
 			magFilter: 'NearestNeighbor',
 			minFilter: 'NearestNeighborNoMipMaps',
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
 			generateMipmaps: false,
 			format: 'Luminance'
 		}, this.size, this.size);
@@ -212,8 +215,8 @@ define([
 		this.splatTexture = terrainTextures.splatMap instanceof Texture ? terrainTextures.splatMap : new Texture(terrainTextures.splatMap, {
 			magFilter: 'NearestNeighbor',
 			minFilter: 'NearestNeighborNoMipMaps',
-			wrapS: 'EdgeClamp',
-			wrapT: 'EdgeClamp',
+			wrapS: 'Repeat',
+			wrapT: 'Repeat',
 			generateMipmaps: false,
 			flipY: false
 		}, this.size * this.splatMult, this.size * this.splatMult);
@@ -796,7 +799,7 @@ define([
 				'vec2 alpha = clamp((abs(worldPos.xz - cameraPosition.xz) * resolution.y - alphaOffset) * oneOverWidth, vec2(0.0), vec2(1.0));',
 				'alpha.x = max(alpha.x, alpha.y);',
 				'float z = mix(zf, zd, alpha.x);',
-				'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
+				// 'z = coord.x <= 0.0 || coord.x >= 1.0 || coord.y <= 0.0 || coord.y >= 1.0 ? -2000.0 : z;',
 				'alphaval = vec4(zf, zd, alpha.x, z);',
 
 				'worldPos.y = z * resolution.x;',

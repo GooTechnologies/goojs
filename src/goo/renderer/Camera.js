@@ -609,6 +609,7 @@ define([
 	 * @returns {Vector3} Vector containing the world coordinates.
 	 */
 	Camera.prototype.getWorldPosition = function (screenX, screenY, screenWidth, screenHeight, zDepth, store) {
+		zDepth = Math.max(zDepth, this.near);
 		if (this.projectionMode === Camera.Parallel) {
 			zDepth = ((zDepth - this.near) / (this.far - this.near));
 		} else {

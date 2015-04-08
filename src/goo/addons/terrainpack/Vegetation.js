@@ -60,7 +60,7 @@ define([
 		var material = new Material(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', vegetationAtlasTexture);
 		material.cullState.enabled = false;
-		material.uniforms.discardThreshold = 0.2;
+		material.uniforms.discardThreshold = 0.3;
 		material.blendState.blending = 'CustomBlending';
 		// material.uniforms.materialAmbient = [0.3, 0.3, 0.3, 0.3];
 		material.uniforms.materialAmbient = [0, 0, 0, 0];
@@ -128,9 +128,15 @@ define([
 		}
 	};
 
+	var patches = [];
 	Vegetation.prototype.update = function (x, z) {
 		if (!this.initDone || hidden) {
 			return;
+		}
+
+		if (patches.length > 0) {
+			var patch = patches.shift();
+			this.updatePatch(patch.patchX, patch.patchZ);
 		}
 
 		var newX = Math.floor(x / this.patchSize);
@@ -155,21 +161,28 @@ define([
 
 				patchX -= this.gridSizeHalf;
 				patchZ -= this.gridSizeHalf;
-				var modX = MathUtils.moduloPositive(patchX, this.gridSize);
-				var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
 
-				patchX *= this.patchSize;
-				patchZ *= this.patchSize;
+				patches.push({
+					patchX: patchX,
+					patchZ: patchZ,
+				});
 
-				var entity = this.grid[modX][modZ];
-				var meshData = this.createPatch(patchX, patchZ);
-				if (!meshData) {
-					entity.meshRendererComponent.hidden = true;
-				} else {
-					entity.meshRendererComponent.hidden = false;
-					entity.meshDataComponent.meshData = meshData;
-					entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
-				}
+
+				// var modX = MathUtils.moduloPositive(patchX, this.gridSize);
+				// var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
+
+				// patchX *= this.patchSize;
+				// patchZ *= this.patchSize;
+
+				// var entity = this.grid[modX][modZ];
+				// var meshData = this.createPatch(patchX, patchZ);
+				// if (!meshData) {
+				// 	entity.meshRendererComponent.hidden = true;
+				// } else {
+				// 	entity.meshRendererComponent.hidden = false;
+				// 	entity.meshDataComponent.meshData = meshData;
+				// 	entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+				// }
 			}
 		}
 
@@ -177,6 +190,24 @@ define([
 		this.currentZ = newZ;
 
 		// console.timeEnd('vegetation update');
+	};
+
+	Vegetation.prototype.updatePatch = function (patchX, patchZ) {
+		var modX = MathUtils.moduloPositive(patchX, this.gridSize);
+		var modZ = MathUtils.moduloPositive(patchZ, this.gridSize);
+
+		patchX *= this.patchSize;
+		patchZ *= this.patchSize;
+
+		var entity = this.grid[modX][modZ];
+		var meshData = this.createPatch(patchX, patchZ);
+		if (!meshData) {
+			entity.meshRendererComponent.hidden = true;
+		} else {
+			entity.meshRendererComponent.hidden = false;
+			entity.meshDataComponent.meshData = meshData;
+			entity.meshRendererComponent.worldBound.center.setDirect(patchX + this.patchSize * 0.5, 0, patchZ + this.patchSize * 0.5);
+		}
 	};
 
 	Vegetation.prototype.createPatch = function (patchX, patchZ) {

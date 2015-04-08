@@ -117,9 +117,9 @@ define([
 		material.uniforms.discardThreshold = 0.6;
 		// material.blendState.blending = 'CustomBlending';
 		// material.uniforms.materialAmbient = [0, 0, 0, 0];
-		material.uniforms.materialAmbient = [0, 0, 0, 0];
-		material.uniforms.materialDiffuse = [1, 1, 1, 1];
-		material.uniforms.materialSpecular = [0, 0, 0, 0];
+		material.uniforms.materialAmbient = [0.5, 0.5, 0.5, 1];
+		material.uniforms.materialDiffuse = [0.5, 0.5, 0.5, 1];
+		material.uniforms.materialSpecular = [0, 0, 0, 1];
 		material.renderQueue = 2001;
 		this.material = material;
 
@@ -127,10 +127,10 @@ define([
 		// this.patchDensity = 10;
 		// this.gridSize = 7;
 		// this.minDist = 0;
-		this.patchSize = 32;
-		this.patchDensity = 5;
+		this.patchSize = 64;
+		this.patchDensity = 8;
 		this.gridSize = 7;
-		this.minDist = 1.5;
+		this.minDist = 0;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
@@ -288,7 +288,7 @@ define([
 
 	Forrest.prototype.addVegMeshToPatch = function (vegetationType, pos, meshBuilder, levelOfDetail, gridEntity) {
 		var transform = new Transform();
-		var size = (MathUtils.fastRandom() * 0.5 + 0.75);
+		var size = (MathUtils.fastRandom() * 0.5 + 0.75) * 0.5;
 		transform.translation.set(pos);
 		transform.update();
 		// var meshData;
@@ -435,13 +435,15 @@ define([
 		'varying vec3 viewPosition;',
 		'varying vec2 texCoord0;',
 
+		'const vec3 upVec = vec3(0.0, 1.0, 0.0);',
+
 		'void main(void) {',
 			'vec3 swayPos = vertexPosition;',
 
 			'vec3 nn = cameraPosition - swayPos.xyz;',
 			'nn.y = 0.0;',
 			'normal = normalize(nn);',
-			'tangent = cross(vec3(0.0, 1.0, 0.0), normal);',
+			'tangent = cross(upVec, normal);',
 			'binormal = cross(normal, tangent);',
 			'swayPos.xz += tangent.xz * offset.x;',
 			'swayPos.y += offset.y;',
@@ -479,21 +481,19 @@ define([
 		'void main(void)',
 		'{',
 		'	vec4 final_color = texture2D(diffuseMap, texCoord0);',
-			// 'if (final_color.a < discardThreshold) discard;',
-			// 'final_color = vec4(1.0);',
+			'if (final_color.a < discardThreshold) discard;',
 
 			'mat3 tangentToWorld = mat3(tangent, binormal, normal);',
 			'vec3 tangentNormal = texture2D(normalMap, texCoord0).xyz * vec3(2.0) - vec3(1.0);',
 			'vec3 worldNormal = (tangentToWorld * tangentNormal);',
 			'vec3 N = normalize(worldNormal);',
 
-			// 'final_color = vec4(N, 1.0);',
 			ShaderBuilder.light.fragment,
 
-			// '#ifdef FOG',
-			// 'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
-			// 'final_color.rgb = mix(final_color.rgb, fogColor, d);',
-			// '#endif',
+			'#ifdef FOG',
+			'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',
+			'final_color.rgb = mix(final_color.rgb, fogColor, d);',
+			'#endif',
 
 		'	gl_FragColor = final_color;',
 		'}'//
