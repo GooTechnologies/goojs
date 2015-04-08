@@ -6,7 +6,10 @@ define(function () {
 	 */
 	function Vector() {}
 
+	var COMPONENT_NAMES = ['x', 'y', 'z', 'w'];
+	// #ifdef DEBUG
 	var COMPONENT_NAMES = ['_x', '_y', '_z', '_w'];
+	// #endif
 
 	/**
 	 * Binds aliases to the different vector components.
