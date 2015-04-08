@@ -1,6 +1,7 @@
-var Dependency = require('./dependency').Dependency;
-var fs = require('fs');
-var colors = require('colors');
+// jshint node:true
+'use strict';
+
+var Dependency = require('./dependency');
 
 function extractModuleName(s) {
 	var slash = s.lastIndexOf('/');

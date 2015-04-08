@@ -3,7 +3,7 @@
 
 var Dependency = require('./dependency').Dependency;
 var topoSort = require('./topo-sort');
-var derequire = require('./derequire-module');
+var derequire = require('./derequire-module-esprima');
 var fs = require('fs');
 var esprima = require('esprima');
 var escodegen = require('escodegen');
