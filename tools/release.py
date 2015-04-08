@@ -45,7 +45,11 @@ def copy_to_release_dir(release_dir, engine_folders):
 		os.makedirs(release_dir)
 		print 'Created directory for release:', release_dir
 
-	release_lib_folder = os.path.join(release_dir, 'lib')
+	# Store the base content in a subfolder of its own
+	base_folder = os.path.join(release_dir, 'base')
+	os.makedirs(base_folder)
+
+	release_lib_folder = os.path.join(base_folder, 'lib')
 	os.makedirs(release_lib_folder)
 
 	for directory in (
@@ -62,16 +66,16 @@ def copy_to_release_dir(release_dir, engine_folders):
 			source = destination = directory
 		else:
 			source, destination = directory
-		dest_path = os.path.join(release_dir, destination)
+		dest_path = os.path.join(base_folder, destination)
 		shutil.copytree(source, dest_path)
 		print 'Copied "%s" into "%s"' % (source, dest_path)
 
 	shutil.copy('lib/require.js', release_lib_folder)
 	shutil.copy('lib/ammo.small.js', release_lib_folder)
 	shutil.copy('lib/polyk.js', release_lib_folder)
-	shutil.copy('COPYING', release_dir)
-	shutil.copy('LICENSE', release_dir)
-	shutil.copy('CHANGES', release_dir)
+	shutil.copy('COPYING', base_folder)
+	shutil.copy('LICENSE', base_folder)
+	shutil.copy('CHANGES', base_folder)
 
 	engine_releases_folder = os.path.abspath(os.path.join(release_dir, ENGINE_RELEASE_BASE_FOLDER))
 	os.makedirs(engine_releases_folder)
