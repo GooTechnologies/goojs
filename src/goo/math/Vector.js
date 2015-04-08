@@ -1,6 +1,9 @@
 define(function () {
 	'use strict';
 
+	/**
+	 * Abstract vector class
+	 */
 	function Vector() {}
 
 	var COMPONENT_NAMES = ['_x', '_y', '_z', '_w'];

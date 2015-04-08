@@ -9,6 +9,7 @@ define([
 
 	/**
 	 * Vector with 2 components
+	 * @extends Vector
 	 * @param {number} x
 	 * @param {number} y
 	 * @example
@@ -33,6 +34,9 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	Vector2.prototype = Object.create(Vector.prototype);
+	Vector2.prototype.constructor = Vector2;
 
 	// #ifdef DEBUG
 	Vector.setupAliases(Vector2.prototype, [['x'], ['y']]);

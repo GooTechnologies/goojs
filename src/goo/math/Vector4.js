@@ -9,6 +9,7 @@ define([
 
 	/**
 	 * Vector with 4 components
+	 * @extends Vector
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
@@ -41,6 +42,9 @@ define([
 		Object.seal(this);
 		// #endif
 	}
+
+	Vector4.prototype = Object.create(Vector.prototype);
+	Vector4.prototype.constructor = Vector4;
 
 	// #ifdef DEBUG
 	Vector.setupAliases(Vector4.prototype,[['x'], ['y'], ['z'], ['w']]);
