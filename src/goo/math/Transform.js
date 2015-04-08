@@ -100,10 +100,13 @@ define([
 
 		tmpVec.setVector(a.scale).mulVector(b.scale);
 		this.scale.setVector(tmpVec);
+
+		return this;
 	};
 
 	/**
 	 * Set Transform to identity
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.setIdentity = function () {
 		this.matrix.setIdentity();
@@ -111,6 +114,8 @@ define([
 		this.translation.setVector(Vector3.ZERO);
 		this.rotation.setIdentity();
 		this.scale.setVector(Vector3.ONE);
+
+		return this;
 	};
 
 	/**
@@ -162,6 +167,7 @@ define([
 
 	/**
 	 * Updates the transform according to set scaling, rotation and translation. This is done automatically by the engine
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.update = function () {
 		var target = this.matrix.data;
@@ -185,10 +191,13 @@ define([
 		target[13] = translation[1];
 		target[14] = translation[2];
 		target[15] = 1.0;
+
+		return this;
 	};
 
 	/**
 	 * Updates the normal matrix. This is done automatically by the engine.
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.updateNormalMatrix = function () {
 		// Copy upper left of 4x4 to 3x3
@@ -211,11 +220,14 @@ define([
 			Matrix3x3.invert(this.normalMatrix, tmpMat1);
 			Matrix3x3.transpose(tmpMat1, this.normalMatrix);
 		}
+
+		return this;
 	};
 
 	/**
 	 * Copy supplied transform into this transform
 	 * @param {Transform} transform
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.copy = function (transform) {
 		this.matrix.copy(transform.matrix);
@@ -223,6 +235,8 @@ define([
 		this.translation.setVector(transform.translation);
 		this.rotation.copy(transform.rotation);
 		this.scale.setVector(transform.scale);
+
+		return this;
 	};
 
 	/**
@@ -231,15 +245,19 @@ define([
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.setRotationXYZ = function (x, y, z) {
 		this.rotation.fromAngles(x, y, z);
+
+		return this;
 	};
 
 	/**
 	 * Sets the transform to look in a specific direction.
 	 * @param {Vector3} position Target position.
 	 * @param {Vector3} [up=(0, 1, 0)] Up vector.
+	 * @returns {Transform} Self to allow chaining
 	 */
 	Transform.prototype.lookAt = function (position, up) {
 		if (!up) {
@@ -251,6 +269,8 @@ define([
 			tmpVec.normalize();
 			this.rotation.lookAt(tmpVec, up);
 		}
+
+		return this;
 	};
 
 	/**
