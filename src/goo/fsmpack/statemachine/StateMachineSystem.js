@@ -1,8 +1,10 @@
 define([
 	'goo/entities/systems/System',
+	'goo/util/Tween',
 	'goo/fsmpack/statemachine/actions/Actions'
 ], function (
-	System
+	System,
+	TWEEN
 ) {
 	'use strict';
 
@@ -49,7 +51,8 @@ define([
 				component.cleanup();
 			}
 			this.time = 0;
-			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
+			// remove all sounds a bit hard but in reality no tween should remain alive between runs
+			TWEEN.removeAll();
 			this.passive = true;
 			return;
 		}
@@ -65,7 +68,7 @@ define([
 			}
 		}
 
-		if (window.TWEEN) { window.TWEEN.update(this.engine.world.time * 1000); } // this should not stay here
+		TWEEN.update(this.engine.world.time * 1000); // this should not stay here
 
 		for (var i = 0; i < entities.length; i++) {
 			component = entities[i].stateMachineComponent;

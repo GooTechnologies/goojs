@@ -1,7 +1,9 @@
 define([
-	'goo/entities/systems/System'
+	'goo/entities/systems/System',
+	'goo/util/Tween'
 ], function (
-	System
+	System,
+	TWEEN
 ) {
 	'use strict';
 
@@ -27,7 +29,7 @@ define([
 			}
 			this.time = 0;
 			//! AT: but no TWEENS have been harmed in any way
-			if (window.TWEEN) { window.TWEEN.removeAll(); } // this should not stay here
+			TWEEN.removeAll(); // this should not stay here
 			this.passive = true;
 			return;
 		}
