@@ -76,6 +76,8 @@ function (
 		this.planeMeshData = new PhysicsPlaneDebugShape();
 
 		this.material = new Material(ShaderLib.simpleColored);
+		this.material.depthState.write = true;
+		this.material.depthState.enabled = true;
 		this.material.uniforms.color = [0, 1, 0];
 		this.material.wireframe = true;
 		this.renderablePool = new Pool({
