@@ -29,12 +29,12 @@ define([
 			});
 		});
 
-		describe('mulPre', function () {
+		describe('mul', function () {
 			it('can multiply this matrix with another matrix', function () {
 				var a = new Matrix2(1, 2, 3, 4);
 				var b = new Matrix2(2, 3, 5, 7);
 
-				a.mulPre(b);
+				a.mul(b);
 
 				expect(a).toBeCloseToMatrix(new Matrix2(12, 17, 24, 37));
 			});

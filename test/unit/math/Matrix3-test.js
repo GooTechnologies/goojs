@@ -33,12 +33,12 @@ define([
 			});
 		});
 
-		describe('mulPre', function () {
+		describe('mul', function () {
 			it('multiplies this matrix with another matrix', function () {
 				var a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 				var b = new Matrix3(2, 3, 5, 7, 11, 13, 17, 19, 23);
 
-				a.mulPre(b);
+				a.mul(b);
 
 				expect(a).toBeCloseToMatrix(new Matrix3(67, 82, 100, 145, 181, 223, 223, 280, 346));
 			});

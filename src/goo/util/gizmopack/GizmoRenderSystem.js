@@ -217,7 +217,7 @@ define([
 					inverseRotation.invert();
 				}
 
-				this.entity.transformComponent.transform.rotation.mulPre(inverseRotation);
+				this.entity.transformComponent.transform.rotation.mul(inverseRotation);
 				this.entity.transformComponent.setUpdated();
 			}
 		}.bind(this);

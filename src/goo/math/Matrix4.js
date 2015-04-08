@@ -150,7 +150,7 @@ define([
 	 * @param {Matrix4} that Matrix on the left-hand side
 	 * @returns {Matrix4} Self to allow chaining
 	 */
-	Matrix4.prototype.mulPre = function (that) {
+	Matrix4.prototype.mul = function (that) {
 		var s1d = this.data;
 		var m00 = s1d[0], m01 = s1d[4], m02 = s1d[8], m03 = s1d[12],
 			m10 = s1d[1], m11 = s1d[5], m12 = s1d[9], m13 = s1d[13],

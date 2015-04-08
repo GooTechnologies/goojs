@@ -97,7 +97,7 @@ define([
 	 * @param {Matrix2} that Matrix on the left-hand side
 	 * @returns {Matrix2} Self to allow chaining
 	 */
-	Matrix2.prototype.mulPre = function (that) {
+	Matrix2.prototype.mul = function (that) {
 		var s1d = that.data;
 		var m00 = s1d[0], m01 = s1d[2],
 			m10 = s1d[1], m11 = s1d[3];

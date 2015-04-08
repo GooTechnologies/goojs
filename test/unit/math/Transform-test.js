@@ -98,6 +98,8 @@ define([
 		});
 
 		it('combines correctly', function () {
+			//! AT: really bad idea to use random numbers
+			// if the test fails for some numbers once in a full moon you won't be able to reproduce it
 			t.translation.setDirect(rnd(5), rnd(5), rnd(5));
 			t.scale.setDirect(3, 3, 3);
 			t.setRotationXYZ(rnd(5), rnd(5), rnd(5));
@@ -109,7 +111,7 @@ define([
 			t2.update();
 			var t3 = Transform.combine(t, t2);
 			t3.update();
-			t.matrix.mulPre(t2.matrix);
+			t.matrix.mul(t2.matrix);
 			expect(t3.matrix).toBeCloseToMatrix(t.matrix);
 		});
 

@@ -163,7 +163,7 @@ define([
 		screenRotation.mul2(this._rotation, screenRotation);
 		screenRotation.mul2(screenRotation, camRotation);
 
-		this.transform.rotation.mulPre(screenRotation);
+		this.transform.rotation.mul(screenRotation);
 	};
 
 	// --- functions for snapping to certain angles go here
