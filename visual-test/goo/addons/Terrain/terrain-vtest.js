@@ -16,6 +16,7 @@ require([
 	'goo/addons/terrainpack/TerrainHandler',
 	'goo/scriptpack/FlyControlScript',
 	'goo/scripts/Scripts',
+	'ColorUtil',
 	'lib/V'
 ], function(
 	Material,
@@ -35,6 +36,7 @@ require([
 	TerrainHandler,
 	FlyControlScript,
 	Scripts,
+	ColorUtil,
 	V
 ) {
 	'use strict';
@@ -477,7 +479,7 @@ require([
 		crawlSpeed: 20,
 		// button: 'Right'
 	});
-	var camera = new Camera(90);
+	var camera = new Camera(80);
 	var cameraEntity = goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
 	cameraEntity.setTranslation(512, 50, 512);
 
@@ -564,10 +566,10 @@ require([
 		angle: angle,
 		intensity: levelData.light.intensity * 100,
 		color: levelData.light.color.map(function(x) {
-			return x * 255
+			return x * 255;
 		}),
 		ambient: levelData.globalAmbient.map(function(x) {
-			return x * 255
+			return x * 255;
 		})
 	};
 	var intensitySlider = lighting.add(lightingobj, 'intensity').min(0);
@@ -602,7 +604,7 @@ require([
 			col = ColorUtil.cssToArray(value);
 		} else {
 			col = value.map(function(x) {
-				return x / 255
+				return x / 255;
 			});
 		}
 		lightEntity.lightComponent.light.color.setArray(col);
@@ -615,7 +617,7 @@ require([
 			col = ColorUtil.cssToArray(value);
 		} else {
 			col = value.map(function(x) {
-				return x / 255
+				return x / 255;
 			});
 		}
 		ShaderBuilder.GLOBAL_AMBIENT = col;
@@ -663,7 +665,7 @@ require([
 	});
 	var fogObj = {
 		color: levelData.fog.color.map(function(x) {
-			return x * 255
+			return x * 255;
 		})
 	};
 	var fogColor = fog.addColor(fogObj, 'color');
@@ -673,7 +675,7 @@ require([
 			col = ColorUtil.cssToArray(value);
 		} else {
 			col = value.map(function(x) {
-				return x / 255
+				return x / 255;
 			});
 		}
 		ShaderBuilder.FOG_COLOR = col;
