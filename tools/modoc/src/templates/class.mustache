@@ -32,7 +32,7 @@
 			<div>{{{constructor.comment.description}}}</div>
 
 			{{#constructor.comment.exampleLink}}
-				<div>Example: <a class="example-link" href="{{link}}">{{text}}</a></div>
+				<div>Example: <a class="example-link" href="{{link}}" target="_blank">{{text}}</a></div>
 			{{/constructor.comment.exampleLink}}
 
 			{{#constructor.comment.example}}
@@ -162,7 +162,7 @@
 						{{/comment.param}}
 
 						{{#comment.exampleLink}}
-							<div class="roboto">Example: <a class="example-link" href="{{link}}">{{text}}</a></div>
+							<div class="roboto">Example: <a class="example-link" href="{{link}}" target="_blank">{{text}}</a></div>
 						{{/comment.exampleLink}}
 
 						{{#comment.example}}
@@ -206,7 +206,7 @@
 						{{/comment.param}}
 
 						{{#comment.exampleLink}}
-							<a class="example-link" href="{{link}}">{{text}}</a>
+							<a class="example-link" href="{{link}}" target="_blank">{{text}}</a>
 						{{/comment.exampleLink}}
 
 						{{#comment.example}}
