@@ -14,6 +14,14 @@ function extractModuleName(completeName) {
 	return index === -1 ? completeName : completeName.substr(index + 1);
 }
 
+function stripEnding(ending, string) {
+	if (string.slice(-ending.length) === ending) {
+		return string.slice(0, -ending.length);
+	}
+	return string;
+}
+
 exports.isSafeIdentifier = isSafeIdentifier;
 exports.safenIdentifier = safenIdentifier;
 exports.extractModuleName = extractModuleName;
+exports.stripEnding = stripEnding;
