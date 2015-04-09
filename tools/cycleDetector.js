@@ -1,7 +1,8 @@
 // jshint node:true
 'use strict';
 
-var Dependency = require('./dependency');
+var dependency = require('./dependency');
+require('colors');
 
 function extractModuleName(s) {
 	var slash = s.lastIndexOf('/');
@@ -74,7 +75,7 @@ function checkCycles(graph) {
 // ---
 function cycleDetector() {
 	// do the whole tree
-	Dependency.getTree(rootPath, function (graph) {
+	dependency.getTree(rootPath, function (graph) {
 		// get the nice graph - without paths
 		graph = getNiceGraph(graph);
 
@@ -84,13 +85,13 @@ function cycleDetector() {
 }
 
 function dependencies(fileName) {
-	Dependency.getDependencies(fileName, function (properFileName, dependencies) {
+	dependency.getDependencies(fileName, function (properFileName, dependencies) {
 		console.log(properFileName, 'is dependant on\n', dependencies);
 	});
 }
 
 function dependants(fileName) {
-	Dependency.getDependants(rootPath, fileName, function (properFileName, dependants) {
+	dependency.getDependants(rootPath, fileName, function (properFileName, dependants) {
 		console.log(properFileName, 'is required by\n', dependants);
 	});
 }

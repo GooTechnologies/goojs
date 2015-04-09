@@ -1,13 +1,13 @@
 // jshint node:true
 'use strict';
 
-var Dependency = require('./dependency').Dependency;
-var topoSort = require('./topo-sort');
-var derequire = require('./derequire-module-esprima');
 var fs = require('fs');
-var esprima = require('esprima');
-var escodegen = require('escodegen');
 var uglify = require('uglify-js');
+
+var dependency = require('./dependency');
+var topoSort = require('./topo-sort');
+var derequire = require('./derequire-module-regex');
+var util = require('./util');
 
 
 /**
@@ -60,16 +60,6 @@ function mapObj(obj, fun) {
 	}, {});
 }
 
-function getProgram(body) {
-	return {
-		"type": "Program",
-		"body": [{
-			"type": "ExpressionStatement",
-			"expression": body
-		}]
-	};
-}
-
 function minify(source, options) {
 	if (!options.minifyLevel) {
 		return source;
@@ -96,7 +86,7 @@ function wrapPack(source, modules) {
 	ret += 'if (typeof require === "function") {\n';
 	ret += modules.map(function (module) {
 		return 'define("' + module + '", [], function () { return goo.' +
-			derequire.safenIdentifier(afterLastSlash(module)) + '; });';
+			util.safenIdentifier(afterLastSlash(module)) + '; });';
 	}).join('\n') + '\n';
 	ret += '}\n';
 
@@ -132,7 +122,7 @@ function run(rootPath, packPath, outFile, options, callback) {
 	callback = callback || function () {};
 
 	// build dependency tree
-	Dependency.getTree(rootPath + '/', function (dependencies) {
+	dependency.getTree(rootPath + '/', function (dependencies) {
 		var graph = graphise(dependencies);
 
 		if (packPath) {
@@ -158,13 +148,7 @@ function run(rootPath, packPath, outFile, options, callback) {
 
 		var processedModules = sortedModules.map(function (modulePath) {
 			var source = fs.readFileSync(rootPath + '/' + modulePath + '.js', 'utf8');
-
-			var tree = esprima.parse(source);
-			var strippedModule = derequire.transform(modulePath, tree.body[0].expression);
-
-			var program = getProgram(strippedModule);
-
-			return escodegen.generate(program);
+			return derequire.transform(modulePath, source);
 		});
 
 		var concatenatedModules = processedModules.join('\n');
