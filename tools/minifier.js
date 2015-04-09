@@ -9,15 +9,7 @@ var topoSort = require('./topo-sort');
 var derequire = require('./derequire-module-regex');
 var util = require('./util');
 
-
-/**
- * Strips the .js (or any 2 letter) extension at the end of files
- * @param string
- * @returns {string}
- */
-function stripJS(string) {
-	return string.slice(0, -3);
-}
+var stripJS = util.stripEnding.bind(null, '.js');
 
 /**
  * Transforms a dependency tree into a graph usable by the topological sort function.
