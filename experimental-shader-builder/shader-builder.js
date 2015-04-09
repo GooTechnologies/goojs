@@ -43,6 +43,21 @@
 
 	// nodes are sorted
 	function generateCode(nodeTypes, nodes) {
+		// caching compiled templates ("code generators")
+		// the same node can be instantiated more than once
+		var getCodeGenerator = (function () {
+			var generatorsByType = new Map();
+
+			return function (type, body) {
+				if (!generatorsByType.has(type)) {
+					var codeGenerator = jsTemplate.compile(body);
+					generatorsByType.set(type, codeGenerator);
+					return codeGenerator;
+				}
+				return generatorsByType.get(type);
+			};
+		})();
+
 		function getInputVar(nodeId, varName) {
 			return 'inp_' + nodeId + '_' + varName;
 		}
@@ -96,6 +111,11 @@
 			}).join('\n');
 
 
+			// body
+			var bodyGenerator = getCodeGenerator(node.type, nodeDefinition.body);
+			var bodyCode = bodyGenerator(node.defines);
+
+
 			// process inputs (from other shader's outputs)
 			var processedBody = nodeDefinition.inputs.filter(function (input) {
 				return isExternalInput(node, input.name);
@@ -106,7 +126,7 @@
 					new RegExp('\\b' + input.name + '\\b', 'g'),
 					getInputVar(node.id, input.name)
 				);
-			}, nodeDefinition.body);
+			}, bodyCode);
 
 
 			// process external inputs (direct uniforms)

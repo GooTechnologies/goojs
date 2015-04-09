@@ -1,6 +1,9 @@
 [{
   "type": "sin01",
   "id": "node_1",
+  "defines": {
+    "multiplier": "2.0"
+  },
   "externalInputs": [{
     "name": "x",
     "externalName": "time",
