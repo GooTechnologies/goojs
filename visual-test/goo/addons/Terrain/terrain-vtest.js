@@ -481,7 +481,7 @@ require([
 	});
 	var camera = new Camera(80);
 	var cameraEntity = goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
-	cameraEntity.setTranslation(512, 50, 512);
+	cameraEntity.setTranslation(512, 180, 512);
 
 	// V.addLights();
 	var directionalLight = new DirectionalLight(new Vector3(1, 1, 0.9));
@@ -712,7 +712,7 @@ require([
 			}
 
 			var pos = cameraEntity.transformComponent.transform.translation;
-			// pos.y = Math.max(pos.y, terrainHandler.getHeightAt([pos.x, 0, pos.z]) + 1.5);
+			pos.y = Math.max(pos.y, terrainHandler.getHeightAt([pos.x, 0, pos.z]) + 1.5);
 
 			terrainHandler.update(cameraEntity);
 		});
