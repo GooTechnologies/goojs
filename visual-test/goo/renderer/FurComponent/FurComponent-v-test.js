@@ -5,12 +5,13 @@ require([
 	'goo/renderer/pass/Composer',
 	'goo/renderer/pass/RenderPass',
 	'goo/renderer/pass/FurPass',
+	'goo/renderer/TextureCreator',
 
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
 	'goo/shapes/Torus',
 	'goo/shapes/Box',
-	'goo/util/TangentGenerator'
+	'goo/util/TangentGenerator',
 ],
 function(
 	V,
@@ -19,6 +20,7 @@ function(
 	Composer,
 	RenderPass,
 	FurPass,
+	TextureCreator,
 
 	Sphere,
 	Quad,
@@ -48,8 +50,6 @@ function(
 		var meshData = new Torus();
 		//var meshData = new Box()
 
-
-
 		TangentGenerator.addTangentBuffer(meshData);
 
 		var entity = goo.world.createEntity(
@@ -58,9 +58,8 @@ function(
 					);
 		var s = 10;
 		entity.setScale(s, s, s);
-		entity.setRotation(0, 0, Math.PI/2);
-		//entity.setRotation(0, Math.PI/2 , 0);
 		entity.addToWorld();
+
 
 		V.addOrbitCamera(new Vector3(90, Math.PI / 2, 0));
 		//V.addLights();
@@ -72,6 +71,8 @@ function(
 	var furSettings = {
 		layerCount: 20
 	};
+
+	var furUniforms;
 
 	function createFurRenderingRoutine() {
 
@@ -86,16 +87,21 @@ function(
 		furPass.clear = false;
 
 		var furFolder = gui.addFolder("Fur Uniforms");
-		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 100);
+		furFolder.add(furPass.furUniforms, 'furRepeat', 1, 15);
 		furFolder.add(furPass.furUniforms, 'hairLength', 0.1, 20);
 		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 100);
 		furFolder.add(furPass.furUniforms, 'curlRadius', -1, 1);
 		furFolder.add(furPass.furUniforms, 'shadow', 1, 10);
-		furFolder.add(furPass.furUniforms, 'specularPower', 0, 1000);
+		furFolder.add(furPass.furUniforms, 'specularPower', 0, 200);
 		furFolder.add(furPass.furUniforms, 'specularBlend', 0, 1);
 		furFolder.open();
 
 		window.furUniforms = furPass.furUniforms;
+		furUniforms = furPass.furUniforms;
+
+		//furPass.furMaterial.setTexture('DIFFUSE_MAP', new TextureCreator().loadTextureWebCam());
+
+		furPass.furUniforms.displacement = [0, -500, 0];
 
 		var controller = gui.add(furSettings, 'layerCount', 1, 100).step(1);
 		controller.onFinishChange(function(value) {

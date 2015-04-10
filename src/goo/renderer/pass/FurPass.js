@@ -161,7 +161,7 @@ function (
 			displacement: [0, 0, 0],
 			// Color settings
 			specularBlend: 1.0,
-			specularPower: 120,
+			specularPower: 25,
 			shadow: 1.2,
 		},
 		vshader: [
@@ -251,8 +251,6 @@ function (
 		].join("\n"),
 		fshader: [
 
-			//ShaderBuilder.light.prefragment,
-
 			'uniform float normalizedLength;',
 			'uniform float furRepeat;',
 			'uniform float gravity;',
@@ -282,14 +280,14 @@ function (
 			http://web.media.mit.edu/~bandy/fur/CGI10fur.pdf
 			*/
 			//'vec4 texCol = texture2D(colorTexture, texCoord0);',
-			'vec4 texCol = vec4(1, 0, 0, 1.0);',
-			'vec3 diffuse = texCol.rgb;',
+			//'vec3 diffuse = texCol.rgb;',
+			'vec3 diffuse = vec3(0, 0.7, 0);',
 
-			"vec3 specularColor = vec3(1, 0, 1);",
+			"vec3 specularColor = vec3(1, 1, 1);",
 			"vec3 materialAmbient = vec3(0.1,0,0);",
 
 			'vec3 tangent = normalize(T);',
-			'vec3 lightDir = vec3(0, 1, 0);',
+			'vec3 lightDir = normalize(vec3(1, 1, 0));',
 			'vec3 eye = normalize(viewPosition);',
 
 			// Specular
