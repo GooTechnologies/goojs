@@ -107,6 +107,8 @@ require([
 				entity.set(rigidBodyComponent).set(colliderComponent);
 			}
 			entity.addToWorld();
+
+			rigidBodyComponent.initialize();
 		}
 	}
 
@@ -116,13 +118,15 @@ require([
 			.setRotation(-Math.PI / 2, 0, 0);
 		var rigidBodyComponent = new RigidBodyComponent({ isKinematic: true });
 		var planeColliderComponent = new ColliderComponent({ collider: new PlaneCollider() });
-		entity.set(rigidBodyComponent)
+		entity
+			.set(rigidBodyComponent)
 			.set(planeColliderComponent)
 			.addToWorld();
+		rigidBodyComponent.initialize();
 	}
 
 	function createStaticBox(x, y, z, w, d, h) {
-		return world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
+		var entity = world.createEntity(new Box(w, d, h), V.getColoredMaterial(), [x, y, z])
 			.set(new RigidBodyComponent({ isKinematic: true }))
 			.set(
 				new ColliderComponent({
@@ -131,6 +135,8 @@ require([
 					})
 				})
 			).addToWorld();
+		entity.rigidBodyComponent.initialize();
+		return entity;
 	}
 
 	// Create a 'G' compound box body
@@ -199,6 +205,8 @@ require([
 		// Add the root
 		compoundEntity.addToWorld();
 
+		compoundEntity.rigidBodyComponent.initialize();
+
 		return compoundEntity;
 	}
 
@@ -214,6 +222,8 @@ require([
 				.set(new ColliderComponent({ collider: new SphereCollider() }))
 				.setScale(size, size, size)
 				.addToWorld();
+
+			rbComponent.initialize();
 
 			if (lastEntity) {
 				e.rigidBodyComponent.addJoint(new BallJoint({
@@ -231,7 +241,9 @@ require([
 		var rigidBodyComponent = new RigidBodyComponent({ mass : 5, velocity: new Vector3(0, 0, 1) });
 		var meshData = new Torus(16, 16);
 		var colliderComponent = new ColliderComponent({ collider: new MeshCollider({ meshData: meshData }) });
-		return world.createEntity(position, rigidBodyComponent, colliderComponent, meshData, V.getColoredMaterial()).addToWorld();
+		var entity = world.createEntity(position, rigidBodyComponent, colliderComponent, meshData, V.getColoredMaterial()).addToWorld();
+		entity.rigidBodyComponent.initialize();
+		return entity;
 	}
 
 	function createHinge(x, y, z) {
@@ -257,6 +269,8 @@ require([
 				}));
 			}
 
+			rbComponent.initialize();
+
 			lastEntity = e;
 		}
 	}
@@ -270,7 +284,7 @@ require([
 		});
 
 		var halfExtents = new Vector3(1, 1, 1);
-		world.createEntity(new Box(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2), V.getColoredMaterial(), [0, 0, 5])
+		var entity = world.createEntity(new Box(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2), V.getColoredMaterial(), [0, 0, 5])
 			.set(rbComponent)
 			.set(
 				new ColliderComponent({
@@ -279,6 +293,7 @@ require([
 					})
 				})
 			).addToWorld();
+		entity.rigidBodyComponent.initialize();
 	}
 
 	createKinematic();

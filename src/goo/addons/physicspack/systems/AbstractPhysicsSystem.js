@@ -15,7 +15,7 @@ function (
 	function AbstractPhysicsSystem() {
 		System.apply(this, arguments);
 
-		this.priority = -1; // make sure it processes after transformsystem and collidersystem
+		this.priority = -1;
 
 		/**
 		 * Entitites that holds ColliderComponents, but aren't instantiated since they have no RigidBodyComponent
@@ -102,6 +102,7 @@ function (
 
 	AbstractPhysicsSystem.prototype._colliderInserted = function (/*entity*/) {};
 	AbstractPhysicsSystem.prototype._colliderDeleted = function (/*entity*/) {};
+	AbstractPhysicsSystem.prototype._colliderDeletedComponent = function (/*entity*/) {};
 
 	return AbstractPhysicsSystem;
 });

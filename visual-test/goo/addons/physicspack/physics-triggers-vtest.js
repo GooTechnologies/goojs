@@ -1,23 +1,23 @@
 require([
 	'goo/entities/SystemBus',
-	'goo/shapes/Sphere',
+	'goo/shapes/Box',
 	'goo/math/Vector3',
 	'goo/addons/physicspack/components/ColliderComponent',
 	'goo/addons/physicspack/systems/PhysicsSystem',
 	'goo/addons/physicspack/systems/ColliderSystem',
 	'goo/addons/physicspack/components/RigidBodyComponent',
-	'goo/addons/physicspack/colliders/SphereCollider',
+	'goo/addons/physicspack/colliders/BoxCollider',
 	'goo/addons/physicspack/systems/PhysicsDebugRenderSystem',
 	'lib/V'
 ], function (
 	SystemBus,
-	Sphere,
+	Box,
 	Vector3,
 	ColliderComponent,
 	PhysicsSystem,
 	ColliderSystem,
 	RigidBodyComponent,
-	SphereCollider,
+	BoxCollider,
 	PhysicsDebugRenderSystem,
 	V
 ) {
@@ -38,23 +38,26 @@ require([
 
 	var material = V.getColoredMaterial();
 	var radius = 5;
-	var sphereMesh = new Sphere(20, 20, radius);
+	var sphereMesh = new Box(radius, radius, radius);
 
 	// Adding the components, style 1
-	var collider = new SphereCollider({ radius: radius });
+	var collider = new BoxCollider({ halfExtents: new Vector3(radius / 2, radius / 2, radius / 2) });
 	var body = new RigidBodyComponent({ mass: 1, isKinematic: true, velocity: new Vector3(0, 0, 10) });
 	world.createEntity(sphereMesh, material, collider, body).addToWorld();
+	body.initialize();
 
 	// Adding the components, style 2
-	world.createEntity(sphereMesh, material)
+	var entity = world.createEntity(sphereMesh, material)
 		.set(new ColliderComponent({
-			collider: new SphereCollider({ radius: radius }),
+			collider: new BoxCollider({ halfExtents: new Vector3(radius / 2, radius / 2, radius / 2) }),
 			isTrigger: true
 		}))
 		.set(new RigidBodyComponent({
 			mass: 1
 		}))
 		.addToWorld();
+
+	entity.rigidBodyComponent.initialize();
 
 	SystemBus.addListener('goo.physics.beginContact', function (evt) {
 		material.uniforms.materialDiffuse = [1, 0, 0, 1];
@@ -63,8 +66,6 @@ require([
 
 	SystemBus.addListener('goo.physics.duringContact', function (/*evt*/) {
 		console.log('During contact event is emitted!');
-		// evt.entityA
-		// evt.entityB
 	});
 
 	SystemBus.addListener('goo.physics.endContact', function (evt) {
