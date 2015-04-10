@@ -333,7 +333,9 @@ define([
 				bus.addListener('main', function (data) {});
 				bus.addListener('main.second', function (data) {});
 				bus.clear();
-				expect(bus).toEqual(new Bus());
+				var newBus = new Bus();
+				bus._emitOnEachChildChannel = newBus._emitOnEachChildChannel = null; // this function is the only thing that differ in the following test
+				expect(bus).toEqual(newBus);
 			});
 		});
 	});
