@@ -341,7 +341,7 @@ function (
 			'vec3 lightDir = normalize(L);',
 			'vec3 eye = normalize(viewPosition);',
 			'float specularAmount = pow(((dot(tangent, lightDir) * dot(tangent, eye)) + TxL * TxE), specularPower);',
-			'vec3 color = (diffuse * TxL) + (specularColor * specularAmount);',
+			'vec3 color = (diffuse * TxL) + (specularColor * max(specularAmount, 0.0));',
 			//'vec3 color = (diffuse * TxL);',
 			//'vec3 color = (specularColor * specularAmount);',
 
