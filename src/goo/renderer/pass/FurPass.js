@@ -196,9 +196,6 @@ function (
 			'varying vec2 furTexCoord;',
 			'varying vec3 T;',
 			'varying vec3 viewPosition;',
-			'varying vec3 L;',
-			'varying float TxL;',
-			'varying float TxE;',
 
 			'void main(void) {',
 
@@ -286,10 +283,6 @@ function (
 			'texCoord0 = vertexUV0;',
 			'furTexCoord = vertexUV0 * furRepeat;',
 			'viewPosition = cameraPosition - pos;',
-			'T = normalize(T);',
-			'L = vec3(0, 1, 0);',
-			'TxL = length(cross(T, L));',
-			'TxE = length(cross(T, normalize(viewPosition)));',
 			'gl_Position = viewProjectionMatrix * vec4(pos, 1.0);',
 
 			'}'//
@@ -313,9 +306,6 @@ function (
 			'varying vec2 texCoord0;',
 			'varying vec3 T;',
 			'varying vec3 viewPosition;',
-			'varying vec3 L;',
-			'varying float TxL;',
-			'varying float TxE;',
 
 			'void main(void)',
 			'{',
@@ -330,20 +320,25 @@ function (
 			http://publications.dice.se/attachments/RealTimeHairSimAndVis.pdf
 			http://web.media.mit.edu/~bandy/fur/CGI10fur.pdf
 			*/
-			//'	vec4 texCol = texture2D(colorTexture, texCoord0);',
-			'	vec4 texCol = vec4(1, 0, 0, 1.0);',
-			'	vec3 diffuse = texCol.rgb;',
+			//'vec4 texCol = texture2D(colorTexture, texCoord0);',
+			'vec4 texCol = vec4(1, 0, 0, 1.0);',
+			'vec3 diffuse = texCol.rgb;',
 
-			"vec3 specularColor = vec3(0,0,1.0);",
+			"vec3 specularColor = vec3(1,1,1.0);",
 			"vec3 materialAmbient = vec3(0.1,0,0);",
 
 			'vec3 tangent = normalize(T);',
-			'vec3 lightDir = normalize(L);',
+			'vec3 lightDir = vec3(0, 1, 0);',
 			'vec3 eye = normalize(viewPosition);',
-			'float specularAmount = pow(((dot(tangent, lightDir) * dot(tangent, eye)) + TxL * TxE), specularPower);',
-			'vec3 color = (diffuse * TxL) + (specularColor * max(specularAmount, 0.0));',
-			//'vec3 color = (diffuse * TxL);',
-			//'vec3 color = (specularColor * specularAmount);',
+
+			// Specular
+			'float TcrossL = length(cross(tangent, lightDir));',
+			'float TcrossE = length(cross(tangent, eye));',
+			'float dotFactor = dot(tangent, lightDir) * dot(tangent, eye);',
+			'float crossFactor = TcrossL * TcrossE;',
+			'float specularAmount = max(pow(dotFactor + crossFactor, specularPower), 0.0);',
+
+			'vec3 color = mix((diffuse * TcrossL), specularColor, specularAmount);',
 
 			// "Simple shadow effect"
 			'float shadowFactor = (shadow - 1.0 + normalizedLength)/shadow;',
