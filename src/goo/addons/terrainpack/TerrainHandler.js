@@ -30,8 +30,8 @@ define([
 			this.goo = goo;
 			this.terrainSize = terrainSize;
 			this.resourceFolder = resourceFolder;
-			this.terrain = new Terrain(goo, terrainSize, clipmapLevels);
-			// this.terrain = new TerrainStatic(goo, terrainSize, clipmapLevels);
+			// this.terrain = new Terrain(goo, terrainSize, clipmapLevels);
+			this.terrain = new TerrainStatic(goo, terrainSize, clipmapLevels);
 			this.vegetation = new Vegetation();
 			this.forrest = new Forrest();
 
@@ -192,8 +192,10 @@ define([
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground4.texture));
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.ground5.texture));
 			promises.push(this._textureLoad(this.resourceFolder + terrainData.stone.texture));
+			promises.push(this._textureLoad(this.resourceFolder + terrainData.lightMap));
+			promises.push(this._textureLoad(this.resourceFolder + terrainData.normalMap));
 			return RSVP.all(promises).then(function(textures) {
-				this.terrain.init({
+				var terrainTextures = {
 					heightMap: parentMipmap,
 					splatMap: splatMap,
 					ground1: textures[0],
@@ -201,8 +203,11 @@ define([
 					ground3: textures[2],
 					ground4: textures[3],
 					ground5: textures[4],
-					stone: textures[5]
-				});
+					stone: textures[5],
+					lightMap: textures[6],
+					normalMap: textures[7]
+				};
+				this.terrain.init(terrainTextures);
 				this.terrainInfo = this.terrain.getTerrainData();
 
 				var terrainSize = this.terrainSize;
@@ -413,8 +418,8 @@ define([
 
 				var forrestTypes = terrainData.forrestTypes;
 
-				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings);
-				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap);
+				this.vegetation.init(this.goo.world, terrainQuery, vegetationAtlasTexture, vegetationTypes, this.vegetationSettings, terrainTextures);
+				this.forrest.init(this.goo.world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, forrestLODEntityMap, terrainTextures);
 
 				return texturesPromise;
 			}.bind(this));

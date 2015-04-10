@@ -61,6 +61,7 @@ define([
 		var id = StringUtil.createUniqueId('texture');
 		settings = settings || {};
 		settings.imageRef = imageUrl;
+		console.log(imageUrl);
 
 		var texture = this.textureHandler._create();
 		this.textureHandler._objects.set(id, texture);

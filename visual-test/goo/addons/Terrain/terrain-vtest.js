@@ -53,11 +53,14 @@ require([
 		"heightMapBits": 16, //32,
 		"heightMapScale": 0.2, //1,
 		"splatMap": "maps/legend01_map01_splat.raw",
+		"attributesMap": "maps/l3dt/attributes.png",
 		// "splatMap": "maps/l3dt/splat.raw",
 		"l3dtFolder": "maps/l3dt",
+		"normalMap": "maps/l3dt/normals.png",
+		"lightMap": "maps/l3dt/lightmap.jpg",
 		"terrainConfig": "legend01",
 		"ground1": {
-			"texture": "images/legend_02/ground/grass_01.dds",
+			"texture": "images/legend_02/ground/grass_01.jpg",
 			"material": "ground_dirt_hit",
 			"vegetation": {
 				"grass_short_yellow_1": 0.39,
@@ -74,7 +77,7 @@ require([
 			}
 		},
 		"ground2": {
-			"texture": "images/legend_02/ground/grass_02.dds",
+			"texture": "images/legend_02/ground/grass_02.jpg",
 			"material": "ground_grass_hit",
 			"vegetation": {
 				"grass_short_green_1": 0.3,
@@ -97,7 +100,7 @@ require([
 			}
 		},
 		"ground3": {
-			"texture": "images/legend_02/ground/gravel_clay_debris_01.dds",
+			"texture": "images/legend_02/ground/gravel_clay_debris_01.jpg",
 			"material": "ground_dirt_hit",
 			"vegetation": {
 				"grass_short_yellow_1": 0.3
@@ -109,11 +112,11 @@ require([
 			}
 		},
 		"ground4": {
-			"texture": "images/legend_02/ground/gravel_01.dds",
+			"texture": "images/legend_02/ground/gravel_01.jpg",
 			"material": "ground_gravel_hit"
 		},
 		"ground5": {
-			"texture": "images/legend_02/ground/grass_03.dds",
+			"texture": "images/legend_02/ground/grass_03.jpg",
 			"material": "ground_grass_hit",
 			"vegetation": {
 				"nettles_1": 0.1,
@@ -140,10 +143,10 @@ require([
 			}
 		},
 		"stone": {
-			"texture": "images/legend_02/ground/stone_01.dds",
+			"texture": "images/legend_02/ground/stone_01.jpg",
 			"material": "ground_stone_hit"
 		},
-		"vegetationAtlas": "images/legend_02/vegetation/grass.dds",
+		"vegetationAtlas": "images/legend_02/vegetation/grass.tga",
 		"vegetationTypes": {
 			"grass_short_green_1": {
 				"w": 1,
@@ -234,8 +237,8 @@ require([
 				"th": 0.5
 			}
 		},
-		"forrestAtlas": "images/legend_02/vegetation/impostors_diffuse.dds",
-		"forrestAtlasNormals": "images/legend_02/vegetation/impostors_normal.dds",
+		"forrestAtlas": "images/legend_02/vegetation/impostors_diffuse.tga",
+		"forrestAtlasNormals": "images/legend_02/vegetation/impostors_normal.jpg",
 		"vegetationAlphaThreshold": 0.2,
 		"forrestAlphaThreshold": 0.4,
 		"forrestTypes": {
@@ -355,7 +358,7 @@ require([
 		"fog": {
 			"enabled": true,
 			"start": 20,
-			"end": 500,
+			"end": 10000,
 			"color": [
 				1,
 				1,
@@ -479,7 +482,7 @@ require([
 		crawlSpeed: 20,
 		// button: 'Right'
 	});
-	var camera = new Camera(80);
+	var camera = new Camera(80, undefined, 1, 10000);
 	var cameraEntity = goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
 	cameraEntity.setTranslation(512, 180, 512);
 
@@ -491,27 +494,26 @@ require([
 
 	loadSkybox();
 
-	var meshData = new Quad(10000, 10000, 10, 10);
-	var material = new Material(ShaderLib.simple);
-	var waterEntity = world.createEntity('Water', [512, -100, 512], meshData, material, function(entity) {
-		// entity.setTransla3tion(0, Math.sin(world.time * 1) * 5, 0);
-	}).setRotation([-Math.PI / 2, 0, 0]).addToWorld();
+	// var meshData = new Quad(10000, 10000, 10, 10);
+	// var material = new Material(ShaderLib.simple);
+	// var waterEntity = world.createEntity('Water', [512, -100, 512], meshData, material, function(entity) {
+	// 	// entity.setTransla3tion(0, Math.sin(world.time * 1) * 5, 0);
+	// }).setRotation([-Math.PI / 2, 0, 0]).addToWorld();
 
-	var waterRenderer = new FlatWaterRenderer({
-		normalsUrl: 'resources/water/waternormals3.png',
-		useRefraction: false
-	});
-	goo.renderSystem.preRenderers.push(waterRenderer);
+	// var waterRenderer = new FlatWaterRenderer({
+	// 	normalsUrl: 'resources/water/waternormals3.png',
+	// 	useRefraction: false
+	// });
+	// goo.renderSystem.preRenderers.push(waterRenderer);
 
-	waterRenderer.setWaterEntity(waterEntity);
-	waterRenderer.setSkyBox(skybox);
+	// waterRenderer.setWaterEntity(waterEntity);
+	// waterRenderer.setSkyBox(skybox);
 
-	waterRenderer.waterMaterial.shader.uniforms.normalMultiplier = 1;
-	waterRenderer.waterMaterial.shader.uniforms.fogColor = [1.0, 1.0, 1.0];
-	waterRenderer.waterMaterial.shader.uniforms.fogStart = 0;
+	// waterRenderer.waterMaterial.shader.uniforms.normalMultiplier = 1;
+	// waterRenderer.waterMaterial.shader.uniforms.fogColor = [1.0, 1.0, 1.0];
+	// waterRenderer.waterMaterial.shader.uniforms.fogStart = 0;
 
-
-	var terrainHandler = new TerrainHandler(goo, 1024, 5, 'resources/');
+	var terrainHandler = new TerrainHandler(goo, 1024, 8, 'resources/');
 
 	var forrestLODMap = {};
 	var terrainEditSettings = {
@@ -543,11 +545,11 @@ require([
 
 	var brushes = [
 		"images/effects/flare.png",
-		"images/effects/particle_chalk_smoke.dds",
-		"images/effects/particle_clay_chard_medium.dds",
-		"images/effects/particle_dirt.dds",
-		"images/effects/particle_rifle_smoke.dds",
-		"images/effects/particle_shot_wad.dds"
+		"images/effects/particle_chalk_smoke.jpg",
+		"images/effects/particle_clay_chard_medium.jpg",
+		"images/effects/particle_dirt.jpg",
+		"images/effects/particle_rifle_smoke.jpg",
+		"images/effects/particle_shot_wad.jpg"
 	];
 
 	terrainEditSettings.brushTexture = new TextureCreator().loadTexture2D('resources/' + brushes[0]);
@@ -655,11 +657,11 @@ require([
 	fogEnabled.onChange(function(value) {
 		ShaderBuilder.USE_FOG = value;
 	});
-	var fogDistance1 = fog.add(levelData.fog, 'start', 0, 1000);
+	var fogDistance1 = fog.add(levelData.fog, 'start', 0, 10000);
 	fogDistance1.onChange(function(value) {
 		ShaderBuilder.FOG_SETTINGS[0] = value;
 	});
-	var fogDistance2 = fog.add(levelData.fog, 'end', 0, 1000);
+	var fogDistance2 = fog.add(levelData.fog, 'end', 0, 10000);
 	fogDistance2.onChange(function(value) {
 		ShaderBuilder.FOG_SETTINGS[1] = value;
 	});
@@ -712,7 +714,7 @@ require([
 			}
 
 			var pos = cameraEntity.transformComponent.transform.translation;
-			pos.y = Math.max(pos.y, terrainHandler.getHeightAt([pos.x, 0, pos.z]) + 1.5);
+			pos.y = Math.max(pos.y, terrainHandler.getHeightAt([pos.x, 0, pos.z]) + 3);
 
 			terrainHandler.update(cameraEntity);
 		});

@@ -79,7 +79,7 @@ define([
 		});
 	};
 
-	Forrest.prototype.init = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap) {
+	Forrest.prototype.init = function (world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap, terrainTextures) {
 		var p = new RSVP.Promise();
 
 		var bundlesToLoad = ["fish"];
@@ -94,6 +94,8 @@ define([
 		}).then(null, function (e) {
 			console.log("Error! ", e);
 		});
+
+		this.terrainTextures = terrainTextures;
 
 		return this.loadLODTrees(world, terrainQuery, forrestAtlasTexture, forrestAtlasNormals, forrestTypes, entityMap);
 	};
@@ -114,6 +116,7 @@ define([
 		var material = new Material(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', forrestAtlasTexture);
 		material.setTexture('NORMAL_MAP', forrestAtlasNormals);
+		material.setTexture('LIGHT_MAP', this.terrainTextures.lightMap);
 		material.uniforms.discardThreshold = 0.6;
 		// material.blendState.blending = 'CustomBlending';
 		// material.uniforms.materialAmbient = [0, 0, 0, 0];
@@ -402,6 +405,7 @@ define([
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
+			lightMap : 'LIGHT_MAP',
 			normalMap : Shader.NORMAL_MAP,
 			discardThreshold: -0.01,
 			fogSettings: function () {
@@ -464,6 +468,7 @@ define([
 		fshader: function () {
 			return [
 		'uniform sampler2D diffuseMap;',
+		'uniform sampler2D lightMap;',
 		'uniform sampler2D normalMap;',
 		'uniform float discardThreshold;',
 		'uniform vec2 fogSettings;',
@@ -488,7 +493,8 @@ define([
 			'vec3 worldNormal = (tangentToWorld * tangentNormal);',
 			'vec3 N = normalize(worldNormal);',
 
-			ShaderBuilder.light.fragment,
+			// ShaderBuilder.light.fragment,
+			'final_color *= texture2D(lightMap, vWorldPos.xz/1024.0) * 1.3;',
 
 			'#ifdef FOG',
 			'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',

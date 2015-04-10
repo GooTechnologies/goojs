@@ -227,7 +227,9 @@ define([
 
 			material.setTexture('HEIGHT_MAP', texture);
 			material.setTexture('NORMAL_MAP', this.normalMap);
-			material.setTexture('DETAIL_MAP', this.detailMap);
+			material.setTexture('DETAIL_MAP', terrainTextures.detailMap);
+			material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
+			material.shader.setDefine('LIGHTMAP', true);
 
 			material.setTexture('SPLAT_MAP', this.splat);
 			material.setTexture('GROUND_MAP1', terrainTextures.ground1);
@@ -871,9 +873,9 @@ define([
 					// 'final_color.rgb = mix(final_color.rgb, detail, smoothstep(30.0, 60.0, length(viewPosition)));',
 
 					'#ifdef LIGHTMAP',
-					'final_color = final_color * texture2D(lightMap, mapcoord);',
+						'final_color = final_color * texture2D(lightMap, mapcoord) * 1.5;',
 					'#else',
-					ShaderBuilder.light.fragment,
+						ShaderBuilder.light.fragment,
 					'#endif',
 
 					'#ifdef FOG',
