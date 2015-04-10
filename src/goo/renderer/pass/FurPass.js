@@ -214,6 +214,8 @@ function (
 			// Displace the pos in a circle in the surface plane to create curls!
 			'vec3 tangent = normalize(normalMatrix * vertexTangent.xyz);',
 			'vec3 binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
+			'float wh = curlFrequency * normalizedLength;',
+			
 
 
 			// CONSTRAINTS
@@ -244,16 +246,15 @@ function (
 			'	pos = (a * a * p_root) + (norm2 * a * p_0) + (normalizedLength * normalizedLength * p);',
 				//Derivative of bezier curve == hair tangent
 				//The tangent is used for lighting computations in the fragment shader
+			'	pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
 			'	T = (2.0 * a * (p_0 - p_root) + norm2 * (pos - p_0));',
 			'}',
 			'else {',
 			'	pos = p;',
+			'	pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
 			'	T = 2.0 * (pos - p_0);',
 			'}',
 
-
-			'float wh = curlFrequency * normalizedLength;',
-			'pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
 
 			// Set varying variables
 			'texCoord0 = vertexUV0;',
