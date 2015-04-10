@@ -199,82 +199,58 @@ function (
 
 			'void main(void) {',
 
-			// Pos will hold the final position
-			'	vec3 pos;',
+			'vec3 pos;',
 			
-			'	vec3 normal = normalize(normalMatrix * vertexNormal);',
-			'	vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
-			'	vec3 p_0 = p_root + (normal * hairLength);',
-			'	float L_0 = length(p_0 - p_root);',
-			// Gravity
-
-			/*
-	vec3 gravity = vec3(0,-1,0) * 9.81*mass;
-	vec3 test = 14* sin(time*2.0) * mass * vec3(1,0,0);
-
-	//k in Newtonmeters
-	float k = length(gravity)/(L_0*0.5);
-
-	lightDir = vec3(p_0 - gl_LightSource[0].position);
-	float windDistance = length(lightDir);
-	lightDir = normalize(lightDir);
-
-	vec3 wind = (10 + windStrength)*mass*lightDir;
-
-
-	//Hooke's law F = -kx <-> x = -F/k
-	vec3 p = (gravity + wind)/k + p_0;
-	*/
+			'vec3 normal = normalize(normalMatrix * vertexNormal);',
+			'vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
+			'vec3 p_0 = p_root + (normal * hairLength);',
+			'float L_0 = length(p_0 - p_root);',
+	
 			// TODO: Refactor to use external displacement vec3 instead
-
-			'	float mass =  0.00001;',
-			
-			'	vec3 sinusNoise = 20.0 * sin(time*4.0) * mass * vec3(1,0,0);',
-			'	sinusNoise *= sinusAmount;',
-
-			'	vec3 gravityForce = vec3(0,-1,0) * gravity * mass;',
-
-			'	float k = length(gravityForce)/(L_0 * 0.5);',
-			'	vec3 p = ((gravityForce + sinusNoise)/k) + p_0;',
-
-			// CONSTRAINTS
-			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
-			// c1: |p-p_root| <= L_0
-			// c2: dot((p-p_root),normal) >= 0
-			'	vec3 constraint = p - p_root;',
-			'	float c1 = length(constraint);',
-			'	if (c1 > L_0) {',
-			'		p = p_root + ( L_0 * normalize(constraint));',
-			'	}',
-
-			'	float c2 = dot((p-p_0),normal);',
-			'	if (c2 < 0.0) {',
-				//If p is below the surface, add the depth in the normal's direction
-
-				// Depth is calculated as the projection of the vector from the root
-				// to the point p projected at the negative normal
-			'	p = p + normal * -c2;',
-			'	}',
-
-			'	if (normalizedLength < 1.0) {',
-			//Qudratic bezier approximation of the curvture of the hair
-			//pos = (1-h)^2 * proot + 2h(1-h)p0 + h^2 *p
-			//pos = a*a*proot + 2*h*a*p0 + h*h*p
-			'		float a = (1.0-normalizedLength);',
-			'		pos = (a*a*p_root) + (2.0*normalizedLength*a*p_0) + (normalizedLength*normalizedLength*p);',
-			//Derivative of bezier curve == hair tangent
-			//The tangent is used for lighting computations in the fragment shader
-			'		T = (2.0*a*(p_0 - p_root) + 2.0*normalizedLength*(p-p_0));',
-			'}',
-			'else {',
-			'		pos = p;',
-			'		T = 2.0*(p - p_0);',
-			'}',
+			'vec3 displacement = vec3(0, 0, 0);',
+			'vec3 p = displacement + p_0;',
 
 			// Curliness Control
 			// Displace the pos in a circle in the surface plane to create curls!
 			'vec3 tangent = normalize(normalMatrix * vertexTangent.xyz);',
 			'vec3 binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
+
+
+			// CONSTRAINTS
+			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
+			// c1: |p-p_root| <= L_0
+			// c2: dot((p-p_root),normal) >= 0
+			'vec3 constraint = p - p_root;',
+			'float c1 = length(constraint);',
+			'if (c1 > L_0) {',
+			'	p = p_root + ( L_0 * normalize(constraint));',
+			'}',
+
+			'float c2 = dot((p-p_0),normal);',
+			'if (c2 < 0.0) {',
+				//If p is below the surface, add the depth in the normal's direction
+
+				// Depth is calculated as the projection of the vector from the root
+				// to the point p projected at the negative normal
+			'	p = p + normal * -c2;',
+			'}',
+
+			'if (normalizedLength < 1.0) {',
+				//Qudratic bezier approximation of the curvture of the hair
+				//pos = (1-h)^2 * proot + 2h(1-h)p0 + h^2 *p
+				//pos = a*a*proot + 2*h*a*p0 + h*h*p
+			'	float norm2 = 2.0 * normalizedLength;',
+			'	float a = 1.0 - normalizedLength;',
+			'	pos = (a * a * p_root) + (norm2 * a * p_0) + (normalizedLength * normalizedLength * p);',
+				//Derivative of bezier curve == hair tangent
+				//The tangent is used for lighting computations in the fragment shader
+			'	T = (2.0 * a * (p_0 - p_root) + norm2 * (pos - p_0));',
+			'}',
+			'else {',
+			'	pos = p;',
+			'	T = 2.0 * (pos - p_0);',
+			'}',
+
 
 			'float wh = curlFrequency * normalizedLength;',
 			'pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
