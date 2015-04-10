@@ -43,9 +43,9 @@ function(
 
 		var material = V.getColoredMaterial();
 
-		var meshData = new Sphere(32, 32);
+		//var meshData = new Sphere(32, 32);
 		//var meshData = new Quad();
-		//var meshData = new Torus();
+		var meshData = new Torus();
 		//var meshData = new Box()
 
 
@@ -56,7 +56,7 @@ function(
 						meshData,
 						material
 					);
-		var s = 50;
+		var s = 10;
 		entity.setScale(s, s, s);
 		entity.setRotation(0, 0, Math.PI/2);
 		//entity.setRotation(0, Math.PI/2 , 0);

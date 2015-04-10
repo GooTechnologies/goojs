@@ -70,8 +70,8 @@ function (
 
 		var textureSettings = {
 			format: "Alpha",
-			generateMipmaps: false,
-			minFilter: 'NearestNeighborNoMipMaps',
+			generateMipmaps: true,
+			minFilter: 'NearestNeighborNearestMipMap',
 			magFilter: 'NearestNeighbor',
 		};
 
@@ -324,7 +324,7 @@ function (
 			'vec4 texCol = vec4(1, 0, 0, 1.0);',
 			'vec3 diffuse = texCol.rgb;',
 
-			"vec3 specularColor = vec3(1,1,1.0);",
+			"vec3 specularColor = vec3(1, 0, 1);",
 			"vec3 materialAmbient = vec3(0.1,0,0);",
 
 			'vec3 tangent = normalize(T);',
@@ -338,7 +338,9 @@ function (
 			'float crossFactor = TcrossL * TcrossE;',
 			'float specularAmount = max(pow(dotFactor + crossFactor, specularPower), 0.0);',
 
+			//TODO: Revise mixing of diffuse and specular.
 			'vec3 color = mix((diffuse * TcrossL), specularColor, specularAmount);',
+			//'vec3 color = (diffuse * TcrossL) + (specularColor * specularAmount);',
 
 			// "Simple shadow effect"
 			'float shadowFactor = (shadow - 1.0 + normalizedLength)/shadow;',
