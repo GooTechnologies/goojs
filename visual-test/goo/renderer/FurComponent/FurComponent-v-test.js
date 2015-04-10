@@ -9,6 +9,7 @@ require([
 	'goo/shapes/Sphere',
 	'goo/shapes/Quad',
 	'goo/shapes/Torus',
+	'goo/shapes/Box',
 	'goo/util/TangentGenerator'
 ],
 function(
@@ -22,6 +23,7 @@ function(
 	Sphere,
 	Quad,
 	Torus,
+	Box,
 	TangentGenerator
 	) {
 	"use strict";
@@ -41,9 +43,11 @@ function(
 
 		var material = V.getColoredMaterial();
 
-		//var meshData = new Sphere(32, 32);
+		var meshData = new Sphere(32, 32);
 		//var meshData = new Quad();
-		var meshData = new Torus();
+		//var meshData = new Torus();
+		//var meshData = new Box()
+
 
 
 		TangentGenerator.addTangentBuffer(meshData);
@@ -52,7 +56,7 @@ function(
 						meshData,
 						material
 					);
-		var s = 10;
+		var s = 50;
 		entity.setScale(s, s, s);
 		entity.setRotation(0, 0, Math.PI/2);
 		//entity.setRotation(0, Math.PI/2 , 0);
@@ -88,8 +92,7 @@ function(
 		furFolder.add(furPass.furUniforms, 'curlRadius', -1, 1);
 		furFolder.add(furPass.furUniforms, 'gravity', 0.1, 20.0);
 		furFolder.add(furPass.furUniforms, 'sinusAmount', 0, 20.0);
-		furFolder.add(furPass.furUniforms, 'shadow', 0, 10);
-		furFolder.add(furPass.furUniforms, 'lightCutoff', -1.0, 1.0);
+		furFolder.add(furPass.furUniforms, 'shadow', 1, 10);
 		furFolder.add(furPass.furUniforms, 'specularPower', 0, 1000);
 		furFolder.open();
 

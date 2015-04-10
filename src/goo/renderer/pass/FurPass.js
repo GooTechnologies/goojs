@@ -170,8 +170,6 @@ function (
 			gravity: 9.81,
 			sinusAmount: 1,
 			shadow: 1.2,
-			// TODO: Read through stuff to find out why I set this magic number.
-			lightCutoff: -0.3,
 			// Color settings
 			specularPower: 120,
 		},
@@ -198,13 +196,15 @@ function (
 			'varying vec2 furTexCoord;',
 			'varying vec3 T;',
 			'varying vec3 viewPosition;',
+			'varying vec3 L;',
+			'varying float TxL;',
+			'varying float TxE;',
 
 			'void main(void) {',
 
 			// Pos will hold the final position
 			'	vec3 pos;',
-			'	texCoord0 = vertexUV0;',
-			'	furTexCoord = vertexUV0 * furRepeat;',
+			
 			'	vec3 normal = normalize(normalMatrix * vertexNormal);',
 			'	vec3 p_root = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 			'	vec3 p_0 = p_root + (normal * hairLength);',
@@ -248,7 +248,7 @@ function (
 			'	float c1 = length(constraint);',
 			'	if (c1 > L_0) {',
 			'		p = p_root + ( L_0 * normalize(constraint));',
-			'}',
+			'	}',
 
 			'	float c2 = dot((p-p_0),normal);',
 			'	if (c2 < 0.0) {',
@@ -257,7 +257,7 @@ function (
 				// Depth is calculated as the projection of the vector from the root
 				// to the point p projected at the negative normal
 			'	p = p + normal * -c2;',
-			'}',
+			'	}',
 
 			'	if (normalizedLength < 1.0) {',
 			//Qudratic bezier approximation of the curvture of the hair
@@ -276,13 +276,21 @@ function (
 
 			// Curliness Control
 			// Displace the pos in a circle in the surface plane to create curls!
-			'	vec3 tangent = normalize(normalMatrix * vertexTangent.xyz);',
-			'	vec3 binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
+			'vec3 tangent = normalize(normalMatrix * vertexTangent.xyz);',
+			'vec3 binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 
-			'	float wh = curlFrequency * normalizedLength;',
-			'	pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
-			'	viewPosition = cameraPosition - pos;',
-			'	gl_Position = viewProjectionMatrix * vec4(pos, 1.0);',
+			'float wh = curlFrequency * normalizedLength;',
+			'pos += curlRadius * normalizedLength * (cos(wh) * tangent + sin(wh) * binormal);',
+
+			// Set varying variables
+			'texCoord0 = vertexUV0;',
+			'furTexCoord = vertexUV0 * furRepeat;',
+			'viewPosition = cameraPosition - pos;',
+			'T = normalize(T);',
+			'L = vec3(0, 1, 0);',
+			'TxL = length(cross(T, L));',
+			'TxE = length(cross(T, normalize(viewPosition)));',
+			'gl_Position = viewProjectionMatrix * vec4(pos, 1.0);',
 
 			'}'//
 		].join("\n"),
@@ -305,6 +313,9 @@ function (
 			'varying vec2 texCoord0;',
 			'varying vec3 T;',
 			'varying vec3 viewPosition;',
+			'varying vec3 L;',
+			'varying float TxL;',
+			'varying float TxE;',
 
 			'void main(void)',
 			'{',
@@ -312,40 +323,33 @@ function (
 			'	if (opacity.a <= 0.0) discard;',
 			/*
 			Kajiya and Kay , 1989 , Illumination model
+			https://www.cs.drexel.edu/~david/Classes/CS586/Papers/p271-kajiya.pdf
 
 			http://http.developer.nvidia.com/GPUGems/gpugems_ch33.html
 			http://vilsen.se/Evaluation_of_Hair_Modeling_Simulation_and_Rendering_Algorithms_for_a_VFX_Hair_Modeling_System.pdf
 			http://publications.dice.se/attachments/RealTimeHairSimAndVis.pdf
+			http://web.media.mit.edu/~bandy/fur/CGI10fur.pdf
 			*/
 			//'	vec4 texCol = texture2D(colorTexture, texCoord0);',
-			'	vec4 texCol = vec4(0.5, 0, 0, 1.0);',
-			'	vec3 tangent = normalize(T);',
-			'	vec3 color = texCol.rgb;',
-			// stuff from ShaderBuilder.light.fragment
+			'	vec4 texCol = vec4(1, 0, 0, 1.0);',
+			'	vec3 diffuse = texCol.rgb;',
 
-			"vec3 materialDiffuse = vec3(0.9,0,0);",
-			"vec3 materialSpecular = vec3(0.9,0,0);",
+			"vec3 specularColor = vec3(0,0,1.0);",
 			"vec3 materialAmbient = vec3(0.1,0,0);",
 
-			"vec4 lDirection = vec4(0, 1, 0, 0.0);",
-			"vec3 dirVector = normalize(lDirection.xyz);",
-			// diffuse
-			'float TdotL = dot(tangent, dirVector);',
+			'vec3 tangent = normalize(T);',
+			'vec3 lightDir = normalize(L);',
+			'vec3 eye = normalize(viewPosition);',
+			'float specularAmount = pow(((dot(tangent, lightDir) * dot(tangent, eye)) + TxL * TxE), specularPower);',
+			'vec3 color = (diffuse * TxL) + (specularColor * specularAmount);',
+			//'vec3 color = (diffuse * TxL);',
+			//'vec3 color = (specularColor * specularAmount);',
 
-			'if (TdotL > lightCutoff) {',
-				'float TdotE = dot(tangent, normalize(viewPosition));',
-				'float sinTL = sin(acos(TdotL));',
-				'float sinTE = sin(acos(TdotE));',
-				'float diffuse = max(materialDiffuse.r * sinTL, 0.0);',
-				'float specular = max(materialSpecular.r * pow(TdotL * TdotE + sinTL * sinTE, specularPower), 0.0);',
-				// "Simple shadow effect"
-				'float shadowFactor = (shadow - 1.0 + normalizedLength)/shadow;',
-				'color = shadowFactor * ( color * (diffuse + specular + materialAmbient.r));',
-			'}',
-			'else {',
-				'color *= materialAmbient.r;',
-			'}',
-			'	gl_FragColor = vec4(color, 1.0);',
+			// "Simple shadow effect"
+			'float shadowFactor = (shadow - 1.0 + normalizedLength)/shadow;',
+			'color *= shadowFactor;',
+
+			'gl_FragColor = vec4(color, 1.0);',
 			
 			'}'//
 		].join("\n")
