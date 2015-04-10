@@ -37,19 +37,11 @@ function (
 		this.clear = false;
 		this.needsSwap = false;
 
-		// TODO : This stuff shall be fetched from the FurComponent, when it is implemented.
 		this.opacityTextures = this.generateOpacityTextures(layerCount);
 
 		this.furMaterial = Material.createEmptyMaterial(furShader, "FurMaterial");
-		// TODO: How to best do the binding of texture?
-		//this.furMaterial.setTexture('SPECULAR_MAP', this.opacityTextures[0]);
-		// TODO: The blending method is maybe not correct... lets see.
-		// 'AdditiveBlending', 'SubtractiveBlending', 'MultiplyBlending', 'CustomBlending'
-		//this.furMaterial.blendState.blending = "AdditiveBlending";
-		
 		// this.furMaterial.depthState.write = false;
 		this.furMaterial.cullState.enabled = false;
-
 		this.furUniforms = this.furMaterial.shader.uniforms;
 	}
 
@@ -163,15 +155,14 @@ function (
 			hairLength : 2,
 			colorTexture: Shader.DIFFUSE_MAP,
 			opacityTexture: FurPass.OPACITY_MAP,
-			time: Shader.TIME,
 			curlFrequency: 0.0,
 			curlRadius: 0.2,
 			furRepeat: 5,
-			gravity: 9.81,
-			sinusAmount: 1,
-			shadow: 1.2,
+			displacement: [0, 0, 0],
 			// Color settings
+			specularBlend: 1.0,
 			specularPower: 120,
+			shadow: 1.2,
 		},
 		vshader: [
 			'attribute vec3 vertexPosition;',
@@ -185,12 +176,10 @@ function (
 			'uniform vec3 cameraPosition;',
 			'uniform float normalizedLength;',
 			'uniform float hairLength;',
-			'uniform float time;',
 			'uniform float curlFrequency;',
 			'uniform float curlRadius;',
 			'uniform float furRepeat;',
-			'uniform float gravity;',
-			'uniform float sinusAmount;',
+			'uniform vec3 displacement;',
 
 			'varying vec2 texCoord0;',
 			'varying vec2 furTexCoord;',
@@ -206,8 +195,6 @@ function (
 			'vec3 p_0 = p_root + (normal * hairLength);',
 			'float L_0 = length(p_0 - p_root);',
 	
-			// TODO: Refactor to use external displacement vec3 instead
-			'vec3 displacement = vec3(0, 0, 0);',
 			'vec3 p = displacement + p_0;',
 
 			// Curliness Control
@@ -216,8 +203,6 @@ function (
 			'vec3 binormal = cross(normal, tangent) * vec3(vertexTangent.w);',
 			'float wh = curlFrequency * normalizedLength;',
 			
-
-
 			// CONSTRAINTS
 			// 2 constraints for the instant position p, to constrain p in a hemisphere abouve the surface
 			// c1: |p-p_root| <= L_0
@@ -272,9 +257,8 @@ function (
 			'uniform float furRepeat;',
 			'uniform float gravity;',
 			'uniform float shadow;',
-			'uniform float lightCutoff;',
 			'uniform float specularPower;',
-
+			'uniform float specularBlend;',
 
 			'uniform sampler2D colorTexture;',
 			'uniform sampler2D opacityTexture;',
@@ -317,7 +301,7 @@ function (
 
 			//TODO: Revise mixing of diffuse and specular.
 			//'vec3 color = mix((diffuse * TcrossL), specularColor, specularAmount);',
-			'vec3 color = (diffuse * TcrossL) + (specularColor * specularAmount);',
+			'vec3 color = (diffuse * TcrossL) + specularBlend * (specularColor * specularAmount);',
 
 			// "Simple shadow effect"
 			'float shadowFactor = (shadow - 1.0 + normalizedLength)/shadow;',

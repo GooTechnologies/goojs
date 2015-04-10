@@ -90,11 +90,12 @@ function(
 		furFolder.add(furPass.furUniforms, 'hairLength', 0.1, 20);
 		furFolder.add(furPass.furUniforms, 'curlFrequency', 0, 100);
 		furFolder.add(furPass.furUniforms, 'curlRadius', -1, 1);
-		furFolder.add(furPass.furUniforms, 'gravity', 0.1, 20.0);
-		furFolder.add(furPass.furUniforms, 'sinusAmount', 0, 20.0);
 		furFolder.add(furPass.furUniforms, 'shadow', 1, 10);
 		furFolder.add(furPass.furUniforms, 'specularPower', 0, 1000);
+		furFolder.add(furPass.furUniforms, 'specularBlend', 0, 1);
 		furFolder.open();
+
+		window.furUniforms = furPass.furUniforms;
 
 		var controller = gui.add(furSettings, 'layerCount', 1, 100).step(1);
 		controller.onFinishChange(function(value) {
