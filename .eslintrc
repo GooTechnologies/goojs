@@ -1,6 +1,7 @@
 {
   "globals": {
-    "performance": true
+    "performance": true,
+    "jasmine": true
   },
   "rules": {
     "quotes": [2, "single", "avoid-escape"],
@@ -11,7 +12,15 @@
     "no-use-before-define": true,
     "new-cap": false,
     "no-constant-condition": false,
-    "no-redeclare": false
+    "no-redeclare": false,
+    "complexity": [2, 10],
+    "no-throw-literal": true,
+    "indent": [2, "tab", { "indentSwitchCase": true }],
+    "consistent-this": [2, "that"],
+    "no-lonely-if": true,
+    "operator-assignment": [2, "always"],
+    "padded-blocks": [2, "never"],
+    "space-after-keywords": [2, "always"]
   },
   "env": {
     "browser": true,
