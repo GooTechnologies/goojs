@@ -123,30 +123,6 @@ define([
 			expect(new Matrix4().setScale(new Vector3(1, 2, 3))).toBeCloseToMatrix(new Matrix4(1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1));
 		});
 
-		it('can transform four-dimensional vectors (y = (x*M)^T)', function () {
-			var a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-
-			expect(a.applyPre(new Vector4(1, 2, 3, 4))).toBeCloseToVector(new Vector4(30, 70, 110, 150));
-		});
-
-		it('can transform four-dimensional vectors (y = M*x)', function () {
-			var a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-
-			expect(a.applyPost(new Vector4(1, 2, 3, 4))).toBeCloseToVector(new Vector4(90, 100, 110, 120));
-		});
-
-		it('can transform three-dimensional vectors', function () {
-			var a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-
-			expect(a.applyPostPoint(new Vector3(1, 2, 3))).toBeCloseToVector(new Vector3(51, 58, 65));
-		});
-
-		it('can transform three-dimensional normals', function () {
-			var a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-
-			expect(a.applyPostVector(new Vector3(1, 2, 3))).toBeCloseToVector(new Vector3(38, 44, 50));
-		});
-
 		describe('add', function () {
 			it('can add two matrices component-wise', function () {
 				var a = new Matrix4(

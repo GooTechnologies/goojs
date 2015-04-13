@@ -364,29 +364,6 @@ define([
 		return this;
 	};
 
-	/**
-	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
-	 * @param {Vector3} rhs Vector3 on the right-hand side.  The Vector3 passed in IS modified.
-	 * @returns {Vector3} Transformed right-hand side Vector3.
-	 * @example
-	 * var forward = new Vector3(0, 0, -1);
-	 * entity.applyPost(forward); // now 'forward' is in local space
-	 */
-	Matrix3.prototype.applyPost = function (rhs) {
-		// throw '';
-		return rhs.applyPost(this);
-	};
-
-	/**
-	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
-	 * @param {Vector3} rhs Vector on the left-hand side.
-	 * @returns {Vector3} Transformed left-hand side vector.
-	 */
-	Matrix3.prototype.applyPre = function (rhs) {
-		// throw '';
-		return rhs.applyPre(this);
-	};
-
 	// unused
 	/**
 	 * Post-multiplies the matrix ("before") with a scaling vector.
@@ -754,7 +731,7 @@ define([
 	// #ifdef DEBUG
 	Matrix.addPostChecks(Matrix3.prototype, [
 		'add', 'sub', 'scale', 'transpose', 'invert',
-		'isOrthogonal', 'determinant', 'applyPost', 'applyPre',
+		'isOrthogonal', 'determinant',
 		'fromAngles', 'rotateX', 'rotateY', 'rotateZ', 'fromAngleNormalAxis', 'lookAt',
 		'copyQuaternion', 'copy'
 	]);

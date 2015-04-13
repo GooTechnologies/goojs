@@ -116,12 +116,6 @@ define([
 			expect(b).toBeCloseToMatrix(Matrix3.IDENTITY);
 		});
 
-		it('can transform three-dimensional vectors', function () {
-			var a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
-
-			expect(a.applyPost(new Vector3(1, 2, 3))).toBeCloseToVector(new Vector3(30, 36, 42));
-		});
-
 		it('can set the scale part', function () {
 			var a = new Matrix3();
 			var b = new Matrix3();

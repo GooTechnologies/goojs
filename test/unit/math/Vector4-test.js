@@ -1,8 +1,10 @@
 define([
 	'goo/math/Vector4',
+	'goo/math/Matrix4',
 	'test/CustomMatchers'
 ], function (
 	Vector4,
+	Matrix4,
 	CustomMatchers
 ) {
 	'use strict';
@@ -191,6 +193,24 @@ define([
 				var vector = new Vector4(11, 22, 33, 44);
 				vector.mul(new Vector4(55, 66, 77, 88));
 				expect(vector).toBeCloseToVector(new Vector4(11 * 55, 22 * 66, 33 * 77, 44 * 88));
+			});
+		});
+
+		describe('applyPre', function () {
+			it('can transform four-dimensional vectors (y = (x*M)^T)', function () {
+				var vector = new Vector4(1, 2, 3, 4);
+				var matrix = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+				expect(vector.applyPre(matrix)).toBeCloseToVector(new Vector4(30, 70, 110, 150));
+			});
+		});
+
+		describe('applyPost', function () {
+			it('can transform four-dimensional vectors (y = M*x)', function () {
+				var vector = new Vector4(1, 2, 3, 4);
+				var matrix = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+				expect(vector.applyPost(matrix)).toBeCloseToVector(new Vector4(90, 100, 110, 120));
 			});
 		});
 	});

@@ -52,7 +52,7 @@ define([
 		// Translation
 		tmpVec.set(rhs.translation);
 		// Rotate translation
-		lhs.rotation.applyPost(tmpVec);
+		tmpVec.applyPost(lhs.rotation);
 		// Scale translation
 		tmpVec.mul(lhs.scale);
 		// Translate translation
@@ -96,7 +96,7 @@ define([
 		this.rotation.mul2(tmpMat1, this.rotation);
 		this.translation.set(b.translation);
 		this.translation.mul(a.scale);
-		tmpMat1.applyPost(this.translation).add(a.translation);
+		this.translation.applyPost(tmpMat1).add(a.translation);
 
 		tmpVec.set(a.scale).mul(b.scale);
 		this.scale.set(tmpVec);
@@ -133,7 +133,7 @@ define([
 		// this.rotation.applyPost(store);
 		// store.add(this.translation);
 
-		this.matrix.applyPostPoint(store);
+		store.applyPostPoint(this.matrix);
 
 		return store;
 	};
@@ -155,7 +155,7 @@ define([
 		store.copy(vector);
 
 		store.setDirect(store.x * this.scale.x, store.y * this.scale.y, store.z * this.scale.z);
-		this.rotation.applyPost(store);
+		store.applyPost(this.rotation);
 
 		return store;
 	};
@@ -285,7 +285,7 @@ define([
 
 		result.scale.set(Vector3.ONE).div(this.scale);
 		result.translation.copy(this.translation).invert().mul(result.scale);
-		result.rotation.applyPost(result.translation);
+		result.translation.applyPost(result.rotation);
 
 		// result.update();
 

@@ -650,7 +650,7 @@ define([
 		*/
 
 		position.setDirect(x, y, zDepth * 2 - 1, 1);
-		this.modelViewProjectionInverse.applyPost(position);
+		position.applyPost(this.modelViewProjectionInverse);
 		if (position.w !== 0.0) {
 			position.scale(1.0 / position.w);
 		}
@@ -866,7 +866,7 @@ define([
 		var position = new Vector4();
 		for (var i = 0; i < corners.length; i++) {
 			position.setDirect(corners[i].x, corners[i].y, corners[i].z, 1);
-			mvMatrix.applyPre(position);
+			position.applyPre(mvMatrix);
 
 			optimalCameraNear = Math.min(-position.z, optimalCameraNear);
 			optimalCameraFar = Math.max(-position.z, optimalCameraFar);

@@ -1,8 +1,12 @@
 define([
 	'goo/math/Vector3',
+	'goo/math/Matrix3',
+	'goo/math/Matrix4',
 	'test/CustomMatchers'
 ], function (
 	Vector3,
+	Matrix3,
+	Matrix4,
 	CustomMatchers
 ) {
 	'use strict';
@@ -184,10 +188,9 @@ define([
 		describe('cross', function () {
 			it('can calculate cross products', function () {
 				var a = new Vector3(3, 2, 1);
-				var b = new Vector3(3, 2, 1);
-				var c = new Vector3(1, 2, 3);
+				var b = new Vector3(1, 2, 3);
 
-				a.cross(c);
+				a.cross(b);
 
 				expect(a).toBeCloseToVector(new Vector3(4, -8, 4));
 			});
@@ -233,6 +236,33 @@ define([
 					34 / Math.sqrt(12 * 12 + 34 * 34 + 56 * 56),
 					56 / Math.sqrt(12 * 12 + 34 * 34 + 56 * 56)
 				));
+			});
+		});
+
+		describe('applyPost', function () {
+			it('can transformed by a Matrix3', function () {
+				var vector = new Vector3(1, 2, 3);
+				var matrix = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+				expect(vector.applyPost(matrix)).toBeCloseToVector(new Vector3(30, 36, 42));
+			});
+		});
+
+		describe('applyPostPoint', function () {
+			it('can transform three-dimensional vectors', function () {
+				var vector = new Vector3(1, 2, 3);
+				var matrix = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+				expect(vector.applyPostPoint(matrix)).toBeCloseToVector(new Vector3(51, 58, 65));
+			});
+		});
+
+		describe('applyPostVector', function () {
+			it('can transform three-dimensional normals', function () {
+				var vector = new Vector3(1, 2, 3);
+				var matrix = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+				expect(vector.applyPostVector(matrix)).toBeCloseToVector(new Vector3(38, 44, 50));
 			});
 		});
 

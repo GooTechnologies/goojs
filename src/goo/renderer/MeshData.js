@@ -441,7 +441,7 @@ define([
 		if (attributeName === MeshData.POSITION) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.matrix.applyPostPoint(vert);
+				vert.applyPostPoint(transform.matrix);
 				view[i + 0] = vert.x;
 				view[i + 1] = vert.y;
 				view[i + 2] = vert.z;
@@ -449,7 +449,7 @@ define([
 		} else if (attributeName === MeshData.NORMAL) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.rotation.applyPost(vert);
+				vert.applyPost(transform.rotation);
 				view[i + 0] = vert.x;
 				view[i + 1] = vert.y;
 				view[i + 2] = vert.z;
@@ -457,7 +457,7 @@ define([
 		} else if (attributeName === MeshData.TANGENT) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.rotation.applyPost(vert);
+				vert.applyPost(transform.rotation);
 				view[i + 0] = vert.x;
 				view[i + 1] = vert.y;
 				view[i + 2] = vert.z;

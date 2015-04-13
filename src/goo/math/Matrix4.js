@@ -611,45 +611,6 @@ define([
 	};
 
 	/**
-	 * Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = (x*M)^T)
-	 * @param {Vector4} rhs Vector on the right-hand side.
-	 * @returns {Vector4} Transformed right-hand side vector.
-	 */
-
-	// REVIEW rherlitz: The name of this method is not 100% intuitive as the method is called through matrix.applyPre(vector)
-	// and the matrix is applied after the vector.
-	Matrix4.prototype.applyPre = function (rhs) {
-		return rhs.applyPre(this);
-	};
-
-	/**
-	 * Applies the matrix (rotation, scale, translation, projection) to a four-dimensional vector. (x = M*x)
-	 * @param {Vector4} rhs Vector on the right-hand side.
-	 * @returns {Vector4} Transformed right-hand side vector.
-	 */
-	Matrix4.prototype.applyPost = function (rhs) {
-		return rhs.applyPost(this);
-	};
-
-	/**
-	 * Applies the matrix (rotation, scale, translation) to a three-dimensional vector.
-	 * @param {Vector3} rhs Vector on the right-hand side.
-	 * @returns {Vector3} Transformed right-hand side vector.
-	 */
-	Matrix4.prototype.applyPostPoint = function (rhs) {
-		return rhs.applyPostPoint(this);
-	};
-
-	/**
-	 * Applies the matrix (rotation, scale) to a three-dimensional vector.
-	 * @param {Vector3} rhs Vector on the right-hand side.
-	 * @returns {Vector3} Transformed right-hand side vector.
-	 */
-	Matrix4.prototype.applyPostVector = function (rhs) {
-		return rhs.applyPostVector(this);
-	};
-
-	/**
 	 * Compares two matrices for approximate equality
 	 * @param {Matrix4} that The matrix to compare against
 	 * @returns {boolean}
@@ -723,7 +684,7 @@ define([
 	// #ifdef DEBUG
 	Matrix.addPostChecks(Matrix4.prototype, [
 		'add', 'sub', 'scale', 'transpose', 'invert',
-		'isOrthogonal', 'determinant', 'applyPre',
+		'isOrthogonal', 'determinant',
 		'copy'
 	]);
 	// #endif

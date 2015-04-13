@@ -148,7 +148,7 @@ define([
 
 		// Transform all of these points by the transform
 		for (var i = 0; i < 8; i++) {
-			transform.matrix.applyPostPoint(corners[i]);
+			corners[i].applyPostPoint(transform.matrix);
 		}
 		// Now compute based on these transformed points
 		var minX = corners[0].x;

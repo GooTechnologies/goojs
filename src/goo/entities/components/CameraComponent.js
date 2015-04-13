@@ -96,15 +96,15 @@ define([
 		this.camera._left.set(this.leftVec);
 		//! AT: let's prevent scaling or skewing from spilling in the view(projection) matrix
 //		transform.matrix.applyPostVector(this.camera._left);
-		transform.rotation.applyPost(this.camera._left);
+		this.camera._left.applyPost(transform.rotation);
 
 		this.camera._up.set(this.upVec);
 //		transform.matrix.applyPostVector(this.camera._up);
-		transform.rotation.applyPost(this.camera._up);
+		this.camera._up.applyPost(transform.rotation);
 
 		this.camera._direction.set(this.dirVec);
 //		transform.matrix.applyPostVector(this.camera._direction);
-		transform.rotation.applyPost(this.camera._direction);
+		this.camera._direction.applyPost(transform.rotation);
 
 		transform.matrix.getTranslation(this.camera.translation);
 
