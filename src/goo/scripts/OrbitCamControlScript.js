@@ -95,7 +95,7 @@ define([
 			// Setting look at point at a distance forward
 			var rotation = ctx.entity.transformComponent.transform.rotation;
 			ctx.lookAtPoint = new Vector3(0, 0, -args.lookAtDistance);
-			rotation.applyPost(ctx.lookAtPoint);
+			ctx.lookAtPoint.applyPost(rotation);
 			ctx.lookAtPoint.add(ctx.entity.getTranslation());
 		} else if (args.lookAtPoint) {
 			ctx.lookAtPoint = args.lookAtPoint instanceof Array ? Vector3.fromArray(args.lookAtPoint) : args.lookAtPoint.clone();

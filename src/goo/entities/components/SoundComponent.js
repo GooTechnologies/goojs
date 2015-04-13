@@ -156,7 +156,7 @@ define([
 		this._velocity.set(this._position).sub(this._oldPosition).scale(1 / tpf);
 		this._oldPosition.set(this._position);
 		this._orientation.setDirect(0, 0, -1);
-		mvMat.applyPostVector(this._orientation);
+		this._orientation.applyPostVector(mvMat);
 
 		this._pannerNode.setPosition(this._position.x, this._position.y, this._position.z);
 		this._pannerNode.setVelocity(this._velocity.x, this._velocity.y, this._velocity.z);

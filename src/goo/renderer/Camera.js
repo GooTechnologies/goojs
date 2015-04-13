@@ -942,7 +942,7 @@ define([
 
 		// bring the clip-plane into camera space which is needed for the calculation
 		transformedClipPlane.w = 0;
-		this.getViewMatrix().applyPost(transformedClipPlane);
+		transformedClipPlane.applyPost(this.getViewMatrix());
 		transformedClipPlane.w = this.translation.y * clipPlane.y - clipPlane.w;
 
 		// calculate oblique camera projection matrix
