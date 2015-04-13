@@ -4,10 +4,7 @@
 var path = require('path');
 var _ = require('underscore');
 
-
 module.exports = function (grunt) {
-	'use strict';
-
 	var packs = {
 		fsmpack: 'goo/fsmpack',
 		geometrypack: 'goo/geometrypack',
@@ -151,7 +148,13 @@ module.exports = function (grunt) {
 				force: true // Do not fail the task
 			}
 		},
-		watch: getWatchConfig(packs)
+		watch: getWatchConfig(packs),
+		eslint: {
+			options: {
+				configFile: '.eslintrc'
+			},
+			target: ['Gruntfile.js', 'src/**/*.js']
+		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -163,6 +166,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-keepalive');
+	grunt.loadNpmTasks('grunt-eslint');
 
 	grunt.loadTasks('tools/grunt_tasks');
 

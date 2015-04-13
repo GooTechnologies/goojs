@@ -1,0 +1,21 @@
+{
+  "globals": {
+    "performance": true
+  },
+  "rules": {
+    "quotes": [2, "single", "avoid-escape"],
+    "no-underscore-dangle": false,
+    "no-shadow": false,
+    "no-loop-func": false,
+    "eol-last": false,
+    "no-use-before-define": true,
+    "new-cap": false,
+    "no-constant-condition": false,
+    "no-redeclare": false
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "amd": true
+  }
+}

@@ -59,7 +59,9 @@
     "jasmine-node": "~2.0.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-keepalive": "0.0.1",
-    "node-watch": "~0.3.4"
+    "node-watch": "~0.3.4",
+    "eslint": "~0.19.0",
+    "grunt-eslint": "~11.0.0"
   },
   "engines": {
     "node": ">=0.8.2"
