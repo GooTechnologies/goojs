@@ -161,23 +161,23 @@ define([
 		if(this._activeHandle.type === 'Plane') {
 			// Calculate plane's normal in world space
 			normal.set([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
-			this.transform.matrix.applyPostVector(normal);
+			normal.applyPostVector(this.transform.matrix);
 			normal.normalize();
 
 			// Set plane distance from world origin by projecting world translation to plane normal
 			worldCenter.set(Vector3.ZERO);
-			this.transform.matrix.applyPostPoint(worldCenter);
+			worldCenter.applyPostPoint(this.transform.matrix);
 			this._plane.constant = worldCenter.dot(normal);
 		} else {
 			// Get gizmo handle points in world space
 			worldCenter.set(Vector3.ZERO);
-			this.transform.matrix.applyPostPoint(worldCenter);
+			worldCenter.applyPostPoint(this.transform.matrix);
 			worldX.set(Vector3.UNIT_X);
-			this.transform.matrix.applyPostPoint(worldX);
+			worldX.applyPostPoint(this.transform.matrix);
 			worldY.set(Vector3.UNIT_Y);
-			this.transform.matrix.applyPostPoint(worldY);
+			worldY.applyPostPoint(this.transform.matrix);
 			worldZ.set(Vector3.UNIT_Z);
-			this.transform.matrix.applyPostPoint(worldZ);
+			worldZ.applyPostPoint(this.transform.matrix);
 
 			// Gizmo handle points in screen space
 			Renderer.mainCamera.getScreenCoordinates(worldCenter, 1, 1, screenCenter);
@@ -215,7 +215,7 @@ define([
 	Gizmo.prototype._setLine = function() {
 		// If translating or scaling along a line, set current line
 		this._line.set([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
-		this.transform.matrix.applyPostVector(this._line);
+		this._line.applyPostVector(this.transform.matrix);
 		this._line.normalize();
 	};
 

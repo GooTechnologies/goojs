@@ -723,7 +723,7 @@ define([
 		this.checkModelViewProjection();
 		var position = new Vector4();
 		position.setDirect(worldPosition.x, worldPosition.y, worldPosition.z, 1);
-		this.modelViewProjection.applyPost(position);
+		position.applyPost(this.modelViewProjection);
 		if (position.w !== 0.0) {
 			position.scale(1.0 / position.w);
 		}

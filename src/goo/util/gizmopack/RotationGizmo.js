@@ -71,11 +71,11 @@ define([
 		if(this._activeHandle.axis < 3) {
 			// Get rotation axis
 			axis.set([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
-			this.transform.rotation.applyPost(axis);
+			axis.applyPost(this.transform.rotation);
 
 			// Get rotation center
 			worldCenter.set(Vector3.ZERO);
-			this.transform.matrix.applyPostPoint(worldCenter);
+			worldCenter.applyPostPoint(this.transform.matrix);
 
 			// Get picked point in world space (sort of)
 			Renderer.mainCamera.getPickRay(

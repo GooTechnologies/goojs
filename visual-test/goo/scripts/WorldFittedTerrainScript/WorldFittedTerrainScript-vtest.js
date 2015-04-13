@@ -96,10 +96,14 @@ require([
             sphereEntity.addToWorld();
 
             var light1 = new PointLight();
-            light1.color.set(0.1, 0.1,0.1);
+            light1.color.setDirect(0.1, 0.1,0.1);
             var light1Entity = goo.world.createEntity('light');
             light1Entity.setComponent(new LightComponent(light1));
-            light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
+            light1Entity.transformComponent.transform.translation.setDirect(
+                dims.minX*0.5+dims.maxX*0.50,
+                20+dims.maxY,
+                dims.maxZ*0.5+dims.minZ*0.5
+            );
             light1Entity.addToWorld();
         }
     }

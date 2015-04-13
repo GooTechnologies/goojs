@@ -42,7 +42,9 @@ require([
 
 		var plane = world.createEntity(planeMesh, V.getColoredMaterial()).addToWorld().lookAt(lookAt);
 		plane.transformComponent.updateTransform(); // force update
-		var translation = plane.transformComponent.transform.rotation.applyPost(new Vector3(0, 0, -1)).scale(distance);
+		var translation = new Vector3(0, 0, -1)
+			.applyPost(plane.transformComponent.transform.rotation)
+			.scale(distance);
 		plane.setTranslation(translation);
 
 		planes.push(new Plane(lookAt, distance));

@@ -252,7 +252,7 @@ define([
 		this.displacementVector.sub(this.centerVector);
 		this.distance = this.displacementVector.length();
 		this.distanceVector.setDirect(0, 0, -this.distance);
-		this.camRot.applyPost(this.distanceVector);
+		this.distanceVector.applyPost(this.camRot);
 		this.centerVector.add(this.distanceVector);
 		this.positionVector.set(this.centerVector);
 		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
