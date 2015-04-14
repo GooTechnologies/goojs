@@ -32,55 +32,65 @@ define([
 			});
 		});
 
-		xit('can be accessed through indices', function () {
-			var a = new Vector4(1, 2, 3, 4);
+		describe('indices', function () {
+			it('can be accessed through indices (debug only)', function () {
+				var a = new Vector4(11, 22, 33, 44);
 
-			expect(a[0]).toEqual(1);
-			expect(a[1]).toEqual(2);
-			expect(a[2]).toEqual(3);
-			expect(a[3]).toEqual(4);
+				expect(function () { a[0]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[1]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[2]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[3]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+			});
+
+			it('can be modified through indices (debug only)', function () {
+				var a = new Vector4();
+
+				expect(function () { a[0] = 11; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[1] = 22; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[2] = 33; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[3] = 44; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+			});
 		});
 
-		xit('can be modified through indices', function () {
-			var a = new Vector4();
+		describe('aliases', function () {
+			it('can be accessed through aliases', function () {
+				var a = new Vector4(1, 2, 3, 4);
 
-			a[0] = 1;
-			a[1] = 2;
-			a[2] = 3;
-			a[3] = 4;
+				expect(a.x).toEqual(1);
+				expect(a.y).toEqual(2);
+				expect(a.z).toEqual(3);
+				expect(a.w).toEqual(4);
+				expect(a.r).toEqual(1);
+				expect(a.g).toEqual(2);
+				expect(a.b).toEqual(3);
+				expect(a.a).toEqual(4);
+			});
 
-			expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
-		});
+			it('can be modified through aliases', function () {
+				var a = new Vector4();
 
-		it('can be accessed through aliases', function () {
-			var a = new Vector4(1, 2, 3, 4);
+				a.x = 1;
+				a.y = 2;
+				a.z = 3;
+				a.w = 4;
 
-			expect(a.x).toEqual(1);
-			expect(a.y).toEqual(2);
-			expect(a.z).toEqual(3);
-			expect(a.w).toEqual(4);
-			expect(a.r).toEqual(1);
-			expect(a.g).toEqual(2);
-			expect(a.b).toEqual(3);
-			expect(a.a).toEqual(4);
-		});
+				expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
 
-		it('can be modified through aliases', function () {
-			var a = new Vector4();
+				a.r = 2;
+				a.g = 3;
+				a.b = 4;
+				a.a = 5;
 
-			a.x = 1;
-			a.y = 2;
-			a.z = 3;
-			a.w = 4;
-
-			expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
-
-			a.r = 2;
-			a.g = 3;
-			a.b = 4;
-			a.a = 5;
-
-			expect(a).toBeCloseToVector(new Vector4(2, 3, 4, 5));
+				expect(a).toBeCloseToVector(new Vector4(2, 3, 4, 5));
+			});
 		});
 
 		describe('scale', function () {

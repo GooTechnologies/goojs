@@ -551,10 +551,9 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.move = (function(){
-		var moveLocalDirection = new Vector3();
 		var moveWorldDirection = new Vector3();
 		return function () {
-			moveLocalDirection.set.apply(moveLocalDirection, arguments);
+			var moveLocalDirection = Vector3.fromAny.apply(null, arguments);
 			this.transform.applyForwardVector(moveLocalDirection, moveWorldDirection);
 			this.addTranslation(moveWorldDirection);
 			return this;

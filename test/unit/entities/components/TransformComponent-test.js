@@ -76,7 +76,7 @@ define([
 
 		//! AT: if any method fails the whole spec fails
 		// what is this testing? that the methods simply exist?
-		xit('can set, add and get rotation', function () {
+		it('can set, add and get rotation', function () {
 			var tc = new TransformComponent();
 			tc.setRotation(1,2,2);
 			tc.addRotation(0,0,1);
@@ -85,14 +85,14 @@ define([
 
 		//! AT: if any method fails the whole spec fails
 		// what is this testing? that the methods simply exist?
-		xit('can set, add and get rotation with array', function () {
+		it('can set, add and get rotation with array', function () {
 			var tc = new TransformComponent();
 			tc.setRotation([1,2,2]);
 			tc.addRotation([0,0,1]);
 		});
 
 		//! AT: if any method fails the whole spec fails
-		xit('can set, add and get translation', function () {
+		it('can set, add and get translation', function () {
 			var tc = new TransformComponent();
 			tc.setTranslation(1,2,2);
 			var vec = tc.getTranslation();
@@ -101,7 +101,7 @@ define([
 			expect(vec).toEqual(new Vector3(1,2,3));
 		});
 
-		xit('can move', function () {
+		it('can move', function () {
 			var tc = new TransformComponent();
 			tc.lookAt(new Vector3(1,0,0)); // look along the positive x axis
 			tc.move(0,0,-10); // this moves forward in a right handed coordinate system.

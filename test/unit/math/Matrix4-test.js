@@ -35,14 +35,30 @@ define([
 			});
 		});
 
-		// bad idea to use the same data in both matrices
-		xit('can combine multiple matrices into a single matrix', function () {
-			var a = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-			var b = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
 
-			a.combine(a);
+		it('can combine multiple matrices into a single matrix', function () {
+			var a = new Matrix4(
+				1, 2, 3, 4,
+				5, 6, 7, 8,
+				9, 10, 11, 12,
+				13, 14, 15, 16
+			);
 
-			expect(a).toBeCloseToMatrix(new Matrix4(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
+			var b = new Matrix4(
+				2, 3, 5, 7,
+				11, 13, 17, 19,
+				23, 29, 31, 37,
+				41, 43, 47, 53
+			);
+
+			a.mul(b);
+
+			expect(a).toBeCloseToMatrix(new Matrix4(
+				153, 170, 187, 204,
+				476, 536, 596, 656,
+				928, 1048, 1168, 1288,
+				1368, 1552, 1736, 1920
+			));
 		});
 
 		it('can be transposed', function () {

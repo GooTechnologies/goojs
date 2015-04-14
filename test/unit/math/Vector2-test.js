@@ -28,41 +28,47 @@ define([
 			});
 		});
 
-		xit('can be accessed through indices', function () {
-			var a = new Vector2(1, 2);
+		describe('indices', function () {
+			it('can be accessed through indices (debug only)', function () {
+				var a = new Vector2(11, 22);
 
-			expect(a[0]).toEqual(1);
-			expect(a[1]).toEqual(2);
+				expect(function () { a[0]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[1]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+			});
+
+			it('can be modified through indices (debug only)', function () {
+				var a = new Vector2();
+
+				expect(function () { a[0] = 11; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[1] = 22; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+			});
 		});
 
-		xit('can be modified through indices', function () {
-			var a = new Vector2();
+		describe('aliases', function () {
+			it('can be accessed through aliases', function () {
+				var a = new Vector2(11, 22);
 
-			a[0] = 1;
-			a[1] = 2;
+				expect(a.x).toEqual(11);
+				expect(a.y).toEqual(22);
+				expect(a.u).toEqual(11);
+				expect(a.v).toEqual(22);
+			});
 
-			expect(a).toBeCloseToVector(new Vector2(1, 2));
-		});
+			it('can be modified through aliases', function () {
+				var v1 = new Vector2();
+				v1.x = 11;
+				v1.y = 22;
+				expect(v1).toBeCloseToVector(new Vector2(11, 22));
 
-		it('can be accessed through aliases', function () {
-			var a = new Vector2(1, 2);
-
-			expect(a.x).toEqual(1);
-			expect(a.y).toEqual(2);
-			expect(a.u).toEqual(1);
-			expect(a.v).toEqual(2);
-		});
-
-		it('can be modified through aliases', function () {
-			var v1 = new Vector2();
-			v1.x = 1;
-			v1.y = 2;
-			expect(v1).toBeCloseToVector(new Vector2(1, 2));
-
-			var v2 = new Vector2();
-			v2.u = 2;
-			v2.v = 3;
-			expect(v2).toBeCloseToVector(new Vector2(2, 3));
+				var v2 = new Vector2();
+				v2.u = 22;
+				v2.v = 33;
+				expect(v2).toBeCloseToVector(new Vector2(22, 33));
+			});
 		});
 
 		describe('scale', function () {

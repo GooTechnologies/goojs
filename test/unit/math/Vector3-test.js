@@ -33,25 +33,31 @@ define([
 			});
 		});
 
-		describe('getters/setters', function () {
-			xit('can be accessed through indices', function () {
-				var vector = new Vector3(11, 22, 33);
+		describe('indices', function () {
+			it('can be accessed through indices (debug only)', function () {
+				var a = new Vector3(11, 22, 33);
 
-				expect(vector[0]).toBeCloseTo(11);
-				expect(vector[1]).toBeCloseTo(22);
-				expect(vector[2]).toBeCloseTo(33);
+				expect(function () { a[0]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[1]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[2]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
 			});
 
-			xit('can be modified through indices', function () {
-				var vector = new Vector3();
+			it('can be modified through indices (debug only)', function () {
+				var a = new Vector3();
 
-				vector[0] = 11;
-				vector[1] = 22;
-				vector[2] = 33;
-
-				expect(vector).toBeCloseToVector(new Vector3(11, 22, 33));
+				expect(function () { a[0] = 11; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[1] = 22; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[2] = 33; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
 			});
+		});
 
+		describe('aliases', function () {
 			it('can be accessed through aliases', function () {
 				var vector = new Vector3(11, 22, 33);
 
