@@ -327,18 +327,21 @@ define([
 		};
 	})();
 
-	/**
-	 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation.
-	 * Note that this method creates an object, so use fromAngleNormalAxis if your axis is already normalized.
-	 * If axis == (0, 0, 0) the quaternion is set to identity.
-	 * @param {number} angle The angle to rotate (in radians).
-	 * @param {Vector3} axis The axis of rotation.
-	 * @returns {Quaternion} Self for chaining.
-	 */
-	Quaternion.prototype.fromAngleAxis = function (angle, axis) {
-		var temp = axis.clone().normalize();
-		return this.fromAngleNormalAxis(angle, temp);
-	};
+	(function () {
+		var tmpStoreVector3 = new Vector3();
+		/**
+		 * Sets the values of this quaternion to the values represented by a given angle and axis of rotation.
+		 * Note that this method creates an object, so use fromAngleNormalAxis if your axis is already normalized.
+		 * If axis == (0, 0, 0) the quaternion is set to identity.
+		 * @param {number} angle The angle to rotate (in radians).
+		 * @param {Vector3} axis The axis of rotation.
+		 * @returns {Quaternion} Self for chaining.
+		 */
+		Quaternion.prototype.fromAngleAxis = function (angle, axis) {
+			tmpStoreVector3.copy(axis).normalize();
+			return this.fromAngleNormalAxis(angle, tmpStoreVector3);
+		};
+	})();
 
 	/**
 	 * Sets the values of this quaternion to the values represented by a given angle and unit length axis of rotation.

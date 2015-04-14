@@ -54,40 +54,40 @@ define([
 	Vector.setupAliases(Vector4.prototype,[['r'], ['g'], ['b'], ['a']]);
 
 	/**
-	 * Zero-vector (0, 0, 0)
+	 * Zero-vector (0, 0, 0, 0)
 	 * @type {Vector4}
 	 */
 	Vector4.ZERO = new Vector4(0, 0, 0, 0);
 
 	/**
-	 * One-vector (1, 1, 1)
+	 * One-vector (1, 1, 1, 1)
 	 * @type {Vector4}
 	 */
 	Vector4.ONE = new Vector4(1, 1, 1, 1);
 
 	/**
-	 * Unit-X (1, 0, 0)
+	 * Unit-X (1, 0, 0, 0)
 	 * @type {Vector4}
 	 */
 	Vector4.UNIT_X = new Vector4(1, 0, 0, 0);
 
 	/**
-	 * Unit-Y (0, 1, 0)
+	 * Unit-Y (0, 1, 0, 0)
 	 * @type {Vector4}
 	 */
 	Vector4.UNIT_Y = new Vector4(0, 1, 0, 0);
 
 	/**
-	 * Unit-Z (0, 0, 1)
+	 * Unit-Z (0, 0, 1, 0)
 	 * @type {Vector4}
 	 */
 	Vector4.UNIT_Z = new Vector4(0, 0, 1, 0);
 
 	/**
-	 * Unit-Z (0, 0, 1)
+	 * Unit-W (0, 0, 0, 1)
 	 * @type {Vector4}
 	 */
-	Vector4.UNIT_Z = new Vector4(0, 0, 0, 1);
+	Vector4.UNIT_W = new Vector4(0, 0, 0, 1);
 
 	/**
 	 * Returns the vector component associated with the given index.
@@ -201,7 +201,7 @@ define([
 	 * Performs component-wise negation of the vector
 	 * @returns {Vector4} Self to allow chaining
 	 */
-	Vector4.prototype.invert = function () {
+	Vector4.prototype.negate = function () {
 		this.x = -this.x;
 		this.y = -this.y;
 		this.z = -this.z;
@@ -406,7 +406,7 @@ define([
 	};
 
 	/**
-	 * Sets the vector's values from 3 numeric arguments
+	 * Sets the vector's values from 4 numeric arguments
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} z
@@ -575,19 +575,43 @@ define([
 	 */
 	Vector4.prototype.copy = Vector4.prototype.set;
 
-	// can't just use destination.copy(source) when destination has more components than source
-	// it would get infested with undefined and NaNs
-	Vector4.prototype.copyTo = function (destination) {
-		destination.x = this.x;
-		destination.y = this.y;
-		destination.z = this.z;
-		destination.w = this.w;
+	/**
+	 * Copies this vector over another. Not equivalent to `target.copy(this)` when
+	 * the target vector has more components than the source vector
+	 * @param {Vector} target
+	 * @returns {Vector4} Self to allow chaining
+	 */
+	Vector4.prototype.copyTo = function (target) {
+		target.x = this.x;
+		target.y = this.y;
+		target.z = this.z;
+		target.w = this.w;
 
 		return this;
 	};
 
+	/**
+	 * Creates a Vector4 given an array
+	 * @param {number[4]} array
+	 * @returns {Vector4}
+	 */
 	Vector4.fromArray = function (array) {
 		return new Vector4(array[0], array[1], array[2], array[3]);
+	};
+
+	/**
+	 * Creates a Vector4 given 4 numbers, an array, an {x, y, z, w} object or another Vector4
+	 * @returns {Vector4}
+	 */
+	Vector4.fromAny = function () {
+		if (arguments.length === 4) {
+			return Vector4.fromArray(arguments);
+		} else if (arguments[0] instanceof Array) {
+			return Vector4.fromArray(arguments[0]);
+		} else {
+			var vectorLike = arguments[0];
+			return new Vector4(vectorLike.x, vectorLike.y, vectorLike.z, vectorLike.w);
+		}
 	};
 
 	// #ifdef DEBUG

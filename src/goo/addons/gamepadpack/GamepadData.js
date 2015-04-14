@@ -1,9 +1,10 @@
 define([
-	'goo/math/Vector2'
+	'goo/math/Vector2',
+	'goo/math/MathUtils'
 ], function (
-	Vector2
-	) {
-
+	Vector2,
+	MathUtils
+) {
 	'use strict';
 
 	/**
@@ -83,9 +84,8 @@ define([
 	GamepadData.prototype.calculateStickDirection = function(dirVector, x, y) {
 		dirVector.setDirect(x, y);
 		var length = dirVector.length();
-		if (length > 0.0000001) {
-			dirVector.x /= length;
-			dirVector.y /= length;
+		if (length > MathUtils.EPSILON) {
+			dirVector.scale(1 / length);
 		}
 	};
 

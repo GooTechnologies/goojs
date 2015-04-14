@@ -122,8 +122,6 @@ define([
 	 * });
 	 */
 	CanvasUtils.renderSvgToCanvas = function (svgSource, options, callback) {
-		var DOMURL = window.URL || window.webkitURL || window;
-
 		var url = 'data:image/svg+xml;base64,' + btoa(svgSource);
 
 		CanvasUtils.loadCanvasFromPath(url, options, callback);
@@ -143,7 +141,7 @@ define([
 			if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
 				return 0;
 			} else {
-				return context.getImageData(x, y, 1, 1).x / 255;
+				return context.getImageData(x, y, 1, 1).data[0] / 255;
 			}
 		};
 

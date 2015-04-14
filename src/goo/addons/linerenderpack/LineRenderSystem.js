@@ -132,16 +132,16 @@ define([
 
 			size = size || 0.05;
 
-			var start = tmpVec1.set(position).addDirect(-size, 0.0, -size);
-			var end = tmpVec2.set(position).addDirect(size, 0.0, size);
+			var start = tmpVec1.set(position).addDirect(-size, 0, -size);
+			var end = tmpVec2.set(position).addDirect(size, 0, size);
 			this.drawLine(start, end, color);
 
-			start = tmpVec1.set(position).addDirect(size, 0.0, -size);
-			end = tmpVec2.set(position).addDirect(-size, 0.0, size);
+			start = tmpVec1.set(position).addDirect(size, 0, -size);
+			end = tmpVec2.set(position).addDirect(-size, 0, size);
 			this.drawLine(start, end, color);
 
-			start = tmpVec1.set(position).addDirect(0, -size, 0.0);
-			end = tmpVec2.set(position).addDirect(0.0, size, 0.0);
+			start = tmpVec1.set(position).addDirect(0, -size, 0);
+			end = tmpVec2.set(position).addDirect(0, size, 0);
 			this.drawLine(start, end, color);
 		};
 

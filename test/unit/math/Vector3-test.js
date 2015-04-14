@@ -142,10 +142,10 @@ define([
 		});
 
 
-		describe('invert', function () {
+		describe('negate', function () {
 			it('negates a vector', function () {
 				var vector = new Vector3(123, 345, -567);
-				vector.invert();
+				vector.negate();
 				expect(vector).toBeCloseToVector(new Vector3(-123, -345, 567));
 			});
 		});

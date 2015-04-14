@@ -182,7 +182,7 @@ define([
 		for (var i = 0; i < nParallel; i++) {
 			var circle = buildCircle(radius, nSegments);
 			var transform = new Transform();
-			transform.translation.setDirect(0, 0, -dxParallel * i);
+			transform.translation.z = -dxParallel * i;
 			transform.update();
 			meshBuilder.addMeshData(circle, transform);
 		}

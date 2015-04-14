@@ -284,17 +284,12 @@ define([
 		// }
 
 		result.scale.set(Vector3.ONE).div(this.scale);
-		result.translation.copy(this.translation).invert().mul(result.scale);
+		result.translation.copy(this.translation).negate().mul(result.scale);
 		result.translation.applyPost(result.rotation);
 
 		// result.update();
 
 		return result;
-	};
-
-	//! AT: the second toString in the whole engine
-	Transform.prototype.toString = function () {
-		return '' + this.matrix;
 	};
 
 	/**

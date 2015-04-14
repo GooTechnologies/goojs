@@ -165,7 +165,7 @@ define([
 	 * Performs component-wise negation of the vector
 	 * @returns {Vector2} Self to allow chaining
 	 */
-	Vector2.prototype.invert = function () {
+	Vector2.prototype.negate = function () {
 		this.x = -this.x;
 		this.y = -this.y;
 
@@ -487,17 +487,41 @@ define([
 	 */
 	Vector2.prototype.copy = Vector2.prototype.set;
 
-	// can't just use destination.copy(source) when destination has more components than source
-	// it would get infested with undefined and NaNs
-	Vector2.prototype.copyTo = function (destination) {
-		destination.x = this.x;
-		destination.y = this.y;
+	/**
+	 * Copies this vector over another. Not equivalent to `target.copy(this)` when
+	 * the target vector has more components than the source vector
+	 * @param {Vector} target
+	 * @returns {Vector2} Self to allow chaining
+	 */
+	Vector2.prototype.copyTo = function (target) {
+		target.x = this.x;
+		target.y = this.y;
 
 		return this;
 	};
 
+	/**
+	 * Creates a Vector2 given an array
+	 * @param {number[2]} array
+	 * @returns {Vector2}
+	 */
 	Vector2.fromArray = function (array) {
 		return new Vector2(array[0], array[1]);
+	};
+
+	/**
+	 * Creates a Vector2 given 3 numbers, an array, an {x, y} object or another Vector2
+	 * @returns {Vector2}
+	 */
+	Vector2.fromAny = function () {
+		if (arguments.length === 2) {
+			return Vector2.fromArray(arguments);
+		} else if (arguments[0] instanceof Array) {
+			return Vector2.fromArray(arguments[0]);
+		} else {
+			var vectorLike = arguments[0];
+			return new Vector2(vectorLike.x, vectorLike.y);
+		}
 	};
 
 	// #ifdef DEBUG

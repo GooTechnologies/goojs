@@ -101,13 +101,17 @@ define([
 			transformData._rotation.set(tmpQuat2);
 		}
 
-		transformData._translation.x = (1 - fraction) * this._translations[index3A + 0] + fraction * this._translations[index3B + 0];
-		transformData._translation.y = (1 - fraction) * this._translations[index3A + 1] + fraction * this._translations[index3B + 1];
-		transformData._translation.z = (1 - fraction) * this._translations[index3A + 2] + fraction * this._translations[index3B + 2];
+		transformData._translation.setDirect(
+			(1 - fraction) * this._translations[index3A + 0] + fraction * this._translations[index3B + 0],
+			(1 - fraction) * this._translations[index3A + 1] + fraction * this._translations[index3B + 1],
+			(1 - fraction) * this._translations[index3A + 2] + fraction * this._translations[index3B + 2]
+		);
 
-		transformData._scale.x = (1 - fraction) * this._scales[index3A + 0] + fraction * this._scales[index3B + 0];
-		transformData._scale.y = (1 - fraction) * this._scales[index3A + 1] + fraction * this._scales[index3B + 1];
-		transformData._scale.z = (1 - fraction) * this._scales[index3A + 2] + fraction * this._scales[index3B + 2];
+		transformData._scale.setDirect(
+			(1 - fraction) * this._scales[index3A + 0] + fraction * this._scales[index3B + 0],
+			(1 - fraction) * this._scales[index3A + 1] + fraction * this._scales[index3B + 1],
+			(1 - fraction) * this._scales[index3A + 2] + fraction * this._scales[index3B + 2]
+		);
 	};
 
 	/**

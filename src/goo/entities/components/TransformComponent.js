@@ -2,16 +2,12 @@ define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
-	'goo/entities/EntitySelection',
-	'goo/math/Matrix4',
-	'goo/math/Vector'
+	'goo/entities/EntitySelection'
 ], function (
 	Transform,
 	Vector3,
 	Component,
-	EntitySelection,
-	Matrix4,
-	Vector
+	EntitySelection
 ) {
 	'use strict';
 
@@ -362,16 +358,6 @@ define([
 
 	var tmpVec = new Vector3();
 
-	function toVector3() {
-		if (arguments.length === 3) {
-			return Vector3.fromArray(arguments);
-		} else if (arguments[0] instanceof Array) {
-			return Vector3.fromArray(arguments[0]);
-		} else {
-			return arguments[0];
-		}
-	}
-
 	/**
 	 * Gets the value of transformComponent.transform.translation.
 	 * To change the translation, the returned object can be modified
@@ -403,7 +389,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		this.transform.translation.set(toVector3.apply(null, arguments));
+		this.transform.translation.set(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
@@ -433,7 +419,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
-		this.transform.scale.set(toVector3.apply(null, arguments));
+		this.transform.scale.set(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
@@ -450,7 +436,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
-		this.transform.translation.add(toVector3.apply(null, arguments));
+		this.transform.translation.add(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
