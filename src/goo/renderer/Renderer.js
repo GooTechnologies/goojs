@@ -527,8 +527,7 @@ define([
 						this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
 					} else {
 						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(texture.format), image.width,
-							image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), this
-								.getGLPixelDataType(texture.type), image.data);
+							image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data);
 					}
 				} else {
 					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image);
@@ -565,8 +564,7 @@ define([
 							this.loadCompressedTexture(context, RendererUtils.getGLCubeMapFace(face), texture, image.data[faceIndex]);
 						} else {
 							context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), image.width,
-								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), this
-									.getGLPixelDataType(texture.type), image.data[faceIndex]);
+								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data[faceIndex]);
 						}
 					} else {
 						context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data[faceIndex]);
@@ -1596,8 +1594,7 @@ define([
 							this.loadCompressedTexture(context, RendererUtils.getGLCubeMapFace(face), texture, image.data[faceIndex]);
 						} else {
 							context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), image.width,
-								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), this
-									.getGLPixelDataType(texture.type), image.data[faceIndex]);
+								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data[faceIndex]);
 						}
 					} else {
 						context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data[faceIndex]);
