@@ -82,14 +82,6 @@ define([
 	};
 
 	/**
-	 * Stops updating the entities
-	 */
-	StateMachineSystem.prototype.pause = function () {
-		this.passive = true;
-		this.paused = true;
-	};
-
-	/**
 	 * Resumes updating the entities
 	 */
 	StateMachineSystem.prototype.play = function () {
@@ -101,9 +93,22 @@ define([
 	};
 
 	/**
+	 * Stops updating the entities
+	 */
+	StateMachineSystem.prototype.pause = function () {
+		this.passive = true;
+		this.paused = true;
+	};
+
+	/**
+	 * Resumes updating the entities; an alias for `.play`
+	 */
+	StateMachineSystem.prototype.resume = StateMachineSystem.prototype.play;
+
+	/**
 	 * Stop updating entities and resets the state machines to their initial state
 	 */
-	StateMachineSystem.prototype.reset = function () {
+	StateMachineSystem.prototype.stop = function () {
 		this.passive = false;
 		this.resetRequest = true;
 		this.paused = false;
