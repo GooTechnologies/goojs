@@ -57,8 +57,8 @@ define([
 
 		this.convolutionShader = ObjectUtil.deepClone(ShaderLib.convolution);
 		this.convolutionShader.defines = {
-			"KERNEL_SIZE_FLOAT": kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT": kernelSize.toFixed(0)
+			'KERNEL_SIZE_FLOAT': kernelSize.toFixed(1),
+			'KERNEL_SIZE_INT': kernelSize.toFixed(0)
 		};
 		this.convolutionMaterial = new Material(this.convolutionShader);
 		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;

@@ -11,32 +11,32 @@ define(
 
 		/**
 		 * Logic node implementing a time counter. Processed every frame and time is increased. Output
-		 * can be read through the "Time" port
+		 * can be read through the 'Time' port
 		 * @private
 		 */
 		function LogicNodeTime() {
 			LogicNode.call(this);
 			this.wantsProcessCall = true;
 			this.logicInterface = LogicNodeTime.logicInterface;
-			this.type = "LogicNodeTime";
+			this.type = 'LogicNodeTime';
 			this._time = 0;
 			this._running = true;
 		}
 
-		// Logic interface set-up	
+		// Logic interface set-up
 		LogicNodeTime.prototype = Object.create(LogicNode.prototype);
 
-		LogicNodeTime.editorName = "Time";
+		LogicNodeTime.editorName = 'Time';
 		LogicNodeTime.logicInterface = new LogicInterface();
 
 		// ports
-		LogicNodeTime.outPropTime = LogicNodeTime.logicInterface.addOutputProperty("Time", "float");
+		LogicNodeTime.outPropTime = LogicNodeTime.logicInterface.addOutputProperty('Time', 'float');
 
 		// events
-		LogicNodeTime.outEventReached1 = LogicNodeTime.logicInterface.addOutputEvent(">1");
-		LogicNodeTime.inEventStart = LogicNodeTime.logicInterface.addInputEvent("Start");
-		LogicNodeTime.inEventStop = LogicNodeTime.logicInterface.addInputEvent("Stop");
-		LogicNodeTime.inEventReset = LogicNodeTime.logicInterface.addInputEvent("Reset");
+		LogicNodeTime.outEventReached1 = LogicNodeTime.logicInterface.addOutputEvent('>1');
+		LogicNodeTime.inEventStart = LogicNodeTime.logicInterface.addInputEvent('Start');
+		LogicNodeTime.inEventStop = LogicNodeTime.logicInterface.addInputEvent('Stop');
+		LogicNodeTime.inEventReset = LogicNodeTime.logicInterface.addInputEvent('Reset');
 
 		LogicNodeTime.prototype.onConfigure = function () {
 			this._time = 0;
@@ -68,7 +68,7 @@ define(
 			}
 		};
 
-		LogicNodes.registerType("LogicNodeTime", LogicNodeTime);
+		LogicNodes.registerType('LogicNodeTime', LogicNodeTime);
 
 		return LogicNodeTime;
 	});

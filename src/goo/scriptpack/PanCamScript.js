@@ -16,7 +16,7 @@ define([
 	'use strict';
 
 	function PanCamScript() {
-		var fwdVector, leftVector, moveVector, calcVector, calcVector2;
+		var fwdVector, leftVector, calcVector, calcVector2;
 		var panButton;
 		var lookAtPoint;
 		var mouseState;
@@ -40,7 +40,6 @@ define([
 			lookAtPoint = environment.goingToLookAt;
 			fwdVector = Vector3.UNIT_Y.clone();
 			leftVector = Vector3.UNIT_X.clone().invert();
-			moveVector = new Vector3();
 			calcVector = new Vector3();
 			calcVector2 = new Vector3();
 

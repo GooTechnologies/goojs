@@ -16,11 +16,11 @@ define(
 		function LogicNodeSub() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeSub.logicInterface;
-			this.type = "LogicNodeSub";
+			this.type = 'LogicNodeSub';
 		}
 
 		LogicNodeSub.prototype = Object.create(LogicNode.prototype);
-		LogicNodeSub.editorName = "Sub";
+		LogicNodeSub.editorName = 'Sub';
 
 		LogicNodeSub.prototype.onInputChanged = function (instDesc /*, portID, value */ ) {
 			var out = LogicLayer.readPort(instDesc, LogicNodeSub.inportX) -
@@ -30,11 +30,11 @@ define(
 		};
 
 		LogicNodeSub.logicInterface = new LogicInterface();
-		LogicNodeSub.outportSum = LogicNodeSub.logicInterface.addOutputProperty("sum", "float");
-		LogicNodeSub.inportX = LogicNodeSub.logicInterface.addInputProperty("x", "float", 0);
-		LogicNodeSub.inportY = LogicNodeSub.logicInterface.addInputProperty("y", "float", 0);
+		LogicNodeSub.outportSum = LogicNodeSub.logicInterface.addOutputProperty('sum', 'float');
+		LogicNodeSub.inportX = LogicNodeSub.logicInterface.addInputProperty('x', 'float', 0);
+		LogicNodeSub.inportY = LogicNodeSub.logicInterface.addInputProperty('y', 'float', 0);
 
-		LogicNodes.registerType("LogicNodeSub", LogicNodeSub);
+		LogicNodes.registerType('LogicNodeSub', LogicNodeSub);
 
 		return LogicNodeSub;
 	});

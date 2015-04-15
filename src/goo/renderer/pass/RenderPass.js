@@ -7,7 +7,6 @@ define([
 	Pass,
 	Vector4
 ) {
-
 	'use strict';
 
 	/**

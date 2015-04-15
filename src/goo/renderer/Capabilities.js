@@ -1,27 +1,25 @@
-define(
-
-function () {
+define(function () {
 	'use strict';
 
 	/**
 	 * Enabled and stores webgl extensions and capabilities
 
 	 * Extensions
-	 * @property {object} CompressedTextureS3TC S3TC (DXT) compression, WEBGL_compressed_texture_s3tc
-	 * @property {object} TextureFloat Floating point textures, OES_texture_float
-	 * @property {object} TextureFloatLinear Linear filtering of floating point textures, OES_texture_float_linear
-	 * @property {object} TextureHalfFloat 16-bit floating point textures, OES_texture_half_float
-	 * @property {object} TextureHalfFloatLinear Linear filtering of 16-bit floating point textures, OES_texture_half_float_linear
-	 * @property {object} StandardDerivatives Enabled dFdx/dFdy/fwidth in fragment shaders, OES_standard_derivatives
-	 * @property {object} TextureFilterAnisotropic Anisotropic filtering of textures, EXT_texture_filter_anisotropic
-	 * @property {object} DepthTexture Depth textures, WEBGL_depth_texture
-	 * @property {object} ElementIndexUInt 32-bit index buffers, OES_element_index_uint
-	 * @property {object} InstancedArrays Instanced arrays, ANGLE_instanced_arrays
-	 * @property {object} BlendMinmax BlendMinmax, EXT_blend_minmax
-	 * @property {object} FragDepth FragDepth, EXT_frag_depth
-	 * @property {object} ShaderTextureLod ShaderTextureLod, EXT_shader_texture_lod
-	 * @property {object} VertexArrayObject VertexArrayObject, OES_vertex_array_object
-	 * @property {object} DrawBuffers Multiple rendertargets, WEBGL_draw_buffers
+	 * @property {Object} CompressedTextureS3TC S3TC (DXT) compression, WEBGL_compressed_texture_s3tc
+	 * @property {Object} TextureFloat Floating point textures, OES_texture_float
+	 * @property {Object} TextureFloatLinear Linear filtering of floating point textures, OES_texture_float_linear
+	 * @property {Object} TextureHalfFloat 16-bit floating point textures, OES_texture_half_float
+	 * @property {Object} TextureHalfFloatLinear Linear filtering of 16-bit floating point textures, OES_texture_half_float_linear
+	 * @property {Object} StandardDerivatives Enabled dFdx/dFdy/fwidth in fragment shaders, OES_standard_derivatives
+	 * @property {Object} TextureFilterAnisotropic Anisotropic filtering of textures, EXT_texture_filter_anisotropic
+	 * @property {Object} DepthTexture Depth textures, WEBGL_depth_texture
+	 * @property {Object} ElementIndexUInt 32-bit index buffers, OES_element_index_uint
+	 * @property {Object} InstancedArrays Instanced arrays, ANGLE_instanced_arrays
+	 * @property {Object} BlendMinmax BlendMinmax, EXT_blend_minmax
+	 * @property {Object} FragDepth FragDepth, EXT_frag_depth
+	 * @property {Object} ShaderTextureLod ShaderTextureLod, EXT_shader_texture_lod
+	 * @property {Object} VertexArrayObject VertexArrayObject, OES_vertex_array_object
+	 * @property {Object} DrawBuffers Multiple rendertargets, WEBGL_draw_buffers
 
 	 * Properties
 	 * @property {number} maxTexureSize Maximum 2D texture size
@@ -48,8 +46,7 @@ function () {
 	 * @property {number} version Version string
 	 * @property {number} shadingLanguageVersion Shadinglanguage version string
 	 */
-	function Capabilities() {
-	}
+	function Capabilities() {}
 
 	/**
 	 * Initialize capabilities from rendering context.
@@ -57,9 +54,9 @@ function () {
 	 */
 	Capabilities.init = function (context) {
 		// Extensions
-		Capabilities.CompressedTextureS3TC = context.getExtension("WEBGL_compressed_texture_s3tc")
-										|| context.getExtension("MOZ_WEBGL_compressed_texture_s3tc")
-										|| context.getExtension("WEBKIT_WEBGL_compressed_texture_s3tc");
+		Capabilities.CompressedTextureS3TC = context.getExtension('WEBGL_compressed_texture_s3tc')
+										|| context.getExtension('MOZ_WEBGL_compressed_texture_s3tc')
+										|| context.getExtension('WEBKIT_WEBGL_compressed_texture_s3tc');
 		Capabilities.TextureFloat = context.getExtension('OES_texture_float');
 		Capabilities.TextureFloatLinear = context.getExtension('OES_texture_float_linear');
 		Capabilities.TextureHalfFloat = context.getExtension('OES_texture_half_float');

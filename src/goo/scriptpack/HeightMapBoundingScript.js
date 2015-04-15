@@ -55,7 +55,7 @@ define([
 
 		return totalAvg;
 	};
-	
+
 	HeightMapBoundingScript.prototype.getTriangleAt = function (x, y) {
 		var xc = Math.ceil(x);
 		var xf = Math.floor(x);

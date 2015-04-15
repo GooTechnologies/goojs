@@ -20,8 +20,7 @@ define([
 	/**
 	 * Builds shaders
 	 */
-	function ShaderBuilder() {
-	}
+	function ShaderBuilder() {}
 
 	var defaultLight = new DirectionalLight();
 	defaultLight.translation.setDirect(10, 10, 10);
@@ -136,7 +135,6 @@ define([
 					shader.removeDefine(attribute);
 				}
 			}
-
 		},
 
 		discard: function (shader, material) {
@@ -146,7 +144,6 @@ define([
 			} else {
 				shader.removeDefine('DISCARD');
 			}
-
 		},
 
 		opacity: function (shader, material) {
@@ -175,7 +172,6 @@ define([
 			} else {
 				shader.removeDefine('FOG');
 			}
-
 		},
 
 		normalTangents: function (shader, shaderInfo) {
@@ -572,39 +568,39 @@ define([
 							);
 									if (light.shadowSettings.shadowType === 'PCF') {
 										fragment.push(
-										'depth.z *= 0.96;',
-										'float shadowPcf = 0.0;',
-										'const float shadowDelta = 1.0 / 9.0;',
-										'float xPixelOffset = 1.0 / shadowMapSizes' + i + '.x;',
-										'float yPixelOffset = 1.0 / shadowMapSizes' + i + '.y;',
+											'depth.z *= 0.96;',
+											'float shadowPcf = 0.0;',
+											'const float shadowDelta = 1.0 / 9.0;',
+											'float xPixelOffset = 1.0 / shadowMapSizes' + i + '.x;',
+											'float yPixelOffset = 1.0 / shadowMapSizes' + i + '.y;',
 
-										'float dx0 = -1.25 * xPixelOffset;',
-										'float dy0 = -1.25 * yPixelOffset;',
-										'float dx1 = 1.25 * xPixelOffset;',
-										'float dy1 = 1.25 * yPixelOffset;',
+											'float dx0 = -1.25 * xPixelOffset;',
+											'float dy0 = -1.25 * yPixelOffset;',
+											'float dx1 = 1.25 * xPixelOffset;',
+											'float dy1 = 1.25 * yPixelOffset;',
 
-										'float fDepth = 0.0;',
+											'float fDepth = 0.0;',
 
-										'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0)).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy0)).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy0)).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, 0.0)).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth =  texture2D(shadowMaps' + i + ', depth.xy).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, 0.0)).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy1)).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy1)).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy1)).r;',
-										'if (fDepth < depth.z) shadowPcf += shadowDelta;',
-										'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness' + i + ');'
-										//'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness' + i + ') + shadowDarkness' + i + ';'
+											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy0)).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy0)).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy0)).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, 0.0)).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'fDepth =  texture2D(shadowMaps' + i + ', depth.xy).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, 0.0)).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx0, dy1)).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(0.0, dy1)).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'fDepth = texture2D(shadowMaps' + i + ', depth.xy + vec2(dx1, dy1)).r;',
+											'if (fDepth < depth.z) shadowPcf += shadowDelta;',
+											'shadow = mix(1.0, 1.0 - shadowPcf, shadowDarkness' + i + ');'
+											//'shadow = (1.0 - shadowPcf) * (1.0 - shadowDarkness' + i + ') + shadowDarkness' + i + ';'
 										);
 									} else if (light.shadowSettings.shadowType === 'VSM') {
 										fragment.push(

@@ -16,7 +16,7 @@ define(
 		function LogicNodeWASD2() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeWASD2.logicInterface;
-			this.type = "LogicNodeWASD2";
+			this.type = 'LogicNodeWASD2';
 
 			var preventRepeat = {};
 			this.eventListenerDown = function (event) {
@@ -43,7 +43,7 @@ define(
 		}
 
 		LogicNodeWASD2.prototype = Object.create(LogicNode.prototype);
-		LogicNodeWASD2.editorName = "WASD2";
+		LogicNodeWASD2.editorName = 'WASD2';
 
 		LogicNodeWASD2.prototype.onSystemStarted = function () {
 			document.addEventListener('keydown', this.eventListenerDown);
@@ -58,24 +58,24 @@ define(
 		LogicNodeWASD2.logicInterface = new LogicInterface();
 		LogicNodeWASD2.downKeys = {
 			'w': {
-				port: LogicNodeWASD2.logicInterface.addOutputProperty("W", "float", 0),
+				port: LogicNodeWASD2.logicInterface.addOutputProperty('W', 'float', 0),
 				value: 1
 			},
 			'a': {
-				port: LogicNodeWASD2.logicInterface.addOutputProperty("A", "float", 0),
+				port: LogicNodeWASD2.logicInterface.addOutputProperty('A', 'float', 0),
 				value: 1
 			},
 			's': {
-				port: LogicNodeWASD2.logicInterface.addOutputProperty("S", "float", 0),
+				port: LogicNodeWASD2.logicInterface.addOutputProperty('S', 'float', 0),
 				value: -1
 			},
 			'd': {
-				port: LogicNodeWASD2.logicInterface.addOutputProperty("D", "float", 0),
+				port: LogicNodeWASD2.logicInterface.addOutputProperty('D', 'float', 0),
 				value: -1
 			}
 		};
 
-		LogicNodes.registerType("LogicNodeWASD2", LogicNodeWASD2);
+		LogicNodes.registerType('LogicNodeWASD2', LogicNodeWASD2);
 
 		return LogicNodeWASD2;
 	});

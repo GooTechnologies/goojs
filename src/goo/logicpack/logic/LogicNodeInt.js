@@ -16,13 +16,13 @@ define(
 		function LogicNodeInt() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeInt.logicInterface;
-			this.type = "LogicNodeInt";
+			this.type = 'LogicNodeInt';
 			this.defValue = 0;
 			this.value = 0;
 		}
 
 		LogicNodeInt.prototype = Object.create(LogicNode.prototype);
-		LogicNodeInt.editorName = "Int";
+		LogicNodeInt.editorName = 'Int';
 
 		LogicNodeInt.prototype.onConfigure = function (newConfig) {
 			if (newConfig.value !== undefined) {
@@ -55,13 +55,13 @@ define(
 
 		LogicNodeInt.prototype.onSystemStopped = function () {};
 
-		LogicNodes.registerType("LogicNodeInt", LogicNodeInt);
+		LogicNodes.registerType('LogicNodeInt', LogicNodeInt);
 
 		LogicNodeInt.logicInterface = new LogicInterface();
-		LogicNodeInt.ineventReset = LogicNodeInt.logicInterface.addInputEvent("reset");
-		LogicNodeInt.ineventIncrease = LogicNodeInt.logicInterface.addInputEvent("increase");
-		LogicNodeInt.ineventDecrease = LogicNodeInt.logicInterface.addInputEvent("decrease");
-		LogicNodeInt.outportInt = LogicNodeInt.logicInterface.addOutputProperty("value", "int");
+		LogicNodeInt.ineventReset = LogicNodeInt.logicInterface.addInputEvent('reset');
+		LogicNodeInt.ineventIncrease = LogicNodeInt.logicInterface.addInputEvent('increase');
+		LogicNodeInt.ineventDecrease = LogicNodeInt.logicInterface.addInputEvent('decrease');
+		LogicNodeInt.outportInt = LogicNodeInt.logicInterface.addOutputProperty('value', 'int');
 		LogicNodeInt.logicInterface.addConfigEntry({
 			name: 'value',
 			type: 'int',

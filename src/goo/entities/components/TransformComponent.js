@@ -550,7 +550,7 @@ define([
 	 * @param {Vector | number[] | number...} component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
-	TransformComponent.prototype.move = (function (){
+	TransformComponent.prototype.move = (function () {
 		var moveWorldDirection = new Vector3();
 		return function () {
 			var moveLocalDirection = Vector3.fromAny.apply(null, arguments);

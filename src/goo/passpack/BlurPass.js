@@ -58,8 +58,8 @@ define([
 
 		this.convolutionShader = ObjectUtil.deepClone(ShaderLib.convolution);
 		this.convolutionShader.defines = {
-			"KERNEL_SIZE_FLOAT": kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT": kernelSize.toFixed(0)
+			'KERNEL_SIZE_FLOAT': kernelSize.toFixed(1),
+			'KERNEL_SIZE_INT': kernelSize.toFixed(0)
 		};
 		this.convolutionShader.uniforms.uImageIncrement = this.blurX;
 		this.convolutionShader.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);

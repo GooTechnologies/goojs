@@ -35,7 +35,7 @@ define(
 		LogicNodes.getClass = function (name) {
 			if (LogicNodes.types[name] === undefined) {
 				return function () {
-					console.error("LogicNode type [" + name + "] does not exist.");
+					console.error('LogicNode type [' + name + '] does not exist.');
 					return null;
 				};
 			}

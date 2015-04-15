@@ -6,8 +6,8 @@ function () {
 	 * Get logo svg in different formats
 	 * Only used to define the class. Should never be instantiated.
 	 */
-	function Logo() {
-	}
+	function Logo() {}
+
 	/** @type {string} */
 	Logo.blue = '#2A3276';
 	/** @type {string} */
@@ -34,7 +34,7 @@ function () {
 			}
 		}
 
-        if (!document.createElementNS) { return ''; }
+		if (!document.createElementNS) { return ''; }
 
 		var xmlns = 'http://www.w3.org/2000/svg';
 		var svg = document.createElementNS(xmlns, 'svg');

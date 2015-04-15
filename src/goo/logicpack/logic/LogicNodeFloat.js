@@ -16,11 +16,11 @@ define(
 		function LogicNodeFloat() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeFloat.logicInterface;
-			this.type = "LogicNodeFloat";
+			this.type = 'LogicNodeFloat';
 		}
 
 		LogicNodeFloat.prototype = Object.create(LogicNode.prototype);
-		LogicNodeFloat.editorName = "Float";
+		LogicNodeFloat.editorName = 'Float';
 
 		LogicNodeFloat.prototype.onConfigure = function (newConfig) {
 			if (newConfig.value !== undefined) {
@@ -33,10 +33,10 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeFloat.outportFloat, this.value);
 		};
 
-		LogicNodes.registerType("LogicNodeFloat", LogicNodeFloat);
+		LogicNodes.registerType('LogicNodeFloat', LogicNodeFloat);
 
 		LogicNodeFloat.logicInterface = new LogicInterface();
-		LogicNodeFloat.outportFloat = LogicNodeFloat.logicInterface.addOutputProperty("value", "float");
+		LogicNodeFloat.outportFloat = LogicNodeFloat.logicInterface.addOutputProperty('value', 'float');
 		LogicNodeFloat.logicInterface.addConfigEntry({
 			name: 'value',
 			type: 'float',

@@ -57,7 +57,7 @@ define([
 	 */
 	Plane.prototype.reflectVector = function (unitVector, store) {
 		var result = store;
-		if (typeof(result) === 'undefined') {
+		if (typeof result === 'undefined') {
 			result = new Vector3();
 		}
 
@@ -78,14 +78,14 @@ define([
 	 */
 	Plane.prototype.rayIntersect = function (ray, store, suppressWarnings, precision) {
 		//! AT: the only function with a suppressWarnings
-		precision = typeof(precision)==='undefined' ? 1e-7 : precision;
+		precision = typeof precision === 'undefined' ? 1e-7 : precision;
 		store = store || new Vector3();
 
 		var lDotN = ray.direction.dot(this.normal);
 		if (Math.abs(lDotN) < precision) {
 			//! AT: this is the only function where we have this suppressWarnings mechanism
 			if (!suppressWarnings) {
-				console.warn('Ray parallell with plane');
+				console.warn('Ray parallel with plane');
 			}
 			return null;
 		}

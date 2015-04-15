@@ -1,6 +1,6 @@
 define(
 	[
-		"goo/logic/LogicInterface"
+		'goo/logic/LogicInterface'
 	],
 
 	function (
@@ -23,7 +23,7 @@ define(
 			this.ownerEntity = ownerEntity;
 
 			// Hax to get LogicSystem
-			this.logicSystem = ownerEntity._world.getSystem("LogicSystem");
+			this.logicSystem = ownerEntity._world.getSystem('LogicSystem');
 		}
 
 		LogicLayer.prototype.clear = function () {
@@ -48,7 +48,7 @@ define(
 
 			// if wished, autogenerate name.
 			if (name === null) {
-				name = "_auto-" + this._instanceID;
+				name = '_auto-' + this._instanceID;
 			}
 
 			// create the instance description
@@ -108,7 +108,7 @@ define(
 
 		LogicLayer.resolvePortID = function (instDesc, portName) {
 
-			if (typeof portName === "number") {
+			if (typeof portName === 'number') {
 				return portName;
 			}
 
@@ -125,7 +125,7 @@ define(
 				}
 			}
 
-			console.warn("Unable to resolve port [" + portName + "]!");
+			console.warn('Unable to resolve port [' + portName + ']!');
 			return null;
 		};
 
@@ -146,7 +146,7 @@ define(
 					// 	console.log(l);
 					// }
 
-					if (l.obj.type === "LogicNodeInput" && l.obj.dummyInport !== null && LogicInterface.makePortDataName(l.obj.dummyInport)) {
+					if (l.obj.type === 'LogicNodeInput' && l.obj.dummyInport !== null && LogicInterface.makePortDataName(l.obj.dummyInport)) {
 						return {
 							target: l,
 							portID: portName
@@ -165,7 +165,7 @@ define(
 				};
 			}
 
-			console.warn("Failed resolving target&portid to " + targetRef + ":" + portName);
+			console.warn('Failed resolving target&portid to ' + targetRef + ':' + portName);
 			return null;
 		};
 
@@ -220,7 +220,7 @@ define(
 				if (tconn.length === 2) {
 					var out = instDesc.layer.resolveTargetAndPortID(tconn[0], tconn[1]);
 					if (out === null) {
-						console.log("Target unresolved " + tconn[0] + " and " + tconn[1]);
+						console.log('Target unresolved ' + tconn[0] + ' and ' + tconn[1]);
 						// TODO: Queue write.
 						continue;
 					}
@@ -284,7 +284,7 @@ define(
 		 */
 		LogicLayer.readPort = function (instDesc, portID) {
 			// 2-step lookup. note that value will first be
-			// _portValue if it exists. 
+			// _portValue if it exists.
 			var value = instDesc._portValues;
 			if (value !== undefined) {
 				value = value[portID];
@@ -306,7 +306,7 @@ define(
 				}
 			}
 
-			console.log("Could not find the port [" + portID + "]!");
+			console.log('Could not find the port [' + portID + ']!');
 			return undefined; // REVIEW: returns undefined anyway
 		};
 

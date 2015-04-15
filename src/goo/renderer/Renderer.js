@@ -103,9 +103,9 @@ define([
 		if (this.context.getShaderPrecisionFormat === undefined) {
 			this.context.getShaderPrecisionFormat = function () {
 				return {
-					"rangeMin": 1,
-					"rangeMax": 1,
-					"precision": 1
+					'rangeMin': 1,
+					'rangeMax': 1,
+					'precision': 1
 				};
 			};
 		}
@@ -125,7 +125,7 @@ define([
 		} else {
 			this.shaderPrecision = 'lowp';
 		}
-		//console.log("Shader precision: " + this.shaderPrecision);
+		//console.log('Shader precision: ' + this.shaderPrecision);
 
 		this.downScale = parameters.downScale || 1;
 
@@ -234,11 +234,11 @@ define([
 	Renderer.prototype.establishContext = function () {
 		if (!!window.WebGLRenderingContext) {
 			//! AT: this list may require cleanup
-			var contextNames = ["experimental-webgl", "webgl", "moz-webgl", "webkit-3d"];
+			var contextNames = ['experimental-webgl', 'webgl', 'moz-webgl', 'webkit-3d'];
 			for (var i = 0; i < contextNames.length; i++) {
 				try {
 					this.context = this.domElement.getContext(contextNames[i], this._contextSettings);
-					if (this.context && typeof(this.context.getParameter) === "function") {
+					if (this.context && typeof this.context.getParameter === 'function') {
 						// WebGL is supported & enabled
 						break;
 					}
@@ -298,15 +298,15 @@ define([
 	function validateNoneOfTheArgsAreUndefined(functionName, args) {
 		for (var ii = 0; ii < args.length; ++ii) {
 			if (args[ii] === undefined) {
-				console.error("undefined passed to gl." + functionName + "("
-					+ window.WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ")");
+				console.error('undefined passed to gl.' + functionName + '('
+					+ window.WebGLDebugUtils.glFunctionArgsToString(functionName, args) + ')');
 			}
 		}
 	}
 
 	Renderer.prototype.onDebugError = function (err, functionName, args) {
 		// Based on the default error handler in WebGLDebugUtils
-		// apparently we can't do args.join(",");
+		// apparently we can't do args.join(',');
 		var message = 'WebGL error ' + window.WebGLDebugUtils.glEnumToString(err) + ' in ' + functionName + '(';
 		for (var ii = 0; ii < args.length; ++ii) {
 			message += ((ii === 0) ? '' : ', ') +
@@ -596,7 +596,7 @@ define([
 			var texture = material.getTexture(textureKey);
 
 			if (texture === undefined) {
-				return ;
+				return;
 			}
 
 			var textureList = texture;
@@ -1034,7 +1034,6 @@ define([
 	};
 
 	Renderer.prototype.configureRenderInfo = function (renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire) {
-
 		var meshData = renderInfo.meshData;
 		if (materialIndex < this._overrideMaterials.length) {
 			orMaterial = this._overrideMaterials[materialIndex];
@@ -1481,7 +1480,7 @@ define([
 		} else if (texture.format === 'PrecompressedDXT5') {
 			internalFormat = ddsExt.COMPRESSED_RGBA_S3TC_DXT5_EXT;
 		} else {
-			throw new Error("Unhandled compression format: " + imageData.getDataFormat().name());
+			throw new Error('Unhandled compression format: ' + imageData.getDataFormat().name());
 		}
 
 		if (typeof mipSizes === 'undefined' || mipSizes === null) {

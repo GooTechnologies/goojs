@@ -27,12 +27,12 @@ define([
 			env.axisAlignedDirty = true;
 		}
 
-		function setView(params, env, view){
-			if (env.currentView === view){
+		function setView(params, env, view) {
+			if (env.currentView === view) {
 				return;
 			}
 			env.currentView = view;
-			switch (view){
+			switch (view) {
 				case 'XY':
 					env.axis.set(Vector3.UNIT_Z);
 					env.upAxis.set(Vector3.UNIT_Y);
@@ -46,7 +46,7 @@ define([
 		}
 
 		function update(params, env) {
-			if (params.view !== env.currentView){
+			if (params.view !== env.currentView) {
 				env.axisAlignedDirty = true;
 			}
 			if (!env.axisAlignedDirty) {
@@ -80,23 +80,23 @@ define([
 		parameters: [{
 			key: 'whenUsed',
 			name: 'When Camera Used',
-			description:'Script only runs when the camera to which it is added is being used.',
+			description: 'Script only runs when the camera to which it is added is being used.',
 			'default': true,
 			type: 'boolean'
 		}, {
 			key: 'distance',
 			name: 'Distance',
 			type: 'float',
-			description:'Camera distance from lookat point',
+			description: 'Camera distance from lookat point',
 			control: 'slider',
 			'default': 1,
 			min: 1,
 			max: 1e3
 		}, {
 			key: 'view',
-			type:'string',
+			type: 'string',
 			'default': 'XY',
-			control:'select',
+			control: 'select',
 			options: ['XY', 'ZY']
 		}]
 	};

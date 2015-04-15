@@ -16,12 +16,12 @@ define(
 		function LogicNodeInput() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeInput.logicInterface;
-			this.type = "LogicNodeInput";
+			this.type = 'LogicNodeInput';
 			this.dummyInport = null;
 		}
 
 		LogicNodeInput.prototype = Object.create(LogicNode.prototype);
-		LogicNodeInput.editorName = "Input";
+		LogicNodeInput.editorName = 'Input';
 
 		// Configure new input.
 		LogicNodeInput.prototype.onConfigure = function (newConfig) {
@@ -33,12 +33,12 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInput.outportInput, value);
 		};
 
-		LogicNodes.registerType("LogicNodeInput", LogicNodeInput);
+		LogicNodes.registerType('LogicNodeInput', LogicNodeInput);
 
 		LogicNodeInput.logicInterface = new LogicInterface();
 
-		// TODO: This should be a both, not property/event.		
-		LogicNodeInput.outportInput = LogicNodeInput.logicInterface.addOutputProperty("Input", "any");
+		// TODO: This should be a both, not property/event.
+		LogicNodeInput.outportInput = LogicNodeInput.logicInterface.addOutputProperty('Input', 'any');
 
 		LogicNodeInput.logicInterface.addConfigEntry({
 			name: 'Name',

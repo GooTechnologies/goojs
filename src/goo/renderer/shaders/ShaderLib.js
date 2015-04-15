@@ -911,10 +911,10 @@ define([
 			worldMatrix: Shader.WORLD_MATRIX,
 			heightMap: Shader.DIFFUSE_MAP,
 			resolution: [512, 512],
-			height	: 0.05
+			height: 0.05
 		},
 		vshader: [
-			'attribute vec3 vertexPosition;',
+			'attribute vec3 vertexPossition;',
 			'attribute vec2 vertexUV0;',
 
 			'uniform mat4 viewMatrix;',

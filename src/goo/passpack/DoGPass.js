@@ -124,15 +124,15 @@ define([
 		var kernelSize = kernel1.length;
 
 		this.convolutionShader1.defines = {
-			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)
+			"KERNEL_SIZE_FLOAT": kernelSize.toFixed(1),
+			"KERNEL_SIZE_INT": kernelSize.toFixed(0)
 		};
 
 		kernelSize = kernel2.length;
 
 		this.convolutionShader2.defines = {
-			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)
+			"KERNEL_SIZE_FLOAT": kernelSize.toFixed(1),
+			"KERNEL_SIZE_INT": kernelSize.toFixed(0)
 		};
 
 		this.convolutionShader1.uniforms.cKernel = kernel1;
@@ -140,11 +140,9 @@ define([
 
 		this.convolutionMaterial1 = new Material(this.convolutionShader1);
 		this.convolutionMaterial2 = new Material(this.convolutionShader2);
-
 	};
 
 	DoGPass.prototype.render = function (renderer, writeBuffer, readBuffer) {
-
 		// Gaussian sigma1
 		this.renderable.materials[0] = this.convolutionMaterial1;
 

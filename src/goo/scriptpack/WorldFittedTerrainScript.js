@@ -43,8 +43,8 @@ define([
 		dimensions = dimensions || _defaults;
 		validateTerrainProperties(dimensions, heightMatrix, heightMapData);
 		var scriptContainer = {
-			dimensions:dimensions,
-			sideQuadCount:heightMatrix.length-1,
+			dimensions: dimensions,
+			sideQuadCount: heightMatrix.length - 1,
 			script: new HeightMapBoundingScript(heightMatrix)
 		};
 		return scriptContainer;
@@ -79,7 +79,7 @@ define([
 		for (var i = 0; i < this.heightMapData.length; i++) {
 			var dim = this.heightMapData[i].dimensions;
 			if (pos[0] <= dim.maxX && pos[0] >= dim.minX) {
-				if (pos[1] < dim.maxY + this.yMargin && pos[1] > dim.minY-this.yMargin) {
+				if (pos[1] < dim.maxY + this.yMargin && pos[1] > dim.minY - this.yMargin) {
 					if (pos[2] <= dim.maxZ && pos[2] >= dim.minZ) {
 						return this.heightMapData[i];
 					}
@@ -98,7 +98,7 @@ define([
 	 * @returns {Number}
 	 */
 	WorldFittedTerrainScript.prototype.displaceAxisDimensions = function (axPos, axMin, axMax, quadCount) {
-		var matrixPos = axPos-axMin;
+		var matrixPos = axPos - axMin;
 		return quadCount * matrixPos / (axMax - axMin);
 	};
 

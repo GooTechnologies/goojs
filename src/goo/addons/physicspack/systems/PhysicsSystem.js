@@ -352,7 +352,7 @@ function (
 	 * @returns {boolean} True if hit, else false
 	 */
 	PhysicsSystem.prototype.raycastAll = function (start, direction, distance, options, callback) {
-		if (typeof(options) === 'function') {
+		if (typeof options === 'function') {
 			callback = options;
 			options = {};
 		}

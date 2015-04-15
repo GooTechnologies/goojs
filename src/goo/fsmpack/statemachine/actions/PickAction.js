@@ -16,7 +16,7 @@ define([
 				return;
 			}
 
-			evt.entity.traverseUp(function (entity){
+			evt.entity.traverseUp(function (entity) {
 				if (entity === that.ownerEntity) {
 					that.updated = true;
 					return false;

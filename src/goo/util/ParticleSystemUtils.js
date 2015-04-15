@@ -32,7 +32,7 @@ define([
 
 		// Set particle component
 		var particleComponent = new ParticleComponent({
-			particleCount : particleParameters.particleCount || 500
+			particleCount: particleParameters.particleCount || 500
 		});
 
 		particleComponent.emitters.push(new ParticleEmitter(particleParameters));
@@ -124,7 +124,7 @@ define([
 			var ax = (ex - sx) / nSteps;
 			var ay = (ey - sy) / nSteps;
 			var ar = (er - sr) / nSteps;
-			for (var i = 0, x = sx, y = sy, r = sr; i < nSteps; i++, x+=ax, y+=ay, r+=ar) {
+			for (var i = 0, x = sx, y = sy, r = sr; i < nSteps; i++, x += ax, y += ay, r += ar) {
 				circle(x, y, r);
 			}
 		}

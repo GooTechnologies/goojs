@@ -16,25 +16,25 @@ define(
 		function LogicNodeEntityProxy() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeEntityProxy.logicInterface;
-			this.type = "LogicNodeEntityProxy";
+			this.type = 'LogicNodeEntityProxy';
 		}
 
 		LogicNodeEntityProxy.prototype = Object.create(LogicNode.prototype);
-		LogicNodeEntityProxy.editorName = "EntityProxy";
+		LogicNodeEntityProxy.editorName = 'EntityProxy';
 
 		LogicNodeEntityProxy.prototype.onConfigure = function (config) {
 			this.entityRef = config.entityRef;
 		};
 
-		// Empty.	
-		LogicNodeEntityProxy.logicInterface = new LogicInterface("Component Proxy");
+		// Empty.
+		LogicNodeEntityProxy.logicInterface = new LogicInterface('Component Proxy');
 		LogicNodeEntityProxy.logicInterface.addConfigEntry({
 			name: 'entityRef',
 			type: 'entityRef',
 			label: 'Entity'
 		});
 
-		LogicNodes.registerType("LogicNodeEntityProxy", LogicNodeEntityProxy);
+		LogicNodes.registerType('LogicNodeEntityProxy', LogicNodeEntityProxy);
 
 		return LogicNodeEntityProxy;
 	});

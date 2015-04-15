@@ -25,7 +25,7 @@ define([
 	 * @param {number} [globalTime=World.time]
 	 */
 	AnimationClipInstance.prototype.setTimeScale = function (scale, globalTime) {
-		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
+		globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
 		if (this._active && this._timeScale !== scale) {
 			if (this._timeScale !== 0.0 && scale !== 0.0) {
 				// move startTime to account for change in scale

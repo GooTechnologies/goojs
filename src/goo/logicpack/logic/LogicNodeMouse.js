@@ -16,7 +16,7 @@ define(
 		function LogicNodeMouse() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeMouse.logicInterface;
-			this.type = "LogicNodeMouse";
+			this.type = 'LogicNodeMouse';
 
 			this.eventMouseMove = function (event) {
 				var mx = event.clientX;
@@ -40,7 +40,7 @@ define(
 		}
 
 		LogicNodeMouse.prototype = Object.create(LogicNode.prototype);
-		LogicNodeMouse.editorName = "Mouse";
+		LogicNodeMouse.editorName = 'Mouse';
 
 		LogicNodeMouse.prototype.onSystemStarted = function () {
 			this.x = 0;
@@ -55,14 +55,14 @@ define(
 		};
 
 		LogicNodeMouse.logicInterface = new LogicInterface();
-		LogicNodeMouse.portX = LogicNodeMouse.logicInterface.addOutputProperty("x", "float", 0);
-		LogicNodeMouse.portY = LogicNodeMouse.logicInterface.addOutputProperty("y", "float", 0);
-		LogicNodeMouse.portDX = LogicNodeMouse.logicInterface.addOutputProperty("dx", "float", 0);
-		LogicNodeMouse.portDY = LogicNodeMouse.logicInterface.addOutputProperty("dy", "float", 0);
-		LogicNodeMouse.outEventLmb = LogicNodeMouse.logicInterface.addOutputEvent("lmb");
-		LogicNodeMouse.outEventRmb = LogicNodeMouse.logicInterface.addOutputEvent("rmb");
+		LogicNodeMouse.portX = LogicNodeMouse.logicInterface.addOutputProperty('x', 'float', 0);
+		LogicNodeMouse.portY = LogicNodeMouse.logicInterface.addOutputProperty('y', 'float', 0);
+		LogicNodeMouse.portDX = LogicNodeMouse.logicInterface.addOutputProperty('dx', 'float', 0);
+		LogicNodeMouse.portDY = LogicNodeMouse.logicInterface.addOutputProperty('dy', 'float', 0);
+		LogicNodeMouse.outEventLmb = LogicNodeMouse.logicInterface.addOutputEvent('lmb');
+		LogicNodeMouse.outEventRmb = LogicNodeMouse.logicInterface.addOutputEvent('rmb');
 
-		LogicNodes.registerType("LogicNodeMouse", LogicNodeMouse);
+		LogicNodes.registerType('LogicNodeMouse', LogicNodeMouse);
 
 		return LogicNodeMouse;
 	});

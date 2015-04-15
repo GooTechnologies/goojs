@@ -117,7 +117,7 @@ define([
 				indices[0] = triangleData.indices[tIndex++];
 				indices[1] = triangleData.indices[tIndex++];
 				indices[2] = triangleData.indices[tIndex++];
-				if (!this.renderer.isRenderedTriangleOccluded(indices, triangleData.positions)){
+				if (!this.renderer.isRenderedTriangleOccluded(indices, triangleData.positions)) {
 					return false;
 				}
 			}

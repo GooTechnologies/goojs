@@ -229,11 +229,11 @@ define([
 		var meshDatas = meshBuilder.build();
 
 		// Calculate lighting from lightmap
-		for (var i=0;i<meshDatas.length;i++) {
+		for (var i = 0; i<meshDatas.length; i++) {
 			var meshData = meshDatas[i];
 			var verts = meshData.getAttributeBuffer(MeshData.POSITION);
 			var cols = meshData.getAttributeBuffer(MeshData.COLOR);
-			for (var i=0, j=0;i<verts.length;i+=3, j+=4) {
+			for (var i = 0, j = 0; i < verts.length; i += 3, j += 4) {
 				var col = this.terrainQuery.getLightAt([verts[i], verts[i + 1], verts[i + 2]]);
 				cols[j] = col;
 				cols[j + 1] = col;

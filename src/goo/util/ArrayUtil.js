@@ -1,13 +1,10 @@
 define([], function () {
-
 	'use strict';
-
-	var ArrayUtil = {};
 
 	/**
 	 * Utilities for arrays and typed arrays
 	 */
-
+	function ArrayUtil() {}
 
 	/**
 	 * Create a typed array view on an ArrayBuffer, using the supplied pointer. Notice that this
@@ -32,17 +29,13 @@ define([], function () {
 
 		if (format === 'float32') {
 			return new Float32Array(arrayBuffer, start, length);
-		}
-		else if (format === 'uint8') {
+		} else if (format === 'uint8') {
 			return new Uint8Array(arrayBuffer, start, length);
-		}
-		else if (format === 'uint16') {
+		} else if (format === 'uint16') {
 			return new Uint16Array(arrayBuffer, start, length);
-		}
-		else if (format === 'uint32') {
+		} else if (format === 'uint32') {
 			return new Uint32Array(arrayBuffer, start, length);
-		}
-		else {
+		} else {
 			throw new Error('Binary format ' + format + ' is not supported');
 		}
 	};
@@ -56,10 +49,10 @@ define([], function () {
 					break;
 				}
 			}
-		}
-		else {
+		} else {
 			idx = array.indexOf(value);
 		}
+
 		if (idx > -1) {
 			array.splice(idx, 1);
 		}

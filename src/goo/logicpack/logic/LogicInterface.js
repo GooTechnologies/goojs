@@ -14,9 +14,9 @@ define(
 
 			// Name builds the data name prefix
 			if (name === undefined) {
-				this.dn_pfx = "";
+				this.dn_pfx = '';
 			} else {
-				this.dn_pfx = name + "-";
+				this.dn_pfx = name + '-';
 			}
 		}
 
@@ -106,7 +106,7 @@ define(
 		};
 
 		LogicInterface.isDynamicPortName = function (name) {
-			return name[0] === "$";
+			return name[0] === '$';
 		};
 
 		LogicInterface.makeDynamicId = function () {
@@ -121,17 +121,17 @@ define(
 			if (port.dataname !== undefined) {
 				return port.dataname;
 			} else {
-				var prefix = port.input ? "in-" : "out-";
+				var prefix = port.input ? 'in-' : 'out-';
 				if (port.property) {
-					prefix += "prop-";
+					prefix += 'prop-';
 				}
 				if (port.event) {
-					prefix += "event-";
+					prefix += 'event-';
 				}
 
 				// tag dynamic ports with $ at the start so they can be routed
 				// properly.
-				var dyn = (port.dynamic === true) ? "$" : "";
+				var dyn = (port.dynamic === true) ? '$' : '';
 				return dyn + prefix + port.name;
 			}
 		};

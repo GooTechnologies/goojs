@@ -216,7 +216,7 @@ define([
 		var relativeTransform = this._relativeTransform;
 
 		var viewMat;
-		if (this._camera){
+		if (this._camera) {
 			viewMat = this._camera.getViewMatrix();
 		}
 
@@ -226,7 +226,7 @@ define([
 
 			component._attachedToCamera = !!(e.cameraComponent && e.cameraComponent.camera === this._camera);
 
-			if (this._camera && !component._attachedToCamera){
+			if (this._camera && !component._attachedToCamera) {
 				// Give the transform relative to the camera
 				relativeTransform.mul2(viewMat, e.transformComponent.worldTransform.matrix);
 				component.process(this._settings, relativeTransform, tpf);

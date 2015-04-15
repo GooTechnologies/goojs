@@ -439,15 +439,15 @@ define([
 					definition.format = 'floatarray';
 				} else if (definition.format === 'int') {
 					definition.format = 'intarray';
-				} else if (definition.format.indexOf("sampler") === 0) {
+				} else if (definition.format.indexOf('sampler') === 0) {
 					definition.format = 'samplerArray';
 				}
 			}
 
-			if ("attribute" === type) {
+			if (type === 'attribute') {
 				target.attributeMapping[variableName] = definition;
 			} else {
-				if (definition.format.indexOf("sampler") === 0) {
+				if (definition.format.indexOf('sampler') === 0) {
 					var textureSlot = {
 						format: definition.format,
 						name: variableName,
@@ -472,7 +472,7 @@ define([
 		this.fragmentShader = this._getShader(context, WebGLRenderingContext.FRAGMENT_SHADER, this.fragmentSource);
 
 		if (this.vertexShader === null || this.fragmentShader === null) {
-			console.error("Shader error - no shaders");
+			console.error('Shader error - no shaders');
 		}
 
 		this.shaderProgram = context.createProgram();

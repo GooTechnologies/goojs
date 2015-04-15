@@ -132,7 +132,7 @@ define([
 
 		// keeping scale the same on the first element which is assumed to always be the camera mesh/light 'bulb'
 		var mainCamera = Renderer.mainCamera;
-		if (mainCamera){
+		if (mainCamera) {
 			var camPosition = mainCamera.translation;
 			var scale = renderables[0].transform.translation.distance(camPosition) / 30;
 			if (mainCamera.projectionMode === Camera.Parallel) {

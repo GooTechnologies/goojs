@@ -257,7 +257,7 @@ define([
 	};
 
 	// TODO Put this somewhere nicer
-	Ajax.ENGINE_SHADER_PREFIX = "GOO_ENGINE_SHADERS/";
+	Ajax.ENGINE_SHADER_PREFIX = 'GOO_ENGINE_SHADERS/';
 
 	function addKeys(obj, keys) {
 		for (var i = 0; i < keys.length; i++) {

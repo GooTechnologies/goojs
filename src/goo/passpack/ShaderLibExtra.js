@@ -340,11 +340,11 @@ define([
 			'gl_FragColor = vec4( mix( texel.rgb, vec3( 1.0 - darkness ), dot( uv, uv ) ), texel.a );',
 
 			/*
-			 'vec4 color = texture2D( tDiffuse, vUv );',
-			 'float dist = distance( vUv, vec2( 0.5 ) );',
-			 'color.rgb *= smoothstep( 0.8, offset * 0.799, dist *( darkness + offset ) );',
-			 'gl_FragColor = color;',
-			 */
+			'vec4 color = texture2D( tDiffuse, vUv );',
+			'float dist = distance( vUv, vec2( 0.5 ) );',
+			'color.rgb *= smoothstep( 0.8, offset * 0.799, dist *( darkness + offset ) );',
+			'gl_FragColor = color;',
+			*/
 			'}'
 		].join('\n')
 	};

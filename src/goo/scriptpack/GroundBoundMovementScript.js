@@ -25,16 +25,13 @@ define([
 	function GroundBoundMovementScript(properties) {
 		properties = properties || {};
 		for (var key in _defaults) {
-			if (typeof(_defaults[key]) === 'boolean') {
+			if (typeof _defaults[key] === 'boolean') {
 				this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];
-			}
-			else if (!isNaN(_defaults[key])) {
+			} else if (!isNaN(_defaults[key])) {
 				this[key] = !isNaN(properties[key]) ? properties[key] : _defaults[key];
-			}
-			else if (_defaults[key] instanceof Vector3) {
+			} else if (_defaults[key] instanceof Vector3) {
 				this[key] = (properties[key]) ? new Vector3(properties[key]) : new Vector3().set(_defaults[key]);
-			}
-			else {
+			} else {
 				this[key] = properties[key] || _defaults[key];
 			}
 		}
@@ -47,12 +44,12 @@ define([
 		this.groundHeight = 0;
 		this.groundNormal = new Vector3();
 		this.controlState = {
-			run:0,
-			strafe:0,
-			jump:0,
-			yaw:0,
-			roll:0,
-			pitch:0
+			run: 0,
+			strafe: 0,
+			jump: 0,
+			yaw: 0,
+			roll: 0,
+			pitch: 0
 		};
 	}
 
@@ -165,13 +162,12 @@ define([
 	GroundBoundMovementScript.prototype.applyDirectionalModulation = function (strafe, up, run) {
 		strafe *= this.modStrafe;
 		if (run > 0) {
-			run *=this.modForward;
+			run *= this.modForward;
 		} else {
-			run *=this.modBack;
+			run *= this.modBack;
 		}
         this.targetVelocity.set(strafe, this.applyJumpImpulse(up), run); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
 	};
-
 
 	/**
 	 * Modulates the rotational movement state.

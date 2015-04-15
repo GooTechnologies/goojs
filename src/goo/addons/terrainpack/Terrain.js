@@ -440,7 +440,7 @@ define([
 				if (entity.meshRendererComponent) {
 					var material = entity.meshRendererComponent.materials[0];
 					if (lightMap) {
-						material.setTexture("LIGHT_MAP", lightMap);
+						material.setTexture('LIGHT_MAP', lightMap);
 						material.shader.setDefine('LIGHTMAP', true);
 					} else {
 						material.shader.removeDefine('LIGHTMAP');
@@ -452,7 +452,7 @@ define([
 
 	// Returns the ammo body.
 	Terrain.prototype.initAmmoBody = function () {
-		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, "float", Ammo.ALLOC_NORMAL);
+		var heightBuffer = this.heightBuffer = Ammo.allocate(4 * this.size * this.size, 'float', Ammo.ALLOC_NORMAL);
 
 		this.updateAmmoBody();
 
@@ -1244,7 +1244,7 @@ define([
 			'depth = -mvPosition.z / cameraFar;',
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'
-		].join("\n"),
+		].join('\n'),
 		fshader: [
 		'uniform float id;',
 
@@ -1258,7 +1258,7 @@ define([
 			'gl_FragColor = vec4(packedId, packedDepth);',
 			// 'gl_FragColor = vec4(depth * 0.2, 0.0, 0.0, 1.0);',
 		'}'
-		].join("\n")
+		].join('\n')
 	};
 
 	// var detailShader = {
@@ -1354,30 +1354,30 @@ define([
 			'uniform mat4 projectionMatrix;',
 			'uniform mat4 worldMatrix;',
 
-			"varying vec2 vUv;",
-			"void main() {",
-				"vUv = vertexUV0;",
-				"gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );",
-			"}"
-		].join("\n"),
+			'varying vec2 vUv;',
+			'void main() {',
+				'vUv = vertexUV0;',
+				'gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4( vertexPosition, 1.0 );',
+			'}'
+		].join('\n'),
 		fshader: [
-			"uniform float height;",
-			"uniform vec2 resolution;",
-			"uniform sampler2D heightMap;",
-			// "uniform sampler2D normalMap;",
+			'uniform float height;',
+			'uniform vec2 resolution;',
+			'uniform sampler2D heightMap;',
+			// 'uniform sampler2D normalMap;',
 
-			"varying vec2 vUv;",
+			'varying vec2 vUv;',
 
-			"void main() {",
-				"float val = texture2D(heightMap, vUv).x;",
-				"float valU = texture2D(heightMap, vUv + vec2(1.0 / resolution.x, 0.0)).x;",
-				"float valV = texture2D(heightMap, vUv + vec2(0.0, 1.0 / resolution.y)).x;",
+			'void main() {',
+				'float val = texture2D(heightMap, vUv).x;',
+				'float valU = texture2D(heightMap, vUv + vec2(1.0 / resolution.x, 0.0)).x;',
+				'float valV = texture2D(heightMap, vUv + vec2(0.0, 1.0 / resolution.y)).x;',
 
 				'vec3 normal = vec3(val - valU, val - valV, height);',
 				// 'normal.rgb += vec3(texture2D(normalMap, vUv).rg * 2.0 - 1.0, 0.0);',
-				"gl_FragColor = vec4((0.5 * normalize(normal) + 0.5), 1.0);",
-			"}"
-		].join("\n")
+				'gl_FragColor = vec4((0.5 * normalize(normal) + 0.5), 1.0);',
+			'}'
+		].join('\n')
 	};
 
 	return Terrain;

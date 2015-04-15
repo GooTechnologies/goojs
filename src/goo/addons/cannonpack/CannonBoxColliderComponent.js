@@ -29,7 +29,7 @@ define([
 		// Create shape
 		this.cannonShape = new CANNON.Box(new CANNON.Vec3(e.x, e.y, e.z));
 
-		this.isTrigger = typeof(settings.isTrigger) !== 'undefined' ? settings.isTrigger : false;
+		this.isTrigger = typeof settings.isTrigger !== 'undefined' ? settings.isTrigger : false;
 	}
 
 	CannonBoxColliderComponent.prototype = Object.create(Component.prototype);

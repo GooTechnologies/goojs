@@ -93,7 +93,7 @@ define([
 	 */
 	AnimationLayer.prototype.update = function (globalTime) {
 		if (this._currentState) {
-			this._currentState.update(typeof(globalTime) !== 'undefined' ? globalTime : World.time);
+			this._currentState.update(typeof globalTime !== 'undefined' ? globalTime : World.time);
 		}
 	};
 
@@ -115,7 +115,7 @@ define([
 	 * @returns {Boolean} true if a transition was found and started
 	 */
 	AnimationLayer.prototype.transitionTo = function (state, globalTime, finishCallback) {
-		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
+		globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
 		var cState = this._currentState;
 		var transition;
 		if (this._steadyStates[state] === cState) {
@@ -172,7 +172,7 @@ define([
 	 * @param {function} finishCallback If the target state has a limited number of repeats, this callback is called when the animation finishes.
 	 */
 	AnimationLayer.prototype.setCurrentState = function (state, rewind, globalTime, finishCallback) {
-		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
+		globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
 		this._currentState = state;
 		if (state) {
 			if (rewind) {
@@ -286,13 +286,13 @@ define([
 
 	AnimationLayer.prototype.resetClips = function (globalTime) {
 		if (this._currentState) {
-			this._currentState.resetClips(typeof(globalTime) !== 'undefined' ? globalTime : World.time);
+			this._currentState.resetClips(typeof globalTime !== 'undefined' ? globalTime : World.time);
 		}
 	};
 
 	AnimationLayer.prototype.shiftClipTime = function (shiftTime) {
 		if (this._currentState) {
-			this._currentState.shiftClipTime(typeof(shiftTime) !== 'undefined' ? shiftTime : 0);
+			this._currentState.shiftClipTime(typeof shiftTime !== 'undefined' ? shiftTime : 0);
 		}
 	};
 

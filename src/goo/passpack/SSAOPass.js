@@ -68,8 +68,8 @@ define([
 //			this.blurPass.needsSwap = true;
 
 		this.depthTarget = new RenderTarget(width, height, {
-			magFilter : 'NearestNeighbor',
-			minFilter : 'NearestNeighborNoMipMaps'
+			magFilter: 'NearestNeighbor',
+			minFilter: 'NearestNeighborNoMipMaps'
 		});
 		console.log('UPDATE SSAOPASS: ', width, height);
 	};
@@ -86,7 +86,7 @@ define([
 
 	var packDepth = {
 		attributes: {
-			vertexPosition : MeshData.POSITION
+			vertexPosition: MeshData.POSITION
 		},
 		uniforms: {
 			viewMatrix: Shader.VIEW_MATRIX,

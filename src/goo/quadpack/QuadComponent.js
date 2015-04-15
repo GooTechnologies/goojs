@@ -37,10 +37,10 @@ define([
 
 		settings = settings || {};
 		var defaults = {
-			width	: 1,
-			height	: 1,
-			tileX	: 1,
-			tileY	: 1,
+			width: 1,
+			height: 1,
+			tileX: 1,
+			tileY: 1,
 			preserveAspectRatio : true
 		};
 		_.defaults(settings, defaults); //! AT: this will mutate settings which is BAD!!!

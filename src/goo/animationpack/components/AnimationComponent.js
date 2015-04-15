@@ -92,7 +92,7 @@ define([
 		}
 
 		// grab current global time
-		globalTime = typeof(globalTime) !== 'undefined' ? globalTime : World.time;
+		globalTime = typeof globalTime !== 'undefined' ? globalTime : World.time;
 
 		// check throttle
 		if (this._updateRate !== 0.0) {

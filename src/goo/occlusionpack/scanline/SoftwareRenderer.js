@@ -9,11 +9,18 @@ define([
 	'goo/renderer/scanline/BoundingSphereOcclusionChecker',
 	'goo/renderer/scanline/OccluderTriangleData',
 	'goo/renderer/scanline/EdgeMap'
-	],
-
-
-	function (Vector4, Matrix4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
-				BoundingSphereOcclusionChecker, OccluderTriangleData, EdgeMap) {
+], function (
+	Vector4,
+	Matrix4,
+	Edge,
+	BoundingSphere,
+	BoundingBox,
+	EdgeData,
+	BoundingBoxOcclusionChecker,
+	BoundingSphereOcclusionChecker,
+	OccluderTriangleData,
+	EdgeMap
+) {
 	'use strict';
 
 	// Variables used during creation of triangle data and rendering
@@ -683,7 +690,7 @@ define([
 			}
 
 			// Draw first portion of the triangle
-			if (!this._isEdgeOccluded(edgeData, orientationData)){
+			if (!this._isEdgeOccluded(edgeData, orientationData)) {
 				return false;
 			}
 		}
@@ -699,7 +706,7 @@ define([
 				}
 			}
 			// Draw second portion of the triangle.
-			if (!this._isEdgeOccluded(edgeData, orientationData)){
+			if (!this._isEdgeOccluded(edgeData, orientationData)) {
 				return false;
 			}
 		}

@@ -16,12 +16,12 @@ define(
 		function LogicNodeMultiplyFloat() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeMultiplyFloat.logicInterface;
-			this.type = "LogicNodeMultiplyFloat";
+			this.type = 'LogicNodeMultiplyFloat';
 			this._x = this._y = 0; // REVIEW: unused?
 		}
 
 		LogicNodeMultiplyFloat.prototype = Object.create(LogicNode.prototype);
-		LogicNodeMultiplyFloat.editorName = "MultiplyFloat";
+		LogicNodeMultiplyFloat.editorName = 'MultiplyFloat';
 
 		LogicNodeMultiplyFloat.prototype.onConfigure = function (newConfig) {
 			if (newConfig.value !== undefined) {
@@ -36,15 +36,15 @@ define(
 		};
 
 		LogicNodeMultiplyFloat.logicInterface = new LogicInterface();
-		LogicNodeMultiplyFloat.outportProduct = LogicNodeMultiplyFloat.logicInterface.addOutputProperty("product", "float");
-		LogicNodeMultiplyFloat.inportX = LogicNodeMultiplyFloat.logicInterface.addInputProperty("x", "float", 0);
+		LogicNodeMultiplyFloat.outportProduct = LogicNodeMultiplyFloat.logicInterface.addOutputProperty('product', 'float');
+		LogicNodeMultiplyFloat.inportX = LogicNodeMultiplyFloat.logicInterface.addInputProperty('x', 'float', 0);
 		LogicNodeMultiplyFloat.logicInterface.addConfigEntry({
 			name: 'value',
 			type: 'float',
 			label: 'Value'
 		});
 
-		LogicNodes.registerType("LogicNodeMultiplyFloat", LogicNodeMultiplyFloat);
+		LogicNodes.registerType('LogicNodeMultiplyFloat', LogicNodeMultiplyFloat);
 
 		return LogicNodeMultiplyFloat;
 	});

@@ -119,7 +119,6 @@ define([
 		if (options.backgroundMix !== undefined) {
 			this.updateBackgroundMix(options.backgroundMix);
 		}
-
 	};
 
 	DiffOfGaussians.label = 'Edge detect';
@@ -310,35 +309,31 @@ define([
 		}
 	};
 	Grain.label = 'Film Grain';
-	Grain.options = [
-		{
-			key: 'nIntensity',
-			type: 'int',
-			control: 'slider',
-			name: 'Noise',
-			min: 0,
-			max: 100,
-			'default': 50
-		},
-		{
-			key: 'sIntensity',
-			type: 'int',
-			control: 'slider',
-			name: "Line Intensity",
-			min: 0,
-			max: 100,
-			'default': 50
-		},
-		{
-			key: 'sCount',
-			type: 'int',
-			control: 'slider',
-			name: "Line Count",
-			min: 1,
-			max: 4096,
-			'default': 1024
-		}
-	];
+	Grain.options = [{
+		key: 'nIntensity',
+		type: 'int',
+		control: 'slider',
+		name: 'Noise',
+		min: 0,
+		max: 100,
+		'default': 50
+	}, {
+		key: 'sIntensity',
+		type: 'int',
+		control: 'slider',
+		name: 'Line Intensity',
+		min: 0,
+		max: 100,
+		'default': 50
+	}, {
+		key: 'sCount',
+		type: 'int',
+		control: 'slider',
+		name: 'Line Count',
+		min: 1,
+		max: 4096,
+		'default': 1024
+	}];
 
 	function Noise(id) {
 		FullscreenPass.call(this, ObjectUtil.deepClone(ShaderLibExtra.noise));

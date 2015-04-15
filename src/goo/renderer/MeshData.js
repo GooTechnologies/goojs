@@ -333,7 +333,7 @@ define([
 			if (ArrayType) {
 				view = new ArrayType(data, attribute.offset, length);
 			} else {
-				throw new Error("Unsupported DataType: " + attribute.type);
+				throw new Error('Unsupported DataType: ' + attribute.type);
 			}
 
 			this.dataViews[key] = view;

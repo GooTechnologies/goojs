@@ -18,12 +18,12 @@ define(
 		function LogicNodeRotationMatrix() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeRotationMatrix.logicInterface;
-			this.type = "LogicNodeRotationMatrix";
+			this.type = 'LogicNodeRotationMatrix';
 			this.vec = new Vector3();
 		}
 
 		LogicNodeRotationMatrix.prototype = Object.create(LogicNode.prototype);
-		LogicNodeRotationMatrix.editorName = "RotationMatrix";
+		LogicNodeRotationMatrix.editorName = 'RotationMatrix';
 
 		LogicNodeRotationMatrix.prototype.onInputChanged = function (instDesc) {
 			var vec = LogicLayer.readPort(instDesc, LogicNodeRotationMatrix.inportX);
@@ -33,10 +33,10 @@ define(
 		};
 
 		LogicNodeRotationMatrix.logicInterface = new LogicInterface();
-		LogicNodeRotationMatrix.inportX = LogicNodeRotationMatrix.logicInterface.addInputProperty("vec", "Vector3", new Vector3());
-		LogicNodeRotationMatrix.outportProduct = LogicNodeRotationMatrix.logicInterface.addOutputProperty("mat", "Matrix3", new Matrix3());
+		LogicNodeRotationMatrix.inportX = LogicNodeRotationMatrix.logicInterface.addInputProperty('vec', 'Vector3', new Vector3());
+		LogicNodeRotationMatrix.outportProduct = LogicNodeRotationMatrix.logicInterface.addOutputProperty('mat', 'Matrix3', new Matrix3());
 
-		LogicNodes.registerType("LogicNodeRotationMatrix", LogicNodeRotationMatrix);
+		LogicNodes.registerType('LogicNodeRotationMatrix', LogicNodeRotationMatrix);
 
 
 

@@ -3,7 +3,6 @@ define([
 ], function (
 	PromiseUtil
 ) {
-
 	'use strict';
 
 	// TODO: make promise based instead of sending callbacks
@@ -63,7 +62,7 @@ define([
 			}
 
 			// Canvas size
-			options.width =  options.width  ? options.width :  img.width;
+			options.width = options.width ? options.width : img.width;
 			options.height = options.height ? options.height : img.height;
 
 			// Clipping window size & position
@@ -78,13 +77,13 @@ define([
 			options.destWidth = options.destWidth ? options.destWidth : options.width;
 			options.destHeight = options.destHeight ? options.destHeight : options.height;
 
-			if (options.resizeToFit){
+			if (options.resizeToFit) {
 				// preserve aspect ratio of input image and center it
 				var ratio = options.sourceWidth / options.sourceHeight;
-				if (ratio > 1){
+				if (ratio > 1) {
 					options.destHeight = options.destWidth / ratio;
 					options.destY = (options.height - options.destHeight) * 0.5;
-				} else if (ratio < 1){
+				} else if (ratio < 1) {
 					options.destWidth = options.destHeight * ratio;
 					options.destX = (options.width - options.destWidth) * 0.5;
 				}

@@ -17,11 +17,11 @@ define(
 		function LogicNodeConstVec3() {
 			LogicNode.call(this);
 			this.logicInterface = LogicNodeConstVec3.logicInterface;
-			this.type = "LogicNodeConstVec3";
+			this.type = 'LogicNodeConstVec3';
 		}
 
 		LogicNodeConstVec3.prototype = Object.create(LogicNode.prototype);
-		LogicNodeConstVec3.editorName = "ConstVec3";
+		LogicNodeConstVec3.editorName = 'ConstVec3';
 
 		LogicNodeConstVec3.prototype.onConfigure = function (newConfig) {
 			if (newConfig.value !== undefined) {
@@ -34,10 +34,10 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeConstVec3.outportVec, new Vector3(this.x, this.y, this.z));
 		};
 
-		LogicNodes.registerType("LogicNodeConstVec3", LogicNodeConstVec3);
+		LogicNodes.registerType('LogicNodeConstVec3', LogicNodeConstVec3);
 
 		LogicNodeConstVec3.logicInterface = new LogicInterface();
-		LogicNodeConstVec3.outportVec = LogicNodeConstVec3.logicInterface.addOutputProperty("xyz", "Vector3");
+		LogicNodeConstVec3.outportVec = LogicNodeConstVec3.logicInterface.addOutputProperty('xyz', 'Vector3');
 
 		LogicNodeConstVec3.logicInterface.addConfigEntry({
 			name: 'x',
