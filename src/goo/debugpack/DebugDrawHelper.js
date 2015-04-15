@@ -181,7 +181,7 @@ define([
 	DebugDrawHelper.CameraComponent.updateTransform = function (/*transform, component*/) {
 		// var camera = component.camera;
 		// var z = camera.far;
-		// var y = z * Math.tan(camera.fov/2 * Math.PI/180);
+		// var y = z * Math.tan(camera.fov / 2 * Math.PI/180);
 		// var x = y * camera.aspect;
 		// transform.scale.setDirect(x, y, z);
 		// transform.update();

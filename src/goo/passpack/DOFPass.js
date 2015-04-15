@@ -72,17 +72,17 @@ define([
 	};
 
 	var packDepth = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-//				nearPlane : Shader.NEAR_PLANE,
-			farPlane : Shader.FAR_PLANE
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+//				nearPlane: Shader.NEAR_PLANE,
+			farPlane: Shader.FAR_PLANE
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 
 			'uniform mat4 viewMatrix;',
@@ -96,7 +96,7 @@ define([
 			'	gl_Position = projectionMatrix * vPosition;',
 			'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'precision mediump float;',
 
 //				'uniform float nearPlane;',
@@ -115,24 +115,24 @@ define([
 	};
 
 	var unpackDepth = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			worldMatrix : Shader.WORLD_MATRIX,
+		uniforms: {
+			worldMatrix: Shader.WORLD_MATRIX,
 			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
-			depthMap : Shader.DEPTH_MAP,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			diffuseMip : 'DIFFUSE_MIP',
-			zfar : Shader.FAR_PLANE,
+			depthMap: Shader.DEPTH_MAP,
+			diffuseMap: Shader.DIFFUSE_MAP,
+			diffuseMip: 'DIFFUSE_MIP',
+			zfar: Shader.FAR_PLANE,
 			focalDepth: 100.0,
 			fStop: 2.0,
 			CoC: 0.003,
 			focalLength: 75.0,
 			maxBlur: 16.0
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -146,7 +146,7 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'
 		].join('\n'),
-		fshader : '' +
+		fshader: '' +
 		'uniform sampler2D diffuseMap;\n' +
 		'uniform sampler2D diffuseMip;\n' +
 		'uniform sampler2D depthMap;\n' +

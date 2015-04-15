@@ -26,8 +26,8 @@ define([
 	 *
 	 * <code>
 	 * {
-	 *    vshader : [required] vertex shader source
-	 *    fshader : [required] fragment shader source
+	 *    vshader: [required] vertex shader source
+	 *    fshader: [required] fragment shader source
 	 *    defines : shader definitions (becomes #define)
 	 *    attributes : attribute bindings
 	 *       attribute bindings need to map to an attribute in the meshdata being rendered

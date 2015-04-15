@@ -66,7 +66,7 @@ define([
 			);
 
 			tex.push(
-				t + at/2, 1.0,
+				t + at / 2, 1.0,
 				t, 0.5,
 				t + at, 0.5
 			);

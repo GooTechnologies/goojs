@@ -21,10 +21,10 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/passpack/BloomPass/BloomPass-vtest.html Working example
 	 * <pre>
 	 * settings: {
-	 *     strength : 1.0,
-	 *     sigma : 4.0,
-	 *     sizeX : 256,
-	 *     sizeY : 256
+	 *     strength: 1.0,
+	 *     sigma: 4.0,
+	 *     sizeX: 256,
+	 *     sizeY: 256
 	 * }
 	 * </pre>
 	 */
@@ -47,8 +47,8 @@ define([
 		});
 
 		this.renderable = {
-			meshData : FullscreenUtil.quad,
-			materials : []
+			meshData: FullscreenUtil.quad,
+			materials: []
 		};
 
 		this.copyMaterial = new Material(ShaderLib.copyPure);
@@ -57,8 +57,8 @@ define([
 
 		this.convolutionShader = ObjectUtil.deepClone(ShaderLib.convolution);
 		this.convolutionShader.defines = {
-			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)
+			"KERNEL_SIZE_FLOAT": kernelSize.toFixed(1),
+			"KERNEL_SIZE_INT": kernelSize.toFixed(0)
 		};
 		this.convolutionMaterial = new Material(this.convolutionShader);
 		this.convolutionMaterial.uniforms.uImageIncrement = BloomPass.blurX;

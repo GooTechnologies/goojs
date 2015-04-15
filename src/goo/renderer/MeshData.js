@@ -212,38 +212,39 @@ define([
 
 		// Ok, now pull primitive index based on indexmode.
 		switch (this.indexModes[section]) {
-		case "Triangles":
-			index += primitiveIndex * 3 + point;
-			break;
-		case "TriangleStrip":
-			// XXX: Do we need to flip point 0 and 1 on odd primitiveIndex values?
-			// if (point < 2 && primitiveIndex % 2 == 1) {
-			// index += primitiveIndex + (point == 0 ? 1 : 0);
-			// } else {
-			index += primitiveIndex + point;
-			// }
-			break;
-		case "TriangleFan":
-			if (point === 0) {
-				index += 0;
-			} else {
+			case 'Triangles':
+				index += primitiveIndex * 3 + point;
+				break;
+			case 'TriangleStrip':
+				// XXX: Do we need to flip point 0 and 1 on odd primitiveIndex values?
+				// if (point < 2 && primitiveIndex % 2 == 1) {
+				// index += primitiveIndex + (point == 0 ? 1 : 0);
+				// } else {
 				index += primitiveIndex + point;
-			}
-			break;
-		case "Points":
-			index += primitiveIndex;
-			break;
-		case "Lines":
-			index += primitiveIndex * 2 + point;
-			break;
-		case "LineStrip":
-		case "LineLoop":
-			index += primitiveIndex + point;
-			break;
-		default:
-			MeshData.logger.warning("unimplemented index mode: " + this.indexModes[section]);
-			return -1;
+				// }
+				break;
+			case 'TriangleFan':
+				if (point === 0) {
+					index += 0;
+				} else {
+					index += primitiveIndex + point;
+				}
+				break;
+			case 'Points':
+				index += primitiveIndex;
+				break;
+			case 'Lines':
+				index += primitiveIndex * 2 + point;
+				break;
+			case 'LineStrip':
+			case 'LineLoop':
+				index += primitiveIndex + point;
+				break;
+			default:
+				MeshData.logger.warning('unimplemented index mode: ' + this.indexModes[section]);
+				return -1;
 		}
+
 		return index;
 	};
 
@@ -271,39 +272,39 @@ define([
 
 	MeshData.getPrimitiveCount = function (indexMode, size) {
 		switch (indexMode) {
-		case "Triangles":
-			return size / 3;
-		case "TriangleFan":
-		case "TriangleStrip":
-			return size - 2;
-		case "Lines":
-			return size / 2;
-		case "LineStrip":
-			return size - 1;
-		case "LineLoop":
-			return size;
-		case "Points":
-			return size;
+			case 'Triangles':
+				return size / 3;
+			case 'TriangleFan':
+			case 'TriangleStrip':
+				return size - 2;
+			case 'Lines':
+				return size / 2;
+			case 'LineStrip':
+				return size - 1;
+			case 'LineLoop':
+				return size;
+			case 'Points':
+				return size;
+			default:
+				throw new Error('unimplemented index mode: ' + indexMode);
 		}
-
-		throw new Error("unimplemented index mode: " + indexMode);
 	};
 
 	MeshData.getVertexCount = function (indexMode) {
 		switch (indexMode) {
-		case "Triangles":
-		case "TriangleFan":
-		case "TriangleStrip":
-			return 3;
-		case "Lines":
-		case "LineStrip":
-		case "LineLoop":
-			return 2;
-		case "Points":
-			return 1;
+			case 'Triangles':
+			case 'TriangleFan':
+			case 'TriangleStrip':
+				return 3;
+			case 'Lines':
+			case 'LineStrip':
+			case 'LineLoop':
+				return 2;
+			case 'Points':
+				return 1;
+			default:
+				throw new Error('unimplemented index mode: ' + indexMode);
 		}
-
-		throw new Error("unimplemented index mode: " + indexMode);
 	};
 
 	var ArrayTypes = {
@@ -604,9 +605,9 @@ define([
 			var primitiveCount = this.getPrimitiveCount(section);
 			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 				switch (indexMode) {
-				case "Triangles":
-				case "TriangleFan":
-				case "TriangleStrip":
+				case 'Triangles':
+				case 'TriangleFan':
+				case 'TriangleStrip':
 					var i1 = getIndex(primitiveIndex, 0, section);
 					var i2 = getIndex(primitiveIndex, 1, section);
 					var i3 = getIndex(primitiveIndex, 2, section);
@@ -619,8 +620,8 @@ define([
 					targetI[indexCount + 5] = i1;
 					indexCount += 6;
 					break;
-				case "Lines":
-				case "LineStrip":
+				case 'Lines':
+				case 'LineStrip':
 					var i1 = getIndex(primitiveIndex, 0, section);
 					var i2 = getIndex(primitiveIndex, 1, section);
 
@@ -628,7 +629,7 @@ define([
 					targetI[indexCount + 1] = i2;
 					indexCount += 2;
 					break;
-				case "LineLoop":
+				case 'LineLoop':
 					var i1 = getIndex(primitiveIndex, 0, section);
 					var i2 = getIndex(primitiveIndex, 1, section);
 					if (primitiveIndex === primitiveCount - 1) {
@@ -639,7 +640,7 @@ define([
 					targetI[indexCount + 1] = i2;
 					indexCount += 2;
 					break;
-				case "Points":
+				case 'Points':
 					// Not supported in wireframe
 					break;
 				}
@@ -693,11 +694,11 @@ define([
 			for (var primitiveIndex = 0; primitiveIndex < primitiveCount; primitiveIndex++) {
 				switch (indexMode) {
 				/*jshint -W086 */
-				case "TriangleStrip":
+				case 'TriangleStrip':
 					flip = (primitiveIndex % 2 === 1) ? true : false;
-				case "Triangles":
-				case "TriangleFan":
-
+					// fall through intended?
+				case 'Triangles':
+				case 'TriangleFan':
 					var i1 = oldIdcs[this.getVertexIndex(primitiveIndex, 0, section)];
 					var i2 = oldIdcs[this.getVertexIndex(primitiveIndex, 1, section)];
 					var i3 = oldIdcs[this.getVertexIndex(primitiveIndex, 2, section)];

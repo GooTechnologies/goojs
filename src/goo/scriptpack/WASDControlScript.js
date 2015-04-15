@@ -6,7 +6,7 @@ define([
 	Vector3,
 	Scripts,
 	ScriptUtils
-	) {
+) {
 	'use strict';
 
 	function WASDControlScript() {
@@ -31,27 +31,27 @@ define([
 			if (event.altKey) {	return;	}
 
 			switch (ScriptUtils.keyForCode(event.keyCode)) {
-			case _parameters.crawlKey:
-				moveState.speed = _parameters.crawlSpeed;
-				break;
+				case _parameters.crawlKey:
+					moveState.speed = _parameters.crawlSpeed;
+					break;
 
-			case _parameters.forwardKey:
-				moveState.forward = 1;
-				updateMovementVector();
-				break;
-			case _parameters.backKey:
-				moveState.back = 1;
-				updateMovementVector();
-				break;
+				case _parameters.forwardKey:
+					moveState.forward = 1;
+					updateMovementVector();
+					break;
+				case _parameters.backKey:
+					moveState.back = 1;
+					updateMovementVector();
+					break;
 
-			case _parameters.strafeLeftKey:
-				moveState.strafeLeft = 1;
-				updateMovementVector();
-				break;
-			case _parameters.strafeRightKey:
-				moveState.strafeRight = 1;
-				updateMovementVector();
-				break;
+				case _parameters.strafeLeftKey:
+					moveState.strafeLeft = 1;
+					updateMovementVector();
+					break;
+				case _parameters.strafeRightKey:
+					moveState.strafeRight = 1;
+					updateMovementVector();
+					break;
 			}
 		}
 
@@ -59,27 +59,27 @@ define([
 			if (event.altKey) {	return;	}
 
 			switch (ScriptUtils.keyForCode(event.keyCode)) {
-			case _parameters.crawlKey:
-				moveState.speed = _parameters.walkSpeed;
-				break;
+				case _parameters.crawlKey:
+					moveState.speed = _parameters.walkSpeed;
+					break;
 
-			case _parameters.forwardKey:
-				moveState.forward = 0;
-				updateMovementVector();
-				break;
-			case _parameters.backKey:
-				moveState.back = 0;
-				updateMovementVector();
-				break;
+				case _parameters.forwardKey:
+					moveState.forward = 0;
+					updateMovementVector();
+					break;
+				case _parameters.backKey:
+					moveState.back = 0;
+					updateMovementVector();
+					break;
 
-			case _parameters.strafeLeftKey:
-				moveState.strafeLeft = 0;
-				updateMovementVector();
-				break;
-			case _parameters.strafeRightKey:
-				moveState.strafeRight = 0;
-				updateMovementVector();
-				break;
+				case _parameters.strafeLeftKey:
+					moveState.strafeLeft = 0;
+					updateMovementVector();
+					break;
+				case _parameters.strafeRightKey:
+					moveState.strafeRight = 0;
+					updateMovementVector();
+					break;
 			}
 		}
 
@@ -158,7 +158,7 @@ define([
 			key: 'whenUsed',
 			type: 'boolean',
 			name: 'When Camera Used',
-			description:'Script only runs when the camera to which it is added is being used.',
+			description: 'Script only runs when the camera to which it is added is being used.',
 			'default': true
 		}, {
 			key: 'crawlKey',

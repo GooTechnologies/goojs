@@ -8,7 +8,6 @@ define([
 	'use strict';
 
 	function OscillatorSound() {
-
 		// Settings
 		this.id = null;
 		this._volume = 1.0;

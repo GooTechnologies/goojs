@@ -7,15 +7,15 @@ define([
 
 	var calcVec = new Vector3();
 	var _defaults = {
-		gravity:-9.81,
-		worldFloor:-Infinity,
-		jumpImpulse:95,
-		accLerp:0.1,
-		rotLerp:0.1,
-		modForward:1,
-		modStrafe:0.7,
-		modBack:0.4,
-		modTurn:0.3
+		gravity: -9.81,
+		worldFloor: -Infinity,
+		jumpImpulse: 95,
+		accLerp: 0.1,
+		rotLerp: 0.1,
+		modForward: 1,
+		modStrafe: 0.7,
+		modBack: 0.4,
+		modTurn: 0.3
 	};
 
 	/**

@@ -85,17 +85,17 @@ define([
 	};
 
 	var packDepth = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX
-//				nearPlane : Shader.NEAR_PLANE,
-//				farPlane : Shader.FAR_PLANE
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX
+//				nearPlane: Shader.NEAR_PLANE,
+//				farPlane: Shader.FAR_PLANE
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 
 			'uniform mat4 viewMatrix;',
@@ -106,7 +106,7 @@ define([
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 			'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'precision mediump float;',
 
 //				'uniform float nearPlane;',

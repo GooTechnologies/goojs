@@ -14,7 +14,7 @@ define([
 	 * @param textureUnitsPerLine
 	 */
 	function TextureGrid(matrix, textureUnitsPerLine) {
-	    this.matrix = matrix;
+		this.matrix = matrix;
 		this.textureUnitsPerLine = textureUnitsPerLine || 8;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
@@ -67,10 +67,10 @@ define([
 				texY = 1 - texY;
 
 				tex.push(
-					 texX, texY - 1 / this.textureUnitsPerLine,
-					 texX, texY,
-					 texX + 1 / this.textureUnitsPerLine, texY,
-					 texX + 1 / this.textureUnitsPerLine, texY - 1 / this.textureUnitsPerLine
+					texX, texY - 1 / this.textureUnitsPerLine,
+					texX, texY,
+					texX + 1 / this.textureUnitsPerLine, texY,
+					texX + 1 / this.textureUnitsPerLine, texY - 1 / this.textureUnitsPerLine
 				);
 
 				indices.push(

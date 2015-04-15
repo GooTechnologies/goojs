@@ -71,7 +71,6 @@ define([], function () {
 
 			if (collidable.bottom <= translation.y && collidable.top >= translation.y) {
 				if (window.PolyK.ContainsPoint(collidable.poly, translation.x, translation.z)) {
-
 					var pointOutside = window.PolyK.ClosestEdge(
 						collidable.poly,
 						translation.x,
@@ -81,6 +80,7 @@ define([], function () {
 					translation.x = pointOutside.point.x;
 					translation.z = pointOutside.point.y;
 					transformComponent.setUpdated();
+
 					return;
 				}
 			}

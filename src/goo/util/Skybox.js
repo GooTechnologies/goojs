@@ -7,7 +7,7 @@ define([
 	'goo/renderer/TextureCreator',
 	'goo/math/Transform'
 
-],  function (
+], function (
 	Box,
 	Sphere,
 	MeshData,
@@ -38,7 +38,7 @@ define([
 		} else if (type === Skybox.BOX) {
 			this.meshData = new Box(1, 1, 1);
 			if (images.length) {
-				texture = new TextureCreator().loadTextureCube(images, {flipY: false});
+				texture = new TextureCreator().loadTextureCube(images, { flipY: false });
 			}
 		} else {
 			throw new Error('Unknown geometry type');
@@ -109,14 +109,14 @@ define([
 			' if (cube.a < 0.05) discard;',
 			'	gl_FragColor = cube;',
 
-			 //' gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);',
+			//' gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);',
 			'}'//
 		].join('\n')
 	};
 	shaders.sphere = {
 		attributes: {
 			vertexPosition: MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+			vertexUV0: MeshData.TEXCOORD0
 		},
 		uniforms: {
 			viewMatrix: Shader.VIEW_MATRIX,

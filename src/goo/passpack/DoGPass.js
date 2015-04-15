@@ -41,11 +41,11 @@ define([
 			sigma = 2.5;
 		}
 
-		this.updateSize({width: width, height: height});
+		this.updateSize({ width: width, height: height });
 
 		this.renderable = {
 			meshData : FullscreenUtil.quad,
-			materials : []
+			materials: []
 		};
 
 		this.convolutionShader1 = ObjectUtil.deepClone(ShaderLib.convolution);

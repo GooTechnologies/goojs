@@ -6,10 +6,7 @@ define([
 	'goo/shapes/Torus',
 	'goo/shapes/Disk',
 	'goo/shapes/Cone'
-],
-
-
-function (
+], function (
 	Box,
 	Quad,
 	Sphere,
@@ -24,8 +21,7 @@ function (
 	 * Factory for shape creation.
 	 * Only used to define the class. Should never be instantiated.
 	 */
-	function ShapeCreatorMemoized() {
-	}
+	function ShapeCreatorMemoized() {}
 
 	var _cache = {};
 	//var hits = 0, requests = 0;

@@ -23,7 +23,7 @@ define([
 		var positionArray = new Float32Array(8 * 4);
 
 		// The array contains the min and max x- and y-coordinates as well as the min depth.
-		// order : [minX, maxX, minY, maxY, minDepth]
+		// order: [minX, maxX, minY, maxY, minDepth]
 		var minMaxArray = new Float32Array(5);
 
 		var triangleIndices = new Uint8Array([
@@ -57,7 +57,7 @@ define([
 		]);
 		// For a box, the number of vertices are 8 and the number of visible triangles from a view are 6. 6 * 3 indices.
 		// homogeneous vertices gives 32 position values.
-		var triangleData = new OccludeeTriangleData({'numberOfPositions': 32, 'numberOfIndices': 18});
+		var triangleData = new OccludeeTriangleData({'numberOfPositions': 32, 'numberOfIndices': 18 });
 
 		// Global vars for transforming data.
 		var v1 = new Vector4(0, 0, 0, 1);

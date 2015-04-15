@@ -184,7 +184,6 @@ define([
 					calcVector
 				);
 				lookAtPoint.set(calcVector);
-
 			} else {
 				calcVector.set(fwdVector).scale(mouseState.dy);
 				calcVector2.set(leftVector).scale(mouseState.dx);
@@ -242,7 +241,7 @@ define([
 			key: 'whenUsed',
 			type: 'boolean',
 			name: 'When Camera Used',
-			description:'Script only runs when the camera to which it is added is being used.',
+			description: 'Script only runs when the camera to which it is added is being used.',
 			'default': true
 		}, {
 			key: 'panButton',

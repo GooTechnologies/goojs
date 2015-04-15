@@ -36,7 +36,7 @@ function (
 
 		this.blurTarget = new RenderTarget(256, 256);
 		this.blurPass = new BlurPass({
-			target : this.blurTarget
+			target: this.blurTarget
 		});
 
 		var shader = outShader || unpackDepth;
@@ -68,17 +68,17 @@ function (
 	};
 
 	var packDepth = {
-		attributes : {
-			vertexPosition : MeshData.POSITION
+		attributes: {
+			vertexPosition: MeshData.POSITION
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-//				nearPlane : Shader.NEAR_PLANE,
-			farPlane : Shader.FAR_PLANE
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+//				nearPlane: Shader.NEAR_PLANE,
+			farPlane: Shader.FAR_PLANE
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 
 			'uniform mat4 viewMatrix;',
@@ -92,7 +92,7 @@ function (
 			'	gl_Position = projectionMatrix * vPosition;',
 			'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'precision mediump float;',
 
 //				'uniform float nearPlane;',
@@ -112,18 +112,18 @@ function (
 	};
 
 	var unpackDepth = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0
 		},
-		uniforms : {
-			viewMatrix : Shader.VIEW_MATRIX,
-			projectionMatrix : Shader.PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			depthMap : Shader.DEPTH_MAP,
-			diffuseMap : Shader.DIFFUSE_MAP
+		uniforms: {
+			viewMatrix: Shader.VIEW_MATRIX,
+			projectionMatrix: Shader.PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			depthMap: Shader.DEPTH_MAP,
+			diffuseMap: Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 			'attribute vec2 vertexUV0;',
 
@@ -138,7 +138,7 @@ function (
 			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 			'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 			'precision mediump float;',
 
 			'uniform sampler2D depthMap;',

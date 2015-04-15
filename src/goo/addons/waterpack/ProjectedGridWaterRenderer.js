@@ -89,7 +89,7 @@ define([
 		// materialProj.textures[0] = new TextureCreator().loadTexture2D('../resources/water/wbump.png');
 		this.projRenderable = {
 			meshData : projData,
-			materials : [materialProj]
+			materials: [materialProj]
 		};
 	}
 
@@ -443,10 +443,10 @@ define([
 	};
 
 	var projShaderDef = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION
 		},
-		uniforms : {
+		uniforms: {
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
@@ -455,7 +455,7 @@ define([
 			//camFar: Shader.FAR_PLANE,
 			time: Shader.TIME
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 
 		'uniform mat4 viewMatrix;',
@@ -471,7 +471,7 @@ define([
 		'	gl_Position = projectionMatrix * viewMatrix * worldPos;',
 		'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'precision mediump float;',
 
 		//'uniform sampler2D diffuseMap;',

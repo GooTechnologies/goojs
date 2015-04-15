@@ -42,7 +42,7 @@ define([
 		var time = this.time + tpf;
 		if (time > this.duration) {
 			if (this.loop) {
-				time = time % this.duration;
+				time %= this.duration;
 			} else {
 				time = this.duration;
 			}

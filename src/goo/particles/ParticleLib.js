@@ -72,7 +72,7 @@ define([], function (
 				return vec3;
 			},
 			timeline: [{
-				timeOffset : 0.0,
+				timeOffset: 0.0,
 				spin: 0,
 				mass: 1,
 				size: 2.0 * options.scale,
@@ -118,7 +118,7 @@ define([], function (
 				return vec3;
 			},
 			timeline: [{
-				timeOffset : 0.0,
+				timeOffset: 0.0,
 				spin: 0,
 				mass: 1,
 				size: 1.0 * options.scale,

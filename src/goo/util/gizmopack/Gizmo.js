@@ -246,10 +246,10 @@ define([
 			vertexNormal: MeshData.NORMAL
 		},
 		uniforms: {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			worldMatrix : Shader.WORLD_MATRIX,
-			cameraPosition : Shader.CAMERA,
-			color : [1.0, 1.0, 1.0],
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			worldMatrix: Shader.WORLD_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			color: [1.0, 1.0, 1.0],
 			opacity: 1.0,
 			light: [-20, 20, 20]
 		},

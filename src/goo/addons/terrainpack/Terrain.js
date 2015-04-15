@@ -311,8 +311,8 @@ define([
 	Terrain.prototype.draw = function (mode, type, size, x, y, z, power, brushTexture, rgba) {
 		power = MathUtils.clamp(power, 0, 1);
 
-		x = (x - this.size/2) * 2;
-		z = (z - this.size/2) * 2;
+		x = (x - this.size / 2) * 2;
+		z = (z - this.size / 2) * 2;
 
 		if (mode === 'paint') {
 			this.renderable.materials[0] = this.drawMaterial2;
@@ -935,17 +935,17 @@ define([
 	};
 
 	var brushShader = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
 		},
-		uniforms : {
+		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
 			diffuseMap : Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -959,7 +959,7 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform float opacity;',
 
@@ -974,11 +974,11 @@ define([
 	};
 
 	var brushShader2 = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
 		},
-		uniforms : {
+		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
@@ -986,7 +986,7 @@ define([
 			diffuseMap : Shader.DIFFUSE_MAP,
 			splatMap : 'SPLAT_MAP'
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -1003,7 +1003,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D splatMap;',
 		'uniform vec4 rgba;',
@@ -1023,11 +1023,11 @@ define([
 	};
 
 	var brushShader3 = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
 		},
-		uniforms : {
+		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
@@ -1035,7 +1035,7 @@ define([
 			diffuseMap : Shader.DIFFUSE_MAP,
 			heightMap : 'HEIGHT_MAP'
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -1052,7 +1052,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D heightMap;',
 		'uniform float opacity;',
@@ -1077,11 +1077,11 @@ define([
 	};
 
 	var brushShader4 = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
 		},
-		uniforms : {
+		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
@@ -1089,7 +1089,7 @@ define([
 			diffuseMap : Shader.DIFFUSE_MAP,
 			heightMap : 'HEIGHT_MAP'
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -1106,7 +1106,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D heightMap;',
 		'uniform float opacity;',
@@ -1126,16 +1126,16 @@ define([
 	};
 
 	var extractShader = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
 		},
-		uniforms : {
+		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			diffuseMap : Shader.DIFFUSE_MAP
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 		'attribute vec2 vertexUV0;',
 
@@ -1149,7 +1149,7 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'//
 		].join('\n'),
-		fshader : [
+		fshader: [
 		'uniform sampler2D diffuseMap;',
 
 		'varying vec2 texCoord0;',
@@ -1194,10 +1194,10 @@ define([
 	};
 
 	var terrainPickingShader = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION
 		},
-		uniforms : {
+		uniforms: {
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
@@ -1209,7 +1209,7 @@ define([
 				return shaderInfo.renderable.id + 1;
 			}
 		},
-		vshader : [
+		vshader: [
 		'attribute vec3 vertexPosition;',
 
 		'uniform sampler2D heightMap;',
@@ -1245,7 +1245,7 @@ define([
 			'gl_Position = projectionMatrix * mvPosition;',
 		'}'
 		].join("\n"),
-		fshader : [
+		fshader: [
 		'uniform float id;',
 
 		'varying float depth;',
@@ -1333,17 +1333,17 @@ define([
 	// };
 
 	var normalmapShader = {
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION,
 			vertexUV0 : MeshData.TEXCOORD0
 		},
-		uniforms : {
+		uniforms: {
 			viewMatrix : Shader.VIEW_MATRIX,
 			projectionMatrix : Shader.PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			heightMap : Shader.DIFFUSE_MAP,
 			// normalMap : Shader.NORMAL_MAP,
-			resolution : [512, 512],
+			resolution: [512, 512],
 			height	: 0.05
 		},
 		vshader: [

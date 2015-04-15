@@ -279,7 +279,7 @@ define([
 					return script;
 				}
 				else {
-					SystemBus.emit('goo.scriptError', {id: ref, errors: null});
+					SystemBus.emit('goo.scriptError', { id: ref, errors: null });
 				}
 
 				_.extend(script.parameters, config.options);

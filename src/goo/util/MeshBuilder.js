@@ -1,14 +1,12 @@
 define([
-        'goo/renderer/MeshData',
-        'goo/math/Vector3',
-        'goo/entities/EntityUtils'
-        ],
-
-	function (
-		MeshData,
-		Vector3,
-		EntityUtils
-	) {
+	'goo/renderer/MeshData',
+	'goo/math/Vector3',
+	'goo/entities/EntityUtils'
+], function (
+	MeshData,
+	Vector3,
+	EntityUtils
+) {
 	'use strict';
 
 	/**
@@ -77,7 +75,7 @@ define([
 	 */
 	MeshBuilder.prototype.addMeshData = function (meshData, transform) {
 		if (meshData.vertexCount >= 65536) {
-			throw new Error("Maximum number of vertices for a mesh to add is 65535. Got: " + meshData.vertexCount);
+			throw new Error('Maximum number of vertices for a mesh to add is 65535. Got: ' + meshData.vertexCount);
 		} else if (this.vertexCounter + meshData.vertexCount >= 65536) {
 			this._generateMesh();
 		}
@@ -100,8 +98,8 @@ define([
 				attribute.map = {
 					count: map.count,
 					type: map.type,
-					stride : map.stride,
-					offset : map.offset,
+					stride: map.stride,
+					offset: map.offset,
 					normalized: map.normalized
 				};
 			}

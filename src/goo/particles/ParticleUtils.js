@@ -8,8 +8,7 @@ define([
 	/**
 	 * Various helper utils for particle systems.
 	 */
-	function ParticleUtils() {
-	}
+	function ParticleUtils() {}
 
 	ParticleUtils.getRandomVelocityOffY = function (store, minOffsetAngle, maxOffsetAngle, scale, particleEntity) {
 		var randomAngle = minOffsetAngle + Math.random() * (maxOffsetAngle - minOffsetAngle);
@@ -39,8 +38,7 @@ define([
 		return {
 			enabled: true,
 			/* Was: function (particleEntity, emitter) */
-			prepare: function () {
-			},
+			prepare: function () {},
 			/* Was: function (tpf, particle, particleIndex) */
 			apply: function (tpf, particle) {
 				particle.velocity.x += applyForce.x * tpf;
@@ -70,7 +68,7 @@ define([
 		var age = particle.age, lifeSpan = particle.lifeSpan;
 		var prevCAge = 0, prevMAge = 0, prevSiAge = 0, prevSpAge = 0;
 		var nextCAge = lifeSpan, nextMAge = lifeSpan, nextSiAge = lifeSpan, nextSpAge = lifeSpan;
-		var trAge = 0, ratio = 0;
+		var trAge = 0, ratio;
 		var prevCEntry = null, prevMEntry = null, prevSiEntry = null, prevSpEntry = null, prevUVEntry = null;
 		var nextCEntry = null, nextMEntry = null, nextSiEntry = null, nextSpEntry = null;
 
@@ -145,44 +143,35 @@ define([
 
 		//! AT: hope this code is not based on the non-existent block scoping in JS
 		// color
-		{
-			ratio = (age - prevCAge) / (nextCAge - prevCAge);
-			var start = prevCEntry !== null ? prevCEntry.color : [1, 1, 1, 1];
-			var end = nextCEntry !== null ? nextCEntry.color : start;
-			particle.color.x = (1.0 - ratio) * start[0] + ratio * end[0];
-			particle.color.y = (1.0 - ratio) * start[1] + ratio * end[1];
-			particle.color.z = (1.0 - ratio) * start[2] + ratio * end[2];
-			particle.color.w = (1.0 - ratio) * start[3] + ratio * end[3];
-		}
+
+		ratio = (age - prevCAge) / (nextCAge - prevCAge);
+		var start = prevCEntry !== null ? prevCEntry.color : [1, 1, 1, 1];
+		var end = nextCEntry !== null ? nextCEntry.color : start;
+		particle.color.x = (1.0 - ratio) * start[0] + ratio * end[0];
+		particle.color.y = (1.0 - ratio) * start[1] + ratio * end[1];
+		particle.color.z = (1.0 - ratio) * start[2] + ratio * end[2];
+		particle.color.w = (1.0 - ratio) * start[3] + ratio * end[3];
 
 		// mass
-		{
-			ratio = (age - prevMAge) / (nextMAge - prevMAge);
-			var start = prevMEntry !== null ? prevMEntry.mass : 1.0;
-			var end = nextMEntry !== null ? nextMEntry.mass : start;
-			particle.mass = (1 - ratio) * start + ratio * end;
-		}
+		ratio = (age - prevMAge) / (nextMAge - prevMAge);
+		var start = prevMEntry !== null ? prevMEntry.mass : 1.0;
+		var end = nextMEntry !== null ? nextMEntry.mass : start;
+		particle.mass = (1 - ratio) * start + ratio * end;
 
 		// uvIndex
-		{
-			particle.uvIndex = prevUVEntry !== null ? prevUVEntry.uvIndex : 0;
-		}
+		particle.uvIndex = prevUVEntry !== null ? prevUVEntry.uvIndex : 0;
 
 		// Size
-		{
-			ratio = (age - prevSiAge) / (nextSiAge - prevSiAge);
-			var start = prevSiEntry !== null ? prevSiEntry.size : 1.0;
-			var end = nextSiEntry !== null ? nextSiEntry.size : start;
-			particle.size = (1 - ratio) * start + ratio * end;
-		}
+		ratio = (age - prevSiAge) / (nextSiAge - prevSiAge);
+		var start = prevSiEntry !== null ? prevSiEntry.size : 1.0;
+		var end = nextSiEntry !== null ? nextSiEntry.size : start;
+		particle.size = (1 - ratio) * start + ratio * end;
 
 		// Spin
-		{
-			ratio = (age - prevSpAge) / (nextSpAge - prevSpAge);
-			var start = prevSpEntry !== null ? prevSpEntry.spin : 0.0;
-			var end = nextSpEntry !== null ? nextSpEntry.spin : start;
-			particle.spin = (1 - ratio) * start + ratio * end;
-		}
+		ratio = (age - prevSpAge) / (nextSpAge - prevSpAge);
+		var start = prevSpEntry !== null ? prevSpEntry.spin : 0.0;
+		var end = nextSpEntry !== null ? nextSpEntry.spin : start;
+		particle.spin = (1 - ratio) * start + ratio * end;
 	};
 
 	return ParticleUtils;

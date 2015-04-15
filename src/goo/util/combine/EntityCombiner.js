@@ -218,7 +218,6 @@ define([
 			entity.parent().each(function (parent) {
 				parent.detachChild(entity);
 			});
-
 		}
 	};
 

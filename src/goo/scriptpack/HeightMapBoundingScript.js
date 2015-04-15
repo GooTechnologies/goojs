@@ -55,8 +55,7 @@ define([
 
 		return totalAvg;
 	};
-
-
+	
 	HeightMapBoundingScript.prototype.getTriangleAt = function (x, y) {
 		var xc = Math.ceil(x);
 		var xf = Math.floor(x);
@@ -66,15 +65,15 @@ define([
 		var fracX = x - xf;
 		var fracY = y - yf;
 
-		var p1  = {x:xf, y:yc, z:this.getAt(xf, yc)};
-		var p2  = {x:xc, y:yf, z:this.getAt(xc, yf)};
+		var p1 = { x: xf, y: yc, z: this.getAt(xf, yc) };
+		var p2 = { x: xc, y: yf, z: this.getAt(xc, yf) };
 
 		var p3;
 
-		if (fracX < 1-fracY) {
-			p3 = {x:xf, y:yf, z:this.getAt(xf, yf)};
+		if (fracX < 1 - fracY) {
+			p3 = { x: xf, y: yf, z: this.getAt(xf, yf) };
 		} else {
-			p3 = {x:xc, y:yc, z:this.getAt(xc, yc)};
+			p3 = { x: xc, y: yc, z: this.getAt(xc, yc) };
 		}
 		return [p1, p2, p3];
 	};
@@ -82,7 +81,7 @@ define([
 	// get the exact height of the triangle at point
 	HeightMapBoundingScript.prototype.getPreciseHeight = function (x, y) {
 		var tri = this.getTriangleAt(x, y);
-		var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:x, y:y, z:0});
+		var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], { x: x, y: y, z: 0 });
 		return find.z;
 	};
 

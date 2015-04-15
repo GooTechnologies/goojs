@@ -50,7 +50,7 @@ define([
 				for (var j=0; j<al; j++) {
 					var vi = avl[j];
 					if (vi===i0 || vi===i1 || vi===i2) { continue; }
-					if (pointInTriangle(p[3 * vi], p[3 * vi + 1], ax, ay, bx, by, cx, cy)) {earFound = false; break;}
+					if (pointInTriangle(p[3 * vi], p[3 * vi + 1], ax, ay, bx, by, cx, cy)) { earFound = false; break;}
 				}
 			}
 			if (earFound) {
@@ -161,7 +161,7 @@ define([
 			minX: minX,
 			maxX: maxX,
 			minY: minY,
-			maxY: maxY};
+			maxY: maxY };
 	}
 
 	return FilledPolygon;

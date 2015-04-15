@@ -90,10 +90,10 @@ define([
 	 * Pauses the sound if it's playing
 	 */
 	Sound.prototype.pause = function () {
-
 		if (!this._currentSource) {
 			return;
 		}
+
 		this._paused = true;
 
 		this._pausePos = (AudioContext.getContext().currentTime - this._playStart) % this._duration;

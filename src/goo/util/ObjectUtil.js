@@ -55,7 +55,7 @@ define(function () {
 	// Handles objects with the built-in `forEach`, arrays, and raw objects.
 	// Delegates to **ECMAScript 5**'s native `forEach` if available.
 	var each = _.each = _.forEach = function (obj, iterator, context, sortProp) {
-		if (typeof obj === 'undefined' || obj === null) {return;}
+		if (typeof obj === 'undefined' || obj === null) { return;}
 		if (nativeForEach && obj.forEach === nativeForEach) {
 			obj.forEach(iterator, context);
 		} else if (obj.length === +obj.length) {

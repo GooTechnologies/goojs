@@ -83,12 +83,12 @@ define([
 		meshBuilder.addMeshData(circle, transform);
 
 		transform = new Transform();
-		transform.rotation.fromAngles(0, Math.PI/2, 0);
+		transform.rotation.fromAngles(0, Math.PI / 2, 0);
 		transform.update();
 		meshBuilder.addMeshData(circle, transform);
 
 		transform = new Transform();
-		transform.rotation.fromAngles(Math.PI/2, Math.PI/2, 0);
+		transform.rotation.fromAngles(Math.PI / 2, Math.PI / 2, 0);
 		transform.update();
 		meshBuilder.addMeshData(circle, transform);
 

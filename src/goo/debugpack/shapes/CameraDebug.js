@@ -30,7 +30,7 @@ define([
 		var tanFar, tanNear;
 
 		if (camera.projectionMode === 0) {
-			var tan = Math.tan(camera.fov/2 * Math.PI/180);
+			var tan = Math.tan(camera.fov / 2 * Math.PI/180);
 			tanFar = tan * far;
 			tanNear = tan * near;
 		} else {

@@ -252,9 +252,9 @@ define([
 		var transform = new Transform();
 		transform.scale.setDirect(1.7, 1.7, 1.7);
 		if (dim === 0) {
-			transform.setRotationXYZ(0, Math.PI/2, 0);
+			transform.setRotationXYZ(0, Math.PI / 2, 0);
 		} else if (dim === 1) {
-			transform.setRotationXYZ(Math.PI/2, 0, 0);
+			transform.setRotationXYZ(Math.PI / 2, 0, 0);
 		}
 
 		this.addRenderable({

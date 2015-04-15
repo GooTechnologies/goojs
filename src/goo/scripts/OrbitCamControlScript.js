@@ -190,7 +190,7 @@ define([
 	}
 
 	function applyWheel(e, args, ctx) {
-		var delta =  Math.max(-1, Math.min(1, -e.wheelDelta || e.detail));
+		var delta = Math.max(-1, Math.min(1, -e.wheelDelta || e.detail));
 		delta *= ZOOM_DISTANCE_FACTOR * ctx.targetSpherical.x;
 
 		var td = ctx.targetSpherical;

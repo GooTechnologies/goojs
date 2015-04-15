@@ -28,18 +28,18 @@ define(['goo/math/Vector3', 'goo/math/Matrix3'], function (Vector3, Matrix3) {
 
 		this.mouseStatus = 0;
 		this.moveState = {
-			up : 0,
-			down : 0,
-			left : 0,
-			right : 0,
-			forward : 0,
-			back : 0,
-			pitchUp : 0,
-			pitchDown : 0,
-			yawLeft : 0,
-			yawRight : 0,
-			rollLeft : 0,
-			rollRight : 0
+			up: 0,
+			down: 0,
+			left: 0,
+			right: 0,
+			forward: 0,
+			back: 0,
+			pitchUp: 0,
+			pitchDown: 0,
+			yawLeft: 0,
+			yawRight: 0,
+			rollLeft: 0,
+			rollRight: 0
 		};
 		this.moveVector = new Vector3(0, 0, 0);
 		this.rotationVector = new Vector3(0, 0, 0);
@@ -232,13 +232,13 @@ define(['goo/math/Vector3', 'goo/math/Matrix3'], function (Vector3, Matrix3) {
 		this.getContainerDimensions = function () {
 			if (this.domElement !== document) {
 				return {
-					size : [this.domElement.offsetWidth, this.domElement.offsetHeight],
-					offset : [this.domElement.offsetLeft, this.domElement.offsetTop]
+					size: [this.domElement.offsetWidth, this.domElement.offsetHeight],
+					offset: [this.domElement.offsetLeft, this.domElement.offsetTop]
 				};
 			} else {
 				return {
-					size : [window.innerWidth, window.innerHeight],
-					offset : [0, 0]
+					size: [window.innerWidth, window.innerHeight],
+					offset: [0, 0]
 				};
 			}
 		};
@@ -265,11 +265,11 @@ define(['goo/math/Vector3', 'goo/math/Matrix3'], function (Vector3, Matrix3) {
 	 */
 	BasicControlScript.prototype.externals = function () {
 		return [{
-			variable : 'movementSpeed',
-			type : 'number'
+			variable: 'movementSpeed',
+			type: 'number'
 		}, {
-			variable : 'rollSpeed',
-			type : 'number'
+			variable: 'rollSpeed',
+			type: 'number'
 		}];
 	};
 

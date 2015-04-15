@@ -64,7 +64,7 @@ define([
 		// If Projected & Linear use shared pole vertices the uv-mapping will get too distorted, so let them
 		// have full 'rings' of vertices for a straighter texture mapping.
 		this._useSharedPoleVertices = (this.textureMode !== Sphere.TextureModes.Projected) &&
-		                              (this.textureMode !== Sphere.TextureModes.Linear);
+			(this.textureMode !== Sphere.TextureModes.Linear);
 
 		// sharedVert = pole vertex that represents a whole layer. When not using shared vertices,
 		// full layers are used for both poles.
@@ -121,7 +121,7 @@ define([
 		var tempVb = new Vector3();
 		var tempVc = new Vector3();
 		for (var iZ = zBegin; iZ < zEnd; iZ++) {
-			var fAFraction = MathUtils.HALF_PI * (-1.0 + fZFactor * iZ); // in (-pi/2, pi/2)
+			var fAFraction = MathUtils.HALF_PI * (-1.0 + fZFactor * iZ); // in (-pi / 2, pi / 2)
 			var fZFraction = Math.sin(fAFraction); // in (-1, 1)
 			var fZ = this.radius * fZFraction;
 
@@ -340,8 +340,8 @@ define([
 
 		// south pole triangles
 		for (var i = 0; i < this.radialSamples; i++) {
-
 			var i0, i1, i2;
+
 			if (!this._useSharedPoleVertices) {
 				i0 = i;
 				i1 = i + this.radialSamples + 2;
@@ -367,8 +367,8 @@ define([
 		// - point iOffset point to the start of the last generated ring of vertices
 		var iOffset = (zEnd - zBegin - 1) * (this.radialSamples + 1);
 		for (var i = 0; i < this.radialSamples; i++) {
-
 			var i0, i1, i2;
+
 			if (!this._useSharedPoleVertices) {
 				// as we are in the last pole ring (with iOffset added), step back to the
 				// next-to-last as there is no pole vertex in this mode.

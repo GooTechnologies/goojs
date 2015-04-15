@@ -434,7 +434,7 @@ define([
 			WEIGHTS: true,
 			JOINTIDS: true
 		},
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION,
 			vertexJointIDs: MeshData.JOINTIDS,
 			vertexWeights: MeshData.WEIGHTS

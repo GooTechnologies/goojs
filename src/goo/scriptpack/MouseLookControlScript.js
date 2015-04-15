@@ -122,8 +122,8 @@ define([
 			entity.transformComponent.setUpdated();
 			lastX = x;
 			lastY = y;
-
 		}
+
 		function cleanup(parameters, environment) {
 			var domElement = environment.domElement;
 			if (button === 3) {

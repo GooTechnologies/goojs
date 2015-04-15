@@ -338,14 +338,14 @@ define([
 				}
 			}
 		],
-		attributes : {
+		attributes: {
 			vertexPosition : MeshData.POSITION,
 			vertexNormal : MeshData.NORMAL,
 			vertexUV0 : MeshData.TEXCOORD0,
 			vertexColor : MeshData.COLOR,
 			base : 'BASE'
 		},
-		uniforms : {
+		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,

@@ -29,7 +29,7 @@ define(function () {
 		});
 
 		var element = document.createElement('div');
-		observer.observe(element, {attributes: true});
+		observer.observe(element, { attributes: true });
 
 		// Chrome Memory Leak: https://bugs.webkit.org/show_bug.cgi?id=93661
 		window.addEventListener('unload', function () {
@@ -138,7 +138,7 @@ define(function () {
 					binding = callbackTuple[1];
 
 					if (typeof options !== 'object') {
-						options = {detail: options};
+						options = { detail: options };
 					}
 
 					event = new Event(eventName, options);
@@ -150,11 +150,11 @@ define(function () {
 
 	var Promise = function () {
 		this.on('promise:resolved', function (event) {
-			this.trigger('success', {detail: event.detail});
+			this.trigger('success', { detail: event.detail });
 		}, this);
 
 		this.on('promise:failed', function (event) {
-			this.trigger('error', {detail: event.detail});
+			this.trigger('error', { detail: event.detail });
 		}, this);
 	};
 
@@ -199,13 +199,13 @@ define(function () {
 
 			if (this.isResolved) {
 				config.async(function () {
-					invokeCallback('resolve', thenPromise, done, {detail: this.resolvedValue});
+					invokeCallback('resolve', thenPromise, done, { detail: this.resolvedValue });
 				}, this);
 			}
 
 			if (this.isRejected) {
 				config.async(function () {
-					invokeCallback('reject', thenPromise, fail, {detail: this.rejectedValue});
+					invokeCallback('reject', thenPromise, fail, { detail: this.rejectedValue });
 				}, this);
 			}
 
@@ -237,7 +237,7 @@ define(function () {
 
 	function resolve(promise, value) {
 		config.async(function () {
-			promise.trigger('promise:resolved', {detail: value});
+			promise.trigger('promise:resolved', { detail: value });
 			promise.isResolved = true;
 			promise.resolvedValue = value;
 		});
@@ -245,7 +245,7 @@ define(function () {
 
 	function reject(promise, value) {
 		config.async(function () {
-			promise.trigger('promise:failed', {detail: value});
+			promise.trigger('promise:failed', { detail: value });
 			promise.isRejected = true;
 			promise.rejectedValue = value;
 		});

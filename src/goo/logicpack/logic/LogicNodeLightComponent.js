@@ -26,7 +26,7 @@ define(
 			this.entityRef = config.entityRef;
 		};
 
-		// Logic interface set-up	
+		// Logic interface set-up
 		LogicNodeLightComponent.logicInterface = new LogicInterface("LightComponent");
 		LogicNodeLightComponent.inportIntensity = LogicNodeLightComponent.logicInterface.addInputProperty("Intensity", "float");
 		LogicNodeLightComponent.inportRange = LogicNodeLightComponent.logicInterface.addInputProperty("Range", "float");
@@ -40,7 +40,7 @@ define(
 			}
 		};
 
-		LogicNodeLightComponent.logicInterface.addConfigEntry({name: 'entityRef', type: 'entityRef', label: 'Entity'});
+		LogicNodeLightComponent.logicInterface.addConfigEntry({ name: 'entityRef', type: 'entityRef', label: 'Entity'});
 		LogicNodes.registerType("LightComponent", LogicNodeLightComponent);
 		return LogicNodeLightComponent;
 	});

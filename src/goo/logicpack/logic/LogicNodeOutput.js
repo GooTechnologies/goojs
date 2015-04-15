@@ -38,7 +38,7 @@ define(
 
 		LogicNodeOutput.logicInterface = new LogicInterface();
 		LogicNodeOutput.inportOutput = LogicNodeOutput.logicInterface.addInputProperty("Output", "any");
-		LogicNodeOutput.logicInterface.addConfigEntry({name: 'Name', type: 'string', label: 'Name'});
+		LogicNodeOutput.logicInterface.addConfigEntry({ name: 'Name', type: 'string', label: 'Name'});
 		return LogicNodeOutput;
 	}
 );

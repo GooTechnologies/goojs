@@ -178,7 +178,7 @@ define([
 		// TODO Put somewhere else
 		if (config.boundingVolume) {
 			if (config.boundingVolume.type === 'BoundingBox') {
-				meshData.boundingBox = {min: config.boundingVolume.min, max: config.boundingVolume.max};
+				meshData.boundingBox = { min: config.boundingVolume.min, max: config.boundingVolume.max };
 			} else {
 				throw new Error('Bounding volume was not BoundingBox');
 			}

@@ -33,7 +33,7 @@ define([
 		this._skybox.name = 'Skybox_box';
 
 		// Skybox texture
-		this._skyboxTexture = new Texture(null, {flipY: false });
+		this._skyboxTexture = new Texture(null, { flipY: false });
 		this._skyboxTexture.variant = 'CUBE';
 		this._skybox.meshRendererComponent.materials[0].setTexture('DIFFUSE_MAP', this._skyboxTexture);
 

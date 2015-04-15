@@ -70,7 +70,7 @@ define([
 		//! AT: please extract this in its own class
 
 		this.changedProperties = false;
-		this.changedColor =  false;
+		this.changedColor = false;
 	}
 
 	Light.prototype.destroy = function (renderer) {

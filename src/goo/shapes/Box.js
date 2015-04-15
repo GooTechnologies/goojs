@@ -1,12 +1,10 @@
 define([
 	'goo/renderer/MeshData',
 	'goo/util/ObjectUtil'
-],
-
-	function (
-		MeshData,
-		_
-	) {
+], function (
+	MeshData,
+	ObjectUtil
+) {
 	'use strict';
 
 	/**
@@ -118,12 +116,12 @@ define([
 		this.getAttributeBuffer(MeshData.POSITION).set(vertices);
 
 		var norms = [
-			 0,  0, -1,
-			 1,  0,  0,
-			 0,  0,  1,
-			-1,  0,  0,
-			 0,  1,  0,
-			 0, -1,  0
+			 0, 0, -1,
+			 1, 0, 0,
+			 0, 0, 1,
+			-1, 0, 0,
+			 0, 1, 0,
+			 0, -1, 0
 		];
 
 		var normals = [];
@@ -157,12 +155,12 @@ define([
 				tex.push(tileY);
 			}
 		} else {
-			tex.push(4/4, 1/3,   3/4, 1/3,   3/4, 2/3,   4/4, 2/3); // 5
-			tex.push(3/4, 1/3,   2/4, 1/3,   2/4, 2/3,   3/4, 2/3); // 4
-			tex.push(2/4, 1/3,   1/4, 1/3,   1/4, 2/3,   2/4, 2/3); // 3
-			tex.push(1/4, 1/3,   0/4, 1/3,   0/4, 2/3,   1/4, 2/3); // 2
-			tex.push(2/4, 3/3,   2/4, 2/3,   1/4, 2/3,   1/4, 3/3); // 1
-			tex.push(1/4, 0/3,   1/4, 1/3,   2/4, 1/3,   2/4, 0/3); // 6
+			tex.push(4 / 4, 1 / 3,   3 / 4, 1 / 3,   3 / 4, 2 / 3,   4 / 4, 2 / 3); // 5
+			tex.push(3 / 4, 1 / 3,   2 / 4, 1 / 3,   2 / 4, 2 / 3,   3 / 4, 2 / 3); // 4
+			tex.push(2 / 4, 1 / 3,   1 / 4, 1 / 3,   1 / 4, 2 / 3,   2 / 4, 2 / 3); // 3
+			tex.push(1 / 4, 1 / 3,   0 / 4, 1 / 3,   0 / 4, 2 / 3,   1 / 4, 2 / 3); // 2
+			tex.push(2 / 4, 3 / 3,   2 / 4, 2 / 3,   1 / 4, 2 / 3,   1 / 4, 3 / 3); // 1
+			tex.push(1 / 4, 0 / 3,   1 / 4, 1 / 3,   2 / 4, 1 / 3,   2 / 4, 0 / 3); // 6
 		}
 
 		this.getAttributeBuffer(MeshData.TEXCOORD0).set(tex);
@@ -184,7 +182,7 @@ define([
 	 * @returns {Box}
 	 */
 	Box.prototype.clone = function () {
-		var options = _.shallowSelectiveClone(this, ['tileX', 'tileY', 'textureMode']);
+		var options = ObjectUtil.shallowSelectiveClone(this, ['tileX', 'tileY', 'textureMode']);
 
 		// converting xExtent to width so the constructor will convert it the other way around again
 		options.width = this.xExtent * 2;

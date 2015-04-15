@@ -468,16 +468,16 @@ define([
 				var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin),
 					new Vector3(ray.direction).scale(distances[1]).add(ray.origin)];
 				return {
-					"distances": distances,
-					"points": points
+					distances: distances,
+					points: points
 				};
 			}
 
 			var distances = [t[0]];
 			var points = [new Vector3(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
-				"distances": distances,
-				"points": points
+				distances: distances,
+				points: points
 			};
 		}
 

@@ -92,7 +92,7 @@ function () {
 	 * @param {Function} callback function called with a boolean (true=hidden, false=visible)
 	 */
 	GameUtils.addVisibilityChangeListener = function (callback) {
-		if (typeof(callback) !== 'function') {
+		if (typeof callback !== 'function') {
 			return;
 		}
 
@@ -357,15 +357,13 @@ function () {
 
 				if (navigator.pointer) {
 					return function () {
-						var elem = this;
-						navigator.pointer.lock(elem, pointerlockchange, pointerlockerror);
+						navigator.pointer.lock(this, pointerlockchange, pointerlockerror);
 					};
 				}
 
 				GameUtils.supported.pointerLock = false;
 
-				return function () {
-				};
+				return function () {};
 			})();
 		}
 

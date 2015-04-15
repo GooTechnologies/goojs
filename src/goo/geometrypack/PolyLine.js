@@ -86,7 +86,7 @@ define([
 		var nx2 = vx2 / d2;
 		var ny2 = vy2 / d2;
 
-		return Math.atan2(ny1 + ny2, nx1 + nx2) - Math.PI/2;
+		return Math.atan2(ny1 + ny2, nx1 + nx2) - Math.PI / 2;
 	}
 
 	function getBisectorAngle(verts, index) {
@@ -97,13 +97,13 @@ define([
 			p1z = verts[0 * 3 + 2];
 			p2x = verts[1 * 3 + 0];
 			p2z = verts[1 * 3 + 2];
-			return Math.atan2(p2z - p1z, p2x - p1x) - Math.PI/2;
+			return Math.atan2(p2z - p1z, p2x - p1x) - Math.PI / 2;
 		} else if (index === nVerts-1) {
 			p0x = verts[(nVerts-2) * 3 + 0];
 			p0z = verts[(nVerts-2) * 3 + 2];
 			p1x = verts[(nVerts-1) * 3 + 0];
 			p1z = verts[(nVerts-1) * 3 + 2];
-			return Math.atan2(p1z - p0z, p1x - p0x) - Math.PI/2;
+			return Math.atan2(p1z - p0z, p1x - p0x) - Math.PI / 2;
 		} else {
 			p0x = verts[(index-1) * 3 + 0];
 			p0z = verts[(index-1) * 3 + 2];

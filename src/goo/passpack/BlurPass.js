@@ -18,11 +18,11 @@ define([
 	/**
 	 * <pre>
 	 * settings: {
-	 *     target : null,
-	 *     strength : 1.0,
-	 *     sigma : 4.0,
-	 *     sizeX : 256,
-	 *     sizeY : 256
+	 *     target: null,
+	 *     strength: 1.0,
+	 *     sigma: 4.0,
+	 *     sizeX: 256,
+	 *     sizeY: 256
 	 * }
 	 * </pre>
 	 */
@@ -48,8 +48,8 @@ define([
 		});
 
 		this.renderable = {
-			meshData : FullscreenUtil.quad,
-			materials : []
+			meshData: FullscreenUtil.quad,
+			materials: []
 		};
 
 		this.copyMaterial = new Material(ShaderLib.copyPure);
@@ -58,8 +58,8 @@ define([
 
 		this.convolutionShader = ObjectUtil.deepClone(ShaderLib.convolution);
 		this.convolutionShader.defines = {
-			"KERNEL_SIZE_FLOAT" : kernelSize.toFixed(1),
-			"KERNEL_SIZE_INT" : kernelSize.toFixed(0)
+			"KERNEL_SIZE_FLOAT": kernelSize.toFixed(1),
+			"KERNEL_SIZE_INT": kernelSize.toFixed(0)
 		};
 		this.convolutionShader.uniforms.uImageIncrement = this.blurX;
 		this.convolutionShader.uniforms.cKernel = this.convolutionShader.buildKernel(sigma);

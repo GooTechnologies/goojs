@@ -29,7 +29,7 @@ define([
 		var textures = {};
 
 		var textureShapes = {
-			splash: { trailStartRadius: 25, trailEndRadius: 0},
+			splash: { trailStartRadius: 25, trailEndRadius: 0 },
 			ring: [
 				{ fraction: 0.00, value: 0 },
 				{ fraction: 0.70, value: 0 },
@@ -113,18 +113,18 @@ define([
 			lightColor = [args.color[0], args.color[1], args.color[2], 1];
 
 			quadData = [
-				{ size: 2.53, tx: 'bell', intensity: 0.70, displace:  1    },
-				{ size: 0.53, tx: 'dot',  intensity: 0.70, displace:  1    },
-				{ size: 0.83, tx: 'bell', intensity: 0.20, displace:  0.8  },
-				{ size: 0.40, tx: 'ring', intensity: 0.10, displace:  0.6  },
-				{ size: 0.30, tx: 'bell', intensity: 0.10, displace:  0.4  },
-				{ size: 0.60, tx: 'bell', intensity: 0.10, displace:  0.3  },
-				{ size: 0.30, tx: 'dot',  intensity: 0.10, displace:  0.15 },
+				{ size: 2.53, tx: 'bell', intensity: 0.70, displace: 1 },
+				{ size: 0.53, tx: 'dot',  intensity: 0.70, displace: 1 },
+				{ size: 0.83, tx: 'bell', intensity: 0.20, displace: 0.8 },
+				{ size: 0.40, tx: 'ring', intensity: 0.10, displace: 0.6 },
+				{ size: 0.30, tx: 'bell', intensity: 0.10, displace: 0.4 },
+				{ size: 0.60, tx: 'bell', intensity: 0.10, displace: 0.3 },
+				{ size: 0.30, tx: 'dot',  intensity: 0.10, displace: 0.15 },
 				{ size: 0.22, tx: 'ring', intensity: 0.03, displace: -0.25 },
-				{ size: 0.36, tx: 'dot',  intensity: 0.05, displace: -0.5  },
-				{ size: 0.80, tx: 'ring', intensity: 0.10, displace: -0.8  },
-				{ size: 0.86, tx: 'bell', intensity: 0.20, displace: -1.1  },
-				{ size: 1.30, tx: 'ring', intensity: 0.05, displace: -1.5  }
+				{ size: 0.36, tx: 'dot',  intensity: 0.05, displace: -0.5 },
+				{ size: 0.80, tx: 'ring', intensity: 0.10, displace: -0.8 },
+				{ size: 0.86, tx: 'bell', intensity: 0.20, displace: -1.1 },
+				{ size: 1.30, tx: 'ring', intensity: 0.05, displace: -1.5 }
 			];
 		}
 
@@ -165,7 +165,7 @@ define([
 		key: 'LensFlareScript',
 		name: 'Lens Flare Script',
 		description: 'Makes an entity shine with some lensflare effect.',
-		parameters : [{
+		parameters: [{
 			key: 'scale',
 			name: 'Scale',
 			type: 'float',

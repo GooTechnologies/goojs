@@ -36,13 +36,13 @@ define([
 				return;
 			}
 
-			if (spec['default'] === null || spec['default'] === undefined) {
-				spec['default'] = ScriptUtils.defaultsByType[spec.type];
+			if (spec.default === null || spec.default === undefined) {
+				spec.default = ScriptUtils.defaultsByType[spec.type];
 			}
 
 			keys.push(spec.key);
 			if (typeof parameters[spec.key] === 'undefined') {
-				parameters[spec.key] = _.clone(spec['default']);
+				parameters[spec.key] = _.clone(spec.default);
 			}
 		});
 
@@ -98,7 +98,7 @@ define([
 		'Pause': 19,
 		'Capslock': 20,
 		'Esc': 27,
-		'Space':32,
+		'Space': 32,
 		'Pageup': 33,
 		'Pagedown': 34,
 		'End': 35,

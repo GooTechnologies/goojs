@@ -73,7 +73,7 @@ define([
 			this._depthClear[i] = 0.0;
 		}
 
-		this._triangleData = new OccluderTriangleData({'vertCount': parameters.maxVertCount, 'indexCount': parameters.maxIndexCount});
+		this._triangleData = new OccluderTriangleData({'vertCount': parameters.maxVertCount, 'indexCount': parameters.maxIndexCount });
 
 		this.edgeMap = new EdgeMap(parameters.maxVertCount);
 

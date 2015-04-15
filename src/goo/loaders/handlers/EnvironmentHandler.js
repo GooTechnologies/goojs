@@ -125,7 +125,7 @@ define([
 			// Skybox
 			if (config.skyboxRef) {
 				EnvironmentHandler.currentSkyboxRef = config.skyboxRef;
-				promises.push(that._load(config.skyboxRef, {reload: true}));
+				promises.push(that._load(config.skyboxRef, { reload: true }));
 			} else if (EnvironmentHandler.currentSkyboxRef) {
 				var p = that.updateObject(EnvironmentHandler.currentSkyboxRef, null)
 				.then(function () {
