@@ -78,7 +78,7 @@ define([
 			var iSave = i;
 			for (var radialCount = 0; radialCount < this.radialSamples; radialCount++) {
 				var radialFraction = radialCount * inverseRadialSamples;
-				// in [0,1)
+				// in [0, 1)
 				var phi = MathUtils.TWO_PI * radialFraction;
 				var cosPhi = Math.cos(phi);
 				var sinPhi = Math.sin(phi);

@@ -40,7 +40,7 @@ define([
 	Grid.prototype = Object.create(MeshData.prototype);
 	Grid.prototype.constructor = Grid;
 
-	Grid.prototype.rebuild = function() {
+	Grid.prototype.rebuild = function () {
 		var xExtent = this.width / 2;
 		var yExtent = this.height / 2;
 		var verts = [];

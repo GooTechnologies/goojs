@@ -113,7 +113,7 @@ define([
 			var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
 			var that = this;
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
 				translation.x += this.x - old.x;
 				translation.y += this.y - old.y;
 				translation.z += this.z - old.z;
@@ -126,7 +126,7 @@ define([
 
 				var fov = (180 / Math.PI) * 2 * Math.atan(that.eyeTargetScale / this.d);
 				camera.setFrustumPerspective(fov);
-			}).onComplete(function() {
+			}).onComplete(function () {
 				fsm.send(this.eventToEmit.channel);
 			}.bind(this)).start(time);
 		}

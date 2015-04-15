@@ -197,11 +197,11 @@ define([], function () {
 	 * var pos = entity.transformComponent.transform.translation.
 	 * MathUtils.cartesianToSpherical(pos.x, pos.y, pos.z, sphericalCoord);
 	 */
-	MathUtils.cartesianToSpherical = function (x,y,z, store) {
+	MathUtils.cartesianToSpherical = function (x, y, z, store) {
 		var a = Math.sqrt(x*x + z*z);
 		store.x = Math.sqrt(x*x+y*y+z*z); // radius
-		store.y = Math.atan2(z,x); // azimuth
-		store.z = Math.atan2(y,a); // polar
+		store.y = Math.atan2(z, x); // azimuth
+		store.z = Math.atan2(y, a); // polar
 	};
 
 	/**
@@ -245,7 +245,7 @@ define([], function () {
 	/**
 	 * Gets the nearest higher power of two for a value
 	 * @param {number} value Number to get the nearest power of two from
-	 * @returns {number} Nearest power of two 
+	 * @returns {number} Nearest power of two
 	 */
 	MathUtils.nearestHigherPowerOfTwo = function (value) {
 		return Math.floor(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
@@ -258,7 +258,7 @@ define([], function () {
 	 * @param tolerance
 	 * @returns {boolean}
 	 */
-	MathUtils.closeTo = function(v1, v2, tolerance) {
+	MathUtils.closeTo = function (v1, v2, tolerance) {
 		tolerance = typeof tolerance !== 'undefined' ? tolerance : 0.001;
 		return Math.abs(v1 - v2) <= tolerance;
 	};
@@ -315,7 +315,7 @@ define([], function () {
 	};
 
 	/**
-	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1. 
+	 * Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
 	 * This is useful in cases where a threshold function with a smooth transition is desired.
 	 * @param {number} edge0 Specifies the value of the lower edge of the Hermite function.
 	 * @param {number} edge1 Specifies the value of the upper edge of the Hermite function.
@@ -338,7 +338,7 @@ define([], function () {
 	 * Rough random generation with seeding. Set random seed through MathUtils.randomSeed = {new seed value}
 	 * @returns {number} Random number between 0 and 1.
 	 */
-	MathUtils.fastRandom = function() {
+	MathUtils.fastRandom = function () {
 		MathUtils.randomSeed = (MathUtils.randomSeed * 9301 + 49297) % 233280;
 		return MathUtils.randomSeed / 233280;
 	};

@@ -250,7 +250,7 @@ define([
 					// Debug, add color where scanline samples are taken.
 					this.renderer._colorData.set(green, sampleCoord * 4);
 
-					if(this.renderer._depthData[sampleCoord] < nearestDepth) {
+					if (this.renderer._depthData[sampleCoord] < nearestDepth) {
 						// Early exit if the sample is visible.
 						return false;
 					}
@@ -272,7 +272,7 @@ define([
 		 * @returns {boolean} occluded or not occluded
 		 * @private
 		 */
-		BoundingSphereOcclusionChecker.prototype._isPythagorasCircleScanlineOccluded = function(topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
+		BoundingSphereOcclusionChecker.prototype._isPythagorasCircleScanlineOccluded = function (topCoordinate, bottomCoordinate, rightCoordinate, leftCoordinate, nearestDepth, color) {
 			// Saving the number of rows minus one row. This is the value of use when calculating the tIncrements.
 			var topRows = topCoordinate.y - rightCoordinate.y;
 			var botRows = rightCoordinate.y - bottomCoordinate.y;
@@ -363,10 +363,10 @@ define([
 
 				var sampleCoord = y * this.width + leftX;
 
-				for(var xindex = leftX; xindex <= rightX; xindex++) {
+				for (var xindex = leftX; xindex <= rightX; xindex++) {
 
 					this.renderer._colorData.set(color, sampleCoord * 4);
-					if(this.renderer._depthData[sampleCoord] < nearestDepth) {
+					if (this.renderer._depthData[sampleCoord] < nearestDepth) {
 						// Early exit if the sample is visible.
 						return false;
 					}
@@ -383,7 +383,7 @@ define([
 				return true;
 			}
 
-			if(topRows >= -1 && rightCoordinate.y <= this._clipY) {
+			if (topRows >= -1 && rightCoordinate.y <= this._clipY) {
 				// Check the middle scanline , the pixels in between the left and right coordinates.
 				var leftX = leftCoordinate.x + 1;
 				if (leftX < 0) {
@@ -440,11 +440,11 @@ define([
 				}
 
 				var sampleCoord = y * this.width + leftX;
-				for(var xindex = leftX; xindex <= rightX; xindex++) {
+				for (var xindex = leftX; xindex <= rightX; xindex++) {
 					// Debug, add color where scanline samples are taken.
 					this.renderer._colorData.set(color, sampleCoord * 4);
 
-					if(this.renderer._depthData[sampleCoord] < nearestDepth) {
+					if (this.renderer._depthData[sampleCoord] < nearestDepth) {
 						// Early exit if the sample is visible.
 						return false;
 					}

@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -23,14 +23,14 @@ define(
 		LogicNodeOutput.prototype = Object.create(LogicNode.prototype);
 		LogicNodeOutput.editorName = "Output";
 
-		LogicNodeOutput.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeOutput.prototype.onInputChanged = function (instDesc, portID, value) {
 			LogicLayer.writeValueToLayerOutput(instDesc, this.realOutport, value);
 		};
 
-		LogicNodeOutput.prototype.onEvent = function() { };
+		LogicNodeOutput.prototype.onEvent = function () { };
 
 		// Configure new output.
-		LogicNode.prototype.onConfigure = function(newConfig) {
+		LogicNode.prototype.onConfigure = function (newConfig) {
 			this.realOutport = LogicInterface.createDynamicOutput(newConfig.Name);
 		};
 

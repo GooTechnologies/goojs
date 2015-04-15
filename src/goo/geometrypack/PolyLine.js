@@ -21,7 +21,7 @@ define([
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
 		MeshData.call(this, attributeMap, this.verts.length / 3, this.verts.length / 3);
 
-		if(this.closed) {
+		if (this.closed) {
 			this.indexModes = ['LineLoop'];
 		}
 		else {
@@ -58,7 +58,7 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/geometrypack/Surface/Surface-vtest.html Working example
 	 */
 	PolyLine.prototype.mul = function (that) {
-		if(!(that instanceof PolyLine)) {
+		if (!(that instanceof PolyLine)) {
 			return ;
 		}
 
@@ -92,13 +92,13 @@ define([
 	function getBisectorAngle(verts, index) {
 		var nVerts = verts.length / 3;
 		var p0x, p0z, p1x, p1z, p2x, p2z;
-		if(index === 0) {
+		if (index === 0) {
 			p1x = verts[0 * 3 + 0];
 			p1z = verts[0 * 3 + 2];
 			p2x = verts[1 * 3 + 0];
 			p2z = verts[1 * 3 + 2];
 			return Math.atan2(p2z - p1z, p2x - p1x) - Math.PI/2;
-		} else if(index === nVerts-1) {
+		} else if (index === nVerts-1) {
 			p0x = verts[(nVerts-2) * 3 + 0];
 			p0z = verts[(nVerts-2) * 3 + 2];
 			p1x = verts[(nVerts-1) * 3 + 0];
@@ -121,7 +121,7 @@ define([
 	 * @returns {Surface} The resulting surface
 	 */
 	PolyLine.prototype.pipe = function (that) {
-		if(!(that instanceof PolyLine)) {
+		if (!(that instanceof PolyLine)) {
 			console.error('pipe operation can only be applied to PolyLines');
 			return ;
 		}
@@ -172,8 +172,8 @@ define([
 	 * @param {boolean} [closed] True if the resulting polyLine should be closed
 	 * @returns {PolyLine} The new polyLine
 	 */
-	PolyLine.prototype.concat = function(that, closed) {
-		if(!(that instanceof PolyLine)) {
+	PolyLine.prototype.concat = function (that, closed) {
+		if (!(that instanceof PolyLine)) {
 			console.error('concat operation can only be applied to PolyLines');
 			return ;
 		}
@@ -188,7 +188,7 @@ define([
 	 * @returns {PolyLine} The resulting polyLine
 	 */
 	PolyLine.fromCubicBezier = function (verts, nSegments, startFraction) {
-		if(verts.length !== 3 * 4) {
+		if (verts.length !== 3 * 4) {
 			console.error('PolyLine.fromCubicBezier takes an array of exactly 12 coordinates');
 			return ;
 		}
@@ -232,11 +232,11 @@ define([
 			plVerts.push(p0123[0], p0123[1], p0123[2]);
 		}
 
-		plVerts = verts.slice(0,3).concat(plVerts);
+		plVerts = verts.slice(0, 3).concat(plVerts);
 		return new PolyLine(plVerts);
 	};
 
-	PolyLine.fromQuadraticSpline = function(verts, nSegments, closed) {
+	PolyLine.fromQuadraticSpline = function (verts, nSegments, closed) {
 		if (verts.length % 3 !== 0 && (verts.length / 3) % 2 !== 0) {
 			console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromQuadraticSpline');
 			return;
@@ -274,8 +274,8 @@ define([
 	 * @returns {PolyLine} The resulting polyLine
 	 */
 	PolyLine.fromCubicSpline = function (verts, nSegments, closed) {
-		if(closed) {
-			if(verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 0) {
+		if (closed) {
+			if (verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 0) {
 				console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromCubicSpline');
 				return ;
 			}
@@ -296,7 +296,7 @@ define([
 			return ret;
 		}
 		else {
-			if(verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 1) {
+			if (verts.length % 3 !== 0 && (verts.length / 3) % 3 !== 1) {
 				console.error('Wrong number of coordinates supplied in first argument to PolyLine.fromCubicSpline');
 				return ;
 			}

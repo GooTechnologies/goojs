@@ -10,7 +10,7 @@ define([
 		'goo/renderer/TextureCreator',
 		'goo/util/rsvp'
 	],
-	function(
+	function (
 		Terrain,
 		Vegetation,
 		Forrest,
@@ -379,7 +379,7 @@ define([
 
 				var texturesPromise = new RSVP.Promise();
 				var loadCount = 3;
-				var onLoaded = function() {
+				var onLoaded = function () {
 					if (!--loadCount) {
 						texturesPromise.resolve();
 					}
@@ -412,7 +412,7 @@ define([
 			this.ammoBody = this.terrain.initAmmoBody();
 		};
 
-		TerrainHandler.prototype.useLightmap = function(data, size) {
+		TerrainHandler.prototype.useLightmap = function (data, size) {
 			if (data) {
 				var lightMap = new Texture(data, {
 					magFilter: 'Bilinear',

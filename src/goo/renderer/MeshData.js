@@ -586,11 +586,11 @@ define([
 		var that = this;
 		var getIndex;
 		if (origI) {
-			getIndex = function(primitiveIndex, point, section) {
+			getIndex = function (primitiveIndex, point, section) {
 				return origI[that.getVertexIndex(primitiveIndex, point, section)];
 			};
 		} else {
-			getIndex = function(primitiveIndex, point, section) {
+			getIndex = function (primitiveIndex, point, section) {
 				return that.getVertexIndex(primitiveIndex, point, section);
 			};
 		}

@@ -41,12 +41,12 @@ define(function () {
 		return obj;
 	};
 
-	_.isObject = function(obj) {
+	_.isObject = function (obj) {
 		return obj === Object(obj);
 	};
 
 	// Create a (shallow-cloned) duplicate of an object.
-	_.clone = function(obj) {
+	_.clone = function (obj) {
 		if (!_.isObject(obj)) { return obj; }
 		return Array.isArray(obj) ? obj.slice() : _.extend({}, obj);
 	};
@@ -65,7 +65,7 @@ define(function () {
 		} else {
 			var keys = Object.keys(obj);
 			if (sortProp !== undefined) {
-				keys.sort(function(a, b) {
+				keys.sort(function (a, b) {
 					return obj[a][sortProp] - obj[b][sortProp];
 				});
 			}

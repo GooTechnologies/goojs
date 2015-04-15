@@ -8,7 +8,7 @@ define(
 		'goo/math/Matrix3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3) {
 		'use strict';
 
 		/**
@@ -25,7 +25,7 @@ define(
 		LogicNodeRotationMatrix.prototype = Object.create(LogicNode.prototype);
 		LogicNodeRotationMatrix.editorName = "RotationMatrix";
 
-		LogicNodeRotationMatrix.prototype.onInputChanged = function(instDesc) {
+		LogicNodeRotationMatrix.prototype.onInputChanged = function (instDesc) {
 			var vec = LogicLayer.readPort(instDesc, LogicNodeRotationMatrix.inportX);
 			var mat = new Matrix3();
 			mat.fromAngles(vec.x, vec.y, vec.z);

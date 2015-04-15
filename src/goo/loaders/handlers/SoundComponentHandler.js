@@ -37,7 +37,7 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundComponentHandler.prototype._remove = function(entity) {
+	SoundComponentHandler.prototype._remove = function (entity) {
 		var component = entity.soundComponent;
 		if (component && component.sounds) {
 			var sounds = component.sounds;
@@ -51,7 +51,7 @@ define([
 	 * Prepares the config
 	 * @param {object} config
 	 */
-	SoundComponentHandler.prototype._prepare = function(config) {
+	SoundComponentHandler.prototype._prepare = function (config) {
 		_.defaults(config, {
 			volume: 1.0,
 			reverb: 0.0
@@ -63,7 +63,7 @@ define([
 	 * @returns {SoundComponent} Should be soundcomponent
 	 * @private
 	 */
-	SoundComponentHandler.prototype._create = function() {
+	SoundComponentHandler.prototype._create = function () {
 		return new SoundComponent();
 	};
 
@@ -74,13 +74,13 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	SoundComponentHandler.prototype.update = function(entity, config, options) {
+	SoundComponentHandler.prototype.update = function (entity, config, options) {
 		if (!AudioContext.isSupported()) {
 			return PromiseUtil.resolve(); //! AT: we're not really using reject
 		}
 
 		var that = this;
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 			component.updateConfig(config);
 
@@ -94,11 +94,11 @@ define([
 
 			var promises = [];
 			// Load all sounds
-			_.forEach(config.sounds, function(soundCfg) {
+			_.forEach(config.sounds, function (soundCfg) {
 				promises.push(that._load(soundCfg.soundRef, options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function(sounds) {
+			return RSVP.all(promises).then(function (sounds) {
 				// Add new sounds
 				for (var i = 0; i < sounds.length; i++) {
 					if (component.sounds.indexOf(sounds[i]) === -1) {

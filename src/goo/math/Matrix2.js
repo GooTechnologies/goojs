@@ -37,7 +37,7 @@ define([
 	Matrix2.prototype = Object.create(Matrix.prototype);
 	Matrix2.prototype.constructor = Matrix2;
 
-	Matrix.setupAliases(Matrix2.prototype,[['e00'], ['e10'], ['e01'], ['e11']]);
+	Matrix.setupAliases(Matrix2.prototype, [['e00'], ['e10'], ['e01'], ['e11']]);
 
 	/* @type {Matrix2} */
 	Matrix2.IDENTITY = new Matrix2(1, 0, 0, 1);

@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -24,7 +24,7 @@ define(
 		LogicNodeInt.prototype = Object.create(LogicNode.prototype);
 		LogicNodeInt.editorName = "Int";
 
-		LogicNodeInt.prototype.onConfigure = function(newConfig) {
+		LogicNodeInt.prototype.onConfigure = function (newConfig) {
 			if (newConfig.value !== undefined) {
 				this.defValue = newConfig.value;
 			}
@@ -32,11 +32,11 @@ define(
 			this.value = this.defValue;
 		};
 
-		LogicNodeInt.prototype.onConnected = function(instDesc) {
+		LogicNodeInt.prototype.onConnected = function (instDesc) {
 			LogicLayer.writeValue(instDesc, LogicNodeInt.outportInt, this.value);
 		};
 
-		LogicNodeInt.prototype.onEvent = function(instDesc, evt) {
+		LogicNodeInt.prototype.onEvent = function (instDesc, evt) {
 
 			if (evt === LogicNodeInt.ineventIncrease) {
 				this.value = this.value + 1;
@@ -49,11 +49,11 @@ define(
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInt.outportInt, this.value);
 		};
 
-		LogicNodeInt.prototype.onSystemStarted = function() {
+		LogicNodeInt.prototype.onSystemStarted = function () {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInt.outportInt, this.value);
 		};
 
-		LogicNodeInt.prototype.onSystemStopped = function() {};
+		LogicNodeInt.prototype.onSystemStopped = function () {};
 
 		LogicNodes.registerType("LogicNodeInt", LogicNodeInt);
 

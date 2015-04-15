@@ -27,33 +27,33 @@ define([
 		var minMaxArray = new Float32Array(5);
 
 		var triangleIndices = new Uint8Array([
-			0,3,4,
-			3,7,4,
-			0,4,5,
-			0,5,1,
-			2,1,5,
-			2,5,6,
-			3,2,6,
-			3,6,7,
-			0,1,2,
-			0,2,3,
-			5,4,6,
-			7,6,4
+			0, 3, 4,
+			3, 7, 4,
+			0, 4, 5,
+			0, 5, 1,
+			2, 1, 5,
+			2, 5, 6,
+			3, 2, 6,
+			3, 6, 7,
+			0, 1, 2,
+			0, 2, 3,
+			5, 4, 6,
+			7, 6, 4
 		]);
 
 		var edgeIndices = new Uint8Array([
-			0,1,
-			1,2,
-			2,3,
-			3,0,
-			4,5,
-			5,6,
-			6,7,
-			7,0,
-			0,4,
-			1,5,
-			2,6,
-			3,7
+			0, 1,
+			1, 2,
+			2, 3,
+			3, 0,
+			4, 5,
+			5, 6,
+			6, 7,
+			7, 0,
+			0, 4,
+			1, 5,
+			2, 6,
+			3, 7
 		]);
 		// For a box, the number of vertices are 8 and the number of visible triangles from a view are 6. 6*3 indices.
 		// homogeneous vertices gives 32 position values.
@@ -516,7 +516,7 @@ define([
 			}
 		};
 
-		BoundingBoxOcclusionChecker.prototype._screenSpaceTransformTriangleData = function() {
+		BoundingBoxOcclusionChecker.prototype._screenSpaceTransformTriangleData = function () {
 			// TODO : Transform only the positions going to be rendered.
 			var maxPos = triangleData.positions.length;
 			for (var i = 0; i < maxPos; i += 4) {

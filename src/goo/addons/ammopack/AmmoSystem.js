@@ -19,7 +19,7 @@ define([
 	 * @param {number} settings.maxSubSteps (defaults to 5)
 	 * @param {number} settings.stepFrequency (defaults to 60)
 	 * @example
-	 * var ammoSystem = new AmmoSystem({stepFrequency:60});
+	 * var ammoSystem = new AmmoSystem({stepFrequency: 60});
 	 * goo.world.setSystem(ammoSystem);
 	 */
 	function AmmoSystem(settings) {
@@ -41,7 +41,7 @@ define([
 
 	AmmoSystem.prototype = Object.create(System.prototype);
 
-	AmmoSystem.prototype.inserted = function(entity) {
+	AmmoSystem.prototype.inserted = function (entity) {
 		if (entity.ammoComponent) {
 			entity.ammoComponent.initialize(entity);
 			this.ammoWorld.addRigidBody( entity.ammoComponent.body);
@@ -50,18 +50,18 @@ define([
 		}
 	};
 
-	AmmoSystem.prototype.deleted = function(entity) {
+	AmmoSystem.prototype.deleted = function (entity) {
 		if (entity.ammoComponent) {
 			this.ammoWorld.removeRigidBody(entity.ammoComponent.body);
 		}
 	};
 
-	AmmoSystem.prototype.process = function(entities, tpf) {
+	AmmoSystem.prototype.process = function (entities, tpf) {
 		this.ammoWorld.stepSimulation( tpf, this.maxSubSteps, this.fixedTime);
 
 		for (var i = 0; i < entities.length; i++) {
 			var e = entities[i];
-			if( e.ammoComponent.mass > 0) {
+			if ( e.ammoComponent.mass > 0) {
 				e.ammoComponent.copyPhysicalTransformToVisual( e, tpf);
 			}
 		}

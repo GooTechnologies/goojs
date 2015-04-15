@@ -11,7 +11,7 @@ define([
 		this.updated = false;
 		this.keysPressed = {};
 
-		this.eventListener = function(event) {
+		this.eventListener = function (event) {
 			var keyname = WASDAction._keys[event.which];
 			if (keyname !== undefined) {
 				this.updated = true;
@@ -22,7 +22,7 @@ define([
 
 	WASDAction.prototype = Object.create(Action.prototype);
 
-	WASDAction.prototype.configure = function(settings) {
+	WASDAction.prototype.configure = function (settings) {
 		this.everyFrame = true;
 		this.targets = settings.transitions;
 	};
@@ -34,7 +34,7 @@ define([
 		68: 'd'
 	};
 
-	WASDAction.external = (function() {
+	WASDAction.external = (function () {
 		var transitions = [];
 		for (var keycode in WASDAction._keys) {
 			var keyname = WASDAction._keys[keycode];
@@ -56,11 +56,11 @@ define([
 		};
 	})();
 
-	WASDAction.prototype._setup = function() {
+	WASDAction.prototype._setup = function () {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	WASDAction.prototype._run = function(fsm) {
+	WASDAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			//var keyKeys = _.keys(WASDAction._keys); // unused
@@ -75,7 +75,7 @@ define([
 		}
 	};
 
-	WASDAction.prototype.exit = function() {
+	WASDAction.prototype.exit = function () {
 		document.removeEventListener('keydown', this.eventListener);
 	};
 

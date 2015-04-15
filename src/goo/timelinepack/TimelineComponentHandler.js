@@ -33,9 +33,9 @@ define([
 	TimelineComponentHandler.prototype.constructor = TimelineComponentHandler;
 	ComponentHandler._registerClass('timeline', TimelineComponentHandler);
 
-	TimelineComponentHandler.prototype._prepare = function(/*config*/) {};
+	TimelineComponentHandler.prototype._prepare = function (/*config*/) {};
 
-	TimelineComponentHandler.prototype._create = function() {
+	TimelineComponentHandler.prototype._create = function () {
 		return new TimelineComponent();
 	};
 
@@ -186,7 +186,7 @@ define([
 		}
 	}
 
-	TimelineComponentHandler.prototype.update = function(entity, config, options) {
+	TimelineComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }

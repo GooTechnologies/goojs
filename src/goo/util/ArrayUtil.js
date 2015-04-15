@@ -25,7 +25,7 @@ define([], function () {
 	 *
 	 * @returns Typed array
 	 */
-	ArrayUtil.getTypedArray = function(arrayBuffer, pointer) {
+	ArrayUtil.getTypedArray = function (arrayBuffer, pointer) {
 		var start = pointer[0];
 		var length = pointer[1];
 		var format = pointer[2];
@@ -47,7 +47,7 @@ define([], function () {
 		}
 	};
 
-	ArrayUtil.remove = function(array, value, equals) {
+	ArrayUtil.remove = function (array, value, equals) {
 		var idx = -1;
 		if (typeof equals === 'function') {
 			for (var i = 0; i < array.length; i++) {
@@ -71,7 +71,7 @@ define([], function () {
 	 * @param predicate
 	 * @returns {*}
 	 */
-	ArrayUtil.find = function(array, predicate) {
+	ArrayUtil.find = function (array, predicate) {
 		for (var i = 0; i < array.length; i++) {
 			if (predicate(array[i])) {
 				return array[i];

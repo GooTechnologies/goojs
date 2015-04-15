@@ -25,7 +25,7 @@ define([
 		transitions: []
 	};
 
-	SuspendFSMAction.prototype._run = function(/*fsm*/) {
+	SuspendFSMAction.prototype._run = function (/*fsm*/) {
 		if (this.entity && this.entity.stateMachineComponent) {
 			this.entity.stateMachineComponent.pause();
 		}

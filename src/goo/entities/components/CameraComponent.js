@@ -131,7 +131,7 @@ define([
 		return clone;
 	};
 
-	CameraComponent.applyOnEntity = function(obj, entity) {
+	CameraComponent.applyOnEntity = function (obj, entity) {
 		if (obj instanceof Camera) {
 			var cameraComponent = new CameraComponent(obj);
 			entity.setComponent(cameraComponent);

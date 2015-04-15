@@ -44,7 +44,7 @@ define([
 			normalMatrix: Shader.NORMAL_MATRIX,
 			cameraPosition: Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
-			offsetRepeat : [0,0,1,1],
+			offsetRepeat : [0, 0, 1, 1],
 			normalMap : Shader.NORMAL_MAP,
 			normalMultiplier: 1.0,
 			specularMap : Shader.SPECULAR_MAP,
@@ -774,7 +774,7 @@ define([
 			'vec2 imageCoord = vUv;',
 			'vec4 sum = vec4( 0.0 );',
 
-			// 'for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
+			// 'for ( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {',
 				// 'sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];',
 				// 'imageCoord += uImageIncrement * size;',
 			// '}',
@@ -787,7 +787,7 @@ define([
 			'gl_FragColor = sum;',
 		'}'
 		].join('\n'),
-		buildKernel : function(sigma) {
+		buildKernel : function (sigma) {
 			// We lop off the sqrt(2 * pi) * sigma term, since we're going to normalize anyway.
 			function gauss(x, sigma) {
 				return Math.exp(-(x * x) / (2.0 * sigma * sigma));
@@ -1090,7 +1090,7 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraFar : Shader.FAR_PLANE,
 			thickness: 0.0,
-			id : function(shaderInfo) {
+			id : function (shaderInfo) {
 				return shaderInfo.renderable._index != null ? shaderInfo.renderable._index + 1 : shaderInfo.renderable.id + 1;
 			}
 		},

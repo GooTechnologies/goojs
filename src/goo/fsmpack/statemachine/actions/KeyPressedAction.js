@@ -12,12 +12,12 @@ define([
 
 		this.everyFrame = true;
 		this.keyIsDown = false;
-		this.eventListenerDown = function(event) {
+		this.eventListenerDown = function (event) {
 			if (event.which === +this.key) {
 				this.keyIsDown = true;
 			}
 		}.bind(this);
-		this.eventListenerUp = function(event) {
+		this.eventListenerUp = function (event) {
 			if (event.which === +this.key) {
 				document.removeEventListener('keydown', this.eventListenerUp);
 				this.keyIsDown = false;
@@ -52,18 +52,18 @@ define([
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyPressedAction.prototype._setup = function() {
+	KeyPressedAction.prototype._setup = function () {
 		document.addEventListener('keydown', this.eventListenerDown);
 		document.addEventListener('keyup', this.eventListenerUp);
 	};
 
-	KeyPressedAction.prototype._run = function(fsm) {
+	KeyPressedAction.prototype._run = function (fsm) {
 		if (this.keyIsDown) {
 			fsm.send(this.transitions.keydown);
 		}
 	};
 
-	KeyPressedAction.prototype.exit = function() {
+	KeyPressedAction.prototype.exit = function () {
 		document.removeEventListener('keydown', this.eventListenerDown);
 	};
 

@@ -3,7 +3,7 @@ define([
     'goo/math/Vector3'
 	],
 
-	function(HeightMapBoundingScript,
+	function (HeightMapBoundingScript,
              Vector3) {
 		'use strict';
 
@@ -68,7 +68,7 @@ define([
 		 * @param {Array} [heightMatrix] file to load height data from
 		 * @param {Object} [dimensions] dimensions to fit the data within
 		 */
-		WorldFittedTerrainScript.prototype.addHeightData = function(heightMatrix, dimensions) {
+		WorldFittedTerrainScript.prototype.addHeightData = function (heightMatrix, dimensions) {
             var scriptContainer = registerHeightData(heightMatrix, dimensions, this.heightMapData);
 			this.heightMapData.push(scriptContainer);
             return scriptContainer;
@@ -80,7 +80,7 @@ define([
 		 * @returns {Object} container object with script and its world dimensions
 		 */
 
-		WorldFittedTerrainScript.prototype.getHeightDataForPosition = function(pos) {
+		WorldFittedTerrainScript.prototype.getHeightDataForPosition = function (pos) {
 			for (var i = 0; i < this.heightMapData.length; i++) {
 				var dim = this.heightMapData[i].dimensions;
 				if (pos[0] <= dim.maxX && pos[0] >= dim.minX) {
@@ -103,7 +103,7 @@ define([
          * @returns {Number}
          */
 
-		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function(axPos, axMin, axMax, quadCount) {
+		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function (axPos, axMin, axMax, quadCount) {
 			var matrixPos = axPos-axMin;
 			return quadCount*matrixPos/(axMax - axMin);
 		};
@@ -117,7 +117,7 @@ define([
 		 * @returns {Number}
 		 */
 
-		WorldFittedTerrainScript.prototype.returnToWorldDimensions = function(axPos, axMin, axMax, quadCount) {
+		WorldFittedTerrainScript.prototype.returnToWorldDimensions = function (axPos, axMin, axMax, quadCount) {
 			var quadSize = (axMax-axMin) / quadCount;
 			var insidePos = axPos * quadSize;
 			return axMin+insidePos;
@@ -129,7 +129,7 @@ define([
          * @returns {Number} height in units
          */
 
-        WorldFittedTerrainScript.prototype.getTerrainHeightAt = function(pos) {
+        WorldFittedTerrainScript.prototype.getTerrainHeightAt = function (pos) {
             var heightData = this.getHeightDataForPosition(pos);
             if (heightData === null) {
                 return null;
@@ -147,7 +147,7 @@ define([
 		 * @param {Array} [pos] the position as [x, y, z]
 		 * @returns {Vector3} the normal vector
 		 */
-		WorldFittedTerrainScript.prototype.getTerrainNormalAt = function(pos) {
+		WorldFittedTerrainScript.prototype.getTerrainNormalAt = function (pos) {
 			var heightData = this.getHeightDataForPosition(pos);
             if (!heightData) {
                 return null;

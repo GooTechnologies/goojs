@@ -32,7 +32,7 @@ define([
 			if (images instanceof Array) {
 				images = images[0];
 			}
-			if(images) {
+			if (images) {
 				texture = new TextureCreator().loadTexture2D(images);
 			}
 		} else if (type === Skybox.BOX) {
@@ -80,12 +80,12 @@ define([
 			'attribute vec3 vertexPosition;', //
 
 			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
+			'uniform mat4 projectionMatrix;', //
+			'uniform mat4 worldMatrix;', //
 			'uniform vec3 cameraPosition;', //
 			'uniform float near;',
 
-			'varying vec3 eyeVec;',//
+			'varying vec3 eyeVec;', //
 
 			'void main(void) {', //
 			'	vec4 worldPos = worldMatrix * vec4(vertexPosition * near * 10.0, 1.0);', //
@@ -97,19 +97,19 @@ define([
 			'}'//
 		].join('\n'),
 		fshader: [//
-			'precision mediump float;',//
+			'precision mediump float;', //
 
-			'uniform samplerCube diffuseMap;',//
+			'uniform samplerCube diffuseMap;', //
 
-			'varying vec3 eyeVec;',//
+			'varying vec3 eyeVec;', //
 
-			'void main(void)',//
-			'{',//
-			'	vec4 cube = textureCube(diffuseMap, eyeVec);',//
+			'void main(void)', //
+			'{', //
+			'	vec4 cube = textureCube(diffuseMap, eyeVec);', //
 			' if (cube.a < 0.05) discard;',
-			'	gl_FragColor = cube;',//
+			'	gl_FragColor = cube;', //
 
-			 //' gl_FragColor = vec4(1.0,0.0,0.0,1.0);',//
+			 //' gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);', //
 			'}'//
 		].join('\n')
 	};
@@ -131,13 +131,13 @@ define([
 			'attribute vec2 vertexUV0;',
 
 			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
+			'uniform mat4 projectionMatrix;', //
+			'uniform mat4 worldMatrix;', //
 			'uniform vec3 cameraPosition;', //
 			'uniform float near;',
 
 			'varying vec2 texCoord0;',
-			'varying vec3 eyeVec;',//
+			'varying vec3 eyeVec;', //
 
 			'void main(void) {', //
 			'	texCoord0 = vertexUV0;',

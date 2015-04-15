@@ -130,7 +130,7 @@ define([
 			if (dataB) {
 				rVal[key] = dataA.blend(dataB, blendWeight, rVal[key]);
 			} else {
-				if(!rVal[key]) {
+				if (!rVal[key]) {
 					rVal[key] = new dataA.constructor(dataA);
 				} else {
 					rVal[key].set(dataA);
@@ -163,7 +163,7 @@ define([
 		}
 	};
 
-	BinaryLERPSource.prototype.clone = function() {
+	BinaryLERPSource.prototype.clone = function () {
 		return new BinaryLERPSource (
 			this._sourceA,
 			this._sourceB,

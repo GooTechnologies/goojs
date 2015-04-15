@@ -24,9 +24,9 @@ define([
         }
 
         EdgeMap.prototype.addEdge = function (i1, i2, vec1, vec2) {
-            var key1 = this._indicesToKey(i1,i2);
+            var key1 = this._indicesToKey(i1, i2);
             if (!this._contains(key1)){
-                var key2 = this._indicesToKey(i2,i1);
+                var key2 = this._indicesToKey(i2, i1);
 
                 var edgeIndex = this._edgeCount;
 	            var edge = this._edges[edgeIndex];
@@ -52,7 +52,7 @@ define([
         };
 
         EdgeMap.prototype.getEdge = function (i1, i2) {
-            var index = this._indicesToKey(i1,i2);
+            var index = this._indicesToKey(i1, i2);
             var edgeIndex = this._map[index];
             return this._edges[edgeIndex];
         };

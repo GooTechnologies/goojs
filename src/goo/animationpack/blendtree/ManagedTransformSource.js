@@ -111,7 +111,7 @@ define([
 	 * @param {string[]} jointIndices the indices of the joints to initialize data for.
 	 */
 	ManagedTransformSource.prototype.initFromClip = function (clip, filter, channelNames) {
-		if(filter === 'Include' && channelNames && channelNames.length) {
+		if (filter === 'Include' && channelNames && channelNames.length) {
 			for ( var i = 0, max = channelNames.length; i < max; i++) {
 				var channelName = channelNames[i];
 				var channel = clip.findChannelByName(channelName);
@@ -126,7 +126,7 @@ define([
 			for ( var i = 0, max = clip._channels.length; i < max; i++) {
 				var channel = clip._channels[i];
 				var channelName = channel._channelName;
-				if(filter === 'Exclude'
+				if (filter === 'Exclude'
 					&& channelNames
 					&& channelNames.length
 					&& channelNames.indexOf(channelName) > -1) {

@@ -152,7 +152,7 @@ define([
 		this.vertexCounter += meshData.vertexCount;
 		this.indexCounter += meshData.indexCount;
 
-		if(meshData.indexLengths) {
+		if (meshData.indexLengths) {
 			this.indexLengths = this.indexLengths.concat(meshData.indexLengths);
 		} else {
 			this.indexLengths = this.indexLengths.concat(meshData.getIndexBuffer().length);

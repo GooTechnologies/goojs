@@ -192,7 +192,7 @@ function () {
 				var name = ["webkitCurrentFullScreenElement", "webkitFullscreenElement", "mozFullScreenElement"];
 
 				var getNameInDocument = function (i) {
-					return function() {
+					return function () {
 						return document[name[i]];
 					};
 				};

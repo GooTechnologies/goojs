@@ -13,7 +13,7 @@ define([
 
 	NumberCompareAction.prototype = Object.create(Action.prototype);
 
-	NumberCompareAction.prototype.configure = function(settings) {
+	NumberCompareAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;
 		this.leftHand = settings.leftHand || 0;
 		this.rightHand = settings.rightHand || 0;
@@ -56,7 +56,7 @@ define([
 		}]
 	};
 
-	NumberCompareAction.prototype._run = function(fsm) {
+	NumberCompareAction.prototype._run = function (fsm) {
 		var leftHand = FSMUtil.getValue(this.leftHand, fsm);
 		var rightHand = FSMUtil.getValue(this.rightHand, fsm);
 		var diff = rightHand - leftHand;

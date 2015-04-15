@@ -39,13 +39,13 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated entity or null if removed
 	 */
-	SkeletonHandler.prototype._update = function(ref, config/*, options*/) {
+	SkeletonHandler.prototype._update = function (ref, config/*, options*/) {
 		if (!this._objects.has(ref)) {
 			if (!config) {
 				return PromiseUtil.resolve();
 			}
 			var joints = [];
-			_.forEach(config.joints, function(jointConfig) {
+			_.forEach(config.joints, function (jointConfig) {
 				var joint = new Joint(jointConfig.name);
 				joint._index = jointConfig.index;
 				joint._parentIndex = jointConfig.parentIndex;

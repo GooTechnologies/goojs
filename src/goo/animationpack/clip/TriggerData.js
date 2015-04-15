@@ -25,7 +25,7 @@ function () {
 		} else if (index !== this._currentIndex) {
 			this._currentTriggers.length = 0;
 			for ( var i = 0, max = triggers.length; i < max; i++) {
-				if(triggers[i] && triggers[i] !== '') {
+				if (triggers[i] && triggers[i] !== '') {
 					this._currentTriggers.push(triggers[i]);
 				}
 			}

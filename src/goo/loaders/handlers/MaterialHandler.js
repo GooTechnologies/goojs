@@ -110,9 +110,9 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated material or null if removed
 	 */
-	MaterialHandler.prototype._update = function(ref, config, options) {
+	MaterialHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(material) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (material) {
 			if (!material) { return; }
 			var promises = [];
 			// Material settings
@@ -157,9 +157,9 @@ define([
 				var shaderName = shaderRef.slice(MaterialHandler.ENGINE_SHADER_PREFIX.length);
 				material.shader = Material.createShader(ShaderLib[shaderName]);
 			} else {
-				var p = that._load(shaderRef, options).then(function(shader) {
+				var p = that._load(shaderRef, options).then(function (shader) {
 					material.shader = shader;
-				}).then(null, function(err) {
+				}).then(null, function (err) {
 					throw new Error('Error loading shader: ' + err);
 				});
 				promises.push(p);
@@ -167,16 +167,16 @@ define([
 
 			// Textures
 			function addTexture(type, ref, options) {
-				return that._load(ref, options).then(function(texture) {
+				return that._load(ref, options).then(function (texture) {
 					material.setTexture(type, texture);
-				}).then(null, function(err) {
+				}).then(null, function (err) {
 					throw new Error('Error loading texture: ' + ref + ' - ' + err);
 				});
 			}
 			var textureRef;
 			for (var type in config.texturesMapping) {
 				textureRef = config.texturesMapping[type];
-				if(!textureRef || !textureRef.textureRef || textureRef.enabled === false) {
+				if (!textureRef || !textureRef.textureRef || textureRef.enabled === false) {
 					material.removeTexture(type);
 				} else {
 					promises.push(addTexture(type, textureRef.textureRef, options));
@@ -187,7 +187,7 @@ define([
 					material.removeTexture(type);
 				}
 			}
-			return RSVP.all(promises).then(function() {
+			return RSVP.all(promises).then(function () {
 				return material;
 			});
 		});

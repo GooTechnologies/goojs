@@ -3,7 +3,7 @@ define([
 	'goo/addons/gamepadpack/GamepadData'
 ],
 
-	function(
+	function (
 	System,
 	GamepadData
 	) {
@@ -32,16 +32,16 @@ define([
 			this.updateGamepads = function () {};
 
 			var that = this;
-			window.addEventListener('gamepadconnected', function(e) {
+			window.addEventListener('gamepadconnected', function (e) {
 					that.mozGamepadHandler(e, true);
 			}, false);
-			window.addEventListener('gamepaddisconnected', function(e) {
+			window.addEventListener('gamepaddisconnected', function (e) {
 					that.mozGamepadHandler(e, false);
 			}, false);
 		}
 	}
 
-	GamepadSystem.prototype.checkGamepadMapping = function(gamepad) {
+	GamepadSystem.prototype.checkGamepadMapping = function (gamepad) {
 		if (!gamepad.mapping) {
 			console.warn('No mapping set on gamepad #' + gamepad.index);
 		} else if (gamepad.mapping !== 'standard') {
@@ -52,7 +52,7 @@ define([
 	GamepadSystem.prototype = Object.create(System.prototype);
 	GamepadSystem.prototype.constructor = GamepadSystem;
 
-	GamepadSystem.prototype.mozGamepadHandler = function(event, connecting) {
+	GamepadSystem.prototype.mozGamepadHandler = function (event, connecting) {
 		var gamepad = event.gamepad;
 		if (connecting) {
 			this.gamepads[gamepad.index] = gamepad;
@@ -62,7 +62,7 @@ define([
 		}
 	};
 
-	GamepadSystem.prototype.chromeGamepadUpdate = function() {
+	GamepadSystem.prototype.chromeGamepadUpdate = function () {
 
 		var updatedGamepads = navigator.webkitGetGamepads();
 		var numOfGamePads = updatedGamepads.length;
@@ -75,7 +75,7 @@ define([
 	};
 
 
-	GamepadSystem.prototype.updateGamepadData = function() {
+	GamepadSystem.prototype.updateGamepadData = function () {
 
 		this.updateGamepads();
 
@@ -89,7 +89,7 @@ define([
 	};
 
 
-	GamepadSystem.prototype.resetGamepadData = function() {
+	GamepadSystem.prototype.resetGamepadData = function () {
 		var numOfGamePads = this.gamepads.length;
 		for (var i = 0; i < numOfGamePads; i++) {
 			var gamepad = this.gamepads[i];
@@ -100,7 +100,7 @@ define([
 	};
 
 
-	GamepadSystem.prototype.process = function(entities) {
+	GamepadSystem.prototype.process = function (entities) {
 
 		this.updateGamepadData();
 

@@ -5,7 +5,7 @@ define([
 	'goo/math/MathUtils'
 ],
 
-	function(
+	function (
 	Action,
 	Quaternion,
 	Matrix3,
@@ -68,7 +68,7 @@ define([
 		}]
 	};
 
-	TweenRotationAction.prototype.configure = function(settings) {
+	TweenRotationAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
@@ -80,7 +80,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenRotationAction.prototype._setup = function() {
+	TweenRotationAction.prototype._setup = function () {
 		this.tween = new window.TWEEN.Tween();
 	};
 
@@ -90,7 +90,7 @@ define([
 		}
 	};
 
-	TweenRotationAction.prototype._run = function(fsm) {
+	TweenRotationAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var rotation = transformComponent.transform.rotation;
@@ -104,11 +104,11 @@ define([
 			Quaternion.mul(initialRotation, finalRotation, finalRotation);
 		}
 
-		this.tween.from({ t: 0 }).to({ t: 1 }, +this.time).easing(this.easing).onUpdate(function() {
+		this.tween.from({ t: 0 }).to({ t: 1 }, +this.time).easing(this.easing).onUpdate(function () {
 			Quaternion.slerp(initialRotation, finalRotation, this.t, workQuaternion);
 			rotation.copyQuaternion(workQuaternion);
 			transformComponent.setUpdated();
-		}).onComplete(function() {
+		}).onComplete(function () {
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start(time);
 	};

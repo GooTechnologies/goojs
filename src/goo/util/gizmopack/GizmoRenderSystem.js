@@ -87,7 +87,7 @@ define([
 				mousePos[1] = y / (this.viewportHeight / this._devicePixelRatio) / (camera._frustumTop  - camera._frustumBottom);
 			}
 
-			console.log(mousePos[0],mousePos[1])
+			console.log(mousePos[0], mousePos[1])
 			*/
 
 			this.activeGizmo.update(mousePos);

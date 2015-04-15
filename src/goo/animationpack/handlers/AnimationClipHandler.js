@@ -41,7 +41,7 @@ define([
 	 * @returns {AnimationClip}
 	 * @private
 	 */
-	AnimationClipHandler.prototype._create = function() {
+	AnimationClipHandler.prototype._create = function () {
 		return new AnimationClip();
 	};
 
@@ -52,11 +52,11 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated animation clip or null if removed
 	 */
-	AnimationClipHandler.prototype._update = function(ref, config, options) {
+	AnimationClipHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(clip) {
-			if(!clip) { return clip; }
-			return that.loadObject(config.binaryRef, options).then(function(bindata) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (clip) {
+			if (!clip) { return clip; }
+			return that.loadObject(config.binaryRef, options).then(function (bindata) {
 				if (!bindata) {
 					throw new Error("Binary clip data was empty");
 				}
@@ -73,7 +73,7 @@ define([
 	 * @param {AnimationClip} clip
 	 * @private
 	 */
-	AnimationClipHandler.prototype._updateAnimationClip = function(clipConfig, bindata, clip) {
+	AnimationClipHandler.prototype._updateAnimationClip = function (clipConfig, bindata, clip) {
 		clip._channels = [];
 
 		if (clipConfig.channels) {

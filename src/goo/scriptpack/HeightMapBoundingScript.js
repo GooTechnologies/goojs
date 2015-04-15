@@ -19,18 +19,18 @@ define([
 	 * Gets the terrain matrix data
 	 * @returns {Array} the height data matrix
 	 */
-	HeightMapBoundingScript.prototype.getMatrixData = function() {
+	HeightMapBoundingScript.prototype.getMatrixData = function () {
 		return this.matrixData;
 	};
 
 	// get a height at point from matrix
-	HeightMapBoundingScript.prototype.getPointInMatrix = function(x, y) {
+	HeightMapBoundingScript.prototype.getPointInMatrix = function (x, y) {
 		return this.matrixData[x][y];
 	};
 
 	// get the value at the precise integer (x, y) coordinates
-	HeightMapBoundingScript.prototype.getAt = function(x, y) {
-		if(x < 0 || x > this.width || y < 0 || y > this.width) {
+	HeightMapBoundingScript.prototype.getAt = function (x, y) {
+		if (x < 0 || x > this.width || y < 0 || y > this.width) {
 			return 0;
 		}
 		else {
@@ -39,7 +39,7 @@ define([
 	};
 
 	// get the interpolated value
-	HeightMapBoundingScript.prototype.getInterpolated = function(x, y) {
+	HeightMapBoundingScript.prototype.getInterpolated = function (x, y) {
 		var valueLeftUp = this.getAt(Math.ceil(x), Math.ceil(y));
 		var valueLeftDown = this.getAt(Math.ceil(x), Math.floor(y));
 		var valueRightUp = this.getAt(Math.floor(x), Math.ceil(y));
@@ -57,7 +57,7 @@ define([
 	};
 
 
-	HeightMapBoundingScript.prototype.getTriangleAt = function(x, y) {
+	HeightMapBoundingScript.prototype.getTriangleAt = function (x, y) {
 		var xc = Math.ceil(x);
 		var xf = Math.floor(x);
 		var yc = Math.ceil(y);
@@ -80,13 +80,13 @@ define([
 	};
 
 	// get the exact height of the triangle at point
-	HeightMapBoundingScript.prototype.getPreciseHeight = function(x, y) {
+	HeightMapBoundingScript.prototype.getPreciseHeight = function (x, y) {
 		var tri = this.getTriangleAt(x, y);
 		var find = MathUtils.barycentricInterpolation(tri[0], tri[1], tri[2], {x:x, y:y, z:0});
 		return find.z;
 	};
 
-	HeightMapBoundingScript.prototype.run = function(entity) {
+	HeightMapBoundingScript.prototype.run = function (entity) {
 		var translation = entity.transformComponent.transform.translation;
 		translation.y = this.getInterpolated(translation.z, translation.x);
 	};

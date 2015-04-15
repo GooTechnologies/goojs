@@ -25,17 +25,17 @@ define([
 	 * Sets event listeners on the REPL
 	 * @private
 	 */
-	Debugger.prototype._setUpREPL = function() {
+	Debugger.prototype._setUpREPL = function () {
 		var lastCommStr = '';
 
 		// repl keypresses
-		document.getElementById('replintex').addEventListener('keyup', function(event) {
+		document.getElementById('replintex').addEventListener('keyup', function (event) {
 			/* jshint evil: true */
 			//event.preventDefault();
 			event.stopPropagation();
 			var replinElemHandle = document.getElementById('replintex');
 			var reploutElemHandle = document.getElementById('replouttex');
-			if(event.keyCode === 13 && !event.shiftKey) {
+			if (event.keyCode === 13 && !event.shiftKey) {
 				var commStr = replinElemHandle.value.substr(0, replinElemHandle.value.length - 1);
 				lastCommStr = commStr;
 
@@ -56,7 +56,7 @@ define([
 				reploutElemHandle.value += '\n-------\n' + resultStr;
 
 				displayInfo(this.picked);
-			} else if(event.keyCode === 38) {
+			} else if (event.keyCode === 38) {
 				replinElemHandle.value = lastCommStr;
 			}
 		}.bind(this), false);
@@ -66,24 +66,24 @@ define([
 	 * Sets up the picking system
 	 * @private
 	 */
-	Debugger.prototype._setUpPicking = function() {
+	Debugger.prototype._setUpPicking = function () {
 		// picking entities
-		document.addEventListener('mouseup', function(event) {
+		document.addEventListener('mouseup', function (event) {
 			//event.preventDefault();
 			event.stopPropagation();
 
 			var mouseDownX = event.pageX;
 			var mouseDownY = event.pageY;
 
-			this.goo.pick(mouseDownX, mouseDownY, function(id) {
+			this.goo.pick(mouseDownX, mouseDownY, function (id) {
 				var entity = this.goo.world.entityManager.getEntityByIndex(id);
-				if(entity) {
+				if (entity) {
 					this.oldPicked = this.picked;
 					this.picked = entity;
 
-					if(this.picked === this.oldPicked) { this.picked = null; }
+					if (this.picked === this.oldPicked) { this.picked = null; }
 
-					if(this.exportPicked) { window.picked = this.picked; }
+					if (this.exportPicked) { window.picked = this.picked; }
 					displayInfo(this.picked);
 					updateMarker(this.picked, this.oldPicked);
 				}
@@ -97,20 +97,20 @@ define([
 	 * @param {GooRunner} goo A GooRunner reference
 	 * @returns {Debugger} Self to allow chaining
 	 */
-	Debugger.prototype.inject = function(goo) {
+	Debugger.prototype.inject = function (goo) {
 		this.goo = goo;
 
 		createPanel();
 
 		// adding marker system if there is none
-		if(!this.goo.world.getSystem('MarkerSystem')) {
+		if (!this.goo.world.getSystem('MarkerSystem')) {
 			this.goo.world.setSystem(new MarkerSystem(this.goo));
 		}
 
 		this._setUpPicking();
 
 		// setting up onchange for debug parameter filters
-		document.getElementById('debugparams').addEventListener('keyup', function() {
+		document.getElementById('debugparams').addEventListener('keyup', function () {
 			displayInfo(this.picked);
 		}.bind(this));
 
@@ -166,18 +166,18 @@ define([
 	 * @returns {Array}
 	 */
 	function getFilterList(str) {
-		return str.split(',').map(function(entry) {
+		return str.split(',').map(function (entry) {
 				return entry.replace(/(^[\s]+|[\s]+$)/g, '');
-			}).filter(function(entry) {
+			}).filter(function (entry) {
 				return entry.length > 0;
-			}).map(function(entry) {
+			}).map(function (entry) {
 				return new RegExp(entry);
 			});
 	}
 
-	// JSON.stringy handles typed arrays as objects ("0":0,"1":0,"2":0,"3":0 ... )
+	// JSON.stringy handles typed arrays as objects ("0": 0, "1": 0, "2": 0, "3": 0 ... )
 	function stringifyTypedArray(typedArray) {
-		if(typedArray.length === 0) { return '[]'; }
+		if (typedArray.length === 0) { return '[]'; }
 
 		var ret = '[' + typedArray[0];
 		for (var i = 1; i < typedArray.length; i++) {
@@ -196,20 +196,20 @@ define([
 	 * @returns {string}
 	 */
 	function filterProperties(obj, interests, ident, recursionDeph) {
-		if(interests.length === 0) {
+		if (interests.length === 0) {
 			return 'No interests specified;\n\n' +
 				'Some popular interests: is, tran, Compo\n\n' +
 				'Every entry separated by a comma is a regex';
 		}
 
-		if(recursionDeph < 0) { return ident + 'REACHED MAXIMUM DEPH\n'; }
+		if (recursionDeph < 0) { return ident + 'REACHED MAXIMUM DEPH\n'; }
 
 		// null
-		if(obj === null) { return ident + 'null\n'; }
+		if (obj === null) { return ident + 'null\n'; }
 
 		// 'primitive' types and arrays or primitive types
 		var typeOfObj = typeof obj;
-		if(typeOfObj === 'undefined' ||
+		if (typeOfObj === 'undefined' ||
 			typeOfObj === 'number' ||
 			typeOfObj === 'boolean' ||
 			typeOfObj === 'string' ||
@@ -218,7 +218,7 @@ define([
 		}
 
 		// typed arrays
-		if(Object.prototype.toString.call(obj).indexOf('Array]') !== -1) {
+		if (Object.prototype.toString.call(obj).indexOf('Array]') !== -1) {
 			return ident + stringifyTypedArray(obj) + '\n';
 		}
 		// generic objects
@@ -226,14 +226,14 @@ define([
 			var retArr = [];
 			// go through all the properties of a function
 			for (var prop in obj) {
-				if(obj.hasOwnProperty(prop)) {
+				if (obj.hasOwnProperty(prop)) {
 
 					// skip if function
-					if(typeof obj[prop] === 'function') { continue; }
+					if (typeof obj[prop] === 'function') { continue; }
 
 					// explore further if it matches with at least one interest
 					for (var i in interests) {
-						if(interests[i].test(prop)) {
+						if (interests[i].test(prop)) {
 							var filterStr = filterProperties(obj[prop], interests, ident + ' ', recursionDeph - 1);
 							retArr.push(ident + prop + '\n' + filterStr);
 							break;
@@ -253,16 +253,16 @@ define([
 	 * @param oldPicked
 	 */
 	function updateMarker(picked, oldPicked) {
-		if(picked !== oldPicked) {
-			if(oldPicked !== null && oldPicked.hasComponent('MarkerComponent')) {
+		if (picked !== oldPicked) {
+			if (oldPicked !== null && oldPicked.hasComponent('MarkerComponent')) {
 				oldPicked.clearComponent('MarkerComponent');
 			}
-			if(picked !== null) {
+			if (picked !== null) {
 				picked.setComponent(new MarkerComponent(picked));
 			}
 		}
 		else {
-			if(picked.hasComponent('MarkerComponent')) {
+			if (picked.hasComponent('MarkerComponent')) {
 				picked.clearComponent('MarkerComponent');
 			} else {
 				picked.setComponent(new MarkerComponent(picked));
@@ -279,7 +279,7 @@ define([
 	function displayInfo(entity) {
 		var filterList = getFilterList(document.getElementById('debugparams').value);
 
-		if(entity) { console.log('==> ', entity); }
+		if (entity) { console.log('==> ', entity); }
 
 		var entityStr = filterProperties(entity, filterList, '', 20);
 

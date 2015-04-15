@@ -47,14 +47,14 @@ define(['goo/loaders/handlers/ComponentHandler',
 	LogicComponentHandler.prototype.constructor = LogicComponentHandler;
 	ComponentHandler._registerClass('logic', LogicComponentHandler);
 
-	LogicComponentHandler.prototype._create = function(entity, config) {
+	LogicComponentHandler.prototype._create = function (entity, config) {
 		var c = new LogicComponent(entity);
 		c.configure(config);
 		entity.setComponent(c);
 		return c;
 	};
 
-	LogicComponentHandler.prototype.update = function(entity, config) {
+	LogicComponentHandler.prototype.update = function (entity, config) {
 		var component = ComponentHandler.prototype.update.call(this, entity, config);
 		component.configure(config);
 		return PromiseUtil.resolve(component);

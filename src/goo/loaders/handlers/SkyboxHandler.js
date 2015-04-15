@@ -7,7 +7,7 @@ define([
 	'goo/util/rsvp',
 	'goo/util/PromiseUtil',
 	'goo/entities/SystemBus'
-], function(
+], function (
 	ConfigHandler,
 	EnvironmentHandler,
 	Texture,
@@ -55,7 +55,7 @@ define([
 	SkyboxHandler.prototype.constructor = SkyboxHandler;
 	ConfigHandler._registerClass('skybox', SkyboxHandler);
 
-	SkyboxHandler.prototype._remove = function(ref) {
+	SkyboxHandler.prototype._remove = function (ref) {
 		this._objects.delete(ref);
 
 		// We can only remove the skybox if it is the one that is currently
@@ -72,16 +72,16 @@ define([
 		}
 	};
 
-	SkyboxHandler.prototype._create = function() {
+	SkyboxHandler.prototype._create = function () {
 		return {
 			textures: [],
 			enabled: false
 		};
 	};
 
-	SkyboxHandler.prototype._update = function(ref, config, options) {
+	SkyboxHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(skybox) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (skybox) {
 			if (!skybox) {
 				return PromiseUtil.resolve([]);
 			}
@@ -104,11 +104,11 @@ define([
 		});
 	};
 
-	SkyboxHandler.prototype._updateSphere = function(ref, config, options, skybox) {
+	SkyboxHandler.prototype._updateSphere = function (ref, config, options, skybox) {
 		var that = this;
 
 		if (config.sphereRef) {
-			return this._load(config.sphereRef, options).then(function(texture) {
+			return this._load(config.sphereRef, options).then(function (texture) {
 				if (!texture || !texture.image) {
 					SystemBus.emit('goo.error.skybox', {
 						type: 'Sphere',
@@ -152,22 +152,22 @@ define([
 	}
 
 
-	SkyboxHandler.prototype._updateBox = function(ref, config, options, skybox) {
+	SkyboxHandler.prototype._updateBox = function (ref, config, options, skybox) {
 		var that = this;
 
-		var promises = sides.map(function(side) {
+		var promises = sides.map(function (side) {
 			return config[side] ? that._load(config[side], options) : PromiseUtil.resolve();
 		});
 
 		// Load all textures
-		return RSVP.all(promises).then(function(textures) {
+		return RSVP.all(promises).then(function (textures) {
 
 			// Check if skybox is the same
 			if (isEqual(textures, skybox.textures) && that._activeSkyShape === that._skybox) {
 				return that._skybox;
 			}
 
-			var images = textures.map(function(texture) { return texture ? texture.image : null; });
+			var images = textures.map(function (texture) { return texture ? texture.image : null; });
 
 			// If no textures were found, clear skybox and return
 			if (images.filter(Boolean).length === 0) {
@@ -204,7 +204,7 @@ define([
 		});
 	};
 
-	SkyboxHandler.prototype._hide = function(skyshape) {
+	SkyboxHandler.prototype._hide = function (skyshape) {
 		var renderSystem = this.world.getSystem('RenderSystem');
 		renderSystem.removed(skyshape);
 		if (skyshape === this._skybox) {
@@ -214,7 +214,7 @@ define([
 		}
 	};
 
-	SkyboxHandler.prototype._show = function(skyshape) {
+	SkyboxHandler.prototype._show = function (skyshape) {
 		var renderSystem = this.world.getSystem('RenderSystem');
 		if (this._activeSkyshape) {
 			renderSystem.removed(this._activeSkyshape);

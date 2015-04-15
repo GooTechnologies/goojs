@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -23,11 +23,11 @@ define(
 		LogicNodeDebug.prototype = Object.create(LogicNode.prototype);
 		LogicNodeDebug.editorName = "Debug";
 
-		LogicNodeDebug.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeDebug.prototype.onInputChanged = function (instDesc, portID, value) {
 			console.log("LogicNodeDebug (" + this.logicInstance.name + ") value port " + portID + " = [" + value + "]");
 		};
 
-		LogicNodeDebug.prototype.onEvent = function(instDesc, portID) {
+		LogicNodeDebug.prototype.onEvent = function (instDesc, portID) {
 			console.log("LogicNodeDebug (" + this.logicInstance.name + ") event on port " + portID);
 		};
 

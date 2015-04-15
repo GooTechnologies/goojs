@@ -16,17 +16,17 @@ define(['goo/entities/systems/System'],
 		MovementSystem.prototype = Object.create(System.prototype);
 		MovementSystem.prototype.constructor = MovementSystem;
 
-		MovementSystem.prototype.addVelocityToTransform = function(vel, transform, tpf) {
+		MovementSystem.prototype.addVelocityToTransform = function (vel, transform, tpf) {
 			transform.translation.addDirect(vel.x*tpf, vel.y*tpf, vel.z*tpf);
 		};
 
-		MovementSystem.prototype.addRotToTransform = function(rotVel, transform, tpf) {
+		MovementSystem.prototype.addRotToTransform = function (rotVel, transform, tpf) {
 			transform.rotation.rotateX(rotVel.x*tpf);
 			transform.rotation.rotateY(rotVel.y*tpf);
 			transform.rotation.rotateZ(rotVel.z*tpf);
 		};
 
-		MovementSystem.prototype.applyMovementToEntity = function(entity) {
+		MovementSystem.prototype.applyMovementToEntity = function (entity) {
 			var tpf = entity._world.tpf;
 			var rotVel = entity.movementComponent.getRotationVelocity();
 			var velocity = entity.movementComponent.getVelocity();

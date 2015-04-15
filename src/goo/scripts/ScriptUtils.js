@@ -63,7 +63,7 @@ define([
 		if (!(specs instanceof Array)) { return; }
 
 		function getNameFromKey(key) {
-			if(typeof key !== 'string' || key.length === 0) { return ''; }
+			if (typeof key !== 'string' || key.length === 0) { return ''; }
 			var capitalisedKey = key[0].toUpperCase() + key.slice(1);
 			return capitalisedKey.replace(/(.)([A-Z])/g, '$1 $2');
 		}
@@ -204,7 +204,7 @@ define([
 		'Backslash': 220
 	};
 
-	ScriptUtils._keyInverse = (function(assoc) {
+	ScriptUtils._keyInverse = (function (assoc) {
 		var inverseAssoc = {};
 
 		var keys = Object.keys(assoc);
@@ -214,7 +214,7 @@ define([
 		return inverseAssoc;
 	}(ScriptUtils._keys));
 
-	ScriptUtils.keyForCode = function(code) {
+	ScriptUtils.keyForCode = function (code) {
 		return ScriptUtils._keyInverse[code];
 	};
 

@@ -58,7 +58,7 @@ define([
 		return meshData;
 	}
 
-	BoundingVolumeMeshBuilder.buildBox = function(boundingBox) {
+	BoundingVolumeMeshBuilder.buildBox = function (boundingBox) {
 		var boxMeshData = buildBox(boundingBox.xExtent, boundingBox.yExtent, boundingBox.zExtent);
 		// translate vertices to center
 		return boxMeshData;
@@ -72,7 +72,7 @@ define([
 		var indices = [];
 
 		var ak = Math.PI * 2 / nSegments;
-		for(var i = 0, k = 0; i < nSegments; i++, k += ak) {
+		for (var i = 0, k = 0; i < nSegments; i++, k += ak) {
 			verts.push(Math.cos(k) * radius, Math.sin(k) * radius, 0);
 			indices.push(i, i + 1);
 		}
@@ -114,13 +114,13 @@ define([
 		return meshDatas[0];
 	}
 
-	BoundingVolumeMeshBuilder.buildSphere = function(boundingSphere) {
+	BoundingVolumeMeshBuilder.buildSphere = function (boundingSphere) {
 		var sphereMeshData = buildSphere(boundingSphere.radius);
 		// translate vertices to center
 		return sphereMeshData;
 	};
 
-	BoundingVolumeMeshBuilder.build = function(boundingVolume) {
+	BoundingVolumeMeshBuilder.build = function (boundingVolume) {
 		if (boundingVolume instanceof BoundingBox) {
 			return BoundingVolumeMeshBuilder.buildBox(boundingVolume);
 		} else if (boundingVolume instanceof BoundingSphere) {

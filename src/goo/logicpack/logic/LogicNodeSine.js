@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -23,7 +23,7 @@ define(
 		LogicNodeSine.prototype = Object.create(LogicNode.prototype);
 		LogicNodeSine.editorName = "Sine";
 
-		LogicNodeSine.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeSine.prototype.onInputChanged = function (instDesc, portID, value) {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeSine.outportSin, Math.sin(value));
 			LogicLayer.writeValue(this.logicInstance, LogicNodeSine.outportCos, Math.cos(value));
 		};

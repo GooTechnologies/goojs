@@ -13,7 +13,7 @@ define([
 
 	MultiplyVariableAction.prototype = Object.create(Action.prototype);
 
-	MultiplyVariableAction.prototype.configure = function(settings) {
+	MultiplyVariableAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 1;
@@ -38,8 +38,8 @@ define([
 		transitions: []
 	};
 
-	MultiplyVariableAction.prototype._run = function(fsm) {
-		fsm.applyOnVariable(this.variable, function(v) {
+	MultiplyVariableAction.prototype._run = function (fsm) {
+		fsm.applyOnVariable(this.variable, function (v) {
 			return v * FSMUtil.getValue(this.amount, fsm);
 		}.bind(this));
 	};

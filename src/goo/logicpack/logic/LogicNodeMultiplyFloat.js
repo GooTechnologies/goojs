@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -23,13 +23,13 @@ define(
 		LogicNodeMultiplyFloat.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMultiplyFloat.editorName = "MultiplyFloat";
 
-		LogicNodeMultiplyFloat.prototype.onConfigure = function(newConfig) {
+		LogicNodeMultiplyFloat.prototype.onConfigure = function (newConfig) {
 			if (newConfig.value !== undefined) {
 				this.value = newConfig.value;
 			}
 		};
 
-		LogicNodeMultiplyFloat.prototype.onInputChanged = function(instDesc) {
+		LogicNodeMultiplyFloat.prototype.onInputChanged = function (instDesc) {
 			var x = LogicLayer.readPort(instDesc, LogicNodeMultiplyFloat.inportX);
 			var y = this.value;
 			LogicLayer.writeValue(instDesc, LogicNodeMultiplyFloat.outportProduct, x * y);

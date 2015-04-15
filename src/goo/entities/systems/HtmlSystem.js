@@ -102,7 +102,7 @@ define([
 		}
 	};
 
-	HtmlSystem.prototype.deleted = function(entity) {
+	HtmlSystem.prototype.deleted = function (entity) {
 		if (!entity || !entity.htmlComponent) {
 			return;
 		}

@@ -3,7 +3,7 @@ define([
 	'goo/math/Vector3'
 ],
 
-	function(
+	function (
 	Action,
 	Vector3
 	) {
@@ -63,7 +63,7 @@ define([
 		}]
 	};
 
-	TweenScaleAction.prototype.configure = function(settings) {
+	TweenScaleAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
@@ -75,7 +75,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenScaleAction.prototype._setup = function() {
+	TweenScaleAction.prototype._setup = function () {
 		this.tween = new window.TWEEN.Tween();
 	};
 
@@ -85,7 +85,7 @@ define([
 		}
 	};
 
-	TweenScaleAction.prototype._run = function(fsm) {
+	TweenScaleAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var scale = transformComponent.transform.scale;
@@ -99,19 +99,19 @@ define([
 			var to = Vector3.fromArray(this.to).add(initialScale);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
 				scale.setDirect(this.x, this.y, this.z);
 				transformComponent.setUpdated();
-			}).onComplete(function() {
+			}).onComplete(function () {
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
 		} else {
 			fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
 				scale.setDirect(this.x, this.y, this.z);
 				transformComponent.setUpdated();
-			}).onComplete(function() {
+			}).onComplete(function () {
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
 		}

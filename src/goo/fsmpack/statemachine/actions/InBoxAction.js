@@ -53,7 +53,7 @@ define([
 	function checkInside(pos, pt1, pt2) {
 		var inside = false;
 
-		var inOnAxis = function(pos, pt1, pt2) {
+		var inOnAxis = function (pos, pt1, pt2) {
 			if (pt1 > pt2) {
 				if (pos < pt1 && pos > pt2) {
 					return true;
@@ -81,7 +81,7 @@ define([
 		return inside;
 	}
 
-	InBoxAction.prototype._run = function(fsm) {
+	InBoxAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var translation = entity.transformComponent.worldTransform.translation;
 

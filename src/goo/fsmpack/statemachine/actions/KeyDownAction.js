@@ -12,7 +12,7 @@ define([
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(event) {
+		this.eventListener = function (event) {
 			if (this.key) {
 				if (event.which === +this.key) {
 					this.updated = true;
@@ -49,18 +49,18 @@ define([
 		this.transitions = { keydown: settings.transitions.keydown };
 	};
 
-	KeyDownAction.prototype._setup = function() {
+	KeyDownAction.prototype._setup = function () {
 		document.addEventListener('keydown', this.eventListener);
 	};
 
-	KeyDownAction.prototype._run = function(fsm) {
+	KeyDownAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.keydown);
 		}
 	};
 
-	KeyDownAction.prototype.exit = function() {
+	KeyDownAction.prototype.exit = function () {
 		document.removeEventListener('keydown', this.eventListener);
 	};
 

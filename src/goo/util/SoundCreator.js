@@ -53,7 +53,7 @@ define([
 
 		var sound = this.soundHandler._create();
 		this.soundHandler._objects.set(id, sound);
-		this.soundHandler.update(id, settings, {}).then(function() {
+		this.soundHandler.update(id, settings, {}).then(function () {
 			if (callback) {
 				callback(sound);
 			}

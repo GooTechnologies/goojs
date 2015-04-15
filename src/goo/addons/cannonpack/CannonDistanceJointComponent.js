@@ -24,7 +24,7 @@ define([
 		this.type = 'CannonDistanceJointComponent';
 
 		_.defaults(settings, {
-			distance : 1,
+			distance: 1,
 			connectedBody: null
 		});
 

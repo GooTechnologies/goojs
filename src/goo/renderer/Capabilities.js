@@ -135,7 +135,7 @@ function () {
 	 */
 	Capabilities.getCapabilitiesString = function () {
 		var caps = [];
-		var isArrayBufferView = function(value) {
+		var isArrayBufferView = function (value) {
 			return value && value.buffer instanceof ArrayBuffer && value.byteLength !== undefined;
 		};
 		for (var name in Capabilities) {

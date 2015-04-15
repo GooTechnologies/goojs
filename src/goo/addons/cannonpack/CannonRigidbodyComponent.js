@@ -31,11 +31,11 @@ define([
 	 * world.setSystem(new CannonSystem());
 	 * var entity = world.createEntity();
 	 * var rigidBodyComponent = new CannonRigidBodyComponent({
-	 *   mass : 1
+	 *   mass: 1
 	 * });
 	 * entity.setComponent(rigidBodyComponent);
 	 * var boxColliderComponent = new CannonBoxColliderComponent({
-	 *   halfExtents : new Vector3(1, 1, 1)
+	 *   halfExtents: new Vector3(1, 1, 1)
 	 * });
 	 * entity.setComponent(boxColliderComponent);
 	 */
@@ -46,8 +46,8 @@ define([
 		this.type = 'CannonRigidbodyComponent';
 
 		_.defaults(settings, {
-			mass : 1,
-			velocity : new Vector3()
+			mass: 1,
+			velocity: new Vector3()
 			// Todo: a lot of more things from Cannon.js API
 		}); //! AT: this is modifying the settings object which is bad practice (as in 'unintended side effects')
 

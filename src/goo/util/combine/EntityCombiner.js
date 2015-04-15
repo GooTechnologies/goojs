@@ -37,7 +37,7 @@ define([
 	/**
 	 * Runs the combiner
 	 */
-	EntityCombiner.prototype.combine = function() {
+	EntityCombiner.prototype.combine = function () {
 		this.world.processEntityChanges();
 		this.world.getSystem('TransformSystem')._process();
 		this.world.getSystem('BoundingUpdateSystem')._process();
@@ -49,7 +49,7 @@ define([
 		this._combineList(topEntities);
 	};
 
-	EntityCombiner.prototype._combineList = function(entities) {
+	EntityCombiner.prototype._combineList = function (entities) {
 		var root = entities;
 		this.createdEntities = [];
 		if (entities instanceof Entity === false) {
@@ -72,7 +72,7 @@ define([
 		}
 	};
 
-	EntityCombiner.prototype._buildSubs = function(entity, baseSubs, subs) {
+	EntityCombiner.prototype._buildSubs = function (entity, baseSubs, subs) {
 		if (entity._hidden || entity.skip || entity.animationComponent || entity.particleComponent) {
 			return;
 		}
@@ -94,7 +94,7 @@ define([
 		}
 	};
 
-	EntityCombiner.prototype._combine = function(root, combineList) {
+	EntityCombiner.prototype._combine = function (root, combineList) {
 		var rootTransform = root.transformComponent.worldTransform;
 		var invertTransform = new Transform();
 		var calcTransform = new Transform();
@@ -180,7 +180,7 @@ define([
 		}
 	};
 
-	EntityCombiner.prototype._calculateBounds = function(entities) {
+	EntityCombiner.prototype._calculateBounds = function (entities) {
 		var first = true;
 		var wb = new BoundingBox();
 		for (var i = 0; i < entities.length; i++) {
@@ -209,7 +209,7 @@ define([
 		return Math.max(wb.xExtent, wb.zExtent) * 2.0;
 	};
 
-	EntityCombiner.prototype.cleanup = function(entities) {
+	EntityCombiner.prototype.cleanup = function (entities) {
 		for (var i = 0; i < this.createdEntities.length; i++) {
 			var entity = this.createdEntities[i];
 
@@ -227,7 +227,7 @@ define([
 			values = [];
 
 		return {
-			put: function(key, value) {
+			put: function (key, value) {
 				var index = keys.indexOf(key);
 				if (index === -1) {
 					keys.push(key);
@@ -236,13 +236,13 @@ define([
 					values[index] = value;
 				}
 			},
-			get: function(key) {
+			get: function (key) {
 				return values[keys.indexOf(key)];
 			},
-			getKeys: function() {
+			getKeys: function () {
 				return keys;
 			},
-			getValues: function() {
+			getValues: function () {
 				return values;
 			}
 		};

@@ -40,24 +40,24 @@ define([
 	ScaleGizmo.prototype = Object.create(Gizmo.prototype);
 	ScaleGizmo.prototype.constructor = ScaleGizmo;
 
-	ScaleGizmo.prototype.activate = function(props) {
+	ScaleGizmo.prototype.activate = function (props) {
 		Gizmo.prototype.activate.call(this, props);
-		if(this._activeHandle.axis !== 3) {
+		if (this._activeHandle.axis !== 3) {
 			this._setPlane();
 			this._setLine();
 		}
 	};
 
-	ScaleGizmo.prototype.copyTransform = function(transform) {
+	ScaleGizmo.prototype.copyTransform = function (transform) {
 		Gizmo.prototype.copyTransform.call(this, transform);
 		this._transformScale.set(transform.scale);
 	};
 
-	ScaleGizmo.prototype.process = function() {
+	ScaleGizmo.prototype.process = function () {
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
 
-		if(this._activeHandle.axis === 3) {
+		if (this._activeHandle.axis === 3) {
 			this._scaleUniform();
 		} else {
 			this._scaleNonUniform();
@@ -67,12 +67,12 @@ define([
 		this.updateTransforms();
 		this.dirty = false;
 
-		if(this.onChange instanceof Function) {
+		if (this.onChange instanceof Function) {
 			this.onChange(this._transformScale);
 		}
 	};
 
-	ScaleGizmo.prototype._scaleUniform = function() {
+	ScaleGizmo.prototype._scaleUniform = function () {
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
 		var scale = Math.pow(1 + p[0] + op[1] - op[0] - p[1], this._scale);
@@ -85,7 +85,7 @@ define([
 		this._transformScale.scale(scale);
 	};
 
-	ScaleGizmo.prototype._scaleNonUniform = function() {
+	ScaleGizmo.prototype._scaleNonUniform = function () {
 		var p = this._mouse.position;
 		var op = this._mouse.oldPosition;
 
@@ -120,7 +120,7 @@ define([
 		}
 	};
 
-	ScaleGizmo.prototype._buildBox = function() {
+	ScaleGizmo.prototype._buildBox = function () {
 		this.addRenderable({
 			meshData: this._boxMesh,
 			materials: [this._buildMaterialForAxis(3)],
@@ -129,9 +129,9 @@ define([
 		});
 	};
 
-	ScaleGizmo.prototype._buildArrow = function(dim) {
+	ScaleGizmo.prototype._buildArrow = function (dim) {
 		var transform = new Transform();
-		if(dim === 0) {
+		if (dim === 0) {
 			transform.setRotationXYZ(0, Math.PI / 2, 0);
 		} else if (dim === 1) {
 			transform.setRotationXYZ(Math.PI * 3 / 2, 0, 0);
@@ -145,7 +145,7 @@ define([
 		});
 	};
 
-	ScaleGizmo.prototype._buildArrowMesh = function() {
+	ScaleGizmo.prototype._buildArrowMesh = function () {
 		var meshBuilder = new MeshBuilder();
 
 		// Box

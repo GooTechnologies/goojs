@@ -2,7 +2,7 @@ define([
 	'goo/math/Vector3',
 	'goo/scripts/ScriptUtils',
 	'goo/math/MathUtils'
-], function(
+], function (
 	Vector3,
 	ScriptUtils,
 	MathUtils
@@ -28,7 +28,7 @@ define([
 		}
 
 		function setView(params, env, view){
-			if(env.currentView === view){
+			if (env.currentView === view){
 				return;
 			}
 			env.currentView = view;
@@ -46,7 +46,7 @@ define([
 		}
 
 		function update(params, env) {
-			if(params.view !== env.currentView){
+			if (params.view !== env.currentView){
 				env.axisAlignedDirty = true;
 			}
 			if (!env.axisAlignedDirty) {
@@ -83,7 +83,7 @@ define([
 			description:'Script only runs when the camera to which it is added is being used.',
 			'default': true,
 			type: 'boolean'
-		},{
+		}, {
 			key: 'distance',
 			name: 'Distance',
 			type: 'float',
@@ -92,7 +92,7 @@ define([
 			'default': 1,
 			min: 1,
 			max: 1e3
-		},{
+		}, {
 			key: 'view',
 			type:'string',
 			'default': 'XY',

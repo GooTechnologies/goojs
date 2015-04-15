@@ -57,7 +57,7 @@ define([
 	 * @param {Object} [options]
 	 * @returns {Texture}
 	 */
-	ParticleSystemUtils.createFlareTexture = function(size, options) {
+	ParticleSystemUtils.createFlareTexture = function (size, options) {
 		size = size || 64;
 
 		//! AT: this modifies the original options object which is intrusive and bad
@@ -95,7 +95,7 @@ define([
 	 * @param {Object} [options]
 	 * @returns {Texture}
 	 */
-	ParticleSystemUtils.createSplashTexture = function(size, options) {
+	ParticleSystemUtils.createSplashTexture = function (size, options) {
 		size = size || 64;
 
 		//! AT: this modifies the original options object which is intrusive and bad
@@ -160,7 +160,7 @@ define([
 	 * @param {Object} [options]
 	 * @returns {Texture}
 	 */
-	ParticleSystemUtils.createPlanktonTexture = function(size, options) {
+	ParticleSystemUtils.createPlanktonTexture = function (size, options) {
 		size = size || 64;
 
 		//! AT: this modifies the original options object which is intrusive and bad
@@ -206,7 +206,7 @@ define([
 	 * @param {Object} [options]
 	 * @returns {Texture}
 	 */
-	ParticleSystemUtils.createSnowflakeTexture = function(size, options) {
+	ParticleSystemUtils.createSnowflakeTexture = function (size, options) {
 		size = size || 64;
 
 		//! AT: this modifies the original options object which is intrusive and bad

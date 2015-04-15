@@ -25,7 +25,7 @@ define([
 	 * @param id
 	 * @param time Start time
 	 * @param value
-	 * @param {function(number)} easingFunction
+	 * @param {function (number)} easingFunction
 	 */
 	ValueChannel.prototype.addKeyframe = function (id, time, value, easingFunction) {
 		var newKeyframe = {

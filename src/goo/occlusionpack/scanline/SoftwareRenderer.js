@@ -40,7 +40,7 @@ define([
 	/**
 	*	A software renderer able to render triangles to a depth buffer (w-buffer). Occlusion culling is also performed in this class.
 	*	@constructor
-	*	@param {{width:Number, height:Number, camera:Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
+	*	@param {{width: Number, height: Number, camera: Camera}} parameters A JSON object which has to contain width, height and the camera object to be used.
 	*/
 	function SoftwareRenderer (parameters) {
 		parameters = parameters || {};
@@ -215,7 +215,7 @@ define([
 
 			combinedMatrix.applyPost(v1);
 
-			// Insert the homogeneous coordinate (x,y,z,w) to the triangleData's position array.
+			// Insert the homogeneous coordinate (x, y, z, w) to the triangleData's position array.
 			this._triangleData.positions[offset] = v1.x;
 			offset++;
 			this._triangleData.positions[offset] = v1.y;
@@ -547,7 +547,7 @@ define([
 
 		var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
-		// The cameras eye direction will always be [0,0,-1] at this stage
+		// The cameras eye direction will always be [0, 0, -1] at this stage
 		// (the vertices are transformed into the camera's view projection space,
 		// thus the dot product can be simplified to only do multiplications on the z component.
 
@@ -566,7 +566,7 @@ define([
 	 */
 	SoftwareRenderer.prototype._createOccludeeEdges = function (indices, positions) {
 
-		// Use (x,y,1/w), the w component is already inverted.
+		// Use (x, y, 1/w), the w component is already inverted.
 		// Reuse the global vectors for storing data to send as parameter to create Edges.
 		var vPos = indices[0] * 4;
 		v1.x = positions[vPos];
@@ -602,9 +602,9 @@ define([
 		var longEdge = 0;
 
 		// Find edge with the greatest height in the Y axis, this is the long edge.
-		for(var i = 1; i < 3; i++) {
+		for (var i = 1; i < 3; i++) {
 			var height = edges[i].dy;
-			if(height > maxHeight) {
+			if (height > maxHeight) {
 				maxHeight = height;
 				longEdge = i;
 			}
@@ -683,7 +683,7 @@ define([
 			}
 
 			// Draw first portion of the triangle
-			if(!this._isEdgeOccluded(edgeData, orientationData)){
+			if (!this._isEdgeOccluded(edgeData, orientationData)){
 				return false;
 			}
 		}
@@ -699,7 +699,7 @@ define([
 				}
 			}
 			// Draw second portion of the triangle.
-			if(!this._isEdgeOccluded(edgeData, orientationData)){
+			if (!this._isEdgeOccluded(edgeData, orientationData)){
 				return false;
 			}
 		}
@@ -723,9 +723,9 @@ define([
 		var i2 = indices[1];
 		var i3 = indices[2];
 
-		edges[0] = this.edgeMap.getEdge(i1,i2);
-		edges[1] = this.edgeMap.getEdge(i2,i3);
-		edges[2] = this.edgeMap.getEdge(i3,i1);
+		edges[0] = this.edgeMap.getEdge(i1, i2);
+		edges[1] = this.edgeMap.getEdge(i2, i3);
+		edges[2] = this.edgeMap.getEdge(i3, i1);
 
 		var edgeIndices = this._getLongEdgeAndShortEdgeIndices();
 
@@ -794,7 +794,7 @@ define([
 		}
 	};
 
-	SoftwareRenderer.prototype._isEdgeOccluded = function(edgeData, orientationData) {
+	SoftwareRenderer.prototype._isEdgeOccluded = function (edgeData, orientationData) {
 
 		// Copypasted from _drawEdges.
 		var startLine = edgeData.getStartLine();
@@ -1528,7 +1528,7 @@ define([
 
 		var colorIndex = 0;
 
-		for(var i = 0; i < this._depthData.length; i++) {
+		for (var i = 0; i < this._depthData.length; i++) {
 
 			// Convert the float value of depth into 8bit.
 			// var depth = this._depthData[i] * 255;

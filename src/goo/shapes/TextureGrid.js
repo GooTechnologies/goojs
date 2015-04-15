@@ -29,7 +29,7 @@ define([
 
 	function countCells(matrix) {
 		var count = 0;
-		for(var i = 0; i < matrix.length; i++) {
+		for (var i = 0; i < matrix.length; i++) {
 			count += matrix[i].length;
 		}
 		return count;
@@ -110,7 +110,7 @@ define([
 		return matrix;
 	}
 
-	TextureGrid.fromString = function(str) {
+	TextureGrid.fromString = function (str) {
 		return new TextureGrid(stringToMatrix(str), 16);
 	};
 

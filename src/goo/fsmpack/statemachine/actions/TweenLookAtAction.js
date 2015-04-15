@@ -55,7 +55,7 @@ define([
 		}]
 	};
 
-	TweenLookAtAction.prototype.configure = function(settings) {
+	TweenLookAtAction.prototype.configure = function (settings) {
 		this.to = settings.to;
 		this.relative = settings.relative;
 		this.time = settings.time;
@@ -67,7 +67,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	TweenLookAtAction.prototype._setup = function() {
+	TweenLookAtAction.prototype._setup = function () {
 		this.tween = new window.TWEEN.Tween();
 	};
 
@@ -77,7 +77,7 @@ define([
 		}
 	};
 
-	TweenLookAtAction.prototype._run = function(fsm) {
+	TweenLookAtAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var transform = transformComponent.transform;
@@ -94,13 +94,13 @@ define([
 		var fakeTo = { x: this.to[0], y: this.to[1], z: this.to[2] };
 		var tmpVec3 = new Vector3();
 
-		this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+		this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
 			tmpVec3.x = this.x;
 			tmpVec3.y = this.y;
 			tmpVec3.z = this.z;
 			transform.lookAt(tmpVec3, Vector3.UNIT_Y);
 			transformComponent.setUpdated();
-		}).onComplete(function() {
+		}).onComplete(function () {
 			fsm.send(this.eventToEmit.channel);
 		}.bind(this)).start(time);
 	};

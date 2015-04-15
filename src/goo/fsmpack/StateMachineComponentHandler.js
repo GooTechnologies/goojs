@@ -3,7 +3,7 @@ define([
 	'goo/fsmpack/statemachine/StateMachineComponent',
 	'goo/util/rsvp',
 	'goo/util/ObjectUtil'
-], function(
+], function (
 	ComponentHandler,
 	StateMachineComponent,
 	RSVP,
@@ -33,7 +33,7 @@ define([
 	 * @returns {StateMachineComponent} the created component object
 	 * @hidden
 	 */
-	StateMachineComponentHandler.prototype._create = function() {
+	StateMachineComponentHandler.prototype._create = function () {
 		return new StateMachineComponent();
 	};
 
@@ -44,17 +44,17 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	 StateMachineComponentHandler.prototype.update = function(entity, config, options) {
+	 StateMachineComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
 			var promises = [];
-			_.forEach(config.machines, function(machineCfg) {
+			_.forEach(config.machines, function (machineCfg) {
 				promises.push(that._load(machineCfg.machineRef, options));
 			}, null, 'sortValue');
 
-			return RSVP.all(promises).then(function(machines) {
+			return RSVP.all(promises).then(function (machines) {
 				// Adding new machines
 				for (var i = 0; i < machines.length; i++) {
 					if (component._machines.indexOf(machines[i]) === -1) {

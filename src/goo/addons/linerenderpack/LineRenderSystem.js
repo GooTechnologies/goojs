@@ -62,8 +62,8 @@ define([
 		 * @param {Vector3} end
 		 * @param {Vector3} color A vector with its components between 0-1.
 		 * @example
-		 * var vector1 = new Vector3(0,0,0);
-		 * var vector2 = new Vector3(13,3,7);
+		 * var vector1 = new Vector3(0, 0, 0);
+		 * var vector2 = new Vector3(13, 3, 7);
 		 * var redColor = lineRenderSystem.RED;
 		 * lineRenderSystem.drawLine(v1, v2, redColor);
 		 */

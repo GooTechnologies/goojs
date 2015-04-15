@@ -11,7 +11,7 @@ define([
 	 * <code>Texture</code> defines a texture object to be used to display an image on a piece of geometry. The image to be displayed is
 	 *        defined by the <code>Image</code> class. All attributes required for texture mapping are contained within this class. This includes
 	 *        mipmapping if desired, magnificationFilter options, apply options and correction options. Default values are as follows:
-	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S,T and R, apply - Modulate,
+	 *        minificationFilter - NearestNeighborNoMipMaps, magnificationFilter - NearestNeighbor, wrap - EdgeClamp on S, T and R, apply - Modulate,
 	 *        environment - None.
 	 * @param {Image} image Image to use as base for texture
 	 * @param {object} settings Texturing settings
@@ -58,8 +58,8 @@ define([
 	 *			<li>'UnsignedShort5551' =
 	 *			<li>'Float' =
 	 *		</ul>
-	 * @param {Array} [settings.offset=(0,0)] Texture offset
-	 * @param {Array} [settings.repeat=(1,1)] Texture repeat/scale
+	 * @param {Array} [settings.offset=(0, 0)] Texture offset
+	 * @param {Array} [settings.repeat=(1, 1)] Texture repeat/scale
 	 * @param {boolean} [settings.generateMipmaps='true'] Automatically generate mipmaps
 	 * @param {boolean} [settings.premultiplyAlpha='false'] Premultiply alpha
 	 * @param {number} [settings.unpackAlignment=1] Unpack alignment setting

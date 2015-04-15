@@ -8,7 +8,7 @@ define(
 		'goo/math/Vector3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, MeshRendererComponent, Vector3) {
 		'use strict';
 
 		/**
@@ -24,11 +24,11 @@ define(
 		LogicNodeMeshRendererComponent.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMeshRendererComponent.editorName = "MeshRendererComponent";
 
-		LogicNodeMeshRendererComponent.prototype.onConfigure = function(config) {
+		LogicNodeMeshRendererComponent.prototype.onConfigure = function (config) {
 			this.entityRef = config.entityRef;
 		};
 
-		LogicNodeMeshRendererComponent.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeMeshRendererComponent.prototype.onInputChanged = function (instDesc, portID, value) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var comp = entity.meshRendererComponent;
 
@@ -39,7 +39,7 @@ define(
 			}
 		};
 
-		LogicNodeMeshRendererComponent.prototype.onEvent = function(instDesc, event) {
+		LogicNodeMeshRendererComponent.prototype.onEvent = function (instDesc, event) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var comp = entity.meshRendererComponent;
 

@@ -39,7 +39,7 @@ function (
 	 */
 	function TextureHandler() {
 		ConfigHandler.apply(this, arguments);
-		SystemBus.addListener('playStateChanged', function(playState) {
+		SystemBus.addListener('playStateChanged', function (playState) {
 			this._objects.forEach(function (texture) {
 				if (texture.image && texture.image.play && texture.image.pause) {
 					var video = texture.image;

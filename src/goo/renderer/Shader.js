@@ -188,7 +188,7 @@ define([
 	 */
 	var regExp = /\b(attribute|uniform)\s+(float|int|bool|vec2|vec3|vec4|mat2|mat3|mat4|sampler2D|sampler3D|samplerCube)\s+(\w+)(\s*\[\s*\w+\s*\])*;/g;
 
-	Shader.prototype.compileProgram = function(renderer) {
+	Shader.prototype.compileProgram = function (renderer) {
 		if (this.shaderProgram === null) {
 			this._investigateShaders();
 			this.addDefines(this.defines);
@@ -197,7 +197,7 @@ define([
 		}
 	};
 
-	Shader.prototype.activateProgram = function(record, context) {
+	Shader.prototype.activateProgram = function (record, context) {
 		if (record.usedProgram !== this.shaderProgram) {
 			context.useProgram(this.shaderProgram);
 			record.usedProgram = this.shaderProgram;
@@ -205,7 +205,7 @@ define([
 		}
 	};
 
-	Shader.prototype.bindAttributeKey = function(record, renderer, attributeMap, key) {
+	Shader.prototype.bindAttributeKey = function (record, renderer, attributeMap, key) {
 		var attribute = attributeMap[this.attributes[key]];
 		if (!attribute) {
 			return;
@@ -221,7 +221,7 @@ define([
 		renderer.bindVertexAttribute(attributeIndex, attribute);
 	};
 
-	Shader.prototype.bindAttributes = function(record, renderer, attributeMap) {
+	Shader.prototype.bindAttributes = function (record, renderer, attributeMap) {
 		if (this.attributes) {
 			for (var i = 0, l = this.attributeKeys.length; i < l; i++) {
 				this.bindAttributeKey(record, renderer, attributeMap, this.attributeKeys[i]);
@@ -229,7 +229,7 @@ define([
 		}
 	};
 
-	Shader.prototype.disableAttributes = function(record, context) {
+	Shader.prototype.disableAttributes = function (record, context) {
 		for (var i = 0, l = record.enabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
@@ -240,7 +240,7 @@ define([
 		}
 	};
 
-	Shader.prototype.enableAttributes = function(record, context) {
+	Shader.prototype.enableAttributes = function (record, context) {
 		for (var i = 0, l = record.newlyEnabledAttributes.length; i < l; i++) {
 			var enabled = record.enabledAttributes[i];
 			var newEnabled = record.newlyEnabledAttributes[i];
@@ -251,7 +251,7 @@ define([
 		}
 	};
 
-	Shader.prototype.matchUniforms = function(shaderInfo) {
+	Shader.prototype.matchUniforms = function (shaderInfo) {
 		var uniforms = this.matchedUniforms;
 		if (uniforms) {
 			this.textureIndex = 0;
@@ -280,7 +280,7 @@ define([
 		this.matchUniforms(shaderInfo);
 	};
 
-	Shader.prototype.defineValue = function(shaderInfo, name) {
+	Shader.prototype.defineValue = function (shaderInfo, name) {
 		var defValue = shaderInfo.material.uniforms[name];
 		if (defValue === undefined) {
 			defValue = this.uniforms[name];
@@ -289,7 +289,7 @@ define([
 	};
 
 
-	Shader.prototype.mapSlot = function(shaderInfo, mapping, slot) {
+	Shader.prototype.mapSlot = function (shaderInfo, mapping, slot) {
 		var maps = shaderInfo.material.getTexture(slot.mapping);
 		if (maps instanceof Array) {
 			this.arrayType(mapping, slot, maps);
@@ -299,7 +299,7 @@ define([
 		}
 	};
 
-	Shader.prototype.arrayType = function(mapping, slot, maps) {
+	Shader.prototype.arrayType = function (mapping, slot, maps) {
 		var arr = [];
 		slot.index = [];
 		for (var i = 0; i < maps.length; i++) {
@@ -309,7 +309,7 @@ define([
 		mapping.call(arr);
 	};
 
-	Shader.prototype.stringType = function(shaderInfo, name, mapping) {
+	Shader.prototype.stringType = function (shaderInfo, name, mapping) {
 		var callback = this.currentCallbacks[name];
 		if (callback) {
 			callback(mapping, shaderInfo);
@@ -321,7 +321,7 @@ define([
 		}
 	};
 
-	Shader.prototype.callMapping = function(shaderInfo, name, mapping) {
+	Shader.prototype.callMapping = function (shaderInfo, name, mapping) {
 		var defValue = this.defineValue(shaderInfo, name);
 		var type = typeof defValue;
 		if (type === 'string') {

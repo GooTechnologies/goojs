@@ -69,7 +69,7 @@ define([
 				norms.push(normals[0], normals[1], normals[2]);
 			}
 
-			if(this.verticallyClosed) {
+			if (this.verticallyClosed) {
 				var upLeft = (i + 0) * this.vertsPerLine + (0 + 0);
 				var downLeft = (i + 1) * this.vertsPerLine + (0 + 0);
 				var upRight = (i + 0) * this.vertsPerLine + (0 + 1);

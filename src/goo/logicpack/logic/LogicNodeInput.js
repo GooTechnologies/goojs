@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -24,11 +24,11 @@ define(
 		LogicNodeInput.editorName = "Input";
 
 		// Configure new input.
-		LogicNodeInput.prototype.onConfigure = function(newConfig) {
+		LogicNodeInput.prototype.onConfigure = function (newConfig) {
 			this.dummyInport = LogicInterface.createDynamicInput(newConfig.Name);
 		};
 
-		LogicNodeInput.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeInput.prototype.onInputChanged = function (instDesc, portID, value) {
 			// this will be the dummy inport getting values written.
 			LogicLayer.writeValue(this.logicInstance, LogicNodeInput.outportInput, value);
 		};

@@ -223,10 +223,10 @@ define([
 	Vignette.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.offset !== undefined) {
+		if (options.offset !== undefined) {
 			shader.uniforms.offset = options.offset;
 		}
-		if(options.darkness !== undefined) {
+		if (options.darkness !== undefined) {
 			shader.uniforms.darkness = options.darkness;
 		}
 		if (config.enabled !== undefined) {
@@ -266,7 +266,7 @@ define([
 
 	Sepia.prototype.update = function (config) {
 		var options = config.options;
-		if(options.amount !== undefined) {
+		if (options.amount !== undefined) {
 			this.material.uniforms.amount = options.amount / 100;
 		}
 		if (config.enabled !== undefined) {
@@ -296,7 +296,7 @@ define([
 	Grain.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.nIntensity !== undefined) {
+		if (options.nIntensity !== undefined) {
 			shader.uniforms.nIntensity = options.nIntensity / 100;
 		}
 		if (options.sIntensity !== undefined) {
@@ -350,7 +350,7 @@ define([
 	Noise.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.nIntensity !== undefined) {
+		if (options.nIntensity !== undefined) {
 			shader.uniforms.nIntensity = options.nIntensity / 100;
 		}
 		if (config.enabled !== undefined) {
@@ -380,10 +380,10 @@ define([
 	RgbShift.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.amount !== undefined) {
+		if (options.amount !== undefined) {
 			shader.uniforms.amount = options.amount;
 		}
-		if(options.angle !== undefined) {
+		if (options.angle !== undefined) {
 			shader.uniforms.angle = options.angle;
 		}
 		if (config.enabled !== undefined) {
@@ -424,7 +424,7 @@ define([
 	Bleach.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.opacity !== undefined) {
+		if (options.opacity !== undefined) {
 			shader.uniforms.opacity = options.opacity;
 		}
 		if (config.enabled !== undefined) {
@@ -455,13 +455,13 @@ define([
 	HSB.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.hue !== undefined) {
+		if (options.hue !== undefined) {
 			shader.uniforms.hue = options.hue;
 		}
-		if(options.saturation !== undefined) {
+		if (options.saturation !== undefined) {
 			shader.uniforms.saturation = options.saturation;
 		}
-		if(options.brightness !== undefined) {
+		if (options.brightness !== undefined) {
 			shader.uniforms.brightness = options.brightness;
 		}
 		if (config.enabled !== undefined) {
@@ -512,10 +512,10 @@ define([
 	Colorify.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.color !== undefined) {
+		if (options.color !== undefined) {
 			shader.uniforms.color = options.color;
 		}
-		if(options.amount !== undefined) {
+		if (options.amount !== undefined) {
 			shader.uniforms.amount = options.amount;
 		}
 		if (config.enabled !== undefined) {
@@ -553,10 +553,10 @@ define([
 	Hatch.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.width !== undefined) {
+		if (options.width !== undefined) {
 			shader.uniforms.width = options.width;
 		}
-		if(options.spread !== undefined) {
+		if (options.spread !== undefined) {
 			shader.uniforms.spread = options.spread;
 		}
 		if (config.enabled !== undefined) {
@@ -596,16 +596,16 @@ define([
 	Dot.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.angle !== undefined) {
+		if (options.angle !== undefined) {
 			shader.uniforms.angle = options.angle;
 		}
-		if(options.scale !== undefined) {
+		if (options.scale !== undefined) {
 			shader.uniforms.scale = options.scale;
 		}
-		if(options.sizex !== undefined) {
+		if (options.sizex !== undefined) {
 			shader.uniforms.tSize[0] = options.sizex;
 		}
-		if(options.sizey !== undefined) {
+		if (options.sizey !== undefined) {
 			shader.uniforms.tSize[1] = options.sizey;
 		}
 		if (config.enabled !== undefined) {
@@ -665,13 +665,13 @@ define([
 	Contrast.prototype.update = function (config) {
 		var options = config.options;
 		var shader = this.material.shader;
-		if(options.brightness !== undefined) {
+		if (options.brightness !== undefined) {
 			shader.uniforms.brightness = options.brightness;
 		}
-		if(options.contrast !== undefined) {
+		if (options.contrast !== undefined) {
 			shader.uniforms.contrast = options.contrast;
 		}
-		if(options.saturation !== undefined) {
+		if (options.saturation !== undefined) {
 			shader.uniforms.saturation = options.saturation;
 		}
 		if (config.enabled !== undefined) {

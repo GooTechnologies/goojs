@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -19,7 +19,7 @@ define(
 			this.type = "LogicNodeWASD2";
 
 			var preventRepeat = {};
-			this.eventListenerDown = function(event) {
+			this.eventListenerDown = function (event) {
 				var character = String.fromCharCode(event.which).toLowerCase();
 				if (preventRepeat[character]) {
 					return;
@@ -30,7 +30,7 @@ define(
 					LogicLayer.writeValue(this.logicInstance, keyEvent.port, keyEvent.value);
 				}
 			}.bind(this);
-			this.eventListenerUp = function(event) {
+			this.eventListenerUp = function (event) {
 				var character = String.fromCharCode(event.which).toLowerCase();
 				if (preventRepeat[character]) {
 					preventRepeat[character] = false;
@@ -45,12 +45,12 @@ define(
 		LogicNodeWASD2.prototype = Object.create(LogicNode.prototype);
 		LogicNodeWASD2.editorName = "WASD2";
 
-		LogicNodeWASD2.prototype.onSystemStarted = function() {
+		LogicNodeWASD2.prototype.onSystemStarted = function () {
 			document.addEventListener('keydown', this.eventListenerDown);
 			document.addEventListener('keyup', this.eventListenerUp);
 		};
 
-		LogicNodeWASD2.prototype.onSystemStopped = function() {
+		LogicNodeWASD2.prototype.onSystemStopped = function () {
 			document.removeEventListener('keydown', this.eventListenerDown);
 			document.removeEventListener('keyup', this.eventListenerUp);
 		};

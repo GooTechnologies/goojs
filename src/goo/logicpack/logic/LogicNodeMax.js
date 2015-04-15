@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -22,7 +22,7 @@ define(
 		LogicNodeMax.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMax.editorName = "Max";
 
-		LogicNodeMax.prototype.onInputChanged = function(instDesc) {
+		LogicNodeMax.prototype.onInputChanged = function (instDesc) {
 			var val1 = LogicLayer.readPort(instDesc, LogicNodeMax.inportX);
 			var val2 = LogicLayer.readPort(instDesc, LogicNodeMax.inportY);
 			var out = Math.max(val1, val2);

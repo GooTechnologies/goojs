@@ -46,7 +46,7 @@ define([
 	 * @param {number[]} [store] the TransformData to store in. If null, a new one is created.
 	 * @returns {number[]} our resulting TransformData.
 	 */
-	InterpolatedFloatChannel.prototype.getData = function(index, store) {
+	InterpolatedFloatChannel.prototype.getData = function (index, store) {
 		var rVal = store || [];
 		rVal[0] = this._values[index];
 		return rVal;

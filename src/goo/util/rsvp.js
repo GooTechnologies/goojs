@@ -1,4 +1,4 @@
-define(function() {
+define(function () {
     'use strict';
     var config = {};
 
@@ -10,19 +10,19 @@ define(function() {
 
     if (typeof process !== 'undefined' &&
       {}.toString.call(process) === '[object process]') {
-      config.async = function(callback, binding) {
-        process.nextTick(function() {
+      config.async = function (callback, binding) {
+        process.nextTick(function () {
           callback.call(binding);
         });
       };
     } else if (MutationObserver) {
       var queue = [];
 
-      var observer = new MutationObserver(function() {
+      var observer = new MutationObserver(function () {
         var toProcess = queue.slice();
         queue = [];
 
-        toProcess.forEach(function(tuple) {
+        toProcess.forEach(function (tuple) {
           var callback = tuple[0], binding = tuple[1];
           callback.call(binding);
         });
@@ -32,24 +32,24 @@ define(function() {
       observer.observe(element, { attributes: true });
 
       // Chrome Memory Leak: https://bugs.webkit.org/show_bug.cgi?id=93661
-      window.addEventListener('unload', function(){
+      window.addEventListener('unload', function (){
         observer.disconnect();
         observer = null;
       });
 
-      config.async = function(callback, binding) {
+      config.async = function (callback, binding) {
         queue.push([callback, binding]);
         element.setAttribute('drainQueue', 'drainQueue');
       };
     } else {
-      config.async = function(callback, binding) {
-        setTimeout(function() {
+      config.async = function (callback, binding) {
+        setTimeout(function () {
           callback.call(binding);
         }, 1);
       };
     }
 
-    var Event = function(type, options) {
+    var Event = function (type, options) {
       this.type = type;
 
       for (var option in options) {
@@ -59,7 +59,7 @@ define(function() {
       }
     };
 
-    var indexOf = function(callbacks, callback) {
+    var indexOf = function (callbacks, callback) {
       for (var i=0, l=callbacks.length; i<l; i++) {
         if (callbacks[i][0] === callback) { return i; }
       }
@@ -67,7 +67,7 @@ define(function() {
       return -1;
     };
 
-    var callbacksFor = function(object) {
+    var callbacksFor = function (object) {
       var callbacks = object._promiseCallbacks;
 
       if (!callbacks) {
@@ -78,14 +78,14 @@ define(function() {
     };
 
     var EventTarget = {
-      mixin: function(object) {
+      mixin: function (object) {
         object.on = this.on;
         object.off = this.off;
         object.trigger = this.trigger;
         return object;
       },
 
-      on: function(eventNames, callback, binding) {
+      on: function (eventNames, callback, binding) {
         var allCallbacks = callbacksFor(this), callbacks, eventName;
         eventNames = eventNames.split(/\s+/);
         binding = binding || this;
@@ -103,7 +103,7 @@ define(function() {
         }
       },
 
-      off: function(eventNames, callback) {
+      off: function (eventNames, callback) {
         var allCallbacks = callbacksFor(this), callbacks, eventName, index;
         eventNames = eventNames.split(/\s+/);
 
@@ -121,7 +121,7 @@ define(function() {
         }
       },
 
-      trigger: function(eventName, options) {
+      trigger: function (eventName, options) {
         var allCallbacks = callbacksFor(this),
             callbacks, callbackTuple, callback, binding, event;
 
@@ -142,19 +142,19 @@ define(function() {
       }
     };
 
-    var Promise = function() {
-      this.on('promise:resolved', function(event) {
+    var Promise = function () {
+      this.on('promise:resolved', function (event) {
         this.trigger('success', { detail: event.detail });
       }, this);
 
-      this.on('promise:failed', function(event) {
+      this.on('promise:failed', function (event) {
         this.trigger('error', { detail: event.detail });
       }, this);
     };
 
-    var noop = function() {};
+    var noop = function () {};
 
-    var invokeCallback = function(type, promise, callback, event) {
+    var invokeCallback = function (type, promise, callback, event) {
       var hasCallback = typeof callback === 'function',
           value, error, succeeded, failed;
 
@@ -172,9 +172,9 @@ define(function() {
       }
 
       if (value && typeof value.then === 'function') {
-        value.then(function(value) {
+        value.then(function (value) {
           promise.resolve(value);
-        }, function(error) {
+        }, function (error) {
           promise.reject(error);
         });
       } else if (hasCallback && succeeded) {
@@ -187,40 +187,40 @@ define(function() {
     };
 
     Promise.prototype = {
-      then: function(done, fail) {
+      then: function (done, fail) {
         var thenPromise = new Promise();
 
         if (this.isResolved) {
-          config.async(function() {
+          config.async(function () {
             invokeCallback('resolve', thenPromise, done, { detail: this.resolvedValue });
           }, this);
         }
 
         if (this.isRejected) {
-          config.async(function() {
+          config.async(function () {
             invokeCallback('reject', thenPromise, fail, { detail: this.rejectedValue });
           }, this);
         }
 
-        this.on('promise:resolved', function(event) {
+        this.on('promise:resolved', function (event) {
           invokeCallback('resolve', thenPromise, done, event);
         });
 
-        this.on('promise:failed', function(event) {
+        this.on('promise:failed', function (event) {
           invokeCallback('reject', thenPromise, fail, event);
         });
 
         return thenPromise;
       },
 
-      resolve: function(value) {
+      resolve: function (value) {
         resolve(this, value);
 
         this.resolve = noop;
         this.reject = noop;
       },
 
-      reject: function(value) {
+      reject: function (value) {
         reject(this, value);
 
         this.resolve = noop;
@@ -229,7 +229,7 @@ define(function() {
     };
 
     function resolve(promise, value) {
-      config.async(function() {
+      config.async(function () {
         promise.trigger('promise:resolved', { detail: value });
         promise.isResolved = true;
         promise.resolvedValue = value;
@@ -237,7 +237,7 @@ define(function() {
     }
 
     function reject(promise, value) {
-      config.async(function() {
+      config.async(function () {
         promise.trigger('promise:failed', { detail: value });
         promise.isRejected = true;
         promise.rejectedValue = value;
@@ -253,20 +253,20 @@ define(function() {
         allPromise.resolve([]);
       }
 
-      var resolve = function(index, value) {
+      var resolve = function (index, value) {
         results[index] = value;
         if (--remaining === 0) {
           allPromise.resolve(results);
         }
       };
 
-      var resolver = function(index) {
-        return function(value) {
+      var resolver = function (index) {
+        return function (value) {
           resolve(index, value);
         };
       };
 
-      var reject = function(error) {
+      var reject = function (error) {
         allPromise.reject(error);
       };
 

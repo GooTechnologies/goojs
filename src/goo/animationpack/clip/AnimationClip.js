@@ -85,7 +85,7 @@ function () {
 
 	AnimationClip.prototype.toString = function () {
 		return this._name + ': '
-			+ this._channels.map(function(channel) { return channel._channelName; });
+			+ this._channels.map(function (channel) { return channel._channelName; });
 	};
 
 	return AnimationClip;

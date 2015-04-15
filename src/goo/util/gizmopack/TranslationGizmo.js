@@ -36,23 +36,23 @@ define([
 	TranslationGizmo.prototype.constructor = TranslationGizmo;
 
 	// Triggered when you have mousedown on a gizmo handle
-	TranslationGizmo.prototype.activate = function(props) {
+	TranslationGizmo.prototype.activate = function (props) {
 		Gizmo.prototype.activate.call(this, props);
 		this._setPlane();
-		if(this._activeHandle.type === 'Axis') {
+		if (this._activeHandle.type === 'Axis') {
 			this._setLine();
 		}
 	};
 
 	// Changing transform once per process
-	TranslationGizmo.prototype.process = function() {
+	TranslationGizmo.prototype.process = function () {
 		var op = this._mouse.oldPosition;
 		var p = this._mouse.position;
 
 		/*
 		var w = 1, h = 1;
 		var camera = this.camera;
-		if(camera && camera.projectionMode === Camera.Parallel){
+		if (camera && camera.projectionMode === Camera.Parallel){
 			w = 1/(camera._frustumRight - camera._frustumLeft);
 			h = 1/(camera._frustumTop  - camera._frustumBottom);
 		}
@@ -61,7 +61,7 @@ define([
 		Renderer.mainCamera.getPickRay(op[0], op[1], 1, 1, this._oldRay);
 		Renderer.mainCamera.getPickRay(p[0], p[1], 1, 1, this._newRay);
 
-		if(this._activeHandle.type === 'Plane') {
+		if (this._activeHandle.type === 'Plane') {
 			this._moveOnPlane();
 		} else if (this._activeHandle.type === 'Axis') {
 			this._moveOnLine();
@@ -71,12 +71,12 @@ define([
 		this.updateTransforms();
 		this.dirty = false;
 
-		if(this.onChange instanceof Function) {
+		if (this.onChange instanceof Function) {
 			this.onChange(this.transform.translation);
 		}
 	};
 
-	TranslationGizmo.prototype.copyTransform = function(transform, global) {
+	TranslationGizmo.prototype.copyTransform = function (transform, global) {
 		Gizmo.prototype.copyTransform.call(this, transform);
 		if (transform && global) {
 			this.transform.rotation.setIdentity();
@@ -85,7 +85,7 @@ define([
 	};
 
 	// Moving along a plane
-	TranslationGizmo.prototype._moveOnPlane = function() {
+	TranslationGizmo.prototype._moveOnPlane = function () {
 		var oldWorldPos = this._v0,
 			worldPos = this._v1,
 			moveVector = this._result;
@@ -98,7 +98,7 @@ define([
 		this.transform.translation.add(moveVector);
 	};
 
-	TranslationGizmo.prototype._moveOnLine = function() {
+	TranslationGizmo.prototype._moveOnLine = function () {
 		var oldWorldPos = this._v0,
 			worldPos = this._v1,
 			moveVector = this._result,
@@ -115,7 +115,7 @@ define([
 		this.transform.translation.add(moveVector);
 	};
 
-	TranslationGizmo.prototype._buildArrow = function(dim) {
+	TranslationGizmo.prototype._buildArrow = function (dim) {
 		var arrowTransform = new Transform();
 		var quadTransform = new Transform();
 
@@ -123,7 +123,7 @@ define([
 		quadTransform.scale.setDirect(size, size, size);
 		if (dim === 2) {
 			quadTransform.translation.setDirect(size, size, 0);
-		} else if(dim === 0) {
+		} else if (dim === 0) {
 			quadTransform.translation.setDirect(0, size, size);
 			quadTransform.setRotationXYZ(0, Math.PI / 2, 0);
 			arrowTransform.setRotationXYZ(0, Math.PI / 2, 0);
@@ -149,7 +149,7 @@ define([
 		});
 	};
 
-	TranslationGizmo.prototype._buildArrowMesh = function() {
+	TranslationGizmo.prototype._buildArrowMesh = function () {
 		var meshBuilder = new MeshBuilder();
 
 		// Arrow head

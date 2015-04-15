@@ -58,7 +58,7 @@ define([
 	 * @param {boolean} [parameters.preserveDrawingBuffer=false]
 	 * @param {boolean} [parameters.useDevicePixelRatio=false] Take into account the device pixel ratio (for retina screens etc)
 	 * @param {canvas} [parameters.canvas] If not supplied, Renderer will create a new canvas
-	 * @param {function(string)} [parameters.onError] Called with message when error occurs
+	 * @param {function (string)} [parameters.onError] Called with message when error occurs
 	 */
 	function Renderer(parameters) {
 		parameters = parameters || {};
@@ -170,7 +170,7 @@ define([
 		// Hardware picking
 		this.hardwarePicking = null;
 
-		SystemBus.addListener('goo.setClearColor', function(color) {
+		SystemBus.addListener('goo.setClearColor', function (color) {
 			this.setClearColor.apply(this, color);
 		}.bind(this));
 
@@ -406,7 +406,7 @@ define([
 	/**
 	 * Sets this.viewportX and viewportY to the parameters or to 0
 	 * Sets this.viewportWidth and viewportHeight to the parameters or to this.domElement.width and height.
-	 * Finally it calls this.context.viewport(x,y,w,h) with the resulting values.
+	 * Finally it calls this.context.viewport(x, y, w, h) with the resulting values.
 	 * @param {number} [x] optional x coordinate
 	 * @param {number} [y] optional y coordinate
 	 * @param {number} [width] optional width coordinate
@@ -845,7 +845,7 @@ define([
 	 * @param {Camera} camera Main camera for rendering
 	 * @param {Light[]} lights Lights used in the rendering
 	 * @param {RenderTarget} [renderTarget=null] Optional rendertarget to use as target for rendering, or null to render to the screen
-	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color:true/false, depth:true/false, stencil:true/false}
+	 * @param {boolean} [clear=false] true/false to clear or not clear all types, or an object in the form <code>{color: true/false, depth: true/false, stencil: true/false}
 	 */
 	Renderer.prototype.render = function (renderList, camera, lights, renderTarget, clear, overrideMaterials) {
 		if (overrideMaterials) {
@@ -905,7 +905,7 @@ define([
 	+ moreover it does not change `this` in any way nor does it need to belong to instances of Renderer - it can be only a helper function
 	+ it could also use a description of what it's supposed to do
 	 */
-	Renderer.prototype._override = function(mat1, mat2, store) {
+	Renderer.prototype._override = function (mat1, mat2, store) {
 		store.empty();
 		var keys = Object.keys(store);
 		for (var i = 0, l = keys.length; i < l; i++) {
@@ -977,7 +977,7 @@ define([
 		}
 	};
 
-	Renderer.prototype.callShaderProcessors = function(material, renderInfo) {
+	Renderer.prototype.callShaderProcessors = function (material, renderInfo) {
 		// Check for caching of shader that use defines
 		material.shader.updateProcessors(renderInfo);
 		this.findOrCacheMaterialShader(material, renderInfo);
@@ -1035,7 +1035,7 @@ define([
 		}
 	};
 
-	Renderer.prototype.configureRenderInfo = function(renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire) {
+	Renderer.prototype.configureRenderInfo = function (renderInfo, materialIndex, material, orMaterial, originalData, flatOrWire) {
 
 		var meshData = renderInfo.meshData;
 		if (materialIndex < this._overrideMaterials.length) {
@@ -1208,7 +1208,7 @@ define([
 
 	// Hardware picking
 	Renderer.prototype.renderToPick = function (renderList, camera, clear, skipUpdateBuffer, doScissor, clientX, clientY, customPickingMaterial, skipOverride) {
-		if(this.viewportWidth * this.viewportHeight === 0) {
+		if (this.viewportWidth * this.viewportHeight === 0) {
 			return;
 		}
 		var pickingResolutionDivider = 4;
@@ -1274,7 +1274,7 @@ define([
 	};
 
 	Renderer.prototype.pick = function (clientX, clientY, pickingStore, camera) {
-		if(this.viewportWidth * this.viewportHeight === 0) {
+		if (this.viewportWidth * this.viewportHeight === 0) {
 			pickingStore.id = -1;
 			pickingStore.depth = 0;
 			return;

@@ -115,7 +115,7 @@ define([
 	 *
 	 * @param {string} ref Ref of object to load.
 	 * @param {object} options
-	 * @param {function(handled, total)} [options.progressCallback] Function called while loading the world.
+	 * @param {function (handled, total)} [options.progressCallback] Function called while loading the world.
 	 * Arguments handled and total are both integer numbers and represent the loaded elements so far as well as the total elements.
 	 * @param {boolean} [options.preloadBinaries=false] Load the binary data as soon as the reference is loaded.
 	 * @param {boolean} [options.noCache=false] Ignore cache, i.e. always load files fresh from the server.

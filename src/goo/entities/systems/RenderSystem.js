@@ -53,7 +53,7 @@ define([
 			x: 0,
 			y: 0,
 			pickingStore: {},
-			pickingCallback: function(id, depth) {
+			pickingCallback: function (id, depth) {
 				console.log(id, depth);
 			},
 			skipUpdateBuffer: false
@@ -153,7 +153,7 @@ define([
 		}
 		var shaderDef = ObjectUtil.deepClone(ShaderLib.uber);
 		shaderDef.fshader = fshader;
-		if(key !== 'flat') {
+		if (key !== 'flat') {
 			this._debugMaterials[key] = new Material(shaderDef, key);
 			if (key === 'wireframe') {
 				this._debugMaterials[key].wireframe = true;
@@ -175,20 +175,20 @@ define([
 		}
 	};
 
-	RenderSystem.prototype.setDebugMaterial = function(key) {
-		if(!key || key === '') {
+	RenderSystem.prototype.setDebugMaterial = function (key) {
+		if (!key || key === '') {
 			this.overrideMaterials = [];
 			return;
 		}
 		var debugs = key.split('+');
 		this.overrideMaterials = [];
 
-		for(var i = 0; i < debugs.length; i++) {
+		for (var i = 0; i < debugs.length; i++) {
 			var key = debugs[i];
-			if(!this._debugMaterials[key]) {
+			if (!this._debugMaterials[key]) {
 				this._createDebugMaterial(key);
 			}
-			if(key === '') {
+			if (key === '') {
 				this.overrideMaterials.push(null);
 			} else {
 				this.overrideMaterials.push(this._debugMaterials[key]);

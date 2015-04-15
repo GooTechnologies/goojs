@@ -12,7 +12,7 @@ define([
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(/*data*/) {
+		this.eventListener = function (/*data*/) {
 			this.updated = true;
 		}.bind(this);
 	}
@@ -44,14 +44,14 @@ define([
 		SystemBus.addListener(this.channel, this.eventListener, false);
 	};
 
-	TransitionOnMessageAction.prototype._run = function(fsm) {
+	TransitionOnMessageAction.prototype._run = function (fsm) {
 		if (this.updated) {
 			this.updated = false;
 			fsm.send(this.transitions.transition);
 		}
 	};
 
-	TransitionOnMessageAction.prototype.exit = function(/*fsm*/) {
+	TransitionOnMessageAction.prototype.exit = function (/*fsm*/) {
 		SystemBus.removeListener(this.channel, this.eventListener);
 	};
 

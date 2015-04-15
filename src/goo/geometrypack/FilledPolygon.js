@@ -28,10 +28,10 @@ define([
 
 	function getTriangulation(p) {
 		var n = p.length / 3;
-		if(n < 3) { return []; }
+		if (n < 3) { return []; }
 		var tgs = [];
 		var avl = [];
-		for(var i=0; i<n; i++) { avl.push(i); }
+		for (var i=0; i<n; i++) { avl.push(i); }
 
 		var i = 0;
 		var al = n;
@@ -45,21 +45,21 @@ define([
 			var cx = p[3*i2],  cy = p[3*i2+1];
 
 			var earFound = false;
-			if(convex(ax, ay, bx, by, cx, cy)) {
+			if (convex(ax, ay, bx, by, cx, cy)) {
 				earFound = true;
 				for (var j=0; j<al; j++) {
 					var vi = avl[j];
-					if(vi===i0 || vi===i1 || vi===i2) { continue; }
-					if(pointInTriangle(p[3*vi], p[3*vi+1], ax, ay, bx, by, cx, cy)) {earFound = false; break;}
+					if (vi===i0 || vi===i1 || vi===i2) { continue; }
+					if (pointInTriangle(p[3*vi], p[3*vi+1], ax, ay, bx, by, cx, cy)) {earFound = false; break;}
 				}
 			}
-			if(earFound) {
+			if (earFound) {
 				tgs.push(i0, i1, i2);
 				avl.splice((i+1)%al, 1);
 				al--;
 				i= 0;
 			}
-			else { if(i++ > 3*al) { break; } }
+			else { if (i++ > 3*al) { break; } }
 		}
 		tgs.push(avl[0], avl[1], avl[2]);
 		return tgs;

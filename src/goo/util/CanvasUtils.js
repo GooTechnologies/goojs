@@ -35,7 +35,7 @@ define([
 	CanvasUtils.loadCanvasFromPath = function (canvasPath, callback) {
 		var options = {};
 		if (arguments.length === 3) {
-			// Called with loadCanvasFromPath(path,options,callback)
+			// Called with loadCanvasFromPath(path, options, callback)
 			options = arguments[1];
 			callback = arguments[2];
 		}
@@ -117,7 +117,7 @@ define([
 	 *     resizeToFit:true,
 	 *     width:100,
 	 *     height:100
-	 * }, function(canvas){
+	 * }, function (canvas){
 	 *     // canvas is an HTMLCanvasElement
 	 * });
 	 */

@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -23,7 +23,7 @@ define(
 		LogicNodeMultiply.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMultiply.editorName = "Multiply";
 
-		LogicNodeMultiply.prototype.onInputChanged = function(instDesc) {
+		LogicNodeMultiply.prototype.onInputChanged = function (instDesc) {
 			var x = LogicLayer.readPort(instDesc, LogicNodeMultiply.inportX);
 			var y = LogicLayer.readPort(instDesc, LogicNodeMultiply.inportY);
 			LogicLayer.writeValue(instDesc, LogicNodeMultiply.outportProduct, x * y);

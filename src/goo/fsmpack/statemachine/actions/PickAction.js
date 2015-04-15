@@ -11,13 +11,13 @@ define([
 		this.everyFrame = true;
 		this.updated = false;
 		var that = this;
-		this.eventListener = function(evt) {
+		this.eventListener = function (evt) {
 			if (!evt.entity) {
 				return;
 			}
 
-			evt.entity.traverseUp(function(entity){
-				if(entity === that.ownerEntity) {
+			evt.entity.traverseUp(function (entity){
+				if (entity === that.ownerEntity) {
 					that.updated = true;
 					return false;
 				}

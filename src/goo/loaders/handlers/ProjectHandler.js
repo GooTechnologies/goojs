@@ -37,7 +37,7 @@ define([
 	 * @param {string} ref}
 	 * @param {object} options
 	 */
-	ProjectHandler.prototype._remove = function(ref, options) {
+	ProjectHandler.prototype._remove = function (ref, options) {
 		var project = this._objects.get(ref);
 		if (project) {
 			this.updateObject(project.mainScene.id, null, options);
@@ -49,7 +49,7 @@ define([
 	 * @returns {object}
 	 * @private
 	 */
-	ProjectHandler.prototype._create = function() {
+	ProjectHandler.prototype._create = function () {
 		return {
 			mainScene: null
 		};
@@ -62,12 +62,12 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} Resolves with the updated scene or null if removed
 	 */
-	 ProjectHandler.prototype._update = function(ref, config, options) {
+	 ProjectHandler.prototype._update = function (ref, config, options) {
 		var that = this;
-		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function(project) {
+		return ConfigHandler.prototype._update.call(this, ref, config, options).then(function (project) {
 			if (!project) { return; }
 			function loadPromise() {
-				return that._load(config.mainSceneRef, options).then(function(scene) {
+				return that._load(config.mainSceneRef, options).then(function (scene) {
 					project.mainScene = scene;
 					return project;
 				});

@@ -243,14 +243,14 @@ define(['goo/math/Vector3', 'goo/math/Matrix3'], function (Vector3, Matrix3) {
 			}
 		};
 
-		if(this.domElement) {
+		if (this.domElement) {
 			this.setupMouseControls();
 		}
 		this.updateMovementVector();
 		this.updateRotationVector();
 	}
 
-	BasicControlScript.prototype.setupMouseControls = function() {
+	BasicControlScript.prototype.setupMouseControls = function () {
 		this.domElement.setAttribute('tabindex', -1);
 		this.domElement.addEventListener('mousedown', this.mousedown, false);
 		this.domElement.addEventListener('touchstart', this.mousedown, false);
@@ -274,8 +274,8 @@ define(['goo/math/Vector3', 'goo/math/Matrix3'], function (Vector3, Matrix3) {
 	};
 
 	BasicControlScript.prototype.run = function (entity, tpf, env) {
-		if(env) {
-			if(!this.domElement && env.domElement) {
+		if (env) {
+			if (!this.domElement && env.domElement) {
 				this.domElement = env.domElement;
 				this.setupMouseControls();
 			}

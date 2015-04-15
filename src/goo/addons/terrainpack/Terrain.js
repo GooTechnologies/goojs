@@ -338,7 +338,7 @@ define([
 
 			this.copyPass.render(this.renderer, this.splatCopy, this.splat);
 
-			this.renderable.materials[0].uniforms.rgba = rgba || [1,1,1,1];
+			this.renderable.materials[0].uniforms.rgba = rgba || [1, 1, 1, 1];
 			this.renderer.render(this.renderable, FullscreenUtil.camera, [], this.splat, false);
 		} else if (mode === 'smooth') {
 			this.renderable.materials[0] = this.drawMaterial3;
@@ -432,7 +432,7 @@ define([
 		}
 	};
 
-	Terrain.prototype.setLightmapTexture = function(lightMap) {
+	Terrain.prototype.setLightmapTexture = function (lightMap) {
 		// update all meshes.
 		for (var i = 0; i < this.clipmaps.length; i++) {
 			var clipmap = this.clipmaps[i];
@@ -982,7 +982,7 @@ define([
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			opacity : 1.0,
-			rgba: [1,1,1,1],
+			rgba: [1, 1, 1, 1],
 			diffuseMap : Shader.DIFFUSE_MAP,
 			splatMap : 'SPLAT_MAP'
 		},

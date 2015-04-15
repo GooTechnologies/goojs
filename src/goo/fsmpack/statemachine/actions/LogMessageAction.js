@@ -31,7 +31,7 @@ define([
 		transitions: []
 	};
 
-	LogMessageAction.prototype._run = function(/*fsm*/) {
+	LogMessageAction.prototype._run = function (/*fsm*/) {
 		console.log(this.message);
 	};
 

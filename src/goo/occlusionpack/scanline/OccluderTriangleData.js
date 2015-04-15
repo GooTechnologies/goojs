@@ -12,7 +12,7 @@ define([
 		var indexCount = parameters.indexCount;
 
 		/*
-			The position array will contain 4 values per vertex. (x,y,z,w).
+			The position array will contain 4 values per vertex. (x, y, z, w).
 
 			The maximum amount of extra vertices are 2 per triangle, thus 2*4 extra positions per triangle
 
@@ -57,7 +57,7 @@ define([
 
 	/**
 	 * Adds the array of vertex data to the position array and returns the new vertex's index to the position.
-	  * @param {Float32Array} array [x,y,z,w]
+	  * @param {Float32Array} array [x, y, z, w]
 	 * @returns {Number} the added position's vertex index
 	 */
 	OccluderTriangleData.prototype.addVertex = function (array) {

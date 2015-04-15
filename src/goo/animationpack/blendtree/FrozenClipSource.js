@@ -46,12 +46,12 @@ function () {
 	/**
 	* Set time scale
 	*/
-	FrozenClipSource.prototype.setTimeScale = function() {};
+	FrozenClipSource.prototype.setTimeScale = function () {};
 
 	/**
 	 * @returns {FrozenClipSource}
 	 */
-	FrozenClipSource.prototype.clone = function() {
+	FrozenClipSource.prototype.clone = function () {
 		var cloned = new FrozenClipSource(
 			this._source.clone(),
 			this._time

@@ -25,7 +25,7 @@ define([
 		transitions: []
 	};
 
-	ResumeFSMAction.prototype._run = function(/*fsm*/) {
+	ResumeFSMAction.prototype._run = function (/*fsm*/) {
 		if (this.entity && this.entity.stateMachineComponent) {
 			this.entity.stateMachineComponent.resume();
 		}

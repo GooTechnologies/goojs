@@ -8,7 +8,7 @@ define([
 	'use strict';
 
 	/**
-	 * Constructs a new ray with an origin at (0,0,0) and a direction of (0,0,1).
+	 * Constructs a new ray with an origin at (0, 0, 0) and a direction of (0, 0, 1).
 	 */
 	function Ray(origin, direction) {
 		this.origin = origin ? origin.clone() : new Vector3();
@@ -91,7 +91,7 @@ define([
 						} else {
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.
-							// eg. texcoord s,t at intersection point:
+							// eg. texcoord s, t at intersection point:
 							// s = w0*s0 + w1*s1 + w2*s2;
 							// t = w0*t0 + w1*t1 + w2*t2;
 							var w1 = dirDotDiffxEdge2 * inv;

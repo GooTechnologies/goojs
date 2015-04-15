@@ -12,7 +12,7 @@ define([
 
 		this.everyFrame = true;
 		this.updated = false;
-		this.eventListener = function(event) {
+		this.eventListener = function (event) {
 			if (!this.key || event.which === +this.key) {
 				this.updated = true;
 			}

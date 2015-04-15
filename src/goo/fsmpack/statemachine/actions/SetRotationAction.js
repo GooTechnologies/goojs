@@ -13,7 +13,7 @@ define([
 
 	SetRotationAction.prototype = Object.create(Action.prototype);
 
-	SetRotationAction.prototype.configure = function(settings) {
+	SetRotationAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;
 		this.entity = settings.entity || null;
 		this.amountX = settings.amountX || 0;
@@ -55,7 +55,7 @@ define([
 		transitions: []
 	};
 
-	SetRotationAction.prototype._run = function(fsm) {
+	SetRotationAction.prototype._run = function (fsm) {
 		if (this.entity !== null) {
 			this.entity.transformComponent.transform.setRotationXYZ(
 				FSMUtil.getValue(this.amountX, fsm),

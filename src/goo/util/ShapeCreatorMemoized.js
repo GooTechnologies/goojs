@@ -135,7 +135,7 @@ function (
 			options.circleSamples !== oldMeshData._circleSamples ||
 			options.tubeRadius !== oldMeshData._tubeRadius ||
 			options.centerRadius !== oldMeshData._centerRadius) {
-			//return cacheOrCreate('torus', options, function() { // cannot cache torus because of real typed tubeRadius
+			//return cacheOrCreate('torus', options, function () { // cannot cache torus because of real typed tubeRadius
 			return new Torus(options.circleSamples, options.radialSamples, options.tubeRadius, options.centerRadius);
 			//});
 		} else {

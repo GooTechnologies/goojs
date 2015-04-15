@@ -8,7 +8,7 @@ define(
 		'goo/math/Matrix3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3) {
 		'use strict';
 
 		/**
@@ -25,7 +25,7 @@ define(
 		LogicNodeApplyMatrix.prototype = Object.create(LogicNode.prototype);
 		LogicNodeApplyMatrix.editorName = "ApplyMatrix";
 
-		LogicNodeApplyMatrix.prototype.onInputChanged = function(instDesc) {
+		LogicNodeApplyMatrix.prototype.onInputChanged = function (instDesc) {
 			var vec = LogicLayer.readPort(instDesc, LogicNodeApplyMatrix.inportX);
 			var mat = LogicLayer.readPort(instDesc, LogicNodeApplyMatrix.inportY);
 			this.vec.copy(vec);

@@ -26,8 +26,8 @@ define([
 		for (var i = 0; i < entities.length; i++) {
 			var entity = entities[i];
 			var textComponent = entity.textComponent;
-			if(textComponent.dirty) {
-				if(entity.hasComponent('MeshDataComponent')) {
+			if (textComponent.dirty) {
+				if (entity.hasComponent('MeshDataComponent')) {
 					entity.getComponent('MeshDataComponent').meshData = TextureGrid.fromString(textComponent.text);
 				}
 				else {

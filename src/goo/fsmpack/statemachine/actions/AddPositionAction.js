@@ -13,7 +13,7 @@ define([
 
 	AddPositionAction.prototype = Object.create(Action.prototype);
 
-	AddPositionAction.prototype.configure = function(settings) {
+	AddPositionAction.prototype.configure = function (settings) {
 		this.everyFrame = settings.everyFrame !== false;
 		this.entity = settings.entity || null;
 		this.amountX = settings.amountX || 0;
@@ -62,7 +62,7 @@ define([
 		transitions: []
 	};
 
-	AddPositionAction.prototype._run = function(fsm) {
+	AddPositionAction.prototype._run = function (fsm) {
 		if (this.entity !== null) {
 			var tpf = fsm.getTpf();
 

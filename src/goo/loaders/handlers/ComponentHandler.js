@@ -31,7 +31,7 @@ define([
 	 * @param {object} config
 	 * @private
 	 */
-	ComponentHandler.prototype._prepare = function(/*config*/) {};
+	ComponentHandler.prototype._prepare = function (/*config*/) {};
 
 	/**
 	 * Create engine component object based on the config. Should be overridden in subclasses.
@@ -40,7 +40,7 @@ define([
 	 * @private
 	 * @abstract
 	 */
-	ComponentHandler.prototype._create = function() {
+	ComponentHandler.prototype._create = function () {
 		throw new Error("ComponentHandler._create is abstract, use ComponentHandler.getHandler(type)");
 	};
 
@@ -49,7 +49,7 @@ define([
 	 * @param {Entity} entity The entity from which this component should be removed.
 	 * @private
 	 */
-	ComponentHandler.prototype._remove = function(entity) {
+	ComponentHandler.prototype._remove = function (entity) {
 		entity.clearComponent(this._type);
 	};
 
@@ -59,7 +59,7 @@ define([
 	 * @param {object} options
 	 * @private
 	 */
-	ComponentHandler.prototype._load = function(ref, options) {
+	ComponentHandler.prototype._load = function (ref, options) {
 		return this.loadObject(ref, options);
 	};
 
@@ -71,8 +71,8 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the created component when loading is done.
 	 */
-	ComponentHandler.prototype.update = function(entity, config/*, options*/) {
-		if(!entity) {
+	ComponentHandler.prototype.update = function (entity, config/*, options*/) {
+		if (!entity) {
 			return PromiseUtil.reject('Entity is missing');
 		}
 		if (!config) {
@@ -80,7 +80,7 @@ define([
 			return PromiseUtil.resolve();
 		}
 		var component = entity.getComponent(this._type);
-		if(!component) {
+		if (!component) {
 			component = this._create();
 			entity.setComponent(component);
 		}
@@ -98,7 +98,7 @@ define([
 	 * @param {string} type
 	 * @returns {Class} A subclass of {ComponentHandler}, or null if no registered handler for the given type was found.
 	 */
-	ComponentHandler.getHandler = function(type) {
+	ComponentHandler.getHandler = function (type) {
 		return ComponentHandler.handlerClasses[type];
 	};
 
@@ -107,7 +107,7 @@ define([
 	 * @param {string} type
 	 * @param {Class} klass the class to register for this component type
 	 */
-	ComponentHandler._registerClass = function(type, klass) {
+	ComponentHandler._registerClass = function (type, klass) {
 		ComponentHandler.handlerClasses[type] = klass;
 	};
 

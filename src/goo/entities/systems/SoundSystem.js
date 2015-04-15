@@ -79,7 +79,7 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundSystem.prototype.inserted = function(entity) {
+	SoundSystem.prototype.inserted = function (entity) {
 		if (!this.initialized) { this._initializeAudioNodes(); }
 
 		entity.soundComponent.connectTo({
@@ -94,7 +94,7 @@ define([
 	 * @param {Entity} entity
 	 * @private
 	 */
-	SoundSystem.prototype.deleted = function(entity) {
+	SoundSystem.prototype.deleted = function (entity) {
 		if (entity.soundComponent) {
 			var sounds = entity.soundComponent.sounds;
 			for (var i = 0; i < sounds.length; i++) {
@@ -113,7 +113,7 @@ define([
 	 * @param {number} [config.volume] Will be clamped between 0 and 1.
 	 * @param {number} [config.reverb] Will be clamped between 0 and 1.
 	 */
-	SoundSystem.prototype.updateConfig = function(config) {
+	SoundSystem.prototype.updateConfig = function (config) {
 		if (!AudioContext.isSupported()) {
 			console.warn('WebAudio not supported');
 			return;
@@ -137,7 +137,7 @@ define([
 	 * Set the reverb impulse response
 	 * @param {AudioBuffer} [audioBuffer] if empty will also empty existing reverb
 	 */
-	SoundSystem.prototype.setReverb = function(audioBuffer) {
+	SoundSystem.prototype.setReverb = function (audioBuffer) {
 		if (!AudioContext.isSupported()) {
 			console.warn('WebAudio not supported');
 			return;
@@ -145,7 +145,7 @@ define([
 		if (!this.initialized) { this._initializeAudioNodes(); }
 
 		this._wetNode.disconnect();
-		if(!audioBuffer && this._wetNode) {
+		if (!audioBuffer && this._wetNode) {
 			this._convolver.buffer = null;
 		} else {
 			this._convolver.buffer = audioBuffer;
@@ -156,7 +156,7 @@ define([
 	/**
 	 * Pause the sound system and thereby all sounds in the scene
 	 */
-	SoundSystem.prototype.pause = function() {
+	SoundSystem.prototype.pause = function () {
 		if (this._pausedSounds) { return; }
 		this._pausedSounds = {};
 		for (var i = 0; i < this.entities.length; i++) {
@@ -174,7 +174,7 @@ define([
 	/**
 	 * Stopping the sound system and all sounds in scene
 	 */
-	SoundSystem.prototype.stop = function() {
+	SoundSystem.prototype.stop = function () {
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
 			for (var j = 0; j < sounds.length; j++) {
@@ -188,7 +188,7 @@ define([
 	/**
 	 * Resumes playing of all sounds that were paused
 	 */
-	SoundSystem.prototype.resume = function() {
+	SoundSystem.prototype.resume = function () {
 		if (!this._pausedSounds) { return; }
 		for (var i = 0; i < this.entities.length; i++) {
 			var sounds = this.entities[i].soundComponent.sounds;
@@ -202,7 +202,7 @@ define([
 		this._pausedSounds = null;
 	};
 
-	SoundSystem.prototype.process = function(entities, tpf) {
+	SoundSystem.prototype.process = function (entities, tpf) {
 		if (!AudioContext.isSupported()) {
 			// This should never happen because system shouldn't process
 			return;
@@ -216,7 +216,7 @@ define([
 		var relativeTransform = this._relativeTransform;
 
 		var viewMat;
-		if(this._camera){
+		if (this._camera){
 			viewMat = this._camera.getViewMatrix();
 		}
 
@@ -226,7 +226,7 @@ define([
 
 			component._attachedToCamera = !!(e.cameraComponent && e.cameraComponent.camera === this._camera);
 
-			if(this._camera && !component._attachedToCamera){
+			if (this._camera && !component._attachedToCamera){
 				// Give the transform relative to the camera
 				relativeTransform.mul2(viewMat, e.transformComponent.worldTransform.matrix);
 				component.process(this._settings, relativeTransform, tpf);

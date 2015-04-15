@@ -9,7 +9,7 @@ define(
 		'goo/math/Matrix3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, TransformComponent, Vector3, Matrix3) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, TransformComponent, Vector3, Matrix3) {
 		'use strict';
 
 		/**
@@ -25,11 +25,11 @@ define(
 		LogicNodeTransformComponent.prototype = Object.create(LogicNode.prototype);
 		LogicNodeTransformComponent.editorName = "TransformComponent";
 
-		LogicNodeTransformComponent.prototype.onConfigure = function(config) {
+		LogicNodeTransformComponent.prototype.onConfigure = function (config) {
 			this.entityRef = config.entityRef; //
 		};
 
-		LogicNodeTransformComponent.prototype.onInputChanged = function(instDesc, portID, value) {
+		LogicNodeTransformComponent.prototype.onInputChanged = function (instDesc, portID, value) {
 			var entity = LogicLayer.resolveEntityRef(instDesc, this.entityRef);
 			var transformComponent = entity.transformComponent;
 

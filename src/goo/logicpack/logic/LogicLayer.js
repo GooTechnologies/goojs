@@ -3,7 +3,7 @@ define(
 		"goo/logic/LogicInterface"
 	],
 
-	function(
+	function (
 		LogicInterface
 	) {
 
@@ -26,7 +26,7 @@ define(
 			this.logicSystem = ownerEntity._world.getSystem("LogicSystem");
 		}
 
-		LogicLayer.prototype.clear = function() {
+		LogicLayer.prototype.clear = function () {
 			this._logicInterfaces = {};
 			this._connectionsBySource = {};
 			this._instanceID = 0;
@@ -44,7 +44,7 @@ define(
 		 * @param wantsProcessCall If the instance passed wants processLogic per-frame calls
 		 * @returns An instance descriptor
 		 */
-		LogicLayer.prototype.addInterfaceInstance = function(iface, instance, name, wantsProcessCall) {
+		LogicLayer.prototype.addInterfaceInstance = function (iface, instance, name, wantsProcessCall) {
 
 			// if wished, autogenerate name.
 			if (name === null) {
@@ -65,7 +65,7 @@ define(
 
 			// also supply self-destructing code
 			var _this = this;
-			instDesc.remove = function() {
+			instDesc.remove = function () {
 				delete this.outConnections;
 				delete _this._logicInterfaces[name];
 
@@ -73,7 +73,7 @@ define(
 				_this.unresolveAllConnections();
 
 			};
-			instDesc.getPorts = function() {
+			instDesc.getPorts = function () {
 				return iface.getPorts();
 			};
 
@@ -87,7 +87,7 @@ define(
 			return instDesc;
 		};
 
-		LogicLayer.prototype.unresolveAllConnections = function() {
+		LogicLayer.prototype.unresolveAllConnections = function () {
 			// Un-do all connection resolving. Processes all instances, all ports and all connections
 			for (var n in this._logicInterfaces) {
 				var ports = this._logicInterfaces[n].outConnections;
@@ -106,7 +106,7 @@ define(
 			}
 		};
 
-		LogicLayer.resolvePortID = function(instDesc, portName) {
+		LogicLayer.resolvePortID = function (instDesc, portName) {
 
 			if (typeof portName === "number") {
 				return portName;
@@ -129,7 +129,7 @@ define(
 			return null;
 		};
 
-		LogicLayer.prototype.resolveTargetAndPortID = function(targetRef, portName) {
+		LogicLayer.prototype.resolveTargetAndPortID = function (targetRef, portName) {
 			var tgt = this._logicInterfaces[targetRef];
 
 			// can't be resolved right away, not added yet.
@@ -169,7 +169,7 @@ define(
 			return null;
 		};
 
-		LogicLayer.prototype.addConnectionByName = function(instDesc, sourcePort, targetName, targetPort) {
+		LogicLayer.prototype.addConnectionByName = function (instDesc, sourcePort, targetName, targetPort) {
 			//
 			// Adding connection here which will be in unresolved state
 			// [targetName, targetPort]
@@ -195,7 +195,7 @@ define(
 		 * Resolve all outgoing connections from the logic instance instDesc and
 		 * call the provided callback function on each connected target.
 		 */
-		LogicLayer.doConnections = function(instDesc, portID, func) {
+		LogicLayer.doConnections = function (instDesc, portID, func) {
 
 			if (instDesc.outConnections === undefined) {
 				return;
@@ -237,9 +237,9 @@ define(
 		 * Writes a value using an instance descriptor and a portID (which must be registered through the interface the instance
 		 * was created with). All connected objects get the onPropertyWrite call.
 		 */
-		LogicLayer.writeValue = function(instDesc, outPortID, value) {
+		LogicLayer.writeValue = function (instDesc, outPortID, value) {
 			//
-			LogicLayer.doConnections(instDesc, outPortID, function(targetDesc, portID) {
+			LogicLayer.doConnections(instDesc, outPortID, function (targetDesc, portID) {
 				// write
 				if (targetDesc._portValues === undefined) {
 					targetDesc._portValues = {};
@@ -270,7 +270,7 @@ define(
 		 * @param outPortDesc Port id of the output port
 		 * @param value Value to write
 		 */
-		LogicLayer.writeValueToLayerOutput = function(outNodeDesc, outPortDesc, value) {
+		LogicLayer.writeValueToLayerOutput = function (outNodeDesc, outPortDesc, value) {
 			// TODO: Cache writeFn
 			var writeFn = outNodeDesc.layer.logicSystem.makeOutputWriteFn(outNodeDesc.layer.ownerEntity, outPortDesc);
 			writeFn(value);
@@ -282,7 +282,7 @@ define(
 		 * @param portID portID of interest
 		 * @returns Returns the value at the port
 		 */
-		LogicLayer.readPort = function(instDesc, portID) {
+		LogicLayer.readPort = function (instDesc, portID) {
 			// 2-step lookup. note that value will first be
 			// _portValue if it exists. 
 			var value = instDesc._portValues;
@@ -314,14 +314,14 @@ define(
 		 * Fire an event.
 		 * @param portId The port connecting the event. (Returned when registering the event port)
 		 */
-		LogicLayer.fireEvent = function(instDesc, outPortID) {
-			LogicLayer.doConnections(instDesc, outPortID, function(targetDesc, portID) {
+		LogicLayer.fireEvent = function (instDesc, outPortID) {
+			LogicLayer.doConnections(instDesc, outPortID, function (targetDesc, portID) {
 				targetDesc.obj.onEvent(targetDesc, portID);
 			});
 		};
 
 
-		LogicLayer.resolveEntityRef = function(instDesc, entityRef) {
+		LogicLayer.resolveEntityRef = function (instDesc, entityRef) {
 			if (entityRef === '[self]') {
 				return instDesc.layer.ownerEntity;
 			} else {
@@ -329,7 +329,7 @@ define(
 			}
 		};
 
-		LogicLayer.prototype.process = function(tpf) {
+		LogicLayer.prototype.process = function (tpf) {
 			// First of all process queued property update notifications from last frame.
 			// These are limited to one per frame and queued up if more should happen.
 			// Reason for this being avoiding cyclic and infinite update loops.
@@ -355,7 +355,7 @@ define(
 		 * For all logic objects (i.e. those who added logicInstances and passed themselves along)
 		 * @param f Function to call for every object.
 		 */
-		LogicLayer.prototype.forEachLogicObject = function(f) {
+		LogicLayer.prototype.forEachLogicObject = function (f) {
 			for (var i in this._logicInterfaces) {
 				var o = this._logicInterfaces[i].obj;
 				if (o !== undefined) {
@@ -369,14 +369,14 @@ define(
 		 * (components, logic nodes), this is useful for less verbose connection code. It looks up the logicInstance
 		 * in the objects passed in and connects their endpoints.
 		 */
-		LogicLayer.prototype.connectObjectsWithLogic = function(sourceObj, sourcePort, destObj, destPort) {
+		LogicLayer.prototype.connectObjectsWithLogic = function (sourceObj, sourcePort, destObj, destPort) {
 			this.connectEndpoints(sourceObj.logicInstance, sourcePort, destObj.logicInstance, destPort);
 		};
 
 		/**
 		 * Connects two objects through their instance descriptors and port names.
 		 */
-		LogicLayer.prototype.connectEndpoints = function(sourceInst, sourcePort, destInst, destPort) {
+		LogicLayer.prototype.connectEndpoints = function (sourceInst, sourcePort, destInst, destPort) {
 			this.addConnectionByName(sourceInst, sourcePort, destInst.name, destPort);
 		};
 

@@ -22,13 +22,13 @@ define([
 		}
 	}
 
-	AtlasNode.prototype.getRectangles = function() {
+	AtlasNode.prototype.getRectangles = function () {
 		var rectangles = [];
 		this._getRectangles(rectangles);
 		return rectangles;
 	};
 
-	AtlasNode.prototype._getRectangles = function(list) {
+	AtlasNode.prototype._getRectangles = function (list) {
 		if (this.isSet) {
 			list.push(this.localRectangle);
 		}
@@ -38,11 +38,11 @@ define([
 		}
 	};
 
-	AtlasNode.prototype.insert = function(w, h) {
+	AtlasNode.prototype.insert = function (w, h) {
 		return this._insert(new Rectangle(0, 0, w, h));
 	};
 
-	AtlasNode.prototype._insert = function(rectangle) {
+	AtlasNode.prototype._insert = function (rectangle) {
 		if (!this.isLeaf) {
 			var newNode = this.children[0]._insert(rectangle);
 			if (newNode !== null) {

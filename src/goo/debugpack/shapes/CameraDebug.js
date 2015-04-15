@@ -19,11 +19,11 @@ define([
 		this._camera = CameraDebug.buildCamera();
 	}
 
-	CameraDebug.prototype.getMesh = function(camera, options) {
+	CameraDebug.prototype.getMesh = function (camera, options) {
 		return options.full ? [this._camera, CameraDebug.buildFrustum(camera)] : [this._camera];
 	};
 
-	CameraDebug.buildFrustum = function(camera) {
+	CameraDebug.buildFrustum = function (camera) {
 		var near = camera.near;
 		var far = camera.far;
 		var aspect = camera.aspect;
@@ -127,7 +127,7 @@ define([
 		return meshData;
 	};
 
-	CameraDebug.buildCamera = function() {
+	CameraDebug.buildCamera = function () {
 		var meshBuilder = new MeshBuilder();
 		var transform = new Transform();
 
@@ -136,7 +136,7 @@ define([
 		var cameraBox3 = new Box(0.3, 1, 1.6);
 
 		var cameraBox4 = new Box(0.2, 0.15, 0.7);
-		cameraBox4.applyFunction(MeshData.POSITION, function(vert) {
+		cameraBox4.applyFunction(MeshData.POSITION, function (vert) {
 			return new Vector3(
 				vert.x + vert.x / ((vert.z + 1.1) * 0.3),
 				vert.y + vert.y / ((vert.z + 1.1) * 0.3),

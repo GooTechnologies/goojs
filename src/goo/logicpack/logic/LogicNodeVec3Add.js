@@ -7,7 +7,7 @@ define(
 		'goo/math/Vector3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3) {
 		'use strict';
 
 		/**
@@ -23,7 +23,7 @@ define(
 		LogicNodeVec3Add.prototype = Object.create(LogicNode.prototype);
 		LogicNodeVec3Add.editorName = "AddVec3";
 
-		LogicNodeVec3Add.prototype.onInputChanged = function(instDesc) {
+		LogicNodeVec3Add.prototype.onInputChanged = function (instDesc) {
 			var vec1 = LogicLayer.readPort(instDesc, LogicNodeVec3Add.inportX);
 			var vec2 = LogicLayer.readPort(instDesc, LogicNodeVec3Add.inportY);
 

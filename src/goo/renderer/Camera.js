@@ -171,7 +171,7 @@ define([
 	 * Sets the frustum plane values of this camera using the given perspective values.
 	 *
 	 * @param {number} fov The full angle of view on the Y axis, in degrees.
-	 * @param {number} aspect The aspect ratio of our view (generally in [0,1]). Often this is canvas width / canvas height.
+	 * @param {number} aspect The aspect ratio of our view (generally in [0, 1]). Often this is canvas width / canvas height.
 	 * @param {number} near Near plane value
 	 * @param {number} far Far plane value
 	 */
@@ -596,7 +596,7 @@ define([
 	};
 
 	/**
-	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
+	 * Converts a local x, y screen position and depth value to world coordinates based on the current settings of this camera.
 	 * This function calls getWorldCoordinates after converting zDepth to screen space.
 	 *
 	 * @param {number} screenX The screen x position.
@@ -619,7 +619,7 @@ define([
 	};
 
 	/**
-	 * Converts a local x,y screen position and depth value to world coordinates based on the current settings of this camera.
+	 * Converts a local x, y screen position and depth value to world coordinates based on the current settings of this camera.
 	 *
 	 * @param {number} screenX The screen x position (x=0 is the leftmost coordinate of the screen).
 	 * @param {number} screenY The screen y position (y=0 is the top of the screen).
@@ -662,7 +662,7 @@ define([
 	};
 
 	/**
-	 * Converts a position in world coordinate space to an x,y screen position and non linear depth value using the current settings of this camera.
+	 * Converts a position in world coordinate space to an x, y screen position and non linear depth value using the current settings of this camera.
 	 *
 	 * @param {Vector3} worldPos The position in world space to retrieve screen coordinates for.
 	 * @param {number} screenWidth The screen width.
@@ -691,7 +691,7 @@ define([
 	};
 
 	/**
-	 * Converts a position in world coordinate space to a x,y,z frustum position using the current settings of this camera.
+	 * Converts a position in world coordinate space to a x, y, z frustum position using the current settings of this camera.
 	 *
 	 * @param {Vector3} worldPos the position in space to retrieve frustum coordinates for.
 	 * @param {Vector3} [store] Use to avoid object creation. if not null, the results are stored in the given vector and returned.

@@ -98,7 +98,7 @@ define([
 			return;
 		}
 
-		entities = entities.filter(function(entity) {
+		entities = entities.filter(function (entity) {
 			return entity.meshRendererComponent.isReflectable;
 		});
 

@@ -87,7 +87,7 @@ define([
 
 			var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
 
-			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {
+			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
 				color.x += this.x - old.x;
 				color.y += this.y - old.y;
 				color.z += this.z - old.z;
@@ -95,7 +95,7 @@ define([
 				old.x = this.x;
 				old.y = this.y;
 				old.z = this.z;
-			}).onComplete(function() {
+			}).onComplete(function () {
 					fsm.send(this.eventToEmit.channel);
 				}.bind(this)).start(time);
 		}

@@ -53,7 +53,7 @@ define([
 		}]
 	};
 
-	ShakeAction.prototype.configure = function(settings) {
+	ShakeAction.prototype.configure = function (settings) {
 		this.startLevel = settings.startLevel;
 		this.endLevel = settings.endLevel;
 		this.time = settings.time;
@@ -62,7 +62,7 @@ define([
 		this.eventToEmit = { channel: settings.transitions.complete };
 	};
 
-	ShakeAction.prototype._setup = function() {
+	ShakeAction.prototype._setup = function () {
 		this.tween = new window.TWEEN.Tween();
 	};
 
@@ -72,7 +72,7 @@ define([
 		}
 	};
 
-	ShakeAction.prototype._run = function(fsm) {
+	ShakeAction.prototype._run = function (fsm) {
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
@@ -84,7 +84,7 @@ define([
 
 		var that = this;
 		var iter = 0;
-		this.tween.from({ level: +this.startLevel }).to({ level: +this.endLevel }, +this.time).easing(this.easing).onUpdate(function() {
+		this.tween.from({ level: +this.startLevel }).to({ level: +this.endLevel }, +this.time).easing(this.easing).onUpdate(function () {
 			iter++;
 			if (iter > that.speed) {
 				iter = 0;
@@ -105,7 +105,7 @@ define([
 			translation.add(vel).sub(oldVal);
 			oldVal.copy(vel);
 			transformComponent.setUpdated();
-		}).onComplete(function() {
+		}).onComplete(function () {
 			translation.sub(oldVal);
 			transformComponent.setUpdated();
 			fsm.send(this.eventToEmit.channel);

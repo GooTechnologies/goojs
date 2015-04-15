@@ -31,7 +31,7 @@ define([
 	 * @returns {AnimationComponent} the created component object
 	 * @private
 	 */
-	AnimationComponentHandler.prototype._create = function() {
+	AnimationComponentHandler.prototype._create = function () {
 		return new AnimationComponent();
 	};
 
@@ -42,10 +42,10 @@ define([
 	 * @param {object} options
 	 * @returns {RSVP.Promise} promise that resolves with the component when loading is done.
 	 */
-	AnimationComponentHandler.prototype.update = function(entity, config, options) {
+	AnimationComponentHandler.prototype.update = function (entity, config, options) {
 		var that = this;
 
-		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function(component) {
+		return ComponentHandler.prototype.update.call(this, entity, config, options).then(function (component) {
 			if (!component) { return; }
 
 			var promises = [];
@@ -53,7 +53,7 @@ define([
 
 			var poseRef = config.poseRef;
 			if (poseRef) {
-				p = that._load(poseRef, options).then(function(pose) {
+				p = that._load(poseRef, options).then(function (pose) {
 					component._skeletonPose = pose;
 				});
 				promises.push(p);
@@ -61,13 +61,13 @@ define([
 
 			var layersRef = config.layersRef;
 			if (layersRef) {
-				p = that._load(layersRef, options).then(function(layers) {
+				p = that._load(layersRef, options).then(function (layers) {
 					component.layers = layers;
 					component._layersId = layersRef;
 				});
 				promises.push(p);
 			}
-			return RSVP.all(promises).then(function() {
+			return RSVP.all(promises).then(function () {
 				return component;
 			});
 		});

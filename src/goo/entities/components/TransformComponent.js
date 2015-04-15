@@ -543,14 +543,14 @@ define([
 	/**
 	 * Adds to the translation in a local direction.<br/>
 	 * This is similar to addTranslation but this function takes the argument in local coordinate space and converts it for you.<br/>
-	 * So for example move(0,0,-1) moves forward (because of the right handed coordinate system).<br/>
+	 * So for example move(0, 0, -1) moves forward (because of the right handed coordinate system).<br/>
 	 * <i>Injected into entity when adding component.</i>
 	 *
 	 * @function
 	 * @param {Vector | number[] | number...} component values.
 	 * @returns {TransformComponent} Self for chaining.
 	 */
-	TransformComponent.prototype.move = (function(){
+	TransformComponent.prototype.move = (function (){
 		var moveWorldDirection = new Vector3();
 		return function () {
 			var moveLocalDirection = Vector3.fromAny.apply(null, arguments);

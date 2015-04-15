@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -22,7 +22,7 @@ define(
 		LogicNodeEntityProxy.prototype = Object.create(LogicNode.prototype);
 		LogicNodeEntityProxy.editorName = "EntityProxy";
 
-		LogicNodeEntityProxy.prototype.onConfigure = function(config) {
+		LogicNodeEntityProxy.prototype.onConfigure = function (config) {
 			this.entityRef = config.entityRef;
 		};
 

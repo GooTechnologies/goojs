@@ -258,7 +258,7 @@ function () {
 	function compareArrays(a1, a2) {
 		var l = a1.length;
 		while(l--) {
-			if(a1[l] !== a2[l]) {
+			if (a1[l] !== a2[l]) {
 				return false;
 			}
 		}

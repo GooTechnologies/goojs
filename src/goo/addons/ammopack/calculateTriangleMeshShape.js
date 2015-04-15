@@ -1,10 +1,10 @@
-define( [], function(){
+define( [], function (){
 	'use strict';
 	/*global Ammo */
 
 	// TODO: instead of using this scale parameter, "simply" scale the vertices with the real entity transform
-	return function(entity, scale) {
-		scale = scale || [1,1,1];
+	return function (entity, scale) {
+		scale = scale || [1, 1, 1];
 		var floatByteSize = 4;
 		var use32bitIndices = true;
 		var intByteSize = use32bitIndices ? 4 : 2;

@@ -357,7 +357,7 @@ define([
 		attributes : ShaderLib.copy.attributes,
 		uniforms : {
 			tDiffuse : Shader.DIFFUSE_MAP,
-			time : function() {
+			time : function () {
 				return World.time;
 			},
 			// noise effect intensity value (0 = no effect, 1 = full effect)
@@ -389,7 +389,7 @@ define([
 			'vec2 sc = vec2( sin( texCoord0.y * sCount ), cos( texCoord0.y * sCount ) );',
 			'cResult += cTextureScreen.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;',
 			'cResult = cTextureScreen.rgb + nIntensity * ( cResult - cTextureScreen.rgb );',
-			'if( grayscale ) {',
+			'if ( grayscale ) {',
 			'	cResult = vec3( cResult.r * 0.3 + cResult.g * 0.59 + cResult.b * 0.11 );',
 			'}',
 			'gl_FragColor = vec4( cResult, cTextureScreen.a );',
@@ -400,7 +400,7 @@ define([
 		attributes : ShaderLib.copy.attributes,
 		uniforms : {
 			tDiffuse : Shader.DIFFUSE_MAP,
-			time : function() {
+			time : function () {
 				return World.time;
 			},
 			// noise effect intensity value (0 = no effect, 1 = full effect)
@@ -1151,9 +1151,9 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			lightPosition : Shader.LIGHT0,
-			HighlightColor : [0.9,0.8,0.7,1.0],
-			MidColor : [0.65,0.55,0.45,1.0],
-			ShadowColor : [0.4,0.3,0.2,1.0],
+			HighlightColor : [0.9, 0.8, 0.7, 1.0],
+			MidColor : [0.65, 0.55, 0.45, 1.0],
+			ShadowColor : [0.4, 0.3, 0.2, 1.0],
 			HighlightSize : 0.2,
 			ShadowSize : 0.01,
 			OutlineWidth : 0.15
@@ -1275,7 +1275,7 @@ define([
 		defines: {
 			OVERLAY_TYPE: 0
 		},
-		processors: [function(shader, shaderInfo) {
+		processors: [function (shader, shaderInfo) {
 			var overlayTex = shaderInfo.material._textureMaps.OVERLAY_MAP;
 			if (overlayTex) {
 				shader.setDefine('OVERLAY_MAP', true);

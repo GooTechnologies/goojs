@@ -512,7 +512,7 @@ define([
 	BoundingBox.prototype.merge = function (bv) {
 		if (bv instanceof BoundingBox) {
 			return this.mergeBox(bv.center, bv.xExtent, bv.yExtent, bv.zExtent, this);
-		} else if(bv instanceof BoundingSphere) {
+		} else if (bv instanceof BoundingSphere) {
 			return this.mergeBox(bv.center, bv.radius, bv.radius, bv.radius, this);
 		} else {
 			return this;

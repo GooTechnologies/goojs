@@ -21,7 +21,7 @@ define([], function () {
 	 * @param {number} collidables[].bottom The bottom Y coordinate of the collidable
 	 * @param {number} collidables[].top The top Y coordinate of the collidable
 	 */
-	PolyBoundingScript.prototype.addCollidable = function(collidable) {
+	PolyBoundingScript.prototype.addCollidable = function (collidable) {
 		this.collidables.push(collidable);
 	};
 
@@ -31,9 +31,9 @@ define([], function () {
 	 * @param {number} y
 	 * @param {number} z
 	 */
-	PolyBoundingScript.prototype.removeAllAt = function(x, y, z) {
-		this.collidables = this.collidables.filter(function(collidable) {
-			if(collidable.bottom <= z && collidable.top >= z) {
+	PolyBoundingScript.prototype.removeAllAt = function (x, y, z) {
+		this.collidables = this.collidables.filter(function (collidable) {
+			if (collidable.bottom <= z && collidable.top >= z) {
 				return !window.PolyK.ContainsPoint(collidable.poly, x, y);
 			}
 		});
@@ -45,12 +45,12 @@ define([], function () {
 	 * @param {number} y
 	 * @param {number} z
 	 */
-	PolyBoundingScript.prototype.inside = function(x, y, z) {
+	PolyBoundingScript.prototype.inside = function (x, y, z) {
 		for (var i = 0; i < this.collidables.length; i++) {
 			var collidable = this.collidables[i];
 
-			if(collidable.bottom <= y && collidable.top >= y) {
-				if(window.PolyK.ContainsPoint(collidable.poly, x, z)) {
+			if (collidable.bottom <= y && collidable.top >= y) {
+				if (window.PolyK.ContainsPoint(collidable.poly, x, z)) {
 					return window.PolyK.ClosestEdge(collidable.poly, x, z);
 				}
 			}
@@ -62,15 +62,15 @@ define([], function () {
 	 * The entity's coordinates are obtained from the translation of its transformComponent. All collisions are performed against these coordinates only.
 	 * @param {Entity} entity
 	 */
-	PolyBoundingScript.prototype.run = function(entity) {
+	PolyBoundingScript.prototype.run = function (entity) {
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
 
 		for (var i = 0; i < this.collidables.length; i++) {
 			var collidable = this.collidables[i];
 
-			if(collidable.bottom <= translation.y && collidable.top >= translation.y) {
-				if(window.PolyK.ContainsPoint(collidable.poly, translation.x, translation.z)) {
+			if (collidable.bottom <= translation.y && collidable.top >= translation.y) {
+				if (window.PolyK.ContainsPoint(collidable.poly, translation.x, translation.z)) {
 
 					var pointOutside = window.PolyK.ClosestEdge(
 						collidable.poly,

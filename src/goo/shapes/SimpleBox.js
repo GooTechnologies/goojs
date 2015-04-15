@@ -37,7 +37,7 @@ define([
 	 * Builds or rebuilds the mesh data.
 	 * @returns {SimpleBox} Self for chaining.
 	 */
-	SimpleBox.prototype.rebuild = function() {
+	SimpleBox.prototype.rebuild = function () {
 		var xExtent = this.xExtent;
 		var yExtent = this.yExtent;
 		var zExtent = this.zExtent;

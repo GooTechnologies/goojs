@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -22,14 +22,14 @@ define(
 		LogicNodeFloat.prototype = Object.create(LogicNode.prototype);
 		LogicNodeFloat.editorName = "Float";
 
-		LogicNodeFloat.prototype.onConfigure = function(newConfig) {
+		LogicNodeFloat.prototype.onConfigure = function (newConfig) {
 			if (newConfig.value !== undefined) {
 				this.value = newConfig.value;
 				LogicLayer.writeValue(this.logicInstance, LogicNodeFloat.outportFloat, this.value);
 			}
 		};
 
-		LogicNodeFloat.prototype.onSystemStarted = function() {
+		LogicNodeFloat.prototype.onSystemStarted = function () {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeFloat.outportFloat, this.value);
 		};
 

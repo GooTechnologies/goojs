@@ -17,7 +17,7 @@ define([
 	 * @param {number} vertexCount Number of vertices
 	 * @returns {TypedArray} Index buffer
 	 */
-	BufferUtils.createIndexBuffer = function(indexCount, vertexCount) {
+	BufferUtils.createIndexBuffer = function (indexCount, vertexCount) {
 		var indices;
 		if (vertexCount <= 256) { // 2^8
 			if (BufferUtils.browserType === "Trident") { // IE 11 case

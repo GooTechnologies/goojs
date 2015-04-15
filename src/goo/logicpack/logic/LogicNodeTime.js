@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicNodes'
 	],
 
-	function(LogicLayer, LogicNode, LogicInterface, LogicNodes) {
+	function (LogicLayer, LogicNode, LogicInterface, LogicNodes) {
 		'use strict';
 
 		/**
@@ -38,13 +38,13 @@ define(
 		LogicNodeTime.inEventStop = LogicNodeTime.logicInterface.addInputEvent("Stop");
 		LogicNodeTime.inEventReset = LogicNodeTime.logicInterface.addInputEvent("Reset");
 
-		LogicNodeTime.prototype.onConfigure = function() {
+		LogicNodeTime.prototype.onConfigure = function () {
 			this._time = 0;
 			this._running = true;
 		};
 
 		// Process
-		LogicNodeTime.prototype.processLogic = function(tpf) {
+		LogicNodeTime.prototype.processLogic = function (tpf) {
 			if (this._running) {
 				var old = this._time;
 				this._time += tpf;
@@ -57,7 +57,7 @@ define(
 		};
 
 		// should they have args too?
-		LogicNodeTime.prototype.onEvent = function(instDesc, event) {
+		LogicNodeTime.prototype.onEvent = function (instDesc, event) {
 			if (event === LogicNodeTime.inEventStart) {
 				this._running = true;
 			} else if (event === LogicNodeTime.inEventStop) {

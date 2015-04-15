@@ -176,7 +176,7 @@ define([
 	 * Loads image data at specified path which is returned in a Promise object.
 	 *
 	 * @example
-	 * loader.loadImage('resources/image.png').then(function(image) {
+	 * loader.loadImage('resources/image.png').then(function (image) {
 	 *   // handle {@link Image} image
 	 * });
 	 * @param {string} url Path to whatever shall be loaded.

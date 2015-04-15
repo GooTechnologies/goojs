@@ -31,7 +31,7 @@ define([
 	 * @param outShader
 	 */
 	function DOFPass(renderList, outShader) {
-		this.depthPass = new RenderPass(renderList, function(item) {
+		this.depthPass = new RenderPass(renderList, function (item) {
 			return !(item instanceof Skybox);
 		});
 		this.regularPass = new RenderPass(renderList);
@@ -86,10 +86,10 @@ define([
 			'attribute vec3 vertexPosition;', //
 
 			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
+			'uniform mat4 projectionMatrix;', //
+			'uniform mat4 worldMatrix;', //
 
-			'varying vec4 vPosition;',//
+			'varying vec4 vPosition;', //
 
 			'void main(void) {', //
 			'	vPosition = viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
@@ -97,19 +97,19 @@ define([
 			'}'//
 		].join('\n'),
 		fshader : [//
-			'precision mediump float;',//
+			'precision mediump float;', //
 
-//				'uniform float nearPlane;',//
-			'uniform float farPlane;',//
+//				'uniform float nearPlane;', //
+			'uniform float farPlane;', //
 
-			ShaderFragment.methods.packDepth,//
+			ShaderFragment.methods.packDepth, //
 
-			'varying vec4 vPosition;',//
+			'varying vec4 vPosition;', //
 
-			'void main(void)',//
-			'{',//
-			'	float linearDepth = min(-vPosition.z, farPlane) / farPlane;',//
-			'	gl_FragColor = packDepth(linearDepth);',//
+			'void main(void)', //
+			'{', //
+			'	float linearDepth = min(-vPosition.z, farPlane) / farPlane;', //
+			'	gl_FragColor = packDepth(linearDepth);', //
 			'}'//
 		].join('\n')
 	};

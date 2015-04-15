@@ -36,7 +36,7 @@ define([
 	// Was: function (globalTime, layer)
 	AbstractTransitionState.prototype.update = function (globalTime) {
 		var currentTime = globalTime - this._globalStartTime;
-		if(currentTime > this._fadeTime && this.onFinished) {
+		if (currentTime > this._fadeTime && this.onFinished) {
 			this.onFinished();
 			return;
 		}
@@ -58,7 +58,7 @@ define([
 	 * @param {Object} configuration data
 	 */
 
-	AbstractTransitionState.prototype.readFromConfig = function(config) {
+	AbstractTransitionState.prototype.readFromConfig = function (config) {
 		if (config) {
 			if (config.fadeTime !== undefined) { this._fadeTime = config.fadeTime; }
 			if (config.blendType !== undefined) { this._blendType = config.blendType; }
@@ -90,7 +90,7 @@ define([
 	 * @returns {Boolean} true if transition is valid
 	 */
 
-	AbstractTransitionState.prototype.isValid = function(timeWindow, globalTime) {
+	AbstractTransitionState.prototype.isValid = function (timeWindow, globalTime) {
 		var localTime = globalTime - this._sourceState._globalStartTime;
 		var start = timeWindow[0];
 		var end = timeWindow[1];
@@ -117,13 +117,13 @@ define([
 		}
 	};
 
-	AbstractTransitionState.prototype.resetClips = function(globalTime) {
+	AbstractTransitionState.prototype.resetClips = function (globalTime) {
 		AbstractState.prototype.resetClips.call(this, globalTime);
 		//this._sourceData = {};
 		this._percent = 0.0;
 	};
 
-	AbstractTransitionState.prototype.shiftClipTime = function(shiftTime) {
+	AbstractTransitionState.prototype.shiftClipTime = function (shiftTime) {
 		AbstractState.prototype.shiftClipTime.call(this, shiftTime);
 		//this._percent = 0.0;  // definitely not 0, or maybe 0
 	};

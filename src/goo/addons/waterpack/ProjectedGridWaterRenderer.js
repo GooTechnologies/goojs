@@ -64,7 +64,7 @@ define([
 
 		var materialWire = this.materialWire = new Material(ShaderLib.simple, 'mat');
 		materialWire.wireframe = true;
-		materialWire.wireframeColor = [0,0,0];
+		materialWire.wireframeColor = [0, 0, 0];
 
 		this.calcVect = new Vector3();
 		this.camReflectDir = new Vector3();
@@ -242,14 +242,14 @@ define([
 			camNear: Shader.NEAR_PLANE,
 			camFar: Shader.FAR_PLANE,
 			time: Shader.TIME,
-			intersectBottomLeft: [0,0,0,0],
-			intersectTopLeft: [0,0,0,0],
-			intersectTopRight: [0,0,0,0],
-			intersectBottomRight: [0,0,0,0],
+			intersectBottomLeft: [0, 0, 0, 0],
+			intersectTopLeft: [0, 0, 0, 0],
+			intersectTopRight: [0, 0, 0, 0],
+			intersectBottomRight: [0, 0, 0, 0],
 			grid: false,
 			heightMultiplier: 50.0,
-			density: [1,1]
-			//screenSize: [1,1]
+			density: [1, 1]
+			//screenSize: [1, 1]
 		},
 		vshader: [ //
 			//'attribute vec3 vertexPosition;', //
@@ -258,8 +258,8 @@ define([
 			'uniform vec3 vertexNormal;', //
 			'uniform vec4 vertexTangent;', //
 			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;',//
-			'uniform mat4 worldMatrix;',//
+			'uniform mat4 projectionMatrix;', //
+			'uniform mat4 worldMatrix;', //
 			'uniform mat3 normalMatrix;',
 			'uniform vec3 cameraPosition;', //
 			'uniform float time;',
@@ -268,17 +268,17 @@ define([
 			'uniform float heightMultiplier;',
 			//'uniform vec2 screenSize;',
 
-			'uniform sampler2D bump;',//
+			'uniform sampler2D bump;', //
 
 			'uniform vec4 intersectBottomLeft;',
 			'uniform vec4 intersectTopLeft;',
 			'uniform vec4 intersectTopRight;',
 			'uniform vec4 intersectBottomRight;',
 
-			'varying vec2 texCoord0;',//
-			'varying vec2 texCoord1;',//
-			'varying vec3 eyeVec;',//
-			'varying vec3 sunDir;',//
+			'varying vec2 texCoord0;', //
+			'varying vec2 texCoord1;', //
+			'varying vec3 eyeVec;', //
+			'varying vec3 sunDir;', //
 			'varying vec4 viewCoords;',
 			'varying vec3 worldPos;',
 			'varying vec3 normal;',
@@ -308,13 +308,13 @@ define([
 			'	float height = texture2D(bump, projCoord).x;',
 			'	pointFinal.y = height * heightMultiplier;',
 
-			'	texCoord1 = vertexUV0;',//
+			'	texCoord1 = vertexUV0;', //
 
             '	vec4 pos = worldMatrix * vec4(pointFinal.xyz, 1.0);',
 			'	worldPos = pos.xyz;',
 			// '	worldPos = (worldMatrix * vec4(vertexPosition, 1.0)).xyz;',
 
-			'	texCoord0 = worldPos.xz * 2.0;',//
+			'	texCoord0 = worldPos.xz * 2.0;', //
 
 			'	vec3 n = normalize(normalMatrix * vertexNormal);',
 			'	vec3 t = normalize(normalMatrix * vertexTangent.xyz);',
@@ -331,9 +331,9 @@ define([
 			'}'//
 		].join('\n'),
 		fshader: [//
-			'uniform sampler2D normalMap;',//
-			'uniform sampler2D reflection;',//
-			'uniform sampler2D normalMapCoarse;',//
+			'uniform sampler2D normalMap;', //
+			'uniform sampler2D reflection;', //
+			'uniform sampler2D normalMapCoarse;', //
 
 			'uniform vec3 waterColor;',
 			'uniform bool abovewater;',
@@ -370,8 +370,8 @@ define([
 			'    return noise/4.0-1.0;',
 			'}',
 
-			'void main(void)',//
-			'{',//
+			'void main(void)', //
+			'{', //
 			'	vec2 projCoord = viewCoords.xy / viewCoords.q;',
 			'	projCoord = (projCoord + 1.0) * 0.5;',
 
@@ -383,7 +383,7 @@ define([
 			'	vec2 normCoords = texCoord0;',
 			'	vec4 noise = getNoise(normCoords);',
 			'	vec3 normalVector = normalize(noise.xyz * vec3(1.8 * detailStrength, 1.8 * detailStrength, 1.0) + coarseNormal.xyz * vec3(1.8 * coarseStrength, 1.8 * coarseStrength, 1.0));',
-			// '	vec3 normalVector = vec3(0.0,0.0,1.0);',
+			// '	vec3 normalVector = vec3(0.0, 0.0, 1.0);',
 
 			'	vec3 localView = normalize(eyeVec);',
 			'	float fresnel = dot(normalize(normalVector*vec3(1.0, 1.0, 1.0)), localView);',
@@ -459,11 +459,11 @@ define([
 		'attribute vec3 vertexPosition;', //
 
 		'uniform mat4 viewMatrix;', //
-		'uniform mat4 projectionMatrix;',//
-		'uniform mat4 worldMatrix;',//
+		'uniform mat4 projectionMatrix;', //
+		'uniform mat4 worldMatrix;', //
 
-		'varying vec4 worldPos;',//
-		'varying vec4 viewCoords;',//
+		'varying vec4 worldPos;', //
+		'varying vec4 viewCoords;', //
 
 		'void main(void) {', //
 		'	worldPos = worldMatrix * vec4(vertexPosition, 1.0);',
@@ -497,13 +497,13 @@ define([
 		'    return noise/5.0-1.0;',
 		'}',
 
-		'void main(void)',//
-		'{',//
+		'void main(void)', //
+		'{', //
 		//'	float fs = camFar * 0.5;',
 		// '	float fogDist = clamp(max(viewCoords.z - fs, 0.0)/(camFar - camNear - fs), 0.0, 1.0);',
 		'	float fogDist = clamp(-viewCoords.z / 1000.0, 0.0, 1.0);',
 
-		// '	gl_FragColor = mix(texture2D(diffuseMap, worldPos.xz * 0.001), vec4(0.5), fogDist);',//
+		// '	gl_FragColor = mix(texture2D(diffuseMap, worldPos.xz * 0.001), vec4(0.5), fogDist);', //
 
 		// '	vec4 noise = getNoise(diffuseMap, worldPos.xz * 1.0);',
 		// '	gl_FragColor = noise;',

@@ -391,17 +391,17 @@ define([
 				}
 			}
 		],
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexUV0 : MeshData.TEXCOORD0,
-			base : 'BASE',
-			offset : 'OFFSET'
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexUV0: MeshData.TEXCOORD0,
+			base: 'BASE',
+			offset: 'OFFSET'
 		},
-		uniforms : {
-			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
-			cameraPosition : Shader.CAMERA,
-			diffuseMap : Shader.DIFFUSE_MAP,
-			normalMap : Shader.NORMAL_MAP,
+		uniforms: {
+			viewProjectionMatrix: Shader.VIEW_PROJECTION_MATRIX,
+			cameraPosition: Shader.CAMERA,
+			diffuseMap: Shader.DIFFUSE_MAP,
+			normalMap: Shader.NORMAL_MAP,
 			discardThreshold: -0.01,
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
@@ -409,7 +409,7 @@ define([
 			fogColor: function () {
 				return ShaderBuilder.FOG_COLOR;
 			},
-			time : Shader.TIME
+			time: Shader.TIME
 		},
 		builder: function (shader, shaderInfo) {
 			ShaderBuilder.light.builder(shader, shaderInfo);

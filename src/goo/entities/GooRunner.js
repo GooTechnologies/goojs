@@ -125,23 +125,23 @@ define([
 		}
 
 		/** A list of callbacks to call every frame, before the world is processed.
-		 * @type {Array.<function(number)>}
+		 * @type {Array.<function (number)>}
 		 */
 		this.callbacksPreProcess = [];
 
 		/** A list of callbacks to call every frame, after the world is processed and before the rendering is done.
-		 * @type {Array.<function(number)>}
+		 * @type {Array.<function (number)>}
 		 */
 		this.callbacksPreRender = [];
 
 		/** A list of callbacks to call every frame, after the rendering is done.
-		 * @type {Array.<function(number)>}
+		 * @type {Array.<function (number)>}
 		 */
 		this.callbacks = [];
 
 		/** A list of callbacks to call once, in the following frame, before the world is processed.<br>
 		 * @example-link http://code.gooengine.com/latest/visual-test/goo/entities/CallbacksNextFrame/CallbacksNextFrame-vtest.html Working example
-		 * @type {Array.<function(number)>}
+		 * @type {Array.<function (number)>}
 		 */
 		this.callbacksNextFrame = [];
 
@@ -587,7 +587,7 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/misc/PickingEvents/PickingEvents-vtest.html Working example
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
-	 * @param  {function(event)} callback Callback function.
+	 * @param  {function (event)} callback Callback function.
 	 * @param {Entity} callback.event.entity Picked entity, undefined if no entity is picked.
 	 * @param {Vector3} callback.event.intersection Point of pick ray intersection with scene.
 	 * @param {number} callback.event.depth Depth of pick ray intersection.
@@ -597,7 +597,7 @@ define([
 	 * @param {Event} callback.event.domEvent Original DOM event.
 	 * @param {number} callback.event.id Entity pick ID. -1 if no entity was picked.
 	 * @example
-	 * gooRunner.addEventListener('mousedown', function(event) {
+	 * gooRunner.addEventListener('mousedown', function (event) {
 	 *   if (event.entity) {
 	 *     console.log('clicked entity', event.entity.name);
 	 *     console.log('clicked point', event.intersection);
@@ -621,7 +621,7 @@ define([
 	 * Removes an event listener from the GooRunner.
 	 * @param {string} type Can currently be 'click', 'mousedown', 'mousemove', 'mouseup',
 	 * 'touchstart', 'touchend' or 'touchmove'.
-	 * @param {function(event)} callback Callback to remove from event listener.
+	 * @param {function (event)} callback Callback to remove from event listener.
 	 */
 	GooRunner.prototype.removeEventListener = function (type, callback) {
 		if (!this._eventListeners[type]) {

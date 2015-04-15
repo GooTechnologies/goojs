@@ -1,6 +1,6 @@
 define(
 
-function() {
+function () {
 	'use strict';
 	/**
 	 * Get logo svg in different formats
@@ -26,15 +26,15 @@ function() {
 	 * @param {string} [properties.width]
 	 * @param {string} [properties.height]
 	 */
-	Logo.getLogo = function(properties) {
+	Logo.getLogo = function (properties) {
 		properties = properties || {};
 		for (var key in defaults) {
-			if(properties[key] === undefined) {
+			if (properties[key] === undefined) {
 				properties[key] = defaults[key];
 			}
 		}
 
-        if(!document.createElementNS) { return ''; }
+        if (!document.createElementNS) { return ''; }
 
 		var xmlns = 'http://www.w3.org/2000/svg';
 		var svg = document.createElementNS(xmlns, 'svg');
@@ -47,10 +47,10 @@ function() {
 		svg.setAttribute('xml:space', 'preserve');
 
 
-		if(properties.width) {
+		if (properties.width) {
 			svg.setAttribute('width', properties.width);
 		}
-		if(properties.height) {
+		if (properties.height) {
 			svg.setAttribute('height', properties.height);
 		}
 
@@ -106,7 +106,7 @@ function() {
 			' M145.687,207.256c-12.785,0-23.145-10.361-23.145-23.145s10.359-23.15,23.145-23.15c12.797,0,23.156,10.367,23.156,23.15' +
 			'S158.483,207.256,145.687,207.256z');
 		path.setAttribute('fill', properties.color);
-		if(properties.shadow) {
+		if (properties.shadow) {
 			g.appendChild(shadowFilter);
 			path.setAttribute('style', 'filter:url(#insetShadow)');
 		}

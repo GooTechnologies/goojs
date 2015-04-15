@@ -38,14 +38,14 @@ define([
 	ShaderBuilder.FOG_COLOR = [1, 1, 1];
 
 	ShaderBuilder.uber = {
-		defines: function(shader, attributeMap) {
+		defines: function (shader, attributeMap) {
 			var keys = Object.keys(attributeMap);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				shader.setDefine(keys[i], true);
 			}
 		},
 
-		txMaps: function(shader, textureMaps) {
+		txMaps: function (shader, textureMaps) {
 			var keys = Object.keys(textureMaps);
 			for (var i = 0, l = keys.length; i < l; i++) {
 				var type = keys[i];
@@ -61,7 +61,7 @@ define([
 			}
 		},
 
-		reflectivity: function(shader, material) {
+		reflectivity: function (shader, material) {
 			if (material.uniforms.reflectivity || material.uniforms.refractivity) {
 				shader.setDefine('REFLECTIVE', true);
 			} else {
@@ -70,7 +70,7 @@ define([
 			shader.setDefine('REFLECTION_TYPE', material.uniforms.reflectionType !== undefined ? material.uniforms.reflectionType : 0);
 		},
 
-		sky: function(shader, material) {
+		sky: function (shader, material) {
 			if (material.getTexture('LOCAL_ENVIRONMENT')) {
 				material.setTexture('ENVIRONMENT_SPHERE', material.getTexture('LOCAL_ENVIRONMENT'));
 				shader.setDefine('ENVIRONMENT_TYPE', 0);
@@ -92,7 +92,7 @@ define([
 			}
 		},
 
-		uniforms: function(shader, textureMaps) {
+		uniforms: function (shader, textureMaps) {
 			if (textureMaps.DIFFUSE_MAP) {
 				var offset = textureMaps.DIFFUSE_MAP.offset;
 				var repeat = textureMaps.DIFFUSE_MAP.repeat;
@@ -110,7 +110,7 @@ define([
 			}
 		},
 
-		attributes: function(shader, attributeMap, textureMaps) {
+		attributes: function (shader, attributeMap, textureMaps) {
 			// Exclude in a nicer way
 			var keys = Object.keys(shader.defines);
 			for (var i = 0, l = keys.length; i < l; i++) {
@@ -139,7 +139,7 @@ define([
 
 		},
 
-		discard: function(shader, material) {
+		discard: function (shader, material) {
 			// discard
 			if (material.uniforms.discardThreshold >= 0.0) {
 				shader.setDefine('DISCARD', true);
@@ -149,7 +149,7 @@ define([
 
 		},
 
-		opacity: function(shader, material) {
+		opacity: function (shader, material) {
 			// opacity
 			var opacity = material.uniforms.opacity;
 			if (opacity !== undefined && opacity < 1.0) {
@@ -166,7 +166,7 @@ define([
 			}
 		},
 
-		fog: function(shader) {
+		fog: function (shader) {
 			// fog
 			if (ShaderBuilder.USE_FOG) {
 				shader.setDefine('FOG', true);
@@ -178,7 +178,7 @@ define([
 
 		},
 
-		normalTangents: function(shader, shaderInfo) {
+		normalTangents: function (shader, shaderInfo) {
 			//TODO: Hacky?
 			if (shader.hasDefine('NORMAL') && shader.hasDefine('NORMAL_MAP') && !shaderInfo.meshData.getAttributeBuffer(MeshData.TANGENT)) {
 				TangentGenerator.addTangentBuffer(shaderInfo.meshData);
@@ -316,7 +316,7 @@ define([
 
 					lightDefines.push('H', light.shadowSettings.shadowType === 'PCF' ? 1 : light.shadowSettings.shadowType === 'VSM' ? 2 : 0);
 				}
-				
+
 				if (useLightCookie) {
 					uniforms['lightCookie'+i] = 'LIGHT_COOKIE'+i;
 					shaderInfo.material.setTexture('LIGHT_COOKIE'+i, light.lightCookie);
@@ -459,7 +459,7 @@ define([
 				var directionalIndex = 0;
 				var spotIndex = 0;
 				var shadowIndex = 0;
-			
+
 				for (var i = 0; i < lights.length; i++) {
 					var light = lights[i];
 					if (light instanceof PointLight) {
@@ -793,7 +793,7 @@ define([
 	};
 
 	ShaderBuilder.animation = {
-		processor: function(shader, shaderInfo) {
+		processor: function (shader, shaderInfo) {
 			var pose = shaderInfo.currentPose;
 			if (pose) {
 				if (!shader.uniforms.jointPalette) {
@@ -832,9 +832,9 @@ define([
 			}
 		},
 		order: [
-			0,4,8,12,
-			1,5,9,13,
-			2,6,10,14
+			0, 4, 8, 12,
+			1, 5, 9, 13,
+			2, 6, 10, 14
 		],
 		prevertex: [
 			'#ifdef JOINTIDS',

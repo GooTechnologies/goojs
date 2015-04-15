@@ -13,7 +13,7 @@ define([
 
 	AddVariableAction.prototype = Object.create(Action.prototype);
 
-	AddVariableAction.prototype.configure = function(settings) {
+	AddVariableAction.prototype.configure = function (settings) {
 		this.everyFrame = !!settings.everyFrame;
 		this.variable = settings.variable || null;
 		this.amount = settings.amount || 1;
@@ -38,8 +38,8 @@ define([
 		transitions: []
 	};
 
-	AddVariableAction.prototype._run = function(fsm) {
-		fsm.applyOnVariable(this.variable, function(v) {
+	AddVariableAction.prototype._run = function (fsm) {
+		fsm.applyOnVariable(this.variable, function (v) {
 			return v + FSMUtil.getValue(this.amount, fsm);
 		}.bind(this));
 	};

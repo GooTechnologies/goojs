@@ -25,13 +25,13 @@ define([
 	function GroundBoundMovementScript(properties) {
 		properties = properties || {};
 		for (var key in _defaults) {
-			if(typeof(_defaults[key]) === 'boolean') {
+			if (typeof(_defaults[key]) === 'boolean') {
 				this[key] = properties[key] !== undefined ? properties[key] === true : _defaults[key];
 			}
 			else if (!isNaN(_defaults[key])) {
 				this[key] = !isNaN(properties[key]) ? properties[key] : _defaults[key];
 			}
-			else if(_defaults[key] instanceof Vector3) {
+			else if (_defaults[key] instanceof Vector3) {
 				this[key] = (properties[key]) ? new Vector3(properties[key]) : new Vector3().set(_defaults[key]);
 			}
 			else {
@@ -62,7 +62,7 @@ define([
 	 * script will fallback to the worldFloor height. (Defaults to -Infinity).
 	 * @param {WorldFittedTerrainScript} terrainScript
 	 */
-	GroundBoundMovementScript.prototype.setTerrainSystem = function(terrainScript) {
+	GroundBoundMovementScript.prototype.setTerrainSystem = function (terrainScript) {
 		this.terrainScript = terrainScript;
 	};
 
@@ -71,7 +71,7 @@ define([
 	 * Returns the terrain system.
 	 * @returns {WorldFittedTerrainScript} terrainScript
 	 */
-	GroundBoundMovementScript.prototype.getTerrainSystem = function() {
+	GroundBoundMovementScript.prototype.getTerrainSystem = function () {
 		return this.terrainScript;
 	};
 
@@ -83,7 +83,7 @@ define([
 	 * @param {Vector3} translation
 	 * @returns {Number} Height of ground
 	 */
-	GroundBoundMovementScript.prototype.getTerrainHeight = function(translation) {
+	GroundBoundMovementScript.prototype.getTerrainHeight = function (translation) {
 		var height = this.getTerrainSystem().getTerrainHeightAt(translation.data);
 		if (height === null) {
 			height = this.worldFloor;
@@ -97,7 +97,7 @@ define([
 	 * @param {Vector3} translation
 	 * @returns {Vector3} The terrain normal vector.
 	 */
-	GroundBoundMovementScript.prototype.getTerrainNormal = function(translation) {
+	GroundBoundMovementScript.prototype.getTerrainNormal = function (translation) {
 		return this.getTerrainSystem().getTerrainNormalAt(translation.data);
 	};
 
@@ -106,7 +106,7 @@ define([
 	 * backwards with negative amount.
 	 * @param {number} amount
 	 */
-	GroundBoundMovementScript.prototype.applyForward = function(amount) {
+	GroundBoundMovementScript.prototype.applyForward = function (amount) {
 		this.controlState.run = amount;
 	};
 
@@ -114,7 +114,7 @@ define([
 	 * Applies strafe amount for sideways input.
 	 * @param {number} amount
 	 */
-	GroundBoundMovementScript.prototype.applyStrafe = function(amount) {
+	GroundBoundMovementScript.prototype.applyStrafe = function (amount) {
 		this.controlState.strafe = amount;
 	};
 
@@ -122,7 +122,7 @@ define([
 	 * Applies jump input.
 	 * @param {number} amount
 	 */
-	GroundBoundMovementScript.prototype.applyJump = function(amount) {
+	GroundBoundMovementScript.prototype.applyJump = function (amount) {
 		this.controlState.jump = amount;
 	};
 
@@ -131,7 +131,7 @@ define([
 	 * @param {number} amount
 	 */
 
-	GroundBoundMovementScript.prototype.applyTurn = function(amount) {
+	GroundBoundMovementScript.prototype.applyTurn = function (amount) {
 		this.controlState.yaw = amount;
 	};
 
@@ -141,7 +141,7 @@ define([
 	 * @param [number} up
 	 * @returns {*}
 	 */
-	GroundBoundMovementScript.prototype.applyJumpImpulse = function(up) {
+	GroundBoundMovementScript.prototype.applyJumpImpulse = function (up) {
 		if (this.groundContact) {
 			if (this.controlState.jump) {
 				up = this.jumpImpulse;
@@ -162,7 +162,7 @@ define([
 	 * @param {number} run
 	 * @returns {Array} The modulated directional movement state
 	 */
-	GroundBoundMovementScript.prototype.applyDirectionalModulation = function(strafe, up, run) {
+	GroundBoundMovementScript.prototype.applyDirectionalModulation = function (strafe, up, run) {
 		strafe *= this.modStrafe;
 		if (run > 0) {
 			run *=this.modForward;
@@ -181,7 +181,7 @@ define([
 	 * @param {number} roll
 	 * @returns {Array}
 	 */
-	GroundBoundMovementScript.prototype.applyTorqueModulation = function(pitch, yaw, roll) {
+	GroundBoundMovementScript.prototype.applyTorqueModulation = function (pitch, yaw, roll) {
         this.targetHeading.set(pitch, yaw*this.modTurn, roll); // REVIEW: this creates a new object every frame... I recommend to reuse a Vector3 object.
 	};
 
@@ -191,7 +191,7 @@ define([
 	 * @private
 	 */
 
-	GroundBoundMovementScript.prototype.applyGroundNormalInfluence = function() {
+	GroundBoundMovementScript.prototype.applyGroundNormalInfluence = function () {
 		var groundModX = Math.abs(Math.cos(this.groundNormal.x));
 		var groundModZ = Math.abs(Math.cos(this.groundNormal.z));
 		this.targetVelocity.x *= groundModX;
@@ -204,7 +204,7 @@ define([
 	 * @private
 	 * @param {Vector3} transform
 	 */
-	GroundBoundMovementScript.prototype.updateTargetVectors = function(transform) {
+	GroundBoundMovementScript.prototype.updateTargetVectors = function (transform) {
 		this.applyDirectionalModulation(this.controlState.strafe, this.gravity, this.controlState.run);
 		transform.rotation.applyPost(this.targetVelocity);
 		this.applyGroundNormalInfluence();
@@ -219,7 +219,7 @@ define([
 	 * @param {Vector3} target
 	 * @returns {Vector3}
 	 */
-	GroundBoundMovementScript.prototype.computeAcceleration = function(entity, current, target) {
+	GroundBoundMovementScript.prototype.computeAcceleration = function (entity, current, target) {
 		calcVec.set(target);
 		entity.transformComponent.transform.rotation.applyPost(calcVec);
 		calcVec.sub(current);
@@ -236,7 +236,7 @@ define([
 	 * @param {Vector3} target
 	 * @returns {Vector3}
 	 */
-	GroundBoundMovementScript.prototype.computeTorque = function(current, target) {
+	GroundBoundMovementScript.prototype.computeTorque = function (current, target) {
 		calcVec.set(target);
 		calcVec.sub(current);
 		calcVec.lerp(target, this.rotLerp);
@@ -248,7 +248,7 @@ define([
 	 * @private
 	 * @param {Entity} entity
 	 */
-	GroundBoundMovementScript.prototype.updateVelocities = function(entity) {
+	GroundBoundMovementScript.prototype.updateVelocities = function (entity) {
 		var currentVelocity = entity.movementComponent.getVelocity();
 		var currentRotVel = entity.movementComponent.getRotationVelocity();
 		this.acceleration.set(this.computeAcceleration(entity, currentVelocity, this.targetVelocity));
@@ -260,7 +260,7 @@ define([
 	 * @private
 	 * @param {Entity} entity
 	 */
-	GroundBoundMovementScript.prototype.applyAccelerations = function(entity) {
+	GroundBoundMovementScript.prototype.applyAccelerations = function (entity) {
 		entity.movementComponent.addVelocity(this.acceleration);
 		entity.movementComponent.addRotationVelocity(this.torque);
 	};
@@ -270,7 +270,7 @@ define([
 	 * @private
 	 * @param {Transform} transform
 	 */
-	GroundBoundMovementScript.prototype.updateGroundNormal = function(transform) {
+	GroundBoundMovementScript.prototype.updateGroundNormal = function (transform) {
 		this.groundNormal.set(this.getTerrainNormal(transform.translation));
 	};
 
@@ -280,7 +280,7 @@ define([
 	 * @param {Entity} entity
 	 * @param {Transform} transform
 	 */
-	GroundBoundMovementScript.prototype.checkGroundContact = function(entity, transform) {
+	GroundBoundMovementScript.prototype.checkGroundContact = function (entity, transform) {
 		this.groundHeight = this.getTerrainHeight(transform.translation);
 		if (transform.translation.y <= this.groundHeight) {
 			this.groundContact = 1;
@@ -296,7 +296,7 @@ define([
 	 * @param {Entity} entity
 	 * @param {Transform} transform
 	 */
-	GroundBoundMovementScript.prototype.applyGroundContact = function(entity, transform) {
+	GroundBoundMovementScript.prototype.applyGroundContact = function (entity, transform) {
 		if (this.groundHeight >= transform.translation.y) {
 			transform.translation.y = this.groundHeight;
 			if (entity.movementComponent.velocity.y < 0) {
@@ -310,7 +310,7 @@ define([
 	 * @private
 	 * @param {Entity} entity
 	 */
-	GroundBoundMovementScript.prototype.run = function(entity) {
+	GroundBoundMovementScript.prototype.run = function (entity) {
 		var transform = entity.transformComponent.transform;
 		this.checkGroundContact(entity, transform);
 		this.updateTargetVectors(transform);

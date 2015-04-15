@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicNodes'
 	],
 
-	function(LogicLayer, LogicNode, LogicInterface, LogicNodes) {
+	function (LogicLayer, LogicNode, LogicInterface, LogicNodes) {
 		'use strict';
 
 		/**
@@ -30,7 +30,7 @@ define(
 		LogicNodeRandom.outPropRandom = LogicNodeRandom.logicInterface.addOutputProperty("Random0_1", "float");
 
 		// Process
-		LogicNodeRandom.prototype.processLogic = function() {
+		LogicNodeRandom.prototype.processLogic = function () {
 			LogicLayer.writeValue(this.logicInstance, LogicNodeRandom.outPropRandom, Math.random());
 		};
 

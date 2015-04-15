@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -18,7 +18,7 @@ define(
 			this.logicInterface = LogicNodeMouse.logicInterface;
 			this.type = "LogicNodeMouse";
 
-			this.eventMouseMove = function(event) {
+			this.eventMouseMove = function (event) {
 				var mx = event.clientX;
 				var my = event.clientY;
 				var dx = mx - this.x;
@@ -29,7 +29,7 @@ define(
 				LogicLayer.writeValue(this.logicInstance, LogicNodeMouse.portDY, dy);
 			}.bind(this);
 
-			this.eventMouseDown = function(event) {
+			this.eventMouseDown = function (event) {
 				if (event.button === 0) {
 					LogicLayer.fireEvent(this.logicInstance, LogicNodeMouse.outEventLmb);
 				}
@@ -42,14 +42,14 @@ define(
 		LogicNodeMouse.prototype = Object.create(LogicNode.prototype);
 		LogicNodeMouse.editorName = "Mouse";
 
-		LogicNodeMouse.prototype.onSystemStarted = function() {
+		LogicNodeMouse.prototype.onSystemStarted = function () {
 			this.x = 0;
 			this.y = 0;
 			document.addEventListener('mousemove', this.eventMouseMove, false);
 			document.addEventListener('mousedown', this.eventMouseDown, false);
 		};
 
-		LogicNodeMouse.prototype.onSystemStopped = function() {
+		LogicNodeMouse.prototype.onSystemStopped = function () {
 			document.removeEventListener('mousemove', this.eventMouseMove);
 			document.removeEventListener('mousedown', this.eventMouseDown);
 		};

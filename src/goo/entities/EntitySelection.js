@@ -189,7 +189,7 @@ define([
 		// could use flatMap
 		if (this.top === null) { return this; }
 
-		var children = this.top.map(function(entity) {
+		var children = this.top.map(function (entity) {
 			return entity.transformComponent.children.map(function (childTransform) {
 				return childTransform.entity;
 			});

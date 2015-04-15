@@ -1,7 +1,7 @@
 /*jshint bitwise: false */
 define(
 
-function() {
+function () {
 	'use strict';
 
 	function FSMUtil() {
@@ -48,7 +48,7 @@ function() {
 		'Pause': 19,
 		'Capslock': 20,
 		'Esc': 27,
-		'Space':32,
+		'Space': 32,
 		'Pageup': 33,
 		'Pagedown': 34,
 		'End': 35,
@@ -169,7 +169,7 @@ function() {
 
 	FSMUtil.keyInverse = buildKeyInverse(FSMUtil.keys);
 
-	FSMUtil.keyForCode = function(code) {
+	FSMUtil.keyForCode = function (code) {
 		if (FSMUtil.keyInverse[code]) {
 			return FSMUtil.keyInverse[code];
 		}
@@ -183,12 +183,12 @@ function() {
 	};
 
 	// Random unique id
-	FSMUtil.guid = function() {
+	FSMUtil.guid = function () {
 		return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
 			s4() + '-' + s4() + s4() + s4();
 	};
 
-	FSMUtil.getValue = function(par, fsm) {
+	FSMUtil.getValue = function (par, fsm) {
 		if (typeof par === 'number') {
 			return par;
 		} else {
@@ -196,10 +196,10 @@ function() {
 		}
 	};
 
-	FSMUtil.createComposableTween = function(object, propertyName, from, to, time, callback) {
+	FSMUtil.createComposableTween = function (object, propertyName, from, to, time, callback) {
 		var tween = new window.TWEEN.Tween();
 		var old = from;
-		return tween.from({ v: from }).to({ v: to }).onUpdate(function() {
+		return tween.from({ v: from }).to({ v: to }).onUpdate(function () {
 			object[propertyName] += this.v - old;
 			old = this.v;
 			if (callback) {

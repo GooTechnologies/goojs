@@ -183,7 +183,7 @@ define([
 			'default': 1,
 			min: 0.01,
 			// REVIEW: why 2 for so many of these params? can they be normalized
-			//! AT: [0,1] might be the normal domain but the upper allowed bound is 2 because it allows for superbright/superfancy lens flares
+			//! AT: [0, 1] might be the normal domain but the upper allowed bound is 2 because it allows for superbright/superfancy lens flares
 			max: 2
 		}, {
 			key: 'edgeRelevance',

@@ -45,21 +45,21 @@ define([
 	 * @example-link http://code.gooengine.com/latest/visual-test/goo/addons/Ammo/Ammo-vtest.html Working example
 	 * @example
 	 * var entity = world.createEntity(new Box(20, 10, 1));
-	 * entity.setComponent(new AmmoComponent({ mass:5 }));
+	 * entity.setComponent(new AmmoComponent({ mass: 5 }));
 	 */
 	function AmmoComponent(settings) {
 		Component.apply(this, arguments);
 
 		this.settings = settings = settings || {};
 
-		_.defaults(settings,{
+		_.defaults(settings, {
 			mass: 0,
 			useBounds: false,
-			useWorldBounds : false,
-			useWorldTransform : false,
-			linearFactor : new Ammo.btVector3(1, 1, 1),
-			isTrigger : false,
-			onInitializeBody : null,
+			useWorldBounds: false,
+			useWorldTransform: false,
+			linearFactor: new Ammo.btVector3(1, 1, 1),
+			isTrigger: false,
+			onInitializeBody: null,
 			scale: null,
 			translation: null,
 			rotation: null
@@ -85,7 +85,7 @@ define([
 	AmmoComponent.prototype = Object.create(Component.prototype);
 	AmmoComponent.prototype.constructor = AmmoComponent;
 
-	AmmoComponent.prototype.getAmmoShapefromGooShape = function(entity, gooTransform) {
+	AmmoComponent.prototype.getAmmoShapefromGooShape = function (entity, gooTransform) {
 		var shape;
 
 		// Need to abs since negative scales are fine for meshes but not for bounding boxes.
@@ -133,7 +133,7 @@ define([
 		return shape;
 	};
 
-	AmmoComponent.prototype.getAmmoShapefromGooShapeWorldBounds = function(entity) {
+	AmmoComponent.prototype.getAmmoShapefromGooShapeWorldBounds = function (entity) {
 		var shape;
 		var bound = EntityUtils.getTotalBoundingBox(entity);
 		this.center = bound.center;
@@ -142,7 +142,7 @@ define([
 		return shape;
 	};
 
-	AmmoComponent.prototype.initialize = function(entity) {
+	AmmoComponent.prototype.initialize = function (entity) {
 		var gooTransform = entity.transformComponent.transform;
 
 		if (this.useWorldTransform) {
@@ -187,7 +187,7 @@ define([
 		}
 	};
 
-	AmmoComponent.prototype.showBounds = function(entity) {
+	AmmoComponent.prototype.showBounds = function (entity) {
 		// entity.meshRendererComponent.worldBound
 		// entity.meshDataComponent.computeBoundFromPoints();
 		var bound = EntityUtils.getTotalBoundingBox(entity);
@@ -208,7 +208,7 @@ define([
 		this.bv = bv;
 	};
 
-	AmmoComponent.prototype.setPhysicalTransform = function(transform) {
+	AmmoComponent.prototype.setPhysicalTransform = function (transform) {
 		var gooPos = transform.translation;
 		this.ammoTransform.setIdentity(); // TODO: is this needed ?
 		this.ammoTransform.setOrigin(new Ammo.btVector3(gooPos.x, gooPos.y, gooPos.z));
@@ -218,7 +218,7 @@ define([
 		this.body.setWorldTransform(this.ammoTransform);
 	};
 
-	AmmoComponent.prototype.copyPhysicalTransformToVisual = function(entity) {
+	AmmoComponent.prototype.copyPhysicalTransformToVisual = function (entity) {
 		var tc = entity.transformComponent;
 		if (!this.body) {
 			return;

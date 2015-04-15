@@ -6,7 +6,7 @@ define(
 		'goo/logic/LogicInterface'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface) {
+	function (LogicLayer, LogicNode, LogicNodes, LogicInterface) {
 		'use strict';
 
 		/**
@@ -22,7 +22,7 @@ define(
 		LogicNodeAdd.prototype = Object.create(LogicNode.prototype);
 		LogicNodeAdd.editorName = "Add";
 
-		LogicNodeAdd.prototype.onInputChanged = function(instDesc) {
+		LogicNodeAdd.prototype.onInputChanged = function (instDesc) {
 			var out = LogicLayer.readPort(instDesc, LogicNodeAdd.inportX) +
 				LogicLayer.readPort(instDesc, LogicNodeAdd.inportY);
 

@@ -122,7 +122,7 @@ define([
 		var tempVc = new Vector3();
 		for (var iZ = zBegin; iZ < zEnd; iZ++) {
 			var fAFraction = MathUtils.HALF_PI * (-1.0 + fZFactor * iZ); // in (-pi/2, pi/2)
-			var fZFraction = Math.sin(fAFraction); // in (-1,1)
+			var fZFraction = Math.sin(fAFraction); // in (-1, 1)
 			var fZ = this.radius * fZFraction;
 
 			// compute center of slice
@@ -136,7 +136,7 @@ define([
 			var kNormal;
 			var iSave = i;
 			for (var iR = 0; iR < this.radialSamples; iR++) {
-				var fRadialFraction = iR * fInvRS; // in [0,1)
+				var fRadialFraction = iR * fInvRS; // in [0, 1)
 				var kRadial = tempVc.setDirect(afCos[iR], afSin[iR], 0);
 				tempVa.copy(kRadial).scale(fSliceRadius);
 
@@ -308,7 +308,7 @@ define([
 
 		var iZStart = 0;
 		if (!this._useSharedPoleVertices) {
-			// When triangles at the pole dont use a shared vertices, there's an extra pole layer here that will be 
+			// When triangles at the pole dont use a shared vertices, there's an extra pole layer here that will be
 			// used only for the pole.
 			iZStart = this.radialSamples + 1;
 		}
@@ -370,7 +370,7 @@ define([
 
 			var i0, i1, i2;
 			if (!this._useSharedPoleVertices) {
-				// as we are in the last pole ring (with iOffset added), step back to the 
+				// as we are in the last pole ring (with iOffset added), step back to the
 				// next-to-last as there is no pole vertex in this mode.
 				i0 = i + iOffset - this.radialSamples - 1;
 				i1 = i + iOffset - this.radialSamples;

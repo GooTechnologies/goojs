@@ -5,7 +5,7 @@ define([
 		'goo/entities/components/Component'
 	],
 
-	function(
+	function (
 		LogicInterface,
 		LogicLayer,
 		LogicNodes,
@@ -34,7 +34,7 @@ define([
 
 		LogicComponent.prototype = Object.create(Component.prototype);
 
-		LogicComponent.prototype.configure = function(conf) {
+		LogicComponent.prototype.configure = function (conf) {
 			// cleanup.
 			for (var x in this.nodes) {
 				if (this.nodes[x].onSystemStopped !== undefined) {
@@ -58,7 +58,7 @@ define([
 			}
 		};
 
-		LogicComponent.prototype.process = function(tpf) {
+		LogicComponent.prototype.process = function (tpf) {
 			if (this.logicLayer !== null) {
 				this.logicLayer.process(tpf);
 			}
