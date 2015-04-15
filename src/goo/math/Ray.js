@@ -92,8 +92,8 @@ define([
 							// these weights can be used to determine
 							// interpolated values, such as texture coord.
 							// eg. texcoord s, t at intersection point:
-							// s = w0*s0 + w1*s1 + w2*s2;
-							// t = w0*t0 + w1*t1 + w2*t2;
+							// s = w0 * s0 + w1 * s1 + w2 * s2;
+							// t = w0 * t0 + w1 * t1 + w2 * t2;
 							var w1 = dirDotDiffxEdge2 * inv;
 							var w2 = dirDotEdge1xDiff * inv;
 							// float w0 = 1.0 - w1 - w2;
@@ -158,7 +158,7 @@ define([
 		vectorA.set(point).sub(this.origin);
 		var t0 = this.direction.dot(vectorA);
 		if (t0 > 0) {
-			// d = |P - (O + t*D)|
+			// d = |P - (O + t * D)|
 			vectorA.set(this.direction).scale(t0);
 			vectorA.add(this.origin);
 		} else {

@@ -132,7 +132,7 @@ define([
 		this.minDist = 1.5;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
-		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
+		this.gridSizeHalf = Math.floor(this.gridSize * 0.5);
 		this.grid = [];
 		this.gridState = [];
 		var dummyMesh = this.createForrestPatch(0, 0, 1);
@@ -265,18 +265,18 @@ define([
 		var w = type.w * size;
 		var h = type.h * size;
 		meshData.getAttributeBuffer('OFFSET').set([
-			-w*0.5, 0,
-			-w*0.5, h,
-			w*0.5, h,
-			w*0.5, 0
+			-w * 0.5, 0,
+			-w * 0.5, h,
+			w * 0.5, h,
+			w * 0.5, 0
 		]);
 		return meshData;
 	};
 
 	Forrest.prototype.getPointInPatch = function (x, z, patchX, patchZ, patchSpacing) {
 		var pos = [0, 0, 0];
-		pos[0] = patchX + (x + MathUtils.fastRandom()*0.75) * patchSpacing;
-		pos[2] = 0.5 + patchZ + (z + MathUtils.fastRandom()*0.75) * patchSpacing;
+		pos[0] = patchX + (x + MathUtils.fastRandom() * 0.75) * patchSpacing;
+		pos[2] = 0.5 + patchZ + (z + MathUtils.fastRandom() * 0.75) * patchSpacing;
 
 		pos[1] = this.terrainQuery.getHeightAt(pos);
 		if (pos[1] === null) {
@@ -367,10 +367,10 @@ define([
 			0, type.h, type.h, 0
 		]);
 		meshData.getAttributeBuffer('OFFSET').set([
-			-type.w*0.5, 0,
-			-type.w*0.5, type.h,
-			type.w*0.5, type.h,
-			type.w*0.5, 0
+			-type.w * 0.5, 0,
+			-type.w * 0.5, type.h,
+			type.w * 0.5, type.h,
+			type.w * 0.5, 0
 		]);
 
 		meshData.getIndexBuffer().set([0, 3, 1, 1, 3, 2]);

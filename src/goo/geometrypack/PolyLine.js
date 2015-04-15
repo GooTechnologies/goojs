@@ -78,11 +78,11 @@ define([
 	};
 
 	function getBisectorAngleOfVectors(vx1, vy1, vx2, vy2) {
-		var d1 = Math.sqrt(vx1*vx1 + vy1*vy1);
+		var d1 = Math.sqrt(vx1 * vx1 + vy1 * vy1);
 		var nx1 = vx1 / d1;
 		var ny1 = vy1 / d1;
 
-		var d2 = Math.sqrt(vx2*vx2 + vy2*vy2);
+		var d2 = Math.sqrt(vx2 * vx2 + vy2 * vy2);
 		var nx2 = vx2 / d2;
 		var ny2 = vy2 / d2;
 
@@ -109,8 +109,8 @@ define([
 			p0z = verts[(index-1) * 3 + 2];
 			p1x = verts[(index) * 3 + 0];
 			p1z = verts[(index) * 3 + 2];
-			p2x = verts[(index+1) * 3 + 0];
-			p2z = verts[(index+1) * 3 + 2];
+			p2x = verts[(index + 1) * 3 + 0];
+			p2z = verts[(index + 1) * 3 + 2];
 			return getBisectorAngleOfVectors(p1x - p0x, p1z - p0z, p2x - p1x, p2z - p1z);
 		}
 	}
@@ -283,14 +283,14 @@ define([
 			var nVerts = verts.length / 3;
 			var nCurves = nVerts / 3;
 
-			var ret = PolyLine.fromCubicBezier(verts.slice(0*3, 0*3 + 4*3), nSegments, 1);
+			var ret = PolyLine.fromCubicBezier(verts.slice(0 * 3, 0 * 3 + 4 * 3), nSegments, 1);
 
 			for (var i = 1; i < nCurves - 1; i++) {
-				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 4*3), nSegments, 1);
+				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i * 3 * 3, i * 3 * 3 + 4 * 3), nSegments, 1);
 				ret = ret.concat(plToAdd);
 			}
 
-			var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 3*3).concat(verts.slice(0, 3)), nSegments, 1);
+			var plToAdd = PolyLine.fromCubicBezier(verts.slice(i * 3 * 3, i * 3 * 3 + 3 * 3).concat(verts.slice(0, 3)), nSegments, 1);
 			ret = ret.concat(plToAdd);
 
 			return ret;
@@ -304,10 +304,10 @@ define([
 			var nVerts = verts.length / 3;
 			var nCurves = (nVerts - 1) / 3;
 
-			var ret = PolyLine.fromCubicBezier(verts.slice(0*3, 0*3 + 4*3), nSegments, 1);
+			var ret = PolyLine.fromCubicBezier(verts.slice(0 * 3, 0 * 3 + 4 * 3), nSegments, 1);
 
 			for (var i = 1; i < nCurves; i++) {
-				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i*3*3, i*3*3 + 4*3), nSegments, 1);
+				var plToAdd = PolyLine.fromCubicBezier(verts.slice(i * 3 * 3, i * 3 * 3 + 4 * 3), nSegments, 1);
 				ret = ret.concat(plToAdd);
 			}
 

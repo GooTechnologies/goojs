@@ -80,7 +80,7 @@ define([
 		}
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
-		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
+		this.gridSizeHalf = Math.floor(this.gridSize * 0.5);
 		this.grid = [];
 		var dummyMesh = this.createPatch(0, 0);
 		for (var x = 0; x < this.gridSize; x++) {
@@ -188,8 +188,8 @@ define([
 		var pos = [0, 10, 0];
 		for (var x = 0; x < patchDensity; x++) {
 			for (var z = 0; z < patchDensity; z++) {
-				var xx = patchX + (x + Math.random()*0.5) * patchSpacing;
-				var zz = patchZ + (z + Math.random()*0.5) * patchSpacing;
+				var xx = patchX + (x + Math.random() * 0.5) * patchSpacing;
+				var zz = patchZ + (z + Math.random() * 0.5) * patchSpacing;
 				pos[0] = xx;
 				pos[2] = zz + 0.5;
 				var yy = this.terrainQuery.getHeightAt(pos);
@@ -234,11 +234,11 @@ define([
 			var verts = meshData.getAttributeBuffer(MeshData.POSITION);
 			var cols = meshData.getAttributeBuffer(MeshData.COLOR);
 			for (var i=0, j=0;i<verts.length;i+=3, j+=4) {
-				var col = this.terrainQuery.getLightAt([verts[i], verts[i+1], verts[i+2]]);
+				var col = this.terrainQuery.getLightAt([verts[i], verts[i + 1], verts[i + 2]]);
 				cols[j] = col;
-				cols[j+1] = col;
-				cols[j+2] = col;
-				cols[j+3] = 1;
+				cols[j + 1] = col;
+				cols[j + 2] = col;
+				cols[j + 3] = 1;
 			}
 		}
 

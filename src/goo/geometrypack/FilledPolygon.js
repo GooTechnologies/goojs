@@ -35,14 +35,14 @@ define([
 
 		var i = 0;
 		var al = n;
-		while(al > 3) {
-			var i0 = avl[(i+0)%al];
-			var i1 = avl[(i+1)%al];
-			var i2 = avl[(i+2)%al];
+		while (al > 3) {
+			var i0 = avl[(i + 0) % al];
+			var i1 = avl[(i + 1) % al];
+			var i2 = avl[(i + 2) % al];
 
-			var ax = p[3*i0],  ay = p[3*i0+1];
-			var bx = p[3*i1],  by = p[3*i1+1];
-			var cx = p[3*i2],  cy = p[3*i2+1];
+			var ax = p[3 * i0],  ay = p[3 * i0 + 1];
+			var bx = p[3 * i1],  by = p[3 * i1 + 1];
+			var cx = p[3 * i2],  cy = p[3 * i2 + 1];
 
 			var earFound = false;
 			if (convex(ax, ay, bx, by, cx, cy)) {
@@ -50,16 +50,16 @@ define([
 				for (var j=0; j<al; j++) {
 					var vi = avl[j];
 					if (vi===i0 || vi===i1 || vi===i2) { continue; }
-					if (pointInTriangle(p[3*vi], p[3*vi+1], ax, ay, bx, by, cx, cy)) {earFound = false; break;}
+					if (pointInTriangle(p[3 * vi], p[3 * vi + 1], ax, ay, bx, by, cx, cy)) {earFound = false; break;}
 				}
 			}
 			if (earFound) {
 				tgs.push(i0, i1, i2);
-				avl.splice((i+1)%al, 1);
+				avl.splice((i + 1) % al, 1);
 				al--;
 				i= 0;
 			}
-			else { if (i++ > 3*al) { break; } }
+			else { if (i++ > 3 * al) { break; } }
 		}
 		tgs.push(avl[0], avl[1], avl[2]);
 		return tgs;
@@ -73,11 +73,11 @@ define([
 		var v2x = px-ax;
 		var v2y = py-ay;
 
-		var dot00 = v0x*v0x+v0y*v0y;
-		var dot01 = v0x*v1x+v0y*v1y;
-		var dot02 = v0x*v2x+v0y*v2y;
-		var dot11 = v1x*v1x+v1y*v1y;
-		var dot12 = v1x*v2x+v1y*v2y;
+		var dot00 = v0x * v0x + v0y * v0y;
+		var dot01 = v0x * v1x + v0y * v1y;
+		var dot02 = v0x * v2x + v0y * v2y;
+		var dot11 = v1x * v1x + v1y * v1y;
+		var dot12 = v1x * v2x + v1y * v2y;
 
 		var invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
 		var u = (dot11 * dot02 - dot01 * dot12) * invDenom;
@@ -88,7 +88,7 @@ define([
 	}
 
 	function convex(ax, ay, bx, by, cx, cy) {
-		return (ay-by)*(cx-bx) + (bx-ax)*(cy-by) >= 0;
+		return (ay-by) * (cx-bx) + (bx-ax) * (cy-by) >= 0;
 	}
 
 	/**

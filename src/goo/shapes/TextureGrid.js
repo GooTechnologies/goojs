@@ -49,30 +49,34 @@ define([
 		for (var i = 0; i < this.matrix.length; i++) {
 			for (var j = 0; j < this.matrix[i].length; j++) {
 				verts.push(
-					j    , -i - 1, 0,
-					j    , -i    , 0,
-					j + 1, -i    , 0,
-					j + 1, -i - 1, 0);
+					j, -i - 1, 0,
+					j, -i, 0,
+					j + 1, -i, 0,
+					j + 1, -i - 1, 0
+				);
 
 				norms.push(
 					0, 0, 1,
 					0, 0, 1,
 					0, 0, 1,
-					0, 0, 1);
+					0, 0, 1
+				);
 
 				var texX = (this.matrix[i][j] % this.textureUnitsPerLine) / this.textureUnitsPerLine;
 				var texY = Math.floor(this.matrix[i][j] / this.textureUnitsPerLine) / this.textureUnitsPerLine;
 				texY = 1 - texY;
 
 				tex.push(
-					 texX      , texY - 1/this.textureUnitsPerLine,
-					 texX      , texY,
-					 texX + 1/this.textureUnitsPerLine, texY,
-					 texX + 1/this.textureUnitsPerLine, texY - 1/this.textureUnitsPerLine);
+					 texX, texY - 1 / this.textureUnitsPerLine,
+					 texX, texY,
+					 texX + 1 / this.textureUnitsPerLine, texY,
+					 texX + 1 / this.textureUnitsPerLine, texY - 1 / this.textureUnitsPerLine
+				);
 
 				indices.push(
 					indexCounter + 3, indexCounter + 1, indexCounter + 0,
-					indexCounter + 2, indexCounter + 1, indexCounter + 3);
+					indexCounter + 2, indexCounter + 1, indexCounter + 3
+				);
 
 				indexCounter += 4;
 			}

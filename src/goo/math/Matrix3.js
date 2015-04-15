@@ -20,7 +20,7 @@ define([
 	 *
 	 * // Passing in a number Array
 	 * var m2 = new Matrix3([1, 0, 0, 0, 1, 0, 0, 0, 1]);
-	 *		
+	 *
 	 * // Passing in numbers
 	 * var m3 = new Matrix3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	 *
@@ -471,8 +471,8 @@ define([
 	 * @param {Matrix3} [store] the target Matrix3 to store the result or 'this', if undefined.
 	 * @returns {Matrix3} store
 	 * @example
-	 * // rotates the entity on the Y axis, by Math.PI*0.5 (90 degrees)
-	 * entity.transformComponent.transform.rotation.rotateY(Math.PI*0.5);
+	 * // rotates the entity on the Y axis, by Math.PI * 0.5 (90 degrees)
+	 * entity.transformComponent.transform.rotation.rotateY(Math.PI * 0.5);
 	 */
 	Matrix3.prototype.rotateY = function (rad, store) {
 		store = store || this;

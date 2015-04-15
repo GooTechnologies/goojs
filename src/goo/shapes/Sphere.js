@@ -59,7 +59,7 @@ define([
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION, MeshData.NORMAL, MeshData.TEXCOORD0]);
 
-		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples+1 : this.zSamples;
+		var samples = (this.textureMode === Sphere.TextureModes.Chromeball) ? this.zSamples + 1 : this.zSamples;
 
 		// If Projected & Linear use shared pole vertices the uv-mapping will get too distorted, so let them
 		// have full 'rings' of vertices for a straighter texture mapping.

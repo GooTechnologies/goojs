@@ -138,7 +138,7 @@ define([
 		var bound = EntityUtils.getTotalBoundingBox(entity);
 		this.center = bound.center;
 		shape = new Ammo.btBoxShape(new Ammo.btVector3(bound.xExtent, bound.yExtent, bound.zExtent));
-		//shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent*scale, bound.yExtent*scale, bound.zExtent*scale));
+		//shape = new Ammo.btBoxShape(new Ammo.btVector3( bound.xExtent * scale, bound.yExtent * scale, bound.zExtent * scale));
 		return shape;
 	};
 

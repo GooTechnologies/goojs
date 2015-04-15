@@ -55,7 +55,7 @@ define([
 			2, 6,
 			3, 7
 		]);
-		// For a box, the number of vertices are 8 and the number of visible triangles from a view are 6. 6*3 indices.
+		// For a box, the number of vertices are 8 and the number of visible triangles from a view are 6. 6 * 3 indices.
 		// homogeneous vertices gives 32 position values.
 		var triangleData = new OccludeeTriangleData({'numberOfPositions': 32, 'numberOfIndices': 18});
 

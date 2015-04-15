@@ -133,7 +133,7 @@ define([
 			return;
 		}
 		var fshader;
-		switch(key) {
+		switch (key) {
 			case 'wireframe':
 			case 'color':
 				fshader = ObjectUtil.deepClone(ShaderLib.simpleColored.fshader);

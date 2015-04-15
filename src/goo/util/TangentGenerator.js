@@ -2,7 +2,7 @@ define([
 	'goo/math/Vector2',
 	'goo/math/Vector3',
 	'goo/renderer/MeshData'
-	], function (
+], function (
 	Vector2,
 	Vector3,
 	MeshData
@@ -12,8 +12,7 @@ define([
 	/**
 	 * The TangentGenerator can generate and add a buffer with tangent information to a MeshData
 	 */
-	function TangentGenerator() {
-	}
+	function TangentGenerator() {}
 
 	/**
 	 * Generates and adds a buffer with tangent information to a MeshData object

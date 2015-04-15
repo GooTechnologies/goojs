@@ -32,7 +32,7 @@ define([
 				return;
 			}
 			env.currentView = view;
-			switch(view){
+			switch (view){
 				case 'XY':
 					env.axis.set(Vector3.UNIT_Z);
 					env.upAxis.set(Vector3.UNIT_Y);

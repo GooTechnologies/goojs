@@ -195,7 +195,7 @@ define([
 		var verts = [];
 		for (var i = 0; i < xCount; i++) {
 			for (var j = 0; j < yCount; j++) {
-				verts.push((i * xSize / xCount)-xSize*0.5, (j*ySize/yCount) -ySize*0.5, 0);
+				verts.push((i * xSize / xCount)-xSize * 0.5, (j * ySize/yCount) -ySize * 0.5, 0);
 			}
 		}
 		var surface = new Surface(verts, xCount);

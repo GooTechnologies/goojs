@@ -372,7 +372,7 @@ define([
 
 	Shader.prototype.getDefineKey = function (definesIndices) {
 		if (this.defineKeyDirty) {
-			var key = 'Key:'+this.name;
+			var key = 'Key:' + this.name;
 			var defineArray = Object.keys(this.defines);
 			for (var i = 0, l = defineArray.length; i < l; i++) {
 				var defineArrayKey = defineArray[i];
@@ -385,7 +385,7 @@ define([
 					definesIndices.push(defineArrayKey);
 					defineIndex = definesIndices.length;
 				}
-				key += '_'+defineIndex+':'+defineVal;
+				key += '_' + defineIndex + ':' + defineVal;
 			}
 			this.defineKey = key;
 			this.defineKeyDirty = false;

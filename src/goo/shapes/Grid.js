@@ -30,8 +30,8 @@ define([
 		this.height = height || 1;
 
 		var attributeMap = MeshData.defaultMap([MeshData.POSITION]);
-		var vertsCount = 4 + (this.xSegments-1) * 2 + (this.ySegments-1) * 2;
-		var idcsCount = 8 + (this.xSegments-1) * 2 + (this.ySegments-1) * 2;
+		var vertsCount = 4 + (this.xSegments - 1) * 2 + (this.ySegments - 1) * 2;
+		var idcsCount = 8 + (this.xSegments - 1) * 2 + (this.ySegments - 1) * 2;
 		MeshData.call(this, attributeMap, vertsCount, idcsCount);
 		this.indexModes[0] = 'Lines';
 		this.rebuild();

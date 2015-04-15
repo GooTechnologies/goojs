@@ -1,7 +1,6 @@
 define([
 	'goo/loaders/handlers/ConfigHandler',
 	'goo/renderer/Material',
-	'goo/renderer/Util',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/RenderQueue',
 	'goo/util/rsvp',
@@ -10,7 +9,6 @@ define([
 ], function (
 	ConfigHandler,
 	Material,
-	Util,
 	ShaderLib,
 	RenderQueue,
 	RSVP,

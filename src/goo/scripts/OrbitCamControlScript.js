@@ -170,7 +170,7 @@ define([
 			var maxAzimuth = args.maxAzimuth * MathUtils.DEG_TO_RAD;
 			td.y = MathUtils.radialClamp(td.y - azimuthAccel, minAzimuth, maxAzimuth);
 		} else {
-			td.y = td.y - azimuthAccel;
+			td.y -= azimuthAccel;
 		}
 		var minAscent = args.minAscent * MathUtils.DEG_TO_RAD;
 		var maxAscent = args.maxAscent * MathUtils.DEG_TO_RAD;

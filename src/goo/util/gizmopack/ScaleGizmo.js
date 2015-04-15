@@ -107,7 +107,7 @@ define([
 		result.set(line).scale(d);
 		var scale = Math.pow(1 + d, this._scale);
 
-		switch(this._activeHandle.axis) {
+		switch (this._activeHandle.axis) {
 			case 0:
 				this._transformScale.x *= scale;
 				break;

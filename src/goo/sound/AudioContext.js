@@ -20,7 +20,7 @@ define(function () {
 				try {
 					// even if window.AudioContext is available something might go wrong
 					context = new AudioContext();
-				} catch (e) {
+				} catch (e) {
 					console.warn(e.message);
 					supported = false;
 				}

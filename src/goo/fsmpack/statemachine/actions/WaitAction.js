@@ -54,7 +54,7 @@ define(['goo/fsmpack/statemachine/actions/Action'], function (Action) {
 
 	WaitAction.prototype._setup = function () {
 		this.currentTime = 0;
-		this.totalWait = parseFloat(this.waitTime) + Math.random()*parseFloat(this.randomTime);
+		this.totalWait = parseFloat(this.waitTime) + Math.random() * parseFloat(this.randomTime);
 	};
 
 	WaitAction.prototype._run = function (fsm) {

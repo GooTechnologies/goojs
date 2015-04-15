@@ -84,7 +84,7 @@ define([
 				var sinPhi = Math.sin(phi);
 
 				tempNormal.copy(radialAxis).scale(cosPhi);
-				tempNormal.z = tempNormal.z + sinPhi;
+				tempNormal.z += sinPhi;
 				tempNormal.normalize();
 
 				if (!this.viewInside) {

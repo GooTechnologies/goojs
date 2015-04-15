@@ -246,8 +246,8 @@ define([
 			var distances = [root - a1];
 			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
 			return {
-				"distances": distances,
-				"points": points
+				distances: distances,
+				points: points
 			};
 		}
 
@@ -266,16 +266,16 @@ define([
 			var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin),
 				new Vector3().copy(ray.direction).scale(distances[1]).add(ray.origin)];
 			return {
-				"distances": distances,
-				"points": points
+				distances: distances,
+				points: points
 			};
 		}
 
 		var distances = [-a1];
 		var points = [new Vector3().copy(ray.direction).scale(distances[0]).add(ray.origin)];
 		return {
-			"distances": distances,
-			"points": points
+			distances: distances,
+			points: points
 		};
 	};
 

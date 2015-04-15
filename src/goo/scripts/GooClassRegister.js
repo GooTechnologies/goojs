@@ -74,7 +74,6 @@ define([
 	'goo/renderer/SimplePartitioner',
 	'goo/renderer/Texture',
 	'goo/renderer/TextureCreator',
-	'goo/renderer/Util', // this needs to go
 	'goo/renderer/RendererUtils',
 	'goo/renderer/bounds/BoundingBox',
 	'goo/renderer/bounds/BoundingSphere',
@@ -210,7 +209,6 @@ define([
 		'SimplePartitioner',
 		'Texture',
 		'TextureCreator',
-		'Util', // this needs to go
 		'RendererUtils',
 		'BoundingBox',
 		'BoundingSphere',

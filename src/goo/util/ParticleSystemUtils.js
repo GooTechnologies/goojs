@@ -72,7 +72,8 @@ define([
 		canvas.height = size;
 		var con2d = canvas.getContext('2d');
 
-		var gradient = con2d.createRadialGradient(size/2, size/2, options.startRadius, size/2, size/2, options.endRadius);
+		var gradient = con2d.createRadialGradient(
+			size / 2, size / 2, options.startRadius, size / 2, size / 2, options.endRadius);
 
 		for (var i = 0; i < options.steps.length; i++) {
 			var step = options.steps[i];
@@ -145,7 +146,7 @@ define([
 		}
 		// ----
 
-		splash(size/2, size/2, ((size/2)/10)*1, ((size/2)/10)*9, options.trailStartRadius, options.trailEndRadius, options.nTrails);
+		splash(size / 2, size / 2, ((size / 2) / 10) * 1, ((size / 2) / 10) * 9, options.trailStartRadius, options.trailEndRadius, options.nTrails);
 
 		var imageData = con2d.getImageData(0, 0, size, size).data;
 		imageData = new Uint8Array(imageData);

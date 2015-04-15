@@ -119,7 +119,7 @@ define([
 					var data = channel.getData(0);
 					this._data[channelName] = data;
 				} else {
-					console.error('Channel not in clip: '+channelName);
+					console.error('Channel not in clip: ' + channelName);
 				}
 			}
 		} else {

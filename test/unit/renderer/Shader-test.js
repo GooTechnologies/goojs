@@ -8,7 +8,7 @@ define([
 	'goo/renderer/Texture',
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/light/DirectionalLight',
-	'goo/renderer/Util',
+	'goo/renderer/RendererUtils',
 	'goo/shapes/Box'
 ], function(
 	Shader,
@@ -20,7 +20,7 @@ define([
 	Texture,
 	ShaderLib,
 	DirectionalLight,
-	Util,
+	RendererUtils,
 	Box
 ) {
 	'use strict';
@@ -29,7 +29,7 @@ define([
 		describe('DefineKey', function() {
 			var shader;
 			beforeEach(function() {
-				shader = new Shader('TestName', Util.clone(ShaderLib.simple));
+				shader = new Shader('TestName', RendererUtils.clone(ShaderLib.simple));
 			});
 			it('can generate define key when no defines', function() {
 				var defineIndices = [];
@@ -129,15 +129,15 @@ define([
 				testShaderCall(context, 'uniform3fv', 'vec3', [1.2, 2.3, 3.4], [3.4, 4.5, 5.6]);
 				testShaderCall(context, 'uniform4fv', 'vec4', [1.2, 2.3, 3.4, 4.5], [3.4, 4.5, 5.6, 6.7]);
 
-				testShaderCall(context, 'uniformMatrix2fv', 'mat2', 
+				testShaderCall(context, 'uniformMatrix2fv', 'mat2',
 					[1.2, 2.3, 3.4, 4.5],
 					[3.4, 4.5, 5.6, 6.7]
 				);
-				testShaderCall(context, 'uniformMatrix3fv', 'mat3', 
+				testShaderCall(context, 'uniformMatrix3fv', 'mat3',
 					[1, 2, 3, 4, 5, 6, 7, 8, 9],
 					[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1]
 				);
-				testShaderCall(context, 'uniformMatrix4fv', 'mat4', 
+				testShaderCall(context, 'uniformMatrix4fv', 'mat4',
 					[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
 					[1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1, 11.1, 12.1, 13.1, 14.1, 15.1, 16.1]
 				);

@@ -126,7 +126,7 @@ function () {
 		}
 		this.context.uniform2fv(this.location, values);
 		var l = values.length;
-		while(l--) {
+		while (l--) {
 			curValue[l] = values[l];
 		}
 	};
@@ -179,7 +179,7 @@ function () {
 		}
 		this.context.uniform3fv(this.location, values);
 		var l = values.length;
-		while(l--) {
+		while (l--) {
 			curValue[l] = values[l];
 		}
 	};
@@ -228,7 +228,7 @@ function () {
 		}
 		this.context.uniform4fv(this.location, values);
 		var l = values.length;
-		while(l--) {
+		while (l--) {
 			curValue[l] = values[l];
 		}
 	};
@@ -257,7 +257,7 @@ function () {
 
 	function compareArrays(a1, a2) {
 		var l = a1.length;
-		while(l--) {
+		while (l--) {
 			if (a1[l] !== a2[l]) {
 				return false;
 			}
@@ -280,7 +280,7 @@ function () {
 			}
 			this.context.uniformMatrix2fv(this.location, transpose, values);
 			var l = values.length;
-			while(l--) {
+			while (l--) {
 				curValue[l] = values[l];
 			}
 			return;
@@ -316,7 +316,7 @@ function () {
 			}
 			this.context.uniformMatrix3fv(this.location, transpose, values);
 			var l = values.length;
-			while(l--) {
+			while (l--) {
 				curValue[l] = values[l];
 			}
 			return;
@@ -351,7 +351,7 @@ function () {
 			}
 			this.context.uniformMatrix4fv(this.location, transpose, values);
 			var l = values.length;
-			while(l--) {
+			while (l--) {
 				curValue[l] = values[l];
 			}
 			return;

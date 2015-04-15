@@ -159,14 +159,14 @@ function () {
 		global = global || window;
 		var elementPrototype = (global.HTMLElement || global.Element).prototype;
 
-		if (!document.hasOwnProperty("fullscreenEnabled")) {
+		if (!document.hasOwnProperty('fullscreenEnabled')) {
 			var getter = (function () {
-				if ("webkitIsFullScreen" in document) {
+				if ('webkitIsFullScreen' in document) {
 					return function () {
 						return document.webkitFullscreenEnabled;
 					};
 				}
-				if ("mozFullScreenEnabled" in document) {
+				if ('mozFullScreenEnabled' in document) {
 					return function () {
 						return document.mozFullScreenEnabled;
 					};
@@ -179,7 +179,7 @@ function () {
 				};
 			})();
 
-			Object.defineProperty(document, "fullscreenEnabled", {
+			Object.defineProperty(document, 'fullscreenEnabled', {
 				enumerable: true,
 				configurable: false,
 				writeable: false,
@@ -187,9 +187,9 @@ function () {
 			});
 		}
 
-		if (!document.hasOwnProperty("fullscreenElement")) {
+		if (!document.hasOwnProperty('fullscreenElement')) {
 			var getter = (function () {
-				var name = ["webkitCurrentFullScreenElement", "webkitFullscreenElement", "mozFullScreenElement"];
+				var name = ['webkitCurrentFullScreenElement', 'webkitFullscreenElement', 'mozFullScreenElement'];
 
 				var getNameInDocument = function (i) {
 					return function () {
@@ -207,7 +207,7 @@ function () {
 				};
 			})();
 
-			Object.defineProperty(document, "fullscreenElement", {
+			Object.defineProperty(document, 'fullscreenElement', {
 				enumerable: true,
 				configurable: false,
 				writeable: false,
@@ -216,20 +216,20 @@ function () {
 		}
 
 		function fullscreenchange () {
-			var newEvent = document.createEvent("CustomEvent");
-			newEvent.initCustomEvent("fullscreenchange", true, false, null);
+			var newEvent = document.createEvent('CustomEvent');
+			newEvent.initCustomEvent('fullscreenchange', true, false, null);
 			document.dispatchEvent(newEvent);
 		}
-		document.addEventListener("webkitfullscreenchange", fullscreenchange, false);
-		document.addEventListener("mozfullscreenchange", fullscreenchange, false);
+		document.addEventListener('webkitfullscreenchange', fullscreenchange, false);
+		document.addEventListener('mozfullscreenchange', fullscreenchange, false);
 
 		function fullscreenerror () {
-			var newEvent = document.createEvent("CustomEvent");
-			newEvent.initCustomEvent("fullscreenerror", true, false, null);
+			var newEvent = document.createEvent('CustomEvent');
+			newEvent.initCustomEvent('fullscreenerror', true, false, null);
 			document.dispatchEvent(newEvent);
 		}
-		document.addEventListener("webkitfullscreenerror", fullscreenerror, false);
-		document.addEventListener("mozfullscreenerror", fullscreenerror, false);
+		document.addEventListener('webkitfullscreenerror', fullscreenerror, false);
+		document.addEventListener('mozfullscreenerror', fullscreenerror, false);
 
 		if (!elementPrototype.requestFullScreen) {
 			elementPrototype.requestFullScreen = (function () {
@@ -272,8 +272,8 @@ function () {
 
 		var mouseEventPrototype = global.MouseEvent.prototype;
 
-		if (!("movementX" in mouseEventPrototype)) {
-			Object.defineProperty(mouseEventPrototype, "movementX", {
+		if (!('movementX' in mouseEventPrototype)) {
+			Object.defineProperty(mouseEventPrototype, 'movementX', {
 				enumerable: true,
 				configurable: false,
 				writeable: false,
@@ -283,8 +283,8 @@ function () {
 			});
 		}
 
-		if (!("movementY" in mouseEventPrototype)) {
-			Object.defineProperty(mouseEventPrototype, "movementY", {
+		if (!('movementY' in mouseEventPrototype)) {
+			Object.defineProperty(mouseEventPrototype, 'movementY', {
 				enumerable: true,
 				configurable: false,
 				writeable: false,
@@ -299,31 +299,31 @@ function () {
 		}
 
 		function pointerlockchange () {
-			var newEvent = document.createEvent("CustomEvent");
-			newEvent.initCustomEvent("pointerlockchange", true, false, null);
+			var newEvent = document.createEvent('CustomEvent');
+			newEvent.initCustomEvent('pointerlockchange', true, false, null);
 			document.dispatchEvent(newEvent);
 		}
-		document.addEventListener("webkitpointerlockchange", pointerlockchange, false);
-		document.addEventListener("webkitpointerlocklost", pointerlockchange, false);
-		document.addEventListener("mozpointerlockchange", pointerlockchange, false);
-		document.addEventListener("mozpointerlocklost", pointerlockchange, false);
+		document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
+		document.addEventListener('webkitpointerlocklost', pointerlockchange, false);
+		document.addEventListener('mozpointerlockchange', pointerlockchange, false);
+		document.addEventListener('mozpointerlocklost', pointerlockchange, false);
 
 		function pointerlockerror () {
-			var newEvent = document.createEvent("CustomEvent");
-			newEvent.initCustomEvent("pointerlockerror", true, false, null);
+			var newEvent = document.createEvent('CustomEvent');
+			newEvent.initCustomEvent('pointerlockerror', true, false, null);
 			document.dispatchEvent(newEvent);
 		}
-		document.addEventListener("webkitpointerlockerror", pointerlockerror, false);
-		document.addEventListener("mozpointerlockerror", pointerlockerror, false);
+		document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
+		document.addEventListener('mozpointerlockerror', pointerlockerror, false);
 
-		if (!document.hasOwnProperty("pointerLockElement")) {
+		if (!document.hasOwnProperty('pointerLockElement')) {
 			var getter = (function () {
-				if ("webkitPointerLockElement" in document) {
+				if ('webkitPointerLockElement' in document) {
 					return function () {
 						return document.webkitPointerLockElement;
 					};
 				}
-				if ("mozPointerLockElement" in document) {
+				if ('mozPointerLockElement' in document) {
 					return function () {
 						return document.mozPointerLockElement;
 					};
@@ -333,7 +333,7 @@ function () {
 				};
 			})();
 
-			Object.defineProperty(document, "pointerLockElement", {
+			Object.defineProperty(document, 'pointerLockElement', {
 				enumerable: true,
 				configurable: false,
 				writeable: false,

@@ -198,8 +198,8 @@ define([], function () {
 	 * MathUtils.cartesianToSpherical(pos.x, pos.y, pos.z, sphericalCoord);
 	 */
 	MathUtils.cartesianToSpherical = function (x, y, z, store) {
-		var a = Math.sqrt(x*x + z*z);
-		store.x = Math.sqrt(x*x+y*y+z*z); // radius
+		var a = Math.sqrt(x * x + z * z);
+		store.x = Math.sqrt(x * x + y * y + z * z); // radius
 		store.y = Math.atan2(z, x); // azimuth
 		store.z = Math.atan2(y, a); // polar
 	};

@@ -464,7 +464,7 @@ define([
 	 * @example
 	 * boxEntity.setRotation(Math.PI/4.0, 0, 0);
 	 * console.log(boxEntity.getRotation().toString()); // [0.79, 0, 0]
-	 * boxEntity.addRotation(new Vector3(MathUtils.DEG_TO_RAD*45.0, 0, 0));
+	 * boxEntity.addRotation(new Vector3(MathUtils.DEG_TO_RAD * 45.0, 0, 0));
 	 * console.log(boxEntity.getRotation().toString()); // [1.57, 0, 0]
 	 *
 	 * @param {Vector | number[] | number...} Component values.

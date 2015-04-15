@@ -78,7 +78,7 @@ define([
 			materials: [mat],
 			transform: new Transform()
 		};
-		this.renderable.transform.setRotationXYZ(0, 0, Math.PI*0.5);
+		this.renderable.transform.setRotationXYZ(0, 0, Math.PI * 0.5);
 
 		this.copyPass = new FullscreenPass(ShaderLib.screenCopy);
 		this.copyPass.material.depthState.enabled = false;
@@ -196,7 +196,7 @@ define([
 		light.shadowSettings.size = 10;
 		var lightEntity = this.lightEntity = world.createEntity(light);
 		lightEntity.setTranslation(200, 200, 200);
-		lightEntity.setRotation(-Math.PI*0.5, 0, 0);
+		lightEntity.setRotation(-Math.PI * 0.5, 0, 0);
 		lightEntity.addToWorld();
 		this.lightEntity.lightComponent.hidden = true;
 

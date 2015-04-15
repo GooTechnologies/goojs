@@ -191,7 +191,7 @@ define([
 		sum *= this._rotationScale;
 
 		if (this.snap) {
-			switch(this._activeHandle.axis) {
+			switch (this._activeHandle.axis) {
 				case 0:
 					this.accumulatedRotationThorX += sum;
 					var newAngleX = tranFun(this.accumulatedRotationThorX);
@@ -212,7 +212,7 @@ define([
 					break;
 			}
 		} else {
-			switch(this._activeHandle.axis) {
+			switch (this._activeHandle.axis) {
 				case 0:
 					this.accumulatedRotationThorX += sum;
 					var newAngleX = this.accumulatedRotationThorX;

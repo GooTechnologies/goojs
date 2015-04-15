@@ -84,7 +84,7 @@ define([
 			for (var i = 0; i < this.heightMapData.length; i++) {
 				var dim = this.heightMapData[i].dimensions;
 				if (pos[0] <= dim.maxX && pos[0] >= dim.minX) {
-					if (pos[1] < dim.maxY+this.yMargin && pos[1] > dim.minY-this.yMargin) {
+					if (pos[1] < dim.maxY + this.yMargin && pos[1] > dim.minY-this.yMargin) {
 						if (pos[2] <= dim.maxZ && pos[2] >= dim.minZ) {
 							return this.heightMapData[i];
 						}
@@ -105,7 +105,7 @@ define([
 
 		WorldFittedTerrainScript.prototype.displaceAxisDimensions = function (axPos, axMin, axMax, quadCount) {
 			var matrixPos = axPos-axMin;
-			return quadCount*matrixPos/(axMax - axMin);
+			return quadCount * matrixPos/(axMax - axMin);
 		};
 
 		/**
@@ -120,7 +120,7 @@ define([
 		WorldFittedTerrainScript.prototype.returnToWorldDimensions = function (axPos, axMin, axMax, quadCount) {
 			var quadSize = (axMax-axMin) / quadCount;
 			var insidePos = axPos * quadSize;
-			return axMin+insidePos;
+			return axMin + insidePos;
 		};
 
 		/**
@@ -139,7 +139,7 @@ define([
             var tx = this.displaceAxisDimensions(pos[0], dims.minX, dims.maxX, heightData.sideQuadCount);
             var tz = this.displaceAxisDimensions(pos[2], dims.minZ, dims.maxZ, heightData.sideQuadCount);
             var matrixHeight = heightData.script.getPreciseHeight(tx, tz);
-            return matrixHeight*(dims.maxY - dims.minY) + dims.minY;
+            return matrixHeight * (dims.maxY - dims.minY) + dims.minY;
         };
 
 		/**

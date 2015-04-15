@@ -1,14 +1,12 @@
 define([
         'goo/renderer/MeshData',
         'goo/math/Vector3',
-        // 'goo/math/Matrix3',
         'goo/entities/EntityUtils'
         ],
 
 	function (
 		MeshData,
 		Vector3,
-		// Matrix3,
 		EntityUtils
 	) {
 	'use strict';
@@ -20,18 +18,18 @@ define([
 	 * @example
 	 * var meshBuilder = new MeshBuilder();
 	 * var transform = new Transform();
-	 * 
+	 *
 	 * var box1 = new Box(0.3, 1, 1.6);
 	 * var box2 = new Box(0.2, 0.15, 0.7);
-	 * 
+	 *
 	 * transform.translation.setDirect(0, 0, 1.3);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box1, transform);
-     * 
+     *
 	 * transform.translation.setDirect(0, 0, 0);
 	 * transform.update();
 	 * meshBuilder.addMeshData(box2, transform);
-     * 
+     *
 	 * var meshData = meshBuilder.build()[0];
 	 * goo.world.createEntity( meshData, new Material(ShaderLib.simpleLit)).addToWorld();
 
@@ -109,7 +107,7 @@ define([
 			}
 
 			var view = meshData.getAttributeBuffer(key);
-			
+
 			var viewLength = view.length;
 			var array = attribute.array;
 			var count = map.count;

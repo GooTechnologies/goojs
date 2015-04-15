@@ -1,11 +1,9 @@
 define([
-	'goo/renderer/Util',
 	'goo/loaders/handlers/SoundHandler',
 	'goo/sound/AudioContext',
 	'goo/util/Ajax',
 	'goo/util/StringUtil'
 ], function (
-	Util,
 	SoundHandler,
 	AudioContext,
 	Ajax,

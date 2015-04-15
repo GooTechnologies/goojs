@@ -55,7 +55,7 @@ define([
 				var parentJoint = joints[joint._parentIndex];
 				weights.push(1, 0, 0, 0, 1, 0, 0, 0);
 				jointIds.push(joint._index, 0, 0, 0, parentJoint._index, 0, 0, 0);
-				indices.push(count*2, count*2+1);
+				indices.push(count * 2, count * 2 + 1);
 				count++;
 
 				calcTrans.matrix.copy(joint._inverseBindPose.matrix).invert();
