@@ -33,14 +33,19 @@ define([
 	BoundingSphere.prototype.constructor = BoundingSphere;
 
 	BoundingSphere.prototype.computeFromPoints = function (verts) {
+		var l = verts.length;
+		if (l < 3) {
+			return;
+		}
+
 		var min = this.min;
 		var max = this.max;
 		var vec = tmpVec;
 
-		min.setDirect(Infinity, Infinity, Infinity);
-		max.setDirect(-Infinity, -Infinity, -Infinity);
+		min.setDirect(verts[0], verts[1], verts[2]);
+		max.setDirect(verts[0], verts[1], verts[2]);
 		var x, y, z;
-		for (var i = 0; i < verts.length; i += 3) {
+		for (var i = 3; i < l; i += 3) {
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];
@@ -53,7 +58,7 @@ define([
 		}
 		var newCenter = max.add(min).scale(1 / 2.0);
 		var size = 0, test;
-		for (var i = 0; i < verts.length; i += 3) {
+		for (var i = 0; i < l; i += 3) {
 			vec.setDirect(verts[i], verts[i + 1], verts[i + 2]);
 			test = vec.sub(newCenter).lengthSquared();
 			if (test > size) {

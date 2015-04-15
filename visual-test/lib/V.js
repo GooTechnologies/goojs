@@ -473,7 +473,7 @@ define([
         }
 
         var button = document.createElement('button');
-        button.innerText = text;
+        button.textContent = text;
         button.addEventListener('click', onClick);
 
         panel.appendChild(button);

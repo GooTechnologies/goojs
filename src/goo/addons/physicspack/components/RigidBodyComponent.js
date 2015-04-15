@@ -9,7 +9,8 @@ define([
 	'goo/addons/physicspack/colliders/PlaneCollider',
 	'goo/addons/physicspack/colliders/MeshCollider',
 	'goo/addons/physicspack/joints/BallJoint',
-	'goo/addons/physicspack/joints/HingeJoint'
+	'goo/addons/physicspack/joints/HingeJoint',
+	'goo/addons/physicspack/components/ColliderComponent'
 ],
 function (
 	AbstractRigidBodyComponent,
@@ -22,7 +23,8 @@ function (
 	PlaneCollider,
 	MeshCollider,
 	BallJoint,
-	HingeJoint
+	HingeJoint,
+	ColliderComponent
 ) {
 	'use strict';
 
@@ -213,8 +215,10 @@ function (
 	 * @param {Vector3} targetVector
 	 */
 	RigidBodyComponent.prototype.getPosition = function (targetVector) {
-		var position = this.cannonBody.position;
-		targetVector.setDirect(position.x, position.y, position.z);
+		if (this.cannonBody) {
+			var position = this.cannonBody.position;
+			targetVector.setDirect(position.x, position.y, position.z);
+		}
 	};
 
 	/**
@@ -285,7 +289,10 @@ function (
 			},
 			set: function (value) {
 				this._isKinematic = value;
-				this._dirty = true;
+				if (this.cannonBody) {
+					this.cannonBody.type = value ? CANNON.Body.KINEMATIC : CANNON.Body.DYNAMIC;
+					this.cannonBody.updateMassProperties();
+				}
 			}
 		},
 
@@ -340,58 +347,17 @@ function (
 	});
 
 	/**
-	 * Create a CANNON.Shape given a Collider. A BoxCollider yields a CANNON.Box and so on.
-	 * @param {Collider} collider
-	 * @return {CANNON.Shape}
-	 * @hidden
-	 */
-	RigidBodyComponent.getCannonShape = function (collider) {
-		var shape;
-		if (collider instanceof BoxCollider) {
-			var halfExtents = new CANNON.Vec3();
-			halfExtents.copy(collider.halfExtents);
-			shape = new CANNON.Box(halfExtents);
-		} else if (collider instanceof SphereCollider) {
-			shape = new CANNON.Sphere(collider.radius);
-		} else if (collider instanceof PlaneCollider) {
-			shape = new CANNON.Plane();
-		} else if (collider instanceof CylinderCollider) {
-			shape = new CANNON.Cylinder(
-				collider.radius,
-				collider.radius,
-				collider.height,
-				RigidBodyComponent.numCylinderSegments
-			);
-			var quat = new CANNON.Quaternion();
-			quat.setFromAxisAngle(new Vector3(0, 0, 1), -Math.PI / 2);
-			shape.transformAllPoints(new Vector3(), quat);
-			shape.computeEdges();
-			shape.updateBoundingSphereRadius();
-		} else if (collider instanceof MeshCollider) {
-			// Assume triangles
-			if (collider.meshData.indexModes[0] !== 'Triangles') {
-				throw new Error('MeshCollider data must be a triangle mesh!');
-			}
-			shape = new CANNON.Trimesh(
-				collider.meshData.getAttributeBuffer('POSITION'),
-				collider.meshData.getIndexBuffer()
-			);
-		} else {
-			console.warn('Unhandled collider: ', collider);
-		}
-		return shape;
-	};
-
-	/**
-	 * Removes the body from the physics engine, and set the component to dirty.
+	 * Removes the body from the physics engine
 	 */
 	RigidBodyComponent.prototype.destroy = function () {
 		var body = this.cannonBody;
 		if (body) {
 			body.world.removeBody(body);
 			delete this._system._entities[body.id];
+			body.shapes.forEach(function (shape) {
+				this._system._shapeIdToColliderEntityMap.delete(shape.id);
+			}.bind(this));
 			this.cannonBody = null;
-			this._dirty = true;
 		}
 
 		// Remove references to colliders
@@ -405,10 +371,6 @@ function (
 	 * Initialize the Cannon.js body available in the .cannonBody property. This is useful if the intention is to work with the CANNON.Body instance directly after the component is created.
 	 */
 	RigidBodyComponent.prototype.initialize = function () {
-		if (!this._dirty) {
-			return;
-		}
-
 		this.destroy();
 
 		var body = this.cannonBody = new CANNON.Body({
@@ -434,10 +396,6 @@ function (
 			body.type = CANNON.Body.KINEMATIC;
 		}
 		this.setTransformFromEntity(this._entity);
-
-		this._initialized = true;
-		this._dirty = false;
-
 		this.emitInitialized(this._entity);
 	};
 
@@ -446,7 +404,7 @@ function (
 	 */
 	RigidBodyComponent.prototype.initializeJoint = function (joint) {
 		var bodyA = this.cannonBody;
-		var bodyB = joint.connectedEntity.rigidBodyComponent.cannonBody;
+		var bodyB = (joint.connectedEntity.rigidBodyComponent || joint.connectedEntity.colliderComponent).cannonBody;
 		var constraint;
 		if (joint instanceof BallJoint) {
 
@@ -530,43 +488,12 @@ function (
 			var scale;
 			if (!tmpCannonVec) {
 				tmpCannonVec = new CANNON.Vec3();
-				scale = tmpCannonVec;
 			}
+			scale = tmpCannonVec;
 			scale.copy(collider.scale);
 			cannonShape.setScale(scale);
 		}
 		cannonShape.updateBoundingSphereRadius();
-	};
-
-	/**
-	 * @hidden
-	 */
-	RigidBodyComponent.prototype.updateDirtyColliders = function () {
-		var colliderEntities = this._colliderEntities;
-		for (var i = colliderEntities.length - 1; i >= 0; i--) {
-			var entity = colliderEntities[i];
-
-			// Check so it is still attached to this entity
-			var parent = entity.colliderComponent.getBodyEntity();
-			if (parent !== this._entity) {
-				colliderEntities.splice(i, 1);
-				entity.colliderComponent.setToDirty();
-				return;
-			}
-
-			var colliderComponent = entity.colliderComponent;
-			if (colliderComponent.isDirty()) {
-				colliderComponent.updateWorldCollider();
-				RigidBodyComponent.copyScaleFromColliderToCannonShape(
-					colliderComponent.cannonShape,
-					colliderComponent.worldCollider
-				);
-
-				colliderComponent.cannonShape.collisionResponse = !colliderComponent.isTrigger;
-
-				colliderComponent.setToClean();
-			}
-		}
 	};
 
 	/**
@@ -589,7 +516,9 @@ function (
 		colliderComponent.updateWorldCollider(true);
 		var collider = colliderComponent.worldCollider;
 
-		var cannonShape = colliderComponent.cannonShape = RigidBodyComponent.getCannonShape(collider);
+		var cannonShape = colliderComponent.cannonShape = ColliderComponent.getCannonShape(collider);
+
+		this._system._shapeIdToColliderEntityMap.set(cannonShape.id, entity);
 
 		// Create a material for the shape
 		var mat = new CANNON.Material();
@@ -637,29 +566,6 @@ function (
 	RigidBodyComponent.prototype.attached = function (entity) {
 		this._entity = entity;
 		this._system = entity._world.getSystem('PhysicsSystem');
-	};
-
-	/**
-	 * Marks the component as dirty. If it is dirty, the .cannonBody instance is re-initialized in the next process loop.
-	 */
-	RigidBodyComponent.prototype.setToDirty = function () {
-		this._dirty = true;
-	};
-
-	/**
-	 * Marks the component as non-dirty.
-	 */
-	RigidBodyComponent.prototype.setToClean = function () {
-		this._dirty = false;
-	};
-
-	/**
-	 * Gets whether the component needs to be updated.
-	 *
-	 * @return {boolean}
-	 */
-	RigidBodyComponent.prototype.isDirty = function () {
-		return this._dirty;
 	};
 
 	RigidBodyComponent.prototype.api = {};

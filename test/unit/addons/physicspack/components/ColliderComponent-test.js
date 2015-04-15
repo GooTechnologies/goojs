@@ -65,7 +65,7 @@ define([
 			var entity = world.createEntity(colliderComponent).addToWorld();
 
 			// Initialize
-			world.process();
+			colliderComponent.initialize();
 
 			expect(colliderComponent.bodyEntity).toBeFalsy();
 			expect(colliderComponent.cannonBody).toBeTruthy();
@@ -77,7 +77,7 @@ define([
 			entity.removeFromWorld();
 
 			// Cleanup
-			world.process();
+			colliderComponent.destroy();
 
 			expect(colliderComponent.bodyEntity).toBeFalsy();
 			expect(colliderComponent.cannonBody).toBeFalsy();

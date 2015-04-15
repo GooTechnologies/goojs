@@ -6,6 +6,13 @@ define(function () {
 	 */
 	function Bus() {
 		this.trie = { name: '', listeners: [], children: new Map() };
+
+		this._data = null;
+		this._emitOnEachChildChannel = function (child) {
+			child._data = this._data;
+			this._emitToAll(child, this._data);
+			child._data = null;
+		}.bind(this);
 	}
 
 	/**
@@ -88,9 +95,9 @@ define(function () {
 		}
 
 		// emit on the child channels as well
-		node.children.forEach(function (child) {
-			this._emitToAll(child, data);
-		}.bind(this));
+		this._data = data;
+		node.children.forEach(this._emitOnEachChildChannel);
+		this._data = null;
 	};
 
 	/**
@@ -185,7 +192,7 @@ define(function () {
 
 		node.children.forEach(function (child) {
 			this._removeListener(child, callbackToRemove);
-		}.bind(this));
+		}, this);
 	};
 
 	/**

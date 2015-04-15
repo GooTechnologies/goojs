@@ -44,6 +44,11 @@ define([
 	BoundingBox.prototype.constructor = BoundingBox;
 
 	BoundingBox.prototype.computeFromPoints = function (verts) {
+		var l = verts.length;
+		if (l < 3) {
+			return;
+		}
+
 		var min = this.min;
 		var max = this.max;
 		var vec = tmpVec3;
@@ -51,7 +56,7 @@ define([
 		min.setDirect(verts[0], verts[1], verts[2]);
 		max.setDirect(verts[0], verts[1], verts[2]);
 		var x, y, z;
-		for (var i = 3; i < verts.length; i += 3) {
+		for (var i = 3; i < l; i += 3) {
 			x = verts[i + 0];
 			y = verts[i + 1];
 			z = verts[i + 2];

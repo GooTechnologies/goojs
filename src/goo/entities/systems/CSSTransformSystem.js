@@ -4,11 +4,11 @@ define([
 	'goo/math/Matrix4',
 	'goo/math/MathUtils', 
 	'goo/math/Vector3'
-],  function (
+], function (
 	System, 
 	Renderer, 
 	Matrix4,
-	MathUtils, 
+	MathUtils,
 	Vector3
 ) {
 	'use strict';
@@ -81,7 +81,20 @@ define([
 		tmpMatrix2.e03 = -tmpMatrix2.e03;
 		// tmpMatrix2.e13 = -tmpMatrix2.e13;
 		tmpMatrix2.e23 = -tmpMatrix2.e23;
-		tmpMatrix2.setRotationFromVector(new Vector3(0, 0, 0));
+
+		// Needed?
+		tmpMatrix2.data[0] = 1;
+		tmpMatrix2.data[1] = 0;
+		tmpMatrix2.data[2] = 0;
+
+		tmpMatrix2.data[4] = 0;
+		tmpMatrix2.data[5] = 1;
+		tmpMatrix2.data[6] = 0;
+
+		tmpMatrix2.data[8] = 0;
+		tmpMatrix2.data[9] = 0;
+		tmpMatrix2.data[10] = 1;
+
 		style = getCSSMatrix(tmpMatrix2);
 		setStyle(this.containerDom2, 'transform', style);
 

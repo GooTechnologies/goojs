@@ -52,6 +52,7 @@ function (
 		});
 
 		this._entities = {};
+		this._shapeIdToColliderEntityMap = new Map();
 
 		if (!tmpVec1) {
 			tmpVec1 = new CANNON.Vec3();
@@ -74,10 +75,51 @@ function (
 		 */
 		this.maxSubSteps = settings.maxSubSteps !== undefined ? settings.maxSubSteps : 10;
 
-		this._inContactCurrentStepA = [];
-		this._inContactCurrentStepB = [];
-		this._inContactLastStepA = [];
-		this._inContactLastStepB = [];
+		/**
+		 * The current shape pair hashes.
+		 * @private
+		 * @type {Set}
+		 */
+		this._currentContacts = new Set();
+
+		/**
+		 * Shape pair hashes from last step.
+		 * @private
+		 * @type {Set}
+		 */
+		this._lastContacts = new Set();
+
+		// Function to be used with Array.prototype.sort(), will sort the contacts by hash.
+		this._sortContacts = function (contactA, contactB) {
+			return PhysicsSystem._getShapePairHash(contactA.si, contactA.sj) - PhysicsSystem._getShapePairHash(contactB.si, contactB.sj);
+		}.bind(this);
+
+		// Set iterator callback for lastContacts: emits endContact events
+		this._emitEndContactEvents = function (hash) {
+			var idA = PhysicsSystem._getShapeIdA(hash);
+			var idB = PhysicsSystem._getShapeIdB(hash);
+
+			var entityA = this._shapeIdToColliderEntityMap.get(idA);
+			var entityB = this._shapeIdToColliderEntityMap.get(idB);
+
+			var found = this._currentContacts.has(hash);
+			if (!found) {
+				this.emitEndContact(entityA, entityB);
+			}
+		}.bind(this);
+
+		// Set iterator callback for currentContacts: Moves all hashes from currentContacts to lastContacts
+		this._moveHashes = function (hash) {
+			this._lastContacts.add(hash);
+			this._currentContacts.delete(hash);
+		}.bind(this);
+
+		// Set iterator callback for lastContacts: just empties the Set
+		this._emptyLastContacts = function (hash) {
+			this._lastContacts.delete(hash);
+		}.bind(this);
+
+		this.initialized = false;
 
 		AbstractPhysicsSystem.call(this, 'PhysicsSystem', ['RigidBodyComponent']);
 	}
@@ -88,15 +130,8 @@ function (
 	 * @private
 	 */
 	PhysicsSystem.prototype._swapContactLists = function () {
-		var tmp = this._inContactCurrentStepA;
-		this._inContactCurrentStepA = this._inContactLastStepA;
-		this._inContactLastStepA = tmp;
-		this._inContactCurrentStepA.length = 0;
-
-		tmp = this._inContactCurrentStepB;
-		this._inContactCurrentStepB = this._inContactLastStepB;
-		this._inContactLastStepB = tmp;
-		this._inContactCurrentStepB.length = 0;
+		this._lastContacts.forEach(this._emptyLastContacts);
+		this._currentContacts.forEach(this._moveHashes);
 	};
 
 	/**
@@ -126,64 +161,111 @@ function (
 	};
 
 	/**
+	 * Returns an integer hash given two shapes.
+	 * @private
+	 * @param  {CANNON.Shape} shapeA
+	 * @param  {CANNON.Shape} shapeB
+	 * @return {number}
+	 */
+	PhysicsSystem._getShapePairHash = function (shapeA, shapeB) {
+		var idA = shapeA.id;
+		var idB = shapeB.id;
+
+		if (idA > idB) {
+			var tmp = idA;
+			idA = idB;
+			idB = tmp;
+		}
+
+		var hash = (idA << 16) | idB;
+
+		return hash;
+	};
+
+	/**
+	 * Returns the first of the shape id's given a hash.
+	 * @private
+	 * @param  {number} hash
+	 * @return {number}
+	 */
+	PhysicsSystem._getShapeIdA = function (hash) {
+		return (hash & 0xFFFF0000) >> 16;
+	};
+
+	/**
+	 * Returns the second shape id given a hash.
+	 * @private
+	 * @param  {number} hash
+	 * @return {number}
+	 */
+	PhysicsSystem._getShapeIdB = function (hash) {
+		return hash & 0x0000FFFF;
+	};
+
+	/**
+	 * Fill a Map with contacts.
+	 * @private
+	 * @param  {Array} contacts
+	 * @param  {Map} targetMap
+	 */
+	PhysicsSystem.prototype._fillContactsMap = function (contacts, targetMap) {
+		for (var i = 0; i !== contacts.length; i++) {
+			var contact = contacts[i];
+			var hash = PhysicsSystem._getShapePairHash(contact.si, contact.sj);
+			targetMap.add(hash);
+		}
+	};
+
+	/**
 	 * @private
 	 */
 	PhysicsSystem.prototype.emitContactEvents = function () {
 
+		// TODO: Move this logic to CANNON.js intead?
+
 		// Get overlapping entities
-		var contacts = this.cannonWorld.contacts,
-			num = contacts.length,
-			entities = this._entities;
+		var contacts = this.cannonWorld.contacts.sort(this._sortContacts), // TODO: How to sort without creating a new array?
+			currentContacts = this._currentContacts,
+			lastContacts = this._lastContacts;
 
-		this._swapContactLists();
+		// Make the shape pairs unique
+		this._fillContactsMap(contacts, currentContacts);
 
-		for (var i = 0; i !== num; i++) {
+		// loop over the non-unique, but sorted array.
+		var lastHash;
+		for (var i = 0; i < contacts.length; i++) {
 			var contact = contacts[i];
+			var shapeA = contact.si;
+			var shapeB = contact.sj;
+			var entityA = this._shapeIdToColliderEntityMap.get(shapeA.id);
+			var entityB = this._shapeIdToColliderEntityMap.get(shapeB.id);
 
-			var bodyA = contact.bi;
-			var bodyB = contact.bj;
-			var entityA = entities[bodyA.id];
-			var entityB = entities[bodyB.id];
+			var hash = PhysicsSystem._getShapePairHash(contact.si, contact.sj);
+			if (hash !== lastHash) {
+				var wasInContact = this._lastContacts.has(hash);
 
-			if (bodyA.id > bodyB.id) {
-				var tmp = entityA;
-				entityA = entityB;
-				entityB = tmp;
+				if (wasInContact) {
+					this.emitDuringContact(entityA, entityB);
+				} else {
+					this.emitBeginContact(entityA, entityB);
+				}
 			}
 
-			if (this._inContactLastStepA.indexOf(entityA) === -1) {
-				this.emitBeginContact(entityA, entityB);
-			} else {
-				this.emitDuringContact(entityA, entityB);
-			}
-
-			this._inContactCurrentStepA.push(entityA);
-			this._inContactCurrentStepB.push(entityB);
+			lastHash = hash;
 		}
 
 		// Emit end contact events
-		for (var i = 0; i !== this._inContactLastStepA.length; i++) {
-			var entityA = this._inContactLastStepA[i];
-			var entityB = this._inContactLastStepB[i];
+		lastContacts.forEach(this._emitEndContactEvents);
 
-			var found = false;
-			for (var j = 0; j !== this._inContactCurrentStepA.length; j++) {
-				if (entityA === this._inContactCurrentStepA[i] && entityB === this._inContactCurrentStepB[i]) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				this.emitEndContact(entityA, entityB);
-			}
-		}
+		// Swap the lists, drop references to the current Cannon.js contacts
+		this._swapContactLists();
 	};
 
 	var tmpOptions = {};
 	PhysicsSystem.prototype._getCannonRaycastOptions = function (options) {
 		tmpOptions.collisionFilterMask = options.collisionMask !== undefined ? options.collisionMask : -1;
 		tmpOptions.collisionFilterGroup = options.collisionGroup !== undefined ? options.collisionGroup : -1;
-		tmpOptions.skipBackfaces = options.skipBackfaces !== undefined ? options.skipBackfaces : false;
+		tmpOptions.skipBackfaces = options.skipBackfaces !== undefined ? options.skipBackfaces : true;
 		return tmpOptions;
 	};
 
@@ -308,9 +390,8 @@ function (
 	PhysicsSystem.prototype.play = function () {
 		this.passive = false;
 
-		// this.setAllBodiesDirty();
-		// this.setAllCollidersDirty();
-		this.updateLonelyColliders(true);
+		// Initialize all of the physics world
+		this.initialize();
 	};
 
 	/**
@@ -319,108 +400,8 @@ function (
 	PhysicsSystem.prototype.stop = function () {
 		this.pause();
 
-		// Trash everything
-		this.setAllBodiesDirty();
-		this.setAllCollidersDirty();
-	};
-
-	PhysicsSystem.prototype.setAllBodiesDirty = function () {
-		for (var i = 0; i < this._activeEntities.length; i++) {
-			this._activeEntities[i].rigidBodyComponent.setToDirty();
-		}
-	};
-
-	PhysicsSystem.prototype.setAllCollidersDirty = function () {
-		for (var i = 0; i < this._activeColliderEntities.length; i++) {
-			this._activeColliderEntities[i].colliderComponent.setToDirty();
-		}
-	};
-
-	/**
-	 * @private
-	 * @param  {Entity} entity
-	 */
-	PhysicsSystem.prototype.inserted = function (entity) {
-		entity.rigidBodyComponent.initialize();
-	};
-
-	/**
-	 * @private
-	 * @param  {Entity} entity
-	 */
-	PhysicsSystem.prototype.deleted = function (entity) {
-		if (entity.rigidBodyComponent) {
-			for (var i = 0; i < entity.rigidBodyComponent.joints.length; i++) {
-				entity.rigidBodyComponent.destroyJoint(entity.rigidBodyComponent.joints[i]);
-			}
-			entity.rigidBodyComponent.joints.length = 0;
-			entity.rigidBodyComponent.destroy();
-		}
-	};
-
-	/**
-	 * @private
-	 * @param  {Entity} entity
-	 */
-	PhysicsSystem.prototype._addLonelyCollider = function (entity) {
-		var material = null;
-		if (entity.colliderComponent.material) {
-			material = new CANNON.Material();
-			material.friction = entity.colliderComponent.material.friction;
-			material.restitution = entity.colliderComponent.material.restitution;
-		}
-		entity.colliderComponent.updateWorldCollider();
-		var shape = RigidBodyComponent.getCannonShape(entity.colliderComponent.worldCollider);
-		shape.material = material;
-		var body = new CANNON.Body({
-			mass: 0,
-			collisionResponse: !entity.colliderComponent.isTrigger,
-			shape: shape
-		});
-		this.cannonWorld.addBody(body);
-		entity.colliderComponent.cannonBody = body;
-		if (entity.colliderComponent.bodyEntity && entity.colliderComponent.bodyEntity.rigidBodyComponent) {
-			entity.colliderComponent.bodyEntity.rigidBodyComponent.setToDirty();
-		}
-		entity.colliderComponent.bodyEntity = null;
-		entity.colliderComponent.setToDirty();
-	};
-
-	/**
-	 * @private
-	 * @param  {Entity} entity
-	 */
-	PhysicsSystem.prototype._removeLonelyCollider = function (entity) {
-		if (entity.colliderComponent.cannonBody) {
-			this.cannonWorld.removeBody(entity.colliderComponent.cannonBody);
-			entity.colliderComponent.cannonBody = null;
-		}
-
-		var bodyEntity = entity.colliderComponent.getBodyEntity();
-		if (bodyEntity) {
-			bodyEntity.rigidBodyComponent.setToDirty();
-		}
-
-		entity.colliderComponent.setToDirty();
-	};
-
-	PhysicsSystem.prototype._colliderDeleted = function (entity) {
-		var colliderComponent = entity.colliderComponent;
-		if (colliderComponent) {
-			var body = colliderComponent.cannonBody;
-			if (body) {
-				this.cannonWorld.removeBody(body);
-				colliderComponent.cannonBody = null;
-			}
-		}
-	};
-
-	PhysicsSystem.prototype._colliderDeletedComponent = function (entity, colliderComponent) {
-		var body = colliderComponent.cannonBody;
-		if (body) {
-			this.cannonWorld.removeBody(body);
-			colliderComponent.cannonBody = null;
-		}
+		// Trash the physics world
+		this.destroy();
 	};
 
 	/**
@@ -428,17 +409,30 @@ function (
 	 * @param  {array} entities
 	 */
 	PhysicsSystem.prototype.initialize = function (entities) {
+		entities = entities || this._activeEntities;
+
 		var N = entities.length;
 
 		for (var i = 0; i !== N; i++) {
 			var entity = entities[i];
 			var rigidBodyComponent = entity.rigidBodyComponent;
 
-			// Initialize bodies
-			if (rigidBodyComponent.isDirty()) {
-				rigidBodyComponent.initialize();
+			// Initialize body
+			rigidBodyComponent.initialize();
+		}
+
+		// Initialize all lonely colliders without rigid body
+		var colliderEntities = this._activeColliderEntities;
+		for (var i = 0; i !== colliderEntities.length; i++) {
+			var colliderEntity = colliderEntities[i];
+
+			if (!colliderEntity.colliderComponent) { // Needed?
+				continue;
 			}
-			rigidBodyComponent.updateDirtyColliders();
+
+			if (!colliderEntity.colliderComponent.getBodyEntity() && !colliderEntity.colliderComponent.cannonBody) {
+				colliderEntity.colliderComponent.initialize();
+			}
 		}
 
 		// Initialize joints - must be done *after* all bodies were initialized
@@ -448,15 +442,45 @@ function (
 			var joints = entity.rigidBodyComponent.joints;
 			for (var j = 0; j < joints.length; j++) {
 				var joint = joints[j];
-				if (!joint._dirty) {
-					continue;
-				}
 				entity.rigidBodyComponent.initializeJoint(joint, entity, this);
-				joint._dirty = false;
 			}
 		}
 
-		// Initialize all lonely colliders without rigid body
+		this.initialized = true;
+	};
+
+	/**
+	 * @private
+	 * @param  {array} entities
+	 */
+	PhysicsSystem.prototype.destroy = function (entities) {
+		entities = entities || this._activeEntities;
+		var N = entities.length;
+
+		this._shapeIdToColliderEntityMap.forEach(function (key) {
+			this._shapeIdToColliderEntityMap.delete(key);
+		}.bind(this));
+
+		// Empty the contact event lists
+		this._lastContacts.forEach(function (key) {
+			this._lastContacts.delete(key);
+		}.bind(this));
+		this._currentContacts.forEach(function (key) {
+			this._currentContacts.delete(key);
+		}.bind(this));
+
+		// Destroy joints
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+
+			var joints = entity.rigidBodyComponent.joints;
+			for (var j = 0; j < joints.length; j++) {
+				var joint = joints[j];
+				entity.rigidBodyComponent.destroyJoint(joint, entity, this);
+			}
+		}
+
+		// Destroy all lonely colliders without rigid body
 		for (var i = 0; i !== this._activeColliderEntities.length; i++) {
 			var colliderEntity = this._activeColliderEntities[i];
 
@@ -464,15 +488,20 @@ function (
 				continue;
 			}
 
-			if (!colliderEntity.colliderComponent.getBodyEntity() && (!colliderEntity.colliderComponent.cannonBody || colliderEntity.colliderComponent.isDirty())) {
-				this._removeLonelyCollider(colliderEntity);
-				this._addLonelyCollider(colliderEntity);
-			}
-
-			if (colliderEntity.colliderComponent.getBodyEntity() && colliderEntity.colliderComponent.cannonBody) {
-				this._removeLonelyCollider(colliderEntity);
+			if (colliderEntity.colliderComponent.cannonBody) {
+				colliderEntity.colliderComponent.destroy();
 			}
 		}
+
+		for (var i = 0; i !== N; i++) {
+			var entity = entities[i];
+			var rigidBodyComponent = entity.rigidBodyComponent;
+
+			// Destroy body
+			rigidBodyComponent.destroy();
+		}
+
+		this.initialized = false;
 	};
 
 	/**
@@ -481,42 +510,11 @@ function (
 	 * @param  {number} tpf
 	 */
 	PhysicsSystem.prototype.process = function (entities, tpf) {
-		this.initialize(entities);
-		this.updateLonelyColliders();
+		if (!this.initialized) {
+			this.initialize();
+		}
 		this.step(tpf);
 		this.syncTransforms(entities);
-	};
-
-	/**
-	 * Checks for dirty ColliderComponents without a RigidBodyComponent and updates them.
-	 */
-	PhysicsSystem.prototype.updateLonelyColliders = function (forceUpdate) {
-		for (var i = this._activeColliderEntities.length - 1; i >= 0; i--) {
-			var entity = this._activeColliderEntities[i];
-
-			// Set transform from entity
-			var colliderComponent = entity.colliderComponent;
-			if (colliderComponent && (forceUpdate || colliderComponent._dirty || entity.transformComponent._updated)) {
-				var transform = entity.transformComponent.worldTransform;
-				var body = colliderComponent.cannonBody;
-				if (body) {
-					body.position.copy(transform.translation);
-					tmpQuat.fromRotationMatrix(transform.rotation);
-					body.quaternion.copy(tmpQuat);
-
-					// Update scale of stuff
-					var cannonShape = body.shapes[0];
-					if (cannonShape) {
-						cannonShape.collisionResponse = !colliderComponent.isTrigger;
-						colliderComponent.updateWorldCollider();
-						RigidBodyComponent.copyScaleFromColliderToCannonShape(
-							cannonShape,
-							colliderComponent.worldCollider
-						);
-					}
-				}
-			}
-		}
 	};
 
 	/**

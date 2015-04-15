@@ -84,6 +84,7 @@ define([
 	'goo/renderer/light/PointLight',
 	'goo/renderer/light/SpotLight',
 
+	'goo/renderer/pass/Pass',
 	'goo/renderer/pass/Composer',
 	'goo/renderer/pass/FullscreenPass',
 	'goo/renderer/pass/FullscreenUtil',
@@ -219,6 +220,7 @@ define([
 		'PointLight',
 		'SpotLight',
 
+		'Pass',
 		'Composer',
 		'FullscreenPass',
 		'FullscreenUtil',
