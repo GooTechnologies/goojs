@@ -87,6 +87,7 @@ define([
 				domElement.addEventListener('mouseleave', mouseUp);
 				domElement.addEventListener('mousemove', mouseMove);
 			}
+			domElement.oncontextmenu = function () { return false; };
 
 			angles = new Vector3();
 			var rotation = environment.entity.transformComponent.transform.rotation;

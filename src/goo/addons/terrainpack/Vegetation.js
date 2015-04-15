@@ -46,7 +46,7 @@ define([
 		this.initDone = false;
 	}
 
-	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes, settings) {
+	Vegetation.prototype.init = function (world, terrainQuery, vegetationAtlasTexture, vegetationTypes, settings, terrainTextures) {
 		this.world = world;
 		this.terrainQuery = terrainQuery;
 
@@ -59,6 +59,7 @@ define([
 
 		var material = new Material(vegetationShader, 'vegetation');
 		material.setTexture('DIFFUSE_MAP', vegetationAtlasTexture);
+		material.setTexture('LIGHT_MAP', terrainTextures.lightMap);
 		material.cullState.enabled = false;
 		material.uniforms.discardThreshold = 0.3;
 		material.blendState.blending = 'CustomBlending';
@@ -70,7 +71,7 @@ define([
 		this.material = material;
 
 		this.patchSize = 15;
-		this.patchDensity = 19;
+		this.patchDensity = 25;
 		this.gridSize = 7;
 
 		if (settings) {
@@ -381,6 +382,7 @@ define([
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
 			diffuseMap : Shader.DIFFUSE_MAP,
+			lightMap : 'LIGHT_MAP',
 			discardThreshold: -0.01,
 			fogSettings: function () {
 				return ShaderBuilder.FOG_SETTINGS;
@@ -439,6 +441,7 @@ define([
 		fshader: function () {
 			return [
 			'uniform sampler2D diffuseMap;',
+			'uniform sampler2D lightMap;',
 			'uniform float discardThreshold;',
 			'uniform vec2 fogSettings;',
 			'uniform vec3 fogColor;',
@@ -461,7 +464,8 @@ define([
 
 				'vec3 N = normalize(normal);',
 
-				ShaderBuilder.light.fragment,
+				// ShaderBuilder.light.fragment,
+				'final_color.rgb *= texture2D(lightMap, vWorldPos.xz/1024.0).rgb * 2.0;',
 
 				'final_color.a = pow(final_color.a, 0.5);',
 

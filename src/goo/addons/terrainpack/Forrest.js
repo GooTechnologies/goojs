@@ -130,10 +130,14 @@ define([
 		// this.patchDensity = 10;
 		// this.gridSize = 7;
 		// this.minDist = 0;
-		this.patchSize = 64;
-		this.patchDensity = 8;
+		this.patchSize = 128;
+		this.patchDensity = 35;
 		this.gridSize = 7;
 		this.minDist = 0;
+		// this.patchSize = 64;
+		// this.patchDensity = 8;
+		// this.gridSize = 7;
+		// this.minDist = 0;
 
 		this.patchSpacing = this.patchSize / this.patchDensity;
 		this.gridSizeHalf = Math.floor(this.gridSize*0.5);
@@ -171,6 +175,15 @@ define([
 	Forrest.prototype.rebuild = function () {
 		this.currentX = -10000;
 		this.currentZ = -10000;
+		for (var x = 0; x < this.gridSize; x++) {
+			for (var z = 0; z < this.gridSize; z++) {
+				this.gridState[x][z] = {
+					lod: -1,
+					x: -1,
+					z: -1
+				};
+			}
+		}
 	};
 
 	var hidden = false;
@@ -494,7 +507,7 @@ define([
 			'vec3 N = normalize(worldNormal);',
 
 			// ShaderBuilder.light.fragment,
-			'final_color *= texture2D(lightMap, vWorldPos.xz/1024.0) * 1.3;',
+			'final_color *= texture2D(lightMap, vWorldPos.xz/1024.0) * 1.1;',
 
 			'#ifdef FOG',
 			'float d = pow(smoothstep(fogSettings.x, fogSettings.y, length(viewPosition)), 1.0);',

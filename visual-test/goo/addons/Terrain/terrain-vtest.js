@@ -41,7 +41,7 @@ require([
 ) {
 	'use strict';
 
-	V.describe('The large quad should look like water, with ripples and a reflection of the skybox and the boxes above the quad\'s surface.');
+	// V.describe('The large quad should look like water, with ripples and a reflection of the skybox and the boxes above the quad\'s surface.');
 
 	var terrainData = {
 		"map_id": "legend01_map01",
@@ -358,11 +358,11 @@ require([
 		"fog": {
 			"enabled": true,
 			"start": 20,
-			"end": 10000,
+			"end": 2200,
 			"color": [
-				1,
-				1,
-				1
+				232/255,
+				245/255,
+				255/255
 			]
 		},
 		"gravity": 9.82,
@@ -472,25 +472,27 @@ require([
 		].join('\n')
 	};
 
-	var goo = V.initGoo();
+	var goo = V.initGoo({
+		showStats: false
+	});
 	var world = goo.world;
 
 	var skybox = null;
 
 	var orbitScript = Scripts.create(FlyControlScript, {
-		walkSpeed: 100,
+		walkSpeed: 30,
 		crawlSpeed: 20,
-		// button: 'Right'
+		button: 'Right'
 	});
 	var camera = new Camera(80, undefined, 1, 10000);
 	var cameraEntity = goo.world.createEntity(camera, orbitScript, 'CameraEntity').addToWorld();
 	cameraEntity.setTranslation(512, 180, 512);
 
 	// V.addLights();
-	var directionalLight = new DirectionalLight(new Vector3(1, 1, 0.9));
-	directionalLight.intensity = 1;
-	var lightEntity = goo.world.createEntity('directionalLight', directionalLight).addToWorld();
-	lightEntity.setRotation(-Math.PI / 3, 0, 0);
+	// var directionalLight = new DirectionalLight(new Vector3(1, 1, 0.9));
+	// directionalLight.intensity = 1;
+	// var lightEntity = goo.world.createEntity('directionalLight', directionalLight).addToWorld();
+	// lightEntity.setRotation(-Math.PI / 3, 0, 0);
 
 	loadSkybox();
 
@@ -513,7 +515,7 @@ require([
 	// waterRenderer.waterMaterial.shader.uniforms.fogColor = [1.0, 1.0, 1.0];
 	// waterRenderer.waterMaterial.shader.uniforms.fogStart = 0;
 
-	var terrainHandler = new TerrainHandler(goo, 1024, 8, 'resources/');
+	var terrainHandler = new TerrainHandler(goo, 1024, 6, 'resources/');
 
 	var forrestLODMap = {};
 	var terrainEditSettings = {
@@ -559,72 +561,72 @@ require([
 	});
 
 	// LIGHTING
-	var lighting = gui.addFolder('Lighting');
-	var rot = lightEntity.getRotation();
-	var direction = MathUtils.moduloPositive(rot.y * 180 / Math.PI, 360);
-	var angle = -rot.x * 180 / Math.PI;
-	var lightingobj = {
-		direction: direction,
-		angle: angle,
-		intensity: levelData.light.intensity * 100,
-		color: levelData.light.color.map(function(x) {
-			return x * 255;
-		}),
-		ambient: levelData.globalAmbient.map(function(x) {
-			return x * 255;
-		})
-	};
-	var intensitySlider = lighting.add(lightingobj, 'intensity').min(0);
-	intensitySlider.onChange(function(value) {
-		lightEntity.lightComponent.light.intensity = value / 100;
-		levelData.light.intensity = value / 100;
-	});
-	var directionSlider = lighting.add(lightingobj, 'direction', 0, 360);
-	directionSlider.onChange(function(value) {
-		var rot = lightEntity.getRotation();
-		var rad = value * Math.PI / 180;
-		lightEntity.transformComponent.transform.rotation.setIdentity();
-		lightEntity.transformComponent.transform.rotation.rotateY(rad);
-		lightEntity.transformComponent.transform.rotation.rotateX(rot.x);
-		lightEntity.transformComponent.setUpdated();
-		levelData.light.direction = [rot.x, rad, rot.z];
-	});
-	var angleSlider = lighting.add(lightingobj, 'angle', -90, 90);
-	angleSlider.onChange(function(value) {
-		var rot = lightEntity.getRotation();
-		var rad = -value * Math.PI / 180;
-		lightEntity.transformComponent.transform.rotation.setIdentity();
-		lightEntity.transformComponent.transform.rotation.rotateY(rot.y);
-		lightEntity.transformComponent.transform.rotation.rotateX(rad);
-		lightEntity.transformComponent.setUpdated();
-		levelData.light.direction = [rad, rot.y, rot.z];
-	});
-	var colorSetting = lighting.addColor(lightingobj, 'color');
-	colorSetting.onChange(function(value) {
-		var col;
-		if (typeof value === 'string') {
-			col = ColorUtil.cssToArray(value);
-		} else {
-			col = value.map(function(x) {
-				return x / 255;
-			});
-		}
-		lightEntity.lightComponent.light.color.setArray(col);
-		levelData.light.color = col;
-	});
-	var ambientSetting = lighting.addColor(lightingobj, 'ambient');
-	ambientSetting.onChange(function(value) {
-		var col;
-		if (typeof value === 'string') {
-			col = ColorUtil.cssToArray(value);
-		} else {
-			col = value.map(function(x) {
-				return x / 255;
-			});
-		}
-		ShaderBuilder.GLOBAL_AMBIENT = col;
-		levelData.globalAmbient = col;
-	});
+	// var lighting = gui.addFolder('Lighting');
+	// var rot = lightEntity.getRotation();
+	// var direction = MathUtils.moduloPositive(rot.y * 180 / Math.PI, 360);
+	// var angle = -rot.x * 180 / Math.PI;
+	// var lightingobj = {
+		// direction: direction,
+		// angle: angle,
+		// intensity: levelData.light.intensity * 100,
+		// color: levelData.light.color.map(function(x) {
+			// return x * 255;
+		// }),
+		// ambient: levelData.globalAmbient.map(function(x) {
+			// return x * 255;
+		// })
+	// };
+	// var intensitySlider = lighting.add(lightingobj, 'intensity').min(0);
+	// intensitySlider.onChange(function(value) {
+	// 	lightEntity.lightComponent.light.intensity = value / 100;
+	// 	levelData.light.intensity = value / 100;
+	// });
+	// var directionSlider = lighting.add(lightingobj, 'direction', 0, 360);
+	// directionSlider.onChange(function(value) {
+	// 	var rot = lightEntity.getRotation();
+	// 	var rad = value * Math.PI / 180;
+	// 	lightEntity.transformComponent.transform.rotation.setIdentity();
+	// 	lightEntity.transformComponent.transform.rotation.rotateY(rad);
+	// 	lightEntity.transformComponent.transform.rotation.rotateX(rot.x);
+	// 	lightEntity.transformComponent.setUpdated();
+	// 	levelData.light.direction = [rot.x, rad, rot.z];
+	// });
+	// var angleSlider = lighting.add(lightingobj, 'angle', -90, 90);
+	// angleSlider.onChange(function(value) {
+	// 	var rot = lightEntity.getRotation();
+	// 	var rad = -value * Math.PI / 180;
+	// 	lightEntity.transformComponent.transform.rotation.setIdentity();
+	// 	lightEntity.transformComponent.transform.rotation.rotateY(rot.y);
+	// 	lightEntity.transformComponent.transform.rotation.rotateX(rad);
+	// 	lightEntity.transformComponent.setUpdated();
+	// 	levelData.light.direction = [rad, rot.y, rot.z];
+	// });
+	// var colorSetting = lighting.addColor(lightingobj, 'color');
+	// colorSetting.onChange(function(value) {
+	// 	var col;
+	// 	if (typeof value === 'string') {
+	// 		col = ColorUtil.cssToArray(value);
+	// 	} else {
+	// 		col = value.map(function(x) {
+	// 			return x / 255;
+	// 		});
+	// 	}
+	// 	lightEntity.lightComponent.light.color.setArray(col);
+	// 	levelData.light.color = col;
+	// });
+	// var ambientSetting = lighting.addColor(lightingobj, 'ambient');
+	// ambientSetting.onChange(function(value) {
+	// 	var col;
+	// 	if (typeof value === 'string') {
+	// 		col = ColorUtil.cssToArray(value);
+	// 	} else {
+	// 		col = value.map(function(x) {
+	// 			return x / 255;
+	// 		});
+	// 	}
+	// 	ShaderBuilder.GLOBAL_AMBIENT = col;
+	// 	levelData.globalAmbient = col;
+	// });
 
 	// Set up lightmap settings if missing & add default values to missing values
 	// if (levelData.lightmapSettings === undefined) {
@@ -699,10 +701,12 @@ require([
 		// }
 
 		// if (options.disableForrestLOD) {
-		// terrainHandler.forrest.patchSize = 64;
-		// terrainHandler.forrest.patchDensity = 5;
+		// terrainHandler.forrest.patchSize = 128;
+		// terrainHandler.forrest.patchDensity = 35;
 		// terrainHandler.forrest.gridSize = 7;
 		// terrainHandler.forrest.minDist = 0;
+		// terrainHandler.forrest.material.uniforms.materialAmbient = [0.1, 0.1, 0.1, 1];
+		// terrainHandler.forrest.material.uniforms.materialDiffuse = [0.3, 0.3, 0.3, 1];
 		// }
 
 		console.log("LOADED TERRAIN ", terrainHandler.terrain);
