@@ -95,27 +95,27 @@ define([
 //				nearPlane : Shader.NEAR_PLANE,
 //				farPlane : Shader.FAR_PLANE
 		},
-		vshader : [ //
-			'attribute vec3 vertexPosition;', //
+		vshader : [
+			'attribute vec3 vertexPosition;',
 
-			'uniform mat4 viewMatrix;', //
-			'uniform mat4 projectionMatrix;', //
-			'uniform mat4 worldMatrix;', //
+			'uniform mat4 viewMatrix;',
+			'uniform mat4 projectionMatrix;',
+			'uniform mat4 worldMatrix;',
 
-			'void main(void) {', //
-			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);', //
+			'void main(void) {',
+			'	gl_Position = projectionMatrix * viewMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 			'}'//
 		].join('\n'),
-		fshader : [//
-			'precision mediump float;', //
+		fshader : [
+			'precision mediump float;',
 
-//				'uniform float nearPlane;', //
-//				'uniform float farPlane;', //
+//				'uniform float nearPlane;',
+//				'uniform float farPlane;',
 
-			ShaderFragment.methods.packDepth, //
+			ShaderFragment.methods.packDepth,
 
-			'void main(void) {', //
-			'	gl_FragColor = packDepth(gl_FragCoord.z);', //
+			'void main(void) {',
+			'	gl_FragColor = packDepth(gl_FragCoord.z);',
 			'}'//
 		].join('\n')
 	};

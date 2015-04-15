@@ -241,11 +241,11 @@ define([
 	};
 
 	Gizmo._shaderDef = {
-		attributes : {
-			vertexPosition : MeshData.POSITION,
-			vertexNormal : MeshData.NORMAL
+		attributes: {
+			vertexPosition: MeshData.POSITION,
+			vertexNormal: MeshData.NORMAL
 		},
-		uniforms : {
+		uniforms: {
 			viewProjectionMatrix : Shader.VIEW_PROJECTION_MATRIX,
 			worldMatrix : Shader.WORLD_MATRIX,
 			cameraPosition : Shader.CAMERA,
@@ -253,7 +253,7 @@ define([
 			opacity: 1.0,
 			light: [-20, 20, 20]
 		},
-		vshader : [
+		vshader: [
 			'attribute vec3 vertexPosition;',
 			'attribute vec3 vertexNormal;',
 
@@ -269,9 +269,9 @@ define([
 			'	gl_Position = viewProjectionMatrix * worldPos;',
 			'	normal = vertexNormal;',
 			'	viewPosition = cameraPosition - worldPos.xyz;',
-			'}'//
+			'}'
 		].join('\n'),
-		fshader : [//
+		fshader: [
 			// ShaderBuilder.light.prefragment,
 
 			'varying vec3 normal;',
@@ -292,7 +292,7 @@ define([
 
 			' final_color.a = opacity;',
 			'	gl_FragColor = final_color;',
-			'}'//
+			'}'
 		].join('\n')
 	};
 

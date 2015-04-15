@@ -959,7 +959,7 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader : [
 		'uniform sampler2D diffuseMap;',
 		'uniform float opacity;',
 
@@ -1003,7 +1003,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader : [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D splatMap;',
 		'uniform vec4 rgba;',
@@ -1052,7 +1052,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader : [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D heightMap;',
 		'uniform float opacity;',
@@ -1106,7 +1106,7 @@ define([
 		'	texCoord1 = worldPos.xy * 0.5 + 0.5;',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader : [
 		'uniform sampler2D diffuseMap;',
 		'uniform sampler2D heightMap;',
 		'uniform float opacity;',
@@ -1149,7 +1149,7 @@ define([
 		'	gl_Position = viewProjectionMatrix * worldMatrix * vec4(vertexPosition, 1.0);',
 		'}'//
 		].join('\n'),
-		fshader : [//
+		fshader : [
 		'uniform sampler2D diffuseMap;',
 
 		'varying vec2 texCoord0;',

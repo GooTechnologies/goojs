@@ -134,7 +134,7 @@ define([
 			fogNear: Shader.NEAR_PLANE,
 			fogFar: Shader.FAR_PLANE
 		},
-		vshader : [ //
+		vshader : [
 			'attribute vec3 vertexPosition;',
 
 			'uniform mat4 worldMatrix;',
@@ -152,7 +152,7 @@ define([
 				'gl_Position = projectionMatrix * viewPosition;',
 			'}'
 		].join('\n'),
-		fshader : [//
+		fshader : [
 			'precision mediump float;',
 
 			'uniform vec4 fogColor;',
