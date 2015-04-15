@@ -50,7 +50,7 @@ define([
 			p2.copyTo(term2);
 			term2.scale(t2);
 
-			store.setVector(term0).addVector(term1).addVector(term2);
+			store.set(term0).add(term1).add(term2);
 		};
 	})();
 
@@ -97,7 +97,7 @@ define([
 			p3.copyTo(term3);
 			term3.scale(t3);
 
-			store.setVector(term0).addVector(term1).addVector(term2).addVector(term3);
+			store.set(term0).add(term1).add(term2).add(term3);
 		};
 	})();
 
@@ -108,10 +108,10 @@ define([
 	 */
 	Spline.prototype.getPoint = function (t, store) {
 		if (t <= 0) {
-			store.setVector(this.controlPoints[0]);
+			store.set(this.controlPoints[0]);
 			return;
 		} else if (t >= 1) {
-			store.setVector(this.controlPoints[this.controlPoints.length - 1]);
+			store.set(this.controlPoints[this.controlPoints.length - 1]);
 			return;
 		}
 

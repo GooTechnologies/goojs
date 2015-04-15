@@ -1,4 +1,4 @@
-define(['goo/math/Vector3', 'goo/math/Matrix3x3'], function (Vector3, Matrix3x3) {
+define(['goo/math/Vector3', 'goo/math/Matrix3'], function (Vector3, Matrix3) {
 	'use strict';
 
 	/**
@@ -44,7 +44,7 @@ define(['goo/math/Vector3', 'goo/math/Matrix3x3'], function (Vector3, Matrix3x3)
 		this.moveVector = new Vector3(0, 0, 0);
 		this.rotationVector = new Vector3(0, 0, 0);
 		this.multiplier = new Vector3(1, 1, 1);
-		this.rotationMatrix = new Matrix3x3();
+		this.rotationMatrix = new Matrix3();
 		this.tmpVec = new Vector3();
 
 		this.handleEvent = function (event) {

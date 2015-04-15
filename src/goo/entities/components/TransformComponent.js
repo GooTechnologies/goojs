@@ -2,16 +2,12 @@ define([
 	'goo/math/Transform',
 	'goo/math/Vector3',
 	'goo/entities/components/Component',
-	'goo/entities/EntitySelection',
-	'goo/math/Matrix4x4',
-	'goo/math/Vector'
+	'goo/entities/EntitySelection'
 ], function (
 	Transform,
 	Vector3,
 	Component,
-	EntitySelection,
-	Matrix4x4,
-	Vector
+	EntitySelection
 ) {
 	'use strict';
 
@@ -393,7 +389,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setTranslation = function () {
-		Vector.prototype.set.apply(this.transform.translation, arguments);
+		this.transform.translation.set(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
@@ -423,7 +419,7 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.setScale = function () {
-		Vector.prototype.set.apply(this.transform.scale, arguments);
+		this.transform.scale.set(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
@@ -440,17 +436,13 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.addTranslation = function () {
-		if (arguments.length === 3) {
-			this.transform.translation.add(arguments);
-		} else {
-			this.transform.translation.add(arguments[0]);
-		}
+		this.transform.translation.add(Vector3.fromAny.apply(null, arguments));
 		this._dirty = true;
 		return this;
 	};
 
 	/**
-	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians).
+	 * Gets the value of transformComponent.transform.rotation in Euler angles (in radians, Euler order YZX).
 	 * Returns a new Vector3 that cannot be used for modifying the rotation.
 	 * <br /><i>Injected into entity when adding component.</i>.
 	 * @example
@@ -467,7 +459,7 @@ define([
 	};
 
 	/**
-	 * Adds to this transform's rotation using Euler angles (in radians).
+	 * Adds to this transform's rotation using Euler angles (in radians, Euler order YZX).
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
 	 * boxEntity.setRotation(Math.PI/4.0, 0, 0);
@@ -496,7 +488,7 @@ define([
 	};
 
 	/**
-	 * Sets this transform's rotation around X, Y and Z axis (Euler angles, in radians).
+	 * Sets this transform's rotation around X, Y and Z axis (in radians, Euler order YZX).
 	 * The rotation is applied in X, Y, Z order.
 	 * <br /><i>Injected into entity when adding component.</i>
 	 * @example
@@ -536,10 +528,10 @@ define([
 			this.transform.lookAt(new Vector3(arguments[0], arguments[1], arguments[2]));
 		} else {
 			if (Array.isArray(position)) {
-				position = new Vector3(position);
+				position = Vector3.fromArray(position);
 			}
 			if (Array.isArray(up)) {
-				up = new Vector3(up);
+				up = Vector3.fromArray(up);
 			}
 			this.transform.lookAt(position, up);
 		}
@@ -559,10 +551,9 @@ define([
 	 * @returns {TransformComponent} Self for chaining.
 	 */
 	TransformComponent.prototype.move = (function(){
-		var moveLocalDirection = new Vector3();
 		var moveWorldDirection = new Vector3();
 		return function () {
-			moveLocalDirection.set.apply(moveLocalDirection, arguments);
+			var moveLocalDirection = Vector3.fromAny.apply(null, arguments);
 			this.transform.applyForwardVector(moveLocalDirection, moveWorldDirection);
 			this.addTranslation(moveWorldDirection);
 			return this;
@@ -684,7 +675,7 @@ define([
 			transformComponent.transform.translation.setDirect(obj[0], obj[1], obj[2]);
 			matched = true;
 		} else if (obj instanceof Vector3) {
-			transformComponent.transform.translation.setDirect(obj.data[0], obj.data[1], obj.data[2]);
+			transformComponent.transform.translation.setDirect(obj.x, obj.y, obj.z);
 			matched = true;
 		} else if (typeof obj === 'object' &&
 			typeof obj.x !== 'undefined' && typeof obj.y !== 'undefined' && typeof obj.z !== 'undefined') {

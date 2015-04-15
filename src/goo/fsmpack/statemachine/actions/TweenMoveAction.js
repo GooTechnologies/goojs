@@ -87,7 +87,7 @@ define([
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var translation = transformComponent.transform.translation;
-		var initialTranslation = new Vector3().copy(translation);
+		var initialTranslation = translation.clone();
 		var time = entity._world.time * 1000;
 
 		var fakeFrom = { x: initialTranslation.x, y: initialTranslation.y, z: initialTranslation.z };
@@ -96,22 +96,22 @@ define([
 		var old = { x: fakeFrom.x, y: fakeFrom.y, z: fakeFrom.z };
 
 		if (this.relative) {
-			var to = Vector3.add(initialTranslation, this.to);
+			var to = Vector3.fromArray(this.to).add(initialTranslation);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
 			// it's a string until property controls are fixed
 			if (this.time === '0') {
 				// have to do this manually since tween.js chokes for time = 0
-				translation.data[0] += fakeTo.x - old.x;
-				translation.data[1] += fakeTo.y - old.y;
-				translation.data[2] += fakeTo.z - old.z;
+				translation.x += fakeTo.x - old.x;
+				translation.y += fakeTo.y - old.y;
+				translation.z += fakeTo.z - old.z;
 				transformComponent.setUpdated();
 				fsm.send(this.eventToEmit.channel);
 			} else {
 				this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-					translation.data[0] += this.x - old.x;
-					translation.data[1] += this.y - old.y;
-					translation.data[2] += this.z - old.z;
+					translation.x += this.x - old.x;
+					translation.y += this.y - old.y;
+					translation.z += this.z - old.z;
 
 					old.x = this.x;
 					old.y = this.y;
@@ -127,16 +127,16 @@ define([
 
 			if (this.time === '0') {
 				// have to do this manually since tween.js chokes for time = 0
-				translation.data[0] += fakeTo.x - old.x;
-				translation.data[1] += fakeTo.y - old.y;
-				translation.data[2] += fakeTo.z - old.z;
+				translation.x += fakeTo.x - old.x;
+				translation.y += fakeTo.y - old.y;
+				translation.z += fakeTo.z - old.z;
 				transformComponent.setUpdated();
 				fsm.send(this.eventToEmit.channel);
 			} else {
 				this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function () {
-					translation.data[0] += this.x - old.x;
-					translation.data[1] += this.y - old.y;
-					translation.data[2] += this.z - old.z;
+					translation.x += this.x - old.x;
+					translation.y += this.y - old.y;
+					translation.z += this.z - old.z;
 
 					old.x = this.x;
 					old.y = this.y;

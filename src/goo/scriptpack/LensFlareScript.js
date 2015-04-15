@@ -251,8 +251,8 @@ define([
 		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
 		this.displacementVector.sub(this.centerVector);
 		this.distance = this.displacementVector.length();
-		this.distanceVector.set(0, 0, -this.distance);
-		this.camRot.applyPost(this.distanceVector);
+		this.distanceVector.setDirect(0, 0, -this.distance);
+		this.distanceVector.applyPost(this.camRot);
 		this.centerVector.add(this.distanceVector);
 		this.positionVector.set(this.centerVector);
 		this.displacementVector.set(lightEntity.transformComponent.worldTransform.translation);
@@ -269,7 +269,7 @@ define([
 
 	function FlareQuad(lightColor, tx, displace, size, intensity, systemScale, edgeDampen, edgeScaling, textures, world) {
 		this.sizeVector = new Vector3(size, size, size);
-		this.sizeVector.mul(systemScale);
+		this.sizeVector.scale(systemScale);
 		this.positionVector = new Vector3();
 		this.flareVector = new Vector3();
 		this.intensity = intensity;
@@ -308,7 +308,7 @@ define([
 	FlareQuad.prototype.updatePosition = function (flareGeometry) {
 		this.flareVector.set(flareGeometry.displacementVector);
 		this.positionVector.set(flareGeometry.positionVector);
-		this.flareVector.mul(this.displace);
+		this.flareVector.scale(this.displace);
 		this.positionVector.add(this.flareVector);
 
 		this.material.uniforms.materialEmissive = [
@@ -322,7 +322,7 @@ define([
 
 		var quadTransform = this.quad.transformComponent.transform;
 		quadTransform.scale.set(this.sizeVector);
-		quadTransform.scale.mul(scaleFactor);
+		quadTransform.scale.scale(scaleFactor);
 		quadTransform.rotation.set(flareGeometry.camRot);
 		quadTransform.translation.set(this.positionVector);
 		this.quad.transformComponent.updateTransform();

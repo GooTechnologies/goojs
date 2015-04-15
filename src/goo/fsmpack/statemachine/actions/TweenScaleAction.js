@@ -89,14 +89,14 @@ define([
 		var entity = fsm.getOwnerEntity();
 		var transformComponent = entity.transformComponent;
 		var scale = transformComponent.transform.scale;
-		var initialScale = new Vector3().copy(scale);
+		var initialScale = scale.clone();
 
 		var fakeFrom = { x: initialScale.x, y: initialScale.y, z: initialScale.z };
 		var fakeTo;
 		var time = entity._world.time * 1000;
 
 		if (this.relative) {
-			var to = Vector3.add(initialScale, this.to);
+			var to = Vector3.fromArray(this.to).add(initialScale);
 			fakeTo = { x: to.x, y: to.y, z: to.z };
 
 			this.tween.from(fakeFrom).to(fakeTo, +this.time).easing(this.easing).onUpdate(function() {

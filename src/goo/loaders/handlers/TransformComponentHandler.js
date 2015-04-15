@@ -111,7 +111,7 @@ define([
 			}
 
 			// Translation
-			component.transform.translation.setArray(config.translation);
+			component.transform.translation.setDirect(config.translation[0], config.translation[1], config.translation[2]);
 			// Rotation
 			component.transform.setRotationXYZ(
 				MathUtils.DEG_TO_RAD * config.rotation[0],
@@ -119,7 +119,7 @@ define([
 				MathUtils.DEG_TO_RAD * config.rotation[2]
 			);
 			// Scale
-			component.transform.scale.setArray(config.scale);
+			component.transform.scale.setDirect(config.scale[0], config.scale[1], config.scale[2]);
 
 			var promises = [];
 			if (config.children) {

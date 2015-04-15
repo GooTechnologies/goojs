@@ -157,9 +157,9 @@ define([
 	DebugDrawHelper.LightComponent.updateMaterial = function(material, component) {
 		var light = component.light;
 		var color = material.uniforms.color = material.uniforms.color || [];
-		color[0] = light.color.data[0];
-		color[1] = light.color.data[1];
-		color[2] = light.color.data[2];
+		color[0] = light.color.x;
+		color[1] = light.color.y;
+		color[2] = light.color.z;
 	};
 
 	DebugDrawHelper.LightComponent.updateTransform = function(transform, component) {

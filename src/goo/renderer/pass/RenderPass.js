@@ -42,7 +42,7 @@ define([
 
 		lights = lights || [];
 		if (clearColor && false) {
-			this.oldClearColor.setVector(renderer.clearColor);
+			this.oldClearColor.set(renderer.clearColor);
 			renderer.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 		}
 

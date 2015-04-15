@@ -112,7 +112,7 @@ define([
 			if (parameters.whenUsed && environment.entity !== environment.activeCameraEntity) { return; }
 
 			// direction of movement in local coords
-			calcVector.set(
+			calcVector.setDirect(
 				fwdVector.x * moveVector.z + leftVector.x * moveVector.x,
 				fwdVector.y * moveVector.z + leftVector.y * moveVector.x,
 				fwdVector.z * moveVector.z + leftVector.z * moveVector.x
@@ -123,7 +123,7 @@ define([
 			var moveMult = environment.world.tpf * moveState.speed;
 
 			// scale by speed
-			calcVector.mul(moveMult);
+			calcVector.scale(moveMult);
 
 			// grab orientation of player
 			var orient = transform.rotation;

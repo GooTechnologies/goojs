@@ -51,20 +51,20 @@ define([
 			if (this.multiply) {
 				if (this.everyFrame) {
 					var tpf = fsm.getTpf() * 10;
-					transform.scale.data[0] *= this.scale[0] * tpf;
-					transform.scale.data[1] *= this.scale[1] * tpf;
-					transform.scale.data[2] *= this.scale[2] * tpf;
+					transform.scale.x *= this.scale[0] * tpf;
+					transform.scale.y *= this.scale[1] * tpf;
+					transform.scale.z *= this.scale[2] * tpf;
 				} else {
-					transform.scale.mul(this.scale);
+					transform.scale.mulDirect(this.scale[0], this.scale[1], this.scale[2]);
 				}
 			} else {
 				if (this.everyFrame) {
 					var tpf = fsm.getTpf() * 10;
-					transform.scale.data[0] += this.scale[0] * tpf;
-					transform.scale.data[1] += this.scale[1] * tpf;
-					transform.scale.data[2] += this.scale[2] * tpf;
+					transform.scale.x += this.scale[0] * tpf;
+					transform.scale.y += this.scale[1] * tpf;
+					transform.scale.z += this.scale[2] * tpf;
 				} else {
-					transform.scale.add(this.scale);
+					transform.scale.addDirect(this.scale[0], this.scale[1], this.scale[2]);
 				}
 			}
 		} else {

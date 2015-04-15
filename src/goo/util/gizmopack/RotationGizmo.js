@@ -3,7 +3,7 @@ define([
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
 	'goo/math/Vector3',
-	'goo/math/Matrix3x3',
+	'goo/math/Matrix3',
 	'goo/math/Transform',
 	'goo/renderer/Renderer',
 	'goo/math/Ray'
@@ -12,7 +12,7 @@ define([
 	Sphere,
 	Torus,
 	Vector3,
-	Matrix3x3,
+	Matrix3,
 	Transform,
 	Renderer,
 	Ray
@@ -33,14 +33,14 @@ define([
 		this._buildTorus(1);
 		this._buildTorus(2);
 
-		this._rotation = new Matrix3x3();
+		this._rotation = new Matrix3();
 		this._rotationScale = 4;
 		this._axis = new Vector3();
 		this._direction = new Vector3();
 
 		this._ray = new Ray();
-		this._m1 = new Matrix3x3();
-		this._m2 = new Matrix3x3();
+		this._m1 = new Matrix3();
+		this._m2 = new Matrix3();
 
 		//TODO: create a function that does this sort of thing
 		this.snap = false;
@@ -57,6 +57,8 @@ define([
 	RotationGizmo.prototype = Object.create(Gizmo.prototype);
 	RotationGizmo.prototype.constructor = RotationGizmo;
 
+	var tmpVec = new Vector3();
+
 	RotationGizmo.prototype.activate = function(props) {
 		Gizmo.prototype.activate.call(this, props);
 
@@ -68,12 +70,12 @@ define([
 
 		if(this._activeHandle.axis < 3) {
 			// Get rotation axis
-			axis.setVector([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
-			this.transform.rotation.applyPost(axis);
+			axis.set([Vector3.UNIT_X, Vector3.UNIT_Y, Vector3.UNIT_Z][this._activeHandle.axis]);
+			axis.applyPost(this.transform.rotation);
 
 			// Get rotation center
-			worldCenter.setVector(Vector3.ZERO);
-			this.transform.matrix.applyPostPoint(worldCenter);
+			worldCenter.set(Vector3.ZERO);
+			worldCenter.applyPostPoint(this.transform.matrix);
 
 			// Get picked point in world space (sort of)
 			Renderer.mainCamera.getPickRay(
@@ -82,17 +84,18 @@ define([
 				1,1,
 				ray
 			);
-			pickedPoint.setVector(ray.origin).subVector(worldCenter);
+			pickedPoint.set(ray.origin).sub(worldCenter);
 			var d = pickedPoint.length() * 0.9;
-			pickedPoint.setVector(ray.direction).scale(d).addVector(ray.origin);
+			pickedPoint.set(ray.direction).scale(d).add(ray.origin);
 
 			// Get vector from center to picked point, cross it with rotation axis and get drag direction
-			rotationDirection.setVector(pickedPoint).subVector(worldCenter);
-			Vector3.cross(axis, rotationDirection, rotationDirection);
-			rotationDirection.addVector(pickedPoint);
+			rotationDirection.set(pickedPoint).sub(worldCenter);
+			tmpVec.set(rotationDirection);
+			rotationDirection.set(axis).cross(tmpVec);
+			rotationDirection.add(pickedPoint);
 			Renderer.mainCamera.getScreenCoordinates(
 				rotationDirection,
-				1,1,
+				1, 1,
 				this._direction
 			);
 			this._direction.subDirect(props.x, props.y, 0);
@@ -152,23 +155,15 @@ define([
 			this._rotation.rotateX(dy * this._rotationScale);
 		}
 
-		var camMat = Renderer.mainCamera.getViewMatrix().data;
+		var camMat = Renderer.mainCamera.getViewMatrix();
 		var camRotation = this._m1, screenRotation = this._m2;
 
-		camRotation.set(
-			camMat[0], camMat[1], camMat[2],
-			camMat[4], camMat[5], camMat[6],
-			camMat[8], camMat[9], camMat[10]
-		);
+		camRotation.set(camMat);
 		screenRotation.set(camRotation).invert();
-		screenRotation.combine(this._rotation);
-		screenRotation.combine(camRotation);
+		screenRotation.mul2(this._rotation, screenRotation);
+		screenRotation.mul2(screenRotation, camRotation);
 
-		Matrix3x3.combine(
-			screenRotation,
-			this.transform.rotation,
-			this.transform.rotation
-		);
+		this.transform.rotation.mul(screenRotation);
 	};
 
 	// --- functions for snapping to certain angles go here
@@ -238,11 +233,8 @@ define([
 					break;
 			}
 		}
-		Matrix3x3.combine(
-			this.transform.rotation,
-			this._rotation,
-			this.transform.rotation
-		);
+
+		this.transform.rotation.mul2(this.transform.rotation, this._rotation);
 	};
 
 	RotationGizmo.prototype._buildBall = function() {

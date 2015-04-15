@@ -5,10 +5,10 @@ define(
 		'goo/logic/LogicNodes',
 		'goo/logic/LogicInterface',
 		'goo/math/Vector3',
-		'goo/math/Matrix3x3'
+		'goo/math/Matrix3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3x3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, Vector3, Matrix3) {
 		'use strict';
 
 		/**
@@ -36,7 +36,7 @@ define(
 		LogicNodeApplyMatrix.logicInterface = new LogicInterface();
 		LogicNodeApplyMatrix.outportProduct = LogicNodeApplyMatrix.logicInterface.addOutputProperty("product", "Vector3");
 		LogicNodeApplyMatrix.inportX = LogicNodeApplyMatrix.logicInterface.addInputProperty("vec", "Vector3", new Vector3());
-		LogicNodeApplyMatrix.inportY = LogicNodeApplyMatrix.logicInterface.addInputProperty("mat", "Matrix3", new Matrix3x3());
+		LogicNodeApplyMatrix.inportY = LogicNodeApplyMatrix.logicInterface.addInputProperty("mat", "Matrix3", new Matrix3());
 
 		LogicNodes.registerType("LogicNodeApplyMatrix", LogicNodeApplyMatrix);
 

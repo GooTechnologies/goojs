@@ -192,10 +192,10 @@ define([
 						if (bound instanceof BoundingBox) {
 							wb.copy(bound);
 						} else if (bound instanceof BoundingSphere) {
-							wb.center.setVector(bound.center);
+							wb.center.set(bound.center);
 							wb.xExtent = wb.yExtent = wb.zExtent = bound.radius;
 						} else {
-							wb.center.setVector(Vector3.ZERO);
+							wb.center.set(Vector3.ZERO);
 							wb.xExtent = wb.yExtent = wb.zExtent = 10;
 						}
 

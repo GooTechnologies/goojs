@@ -122,8 +122,6 @@ define([
 	 * });
 	 */
 	CanvasUtils.renderSvgToCanvas = function (svgSource, options, callback) {
-		var DOMURL = window.URL || window.webkitURL || window;
-
 		var url = 'data:image/svg+xml;base64,' + btoa(svgSource);
 
 		CanvasUtils.loadCanvasFromPath(url, options, callback);

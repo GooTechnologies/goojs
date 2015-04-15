@@ -83,8 +83,8 @@ require([
                     run: function(entity) {
                         var translation = entity.transformComponent.transform.translation;
 
-                        translation.data[0] = Math.cos(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + dims.minX*0.5+dims.maxX*0.5;
-                        translation.data[2] = Math.sin(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + dims.maxZ*0.5+dims.minZ*0.5;
+                        translation.x = Math.cos(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + dims.minX*0.5+dims.maxX*0.5;
+                        translation.z = Math.sin(World.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + dims.maxZ*0.5+dims.minZ*0.5;
 
                         entity.transformComponent.setUpdated();
                     }
@@ -96,10 +96,14 @@ require([
             sphereEntity.addToWorld();
 
             var light1 = new PointLight();
-            light1.color.set(0.1, 0.1,0.1);
+            light1.color.setDirect(0.1, 0.1,0.1);
             var light1Entity = goo.world.createEntity('light');
             light1Entity.setComponent(new LightComponent(light1));
-            light1Entity.transformComponent.transform.translation.set( dims.minX*0.5+dims.maxX*0.50, 20+dims.maxY, dims.maxZ*0.5+dims.minZ*0.5);
+            light1Entity.transformComponent.transform.translation.setDirect(
+                dims.minX*0.5+dims.maxX*0.50,
+                20+dims.maxY,
+                dims.maxZ*0.5+dims.minZ*0.5
+            );
             light1Entity.addToWorld();
         }
     }

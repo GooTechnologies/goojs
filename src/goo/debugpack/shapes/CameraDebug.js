@@ -2,12 +2,14 @@ define([
 	'goo/renderer/MeshData',
 	'goo/util/MeshBuilder',
 	'goo/math/Transform',
+	'goo/math/Vector3',
 	'goo/shapes/Box',
 	'goo/shapes/Cylinder'
 ], function (
 		MeshData,
 		MeshBuilder,
 		Transform,
+		Vector3,
 		Box,
 		Cylinder
 ) {
@@ -135,10 +137,11 @@ define([
 
 		var cameraBox4 = new Box(0.2, 0.15, 0.7);
 		cameraBox4.applyFunction(MeshData.POSITION, function(vert) {
-			return [
+			return new Vector3(
 				vert.x + vert.x / ((vert.z + 1.1) * 0.3),
 				vert.y + vert.y / ((vert.z + 1.1) * 0.3),
-				vert.z];
+				vert.z
+			);
 		});
 
 		transform.translation.setDirect(0.0, 0.0, 0.0);

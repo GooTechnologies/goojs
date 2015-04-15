@@ -137,33 +137,33 @@ define([
 			var camLocation = this.camLocation;
 			var camReflectPos = this.camReflectPos;
 
-			camLocation.setVector(camera.translation);
+			camLocation.set(camera.translation);
 			var planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
-			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
-			camReflectPos.setVector(camLocation.subVector(calcVect));
+			calcVect.set(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectPos.set(camLocation.sub(calcVect));
 
-			camLocation.setVector(camera.translation).addVector(camera._direction);
+			camLocation.set(camera.translation).add(camera._direction);
 			planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
-			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
-			camReflectDir.setVector(camLocation.subVector(calcVect)).subVector(camReflectPos).normalize();
+			calcVect.set(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectDir.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
 
-			camLocation.setVector(camera.translation).addVector(camera._up);
+			camLocation.set(camera.translation).add(camera._up);
 			planeDistance = waterPlane.pseudoDistance(camLocation) * 2.0;
-			calcVect.setVector(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
-			camReflectUp.setVector(camLocation.subVector(calcVect)).subVector(camReflectPos).normalize();
+			calcVect.set(waterPlane.normal).mulDirect(planeDistance, planeDistance, planeDistance);
+			camReflectUp.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
 
-			camReflectLeft.setVector(camReflectUp).cross(camReflectDir).normalize();
+			camReflectLeft.set(camReflectUp).cross(camReflectDir).normalize();
 
-			this.waterCamera.translation.setVector(camReflectPos);
-			this.waterCamera._direction.setVector(camReflectDir);
-			this.waterCamera._up.setVector(camReflectUp);
-			this.waterCamera._left.setVector(camReflectLeft);
+			this.waterCamera.translation.set(camReflectPos);
+			this.waterCamera._direction.set(camReflectDir);
+			this.waterCamera._up.set(camReflectUp);
+			this.waterCamera._left.set(camReflectLeft);
 			this.waterCamera.normalize();
 			this.waterCamera.update();
 
 			if (this.skybox && this.followCam) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setVector(camReflectPos);
+				target.translation.set(camReflectPos);
 				target.update();
 			}
 		}
@@ -208,7 +208,7 @@ define([
 		if (aboveWater && this.skybox && this.followCam) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setVector(source).addVector(this.offset);
+			target.translation.set(source).add(this.offset);
 			target.update();
 			this.waterCamera._updatePMatrix = true;
 		}

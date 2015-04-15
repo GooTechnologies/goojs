@@ -1280,10 +1280,10 @@ define([
 			if (overlayTex) {
 				shader.setDefine('OVERLAY_MAP', true);
 				var offsetRepeat = shader.uniforms.offsetRepeat;
-				offsetRepeat[0] = overlayTex.offset.data[0];
-				offsetRepeat[1] = overlayTex.offset.data[1];
-				offsetRepeat[2] = overlayTex.repeat.data[0];
-				offsetRepeat[3] = overlayTex.repeat.data[1];
+				offsetRepeat[0] = overlayTex.offset.x;
+				offsetRepeat[1] = overlayTex.offset.y;
+				offsetRepeat[2] = overlayTex.repeat.x;
+				offsetRepeat[3] = overlayTex.repeat.y;
 			} else {
 				shader.removeDefine('OVERLAY_MAP');
 			}

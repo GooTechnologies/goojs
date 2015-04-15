@@ -96,10 +96,10 @@ define([
 			if (textureMaps.DIFFUSE_MAP) {
 				var offset = textureMaps.DIFFUSE_MAP.offset;
 				var repeat = textureMaps.DIFFUSE_MAP.repeat;
-				shader.uniforms.offsetRepeat[0] = offset.data[0];
-				shader.uniforms.offsetRepeat[1] = offset.data[1];
-				shader.uniforms.offsetRepeat[2] = repeat.data[0];
-				shader.uniforms.offsetRepeat[3] = repeat.data[1];
+				shader.uniforms.offsetRepeat[0] = offset.x;
+				shader.uniforms.offsetRepeat[1] = offset.y;
+				shader.uniforms.offsetRepeat[2] = repeat.x;
+				shader.uniforms.offsetRepeat[3] = repeat.y;
 				shader.uniforms.lodBias = textureMaps.DIFFUSE_MAP.lodBias;
 			} else {
 				shader.uniforms.offsetRepeat[0] = 0;
@@ -221,16 +221,16 @@ define([
 
 			var ind = pointIndex * 8; // 2 vec4 = 8 floats
 
-			var translation = light.translation.data;
-			uniform[ind + 0] = translation[0];
-			uniform[ind + 1] = translation[1];
-			uniform[ind + 2] = translation[2];
+			var translation = light.translation;
+			uniform[ind + 0] = translation.x;
+			uniform[ind + 1] = translation.y;
+			uniform[ind + 2] = translation.z;
 			uniform[ind + 3] = light.range;
 
-			var color = light.color.data;
-			uniform[ind + 4] = color[0] * light.intensity;
-			uniform[ind + 5] = color[1] * light.intensity;
-			uniform[ind + 6] = color[2] * light.intensity;
+			var color = light.color;
+			uniform[ind + 4] = color.x * light.intensity;
+			uniform[ind + 5] = color.y * light.intensity;
+			uniform[ind + 6] = color.z * light.intensity;
 			uniform[ind + 7] = light.specularIntensity;
 
 			lightDefines.push('P');
@@ -240,16 +240,16 @@ define([
 
 			var ind = directionalIndex * 8; // 2 vec4 = 8 floats
 
-			var direction = light.direction.data;
-			uniform[ind + 0] = direction[0];
-			uniform[ind + 1] = direction[1];
-			uniform[ind + 2] = direction[2];
+			var direction = light.direction;
+			uniform[ind + 0] = direction.x;
+			uniform[ind + 1] = direction.y;
+			uniform[ind + 2] = direction.z;
 			uniform[ind + 3] = 0; // padding
 
-			var color = light.color.data;
-			uniform[ind + 4] = color[0] * light.intensity;
-			uniform[ind + 5] = color[1] * light.intensity;
-			uniform[ind + 6] = color[2] * light.intensity;
+			var color = light.color;
+			uniform[ind + 4] = color.x * light.intensity;
+			uniform[ind + 5] = color.y * light.intensity;
+			uniform[ind + 6] = color.z * light.intensity;
 			uniform[ind + 7] = light.specularIntensity;
 
 			lightDefines.push('D');
@@ -258,19 +258,19 @@ define([
 			var uniform = uniforms.spotLights = uniforms.spotLights || [];
 
 			var ind = spotIndex * 16; // 4 vec4 = 16 floats
-			uniform[ind + 0] = light.translation.data[0];
-			uniform[ind + 1] = light.translation.data[1];
-			uniform[ind + 2] = light.translation.data[2];
+			uniform[ind + 0] = light.translation.x;
+			uniform[ind + 1] = light.translation.y;
+			uniform[ind + 2] = light.translation.z;
 			uniform[ind + 3] = light.range;
 
-			uniform[ind + 4] = light.color.data[0] * light.intensity;
-			uniform[ind + 5] = light.color.data[1] * light.intensity;
-			uniform[ind + 6] = light.color.data[2] * light.intensity;
+			uniform[ind + 4] = light.color.x * light.intensity;
+			uniform[ind + 5] = light.color.y * light.intensity;
+			uniform[ind + 6] = light.color.z * light.intensity;
 			uniform[ind + 7] = light.specularIntensity;
 
-			uniform[ind + 8] = light.direction.data[0];
-			uniform[ind + 9] = light.direction.data[1];
-			uniform[ind + 10] = light.direction.data[2];
+			uniform[ind + 8] = light.direction.x;
+			uniform[ind + 9] = light.direction.y;
+			uniform[ind + 10] = light.direction.z;
 			uniform[ind + 11] = 0; // padding
 
 			uniform[ind + 12] = Math.cos(light.angle * MathUtils.DEG_TO_RAD / 2);
@@ -296,10 +296,10 @@ define([
 
 					var ind = shadowIndex * 8;
 
-					var translationData = shadowData.lightCamera.translation.data;
-					uniform[ind + 0] = translationData[0];
-					uniform[ind + 1] = translationData[1];
-					uniform[ind + 2] = translationData[2];
+					var translationData = shadowData.lightCamera.translation;
+					uniform[ind + 0] = translationData.x;
+					uniform[ind + 1] = translationData.y;
+					uniform[ind + 2] = translationData.z;
 					uniform[ind + 3] = 0; // padding
 
 					uniform[ind + 4] = shadowData.cameraScale;

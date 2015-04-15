@@ -1,6 +1,6 @@
 define([
 	'goo/math/Vector4',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/renderer/scanline/Edge',
 	'goo/renderer/bounds/BoundingSphere',
 	'goo/renderer/bounds/BoundingBox',
@@ -12,7 +12,7 @@ define([
 	],
 
 
-	function (Vector4, Matrix4x4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
+	function (Vector4, Matrix4, Edge, BoundingSphere, BoundingBox, EdgeData, BoundingBoxOcclusionChecker,
 				BoundingSphereOcclusionChecker, OccluderTriangleData, EdgeMap) {
 	'use strict';
 
@@ -30,8 +30,8 @@ define([
 	var clippedIndices = new Uint8Array(3);
 
 	// Store matrix4x4 to be re-used
-	var cameraViewProjectionMatrix = new Matrix4x4();
-	var combinedMatrix = new Matrix4x4();
+	var cameraViewProjectionMatrix = new Matrix4();
+	var combinedMatrix = new Matrix4();
 
 	// EdgeData used during rendering.
 	var edgeData = new EdgeData();
@@ -81,7 +81,7 @@ define([
 		this.boundingSphereModule = new BoundingSphereOcclusionChecker(this);
 
 		// Clipping vector is used for near clipping, thus the z component is set to negative camera near.
-		clipVec.data[2] = -this.camera.near;
+		clipVec.z = -this.camera.near;
 	}
 
 	/**
@@ -129,17 +129,17 @@ define([
 			var index3 = this._triangleData.indices[++i];
 
 			var vPos = index1 * 4;
-			v1.data[0] = this._triangleData.positions[vPos];
-			v1.data[1] = this._triangleData.positions[vPos + 1];
-			v1.data[2] = this._triangleData.positions[vPos + 3];
+			v1.x = this._triangleData.positions[vPos];
+			v1.y = this._triangleData.positions[vPos + 1];
+			v1.z = this._triangleData.positions[vPos + 3];
 			vPos = index2 * 4;
-			v2.data[0] = this._triangleData.positions[vPos];
-			v2.data[1] = this._triangleData.positions[vPos + 1];
-			v2.data[2] = this._triangleData.positions[vPos + 3];
+			v2.x = this._triangleData.positions[vPos];
+			v2.y = this._triangleData.positions[vPos + 1];
+			v2.z = this._triangleData.positions[vPos + 3];
 			vPos = index3 * 4;
-			v3.data[0] = this._triangleData.positions[vPos];
-			v3.data[1] = this._triangleData.positions[vPos + 1];
-			v3.data[2] = this._triangleData.positions[vPos + 3];
+			v3.x = this._triangleData.positions[vPos];
+			v3.y = this._triangleData.positions[vPos + 1];
+			v3.z = this._triangleData.positions[vPos + 3];
 
 			this.edgeMap.addEdge(index1, index2, v1, v2);
 			this.edgeMap.addEdge(index2, index3, v2, v3);
@@ -159,7 +159,7 @@ define([
 
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
-		Matrix4x4.combine(cameraProjectionMatrix, cameraViewMatrix, cameraViewProjectionMatrix);
+		cameraViewProjectionMatrix.mul2(cameraProjectionMatrix, cameraViewMatrix);
 		var cameraNearZInWorld = -this.camera.near;
 		var visibleEntities = [];
 
@@ -198,7 +198,7 @@ define([
 		var originalPositions = entity.occluderComponent.meshData.dataViews.POSITION;
 		var entitityWorldTransformMatrix = entity.transformComponent.worldTransform.matrix;
 		// Combine the entity world transform and camera view matrix, since nothing is calculated between these spaces
-		Matrix4x4.combine(cameraViewMatrix, entitityWorldTransformMatrix, combinedMatrix);
+		combinedMatrix.mul2(cameraViewMatrix, entitityWorldTransformMatrix);
 
 		// Reset the global vectors' w-components to 1
 		v1.data[3] = 1.0;
@@ -207,20 +207,20 @@ define([
 		var maxPos = originalPositions.length;
 		var offset = 0;
 		for (var i = 0; i < maxPos; i++) {
-			v1.data[0] = originalPositions[i];
+			v1.x = originalPositions[i];
 			i++;
-			v1.data[1] = originalPositions[i];
+			v1.y = originalPositions[i];
 			i++;
-			v1.data[2] = originalPositions[i];
+			v1.z = originalPositions[i];
 
 			combinedMatrix.applyPost(v1);
 
 			// Insert the homogeneous coordinate (x,y,z,w) to the triangleData's position array.
-			this._triangleData.positions[offset] = v1.data[0];
+			this._triangleData.positions[offset] = v1.x;
 			offset++;
-			this._triangleData.positions[offset] = v1.data[1];
+			this._triangleData.positions[offset] = v1.y;
 			offset++;
-			this._triangleData.positions[offset] = v1.data[2];
+			this._triangleData.positions[offset] = v1.z;
 			offset += 2;
 		}
 
@@ -264,15 +264,15 @@ define([
 				// perhaps the entire function, in order to make use of them.
 				outIndex = outsideIndices[0];
 				origin = globalVertices[outIndex];
-				origin_x = origin.data[0];
-				origin_y = origin.data[1];
+				origin_x = origin.x;
+				origin_y = origin.y;
 
 				target = globalVertices[insideIndices[0]];
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
 				// use the clipVec for storing the new vertex data, the w component is always 1.0 on this one.
-				clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
-				clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
+				clipVec.x = origin_x + ratio * (target.x - origin_x);
+				clipVec.y = origin_y + ratio * (target.y - origin_y);
 
 				// Overwrite the vertex index with the new vertex.
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
@@ -281,8 +281,8 @@ define([
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
 				// Calculate the new vertex's position
-				clipVec.data[0] = origin_x + ratio * (target.data[0] - origin_x);
-				clipVec.data[1] = origin_y + ratio * (target.data[1] - origin_y);
+				clipVec.x = origin_x + ratio * (target.x - origin_x);
+				clipVec.y = origin_y + ratio * (target.y - origin_y);
 
 				// Add the new vertex and store the new vertex's index to be added at the last stage.
 				indices[3] = this._triangleData.addVertex(clipVec.data);
@@ -311,32 +311,32 @@ define([
 			case 2:
 				// Update the two outside vertices to their new positions on the near plane.
 				target = globalVertices[insideIndices[0]];
-				target_x = target.data[0];
-				target_y = target.data[1];
+				target_x = target.x;
+				target_y = target.y;
 
 				// First new vertex.
 				outIndex = outsideIndices[0];
 				origin = globalVertices[outIndex];
-				origin_x = origin.data[0];
-				origin_y = origin.data[1];
+				origin_x = origin.x;
+				origin_y = origin.y;
 
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
-				clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
-				clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
+				clipVec.x = origin_x + ratio * (target_x - origin_x);
+				clipVec.y = origin_y + ratio * (target_y - origin_y);
 
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
 				// Second new vertex.
 				outIndex = outsideIndices[1];
 				origin = globalVertices[outIndex];
-				origin_x = origin.data[0];
-				origin_y = origin.data[1];
+				origin_x = origin.x;
+				origin_y = origin.y;
 
 				ratio = this._calculateIntersectionRatio(origin, target, cameraNear);
 
-				clipVec.data[0] = origin_x + ratio * (target_x - origin_x);
-				clipVec.data[1] = origin_y + ratio * (target_y - origin_y);
+				clipVec.x = origin_x + ratio * (target_x - origin_x);
+				clipVec.y = origin_y + ratio * (target_y - origin_y);
 
 				indices[outIndex] = this._triangleData.addVertex(clipVec.data);
 
@@ -363,9 +363,9 @@ define([
 			var p2 = p++;
 			var p3 = p++;
 			var p4 = p++;
-			v1.data[0] = this._triangleData.positions[p1];
-			v1.data[1] = this._triangleData.positions[p2];
-			v1.data[2] = this._triangleData.positions[p3];
+			v1.x = this._triangleData.positions[p1];
+			v1.y = this._triangleData.positions[p2];
+			v1.z = this._triangleData.positions[p3];
 			// The w-component is still 1.0 here.
 			v1.data[3] = 1.0;
 
@@ -375,13 +375,13 @@ define([
 
 			// Homogeneous divide.
 			var homogeneousDivide =  1.0 / v1.data[3];
-			var divX = v1.data[0] * homogeneousDivide;
-			var divY = v1.data[1] * homogeneousDivide;
+			var divX = v1.x * homogeneousDivide;
+			var divY = v1.y * homogeneousDivide;
 
 			// Screen space transform x and y coordinates, and write the transformed position data into the triangleData.
 			this._triangleData.positions[p1] = (divX + 1.0) * this._halfClipX;
 			this._triangleData.positions[p2] = (divY + 1.0) * this._halfClipY;
-			// positionArray[p3] = v1.data[2]; z-componenet is not used any more.
+			// positionArray[p3] = v1.z; z-componenet is not used any more.
 			// Invert w component here, this to be able to interpolate the depth over the triangles.
 			this._triangleData.positions[p4] = homogeneousDivide;
 		}
@@ -412,17 +412,17 @@ define([
 			vertexPositions[2] = indices[2] * 4;
 
 			var vPos = vertexPositions[0];
-			v1.data[0] = this._triangleData.positions[vPos];
-			v1.data[1] = this._triangleData.positions[vPos + 1];
-			v1.data[2] = this._triangleData.positions[vPos + 2];
+			v1.x = this._triangleData.positions[vPos];
+			v1.y = this._triangleData.positions[vPos + 1];
+			v1.z = this._triangleData.positions[vPos + 2];
 			vPos = vertexPositions[1];
-			v2.data[0] = this._triangleData.positions[vPos];
-			v2.data[1] = this._triangleData.positions[vPos + 1];
-			v2.data[2] = this._triangleData.positions[vPos + 2];
+			v2.x = this._triangleData.positions[vPos];
+			v2.y = this._triangleData.positions[vPos + 1];
+			v2.z = this._triangleData.positions[vPos + 2];
 			vPos = vertexPositions[2];
-			v3.data[0] = this._triangleData.positions[vPos];
-			v3.data[1] = this._triangleData.positions[vPos + 1];
-			v3.data[2] = this._triangleData.positions[vPos + 2];
+			v3.x = this._triangleData.positions[vPos];
+			v3.y = this._triangleData.positions[vPos + 1];
+			v3.z = this._triangleData.positions[vPos + 2];
 
 			if (this._isBackFacingCameraViewSpace(v1, v2, v3)) {
 				continue; // Skip loop to the next three vertices.
@@ -448,7 +448,7 @@ define([
 
 		for ( var i = 0; i < 3; i++ ) {
 			// The vertex shall be categorized as an inside vertex if it is on the near plane.
-			if (globalVertices[i].data[2] <= cameraNear) {
+			if (globalVertices[i].z <= cameraNear) {
 				insideIndices[inCount] = i;
 				inCount++;
 			} else {
@@ -487,8 +487,8 @@ define([
 		// var ratio = a/(a+b);
 
 		// Simplified the ratio to :
-		var origin_z = origin.data[2];
-		return (origin_z + near) / (origin_z - target.data[2]);
+		var origin_z = origin.z;
+		return (origin_z + near) / (origin_z - target.z);
 
 	};
 
@@ -498,17 +498,17 @@ define([
 		// to find out if the face is facing away or not.
 
 		// Create edges for calculating the normal.
-		var v1_x = vert1.data[0];
-		var v1_y = vert1.data[1];
-		var v1_z = vert1.data[2];
+		var v1_x = vert1.x;
+		var v1_y = vert1.y;
+		var v1_z = vert1.z;
 
-		var e1_x = vert2.data[0] - v1_x;
-		var e1_y = vert2.data[1] - v1_y;
-		var e1_z = vert2.data[2] - v1_z;
+		var e1_x = vert2.x - v1_x;
+		var e1_y = vert2.y - v1_y;
+		var e1_z = vert2.z - v1_z;
 
-		var e2_x = vert3.data[0] - v1_x;
-		var e2_y = vert3.data[1] - v1_y;
-		var e2_z = vert3.data[2] - v1_z;
+		var e2_x = vert3.x - v1_x;
+		var e2_y = vert3.y - v1_y;
+		var e2_z = vert3.z - v1_z;
 
 		// Doing the cross as well as dot product here since the built-in methods in Vector3 seems to do much error checking.
 		var faceNormal_x = e2_z * e1_y - e2_y * e1_z;
@@ -536,14 +536,14 @@ define([
 	SoftwareRenderer.prototype._isBackFacingProjected = function (v1, v2, v3) {
 
 		// Create edges, only need x and y , since only the z component of the dot product is needed.
-		var v1_x = v1.data[0];
-		var v1_y = v1.data[1];
+		var v1_x = v1.x;
+		var v1_y = v1.y;
 
-		var e1X = v2.data[0] - v1_x;
-		var e1Y = v2.data[1] - v1_y;
+		var e1X = v2.x - v1_x;
+		var e1Y = v2.y - v1_y;
 
-		var e2X = v3.data[0] - v1_x;
-		var e2Y = v3.data[1] - v1_y;
+		var e2X = v3.x - v1_x;
+		var e2Y = v3.y - v1_y;
 
 		var faceNormalZ = e2Y * e1X - e2X * e1Y;
 
@@ -569,17 +569,17 @@ define([
 		// Use (x,y,1/w), the w component is already inverted.
 		// Reuse the global vectors for storing data to send as parameter to create Edges.
 		var vPos = indices[0] * 4;
-		v1.data[0] = positions[vPos];
-		v1.data[1] = positions[vPos + 1];
-		v1.data[2] = positions[vPos + 3];
+		v1.x = positions[vPos];
+		v1.y = positions[vPos + 1];
+		v1.z = positions[vPos + 3];
 		vPos = indices[1] * 4;
-		v2.data[0] = positions[vPos];
-		v2.data[1] = positions[vPos + 1];
-		v2.data[2] = positions[vPos + 3];
+		v2.x = positions[vPos];
+		v2.y = positions[vPos + 1];
+		v2.z = positions[vPos + 3];
 		vPos = indices[2] * 4;
-		v3.data[0] = positions[vPos];
-		v3.data[1] = positions[vPos + 1];
-		v3.data[2] = positions[vPos + 3];
+		v3.x = positions[vPos];
+		v3.y = positions[vPos + 1];
+		v3.z = positions[vPos + 3];
 
 		edges[0].setData(v1, v2);
 		edges[1].setData(v2, v3);

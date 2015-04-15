@@ -1,15 +1,15 @@
 define([
 	'goo/renderer/ShaderCall',
-	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix3',
+	'goo/math/Matrix4',
 	'goo/entities/World',
 	'goo/renderer/RenderQueue',
 	'goo/util/ObjectUtil',
 	'goo/entities/SystemBus'
 ], function (
 	ShaderCall,
-	Matrix3x3,
-	Matrix4x4,
+	Matrix3,
+	Matrix4,
 	World,
 	RenderQueue,
 	ObjectUtil,
@@ -676,12 +676,12 @@ define([
 		};
 		defaultCallbacks[Shader.WORLD_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4x4.IDENTITY;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.matrix : Matrix4.IDENTITY;
 			uniformCall.uniformMatrix4fv(matrix);
 		};
 		defaultCallbacks[Shader.NORMAL_MATRIX] = function (uniformCall, shaderInfo) {
 			//! AT: when is this condition ever true?
-			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix3x3.IDENTITY;
+			var matrix = shaderInfo.transform !== undefined ? shaderInfo.transform.normalMatrix : Matrix3.IDENTITY;
 			uniformCall.uniformMatrix3fv(matrix);
 		};
 
@@ -713,7 +713,7 @@ define([
 				return function (uniformCall, shaderInfo) {
 					var light = shaderInfo.lights[i];
 					if (light !== undefined) {
-						uniformCall.uniform3f(light.translation.data[0], light.translation.data[1], light.translation.data[2]);
+						uniformCall.uniform3f(light.translation.x, light.translation.y, light.translation.z);
 					} else {
 						uniformCall.uniform3f(-20, 20, 20);
 					}
@@ -726,7 +726,7 @@ define([
 
 		defaultCallbacks[Shader.CAMERA] = function (uniformCall, shaderInfo) {
 			var cameraPosition = shaderInfo.camera.translation;
-			uniformCall.uniform3f(cameraPosition.data[0], cameraPosition.data[1], cameraPosition.data[2]);
+			uniformCall.uniform3f(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 		};
 		defaultCallbacks[Shader.NEAR_PLANE] = function (uniformCall, shaderInfo) {
 			uniformCall.uniform1f(shaderInfo.camera.near);

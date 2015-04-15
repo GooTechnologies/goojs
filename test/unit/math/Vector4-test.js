@@ -1,8 +1,10 @@
 define([
 	'goo/math/Vector4',
+	'goo/math/Matrix4',
 	'test/CustomMatchers'
 ], function (
 	Vector4,
+	Matrix4,
 	CustomMatchers
 ) {
 	'use strict';
@@ -19,158 +21,75 @@ define([
 
 			it('creates a vector when given 4 parameters', function () {
 				var vector = new Vector4(11, 22, 33, 44);
-				var expected = new Vector4();
-
-				for (var i = 0; i < 4; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
-
-				expect(vector).toBeCloseToVector(expected);
-			});
-
-			it('creates a vector when given an array', function () {
-				var vector = new Vector4([11, 22, 33, 44]);
-				var expected = new Vector4();
-
-				for (var i = 0; i < 4; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
-
-				expect(vector).toBeCloseToVector(expected);
-			});
-
-			it('creates a vector when given a vector', function () {
-				var original = new Vector4();
-				for (var i = 0; i < 4; i++) {
-					original.data[i] = (i + 1) * 11;
-				}
-
-				var vector = new Vector4(original);
 
 				var expected = new Vector4();
-
-				for (var i = 0; i < 4; i++) {
-					expected.data[i] = (i + 1) * 11;
-				}
+				expected.x = 11;
+				expected.y = 22;
+				expected.z = 33;
+				expected.w = 44;
 
 				expect(vector).toBeCloseToVector(expected);
 			});
 		});
 
-		it('can be accessed through indices', function () {
-			var a = new Vector4(1, 2, 3, 4);
+		describe('indices', function () {
+			it('can be accessed through indices (debug only)', function () {
+				var a = new Vector4(11, 22, 33, 44);
 
-			expect(a[0]).toEqual(1);
-			expect(a[1]).toEqual(2);
-			expect(a[2]).toEqual(3);
-			expect(a[3]).toEqual(4);
+				expect(function () { a[0]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[1]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[2]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[3]; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+			});
+
+			it('can be modified through indices (debug only)', function () {
+				var a = new Vector4();
+
+				expect(function () { a[0] = 11; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[1] = 22; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[2] = 33; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+				expect(function () { a[3] = 44; })
+					.toThrow(new Error('Vector component access through indices is not supported anymore'));
+			});
 		});
 
-		it('can be modified through indices', function () {
-			var a = new Vector4();
-
-			a[0] = 1;
-			a[1] = 2;
-			a[2] = 3;
-			a[3] = 4;
-
-			expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
-		});
-
-		it('can be accessed through aliases', function () {
-			var a = new Vector4(1, 2, 3, 4);
-
-			expect(a.x).toEqual(1);
-			expect(a.y).toEqual(2);
-			expect(a.z).toEqual(3);
-			expect(a.w).toEqual(4);
-			expect(a.r).toEqual(1);
-			expect(a.g).toEqual(2);
-			expect(a.b).toEqual(3);
-			expect(a.a).toEqual(4);
-		});
-
-		it('can be modified through aliases', function () {
-			var a = new Vector4();
-
-			a.x = 1;
-			a.y = 2;
-			a.z = 3;
-			a.w = 4;
-
-			expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
-
-			a.r = 2;
-			a.g = 3;
-			a.b = 4;
-			a.a = 5;
-
-			expect(a).toBeCloseToVector(new Vector4(2, 3, 4, 5));
-		});
-
-		describe('add', function () {
-			it('can perform addition', function () {
+		describe('aliases', function () {
+			it('can be accessed through aliases', function () {
 				var a = new Vector4(1, 2, 3, 4);
-				var b = new Vector4(1, 2, 3, 4);
 
-				a.add(a);
-
-				expect(a).toBeCloseToVector(new Vector4(2, 4, 6, 8));
-				expect(Vector4.add(b, b)).toBeCloseToVector(new Vector4(2, 4, 6, 8));
-
-				expect(Vector4.add(b, 1)).toBeCloseToVector(new Vector4(2, 3, 4, 5));
-				expect(Vector4.add(1, b)).toBeCloseToVector(new Vector4(2, 3, 4, 5));
-
-				expect(Vector4.add(b, [1, 2, 3, 4])).toBeCloseToVector(new Vector4(2, 4, 6, 8));
-				expect(Vector4.add([1, 2, 3, 4], b)).toBeCloseToVector(new Vector4(2, 4, 6, 8));
+				expect(a.x).toEqual(1);
+				expect(a.y).toEqual(2);
+				expect(a.z).toEqual(3);
+				expect(a.w).toEqual(4);
+				expect(a.r).toEqual(1);
+				expect(a.g).toEqual(2);
+				expect(a.b).toEqual(3);
+				expect(a.a).toEqual(4);
 			});
 
-			it('performs partial addition when applied to vectors of different size', function () {
-				expect(Vector4.add([1, 2], [7])).toBeCloseToVector(new Vector4(1 + 7, NaN, NaN, NaN));
-			});
-		});
+			it('can be modified through aliases', function () {
+				var a = new Vector4();
 
-		describe('sub', function () {
-			it('can perform subtraction', function () {
-				var a = new Vector4(1, 2, 3, 4);
-				var b = new Vector4(1, 2, 3, 4);
+				a.x = 1;
+				a.y = 2;
+				a.z = 3;
+				a.w = 4;
 
-				a.sub(a);
+				expect(a).toBeCloseToVector(new Vector4(1, 2, 3, 4));
 
-				expect(a).toBeCloseToVector(new Vector4(0, 0, 0, 0));
-				expect(Vector4.sub(b, b)).toBeCloseToVector(new Vector4(0, 0, 0, 0));
+				a.r = 2;
+				a.g = 3;
+				a.b = 4;
+				a.a = 5;
 
-				expect(Vector4.sub(b, 1)).toBeCloseToVector(new Vector4(0, 1, 2, 3));
-				expect(Vector4.sub(1, b)).toBeCloseToVector(new Vector4(0, -1, -2, -3));
-
-				expect(Vector4.sub(b, [1, 2, 3, 4])).toBeCloseToVector(new Vector4(0, 0, 0, 0));
-				expect(Vector4.sub([1, 2, 3, 4], b)).toBeCloseToVector(new Vector4(0, 0, 0, 0));
-			});
-
-			it('performs partial subtraction when applied to vectors of different size', function () {
-				expect(Vector4.sub([1, 2], [7])).toBeCloseToVector(new Vector4(1 - 7, NaN, NaN, NaN));
-			});
-		});
-
-		describe('mul', function () {
-			it('can perform multiplication', function () {
-				var a = new Vector4(1, 2, 3, 4);
-				var b = new Vector4(1, 2, 3, 4);
-
-				a.mul(a);
-
-				expect(a).toBeCloseToVector(new Vector4(1, 4, 9, 16));
-				expect(Vector4.mul(b, b)).toBeCloseToVector(new Vector4(1, 4, 9, 16));
-
-				expect(Vector4.mul(b, 1)).toBeCloseToVector(new Vector4(1, 2, 3, 4));
-				expect(Vector4.mul(1, b)).toBeCloseToVector(new Vector4(1, 2, 3, 4));
-
-				expect(Vector4.mul(b, [1, 2, 3, 4])).toBeCloseToVector(new Vector4(1, 4, 9, 16));
-				expect(Vector4.mul([1, 2, 3, 4], b)).toBeCloseToVector(new Vector4(1, 4, 9, 16));
-			});
-
-			it('performs partial subtraction when applied to vectors of different size', function () {
-				expect(Vector4.mul([1, 2], [7])).toBeCloseToVector(new Vector4(1 * 7, NaN, NaN, NaN));
+				expect(a).toBeCloseToVector(new Vector4(2, 3, 4, 5));
 			});
 		});
 
@@ -182,42 +101,12 @@ define([
 			});
 		});
 
-		describe('div', function () {
-			it('can perform division', function () {
-				var a = new Vector4(1, 2, 3, 4);
-				var b = new Vector4(1, 2, 3, 4);
-
-				a.div(a);
-
-				expect(a).toBeCloseToVector(new Vector4(1, 1, 1, 1));
-				expect(Vector4.div(b, b)).toBeCloseToVector(new Vector4(1, 1, 1, 1));
-
-				expect(Vector4.div(b, 1)).toBeCloseToVector(new Vector4(1, 2, 3, 4));
-				expect(Vector4.div(1, b)).toBeCloseToVector(new Vector4(1, 1 / 2, 1 / 3, 1 / 4));
-
-				expect(Vector4.div(b, [1, 2, 3, 4])).toBeCloseToVector(new Vector4(1, 1, 1, 1));
-				expect(Vector4.div([1, 2, 3, 4], b)).toBeCloseToVector(new Vector4(1, 1, 1, 1));
-			});
-
-			it('performs partial division when applied to vectors of different size', function () {
-				expect(Vector4.div([1, 2], [7])).toBeCloseToVector(new Vector4(1 / 7, NaN, NaN, NaN));
-			});
-		});
-
-		it('can calculate dot products', function () {
-			var a = new Vector4(1, 2, 3, 4);
-			var b = new Vector4(2, 3, 4, 5);
-
-			expect(a.dot(b)).toEqual(40);
-			expect(Vector4.dot(a, b)).toEqual(40);
-		});
-
-		describe('dotVector', function () {
+		describe('dot', function () {
 			it('can calculate dot products', function () {
 				var a = new Vector4(1, 2, 3, 4);
 				var b = new Vector4(2, 3, 4, 5);
 
-				expect(a.dotVector(b)).toEqual(40);
+				expect(a.dot(b)).toEqual(40);
 			});
 		});
 
@@ -227,7 +116,7 @@ define([
 
 			expect(a.lerp(b, 0.0)).toBeCloseToVector(new Vector4(0, 0, 0, 0));
 			expect(a.lerp(b, 1.0)).toBeCloseToVector(new Vector4(1, 1, 1, 1));
-			a.set(0, 0, 0, 0);
+			a.setDirect(0, 0, 0, 0);
 			expect(a.lerp(b, 0.5)).toBeCloseToVector(new Vector4(0.5, 0.5, 0.5, 0.5));
 		});
 
@@ -249,30 +138,6 @@ define([
 			});
 		});
 
-		describe('setd (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.setd(55, 66, 77, 88);
-				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
-			});
-		});
-
-		describe('seta (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.seta([55, 66, 77, 88]);
-				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
-			});
-		});
-
-		describe('setv (deprecated)', function () {
-			it('can set a vector', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.setv(new Vector4(55, 66, 77, 88));
-				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
-			});
-		});
-
 
 		describe('setDirect', function () {
 			it('can set a vector', function () {
@@ -282,18 +147,10 @@ define([
 			});
 		});
 
-		describe('setArray', function () {
+		describe('set', function () {
 			it('can set a vector', function () {
 				var vector = new Vector4(11, 22, 33, 44);
-				vector.setArray([55, 66, 77, 88]);
-				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
-			});
-		});
-
-		describe('setVector', function () {
-			it('can set a vector', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.setVector(new Vector4(55, 66, 77, 88));
+				vector.set(new Vector4(55, 66, 77, 88));
 				expect(vector).toBeCloseToVector(new Vector4(55, 66, 77, 88));
 			});
 		});
@@ -307,28 +164,11 @@ define([
 			});
 		});
 
-		describe('addVector', function () {
+		describe('add', function () {
 			it('can add to a vector', function () {
 				var vector = new Vector4(11, 22, 33, 44);
-				vector.addVector(new Vector4(55, 66, 77, 88));
+				vector.add(new Vector4(55, 66, 77, 88));
 				expect(vector).toBeCloseToVector(new Vector4(11 + 55, 22 + 66, 33 + 77, 44 + 88));
-			});
-		});
-
-
-		describe('mulDirect', function () {
-			it('can multiply with 4 numbers', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.mulDirect(55, 66, 77, 88);
-				expect(vector).toBeCloseToVector(new Vector4(11 * 55, 22 * 66, 33 * 77, 44 * 88));
-			});
-		});
-
-		describe('mulVector', function () {
-			it('can multiply with a vector', function () {
-				var vector = new Vector4(11, 22, 33, 44);
-				vector.mulVector(new Vector4(55, 66, 77, 88));
-				expect(vector).toBeCloseToVector(new Vector4(11 * 55, 22 * 66, 33 * 77, 44 * 88));
 			});
 		});
 
@@ -341,11 +181,46 @@ define([
 			});
 		});
 
-		describe('subVector', function () {
+		describe('sub', function () {
 			it('can subtract from a vector', function () {
 				var vector = new Vector4(11, 22, 33, 44);
-				vector.subVector(new Vector4(55, 66, 77, 88));
+				vector.sub(new Vector4(55, 66, 77, 88));
 				expect(vector).toBeCloseToVector(new Vector4(11 - 55, 22 - 66, 33 - 77, 44 - 88));
+			});
+		});
+
+
+		describe('mulDirect', function () {
+			it('can multiply with 4 numbers', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.mulDirect(55, 66, 77, 88);
+				expect(vector).toBeCloseToVector(new Vector4(11 * 55, 22 * 66, 33 * 77, 44 * 88));
+			});
+		});
+
+		describe('mul', function () {
+			it('can multiply with a vector', function () {
+				var vector = new Vector4(11, 22, 33, 44);
+				vector.mul(new Vector4(55, 66, 77, 88));
+				expect(vector).toBeCloseToVector(new Vector4(11 * 55, 22 * 66, 33 * 77, 44 * 88));
+			});
+		});
+
+		describe('applyPre', function () {
+			it('can transform four-dimensional vectors (y = (x*M)^T)', function () {
+				var vector = new Vector4(1, 2, 3, 4);
+				var matrix = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+				expect(vector.applyPre(matrix)).toBeCloseToVector(new Vector4(30, 70, 110, 150));
+			});
+		});
+
+		describe('applyPost', function () {
+			it('can transform four-dimensional vectors (y = M*x)', function () {
+				var vector = new Vector4(1, 2, 3, 4);
+				var matrix = new Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+
+				expect(vector.applyPost(matrix)).toBeCloseToVector(new Vector4(90, 100, 110, 120));
 			});
 		});
 	});

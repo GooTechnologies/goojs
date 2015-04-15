@@ -93,7 +93,7 @@ define([
 		// Project mouse move to plane
 		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
 		this._plane.rayIntersect(this._newRay, worldPos, true);
-		moveVector.setVector(worldPos).subVector(oldWorldPos);
+		moveVector.set(worldPos).sub(oldWorldPos);
 		// And add to translation
 		this.transform.translation.add(moveVector);
 	};
@@ -107,12 +107,12 @@ define([
 		// Project mousemove to plane
 		this._plane.rayIntersect(this._oldRay, oldWorldPos, true);
 		this._plane.rayIntersect(this._newRay, worldPos, true);
-		moveVector.setVector(worldPos).subVector(oldWorldPos);
+		moveVector.set(worldPos).sub(oldWorldPos);
 		// Then project plane diff to line
 		var d = moveVector.dot(line);
-		moveVector.setVector(line).scale(d);
+		moveVector.set(line).scale(d);
 
-		this.transform.translation.addVector(moveVector);
+		this.transform.translation.add(moveVector);
 	};
 
 	TranslationGizmo.prototype._buildArrow = function(dim) {

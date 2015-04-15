@@ -43,8 +43,8 @@ define([
 	 * @returns {Plane} Self for chaining.
 	 */
 	Plane.prototype.setPlanePoints = function (pointA, pointB, pointC) {
-		this.normal.setVector(pointB).subVector(pointA);
-		this.normal.cross([pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z]).normalize();
+		this.normal.set(pointB).sub(pointA);
+		this.normal.cross(new Vector3(pointC.x - pointA.x, pointC.y - pointA.y, pointC.z - pointA.z)).normalize();
 		this.constant = this.normal.dot(pointA);
 		return this;
 	};
@@ -62,7 +62,7 @@ define([
 		}
 
 		var dotProd = this.normal.dot(unitVector) * 2;
-		result.set(unitVector).sub([this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd]);
+		result.set(unitVector).sub(new Vector3(this.normal.x * dotProd, this.normal.y * dotProd, this.normal.z * dotProd));
 		return result;
 	};
 
@@ -77,10 +77,11 @@ define([
 	 * @returns {Vector3|null} The store, or new Vector3 if no store was given. In the case where the ray is parallel with the plane, null is returned (and a warning is printed to console).
 	 */
 	Plane.prototype.rayIntersect = function (ray, store, suppressWarnings, precision) {
+		//! AT: the only function with a suppressWarnings
 		precision = typeof(precision)==='undefined' ? 1e-7 : precision;
 		store = store || new Vector3();
 
-		var lDotN = ray.direction.dotVector(this.normal);
+		var lDotN = ray.direction.dot(this.normal);
 		if (Math.abs(lDotN) < precision) {
 			//! AT: this is the only function where we have this suppressWarnings mechanism
 			if (!suppressWarnings) {
@@ -88,12 +89,15 @@ define([
 			}
 			return null;
 		}
-		var c = this.constant;
-		var pMinusL0DotN = p0.setVector(this.normal).scale(c).subVector(ray.origin).dotVector(this.normal);
 
-		var d = pMinusL0DotN / lDotN;
+		var pMinusL0DotN = p0.set(this.normal)
+			.scale(this.constant)
+			.sub(ray.origin)
+			.dot(this.normal);
 
-		return store.setVector(ray.direction).scale(d).addVector(ray.origin);
+		return store.set(ray.direction)
+			.scale(pMinusL0DotN / lDotN)
+			.add(ray.origin);
 	};
 
 	/**

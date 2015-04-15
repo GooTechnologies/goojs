@@ -47,17 +47,17 @@ define([
 		if (this.entity !== null) {
 			if (this.variableX) {  // !== undefined
 				fsm.applyOnVariable(this.variableX, function() {
-					return translation.data[0];
+					return translation.x;
 				});
 			}
 			if (this.variableY) {
 				fsm.applyOnVariable(this.variableY, function() {
-					return translation.data[1];
+					return translation.y;
 				});
 			}
 			if (this.variableZ) {
 				fsm.applyOnVariable(this.variableZ, function() {
-					return translation.data[2];
+					return translation.z;
 				});
 			}
 		}

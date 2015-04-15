@@ -7,7 +7,7 @@ require([
 	'goo/shapes/Box',
 	'goo/shapes/Sphere',
 	'goo/shapes/Torus',
-	'goo/math/Matrix3x3',
+	'goo/math/Matrix3',
 	'goo/timelinepack/ValueChannel',
 	'goo/timelinepack/EventChannel',
 	'lib/V'
@@ -20,7 +20,7 @@ require([
 	Box,
 	Sphere,
 	Torus,
-	Matrix3x3,
+	Matrix3,
 	ValueChannel,
 	EventChannel,
 	V

@@ -14,7 +14,7 @@ define([
 
 		function createEntity(x, y, z) {
 			var entity = world.createEntity().addToWorld();
-			entity.setTranslation(x || 0, y || 0, z || 0);
+			entity.setTranslation(new Vector3(x || 0, y || 0, z || 0));
 			return entity;
 		}
 

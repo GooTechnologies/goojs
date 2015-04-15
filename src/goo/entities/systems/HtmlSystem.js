@@ -1,16 +1,16 @@
 define([
 	'goo/entities/systems/System',
 	'goo/renderer/Renderer',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix4',
 	'goo/math/MathUtils',
 	'goo/math/Vector3'
 ], function (
 	System,
 	Renderer,
-	Matrix4x4,
+	Matrix4,
 	MathUtils,
 	Vector3
-	) {
+) {
 	'use strict';
 
 	/**
@@ -34,7 +34,7 @@ define([
 	var tmpVector = new Vector3();
 
 	// Copied from CSSTransformComponent
-	var prefixes = ["", "-webkit-", "-moz-", "-ms-", "-o-"];
+	var prefixes = ['', '-webkit-', '-moz-', '-ms-', '-o-'];
 	var setStyle = function (element, property, style) {
 		for (var j = 0; j < prefixes.length; j++) {
 			element.style[prefixes[j] + property] = style;
@@ -68,8 +68,8 @@ define([
 			}
 
 			// Behind camera
-			tmpVector.setVector(camera.translation)
-				.subVector(entity.transformComponent.worldTransform.translation);
+			tmpVector.set(camera.translation)
+				.sub(entity.transformComponent.worldTransform.translation);
 			if (camera._direction.dot(tmpVector) > 0) {
 				component.domElement.style.display = 'none';
 				continue;
@@ -109,7 +109,7 @@ define([
 
 		var component = entity.htmlComponent;
 		component.domElement.parentNode.removeChild(component.domElement);
-		component.domElement = null
+		component.domElement = null;
 	};
 
 	return HtmlSystem;

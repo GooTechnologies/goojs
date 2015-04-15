@@ -54,7 +54,7 @@ define([
 		this.mass = settings.mass;
 		this._initialPosition = null;
 		this._initialVelocity = new Vector3();
-		this._initialVelocity.setVector(settings.velocity);
+		this._initialVelocity.set(settings.velocity);
 		this.body = null;
 		this.centerOfMassOffset = new Vector3();
 	}

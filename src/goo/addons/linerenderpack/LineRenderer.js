@@ -133,17 +133,17 @@ define([
 				return;
 			}
 
-			for (var i = 0; i < 3; i++) {
-				var vertexIndex = this._numRenderingLines * 6;
+			var vertexIndex = this._numRenderingLines * 6;
 
+			for (var i = 0; i < 3; i++) {
 				var firstVertexDataIndex = vertexIndex + i;
 				var secondVertexDataIndex = vertexIndex + 3 + i;
 
-				this._positions[firstVertexDataIndex] = start.data[i];
-				this._positions[secondVertexDataIndex] = end.data[i];
+				this._positions[firstVertexDataIndex] = start.getComponent(i);
+				this._positions[secondVertexDataIndex] = end.getComponent(i);
 
-				this._colors[firstVertexDataIndex] = color.data[i];
-				this._colors[secondVertexDataIndex] = color.data[i];
+				this._colors[firstVertexDataIndex] = color.getComponent(i);
+				this._colors[secondVertexDataIndex] = color.getComponent(i);
 			}
 
 			this._numRenderingLines++;

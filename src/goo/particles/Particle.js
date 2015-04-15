@@ -76,13 +76,29 @@ define([
 		ParticleUtils.applyTimeline(this, this.emitter && this.emitter.timeline ? this.emitter.timeline : this.parent.timeline);
 
 		// apply current color to mesh
-		if (!Vector.equals(this.lastColor, this.color)) {
+		if (!this.lastColor.equals(this.color)) {
 			var colorBuffer = this.parent.meshData.getAttributeBuffer(MeshData.COLOR);
-			colorBuffer.set(this.color.data, this.index * 16 + 0);
-			colorBuffer.set(this.color.data, this.index * 16 + 4);
-			colorBuffer.set(this.color.data, this.index * 16 + 8);
-			colorBuffer.set(this.color.data, this.index * 16 + 12);
-			this.lastColor.setVector(this.color);
+			colorBuffer[0] = this.color.r;
+			colorBuffer[1] = this.color.g;
+			colorBuffer[2] = this.color.b;
+			colorBuffer[3] = this.color.a;
+
+			colorBuffer[4] = this.color.r;
+			colorBuffer[5] = this.color.g;
+			colorBuffer[6] = this.color.b;
+			colorBuffer[7] = this.color.a;
+
+			colorBuffer[8] = this.color.r;
+			colorBuffer[9] = this.color.g;
+			colorBuffer[10] = this.color.b;
+			colorBuffer[11] = this.color.a;
+
+			colorBuffer[12] = this.color.r;
+			colorBuffer[13] = this.color.g;
+			colorBuffer[14] = this.color.b;
+			colorBuffer[15] = this.color.a;
+
+			this.lastColor.set(this.color);
 		}
 
 		// determine our particle plane
@@ -96,7 +112,7 @@ define([
 			var cA = Math.cos(this.spin) * this.size;
 			var sA = Math.sin(this.spin) * this.size;
 			var upX = this.bbY.x, upY = this.bbY.y, upZ = this.bbY.z;
-			this.bbY.setVector(this.bbX);
+			this.bbY.set(this.bbX);
 			this.bbX.mulDirect(cA, cA, cA).addDirect(upX * sA, upY * sA, upZ * sA);
 			this.bbY.mulDirect(-sA, -sA, -sA).addDirect(upX * cA, upY * cA, upZ * cA);
 		}
@@ -105,20 +121,28 @@ define([
 		var vertexBuffer = this.parent.meshData.getAttributeBuffer(MeshData.POSITION);
 
 		// bottom right point
-		calcVec.setVector(this.position).subVector(this.bbX).subVector(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 0);
+		calcVec.set(this.position).sub(this.bbX).sub(this.bbY);
+		vertexBuffer[this.index * 12 + 0 + 0] = calcVec.x;
+		vertexBuffer[this.index * 12 + 0 + 1] = calcVec.y;
+		vertexBuffer[this.index * 12 + 0 + 2] = calcVec.z;
 
 		// top right point
-		calcVec.setVector(this.position).subVector(this.bbX).addVector(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 3);
+		calcVec.set(this.position).sub(this.bbX).add(this.bbY);
+		vertexBuffer[this.index * 12 + 3 + 0] = calcVec.x;
+		vertexBuffer[this.index * 12 + 3 + 1] = calcVec.y;
+		vertexBuffer[this.index * 12 + 3 + 2] = calcVec.z;
 
 		// top left point
-		calcVec.setVector(this.position).addVector(this.bbX).addVector(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 6);
+		calcVec.set(this.position).add(this.bbX).add(this.bbY);
+		vertexBuffer[this.index * 12 + 6 + 0] = calcVec.x;
+		vertexBuffer[this.index * 12 + 6 + 1] = calcVec.y;
+		vertexBuffer[this.index * 12 + 6 + 2] = calcVec.z;
 
 		// bottom left corner
-		calcVec.setVector(this.position).addVector(this.bbX).subVector(this.bbY);
-		vertexBuffer.set(calcVec.data, this.index * 12 + 9);
+		calcVec.set(this.position).add(this.bbX).sub(this.bbY);
+		vertexBuffer[this.index * 12 + 9 + 0] = calcVec.x;
+		vertexBuffer[this.index * 12 + 9 + 1] = calcVec.y;
+		vertexBuffer[this.index * 12 + 9 + 2] = calcVec.z;
 
 		if (this.lastUVIndex !== this.uvIndex) {
 			var uvBuffer = this.parent.meshData.getAttributeBuffer(MeshData.TEXCOORD0);

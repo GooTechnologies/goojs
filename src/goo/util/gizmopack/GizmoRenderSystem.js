@@ -6,8 +6,8 @@ define([
 	'goo/renderer/shaders/ShaderLib',
 	'goo/renderer/shaders/ShaderFragment',
 	'goo/renderer/Util',
-	'goo/math/Matrix3x3',
-	'goo/math/Matrix4x4',
+	'goo/math/Matrix3',
+	'goo/math/Matrix4',
 	'goo/renderer/MeshData',
 	'goo/renderer/Shader',
 	'goo/util/gizmopack/Gizmo',
@@ -22,8 +22,8 @@ define([
 	ShaderLib,
 	ShaderFragment,
 	Util,
-	Matrix3x3,
-	Matrix4x4,
+	Matrix3,
+	Matrix4,
 	MeshData,
 	Shader,
 	Gizmo,
@@ -191,14 +191,14 @@ define([
 			return;
 		}
 
-		var inverseRotation = new Matrix3x3();
-		var inverseTransformation = new Matrix4x4();
+		var inverseRotation = new Matrix3();
+		var inverseTransformation = new Matrix4();
 
 		// Set bound entities translation
 		this.gizmos[0].onChange = function (change) {
 			if (this.entity) {
 				var translation = this.entity.transformComponent.transform.translation;
-				translation.setVector(change);
+				translation.set(change);
 				if (this.entity.transformComponent.parent) {
 					inverseTransformation.copy(this.entity.transformComponent.parent.worldTransform.matrix);
 					inverseTransformation.invert();
@@ -216,11 +216,8 @@ define([
 					inverseRotation.copy(this.entity.transformComponent.parent.worldTransform.rotation);
 					inverseRotation.invert();
 				}
-				Matrix3x3.combine(
-					inverseRotation,
-					this.entity.transformComponent.transform.rotation,
-					this.entity.transformComponent.transform.rotation
-				);
+
+				this.entity.transformComponent.transform.rotation.mul(inverseRotation);
 				this.entity.transformComponent.setUpdated();
 			}
 		}.bind(this);
@@ -229,7 +226,7 @@ define([
 		this.gizmos[2].onChange = function (change) {
 			if (this.entity) {
 				var scale = this.entity.transformComponent.transform.scale;
-				scale.setVector(change);
+				scale.set(change);
 				if (this.entity.transformComponent.parent) {
 					scale.div(this.entity.transformComponent.parent.worldTransform.scale);
 				}

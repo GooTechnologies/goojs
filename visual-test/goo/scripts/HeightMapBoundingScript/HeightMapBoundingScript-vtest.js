@@ -63,8 +63,8 @@ require([
 					run: function(entity) {
 						var translation = entity.transformComponent.transform.translation;
 
-						translation.data[0] = Math.cos(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
-						translation.data[2] = Math.sin(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+						translation.x = Math.cos(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
+						translation.z = Math.sin(world.time * 0.07 * (i + 3)) * (i * 1.6 + 4) + 32;
 
 						entity.transformComponent.setUpdated();
 					}

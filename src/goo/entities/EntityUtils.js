@@ -175,7 +175,7 @@ define([
 					if (boundingVolume instanceof BoundingBox) {
 						mergedWorldBound.copy(boundingVolume);
 					} else {
-						mergedWorldBound.center.setVector(boundingVolume.center);
+						mergedWorldBound.center.set(boundingVolume.center);
 						mergedWorldBound.xExtent = mergedWorldBound.yExtent = mergedWorldBound.zExtent = boundingVolume.radius;
 					}
 					first = false;

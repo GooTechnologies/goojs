@@ -91,7 +91,7 @@ define([
 			angles = new Vector3();
 			var rotation = environment.entity.transformComponent.transform.rotation;
 			rotation.toAngles(angles);
-			_initialAzimuth = angles.data[1];
+			_initialAzimuth = angles.y;
 		}
 
 		function update(parameters, environment) {
@@ -104,8 +104,8 @@ define([
 			var rotation = entity.transformComponent.transform.rotation;
 			rotation.toAngles(angles);
 
-			var pitch = angles.data[0];
-			var yaw = angles.data[1];
+			var pitch = angles.x;
+			var yaw = angles.y;
 
 			var maxAscent = parameters.maxAscent * MathUtils.DEG_TO_RAD;
 			var minAscent = parameters.minAscent * MathUtils.DEG_TO_RAD;

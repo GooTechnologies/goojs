@@ -2,6 +2,7 @@
 define([
 	'goo/renderer/Capabilities',
 	'goo/renderer/RendererRecord',
+	'goo/renderer/RendererUtils',
 	'goo/renderer/Util',
 	'goo/renderer/TextureCreator',
 	'goo/renderer/pass/RenderTarget',
@@ -22,6 +23,7 @@ define([
 ], function (
 	Capabilities,
 	RendererRecord,
+	RendererUtils,
 	Util,
 	TextureCreator,
 	RenderTarget,
@@ -129,10 +131,11 @@ define([
 
 		this.downScale = parameters.downScale || 1;
 
+		//! AT: why are there 2 clear colors?
 		// Default setup
 		this.clearColor = new Vector4();
 		// You need 64 bits for number equality
-		this._clearColor = new Float64Array(4);
+		this._clearColor = new Vector4();
 		this.setClearColor(0.3, 0.3, 0.3, 1.0);
 
 
@@ -434,17 +437,20 @@ define([
 	 * @param {number} a Alpha
 	 */
 	Renderer.prototype.setClearColor = function (r, g, b, a) {
-		if (this._clearColor[0] === r
-			&& this._clearColor[1] === g
-			&& this._clearColor[2] === b
-			&& this._clearColor[3] === a) {
-				return;
-			}
-		this._clearColor[0] = r;
-		this._clearColor[1] = g;
-		this._clearColor[2] = b;
-		this._clearColor[3] = a;
-		this.clearColor.setArray(this._clearColor);
+		//! AT: is exact equality important here?
+		if (this._clearColor.r === r &&
+			this._clearColor.g === g &&
+			this._clearColor.b === b &&
+			this._clearColor.a === a
+		) {
+			return;
+		}
+
+		this._clearColor.r = r;
+		this._clearColor.g = g;
+		this._clearColor.b = b;
+		this._clearColor.a = a;
+		this.clearColor.copy(this._clearColor);
 		this.context.clearColor(r, g, b, a);
 	};
 
@@ -453,7 +459,7 @@ define([
 		if (glBuffer !== null) {
 			this.setBoundBuffer(glBuffer, bufferData.target);
 			if (bufferData._dataNeedsRefresh) {
-				this.context.bufferSubData(this.getGLBufferTarget(bufferData.target), 0, bufferData.data);
+				this.context.bufferSubData(RendererUtils.getGLBufferTarget(bufferData.target), 0, bufferData.data);
 				bufferData._dataNeedsRefresh = false;
 			}
 		} else {
@@ -462,7 +468,7 @@ define([
 
 			this.rendererRecord.invalidateBuffer(bufferData.target);
 			this.setBoundBuffer(glBuffer, bufferData.target);
-			this.context.bufferData(this.getGLBufferTarget(bufferData.target), bufferData.data, this.getGLBufferUsage(bufferData._dataUsage));
+			this.context.bufferData(RendererUtils.getGLBufferTarget(bufferData.target), bufferData.data, RendererUtils.getGLBufferUsage(bufferData._dataUsage));
 		}
 	};
 
@@ -493,7 +499,7 @@ define([
 		// context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit); // do I need this?
 
 		//! schteppe: What if the .glTexture is not allocated yet?
-		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
+		context.bindTexture(RendererUtils.getGLType(texture.variant), texture.glTexture);
 
 		// set alignment to support images with width % 4 !== 0, as
 		// images are not aligned
@@ -512,8 +518,8 @@ define([
 		var image = texture.image;
 		if (texture.variant === '2D') {
 			if (!image) {
-				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
-					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+					RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), null);
 			} else {
 				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
 					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
@@ -524,13 +530,11 @@ define([
 					if (image.isCompressed) {
 						this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
 					} else {
-						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), image.width,
-							image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-								.getGLPixelDataType(texture.type), image.data);
+						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(texture.format), image.width,
+							image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data);
 					}
 				} else {
-					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
-						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image);
+					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image);
 				}
 
 				if (texture.generateMipmaps && !image.isCompressed) {
@@ -556,20 +560,18 @@ define([
 				var face = Texture.CUBE_FACES[faceIndex];
 
 				if (!image) {
-					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
-						this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+					context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+						RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), null);
 				} else {
 					if (image.isData === true) {
 						if (image.isCompressed) {
-							this.loadCompressedTexture(context, this.getGLCubeMapFace(face), texture, image.data[faceIndex]);
+							this.loadCompressedTexture(context, RendererUtils.getGLCubeMapFace(face), texture, image.data[faceIndex]);
 						} else {
-							context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), image.width,
-								image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-									.getGLPixelDataType(texture.type), image.data[faceIndex]);
+							context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), image.width,
+								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data[faceIndex]);
 						}
 					} else {
-						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this
-							.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image.data[faceIndex]);
+						context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data[faceIndex]);
 					}
 				}
 			}
@@ -676,7 +678,7 @@ define([
 	 * @param material
 	 * @param renderInfo
 	 */
-	Renderer.prototype.precompileShader = function (material, renderInfo, queue) {
+	Renderer.prototype.precompileShader = function (material, renderInfo) {
 		var shader = material.shader;
 
 		shader.updateProcessors(renderInfo);
@@ -833,6 +835,10 @@ define([
 
 	var renderRenderInfo = new RenderInfo();
 
+	var startEachShaderFrame = function (shader) {
+		shader.startFrame();
+	};
+
 	/**
 	 * Renders a "renderable" or a list of renderables. Handles all setup and updates of materials/shaders and states.
 	 * @param {Entity[]} renderList A list of "renderables". Eg Entities with the right components or objects with mesh data, material and transform
@@ -861,9 +867,7 @@ define([
 			this.clear(clear.color, clear.depth, clear.stencil);
 		}
 
-		this.rendererRecord.shaderCache.forEach(function (shader) {
-			shader.startFrame();
-		});
+		this.rendererRecord.shaderCache.forEach(startEachShaderFrame);
 
 		var renderInfo = renderRenderInfo;
 		renderInfo.reset();
@@ -945,7 +949,7 @@ define([
 		if (meshData._attributeDataNeedsRefresh) {
 			meshData._dirtyAttributeNames.forEach(function (name) {
 				this.updateAttributeData(meshData.dataViews[name], meshData.attributeMap[name].offset);
-			}.bind(this));
+			}, this);
 
 			meshData._attributeDataNeedsRefresh = false;
 			meshData._dirtyAttributeNames.clear();
@@ -1167,12 +1171,12 @@ define([
 	Renderer.prototype.drawElementsVBO = function (indices, indexModes, indexLengths) {
 		var offset = 0;
 		var indexModeCounter = 0;
-		var type = indices.type = indices.type || this.getGLArrayType(indices);
-		var byteSize = this.getGLByteSize(indices);
+		var type = indices.type = indices.type || RendererUtils.getGLArrayType(indices);
+		var byteSize = RendererUtils.getGLByteSize(indices);
 
 		for (var i = 0; i < indexLengths.length; i++) {
 			var count = indexLengths[i];
-			var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
+			var glIndexMode = RendererUtils.getGLIndexMode(indexModes[indexModeCounter]);
 
 			this.context.drawElements(glIndexMode, count, type, offset * byteSize);
 
@@ -1190,7 +1194,7 @@ define([
 
 		for (var i = 0; i < indexLengths.length; i++) {
 			var count = indexLengths[i];
-			var glIndexMode = this.getGLIndexMode(indexModes[indexModeCounter]);
+			var glIndexMode = RendererUtils.getGLIndexMode(indexModes[indexModeCounter]);
 
 			this.context.drawArrays(glIndexMode, offset, count);
 
@@ -1237,7 +1241,7 @@ define([
 		}
 
 		if (!skipUpdateBuffer) {
-			this.hardwarePicking.clearColorStore.setVector(this.clearColor);
+			this.hardwarePicking.clearColorStore.set(this.clearColor);
 			if (doScissor && clientX !== undefined && clientY !== undefined) {
 				var devicePixelRatio = this._useDevicePixelRatio && window.devicePixelRatio ? window.devicePixelRatio / this.svg.currentScale : 1;
 
@@ -1417,26 +1421,26 @@ define([
 
 		var texrecord = texture.textureRecord;
 
-		var glType = this.getGLType(texture.variant);
+		var glType = RendererUtils.getGLType(texture.variant);
 		if (texrecord.magFilter !== texture.magFilter) {
-			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this.getGLMagFilter(texture.magFilter));
+			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MAG_FILTER, RendererUtils.getGLMagFilter(texture.magFilter));
 			texrecord.magFilter = texture.magFilter;
 		}
-		var minFilter = isImagePowerOfTwo ? texture.minFilter : this.getFilterFallback(texture.minFilter);
+		var minFilter = isImagePowerOfTwo ? texture.minFilter : RendererUtils.getFilterFallback(texture.minFilter);
 		if (texrecord.minFilter !== minFilter) {
-			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MIN_FILTER, this.getGLMinFilter(minFilter));
+			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_MIN_FILTER, RendererUtils.getGLMinFilter(minFilter));
 			texrecord.minFilter = minFilter;
 		}
 
 		var wrapS = isImagePowerOfTwo ? texture.wrapS : 'EdgeClamp';
 		if (texrecord.wrapS !== wrapS) {
-			var glwrapS = this.getGLWrap(wrapS, context);
+			var glwrapS = RendererUtils.getGLWrap(wrapS, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_S, glwrapS);
 			texrecord.wrapS = wrapS;
 		}
 		var wrapT = isImagePowerOfTwo ? texture.wrapT : 'EdgeClamp';
 		if (texrecord.wrapT !== wrapT) {
-			var glwrapT = this.getGLWrap(wrapT, context);
+			var glwrapT = RendererUtils.getGLWrap(wrapT, context);
 			context.texParameteri(glType, WebGLRenderingContext.TEXTURE_WRAP_T, glwrapT);
 			texrecord.wrapT = wrapT;
 		}
@@ -1453,25 +1457,15 @@ define([
 	Renderer.prototype.bindTexture = function (context, texture, unit, record) {
 		if (record.boundTexture === undefined || texture.glTexture !== undefined && record.boundTexture !== texture.glTexture) {
 			context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
-			context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
+			context.bindTexture(RendererUtils.getGLType(texture.variant), texture.glTexture);
 			record.boundTexture = texture.glTexture;
 		}
 	};
 
 	Renderer.prototype.unbindTexture = function (context, texture, unit, record) {
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
-		context.bindTexture(this.getGLType(texture.variant), null);
+		context.bindTexture(RendererUtils.getGLType(texture.variant), null);
 		record.boundTexture = undefined;
-	};
-
-	Renderer.prototype.getGLType = function (type) {
-		switch (type) {
-			case '2D':
-				return WebGLRenderingContext.TEXTURE_2D;
-			case 'CUBE':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP;
-		}
-		throw 'invalid texture type: ' + type;
 	};
 
 	Renderer.prototype.loadCompressedTexture = function (context, target, texture, imageData) {
@@ -1535,7 +1529,7 @@ define([
 	Renderer.prototype.updateTexture = function (context, texture, unit, record) {
 		// this.bindTexture(context, texture, unit, record);
 		context.activeTexture(WebGLRenderingContext.TEXTURE0 + unit);
-		context.bindTexture(this.getGLType(texture.variant), texture.glTexture);
+		context.bindTexture(RendererUtils.getGLType(texture.variant), texture.glTexture);
 		record.boundTexture = texture.glTexture;
 
 		// set alignment to support images with width % 4 !== 0, as
@@ -1555,8 +1549,8 @@ define([
 		var image = texture.image;
 		if (texture.variant === '2D') {
 			if (!image) {
-				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
-					this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+				context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+					RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), null);
 			} else {
 				if (!image.isCompressed && (texture.generateMipmaps || image.width > this.maxTextureSize || image.height > this.maxTextureSize)) {
 					this.checkRescale(texture, image, image.width, image.height, this.maxTextureSize);
@@ -1567,13 +1561,11 @@ define([
 					if (image.isCompressed) {
 						this.loadCompressedTexture(context, WebGLRenderingContext.TEXTURE_2D, texture, image.data);
 					} else {
-						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), image.width,
-							image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-								.getGLPixelDataType(texture.type), image.data);
+						context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(texture.format), image.width,
+							image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data);
 					}
 				} else {
-					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, this.getGLInternalFormat(texture.format), this
-						.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image);
+					context.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image);
 				}
 
 				if (texture.generateMipmaps && !image.isCompressed) {
@@ -1598,20 +1590,18 @@ define([
 				var face = Texture.CUBE_FACES[faceIndex];
 
 				if (!image) {
-					context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
-						this.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), null);
+					context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), texture.width, texture.height, 0,
+						RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), null);
 				} else {
 					if (image.isData === true) {
 						if (image.isCompressed) {
-							this.loadCompressedTexture(context, this.getGLCubeMapFace(face), texture, image.data[faceIndex]);
+							this.loadCompressedTexture(context, RendererUtils.getGLCubeMapFace(face), texture, image.data[faceIndex]);
 						} else {
-							context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), image.width,
-								image.height, texture.hasBorder ? 1 : 0, this.getGLInternalFormat(texture.format), this
-									.getGLPixelDataType(texture.type), image.data[faceIndex]);
+							context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), image.width,
+								image.height, texture.hasBorder ? 1 : 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data[faceIndex]);
 						}
 					} else {
-						context.texImage2D(this.getGLCubeMapFace(face), 0, this.getGLInternalFormat(texture.format), this
-							.getGLInternalFormat(texture.format), this.getGLPixelDataType(texture.type), image.data[faceIndex]);
+						context.texImage2D(RendererUtils.getGLCubeMapFace(face), 0, RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLInternalFormat(texture.format), RendererUtils.getGLPixelDataType(texture.type), image.data[faceIndex]);
 					}
 				}
 			}
@@ -1624,201 +1614,6 @@ define([
 
 	Renderer.prototype.checkRescale = function (texture, image, width, height, maxSize, index) {
 		Util.scaleImage(texture, image, width, height, maxSize, index);
-	};
-
-	Renderer.prototype.getGLWrap = function (wrap) {
-		switch (wrap) {
-			case 'Repeat':
-				return WebGLRenderingContext.REPEAT;
-			case 'MirroredRepeat':
-				return WebGLRenderingContext.MIRRORED_REPEAT;
-			case 'EdgeClamp':
-				return WebGLRenderingContext.CLAMP_TO_EDGE;
-		}
-		throw "invalid WrapMode type: " + wrap;
-	};
-
-	Renderer.prototype.getGLInternalFormat = function (format) {
-		switch (format) {
-			case 'RGBA':
-				return WebGLRenderingContext.RGBA;
-			case 'RGB':
-				return WebGLRenderingContext.RGB;
-			case 'Alpha':
-				return WebGLRenderingContext.ALPHA;
-			case 'Luminance':
-				return WebGLRenderingContext.LUMINANCE;
-			case 'LuminanceAlpha':
-				return WebGLRenderingContext.LUMINANCE_ALPHA;
-			default:
-				throw "Unsupported format: " + format;
-		}
-	};
-
-	Renderer.prototype.getGLPixelDataType = function (type) {
-		switch (type) {
-			case 'UnsignedByte':
-				return WebGLRenderingContext.UNSIGNED_BYTE;
-			case 'UnsignedShort565':
-				return WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
-			case 'UnsignedShort4444':
-				return WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
-			case 'UnsignedShort5551':
-				return WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
-			case 'Float':
-				return WebGLRenderingContext.FLOAT;
-			default:
-				throw "Unsupported type: " + type;
-		}
-	};
-
-	Renderer.prototype.getFilterFallback = function (filter) {
-		switch (filter) {
-			case 'NearestNeighborNoMipMaps':
-			case 'NearestNeighborNearestMipMap':
-			case 'NearestNeighborLinearMipMap':
-				return 'NearestNeighborNoMipMaps';
-			case 'BilinearNoMipMaps':
-			case 'Trilinear':
-			case 'BilinearNearestMipMap':
-				return 'BilinearNoMipMaps';
-			default:
-				return 'NearestNeighborNoMipMaps';
-		}
-	};
-
-	Renderer.prototype.getGLMagFilter = function (filter) {
-		switch (filter) {
-			case 'Bilinear':
-				return WebGLRenderingContext.LINEAR;
-			case 'NearestNeighbor':
-				return WebGLRenderingContext.NEAREST;
-		}
-		throw "invalid MagnificationFilter type: " + filter;
-	};
-
-	Renderer.prototype.getGLMinFilter = function (filter) {
-		switch (filter) {
-			case 'BilinearNoMipMaps':
-				return WebGLRenderingContext.LINEAR;
-			case 'Trilinear':
-				return WebGLRenderingContext.LINEAR_MIPMAP_LINEAR;
-			case 'BilinearNearestMipMap':
-				return WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
-			case 'NearestNeighborNoMipMaps':
-				return WebGLRenderingContext.NEAREST;
-			case 'NearestNeighborNearestMipMap':
-				return WebGLRenderingContext.NEAREST_MIPMAP_NEAREST;
-			case 'NearestNeighborLinearMipMap':
-				return WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
-		}
-		throw "invalid MinificationFilter type: " + filter;
-	};
-
-	Renderer.prototype.getGLBufferTarget = function (target) {
-		if (target === 'ElementArrayBuffer') {
-			return WebGLRenderingContext.ELEMENT_ARRAY_BUFFER;
-		}
-
-		return WebGLRenderingContext.ARRAY_BUFFER;
-	};
-
-	Renderer.prototype.getGLArrayType = function (indices) {
-		if (indices instanceof Uint8Array) {
-			return WebGLRenderingContext.UNSIGNED_BYTE;
-		} else if (indices instanceof Uint16Array) {
-			return WebGLRenderingContext.UNSIGNED_SHORT;
-		} else if (indices instanceof Uint32Array) {
-			return WebGLRenderingContext.UNSIGNED_INT;
-		} else if (indices instanceof Int8Array) {
-			return WebGLRenderingContext.UNSIGNED_BYTE;
-		} else if (indices instanceof Int16Array) {
-			return WebGLRenderingContext.UNSIGNED_SHORT;
-		} else if (indices instanceof Int32Array) {
-			return WebGLRenderingContext.UNSIGNED_INT;
-		}
-
-		return null;
-	};
-
-	Renderer.prototype.getGLByteSize = function (indices) {
-		if (indices instanceof Uint8Array) {
-			return 1;
-		} else if (indices instanceof Uint16Array) {
-			return 2;
-		} else if (indices instanceof Uint32Array) {
-			return 4;
-		} else if (indices instanceof Int8Array) {
-			return 1;
-		} else if (indices instanceof Int16Array) {
-			return 2;
-		} else if (indices instanceof Int32Array) {
-			return 4;
-		}
-
-		return 1;
-	};
-
-	Renderer.prototype.getGLCubeMapFace = function (face) {
-		switch (face) {
-			case 'PositiveX':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
-			case 'NegativeX':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
-			case 'PositiveY':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
-			case 'NegativeY':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
-			case 'PositiveZ':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
-			case 'NegativeZ':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
-		}
-		throw 'Invalid cubemap face: ' + face;
-	};
-
-	Renderer.prototype.getGLBufferUsage = function (usage) {
-		var glMode = WebGLRenderingContext.STATIC_DRAW;
-		switch (usage) {
-			case 'StaticDraw':
-				glMode = WebGLRenderingContext.STATIC_DRAW;
-				break;
-			case 'DynamicDraw':
-				glMode = WebGLRenderingContext.DYNAMIC_DRAW;
-				break;
-			case 'StreamDraw':
-				glMode = WebGLRenderingContext.STREAM_DRAW;
-				break;
-		}
-		return glMode;
-	};
-
-	Renderer.prototype.getGLIndexMode = function (indexMode) {
-		var glMode = WebGLRenderingContext.TRIANGLES;
-		switch (indexMode) {
-			case 'Triangles':
-				glMode = WebGLRenderingContext.TRIANGLES;
-				break;
-			case 'TriangleStrip':
-				glMode = WebGLRenderingContext.TRIANGLE_STRIP;
-				break;
-			case 'TriangleFan':
-				glMode = WebGLRenderingContext.TRIANGLE_FAN;
-				break;
-			case 'Lines':
-				glMode = WebGLRenderingContext.LINES;
-				break;
-			case 'LineStrip':
-				glMode = WebGLRenderingContext.LINE_STRIP;
-				break;
-			case 'LineLoop':
-				glMode = WebGLRenderingContext.LINE_LOOP;
-				break;
-			case 'Points':
-				glMode = WebGLRenderingContext.POINTS;
-				break;
-		}
-		return glMode;
 	};
 
 	Renderer.prototype.updateBlending = function (material) {
@@ -1864,13 +1659,13 @@ define([
 			} else if (blending === 'SeparateBlending') {
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquationSeparate(
-						this.getGLBlendParam(material.blendState.blendEquationColor),
-						this.getGLBlendParam(material.blendState.blendEquationAlpha));
+						RendererUtils.getGLBlendParam(material.blendState.blendEquationColor),
+						RendererUtils.getGLBlendParam(material.blendState.blendEquationAlpha));
 				context.blendFuncSeparate(
-					this.getGLBlendParam(material.blendState.blendSrcColor),
-					this.getGLBlendParam(material.blendState.blendDstColor),
-					this.getGLBlendParam(material.blendState.blendSrcAlpha),
-					this.getGLBlendParam(material.blendState.blendDstAlpha));
+					RendererUtils.getGLBlendParam(material.blendState.blendSrcColor),
+					RendererUtils.getGLBlendParam(material.blendState.blendDstColor),
+					RendererUtils.getGLBlendParam(material.blendState.blendSrcAlpha),
+					RendererUtils.getGLBlendParam(material.blendState.blendDstAlpha));
 			} else {
 				context.enable(WebGLRenderingContext.BLEND);
 				context.blendEquationSeparate(WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD);
@@ -1887,12 +1682,12 @@ define([
 			var blendDst = material.blendState.blendDst;
 
 			if (blendEquation !== blendRecord.blendEquation) {
-				context.blendEquation(this.getGLBlendParam(blendEquation));
+				context.blendEquation(RendererUtils.getGLBlendParam(blendEquation));
 				blendRecord.blendEquation = blendEquation;
 			}
 
 			if (blendSrc !== blendRecord.blendSrc || blendDst !== blendRecord.blendDst) {
-				context.blendFunc(this.getGLBlendParam(blendSrc), this.getGLBlendParam(blendDst));
+				context.blendFunc(RendererUtils.getGLBlendParam(blendSrc), RendererUtils.getGLBlendParam(blendDst));
 
 				blendRecord.blendSrc = blendSrc;
 				blendRecord.blendDst = blendDst;
@@ -1933,7 +1728,7 @@ define([
 	Renderer.prototype.setBoundBuffer = function (buffer, target) {
 		var targetBuffer = this.rendererRecord.currentBuffer[target];
 		if (!targetBuffer.valid || targetBuffer.buffer !== buffer) {
-			this.context.bindBuffer(this.getGLBufferTarget(target), buffer);
+			this.context.bindBuffer(RendererUtils.getGLBufferTarget(target), buffer);
 			targetBuffer.buffer = buffer;
 			targetBuffer.valid = true;
 			if (target === 'ArrayBuffer') {
@@ -1945,70 +1740,8 @@ define([
 	Renderer.prototype.bindVertexAttribute = function (attribIndex, attribute) {
 		var hashKey = this.rendererRecord.attributeCache[attribIndex];
 		if (hashKey !== attribute.hashKey) {
-			this.context.vertexAttribPointer(attribIndex, attribute.count, this.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
+			this.context.vertexAttribPointer(attribIndex, attribute.count, RendererUtils.getGLDataType(attribute.type), attribute.normalized, attribute.stride, attribute.offset);
 			this.rendererRecord.attributeCache[attribIndex] = attribute.hashKey;
-		}
-	};
-
-	Renderer.prototype.getGLDataType = function (type) {
-		switch (type) {
-			case 'Float':
-			case 'HalfFloat':
-			case 'Double':
-				return WebGLRenderingContext.FLOAT;
-			case 'Byte':
-				return WebGLRenderingContext.BYTE;
-			case 'UnsignedByte':
-				return WebGLRenderingContext.UNSIGNED_BYTE;
-			case 'Short':
-				return WebGLRenderingContext.SHORT;
-			case 'UnsignedShort':
-				return WebGLRenderingContext.UNSIGNED_SHORT;
-			case 'Int':
-				return WebGLRenderingContext.INT;
-			case 'UnsignedInt':
-				return WebGLRenderingContext.UNSIGNED_INT;
-
-			default:
-				throw 'Unknown datatype: ' + type;
-		}
-	};
-
-	Renderer.prototype.getGLBlendParam = function (param) {
-		switch (param) {
-			case 'AddEquation':
-				return WebGLRenderingContext.FUNC_ADD;
-			case 'SubtractEquation':
-				return WebGLRenderingContext.FUNC_SUBTRACT;
-			case 'ReverseSubtractEquation':
-				return WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
-
-			case 'ZeroFactor':
-				return WebGLRenderingContext.ZERO;
-			case 'OneFactor':
-				return WebGLRenderingContext.ONE;
-			case 'SrcColorFactor':
-				return WebGLRenderingContext.SRC_COLOR;
-			case 'OneMinusSrcColorFactor':
-				return WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
-			case 'SrcAlphaFactor':
-				return WebGLRenderingContext.SRC_ALPHA;
-			case 'OneMinusSrcAlphaFactor':
-				return WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
-			case 'DstAlphaFactor':
-				return WebGLRenderingContext.DST_ALPHA;
-			case 'OneMinusDstAlphaFactor':
-				return WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
-
-			case 'DstColorFactor':
-				return WebGLRenderingContext.DST_COLOR;
-			case 'OneMinusDstColorFactor':
-				return WebGLRenderingContext.ONE_MINUS_DST_COLOR;
-			case 'SrcAlphaSaturateFactor':
-				return WebGLRenderingContext.SRC_ALPHA_SATURATE;
-
-			default:
-				throw 'Unknown blend param: ' + param;
 		}
 	};
 
@@ -2084,8 +1817,8 @@ define([
 
 			// Setup texture, create render and frame buffers
 			var isTargetPowerOfTwo = Util.isPowerOfTwo(renderTarget.width) && Util.isPowerOfTwo(renderTarget.height);
-			var glFormat = this.getGLInternalFormat(renderTarget.format);
-			var glType = this.getGLDataType(renderTarget.type);
+			var glFormat = RendererUtils.getGLInternalFormat(renderTarget.format);
+			var glType = RendererUtils.getGLDataType(renderTarget.type);
 
 			renderTarget._glFrameBuffer = this.context.createFramebuffer();
 			renderTarget._glRenderBuffer = this.context.createRenderbuffer();

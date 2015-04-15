@@ -82,13 +82,13 @@ define([
 		 * @param {number} startPolarity
 		 * @param {number} endPolarity
 		 * @param {Vector3} color A vector with its components between 0-1.
-		 * @param {Matrix4x4} transformMatrix
+		 * @param {Matrix4} transformMatrix
 		 */
 		LineRenderSystem.prototype._drawAxisLine = function (start, startEndDelta, startDataIndex, endDataIndex, startPolarity, endPolarity, color, transformMatrix) {
-			var lineStart = tmpVec2.setVector(start);
+			var lineStart = tmpVec2.set(start);
 			lineStart.data[startDataIndex] += startEndDelta.data[startDataIndex] * startPolarity;
 
-			var lineEnd = tmpVec3.setVector(lineStart);
+			var lineEnd = tmpVec3.set(lineStart);
 			lineEnd.data[endDataIndex] += startEndDelta.data[endDataIndex] * endPolarity;
 
 			if (transformMatrix !== undefined) {
@@ -104,10 +104,10 @@ define([
 		 * @param {Vector3} min
 		 * @param {Vector3} max
 		 * @param {Vector3} color A vector with its components between 0-1.
-		 * @param {Matrix4x4} [transformMatrix]
+		 * @param {Matrix4} [transformMatrix]
 		 */
 		LineRenderSystem.prototype.drawAABox = function (min, max, color, transformMatrix) {
-			var diff = tmpVec1.setVector(max).subVector(min);
+			var diff = tmpVec1.set(max).sub(min);
 
 			for (var a = 0; a < 3; a++) {
 
@@ -132,16 +132,16 @@ define([
 
 			size = size || 0.05;
 
-			var start = tmpVec1.setVector(position).addDirect(-size, 0.0, -size);
-			var end = tmpVec2.setVector(position).addDirect(size, 0.0, size);
+			var start = tmpVec1.set(position).addDirect(-size, 0, -size);
+			var end = tmpVec2.set(position).addDirect(size, 0, size);
 			this.drawLine(start, end, color);
 
-			start = tmpVec1.setVector(position).addDirect(size, 0.0, -size);
-			end = tmpVec2.setVector(position).addDirect(-size, 0.0, size);
+			start = tmpVec1.set(position).addDirect(size, 0, -size);
+			end = tmpVec2.set(position).addDirect(-size, 0, size);
 			this.drawLine(start, end, color);
 
-			start = tmpVec1.setVector(position).addDirect(0, -size, 0.0);
-			end = tmpVec2.setVector(position).addDirect(0.0, size, 0.0);
+			start = tmpVec1.set(position).addDirect(0, -size, 0);
+			end = tmpVec2.set(position).addDirect(0, size, 0);
 			this.drawLine(start, end, color);
 		};
 

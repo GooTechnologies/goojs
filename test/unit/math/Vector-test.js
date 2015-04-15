@@ -9,7 +9,7 @@ define([
 ) {
 	'use strict';
 
-	describe('Vector', function () {
+	xdescribe('Vector', function () {
 		beforeEach(function () {
 			jasmine.addMatchers(CustomMatchers);
 		});

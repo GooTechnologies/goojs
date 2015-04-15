@@ -77,10 +77,10 @@ define([
 
 		var projData = this.projData = new MeshData(MeshData.defaultMap([MeshData.POSITION]), 4, 6);
 		projData.getAttributeBuffer(MeshData.POSITION).set([
-			0,0,0,
-			1,0,0,
-			1,1,0,
-			0,1,0
+			0, 0, 0,
+			1, 0, 0,
+			1, 1, 0,
+			0, 1, 0
 		]);
 		projData.getIndexBuffer().set([1, 3, 0, 2, 3, 1]);
 		var materialProj = new Material(projShaderDef, 'mat');
@@ -139,17 +139,17 @@ define([
 
 			camLocation.set(camera.translation);
 			var planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
+			calcVect.set(waterPlane.normal).scale(planeDistance * 2.0);
 			camReflectPos.set(camLocation.sub(calcVect));
 
 			camLocation.set(camera.translation).add(camera._direction);
 			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
+			calcVect.set(waterPlane.normal).scale(planeDistance * 2.0);
 			camReflectDir.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
 
 			camLocation.set(camera.translation).add(camera._up);
 			planeDistance = waterPlane.pseudoDistance(camLocation);
-			calcVect.set(waterPlane.normal).mul(planeDistance * 2.0);
+			calcVect.set(waterPlane.normal).scale(planeDistance * 2.0);
 			camReflectUp.set(camLocation.sub(calcVect)).sub(camReflectPos).normalize();
 
 			camReflectLeft.set(camReflectUp).cross(camReflectDir).normalize();
@@ -163,7 +163,7 @@ define([
 
 			if (this.skybox) {
 				var target = this.skybox.transformComponent.worldTransform;
-				target.translation.setVector(camReflectPos);
+				target.translation.set(camReflectPos);
 				target.update();
 			}
 		}
@@ -186,7 +186,7 @@ define([
 		if (aboveWater && this.skybox) {
 			var source = camera.translation;
 			var target = this.skybox.transformComponent.worldTransform;
-			target.translation.setVector(source);
+			target.translation.set(source);
 			target.update();
 		}
 	};

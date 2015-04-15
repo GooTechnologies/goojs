@@ -441,26 +441,26 @@ define([
 		if (attributeName === MeshData.POSITION) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.matrix.applyPostPoint(vert);
-				view[i + 0] = vert[0];
-				view[i + 1] = vert[1];
-				view[i + 2] = vert[2];
+				vert.applyPostPoint(transform.matrix);
+				view[i + 0] = vert.x;
+				view[i + 1] = vert.y;
+				view[i + 2] = vert.z;
 			}
 		} else if (attributeName === MeshData.NORMAL) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.rotation.applyPost(vert);
-				view[i + 0] = vert[0];
-				view[i + 1] = vert[1];
-				view[i + 2] = vert[2];
+				vert.applyPost(transform.rotation);
+				view[i + 0] = vert.x;
+				view[i + 1] = vert.y;
+				view[i + 2] = vert.z;
 			}
 		} else if (attributeName === MeshData.TANGENT) {
 			for (var i = 0; i < viewLength; i += 3) {
 				vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-				transform.rotation.applyPost(vert);
-				view[i + 0] = vert[0];
-				view[i + 1] = vert[1];
-				view[i + 2] = vert[2];
+				vert.applyPost(transform.rotation);
+				view[i + 0] = vert.x;
+				view[i + 1] = vert.y;
+				view[i + 2] = vert.z;
 			}
 		}
 
@@ -495,8 +495,8 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
 			}
 			break;
 		case 3:
@@ -506,9 +506,9 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
-				view[i + 2] = outVert[2];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+				view[i + 2] = outVert.z;
 			}
 			break;
 		case 4:
@@ -518,10 +518,10 @@ define([
 
 				outVert = fun(vert);
 
-				view[i + 0] = outVert[0];
-				view[i + 1] = outVert[1];
-				view[i + 2] = outVert[2];
-				view[i + 3] = outVert[3];
+				view[i + 0] = outVert.x;
+				view[i + 1] = outVert.y;
+				view[i + 2] = outVert.z;
+				view[i + 3] = outVert.w;
 			}
 			break;
 		}
@@ -732,22 +732,22 @@ define([
 								attribs[key].values[(indexCount + 2) * 3 + 1],
 								attribs[key].values[(indexCount + 2) * 3 + 2]
 							);
-							v2.subVector(v1);
-							v3.subVector(v1);
+							v2.sub(v1);
+							v3.sub(v1);
 							v2.cross(v3).normalize();
 
 							if (attribs[MeshData.NORMAL]) {
-								attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount) * 3 + 2] = v2.z;
 
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount + 1) * 3 + 2] = v2.z;
 
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.data[0];
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.data[1];
-								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.data[2];
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3] = v2.x;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 1] = v2.y;
+								attribs[MeshData.NORMAL].values[(indexCount + 2) * 3 + 2] = v2.z;
 							}
 						}
 					}

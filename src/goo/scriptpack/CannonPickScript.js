@@ -173,7 +173,7 @@ define([
 				if(result.length){
 					var b = result[0].body;
 					var p = result[0].point;
-					addMouseConstraint(params, env, p.x, p.y, p.z, b, gooRay.direction.mul(-1));
+					addMouseConstraint(params, env, p.x, p.y, p.z, b, gooRay.direction.scale(-1));
 				}
 			} else if(mainCam && mouseState.down && env.mouseConstraint && (mouseState.dx !== 0 || mouseState.dy !== 0)){
 
@@ -220,7 +220,7 @@ define([
 			// Set plane distance from world origin by projecting world translation to plane normal
 			var worldCenter = new Vector3(x,y,z);
 			plane.constant = worldCenter.dot(normal);
-			plane.normal.setVector(normal);
+			plane.normal.set(normal);
 
 		}
 

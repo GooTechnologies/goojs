@@ -49,14 +49,14 @@ define([
 
 					// camera
 					vec3.copy(Renderer.mainCamera ? Renderer.mainCamera.translation : new Vector3());
-					vec3.data[0] += Math.random() * 1000 - 500;
-					vec3.data[1] += that.height; // put higher than camera
-					vec3.data[2] += Math.random() * 1000 - 500;
+					vec3.x += Math.random() * 1000 - 500;
+					vec3.y += that.height; // put higher than camera
+					vec3.z += Math.random() * 1000 - 500;
 				},
 				getEmissionVelocity: function(vec3) {
-					vec3.data[0] = (Math.random() - 0.5) * 2;
-					vec3.data[1] = -(Math.random() + 1) * that.velocity;
-					vec3.data[2] = (Math.random() - 0.5) * 2;
+					vec3.x = (Math.random() - 0.5) * 2;
+					vec3.y = -(Math.random() + 1) * that.velocity;
+					vec3.z = (Math.random() - 0.5) * 2;
 				}
 			}),
 			this.material

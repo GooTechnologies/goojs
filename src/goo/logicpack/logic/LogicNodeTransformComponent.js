@@ -6,10 +6,10 @@ define(
 		'goo/logic/LogicInterface',
 		'goo/entities/components/TransformComponent',
 		'goo/math/Vector3',
-		'goo/math/Matrix3x3'
+		'goo/math/Matrix3'
 	],
 
-	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, TransformComponent, Vector3, Matrix3x3) {
+	function(LogicLayer, LogicNode, LogicNodes, LogicInterface, TransformComponent, Vector3, Matrix3) {
 		'use strict';
 
 		/**
@@ -49,7 +49,7 @@ define(
 		LogicNodeTransformComponent.inportRot = LogicNodeTransformComponent.logicInterface.addInputProperty("rotation", "Vector3", new Vector3(0, 0, 0));
 		LogicNodeTransformComponent.inportScale = LogicNodeTransformComponent.logicInterface.addInputProperty("scale", "Vector3", new Vector3(1, 1, 1));
 		LogicNodeTransformComponent.outportPos = LogicNodeTransformComponent.logicInterface.addOutputProperty("outpos", "Vector3", new Vector3());
-		LogicNodeTransformComponent.outportRot = LogicNodeTransformComponent.logicInterface.addOutputProperty("rotmat", "Matrix3", new Matrix3x3());
+		LogicNodeTransformComponent.outportRot = LogicNodeTransformComponent.logicInterface.addOutputProperty("rotmat", "Matrix3", new Matrix3());
 		LogicNodeTransformComponent.logicInterface.addConfigEntry({
 			name: 'entityRef',
 			type: 'entityRef',

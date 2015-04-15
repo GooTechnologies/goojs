@@ -90,16 +90,16 @@ define([
 				iter = 0;
 
 				target.setDirect(
-					- oldVal.data[0] + (Math.random()-0.5) * this.level * 2,
-					- oldVal.data[1] + (Math.random()-0.5) * this.level * 2,
-					- oldVal.data[2] + (Math.random()-0.5) * this.level * 2
+					- oldVal.x + (Math.random()-0.5) * this.level * 2,
+					- oldVal.y + (Math.random()-0.5) * this.level * 2,
+					- oldVal.z + (Math.random()-0.5) * this.level * 2
 				);
 			}
 
 			vel.setDirect(
-				vel.data[0] * 0.98 + (target.data[0]) * 0.1,
-				vel.data[1] * 0.98 + (target.data[1]) * 0.1,
-				vel.data[2] * 0.98 + (target.data[2]) * 0.1
+				vel.x * 0.98 + (target.x) * 0.1,
+				vel.y * 0.98 + (target.y) * 0.1,
+				vel.z * 0.98 + (target.z) * 0.1
 			);
 
 			translation.add(vel).sub(oldVal);

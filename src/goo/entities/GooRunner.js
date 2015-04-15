@@ -204,7 +204,7 @@ define([
 			doPick: false,
 			pickingCallback: null,
 			pickingStore: {},
-			clearColorStore: []
+			clearColorStore: [] //! AT: why is this an array and not a vector4?
 		};
 
 		this.manuallyPaused = !!parameters.manuallyStartGameLoop;
@@ -410,11 +410,11 @@ define([
 			}
 			// handle pick requests
 			if (this._picking.doPick && Renderer.mainCamera) {
-				var cc = this.renderer.clearColor.data;
-				this._picking.clearColorStore[0] = cc[0];
-				this._picking.clearColorStore[1] = cc[1];
-				this._picking.clearColorStore[2] = cc[2];
-				this._picking.clearColorStore[3] = cc[3];
+				var clearColor = this.renderer.clearColor;
+				this._picking.clearColorStore[0] = clearColor.r;
+				this._picking.clearColorStore[1] = clearColor.g;
+				this._picking.clearColorStore[2] = clearColor.b;
+				this._picking.clearColorStore[3] = clearColor.a;
 				this.renderer.setClearColor(0, 0, 0, 1);
 
 				for (var i = 0; i < this.renderSystems.length; i++) {
@@ -806,16 +806,11 @@ define([
 	 */
 	GooRunner.prototype.pickSync = function (x, y, skipUpdateBuffer) {
 		// save the clear color
-		var currentClearColor = this.renderer.clearColor.data;
+		var currentClearColor = this.renderer.clearColor;
 
 		this._picking.skipUpdateBuffer = skipUpdateBuffer === undefined ? false : skipUpdateBuffer;
 
-		var savedClearColor = [
-			currentClearColor[0],
-			currentClearColor[1],
-			currentClearColor[2],
-			currentClearColor[3]
-		];
+		var savedClearColor = currentClearColor.clone();
 
 		// change the clear color
 		this.renderer.setClearColor(0, 0, 0, 1);
@@ -824,7 +819,7 @@ define([
 		this.renderSystem.renderToPick(this.renderer, false);
 
 		// restore the clear color
-		this.renderer.setClearColor.apply(this.renderer, savedClearColor);
+		this.renderer.setClearColor(savedClearColor.r, savedClearColor.g, savedClearColor.b, savedClearColor.a);
 
 		// get the picking data from the buffer
 		var pickingStore = {};

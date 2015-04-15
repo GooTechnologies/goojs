@@ -1,14 +1,14 @@
 define([
         'goo/renderer/MeshData',
         'goo/math/Vector3',
-        // 'goo/math/Matrix3x3',
+        // 'goo/math/Matrix3',
         'goo/entities/EntityUtils'
         ],
 
 	function (
 		MeshData,
 		Vector3,
-		// Matrix3x3,
+		// Matrix3,
 		EntityUtils
 	) {
 	'use strict';
@@ -71,7 +71,7 @@ define([
 		});
 	};
 
-	// var normalMatrix = new Matrix3x3();
+	// var normalMatrix = new Matrix3();
 	var vert = new Vector3();
 	/**
 	 * add MeshData to this MeshBuilder
@@ -86,8 +86,8 @@ define([
 
 		var matrix = transform.matrix;
 		var rotation = transform.rotation;
-		// Matrix3x3.invert(transform.rotation, normalMatrix);
-		// Matrix3x3.transpose(normalMatrix, normalMatrix);
+		// Matrix3.invert(transform.rotation, normalMatrix);
+		// Matrix3.transpose(normalMatrix, normalMatrix);
 
 		var attributeMap = meshData.attributeMap;
 		var keys = Object.keys(attributeMap);
@@ -109,6 +109,7 @@ define([
 			}
 
 			var view = meshData.getAttributeBuffer(key);
+			
 			var viewLength = view.length;
 			var array = attribute.array;
 			var count = map.count;
@@ -116,27 +117,27 @@ define([
 			if (key === MeshData.POSITION) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-					matrix.applyPostPoint(vert);
-					array[vertexPos + i + 0] = vert.data[0];
-					array[vertexPos + i + 1] = vert.data[1];
-					array[vertexPos + i + 2] = vert.data[2];
+					vert.applyPostPoint(matrix);
+					array[vertexPos + i + 0] = vert.x;
+					array[vertexPos + i + 1] = vert.y;
+					array[vertexPos + i + 2] = vert.z;
 				}
 			} else if (key === MeshData.NORMAL) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-					rotation.applyPost(vert);
-					array[vertexPos + i + 0] = vert.data[0];
-					array[vertexPos + i + 1] = vert.data[1];
-					array[vertexPos + i + 2] = vert.data[2];
+					vert.applyPost(rotation);
+					array[vertexPos + i + 0] = vert.x;
+					array[vertexPos + i + 1] = vert.y;
+					array[vertexPos + i + 2] = vert.z;
 				}
 			} else if (key === MeshData.TANGENT) {
 				for (var i = 0; i < viewLength; i += count) {
 					vert.setDirect(view[i + 0], view[i + 1], view[i + 2]);
-					rotation.applyPost(vert);
-					array[vertexPos + i + 0] = vert.data[0];
-					array[vertexPos + i + 1] = vert.data[1];
-					array[vertexPos + i + 2] = vert.data[2];
-					array[vertexPos + i + 3] = view[i + 3];
+					vert.applyPost(rotation);
+					array[vertexPos + i + 0] = vert.x;
+					array[vertexPos + i + 1] = vert.y;
+					array[vertexPos + i + 2] = vert.z;
+					array[vertexPos + i + 3] = view.w;
 				}
 			} else {
 				for (var i = 0; i < viewLength; i++) {

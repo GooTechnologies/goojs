@@ -38,8 +38,8 @@ define([
 				panButton = -1;
 			}
 			lookAtPoint = environment.goingToLookAt;
-			fwdVector = new Vector3(Vector3.UNIT_Y);
-			leftVector = new Vector3(Vector3.UNIT_X).invert();
+			fwdVector = Vector3.UNIT_Y.clone();
+			leftVector = Vector3.UNIT_X.clone().invert();
 			moveVector = new Vector3();
 			calcVector = new Vector3();
 			calcVector2 = new Vector3();
@@ -183,11 +183,11 @@ define([
 					calcVector.z,
 					calcVector
 				);
-				lookAtPoint.setVector(calcVector);
+				lookAtPoint.set(calcVector);
 
 			} else {
-				calcVector.setVector(fwdVector).scale(mouseState.dy);
-				calcVector2.setVector(leftVector).scale(mouseState.dx);
+				calcVector.set(fwdVector).scale(mouseState.dy);
+				calcVector2.set(leftVector).scale(mouseState.dx);
 
 				//! schteppe: use world coordinates for both by default?
 				//if (parameters.screenMove){
@@ -200,7 +200,7 @@ define([
 					calcVector2.scale((camera._frustumRight - camera._frustumLeft) / environment.viewportWidth);
 				}
 				//}
-				calcVector.addVector(calcVector2);
+				calcVector.add(calcVector2);
 				transform.rotation.applyPost(calcVector);
 				//if (!parameters.screenMove){
 					// panSpeed should be 1 in the screenMove case, to make movement sync properly
@@ -210,7 +210,7 @@ define([
 				} else {
 					calcVector.scale(parameters.panSpeed);
 				}
-				entity.transformComponent.transform.translation.addVector(calcVector);
+				entity.transformComponent.transform.translation.add(calcVector);
 				entity.transformComponent.setUpdated();
 				environment.dirty = false;
 			}

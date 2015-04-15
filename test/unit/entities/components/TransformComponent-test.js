@@ -2,7 +2,7 @@ define([
 	'goo/entities/World',
 	'goo/entities/components/TransformComponent',
 	'goo/entities/systems/TransformSystem',
-	'goo/math/Matrix3x3',
+	'goo/math/Matrix3',
 	'goo/math/Vector3',
 	'goo/entities/Entity',
 	'goo/math/Transform',
@@ -15,7 +15,7 @@ define([
 	World,
 	TransformComponent,
 	TransformSystem,
-	Matrix3x3,
+	Matrix3,
 	Vector3,
 	Entity,
 	Transform,
@@ -255,7 +255,7 @@ define([
 			it('sets a TransformComponent when trying to add a Transform', function () {
 				var entity = new Entity(world);
 				var transform = new Transform();
-				transform.translation.setd(1, 2, 3);
+				transform.translation.setDirect(1, 2, 3);
 				entity.set(transform);
 
 				expect(entity.transformComponent).toBeTruthy();

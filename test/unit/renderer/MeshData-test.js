@@ -30,7 +30,7 @@ define(
 			var box = new Quad();
 
 			var transform = new Transform();
-			transform.translation.setd(1, 2, 3);
+			transform.translation.setDirect(1, 2, 3);
 			transform.update();
 			box.applyTransform(MeshData.POSITION, transform);
 
@@ -77,11 +77,11 @@ define(
 
 		});
 
-		it("can apply a function on vertices", function() {
+		it("can apply a function on vertices", function () {
 			var box = new Quad();
 
-			box.applyFunction(MeshData.POSITION, function(vert) {
-				vert.data[2] = vert.data[0] + vert.data[1];
+			box.applyFunction(MeshData.POSITION, function (vert) {
+				vert.z = vert.x + vert.y;
 				return vert;
 			});
 
