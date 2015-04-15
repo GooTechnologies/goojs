@@ -19,26 +19,31 @@ define([
 	 * @param {String} type Type to retrieve bytesize for
 	 */
 	RendererUtils.getByteSize = function (type) {
+		var byteSize;
+
 		switch (type) {
-		case 'Byte':
-			return 1;
-		case 'UnsignedByte':
-			return 1;
-		case 'Short':
-			return 2;
-		case 'UnsignedShort':
-			return 2;
-		case 'Int':
-			return 4;
-		case 'HalfFloat':
-			return 2;
-		case 'Float':
-			return 4;
-		case 'Double':
-			return 8;
-		default:
-			throw 'Unknown type: ' + type;
+			case 'Byte':
+			case 'UnsignedByte':
+				byteSize = 1;
+				break;
+			case 'Short':
+			case 'UnsignedShort':
+			case 'HalfFloat':
+				byteSize = 2;
+				break;
+			case 'Int':
+			case 'Float':
+				byteSize = 4;
+				break;
+			case 'Double':
+				byteSize = 8;
+				break;
+
+			default:
+				throw new Error('Unknown type: ' + type);
 		}
+
+		return byteSize;
 	};
 
 	/**
@@ -53,24 +58,24 @@ define([
 			wasError = true;
 			if (error === gl.INVALID_ENUM) {
 				console
-					.error("An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.");
+					.error('An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.');
 			} else if (error === gl.INVALID_VALUE) {
 				console
-					.error("A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.");
+					.error('A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.');
 			} else if (error === gl.INVALID_OPERATION) {
 				console
-					.error("The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.");
+					.error('The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.');
 			} else if (error === gl.FRAMEBUFFER_COMPLETE) {
 				console
-					.error("The command is trying to render to or read from the framebuffer while the currently bound framebuffer is not framebuffer complete (i.e. the return value from glCheckFramebufferStatus is not GL_FRAMEBUFFER_COMPLETE). The offending command is ignored and has no other side effect than to set the error flag.");
+					.error('The command is trying to render to or read from the framebuffer while the currently bound framebuffer is not framebuffer complete (i.e. the return value from glCheckFramebufferStatus is not GL_FRAMEBUFFER_COMPLETE). The offending command is ignored and has no other side effect than to set the error flag.');
 			} else if (error === gl.OUT_OF_MEMORY) {
-				throw "There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded.";
+				throw new Error('There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded.');
 			}
 			error = gl.getError();
 		}
 
 		if (wasError) {
-			throw "Stopping due to error";
+			throw new Error('Stopping due to error');
 		}
 	};
 
@@ -182,102 +187,167 @@ define([
 	};
 
 	RendererUtils.getGLType = function (type) {
+		var glType;
+
 		switch (type) {
 			case '2D':
-				return WebGLRenderingContext.TEXTURE_2D;
+				glType = WebGLRenderingContext.TEXTURE_2D;
+				break;
 			case 'CUBE':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP;
+				glType = WebGLRenderingContext.TEXTURE_CUBE_MAP;
+				break;
+
+			default:
+				throw new Error('Invalid texture type: ' + type);
 		}
-		throw 'invalid texture type: ' + type;
+
+		return glType;
 	};
 
 	RendererUtils.getGLWrap = function (wrap) {
+		var glWrap;
+
 		switch (wrap) {
 			case 'Repeat':
-				return WebGLRenderingContext.REPEAT;
+				glWrap = WebGLRenderingContext.REPEAT;
+				break;
 			case 'MirroredRepeat':
-				return WebGLRenderingContext.MIRRORED_REPEAT;
+				glWrap = WebGLRenderingContext.MIRRORED_REPEAT;
+				break;
 			case 'EdgeClamp':
-				return WebGLRenderingContext.CLAMP_TO_EDGE;
+				glWrap = WebGLRenderingContext.CLAMP_TO_EDGE;
+				break;
+
+			default:
+				throw new Error('Invalid WrapMode type: ' + wrap);
 		}
-		throw "invalid WrapMode type: " + wrap;
+
+		return glWrap;
 	};
 
 	RendererUtils.getGLInternalFormat = function (format) {
+		var glInternalFormat;
+
 		switch (format) {
 			case 'RGBA':
-				return WebGLRenderingContext.RGBA;
+				glInternalFormat = WebGLRenderingContext.RGBA;
+				break;
 			case 'RGB':
-				return WebGLRenderingContext.RGB;
+				glInternalFormat = WebGLRenderingContext.RGB;
+				break;
 			case 'Alpha':
-				return WebGLRenderingContext.ALPHA;
+				glInternalFormat = WebGLRenderingContext.ALPHA;
+				break;
 			case 'Luminance':
-				return WebGLRenderingContext.LUMINANCE;
+				glInternalFormat = WebGLRenderingContext.LUMINANCE;
+				break;
 			case 'LuminanceAlpha':
-				return WebGLRenderingContext.LUMINANCE_ALPHA;
+				glInternalFormat = WebGLRenderingContext.LUMINANCE_ALPHA;
+				break;
+
 			default:
-				throw "Unsupported format: " + format;
+				throw new Error('Unsupported format: ' + format);
 		}
+
+		return glInternalFormat;
 	};
 
 	RendererUtils.getGLPixelDataType = function (type) {
+		var glPixelDataType;
+
 		switch (type) {
 			case 'UnsignedByte':
-				return WebGLRenderingContext.UNSIGNED_BYTE;
+				glPixelDataType = WebGLRenderingContext.UNSIGNED_BYTE;
+				break;
 			case 'UnsignedShort565':
-				return WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
+				glPixelDataType = WebGLRenderingContext.UNSIGNED_SHORT_5_6_5;
+				break;
 			case 'UnsignedShort4444':
-				return WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
+				glPixelDataType = WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4;
+				break;
 			case 'UnsignedShort5551':
-				return WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
+				glPixelDataType = WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1;
+				break;
 			case 'Float':
-				return WebGLRenderingContext.FLOAT;
+				glPixelDataType = WebGLRenderingContext.FLOAT;
+				break;
+
 			default:
-				throw "Unsupported type: " + type;
+				throw new Error('Unsupported type: ' + type);
 		}
+
+		return glPixelDataType;
 	};
 
 	RendererUtils.getFilterFallback = function (filter) {
+		var filterFallback;
+
 		switch (filter) {
 			case 'NearestNeighborNoMipMaps':
 			case 'NearestNeighborNearestMipMap':
 			case 'NearestNeighborLinearMipMap':
-				return 'NearestNeighborNoMipMaps';
+				filterFallback = 'NearestNeighborNoMipMaps';
+				break;
 			case 'BilinearNoMipMaps':
 			case 'Trilinear':
 			case 'BilinearNearestMipMap':
-				return 'BilinearNoMipMaps';
+				filterFallback = 'BilinearNoMipMaps';
+				break;
+
 			default:
-				return 'NearestNeighborNoMipMaps';
+				filterFallback = 'NearestNeighborNoMipMaps';
+				break;
 		}
+
+		return filterFallback;
 	};
 
 	RendererUtils.getGLMagFilter = function (filter) {
+		var glMagFilter;
+
 		switch (filter) {
 			case 'Bilinear':
-				return WebGLRenderingContext.LINEAR;
+				glMagFilter = WebGLRenderingContext.LINEAR;
+				break;
 			case 'NearestNeighbor':
-				return WebGLRenderingContext.NEAREST;
+				glMagFilter = WebGLRenderingContext.NEAREST;
+				break;
+
+			default:
+				throw new Error('Invalid MagnificationFilter type: ' + filter);
 		}
-		throw "invalid MagnificationFilter type: " + filter;
+
+		return glMagFilter;
 	};
 
 	RendererUtils.getGLMinFilter = function (filter) {
+		var glMinFilter;
+
 		switch (filter) {
 			case 'BilinearNoMipMaps':
-				return WebGLRenderingContext.LINEAR;
+				glMinFilter = WebGLRenderingContext.LINEAR;
+				break;
 			case 'Trilinear':
-				return WebGLRenderingContext.LINEAR_MIPMAP_LINEAR;
+				glMinFilter = WebGLRenderingContext.LINEAR_MIPMAP_LINEAR;
+				break;
 			case 'BilinearNearestMipMap':
-				return WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
+				glMinFilter = WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
+				break;
 			case 'NearestNeighborNoMipMaps':
-				return WebGLRenderingContext.NEAREST;
+				glMinFilter = WebGLRenderingContext.NEAREST;
+				break;
 			case 'NearestNeighborNearestMipMap':
-				return WebGLRenderingContext.NEAREST_MIPMAP_NEAREST;
+				glMinFilter = WebGLRenderingContext.NEAREST_MIPMAP_NEAREST;
+				break;
 			case 'NearestNeighborLinearMipMap':
-				return WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
+				glMinFilter = WebGLRenderingContext.NEAREST_MIPMAP_LINEAR;
+				break;
+
+			default:
+				throw new Error('Invalid MinificationFilter type: ' + filter);
 		}
-		throw "invalid MinificationFilter type: " + filter;
+
+		return glMinFilter;
 	};
 
 	RendererUtils.getGLBufferTarget = function (target) {
@@ -289,61 +359,62 @@ define([
 	};
 
 	RendererUtils.getGLArrayType = function (indices) {
+		var glArrayType = null;
+
 		if (indices instanceof Uint8Array) {
-			return WebGLRenderingContext.UNSIGNED_BYTE;
+			glArrayType = WebGLRenderingContext.UNSIGNED_BYTE;
 		} else if (indices instanceof Uint16Array) {
-			return WebGLRenderingContext.UNSIGNED_SHORT;
+			glArrayType = WebGLRenderingContext.UNSIGNED_SHORT;
 		} else if (indices instanceof Uint32Array) {
-			return WebGLRenderingContext.UNSIGNED_INT;
+			glArrayType = WebGLRenderingContext.UNSIGNED_INT;
 		} else if (indices instanceof Int8Array) {
-			return WebGLRenderingContext.UNSIGNED_BYTE;
+			glArrayType = WebGLRenderingContext.UNSIGNED_BYTE;
 		} else if (indices instanceof Int16Array) {
-			return WebGLRenderingContext.UNSIGNED_SHORT;
+			glArrayType = WebGLRenderingContext.UNSIGNED_SHORT;
 		} else if (indices instanceof Int32Array) {
-			return WebGLRenderingContext.UNSIGNED_INT;
+			glArrayType = WebGLRenderingContext.UNSIGNED_INT;
 		}
 
-		return null;
+		return glArrayType;
 	};
 
 	RendererUtils.getGLByteSize = function (indices) {
-		if (indices instanceof Uint8Array) {
-			return 1;
-		} else if (indices instanceof Uint16Array) {
-			return 2;
-		} else if (indices instanceof Uint32Array) {
-			return 4;
-		} else if (indices instanceof Int8Array) {
-			return 1;
-		} else if (indices instanceof Int16Array) {
-			return 2;
-		} else if (indices instanceof Int32Array) {
-			return 4;
-		}
-
-		return 1;
+		return indices.BYTES_PER_ELEMENT || 1;
 	};
 
 	RendererUtils.getGLCubeMapFace = function (face) {
+		var glCubeMapFace;
+
 		switch (face) {
 			case 'PositiveX':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
+				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X;
+				break;
 			case 'NegativeX':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
+				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X;
+				break;
 			case 'PositiveY':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
+				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y;
+				break;
 			case 'NegativeY':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+				break;
 			case 'PositiveZ':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
+				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z;
+				break;
 			case 'NegativeZ':
-				return WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+				glCubeMapFace = WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+				break;
+
+			default:
+				throw new Error('Invalid cubemap face: ' + face);
 		}
-		throw 'Invalid cubemap face: ' + face;
+
+		return glCubeMapFace;
 	};
 
 	RendererUtils.getGLBufferUsage = function (usage) {
-		var glMode = WebGLRenderingContext.STATIC_DRAW;
+		var glMode;
+
 		switch (usage) {
 			case 'StaticDraw':
 				glMode = WebGLRenderingContext.STATIC_DRAW;
@@ -354,12 +425,18 @@ define([
 			case 'StreamDraw':
 				glMode = WebGLRenderingContext.STREAM_DRAW;
 				break;
+
+			default:
+				glMode = WebGLRenderingContext.STATIC_DRAW;
+				break;
 		}
+
 		return glMode;
 	};
 
 	RendererUtils.getGLIndexMode = function (indexMode) {
-		var glMode = WebGLRenderingContext.TRIANGLES;
+		var glMode;
+
 		switch (indexMode) {
 			case 'Triangles':
 				glMode = WebGLRenderingContext.TRIANGLES;
@@ -382,70 +459,104 @@ define([
 			case 'Points':
 				glMode = WebGLRenderingContext.POINTS;
 				break;
+
+			default:
+				glMode = WebGLRenderingContext.TRIANGLES;
+				break;
 		}
+
 		return glMode;
 	};
 
 	RendererUtils.getGLDataType = function (type) {
+		var glDataType;
+
 		switch (type) {
 			case 'Float':
 			case 'HalfFloat':
 			case 'Double':
-				return WebGLRenderingContext.FLOAT;
+				glDataType = WebGLRenderingContext.FLOAT;
+				break;
 			case 'Byte':
-				return WebGLRenderingContext.BYTE;
+				glDataType = WebGLRenderingContext.BYTE;
+				break;
 			case 'UnsignedByte':
-				return WebGLRenderingContext.UNSIGNED_BYTE;
+				glDataType = WebGLRenderingContext.UNSIGNED_BYTE;
+				break;
 			case 'Short':
-				return WebGLRenderingContext.SHORT;
+				glDataType = WebGLRenderingContext.SHORT;
+				break;
 			case 'UnsignedShort':
-				return WebGLRenderingContext.UNSIGNED_SHORT;
+				glDataType = WebGLRenderingContext.UNSIGNED_SHORT;
+				break;
 			case 'Int':
-				return WebGLRenderingContext.INT;
+				glDataType = WebGLRenderingContext.INT;
+				break;
 			case 'UnsignedInt':
-				return WebGLRenderingContext.UNSIGNED_INT;
+				glDataType = WebGLRenderingContext.UNSIGNED_INT;
+				break;
 
 			default:
-				throw 'Unknown datatype: ' + type;
+				throw new Error('Unknown datatype: ' + type);
 		}
+
+		return glDataType;
 	};
 
 	RendererUtils.getGLBlendParam = function (param) {
+		var glBlendParam;
+
 		switch (param) {
 			case 'AddEquation':
-				return WebGLRenderingContext.FUNC_ADD;
+				glBlendParam = WebGLRenderingContext.FUNC_ADD;
+				break;
 			case 'SubtractEquation':
-				return WebGLRenderingContext.FUNC_SUBTRACT;
+				glBlendParam = WebGLRenderingContext.FUNC_SUBTRACT;
+				break;
 			case 'ReverseSubtractEquation':
-				return WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
+				glBlendParam = WebGLRenderingContext.FUNC_REVERSE_SUBTRACT;
+				break;
 
 			case 'ZeroFactor':
-				return WebGLRenderingContext.ZERO;
+				glBlendParam = WebGLRenderingContext.ZERO;
+				break;
 			case 'OneFactor':
-				return WebGLRenderingContext.ONE;
+				glBlendParam = WebGLRenderingContext.ONE;
+				break;
 			case 'SrcColorFactor':
-				return WebGLRenderingContext.SRC_COLOR;
+				glBlendParam = WebGLRenderingContext.SRC_COLOR;
+				break;
 			case 'OneMinusSrcColorFactor':
-				return WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
+				glBlendParam = WebGLRenderingContext.ONE_MINUS_SRC_COLOR;
+				break;
 			case 'SrcAlphaFactor':
-				return WebGLRenderingContext.SRC_ALPHA;
+				glBlendParam = WebGLRenderingContext.SRC_ALPHA;
+				break;
 			case 'OneMinusSrcAlphaFactor':
-				return WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
+				glBlendParam = WebGLRenderingContext.ONE_MINUS_SRC_ALPHA;
+				break;
 			case 'DstAlphaFactor':
-				return WebGLRenderingContext.DST_ALPHA;
+				glBlendParam = WebGLRenderingContext.DST_ALPHA;
+				break;
 			case 'OneMinusDstAlphaFactor':
-				return WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
+				glBlendParam = WebGLRenderingContext.ONE_MINUS_DST_ALPHA;
+				break;
 
 			case 'DstColorFactor':
-				return WebGLRenderingContext.DST_COLOR;
+				glBlendParam = WebGLRenderingContext.DST_COLOR;
+				break;
 			case 'OneMinusDstColorFactor':
-				return WebGLRenderingContext.ONE_MINUS_DST_COLOR;
+				glBlendParam = WebGLRenderingContext.ONE_MINUS_DST_COLOR;
+				break;
 			case 'SrcAlphaSaturateFactor':
-				return WebGLRenderingContext.SRC_ALPHA_SATURATE;
+				glBlendParam = WebGLRenderingContext.SRC_ALPHA_SATURATE;
+				break;
 
 			default:
-				throw 'Unknown blend param: ' + param;
+				throw new Error('Unknown blend param: ' + param);
 		}
+
+		return glBlendParam;
 	};
 
 	return RendererUtils;
