@@ -130,8 +130,6 @@ define([
 
 			texture.readyCallback = function () {
 				if (video.readyState >= 3) {
-					console.log('WebCam video ready: ' + video.videoWidth + ', ' + video.videoHeight);
-
 					video.width = video.videoWidth;
 					video.height = video.videoHeight;
 
@@ -143,10 +141,9 @@ define([
 
 					video.dataReady = true;
 
-					resolve(texture);
-
 					return true;
 				}
+
 				return false;
 			};
 
@@ -162,12 +159,11 @@ define([
 					video: true
 				}, function (stream) {
 					video.src = window.URL.createObjectURL(stream);
+					resolve(texture);
 				}, function (err) {
-					console.warn('Unable to capture WebCam. Please reload the page.', err);
 					reject(err);
 				});
 			} else {
-				console.warn('No support for WebCam getUserMedia found!');
 				reject(new Error('No support for WebCam getUserMedia found!'));
 			}
 		});
