@@ -47,7 +47,7 @@ define(function () {
 	};
 
 	EdgeData.prototype.setLongX = function (value) {
-			this.floatData[0] = value;
+		this.floatData[0] = value;
 	};
 
 	EdgeData.prototype.getShortX = function () {

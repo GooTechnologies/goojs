@@ -223,5 +223,29 @@ define([
 				expect(vector.applyPost(matrix)).toBeCloseToVector(new Vector4(90, 100, 110, 120));
 			});
 		});
+
+		describe('fromArray', function () {
+			it('creates a Vector4 from an array', function () {
+				expect(Vector4.fromArray([11, 22, 33, 44]))
+					.toBeCloseToVector(new Vector4(11, 22, 33, 44));
+			});
+		});
+
+		describe('fromAny', function () {
+			it('creates a Vector4 from 4 numbers', function () {
+				expect(Vector4.fromAny(11, 22, 33, 44))
+					.toBeCloseToVector(new Vector4(11, 22, 33, 44));
+			});
+
+			it('creates a Vector4 from an array of 4 numbers', function () {
+				expect(Vector4.fromAny([11, 22, 33, 44]))
+					.toBeCloseToVector(new Vector4(11, 22, 33, 44));
+			});
+
+			it('creates a Vector4 from an { x, y, z } object', function () {
+				expect(Vector4.fromAny({ x: 11, y: 22, z: 33, w: 44 }))
+					.toBeCloseToVector(new Vector4(11, 22, 33, 44));
+			});
+		});
 	});
 });

@@ -32,6 +32,38 @@ define([
 			});
 		});
 
+		describe('copyOptions', function () {
+			it('copies defaults onto an empty object', function () {
+				var destination = {};
+				var options = {};
+				var defaults = { a: 1, b: 2 };
+
+				ObjectUtil.copyOptions(destination, options, defaults);
+
+				expect(destination).toEqual(defaults);
+			});
+
+			it('ignores defaults when options are present', function () {
+				var destination = {};
+				var options = { a: 123, b: 456 };
+				var defaults = { a: 1, b: 2 };
+
+				ObjectUtil.copyOptions(destination, options, defaults);
+
+				expect(destination).toEqual(options);
+			});
+
+			it('copies the defaults object over when options is not an object', function () {
+				var destination = {};
+				var options = null;
+				var defaults = { a: 1, b: 2 };
+
+				ObjectUtil.copyOptions(destination, options, defaults);
+
+				expect(destination).toEqual(defaults);
+			});
+		});
+
 		describe('extends', function () {
 			it('copies properties onto an empty object', function () {
 				var destination = {};

@@ -104,7 +104,6 @@ define([
 	*	@param {Array.<Entity>} renderList The array of entities with attached OccluderComponents.
 	*/
 	SoftwareRenderer.prototype.render = function (renderList) {
-
 		this._clearDepthData();
 
 		var cameraViewMatrix = this.camera.getViewMatrix();
@@ -163,7 +162,6 @@ define([
 	*	@returns {Array.<Entity>} visibleEntities The array of entities which are visible after occlusion culling has been applied.
 	*/
 	SoftwareRenderer.prototype.performOcclusionCulling = function (renderList) {
-
 		var cameraViewMatrix = this.camera.getViewMatrix();
 		var cameraProjectionMatrix = this.camera.getProjectionMatrix();
 		cameraViewProjectionMatrix.mul2(cameraProjectionMatrix, cameraViewMatrix);
@@ -171,7 +169,6 @@ define([
 		var visibleEntities = [];
 
 		for (var i = 0, _len = renderList.length; i < _len; i++) {
-
 			var entity = renderList[i];
 			// If the entity does not have an occludeeComponent, it should not be able to to be culled.
 			var occludeeComponent = entity.occludeeComponent;
@@ -293,10 +290,10 @@ define([
 				indices[3] = this._triangleData.addVertex(clipVec.data);
 
 				/*
-				 The order of the indices ( CCW / CW ) are not relevant at this point, since
-				 back face culling has been performed.
+				The order of the indices ( CCW / CW ) are not relevant at this point, since
+				back face culling has been performed.
 
-				 But to construct the right triangles, making use of the outside and inside indices is needed.
+				But to construct the right triangles, making use of the outside and inside indices is needed.
 				*/
 
 				var insideIndex1 = insideIndices[0];
@@ -357,9 +354,8 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._screenSpaceTransformTriangleData = function (cameraProjectionMatrix) {
-
-		 // TODO :  Possible optimization? : Look at which vertices actually in need of beeing transformed?
-		 //          Recreate position array from those and then transform?
+		// TODO :  Possible optimization? : Look at which vertices actually in need of beeing transformed?
+		//          Recreate position array from those and then transform?
 		var maxPos = this._triangleData.posCount;
 		var p = 0;
 		while (p < maxPos) {
@@ -800,7 +796,6 @@ define([
 	};
 
 	SoftwareRenderer.prototype._isEdgeOccluded = function (edgeData, orientationData) {
-
 		// Copypasted from _drawEdges.
 		var startLine = edgeData.getStartLine();
 		var stopLine = edgeData.getStopLine();
@@ -860,7 +855,6 @@ define([
 				}
 			} else { // OUTWARDS TRIANGLE
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getShortX();
 					realRightX = edgeData.getLongX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
@@ -900,7 +894,6 @@ define([
 		} else { // LEFT ORIENTED
 			if (orientationData[1]) { //INWARDS TRIANGLE
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getLongX();
 					realRightX = edgeData.getShortX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
@@ -942,7 +935,6 @@ define([
 				}
 			} else { // OUTWARDS TRIANGLE
 				for (y = startLine; y <= stopLine; y++) {
-
 					realLeftX = edgeData.getLongX();
 					realRightX = edgeData.getShortX();
 					// Conservative rounding (will cause overdraw on connecting triangles)
@@ -1032,7 +1024,6 @@ define([
 		// Checking if the triangle's long edge is on the right or the left side.
 		if (orientationData[0]) { // LONG EDGE ON THE RIGHT SIDE
 			if (orientationData[1]) { // INWARDS TRIANGLE
-
 				rightEdgeShared = longEdgeBetween;
 
 				// Setup where the samples of the x-values should be taken from, upper or lower part of the edge in
@@ -1320,7 +1311,6 @@ define([
 	// TODO: The long edge's increment values are not necessary to write for each of the two sub-triangles. Separate this function
 	// into another.
 	SoftwareRenderer.prototype._createEdgeData = function (longEdge, shortEdge) {
-
 		var startLine = Math.ceil(shortEdge.y0);
 		var stopLine = Math.floor(shortEdge.y1);
 
@@ -1395,7 +1385,6 @@ define([
 	 * @private
 	 */
 	SoftwareRenderer.prototype._isScanlineOccluded = function (leftX, rightX, y, leftZ, rightZ) {
-
 		// 99% COPY PASTE FROM _fillPixels()!
 
 		if (rightX < leftX || rightX < 0 || leftX > this._clipX) {
@@ -1432,7 +1421,6 @@ define([
 		var depthIncrement = (rightZ - leftZ) / (rightX - leftX);
 		// Fill all pixels in the interval [leftX, rightX].
 		for (var i = leftX; i <= rightX; i++) {
-
 			// TODO : Remove this debugg add of color in prod....
 			this._colorData.set([Math.min(depth * 255 + 50, 255), 0, 0], index * 4);
 
@@ -1455,7 +1443,6 @@ define([
 	*
 	*/
 	SoftwareRenderer.prototype._fillPixels = function (leftX, rightX, y, leftZ, rightZ) {
-
 		if (rightX < 0 || leftX > this._clipX || rightX < leftX) {
 			return; // Nothing to draw here. early exit.
 		}
@@ -1525,7 +1512,6 @@ define([
 	*	Maps the data in the depth buffer to gray scale values in the color buffer.
 	*/
 	SoftwareRenderer.prototype.copyDepthToColor = function () {
-
 		var colorIndex = 0;
 
 		for (var i = 0; i < this._depthData.length; i++) {
@@ -1551,24 +1537,21 @@ define([
 		}
 	};
 
-
 	/**
-	*	Returns the array of RGBA color data.
-	*	@returns {Uint8Array} RGBA Color data.
-	*/
+	 * Returns the array of RGBA color data.
+	 * @returns {Uint8Array} RGBA Color data.
+	 */
 	SoftwareRenderer.prototype.getColorData = function () {
 		return this._colorData;
 	};
 
 	/**
-	*	Returns the array of depth data.
-	*	@returns {Float32Array} Depth data.
-	*/
+	 * Returns the array of depth data.
+	 * @returns {Float32Array} Depth data.
+	 */
 	SoftwareRenderer.prototype.getDepthData = function () {
-
 		return this._depthData;
 	};
-
 
 	SoftwareRenderer.prototype.calculateDifference = function (webGLColorData, clearColor) {
 		for (var i = 0; i < this._depthData.length; i++) {

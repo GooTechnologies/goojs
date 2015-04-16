@@ -38,7 +38,7 @@ define([
 				};
 			},
 			light: function(type, options) {
-				var config = _.defaults({}, options, {
+				var config = _.copyOptions({}, options, {
 					type: type || 'PointLight',
 					color: [1,1,1],
 					intensity: 1,

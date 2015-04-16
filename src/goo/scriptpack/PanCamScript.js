@@ -39,7 +39,7 @@ define([
 			}
 			lookAtPoint = environment.goingToLookAt;
 			fwdVector = Vector3.UNIT_Y.clone();
-			leftVector = Vector3.UNIT_X.clone().invert();
+			leftVector = Vector3.UNIT_X.clone().negate();
 			calcVector = new Vector3();
 			calcVector2 = new Vector3();
 

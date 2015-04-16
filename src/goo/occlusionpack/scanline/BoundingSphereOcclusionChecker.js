@@ -22,11 +22,11 @@ define([
 	var green = [0, 255, 0];
 	var cyan = [0, 190, 190];
 	/*
-	 var red = [255, 0, 0];
-	 var blue = [0, 0, 255];
-	 var yellow = [255, 255, 0];
-	 var pink = [255, 0, 255];
-	 */
+	var red = [255, 0, 0];
+	var blue = [0, 0, 255];
+	var yellow = [255, 255, 0];
+	var pink = [255, 0, 255];
+	*/
 
 	/**
 	 *
@@ -69,17 +69,17 @@ define([
 		var radius = scale.maxAxis() * boundingSphere.radius;
 
 		/*
-		 Compensate for perspective distortion of the sphere.
-		 http://article.gmane.org/gmane.games.devel.algorithms/21697/
-		 http://www.gamasutra.com/view/feature/2942/the_mechanics_of_robust_stencil_.php?page=6
-		 http://www.nickdarnell.com/2010/06/hierarchical-z-buffer-occlusion-culling/
-		 Bounds.w == radius.
-		 float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
-		 */
-		var origin_x = tempVec.x;
-		var origin_y = tempVec.y;
-		var origin_z = tempVec.z;
-		var cameraToSphereDistance = Math.sqrt(origin_x * origin_x + origin_y * origin_y + origin_z * origin_z);
+		Compensate for perspective distortion of the sphere.
+		http://article.gmane.org/gmane.games.devel.algorithms/21697/
+		http://www.gamasutra.com/view/feature/2942/the_mechanics_of_robust_stencil_.php?page=6
+		http://www.nickdarnell.com/2010/06/hierarchical-z-buffer-occlusion-culling/
+		Bounds.w == radius.
+		float fRadius = CameraSphereDistance * tan(asin(Bounds.w / CameraSphereDistance));
+		*/
+		var originX = tempVec.x;
+		var originY = tempVec.y;
+		var originZ = tempVec.z;
+		var cameraToSphereDistance = Math.sqrt(originX * originX + originY * originY + originZ * originZ);
 
 		// https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Math/asin
 		// The asin method returns a numeric value between -pi/2 and pi/2 radians for x between -1 and 1. If the value of number is outside this range, it returns NaN.
@@ -91,7 +91,7 @@ define([
 		// The coordinate which is closest to the near plane should be at one radius step closer to the camera.
 		// w-component is always 1.0 at this point.
 
-		var nearCut = origin_z + compensatedRadius;
+		var nearCut = originZ + compensatedRadius;
 		if (nearCut > cameraNearZInWorld) {
 			// The bounding sphere intersects the near plane, assuming to have to draw the entity by default.
 			return false;
@@ -101,42 +101,41 @@ define([
 		// [near, left, right, top, bottom]
 
 		// NEAR
-		positionArray[0] = origin_x;
-		positionArray[1] = origin_y;
+		positionArray[0] = originX;
+		positionArray[1] = originY;
 		positionArray[2] = nearCut;
 
 		// LEFT
-		positionArray[4] = origin_x - compensatedRadius;
-		positionArray[5] = origin_y;
-		positionArray[6] = origin_z;
+		positionArray[4] = originX - compensatedRadius;
+		positionArray[5] = originY;
+		positionArray[6] = originZ;
 
 		// RIGHT
-		positionArray[8] = origin_x + compensatedRadius;
-		positionArray[9] = origin_y;
-		positionArray[10] = origin_z;
+		positionArray[8] = originX + compensatedRadius;
+		positionArray[9] = originY;
+		positionArray[10] = originZ;
 
 		// TOP
-		positionArray[12] = origin_x;
-		positionArray[13] = origin_y + compensatedRadius;
-		positionArray[14] = origin_z;
+		positionArray[12] = originX;
+		positionArray[13] = originY + compensatedRadius;
+		positionArray[14] = originZ;
 
 		// BOTTOM
-		positionArray[16] = origin_x;
-		positionArray[17] = origin_y - compensatedRadius;
-		positionArray[18] = origin_z;
+		positionArray[16] = originX;
+		positionArray[17] = originY - compensatedRadius;
+		positionArray[18] = originZ;
 
 		/*
-		var nearCoord = new Vector4(origin_x, origin_y, nearCut, 1.0);
-		var leftCoord = new Vector4(origin_x - compensatedRadius, origin_y, origin_z, 1.0);
-		var rightCoord = new Vector4(origin_x + compensatedRadius, origin_y, origin_z, 1.0);
-		var topCoord = new Vector4(origin_x, origin_y + compensatedRadius, origin_z, 1.0);
-		var bottomCoord = new Vector4(origin_x , origin_y - compensatedRadius, origin_z, 1.0);
+		var nearCoord = new Vector4(originX, originY, nearCut, 1.0);
+		var leftCoord = new Vector4(originX - compensatedRadius, originY, originZ, 1.0);
+		var rightCoord = new Vector4(originX + compensatedRadius, originY, originZ, 1.0);
+		var topCoord = new Vector4(originX, originY + compensatedRadius, originZ, 1.0);
+		var bottomCoord = new Vector4(originX , originY - compensatedRadius, originZ, 1.0);
 		*/
 
 		// Projection transform the positions.
 		var i = 0;
 		while (i < 20) {
-
 			var i1 = i++;
 			var i2 = i++;
 			var i3 = i++;
@@ -179,21 +178,21 @@ define([
 		// Executes the occluded test in the order they are put, exits the case upon any false value.
 		// TODO: Test for best order of early tests.
 		/*
-		 this._isOccluded(topCoord, yellow, nearestDepth);
-		 this._isOccluded(leftCoord, blue, nearestDepth);
-		 this._isOccluded(rightCoord, green, nearestDepth);
-		 this._isOccluded(bottomCoord, yellow, nearestDepth);
-		 this._isOccluded(nearCoord, red, nearestDepth);
-		 */
+		this._isOccluded(topCoord, yellow, nearestDepth);
+		this._isOccluded(leftCoord, blue, nearestDepth);
+		this._isOccluded(rightCoord, green, nearestDepth);
+		this._isOccluded(bottomCoord, yellow, nearestDepth);
+		this._isOccluded(nearCoord, red, nearestDepth);
+		*/
 
 		/*
-		 return (this._isOccluded(topCoord, yellow, nearestDepth)
-		 && this._isOccluded(leftCoord, blue, nearestDepth)
-		 && this._isOccluded(rightCoord, green, nearestDepth)
-		 && this._isOccluded(bottomCoord, yellow, nearestDepth)
-		 && this._isOccluded(nearCoord, red, nearestDepth)
-		 && this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink));
-		 */
+		return (this._isOccluded(topCoord, yellow, nearestDepth)
+		&& this._isOccluded(leftCoord, blue, nearestDepth)
+		&& this._isOccluded(rightCoord, green, nearestDepth)
+		&& this._isOccluded(bottomCoord, yellow, nearestDepth)
+		&& this._isOccluded(nearCoord, red, nearestDepth)
+		&& this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink));
+		*/
 
 		//return this._isPythagorasCircleScanlineOccluded(topCoord, bottomCoord, rightCoord, leftCoord, nearestDepth, pink);
 		return this._isSSAABBScanlineOccluded();
@@ -426,7 +425,6 @@ define([
 		botRows -= 1;
 		radius = rightCoordinate.x - bottomCoordinate.x;
 		for (var i = 0; i < botRows; i++) {
-
 			var b = radius - ratio * yH;
 			var x = Math.sqrt(r2 - b * b);
 			var rightX = Math.ceil(topCoordinate.x + x);
@@ -469,7 +467,6 @@ define([
 	 * @param color
 	 */
 	BoundingSphereOcclusionChecker.prototype._isOccluded = function (coordinate, color, nearestDepth) {
-
 		if (this._isCoordinateInsideScreen(coordinate)) {
 
 			var coordIndex = coordinate.y * this.renderer.width + coordinate.x;

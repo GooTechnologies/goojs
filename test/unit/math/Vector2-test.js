@@ -221,5 +221,29 @@ define([
 				expect(vector).toBeCloseToVector(new Vector2(11 / 55, 22 / 66));
 			});
 		});
+
+		describe('fromArray', function () {
+			it('creates a Vector2 from an array', function () {
+				expect(Vector2.fromArray([11, 22]))
+					.toBeCloseToVector(new Vector2(11, 22));
+			});
+		});
+
+		describe('fromAny', function () {
+			it('creates a Vector2 from 2 numbers', function () {
+				expect(Vector2.fromAny(11, 22))
+					.toBeCloseToVector(new Vector2(11, 22));
+			});
+
+			it('creates a Vector2 from an array of 2 numbers', function () {
+				expect(Vector2.fromAny([11, 22]))
+					.toBeCloseToVector(new Vector2(11, 22));
+			});
+
+			it('creates a Vector2 from an { x, y } object', function () {
+				expect(Vector2.fromAny({ x: 11, y: 22 }))
+					.toBeCloseToVector(new Vector2(11, 22));
+			});
+		});
 	});
 });

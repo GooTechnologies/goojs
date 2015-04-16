@@ -314,7 +314,7 @@ define([
 				expect(function () { vector3.scale(); })
 					.toThrow(new Error('Tried setting NaN to vector component x'));
 			});
-			
+
 			it('throws an exception when a corrupt vector would return NaN', function () {
 				var vector = new Vector3();
 				// manually corrupting this vector
@@ -322,6 +322,30 @@ define([
 				vector._x = NaN;
 				expect(function () { vector.lengthSquared(); })
 					.toThrow(new Error('Vector method lengthSquared returned NaN'));
+			});
+		});
+
+		describe('fromArray', function () {
+			it('creates a Vector3 from an array', function () {
+				expect(Vector3.fromArray([11, 22, 33]))
+					.toBeCloseToVector(new Vector3(11, 22, 33));
+			});
+		});
+
+		describe('fromAny', function () {
+			it('creates a Vector3 from 3 numbers', function () {
+				expect(Vector3.fromAny(11, 22, 33))
+					.toBeCloseToVector(new Vector3(11, 22, 33));
+			});
+
+			it('creates a Vector3 from an array of 3 numbers', function () {
+				expect(Vector3.fromAny([11, 22, 33]))
+					.toBeCloseToVector(new Vector3(11, 22, 33));
+			});
+
+			it('creates a Vector3 from an { x, y, z } object', function () {
+				expect(Vector3.fromAny({ x: 11, y: 22, z: 33 }))
+					.toBeCloseToVector(new Vector3(11, 22, 33));
 			});
 		});
 	});

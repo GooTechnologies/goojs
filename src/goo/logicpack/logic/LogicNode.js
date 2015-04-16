@@ -24,7 +24,7 @@ define(
 			// If instantiated in a logic layer.
 			this.logicInstance = null;
 
-			// For now this needs to be set to true in the constructor of those who wants it, or 
+			// For now this needs to be set to true in the constructor of those who wants it, or
 			// at least before addToWorldLogic is called.
 			this.wantsProcessCall = false;
 		}

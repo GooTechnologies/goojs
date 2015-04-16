@@ -40,7 +40,7 @@ define([
 		var i = Math.floor(x);
 		var f = MathUtils.scurve5(x - i);
 
-		return { 'i0' : i + 0, 'i1' : i + 1, 'f0' : 1.0 - f, 'f1' : 0.0 + f };
+		return { 'i0': i + 0, 'i1': i + 1, 'f0': 1.0 - f, 'f1': 0.0 + f };
 	};
 
 	/**

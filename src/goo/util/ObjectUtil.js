@@ -25,12 +25,39 @@ define(function () {
 	};
 
 	/**
+	 * Merges an options object and a defaults object into another object
+	 * @param destination Object to attach properties to
+	 * @param options A list of options; options must eb a subset of defaults
+	 * @param defaults Defaults for options; if an option if not present this value is used instead
+	 * @returns {Object} Returns the destination object
+	 */
+	ObjectUtil.copyOptions = function (destination, options, defaults) {
+		var keys = Object.keys(defaults);
+
+		if (options) {
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var option = options[key];
+				destination[key] = typeof option === 'undefined' || option === null ?
+					defaults[key] :
+					option;
+			}
+		} else {
+			ObjectUtil.extend(destination, defaults);
+		}
+
+		return destination;
+	};
+
+	/**
 	 * Copies properties from an object onto another object; overwrites existing properties
 	 * @param {Object} destination Destination object to copy to
 	 * @param {Object} source Source object to copy from
 	 * @returns {Object} Returns the destination object
 	 */
 	ObjectUtil.extend = function (destination, source) {
+		if (!source) { return; }
+
 		var keys = Object.keys(source);
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
